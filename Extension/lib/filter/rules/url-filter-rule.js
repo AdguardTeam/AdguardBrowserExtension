@@ -231,6 +231,10 @@ UrlFilterRule.prototype._loadOptions = function (options) {
 					permittedContentType |= UrlFilterRule.contentTypes[optionName];
 				} else if (optionName[0] == FilterRule.NOT_MARK && optionName.substring(1) in UrlFilterRule.contentTypes) {
 					restrictedContentType |= UrlFilterRule.contentTypes[optionName.substring(1)];
+				} else if (optionName in UrlFilterRule.ignoreOptions) {
+					//ignore
+				} else {
+					throw 'Unknown option: ' + optionName;
 				}
 		}
 	}
@@ -278,6 +282,25 @@ UrlFilterRule.contentTypes = {
 	URLBLOCK: 1 << 21,  //This attribute is only for exception rules. If true - do not use urlblocking rules for urls where referrer satisfies this rule.
 	JSINJECT: 1 << 22,  //Does not inject javascript rules to page
 	POPUP: 1 << 23      //check block popups
+};
+
+UrlFilterRule.ignoreOptions = {
+	// Process as common url-blocking rule
+	'OBJECT-SUBREQUEST': true,
+	'~OBJECT-SUBREQUEST': true,
+	// Deprecated modifiers
+	'BACKGROUND': true,
+	'~BACKGROUND': true,
+	'MEDIA': true,
+	'~MEDIA': true,
+	// Unused modifiers
+	'COLLAPSE': true,
+	'~COLLAPSE': true,
+	'~DOCUMENT': true,
+	// Process as a common url-blocking rule
+	'EMPTY': true,
+	// http://adguard.com/en/filterrules.html#advanced
+	'CONTENT': true
 };
 
 UrlFilterRule.contentTypes.DOCUMENT = UrlFilterRule.contentTypes.ELEMHIDE | UrlFilterRule.contentTypes.URLBLOCK | UrlFilterRule.contentTypes.JSINJECT;
@@ -379,7 +402,7 @@ function parseRuleText(ruleText) {
 		whiteListRule = true;
 	}
 
-	var optionsIndex = urlRuleText.indexOf(UrlFilterRule.OPTIONS_DELIMITER);
+	var optionsIndex = urlRuleText.lastIndexOf(UrlFilterRule.OPTIONS_DELIMITER);
 	if (optionsIndex >= 0) {
 		var optionsBase = urlRuleText;
 		urlRuleText = urlRuleText.substring(0, optionsIndex);
