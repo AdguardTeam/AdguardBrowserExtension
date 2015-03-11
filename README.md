@@ -1,0 +1,2 @@
+# AdguardBrowserExtension
+Adguard browser extension
