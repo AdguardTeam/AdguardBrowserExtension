@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title i18n="filter_download_title"></title>
+
+    <meta charset="utf-8">
+    <link type="text/css" rel="stylesheet" href="skin/style.css">
+    <link type="text/css" rel="stylesheet" href="skin/my.css">
+    <link type="text/css" rel="stylesheet" href="skin/nprogress.css"/>
+
+    <#if browser.name() == "CHROMIUM" || browser.name() == "SAFARI">
+    <script type="text/javascript" src="../lib/libs/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="../lib/libs/nprogress.js"></script>
+    <script type="text/javascript" src="../lib/content-script/common-script.js"></script>
+    <script type="text/javascript" src="../lib/content-script/content-script.js"></script>
+    <script type="text/javascript" src="../lib/pages/i18n.js"></script>
+    <script type="text/javascript" src="../lib/pages/filter-download.js"></script>
+    </#if>
+    <#if browser.name() == "FIREFOX" || browser.name() == "FIREFOX_LEGACY">
+    <link rel="shortcut icon" href="skin/favicon.png"/>
+    <script type="text/javascript" src="libs/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="libs/nprogress.js"></script>
+    <script type="text/javascript" src="content-script/content-script.js"></script>
+    <script type="text/javascript" src="pages/i18n.js"></script>
+    <script type="text/javascript" src="pages/script.js"></script>
+    <script type="text/javascript" src="pages/filter-download.js"></script>
+    </#if>
+</head>
+<body>
+<header class="header downloading">
+    <div class="wrap cf">
+        <a class="header-logo" href="">
+            Adguard
+        </a>
+    </div>
+</header>
+
+<div class="settings-page downloading">
+
+    <div class="wrap">
+
+        <div class="sp-lists-user-descr" i18n="filter_download_loading"></div>
+
+        <div class="sp-lists-user-descr" i18n="filter_download_do_you_know"></div>
+        <div class="sp-lists-user-descr" i18n="filter_download_sb_sites"></div>
+        <div class="sp-lists-user-descr" i18n="filter_download_rules"></div>
+        <div class="sp-lists-user-descr" i18n="filter_download_ads_malware"></div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title i18n="filtering_log_title"></title>
+
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="skin/logpage/css/style.css"/>
+    <link rel="stylesheet" href="skin/my.css"/>
+
+    <#if browser.name() == "CHROMIUM" || browser.name() == "SAFARI">
+        <script type="text/javascript" src="../lib/libs/jquery-1.8.3.min.js"></script>
+        <script type="text/javascript" src="../lib/libs/bootstrap.min.js"></script>
+        <script type="text/javascript" src="../lib/libs/moment-with-locales.min.js"></script>
+        <script type="text/javascript" src="../lib/content-script/common-script.js"></script>
+        <script type="text/javascript" src="../lib/content-script/content-script.js"></script>
+        <script type="text/javascript" src="../lib/pages/i18n.js"></script>
+        <script type="text/javascript" src="../lib/pages/script.js"></script>
+        <script type="text/javascript" src="../lib/pages/log.js"></script>
+    </#if>
+    <#if browser.name() == "FIREFOX" || browser.name() == "FIREFOX_LEGACY">
+        <link rel="shortcut icon" href="skin/favicon.png"/>
+        <script type="text/javascript" src="libs/jquery-1.8.3.min.js"></script>
+        <script type="text/javascript" src="libs/bootstrap.min.js"></script>
+        <script type="text/javascript" src="libs/moment-with-locales.min.js"></script>
+        <script type="text/javascript" src="content-script/content-script.js"></script>
+        <script type="text/javascript" src="pages/i18n.js"></script>
+        <script type="text/javascript" src="pages/script.js"></script>
+        <script type="text/javascript" src="pages/log.js"></script>
+    </#if>
+</head>
+<body>
+
+<div class="task-manager">
+    <div class="task-manager-header">
+        <div class="task-manager-header-row cf">
+            <div class="task-manager-header-dropdown">
+                <img id="logoIcon" class="task-manager-header-dropdown-img" src="skin/logpage/images/dropdown-logo.png"/>
+                <span class="task-manager-header-dropdown-text" i18n="filtering_log_tab"></span>
+
+                <div id="tabSelector" class="task-manager-header-dropdown-select">
+                    <div class="task-manager-header-dropdown-select-text" data-toggle="dropdown" data-target="#tabSelector"></div>
+                    <div class="task-manager-header-dropdown-select-list"></div>
+                </div>
+            </div>
+            <div class="task-manager-header-controls">
+                <a href="#" class="reloadTab task-manager-header-controls-refresh button button-small button-green" i18n="filtering_refresh_tab"></a>
+                <a id="clearTabLog" href="#" class="task-manager-header-controls-clear button-link" i18n="filtering_clear_tab_events"></a>
+            </div>
+        </div>
+        <div class="task-manager-header-row cf">
+            <div class="task-manager-header-filter">
+                <span class="task-manager-header-filter-icon"></span>
+                <input class="task-manager-header-filter-input" type="text" i18n-plhr="filtering_log_search_string" name="searchEventRequest"/>
+            </div>
+            <div class="task-manager-header-tabs cf select-none">
+                <div class="task-manager-header-tabs-item-wrap active">
+                    <a class="task-manager-header-tabs-item searchEventType" href="#" i18n="filtering_type_all"></a>
+                </div>
+                <div class="task-manager-header-tabs-item-wrap">
+                    <a class="task-manager-header-tabs-item searchEventType" href="#" attr-type="DOCUMENT,SUBDOCUMENT">HTML</a>
+                </div>
+                <div class="task-manager-header-tabs-item-wrap">
+                    <a class="task-manager-header-tabs-item searchEventType" href="#" attr-type="STYLESHEET">CSS</a>
+                </div>
+                <div class="task-manager-header-tabs-item-wrap">
+                    <a class="task-manager-header-tabs-item searchEventType" href="#" attr-type="SCRIPT">JavaScript</a>
+                </div>
+                <div class="task-manager-header-tabs-item-wrap">
+                    <a class="task-manager-header-tabs-item searchEventType" href="#" attr-type="XMLHTTPREQUEST">Ajax</a>
+                </div>
+                <div class="task-manager-header-tabs-item-wrap">
+                    <a class="task-manager-header-tabs-item searchEventType" href="#" attr-type="IMAGE">Image</a>
+                </div>
+                <div class="task-manager-header-tabs-item-wrap">
+                    <a class="task-manager-header-tabs-item searchEventType" href="#" attr-type="OBJECT">Media</a>
+                </div>
+                <div class="task-manager-header-tabs-item-wrap">
+                    <a class="task-manager-header-tabs-item searchEventType" href="#" attr-type="OTHER">Other</a>
+                </div>
+                <div class="task-manager-header-tabs-checkbox">
+                    <input class="task-manager-header-tabs-checkbox-input" type="checkbox" id="task-manager-third-party" name="searchEventThirdParty">
+                    <label class="task-manager-header-tabs-checkbox-label" for="task-manager-third-party">
+                        <span class="task-manager-header-tabs-checkbox-icon"></span>
+                        <span class="task-manager-header-tabs-checkbox-label-text">Third party</span>
+                    </label>
+                </div>
+                <div class="task-manager-header-tabs-checkbox">
+                    <input class="task-manager-header-tabs-checkbox-input" type="checkbox" id="task-manager-blocked" name="searchEventBlocked">
+                    <label class="task-manager-header-tabs-checkbox-label" for="task-manager-blocked">
+                        <span class="task-manager-header-tabs-checkbox-icon"></span>
+                        <span class="task-manager-header-tabs-checkbox-label-text" i18n="filtering_type_blocked"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="task-manager-content">
+        <div class="task-manager-content-header cf">
+            <div class="task-manager-content-header-item task-manager-content-item-url">
+                <div class="task-manager-content-header-item-wrap">URL</div>
+            </div>
+            <div class="task-manager-content-header-item task-manager-content-item-type">
+                <div class="task-manager-content-header-item-wrap" i18n="filtering_table_type"></div>
+            </div>
+            <div class="task-manager-content-header-item task-manager-content-item-rule">
+                <div class="task-manager-content-header-item-wrap" i18n="filtering_table_rule"></div>
+            </div>
+            <div class="task-manager-content-header-item task-manager-content-item-source">
+                <div class="task-manager-content-header-item-wrap" i18n="filtering_table_source"></div>
+            </div>
+        </div>
+        <div id="logTable" class="task-manager-content-header-body hidden"></div>
+        <div id="logTableEmpty" class="task-manager-content-header-body hidden">
+            <div class="task-manager-content-header-body-row-empty" i18n="filtering_table_empty_row"></div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-request-info" class="modal compact-view" style="display: none;">
+    <div class="modal-dialog adg-modal-window">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" i18n="filtering_modal_info_title"></h4>
+            </div>
+            <div class="modal-body adg-modal-window-locking-info cf">
+                <div class="adg-modal-window-locking-info-left pull-left">
+                    <div class="adg-modal-window-locking-info-left-row cf">
+                        <div class="adg-modal-window-locking-info-left-col">URL:</div>
+                        <div class="adg-modal-window-locking-info-left-col" attr-text="requestUrl"></div>
+                    </div>
+                    <div class="adg-modal-window-locking-info-left-row cf">
+                        <div class="adg-modal-window-locking-info-left-col" i18n="filtering_modal_type"></div>
+                        <div class="adg-modal-window-locking-info-left-col" attr-text="requestType"></div>
+                    </div>
+                    <div class="adg-modal-window-locking-info-left-row cf">
+                        <div class="adg-modal-window-locking-info-left-col" i18n="filtering_modal_source"></div>
+                        <div class="adg-modal-window-locking-info-left-col" attr-text="frameDomain"></div>
+                    </div>
+                    <div class="adg-modal-window-locking-info-left-row cf">
+                        <div class="adg-modal-window-locking-info-left-col" i18n="filtering_modal_rule"></div>
+                        <div class="adg-modal-window-locking-info-left-col" attr-text="requestRule"></div>
+                    </div>
+                    <div class="adg-modal-window-locking-info-left-row cf">
+                        <div class="adg-modal-window-locking-info-left-col" i18n="filtering_modal_filter"></div>
+                        <div class="adg-modal-window-locking-info-left-col" attr-text="requestRuleFilter"></div>
+                    </div>
+                </div>
+                <div class="adg-modal-window-locking-info-right pull-right" style="display: none;">
+                    <img class="adg-modal-window-locking-info-right-pic" attr-src="requestUrl">
+                </div>
+            </div>
+            <div class="modal-footer cf">
+                <a id="openRequestNewTab" href="#" class="button button-gray pull-left" i18n="filtering_modal_open_in_new_tab"></a>
+
+                <div class="pull-right">
+                    <a id="blockRequest" href="#" class="button button-red hidden" i18n="filtering_modal_block"></a>
+                    <a id="unblockRequest" href="#" class="button hidden" i18n="filtering_modal_unblock"></a>
+                    <a id="removeUserFilterRule" href="#" class="button hidden" i18n="filtering_modal_remove_user"></a>
+                    <a id="removeWhiteListDomain" href="#" class="button hidden" i18n="filtering_modal_remove_whitelist"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-create-block-rule" class="modal" style="display: none;">
+    <div class="modal-dialog adg-modal-window">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" i18n="filtering_modal_add_title"></h4>
+            </div>
+            <div class="modal-body addition-rule cf">
+                <div class="addition-rule-row cf">
+                    <div class="addition-rule-row-left addition-rule-row-right-controls addition-rule-row-right-filtername" i18n="filtering_modal_rule_text"></div>
+                    <div class="addition-rule-row-right">
+                        <input name="ruleText" class="addition-rule-row-right-input" type="text"/>
+                    </div>
+                </div>
+                <div class="addition-rule-row cf">
+                    <div class="addition-rule-row-left addition-rule-row-right-controls addition-rule-row-left-patterns" i18n="filtering_modal_patterns"></div>
+                    <div id="rulePatterns" class="addition-rule-row-right addition-rule-row-right-patterns"></div>
+                </div>
+                <div class="addition-rule-row cf">
+                    <div class="addition-rule-row-left addition-rule-row-left-options addition-rule-row-right-controls" i18n="filtering_modal_options"></div>
+                    <div class="addition-rule-row-right addition-rule-row-right-options">
+                        <div class="checkbox checkbox-options">
+                            <input name="ruleDomain" class="checkbox-input" type="checkbox">
+                            <label class="checkbox-label">
+                                <span class="checkbox-icon"></span>
+                                <span class="checkbox-label-text" i18n="filtering_modal_apply_domains"></span>
+                            </label>
+                        </div>
+                        <div class="checkbox checkbox-options">
+                            <input name="ruleMatchCase" class="checkbox-input" type="checkbox">
+                            <label class="checkbox-label">
+                                <span class="checkbox-icon"></span>
+                                <span class="checkbox-label-text" i18n="filtering_modal_match_case"></span>
+                            </label>
+                        </div>
+                        <div class="checkbox checkbox-options">
+                            <input name="ruleThirdParty" class="checkbox-input" type="checkbox">
+                            <label class="checkbox-label">
+                                <span class="checkbox-icon"></span>
+                                <span class="checkbox-label-text" i18n="filtering_modal_third_party"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer cf">
+                <div class="pull-right">
+                    <a id="createRule" href="#" class="button button-red" i18n="filtering_modal_add_rule"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-create-exception-rule" class="modal" style="display: none;">
+    <div class="modal-dialog adg-modal-window">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" i18n="filtering_modal_exception_title"></h4>
+            </div>
+            <div class="modal-body addition-rule cf">
+                <div class="addition-rule-row cf">
+                    <div class="addition-rule-row-left addition-rule-row-right-controls addition-rule-row-right-filtername" i18n="filtering_modal_rule_text"></div>
+                    <div class="addition-rule-row-right">
+                        <input name="ruleText" class="addition-rule-row-right-input" type="text"/>
+                    </div>
+                </div>
+                <div class="addition-rule-row cf">
+                    <div class="addition-rule-row-left addition-rule-row-right-controls addition-rule-row-left-patterns" i18n="filtering_modal_patterns"></div>
+                    <div id="rulePatterns" class="addition-rule-row-right addition-rule-row-right-patterns"></div>
+                </div>
+                <div class="addition-rule-row cf">
+                    <div class="addition-rule-row-left addition-rule-row-left-options addition-rule-row-right-controls" i18n="filtering_modal_options"></div>
+                    <div class="addition-rule-row-right addition-rule-row-right-options">
+                        <div class="checkbox checkbox-options">
+                            <input name="ruleDomain" class="checkbox-input" type="checkbox">
+                            <label class="checkbox-label">
+                                <span class="checkbox-icon"></span>
+                                <span class="checkbox-label-text" i18n="filtering_modal_apply_domains"></span>
+                            </label>
+                        </div>
+                        <div class="checkbox checkbox-options">
+                            <input name="ruleMatchCase" class="checkbox-input" type="checkbox">
+                            <label class="checkbox-label">
+                                <span class="checkbox-icon"></span>
+                                <span class="checkbox-label-text" i18n="filtering_modal_match_case"></span>
+                            </label>
+                        </div>
+                        <div class="checkbox checkbox-options">
+                            <input name="ruleThirdParty" class="checkbox-input" type="checkbox">
+                            <label class="checkbox-label">
+                                <span class="checkbox-icon"></span>
+                                <span class="checkbox-label-text" i18n="filtering_modal_third_party"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer cf">
+                <div class="pull-right">
+                    <a id="createRule" href="#" class="button button-red" i18n="filtering_modal_add_rule"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

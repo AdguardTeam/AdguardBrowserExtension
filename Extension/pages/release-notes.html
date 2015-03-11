@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title i18n="release_notes_title"></title>
+    <meta charset="utf-8">
+    <link type="text/css" rel="stylesheet" href="skin/style.css">
+    <link type="text/css" rel="stylesheet" href="skin/my.css">
+
+    <#if browser.name() == "CHROMIUM" || browser.name() == "SAFARI">
+    <script type="text/javascript" src="../lib/libs/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="../lib/content-script/common-script.js"></script>
+    <script type="text/javascript" src="../lib/content-script/content-script.js"></script>
+    <script type="text/javascript" src="../lib/pages/i18n.js"></script>
+    <script type="text/javascript" src="../lib/pages/script.js"></script>
+    <script type="text/javascript" src="../lib/pages/release-notes.js"></script>
+    </#if>
+    <#if browser.name() == "FIREFOX" || browser.name() == "FIREFOX_LEGACY">
+    <link rel="shortcut icon" href="skin/favicon.png"/>
+    <script type="text/javascript" src="libs/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="content-script/content-script.js"></script>
+    <script type="text/javascript" src="pages/i18n.js"></script>
+    <script type="text/javascript" src="pages/script.js"></script>
+    <script type="text/javascript" src="pages/release-notes.js"></script>
+    </#if>
+</head>
+<body>
+
+<header class="thanks-header">
+    <div class="wrap">
+        <img class="thanks-header-img" src="skin/img/thanks-header-logo.png">
+
+        <div class="thanks-header-title" i18n="release_notes_whats_new"></div>
+    </div>
+</header>
+
+<div id="locale-ru" class="thanks-content changelog">
+
+    <div class="wrap">
+
+        <div class="settings-page-title">Версия 2.0.0</div>
+        <div class="thanks-content-descr">
+            <h4>+ Новый Журнал работы Adguard</h4>
+            <p>
+                Теперь это не&nbsp;просто список запросов, обработанных Adguard. Это полноценный инструмент разработчика фильтров. С&nbsp;помощью журнала вы&nbsp;сможете проанализировать какие запросы блокируются или, наоборот, разрешаются Adguard. Анализ&nbsp;&mdash; не&nbsp;единственная задача журнала. Буквально в&nbsp;пару кликов вы&nbsp;сможете блокировать или разблокировать любой запрос.
+            </p>
+            <h4>+ Функция приостановки защиты</h4>
+            <p>
+                Приостановка защиты позволит полностью, а&nbsp;не&nbsp;на&nbsp;каком-либо конкретном сайте, отключить фильтрацию Adguard. Включить ее&nbsp;обратно также просто, как и&nbsp;отключить.
+            </p>
+            <h4>+ Значительно улучшены производительность и&nbsp;потребление памяти</h4>
+            <p>
+                Мы&nbsp;провели большую работу по&nbsp;оптимизации кода расширения. Версия&nbsp;2.0 стала еще быстрее и&nbsp;еще &laquo;легче&raquo;.
+            </p>
+        </div>
+
+        <div class="settings-page-title">Версия 1.0.3.8</div>
+        <div class="thanks-content-descr">
+<pre>
++ Улучшена интеграция с Windows и Mac версией Adguard
++ Добавлена поддержка regexp-правил
+* Ускорена работа расширения
+* Исправлено несколько небольших дефектов
+</pre>
+        </div>
+
+        <div class="settings-page-title">Версия 1.0.3.6</div>
+        <div class="thanks-content-descr">
+<pre>
+* Небольшие исправления
+</pre>
+        </div>
+
+        <div class="settings-page-title">Версия 1.0.3.5</div>
+        <div class="thanks-content-descr">
+<pre>
+* Исправлены дефекты выбора и блокирования элементов страницы
+* Исправлена блокировка рекламы на сайте youtube.com для Safari
+* Оптимизирована работа с рекламными фильтрами
+</pre>
+        </div>
+
+        <div class="settings-page-title">Версия 1.0.3.4</div>
+        <div class="thanks-content-descr">
+<pre>
+* Исправлены дефекты выбора и блокирования элементов страницы
+* Небольшие исправления по UI
+</pre>
+        </div>
+
+
+        <div class="settings-page-title">Версия 1.0.3.1</div>
+        <div class="thanks-content-descr">
+<pre>
+* Исправлено несколько минорных дефектов
+</pre>
+        </div>
+
+        <div class="settings-page-title">Версия 1.0.3.0</div>
+        <div class="thanks-content-descr">
+<pre>
++ Добавлена возможность подключать известные подписки ABP.
+</pre>
+        </div>
+
+        <div class="settings-page-title">Версия 1.0.2.12</div>
+        <div class="thanks-content-descr">
+<pre>
+* Исправлена фильтрация redirect-запросов
+</pre>
+        </div>
+
+        <div class="settings-page-title">Версия 1.0.2.10</div>
+        <div class="thanks-content-descr">
+<pre>
+* Добавлено контекстное меню
+* Ускорена инициализация расширения
+* Исправлена ручная блокировка flash-объектов
+</pre>
+        </div>
+
+        <div class="settings-page-title">Версия 1.0.2.9</div>
+        <div class="thanks-content-descr">
+<pre>
+* Исправлена работа правил-исключений для сокрытия элементов
+* Исправлено отображение уведомления об автоматически подключаемых фильтрах на youtube.com
+</pre>
+        </div>
+
+        <div class="settings-page-title">Версия 1.0.2.8</div>
+        <div class="thanks-content-descr">
+<pre>
++ Добавлена поддержка браузеров Firefox, Pale Moon, Cyberfox, Firefox для Android
+* Исправлено отображение счетчика заблокированной рекламы
+* Исправлены ошибки интеграции с Adguard для Windows
+</pre>
+        </div>
+
+        <div class="settings-page-title">Версия 1.0.1.8</div>
+        <div class="thanks-content-descr">
+<pre>
++ Еще сильнее уменьшено потребление оперативной памяти
++ Расширение теперь использует защищенные соединения для общения с нашими серверами
++ Добавлена опция "Отправлять статистику использования фильтров"
++ Добавлена опция "Сбросить статистику"
++ Добавлены возможности экспорта и импорта белого списка
++ Небольшие изменения по внешнему виду расширения
+</pre>
+        </div>
+
+        <div class="settings-page-title">Версия 1.0.0.50</div>
+        <div class="thanks-content-descr">
+<pre>
+* Небольшие исправления
+</pre>
+        </div>
+
+        <div class="settings-page-title">Версия 1.0.0.45</div>
+        <div class="thanks-content-descr">
+<pre>
++ Добавлена интеграция с Adguard для Windows
+</pre>
+        </div>
+
+        <div class="settings-page-title">Версия 1.0.0.41</div>
+        <div class="thanks-content-descr">
+<pre>
++ Улучшена скорость фильтрации
+</pre>
+        </div>
+
+        <div class="settings-page-title">Версия 1.0.0.40</div>
+        <div class="thanks-content-descr">
+<pre>
++ Добавлена поддержка немецкого языка
++ Добавлена поддержка украинского языка
+</pre>
+        </div>
+
+        <div class="settings-page-title">Версия 1.0.0.36</div>
+        <div class="thanks-content-descr">
+<pre>
++ Добавлен журнал
++ Исправлены ошибки фильтрации
++ Стабилизирована работа расширения
++ Улучшен код для поддержки большего количества браузеров
++ Сайты в белом списке не блокируются Антифишингом
+</pre>
+        </div>
+
+        <div class="settings-page-title">Версия 1.0.0.28</div>
+        <div class="thanks-content-descr">
+<pre>
++ Ускорена работа антифишинга
+* Исправлена логика работы белого списка
+* Исправлено поведение контекстного меню в Mac OS X
+</pre>
+        </div>
+
+        <div class="settings-page-title">Версия 1.0.0.27</div>
+        <div class="thanks-content-descr">
+<pre>
++ Добавлен импорт пользовательского фильтра
++ Добавлен экспорт пользовательского фильтра
++ Добавлен поиск по пользовательскому фильтру и белому списку
++ Добавлена функция "Блокировать похожие элементы"
+</pre>
+        </div>
+
+        <div class="settings-page-title">Версия 1.0.0.25</div>
+        <div class="thanks-content-descr">
+<pre>
++ Оптимизирована скорость фильтрации
++ Исправлено несколько минорных дефектов
+</pre>
+        </div>
+    </div>
+</div>
+
+<div id="locale-en" class="thanks-content changelog">
+
+    <div class="wrap">
+
+        <div class="settings-page-title">Version 2.0.0</div>
+        <div class="thanks-content-descr">
+            <h4>+ New Adguard Log</h4>
+            <p>
+                Now it&nbsp;is&nbsp;not just a&nbsp;list of&nbsp;requests processed by&nbsp;Adguard. This is&nbsp;a&nbsp;complete filter development tool. With the help of&nbsp;the Log you will be&nbsp;able to&nbsp;analyze what requests are blocked&nbsp;or, on&nbsp;contrary, are allowed by&nbsp;Adguard. Analysis is&nbsp;not the only task of&nbsp;the Log. Just a&nbsp;couple of&nbsp;clicks and you can block or&nbsp;unlock any request.
+            </p>
+            <h4>+ &laquo;Pause protection&raquo; function</h4>
+            <p>
+                Pausing protection allows to&nbsp;completely (not only on&nbsp;some particular site) disable Adguard filtering. Resuming it&nbsp;is&nbsp;as&nbsp;easy as&nbsp;turning off.
+            </p>
+            <h4>+ Significantly improved performance and memory consumption</h4>
+            <p>
+                We&nbsp;have made great efforts to&nbsp;optimize the spreading code.
+                Version&nbsp;2.0 has become even faster and more lightweight.
+            </p>
+        </div>
+
+        <div class="settings-page-title">Version 1.0.3.8</div>
+        <div class="thanks-content-descr">
+<pre>
++ Improved integration with Adguard for Windows and for Mac
++ Added support of regexp-rules
+* Improved filtering speed
+* Fixed several minor bugs
+</pre>
+        </div>
+
+        <div class="settings-page-title">Version 1.0.3.6</div>
+        <div class="thanks-content-descr">
+<pre>
+* Minor bugfixes
+</pre>
+        </div>
+
+        <div class="settings-page-title">Version 1.0.3.5</div>
+        <div class="thanks-content-descr">
+<pre>
+* Fixed bugs with blocking page elements
+* Fixed blocking ads on youtube for Safari extension
+* Optimized ad filters processing
+</pre>
+        </div>
+
+        <div class="settings-page-title">Version 1.0.3.4</div>
+        <div class="thanks-content-descr">
+<pre>
+* Fixed bugs with blocking page elements
+* Minor UI fixes
+</pre>
+        </div>
+
+
+        <div class="settings-page-title">Version 1.0.3.1</div>
+        <div class="thanks-content-descr">
+<pre>
+* Minor bugfixes
+</pre>
+        </div>
+
+        <div class="settings-page-title">Version 1.0.3.0</div>
+        <div class="thanks-content-descr">
+<pre>
++ Added capability to add known ABP filter subscriptions.
+</pre>
+        </div>
+
+        <div class="settings-page-title">Version 1.0.2.12</div>
+        <div class="thanks-content-descr">
+<pre>
+* Fixed filtering of redirect requests
+</pre>
+        </div>
+
+        <div class="settings-page-title">Version 1.0.2.10</div>
+        <div class="thanks-content-descr">
+<pre>
+* Extension initialization speedup
+* Added context menu
+* Fixed manual blocking of flash objects
+</pre>
+        </div>
+
+        <div class="settings-page-title">Version 1.0.2.9</div>
+        <div class="thanks-content-descr">
+<pre>
+* Fixed the work of Exception rules for Elements hiding
+* Fixed the display of notifications about automatically activated filters on youtube.com
+</pre>
+        </div>
+
+        <div class="settings-page-title">Version 1.0.2.8</div>
+        <div class="thanks-content-descr">
+<pre>
++ Added support for the following browsers: Firefox, Pale Moon, Cyberfox, Firefox for Android
+* Fixed the display of blocked ads counter
+* Fixed integration bugs with Adguard for Windows
+</pre>
+        </div>
+
+        <div class="settings-page-title">Version 1.0.1.8</div>
+        <div class="thanks-content-descr">
+<pre>
++ We have reduced memory usage even more
++ Extension now uses secured connections to communicate with our servers
++ Added option "Send statistics for ad filters usage"
++ Added "Reset statistics" button
++ Added Export/Import of the whitelist
++ Minor UI changes
+</pre>
+        </div>
+
+        <div class="settings-page-title">Version 1.0.0.50</div>
+        <div class="thanks-content-descr">
+<pre>
+* Minor bugfixes
+</pre>
+        </div>
+
+        <div class="settings-page-title">Version 1.0.0.45</div>
+        <div class="thanks-content-descr">
+<pre>
++ Added integration with Adguard for PC
+</pre>
+        </div>
+
+        <div class="settings-page-title">Version 1.0.0.41</div>
+        <div class="thanks-content-descr">
+<pre>
++ Improved filtration speed
+</pre>
+        </div>
+
+        <div class="settings-page-title">Version 1.0.0.40</div>
+        <div class="thanks-content-descr">
+<pre>
++ Added german language
++ Added ukrainian language
+</pre>
+        </div>
+
+        <div class="settings-page-title">Version 1.0.0.36</div>
+        <div class="thanks-content-descr">
+<pre>
++ Log added
++ Filtering bugs fixed
++ Stabilized extension work
++ Improved the code to support more browsers
++ Sites in the whitelist are not blocked by Browsing Security
+</pre>
+        </div>
+
+        <div class="settings-page-title">Version 1.0.0.28</div>
+        <div class="thanks-content-descr">
+<pre>
++ Improved browsing security performance
+* Fixed white-list logic
+* Fixed context menu in Mac OS X
+</pre>
+        </div>
+
+        <div class="settings-page-title">Version 1.0.0.27</div>
+        <div class="thanks-content-descr">
+<pre>
++ Added import user filter feature
++ Added export user filter feature
++ Added user filter and white list search
++ Added "Block similar" feature
+</pre>
+        </div>
+
+        <div class="settings-page-title">Version 1.0.0.25</div>
+        <div class="thanks-content-descr">
+<pre>
++ Increased filtration speed
++ Minor bugfixes
+</pre>
+        </div>
+    </div>
+</div>
+
+<div id="download" class="prefooter non-download-adguard-block">
+    <div class="wrap cf">
+        <div class="prefooter-do-you-like">
+            <span class="pd-you-like-text" i18n="options_do_you_like"></span>
+            <a class="pd-you-like-btn openExtensionStore" href="#"><i class="pdy-like-btn-icon"></i><span i18n="options_footer_like_us"></span></a>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="wrap cf">
+        <div class="footer-copy">&copy; Adguard 2009-2015</div>
+        <nav class="footer-menu">
+            <a class="footer-menu-item" href="https://adguard.com?utm_source=extension&aid=16593" target="_blank" i18n="options_site"></a>
+            <a class="footer-menu-item" href="#" target="_blank" i18n="options_blog" i18n-href="options_blog_link"></a>
+            <a class="footer-menu-item" href="https://forum.adguard.com?utm_source=extension&aid=16593" target="_blank" i18n="options_forum"></a>
+            <a class="footer-menu-item" href="https://adguard.com/feedback.html?utm_source=extension&aid=16593" target="_blank" i18n="options_feedback"></a>
+        </nav>
+    </div>
+</footer>
+
+<div id="phishingPopup" class="tp-table-popup hidden" style="position: absolute; top: 1240px; left: 43%;">
+    <div class="tpt-popup-title">Фишинг —</div>
+    <div class="tpt-popup-text">вид интернет-мошенничества, целью которого является получение доступа к конфиденциальным данным пользователей — логинам и паролям. Это достигается путём проведения массовых рассылок электронных писем от имени популярных брендов, а также личных сообщений внутри различных сервисов, например, от имени банков или внутри социальных сетей.</div>
+</div>
+
+</body>
+</html>

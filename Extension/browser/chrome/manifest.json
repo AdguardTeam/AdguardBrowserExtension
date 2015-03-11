@@ -1,0 +1,93 @@
+{
+	"manifest_version": 2,
+	"name": "__MSG_name__",
+	"short_name": "__MSG_short_name__",
+	"version": "${version}",
+
+	"default_locale": "en",
+	"description": "__MSG_description__",
+	"icons": {
+		"16": "icons/green-16.png",
+		"32": "icons/green-32.png",
+		"48": "icons/green-48.png",
+		"128": "icons/green-128.png"
+	},
+
+	"browser_action": {
+		"default_icon": {
+			"19": "icons/gray-19.png",
+			"32": "icons/gray-32.png"
+		},
+		"default_title": "__MSG_name__",
+		"default_popup": "pages/popup.html"
+	},
+
+	"background": {
+		"page": "chrome_background.html"
+	},
+
+	"content_scripts": [
+		{
+			"all_frames": true,
+			"js": [
+				"lib/content-script/common-script.js",
+				"lib/content-script/content-script.js",
+				"lib/content-script/preload.js"
+			],
+			"matches": [
+				"http://*/*",
+				"https://*/*"
+			],
+			"run_at": "document_start"
+		},
+		{
+			"all_frames": false,
+			"js": [
+				"lib/content-script/content-utils.js"
+			],
+			"matches": [
+				"http://*/*",
+				"https://*/*"
+			],
+			"run_at": "document_start"
+		},
+		{
+			"all_frames": false,
+			"css": [
+				"lib/content-script/assistant/css/selector.css"
+			],
+			"js": [
+				"lib/libs/jquery-1.8.3.min.js",
+				"lib/libs/diff_match_patch.js",
+				"lib/libs/dom.js",
+				"require.js",
+				"lib/utils/common.js",
+				"lib/content-script/assistant/js/selector.js",
+				"lib/content-script/assistant/js/assistant.js",
+				"lib/content-script/postload.js"
+			],
+			"matches": [
+				"http://*/*",
+				"https://*/*"
+			],
+			"run_at": "document_end"
+		}
+	],
+
+	"minimum_chrome_version": "21.0",
+
+	"options_page": "pages/options.html",
+
+	"permissions": [
+		"tabs",
+		"http://*/*",
+		"https://*/*",
+		"webRequest",
+		"webRequestBlocking",
+		"webNavigation",
+		"unlimitedStorage",
+		"contextMenus"
+	],
+
+	"web_accessible_resources": ["elemhidehit.png", "lib/content-script/assistant/css/assistant.css"]
+}

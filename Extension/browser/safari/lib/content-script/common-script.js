@@ -1,0 +1,196 @@
+/**
+ * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
+ *
+ * Adguard Browser Extension is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Adguard Browser Extension is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
+ */
+var ext, BaseEvent, OnMessageEvent, sendMessage;
+
+(function () {
+
+	//Safari variable may be undefined in frame
+
+	(function () {
+		if (typeof safari === "undefined" && typeof chrome === "undefined") {
+			var w = window;
+			while (w.safari === undefined && w !== window.top) {
+				w = w.parent;
+			}
+			window.safari = w.safari;
+		}
+	})();
+
+	//Event implementation
+
+	BaseEvent = function (target, eventName, capture) {
+
+		this.eventListeners = [];
+		this.specialEventListeners = [];
+
+		this.eventTarget = target;
+		this.eventName = eventName;
+		this.eventCapture = capture;
+	};
+	BaseEvent.prototype = {
+
+		addListener: function (listener) {
+
+			var specialListener = this.specifyListener(listener);
+			this.eventListeners.push(listener);
+			this.specialEventListeners.push(specialListener);
+
+			this.eventTarget.addEventListener(this.eventName, specialListener, this.eventCapture);
+		},
+
+		removeListener: function (listener) {
+			var index = this.eventListeners.indexOf(listener);
+			if (index >= 0) {
+				this.eventTarget.removeEventListener(this.eventName, this.specialEventListeners[index], this.eventCapture);
+				this.eventListeners.splice(index, 1);
+				this.specialEventListeners.splice(index, 1);
+			}
+		}
+	};
+
+	//OnMessage event implementation
+
+	OnMessageEvent = function (target) {
+		BaseEvent.call(this, target, "message", false);
+	};
+	OnMessageEvent.prototype = {
+
+		__proto__: BaseEvent.prototype,
+
+		specifyListener: function (listener) {
+
+			return function (event) {
+
+				if (event.name.indexOf("request-") != 0) {
+					return;
+				}
+
+				var sender = {};
+				var dispatcher;
+
+				if ("BrowserTab" in window && "SafariBrowserTab" in window && event.target instanceof SafariBrowserTab) {
+					dispatcher = event.target.page;
+					sender.tab = new BrowserTab(event.target);
+				} else {
+					dispatcher = event.target.tab;
+					sender.tab = null;
+				}
+
+				listener(event.message, sender, function (message) {
+					dispatcher.dispatchMessage("response-" + event.name.substr(8), message);
+				});
+			};
+		}
+	};
+
+
+	//Message passing implementation
+
+	var nextRequestNumber = 0;
+
+	sendMessage = function (message, responseCallback) {
+		var requestId = ++nextRequestNumber;
+		if (responseCallback) {
+			var eventTarget = this._eventTarget;
+			var responseListener = function (event) {
+				if (event.name == "response-" + requestId) {
+					eventTarget.removeEventListener("message", responseListener, false);
+					responseCallback(event.message);
+				}
+			};
+			eventTarget.addEventListener("message", responseListener, false);
+		}
+		this._messageDispatcher.dispatchMessage("request-" + requestId, message);
+	};
+
+	//I18n implementation
+
+	var I18n = function () {
+		this._uiLocale = this._getLocale();
+		this._messages = null;
+	};
+
+	I18n.prototype = {
+
+		supportedLocales: ['ru', 'en', 'tr', 'uk', 'de'],
+
+		_getLocale: function () {
+			var prefix = navigator.language.substring(0, 2).toLowerCase();
+			if (this.supportedLocales.indexOf(prefix) >= 0) {
+				return prefix;
+			} else {
+				return "en";
+			}
+		},
+
+		_getMessages: function (locale) {
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", safari.extension.baseURI + "_locales/" + locale + "/messages.json", false);
+			try {
+				xhr.send();
+			} catch (e) {
+				return null;
+			}
+			return JSON.parse(xhr.responseText);
+		},
+
+		getMessage: function (msgId, substitutions) {
+
+			if (msgId == "@@ui_locale") {
+				return this._uiLocale;
+			}
+
+			if (!this._messages) {
+				this._messages = this._getMessages(this._uiLocale);
+			}
+
+			return this._getI18nMessage(this._messages, msgId, substitutions);
+		},
+
+		_getI18nMessage: function (messages, msgId, substitutions) {
+
+			if (!messages) {
+				return "";
+			}
+
+			var msg = messages[msgId];
+			if (!msg) {
+				return "";
+			}
+
+			var msgstr = msg.message;
+			if (!msgstr) {
+				return "";
+			}
+
+			if (substitutions && substitutions.length > 0) {
+				msgstr = msgstr.replace(/\$(\d+)/g, function (match, number) {
+					return typeof substitutions[number - 1] != "undefined" ? substitutions[number - 1] : match;
+				});
+			}
+			return msgstr;
+		}
+	};
+
+	//Extension API
+
+	ext = {};
+	ext.i18n = new I18n();
+	ext.getURL = function (path) {
+		return safari.extension.baseURI + path;
+	};
+})();

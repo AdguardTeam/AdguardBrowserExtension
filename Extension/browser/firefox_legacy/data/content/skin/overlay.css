@@ -1,0 +1,154 @@
+/**
+ * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
+ *
+ * Adguard Browser Extension is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Adguard Browser Extension is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
+ */
+#adguard-toolbarbutton {
+    list-style-image: url("firefox-gray-16.png");
+    -moz-image-region: rect(0px, 16px, 16px, 0px);
+    -moz-binding: url("chrome://adguard/content/startButton.xml#start-button");
+}
+
+#adguard-toolbarbutton[enabled="true"] {
+    list-style-image: url("firefox-16.png");
+}
+
+#adguard-toolbarbutton[adguardDetected="true"] {
+    list-style-image: url("firefox-blue-16.png");
+}
+
+#adguard-toolbarbutton[cui-areatype="menu-panel"], toolbarpaletteitem[place="palette"] > #adguard-toolbarbutton {
+    list-style-image: url("firefox-gray-32.png");
+    -moz-image-region: rect(0px, 32px, 32px, 0px);
+}
+
+#adguard-toolbarbutton[cui-areatype="menu-panel"][enabled="true"], toolbarpaletteitem[place="palette"] > #adguard-toolbarbutton[enabled="true"] {
+    list-style-image: url("firefox-32.png");
+    -moz-image-region: rect(0px, 32px, 32px, 0px);
+}
+
+#adguard-toolbarbutton[cui-areatype="menu-panel"][adguardDetected="true"], toolbarpaletteitem[place="palette"] > #adguard-toolbarbutton[enabled="true"] {
+    list-style-image: url("firefox-blue-32.png");
+    -moz-image-region: rect(0px, 32px, 32px, 0px);
+}
+
+#CustomizeToolbarWindow #adguard-toolbarbutton {
+    list-style-image: url("firefox-gray-16.png") !important;
+    -moz-image-region: rect(0px, 16px, 16px, 0px);
+}
+
+#adguard-toolbarbutton #adguard-toolbardropdown {
+    -moz-appearance: none;
+    -moz-binding: url('chrome://adguard/content/startButton.xml#places-popup-arrow');
+    background: none repeat scroll 0% 0% transparent;
+    border: medium none;
+    transition: opacity 300ms ease 0s;
+    -moz-image-region: auto;
+    margin-right: -10px;
+}
+
+#adguard-toolbarbutton .panel-arrowcontent {
+    padding: 0 !important;
+}
+
+#adguard-toolbarbutton .popup-internal-box {
+    padding: 1px 0;
+}
+
+#adguard-toolbarbutton .badge {
+    display: none;
+}
+
+#adguard-toolbarbutton[cui-areatype="menu-panel"] .badge, toolbarpaletteitem[place="palette"] > #adguard-toolbarbutton .badge {
+    display: none !important;
+}
+
+#adguard-toolbarbutton[showBlocked="true"] .badge {
+    display: block;
+    margin: 5px 0 0 -12px;
+}
+
+#nav-bar #adguard-toolbarbutton .badge, #TabsToolbar #adguard-toolbarbutton .badge {
+    margin: 9px 0 0 -12px;
+}
+
+#addon-bar #adguard-toolbarbutton .badge {
+    margin: 4px 0 0 -12px;
+}
+
+#nav-bar[iconsize="small"] #adguard-toolbarbutton .badge {
+    margin: 5px 0 0 -12px;
+}
+
+toolbar:not([mode="icons"]) #adguard-toolbarbutton .badge {
+    display: none !important;
+}
+
+#nav-bar:not([mode="icons"]) #adguard-toolbarbutton .badge {
+    display: none !important;
+}
+
+#adguard-toolbarbutton .badge > .label {
+    visibility: hidden;
+    background-color: #555;
+    border-radius: 2px;
+    color: #FFFFFF;
+    font-size: 8px;
+    line-height: 12px;
+    text-align: center;
+    padding: 0 2px;
+    min-width: 12px;
+    background: -moz-linear-gradient(top, #555 0%, #000000 100%);
+    margin: 0 !important;
+}
+
+#adguard-toolbarbutton[showBlocked="true"]:not([countBlocked="0"]) .badge .label {
+    visibility: visible;
+}
+
+/*customizations*/
+
+#adguard-toolbarbutton.version-28 .panel-arrow, #adguard-toolbarbutton.linux .panel-arrow {
+    list-style-image: url("chrome://adguard/content/skin/panelarrow-vertical.png") !important;
+}
+
+@media (min-resolution: 2dppx) {
+    #adguard-toolbarbutton.version-28 .panel-arrow, #adguard-toolbarbutton.linux .panel-arrow {
+        list-style-image: url("chrome://adguard/content/skin/panelarrow-vertical@2x.png") !important;
+        width: 39px;
+        height: 16px;
+    }
+}
+
+#adguard-toolbarbutton.mac .badge {
+    margin: -11px -16px -11px 0 !important;
+}
+
+#addon-bar #adguard-toolbarbutton.mac .badge {
+    margin: -13px -16px -10px 0 !important;
+}
+
+#adguard-toolbarbutton.linux .badge {
+    margin: 0 0 0 -10px;
+}
+
+#nav-bar #adguard-toolbarbutton.linux .badge, #TabsToolbar #adguard-toolbarbutton.linux .badge {
+    margin: 6px 0 0 -10px;
+}
+
+#adguard-toolbarbutton.linux.version-28 .badge {
+    margin: -17px -16px 0 0 !important;
+}
+
+

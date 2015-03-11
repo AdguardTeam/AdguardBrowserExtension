@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <link type="text/css" rel="stylesheet" href="skin/style.css">
+    <link type="text/css" rel="stylesheet" href="skin/my.css">
+
+    <#if browser.name() == "CHROMIUM" || browser.name() == "SAFARI">
+        <script type="text/javascript" src="../lib/libs/jquery-1.8.3.min.js"></script>
+        <script type="text/javascript" src="../lib/content-script/popup-script.js"></script>
+        <script type="text/javascript" src="../lib/pages/i18n.js"></script>
+        <script type="text/javascript" src="../lib/pages/script.js"></script>
+        <script type="text/javascript" src="../lib/pages/popup-controller.js"></script>
+        <script type="text/javascript" src="../lib/pages/popup.js"></script>
+    </#if>
+    <#if browser.name() == "FIREFOX" || browser.name() == "FIREFOX_LEGACY">
+        <link rel="shortcut icon" href="skin/favicon.png"/>
+        <script type="text/javascript" src="libs/jquery-1.8.3.min.js"></script>
+        <script type="text/javascript" src="content-script/content-script.js"></script>
+        <script type="text/javascript" src="pages/i18n.js"></script>
+        <script type="text/javascript" src="pages/script.js"></script>
+        <script type="text/javascript" src="pages/popup-controller.js"></script>
+        <script type="text/javascript" src="pages/popup.js"></script>
+    </#if>
+
+</head>
+<body style="overflow: hidden;">
+
+<div class="widjet-popup"></div>
+
+<div class="modal-feedback hidden">
+    <div class="modal-feedback-header" i18n="popup_what_wrong_site"></div>
+    <div class="modal-feedback-subject"></div>
+    <span class="m-feedback-actions-error" id="feedbackErrorMessage" i18n="popup_feedback_option_is_empty"></span>
+
+    <div class="modal-feedback-select">
+        <div class="modal-feedback-inner">
+            <div class="m-feedback-inner-text" i18n="popup_feedback_empty_option"></div>
+            <div class="m-feedback-inner-icon"></div>
+        </div>
+        <div class="modal-feedback-dropdown hidden">
+            <div class="m-feedback-dropdown-item" i18n="popup_feedback_malware_option" item-data="PHISHING"></div>
+            <div class="m-feedback-dropdown-item" i18n="popup_feedback_wrong_block_option" item-data="FALSE_POSITIVE"></div>
+            <div class="m-feedback-dropdown-item" i18n="popup_feedback_miss_ads_option" item-data="MISSED_ADS"></div>
+            <div class="m-feedback-dropdown-item" i18n="popup_feedback_other_option" item-data="CUSTOM"></div>
+        </div>
+    </div>
+    <div class="modal-feedback-message">
+        <textarea i18n-plhr="popup_feedback_comment"></textarea>
+    </div>
+    <div class="modal-feedback-actions cf">
+        <a class="m-feedback-actions-send" id="sendFeedback" href="#" i18n="popup_feedback_send"></a>
+        <a class="m-feedback-actions-cancel" id="cancelFeedback" href="#" i18n="popup_feedback_cancel"></a>
+    </div>
+</div>
+
+<!--Templates-->
+<div id="page-stats-template" style="display: none;">
+    <div id="pageStatisticBlock" class="widjet-popup-filter cf macoshackresize">
+        <span class="w-popup-filter-title w-popup-filter-title-blocked"></span>
+        <a href="#" i18n-title="popup_filtering_log_icon_title" class="w-popup-filter-icon openFilteringLog"><i class="popup-icon-eye"></i></a>
+        <span class="w-popup-filter-title w-popup-filter-title-blocked-all"></span>
+    </div>
+</div>
+
+<div id="adguard-detected-message-template" style="display: none;">
+    <div class="widjet-popup-filter cf macoshackresize">
+        <span class="w-popup-filter-title top-title" i18n="popup_ads_has_been_removed"></span>
+        <a href="#" i18n-title="popup_filtering_log_icon_title" class="w-popup-filter-icon openFilteringLog"><i class="popup-icon-eye"></i></a>
+    </div>
+</div>
+
+<div id="site-filtering-disabled-message-template" style="display: none;">
+    <div class="widjet-popup-filter cf macoshackresize">
+        <span class="w-popup-filter-title top-title" i18n="popup_site_filtering_disabled"></span>
+    </div>
+</div>
+
+<div id="site-protection-disabled-message-template" style="display: none;">
+    <div class="widjet-popup-filter cf macoshackresize">
+        <span class="w-popup-filter-title top-title" i18n="popup_site_protection_disabled"></span>
+    </div>
+</div>
+
+<div id="site-filtering-exception-message-template" style="display: none;">
+    <div class="widjet-popup-filter cf widjet-popup-filter-help">
+        <span class="w-popup-filter-title" i18n="popup_site_exception"></span>
+        <span class="w-popup-filter-help" i18n="popup_site_exception_info"></span>
+    </div>
+</div>
+
+<div id="site-filtering-checkbox-template" style="display: none;">
+    <div class="widjet-popup-filter cf">
+        <span class="w-popup-filter-title" i18n="popup_site_filtering_state"></span>
+        <input type="checkbox" class="sp-table-row-input" id="siteFilteringDisabledCheckbox" checked="checked" style="display: none;">
+    </div>
+</div>
+
+<div id="open-assistant-template" style="display: none;">
+    <a class="w-popup-menu-item openAssistant" href="#"><i class="popup-icon-filter"></i><span i18n="popup_block_site_ads"></span></a>
+</div>
+
+<div id="open-abuse-template" style="display: none;">
+    <a class="w-popup-menu-item openAbuse" href="#"><i class="popup-icon-appeal"></i><span i18n="popup_abuse_site"></span></a>
+</div>
+
+<div id="site-report-template" style="display: none;">
+    <a class="w-popup-menu-item siteReport" href="#"><i class="popup-icon-report"></i><span i18n="popup_security_report"></span></a>
+</div>
+
+<div id="open-settings-template" style="display: none;">
+    <a class="w-popup-menu-item openSettings" href="#"><i class="popup-icon-settings"></i><span i18n="popup_open_settings"></span></a>
+</div>
+
+<div id="protection-disabled-template" style="display: none;">
+    <a class="w-popup-menu-item changeProtectionState" href="#">
+        <i class="popup-icon-play"></i>
+        <span i18n="popup_enable_protection"></span>
+    </a>
+</div>
+
+<div id="protection-enabled-template" style="display: none;">
+    <a class="w-popup-menu-item changeProtectionState" href="#">
+        <i class="popup-icon-pause"></i>
+        <span i18n="popup_disable_protection"></span>
+    </a>
+</div>
+
+<div id="popup-footer-template" style="display: none;">
+    <div class="popup-footer">
+        <span i18n="popup_adguard_other_os"></span>
+        <a href="https://adguard.com/adguard-android/overview.html?utm_source=extension&aid=18081" i18n-title="popup_adguard_android" class="popup-footer-link ml5 openLink">
+            <i class="os-popup-icon-android"></i>
+        </a>
+        <a href="https://adguard.com/adguard-windows/overview.html?utm_source=extension&aid=18081" i18n-title="popup_adguard_windows" class="popup-footer-link openLink">
+            <i class="os-popup-icon-windows"></i>
+        </a>
+    </div>
+</div>
+
+</body>
+</html>
