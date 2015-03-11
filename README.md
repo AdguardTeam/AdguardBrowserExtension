@@ -11,18 +11,20 @@
 ###Building dev version
 
 Run the following command in the Compiler directory:
-
+```
   ./build.sh dev
-  
+```
+
 This will create a Build directory with unpacked extensions for all browsers:
-  
+```
   Build/chrome-$currentVersion
   Build/firefox-$currentVersion
   Build/opera-$currentVersion
   Build/safari-$currentVersion.safariextension
-  
-###Building release version
+```
 
+###Building release version
+```
   ./build.sh release
-  
+```
 You will need to put certificate.pem file to the Compiler directory. This build will create unpacked extensions and then pack them (crx for Chrome, xpi for Firefox).
