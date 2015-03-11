@@ -49,6 +49,7 @@ var ServiceClient = exports.ServiceClient = function () {
 	this.adguardAppUrl = this.injectionsUrl + "/adguard-ajax-api/api?";
 	this.hitStatsUrl = this.backendUrl + "/hitstats.html";
 	this.safebrowsingLookupUrl = "https://sb.adtidy.org/safebrowsing-lookup-domain.html";
+	this.safebrowsingStatsUrl = "https://sb.adtidy.org/sb-report.html";
 	this.apiKey = "4DDBE80A3DA94D819A00523252FB6380";
 };
 
@@ -248,6 +249,19 @@ ServiceClient.prototype = {
 	lookupSafebrowsing: function (host, successCallback, errorCallback) {
 		var url = this.safebrowsingLookupUrl + "?domain=" + encodeURIComponent(host);
 		this._executeRequestAsync(url, "application/json", successCallback, errorCallback);
+	},
+
+	/**
+	 * Track safebrowsing stats
+	 *
+	 * @param url - filtered url by safebrowsing
+	 */
+	trackSafebrowsingStats: function (url) {
+		var trackUrl = this.safebrowsingStatsUrl + "?url=" + encodeURIComponent(url);
+		trackUrl += "&locale=" + Prefs.locale;
+		trackUrl += "&referrer=";
+		trackUrl += "&r=" + Math.random();
+		this._executeRequestAsync(trackUrl, "text/plain");
 	},
 
 	/**

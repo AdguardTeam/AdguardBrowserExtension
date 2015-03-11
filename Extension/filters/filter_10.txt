@@ -1,9 +1,9 @@
-! Version: 1.0.0.63
+! Version: 1.0.0.64
 ! Name: Filter for useful ads
 ! Description: Filter that unblocks ads that may be useful to users.
 ! NameEn: Filter for useful ads
 ! DescriptionEn: Filter that unblocks ads, which may be useful to users.
-! TimeUpdated: 2015-01-12T12:11:56.579+03:00
+! TimeUpdated: 2015-03-11T16:37:12.519+03:00
 ! Adguard Useful Ads Filter
 !
 ! Filter that unblocks ads that may be useful to users.
@@ -16,9 +16,9 @@
 !----------------------------- Search engine result pages ----------------------!
 !-------------------------------------------------------------------------------!
 ! Bing
-@@||bing.com/search$elemhide,content,urlblock,jsinject,jscript
+@@||bing.com/search$document
 ! Yahoo
-@@||search.yahoo.com/search$elemhide,content,urlblock,jsinject,jscript
+@@||search.yahoo.com/search$document
 !
 ! Google
 !
@@ -32,7 +32,7 @@ google.cn,google.by,google.be,google.at,google.ae,google.ca,google.ch,google.cl,
 google.cn,google.by,google.be,google.at,google.ae,google.ca,google.ch,google.cl,google.cn,google.co.id,google.co.in,google.co.jp,google.co.th,google.co.uk,google.co.ve,google.co.za,google.com,google.com.ar,google.com.au,google.com.bd,google.com.br,google.com.co,google.com.eg,google.com.hk,google.com.mx,google.com.my,google.com.ng,google.com.pe,google.com.pe,google.com.ph,google.com.pk,google.com.sa,google.com.sg,google.com.tr,google.com.tw,google.com.ua,google.com.vn,google.de,google.dk,google.es,google.fr,google.gr,google.hu,google.ie,google.it,google.nl,google.no,google.pl,google.ru,google.pt,google.ro,google.rs,google.se,google.sk,google.tn,google.ee#@#.ads-ad
 @@://www.google.*/aclk$urlblock
 ! Ask.com
-@@||ask.com/web$elemhide,content,urlblock,jsinject,jscript
+@@||ask.com/web$document
 search.ask.com#@#.sponsoredTop
 search.ask.com#@##sponsoredTop
 ! Yandex
@@ -53,15 +53,15 @@ yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by,yandex.com.tr#@#.serp-adv__ad
 ! Общий стиль заголовка директа на выдачах поддоменов
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by,beta.yandex.ru#@#.ads-header
 ! Auto.Yandex
-@@||auto.yandex.ru/search$elemhide,content,urlblock,jsinject,jscript
-@@||auto.yandex.ru/*/offers$elemhide,content,urlblock,jsinject,jscript
-@@||auto.yandex.ua/search$elemhide,content,urlblock,jsinject,jscript
-@@||auto.yandex.ua/*/offers$elemhide,content,urlblock,jsinject,jscript
+@@||auto.yandex.ru/search$document
+@@||auto.yandex.ru/*/offers$document
+@@||auto.yandex.ua/search$document
+@@||auto.yandex.ua/*/offers$document
 ! Yaca.Yandex
-@@||yaca.yandex.ru/yca$elemhide,content,urlblock,jsinject,jscript
-@@||yaca.yandex.ua/yca$elemhide,content,urlblock,jsinject,jscript
-@@||yaca.yandex.kz/yca$elemhide,content,urlblock,jsinject,jscript
-@@||yaca.yandex.by/yca$elemhide,content,urlblock,jsinject,jscript
+@@||yaca.yandex.ru/yca$document
+@@||yaca.yandex.ua/yca$document
+@@||yaca.yandex.kz/yca$document
+@@||yaca.yandex.by/yca$document
 ! Realty.Yandex
 realty.yandex.ru,realty.yandex.ua,realty.yandex.by#@#.b-guadeloupe
 ! Market.Yandex

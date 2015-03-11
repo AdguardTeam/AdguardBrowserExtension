@@ -1,9 +1,9 @@
-! Version: 1.0.4.91
+! Version: 1.0.4.92
 ! Name: Social media filter
 ! Description: A filter for social media widgets ("Like" buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets ("Like" buttons and such).
-! TimeUpdated: 2015-02-23T17:06:58.957+03:00
+! TimeUpdated: 2015-03-11T16:36:33.494+03:00
 ! Adguard Social Media Filter
 !
 ! If you do not like numerous «Like» and «Tweet» buttons on all the popular websites on the Internet,
@@ -29,8 +29,8 @@
 ||facebook.com/connect/connect.php$third-party
 ! unblocking comments plugin
 @@||facebook.com/plugins/comments
-@@||facebook.com/plugins/livefeed.php$elemhide,content,urlblock,jsinject,jscript
-@@||facebook.com/plugins/login_button.php$elemhide,urlblock,jsinject,jscript,content
+@@||facebook.com/plugins/livefeed.php$document
+@@||facebook.com/plugins/login_button.php$document
 ! unblocking facebook embedded posts
 @@||facebook.com/plugins/post
 ~facebook.com,~developers.facebook.com,~giftube.com,~myshared.ru,~thefurnish.ru,~filmixru.ru###fb-root
@@ -46,9 +46,6 @@
 !
 ! Google Buzz, FriendConnect, PlusOne
 !
-$$script[tag-content="gapi.plusone"][max-length="200"]
-$$g:plusone
-~pikucha.ru,~blogger.com$$script[src="apis.google.com/js/plusone.js"]
 ||google.com^*/fastbutton?$third-party
 ||google.com/buzz/api$third-party
 ||google.com/friendconnect/script$domain=~blogspot.com|~blogger.com
@@ -81,13 +78,10 @@ $$g:plusone
 !
 ! Friendfeed
 !
-~friendfeed.com$$a[href="http://friendfeed.com/?url="]
-~friendfeed.com$$a[onclick="friendfeed.com/share/"]
 ||friendfeed.com/embed$third-party
 !
 ! MySpace
 !
-~myspace.com$$a[href="myspace.com/Modules/PostTo"]
 ||cms.myspacecdn.com/cms//ShareOnMySpace/$third-party,domain=~myspace.com
 !
 ! Flickr
@@ -98,8 +92,6 @@ $$g:plusone
 !
 ! Digg
 !
-~digg.com$$a[href="digg.com/login/"]
-~digg.com$$div[id="digg-widget"]
 ||widgets.digg.com/$domain=~digg.com
 ||diggstatic.com/img/badges/$domain=~digg.com
 ~digg.com##.DiggThisButton
@@ -126,7 +118,7 @@ livejournal.com##.b-ljtimes-wrapper
 ||vkontakte.ru/widget_like.php$third-party
 ||vkontakte.ru/app1982352$third-party
 ! unblocking comments
-@@||vk.com/widget_comments.php$elemhide,content,urlblock,jsinject,jscript
+@@||vk.com/widget_comments.php$document
 ! unblock embedded posts
 @@||vk.com/widget_post.php
 ##div[id^="vk_like_"]
@@ -144,7 +136,6 @@ livejournal.com##.b-ljtimes-wrapper
 !
 ! Odnoklassniki
 !
-~odnoklassniki.ru$$script[tag-content="ODKL.init"][max-length="200"]
 ||odnoklassniki.ru/dk?st.cmd=extLike$third-party
 ||stg.odnoklassniki.ru/share/$third-party,domain=~mail.ru|~odnoklassniki.ru
 ||odnoklassniki.ru/dk?st.cmd=addShare$third-party,domain=~mail.ru|~odnoklassniki.ru
@@ -194,7 +185,6 @@ livejournal.com##.b-ljtimes-wrapper
 !
 ###odnaknopka
 ||odnaknopka.ru/$third-party
-$$script[tag-content="odnaknopka2.init"][max-length="200"]
 !
 ! BufferApp
 !
@@ -208,7 +198,6 @@ $$script[tag-content="odnaknopka2.init"][max-length="200"]
 !
 ! ShareThis
 !
-$$script[tag-content="stLight.options"][max-length="500"]
 ||sharethis.com^$third-party
 ##.sharethis-container
 ##.sharethis
@@ -278,7 +267,6 @@ $$script[tag-content="stLight.options"][max-length="500"]
 ##.ya-share
 ##.ya-share-large
 ##.ya-share-icon
-$$script[tag-content="var YaShareInstance"][max-length="1500"]
 !
 ! Zing.vn
 !
@@ -999,7 +987,6 @@ povarenok.ru##.vkfb
 gamesradar.com#$#.shareSocialArticle-wrap { visibility: hidden; }
 ! Clone sites
 048.ua,62.ua,048.ua,057.ua,056.ua,061.ua,0642.ua,0629.com.ua,0512.com.ua,0564.ua,032.ua,0352.ua,06242.com.ua,0542.ua,05366.com.ua,0552.ua,0412.ua,0432.ua,0332.ua,0522.ua,0342.ua,0532.ua,44.ua,06274.com.ua,06153.com.ua,0462.ua,0362.ua,06562.com.ua,0372.ua,0472.ua,06252.com.ua,06257.in.ua,06255.com.ua,06254.in.ua,04565.com.ua,04578.in.ua,0623.com.ua,06239.com.ua,06239.com.ua,5692.com.ua,6264.com.ua,04868.com.ua,06432.in.ua,06434.com.ua,0652.ua,0692.ua,0654.com.ua,pronews48.ru,8352city.ru,8422city.ru,8634city.ru,labaved.ru,gorodpushkin.ru,3462city.ru,015.by,go31.ru,goroddomodedovo.ru,prokolpino.ru,86155city.ru,01regionpro.ru,go812.ru,city3012.ru,go862.ru###socialpopup
-048.ua,62.ua,048.ua,057.ua,056.ua,061.ua,0642.ua,0629.com.ua,0512.com.ua,0564.ua,032.ua,0352.ua,06242.com.ua,0542.ua,05366.com.ua,0552.ua,0412.ua,0432.ua,0332.ua,0522.ua,0342.ua,0532.ua,44.ua,06274.com.ua,06153.com.ua,0462.ua,0362.ua,06562.com.ua,0372.ua,0472.ua,06252.com.ua,06257.in.ua,06255.com.ua,06254.in.ua,04565.com.ua,04578.in.ua,0623.com.ua,06239.com.ua,06239.com.ua,5692.com.ua,6264.com.ua,04868.com.ua,06432.in.ua,06434.com.ua,0652.ua,0692.ua,0654.com.ua,pronews48.ru,8352city.ru,8422city.ru,8634city.ru,labaved.ru,gorodpushkin.ru,3462city.ru,015.by,go31.ru,goroddomodedovo.ru,prokolpino.ru,86155city.ru,01regionpro.ru,go812.ru,city3012.ru,go862.ru$$script[tag-content="showSocialPopup"][max-length="500"]
 reibert.info##.sharePage
 finam.ru##div[id*="socnet-btns"]
 focus.ua##.likeboxes
@@ -1080,7 +1067,6 @@ digit.ru##.actions
 digit.ru##.social-widget
 digitaltrends.com###sitewide-social
 digitaltrends.com##.share
-digitaltrends.com$$script[tag-content="facebook_like"][max-length="2000"]
 disqus.com##.share
 droid-life.com##.sharrre
 economist.com##.block-ec_facebook
@@ -1152,7 +1138,6 @@ rbc.ru##.js-social-invite-mini
 rbc.ru##.win-subscribe-popup-box
 reference.com##.hdrsc
 ripten.com###leftcontainerBox
-seopult.tv$$script[tag-content="dialog("][max-length="300"]
 si.com##.btn-fb
 si.com##.btn-gp
 si.com##.btn-tw

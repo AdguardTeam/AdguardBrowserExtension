@@ -519,8 +519,16 @@ AdguardSelector.makeCssNthChildFilter = function (element) {
 				ch = ":nth-child(" + c + ")";
 			}
 
-			var className = el.className ? el.className.trim().replace(/ +(?= )/g, '') : null; //delete more than one space between classes;
-			path.unshift(el.tagName + (className ? "." + className.replace(/\s/g, ".") : "") + ch);
+			var className = el.className;
+			if (className) {
+				if (className.indexOf('.') > -1) {
+					path.unshift('[class="' + className + '"]')
+				} else {
+					className = className.trim().replace(/ +(?= )/g, ''); //delete more than one space between classes;
+					path.unshift(el.tagName + (className ? "." + className.replace(/\s/g, ".") : "") + ch);
+				}
+			}
+
 			el = el.parentNode;
 		}
 	}

@@ -11,7 +11,7 @@ if [ "$env" = release ]; then
     echo "Creating release builds..."
 
     #chrome release zip for chrome.store
-    options="--version=2.0.0 --name=main --browser=chrome --pack=zip"
+    options="--version=2.0.0 --name=main --browser=chrome --pack=zip --update-filters=true --autoupdate=false"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #chrome release crx
@@ -19,19 +19,19 @@ if [ "$env" = release ]; then
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox release xpi for amo
-    options="--version=2.0.0 --name=main --browser=firefox --pack=xpi  --local-filters=true"
+    options="--version=2.0.0 --name=firefox --browser=firefox --pack=xpi  --local-script-rules=true --autoupdate=false"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox release xpi
-    options="--version=2.0.0 --name=firefox --browser=firefox --pack=xpi  --local-filters=true"
+    options="--version=2.0.0 --name=main --browser=firefox --pack=xpi"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox legacy release xpi
-    options="--version=2.0.0 --name=legacy --browser=firefox_legacy --pack=xpi  --local-filters=true"
+    options="--version=2.0.0 --name=legacy --browser=firefox_legacy --pack=xpi"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #safari release for extensions.apple.com
-    options="--version=2.0.0 --name=Adguard --browser=safari --local-filters=true"
+    options="--version=2.0.0 --name=Adguard --browser=safari"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     echo "Release builds created"
@@ -45,7 +45,7 @@ else
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #opera
-    options="--version=2.0.0 --name=opera --browser=chrome --local-filters=true"
+    options="--version=2.0.0 --name=opera --browser=chrome --local-script-rules=true"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #safari
@@ -53,11 +53,11 @@ else
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox
-    options="--version=2.0.0 --name=firefox --browser=firefox --local-filters=true"
+    options="--version=2.0.0 --name=firefox --browser=firefox --local-script-rules=true"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox legacy
-    options="--version=2.0.0 --name=firefox --browser=firefox_legacy --local-filters=true"
+    options="--version=2.0.0 --name=firefox --browser=firefox_legacy --local-script-rules=true"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     echo "Dev builds created"

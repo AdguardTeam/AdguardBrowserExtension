@@ -26,11 +26,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Helper method for customizing manifest files and extension settings
+ * Helper method for customizing manifest files and extension local script rules
  */
 public class SettingUtils {
 
-	private final static String SETTINGS_TEMPLATE = "/**\r\n" +
+	private final static String LOCAL_SCRIPT_RULES_FILE_TEMPLATE = "/**\r\n" +
 			" * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).\r\n" +
 			" *\r\n" +
 			" * Adguard Browser Extension is free software: you can redistribute it and/or modify\r\n" +
@@ -57,6 +57,7 @@ public class SettingUtils {
 			" * 3. We allow only custom rules got from the User filter (which user creates manually)\r\n" +
 			" *    or from this DEFAULT_SCRIPT_RULES object\r\n" +
 			" */\r\n" +
+			"var USE_DEFAULT_SCRIPT_RULES = exports.USE_DEFAULT_SCRIPT_RULES = %s;\r\n" +
 			"var DEFAULT_SCRIPT_RULES = exports.DEFAULT_SCRIPT_RULES = Object.create(null);\r\n%s";
 
 	private final static String CHROMIUM_UPDATE_URL = "https://chrome.adtidy.org/updates.xml";
@@ -64,18 +65,13 @@ public class SettingUtils {
 	private final static String FIREFOX_LEGACY_UPDATE_URL = "https://chrome.adtidy.org/legacy.rdf";
 	private final static String SAFARI_UPDATE_URL = "https://chrome.adtidy.org/safari/updates.xml";
 
-	public static void customizeSettings(File dest, Map<Integer, List<String>> filtersScriptRules, Browser browser) throws IOException {
-		switch (browser) {
-			case CHROMIUM:
-			case FIREFOX:
-				String scriptRules = getScriptRulesText(filtersScriptRules);
-				String settings = String.format(SETTINGS_TEMPLATE, scriptRules);
-				FileUtils.writeStringToFile(getSettingsFile(dest), settings);
-				break;
-		}
+	public static void writeLocalScriptRulesToFile(File dest, boolean useLocalScriptRules, Map<Integer, List<String>> filtersScriptRules) throws IOException {
+		String scriptRules = getScriptRulesText(filtersScriptRules);
+		String settings = String.format(LOCAL_SCRIPT_RULES_FILE_TEMPLATE, useLocalScriptRules, scriptRules);
+		FileUtils.writeStringToFile(getLocalScriptRulesFile(dest), settings);
 	}
 
-	public static void customizeManifestFile(File dest, Browser browser, String version, boolean autoupdate) throws IOException {
+	public static void writeVersionAndUpdateUrlToManifestFile(File dest, Browser browser, String version, boolean autoupdate) throws IOException {
 
 		switch (browser) {
 			case CHROMIUM:
@@ -132,7 +128,7 @@ public class SettingUtils {
 		return sb.toString();
 	}
 
-	private static File getSettingsFile(File sourcePath) {
-		return new File(sourcePath, "lib/utils/settings.js");
+	private static File getLocalScriptRulesFile(File sourcePath) {
+		return new File(sourcePath, "lib/utils/local-script-rules.js");
 	}
 }

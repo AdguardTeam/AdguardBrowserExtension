@@ -19,11 +19,10 @@
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
-var Utils = require('utils/common').Utils;
-var StringUtils = require('utils/common').StringUtils;
 var UrlUtils = require('utils/url').UrlUtils;
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
-var DEFAULT_SCRIPT_RULES = require('utils/settings').DEFAULT_SCRIPT_RULES;
+var USE_DEFAULT_SCRIPT_RULES = require('utils/local-script-rules').USE_DEFAULT_SCRIPT_RULES;
+var DEFAULT_SCRIPT_RULES = require('utils/local-script-rules').DEFAULT_SCRIPT_RULES;
 
 /**
  * We collect here all workarounds and ugly hacks:)
@@ -53,11 +52,10 @@ var WorkaroundUtils = exports.WorkaroundUtils = {
      */
 	getScriptsForUrl: function (antiBannerService, url) {
 
-		if (!Utils.isOperaBrowser() && !Utils.isFirefoxBrowser()) {
-
-            // Get JS scripts from filters
-			return antiBannerService.getRequestFilter().getScriptsForUrl(url);
-		}
+	    if (!USE_DEFAULT_SCRIPT_RULES) {
+		    // Get JS scripts from filters
+		    return antiBannerService.getRequestFilter().getScriptsForUrl(url);
+	    }
 
 	    //antiBannerService not yet initialized
 	    if (!antiBannerService.initialized) {

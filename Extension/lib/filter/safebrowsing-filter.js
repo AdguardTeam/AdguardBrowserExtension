@@ -145,7 +145,17 @@ SafebrowsingFilter.prototype = {
         return url;
     },
 
-    /**
+	/**
+	 * Track safebrowsing stats
+	 * @param requestUrl
+	 */
+	trackSafebrowsingStats: function (requestUrl) {
+		if (userSettings.getSafebrowsingInfo().sendStats) {
+			this.serviceClient.trackSafebrowsingStats(requestUrl);
+		}
+	},
+
+	/**
      * Parses safebrowsing service response
      *
      * @param responseText  Response text

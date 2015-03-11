@@ -1,9 +1,9 @@
-! Version: 1.0.2.1
+! Version: 1.0.2.2
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet be tracked, use this filter.
 ! NameEn: Spyware filter
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2015-02-24T16:09:42.811+03:00
+! TimeUpdated: 2015-03-11T16:36:27.465+03:00
 ! Adguard Spyware Filter
 !
 ! The most comprehensive list of various online counters and web analytics tools.
@@ -16,53 +16,19 @@
 !-------------- Common HTML filtering rules  -----------------------------------!
 !-------------------------------------------------------------------------------!
 ! Google analytics scripts
-~askmrrobot.com, ~fasttech.com$$script[tag-content="var _gaq = _gaq || [];"][max-length="1000"]
-$$script[tag-content="urchinTracker()"][max-length="200"]
 ! Statcounter script
-$$script[tag-content="statcounter.com/counter"][max-length="800"]
 ! Gostats script
-~gostats.com$$script[tag-content="GoStatsRun"][max-length="300"]
 ! Liveinternet script
-$$script[tag-content="counter.yadro.ru"][max-length="700"]
 ! Mail.ru
-$$script[tag-content="top.mail.ru/counter"][max-length="600"]
 ! List.ru
-$$script[tag-content="top.list.ru/counter"][max-length="600"]
 ! Hotlog
-$$script[tag-content="hotlog.ru/cgi-bin/hotlog"][max-length="600"]
 ! Yandex counter scripts
-~highscreen.ru,~meijin.ru,~gq.ru,~yandex.ru,~yandex.com,~yandex.ua,~yandex.kz,~yandex.by,~mp3poisk.ru$$script[tag-content="Ya.Metrika"][max-length="1500"]
-~kinopoisk.ru$$script[tag-content="tns-counter.ru"][max-length="600"]
 ! Spylog scripts
-$$script[tag-content="spylog.com"][max-length="600"]
-$$script[tag-content="openstat.net"][max-length="600"]
 ! Bigmir counter scripts
-$$script[tag-content="bmD.write(bmQ+"][max-length="600"]
-$$script[tag-content="bmS=screen;bmQ+="][max-length="300"]
-~bigmir.net$$script[tag-content="c.bigmir.net/?"][max-length="1200"]
 ! I.ua scripts
-$$script[tag-content="hotsites.com.ua/img.php"][max-length="600"]
-$$script[tag-content="r.i.ua/s?"][max-length="1500"]
 ! Findme.ru
-$$script[tag-content="alt='Findme.Ru'"][max-length="500"]
 ! Newrelic.com
-$$script[tag-content="if (!NREUMQ.f)"][max-length="800"]
 ! Other scripts
-$$script[tag-content="extreme-dm.com"][max-length="800"]
-$$script[tag-content="width=88 height=31 border=0 alt=online.ua"][max-length="200"]
-$$script[tag-content="counter.star.lg.ua"][max-length="400"]
-$$script[tag-content="click.kmindex.ru"][max-length="500"]
-$$script[tag-content="c.uarating.com/"][max-length="500"]
-$$script[tag-content="logua.com/stat.php"][max-length="400"]
-$$script[tag-content="hostomer.ru/"][max-length="800"]
-$$script[tag-content="whois.1in.kz"][max-length="600"]
-$$script[tag-content="zero.kz/c.php"][max-length="800"]
-$$script[tag-content="24log.ru/rating/"][max-length="1024"]
-$$script[tag-content="rating.kp.km.ua"][max-length="500"]
-~mystat-in.net$$script[tag-content="mystat-in.net"][max-length="300"]
-$$script[tag-content="t.proext.com"][max-length="800"]
-$$script[tag-content="(new Image).src"][max-length="400"]
-$$script[tag-content="count.yandeg.ru"][max-length="500"]
 !-------------------------------------------------------------------------------!
 !-------------- Common javascript injections -----------------------------------!
 !-------------------------------------------------------------------------------!
@@ -2454,9 +2420,6 @@ bogamol.ru##a[href="http://www.hitcounter.ru"]
 ||adobe.com/*/pdc_s_code.js
 ||adobe.com/*/s_code*.js
 ! Remove counters on specific web sites
-citystar.ru$$script[tag-content="acn.rucounter.ru"][max-length="500"]
-echo.msk.ru$$script[tag-content="s=screen;"][max-length="200"]
-echo.msk.ru$$script[tag-content="r=d.im.width"][max-length="200"]
 nnm-club.ru###livi
 lenta.ru##.counters
 ||i.ag.ru/ag/i/counters_new_nr.png
@@ -3069,7 +3032,6 @@ mozilla-russia.org#@#img[width="88"][height="31"]
 @@||itv.1tv.ru/stat.php?
 @@||labrc.pw/advstats/$xmlhttprequest
 @@||swa.mail.ru/cgi-bin/counters?$script
-@@||wargag.ru/public/js/counter.js?
 @@||widget.myrentacar.me^$script,subdocument
 @@||yandex.ru/metrika/watch.js$domain=anoncer.net
 @@||yandex.ru/watch/$xmlhttprequest,domain=anoncer.net

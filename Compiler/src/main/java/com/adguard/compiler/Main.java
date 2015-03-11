@@ -61,7 +61,7 @@ public class Main {
 		boolean updateFilters = Boolean.valueOf(getParamValue(args, "--update-filters", "false"));
 
 		//use local filters
-		boolean useLocalFilters = Boolean.valueOf(getParamValue(args, "--local-filters", "false"));
+		boolean useLocalScriptRules = Boolean.valueOf(getParamValue(args, "--local-script-rules", "false"));
 
 		//use our update url for extension
 		boolean autoupdate = Boolean.valueOf(getParamValue(args, "--autoupdate", "true"));
@@ -85,7 +85,7 @@ public class Main {
 
 		Map<Integer, List<String>> filtersScriptRules = FilterUtils.getScriptRules(source);
 
-		File buildResult = createBuild(source, dest, useLocalFilters ? filtersScriptRules : null, autoupdate, browser, version);
+		File buildResult = createBuild(source, dest, useLocalScriptRules, filtersScriptRules, autoupdate, browser, version);
 
 		if (browser == Browser.SAFARI && updateFilters) {
 			FilterUtils.loadEnglishFilterForSafari(new File(buildResult, "filters"));
@@ -117,7 +117,7 @@ public class Main {
 		}
 		log.info("Browser: " + browser);
 		log.info("AutoUpdates: " + autoupdate);
-		log.info("LocalFilters: " + useLocalFilters);
+		log.info("LocalScriptRules: " + useLocalScriptRules);
 		log.info("---------------------------------");
 	}
 
@@ -170,6 +170,7 @@ public class Main {
 	 * @throws Exception
 	 */
 	private static File createBuild(File source, File dest,
+	                                boolean useLocalScriptRules,
 	                                Map<Integer, List<String>> filtersScriptRules,
 	                                boolean autoupdate, Browser browser, String version) throws Exception {
 
@@ -180,8 +181,8 @@ public class Main {
 
 		FileUtil.copyFiles(source, dest, browser);
 
-		SettingUtils.customizeSettings(dest, filtersScriptRules, browser);
-		SettingUtils.customizeManifestFile(dest, browser, version, autoupdate);
+		SettingUtils.writeLocalScriptRulesToFile(dest, useLocalScriptRules, filtersScriptRules);
+		SettingUtils.writeVersionAndUpdateUrlToManifestFile(dest, browser, version, autoupdate);
 
 		return dest;
 	}

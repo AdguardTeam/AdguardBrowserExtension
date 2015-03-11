@@ -280,6 +280,7 @@ RequestFilter.prototype = {
                 return;
             }
             Log.debug("Following safebrowsing filter has been fired: {0}", sbList);
+	        this.safebrowsingFilter.trackSafebrowsingStats(requestUrl);
             safebrowsingCallback(this.safebrowsingFilter.getErrorPageURL(requestUrl, sbList));
 
         }.bind(this);

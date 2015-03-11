@@ -122,7 +122,7 @@ function processLoadAssistant(tab, callback) {
 		"lib/content-script/assistant/js/slider.js",
 		"lib/content-script/assistant/js/tools.js"
 	];
-	var cssLink = "lib/assistant/css/assistant.css";
+	var cssLink = "lib/content-script/assistant/css/assistant.css";
 
 	var ids = [
 		'assistant_select_element',
