@@ -23,8 +23,9 @@ This will create a Build directory with unpacked extensions for all browsers:
   Build/safari-$currentVersion.safariextension
 ```
 
-###Building release version
+###Building beta and release versions
 ```
+  ./build.sh beta
   ./build.sh release
 ```
 You will need to put certificate.pem file to the Compiler directory. This build will create unpacked extensions and then pack them (crx for Chrome, xpi for Firefox).

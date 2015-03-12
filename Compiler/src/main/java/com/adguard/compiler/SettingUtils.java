@@ -71,16 +71,16 @@ public class SettingUtils {
 		FileUtils.writeStringToFile(getLocalScriptRulesFile(dest), settings);
 	}
 
-	public static void writeVersionAndUpdateUrlToManifestFile(File dest, Browser browser, String version, boolean autoupdate) throws IOException {
+	public static void updateManifestFile(File dest, Browser browser, String version, String extensionId, String updateUrl) throws IOException {
 
 		switch (browser) {
 			case CHROMIUM:
 				File manifestFile = new File(dest, "manifest.json");
 				String content = FileUtils.readFileToString(manifestFile, "utf-8").trim();
-				if (autoupdate) {
+				if (updateUrl != null) {
 					content = StringUtils.removeEnd(content, "}").trim();
 					content = content + ",\r\n\r\n";
-					content = content + "\t\"update_url\": \"" + CHROMIUM_UPDATE_URL + "\"\r\n}";
+					content = content + "\t\"update_url\": \"" + updateUrl + "\"\r\n}";
 				}
 				content = StringUtils.replace(content, "${version}", version);
 				FileUtils.writeStringToFile(manifestFile, content);
@@ -88,8 +88,9 @@ public class SettingUtils {
 			case SAFARI:
 				File infoPlistFile = new File(dest, "Info.plist");
 				String contentInfoPlist = FileUtils.readFileToString(infoPlistFile, "utf-8");
+				contentInfoPlist = StringUtils.replace(contentInfoPlist, "${extensionId}", extensionId);
 				contentInfoPlist = StringUtils.replace(contentInfoPlist, "${version}", version);
-				contentInfoPlist = StringUtils.replace(contentInfoPlist, "${updateURL}", autoupdate ? SAFARI_UPDATE_URL : "");
+				contentInfoPlist = StringUtils.replace(contentInfoPlist, "${updateURL}", updateUrl != null ? updateUrl : "");
 				FileUtils.writeStringToFile(infoPlistFile, contentInfoPlist);
 				break;
 			case FIREFOX:
@@ -97,11 +98,11 @@ public class SettingUtils {
 				File installRdf = new File(dest, "install.rdf");
 				String contentRdf = FileUtils.readFileToString(installRdf, "utf-8").trim();
 				//write update url link
-				String updateUrlLink = FIREFOX_UPDATE_URL;
-				if (browser == Browser.FIREFOX_LEGACY) {
-					updateUrlLink = FIREFOX_LEGACY_UPDATE_URL;
+				if (updateUrl == null) {
+					updateUrl = "";
+				} else {
+					updateUrl = "<em:updateURL>" + updateUrl + "</em:updateURL>";
 				}
-				String updateUrl = autoupdate ? "<em:updateURL>" + updateUrlLink + "</em:updateURL>" : "";
 				contentRdf = StringUtils.replace(contentRdf, "${updateUrl}", updateUrl);
 				contentRdf = StringUtils.replace(contentRdf, "${version}", version);
 				FileUtils.writeStringToFile(installRdf, contentRdf);

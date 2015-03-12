@@ -1,9 +1,9 @@
-! Version: 1.0.21.12
+! Version: 1.0.21.16
 ! Name: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: Experimental filter
 ! DescriptionEn: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! TimeUpdated: 2015-03-11T17:00:38.362+03:00
+! TimeUpdated: 2015-03-12T17:00:14.597+03:00
 ! Adguard Experimental Filter
 !
 ! Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
@@ -131,6 +131,14 @@ dreamprogs.net##td[width="88"][height="31"]
 !-------------------------------------------------------------------!
 !
 ! This file contains all experimental rules for Social filter.
+!
+!
+focus.lv##.news_social_button
+||focus.lv/social_*.html
+!
+strana.in.ua##.plusobut
+! http://www.zvuki.ru/R/P/34696/
+zvuki.ru##iframe[title^="fb:like"]
 !
 ng72.ru###VKGroupInvite
 ! http://forum.terraanalytica.ru/topic/14-rossiia-ukraina/ - social buttons in mobile version of site
@@ -311,6 +319,27 @@ gorodkirov.ru##.likely__widget
 !
 ! Rules which are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
+!
+! http://forum.adguard.com/showthread.php?4725
+tracker.ru##.body.thumbnail
+!! http://forum.adguard.com/showthread.php?4715
+auto.mail.ru##.js-slot-parallax-container
+auto.mail.ru##.wrapper > div.cols_clear > div.cols__column_sidebar > div.cols__inner > div.box
+!! правило для уменьшения высоты елемента, в котором при прокрутке появляются отзывы
+auto.mail.ru#$#.spring.spring_side.spring_bordered {min-height: 0px!important;}
+!
+!
+strana.in.ua##.teasr
+strana.in.ua##div[id^="rdminfrm"]
+strana.in.ua##a[href^="http://ikino.org/"]
+! http://www.zvuki.ru/R/P/34696/
+||zvuki.ru/css/skins/harman/harman.css
+||zvuki.ru/i/skins/harman/
+zvuki.ru##div[class^="banner-"]
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/405
+! первое правило с привязкой к домену не работает
+||banerator.silvercdn.com/files-banerator/
+||my-hit.org/themes/kino_v5/js/traforet-*.js
 !
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/332
 ||moevideo.net/img/promo/*.mp4$mp4
@@ -530,6 +559,8 @@ gismeteo.ru,gismeteo.ua,gismeteo.by,gismeteo.kz##.rframe#ad-lb
 !
 ! This section contains all kinds of exception rules.
 !
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/403
+@@||adsrv.gpm-digital.com/crossdomain.xml$domain=rutube.ru
 ! не происходит переход по превьюшкам справа
 ! http://videochart.net/video/96661.966b697593898d5ca5b3680bd8a2
 @@||google-analytics.com/ga.js$domain=videochart.net
@@ -924,3 +955,5 @@ cinemaonline.kg#$#body { background-image: url("http://cinemaonline.kg/templates
 cinemaonline.kg###online_movies_list
 ! gidonlinekino.com - удаление отступа сверху
 gidonlinekino.com#$##headerline {margin-top:0!important;}
+! zvuki.ru - удаление отступа сверху
+zvuki.ru#$#.bCenter > div#header {height: auto!important;}

@@ -123,13 +123,14 @@ PopupController.prototype = {
 
 		//footer
 		this.footerTemplate = this._getTemplate('popup-footer-template');
+		this.footerIntegrationTemplate = this._getTemplate('popup-footer-integration-template');
 
 		//render
 		this._renderTopMessageBlock(parent, tabInfo);
 		this._renderSiteExceptionBlock(parent, tabInfo);
 		this._renderFilteringCheckboxBlock(parent, tabInfo);
 		this._renderActionsBlock(parent, tabInfo);
-		this._renderFooter(parent);
+		this._renderFooter(parent, tabInfo);
 	},
 
 	_getTemplate: function (id) {
@@ -238,8 +239,12 @@ PopupController.prototype = {
 		parent.append(el);
 	},
 
-	_renderFooter: function (parent) {
-		parent.append(this.footerTemplate);
+	_renderFooter: function (parent, tabInfo) {
+		if (tabInfo.adguardDetected) {
+			parent.append(this.footerIntegrationTemplate);
+		} else {
+			parent.append(this.footerTemplate);
+		}
 	},
 
 	_bindActions: function () {

@@ -53,15 +53,10 @@ $(document).ready(function () {
 
 			//override
 			controller.afterRender = function () {
-				//resize popup
-				if (Utils.isSafariBrowser()) {
-					//safari need some delay for show popup size properly
-					setTimeout(function () {
-						controller.resizePopupWindow();
-					}, 10);
-				} else {
+				//add some delay for show popup size properly
+				setTimeout(function () {
 					controller.resizePopupWindow();
-				}
+				}, 10);
 				resizePopupWindowForMacOs($);
 			};
 			controller.resizePopup = function (width, height) {

@@ -1,9 +1,9 @@
-! Version: 1.0.55.90
+! Version: 1.0.55.92
 ! Name: English filter
 ! Description: Filter that enables removing of the ads from websites with English content.
 ! NameEn: English filter
 ! DescriptionEn: Filter that enables blocking of ads on websites with English content.
-! TimeUpdated: 2015-03-11T19:00:42.760+03:00
+! TimeUpdated: 2015-03-12T18:00:32.646+03:00
 ! Adguard English Filter.
 !
 ! Filter that enables removing of the ads from websites with English content.
@@ -13468,6 +13468,7 @@ _popunder+$popup
 ###joead
 ###joead2
 ###js-ad-leaderboard
+###js-image-ad-mpu
 ###js_adsense
 ###jt-advert
 ###jupiter-ads
@@ -19233,6 +19234,7 @@ _popunder+$popup
 ##.big_ad
 ##.big_ads
 ##.big_center_ad
+##.big_rectangle_page_ad
 ##.bigad
 ##.bigad1
 ##.bigad2
@@ -20737,6 +20739,8 @@ _popunder+$popup
 ##.im-topAds
 ##.image-ad-336
 ##.image-advertisement
+##.image-viewer-ad
+##.image-viewer-mpu
 ##.imageAd
 ##.imageAdBoxTitle
 ##.imageads
@@ -24195,11 +24199,13 @@ bitrebels.com#@#a[href*="/adrotate-out.php?"]
 santander.co.uk#@#a[href^="http://ad-emea.doubleclick.net/"]
 jabong.com,people.com,techrepublic.com,time.com#@#a[href^="http://ad.doubleclick.net/"]
 watchever.de#@#a[href^="http://adfarm.mediaplex.com/"]
+betbeaver.com#@#a[href^="http://ads.betfair.com/redirect.aspx?"]
 adultfriendfinder.com#@#a[href^="http://adultfriendfinder.com/p/register.cgi?pid="]
 marketgid.com,mgid.com#@#a[href^="http://marketgid.com"]
 marketgid.com,mgid.com#@#a[href^="http://mgid.com/"]
 linkedin.com,tasteofhome.com#@#a[href^="http://pubads.g.doubleclick.net/"]
 marketgid.com,mgid.com#@#a[href^="http://us.marketgid.com"]
+betbeaver.com#@#a[href^="http://www.bet365.com/home/?affiliate"]
 fbooksluts.com#@#a[href^="http://www.fbooksluts.com/"]
 fleshjack.com,fleshlight.com#@#a[href^="http://www.fleshlight.com/"]
 www.google.com#@#a[href^="http://www.google.com/aclk?"]
@@ -27781,6 +27787,7 @@ afreesms.com#@#iframe[id^="google_ads_frame"]
 ||dblpmp.com^$third-party
 ||deecash.com^$third-party
 ||demanier.com^$third-party
+||denotyro.com^$third-party
 ||depilflash.tv^$third-party
 ||depravedwhores.com^$third-party
 ||desiad.net^$third-party
@@ -28102,6 +28109,7 @@ afreesms.com#@#iframe[id^="google_ads_frame"]
 ||reliablebanners.com^$third-party
 ||reprak.com^$third-party
 ||retargetpro.net^$third-party
+||retoxo.com^$third-party
 ||rexbucks.com^$third-party
 ||rivcash.com^$third-party
 ||rmbn.net^$third-party
@@ -29110,6 +29118,7 @@ afreesms.com#@#iframe[id^="google_ads_frame"]
 ||i.lsimg.net^*/takeover/
 ||ibsrv.net/sidetiles/125x125/
 ||ibsrv.net/sponsor_images/
+||ibsys.com/sh/sponsors/
 ||ibvpn.com/img/banners/
 ||icastcenter.com^*/amazon-buyfrom.gif
 ||icastcenter.com^*/itunes.jpg
@@ -29525,7 +29534,7 @@ afreesms.com#@#iframe[id^="google_ads_frame"]
 ||ruralpressevents.com/agquip/logos/$domain=farmonline.com.au
 ||russian-dreams.net/static/js/$third-party
 ||rya.rockyou.com^$third-party
-||s-assets.tp-cdn.com^
+||s-assets.tp-cdn.com/widgets/*/vwid/*.html?
 ||s-yoolk-banner-assets.yoolk.com^
 ||s-yoolk-billboard-assets.yoolk.com^
 ||s.cxt.ms^$third-party
@@ -36766,7 +36775,7 @@ tripit.com###leadboard
 gamesindustry.biz,investopedia.com,iphonic.tv,kontraband.com,motherproof.com,nutritioncuisine.com,sansabanews.com,thestreet.com,topgear.com,venturebeat.com,vg247.com###leader
 duffelblog.com###leader-large
 bakersfieldnow.com,katu.com,keprtv.com,komonews.com,kpic.com,kval.com,star1015.com###leader-sponsor
-agriland.ie,blackburnnews.com,bloody-disgusting.com,football-talk.co.uk,foxnews.com,irishpost.co.uk,longislandpress.com,mobiletoday.co.uk,mobiletor.com,morningledger.com,pcgamerhub.com,soccersouls.com,tangatawhenua.com,thescoopng.com,thewrap.com,urbanmecca.net,youngzimbabwe.com###leader-wrapper
+agriland.ie,ballitonews.co.za,blackburnnews.com,bloody-disgusting.com,football-talk.co.uk,foxnews.com,irishpost.co.uk,longislandpress.com,mobiletoday.co.uk,mobiletor.com,morningledger.com,pcgamerhub.com,soccersouls.com,tangatawhenua.com,thescoopng.com,thewrap.com,urbanmecca.net,youngzimbabwe.com###leader-wrapper
 heraldstandard.com###leaderArea
 xe.com###leaderB
 firstnationsvoice.com,hbr.org,menshealth.com,pistonheads.com###leaderBoard
@@ -43706,6 +43715,7 @@ synonym.com##div[style="margin:0px auto; width: 300px; height: 250px;"]
 10minutemail.net##div[style="margin:10px 0; height:90px; width:728px;"]
 22find.com##div[style="margin:10px auto 0;width:300px;height:320px;"]
 drakulastream.eu##div[style="margin:10px"]
+anymaking.com##div[style="margin:15px auto; border:1px solid #ccc; width:728px; height:90px;"]
 whattoexpect.com##div[style="margin:15px auto;width:728px;"]
 xnotifier.tobwithu.com##div[style="margin:1em 0;font-weight:bold;"]
 thespoof.com##div[style="margin:20px 5px 10px 0;"]
@@ -45313,6 +45323,7 @@ tnaflix.com##.camsBox2
 celebspank.com##.celeb_bikini
 adultfriendfinder.com##.chatDiv.rcc
 voyeur.net##.cockholder
+xnxx.com##.combo.smallMargin[style="padding: 0px; width: 100%; text-align: center; height: 244px;"]
 xnxx.com##.combo[style="padding: 0px; width: 830px; height: 244px;"]
 avn.com##.content-right[style="padding-top: 0px; padding-bottom: 0px; height: auto;"]
 xbutter.com##.counters
@@ -46354,6 +46365,7 @@ tube8.com##topadblock
 @@||eightinc.com/admin/zone.php?zoneid=$xmlhttprequest
 @@||elephantjournal.com/ad_art/
 @@||eluxe.ca^*_doubleclick.js*.pagespeed.$script
+@@||emailbidding.com^*/advertiser/$~third-party,xmlhttprequest
 @@||emergencymedicalparamedic.com/wp-content/themes/AdSense/style.css
 @@||emjcd.com^$image,domain=catalogfavoritesvip.com|freeshipping.com|freeshippingbymastercard.com|freeshippingrewards.com|habandvipplus.com|inthecompanyofdogsvip.com|naturesjewelryvip.com|northstylevip.com|pyramidcollectionvip.com|serengeticatalogvip.com|travelplus.com
 @@||empireonline.com/images/image_index/300x250/
@@ -48357,12 +48369,14 @@ accounts.google.com#@#.adwords
 @@||weatherbug.com/style/stickers/*_728x90.css
 @@||wixstatic.com/media/*_300_250_$image,domain=lenislens.com
 @@||zorza-polarna.pl/environment/cache/images/300_250_
+@@/redirect.aspx?pid=*&bid=$popup,domain=betbeaver.com
 @@||ads.flipkart.com/delivery/ck.php?$popup,domain=flipkart.com
 @@||ads.pinterest.com^$popup,~third-party
 @@||ads.sudpresse.be^$popup,domain=sudinfo.be
 @@||ads.twitter.com^$popup,~third-party
 @@||ads.williamhillcasino.com/redirect.aspx?*=internal&$popup,domain=williamhillcasino.com
 @@||adv.blogupp.com^$popup
+@@||bet365.com/home/?affiliate=$popup,domain=betbeaver.com
 @@||doubleclick.net/click%$popup,domain=people.com|time.com
 @@||doubleclick.net/clk;$popup,domain=hotukdeals.com|jobamatic.com|play.google.com|santander.co.uk|techrepublic.com
 @@||doubleclick.net/ddm/clk/$popup,domain=couponcodeswap.com

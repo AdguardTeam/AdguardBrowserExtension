@@ -78,7 +78,7 @@ public class LocaleUtils {
 		}
 	}
 
-	private static void writeLocalesToFirefoxInstallRdf(File dest) throws IOException {
+	public static void writeLocalesToFirefoxInstallRdf(File dest) throws IOException {
 //		<em:localized>
 //		<Description>
 //		<em:locale>en</em:locale>

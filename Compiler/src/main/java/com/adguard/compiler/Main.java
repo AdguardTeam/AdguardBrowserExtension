@@ -63,13 +63,16 @@ public class Main {
 		//use local filters
 		boolean useLocalScriptRules = Boolean.valueOf(getParamValue(args, "--local-script-rules", "false"));
 
-		//use our update url for extension
-		boolean autoupdate = Boolean.valueOf(getParamValue(args, "--autoupdate", "true"));
+		//update url for extension
+		String updateUrl = getParamValue(args, "--update-url", null);
+
+		//safari extension id
+		String extensionId = getParamValue(args, "--extension-id", null);
 
 		//pack method
 		String packMethod = getParamValue(args, "--pack", null);
 
-		if (!validateParameters(sourcePath, buildName, version, configBrowser, packMethod)) {
+		if (!validateParameters(sourcePath, buildName, version, extensionId, configBrowser, packMethod)) {
 			System.exit(-1);
 		}
 
@@ -85,7 +88,7 @@ public class Main {
 
 		Map<Integer, List<String>> filtersScriptRules = FilterUtils.getScriptRules(source);
 
-		File buildResult = createBuild(source, dest, useLocalScriptRules, filtersScriptRules, autoupdate, browser, version);
+		File buildResult = createBuild(source, dest, useLocalScriptRules, filtersScriptRules, extensionId, updateUrl, browser, version);
 
 		if (browser == Browser.SAFARI && updateFilters) {
 			FilterUtils.loadEnglishFilterForSafari(new File(buildResult, "filters"));
@@ -115,13 +118,18 @@ public class Main {
 		} else {
 			log.info("File: " + buildResult.getName());
 		}
+		if (extensionId != null) {
+			log.info("ExtensionId: " + extensionId);
+		}
 		log.info("Browser: " + browser);
-		log.info("AutoUpdates: " + autoupdate);
+		if (updateUrl != null) {
+			log.info("UpdateUrl: " + updateUrl);
+		}
 		log.info("LocalScriptRules: " + useLocalScriptRules);
 		log.info("---------------------------------");
 	}
 
-	private static boolean validateParameters(String sourcePath, String buildName, String version, String configBrowser, String packMethod) {
+	private static boolean validateParameters(String sourcePath, String buildName, String version, String extensionId, String configBrowser, String packMethod) {
 
 		if (buildName == null) {
 			log.error("Name is required");
@@ -148,6 +156,12 @@ public class Main {
 			log.error("Source path '" + source.getAbsolutePath() + "' not found");
 			return false;
 		}
+
+		if (extensionId == null && browser == Browser.SAFARI) {
+			log.error("Set --extension-id for Safari build");
+			return false;
+		}
+
 		return true;
 	}
 
@@ -160,7 +174,8 @@ public class Main {
 	 *                           For AMO and addons.opera.com we embed all
 	 *                           js rules into the extension and do not update them
 	 *                           from remote server.
-	 * @param autoupdate         If true - add to manifest our own update url.
+	 * @param extensionId        Extension identifier (Use for safari)
+	 * @param updateUrl          Add to manifest update url.
 	 *                           Otherwise - do not add it.
 	 *                           All extension stores have their own update channels so
 	 *                           we shouldn't add update channel to the manifest.
@@ -172,7 +187,7 @@ public class Main {
 	private static File createBuild(File source, File dest,
 	                                boolean useLocalScriptRules,
 	                                Map<Integer, List<String>> filtersScriptRules,
-	                                boolean autoupdate, Browser browser, String version) throws Exception {
+	                                String extensionId, String updateUrl, Browser browser, String version) throws Exception {
 
 		if (dest.exists()) {
 			log.debug("Removed previous build: " + dest.getName());
@@ -182,7 +197,10 @@ public class Main {
 		FileUtil.copyFiles(source, dest, browser);
 
 		SettingUtils.writeLocalScriptRulesToFile(dest, useLocalScriptRules, filtersScriptRules);
-		SettingUtils.writeVersionAndUpdateUrlToManifestFile(dest, browser, version, autoupdate);
+		SettingUtils.updateManifestFile(dest, browser, version, extensionId, updateUrl);
+		if (browser == Browser.FIREFOX || browser == Browser.FIREFOX_LEGACY) {
+			LocaleUtils.writeLocalesToFirefoxInstallRdf(dest);
+		}
 
 		return dest;
 	}
