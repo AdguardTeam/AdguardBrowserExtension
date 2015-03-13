@@ -68,11 +68,6 @@ var PreloadHelper = {
 		}
 	},
 
-	applyCssAndScripts: function (response) {
-		PreloadHelper._applySelectors(response.selectors);
-		PreloadHelper._applyScripts(response.scripts);
-	},
-
 	_applySelectors: function (selectors) {
 		if (!selectors || selectors.length == 0) {
 			return;
