@@ -78,6 +78,10 @@ function processGetSelectorsAndScripts(documentUrl, tab) {
 		return null;
 	}
 
+	if (!antiBannerService.requestFilterReady) {
+		return {requestFilterReady: false};
+	}
+
 	if (framesMap.isTabAdguardDetected(tab) || framesMap.isTabProtectionDisabled(tab) || framesMap.isTabWhiteListed(tab)) {
 		return null;
 	}

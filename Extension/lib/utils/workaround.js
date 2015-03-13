@@ -57,11 +57,6 @@ var WorkaroundUtils = exports.WorkaroundUtils = {
 		    return antiBannerService.getRequestFilter().getScriptsForUrl(url);
 	    }
 
-	    //antiBannerService not yet initialized
-	    if (!antiBannerService.initialized) {
-		    return [];
-	    }
-
 	    //in case of opera and firefox browsers, use predefined script rules
 		if (WorkaroundUtils._scriptRules == null) {
 			WorkaroundUtils._populateScriptRules();

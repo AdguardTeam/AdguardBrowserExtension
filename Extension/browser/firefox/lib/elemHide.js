@@ -272,6 +272,10 @@ ElemHide.prototype = {
 			return null;
 		}
 
+		if (!this.antiBannerService.requestFilterReady) {
+			return {requestFilterReady: false};
+		}
+
 		if (this.framesMap.isTabAdguardDetected(tab) || this.framesMap.isTabProtectionDisabled(tab) || this.framesMap.isTabWhiteListed(tab)) {
 			return;
 		}

@@ -1,9 +1,9 @@
-! Version: 1.0.2.2
+! Version: 1.0.2.6
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet be tracked, use this filter.
 ! NameEn: Spyware filter
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2015-03-11T16:36:27.465+03:00
+! TimeUpdated: 2015-03-13T13:54:22.514+03:00
 ! Adguard Spyware Filter
 !
 ! The most comprehensive list of various online counters and web analytics tools.
@@ -58,6 +58,8 @@ webfile.ru#%#var yaCounter20889169 = { reachGoal: function() {} };
 aukro.ua#%#window.cm = { event: function() {}, call: function() {} };
 ! Fixing apteka.ru map
 apteka.ru#%#window.yaCounter14913877={ reachGoal: function() {} };
+! http://forum.adguard.com/showthread.php?4633
+popmech.ru#%#AG_onLoad(function() { window.POPMECH.increaseCounters = function() {} });
 !-------------------------------------------------------------------------------!
 !-------------- Common CSS rules -----------------------------------------------!
 !-------------------------------------------------------------------------------!
@@ -68,6 +70,15 @@ apteka.ru#%#window.yaCounter14913877={ reachGoal: function() {} };
 !-------------------------------------------------------------------------------!
 !-------------- Tracking servers list  -----------------------------------------!
 !-------------------------------------------------------------------------------!
+||start.ru^$third-party
+||tag.datariver.ru^$third-party
+||visit.webhosting.yahoo.com^$third-party
+||stat.php-d.com^$third-party
+||googleapis.com/generate_204
+||referrer.disqus.com^
+||disqus.com/api/ping?$third-party
+||disqus.com/event.js?$script
+||disqus.com/stats.html
 ||mcount.ru^$third-party
 ||top100.vkirove.ru^$third-party
 ||3dn.ru/stat/
@@ -934,6 +945,7 @@ apteka.ru#%#window.yaCounter14913877={ reachGoal: function() {} };
 ||googleadservices.com^$third-party
 ||googlerank.info^$third-party
 ||googlesyndication.com/safeframe/$third-party
+||video-ad-stats.googlesyndication.com^
 ||googletagmanager.com/gtm.js?$third-party
 ||gooo.al/$third-party
 ||gosquared.com^$third-party
@@ -2406,6 +2418,15 @@ apteka.ru#%#window.yaCounter14913877={ reachGoal: function() {} };
 !-------------------------------------------------------------------------------!
 !-------------- Specific web sites ---------------------------------------------!
 !-------------------------------------------------------------------------------!
+! http://forum.adguard.com/showthread.php?4540
+@@||top.list.ru/counter?id=$domain=crimea-kurort.com
+crimea-kurort.com#$#img[width="88"][height="31"] {visibility: hidden!important;}
+crimea-kurort.com#@#img[width="88"][height="31"]
+! остатки счётчиков
+dreamprogs.net##td[width="88"][height="31"]
+! http://forum.adguard.com/showthread.php?4576
+radioprofusion.com##footer > div.counter
+radioprofusion.com##.revolvermaps
 ! http://forum.adguard.com/showthread.php?4378
 hentaiz-org##img[width="31"][height="31"]
 ||js.washingtonpost.com/wp-stat/

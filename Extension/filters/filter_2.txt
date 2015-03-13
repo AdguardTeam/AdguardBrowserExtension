@@ -1,9 +1,9 @@
-! Version: 1.0.55.92
+! Version: 1.0.55.99
 ! Name: English filter
 ! Description: Filter that enables removing of the ads from websites with English content.
 ! NameEn: English filter
 ! DescriptionEn: Filter that enables blocking of ads on websites with English content.
-! TimeUpdated: 2015-03-12T18:00:32.646+03:00
+! TimeUpdated: 2015-03-13T16:00:45.212+03:00
 ! Adguard English Filter.
 !
 ! Filter that enables removing of the ads from websites with English content.
@@ -632,6 +632,8 @@ fcore.eu,filecore.co.nz#%#AG_onLoad(function() { window.checkAds = function() {}
 pornhub.com#%#window.opera = true;
 ! http://forum.adguard.com/showthread.php?3431
 secureupload.eu#%#window.open = function() {};
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/47
+kissanime.com#%#AG_onLoad(function() { window.DoDetect2 = function() {} });
 !-------------------------------------------------------------------------------!
 !------------------------------ Common anti-adblock ----------------------------!
 !-------------------------------------------------------------------------------!
@@ -682,9 +684,19 @@ doulci.net#@##adsense
 doulci.net#@##rightAd
 ! http://forum.adguard.com/showthread.php?4204
 @@||4shared.com/ads.html^$document
+! http://forum.adguard.com/showthread.php?4598
+tamilmovierockers.net###j401
+tamilmovierockers.net#$##j401 ~ * { display: block!important; }
+! http://forum.adguard.com/showthread.php?3165
+dirtstyle.tv##.lightbox
 !-------------------------------------------------------------------------------!
 !---------------- Rules for specific web sites  --------------------------------!
 !-------------------------------------------------------------------------------!
+! linkbucksmedia.com (example: http://www.ultrafiles.net/aee8f04a/)
+||linkbucksmedia.com/director/?t=
+! theplatform.com
+! http://forum.adguard.com/showthread.php?4584
+||olyhdliveextra-a.akamaihd.net/*.mp4$domain=theplatform.com
 ! gossipcop.com
 gossipcop.com##.am-ngg-right-ad
 gossipcop.com##iframe[width="300"][height="250"]
@@ -705,6 +717,13 @@ english-portal.com,english-portal.ru##div[style^="margin-top:3px;width:150px;bac
 ! sat-sharing.us
 sat-sharing.us##div[style="padding:0px 25px 0px 25px"] > p[align="center"]
 sat-sharing.us##a[href^="http://www.flashdz.com/"]
+! onepiecepodcast.com
+onepiecepodcast.com##.vce_adsense_widget
+onepiecepodcast.com##.mks_ads_widget
+! nv.ua
+nv.ua#$#body.branding {background-image: url(/)!important;}
+nv.ua##body.branding > a[href*="/exec/bn/click.php"]
+nv.ua##.brand_banner
 ! cnn.com
 ||cnn.com/cnnintl_adspaces/
 ! film-stream.org
@@ -826,6 +845,9 @@ youtube.com###__ffYoutube1
 youtube.com###__ffYoutube2
 youtube.com###__ffYoutube3
 youtube.com###__ffYoutube4
+! answers.yahoo.com
+answers.yahoo.com##div[id*="textads"]
+answers.yahoo.com###ad-case
 ! mail.yahoo.com
 mail.yahoo.com#$#div[id="shellcontent"] { right: 0px!important; }
 mail.yahoo.com#$#.panescroll #toolbar { right:0 !important; }
@@ -1127,6 +1149,14 @@ http://www.ads.$third-party
 !-------------------------------------------------------------------------------!
 !------------------ White list (exceptions list)  ------------------------------!
 !-------------------------------------------------------------------------------!
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/161
+@@||dnsleaktest.com^$content,jsinject,elemhide
+! http://forum.adguard.com/showthread.php?4685
+@@||kayako.com/images/home/banner*.jpg
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/396
+@@/s1600/banner.png$domain=googlechromereleases.blogspot.ru
+! http://forum.adguard.com/showthread.php?4584
+@@||v.fwmrm.net/ad/$domain=theplatform.com
 ! Fixing video player
 @@||pornhub.com/devices/wankband^$document
 ! Fixing an issue with /download/ads filter
@@ -1231,6 +1261,8 @@ americannews.com#@#.wpInsertInPostAd
 @@||partner.googleadservices.com^$domain=popsugar.com|fabsugar.com
 @@||pubads.g.doubleclick.net^$domain=popsugar.com|fabsugar.com
 @@/beacon.js$domain=ww1.canada.com
+! http://forum.adguard.com/showthread.php?4530
+@@/webtracking/*$~subdocument,domain=ups.com
 ! Fixing EasyList Hebrew (ups tracking)
 @@||ups.com/*/tracking.cgi
 @@||pocketbook-int.com^$document
@@ -1651,6 +1683,11 @@ aftonbladet.se##.abBoxSponsoredRed
 nhaccuatui.com##div[class^="adv_"]
 nhaccuatui.com###eventBannerLeft
 nhaccuatui.com###eventBannerTop
+! http://forum.adguard.com/showthread.php?4654
+||torviet.com/pic/banner/*.gif
+torviet.com###rightBanner1Ky
+torviet.com###leftBanner1Ky
+torviet.com##a[href*="adredir.php?id="]
 ! -----------------
 ! Chinese rules
 ! -----------------
@@ -1702,7 +1739,10 @@ dm5.com##.cp_adct
 ||soft98.ir/templates/soft98/js/linkdon.js
 ||soft98.ir/ajaxb.js
 ||8pic.ir/ads/tabligh.js
-||p30day.com/images/popdanny.js
+||p30day.com/images/popdanny*.js
+p30day.com##.adsblockpop
+p30day.com##.txtAdv
+download.ir##img[alt="120-240"]
 ! -----------------
 ! Turkish rules
 ! -----------------
@@ -1724,6 +1764,8 @@ yesilcin.com##.sp_block
 720pizle.com##div[class^="adv-"]
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/304
 ||filmkorku.org/wp-content/plugins/wpsite-background-takeover/
+! filmkorku.org - branded background [Turkish]
+||filmkorku.org/wp-content/uploads/pageskin*.jpg
 !----------------------------
 ||milliyet.com.tr/ashx/GoogleBanner.ashx
 !
@@ -20899,6 +20941,7 @@ _popunder+$popup
 ##.kw_advert_pair
 ##.l-ad-300
 ##.l-ad-728
+##.l-adsense
 ##.l-bottom-ads
 ##.l-header-advertising
 ##.l300x250ad
@@ -22891,6 +22934,7 @@ _popunder+$popup
 ##.top-adbox
 ##.top-ads
 ##.top-ads-wrapper
+##.top-adsense
 ##.top-adsense-banner
 ##.top-adspace
 ##.top-adv
@@ -27317,6 +27361,7 @@ afreesms.com#@#iframe[id^="google_ads_frame"]
 ||rlex.org^$third-party
 ||rterdf.me^$third-party
 ||selectr.net^$third-party
+||simusangr.com^$third-party
 ||splazards.com^$third-party
 ||sxrrxa.net^$third-party
 ||t3sort.com^$third-party
@@ -33895,6 +33940,7 @@ afreesms.com#@#iframe[id^="google_ads_frame"]
 ||wikinvest.com/wikinvest/ads/
 ||wikinvest.com/wikinvest/images/zap_trade_
 ||wildtangent.com/leaderboard?
+||windows.net/script/p.js$domain=1fichier.com
 ||windowsitpro.com^*/roadblock.
 ||winnfm.com/grfx/banners/
 ||winpcap.org/assets/image/banner_
@@ -34110,7 +34156,7 @@ afreesms.com#@#iframe[id^="google_ads_frame"]
 ||zurrieqfc.com/images/banners/
 /\.filenuke\.com/.*[a-zA-Z0-9]{4}/$script
 /\.sharesix\.com/.*[a-zA-Z0-9]{4}/$script
-/http://[a-zA-Z0-9]+\.[a-z]+\/.*[a-zA-Z]{2}.*(?:[!"#$%&'()*+,:;<=>?@/\^_`{|}~-]).*(?:[!"#$%&'()*+,:;<=>?@/\^_`{|}~-]).*(?:[!"#$%&'()*+,:;<=>?@/\^_`{|}~-])/$script,third-party,domain=247wallst.com|allenbwest.com|americanlivewire.com|askmefast.com|blacklistednews.com|breathecast.com|brosome.com|chacha.com|cheezburger.com|christianpost.com|christiantoday.com|cinemablend.com|classicalite.com|crossmap.com|dailycaller.com|dealbreaker.com|designntrend.com|digitaljournal.com|gamerant.com|hallels.com|hellou.co.uk|hngn.com|infowars.com|investmentwatchblog.com|joblo.com|kdramastars.com|kpopstarz.com|latinpost.com|listverse.com|makeuseof.com|moddb.com|mstarz.com|musictimes.com|naturalnews.com|natureworldnews.com|newser.com|oddee.com|okmagazine.com|opposingviews.com|politicususa.com|radaronline.com|realfarmacy.com|screenrant.com|techtimes.com|theblaze.com|thefreedictionary.com|thegatewaypundit.com|theladbible.com|thelibertarianrepublic.com|townhall.com|unilad.co.uk|uniladmag.com|unitrending.co.uk|valuewalk.com|vcpost.com|viralnova.com|whatculture.com|wimp.com|wwitv.com
+/http://[a-zA-Z0-9]+\.[a-z]+\/.*[a-zA-Z]{2}.*(?:[!"#$%&'()*+,:;<=>?@/\^_`{|}~-]).*[a-zA-Z]{2}.*(?:[!"#$%&'()*+,:;<=>?@/\^_`{|}~-])/$script,third-party,domain=247wallst.com|allenbwest.com|americanlivewire.com|askmefast.com|blacklistednews.com|breathecast.com|brosome.com|chacha.com|cheezburger.com|christianpost.com|christiantoday.com|cinemablend.com|classicalite.com|crossmap.com|dailycaller.com|dealbreaker.com|designntrend.com|digitaljournal.com|gamerant.com|hallels.com|hellou.co.uk|hngn.com|infowars.com|investmentwatchblog.com|joblo.com|kdramastars.com|kpopstarz.com|latinpost.com|listverse.com|makeuseof.com|moddb.com|mstarz.com|musictimes.com|naturalnews.com|natureworldnews.com|newser.com|oddee.com|okmagazine.com|opposingviews.com|politicususa.com|radaronline.com|realfarmacy.com|screenrant.com|techtimes.com|theblaze.com|thefreedictionary.com|thegatewaypundit.com|theladbible.com|thelibertarianrepublic.com|townhall.com|unilad.co.uk|uniladmag.com|unitrending.co.uk|valuewalk.com|vcpost.com|viralnova.com|whatculture.com|wimp.com|wwitv.com
 @@/wp-content/plugins/akismet/*$script
 @@||cdn.api.twitter.com*http%$script,third-party
 @@||hwcdn.net/*.js?$script
@@ -40238,7 +40284,6 @@ coinurl.com##.contents
 huffingtonpost.com##.contin_below
 businessinsider.com##.continue-link
 netnewscheck.com##.continue-text
-filenuke.com,sharesix.com##.contt-block > :first-child + div
 notcot.org##.conversationalist_outer
 list25.com##.converter
 sharaget.com##.coollist
@@ -43320,6 +43365,7 @@ forumswindows8.com##center[style="font-size:15px;font-weight:bold;margin-left:au
 helenair.com##dd
 filepuma.com##dd[style="padding-left:3px; width:153px; height:25px;"]
 search.mywebsearch.com##div > div[style="padding-bottom: 12px;"]
+filenuke.com,sharesix.com##div > p:first-child + div
 cdrlabs.com##div[align="center"]
 bleachanime.org##div[align="center"][style="font-size:14px;margin:0;padding:3px;background-color:#f6f6f6;border-bottom:1px solid #ababab;"]
 thelakewoodscoop.com##div[align="center"][style="margin-bottom:10px;"]
@@ -47340,6 +47386,7 @@ tube8.com##topadblock
 @@||www.google.*/search?$subdocument
 @@||www.google.*/settings/u/0/ads/preferences/$~third-party,xmlhttprequest
 @@||www.google.com/ads/preferences/$image,script,subdocument
+@@||www.networkadvertising.org/choices/|$document
 @@||www8-hp.com^*/styles/ads/$domain=hp.com
 @@||yadayadayada.nl/banner/banner.php$image,domain=murf.nl|workhardclimbharder.nl
 @@||yahoo.com/combo?$stylesheet

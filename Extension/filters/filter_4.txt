@@ -1,9 +1,9 @@
-! Version: 1.0.4.92
+! Version: 1.0.4.95
 ! Name: Social media filter
 ! Description: A filter for social media widgets ("Like" buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets ("Like" buttons and such).
-! TimeUpdated: 2015-03-11T16:36:33.494+03:00
+! TimeUpdated: 2015-03-13T13:54:28.659+03:00
 ! Adguard Social Media Filter
 !
 ! If you do not like numerous «Like» and «Tweet» buttons on all the popular websites on the Internet,
@@ -306,6 +306,7 @@ livejournal.com##.b-ljtimes-wrapper
 ||iknopo.ru^$third-party
 ||i.po.st/share$third-party
 ||share.pluso.ru^$third-party
+||x.pluso.ru^$third-party
 ||cdn.wibiya.com^$third-party
 ||stumbleupon.com/badge/$third-party
 ||platform.stumbleupon.com/*/widgets.js$third-party
@@ -325,6 +326,7 @@ livejournal.com##.b-ljtimes-wrapper
 !
 ! Unsorted
 !
+/wp-content/plugins/facebook-page-promoter-lightbox/*
 /social-likes.min.js
 /wp-content/plugins/easy-social-share-buttons/*
 /fbLikePopup*.js
@@ -370,6 +372,10 @@ images/livejournal
 !-------------------------------------------------------------------------------!
 !-------------- Common CSS rules  ----------------------------------------------!
 !-------------------------------------------------------------------------------!
+##div[id="shareStrip"]
+##.news_social_button
+##.p-button-social
+##.share__buttons
 ##.socFbShare
 ##.socBmFb
 ##.socBmTw
@@ -854,6 +860,25 @@ nv.ua#%#document.cookie = "smodal=1";
 !
 ! Contains rules for specific web sites
 !
+gorodkirov.ru##.likely__widget
+! http://forum.adguard.com/showthread.php?4460
+heise.de##.teaser_hbs
+! http://forum.adguard.com/showthread.php?4528
+||svit24.net/media/mod_pwebbox/js/mootools.pwebbox.js
+! http://forum.adguard.com/showthread.php?4577
+||rusradio.ru/upload/images/js/additional.js
+! http://forum.adguard.com/showthread.php?4633
+popmech.ru##.js-toggle-share-block
+! http://forum.adguard.com/showthread.php?4676
+muz.ru##.like > .share
+ng72.ru###VKGroupInvite
+! http://www.zvuki.ru/R/P/34696/
+zvuki.ru##iframe[title^="fb:like"]
+strana.in.ua##.plusobut
+||focus.lv/social_*.html
+! http://forum.adguard.com/showthread.php?4504
+||goha.ru/*/social/social.js_x_themes/
+bfm.ru##.quiz_result_share
 focus.de###singlepostSlideInBoxHoch
 augsburger-allgemeine.de##.socialNetworkBox
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/358
@@ -1183,6 +1208,8 @@ zeroturnaround.com##.contact-us-floating
 !
 ! Section fixing issues caused by social filter
 !
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/387
+@@||ichip.ru/blobimgs/plugins/easy-vkontakte-connect/js/social-likes.min.js
 ! http://forum.adguard.com/showthread.php?3666-Adguard-for-Mac-1-0-beta-test/page2
 tampermonkey.net#@#.social
 ! http://forum.adguard.com/showthread.php?4413

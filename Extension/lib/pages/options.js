@@ -1093,7 +1093,7 @@ var onInit = function () {
 
 function init() {
 
-	if (!(backgroundPage.antiBannerService && backgroundPage.antiBannerService.initialized)) {
+	if (!(backgroundPage.antiBannerService && backgroundPage.antiBannerService.requestFilterReady)) {
 		setTimeout(function () {
 			init();
 		}, 10);

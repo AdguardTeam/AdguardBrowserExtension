@@ -1,9 +1,9 @@
-! Version: 1.0.18.32
+! Version: 1.0.18.33
 ! Name: German filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: German filter
 ! DescriptionEn: Filter that enables removing of the ads from websites with German content.
-! TimeUpdated: 2015-03-03T15:01:01.642+03:00
+! TimeUpdated: 2015-03-13T13:54:40.668+03:00
 ! Adguard German Filter.
 !
 ! Filter that enables removing of the ads from websites with German content.
@@ -18,6 +18,12 @@
 !
 ||adshot.de^$third-party
 !-------------- Specific web sites ------------------------------------------!
+! http://forum.adguard.com/showthread.php?4492
+syfy.de###block-block-2 p[style="text-align: right; margin: 0; width: 305px;"]
+! http://forum.adguard.com/showthread.php?4493
+syfy.com##.tile--ad
+! http://forum.adguard.com/showthread.php?4520
+allaboutsamsung.de##div[style="width:300px;min-height:250px;padding-bottom:4px;padding-top:4px;"]
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/316
 kurier.at#@#.adblock
 ! http://forum.adguard.com/showthread.php?3950
@@ -102,8 +108,12 @@ gamona.de##.werbung ._container ~ .ad-label
 ! http://forum.adguard.com/showthread.php?3652-Randomized-Ads-Stern-de
 ! http://forum.adguard.com/showthread.php?3598
 ! http://forum.adguard.com/showthread.php?4259
-prosieben.de,sat1.de,stern.de,webfail.com,focus.de#%#window.UABPtracked = true;
-prosieben.de,sat1.de,stern.de,webfail.com,focus.de#%#AG_onLoad(function() { window.UABPTrack = function() {}; });
+! http://forum.adguard.com/showthread.php?4603
+! http://forum.adguard.com/showthread.php?4489
+! http://forum.adguard.com/showthread.php?4487
+! http://forum.adguard.com/showthread.php?4488
+prosieben.de,sat1.de,stern.de,webfail.com,focus.de,finanzen.net,prosiebenmaxx.de,sixx.de,kabeleins.de#%#window.UABPtracked = true;
+prosieben.de,sat1.de,stern.de,webfail.com,focus.de,finanzen.net,prosiebenmaxx.de,sixx.de,kabeleins.de#%#AG_onLoad(function() { window.UABPTrack = function() {}; });
 !-------------- Whitelist ------------------------------------------!
 ! http://forum.adguard.com/showthread.php?2874-servustv-com-(google-chrome-firefox)
 @@||ad3.adfarm1.adition.com^$domain=servustv.com,other

@@ -45,14 +45,27 @@ var PreloadHelper = {
 		}
 
 		this._initCollapse();
+		this.tryLoadCssAndScripts();
+	},
 
+	tryLoadCssAndScripts: function () {
 		ext.backgroundPage.sendMessage(
 			{
 				type: 'get-selectors-and-scripts',
 				documentUrl: window.location.href
 			},
-			PreloadHelper.applyCssAndScripts
-		);
+			this.processCssAndScriptsResponse.bind(this)
+		)
+	},
+
+	processCssAndScriptsResponse: function (response) {
+		if (!response || response.requestFilterReady === false) {
+			//wait for request filter ready on browser startup
+			setTimeout(this.tryLoadCssAndScripts.bind(this), 100);
+		} else {
+			this._applySelectors(response.selectors);
+			this._applyScripts(response.scripts);
+		}
 	},
 
 	applyCssAndScripts: function (response) {

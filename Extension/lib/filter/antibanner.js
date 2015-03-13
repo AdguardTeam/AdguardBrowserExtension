@@ -73,8 +73,8 @@ var AntiBannerService = exports.AntiBannerService = function () {
 	//retrieve filtering state
 	this.applicationFilteringDisabled = userSettings.isFilteringDisabled();
 
-	// Service is not initialized yet
-	this.initialized = false;
+	//Service is not initialized yet
+	this.requestFilterReady = false;
 };
 
 /**
@@ -111,6 +111,9 @@ AntiBannerService.prototype = {
 		 * Then it just calls a callback from constructor parameters.
 		 */
 		var onServiceInitialized = function (runInfo) {
+
+			//set request filter is ready
+			this.requestFilterReady = true;
 
 			if (options.runCallback) {
 				options.runCallback(runInfo);
@@ -171,9 +174,6 @@ AntiBannerService.prototype = {
 
 			// Schedule filters update job
 			context._scheduleFiltersUpdate();
-
-			// That's all, service is finally initialized
-			context.initialized = true;
 
 		}.bind(this);
 
