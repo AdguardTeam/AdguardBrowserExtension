@@ -440,8 +440,8 @@ var BrowserTab, BrowserTabs, BrowserWindow;
 			chrome.windows.create({
 				url: url,
 				type: 'popup',
-				width: 1100,
-				height: 600
+				width: 1130,
+				height: 630
 			}, function (win) {
 				if (callback) {
 					callback(new BrowserWindow(win));

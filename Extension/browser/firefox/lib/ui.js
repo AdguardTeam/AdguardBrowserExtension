@@ -137,7 +137,7 @@ var UI = exports.UI = {
 				this.popupWindow.focus();
 				return;
 			}
-			this.popupWindow = UiUtils.getMostRecentWindow().open(url, "_blank", "width=1100,height=600,menubar=0,status=no,toolbar=no,scrollbars=yes");
+			this.popupWindow = UiUtils.getMostRecentWindow().open(url, "_blank", "width=1130,height=630,menubar=0,status=no,toolbar=no,scrollbars=yes,resizable=yes");
 		} else {
 			tabs.open({
 				url: url,
