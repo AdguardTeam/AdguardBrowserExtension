@@ -21,87 +21,100 @@
  */
 var StringUtils = require('utils/common').StringUtils;
 var CollectionUtils = require('utils/common').CollectionUtils;
+var Utils = require('utils/common').Utils;
 
 /**
  * Special hash table that greatly increases speed of searching url filter rule by its shortcut
  */
 var ShortcutsLookupTable = exports.ShortcutsLookupTable = function (rules) {
 
-	this.lookupTable = Object.create(null);
+    this.lookupTable = Object.create(null);
 
-	if (rules) {
-		for (var i = 0; i < rules.length; i++) {
-			this.addRule(rules[i]);
-		}
-	}
+    if (rules) {
+        for (var i = 0; i < rules.length; i++) {
+            this.addRule(rules[i]);
+        }
+    }
 };
 
 ShortcutsLookupTable.prototype = {
 
-	// Adds rule to shortcuts lookup table
-	addRule: function (rule) {
+    // Adds rule to shortcuts lookup table
+    addRule: function (rule) {
 
-		if (StringUtils.isEmpty(rule.shortcut) || rule.shortcut.length < ShortcutsLookupTable.SHORTCUT_LENGTH) {
-			return;
-		}
+        var shortcut = this._getRuleShortcut(rule);
 
-		var shortcut = rule.shortcut.substring(0, ShortcutsLookupTable.SHORTCUT_LENGTH);
-		if (!(shortcut in this.lookupTable)) {
-			// Array is too "memory-hungry" so we try to store one rule instead
-			this.lookupTable[shortcut] = rule;
-		} else {
-			var obj = this.lookupTable[shortcut];
-			if (obj instanceof Array) {
-				// That is popular shortcut, more than one rule
-				obj.push(rule);
-			} else {
-				this.lookupTable[shortcut] = [obj, rule];
-			}
-		}
-	},
+        if (!shortcut) {
+            // Shortcut does not exists or it is too short
+            return;
+        }
 
-	// Removes rule from the shortcuts table
-	removeRule: function (rule) {
+        if (!(shortcut in this.lookupTable)) {
+            // Array is too "memory-hungry" so we try to store one rule instead
+            this.lookupTable[shortcut] = rule;
+        } else {
+            var obj = this.lookupTable[shortcut];
+            if (Utils.isArray(obj)) {
+                // That is popular shortcut, more than one rule
+                obj.push(rule);
+            } else {
+                this.lookupTable[shortcut] = [obj, rule];
+            }
+        }
+    },
 
-		if (StringUtils.isEmpty(rule.shortcut) || rule.shortcut.length < ShortcutsLookupTable.SHORTCUT_LENGTH) {
-			return;
-		}
+    // Removes rule from the shortcuts table
+    removeRule: function (rule) {
 
-		var shortcut = rule.shortcut.substring(0, ShortcutsLookupTable.SHORTCUT_LENGTH);
-		if (shortcut in this.lookupTable) {
-			var obj = this.lookupTable[shortcut];
-			if (obj instanceof Array) {
-				CollectionUtils.removeRule(obj, rule);
-				if (obj.length == 0) {
-					delete this.lookupTable[shortcut];
-				}
-			} else {
-				delete this.lookupTable[shortcut];
-			}
-		}
-	},
+        var shortcut = this._getRuleShortcut(rule);
 
-	clearRules: function () {
-		this.lookupTable = Object.create(null);
-	},
+        if (!shortcut) {
+            // Shortcut does not exists or it is too short
+            return;
+        }
 
-	lookupRules: function (url) {
+        if (shortcut in this.lookupTable) {
+            var obj = this.lookupTable[shortcut];
+            if (Utils.isArray(obj)) {
+                CollectionUtils.removeRule(obj, rule);
+                if (obj.length == 0) {
+                    delete this.lookupTable[shortcut];
+                }
+            } else {
+                delete this.lookupTable[shortcut];
+            }
+        }
+    },
 
-		var result = [];
-		for (var i = 0; i <= url.length - ShortcutsLookupTable.SHORTCUT_LENGTH; i++) {
-			var hash = url.substring(i, i + ShortcutsLookupTable.SHORTCUT_LENGTH);
-			var value = this.lookupTable[hash];
-			if (value) {
-				if (value instanceof Array) {
-					result = result.concat(value);
-				} else {
-					result.push(value);
-				}
-			}
-		}
-		return result;
-	}
+    clearRules: function () {
+        this.lookupTable = Object.create(null);
+    },
+
+    lookupRules: function (url) {
+
+        var result = [];
+        for (var i = 0; i <= url.length - ShortcutsLookupTable.SHORTCUT_LENGTH; i++) {
+            var hash = url.substring(i, i + ShortcutsLookupTable.SHORTCUT_LENGTH);
+            var value = this.lookupTable[hash];
+            if (value) {
+                if (Utils.isArray(value)) {
+                    result = result.concat(value);
+                } else {
+                    result.push(value);
+                }
+            }
+        }
+        return result;
+    },
+
+    _getRuleShortcut: function (rule) {
+        if (StringUtils.isEmpty(rule.shortcut) || rule.shortcut.length < ShortcutsLookupTable.SHORTCUT_LENGTH) {
+            return null;
+        }
+
+        return rule.shortcut.substring(rule.shortcut.length - ShortcutsLookupTable.SHORTCUT_LENGTH);
+    }
 };
 
 // Constants
-ShortcutsLookupTable.SHORTCUT_LENGTH = 8;
+ShortcutsLookupTable.SHORTCUT_LENGTH = 6;

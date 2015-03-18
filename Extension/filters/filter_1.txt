@@ -1,9 +1,9 @@
-! Version: 1.0.22.46
+! Version: 1.0.22.56
 ! Name: Russian filter
 ! Description: Filter that enables removing of the ads from websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2015-03-13T13:54:00.471+03:00
+! TimeUpdated: 2015-03-18T18:23:03.376+03:00
 ! Adguard Russian Filter
 !
 ! Filter that enables removing of the ads from websites with Russian content.
@@ -47,7 +47,13 @@ yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by,beta.yandex.ru,beta.yandex.ua
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by,beta.yandex.ru,beta.yandex.ua,beta.yandex.by#%#var __adgRemoveDirect = function() { if (typeof __adgEnabled != 'undefined' &&  !__adgEnabled) return; __adgRemoveDirectColor(); __adgRemoveDirectTitle(); __adgRemoveDirectLabel(); };
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by,beta.yandex.ru,beta.yandex.ua,beta.yandex.by#%#AG_onLoad(function() { try {$(document).ajaxComplete(__adgRemoveDirect); $(document).ready(__adgRemoveDirect);}catch(ex){} });
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by,beta.yandex.ru,beta.yandex.ua,beta.yandex.by#%#try {__adgRemoveDirect();} catch(ex) {};
+!
+! pogoda.yandex.ru (директ на странице прогноза, появляется не сразу)
+!
+pogoda.yandex.ru,pogoda.yandex.ua,pogoda.yandex.by,pogoda.yandex.kz#%#AG_onLoad(function() { try { $('.adsrv').remove(); } catch(ex) {} });
+!
 ! megashara branding
+!
 megashara.com#%#AG_onLoad(function() { $('body').removeClass('branding'); });
 ! Rusfolder anti-popup
 rusfolder.com,rusfolder.net,rusfolder.ru#%#AG_onLoad(function() { window.openCbn = function() {} });
@@ -81,6 +87,10 @@ aniland.org#%#document.cookie = "vostrek=2500";
 nnm.me#%#AG_onLoad(function() { $('#page').removeAttr('id') });
 ! http://forum.adguard.com/showthread.php?4677
 hdrezka.tv#%#window.fuckAdBlock = false;
+!
+! Fixing AdFox constant page load
+!
+#%#AG_onLoad(function() { window.AG_each('iframe[id^="AdFox_iframe_"', function(el) { if (el && el.parentNode) { el.parentNode.removeChild(el); } }); });
 !-------------------------------------------------------------------------------!
 !------------------------------ Direct adverts ---------------------------------!
 !-------------------------------------------------------------------------------!
@@ -648,6 +658,11 @@ putanapartners.com/go.php
 !
 ! Содержит доменные имена, использующиеся рекламными сетями.
 !
+||webturn.ru^$third-party
+||contema.ru^$third-party
+||9wwcdef.ru^$third-party
+||rwqckakqfq.ru^$third-party
+||vertom.ru^$third-party
 ||alltereg0.ru^$third-party
 ||banerator.silvercdn.com^$third-party
 ||surfearner.com^$third-party
@@ -708,7 +723,6 @@ putanapartners.com/go.php
 ||tomiti.ru^$third-party
 ||velegi.ru^$third-party
 ||betweendigital.com^$third-party
-||vmet.ro^$third-party
 ||go.jetswap.com^$third-party
 ||advvideo.com^$third-party
 ||js.textshift.net^$third-party
@@ -3528,6 +3542,7 @@ polezno-2012.info^
 !
 ! Новостные тизерки
 !
+||target.smi2.net^$third-party
 ||promotion.vesti.lv/promotion/$third-party
 ||ria.com/service/informer$third-party
 ||auto.ria.com/informer_24/$third-party
@@ -9552,6 +9567,9 @@ kinonews.ru##noindex>.blockdiv
 ! Сюда добавляем только в том случае, если для этого сайта есть больше одного правила.
 ! Если правило одно - отправляем в секцию onerulers.
 !
+! vmet.ro (ads in moscow metro)
+@@||login.vmet.ro^$document
+||vmet.ro^$third-party
 ! ayda.ru
 ayda.ru##td.content > div.light_yellow2
 ayda.ru##div[style="text-align:center;color:#777777;font-size:12px;margin:3px 0 7px 0;"]
@@ -11017,6 +11035,7 @@ moskva.fm##.bn-top
 roem.ru##.factus-promo-wrapper
 roem.ru##.banner
 roem.ru##.like-material
+roem.ru##div[class^="banner"]
 ! meta.ua
 /block.js$domain=meta.ua
 ||meta.ua/api/widget.js
@@ -12927,6 +12946,7 @@ ladymir.com.ua,infowoman.com.ua##a[href*="cpl2.ru/"]
 ! Правила, специфичные для конкретных сайтов.
 ! В эту секцию помещаем в том случае, если правило для сайта только одно.
 !
+rusnovosti.ru##.teasers
 ||moevideo.net/img/promo/*.mp4$mp4
 gagarinm.ru###imSplashBox
 ||sovch.ru/bg/$domain=forum.na-svyazi.ru
@@ -16615,6 +16635,10 @@ imgg.dt00.net
 !
 ! Белый список. Исправляем ошибки фильтрации.
 !
+! Fixing layout: http://kurs.com.ua/mejbank
+kurs.com.ua#@#.afs_ads
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/407
+@@||sletat.ru/scripts/banners.js
 ! http://forum.adguard.com/showthread.php?4506
 polismed.ru#@#.logo-ad
 ! http://forum.adguard.com/showthread.php?4747
@@ -17081,6 +17105,7 @@ gnezdogluharya.ru#@#.banners
 @@||tet.tv/-/src/js/advertisement.js
 @@||ad.adriver.ru/cgi-bin/erle.cgi$domain=112.ua
 ! Бесконечная загрузка страниц (ads.adfox.ru)
+! Remove this after new extension release
 @@/prepareCode?*&prr=*&dl=$script,domain=aif.ru|diary.ru|europaplus.ru|irr.ru|lenta.ru|rosbalt.ru|soccer.ru|sport-express.ru|vesti.ru|livejournal.com|the-village.ru|meduza.io
 @@||adfox.ru/$domain=lookatme.ru
 @@||adriver.ru/cgi-bin/click$domain=lookatme.ru

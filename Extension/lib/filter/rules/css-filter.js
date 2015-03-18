@@ -55,14 +55,6 @@ var CssFilter = exports.CssFilter = function (rules) {
 			this.addRule(rules[i]);
 		}
 	}
-
-	//bind to collect hit stats setting change
-	EventNotifier.addListener(function (event, setting) {
-		if (event == EventNotifierTypes.CHANGE_USER_SETTINGS && setting == userSettings.settings.DISABLE_COLLECT_HITS) {
-			//force rebuild css-filter
-			this.dirty = true;
-		}
-	}.bind(this));
 };
 
 CssFilter.prototype = {

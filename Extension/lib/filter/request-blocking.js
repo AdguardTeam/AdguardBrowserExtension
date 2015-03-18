@@ -53,6 +53,8 @@ WebRequestService.prototype.processRequest = function (tab, requestUrl, referrer
 	}
 
 	requestEvent.requestBlocked = requestBlocked;
+
+	// TODO: Don't create it if filtering log is disabled
 	requestEvent.logEvent = {
 		tab: tab,
 		requestUrl: requestUrl,

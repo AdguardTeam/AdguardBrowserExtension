@@ -1,9 +1,9 @@
-! Version: 1.0.21.20
+! Version: 1.0.21.33
 ! Name: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: Experimental filter
 ! DescriptionEn: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! TimeUpdated: 2015-03-13T17:00:21.419+03:00
+! TimeUpdated: 2015-03-18T01:00:18.739+03:00
 ! Adguard Experimental Filter
 !
 ! Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
@@ -74,6 +74,8 @@
 ! Rules that are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
 !
+! clickunder(empty) http://www.imagebam.com/image/fc3dc3397258172
+imagebam.com#%#window.open = function() {};
 !
 ! Whitelist
 ! http://adguard.com/filterrules.html#exclusionRules
@@ -83,18 +85,28 @@
 !
 ! This section contains all kinds of exception rules.
 !
+! broken player http://www.collegehumor.com/video/6092167/jake-and-amir-rubiks-cube
+@@||imasdk.googleapis.com/js/core/bridge*.html$domain=collegehumor.com
 !-------------------------------------------------------------------!
 !------- Experimental rules for Spyware filter ---------------------!
 !-------------------------------------------------------------------!
 !
 ! This file contains all experimental rules for Spyware filter.
 !
+! sletat.ru - bottom
+||sletat.ru/Services/SletatCounter.ashx
 !-------------------------------------------------------------------!
 !------- Experimental rules for Social filter ----------------------!
 !-------------------------------------------------------------------!
 !
 ! This file contains all experimental rules for Social filter.
 !
+! http://forum.adguard.com/showthread.php?4786
+3dnews.ru###vk_right
+! http://forum.adguard.com/showthread.php?4787
+eminem.pro###vk_groups2
+! http://waronline.org/
+waronline.org##.facebookLike
 !-------------------------------------------------------------------!
 !------- Experimental rules for Russian filter ---------------------!
 !-------------------------------------------------------------------!
@@ -110,6 +122,13 @@
 ! Read about it in direct_adverts.txt
 !
 ! Possible ad networks (http://forum.adguard.com/showthread.php?783)
+!
+! http://forum.adguard.com/showthread.php?783
+||khotokra.ru^$third-party
+! http://forum.adguard.com/showthread.php?4767
+||adselector.ru^$third-party
+||ratyakhu.ru^$third-party
+!
 ! TODO[avatar]: check them
 !
 ||vinregle.com^$third-party
@@ -227,6 +246,21 @@
 ! Rules which are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
 !
+! http://forum.adguard.com/showthread.php?4791
+||gameinonline.com/sites/all/themes/ishopping/images/poster_tanki.jpg
+gameinonline.com###game_link
+gameinonline.com##a[href="/go/prime_play.html"]
+! http://forum.adguard.com/showthread.php?4785
+||uglich-online.ru/images/banners/
+||uglich-online.ru/images/com_adsmanager/
+! http://forum.adguard.com/showthread.php?4788
+shiryaevpavel.ru##a[href^="http://power-braselet.ru/index.php?click="]
+! [Mediaget. Скачать им нужный файл не удалось. Антивирус ругается.] http://forum.adguard.com/showthread.php?4762
+rsload.net##a[href*=".bubblesmedia.ru/"]
+! http://forum.adguard.com/showthread.php?4765
+pics-money.ru#%#document.cookie = "clickunder=1";
+! http://mcdownloads.ru/ - кликандер
+||.mcdownloads.ru^$domain=mcdownloads.ru
 !
 ! Whitelist
 ! http://adguard.com/filterrules.html#exclusionRules
@@ -236,6 +270,19 @@
 !
 ! This section contains all kinds of exception rules.
 !
+! http://forum.adguard.com/showthread.php?4785
+@@||uglich-online.ru/images/banners/TV/
+! http://forum.adguard.com/showthread.php?4774
+@@||adv.agava.ru^$domain=adv.agava.ru
+! http://forum.adguard.com/showthread.php?4768
+@@/ADVERT.php$domain=anistar.ru
+@@||anistar.ru/templates/new/images/ADVERT.js
+! http://forum.adguard.com/showthread.php?4760
+@@||netangels.ru/static/images/banner/
+! http://forum.adguard.com/showthread.php?4753
+@@||pobeda70.mos.ru/templates/70_let_pobedy/images/banner.jpg
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/407
+@@||sletat.ru/scripts/banners.js
 !-------------------------------------------------------------------!
 !------- Experimental rules for Other filters ----------------------!
 !-------------------------------------------------------------------!
@@ -252,6 +299,17 @@
 antiblock.org#%#var AG_AntiAntiBlock = function() { var baseCreateElement = document.createElement; document.createElement = function(name) { if (name && name.match(/div|font|center/i)) { return null; } else { return baseCreateElement(name); } } };
 antiblock.org#%#AG_onLoad(function() { AG_AntiAntiBlock(); });
 !------------------------------------------------
+! [anti-adblock] http://forum.adguard.com/showthread.php?4750
+oploverz.net#@##adlabel
+oploverz.net#@##advertbox3
+oploverz.net#@##bottomAd
+oploverz.net#@##mini-ad
+oploverz.net#@##rightAd
+oploverz.net#@##sky_advert
+oploverz.net#@##top_ad_game
+oploverz.net#@##ads
+oploverz.net#@##adsense
+oploverz.net###btm_banner
 !-------------------------------------------------------------------!
 !------- Experimental rules for Mobile ads filter-------------------!
 !-------------------------------------------------------------------!
@@ -259,12 +317,19 @@ antiblock.org#%#AG_onLoad(function() { AG_AntiAntiBlock(); });
 ! Mobile advertising networks known rotator domains
 ! Used to show ads in mobile apps and websites
 !
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/371
+||lfstmedia.com^$empty
+||avazutracking.net^$empty
 !-------------------------------------------------------------------!
 !---------------------- Annoyances ---------------------------------!
 !-------------------------------------------------------------------!
 !
 ! This section contains all kinds of annoyances
 !
+! http://forum.adguard.com/showthread.php?4763
+opennet.ru##form[method="get"] td[align="RIGHT"][width="470"][height="70"]
+opennet.ru##form[method="get"] td[width="40"][style="background: #E9EAD6 url('/back.gif') repeat-x bottom left"]
+opennet.ru##form[method="get"] td[valign="TOP"][align="RIGHT"][width="130"][bgcolor="#E9EAD6"]
 ! http://forum.adguard.com/showthread.php?4684
 ||нашбийск.рф/images/banners/sonata%20min.jpg
 ||нашбийск.рф/images/banners/vodoley%20glav.jpg
@@ -513,6 +578,8 @@ rutor.net#$#.top-head {margin: -1040px 0 0 0!important;}
 !=====здесь с будут правила с учетом предыдущего раздела
 !=====закончу переносить - можно будет его убрать
 !============================================
+! gameinonline.com - удаление отступа сверху
+gameinonline.com#$##header {padding:20px 0 3px!important;}
 ! anistar.ru - удаление фонового изображения
 anistar.ru#$#.all_content.bodys {background:url('/')!important;}
 ! nnm-club.me - удаление фонового изображения(фон не рекламный), отступа сверху

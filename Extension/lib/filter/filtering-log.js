@@ -165,6 +165,12 @@ FilteringLog.prototype.addEvent = function (event) {
 		requestThirdParty: UrlUtils.isThirdPartyRequest(requestUrl, frameUrl),
 		requestRule: requestRule
 	};
+	if (requestRule) {
+		filteringEvent.requestRule = Object.create(null);
+		filteringEvent.requestRule.filterId = requestRule.filterId;
+		filteringEvent.requestRule.ruleText = requestRule.ruleText;
+		filteringEvent.requestRule.whiteListRule = requestRule.whiteListRule;
+	}
 	tabInfo.filteringEvents.push(filteringEvent);
 
 	if (tabInfo.filteringEvents.length > FilteringLog.REQUESTS_SIZE_PER_TAB) {

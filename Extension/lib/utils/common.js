@@ -251,6 +251,10 @@ var Utils = exports.Utils = {
 		return Prefs.getBrowser() == "Firefox" || Prefs.getBrowser() == "Android";
 	},
 
+    isChromeBrowser: function () {
+        return Prefs.getBrowser() == "Chrome";
+    },
+
 	isWindowsOs: function () {
 		return Utils.userAgent.toLowerCase().indexOf("win") >= 0;
 	},
@@ -327,6 +331,15 @@ var Utils = exports.Utils = {
             locale = "en";
         }
         return locale;
+    },
+
+    /**
+     * Checks if specified object is array
+     * We don't use instanceof because it is too slow: http://jsperf.com/instanceof-performance/2
+     * @param obj Object
+     */
+    isArray: Array.isArray || function(obj) {
+        return '' + obj === '[object Array]';
     }
 };
 

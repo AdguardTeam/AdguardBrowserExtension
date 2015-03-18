@@ -237,6 +237,7 @@ ElemHide.prototype = {
 	_registerElemHideInsert: function () {
 
 		var processGetSelectorsAndScripts = this.processGetSelectorsAndScripts.bind(this);
+		var processShouldCollapseMany = this.processShouldCollapseMany.bind(this);
 
 		pageMod.PageMod({
 			include: ["http://*", "https://*"],
@@ -255,13 +256,17 @@ ElemHide.prototype = {
 						worker.port.emit('get-selectors-and-scripts', result);
 					}
 				});
+				worker.port.on('process-should-collapse-many', function (message) {
+					var requests = processShouldCollapseMany(message.requests, message.documentUrl, worker.tab);
+					worker.port.emit('process-should-collapse-many', {requests: requests});
+				})
 			}
 		});
 	},
 
 	/**
 	 * Prepares CSS and JS which should be injected to the page.
-	 *
+	 * TODO: Duplicate for chrome/safari code, we should refactor this.
 	 * @param documentUrl   Document URL
 	 * @param tab           Tab object
 	 * @returns {*}
@@ -303,5 +308,29 @@ ElemHide.prototype = {
 			selectors: selectors,
 			scripts: scripts
 		};
+	},
+
+	/**
+	 * TODO: Duplicate for chrome/safari code, we should refactor this.
+	 */
+	processShouldCollapseMany: function (requests, referrerUrl, tab) {
+
+		if (!tab) {
+			return requests;
+		}
+
+		if (this.framesMap.isTabAdguardDetected(tab) || this.framesMap.isTabProtectionDisabled(tab) || this.framesMap.isTabWhiteListed(tab)) {
+			return requests;
+		}
+
+		referrerUrl = UrlUtils.urlToPunyCode(referrerUrl);
+
+		for (var i = 0; i < requests.length; i++) {
+			var request = requests[i];
+			var requestRule = this.antiBannerService.getRequestFilter().findRuleForRequest(request.elementUrl, referrerUrl, request.requestType);
+			request.collapse = requestRule && !requestRule.whiteListRule;
+		}
+
+		return requests;
 	}
 };

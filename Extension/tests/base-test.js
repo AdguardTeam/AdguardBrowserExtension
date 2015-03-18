@@ -35,7 +35,7 @@ var runTests = function () {
 		try {
 			tests[i]();
 		} catch (ex) {
-			console.log(ex.stack);
+			console.error(ex);
 			return;
 		}
 	}

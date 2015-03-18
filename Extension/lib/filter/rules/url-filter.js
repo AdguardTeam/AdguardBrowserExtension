@@ -83,19 +83,19 @@ UrlFilter.prototype = {
 	 * Searches for first rule matching specified request
 	 *
 	 * @param url           Request url
-	 * @param referrer      Referrer
+	 * @param refHost       Referrer host
 	 * @param requestType   Request content type (UrlFilterRule.contentTypes)
 	 * @param thirdParty    true if request is third-party
 	 * @return First matching rule or null if no match found
 	 */
-	isFiltered: function (url, referrer, requestType, thirdParty) {
+	isFiltered: function (url, refHost, requestType, thirdParty) {
 		var rule;
 
 		var rules = this.lookupTable.lookupRules(url.toLowerCase());
 
 		// Check against rules with shortcuts
 		if (rules && rules.length > 0) {
-			rule = this._isFiltered(url, referrer, rules, requestType, thirdParty);
+			rule = this._isFiltered(url, refHost, rules, requestType, thirdParty);
 			if (rule) {
 				return rule;
 			}
@@ -103,7 +103,7 @@ UrlFilter.prototype = {
 
 		// Check against rules without shortcuts
 		if (this.rulesWithoutShortcuts != null && this.rulesWithoutShortcuts.length > 0) {
-			rule = this._isFiltered(url, referrer, this.rulesWithoutShortcuts, requestType, thirdParty);
+			rule = this._isFiltered(url, refHost, this.rulesWithoutShortcuts, requestType, thirdParty);
 			if (rule != null) {
 				return rule;
 			}
@@ -116,15 +116,13 @@ UrlFilter.prototype = {
 	 * Searches for first rule in "rules" collection matching specified request
 	 *
 	 * @param url           Request url
-	 * @param referrer      Referrer
+	 * @param refHost       Referrer host
 	 * @param rules         Rules collection
 	 * @param requestType   Request content type (UrlFilterRule.contentTypes)
 	 * @param thirdParty    true if request is third-party
 	 * @return First matching rule or null if no match found
 	 */
-	_isFiltered: function (url, referrer, rules, requestType, thirdParty) {
-
-		var refHost = UrlUtils.getHost(referrer);
+	_isFiltered: function (url, refHost, rules, requestType, thirdParty) {
 
 		for (var i = 0; i < rules.length; i++) {
 			var rule = rules[i];

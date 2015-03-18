@@ -29,7 +29,7 @@ var Adguard = function () {
 		selectedElement: null,
 		lastPreview: null,
 		cssRuleIndex: null,
-		urlBlockAttributes: ["src", "href", "data"],
+		urlBlockAttributes: ["src", "data"],
 		urlInfo: null,
 		croppedDomain: null,
 		domainRule: '##'
@@ -436,21 +436,8 @@ var Adguard = function () {
 	};
 
 	var haveUrlBlockParameter = function (element) {
-		if (element.href) {
-			var childNodes = element.childNodes;
-			if (childNodes) {
-				for (var i = 0; i < childNodes.length; i++) {
-					var child = childNodes[i];
-					if (child.src) {
-						return true;
-					}
-				}
-			}
-			return false;
-		} else {
-			var value = getUrlBlockAttribute(element);
-			return value && value != '';
-		}
+		var value = getUrlBlockAttribute(element);
+		return value && value != '';
 	};
 
 	var haveClassAttribute = function (element) {

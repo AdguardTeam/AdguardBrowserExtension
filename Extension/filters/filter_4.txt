@@ -1,9 +1,9 @@
-! Version: 1.0.4.95
+! Version: 1.0.4.98
 ! Name: Social media filter
 ! Description: A filter for social media widgets ("Like" buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets ("Like" buttons and such).
-! TimeUpdated: 2015-03-13T13:54:28.659+03:00
+! TimeUpdated: 2015-03-18T16:06:57.494+03:00
 ! Adguard Social Media Filter
 !
 ! If you do not like numerous «Like» and «Tweet» buttons on all the popular websites on the Internet,
@@ -234,6 +234,7 @@ livejournal.com##.b-ljtimes-wrapper
 !
 ||pinterest.com/pinit.html$third-party
 ||pinterest.com/pin/create/button/?url=$third-party
+||assets.pinterest.com/images/pidgets/$third-party
 ||assets.pinterest.com/js/pinit.js^$third-party
 ##.pin-it-button
 !
@@ -860,6 +861,8 @@ nv.ua#%#document.cookie = "smodal=1";
 !
 ! Contains rules for specific web sites
 !
+motor.ru##.topic-social__caption
+motor.ru##.topic-social__list
 gorodkirov.ru##.likely__widget
 ! http://forum.adguard.com/showthread.php?4460
 heise.de##.teaser_hbs
@@ -875,7 +878,11 @@ ng72.ru###VKGroupInvite
 ! http://www.zvuki.ru/R/P/34696/
 zvuki.ru##iframe[title^="fb:like"]
 strana.in.ua##.plusobut
+||focus.de/resources/*/singlepost_complain_q.png
 ||focus.lv/social_*.html
+focus.de##.socFolStarRating
+focus.de##.socBmXing
+focus.de##.socFbLikeShare
 ! http://forum.adguard.com/showthread.php?4504
 ||goha.ru/*/social/social.js_x_themes/
 bfm.ru##.quiz_result_share

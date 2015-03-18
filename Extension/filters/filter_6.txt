@@ -1,9 +1,9 @@
-! Version: 1.0.18.33
+! Version: 1.0.18.36
 ! Name: German filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: German filter
 ! DescriptionEn: Filter that enables removing of the ads from websites with German content.
-! TimeUpdated: 2015-03-13T13:54:40.668+03:00
+! TimeUpdated: 2015-03-17T19:11:04.459+03:00
 ! Adguard German Filter.
 !
 ! Filter that enables removing of the ads from websites with German content.
@@ -882,7 +882,6 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||layer-schueri.de^$third-party
 ||layerad.net^$third-party
 ||layerpark.com^$third-party
-||lead-alliance.net^$third-party
 ||levelads.de^$third-party
 ||liferd.de^$third-party
 ||ligatus.de^$third-party
@@ -1316,6 +1315,7 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||kunden-bonus.de/?sh=*&tr=*&s=$third-party
 ||kundwerk.de^*/kv_banner_$third-party
 ||lavire.de/layer.php
+||lead-alliance.net/tb.php$third-party
 ||lechuck.otogami.de/assets/*/OtogamiWidget.js$third-party
 ||lieferando.de/widgets/$subdocument,third-party
 ||ligaportal.at/images/promo/$third-party
@@ -3827,7 +3827,6 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||zumlink.de/public/images/banner/
 ||zweinullig.de/wp-content/uploads/125.png
 ||zweinullig.de/wp-content/uploads/chaershop.jpg
-.de/test/*.html$subdocument,domain=gamona.de
 ||2mdn.net/videoplayback/$object-subrequest,domain=n-tvnow.de|rtl-now.rtl.de|rtl2now.rtl2.de|rtlnitronow.de|superrtlnow.de|voxnow.de
 ||astronews.com^*_6.js
 ||csgo.99damage.de/wp-content/$image
@@ -5085,7 +5084,7 @@ diaware.de##.abcde_text
 tutorials.de##.above_body > #header + #navbar + table:last-child
 rc-network.de##.above_body:first-child + table[cellspacing="0"][cellpadding="0"][border="0"][align="center"]
 die-schnelle-kuh.de##.abp
-abendblatt.de,alle-immobilien.ch,azonline.de,bazonline.ch,bernerzeitung.ch,billig-flieger-vergleich.de,bos-fahrzeuge.info,crn.de,derbund.ch,derlacher.de,epochtimes.de,fail.to,fettspielen.de,funnypizza.de,glamour.de,gmx.net,hamburg.de,hardwareclips.com,inside-handy.de,ircgalerie.net,kalenderwoche.net,kino24.to,kronehit.at,macwelt.de,netzpolitik.org,newscomm.de,phonostar.de,playporn.to,podcast.de,prisma.de,radiokoeln.de,raidrush.org,rhein-neckar-loewen.de,sachsen-fernsehen.de,shopbetreiber-blog.de,sueddeutsche.de,suite101.de,tagesanzeiger.ch,wallstreet-online.de,web.de,welt.de,wn.de,zeit.de##.ad
+abendblatt.de,alle-immobilien.ch,azonline.de,bazonline.ch,bernerzeitung.ch,billig-flieger-vergleich.de,bos-fahrzeuge.info,computerbase.de,crn.de,derbund.ch,derlacher.de,epochtimes.de,fail.to,fettspielen.de,funnypizza.de,glamour.de,gmx.net,hamburg.de,hardwareclips.com,inside-handy.de,ircgalerie.net,kalenderwoche.net,kino24.to,kronehit.at,macwelt.de,netzpolitik.org,newscomm.de,phonostar.de,playporn.to,podcast.de,prisma.de,radiokoeln.de,raidrush.org,rhein-neckar-loewen.de,sachsen-fernsehen.de,shopbetreiber-blog.de,sueddeutsche.de,suite101.de,tagesanzeiger.ch,wallstreet-online.de,web.de,welt.de,wn.de,zeit.de##.ad
 med1.de,stayfriends.de##.adContainer
 wz-newsline.de##.adDisclaimerLight
 games.ch,webfail.at##.adMR
@@ -7550,6 +7549,7 @@ r-b-a.de##ul[style="padding: 0px; margin: 0px; border: 0px none;"]
 @@||kurier.at^*/ac_oetags_clone.js
 @@||kyosho.de^*_produktkategorien.swf?link1=$object
 @@||landwirt.com/commercials/$object-subrequest
+@@||lead-alliance.net^*/advertiser/$~third-party
 @@||lemmi-lebensmittel.de/werbung/$~third-party
 @@||liberale-hochschulgruppen.de/images/stories/werbemittel/$~third-party
 @@||liverail.com/js/LiveRail.AdManager-*.js$domain=jam.fm
@@ -7902,6 +7902,7 @@ r-b-a.de##ul[style="padding: 0px; margin: 0px; border: 0px none;"]
 @@||green-24.de^$elemhide
 @@||grundrechteschutz.de^$elemhide
 @@||hartzbote.de^$elemhide
+@@||hobodoka.de^$document,subdocument,domain=gamona.de
 @@||hubbahotel.cc^*/advertisement.js
 @@||idlity.de^$document,subdocument,domain=gamona.de|lustich.de
 @@||idlity.de^$script,domain=gamona.de|lustich.de

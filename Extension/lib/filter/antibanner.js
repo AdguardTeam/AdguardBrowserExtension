@@ -886,14 +886,13 @@ AntiBannerService.prototype = {
 
 		var rulesFilterMap = Object.create(null);
 
-		// Creates request filter
-		var requestFilter = new RequestFilter();
-
 		// Called when all filter rules has been loaded from storage
 		var loadAllFilterRulesDone = function () {
 			// Depending on Prefs.speedupStartup we either load filter rules asynchronously
 			// Or we do it on the main thread.
 			CollectionUtils.getRulesFromTextAsyncUnique(rulesFilterMap, FilterRule, function (rules) {
+				// Creates request filter
+				var requestFilter = new RequestFilter();
 				//add distinct rules to request filter
 				requestFilter.addRules(rules);
 				this.requestFilter = requestFilter;
@@ -907,9 +906,10 @@ AntiBannerService.prototype = {
 		 * Deferred filter rules load
 		 *
 		 * @param filterId Filter identifier
+		 * @param rulesFilterMap Map for loading rules
 		 * @returns {*} Deferred object
 		 */
-		var loadFilterRules = function (filterId) {
+		var loadFilterRules = function (filterId, rulesFilterMap) {
 			var dfd = new Promise();
 
 			FilterStorage.loadFilterRules(filterId, function (rulesText) {
@@ -926,11 +926,11 @@ AntiBannerService.prototype = {
 		for (var i = 0; i < this.adguardFilters.length; i++) {
 			var filter = this.adguardFilters[i];
 			if (filter.enabled) {
-				dfds.push(loadFilterRules(filter.filterId));
+				dfds.push(loadFilterRules(filter.filterId, rulesFilterMap));
 			}
 		}
-		dfds.push(this._loadUserRulesToRequestFilter(requestFilter));
-		dfds.push(this._loadWhiteListRulesToRequestFilter(requestFilter));
+		dfds.push(this._loadUserRulesToRequestFilter(rulesFilterMap));
+		dfds.push(this._loadWhiteListRulesToRequestFilter(rulesFilterMap));
 
 		// Load all filters and then recreate request filter
 		Promise.all(dfds).then(loadAllFilterRulesDone);
@@ -939,11 +939,11 @@ AntiBannerService.prototype = {
 	/**
 	 * Adds user rules (got from the storage) to request filter
 	 *
-	 * @param requestFilter Request filter
+	 * @param rulesFilterMap Map for loading rules
 	 * @returns {*} Deferred object
 	 * @private
 	 */
-	_loadUserRulesToRequestFilter: function (requestFilter) {
+	_loadUserRulesToRequestFilter: function (rulesFilterMap) {
 
 		var dfd = new Promise();
 
@@ -957,13 +957,8 @@ AntiBannerService.prototype = {
 				return;
 			}
 
-			var rulesFilterMap = Object.create(null);
 			rulesFilterMap[filterId] = rulesText;
-			CollectionUtils.getRulesFromTextAsyncUnique(rulesFilterMap, FilterRule, function (rules) {
-				requestFilter.addRules(rules, filterId);
-				dfd.resolve();
-			});
-
+			dfd.resolve();
 		}.bind(this));
 
 		return dfd;
@@ -972,11 +967,11 @@ AntiBannerService.prototype = {
 	/**
 	 * Adds white list rules (loaded from the storage) to the request filter
 	 *
-	 * @param requestFilter Request filter
+	 * @param rulesFilterMap Map for loading rules
 	 * @returns {*} Deferred object
 	 * @private
 	 */
-	_loadWhiteListRulesToRequestFilter: function (requestFilter) {
+	_loadWhiteListRulesToRequestFilter: function (rulesFilterMap) {
 
 		var dfd = new Promise();
 
@@ -998,13 +993,8 @@ AntiBannerService.prototype = {
 				}
 			}
 
-			var rulesFilterMap = Object.create(null);
 			rulesFilterMap[filterId] = rulesText;
-			CollectionUtils.getRulesFromTextAsyncUnique(rulesFilterMap, FilterRule, function (rules) {
-				requestFilter.addRules(rules, filterId);
-				dfd.resolve();
-			});
-
+			dfd.resolve();
 		}.bind(this));
 
 		return dfd;

@@ -40,7 +40,7 @@ addTestCase(testUrlBlockingRuleWithoutDomain);
 
 function testUrlBlockingRule() {
 
-	var ruleText = "||test.ru/^$domain=~nigma.ru|google.com,third-party,match-case,popup,mp4";
+	var ruleText = "||test.ru/^$domain=~nigma.ru|google.com,third-party,match-case,popup";
 	var rule = new UrlFilterRule(ruleText);
 
 	// Check rule properties
@@ -113,12 +113,12 @@ function testUrlFilter() {
 
 	var filter = new UrlFilter([rule, rule1, rule2]);
 
-	assertFalse(filter.isFiltered("http://test.ru/", "http://test.test.ru", "SUBDOCUMENT", false) != null);
-	assertTrue(filter.isFiltered("http://test.ru/", "http://www.google.com", "SUBDOCUMENT", true) != null);
-	assertTrue(filter.isFiltered("http://www.google.com/ad/advertisment", "http://test.ru/", "SUBDOCUMENT", true) != null);
-	assertFalse(filter.isFiltered("http://test.ru/", "http://www.nigma.ru", "SUBDOCUMENT", true) != null);
-	assertTrue(filter.isFiltered("http://partner.nekki.ru/banner.php?no_cache=41122&rotation_id=7", "http://rutracker.org", "SUBDOCUMENT", true) != null);
-	assertFalse(filter.isFiltered("http://partner.yandex.ru", "http://yandex.ru", "SUBDOCUMENT", false) != null);
+	assertFalse(filter.isFiltered("http://test.ru/", "test.test.ru", "SUBDOCUMENT", false) != null);
+	assertTrue(filter.isFiltered("http://test.ru/", "www.google.com", "SUBDOCUMENT", true) != null);
+	assertTrue(filter.isFiltered("http://www.google.com/ad/advertisment", "test.ru", "SUBDOCUMENT", true) != null);
+	assertFalse(filter.isFiltered("http://test.ru/", "www.nigma.ru", "SUBDOCUMENT", true) != null);
+	assertTrue(filter.isFiltered("http://partner.nekki.ru/banner.php?no_cache=41122&rotation_id=7", "rutracker.org", "SUBDOCUMENT", true) != null);
+	assertFalse(filter.isFiltered("http://partner.yandex.ru", "yandex.ru", "SUBDOCUMENT", false) != null);
 }
 addTestCase(testUrlFilter);
 

@@ -54,6 +54,12 @@ ext.onMessage.addListener(function (message, sender, callback) {
 				requestId: message.requestId
 			});
 			break;
+		case "process-should-collapse-many":
+			var requests = processShouldCollapseMany(message.requests, message.documentUrl, sender.tab);
+			callback({
+				requests: requests
+			});
+			break;
 		case "load-assistant-iframe":
 			processLoadAssistant(sender.tab, callback);
 			return true;
@@ -112,6 +118,20 @@ function processShouldCollapse(requestUrl, referrerUrl, requestType, tab) {
 
 	var requestEvent = webRequestService.processRequest(tab, requestUrl, referrerUrl, requestType);
 	return requestEvent.requestBlocked;
+}
+
+function processShouldCollapseMany(requests, referrerUrl, tab) {
+	if (!tab) {
+		return requests;
+	}
+
+	for (var i = 0; i < requests.length; i++) {
+		var request = requests[i];
+		var requestEvent = webRequestService.processRequest(tab, request.elementUrl, referrerUrl, request.requestType);
+		request.collapse = requestEvent.requestBlocked;
+	}
+
+	return requests;
 }
 
 function processLoadAssistant(tab, callback) {

@@ -147,10 +147,10 @@ AdguardSelector.prototype.removeBorders = function () {
 AdguardSelector.prototype.setupBorders = function () {
 	if (!this.b_top) {
 		var width = this.border_width + 'px';
-		this.b_top = $('<div>').addClass('sg_border').css('height', width).hide().on("click", { 'self': this }, this.sgMousedown);
-		this.b_bottom = $('<div>').addClass('sg_border').addClass('sg_bottom_border').css('height', this.px(this.border_width + 6)).hide().bind("click", { 'self': this }, this.sgMousedown);
-		this.b_left = $('<div>').addClass('sg_border').css('width', width).hide().on("click", { 'self': this }, this.sgMousedown);
-		this.b_right = $('<div>').addClass('sg_border').css('width', width).hide().on("click", { 'self': this }, this.sgMousedown);
+		this.b_top = $('<div>').addClass('sg_border').css('height', width).hide().on("click", {'self': this}, this.sgMousedown);
+		this.b_bottom = $('<div>').addClass('sg_border').addClass('sg_bottom_border').css('height', this.px(this.border_width + 6)).hide().bind("click", {'self': this}, this.sgMousedown);
+		this.b_left = $('<div>').addClass('sg_border').css('width', width).hide().on("click", {'self': this}, this.sgMousedown);
+		this.b_right = $('<div>').addClass('sg_border').css('width', width).hide().on("click", {'self': this}, this.sgMousedown);
 
 		this.addBorderToDom();
 	}
@@ -274,7 +274,7 @@ AdguardSelector.prototype.sgMousedown = function (e) {
 
 	gadget.blockClicksOn(elem);
 
-	w_elem.trigger("mouseover", { 'self': gadget }); // Refresh the borders by triggering a new mouseover event.
+	w_elem.trigger("mouseover", {'self': gadget}); // Refresh the borders by triggering a new mouseover event.
 
 	gadget.onElementSelected(gadget.getSelectorPath(elem), gadget.getSelectorSimilarPath(elem), elem);
 
@@ -304,9 +304,9 @@ AdguardSelector.prototype.getSelectorSimilarPath = function (selectedElement) {
 AdguardSelector.prototype.setupEventHandlers = function () {
 	this.makeIframeAndEmbededSelector();
 	var sgIgnore = $("body *:not(.sg_ignore)");
-	sgIgnore.on("mouseover", { 'self': this }, this.sgMouseover);
-	sgIgnore.on("mouseout", { 'self': this }, this.sgMouseout);
-	sgIgnore.on("click", { 'self': this }, this.sgMousedown);
+	sgIgnore.on("mouseover", {'self': this}, this.sgMouseover);
+	sgIgnore.on("mouseout", {'self': this}, this.sgMouseout);
+	sgIgnore.on("click", {'self': this}, this.sgMousedown);
 };
 
 AdguardSelector.prototype.deleteEventHandlers = function () {
@@ -326,7 +326,7 @@ AdguardSelector.prototype.makeIframeAndEmbededSelector = function () {
 		var id = this.constantPlaceholderPrefix + i;
 		placeHolder.setAttribute("id", id);
 		$(current).replaceWith(placeHolder);
-		$('#' + id).on('click', { 'self': this, 'actualElement': current }, this.placeholderClick);
+		$('#' + id).on('click', {'self': this, 'actualElement': current}, this.placeholderClick);
 	}
 };
 
@@ -521,13 +521,16 @@ AdguardSelector.makeCssNthChildFilter = function (element) {
 
 			var className = el.className;
 			if (className) {
-				if (className.indexOf('.') > -1) {
-					path.unshift('[class="' + className + '"]')
+				if (className.indexOf('.') > 0) {
+					className = '[class="' + className + '"]';
 				} else {
 					className = className.trim().replace(/ +(?= )/g, ''); //delete more than one space between classes;
-					path.unshift(el.tagName + (className ? "." + className.replace(/\s/g, ".") : "") + ch);
+					className = '.' + className.replace(/\s/g, ".");
 				}
+			} else {
+				className = '';
 			}
+			path.unshift(el.tagName + className + ch);
 
 			el = el.parentNode;
 		}
