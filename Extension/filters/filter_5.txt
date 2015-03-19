@@ -1,9 +1,9 @@
-! Version: 1.0.21.33
+! Version: 1.0.21.36
 ! Name: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: Experimental filter
 ! DescriptionEn: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! TimeUpdated: 2015-03-18T01:00:18.739+03:00
+! TimeUpdated: 2015-03-19T05:00:24.725+03:00
 ! Adguard Experimental Filter
 !
 ! Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
@@ -74,6 +74,9 @@
 ! Rules that are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
 !
+! http://forum.adguard.com/showthread.php?4766
+clipmass.com###fancybox-overlay
+clipmass.com###fancybox-wrap
 ! clickunder(empty) http://www.imagebam.com/image/fc3dc3397258172
 imagebam.com#%#window.open = function() {};
 !
@@ -101,6 +104,8 @@ imagebam.com#%#window.open = function() {};
 !
 ! This file contains all experimental rules for Social filter.
 !
+! addthis.com was broken
+@@||addthiscdn.com^$domain=addthis.com
 ! http://forum.adguard.com/showthread.php?4786
 3dnews.ru###vk_right
 ! http://forum.adguard.com/showthread.php?4787
@@ -246,6 +251,25 @@ waronline.org##.facebookLike
 ! Rules which are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
 !
+! http://forum.adguard.com/showthread.php?4783
+jpegshare.net##a[href^="http://www.citilink.ru/?r="]
+jpegshare.net##a[href="/horo/"]
+! forum.adguard.com/showthread.php?4819
+||directtogo.ru/media/content/*.js$third-party
+! http://forum.adguard.com/showthread.php?4818
+tvc.ru##.b-adv-block
+tvc.ru##.b-adv__header
+tvc.ru##div[id^="LentaInformScriptRoot"]
+! http://forum.adguard.com/showthread.php?4770
+||banerator.silvercdn.com/files-banerator/$domain=my-hit.org
+! http://forum.adguard.com/showthread.php?4778
+||oszone.net/img/dwn.png
+! forum.adguard.com/showthread.php?4809
+||ekb-security.ru/images/banners/rozisk.jpg
+||ekb-security.ru/images/banners/forum2015security.jpg
+! http://forum.adguard.com/showthread.php?4790
+||gametarget.ru/templates/yoo_streamline/images/background/
+||gametarget.ru/images/banners/terabrand.png
 ! http://forum.adguard.com/showthread.php?4791
 ||gameinonline.com/sites/all/themes/ishopping/images/poster_tanki.jpg
 gameinonline.com###game_link
@@ -270,6 +294,13 @@ pics-money.ru#%#document.cookie = "clickunder=1";
 !
 ! This section contains all kinds of exception rules.
 !
+! http://forum.adguard.com/showthread.php?4789
+@@||playshake.ru/css/theme/adstyle.css
+! http://forum.adguard.com/showthread.php?4783
+jpegshare.net#@#.links
+! forum.adguard.com/showthread.php?4819
+@@||sdelanounas.ru/app/themes/sdelanounas/images/social/apple.png
+@@||sdelanounas.ru/app/themes/sdelanounas/images/social/android.png
 ! http://forum.adguard.com/showthread.php?4785
 @@||uglich-online.ru/images/banners/TV/
 ! http://forum.adguard.com/showthread.php?4774
@@ -578,6 +609,8 @@ rutor.net#$#.top-head {margin: -1040px 0 0 0!important;}
 !=====здесь с будут правила с учетом предыдущего раздела
 !=====закончу переносить - можно будет его убрать
 !============================================
+! gametarget.ru - удаление фонового изображения
+gametarget.ru#$#body#page {background: #F8F8F8 url("/")!important;}
 ! gameinonline.com - удаление отступа сверху
 gameinonline.com#$##header {padding:20px 0 3px!important;}
 ! anistar.ru - удаление фонового изображения
