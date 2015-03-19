@@ -97,7 +97,7 @@ var PopupButton = exports.PopupButton = {
                     var tabInfo = this.UI.getCurrentTabInfo();
                     var filteringInfo = this.UI.getCurrentTabFilteringInfo();
                     panel.port.emit('initPanelPopup', {tabInfo: tabInfo, filteringInfo: filteringInfo});
-                    panel.show({position: button})
+                    panel.show({position: button});
                 }
             }.bind(this)
         });
@@ -173,17 +173,8 @@ var PopupButton = exports.PopupButton = {
         }
         this._customizeToolbarButton(toolbarButton);
         var blockedText = blocked == "0" ? "" : blocked;
-        var hideBadge = true;
-        if (blockedText) {
-            hideBadge = false;
-        }
         if (blocked - 0 > 99) {
             blockedText = "99";
-        }
-        if (hideBadge) {
-            toolbarButton.removeAttribute('showBlocked');
-        } else {
-            toolbarButton.setAttribute('showBlocked', 'true');
         }
         toolbarButton.setAttribute('countBlocked', blockedText);
     },
