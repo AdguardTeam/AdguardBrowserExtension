@@ -139,14 +139,14 @@ var CollectionUtils = exports.CollectionUtils = {
         }
     },
 
-	removeDuplicates: function (arr) {
-		if (!arr || arr.length == 1) {
-			return arr;
-		}
-		return arr.filter(function (elem, pos) {
-			return arr.indexOf(elem) == pos;
-		});
-	},
+    removeDuplicates: function (arr) {
+        if (!arr || arr.length == 1) {
+            return arr;
+        }
+        return arr.filter(function (elem, pos) {
+            return arr.indexOf(elem) == pos;
+        });
+    },
 
     getRulesText: function (collection) {
         var text = [];
@@ -201,7 +201,7 @@ var Utils = exports.Utils = {
      */
     supportedLocales: ['ru', 'en', 'tr', 'uk', 'de'],
 
-    userAgent: Cc["@mozilla.org/network/protocol;1?name=http"].getService(Ci.nsIHttpProtocolHandler).userAgent,
+    navigator: Cc["@mozilla.org/network/protocol;1?name=http"].getService(Ci.nsIHttpProtocolHandler),
 
     getClientId: function () {
 
@@ -235,29 +235,33 @@ var Utils = exports.Utils = {
         LS.setItem("app-version", version);
     },
 
-	isYaBrowser: function () {
-		return Prefs.getBrowser() == "YaBrowser";
-	},
+    isYaBrowser: function () {
+        return Prefs.getBrowser() == "YaBrowser";
+    },
 
-	isOperaBrowser: function () {
-		return Prefs.getBrowser() == "Opera";
-	},
+    isOperaBrowser: function () {
+        return Prefs.getBrowser() == "Opera";
+    },
 
-	isSafariBrowser: function () {
-		return Prefs.getBrowser() == "Safari";
-	},
+    isSafariBrowser: function () {
+        return Prefs.getBrowser() == "Safari";
+    },
 
-	isFirefoxBrowser: function () {
-		return Prefs.getBrowser() == "Firefox" || Prefs.getBrowser() == "Android";
-	},
+    isFirefoxBrowser: function () {
+        return Prefs.getBrowser() == "Firefox" || Prefs.getBrowser() == "Android";
+    },
 
     isChromeBrowser: function () {
         return Prefs.getBrowser() == "Chrome";
     },
 
-	isWindowsOs: function () {
-		return Utils.userAgent.toLowerCase().indexOf("win") >= 0;
-	},
+    isWindowsOs: function () {
+        return Utils.navigator.userAgent.toLowerCase().indexOf("win") >= 0;
+    },
+
+    isMacOs: function () {
+        return Utils.navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+    },
 
     debounce: function (func, wait) {
         var timeout;
@@ -338,7 +342,7 @@ var Utils = exports.Utils = {
      * We don't use instanceof because it is too slow: http://jsperf.com/instanceof-performance/2
      * @param obj Object
      */
-    isArray: Array.isArray || function(obj) {
+    isArray: Array.isArray || function (obj) {
         return '' + obj === '[object Array]';
     }
 };

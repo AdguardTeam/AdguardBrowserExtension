@@ -98,6 +98,7 @@ exports.main = function (options, callbacks) {
 		var {FilterRule} = loadAdguardModule('filter/rules/base-filter-rule');
 		var {UrlFilterRule} = loadAdguardModule('filter/rules/url-filter-rule');
 
+        var {WebRequestService}= loadAdguardModule('filter/request-blocking');
 		var {AntiBannerService} = loadAdguardModule('filter/antibanner');
 		var {ElemHide} = loadAdguardModule('elemHide');
 		var {WebRequestImpl} = loadAdguardModule('contentPolicy');
@@ -118,14 +119,14 @@ exports.main = function (options, callbacks) {
 
 		var antiBannerService = new AntiBannerService();
 		var framesMap = new FramesMap(antiBannerService, TabsMap);
-		var elemHide = new ElemHide(antiBannerService, framesMap);
 		var adguardApplication = new AdguardApplication(framesMap, {
 			i18nGetMessage: l10n.get.bind(l10n)
 		});
 		var filteringLog = new FilteringLog(TabsMap, framesMap, UI);
+        var webRequestService = new WebRequestService(framesMap, antiBannerService, filteringLog, adguardApplication);
 
-		WebRequestImpl.init(antiBannerService, adguardApplication, elemHide, framesMap, filteringLog);
-		elemHide.init();
+		WebRequestImpl.init(antiBannerService, adguardApplication, ElemHide, framesMap, filteringLog, webRequestService);
+		ElemHide.init(framesMap, antiBannerService, webRequestService);
 		InterceptHandler.init(framesMap, antiBannerService);
 		filterRulesHitCount.setAntiBannerService(antiBannerService);
 

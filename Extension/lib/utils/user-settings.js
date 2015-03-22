@@ -31,120 +31,120 @@ var EventNotifierTypes = require('utils/common').EventNotifierTypes;
  */
 var UserSettings = function () {
 
-	this.settings = {
+    this.settings = {
 
-		DISABLE_DETECT_FILTERS: 'detect-filters-disabled',
-		DISABLE_SHOW_PAGE_STATS: 'disable-show-page-statistic',
-		DISABLE_SHOW_ADGUARD_PROMO_INFO: 'show-info-about-adguard-disabled',
-		DISABLE_SAFEBROWSING: 'safebrowsing-disabled',
-		DISABLE_SEND_SAFEBROWSING_STATS: 'safebrowsing-stats-disabled',
-		DISABLE_FILTERING: 'adguard-disabled',
-		DISABLE_COLLECT_HITS: 'hits-count-disabled',
-		DISABLE_SHOW_CONTEXT_MENU: 'context-menu-disabled'
-	};
+        DISABLE_DETECT_FILTERS: 'detect-filters-disabled',
+        DISABLE_SHOW_PAGE_STATS: 'disable-show-page-statistic',
+        DISABLE_SHOW_ADGUARD_PROMO_INFO: 'show-info-about-adguard-disabled',
+        DISABLE_SAFEBROWSING: 'safebrowsing-disabled',
+        DISABLE_SEND_SAFEBROWSING_STATS: 'safebrowsing-stats-disabled',
+        DISABLE_FILTERING: 'adguard-disabled',
+        DISABLE_COLLECT_HITS: 'hits-count-disabled',
+        DISABLE_SHOW_CONTEXT_MENU: 'context-menu-disabled'
+    };
 
-	this.defaultProperties = Object.create(null);
-	for (var name in this.settings) {
-		this.defaultProperties[this.settings[name]] = false;
-	}
-	this.defaultProperties[this.settings.DISABLE_SHOW_ADGUARD_PROMO_INFO] = !Utils.isWindowsOs();
-	this.defaultProperties[this.settings.DISABLE_SAFEBROWSING] = true;
-	this.defaultProperties[this.settings.DISABLE_COLLECT_HITS] = true;
-	this.defaultProperties[this.settings.DISABLE_SEND_SAFEBROWSING_STATS] = true;
+    this.defaultProperties = Object.create(null);
+    for (var name in this.settings) {
+        this.defaultProperties[this.settings[name]] = false;
+    }
+    this.defaultProperties[this.settings.DISABLE_SHOW_ADGUARD_PROMO_INFO] = !Utils.isWindowsOs() && !Utils.isMacOs();
+    this.defaultProperties[this.settings.DISABLE_SAFEBROWSING] = true;
+    this.defaultProperties[this.settings.DISABLE_COLLECT_HITS] = true;
+    this.defaultProperties[this.settings.DISABLE_SEND_SAFEBROWSING_STATS] = true;
 
-	this.properties = Object.create(null);
+    this.properties = Object.create(null);
 };
 
 UserSettings.prototype.getProperty = function (propertyName) {
 
-	if (propertyName in this.properties) {
-		return this.properties[propertyName];
-	}
+    if (propertyName in this.properties) {
+        return this.properties[propertyName];
+    }
 
-	var propertyValue = null;
+    var propertyValue = null;
 
-	if (propertyName in LS.storage) {
-		try {
-			propertyValue = JSON.parse(LS.getItem(propertyName));
-		} catch (ex) {
-			Log.error('Error get property {0}, cause: {1}', propertyName, ex);
-		}
-	} else if (propertyName in this.defaultProperties) {
-		propertyValue = this.defaultProperties[propertyName];
-	}
+    if (propertyName in LS.storage) {
+        try {
+            propertyValue = JSON.parse(LS.getItem(propertyName));
+        } catch (ex) {
+            Log.error('Error get property {0}, cause: {1}', propertyName, ex);
+        }
+    } else if (propertyName in this.defaultProperties) {
+        propertyValue = this.defaultProperties[propertyName];
+    }
 
-	this.properties[propertyName] = propertyValue;
+    this.properties[propertyName] = propertyValue;
 
-	return propertyValue;
+    return propertyValue;
 };
 
 UserSettings.prototype.setProperty = function (propertyName, propertyValue) {
-	LS.setItem(propertyName, propertyValue);
-	this.properties[propertyName] = propertyValue;
-	EventNotifier.notifyListeners(EventNotifierTypes.CHANGE_USER_SETTINGS, propertyName, propertyValue);
+    LS.setItem(propertyName, propertyValue);
+    this.properties[propertyName] = propertyValue;
+    EventNotifier.notifyListeners(EventNotifierTypes.CHANGE_USER_SETTINGS, propertyName, propertyValue);
 };
 
 UserSettings.prototype.isFilteringDisabled = function () {
-	return this.getProperty(this.settings.DISABLE_FILTERING);
+    return this.getProperty(this.settings.DISABLE_FILTERING);
 };
 
 UserSettings.prototype.changeFilteringDisabled = function (disabled) {
-	this.setProperty(this.settings.DISABLE_FILTERING, disabled);
+    this.setProperty(this.settings.DISABLE_FILTERING, disabled);
 };
 
 UserSettings.prototype.isAutodetectFilters = function () {
-	return !this.getProperty(this.settings.DISABLE_DETECT_FILTERS);
+    return !this.getProperty(this.settings.DISABLE_DETECT_FILTERS);
 };
 
 UserSettings.prototype.changeAutodetectFilters = function (enabled) {
-	this.setProperty(this.settings.DISABLE_DETECT_FILTERS, !enabled);
+    this.setProperty(this.settings.DISABLE_DETECT_FILTERS, !enabled);
 };
 
 UserSettings.prototype.showPageStatistic = function () {
-	return !this.getProperty(this.settings.DISABLE_SHOW_PAGE_STATS);
+    return !this.getProperty(this.settings.DISABLE_SHOW_PAGE_STATS);
 };
 
 UserSettings.prototype.changeShowPageStatistic = function (enabled) {
-	this.setProperty(this.settings.DISABLE_SHOW_PAGE_STATS, !enabled);
+    this.setProperty(this.settings.DISABLE_SHOW_PAGE_STATS, !enabled);
 };
 
 UserSettings.prototype.isShowInfoAboutAdguardFullVersion = function () {
-	return !this.getProperty(this.settings.DISABLE_SHOW_ADGUARD_PROMO_INFO);
+    return !this.getProperty(this.settings.DISABLE_SHOW_ADGUARD_PROMO_INFO);
 };
 
 UserSettings.prototype.changeShowInfoAboutAdguardFullVersion = function (show) {
-	this.setProperty(this.settings.DISABLE_SHOW_ADGUARD_PROMO_INFO, !show);
+    this.setProperty(this.settings.DISABLE_SHOW_ADGUARD_PROMO_INFO, !show);
 };
 
 UserSettings.prototype.changeEnableSafebrowsing = function (enabled) {
-	this.setProperty(this.settings.DISABLE_SAFEBROWSING, !enabled);
+    this.setProperty(this.settings.DISABLE_SAFEBROWSING, !enabled);
 };
 
 UserSettings.prototype.changeSendSafebrowsingStats = function (enabled) {
-	this.setProperty(this.settings.DISABLE_SEND_SAFEBROWSING_STATS, !enabled);
+    this.setProperty(this.settings.DISABLE_SEND_SAFEBROWSING_STATS, !enabled);
 };
 
 UserSettings.prototype.getSafebrowsingInfo = function () {
-	return {
-		enabled: !this.getProperty(this.settings.DISABLE_SAFEBROWSING),
-		sendStats: !this.getProperty(this.settings.DISABLE_SEND_SAFEBROWSING_STATS)
-	}
+    return {
+        enabled: !this.getProperty(this.settings.DISABLE_SAFEBROWSING),
+        sendStats: !this.getProperty(this.settings.DISABLE_SEND_SAFEBROWSING_STATS)
+    }
 };
 
 UserSettings.prototype.collectHitsCount = function () {
-	return !this.getProperty(this.settings.DISABLE_COLLECT_HITS);
+    return !this.getProperty(this.settings.DISABLE_COLLECT_HITS);
 };
 
 UserSettings.prototype.changeCollectHitsCount = function (enabled) {
-	this.setProperty(this.settings.DISABLE_COLLECT_HITS, !enabled);
+    this.setProperty(this.settings.DISABLE_COLLECT_HITS, !enabled);
 };
 
 UserSettings.prototype.showContextMenu = function () {
-	return !this.getProperty(this.settings.DISABLE_SHOW_CONTEXT_MENU);
+    return !this.getProperty(this.settings.DISABLE_SHOW_CONTEXT_MENU);
 };
 
 UserSettings.prototype.changeShowContextMenu = function (enabled) {
-	this.setProperty(this.settings.DISABLE_SHOW_CONTEXT_MENU, !enabled);
+    this.setProperty(this.settings.DISABLE_SHOW_CONTEXT_MENU, !enabled);
 };
 
 var userSettings = exports.userSettings = new UserSettings();

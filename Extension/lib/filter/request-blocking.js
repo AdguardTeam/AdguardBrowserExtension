@@ -21,107 +21,156 @@ var FilterUtils = require('utils/common').FilterUtils;
 var EventNotifier = require('utils/notifier').EventNotifier;
 var EventNotifierTypes = require('utils/common').EventNotifierTypes;
 var ServiceClient = require('utils/service-client').ServiceClient;
+var WorkaroundUtils = require('utils/workaround').WorkaroundUtils;
+var Utils = require('utils/common').Utils;
+var userSettings = require('utils/user-settings').userSettings;
 
 var WebRequestService = exports.WebRequestService = function (framesMap, antiBannerService, filteringLog, adguardApplication) {
-	this.framesMap = framesMap;
-	this.antiBannerService = antiBannerService;
-	this.filteringLog = filteringLog;
-	this.adguardApplication = adguardApplication;
+    this.framesMap = framesMap;
+    this.antiBannerService = antiBannerService;
+    this.filteringLog = filteringLog;
+    this.adguardApplication = adguardApplication;
 };
 
-WebRequestService.prototype.processRequest = function (tab, requestUrl, referrerUrl, requestType) {
+/**
+ * Prepares CSS and JS which should be injected to the page.
+ * @param tab           Tab
+ * @param documentUrl   Document URL
+ * @returns {*}
+ */
+WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, documentUrl) {
 
-	var requestEvent = {requestBlocked: false};
+    if (!tab) {
+        return null;
+    }
 
-	if (!UrlUtils.isHttpRequest(requestUrl) || !UrlUtils.isHttpRequest(referrerUrl)) {
-		return requestEvent;
-	}
+    if (!this.antiBannerService.requestFilterReady) {
+        return {requestFilterReady: false};
+    }
 
-	var requestRule = null;
-	var requestBlocked = false;
+    if (this.framesMap.isTabAdguardDetected(tab) || this.framesMap.isTabProtectionDisabled(tab) || this.framesMap.isTabWhiteListed(tab)) {
+        return null;
+    }
 
-	if (this.framesMap.isTabAdguardDetected(tab)) {
-		//don't process request, add log event later
-		return requestEvent;
-	} else if (this.framesMap.isTabProtectionDisabled(tab)) {
-		//don't process request
-	} else if (this.framesMap.isTabWhiteListed(tab)) {
-		requestRule = this.framesMap.getFrameWhiteListRule(tab);
-	} else {
-		requestRule = this.antiBannerService.getRequestFilter().findRuleForRequest(requestUrl, referrerUrl, requestType);
-		requestBlocked = requestRule && !requestRule.whiteListRule;
-	}
+    var selectors = null;
+    var scripts = null;
 
-	requestEvent.requestBlocked = requestBlocked;
+    var elemHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "ELEMHIDE");
+    if (!elemHideRule) {
+        if (Utils.isFirefoxBrowser() && userSettings.collectHitsCount()) {
+            selectors = this.antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl);
+        } else {
+            selectors = this.antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl);
+        }
+    }
 
-	// TODO: Don't create it if filtering log is disabled
-	requestEvent.logEvent = {
-		tab: tab,
-		requestUrl: requestUrl,
-		frameUrl: referrerUrl,
-		requestType: requestType,
-		requestRule: requestRule
-	};
+    var jsInjectRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "JSINJECT");
+    if (!jsInjectRule) {
+        scripts = WorkaroundUtils.getScriptsForUrl(this.antiBannerService, documentUrl);
+    }
 
-	return requestEvent;
+    return {
+        selectors: selectors,
+        scripts: scripts
+    };
+};
+
+WebRequestService.prototype.processShouldCollapse = function (tab, requestUrl, referrerUrl, requestType) {
+
+    if (!tab) {
+        return false;
+    }
+
+    var requestRule = this.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
+    return this.isRequestBlockedByRule(requestRule);
+};
+
+WebRequestService.prototype.processShouldCollapseMany = function (tab, referrerUrl, collapseRequests) {
+
+    if (!tab) {
+        return collapseRequests;
+    }
+
+    for (var i = 0; i < collapseRequests.length; i++) {
+        var request = collapseRequests[i];
+        var requestRule = this.getRuleForRequest(tab, request.elementUrl, referrerUrl, request.requestType);
+        request.collapse = this.isRequestBlockedByRule(requestRule);
+    }
+
+    return collapseRequests;
+};
+
+WebRequestService.prototype.isRequestBlockedByRule = function (requestRule) {
+    return requestRule && !requestRule.whiteListRule;
+};
+
+WebRequestService.prototype.getRuleForRequest = function (tab, requestUrl, referrerUrl, requestType) {
+
+    if (!UrlUtils.isHttpRequest(requestUrl) || !UrlUtils.isHttpRequest(referrerUrl)) {
+        return null;
+    }
+
+    if (this.framesMap.isTabAdguardDetected(tab) || this.framesMap.isTabProtectionDisabled(tab)) {
+        //don't process request
+        return null;
+    }
+
+    var requestRule = null;
+
+    if (this.framesMap.isTabWhiteListed(tab)) {
+        requestRule = this.framesMap.getFrameWhiteListRule(tab);
+    } else {
+        requestRule = this.antiBannerService.getRequestFilter().findRuleForRequest(requestUrl, referrerUrl, requestType);
+    }
+
+    return requestRule;
 };
 
 WebRequestService.prototype.processRequestResponse = function (tab, requestUrl, referrerUrl, requestType, responseHeaders) {
 
-	if (requestType == "DOCUMENT") {
-		//check headers to detect Adguard application
-		this.adguardApplication.checkHeaders(tab, responseHeaders, requestUrl);
-		//clear previous events
-		this.filteringLog.clearEventsForTab(tab);
-	}
+    if (requestType == "DOCUMENT") {
+        //check headers to detect Adguard application
+        this.adguardApplication.checkHeaders(tab, responseHeaders, requestUrl);
+        //clear previous events
+        this.filteringLog.clearEventsForTab(tab);
+    }
 
-	var requestRule = null;
-	var appendLogEvent = false;
+    var requestRule = null;
+    var appendLogEvent = false;
 
-	if (this.framesMap.isTabAdguardDetected(tab)) {
-		//parse rule applied to request from response headers
-		requestRule = this.adguardApplication.parseAdguardRuleFromHeaders(responseHeaders);
-		appendLogEvent = !ServiceClient.isAdguardAppRequest(requestUrl);
-	} else if (this.framesMap.isTabProtectionDisabled(tab)) {
-		//do nothing
-	} else if (requestType == "DOCUMENT") {
-		requestRule = this.framesMap.getFrameWhiteListRule(tab);
-		//add page view to stats
-		filterRulesHitCount.addPageView();
-		appendLogEvent = true;
-	}
+    if (this.framesMap.isTabAdguardDetected(tab)) {
+        //parse rule applied to request from response headers
+        requestRule = this.adguardApplication.parseAdguardRuleFromHeaders(responseHeaders);
+        appendLogEvent = !ServiceClient.isAdguardAppRequest(requestUrl);
+    } else if (this.framesMap.isTabProtectionDisabled(tab)) {
+        //do nothing
+    } else if (requestType == "DOCUMENT") {
+        requestRule = this.framesMap.getFrameWhiteListRule(tab);
+        //add page view to stats
+        filterRulesHitCount.addPageView();
+        appendLogEvent = true;
+    }
 
-	// add event to filtering log
-	if (appendLogEvent) {
-		this.filteringLog.addEvent({
-			tab: tab,
-			requestUrl: requestUrl,
-			frameUrl: referrerUrl,
-			requestType: requestType,
-			requestRule: requestRule
-		});
-	}
+    // add event to filtering log
+    if (appendLogEvent) {
+        this.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
+    }
 };
 
-WebRequestService.prototype.postProcessRequest = function (requestEvent) {
+WebRequestService.prototype.postProcessRequest = function (tab, requestUrl, referrerUrl, requestType, requestRule) {
 
-	var tab;
-	var requestRule;
+    if (this.framesMap.isTabAdguardDetected(tab)) {
+        //do nothing, log event will be added on response
+        return;
+    }
 
-	if (requestEvent.logEvent) {
-		requestRule = requestEvent.logEvent.requestRule;
-		tab = requestEvent.logEvent.tab;
-	}
+    if (this.isRequestBlockedByRule(requestRule)) {
+        EventNotifier.notifyListeners(EventNotifierTypes.ADS_BLOCKED, requestRule, tab, 1);
+    }
 
-	if (requestEvent.requestBlocked) {
-		EventNotifier.notifyListeners(EventNotifierTypes.ADS_BLOCKED, requestRule, tab, 1);
-	}
+    this.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
 
-	if (requestEvent.logEvent) {
-		this.filteringLog.addEvent(requestEvent.logEvent);
-	}
-
-	if (requestRule && !FilterUtils.isUserFilterRule(requestRule)) {
-		filterRulesHitCount.addHitCount(requestRule.ruleText);
-	}
+    if (requestRule && !FilterUtils.isUserFilterRule(requestRule)) {
+        filterRulesHitCount.addHitCount(requestRule.ruleText);
+    }
 };

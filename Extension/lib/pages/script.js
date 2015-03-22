@@ -16,119 +16,139 @@
  */
 $(function () {
 
-	$.fn.toggleCheckbox = function () {
+    $.fn.toggleCheckbox = function () {
 
-		return this.each(function () {
+        return this.each(function () {
 
-			var checkbox = this;
-			var $checkbox = $(this);
+            var checkbox = this;
+            var $checkbox = $(this);
 
-			if ($checkbox.data("toggleCheckbox")) {
-				//already applied
-				return;
-			}
+            if ($checkbox.data("toggleCheckbox")) {
+                //already applied
+                return;
+            }
 
-			var el = $("<div>", {class: 'sp-table-row-pseudo'}).append($('<span>', {class: 'spt-row-pseudo-handler'}));
-			el.insertAfter(checkbox);
+            var el = $("<div>", {class: 'sp-table-row-pseudo'}).append($('<span>', {class: 'spt-row-pseudo-handler'}));
+            el.insertAfter(checkbox);
 
-			el.on('click', function () {
-				checkbox.checked = !checkbox.checked;
-				$checkbox.change();
-			});
+            el.on('click', function () {
+                checkbox.checked = !checkbox.checked;
+                $checkbox.change();
+            });
 
-			$checkbox.bind('change', function () {
-				onClicked(checkbox.checked);
-			});
+            $checkbox.bind('change', function () {
+                onClicked(checkbox.checked);
+            });
 
-			function onClicked(checked) {
-				if (checked) {
-					el.addClass("active");
-					el.closest(".s-page-table-row").addClass("active");
-				} else {
-					el.removeClass("active");
-					el.closest(".s-page-table-row").removeClass("active");
-				}
-			}
+            function onClicked(checked) {
+                if (checked) {
+                    el.addClass("active");
+                    el.closest(".s-page-table-row").addClass("active");
+                } else {
+                    el.removeClass("active");
+                    el.closest(".s-page-table-row").removeClass("active");
+                }
+            }
 
-			$checkbox.hide();
-			onClicked(checkbox.checked);
+            $checkbox.hide();
+            onClicked(checkbox.checked);
 
-			$checkbox.data("toggleCheckbox", true);
-		});
-	};
+            $checkbox.data("toggleCheckbox", true);
+        });
+    };
 
-	$.fn.updateCheckbox = function (checked) {
+    $.fn.updateCheckbox = function (checked) {
 
-		return this.each(function () {
-			var $this = $(this);
-			if (checked) {
-				$this.attr('checked', 'checked');
-			} else {
-				$this.removeAttr('checked');
-			}
-		});
-	};
+        return this.each(function () {
+            var $this = $(this);
+            if (checked) {
+                $this.attr('checked', 'checked');
+            } else {
+                $this.removeAttr('checked');
+            }
+        });
+    };
 
-	$.fn.popupHelp = function () {
+    $.fn.popupHelp = function () {
 
-		return this.each(function () {
+        return this.each(function () {
 
-			var el = $(this);
-			var popup = $("#" + el.attr("data-popup"));
-			if (!popup || popup.length == 0) {
-				return;
-			}
+            var el = $(this);
+            var popup = $("#" + el.attr("data-popup"));
+            if (!popup || popup.length == 0) {
+                return;
+            }
 
-			var w = $(window);
+            var w = $(window);
 
-			function positionPopup() {
+            function positionPopup() {
 
-				var viewport = {
-					right: w.scrollLeft() + w.width(),
-					bottom: w.scrollTop() + w.height()
-				};
+                var viewport = {
+                    right: w.scrollLeft() + w.width(),
+                    bottom: w.scrollTop() + w.height()
+                };
 
-				var elBounds = el.offset();
+                var elBounds = el.offset();
 
-				var popupHeight = popup.outerHeight();
-				var popupWidth = popup.outerWidth();
+                var popupHeight = popup.outerHeight();
+                var popupWidth = popup.outerWidth();
 
-				var offsetTop = elBounds.top + 15;
-				if (viewport.bottom < offsetTop + popupHeight) {
-					offsetTop = elBounds.top - popupHeight - 15;
-				}
+                var offsetTop = elBounds.top + 15;
+                if (viewport.bottom < offsetTop + popupHeight) {
+                    offsetTop = elBounds.top - popupHeight - 15;
+                }
 
-				var offsetLeft = elBounds.left + 15;
-				if (viewport.right < offsetLeft + popupWidth) {
-					offsetLeft = elBounds.left - popupWidth - 15;
-				}
+                var offsetLeft = elBounds.left + 15;
+                if (viewport.right < offsetLeft + popupWidth) {
+                    offsetLeft = elBounds.left - popupWidth - 15;
+                }
 
-				popup.css({
-					top: offsetTop,
-					left: offsetLeft
-				});
-			}
+                popup.css({
+                    top: offsetTop,
+                    left: offsetLeft
+                });
+            }
 
-			el.on({
-				mouseenter: function () {
-					positionPopup();
-					popup.removeClass("hidden");
-				},
-				mouseleave: function () {
-					popup.addClass("hidden");
-				}
-			});
-		});
-	}
+            el.on({
+                mouseenter: function () {
+                    positionPopup();
+                    popup.removeClass("hidden");
+                },
+                mouseleave: function () {
+                    popup.addClass("hidden");
+                }
+            });
+        });
+    }
 });
 
 function updateDisplayAdguardPromo() {
-	var showPromo = userSettings && userSettings.isShowInfoAboutAdguardFullVersion();
-	if (showPromo) {
-		$('.download-adguard-block').show();
-		$('.non-download-adguard-block').hide();
-	} else {
-		$('.download-adguard-block').hide();
-		$('.non-download-adguard-block').show();
-	}
+    var showPromo = userSettings && userSettings.isShowInfoAboutAdguardFullVersion();
+    if (showPromo) {
+        $('.download-adguard-block').show();
+        $('.non-download-adguard-block').hide();
+    } else {
+        $('.download-adguard-block').hide();
+        $('.non-download-adguard-block').show();
+    }
+}
+
+function customizePopupFooter() {
+
+    //fix title
+    var messageId = Utils.isMacOs() ? 'thankyou_want_full_protection_mac' : 'thankyou_want_full_protection';
+    var title = $('.thanks-prefooter .thanks-prefooter-title');
+    ext.i18n.translateElement(title[0], messageId);
+
+    //fix title in table
+    messageId = Utils.isMacOs() ? 'thankyou_compare_full_title_mac' : 'thankyou_compare_full_title';
+    title = $('.thanks-prefooter .thanks-prefooter-table .tpt-head-full');
+    ext.i18n.translateElement(title[0], messageId);
+
+    //hide parental control feature for mac os
+    if (Utils.isMacOs()) {
+        $('.parental-control-feature').hide();
+    } else {
+        $('.parental-control-feature').show();
+    }
 }

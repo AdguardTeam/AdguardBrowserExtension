@@ -25,13 +25,13 @@ var AntiBannerFiltersId = backgroundPage.AntiBannerFiltersId;
 
 //http://jira.performix.ru/browse/AG-3474
 var resizePopupWindowForMacOs = function ($) {
-	if (Utils.isSafariBrowser() || Utils.isFirefoxBrowser() || navigator.platform.toUpperCase().indexOf('MAC') < 0) {
-		return;
-	}
-	setTimeout(function () {
-		var block = $(".macoshackresize");
-		block.css("padding-top", "23px");
-	}, 1000);
+    if (Utils.isSafariBrowser() || Utils.isFirefoxBrowser() || !Utils.isMacOs()) {
+        return;
+    }
+    setTimeout(function () {
+        var block = $(".macoshackresize");
+        block.css("padding-top", "23px");
+    }, 1000);
 };
 
 //make global for other popup scripts;
@@ -39,84 +39,84 @@ var tab;
 var controller;
 
 $(document).ready(function () {
-	ext.windows.getLastFocused(function (win) {
-		win.getActiveTab(function (t) {
+    ext.windows.getLastFocused(function (win) {
+        win.getActiveTab(function (t) {
 
-			tab = t;
+            tab = t;
 
-			var tabInfo = framesMap.getFrameInfo(tab);
-			var filteringInfo = filteringLog.getTabInfo(tab);
-			controller = new PopupController({
-				platform: Prefs.platform,
-				abusePanelSupported: Prefs.platform != 'firefox' || UI.abusePanelSupported
-			});
+            var tabInfo = framesMap.getFrameInfo(tab);
+            var filteringInfo = filteringLog.getTabInfo(tab);
+            controller = new PopupController({
+                platform: Prefs.platform,
+                abusePanelSupported: Prefs.platform != 'firefox' || UI.abusePanelSupported
+            });
 
-			//override
-			controller.afterRender = function () {
-				//add some delay for show popup size properly
-				setTimeout(function () {
-					controller.resizePopupWindow();
-				}, 10);
-				resizePopupWindowForMacOs($);
-			};
-			controller.resizePopup = function (width, height) {
-				ext.resizePopup(width, height);
-			};
-			//popup checkbox actions
-			controller.addWhiteListDomain = function (url) {
-				if (tabInfo.adguardDetected) {
-					UI.addCurrentTabToAdguardWhiteList();
-					ext.closePopup();
-				} else {
-					antiBannerService.addWhiteListDomain(url);
-				}
-			};
-			controller.removeWhiteListDomain = function (url) {
-				if (tabInfo.adguardDetected) {
-					UI.removeCurrentTabFromAdguardWhiteList();
-					ext.closePopup();
-				} else {
-					antiBannerService.removeWhiteListDomain(url);
-				}
-			};
-			controller.changeApplicationFilteringDisabled = function (disabled) {
-				antiBannerService.changeApplicationFilteringDisabled(disabled);
-			};
-			//popup menu actions
-			controller.openSiteReportTab = function (url) {
-				UI.openSiteReportTab(url);
-				ext.closePopup();
-			};
-			controller.openSettingsTab = function () {
-				UI.openSettingsTab();
-				ext.closePopup();
-			};
-			controller.openAssistantInTab = function () {
-				tab.sendMessage({type: "open-assistant"}, function () {
-					ext.closePopup();
-				});
-			};
-			controller.openLink = function (url) {
-				UI.openTab(url);
-				ext.closePopup();
-			};
-			controller.openAbusePanel = function () {
-				UI.openAbusePanel();
-				ext.closePopup();
-			};
-			controller.openFilteringLog = function (tabId) {
-				UI.openFilteringLog(tabId);
-				ext.closePopup();
-			};
-			controller.resetBlockedAdsCount = function () {
-				framesMap.resetBlockedAdsCount();
-			};
-			controller.translateElement = function (el, messageId, args) {
-				ext.i18n.translateElement(el, messageId, args);
-			};
+            //override
+            controller.afterRender = function () {
+                //add some delay for show popup size properly
+                setTimeout(function () {
+                    controller.resizePopupWindow();
+                }, 10);
+                resizePopupWindowForMacOs($);
+            };
+            controller.resizePopup = function (width, height) {
+                ext.resizePopup(width, height);
+            };
+            //popup checkbox actions
+            controller.addWhiteListDomain = function (url) {
+                if (tabInfo.adguardDetected) {
+                    UI.addCurrentTabToAdguardWhiteList();
+                    ext.closePopup();
+                } else {
+                    antiBannerService.addWhiteListDomain(url);
+                }
+            };
+            controller.removeWhiteListDomain = function (url) {
+                if (tabInfo.adguardDetected) {
+                    UI.removeCurrentTabFromAdguardWhiteList();
+                    ext.closePopup();
+                } else {
+                    antiBannerService.removeWhiteListDomain(url);
+                }
+            };
+            controller.changeApplicationFilteringDisabled = function (disabled) {
+                antiBannerService.changeApplicationFilteringDisabled(disabled);
+            };
+            //popup menu actions
+            controller.openSiteReportTab = function (url) {
+                UI.openSiteReportTab(url);
+                ext.closePopup();
+            };
+            controller.openSettingsTab = function () {
+                UI.openSettingsTab();
+                ext.closePopup();
+            };
+            controller.openAssistantInTab = function () {
+                tab.sendMessage({type: "open-assistant"}, function () {
+                    ext.closePopup();
+                });
+            };
+            controller.openLink = function (url) {
+                UI.openTab(url);
+                ext.closePopup();
+            };
+            controller.openAbusePanel = function () {
+                UI.openAbusePanel();
+                ext.closePopup();
+            };
+            controller.openFilteringLog = function (tabId) {
+                UI.openFilteringLog(tabId);
+                ext.closePopup();
+            };
+            controller.resetBlockedAdsCount = function () {
+                framesMap.resetBlockedAdsCount();
+            };
+            controller.translateElement = function (el, messageId, args) {
+                ext.i18n.translateElement(el, messageId, args);
+            };
 
-			//render popup
-			controller.render(tabInfo, filteringInfo);
-		})
-	});
+            //render popup
+            controller.render(tabInfo, filteringInfo);
+        })
+    });
 });

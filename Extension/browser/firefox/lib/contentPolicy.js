@@ -237,7 +237,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
     xpcom_categories: ["content-policy", "net-channel-event-sinks"],
 
     antiBannerService: null,
-    elemHide: null,
+    ElemHide: null,
     framesMap: null,
     filteringLog: null,
     webRequestService: null,
@@ -247,19 +247,20 @@ var WebRequestImpl = exports.WebRequestImpl = {
      *
      * @param antiBannerService     AntiBannerService object (implements the filtering)
      * @param adguardApplication    AdguardApplication (used for integration with Adguard for Windows/Mac/Android)
-     * @param elemHide              ElemHide object (used to apply CSS rules)
+     * @param ElemHide              ElemHide object (used to apply CSS rules)
      * @param framesMap             Map with frames data
      * @param filteringLog          Service for log requests
+     * @param webRequestService     Request Blocking service
      */
-    init: function (antiBannerService, adguardApplication, elemHide, framesMap, filteringLog) {
+    init: function (antiBannerService, adguardApplication, ElemHide, framesMap, filteringLog, webRequestService) {
 
         Log.info('Initializing webRequest...');
 
         this.antiBannerService = antiBannerService;
-        this.elemHide = elemHide;
+        this.ElemHide = ElemHide;
         this.framesMap = framesMap;
         this.filteringLog = filteringLog;
-        this.webRequestService = new WebRequestService(framesMap, antiBannerService, filteringLog, adguardApplication);
+        this.webRequestService = webRequestService;
 
         let registrar = components.manager.QueryInterface(Ci.nsIComponentRegistrar);
         registrar.registerFactory(this.classID, this.classDescription, this.contractID, this);
@@ -514,13 +515,14 @@ var WebRequestImpl = exports.WebRequestImpl = {
 
         var tabUrl = this.framesMap.getFrameUrl(tab, 0);
 
-        var requestEvent = this.webRequestService.processRequest(tab, requestUrl, tabUrl, requestType);
-        if (requestEvent.requestBlocked) {
+        var requestRule = this.webRequestService.getRuleForRequest(tab, requestUrl, tabUrl, requestType);
+        var requestBlocked = this.webRequestService.isRequestBlockedByRule(requestRule);
+        if (requestBlocked) {
             this._collapseElement(node, contentType);
         }
-        this.webRequestService.postProcessRequest(requestEvent);
+        this.webRequestService.postProcessRequest(tab, requestUrl, tabUrl, requestType, requestRule);
 
-        return requestEvent.requestBlocked;
+        return requestBlocked;
     },
 
     /**
@@ -541,21 +543,20 @@ var WebRequestImpl = exports.WebRequestImpl = {
      *
      * @param requestUrl
      * @param sourceTab
-     * @returns {requestEvent.requestBlocked|*}
      * @private
      */
     _checkPopupRule: function (requestUrl, sourceTab) {
 
         var tabUrl = this.framesMap.getFrameUrl(sourceTab, 0);
 
-        var requestEvent = this.webRequestService.processRequest(sourceTab, requestUrl, tabUrl, "POPUP");
-        if (requestEvent.requestBlocked) {
-            //fix log event type from "POPUP" to "DOCUMENT"
-            requestEvent.logEvent.requestType = "DOCUMENT";
-            this.webRequestService.postProcessRequest(requestEvent);
+        var requestRule = this.webRequestService.getRuleForRequest(sourceTab, requestUrl, tabUrl, "POPUP");
+        var requestBlocked = this.webRequestService.isRequestBlockedByRule(requestRule);
+        if (requestBlocked) {
+            //add log event and fix log event type from "POPUP" to "DOCUMENT"
+            this.webRequestService.postProcessRequest(sourceTab, requestUrl, tabUrl, "DOCUMENT", requestRule);
         }
 
-        return requestEvent.requestBlocked;
+        return requestBlocked;
     },
 
     /**
@@ -606,7 +607,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
      */
     _collapseElement: function (node, contentType) {
         if (node && node.ownerDocument && WebRequestHelper.isVisualContentType(contentType)) {
-            this.elemHide.collapseNode(node);
+            this.ElemHide.collapseNode(node);
         }
     },
 

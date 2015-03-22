@@ -28,6 +28,7 @@ PageController.prototype = {
 		$("[data-popup]").popupHelp();
 
 		updateDisplayAdguardPromo();
+        customizePopupFooter();
 	},
 
 	_bindEvents: function () {
@@ -95,6 +96,7 @@ var antiBannerService;
 var UI;
 var userSettings;
 var AntiBannerFiltersId;
+var Utils;
 
 var onInit = function () {
 
@@ -117,6 +119,7 @@ function init() {
 	UI = backgroundPage.UI;
 	userSettings = backgroundPage.userSettings;
 	AntiBannerFiltersId = backgroundPage.AntiBannerFiltersId;
+    Utils = backgroundPage.Utils;
 	onInit();
 }
 init();

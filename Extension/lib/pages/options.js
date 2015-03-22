@@ -32,6 +32,7 @@ PageController.prototype = {
 		$(".sp-table-row-input").toggleCheckbox();
 
 		updateDisplayAdguardPromo();
+        customizePopupFooter();
 
 		var currentAnchor = null;
 

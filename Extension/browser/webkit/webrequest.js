@@ -16,29 +16,28 @@
  */
 function onBeforeRequest(requestDetails) {
 
-	var tab = requestDetails.tab;
-	var requestUrl = requestDetails.requestUrl;
-	var requestType = requestDetails.requestType;
+    var tab = requestDetails.tab;
+    var requestUrl = requestDetails.requestUrl;
+    var requestType = requestDetails.requestType;
 
-	if (requestType == "DOCUMENT" || requestType == "SUBDOCUMENT") {
-		framesMap.recordFrame(tab, requestDetails.frameId, requestUrl, requestType);
-	}
+    if (requestType == "DOCUMENT" || requestType == "SUBDOCUMENT") {
+        framesMap.recordFrame(tab, requestDetails.frameId, requestUrl, requestType);
+    }
 
-	if (requestType == "DOCUMENT") {
-		//reset tab button state
-		EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_TAB_BUTTON_STATE, tab, true);
-		return true;
-	}
+    if (requestType == "DOCUMENT") {
+        //reset tab button state
+        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_TAB_BUTTON_STATE, tab, true);
+        return true;
+    }
 
-	var referrerUrl = framesMap.getFrameUrl(tab, requestDetails.requestFrameId);
+    var referrerUrl = framesMap.getFrameUrl(tab, requestDetails.requestFrameId);
 
-	var requestEvent = webRequestService.processRequest(tab, requestUrl, referrerUrl, requestType);
+    var requestRule = webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
 
-	webRequestService.postProcessRequest(requestEvent);
+    webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
 
-	return !requestEvent.requestBlocked;
+    return !webRequestService.isRequestBlockedByRule(requestRule);
 }
-
 
 /**
  * If page URL is whitelisted in standalone Adguard, we should forcibly set Referrer value to this page URL.
@@ -50,64 +49,64 @@ function onBeforeRequest(requestDetails) {
  */
 function onBeforeSendHeaders(requestDetails) {
 
-	var tab = requestDetails.tab;
+    var tab = requestDetails.tab;
 
-	if (framesMap.isTabAdguardWhiteListed(tab)) {
+    if (framesMap.isTabAdguardWhiteListed(tab)) {
 
-		//retrieve main frame url
-		var mainFrameUrl = framesMap.getFrameUrl(tab, 0);
-		var headers = requestDetails.requestHeaders || [];
+        //retrieve main frame url
+        var mainFrameUrl = framesMap.getFrameUrl(tab, 0);
+        var headers = requestDetails.requestHeaders || [];
 
-		var refHeader = null;
-		for (var i = 0; i < headers.length; i++) {
-			if (headers[i].name == 'Referer') {
-				refHeader = headers[i];
-				break;
-			}
-		}
-		if (refHeader) {
-			refHeader.value = mainFrameUrl;
-		} else {
-			headers.push({
-				name: 'Referer',
-				value: mainFrameUrl
-			});
-		}
-		return {requestHeaders: headers};
-	}
-	return {};
+        var refHeader = null;
+        for (var i = 0; i < headers.length; i++) {
+            if (headers[i].name == 'Referer') {
+                refHeader = headers[i];
+                break;
+            }
+        }
+        if (refHeader) {
+            refHeader.value = mainFrameUrl;
+        } else {
+            headers.push({
+                name: 'Referer',
+                value: mainFrameUrl
+            });
+        }
+        return {requestHeaders: headers};
+    }
+    return {};
 }
 
 function onHeadersReceived(requestDetails) {
 
-	var tab = requestDetails.tab;
-	var requestUrl = requestDetails.requestUrl;
-	var responseHeaders = requestDetails.responseHeaders;
-	var requestType = requestDetails.requestType;
-	//retrieve referrer
-	var referrerUrl = framesMap.getFrameUrl(tab, requestDetails.requestFrameId);
+    var tab = requestDetails.tab;
+    var requestUrl = requestDetails.requestUrl;
+    var responseHeaders = requestDetails.responseHeaders;
+    var requestType = requestDetails.requestType;
+    //retrieve referrer
+    var referrerUrl = framesMap.getFrameUrl(tab, requestDetails.requestFrameId);
 
-	webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
+    webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
 
-	if (requestType == "DOCUMENT") {
-		//safebrowsing check
-		filterSafebrowsing(tab, requestUrl);
-	}
+    if (requestType == "DOCUMENT") {
+        //safebrowsing check
+        filterSafebrowsing(tab, requestUrl);
+    }
 }
 
 function filterSafebrowsing(tab, mainFrameUrl) {
 
-	if (framesMap.isTabAdguardDetected(tab) || framesMap.isTabProtectionDisabled(tab) || framesMap.isTabWhiteListed(tab)) {
-		return;
-	}
+    if (framesMap.isTabAdguardDetected(tab) || framesMap.isTabProtectionDisabled(tab) || framesMap.isTabWhiteListed(tab)) {
+        return;
+    }
 
-	antiBannerService.getRequestFilter().checkSafebrowsingFilter(mainFrameUrl, function (safebrowsingUrl) {
-		UI.openTab(safebrowsingUrl, {
-			onOpen: function () {
-				tab.close();
-			}
-		});
-	});
+    antiBannerService.getRequestFilter().checkSafebrowsingFilter(mainFrameUrl, function (safebrowsingUrl) {
+        UI.openTab(safebrowsingUrl, {
+            onOpen: function () {
+                tab.close();
+            }
+        });
+    });
 }
 
 ext.webRequest.onBeforeRequest.addListener(onBeforeRequest, ["<all_urls>"]);
@@ -117,29 +116,29 @@ ext.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, ["<all_urls>
 ext.webRequest.onHeadersReceived.addListener(onHeadersReceived, ["<all_urls>"]);
 
 function checkHitCount(requestDetails) {
-	var ruleText = decodeURIComponent(StringUtils.substringAfter(requestDetails.requestUrl, '#'));
-	if (ruleText) {
-		filterRulesHitCount.addHitCount(ruleText);
-	}
+    var ruleText = decodeURIComponent(StringUtils.substringAfter(requestDetails.requestUrl, '#'));
+    if (ruleText) {
+        filterRulesHitCount.addHitCount(ruleText);
+    }
 }
 
 ext.webRequest.onBeforeRequest.addListener(checkHitCount, ["chrome-extension://*/elemhidehit.png"]);
 
 var handlerBehaviorTimeout = null;
 EventNotifier.addListener(function (event) {
-	switch (event) {
-		case EventNotifierTypes.ADD_RULE:
-		case EventNotifierTypes.ADD_RULES:
-		case EventNotifierTypes.REMOVE_RULE:
-		case EventNotifierTypes.UPDATE_FILTER_RULES:
-		case EventNotifierTypes.ENABLE_FILTER:
-		case EventNotifierTypes.DISABLE_FILTER:
-			if (handlerBehaviorTimeout != null) {
-				clearTimeout(handlerBehaviorTimeout);
-			}
-			handlerBehaviorTimeout = setTimeout(function () {
-				handlerBehaviorTimeout = null;
-				ext.webRequest.handlerBehaviorChanged();
-			}, 3000);
-	}
+    switch (event) {
+        case EventNotifierTypes.ADD_RULE:
+        case EventNotifierTypes.ADD_RULES:
+        case EventNotifierTypes.REMOVE_RULE:
+        case EventNotifierTypes.UPDATE_FILTER_RULES:
+        case EventNotifierTypes.ENABLE_FILTER:
+        case EventNotifierTypes.DISABLE_FILTER:
+            if (handlerBehaviorTimeout != null) {
+                clearTimeout(handlerBehaviorTimeout);
+            }
+            handlerBehaviorTimeout = setTimeout(function () {
+                handlerBehaviorTimeout = null;
+                ext.webRequest.handlerBehaviorChanged();
+            }, 3000);
+    }
 });

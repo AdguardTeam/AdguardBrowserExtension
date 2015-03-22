@@ -65,7 +65,7 @@ else
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox legacy
-    options="--version=$version --name=firefox --browser=firefox_legacy"
+    options="--version=$version --name=firefox-legacy --browser=firefox_legacy"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #safari

@@ -38,299 +38,231 @@ var styleService = require('styleSheetService');
  * 1. Registering browser-wide stylesheet
  * 2. Injecting CSS/JS with content-script/preload.js script
  */
-var ElemHide = exports.ElemHide = function (antiBannerService, framesMap) {
-	this.antiBannerService = antiBannerService;
-	this.framesMap = framesMap;
-};
+ElemHide = exports.ElemHide = {
 
-ElemHide.prototype = {
+    collapsedClass: null,
+    collapseStyle: null,
+    nodesToCollapse: null,
 
-	collapsedClass: null,
-	collapseStyle: null,
-	nodesToCollapse: null,
+    /**
+     * Init ElemHide object
+     */
+    init: function (framesMap, antiBannerService, webRequestService) {
 
-	/**
-	 * Init ElemHide object
-	 */
-	init: function () {
-		this._registerCollapsedStyle();
-		this._registerSelectorStyle();
-		this._registerElemHideInsert();
-		EventNotifier.addListener(function (event, settings) {
-			switch (event) {
-				case EventNotifierTypes.REBUILD_REQUEST_FILTER_END:
-					if (!userSettings.collectHitsCount()) {
-						// "Send statistics for ad filters usage" option is disabled
-						// Do nothing in this case
-						return;
-					}
-					this._saveStyleSheetToDisk();
-					break;
-				case EventNotifierTypes.CHANGE_USER_SETTINGS:
-					this.changeElemhideMethod(settings);
-					break;
-			}
-		}.bind(this));
+        this.framesMap = framesMap;
+        this.antiBannerService = antiBannerService;
+        this.webRequestService = webRequestService;
 
-		if (userSettings.collectHitsCount()) {
-			this._applyCssStyleSheet(FilterStorage.getInjectCssFileURI(), true);
-		}
-	},
+        this._registerCollapsedStyle();
+        this._registerSelectorStyle();
+        this._registerContentScripts();
 
-	/**
-	 * Called if user settings have been changed.
-	 * In this case we check "Send statistics for ad filters usage" option value.
-	 * If this flag has been changed - switching CSS injection method.
-	 *
-	 * @param settings
-	 */
-	changeElemhideMethod: function (settings) {
-		if (settings != userSettings.settings.DISABLE_COLLECT_HITS) {
-			return;
-		}
-		var enableCss = userSettings.collectHitsCount();
-		if (enableCss) {
-			this._saveStyleSheetToDisk();
-		} else {
-			this._disableStyleSheet(FilterStorage.getInjectCssFileURI());
-		}
-	},
+        EventNotifier.addListener(function (event, settings) {
+            switch (event) {
+                case EventNotifierTypes.REBUILD_REQUEST_FILTER_END:
+                    if (!userSettings.collectHitsCount()) {
+                        // "Send statistics for ad filters usage" option is disabled
+                        // Do nothing in this case
+                        return;
+                    }
+                    this._saveStyleSheetToDisk();
+                    break;
+                case EventNotifierTypes.CHANGE_USER_SETTINGS:
+                    this.changeElemhideMethod(settings);
+                    break;
+            }
+        }.bind(this));
 
-	/**
-	 * Unregister our stylesheet by it's uri
-	 *
-	 * @param uri Stylesheet URI
-	 * @private
-	 */
-	_disableStyleSheet: function (uri) {
-		styleService.unloadUserSheetByUri(uri);
-	},
+        if (userSettings.collectHitsCount()) {
+            this._applyCssStyleSheet(FilterStorage.getInjectCssFileURI(), true);
+        }
+    },
 
-	/**
-	 * Collapses specified node.
-	 * This method is used from contentPolicy.js
-	 *
-	 * @param node Node
-	 */
-	collapseNode: function (node) {
-		if (this.nodesToCollapse) {
-			this.nodesToCollapse.push(node);
-		} else {
-			this.nodesToCollapse = [node];
-			ConcurrentUtils.runAsync(this._hideNodes, this);
-		}
-	},
+    /**
+     * Called if user settings have been changed.
+     * In this case we check "Send statistics for ad filters usage" option value.
+     * If this flag has been changed - switching CSS injection method.
+     *
+     * @param settings
+     */
+    changeElemhideMethod: function (settings) {
+        if (settings != userSettings.settings.DISABLE_COLLECT_HITS) {
+            return;
+        }
+        var enableCss = userSettings.collectHitsCount();
+        if (enableCss) {
+            this._saveStyleSheetToDisk();
+        } else {
+            this._disableStyleSheet(FilterStorage.getInjectCssFileURI());
+        }
+    },
 
-	/**
-	 * Hides nodes from "nodesToCollapse" field
-	 * @private
-	 */
-	_hideNodes: function () {
+    /**
+     * Unregister our stylesheet by it's uri
+     *
+     * @param uri Stylesheet URI
+     * @private
+     */
+    _disableStyleSheet: function (uri) {
+        styleService.unloadUserSheetByUri(uri);
+    },
 
-		var nodes = this.nodesToCollapse;
-		this.nodesToCollapse = null;
+    /**
+     * Collapses specified node.
+     * This method is used from contentPolicy.js
+     *
+     * @param node Node
+     */
+    collapseNode: function (node) {
+        if (this.nodesToCollapse) {
+            this.nodesToCollapse.push(node);
+        } else {
+            this.nodesToCollapse = [node];
+            ConcurrentUtils.runAsync(this._hideNodes, this);
+        }
+    },
 
-		if (!nodes) {
-			return;
-		}
-		for (var i = 0; i < nodes.length; i++) {
-			var node = nodes[i];
-			var parentNode = node.parentNode;
-			if (parentNode && parentNode instanceof Ci.nsIDOMHTMLFrameSetElement) {
-				// It's not that simple to collapse frame node without breaking page layout
-				// We should also change the parent node.
-				var hasCols = (parentNode.cols && parentNode.cols.indexOf(",") > 0);
-				var hasRows = (parentNode.rows && parentNode.rows.indexOf(",") > 0);
-				if ((hasCols || hasRows) && !(hasCols && hasRows)) {
-					var index = -1;
-					for (var frame = node; frame; frame = frame.previousSibling) {
-						if (frame instanceof Ci.nsIDOMHTMLFrameElement ||
-							frame instanceof Ci.nsIDOMHTMLFrameSetElement) {
-							index++;
-						}
-					}
+    /**
+     * Hides nodes from "nodesToCollapse" field
+     * @private
+     */
+    _hideNodes: function () {
 
-					var property = (hasCols ? "cols" : "rows");
-					var weights = parentNode[property].split(",");
-					weights[index] = "0";
-					parentNode[property] = weights.join(",");
-				}
-			} else {
-				// Add "collapsedClass" to node's class list
-				if (node.classList) {
-					node.classList.add(this.collapsedClass);
-				}
-			}
-		}
-	},
+        var nodes = this.nodesToCollapse;
+        this.nodesToCollapse = null;
 
-	/**
-	 * Registers style for collapsing page node.
-	 * @private
-	 */
-	_registerCollapsedStyle: function () {
-		var offset = "a".charCodeAt(0);
-		this.collapsedClass = "";
-		for (var i = 0; i < 20; i++) {
-			this.collapsedClass += String.fromCharCode(offset + Math.random() * 26);
-		}
-		this.collapseStyle = Services.io.newURI("data:text/css," + encodeURIComponent("." + this.collapsedClass + "{-moz-binding: url(chrome://global/content/bindings/general.xml#dummy) !important;}"), null, null);
-		this._applyCssStyleSheet(this.collapseStyle);
-		Log.info("Collapse style registered successfully");
-	},
+        if (!nodes) {
+            return;
+        }
+        for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+            var parentNode = node.parentNode;
+            if (parentNode && parentNode instanceof Ci.nsIDOMHTMLFrameSetElement) {
+                // It's not that simple to collapse frame node without breaking page layout
+                // We should also change the parent node.
+                var hasCols = (parentNode.cols && parentNode.cols.indexOf(",") > 0);
+                var hasRows = (parentNode.rows && parentNode.rows.indexOf(",") > 0);
+                if ((hasCols || hasRows) && !(hasCols && hasRows)) {
+                    var index = -1;
+                    for (var frame = node; frame; frame = frame.previousSibling) {
+                        if (frame instanceof Ci.nsIDOMHTMLFrameElement ||
+                            frame instanceof Ci.nsIDOMHTMLFrameSetElement) {
+                            index++;
+                        }
+                    }
 
-	/**
-	 * Registers "assistant" module style.
-	 * @private
-	 */
-	_registerSelectorStyle: function () {
-		this.selectorStyle = Services.io.newURI("data:text/css," + encodeURIComponent(self.data.load('content/content-script/assistant/css/selector.css')), null, null);
-		this._applyCssStyleSheet(this.selectorStyle);
-		Log.info("Selector style registered successfully");
-	},
+                    var property = (hasCols ? "cols" : "rows");
+                    var weights = parentNode[property].split(",");
+                    weights[index] = "0";
+                    parentNode[property] = weights.join(",");
+                }
+            } else {
+                // Add "collapsedClass" to node's class list
+                if (node.classList) {
+                    node.classList.add(this.collapsedClass);
+                }
+            }
+        }
+    },
 
-	/**
-	 * Saves CSS content built by CssFilter to file.
-	 * This file is then registered as browser-wide stylesheet.
-	 * @private
-	 */
-	_saveStyleSheetToDisk: function () {
-		ConcurrentUtils.runAsync(function () {
-			var content = this.antiBannerService.getRequestFilter().getCssForStyleSheet();
-			FilterStorage.saveStyleSheetToDisk(content, function () {
-				this._applyCssStyleSheet(FilterStorage.getInjectCssFileURI());
-			}.bind(this));
-		}, this);
-	},
+    /**
+     * Registers style for collapsing page node.
+     * @private
+     */
+    _registerCollapsedStyle: function () {
+        var offset = "a".charCodeAt(0);
+        this.collapsedClass = "";
+        for (var i = 0; i < 20; i++) {
+            this.collapsedClass += String.fromCharCode(offset + Math.random() * 26);
+        }
+        this.collapseStyle = Services.io.newURI("data:text/css," + encodeURIComponent("." + this.collapsedClass + "{-moz-binding: url(chrome://global/content/bindings/general.xml#dummy) !important;}"), null, null);
+        this._applyCssStyleSheet(this.collapseStyle);
+        Log.info("Collapse style registered successfully");
+    },
 
-	/**
-	 * Registers specified stylesheet
-	 * @param uri                   Stylesheet URI
-	 * @param needCheckFileExist    If true - check if file exists
-	 * @private
-	 */
-	_applyCssStyleSheet: function (uri, needCheckFileExist) {
-		try {
-			if (uri) {
-				if (needCheckFileExist) {
-					if (uri.file) {
-						var existed = uri.file.exists();
-						if (!existed) {
-							Log.info('Css stylesheet does not apply file: ' + uri.path + ' because file does not exist');
-							return;
-						}
-					}
-				}
-				styleService.loadUserSheetByUri(uri);
-				Log.debug('styles hiding elements are successfully registered.')
-			}
-		} catch (ex) {
-			Log.error('Error while register stylesheet ' + uri + ':' + ex);
-		}
-	},
+    /**
+     * Registers "assistant" module style.
+     * @private
+     */
+    _registerSelectorStyle: function () {
+        this.selectorStyle = Services.io.newURI("data:text/css," + encodeURIComponent(self.data.load('content/content-script/assistant/css/selector.css')), null, null);
+        this._applyCssStyleSheet(this.selectorStyle);
+        Log.info("Selector style registered successfully");
+    },
 
-	/**
-	 * Registers PageMod for all URLs.
-	 *
-	 * @private
-	 */
-	_registerElemHideInsert: function () {
+    /**
+     * Saves CSS content built by CssFilter to file.
+     * This file is then registered as browser-wide stylesheet.
+     * @private
+     */
+    _saveStyleSheetToDisk: function () {
+        ConcurrentUtils.runAsync(function () {
+            var content = this.antiBannerService.getRequestFilter().getCssForStyleSheet();
+            FilterStorage.saveStyleSheetToDisk(content, function () {
+                this._applyCssStyleSheet(FilterStorage.getInjectCssFileURI());
+            }.bind(this));
+        }, this);
+    },
 
-		var processGetSelectorsAndScripts = this.processGetSelectorsAndScripts.bind(this);
-		var processShouldCollapseMany = this.processShouldCollapseMany.bind(this);
+    /**
+     * Registers specified stylesheet
+     * @param uri                   Stylesheet URI
+     * @param needCheckFileExist    If true - check if file exists
+     * @private
+     */
+    _applyCssStyleSheet: function (uri, needCheckFileExist) {
+        try {
+            if (uri) {
+                if (needCheckFileExist) {
+                    if (uri.file) {
+                        var existed = uri.file.exists();
+                        if (!existed) {
+                            Log.info('Css stylesheet does not apply file: ' + uri.path + ' because file does not exist');
+                            return;
+                        }
+                    }
+                }
+                styleService.loadUserSheetByUri(uri);
+                Log.debug('styles hiding elements are successfully registered.')
+            }
+        } catch (ex) {
+            Log.error('Error while register stylesheet ' + uri + ':' + ex);
+        }
+    },
 
-		pageMod.PageMod({
-			include: ["http://*", "https://*"],
-			contentScriptFile: [
-				self.data.url('content/content-script/content-script.js'),
-				self.data.url('content/content-script/preload.js')
-			],
-			contentScriptWhen: 'start',
-			onAttach: function (worker) {
-				worker.port.on('get-selectors-and-scripts', function (message) {
-					if (WorkaroundUtils.isFacebookIframe(message.documentUrl)) {
-						return;
-					}
-					var result = processGetSelectorsAndScripts(message.documentUrl, worker.tab);
-					if (result) {
-						worker.port.emit('get-selectors-and-scripts', result);
-					}
-				});
-				worker.port.on('process-should-collapse-many', function (message) {
-					var requests = processShouldCollapseMany(message.requests, message.documentUrl, worker.tab);
-					worker.port.emit('process-should-collapse-many', {requests: requests});
-				})
-			}
-		});
-	},
+    /**
+     * Registers PageMod for all URLs.
+     *
+     * @private
+     */
+    _registerContentScripts: function () {
 
-	/**
-	 * Prepares CSS and JS which should be injected to the page.
-	 * TODO: Duplicate for chrome/safari code, we should refactor this.
-	 * @param documentUrl   Document URL
-	 * @param tab           Tab object
-	 * @returns {*}
-	 */
-	processGetSelectorsAndScripts: function (documentUrl, tab) {
+        pageMod.PageMod({
+            include: ["http://*", "https://*"],
+            contentScriptFile: [
+                self.data.url('content/content-script/content-script.js'),
+                self.data.url('content/content-script/preload.js')
+            ],
+            contentScriptWhen: 'start',
+            onAttach: this._onContentScriptAttached.bind(this)
+        });
+    },
 
-		if (!tab) {
-			return null;
-		}
+    _onContentScriptAttached: function (worker) {
 
-		if (!this.antiBannerService.requestFilterReady) {
-			return {requestFilterReady: false};
-		}
+        worker.port.on('get-selectors-and-scripts', function (message) {
+            if (WorkaroundUtils.isFacebookIframe(message.documentUrl)) {
+                return;
+            }
+            var result = this.webRequestService.processGetSelectorsAndScripts(worker.tab, message.documentUrl);
+            if (result) {
+                worker.port.emit('get-selectors-and-scripts', result);
+            }
+        }.bind(this));
 
-		if (this.framesMap.isTabAdguardDetected(tab) || this.framesMap.isTabProtectionDisabled(tab) || this.framesMap.isTabWhiteListed(tab)) {
-			return;
-		}
-
-		var scripts = null;
-		var selectors = null;
-
-		documentUrl = UrlUtils.urlToPunyCode(documentUrl);
-
-		var elemHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "ELEMHIDE");
-		if (!elemHideRule) {
-			if (userSettings.collectHitsCount()) {
-				selectors = this.antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl);
-			} else {
-				selectors = this.antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl);
-			}
-		}
-
-		var jsInjectRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "JSINJECT");
-		if (!jsInjectRule) {
-			scripts = WorkaroundUtils.getScriptsForUrl(this.antiBannerService, documentUrl);
-		}
-
-		return {
-			selectors: selectors,
-			scripts: scripts
-		};
-	},
-
-	/**
-	 * TODO: Duplicate for chrome/safari code, we should refactor this.
-	 */
-	processShouldCollapseMany: function (requests, referrerUrl, tab) {
-
-		if (!tab) {
-			return requests;
-		}
-
-		if (this.framesMap.isTabAdguardDetected(tab) || this.framesMap.isTabProtectionDisabled(tab) || this.framesMap.isTabWhiteListed(tab)) {
-			return requests;
-		}
-
-		referrerUrl = UrlUtils.urlToPunyCode(referrerUrl);
-
-		for (var i = 0; i < requests.length; i++) {
-			var request = requests[i];
-			var requestRule = this.antiBannerService.getRequestFilter().findRuleForRequest(request.elementUrl, referrerUrl, request.requestType);
-			request.collapse = requestRule && !requestRule.whiteListRule;
-		}
-
-		return requests;
-	}
+        worker.port.on('process-should-collapse-many', function (message) {
+            var requests = this.webRequestService.processShouldCollapseMany(worker.tab, message.documentUrl, message.requests);
+            worker.port.emit('process-should-collapse-many', {requests: requests});
+        }.bind(this));
+    }
 };

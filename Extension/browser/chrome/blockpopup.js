@@ -18,56 +18,55 @@ var tabsLoading = Object.create(null);
 
 chrome.webNavigation.onCreatedNavigationTarget.addListener(function (details) {
 
-	var sourceTab = new BrowserTab({id: details.sourceTabId});
+    var sourceTab = new BrowserTab({id: details.sourceTabId});
 
-	//don't process this request
-	if (framesMap.isTabAdguardDetected(sourceTab)) {
-		return;
-	}
+    //don't process this request
+    if (framesMap.isTabAdguardDetected(sourceTab)) {
+        return;
+    }
 
-	var referrerUrl = framesMap.getFrameUrl(sourceTab, 0);
-	if (!UrlUtils.isHttpRequest(referrerUrl)) {
-		return;
-	}
+    var referrerUrl = framesMap.getFrameUrl(sourceTab, 0);
+    if (!UrlUtils.isHttpRequest(referrerUrl)) {
+        return;
+    }
 
-	tabsLoading[details.tabId] = {
-		referrerUrl: referrerUrl,
-		sourceTab: sourceTab
-	};
+    tabsLoading[details.tabId] = {
+        referrerUrl: referrerUrl,
+        sourceTab: sourceTab
+    };
 
-	checkPopupBlockedRule(details.tabId, details.url, referrerUrl, sourceTab);
+    checkPopupBlockedRule(details.tabId, details.url, referrerUrl, sourceTab);
 });
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 
-	if (!(tabId in tabsLoading)) {
-		return;
-	}
+    if (!(tabId in tabsLoading)) {
+        return;
+    }
 
-	if ("url" in changeInfo) {
-		var tabInfo = tabsLoading[tabId];
-		if (tabInfo) {
-			checkPopupBlockedRule(tabId, tab.url, tabInfo.referrerUrl, tabInfo.sourceTab);
-		}
-	}
+    if ("url" in changeInfo) {
+        var tabInfo = tabsLoading[tabId];
+        if (tabInfo) {
+            checkPopupBlockedRule(tabId, tab.url, tabInfo.referrerUrl, tabInfo.sourceTab);
+        }
+    }
 });
 
 function checkPopupBlockedRule(tabId, requestUrl, referrerUrl, sourceTab) {
 
-	//is not http request or url of tab isn't ready
-	if (!UrlUtils.isHttpRequest(requestUrl)) {
-		return;
-	}
+    //is not http request or url of tab isn't ready
+    if (!UrlUtils.isHttpRequest(requestUrl)) {
+        return;
+    }
 
-	delete tabsLoading[tabId];
+    delete tabsLoading[tabId];
 
-	var requestEvent = webRequestService.processRequest(sourceTab, requestUrl, referrerUrl, "POPUP");
+    var requestRule = webRequestService.getRuleForRequest(sourceTab, requestUrl, referrerUrl, "POPUP");
 
-	if (requestEvent.requestBlocked) {
-		//remove popup tab
-		chrome.tabs.remove(tabId);
-		//fix log event type from "POPUP" to "DOCUMENT"
-		requestEvent.logEvent.requestType = "DOCUMENT";
-		webRequestService.postProcessRequest(requestEvent);
-	}
+    if (webRequestService.isRequestBlockedByRule(requestRule)) {
+        //remove popup tab
+        chrome.tabs.remove(tabId);
+        //append log event and fix log event type from "POPUP" to "DOCUMENT"
+        webRequestService.postProcessRequest(sourceTab, requestUrl, referrerUrl, "DOCUMENT", requestRule);
+    }
 }

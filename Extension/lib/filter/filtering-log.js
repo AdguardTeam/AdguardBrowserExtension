@@ -132,17 +132,11 @@ FilteringLog.prototype.clearEventsForTab = function (tab) {
 	EventNotifier.notifyListeners(LogEvents.TAB_RESET, tabInfo);
 };
 
-FilteringLog.prototype.addEvent = function (event) {
+FilteringLog.prototype.addEvent = function (tab, requestUrl, frameUrl, requestType, requestRule) {
 
 	if (this.openedFilteringLogsPage == 0) {
 		return;
 	}
-
-	var tab = event.tab;
-	var requestUrl = event.requestUrl;
-	var frameUrl = event.frameUrl;
-	var requestType = event.requestType;
-	var requestRule = event.requestRule;
 
 	var tabInfo = this.tabsInfo.get(tab);
 	if (!tabInfo) {
