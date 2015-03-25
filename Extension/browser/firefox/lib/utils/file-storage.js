@@ -34,125 +34,147 @@ var Log = require('utils/log').Log;
  */
 var FS = exports.FS = {
 
-	PROFILE_DIR: 'ProfD',
-	ADGUARD_DIR: 'Adguard',
-	LINE_BREAK: '\n',
+    PROFILE_DIR: 'ProfD',
+    ADGUARD_DIR: 'Adguard',
+    LINE_BREAK: '\n',
 
-	readFromFile: function (filename, callback) {
+    readFromFile: function (filename, callback) {
 
-		var filePath = FileUtils.getFile(this.PROFILE_DIR, [this.ADGUARD_DIR, filename]);
-		if (!filePath.exists() || filePath.fileSize == 0) {
-			callback(null, []);
-			return;
-		}
-		NetUtil.asyncFetch(filePath, function (inputStream, status) {
-			if (components.isSuccessCode(status)) {
-				try {
-					var data = NetUtil.readInputStreamToString(inputStream, inputStream.available());
-					data = converter.ConvertToUnicode(data);
-					var lines = data.split(/[\r\n]+/);
-					if (!data) {
-						callback(null, []);
-						return;
-					}
-					callback(null, lines);
-				} catch (ex) {
-					callback(ex);
-				}
-			} else {
-				callback(status);
-			}
-		});
-	},
+        var filePath = FileUtils.getFile(this.PROFILE_DIR, [this.ADGUARD_DIR, filename]);
+        if (!filePath.exists() || filePath.fileSize == 0) {
+            callback(null, []);
+            return;
+        }
+        NetUtil.asyncFetch(filePath, function (inputStream, status) {
+            if (components.isSuccessCode(status)) {
+                try {
+                    var data = NetUtil.readInputStreamToString(inputStream, inputStream.available());
+                    data = converter.ConvertToUnicode(data);
+                    var lines = data.split(/[\r\n]+/);
+                    if (!data) {
+                        callback(null, []);
+                        return;
+                    }
+                    callback(null, lines);
+                } catch (ex) {
+                    callback(ex);
+                }
+            } else {
+                callback(status);
+            }
+        });
+    },
 
-	writeToFile: function (filename, data, callback) {
-		try {
-			this._createDir();
-			var filePath = sdkFile.join(sdkPathFor(this.PROFILE_DIR), this.ADGUARD_DIR, filename);
-			var content = data.join(FS.LINE_BREAK);
-			content = converter.ConvertFromUnicode(content);
+    writeToFile: function (filename, data, callback) {
+        try {
+            this._createDir();
+            var filePath = sdkFile.join(sdkPathFor(this.PROFILE_DIR), this.ADGUARD_DIR, filename);
+            var content = data.join(FS.LINE_BREAK);
+            content = converter.ConvertFromUnicode(content);
 
-			var textWriter = sdkFile.open(filePath, 'w');
-			textWriter.writeAsync(content, function (error) {
-				if (error) {
-					Log.error("Error read file {0}, cause: {1}", filename, error);
-					callback(error);
-				} else {
-					callback(null);
-				}
-			});
+            var textWriter = sdkFile.open(filePath, 'w');
+            textWriter.writeAsync(content, function (error) {
+                if (error) {
+                    Log.error("Error read file {0}, cause: {1}", filename, error);
+                    callback(error);
+                } else {
+                    callback(null);
+                }
+            });
 
-		} catch (ex) {
-			Log.error("Error read file {0}, cause: {1}", filename, ex);
-			callback(ex);
-		}
-	},
+        } catch (ex) {
+            Log.error("Error read file {0}, cause: {1}", filename, ex);
+            callback(ex);
+        }
+    },
 
-	/* Create dir in profile folder */
-	_createDir: function () {
-		var adguardDir = sdkFile.join(sdkPathFor(this.PROFILE_DIR), this.ADGUARD_DIR);
-		if (sdkFile.exists(adguardDir)) {
-			return;
-		}
-		sdkFile.mkpath(adguardDir);
-	},
+    /**
+     * Remove adguard directory on extension uninstall
+     * https://bugzilla.mozilla.org/show_bug.cgi?id=627432
+     */
+    removeAdguardDir: function () {
+        try {
+            var adguardDir = sdkFile.join(sdkPathFor(this.PROFILE_DIR), this.ADGUARD_DIR);
+            if (sdkFile.exists(adguardDir)) {
+                Log.info('Removing profile directory {0}', adguardDir);
+                var files = sdkFile.list(adguardDir);
+                for (var i = 0; i < files.length; i++) {
+                    var filePath = sdkFile.join(sdkPathFor(this.PROFILE_DIR), this.ADGUARD_DIR, files[i]);
+                    sdkFile.remove(filePath);
+                }
+                sdkFile.rmdir(adguardDir);
+            }
+        } catch (ex) {
+            //ignore
+            Log.error('Error remove profile directory, cause {0}', ex);
+        }
+    },
 
-	translateError: function (e) {
-		var msg = e.message || e.name;
-		if (msg) {
-			return msg;
-		}
-		switch (e.code) {
-			case 0x80520001:
-				msg = 'NS_ERROR_FILE_UNRECOGNIZED_PATH';
-				break;
-			case 0x80520002:
-				msg = 'NS_ERROR_FILE_UNRESOLVABLE_SYMLINK ';
-				break;
-			case 0x80520003:
-				msg = 'NS_ERROR_FILE_EXECUTION_FAILED ';
-				break;
-			case 0x80520006:
-				msg = 'NS_ERROR_FILE_TARGET_DOES_NOT_EXIST ';
-				break;
-			case 0x80520007:
-				msg = 'NS_ERROR_FILE_COPY_OR_MOVE_FAILED ';
-				break;
-			case 0x80520008:
-				msg = 'NS_ERROR_FILE_ALREADY_EXISTS ';
-				break;
-			case 0x80520009:
-				msg = 'NS_ERROR_FILE_INVALID_PATH';
-				break;
-			case 0x8052000A:
-				msg = 'NS_ERROR_FILE_DISK_FULL';
-				break;
-			case 0x8052000E:
-				msg = 'NS_ERROR_FILE_IS_LOCKED';
-				break;
-			default:
-				msg = 'Unknown Error';
-				break;
-		}
-		return msg;
-	},
+    /* Create dir in profile folder */
+    _createDir: function () {
+        var adguardDir = sdkFile.join(sdkPathFor(this.PROFILE_DIR), this.ADGUARD_DIR);
+        if (sdkFile.exists(adguardDir)) {
+            return;
+        }
+        sdkFile.mkpath(adguardDir);
+    },
 
-	getFileInAdguardDirUri: function (filename) {
-		var styleFile = FileUtils.getFile(this.PROFILE_DIR, [this.ADGUARD_DIR, filename]);
-		return ioService.newFileURI(styleFile).QueryInterface(Ci.nsIFileURL);
-	},
+    translateError: function (e) {
+        var msg = e.message || e.name;
+        if (msg) {
+            return msg;
+        }
+        switch (e.code) {
+            case 0x80520001:
+                msg = 'NS_ERROR_FILE_UNRECOGNIZED_PATH';
+                break;
+            case 0x80520002:
+                msg = 'NS_ERROR_FILE_UNRESOLVABLE_SYMLINK ';
+                break;
+            case 0x80520003:
+                msg = 'NS_ERROR_FILE_EXECUTION_FAILED ';
+                break;
+            case 0x80520006:
+                msg = 'NS_ERROR_FILE_TARGET_DOES_NOT_EXIST ';
+                break;
+            case 0x80520007:
+                msg = 'NS_ERROR_FILE_COPY_OR_MOVE_FAILED ';
+                break;
+            case 0x80520008:
+                msg = 'NS_ERROR_FILE_ALREADY_EXISTS ';
+                break;
+            case 0x80520009:
+                msg = 'NS_ERROR_FILE_INVALID_PATH';
+                break;
+            case 0x8052000A:
+                msg = 'NS_ERROR_FILE_DISK_FULL';
+                break;
+            case 0x8052000E:
+                msg = 'NS_ERROR_FILE_IS_LOCKED';
+                break;
+            default:
+                msg = 'Unknown Error';
+                break;
+        }
+        return msg;
+    },
 
-	removeFile: function (path, successCallback, errorCallback) {
-		var file = FileUtils.getFile(this.PROFILE_DIR, [this.ADGUARD_DIR, path]);
-		if (!file.exists() || file.fileSize == 0) {
-			successCallback();
-			return;
-		}
-		try {
-			file.remove();
-			successCallback();
-		} catch (ex) {
+    getFileInAdguardDirUri: function (filename) {
+        var styleFile = FileUtils.getFile(this.PROFILE_DIR, [this.ADGUARD_DIR, filename]);
+        return ioService.newFileURI(styleFile).QueryInterface(Ci.nsIFileURL);
+    },
 
-		}
-	}
+    removeFile: function (path, successCallback, errorCallback) {
+        var file = FileUtils.getFile(this.PROFILE_DIR, [this.ADGUARD_DIR, path]);
+        if (!file.exists() || file.fileSize == 0) {
+            successCallback();
+            return;
+        }
+        try {
+            file.remove();
+            successCallback();
+        } catch (ex) {
+            //ignore
+        }
+    }
 };

@@ -1,9 +1,9 @@
-! Version: 1.0.8.27
+! Version: 1.0.8.29
 ! Name: Dutch filter
 ! Description: Filter that enables removing of the ads from websites with Dutch content.
 ! NameEn: Dutch filter
 ! DescriptionEn: Filter that enables blocking of ads on websites with Dutch content.
-! TimeUpdated: 2015-03-13T13:54:53.921+03:00
+! TimeUpdated: 2015-03-24T05:06:15.907+03:00
 ! Adguard Dutch Filter.
 !
 ! Filter that enables removing of the ads from websites with Dutch content.
@@ -205,6 +205,7 @@ _advertentieleaderboardhome.
 ||maffiagame.nl/banner$third-party
 ||media.zie.nl/e/?v=*&ad=false$subdocument,domain=nubijlage.nl
 ||members.home.nl/ajaxf-side/banners/
+||metroonline.nl/bva/
 ||mijnafbeeldingen.net^*/banners/
 ||mijnautobedrijf.nl/nieuwsbanner/$~stylesheet
 ||mijnzusje.nl/banners/
@@ -500,6 +501,7 @@ _advertentieleaderboardhome.
 ||nederlandnieuws.nl/scripts/afb_
 ||netonline.be/reizen/ebookers/
 ||netonline.be/slices/banners/
+||nieuwsuitnijmegen.nl/gfx/banners/
 ||nlondertitels.com/img/studentenlening.png
 ||nolensplein.nl/banners/
 ||nsmbl.nl/wp-content/themes/*/campagnes/
@@ -651,6 +653,8 @@ _advertentieleaderboardhome.
 ||weeronline.nl/go/banner/index?
 ||weeronline.nl/go/specialblock/index/
 ||weeronline.nl^*/hoteldeals/
+||weertdegekste.nl^*/coin-slider.js?
+||weertdegekste.nl^*banner
 ||welingelichtekringen.nl/images/overgangster2.gif
 ||wetenschapsforum.nl/bnr/
 ||whatismyip.nl/images/vista_sky2.gif
@@ -954,6 +958,7 @@ zdnet.be###rightwallpaper
 hetkanwel.net###secondary > aside[id^="text-"]:nth-child(2) > .ssc > .textwidget
 hetkanwel.net###secondary > aside[id^="text-"]:nth-child(3) > .ssc > .textwidget
 hetkanwel.net###secondary > aside[id^="text-"]:nth-child(5) > .ssc > .textwidget
+112achterhoek-nieuws.nl###sidebar
 stoerejongenzzz.nl###sidebar .jetpack-image-container > a
 beautylab.nl###sidebar .textwidget > a[target="_blank"]
 skipr.nl###sidebar > .block.special:nth-child(2)
@@ -982,7 +987,7 @@ mistermoney.nl###theLayer
 valuta.nl,wisselkoers.nl###theLayerSpaarrenteVergelijken
 valuta.nl,wisselkoers.nl###theLayerZorg
 scholieren.com###top
-marktplaats.nl###top-banner-wrapper
+marktplaats.nl###top-banner-wrapper div[id^="banner-"]
 krapuul.nl###topbanner
 voetbalzone.nl###uniGroot
 pokercollege.nl###verticalbanner
@@ -1012,7 +1017,7 @@ fantv.nl,porntubexl.nl,studio040.nl,tube.nl##.ads
 openingstijden.com##.adsense
 nu.nl##.adsilver
 allradio.nl##.adv
-9292.nl,classicfm.nl,fcupdate.nl,onemorething.nl##.advert
+9292.nl,classicfm.nl,fcupdate.nl,onemorething.nl,weertdegekste.nl##.advert
 computeridee.nl##.advertentie-1korting-nl
 apparata.nl,autoblog.nl,skipr.nl##.advertisement
 biertijd.com##.advertorialtitle ~ *
@@ -1212,6 +1217,7 @@ zie.nl##div[id^="advertisement_"]
 marktplaats.nl##div[id^="google_ads_iframe_"]
 hababam.nl##div[id^="had"]
 binaries4all.nl##div[id^="payserver"]
+weertdegekste.nl##div[id^="sidebar"] a[target="_blank"] > img
 treinreiziger.nl##div[id^="subbanner"]
 phphulp.nl##div[style$="background: #ff0000 url(/img/ads/bhosted.png) top left no-repeat; margin-bottom: 10px;"]
 voetbalzone.nl##div[style*="url(http://static-voetbalzone.nl/images/adfactor/"]
@@ -1240,6 +1246,7 @@ telegraaf.nl##table[width][border="0"][style="border:1px solid #e0e0e0;padding-l
 oops.nl##table[width][cellspacing="30"][align="center"]
 kapsels.net##td[width="164"] a[target="_blank"]
 dreamboxclub.nl##td[width="227"] > a[target="_blank"]
+nieuwsuitnijmegen.nl##tr[height="150"]
 kopen.marktplaats.nl##tr[onclick^="document.location.href=logAdmarktClick"]
 kopen.marktplaats.nl##tr[onclick^="window.open(logAdmarktClick('"]
 bouweenpc.nl###header-banner
@@ -1262,7 +1269,7 @@ kinderspelletjes.nl#@##adframe:not(frameset)
 homesearch.nu#@##adsense
 demorgen.be,trouw.nl,volkskrant.nl#@##adv_sky
 comedycentral.nl#@##bannerad
-archiefleeuwardercourant.nl#@##headerAdv
+archiefleeuwardercourant.nl,dekrantvantoen.nl#@##headerAdv
 losseveter.nl#@##mainAd
 schaatsen.nl#@#.HeaderAd
 innerlijk-besef.nl,landleven.nl#@#.ad-block
