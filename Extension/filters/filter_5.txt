@@ -1,9 +1,9 @@
-! Version: 1.0.21.53
+! Version: 1.0.21.64
 ! Name: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: Experimental filter
 ! DescriptionEn: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! TimeUpdated: 2015-03-25T17:00:18.803+03:00
+! TimeUpdated: 2015-03-29T17:00:20.113+03:00
 ! Adguard Experimental Filter
 !
 ! Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
@@ -17,6 +17,8 @@
 !
 ! Advertising networks known rotator domains
 !
+!http://forum.adguard.com/showthread.php?4907
+||googlsyndication.com^$third-party
 ! http://forum.adguard.com/showthread.php?4846
 ifirstrowpt.eu###adblockplus
 ! http://forum.adguard.com/showthread.php?4857
@@ -84,6 +86,8 @@ ifirstrowpt.eu###adblockplus
 ! Rules that are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
 !
+! http://forum.adguard.com/showthread.php?3796
+||whoer.net/images/5socks.gif
 ! http://forum.adguard.com/showthread.php?4889
 link-base.org##img[width="468px"][height="60px"]
 ! forum.adguard.com/showthread.php?4875
@@ -117,6 +121,10 @@ imagebam.com#%#window.open = function() {};
 !
 ! This file contains all experimental rules for Spyware filter.
 !
+! forum.adguard.com/showthread.php?4949
+||kinokadr.ru/includes/count.js
+! http://forum.adguard.com/showthread.php?4921
+/s_code.js$domain=ge.com
 ! http://forum.adguard.com/showthread.php?4860
 megatrest.ru##.bcounts
 ! sletat.ru - bottom
@@ -127,6 +135,12 @@ megatrest.ru##.bcounts
 !
 ! This file contains all experimental rules for Social filter.
 !
+! http://forum.adguard.com/showthread.php?4958
+penzainform.ru###divSocial
+! forum.adguard.com/showthread.php?4949
+kinokadr.ru###socialpopup
+kinokadr.ru###socialpopup2
+##a[href^="http://vkontakte.ru/share.php"]
 ! http://progorod43.ru/news/view/139513
 progorod43.ru##noindex > div.Like
 ! http://gazeta.ua/ - под статьями
@@ -157,6 +171,13 @@ waronline.org##.facebookLike
 ! Do not mix it up with direct adverts domains.
 ! Read about it in direct_adverts.txt
 !
+! forum.adguard.com/showthread.php?4954
+||dverser.ru^$third-party
+||owpawuk.ru^$third-party
+||darangi.ru^$third-party
+||gafik.nehudeyka.ru^$third-party
+! http://forum.adguard.com/showthread.php?4907
+||googlsyndication.com^$third-party
 ! http://forum.adguard.com/showthread.php?4904
 ||madbanner.com^$third-party
 ! http://forum.adguard.com/showthread.php?4899
@@ -300,6 +321,55 @@ waronline.org##.facebookLike
 ! Rules which are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
 !
+! http://forum.adguard.com/showthread.php?4958
+||b.penzainform.ru^$domain=penzainform.ru
+penzainform.ru###divBannerTop
+penzainform.ru##div[style="width: 140px; height: 180px;"][class="rb"]
+penzainform.ru##[id^="flcnt_"]
+! forum.adguard.com/showthread.php?4947
+123-box.ru###ad_s
+! forum.adguard.com/showthread.php?4949
+||pics.kinokadr.ru/images/b/
+kinokadr.ru###uberdiv
+kinokadr.ru###uberfooter
+! http://forum.adguard.com/showthread.php?4952
+||paidbitco.in/banners/
+! http://forum.adguard.com/showthread.php?4925
+! в расширении не сработало правило ||proxy.insorg.org^$third-party для блокировки URL картинок
+||safe-inet.com/sites/default/files/rotor/
+safe-inet.com##div[id^="block-views-rotor-block"]
+! http://forum.adguard.com/showthread.php?4926
+online.anidub.com##a[href^="http://www.dragonknight.ru/ref/"]
+online.anidub.com##object[width="230"][height="380"]
+!
+!
+! http://forum.adguard.com/showthread.php?4927
+||animelend.info/bs/pc_begin.js
+||animelend.info/bs/post.js
+! http://forum.adguard.com/showthread.php?4928
+! стиль - для выравнивания отступа от рекламы
+animemovie.ru#$#.dem {height: 250px!important;}
+animemovie.ru#$#.dem>header{background: url('/')!important;}
+! для расширения, убирает отступ от флэша
+animemovie.ru###field > div > figure > div > object[data^="http://animemovie.ru/uploads/"]
+||animemovie.ru/templates/amu/images/nwb.jpg
+animemovie.ru###drakensang
+||animemovie.ru/templates/amu/images/nwbb.jpg
+||animemovie.ru/uploads/infiplay_naruto/
+!
+!
+! http://forum.adguard.com/showthread.php?4934
+volzsky.ru##img[alt="реклама"]
+volzsky.ru##img[alt="Реклама"]
+volzsky.ru##.lr_banner
+volzsky.ru##div[class*="-promo"]
+volzsky.ru##img[alt="Партнёры"]
+||volzsky.ru/upload/flash/banner_
+||krizis-2015.ru/direct.php$domain=volzsky.ru
+! http://forum.adguard.com/showthread.php?4907
+||klyuchev.in.ua/js/$domain=radikal.ru|f-picture.net
+! http://forum.adguard.com/showthread.php?4819
+||directtogo.ru^$image,domain=sdelanounas.ru
 ! http://forum.adguard.com/showthread.php?4923
 rabota66.ru##.cc-top-banner
 ! [под статьёй остатки] http://replyua.net/news/donetzk/3593-v-donecke-progremel-silnyy-vzryv.html
@@ -452,6 +522,29 @@ pics-money.ru#%#document.cookie = "clickunder=1";
 !
 ! This section contains all kinds of exception rules.
 !
+! http://forum.adguard.com/showthread.php?4962
+mchs.gov.ru#@#.b-banner
+! http://forum.adguard.com/showthread.php?4847
+@@||ads.adfox.ru/*/getCode$domain=carambatv.ru
+@@||ads.adfox.ru/*/getCodeTest$domain=carambatv.ru
+@@||ads.adfox.ru/*/getDefaultImage$domain=carambatv.ru
+@@||ads.adfox.ru/*/goDefaultLink$domain=carambatv.ru
+@@||ads.adfox.ru/*/goLink$domain=carambatv.ru
+@@||ads.adfox.ru/*/prepareCode$domain=carambatv.ru
+@@||ads.adfox.ru/crossdomain.xml$domain=carambatv.ru
+@@||b.scorecardresearch.com/beacon.js$domain=carambatv.ru
+@@||content.adfox.ru/*/defaults/adfox/$domain=carambatv.ru
+@@||content.adfox.ru/transparent.gif$domain=carambatv.ru
+@@||tns-counter.ru/V13a$domain=carambatv.ru
+@@||x.ulogix.ru/?rand=$domain=carambatv.ru
+||vcdn.biz/*_advideo/$domain=carambatv.ru
+! http://forum.adguard.com/showthread.php?4946
+! http://forum.adguard.com/showthread.php?4939
+kino-kolizey.ru#@##banner-wrap
+! http://forum.adguard.com/showthread.php?4907
+radikal.ru,radikal.cc,f-picture.net,radical-foto.ru#@%#window.open = function() {};
+! forum.adguard.com/showthread.php?4912
+@@/themes/tiles/img/banners/banner_$domain=drweb.com|products.drweb.ru
 ! http://forum.adguard.com/showthread.php?4861
 @@/lp2/go.php?file=$domain=bezoplat.ru
 ! http://forum.adguard.com/showthread.php?4850
@@ -514,10 +607,26 @@ oploverz.net###btm_banner
 ! Mobile advertising networks known rotator domains
 ! Used to show ads in mobile apps and websites
 !
-! [LG Phone Info] http://4pda.ru/forum/index.php?showtopic=601691&view=findpost&p=38942080
+!*****временное исключение для news.sportbox.ru(ломается видео)*****
+! http://4pda.ru/forum/index.php?showtopic=601691&view=findpost&p=39012562
+@@||news.sportbox.ru^$urlblock
+!***************************************************
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/418
+! full request: met.adzmobi.com/exmet.php?appid=e616990a48854cb5ba2007652cbd669b&nid=f8f9b9689cea45f6963b1c6046ec90ab&type=17&uuid=7d1dd13a2fa91c0ad174cb69a11549a3&country_code=ru_RU&appver=311&client=2
+||met.adzmobi.com^$empty
+! from Google search
+||adzmobi.com^$empty
+||adzmedia.com^$empty
+||adz.mobi^$empty
+||adzmedia.com^$empty
+||adzworld.in^$empty
+!!! [LG Phone Info] http://4pda.ru/forum/index.php?showtopic=601691&view=findpost&p=38942080
 ||startappexchange.com/tracking/adClick?d=$empty
 ||startappexchange.com/*/gethtmlad$empty
 ||startappexchange.com/*/getadsmetadata$empty
+! [Chess Live]
+||f.doodlemobile.com:8080/feature_server_v3/$empty
+!!!
 ! http://forum.adguard.com/showthread.php?4906
 ||mobile333.com^$empty
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/371

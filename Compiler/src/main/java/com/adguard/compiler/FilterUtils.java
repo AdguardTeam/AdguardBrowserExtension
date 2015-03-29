@@ -52,7 +52,7 @@ public class FilterUtils {
         File dest = new File(source, "tmp-filters");
         File filtersDir = new File(source, "filters");
 
-        List<File> filesToCopy = new ArrayList<>();
+        List<File> filesToCopy = new ArrayList<File>();
         try {
             for (int filterId = 1; filterId <= 10; filterId++) {
 
@@ -124,13 +124,13 @@ public class FilterUtils {
      */
     public static Map<Integer, List<String>> getScriptRules(File source) throws IOException {
 
-        Map<Integer, List<String>> filterScriptRules = new HashMap<>();
+        Map<Integer, List<String>> filterScriptRules = new HashMap<Integer, List<String>>();
 
         File filtersDir = new File(source, "filters");
         for (int filterId = 1; filterId <= 10; filterId++) {
             File filterFile = new File(filtersDir, "filter_" + filterId + ".txt");
             List<String> lines = FileUtils.readLines(filterFile);
-            List<String> scriptRules = new ArrayList<>();
+            List<String> scriptRules = new ArrayList<String>();
             for (String line : lines) {
                 if (line.contains("#%#")) {
                     scriptRules.add(line.trim());

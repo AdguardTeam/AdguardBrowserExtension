@@ -2,9 +2,7 @@
 
 env=$1
 
-if [ ! -d "deploy" ]; then
-    mvn package;
-fi
+mvn package;
 
 cd deploy;
 

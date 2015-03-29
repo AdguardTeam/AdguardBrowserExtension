@@ -1,9 +1,9 @@
-! Version: 1.0.22.57
+! Version: 1.0.22.59
 ! Name: Russian filter
 ! Description: Filter that enables removing of the ads from websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2015-03-19T15:59:47.272+03:00
+! TimeUpdated: 2015-03-29T03:32:37.059+03:00
 ! Adguard Russian Filter
 !
 ! Filter that enables removing of the ads from websites with Russian content.
@@ -9567,6 +9567,9 @@ kinonews.ru##noindex>.blockdiv
 ! Сюда добавляем только в том случае, если для этого сайта есть больше одного правила.
 ! Если правило одно - отправляем в секцию onerulers.
 !
+! picshare.ru
+! скрипты типа такого: http://belole.ru/13d46wncd41atc8xo1sc0rp89kky1513uzubafks0zzfrmijgu15pj250aohtz126o
+/\/[a-z0-9]{32,}/$domain=picshare.ru,third-party
 ! vmet.ro (ads in moscow metro)
 @@||login.vmet.ro^$document
 ||vmet.ro^$third-party
@@ -11646,6 +11649,7 @@ ict-online.ru,spbit.ru##a[href*="/view_images/url.php"]
 ||overclockers.ru/images/Seagate-sky_contest-Micro-win-a-laptop.gif
 ||overclockers.ru/images/*banner.*
 forums.overclockers.ru##.needblock
+forums.overclockers.ru###menubar+center>a>img
 overclockers.ru###header > #uhi
 overclockers.ru##.rastya_zka
 overclockers.ru###topb_anners
