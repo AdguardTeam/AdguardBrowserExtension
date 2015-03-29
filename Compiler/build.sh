@@ -2,11 +2,13 @@
 
 env=$1
 
-mvn package;
+if [ ! -d "deploy" ]; then
+    mvn package;
+fi
 
 cd deploy;
 
-version="2.0.4"
+version="2.0.5"
 
 if [ "$env" = release ]; then
 

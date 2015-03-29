@@ -55,6 +55,8 @@ var ServiceClient = exports.ServiceClient = function () {
 
 ServiceClient.prototype = {
 
+	APP_PARAM: '&app=ag&v=' + Prefs.version,
+
 	/**
 	 * Checks versions of the specified filters
 	 *
@@ -93,6 +95,7 @@ ServiceClient.prototype = {
 		for (var i = 0; i < filterIds.length; i++) {
 			url += (i == 0 ? "?filterid=" : "&filterid=") + filterIds[i];
 		}
+		url += this.APP_PARAM;
 		url = this._addKeyParameter(url);
 		this._executeRequestAsync(url, "application/xml", success, errorCallback);
 	},
@@ -141,7 +144,9 @@ ServiceClient.prototype = {
 			var filterVersion = new AdguardFilterVersion(timeUpdated.getTime(), version, filterId);
 			successCallback(filterVersion, rules);
 		};
-		var url = this._addKeyParameter(this.getFilterRulesUrl + "?filterid=" + filterId);
+		var url = this.getFilterRulesUrl + "?filterid=" + filterId;
+		url += this.APP_PARAM;
+		url = this._addKeyParameter(url);
 		this._executeRequestAsync(url, "text/plain", success, errorCallback);
 	},
 

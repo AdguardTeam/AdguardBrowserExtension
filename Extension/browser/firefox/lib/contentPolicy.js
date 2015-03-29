@@ -139,7 +139,7 @@ var WebRequestHelper = exports.WebRequestHelper = {
         }
 
         // If we have a window now - get the tab
-        if (context) {
+        if (context && context instanceof Ci.nsIDOMWindow) {
             return tabUtils.getTabForContentWindow(context.top);
         }
         return null;
