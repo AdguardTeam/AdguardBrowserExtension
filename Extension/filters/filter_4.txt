@@ -1,9 +1,9 @@
-! Version: 1.0.4.98
+! Version: 1.0.5.1
 ! Name: Social media filter
 ! Description: A filter for social media widgets ("Like" buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets ("Like" buttons and such).
-! TimeUpdated: 2015-03-18T16:06:57.494+03:00
+! TimeUpdated: 2015-04-03T14:13:38.019+03:00
 ! Adguard Social Media Filter
 !
 ! If you do not like numerous «Like» and «Tweet» buttons on all the popular websites on the Internet,
@@ -37,12 +37,6 @@
 ~facebook.com,~developers.facebook.com##a[name="fb_share"]
 ~facebook.com###fb_groups
 ~facebook.com##input.fb
-###facebook_Badge
-##.fb-like
-##.fb_share
-###facebook-icon
-###fb-friends-recent-activity
-##.fb-button
 !
 ! Google Buzz, FriendConnect, PlusOne
 !
@@ -71,10 +65,12 @@
 ||twitter.com/share$third-party
 ||platform.twitter.com/widgets.js$third-party
 ||platform.twitter.com/widgets/$third-party
+||platform.twitter.com/oct.js$third-party
 ||twitter.com/home?status=$third-party
 ~twitter.com##input.tweet
 ~twitter.com##body .twitter-share-button
 ##.tweet_link
+||t.co/i/adsct$third-party
 !
 ! Friendfeed
 !
@@ -133,6 +129,7 @@ livejournal.com##.b-ljtimes-wrapper
 ~vkontakte.ru,~vk.com##.vk-like
 ~vkontakte.ru,~vk.com##input.vk
 ~vkontakte.ru,~vk.com###vkshare0
+~vkontakte.ru,~vk.com##a[href^="http://vkontakte.ru/share.php"]
 !
 ! Odnoklassniki
 !
@@ -292,6 +289,7 @@ livejournal.com##.b-ljtimes-wrapper
 !
 ! Unsorted
 !
+||changetip.com^$third-party
 ||yastatic.net/share/$third-party
 ||lessbuttons.com^$third-party
 ||socpost.net^$third-party
@@ -373,6 +371,14 @@ images/livejournal
 !-------------------------------------------------------------------------------!
 !-------------- Common CSS rules  ----------------------------------------------!
 !-------------------------------------------------------------------------------!
+###facebook_Badge
+##.fb-like
+##.fb_share
+###facebook-icon
+###fb-friends-recent-activity
+##.fb-button
+##a[onlick*="https://www.facebook.com/sharer/"]
+##.hdsocial2
 ##div[id="shareStrip"]
 ##.news_social_button
 ##.p-button-social
@@ -840,7 +846,7 @@ images/livejournal
 !
 ! injecting gapi object to avoid breaking website's javascript
 ~google.cn,~google.by,~google.be,~google.at,~google.ae,~google.ca,~google.ch,~google.cl,~google.cn,~google.co.id,~google.co.in,~google.co.jp,~google.co.th,~google.co.uk,~google.co.ve,~google.co.za,~google.com,~google.com.ar,~google.com.au,~google.com.bd,~google.com.br,~google.com.co,~google.com.eg,~google.com.hk,~google.com.mx,~google.com.my,~google.com.ng,~google.com.pe,~google.com.pe,~google.com.ph,~google.com.pk,~google.com.sa,~google.com.sg,~google.com.tr,~google.com.tw,~google.com.ua,~google.com.vn,~google.de,~google.dk,~google.es,~google.fr,~google.gr,~google.hu,~google.ie,~google.it,~google.nl,~google.no,~google.pl,~google.ru,~google.pt,~google.ro,~google.rs,~google.se,~google.sk,~google.tn,~google.ee,~youtube.com,~9gag.com,~xda-developers.com#%#window.gapi={ plusone: { go: function(){}, render: function(){} }};
-~samsung.com,~imgur.com#%#var addthis = { init: function() {}, addEventListener: function() {}, button: function() {}, counter: function() {} };
+~samsung.com,~imgur.com,~rockstargames.com#%#var addthis = { init: function() {}, addEventListener: function() {}, button: function() {}, counter: function() {} };
 hopesandfears.com#%#twttr={events: { bind: function() {} }};
 ! Fixing CNN gallery
 #%#var stLight = { options: function() {} };
@@ -861,6 +867,34 @@ nv.ua#%#document.cookie = "smodal=1";
 !
 ! Contains rules for specific web sites
 !
+browserleaks.com##.twt
+! forum.adguard.com/showthread.php?4949
+||kinokadr.ru/includes/count.js
+! http://forum.adguard.com/showthread.php?4921
+/s_code.js$domain=ge.com
+! http://forum.adguard.com/showthread.php?4860
+megatrest.ru##.bcounts
+! sletat.ru - bottom
+||sletat.ru/Services/SletatCounter.ashx
+! http://forum.adguard.com/showthread.php?4958
+penzainform.ru###divSocial
+! forum.adguard.com/showthread.php?4949
+kinokadr.ru###socialpopup
+kinokadr.ru###socialpopup2
+! http://progorod43.ru/news/view/139513
+progorod43.ru##noindex > div.Like
+! http://gazeta.ua/ - под статьями
+||connect.ok.ru/dk?st.cmd=WidgetShare$domain=gazeta.ua
+! http://www.ex.ua/18597166
+ex.ua##img[title="Поделиться вконтакте"]
+! http://forum.adguard.com/showthread.php?4839
+progorod43.ru##.social_container
+! http://forum.adguard.com/showthread.php?4786
+3dnews.ru###vk_right
+! http://forum.adguard.com/showthread.php?4787
+eminem.pro###vk_groups2
+! http://waronline.org/
+waronline.org##.facebookLike
 motor.ru##.topic-social__caption
 motor.ru##.topic-social__list
 gorodkirov.ru##.likely__widget
@@ -1215,6 +1249,8 @@ zeroturnaround.com##.contact-us-floating
 !
 ! Section fixing issues caused by social filter
 !
+! addthis.com was broken
+@@||addthiscdn.com^$domain=addthis.com
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/387
 @@||ichip.ru/blobimgs/plugins/easy-vkontakte-connect/js/social-likes.min.js
 ! http://forum.adguard.com/showthread.php?3666-Adguard-for-Mac-1-0-beta-test/page2

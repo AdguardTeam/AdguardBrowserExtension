@@ -1,9 +1,9 @@
-! Version: 1.0.2.7
+! Version: 1.0.2.16
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet be tracked, use this filter.
 ! NameEn: Spyware filter
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2015-03-25T17:53:06.241+03:00
+! TimeUpdated: 2015-04-02T13:25:29.279+03:00
 ! Adguard Spyware Filter
 !
 ! The most comprehensive list of various online counters and web analytics tools.
@@ -15,6 +15,7 @@
 !-------------------------------------------------------------------------------!
 !-------------- Common HTML filtering rules  -----------------------------------!
 !-------------------------------------------------------------------------------!
+! Newrelic
 ! Google analytics scripts
 ! Statcounter script
 ! Gostats script
@@ -70,6 +71,12 @@ popmech.ru#%#AG_onLoad(function() { window.POPMECH.increaseCounters = function()
 !-------------------------------------------------------------------------------!
 !-------------- Tracking servers list  -----------------------------------------!
 !-------------------------------------------------------------------------------!
+||stats.wp.com^$third-party
+||analytics.twitter.com^$third-party
+||statsale.com^$third-party
+||jwpltx.com^$third-party
+||stats.rutracker.ga^
+||webstatistic.ml^$third-party
 ||securestudies.com^$third-party
 ||browser-update.org^$third-party
 ||start.ru^$third-party
@@ -2420,6 +2427,9 @@ popmech.ru#%#AG_onLoad(function() { window.POPMECH.increaseCounters = function()
 !-------------------------------------------------------------------------------!
 !-------------- Specific web sites ---------------------------------------------!
 !-------------------------------------------------------------------------------!
+||assets.adobedtm.com^$domain=f1sport.autorevue.cz
+! hiding optimize.webtrends.com overlay
+europcar.com###wt_overlay
 ! http://forum.adguard.com/showthread.php?4540
 @@||top.list.ru/counter?id=$domain=crimea-kurort.com
 crimea-kurort.com#$#img[width="88"][height="31"] {visibility: hidden!important;}
