@@ -70,9 +70,8 @@ var FS = exports.FS = {
             this._createDir();
             var filePath = sdkFile.join(sdkPathFor(this.PROFILE_DIR), this.ADGUARD_DIR, filename);
             var content = data.join(FS.LINE_BREAK);
-            content = converter.ConvertFromUnicode(content);
 
-            var textWriter = sdkFile.open(filePath, 'w');
+            var textWriter = sdkFile.open(filePath, 'w');//utf-8 charset by default
             textWriter.writeAsync(content, function (error) {
                 if (error) {
                     Log.error("Error read file {0}, cause: {1}", filename, error);

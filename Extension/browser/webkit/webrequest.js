@@ -14,6 +14,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * Process request
+ * @param requestDetails
+ * @returns {boolean} False if request must be blocked
+ */
 function onBeforeRequest(requestDetails) {
 
     var tab = requestDetails.tab;
@@ -27,6 +33,10 @@ function onBeforeRequest(requestDetails) {
     if (requestType == "DOCUMENT") {
         //reset tab button state
         EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_TAB_BUTTON_STATE, tab, true);
+        return true;
+    }
+
+    if (!UrlUtils.isHttpRequest(requestUrl)) {
         return true;
     }
 

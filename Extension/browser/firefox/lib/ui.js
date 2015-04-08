@@ -265,18 +265,13 @@ var UI = exports.UI = {
             activeWorker.port.emit('set-assistant-localization', result);
         }.bind(this);
 
-        var getIframeScripts = function () {
+        var onLoadAssistantIframe = function () {
             var activeWorker = getActiveWorker();
             if (!activeWorker) {
                 return;
             }
-            var scripts = [
-                self.data.load("content/libs/jquery-1.8.3.min.js"),
-                self.data.load("content/libs/jquery-ui.min.js"),
-                self.data.load("content/content-script/assistant/js/slider.js")
-            ];
             var cssContent = self.data.load("content/content-script/assistant/css/assistant.css");
-            activeWorker.port.emit('load-assistant-iframe', {scripts: scripts, cssContent: cssContent});
+            activeWorker.port.emit('load-assistant-iframe', {cssContent: cssContent});
         }.bind(this);
 
         var addUserRule = function (message) {
@@ -285,6 +280,14 @@ var UI = exports.UI = {
                 });
             } else {
                 this.antiBannerService.addUserFilterRule(message.ruleText);
+            }
+        }.bind(this);
+
+        var removeWorker = function (worker) {
+            for (var tabId in this.tabsWorkers) {
+                if (this.tabsWorkers[tabId] === worker) {
+                    delete this.tabsWorkers[tabId];
+                }
             }
         }.bind(this);
 
@@ -314,8 +317,16 @@ var UI = exports.UI = {
 
         activeWorker.port.emit('initAssistant', assistantOptions);
         activeWorker.port.once('get-assistant-localization', getAssistantLocalization);
-        activeWorker.port.once('load-assistant-iframe', getIframeScripts);
+        activeWorker.port.once('load-assistant-iframe', onLoadAssistantIframe);
         activeWorker.port.once('add-user-rule', addUserRule);
+
+        //cleanup workers
+        activeWorker.on('detach', function () {
+            removeWorker(activeWorker);
+        });
+        activeWorker.on('pagehide', function () {
+            removeWorker(activeWorker);
+        });
     },
 
     resizePopup: function (width, height) {

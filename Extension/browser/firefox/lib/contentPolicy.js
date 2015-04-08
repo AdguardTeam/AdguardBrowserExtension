@@ -28,8 +28,9 @@ var events = require('sdk/system/events');
 
 var {Log} = require('utils/log');
 var {EventNotifier} = require('utils/notifier');
-var {EventNotifierTypes, ConcurrentUtils} = require('utils/common');
-var WebRequestService = require('filter/request-blocking').WebRequestService;
+var {EventNotifierTypes} = require('utils/common');
+var {UrlUtils} = require('utils/url');
+var {WebRequestService} = require('filter/request-blocking');
 
 /**
  * Helper object to work with web requests.
@@ -134,12 +135,16 @@ var WebRequestHelper = exports.WebRequestHelper = {
             if (context instanceof Ci.nsIDOMDocument) {
                 context = context.defaultView;
             } else {
-                context = null;
+                return null;
             }
         }
 
         // If we have a window now - get the tab
         if (context && context instanceof Ci.nsIDOMWindow) {
+            //http://jira.performix.ru/browse/AG-7285
+            if ("" + context === "[object ChromeWindow]") {
+                return null;
+            }
             return tabUtils.getTabForContentWindow(context.top);
         }
         return null;
@@ -322,20 +327,6 @@ var WebRequestImpl = exports.WebRequestImpl = {
         var requestUrl = contentLocation.asciiSpec;
         var requestType = WebRequestHelper.getRequestType(contentType);
 
-        if (requestType == "DOCUMENT") {
-            var context = node.contentWindow || node;
-            //check is really main frame
-            if (context.top === context) {
-                //record frame
-                this.framesMap.recordFrame(tab, 0, requestUrl, requestType);
-                //reset tab button state
-                EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_TAB_BUTTON_STATE, tab, true);
-                //save opener for popup rules
-                this._saveContextOpenerTab(context);
-                return WebRequestHelper.ACCEPT;
-            }
-        }
-
         var block = this._shouldBlockRequest(tab, requestUrl, requestType, node, contentType);
 
         return block ? WebRequestHelper.REJECT : WebRequestHelper.ACCEPT;
@@ -394,7 +385,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
         var requestType = contentType ? WebRequestHelper.getRequestType(contentType) : null;
 
         // Sometimes shouldLoad is not called. (e.g. speed dial)
-        if (isMainFrame && !this.framesMap.getMainFrame(tab)) {
+        if (isMainFrame) {
             //record frame
             this.framesMap.recordFrame(tab, 0, requestUrl, "DOCUMENT");
         }
@@ -513,6 +504,14 @@ var WebRequestImpl = exports.WebRequestImpl = {
      */
     _shouldBlockRequest: function (tab, requestUrl, requestType, node, contentType) {
 
+        if (requestType === "DOCUMENT") {
+            return false;
+        }
+
+        if (!UrlUtils.isHttpRequest(requestUrl)) {
+            return false;
+        }
+
         var tabUrl = this.framesMap.getFrameUrl(tab, 0);
 
         var requestRule = this.webRequestService.getRuleForRequest(tab, requestUrl, tabUrl, requestType);
@@ -546,6 +545,10 @@ var WebRequestImpl = exports.WebRequestImpl = {
      * @private
      */
     _checkPopupRule: function (requestUrl, sourceTab) {
+
+        if (!UrlUtils.isHttpRequest(requestUrl)) {
+            return false;
+        }
 
         var tabUrl = this.framesMap.getFrameUrl(sourceTab, 0);
 

@@ -84,12 +84,6 @@ function processLoadAssistant(tab, callback) {
         callback({});
     }
 
-    var assistantJsFiles = [
-        "lib/libs/jquery-1.8.3.min.js",
-        "lib/libs/jquery-ui.min.js",
-        "lib/content-script/assistant/js/slider.js",
-        "lib/content-script/assistant/js/tools.js"
-    ];
     var cssLink = "lib/content-script/assistant/css/assistant.css";
 
     var ids = [
@@ -122,23 +116,10 @@ function processLoadAssistant(tab, callback) {
         return result;
     };
 
-    var loadJs = function (tab, files, i) {
-        tab.executeScript({
-            file: files[i],
-            allFrames: true
-        }, function () {
-            if (i == files.length - 1) {
-                callback({
-                    localization: getLocalization(ids),
-                    cssLink: [ext.getURL(cssLink)]
-                });
-            } else {
-                loadJs(tab, files, i + 1);
-            }
-        });
-    };
-
-    loadJs(tab, assistantJsFiles, 0);
+    callback({
+        localization: getLocalization(ids),
+        cssLink: [ext.getURL(cssLink)]
+    });
 }
 
 //record opened tabs

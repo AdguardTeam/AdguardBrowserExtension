@@ -106,10 +106,6 @@ WebRequestService.prototype.isRequestBlockedByRule = function (requestRule) {
 
 WebRequestService.prototype.getRuleForRequest = function (tab, requestUrl, referrerUrl, requestType) {
 
-    if (!UrlUtils.isHttpRequest(requestUrl) || !UrlUtils.isHttpRequest(referrerUrl)) {
-        return null;
-    }
-
     if (this.framesMap.isTabAdguardDetected(tab) || this.framesMap.isTabProtectionDisabled(tab)) {
         //don't process request
         return null;

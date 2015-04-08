@@ -277,21 +277,12 @@ var Adguard = function () {
 				self.localization = response.localization;
 			}
 
-			var scripts = response.scripts;
 			var cssContent = response.cssContent;
 			var cssLink = response.cssLink;
 
 			var iframe = document.getElementById(settings.iframeId);
 			var head = iframe.contentDocument.getElementsByTagName('head')[0];
 
-			if (scripts) {
-				for (var i = 0; i < scripts.length; i++) {
-					var js = document.createElement("script");
-					js.type = "text/javascript";
-					js.textContent = scripts[i];
-					head.appendChild(js);
-				}
-			}
 			if (cssContent) {
 				var style = document.createElement("style");
 				style.type = "text/css";
@@ -689,16 +680,95 @@ var Adguard = function () {
 		findInIframe('#oneDomainText').text(path);
 	};
 
-	if (typeof(cloneInto) == 'undefined') {
-		cloneInto = function (targetObject) {
-			return targetObject;
-		}
-	}
-	if (typeof(exportFunction) == 'undefined') {
-		exportFunction = function (func, targetScope, define) {
-			targetScope[define.defineAs] = func;
-		}
-	}
+    var renderSliderAndBindEvents = function (options) {
+
+        var $document = findIframe().contents();
+        var $slider = $("#slider", $document);
+
+        $slider.slider({
+            min: options.min,
+            max: options.max,
+            range: 'min',
+            value: options.value,
+            //Prevent the slider from doing anything from the start
+            start: function (event, ui) {
+                return false;
+            },
+            change: function (event, ui) {
+                refreshTicks(ui.value);
+                var delta = options.value - ui.value;
+                options.onSliderMove(delta);
+            }
+        });
+
+        $(document).mouseup(function () {
+            $('.slider,.ui-slider-handle', $document).unbind('mousemove');
+        });
+
+        //While the ui-slider-handle is being held down reference it parent.
+        $('.ui-slider-handle', $document).mousedown(function (e) {
+            e.preventDefault();
+            return $(this).parent().mousedown();
+        });
+
+        var $sliderOffsetLeft = $slider.offset().left;
+        var $sliderWidth = $slider.width();
+
+        var getSliderValue = function (pageX) {
+            return (options.max - options.min) / $sliderWidth * (pageX - $sliderOffsetLeft) + options.min;
+        };
+
+        //This will prevent the slider from moving if the mouse is taken out of the
+        //slider area before the mouse down has been released.
+        $slider.hover(function () {
+            $slider.bind('click', function (e) {
+                //calculate the correct position of the slider set the value
+                var value = getSliderValue(e.pageX);
+                $slider.slider('value', value);
+            });
+            $slider.mousedown(function () {
+                $(this).bind('mousemove', function (e) {
+                    //calculate the correct position of the slider set the value
+                    var value = getSliderValue(e.pageX);
+                    $(this).slider('value', value);
+                });
+            }).mouseup(function () {
+                $(this).unbind('mousemove');
+            })
+        }, function () {
+            $('#slider', $document).unbind('mousemove');
+            $('#slider', $document).unbind('click');
+        });
+
+        //render slider items
+        var sliderItemsCount = options.max - 1;
+
+        //update slider items color
+        var refreshTicks = function (value) {
+            var ticks = findInIframe(".tick");
+            var i;
+            for (i = 0; i < ticks.length; i++) {
+                if (i + 1 < value) {
+                    findInIframe(ticks[i]).css('background-color', '#86BFCE');
+                }
+                else {
+                    findInIframe(ticks[i]).css('background-color', '#E6ECED');
+                }
+            }
+        };
+        //render slider items
+        var prepare = function (i) {
+            var tick = $('<div>', {class: 'tick ui-widget-content'}).appendTo($slider);
+            tick.css({
+                left: (100 / sliderItemsCount * i) + '%',
+                width: (100 / sliderItemsCount) + '%'
+            });
+        };
+        for (var i = 0; i < sliderItemsCount; i++) {
+            prepare(i);
+        }
+        refreshTicks(options.value);
+    };
 
 	var createSlider = function (element) {
 		var parents = utils.getParentsLevel(element);
@@ -712,9 +782,7 @@ var Adguard = function () {
 			findInIframe('#slider').hide();
 			findInIframe('.adg-slide-text').text(getMessage("assistant_slider_if_hide"));
 		}
-		var concreteWindow = typeof (unsafeWindow) != 'undefined' ? unsafeWindow : window;
-		var frameContentWindow = concreteWindow.document.getElementById(settings.iframeId).contentWindow;
-		var onSliderMoveWrapper = function (delta) {
+		options.onSliderMove = function (delta) {
 			var elem;
 			if (delta > 0) {
 				elem = parents[delta - 1];
@@ -727,9 +795,7 @@ var Adguard = function () {
 			}
 			onSliderMove(elem);
 		};
-		frameContentWindow.unsafeOptions = cloneInto(options, frameContentWindow);
-		exportFunction(onSliderMoveWrapper, frameContentWindow.unsafeOptions, {defineAs: 'callback'});
-		frameContentWindow.CreateSlider();
+        renderSliderAndBindEvents(options);
 	};
 
 	var handleShowBlockSettings = function (showBlockByUrl, showBlockSimilar) {
