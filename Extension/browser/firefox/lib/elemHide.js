@@ -222,6 +222,11 @@ ElemHide = exports.ElemHide = {
                         }
                     }
                 }
+                //disable previous registered sheet
+                if (styleService.sheetRegistered(uri)) {
+                    styleService.unloadUserSheetByUri(uri);
+                }
+                //load new stylesheet
                 styleService.loadUserSheetByUri(uri);
                 Log.debug('styles hiding elements are successfully registered.')
             }

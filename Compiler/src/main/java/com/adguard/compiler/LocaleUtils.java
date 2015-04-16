@@ -1,16 +1,16 @@
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
- *
+ * <p/>
  * Adguard Browser Extension is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p/>
  * Adguard Browser Extension is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -29,13 +29,13 @@ import java.util.Map;
  */
 public class LocaleUtils {
 
-	public static enum SupportedLocales {
+	public enum SupportedLocales {
 
-		EN("en"), RU("ru"), DE("de"), TR("tr"), UK("uk");
+		EN("en"), RU("ru"), DE("de"), TR("tr"), UK("uk"), PL("pl"), PT_BR("pt_BR"), PT_PT("pt_PT");
 
 		private String code;
 
-		private SupportedLocales(String code) {
+		SupportedLocales(String code) {
 			this.code = code;
 		}
 
@@ -93,7 +93,7 @@ public class LocaleUtils {
 
 		StringBuilder sb = new StringBuilder();
 		for (SupportedLocales locale : SupportedLocales.values()) {
-			File localeFile = new File(dest, "locale/" + locale.code + ".properties");
+			File localeFile = new File(dest, "locale/" + locale.code.replace("_", "-") + ".properties");
 			String[] messages = StringUtils.split(FileUtils.readFileToString(localeFile), System.lineSeparator());
 			String name = findMessage(messages, "name");
 			String description = findMessage(messages, "description");

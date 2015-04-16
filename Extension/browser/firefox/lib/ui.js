@@ -206,21 +206,7 @@ var UI = exports.UI = {
     },
 
     openExtensionStore: function () {
-        var url;
-        if (Utils.isOperaBrowser()) {
-            url = "https://addons.opera.com/ru/extensions/details/adguard/";
-        } else if (Utils.isFirefoxBrowser()) {
-            url = "https://addons.mozilla.org/en-US/firefox/addon/adguard-adblocker/";
-        } else if (Utils.isYaBrowser() || Utils.isSafariBrowser()) {
-            var locale = Prefs.locale;
-            if (locale == "ru") {
-                url = "http://vk.com/adguard";
-            } else {
-                url = "https://www.facebook.com/AdguardEn";
-            }
-        } else {
-            url = "https://chrome.google.com/webstore/detail/bgnkhhnnamicmpeenaelnjfhikgbkllg/reviews";
-        }
+        var url = Utils.getExtensionStoreLink();
         UI.openTab(url);
     },
 

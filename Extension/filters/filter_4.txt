@@ -1,9 +1,9 @@
-! Version: 1.0.5.1
+! Version: 1.0.5.6
 ! Name: Social media filter
 ! Description: A filter for social media widgets ("Like" buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets ("Like" buttons and such).
-! TimeUpdated: 2015-04-03T14:13:38.019+03:00
+! TimeUpdated: 2015-04-15T21:40:10.115+03:00
 ! Adguard Social Media Filter
 !
 ! If you do not like numerous «Like» and «Tweet» buttons on all the popular websites on the Internet,
@@ -301,7 +301,6 @@ livejournal.com##.b-ljtimes-wrapper
 ||w.uptolike.com^$third-party
 ||hn-button.herokuapp.com$third-party
 ||taboolasyndication.com^$third-party
-||outbrain.com^$third-party
 ||iknopo.ru^$third-party
 ||i.po.st/share$third-party
 ||share.pluso.ru^$third-party
@@ -867,6 +866,22 @@ nv.ua#%#document.cookie = "smodal=1";
 !
 ! Contains rules for specific web sites
 !
+! gamer.ru
+gamer.ru##.social_vk
+! meduza.io
+meduza.io##.MaterialTopBar-fbButton
+meduza.io##.MaterialTopBar-twButton
+meduza.io##.MaterialTopBar-vkButton
+meduza.io##.Material-socialButtons
+meduza.io###DailySubscriber
+meduza.io##.NewsMaterial-sidebar
+wday.ru##.social-blocks
+facenews.ua##.popup-time-banner
+! http://forum.adguard.com/showthread.php?4984
+sports.ru#@#.social-icons-big
+sports.ru##.social-icons-big.likes
+sports.ru##.c-poll-share__text
+sports.ru##.c-poll-share__social
 browserleaks.com##.twt
 ! forum.adguard.com/showthread.php?4949
 ||kinokadr.ru/includes/count.js
@@ -1084,8 +1099,6 @@ sonikelf.ru##a[class="VKLink"]
 sonikelf.ru##a[class="TWLink"]
 sonikelf.ru##a[class="GLink"]
 androidcentral.com##.share
-sports.ru##.c-poll-share__text
-sports.ru##.c-poll-share__social
 androidauthority.com###text-44
 androidauthority.com##.single_share_block
 comss.ru##.toplogo>span

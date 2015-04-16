@@ -1,16 +1,16 @@
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
- *
+ * <p/>
  * Adguard Browser Extension is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p/>
  * Adguard Browser Extension is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -20,6 +20,7 @@ import freemarker.cache.FileTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.util.HashMap;
@@ -77,7 +78,6 @@ public class FileUtil {
 
 		//customize html files
 		File[] htmlFiles = destPages.listFiles(new FilenameFilter() {
-			@Override
 			public boolean accept(File dir, String name) {
 				return name.endsWith(".html");
 			}
@@ -179,7 +179,6 @@ public class FileUtil {
 
 	private static void copyDirectory(File source, File dest) throws IOException {
 		FileUtils.copyDirectory(source, dest, new FileFilter() {
-			@Override
 			public boolean accept(File pathname) {
 				return !pathname.getName().startsWith(".");
 			}
@@ -194,15 +193,20 @@ public class FileUtil {
 		templateConfiguration.setTemplateLoader(fileTemplateLoader);
 
 		String result;
-		try (Writer out = new StringWriter()) {
+		Writer out = null;
+		try {
 
-			Map<String, Object> params = new HashMap<>();
+			out = new StringWriter();
+
+			Map<String, Object> params = new HashMap<String, Object>();
 			params.put("browser", browser);
 
 			Template template = templateConfiguration.getTemplate(file.getName(), "utf-8");
 			template.process(params, out);
 
 			result = out.toString();
+		} finally {
+			IOUtils.closeQuietly(out);
 		}
 
 		FileUtils.writeStringToFile(file, result);

@@ -6,7 +6,7 @@ mvn package;
 
 cd deploy;
 
-version="2.0.6"
+version="2.0.7"
 
 if [ "$env" = release ]; then
 
@@ -34,8 +34,12 @@ elif [ "$env" = beta ]; then
 
     echo "Creating beta builds..."
 
+    #chrome beta zip
+    options="--version=$version --name=main --browser=chrome --pack=zip --update-filters=true"
+    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
+
     #chrome beta crx
-    options="--version=$version --name=main --browser=chrome --pack=crx --update-filters=true --update-url=https://chrome.adtidy.org/updates.xml"
+    options="--version=$version --name=main --browser=chrome --pack=crx --update-url=https://chrome.adtidy.org/updates.xml"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox beta xpi

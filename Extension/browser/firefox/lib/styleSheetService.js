@@ -21,25 +21,29 @@ var styleService = Cc['@mozilla.org/content/style-sheet-service;1'].getService(C
 var ioService = Cc['@mozilla.org/network/io-service;1'].getService(Ci.nsIIOService);
 
 function makeURI(url) {
-	return ioService.newURI(url, null, null);
+    return ioService.newURI(url, null, null);
 }
 
 var loadUserSheet = exports.loadUserSheet = function loadUserSheet(url) {
-	var uri = makeURI(url);
-	styleService.loadAndRegisterSheet(uri, styleService.USER_SHEET);
-	unload(unloadUserSheet.bind(null, url));
+    var uri = makeURI(url);
+    styleService.loadAndRegisterSheet(uri, styleService.USER_SHEET);
+    unload(unloadUserSheet.bind(null, url));
 };
 
 var unloadUserSheet = exports.unloadUserSheet = function unloadUserSheet(url) {
-	var uri = makeURI(url);
-	styleService.unregisterSheet(uri, styleService.USER_SHEET);
+    var uri = makeURI(url);
+    styleService.unregisterSheet(uri, styleService.USER_SHEET);
 };
 
 var loadUserSheetByUri = exports.loadUserSheetByUri = function loadUserSheetByUri(uri) {
-	styleService.loadAndRegisterSheet(uri, styleService.USER_SHEET);
-	unload(unloadUserSheetByUri.bind(null, uri));
+    styleService.loadAndRegisterSheet(uri, styleService.USER_SHEET);
+    unload(unloadUserSheetByUri.bind(null, uri));
+};
+
+var sheetRegistered = exports.sheetRegistered = function (uri) {
+    return styleService.sheetRegistered(uri, styleService.USER_SHEET);
 };
 
 var unloadUserSheetByUri = exports.unloadUserSheetByUri = function unloadUserSheetByUri(uri) {
-	styleService.unregisterSheet(uri, styleService.USER_SHEET);
+    styleService.unregisterSheet(uri, styleService.USER_SHEET);
 };

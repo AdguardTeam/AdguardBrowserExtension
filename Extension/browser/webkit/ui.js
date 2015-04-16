@@ -19,15 +19,15 @@ var UI = {
 
 	ICON_BLUE: {
 		'19': ext.getURL('icons/blue-19.png'),
-		'38': ext.getURL('icons/blue-32.png')
+		'38': ext.getURL('icons/blue-38.png')
 	},
 	ICON_GREEN: {
 		'19': ext.getURL('icons/green-19.png'),
-		'38': ext.getURL('icons/green-32.png')
+		'38': ext.getURL('icons/green-38.png')
 	},
 	ICON_GRAY: {
 		'19': ext.getURL('icons/gray-19.png'),
-		'38': ext.getURL('icons/gray-32.png')
+		'38': ext.getURL('icons/gray-38.png')
 	},
 
 	nextMenuId: 0,
@@ -226,21 +226,7 @@ var UI = {
 	},
 
 	openExtensionStore: function () {
-		var url;
-		if (Utils.isOperaBrowser()) {
-			url = "https://addons.opera.com/ru/extensions/details/adguard/";
-		} else if (Utils.isFirefoxBrowser()) {
-			url = "https://addons.mozilla.org/en-US/firefox/addon/adguard-adblocker/";
-		} else if (Utils.isYaBrowser() || Utils.isSafariBrowser()) {
-			var locale = ext.i18n.getMessage("@@ui_locale");
-			if (locale == "ru") {
-				url = "http://vk.com/adguard";
-			} else {
-				url = "https://www.facebook.com/AdguardEn";
-			}
-		} else {
-			url = "https://chrome.google.com/webstore/detail/bgnkhhnnamicmpeenaelnjfhikgbkllg/reviews";
-		}
+		var url = Utils.getExtensionStoreLink();
 		UI.openTab(url);
 	},
 

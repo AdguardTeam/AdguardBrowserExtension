@@ -141,7 +141,7 @@ SubscriptionGroup.fromXml = function (group) {
  * Filter metadata
  * @type {Function}
  */
-var SubscriptionFilter = exports.SubscriptionFilter = function (filterId, groupId, name, description, homepage, version, timeUpdated, displayNumber, languages, expires) {
+var SubscriptionFilter = exports.SubscriptionFilter = function (filterId, groupId, name, description, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl) {
 
 	this.filterId = filterId;
 	this.groupId = groupId;
@@ -153,6 +153,7 @@ var SubscriptionFilter = exports.SubscriptionFilter = function (filterId, groupI
 	this.displayNumber = displayNumber;
 	this.languages = languages;
 	this.expires = expires;
+	this.subscriptionUrl = subscriptionUrl;
 };
 
 /**
@@ -171,6 +172,7 @@ SubscriptionFilter.fromXml = function (filter) {
 	var timeUpdated = new Date(getChildTextContent(filter, 'timeUpdated')).getTime();
 	var displayNumber = getChildTextContent(filter, 'displayNumber') - 0;
 	var expires = getChildTextContent(filter, 'expires') - 0;
+	var subscriptionUrl = getChildTextContent(filter, 'subscriptionUrl');
 
 	var languages = [];
 	var languagesEl = getChild(filter, 'languages');
@@ -199,7 +201,7 @@ SubscriptionFilter.fromXml = function (filter) {
 		defaultDescription = i18n[Locale].description;
 	}
 
-	return new SubscriptionFilter(filterId, groupId, defaultName, defaultDescription, homepage, version, timeUpdated, displayNumber, languages, expires);
+	return new SubscriptionFilter(filterId, groupId, defaultName, defaultDescription, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl);
 };
 
 

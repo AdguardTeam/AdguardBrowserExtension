@@ -126,7 +126,13 @@ var ext, BaseEvent, OnMessageEvent, sendMessage;
 
 	I18n.prototype = {
 
-		supportedLocales: ['ru', 'en', 'tr', 'uk', 'de'],
+		defaultLocale: 'en',
+
+		supportedLocales: ['ru', 'en', 'tr', 'uk', 'de', 'pl', 'pt'],
+
+		localeMessages: {
+			'pt': 'pt_PT'
+		},
 
 		_getLocale: function () {
 			var prefix = navigator.language.substring(0, 2).toLowerCase();
@@ -139,13 +145,21 @@ var ext, BaseEvent, OnMessageEvent, sendMessage;
 
 		_getMessages: function (locale) {
 			var xhr = new XMLHttpRequest();
-			xhr.open("GET", safari.extension.baseURI + "_locales/" + locale + "/messages.json", false);
+			xhr.open("GET", this._getMessageFile(locale), false);
 			try {
 				xhr.send();
 			} catch (e) {
 				return null;
 			}
 			return JSON.parse(xhr.responseText);
+		},
+
+		_getMessageFile: function (locale) {
+			var path = locale;
+			if (path in this.localeMessages) {
+				path = this.localeMessages[locale];
+			}
+			return safari.extension.baseURI + "_locales/" + path + "/messages.json";
 		},
 
 		getMessage: function (msgId, substitutions) {

@@ -293,6 +293,7 @@ AntiBannerService.prototype = {
 		var filter = this._getFilterById(AntiBannerFiltersId.USER_FILTER_ID);
 		EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTER_RULES, filter, []);
 		this.userRules = [];
+        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES);
 	},
 
 	/**
@@ -302,6 +303,7 @@ AntiBannerService.prototype = {
 		var filter = this._getFilterById(AntiBannerFiltersId.WHITE_LIST_FILTER_ID);
 		EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTER_RULES, filter, []);
 		this.whiteListDomains = [];
+        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES);
 	},
 
 	/**
@@ -334,6 +336,8 @@ AntiBannerService.prototype = {
 			}
 		}
 		this._addRulesToFilter(AntiBannerFiltersId.USER_FILTER_ID, rules);
+        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES);
+		return rules;
 	},
 
 	/**
@@ -421,6 +425,7 @@ AntiBannerService.prototype = {
 			}
 		}
 		this._addRulesToFilter(AntiBannerFiltersId.WHITE_LIST_FILTER_ID, rules);
+        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES);
 	},
 
 	/**
@@ -525,6 +530,17 @@ AntiBannerService.prototype = {
 			return f.filterId == filterId;
 		})[0];
 	},
+
+    /**
+     * Returns filter metadata by subscription url
+     * @param subscriptionUrl - subscription url
+     * @returns {*|T}
+     */
+    findFilterMetadataBySubscriptionUrl: function (subscriptionUrl) {
+        return this.subscriptionService.getFilters().filter(function (f) {
+            return f.subscriptionUrl === subscriptionUrl;
+        })[0];
+    },
 
 	/**
 	 * This method is called from UI when user changes list of active filters
@@ -790,6 +806,30 @@ AntiBannerService.prototype = {
 	getAppVersion: function () {
 		return Utils.getAppVersion();
 	},
+
+    /**
+     *
+     * @param subscriptionUrl
+     */
+    processAbpSubscriptionUrl: function (subscriptionUrl, loadCallback) {
+
+        var filterMetadata = this.findFilterMetadataBySubscriptionUrl(subscriptionUrl);
+
+        if (filterMetadata) {
+            var filter = this._getFilterById(filterMetadata.filterId);
+            this.addAndEnableFilter(filter.filterId);
+        } else {
+            //load filter
+            var successCallback = function (rulesText) {
+	            var rules = this.addUserFilterRules(rulesText);
+	            loadCallback(rules.length);
+            }.bind(this);
+            var errorCallback = function (request, cause) {
+                Log.error("Error download subscription by url {0}, cause: {1} {2}", subscriptionUrl, request.statusText, cause || "");
+            };
+            this.serviceClient.loadFilterRulesBySubscriptionUrl(subscriptionUrl, successCallback, errorCallback);
+        }
+    },
 
 	/**
 	 * Returns all filters with their metadata

@@ -72,6 +72,18 @@ ext.onMessage.addListener(function (message, sender, callback) {
             }
             callback({});
             break;
+        case "check-subscription-url":
+            var filterMetadata = antiBannerService.findFilterMetadataBySubscriptionUrl(message.url);
+            var confirmMessage = Utils.getAbpSubscribeConfirmMessage(ext.i18n.getMessage.bind(ext.i18n), filterMetadata, message.title);
+            callback({confirmText: confirmMessage, url: message.url});
+            break;
+        case "enable-subscription":
+            var onLoaded = function (rulesAddedCount) {
+                var message = Utils.getAbpSubscribeFinishedMessage(ext.i18n.getMessage.bind(ext.i18n), rulesAddedCount);
+                UI.showAlertMessagePopup(message.title, message.text);
+            };
+            antiBannerService.processAbpSubscriptionUrl(message.url, onLoaded);
+            return true;
         default :
             callback({});
             break;

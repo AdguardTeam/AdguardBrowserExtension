@@ -1,9 +1,9 @@
-! Version: 1.0.21.83
+! Version: 1.0.21.92
 ! Name: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: Experimental filter
 ! DescriptionEn: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! TimeUpdated: 2015-04-08T13:00:28.620+03:00
+! TimeUpdated: 2015-04-16T17:00:21.585+03:00
 ! Adguard Experimental Filter
 !
 ! Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
@@ -74,10 +74,8 @@
 ! Rules that are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
 !
-! forum.adguard.com/showthread.php?4971
-calameo.com#%#AG_onLoad(function() { document.getElementsByTagName('body')[0].className = ''; });
-! http://forum.adguard.com/showthread.php?3796
-whoer.net##.rightsimple
+! http://forum.ru-board.com/topic.cgi?forum=5&topic=31105&start=1920
+180upload.com#%#AG_onLoad(function() { $('#use_installer').removeAttr('checked') });
 !
 ! Whitelist
 ! http://adguard.com/filterrules.html#exclusionRules
@@ -93,23 +91,16 @@ whoer.net##.rightsimple
 !
 ! This file contains all experimental rules for Spyware filter.
 !
-! http://forum.adguard.com/showthread.php?4917
-minecraft.net#@%#var _gaq = []; var _gat = { _getTracker: function() { return { _initData: function(){}, _trackPageview: function(){}, _trackEvent: function(){}, _setAllowLinker: function() {}, _setCustomVar: function() {} } }, _createTracker: function() { return this._getTracker(); }, _anonymizeIp: function() {} };
-! остаток от счётчика http://forum.adguard.com/showthread.php?4995
-##img[src*="counter.yadro.ru"]
 !-------------------------------------------------------------------!
 !------- Experimental rules for Social filter ----------------------!
 !-------------------------------------------------------------------!
 !
 ! This file contains all experimental rules for Social filter.
 !
-! http://forum.adguard.com/showthread.php?4984
-sports.ru#@#.social-icons-big
-sports.ru##.social-icons-big.likes
-! http://forum.adguard.com/showthread.php?4902
-wday.ru##.social-blocks
-! http://forum.adguard.com/showthread.php?4981
-facenews.ua##.popup-time-banner
+! http://forum.adguard.com/showthread.php?5141
+mailblog.mail.ru##.sn-mini__single__post
+! http://forum.adguard.com/showthread.php?5085
+igromania.ru###vk_groups2
 !-------------------------------------------------------------------!
 !------- Experimental rules for Russian filter ---------------------!
 !-------------------------------------------------------------------!
@@ -124,36 +115,29 @@ facenews.ua##.popup-time-banner
 ! Do not mix it up with direct adverts domains.
 ! Read about it in direct_adverts.txt
 !
-! http://forum.adguard.com/showthread.php?5063
-||sub.intoback.tk^$third-party
-||go8me.ru^$third-party
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/426
-||pabhaco.ru^$third-party
-! forum.adguard.com/showthread.php?4955
-||tsiso.ru^$third-party
-||tarkita.ru^$third-party
-! nnm.me
-||tech1515983.ru^$third-party
-||rtbget.com^$third-party
-||adname.devsector.ru^$third-party
+! http://forum.adguard.com/showthread.php?5067
+||lizhodo.ru^$third-party
+! http://forum.adguard.com/showthread.php?5059
+! похоже рекламный домен. ||izo.pidarunki.ru^ , ||yagodiza.pidarunki.ru^
+||pidarunki.ru^$third-party
 !
+! http://forum.adguard.com/showthread.php?5062
+||yatvyanos.ru^$third-party
+||enbadar.ru^$third-party
+||holysts.com^$third-party
 ! Possible ad networks (http://forum.adguard.com/showthread.php?783)
 ! TODO[avatar]: check them
 !
 ! .com, .bz - by lang
 ||extronext.ru^$third-party
-||site.imageshara.ru^
 ||web.imgbum.net^
 ||domaha.lisao.ru^$third-party
-||site.imageshara.ru^$third-party
-||adall.me^$third-party
 ||f.film-adult.com^
 ||clickandjoinyourgirl.com^$third-party
 ||xg1.ru^$third-party
 ||kuhni.kuhnibrother.ru^
 ||love-our.ru^$third-party
 ||pigmont.ru^$third-party
-||traffic-sale.ru^$third-party
 ||vezuha.me^$third-party
 ||novosti.kordonivkakino.net^
 ||aksisma.ru^$third-party
@@ -175,17 +159,12 @@ facenews.ua##.popup-time-banner
 ||sweet.game-rust.ru^
 ||tizer.ateke.ru^
 ||vizp.zavetiss.ru^
-||bbtyup.com^$third-party
-||brndrm.com^$third-party
 ||favoritezz.besaba.com^$third-party
 ||ladiesnadosuge.com^$third-party
 ||megabestnews.net^$third-party
 ||slsdlkgjlksdg.net^$third-party
-||gendalf.pronpic.org^$third-party
-||sundoff.pronpic.org^$third-party
 ||tcpalace.com^$third-party
 ||teasermall.com^$third-party
-||tizergid.com^$third-party
 ||total.kordonivkakino.net^$third-party
 ||tznov.kordonivkakino.net^$third-party
 ||tuti.pronpic.org^$third-party
@@ -243,77 +222,66 @@ facenews.ua##.popup-time-banner
 ! Rules which are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
 !
-! http://forum.adguard.com/showthread.php?5064
-||ruspicbox.ru/tpl/
-! http://forum.adguard.com/showthread.php?5054
-2baksa.net##table[style="width: 468px; border-collapse: collapse; height: 60px;"]
-2baksa.net##div[style="width: 180px; height: 250px; border:black 1px solid"]
-2baksa.net##div[id^="bn_"]
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/434
-||vestifinance.ru/img/banners/
-! http://forum.adguard.com/showthread.php?5042
-pornolab.net###page_container > div > a[href^="http://ow.ly/"]
-pornolab.net##iframe[height="400"][width="200"]
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/391
-||i.bongacams.com/b/
-! http://forum.adguard.com/showthread.php?5020
-! фон всегда рекламный, стиль более актуален
-fastpic.ru#$#body {background:url(/) !important;}
-fastpic.ru###someb
-fastpic.ru##div[style="height: 240px;"]
-||fastpic.ru/?123
-fastpic.ru###left-bottom
-fastpic.ru###brndfooter+div
-! forum.adguard.com/showthread.php?5000
-||api.qip.ru/js/s_partners.js
-! forum.adguard.com/showthread.php?5002
-||poltava.to/sponsor2/
-||poltava.to/js-sponsor2/
-poltava.to##div[id^="sponsor"]
+! gamebomb.ru
+gamebomb.ru##object[width="300"][height="400"]
+! http://forum.adguard.com/showthread.php?5155
+pikabu.ru##a[href^="http://ad.adriver.ru/"]
+pikabu.ru###tr_3256920
+! http://forum.adguard.com/showthread.php?5157
+||komcity.ru/adver/
+komcity.ru##a[href^="/goto/?idbanner="]
+! http://forum.adguard.com/showthread.php?5156
+||voono.ru^$domain=www.vl.ru
+www.vl.ru##.banners
+! rg.ru
+rg.ru##.single-banner
+rg.ru##.teaser2-top
+rg.ru##.teaser-box
+! playground.ru
+playground.ru##a[href^="http://ad.adriver.ru"]
+||playground.ru/download/online/image/mkx_pg.jpg
+! http://forum.adguard.com/showthread.php?5137
+pg21.ru##.banner
+! http://forum.adguard.com/showthread.php?5143
+baibako.tv##a[href^="http://moonbit.co.in/?ref="]
+! http://forum.adguard.com/showthread.php?5142
+nnm-club.me###CGCandy377
+nnm-club.me##.genmed > div[style="height:160px;"]
+! http://forum.adguard.com/showthread.php?5152
+||css.joyreactor.cc/css/moiblenew.css
+! http://forum.adguard.com/showthread.php?5103
+health.mail.ru##.branding
+! http://forum.adguard.com/showthread.php?5138
+cheboksary.ru###adv
+! http://forum.adguard.com/showthread.php?5100
+tuchkatv.ru##.adb
+! 4pda.ru
+4pda.ru##a[ah]>img
+||s.4pda.to/css/warthunder.min.css
 !
-! https://auto.mail.ru/article/54558-vesennie_avarii_chem_opasna_smena_sezona/
-! блок справа
-mail.ru##.spring_bordered
-! forum.adguard.com/showthread.php?5016
-||prizyvnik.info/action_prizyv/banner.js
-!
-! ivi.ru
-||digitalaccess.ru^*&rnd=*.
-||thumbs.ivi.ru^*.swf^
-||vidigital.ru^
-||api.digitalaccess.ru/logger/
-||ivi.ru/js/adv/
-||weborama.fr/advertiser/*.mp4
-! неуловимый [почти] баннер
-! div#lfashWowRollDiv
-! http://imagizer.imageshack.com/img540/7207/jyg1dm.png
-!
-! news.sportbox.ru
-||s.s-ports.ru/*/240x150_
-news.sportbox.ru##iframe#iframeTraficChangeRightCol
-! надпись "Новости партнёров". Проверил - с нужным не пересекается
-news.sportbox.ru##.sb_cp_konk_main_head
-! http://news.sportbox.ru/Vidy_sporta/Avtosport/Girls/spbfoto_NI527258_Devushki_zastavshije_pobedy_Fettela_i_Rossi
-||s.s-ports.ru/*/Promo/GilletteRace2015/
-news.sportbox.ru##a[href*="http://ad.adriver.ru/cgi-bin/click.cgi"]
-! http://imagizer.imageshack.com/img538/2971/irRal5.png
-news.sportbox.ru##.sb_c_news_alltype
-!
-! forum.adguard.com/showthread.php?4995
-iobit.com##a[href="https://allsoft.ru/?utm_source=ru+iobit+com&utm_medium=banner&utm_campaign=delivery"]
-! forum.adguard.com/showthread.php?4992
-||povara.ru/img/povara.gif
-!
-||image.dhgate.com^$domain=nowa.cc
-!
-! http://forum.adguard.com/showthread.php?4902
-wday.ru##.banner
-wday.ru##div[class^="banner-"]
-! http://codename-it.livejournal.com/1033911.html
-! screenshot http://imagizer.imageshack.com/img661/6899/j3R81Q.png
-livejournal.com##.b-journalpromo-container
-! [for Annoyances] http://forum.adguard.com/showthread.php?4895
-ufolabs.net###bullet_energy > center > a > img
+torrents.by##img[width="240px"][height="400px"]
+torrents.by###tr_main_cats
+||torrents.by/forum/Skoda.jpg
+! http://forum.adguard.com/showthread.php?5114
+orthographia.ru##.ban_top
+orthographia.ru##.ban
+! http://forum.adguard.com/showthread.php?5119
+sports.ru##.b-euroleague-header
+! http://forum.adguard.com/showthread.php?5049
+vpk.name##div[style="height:400px;margin:10px 0;"]
+vpk.name##div[style="height:90px;"]
+vpk.name###adds
+! http://forum.adguard.com/showthread.php?5072
+||virusinfo.info/images/styles/virusinfo/brand/
+! http://forum.adguard.com/showthread.php?5118
+fishki.net##a[href^="http://engine.adspynet.com/reference?pid="]
+fishki.net##a[href^="http://li.ru/go?"]
+! http://forum.adguard.com/showthread.php?5060
+||livesurf.ru/ad/
+! http://forum.adguard.com/showthread.php?5071
+||cashandfavor.ru^$third-party
+! http://forum.adguard.com/showthread.php?5057
+parnuxi.net##a[href="http://moscow.mac-dostavka.ru/"]
 !
 ! Whitelist
 ! http://adguard.com/filterrules.html#exclusionRules
@@ -323,14 +291,8 @@ ufolabs.net###bullet_energy > center > a > img
 !
 ! This section contains all kinds of exception rules.
 !
-! http://forum.adguard.com/showthread.php?5047
-@@/themes/tiles/img/banners/banner_$domain=drweb.com|drweb.ru
-! forum.adguard.com/showthread.php?5016
-prizyvnik.info#@##ad_global_below_navbar
-! http://forum.adguard.com/showthread.php?4928
-@@||animemovie.ru/uploads/banner/friends/
-! http://forum.adguard.com/showthread.php?4981
-||facenews.ua/misc/r.ad.php
+! http://rusfolder.com/43437998/ - redirect to "Without Ads" blocked (.com/ads_)
+@@||rusfolder.com/ads_free
 !-------------------------------------------------------------------!
 !------- Experimental rules for Other filters ----------------------!
 !-------------------------------------------------------------------!
@@ -348,7 +310,9 @@ antiblock.org#%#var AG_AntiAntiBlock = function() { var baseCreateElement = docu
 antiblock.org#%#AG_onLoad(function() { AG_AntiAntiBlock(); });
 !------------------------------------------------
 ! [Liste FR] https://github.com/AdguardTeam/ExperimentalFilter/issues/424
+! TODO (Alex): REPORT IT TO EASYLIST FORUM
 countrycarcare.com#@#.innerpad
+! TODO (Alex): Report it to RU AdList
 ! http://forum.adguard.com/showthread.php?5021
 ! косяк в фильтре RU AdList: Counters
 @@||my10.imgsmail.ru/mail/$domain=mail.ru
@@ -365,20 +329,11 @@ countrycarcare.com#@#.innerpad
 !
 ! This section contains all kinds of annoyances
 !
-! http://forum.adguard.com/showthread.php?4847
-@@||ads.adfox.ru/*/getCode$domain=carambatv.ru
-@@||ads.adfox.ru/*/getCodeTest$domain=carambatv.ru
-@@||ads.adfox.ru/*/getDefaultImage$domain=carambatv.ru
-@@||ads.adfox.ru/*/goDefaultLink$domain=carambatv.ru
-@@||ads.adfox.ru/*/goLink$domain=carambatv.ru
-@@||ads.adfox.ru/*/prepareCode$domain=carambatv.ru
-@@||ads.adfox.ru/crossdomain.xml$domain=carambatv.ru
-@@||b.scorecardresearch.com/beacon.js$domain=carambatv.ru
-@@||content.adfox.ru/*/defaults/adfox/$domain=carambatv.ru
-@@||content.adfox.ru/transparent.gif$domain=carambatv.ru
-@@||tns-counter.ru/V13a$domain=carambatv.ru
-@@||x.ulogix.ru/?rand=$domain=carambatv.ru
-||vcdn.biz/*_advideo/$domain=carambatv.ru
+! http://forum.adguard.com/showthread.php?4895
+ufolabs.net###bullet_energy > center > a > img
+! Youtube annoyances
+||youtube.com/annotations_invideo?$object-subrequest
+youtube.com##.video-annotations
 ! forum.adguard.com/showthread.php?4882
 android.mobportal.net##body > div.site > table > tbody > tr[align="center"] > td[height="310px"][align="left"]
 android.mobportal.net#$#body > div.site > table > tbody > tr[align="center"] > td[align="right"] > div.header_text {height: inherit!important;}
@@ -495,6 +450,10 @@ fishki.net#%#AG_onLoad(function() { $('a[data-subscribe*="_543769"]').closest('d
 yaplakal.com#%#AG_onLoad(function() { var footers = $('b.icon-user>a[href="http://www.yaplakal.com/members/member1438.html"]').closest('tr'); $(footers).each(function() { $(this).prev().remove(); $(this).prev().remove(); $(this).remove(); }); });
 yap.ru#%#AG_onLoad(function() { var footers = $('b.icon-user>a[href="http://yap.ru/members/member1438.html"]').closest('tr'); $(footers).each(function() { $(this).prev().remove(); $(this).prev().remove(); $(this).remove(); }); });
 !!!---!!!
+!
+!!!---!!! pikabu.ru ads(like posts)
+pikabu.ru#%#AG_onLoad(function() { $('a[href="http://pikabu.ru/html.php?id=ad"]').closest('table[id^="story_table_"]').remove(); });
+!!!---!!!
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/164
 free-torrents.org##noindex > center > div[style="border: 2px solid red;"]
 free-torrents.org##a[href*="https://webtransfer-finance.com/?"]
@@ -561,6 +520,9 @@ letitbit.net##img[class="mcmp_postrol_img"]
 !============================================
 !=============CSS fixes======================
 !============================================
+! http://forum.adguard.com/showthread.php?5119
+sports.ru#$#.branding_euroleague_special-45 {background: #fff !important;}
+sports.ru#$#.branding_euroleague_special-45 .pageLayout {top: 0px !important;}
 ! http://forum.adguard.com/showthread.php?4472
 realty.mail.ru#$#.spring_side {width: 0px!important;}
 ! http://forum.adguard.com/showthread.php?4510

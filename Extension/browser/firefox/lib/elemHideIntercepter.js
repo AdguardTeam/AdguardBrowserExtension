@@ -106,7 +106,7 @@ HidingChannel.prototype = {
 	loadGroup: null,
 	name: null,
 	status: Cr.NS_OK,
-	notHideData: "<bindings xmlns='http://www.mozilla.org/xbl'><binding id='dummy'/></bindings>",
+	notHideData: "<bindings xmlns='http://www.mozilla.org/xbl'><binding id='dummy' bindToUntrustedContent='true'/></bindings>",
 	hideData: "<bindings xmlns='http://www.mozilla.org/xbl'/>",
 
 	asyncOpen: function (listener, context) {

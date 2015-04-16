@@ -21,7 +21,6 @@
  */
 var Log = require('utils/log').Log;
 var Utils = require('utils/common').Utils;
-var StringUtils = require('utils/common').StringUtils;
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
 var Prefs = require('prefs').Prefs;
 var LS = require('utils/local-storage').LS;
@@ -51,6 +50,8 @@ var ServiceClient = exports.ServiceClient = function () {
 	this.safebrowsingLookupUrl = "https://sb.adtidy.org/safebrowsing-lookup-domain.html";
 	this.safebrowsingStatsUrl = "https://sb.adtidy.org/sb-report.html";
 	this.apiKey = "4DDBE80A3DA94D819A00523252FB6380";
+
+	this.loadingSubscriptions = Object.create(null);
 };
 
 ServiceClient.prototype = {
@@ -185,6 +186,54 @@ ServiceClient.prototype = {
 		var url = Prefs.getLocalFilterPath(filterId);
 		this._executeRequestAsync(url, "text/plain", success, errorCallback);
 	},
+
+    /**
+     * Downloads filter rules frm url
+     *
+     * @param url               Subscription url
+     * @param successCallback   Called on success
+     * @param errorCallback     Called on error
+     */
+    loadFilterRulesBySubscriptionUrl: function (url, successCallback, errorCallback) {
+
+	    if (url in this.loadingSubscriptions) {
+		    return;
+	    }
+	    this.loadingSubscriptions[url] = true;
+
+	    var self = this;
+
+        var success = function (response) {
+
+	        delete self.loadingSubscriptions[url];
+
+	        if (response.status !== 200) {
+		        errorCallback(response, "wrong status code: " + response.status);
+		        return;
+	        }
+
+	        var responseText = (response.responseText || '').trim();
+	        if (responseText.length === 0) {
+		        errorCallback(response, "filter rules missing");
+		        return;
+	        }
+
+	        var lines = responseText.split(/[\r\n]+/);
+	        if (lines[0].indexOf('[') === 0) {
+		        //[Adblock Plus 2.0]
+		        lines.shift();
+	        }
+
+            successCallback(lines);
+        };
+
+	    var error = function (request, cause) {
+		    delete self.loadingSubscriptions[url];
+		    errorCallback(request, cause);
+	    };
+
+        this._executeRequestAsync(url, "text/plain", success, error);
+    },
 
 	/**
 	 * Loads filter groups metadata
@@ -406,27 +455,32 @@ ServiceClient.prototype = {
 	},
 
 	_executeRequestAsync: function (url, contentType, successCallback, errorCallback) {
+
 		var request = XMLHttpRequestConstructor.createInstance(Ci.nsIXMLHttpRequest);
-		request.open('GET', url);
-		request.setRequestHeader('Content-type', contentType);
-		request.overrideMimeType(contentType);
-		request.mozBackgroundRequest = true;
-		if (successCallback) {
-			request.onload = function () {
-				successCallback(request);
-			};
+		try {
+			request.open('GET', url);
+			request.setRequestHeader('Content-type', contentType);
+			request.overrideMimeType(contentType);
+			request.mozBackgroundRequest = true;
+			if (successCallback) {
+				request.onload = function () {
+					successCallback(request);
+				};
+			}
+			if (errorCallback) {
+				var errorCallbackWrapper = function () {
+					errorCallback(request);
+				};
+				request.onerror = errorCallbackWrapper;
+				request.onabort = errorCallbackWrapper;
+				request.ontimeout = errorCallbackWrapper;
+			}
+			request.send(null);
+		} catch (ex) {
+			if (errorCallback) {
+				errorCallback(request, ex);
+			}
 		}
-
-		if (errorCallback) {
-			var errorCallbackWrapper = function () {
-				errorCallback(request);
-			};
-			request.onerror = errorCallbackWrapper;
-			request.onabort = errorCallbackWrapper;
-			request.ontimeout = errorCallbackWrapper;
-		}
-
-		request.send(null);
 	},
 
 	_addKeyParameter: function (url) {

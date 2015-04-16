@@ -405,7 +405,6 @@ PageController.prototype = {
 			return;
 		}
 		antiBannerService.clearUserFilter();
-		this._renderUserFilters();
 	},
 
 	onClearWhiteListFilterClicked: function (e) {
@@ -415,7 +414,6 @@ PageController.prototype = {
 			return;
 		}
 		antiBannerService.clearWhiteListFilter();
-		this._renderWhiteListFilters();
 	},
 
 	_renderSearchFilters: function (input, listEl, clearButton, sResult, renderFunc, searchFunc, loadNext) {
@@ -781,13 +779,11 @@ PageController.prototype = {
 	_importUserFilterRules: function (text) {
 		var rules = text ? text.split(/[\r\n]+/) : [];
 		antiBannerService.addUserFilterRules(rules);
-		this._renderUserFilters();
 	},
 
 	_importWhiteListFilterRules: function (text) {
 		var rules = text ? text.split(/[\r\n]+/) : [];
 		antiBannerService.addWhiteListDomains(rules);
-		this._renderWhiteListFilters();
 	},
 
 	_onStatsReset: function () {
@@ -1027,7 +1023,9 @@ var onInit = function () {
 			EventNotifierTypes.REMOVE_FILTER,
 			EventNotifierTypes.START_DOWNLOAD_FILTER,
 			EventNotifierTypes.SUCCESS_DOWNLOAD_FILTER,
-			EventNotifierTypes.ERROR_DOWNLOAD_FILTER
+			EventNotifierTypes.ERROR_DOWNLOAD_FILTER,
+			EventNotifierTypes.UPDATE_USER_FILTER_RULES,
+			EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES
 		];
 
 		function eventListener(event, filter, rules) {
@@ -1066,6 +1064,12 @@ var onInit = function () {
 				case EventNotifierTypes.SUCCESS_DOWNLOAD_FILTER:
 				case EventNotifierTypes.ERROR_DOWNLOAD_FILTER:
 					controller._updateAntiBannerFilter(filter);
+					break;
+				case EventNotifierTypes.UPDATE_USER_FILTER_RULES:
+					controller._renderUserFilters();
+					break;
+				case EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES:
+					controller._renderWhiteListFilters();
 					break;
 			}
 		}

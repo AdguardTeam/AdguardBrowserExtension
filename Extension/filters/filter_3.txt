@@ -1,9 +1,9 @@
-! Version: 1.0.2.16
+! Version: 1.0.2.21
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet be tracked, use this filter.
 ! NameEn: Spyware filter
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2015-04-02T13:25:29.279+03:00
+! TimeUpdated: 2015-04-15T21:48:37.519+03:00
 ! Adguard Spyware Filter
 !
 ! The most comprehensive list of various online counters and web analytics tools.
@@ -46,7 +46,7 @@
 ! JS API FINISH
 !
 ! Fixing possible issues with google analytics blocked
-~google.cn,~google.by,~google.be,~google.at,~google.ae,~google.ca,~google.ch,~google.cl,~google.cn,~google.co.id,~google.co.in,~google.co.jp,~google.co.th,~google.co.uk,~google.co.ve,~google.co.za,~google.com,~google.com.ar,~google.com.au,~google.com.bd,~google.com.br,~google.com.co,~google.com.eg,~google.com.hk,~google.com.mx,~google.com.my,~google.com.ng,~google.com.pe,~google.com.pe,~google.com.ph,~google.com.pk,~google.com.sa,~google.com.sg,~google.com.tr,~google.com.tw,~google.com.ua,~google.com.vn,~google.de,~google.dk,~google.es,~google.fr,~google.gr,~google.hu,~google.ie,~google.it,~google.nl,~google.no,~google.pl,~google.ru,~google.pt,~google.ro,~google.rs,~google.se,~google.sk,~google.tn,~google.ee,~maximonline.ru#%#var _gaq = []; var _gat = { _getTracker: function() { return { _initData: function(){}, _trackPageview: function(){}, _trackEvent: function(){}, _setAllowLinker: function() {}, _setCustomVar: function() {} } }, _createTracker: function() { return this._getTracker(); }, _anonymizeIp: function() {} };
+~google.cn,~google.by,~google.be,~google.at,~google.ae,~google.ca,~google.ch,~google.cl,~google.cn,~google.co.id,~google.co.in,~google.co.jp,~google.co.th,~google.co.uk,~google.co.ve,~google.co.za,~google.com,~google.com.ar,~google.com.au,~google.com.bd,~google.com.br,~google.com.co,~google.com.eg,~google.com.hk,~google.com.mx,~google.com.my,~google.com.ng,~google.com.pe,~google.com.pe,~google.com.ph,~google.com.pk,~google.com.sa,~google.com.sg,~google.com.tr,~google.com.tw,~google.com.ua,~google.com.vn,~google.de,~google.dk,~google.es,~google.fr,~google.gr,~google.hu,~google.ie,~google.it,~google.nl,~google.no,~google.pl,~google.ru,~google.pt,~google.ro,~google.rs,~google.se,~google.sk,~google.tn,~google.ee,~maximonline.ru,~minecraft.net#%#var _gaq = []; var _gat = { _getTracker: function() { return { _initData: function(){}, _trackPageview: function(){}, _trackEvent: function(){}, _setAllowLinker: function() {}, _setCustomVar: function() {} } }, _createTracker: function() { return this._getTracker(); }, _anonymizeIp: function() {} };
 ~google.cn,~google.by,~google.be,~google.at,~google.ae,~google.ca,~google.ch,~google.cl,~google.cn,~google.co.id,~google.co.in,~google.co.jp,~google.co.th,~google.co.uk,~google.co.ve,~google.co.za,~google.com,~google.com.ar,~google.com.au,~google.com.bd,~google.com.br,~google.com.co,~google.com.eg,~google.com.hk,~google.com.mx,~google.com.my,~google.com.ng,~google.com.pe,~google.com.pe,~google.com.ph,~google.com.pk,~google.com.sa,~google.com.sg,~google.com.tr,~google.com.tw,~google.com.ua,~google.com.vn,~google.de,~google.dk,~google.es,~google.fr,~google.gr,~google.hu,~google.ie,~google.it,~google.nl,~google.no,~google.pl,~google.ru,~google.pt,~google.ro,~google.rs,~google.se,~google.sk,~google.tn,~google.ee#%#function urchinTracker() {};
 ! Fixing imrworldwide.com scripts
 #%#var nol_t = function() { return { record: function() { return { post: function() {} } } } };
@@ -67,10 +67,12 @@ popmech.ru#%#AG_onLoad(function() { window.POPMECH.increaseCounters = function()
 ! Hide counters images
 ###ramblerCounter
 ##span[id="top100counter"]
+##img[src*="counter.yadro.ru"]
 ~onliner.by,~yandex.ru,~yandex.ua,~yandex.com,~yandex.by,~yandex.com.tr##img[width="88"][height="31"]
 !-------------------------------------------------------------------------------!
 !-------------- Tracking servers list  -----------------------------------------!
 !-------------------------------------------------------------------------------!
+||collect.igodigital.com^$third-party
 ||stats.wp.com^$third-party
 ||analytics.twitter.com^$third-party
 ||statsale.com^$third-party
@@ -2445,6 +2447,7 @@ hentaiz-org##img[width="31"][height="31"]
 ||js.washingtonpost.com/*/init.track-header-*.js
 ||wo.washingtonpost.com^
 ||nbcnews.com/databox/databoxservice.asmx/GetLocation$domain=nbcnews.com
+||nbcnews.com/trackingService/$domain=nbcnews.com
 versii.com##img[style="width: 88px; height: 31px; border: 0"]
 bogamol.ru##a[href="http://www.hitcounter.ru"]
 ||biweed.com/templates/ipboard/images/counter*.gif
@@ -2474,6 +2477,8 @@ seclub.org##a[href^="http://waplog.net/"]
 !-------------------------------------------------------------------------------!
 !-------------- Whitelist ------------------------------------------------------!
 !-------------------------------------------------------------------------------!
+! Fixing disqus (for stealth mode extension)
+@@||disqus.com/api/3.0/embed/threadDetails.json
 ! Fixing ponominalu purchase page
 @@||ponominalu.ru/cart$document
 @@.googleadservices.*.js$domain=ponominalu.ru

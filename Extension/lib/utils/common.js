@@ -199,7 +199,7 @@ var Utils = exports.Utils = {
     /**
      * Locales supported
      */
-    supportedLocales: ['ru', 'en', 'tr', 'uk', 'de'],
+    supportedLocales: ['ru', 'en', 'tr', 'uk', 'de', 'pl', 'pt'],
 
     navigator: Cc["@mozilla.org/network/protocol;1?name=http"].getService(Ci.nsIHttpProtocolHandler),
 
@@ -263,6 +263,31 @@ var Utils = exports.Utils = {
         return Utils.navigator.platform.toUpperCase().indexOf('MAC') >= 0;
     },
 
+    getExtensionStoreLink: function () {
+        var urlBuilder = ["http://adguard.com/"];
+
+        if (Prefs.locale == "ru") {
+            urlBuilder.push("ru");
+        } else {
+            urlBuilder.push("en");
+        }
+        urlBuilder.push("/extension-page.html?browser=");
+
+        if (Utils.isOperaBrowser()) {
+            urlBuilder.push("opera");
+        } else if (Utils.isFirefoxBrowser()) {
+            urlBuilder.push("firefox");
+        } else if (Utils.isYaBrowser()) {
+            urlBuilder.push("yabrowser");
+        } else if (Utils.isSafariBrowser()) {
+            urlBuilder.push("safari");
+        } else {
+            urlBuilder.push("chrome");
+        }
+
+        return urlBuilder.join("");
+    },
+
     debounce: function (func, wait) {
         var timeout;
         return function () {
@@ -321,6 +346,23 @@ var Utils = exports.Utils = {
         return {
             title: title,
             text: text
+        }
+    },
+
+    getAbpSubscribeConfirmMessage: function (i18nGetMessage, filterMetadata, subscriptionTitle) {
+        if (filterMetadata) {
+            //ok, filter found
+            return i18nGetMessage('abp_subscribe_confirm_enable', [filterMetadata.name]).replace("$1", filterMetadata.name);
+        } else {
+            //filter not found
+            return i18nGetMessage('abp_subscribe_confirm_import', [subscriptionTitle]).replace("$1", subscriptionTitle);
+        }
+    },
+
+    getAbpSubscribeFinishedMessage: function (i18nGetMessage, rulesCount) {
+        return {
+            title: i18nGetMessage('abp_subscribe_confirm_import_finished_title'),
+            text: i18nGetMessage('abp_subscribe_confirm_import_finished_text', [rulesCount]).replace("$1", rulesCount)
         }
     },
 
@@ -396,7 +438,9 @@ var EventNotifierTypes = exports.EventNotifierTypes = {
     UPDATE_TAB_BUTTON_STATE: "event.update.tab.button.state",
     REBUILD_REQUEST_FILTER_END: "event.rebuild.request.filter.end",
     CHANGE_USER_SETTINGS: "event.change.user.settings",
-    UPDATE_FILTERS_SHOW_POPUP: "event.update.filters.show.popup"
+    UPDATE_FILTERS_SHOW_POPUP: "event.update.filters.show.popup",
+    UPDATE_USER_FILTER_RULES: "event.update.user.filter.rules",
+    UPDATE_WHITELIST_FILTER_RULES: "event.update.whitelist.filter.rules"
 };
 
 var AntiBannerFiltersId = exports.AntiBannerFiltersId = {
@@ -446,14 +490,11 @@ var FilterUtils = exports.FilterUtils = {
 
 var ConcurrentUtils = exports.ConcurrentUtils = {
 
-    runAsync: function (callback, thisPtr) {
+    runAsync: function (callback, context) {
         var params = Array.prototype.slice.call(arguments, 2);
-        var runnable = {
-            run: function () {
-                callback.apply(thisPtr, params);
-            }
-        };
-        Services.tm.currentThread.dispatch(runnable, Ci.nsIEventTarget.DISPATCH_NORMAL);
+        setTimeout(function () {
+            callback.apply(context, params);
+        }, 0);
     }
 };
 

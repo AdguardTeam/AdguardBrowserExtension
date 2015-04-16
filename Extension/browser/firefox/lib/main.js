@@ -20,6 +20,7 @@ var l10n = require('sdk/l10n');
 var tabs = require('sdk/tabs');
 var simpleStorage = require('sdk/simple-storage');
 var unload = require('sdk/system/unload');
+var pageMod = require('sdk/page-mod');
 
 const {Cc, Ci, Cr, Cu} = chrome;
 Cu.import("resource://gre/modules/Services.jsm");
@@ -33,7 +34,7 @@ var sdkModules = {
     'sdk/system': require('sdk/system'),
     'sdk/simple-storage': simpleStorage,
     'sdk/self': self,
-    'sdk/page-mod': require('sdk/page-mod'),
+    'sdk/page-mod': pageMod,
     'sdk/l10n': l10n,
     'sdk/system/unload': unload,
     'sdk/system/events': require('sdk/system/events'),
@@ -239,6 +240,9 @@ exports.main = function (options, callbacks) {
         }
     });
 
+    //abp:subscribe
+    initAbpSubscribe(antiBannerService, Utils);
+
     //cleanup stored frames
     tabs.on('close', function (tab) {
         framesMap.removeFrame(tab);
@@ -259,6 +263,67 @@ exports.main = function (options, callbacks) {
     });
     tabs.on('ready', function (tab) {
         filteringLog.updateTab(tab);
+    });
+};
+
+var initAbpSubscribe = function (antiBannerService, Utils) {
+
+    var subscribeIncludeDomains = [
+        "*.abpchina.org",
+        "*.abpindo.blogspot.com",
+        "*.abpvn.com",
+        "*.adblock-listefr.com",
+        "*.adblock.gardar.net",
+        "*.adblockplus.org",
+        "*.adblockplus.me",
+        "*.adguard.com",
+        "*.certyficate.it",
+        "*.code.google.com",
+        "*.dajbych.net",
+        "*.fanboy.co.nz",
+        "*.fredfiber.no",
+        "*.gardar.net",
+        "*.github.com",
+        "*.henrik.schack.dk",
+        "*.latvian-list.site11.com",
+        "*.liamja.co.uk",
+        "*.malwaredomains.com",
+        "*.margevicius.lt",
+        "*.nauscopio.nireblog.com",
+        "*.nireblog.com",
+        "*.noads.it",
+        "*.schack.dk",
+        "*.spam404.com",
+        "*.stanev.org",
+        "*.void.gr",
+        "*.yoyo.org",
+        "*.zoso.ro"
+    ];
+
+    pageMod.PageMod({
+        include: subscribeIncludeDomains,
+        contentScriptFile: [
+            self.data.url('content/content-script/content-script.js'),
+            self.data.url('content/content-script/content-utils.js'),
+            self.data.url('content/content-script/subscribe.js')
+        ],
+        contentScriptWhen: 'end',
+        onAttach: function (worker) {
+
+            worker.port.on('check-subscription-url', function (message) {
+                var filterMetadata = antiBannerService.findFilterMetadataBySubscriptionUrl(message.url);
+                var confirmMessage = Utils.getAbpSubscribeConfirmMessage(l10n.get.bind(l10n), filterMetadata, message.title);
+                worker.port.emit('check-subscription-url', {confirmText: confirmMessage, url: message.url});
+            });
+
+            worker.port.on('enable-subscription', function (message) {
+                var onLoaded = function (rulesAddedCount) {
+                    var message = Utils.getAbpSubscribeFinishedMessage(l10n.get.bind(l10n), rulesAddedCount);
+                    worker.port.emit('show-alert-popup', {title: message.title, text: message.text});
+                };
+                antiBannerService.processAbpSubscriptionUrl(message.url, onLoaded);
+            });
+        }
     });
 };
 
@@ -295,5 +360,3 @@ var loadAdguardModule = function (module) {
     }
 };
 loadAdguardModule.scopes = {__proto: null};
-
-
