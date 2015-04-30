@@ -159,35 +159,28 @@ var CollectionUtils = exports.CollectionUtils = {
         return text;
     },
 
-    getRulesFromTextAsyncUnique: function (rulesFilterMap, FilterRule, callback) {
+    getRulesFromTextAsyncUnique: function (rulesFilterMap, callback) {
         if (Prefs.speedupStartup()) {
             setTimeout(function () {
-                callback(CollectionUtils.getRulesFromTextUnique(rulesFilterMap, FilterRule));
+                callback(CollectionUtils.getRulesFromTextUnique(rulesFilterMap));
             }, 500);
         } else {
-            callback(CollectionUtils.getRulesFromTextUnique(rulesFilterMap, FilterRule));
+            callback(CollectionUtils.getRulesFromTextUnique(rulesFilterMap));
         }
     },
 
-    getRulesFromTextUnique: function (rulesFilterMap, FilterRule) {
+    getRulesFromTextUnique: function (rulesFilterMap) {
 
-        var rules = [];
-
-        var processed = Object.create(null);
+        var rules = Object.create(null);
 
         for (var filterId in rulesFilterMap) {
-            var rulesText = rulesFilterMap[filterId];
-            for (var i = 0; i < rulesText.length; i++) {
-                var ruleText = rulesText[i];
-                if (ruleText in processed) {
+            var rulesTexts = rulesFilterMap[filterId];
+            for (var i = 0; i < rulesTexts.length; i++) {
+                var ruleText = rulesTexts[i];
+                if (ruleText in rules) {
                     continue;
                 }
-                var rule = FilterRule.createRule(ruleText);
-                if (rule != null) {
-                    rule.filterId = filterId - 0;
-                    rules.push(rule);
-                }
-                processed[ruleText] = null;
+                rules[ruleText] = filterId - 0;
             }
         }
         return rules;
@@ -377,6 +370,16 @@ var Utils = exports.Utils = {
             locale = "en";
         }
         return locale;
+    },
+
+    getEmptyTabUrl: function () {
+        if (this.isFirefoxBrowser()) {
+            return 'about:newtab';
+        } else if (this.isSafariBrowser()) {
+            return 'about:blank';
+        } else {
+            return 'about:newtab';
+        }
     },
 
     /**

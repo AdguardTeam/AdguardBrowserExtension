@@ -1,9 +1,9 @@
-! Version: 1.0.21.92
+! Version: 1.0.22.21
 ! Name: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: Experimental filter
 ! DescriptionEn: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! TimeUpdated: 2015-04-16T17:00:21.585+03:00
+! TimeUpdated: 2015-04-27T17:00:15.705+03:00
 ! Adguard Experimental Filter
 !
 ! Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
@@ -74,8 +74,22 @@
 ! Rules that are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
 !
-! http://forum.ru-board.com/topic.cgi?forum=5&topic=31105&start=1920
-180upload.com#%#AG_onLoad(function() { $('#use_installer').removeAttr('checked') });
+! http://forum.adguard.com/showthread.php?5135
+! ***reported: https://forums.lanik.us/posting.php?mode=post&f=62
+||.720pizle.com/720pizle
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/462
+! ***reported: https://forums.lanik.us/posting.php?mode=post&f=62
+skidrowcrack.com##[id^="bsa"][style*="opacity:"]
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/454
+! ***Reported: https://forums.lanik.us/viewtopic.php?f=62&t=22365
+solidfiles.com###dlm-btn.dlm-dl
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/443
+! ***Reported: https://forums.lanik.us/viewtopic.php?f=62&t=22367&p=69472#p69472
+qrrro.com###netkevin-overlay
+qrrro.com###netkevin-popup
+! forum.adguard.com/showthread.php?5074
+! ***Reported: https://forums.lanik.us/viewtopic.php?f=62&t=22368
+||sky.de/web/cms/static/img/595x80_
 !
 ! Whitelist
 ! http://adguard.com/filterrules.html#exclusionRules
@@ -97,10 +111,6 @@
 !
 ! This file contains all experimental rules for Social filter.
 !
-! http://forum.adguard.com/showthread.php?5141
-mailblog.mail.ru##.sn-mini__single__post
-! http://forum.adguard.com/showthread.php?5085
-igromania.ru###vk_groups2
 !-------------------------------------------------------------------!
 !------- Experimental rules for Russian filter ---------------------!
 !-------------------------------------------------------------------!
@@ -115,61 +125,49 @@ igromania.ru###vk_groups2
 ! Do not mix it up with direct adverts domains.
 ! Read about it in direct_adverts.txt
 !
-! http://forum.adguard.com/showthread.php?5067
-||lizhodo.ru^$third-party
-! http://forum.adguard.com/showthread.php?5059
-! похоже рекламный домен. ||izo.pidarunki.ru^ , ||yagodiza.pidarunki.ru^
-||pidarunki.ru^$third-party
 !
-! http://forum.adguard.com/showthread.php?5062
-||yatvyanos.ru^$third-party
-||enbadar.ru^$third-party
-||holysts.com^$third-party
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/477
+||img.fitbut.ru^$third-party
 ! Possible ad networks (http://forum.adguard.com/showthread.php?783)
 ! TODO[avatar]: check them
 !
-! .com, .bz - by lang
-||extronext.ru^$third-party
-||web.imgbum.net^
-||domaha.lisao.ru^$third-party
+! вроде нормальные
+||love-our.ru^$third-party
+||vezuha.me^$third-party
+||novosti.kordonivkakino.net^
+||gryzuche.ru^$third-party
+||mteaser.aldieta.ru^
+||pmicama.ru^$third-party
+||.dagstart.ru^
+||risale.ru^$third-party
+||.smartsiti.ru^
+||.smartsiti.ru^
+||sweet.game-rust.ru^
+||vizp.zavetiss.ru^
+||favoritezz.besaba.com^$third-party
+||ladiesnadosuge.com^$third-party
+||teasermall.com^$third-party
+||kolezeynews.ru^$third-party
+||ali.epn.bz^$third-party
+! вероятно не рабочие
 ||f.film-adult.com^
 ||clickandjoinyourgirl.com^$third-party
 ||xg1.ru^$third-party
-||kuhni.kuhnibrother.ru^
-||love-our.ru^$third-party
 ||pigmont.ru^$third-party
-||vezuha.me^$third-party
-||novosti.kordonivkakino.net^
-||aksisma.ru^$third-party
-||asdhit.com^$third-party
 ||finclick.ru^$third-party
-||firmernet.ru^$third-party
-||gryzuche.ru^$third-party
 ||imgwall.ru^$third-party
-||mteaser.aldieta.ru^
 ||new.picsvoboda.ru^
 ||nxnxcaqicm.ru^$third-party
 ||mrbile.issson.ru^$third-party
 ||pdda.issson.ru^
-||pmicama.ru^$third-party
-||.dagstart.ru^
-||risale.ru^$third-party
 ||slavakirkudu.ru^$third-party
-||stasenko.smartsiti.ru^
-||sweet.game-rust.ru^
-||tizer.ateke.ru^
-||vizp.zavetiss.ru^
-||favoritezz.besaba.com^$third-party
-||ladiesnadosuge.com^$third-party
 ||megabestnews.net^$third-party
 ||slsdlkgjlksdg.net^$third-party
 ||tcpalace.com^$third-party
-||teasermall.com^$third-party
 ||total.kordonivkakino.net^$third-party
 ||tznov.kordonivkakino.net^$third-party
 ||tuti.pronpic.org^$third-party
 ||wtraff.com^$third-party
-||ali.epn.bz^$third-party
 !
 ! Direct adverts
 !
@@ -222,66 +220,29 @@ igromania.ru###vk_groups2
 ! Rules which are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
 !
-! gamebomb.ru
-gamebomb.ru##object[width="300"][height="400"]
-! http://forum.adguard.com/showthread.php?5155
-pikabu.ru##a[href^="http://ad.adriver.ru/"]
-pikabu.ru###tr_3256920
-! http://forum.adguard.com/showthread.php?5157
-||komcity.ru/adver/
-komcity.ru##a[href^="/goto/?idbanner="]
-! http://forum.adguard.com/showthread.php?5156
-||voono.ru^$domain=www.vl.ru
-www.vl.ru##.banners
-! rg.ru
-rg.ru##.single-banner
-rg.ru##.teaser2-top
-rg.ru##.teaser-box
-! playground.ru
-playground.ru##a[href^="http://ad.adriver.ru"]
-||playground.ru/download/online/image/mkx_pg.jpg
-! http://forum.adguard.com/showthread.php?5137
-pg21.ru##.banner
-! http://forum.adguard.com/showthread.php?5143
-baibako.tv##a[href^="http://moonbit.co.in/?ref="]
-! http://forum.adguard.com/showthread.php?5142
-nnm-club.me###CGCandy377
-nnm-club.me##.genmed > div[style="height:160px;"]
-! http://forum.adguard.com/showthread.php?5152
-||css.joyreactor.cc/css/moiblenew.css
-! http://forum.adguard.com/showthread.php?5103
-health.mail.ru##.branding
-! http://forum.adguard.com/showthread.php?5138
-cheboksary.ru###adv
-! http://forum.adguard.com/showthread.php?5100
-tuchkatv.ru##.adb
-! 4pda.ru
-4pda.ru##a[ah]>img
-||s.4pda.to/css/warthunder.min.css
-!
-torrents.by##img[width="240px"][height="400px"]
-torrents.by###tr_main_cats
-||torrents.by/forum/Skoda.jpg
-! http://forum.adguard.com/showthread.php?5114
-orthographia.ru##.ban_top
-orthographia.ru##.ban
-! http://forum.adguard.com/showthread.php?5119
-sports.ru##.b-euroleague-header
-! http://forum.adguard.com/showthread.php?5049
+! уточнить
+! http://forum.adguard.com/showthread.php?5049 - в annoyancez?
 vpk.name##div[style="height:400px;margin:10px 0;"]
 vpk.name##div[style="height:90px;"]
 vpk.name###adds
-! http://forum.adguard.com/showthread.php?5072
-||virusinfo.info/images/styles/virusinfo/brand/
-! http://forum.adguard.com/showthread.php?5118
-fishki.net##a[href^="http://engine.adspynet.com/reference?pid="]
-fishki.net##a[href^="http://li.ru/go?"]
-! http://forum.adguard.com/showthread.php?5060
-||livesurf.ru/ad/
-! http://forum.adguard.com/showthread.php?5071
-||cashandfavor.ru^$third-party
-! http://forum.adguard.com/showthread.php?5057
-parnuxi.net##a[href="http://moscow.mac-dostavka.ru/"]
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/438 - в какую секцию?
+||banerator.silvercdn.com/files-banerator/*.flv
+! forum.adguard.com/showthread.php?5169
+! третье правило полностью убирает место от баннера, но выглядит стремновато. Можно так ##.branding__tv , но останется прямоугольник
+cars.mail.ru##.branding__head
+cars.mail.ru##.branding__side
+cars.mail.ru##.tv__viewport
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/468
+! без стиля страница сильно съезжает вверх
+||watchngo.ru^$domain=sound-park.ru
+sound-park.ru#$##top_groundnew {height: 70px!important;}
+! cxz.to - пустота на главной
+cxz.to##div[style="margin-bottom: 15px; min-height: 274px; clear: both;"]
+! http://forum.adguard.com/showthread.php?5187
+apparat.cc##.postBanner
+||aviasales.ru^$domain=apparat.cc
+! http://forum.adguard.com/showthread.php?3984
+kinomania.ru##.layout > div[style="margin-bottom:4px;width:998px;height:190px;position:relative;"]
 !
 ! Whitelist
 ! http://adguard.com/filterrules.html#exclusionRules
@@ -291,8 +252,9 @@ parnuxi.net##a[href="http://moscow.mac-dostavka.ru/"]
 !
 ! This section contains all kinds of exception rules.
 !
-! http://rusfolder.com/43437998/ - redirect to "Without Ads" blocked (.com/ads_)
-@@||rusfolder.com/ads_free
+! http://fotostrana.ru/app/epicbubble/?from=trafficExchange.apps&fromUid=51761&toUid=1573070&tetoken=18341539&eAppsTraffExchg=1
+! внедряемые правила и помощника выключал - не помогло, только вот так:
+@@||wysegames.com/login/$jsinject,domain=wysegames.com|fotostrana.ru
 !-------------------------------------------------------------------!
 !------- Experimental rules for Other filters ----------------------!
 !-------------------------------------------------------------------!
@@ -309,10 +271,8 @@ parnuxi.net##a[href="http://moscow.mac-dostavka.ru/"]
 antiblock.org#%#var AG_AntiAntiBlock = function() { var baseCreateElement = document.createElement; document.createElement = function(name) { if (name && name.match(/div|font|center/i)) { return null; } else { return baseCreateElement(name); } } };
 antiblock.org#%#AG_onLoad(function() { AG_AntiAntiBlock(); });
 !------------------------------------------------
-! [Liste FR] https://github.com/AdguardTeam/ExperimentalFilter/issues/424
-! TODO (Alex): REPORT IT TO EASYLIST FORUM
-countrycarcare.com#@#.innerpad
-! TODO (Alex): Report it to RU AdList
+! [EasyPrivacy filter] http://forum.adguard.com/showthread.php?5241
+@@||chancro.jp/assets/lib/googleanalytics-*.js$domain=chancro.jp
 ! http://forum.adguard.com/showthread.php?5021
 ! косяк в фильтре RU AdList: Counters
 @@||my10.imgsmail.ru/mail/$domain=mail.ru
@@ -329,6 +289,20 @@ countrycarcare.com#@#.innerpad
 !
 ! This section contains all kinds of annoyances
 !
+! footballtransfer.com.ua - удаление нижнего отступа
+footballtransfer.com.ua##noindex > a#back-screen
+! translate.google.ru/com - Improve Google Translate
+translate.google.ru,translate.google.com###gt-community-promo
+! sports.ru - блок "подписаться"
+sports.ru##.c-tag-subscription
+! sports.ru - блок "За кого вы болеете?", "Зарегистрируйтесь" и пр.
+sports.ru##.c-favorite-team
+! sports.ru - всплывающее сообщение
+sports.ru##.js_favteam > .tooltips
+! hdclub.org - нескрываемый блок "спасибо"
+hdclub.org##form[action="thanks.php"]
+! fishki.net - блок внизу "с самым интересным на сайте"
+fishki.net##.related-posts.related-posts-bottom.clearfix
 ! http://forum.adguard.com/showthread.php?4895
 ufolabs.net###bullet_energy > center > a > img
 ! Youtube annoyances
@@ -383,14 +357,8 @@ bezformata.ru##div[style^="clear:both;width:100%;min-height:100px;padding-left:9
 ps4news.com##font[face="Verdana,Arial,Tahoma,Calibri,Geneva,sans-serif;"]
 ! http://forum.adguard.com/showthread.php?4147
 allcrimea.net##.foto2i
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/337
-720pizle.com#$#body {background:url("http://720pizle.com/images/film/body-bg.png")!important; repeat 0 0 #D2D2D2;!important;}
-! http://forum.adguard.com/showthread.php?4136
-tut.by#$#body {background:#eee url("http://img.tyt.by/i/by4/general/bg.png")!important;}
 ! 24tv.ua - остатки блока "Новости партнёров"
 24tv.ua##.programs_wrap
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/330
-999.md#$#html > body {position: relative!important;}
 ! http://forum.adguard.com/showthread.php?4050
 mail.ru##.social_my
 mail.ru##.social__title
@@ -407,17 +375,10 @@ fastpic.ru##div[style^="height: 279px;"]
 vuku.tv##div[class^="bookmarks_div"]
 ! http://forum.adguard.com/showthread.php?3890
 fast-torrent.ru##.wrap >div > h1 > span[style="font-size: small;"]
-! !!! http://forum.adguard.com/showthread.php?3807
-kinonoch.com#$#.wrapperrrr {top: 0px!important;}
 ! http://forum.adguard.com/showthread.php?3754
 pozdrav.ru##.conteiner.purple
 ! http://forum.adguard.com/showthread.php?3775
 stost.ru##.tosts
-!! http://forum.adguard.com/showthread.php?3684-http-anistar-ru&p=39679&posted=1#post39679
-!! стиль использовать вместе с правилами, т.к. там ломается вёрстка
-anistar.ru##.flash_reklama
-anistar.ru#$#.all_content.bodys {margin-top: 50px!important;}
-anistar.ru##a[href^="/location2.php?id="]
 ! http://rus-warez.com/ - top of page
 rus-warez.com##div[style^="background-color:#bf0000; width:100%; position:relative; padding-top:0px;"]
 ! http://forum.adguard.com/showthread.php?3570
@@ -450,10 +411,6 @@ fishki.net#%#AG_onLoad(function() { $('a[data-subscribe*="_543769"]').closest('d
 yaplakal.com#%#AG_onLoad(function() { var footers = $('b.icon-user>a[href="http://www.yaplakal.com/members/member1438.html"]').closest('tr'); $(footers).each(function() { $(this).prev().remove(); $(this).prev().remove(); $(this).remove(); }); });
 yap.ru#%#AG_onLoad(function() { var footers = $('b.icon-user>a[href="http://yap.ru/members/member1438.html"]').closest('tr'); $(footers).each(function() { $(this).prev().remove(); $(this).prev().remove(); $(this).remove(); }); });
 !!!---!!!
-!
-!!!---!!! pikabu.ru ads(like posts)
-pikabu.ru#%#AG_onLoad(function() { $('a[href="http://pikabu.ru/html.php?id=ad"]').closest('table[id^="story_table_"]').remove(); });
-!!!---!!!
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/164
 free-torrents.org##noindex > center > div[style="border: 2px solid red;"]
 free-torrents.org##a[href*="https://webtransfer-finance.com/?"]
@@ -478,8 +435,6 @@ ukrrele.com#%#document.onmousedown = function() {};
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/64 suspicious sites...
 vmatruk.com##object[id="videobaner"]
 vmatruk.ru##object[data*="/videobaner.swf"][width="180"]
-! top of page - damaged design
-plan.ru#$##wrapper {margin-top: -50px !important; }
 ! forumodua.com - top of page
 forumodua.com##.body_wrapper > div > table[width="100%"] > tbody > tr > td[valign="top"]
 !
@@ -520,116 +475,12 @@ letitbit.net##img[class="mcmp_postrol_img"]
 !============================================
 !=============CSS fixes======================
 !============================================
-! http://forum.adguard.com/showthread.php?5119
-sports.ru#$#.branding_euroleague_special-45 {background: #fff !important;}
-sports.ru#$#.branding_euroleague_special-45 .pageLayout {top: 0px !important;}
-! http://forum.adguard.com/showthread.php?4472
-realty.mail.ru#$#.spring_side {width: 0px!important;}
-! http://forum.adguard.com/showthread.php?4510
-ps3hits.ru#$##header {height: 0px!important;}
-ps3hits.ru#$##footer {height: 0px!important;}
-ps3hits.ru#$#body {background:url(/) #000000!important;}
-ps3hits.ru#$##footer {background:url(/)!important;}
-! http://forum.adguard.com/showthread.php?4512
-5.ua#$#body {background:url(/) #F5F5F5!important;}
-! dota2.ru - удаление отступа сверху
-dota2.ru#$#body {padding:0!important;}
-! goha.ru - удаление брендированного фона
-goha.ru#$##full-brand { background: url(/)!important; }
-! kinatgames.ru - удаление брендированного фона
-kinatgames.ru#$#body {background-image: url(/)!important;}
-! filebase.ws - removed branded backgroung, backgroung color change to original
-filebase.ws#$#body {background-image: url(/)!important; background-color: #fafafa!important;}
-! filmkorku.org - removed branded backgroung, backgroung color change to more contrast
+!----RU----
+!
+!---EN---
+!
+!---Turkish---
+! [TR] filmkorku.org - removed branded backgroung, backgroung color change to more contrast
 filmkorku.org#$#html body {background-image: url('/')!important; background-color: #3c0f10!important;}
-! kino-live.org - возвращён оригинальный фон
-kino-live.org#$#body {background: url(http://kino-live.org/templates/kino-live2/images/fon.png) repeat-x #3c0f10!important;}
-! moskva.fm - удаление отступа сверху
-moskva.fm#$#body.ad-branding {padding-top: 0px!important;}
-! baibako.tv - оригинальный фон
-! baibako.tv#$##wrap0 {background: url("http://baibako.tv/themes/2014/images/bg-footer.jpg") no-repeat scroll center top #175586!important;}
-! "универсальное" правило удаления фонового изображения
-newstudio.tv#$#body {background-image:none!important}
-! fast-torrent.ru
-fast-torrent.ru#$#body { background:url('/' )!important;}
-! newstudio.tv - удаление отступа сверху
-newstudio.tv#$#body {padding-top: 0px!important;}
-! gamebomb.ru - удаление отступа сверху
-gamebomb.ru#$##content.site-max-width {margin-top: 0px!important;}
-! brofilms.ru - удаление отступа сверху
-brofilms.ru#$##header { margin-bottom: 0px!important; }
-! ts.kg - оригинальный цвет фона, удаление отступа от баннера
-ts.kg#$#body { background: #DEDEDE!important;}
-ts.kg#$#.containe { margin-top: 5px!important;}
-! tree.tv - удаление отступа сверху, восстановление исходного фона, прозрачность фона между элементами как в старом стиле
-tree.tv#$#.wrapper { margin-top: 0px!important;}
-tree.tv#$#body { background: url('http://tree.tv/imgs/tree_bg.png') repeat !important;}
-tree.tv#$#.main_bg { background: transparent!important;}
-! kinoplace.org - восстановление не брендированного стиля
-kinoplace.org#$#body { background: #0e0e0e url(http://web.archive.org/web/20140625071222/http://kinoplace.org/templates/kinoman/images/body.jpg)!important; background-position: center top!important; background-repeat: repeat-x!important;background-color: #0e0e0e!important;}
-kinoplace.org#$#.header {height: 200px!important;}
-kinoplace.org#$#.top-menu-block {top: 180px!important;}
-kinoplace.org#$#.logo {top: 50px!important;}
-! sc2tv.ru - убираем пустоту от баннера
-sc2tv.ru#$##block-sc2tv_streams-0 {margin-top: 1px!important}
-! rutor.net - убираем пустоту от баннера
-rutor.net#$#.top-head {margin: -1040px 0 0 0!important;}
-! gametarget.ru - удаление фонового изображения
-gametarget.ru#$#body#page {background: #F8F8F8 url("/")!important;}
-! gameinonline.com - удаление отступа сверху
-gameinonline.com#$##header {padding:20px 0 3px!important;}
-! anistar.ru - удаление фонового изображения
-anistar.ru#$#.all_content.bodys {background:url('/')!important;}
-! nnm-club.me - удаление фонового изображения(фон не рекламный), отступа сверху
-nnm-club.me#$#html>body {background-image:none!important;}
-nnm-club.me#$#body {padding-top:0!important;}
-! dota2.ru - удаление фонового изображения, отступа сверху
-dota2.ru#$#html>body {background-image:none!important;}
-dota2.ru#$#.site-brand {background-image:none!important;}
-dota2.ru#$#html>body {padding:0!important;}
-! kinozadrot.net - удаление отступа сверху
-kinozadrot.net#$#body.brending {padding-top:180px!important;}
-! newstudio.tv - удаление фонового изображения (не рекламный), отступа сверху
-! newstudio.tv#$#body {background-image:none!important}
-! newstudio.tv#$#body {padding-top: 0px!important;}
-! kinopoisk.ru - удаление фонового изображения, отступа сверху
-kinopoisk.ru#$#body {background:#d5d5d5 url(/)!important;}
-kinopoisk.ru#$#body {padding-top:0!important;}
-! lostfilm.tv - альтернативный логотип, взамен удалённого, нанесённого на рекламный фон, выравнивание столбцов
-lostfilm.tv#$#.main_logo_link {background-image: url(http://i077.radikal.ru/1411/32/41600e97361b.png)!important }
-lostfilm.tv#$#body{background:#c0c0c0!important;}
-lostfilm.tv#$#div>div>a>div[style*="height"] {display:none!important;}
-lostfilm.tv#$#a.main_logo_link {margin-top: -3px!important;}
-lostfilm.tv#$#.logo {height: 90px!important;}
-lostfilm.tv#$#.prof {height: 90px!important;}
-! seasonvar.ru - отступа сверху
-seasonvar.ru#$#html>body {padding:0!important;}
-! gidonlinekino.com - удаление отступа сверху
-gidonlinekino.com#$##headerline {margin-top:0!important;}
-! promodj.com - удаление отступа сверху
-promodj.com#$##topbrandingspot {padding-top:0!important;}
-! riotpixels.com - удаление отступа сверху
-riotpixels.com#$#body .all-wrapper {top:0!important;}
-riotpixels.com#$#body .bottom-bar {top:0!important;}
-! gismeteo - удаление пустоты от баннера
-gismeteo.ru,gismeteo.ua,gismeteo.by,gismeteo.kz#$##ad-top {background: url(/static/app/body.png)!important;}
-! getwallpapers.net - удаление пустоты от баннера
-getwallpapers.net#$#div[id^="ad_"] {height: 0px!important;}
-! gametech.ru - удаление отступа сверху, оригинальный цвет фона(по http://web.archive.org/)
-gametech.ru#$#body {background:#eee!important;}
-gametech.ru#$#body {margin-top: 0px!important;}
-! depo.ua - удаление отступа сверху
-depo.ua#$#.container {margin-top: 0px!important;}
-! filebase.ws - оригинальный цвет фона(по http://web.archive.org/)
-filebase.ws#$#body {background-color: #fafafa!important;}
-! kino-live.org - удаление отступа сверху
-kino-live.org#$#html > body {padding: 0px 0px 0px!important;}
-! china-review.com.ua - удаление отступа сверху
-china-review.com.ua#$#body {margin-top: 0px!important;}
-! allhockey.ru - удаление отступа сверху
-allhockey.ru#$#.adr-top {min-height: 0px!important;}
-! cinemaonline.kg - восстановление не брендированного стиля
-cinemaonline.kg#$#body { background-image: url("http://cinemaonline.kg/templates/modern/img/bgny.jpg")!important; background-color: #000000!important;}
-cinemaonline.kg###online_movies_list
-! zvuki.ru - удаление отступа сверху
-zvuki.ru#$#.bCenter > div#header {height: auto!important;}
+! 720pizle.com - replace background to original
+720pizle.com#$#body {background:url("http://720pizle.com/images/film/body-bg.png")!important; repeat 0 0 #D2D2D2;!important;}

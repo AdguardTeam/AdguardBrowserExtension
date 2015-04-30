@@ -30,6 +30,7 @@ var {Log} = require('utils/log');
 var {EventNotifier} = require('utils/notifier');
 var {EventNotifierTypes} = require('utils/common');
 var {UrlUtils} = require('utils/url');
+var {Utils} = require('utils/common');
 var {WebRequestService} = require('filter/request-blocking');
 
 /**
@@ -327,6 +328,13 @@ var WebRequestImpl = exports.WebRequestImpl = {
         var requestUrl = contentLocation.asciiSpec;
         var requestType = WebRequestHelper.getRequestType(contentType);
 
+        if (requestType == "DOCUMENT") {
+            var context = node.contentWindow || node;
+            if (context.top === context) {
+                this._saveContextOpenerTab(context);
+            }
+        }
+
         var block = this._shouldBlockRequest(tab, requestUrl, requestType, node, contentType);
 
         return block ? WebRequestHelper.REJECT : WebRequestHelper.ACCEPT;
@@ -596,7 +604,10 @@ var WebRequestImpl = exports.WebRequestImpl = {
             return;
         }
 
-        this.antiBannerService.getRequestFilter().checkSafebrowsingFilter(requestUrl, function (safebrowsingUrl) {
+        var frameData = this.framesMap.getMainFrame(tab);
+        var referrerUrl = (frameData ? frameData.previousUrl : null) || Utils.getEmptyTabUrl();
+
+        this.antiBannerService.getRequestFilter().checkSafebrowsingFilter(requestUrl, referrerUrl, function (safebrowsingUrl) {
             tabUtils.setTabURL(xulTab, "chrome://adguard/content/" + safebrowsingUrl);
         });
     },

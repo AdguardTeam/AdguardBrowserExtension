@@ -234,32 +234,31 @@ FilterRule.createRule = function (ruleText) {
 	}
 	var rule = null;
 	try {
+		if (StringUtils.startWith(ruleText, FilterRule.COMMENT) ||
+			StringUtils.contains(ruleText, FilterRule.OLD_INJECT_RULES) ||
+			StringUtils.contains(ruleText, FilterRule.MASK_CONTENT_RULE) ||
+			StringUtils.contains(ruleText, FilterRule.MASK_JS_RULE)) {
+			// Empty or comment, ignore
+			// Content rules are not supported
+			return null;
+		}
+
 		var CssFilterRule = getClasses().CssFilterRule;
 		var UrlFilterRule = getClasses().UrlFilterRule;
 		var ScriptFilterRule = getClasses().ScriptFilterRule;
-		if (StringUtils.isEmpty(ruleText) || StringUtils.startWith(ruleText, FilterRule.COMMENT)) {
-			// Empty or comment, ignore
-		} else if (StringUtils.contains(ruleText, FilterRule.OLD_INJECT_RULES)) {
-			return rule;
-		}
-		else if (StringUtils.startWith(ruleText, FilterRule.MASK_WHITE_LIST)) {
+		if (StringUtils.startWith(ruleText, FilterRule.MASK_WHITE_LIST)) {
 			rule = new UrlFilterRule(ruleText);
-		} else if (StringUtils.contains(ruleText, FilterRule.MASK_CONTENT_RULE)) {
-			//not supported
 		} else if (StringUtils.contains(ruleText, FilterRule.MASK_CSS_RULE) || StringUtils.contains(ruleText, FilterRule.MASK_CSS_EXCEPTION_RULE)) {
 			rule = new CssFilterRule(ruleText);
 		} else if (StringUtils.contains(ruleText, FilterRule.MASK_CSS_INJECT_RULE) || StringUtils.contains(ruleText, FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE)) {
 			rule = new CssFilterRule(ruleText);
-		}
-		else if (StringUtils.contains(ruleText, FilterRule.MASK_JS_RULE)) {
-			//not supported
 		} else if (StringUtils.contains(ruleText, FilterRule.MASK_SCRIPT_RULE) || StringUtils.contains(ruleText, FilterRule.MASK_SCRIPT_EXCEPTION_RULE)) {
 			rule = new ScriptFilterRule(ruleText);
 		} else {
 			rule = new UrlFilterRule(ruleText);
 		}
 	} catch (ex) {
-		Log.error("Error create rule from {0}, cause {1}", ruleText, ex);
+		Log.error("Error creating rule from {0}, cause {1}", ruleText, ex);
 	}
 	return rule;
 };

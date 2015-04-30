@@ -132,16 +132,18 @@ SafebrowsingFilter.prototype = {
      * Access Denied page URL
      *
      * @param requestUrl    Request URL
+     * @param referrerUrl   Referrer URL
      * @param sbList        Safebrowsing list
      * @returns page URL
      */
-    getErrorPageURL: function (requestUrl, sbList) {
+    getErrorPageURL: function (requestUrl, referrerUrl, sbList) {
         var listName = sbList || "malware";
         var isMalware = StringUtils.contains(listName, "malware");
         var url = Prefs.safebrowsingPagePath;
         url += "?malware=" + isMalware;
         url += "&host=" + encodeURIComponent(UrlUtils.getHost(requestUrl));
         url += "&url=" + encodeURIComponent(requestUrl);
+        url += "&ref=" + encodeURIComponent(referrerUrl);
         return url;
     },
 

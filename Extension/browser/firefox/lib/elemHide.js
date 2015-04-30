@@ -265,6 +265,11 @@ ElemHide = exports.ElemHide = {
             }
         }.bind(this));
 
+        worker.port.on('process-should-collapse', function (message) {
+            //collapsed in contentPolicy.js
+            worker.port.emit('process-should-collapse', {collapse: false, requestId: message.requestId})
+        });
+
         worker.port.on('process-should-collapse-many', function (message) {
             var requests = this.webRequestService.processShouldCollapseMany(worker.tab, message.documentUrl, message.requests);
             worker.port.emit('process-should-collapse-many', {requests: requests});

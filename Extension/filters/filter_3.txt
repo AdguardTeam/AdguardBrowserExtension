@@ -1,9 +1,9 @@
-! Version: 1.0.2.21
+! Version: 1.0.2.28
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet be tracked, use this filter.
 ! NameEn: Spyware filter
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2015-04-15T21:48:37.519+03:00
+! TimeUpdated: 2015-04-29T17:55:54.696+03:00
 ! Adguard Spyware Filter
 !
 ! The most comprehensive list of various online counters and web analytics tools.
@@ -13,30 +13,11 @@
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
 !
 !-------------------------------------------------------------------------------!
-!-------------- Common HTML filtering rules  -----------------------------------!
+!-------------- General javascript, CSS and HTML extensions --------------------!
 !-------------------------------------------------------------------------------!
-! Newrelic
-! Google analytics scripts
-! Statcounter script
-! Gostats script
-! Liveinternet script
-! Mail.ru
-! List.ru
-! Hotlog
-! Yandex counter scripts
-! Spylog scripts
-! Bigmir counter scripts
-! I.ua scripts
-! Findme.ru
-! Newrelic.com
-! Other scripts
-!-------------------------------------------------------------------------------!
-!-------------- Common javascript injections -----------------------------------!
-!-------------------------------------------------------------------------------!
-!
-! Common javascript injection rules
-!
-!
+!-------------------
+!-------JS----------
+!-------------------
 ! JS API START
 !
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
@@ -61,8 +42,15 @@ aukro.ua#%#window.cm = { event: function() {}, call: function() {} };
 apteka.ru#%#window.yaCounter14913877={ reachGoal: function() {} };
 ! http://forum.adguard.com/showthread.php?4633
 popmech.ru#%#AG_onLoad(function() { window.POPMECH.increaseCounters = function() {} });
+!-------------------
+!-------CSS---------
+!-------------------
+!
+!-------------------
+!-------HTML--------
+!-------------------
 !-------------------------------------------------------------------------------!
-!-------------- Common CSS rules -----------------------------------------------!
+!-------------- General hiding rules--------------------------------------------!
 !-------------------------------------------------------------------------------!
 ! Hide counters images
 ###ramblerCounter
@@ -2429,13 +2417,10 @@ popmech.ru#%#AG_onLoad(function() { window.POPMECH.increaseCounters = function()
 !-------------------------------------------------------------------------------!
 !-------------- Specific web sites ---------------------------------------------!
 !-------------------------------------------------------------------------------!
+hdclub.org##img[height="31"][width="88/"]
 ||assets.adobedtm.com^$domain=f1sport.autorevue.cz
 ! hiding optimize.webtrends.com overlay
 europcar.com###wt_overlay
-! http://forum.adguard.com/showthread.php?4540
-@@||top.list.ru/counter?id=$domain=crimea-kurort.com
-crimea-kurort.com#$#img[width="88"][height="31"] {visibility: hidden!important;}
-crimea-kurort.com#@#img[width="88"][height="31"]
 ! остатки счётчиков
 dreamprogs.net##td[width="88"][height="31"]
 ! http://forum.adguard.com/showthread.php?4576
@@ -2477,6 +2462,17 @@ seclub.org##a[href^="http://waplog.net/"]
 !-------------------------------------------------------------------------------!
 !-------------- Whitelist ------------------------------------------------------!
 !-------------------------------------------------------------------------------!
+! guzei.com - восстановление логотипов радиостанций
+guzei.com#@#img[width="88"][height="31"]
+! 3101010.ru - ломался заказ
+@@||mc.yandex.ru/metrika/watch.js$domain=3101010.ru
+! http://forum.adguard.com/showthread.php?4540
+crimea-kurort.com#$#img[width="88"][height="31"] {visibility: hidden!important;}
+crimea-kurort.com#@#img[width="88"][height="31"]
+! http://forum.adguard.com/showthread.php?4540
+@@||top.list.ru/counter?id=$domain=crimea-kurort.com
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/447
+@@||interia.hit.gemius.pl/hitredir/$domain=interia.pl
 ! Fixing disqus (for stealth mode extension)
 @@||disqus.com/api/3.0/embed/threadDetails.json
 ! Fixing ponominalu purchase page

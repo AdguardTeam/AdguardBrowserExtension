@@ -116,11 +116,6 @@ PageController.prototype = {
 			UI.openFilteringLog();
 		});
 
-		$("#openChangelog").on('click', function (e) {
-			e.preventDefault();
-			UI.openChangeLog();
-		});
-
 		this.wlFilters.jScrollPane({
 			contentWidth: '0px',
 			mouseWheelSpeed: 20

@@ -172,10 +172,6 @@ var UI = exports.UI = {
         UI.openFilteringLog(tabId);
     },
 
-    openChangeLog: function () {
-        UI.openTab(UI._getURL("release-notes.html"), {activateSameTab: true});
-    },
-
     openSettingsTab: function (anchor) {
         UI.openTab(UI._getURL("options.html" + (anchor ? '#' + anchor : '')), {activateSameTab: true});
     },

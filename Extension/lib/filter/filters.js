@@ -293,9 +293,10 @@ RequestFilter.prototype = {
      * http://adguard.com/en/how-malware-blocked.html#extension
      *
      * @param requestUrl Request URL
+     * @param referrerUrl Referrer URL
      * @param safebrowsingCallback Called when check has been finished
      */
-    checkSafebrowsingFilter: function (requestUrl, safebrowsingCallback) {
+    checkSafebrowsingFilter: function (requestUrl, referrerUrl, safebrowsingCallback) {
 
         if (!userSettings.getSafebrowsingInfo().enabled) {
             return;
@@ -313,7 +314,7 @@ RequestFilter.prototype = {
             if (userSettings.getSafebrowsingInfo().sendStats) {
                 this.safebrowsingFilter.trackSafebrowsingStats(requestUrl);
             }
-            safebrowsingCallback(this.safebrowsingFilter.getErrorPageURL(requestUrl, sbList));
+            safebrowsingCallback(this.safebrowsingFilter.getErrorPageURL(requestUrl, referrerUrl, sbList));
 
         }.bind(this);
 

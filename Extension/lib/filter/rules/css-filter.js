@@ -74,7 +74,6 @@ CssFilter.prototype = {
 		}
 
 		this._addRuleToMap(rule);
-
 		this.dirty = true;
 	},
 

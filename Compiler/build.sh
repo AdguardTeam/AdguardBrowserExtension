@@ -6,7 +6,7 @@ mvn package;
 
 cd deploy;
 
-version="2.0.7"
+version="2.0.8"
 
 if [ "$env" = release ]; then
 

@@ -39,9 +39,9 @@ var UrlFilterRule = exports.UrlFilterRule = function (rule) {
 	this.permittedContentType = UrlFilterRule.contentTypes.ALL;
 	this.restrictedContentType = 0;
 
-	//parse rule text
+	// Parse rule text
 	var parseResult = parseRuleText(rule);
-	//load options
+	// Load options
 	if (parseResult.options) {
 		this._loadOptions(parseResult.options);
 	}

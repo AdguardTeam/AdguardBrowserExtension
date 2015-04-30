@@ -110,7 +110,14 @@ function filterSafebrowsing(tab, mainFrameUrl) {
         return;
     }
 
-    antiBannerService.getRequestFilter().checkSafebrowsingFilter(mainFrameUrl, function (safebrowsingUrl) {
+    var frameData = framesMap.getMainFrame(tab);
+    var referrerUrl = (frameData ? frameData.previousUrl : null) || Utils.getEmptyTabUrl();
+    //https://code.google.com/p/chromium/issues/detail?id=11854
+    if (referrerUrl.indexOf('chrome://') === 0) {
+        referrerUrl = Utils.getEmptyTabUrl();
+    }
+
+    antiBannerService.getRequestFilter().checkSafebrowsingFilter(mainFrameUrl, referrerUrl, function (safebrowsingUrl) {
         UI.openTab(safebrowsingUrl, {
             onOpen: function () {
                 tab.close();
