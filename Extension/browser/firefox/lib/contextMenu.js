@@ -51,28 +51,16 @@ var ContextMenu = exports.ContextMenu = {
 				var UI = this.UI;
 				switch (message.data.action) {
 					case 'context_site_filtering_off':
-						if (UI.isCurrentTabAdguardDetected()) {
-							UI.addCurrentTabToAdguardWhiteList();
-						} else {
-							UI.addUrlToWhiteList(url);
-							UI.updateCurrentTabButtonState();
-						}
+						UI.whiteListCurrentTab();
 						break;
 					case 'context_site_filtering_on':
-						if (UI.isCurrentTabAdguardDetected()) {
-							UI.removeCurrentTabFromAdguardWhiteList();
-						} else {
-							UI.removeUrlFromWhiteList(url);
-							UI.updateCurrentTabButtonState();
-						}
+						UI.unWhiteListCurrentTab();
 						break;
 					case 'context_enable_protection':
 						UI.changeApplicationFilteringDisabled(false);
-						UI.updateCurrentTabButtonState();
 						break;
 					case 'context_disable_protection':
 						UI.changeApplicationFilteringDisabled(true);
-						UI.updateCurrentTabButtonState();
 						break;
 					case 'context_security_report':
 						UI.openSiteReportTab(url);

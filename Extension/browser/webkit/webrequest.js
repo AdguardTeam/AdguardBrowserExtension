@@ -60,20 +60,15 @@ function onBeforeRequest(requestDetails) {
 function onBeforeSendHeaders(requestDetails) {
 
     var tab = requestDetails.tab;
+    var headers = requestDetails.requestHeaders;
+    var refHeader;
 
     if (framesMap.isTabAdguardWhiteListed(tab)) {
 
         //retrieve main frame url
         var mainFrameUrl = framesMap.getFrameUrl(tab, 0);
-        var headers = requestDetails.requestHeaders || [];
 
-        var refHeader = null;
-        for (var i = 0; i < headers.length; i++) {
-            if (headers[i].name == 'Referer') {
-                refHeader = headers[i];
-                break;
-            }
-        }
+        refHeader = Utils.findHeaderByName(headers, 'Referer');
         if (refHeader) {
             refHeader.value = mainFrameUrl;
         } else {
@@ -84,6 +79,15 @@ function onBeforeSendHeaders(requestDetails) {
         }
         return {requestHeaders: headers};
     }
+
+    if (requestDetails.requestType === 'DOCUMENT') {
+        //save ref header
+        refHeader = Utils.findHeaderByName(headers, 'Referer');
+        if (refHeader) {
+            framesMap.recordFrameReferrerHeader(tab, refHeader.value);
+        }
+    }
+
     return {};
 }
 
@@ -111,11 +115,7 @@ function filterSafebrowsing(tab, mainFrameUrl) {
     }
 
     var frameData = framesMap.getMainFrame(tab);
-    var referrerUrl = (frameData ? frameData.previousUrl : null) || Utils.getEmptyTabUrl();
-    //https://code.google.com/p/chromium/issues/detail?id=11854
-    if (referrerUrl.indexOf('chrome://') === 0) {
-        referrerUrl = Utils.getEmptyTabUrl();
-    }
+    var referrerUrl = Utils.getSafebrowsingBackUrl(frameData);
 
     antiBannerService.getRequestFilter().checkSafebrowsingFilter(mainFrameUrl, referrerUrl, function (safebrowsingUrl) {
         UI.openTab(safebrowsingUrl, {

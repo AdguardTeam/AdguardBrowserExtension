@@ -72,7 +72,7 @@ ext.i18n.translateElement = function (element, messageId, args) {
 
 	function processString(str, element) {
 
-		var match1 = /^(.*?)<(a|strong|span)([^>]*)>(.*?)<\/\2>(.*)$/.exec(str);
+		var match1 = /^(.*?)<(a|strong|span|i)([^>]*)>(.*?)<\/\2>(.*)$/.exec(str);
 		var match2 = /^(.*?)<(br|input)([^>]*)\/?>(.*)$/.exec(str);
 		if (match1) {
 

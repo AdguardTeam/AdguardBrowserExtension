@@ -277,6 +277,7 @@ UrlFilterRule.contentTypes = {
 	OBJECT: 1 << 4,
 	SUBDOCUMENT: 1 << 5,
 	XMLHTTPREQUEST: 1 << 6,
+    'OBJECT-SUBREQUEST': 1 << 7,
 
 	ELEMHIDE: 1 << 20,  //CssFilter cannot be applied to page
 	URLBLOCK: 1 << 21,  //This attribute is only for exception rules. If true - do not use urlblocking rules for urls where referrer satisfies this rule.
@@ -285,9 +286,6 @@ UrlFilterRule.contentTypes = {
 };
 
 UrlFilterRule.ignoreOptions = {
-	// Process as common url-blocking rule
-	'OBJECT-SUBREQUEST': true,
-	'~OBJECT-SUBREQUEST': true,
 	// Deprecated modifiers
 	'BACKGROUND': true,
 	'~BACKGROUND': true,
@@ -313,6 +311,7 @@ UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.STYLESHEET;
 UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.OBJECT;
 UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.SUBDOCUMENT;
 UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.XMLHTTPREQUEST;
+UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes['OBJECT-SUBREQUEST'];
 
 /**
  * Searches for domain name in rule text and transforms it to punycode if needed.

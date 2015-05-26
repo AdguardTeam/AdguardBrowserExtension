@@ -100,9 +100,19 @@ var WebRequestHelper = exports.WebRequestHelper = {
                 return "SUBDOCUMENT";
             case t.TYPE_XMLHTTPREQUEST:
                 return "XMLHTTPREQUEST";
+            case t.TYPE_OBJECT_SUBREQUEST:
+                return "OBJECT-SUBREQUEST";
             default:
                 return "OTHER";
         }
+    },
+
+    getRequestHeaders: function (request) {
+        var requestHeaders = [];
+        request.visitRequestHeaders(function (header, value) {
+            requestHeaders.push({name: header, value: value});
+        });
+        return requestHeaders;
     },
 
     getResponseHeaders: function (request) {
@@ -403,6 +413,12 @@ var WebRequestImpl = exports.WebRequestImpl = {
         if (isMainFrame) {
             //update tab button state
             EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_TAB_BUTTON_STATE, tab, false);
+            //save ref header
+            var headers = WebRequestHelper.getRequestHeaders(subject);
+            var refHeader = Utils.findHeaderByName(headers, 'Referer');
+            if (refHeader) {
+                this.framesMap.recordFrameReferrerHeader(tab, refHeader.value);
+            }
         }
 
         if (isMainFrame) {
@@ -605,7 +621,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
         }
 
         var frameData = this.framesMap.getMainFrame(tab);
-        var referrerUrl = (frameData ? frameData.previousUrl : null) || Utils.getEmptyTabUrl();
+        var referrerUrl = Utils.getSafebrowsingBackUrl(frameData);
 
         this.antiBannerService.getRequestFilter().checkSafebrowsingFilter(requestUrl, referrerUrl, function (safebrowsingUrl) {
             tabUtils.setTabURL(xulTab, "chrome://adguard/content/" + safebrowsingUrl);

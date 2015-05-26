@@ -104,20 +104,16 @@ var PopupButton = exports.PopupButton = {
         this.toolbarButton = button;
 
         var UI = this.UI;
-        panel.port.on('addWhiteListDomain', function (message) {
+        panel.port.on('addWhiteListDomain', function () {
+            UI.whiteListCurrentTab();
             if (UI.isCurrentTabAdguardDetected()) {
-                UI.addCurrentTabToAdguardWhiteList();
                 panel.hide();
-            } else {
-                UI.addUrlToWhiteList(message.url);
             }
         });
-        panel.port.on('removeWhiteListDomain', function (message) {
+        panel.port.on('removeWhiteListDomain', function () {
+            UI.unWhiteListCurrentTab();
             if (UI.isCurrentTabAdguardDetected()) {
-                UI.removeCurrentTabFromAdguardWhiteList();
                 panel.hide();
-            } else {
-                UI.removeUrlFromWhiteList(message.url);
             }
         });
         panel.port.on('changeApplicationFilteringDisabled', function (message) {

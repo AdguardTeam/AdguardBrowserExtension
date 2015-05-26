@@ -73,6 +73,9 @@ exports.ApplicationUpdateService = {
 		if (Utils.isGreaterVersion("2.0.0", runInfo.prevVersion)) {
 			methods.push(this._onUpdateRemoveIpResolver);
 		}
+		if (Utils.isGreaterVersion("2.0.9", runInfo.prevVersion)) {
+			methods.push(this._onUpdateWhiteListService);
+		}
 
 		var dfd = this._executeMethods(methods);
 		dfd.then(callback);
@@ -185,6 +188,46 @@ exports.ApplicationUpdateService = {
 
 		var dfd = new Promise();
 		dfd.resolve();
+		return dfd;
+	},
+
+	/**
+	 * Update whitelist service
+	 *
+	 * Version 2.0.9
+	 * @private
+	 */
+	_onUpdateWhiteListService: function () {
+
+		Log.info('Call update to version 2.0.9');
+
+		var dfd = new Promise();
+
+		var filterId = AntiBannerFiltersId.WHITE_LIST_FILTER_ID;
+
+		FilterStorage.loadFilterRules(filterId, function (rulesText) {
+
+			var whiteListDomains = [];
+
+			if (!rulesText) {
+				dfd.resolve();
+				return;
+			}
+
+			for (var i = 0; i < rulesText.length; i++) {
+				if (/^@@\/\/([^\/]+)\^\$document$/.test(rulesText[i])) {
+					var domain = RegExp.$1;
+					if (whiteListDomains.indexOf(domain) < 0) {
+						whiteListDomains.push(domain);
+					}
+				}
+			}
+
+			LS.setItem('white-list-domains', JSON.stringify(whiteListDomains));
+
+			dfd.resolve();
+		}.bind(this));
+
 		return dfd;
 	},
 

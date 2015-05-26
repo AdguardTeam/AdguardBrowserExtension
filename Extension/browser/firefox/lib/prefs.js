@@ -19,8 +19,7 @@ var platform = require('sdk/system').platform;
 const {Cc, Ci} = require('chrome');
 
 var locale = (function () {
-	var locale = Cc["@mozilla.org/chrome/chrome-registry;1"].getService(Ci.nsIXULChromeRegistry).getSelectedLocale('global');
-	return locale.substring(0, 2);
+	return Cc["@mozilla.org/chrome/chrome-registry;1"].getService(Ci.nsIXULChromeRegistry).getSelectedLocale('global');
 })();
 
 var prefsService = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService);

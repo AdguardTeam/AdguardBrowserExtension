@@ -40,7 +40,8 @@ var UserSettings = function () {
         DISABLE_SEND_SAFEBROWSING_STATS: 'safebrowsing-stats-disabled',
         DISABLE_FILTERING: 'adguard-disabled',
         DISABLE_COLLECT_HITS: 'hits-count-disabled',
-        DISABLE_SHOW_CONTEXT_MENU: 'context-menu-disabled'
+        DISABLE_SHOW_CONTEXT_MENU: 'context-menu-disabled',
+        DEFAULT_WHITE_LIST_MODE: 'default-whitelist-mode'
     };
 
     this.defaultProperties = Object.create(null);
@@ -51,6 +52,7 @@ var UserSettings = function () {
     this.defaultProperties[this.settings.DISABLE_SAFEBROWSING] = true;
     this.defaultProperties[this.settings.DISABLE_COLLECT_HITS] = true;
     this.defaultProperties[this.settings.DISABLE_SEND_SAFEBROWSING_STATS] = true;
+    this.defaultProperties[this.settings.DEFAULT_WHITE_LIST_MODE] = true;
 
     this.properties = Object.create(null);
 };
@@ -145,6 +147,14 @@ UserSettings.prototype.showContextMenu = function () {
 
 UserSettings.prototype.changeShowContextMenu = function (enabled) {
     this.setProperty(this.settings.DISABLE_SHOW_CONTEXT_MENU, !enabled);
+};
+
+UserSettings.prototype.isDefaultWhiteListMode = function () {
+    return this.getProperty(this.settings.DEFAULT_WHITE_LIST_MODE);
+};
+
+UserSettings.prototype.changeDefaultWhiteListMode = function (enabled) {
+    this.setProperty(this.settings.DEFAULT_WHITE_LIST_MODE, enabled);
 };
 
 var userSettings = exports.userSettings = new UserSettings();

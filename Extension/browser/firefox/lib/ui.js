@@ -347,38 +347,39 @@ var UI = exports.UI = {
         }
     },
 
-    addUrlToWhiteList: function (url) {
-        this.antiBannerService.addWhiteListDomain(url);
+    whiteListCurrentTab: function () {
+        var tab = this._getActiveTab();
+        if (this.framesMap.isTabAdguardDetected(tab)) {
+            var domain = UrlUtils.getHost(tab.url);
+            this.adguardApplication.addRuleToApp("@@//" + domain + "^$document", function () {
+                this._reloadWithoutCache(tab);
+            }.bind(this));
+        } else {
+            var tabInfo = this.framesMap.getFrameInfo(tab);
+            this.antiBannerService.whiteListFrame(tabInfo);
+            this.updateCurrentTabButtonState();
+        }
     },
 
-    removeUrlFromWhiteList: function (url) {
-        this.antiBannerService.removeWhiteListDomain(url);
-    },
-
-    addCurrentTabToAdguardWhiteList: function () {
-        var domain = UrlUtils.getHost(tabs.activeTab.url);
-        this.adguardApplication.addRuleToApp("@@//" + domain + "^$document", function () {
-            tabs.activeTab.reload();
-        });
+    unWhiteListCurrentTab: function () {
+        var tab = this._getActiveTab();
+        if (this.framesMap.isTabAdguardDetected(tab)) {
+            var rule = this.framesMap.getTabAdguardUserWhiteListRule(tab);
+            if (rule) {
+                this.adguardApplication.removeRuleFromApp(rule.ruleText, function () {
+                    this._reloadWithoutCache(tab);
+                }.bind(this));
+            }
+        } else {
+            var tabInfo = this.framesMap.getFrameInfo(tab);
+            this.antiBannerService.unWhiteListFrame(tabInfo);
+            this.updateCurrentTabButtonState();
+        }
     },
 
     changeApplicationFilteringDisabled: function (disabled) {
         this.antiBannerService.changeApplicationFilteringDisabled(disabled);
-    },
-
-    removeCurrentTabFromAdguardWhiteList: function () {
-        var rule = this.framesMap.getTabAdguardUserWhiteListRule(this._getActiveTab());
-        if (rule) {
-            this.adguardApplication.removeRuleFromApp(rule.ruleText, function () {
-                //reload page without cache via content script
-                var worker = tabs.activeTab.attach({
-                    contentScriptFile: [
-                        self.data.url('content/content-script/content-script.js'),
-                        self.data.url('content/content-script/content-utils.js')]
-                });
-                worker.port.emit('no-cache-reload');
-            });
-        }
+        this.updateCurrentTabButtonState();
     },
 
     getCurrentTabInfo: function (reloadFrameData) {
@@ -579,5 +580,15 @@ var UI = exports.UI = {
         var xulTab = tabUtils.getActiveTab(win);
         var tabId = tabUtils.getTabId(xulTab);
         return {id: tabId};
+    },
+
+    _reloadWithoutCache: function (tab) {
+        //reload page without cache via content script
+        var worker = tab.attach({
+            contentScriptFile: [
+                self.data.url('content/content-script/content-script.js'),
+                self.data.url('content/content-script/content-utils.js')]
+        });
+        worker.port.emit('no-cache-reload');
     }
 };

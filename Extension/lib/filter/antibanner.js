@@ -42,6 +42,7 @@ var LS = require('utils/local-storage').LS;
 var Prefs = require('prefs').Prefs;
 var SubscriptionService = require('filter/subscription').SubscriptionService;
 var ApplicationUpdateService = require('filter/update-service').ApplicationUpdateService;
+var whiteListService = require('filter/whitelist').whiteListService;
 
 /**
  * Creating service that manages our filter rules.
@@ -70,9 +71,6 @@ var AntiBannerService = exports.AntiBannerService = function () {
 
     // Custom user rules
     this.userRules = [];
-
-    // List of domains whitelisted by user
-    this.whiteListDomains = [];
 
     //retrieve filtering state
     this.applicationFilteringDisabled = userSettings.isFilteringDisabled();
@@ -143,6 +141,8 @@ AntiBannerService.prototype = {
          */
         var initRequestFilter = function () {
             context._loadFiltersVersionAndStateInfo();
+            //init white list filter
+            whiteListService.initWhiteListFilters();
             context._createRequestFilter(function () {
                 this._addFiltersChangeEventListener();
                 onServiceInitialized(runInfo);
@@ -219,7 +219,7 @@ AntiBannerService.prototype = {
     _addAndEnableFilters: function (filterIds, callback) {
 
         callback = callback || function () {
-        };
+            };
 
         var enabledFilterIds = [];
 
@@ -313,20 +313,10 @@ AntiBannerService.prototype = {
      * Removes all user's custom rules
      */
     clearUserFilter: function () {
+        this.userRules = [];
         var filter = this._getFilterById(AntiBannerFiltersId.USER_FILTER_ID);
         EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTER_RULES, filter, []);
-        this.userRules = [];
         EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES);
-    },
-
-    /**
-     * Removes all domains from the whitelist
-     */
-    clearWhiteListFilter: function () {
-        var filter = this._getFilterById(AntiBannerFiltersId.WHITE_LIST_FILTER_ID);
-        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTER_RULES, filter, []);
-        this.whiteListDomains = [];
-        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES);
     },
 
     /**
@@ -341,7 +331,7 @@ AntiBannerService.prototype = {
             this._addRuleToFilter(AntiBannerFiltersId.USER_FILTER_ID, rule);
             this.userRules.push(rule.ruleText);
         }
-        return rule;
+        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES);
     },
 
     /**
@@ -376,6 +366,7 @@ AntiBannerService.prototype = {
             EventNotifier.notifyListeners(EventNotifierTypes.REMOVE_RULE, filter, [rule]);
         }
         CollectionUtils.removeAll(this.userRules, ruleText);
+        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES);
     },
 
     /**
@@ -387,15 +378,31 @@ AntiBannerService.prototype = {
      * @returns {Array} Domains found
      */
     getWhiteListDomains: function (offset, limit, text) {
-        var rules = this.whiteListDomains;
-        var domains = [];
-        for (var i = 0; i < rules.length; i++) {
-            var domain = rules[i];
+        var domains = whiteListService.getWhiteList();
+        var result = [];
+        for (var i = 0; i < domains.length; i++) {
+            var domain = domains[i];
             if (!text || StringUtils.containsIgnoreCase(domain, text)) {
-                domains.push(domain);
+                result.push(domain);
             }
         }
-        return limit ? domains.slice(offset, offset + limit) : domains;
+        return limit ? result.slice(offset, offset + limit) : result;
+    },
+
+    whiteListFrame: function (frameInfo) {
+        whiteListService.whiteListUrl(frameInfo.url);
+        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES);
+    },
+
+    unWhiteListFrame: function (frameInfo) {
+        if (frameInfo.frameRule) {
+            if (frameInfo.frameRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+                whiteListService.unWhiteListUrl(frameInfo.url);
+                EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES);
+            } else {
+                this.removeUserFilter(frameInfo.frameRule.ruleText);
+            }
+        }
     },
 
     /**
@@ -405,49 +412,17 @@ AntiBannerService.prototype = {
      * @returns {*}
      */
     addWhiteListDomain: function (domain) {
-        if (StringUtils.isEmpty(domain)) {
-            return null;
-        }
-        // Validate domain first
-        domain = UrlUtils.getHost(UrlUtils.getAbsoluteUrl(domain.trim()));
-        if (!domain) {
-            // Domain is not valid, doing nothing
-            return null;
-        }
-        var rule = FilterRule.createRule("@@//" + domain + "^$document");
-        if (rule != null) {
-            // Add rule to the request filter
-            this._addRuleToFilter(AntiBannerFiltersId.WHITE_LIST_FILTER_ID, rule);
-            this.whiteListDomains.push(domain);
-        }
-        return rule;
+        whiteListService.addToWhiteList(domain);
+        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES);
     },
 
     /**
      * Adds list of domains to the whitelist.
-     * We don't use addWhiteListDomain method because of EventNotifier,
-     * we want to raise "batch" event instead of a multiple events.
      *
      * @param domains List of domains to add
      */
     addWhiteListDomains: function (domains) {
-        if (!domains) {
-            return;
-        }
-        var rules = [];
-        for (var i = 0; i < domains.length; i++) {
-            var domain = domains[i];
-            if (!domain || !/^[^\/]+$/.test(domain)) {
-                // First validate it
-                continue;
-            }
-            var rule = FilterRule.createRule("@@//" + domain + "^$document");
-            if (rule != null) {
-                rules.push(rule);
-                this.whiteListDomains.push(domain);
-            }
-        }
-        this._addRulesToFilter(AntiBannerFiltersId.WHITE_LIST_FILTER_ID, rules);
+        whiteListService.addToWhiteListArray(domains);
         EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES);
     },
 
@@ -457,22 +432,21 @@ AntiBannerService.prototype = {
      * @param domain   Domain to remove
      */
     removeWhiteListDomain: function (domain) {
-        if (StringUtils.isEmpty(domain)) {
-            return;
-        }
-        // Validate domain
-        domain = UrlUtils.getHost(UrlUtils.getAbsoluteUrl(domain.trim()));
-        if (!domain) {
-            return;
-        }
-        var rule = FilterRule.createRule("@@//" + domain + "^$document");
-        if (rule != null) {
-            // Remove rule from the RequestFilter first
-            var filter = this._getFilterById(AntiBannerFiltersId.WHITE_LIST_FILTER_ID);
-            this.requestFilter.removeRule(rule);
-            EventNotifier.notifyListeners(EventNotifierTypes.REMOVE_RULE, filter, [rule]);
-        }
-        CollectionUtils.removeAll(this.whiteListDomains, domain);
+        whiteListService.removeFromWhiteList(domain);
+        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES);
+    },
+
+    /**
+     * Removes all domains from the whitelist
+     */
+    clearWhiteListFilter: function () {
+        whiteListService.clearWhiteList();
+        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES);
+    },
+
+    changeDefaultWhiteListMode: function (enabled) {
+        whiteListService.changeDefaultWhiteListMode(enabled);
+        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES);
     },
 
     /**
@@ -758,9 +732,9 @@ AntiBannerService.prototype = {
     checkAntiBannerFiltersUpdate: function (forceUpdate, successCallback, errorCallback) {
 
         successCallback = successCallback || function () {
-        };
+            };
         errorCallback = errorCallback || function () {
-        };
+            };
 
         // Select filters for update
         var filterIdsToUpdate = [];
@@ -997,7 +971,6 @@ AntiBannerService.prototype = {
             }
         }
         dfds.push(this._loadUserRulesToRequestFilter(rulesFilterMap));
-        dfds.push(this._loadWhiteListRulesToRequestFilter(rulesFilterMap));
 
         // Load all filters and then recreate request filter
         Promise.all(dfds).then(loadAllFilterRulesDone);
@@ -1022,42 +995,6 @@ AntiBannerService.prototype = {
             if (!rulesText) {
                 dfd.resolve();
                 return;
-            }
-
-            rulesFilterMap[filterId] = rulesText;
-            dfd.resolve();
-        }.bind(this));
-
-        return dfd;
-    },
-
-    /**
-     * Adds white list rules (loaded from the storage) to the request filter
-     *
-     * @param rulesFilterMap Map for loading rules
-     * @returns {*} Deferred object
-     * @private
-     */
-    _loadWhiteListRulesToRequestFilter: function (rulesFilterMap) {
-
-        var dfd = new Promise();
-
-        var filterId = AntiBannerFiltersId.WHITE_LIST_FILTER_ID;
-
-        FilterStorage.loadFilterRules(filterId, function (rulesText) {
-
-            this.whiteListDomains = [];
-
-            if (!rulesText) {
-                dfd.resolve();
-                return;
-            }
-
-            for (var i = 0; i < rulesText.length; i++) {
-                var domain = Utils.getWhiteListDomain(rulesText[i]);
-                if (domain) {
-                    this.whiteListDomains.push(domain);
-                }
             }
 
             rulesFilterMap[filterId] = rulesText;

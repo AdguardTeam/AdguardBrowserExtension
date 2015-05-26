@@ -31,7 +31,7 @@ public class LocaleUtils {
 
 	public enum SupportedLocales {
 
-		EN("en"), RU("ru"), DE("de"), TR("tr"), UK("uk"), PL("pl"), PT_BR("pt_BR"), PT_PT("pt_PT");
+		EN("en"), RU("ru"), DE("de"), TR("tr"), UK("uk"), PL("pl"), PT_BR("pt_BR"), PT_PT("pt_PT"), KO("ko"), zh_CN("zh_CN");
 
 		private String code;
 

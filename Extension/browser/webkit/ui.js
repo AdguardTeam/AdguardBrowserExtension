@@ -105,33 +105,43 @@ var UI = {
 		}
 	},
 
-	addCurrentTabToAdguardWhiteList: function () {
-		ext.windows.getLastFocused(function (win) {
-			win.getActiveTab(function (tab) {
-				if (tab) {
-					var domain = UrlUtils.getHost(tab.url);
-					adguardApplication.addRuleToApp("@@//" + domain + "^$document", function () {
-						tab.reload();
-					});
-				}
-			})
-		});
+	changeApplicationFilteringDisabled: function (disabled) {
+		antiBannerService.changeApplicationFilteringDisabled(disabled);
+		this._getCurrentTab(function (tab) {
+			this.updateTabIconAndContextMenu(tab, true);
+		}.bind(this));
 	},
 
-	removeCurrentTabFromAdguardWhiteList: function () {
-		ext.windows.getLastFocused(function (win) {
-			win.getActiveTab(function (tab) {
-				if (tab) {
-					var rule = framesMap.getTabAdguardUserWhiteListRule(tab);
-					if (rule) {
-						adguardApplication.removeRuleFromApp(rule.ruleText, function () {
-							//reload page without cache via content script
-							tab.sendMessage({type: 'no-cache-reload'});
-						});
-					}
+	whiteListCurrentTab: function () {
+		this._getCurrentTab(function (tab) {
+			if (framesMap.isTabAdguardDetected(tab)) {
+				var domain = UrlUtils.getHost(tab.url);
+				adguardApplication.addRuleToApp("@@//" + domain + "^$document", function () {
+					this._reloadWithoutCache(tab);
+				}.bind(this));
+			} else {
+				var tabInfo = framesMap.getFrameInfo(tab);
+				antiBannerService.whiteListFrame(tabInfo);
+				this.updateTabIconAndContextMenu(tab, true);
+			}
+		}.bind(this));
+	},
+
+	unWhiteListCurrentTab: function () {
+		this._getCurrentTab(function (tab) {
+			if (framesMap.isTabAdguardDetected(tab)) {
+				var rule = framesMap.getTabAdguardUserWhiteListRule(tab);
+				if (rule) {
+					adguardApplication.removeRuleFromApp(rule.ruleText, function () {
+						this._reloadWithoutCache(tab);
+					}.bind(this));
 				}
-			})
-		});
+			} else {
+				var tabInfo = framesMap.getFrameInfo(tab);
+				antiBannerService.unWhiteListFrame(tabInfo);
+				this.updateTabIconAndContextMenu(tab, true);
+			}
+		}.bind(this));
 	},
 
 	openTab: function (url, options) {
@@ -295,28 +305,16 @@ var UI = {
 				UI.openSiteReportTab(tab.url);
 			},
 			'context_site_filtering_on': function () {
-				if (framesMap.isTabAdguardDetected(tab)) {
-					UI.removeCurrentTabFromAdguardWhiteList();
-				} else {
-					antiBannerService.removeWhiteListDomain(tab.url);
-					UI.updateTabIconAndContextMenu(tab, true);
-				}
+				UI.unWhiteListCurrentTab();
 			},
 			'context_site_filtering_off': function () {
-				if (framesMap.isTabAdguardDetected(tab)) {
-					UI.addCurrentTabToAdguardWhiteList();
-				} else {
-					antiBannerService.addWhiteListDomain(tab.url);
-					UI.updateTabIconAndContextMenu(tab, true);
-				}
+				UI.whiteListCurrentTab();
 			},
 			'context_enable_protection': function () {
-				antiBannerService.changeApplicationFilteringDisabled(false);
-				UI.updateTabIconAndContextMenu(tab, true);
+				UI.changeApplicationFilteringDisabled(false);
 			},
 			'context_disable_protection': function () {
-				antiBannerService.changeApplicationFilteringDisabled(true);
-				UI.updateTabIconAndContextMenu(tab, true);
+				UI.changeApplicationFilteringDisabled(true);
 			},
 			'context_general_settings': function () {
 				UI.openSettingsTab('general-settings');
@@ -557,6 +555,21 @@ var UI = {
 		}, function () {
 			EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTERS_SHOW_POPUP, false);
 		});
+	},
+
+	_getCurrentTab: function (callback) {
+		ext.windows.getLastFocused(function (win) {
+			win.getActiveTab(function (tab) {
+				if (tab && callback) {
+					callback(tab);
+				}
+			});
+		});
+	},
+
+	_reloadWithoutCache: function (tab) {
+		//reload page without cache via content script
+		tab.sendMessage({type: 'no-cache-reload'});
 	}
 };
 

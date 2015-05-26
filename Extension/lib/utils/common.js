@@ -189,11 +189,6 @@ var CollectionUtils = exports.CollectionUtils = {
 
 var Utils = exports.Utils = {
 
-    /**
-     * Locales supported
-     */
-    supportedLocales: ['ru', 'en', 'tr', 'uk', 'de', 'pl', 'pt'],
-
     navigator: Cc["@mozilla.org/network/protocol;1?name=http"].getService(Ci.nsIHttpProtocolHandler),
 
     getClientId: function () {
@@ -294,13 +289,6 @@ var Utils = exports.Utils = {
         };
     },
 
-    getWhiteListDomain: function (ruleText) {
-        if (/^@@\/\/([^\/]+)\^\$document$/.test(ruleText)) {
-            return RegExp.$1;
-        }
-        return null;
-    },
-
     getFiltersUpdateResultMessage: function (i18nGetMessage, success, updatedFilters) {
         var title = i18nGetMessage("options_popup_update_title");
         var text = [];
@@ -359,20 +347,30 @@ var Utils = exports.Utils = {
         }
     },
 
-    /**
-     * Used for text formatting on UI side.
-     *
-     * @returns {*}
-     */
-    getSupportedLocale: function () {
-        var locale = Prefs.locale;
-        if (Utils.supportedLocales.indexOf(locale) < 0) {
-            locale = "en";
+    findHeaderByName: function (headers, headerName) {
+        if (headers) {
+            for (var i = 0; i < headers.length; i++) {
+                var header = headers[i];
+                if (header.name === headerName) {
+                    return header;
+                }
+            }
         }
-        return locale;
+        return null;
     },
 
-    getEmptyTabUrl: function () {
+    getSafebrowsingBackUrl: function (frameData) {
+        if (frameData) {
+            //https://code.google.com/p/chromium/issues/detail?id=11854
+            var previousUrl = frameData.previousUrl;
+            if (previousUrl && previousUrl.indexOf('http') === 0) {
+                return previousUrl;
+            }
+            var referrerUrl = frameData.referrerUrl;
+            if (referrerUrl && referrerUrl.indexOf('http') === 0) {
+                return referrerUrl;
+            }
+        }
         if (this.isFirefoxBrowser()) {
             return 'about:newtab';
         } else if (this.isSafariBrowser()) {

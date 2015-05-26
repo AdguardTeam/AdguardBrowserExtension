@@ -21,7 +21,7 @@ PageController.prototype = {
 
 	DEFAULT_LIMIT: 20,
 
-	isEditRuleNow: false,
+	omitRenderEventsCount: 0,
 
 	init: function () {
 
@@ -75,6 +75,7 @@ PageController.prototype = {
 		this.updatePopup = $("#filtersUpdatePopup");
 		this.resetStatsPopup = $("#resetStatsPopup");
 		this.enableShowContextMenuCheckbox = $('#enableShowContextMenu');
+		this.changeDefaultWhiteListModeCheckbox = $('#changeDefaultWhiteListMode');
 		if (Utils.isSafariBrowser()) {
 			this.enableShowContextMenuCheckbox.closest('.s-page-table-row').hide();
 		}
@@ -90,6 +91,7 @@ PageController.prototype = {
 		this.showInfoAboutAdguardFullVersionCheckbox.on('change', this.updateShowInfoAboutAdguardFullVersion);
 		this.enableHitsCountCheckbox.on('change', this.changeEnableHitsCount);
 		this.enableShowContextMenuCheckbox.on('change', this.changeEnableShowContextMenu);
+		this.changeDefaultWhiteListModeCheckbox.on('change', this.changeDefaultWhiteListMode.bind(this));
 		$("#resetStats").on('click', this.onResetStatsClicked.bind(this));
 
 		$('.settings-page').on('click', '.editAntiBannerFilters', this._openSubscriptionModal.bind(this));
@@ -215,30 +217,12 @@ PageController.prototype = {
 		this._renderShowInfoAboutAdguardFullVersion(userSettings.isShowInfoAboutAdguardFullVersion());
 		this._renderCollectHitsCount(userSettings.collectHitsCount());
 		this._renderShowContextMenu(userSettings.showContextMenu());
+		this._renderDefaultWhiteListMode(userSettings.isDefaultWhiteListMode());
 		if (Prefs.mobile) {
 			$('#resetStats').hide();
 		}
 		this._initializeSubscriptionModal();
 		this.checkSubscriptionsCount();
-	},
-
-	_onAddRuleEvent: function (filter, rule) {
-		if (FilterUtils.isUserFilter(filter)) {
-			this._renderUserFilter(rule.ruleText);
-		} else if (FilterUtils.isWhiteListFilter(filter)) {
-			var domain = Utils.getWhiteListDomain(rule.ruleText);
-			if (domain) {
-				this._renderWhiteListFilter(domain);
-			}
-		}
-	},
-
-	_onRemoveRuleEvent: function (filter, rule) {
-		if (FilterUtils.isUserFilter(filter)) {
-			this._removeEditableFilter(this.userFilters, rule.ruleText, this.clearUserFilterButton, this.userSearchResult.searchMode);
-		} else if (FilterUtils.isWhiteListFilter(filter)) {
-			this._removeEditableFilter(this.wlFilters, Utils.getWhiteListDomain(rule.ruleText), this.clearWlFilterButton, this.wlSearchResult.searchMode);
-		}
 	},
 
 	_onAntiBannerFilterStateChange: function (antiBannerFilter) {
@@ -313,6 +297,12 @@ PageController.prototype = {
 	changeEnableShowContextMenu: function (e) {
 		e.preventDefault();
 		userSettings.changeShowContextMenu(this.checked);
+	},
+
+	changeDefaultWhiteListMode: function(e){
+		e.preventDefault();
+		antiBannerService.changeDefaultWhiteListMode(!e.currentTarget.checked);
+		this._renderWhiteListFilters();
 	},
 
 	onAddWhiteListFilterClicked: function (e) {
@@ -456,22 +446,24 @@ PageController.prototype = {
 
 	_renderWhiteListFilter: function (whiteListFilter) {
 		var saveCallback = function (item) {
-			var rule;
 			if (item.isNew) {
-				rule = antiBannerService.addWhiteListDomain(item.text);
+				this.omitRenderEventsCount = 1;
+				antiBannerService.addWhiteListDomain(item.text);
 			} else {
 				//start edit rule
-				this.isEditRuleNow = true;
-
+				this.omitRenderEventsCount = 2;
 				antiBannerService.removeWhiteListDomain(item.prevText);
-				rule = antiBannerService.addWhiteListDomain(item.text);
+				antiBannerService.addWhiteListDomain(item.text);
 			}
-			return  rule ? Utils.getWhiteListDomain(rule.ruleText) : null;
+			return item.text;
 		}.bind(this);
 
 		var deleteCallback = function (item) {
+			this.omitRenderEventsCount = 1;
 			antiBannerService.removeWhiteListDomain(item.text);
-		};
+			this._removeEditableFilter(this.wlFilters, item.text, this.clearWlFilterButton, this.wlSearchResult.searchMode);
+		}.bind(this);
+
 		this._renderEditableFilter(this.wlFilters, whiteListFilter, saveCallback, deleteCallback, this.clearWlFilterButton, this.wlSearchResult.searchMode);
 	},
 
@@ -488,22 +480,23 @@ PageController.prototype = {
 
 	_renderUserFilter: function (userFilter) {
 		var saveCallback = function (item) {
-			var rule;
 			if (item.isNew) {
-				rule = antiBannerService.addUserFilterRule(item.text);
+				this.omitRenderEventsCount = 1;
+				antiBannerService.addUserFilterRule(item.text);
 			} else {
-				//start edit rule
-				this.isEditRuleNow = true;
-
+				this.omitRenderEventsCount = 2;
 				antiBannerService.removeUserFilter(item.prevText);
-				rule = antiBannerService.addUserFilterRule(item.text);
+				antiBannerService.addUserFilterRule(item.text);
 			}
-			return rule ? rule.ruleText : null;
+			return item.text;
 		}.bind(this);
 
 		var deleteCallback = function (item) {
+			this.omitRenderEventsCount = 1;
 			antiBannerService.removeUserFilter(item.text);
-		};
+			this._removeEditableFilter(this.userFilters, item.text, this.clearUserFilterButton, this.userSearchResult.searchMode);
+		}.bind(this);
+
 		this._renderEditableFilter(this.userFilters, userFilter, saveCallback, deleteCallback, this.clearUserFilterButton, this.userSearchResult.searchMode);
 	},
 
@@ -513,7 +506,6 @@ PageController.prototype = {
 			return;
 		}
 
-		var isNew = !ruleText;
 		var el = this._getFilterRuleTemplate();
 
 		//hide overlay
@@ -529,7 +521,8 @@ PageController.prototype = {
 		var input = el.find("input[type='text']");
 		var text = el.find('.rule-text');
 
-		if (isNew) {
+		if (!ruleText) {
+			el.data("isNew", true);
 			startEdit();
 		} else {
 			el.data("ruleText", ruleText);
@@ -556,19 +549,16 @@ PageController.prototype = {
 				return;
 			}
 			var newText = saveCallback({
-				isNew: isNew,
+				isNew: el.data("isNew"),
 				text: value,
 				prevText: el.data("ruleText")
 			});
-			if (isNew) {
-				removeEditableItem();
-			} else {
-				if (newText) {
-					el.data("ruleText", newText);
-					text.text(newText);
-				}
-				stopEdit();
+			if (newText) {
+				el.data("isNew", false);
+				el.data("ruleText", newText);
+				text.text(newText);
 			}
+			stopEdit();
 		}
 
 		var self = this;
@@ -580,7 +570,7 @@ PageController.prototype = {
 		}
 
 		function onCancelEditClicked() {
-			if (isNew) {
+			if (el.data("isNew")) {
 				removeEditableItem();
 			} else {
 				stopEdit();
@@ -687,7 +677,7 @@ PageController.prototype = {
 		var versionTitle = "";
 		if (antiBannerFilter.lastUpdateTime) {
 			var lastUpdateTime = moment(antiBannerFilter.lastUpdateTime);
-			lastUpdateTime.locale(Utils.getSupportedLocale());
+			lastUpdateTime.locale(Prefs.locale);
 			var date = lastUpdateTime.format("D MMMM YYYY").toLowerCase();
 			var time = lastUpdateTime.format("HH:mm");
 			versionTitle = ext.i18n.getMessage("options_filter_version", [antiBannerFilter.version, date, time]);
@@ -735,6 +725,10 @@ PageController.prototype = {
 
 	_renderShowContextMenu: function (show) {
 		this.enableShowContextMenuCheckbox.updateCheckbox(show);
+	},
+
+	_renderDefaultWhiteListMode: function (defaultWhiteListMode) {
+		this.changeDefaultWhiteListModeCheckbox.updateCheckbox(!defaultWhiteListMode);
 	},
 
 	_renderWhiteListOverlay: function () {
@@ -1010,8 +1004,6 @@ var onInit = function () {
 		controller.init();
 
 		var events = [
-			EventNotifierTypes.ADD_RULE,
-			EventNotifierTypes.REMOVE_RULE,
 			EventNotifierTypes.ENABLE_FILTER,
 			EventNotifierTypes.DISABLE_FILTER,
 			EventNotifierTypes.ADD_FILTER,
@@ -1025,25 +1017,6 @@ var onInit = function () {
 
 		function eventListener(event, filter, rules) {
 			switch (event) {
-				case EventNotifierTypes.ADD_RULE:
-					if (rules.length == 1) {
-						if (controller.isEditRuleNow) {
-							//edit rule finished
-							controller.isEditRuleNow = false;
-							break;
-						}
-						controller._onAddRuleEvent(filter, rules[0]);
-					}
-					break;
-				case EventNotifierTypes.REMOVE_RULE:
-					if (rules.length == 1) {
-						//don't remove rules in edit mode
-						if (controller.isEditRuleNow) {
-							break;
-						}
-						controller._onRemoveRuleEvent(filter, rules[0]);
-					}
-					break;
 				case EventNotifierTypes.ENABLE_FILTER:
 				case EventNotifierTypes.DISABLE_FILTER:
 					controller._onAntiBannerFilterStateChange(filter);
@@ -1061,9 +1034,17 @@ var onInit = function () {
 					controller._updateAntiBannerFilter(filter);
 					break;
 				case EventNotifierTypes.UPDATE_USER_FILTER_RULES:
+					if (controller.omitRenderEventsCount > 0) {
+						controller.omitRenderEventsCount--;
+						break;
+					}
 					controller._renderUserFilters();
 					break;
 				case EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES:
+					if (controller.omitRenderEventsCount > 0) {
+						controller.omitRenderEventsCount--;
+						break;
+					}
 					controller._renderWhiteListFilters();
 					break;
 			}

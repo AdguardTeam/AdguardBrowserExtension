@@ -128,19 +128,22 @@ var ext, BaseEvent, OnMessageEvent, sendMessage;
 
 		defaultLocale: 'en',
 
-		supportedLocales: ['ru', 'en', 'tr', 'uk', 'de', 'pl', 'pt'],
-
-		localeMessages: {
-			'pt': 'pt_PT'
-		},
+		supportedLocales: ['ru', 'en', 'tr', 'uk', 'de', 'pl', 'pt_BR', 'pt_PT', 'ko', 'zh_CN'],
 
 		_getLocale: function () {
-			var prefix = navigator.language.substring(0, 2).toLowerCase();
-			if (this.supportedLocales.indexOf(prefix) >= 0) {
-				return prefix;
-			} else {
-				return "en";
+			var prefix = navigator.language;
+			var parts = prefix.replace('-', '_').split('_');
+			var locale = parts[0].toLowerCase();
+			if (parts[1]) {
+				locale += '_' + parts[1].toUpperCase();
 			}
+			if (this.supportedLocales.indexOf(locale) < 0) {
+				locale = parts[0];
+			}
+			if (this.supportedLocales.indexOf(locale) < 0) {
+				locale = "en";
+			}
+			return locale;
 		},
 
 		_getMessages: function (locale) {
@@ -155,11 +158,7 @@ var ext, BaseEvent, OnMessageEvent, sendMessage;
 		},
 
 		_getMessageFile: function (locale) {
-			var path = locale;
-			if (path in this.localeMessages) {
-				path = this.localeMessages[locale];
-			}
-			return safari.extension.baseURI + "_locales/" + path + "/messages.json";
+			return safari.extension.baseURI + "_locales/" + locale + "/messages.json";
 		},
 
 		getMessage: function (msgId, substitutions) {

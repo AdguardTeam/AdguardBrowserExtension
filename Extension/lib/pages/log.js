@@ -33,6 +33,12 @@ var PageController = function () {
 	this.requestWizard = new RequestWizard();
 };
 
+var Messages = {
+	OPTIONS_USERFILTER: ext.i18n.getMessage('options_userfilter'),
+	OPTIONS_WHITELIST: ext.i18n.getMessage('options_whitelist'),
+	IN_WHITELIST: ext.i18n.getMessage('filtering_log_in_whitelist')
+};
+
 PageController.prototype = {
 
 	init: function () {
@@ -295,7 +301,15 @@ PageController.prototype = {
 		if (event.requestRule) {
 			metadata.class += event.requestRule.whiteListRule ? ' green' : ' red';
 		}
-		var ruleText = event.requestRule ? event.requestRule.ruleText : '';
+
+		var ruleText = '';
+		if (event.requestRule) {
+			if (event.requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+				ruleText = Messages.IN_WHITELIST;
+			} else {
+				ruleText = event.requestRule.ruleText;
+			}
+		}
 
 		var requestTypeClass = 'task-manager-content-header-body-col task-manager-content-item-type';
 		if (event.requestThirdParty) {
@@ -336,10 +350,10 @@ var RequestWizard = function () {
 
 RequestWizard.getFilterName = function (filterId) {
 	if (filterId == AntiBannerFiltersId.USER_FILTER_ID) {
-		return ext.i18n.getMessage('options_userfilter');
+		return Messages.OPTIONS_USERFILTER;
 	}
 	if (filterId == AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
-		return ext.i18n.getMessage('options_whitelist');
+		return Messages.OPTIONS_WHITELIST;
 	}
 	var filterMetadata = antiBannerService.getFilterMetadata(filterId);
 	return filterMetadata ? filterMetadata.name : "";
@@ -376,7 +390,11 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 	template.find('[attr-text="requestType"]').text(RequestWizard.getRequestType(filteringEvent.requestType));
 	template.find('[attr-text="frameDomain"]').text(filteringEvent.frameDomain);
 	if (requestRule) {
-		template.find('[attr-text="requestRule"]').text(requestRule.ruleText);
+		if (requestRule.filterId != AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+			template.find('[attr-text="requestRule"]').text(requestRule.ruleText);
+		} else {
+			template.find('[attr-text="requestRule"]').closest('.adg-modal-window-locking-info-left-row').hide();
+		}
 		template.find('[attr-text="requestRuleFilter"]').text(RequestWizard.getFilterName(requestRule.filterId));
 	} else {
 		template.find('[attr-text="requestRule"]').closest('.adg-modal-window-locking-info-left-row').hide();
@@ -425,10 +443,7 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 
 	removeWhiteListDomainButton.on('click', function (e) {
 		e.preventDefault();
-		var domain = Utils.getWhiteListDomain(requestRule.ruleText);
-		if (domain) {
-			antiBannerService.removeWhiteListDomain(domain);
-		}
+		antiBannerService.unWhiteListFrame(frameInfo);
 		this.closeModal();
 	}.bind(this));
 
@@ -635,6 +650,7 @@ RequestWizard.getRequestType = function (requestType) {
 		case 'IMAGE':
 			return 'Image';
 		case 'OBJECT':
+        case 'OBJECT-SUBREQUEST':
 			return 'Media';
 		case 'OTHER':
 			return 'Other';

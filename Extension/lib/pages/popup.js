@@ -63,24 +63,20 @@ $(document).ready(function () {
                 ext.resizePopup(width, height);
             };
             //popup checkbox actions
-            controller.addWhiteListDomain = function (url) {
+            controller.addWhiteListDomain = function () {
+                UI.whiteListCurrentTab();
                 if (tabInfo.adguardDetected) {
-                    UI.addCurrentTabToAdguardWhiteList();
                     ext.closePopup();
-                } else {
-                    antiBannerService.addWhiteListDomain(url);
                 }
             };
-            controller.removeWhiteListDomain = function (url) {
+            controller.removeWhiteListDomain = function () {
+                UI.unWhiteListCurrentTab();
                 if (tabInfo.adguardDetected) {
-                    UI.removeCurrentTabFromAdguardWhiteList();
                     ext.closePopup();
-                } else {
-                    antiBannerService.removeWhiteListDomain(url);
                 }
             };
             controller.changeApplicationFilteringDisabled = function (disabled) {
-                antiBannerService.changeApplicationFilteringDisabled(disabled);
+                UI.changeApplicationFilteringDisabled(disabled);
             };
             //popup menu actions
             controller.openSiteReportTab = function (url) {

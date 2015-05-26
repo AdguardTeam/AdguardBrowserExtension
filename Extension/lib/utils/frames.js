@@ -19,6 +19,8 @@ var PageStatistic = require('utils/page-stats').PageStatistic;
 var FilterUtils = require('utils/common').FilterUtils;
 var UrlUtils = require('utils/url').UrlUtils;
 
+var whiteListService = require('filter/whitelist').whiteListService;
+
 /**
  * Map that contains info about every browser tab.
  */
@@ -187,8 +189,19 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
         var frameData = this.getMainFrame(tab);
         if (frameData) {
             var url = frameData.url;
-            frameData.frameWhiteListRule = antiBannerService.getRequestFilter().findWhiteListRule(url, url, "DOCUMENT");
+            var frameWhiteListRule = antiBannerService.getRequestFilter().findWhiteListRule(url, url, "DOCUMENT");
+            if (!frameWhiteListRule) {
+                frameWhiteListRule = whiteListService.findWhiteListRule(url);
+            }
+            frameData.frameWhiteListRule = frameWhiteListRule;
             frameData.applicationFilteringDisabled = antiBannerService.isApplicationFilteringDisabled();
+        }
+    };
+
+    this.recordFrameReferrerHeader = function (tab, referrerUrl) {
+        var frameData = this.getMainFrame(tab);
+        if (frameData) {
+            frameData.referrerUrl = referrerUrl;
         }
     };
 
@@ -210,6 +223,7 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
         var documentWhiteListed = false;
         var userWhiteListed = false;
         var canAddRemoveRule = false;
+        var frameRule;
 
         if (!urlFilteringDisabled) {
 
@@ -227,10 +241,17 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
                 var rule = frameData ? frameData.frameWhiteListRule : null;
                 documentWhiteListed = rule != null;
                 if (documentWhiteListed) {
-                    userWhiteListed = FilterUtils.isWhiteListFilterRule(rule);
+                    userWhiteListed = FilterUtils.isWhiteListFilterRule(rule) || FilterUtils.isUserFilterRule(rule);
                 }
                 //mean site in exception
                 canAddRemoveRule = !(documentWhiteListed && !userWhiteListed);
+
+                if (rule) {
+                    frameRule = {
+                        filterId: rule.filterId,
+                        ruleText: rule.ruleText
+                    };
+                }
             }
         }
 
@@ -247,6 +268,7 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
             documentWhiteListed: documentWhiteListed,
             userWhiteListed: userWhiteListed,
             canAddRemoveRule: canAddRemoveRule,
+            frameRule: frameRule,
 
             adguardDetected: frameData && frameData.adguardDetected,
             adguardProductName: frameData ? frameData.adguardProductName : null,

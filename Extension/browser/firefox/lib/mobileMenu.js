@@ -66,9 +66,9 @@ var MobileMenu = exports.MobileMenu = {
 
 			var tabInfo = this.UI.getCurrentTabInfo();
 			if (tabInfo.userWhiteListed) {
-				this.UI.removeUrlFromWhiteList(tabs.activeTab.url);
+				UI.unWhiteListCurrentTab();
 			} else {
-				this.UI.addUrlToWhiteList(tabs.activeTab.url);
+				UI.whiteListCurrentTab();
 			}
 
 			var window = UiUtils.getMostRecentWindow();
