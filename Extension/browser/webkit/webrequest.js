@@ -61,28 +61,17 @@ function onBeforeSendHeaders(requestDetails) {
 
     var tab = requestDetails.tab;
     var headers = requestDetails.requestHeaders;
-    var refHeader;
 
     if (framesMap.isTabAdguardWhiteListed(tab)) {
-
         //retrieve main frame url
         var mainFrameUrl = framesMap.getFrameUrl(tab, 0);
-
-        refHeader = Utils.findHeaderByName(headers, 'Referer');
-        if (refHeader) {
-            refHeader.value = mainFrameUrl;
-        } else {
-            headers.push({
-                name: 'Referer',
-                value: mainFrameUrl
-            });
-        }
+        headers = Utils.setHeaderValue(headers, 'Referer', mainFrameUrl);
         return {requestHeaders: headers};
     }
 
     if (requestDetails.requestType === 'DOCUMENT') {
         //save ref header
-        refHeader = Utils.findHeaderByName(headers, 'Referer');
+        var refHeader = Utils.findHeaderByName(headers, 'Referer');
         if (refHeader) {
             framesMap.recordFrameReferrerHeader(tab, refHeader.value);
         }
@@ -132,14 +121,40 @@ ext.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, ["<all_urls>
 
 ext.webRequest.onHeadersReceived.addListener(onHeadersReceived, ["<all_urls>"]);
 
-function checkHitCount(requestDetails) {
-    var ruleText = decodeURIComponent(StringUtils.substringAfter(requestDetails.requestUrl, '#'));
-    if (ruleText) {
-        filterRulesHitCount.addHitCount(ruleText);
+// AG for Windows and Mac checks either request signature or request Referer to authorize request.
+// Referer cannot be forged by the website so it's ok for add-on authorization.
+if (typeof chrome !== 'undefined') {
+
+    chrome.webRequest.onBeforeSendHeaders.addListener(function callback(details) {
+
+        var headers = Utils.setHeaderValue(details.requestHeaders, 'Referer', 'http://injections.adguard.com/');
+        return {requestHeaders: headers};
+
+    }, {urls: ["*://injections.adguard.com/*"]}, ["requestHeaders"]);
+}
+
+function parseCssRuleFromUrl(requestUrl) {
+    if (!requestUrl) {
+        return null;
+    }
+    var filterIdAndRuleText = decodeURIComponent(StringUtils.substringAfter(requestUrl, '#'));
+    var filterId = StringUtils.substringBefore(filterIdAndRuleText, ';');
+    var ruleText = StringUtils.substringAfter(filterIdAndRuleText, ';');
+    return {
+        filterId: filterId,
+        ruleText: ruleText
     }
 }
 
-ext.webRequest.onBeforeRequest.addListener(checkHitCount, ["chrome-extension://*/elemhidehit.png"]);
+function onCssRuleHit(requestDetails) {
+    var domain = framesMap.getFrameDomain(requestDetails.tab);
+    var rule = parseCssRuleFromUrl(requestDetails.requestUrl);
+    if (rule) {
+        filterRulesHitCount.addRuleHit(domain, rule.ruleText, rule.filterId);
+    }
+}
+
+ext.webRequest.onBeforeRequest.addListener(onCssRuleHit, ["chrome-extension://*/elemhidehit.png"]);
 
 var handlerBehaviorTimeout = null;
 EventNotifier.addListener(function (event) {

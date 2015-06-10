@@ -142,8 +142,9 @@ WebRequestService.prototype.processRequestResponse = function (tab, requestUrl, 
         //do nothing
     } else if (requestType == "DOCUMENT") {
         requestRule = this.framesMap.getFrameWhiteListRule(tab);
+        var domain = this.framesMap.getFrameDomain(tab);
         //add page view to stats
-        filterRulesHitCount.addPageView();
+        filterRulesHitCount.addDomainView(domain);
         appendLogEvent = true;
     }
 
@@ -166,7 +167,8 @@ WebRequestService.prototype.postProcessRequest = function (tab, requestUrl, refe
 
     this.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
 
-    if (requestRule && !FilterUtils.isUserFilterRule(requestRule)) {
-        filterRulesHitCount.addHitCount(requestRule.ruleText);
+    if (requestRule && !FilterUtils.isUserFilterRule(requestRule) && !FilterUtils.isWhiteListFilterRule(requestRule)) {
+        var domain = this.framesMap.getFrameDomain(tab);
+        filterRulesHitCount.addRuleHit(domain, requestRule.ruleText, requestRule.filterId, requestUrl);
     }
 };

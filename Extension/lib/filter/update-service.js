@@ -28,6 +28,7 @@ var FS = require('utils/file-storage').FS;
 var FilterStorage = require('filter/storage').FilterStorage;
 var CollectionUtils = require('utils/common').CollectionUtils;
 var Promise = require('utils/promises').Promise;
+var filterRulesHitCount = require('filter/filters-hit').filterRulesHitCount;
 
 /**
  * Service that manages extension version information and handles
@@ -75,6 +76,9 @@ exports.ApplicationUpdateService = {
 		}
 		if (Utils.isGreaterVersion("2.0.9", runInfo.prevVersion)) {
 			methods.push(this._onUpdateWhiteListService);
+		}
+		if (Utils.isGreaterVersion("2.0.10", runInfo.prevVersion)) {
+			methods.push(this._onUpdateRuleHitStats);
 		}
 
 		var dfd = this._executeMethods(methods);
@@ -228,6 +232,21 @@ exports.ApplicationUpdateService = {
 			dfd.resolve();
 		}.bind(this));
 
+		return dfd;
+	},
+
+	/**
+	 * Update rule hit stats
+	 *
+	 * Version 2.0.10
+	 * @private
+	 */
+	_onUpdateRuleHitStats: function () {
+
+		filterRulesHitCount.cleanup();
+
+		var dfd = new Promise();
+		dfd.resolve();
 		return dfd;
 	},
 

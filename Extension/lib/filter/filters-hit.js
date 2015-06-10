@@ -27,6 +27,7 @@ var userSettings = require('utils/user-settings').userSettings;
 var EventNotifier = require('utils/notifier').EventNotifier;
 var EventNotifierTypes = require('utils/common').EventNotifierTypes;
 var Log = require('utils/log').Log;
+var UrlUtils = require('utils/url').UrlUtils;
 
 /**
  * This object is used to store and track ad filters usage stats.
@@ -35,99 +36,152 @@ var Log = require('utils/log').Log;
  * @constructor
  */
 var FilterRulesHitCount = function () {
-	this.hitsCountProperty = 'filters-hit-count';
-	this.serviceClient = new ServiceClient();
-	this._init();
 
-	this.collectStatsEnabled = userSettings.collectHitsCount();
-	EventNotifier.addListener(function (event, setting) {
-		if (event == EventNotifierTypes.CHANGE_USER_SETTINGS && setting == userSettings.settings.DISABLE_COLLECT_HITS) {
-			this.collectStatsEnabled = userSettings.collectHitsCount();
-			//force rebuild css-filter
-			this.antiBannerService.getRequestFilter().cssFilter.dirty = true;
-		}
-	}.bind(this));
+    this.serviceClient = new ServiceClient();
+    this._init();
+
+    this.collectStatsEnabled = userSettings.collectHitsCount();
+    EventNotifier.addListener(function (event, setting) {
+        if (event == EventNotifierTypes.CHANGE_USER_SETTINGS && setting == userSettings.settings.DISABLE_COLLECT_HITS) {
+            this.collectStatsEnabled = userSettings.collectHitsCount();
+            //force rebuild css-filter
+            this.antiBannerService.getRequestFilter().cssFilter.dirty = true;
+        }
+    }.bind(this));
 };
 
 FilterRulesHitCount.prototype = {
 
-	MAX_PAGE_VIEWS_COUNT: 100,
+    MAX_PAGE_VIEWS_COUNT: 100,
+    HITS_COUNT_PROP: 'filters-hit-count',
 
-	setAntiBannerService: function (antiBannerService) {
-		this.antiBannerService = antiBannerService;
-	},
+    setAntiBannerService: function (antiBannerService) {
+        this.antiBannerService = antiBannerService;
+    },
 
-	addPageView: function () {
-		if (!this.collectStatsEnabled) {
-			return;
-		}
-		this.stats.pageViews = (this.stats.pageViews || 0) + 1;
-		this._saveHitsCountStats(this.stats);
-	},
+    addDomainView: function (domain) {
 
-	addHitCount: function (rule) {
-		if (!this.collectStatsEnabled) {
-			return;
-		}
-		var stats = this.stats;
-		if (!("rules" in stats)) {
-			stats.rules = Object.create(null);
-		}
-		var rules = stats.rules;
-		if (!(rule in rules)) {
-			rules[rule] = {count: 0};
-		}
-		rules[rule].count++;
-		this._saveHitsCountStats(stats);
-	},
+        // Filter rules stats are disabled for now - we should first announce the changes properly
+        return;
 
-	_init: function () {
-		this.stats = this._getHitCountStats();
-	},
+        if (!this.collectStatsEnabled) {
+            return;
+        }
+        if (!domain) {
+            return;
+        }
 
-	_getHitCountStats: function () {
-		var json = LS.getItem(this.hitsCountProperty);
-		var stats = Object.create(null);
-		try {
-			if (json) {
-				stats = JSON.parse(json);
-			}
-		} catch (ex) {
-			Log.error("Error retrieve hit count statistic, cause {0}", ex);
-		}
-		return stats;
-	},
+        var domains = this.stats.domains;
+        if (!domains) {
+            this.stats.domains = domains = Object.create(null);
+        }
 
-	_saveHitsCountStats: function (stats) {
-		if (this.timeoutId) {
-			clearTimeout(this.timeoutId);
-		}
-		this.timeoutId = setTimeout(function () {
-			try {
-				LS.setItem(this.hitsCountProperty, JSON.stringify(stats));
-			} catch (ex) {
-				Log.error("Error save hit count statistic to storage, cause {0}", ex);
-			}
-			this._sendStats();
-		}.bind(this), 2000);
-	},
+        var domainInfo = domains[domain];
+        if (!domainInfo) {
+            domains[domain] = domainInfo = Object.create(null);
+            domainInfo.views = 0;
+        }
+        domainInfo.views++;
+        this.stats.views = (this.stats.views || 0) + 1;
 
-	_sendStats: function () {
-		var pageViews = this.stats.pageViews || 0;
-		if (pageViews < this.MAX_PAGE_VIEWS_COUNT) {
-			return;
-		}
-		if (!userSettings.collectHitsCount()) {
-			return;
-		}
-		var enabledFilters = [];
-		if (this.antiBannerService) {
-			enabledFilters = this.antiBannerService.getEnabledAntiBannerFilters();
-		}
-		this.serviceClient.sendHitStats(JSON.stringify(this.stats), enabledFilters);
-		this.stats = Object.create(null);
-		LS.removeItem(this.hitsCountProperty);
-	}
+        this._saveHitsCountStats(this.stats);
+    },
+
+    addRuleHit: function (domain, ruleText, filterId, requestUrl) {
+
+        // Filter rules stats are disabled for now - we should first announce the changes properly
+        return;
+
+        if (!this.collectStatsEnabled) {
+            return;
+        }
+
+        if (!domain || !ruleText || !filterId) {
+            return;
+        }
+
+        var domainInfo = this.stats.domains ? this.stats.domains[domain] : null;
+        if (!domainInfo) {
+            return;
+        }
+
+        var rules = domainInfo.rules;
+        if (!rules) {
+            domainInfo.rules = rules = Object.create(null);
+        }
+
+        var filterRules = rules[filterId];
+        if (!filterRules) {
+            rules[filterId] = filterRules = Object.create(null);
+        }
+
+        if (!(ruleText in filterRules)) {
+            filterRules[ruleText] = null;
+        }
+
+        if (requestUrl) {
+            var requestDomain = UrlUtils.getDomainName(requestUrl);
+            var ruleDomains = filterRules[ruleText];
+            if (!ruleDomains) {
+                filterRules[ruleText] = ruleDomains = Object.create(null);
+            }
+            ruleDomains[requestDomain] = null;
+        }
+
+        this._saveHitsCountStats(this.stats);
+    },
+
+    cleanup: function () {
+        this.stats = Object.create(null);
+        LS.removeItem(this.HITS_COUNT_PROP);
+    },
+
+    _init: function () {
+        this.stats = this._getHitCountStats();
+    },
+
+    _getHitCountStats: function () {
+        var json = LS.getItem(this.HITS_COUNT_PROP);
+        var stats = Object.create(null);
+        try {
+            if (json) {
+                stats = JSON.parse(json);
+            }
+        } catch (ex) {
+            Log.error("Error retrieve hit count statistic, cause {0}", ex);
+        }
+        return stats;
+    },
+
+    _saveHitsCountStats: function (stats) {
+        if (this.timeoutId) {
+            clearTimeout(this.timeoutId);
+        }
+        this.timeoutId = setTimeout(function () {
+            try {
+                LS.setItem(this.HITS_COUNT_PROP, JSON.stringify(stats));
+            } catch (ex) {
+                Log.error("Error save hit count statistic to storage, cause {0}", ex);
+            }
+            this._sendStats();
+        }.bind(this), 2000);
+    },
+
+    _sendStats: function () {
+        var overallViews = this.stats.views || 0;
+        if (overallViews < this.MAX_PAGE_VIEWS_COUNT) {
+            return;
+        }
+        if (!this.collectStatsEnabled) {
+            return;
+        }
+        var enabledFilters = [];
+        if (this.antiBannerService) {
+            enabledFilters = this.antiBannerService.getEnabledAntiBannerFilters();
+        }
+        this.serviceClient.sendHitStats(JSON.stringify(this.stats), enabledFilters);
+        this.cleanup();
+    }
 };
 
 var filterRulesHitCount = exports.filterRulesHitCount = new FilterRulesHitCount();

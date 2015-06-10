@@ -46,7 +46,8 @@ var Adguard = function () {
 			baseWidth: 560,
 			extendDetailedSettingsHeight: 460,
 			detailedMenuHeight: 270,
-			selectorMenuHeight: 95
+			selectorMenuHeight: 95,
+			topOffset: 25
 		}
 	};
 
@@ -235,18 +236,14 @@ var Adguard = function () {
 
 	var createIframe = function (width, height, dfd) {
 		var viewPort = getViewport();
-		var constOffset = 25;
-		var positions = getPositionsForIframe(constOffset, viewPort, height, width);
-		var top = positions.top;
-		if (top < 0) top = height / 4;
-		var left = positions.left;
+		var positions = getPositionsForIframe(constants.iframe.topOffset, viewPort, height, width);
 		var cssStyle = {
 			width: width,
 			height: height,
 			position: 'fixed',
-			left: left
+			left: positions.left,
+			top: positions.top
 		};
-		cssStyle.top = top;
 		//for src
 		var iframe = $('<iframe />"').attr({
 			id: settings.iframeId,
@@ -651,8 +648,12 @@ var Adguard = function () {
 		var height = iframe.outerHeight();
 		if (offset.top + height > bottom) {
 			//replace
+			var top = winHeight - height - constants.iframe.topOffset;
+			if (top < 0) {
+				top = constants.iframe.topOffset;
+			}
 			iframe.css({
-				top: winHeight - height - 25
+				top: top
 			});
 		}
 	};

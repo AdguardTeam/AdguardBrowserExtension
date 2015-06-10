@@ -433,6 +433,13 @@ var WebRequestImpl = exports.WebRequestImpl = {
             return;
         }
 
+        // AG for Windows and Mac checks either request signature or request Referer to authorize request.
+        // Referer cannot be forged by the website so it's ok for add-on authorization.
+        if (subject.URI.asciiHost == 'injections.adguard.com') {
+            subject.setRequestHeader('Referer', 'http://injections.adguard.com/', false);
+            return;
+        }
+
         var win = WebRequestHelper.getWndForChannel(subject);
         if (!win) {
             return;

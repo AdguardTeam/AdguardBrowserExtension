@@ -575,6 +575,7 @@ CssFilter.prototype = {
 
 		var ELEMHIDE_CSS_STYLE = " { display: none!important; }\r\n";
 		var ELEMHIDE_HIT_START = " { display: none!important; background-image: url('chrome-extension://" + appId + "/elemhidehit.png#";
+		var ELEMHIDE_HIT_SEP = encodeURIComponent(';');
 		var ELEMHIDE_HIT_END = "') !important;}\r\n";
 
 		var elemHideSb = [];
@@ -591,6 +592,8 @@ CssFilter.prototype = {
 					elemHideSb.push(ELEMHIDE_CSS_STYLE);
 				} else {
 					elemHideSb.push(ELEMHIDE_HIT_START);
+					elemHideSb.push(rule.filterId);
+					elemHideSb.push(ELEMHIDE_HIT_SEP);
 					elemHideSb.push(encodeURIComponent(rule.ruleText));
 					elemHideSb.push(ELEMHIDE_HIT_END);
 				}

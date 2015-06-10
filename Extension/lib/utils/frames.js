@@ -65,13 +65,20 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
 
         var previousUrl = '';
         if (type == "DOCUMENT" && framesOfTab) {
-            previousUrl = framesOfTab[frameId].url;
+            var frameInfo = framesOfTab[frameId];
+            if (frameInfo) {
+                previousUrl = frameInfo.url;
+            }
         }
 
         if (!framesOfTab || type == "DOCUMENT") {
             frames.set(tab, (framesOfTab = Object.create(null)));
         }
-        framesOfTab[frameId] = {url: url, previousUrl: previousUrl};
+        framesOfTab[frameId] = {
+            url: url,
+            domainName: UrlUtils.getDomainName(url),
+            previousUrl: previousUrl
+        };
         if (type == "DOCUMENT") {
             framesOfTab[frameId].timeAdded = Date.now();
             this.reloadFrameData(tab);
@@ -103,6 +110,17 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
     this.getFrameUrl = function (tab, frameId) {
         var frameData = getFrameData(tab, frameId);
         return (frameData ? frameData.url : null);
+    };
+
+    /**
+     * Gets frame Domain
+     *
+     * @param tab       Tab
+     * @returns Frame Domain
+     */
+    this.getFrameDomain = function (tab) {
+        var frameData = getFrameData(tab, 0);
+        return frameData ? frameData.domainName : null;
     };
 
     /**

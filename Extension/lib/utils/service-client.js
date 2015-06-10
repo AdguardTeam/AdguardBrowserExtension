@@ -46,7 +46,7 @@ var ServiceClient = exports.ServiceClient = function () {
 	this.trackUpdatelUrl = this.backendUrl + "/update.html?";
 	this.adguardAppUrlOld = this.injectionsUrl + "/adguard-ajax-crossdomain-hack/api?";
 	this.adguardAppUrl = this.injectionsUrl + "/adguard-ajax-api/api?";
-	this.hitStatsUrl = this.backendUrl + "/hitstats.html";
+	this.ruleStatsUrl = this.backendUrl + "/rulestats.html";
 	this.safebrowsingLookupUrl = "https://sb.adtidy.org/safebrowsing-lookup-domain.html";
 	this.safebrowsingStatsUrl = "https://sb.adtidy.org/sb-report.html";
 	this.apiKey = "4DDBE80A3DA94D819A00523252FB6380";
@@ -426,7 +426,7 @@ ServiceClient.prototype = {
 		params = this._addKeyParameter(params);
 
 		var request = XMLHttpRequestConstructor.createInstance(Ci.nsIXMLHttpRequest);
-		request.open('POST', this.hitStatsUrl);
+		request.open('POST', this.ruleStatsUrl);
 		request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 		request.send(params);
 	},

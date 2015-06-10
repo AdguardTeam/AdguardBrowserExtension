@@ -359,6 +359,25 @@ var Utils = exports.Utils = {
         return null;
     },
 
+    /**
+     * Set header value. Only for Chrome
+     * @param headers
+     * @param headerName
+     * @param headerValue
+     */
+    setHeaderValue: function (headers, headerName, headerValue) {
+        if (!headers) {
+            headers = [];
+        }
+        var header = this.findHeaderByName(headers, headerName);
+        if (header) {
+            header.value = headerValue;
+        } else {
+            headers.push({name: headerName, value: headerValue});
+        }
+        return headers;
+    },
+
     getSafebrowsingBackUrl: function (frameData) {
         if (frameData) {
             //https://code.google.com/p/chromium/issues/detail?id=11854

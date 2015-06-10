@@ -1,9 +1,9 @@
-! Version: 1.0.22.21
+! Version: 1.0.22.41
 ! Name: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: Experimental filter
 ! DescriptionEn: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! TimeUpdated: 2015-04-27T17:00:15.705+03:00
+! TimeUpdated: 2015-06-07T13:01:51.202+03:00
 ! Adguard Experimental Filter
 !
 ! Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
@@ -11,6 +11,17 @@
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
 ! Homepage: http://adguard.com/filters.html#experimental
 !
+!-------------------------------------------------------------------!
+!------------------ General JS API ---------------------------------!
+!-------------------------------------------------------------------!
+! JS API START
+!
+#%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
+#%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
+#%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
+#%#window.AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
+!
+! JS API FINISH
 !-------------------------------------------------------------------!
 !------- Experimental rules for English filter ---------------------!
 !-------------------------------------------------------------------!
@@ -221,6 +232,10 @@ qrrro.com###netkevin-popup
 ! This section contain any type of rule grouped by domain.
 !
 ! уточнить
+!
+! http://forum.adguard.com/showthread.php?5524
+xakeroker.ws###content > div.pageWidth > div.pageContent > center > a > img
+xakeroker.ws###content > div.pageWidth > div.pageContent > div.mainContainer > div.mainContent > center > a > img
 ! http://forum.adguard.com/showthread.php?5049 - в annoyancez?
 vpk.name##div[style="height:400px;margin:10px 0;"]
 vpk.name##div[style="height:90px;"]
@@ -265,7 +280,7 @@ kinomania.ru##.layout > div[style="margin-bottom:4px;width:998px;height:190px;po
 ! #%#window.UABPtracked = true;
 !
 ! Dangerous "nofollow" links blocking rule
-~fsm-portal.net,~crox.ws,~softek.ucoz.ru,~dfm.ru,~hitfm.ru,~montecarlo.ru,~maximum.ru,~rusradio.ru,~metallurg.ru,~onlinefilmu.ru,~forum.ixbt.com,~igromania.ru,~yarportal.ru,~maxthon.org.ru,~firstvds.ru,~smotretfilmy.ru,~speedy-warez.ru,~blogig.org,~beeset.ru,~mh-soft.su,~respecta.net,~khabarovsk.farpost.ru,~moviez.kz,~games-java.ru,~rulit.net,~art-on.ru,~kinoshka-new.ru,~forum.esetnod32.ru,~kahai.ru,~planetaua.net,~capa.me##noindex a[rel="nofollow"]>img
+~keddr.com,~allkey.org,~wowjp.net,~ex-soft.in.ua,~bucwar.ru,~fsm-portal.net,~crox.ws,~softek.ucoz.ru,~dfm.ru,~hitfm.ru,~montecarlo.ru,~maximum.ru,~rusradio.ru,~metallurg.ru,~onlinefilmu.ru,~forum.ixbt.com,~igromania.ru,~yarportal.ru,~maxthon.org.ru,~firstvds.ru,~smotretfilmy.ru,~speedy-warez.ru,~blogig.org,~beeset.ru,~mh-soft.su,~respecta.net,~khabarovsk.farpost.ru,~moviez.kz,~games-java.ru,~rulit.net,~art-on.ru,~kinoshka-new.ru,~forum.esetnod32.ru,~kahai.ru,~planetaua.net,~capa.me,~delo.ua##noindex a[rel="nofollow"]>img
 !
 ! antiblock.org test page
 antiblock.org#%#var AG_AntiAntiBlock = function() { var baseCreateElement = document.createElement; document.createElement = function(name) { if (name && name.match(/div|font|center/i)) { return null; } else { return baseCreateElement(name); } } };
@@ -289,6 +304,32 @@ antiblock.org#%#AG_onLoad(function() { AG_AntiAntiBlock(); });
 !
 ! This section contains all kinds of annoyances
 !
+! http://forum.adguard.com/showthread.php?5604
+max.de##div[style$="padding:15px; height:90px; "]
+max.de##div[style$="padding: 15px; height: 90px;"]
+! di.fm - remains of ads
+di.fm##.secondary > .bare
+! film.ru - удаление отступа сверху
+film.ru##body > div[style="height: 269px;"]
+! http://forum.adguard.com/showthread.php?5491
+darkmoney.cc##body > div > div[align="center"] > div[align="center"] > a > img
+darkmoney.cc##div > div[align="center"] > div.page[style="width:1200px; text-align:left"] > div[style="padding:0px 20px 0px 20px"] > div[align="center"] > a > img
+darkmoney.cc##div > div[align="center"] > div[align="center"] > div.page[style="width:1200px; text-align:left"] > div[align="center"] > a > img
+darkmoney.cc##.alt1Active td > a > img
+! http://forum.adguard.com/showthread.php?5500
+||vesti.ru/4sport.html
+! yadi.sk - http://forum.adguard.com/showthread.php?5483
+yadi.sk##.content-poster-public__poster
+! sat-expert.com - удаление пустоты от баннеров
+sat-expert.com##div[style="overflow: hidden; height: 65px; padding: 5px;"]
+! http://forum.adguard.com/showthread.php?5366-*-http-vp-news-ru&p=50285&viewfull=1#post50285
+vp-news.ru##.box.nomargin"]
+! oper.ru - удаление пустоты от баннеров
+oper.ru###container > div[style="width: 100%; height: 290px; min-width: 1000px; text-align: center;"]
+! rankw.ru - удаление пустоты от баннеров
+rankw.ru##section[style="margin-left:0;margin-right:0;margin-top:0;margin-bottom:10px; height: 160px;"]
+rankw.ru###headerFrame > div[style*="width: 1170px; height: 90px;"]
+rankw.ru##section#sideBarFrame > section[style="margin:15px;height:90px;"]
 ! footballtransfer.com.ua - удаление нижнего отступа
 footballtransfer.com.ua##noindex > a#back-screen
 ! translate.google.ru/com - Improve Google Translate
@@ -458,6 +499,8 @@ forumodua.com###notices
 !============================================
 !=============Questionable rules=============
 !============================================
+! http://forum.adguard.com/showthread.php?2045
+||yarportal.ru/zagl.gif
 ! http://pirat-pic.ru/
 ||i66.fastpic.ru/big/2014/1118/69/2c67d124b092352f5cc6f29ddf038769.png
 pirat-pic.ru##center >center > font[color="red"] > font[style="font-size: 10pt;"]

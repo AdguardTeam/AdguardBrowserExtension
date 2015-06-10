@@ -145,13 +145,12 @@ HidingChannel.prototype = {
 				// Track filter rule usage
 				var rule = this._getRuleText(this.URI.path);
 				if (rule) {
-					var frameUrl = this.framesMap.getFrameUrl(tab, 0);
-					var domain = UrlUtils.getDomainName(frameUrl);
+					var domain = this.framesMap.getFrameDomain(tab);
 					if (!rule.isPermitted(domain)) {
 						data = this.notHideData;
 					}
 					if (!FilterUtils.isUserFilterRule(rule)) {
-						filterRulesHitCount.addHitCount(rule.ruleText);
+						filterRulesHitCount.addRuleHit(domain, rule.ruleText, rule.filterId);
 					}
 				}
 			}
