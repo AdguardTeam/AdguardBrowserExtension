@@ -1,9 +1,9 @@
-! Version: 1.0.8.37
+! Version: 1.0.8.38
 ! Name: Dutch filter
 ! Description: Filter that enables removing of the ads from websites with Dutch content.
 ! NameEn: Dutch filter
 ! DescriptionEn: Filter that enables blocking of ads on websites with Dutch content.
-! TimeUpdated: 2015-06-03T18:44:27.355+03:00
+! TimeUpdated: 2015-06-10T14:58:59.648+03:00
 ! Adguard Dutch Filter.
 !
 ! Filter that enables removing of the ads from websites with Dutch content.
@@ -14,6 +14,10 @@
 ! Homepage: http://adguard.com/filters.html#dutch
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
 !
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/169
+||bs.serving-sys.com/BurstingPipe/adServer.bs$domain=kijk.nl
+||serving-sys.com/*.mp4^$domain=kijk.nl
+||cdn.sbsnet.nl/creatives/assets/*.mp4$domain=kijk.nl
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/534
 @@||cdn-static.liverail.com/swf/$domain=dumpert.nl
 @@||cdn-static.liverail.com/crossdomain.xml$domain=dumpert.nl

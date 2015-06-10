@@ -1,9 +1,9 @@
-! Version: 1.0.5.67
+! Version: 1.0.5.70
 ! Name: Social media filter
 ! Description: A filter for social media widgets ("Like" buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets ("Like" buttons and such).
-! TimeUpdated: 2015-06-09T16:15:11.493+03:00
+! TimeUpdated: 2015-06-10T17:06:48.780+03:00
 ! Adguard Social Media Filter
 !
 ! If you do not like numerous «Like» and «Tweet» buttons on all the popular websites on the Internet,
@@ -225,13 +225,6 @@ softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 !
 ! Contains rules for specific web sites
 !
-valetudo.ru##.buttons > .allbuts > a[rel="nofollow"]
-valetudo.ru##.buttons > .butspre
-portableapps.com##.social-bottons
-championat.com##.soc-menu
-fishki.net###fb-scroll-popup
-tjournal.ru##.b-article__shares
-mobileangularui.com##.btn-group-social
 imageshack.us###Actions
 meduza.io###DailySubscriber
 washingtonpost.com###NN-module-rr
@@ -255,6 +248,7 @@ pikabu.ru###facebook_page_block_lenta
 habrahabr.ru###facebook_reader_wrapper
 softwares-serials.in###facebook_right
 ridus.ru,tweaktown.com###fanback
+fishki.net###fb-scroll-popup
 manoramaonline.com###fb_iframe_widget
 huffingtonpost.com###float_tracker
 newyorkdailysun.com###fsml_ff
@@ -333,6 +327,7 @@ computerra.ru##.article-soc
 thenextweb.com##.articleShare-buttons
 auto.mail.ru##.articleshares
 ngs.ru,reviews.ngsauto.ru,samara24.ru##.au-share
+tjournal.ru##.b-article__shares
 surfingbird.ru##.b-button_type_list-one_fb-square
 d3.ru##.b-comments_controls_social
 d3.ru##.b-imperial_social
@@ -354,7 +349,10 @@ icaravan.com.ua##.blockOverlay
 icaravan.com.ua##.blockUI
 si.com##.btn-fb
 si.com##.btn-gp
+mobileangularui.com##.btn-group-social
 si.com##.btn-tw
+valetudo.ru##.buttons > .allbuts > a[rel="nofollow"]
+valetudo.ru##.buttons > .butspre
 katushka.net##.buttons_block
 sports.ru##.c-poll-share__social
 sports.ru##.c-poll-share__text
@@ -465,12 +463,14 @@ zdnet.com##.siu-btns-cont
 zdnet.com##.siu-more-cont
 mailblog.mail.ru##.sn-mini__single__post
 utro.ru##.soc
+championat.com##.soc-menu
 focus.de##.socBmXing
 focus.de##.socFbLikeShare
 focus.de##.socFolStarRating
 kinopoisk.ru##.socRight
 colta.ru##.soc_block > a
 wday.ru##.social-blocks
+portableapps.com##.social-bottons
 sports.ru#@#.social-icons-big
 sports.ru##.social-icons-big.likes
 imhonet.ru##.social-net
@@ -671,6 +671,7 @@ posad.com.ua##ul[class="social-icons"]
 ###shareBox
 ###shareFloat
 ###shareHorizontal
+###shareStrip
 ###share_box
 ###share_button
 ###share_button_links
@@ -863,6 +864,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.p-button-social
 ##.pin-it-button
 ##.pinterest-small
+##.pluso
 ##.pocket-btn
 ##.post-item__social
 ##.post-social-facebook
@@ -1139,7 +1141,6 @@ livejournal.com##.b-ljtimes-wrapper
 ##a[onclick^="window.open('http://www.odnoklassniki.ru/dk?st.cmd=addShare"]
 ##a[onlick*="https://www.facebook.com/sharer/"]
 ~twitter.com##body .twitter-share-button
-###shareStrip
 ##div[id^="___plus_"]
 ##div[id^="___plusone_"]
 ##div[id^="twitter-follow-button-"]

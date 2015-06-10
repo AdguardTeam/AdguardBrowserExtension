@@ -130,7 +130,7 @@ if (typeof chrome !== 'undefined') {
         var headers = Utils.setHeaderValue(details.requestHeaders, 'Referer', 'http://injections.adguard.com/');
         return {requestHeaders: headers};
 
-    }, {urls: ["*://injections.adguard.com/*"]}, ["requestHeaders"]);
+    }, {urls: ["*://injections.adguard.com/*"]}, ["requestHeaders", "blocking"]);
 }
 
 function parseCssRuleFromUrl(requestUrl) {
