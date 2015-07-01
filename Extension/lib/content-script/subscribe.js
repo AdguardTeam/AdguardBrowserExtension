@@ -89,7 +89,15 @@
         e.preventDefault();
         e.stopPropagation();
 
-        var urlParams = target.search.substring(1).split('&');
+        var urlParams;
+        if (target.search) {
+            urlParams = target.search.substring(1).split('&');
+        } else {
+            var href = target.href;
+            var index = href.indexOf('?');
+            urlParams = href.substring(index + 1).split('&');
+        }
+
         var subParams = getSubscriptionParams(urlParams);
         var url = subParams.url;
         var title = subParams.title || url;

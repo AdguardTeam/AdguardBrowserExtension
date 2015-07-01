@@ -172,8 +172,6 @@ var ContextMenu = exports.ContextMenu = {
 		} else if (tabInfo.urlFilteringDisabled) {
 			this.menu.addItem(this._createItem('context_site_filtering_disabled'));
 			this.menu.addItem(this._createSeparator());
-			this.menu.addItem(this._createItem('context_abuse_site'));
-			this.menu.addItem(this._createSeparator());
 			this._createSettingsMenu();
 			this.menu.addItem(this._createItem('context_update_antibanner_filters'));
 		} else {

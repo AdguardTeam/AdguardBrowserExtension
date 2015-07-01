@@ -224,7 +224,7 @@ PopupController.prototype = {
 			}
 		}
 
-		if (this.abusePanelSupported) {
+		if (this.abusePanelSupported && !tabInfo.urlFilteringDisabled) {
 			el.append(this.abuseTemplate);
 		}
 

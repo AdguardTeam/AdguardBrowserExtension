@@ -1,9 +1,9 @@
-! Version: 1.0.25.17
+! Version: 1.0.25.18
 ! Name: Russian filter
 ! Description: Filter that enables removing of the ads from websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2015-06-30T19:24:26.671+03:00
+! TimeUpdated: 2015-07-01T16:27:52.982+03:00
 ! Adguard Russian Filter
 !
 ! Filter that enables removing of the ads from websites with Russian content.
@@ -8551,6 +8551,7 @@ letitbit.net#%#window.open = function() {};
 kinokopilka.tv#%#window.open = function() {};
 ! Мимикрируем под adfox, иначе страница вечно грузится (livejournal, sports.ru)
 ~ntv.ru,~rg.ru#%#var AdFox_getCodeScript = function() {};
+!
 ! Удаление iframe от баннера, иначе страница вечно грузится
 newsland.com,newsland.ru,glav.su,eg.ru,kp.ru,kg-portal.ru,sovsport.md,newsland.com,newsland.ru,glav.su,eg.ru,kp.ru,kg-portal.ru,select.by,sovsport.md,sovsport.ru,playground.ru,kinonews.ru,gismeteo.ua,gismeteo.by,soccer.ru,mobile-review.com,ria.ru,thg.ru,mk.ru#%#AG_onLoad(function() { window.AG_removeElementBySelector('iframe[id^="ar_"]'); });
 irr.ru#%#AG_onLoad(function() { window.AG_removeElementBySelector('iframe[id^="bw_"]'); });
@@ -8597,6 +8598,8 @@ valetudo.ru#%#window.open = function() {};
 play.aniland.org#%#document.cookie = "rec=2001";
 ! http://forum.adguard.com/showthread.php?5821
 metrprice.ru#%#AG_onLoad(function() { $('div.special-offers').closest('.h-layout__item').remove(); });
+! strana.in.ua - кликандер
+strana.in.ua#%#AG_onLoad(function() { window.GetCookie = function() { return 'haha'; }; });
 !-------------------
 !-------CSS---------
 !-------------------
@@ -12025,7 +12028,6 @@ my-svadba.ru##.look-at-me
 playground.ru###foundationWrapper div[style="width: 960px; margin: 0 auto;"] > a[href^="http://www.playground.ru/redirect/"]
 radikal.ru,radikal.cc,f-picture.net,radical-foto.ru##div[style^="height: 340px; width: 640px;"]
 rutracker.org##iframe[src*="/195.82.146.52/"]
-mail.yandex.ua##.b-folders__nesting
 meta.ua###matv
 ||interfax.ru/ftproot/textphotos/2015/06/25/160prv.jpg
 uznayvse.ru##.soctabs
@@ -16869,11 +16871,9 @@ zastava.net.ua#@#.banners
 @@||www.s7.ru$document
 ! для того чтобы работали ссылки на форуме 4pda.ru
 @@.gameleads.ru^$domain=4pda.ru
-@@.mts.ru/$document
 @@||anrdoezrs.net^$domain=4pda.ru
 @@||apmebf.com^$domain=4pda.ru
 @@||cityads.ru^$domain=4pda.ru
-@@||po.ua/media/
 ! игры odnoklassniki
 @@.ngs.ru/advert/
 @@||atm-karta.ru/index.php$document
@@ -16948,6 +16948,8 @@ zastava.net.ua#@#.banners
 ! ----------------------------------------------
 ! ----------------------------------------------
 ! ----------------------------------------------
+@@.mts.ru/$document
+@@||po.ua/media/
 @@||ads.adfox.ru/*/goLink$domain=slon.ru
 @@||ads.chatovod.ru^$domain=chat.muz-tv.ru|chatovod.ru|spiritix.eu|детскийчат.рф|подростковыйчат.рф|чатволчат.рф|чаткроватка.рф|чатобщения.рф
 @@||adriver.ru$domain=tsn.ua
