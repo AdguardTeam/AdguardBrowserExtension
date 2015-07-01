@@ -105,6 +105,7 @@ function filterSafebrowsing(tab, mainFrameUrl) {
 
     var frameData = framesMap.getMainFrame(tab);
     var referrerUrl = Utils.getSafebrowsingBackUrl(frameData);
+    var incognitoTab = framesMap.isIncognitoTab(tab);
 
     antiBannerService.getRequestFilter().checkSafebrowsingFilter(mainFrameUrl, referrerUrl, function (safebrowsingUrl) {
         UI.openTab(safebrowsingUrl, {
@@ -112,7 +113,7 @@ function filterSafebrowsing(tab, mainFrameUrl) {
                 tab.close();
             }
         });
-    });
+    }, incognitoTab);
 }
 
 ext.webRequest.onBeforeRequest.addListener(onBeforeRequest, ["<all_urls>"]);
@@ -147,6 +148,9 @@ function parseCssRuleFromUrl(requestUrl) {
 }
 
 function onCssRuleHit(requestDetails) {
+    if (framesMap.isIncognitoTab(requestDetails.tab)) {
+        return;
+    }
     var domain = framesMap.getFrameDomain(requestDetails.tab);
     var rule = parseCssRuleFromUrl(requestDetails.requestUrl);
     if (rule) {

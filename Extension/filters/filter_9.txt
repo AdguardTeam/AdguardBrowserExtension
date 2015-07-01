@@ -1,9 +1,9 @@
-! Version: 1.0.86.2
+! Version: 1.0.86.6
 ! Name: Spanish/Portuguese filter
 ! Description: Filter that enables removing of the ads from websites in Spanish and Portuguese.
 ! NameEn: Spanish/Portuguese filter
 ! DescriptionEn: Filter that enables blocking of ads on websites in Spanish and Portuguese.
-! TimeUpdated: 2015-06-04T19:23:27.977+03:00
+! TimeUpdated: 2015-06-29T01:29:07.018+03:00
 ! Adguard Spanish/Portuguese Filter.
 !
 ! Filter that enables removing of the ads from websites in Spanish.
@@ -19,7 +19,10 @@
 !---------------- Common CSS rules ---------------------------------!
 ##.bannerBox
 !---------------- Specific web sites rules -------------------------!
-! revistasgratis.ws
+territoriodigital.com.ar,territoriodigital.com###HiperLibertad
+||territoriodigital.com.ar/bannerspanorama/
+||territoriodigital.com/bannerspanorama/
+territoriodigital.com.ar,territoriodigital.com##a[href^="http://www.clubelterritorio.com.ar/Suscriptor/Inscripcion?utm_source="]
 ||revistasgratis.ws/js/*_alosexo_msn.js
 ||revistasgratis.ws/js/*.aumento.inc.js
 ||revistasgratis.ws/150x115.radon.meuprazer.js
@@ -33,12 +36,49 @@ revistasgratis.ws###adsoriginal
 revistasgratis.ws###adsalosexo
 revistasgratis.ws###adspb
 revistasgratis.ws###amigos
+!
 elfolladero.com##table[height="368"][width="1000"][id="AutoNumber1"]
 elfolladero.com##table[height="19"][width="98%"][id="AutoNumber4"]
 !-----------------White list--------------------------------------!
 @@||seur.com^$document
 ! Fixing links on marca.com
 @@||b.scorecardresearch.com^$domain=marca.com
+!
+@@/banner/banner_$domain=bci.cl
+@@/publicidad.$domain=tn.com.ar
+@@||ads.e-planning.net^*/PreRoll?
+@@||ads.globo.com/RealMedia/ads/adstream_jx.ads/g1/*videos
+@@||ads.globo.com/RealMedia/ads/adstream_mjx.ads/g1/home/
+@@||ads.globo.com/RealMedia/ads/adstream_nx.ads/g1/home/
+@@||ads.smowtion.com/ad.js
+@@||ads.telecinco.es^*/PM_test_video/crossdomain.xml
+@@||adserver.cl/crossdomain.xml$domain=cooperativa.cl
+@@||adserver.cl/videos.xml?$domain=cooperativa.cl
+@@||adserver.ig.com.br/crossdomain.xml$domain=ig.com.br
+@@||adswizz.com/www/components/$domain=esradio.fm
+@@||adswizz.com/www/delivery/swfIndex.php?$domain=esradio.fm
+@@||antena3.com/adserver/flv2/$domain=larazon.es
+@@||autoscout24.es^*/adbanner.css
+@@||avisooportunoexpress.mx/ajax_core.php*&adtype?$domain=avisooportunoexpress.mx
+@@||cdn.smartclip.net/easyroll/player.swf
+@@||ads.e-planning.net^$domain=ole.com.ar,object-subrequest
+@@||checkm8.com^$domain=terra.com.br,document,object-subrequest
+@@||diariosigloxxi.com/banners/logo_
+@@||e-planning.net/esb/*.swf?clickTag$domain=ole.com.ar
+@@||extraconfidencial.com/js/*$object
+@@||f.i.uol.com.br/folha/publicidade/images/$domain=folha.uol.com.br
+@@||forolockerz.com/advertisement.js
+@@||freelibros.com/wp-content/plugins/no-adblock/$script
+@@||izigo.pt/*/adsearch?
+@@||izigo.pt/AdPictures/
+@@||lanacion.com.ar^*/publicidad/
+@@||larazon.es/videos/publicidad_
+@@||prisacom.com/RealMedia/ads/*/eplayer/$domain=as.com
+@@||punch-fansub.com.br/banners/
+@@||t26.net/ads/yahooads.css
+@@||tvn.cl/include/ads/zona.js
+@@||zpag.es/ads/$xmlhttprequest
+!-----------------------------------------------------------------!
 ! Fanboy's rules
 -publicidad-*
 -publicidad/*
@@ -498,39 +538,6 @@ terra.cl###trr-bar
 ||down.tiodosfilmes.com^$popup,image,~image
 ||mt-50.com^$popup,image,~image
 ||planet49.es/cgi-bin/*partner$popup,image,~image
-@@/banner/banner_$domain=bci.cl
-@@/publicidad.$domain=tn.com.ar
-@@||ads.e-planning.net^*/PreRoll?
-@@||ads.globo.com/RealMedia/ads/adstream_jx.ads/g1/*videos
-@@||ads.globo.com/RealMedia/ads/adstream_mjx.ads/g1/home/
-@@||ads.globo.com/RealMedia/ads/adstream_nx.ads/g1/home/
-@@||ads.smowtion.com/ad.js
-@@||ads.telecinco.es^*/PM_test_video/crossdomain.xml
-@@||adserver.cl/crossdomain.xml$domain=cooperativa.cl
-@@||adserver.cl/videos.xml?$domain=cooperativa.cl
-@@||adserver.ig.com.br/crossdomain.xml$domain=ig.com.br
-@@||adswizz.com/www/components/$domain=esradio.fm
-@@||adswizz.com/www/delivery/swfIndex.php?$domain=esradio.fm
-@@||antena3.com/adserver/flv2/$domain=larazon.es
-@@||autoscout24.es^*/adbanner.css
-@@||avisooportunoexpress.mx/ajax_core.php*&adtype?$domain=avisooportunoexpress.mx
-@@||cdn.smartclip.net/easyroll/player.swf
-@@||checkm8.com^$domain=terra.com.br,document,object-subrequest
-@@||diariosigloxxi.com/banners/logo_
-@@||e-planning.net/esb/*.swf?clickTag$domain=ole.com.ar
-@@||extraconfidencial.com/js/*$object
-@@||f.i.uol.com.br/folha/publicidade/images/$domain=folha.uol.com.br
-@@||forolockerz.com/advertisement.js
-@@||freelibros.com/wp-content/plugins/no-adblock/$script
-@@||izigo.pt/*/adsearch?
-@@||izigo.pt/AdPictures/
-@@||lanacion.com.ar^*/publicidad/
-@@||larazon.es/videos/publicidad_
-@@||prisacom.com/RealMedia/ads/*/eplayer/$domain=as.com
-@@||punch-fansub.com.br/banners/
-@@||t26.net/ads/yahooads.css
-@@||tvn.cl/include/ads/zona.js
-@@||zpag.es/ads/$xmlhttprequest
 .br/metrics/
 /bbtstats/*
 /ml.track.me?p=
@@ -1524,7 +1531,6 @@ yucatan.com.mx###pubhead
 yucatan.com.mx##.pubcuad
 yucatan.com.mx##.publoque9
 yucatan.com.mx##div[style="background:#CCC; width:310; height:280; float:left"]
-@@||ads.e-planning.net^$domain=ole.com.ar,object-subrequest
 elnuevodiario.com.ni##.ads728_90
 ondacero.es##.adContainer1
 uol.com.br###ad-120x600-other

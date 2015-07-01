@@ -40,7 +40,8 @@ var sdkModules = {
     'sdk/system/events': require('sdk/system/events'),
     'sdk/core/promise': require('sdk/core/promise'),
     'sdk/io/file': require('sdk/io/file'),
-    'sdk/windows': require('sdk/windows')
+    'sdk/windows': require('sdk/windows'),
+    'sdk/private-browsing': require('sdk/private-browsing')
 };
 
 exports.onUnload = function (reason) {
@@ -257,6 +258,7 @@ exports.main = function (options, callbacks) {
     filteringLog.synchronizeOpenTabs();
     tabs.on('open', function (tab) {
         filteringLog.addTab(tab);
+        framesMap.checkTabIncognitoMode(tab);
     });
     tabs.on('close', function (tab) {
         filteringLog.removeTab(tab);

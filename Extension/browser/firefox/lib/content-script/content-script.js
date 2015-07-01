@@ -22,6 +22,7 @@ var ext = (function () {
 	 * @param module
 	 */
 	function loadAdguardModule(module) {
+
 		Components.utils.import("resource://gre/modules/Services.jsm");
 		var result = Object.create(Object.prototype);
 		result.wrappedJSObject = result;

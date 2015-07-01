@@ -33,6 +33,32 @@
         });
     }
 
+    function getSubscriptionParams(urlParams) {
+
+        var title = null;
+        var url = null;
+
+        for (var i = 0; i < urlParams.length; i++) {
+            var parts = urlParams[i].split("=", 2);
+            if (parts.length != 2) {
+                continue;
+            }
+            switch (parts[0]) {
+                case 'title':
+                    title = decodeURIComponent(parts[1]);
+                    break;
+                case 'location':
+                    url = decodeURIComponent(parts[1]);
+                    break;
+            }
+        }
+
+        return {
+            title: title,
+            url: url
+        }
+    }
+
     var onLinkClicked = function (e) {
 
         if (e.button === 2) {
@@ -48,29 +74,34 @@
             target = target.parentNode;
         }
 
-        if (!target || target.protocol != 'abp:') {
+        if (!target) {
             return;
         }
 
-        var matches = /^abp:\/*subscribe\/*\?location=([^&]+).*title=([^&]+)/.exec(target.href);
-        if (matches === null) {
-            return;
-        }
-
-        var url = decodeURIComponent(matches[1]);
-        var title = decodeURIComponent(matches[2]) || url;
-
-        if (!url) {
+        if (target.protocol === 'http:' || target.protocol == 'https:') {
+            if (target.host !== 'subscribe.adblockplus.org' || target.pathname !== '/') {
+                return;
+            }
+        } else if (!/^abp:\/*subscribe\/*\?/i.test(target.href)) {
             return;
         }
 
         e.preventDefault();
         e.stopPropagation();
 
+        var urlParams = target.search.substring(1).split('&');
+        var subParams = getSubscriptionParams(urlParams);
+        var url = subParams.url;
+        var title = subParams.title || url;
+
+        if (!url) {
+            return;
+        }
+
         ext.backgroundPage.sendMessage({
             type: 'check-subscription-url',
-            url: url,
-            title: title
+            url: url.trim(),
+            title: title.trim()
         }, onCheckSubscriptionUrlResponse);
     };
 

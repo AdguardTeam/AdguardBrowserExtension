@@ -186,6 +186,7 @@ var PopupButton = exports.PopupButton = {
 				dropdown.removeChild(ifr);
 			}
 			ifr = dropdown.ownerDocument.createElement("iframe");
+			ifr.type = "content";
 			ifr.setAttribute('src', 'chrome://adguard/content/popup.html');
 			ifr.style.width = "320px";
 			ifr.style.height = "244px";

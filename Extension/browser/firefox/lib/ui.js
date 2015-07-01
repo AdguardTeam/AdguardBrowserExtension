@@ -86,6 +86,7 @@ var UI = exports.UI = {
         //record frame and update popup button if needed
         for each(var tab in this._getAllTabs()) {
             this.framesMap.recordFrame(tab, 0, tab.url, "DOCUMENT");
+            this.framesMap.checkTabIncognitoMode(tab);
             this._updatePopupButtonState(tab);
         }
 
@@ -288,6 +289,7 @@ var UI = exports.UI = {
                 self.data.url("content/libs/jquery-ui.min.js"),
                 self.data.url("content/libs/diff_match_patch.js"),
                 self.data.url("content/libs/dom.js"),
+                self.data.url('content/pages/i18n-helper.js'),
                 self.data.url("content/content-script/content-script.js"),
                 self.data.url("content/content-script/assistant/js/start-assistant.js"),
                 self.data.url("content/content-script/assistant/js/tools.js"),
@@ -427,6 +429,7 @@ var UI = exports.UI = {
             contentURL: self.data.url('content/content-script/abuse.html'),
             contentScriptFile: [
                 self.data.url('content/libs/jquery-1.8.3.min.js'),
+                self.data.url('content/pages/i18n-helper.js'),
                 self.data.url('content/content-script/content-i18n.js'),
                 self.data.url('content/content-script/abuse.js')
             ]

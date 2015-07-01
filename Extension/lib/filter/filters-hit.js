@@ -32,6 +32,7 @@ var UrlUtils = require('utils/url').UrlUtils;
 /**
  * This object is used to store and track ad filters usage stats.
  * It is used if user has enabled "Send statistics for ad filters usage" option.
+ * More info about ad filters stats: http://adguard.com/en/filter-rules-statistics.html
  *
  * @constructor
  */
@@ -52,7 +53,7 @@ var FilterRulesHitCount = function () {
 
 FilterRulesHitCount.prototype = {
 
-    MAX_PAGE_VIEWS_COUNT: 100,
+    MAX_PAGE_VIEWS_COUNT: 20,
     HITS_COUNT_PROP: 'filters-hit-count',
 
     setAntiBannerService: function (antiBannerService) {
@@ -60,9 +61,6 @@ FilterRulesHitCount.prototype = {
     },
 
     addDomainView: function (domain) {
-
-        // Filter rules stats are disabled for now - we should first announce the changes properly
-        return;
 
         if (!this.collectStatsEnabled) {
             return;
@@ -88,9 +86,6 @@ FilterRulesHitCount.prototype = {
     },
 
     addRuleHit: function (domain, ruleText, filterId, requestUrl) {
-
-        // Filter rules stats are disabled for now - we should first announce the changes properly
-        return;
 
         if (!this.collectStatsEnabled) {
             return;

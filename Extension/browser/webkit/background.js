@@ -139,6 +139,7 @@ UI.getAllOpenedTabs(function (tabs) {
     for (var i = 0; i < tabs.length; i++) {
         var tab = tabs[i];
         framesMap.recordFrame(tab, 0, tab.url, "DOCUMENT");
+        framesMap.checkTabIncognitoMode(tab);
         UI.updateTabIconAndContextMenu(tab);
     }
 });
@@ -153,6 +154,7 @@ ext.tabs.onCompleted.addListener(function (tab) {
 filteringLog.synchronizeOpenTabs();
 ext.tabs.onCreated.addListener(function (tab) {
     filteringLog.addTab(tab);
+    framesMap.checkTabIncognitoMode(tab);
 });
 ext.tabs.onUpdated.addListener(function (tab) {
     filteringLog.updateTab(tab);

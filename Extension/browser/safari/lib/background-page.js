@@ -130,6 +130,12 @@ var BrowserTab, BrowserTabs, BrowserWindow;
 		collection: function () {
 			return this.framesInfo;
 		},
+		checkIncognitoMode: function (tab) {
+			//do nothing
+		},
+		isIncognito: function () {
+			return safari.application.privateBrowsing.enabled;
+		},
 		remove: function (tab) {
 			this._delete(tab.safariTab);
 		},

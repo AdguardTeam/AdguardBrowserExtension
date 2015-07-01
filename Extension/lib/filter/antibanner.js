@@ -130,8 +130,6 @@ AntiBannerService.prototype = {
              */
             if (runInfo.isFirstRun) {
                 this.serviceClient.trackInstall(this.isAllowedAcceptableAds());
-            } else if (runInfo.isUpdate) {
-                this.serviceClient.trackUpdate(this.isAllowedAcceptableAds());
             }
         }.bind(this);
 

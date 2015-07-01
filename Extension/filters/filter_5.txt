@@ -1,9 +1,9 @@
-! Version: 1.0.22.41
+! Version: 1.0.22.45
 ! Name: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: Experimental filter
 ! DescriptionEn: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! TimeUpdated: 2015-06-07T13:01:51.202+03:00
+! TimeUpdated: 2015-06-25T21:00:20.165+03:00
 ! Adguard Experimental Filter
 !
 ! Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
@@ -85,22 +85,7 @@
 ! Rules that are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
 !
-! http://forum.adguard.com/showthread.php?5135
-! ***reported: https://forums.lanik.us/posting.php?mode=post&f=62
-||.720pizle.com/720pizle
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/462
-! ***reported: https://forums.lanik.us/posting.php?mode=post&f=62
-skidrowcrack.com##[id^="bsa"][style*="opacity:"]
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/454
-! ***Reported: https://forums.lanik.us/viewtopic.php?f=62&t=22365
-solidfiles.com###dlm-btn.dlm-dl
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/443
-! ***Reported: https://forums.lanik.us/viewtopic.php?f=62&t=22367&p=69472#p69472
-qrrro.com###netkevin-overlay
-qrrro.com###netkevin-popup
-! forum.adguard.com/showthread.php?5074
-! ***Reported: https://forums.lanik.us/viewtopic.php?f=62&t=22368
-||sky.de/web/cms/static/img/595x80_
+!
 !
 ! Whitelist
 ! http://adguard.com/filterrules.html#exclusionRules
@@ -137,48 +122,6 @@ qrrro.com###netkevin-popup
 ! Read about it in direct_adverts.txt
 !
 !
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/477
-||img.fitbut.ru^$third-party
-! Possible ad networks (http://forum.adguard.com/showthread.php?783)
-! TODO[avatar]: check them
-!
-! вроде нормальные
-||love-our.ru^$third-party
-||vezuha.me^$third-party
-||novosti.kordonivkakino.net^
-||gryzuche.ru^$third-party
-||mteaser.aldieta.ru^
-||pmicama.ru^$third-party
-||.dagstart.ru^
-||risale.ru^$third-party
-||.smartsiti.ru^
-||.smartsiti.ru^
-||sweet.game-rust.ru^
-||vizp.zavetiss.ru^
-||favoritezz.besaba.com^$third-party
-||ladiesnadosuge.com^$third-party
-||teasermall.com^$third-party
-||kolezeynews.ru^$third-party
-||ali.epn.bz^$third-party
-! вероятно не рабочие
-||f.film-adult.com^
-||clickandjoinyourgirl.com^$third-party
-||xg1.ru^$third-party
-||pigmont.ru^$third-party
-||finclick.ru^$third-party
-||imgwall.ru^$third-party
-||new.picsvoboda.ru^
-||nxnxcaqicm.ru^$third-party
-||mrbile.issson.ru^$third-party
-||pdda.issson.ru^
-||slavakirkudu.ru^$third-party
-||megabestnews.net^$third-party
-||slsdlkgjlksdg.net^$third-party
-||tcpalace.com^$third-party
-||total.kordonivkakino.net^$third-party
-||tznov.kordonivkakino.net^$third-party
-||tuti.pronpic.org^$third-party
-||wtraff.com^$third-party
 !
 ! Direct adverts
 !
@@ -231,33 +174,6 @@ qrrro.com###netkevin-popup
 ! Rules which are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
 !
-! уточнить
-!
-! http://forum.adguard.com/showthread.php?5524
-xakeroker.ws###content > div.pageWidth > div.pageContent > center > a > img
-xakeroker.ws###content > div.pageWidth > div.pageContent > div.mainContainer > div.mainContent > center > a > img
-! http://forum.adguard.com/showthread.php?5049 - в annoyancez?
-vpk.name##div[style="height:400px;margin:10px 0;"]
-vpk.name##div[style="height:90px;"]
-vpk.name###adds
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/438 - в какую секцию?
-||banerator.silvercdn.com/files-banerator/*.flv
-! forum.adguard.com/showthread.php?5169
-! третье правило полностью убирает место от баннера, но выглядит стремновато. Можно так ##.branding__tv , но останется прямоугольник
-cars.mail.ru##.branding__head
-cars.mail.ru##.branding__side
-cars.mail.ru##.tv__viewport
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/468
-! без стиля страница сильно съезжает вверх
-||watchngo.ru^$domain=sound-park.ru
-sound-park.ru#$##top_groundnew {height: 70px!important;}
-! cxz.to - пустота на главной
-cxz.to##div[style="margin-bottom: 15px; min-height: 274px; clear: both;"]
-! http://forum.adguard.com/showthread.php?5187
-apparat.cc##.postBanner
-||aviasales.ru^$domain=apparat.cc
-! http://forum.adguard.com/showthread.php?3984
-kinomania.ru##.layout > div[style="margin-bottom:4px;width:998px;height:190px;position:relative;"]
 !
 ! Whitelist
 ! http://adguard.com/filterrules.html#exclusionRules
@@ -267,27 +183,19 @@ kinomania.ru##.layout > div[style="margin-bottom:4px;width:998px;height:190px;po
 !
 ! This section contains all kinds of exception rules.
 !
-! http://fotostrana.ru/app/epicbubble/?from=trafficExchange.apps&fromUid=51761&toUid=1573070&tetoken=18341539&eAppsTraffExchg=1
-! внедряемые правила и помощника выключал - не помогло, только вот так:
-@@||wysegames.com/login/$jsinject,domain=wysegames.com|fotostrana.ru
 !-------------------------------------------------------------------!
 !------- Experimental rules for Other filters ----------------------!
 !-------------------------------------------------------------------!
 !
 ! This file contains all filters other than English, Social, Spyware and Russian.
 !
-! for mega-script
-! #%#window.UABPtracked = true;
-!
 ! Dangerous "nofollow" links blocking rule
-~keddr.com,~allkey.org,~wowjp.net,~ex-soft.in.ua,~bucwar.ru,~fsm-portal.net,~crox.ws,~softek.ucoz.ru,~dfm.ru,~hitfm.ru,~montecarlo.ru,~maximum.ru,~rusradio.ru,~metallurg.ru,~onlinefilmu.ru,~forum.ixbt.com,~igromania.ru,~yarportal.ru,~maxthon.org.ru,~firstvds.ru,~smotretfilmy.ru,~speedy-warez.ru,~blogig.org,~beeset.ru,~mh-soft.su,~respecta.net,~khabarovsk.farpost.ru,~moviez.kz,~games-java.ru,~rulit.net,~art-on.ru,~kinoshka-new.ru,~forum.esetnod32.ru,~kahai.ru,~planetaua.net,~capa.me,~delo.ua##noindex a[rel="nofollow"]>img
+~keddr.com,~allkey.org,~wowjp.net,~ex-soft.in.ua,~bucwar.ru,~fsm-portal.net,~crox.ws,~softek.ucoz.ru,~dfm.ru,~hitfm.ru,~montecarlo.ru,~maximum.ru,~rusradio.ru,~metallurg.ru,~onlinefilmu.ru,~forum.ixbt.com,~igromania.ru,~yarportal.ru,~maxthon.org.ru,~firstvds.ru,~smotretfilmy.ru,~speedy-warez.ru,~blogig.org,~beeset.ru,~mh-soft.su,~respecta.net,~khabarovsk.farpost.ru,~moviez.kz,~games-java.ru,~rulit.net,~art-on.ru,~kinoshka-new.ru,~forum.esetnod32.ru,~kahai.ru,~planetaua.net,~capa.me,~delo.ua,~uznayvse.ru##noindex a[rel="nofollow"]>img
 !
 ! antiblock.org test page
 antiblock.org#%#var AG_AntiAntiBlock = function() { var baseCreateElement = document.createElement; document.createElement = function(name) { if (name && name.match(/div|font|center/i)) { return null; } else { return baseCreateElement(name); } } };
 antiblock.org#%#AG_onLoad(function() { AG_AntiAntiBlock(); });
 !------------------------------------------------
-! [EasyPrivacy filter] http://forum.adguard.com/showthread.php?5241
-@@||chancro.jp/assets/lib/googleanalytics-*.js$domain=chancro.jp
 ! http://forum.adguard.com/showthread.php?5021
 ! косяк в фильтре RU AdList: Counters
 @@||my10.imgsmail.ru/mail/$domain=mail.ru
@@ -304,6 +212,13 @@ antiblock.org#%#AG_onLoad(function() { AG_AntiAntiBlock(); });
 !
 ! This section contains all kinds of annoyances
 !
+! rusfolder - automate click on sponsor link
+rusfolder.com,rusfolder.net#%#AG_onLoad(function() { $('a[href^="http://ints.rusfolder.com/ints/sponsor/?bi="]').trigger('click'); });
+! http://forum.adguard.com/showthread.php?5875
+fast-torrent.ru##.no-mobile > div > h1 > span[style="font-size: small;"]
+! http://forum.adguard.com/showthread.php?5524
+xakeroker.ws###content > div.pageWidth > div.pageContent > center > a > img
+xakeroker.ws###content > div.pageWidth > div.pageContent > div.mainContainer > div.mainContent > center > a > img
 ! http://forum.adguard.com/showthread.php?5604
 max.de##div[style$="padding:15px; height:90px; "]
 max.de##div[style$="padding: 15px; height: 90px;"]
@@ -365,7 +280,6 @@ opennet.ru##form[method="get"] td[valign="TOP"][align="RIGHT"][width="130"][bgco
 ||нашбийск.рф/images/banners/logo%20gdt1.jpg
 нашбийск.рф##.banner2
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/393#issuecomment-77358450
-! maybe better move this to annoyances?
 vseverske.info##div.place.top > a > img
 vseverske.info##.left_column div[class^="place left_"]
 vseverske.info##.right_column div[class^="place right_"]
@@ -443,19 +357,9 @@ knifeclub.com.ua##table[border="0"][align="center"][height="71"]
 knifeclub.com.ua##table[border="0"][align="center"][height="80"][width="340"]
 ! http://forum.adguard.com/newreply.php?do=postreply&t=3043 Empty space on top
 myshared.ru###s_top
-!!!---!!! fishki.net ads(like posts)
-!fishki.net#%#AG_onLoad(function() { $('img[data-subscribe="subscribe_link_543769"]').closest('div[id^="post-"]').remove(); });
-fishki.net#%#AG_onLoad(function() { $('a[data-subscribe*="_543769"]').closest('div[id^="post-"]').remove(); });
-!!!---!!!
-!
-!!!---!!! yaplakal.com ads(like posts)
-yaplakal.com#%#AG_onLoad(function() { var footers = $('b.icon-user>a[href="http://www.yaplakal.com/members/member1438.html"]').closest('tr'); $(footers).each(function() { $(this).prev().remove(); $(this).prev().remove(); $(this).remove(); }); });
-yap.ru#%#AG_onLoad(function() { var footers = $('b.icon-user>a[href="http://yap.ru/members/member1438.html"]').closest('tr'); $(footers).each(function() { $(this).prev().remove(); $(this).prev().remove(); $(this).remove(); }); });
-!!!---!!!
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/164
 free-torrents.org##noindex > center > div[style="border: 2px solid red;"]
 free-torrents.org##a[href*="https://webtransfer-finance.com/?"]
-!
 ! http://forum.adguard.com/showthread.php?2760
 ! Site is not popular. Leaving these rules here for a while.
 ||magmetall.ru/img/shkola_2014.jpg
@@ -477,6 +381,7 @@ ukrrele.com#%#document.onmousedown = function() {};
 vmatruk.com##object[id="videobaner"]
 vmatruk.ru##object[data*="/videobaner.swf"][width="180"]
 ! forumodua.com - top of page
+forumodua.com###notices
 forumodua.com##.body_wrapper > div > table[width="100%"] > tbody > tr > td[valign="top"]
 !
 45.ru,93.ru,86.ru,56.ru,164.ru,mgorsk.ru,62.ru,48.ru,kbs.ru,26.ru,tolyatty.ru,178.ru,89.ru,proizhevsk.ru,51.ru,irkutsk.ru,sochi1.ru,70.ru,provoronezh.ru,71.ru,154.ru,sterlitamak1.ru,ekat.ru,42.ru,43.ru,14.ru,68.ru,75.ru,35.ru,omsk1.ru,53.ru,60.ru,29.ru,76.ru,116.ru,v1.ru,ufa1.ru,161.ru,74.ru,72.ru,63.ru,59.ru###popup_container
@@ -495,10 +400,6 @@ zerx.tv##a[href*="/torrent/"][style="color:white"]
 !
 ! forumodua.com - notices, requests for donations, some ads
 forumodua.com###notices
-!
-!============================================
-!=============Questionable rules=============
-!============================================
 ! http://forum.adguard.com/showthread.php?2045
 ||yarportal.ru/zagl.gif
 ! http://pirat-pic.ru/
@@ -515,15 +416,17 @@ getwall.ru##a[href="http://www.sensa-massage.ru/"]
 ! для капчи при заходе с не российских IP - через несколько секунд символы прячутся наложением картинки -> можно убрать.
 letitbit.net##img[class="mcmp_postrol_img"]
 !
+!--- ads like posts ---
+fishki.net#%#AG_onLoad(function() { $('a[data-subscribe*="_543769"]').closest('div[id^="post-"]').remove(); });
+yaplakal.com#%#AG_onLoad(function() { var footers = $('b.icon-user>a[href="http://www.yaplakal.com/members/member1438.html"]').closest('tr'); $(footers).each(function() { $(this).prev().remove(); $(this).prev().remove(); $(this).remove(); }); });
+yap.ru#%#AG_onLoad(function() { var footers = $('b.icon-user>a[href="http://yap.ru/members/member1438.html"]').closest('tr'); $(footers).each(function() { $(this).prev().remove(); $(this).prev().remove(); $(this).remove(); }); });
+!----------------------
 !============================================
 !=============CSS fixes======================
 !============================================
-!----RU----
-!
-!---EN---
-!
 !---Turkish---
 ! [TR] filmkorku.org - removed branded backgroung, backgroung color change to more contrast
 filmkorku.org#$#html body {background-image: url('/')!important; background-color: #3c0f10!important;}
 ! 720pizle.com - replace background to original
 720pizle.com#$#body {background:url("http://720pizle.com/images/film/body-bg.png")!important; repeat 0 0 #D2D2D2;!important;}
+!

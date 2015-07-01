@@ -1,16 +1,16 @@
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
- *
+ * <p/>
  * Adguard Browser Extension is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p/>
  * Adguard Browser Extension is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -60,18 +60,13 @@ public class SettingUtils {
 			"var USE_DEFAULT_SCRIPT_RULES = exports.USE_DEFAULT_SCRIPT_RULES = %s;\r\n" +
 			"var DEFAULT_SCRIPT_RULES = exports.DEFAULT_SCRIPT_RULES = Object.create(null);\r\n%s";
 
-	private final static String CHROMIUM_UPDATE_URL = "https://chrome.adtidy.org/updates.xml";
-	private final static String FIREFOX_UPDATE_URL = "https://chrome.adtidy.org/updates.rdf";
-	private final static String FIREFOX_LEGACY_UPDATE_URL = "https://chrome.adtidy.org/legacy.rdf";
-	private final static String SAFARI_UPDATE_URL = "https://chrome.adtidy.org/safari/updates.xml";
-
 	public static void writeLocalScriptRulesToFile(File dest, boolean useLocalScriptRules, Map<Integer, List<String>> filtersScriptRules) throws IOException {
 		String scriptRules = getScriptRulesText(filtersScriptRules);
 		String settings = String.format(LOCAL_SCRIPT_RULES_FILE_TEMPLATE, useLocalScriptRules, scriptRules);
 		FileUtils.writeStringToFile(getLocalScriptRulesFile(dest), settings);
 	}
 
-	public static void updateManifestFile(File dest, Browser browser, String version, String extensionId, String updateUrl) throws IOException {
+	public static void updateManifestFile(File dest, Browser browser, String version, String extensionId, String updateUrl, String extensionNamePostfix) throws IOException {
 
 		switch (browser) {
 			case CHROMIUM:
@@ -83,6 +78,7 @@ public class SettingUtils {
 					content = content + "\t\"update_url\": \"" + updateUrl + "\"\r\n}";
 				}
 				content = StringUtils.replace(content, "${version}", version);
+				content = StringUtils.replace(content, "${extensionNamePostfix}", extensionNamePostfix);
 				FileUtils.writeStringToFile(manifestFile, content);
 				break;
 			case SAFARI:
@@ -91,6 +87,7 @@ public class SettingUtils {
 				contentInfoPlist = StringUtils.replace(contentInfoPlist, "${extensionId}", extensionId);
 				contentInfoPlist = StringUtils.replace(contentInfoPlist, "${version}", version);
 				contentInfoPlist = StringUtils.replace(contentInfoPlist, "${updateURL}", updateUrl != null ? updateUrl : "");
+				contentInfoPlist = StringUtils.replace(contentInfoPlist, "${extensionNamePostfix}", extensionNamePostfix);
 				FileUtils.writeStringToFile(infoPlistFile, contentInfoPlist);
 				break;
 			case FIREFOX:
@@ -105,11 +102,14 @@ public class SettingUtils {
 				}
 				contentRdf = StringUtils.replace(contentRdf, "${updateUrl}", updateUrl);
 				contentRdf = StringUtils.replace(contentRdf, "${version}", version);
+				contentRdf = StringUtils.replace(contentRdf, "${extensionId}", extensionId);
 				FileUtils.writeStringToFile(installRdf, contentRdf);
 				//write version
 				File packageJson = new File(dest, "package.json");
 				String contentPackageJson = FileUtils.readFileToString(packageJson);
 				contentPackageJson = StringUtils.replace(contentPackageJson, "${version}", version);
+				contentPackageJson = StringUtils.replace(contentPackageJson, "${extensionId}", extensionId);
+				contentPackageJson = StringUtils.replace(contentPackageJson, "${extensionNamePostfix}", extensionNamePostfix);
 				FileUtils.writeStringToFile(packageJson, contentPackageJson);
 				break;
 		}

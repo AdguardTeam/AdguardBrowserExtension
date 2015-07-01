@@ -17,6 +17,7 @@
 package com.adguard.compiler;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import javax.net.ssl.*;
@@ -59,6 +60,9 @@ public class Main {
 		//version
 		String version = getParamValue(args, "--version", null);
 
+		//build branch
+		String branch = getParamValue(args, "--branch", null);
+
 		//browser
 		String configBrowser = getParamValue(args, "--browser", null);
 		Browser browser = Browser.getByName(configBrowser);
@@ -73,7 +77,7 @@ public class Main {
 		String updateUrl = getParamValue(args, "--update-url", null);
 
 		//safari extension id
-		String extensionId = getParamValue(args, "--extension-id", null);
+		String extensionId = getParamValue(args, "--extensionId", null);
 
 		//pack method
 		String packMethod = getParamValue(args, "--pack", null);
@@ -94,7 +98,7 @@ public class Main {
 
 		Map<Integer, List<String>> filtersScriptRules = FilterUtils.getScriptRules(source);
 
-		File buildResult = createBuild(source, dest, useLocalScriptRules, filtersScriptRules, extensionId, updateUrl, browser, version);
+		File buildResult = createBuild(source, dest, useLocalScriptRules, filtersScriptRules, extensionId, updateUrl, browser, version, branch);
 
 		if (browser == Browser.SAFARI && updateFilters) {
 			FilterUtils.loadEnglishFilterForSafari(new File(buildResult, "filters"));
@@ -160,7 +164,12 @@ public class Main {
 		}
 
 		if (extensionId == null && browser == Browser.SAFARI) {
-			log.error("Set --extension-id for Safari build");
+			log.error("Set --extensionId for Safari build");
+			return false;
+		}
+
+		if (extensionId == null && (browser == Browser.FIREFOX || browser == Browser.FIREFOX_LEGACY)) {
+			log.error("Set --extensionId for Safari build");
 			return false;
 		}
 
@@ -182,14 +191,15 @@ public class Main {
 	 *                           All extension stores have their own update channels so
 	 *                           we shouldn't add update channel to the manifest.
 	 * @param browser            Browser type
-	 * @param version            If true - this is release build
+	 * @param version            Build version
+	 * @param branch             Build branch
 	 * @return Path to build result
 	 * @throws Exception
 	 */
 	private static File createBuild(File source, File dest,
 	                                boolean useLocalScriptRules,
 	                                Map<Integer, List<String>> filtersScriptRules,
-	                                String extensionId, String updateUrl, Browser browser, String version) throws Exception {
+	                                String extensionId, String updateUrl, Browser browser, String version, String branch) throws Exception {
 
 		if (dest.exists()) {
 			log.debug("Removed previous build: " + dest.getName());
@@ -199,9 +209,15 @@ public class Main {
 		FileUtil.copyFiles(source, dest, browser);
 
 		SettingUtils.writeLocalScriptRulesToFile(dest, useLocalScriptRules, filtersScriptRules);
-		SettingUtils.updateManifestFile(dest, browser, version, extensionId, updateUrl);
+
+		String extensionNamePostfix = "";
+		if (StringUtils.isNotEmpty(branch)) {
+			extensionNamePostfix = " (" + StringUtils.capitalize(branch) + ")";
+		}
+
+		SettingUtils.updateManifestFile(dest, browser, version, extensionId, updateUrl, extensionNamePostfix);
 		if (browser == Browser.FIREFOX || browser == Browser.FIREFOX_LEGACY) {
-			LocaleUtils.writeLocalesToFirefoxInstallRdf(dest);
+			LocaleUtils.writeLocalesToFirefoxInstallRdf(dest, extensionNamePostfix);
 		}
 
 		return dest;

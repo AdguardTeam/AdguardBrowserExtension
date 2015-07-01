@@ -122,7 +122,8 @@ var PreloadHelper = {
     },
 
     /**
-     * Applies JS injections
+     * Applies JS injections.
+     *
      * @param scripts Array with JS scripts
      * @private
      */
@@ -132,6 +133,14 @@ var PreloadHelper = {
             return;
         }
 
+        /**
+         * JS injections are created by JS filtering rules:
+         * http://adguard.com/en/filterrules.html#javascriptInjection
+         *
+         * Note (!) (Firefox, Opera):
+         * In case of Firefox and Opera add-ons, JS filtering rules are hardcoded into add-on code.
+         * Look at WorkaroundUtils.getScriptsForUrl to learn more.
+         */
         var script = document.createElement("script");
         script.setAttribute("type", "text/javascript");
         scripts.unshift("try {");

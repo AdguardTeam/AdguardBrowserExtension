@@ -31,7 +31,20 @@ public class LocaleUtils {
 
 	public enum SupportedLocales {
 
-		EN("en"), RU("ru"), DE("de"), TR("tr"), UK("uk"), PL("pl"), PT_BR("pt_BR"), PT_PT("pt_PT"), KO("ko"), zh_CN("zh_CN");
+		EN("en"), // English
+		RU("ru"), // Russian
+		DE("de"), // German
+		TR("tr"), // Turkish
+		UK("uk"), // Ukrainian
+		PL("pl"), // Polish
+		PT_BR("pt_BR"), // Portuguese (Brazil)
+		PT_PT("pt_PT"), // Portuguese (Portugal)
+		KO("ko"), // Korean
+		zh_CN("zh_CN"), // Chinese (China)
+		SR("sr"), // Serbian
+		FR("fr"), // French
+		SK("sk"), // Slovak
+		HY("hy"); // Armenian
 
 		private String code;
 
@@ -78,7 +91,7 @@ public class LocaleUtils {
 		}
 	}
 
-	public static void writeLocalesToFirefoxInstallRdf(File dest) throws IOException {
+	public static void writeLocalesToFirefoxInstallRdf(File dest, String extensionNamePostfix) throws IOException {
 //		<em:localized>
 //		<Description>
 //		<em:locale>en</em:locale>
@@ -95,7 +108,7 @@ public class LocaleUtils {
 		for (SupportedLocales locale : SupportedLocales.values()) {
 			File localeFile = new File(dest, "locale/" + locale.code.replace("_", "-") + ".properties");
 			String[] messages = StringUtils.split(FileUtils.readFileToString(localeFile), System.lineSeparator());
-			String name = findMessage(messages, "name");
+			String name = findMessage(messages, "name") + extensionNamePostfix;
 			String description = findMessage(messages, "description");
 			sb.append("<em:localized>").append(System.lineSeparator());
 			sb.append("\t<Description>").append(System.lineSeparator());

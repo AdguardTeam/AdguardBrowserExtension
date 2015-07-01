@@ -261,6 +261,7 @@ var BrowserTab, BrowserTabs, BrowserWindow;
         this.active = tab.active;
         this.title = tab.title;
         this.windowId = tab.windowId;
+        this.incognito = tab.incognito;
     };
     BrowserTab.prototype = {
         close: function () {
@@ -305,6 +306,7 @@ var BrowserTab, BrowserTabs, BrowserWindow;
 
     BrowserTabs = function (options) {
         this.tabsById = {};
+        this.incognitoTabsById = {};
         this.options = options;
         this._delete = this._delete.bind(this);
     };
@@ -330,11 +332,18 @@ var BrowserTab, BrowserTabs, BrowserWindow;
             }
             return result;
         },
+        checkIncognitoMode: function (tab) {
+            this.incognitoTabsById[tab.id] = tab.incognito;
+        },
+        isIncognito: function (tab) {
+            return this.incognitoTabsById[tab.id];
+        },
         remove: function (tab) {
             this._delete(tab);
         },
         _delete: function (tab) {
             delete this.tabsById[tab.id];
+            delete this.incognitoTabsById[tab.id];
         }
     };
 

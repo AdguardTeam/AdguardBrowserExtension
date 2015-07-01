@@ -457,75 +457,10 @@ var Adguard = function () {
 		return 'true';
 	};
 
-	var translateElement = function (element, message) {
-
-		function createElement(tagName, attributes) {
-
-			var el = document.createElement(tagName);
-			if (!attributes) {
-				return el;
-			}
-
-			var attrs = attributes.split(' ');
-			for (var i = 0; i < attrs.length; i++) {
-				var attr = attrs[i].trim();
-				if (!attr) {
-					continue;
-				}
-				var index = attr.indexOf("=");
-				var attrName;
-				var attrValue;
-				if (index > 0) {
-					attrName = attr.substring(0, index);
-					attrValue = attr.substring(index + 2, attr.length - 1);
-				}
-				if (attrName && attrValue) {
-					el.setAttribute(attrName, attrValue);
-				}
-			}
-
-			return el;
-		}
-
-		function processString(str, element) {
-
-			var match1 = /^(.*?)<(a|strong|span)([^>]*)>(.*?)<\/\2>(.*)$/.exec(str);
-			var match2 = /^(.*?)<(br|input)([^>]*)\/?>(.*)$/.exec(str);
-			if (match1) {
-
-				processString(match1[1], element);
-
-				var e = createElement(match1[2], match1[3]);
-
-				processString(match1[4], e);
-				element.appendChild(e);
-
-				processString(match1[5], element);
-
-			} else if (match2) {
-
-				processString(match2[1], element);
-
-				var e = createElement(match2[2], match2[3]);
-				element.appendChild(e);
-
-				processString(match2[4], element);
-
-			} else {
-				element.appendChild(document.createTextNode(str.replace(/&nbsp;/g, '\u00A0')));
-			}
-		}
-
-		while (element.lastChild) {
-			element.removeChild(element.lastChild);
-		}
-
-		processString(message, element);
-	};
-
 	var localizeMenu = function () {
 		$.each(findInIframe("[i18n]"), function () {
-			translateElement(this, getMessage($(this).attr("i18n")));
+			var message = getMessage($(this).attr("i18n"));
+			I18nHelper.translateElement(this, message);
 		});
 	};
 

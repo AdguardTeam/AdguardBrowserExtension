@@ -295,8 +295,9 @@ RequestFilter.prototype = {
      * @param requestUrl Request URL
      * @param referrerUrl Referrer URL
      * @param safebrowsingCallback Called when check has been finished
+     * @param incognitoTab Tab incognito mode
      */
-    checkSafebrowsingFilter: function (requestUrl, referrerUrl, safebrowsingCallback) {
+    checkSafebrowsingFilter: function (requestUrl, referrerUrl, safebrowsingCallback, incognitoTab) {
 
         if (!userSettings.getSafebrowsingInfo().enabled) {
             return;
@@ -311,7 +312,7 @@ RequestFilter.prototype = {
                 return;
             }
             Log.debug("Following safebrowsing filter has been fired: {0}", sbList);
-            if (userSettings.getSafebrowsingInfo().sendStats) {
+            if (!incognitoTab && userSettings.getSafebrowsingInfo().sendStats) {
                 this.safebrowsingFilter.trackSafebrowsingStats(requestUrl);
             }
             safebrowsingCallback(this.safebrowsingFilter.getErrorPageURL(requestUrl, referrerUrl, sbList));

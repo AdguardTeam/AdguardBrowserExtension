@@ -330,5 +330,21 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
         } else {
             pageStatistic.resetStats();
         }
+    };
+
+    /**
+     * Check tab is incognito and store value
+     * @param tab Tab
+     */
+    this.checkTabIncognitoMode = function (tab) {
+        frames.checkIncognitoMode(tab);
+    };
+
+    /**
+     * Is tab in incognito mode?
+     * @param tab Tab
+     */
+    this.isIncognitoTab = function (tab) {
+        return frames.isIncognito(tab);
     }
 };

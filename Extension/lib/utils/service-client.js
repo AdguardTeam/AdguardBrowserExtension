@@ -29,27 +29,60 @@ var Ci = require('chrome').Ci;
 var XMLHttpRequestConstructor = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"];
 
 /**
- * Class for working with our backend server
+ * Class for working with our backend server.
+ * All requests sent by this class are covered in the privacy policy:
+ * http://adguard.com/en/privacy.html#browsers
  */
 var ServiceClient = exports.ServiceClient = function () {
 
 	// Base url of our backend server
 	this.backendUrl = "https://chrome.adtidy.org";
+    this.apiKey = "4DDBE80A3DA94D819A00523252FB6380";
 
-	// This url is used in integration mode. Adguard for Windows/Mac/Android intercepts requests to injections.adguard.com host.
-	this.injectionsUrl = "http://injections.adguard.com";
+    // URL for checking filter updates
 	this.checkFilterVersionsUrl = this.backendUrl + "/checkfilterversions.html";
+
+    // URL for downloading AG filters
 	this.getFilterRulesUrl = this.backendUrl + "/getfilter.html";
+
+    // URL for user complaints on missed ads or malware/phishing websites
 	this.reportUrl = this.backendUrl + "/url-report.html";
+
+    // URL for detecting user's country code (to auto-enable proper language-specific filter)
 	this.getCountryUrl = this.backendUrl + "/getcountry.html?";
+
+    // URL for tracking Adguard installation
 	this.trackInstallUrl = this.backendUrl + "/install.html?";
-	this.trackUpdatelUrl = this.backendUrl + "/update.html?";
-	this.adguardAppUrlOld = this.injectionsUrl + "/adguard-ajax-crossdomain-hack/api?";
-	this.adguardAppUrl = this.injectionsUrl + "/adguard-ajax-api/api?";
+
+    /**
+     * URL for collecting filter rules statistics.
+     * We do not collect it by default, unless user is willing to help.
+     *
+     * Filter rules stats are covered in our privacy policy and on also here:
+     * http://adguard.com/en/filter-rules-statistics.html
+     */
 	this.ruleStatsUrl = this.backendUrl + "/rulestats.html";
+
+    /**
+     * Browsing Security lookups. In case of Firefox lookups are disabled for HTTPS urls.
+     * TODO: Switch to using SHA256 hashes instead of plain text domain names.
+     */
 	this.safebrowsingLookupUrl = "https://sb.adtidy.org/safebrowsing-lookup-domain.html";
+
+    /**
+     * URL for collecting Browsing Security stats.
+     * We do not collect it by default, unless user is willing to help.
+     * For now - blocked urls are reported only.
+     */
 	this.safebrowsingStatsUrl = "https://sb.adtidy.org/sb-report.html";
-	this.apiKey = "4DDBE80A3DA94D819A00523252FB6380";
+
+    // This url is used in integration mode. Adguard for Windows/Mac/Android intercepts requests to injections.adguard.com host.
+    // It is not used for remote requests, requests are intercepted by the desktop version of Adguard.
+    this.injectionsUrl = "http://injections.adguard.com";
+
+    // URLs used when add-on works in integration mode.
+    this.adguardAppUrlOld = this.injectionsUrl + "/adguard-ajax-crossdomain-hack/api?";
+    this.adguardAppUrl = this.injectionsUrl + "/adguard-ajax-api/api?";
 
 	this.loadingSubscriptions = Object.create(null);
 };
@@ -364,15 +397,6 @@ ServiceClient.prototype = {
 	},
 
 	/**
-	 * Tracks extension update
-	 *
-	 * @param isAllowedAcceptableAds true if "show useful ads" is enabled
-	 */
-	trackUpdate: function (isAllowedAcceptableAds) {
-		this._trackInfo(this.trackUpdatelUrl, isAllowedAcceptableAds);
-	},
-
-	/**
 	 * Used in integration mode. Sends ajax-request which should be intercepted by Adguard for Windows/Mac/Android.
 	 *
 	 * @param ruleText          Rule text
@@ -408,6 +432,8 @@ ServiceClient.prototype = {
 	/**
 	 * Sends filter hits stats to backend server.
 	 * This method is used if user has enabled "Send statistics for ad filters usage".
+     * More information about ad filters usage stats:
+     * http://adguard.com/en/filter-rules-statistics.html
 	 *
 	 * @param stats             Stats
 	 * @param enabledFilters    List of enabled filters

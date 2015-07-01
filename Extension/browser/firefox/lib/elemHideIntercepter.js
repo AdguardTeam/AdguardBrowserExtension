@@ -149,7 +149,7 @@ HidingChannel.prototype = {
 					if (!rule.isPermitted(domain)) {
 						data = this.notHideData;
 					}
-					if (!FilterUtils.isUserFilterRule(rule)) {
+					if (!FilterUtils.isUserFilterRule(rule) && !this.framesMap.isIncognitoTab(tab)) {
 						filterRulesHitCount.addRuleHit(domain, rule.ruleText, rule.filterId);
 					}
 				}

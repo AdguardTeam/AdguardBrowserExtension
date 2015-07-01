@@ -15,11 +15,14 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+var privateBrowsing = require('sdk/private-browsing');
+
 /**
  * Map containing tabs data
  */
 var TabsMap = exports.TabsMap = function () {
 	this.tabs = Object.create(null);
+	this.incognitoTabsById = Object.create(null);
 };
 
 TabsMap.prototype = {
@@ -42,6 +45,17 @@ TabsMap.prototype = {
 			result.push(this.tabs[id]);
 		}
 		return result;
+	},
+
+	checkIncognitoMode: function (tab) {
+		if (!tab) {
+			return;
+		}
+		this.incognitoTabsById[tab.id] = privateBrowsing.isPrivate(tab);
+	},
+
+	isIncognito: function (tab) {
+		return this.incognitoTabsById[tab.id];
 	},
 
 	/**
@@ -74,6 +88,7 @@ TabsMap.prototype = {
 	_onClose: function (tab) {
 		if (tab) {
 			delete this.tabs[tab.id];
+			delete this.incognitoTabsById[tab.id];
 		}
 	}
 };

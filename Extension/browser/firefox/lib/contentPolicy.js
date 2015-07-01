@@ -629,10 +629,11 @@ var WebRequestImpl = exports.WebRequestImpl = {
 
         var frameData = this.framesMap.getMainFrame(tab);
         var referrerUrl = Utils.getSafebrowsingBackUrl(frameData);
+        var incognitoTab = this.framesMap.isIncognitoTab(tab);
 
         this.antiBannerService.getRequestFilter().checkSafebrowsingFilter(requestUrl, referrerUrl, function (safebrowsingUrl) {
             tabUtils.setTabURL(xulTab, "chrome://adguard/content/" + safebrowsingUrl);
-        });
+        }, incognitoTab);
     },
 
     /**

@@ -30,7 +30,8 @@ var DEFAULT_SCRIPT_RULES = require('utils/local-script-rules').DEFAULT_SCRIPT_RU
 var WorkaroundUtils = exports.WorkaroundUtils = {
 
 	isFacebookIframe: function (url) {
-		//facebook iframe workaround
+		// facebook iframe workaround
+		// do not inject anything to facebook frames
 		return url.indexOf('www.facebook.com/plugins/like.php') > -1;
 	},
 
@@ -38,7 +39,7 @@ var WorkaroundUtils = exports.WorkaroundUtils = {
      * http://jira.performix.ru/browse/AG-3184
      *
      * By the rules of AMO and addons.opera.com we cannot use remote scripts
-     * (and our JS injection rules could be counted as remote scripts).
+     * (and our JS injection rules could be considered as remote scripts).
      *
      * So what we do:
      * 1. We gather all current JS rules in the DEFAULT_SCRIPT_RULES object
@@ -57,7 +58,7 @@ var WorkaroundUtils = exports.WorkaroundUtils = {
 		    return antiBannerService.getRequestFilter().getScriptsForUrl(url);
 	    }
 
-	    //in case of opera and firefox browsers, use predefined script rules
+	    // In case of opera and firefox browsers, use predefined script rules
 		if (WorkaroundUtils._scriptRules == null) {
 			WorkaroundUtils._populateScriptRules();
 		}
