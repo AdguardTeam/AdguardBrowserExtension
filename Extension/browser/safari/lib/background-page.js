@@ -410,10 +410,10 @@ var BrowserTab, BrowserTabs, BrowserWindow;
 		var requestType;
 		switch (message.type) {
 			case "main_frame":
-				requestType = "DOCUMENT";
+				requestType = RequestTypes.DOCUMENT;
 				break;
 			case "sub_frame":
-				requestType = "SUBDOCUMENT";
+				requestType = RequestTypes.SUBDOCUMENT;
 				break;
 			default :
 				requestType = message.type.toUpperCase();

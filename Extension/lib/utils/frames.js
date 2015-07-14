@@ -17,6 +17,7 @@
 
 var PageStatistic = require('utils/page-stats').PageStatistic;
 var FilterUtils = require('utils/common').FilterUtils;
+var RequestTypes = require('utils/common').RequestTypes;
 var UrlUtils = require('utils/url').UrlUtils;
 var WorkaroundUtils = require('utils/workaround').WorkaroundUtils;
 
@@ -68,14 +69,14 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
         var framesOfTab = tabs.get(tab);
 
         var previousUrl = '';
-        if (type == "DOCUMENT" && framesOfTab) {
+        if (type == RequestTypes.DOCUMENT && framesOfTab) {
             var frameInfo = framesOfTab[frameId];
             if (frameInfo) {
                 previousUrl = frameInfo.url;
             }
         }
 
-        if (!framesOfTab || type == "DOCUMENT") {
+        if (!framesOfTab || type == RequestTypes.DOCUMENT) {
             tabs.set(tab, (framesOfTab = Object.create(null)));
         }
 
@@ -85,7 +86,7 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
             previousUrl: previousUrl
         };
 
-        if (type == "DOCUMENT") {
+        if (type == RequestTypes.DOCUMENT) {
             framesOfTab[frameId].timeAdded = Date.now();
             this.reloadFrameData(tab);
         }
@@ -229,7 +230,7 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
         var frameData = this.getMainFrame(tab);
         if (frameData) {
             var url = frameData.url;
-            var frameWhiteListRule = antiBannerService.getRequestFilter().findWhiteListRule(url, url, "DOCUMENT");
+            var frameWhiteListRule = antiBannerService.getRequestFilter().findWhiteListRule(url, url, RequestTypes.DOCUMENT);
             if (!frameWhiteListRule) {
                 frameWhiteListRule = whiteListService.findWhiteListRule(url);
             }

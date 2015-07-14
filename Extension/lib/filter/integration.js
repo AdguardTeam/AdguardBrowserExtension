@@ -24,6 +24,7 @@ var ServiceClient = require('utils/service-client').ServiceClient;
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
 var UrlFilterRule = require('filter/rules/url-filter-rule').UrlFilterRule;
 var StringUtils = require('utils/common').StringUtils;
+var RequestTypes = require('utils/common').RequestTypes;
 
 /**
  * AdguardApplication is used for integration of Adguard extension and Adguard for Windows/Mac/Android versions.
@@ -283,7 +284,7 @@ AdguardApplication.prototype = {
 		}
 
 		var rule = this._createRuleFromHeader(header);
-		if (rule && rule.whiteListRule && rule instanceof UrlFilterRule && rule.isFiltered(tabUrl, false, "DOCUMENT")) {
+		if (rule && rule.whiteListRule && rule instanceof UrlFilterRule && rule.isFiltered(tabUrl, false, RequestTypes.DOCUMENT)) {
 			ruleInfo.headerRule = rule;
 			ruleInfo.documentWhiteListed = true;
 			ruleInfo.userWhiteListed = rule.filterId == 0;

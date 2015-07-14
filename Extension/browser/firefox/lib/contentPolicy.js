@@ -636,7 +636,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
      */
     _shouldBlockRequest: function (tab, requestUrl, requestType, node) {
 
-        if (requestType === "DOCUMENT") {
+        if (requestType === RequestTypes.DOCUMENT) {
             return false;
         }
 
@@ -688,7 +688,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
         var requestRule = this.webRequestService.getRuleForRequest(sourceTab, requestUrl, tabUrl, RequestTypes.POPUP);
         var requestBlocked = this.webRequestService.isRequestBlockedByRule(requestRule);
         if (requestBlocked) {
-            //add log event and fix log event type from "POPUP" to "DOCUMENT"
+            //add log event and fix log event type from POPUP to DOCUMENT
             this.webRequestService.postProcessRequest(sourceTab, requestUrl, tabUrl, RequestTypes.DOCUMENT, requestRule);
         }
 

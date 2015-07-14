@@ -23,6 +23,7 @@ var EventNotifierTypes = require('utils/common').EventNotifierTypes;
 var ServiceClient = require('utils/service-client').ServiceClient;
 var WorkaroundUtils = require('utils/workaround').WorkaroundUtils;
 var Utils = require('utils/common').Utils;
+var RequestTypes = require('utils/common').RequestTypes;
 var userSettings = require('utils/user-settings').userSettings;
 
 var WebRequestService = exports.WebRequestService = function (framesMap, antiBannerService, filteringLog, adguardApplication) {
@@ -137,7 +138,7 @@ WebRequestService.prototype.getRuleForRequest = function (tab, requestUrl, refer
  */
 WebRequestService.prototype.processRequestResponse = function (tab, requestUrl, referrerUrl, requestType, responseHeaders) {
 
-    if (requestType == "DOCUMENT") {
+    if (requestType == RequestTypes.DOCUMENT) {
         // Check headers to detect Adguard application
         this.adguardApplication.checkHeaders(tab, responseHeaders, requestUrl);
         // Clear previous events
@@ -153,7 +154,7 @@ WebRequestService.prototype.processRequestResponse = function (tab, requestUrl, 
         appendLogEvent = !ServiceClient.isAdguardAppRequest(requestUrl);
     } else if (this.framesMap.isTabProtectionDisabled(tab)) {
         //do nothing
-    } else if (requestType == "DOCUMENT") {
+    } else if (requestType == RequestTypes.DOCUMENT) {
         requestRule = this.framesMap.getFrameWhiteListRule(tab);
         var domain = this.framesMap.getFrameDomain(tab);
         if (!this.framesMap.isIncognitoTab(tab)) {

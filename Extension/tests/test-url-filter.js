@@ -55,9 +55,9 @@ function testUrlBlockingRule() {
 	assertEquals("/https?:\\/\\/([a-z0-9-_.]+\\.)?test\\.ru\\/([^ a-zA-Z0-9.%]|$)/", rule.getUrlRegExp().toString());
 
 	// Check rule work
-	assertTrue(rule.isFiltered("http://test.ru/", true, "SUBDOCUMENT"));
-	assertFalse(rule.isFiltered("http://TEst.ru/", false, "SUBDOCUMENT"));
-	assertFalse(rule.isFiltered("http://test.ru", true, "SUBDOCUMENT"));
+	assertTrue(rule.isFiltered("http://test.ru/", true, RequestTypes.SUBDOCUMENT));
+	assertFalse(rule.isFiltered("http://TEst.ru/", false, RequestTypes.SUBDOCUMENT));
+	assertFalse(rule.isFiltered("http://test.ru", true, RequestTypes.SUBDOCUMENT));
 	assertTrue(rule.isPermitted("google.com"));
 	assertTrue(rule.isPermitted("www.google.com"));
 	assertFalse(rule.isPermitted("nigma.ru"));
@@ -68,41 +68,41 @@ addTestCase(testUrlBlockingRule);
 function testContentSpecificUrlBlock() {
 	var mask = "||test.ru/$script";
 	var rule = new UrlFilterRule(mask);
-	assertTrue(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, "SCRIPT"));
-	assertFalse(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, "XMLHTTPREQUEST"));
-	assertFalse(rule.isFiltered("http://test.ru/?ololo=ololo", false, "SUBDOCUMENT"));
-	assertFalse(rule.isFiltered("http://test.ru/image.png", false, "IMAGE"));
+	assertTrue(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.SCRIPT));
+	assertFalse(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.XMLHTTPREQUEST));
+	assertFalse(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.SUBDOCUMENT));
+	assertFalse(rule.isFiltered("http://test.ru/image.png", false, RequestTypes.IMAGE));
 	mask = "||test.ru/$~script";
 	rule = new UrlFilterRule(mask);
-	assertFalse(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false), "SCRIPT");
-	assertTrue(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, "XMLHTTPREQUEST"));
-	assertTrue(rule.isFiltered("http://test.ru/?ololo=ololo", false, "SUBDOCUMENT"));
-	assertTrue(rule.isFiltered("http://test.ru/image.png", false, "IMAGE"));
+	assertFalse(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false), RequestTypes.SCRIPT);
+	assertTrue(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.XMLHTTPREQUEST));
+	assertTrue(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.SUBDOCUMENT));
+	assertTrue(rule.isFiltered("http://test.ru/image.png", false, RequestTypes.IMAGE));
 	mask = "||test.ru/$script,image";
 	rule = new UrlFilterRule(mask);
-	assertTrue(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, "SCRIPT"));
-	assertFalse(rule.isFiltered("http://test.ru/?ololo=ololo", false, "SUBDOCUMENT"));
-	assertFalse(rule.isFiltered("http://test.ru/?ololo=ololo", false, "XMLHTTPREQUEST"));
-	assertTrue(rule.isFiltered("http://test.ru/image.png", false, "IMAGE"));
+	assertTrue(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.SCRIPT));
+	assertFalse(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.SUBDOCUMENT));
+	assertFalse(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.XMLHTTPREQUEST));
+	assertTrue(rule.isFiltered("http://test.ru/image.png", false, RequestTypes.IMAGE));
 	mask = "||test.ru/$~script,~image";
 	rule = new UrlFilterRule(mask);
-	assertFalse(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, "SCRIPT"));
-	assertTrue(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, "XMLHTTPREQUEST"));
-	assertTrue(rule.isFiltered("http://test.ru/?ololo=ololo", false, "SUBDOCUMENT"));
-	assertFalse(rule.isFiltered("http://test.ru/image.png", false, "IMAGE"));
+	assertFalse(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.SCRIPT));
+	assertTrue(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.XMLHTTPREQUEST));
+	assertTrue(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.SUBDOCUMENT));
+	assertFalse(rule.isFiltered("http://test.ru/image.png", false, RequestTypes.IMAGE));
 	mask = "||test.ru/$~script,image";
 	rule = new UrlFilterRule(mask);
-	assertFalse(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, "SCRIPT"));
-	assertFalse(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, "XMLHTTPREQUEST"));
-	assertFalse(rule.isFiltered("http://test.ru/?ololo=ololo", false, "SUBDOCUMENT"));
-	assertTrue(rule.isFiltered("http://test.ru/image.png", false, "IMAGE"));
-	assertFalse(rule.isFiltered("http://test.ru/image.png", false, "XMLHTTPREQUEST"));
+	assertFalse(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.SCRIPT));
+	assertFalse(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.XMLHTTPREQUEST));
+	assertFalse(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.SUBDOCUMENT));
+	assertTrue(rule.isFiltered("http://test.ru/image.png", false, RequestTypes.IMAGE));
+	assertFalse(rule.isFiltered("http://test.ru/image.png", false, RequestTypes.XMLHTTPREQUEST));
 	mask = "||test.ru/$script,image,xmlhttprequest";
 	rule = new UrlFilterRule(mask);
-	assertTrue(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, "SCRIPT"));
-	assertFalse(rule.isFiltered("http://test.ru/?ololo=ololo", false, "SUBDOCUMENT"));
-	assertTrue(rule.isFiltered("http://test.ru/?ololo=ololo", false, "XMLHTTPREQUEST"));
-	assertTrue(rule.isFiltered("http://test.ru/image.png", false, "IMAGE"));
+	assertTrue(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.SCRIPT));
+	assertFalse(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.SUBDOCUMENT));
+	assertTrue(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.XMLHTTPREQUEST));
+	assertTrue(rule.isFiltered("http://test.ru/image.png", false, RequestTypes.IMAGE));
 }
 addTestCase(testContentSpecificUrlBlock);
 
@@ -113,12 +113,12 @@ function testUrlFilter() {
 
 	var filter = new UrlFilter([rule, rule1, rule2]);
 
-	assertFalse(filter.isFiltered("http://test.ru/", "test.test.ru", "SUBDOCUMENT", false) != null);
-	assertTrue(filter.isFiltered("http://test.ru/", "www.google.com", "SUBDOCUMENT", true) != null);
-	assertTrue(filter.isFiltered("http://www.google.com/ad/advertisment", "test.ru", "SUBDOCUMENT", true) != null);
-	assertFalse(filter.isFiltered("http://test.ru/", "www.nigma.ru", "SUBDOCUMENT", true) != null);
-	assertTrue(filter.isFiltered("http://partner.nekki.ru/banner.php?no_cache=41122&rotation_id=7", "rutracker.org", "SUBDOCUMENT", true) != null);
-	assertFalse(filter.isFiltered("http://partner.yandex.ru", "yandex.ru", "SUBDOCUMENT", false) != null);
+	assertFalse(filter.isFiltered("http://test.ru/", "test.test.ru", RequestTypes.SUBDOCUMENT, false) != null);
+	assertTrue(filter.isFiltered("http://test.ru/", "www.google.com", RequestTypes.SUBDOCUMENT, true) != null);
+	assertTrue(filter.isFiltered("http://www.google.com/ad/advertisment", "test.ru", RequestTypes.SUBDOCUMENT, true) != null);
+	assertFalse(filter.isFiltered("http://test.ru/", "www.nigma.ru", RequestTypes.SUBDOCUMENT, true) != null);
+	assertTrue(filter.isFiltered("http://partner.nekki.ru/banner.php?no_cache=41122&rotation_id=7", "rutracker.org", RequestTypes.SUBDOCUMENT, true) != null);
+	assertFalse(filter.isFiltered("http://partner.yandex.ru", "yandex.ru", RequestTypes.SUBDOCUMENT, false) != null);
 }
 addTestCase(testUrlFilter);
 
@@ -132,22 +132,22 @@ function testRegexpRule() {
 	var mask = "/news/\\d+/$domain=~nigma.ru|lenta.ru";
 	var rule = new UrlFilterRule(mask);
 	assertTrue(rule.isPermitted("lenta.ru"));
-	assertTrue(rule.isFiltered("http://lenta.ru/news/2014/12/12/eurodollar/", false, "SUBDOCUMENT"));
+	assertTrue(rule.isFiltered("http://lenta.ru/news/2014/12/12/eurodollar/", false, RequestTypes.SUBDOCUMENT));
 	assertFalse(rule.isPermitted("adguard.com"));
 	assertFalse(rule.isPermitted("nigma.ru"));
-	assertFalse(rule.isFiltered("http://lenta.ru/news/a2014/12/12/eurodollar/", false, "SUBDOCUMENT"));
-	assertFalse(rule.isFiltered("http://lenta.ru/news2014/12/12/eurodollar/", false, "SUBDOCUMENT"));
+	assertFalse(rule.isFiltered("http://lenta.ru/news/a2014/12/12/eurodollar/", false, RequestTypes.SUBDOCUMENT));
+	assertFalse(rule.isFiltered("http://lenta.ru/news2014/12/12/eurodollar/", false, RequestTypes.SUBDOCUMENT));
 }
 addTestCase(testRegexpRule);
 
 function testComplexRegexpRule() {
 	var mask = "/^https?\\:\\/\\/(?!(connect\\.facebook\\.net|ajax\\.cloudflare\\.com|www\\.google-analytics\\.com|ajax\\.googleapis\\.com|fbstatic-a\\.akamaihd\\.net|stats\\.g\\.doubleclick\\.net|api-secure\\.solvemedia\\.com|api\\.solvemedia\\.com|sb\\.scorecardresearch\\.com|www\\.google\\.com)\\/)/$script,third-party,xmlhttprequest,domain=mediafire.com";
 	var rule = new UrlFilterRule(mask);
-	assertTrue(rule.isFiltered("http://traratatata.com/blahblah.js", true, "SCRIPT"));
-	assertFalse(rule.isFiltered("http://traratatata.com/blahblah.html", true, "SUBDOCUMENT"));
-	assertTrue(rule.isFiltered("http://traratatata.com/blahblah.html", true, "XMLHTTPREQUEST"));
-	assertFalse(rule.isFiltered("http://connect.facebook.net/blahblah.js", true, "SCRIPT"));
-	assertFalse(rule.isFiltered("https://ajax.cloudflare.com/blahblah.js", true, "SCRIPT"));
-	assertFalse(rule.isFiltered("https://www.google-analytics.com/blahblah.js", true, "SCRIPT"));
+	assertTrue(rule.isFiltered("http://traratatata.com/blahblah.js", true, RequestTypes.SCRIPT));
+	assertFalse(rule.isFiltered("http://traratatata.com/blahblah.html", true, RequestTypes.SUBDOCUMENT));
+	assertTrue(rule.isFiltered("http://traratatata.com/blahblah.html", true, RequestTypes.XMLHTTPREQUEST));
+	assertFalse(rule.isFiltered("http://connect.facebook.net/blahblah.js", true, RequestTypes.SCRIPT));
+	assertFalse(rule.isFiltered("https://ajax.cloudflare.com/blahblah.js", true, RequestTypes.SCRIPT));
+	assertFalse(rule.isFiltered("https://www.google-analytics.com/blahblah.js", true, RequestTypes.SCRIPT));
 }
 addTestCase(testComplexRegexpRule);

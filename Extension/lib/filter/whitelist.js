@@ -20,6 +20,7 @@ var StringUtils = require('utils/common').StringUtils;
 var UrlUtils = require('utils/url').UrlUtils;
 var CollectionUtils = require('utils/common').CollectionUtils;
 var AntiBannerFiltersId = require('utils/common').AntiBannerFiltersId;
+var RequestTypes = require('utils/common').RequestTypes;
 var LS = require('utils/local-storage').LS;
 var userSettings = require('utils/user-settings').userSettings;
 
@@ -77,9 +78,9 @@ WhiteListService.prototype = {
         var host = UrlUtils.getHost(url);
 
         if (this.defaultWhiteListMode) {
-            return this.whiteListFilter.isFiltered(url, host, "DOCUMENT", false);
+            return this.whiteListFilter.isFiltered(url, host, RequestTypes.DOCUMENT, false);
         } else {
-            var rule = this.blockListFilter.isFiltered(url, host, "DOCUMENT", false);
+            var rule = this.blockListFilter.isFiltered(url, host, RequestTypes.DOCUMENT, false);
             if (rule) {
                 //filtering is enabled on this website
                 return null;

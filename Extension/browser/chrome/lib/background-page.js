@@ -137,12 +137,12 @@ var BrowserTab, BrowserTabs, BrowserWindow;
         switch (details.type) {
             case "main_frame":
                 frameId = 0;
-                requestType = "DOCUMENT";
+                requestType = RequestTypes.DOCUMENT;
                 break;
             case "sub_frame":
                 frameId = details.frameId;
                 requestFrameId = details.parentFrameId; //for sub_frame use parentFrameId as id of frame that wraps this frame
-                requestType = "SUBDOCUMENT";
+                requestType = RequestTypes.SUBDOCUMENT;
                 break;
             default:
                 requestFrameId = details.frameId;

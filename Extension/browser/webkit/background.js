@@ -138,7 +138,7 @@ function processLoadAssistant(tab, callback) {
 UI.getAllOpenedTabs(function (tabs) {
     for (var i = 0; i < tabs.length; i++) {
         var tab = tabs[i];
-        framesMap.recordFrame(tab, 0, tab.url, "DOCUMENT");
+        framesMap.recordFrame(tab, 0, tab.url, RequestTypes.DOCUMENT);
         framesMap.checkTabIncognitoMode(tab);
         UI.updateTabIconAndContextMenu(tab);
     }

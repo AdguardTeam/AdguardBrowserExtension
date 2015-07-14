@@ -26,11 +26,11 @@ function onBeforeRequest(requestDetails) {
     var requestUrl = requestDetails.requestUrl;
     var requestType = requestDetails.requestType;
 
-    if (requestType == "DOCUMENT" || requestType == "SUBDOCUMENT") {
+    if (requestType == RequestTypes.DOCUMENT || requestType == RequestTypes.SUBDOCUMENT) {
         framesMap.recordFrame(tab, requestDetails.frameId, requestUrl, requestType);
     }
 
-    if (requestType == "DOCUMENT") {
+    if (requestType == RequestTypes.DOCUMENT) {
         //reset tab button state
         EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_TAB_BUTTON_STATE, tab, true);
         return true;
@@ -91,7 +91,7 @@ function onHeadersReceived(requestDetails) {
 
     webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
 
-    if (requestType == "DOCUMENT") {
+    if (requestType == RequestTypes.DOCUMENT) {
         //safebrowsing check
         filterSafebrowsing(tab, requestUrl);
     }

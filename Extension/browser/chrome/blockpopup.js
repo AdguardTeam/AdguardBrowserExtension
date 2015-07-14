@@ -61,12 +61,12 @@ function checkPopupBlockedRule(tabId, requestUrl, referrerUrl, sourceTab) {
 
     delete tabsLoading[tabId];
 
-    var requestRule = webRequestService.getRuleForRequest(sourceTab, requestUrl, referrerUrl, "POPUP");
+    var requestRule = webRequestService.getRuleForRequest(sourceTab, requestUrl, referrerUrl, RequestTypes.POPUP);
 
     if (webRequestService.isRequestBlockedByRule(requestRule)) {
         //remove popup tab
         chrome.tabs.remove(tabId);
-        //append log event and fix log event type from "POPUP" to "DOCUMENT"
-        webRequestService.postProcessRequest(sourceTab, requestUrl, referrerUrl, "DOCUMENT", requestRule);
+        //append log event and fix log event type from POPUP to DOCUMENT
+        webRequestService.postProcessRequest(sourceTab, requestUrl, referrerUrl, RequestTypes.DOCUMENT, requestRule);
     }
 }

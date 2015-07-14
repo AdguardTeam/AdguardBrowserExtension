@@ -31,6 +31,7 @@ var Utils = require('utils/common').Utils;
 var StringUtils = require('utils/common').StringUtils;
 var EventNotifier = require('utils/notifier').EventNotifier;
 var EventNotifierTypes = require('utils/common').EventNotifierTypes;
+var RequestTypes = require('utils/common').RequestTypes;
 var userSettings = require('utils/user-settings').userSettings;
 var UiUtils = require('uiUtils').UiUtils;
 var Log = require('utils/log').Log;
@@ -85,7 +86,7 @@ var UI = exports.UI = {
 
         //record frame and update popup button if needed
         for each(var tab in this._getAllTabs()) {
-            this.framesMap.recordFrame(tab, 0, tab.url, "DOCUMENT");
+            this.framesMap.recordFrame(tab, 0, tab.url, RequestTypes.DOCUMENT);
             this.framesMap.checkTabIncognitoMode(tab);
             this._updatePopupButtonState(tab);
         }
