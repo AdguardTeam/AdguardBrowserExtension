@@ -1,9 +1,9 @@
-! Version: 1.0.2.75
+! Version: 1.0.2.82
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet be tracked, use this filter.
 ! NameEn: Spyware filter
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2015-06-26T17:57:05.651+03:00
+! TimeUpdated: 2015-07-10T19:06:51.005+03:00
 ! Adguard Spyware Filter
 !
 ! The most comprehensive list of various online counters and web analytics tools.
@@ -64,15 +64,13 @@ popmech.ru#%#AG_onLoad(function() { window.POPMECH.increaseCounters = function()
 ##a[href^="http://top.mail.ru/jump"]
 ##a[href^="http://top100.rambler.ru/"]
 ##img[src*="counter.yadro.ru"]
-~onliner.by,~yandex.by,~yandex.com,~yandex.com.tr,~yandex.ru,~yandex.ua##img[width="88"][height="31"]
+~mozhor.ru,~onliner.by,~yandex.by,~yandex.com,~yandex.com.tr,~yandex.ru,~yandex.ua##img[width="88"][height="31"]
 !-------------------------------------------------------------------------------!
 !-------------- Tracking servers list  -----------------------------------------!
 !-------------------------------------------------------------------------------!
-||krxd.net^$third-party
-||cntcerber.rambler.ru^
-http://r.i.ua/s?
 //t100.ru^$third-party
 ://tru.am/$third-party
+http://r.i.ua/s?
 |http://r.i.ua^$third-party
 ||0stats.com^$third-party
 ||0tracker.com^$third-party
@@ -200,7 +198,7 @@ http://r.i.ua/s?
 ||agilone.com^$third-party
 ||agkn.com^$third-party
 ||aimediagroup.com^$third-party
-||airbrake.io/*.js$third-party
+||airbrake.io^$third-party
 ||akstat.com^$third-party
 ||alenty.com^$third-party
 ||alexametrics.com^$third-party
@@ -477,7 +475,9 @@ http://r.i.ua/s?
 ||cnt.logoslovo.ru^$third-party
 ||cnt.nov.ru^$third-party
 ||cnt.rambler.ru^$third-party
+||cnt.re/cnt/$third-party
 ||cnt1.net^$third-party
+||cntcerber.rambler.ru^
 ||cnxweb.com^$third-party
 ||cnzz.com^$third-party
 ||cnzz.net^$third-party
@@ -528,6 +528,7 @@ http://r.i.ua/s?
 ||counter-kostenlos.net^$third-party
 ||counter-pagerank.de^$third-party
 ||counter-treff.de^$third-party
+||counter.all.biz^
 ||counter.de^$third-party
 ||counter.gd^$third-party
 ||counter.nn.ru^
@@ -539,7 +540,6 @@ http://r.i.ua/s?
 ||counter.scribblelive.net^
 ||counter.top.ge^$third-party
 ||counter.top.kg^$third-party
-||counter.yadro.ru$third-party
 ||counter.yadro.ru^$third-party
 ||counter160.com^$third-party
 ||counter27.ch^$third-party
@@ -1183,6 +1183,7 @@ http://r.i.ua/s?
 ||kontagent.net^$third-party
 ||kopsil.com^$third-party
 ||kostenlose-counter.com^$third-party
+||krxd.net^$third-party
 ||kupona.de^$third-party
 ||landingpg.com^$third-party
 ||laserstat.com^$third-party
@@ -1265,7 +1266,6 @@ http://r.i.ua/s?
 ||magnetmail1.net^$third-party
 ||magnify360.com^$third-party
 ||mailstat.us^$third-party
-||maploco.com/vmap/$third-party
 ||maploco.com^$third-party
 ||mapmyuser.com^$third-party
 ||marinsm.com^$third-party
@@ -2418,13 +2418,11 @@ http://r.i.ua/s?
 !-------------------------------------------------------------------------------!
 !-------------- General (unsorted) url blocking --------------------------------!
 !-------------------------------------------------------------------------------!
+.gatracking.js
 .microsoft.*/broker.js$domain=~technet.microsoft.com
 .microsoft.com/trans_pixel.
 .microsoft.com/wupixel/
-/images/top100.gif
-/thetracker.js
-/LogAnalysisTracker/
-.gatracking.js
+.tns-counter.ru/v13a
 /atrk.gif?
 /atrk.js
 /cdn-cgi/pe/bag2?*geoiplookup
@@ -2435,6 +2433,8 @@ http://r.i.ua/s?
 /cdn-cgi/pe/bag2?*piwik.js
 /cdn-cgi/pe/bag2?*scorecardresearch.com
 /gemius.js
+/images/top100.gif
+/LogAnalysisTracker/
 /openxtargeting.js
 /piwik-$domain=~piwik.org
 /piwik.js
@@ -2485,6 +2485,7 @@ http://r.i.ua/s?
 /synd.aspx
 /syndication/metrics/*
 /syndstats..gatracker.
+/thetracker.js
 /tracking-ad/*
 /tracking-hits.
 /tracking-info.gif?
@@ -2521,11 +2522,15 @@ http://r.i.ua/s?
 nnm-club.ru###livi
 europcar.com###wt_overlay
 lenta.ru##.counters
+medium.com##.js-followState
 blogovo.ru##.metrika_sapaclick
 radioprofusion.com##.revolvermaps
+medium.com##.voteWidget
 theplanet.ws##a[href="http://mycounter.com.ua/"]
 bogamol.ru##a[href="http://www.hitcounter.ru"]
 seclub.org##a[href^="http://waplog.net/"]
+medium.com##button[data-action-source="footer_recommend"]
+medium.com##button[data-action-source="footer_share"]
 radioprofusion.com##footer > div.counter
 hdclub.org##img[height="31"][width="88/"]
 megalifez.net##img[height="40"][width="88"]
@@ -2553,6 +2558,7 @@ dreamprogs.net##td[width="88"][height="31"]
 ||nbcnews.com/databox/databoxservice.asmx/GetLocation$domain=nbcnews.com
 ||nbcnews.com/trackingService/$domain=nbcnews.com
 ||reanimator.net/informer-images/
+||ruslab.net/a/p.js
 ||source.mmi.bemobile.ua/cm/cm.js
 ||t.insigit.com/assets/dct.js
 ||wo.washingtonpost.com^

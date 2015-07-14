@@ -130,6 +130,43 @@ AdguardApplication.prototype = {
 	},
 
 	/**
+	 * If page URL is whitelisted in desktop Adguard, we should forcibly set Referer header value to this page URL.
+	 * The problem is that standalone Adguard looks at the page referrer to check if it should bypass this request or not.
+	 * Also there's an issue with Opera browser, it misses referrer for some requests.
+	 *
+	 * @param tab Tab
+	 */
+	shouldOverrideReferrer: function(tab) {
+		return this.framesMap.isTabAdguardWhiteListed(tab);
+	},
+
+	/**
+	 * Checks if request is for AG desktop app to intercept
+	 * @param url request URL
+	 */
+	isIntegrationRequest: function(url) {
+		return url && url.indexOf(this.serviceClient.adguardAppUrl) == 0;
+	},
+
+	/**
+	 * Gets base url for requests to desktop AG
+	 */
+	getIntegrationBaseUrl: function() {
+		return this.serviceClient.adguardAppUrl;
+	},
+
+	/**
+	 * Gets headers used to authorize request to desktop AG
+	 * In our case we set Referer header. It can't be forged by the webpage so it's enough.
+	 */
+	getAuthorizationHeaders: function() {
+		return [{
+			headerName: 'Referer',
+			headerValue: this.serviceClient.injectionsUrl
+		}];
+	},
+
+	/**
 	 * Detects Adguard for Windows/Mac/Android
 	 *
 	 * @param tab       Tab data

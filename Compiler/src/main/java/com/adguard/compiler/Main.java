@@ -216,6 +216,11 @@ public class Main {
 		}
 
 		SettingUtils.updateManifestFile(dest, browser, version, extensionId, updateUrl, extensionNamePostfix);
+
+		if (browser == Browser.CHROMIUM) {
+			LocaleUtils.updateExtensionNameForChromeLocales(dest, extensionNamePostfix);
+		}
+
 		if (browser == Browser.FIREFOX || browser == Browser.FIREFOX_LEGACY) {
 			LocaleUtils.writeLocalesToFirefoxInstallRdf(dest, extensionNamePostfix);
 		}

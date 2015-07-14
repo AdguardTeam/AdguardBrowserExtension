@@ -114,6 +114,11 @@ ElemHide = exports.ElemHide = {
      * @param node Node
      */
     collapseNode: function (node) {
+        if (WorkaroundUtils.isMultiProcessFirefoxMode()) {
+            // In case of e10s blocked elements are collapsed by content script
+            return;
+        }
+
         if (this.nodesToCollapse) {
             this.nodesToCollapse.push(node);
         } else {
@@ -124,6 +129,8 @@ ElemHide = exports.ElemHide = {
 
     /**
      * Hides nodes from "nodesToCollapse" field
+     *
+     *
      * @private
      */
     _hideNodes: function () {
@@ -134,6 +141,7 @@ ElemHide = exports.ElemHide = {
         if (!nodes) {
             return;
         }
+
         for (var i = 0; i < nodes.length; i++) {
             var node = nodes[i];
             var parentNode = node.parentNode;
@@ -266,9 +274,22 @@ ElemHide = exports.ElemHide = {
         }.bind(this));
 
         worker.port.on('process-should-collapse', function (message) {
-            //collapsed in contentPolicy.js
-            worker.port.emit('process-should-collapse', {collapse: false, requestId: message.requestId})
-        });
+
+            /**
+             * In case of e10s we use the same way as in Chromium - blocked elements are collapsed in content script.
+             * In single process mode blocked elements are collapsed in the elements.
+             */
+            if (WorkaroundUtils.isMultiProcessFirefoxMode()) {
+                var collapse = this.webRequestService.processShouldCollapse(worker.tab, message.elementUrl, message.documentUrl, message.requestType);
+                worker.port.emit('process-should-collapse', {
+                    collapse: collapse,
+                    requestId: message.requestId
+                });
+            } else {
+                // Collapsed by content policy
+                worker.port.emit('process-should-collapse', {collapse: false, requestId: message.requestId});
+            }
+        }.bind(this));
 
         worker.port.on('process-should-collapse-many', function (message) {
             var requests = this.webRequestService.processShouldCollapseMany(worker.tab, message.documentUrl, message.requests);

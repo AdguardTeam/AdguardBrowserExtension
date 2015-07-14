@@ -463,6 +463,48 @@ var EventNotifierTypes = exports.EventNotifierTypes = {
     UPDATE_WHITELIST_FILTER_RULES: "event.update.whitelist.filter.rules"
 };
 
+/**
+ * Request types enumeration
+ */
+var RequestTypes = exports.RequestTypes = {
+
+    /**
+     * Document that is loaded for a top-level frame
+     */
+    DOCUMENT: "DOCUMENT",
+
+    /**
+     * Document that is loaded for an embedded frame (iframe)
+     */
+    SUBDOCUMENT: "SUBDOCUMENT",
+
+    SCRIPT: "SCRIPT",
+    STYLESHEET: "STYLESHEET",
+    OBJECT: "OBJECT",
+    IMAGE: "IMAGE",
+    XMLHTTPREQUEST: "XMLHTTPREQUEST",
+    OBJECT_SUBREQUEST: "OBJECT-SUBREQUEST",
+
+    /**
+     * Synthetic request type for requests detected as pop-ups
+     */
+    POPUP: "POPUP",
+    OTHER: "OTHER",
+
+    /**
+     * Checks if loaded element could be visible to user
+     *
+     * @param requestType Request type
+     * @returns {boolean} true if request is for some visual element
+     */
+    isVisual: function(requestType) {
+        return requestType == this.DOCUMENT ||
+                requestType == this.SUBDOCUMENT ||
+                requestType == this.OBJECT ||
+                requestType == this.IMAGE;
+    }
+};
+
 var AntiBannerFiltersId = exports.AntiBannerFiltersId = {
     USER_FILTER_ID: 0,
     ENGLISH_FILTER_ID: 2,
@@ -483,7 +525,6 @@ var LogEvents = exports.LogEvents = {
     TAB_RESET: 'log.tab.reset',
     EVENT_ADDED: 'log.event.added'
 };
-
 
 var FilterUtils = exports.FilterUtils = {
 

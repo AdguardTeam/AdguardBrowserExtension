@@ -22,6 +22,7 @@ Cu.import("resource://gre/modules/Services.jsm");
 var self = require('sdk/self');
 var tabs = require('sdk/tabs');
 
+var WorkaroundUtils = require('utils/workaround').WorkaroundUtils;
 var UiUtils = require('uiUtils').UiUtils;
 var styleService = require('styleSheetService');
 
@@ -169,10 +170,7 @@ var PopupButton = exports.PopupButton = {
             return;
         }
         this._customizeToolbarButton(toolbarButton);
-        var blockedText = blocked == "0" ? "" : blocked;
-        if (blocked - 0 > 99) {
-            blockedText = "99";
-        }
+        var blockedText = WorkaroundUtils.getBlockedCountText(blocked);
         toolbarButton.setAttribute('countBlocked', blockedText);
     },
 

@@ -78,7 +78,6 @@ public class SettingUtils {
 					content = content + "\t\"update_url\": \"" + updateUrl + "\"\r\n}";
 				}
 				content = StringUtils.replace(content, "${version}", version);
-				content = StringUtils.replace(content, "${extensionNamePostfix}", extensionNamePostfix);
 				FileUtils.writeStringToFile(manifestFile, content);
 				break;
 			case SAFARI:

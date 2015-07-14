@@ -81,6 +81,7 @@ var ServiceClient = exports.ServiceClient = function () {
     this.injectionsUrl = "http://injections.adguard.com";
 
     // URLs used when add-on works in integration mode.
+	// @deprecated
     this.adguardAppUrlOld = this.injectionsUrl + "/adguard-ajax-crossdomain-hack/api?";
     this.adguardAppUrl = this.injectionsUrl + "/adguard-ajax-api/api?";
 
@@ -424,6 +425,7 @@ ServiceClient.prototype = {
 	 * @param ruleText          Rule text
 	 * @param successCallback   Called on success
 	 * @param errorCallback     Called on error
+	 * @deprecated
 	 */
 	adguardAppAddRuleOld: function (ruleText, successCallback, errorCallback) {
 		this._executeRequestAsync(this.adguardAppUrlOld + "type=add&rule=" + encodeURIComponent(ruleText), "text/plain", successCallback, errorCallback);

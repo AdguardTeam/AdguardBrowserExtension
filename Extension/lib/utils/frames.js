@@ -18,6 +18,7 @@
 var PageStatistic = require('utils/page-stats').PageStatistic;
 var FilterUtils = require('utils/common').FilterUtils;
 var UrlUtils = require('utils/url').UrlUtils;
+var WorkaroundUtils = require('utils/workaround').WorkaroundUtils;
 
 var whiteListService = require('filter/whitelist').whiteListService;
 
@@ -26,7 +27,10 @@ var whiteListService = require('filter/whitelist').whiteListService;
  */
 var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClass) {
 
-    var frames = new BrowserTabsClass();
+    /**
+     * Interface to work with browser tabs
+     */
+    var tabs = new BrowserTabsClass();
     var pageStatistic = new PageStatistic(this);
 
     /**
@@ -37,7 +41,7 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
      * @returns Frame data or null
      */
     function getFrameData(tab, frameId) {
-        var framesOfTab = frames.get(tab);
+        var framesOfTab = tabs.get(tab);
         if (framesOfTab) {
             if (frameId in framesOfTab) {
                 return framesOfTab[frameId];
@@ -51,9 +55,9 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
 
     /**
      * Adds frame to map. This method is called on first document request.
-     * If this is a main frame and it is whitelisted - saves this info in frame data.
+     * If this is a main frame - saves this info in frame data.
      *
-     * @param tab       Tab
+     * @param tab       Tab object
      * @param frameId   Frame ID
      * @param url       Page URL
      * @param type      Request content type (UrlFilterRule.contentTypes)
@@ -61,7 +65,7 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
      */
     this.recordFrame = function (tab, frameId, url, type) {
 
-        var framesOfTab = frames.get(tab);
+        var framesOfTab = tabs.get(tab);
 
         var previousUrl = '';
         if (type == "DOCUMENT" && framesOfTab) {
@@ -72,22 +76,30 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
         }
 
         if (!framesOfTab || type == "DOCUMENT") {
-            frames.set(tab, (framesOfTab = Object.create(null)));
+            tabs.set(tab, (framesOfTab = Object.create(null)));
         }
+
         framesOfTab[frameId] = {
             url: url,
             domainName: UrlUtils.getDomainName(url),
             previousUrl: previousUrl
         };
+
         if (type == "DOCUMENT") {
             framesOfTab[frameId].timeAdded = Date.now();
             this.reloadFrameData(tab);
         }
+
         return framesOfTab[frameId];
     };
 
+    /**
+     * Removes specified frame from the map
+     *
+     * @param tab Tab to remove
+     */
     this.removeFrame = function (tab) {
-        frames.remove(tab);
+        tabs.remove(tab);
     };
 
     /**
@@ -198,11 +210,21 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
         }
     };
 
+    /**
+     * Gets whitelist rule for the specified tab
+     * @param tab Tab to check
+     * @returns whitelist rule applied to that tab (if any)
+     */
     this.getFrameWhiteListRule = function (tab) {
         var frameData = this.getMainFrame(tab);
         return frameData ? frameData.frameWhiteListRule : null;
     };
 
+    /**
+     * Reloads tab data (checks whitelist and filtering status)
+     *
+     * @param tab Tab to reload
+     */
     this.reloadFrameData = function (tab) {
         var frameData = this.getMainFrame(tab);
         if (frameData) {
@@ -216,6 +238,13 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
         }
     };
 
+    /**
+     * Attach referrer url to the tab's main frame object.
+     * This referrer is then used on safebrowsing "Access Denied" for proper "Go Back" behavior.
+     *
+     * @param tab Tab
+     * @param referrerUrl Referrer to record
+     */
     this.recordFrameReferrerHeader = function (tab, referrerUrl) {
         var frameData = this.getMainFrame(tab);
         if (frameData) {
@@ -224,8 +253,10 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
     };
 
     /**
-     * @param tab - Tab
-     * @returns info about frame
+     * Gets main frame data
+     *
+     * @param tab Tab
+     * @returns frame data
      */
     this.getFrameInfo = function (tab) {
 
@@ -305,11 +336,8 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
      */
     this.updateBlockedAdsCount = function (tab, blocked) {
         var frameData = this.getMainFrame(tab);
-        if (frameData) {
-            //don't increase ads counter after 30 seconds since page load
-            if (frameData.timeAdded + 30000 < Date.now()) {
-                return null;
-            }
+
+        if (WorkaroundUtils.shouldUpdateBlockedCount(frameData)) {
             frameData.blocked = (frameData.blocked || 0) + blocked;
             pageStatistic.updateTotalBlocked(blocked);
             return frameData.blocked;
@@ -337,7 +365,7 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
      * @param tab Tab
      */
     this.checkTabIncognitoMode = function (tab) {
-        frames.checkIncognitoMode(tab);
+        tabs.checkIncognitoMode(tab);
     };
 
     /**
@@ -345,6 +373,6 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
      * @param tab Tab
      */
     this.isIncognitoTab = function (tab) {
-        return frames.isIncognito(tab);
+        return tabs.isIncognito(tab);
     }
 };

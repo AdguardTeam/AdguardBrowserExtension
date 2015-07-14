@@ -122,12 +122,25 @@ WebRequestService.prototype.getRuleForRequest = function (tab, requestUrl, refer
     return requestRule;
 };
 
+/**
+ * Processes HTTP response.
+ * It could do the following:
+ * 1. Detect desktop AG and switch to integration mode
+ * 2. Add event to filtering log
+ * 3. Record page stats (if it's enabled)
+ *
+ * @param tab Tab object
+ * @param requestUrl Request URL
+ * @param referrerUrl Referrer URL
+ * @param requestType Request type
+ * @param responseHeaders Response headers
+ */
 WebRequestService.prototype.processRequestResponse = function (tab, requestUrl, referrerUrl, requestType, responseHeaders) {
 
     if (requestType == "DOCUMENT") {
-        //check headers to detect Adguard application
+        // Check headers to detect Adguard application
         this.adguardApplication.checkHeaders(tab, responseHeaders, requestUrl);
-        //clear previous events
+        // Clear previous events
         this.filteringLog.clearEventsForTab(tab);
     }
 

@@ -20,7 +20,6 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 
 var categoryManager = Cc["@mozilla.org/categorymanager;1"].getService(Ci.nsICategoryManager);
-var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
 
 var tabUtils = require('sdk/tabs/utils');
 var unload = require('sdk/system/unload');
@@ -28,10 +27,11 @@ var events = require('sdk/system/events');
 
 var {Log} = require('utils/log');
 var {EventNotifier} = require('utils/notifier');
-var {EventNotifierTypes} = require('utils/common');
+var {EventNotifierTypes,RequestTypes} = require('utils/common');
 var {UrlUtils} = require('utils/url');
 var {Utils} = require('utils/common');
 var {WebRequestService} = require('filter/request-blocking');
+var {WorkaroundUtils} = require('utils/workaround');
 
 /**
  * Helper object to work with web requests.
@@ -40,14 +40,6 @@ var WebRequestHelper = exports.WebRequestHelper = {
 
     ACCEPT: Ci.nsIContentPolicy.ACCEPT,
     REJECT: Ci.nsIContentPolicy.REJECT_REQUEST,
-
-    nonVisualContentTypes: {
-        2: true, //TYPE_SCRIPT
-        4: true, //TYPE_STYLESHEET
-        11: true,//TYPE_XMLHTTPREQUEST
-        12: true,//TYPE_OBJECT_SUBREQUEST
-        14: true //TYPE_FONT
-    },
 
     contentTypes: {
         TYPE_OTHER: 1,
@@ -69,15 +61,6 @@ var WebRequestHelper = exports.WebRequestHelper = {
     },
 
     /**
-     * Checks if request content type is visual (image/document/object/etc)
-     *
-     * @param contentType Request content type
-     */
-    isVisualContentType: function (contentType) {
-        return !(contentType in WebRequestHelper.nonVisualContentTypes);
-    },
-
-    /**
      * Gets request type string representation
      *
      * @param contentType   Request content type
@@ -87,23 +70,23 @@ var WebRequestHelper = exports.WebRequestHelper = {
         var t = WebRequestHelper.contentTypes;
         switch (contentType) {
             case t.TYPE_DOCUMENT:
-                return "DOCUMENT";
+                return RequestTypes.DOCUMENT;
             case t.TYPE_SCRIPT:
-                return "SCRIPT";
+                return RequestTypes.SCRIPT;
             case t.TYPE_IMAGE:
-                return "IMAGE";
+                return RequestTypes.IMAGE;
             case t.TYPE_STYLESHEET:
-                return "STYLESHEET";
+                return RequestTypes.STYLESHEET;
             case t.TYPE_OBJECT:
-                return "OBJECT";
+                return RequestTypes.OBJECT;
             case t.TYPE_SUBDOCUMENT:
-                return "SUBDOCUMENT";
+                return RequestTypes.SUBDOCUMENT;
             case t.TYPE_XMLHTTPREQUEST:
-                return "XMLHTTPREQUEST";
+                return RequestTypes.XMLHTTPREQUEST;
             case t.TYPE_OBJECT_SUBREQUEST:
-                return "OBJECT-SUBREQUEST";
+                return RequestTypes.OBJECT_SUBREQUEST;
             default:
-                return "OTHER";
+                return RequestTypes.OTHER;
         }
     },
 
@@ -162,39 +145,26 @@ var WebRequestHelper = exports.WebRequestHelper = {
     },
 
     /**
-     * Gets window for channel
+     * Gets tab for specified channel
      *
-     * @param channel channel
-     * @returns {*}
+     * @param channel Channel
+     * @returns XUL tab
      */
-    getWndForChannel: function (channel) {
-        try {
-            if (channel.notificationCallbacks) {
-                return channel.notificationCallbacks.getInterface(Ci.nsILoadContext).associatedWindow;
-            }
-        } catch (e) {
-            //ignore this error
-            //TODO: fix
-            Log.debug("Error retrieve associatedWindow from channel.notificationCallbacks, cause {0}", e);
-        }
-        try {
-            if (channel.loadGroup && channel.loadGroup.notificationCallbacks) {
-                return channel.loadGroup.notificationCallbacks.getInterface(Ci.nsILoadContext).associatedWindow;
-            }
-        } catch (e) {
-            //ignore this error
-            //TODO: fix
-            Log.debug("Error retrieve associatedWindow from channel.loadGroup.notificationCallbacks, cause {0}", e);
+    getTabForChannel: function (channel) {
+        var browser = this.getBrowserForChannel(channel);
+        if (browser) {
+            return tabUtils.getTabForBrowser(browser);
         }
         return null;
     },
 
+    /**
+     * Gets tab id for channel
+     * @param channel Channel
+     * @returns XUL tab
+     */
     getTabIdForChannel: function (channel) {
-        var win = this.getWndForChannel(channel);
-        if (!win) {
-            return null;
-        }
-        var xulTab = this.getTabForContext(win);
+        var xulTab = this.getTabForChannel(channel);
         if (!xulTab) {
             return null;
         }
@@ -202,39 +172,153 @@ var WebRequestHelper = exports.WebRequestHelper = {
     },
 
     /**
-     * Gets ASCII url
-     *
-     * @param url   URL
-     * @returns Url (ASCII)
+     * Gets load context from given nsIChannel
+     * @param channel nsIChannel implementation
+     * @private
      */
-    getUrlAscii: function (url) {
-        if (/^[\x00-\x7F]+$/.test(url)) {
-            return url;
-        }
+    _getLoadContext: function(channel) {
+        let loadContext;
         try {
-            return ioService.newURI(url, null, null).asciiSpec;
-        } catch (ex) {
-            return url;
+            loadContext = channel.notificationCallbacks.getInterface(Ci.nsILoadContext);
+        } catch (e) {
         }
-    },
 
-    assignContentTypeToRequest: function (request, contentType) {
-        if (request instanceof Ci.nsIWritablePropertyBag) {
-            request.setProperty("lastRequestContentType", contentType);
-        }
-    },
-
-    retrieveContentTypeFromRequest: function (request) {
-        var contentType;
-        if (request instanceof Ci.nsIPropertyBag) {
+        if (!loadContext) {
             try {
-                contentType = request.getProperty("lastRequestContentType");
-            } catch (ex) {
-                //property doesn't exist
+                loadContext = channel.loadGroup.notificationCallbacks.getInterface(Ci.nsILoadContext);
+            } catch (e) {
+                // Lots of requests have no notificationCallbacks, mostly background
+                // ones like OCSP checks or smart browsing fetches.
+                Log.debug("_getLoadContext: no loadContext for " + channel.URI.spec);
                 return null;
             }
         }
-        return contentType;
+
+        return loadContext;
+    },
+
+    /**
+     * Gets XUL browser for given nsIChannel.
+     *
+     * We've used a method from HTTPS Everywhere to fix e10s incompatibility:
+     * https://github.com/pde/https-everywhere/blob/1afa2d65874403c7c89ce8af320bbd79b0827823/src/components/https-everywhere.js
+     *
+     * @param channel nsIChannel implementation
+     * @returns An instance of https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XUL/browser
+     */
+    getBrowserForChannel: function (channel) {
+        let topFrameElement, associatedWindow;
+        let spec = channel.URI.spec;
+        let loadContext = this._getLoadContext(channel);
+
+        if (loadContext) {
+            topFrameElement = loadContext.topFrameElement;
+            try {
+                // If loadContext is an nsDocShell, associatedWindow is present.
+                // Otherwise, if it's just a LoadContext, accessing it will throw
+                // NS_ERROR_UNEXPECTED.
+                associatedWindow = loadContext.associatedWindow;
+            } catch (e) {
+            }
+        }
+
+        // On e10s (multiprocess, aka electrolysis) Firefox,
+        // loadContext.topFrameElement gives us a reference to the XUL <browser>
+        // element we need. However, on non-e10s Firefox, topFrameElement is null.
+
+        // More details here:
+        // https://bugzilla.mozilla.org/show_bug.cgi?id=1113294
+        // https://developer.mozilla.org/en-US/Firefox/Multiprocess_Firefox/Limitations_of_chrome_scripts#HTTP_requests
+        if (topFrameElement) {
+            if (!associatedWindow) {
+                WorkaroundUtils.setMultiProcessFirefoxMode(true);
+            }
+            return topFrameElement;
+        } else if (associatedWindow) {
+            // For non-e10s Firefox, get the XUL <browser> element using this rather
+            // magical / opaque code cribbed from
+            // https://developer.mozilla.org/en-US/Add-ons/Code_snippets/Tabbed_browser#Getting_the_browser_that_fires_the_http-on-modify-request_notification_(example_code_updated_for_loadContext)
+
+            // this is the HTML DOM window of the page that just loaded
+            var contentWindow = loadContext.associatedWindow;
+            // aDOMWindow this is the firefox window holding the tab
+            var aDOMWindow = contentWindow.top.QueryInterface(Ci.nsIInterfaceRequestor)
+                .getInterface(Ci.nsIWebNavigation)
+                .QueryInterface(Ci.nsIDocShellTreeItem)
+                .rootTreeItem
+                .QueryInterface(Ci.nsIInterfaceRequestor)
+                .getInterface(Ci.nsIDOMWindow);
+            // this is the gBrowser object of the firefox window this tab is in
+            var gBrowser = aDOMWindow.gBrowser;
+            if (gBrowser && gBrowser._getTabForContentWindow) {
+                var aTab = gBrowser._getTabForContentWindow(contentWindow.top);
+
+                // this is the clickable tab xul element, the one found in the tab strip
+                // of the firefox window, aTab.linkedBrowser is same as browser var above
+                // this is the browser within the tab
+                if (aTab) {
+                    return aTab.linkedBrowser;
+                } else {
+                    Log.debug("getBrowserForChannel: aTab was null for " + spec);
+                    return null;
+                }
+            } else if (aDOMWindow.BrowserApp) {
+
+                // gBrowser is unavailable in Firefox for Android, and in some desktop
+                // contexts, like the fetches for new tab tiles (which have an
+                // associatedWindow, but no gBrowser)?
+                // If available, try using the BrowserApp API:
+                // https://developer.mozilla.org/en-US/Add-ons/Firefox_for_Android/API/BrowserApp
+                // TODO: We don't get the toolbar icon on android. Probably need to fix the gBrowser reference in toolbar_button.js.
+                // Also TODO: Where are these log messages going? They don't show up in remote debug console.
+                var mTab = aDOMWindow.BrowserApp.getTabForWindow(contentWindow.top);
+                if (mTab) {
+                    return mTab.browser;
+                } else {
+                    Log.error("getBrowserForChannel: mTab was null for " + spec);
+                    return null;
+                }
+            } else {
+                Log.error("getBrowserForChannel: No gBrowser and no BrowserApp for " + spec);
+                return null;
+            }
+        } else {
+            Log.debug("getBrowserForChannel: No loadContext for " + spec);
+            return null;
+        }
+    },
+
+    /**
+     * Attaches request type property to the http channel.
+     *
+     * @param request nsIHttpChannel
+     * @param contentType Content type (will be transformed to requestType from RequestTypes enumeration)
+     */
+    attachRequestType: function (request, contentType) {
+        if (request instanceof Ci.nsIWritablePropertyBag) {
+            var requestType = this.getRequestType(contentType);
+            request.setProperty("lastRequestType", requestType);
+        }
+    },
+
+    /**
+     * Gets request type from request properties.
+     * This property is attached in http-on-opening-request handler.
+     *
+     * @param request nsIHttpChannel
+     * @returns Content type or null
+     */
+    retrieveRequestType: function (request) {
+        var requestType;
+        if (request instanceof Ci.nsIPropertyBag) {
+            try {
+                requestType = request.getProperty("lastRequestType");
+            } catch (ex) {
+                // property doesn't exist
+                return null;
+            }
+        }
+        return requestType;
     }
 };
 
@@ -253,6 +337,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
     xpcom_categories: ["content-policy", "net-channel-event-sinks"],
 
     antiBannerService: null,
+    adguardApplication: null,
     ElemHide: null,
     framesMap: null,
     filteringLog: null,
@@ -273,6 +358,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
         Log.info('Initializing webRequest...');
 
         this.antiBannerService = antiBannerService;
+        this.adguardApplication = adguardApplication;
         this.ElemHide = ElemHide;
         this.framesMap = framesMap;
         this.filteringLog = filteringLog;
@@ -313,16 +399,21 @@ var WebRequestImpl = exports.WebRequestImpl = {
      * Read here for details:
      * https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIContentPolicy
      *
-     * @param contentType
-     * @param contentLocation
-     * @param requestOrigin
-     * @param node
-     * @param mimeTypeGuess
-     * @param extra
-     * @returns {*}
+     * @param contentType       The type of content being tested. This will be one one of the TYPE_* constants.
+     * @param contentLocation   The location of the content being checked; must not be null.
+     * @param requestOrigin     OPTIONAL. The location of the resource that initiated this load request; can be null if inapplicable.
+     * @param                   node OPTIONAL. The nsIDOMNode or nsIDOMWindow that initiated the request, or something that can Query Interface to one of those; can be null if inapplicable.
+     * @param mimeTypeGuess     OPTIONAL. a guess for the requested content's MIME type, based on information available to the request initiator
+ *                              (e.g., an OBJECT's type attribute); does not reliably reflect the actual MIME type of the requested content.
+     * @param extra             An OPTIONAL argument, pass-through for non-Gecko callers to pass extra data to callees.
+     * @param aRequestPrincipal OPTIONAL. defines the principal that caused the load. This is optional only for non-gecko code:
+     *                          all gecko code should set this argument. For navigation events, this is the principal of the page
+     *                          that caused this load.
+     * @returns ACCEPT or REJECT_*
      */
-    shouldLoad: function (contentType, contentLocation, requestOrigin, node, mimeTypeGuess, extra) {
+    shouldLoad: function (contentType, contentLocation, requestOrigin, node, mimeTypeGuess, extra, aRequestPrincipal) {
 
+        // Save lastRequest so it can be reused further in http-on-opening-request method
         this.lastRequest = {URI: contentLocation, contentType: contentType};
 
         if (!node) {
@@ -338,24 +429,68 @@ var WebRequestImpl = exports.WebRequestImpl = {
         var requestUrl = contentLocation.asciiSpec;
         var requestType = WebRequestHelper.getRequestType(contentType);
 
-        if (requestType == "DOCUMENT") {
+        if (requestType == RequestTypes.DOCUMENT) {
             var context = node.contentWindow || node;
             if (context.top === context) {
                 this._saveContextOpenerTab(context);
             }
         }
 
-        var block = this._shouldBlockRequest(tab, requestUrl, requestType, node, contentType);
+        var block = this._shouldBlockRequest(tab, requestUrl, requestType, node);
 
         return block ? WebRequestHelper.REJECT : WebRequestHelper.ACCEPT;
     },
 
+    /**
+     * nsIContentPolicy method
+     */
     shouldProcess: function () {
         return WebRequestHelper.ACCEPT;
     },
 
     /**
-     * nsIObserver interface implementation
+     * nsIChannelEventSink interface implementation
+     * We use this method to block redirect requests because in this case shouldLoad is not called.
+     *
+     * @param oldChannel
+     * @param newChannel
+     * @param flags
+     * @param callback
+     */
+    asyncOnChannelRedirect: function (oldChannel, newChannel, flags, callback) {
+        var result = Cr.NS_OK;
+        try {
+
+            var requestType = WebRequestHelper.retrieveRequestType(oldChannel);
+            if (!requestType) {
+                return;
+            }
+
+            var xulTab = WebRequestHelper.getTabForChannel(newChannel);
+            if (!xulTab) {
+                return;
+            }
+
+            var tab = {id: tabUtils.getTabId(xulTab)};
+            var requestUrl = newChannel.URI.asciiSpec;
+
+            if (this._shouldBlockRequest(tab, requestUrl, requestType, null)) {
+                result = Cr.NS_BINDING_ABORTED;
+            }
+
+        } catch (e) {
+            // don't throw exceptions
+            Log.error('asyncOnChannelRedirect: Error while processing redirect: {0}', e);
+        } finally {
+            callback.onRedirectVerifyCallback(result);
+        }
+    },
+
+    /**
+     * nsIObserver interface implementation.
+     * Learn more here:
+     * * https://developer.mozilla.org/en-US/Add-ons/Overlay_Extensions/XUL_School/Intercepting_Page_Loads#HTTP_Observers
+     *
      * @param event - observe event
      */
     observe: function (event) {
@@ -375,37 +510,45 @@ var WebRequestImpl = exports.WebRequestImpl = {
         }
     },
 
+    /**
+     * Handler for http-on-examine-response and such.
+     *
+     * @param subject nsIHttpChannel
+     * @private
+     */
     _httpOnExamineResponse: function (subject) {
 
         if (!(subject instanceof Ci.nsIHttpChannel)) {
             return;
         }
 
-        var win = WebRequestHelper.getWndForChannel(subject);
-        if (!win) {
-            return;
-        }
-
-        var xulTab = WebRequestHelper.getTabForContext(win);
+        var xulTab = WebRequestHelper.getTabForChannel(subject);
         if (!xulTab) {
             return;
         }
 
-        var isMainFrame = (subject.loadFlags & subject.LOAD_DOCUMENT_URI) && win.parent == win;
-
         var tab = {id: tabUtils.getTabId(xulTab)};
         var requestUrl = subject.URI.asciiSpec;
         var responseHeaders = WebRequestHelper.getResponseHeaders(subject);
-        //retrieve referrer
-        var referrerUrl = this.framesMap.getFrameUrl(tab, 0);
-        //retrieve request type
-        var contentType = isMainFrame ? WebRequestHelper.contentTypes.TYPE_DOCUMENT : WebRequestHelper.retrieveContentTypeFromRequest(subject);
-        var requestType = contentType ? WebRequestHelper.getRequestType(contentType) : null;
 
-        // Sometimes shouldLoad is not called. (e.g. speed dial)
+        // Retrieve referrer
+        var referrerUrl = this.framesMap.getFrameUrl(tab, 0);
+
+        // Get content type
+        var isDocument = (subject.loadFlags & subject.LOAD_DOCUMENT_URI);
+        var requestType = WebRequestHelper.retrieveRequestType(subject);
+
+        if (!requestType && isDocument) {
+            requestType = RequestTypes.DOCUMENT;
+        } else if (!requestType) {
+            requestType = RequestTypes.OTHER;
+        }
+        isMainFrame = (requestType == RequestTypes.DOCUMENT);
+
+        // We record frame data here because shouldLoad is not always called (shouldLoad issue)
         if (isMainFrame) {
             //record frame
-            this.framesMap.recordFrame(tab, 0, requestUrl, "DOCUMENT");
+            this.framesMap.recordFrame(tab, 0, requestUrl, requestType);
         }
 
         this.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
@@ -422,38 +565,43 @@ var WebRequestImpl = exports.WebRequestImpl = {
         }
 
         if (isMainFrame) {
-            //safebrowsing check
+            // Do safebrowsing check
             this._filterSafebrowsing(requestUrl, tab, xulTab);
         }
     },
 
+    /**
+     * Handler for http-on-opening-request.
+     *
+     * @param subject nsIHttpChannel
+     * @private
+     */
     _httpOnOpeningRequest: function (subject) {
 
         if (!(subject instanceof Ci.nsIHttpChannel)) {
             return;
         }
 
-        // AG for Windows and Mac checks either request signature or request Referer to authorize request.
-        // Referer cannot be forged by the website so it's ok for add-on authorization.
-        if (subject.URI.asciiHost == 'injections.adguard.com') {
-            subject.setRequestHeader('Referer', 'http://injections.adguard.com/', false);
+        // Set authorization headers for requests to desktop AG
+        if (this.adguardApplication.isIntegrationRequest(subject.URI.asciiSpec)) {
+            var authHeaders = this.adguardApplication.getAuthorizationHeaders();
+            for (var i = 0; i < authHeaders.length; i++) {
+                subject.setRequestHeader(authHeaders[i].headerName, authHeaders[i].headerValue, false);
+            }
             return;
         }
 
-        var win = WebRequestHelper.getWndForChannel(subject);
-        if (!win) {
-            return;
-        }
-
-        var xulTab = WebRequestHelper.getTabForContext(win);
+        var xulTab = WebRequestHelper.getTabForChannel(subject);
         if (!xulTab) {
             return;
         }
 
         var openerTab;
-        if (this.lastRequest && subject.URI == this.lastRequest.URI) {
-            // Stores lastRequestContentType, it is then used in asyncOnChannelRedirect method
-            WebRequestHelper.assignContentTypeToRequest(subject, this.lastRequest.contentType);
+        if (this.lastRequest && subject.URI.asciiSpec == this.lastRequest.URI.asciiSpec) {
+
+            // Stores lastRequestType, it is then used in
+            // asyncOnChannelRedirect method and other http observers
+            WebRequestHelper.attachRequestType(subject, this.lastRequest.contentType);
             openerTab = this.lastRequest.openerTab;
             this.lastRequest = null;
         }
@@ -466,74 +614,27 @@ var WebRequestImpl = exports.WebRequestImpl = {
         }
 
         /**
-         * If page URL is whitelisted in standalone Adguard, we should forcibly set Referrer value to this page URL.
-         * The problem is that standalone Adguard looks at the page referrer to check if it should bypass this request or not.
+         * Override request referrer in integration mode
          */
         var tab = {id: tabUtils.getTabId(xulTab)};
-
-        if (this.framesMap.isTabAdguardWhiteListed(tab)) {
-            //retrieve main frame url
+        if (this.adguardApplication.shouldOverrideReferrer(tab)) {
+            // Retrieve main frame url
             var frameUrl = this.framesMap.getFrameUrl(tab, 0);
             subject.setRequestHeader('Referer', frameUrl, false);
         }
     },
 
     /**
-     * nsIChannelEventSink interface implementation
-     * We use this method to block redirect requests because in this case shouldLoad is not called.
-     *
-     * @param oldChannel
-     * @param newChannel
-     * @param flags
-     * @param callback
-     */
-    asyncOnChannelRedirect: function (oldChannel, newChannel, flags, callback) {
-        var result = Cr.NS_OK;
-        try {
-
-            var contentType = WebRequestHelper.retrieveContentTypeFromRequest(oldChannel);
-            if (!contentType) {
-                return;
-            }
-
-            var win = WebRequestHelper.getWndForChannel(newChannel);
-            if (!win) {
-                return;
-            }
-
-            var xulTab = WebRequestHelper.getTabForContext(win);
-            if (!xulTab) {
-                return;
-            }
-
-            var tab = {id: tabUtils.getTabId(xulTab)};
-            var requestUrl = newChannel.URI.asciiSpec;
-            var requestType = WebRequestHelper.getRequestType(contentType);
-
-            if (this._shouldBlockRequest(tab, requestUrl, requestType, win.document, contentType)) {
-                result = Cr.NS_BINDING_ABORTED;
-            }
-
-        } catch (e) {
-            // don't throw exceptions
-            Log.error('Error processing asyncOnChannelRedirect, cause {0}', e);
-        } finally {
-            callback.onRedirectVerifyCallback(result);
-        }
-    },
-
-    /**
      * Checks if request should be blocked
      *
-     * @param tab
-     * @param requestUrl
-     * @param requestType
-     * @param node
-     * @param contentType
-     * @returns {*}
+     * @param tab Browser tab
+     * @param requestUrl Request url
+     * @param requestType Request type
+     * @param node DOM node
+     * @returns {boolean} true if request should be blocked
      * @private
      */
-    _shouldBlockRequest: function (tab, requestUrl, requestType, node, contentType) {
+    _shouldBlockRequest: function (tab, requestUrl, requestType, node) {
 
         if (requestType === "DOCUMENT") {
             return false;
@@ -548,7 +649,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
         var requestRule = this.webRequestService.getRuleForRequest(tab, requestUrl, tabUrl, requestType);
         var requestBlocked = this.webRequestService.isRequestBlockedByRule(requestRule);
         if (requestBlocked) {
-            this._collapseElement(node, contentType);
+            this._collapseElement(node, requestType);
         }
         this.webRequestService.postProcessRequest(tab, requestUrl, tabUrl, requestType, requestRule);
 
@@ -557,7 +658,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
 
     /**
      *
-     * @param context
+     * @param context contentWindow for main frame or node
      * @private
      */
     _saveContextOpenerTab: function (context) {
@@ -570,9 +671,10 @@ var WebRequestImpl = exports.WebRequestImpl = {
     },
 
     /**
+     * Checks if request should be blocked with $popup rule
      *
-     * @param requestUrl
-     * @param sourceTab
+     * @param requestUrl Request URL
+     * @param sourceTab Source tab
      * @private
      */
     _checkPopupRule: function (requestUrl, sourceTab) {
@@ -583,11 +685,11 @@ var WebRequestImpl = exports.WebRequestImpl = {
 
         var tabUrl = this.framesMap.getFrameUrl(sourceTab, 0);
 
-        var requestRule = this.webRequestService.getRuleForRequest(sourceTab, requestUrl, tabUrl, "POPUP");
+        var requestRule = this.webRequestService.getRuleForRequest(sourceTab, requestUrl, tabUrl, RequestTypes.POPUP);
         var requestBlocked = this.webRequestService.isRequestBlockedByRule(requestRule);
         if (requestBlocked) {
             //add log event and fix log event type from "POPUP" to "DOCUMENT"
-            this.webRequestService.postProcessRequest(sourceTab, requestUrl, tabUrl, "DOCUMENT", requestRule);
+            this.webRequestService.postProcessRequest(sourceTab, requestUrl, tabUrl, RequestTypes.DOCUMENT, requestRule);
         }
 
         return requestBlocked;
@@ -618,7 +720,9 @@ var WebRequestImpl = exports.WebRequestImpl = {
     _filterSafebrowsing: function (requestUrl, tab, xulTab) {
 
         //TODO: check for not http
-        if (this.framesMap.isTabAdguardDetected(tab) || this.framesMap.isTabProtectionDisabled(tab) || this.framesMap.isTabWhiteListed(tab)) {
+        if (this.framesMap.isTabAdguardDetected(tab) ||
+            this.framesMap.isTabProtectionDisabled(tab) ||
+            this.framesMap.isTabWhiteListed(tab)) {
             return;
         }
 
@@ -639,12 +743,12 @@ var WebRequestImpl = exports.WebRequestImpl = {
     /**
      * Blocking rule found. Collapsing the element.
      *
-     * @param node
-     * @param contentType
+     * @param node Node to collapse
+     * @param requestType Request type (got from nsIHttpChannel)
      * @private
      */
-    _collapseElement: function (node, contentType) {
-        if (node && node.ownerDocument && WebRequestHelper.isVisualContentType(contentType)) {
+    _collapseElement: function (node, requestType) {
+        if (node && node.ownerDocument && RequestTypes.isVisual(requestType)) {
             this.ElemHide.collapseNode(node);
         }
     },

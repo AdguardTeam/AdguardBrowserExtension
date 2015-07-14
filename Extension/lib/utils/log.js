@@ -48,7 +48,7 @@ var Log = exports.Log = {
 		if (!args || args.length == 0 || !args[0]) {
 			return;
 		}
-		var str = args[0];
+		var str = args[0] + "";
 		args = Array.prototype.slice.call(args, 1);
 		var formatted = str.replace(/{(\d+)}/g, function (match, number) {
 			return typeof  args[number] != "undefined" ? args[number] : match;

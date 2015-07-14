@@ -27,6 +27,7 @@ var tabs = require('sdk/tabs');
 var unload = require('sdk/system/unload');
 
 var {UiUtils, WindowObserver} = require('uiUtils');
+var WorkaroundUtils = require('utils/workaround').WorkaroundUtils;
 
 function findEl(id, element) {
 	for (var i = 0; i < element.children.length; i++) {
@@ -216,15 +217,10 @@ var PopupButton = exports.PopupButton = {
 		if (!toolbarButton) {
 			return;
 		}
-		var blockedText = blocked == "0" ? "" : blocked;
-		var hideBadge = true;
-		if (blockedText) {
-			hideBadge = false;
-		}
-		if (blocked - 0 > 99) {
-			blockedText = "99";
-		}
-		if (hideBadge) {
+
+		var blockedText = WorkaroundUtils.getBlockedCountText(blocked);
+
+		if (!blockedText) {
 			toolbarButton.removeAttribute('showBlocked');
 		} else {
 			toolbarButton.setAttribute('showBlocked', 'true');

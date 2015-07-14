@@ -19,6 +19,7 @@
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
+var Log = require('utils/log').Log;
 var UrlUtils = require('utils/url').UrlUtils;
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
 var USE_DEFAULT_SCRIPT_RULES = require('utils/local-script-rules').USE_DEFAULT_SCRIPT_RULES;
@@ -29,6 +30,71 @@ var DEFAULT_SCRIPT_RULES = require('utils/local-script-rules').DEFAULT_SCRIPT_RU
  */
 var WorkaroundUtils = exports.WorkaroundUtils = {
 
+	/**
+	 * @returns true if e10s is enabled
+	 */
+	isMultiProcessFirefoxMode: function() {
+		return this.multiProcessFirefoxMode;
+	},
+
+	/**
+	 * Saves FF multi-process flag.
+	 *
+	 * In case if FF is working in e10s we change the way we do the following:
+	 * 1. No more collapsing elements from the chrome process.
+	 * We now use the same way as chromium extension - collapsing elements in the content script.
+	 * It is slow, but it won't slow down the browser.
+	 *
+	 * More info:
+	 * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/4
+	 *
+	 * @param value true if multiprocess
+	 */
+	setMultiProcessFirefoxMode: function(value) {
+
+		if (this.multiProcessFirefoxMode !== value) {
+			Log.info("Set multi-process mode to {0}", value);
+		}
+
+		this.multiProcessFirefoxMode = value;
+	},
+
+	/**
+	 * Checks if we should update frame's blocked requests counter.
+	 * This method checks frame's creation time and does not allow
+	 * updating blocked count for old frames.
+	 *
+	 * Thus we trying to fix an issue with pages making ad requests constantly.
+	 *
+	 * @param frameData Frame data
+	 */
+	shouldUpdateBlockedCount: function(frameData) {
+
+		// max age is 60 seconds
+		return frameData && (frameData.timeAdded + 60000 > Date.now());
+	},
+
+	/**
+	 * Converts blocked counter to the badge text.
+	 * Workaround for FF - make 99 max.
+	 *
+	 * @param blocked Blocked requests count
+	 */
+	getBlockedCountText: function(blocked) {
+		var blockedText = blocked == "0" ? "" : blocked;
+		if (blocked - 0 > 99) {
+			blockedText = "99";
+		}
+		return blockedText;
+	},
+
+	/**
+	 * Checks if it is facebook like button iframe
+	 * TODO: Ugly, remove this
+	 *
+	 * @param url URL
+	 * @returns true if it is
+	 */
 	isFacebookIframe: function (url) {
 		// facebook iframe workaround
 		// do not inject anything to facebook frames

@@ -50,27 +50,27 @@ function onBeforeRequest(requestDetails) {
 }
 
 /**
- * If page URL is whitelisted in standalone Adguard, we should forcibly set Referrer value to this page URL.
- * The problem is that standalone Adguard looks at the page referrer to check if it should bypass this request or not.
- * Also there's an issue with Opera browser, it misses referrer for some requests.
+ * Called before request is sent to the remote endpoint.
+ * This method is used to modify request in case of working in integration mode
+ * and also to record referrer header in frame data.
  *
  * @param requestDetails Request details
- * @returns {*}
+ * @returns {*} headers to send
  */
 function onBeforeSendHeaders(requestDetails) {
 
     var tab = requestDetails.tab;
     var headers = requestDetails.requestHeaders;
 
-    if (framesMap.isTabAdguardWhiteListed(tab)) {
-        //retrieve main frame url
+    if (adguardApplication.shouldOverrideReferrer(tab)) {
+        // Retrieve main frame url
         var mainFrameUrl = framesMap.getFrameUrl(tab, 0);
         headers = Utils.setHeaderValue(headers, 'Referer', mainFrameUrl);
         return {requestHeaders: headers};
     }
 
     if (requestDetails.requestType === 'DOCUMENT') {
-        //save ref header
+        // Save ref header
         var refHeader = Utils.findHeaderByName(headers, 'Referer');
         if (refHeader) {
             framesMap.recordFrameReferrerHeader(tab, refHeader.value);
@@ -128,10 +128,15 @@ if (typeof chrome !== 'undefined') {
 
     chrome.webRequest.onBeforeSendHeaders.addListener(function callback(details) {
 
-        var headers = Utils.setHeaderValue(details.requestHeaders, 'Referer', 'http://injections.adguard.com/');
+        var authHeaders = adguardApplication.getAuthorizationHeaders();
+        var headers = details.requestHeaders;
+        for (var i = 0; i < authHeaders.length; i++) {
+            headers = Utils.setHeaderValue(details.requestHeaders, authHeaders[i].headerName, authHeaders[i].headerValue);
+        }
+
         return {requestHeaders: headers};
 
-    }, {urls: ["*://injections.adguard.com/*"]}, ["requestHeaders", "blocking"]);
+    }, {urls: [adguardApplication.getIntegrationBaseUrl() + "*"]}, ["requestHeaders", "blocking"]);
 }
 
 function parseCssRuleFromUrl(requestUrl) {

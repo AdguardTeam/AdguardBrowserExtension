@@ -17,10 +17,13 @@
 package com.adguard.compiler;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Map;
 
@@ -63,6 +66,40 @@ public class LocaleUtils {
 	}
 
 	private static ObjectMapper objectMapper = new ObjectMapper();
+
+	public static void updateExtensionNameForChromeLocales(File dest, String extensionNamePostfix) throws IOException {
+
+		if (StringUtils.isEmpty(extensionNamePostfix)) {
+			return;
+		}
+
+		File chromeLocalesDir = new File(dest, "_locales");
+
+		for (File file : chromeLocalesDir.listFiles()) {
+
+			File chromeLocaleFile = new File(file, "messages.json");
+
+			StringBuilder sb = new StringBuilder();
+			BufferedReader reader = null;
+			try {
+				reader = new BufferedReader(new FileReader(chromeLocaleFile));
+				String line;
+				while ((line = reader.readLine()) != null) {
+					sb.append(line).append("\r\n");
+					if (line.trim().startsWith("\"name\":") || line.trim().startsWith("\"short_name\":")) {
+						line = reader.readLine();
+						String[] parts = StringUtils.split(line, ":");
+						String message = StringUtils.removeEnd(parts[1].trim(), "\"") + extensionNamePostfix + "\"";
+						sb.append("\t\"message\": ").append(message).append("\r\n");
+					}
+				}
+			} finally {
+				IOUtils.closeQuietly(reader);
+			}
+
+			FileUtils.writeStringToFile(chromeLocaleFile, sb.toString());
+		}
+	}
 
 	public static void convertFromChromeToFirefoxLocales(File chromeLocalesDir) throws IOException {
 
