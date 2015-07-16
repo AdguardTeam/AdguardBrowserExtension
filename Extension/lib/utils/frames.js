@@ -147,6 +147,15 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
 
     /**
      * @param tab Tab
+     * @returns true if Tab have white list rule and white list isn't invert
+     */
+    this.isTabWhiteListedForSafebrowsing = function (tab) {
+        var frameData = this.getMainFrame(tab);
+        return frameData && frameData.frameWhiteListRule && whiteListService.isDefaultMode();
+    };
+
+    /**
+     * @param tab Tab
      * @returns true if protection is paused
      */
     this.isTabProtectionDisabled = function (tab) {

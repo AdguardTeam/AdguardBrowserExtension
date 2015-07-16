@@ -128,7 +128,7 @@ var ext, BaseEvent, OnMessageEvent, sendMessage;
 
 		defaultLocale: 'en',
 
-		supportedLocales: ['ru', 'en', 'tr', 'uk', 'de', 'pl', 'pt_BR', 'pt_PT', 'ko', 'zh_CN', 'sr', 'fr', 'sk', 'hy'],
+		supportedLocales: ['ru', 'en', 'tr', 'uk', 'de', 'pl', 'pt_BR', 'pt_PT', 'ko', 'zh_CN', 'sr', 'fr', 'sk', 'hy', 'es', 'es_419', 'it', 'id'],
 
 		_getLocale: function () {
 			var prefix = navigator.language;

@@ -90,6 +90,10 @@ WhiteListService.prototype = {
         }
     },
 
+    isDefaultMode: function () {
+        return this.defaultWhiteListMode;
+    },
+
     changeDefaultWhiteListMode: function (defaultWhiteListMode) {
         this.defaultWhiteListMode = defaultWhiteListMode;
         userSettings.changeDefaultWhiteListMode(defaultWhiteListMode);

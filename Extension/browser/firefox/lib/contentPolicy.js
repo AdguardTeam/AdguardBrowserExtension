@@ -151,9 +151,12 @@ var WebRequestHelper = exports.WebRequestHelper = {
      * @returns XUL tab
      */
     getTabForChannel: function (channel) {
-        var browser = this.getBrowserForChannel(channel);
-        if (browser) {
-            return tabUtils.getTabForBrowser(browser);
+        var contextData = this.getChannelContextData(channel);
+        if (contextData && contextData.tab) {
+            return contextData.tab;
+        }
+        if (contextData && contextData.browser) {
+            return tabUtils.getTabForBrowser(contextData.browser);
         }
         return null;
     },
@@ -203,10 +206,13 @@ var WebRequestHelper = exports.WebRequestHelper = {
      * We've used a method from HTTPS Everywhere to fix e10s incompatibility:
      * https://github.com/pde/https-everywhere/blob/1afa2d65874403c7c89ce8af320bbd79b0827823/src/components/https-everywhere.js
      *
+     * Returns an instance of https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XUL/browser.
+     * Also returns DOMWindow, tab and contentWindow if possible.
+     *
      * @param channel nsIChannel implementation
-     * @returns An instance of https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XUL/browser
+     * @returns {*}
      */
-    getBrowserForChannel: function (channel) {
+    getChannelContextData: function (channel) {
         let topFrameElement, associatedWindow;
         let spec = channel.URI.spec;
         let loadContext = this._getLoadContext(channel);
@@ -233,7 +239,9 @@ var WebRequestHelper = exports.WebRequestHelper = {
             if (!associatedWindow) {
                 WorkaroundUtils.setMultiProcessFirefoxMode(true);
             }
-            return topFrameElement;
+            return {
+                browser: topFrameElement
+            };
         } else if (associatedWindow) {
             // For non-e10s Firefox, get the XUL <browser> element using this rather
             // magical / opaque code cribbed from
@@ -257,9 +265,14 @@ var WebRequestHelper = exports.WebRequestHelper = {
                 // of the firefox window, aTab.linkedBrowser is same as browser var above
                 // this is the browser within the tab
                 if (aTab) {
-                    return aTab.linkedBrowser;
+                    return {
+                        tab: aTab,
+                        browser: aTab.linkedBrowser,
+                        DOMWindow: aDOMWindow,
+                        contentWindow: contentWindow
+                    };
                 } else {
-                    Log.debug("getBrowserForChannel: aTab was null for " + spec);
+                    Log.debug("getChannelContextData: aTab was null for " + spec);
                     return null;
                 }
             } else if (aDOMWindow.BrowserApp) {
@@ -273,17 +286,22 @@ var WebRequestHelper = exports.WebRequestHelper = {
                 // Also TODO: Where are these log messages going? They don't show up in remote debug console.
                 var mTab = aDOMWindow.BrowserApp.getTabForWindow(contentWindow.top);
                 if (mTab) {
-                    return mTab.browser;
+                    return {
+                        tab: mTab,
+                        browser: mTab.browser,
+                        DOMWindow: aDOMWindow,
+                        contentWindow: contentWindow
+                    };
                 } else {
-                    Log.error("getBrowserForChannel: mTab was null for " + spec);
+                    Log.error("getChannelContextData: mTab was null for " + spec);
                     return null;
                 }
             } else {
-                Log.error("getBrowserForChannel: No gBrowser and no BrowserApp for " + spec);
+                Log.error("getChannelContextData: No gBrowser and no BrowserApp for " + spec);
                 return null;
             }
         } else {
-            Log.debug("getBrowserForChannel: No loadContext for " + spec);
+            Log.debug("getChannelContextData: No loadContext for " + spec);
             return null;
         }
     },
@@ -543,7 +561,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
         } else if (!requestType) {
             requestType = RequestTypes.OTHER;
         }
-        isMainFrame = (requestType == RequestTypes.DOCUMENT);
+        var isMainFrame = (requestType == RequestTypes.DOCUMENT);
 
         // We record frame data here because shouldLoad is not always called (shouldLoad issue)
         if (isMainFrame) {
@@ -722,7 +740,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
         //TODO: check for not http
         if (this.framesMap.isTabAdguardDetected(tab) ||
             this.framesMap.isTabProtectionDisabled(tab) ||
-            this.framesMap.isTabWhiteListed(tab)) {
+            this.framesMap.isTabWhiteListedForSafebrowsing(tab)) {
             return;
         }
 

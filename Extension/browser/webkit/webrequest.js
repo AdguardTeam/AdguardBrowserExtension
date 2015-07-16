@@ -99,7 +99,7 @@ function onHeadersReceived(requestDetails) {
 
 function filterSafebrowsing(tab, mainFrameUrl) {
 
-    if (framesMap.isTabAdguardDetected(tab) || framesMap.isTabProtectionDisabled(tab) || framesMap.isTabWhiteListed(tab)) {
+    if (framesMap.isTabAdguardDetected(tab) || framesMap.isTabProtectionDisabled(tab) || framesMap.isTabWhiteListedForSafebrowsing(tab)) {
         return;
     }
 
@@ -108,11 +108,17 @@ function filterSafebrowsing(tab, mainFrameUrl) {
     var incognitoTab = framesMap.isIncognitoTab(tab);
 
     antiBannerService.getRequestFilter().checkSafebrowsingFilter(mainFrameUrl, referrerUrl, function (safebrowsingUrl) {
-        UI.openTab(safebrowsingUrl, {
-            onOpen: function () {
-                tab.close();
-            }
-        });
+        // Chrome doesn't allow open extension url in incognito mode
+        // So close current tab and open new
+        if (incognitoTab && !Utils.isSafariBrowser()) {
+            UI.openTab(safebrowsingUrl, {
+                onOpen: function () {
+                    tab.close();
+                }
+            });
+        } else {
+            tab.reload(safebrowsingUrl);
+        }
     }, incognitoTab);
 }
 

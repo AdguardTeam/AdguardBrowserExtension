@@ -277,7 +277,7 @@ ElemHide = exports.ElemHide = {
 
             /**
              * In case of e10s we use the same way as in Chromium - blocked elements are collapsed in content script.
-             * In single process mode blocked elements are collapsed in the elements.
+             * In single process mode blocked elements are collapsed by content policy.
              */
             if (WorkaroundUtils.isMultiProcessFirefoxMode()) {
                 var collapse = this.webRequestService.processShouldCollapse(worker.tab, message.elementUrl, message.documentUrl, message.requestType);
