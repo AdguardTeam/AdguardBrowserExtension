@@ -1,9 +1,9 @@
-! Version: 1.0.25.53
+! Version: 1.0.25.57
 ! Name: Russian filter
 ! Description: Filter that enables removing of the ads from websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2015-07-14T16:40:55.949+03:00
+! TimeUpdated: 2015-07-16T15:45:03.495+03:00
 ! Adguard Russian Filter
 !
 ! Filter that enables removing of the ads from websites with Russian content.
@@ -29,6 +29,8 @@
 !
 ! Содержит доменные имена, использующиеся рекламными сетями.
 !
+||wifly.net^$third-party
+||wiflyad.net^$third-party
 ||admixercreatives.blob.core.windows.net^$third-party
 ||jazg97clb.ru^$third-party
 ||rx-name.ua/?refer=
@@ -4643,6 +4645,10 @@ http://wq3.ru/$third-party
 !
 ! Правила против анти-адблок скриптов
 !
+! http://forum.adguard.com/showthread.php?6038
+spec-komp.com##.adb
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/651
+skidkaonline.ru#%#var canRunAds = true;
 ! vfl.ru - anti-adblock message
 @@||vfl.ru/advertisement.js
 ! http://forum.adguard.com/showthread.php?5948
@@ -8579,8 +8585,9 @@ meteocenter.net,newsland.com,newsland.ru,glav.su,eg.ru,kp.ru,kg-portal.ru,sovspo
 irr.ru#%#AG_onLoad(function() { window.AG_removeElementBySelector('iframe[id^="bw_"]'); });
 acer-a500.ru,lokomotiv.info,kulturologia.ru,biysk24.ru,baskino.com#%#AG_onLoad(function() { window.AG_removeElementBySelector('iframe[id^="k_c"]'); });
 wonderzine.com,glav.su,rbc.ru,soccer.ru,aftershock.su#%#AG_onLoad(function() { window.AG_removeElementBySelector('iframe[id^="ml_"]'); });
-vesti.ru#%#AG_onLoad(function() { window.AG_removeElementBySelector('iframe[id^="AdFox_iframe_"]'); });
+sports.ru,vesti.ru#%#AG_onLoad(function() { window.AG_removeElementBySelector('iframe[id^="AdFox_iframe_"]'); });
 new-rutor.org#%#AG_onLoad(function() { window.AG_removeElementBySelector('iframe[id^="_ads_"]'); });
+meduza.io#%#AG_onLoad(function() { setTimeout(function() { console.log('REMOVING'); window.AG_removeElementBySelector('iframe[id^="AdFox_iframe_"]'); },1000); });
 !
 ! http://www.yaplakal.com/forum44/topic894652.html - clickunder на странице перехода по ссылке (после клика на любой ссылке)
 alpha.yaplakal.com#%#window.open = function() {};
@@ -12044,6 +12051,14 @@ polezno-2012.info^
 !
 ! Правила специфичные для конкретных сайтов.
 !
+||94.198.53.135/b/
+||tb.beeline.ru/Scripts/App/AnchorCompiled.min.js
+p-p.com.ua##.ainfo-block
+||s5o.ru/source/_desktop/build/banners/main.js
+talkers.ru##center > a[href="http://talkers.ru/forumdisplay.php?f=142"] > img
+talkers.ru##a[href="http://bit.ly/1F1gKvi"]
+talkers.ru##.page > div[style="padding:0px 25px 0px 25px"] > center > a[target="_blank"]
+skidkaonline.ru##.ads-item
 avito.ru##.context-flyer.js-catalog-item-enum
 infocentr.ru###header > div[style^="height: 110px;"]
 ||pirat.ca/images/posters/BanML_
@@ -16271,6 +16286,19 @@ xn--90aiguyb.com/files.php?
 !
 ! Белый список. Исправляем ошибки фильтрации.
 !
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/657
+@@||webadvert.ru^$~third-party
+! http://forum.adguard.com/showthread.php?5947
+@@||olx.kz/i2/ajax/
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/655
+@@||out.pladform.ru/getPlaylist$domain=ok.ru
+@@||out.pladform.ru/getVideo$domain=ok.ru
+! for Megogo.net in IE and Opera 12
+@@||ad.turn.com/crossdomain.xml
+@@||ad.jamba.net/crossdomain.xml
+@@||ad.rambler.ru/crossdomain.xml
+@@||b.scorecardresearch.com/crossdomain.xml
+@@||ads.adfox.ru/*/event?hash=$domain=vcdn.biz
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/647
 driveroff.net#@#.adv
 ! http://forum.adguard.com/showthread.php?5958-Adguard-%D0%B4%D0%BB%D1%8F-Windows-%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D1%8F-5-10-2051&p=54910&viewfull=1#post54910
