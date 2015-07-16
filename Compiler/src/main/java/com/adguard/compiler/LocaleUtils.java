@@ -47,7 +47,11 @@ public class LocaleUtils {
 		SR("sr"), // Serbian
 		FR("fr"), // French
 		SK("sk"), // Slovak
-		HY("hy"); // Armenian
+		HY("hy"), // Armenian
+		ES_419("es_419"), // Spanish (Latin American)
+		ES("es"), // Spanish
+		IT("it"), // Italian
+		ID("id"); // Indonesian
 
 		private String code;
 
