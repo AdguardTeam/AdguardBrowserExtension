@@ -176,7 +176,13 @@ var BrowserTab, BrowserTabs, BrowserWindow;
 
     var linkHelper = document.createElement('a');
 
-    // https://code.google.com/p/chromium/issues/detail?id=410382
+    /**
+     * Fixing request type:
+     * https://code.google.com/p/chromium/issues/detail?id=410382
+     *
+     * @param url Request url
+     * @returns Fixed object type
+     */
     function parseRequestTypeFromUrl(url) {
 
         linkHelper.href = url;
