@@ -76,6 +76,11 @@ AdguardApplication.prototype = {
 	adguardAppVersion: null,
 
 	/**
+	 * Adguard application detected
+	 */
+	adguardIntegrationDetected: false,
+
+	/**
 	 * Checks if X-Adguard-Filtered header is present
 	 *
 	 * @param tab       Tab data
@@ -165,6 +170,23 @@ AdguardApplication.prototype = {
 			headerName: 'Referer',
 			headerValue: this.serviceClient.injectionsUrl
 		}];
+	},
+
+	checkIntegrationModeOn: function () {
+		this.serviceClient._executeRequestAsync(this.serviceClient.injectionsUrl, 'text/plain', function (request) {
+			if (request) {
+				var header = request.getResponseHeader(this.ADGUARD_APP_HEADER);
+				if (header) {
+					var appInfo = this._parseAppHeader(header, this.i18nGetMessage);
+					this.adguardProductName = appInfo.adguardProductName;
+					this.adguardAppVersion = appInfo.adguardAppVersion;
+					this.integrationMode = appInfo.integrationMode;
+					this.adguardIntegrationDetected = true;
+				} else {
+					this.adguardIntegrationDetected = false;
+				}
+			}
+		}.bind(this));
 	},
 
 	/**

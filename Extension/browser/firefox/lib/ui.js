@@ -139,7 +139,7 @@ var UI = exports.UI = {
                 this.popupWindow.focus();
                 return;
             }
-            this.popupWindow = UiUtils.getMostRecentWindow().open(url, "_blank", "width=1130,height=630,menubar=0,status=no,toolbar=no,scrollbars=yes,resizable=yes");
+            this.popupWindow = UiUtils.getMostRecentWindow().open(url, "_blank", "width=1230,height=630,menubar=0,status=no,toolbar=no,scrollbars=yes,resizable=yes");
         } else {
             tabs.open({
                 url: url,
@@ -259,11 +259,9 @@ var UI = exports.UI = {
         }.bind(this);
 
         var addUserRule = function (message) {
+            this.antiBannerService.addUserFilterRule(message.ruleText);
             if (this.framesMap.isTabAdguardDetected(this._getActiveTab())) {
-                this.adguardApplication.addRuleToApp(message.ruleText, function () {
-                });
-            } else {
-                this.antiBannerService.addUserFilterRule(message.ruleText);
+                this.adguardApplication.addRuleToApp(message.ruleText);
             }
         }.bind(this);
 
@@ -352,20 +350,26 @@ var UI = exports.UI = {
 
     whiteListCurrentTab: function () {
         var tab = this._getActiveTab();
+
+        var tabInfo = this.framesMap.getFrameInfo(tab);
+        this.antiBannerService.whiteListFrame(tabInfo);
+
         if (this.framesMap.isTabAdguardDetected(tab)) {
             var domain = UrlUtils.getHost(tab.url);
             this.adguardApplication.addRuleToApp("@@//" + domain + "^$document", function () {
                 this._reloadWithoutCache(tab);
             }.bind(this));
         } else {
-            var tabInfo = this.framesMap.getFrameInfo(tab);
-            this.antiBannerService.whiteListFrame(tabInfo);
             this.updateCurrentTabButtonState();
         }
     },
 
     unWhiteListCurrentTab: function () {
         var tab = this._getActiveTab();
+
+        var tabInfo = this.framesMap.getFrameInfo(tab);
+        this.antiBannerService.unWhiteListFrame(tabInfo);
+
         if (this.framesMap.isTabAdguardDetected(tab)) {
             var rule = this.framesMap.getTabAdguardUserWhiteListRule(tab);
             if (rule) {
@@ -374,8 +378,6 @@ var UI = exports.UI = {
                 }.bind(this));
             }
         } else {
-            var tabInfo = this.framesMap.getFrameInfo(tab);
-            this.antiBannerService.unWhiteListFrame(tabInfo);
             this.updateCurrentTabButtonState();
         }
     },

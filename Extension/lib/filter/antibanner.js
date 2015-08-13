@@ -803,8 +803,9 @@ AntiBannerService.prototype = {
     },
 
     /**
-     *
+     * Load rules to user filter by subscription url
      * @param subscriptionUrl
+     * @param loadCallback
      */
     processAbpSubscriptionUrl: function (subscriptionUrl, loadCallback) {
 

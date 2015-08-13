@@ -73,6 +73,7 @@ PageController.prototype = {
 		this.searchTypes = [];
 		this.searchThirdParty = false;
 		this.searchBlocked = false;
+		this.searchWhitelisted = false;
 
 		//bind click to reload tab
 		$('.task-manager').on('click', '.reloadTab', function (e) {
@@ -230,6 +231,12 @@ PageController.prototype = {
 			self.searchBlocked = this.checked;
 			self._filterEvents();
 		})
+
+		//bind click to filter by whitelisted
+		$('[name="searchEventWhitelisted"]').on('change', function () {
+			self.searchWhitelisted = this.checked;
+			self._filterEvents();
+		})
 	},
 
 	_filterEvents: function () {
@@ -240,7 +247,8 @@ PageController.prototype = {
 		if (!this.searchRequest
 			&& this.searchTypes.length == 0
 			&& !this.searchThirdParty
-			&& !this.searchBlocked) {
+			&& !this.searchBlocked
+			&& !this.searchWhitelisted) {
 
 			rows.removeClass('hidden');
 			return;
@@ -332,6 +340,7 @@ PageController.prototype = {
 		var show = !this.searchRequest || StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest);
 		show &= this.searchTypes.length == 0 || this.searchTypes.indexOf(filterData.requestType) >= 0;
 		show &= !this.searchThirdParty || filterData.requestThirdParty;
+		show &= !this.searchWhitelisted || (filterData.requestRule && filterData.requestRule.whiteListRule);
 		show &= !this.searchBlocked || (filterData.requestRule && !filterData.requestRule.whiteListRule);
 
 		if (show) {
@@ -447,16 +456,16 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 		this.closeModal();
 	}.bind(this));
 
-	removeUserFilterRuleButton.on('click', function (e) {
-		e.preventDefault();
-		if (frameInfo.adguardDetected) {
-			adguardApplication.removeRuleFromApp(requestRule.ruleText, function () {
-			});
-		} else {
-			antiBannerService.removeUserFilter(requestRule.ruleText);
-		}
-		this.closeModal();
-	}.bind(this));
+    removeUserFilterRuleButton.on('click', function (e) {
+        e.preventDefault();
+        antiBannerService.removeUserFilter(requestRule.ruleText);
+        if (frameInfo.adguardDetected) {
+            // In integration mode rule may be present in whitelist filter
+            antiBannerService.unWhiteListFrame(frameInfo);
+            adguardApplication.removeRuleFromApp(requestRule.ruleText);
+        }
+        this.closeModal();
+    }.bind(this));
 
 	if (!requestRule) {
 		blockRequestButton.removeClass('hidden');
@@ -552,17 +561,12 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 			return;
 		}
 		//add rule to user filter
+        antiBannerService.addUserFilterRule(rule.ruleText);
 		if (frameInfo.adguardDetected) {
-			adguardApplication.addRuleToApp(rule.ruleText, function () {
-			});
-		} else {
-			antiBannerService.addUserFilterRule(rule.ruleText);
+			adguardApplication.addRuleToApp(rule.ruleText);
 		}
-
 		//close modal
 		this.closeModal();
-		//TODO: mark blocked line?
-
 	}.bind(this));
 
 	updateRuleText();

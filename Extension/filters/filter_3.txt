@@ -1,9 +1,9 @@
-! Version: 1.0.2.84
+! Version: 1.0.2.99
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet be tracked, use this filter.
 ! NameEn: Spyware filter
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2015-07-15T19:17:32.504+03:00
+! TimeUpdated: 2015-08-12T19:22:05.285+03:00
 ! Adguard Spyware Filter
 !
 ! The most comprehensive list of various online counters and web analytics tools.
@@ -65,9 +65,18 @@ popmech.ru#%#AG_onLoad(function() { window.POPMECH.increaseCounters = function()
 ##a[href^="http://top100.rambler.ru/"]
 ##img[src*="counter.yadro.ru"]
 ~mozhor.ru,~onliner.by,~yandex.by,~yandex.com,~yandex.com.tr,~yandex.ru,~yandex.ua##img[width="88"][height="31"]
+~yandex.by,~yandex.com,~yandex.kz,~yandex.ru,~yandex.ua##a[href^="https://metrika.yandex.ru/stat/"]
 !-------------------------------------------------------------------------------!
 !-------------- Tracking servers list  -----------------------------------------!
 !-------------------------------------------------------------------------------!
+||informer.yandex.ru^$third-party
+||scounter.rambler.ru^$third-party
+||source.mmi.bemobile.ua/cm/
+||pagestat.mmi.bemobile.ua^
+||sslpagestat.mmi.bemobile.ua^
+||er.mmi.bemobile.ua^
+||bs.yandex.ru/informer/$third-party
+||directrix.ru^$third-party
 //t100.ru^$third-party
 ://tru.am/$third-party
 http://r.i.ua/s?
@@ -210,6 +219,7 @@ http://r.i.ua/s?
 ||alzexa.com^$third-party
 ||amadesa.com^$third-party
 ||amazingcounters.com^$third-party
+||amazy.ru^$third-party
 ||ambercrow.com^$third-party
 ||amctp.net^$third-party
 ||amikay.com^$third-party
@@ -222,6 +232,7 @@ http://r.i.ua/s?
 ||analytics.artirix.com^$third-party
 ||analytics.edgesuite.net^
 ||analytics.electro-com.ru^$third-party
+||analytics.query.yahoo.com^$third-party
 ||analytics.rechtslupe.org^
 ||analytics.sergey-mavrodi.com^
 ||analytics.twitter.com^$third-party
@@ -1871,6 +1882,7 @@ http://r.i.ua/s?
 ||sometrics.com^$third-party
 ||sophus3.com^$third-party
 ||sovetnik.net/count$third-party
+||sovetnik.yandex.net^$third-party
 ||space-link.de^$third-party
 ||spacehits.net^$third-party
 ||specialstat.com^$third-party
@@ -1939,6 +1951,7 @@ http://r.i.ua/s?
 ||stats.de^$third-party
 ||stats.fr^$third-party
 ||stats.ft.com^
+||stats.g.doubleclick.net^
 ||stats.kaltura.com^
 ||stats.lt^$third-party
 ||stats.rutracker.ga^
@@ -2115,6 +2128,7 @@ http://r.i.ua/s?
 ||trackfeed.com^$third-party
 ||trackfreundlich.de^$third-party
 ||tracking*.euroads.fi^$third-party
+||tracking.pixelfederation.com^
 ||tracking.tomshardware.co.uk^
 ||tracking100.com^$third-party
 ||tracking202.com^$third-party
@@ -2363,6 +2377,7 @@ http://r.i.ua/s?
 ||wtp101.com^$third-party
 ||wtstats.com^$third-party
 ||wundercounter.com^$third-party
+||wunderdaten.com^$third-party
 ||wunderloop.net^$third-party
 ||www.hey.lt^$third-party
 ||www.rt-ns.ru^$third-party
@@ -2451,10 +2466,7 @@ http://r.i.ua/s?
 /pixel-manager.js?
 /pixel-page.html
 /pixel.cgi?
-/pixel.gif?b=
-/pixel.gif?d=
-/pixel.gif?key=
-/pixel.gif?nocache=
+/pixel.gif?
 /pixel.jsp?
 /pixel.php?
 /pixel.swf?
@@ -2480,12 +2492,14 @@ http://r.i.ua/s?
 /showcounter.
 /showhits.php?
 /si-tracking.
+/stat/dspixel.js
 /stats.php?type=
 /stats/CounterPage.
 /synd.aspx
 /syndication/metrics/*
 /syndstats..gatracker.
 /thetracker.js
+/tns-counter.js
 /tracking-ad/*
 /tracking-hits.
 /tracking-info.gif?
@@ -2519,16 +2533,20 @@ http://r.i.ua/s?
 !-------------------------------------------------------------------------------!
 !-------------- Specific web sites ---------------------------------------------!
 !-------------------------------------------------------------------------------!
-washingtonpost.com##.social-tools-wrapper-bottom
-||linkedin.com/emimp/
+||mc.yandex.ru/webvisor$domain=metro.yandex.ru
+||wow-impulse.net/track/
+||pornhub.com/pix.php?s=
+||widgets.pinterest.com/*/urls/count.json
+||2gis.ru/assets/apitracker-*.
 nnm-club.ru###livi
 europcar.com###wt_overlay
 lenta.ru##.counters
 medium.com##.js-followState
 blogovo.ru##.metrika_sapaclick
 radioprofusion.com##.revolvermaps
+washingtonpost.com##.social-tools-wrapper-bottom
 medium.com##.voteWidget
-theplanet.ws##a[href="http://mycounter.com.ua/"]
+theplanet.ws,mobivid.net##a[href="http://mycounter.com.ua/"]
 bogamol.ru##a[href="http://www.hitcounter.ru"]
 seclub.org##a[href^="http://waplog.net/"]
 medium.com##button[data-action-source="footer_recommend"]
@@ -2540,6 +2558,7 @@ allfilms.net.ua##img[src^="http://c.hit.ua/hit"]
 versii.com##img[style="width: 88px; height: 31px; border: 0"]
 hentaiz.org##img[width="31"][height="31"]
 dreamprogs.net##td[width="88"][height="31"]
+||4pda.ru/stat/ztm
 ||adobe.com/*/pdc_s_code.js
 ||adobe.com/*/s_code*.js
 ||agpeca.ru/templates/*/images/hit*.gif
@@ -2557,11 +2576,12 @@ dreamprogs.net##td[width="88"][height="31"]
 ||js.washingtonpost.com/*/init.track-header-*.js
 ||js.washingtonpost.com/wp-stat/
 ||kitbit.net/kb.js
+||linkedin.com/emimp/
+||metrics.aviasales.ru^
 ||nbcnews.com/databox/databoxservice.asmx/GetLocation$domain=nbcnews.com
 ||nbcnews.com/trackingService/$domain=nbcnews.com
 ||reanimator.net/informer-images/
 ||ruslab.net/a/p.js
-||source.mmi.bemobile.ua/cm/cm.js
 ||t.insigit.com/assets/dct.js
 ||wo.washingtonpost.com^
 ||zive.cz/Client.Scripts/tracking.js
@@ -2634,6 +2654,8 @@ mozilla-russia.org#@#img[width="88"][height="31"]
 @@||mxpnl.com^$domain=dailysteals.com
 ! http://forum.adguard.com/showthread.php?2229
 @@.2o7.net/$domain=today.com
+@@analytics^$domain=wwe.com
+@@||brightcove.com^$domain=wwe.com
 @@||a.visualrevenue.com/vrs.js$domain=nydailynews.com
 @@||about-australia.com/*/clickheat.js
 @@||ad.crwdcntrl.net^$object-subrequest,domain=ap.org|newsinc.com

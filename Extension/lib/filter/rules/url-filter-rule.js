@@ -19,6 +19,7 @@
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
+var Prefs = require('prefs').Prefs;
 var StringUtils = require('utils/common').StringUtils;
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
 var Log = require('utils/log').Log;
@@ -284,6 +285,11 @@ UrlFilterRule.contentTypes = {
 	JSINJECT: 1 << 22,  //Does not inject javascript rules to page
 	POPUP: 1 << 23      //check block popups
 };
+
+// https://code.google.com/p/chromium/issues/detail?id=410382
+if (Prefs.platform === 'chromium') {
+	UrlFilterRule.contentTypes['OBJECT-SUBREQUEST'] = UrlFilterRule.contentTypes.OBJECT;
+}
 
 UrlFilterRule.ignoreOptions = {
 	// Deprecated modifiers

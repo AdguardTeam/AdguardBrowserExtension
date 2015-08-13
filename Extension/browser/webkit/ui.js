@@ -114,14 +114,16 @@ var UI = {
 
 	whiteListCurrentTab: function () {
 		this._getCurrentTab(function (tab) {
+
+			var tabInfo = framesMap.getFrameInfo(tab);
+			antiBannerService.whiteListFrame(tabInfo);
+
 			if (framesMap.isTabAdguardDetected(tab)) {
 				var domain = UrlUtils.getHost(tab.url);
 				adguardApplication.addRuleToApp("@@//" + domain + "^$document", function () {
 					this._reloadWithoutCache(tab);
 				}.bind(this));
 			} else {
-				var tabInfo = framesMap.getFrameInfo(tab);
-				antiBannerService.whiteListFrame(tabInfo);
 				this.updateTabIconAndContextMenu(tab, true);
 			}
 		}.bind(this));
@@ -129,6 +131,10 @@ var UI = {
 
 	unWhiteListCurrentTab: function () {
 		this._getCurrentTab(function (tab) {
+
+			var tabInfo = framesMap.getFrameInfo(tab);
+			antiBannerService.unWhiteListFrame(tabInfo);
+
 			if (framesMap.isTabAdguardDetected(tab)) {
 				var rule = framesMap.getTabAdguardUserWhiteListRule(tab);
 				if (rule) {
@@ -137,8 +143,6 @@ var UI = {
 					}.bind(this));
 				}
 			} else {
-				var tabInfo = framesMap.getFrameInfo(tab);
-				antiBannerService.unWhiteListFrame(tabInfo);
 				this.updateTabIconAndContextMenu(tab, true);
 			}
 		}.bind(this));

@@ -155,6 +155,10 @@ var BrowserTab, BrowserTabs, BrowserWindow;
             requestFrameId = 0;
         }
 
+        if (requestType === RequestTypes.OTHER) {
+            requestType = parseRequestTypeFromUrl(details.url);
+        }
+
         requestDetails.frameId = frameId;
         requestDetails.requestFrameId = requestFrameId;
         requestDetails.requestType = requestType;
@@ -168,6 +172,34 @@ var BrowserTab, BrowserTabs, BrowserWindow;
         }
 
         return requestDetails;
+    }
+
+    var linkHelper = document.createElement('a');
+
+    // https://code.google.com/p/chromium/issues/detail?id=410382
+    function parseRequestTypeFromUrl(url) {
+
+        linkHelper.href = url;
+        var path = linkHelper.pathname;
+
+        var ext = path.slice(-6);
+        var pos = ext.lastIndexOf('.');
+
+        // Unable to parse extension from url
+        if (pos === -1) {
+            return RequestTypes.OBJECT;
+        }
+
+        ext = ext.slice(pos) + '.';
+        if ('.eot.ttf.otf.svg.woff.woff2.'.indexOf(ext) !== -1) {
+            return RequestTypes.OTHER;
+        }
+
+        if ('.ico.png.gif.jpg.jpeg.webp.'.indexOf(ext) !== -1) {
+            return RequestTypes.IMAGE;
+        }
+
+        return RequestTypes.OBJECT;
     }
 
     var OnBeforeRequestEvent = function () {
@@ -449,7 +481,7 @@ var BrowserTab, BrowserTabs, BrowserWindow;
             chrome.windows.create({
                 url: url,
                 type: 'popup',
-                width: 1130,
+                width: 1230,
                 height: 630
             }, function (win) {
                 if (callback) {

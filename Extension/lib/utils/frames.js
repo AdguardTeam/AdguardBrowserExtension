@@ -22,6 +22,7 @@ var UrlUtils = require('utils/url').UrlUtils;
 var WorkaroundUtils = require('utils/workaround').WorkaroundUtils;
 
 var whiteListService = require('filter/whitelist').whiteListService;
+var AntiBannerFiltersId = require('utils/common').AntiBannerFiltersId;
 
 /**
  * Map that contains info about every browser tab.
@@ -292,6 +293,13 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
                 userWhiteListed = frameData.adguardUserWhiteListed;
                 canAddRemoveRule = !frameData.adguardRemoveRuleNotSupported && !(documentWhiteListed && !userWhiteListed);
                 applicationFilteringDisabled = false;
+
+                if (frameData.adguardWhiteListRule) {
+                    frameRule = {
+                        filterId: AntiBannerFiltersId.WHITE_LIST_FILTER_ID,
+                        ruleText: frameData.adguardWhiteListRule.ruleText
+                    }
+                }
 
             } else {
 

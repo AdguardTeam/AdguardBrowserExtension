@@ -1,9 +1,9 @@
-! Version: 1.0.6.4
+! Version: 1.0.6.29
 ! Name: Social media filter
 ! Description: A filter for social media widgets ("Like" buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets ("Like" buttons and such).
-! TimeUpdated: 2015-07-15T19:17:38.769+03:00
+! TimeUpdated: 2015-08-12T18:41:58.245+03:00
 ! Adguard Social Media Filter
 !
 ! If you do not like numerous «Like» and «Tweet» buttons on all the popular websites on the Internet,
@@ -29,6 +29,7 @@
 !
 ! This section contains rules for common trackers/buttons
 !
+||apis.google.com/*/sharebutton
 ||addthis.com^$third-party,domain=~civilization.com|~imgur.com|~tscan.mg
 ||addthiscdn.com^$third-party
 ||addtoany.com/share$third-party
@@ -40,7 +41,6 @@
 ||apis.google.com/js/plusone.js$domain=~blogger.com|~blogspot.com|~blogspot.ru|~pikucha.ru
 ||assets.pinterest.com/images/pidgets/$third-party
 ||assets.pinterest.com/js/pinit.js^$third-party
-||cdn.gigya.com/JS/socialize.js
 ||cdn.wibiya.com^$third-party
 ||changetip.com^$third-party
 ||cim.meebo.com^$third-party
@@ -175,6 +175,7 @@
 /socializ_3.js
 /socialize.js
 /src/gstoolbar2/js/tool.js
+/ultimate-social-deux/
 /widget/?45
 /wp-content/plugins/easy-social-share-buttons/*
 /wp-content/plugins/facebook-page-promoter-lightbox/*
@@ -214,6 +215,8 @@ takprosto.cc#%#document.cookie = "popup_displayed=true";
 !-------------------
 !-------CSS---------
 !-------------------
+! igromania.ru - уменьшил социальный блок
+igromania.ru#$##intwcontainer-1 {height: 20px!important;}
 ! http://forum.adguard.com/showthread.php?4540
 crimea-kurort.com#$#img[width="88"][height="31"] {visibility: hidden!important;}
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/376
@@ -231,11 +234,18 @@ softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 !
 ! Contains rules for specific web sites
 !
-spec-komp.com###vk_groups1
-pastebin.com##.tweet
-skidkaonline.ru##.share-item
-skidkaonline.ru##.social-like
-skidkaonline.ru##.share
+naukatv.ru###VKPopupWrapper
+mail.ru##.article__shares
+ligovka.ru##.social_blocks
+gidonline.club###friend > #socbg
+gidonline.club###friend > #soc
+gidonline.club###friend > .pf
+||share.baidu.com^$third-party
+klerk.ru##.social-popup
+klerk.ru##.social-popup-backdrop
+clipfish.de##.dropdown-social
+clipfish.de##.cf-social-buttons
+4players.de##a[onclick^="socialShares"]
 imageshack.us###Actions
 meduza.io###DailySubscriber
 washingtonpost.com###NN-module-rr
@@ -248,6 +258,7 @@ inforesist.org###arevicofancy-wrap
 dailymail.co.uk###articleIconLinksContainer > ul
 huffingtonpost.com###badges_v2_2
 getandroidstuff.com###bottom-share
+softonic.com###box-social-buttons
 fishki.net###cboxBottom
 cnn.com###cnnShare2
 aliexpress.com###divShareURL
@@ -301,8 +312,10 @@ focus.de###singlepostSlideInBoxHoch
 digitaltrends.com###sitewide-social
 shareable.buzz###slidebox
 er.ru###smBlock
+megogo.net###snashareLink
 ictv.ua###soc_main
 telegraf.com.ua###soc_popup
+myfolder.ru,rusfolder.com###social-media
 podrobnosti.ua###social_popup
 regnum.ru###socialine
 015.by,01regionpro.ru,032.ua,0332.ua,0342.ua,0352.ua,0362.ua,0372.ua,0412.ua,0432.ua,04565.com.ua,04578.in.ua,0462.ua,0472.ua,048.ua,04868.com.ua,0512.com.ua,0522.ua,0532.ua,05366.com.ua,0542.ua,0552.ua,056.ua,0564.ua,057.ua,061.ua,06153.com.ua,0623.com.ua,06239.com.ua,06242.com.ua,06252.com.ua,06254.in.ua,06255.com.ua,06257.in.ua,06274.com.ua,0629.com.ua,0642.ua,06432.in.ua,06434.com.ua,0652.ua,0654.com.ua,06562.com.ua,0692.ua,3462city.ru,44.ua,5692.com.ua,62.ua,6264.com.ua,8352city.ru,8422city.ru,86155city.ru,8634city.ru,city3012.ru,go31.ru,go812.ru,go862.ru,goroddomodedovo.ru,gorodpushkin.ru,kinokadr.ru,labaved.ru,prokolpino.ru,pronews48.ru###socialpopup
@@ -319,6 +332,7 @@ forum.xda-developers.com###thread-header-social
 softwares-serials.in###twitter_right
 wsj.com###valetTools-left
 travelask.ru###vk-popup
+spec-komp.com###vk_groups1
 eminem.pro,igromania.ru###vk_groups2
 lyrsense.com###vk_groups_ls
 3dnews.ru###vk_right
@@ -343,6 +357,8 @@ film.ru##.arcticmodal-container
 film.ru##.arcticmodal-overlay
 computerra.ru##.article-soc
 thenextweb.com##.articleShare-buttons
+auto.mail.ru##.article__item_share
+rt.com##.article__share
 ultimate-guitar.com##.article_vote
 auto.mail.ru##.articleshares
 ngs.ru,reviews.ngsauto.ru,samara24.ru##.au-share
@@ -367,6 +383,7 @@ economist.com##.block-ec_facebook
 economist.com##.block-ec_social
 icaravan.com.ua##.blockOverlay
 icaravan.com.ua##.blockUI
+microsoft.com##.blog-post-info-bar-share
 si.com##.btn-fb
 si.com##.btn-gp
 mobileangularui.com##.btn-group-social
@@ -427,7 +444,7 @@ nashe.ru##.like-b
 focus.ua##.likeboxes
 svoboda.org##.likebutton
 gorodkirov.ru##.likely__widget
-tjournal.ru##.likes
+sport.ua,tjournal.ru##.likes
 24tv.ua##.likes_count
 businessinsider.com,digitaltrends.com##.linkedin
 kinopoisk.ru##.listTrailerShare
@@ -468,20 +485,23 @@ utro.ru##.repost-container
 1tv.ru##.s-adds
 vse42.ru##.sendto.no-print
 mestnye.ru##.service_links
-9gag.com,adindex.ru,androidcentral.com,bbc.com,digitaltrends.com,disqus.com,filecore.co.nz,goqr.me,howstuffworks.com,ibtimes.co.uk,indiatimes.com,jamendo.com,rt.com,temp-mail.ru,urbandictionary.com,versia.ru##.share
+9gag.com,adindex.ru,androidcentral.com,bbc.com,digitaltrends.com,disqus.com,filecore.co.nz,goqr.me,howstuffworks.com,ibtimes.co.uk,indiatimes.com,jamendo.com,rt.com,skidkaonline.ru,temp-mail.ru,urbandictionary.com,versia.ru##.share
 nashe.ru##.share-b
 screen.yahoo.com##.share-btn-container
 dailymail.co.uk##.share-count
 gamespot.com##.share-dropdown
 motusworld.com##.share-filled
 economist.com##.share-inline-footer-reddit
+skidkaonline.ru##.share-item
 css-tricks.com##.share-on-link
 css-tricks.com##.share-on-title
 ng.ru##.shareFix
 pravoved.ru##.shareMoreLink
 reibert.info##.sharePage
+rambler.ru##.share__list
 cc.com##.share_btn
 cc.com##.share_cta
+myfolder.ru,rusfolder.com##.share_friends
 indiatimes.com##.sharingBox
 msn.com##.sharingtb
 droid-life.com##.sharrre
@@ -497,13 +517,12 @@ championat.com##.soc-menu
 focus.de##.socBmXing
 focus.de##.socFbLikeShare
 focus.de##.socFolStarRating
-kinopoisk.ru##.socRight
 colta.ru##.soc_block > a
 zaxid.net##.soc_list_for_news
 wday.ru##.social-blocks
 portableapps.com##.social-bottons
-sports.ru#@#.social-icons-big
 sports.ru##.social-icons-big.likes
+skidkaonline.ru##.social-like
 sovsport.ru##.social-list
 imhonet.ru##.social-net
 interia.pl##.social-socialButtons
@@ -514,10 +533,14 @@ interfax.ru##.socialFull
 t3n.de##.socialIconsList
 augsburger-allgemeine.de##.socialNetworkBox
 rolandgarros.com##.socialSection
+zoomby.ru##.social_actions01_cont
 rg.ru##.social_bottom
 apparat.cc##.social_share
 slashdot.org##.social_sm
 gamer.ru##.social_vk
+notebookcheck.net##.socialarea
+ms-devices.com##.spu-bg
+ms-devices.com##.spu-box
 nbcnews.com##.stack-list-share > li:first-child
 nbcnews.com##.stack-list-share > li:nth-child(2)
 msn.com##.stbp-row-wrap
@@ -530,6 +553,7 @@ heise.de##.teaser_hbs
 motor.ru##.topic-social__caption
 motor.ru##.topic-social__list
 comss.ru##.toplogo > span
+pastebin.com##.tweet
 bandcamp.com##.tweetThis
 businessinsider.com,digitaltrends.com,kickstarter.com,tvstar.ch##.twitter
 habrahabr.ru##.twitter,.vkontakte,.googleplus,.facebook
@@ -604,6 +628,7 @@ povarenok.ru##table[class="haier_share"]
 kinopoisk.ru##ul[class="addTo addToBottom"]
 kinopoisk.ru##ul[class="addTo"]
 komarovskiy.net##ul[class="social-bookmarks"]
+||aii.su/banners/
 ||cdnx.livetv.sx/img/soc/
 ||connect.ok.ru/dk?st.cmd=WidgetShare$domain=gazeta.ua
 ||demotivators.ru/media/facebook_logo.jpg
@@ -624,6 +649,7 @@ komarovskiy.net##ul[class="social-bookmarks"]
 ||kinokrad.net/templates/ntpl/js/social.js
 ||knopka.fishurl.ru
 ||kp.ru/_ajax/social_tabs
+||lastusja.ru/friends/
 ||mblogi.qip.ru/knopka$third-party
 ||mediametrics.ru/rating/ru/online.html
 ||msilab.net/js/share/share.js
@@ -677,7 +703,7 @@ komarovskiy.net##ul[class="social-bookmarks"]
 ###facebook_soc_button
 ###facebooktrend
 ###fb-friends-recent-activity
-~facebook.com,~filmixru.ru,~giftube.com,~myshared.ru,~thefurnish.ru###fb-root
+~facebook.com,~filmixru.ru,~giftube.com,~junodownload.com,~myshared.ru,~thefurnish.ru###fb-root
 ###fbLikeButton
 ~facebook.com###fb_groups
 ###fb_iframe_widget
@@ -856,6 +882,9 @@ livejournal.com##.b-ljtimes-wrapper
 ##.fblike
 ##.field-name-horizontal-social-widgets
 ##.floatee-social-tail
+##.followFacebook
+##.followTwitter
+##.followYoutube
 ##.g_plus
 ##.gig-share-bar-container
 ##.goodshare
@@ -1015,9 +1044,9 @@ livejournal.com##.b-ljtimes-wrapper
 ##.social-fb-alt2
 ##.social-fp-widget
 ##.social-horizontal
-##.social-icon
+~hh.ru##.social-icon
 ##.social-icons
-##.social-icons-big
+~sports.ru##.social-icons-big
 ##.social-likes
 ##.social-likes_single-w
 ##.social-line
@@ -1027,6 +1056,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.social-love
 ##.social-media
 ##.social-media-box
+##.social-media-iframe
 ##.social-menu
 ##.social-nav
 ##.social-networks
@@ -1205,6 +1235,8 @@ livejournal.com##.b-ljtimes-wrapper
 !
 ! Section fixing issues caused by social filter
 !
+! rifey.ru - comments broken
+@@||rifey.ru/sites/default/files/advagg_js/$document
 ! http://idaprikol.ru/f/klIlZH243 - broken pictures
 @@||platform.twitter.com/widgets.js$domain=idaprikol.ru
 ! broken by /advertisement/*

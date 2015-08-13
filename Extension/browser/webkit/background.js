@@ -64,11 +64,9 @@ ext.onMessage.addListener(function (message, sender, callback) {
             processLoadAssistant(sender.tab, callback);
             return true;
         case "add-user-rule":
+            antiBannerService.addUserFilterRule(message.ruleText);
             if (framesMap.isTabAdguardDetected(sender.tab)) {
-                adguardApplication.addRuleToApp(message.ruleText, function () {
-                });
-            } else {
-                antiBannerService.addUserFilterRule(message.ruleText);
+                adguardApplication.addRuleToApp(message.ruleText);
             }
             callback({});
             break;
