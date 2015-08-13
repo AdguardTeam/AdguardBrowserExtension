@@ -1,9 +1,9 @@
-! Version: 1.0.26.26
+! Version: 1.0.26.27
 ! Name: Russian filter
 ! Description: Filter that enables removing of the ads from websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2015-08-12T18:41:28.981+03:00
+! TimeUpdated: 2015-08-13T14:06:04.161+03:00
 ! Adguard Russian Filter
 !
 ! Filter that enables removing of the ads from websites with Russian content.
@@ -29,6 +29,7 @@
 !
 ! Содержит доменные имена, использующиеся рекламными сетями.
 !
+||ningme.ru^$third-party
 ||mpay69.biz^$third-party
 ||mobi-mobi.info^$third-party
 ||gawxf.com^$third-party
@@ -3678,7 +3679,7 @@ fastpic.ru#%#AG_onLoad(function() { $('body').unbind('click').removeAttr("body")
 ! chat.muz-tv.ru,chatovod.ru,spiritix.eu,детскийчат.рф,подростковыйчат.рф,чатволчат.рф,чаткроватка.рф,чатобщения.рф#%#AG_onLoad(function() { window.AG_removeElementBySelector('div[id="aevents3"]'); });
 ! chat.muz-tv.ru,chatovod.ru,spiritix.eu,детскийчат.рф,подростковыйчат.рф,чатволчат.рф,чаткроватка.рф,чатобщения.рф#%#AG_onLoad(function() { document.getElementById('aevents3').id = 'noway';  });
 !chat.muz-tv.ru,chatovod.ru,spiritix.eu,детскийчат.рф,подростковыйчат.рф,чатволчат.рф,чаткроватка.рф,чатобщения.рф#%#setTimeout( function() { console.log('REMOVING'); var ban = document.getElementById("bevents"); ban.parentNode.removeChild(ban); }, 500);
-!chat.muz-tv.ru,chatovod.ru,spiritix.eu,детскийчат.рф,подростковыйчат.рф,чатволчат.рф,чаткроватка.рф,чатобщения.рф#%#setTimeout( function() { console.log('REMOVING'); var ban = document.getElementById("cevents"); ban.parentNode.removeChild(ban); }, 500);
+chat.muz-tv.ru,chatovod.ru,spiritix.eu,детскийчат.рф,подростковыйчат.рф,чатволчат.рф,чаткроватка.рф,чатобщения.рф#%#setTimeout( function() { console.log('REMOVING'); var ban = document.getElementById("devents"); ban.parentNode.removeChild(ban); }, 500);
 chat.muz-tv.ru,chatovod.ru,spiritix.eu,детскийчат.рф,подростковыйчат.рф,чатволчат.рф,чаткроватка.рф,чатобщения.рф#%#setTimeout( function() { console.log('REMOVING'); $('.chatMain div[id$="events"').remove(); }, 550);
 ! http://forum.adguard.com/showthread.php?5545
 gazeta.ua#%#window.open = function() {};
@@ -5811,6 +5812,13 @@ polezno-2012.info^
 !
 ! Правила специфичные для конкретных сайтов.
 !
+noob-club.ru##.content_cactus
+noob-club.ru##.main_cactus
+fastpic.ru###left-bottom
+fastpic.ru###right-bottom
+topdent.ru##.bannersimpl
+||topdent.ru/ad/block/
+f-picture.net,radical-foto.ru,radikal.cc,radikal.ru##div[style^="height: 252px; width: 448px;"]
 vsetorrent.ru##div[style^="height:205px;"]
 afisha.mail.ru##.promo
 realty.mail.ru##.box_special
@@ -9854,6 +9862,8 @@ iphones.ru##.header__warning
 !
 ! Белый список. Исправляем ошибки фильтрации.
 !
+! lenovovibe.ru - картинка в шапке
+@@||lenovovibe.ru/wp-content/themes/novelty/images/elements/banner.jpg
 ! http://forum.adguard.com/showthread.php?6312
 @@||pikabu.ru/view/*_reklama_
 ! http://forum.adguard.com/showthread.php?6284
