@@ -655,7 +655,10 @@ RequestWizard.getRequestType = function (requestType) {
 			return 'Image';
 		case 'OBJECT':
         case 'OBJECT-SUBREQUEST':
+		case 'MEDIA':
 			return 'Media';
+		case 'FONT':
+			return 'Font';
 		case 'OTHER':
 			return 'Other';
 	}

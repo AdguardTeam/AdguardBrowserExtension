@@ -74,7 +74,7 @@ function testContentSpecificUrlBlock() {
 	assertFalse(rule.isFiltered("http://test.ru/image.png", false, RequestTypes.IMAGE));
 	mask = "||test.ru/$~script";
 	rule = new UrlFilterRule(mask);
-	assertFalse(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false), RequestTypes.SCRIPT);
+	assertFalse(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.SCRIPT));
 	assertTrue(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.XMLHTTPREQUEST));
 	assertTrue(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.SUBDOCUMENT));
 	assertTrue(rule.isFiltered("http://test.ru/image.png", false, RequestTypes.IMAGE));

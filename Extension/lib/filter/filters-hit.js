@@ -55,6 +55,7 @@ FilterRulesHitCount.prototype = {
 
     MAX_PAGE_VIEWS_COUNT: 20,
     HITS_COUNT_PROP: 'filters-hit-count',
+    HITS_PROP: 'h',
 
     setAntiBannerService: function (antiBannerService) {
         this.antiBannerService = antiBannerService;
@@ -114,13 +115,20 @@ FilterRulesHitCount.prototype = {
             filterRules[ruleText] = null;
         }
 
+        var ruleInfo = filterRules[ruleText];
+        if (!ruleInfo) {
+            filterRules[ruleText] = ruleInfo = Object.create(null);
+        }
+
         if (requestUrl) {
             var requestDomain = UrlUtils.getDomainName(requestUrl);
-            var ruleDomains = filterRules[ruleText];
-            if (!ruleDomains) {
-                filterRules[ruleText] = ruleDomains = Object.create(null);
-            }
-            ruleDomains[requestDomain] = null;
+            // Domain hits
+            var domainHits = ruleInfo[requestDomain] || 0;
+            ruleInfo[requestDomain] = domainHits + 1;
+        } else {
+            // Css hits
+            var hits = ruleInfo[this.HITS_PROP] || 0;
+            ruleInfo[this.HITS_PROP] = hits + 1;
         }
 
         this._saveHitsCountStats(this.stats);

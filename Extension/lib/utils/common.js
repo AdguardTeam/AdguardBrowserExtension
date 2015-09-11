@@ -191,6 +191,11 @@ var Utils = exports.Utils = {
 
     navigator: Cc["@mozilla.org/network/protocol;1?name=http"].getService(Ci.nsIHttpProtocolHandler),
 
+    objectContentTypes: '.jar.swf.',
+    mediaContentTypes: '.mp4.flv.avi.m3u.webm.mpeg.3gp.3gpp.3g2.3gpp2.ogg.mov.qt.',
+    fontContentTypes: '.ttf.otf.woff.woff2.eot.',
+    imageContentTypes: '.ico.png.gif.jpg.jpeg.webp.',
+
     getClientId: function () {
 
         var clientId = LS.getItem("client-id");
@@ -406,6 +411,38 @@ var Utils = exports.Utils = {
      */
     isArray: Array.isArray || function (obj) {
         return '' + obj === '[object Array]';
+    },
+
+    /**
+     * Parse content type from path
+     * @param path Path
+     * @returns {*} content type (RequestTypes.*) or null
+     */
+    parseContentTypeFromUrlPath: function (path) {
+
+        var ext = path.slice(-6);
+        var pos = ext.lastIndexOf('.');
+
+        // Unable to parse extension from url
+        if (pos === -1) {
+            return null;
+        }
+
+        ext = ext.slice(pos) + '.';
+        if (this.objectContentTypes.indexOf(ext) !== -1) {
+            return RequestTypes.OBJECT;
+        }
+        if (this.mediaContentTypes.indexOf(ext) !== -1) {
+            return RequestTypes.MEDIA;
+        }
+        if (this.fontContentTypes.indexOf(ext) !== -1) {
+            return RequestTypes.FONT;
+        }
+        if (this.imageContentTypes.indexOf(ext) !== -1) {
+            return RequestTypes.IMAGE;
+        }
+
+        return null;
     }
 };
 
@@ -484,6 +521,8 @@ var RequestTypes = exports.RequestTypes = {
     IMAGE: "IMAGE",
     XMLHTTPREQUEST: "XMLHTTPREQUEST",
     OBJECT_SUBREQUEST: "OBJECT-SUBREQUEST",
+    MEDIA: "MEDIA",
+    FONT: "FONT",
 
     /**
      * Synthetic request type for requests detected as pop-ups
@@ -497,11 +536,11 @@ var RequestTypes = exports.RequestTypes = {
      * @param requestType Request type
      * @returns {boolean} true if request is for some visual element
      */
-    isVisual: function(requestType) {
+    isVisual: function (requestType) {
         return requestType == this.DOCUMENT ||
-                requestType == this.SUBDOCUMENT ||
-                requestType == this.OBJECT ||
-                requestType == this.IMAGE;
+            requestType == this.SUBDOCUMENT ||
+            requestType == this.OBJECT ||
+            requestType == this.IMAGE;
     }
 };
 

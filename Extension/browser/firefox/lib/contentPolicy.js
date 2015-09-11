@@ -64,8 +64,9 @@ var WebRequestHelper = exports.WebRequestHelper = {
      * Gets request type string representation
      *
      * @param contentType   Request content type
+     * @param URI           Request URI
      */
-    getRequestType: function (contentType) {
+    getRequestType: function (contentType, URI) {
 
         var t = WebRequestHelper.contentTypes;
         switch (contentType) {
@@ -85,8 +86,12 @@ var WebRequestHelper = exports.WebRequestHelper = {
                 return RequestTypes.XMLHTTPREQUEST;
             case t.TYPE_OBJECT_SUBREQUEST:
                 return RequestTypes.OBJECT_SUBREQUEST;
+            case t.TYPE_FONT:
+                return RequestTypes.FONT;
+            case t.TYPE_MEDIA:
+                return RequestTypes.MEDIA;
             default:
-                return RequestTypes.OTHER;
+                return Utils.parseContentTypeFromUrlPath(URI.path) || RequestTypes.OTHER;
         }
     },
 
@@ -179,7 +184,7 @@ var WebRequestHelper = exports.WebRequestHelper = {
      * @param channel nsIChannel implementation
      * @private
      */
-    _getLoadContext: function(channel) {
+    _getLoadContext: function (channel) {
         let loadContext;
         try {
             loadContext = channel.notificationCallbacks.getInterface(Ci.nsILoadContext);
@@ -314,7 +319,7 @@ var WebRequestHelper = exports.WebRequestHelper = {
      */
     attachRequestType: function (request, contentType) {
         if (request instanceof Ci.nsIWritablePropertyBag) {
-            var requestType = this.getRequestType(contentType);
+            var requestType = this.getRequestType(contentType, request.URI);
             request.setProperty("lastRequestType", requestType);
         }
     },
@@ -422,7 +427,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
      * @param requestOrigin     OPTIONAL. The location of the resource that initiated this load request; can be null if inapplicable.
      * @param                   node OPTIONAL. The nsIDOMNode or nsIDOMWindow that initiated the request, or something that can Query Interface to one of those; can be null if inapplicable.
      * @param mimeTypeGuess     OPTIONAL. a guess for the requested content's MIME type, based on information available to the request initiator
- *                              (e.g., an OBJECT's type attribute); does not reliably reflect the actual MIME type of the requested content.
+     *                              (e.g., an OBJECT's type attribute); does not reliably reflect the actual MIME type of the requested content.
      * @param extra             An OPTIONAL argument, pass-through for non-Gecko callers to pass extra data to callees.
      * @param aRequestPrincipal OPTIONAL. defines the principal that caused the load. This is optional only for non-gecko code:
      *                          all gecko code should set this argument. For navigation events, this is the principal of the page
@@ -445,7 +450,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
 
         var tab = {id: tabUtils.getTabId(xulTab)};
         var requestUrl = contentLocation.asciiSpec;
-        var requestType = WebRequestHelper.getRequestType(contentType);
+        var requestType = WebRequestHelper.getRequestType(contentType, contentLocation);
 
         if (requestType == RequestTypes.DOCUMENT) {
             var context = node.contentWindow || node;

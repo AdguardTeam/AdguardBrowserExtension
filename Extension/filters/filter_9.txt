@@ -1,9 +1,9 @@
-! Version: 1.0.86.6
+! Version: 1.0.86.8
 ! Name: Spanish/Portuguese filter
 ! Description: Filter that enables removing of the ads from websites in Spanish and Portuguese.
 ! NameEn: Spanish/Portuguese filter
 ! DescriptionEn: Filter that enables blocking of ads on websites in Spanish and Portuguese.
-! TimeUpdated: 2015-06-29T01:29:07.018+03:00
+! TimeUpdated: 2015-08-21T18:46:45.231+03:00
 ! Adguard Spanish/Portuguese Filter.
 !
 ! Filter that enables removing of the ads from websites in Spanish.
@@ -19,6 +19,9 @@
 !---------------- Common CSS rules ---------------------------------!
 ##.bannerBox
 !---------------- Specific web sites rules -------------------------!
+forum.ad###branding-content > div#sidebar_header
+forum.ad##.simple_overlay
+||publi.forum.ad^$image
 territoriodigital.com.ar,territoriodigital.com###HiperLibertad
 ||territoriodigital.com.ar/bannerspanorama/
 ||territoriodigital.com/bannerspanorama/
@@ -36,14 +39,17 @@ revistasgratis.ws###adsoriginal
 revistasgratis.ws###adsalosexo
 revistasgratis.ws###adspb
 revistasgratis.ws###amigos
-!
 elfolladero.com##table[height="368"][width="1000"][id="AutoNumber1"]
 elfolladero.com##table[height="19"][width="98%"][id="AutoNumber4"]
 !-----------------White list--------------------------------------!
-@@||seur.com^$document
+! http://forum.adguard.com/showthread.php?6421
+@@||zerozero.pt^$elemhide
+! http://forum.adguard.com/showthread.php?6420
+@@||calcularindemnizacion.es^$elemhide
 ! Fixing links on marca.com
 @@||b.scorecardresearch.com^$domain=marca.com
 !
+@@||seur.com^$document
 @@/banner/banner_$domain=bci.cl
 @@/publicidad.$domain=tn.com.ar
 @@||ads.e-planning.net^*/PreRoll?

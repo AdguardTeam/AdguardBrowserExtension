@@ -181,31 +181,17 @@ var BrowserTab, BrowserTabs, BrowserWindow;
      * https://code.google.com/p/chromium/issues/detail?id=410382
      *
      * @param url Request url
-     * @returns Fixed object type
+     * @returns String Fixed object type
      */
     function parseRequestTypeFromUrl(url) {
-
         linkHelper.href = url;
         var path = linkHelper.pathname;
-
-        var ext = path.slice(-6);
-        var pos = ext.lastIndexOf('.');
-
-        // Unable to parse extension from url
-        if (pos === -1) {
-            return RequestTypes.OBJECT;
+        var requestType = Utils.parseContentTypeFromUrlPath(path);
+        if (requestType == null) {
+            // https://code.google.com/p/chromium/issues/detail?id=410382
+            requestType = RequestTypes.OBJECT;
         }
-
-        ext = ext.slice(pos) + '.';
-        if ('.eot.ttf.otf.svg.woff.woff2.'.indexOf(ext) !== -1) {
-            return RequestTypes.OTHER;
-        }
-
-        if ('.ico.png.gif.jpg.jpeg.webp.'.indexOf(ext) !== -1) {
-            return RequestTypes.IMAGE;
-        }
-
-        return RequestTypes.OBJECT;
+        return requestType;
     }
 
     var OnBeforeRequestEvent = function () {

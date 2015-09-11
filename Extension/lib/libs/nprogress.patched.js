@@ -1,5 +1,10 @@
 /*! NProgress (c) 2013, Rico Sta. Cruz
- *  http://ricostacruz.com/nprogress */
+ *  http://ricostacruz.com/nprogress
+ *
+ *  Patched in case of the following issue
+ *  https://github.com/AdguardTeam/AdguardBrowserExtension/issues/17
+ *  In order to prevent vulnerabilities, the setTimeout and setInterval functions should be called only with function expressions as their first argument.
+ *  */
 
 ;(function(factory) {
 
@@ -84,7 +89,9 @@
           }, speed);
         }, speed);
       } else {
-        setTimeout(next, speed);
+        setTimeout(function() {
+          next();
+        }, speed);
       }
     });
 

@@ -136,6 +136,14 @@ public class FileUtil {
 		copyDirectory(sourcePagesDir, destPagesDir);
 		FileUtils.deleteQuietly(sourcePagesDir);
 
+		//Fix fonts file
+		File fontsFile = new File(destPagesDir, "/skin/fonts.css");
+		File firefoxFontsFile = new File(destPagesDir, "/skin/fonts_firefox.css");
+		File fontsDir = new File(destPagesDir, "/skin/fonts");
+		FileUtils.deleteQuietly(fontsFile);
+		FileUtils.moveFile(firefoxFontsFile, fontsFile);
+		FileUtils.deleteQuietly(fontsDir);
+
 		//move js pages files to data/content/pages folder
 		File sourceJsPagesDir = new File(dest, "lib/pages");
 		File destJsPagesDir = new File(dest, "data/content/pages");

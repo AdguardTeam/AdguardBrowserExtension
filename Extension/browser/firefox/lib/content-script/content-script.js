@@ -17,106 +17,116 @@
 
 var ext = (function () {
 
-	/**
-	 * Load a module from Adguard core
-	 * @param module
-	 */
-	function loadAdguardModule(module) {
+    /**
+     * Load a module from Adguard core
+     * @param module
+     */
+    function loadAdguardModule(module) {
 
-		Components.utils.import("resource://gre/modules/Services.jsm");
-		var result = Object.create(Object.prototype);
-		result.wrappedJSObject = result;
-		Services.obs.notifyObservers(result, "adguard-load-module", module);
-		return result.exports;
-	}
+        if (!Components || !Components.utils) {
+            // TODO: Use messaging, we should not use Components.utils here at all
+            return;
+        }
 
-	return {
+        Components.utils.import("resource://gre/modules/Services.jsm");
+        var result = Object.create(Object.prototype);
+        result.wrappedJSObject = result;
+        Services.obs.notifyObservers(result, "adguard-load-module", module);
+        return result.exports;
+    }
 
-		onMessage: {
+    return {
 
-			addListener: function (listener, type) {
-				self.port.on(type, function (message) {
-					if (!message) {
-						message = Object.create(null);
-					}
-					message.type = type;
-					listener(message);
-				});
-			}
-		},
+        onMessage: {
 
-		backgroundPage: {
+            addListener: function (listener, type) {
+                self.port.on(type, function (message) {
+                    if (!message) {
+                        message = Object.create(null);
+                    }
+                    message.type = type;
+                    listener(message);
+                });
+            }
+        },
 
-			sendMessage: function (message, callback) {
-				if (callback) {
-					self.port.once(message.type, function (response) {
-						callback(response);
-					});
-				}
-				self.port.emit(message.type, message);
-			},
+        backgroundPage: {
 
-			getWindow: function () {
+            sendMessage: function (message, callback) {
+                if (callback) {
+                    self.port.once(message.type, function (response) {
+                        callback(response);
+                    });
+                }
+                self.port.emit(message.type, message);
+            },
 
-				if (!ext.backgroundPage.windowModules) {
+            getWindow: function () {
 
-					ext.backgroundPage.windowModules = {
+                if (!ext.backgroundPage.windowModules) {
 
-						antiBannerService: loadAdguardModule('antiBannerService'),
-						adguardApplication: loadAdguardModule('adguardApplication'),
-						userSettings: loadAdguardModule('userSettings'),
-						framesMap: loadAdguardModule('framesMap'),
-						filteringLog: loadAdguardModule('filteringLog'),
+                    ext.backgroundPage.windowModules = {
 
-						EventNotifier: loadAdguardModule('EventNotifier'),
-						Prefs: loadAdguardModule('Prefs'),
-						UI: loadAdguardModule('UI'),
+                        antiBannerService: loadAdguardModule('antiBannerService'),
+                        adguardApplication: loadAdguardModule('adguardApplication'),
+                        userSettings: loadAdguardModule('userSettings'),
+                        framesMap: loadAdguardModule('framesMap'),
+                        filteringLog: loadAdguardModule('filteringLog'),
 
-						l10n: loadAdguardModule('l10n'),
+                        EventNotifier: loadAdguardModule('EventNotifier'),
+                        Prefs: loadAdguardModule('Prefs'),
+                        UI: loadAdguardModule('UI'),
 
-						FilterUtils: loadAdguardModule('FilterUtils'),
-						UrlUtils: loadAdguardModule('UrlUtils'),
-						StringUtils: loadAdguardModule('StringUtils'),
-						Utils: loadAdguardModule('Utils'),
+                        l10n: loadAdguardModule('l10n'),
 
-						EventNotifierTypes: loadAdguardModule('EventNotifierTypes'),
-						AntiBannerFiltersId: loadAdguardModule('AntiBannerFiltersId'),
-						LogEvents: loadAdguardModule('LogEvents'),
+                        FilterUtils: loadAdguardModule('FilterUtils'),
+                        UrlUtils: loadAdguardModule('UrlUtils'),
+                        StringUtils: loadAdguardModule('StringUtils'),
+                        Utils: loadAdguardModule('Utils'),
 
-						FilterRule: loadAdguardModule('FilterRule'),
-						UrlFilterRule: loadAdguardModule('UrlFilterRule')
-					};
-				}
+                        EventNotifierTypes: loadAdguardModule('EventNotifierTypes'),
+                        AntiBannerFiltersId: loadAdguardModule('AntiBannerFiltersId'),
+                        LogEvents: loadAdguardModule('LogEvents'),
 
-				return ext.backgroundPage.windowModules;
-			}
-		},
+                        FilterRule: loadAdguardModule('FilterRule'),
+                        UrlFilterRule: loadAdguardModule('UrlFilterRule')
+                    };
+                }
 
-		windows: {
-			getLastFocused: function (callback) {
-				var win = {
-					getActiveTab: function (callback) {
-						var activeTab = loadAdguardModule('tabs').activeTab;
-						activeTab.sendMessage = function (message, callback) {
-							if (message.type == 'open-assistant') {
-								ext.backgroundPage.getWindow().UI.openAssistant();
-							}
-							callback();
-						};
-						callback(activeTab);
-					}
-				};
-				callback(win);
-			}
-		},
+                return ext.backgroundPage.windowModules;
+            }
+        },
 
-		closePopup: function () {
-			ext.backgroundPage.getWindow().UI.closePopup();
-		},
+        windows: {
+            getLastFocused: function (callback) {
+                var win = {
+                    getActiveTab: function (callback) {
+                        var tabs = loadAdguardModule('tabs');
+                        if (!tabs) {
+                            return;
+                        }
 
-		resizePopup: function (width, height) {
-			ext.backgroundPage.getWindow().UI.resizePopup(width, height);
-		}
-	}
+                        var activeTab = tabs.activeTab;
+                        activeTab.sendMessage = function (message, callback) {
+                            if (message.type == 'open-assistant') {
+                                ext.backgroundPage.getWindow().UI.openAssistant();
+                            }
+                            callback();
+                        };
+                        callback(activeTab);
+                    }
+                };
+                callback(win);
+            }
+        },
+
+        closePopup: function () {
+            ext.backgroundPage.getWindow().UI.closePopup();
+        },
+
+        resizePopup: function (width, height) {
+            ext.backgroundPage.getWindow().UI.resizePopup(width, height);
+        }
+    }
 
 })();

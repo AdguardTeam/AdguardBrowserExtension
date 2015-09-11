@@ -76,7 +76,9 @@ var PreloadHelper = {
             // This flag means that requestFilter is not yet initialized
             // This is possible only on browser startup.
             // In this case we'll delay injections until extension is fully initialized.
-            setTimeout(this.tryLoadCssAndScripts.bind(this), 100);
+            setTimeout(function() {
+                this.tryLoadCssAndScripts.bind(this);
+            }, 100);
             // Request filter not yet ready, delay elements collapse
             this.collapseAllElements = true;
         } else {
