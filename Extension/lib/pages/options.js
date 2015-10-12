@@ -250,6 +250,11 @@ PageController.prototype = {
 
     _showFilterLoader: function (antiBannerFilter) {
         var el = $("input[name='filterId'][value='" + antiBannerFilter.filterId + "']").closest(".s-page-table-row");
+        if (el.length == 0) {
+            el = this._renderAntiBannerFilter(antiBannerFilter);
+            this.antiBannerFiltersList.append(el);
+        }
+
         var loader = el.find(".preloader");
         loader.removeClass("hidden");
     },

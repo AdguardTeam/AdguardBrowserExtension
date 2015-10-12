@@ -76,7 +76,7 @@ var PreloadHelper = {
             // This flag means that requestFilter is not yet initialized
             // This is possible only on browser startup.
             // In this case we'll delay injections until extension is fully initialized.
-            setTimeout(function() {
+            setTimeout(function () {
                 this.tryLoadCssAndScripts.bind(this);
             }, 100);
             // Request filter not yet ready, delay elements collapse
@@ -330,9 +330,12 @@ var PreloadHelper = {
         var elCssValue = elementStyle.getPropertyValue(cssProperty);
         var elCssPriority = elementStyle.getPropertyPriority(cssProperty);
         if (elCssValue != cssValue || elCssPriority != cssPriority) {
+
             elementStyle.setProperty(cssProperty, cssValue, cssPriority);
+
+            var originalCss = cssProperty + ';' + (elCssValue ? elCssValue : '') + ';' + (elCssPriority ? elCssPriority : '');
+            element.setAttribute(PreloadHelper.AG_HIDDEN_ATTRIBUTE, originalCss);
         }
-        element.setAttribute(PreloadHelper.AG_HIDDEN_ATTRIBUTE, "true");
     },
 
     /**
@@ -342,9 +345,22 @@ var PreloadHelper = {
      * @private
      */
     _toggleElement: function (element) {
+
         if (element.hasAttribute(PreloadHelper.AG_HIDDEN_ATTRIBUTE)) {
-            element.style.removeProperty("display");
-            element.style.removeProperty("visibility");
+
+            var originalCssParts = element.getAttribute(PreloadHelper.AG_HIDDEN_ATTRIBUTE).split(';');
+
+            var cssProperty = originalCssParts[0];
+            var elCssValue = originalCssParts[1];
+            var elCssPriority = originalCssParts[2];
+
+            if (elCssValue) {
+                // Revert to original style
+                element.style.setProperty(cssProperty, elCssValue, elCssPriority);
+            } else {
+                element.style.removeProperty(cssProperty);
+            }
+
             element.removeAttribute(PreloadHelper.AG_HIDDEN_ATTRIBUTE);
         }
     }

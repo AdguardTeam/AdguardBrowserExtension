@@ -1,9 +1,9 @@
-! Version: 1.0.8.49
+! Version: 1.0.8.53
 ! Name: Dutch filter
 ! Description: Filter that enables removing of the ads from websites with Dutch content.
 ! NameEn: Dutch filter
 ! DescriptionEn: Filter that enables blocking of ads on websites with Dutch content.
-! TimeUpdated: 2015-09-01T03:01:02.760+03:00
+! TimeUpdated: 2015-10-06T15:17:13.381+03:00
 ! Adguard Dutch Filter.
 !
 ! Filter that enables removing of the ads from websites with Dutch content.
@@ -14,6 +14,8 @@
 ! Homepage: http://adguard.com/filters.html#dutch
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
 !
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/809
+||servedby.rtbiddingplatform.com^$domain=media.zie.nl
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/169
 ||bs.serving-sys.com/BurstingPipe/adServer.bs$domain=kijk.nl
 ||serving-sys.com/*.mp4^$domain=kijk.nl
@@ -753,6 +755,7 @@ _advertentieleaderboardhome.
 @@||vakantieplaats.nl/afbeeldingen/advertentie/
 @@||zeelandnet.nl/prikbord/assets/*/advertentie.js
 @@||zeelandnet.nl/prikbord/assets/*/advertenties.js
+@@||2ndhandbrand.nl/css/advertisment.css
 @@||ad.nl/static/nmc/prm/frameset/overlay/imago/v2/728x90.jpg?
 @@||adhese.standaard.be/jsonp/callback/sl_test_dso_ipad_optimized_avondeditie_-interstitial/?$script
 @@||adverteer-gratis.nl/ads/$domain=adverteer-gratis.nl
@@ -760,7 +763,7 @@ _advertentieleaderboardhome.
 @@||aludex.com/themes/ad/img/
 @@||bibliotheek.be/detail/*-advertise/$subdocument,~third-party,xmlhttprequest
 @@||cinema.nl/ads/mediaplayer.jsp?$subdocument
-@@||directwonen.nl/adverts/$~third-party,xmlhttprequest
+@@||directwonen.nl/adverts/$~third-party
 @@||doopsgezind.nl/templates/ads/$domain=doopsgezind.nl
 @@||earnieland.be/images/photolib/*_120_60.
 @@||emarketingexperts.nl/images/stories/adwords/
@@ -994,6 +997,7 @@ gtaforum.nl##.__xXadvertentie
 checkcams.com##.ab
 androidplanet.nl,dewereldmorgen.be,ipadclub.nl,iphoneclub.nl,metronieuws.nl,nu.nl,stemwijzer.nl,tvgids.nl,vkmag.com,z24.nl##.ad
 misslipgloss.nl##.ad3
+rijnmond.nl##.ad_label + div
 nu.nl##.adblock_border
 ncrv.nl##.add-disclaimer
 telegraaf.nl##.addiv > a[target="_new"]
@@ -1070,6 +1074,7 @@ quizlet.nl##.four > h3:first-child + p
 nl.hardware.info##.frontpage-wrapper > .fp-left li[data-position="2"]
 haarlemsdagblad.nl,leidschdagblad.nl,noordhollandsdagblad.nl##.fullSizeBanner
 rijnmond.nl##.full_banner
+zelfmaakideetjes.nl##.g
 speeleiland.nl##.game-side-banner-wrap
 dumpert.nl##.geldbakje
 rijnmond.nl##.half_banner
@@ -1084,7 +1089,7 @@ rtl.nl##.inlineRectangle
 wtf.nl##.item-banner
 psx-sense.nl##.laatstenieuws + * + .scheiding2 + * + * + .postbox
 ajaxcafe.nl##.leaderBoard
-9292ov.nl,engineeringnet.be,gay.eu,gay.nl,tvgids.nl##.leaderboard
+9292ov.nl,engineeringnet.be,gay.eu,gay.nl,musicmeter.nl,tvgids.nl##.leaderboard
 top40.nl##.left-banner
 2xklikken.nl##.linksall:first-child
 nieuws.nl##.lokaal_banner_right
