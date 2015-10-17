@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>Author</key>
+        <string>adguard</string>
+        <key>Builder Version</key>
+        <string>9537.73.11</string>
+        <key>CFBundleDisplayName</key>
+        <string>Adguard AdBlocker${extensionNamePostfix}</string>
+        <key>CFBundleIdentifier</key>
+        <string>${extensionId}</string>
+        <key>CFBundleInfoDictionaryVersion</key>
+        <string>${version}</string>
+        <key>CFBundleShortVersionString</key>
+        <string>${version}</string>
+        <key>CFBundleVersion</key>
+        <string>${version}</string>
+        <key>Chrome</key>
+        <dict>
+            <key>Global Page</key>
+            <string>safari_background.html</string>
+            <key>Popovers</key>
+            <array>
+                <dict>
+                    <key>Filename</key>
+                    <string>pages/popup.html</string>
+                    <key>Identifier</key>
+                    <string>AdguardPopup</string>
+                </dict>
+            </array>
+            <key>Toolbar Items</key>
+            <array>
+                <dict>
+                    <key>Identifier</key>
+                    <string>AdguardOpenOptions</string>
+                    <key>Image</key>
+                    <string>icons/safari.png</string>
+                    <key>Label</key>
+                    <string>Adguard</string>
+                    <key>Popover</key>
+                    <string>AdguardPopup</string>
+                </dict>
+            </array>
+        </dict>
+        <key>Content</key>
+        <dict>
+            <key>Scripts</key>
+            <dict>
+                <key>Start</key>
+                <array>
+                    <string>lib/content-script/common-script.js</string>
+                    <string>lib/content-script/content-script.js</string>
+                    <string>lib/content-script/preload.js</string>
+                    <string>lib/content-script/content-utils.js</string>
+                </array>
+                <key>End</key>
+                <array>
+                    <string>lib/libs/jquery-1.8.3.min.js</string>
+                    <string>lib/libs/jquery-ui.min.js</string>
+                    <string>lib/libs/diff_match_patch.js</string>
+                    <string>lib/libs/dom.js</string>
+                    <string>require.js</string>
+                    <string>lib/utils/common.js</string>
+                    <string>lib/pages/i18n-helper.js</string>
+                    <string>lib/content-script/assistant/js/selector.js</string>
+                    <string>lib/content-script/assistant/js/assistant.js</string>
+                    <string>lib/content-script/assistant/js/tools.js</string>
+                    <string>lib/content-script/assistant/js/start-assistant.js</string>
+                    <string>lib/content-script/subscribe.js</string>
+                </array>
+            </dict>
+            <key>Stylesheets</key>
+            <array>
+                <string>lib/content-script/assistant/css/selector.css</string>
+            </array>
+            <key>Whitelist</key>
+            <array>
+                <string>http://*/*</string>
+                <string>https://*/*</string>
+            </array>
+        </dict>
+        <key>Description</key>
+        <string>Unmatched adblock extension against advertising and pop-ups. Blocks ads on Facebook, Youtube and all other websites.</string>
+        <key>ExtensionInfoDictionaryVersion</key>
+        <string>1.0</string>
+        <key>Permissions</key>
+        <dict>
+            <key>Website Access</key>
+            <dict>
+                <key>Include Secure Pages</key>
+                <true/>
+                <key>Level</key>
+                <string>All</string>
+            </dict>
+        </dict>
+        <key>Update Manifest URL</key>
+        <string>${updateURL}</string>
+        <key>Website</key>
+        <string>http://adguard.com</string>
+    </dict>
+</plist>

@@ -17,6 +17,11 @@ public enum Browser {
 	SAFARI("safari"),
 
 	/**
+	 * New Safari with content blocker (v9+)
+	 */
+	SAFARI_NEW("safari_new"),
+
+	/**
 	 * Firefox browser
 	 */
 	FIREFOX("firefox"),

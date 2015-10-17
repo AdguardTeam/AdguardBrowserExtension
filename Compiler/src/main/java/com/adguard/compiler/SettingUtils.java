@@ -81,6 +81,7 @@ public class SettingUtils {
 				FileUtils.writeStringToFile(manifestFile, content);
 				break;
 			case SAFARI:
+			case SAFARI_NEW:
 				File infoPlistFile = new File(dest, "Info.plist");
 				String contentInfoPlist = FileUtils.readFileToString(infoPlistFile, "utf-8");
 				contentInfoPlist = StringUtils.replace(contentInfoPlist, "${extensionId}", extensionId);
