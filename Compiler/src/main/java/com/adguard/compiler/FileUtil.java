@@ -142,7 +142,7 @@ public class FileUtil {
 		copyDirectory(safariNew, dest);
 
 		//copy common files
-		copyCommonFiles(source, dest, Browser.SAFARI_NEW);
+		copyCommonFiles(source, dest, Browser.SAFARI);
 	}
 
 	private static void copyFirefoxFiles(File source, File dest) throws Exception {
