@@ -7,7 +7,7 @@
     <link type="text/css" rel="stylesheet" href="skin/style.css">
     <link type="text/css" rel="stylesheet" href="skin/my.css">
 
-    <#if browser.name() == "CHROMIUM" || browser.name() == "SAFARI">
+    <#if browser.name() == "CHROMIUM" || browser.name() == "SAFARI" || browser.name() == "SAFARI_NEW">
         <script type="text/javascript" src="../lib/libs/jquery-1.8.3.min.js"></script>
         <script type="text/javascript" src="../lib/content-script/popup-script.js"></script>
         <script type="text/javascript" src="../lib/pages/i18n-helper.js"></script>
@@ -15,6 +15,9 @@
         <script type="text/javascript" src="../lib/pages/script.js"></script>
         <script type="text/javascript" src="../lib/pages/popup-controller.js"></script>
         <script type="text/javascript" src="../lib/pages/popup.js"></script>
+    </#if>
+    <#if browser.name() == "SAFARI_NEW">
+        <script type="text/javascript" src="../lib/popup-controller.js"></script>
     </#if>
     <#if browser.name() == "FIREFOX" || browser.name() == "FIREFOX_LEGACY">
         <link rel="shortcut icon" href="skin/favicon.png"/>

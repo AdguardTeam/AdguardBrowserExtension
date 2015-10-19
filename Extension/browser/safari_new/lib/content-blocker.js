@@ -28,6 +28,7 @@ var SafariContentBlocker = exports.SafariContentBlocker = {
         Log.info('Starting loading content blocker.');
 
         //TODO: Convert filters from /filters
+        //jsonFromFilters(rules, limit);
 
         this._loadUrl(this.contentBlockerUrl, this._setContentBlocker);
     },
