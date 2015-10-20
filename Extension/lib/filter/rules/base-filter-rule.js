@@ -263,6 +263,11 @@ FilterRule.createRule = function (ruleText) {
 	return rule;
 };
 
+/**
+ * urlencodes rule text.
+ * We need this function because of this issue:
+ * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/34
+ */
 FilterRule.escapeRule = function (ruleText) {
 	return encodeURIComponent(ruleText).replace(/'/g, "%27");
 };
@@ -286,4 +291,3 @@ FilterRule.COMA_DELIMITER = ",";
 FilterRule.LINE_DELIMITER = "|";
 FilterRule.NOT_MARK = "~";
 FilterRule.OLD_INJECT_RULES = "adg_start_style_inject";
-
