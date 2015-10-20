@@ -591,10 +591,11 @@ CssFilter.prototype = {
 				if (FilterUtils.isUserFilterRule(rule)) {
 					elemHideSb.push(ELEMHIDE_CSS_STYLE);
 				} else {
+					var escaped = encodeURIComponent(rule.ruleText).replace(/'/g, "\\'");
 					elemHideSb.push(ELEMHIDE_HIT_START);
 					elemHideSb.push(rule.filterId);
 					elemHideSb.push(ELEMHIDE_HIT_SEP);
-					elemHideSb.push(encodeURIComponent(rule.ruleText));
+                    elemHideSb.push(escaped);
 					elemHideSb.push(ELEMHIDE_HIT_END);
 				}
 			}
