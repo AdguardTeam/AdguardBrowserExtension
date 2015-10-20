@@ -1,9 +1,9 @@
-! Version: 1.0.3.51
+! Version: 1.0.3.58
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet be tracked, use this filter.
 ! NameEn: Spyware filter
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2015-10-11T13:20:47.298+03:00
+! TimeUpdated: 2015-10-18T21:19:23.445+03:00
 ! Adguard Spyware Filter
 !
 ! The most comprehensive list of various online counters and web analytics tools.
@@ -59,6 +59,7 @@ popmech.ru#%#AG_onLoad(function() { window.POPMECH.increaseCounters = function()
 !
 ! Hide counters images
 !
+###qoo-counter
 ###ramblerCounter
 ###top100counter
 ##a[href^="http://hitcounter.ru/top/stat.php"]
@@ -71,13 +72,8 @@ popmech.ru#%#AG_onLoad(function() { window.POPMECH.increaseCounters = function()
 !-------------------------------------------------------------------------------!
 !-------------- Tracking servers list  -----------------------------------------!
 !-------------------------------------------------------------------------------!
-||cdn.api.twitter.com/*/urls/count.json$third-party
-||twitter.com/i/jot
-||bigsauron.ru^$third-party
-||device-metrics-us.amazon.com^$empty
-||sync.morgdm.ru^$third-party
-||pix.sniperlog.ru^$third-party
-||d31qbv1cthcecs.cloudfront.net^$third-party
+||top.gigmir.net^$third-party
+||qoo.by/counter.js$third-party
 //t100.ru^$third-party
 ://tru.am/$third-party
 http://r.i.ua/s?
@@ -330,6 +326,7 @@ http://r.i.ua/s?
 ||bhs4.com^$third-party
 ||bidswitch.net^$third-party
 ||bigmir.net^$third-party
+||bigsauron.ru^$third-party
 ||bigstats.net^$third-party
 ||bigtracker.com^$third-party
 ||bionicclick.com^$third-party
@@ -417,6 +414,7 @@ http://r.i.ua/s?
 ||cashburners.com^$third-party
 ||cashcount.com^$third-party
 ||castelein.nu^$third-party
+||cdn.api.twitter.com/*/urls/count.json$third-party
 ||cdnstats-a.akamaihd.net^$third-party
 ||cedexis.com^$third-party
 ||cedexis.net^$third-party
@@ -623,6 +621,7 @@ http://r.i.ua/s?
 ||cypr.com/$third-party
 ||cytoclause.com^$third-party
 ||d1l6p2sc9645hc.cloudfront.net^$third-party
+||d31qbv1cthcecs.cloudfront.net^$third-party
 ||dacounter.com^$third-party
 ||dailycaller-alerts.com^$third-party
 ||dailymail.co.uk/tracking/
@@ -647,6 +646,7 @@ http://r.i.ua/s?
 ||demdex.net^$third-party
 ||deqwas.net^$third-party
 ||desert.ru^$third-party
+||device-metrics-us.amazon.com^$empty
 ||dgmsearchlab.com^$third-party
 ||dhmtracking.co.za^$third-party
 ||did-it.com^$third-party
@@ -1513,6 +1513,7 @@ http://r.i.ua/s?
 ||online-right-now.net^$third-party
 ||onlinewebstat.com^$third-party
 ||onlysix.co.uk^$third-party
+||onthe.io^$third-party
 ||opbandit.com^$third-party
 ||openclick.com^$third-party
 ||openhit.com^$third-party
@@ -1599,7 +1600,9 @@ http://r.i.ua/s?
 ||pingomatic.com^$third-party
 ||piwik.matrix.ua^$third-party
 ||piwik.org^$third-party
+||pix.sniperlog.ru^$third-party
 ||pixanalytics.com^$third-party
+||pixel.bild.de^
 ||pixel.parsely.com^$third-party
 ||pixel.quantserve.com$third-party
 ||pixeleze.com^$third-party
@@ -2035,6 +2038,7 @@ http://r.i.ua/s?
 ||swiss-counter.com^$third-party
 ||swoopgrid.com^$third-party
 ||sxtracking.com^$third-party
+||sync.morgdm.ru^$third-party
 ||synergy-e.com^$third-party
 ||synthasite.net^$third-party
 ||sysomos.com^$third-party
@@ -2206,6 +2210,7 @@ http://r.i.ua/s?
 ||tubetrafficcash.com^$third-party
 ||turn.com^$third-party
 ||twcount.com^$third-party
+||twitter.com/i/jot
 ||tylere.net^$third-party
 ||tynt.com^$third-party
 ||tyxo.bg/$third-party
@@ -2561,6 +2566,8 @@ http://r.i.ua/s?
 !-------------------------------------------------------------------------------!
 !-------------- Specific web sites ---------------------------------------------!
 !-------------------------------------------------------------------------------!
+||umirs.com/counter*.
+||umirs.com/counters/
 nnm-club.ru###livi
 football-ukraine.com###reachMedia
 football-ukraine.com###shadowMedia
@@ -2574,9 +2581,9 @@ medium.com##.voteWidget
 espreso.tv##.wrap-footer .counter
 mobivid.net,theplanet.ws##a[href="http://mycounter.com.ua/"]
 bogamol.ru##a[href="http://www.hitcounter.ru"]
-kerch.com.ru,kerch.net##a[href^="http://www.kerch.net/counter/"]
 3dnews.ru##a[href^="http://metrika.yandex.ru/"]
 seclub.org##a[href^="http://waplog.net/"]
+kerch.com.ru,kerch.net##a[href^="http://www.kerch.net/counter/"]
 medium.com##button[data-action-source="footer_recommend"]
 medium.com##button[data-action-source="footer_share"]
 radioprofusion.com##footer > div.counter
@@ -2597,6 +2604,7 @@ dreamprogs.net##td[width="88"][height="31"]
 ||bar-navig.yandex.ru/u
 ||bitrix.info/ba.js
 ||biweed.com/templates/ipboard/images/counter*.gif
+||brightcove.com/1pix.gif
 ||clck.yandex.ru/counter/$domain=metro.yandex.ru
 ||click.xda-developers.com/api/pixel.gif
 ||cmexota.ru/templates/default/images/livinternet.png
@@ -2606,6 +2614,7 @@ dreamprogs.net##td[width="88"][height="31"]
 ||horizon.businessinsider.com/*/track
 ||horizon.mashable.com/*/track
 ||i.ag.ru/ag/i/counters_new_nr.png
+||internetmap.info^$third-party
 ||js.washingtonpost.com/*/init.track-header-*.js
 ||js.washingtonpost.com/wp-stat/
 ||kia.ru/bitrix/templates/.default/js/jquery.gatrack.dpack.js
