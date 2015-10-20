@@ -151,7 +151,7 @@ function parseCssRuleFromUrl(requestUrl) {
     }
     var filterIdAndRuleText = decodeURIComponent(StringUtils.substringAfter(requestUrl, '#'));
     var filterId = StringUtils.substringBefore(filterIdAndRuleText, ';');
-    var ruleText = StringUtils.substringAfter(filterIdAndRuleText, ';').replace(/\\'/g, "'");
+    var ruleText = StringUtils.substringAfter(filterIdAndRuleText, ';');
     return {
         filterId: filterId,
         ruleText: ruleText
