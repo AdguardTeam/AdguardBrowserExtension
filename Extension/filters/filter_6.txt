@@ -1,9 +1,9 @@
-! Version: 1.0.21.24
+! Version: 1.0.21.41
 ! Name: German filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: German filter
 ! DescriptionEn: Filter that enables removing of the ads from websites with German content.
-! TimeUpdated: 2015-10-12T18:00:58.223+03:00
+! TimeUpdated: 2015-10-18T18:00:55.773+03:00
 ! Adguard German Filter.
 !
 ! Filter that enables removing of the ads from websites with German content.
@@ -19,6 +19,47 @@
 ||content.acc-hd.de^$third-party
 ||adshot.de^$third-party
 !-------------- Anti-adblock rules ------------------------------------------!
+! lustich.de
+@@||cdn.krxd.net^$image,script,third-party,domain=lustich.de
+@@||ad.yieldlab.net^$image,script,third-party,domain=lustich.de
+@@||ad.de.doubleclick.net^$image,script,third-party,domain=lustich.de
+@@||de.ioam.de^$image,script,third-party,domain=lustich.de
+@@||dis.eu.criteo.com^$image,script,third-party,domain=lustich.de
+@@||ip.nuggad.net^$image,script,third-party,domain=lustich.de
+@@||pagead2.googlesyndication.com^$image,script,third-party,domain=lustich.de
+@@||pq-direct.revsci.net^$image,script,third-party,domain=lustich.de
+@@||qs.ioam.de^$image,script,third-party,domain=lustich.de
+@@||static.plista.com^$image,script,third-party,domain=lustich.de
+@@||tracking.netzathleten-media.de^$image,script,third-party,domain=lustich.de
+@@||www.google-analytics.com^$image,script,third-party,domain=lustich.de
+@@||www.googleadservices.com^$image,script,third-party,domain=lustich.de
+@@||apis.google.com^$image,script,third-party,domain=lustich.de
+@@||connect.facebook.net^$image,script,third-party,domain=lustich.de
+@@||script.ioam.de^$image,script,third-party,domain=lustich.de
+! gamona.de
+@@||qs.ivwbox.de^$script,third-party,domain=gamona.de
+@@||qs.ioam.de^$script,third-party,domain=gamona.de
+@@||platform.twitter.com^$script,third-party,domain=gamona.de
+@@||connect.facebook.net^$script,third-party,domain=gamona.de
+@@||de.ioam.de^$script,third-party,domain=gamona.de
+@@||pubads.g.doubleclick.net^$script,third-party,domain=gamona.de
+@@||stats.wordpress.com^$script,third-party,domain=gamona.de
+@@||www.google-analytics.com^$script,third-party,domain=gamona.de
+@@||www.googletagservices.com^$script,third-party,domain=gamona.de
+@@||apis.google.com^$script,third-party,domain=gamona.de
+@@||script.ioam.de^$script,third-party,domain=gamona.de
+! bild.de
+bild.de#@#.textAd
+bild.de#@#.text_ads
+bild.de#@#.text_ad
+bild.de#@#.text-ads
+bild.de#@#.text-ad-links
+bild.de#@#.text-ad
+bild.de#@#.pub_728x90
+bild.de#@#.pub_300x250m
+bild.de#@#.pub_300x250
+@@||smartadserver.com/diff/*/smartad.js$domain=bild.de
+@@||sascdn.com^$domain=bild.de,script
 ! http://forum.adguard.com/showthread.php?7074
 @@||notebooksbilliger.de/includes/javascript/advertisement.js
 ! http://forum.adguard.com/showthread.php?5967
@@ -34,6 +75,7 @@ t3n.de##.abContentMsg
 !
 teleboy.ch#@#.adWrapper
 !----------------------------------------------------------------------------!
+bild.de###fullBanner
 ! http://forum.adguard.com/showthread.php?7074
 notebooksbilliger.de##.banner_top
 ! http://forum.adguard.com/showthread.php?6898
@@ -182,6 +224,8 @@ focus.de#%#window.uabInject = 1;
 wetteronline.de,gamona.de,gamepro.de,gta-5-forum.de,gamestar.de,prosieben.de,sat1.de,stern.de,webfail.com,focus.de,finanzen.net,prosiebenmaxx.de,sixx.de,kabeleins.de,sat1gold.de,tvtoday.de,tvspielfilm.de,wetter.com,gamestar.de#%#window.UABPtracked = true;
 pcwelt.de,prosieben.de,sat1.de,stern.de,webfail.com,focus.de,finanzen.net,prosiebenmaxx.de,sixx.de,kabeleins.de#%#AG_onLoad(function() { window.UABPTrack = function() {}; });
 !-------------- Whitelist ------------------------------------------!
+! http://forum.adguard.com/showthread.php?7179
+@@||ndr.de/common/mediaplayer/branding/*.css
 ! http://forum.adguard.com/showthread.php?2874-servustv-com-(google-chrome-firefox)
 @@||ad3.adfarm1.adition.com^$domain=servustv.com,other
 !-------------- Easylist Germany rules ------------------------------------------!
@@ -319,6 +363,7 @@ _woz_banner_vote.
 ?popup:msp_$popup,third-party
 ###Ad_Win2day
 ###LxWerbeteaser
+###ParentDivForWerbPostbit
 ###SSpotIMPopSlider
 ###SlimSpot_imPop_Container
 ###Werb_Postbit_Bottom
@@ -1422,7 +1467,6 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||meinpaket.de/img/dhl/$third-party
 ||microstrom.com/banner/$third-party
 ||microtarife.de/bild/$third-party
-||mirapodo.de/a?rt=$script,third-party
 ||mister-load.com^$third-party
 ||mobil-king.de/banner/$third-party
 ||mobildiscounter.de/banner/$third-party
@@ -2244,6 +2288,7 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||dokus4.me/interstitial.js
 ||dokus4.me/kpopcg2012n2.js
 ||dokus4.me/w-v2.php
+||dokus4.me^*pop.php
 ||dokustream.org^*/banner/
 ||dooyoo.de^*/pp_anzeige.gif
 ||dooyoo.de^*_skyscraper*.php
@@ -3068,7 +3113,6 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||netzwelt.de^*/netzweltde-sparberater-$image
 ||netzwerktotal.de^*/werbung/
 ||neue-braunschweiger.de/images/banners/
-||neues-deutschland.de/bannerdeliver.php
 ||neumarkt-tv.de/Media/5/Banner%20NEU/jubilaeum_button_100x100.jpg
 ||neuwagen.bild.de^$subdocument
 ||neuwagen.welt.de^$subdocument
@@ -3692,7 +3736,6 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||tvspielfilm.de^*/partner/
 ||tvtoday.de/_imgToday/plogos/golf.jpg
 ||tweakpc.de^*/anzeige_v60.gif
-||u.jappy.tv/ub/n/*/*_$image,domain=jappy.de
 ||u11.de/cgi-bin/count/
 ||uhrzeit.org/sys/banner_bigsize.php
 ||uhrzeit.org/sys/wallpaper/
@@ -5116,7 +5159,7 @@ tutorials.de##.above_body > #header + #navbar + table:last-child
 rc-network.de##.above_body:first-child + table[cellspacing="0"][cellpadding="0"][border="0"][align="center"]
 die-schnelle-kuh.de##.abp
 presseportal.de##.abvbp-parent-hockey
-abendblatt.de,alle-immobilien.ch,azonline.de,bazonline.ch,bernerzeitung.ch,billig-flieger-vergleich.de,bos-fahrzeuge.info,computerbase.de,crn.de,derbund.ch,derlacher.de,epochtimes.de,fail.to,fettspielen.de,funnypizza.de,glamour.de,gmx.net,gq-magazin.de,hamburg.de,hardwareclips.com,inside-handy.de,ircgalerie.net,kalenderwoche.net,kino24.to,kronehit.at,macwelt.de,netzpolitik.org,newscomm.de,phonostar.de,playporn.to,podcast.de,prisma.de,radiokoeln.de,raidrush.org,rhein-neckar-loewen.de,sachsen-fernsehen.de,shopbetreiber-blog.de,sueddeutsche.de,suite101.de,tagesanzeiger.ch,wallstreet-online.de,web.de,welt.de,wn.de,zeit.de##.ad
+abendblatt.de,alle-immobilien.ch,azonline.de,bazonline.ch,bernerzeitung.ch,billig-flieger-vergleich.de,bos-fahrzeuge.info,computerbase.de,crn.de,derbund.ch,derlacher.de,epochtimes.de,fail.to,fettspielen.de,funnypizza.de,glamour.de,gmx.net,gq-magazin.de,hamburg.de,hardwareclips.com,inside-handy.de,ircgalerie.net,kalenderwoche.net,kino24.to,kronehit.at,macwelt.de,netzpolitik.org,newscomm.de,phonostar.de,playporn.to,podcast.de,prisma.de,radiokoeln.de,raidrush.org,rhein-neckar-loewen.de,sachsen-fernsehen.de,shopbetreiber-blog.de,sueddeutsche.de,suite101.de,tagesanzeiger.ch,wallstreet-online.de,web.de,welt.de,wn.de,yellingnews.com,zeit.de##.ad
 1und1.de,gmx.net,web.de##.ad-container
 med1.de,stayfriends.de##.adContainer
 wz-newsline.de##.adDisclaimerLight
@@ -6678,6 +6721,7 @@ magistrix.de##a[target="blank"][href^="/"] > img[src^="/"]
 magistrix.de##a[target="blank"][href^="/deblock/"]
 fc-hansa.de##a[title="DKB-Familienblock"]
 chip.de##a[title^="Anzeige:"]
+yellingnews.com##article > .teaser + .related.tm
 schulzeux.de##article > .vi_a_79
 maxwireless.de##aside a[target="_blank"][onclick^="javascript:_gaq.push(['_trackEvent','outbound-widget',"]
 gamestar.de##blockquote > p > strong + a[href^="http://www.amazon.de/"]
@@ -6871,6 +6915,7 @@ xpbulletin.de##div[style="float:left; width:300px; height:250px; margin-right:10
 evocars-magazin.de##div[style="float:left; width:300px; height:250px; margin:8px 15px 5px 3px;"]
 handy-faq.de##div[style="float:left; width:301px; height:251px; border:0px solid #336699;margin-left:2px;margin-right:15px;"]
 digitalvideoschnitt.de##div[style="float:left; width:336px; min-height:280px; margin-right:30px; margin-bottom:30px;"]
+wirtschaftslexikon24.com##div[style="float:left;clear:left;height:620px;width:180px;padding-top:15px;"]
 ht4u.net##div[style="float:left;margin:10px 3px 10px 0px;width:300px;height:250px;"]
 android-hilfe.de##div[style="float:left;width: 186px;position:absolute;left:25px;top:15px;"]
 android-hilfe.de##div[style="float:left;width: 186px;position:fixed;left:25px;top:15px;text-align:center;border:1px solid #636C74;height:610px;padding-top:13px;padding-bottom:5px;background-color: #ffffff;z-index:1;"]
@@ -7390,13 +7435,13 @@ news.de##.plista_widget_underArticle_item + div[style="position: relative;"] > s
 @@||adback.de^$~third-party
 @@||adcell.de/click.php?bid=$subdocument,domain=gutscheindoktor.de|mein-rabatt.com
 @@||adclient.uimserv.net/banner?$script,domain=millionenklick.web.de
-@@||adfarm1.adition.com/banner?sid=$script,domain=jam.fm
-@@||adfarm1.adition.com/js?wp_id=$script,domain=jam.fm
 @@||adimg.uimserv.net^$image,domain=millionenklick.web.de
 @@||adindex.de^*^gutschein_$subdocument,domain=gutscheindoktor.de
-@@||adition.com/banners/$image,domain=dsl.freenet.de
+@@||adition.com/banner?sid=$script,domain=ambellis.de|jam.fm|mirapodo.de|mytoys.de
+@@||adition.com/banners/$image,domain=ambellis.de|dsl.freenet.de|mirapodo.de|mytoys.de
 @@||adition.com/banners/$image,object,domain=payback.de
 @@||adition.com/crossdomain.xml$object-subrequest,domain=hd-plus.de
+@@||adition.com/js?wp_id=$script,domain=ambellis.de|jam.fm|mirapodo.de|mytoys.de
 @@||adition.com/track?$object-subrequest,domain=hd-plus.de
 @@||adlink.net/js?*&s=c&$script,domain=cinemaxx.de
 @@||admedia.adgemini.de^$~third-party
@@ -7621,7 +7666,6 @@ news.de##.plista_widget_underArticle_item + div[style="position: relative;"] > s
 @@||merkur-werbebanner.de^$~third-party
 @@||metzgerei-giering.de^*/advertising/$~third-party
 @@||milesandmore-aktionen.de^*://promo.$subdocument,domain=promo.milesandmore.com
-@@||mirapodo.de/a?rt=$script,domain=ambellis.de|lapurisa.de|mytoys.de
 @@||mirapodo.de/ads?$script
 @@||mmcomputer.de^*&BannerID=$subdocument
 @@||monetenlos.com/components/com_marketplace/images/ads/$image
@@ -7635,7 +7679,7 @@ news.de##.plista_widget_underArticle_item + div[style="position: relative;"] > s
 @@||n-tv.de/stat/videoplayer/ntv_player.swf?*/admeta.$object
 @@||n24.de^*/my_ad_integration.js
 @@||nadann.de/small_ads/$~third-party
-@@||netzathleten-media.de^*/naMediaAd.js$domain=kino-vorschau.com|lustich.de
+@@||netzathleten-media.de^*/naMediaAd.js$domain=kino-vorschau.com
 @@||nonstoppartner.net/a/?$subdocument,domain=gutscheindoktor.de
 @@||nonstoppartner.net^$image,domain=sunsteps.org
 @@||nordclick.de/js/colors/adsense_colors.js
@@ -7797,8 +7841,6 @@ news.de##.plista_widget_underArticle_item + div[style="position: relative;"] > s
 @@.png/$image,~third-party,domain=pcwelt.de
 @@.png?$domain=mobilfunk-geschichte.de
 @@.png^$image,third-party,domain=autozeitung.de|formel1.de|fremdwort.de|inside-handy.de|motorsport-total.com|news.de|seniorbook.de
-@@/^https?\:\/\/(?!(cdn\.krxd\.net|ad\.yieldlab\.net|ad\.de\.doubleclick\.net|de\.ioam\.de|dis\.eu\.criteo\.com|ip\.nuggad\.net|pagead2\.googlesyndication\.com|pq-direct\.revsci\.net|qs\.ioam\.de|static\.plista\.com|tracking\.netzathleten-media\.de|www\.google-analytics\.com|www\.googleadservices\.com|apis\.google\.com|connect\.facebook\.net|script\.ioam\.de)\/)/$image,script,third-party,domain=lustich.de
-@@/^https?\:\/\/(?!(qs\.ivwbox\.de|qs\.ioam.de|platform\.twitter\.com|connect\.facebook\.net|de\.ioam\.de|pubads\.g\.doubleclick\.net|stats\.wordpress\.com|www\.google-analytics\.com|www\.googletagservices\.com|apis\.google\.com|script\.ioam\.de)\/)/$script,third-party,domain=gamona.de
 @@/adcode.js$domain=prad.de
 @@/qos.phtml?$object-subrequest,domain=gmx.net|golem.de|homerj.de|spiegel.tv|sueddeutsche.de|t-online.de|web.de
 @@|http://www-$object-subrequest,third-party,domain=gmx.net|homerj.de|spiegel.tv|sueddeutsche.de|web.de
@@ -7854,8 +7896,7 @@ news.de##.plista_widget_underArticle_item + div[style="position: relative;"] > s
 @@||amazonaws.com^$script,domain=jappy.de
 @@||amgdgt.com/ads?$object-subrequest,domain=clipfish.de
 @@||apmebf.com/ad/js/*&mpvc=http://ad.de.doubleclick.net/click%$script,domain=n-tv.de
-@@||atonato.de^$document,subdocument,domain=gamona.de|lustich.de
-@@||atonato.de^$script,domain=lustich.de
+@@||atonato.de^$document,subdocument,domain=gamona.de
 @@||aussenwirtschaftslupe.de^$elemhide
 @@||autozeitung.de^$elemhide
 @@||banners.webmasterplan.com/view.asp?ref=7564&js=1&site=2941&b=3&target=&title=1%261+DSL$script,domain=mainfranken24.de
@@ -7883,8 +7924,8 @@ news.de##.plista_widget_underArticle_item + div[style="position: relative;"] > s
 @@||combatarms-game.de/adframe.js
 @@||coordur.de^$document,subdocument
 @@||crackajack.de^*/advertising.js
-@@||cuiron.de^$document,subdocument,domain=gamona.de|lustich.de
-@@||cuiron.de^$script,domain=gamona.de|lustich.de
+@@||cuiron.de^$document,subdocument,domain=gamona.de
+@@||cuiron.de^$script,domain=gamona.de
 @@||cussixia.de^$document,subdocument,domain=gamona.de
 @@||dastandard.at/AdServer/AdServerM.aspx|$subdocument
 @@||dastandard.at/MetaAdServer/MAS.aspx?cp=$subdocument
@@ -7906,8 +7947,8 @@ news.de##.plista_widget_underArticle_item + div[style="position: relative;"] > s
 @@||diestandard.at/MetaAdServer/MAS.aspx?cp=$subdocument
 @@||diestandard.at^$elemhide
 @@||diestandard.at^$stylesheet
-@@||digentu.de^$document,subdocument,domain=gamona.de|lustich.de
-@@||digentu.de^$script,domain=gamona.de|lustich.de
+@@||digentu.de^$document,subdocument,domain=gamona.de
+@@||digentu.de^$script,domain=gamona.de
 @@||dokumente-online.com^*/adframe.js
 @@||doubleclick.net/ad/clipfish.smartclip/$object-subrequest,domain=clipfish.de
 @@||doubleclick.net/ad/pushbackde.smartclip/clipfish.smartclip/$object-subrequest,domain=clipfish.de
@@ -7939,32 +7980,29 @@ news.de##.plista_widget_underArticle_item + div[style="position: relative;"] > s
 @@||ebook-hell.to/js/ads.js
 @@||eclipso.*/adframe.js
 @@||einrichtungsbeispiele.de^*/click.js
-@@||eltelmis.de^$document,subdocument,domain=gamona.de|lustich.de
+@@||eltelmis.de^$document,subdocument,domain=gamona.de
 @@||energielupe.de^$elemhide
-@@||ethnarc.de^$document,subdocument,domain=gamona.de|lustich.de
-@@||ethnarc.de^$script,domain=gamona.de|lustich.de
+@@||ethnarc.de^$document,subdocument,domain=gamona.de
+@@||ethnarc.de^$script,domain=gamona.de
 @@||europalupe.eu^$elemhide
 @@||exoclick.com/ads-iframe-display.php?*&type=300x250&$subdocument,domain=board.world-of-hentai.to
 @@||expepp.de^$document,subdocument,domain=gamona.de
 @@||fastshare.org/advertisement.js
-@@||faz.net/f6/ad/faz/iq.faz.net/V0/FAZ_ad_harness.min.js
 @@||feed-reader.net^$elemhide,image,script
 @@||fem.com^$script,domain=fem.com
 @@||fernsehen.to/advertisement.js
-@@||feropt.de^$document,subdocument,domain=gamona.de|lustich.de
-@@||feropt.de^$image,script,domain=gamona.de|lustich.de
+@@||feropt.de^$document,subdocument,domain=gamona.de
+@@||feropt.de^$image,script,domain=gamona.de
 @@||finanzmarkttransaktionssteuer.de^$elemhide
 @@||flashtalking.com/imp/*;BMWTVTeaser220x180/?click=$script,domain=teleboerse.de
 @@||formel1.de^$elemhide
 @@||forum-fuer-senioren.de^*/ad.js
-@@||frantro.de^$document,subdocument,domain=lustich.de
 @@||free-klingeltoene-handy.de/adframe.js
 @@||fremdwort.de^$elemhide
-@@||fribre.de^$document,subdocument,domain=gamona.de|lustich.de
+@@||fribre.de^$document,subdocument,domain=gamona.de
 @@||fribre.de^$image,script,domain=gamona.de
-@@||fribre.de^$script,domain=lustich.de
-@@||fruited.de^$document,subdocument,domain=gamona.de|lustich.de
-@@||fruited.de^$script,domain=gamona.de|lustich.de
+@@||fruited.de^$document,subdocument,domain=gamona.de
+@@||fruited.de^$script,domain=gamona.de
 @@||funkhaus.com/fileadmin/zulieferer/VideoAds/$domain=mainfranken24.de
 @@||g.doubleclick.net/gampad/ads?$script,domain=wetteronline.de
 @@||g.doubleclick.net/gampad/ads?*&callback=googletag.impl.pubads.setAdContentsBySlotForSync&$script,domain=gamona.de
@@ -7973,8 +8011,8 @@ news.de##.plista_widget_underArticle_item + div[style="position: relative;"] > s
 @@||game-advertising-online.com/images/s-l.gif$domain=anime-loads.org
 @@||game-advertising-online.com/index.php?section=serve&id=$subdocument,domain=anime-loads.org
 @@||gassi-tv.de^*/adframe.js
-@@||gearwom.de^$document,subdocument,domain=gamona.de|lustich.de
-@@||gearwom.de^$script,domain=gamona.de|lustich.de
+@@||gearwom.de^$document,subdocument,domain=gamona.de
+@@||gearwom.de^$script,domain=gamona.de
 @@||gerichtsboulevard.de^$elemhide
 @@||gesehen.es^$object-subrequest,domain=gmx.net|homerj.de|spiegel.tv|sueddeutsche.de|web.de
 @@||gmads.net/crossdomain.xml$object-subrequest,domain=kabeleins.at|kabeleins.ch|kabeleins.de|prosieben.at|prosieben.ch|prosieben.de|sat1.ch|sat1.de|sixx.at|sixx.ch|sixx.de|the-voice-of-germany.at|the-voice-of-germany.ch|the-voice-of-germany.de
@@ -7985,50 +8023,47 @@ news.de##.plista_widget_underArticle_item + div[style="position: relative;"] > s
 @@||hartzbote.de^$elemhide
 @@||hobodoka.de^$document,subdocument,domain=gamona.de
 @@||hubbahotel.cc^*/advertisement.js
-@@||idlity.de^$document,subdocument,domain=gamona.de|lustich.de
-@@||idlity.de^$script,domain=gamona.de|lustich.de
+@@||idlity.de^$document,subdocument,domain=gamona.de
+@@||idlity.de^$script,domain=gamona.de
 @@||imagesrv.adition.com/js/adition.js$domain=n-tv.de
 @@||img.lokalisten.de/img/giftshop/$image
 @@||img.lokalisten.de/lokiimg/lokalisten/picturefeed/$image
-@@||inciteb.de^$document,subdocument,domain=gamona.de|lustich.de
-@@||inciteb.de^$script,domain=gamona.de|lustich.de
-@@||incown.de^$document,subdocument,domain=gamona.de|lustich.de
-@@||indalam.de^$document,subdocument,domain=gamona.de|lustich.de
-@@||indalam.de^$script,domain=gamona.de|lustich.de
+@@||inciteb.de^$document,subdocument,domain=gamona.de
+@@||inciteb.de^$script,domain=gamona.de
+@@||incown.de^$document,subdocument,domain=gamona.de
+@@||indalam.de^$document,subdocument,domain=gamona.de
+@@||indalam.de^$script,domain=gamona.de
 @@||inside-handy.de^$elemhide
-@@||intectwo.de^$document,subdocument,domain=gamona.de|lustich.de
+@@||intectwo.de^$document,subdocument,domain=gamona.de
 @@||itectale.de^$document,subdocument,domain=gamona.de
-@@||ivwbox.de^*#$image,domain=lustich.de
 @@||jagdlupe.de^$elemhide
 @@||jappy.de^$elemhide
 @@||java-forum.org^$elemhide
-@@||jubbie.de^$document,subdocument,domain=gamona.de|lustich.de
-@@||jubbie.de^$script,domain=gamona.de|lustich.de
+@@||jubbie.de^$document,subdocument,domain=gamona.de
+@@||jubbie.de^$script,domain=gamona.de
 @@||juristische-suche.de^$elemhide
 @@||kaufn.com/banner/ads/adserver/click/ad.js
 @@||kirchensteuerinfo.de^$elemhide
 @@||lablue.at^$elemhide,script
 @@||lablue.ch^$elemhide,script
 @@||lablue.de^$elemhide,script
-@@||letiva.de^$document,subdocument,domain=gamona.de|lustich.de
-@@||letiva.de^$script,domain=gamona.de|lustich.de
-@@||liferd.de^$document,subdocument,domain=gamona.de|lustich.de
-@@||liferd.de^$script,domain=gamona.de|lustich.de
+@@||letiva.de^$document,subdocument,domain=gamona.de
+@@||letiva.de^$script,domain=gamona.de
+@@||liferd.de^$document,subdocument,domain=gamona.de
+@@||liferd.de^$script,domain=gamona.de
 @@||live-stream.tv^$elemhide
 @@||liverail.com^*^LR_PUBLISHER_ID=*&LR_SCHEMA=vast2-vpaid&$object-subrequest,domain=schoener-fernsehen.com
 @@||loads7.com^$elemhide
-@@||lustich.de^$elemhide
-@@||lustich.de^$image
 @@||magistrix.de/ads/iframe.html?*#content$subdocument
 @@||magistrix.de^*/advertisement-$script
 @@||mannfuermann.com/mfm/static/adcode.js
-@@||manughl.de^$document,subdocument,domain=gamona.de|lustich.de
-@@||manughl.de^$script,domain=gamona.de|lustich.de
+@@||manughl.de^$document,subdocument,domain=gamona.de
+@@||manughl.de^$script,domain=gamona.de
 @@||mediationslupe.de^$elemhide
 @@||medienrechtsnews.de^$elemhide
-@@||mename.de^$document,subdocument,domain=gamona.de|lustich.de
+@@||mename.de^$document,subdocument,domain=gamona.de
 @@||mename.de^$image,domain=gamona.de
-@@||mename.de^$script,domain=gamona.de|lustich.de
+@@||mename.de^$script,domain=gamona.de
 @@||mirror-archiv.com/banner/ads/adserver/click/ad.js
 @@||mobilfunk-geschichte.de^$elemhide
 @@||motorsport-total.com^$elemhide
@@ -8068,6 +8103,7 @@ news.de##.plista_widget_underArticle_item + div[style="position: relative;"] > s
 @@||proverbia-iuris.de^$elemhide
 @@||quoka.de^*/adframe.js
 @@||rappers.in^$elemhide
+@@||rawgit.com^$script,domain=jappy.de
 @@||rechnungswesenforum.de/abp/adblock_detector.js
 @@||rechtslupe.de^$elemhide
 @@||rechtslupe.net^$elemhide
