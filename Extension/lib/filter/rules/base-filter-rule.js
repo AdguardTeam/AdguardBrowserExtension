@@ -263,6 +263,10 @@ FilterRule.createRule = function (ruleText) {
 	return rule;
 };
 
+FilterRule.escapeRule = function (ruleText) {
+	return encodeURIComponent(ruleText).replace(/'/g, "%27");
+};
+
 FilterRule.PARAMETER_START = "[";
 FilterRule.PARAMETER_END = "]";
 FilterRule.MASK_WHITE_LIST = "@@";
