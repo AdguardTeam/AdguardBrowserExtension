@@ -18,12 +18,44 @@
 var SafariContentBlocker = require('content-blocker').SafariContentBlocker;
 
 
-AntiBannerService.prototype.changeApplicationFilteringDisabled = function (disabled) {
-    if (disabled) {
-        SafariContentBlocker.clearFilters();
-    } else {
-        SafariContentBlocker.loadFilters();
+//AntiBannerService.prototype.changeApplicationFilteringDisabled = function (disabled) {
+//    if (disabled) {
+//        SafariContentBlocker.clearFilters();
+//    } else {
+//        SafariContentBlocker.loadFilters();
+//    }
+//
+//    this.applicationFilteringDisabled = disabled;
+//};
+
+AntiBannerService.prototype.getRequestFilter = function () {
+
+    // Check if we can lazy-init request filter
+    if (this.dirtyRules) {
+        // Creates request filter
+        var requestFilter = new RequestFilter();
+
+        var rules = [];
+        for (var ruleText in this.dirtyRules) {
+
+            rules.push(ruleText);
+
+            //var filterId = this.dirtyRules[ruleText];
+            //var rule = FilterRule.createRule(ruleText);
+            //
+            //if (rule != null) {
+            //    requestFilter.addRule(rule, filterId);
+            //}
+        }
+
+        SafariContentBlocker.loadFilters(rules);
+
+        // Request filter is ready
+        this.requestFilter = requestFilter;
+
+        // No need in dirtyRules collection anymore
+        this.dirtyRules = null;
     }
 
-    this.applicationFilteringDisabled = disabled;
-};
+    return this.requestFilter;
+}
