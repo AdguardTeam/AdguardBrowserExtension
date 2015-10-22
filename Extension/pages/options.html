@@ -23,9 +23,6 @@
         <script type="text/javascript" src="../lib/pages/script.js"></script>
         <script type="text/javascript" src="../lib/pages/options.js"></script>
     </#if>
-    <#if browser.name() == "SAFARI_NEW">
-        <script type="text/javascript" src="../lib/options.js"></script>
-    </#if>
     <#if browser.name() == "FIREFOX" || browser.name() == "FIREFOX_LEGACY">
         <link rel="shortcut icon" href="skin/favicon.png"/>
         <script type="text/javascript" src="libs/jquery-1.8.3.min.js"></script>
@@ -181,8 +178,10 @@
             </div>
         </div>
         <div class="sp-lists-user-add no-icon">
-            <span id="openLog" class="spl-user-add-spn" i18n="options_open_log"></span>
-            <span id="resetStats" class="spl-user-add-spn" i18n="options_reset_stats"></span>
+            <#if browser.name() != "SAFARI_NEW">
+                <span id="openLog" class="spl-user-add-spn" i18n="options_open_log"></span>
+                <span id="resetStats" class="spl-user-add-spn" i18n="options_reset_stats"></span>
+            </#if>
             <a href="https://github.com/AdguardTeam/AdguardBrowserExtension/releases" target="_blank" class="spl-user-add-spn" i18n="options_open_changelog"></a>
         </div>
     </div>
