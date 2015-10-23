@@ -41,6 +41,8 @@ AntiBannerService.prototype.getRequestFilter = function () {
 
             rules.push(ruleText);
 
+            //TODO: Add all the rules to dirty
+
             //var filterId = this.dirtyRules[ruleText];
             //var rule = FilterRule.createRule(ruleText);
             //
