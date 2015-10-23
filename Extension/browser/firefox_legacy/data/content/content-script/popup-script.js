@@ -24,7 +24,6 @@ var ext = (function () {
     function loadAdguardModule(module) {
 
         if (!Components || !Components.utils) {
-            // TODO: Use messaging, we should not use Components.utils here at all
             return;
         }
 
@@ -35,31 +34,11 @@ var ext = (function () {
         return result.exports;
     }
 
+    window.i18n = loadAdguardModule('i18n');
+
     return {
 
-        onMessage: {
-
-            addListener: function (listener, type) {
-                self.port.on(type, function (message) {
-                    if (!message) {
-                        message = Object.create(null);
-                    }
-                    message.type = type;
-                    listener(message);
-                });
-            }
-        },
-
         backgroundPage: {
-
-            sendMessage: function (message, callback) {
-                if (callback) {
-                    self.port.once(message.type, function (response) {
-                        callback(response);
-                    });
-                }
-                self.port.emit(message.type, message);
-            },
 
             getWindow: function () {
 
@@ -68,55 +47,17 @@ var ext = (function () {
                     ext.backgroundPage.windowModules = {
 
                         antiBannerService: loadAdguardModule('antiBannerService'),
-                        adguardApplication: loadAdguardModule('adguardApplication'),
-                        userSettings: loadAdguardModule('userSettings'),
                         framesMap: loadAdguardModule('framesMap'),
                         filteringLog: loadAdguardModule('filteringLog'),
-
-                        EventNotifier: loadAdguardModule('EventNotifier'),
-                        Prefs: loadAdguardModule('Prefs'),
                         UI: loadAdguardModule('UI'),
-
-                        l10n: loadAdguardModule('l10n'),
-
-                        FilterUtils: loadAdguardModule('FilterUtils'),
-                        UrlUtils: loadAdguardModule('UrlUtils'),
-                        StringUtils: loadAdguardModule('StringUtils'),
+                        Prefs: loadAdguardModule('Prefs'),
                         Utils: loadAdguardModule('Utils'),
-
-                        EventNotifierTypes: loadAdguardModule('EventNotifierTypes'),
                         AntiBannerFiltersId: loadAdguardModule('AntiBannerFiltersId'),
-                        LogEvents: loadAdguardModule('LogEvents'),
-
-                        FilterRule: loadAdguardModule('FilterRule'),
-                        UrlFilterRule: loadAdguardModule('UrlFilterRule')
+                        i18n: loadAdguardModule('i18n')
                     };
                 }
 
                 return ext.backgroundPage.windowModules;
-            }
-        },
-
-        windows: {
-            getLastFocused: function (callback) {
-                var win = {
-                    getActiveTab: function (callback) {
-                        var tabs = loadAdguardModule('tabs');
-                        if (!tabs) {
-                            return;
-                        }
-
-                        var activeTab = tabs.activeTab;
-                        activeTab.sendMessage = function (message, callback) {
-                            if (message.type == 'open-assistant') {
-                                ext.backgroundPage.getWindow().UI.openAssistant();
-                            }
-                            callback();
-                        };
-                        callback(activeTab);
-                    }
-                };
-                callback(win);
             }
         },
 
@@ -126,6 +67,22 @@ var ext = (function () {
 
         resizePopup: function (width, height) {
             ext.backgroundPage.getWindow().UI.resizePopup(width, height);
+        },
+
+        windows: {
+
+            getLastFocused: function (callback) {
+                var win = {
+                    getActiveTab: function (callback) {
+                        var tabs = loadAdguardModule('tabs');
+                        if (!tabs) {
+                            return;
+                        }
+                        callback(tabs.activeTab);
+                    }
+                };
+                callback(win);
+            }
         }
     }
 

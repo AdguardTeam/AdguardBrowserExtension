@@ -43,6 +43,7 @@ var Prefs = require('prefs').Prefs;
 var SubscriptionService = require('filter/subscription').SubscriptionService;
 var ApplicationUpdateService = require('filter/update-service').ApplicationUpdateService;
 var whiteListService = require('filter/whitelist').whiteListService;
+var UI = require('ui').UI;
 
 /**
  * Creating service that manages our filter rules.
@@ -527,6 +528,14 @@ AntiBannerService.prototype = {
     },
 
     /**
+     * Returns all filters metadata
+     * @returns {*}
+     */
+    getFiltersMetadata: function () {
+        return this.subscriptionService.getFilters();
+    },
+
+    /**
      * Returns filter metadata by subscription url
      * @param subscriptionUrl - subscription url
      * @returns {*|T}
@@ -693,19 +702,6 @@ AntiBannerService.prototype = {
      */
     isAllowedAcceptableAds: function () {
         return this._getFilterById(AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID).enabled;
-    },
-
-    /**
-     * Sets useful ads filter status to enabled/disabled
-     *
-     * @param enabled If true - enable useful ads filter
-     */
-    changeAcceptableAds: function (enabled) {
-        if (enabled) {
-            this.enableAntiBannerFilter(AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID);
-        } else {
-            this.disableAntiBannerFilter(AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID);
-        }
     },
 
     /**
@@ -1465,4 +1461,24 @@ var UPDATE_REQUEST_FILTER_EVENTS = [EventNotifierTypes.UPDATE_FILTER_RULES, Even
  * @type {Array}
  */
 var SAVE_FILTER_RULES_TO_FS_EVENTS = [EventNotifierTypes.UPDATE_FILTER_RULES, EventNotifierTypes.ADD_RULE, EventNotifierTypes.ADD_RULES, EventNotifierTypes.REMOVE_RULE];
+
+// Events
+(function () {
+
+    //on filter auto-enabled event
+    EventNotifier.addListener(function (event, enabledFilters) {
+        if (event == EventNotifierTypes.ENABLE_FILTER_SHOW_POPUP) {
+            var result = Utils.getFiltersEnabledResultMessage(enabledFilters);
+            UI.showAlertMessagePopup(result.title, result.text);
+        }
+    });
+
+    //on filters updated event
+    EventNotifier.addListener(function (event, success, updatedFilters) {
+        if (event == EventNotifierTypes.UPDATE_FILTERS_SHOW_POPUP) {
+            var result = Utils.getFiltersUpdateResultMessage(success, updatedFilters);
+            UI.showAlertMessagePopup(result.title, result.text);
+        }
+    });
+})();
 

@@ -14,29 +14,82 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var backgroundPage = ext.backgroundPage.getWindow();
-var antiBannerService;
-var adguardApplication;
-var UI;
-var filteringLog;
-var EventNotifier;
-var LogEvents;
-var UrlUtils;
-var StringUtils;
-var AntiBannerFiltersId;
-var Utils;
-
-var FilterRule;
-var UrlFilterRule;
 
 var PageController = function () {
 	this.requestWizard = new RequestWizard();
 };
 
 var Messages = {
-	OPTIONS_USERFILTER: ext.i18n.getMessage('options_userfilter'),
-	OPTIONS_WHITELIST: ext.i18n.getMessage('options_whitelist'),
-	IN_WHITELIST: ext.i18n.getMessage('filtering_log_in_whitelist')
+	OPTIONS_USERFILTER: i18n.getMessage('options_userfilter'),
+	OPTIONS_WHITELIST: i18n.getMessage('options_whitelist'),
+	IN_WHITELIST: i18n.getMessage('filtering_log_in_whitelist')
+};
+
+var StringUtils = {
+
+	startWith: function (str, prefix) {
+		return str && str.indexOf(prefix) === 0;
+	},
+
+	containsIgnoreCase: function (str, searchString) {
+		return str && searchString && str.toUpperCase().indexOf(searchString.toUpperCase()) >= 0;
+	},
+
+	substringAfter: function (str, separator) {
+		if (!str) {
+			return str;
+		}
+		var index = str.indexOf(separator);
+		return index < 0 ? "" : str.substring(index + separator.length);
+	},
+
+	substringBefore: function (str, separator) {
+		if (!str || !separator) {
+			return str;
+		}
+		var index = str.indexOf(separator);
+		return index < 0 ? str : str.substring(0, index);
+	}
+};
+
+var UrlUtils = {
+
+	getParamValue: function (url, paramName) {
+		var query = StringUtils.substringAfter(url, '?');
+		if (query) {
+			var params = query.split('&');
+			for (var i = 0; i < params.length; i++) {
+				var paramAndValue = params[i].split('=');
+				if (paramAndValue[0] == paramName) {
+					return paramAndValue[1];
+				}
+			}
+		}
+		return null;
+	},
+
+	getDomainName: function (url) {
+		if (!this.linkHelper) {
+			this.linkHelper = document.createElement('a');
+		}
+		this.linkHelper.href = url;
+		var host = this.linkHelper.hostname;
+		return StringUtils.startWith(host, "www.") ? host.substring(4) : host;
+	}
+};
+
+var FilterRule = {
+	MASK_WHITE_LIST: "@@"
+};
+
+var UrlFilterRule = {
+	MASK_START_URL: "||",
+	MASK_ANY_SYMBOL: "*",
+	MASK_SEPARATOR: "^",
+	DOMAIN_OPTION: "domain",
+	MATCH_CASE_OPTION: "match-case",
+	THIRD_PARTY_OPTION: "third-party",
+	OPTIONS_DELIMITER: "$"
 };
 
 PageController.prototype = {
@@ -78,30 +131,34 @@ PageController.prototype = {
 		//bind click to reload tab
 		$('.task-manager').on('click', '.reloadTab', function (e) {
 			e.preventDefault();
-			filteringLog.reloadTabById(this.currentTabId);
+			contentPage.sendMessage({type: 'reloadTabById', tabId: this.currentTabId});
 		}.bind(this));
 
 		//bind click to clear events
 		$('#clearTabLog').on('click', function (e) {
 			e.preventDefault();
-			filteringLog.clearEventsByTabId(this.currentTabId);
+			contentPage.sendMessage({type: 'clearEventsByTabId', tabId: this.currentTabId});
 		}.bind(this));
 
 		//bind click to show request info
 		var self = this;
 		this.logTable.on('click', '.task-manager-content-header-body-row', function () {
-			var frameInfo = filteringLog.getTabFrameInfoById(self.currentTabId);
-			if (!frameInfo) {
-				return;
-			}
 			var filteringEvent = $(this).data();
-			self.requestWizard.showRequestInfoModal(frameInfo, filteringEvent);
+			contentPage.sendMessage({type: 'getTabFrameInfoById', tabId: self.currentTabId}, function (response) {
+				var frameInfo = response.frameInfo;
+				if (!frameInfo) {
+					return;
+				}
+				self.requestWizard.showRequestInfoModal(frameInfo, filteringEvent);
+			});
 		});
 
 		this._bindSearchFilters();
 
 		//synchronize opened tabs
-		filteringLog.synchronizeOpenTabs(this._onOpenedTabsReceived.bind(this));
+		contentPage.sendMessage({type: 'synchronizeOpenTabs'}, function () {
+			this._onOpenedTabsReceived();
+		}.bind(this));
 	},
 
 	_onOpenedTabsReceived: function () {
@@ -186,12 +243,14 @@ PageController.prototype = {
 	},
 
 	_updateLogoIcon: function () {
-		var frameInfo = filteringLog.getTabFrameInfoById(this.currentTabId);
-		var src = 'skin/logpage/images/dropdown-logo.png';
-		if (frameInfo && frameInfo.adguardDetected) {
-			src = 'skin/logpage/images/dropdown-logo-blue.png';
-		}
-		this.logoIcon.attr('src', src);
+		contentPage.sendMessage({type: 'getTabFrameInfoById', tabId: this.currentTabId}, function (response) {
+			var frameInfo = response.frameInfo;
+			var src = 'skin/logpage/images/dropdown-logo.png';
+			if (frameInfo && frameInfo.adguardDetected) {
+				src = 'skin/logpage/images/dropdown-logo-blue.png';
+			}
+			this.logoIcon.attr('src', src);
+		}.bind(this));
 	},
 
 	_bindSearchFilters: function () {
@@ -221,7 +280,7 @@ PageController.prototype = {
 		});
 
 		//bind click to filter by third party
-		$('[name="searchEventThirdParty"]').on('change', function (e) {
+		$('[name="searchEventThirdParty"]').on('change', function () {
 			self.searchThirdParty = this.checked;
 			self._filterEvents();
 		});
@@ -230,7 +289,7 @@ PageController.prototype = {
 		$('[name="searchEventBlocked"]').on('change', function () {
 			self.searchBlocked = this.checked;
 			self._filterEvents();
-		})
+		});
 
 		//bind click to filter by whitelisted
 		$('[name="searchEventWhitelisted"]').on('change', function () {
@@ -278,14 +337,18 @@ PageController.prototype = {
 
 		this.logTable.empty();
 
-		var tabInfo = filteringLog.getTabInfoById(tabId);
+		contentPage.sendMessage({type: 'getTabInfoById', tabId: tabId}, function (response) {
 
-		var filteringEvents = [];
-		if (tabInfo) {
-			filteringEvents = tabInfo.filteringEvents || [];
-		}
+			var tabInfo = response.tabInfo;
 
-		this._renderEvents(filteringEvents);
+			var filteringEvents = [];
+			if (tabInfo) {
+				filteringEvents = tabInfo.filteringEvents || [];
+			}
+
+			this._renderEvents(filteringEvents);
+
+		}.bind(this));
 	},
 
 	_renderEvents: function (events) {
@@ -364,7 +427,9 @@ RequestWizard.getFilterName = function (filterId) {
 	if (filterId == AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
 		return Messages.OPTIONS_WHITELIST;
 	}
-	var filterMetadata = antiBannerService.getFilterMetadata(filterId);
+	var filterMetadata = filtersMetadata.filter(function (el) {
+		return el.filterId == filterId;
+	})[0];
 	return filterMetadata ? filterMetadata.name : "";
 };
 
@@ -430,7 +495,7 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 	//bind events
 	template.find('#openRequestNewTab').on('click', function (e) {
 		e.preventDefault();
-		UI.openTab(filteringEvent.requestUrl, {inNewWindow: true});
+		contentPage.sendMessage({type: 'openTab', url: filteringEvent.requestUrl, options: {inNewWindow: true}});
 	});
 
 	var blockRequestButton = template.find('#blockRequest');
@@ -452,20 +517,20 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 
 	removeWhiteListDomainButton.on('click', function (e) {
 		e.preventDefault();
-		antiBannerService.unWhiteListFrame(frameInfo);
+		contentPage.sendMessage({type: 'unWhiteListFrame', frameInfo: frameInfo});
 		this.closeModal();
 	}.bind(this));
 
-    removeUserFilterRuleButton.on('click', function (e) {
-        e.preventDefault();
-        antiBannerService.removeUserFilter(requestRule.ruleText);
-        if (frameInfo.adguardDetected) {
-            // In integration mode rule may be present in whitelist filter
-            antiBannerService.unWhiteListFrame(frameInfo);
-            adguardApplication.removeRuleFromApp(requestRule.ruleText);
-        }
-        this.closeModal();
-    }.bind(this));
+	removeUserFilterRuleButton.on('click', function (e) {
+		e.preventDefault();
+		contentPage.sendMessage({type: 'removeUserFilter', text: requestRule.ruleText});
+		if (frameInfo.adguardDetected) {
+			// In integration mode rule may be present in whitelist filter
+			contentPage.sendMessage({type: 'unWhiteListFrame', frameInfo: frameInfo});
+			contentPage.sendMessage({type: 'removeRuleFromApp', ruleText: requestRule.ruleText});
+		}
+		this.closeModal();
+	}.bind(this));
 
 	if (!requestRule) {
 		blockRequestButton.removeClass('hidden');
@@ -555,15 +620,15 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 	template.find('#createRule').on('click', function (e) {
 		e.preventDefault();
 
-		var rule = FilterRule.createRule(ruleTextEl.val());
-		if (!rule) {
+		var ruleText = ruleTextEl.val();
+		if (!ruleText) {
 			//TODO: show error
 			return;
 		}
 		//add rule to user filter
-        antiBannerService.addUserFilterRule(rule.ruleText);
+		contentPage.sendMessage({type: 'addUserFilterRule', text: ruleText});
 		if (frameInfo.adguardDetected) {
-			adguardApplication.addRuleToApp(rule.ruleText);
+			contentPage.sendMessage({type: 'addRuleToApp', ruleText: ruleText});
 		}
 		//close modal
 		this.closeModal();
@@ -584,7 +649,7 @@ RequestWizard.splitToPatterns = function (requestUrl, prefix) {
 	var relative = StringUtils.substringAfter(requestUrl, domain + '/');
 
 	var path = StringUtils.substringBefore(relative, '?');
-	var query = StringUtils.substringAfter(relative, '?');
+	//var query = StringUtils.substringAfter(relative, '?');
 
 	if (path) {
 
@@ -654,7 +719,7 @@ RequestWizard.getRequestType = function (requestType) {
 		case 'IMAGE':
 			return 'Image';
 		case 'OBJECT':
-        case 'OBJECT-SUBREQUEST':
+		case 'OBJECT-SUBREQUEST':
 		case 'MEDIA':
 			return 'Media';
 		case 'FONT':
@@ -665,28 +730,24 @@ RequestWizard.getRequestType = function (requestType) {
 	return '';
 };
 
-function init() {
+var userSettings;
+var enabledFilters;
+var environmentOptions;
+var AntiBannerFiltersId;
+var EventNotifierTypes;
+var LogEvents;
+var filtersMetadata;
 
-	if (!backgroundPage.antiBannerService) {
-		setTimeout(function () {
-			init();
-		}, 10);
-		return;
-	}
+contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
 
-	antiBannerService = backgroundPage.antiBannerService;
-	adguardApplication = backgroundPage.adguardApplication;
-	UI = backgroundPage.UI;
-	filteringLog = backgroundPage.filteringLog;
-	EventNotifier = backgroundPage.EventNotifier;
-	LogEvents = backgroundPage.LogEvents;
-	UrlUtils = backgroundPage.UrlUtils;
-	StringUtils = backgroundPage.StringUtils;
-	AntiBannerFiltersId = backgroundPage.AntiBannerFiltersId;
-	Utils = backgroundPage.Utils;
+	userSettings = response.userSettings;
+	enabledFilters = response.enabledFilters;
+	filtersMetadata = response.filtersMetadata;
+	environmentOptions = response.environmentOptions;
 
-	FilterRule = backgroundPage.FilterRule;
-	UrlFilterRule = backgroundPage.UrlFilterRule;
+	AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
+	EventNotifierTypes = response.constants.EventNotifierTypes;
+	LogEvents = response.constants.LogEvents;
 
 	$(document).ready(function () {
 
@@ -721,15 +782,25 @@ function init() {
 		];
 
 		//set log is open
-		filteringLog.onOpenFilteringLogPage();
+		contentPage.sendMessage({type: 'onOpenFilteringLogPage'});
+
+		var listenerId;
 		//add listener for log events
-		var listenerId = EventNotifier.addSpecifiedListener(events, onEvent);
+		contentPage.sendMessage({type: 'addEventListener', events: events}, function (response) {
+			listenerId = response.listenerId;
+		});
+
+		contentPage.onMessage.addListener(function (message) {
+			if (message.type == 'notifyListeners') {
+				onEvent.apply(this, message.args);
+			}
+		});
 
 		var onUnload = function () {
 			if (listenerId) {
-				EventNotifier.removeListener(listenerId);
+				contentPage.sendMessage({type: 'removeListener', listenerId: listenerId});
 				//set log is closed
-				filteringLog.onCloseFilteringLogPage();
+				contentPage.sendMessage({type: 'onCloseFilteringLogPage'});
 				listenerId = null;
 			}
 		};
@@ -740,5 +811,5 @@ function init() {
 
 		pageController.init();
 	});
-}
-init();
+
+});

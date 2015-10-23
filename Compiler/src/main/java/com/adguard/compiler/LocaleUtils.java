@@ -25,6 +25,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -163,6 +165,17 @@ public class LocaleUtils {
 		String content = FileUtils.readFileToString(installManifest);
 		content = StringUtils.replace(content, "${localised}", sb.toString());
 		FileUtils.writeStringToFile(installManifest, content, "utf-8");
+	}
+
+	public static List<String> getMessageIds(File source) throws IOException {
+		File enMessages = new File(source, "_locales/en/messages.json");
+		byte[] content = FileUtils.readFileToByteArray(enMessages);
+		Map map = objectMapper.readValue(content, Map.class);
+		List<String> messageIds = new ArrayList<String>();
+		for (Object msgId : map.keySet()) {
+			messageIds.add("\"" + String.valueOf(msgId) + "\"");
+		}
+		return messageIds;
 	}
 
 	private static String findMessage(String[] messages, String key) {

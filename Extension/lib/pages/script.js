@@ -122,8 +122,7 @@ $(function () {
     }
 });
 
-function updateDisplayAdguardPromo() {
-    var showPromo = userSettings && userSettings.isShowInfoAboutAdguardFullVersion();
+function updateDisplayAdguardPromo(showPromo) {
     if (showPromo) {
         $('.download-adguard-block').show();
         $('.non-download-adguard-block').hide();
@@ -133,20 +132,20 @@ function updateDisplayAdguardPromo() {
     }
 }
 
-function customizePopupFooter() {
+function customizePopupFooter(isMacOs) {
 
     //fix title
-    var messageId = Utils.isMacOs() ? 'thankyou_want_full_protection_mac' : 'thankyou_want_full_protection';
+    var messageId = isMacOs ? 'thankyou_want_full_protection_mac' : 'thankyou_want_full_protection';
     var title = $('.thanks-prefooter .thanks-prefooter-title');
-    ext.i18n.translateElement(title[0], messageId);
+    i18n.translateElement(title[0], messageId);
 
     //fix title in table
-    messageId = Utils.isMacOs() ? 'thankyou_compare_full_title_mac' : 'thankyou_compare_full_title';
+    messageId = isMacOs ? 'thankyou_compare_full_title_mac' : 'thankyou_compare_full_title';
     title = $('.thanks-prefooter .thanks-prefooter-table .tpt-head-full');
-    ext.i18n.translateElement(title[0], messageId);
+    i18n.translateElement(title[0], messageId);
 
     //hide parental control feature for mac os
-    if (Utils.isMacOs()) {
+    if (isMacOs) {
         $('.parental-control-feature').hide();
     } else {
         $('.parental-control-feature').show();

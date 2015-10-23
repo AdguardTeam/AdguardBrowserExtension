@@ -17,29 +17,6 @@
 
 var I18nHelper = {
 
-    translateAll: function (getMessageFunc) {
-        try {
-            $("[i18n]").each(function () {
-                var $el = $(this);
-                var message = getMessageFunc($el.attr("i18n"));
-                I18nHelper.translateElement(this, message);
-            });
-            $("[i18n-plhr]").each(function () {
-                var $el = $(this);
-                $el.attr("placeholder", getMessageFunc($el.attr("i18n-plhr")));
-            });
-            $("[i18n-href]").each(function () {
-                var $el = $(this);
-                $el.attr("href", getMessageFunc($el.attr("i18n-href")));
-            });
-            $("[i18n-title]").each(function () {
-                var $el = $(this);
-                $el.attr("title", getMessageFunc($el.attr("i18n-title")));
-            });
-        } catch (ex) {
-        }
-    },
-
     translateElement: function (element, message) {
 
         try {

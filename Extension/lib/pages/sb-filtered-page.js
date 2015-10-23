@@ -36,9 +36,6 @@ function onToggleClicked(toggleButton, reportButton, goButton) {
     goButton.attr('class', 'redlink');
 }
 
-var backgroundPage = ext.backgroundPage.getWindow();
-var UI = backgroundPage.UI;
-
 $(document).ready(function () {
 
     var toggleButton = $("#toggle-button");
@@ -62,8 +59,8 @@ $(document).ready(function () {
         reportButton.attr("href", "https://adguard.com/site.html?domain=" + host + "&utm_source=extension&aid=16593");
         var decodeHost = decodeURIComponent(host);
 
-        ext.i18n.translateElement(document.getElementById("malware-text"), "sb_malware_site", [decodeHost]);
-        ext.i18n.translateElement(document.getElementById("phishing-text"), "sb_phishing_site", [decodeHost]);
+        i18n.translateElement(document.getElementById("malware-text"), "sb_malware_site", [decodeHost]);
+        i18n.translateElement(document.getElementById("phishing-text"), "sb_phishing_site", [decodeHost]);
     }
     if (url) {
         goButton.attr("href", decodeURIComponent(url));
@@ -81,6 +78,6 @@ $(document).ready(function () {
     });
     goButton.on('click', function (e) {
         e.preventDefault();
-        UI.openSafebrowsingTrusted(this.href);
+        contentPage.sendMessage({type: 'openSafebrowsingTrusted', url: this.href});
     });
 });

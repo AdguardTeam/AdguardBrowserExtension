@@ -62,14 +62,14 @@ FilteringLog.prototype.synchronizeOpenTabs = function (callback) {
 FilteringLog.prototype.addTab = function (tab) {
 	var tabInfo = this._updateTabInfo(tab);
 	if (tabInfo) {
-		EventNotifier.notifyListeners(LogEvents.TAB_ADDED, tabInfo);
+		EventNotifier.notifyListeners(LogEvents.TAB_ADDED, this.serializeTabInfo(tabInfo));
 	}
 };
 
 FilteringLog.prototype.removeTab = function (tab) {
 	var tabInfo = this.tabsInfo.get(tab);
 	if (tabInfo) {
-		EventNotifier.notifyListeners(LogEvents.TAB_CLOSE, tabInfo);
+		EventNotifier.notifyListeners(LogEvents.TAB_CLOSE, this.serializeTabInfo(tabInfo));
 	}
 	this.tabsInfo.remove(tab);
 };
@@ -77,7 +77,7 @@ FilteringLog.prototype.removeTab = function (tab) {
 FilteringLog.prototype.updateTab = function (tab) {
 	var tabInfo = this._updateTabInfo(tab);
 	if (tabInfo) {
-		EventNotifier.notifyListeners(LogEvents.TAB_UPDATE, tabInfo);
+		EventNotifier.notifyListeners(LogEvents.TAB_UPDATE, this.serializeTabInfo(tabInfo));
 	}
 };
 
@@ -114,12 +114,7 @@ FilteringLog.prototype.getTabFrameInfoById = function (tabId) {
 
 FilteringLog.prototype.getTabInfo = function (tab) {
 	var tabInfo = this.tabsInfo.get(tab);
-	var tabInfoSerialized = Object.create(null);
-	if (tabInfo) {
-		tabInfoSerialized.tabId = tabInfo.tabId;
-		tabInfoSerialized.isHttp = tabInfo.isHttp;
-	}
-	return tabInfoSerialized;
+	return this.serializeTabInfo(tabInfo);
 };
 
 FilteringLog.prototype.clearEventsForTab = function (tab) {
@@ -129,7 +124,7 @@ FilteringLog.prototype.clearEventsForTab = function (tab) {
 	}
 	//remove previous events
 	delete tabInfo.filteringEvents;
-	EventNotifier.notifyListeners(LogEvents.TAB_RESET, tabInfo);
+	EventNotifier.notifyListeners(LogEvents.TAB_RESET, this.serializeTabInfo(tabInfo));
 };
 
 FilteringLog.prototype.addEvent = function (tab, requestUrl, frameUrl, requestType, requestRule) {
@@ -172,14 +167,14 @@ FilteringLog.prototype.addEvent = function (tab, requestUrl, frameUrl, requestTy
 		tabInfo.filteringEvents.splice(1, 1);
 	}
 
-	EventNotifier.notifyListeners(LogEvents.EVENT_ADDED, tabInfo, filteringEvent);
+	EventNotifier.notifyListeners(LogEvents.EVENT_ADDED, this.serializeTabInfo(tabInfo), filteringEvent);
 };
 
 FilteringLog.prototype.clearEventsByTabId = function (tabId) {
 	var tabInfo = this.getTabInfoById(tabId);
 	if (tabInfo) {
 		delete tabInfo.filteringEvents;
-		EventNotifier.notifyListeners(LogEvents.TAB_RESET, tabInfo);
+		EventNotifier.notifyListeners(LogEvents.TAB_RESET, this.serializeTabInfo(tabInfo));
 	}
 };
 
@@ -196,4 +191,18 @@ FilteringLog.prototype.onCloseFilteringLogPage = function () {
 			delete tabsInfo[i].filteringEvents;
 		}
 	}
+};
+
+FilteringLog.prototype.serializeTabInfo = function (tabInfo) {
+	if (!tabInfo) {
+		return null;
+	}
+	return {
+		tabId: tabInfo.tabId,
+		isHttp: tabInfo.isHttp,
+		filteringEvents: tabInfo.filteringEvents,
+		tab: {
+			title: tabInfo.tab.title
+		}
+	};
 };

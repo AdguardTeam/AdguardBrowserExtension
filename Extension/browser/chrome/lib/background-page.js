@@ -14,7 +14,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var BrowserTab, BrowserTabs, BrowserWindow;
+var BrowserTab, BrowserTabs;
+var ext;
 
 (function () {
 
@@ -371,7 +372,7 @@ var BrowserTab, BrowserTabs, BrowserWindow;
         }
     };
 
-    BrowserWindow = function (win) {
+    var BrowserWindow = function (win) {
         this.id = win.id;
         this.visible = win.state != "minimized";
     };
@@ -409,6 +410,19 @@ var BrowserTab, BrowserTabs, BrowserWindow;
             });
         }
     };
+
+
+    ext = {};
+    ext.getURL = chrome.extension.getURL;
+    ext.onMessage = new OnMessageEvent();
+
+    ext.i18n = chrome.i18n;
+
+    ext.backgroundPage = {};
+    ext.backgroundPage.getWindow = function () {
+        return chrome.extension.getBackgroundPage();
+    };
+    ext.backgroundPage.sendMessage = SendMessageFunction;
 
     ext.app = {
         getDetails: chrome.app.getDetails

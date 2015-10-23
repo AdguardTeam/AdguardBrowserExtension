@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var ext, BaseEvent;
+var BaseEvent, OnMessageEvent, SendMessageFunction;
 
 (function () {
 
@@ -73,7 +73,7 @@ var ext, BaseEvent;
 		}
 	};
 
-	var OnMessageEvent = function () {
+	OnMessageEvent = function () {
 		BaseEvent.call(this, detectExtensionOnMessage());
 	};
 
@@ -91,14 +91,6 @@ var ext, BaseEvent;
 		}
 	};
 
-	ext = {};
-	ext.i18n = chrome.i18n;
-	ext.getURL = chrome.extension.getURL;
-	ext.onMessage = new OnMessageEvent();
+	SendMessageFunction = detectExtensionSendMessage();
 
-	ext.backgroundPage = {};
-	ext.backgroundPage.getWindow = function () {
-		return chrome.extension.getBackgroundPage();
-	};
-	ext.backgroundPage.sendMessage = detectExtensionSendMessage();
 })();

@@ -27,8 +27,8 @@ PageController.prototype = {
 		$(".sp-table-row-input").toggleCheckbox();
 		$("[data-popup]").popupHelp();
 
-		updateDisplayAdguardPromo();
-        customizePopupFooter();
+		updateDisplayAdguardPromo(!userSettings.values[userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO]);
+		customizePopupFooter(environmentOptions.isMacOs);
 	},
 
 	_bindEvents: function () {
@@ -45,40 +45,58 @@ PageController.prototype = {
 
 		$(".openExtensionStore").on('click', function (e) {
 			e.preventDefault();
-			UI.openExtensionStore();
+			contentPage.sendMessage({type: 'openExtensionStore'});
 		});
 	},
 
 	safebrowsingEnabledChange: function () {
-		userSettings.changeEnableSafebrowsing(this.checked);
+		contentPage.sendMessage({
+			type: 'changeUserSetting',
+			key: userSettings.names.DISABLE_SAFEBROWSING,
+			value: !this.checked
+		});
 	},
 
 	trackingFilterEnabledChange: function () {
 		if (this.checked) {
-			antiBannerService.addAndEnableFilter(AntiBannerFiltersId.TRACKING_FILTER_ID);
+			contentPage.sendMessage({type: 'addAndEnableFilter', filterId: AntiBannerFiltersId.TRACKING_FILTER_ID});
 		} else {
-			antiBannerService.removeAntiBannerFilter(AntiBannerFiltersId.TRACKING_FILTER_ID);
+			contentPage.sendMessage({type: 'removeAntiBannerFilter', filterId: AntiBannerFiltersId.TRACKING_FILTER_ID});
 		}
 	},
 
 	socialFilterEnabledChange: function () {
 		if (this.checked) {
-			antiBannerService.addAndEnableFilter(AntiBannerFiltersId.SOCIAL_FILTER_ID);
+			contentPage.sendMessage({type: 'addAndEnableFilter', filterId: AntiBannerFiltersId.SOCIAL_FILTER_ID});
 		} else {
-			antiBannerService.removeAntiBannerFilter(AntiBannerFiltersId.SOCIAL_FILTER_ID);
+			contentPage.sendMessage({type: 'removeAntiBannerFilter', filterId: AntiBannerFiltersId.SOCIAL_FILTER_ID});
 		}
 	},
 
 	sendSafebrowsingStatsChange: function () {
-		userSettings.changeSendSafebrowsingStats(this.checked);
-		userSettings.changeCollectHitsCount(this.checked);
+		contentPage.sendMessage({
+			type: 'changeUserSetting',
+			key: userSettings.names.DISABLE_SEND_SAFEBROWSING_STATS,
+			value: !this.checked
+		});
+		contentPage.sendMessage({
+			type: 'changeUserSetting',
+			key: userSettings.names.DISABLE_COLLECT_HITS,
+			value: !this.checked
+		});
 	},
 
 	_render: function () {
-		var safebrowsingInfo = userSettings.getSafebrowsingInfo();
-		this._renderSafebrowsingSection(safebrowsingInfo.enabled, safebrowsingInfo.sendStats, userSettings.collectHitsCount());
-		this._renderFilter(this.trackingFilterEnabledCheckbox, antiBannerService.isAntiBannerFilterEnabled(AntiBannerFiltersId.TRACKING_FILTER_ID));
-		this._renderFilter(this.socialFilterEnabledCheckbox, antiBannerService.isAntiBannerFilterEnabled(AntiBannerFiltersId.SOCIAL_FILTER_ID));
+
+		var safebrowsingEnabled = !userSettings.values[userSettings.names.DISABLE_SAFEBROWSING];
+		var sendSafebrowsingStats = !userSettings.values[userSettings.names.DISABLE_SEND_SAFEBROWSING_STATS];
+		var collectHitsCount = !userSettings.values[userSettings.names.DISABLE_COLLECT_HITS];
+		var trackingFilterEnabled = AntiBannerFiltersId.TRACKING_FILTER_ID in enabledFilters;
+		var socialFilterEnabled = AntiBannerFiltersId.SOCIAL_FILTER_ID in enabledFilters;
+
+		this._renderSafebrowsingSection(safebrowsingEnabled, sendSafebrowsingStats, collectHitsCount);
+		this._renderFilter(this.trackingFilterEnabledCheckbox, trackingFilterEnabled);
+		this._renderFilter(this.socialFilterEnabledCheckbox, socialFilterEnabled);
 	},
 
 	_renderSafebrowsingSection: function (safebrowsingEnabled, sendSafebrowsingStats, collectHitStats) {
@@ -91,35 +109,20 @@ PageController.prototype = {
 	}
 };
 
-var backgroundPage = ext.backgroundPage.getWindow();
-var antiBannerService;
-var UI;
 var userSettings;
 var AntiBannerFiltersId;
-var Utils;
+var enabledFilters;
+var environmentOptions;
 
-var onInit = function () {
+contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
+
+	userSettings = response.userSettings;
+	enabledFilters = response.enabledFilters;
+	environmentOptions = response.environmentOptions;
+	AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
 
 	$(document).ready(function () {
 		var controller = new PageController();
 		controller.init();
 	});
-};
-
-function init() {
-
-	if (!(backgroundPage.antiBannerService && backgroundPage.antiBannerService.requestFilterReady)) {
-		setTimeout(function () {
-			init();
-		}, 10);
-		return;
-	}
-
-	antiBannerService = backgroundPage.antiBannerService;
-	UI = backgroundPage.UI;
-	userSettings = backgroundPage.userSettings;
-	AntiBannerFiltersId = backgroundPage.AntiBannerFiltersId;
-    Utils = backgroundPage.Utils;
-	onInit();
-}
-init();
+});

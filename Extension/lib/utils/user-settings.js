@@ -157,4 +157,22 @@ UserSettings.prototype.changeDefaultWhiteListMode = function (enabled) {
     this.setProperty(this.settings.DEFAULT_WHITE_LIST_MODE, enabled);
 };
 
+UserSettings.prototype.getAllSettings = function () {
+
+    var result = {
+        names: Object.create(null),
+        values: Object.create(null),
+    };
+
+    for (var key in this.settings) {
+        if (this.settings.hasOwnProperty(key)) {
+            var setting = this.settings[key];
+            result.names[key] = setting;
+            result.values[setting] = this.getProperty(setting);
+        }
+    }
+
+    return result;
+};
+
 var userSettings = exports.userSettings = new UserSettings();

@@ -18,23 +18,14 @@
         <script type="text/javascript" src="../lib/libs/moment-with-locales.min.js"></script>
         <script type="text/javascript" src="../lib/content-script/common-script.js"></script>
         <script type="text/javascript" src="../lib/content-script/content-script.js"></script>
-        <script type="text/javascript" src="../lib/pages/i18n-helper.js"></script>
+        <script type="text/javascript" src="../lib/content-script/content-utils.js"></script>
+        <script type="text/javascript" src="../lib/content-script/i18n-helper.js"></script>
         <script type="text/javascript" src="../lib/pages/i18n.js"></script>
         <script type="text/javascript" src="../lib/pages/script.js"></script>
         <script type="text/javascript" src="../lib/pages/options.js"></script>
     </#if>
     <#if browser.name() == "FIREFOX" || browser.name() == "FIREFOX_LEGACY">
         <link rel="shortcut icon" href="skin/favicon.png"/>
-        <script type="text/javascript" src="libs/jquery-1.8.3.min.js"></script>
-        <script type="text/javascript" src="libs/bootstrap.min.js"></script>
-        <script type="text/javascript" src="libs/jquery.mousewheel.min.js"></script>
-        <script type="text/javascript" src="libs/jquery.jscrollpane.min.js"></script>
-        <script type="text/javascript" src="libs/moment-with-locales.min.js"></script>
-        <script type="text/javascript" src="content-script/content-script.js"></script>
-        <script type="text/javascript" src="pages/i18n-helper.js"></script>
-        <script type="text/javascript" src="pages/i18n.js"></script>
-        <script type="text/javascript" src="pages/script.js"></script>
-        <script type="text/javascript" src="pages/options.js"></script>
     </#if>
 </head>
 <body>
@@ -264,11 +255,6 @@
         </nav>
     </div>
 </footer>
-
-<div id="filtersUpdatePopup" class="alert-attention updates-filter-popup" style="display: none;">
-    <div class="alert-attention-title" i18n="options_popup_update_title"></div>
-    <div class="alert-attention-text"></div>
-</div>
 
 <div id="resetStatsPopup" class="alert-attention updates-filter-popup" style="display: none;">
     <div class="alert-attention-title" i18n="options_reset_stats_done"></div>

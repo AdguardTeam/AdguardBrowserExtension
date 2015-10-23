@@ -29,13 +29,10 @@ var RequestTypes = require('utils/common').RequestTypes;
 /**
  * AdguardApplication is used for integration of Adguard extension and Adguard for Windows/Mac/Android versions.
  */
-var AdguardApplication = exports.AdguardApplication = function (framesMap, options) {
+var AdguardApplication = exports.AdguardApplication = function (framesMap) {
 	this.serviceClient = new ServiceClient();
 	this.integrationMode = this.INTEGRATION_MODE_FULL;
 	this.framesMap = framesMap;
-	if (options) {
-		this.i18nGetMessage = options.i18nGetMessage;
-	}
 };
 
 AdguardApplication.prototype = {
@@ -142,7 +139,7 @@ AdguardApplication.prototype = {
 	 *
 	 * @param tab Tab
 	 */
-	shouldOverrideReferrer: function(tab) {
+	shouldOverrideReferrer: function (tab) {
 		return this.framesMap.isTabAdguardWhiteListed(tab);
 	},
 
@@ -150,14 +147,14 @@ AdguardApplication.prototype = {
 	 * Checks if request is for AG desktop app to intercept
 	 * @param url request URL
 	 */
-	isIntegrationRequest: function(url) {
+	isIntegrationRequest: function (url) {
 		return url && url.indexOf(this.serviceClient.adguardAppUrl) == 0;
 	},
 
 	/**
 	 * Gets base url for requests to desktop AG
 	 */
-	getIntegrationBaseUrl: function() {
+	getIntegrationBaseUrl: function () {
 		return this.serviceClient.adguardAppUrl;
 	},
 
@@ -165,7 +162,7 @@ AdguardApplication.prototype = {
 	 * Gets headers used to authorize request to desktop AG
 	 * In our case we set Referer header. It can't be forged by the webpage so it's enough.
 	 */
-	getAuthorizationHeaders: function() {
+	getAuthorizationHeaders: function () {
 		return [{
 			headerName: 'Referer',
 			headerValue: this.serviceClient.injectionsUrl
@@ -177,7 +174,7 @@ AdguardApplication.prototype = {
 			if (request) {
 				var header = request.getResponseHeader(this.ADGUARD_APP_HEADER);
 				if (header) {
-					var appInfo = this._parseAppHeader(header, this.i18nGetMessage);
+					var appInfo = this._parseAppHeader(header);
 					this.adguardProductName = appInfo.adguardProductName;
 					this.adguardAppVersion = appInfo.adguardAppVersion;
 					this.integrationMode = appInfo.integrationMode;
@@ -226,7 +223,7 @@ AdguardApplication.prototype = {
 		}
 
 		// Set adguard detected in frame
-		var appInfo = this._parseAppHeader(adguardAppHeaderValue, this.i18nGetMessage);
+		var appInfo = this._parseAppHeader(adguardAppHeaderValue);
 
 		this.adguardProductName = appInfo.adguardProductName;
 		this.adguardAppVersion = appInfo.adguardAppVersion;
@@ -251,11 +248,10 @@ AdguardApplication.prototype = {
 	 * Parses Adguard version from X-Adguard-Filtered header
 	 *
 	 * @param header Header value
-	 * @param i18nGetMessage i18n get message function
 	 * @returns {{adguardProductName: null, adguardAppVersion: null, integrationMode: null}}
 	 * @private
 	 */
-	_parseAppHeader: function (header, i18nGetMessage) {
+	_parseAppHeader: function (header) {
 		var result = {
 			adguardProductName: null,
 			adguardAppVersion: null,
@@ -267,9 +263,9 @@ AdguardApplication.prototype = {
 			// header is either Adguard for Mac or Adguard for Windows
 			// depending on it we use localized product name
 			if (StringUtils.containsIgnoreCase(adguardProductName, "mac")) {
-				result.adguardProductName = i18nGetMessage("adguard_product_mac");
+				result.adguardProductName = i18n.getMessage("adguard_product_mac");
 			} else {
-				result.adguardProductName = i18nGetMessage("adguard_product_windows");
+				result.adguardProductName = i18n.getMessage("adguard_product_windows");
 			}
 			result.adguardAppVersion = RegExp.$2;
 			result.integrationMode = this.INTEGRATION_MODE_FULL;

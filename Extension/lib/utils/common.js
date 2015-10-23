@@ -249,11 +249,11 @@ var Utils = exports.Utils = {
     },
 
     isWindowsOs: function () {
-        return Utils.navigator.userAgent.toLowerCase().indexOf("win") >= 0;
+        return this.navigator.userAgent.toLowerCase().indexOf("win") >= 0;
     },
 
     isMacOs: function () {
-        return Utils.navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+        return this.navigator.platform.toUpperCase().indexOf('MAC') >= 0;
     },
 
     getExtensionStoreLink: function () {
@@ -266,13 +266,13 @@ var Utils = exports.Utils = {
         }
         urlBuilder.push("/extension-page.html?browser=");
 
-        if (Utils.isOperaBrowser()) {
+        if (this.isOperaBrowser()) {
             urlBuilder.push("opera");
-        } else if (Utils.isFirefoxBrowser()) {
+        } else if (this.isFirefoxBrowser()) {
             urlBuilder.push("firefox");
-        } else if (Utils.isYaBrowser()) {
+        } else if (this.isYaBrowser()) {
             urlBuilder.push("yabrowser");
-        } else if (Utils.isSafariBrowser()) {
+        } else if (this.isSafariBrowser()) {
             urlBuilder.push("safari");
         } else {
             urlBuilder.push("chrome");
@@ -294,23 +294,23 @@ var Utils = exports.Utils = {
         };
     },
 
-    getFiltersUpdateResultMessage: function (i18nGetMessage, success, updatedFilters) {
-        var title = i18nGetMessage("options_popup_update_title");
+    getFiltersUpdateResultMessage: function (success, updatedFilters) {
+        var title = i18n.getMessage("options_popup_update_title");
         var text = [];
         if (success) {
             if (updatedFilters.length == 0) {
-                text.push(i18nGetMessage("options_popup_update_not_found"));
+                text.push(i18n.getMessage("options_popup_update_not_found"));
             } else {
                 updatedFilters.sort(function (a, b) {
                     return a.displayNumber - b.displayNumber;
                 });
                 for (var i = 0; i < updatedFilters.length; i++) {
                     var filter = updatedFilters[i];
-                    text.push(i18nGetMessage("options_popup_update_updated", [filter.name, filter.version]).replace("$1", filter.name).replace("$2", filter.version));
+                    text.push(i18n.getMessage("options_popup_update_updated", [filter.name, filter.version]).replace("$1", filter.name).replace("$2", filter.version));
                 }
             }
         } else {
-            text.push(i18nGetMessage("options_popup_update_error"));
+            text.push(i18n.getMessage("options_popup_update_error"));
         }
 
         return {
@@ -319,36 +319,19 @@ var Utils = exports.Utils = {
         }
     },
 
-    getFiltersEnabledResultMessage: function (i18nGetMessage, enabledFilters) {
-        var title = i18nGetMessage("alert_popup_filter_enabled_title");
+    getFiltersEnabledResultMessage: function (enabledFilters) {
+        var title = i18n.getMessage("alert_popup_filter_enabled_title");
         var text = [];
         enabledFilters.sort(function (a, b) {
             return a.displayNumber - b.displayNumber;
         });
         for (var i = 0; i < enabledFilters.length; i++) {
             var filter = enabledFilters[i];
-            text.push(i18nGetMessage("alert_popup_filter_enabled_text", [filter.name]).replace("$1", filter.name));
+            text.push(i18n.getMessage("alert_popup_filter_enabled_text", [filter.name]).replace("$1", filter.name));
         }
         return {
             title: title,
             text: text
-        }
-    },
-
-    getAbpSubscribeConfirmMessage: function (i18nGetMessage, filterMetadata, subscriptionTitle) {
-        if (filterMetadata) {
-            //ok, filter found
-            return i18nGetMessage('abp_subscribe_confirm_enable', [filterMetadata.name]).replace("$1", filterMetadata.name);
-        } else {
-            //filter not found
-            return i18nGetMessage('abp_subscribe_confirm_import', [subscriptionTitle]).replace("$1", subscriptionTitle);
-        }
-    },
-
-    getAbpSubscribeFinishedMessage: function (i18nGetMessage, rulesCount) {
-        return {
-            title: i18nGetMessage('abp_subscribe_confirm_import_finished_title'),
-            text: i18nGetMessage('abp_subscribe_confirm_import_finished_text', [rulesCount]).replace("$1", rulesCount)
         }
     },
 

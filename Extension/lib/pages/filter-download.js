@@ -15,39 +15,17 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var onInit = function () {
+$(document).ready(function () {
 
-	$(document).ready(function () {
+    NProgress.inc();
 
-		NProgress.inc();
-
-		var onLoaded = function () {
-			NProgress.done();
-			setTimeout(function () {
-				if (window) {
-					UI.openThankYouPage();
-				}
-			}, 1000);
-		};
-		antiBannerService.initializeFiltersOnInstall(onLoaded);
-	});
-};
-
-var backgroundPage = ext.backgroundPage.getWindow();
-var antiBannerService;
-var UI;
-
-function init() {
-
-	if (!backgroundPage.antiBannerService) {
-		setTimeout(function () {
-			init();
-		}, 10);
-		return;
-	}
-
-	antiBannerService = backgroundPage.antiBannerService;
-	UI = backgroundPage.UI;
-	onInit();
-}
-init();
+    var onLoaded = function () {
+        NProgress.done();
+        setTimeout(function () {
+            if (window) {
+                contentPage.sendMessage({type: 'openThankYouPage'});
+            }
+        }, 1000);
+    };
+    contentPage.sendMessage({type: 'initializeFiltersOnInstall'}, onLoaded);
+});
