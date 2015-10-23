@@ -65,6 +65,8 @@ var UrlFilterRule = exports.UrlFilterRule = function (rule) {
         // Searching for shortcut
         this.shortcut = findShortcut(urlRuleText);
     }
+
+    this.isGenericRule = this.isGeneric();
 };
 
 UrlFilterRule.prototype = Object.create(FilterRule.prototype);
@@ -137,12 +139,16 @@ UrlFilterRule.prototype.isPermitted = function (domainName) {
  */
 UrlFilterRule.prototype.isGeneric = function () {
 
-    var domain = parseRuleDomain(this.ruleText);
-    if (domain && domain.match(/^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$/g)) {
-        return false;
+    if (this.isGenericRule === undefined) {
+        var domain = parseRuleDomain(this.ruleText);
+        if (domain && domain.match(/^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$/g)) {
+            this.isGenericRule = false;
+        } else {
+            this.isGenericRule = FilterRule.prototype.isGeneric.call(this);
+        }
     }
 
-    return FilterRule.prototype.isGeneric.call(this);
+    return this.isGenericRule;
 };
 
 /**
