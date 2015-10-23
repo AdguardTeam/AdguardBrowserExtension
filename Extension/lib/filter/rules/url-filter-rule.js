@@ -358,41 +358,9 @@ function getAsciiDomainRule(ruleText) {
             return ruleText;
         }
 
-        var i;
-        var startsWith = ["http://www.", "https://www.", "http://", "https://", "||", "//"];
-        var contains = ["/", "^"];
-        var startIndex = -1;
+        var domain = parseRuleDomain(ruleText, true);
+        if (!domain) return "";
 
-        for (i = 0; i < startsWith.length; i++) {
-            var start = startsWith[i];
-            if (StringUtils.startWith(ruleText, start)) {
-                startIndex = start.length;
-                break;
-            }
-        }
-
-        //exclusive for domain
-        var exceptRule = "domain=";
-        var domainIndex = ruleText.indexOf(exceptRule);
-        if (domainIndex > -1 && ruleText.indexOf("$") > -1) {
-            startIndex = domainIndex + exceptRule.length;
-        }
-
-        if (startIndex == -1) {
-            return "";
-        }
-
-        var symbolIndex = -1;
-        for (i = 0; i < contains.length; i++) {
-            var contain = contains[i];
-            var index = ruleText.indexOf(contain, startIndex);
-            if (index >= 0) {
-                symbolIndex = index;
-                break;
-            }
-        }
-
-        var domain = symbolIndex == -1 ? ruleText.substring(startIndex) : ruleText.substring(startIndex, symbolIndex);
         //In case of one domain
         return StringUtils.replaceAll(ruleText, domain, UrlUtils.toPunyCode(domain));
     } catch (ex) {
@@ -405,14 +373,15 @@ function getAsciiDomainRule(ruleText) {
  * Searches for domain name in rule text.
  *
  * @param ruleText Rule text
+ * @param parseOptions Flag to parse rule options
  * @returns string domain name
  */
-function parseRuleDomain(ruleText) {
+function parseRuleDomain(ruleText, parseOptions) {
     try {
         var i;
         var startsWith = ["http://www.", "https://www.", "http://", "https://", "||", "//"];
         var contains = ["/", "^"];
-        var startIndex = 0;
+        var startIndex = parseOptions ? -1 : 0;
 
         for (i = 0; i < startsWith.length; i++) {
             var start = startsWith[i];
@@ -422,8 +391,17 @@ function parseRuleDomain(ruleText) {
             }
         }
 
-        if (startIndex == -1) {
-            return "";
+        if (parseOptions) {
+            //exclusive for domain
+            var exceptRule = "domain=";
+            var domainIndex = ruleText.indexOf(exceptRule);
+            if (domainIndex > -1 && ruleText.indexOf("$") > -1) {
+                startIndex = domainIndex + exceptRule.length;
+            }
+
+            if (startIndex == -1) {
+                return "";
+            }
         }
 
         var symbolIndex = -1;
