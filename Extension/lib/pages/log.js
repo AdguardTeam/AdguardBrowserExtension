@@ -328,7 +328,7 @@ PageController.prototype = {
 		el.append($('<div>', {text: event.requestUrl, class: 'task-manager-content-header-body-col task-manager-content-item-url'}));
 		el.append($('<div>', {text: RequestWizard.getRequestType(event.requestType), class: requestTypeClass}));
 		el.append($('<div>', {text: ruleText, class: 'task-manager-content-header-body-col task-manager-content-item-rule'}));
-		el.append($('<div>', {text: event.frameDomain, class: 'task-manager-content-header-body-col task-manager-content-item-source'}));
+		el.append($('<div>', {text: RequestWizard.getSource(event.frameDomain), class: 'task-manager-content-header-body-col task-manager-content-item-source'}));
 
 		return el;
 	},
@@ -397,7 +397,11 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 
 	template.find('[attr-text="requestUrl"]').text(filteringEvent.requestUrl);
 	template.find('[attr-text="requestType"]').text(RequestWizard.getRequestType(filteringEvent.requestType));
-	template.find('[attr-text="frameDomain"]').text(filteringEvent.frameDomain);
+	template.find('[attr-text="frameDomain"]').text(RequestWizard.getSource(filteringEvent.frameDomain));
+	if (!filteringEvent.frameDomain || filteringEvent.frameDomain == null) {
+		template.find('[attr-text="frameDomain"]').closest('.adg-modal-window-locking-info-left-row').hide();
+	}
+
 	if (requestRule) {
 		if (requestRule.filterId != AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
 			template.find('[attr-text="requestRule"]').text(requestRule.ruleText);
@@ -523,6 +527,9 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 
 	ruleDomainCheckbox.attr('id', 'ruleDomain');
 	ruleDomainCheckbox.parent().find('label').attr('for', 'ruleDomain');
+	if (!urlDomain || urlDomain == null) {
+		ruleDomainCheckbox.closest('.checkbox').hide();
+	}
 
 	ruleMatchCaseCheckbox.attr('id', 'ruleMatchCase');
 	ruleMatchCaseCheckbox.parent().find('label').attr('for', 'ruleMatchCase');
@@ -623,7 +630,7 @@ RequestWizard.createRuleFromParams = function (urlPattern, urlDomain, permitDoma
 	var options = [];
 
 	//add domain option
-	if (permitDomain) {
+	if (permitDomain && urlDomain) {
 		options.push(UrlFilterRule.DOMAIN_OPTION + '=' + urlDomain);
 	}
 	//add match case option
@@ -662,6 +669,14 @@ RequestWizard.getRequestType = function (requestType) {
 		case 'OTHER':
 			return 'Other';
 	}
+	return '';
+};
+
+RequestWizard.getSource = function (frameDomain) {
+	if (frameDomain && frameDomain != null) {
+		return frameDomain;
+	}
+
 	return '';
 };
 
