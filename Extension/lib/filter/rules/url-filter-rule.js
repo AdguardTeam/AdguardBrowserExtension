@@ -65,8 +65,6 @@ var UrlFilterRule = exports.UrlFilterRule = function (rule) {
         // Searching for shortcut
         this.shortcut = findShortcut(urlRuleText);
     }
-
-    this.isGenericRule = this.isGeneric();
 };
 
 UrlFilterRule.prototype = Object.create(FilterRule.prototype);
@@ -130,25 +128,6 @@ UrlFilterRule.prototype.isPermitted = function (domainName) {
     }
 
     return FilterRule.prototype.isPermitted.call(this, domainName);
-};
-
-/**
- * Checks whether this rule is generic or domain specific
- *
- * @returns boolean true if rule is generic, otherwise false
- */
-UrlFilterRule.prototype.isGeneric = function () {
-
-    if (this.isGenericRule === undefined) {
-        var domain = parseRuleDomain(this.ruleText);
-        if (domain && domain.match(/^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$/g)) {
-            this.isGenericRule = false;
-        } else {
-            this.isGenericRule = FilterRule.prototype.isGeneric.call(this);
-        }
-    }
-
-    return this.isGenericRule;
 };
 
 /**

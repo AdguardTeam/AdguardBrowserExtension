@@ -56,4 +56,13 @@ var CssFilterRule = exports.CssFilterRule = function (rule) {
 	this.cssSelector = rule.substring(indexOfMask + mask.length);
 };
 
+/**
+ * Checks whether this rule is generic or domain specific
+ *
+ * @returns boolean true if rule is generic, otherwise false
+ */
+CssFilterRule.prototype.isGeneric = function () {
+	return FilterRule.prototype.isDomainSensitive.call(this);
+};
+
 CssFilterRule.prototype = Object.create(FilterRule.prototype);
