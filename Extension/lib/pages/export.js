@@ -14,23 +14,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var backgroundPage = ext.backgroundPage.getWindow();
-var antiBannerService;
+$(document).ready(function () {
 
-function init() {
+	var callback = function (response) {
 
-	if (!backgroundPage.antiBannerService) {
-		setTimeout(function () {
-			init();
-		}, 10);
-		return;
-	}
-
-	antiBannerService = backgroundPage.antiBannerService;
-	$(document).ready(function () {
-
-		var whitelist = document.location.hash == '#wl';
-		var rules = whitelist ? antiBannerService.getWhiteListDomains() : antiBannerService.getUserFilters();
+		var rules = response.rules;
 
 		if (!rules || rules.length == 0) {
 			return;
@@ -45,8 +33,18 @@ function init() {
 		if (showSaveFunc) {
 			showSaveFunc(rulesText, filename, 'text/plain;charset=utf-8');
 		}
-	});
-}
+	};
+
+	var whitelist = document.location.hash == '#wl';
+	var messageType;
+	if (whitelist) {
+		messageType = 'getWhiteListDomains';
+	} else {
+		messageType = 'getUserFilters';
+	}
+
+	contentPage.sendMessage({type: messageType}, callback);
+});
 
 var showSaveFunc = (function () {
 
@@ -92,5 +90,3 @@ var showSaveFunc = (function () {
 	}
 	return showSave;
 })();
-
-init();

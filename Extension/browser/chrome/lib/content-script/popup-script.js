@@ -27,6 +27,8 @@
 	};
 	window.BrowserTabs = backgroundPage.BrowserTabs;
 
+	window.i18n = chrome.i18n;
+
 	$(window).on('unload', function () {
 		if (window.tab) {
 			UI.updateTabIconAndContextMenu(tab, true);

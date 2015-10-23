@@ -268,7 +268,7 @@ var Adguard = function () {
 			// Ignore (does not work in FF)
 		}
 
-		sendMessage('load-assistant-iframe', null, function (response) {
+		contentPage.sendMessage({type: 'loadAssistant'}, function (response) {
 
 			if (response.localization) {
 				self.localization = response.localization;
@@ -616,95 +616,95 @@ var Adguard = function () {
 		findInIframe('#oneDomainText').text(path);
 	};
 
-    var renderSliderAndBindEvents = function (options) {
+	var renderSliderAndBindEvents = function (options) {
 
-        var $document = findIframe().contents();
-        var $slider = $("#slider", $document);
+		var $document = findIframe().contents();
+		var $slider = $("#slider", $document);
 
-        $slider.slider({
-            min: options.min,
-            max: options.max,
-            range: 'min',
-            value: options.value,
-            //Prevent the slider from doing anything from the start
-            start: function (event, ui) {
-                return false;
-            },
-            change: function (event, ui) {
-                refreshTicks(ui.value);
-                var delta = options.value - ui.value;
-                options.onSliderMove(delta);
-            }
-        });
+		$slider.slider({
+			min: options.min,
+			max: options.max,
+			range: 'min',
+			value: options.value,
+			//Prevent the slider from doing anything from the start
+			start: function (event, ui) {
+				return false;
+			},
+			change: function (event, ui) {
+				refreshTicks(ui.value);
+				var delta = options.value - ui.value;
+				options.onSliderMove(delta);
+			}
+		});
 
-        $(document).mouseup(function () {
-            $('.slider,.ui-slider-handle', $document).unbind('mousemove');
-        });
+		$(document).mouseup(function () {
+			$('.slider,.ui-slider-handle', $document).unbind('mousemove');
+		});
 
-        //While the ui-slider-handle is being held down reference it parent.
-        $('.ui-slider-handle', $document).mousedown(function (e) {
-            e.preventDefault();
-            return $(this).parent().mousedown();
-        });
+		//While the ui-slider-handle is being held down reference it parent.
+		$('.ui-slider-handle', $document).mousedown(function (e) {
+			e.preventDefault();
+			return $(this).parent().mousedown();
+		});
 
-        var $sliderOffsetLeft = $slider.offset().left;
-        var $sliderWidth = $slider.width();
+		var $sliderOffsetLeft = $slider.offset().left;
+		var $sliderWidth = $slider.width();
 
-        var getSliderValue = function (pageX) {
-            return (options.max - options.min) / $sliderWidth * (pageX - $sliderOffsetLeft) + options.min;
-        };
+		var getSliderValue = function (pageX) {
+			return (options.max - options.min) / $sliderWidth * (pageX - $sliderOffsetLeft) + options.min;
+		};
 
-        //This will prevent the slider from moving if the mouse is taken out of the
-        //slider area before the mouse down has been released.
-        $slider.hover(function () {
-            $slider.bind('click', function (e) {
-                //calculate the correct position of the slider set the value
-                var value = getSliderValue(e.pageX);
-                $slider.slider('value', value);
-            });
-            $slider.mousedown(function () {
-                $(this).bind('mousemove', function (e) {
-                    //calculate the correct position of the slider set the value
-                    var value = getSliderValue(e.pageX);
-                    $(this).slider('value', value);
-                });
-            }).mouseup(function () {
-                $(this).unbind('mousemove');
-            })
-        }, function () {
-            $('#slider', $document).unbind('mousemove');
-            $('#slider', $document).unbind('click');
-        });
+		//This will prevent the slider from moving if the mouse is taken out of the
+		//slider area before the mouse down has been released.
+		$slider.hover(function () {
+			$slider.bind('click', function (e) {
+				//calculate the correct position of the slider set the value
+				var value = getSliderValue(e.pageX);
+				$slider.slider('value', value);
+			});
+			$slider.mousedown(function () {
+				$(this).bind('mousemove', function (e) {
+					//calculate the correct position of the slider set the value
+					var value = getSliderValue(e.pageX);
+					$(this).slider('value', value);
+				});
+			}).mouseup(function () {
+				$(this).unbind('mousemove');
+			})
+		}, function () {
+			$('#slider', $document).unbind('mousemove');
+			$('#slider', $document).unbind('click');
+		});
 
-        //render slider items
-        var sliderItemsCount = options.max - 1;
+		//render slider items
+		var sliderItemsCount = options.max - 1;
 
-        //update slider items color
-        var refreshTicks = function (value) {
-            var ticks = findInIframe(".tick");
-            var i;
-            for (i = 0; i < ticks.length; i++) {
-                if (i + 1 < value) {
-                    findInIframe(ticks[i]).css('background-color', '#86BFCE');
-                }
-                else {
-                    findInIframe(ticks[i]).css('background-color', '#E6ECED');
-                }
-            }
-        };
-        //render slider items
-        var prepare = function (i) {
-            var tick = $('<div>', {class: 'tick ui-widget-content'}).appendTo($slider);
-            tick.css({
-                left: (100 / sliderItemsCount * i) + '%',
-                width: (100 / sliderItemsCount) + '%'
-            });
-        };
-        for (var i = 0; i < sliderItemsCount; i++) {
-            prepare(i);
-        }
-        refreshTicks(options.value);
-    };
+		//update slider items color
+		var refreshTicks = function (value) {
+			var ticks = findInIframe(".tick");
+			var i;
+			for (i = 0; i < ticks.length; i++) {
+				if (i + 1 < value) {
+					findInIframe(ticks[i]).css('background-color', '#86BFCE');
+				}
+				else {
+					findInIframe(ticks[i]).css('background-color', '#E6ECED');
+				}
+			}
+		};
+		//render slider items
+		var prepare = function (i) {
+			var tick = $('<div>', {class: 'tick ui-widget-content'}).appendTo($slider);
+			tick.css({
+				left: (100 / sliderItemsCount * i) + '%',
+				width: (100 / sliderItemsCount) + '%'
+			});
+		};
+		for (var i = 0; i < sliderItemsCount; i++) {
+			prepare(i);
+		}
+		refreshTicks(options.value);
+	};
 
 	var createSlider = function (element) {
 		var parents = utils.getParentsLevel(element);
@@ -731,7 +731,7 @@ var Adguard = function () {
 			}
 			onSliderMove(elem);
 		};
-        renderSliderAndBindEvents(options);
+		renderSliderAndBindEvents(options);
 	};
 
 	var handleShowBlockSettings = function (showBlockByUrl, showBlockSimilar) {
@@ -868,14 +868,8 @@ var Adguard = function () {
 		onRulePreview();
 		settings.lastPreview = null;
 		var path = findInIframe('#filter-rule').val();
-		sendMessage("add-user-rule", {ruleText: path});
-		closeAssistant();
-	};
-
-	var sendMessage = function (type, data, callback) {
-		var message = data || Object.create(Object.prototype);
-		message.type = type;
-		ext.backgroundPage.sendMessage(message, callback || function () {
+		contentPage.sendMessage({type: 'addUserRule', ruleText: path}, function () {
+			closeAssistant();
 		});
 	};
 

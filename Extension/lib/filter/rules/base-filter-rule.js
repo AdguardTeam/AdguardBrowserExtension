@@ -131,16 +131,24 @@ FilterRule.prototype = {
 	},
 
 	/**
+	 * Checks whether this rule is generic or domain specific
+	 * @returns boolean true if rule is generic, otherwise false
+	 */
+	isGeneric: function () {
+		return (!this.hasPermittedDomains());
+	},
+
+	/**
 	 * @returns boolean true if rule has permitted domains
 	 */
-	hasPermittedDomains: function() {
+	hasPermittedDomains: function () {
 		return (this.permittedDomain || (this.permittedDomains && this.permittedDomains.length > 0));
 	},
 
 	/**
 	 * @returns boolean true if rule has restricted domains
 	 */
-	hasRestrictedDomains: function() {
+	hasRestrictedDomains: function () {
 		return (this.restrictedDomain || (this.restrictedDomains && this.restrictedDomains.length > 0));
 	},
 

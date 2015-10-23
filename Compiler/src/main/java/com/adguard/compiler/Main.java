@@ -208,6 +208,7 @@ public class Main {
 
 		FileUtil.copyFiles(source, dest, browser);
 
+		SettingUtils.writeMessageIdsToFile(dest, LocaleUtils.getMessageIds(source));
 		SettingUtils.writeLocalScriptRulesToFile(dest, useLocalScriptRules, filtersScriptRules);
 
 		String extensionNamePostfix = "";

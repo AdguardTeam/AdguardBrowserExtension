@@ -25,6 +25,7 @@ var tabs = require('sdk/tabs');
 var WorkaroundUtils = require('utils/workaround').WorkaroundUtils;
 var UiUtils = require('uiUtils').UiUtils;
 var styleService = require('styleSheetService');
+var contentScripts = require('contentScripts').contentScripts;
 
 /**
  * Object that manages toolbar button rendering.
@@ -73,12 +74,14 @@ var PopupButton = exports.PopupButton = {
             contentURL: self.data.url('content/popup.html'),
             contentScriptFile: [
                 self.data.url('content/libs/jquery-1.8.3.min.js'),
-                self.data.url('content/pages/script.js'),
+                self.data.url('content/content-script/content-script.js'),
+                self.data.url('content/content-script/i18n-helper.js'),
+                self.data.url('content/pages/i18n.js'),
                 self.data.url('content/pages/popup-controller.js'),
-                self.data.url('content/pages/i18n-helper.js'),
-                self.data.url('content/content-script/content-i18n.js'),
+                self.data.url('content/pages/script.js'),
                 self.data.url('content/content-script/panel-popup.js')
             ],
+            contentScriptOptions: contentScripts.getContentScriptOptions(),
             contentScriptWhen: 'ready',
             onHide: function () {
                 this.UI.updateCurrentTabButtonState();
@@ -86,7 +89,7 @@ var PopupButton = exports.PopupButton = {
             }.bind(this),
             onShow: function () {
                 //force resize panel popup
-                panel.port.emit('resizePanelPopup');
+                contentScripts.sendMessageToWorker(panel, {type: 'resizePanelPopup'});
             }
         });
 
@@ -98,7 +101,7 @@ var PopupButton = exports.PopupButton = {
                 if (state.checked) {
                     var tabInfo = this.UI.getCurrentTabInfo();
                     var filteringInfo = this.UI.getCurrentTabFilteringInfo();
-                    panel.port.emit('initPanelPopup', {tabInfo: tabInfo, filteringInfo: filteringInfo});
+                    contentScripts.sendMessageToWorker(panel, {type: 'initPanelPopup', tabInfo: tabInfo, filteringInfo: filteringInfo});
                     panel.show({position: button});
                 }
             }.bind(this)
@@ -106,55 +109,58 @@ var PopupButton = exports.PopupButton = {
         this.toolbarButton = button;
 
         var UI = this.UI;
-        panel.port.on('addWhiteListDomain', function () {
-            UI.whiteListCurrentTab();
-            if (UI.isCurrentTabAdguardDetected()) {
-                panel.hide();
-            }
-        });
-        panel.port.on('removeWhiteListDomain', function () {
-            UI.unWhiteListCurrentTab();
-            if (UI.isCurrentTabAdguardDetected()) {
-                panel.hide();
-            }
-        });
-        panel.port.on('changeApplicationFilteringDisabled', function (message) {
-            UI.changeApplicationFilteringDisabled(message.disabled);
-        });
-        panel.port.on('openSiteReportTab', function (message) {
-            UI.openSiteReportTab(message.url);
-            panel.hide();
-        });
-        panel.port.on('openSettingsTab', function () {
-            UI.openSettingsTab();
-            panel.hide();
-        });
-        panel.port.on('openAssistant', function () {
-            UI.openAssistant();
-            panel.hide();
-        });
-        panel.port.on('openTab', function (message) {
-            UI.openTab(message.url);
-            panel.hide();
-        });
-        panel.port.on('openAbusePanel', function () {
-            UI.openAbusePanel();
-            panel.hide();
-        });
-        panel.port.on('openFilteringLog', function (tabId) {
-            //cause filtering log open in new window, we need hide panel before for properly set checked state
-            panel.hide();
-            UI.openFilteringLog(tabId);
-        });
-        panel.port.on('resetBlockedAdsCount', function () {
-            UI.resetBlockedAdsCount();
-            panel.hide();
-        });
-        panel.port.on('resizePanelPopup', function (message) {
-            panel.resize(message.width, message.height);
-        });
 
-        this.UI.bindLocalizationToContentObject(panel);
+        contentScripts.addContentScriptMessageListener(panel, function (message) {
+            switch (message.type) {
+                case 'addWhiteListDomain':
+                    UI.whiteListCurrentTab();
+                    if (UI.isCurrentTabAdguardDetected()) {
+                        panel.hide();
+                    }
+                    break;
+                case 'removeWhiteListDomain':
+                    UI.unWhiteListCurrentTab();
+                    if (UI.isCurrentTabAdguardDetected()) {
+                        panel.hide();
+                    }
+                    break;
+                case 'changeApplicationFilteringDisabled':
+                    UI.changeApplicationFilteringDisabled(message.disabled);
+                    break;
+                case 'openSiteReportTab':
+                    UI.openSiteReportTab(message.url);
+                    panel.hide();
+                    break;
+                case 'openSettingsTab':
+                    UI.openSettingsTab();
+                    panel.hide();
+                    break;
+                case 'openAssistant':
+                    UI.openAssistant();
+                    panel.hide();
+                    break;
+                case 'openTab':
+                    UI.openTab(message.url);
+                    panel.hide();
+                    break;
+                case 'openAbusePanel':
+                    UI.openAbusePanel();
+                    panel.hide();
+                    break;
+                case 'openFilteringLog' :
+                    //cause filtering log open in new window, we need hide panel before for properly set checked state
+                    panel.hide();
+                    UI.openFilteringLog(message.tabId);
+                    break;
+                case 'resetBlockedAdsCount':
+                    UI.resetBlockedAdsCount();
+                    panel.hide();
+                    break;
+                case 'resizePanelPopup':
+                    panel.resize(message.width, message.height);
+                    break;
+            }
+        });
 
         //register sheet for badge
         styleService.loadUserSheet(self.data.url('content/skin/badge.css'));

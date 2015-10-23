@@ -60,10 +60,34 @@ public class SettingUtils {
 			"var USE_DEFAULT_SCRIPT_RULES = exports.USE_DEFAULT_SCRIPT_RULES = %s;\r\n" +
 			"var DEFAULT_SCRIPT_RULES = exports.DEFAULT_SCRIPT_RULES = Object.create(null);\r\n%s";
 
+	private final static String MESSAGE_IDS_FILE_TEMPLATE = "/**\r\n" +
+			" * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).\r\n" +
+			" *\r\n" +
+			" * Adguard Browser Extension is free software: you can redistribute it and/or modify\r\n" +
+			" * it under the terms of the GNU Lesser General Public License as published by\r\n" +
+			" * the Free Software Foundation, either version 3 of the License, or\r\n" +
+			" * (at your option) any later version.\r\n" +
+			" *\r\n" +
+			" * Adguard Browser Extension is distributed in the hope that it will be useful,\r\n" +
+			" * but WITHOUT ANY WARRANTY; without even the implied warranty of\r\n" +
+			" * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\r\n" +
+			" * GNU Lesser General Public License for more details.\r\n" +
+			" *\r\n" +
+			" * You should have received a copy of the GNU Lesser General Public License\r\n" +
+			" * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.\r\n" +
+			" */\r\n" +
+			"\r\n" +
+			"var I18N_MESSAGES = exports.I18N_MESSAGES = [%s];\r\n";
+
 	public static void writeLocalScriptRulesToFile(File dest, boolean useLocalScriptRules, Map<Integer, List<String>> filtersScriptRules) throws IOException {
 		String scriptRules = getScriptRulesText(filtersScriptRules);
 		String settings = String.format(LOCAL_SCRIPT_RULES_FILE_TEMPLATE, useLocalScriptRules, scriptRules);
 		FileUtils.writeStringToFile(getLocalScriptRulesFile(dest), settings);
+	}
+
+	public static void writeMessageIdsToFile(File dest, List<String> messageIds) throws IOException {
+		String i18nMessages = String.format(MESSAGE_IDS_FILE_TEMPLATE, StringUtils.join(messageIds, ",\r\n"));
+		FileUtils.writeStringToFile(getMessageIdsFile(dest), i18nMessages);
 	}
 
 	public static void updateManifestFile(File dest, Browser browser, String version, String extensionId, String updateUrl, String extensionNamePostfix) throws IOException {
@@ -130,5 +154,9 @@ public class SettingUtils {
 
 	private static File getLocalScriptRulesFile(File sourcePath) {
 		return new File(sourcePath, "lib/utils/local-script-rules.js");
+	}
+
+	private static File getMessageIdsFile(File sourcePath) {
+		return new File(sourcePath, "lib/utils/i18n-messages.js");
 	}
 }

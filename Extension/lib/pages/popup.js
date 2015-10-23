@@ -34,18 +34,22 @@ var resizePopupWindowForMacOs = function ($) {
     }, 1000);
 };
 
-//make global for other popup scripts;
-var tab;
+// Make global for popup-script.js (Safari Code)
 var controller;
+var tab;
 
+//make global for other popup scripts;
 $(document).ready(function () {
+
     ext.windows.getLastFocused(function (win) {
+
         win.getActiveTab(function (t) {
 
             tab = t;
 
             var tabInfo = framesMap.getFrameInfo(tab);
             var filteringInfo = filteringLog.getTabInfo(tab);
+
             controller = new PopupController({
                 platform: Prefs.platform,
                 abusePanelSupported: Prefs.platform != 'firefox' || UI.abusePanelSupported
@@ -64,13 +68,13 @@ $(document).ready(function () {
             };
             //popup checkbox actions
             controller.addWhiteListDomain = function () {
-                UI.whiteListCurrentTab();
+                UI.whiteListTab(tab);
                 if (tabInfo.adguardDetected) {
                     ext.closePopup();
                 }
             };
             controller.removeWhiteListDomain = function () {
-                UI.unWhiteListCurrentTab();
+                UI.unWhiteListTab(tab);
                 if (tabInfo.adguardDetected) {
                     ext.closePopup();
                 }
@@ -88,9 +92,8 @@ $(document).ready(function () {
                 ext.closePopup();
             };
             controller.openAssistantInTab = function () {
-                tab.sendMessage({type: "open-assistant"}, function () {
-                    ext.closePopup();
-                });
+                UI.openAssistant();
+                ext.closePopup();
             };
             controller.openLink = function (url) {
                 UI.openTab(url);
@@ -107,8 +110,8 @@ $(document).ready(function () {
             controller.resetBlockedAdsCount = function () {
                 framesMap.resetBlockedAdsCount();
             };
-            controller.translateElement = function (el, messageId, args) {
-                ext.i18n.translateElement(el, messageId, args);
+            controller.sendFeedback = function (url, topic, comment) {
+                antiBannerService.sendFeedback(url, topic, comment);
             };
 
             //render popup

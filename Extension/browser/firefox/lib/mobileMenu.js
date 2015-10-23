@@ -22,7 +22,6 @@ Cu.import("resource://gre/modules/Services.jsm");
 var self = require('sdk/self');
 var system = require('sdk/system');
 var tabs = require('sdk/tabs');
-var l10n = require('sdk/l10n');
 var events = require('sdk/system/events');
 var unload = require('sdk/system/unload');
 
@@ -73,7 +72,7 @@ var MobileMenu = exports.MobileMenu = {
 
 			var window = UiUtils.getMostRecentWindow();
 			window.NativeWindow.menu.update(toggleWhiteListItem, {checked: tabInfo.userWhiteListed});
-		}.bind(this), l10n.get("popup_site_filtering_state"), true);
+		}.bind(this), i18n.getMessage("popup_site_filtering_state"), true);
 
 		var toggleFilteringEnabledItem = this.createSubMenu(window, menuId, function () {
 
@@ -82,27 +81,27 @@ var MobileMenu = exports.MobileMenu = {
 
 			var window = UiUtils.getMostRecentWindow();
 			window.NativeWindow.menu.update(toggleFilteringEnabledItem, {checked: tabInfo.applicationFilteringDisabled});
-		}.bind(this), l10n.get('popup_site_protection_disabled_android'), true);
+		}.bind(this), i18n.getMessage('popup_site_protection_disabled_android'), true);
 
-		var siteExceptionItem = this.createSubMenu(window, menuId, null, l10n.get('popup_in_white_list_android'), false, false);
+		var siteExceptionItem = this.createSubMenu(window, menuId, null, i18n.getMessage('popup_in_white_list_android'), false, false);
 
 		var blockAdsItem = this.createSubMenu(window, menuId, function () {
 			this.UI.openAssistant();
-		}.bind(this), l10n.get("popup_block_site_ads_android"));
+		}.bind(this), i18n.getMessage("popup_block_site_ads_android"));
 
 		var reportSiteItem = this.createSubMenu(window, menuId, function () {
 			var tab = tabs.activeTab;
 			this.UI.openSiteReportTab(tab.url);
-		}.bind(this), l10n.get("popup_security_report_android"));
+		}.bind(this), i18n.getMessage("popup_security_report_android"));
 
 		var filteringLogItem = this.createSubMenu(window, menuId, function () {
 			this.UI.openCurrentTabFilteringLog();
-		}.bind(this), l10n.get('popup_open_log_android'));
+		}.bind(this), i18n.getMessage('popup_open_log_android'));
 
 		//show settings menu ever
 		this.createSubMenu(window, menuId, function () {
 			this.UI.openSettingsTab();
-		}.bind(this), l10n.get("popup_open_settings"));
+		}.bind(this), i18n.getMessage("popup_open_settings"));
 
 		this.nativeMenuIds[window] = {
 			main: menuId,

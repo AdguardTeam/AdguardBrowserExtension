@@ -153,9 +153,10 @@ RequestFilter.prototype = {
      * http://adguard.com/en/filterrules.html#hideRules
      *
      * @param url Page URL
+     * @param genericHide flag to hide common rules
      * @returns CSS ready to be injected
      */
-    getSelectorsForUrl: function (url) {
+    getSelectorsForUrl: function (url, genericHide) {
         var domain = UrlUtils.getDomainName(url);
         if (userSettings.collectHitsCount()) {
             // If user has enabled "Send statistics for ad filters usage" option we build CSS with enabled hits stats.
@@ -163,9 +164,9 @@ RequestFilter.prototype = {
             // Tracking requests to this URL shows us which rule has been used.
             // NOTE: For Firefox we use another way, look at "getCssForStyleSheet" method.
             var appId = Prefs.appId;
-            return this.cssFilter.buildCssHits(domain, appId);
+            return this.cssFilter.buildCssHits(domain, appId, genericHide);
         } else {
-            return this.cssFilter.buildCss(domain);
+            return this.cssFilter.buildCss(domain, genericHide);
         }
     },
 
@@ -175,11 +176,12 @@ RequestFilter.prototype = {
      * http://adguard.com/en/filterrules.html#cssInjection
      *
      * @param url Page URL
+     * @param genericHide flag to hide common rules
      * @returns CSS ready to be injected.
      */
-    getInjectedSelectorsForUrl: function (url) {
+    getInjectedSelectorsForUrl: function (url, genericHide) {
         var domain = UrlUtils.getDomainName(url);
-        return this.cssFilter.buildInjectCss(domain);
+        return this.cssFilter.buildInjectCss(domain, genericHide);
     },
 
     /**
@@ -385,6 +387,13 @@ RequestFilter.prototype = {
 
         var rule = this._checkUrlBlockingList(requestUrl, refHost, requestType, thirdParty);
         if (rule != null) {
+            if (rule.isGeneric()) {
+                var genericUrlBlockRule = this._checkWhiteList(referrer, refHost, "GENERICBLOCK", thirdParty);
+                if (genericUrlBlockRule) {
+                    return genericUrlBlockRule;
+                }
+            }
+
             Log.debug("Black list rule {0} found for url: {1}, referrer: {2}, requestType: {3}", rule.ruleText, requestUrl, refHost, requestType);
         }
 

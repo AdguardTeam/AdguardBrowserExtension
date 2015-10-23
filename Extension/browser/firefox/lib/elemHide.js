@@ -20,7 +20,6 @@ Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/FileUtils.jsm");
 
 var self = require('sdk/self');
-var pageMod = require('sdk/page-mod');
 
 var {EventNotifier} = require('utils/notifier');
 let {FilterStorage} = require('filter/storage');
@@ -55,7 +54,6 @@ ElemHide = exports.ElemHide = {
 
         this._registerCollapsedStyle();
         this._registerSelectorStyle();
-        this._registerContentScripts();
 
         EventNotifier.addListener(function (event, settings) {
             switch (event) {
@@ -241,59 +239,5 @@ ElemHide = exports.ElemHide = {
         } catch (ex) {
             Log.error('Error while register stylesheet ' + uri + ':' + ex);
         }
-    },
-
-    /**
-     * Registers PageMod for all URLs.
-     *
-     * @private
-     */
-    _registerContentScripts: function () {
-
-        pageMod.PageMod({
-            include: ["http://*", "https://*"],
-            contentScriptFile: [
-                self.data.url('content/content-script/content-script.js'),
-                self.data.url('content/content-script/preload.js')
-            ],
-            contentScriptWhen: 'start',
-            onAttach: this._onContentScriptAttached.bind(this)
-        });
-    },
-
-    _onContentScriptAttached: function (worker) {
-
-        worker.port.on('get-selectors-and-scripts', function (message) {
-            if (WorkaroundUtils.isFacebookIframe(message.documentUrl)) {
-                return;
-            }
-            var result = this.webRequestService.processGetSelectorsAndScripts(worker.tab, message.documentUrl);
-            if (result) {
-                worker.port.emit('get-selectors-and-scripts', result);
-            }
-        }.bind(this));
-
-        worker.port.on('process-should-collapse', function (message) {
-
-            /**
-             * In case of e10s we use the same way as in Chromium - blocked elements are collapsed in content script.
-             * In single process mode blocked elements are collapsed by content policy.
-             */
-            if (WorkaroundUtils.isMultiProcessFirefoxMode()) {
-                var collapse = this.webRequestService.processShouldCollapse(worker.tab, message.elementUrl, message.documentUrl, message.requestType);
-                worker.port.emit('process-should-collapse', {
-                    collapse: collapse,
-                    requestId: message.requestId
-                });
-            } else {
-                // Collapsed by content policy
-                worker.port.emit('process-should-collapse', {collapse: false, requestId: message.requestId});
-            }
-        }.bind(this));
-
-        worker.port.on('process-should-collapse-many', function (message) {
-            var requests = this.webRequestService.processShouldCollapseMany(worker.tab, message.documentUrl, message.requests);
-            worker.port.emit('process-should-collapse-many', {requests: requests});
-        }.bind(this));
     }
 };

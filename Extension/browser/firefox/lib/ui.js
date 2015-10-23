@@ -14,10 +14,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var {Cc, Ci, Cu, Cm, components} = require('chrome');
+var {Cc, Ci, Cu} = require('chrome');
 var self = require('sdk/self');
 var tabs = require('sdk/tabs');
-var l10n = require('sdk/l10n');
 var unload = require('sdk/system/unload');
 var tabUtils = require('sdk/tabs/utils');
 var sdkWindows = require('sdk/windows').browserWindows;
@@ -35,27 +34,7 @@ var RequestTypes = require('utils/common').RequestTypes;
 var userSettings = require('utils/user-settings').userSettings;
 var UiUtils = require('uiUtils').UiUtils;
 var Log = require('utils/log').Log;
-
-var i18n = (function () {
-
-    function getText(text, args) {
-        if (!text) {
-            return "";
-        }
-        if (args && args.length > 0) {
-            text = text.replace(/\$(\d+)/g, function (match, number) {
-                return typeof args[number - 1] != "undefined" ? args[number - 1] : match;
-            });
-        }
-        return text;
-    }
-
-    return {
-        getMessage: function (key, args) {
-            return getText(l10n.get(key), args);
-        }
-    };
-})();
+var contentScripts = require('contentScripts').contentScripts;
 
 /**
  * UI entry point.
@@ -64,8 +43,6 @@ var i18n = (function () {
  * Contains methods managing browser tabs (open/close tabs).
  */
 var UI = exports.UI = {
-
-    tabsWorkers: Object.create(null),
 
     init: function (antiBannerService, framesMap, filteringLog, adguardApplication, SdkPanel, SdkContextMenu, SdkButton) {
 
@@ -90,11 +67,6 @@ var UI = exports.UI = {
             this.framesMap.checkTabIncognitoMode(tab);
             this._updatePopupButtonState(tab);
         }
-
-        //cleanup active worker assistant on tab close
-        tabs.on('close', function (tab) {
-            delete this.tabsWorkers[tab.id];
-        }.bind(this));
 
         //close all page on unload
         unload.when(UI.closeAllPages);
@@ -160,7 +132,7 @@ var UI = exports.UI = {
     },
 
     openAbusePanel: function () {
-        this.abusePanel.port.emit('initAbusePanel');
+        contentScripts.sendMessageToWorker(this.abusePanel, {type: 'initAbusePanel'});
         this.abusePanel.show();
     },
 
@@ -225,91 +197,21 @@ var UI = exports.UI = {
         UI.openTab(UI._getURL("export.html" + (whitelist ? '#wl' : '')));
     },
 
-    openSafebrowsingTrusted: function (url) {
-        UI.antiBannerService.getRequestFilter().addToSafebrowsingTrusted(url);
+    reloadCurrentTab: function (url) {
         tabs.activeTab.url = url;
     },
 
     openAssistant: function (assistantOptions) {
-
-        var getActiveWorker = function () {
-            return this.tabsWorkers[tabs.activeTab.id];
-        }.bind(this);
-
-        var getAssistantLocalization = function (localizations) {
-            var activeWorker = getActiveWorker();
-            if (!activeWorker) {
-                return;
-            }
-            var result = Object.create(null);
-            for (var i = 0; i < localizations.length; i++) {
-                var currentId = localizations[i];
-                result[currentId] = l10n.get(currentId);
-            }
-            activeWorker.port.emit('set-assistant-localization', result);
-        }.bind(this);
-
-        var onLoadAssistantIframe = function () {
-            var activeWorker = getActiveWorker();
-            if (!activeWorker) {
-                return;
-            }
-            var cssContent = self.data.load("content/content-script/assistant/css/assistant.css");
-            activeWorker.port.emit('load-assistant-iframe', {cssContent: cssContent});
-        }.bind(this);
-
-        var addUserRule = function (message) {
-            this.antiBannerService.addUserFilterRule(message.ruleText);
-            if (this.framesMap.isTabAdguardDetected(this._getActiveTab())) {
-                this.adguardApplication.addRuleToApp(message.ruleText);
-            }
-        }.bind(this);
-
-        var removeWorker = function (worker) {
-            for (var tabId in this.tabsWorkers) {
-                if (this.tabsWorkers[tabId] === worker) {
-                    delete this.tabsWorkers[tabId];
-                }
-            }
-        }.bind(this);
-
-        var activeTab = this._getActiveTab();
-        var activeTabId = activeTab.id;
-
-        var activeWorker = this.tabsWorkers[activeTabId];
-        if (activeWorker) {
-            activeWorker.port.emit('destroyAssistant');
-        }
-
-        activeWorker = activeTab.attach({
-            contentScriptWhen: 'ready',
-            contentScriptFile: [
-                self.data.url("content/libs/jquery-1.8.3.min.js"),
-                self.data.url("content/libs/jquery-ui.min.js"),
-                self.data.url("content/libs/diff_match_patch.js"),
-                self.data.url("content/libs/dom.js"),
-                self.data.url('content/pages/i18n-helper.js'),
-                self.data.url("content/content-script/content-script.js"),
-                self.data.url("content/content-script/assistant/js/start-assistant.js"),
-                self.data.url("content/content-script/assistant/js/tools.js"),
-                self.data.url("content/content-script/assistant/js/selector.js"),
-                self.data.url("content/content-script/assistant/js/assistant.js")
-            ]
+        contentScripts.sendMessageToTab(tabs.activeTab, {
+            type: 'initAssistant',
+            options: {cssSelector: assistantOptions ? assistantOptions.cssSelector : null}
         });
-        this.tabsWorkers[activeTabId] = activeWorker;
+    },
 
-        activeWorker.port.emit('initAssistant', assistantOptions);
-        activeWorker.port.once('get-assistant-localization', getAssistantLocalization);
-        activeWorker.port.once('load-assistant-iframe', onLoadAssistantIframe);
-        activeWorker.port.once('add-user-rule', addUserRule);
-
-        //cleanup workers
-        activeWorker.on('detach', function () {
-            removeWorker(activeWorker);
-        });
-        activeWorker.on('pagehide', function () {
-            removeWorker(activeWorker);
-        });
+    getAssistantCssOptions: function () {
+        return {
+            cssContent: self.data.load("content/content-script/assistant/css/assistant.css")
+        };
     },
 
     resizePopup: function (width, height) {
@@ -320,27 +222,6 @@ var UI = exports.UI = {
         PopupButton.closePopup();
     },
 
-    bindLocalizationToContentObject: function (contentObject) {
-        contentObject.port.on('localizeContentFile', function (message) {
-            var messageIds = message.messageIds;
-            var messages = Object.create(null);
-            for (var i = 0; i < messageIds.length; i++) {
-                var messageId = messageIds[i];
-                if (messageId) {
-                    messages[messageId] = l10n.get(messageId);
-                }
-            }
-            contentObject.port.emit('localizeContentFile', {messages: messages});
-        });
-        contentObject.port.on('localizeContentElement', function (message) {
-            contentObject.port.emit('localizeContentElement', {
-                messageId: message.messageId,
-                message: l10n.get(message.messageId),
-                elementId: message.elementId
-            });
-        });
-    },
-
     updateCurrentTabButtonState: function () {
         var currentTab = this._getActiveTab();
         if (currentTab) {
@@ -348,8 +229,7 @@ var UI = exports.UI = {
         }
     },
 
-    whiteListCurrentTab: function () {
-        var tab = this._getActiveTab();
+    whiteListTab: function (tab) {
 
         var tabInfo = this.framesMap.getFrameInfo(tab);
         this.antiBannerService.whiteListFrame(tabInfo);
@@ -364,8 +244,12 @@ var UI = exports.UI = {
         }
     },
 
-    unWhiteListCurrentTab: function () {
+    whiteListCurrentTab: function () {
         var tab = this._getActiveTab();
+        this.whiteListTab(tab);
+    },
+
+    unWhiteListTab: function (tab) {
 
         var tabInfo = this.framesMap.getFrameInfo(tab);
         this.antiBannerService.unWhiteListFrame(tabInfo);
@@ -380,6 +264,11 @@ var UI = exports.UI = {
         } else {
             this.updateCurrentTabButtonState();
         }
+    },
+
+    unWhiteListCurrentTab: function () {
+        var tab = this._getActiveTab();
+        this.unWhiteListTab(tab);
     },
 
     changeApplicationFilteringDisabled: function (disabled) {
@@ -417,8 +306,13 @@ var UI = exports.UI = {
         return i18n.getMessage(messageId, args);
     },
 
-    getFiltersUpdateResultInfo: function (success, updatedFilters) {
-        return Utils.getFiltersUpdateResultMessage(l10n.get.bind(l10n), success, updatedFilters);
+    showAlertMessagePopup: function (title, text) {
+        var worker = tabs.activeTab.attach({
+            contentScriptFile: [
+                self.data.url('content/content-script/content-script.js'),
+                self.data.url('content/content-script/content-utils.js')]
+        });
+        contentScripts.sendMessageToWorker(worker, {type: 'show-alert-popup', title: title, text: text});
     },
 
     _initAbusePanel: function (SdkPanel) {
@@ -430,21 +324,27 @@ var UI = exports.UI = {
             width: 552,
             height: 345,
             contentURL: self.data.url('content/content-script/abuse.html'),
+            contentScriptOptions: contentScripts.getContentScriptOptions(),
             contentScriptFile: [
                 self.data.url('content/libs/jquery-1.8.3.min.js'),
-                self.data.url('content/pages/i18n-helper.js'),
-                self.data.url('content/content-script/content-i18n.js'),
+                self.data.url('content/content-script/content-script.js'),
+                self.data.url('content/content-script/i18n-helper.js'),
+                self.data.url('content/pages/i18n.js'),
                 self.data.url('content/content-script/abuse.js')
             ]
         });
-        this.abusePanel.port.on('sendFeedback', function (message) {
-            var url = tabs.activeTab.url;
-            this.antiBannerService.sendFeedback(url, message.topic, message.comment);
+
+        contentScripts.addContentScriptMessageListener(this.abusePanel, function (message) {
+            switch (message.type) {
+                case 'sendFeedback':
+                    var url = tabs.activeTab.url;
+                    this.antiBannerService.sendFeedback(url, message.topic, message.comment);
+                    break;
+                case 'closeAbusePanel':
+                    this.abusePanel.hide();
+                    break;
+            }
         }.bind(this));
-        this.abusePanel.port.on('closeAbusePanel', function () {
-            this.abusePanel.hide()
-        }.bind(this));
-        this.bindLocalizationToContentObject(this.abusePanel);
     },
 
     _initContextMenu: function (SdkContextMenu) {
@@ -595,6 +495,6 @@ var UI = exports.UI = {
                 self.data.url('content/content-script/content-script.js'),
                 self.data.url('content/content-script/content-utils.js')]
         });
-        worker.port.emit('no-cache-reload');
+        contentScripts.sendMessageToWorker(worker, {type: 'no-cache-reload'});
     }
 };

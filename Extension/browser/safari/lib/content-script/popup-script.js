@@ -45,6 +45,8 @@
 	};
 	window.BrowserTabs = backgroundPage.BrowserTabs;
 
+	window.i18n = new backgroundPage.I18NSupport();
+
 	$(window).on('blur', function () {
 		if (window.tab) {
 			UI.updateTabIconAndContextMenu(tab, true);

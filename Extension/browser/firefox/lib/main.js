@@ -60,7 +60,6 @@ exports.main = function (options, callbacks) {
 
         var {Log} = loadAdguardModule('utils/log');
         var {FS} = loadAdguardModule('utils/file-storage');
-
         if (options.loadReason == 'install' || options.loadReason == 'downgrade') {
             simpleStorage.storage = Object.create(Object.prototype);
             FS.removeAdguardDir();
@@ -89,33 +88,33 @@ exports.main = function (options, callbacks) {
             Log.info('Module sdk/ui/button/toggle is not supported');
         }
 
-        var {Prefs} = require('prefs');
-        var {StringUtils, EventNotifierTypes, FilterUtils, Utils, AntiBannerFiltersId, LogEvents} = loadAdguardModule('utils/common');
-        var {UrlUtils} = loadAdguardModule('utils/url');
-        var {userSettings} = loadAdguardModule('utils/user-settings');
+        var {Prefs} = loadAdguardModule('prefs');
+        var {Utils, AntiBannerFiltersId} = loadAdguardModule('utils/common');
         var {TabsMap} = loadAdguardModule('tabsMap');
-        var {EventNotifier} = loadAdguardModule('utils/notifier');
         var {FramesMap} = loadAdguardModule('utils/frames');
         var {AdguardApplication} = loadAdguardModule('filter/integration');
         var {filterRulesHitCount} = loadAdguardModule('filter/filters-hit');
         var {FilteringLog} = loadAdguardModule('filter/filtering-log');
-        var {FilterRule} = loadAdguardModule('filter/rules/base-filter-rule');
-        var {UrlFilterRule} = loadAdguardModule('filter/rules/url-filter-rule');
-
         var {WebRequestService}= loadAdguardModule('filter/request-blocking');
         var {AntiBannerService} = loadAdguardModule('filter/antibanner');
         var {ElemHide} = loadAdguardModule('elemHide');
         var {WebRequestImpl} = loadAdguardModule('contentPolicy');
         var {InterceptHandler} = loadAdguardModule('elemHideIntercepter');
         var {UI} = loadAdguardModule('ui');
+        var {ContentMessageHandler}= loadAdguardModule('content-message-handler');
+        var {contentScripts} = loadAdguardModule('contentScripts');
 
         // These require-calls are needed for proper build by cfx.
+        require('prefs');
         require('elemHide');
         require('tabsMap');
         require('contentPolicy');
         require('elemHideIntercepter');
+        require('content-message-handler');
         require('ui');
         require('utils/frames');
+        require('utils/common');
+        require('utils/user-settings');
         require('filter/integration');
         require('filter/filtering-log');
 
@@ -123,9 +122,7 @@ exports.main = function (options, callbacks) {
 
         var antiBannerService = new AntiBannerService();
         var framesMap = new FramesMap(antiBannerService, TabsMap);
-        var adguardApplication = new AdguardApplication(framesMap, {
-            i18nGetMessage: l10n.get.bind(l10n)
-        });
+        var adguardApplication = new AdguardApplication(framesMap);
         var filteringLog = new FilteringLog(TabsMap, framesMap, UI);
         var webRequestService = new WebRequestService(framesMap, antiBannerService, filteringLog, adguardApplication);
 
@@ -134,35 +131,27 @@ exports.main = function (options, callbacks) {
         InterceptHandler.init(framesMap, antiBannerService);
         filterRulesHitCount.setAntiBannerService(antiBannerService);
 
+        // Initialize content-message handler
+        var contentMessageHandler = new ContentMessageHandler();
+        contentMessageHandler.init(antiBannerService, webRequestService, framesMap, adguardApplication, filteringLog, UI);
+        contentMessageHandler.setSendMessageToSender(function (worker, message) {
+            contentScripts.sendMessageToWorker(worker, message);
+        });
+        contentScripts.init(contentMessageHandler);
+
         // Initialize overlay toolbar button
         UI.init(antiBannerService, framesMap, filteringLog, adguardApplication, SdkPanel, SdkContextMenu, SdkButton);
 
         var AdguardModules = {
 
             antiBannerService: antiBannerService,
-            adguardApplication: adguardApplication,
-            userSettings: userSettings,
             framesMap: framesMap,
             filteringLog: filteringLog,
-
-            EventNotifier: EventNotifier,
             Prefs: Prefs,
             UI: UI,
-
-            l10n: l10n,
-
-            FilterUtils: FilterUtils,
-            UrlUtils: UrlUtils,
-            StringUtils: StringUtils,
+            i18n: i18n,
             Utils: Utils,
-
-            EventNotifierTypes: EventNotifierTypes,
             AntiBannerFiltersId: AntiBannerFiltersId,
-            LogEvents: LogEvents,
-
-            FilterRule: FilterRule,
-            UrlFilterRule: UrlFilterRule,
-
             //for popup script
             tabs: tabs
         };
@@ -208,42 +197,6 @@ exports.main = function (options, callbacks) {
         throw  ex;
     }
 
-    EventNotifier.addListener(function (event) {
-
-        var activeTab, messageResult;
-
-        if (event == EventNotifierTypes.ENABLE_FILTER_SHOW_POPUP) { //auto enable filter notification
-            var enabledFilters = arguments[1];
-            //don't show for adguard tab
-            activeTab = tabs.activeTab;
-            if (framesMap.isTabAdguardDetected(activeTab)) {
-                return;
-            }
-            messageResult = Utils.getFiltersEnabledResultMessage(l10n.get.bind(l10n), enabledFilters);
-        } else if (event == EventNotifierTypes.UPDATE_FILTERS_SHOW_POPUP) { //filters update notification
-            var success = arguments[1];
-            var updatedFilters = arguments[2];
-            //don't show for adguard tab
-            activeTab = tabs.activeTab;
-            if (framesMap.isTabAdguardDetected(activeTab)) {
-                return;
-            }
-            messageResult = UI.getFiltersUpdateResultInfo(success, updatedFilters);
-        }
-
-        if (messageResult) {
-            var worker = activeTab.attach({
-                contentScriptFile: [
-                    self.data.url('content/content-script/content-script.js'),
-                    self.data.url('content/content-script/content-utils.js')]
-            });
-            worker.port.emit('show-alert-popup', {title: messageResult.title, text: messageResult.text});
-        }
-    });
-
-    //abp:subscribe
-    initAbpSubscribe(antiBannerService, Utils);
-
     //cleanup stored frames
     tabs.on('close', function (tab) {
         framesMap.removeFrame(tab);
@@ -268,66 +221,26 @@ exports.main = function (options, callbacks) {
     });
 };
 
-var initAbpSubscribe = function (antiBannerService, Utils) {
+var i18n = (function () {
 
-    var subscribeIncludeDomains = [
-        "*.abpchina.org",
-        "*.abpindo.blogspot.com",
-        "*.abpvn.com",
-        "*.adblock-listefr.com",
-        "*.adblock.gardar.net",
-        "*.adblockplus.org",
-        "*.adblockplus.me",
-        "*.adguard.com",
-        "*.certyficate.it",
-        "*.code.google.com",
-        "*.dajbych.net",
-        "*.fanboy.co.nz",
-        "*.fredfiber.no",
-        "*.gardar.net",
-        "*.github.com",
-        "*.henrik.schack.dk",
-        "*.latvian-list.site11.com",
-        "*.liamja.co.uk",
-        "*.malwaredomains.com",
-        "*.margevicius.lt",
-        "*.nauscopio.nireblog.com",
-        "*.nireblog.com",
-        "*.noads.it",
-        "*.schack.dk",
-        "*.spam404.com",
-        "*.stanev.org",
-        "*.void.gr",
-        "*.yoyo.org",
-        "*.zoso.ro"
-    ];
-
-    pageMod.PageMod({
-        include: subscribeIncludeDomains,
-        contentScriptFile: [
-            self.data.url('content/content-script/content-script.js'),
-            self.data.url('content/content-script/content-utils.js'),
-            self.data.url('content/content-script/subscribe.js')
-        ],
-        contentScriptWhen: 'end',
-        onAttach: function (worker) {
-
-            worker.port.on('check-subscription-url', function (message) {
-                var filterMetadata = antiBannerService.findFilterMetadataBySubscriptionUrl(message.url);
-                var confirmMessage = Utils.getAbpSubscribeConfirmMessage(l10n.get.bind(l10n), filterMetadata, message.title);
-                worker.port.emit('check-subscription-url', {confirmText: confirmMessage, url: message.url});
-            });
-
-            worker.port.on('enable-subscription', function (message) {
-                var onLoaded = function (rulesAddedCount) {
-                    var message = Utils.getAbpSubscribeFinishedMessage(l10n.get.bind(l10n), rulesAddedCount);
-                    worker.port.emit('show-alert-popup', {title: message.title, text: message.text});
-                };
-                antiBannerService.processAbpSubscriptionUrl(message.url, onLoaded);
+    function getText(text, args) {
+        if (!text) {
+            return "";
+        }
+        if (args && args.length > 0) {
+            text = text.replace(/\$(\d+)/g, function (match, number) {
+                return typeof args[number - 1] != "undefined" ? args[number - 1] : match;
             });
         }
-    });
-};
+        return text;
+    }
+
+    return {
+        getMessage: function (key, args) {
+            return getText(l10n.get(key), args);
+        }
+    };
+})();
 
 /**
  * Loads Adguard module.
@@ -350,6 +263,7 @@ var loadAdguardModule = function (module) {
                     }
                     return loadAdguardModule(module);
                 },
+                i18n: i18n,
                 exports: Object.create(Object.prototype)
             };
             Services.scriptloader.loadSubScript(url, scopes[module]);

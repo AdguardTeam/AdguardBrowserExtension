@@ -112,39 +112,47 @@ var UI = {
 		}.bind(this));
 	},
 
+	whiteListTab: function (tab) {
+
+		var tabInfo = framesMap.getFrameInfo(tab);
+		antiBannerService.whiteListFrame(tabInfo);
+
+		if (framesMap.isTabAdguardDetected(tab)) {
+			var domain = UrlUtils.getHost(tab.url);
+			adguardApplication.addRuleToApp("@@//" + domain + "^$document", function () {
+				this._reloadWithoutCache(tab);
+			}.bind(this));
+		} else {
+			this.updateTabIconAndContextMenu(tab, true);
+		}
+	},
+
 	whiteListCurrentTab: function () {
 		this._getCurrentTab(function (tab) {
+			this.whiteListTab(tab);
+		}.bind(this));
+	},
 
-			var tabInfo = framesMap.getFrameInfo(tab);
-			antiBannerService.whiteListFrame(tabInfo);
+	unWhiteListTab: function (tab) {
 
-			if (framesMap.isTabAdguardDetected(tab)) {
-				var domain = UrlUtils.getHost(tab.url);
-				adguardApplication.addRuleToApp("@@//" + domain + "^$document", function () {
+		var tabInfo = framesMap.getFrameInfo(tab);
+		antiBannerService.unWhiteListFrame(tabInfo);
+
+		if (framesMap.isTabAdguardDetected(tab)) {
+			var rule = framesMap.getTabAdguardUserWhiteListRule(tab);
+			if (rule) {
+				adguardApplication.removeRuleFromApp(rule.ruleText, function () {
 					this._reloadWithoutCache(tab);
 				}.bind(this));
-			} else {
-				this.updateTabIconAndContextMenu(tab, true);
 			}
-		}.bind(this));
+		} else {
+			this.updateTabIconAndContextMenu(tab, true);
+		}
 	},
 
 	unWhiteListCurrentTab: function () {
 		this._getCurrentTab(function (tab) {
-
-			var tabInfo = framesMap.getFrameInfo(tab);
-			antiBannerService.unWhiteListFrame(tabInfo);
-
-			if (framesMap.isTabAdguardDetected(tab)) {
-				var rule = framesMap.getTabAdguardUserWhiteListRule(tab);
-				if (rule) {
-					adguardApplication.removeRuleFromApp(rule.ruleText, function () {
-						this._reloadWithoutCache(tab);
-					}.bind(this));
-				}
-			} else {
-				this.updateTabIconAndContextMenu(tab, true);
-			}
+			this.unWhiteListTab(tab);
 		}.bind(this));
 	},
 
@@ -261,10 +269,6 @@ var UI = {
 		});
 	},
 
-	getFiltersUpdateResultInfo: function (success, updatedFilters) {
-		return Utils.getFiltersUpdateResultMessage(ext.i18n.getMessage.bind(ext.i18n), success, updatedFilters);
-	},
-
 	openFilteringLog: function (tabId) {
 		UI.openTab("pages/log.html" + (tabId ? "?tabId=" + tabId : ""), {activateSameTab: true, tabType: "popup"});
 	},
@@ -281,29 +285,32 @@ var UI = {
 		});
 	},
 
-	openChangeLog: function () {
-		UI.openTab("pages/release-notes.html", {activateSameTab: true});
+	openAssistant: function (selectElement) {
+		this._getCurrentTab(function (tab) {
+			tab.sendMessage({type: 'initAssistant', options: {selectElement: selectElement}});
+		});
 	},
 
-	openSafebrowsingTrusted: function (url) {
-		antiBannerService.getRequestFilter().addToSafebrowsingTrusted(url);
-		ext.windows.getLastFocused(function (win) {
-			win.getActiveTab(function (tab) {
-				tab.reload(url);
-			});
-		});
+	getAssistantCssOptions: function () {
+		return {
+			cssLink: [ext.getURL('lib/content-script/assistant/css/assistant.css')]
+		};
+	},
+
+	reloadCurrentTab: function (url) {
+		this._getCurrentTab(function (tab) {
+			tab.reload(url);
+		})
 	},
 
 	customizeContextMenu: function (tab) {
 
 		var callbackMappings = {
 			'context_block_site_ads': function () {
-				tab.sendMessage({type: "open-assistant"}, function () {
-				});
+				UI.openAssistant();
 			},
 			'context_block_site_element': function () {
-				tab.sendMessage({type: "open-assistant", selectElement: true}, function () {
-				});
+				UI.openAssistant(true);
 			},
 			'context_security_report': function () {
 				UI.openSiteReportTab(tab.url);
@@ -341,7 +348,7 @@ var UI = {
 			'context_open_log': function () {
 				UI.openCurrentTabFilteringLog();
 			},
-			'context_update_antibanner_filters': UI._checkAntiBannerFiltersUpdate
+			'context_update_antibanner_filters': UI.checkAntiBannerFiltersUpdate
 		};
 
 		function addMenu(title, options) {
@@ -515,22 +522,6 @@ var UI = {
 			}
 		});
 
-		//on filter auto-enabled event
-		EventNotifier.addListener(function (event, enabledFilters) {
-			if (event == EventNotifierTypes.ENABLE_FILTER_SHOW_POPUP) {
-				var result = Utils.getFiltersEnabledResultMessage(ext.i18n.getMessage.bind(ext.i18n), enabledFilters);
-				UI.showAlertMessagePopup(result.title, result.text);
-			}
-		});
-
-		//on filters updated event
-		EventNotifier.addListener(function (event, success, updatedFilters) {
-			if (event == EventNotifierTypes.UPDATE_FILTERS_SHOW_POPUP) {
-				var result = UI.getFiltersUpdateResultInfo(success, updatedFilters);
-				UI.showAlertMessagePopup(result.title, result.text);
-			}
-		});
-
 		//update tab icon while loading
 		ext.tabs.onLoading.addListener(function (tab) {
 			UI.updateTabIconAndContextMenu(tab);
@@ -553,8 +544,8 @@ var UI = {
 		});
 	},
 
-	_checkAntiBannerFiltersUpdate: function () {
-		this.antiBannerService.checkAntiBannerFiltersUpdate(true, function (updatedFilters) {
+	checkAntiBannerFiltersUpdate: function () {
+		antiBannerService.checkAntiBannerFiltersUpdate(true, function (updatedFilters) {
 			EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTERS_SHOW_POPUP, true, updatedFilters);
 		}, function () {
 			EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTERS_SHOW_POPUP, false);
@@ -576,7 +567,6 @@ var UI = {
 		tab.sendMessage({type: 'no-cache-reload'});
 	}
 };
-
 
 
 
