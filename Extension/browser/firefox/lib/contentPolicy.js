@@ -554,9 +554,6 @@ var WebRequestImpl = exports.WebRequestImpl = {
         var requestUrl = subject.URI.asciiSpec;
         var responseHeaders = WebRequestHelper.getResponseHeaders(subject);
 
-        // Retrieve referrer
-        var referrerUrl = this.framesMap.getFrameUrl(tab, 0);
-
         // Get content type
         var isDocument = (subject.loadFlags & subject.LOAD_DOCUMENT_URI);
         var requestType = WebRequestHelper.retrieveRequestType(subject);
@@ -573,6 +570,9 @@ var WebRequestImpl = exports.WebRequestImpl = {
             //record frame
             this.framesMap.recordFrame(tab, 0, requestUrl, requestType);
         }
+
+        // Retrieve referrer
+        var referrerUrl = this.framesMap.getFrameUrl(tab, 0);
 
         this.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
 
