@@ -127,11 +127,20 @@ CssFilter.prototype = {
 	 */
 	buildCss: function (domainName, genericHide) {
 		this._rebuild();
-		var css = this._buildCssByRules(this._getDomainSensitiveRules(domainName));
+
+		var domainRules = this._getDomainSensitiveRules(domainName);
 		if (genericHide) {
-			return css;
+			var nonGenericRules = [];
+			if (domainRules != null) {
+				nonGenericRules = domainRules.filter(function (rule) {
+					return !rule.isGeneric();
+				});
+			}
+
+			return this._buildCssByRules(nonGenericRules);;
 		}
 
+		var css = this._buildCssByRules(domainRules);
 		return this._getCommonCss().concat(css);
 	},
 
@@ -152,7 +161,7 @@ CssFilter.prototype = {
 		var injectDomainRules = [];
 		if (domainRules != null) {
 			injectDomainRules = domainRules.filter(function (rule) {
-				return rule.isInjectRule;
+				return rule.isInjectRule && (!genericHide || !rule.isGeneric());
 			});
 		}
 
@@ -183,11 +192,20 @@ CssFilter.prototype = {
 	 */
 	buildCssHits: function (domainName, appId, genericHide) {
 		this._rebuildHits(appId);
-		var css = this._buildCssByRulesHits(this._getDomainSensitiveRules(domainName), appId);
+
+		var domainRules = this._getDomainSensitiveRules(domainName);
 		if (genericHide) {
-			return css;
+			var nonGenericRules = [];
+			if (domainRules != null) {
+				nonGenericRules = domainRules.filter(function (rule) {
+					return !rule.isGeneric();
+				});
+			}
+
+			return this._buildCssByRulesHits(nonGenericRules, appId);
 		}
 
+		var css = this._buildCssByRulesHits(domainRules, appId);
 		return this._getCommonCssHits(appId).concat(css);
 	},
 

@@ -27,18 +27,19 @@ function testWhiteListRule() {
 addTestCase(testWhiteListRule);
 
 function testGenericRule() {
-	var domain1RuleText = "||test.ru/$script";
+
 	var domain2RuleText = "||test.ru/$script,domain=test2.ru";
 	var domain3RuleText = "test/$script,domain=test2.ru";
-	var domain4RuleText = "test.ru/$domain=~test2.ru";
 	var domain5RuleText = "test/$script,domain=test1.ru|~test2.ru";
-	var domain6RuleText = "||retarget.ssl-services.com^$third-party";
 
 	var generic1RuleText = "/generic";
 	var generic2RuleText = "/generic$domain=~test2.ru";
 	var generic3RuleText = "-460x68.";
 	var generic4RuleText = "generic";
 	var generic5RuleText = "~generic.com";
+	var generic6RuleText = "||test.ru/$script";
+	var generic7RuleText = "test.ru/$domain=~test2.ru";
+	var generic8RuleText = "||retarget.ssl-services.com^$third-party";
 
 	var rule = new UrlFilterRule(generic1RuleText);
 	assertNotNull(rule);
@@ -58,12 +59,20 @@ function testGenericRule() {
 
 	rule = new UrlFilterRule(generic5RuleText);
 	assertNotNull(rule);
-	assertTrue(rule.isGeneric())
+	assertTrue(rule.isGeneric());
 
-
-	rule = new UrlFilterRule(domain1RuleText);
+	rule = new UrlFilterRule(generic6RuleText);
 	assertNotNull(rule);
-	assertFalse(rule.isGeneric());
+	assertTrue(rule.isGeneric());
+
+	rule = new UrlFilterRule(generic7RuleText);
+	assertNotNull(rule);
+	assertTrue(rule.isGeneric());
+
+	rule = new UrlFilterRule(generic8RuleText);
+	assertNotNull(rule);
+	assertTrue(rule.isGeneric());
+
 
 	rule = new UrlFilterRule(domain2RuleText);
 	assertNotNull(rule);
@@ -73,15 +82,7 @@ function testGenericRule() {
 	assertNotNull(rule);
 	assertFalse(rule.isGeneric());
 
-	rule = new UrlFilterRule(domain4RuleText);
-	assertNotNull(rule);
-	assertFalse(rule.isGeneric());
-
 	rule = new UrlFilterRule(domain5RuleText);
-	assertNotNull(rule);
-	assertFalse(rule.isGeneric());
-
-	rule = new UrlFilterRule(domain6RuleText);
 	assertNotNull(rule);
 	assertFalse(rule.isGeneric());
 
