@@ -18,16 +18,16 @@
 var SafariContentBlocker = require('content-blocker').SafariContentBlocker;
 
 
-AntiBannerService.prototype.changeApplicationFilteringDisabled = function (disabled) {
-    if (disabled) {
-        SafariContentBlocker.clearFilters();
-    } else {
-        Log.info('Loading rules');
-        this._createRequestFilter();
-    }
-
-    AntiBannerService.prototype.changeApplicationFilteringDisabled.call(this, disabled);
-};
+//AntiBannerService.prototype.changeApplicationFilteringDisabled = function (disabled) {
+//    if (disabled) {
+//        SafariContentBlocker.clearFilters();
+//    } else {
+//        Log.info('Loading rules');
+//        this._createRequestFilter();
+//    }
+//
+//    AntiBannerService.prototype.changeApplicationFilteringDisabled.call(this, disabled);
+//};
 
 AntiBannerService.prototype.getRequestFilter = function () {
 
@@ -40,8 +40,6 @@ AntiBannerService.prototype.getRequestFilter = function () {
         for (var ruleText in this.dirtyRules) {
 
             rules.push(ruleText);
-
-            //TODO: Add all the rules to dirty
 
             //var filterId = this.dirtyRules[ruleText];
             //var rule = FilterRule.createRule(ruleText);
