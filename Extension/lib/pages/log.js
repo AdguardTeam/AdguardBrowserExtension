@@ -673,11 +673,7 @@ RequestWizard.getRequestType = function (requestType) {
 };
 
 RequestWizard.getSource = function (frameDomain) {
-	if (frameDomain && frameDomain != null) {
-		return frameDomain;
-	}
-
-	return '';
+	return frameDomain || '';
 };
 
 function init() {
