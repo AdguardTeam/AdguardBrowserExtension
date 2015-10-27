@@ -60,3 +60,9 @@ AntiBannerService.prototype.getRequestFilter = function () {
 
     return this.requestFilter;
 };
+
+/**
+ * List of events which cause RequestFilter re-creation
+ * @type {Array}
+ */
+var UPDATE_REQUEST_FILTER_EVENTS = [EventNotifierTypes.UPDATE_FILTER_RULES, EventNotifierTypes.ENABLE_FILTER, EventNotifierTypes.DISABLE_FILTER, EventNotifierTypes.ADD_RULE, EventNotifierTypes.ADD_RULES, EventNotifierTypes.REMOVE_RULE];

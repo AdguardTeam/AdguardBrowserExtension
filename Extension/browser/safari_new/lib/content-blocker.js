@@ -42,15 +42,6 @@ var SafariContentBlocker = exports.SafariContentBlocker = {
         this._loadUrl(this.emptyBlockerUrl, this._setContentBlocker);
     },
 
-    /**
-     * Add rule
-     *
-     * @param ruleText
-     */
-    addRule: function (ruleText) {
-        //TODO: Implement addRule
-    },
-
     _loadUrl: function (url, onSuccess) {
         Log.info('Loading ' + url);
         var xhr = new XMLHttpRequest();
