@@ -18,16 +18,16 @@
 var SafariContentBlocker = require('content-blocker').SafariContentBlocker;
 
 
-//AntiBannerService.prototype.changeApplicationFilteringDisabled = function (disabled) {
-//    if (disabled) {
-//        SafariContentBlocker.clearFilters();
-//    } else {
-//        Log.info('Loading rules');
-//        this._createRequestFilter();
-//    }
-//
-//    AntiBannerService.prototype.changeApplicationFilteringDisabled.call(this, disabled);
-//};
+AntiBannerService.prototype.changeApplicationFilteringDisabled = function (disabled) {
+    if (disabled) {
+        SafariContentBlocker.clearFilters();
+    } else {
+        this._createRequestFilter()
+    }
+
+    userSettings.changeFilteringDisabled(disabled);
+    this.applicationFilteringDisabled = disabled;
+};
 
 AntiBannerService.prototype.getRequestFilter = function () {
 
