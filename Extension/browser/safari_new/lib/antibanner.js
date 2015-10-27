@@ -22,7 +22,7 @@ AntiBannerService.prototype.changeApplicationFilteringDisabled = function (disab
     if (disabled) {
         SafariContentBlocker.clearFilters();
     } else {
-        this._createRequestFilter()
+        this._createRequestFilter();
     }
 
     userSettings.changeFilteringDisabled(disabled);
@@ -33,26 +33,25 @@ AntiBannerService.prototype.getRequestFilter = function () {
 
     // Check if we can lazy-init request filter
     if (this.dirtyRules) {
-        // Creates request filter
-        var requestFilter = new RequestFilter();
-
         var rules = [];
+
+        //Add whitelist/blocklist rules
+        for (var i in whiteListService.whiteListDomains) {
+            var rule = whiteListService._createWhiteListRule(whiteListService.whiteListDomains[i]);
+            rules.push(rule.ruleText);
+
+            //TODO: Handle blocklist mode
+        }
+
+        //Add request filter rules
         for (var ruleText in this.dirtyRules) {
-
             rules.push(ruleText);
-
-            //var filterId = this.dirtyRules[ruleText];
-            //var rule = FilterRule.createRule(ruleText);
-            //
-            //if (rule != null) {
-            //    requestFilter.addRule(rule, filterId);
-            //}
         }
 
         SafariContentBlocker.loadFilters(rules);
 
         // Request filter is ready
-        this.requestFilter = requestFilter;
+        this.requestFilter = new RequestFilter();;
 
         // No need in dirtyRules collection anymore
         this.dirtyRules = null;
