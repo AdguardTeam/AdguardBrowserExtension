@@ -17,7 +17,7 @@
 
 var SafariContentBlocker = require('content-blocker').SafariContentBlocker;
 
-
+var changeApplicationFilteringDisabled = AntiBannerService.prototype.changeApplicationFilteringDisabled;
 AntiBannerService.prototype.changeApplicationFilteringDisabled = function (disabled) {
     if (disabled) {
         SafariContentBlocker.clearFilters();
@@ -25,15 +25,19 @@ AntiBannerService.prototype.changeApplicationFilteringDisabled = function (disab
         this._createRequestFilter();
     }
 
-    userSettings.changeFilteringDisabled(disabled);
-    this.applicationFilteringDisabled = disabled;
+    changeApplicationFilteringDisabled.call(this, disabled);
 };
 
+var getRequestFilter = AntiBannerService.prototype.getRequestFilter;
 AntiBannerService.prototype.getRequestFilter = function () {
 
-    // Check if we can lazy-init request filter
     if (this.dirtyRules) {
         var rules = [];
+
+        //Add request filter rules
+        for (var ruleText in this.dirtyRules) {
+            rules.push(ruleText);
+        }
 
         //Add whitelist/blocklist rules
         for (var i in whiteListService.whiteListDomains) {
@@ -43,33 +47,15 @@ AntiBannerService.prototype.getRequestFilter = function () {
             //TODO: Handle blocklist mode
         }
 
-        //Add request filter rules
-        for (var ruleText in this.dirtyRules) {
-            rules.push(ruleText);
-        }
-
         SafariContentBlocker.loadFilters(rules);
-
-        // Request filter is ready
-        this.requestFilter = new RequestFilter();
-        ;
-
-        // No need in dirtyRules collection anymore
-        this.dirtyRules = null;
     }
 
-    return this.requestFilter;
+    return getRequestFilter.call(this);
 };
 
-/**
- * Adds domain to whitelist
- *
- * @param domain Domain name
- * @returns {*}
- */
+var addWhiteListDomain = AntiBannerService.prototype.addWhiteListDomain;
 AntiBannerService.prototype.addWhiteListDomain = function (domain) {
-    whiteListService.addToWhiteList(domain);
-    EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES);
+    addWhiteListDomain.call(this, domain);
 
     var filter = this._getFilterById(AntiBannerFiltersId.WHITE_LIST_FILTER_ID);
     var rule = whiteListService._createWhiteListRule(domain);
@@ -77,14 +63,9 @@ AntiBannerService.prototype.addWhiteListDomain = function (domain) {
     EventNotifier.notifyListeners(EventNotifierTypes.ADD_RULE, filter, [rule]);
 };
 
-/**
- * Adds list of domains to the whitelist.
- *
- * @param domains List of domains to add
- */
+var addWhiteListDomains = AntiBannerService.prototype.addWhiteListDomains;
 AntiBannerService.prototype.addWhiteListDomains = function (domains) {
-    whiteListService.addToWhiteListArray(domains);
-    EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES);
+    addWhiteListDomains.call(this, domains);
 
     if (!domains) {
         return;
@@ -102,26 +83,18 @@ AntiBannerService.prototype.addWhiteListDomains = function (domains) {
     EventNotifier.notifyListeners(EventNotifierTypes.ADD_RULES, filter, rules);
 };
 
-/**
- * Removes domain from the whitelist
- *
- * @param domain   Domain to remove
- */
+var removeWhiteListDomain = AntiBannerService.prototype.removeWhiteListDomain;
 AntiBannerService.prototype.removeWhiteListDomain = function (domain) {
-    whiteListService.removeFromWhiteList(domain);
-    EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES);
+    removeWhiteListDomain.call(this, domain);
 
     var filter = this._getFilterById(AntiBannerFiltersId.WHITE_LIST_FILTER_ID);
     var rule = whiteListService._createWhiteListRule(domain);
     EventNotifier.notifyListeners(EventNotifierTypes.REMOVE_RULE, filter, [rule]);
 };
 
-/**
- * Removes all domains from the whitelist
- */
+var clearWhiteListFilter = AntiBannerService.prototype.clearWhiteListFilter;
 AntiBannerService.prototype.clearWhiteListFilter = function () {
-    whiteListService.clearWhiteList();
-    EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES);
+    clearWhiteListFilter.call(this);
 
     var filter = this._getFilterById(AntiBannerFiltersId.WHITE_LIST_FILTER_ID);
     EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTER_RULES, filter, []);
@@ -132,3 +105,21 @@ AntiBannerService.prototype.clearWhiteListFilter = function () {
  * @type {Array}
  */
 var UPDATE_REQUEST_FILTER_EVENTS = [EventNotifierTypes.UPDATE_FILTER_RULES, EventNotifierTypes.ENABLE_FILTER, EventNotifierTypes.DISABLE_FILTER, EventNotifierTypes.ADD_RULE, EventNotifierTypes.ADD_RULES, EventNotifierTypes.REMOVE_RULE];
+
+(function () {
+
+    EventNotifier.addListener(function (event, params) {
+        switch (event) {
+            case EventNotifierTypes.REBUILD_REQUEST_FILTER_END:
+                console.log('REBUILD_REQUEST_FILTER_END:' + params);
+                break;
+            case EventNotifierTypes.CHANGE_USER_SETTINGS:
+                console.log('CHANGE_USER_SETTINGS:' + params);
+                break;
+            case EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES:
+                console.log('UPDATE_WHITELIST_FILTER_RULES:' + params);
+                break;
+        }
+    });
+
+})();
