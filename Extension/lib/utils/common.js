@@ -220,6 +220,12 @@ var Utils = exports.Utils = {
         return left.compare(right) > 0;
     },
 
+    isGreaterOrEqualsVersion: function (leftVersion, rightVersion) {
+        var left = new Version(leftVersion);
+        var right = new Version(rightVersion);
+        return left.compare(right) >= 0;
+    },
+
     getAppVersion: function () {
         return LS.getItem("app-version");
     },
@@ -238,6 +244,11 @@ var Utils = exports.Utils = {
 
     isSafariBrowser: function () {
         return Prefs.getBrowser() == "Safari";
+    },
+
+    isSafari9Plus: function () {
+        return Prefs.getBrowser() == "Safari"
+            && this.isGreaterOrEqualsVersion(Prefs.safariVersion, "9.0");
     },
 
     isFirefoxBrowser: function () {
