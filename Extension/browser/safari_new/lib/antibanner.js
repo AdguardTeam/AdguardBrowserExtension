@@ -47,6 +47,7 @@ AntiBannerService.prototype.getRequestFilter = function () {
             //TODO: Handle blocklist mode
         }
 
+        //Load rules to content blocker
         SafariContentBlocker.loadFilters(rules);
     }
 
@@ -105,21 +106,3 @@ AntiBannerService.prototype.clearWhiteListFilter = function () {
  * @type {Array}
  */
 var UPDATE_REQUEST_FILTER_EVENTS = [EventNotifierTypes.UPDATE_FILTER_RULES, EventNotifierTypes.ENABLE_FILTER, EventNotifierTypes.DISABLE_FILTER, EventNotifierTypes.ADD_RULE, EventNotifierTypes.ADD_RULES, EventNotifierTypes.REMOVE_RULE];
-
-(function () {
-
-    EventNotifier.addListener(function (event, params) {
-        switch (event) {
-            case EventNotifierTypes.REBUILD_REQUEST_FILTER_END:
-                console.log('REBUILD_REQUEST_FILTER_END:' + params);
-                break;
-            case EventNotifierTypes.CHANGE_USER_SETTINGS:
-                console.log('CHANGE_USER_SETTINGS:' + params);
-                break;
-            case EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES:
-                console.log('UPDATE_WHITELIST_FILTER_RULES:' + params);
-                break;
-        }
-    });
-
-})();
