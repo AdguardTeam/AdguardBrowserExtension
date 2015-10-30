@@ -148,6 +148,20 @@ RequestFilter.prototype = {
     },
 
     /**
+     * Returns the array of loaded rules
+     */
+    getRules: function () {
+        var result = [];
+
+        result = result.concat(this.urlWhiteFilter.getRules());
+        result = result.concat(this.urlBlockingFilter.getRules());
+        result = result.concat(this.cssFilter.getRules());
+        result = result.concat(this.scriptFilter.getRules());
+
+        return result;
+    },
+
+    /**
      * Builds CSS for the specified web page.
      * Only element hiding rules are used to build this CSS:
      * http://adguard.com/en/filterrules.html#hideRules

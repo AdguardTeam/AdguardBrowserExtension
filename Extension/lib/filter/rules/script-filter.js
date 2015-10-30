@@ -76,6 +76,14 @@ ScriptFilter.prototype = {
 	},
 
 	/**
+	 * Returns the array of loaded rules
+	 */
+	getRules: function () {
+		var result = [];
+		return result.concat(this.scriptRules).concat(this.exceptionsRules);
+	},
+
+	/**
 	 * Builds script for the specified domain to be injected
 	 *
 	 * @param domainName Domain name

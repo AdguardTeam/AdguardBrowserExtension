@@ -115,6 +115,14 @@ CssFilter.prototype = {
 		this.dirty = true;
 	},
 
+	/**
+	 * Returns the array of loaded rules
+	 */
+	getRules: function () {
+		var result = [];
+		return result.concat(this.commonRules).concat(this.domainSensitiveRules).concat(this.exceptionRules);
+	},
+
 
 	/**
 	 * Builds CSS to be injected to the page.
