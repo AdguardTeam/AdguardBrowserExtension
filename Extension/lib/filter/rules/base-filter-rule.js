@@ -27,8 +27,9 @@ var Log = require('utils/log').Log;
 /**
  * Base class for all filter rules
  */
-var FilterRule = exports.FilterRule = function (text) {
+var FilterRule = exports.FilterRule = function (text, filterId) {
 	this.ruleText = text;
+	this.filterId = filterId;
 };
 
 FilterRule.prototype = {
@@ -224,9 +225,10 @@ function getClasses() {
  * Method that parses rule text and creates object of a suitable class.
  *
  * @param ruleText Rule text
+ * @param filterId Filter identifier
  * @returns Filter rule object. Either UrlFilterRule or CssFilterRule or ScriptFilterRule.
  */
-FilterRule.createRule = function (ruleText) {
+FilterRule.createRule = function (ruleText, filterId) {
 
 	ruleText = ruleText ? ruleText.trim() : null;
 	if (!ruleText) {
@@ -247,18 +249,18 @@ FilterRule.createRule = function (ruleText) {
 		var UrlFilterRule = getClasses().UrlFilterRule;
 		var ScriptFilterRule = getClasses().ScriptFilterRule;
 		if (StringUtils.startWith(ruleText, FilterRule.MASK_WHITE_LIST)) {
-			rule = new UrlFilterRule(ruleText);
+			rule = new UrlFilterRule(ruleText, filterId);
 		} else if (StringUtils.contains(ruleText, FilterRule.MASK_CSS_RULE) || StringUtils.contains(ruleText, FilterRule.MASK_CSS_EXCEPTION_RULE)) {
-			rule = new CssFilterRule(ruleText);
+			rule = new CssFilterRule(ruleText, filterId);
 		} else if (StringUtils.contains(ruleText, FilterRule.MASK_CSS_INJECT_RULE) || StringUtils.contains(ruleText, FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE)) {
-			rule = new CssFilterRule(ruleText);
+			rule = new CssFilterRule(ruleText, filterId);
 		} else if (StringUtils.contains(ruleText, FilterRule.MASK_SCRIPT_RULE) || StringUtils.contains(ruleText, FilterRule.MASK_SCRIPT_EXCEPTION_RULE)) {
-			rule = new ScriptFilterRule(ruleText);
+			rule = new ScriptFilterRule(ruleText, filterId);
 		} else {
-			rule = new UrlFilterRule(ruleText);
+			rule = new UrlFilterRule(ruleText, filterId);
 		}
 	} catch (ex) {
-		Log.error("Error creating rule from {0}, cause {1}", ruleText, ex);
+		Log.warn("Cannot create rule from {0}, cause {1}", ruleText, ex);
 	}
 	return rule;
 };

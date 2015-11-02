@@ -25,8 +25,7 @@ import java.io.File;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
-import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 public class Main {
 
@@ -70,9 +69,6 @@ public class Main {
 		//download filters before build
 		boolean updateFilters = Boolean.valueOf(getParamValue(args, "--update-filters", "false"));
 
-		//use local filters
-		boolean useLocalScriptRules = Boolean.valueOf(getParamValue(args, "--local-script-rules", "false"));
-
 		//update url for extension
 		String updateUrl = getParamValue(args, "--update-url", null);
 
@@ -96,9 +92,9 @@ public class Main {
 			FilterUtils.updateLocalFilters(source);
 		}
 
-		Map<Integer, List<String>> filtersScriptRules = FilterUtils.getScriptRules(source);
+		Set<String> scriptRules = FilterUtils.getScriptRules(source);
 
-		File buildResult = createBuild(source, dest, useLocalScriptRules, filtersScriptRules, extensionId, updateUrl, browser, version, branch);
+		File buildResult = createBuild(source, dest, scriptRules, extensionId, updateUrl, browser, version, branch);
 
 		if (browser == Browser.SAFARI && updateFilters) {
 			FilterUtils.loadEnglishFilterForSafari(new File(buildResult, "filters"));
@@ -131,8 +127,6 @@ public class Main {
 		if (updateUrl != null) {
 			log.info("UpdateUrl: " + updateUrl);
 		}
-		log.info("LocalScriptRules: " + useLocalScriptRules);
-		log.info("---------------------------------");
 	}
 
 	private static boolean validateParameters(String sourcePath, String buildName, String version, String extensionId, String configBrowser, String packMethod) {
@@ -181,7 +175,7 @@ public class Main {
 	 *
 	 * @param source             Source path
 	 * @param dest               Destination folder
-	 * @param filtersScriptRules List of javascript injection rules.
+	 * @param scriptRules List of javascript injection rules.
 	 *                           For AMO and addons.opera.com we embed all
 	 *                           js rules into the extension and do not update them
 	 *                           from remote server.
@@ -197,9 +191,8 @@ public class Main {
 	 * @throws Exception
 	 */
 	private static File createBuild(File source, File dest,
-	                                boolean useLocalScriptRules,
-	                                Map<Integer, List<String>> filtersScriptRules,
-	                                String extensionId, String updateUrl, Browser browser, String version, String branch) throws Exception {
+									Set<String> scriptRules,
+									String extensionId, String updateUrl, Browser browser, String version, String branch) throws Exception {
 
 		if (dest.exists()) {
 			log.debug("Removed previous build: " + dest.getName());
@@ -208,7 +201,7 @@ public class Main {
 
 		FileUtil.copyFiles(source, dest, browser);
 
-		SettingUtils.writeLocalScriptRulesToFile(dest, useLocalScriptRules, filtersScriptRules);
+		SettingUtils.writeLocalScriptRulesToFile(dest, scriptRules);
 
 		String extensionNamePostfix = "";
 		if (StringUtils.isNotEmpty(branch)) {

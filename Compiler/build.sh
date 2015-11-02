@@ -6,7 +6,7 @@ mvn package;
 
 cd deploy;
 
-version="2.0.17"
+version="2.0.19"
 
 if [ "$env" = release ]; then
 
@@ -19,11 +19,11 @@ if [ "$env" = release ]; then
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #opera release crx for addons.opera.com
-    options="--version=$version --dest=$destPath --name=opera --browser=chrome --pack=crx --local-script-rules=true"
+    options="--version=$version --dest=$destPath --name=opera --browser=chrome --pack=crx"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox release xpi for amo
-    options="--version=$version --dest=$destPath --name=firefox --browser=firefox --pack=xpi --extensionId=adguardadblocker@adguard.com --local-script-rules=true"
+    options="--version=$version --dest=$destPath --name=firefox --browser=firefox --pack=xpi --extensionId=adguardadblocker@adguard.com"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #safari release for extensions.apple.com

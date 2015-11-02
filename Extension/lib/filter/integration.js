@@ -329,10 +329,6 @@ AdguardApplication.prototype = {
 			headerInfo[keyAndValue[0]] = decodeURIComponent(keyAndValue[1]);
 		}
 
-		var rule = FilterRule.createRule(headerInfo.rule);
-		if (rule) {
-			rule.filterId = headerInfo.filterId - 0;
-		}
-		return rule;
+		return FilterRule.createRule(headerInfo.rule, headerInfo.filterId - 0);
 	}
 };

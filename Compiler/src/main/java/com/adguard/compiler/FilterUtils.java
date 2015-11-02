@@ -22,10 +22,7 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Helper utils to work with filters
@@ -119,29 +116,24 @@ public class FilterUtils {
      * Gets javascript injection rules.
      *
      * @param source Extension source
-     * @return Map filterId-List of rules
+     * @return List of rules
      * @throws IOException
      */
-    public static Map<Integer, List<String>> getScriptRules(File source) throws IOException {
+    public static Set<String> getScriptRules(File source) throws IOException {
 
-        Map<Integer, List<String>> filterScriptRules = new HashMap<Integer, List<String>>();
+        Set<String> scriptRules = new HashSet<String>();
 
         File filtersDir = new File(source, "filters");
         for (int filterId = 1; filterId <= 10; filterId++) {
             File filterFile = new File(filtersDir, "filter_" + filterId + ".txt");
             List<String> lines = FileUtils.readLines(filterFile);
-            List<String> scriptRules = new ArrayList<String>();
             for (String line : lines) {
                 if (line.contains("#%#")) {
                     scriptRules.add(line.trim());
                 }
             }
-
-            if (scriptRules.size() > 0) {
-                filterScriptRules.put(filterId, scriptRules);
-            }
         }
 
-        return filterScriptRules;
+        return scriptRules;
     }
 }

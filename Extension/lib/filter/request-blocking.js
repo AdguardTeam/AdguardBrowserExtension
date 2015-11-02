@@ -67,7 +67,7 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
 
     var jsInjectRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "JSINJECT");
     if (!jsInjectRule) {
-        scripts = WorkaroundUtils.getScriptsForUrl(this.antiBannerService, documentUrl);
+        scripts = this.antiBannerService.getRequestFilter().getScriptsForUrl(documentUrl);
     }
 
     return {

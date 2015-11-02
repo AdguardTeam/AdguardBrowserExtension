@@ -21,14 +21,15 @@
  */
 var StringUtils = require('utils/common').StringUtils;
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
+var WorkaroundUtils = require('utils/workaround').WorkaroundUtils;
 
 /**
  * JS injection rule:
  * http://adguard.com/en/filterrules.html#javascriptInjection
  */
-var ScriptFilterRule = exports.ScriptFilterRule = function (rule) {
+var ScriptFilterRule = exports.ScriptFilterRule = function (rule, filterId) {
 
-	FilterRule.call(this, rule);
+	FilterRule.call(this, rule, filterId);
 
 	this.script = null;
 	this.whiteListRule = StringUtils.contains(rule, FilterRule.MASK_SCRIPT_EXCEPTION_RULE);
@@ -42,6 +43,7 @@ var ScriptFilterRule = exports.ScriptFilterRule = function (rule) {
 	}
 
 	this.script = rule.substring(indexOfMask + mask.length);
+	this.scriptSource = WorkaroundUtils.getScriptSource(filterId, rule);
 };
 
 ScriptFilterRule.prototype = Object.create(FilterRule.prototype);

@@ -193,11 +193,7 @@ WhiteListService.prototype = {
         if (StringUtils.isEmpty(domain)) {
             return null;
         }
-        var rule = FilterRule.createRule("@@//" + domain + "$document");
-        if (rule) {
-            rule.filterId = AntiBannerFiltersId.WHITE_LIST_FILTER_ID;
-        }
-        return rule;
+        return FilterRule.createRule("@@//" + domain + "$document", AntiBannerFiltersId.WHITE_LIST_FILTER_ID);
     },
 
     _addToArray: function (domain) {

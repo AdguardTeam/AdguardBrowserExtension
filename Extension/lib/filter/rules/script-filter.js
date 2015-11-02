@@ -20,7 +20,6 @@
  * require method is overridden in Chrome extension (port/require.js).
  */
 var CollectionUtils = require('utils/common').CollectionUtils;
-var FilterUtils = require('utils/common').FilterUtils;
 
 /**
  * Filter that manages JS injection rules.
@@ -79,39 +78,17 @@ ScriptFilter.prototype = {
 	 * Builds script for the specified domain to be injected
 	 *
 	 * @param domainName Domain name
-	 * @returns List of scripts to be applied
+	 * @returns List of scripts to be applied and scriptSource
 	 */
 	buildScript: function (domainName) {
 		var scripts = [];
 		for (var i = 0; i < this.scriptRules.length; i++) {
 			var rule = this.scriptRules[i];
 			if (rule.isPermitted(domainName)) {
-				scripts.push(rule.script);
-			}
-		}
-		return scripts;
-	},
-
-	/**
-	 * Builds script using custom rules from user filter.
-	 *
-	 * We divide user filter and main filters because of Opera and Firefox rules.
-	 * By the rules of AMO and addons.opera.com we cannot use remote scripts
-	 * (and our JS injection rules are remote scripts).
-	 *
-	 * So what we do:
-	 * 1. We pre-compile all current JS rules to the extension and restrict using new rules got from filters updates.
-	 * 2. We allow only custom rules from the User filter.
-	 *
-	 * @param domainName    Domain name
-	 * @returns List of scripts to be applied
-	 */
-	buildScriptFromUserRules: function (domainName) {
-		var scripts = [];
-		for (var i = 0; i < this.scriptRules.length; i++) {
-			var rule = this.scriptRules[i];
-			if (FilterUtils.isUserFilterRule(rule) && rule.isPermitted(domainName)) {
-				scripts.push(rule.script);
+				scripts.push({
+					scriptSource: rule.scriptSource,
+					rule: rule.script
+				});
 			}
 		}
 		return scripts;

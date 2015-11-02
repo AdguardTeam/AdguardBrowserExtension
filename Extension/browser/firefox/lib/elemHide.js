@@ -265,6 +265,7 @@ ElemHide = exports.ElemHide = {
 
         worker.port.on('get-selectors-and-scripts', function (message) {
             if (WorkaroundUtils.isFacebookIframe(message.documentUrl)) {
+                // Never inject into facebook frames
                 return;
             }
             var result = this.webRequestService.processGetSelectorsAndScripts(worker.tab, message.documentUrl);
