@@ -14,148 +14,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-//(function () {
-//
-//	if (window.top == window) {
-//		safari.self.tab.dispatchMessage("loading", document.location.href);
-//	}
-//
-//	if (window.top === window) {
-//
-//		function createMainFrameEvent(type) {
-//			var data = {
-//				url: document.location.href,
-//				type: "main_frame",
-//				frameId: 0
-//			};
-//			var evt = document.createEvent("Event");
-//			evt.initEvent("beforeload");
-//			safari.self.tab.canLoad(evt, {type: type, data: data});
-//		}
-//
-//		createMainFrameEvent("safariWebRequest");
-//		createMainFrameEvent("safariHeadersRequest");
-//	}
-//
-//	var contentScriptId = Date.now() + Math.random().toString(10).slice(2);
-//
-//	var absoluteUrlHelper = document.createElement("a");
-//
-//	var onFirstLoadOccurred = false;
-//
-//	var execTmpScript = function () {
-//		var tmpJS = document.createElement("script");
-//		tmpJS.textContent = '(function () {\
-//								var block = function (url, type) {\
-//									var event = new CustomEvent("' + contentScriptId + '", {\
-//										detail: {\
-//											url: url,\
-//											type: type\
-//										},\
-//										bubbles: false\
-//									});\
-//									document.dispatchEvent(event);\
-//									return event.detail.url === false;\
-//								};\
-//								var _emptyFunc = function () {\
-//								};\
-//								var xmlHttpRequestOpen = XMLHttpRequest.prototype.open;\
-//								XMLHttpRequest.prototype.open = function (method, url) {\
-//									if (block(url, "xmlhttprequest")) {\
-//										return {send: _emptyFunc}\
-//									} else {\
-//										return xmlHttpRequestOpen.apply(this, arguments);\
-//									}\
-//								}\
-//							})();';
-//		document.documentElement.removeChild(document.documentElement.appendChild(tmpJS));
-//	};
-//
-//	var canLoadRequest = function (url, type, frameId) {
-//		return safari.self.tab.canLoad(event, {
-//			type: "safariWebRequest", data: {
-//				url: url,
-//				type: type,
-//				frameId: frameId,
-//				requestFrameId: 0
-//			}
-//		});
-//	};
-//
-//	var onBeforeLoad = function (event) {
-//
-//		if (!onFirstLoadOccurred) {
-//			onFirstLoad();
-//		}
-//
-//		absoluteUrlHelper.href = event.url;
-//		var url = absoluteUrlHelper.href;
-//
-//		if (!/^https?:/.test(url)) {
-//			return;
-//		}
-//
-//		var type;
-//		switch (event.target.localName) {
-//			case "link":
-//				if (/(^|\s)stylesheet($|\s)/i.test(event.target.rel)) {
-//					type = "stylesheet";
-//					break;
-//				}
-//			case "img":
-//				type = "image";
-//				break;
-//			case "frame":
-//			case "iframe":
-//				type = "sub_frame";
-//				break;
-//			case "object":
-//			case "embed":
-//				type = "object";
-//				break;
-//			case "script":
-//				type = "script";
-//				break;
-//			default:
-//				type = "other";
-//				break;
-//		}
-//
-//		var frameId;
-//		if (type == "sub_frame") {
-//			frameId = Math.random();
-//		}
-//
-//		if (!canLoadRequest(url, type, frameId)) {
-//
-//			event.preventDefault();
-//
-//			if (type != "sub_frame") {
-//				setTimeout(function () {
-//					var evt = document.createEvent("Event");
-//					evt.initEvent("error");
-//					event.target.dispatchEvent(evt);
-//				}, 0);
-//			}
-//		}
-//
-//	};
-//	document.addEventListener("beforeload", onBeforeLoad, true);
-//
-//	var onFirstLoad = function () {
-//		document.removeEventListener("DOMContentLoaded", onFirstLoad, true);
-//		onFirstLoadOccurred = true;
-//		document.addEventListener(contentScriptId, function (e) {
-//			absoluteUrlHelper.href = e.detail.url;
-//			if (!canLoadRequest(absoluteUrlHelper.href, e.detail.type)) {
-//				e.detail.url = false;
-//			}
-//		});
-//		execTmpScript();
-//	};
-//	document.addEventListener("DOMContentLoaded", onFirstLoad, true);
-//
-//})();
 
 //Content script API implementation
 var contentPage = {
@@ -166,3 +24,25 @@ var contentPage = {
 };
 
 var i18n = new I18NSupport();
+
+(function () {
+
+	if (window.top === window) {
+
+		function createMainFrameEvent(type) {
+			var data = {
+				url: document.location.href,
+				type: "main_frame",
+				frameId: 0
+			};
+
+			safari.self.tab.dispatchMessage('canLoad', {
+				type: type,
+				data: data
+			});
+		};
+
+		createMainFrameEvent("safariWebRequest");
+		createMainFrameEvent("safariHeadersRequest");
+	}
+})();
