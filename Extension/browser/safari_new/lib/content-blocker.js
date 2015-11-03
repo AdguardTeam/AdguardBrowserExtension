@@ -22,16 +22,19 @@ require('./JSConverter.js');
  * Safari Content Blocker helper
  */
 var SafariContentBlocker = exports.SafariContentBlocker = {
-    contentBlockerUrl: 'config/test_safari.json',
     emptyBlockerUrl: 'config/empty.json',
 
+    /**
+     * Loads array of rules to content blocker
+     *
+     * @param rules
+     */
     loadFilters: function (rules) {
         Log.info('Starting loading content blocker.');
 
-        var converted = jsonFromFilters(rules, 50000);
+        var converted = jsonFromRules(rules, 50000);
 
         this._setContentBlocker(JSON.parse(converted.converted));
-        //this._loadUrl(this.contentBlockerUrl, this._setContentBlocker);
     },
 
     /**
