@@ -56,7 +56,7 @@ public class SettingUtils {
 			" * 3. We allow only custom rules got from the User filter (which user creates manually)\r\n" +
 			" *    or from this DEFAULT_SCRIPT_RULES object\r\n" +
 			" */\r\n" +
-			"exports.DEFAULT_SCRIPT_RULES = Object.create(null);\r\n%s";
+			"var DEFAULT_SCRIPT_RULES = exports.DEFAULT_SCRIPT_RULES = Object.create(null);\r\n%s";
 
 	public static void writeLocalScriptRulesToFile(File dest, Set<String> scriptRules) throws IOException {
 		String scriptRulesText = getScriptRulesText(scriptRules);

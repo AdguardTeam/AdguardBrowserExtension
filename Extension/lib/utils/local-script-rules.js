@@ -25,4 +25,4 @@
  * 3. We allow only custom rules got from the User filter (which user creates manually)
  *    or from this DEFAULT_SCRIPT_RULES object
  */
-exports.DEFAULT_SCRIPT_RULES = Object.create(null);
+var DEFAULT_SCRIPT_RULES = exports.DEFAULT_SCRIPT_RULES = Object.create(null);
