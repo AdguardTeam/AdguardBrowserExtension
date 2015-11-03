@@ -16,7 +16,7 @@
  */
 
 var Log = require('utils/log').Log;
-require('./JSConverter.js');
+require('JSConverter.js');
 
 /**
  * Safari Content Blocker helper
@@ -32,7 +32,7 @@ var SafariContentBlocker = exports.SafariContentBlocker = {
     loadFilters: function (rules) {
         Log.info('Starting loading content blocker.');
 
-        var converted = jsonFromRules(rules, 50000);
+        var converted = jsonFromFilters(rules, 50000);
 
         this._setContentBlocker(JSON.parse(converted.converted));
     },
