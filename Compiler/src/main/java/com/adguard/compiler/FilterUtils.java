@@ -39,6 +39,7 @@ public class FilterUtils {
     private final static String FILTER_DOWNLOAD_URL = "http://chrome.adtidy.org/getfilter.html?filterid=%s&key=4DDBE80A3DA94D819A00523252FB6380";
 
     private final static int ENGLISH_FILTER_ID = 2;
+    private final static int MOBILE_SAFARI_FILTER_ID = 12;
     private final static String USER_AGENT_SAFARI = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.78.2 (KHTML, like Gecko) Version/7.0.6 Safari/537.78.2";
 
     /**
@@ -90,6 +91,21 @@ public class FilterUtils {
         String downloadUrl = String.format(FILTER_DOWNLOAD_URL, ENGLISH_FILTER_ID);
         String response = UrlUtils.downloadString(new URL(downloadUrl), "UTF-8", USER_AGENT_SAFARI);
         FileUtils.writeStringToFile(new File(destDir, "filter_" + ENGLISH_FILTER_ID + ".txt"), response, "utf-8");
+    }
+
+    /**
+     * Loads mobile safari filter for safari.
+     * <p/>
+     * This filters contains some special fix rules for safari content blocker
+     *
+     * @param destDir Destination directory.
+     * @throws IOException
+     */
+    public static void loadMobileSafariFilter(File destDir) throws IOException {
+        log.info("Start download filter mobile safari filter");
+        String downloadUrl = String.format(FILTER_DOWNLOAD_URL, MOBILE_SAFARI_FILTER_ID);
+        String response = UrlUtils.downloadString(new URL(downloadUrl), "UTF-8");
+        FileUtils.writeStringToFile(new File(destDir, "filter_" + MOBILE_SAFARI_FILTER_ID + ".txt"), response, "utf-8");
     }
 
     /**

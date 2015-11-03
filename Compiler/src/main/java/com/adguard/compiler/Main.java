@@ -104,6 +104,10 @@ public class Main {
 			FilterUtils.loadEnglishFilterForSafari(new File(buildResult, "filters"));
 		}
 
+		if (updateFilters && browser == Browser.SAFARI_NEW) {
+			FilterUtils.loadMobileSafariFilter(new File(buildResult, "filters"));
+		}
+
 		File packedFile = null;
 		if (packMethod != null) {
 			if (PACK_METHOD_ZIP.equals(packMethod)) {
