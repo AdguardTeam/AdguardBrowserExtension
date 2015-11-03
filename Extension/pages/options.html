@@ -103,12 +103,14 @@
             <div id="whitelist" class="s-page-lists-user">
                 <div class="sp-lists-user-title" i18n="options_whitelist"></div>
                 <div class="sp-lists-user-descr" i18n="options_whitelist_description"></div>
-                <div class="settings-page-table whitelist-table">
-                    <div class="s-page-table-row cf">
-                        <div class="sp-table-row-label" i18n="options_whitelist_inverse"></div>
-                        <input type="checkbox" class="sp-table-row-input" id="changeDefaultWhiteListMode"/>
+                <#if browser.name() != "SAFARI_NEW">
+                    <div class="settings-page-table whitelist-table">
+                        <div class="s-page-table-row cf">
+                            <div class="sp-table-row-label" i18n="options_whitelist_inverse"></div>
+                            <input type="checkbox" class="sp-table-row-input" id="changeDefaultWhiteListMode"/>
+                        </div>
                     </div>
-                </div>
+                </#if>
                 <div class="sp-lists-user-table sp-lists-search-table">
                     <div class="spl-user-table-row cf">
                         <label for="white-search" i18n="options_whitelist_search"></label>
