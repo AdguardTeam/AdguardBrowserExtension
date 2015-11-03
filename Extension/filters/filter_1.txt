@@ -1,9 +1,9 @@
-! Version: 1.0.28.19
+! Version: 1.0.28.24
 ! Name: Russian filter
 ! Description: Filter that enables removing of the ads from websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2015-10-30T19:42:02.795+03:00
+! TimeUpdated: 2015-11-03T16:42:16.132+03:00
 ! Adguard Russian Filter
 !
 ! Filter that enables removing of the ads from websites with Russian content.
@@ -30,6 +30,19 @@
 !
 ! Содержит доменные имена, использующиеся рекламными сетями.
 !
+||vxqpomwum.pw^$third-party
+||indcoest.com^$third-party
+||lantocha.ru^$third-party
+||evsembu.com^$third-party
+||rec2000.at.ua^$third-party
+||umrefebaot.biz^$third-party
+||guktuti.ru^$third-party
+||guktuti.ru^$third-party
+.piccash.net^
+||koromi.ru^$third-party
+||cholaga.ru^$third-party
+||api.leadiacloud.com^$third-party
+||manfys.com^$third-party
 ||v.vxqpomwum.pw^$third-party
 ||v.qpovpaways.pw^$third-party
 ||fpmef.com^$third-party
@@ -599,7 +612,7 @@ http://wq3.ru/$third-party
 ||cash.loadsex.ru^
 ||cashandfavor.ru^$third-party
 ||cashimtrap.com^$third-party
-||cashprom.ru^$third-party
+||cashprom.ru^
 ||casino-x.com/?partner$third-party
 ||catalog.deport.ru/btn.php?
 ||catwhatsup.org^$third-party
@@ -2924,7 +2937,10 @@ http://wq3.ru/$third-party
 !
 ||kubik3.ru/js/adbs.js
 !
-!
+! http://forum.adguard.com/showthread.php?7482
+gisher.org#@#.afs_ads
+! 1tv.ru - anti-adblock message in the player
+@@||static.1tv.ru/player/current/ads.js
 ! http://forum.adguard.com/showthread.php?6654
 @@/javascripts/*/adriver.core.2.js$domain=geektimes.ru|habrahabr.ru|megamozg.ru
 @@/javascripts/*/_parts/advertising.js$domain=geektimes.ru|habrahabr.ru|megamozg.ru
@@ -3078,7 +3094,7 @@ tapochek.net#%#AG_onLoad(function() { window.ShowAdbblock = function() {} });
 ! advetime.ru
 ||advetime.ru/a-detector/*.js
 ! выключение скрипта fuckAdBlock
-bitru.org,hdrezka.tv,safebit.co.in,stopgame.ru#%#var fuckAdBlock = false;
+xn--b1ajehof.xn--80asehdb,bitru.org,hdrezka.tv,safebit.co.in,stopgame.ru#%#var fuckAdBlock = false;
 ! sports.ru anti-adblock
 sports.ru##body > div[style*="position: fixed; top:35px;"]
 sports.ru#$#body .g-cross-sepia { filter: none!important; -webkit-filter: none!important; }
@@ -3458,7 +3474,6 @@ satsis.ru##.adb
 ##.BannerVertMargin7
 ##.MPU
 ##.SponsorCFrame
-~allcables.ru##.Table_01
 ##.ad-block-240x400
 ~bukkit.org##.ad-box
 ~assetbar.com##.ad-button
@@ -3901,8 +3916,7 @@ login.wi-fi.ru#%#window.adfox['branding'] = {};
 meteo-tv.ru#$#body {background-image: url(/)!important;}
 meteo-tv.ru#$##wrapper > div.wrap > div.main { margin-top: 0px!important; }
 ! 4pda - branding
-4pda.ru#$#.rnd-b-page { height: 0px!important; }
-4pda.ru#$##main { background-image: url(/)!important; }
+4pda.ru#$##rnd-replace-main { background-image: url(/)!important; }
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/825
 thg.ru#$#body { background: url(/)!important; }
 thg.ru#$#div[style^="width:1010px; margin-top: 250px;"] { margin-top: 0px!important; }
@@ -6058,6 +6072,25 @@ polezno-2012.info^
 !
 ! Правила специфичные для конкретных сайтов.
 !
+pravoved.ru##.rtb-banner
+cars.mail.ru##.search-list__ad
+0lik.ru##div[class^="adverton"]
+beznadegi.net##object[width="160"][height="240"]
+||beznadegi.net/uploads/yeisk*.
+||lostnumber.ru^$domain=beznadegi.net
+deslife.ru##noindex > a[rel="nofollow"]
+album-music.ru##a[href^="http://www.smspilot.ru/"]
+||piccash.net/tpl/images/picba.gif
+piccash.net##html > body > center > a img
+piccash.net##html > body > center > div > span > a img
+4pda.ru##.rnd-classname-b-page
+||piccash.net/tpl/images/picba.gif
+/protJS/$third-party,domain=payforpic.ru|piccash.net|armourbook.com
+sverhestestvenoe.com##a[href^="http://sverhestestvenoe.myprintbar.ru"]
+||sverhestestvenoe.com/uploads/supernatural_620_2.jpg
+27sysday.ru###teaser_table
+||ozersk74.ru/upload/banners/
+||ozersk74.ru/images/banner_
 ||soft-file.ru/im/rf.png
 sd.ua##a[href="/mriya-invest"]
 ||sd.ua/files/euro-taxi
@@ -7688,7 +7721,6 @@ vipzone.ws##.rightside
 softobase.com##.rkl-horizontal
 seksi-new.com##.rklbox
 prm.ru##.rn-main-box_objects img[width="240"][height="200"]
-4pda.ru##.rnd-b-page
 cwer.ws##.roundct > noindex
 hopesandfears.com,lookatme.ru##.row-banner
 vz.ru##.russia_flash_div
@@ -8895,7 +8927,6 @@ xn--90aiguyb.com/files.php?
 ||a.thefreedictionary.com^
 ||a3.antistarforce.com^
 ||a7.org/info_en/
-||aaa.piccash.net^
 ||abc-people.com/bann_
 ||abc-people.com/banners/
 ||abelus.ru/index/ms_reklam_
