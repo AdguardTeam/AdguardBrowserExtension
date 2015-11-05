@@ -1,9 +1,9 @@
-! Version: 1.0.8.53
+! Version: 1.0.8.57
 ! Name: Dutch filter
 ! Description: Filter that enables removing of the ads from websites with Dutch content.
 ! NameEn: Dutch filter
 ! DescriptionEn: Filter that enables blocking of ads on websites with Dutch content.
-! TimeUpdated: 2015-10-06T15:17:13.381+03:00
+! TimeUpdated: 2015-11-02T15:01:07.137+03:00
 ! Adguard Dutch Filter.
 !
 ! Filter that enables removing of the ads from websites with Dutch content.
@@ -143,6 +143,7 @@ _advertentieleaderboardhome.
 ||www.nettrack.nl^$third-party
 ||www2.beekje.nl^$third-party
 ||xpartners.nl^$third-party
+||banner.klikklik.nl^
 ||banners.toeto.com^
 ||banners.utilo.nl^
 ||bnr.agf.nl^
@@ -284,6 +285,7 @@ _advertentieleaderboardhome.
 ||x0.nl/banners/
 ||xingo.nl/bannermanagement/
 ||xxxsmsjes.nl/banners/
+||youtube.com/embed/*?rel=0&autoplay=1&showinfo=0$subdocument,domain=kavelplatform.nl
 ||youtube.com/yva_video?adformat=$object-subrequest,domain=vtm.be
 ||zideo.nl/player/plugins/ova/ova.swf
 ||zimmo.be/api2/ticker_h.php?
@@ -410,6 +412,7 @@ _advertentieleaderboardhome.
 ||goldcash.nl/banners/
 ||gosupermodel.com^*banner
 ||gpupdate.net/if/advertsub/
+||gratisepub.nl/wp-content/plugins/scroll-triggered-boxes/
 ||gratispuzzelen.nl^*-banner-255.swf
 ||havovwo.nl/pics/gsmweb.jpg
 ||havovwo.nl/pics/openu2.swf
@@ -448,6 +451,7 @@ _advertentieleaderboardhome.
 ||jouwtomtom.nl^*/back_adblock.gif
 ||katholieknieuwsblad.nl/images/banners/onlineluisteren.gif
 ||katholieknieuwsblad.nl/images/banners^*banner
+||kavelplatform.nl/assets/uploads/banners/
 ||kennisnet.nl/templates/cms/swf/kennisnet/caroussel_v2.swf?
 ||kieskeurig.nl/rectangle?
 ||kijkshop.nl/flash/vanvoordeel.swf
@@ -634,6 +638,7 @@ _advertentieleaderboardhome.
 ||vtm.be^*/images/footer-samsung_2.jpg
 ||vvzigo.nl/images/banners/
 ||waldnet.nl/images/ac/
+||wanttoknow.nl^*Banner
 ||wassenaarders.nl/images/banners/
 ||webaapje.nl^*bannerexchange/
 ||websitegids.nl/banners/
@@ -655,6 +660,7 @@ _advertentieleaderboardhome.
 ||woningnetgroningen.nl^*/Images/banner/
 ||woningnetregioamsterdam.nl^*/Images/banner/
 ||woningnetregioutrecht.nl^*/Images/banner/
+||www.appletips.nl/wp-content/uploads/rek/
 ||xmissymedia.com/galleries/*/banners/
 ||youreon.nl/banners/
 ||z24.nl^*/ad_panel.css
@@ -741,6 +747,7 @@ _advertentieleaderboardhome.
 @@||pubads.g.doubleclick.net/gampad/ads?ad_rule=1&$object-subrequest,domain=2be.be|jim.be|syndication.vmma.be|vitaya.be|vtmkzoom.be
 @@||serving-sys.com/BurstingPipe/adServer.bs?*&pl=VAST&$object-subrequest,domain=rtlxl.nl
 @@||serving-sys.com/crossdomain.xml$object-subrequest,domain=rtlxl.nl
+@@||staticfiles.rtl.nl/lib/rtl.jsapi/pubads_impl_70r.js$domain=rtlxl.nl
 @@||2cv.nl/markt/advertenties/$image,subdocument
 @@||2dehandskleertjes.nl/uploads/advertenties/
 @@||fotoapparatuur.nl/advertenties/
@@ -1006,6 +1013,7 @@ nu.nl##.adorange
 fantv.nl,porntubexl.nl,studio040.nl,tube.nl##.ads
 openingstijden.com##.adsense
 nu.nl##.adsilver
+appletips.nl##.adt
 allradio.nl##.adv
 9292.nl,classicfm.nl,fcupdate.nl,onemorething.nl,weertdegekste.nl##.advert
 computeridee.nl##.advertentie-1korting-nl
@@ -1215,6 +1223,7 @@ hababam.nl##div[id^="had"]
 binaries4all.nl##div[id^="payserver"]
 weertdegekste.nl##div[id^="sidebar"] a[target="_blank"] > img
 treinreiziger.nl##div[id^="subbanner"]
+voetbalzone.nl##div[id^="uniek"]
 phphulp.nl##div[style$="background: #ff0000 url(/img/ads/bhosted.png) top left no-repeat; margin-bottom: 10px;"]
 voetbalzone.nl##div[style*="url(http://static-voetbalzone.nl/images/adfactor/"]
 voetbalzone.nl##div[style*="url(http://static-voetbalzone.nl/images/banners/bannerback.gif)"]

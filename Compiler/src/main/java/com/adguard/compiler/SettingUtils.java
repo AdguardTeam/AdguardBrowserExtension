@@ -22,8 +22,7 @@ import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 /**
  * Helper method for customizing manifest files and extension local script rules
@@ -57,7 +56,6 @@ public class SettingUtils {
 			" * 3. We allow only custom rules got from the User filter (which user creates manually)\r\n" +
 			" *    or from this DEFAULT_SCRIPT_RULES object\r\n" +
 			" */\r\n" +
-			"var USE_DEFAULT_SCRIPT_RULES = exports.USE_DEFAULT_SCRIPT_RULES = %s;\r\n" +
 			"var DEFAULT_SCRIPT_RULES = exports.DEFAULT_SCRIPT_RULES = Object.create(null);\r\n%s";
 
 	private final static String MESSAGE_IDS_FILE_TEMPLATE = "/**\r\n" +
@@ -78,10 +76,10 @@ public class SettingUtils {
 			" */\r\n" +
 			"\r\n" +
 			"var I18N_MESSAGES = exports.I18N_MESSAGES = [%s];\r\n";
-
-	public static void writeLocalScriptRulesToFile(File dest, boolean useLocalScriptRules, Map<Integer, List<String>> filtersScriptRules) throws IOException {
-		String scriptRules = getScriptRulesText(filtersScriptRules);
-		String settings = String.format(LOCAL_SCRIPT_RULES_FILE_TEMPLATE, useLocalScriptRules, scriptRules);
+	
+	public static void writeLocalScriptRulesToFile(File dest, Set<String> scriptRules) throws IOException {
+		String scriptRulesText = getScriptRulesText(scriptRules);
+		String settings = String.format(LOCAL_SCRIPT_RULES_FILE_TEMPLATE, scriptRulesText);
 		FileUtils.writeStringToFile(getLocalScriptRulesFile(dest), settings);
 	}
 
@@ -139,15 +137,12 @@ public class SettingUtils {
 		}
 	}
 
-	public static String getScriptRulesText(Map<Integer, List<String>> filterScriptRules) {
+	public static String getScriptRulesText(Set<String> scriptRules) {
 		StringBuilder sb = new StringBuilder();
-		if (filterScriptRules != null) {
-			for (int filterId : filterScriptRules.keySet()) {
-				List<String> scriptRules = filterScriptRules.get(filterId);
-				sb.append("DEFAULT_SCRIPT_RULES[").append(filterId).append("] = [];\r\n");
-				for (String scriptRule : scriptRules) {
-					sb.append("DEFAULT_SCRIPT_RULES[").append(filterId).append("].push(\"").append(StringEscapeUtils.escapeJavaScript(scriptRule)).append("\");\r\n");
-				}
+		if (scriptRules != null) {
+			for (String scriptRule : scriptRules) {
+				String ruleText = StringEscapeUtils.escapeJavaScript(scriptRule);
+				sb.append("DEFAULT_SCRIPT_RULES[\"").append(ruleText).append("\"] = true;\r\n");
 			}
 		}
 		return sb.toString();

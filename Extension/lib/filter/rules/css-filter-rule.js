@@ -29,9 +29,9 @@ var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
  * http://adguard.com/en/filterrules.html#hideRules
  * http://adguard.com/en/filterrules.html#cssInjection
  */
-var CssFilterRule = exports.CssFilterRule = function (rule) {
+var CssFilterRule = exports.CssFilterRule = function (rule, filterId) {
 
-	FilterRule.call(this, rule);
+	FilterRule.call(this, rule, filterId);
 
 	var isInjectRule = StringUtils.contains(rule, FilterRule.MASK_CSS_INJECT_RULE) || StringUtils.contains(rule, FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE);
 	if (isInjectRule) {

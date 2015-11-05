@@ -78,14 +78,13 @@ RequestFilter.prototype = {
      * Adds rules to the request filter
      *
      * @param rules List of rules to add
-     * @param filterId Filter identifier
      */
-    addRules: function (rules, filterId) {
+    addRules: function (rules) {
         if (!rules) {
             return;
         }
         for (var i = 0; i < rules.length; i++) {
-            this.addRule(rules[i], filterId);
+            this.addRule(rules[i]);
         }
     },
 
@@ -95,16 +94,11 @@ RequestFilter.prototype = {
      *
      * @param rule     Rule to add. Rule should be an object of
      *                 one of these classes: UrlFilterRule, CssFilterRule, ScriptFilterRule
-     * @param filterId Filter identifier
      */
-    addRule: function (rule, filterId) {
+    addRule: function (rule) {
         if (rule == null || !rule.ruleText) {
             Log.error("FilterRule must not be null");
             return;
-        }
-        // For fast access by filterId
-        if (filterId != null) {
-            rule.filterId = filterId - 0;
         }
         if (rule instanceof UrlFilterRule) {
             if (rule.whiteListRule) {
@@ -219,18 +213,6 @@ RequestFilter.prototype = {
     getScriptsForUrl: function (url) {
         var domain = UrlUtils.toPunyCode(UrlUtils.getDomainName(url));
         return this.scriptFilter.buildScript(domain);
-    },
-
-    /**
-     * Builds JS injection for the specified page using custom rules from user's own filter.
-     * http://adguard.com/en/filterrules.html#javascriptInjection
-     *
-     * @param url       Page URL
-     * @returns         Javascript
-     */
-    getUserScriptsForUrl: function (url) {
-        var domain = UrlUtils.toPunyCode(UrlUtils.getDomainName(url));
-        return this.scriptFilter.buildScriptFromUserRules(domain);
     },
 
     /**

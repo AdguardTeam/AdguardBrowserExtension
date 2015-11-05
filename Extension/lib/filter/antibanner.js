@@ -265,10 +265,10 @@ AntiBannerService.prototype = {
 
             for (var ruleText in this.dirtyRules) {
                 var filterId = this.dirtyRules[ruleText];
-                var rule = FilterRule.createRule(ruleText);
+                var rule = FilterRule.createRule(ruleText, filterId);
 
                 if (rule != null) {
-                    requestFilter.addRule(rule, filterId);
+                    requestFilter.addRule(rule);
                 }
             }
 
@@ -330,7 +330,7 @@ AntiBannerService.prototype = {
      * @returns Rule created
      */
     addUserFilterRule: function (ruleText) {
-        var rule = FilterRule.createRule(ruleText);
+        var rule = FilterRule.createRule(ruleText, AntiBannerFiltersId.USER_FILTER_ID);
         if (rule != null) {
             this._addRuleToFilter(AntiBannerFiltersId.USER_FILTER_ID, rule);
             this.userRules.push(rule.ruleText);
@@ -346,7 +346,7 @@ AntiBannerService.prototype = {
     addUserFilterRules: function (rulesToAdd) {
         var rules = [];
         for (var i = 0; i < rulesToAdd.length; i++) {
-            var rule = FilterRule.createRule(rulesToAdd[i]);
+            var rule = FilterRule.createRule(rulesToAdd[i], AntiBannerFiltersId.USER_FILTER_ID);
             if (rule != null) {
                 rules.push(rule);
                 this.userRules.push(rule.ruleText);
@@ -363,7 +363,7 @@ AntiBannerService.prototype = {
      * @param ruleText Rule text
      */
     removeUserFilter: function (ruleText) {
-        var rule = FilterRule.createRule(ruleText);
+        var rule = FilterRule.createRule(ruleText, AntiBannerFiltersId.USER_FILTER_ID);
         if (rule != null) {
             var filter = this._getFilterById(AntiBannerFiltersId.USER_FILTER_ID);
             this.requestFilter.removeRule(rule);
@@ -1184,7 +1184,7 @@ AntiBannerService.prototype = {
      */
     _addRuleToFilter: function (filterId, rule) {
         var filter = this._getFilterById(filterId);
-        this.requestFilter.addRule(rule, filterId);
+        this.requestFilter.addRule(rule);
         EventNotifier.notifyListeners(EventNotifierTypes.ADD_RULE, filter, [rule]);
     },
 
@@ -1197,7 +1197,7 @@ AntiBannerService.prototype = {
      */
     _addRulesToFilter: function (filterId, rules) {
         var filter = this._getFilterById(filterId);
-        this.requestFilter.addRules(rules, filterId);
+        this.requestFilter.addRules(rules);
         EventNotifier.notifyListeners(EventNotifierTypes.ADD_RULES, filter, rules);
     },
 

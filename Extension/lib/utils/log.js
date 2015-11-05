@@ -24,8 +24,9 @@ var Log = exports.Log = {
 
 	LogLevels: {
 		ERROR: 1,
-		INFO: 2,
-		DEBUG: 3
+		WARN: 2,
+		INFO: 3,
+		DEBUG: 4
 	},
 
 	debug: function () {
@@ -34,6 +35,10 @@ var Log = exports.Log = {
 
 	info: function () {
 		Log._print("INFO", "info", arguments);
+	},
+
+	warn: function(){
+		Log._print("WARN", "info", arguments);
 	},
 
 	error: function () {

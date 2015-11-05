@@ -30,9 +30,9 @@ var UrlUtils = require('utils/url').UrlUtils;
  * Read here for details:
  * http://adguard.com/en/filterrules.html#baseRules
  */
-var UrlFilterRule = exports.UrlFilterRule = function (rule) {
+var UrlFilterRule = exports.UrlFilterRule = function (rule, filterId) {
 
-    FilterRule.call(this, rule);
+    FilterRule.call(this, rule, filterId);
 
     // Url shortcut
     this.shortcut = null;

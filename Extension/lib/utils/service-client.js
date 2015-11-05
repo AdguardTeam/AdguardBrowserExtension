@@ -171,7 +171,7 @@ ServiceClient.prototype = {
 			}
 			var rules = [];
 			for (i = 0; i < lines.length; i++) {
-				var rule = FilterRule.createRule(lines[i]);
+				var rule = FilterRule.createRule(lines[i], filterId);
 				if (rule != null) {
 					rules.push(rule);
 				}
@@ -209,7 +209,7 @@ ServiceClient.prototype = {
 				} else if (/!\s+TimeUpdated:\s+(.+)$/.test(line)) {
 					timeUpdated = timeUpdated || new Date(RegExp.$1);
 				}
-				var rule = FilterRule.createRule(line);
+				var rule = FilterRule.createRule(line, filterId);
 				if (rule != null) {
 					rules.push(rule);
 				}

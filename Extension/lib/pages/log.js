@@ -627,8 +627,8 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 	template.find('#createRule').on('click', function (e) {
 		e.preventDefault();
 
-		var ruleText = ruleTextEl.val();
-		if (!ruleText) {
+		var rule = FilterRule.createRule(ruleTextEl.val(), AntiBannerFiltersId.USER_FILTER_ID);
+		if (!rule) {
 			//TODO: show error
 			return;
 		}
