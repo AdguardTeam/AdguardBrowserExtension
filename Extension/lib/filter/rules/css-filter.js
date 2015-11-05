@@ -115,18 +115,40 @@ CssFilter.prototype = {
 		this.dirty = true;
 	},
 
+	/**
+	 * Returns the array of loaded rules
+	 */
+	getRules: function () {
+		var result = [];
+		return result.concat(this.commonRules).concat(this.domainSensitiveRules).concat(this.exceptionRules);
+	},
+
 
 	/**
 	 * Builds CSS to be injected to the page.
 	 * This method builds CSS for element hiding rules only:
 	 * http://adguard.com/en/filterrules.html#hideRules
 	 *
-	 * @param domainName Domain name
+	 * @param domainName    Domain name
+	 * @param genericHide    flag to hide common rules
 	 * @returns Stylesheet content
 	 */
-	buildCss: function (domainName) {
+	buildCss: function (domainName, genericHide) {
 		this._rebuild();
-		var css = this._buildCssByRules(this._getDomainSensitiveRules(domainName));
+
+		var domainRules = this._getDomainSensitiveRules(domainName);
+		if (genericHide) {
+			var nonGenericRules = [];
+			if (domainRules != null) {
+				nonGenericRules = domainRules.filter(function (rule) {
+					return !rule.isGeneric();
+				});
+			}
+
+			return this._buildCssByRules(nonGenericRules);;
+		}
+
+		var css = this._buildCssByRules(domainRules);
 		return this._getCommonCss().concat(css);
 	},
 
@@ -138,20 +160,27 @@ CssFilter.prototype = {
 	 * http://adguard.com/en/filterrules.html#cssInjection
 	 *
 	 * @param domainName Domain name
+	 * @param genericHide flag to hide common rules
 	 * @returns Stylesheet content
 	 */
-	buildInjectCss: function (domainName) {
+	buildInjectCss: function (domainName, genericHide) {
 		this._rebuildBinding();
 		var domainRules = this._getDomainSensitiveRules(domainName);
 		var injectDomainRules = [];
 		if (domainRules != null) {
 			injectDomainRules = domainRules.filter(function (rule) {
-				return rule.isInjectRule;
+				return rule.isInjectRule && (!genericHide || !rule.isGeneric());
 			});
 		}
+
+		if (genericHide) {
+			return this._buildCssByRules(injectDomainRules);
+		}
+
 		var commonInjectedRules = this.commonRules.filter(function (rule) {
 			return rule.isInjectRule;
 		});
+
 		return this._buildCssByRules(injectDomainRules.concat(commonInjectedRules));
 	},
 
@@ -166,11 +195,25 @@ CssFilter.prototype = {
 	 *
 	 * @param domainName    Domain name
 	 * @param appId         Extension ID
+	 * @param genericHide    flag to hide common rules
 	 * @returns Stylesheet content
 	 */
-	buildCssHits: function (domainName, appId) {
+	buildCssHits: function (domainName, appId, genericHide) {
 		this._rebuildHits(appId);
-		var css = this._buildCssByRulesHits(this._getDomainSensitiveRules(domainName), appId);
+
+		var domainRules = this._getDomainSensitiveRules(domainName);
+		if (genericHide) {
+			var nonGenericRules = [];
+			if (domainRules != null) {
+				nonGenericRules = domainRules.filter(function (rule) {
+					return !rule.isGeneric();
+				});
+			}
+
+			return this._buildCssByRulesHits(nonGenericRules, appId);
+		}
+
+		var css = this._buildCssByRulesHits(domainRules, appId);
 		return this._getCommonCssHits(appId).concat(css);
 	},
 

@@ -120,20 +120,6 @@ var UrlUtils = exports.UrlUtils = {
 		return StringUtils.startWith(host, "www.") ? host.substring(4) : host;
 	},
 
-	getParamValue: function (url, paramName) {
-		var query = StringUtils.substringAfter(url, '?');
-		if (query) {
-			var params = query.split('&');
-			for (var i = 0; i < params.length; i++) {
-				var paramAndValue = params[i].split('=');
-				if (paramAndValue[0] == paramName) {
-					return paramAndValue[1];
-				}
-			}
-		}
-		return null;
-	},
-
 	isIpv4: function (address) {
 		if (RE_V4.test(address)) {
 			return true;
@@ -206,7 +192,7 @@ var UrlUtils = exports.UrlUtils = {
 	 * @param domainNames List of domain names
 	 * @returns boolean true if there is suitable domain in domainNames
 	 */
-	isDomainOrSubDomainOfAny: function(domainNameToCheck, domainNames) {
+	isDomainOrSubDomainOfAny: function (domainNameToCheck, domainNames) {
 		if (domainNames == null || domainNames.length == 0) {
 			return false;
 		}
@@ -214,7 +200,7 @@ var UrlUtils = exports.UrlUtils = {
 		for (var i = 0; i < domainNames.length; i++) {
 			if (UrlUtils.isDomainOrSubDomain(domainNameToCheck, domainNames[i])) {
 				return true;
-			};
+			}
 		}
 
 		return false;
@@ -224,7 +210,7 @@ var UrlUtils = exports.UrlUtils = {
 	 * Checks if the specified domain is a sub-domain of equal to domainName
 	 *
 	 * @param domainNameToCheck Domain name to check
-	 * @param domainName   		Domain name
+	 * @param domainName        Domain name
 	 * @returns boolean true if there is suitable domain in domainNames
 	 */
 	isDomainOrSubDomain: function (domainNameToCheck, domainName) {

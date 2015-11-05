@@ -135,7 +135,10 @@ HidingChannel.prototype = {
 		try {
 			var tabId = WebRequestHelper.getTabIdForChannel(this);
 			var tab = {id: tabId};
-			if (!tabId || this._isElemHideWhiteListed(tab)) {
+
+			if (!tabId
+				|| this._isTabWhiteListed(tab)
+				|| this._isElemHideWhiteListed(tab)) {
 				// Return dummy binding if there is an exception rule for this URL
 				data = this.notHideData;
 			} else {
@@ -149,6 +152,12 @@ HidingChannel.prototype = {
 					if (!rule.isPermitted(domain)) {
 						data = this.notHideData;
 					}
+
+					//Rules without domain should be ignored
+					if (!rule.isGeneric() && this._isGenericHideWhiteListed(tab)) {
+						data = this.notHideData;
+					}
+
 					if (!FilterUtils.isUserFilterRule(rule) && !this.framesMap.isIncognitoTab(tab)) {
 						filterRulesHitCount.addRuleHit(domain, rule.ruleText, rule.filterId);
 					}
@@ -162,15 +171,24 @@ HidingChannel.prototype = {
 		}
 	},
 
+	_isTabWhiteListed: function (tab) {
+		return (this.framesMap.isTabAdguardDetected(tab) || this.framesMap.isTabProtectionDisabled(tab) || this.framesMap.isTabWhiteListed(tab));
+	},
+
 	_isElemHideWhiteListed: function (tab) {
-		if (this.framesMap.isTabAdguardDetected(tab) || this.framesMap.isTabProtectionDisabled(tab) || this.framesMap.isTabWhiteListed(tab)) {
-			return true;
-		}
 		var frameData = this.framesMap.getMainFrame(tab);
 		if (!("elemHideWhiteListRule" in frameData)) {
 			frameData.elemHideWhiteListRule = this.antiBannerService.getRequestFilter().findWhiteListRule(frameData.url, frameData.url, "ELEMHIDE");
 		}
 		return frameData.elemHideWhiteListRule;
+	},
+
+	_isGenericHideWhiteListed: function (tab) {
+		var frameData = this.framesMap.getMainFrame(tab);
+		if (!("genericHideWhiteListRule" in frameData)) {
+			frameData.genericHideWhiteListRule = this.antiBannerService.getRequestFilter().findWhiteListRule(frameData.url, frameData.url, "GENERICHIDE");
+		}
+		return frameData.genericHideWhiteListRule;
 	},
 
 	_getRuleText: function (path) {

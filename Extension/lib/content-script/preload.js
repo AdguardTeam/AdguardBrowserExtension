@@ -58,9 +58,9 @@ var PreloadHelper = {
      * Loads CSS and JS injections
      */
     tryLoadCssAndScripts: function () {
-        ext.backgroundPage.sendMessage(
+        contentPage.sendMessage(
             {
-                type: 'get-selectors-and-scripts',
+                type: 'getSelectorsAndScripts',
                 documentUrl: window.location.href
             },
             this.processCssAndScriptsResponse.bind(this)
@@ -201,8 +201,8 @@ var PreloadHelper = {
             this._hideElement(element, tagName);
         }
 
-        ext.backgroundPage.sendMessage({
-                type: 'process-should-collapse',
+        contentPage.sendMessage({
+                type: 'processShouldCollapse',
                 elementUrl: elementUrl,
                 documentUrl: document.URL,
                 requestType: requestType,
@@ -280,8 +280,8 @@ var PreloadHelper = {
             }
         }
 
-        ext.backgroundPage.sendMessage({
-                type: 'process-should-collapse-many',
+        contentPage.sendMessage({
+                type: 'processShouldCollapseMany',
                 requests: requests,
                 documentUrl: document.URL
             },

@@ -147,9 +147,9 @@ PopupController.prototype = {
 		if (tabInfo.adguardDetected) {
 			template = this.adguardDetectedMessageTemplate;
 			if (tabInfo.adguardProductName) {
-				this.translateElement(template.children()[0], 'popup_ads_has_been_removed_by_adguard', [tabInfo.adguardProductName])
+				i18n.translateElement(template.children()[0], 'popup_ads_has_been_removed_by_adguard', [tabInfo.adguardProductName])
 			} else {
-				this.translateElement(template.children()[0], 'popup_ads_has_been_removed');
+				i18n.translateElement(template.children()[0], 'popup_ads_has_been_removed');
 			}
 		} else if (tabInfo.applicationFilteringDisabled) {
 			template = this.siteProtectionDisabledMessageTemplate;
@@ -158,8 +158,8 @@ PopupController.prototype = {
 		} else {
 			template = this.siteStatsTemplate;
 			var titleBlocked = template.find('.w-popup-filter-title-blocked');
-			this.translateElement(titleBlocked[0], 'popup_tab_blocked', [formatNumber(tabInfo.totalBlockedTab || 0)]);
-			this.translateElement(template.find('.w-popup-filter-title-blocked-all')[0], 'popup_tab_blocked_all', [formatNumber(tabInfo.totalBlocked || 0)]);
+			i18n.translateElement(titleBlocked[0], 'popup_tab_blocked', [formatNumber(tabInfo.totalBlockedTab || 0)]);
+			i18n.translateElement(template.find('.w-popup-filter-title-blocked-all')[0], 'popup_tab_blocked_all', [formatNumber(tabInfo.totalBlocked || 0)]);
 			if (tabInfo.totalBlocked >= 10000000) {
 				titleBlocked.closest('.widjet-popup-filter').addClass('db');
 			} else {
@@ -343,7 +343,7 @@ PopupController.prototype = {
 			feedbackModal.addClass('hidden');
 			parent.removeClass('hidden');
 			selectorText.data('abuseOption', '');
-			self.translateElement(selectorText[0], 'popup_feedback_empty_option');
+			i18n.translateElement(selectorText[0], 'popup_feedback_empty_option');
 			feedbackErrorMessage.removeClass('show');
 			self.resizePopupWindow();
 		}

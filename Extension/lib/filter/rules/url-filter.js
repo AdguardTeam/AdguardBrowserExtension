@@ -113,6 +113,14 @@ UrlFilter.prototype = {
 	},
 
 	/**
+	 * Returns the array of loaded rules
+	 */
+	getRules: function () {
+		var rules = this.lookupTable.getRules();
+		return rules.concat(this.rulesWithoutShortcuts);
+	},
+
+	/**
 	 * Searches for first rule in "rules" collection matching specified request
 	 *
 	 * @param url           Request url

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var ext, BaseEvent, OnMessageEvent, sendMessage;
+var BaseEvent, OnMessageEvent, SendMessageFunction, I18NSupport;
 
 (function () {
 
@@ -102,7 +102,7 @@ var ext, BaseEvent, OnMessageEvent, sendMessage;
 
 	var nextRequestNumber = 0;
 
-	sendMessage = function (message, responseCallback) {
+	SendMessageFunction = function (message, responseCallback) {
 		var requestId = ++nextRequestNumber;
 		if (responseCallback) {
 			var eventTarget = this._eventTarget;
@@ -199,11 +199,5 @@ var ext, BaseEvent, OnMessageEvent, sendMessage;
 		}
 	};
 
-	//Extension API
-
-	ext = {};
-	ext.i18n = new I18n();
-	ext.getURL = function (path) {
-		return safari.extension.baseURI + path;
-	};
+	I18NSupport = I18n;
 })();

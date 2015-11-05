@@ -56,12 +56,13 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
     var selectors = null;
     var scripts = null;
 
+    var genericHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "GENERICHIDE");
     var elemHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "ELEMHIDE");
     if (!elemHideRule) {
-        if (Utils.isFirefoxBrowser() && userSettings.collectHitsCount()) {
-            selectors = this.antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl);
+        if ((Utils.isFirefoxBrowser() && userSettings.collectHitsCount()) || Utils.isSafari9Plus()) {
+            selectors = this.antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideRule);
         } else {
-            selectors = this.antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl);
+            selectors = this.antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl, genericHideRule);
         }
     }
 

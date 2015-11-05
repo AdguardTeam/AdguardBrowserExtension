@@ -45,6 +45,18 @@ var Prefs = exports.Prefs = {
 				browser = "Chrome";
 			}
 			Prefs.browser = browser;
+
+			if (browser == "Safari") {
+				var parseSafariVersion = function() {
+					var i = userAgent.indexOf("Version/");
+					if (i == 0) return "";
+
+					var end = userAgent.indexOf(" ", i);
+                    return userAgent.substring(i + 8, end > 0 ? end : userAgent.length);
+				};
+
+				Prefs.safariVersion = parseSafariVersion();
+			}
 		}
 		return Prefs.browser;
 	},

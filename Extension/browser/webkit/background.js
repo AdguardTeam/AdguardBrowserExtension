@@ -32,105 +32,19 @@ ext.tabs.onRemoved.addListener(function (tab) {
     framesMap.removeFrame(tab);
 });
 
-var adguardApplication = new AdguardApplication(framesMap, {
-    i18nGetMessage: ext.i18n.getMessage.bind(ext.i18n)
-});
+var adguardApplication = new AdguardApplication(framesMap);
 
 var filteringLog = new FilteringLog(BrowserTabs, framesMap, UI);
 
 var webRequestService = new WebRequestService(framesMap, antiBannerService, filteringLog, adguardApplication);
 
-ext.onMessage.addListener(function (message, sender, callback) {
-
-    switch (message.type) {
-        case "get-selectors-and-scripts":
-            var cssAndScripts = webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl);
-            callback(cssAndScripts || {});
-            break;
-        case "process-should-collapse":
-            var collapse = webRequestService.processShouldCollapse(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
-            callback({
-                collapse: collapse,
-                requestId: message.requestId
-            });
-            break;
-        case "process-should-collapse-many":
-            var requests = webRequestService.processShouldCollapseMany(sender.tab, message.documentUrl, message.requests);
-            callback({
-                requests: requests
-            });
-            break;
-        case "load-assistant-iframe":
-            processLoadAssistant(sender.tab, callback);
-            return true;
-        case "add-user-rule":
-            antiBannerService.addUserFilterRule(message.ruleText);
-            if (framesMap.isTabAdguardDetected(sender.tab)) {
-                adguardApplication.addRuleToApp(message.ruleText);
-            }
-            callback({});
-            break;
-        case "check-subscription-url":
-            var filterMetadata = antiBannerService.findFilterMetadataBySubscriptionUrl(message.url);
-            var confirmMessage = Utils.getAbpSubscribeConfirmMessage(ext.i18n.getMessage.bind(ext.i18n), filterMetadata, message.title);
-            callback({confirmText: confirmMessage, url: message.url});
-            break;
-        case "enable-subscription":
-            var onLoaded = function (rulesAddedCount) {
-                var message = Utils.getAbpSubscribeFinishedMessage(ext.i18n.getMessage.bind(ext.i18n), rulesAddedCount);
-                UI.showAlertMessagePopup(message.title, message.text);
-            };
-            antiBannerService.processAbpSubscriptionUrl(message.url, onLoaded);
-            return true;
-        default :
-            callback({});
-            break;
-    }
+// Content-Message listener
+var contentMessageHandler = new ContentMessageHandler();
+contentMessageHandler.init(antiBannerService, webRequestService, framesMap, adguardApplication, filteringLog, UI);
+contentMessageHandler.setSendMessageToSender(function (sender, message) {
+    sender.tab.sendMessage(message);
 });
-
-function processLoadAssistant(tab, callback) {
-
-    if (!tab) {
-        callback({});
-    }
-
-    var cssLink = "lib/content-script/assistant/css/assistant.css";
-
-    var ids = [
-        'assistant_select_element',
-        'assistant_select_element_ext',
-        'assistant_select_element_cancel',
-        'assistant_block_element',
-        'assistant_block_element_explain',
-        'assistant_slider_explain',
-        'assistant_slider_min',
-        'assistant_slider_max',
-        'assistant_extended_settings',
-        'assistant_rule_parameters',
-        'assistant_apply_rule_to_all_sites',
-        'assistant_block_by_reference',
-        'assistant_block_similar',
-        'assistant_block',
-        'assistant_another_element',
-        'assistant_preview',
-        'assistant_preview_end',
-        'assistant_preview_start'
-    ];
-
-    var getLocalization = function (ids) {
-        var result = {};
-        for (var id in ids) {
-            var current = ids[id];
-            result[current] = ext.i18n.getMessage(current);
-        }
-        return result;
-    };
-
-    callback({
-        localization: getLocalization(ids),
-        cssLink: [ext.getURL(cssLink)]
-    });
-}
+ext.onMessage.addListener(contentMessageHandler.handleMessage);
 
 //record opened tabs
 UI.getAllOpenedTabs(function (tabs) {

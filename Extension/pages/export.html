@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
 
-    <#if browser.name() == "CHROMIUM" || browser.name() == "SAFARI">
+    <#if browser.name() == "CHROMIUM" || browser.name() == "SAFARI" || browser.name() == "SAFARI_NEW">
     <script type="text/javascript" src="../lib/libs/jquery-1.8.3.min.js"></script>
     <script type="text/javascript" src="../lib/content-script/common-script.js"></script>
     <script type="text/javascript" src="../lib/content-script/content-script.js"></script>
@@ -11,10 +11,6 @@
     </#if>
     <#if browser.name() == "FIREFOX" || browser.name() == "FIREFOX_LEGACY">
     <link rel="shortcut icon" href="skin/favicon.png"/>
-    <script type="text/javascript" src="libs/jquery-1.8.3.min.js"></script>
-    <script type="text/javascript" src="content-script/content-script.js"></script>
-    <script type="text/javascript" src="pages/script.js"></script>
-    <script type="text/javascript" src="pages/export.js"></script>
     </#if>
 </head>
 <body>

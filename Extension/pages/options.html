@@ -10,7 +10,7 @@
     <link type="text/css" rel="stylesheet" href="skin/jquery.jscrollpane.css">
     <link type="text/css" rel="stylesheet" href="skin/bootstrap.css">
 
-    <#if browser.name() == "CHROMIUM" || browser.name() == "SAFARI">
+    <#if browser.name() == "CHROMIUM" || browser.name() == "SAFARI" || browser.name() == "SAFARI_NEW">
         <script type="text/javascript" src="../lib/libs/jquery-1.8.3.min.js"></script>
         <script type="text/javascript" src="../lib/libs/bootstrap.min.js"></script>
         <script type="text/javascript" src="../lib/libs/jquery.mousewheel.min.js"></script>
@@ -18,23 +18,14 @@
         <script type="text/javascript" src="../lib/libs/moment-with-locales.min.js"></script>
         <script type="text/javascript" src="../lib/content-script/common-script.js"></script>
         <script type="text/javascript" src="../lib/content-script/content-script.js"></script>
-        <script type="text/javascript" src="../lib/pages/i18n-helper.js"></script>
+        <script type="text/javascript" src="../lib/content-script/content-utils.js"></script>
+        <script type="text/javascript" src="../lib/content-script/i18n-helper.js"></script>
         <script type="text/javascript" src="../lib/pages/i18n.js"></script>
         <script type="text/javascript" src="../lib/pages/script.js"></script>
         <script type="text/javascript" src="../lib/pages/options.js"></script>
     </#if>
     <#if browser.name() == "FIREFOX" || browser.name() == "FIREFOX_LEGACY">
         <link rel="shortcut icon" href="skin/favicon.png"/>
-        <script type="text/javascript" src="libs/jquery-1.8.3.min.js"></script>
-        <script type="text/javascript" src="libs/bootstrap.min.js"></script>
-        <script type="text/javascript" src="libs/jquery.mousewheel.min.js"></script>
-        <script type="text/javascript" src="libs/jquery.jscrollpane.min.js"></script>
-        <script type="text/javascript" src="libs/moment-with-locales.min.js"></script>
-        <script type="text/javascript" src="content-script/content-script.js"></script>
-        <script type="text/javascript" src="pages/i18n-helper.js"></script>
-        <script type="text/javascript" src="pages/i18n.js"></script>
-        <script type="text/javascript" src="pages/script.js"></script>
-        <script type="text/javascript" src="pages/options.js"></script>
     </#if>
 </head>
 <body>
@@ -69,10 +60,12 @@
                 <div class="sp-table-row-label" i18n="options_allow_acceptable_ads"></div>
                 <input type="checkbox" class="sp-table-row-input" id="allowAcceptableAds"/>
             </div>
+            <#if browser.name() != "SAFARI_NEW">
             <div class="s-page-table-row cf">
                 <div class="sp-table-row-label" i18n="options_show_blocked_ads_count"></div>
                 <input type="checkbox" class="sp-table-row-input" id="showPageStatisticCheckbox"/>
             </div>
+            </#if>
             <div class="s-page-table-row cf">
                 <div class="sp-table-row-label" i18n="options_enable_autodetect_filter"></div>
                 <input type="checkbox" class="sp-table-row-input" id="autodetectFiltersCheckbox"/>
@@ -110,12 +103,14 @@
             <div id="whitelist" class="s-page-lists-user">
                 <div class="sp-lists-user-title" i18n="options_whitelist"></div>
                 <div class="sp-lists-user-descr" i18n="options_whitelist_description"></div>
-                <div class="settings-page-table whitelist-table">
-                    <div class="s-page-table-row cf">
-                        <div class="sp-table-row-label" i18n="options_whitelist_inverse"></div>
-                        <input type="checkbox" class="sp-table-row-input" id="changeDefaultWhiteListMode"/>
+                <#if browser.name() != "SAFARI_NEW">
+                    <div class="settings-page-table whitelist-table">
+                        <div class="s-page-table-row cf">
+                            <div class="sp-table-row-label" i18n="options_whitelist_inverse"></div>
+                            <input type="checkbox" class="sp-table-row-input" id="changeDefaultWhiteListMode"/>
+                        </div>
                     </div>
-                </div>
+                </#if>
                 <div class="sp-lists-user-table sp-lists-search-table">
                     <div class="spl-user-table-row cf">
                         <label for="white-search" i18n="options_whitelist_search"></label>
@@ -178,8 +173,10 @@
             </div>
         </div>
         <div class="sp-lists-user-add no-icon">
-            <span id="openLog" class="spl-user-add-spn" i18n="options_open_log"></span>
-            <span id="resetStats" class="spl-user-add-spn" i18n="options_reset_stats"></span>
+            <#if browser.name() != "SAFARI_NEW">
+                <span id="openLog" class="spl-user-add-spn" i18n="options_open_log"></span>
+                <span id="resetStats" class="spl-user-add-spn" i18n="options_reset_stats"></span>
+            </#if>
             <a href="https://github.com/AdguardTeam/AdguardBrowserExtension/releases" target="_blank" class="spl-user-add-spn" i18n="options_open_changelog"></a>
         </div>
     </div>
@@ -262,11 +259,6 @@
         </nav>
     </div>
 </footer>
-
-<div id="filtersUpdatePopup" class="alert-attention updates-filter-popup" style="display: none;">
-    <div class="alert-attention-title" i18n="options_popup_update_title"></div>
-    <div class="alert-attention-text"></div>
-</div>
 
 <div id="resetStatsPopup" class="alert-attention updates-filter-popup" style="display: none;">
     <div class="alert-attention-title" i18n="options_reset_stats_done"></div>

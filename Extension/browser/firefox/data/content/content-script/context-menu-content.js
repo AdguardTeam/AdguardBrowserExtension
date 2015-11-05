@@ -20,14 +20,14 @@
  * The only purpose is to pass document.URL to ContextMenu
  */
 self.on("click", function (node, data) {
-	self.postMessage({
-		type: 'onClick',
-		data: {
-			url: document.URL,
-			action: data,
-			contextDetails: getContextDetails(node)
-		}
-	});
+    self.postMessage({
+        type: 'onClick',
+        data: {
+            url: document.URL,
+            action: data,
+            contextDetails: getContextDetails(node)
+        }
+    });
 });
 
 /**
@@ -35,22 +35,22 @@ self.on("click", function (node, data) {
  * The only purpose is to pass document.URL to ContextMenu
  */
 self.on('context', function (node) {
-	self.postMessage({
-		type: 'onContext',
-		data: {
-			url: document.URL,
-			contextDetails: getContextDetails(node)
-		}
-	});
-	return true;
+    self.postMessage({
+        type: 'onContext',
+        data: {
+            url: document.URL,
+            contextDetails: getContextDetails(node)
+        }
+    });
+    return true;
 });
 
 function getContextDetails(node) {
-	var details = {
-		tagName: node.localName.toUpperCase()
-	};
-	if (details.tagName == "IMG") {
-		details.cssSelector = AdguardSelector.makeCssNthChildFilter(node)
-	}
-	return details;
+    var details = {
+        tagName: node.localName.toUpperCase()
+    };
+    if (details.tagName == "IMG") {
+        details.cssSelector = AdguardSelector.makeCssNthChildFilter(node)
+    }
+    return details;
 }

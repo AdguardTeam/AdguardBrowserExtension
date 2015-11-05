@@ -175,7 +175,7 @@ FilterParser.fromObject = function (obj) {
 	if ("lastUpdateTime" in obj) {
 		antiBannerFilter.lastUpdateTime = obj.lastUpdateTime - 0;
 	}
-	if ("lastCheckTime"in obj) {
+	if ("lastCheckTime" in obj) {
 		antiBannerFilter.lastCheckTime = obj.lastCheckTime - 0;
 	}
 	antiBannerFilter.disabled = (obj.disabled == "true");

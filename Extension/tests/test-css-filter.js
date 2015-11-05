@@ -52,6 +52,77 @@ function testCssExceptionRules() {
 	assertEquals(css[0], commonCss[0]);
 }
 
+function testCssGenericHideExceptionRules() {
+
+	var genericOne = new CssFilterRule("##.generic-one");
+	var genericTwo = new CssFilterRule("~google.com,~yahoo.com###generic");
+	var nonGeneric = new CssFilterRule("adguard.com##.non-generic");
+	var injectRule = new CssFilterRule("adguard.com#$#body { background-color: #111!important; }");
+	var exceptionRule = new CssFilterRule("adguard.com#@#.generic-one");
+	var genericHideRule = new CssFilterRule("@@||adguard.com^$generichide");
+	var elemHideRule = new CssFilterRule("@@||adguard.com^$elemhide");
+	var filter = new CssFilter([genericOne]);
+
+	var css = filter.buildCss("adguard.com");
+	var commonCss = filter.buildCss(null);
+	assertEquals(css[0], commonCss[0]);
+
+	filter.addRule(genericTwo);
+	css = filter.buildCss("adguard.com");
+	commonCss = filter.buildCss(null);
+	assertEquals(css.length, 2);
+	assertEquals(commonCss.length, 1);
+	assertEquals(css[0], commonCss[0]);
+
+	filter.addRule(nonGeneric);
+	css = filter.buildCss("adguard.com");
+	commonCss = filter.buildCss(null);
+	assertEquals(css.length, 2);
+	assertEquals(css[0], commonCss[0]);
+
+	var otherCss = filter.buildCss("another.domain");
+	assertEquals(otherCss.length, 2);
+
+	filter.addRule(exceptionRule);
+	css = filter.buildCss("adguard.com");
+	commonCss = filter.buildCss(null);
+	assertEquals(css.length, 1);
+
+	filter.addRule(genericHideRule);
+	css = filter.buildCss("adguard.com", true);
+	commonCss = filter.buildCss(null);
+	otherCss = filter.buildCss("another.domain");
+	assertEquals(css.length, 1);
+	assertTrue(css[0].indexOf('#generic') < 0);
+	assertEquals(commonCss.length, 1);
+	assertEquals(otherCss.length, 2);
+
+	filter.removeRule(exceptionRule);
+	css = filter.buildCss("adguard.com", true);
+	commonCss = filter.buildCss(null);
+	otherCss = filter.buildCss("another.domain");
+	assertEquals(css.length, 1);
+	assertEquals(commonCss.length, 1);
+	assertEquals(otherCss.length, 2);
+
+	filter.addRule(elemHideRule);
+	css = filter.buildCss("adguard.com", true);
+	commonCss = filter.buildCss(null);
+	otherCss = filter.buildCss("another.domain");
+	assertEquals(css.length, 1);
+	assertEquals(commonCss.length, 1);
+	assertEquals(otherCss.length, 2);
+
+	filter.addRule(injectRule);
+	css = filter.buildCss("adguard.com", true);
+	commonCss = filter.buildCss(null);
+	otherCss = filter.buildCss("another.domain");
+	assertEquals(css.length, 2);
+	assertEquals(commonCss.length, 1);
+	assertEquals(otherCss.length, 2);
+}
+
 addTestCase(testCssFilterRule);
 addTestCase(testCssFilterWhiteListRule);
 addTestCase(testCssExceptionRules);
+addTestCase(testCssGenericHideExceptionRules);

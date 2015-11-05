@@ -21,15 +21,18 @@
         return;
     }
 
-    function onCheckSubscriptionUrlResponse(response) {
+    function onCheckSubscriptionUrlResponse(url, confirmText) {
 
-        if (!confirm(response.confirmText)) {
+        if (!confirm(confirmText)) {
             return;
         }
 
-        ext.backgroundPage.sendMessage({
-            type: 'enable-subscription',
-            url: response.url
+        contentPage.sendMessage({
+            type: 'enableSubscription',
+            url: url
+        }, function (response) {
+            var message = {title: response.title, text: response.text};
+            showAlertPopupMessage(message);
         });
     }
 
@@ -106,11 +109,13 @@
             return;
         }
 
-        ext.backgroundPage.sendMessage({
-            type: 'check-subscription-url',
+        contentPage.sendMessage({
+            type: 'checkSubscriptionUrl',
             url: url.trim(),
             title: title.trim()
-        }, onCheckSubscriptionUrlResponse);
+        }, function (response) {
+            onCheckSubscriptionUrlResponse(url, response.confirmText);
+        });
     };
 
     document.addEventListener('click', onLinkClicked);

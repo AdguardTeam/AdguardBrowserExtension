@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+var showAlertPopupMessage; // Global;
 if (window === window.top) {
 
 	(function () {
@@ -97,18 +98,16 @@ if (window === window.top) {
 			xhr.send(null);
 		}
 
-		//second parameter use to specify 'port.on' name of the message (for firefox extension only)
-		ext.onMessage.addListener(function (message) {
+		contentPage.onMessage.addListener(function (message) {
 			if (message.type == 'show-alert-popup') {
 				showAlertPopup(message);
 			}
-		}, 'show-alert-popup');
-
-		ext.onMessage.addListener(function (message) {
 			if (message.type == 'no-cache-reload') {
 				noCacheReload();
 			}
-		}, 'no-cache-reload');
+		});
+
+		showAlertPopupMessage = showAlertPopup;
 
 	})();
 }

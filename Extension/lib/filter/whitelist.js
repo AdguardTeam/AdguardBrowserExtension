@@ -184,6 +184,15 @@ WhiteListService.prototype = {
     },
 
     /**
+     * Returns the array of loaded rules
+     */
+    getRules: function () {
+        //TODO: blockListFilter
+
+        return this.whiteListFilter.getRules();
+    },
+
+    /**
      * Create whitelist rule from input text
      * @param domain Domain
      * @returns {*}

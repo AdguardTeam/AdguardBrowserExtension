@@ -16,60 +16,57 @@
  */
 
 var controller = new PopupController({
-	platform: 'firefox',
-	abusePanelSupported: true
+    platform: 'firefox',
+    abusePanelSupported: true
 });
 
 //override
 controller.afterRender = function () {
-	//resize popup
-	controller.resizePopupWindow();
+    //resize popup
+    controller.resizePopupWindow();
 };
 controller.resizePopup = function (width, height) {
-	self.port.emit('resizePanelPopup', {width: width, height: height});
+    contentPage.sendMessage({type: 'resizePanelPopup', width: width, height: height});
 };
 //popup checkbox actions
 controller.addWhiteListDomain = function (url) {
-	self.port.emit('addWhiteListDomain', {url: url});
+    contentPage.sendMessage({type: 'addWhiteListDomain', url: url});
 };
 controller.removeWhiteListDomain = function (url) {
-	self.port.emit('removeWhiteListDomain', {url: url});
+    contentPage.sendMessage({type: 'removeWhiteListDomain', url: url});
 };
-controller.changeApplicationFilteringDisabled = function(disabled){
-	self.port.emit('changeApplicationFilteringDisabled', {disabled: disabled});
+controller.changeApplicationFilteringDisabled = function (disabled) {
+    contentPage.sendMessage({type: 'changeApplicationFilteringDisabled', disabled: disabled});
 };
 //popup menu actions
 controller.openSiteReportTab = function (url) {
-	self.port.emit('openSiteReportTab', {url: url});
+    contentPage.sendMessage({type: 'openSiteReportTab', url: url});
 };
 controller.openSettingsTab = function () {
-	self.port.emit('openSettingsTab');
+    contentPage.sendMessage({type: 'openSettingsTab'});
 };
 controller.openAssistantInTab = function () {
-	self.port.emit('openAssistant');
+    contentPage.sendMessage({type: 'openAssistant'});
 };
 controller.openLink = function (url) {
-	self.port.emit('openTab', {url: url});
+    contentPage.sendMessage({type: 'openTab', url: url});
 };
 controller.openAbusePanel = function () {
-	self.port.emit('openAbusePanel');
+    contentPage.sendMessage({type: 'openAbusePanel'});
 };
 controller.openFilteringLog = function (tabId) {
-	self.port.emit('openFilteringLog', tabId);
+    contentPage.sendMessage({type: 'openFilteringLog', tabId: tabId});
 };
 controller.resetBlockedAdsCount = function () {
-	self.port.emit('resetBlockedAdsCount');
-};
-controller.translateElement = function (el, messageId, args) {
-	i18n.localizeElement(el, messageId, args);
+    contentPage.sendMessage({type: 'resetBlockedAdsCount'});
 };
 
-self.port.on('initPanelPopup', function (message) {
-	//render popup
-	controller.render(message.tabInfo, message.filteringInfo);
+contentPage.onMessage.addListener(function (message) {
+    if (message.type === 'initPanelPopup') {
+        //render popup
+        controller.render(message.tabInfo, message.filteringInfo);
+    }
+    if (message.type === 'resizePanelPopup') {
+        controller.resizePopupWindow();
+    }
 });
-
-self.port.on('resizePanelPopup', function () {
-	controller.resizePopupWindow();
-});
-

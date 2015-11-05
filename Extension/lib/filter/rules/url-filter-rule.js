@@ -214,11 +214,17 @@ UrlFilterRule.prototype._loadOptions = function (options) {
             case UrlFilterRule.ELEMHIDE_OPTION:
                 additionalContentType |= UrlFilterRule.contentTypes.ELEMHIDE;
                 break;
+            case UrlFilterRule.GENERICHIDE_OPTION:
+                additionalContentType |= UrlFilterRule.contentTypes.GENERICHIDE;
+                break;
             case UrlFilterRule.JSINJECT_OPTION:
                 additionalContentType |= UrlFilterRule.contentTypes.JSINJECT;
                 break;
             case UrlFilterRule.URLBLOCK_OPTION:
                 additionalContentType |= UrlFilterRule.contentTypes.URLBLOCK;
+                break;
+            case UrlFilterRule.GENERICBLOCK_OPTION:
+                additionalContentType |= UrlFilterRule.contentTypes.GENERICBLOCK;
                 break;
             case UrlFilterRule.DOCUMENT_OPTION:
                 additionalContentType |= UrlFilterRule.contentTypes.DOCUMENT;
@@ -255,7 +261,9 @@ UrlFilterRule.THIRD_PARTY_OPTION = "third-party";
 UrlFilterRule.MATCH_CASE_OPTION = "match-case";
 UrlFilterRule.DOCUMENT_OPTION = "document";
 UrlFilterRule.ELEMHIDE_OPTION = "elemhide";
+UrlFilterRule.GENERICHIDE_OPTION = "generichide";
 UrlFilterRule.URLBLOCK_OPTION = "urlblock";
+UrlFilterRule.GENERICBLOCK_OPTION = "genericblock";
 UrlFilterRule.JSINJECT_OPTION = "jsinject";
 UrlFilterRule.POPUP_OPTION = "popup";
 UrlFilterRule.MASK_START_URL = "||";
@@ -285,7 +293,9 @@ UrlFilterRule.contentTypes = {
     ELEMHIDE: 1 << 20,  //CssFilter cannot be applied to page
     URLBLOCK: 1 << 21,  //This attribute is only for exception rules. If true - do not use urlblocking rules for urls where referrer satisfies this rule.
     JSINJECT: 1 << 22,  //Does not inject javascript rules to page
-    POPUP: 1 << 23      //check block popups
+    POPUP: 1 << 23,      //check block popups
+    GENERICHIDE: 1 << 24, //CssFilter generic rules cannot be applied to page
+    GENERICBLOCK: 1 << 25 //UrlFilter generic rules cannot be applied to page
 };
 
 // https://code.google.com/p/chromium/issues/detail?id=410382
@@ -333,10 +343,30 @@ function getAsciiDomainRule(ruleText) {
             return ruleText;
         }
 
+        var domain = parseRuleDomain(ruleText, true);
+        if (!domain) return "";
+
+        //In case of one domain
+        return StringUtils.replaceAll(ruleText, domain, UrlUtils.toPunyCode(domain));
+    } catch (ex) {
+        Log.error("Error getAsciiDomainRule from {0}, cause {1}", ruleText, ex);
+        return "";
+    }
+}
+
+/**
+ * Searches for domain name in rule text.
+ *
+ * @param ruleText Rule text
+ * @param parseOptions Flag to parse rule options
+ * @returns string domain name
+ */
+function parseRuleDomain(ruleText, parseOptions) {
+    try {
         var i;
         var startsWith = ["http://www.", "https://www.", "http://", "https://", "||", "//"];
         var contains = ["/", "^"];
-        var startIndex = -1;
+        var startIndex = parseOptions ? -1 : 0;
 
         for (i = 0; i < startsWith.length; i++) {
             var start = startsWith[i];
@@ -346,15 +376,17 @@ function getAsciiDomainRule(ruleText) {
             }
         }
 
-        //exclusive for domain
-        var exceptRule = "domain=";
-        var domainIndex = ruleText.indexOf(exceptRule);
-        if (domainIndex > -1 && ruleText.indexOf("$") > -1) {
-            startIndex = domainIndex + exceptRule.length;
-        }
+        if (parseOptions) {
+            //exclusive for domain
+            var exceptRule = "domain=";
+            var domainIndex = ruleText.indexOf(exceptRule);
+            if (domainIndex > -1 && ruleText.indexOf("$") > -1) {
+                startIndex = domainIndex + exceptRule.length;
+            }
 
-        if (startIndex == -1) {
-            return "";
+            if (startIndex == -1) {
+                return "";
+            }
         }
 
         var symbolIndex = -1;
@@ -363,16 +395,14 @@ function getAsciiDomainRule(ruleText) {
             var index = ruleText.indexOf(contain, startIndex);
             if (index >= 0) {
                 symbolIndex = index;
-                break
+                break;
             }
         }
 
-        var domain = symbolIndex == -1 ? ruleText.substring(startIndex) : ruleText.substring(startIndex, symbolIndex);
-        //In case of one domain
-        return StringUtils.replaceAll(ruleText, domain, UrlUtils.toPunyCode(domain));
+        return symbolIndex == -1 ? ruleText.substring(startIndex) : ruleText.substring(startIndex, symbolIndex);
     } catch (ex) {
-        Log.error("Error getAsciiDomainRule from {0}, cause {1}", ruleText, ex);
-        return "";
+        Log.error("Error parsing domain from {0}, cause {1}", ruleText, ex);
+        return null;
     }
 }
 

@@ -34,6 +34,7 @@ public class FileUtil {
 	private static final String WEBKIT_FOLDER = "browser/webkit";
 	private static final String CHROME_FOLDER = "browser/chrome";
 	private static final String SAFARI_FOLDER = "browser/safari";
+	private static final String SAFARI_NEW_FOLDER = "browser/safari_new";
 	private static final String FIREFOX_FOLDER = "browser/firefox";
 	private static final String FIREFOX_LEGACY_FOLDER = "browser/firefox_legacy";
 
@@ -50,8 +51,11 @@ public class FileUtil {
 			case SAFARI:
 				copySafariFiles(source, dest);
 				break;
+			case SAFARI_NEW:
+				copySafariNewFiles(source, dest);
+				break;
 			case FIREFOX:
-				copyFirefoxFiles(source, dest);
+				copyFirefoxFiles(source, dest, Browser.FIREFOX);
 				break;
 			case FIREFOX_LEGACY:
 				copyFirefoxLegacyFiles(source, dest);
@@ -92,7 +96,6 @@ public class FileUtil {
 		File sourceLib = new File(source, "lib");
 		File destLib = new File(dest, "lib");
 		copyDirectory(sourceLib, destLib);
-
 	}
 
 	private static void copyChromiumFiles(File source, File dest) throws Exception {
@@ -123,12 +126,30 @@ public class FileUtil {
 		copyCommonFiles(source, dest, Browser.SAFARI);
 	}
 
-	private static void copyFirefoxFiles(File source, File dest) throws Exception {
+	private static void copySafariNewFiles(File source, File dest) throws Exception {
+
+		//copy base chrome/safari code
+		File chromeSafariBase = new File(source, WEBKIT_FOLDER);
+		copyDirectory(chromeSafariBase, dest);
+
+		//copy base safari code
+		File safariBase = new File(source, SAFARI_FOLDER);
+		copyDirectory(safariBase, dest);
+
+		//copy new safari code
+		File safariNew = new File(source, SAFARI_NEW_FOLDER);
+		copyDirectory(safariNew, dest);
+
+		//copy common files
+		copyCommonFiles(source, dest, Browser.SAFARI_NEW);
+	}
+
+	private static void copyFirefoxFiles(File source, File dest, Browser browser) throws Exception {
 
 		File firefoxBase = new File(source, FIREFOX_FOLDER);
 		copyDirectory(firefoxBase, dest);
 
-		copyCommonFiles(source, dest, Browser.FIREFOX);
+		copyCommonFiles(source, dest, browser);
 
 		//move processed html pages to data/content folder
 		File sourcePagesDir = new File(dest, "pages");
@@ -178,7 +199,7 @@ public class FileUtil {
 
 	private static void copyFirefoxLegacyFiles(File source, File dest) throws Exception {
 
-		copyFirefoxFiles(source, dest);
+		copyFirefoxFiles(source, dest, Browser.FIREFOX_LEGACY);
 
 		//copy all files to dest folder
 		File firefoxLegacyBase = new File(source, FIREFOX_LEGACY_FOLDER);
