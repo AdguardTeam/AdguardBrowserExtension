@@ -472,6 +472,10 @@ function createRegexFromUrlRuleText(urlRuleText) {
             + StringUtils.replaceAll(regex.substring(UrlFilterRule.MASK_START_URL.length, regex.length - 1), "\|", "\\|")
                 //+ regex.substring(UrlFilterRule.MASK_START_URL.length, regex.length - 1).replace(/\|/, "\\|")
             + regex.substring(regex.length - 1);
+    } else if (StringUtils.startWith(regex, UrlFilterRule.MASK_PIPE)){
+        regex = regex.substring(0, UrlFilterRule.MASK_PIPE.length)
+            + StringUtils.replaceAll(regex.substring(UrlFilterRule.MASK_PIPE.length, regex.length - 1), "\|", "\\|")
+            + regex.substring(regex.length - 1);
     } else {
         regex = StringUtils.replaceAll(regex.substring(0, regex.length - 1), "\|", "\\|")
             + regex.substring(regex.length - 1);
