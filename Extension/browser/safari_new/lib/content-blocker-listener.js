@@ -35,13 +35,7 @@ var SafariContentBlocker = require('content-blocker').SafariContentBlocker;
             var rules = antiBannerService.getRequestFilter().getRules();
             rules = rules.concat(whiteListService.getRules());
 
-            //TODO: Make SafariContentBlocker load rules array
-            var rulesText = [];
-            for (var i in rules) {
-                rulesText.push(rules[i].ruleText);
-            }
-
-            SafariContentBlocker.loadFilters(rulesText);
+            SafariContentBlocker.loadFilters(rules);
         }
     });
 

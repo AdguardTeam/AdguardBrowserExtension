@@ -46,12 +46,14 @@ var UrlFilterRule = exports.UrlFilterRule = function (rule, filterId) {
     if (parseResult.options) {
         this._loadOptions(parseResult.options);
     }
+
     // Exception rule flag
     if (parseResult.whiteListRule) {
         this.whiteListRule = true;
     }
 
     var urlRuleText = parseResult.urlRuleText;
+    this.urlRuleText= urlRuleText;
 
     var isRegexRule = StringUtils.startWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) && StringUtils.endWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE);
     if (isRegexRule) {
@@ -465,9 +467,15 @@ function createRegexFromUrlRuleText(urlRuleText) {
 
     var regex = escapeRegExp(urlRuleText);
 
-    regex = regex.substring(0, UrlFilterRule.MASK_START_URL.length)
-        + regex.substring(UrlFilterRule.MASK_START_URL.length, regex.length - 1).replace(/\|/, "\\|")
-        + regex.substring(regex.length - 1);
+    if (StringUtils.startWith(regex, UrlFilterRule.MASK_START_URL)) {
+        regex = regex.substring(0, UrlFilterRule.MASK_START_URL.length)
+            + StringUtils.replaceAll(regex.substring(UrlFilterRule.MASK_START_URL.length, regex.length - 1), "\|", "\\|")
+                //+ regex.substring(UrlFilterRule.MASK_START_URL.length, regex.length - 1).replace(/\|/, "\\|")
+            + regex.substring(regex.length - 1);
+    } else {
+        regex = StringUtils.replaceAll(regex.substring(0, regex.length - 1), "\|", "\\|")
+            + regex.substring(regex.length - 1);
+    }
 
     // Replacing special url masks
     regex = StringUtils.replaceAll(regex, UrlFilterRule.MASK_ANY_SYMBOL, UrlFilterRule.REGEXP_ANY_SYMBOL);
@@ -481,6 +489,7 @@ function createRegexFromUrlRuleText(urlRuleText) {
     if (StringUtils.endWith(regex, UrlFilterRule.MASK_PIPE)) {
         regex = regex.substring(0, regex.length - 1) + UrlFilterRule.REGEXP_END_STRING;
     }
+
     return regex;
 }
 
