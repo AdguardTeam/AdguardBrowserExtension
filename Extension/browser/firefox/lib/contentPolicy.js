@@ -161,6 +161,11 @@ var WebRequestHelper = exports.WebRequestHelper = {
             return contextData.tab;
         }
         if (contextData && contextData.browser) {
+            if (contextData.browser.contentWindow) {
+                //getTabForBrowser() returns null for FF 38 ESR
+                return tabUtils.getTabForContentWindow(contextData.browser.contentWindow);
+            }
+
             return tabUtils.getTabForBrowser(contextData.browser);
         }
         return null;
