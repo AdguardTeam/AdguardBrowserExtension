@@ -16,7 +16,7 @@ var StringUtils = require('utils/common').StringUtils;
 var Log = require('utils/log').Log;
 var UrlUtils = require('utils/url').UrlUtils;
 
-var SafariContentBlockerConverter = exports.SafariContentBlockerConverter = {
+exports.SafariContentBlockerConverter = {
 
     AGRuleConverter: {
 
