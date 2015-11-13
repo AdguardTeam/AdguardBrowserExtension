@@ -21,6 +21,8 @@
  */
 var StringUtils = require('utils/common').StringUtils;
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
+var AntiBannerFiltersId = require('utils/common').AntiBannerFiltersId;
+var DEFAULT_SCRIPT_RULES = require('utils/local-script-rules').DEFAULT_SCRIPT_RULES;
 
 /**
  * JS injection rule:

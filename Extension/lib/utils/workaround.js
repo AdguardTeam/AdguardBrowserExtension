@@ -21,10 +21,6 @@
  */
 var Log = require('utils/log').Log;
 var UrlUtils = require('utils/url').UrlUtils;
-var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
-require('filter/rules/filter-classes');
-var AntiBannerFiltersId = require('utils/common').AntiBannerFiltersId;
-var DEFAULT_SCRIPT_RULES = require('utils/local-script-rules').DEFAULT_SCRIPT_RULES;
 
 /**
  * We collect here all workarounds and ugly hacks:)
