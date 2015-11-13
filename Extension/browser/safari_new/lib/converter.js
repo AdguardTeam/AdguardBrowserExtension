@@ -10,8 +10,8 @@ var punycode = require("punycode");
 
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
 var CssFilterRule = require('filter/rules/css-filter-rule').CssFilterRule;
-var UrlFilterRule = require('filter/rules//url-filter-rule').UrlFilterRule;
-var ScriptFilterRule = require('filter/rules//script-filter-rule').ScriptFilterRule;
+var UrlFilterRule = require('filter/rules/url-filter-rule').UrlFilterRule;
+var ScriptFilterRule = require('filter/rules/script-filter-rule').ScriptFilterRule;
 var StringUtils = require('utils/common').StringUtils;
 var Log = require('utils/log').Log;
 var UrlUtils = require('utils/url').UrlUtils;
