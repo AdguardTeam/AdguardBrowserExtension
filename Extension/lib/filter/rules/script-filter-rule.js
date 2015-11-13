@@ -21,7 +21,6 @@
  */
 var StringUtils = require('utils/common').StringUtils;
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
-var WorkaroundUtils = require('utils/workaround').WorkaroundUtils;
 
 /**
  * JS injection rule:
@@ -43,7 +42,21 @@ var ScriptFilterRule = exports.ScriptFilterRule = function (rule, filterId) {
 	}
 
 	this.script = rule.substring(indexOfMask + mask.length);
-	this.scriptSource = WorkaroundUtils.getScriptSource(filterId, rule);
+
+	/**
+	 * By the rules of AMO and addons.opera.com we cannot use remote scripts
+	 * (and our JS injection rules could be considered as remote scripts).
+	 *
+	 * So, what we do:
+	 * 1. Pre-compile all current JS rules to the add-on and mark them as 'local'. Other JS rules (new not pre-compiled) are maked as 'remote'.
+	 * 2. Also we mark as 'local' rules from the "User Filter" (local filter which user can edit)
+	 * 3. In case of Firefox and Opera we apply only 'local' JS rules and ignore all marked as 'remote'
+	 */
+	function getScriptSource(filterId, ruleText) {
+		return (filterId == AntiBannerFiltersId.USER_FILTER_ID || ruleText in DEFAULT_SCRIPT_RULES) ? 'local' : 'remote';
+	}
+
+	this.scriptSource = getScriptSource(filterId, rule);
 };
 
 ScriptFilterRule.prototype = Object.create(FilterRule.prototype);
