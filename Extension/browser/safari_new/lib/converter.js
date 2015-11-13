@@ -6,7 +6,7 @@ var CONVERTER_VERSION = '1.2.0';
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var URL_FILTER_ANY_URL = ".*";
 
-var punycode = require("punycode");
+var punycode = require('punycode');
 
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
 require('filter/rules/filter-classes');
