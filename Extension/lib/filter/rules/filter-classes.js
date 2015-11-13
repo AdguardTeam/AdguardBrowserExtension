@@ -1,20 +1,20 @@
 var StringUtils = require('utils/common').StringUtils;
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
+var Log = require('utils/log').Log;
 
 /**
  * Filter classes enumeration
  */
-var FilterClasses = null;
-
+var classes = null;
 function getClasses() {
-    if (!FilterClasses) {
-        FilterClasses = {
+    if (!classes) {
+        classes = {
             CssFilterRule: require('filter/rules/css-filter-rule').CssFilterRule,
             UrlFilterRule: require('filter/rules/url-filter-rule').UrlFilterRule,
             ScriptFilterRule: require('filter/rules/script-filter-rule').ScriptFilterRule
         }
     }
-    return FilterClasses;
+    return classes;
 }
 
 /**

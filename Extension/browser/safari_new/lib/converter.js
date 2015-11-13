@@ -385,18 +385,15 @@ exports.SafariContentBlockerConverter = {
             throw new Error('Invalid argument rule');
         }
 
-        if (rule instanceof getClasses().CssFilterRule
-            || rule instanceof CssFilterRule) {
+        if (rule instanceof getClasses().CssFilterRule) {
             return this.AGRuleConverter.convertCssFilterRule(rule);
         }
 
-        if (rule instanceof getClasses().ScriptFilterRule
-            || rule instanceof ScriptFilterRule) {
+        if (rule instanceof getClasses().ScriptFilterRule) {
             return this.AGRuleConverter.convertScriptRule(rule);
         }
 
-        if (rule instanceof getClasses().UrlFilterRule
-            || rule instanceof UrlFilterRule) {
+        if (rule instanceof getClasses().UrlFilterRule) {
             return this.AGRuleConverter.convertUrlFilterRule(rule);
         }
 
