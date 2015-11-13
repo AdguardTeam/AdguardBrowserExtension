@@ -21,6 +21,7 @@
  */
 var StringUtils = require('utils/common').StringUtils;
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
+require('filter/rules/filter-classes');
 var WorkaroundUtils = require('utils/workaround').WorkaroundUtils;
 
 /**

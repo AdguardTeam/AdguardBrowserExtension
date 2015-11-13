@@ -38,6 +38,7 @@ var FilterStorage = require('filter/storage').FilterStorage;
 var userSettings = require('utils/user-settings').userSettings;
 var EventNotifier = require('utils/notifier').EventNotifier;
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
+require('filter/rules/filter-classes');
 var LS = require('utils/local-storage').LS;
 var Prefs = require('prefs').Prefs;
 var SubscriptionService = require('filter/subscription').SubscriptionService;

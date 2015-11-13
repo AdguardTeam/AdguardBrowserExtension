@@ -54,7 +54,7 @@ FilterRule.prototype = {
 		try {
 			for (var i = 0; i < parts.length; i++) {
 				var domain = parts[i], domainName;
-				if (StringUtils.startWith(domain, FilterRule.NOT_MARK)) {
+				if (StringUtils.startWith(domain, "~")) {
 					domainName = UrlUtils.toPunyCode(domain.substring(1).trim());
 					if (!StringUtils.isEmpty(domainName)) {
 						if (restrictedDomains == null) {
@@ -214,66 +214,6 @@ FilterRule.prototype = {
 };
 
 /**
- * Filter classes enumeration
- */
-var FilterClasses = null;
-
-function getClasses() {
-	if (!FilterClasses) {
-		FilterClasses = {
-			CssFilterRule: require('filter/rules/css-filter-rule').CssFilterRule,
-			UrlFilterRule: require('filter/rules/url-filter-rule').UrlFilterRule,
-			ScriptFilterRule: require('filter/rules/script-filter-rule').ScriptFilterRule
-		}
-	}
-	return FilterClasses;
-}
-
-/**
- * Method that parses rule text and creates object of a suitable class.
- *
- * @param ruleText Rule text
- * @param filterId Filter identifier
- * @returns Filter rule object. Either UrlFilterRule or CssFilterRule or ScriptFilterRule.
- */
-FilterRule.createRule = function (ruleText, filterId) {
-
-	ruleText = ruleText ? ruleText.trim() : null;
-	if (!ruleText) {
-		return null;
-	}
-	var rule = null;
-	try {
-		if (StringUtils.startWith(ruleText, FilterRule.COMMENT) ||
-			StringUtils.contains(ruleText, FilterRule.OLD_INJECT_RULES) ||
-			StringUtils.contains(ruleText, FilterRule.MASK_CONTENT_RULE) ||
-			StringUtils.contains(ruleText, FilterRule.MASK_JS_RULE)) {
-			// Empty or comment, ignore
-			// Content rules are not supported
-			return null;
-		}
-
-		var CssFilterRule = getClasses().CssFilterRule;
-		var UrlFilterRule = getClasses().UrlFilterRule;
-		var ScriptFilterRule = getClasses().ScriptFilterRule;
-		if (StringUtils.startWith(ruleText, FilterRule.MASK_WHITE_LIST)) {
-			rule = new UrlFilterRule(ruleText, filterId);
-		} else if (StringUtils.contains(ruleText, FilterRule.MASK_CSS_RULE) || StringUtils.contains(ruleText, FilterRule.MASK_CSS_EXCEPTION_RULE)) {
-			rule = new CssFilterRule(ruleText, filterId);
-		} else if (StringUtils.contains(ruleText, FilterRule.MASK_CSS_INJECT_RULE) || StringUtils.contains(ruleText, FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE)) {
-			rule = new CssFilterRule(ruleText, filterId);
-		} else if (StringUtils.contains(ruleText, FilterRule.MASK_SCRIPT_RULE) || StringUtils.contains(ruleText, FilterRule.MASK_SCRIPT_EXCEPTION_RULE)) {
-			rule = new ScriptFilterRule(ruleText, filterId);
-		} else {
-			rule = new UrlFilterRule(ruleText, filterId);
-		}
-	} catch (ex) {
-		Log.warn("Cannot create rule from {0}, cause {1}", ruleText, ex);
-	}
-	return rule;
-};
-
-/**
  * urlencodes rule text.
  * We need this function because of this issue:
  * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/34
@@ -281,23 +221,3 @@ FilterRule.createRule = function (ruleText, filterId) {
 FilterRule.escapeRule = function (ruleText) {
 	return encodeURIComponent(ruleText).replace(/'/g, "%27");
 };
-
-FilterRule.PARAMETER_START = "[";
-FilterRule.PARAMETER_END = "]";
-FilterRule.MASK_WHITE_LIST = "@@";
-FilterRule.MASK_CONTENT_RULE = "$$";
-FilterRule.MASK_CSS_RULE = "##";
-FilterRule.MASK_CSS_EXCEPTION_RULE = "#@#";
-FilterRule.MASK_CSS_INJECT_RULE = "#$#";
-FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE = "#@$#";
-FilterRule.MASK_SCRIPT_RULE = "#%#";
-FilterRule.MASK_SCRIPT_EXCEPTION_RULE = "#@%#";
-FilterRule.MASK_JS_RULE = "%%";
-FilterRule.MASK_BANNER_RULE = "++";
-FilterRule.MASK_CONFIGURATION_RULE = "~~";
-FilterRule.COMMENT = "!";
-FilterRule.EQUAL = "=";
-FilterRule.COMA_DELIMITER = ",";
-FilterRule.LINE_DELIMITER = "|";
-FilterRule.NOT_MARK = "~";
-FilterRule.OLD_INJECT_RULES = "adg_start_style_inject";

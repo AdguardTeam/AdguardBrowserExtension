@@ -22,6 +22,7 @@
 var userSettings = require('utils/user-settings').userSettings;
 var ServiceClient = require('utils/service-client').ServiceClient;
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
+require('filter/rules/filter-classes');
 var UrlFilterRule = require('filter/rules/url-filter-rule').UrlFilterRule;
 var StringUtils = require('utils/common').StringUtils;
 var RequestTypes = require('utils/common').RequestTypes;

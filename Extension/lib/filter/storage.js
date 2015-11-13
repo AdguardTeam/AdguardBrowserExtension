@@ -22,6 +22,7 @@
 var Log = require('utils/log').Log;
 var FS = require('utils/file-storage').FS;
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
+require('filter/rules/filter-classes');
 
 /**
  * This class manages file storage for filters.

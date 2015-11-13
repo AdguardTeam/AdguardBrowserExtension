@@ -24,6 +24,7 @@ var StringUtils = require('utils/common').StringUtils;
 var Prefs = require('prefs').Prefs;
 var FilterUtils = require('utils/common').FilterUtils;
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
+require('filter/rules/filter-classes');
 var EventNotifier = require('utils/notifier').EventNotifier;
 var EventNotifierTypes = require('utils/common').EventNotifierTypes;
 var userSettings = require('utils/user-settings').userSettings;

@@ -22,6 +22,7 @@
 var Log = require('utils/log').Log;
 var Utils = require('utils/common').Utils;
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
+require('filter/rules/filter-classes');
 var Prefs = require('prefs').Prefs;
 var LS = require('utils/local-storage').LS;
 var Cc = require('chrome').Cc;

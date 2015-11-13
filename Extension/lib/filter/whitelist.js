@@ -25,6 +25,7 @@ var LS = require('utils/local-storage').LS;
 var userSettings = require('utils/user-settings').userSettings;
 
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
+require('filter/rules/filter-classes');
 var UrlFilter = require('filter/rules/url-filter').UrlFilter;
 
 var allowAllWhiteListRule = {
