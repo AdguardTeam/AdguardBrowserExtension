@@ -21,7 +21,7 @@
  */
 
 
-var ConcurrentUtils = require('utils/common').ConcurrentUtils;
+var ConcurrentUtils = require('utils/browser-utils').ConcurrentUtils;
 var {UiUtils, WindowObserver} = require('uiUtils');
 
 var widgets = Object.create(null);

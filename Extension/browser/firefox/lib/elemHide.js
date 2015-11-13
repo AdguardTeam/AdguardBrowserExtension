@@ -23,7 +23,8 @@ var self = require('sdk/self');
 
 var {EventNotifier} = require('utils/notifier');
 let {FilterStorage} = require('filter/storage');
-var {EventNotifierTypes, ConcurrentUtils} = require('utils/common');
+var {EventNotifierTypes} = require('utils/common');
+var {ConcurrentUtils} = require('utils/browser-utils');
 var {Log} = require('utils/log');
 var {userSettings} = require('utils/user-settings');
 var {WorkaroundUtils} = require('utils/workaround');

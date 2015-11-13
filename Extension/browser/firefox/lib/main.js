@@ -89,7 +89,8 @@ exports.main = function (options, callbacks) {
         }
 
         var {Prefs} = loadAdguardModule('prefs');
-        var {Utils, AntiBannerFiltersId} = loadAdguardModule('utils/common');
+        var {AntiBannerFiltersId} = loadAdguardModule('utils/common');
+        var {Utils} = loadAdguardModule('utils/browser-utils');
         var {TabsMap} = loadAdguardModule('tabsMap');
         var {FramesMap} = loadAdguardModule('utils/frames');
         var {AdguardApplication} = loadAdguardModule('filter/integration');
@@ -114,6 +115,7 @@ exports.main = function (options, callbacks) {
         require('ui');
         require('utils/frames');
         require('utils/common');
+        require('utils/browser-utils');
         require('utils/user-settings');
         require('filter/integration');
         require('filter/filtering-log');

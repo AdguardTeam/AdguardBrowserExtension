@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var Utils = require('utils/common').Utils;
+var Utils = require('utils/browser-utils').Utils;
 var StringUtils = require('utils/common').StringUtils;
 var UrlUtils = require('utils/url').UrlUtils;
 var CollectionUtils = require('utils/common').CollectionUtils;

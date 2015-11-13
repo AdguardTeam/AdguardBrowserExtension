@@ -21,7 +21,7 @@
  */
 var StringUtils = require('utils/common').StringUtils;
 var CollectionUtils = require('utils/common').CollectionUtils;
-var Utils = require('utils/common').Utils;
+var Utils = require('utils/browser-utils').Utils;
 
 /**
  * Special hash table that greatly increases speed of searching url filter rule by its shortcut

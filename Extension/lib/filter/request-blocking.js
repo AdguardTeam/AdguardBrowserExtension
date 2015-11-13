@@ -22,7 +22,7 @@ var EventNotifier = require('utils/notifier').EventNotifier;
 var EventNotifierTypes = require('utils/common').EventNotifierTypes;
 var ServiceClient = require('utils/service-client').ServiceClient;
 var WorkaroundUtils = require('utils/workaround').WorkaroundUtils;
-var Utils = require('utils/common').Utils;
+var Utils = require('utils/browser-utils').Utils;
 var RequestTypes = require('utils/common').RequestTypes;
 var userSettings = require('utils/user-settings').userSettings;
 

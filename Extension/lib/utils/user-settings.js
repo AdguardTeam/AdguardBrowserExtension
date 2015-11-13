@@ -19,7 +19,7 @@
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
-var Utils = require('utils/common').Utils;
+var Utils = require('utils/browser-utils').Utils;
 var LS = require('utils/local-storage').LS;
 var Log = require('utils/log').Log;
 var EventNotifier = require('utils/notifier').EventNotifier;

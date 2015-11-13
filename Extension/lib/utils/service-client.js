@@ -20,7 +20,7 @@
  * require method is overridden in Chrome extension (port/require.js).
  */
 var Log = require('utils/log').Log;
-var Utils = require('utils/common').Utils;
+var Utils = require('utils/browser-utils').Utils;
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
 require('filter/rules/filter-classes');
 var Prefs = require('prefs').Prefs;

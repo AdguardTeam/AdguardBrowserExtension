@@ -29,7 +29,7 @@ var {Log} = require('utils/log');
 var {EventNotifier} = require('utils/notifier');
 var {EventNotifierTypes,RequestTypes} = require('utils/common');
 var {UrlUtils} = require('utils/url');
-var {Utils} = require('utils/common');
+var {Utils} = require('utils/browser-utils');
 var {WebRequestService} = require('filter/request-blocking');
 var {WorkaroundUtils} = require('utils/workaround');
 

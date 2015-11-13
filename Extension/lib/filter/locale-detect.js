@@ -19,7 +19,7 @@
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
-var Utils = require('utils/common').Utils;
+var Utils = require('utils/browser-utils').Utils;
 var Prefs = require('prefs').Prefs;
 var UrlUtils = require('utils/url').UrlUtils;
 var userSettings = require('utils/user-settings').userSettings;

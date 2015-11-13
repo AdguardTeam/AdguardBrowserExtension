@@ -16,7 +16,7 @@
  */
 var userSettings = require('utils/user-settings').userSettings;
 var EventNotifier = require('utils/notifier').EventNotifier;
-var Utils = require('utils/common').Utils;
+var Utils = require('utils/browser-utils').Utils;
 var Prefs = require('prefs').Prefs;
 
 var EventNotifierTypes = require('utils/common').EventNotifierTypes;

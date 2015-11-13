@@ -31,7 +31,7 @@ var AntiBannerFiltersId = require('utils/common').AntiBannerFiltersId;
 var StringUtils = require('utils/common').StringUtils;
 var FilterUtils = require('utils/common').FilterUtils;
 var EventNotifierTypes = require('utils/common').EventNotifierTypes;
-var Utils = require('utils/common').Utils;
+var Utils = require('utils/browser-utils').Utils;
 var CollectionUtils = require('utils/common').CollectionUtils;
 var UrlUtils = require('utils/url').UrlUtils;
 var FilterStorage = require('filter/storage').FilterStorage;
@@ -930,7 +930,17 @@ AntiBannerService.prototype = {
         var loadAllFilterRulesDone = function () {
             // Depending on Prefs.speedupStartup we either load filter rules asynchronously
             // Or we do it on the main thread.
-            CollectionUtils.getRulesFromTextAsyncUnique(rulesFilterMap, function (rules) {
+            function getRulesFromTextAsyncUnique(rulesFilterMap, callback) {
+                if (Prefs && Prefs.speedupStartup()) {
+                    setTimeout(function () {
+                        callback(CollectionUtils.getRulesFromTextUnique(rulesFilterMap));
+                    }, 500);
+                } else {
+                    callback(CollectionUtils.getRulesFromTextUnique(rulesFilterMap));
+                }
+            }
+
+            getRulesFromTextAsyncUnique(rulesFilterMap, function (rules) {
                 this.dirtyRules = rules;
 
                 // Trigger request filter lazy init
