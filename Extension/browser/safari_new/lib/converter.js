@@ -98,34 +98,34 @@ exports.SafariContentBlockerConverter = {
                 return;
             }
 
-            if (rule.permittedContentType & getClasses().UrlFilterRule.contentTypes.IMAGE)
+            if (rule.permittedContentType & UrlFilterRule.contentTypes.IMAGE)
                 types.push("image");
-            if (rule.permittedContentType & getClasses().UrlFilterRule.contentTypes.STYLESHEET)
+            if (rule.permittedContentType & UrlFilterRule.contentTypes.STYLESHEET)
                 types.push("style-sheet");
-            if (rule.permittedContentType & getClasses().UrlFilterRule.contentTypes.SCRIPT)
+            if (rule.permittedContentType & UrlFilterRule.contentTypes.SCRIPT)
                 types.push("script");
-            if (rule.permittedContentType & getClasses().UrlFilterRule.contentTypes.MEDIA)
+            if (rule.permittedContentType & UrlFilterRule.contentTypes.MEDIA)
                 types.push("media");
-            if (rule.permittedContentType & getClasses().UrlFilterRule.contentTypes.POPUP)
+            if (rule.permittedContentType & UrlFilterRule.contentTypes.POPUP)
                 types.push("popup");
-            if (rule.permittedContentType & (getClasses().UrlFilterRule.contentTypes.XMLHTTPREQUEST | getClasses().UrlFilterRule.contentTypes.OTHER))
+            if (rule.permittedContentType & (UrlFilterRule.contentTypes.XMLHTTPREQUEST | UrlFilterRule.contentTypes.OTHER))
                 types.push("raw");
-            if (rule.permittedContentType & getClasses().UrlFilterRule.contentTypes.FONT)
+            if (rule.permittedContentType & UrlFilterRule.contentTypes.FONT)
                 types.push("font");
 
             //Use document for subdocument
-            if (rule.permittedContentType == getClasses().UrlFilterRule.contentTypes.SUBDOCUMENT)
+            if (rule.permittedContentType == UrlFilterRule.contentTypes.SUBDOCUMENT)
                 types.push("document");
 
             //Not supported modificators
-            if (rule.permittedContentType == getClasses().UrlFilterRule.contentTypes.OBJECT) {
+            if (rule.permittedContentType == UrlFilterRule.contentTypes.OBJECT) {
                 throw new Error('Object content type is not yet supported');
             }
-            if (rule.permittedContentType == getClasses().UrlFilterRule.contentTypes['OBJECT-SUBREQUEST']) {
+            if (rule.permittedContentType == UrlFilterRule.contentTypes['OBJECT-SUBREQUEST']) {
                 throw new Error('Object_subrequest content type is not yet supported');
             }
 
-            if (rule.permittedContentType == (getClasses().UrlFilterRule.contentTypes.JSINJECT | getClasses().UrlFilterRule.contentTypes.ALL)) {
+            if (rule.permittedContentType == (UrlFilterRule.contentTypes.JSINJECT | UrlFilterRule.contentTypes.ALL)) {
                 throw new Error('$jsinject rules are ignored.');
             }
 
@@ -236,11 +236,11 @@ exports.SafariContentBlockerConverter = {
 
         _checkWhiteListExceptions: function (rule, result) {
             function isDocumentRule(r) {
-                return r.permittedContentType == (getClasses().UrlFilterRule.contentTypes.DOCUMENT | getClasses().UrlFilterRule.contentTypes.ALL);
+                return r.permittedContentType == (UrlFilterRule.contentTypes.DOCUMENT | UrlFilterRule.contentTypes.ALL);
             }
 
             function isUrlBlockRule(r) {
-                return r.permittedContentType == (getClasses().UrlFilterRule.contentTypes.URLBLOCK | getClasses().UrlFilterRule.contentTypes.ALL);
+                return r.permittedContentType == (UrlFilterRule.contentTypes.URLBLOCK | UrlFilterRule.contentTypes.ALL);
             }
 
             if (rule.whiteListRule && rule.whiteListRule === true) {
@@ -283,7 +283,7 @@ exports.SafariContentBlockerConverter = {
                     result.trigger["url-filter"] = URL_FILTER_ANY_URL;
                     delete result.trigger["resource-type"];
 
-                } else if (rule.permittedContentType & getClasses().UrlFilterRule.contentTypes.ELEMHIDE) {
+                } else if (rule.permittedContentType & UrlFilterRule.contentTypes.ELEMHIDE) {
                     result.trigger["resource-type"] = ['document'];
                 }
             }
@@ -385,15 +385,15 @@ exports.SafariContentBlockerConverter = {
             throw new Error('Invalid argument rule');
         }
 
-        if (rule instanceof getClasses().CssFilterRule) {
+        if (rule instanceof CssFilterRule) {
             return this.AGRuleConverter.convertCssFilterRule(rule);
         }
 
-        if (rule instanceof getClasses().ScriptFilterRule) {
+        if (rule instanceof ScriptFilterRule) {
             return this.AGRuleConverter.convertScriptRule(rule);
         }
 
-        if (rule instanceof getClasses().UrlFilterRule) {
+        if (rule instanceof UrlFilterRule) {
             return this.AGRuleConverter.convertUrlFilterRule(rule);
         }
 
