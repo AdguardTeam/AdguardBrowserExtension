@@ -22,7 +22,6 @@
 var Prefs = require('prefs').Prefs;
 var StringUtils = require('utils/common').StringUtils;
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
-require('filter/rules/filter-classes');
 var Log = require('utils/log').Log;
 var UrlUtils = require('utils/url').UrlUtils;
 
