@@ -1,9 +1,9 @@
-! Version: 1.0.7.21
+! Version: 1.0.7.32
 ! Name: Social media filter
 ! Description: A filter for social media widgets ("Like" buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2015-11-03T16:42:47.016+03:00
+! TimeUpdated: 2015-11-16T16:53:28.876+03:00
 ! Adguard Social Media Filter
 !
 ! If you do not like numerous «Like» and «Tweet» buttons on all the popular websites on the Internet,
@@ -31,6 +31,7 @@
 ! This section contains rules for common trackers/buttons
 !
 /wp-content/plugins/flare/
+/wp-content/plugins/social-warfare/
 ||addthis.com^$third-party,domain=~civilization.com|~imgur.com|~tscan.mg
 ||addthiscdn.com^$third-party
 ||addtoany.com/share$third-party
@@ -45,6 +46,8 @@
 ||assets.pinterest.com/js/pinit.js^$third-party
 ||button.flattr.com^$third-party
 ||cdn.api.twitter.com/*/urls/count.json$third-party
+||cdn.skype.com/shared/v/latest/skypewebsdk.js
+||cdn.skype.com/skypewebsdk/shareButton/
 ||cdn.wibiya.com^$third-party
 ||changetip.com^$third-party
 ||cim.meebo.com^$third-party
@@ -248,14 +251,6 @@ softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 !
 ! Contains rules for specific web sites
 !
-livedoor.com##.socialBtn
-livedoor.com##.article-social
-ghacks.net##.synved-social-button
-androidopentutorials.com##.flare.countloaded
-androidopentutorials.com##div[id^="google-badge-box"]
-foxitsoftware.com##iframe#share
-thestack.com##.social-warfare-container
-wanhaber.com###cm-social-overlay
 imageshack.us###Actions
 meduza.io###DailySubscriber
 washingtonpost.com###NN-module-rr
@@ -266,6 +261,7 @@ kino-world24.ru###appbar_container
 techverse.net###arevicofancy-outer
 inforesist.org,techverse.net###arevicofancy-overlay
 inforesist.org###arevicofancy-wrap
+sueddeutsche.de###article-sidebar-action-twitter
 dailymail.co.uk###articleIconLinksContainer > ul
 huffingtonpost.com###badges_v2_2
 3aram.com###bin-rating-dislike
@@ -275,6 +271,7 @@ relax.ru###bottomSocialSharePlugins
 softonic.com###box-social-buttons
 tomshardware.co.uk###btnShare
 fishki.net###cboxBottom
+wanhaber.com###cm-social-overlay
 cnn.com###cnnShare2
 aliexpress.com###divShareURL
 penzainform.ru###divSocial
@@ -290,6 +287,7 @@ ridus.ru,tweaktown.com###fanback
 mackolik.com###fancybox-close
 mackolik.com###fancybox-frame
 fishki.net###fb-scroll-popup
+therussiantimes.com###fb_widget
 huffingtonpost.com###float_tracker
 gidonline.club###friend > #soc
 gidonline.club###friend > #socbg
@@ -328,6 +326,7 @@ geek.com,greasyfork.org,hackworthy.blogspot.de,wunderground.com###share
 rantlifestyle.com###share-above-desktop
 rantlifestyle.com###share-below-desktop
 rantlifestyle.com###share-in-content
+the-area51.com###share-post
 javaworld.com###sharer .sosh
 fresher.ru,pozdravok.ru###shares
 muzofon.com###simplemodal-container
@@ -368,6 +367,7 @@ lifenews.ru###widget-socials
 telerik.com##.Blogs-Share
 smotri.com##.BroSocial
 pg12.ru##.Likes
+meduza.io##.Material-shareButtons
 meduza.io##.Material-socialButtons
 meduza.io##.MaterialTopBar-fbButton
 meduza.io##.MaterialTopBar-twButton
@@ -387,6 +387,7 @@ film.ru##.arcticmodal-container
 film.ru##.arcticmodal-overlay
 adme.ru##.article-pic-soc
 computerra.ru##.article-soc
+livedoor.com##.article-social
 kaldata.com##.articleIconLinksContainer
 thenextweb.com##.articleShare-buttons
 androidpit.com##.articleSocial
@@ -453,7 +454,7 @@ clipfish.de##.dropdown-social
 lyricsmode.com##.dropdown.share
 omgchrome.com,sanook.com##.entry-share
 myscienceacademy.org##.entry-socials
-xda-developers.com##.et_social_icons_container
+onlinedizi.co,xda-developers.com##.et_social_icons_container
 businessinsider.com,digitaltrends.com,kickstarter.com##.facebook
 sovsport.ru##.facebook-bn_site-overlay
 travelask.ru##.facebook-toolbar
@@ -469,6 +470,7 @@ ok.ru##.feed-list > div[class="feed"][data-log-click*="promo"]
 travelask.ru##.fixed-like-box
 dailytekk.com##.flare
 ginva.com##.flare-vertical
+androidopentutorials.com##.flare.countloaded
 huffingtonpost.com##.floating-share-component__list
 huffingtonpost.com##.follow-author-mini
 zdnet.com##.fyre-share-button
@@ -497,6 +499,7 @@ softkey.ru##.l-soc
 kulturologia.ru##.lb_overlay
 muz.ru##.like > .share
 nashe.ru##.like-b
+giveawayoftheday.com##.like_block_rendered
 focus.ua##.likeboxes
 svoboda.org##.likebutton
 gorodkirov.ru##.likely__widget
@@ -564,7 +567,9 @@ skidkaonline.ru##.share-item
 css-tricks.com##.share-on-link
 css-tricks.com##.share-on-title
 sonymobile.com##.share-post
+creativemarket.com##.share-stuff
 hearthzone.ru##.share-top
+videoben.com##.shareBig
 kp.ru##.shareBox > .shared
 ng.ru##.shareFix
 pravoved.ru##.shareMoreLink
@@ -598,6 +603,7 @@ focus.de##.socFbLikeShare
 focus.de##.socFolStarRating
 colta.ru##.soc_block > a
 zaxid.net##.soc_list_for_news
+wrestling-online.com##.soc_sharing
 livesport.ru##.socbut_b
 sobesednik.ru##.social-block-tabs-wrapper
 wday.ru##.social-blocks
@@ -613,8 +619,10 @@ klerk.ru##.social-popup
 klerk.ru##.social-popup-backdrop
 interia.pl##.social-socialButtons
 domik.ua##.social-subscribe-banner
+thestack.com##.social-warfare-container
 tvigle.ru##.social-wide
 dp.ru##.socialBlock
+livedoor.com##.socialBtn
 windows.microsoft.com##.socialCompAction
 windows.microsoft.com##.socialCompCaption
 windows.microsoft.com##.socialCompTitle
@@ -641,6 +649,7 @@ entertainment.howzit.msn.com##.stbp-tbl
 theblaze.com##.story-col-share
 ibtimes.com##.story_allsocial
 rambler.ru##.subscribe-widget
+ghacks.net##.synved-social-button
 rosregistr.ru,unlockpwd.com##.td-social-sharing
 getandroidstuff.com##.td-tags-and-social-wrapper-box
 heise.de##.teaser_hbs
@@ -681,6 +690,7 @@ slashdot.org##a[data-provider="facebook"]
 slashdot.org##a[data-provider="linkedin"]
 slashdot.org##a[data-provider="twitter"]
 auto.vesti.ru##a[href*="liveinternet.ru/journal_post.php?"]
+therussiantimes.com##a[href="#fb_widget"]
 lostfilm.tv##a[href^="//twitter.com/home?status"]
 bits.media##a[id*="_link"][onclick]
 qiq.ws##a[onclick^="return addSoc"]
@@ -701,6 +711,7 @@ mobiltelefon.ru##div[class^="social_like_btns"]
 yandex.ru##div[class^="ya-share"]
 gazeta.ua##div[id*="-socials-"]
 finam.ru##div[id*="socnet-btns"]
+androidopentutorials.com##div[id^="google-badge-box"]
 eonline.com##div[id^="video-social-shares"]
 files.fm##div[my_title^="Share the link"]
 lifehacker.ru##div[rel="Like"]
@@ -708,6 +719,7 @@ dealspwn.com##div[style="float: right;"]
 kinopoisk.ru##dl.add_to
 er.ru##dl.shareBlock
 zuketapaajabhisa.blogspot.com##html > body #fanback
+foxitsoftware.com##iframe#share
 news.sportbox.ru##iframe[name="vk_community"]
 vkrugudruzei.ru##iframe[src*="facebook.com/plugins/likebox.php"]
 yahoo.com##iframe[src^="https://www.facebook.com/plugins/likebox.php"]
@@ -720,6 +732,7 @@ yabancidiziizle1.com##img[alt="twitter"]
 huffingtonpost.co.uk##li.facebook
 huffingtonpost.co.uk##li.twitter
 vivathematadors.com##li[class="m-site-nav__social-btn"]
+sueddeutsche.de##li[data-linktrack^="onclick.sharingbar"]
 neowin.net##li[id^="article-interact-"]
 plus-soft.ru##noindex > center
 progorod43.ru##noindex > div.Like
@@ -751,6 +764,7 @@ komarovskiy.net##ul[class="social-bookmarks"]
 ||graph.facebook.com/?callback=*&ids=http://$third-party
 ||graph.facebook.com/?callback=*&ids=https://$third-party
 ||idfl.me/fancybox/launch.js
+||innovationmanagement.se/wp-content/themes/IM-5-0/js/jquery.sharrre.min.js
 ||iplsc.com/internal/inpl.social/$domain=interia.pl
 ||joinfo.ua/js/share
 ||kaldata.com/js/cookieconsent.latest.min.js
@@ -765,6 +779,7 @@ komarovskiy.net##ul[class="social-bookmarks"]
 ||mblogi.qip.ru/knopka$third-party
 ||mediafire.com/dynamic/socialmedia-share-buttons.php
 ||mediametrics.ru/rating/ru/online.html
+||meduza.io/api/*/social?links
 ||msilab.net/js/share/share.js
 ||new-rutor.org/js/blocked.js
 ||noi.md/css/facebook-popup.css
@@ -798,7 +813,6 @@ komarovskiy.net##ul[class="social-bookmarks"]
 !
 ! Section contains list general hiding rules
 !
-##a[href^="https://www.linkedin.com/cws/share?url="]
 ###ShareModule
 ###SocialButtons
 ###SocialSharingBtns
@@ -1135,6 +1149,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.sharing-tools
 ##.sharrre_widget
 ##.sidebar-share
+~skype.com##.skype-share
 ##.soc-button
 ##.soc-buttons
 ##.soc-likes
@@ -1173,7 +1188,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.social-likes
 ##.social-likes_single-w
 ##.social-line
-##.social-link
+~asos.com##.social-link
 ~sports.ru##.social-links
 ##.social-links-tooltip
 ##.social-love
@@ -1335,6 +1350,7 @@ livejournal.com##.b-ljtimes-wrapper
 ~vk.com##a[href^="https://vk.com/share.php"]
 ~facebook.com##a[href^="https://www.facebook.com/sharer.php?"]
 ~facebook.com##a[href^="https://www.facebook.com/sharer/sharer.php?u="]
+##a[href^="https://www.linkedin.com/cws/share?url="]
 ~stumbleupon.com##a[href^="https://www.stumbleupon.com/submit?url="]
 ~facebook.com##a[name="fb_share"]
 ##a[onclick^="window.open('http://twitter.com/share"]
@@ -1362,6 +1378,13 @@ livejournal.com##.b-ljtimes-wrapper
 !
 ! Section fixing issues caused by social filter
 !
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/932
+@@||talon.by/squeeze/
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/921
+imgur.com#@#.share-links
+! http://forum.adguard.com/showthread.php?4705
+doorinworld.ru#@#.social
+doorinworld.ru#@#.social-links
 ! https://github.com/AdguardTeam/AdguardBrowserExtension/issues/41
 buffer.com#@#.social
 buffer.com#@##sharer
@@ -1398,6 +1421,8 @@ iguides.ru#@#.socials
 @@||facebook.com/plugins/livefeed.php$document
 @@||facebook.com/plugins/login_button.php$document
 ! unblocking facebook embedded posts
+@@||facebook.com/*/plugins/post.php
+@@||facebook.com/*/plugins/video.php
 @@||facebook.com/plugins/post
 ! addthis.com was broken
 @@||addthiscdn.com^$domain=addthis.com

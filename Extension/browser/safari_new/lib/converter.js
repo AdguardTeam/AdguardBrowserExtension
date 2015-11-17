@@ -290,22 +290,25 @@ exports.SafariContentBlockerConverter = {
         },
 
         convertUrlFilterRule: function (rule) {
-            //Log.debug(rule);
 
             var urlFilter = this._createUrlFilterString(rule);
-            //Log.debug(urlFilter);
 
-            //For delimiter rules we just cut ending |$
+            // For delimiter rules we just cut ending |$
             urlFilter = urlFilter.replace(/\|\$/g, "");
 
-            //Safari doesn't support {digit} in regular expressions
+            // Safari doesn't support {digit} in regular expressions
             if (urlFilter.match(/\{\d*.\}/g)) {
                 throw new Error("Safari doesn't support '{digit}' in regular expressions");
             }
 
-            //Safari doesn't support | in regular expressions
+            // Safari doesn't support | in regular expressions
             if (urlFilter.match(/[^\\]+\|+\S*/g)) {
                 throw new Error("Safari doesn't support '|' in regular expressions");
+            }
+
+            // Safari doesn't support non-ASCII characters in regular expressions
+            if (urlFilter.match(/[^\x00-\x7F]/g)) {
+                throw new Error("Safari doesn't support non-ASCII characters in regular expressions");
             }
 
             var result = {

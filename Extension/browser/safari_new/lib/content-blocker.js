@@ -23,6 +23,7 @@ var SafariContentBlockerConverter = require('converter').SafariContentBlockerCon
  */
 var SafariContentBlocker = exports.SafariContentBlocker = {
     emptyBlockerUrl: 'config/empty.json',
+    rulesLimit: 50000,
 
     /**
      * Loads array of rules to content blocker
@@ -32,7 +33,7 @@ var SafariContentBlocker = exports.SafariContentBlocker = {
     loadFilters: function (rules) {
         Log.info('Starting loading content blocker.');
 
-        var converted = SafariContentBlockerConverter.convertArray(rules, 50000);
+        var converted = SafariContentBlockerConverter.convertArray(rules, this.rulesLimit);
 
         this._setContentBlocker(JSON.parse(converted.converted));
     },
@@ -76,7 +77,7 @@ var SafariContentBlocker = exports.SafariContentBlocker = {
     _setContentBlocker: function (json) {
         try {
             Log.info('Setting content blocker. Length=' + json.length);
-            var result = safari.extension.setContentBlocker(json);
+            safari.extension.setContentBlocker(json);
             Log.info('Content blocker has been set.');
         } catch (ex) {
             Log.error('Error while setting content blocker: ' + ex);
