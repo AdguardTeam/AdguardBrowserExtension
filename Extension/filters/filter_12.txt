@@ -1,11 +1,26 @@
-! Version: 1.0.0.5
-! Name: Mobile Safari filter
-! Description: Special filter for Mobile Safari. We need a separate filter for Safari because it does not fully support rules syntax.
-! NameEn: Mobile Safari filter
-! DescriptionEn: Special filter for Mobile Safari. We need a separate filter for Safari because it does not fully support rules syntax.
-! TimeUpdated: 2015-10-30T22:32:00.091+04:00
+! Version: 1.0.0.6
+! Name: Safari Filter
+! Description: Special filter for Safari 9+. We need a separate filter for Safari because it does not fully support rules syntax.
+! NameEn: Safari Filter
+! DescriptionEn: Special filter for Safari 9+. We need a separate filter for Safari because it does not fully support rules syntax.
+! TimeUpdated: 2015-11-18T00:26:22.474+03:00
+! Safari Filter
+!
+! Special filter for Safari. We need a separate filter for Safari because it does not fully support rules syntax.
+!
+! Homepage: http://adguard.com/filters.html#safari
+! License: http://creativecommons.org/licenses/by-sa/3.0/
+!
+! Fixing Youtube player issue for Safari OS X (player pauses)
+youtube.com#%#(function () {try {var youtubeAdRegExp = /^((.*_)?(ad|ads|afv|adsense)(_.*)?|(ad3|st)_module|prerolls|interstitial|infringe|iv_cta_url)$/;function updateFlashvars(flashvars) {var values = flashvars.split('&');for (var i = 0; i < values.length; i++) {var param = values[i].split('=')[0];if (youtubeAdRegExp.test(param)) {values.splice(i--, 1);}}return values.join('&');}function blockPlayerAds(player) {var updatedPlayer = player.cloneNode(true);var changed = false;var flashvars = updatedPlayer.getAttribute('flashvars');if (flashvars) {var flashvarsUpdated = updateFlashvars(flashvars);if (flashvars != flashvarsUpdated) {updatedPlayer.setAttribute('flashvars', flashvarsUpdated);changed = true;}}var param = updatedPlayer.querySelector('param[name=flashvars]');if (param) {var value = param.getAttribute('value');if (value) {var valueUpdated = updateFlashvars(value);if (value != valueUpdated) {param.setAttribute('value', valueUpdated);changed = true;}}}if (changed && player.parentNode) {player.parentNode.replaceChild(updatedPlayer, player);}var container = document.querySelector(".video-ads");if (container && container.parentNode) {container.parentNode.removeChild(container);}var progress = document.querySelector(".html5-ad-progress-list");if (progress && progress.parentNode) {progress.parentNode.removeChild(progress);}if (typeof ytplayer == 'undefined') {return;}var config = ytplayer['config'];if (!config) {return;}config.loaded = false;var args = config['args'];if (!args) {return;}args.ad3_module = 0;args.ad_channel_code_instream = 0;args.ad_channel_code_overlay = 0;args.ad_device = 0;args.ad_eurl = 0;args.ad_host = 0;args.ad_host_tier = 0;args.ad_logging_flag = 0;args.ad_preroll = 0;args.ad_slots = 0;args.ad_tag = 0;args.ad_video_pub_id = 0;args.adsense_video_doc_id = 0;args.advideo = 0;args.afv = 0;args.afv_ad_tag = 0;args.afv_ad_tag_restricted_to_instream = 0;args.afv_instream_max = 0;args.allowed_ads = 0;args.afv_video_min_cpm = 0;args.allow_html5_ads = 0;args.excluded_ad = 0;args.dynamic_allocation_ad_tag = 0;}window.ytspf = {};Object.defineProperty(window.ytspf, 'enabled', {configurable: true,get: function () {return false;},set: function (enabled) {}});var player = document.querySelector('#movie_player');if (player) {blockPlayerAds(player);} else {var onDOMNodeInserted = function (e) {if (e.target.id == 'movie_player') {blockPlayerAds(e.target);document.removeEventListener('DOMNodeInserted', onDOMNodeInserted, false);}};document.addEventListener('DOMNodeInserted', onDOMNodeInserted, false);}} catch (ex) {console.log('Youtube ads blocking error');console.log(ex);}})();
+! Start: fixing Mobile Youtube video player delays.
+! We should re-evaluate this rules after next Safari release, I suspect it is Safari's bug
+@@||ad.doubleclick.net/*/pfadx/$domain=m.youtube.com
+! End: fixing Youtube video player delays.
+! http://forum.adguard.com/showthread.php?7471
+! The site was broken
 @@||visualwebsiteoptimizer.com^$domain=onlime.ru
-@@||ad.doubleclick.net/*/pfadx/$domain=youtube.com
-@@||googleads.g.doubleclick.net/pagead/ads?sdkv=$domain=youtube.com
+! We should add $subdocument modifier to block iframes from loading on Safari
 ||sports.ru/desktop/special/$subdocument,domain=sports.ru
+! We should also hide that iframe because blocking by URL won't remove the whitespace
 m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]

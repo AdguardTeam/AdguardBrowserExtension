@@ -52,7 +52,11 @@ public class FilterUtils {
 
         List<File> filesToCopy = new ArrayList<File>();
         try {
-            for (int filterId = 1; filterId <= 10; filterId++) {
+            for (int filterId = 1; filterId <= 12; filterId++) {
+
+                if (filterId == 11) {
+                    continue;
+                }
 
                 log.debug("Start download filter " + filterId);
 
