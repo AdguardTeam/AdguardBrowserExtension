@@ -270,7 +270,8 @@ var FilterUtils = exports.FilterUtils = {
     },
 
     isAdguardFilter: function (filter) {
-        return filter.filterId <= AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID;
+        return filter.filterId <= AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID ||
+            filter.filterId == AntiBannerFiltersId.MOBILE_SAFARI_FILTER;
     },
 
     isUserFilterRule: function (rule) {

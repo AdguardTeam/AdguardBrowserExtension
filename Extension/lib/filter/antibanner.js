@@ -1497,4 +1497,3 @@ var SAVE_FILTER_RULES_TO_FS_EVENTS = [EventNotifierTypes.UPDATE_FILTER_RULES, Ev
         }
     });
 })();
-
