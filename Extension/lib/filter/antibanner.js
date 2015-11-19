@@ -199,7 +199,7 @@ AntiBannerService.prototype = {
         filterIds = filterIds.concat(localeFilterIds);
 
         // Add mobile safari filter for safari 9+
-        if (Utils.isSafari9Plus()) {
+        if (Utils.isContentBlockerEnabled()) {
             filterIds.push(AntiBannerFiltersId.MOBILE_SAFARI_FILTER);
         }
 

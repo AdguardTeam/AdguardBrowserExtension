@@ -96,11 +96,8 @@ public class Main {
 
 		File buildResult = createBuild(source, dest, scriptRules, extensionId, updateUrl, browser, version, branch);
 
-		if (updateFilters && (browser == Browser.SAFARI || browser == Browser.SAFARI_NEW)) {
+		if (updateFilters && browser == Browser.SAFARI) {
 			FilterUtils.loadEnglishFilterForSafari(new File(buildResult, "filters"));
-		}
-
-		if (updateFilters && browser == Browser.SAFARI_NEW) {
 			FilterUtils.loadMobileSafariFilter(new File(buildResult, "filters"));
 		}
 
@@ -161,7 +158,7 @@ public class Main {
 			return false;
 		}
 
-		if (extensionId == null && (browser == Browser.SAFARI || browser == Browser.SAFARI_NEW)) {
+		if (extensionId == null && browser == Browser.SAFARI) {
 			log.error("Set --extensionId for Safari build");
 			return false;
 		}
@@ -242,7 +239,6 @@ public class Main {
 				}
 				return true;
 			case SAFARI:
-			case SAFARI_NEW:
 				log.error("Safari doesn't support pack methods. Pack extension manually.");
 				return false;
 			case FIREFOX:
@@ -258,7 +254,7 @@ public class Main {
 
 	private static String getBuildName(String buildName, Browser browser, String version) {
 		String result = buildName + "-" + version;
-		if (browser == Browser.SAFARI || browser == Browser.SAFARI_NEW) {
+		if (browser == Browser.SAFARI) {
 			result += ".safariextension";
 		}
 		return result;

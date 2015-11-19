@@ -52,7 +52,8 @@ $(document).ready(function () {
 
             controller = new PopupController({
                 platform: Prefs.platform,
-                abusePanelSupported: Prefs.platform != 'firefox' || UI.abusePanelSupported
+                abusePanelSupported: Prefs.platform != 'firefox' || UI.abusePanelSupported,
+                showStatsSupported: !Utils.isContentBlockerEnabled()
             });
 
             //override

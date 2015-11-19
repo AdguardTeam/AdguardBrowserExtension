@@ -298,6 +298,7 @@ ContentMessageHandler.prototype = {
             environmentOptions: {
                 isMacOs: Utils.isMacOs(),
                 isSafariBrowser: Utils.isSafariBrowser(),
+                isContentBlockerEnabled: Utils.isContentBlockerEnabled(),
                 Prefs: {
                     locale: Prefs.locale,
                     mobile: Prefs.mobile

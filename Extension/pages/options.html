@@ -10,7 +10,7 @@
     <link type="text/css" rel="stylesheet" href="skin/jquery.jscrollpane.css">
     <link type="text/css" rel="stylesheet" href="skin/bootstrap.css">
 
-    <#if browser.name() == "CHROMIUM" || browser.name() == "SAFARI" || browser.name() == "SAFARI_NEW">
+    <#if browser.name() == "CHROMIUM" || browser.name() == "SAFARI">
         <script type="text/javascript" src="../lib/libs/jquery-1.8.3.min.js"></script>
         <script type="text/javascript" src="../lib/libs/bootstrap.min.js"></script>
         <script type="text/javascript" src="../lib/libs/jquery.mousewheel.min.js"></script>
@@ -60,12 +60,10 @@
                 <div class="sp-table-row-label" i18n="options_allow_acceptable_ads"></div>
                 <input type="checkbox" class="sp-table-row-input" id="allowAcceptableAds"/>
             </div>
-            <#if browser.name() != "SAFARI_NEW">
-            <div class="s-page-table-row cf">
+            <div class="s-page-table-row cf page-stats-switch-block">
                 <div class="sp-table-row-label" i18n="options_show_blocked_ads_count"></div>
                 <input type="checkbox" class="sp-table-row-input" id="showPageStatisticCheckbox"/>
             </div>
-            </#if>
             <div class="s-page-table-row cf">
                 <div class="sp-table-row-label" i18n="options_enable_autodetect_filter"></div>
                 <input type="checkbox" class="sp-table-row-input" id="autodetectFiltersCheckbox"/>
@@ -103,14 +101,12 @@
             <div id="whitelist" class="s-page-lists-user">
                 <div class="sp-lists-user-title" i18n="options_whitelist"></div>
                 <div class="sp-lists-user-descr" i18n="options_whitelist_description"></div>
-                <#if browser.name() != "SAFARI_NEW">
-                    <div class="settings-page-table whitelist-table">
-                        <div class="s-page-table-row cf">
-                            <div class="sp-table-row-label" i18n="options_whitelist_inverse"></div>
-                            <input type="checkbox" class="sp-table-row-input" id="changeDefaultWhiteListMode"/>
-                        </div>
+                <div class="settings-page-table whitelist-table whitelist-mode-switch">
+                    <div class="s-page-table-row cf">
+                        <div class="sp-table-row-label" i18n="options_whitelist_inverse"></div>
+                        <input type="checkbox" class="sp-table-row-input" id="changeDefaultWhiteListMode"/>
                     </div>
-                </#if>
+                </div>
                 <div class="sp-lists-user-table sp-lists-search-table">
                     <div class="spl-user-table-row cf">
                         <label for="white-search" i18n="options_whitelist_search"></label>
@@ -173,10 +169,8 @@
             </div>
         </div>
         <div class="sp-lists-user-add no-icon">
-            <#if browser.name() != "SAFARI_NEW">
-                <span id="openLog" class="spl-user-add-spn" i18n="options_open_log"></span>
-                <span id="resetStats" class="spl-user-add-spn" i18n="options_reset_stats"></span>
-            </#if>
+            <span id="openLog" class="spl-user-add-spn" i18n="options_open_log"></span>
+            <span id="resetStats" class="spl-user-add-spn" i18n="options_reset_stats"></span>
             <a href="https://github.com/AdguardTeam/AdguardBrowserExtension/releases" target="_blank" class="spl-user-add-spn" i18n="options_open_changelog"></a>
         </div>
     </div>

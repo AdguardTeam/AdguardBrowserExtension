@@ -234,6 +234,13 @@ PageController.prototype = {
         if (environmentOptions.Prefs.mobile) {
             $('#resetStats').hide();
         }
+        //Hide some functionality for content blocker safari browsers
+        if (environmentOptions.isContentBlockerEnabled) {
+            $('#openLog').hide();
+            $('#resetStats').hide();
+            $('.page-stats-switch-block').hide();
+            $('.whitelist-mode-switch').hide();
+        }
         this._initializeSubscriptionModal();
         this.checkSubscriptionsCount();
     },

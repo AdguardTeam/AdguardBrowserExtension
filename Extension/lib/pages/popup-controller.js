@@ -22,6 +22,7 @@ var PopupController = function (options) {
 	if (options) {
 		this.platform = options.platform;
 		this.abusePanelSupported = options.abusePanelSupported;
+		this.showStatsSupported = options.showStatsSupported;
 	}
 	//bind actions
 	this._bindActions();
@@ -155,7 +156,7 @@ PopupController.prototype = {
 			template = this.siteProtectionDisabledMessageTemplate;
 		} else if (tabInfo.urlFilteringDisabled) {
 			template = this.siteFilteringDisabledMessageTemplate;
-		} else {
+		} else if (this.showStatsSupported) {
 			template = this.siteStatsTemplate;
 			var titleBlocked = template.find('.w-popup-filter-title-blocked');
 			i18n.translateElement(titleBlocked[0], 'popup_tab_blocked', [formatNumber(tabInfo.totalBlockedTab || 0)]);

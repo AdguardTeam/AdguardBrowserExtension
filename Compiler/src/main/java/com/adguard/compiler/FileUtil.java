@@ -34,7 +34,6 @@ public class FileUtil {
 	private static final String WEBKIT_FOLDER = "browser/webkit";
 	private static final String CHROME_FOLDER = "browser/chrome";
 	private static final String SAFARI_FOLDER = "browser/safari";
-	private static final String SAFARI_NEW_FOLDER = "browser/safari_new";
 	private static final String FIREFOX_FOLDER = "browser/firefox";
 	private static final String FIREFOX_LEGACY_FOLDER = "browser/firefox_legacy";
 
@@ -50,9 +49,6 @@ public class FileUtil {
 				break;
 			case SAFARI:
 				copySafariFiles(source, dest);
-				break;
-			case SAFARI_NEW:
-				copySafariNewFiles(source, dest);
 				break;
 			case FIREFOX:
 				copyFirefoxFiles(source, dest, Browser.FIREFOX);
@@ -124,24 +120,6 @@ public class FileUtil {
 
 		//copy common files
 		copyCommonFiles(source, dest, Browser.SAFARI);
-	}
-
-	private static void copySafariNewFiles(File source, File dest) throws Exception {
-
-		//copy base chrome/safari code
-		File chromeSafariBase = new File(source, WEBKIT_FOLDER);
-		copyDirectory(chromeSafariBase, dest);
-
-		//copy base safari code
-		File safariBase = new File(source, SAFARI_FOLDER);
-		copyDirectory(safariBase, dest);
-
-		//copy new safari code
-		File safariNew = new File(source, SAFARI_NEW_FOLDER);
-		copyDirectory(safariNew, dest);
-
-		//copy common files
-		copyCommonFiles(source, dest, Browser.SAFARI_NEW);
 	}
 
 	private static void copyFirefoxFiles(File source, File dest, Browser browser) throws Exception {

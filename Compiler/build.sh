@@ -30,10 +30,6 @@ if [ "$env" = release ]; then
     options="--version=$version --dest=$destPath --name=Adguard --browser=safari  --extensionId=com.adguard.safari --update-url=https://chrome.adtidy.org/safari/updates.xml"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
-    #safari new release for extensions.apple.com
-    options="--version=$version --dest=$destPath --name=AdguardNew --browser=safari_new  --extensionId=com.adguard.safarinew --update-url=https://chrome.adtidy.org/safari/updates.xml"
-    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
-
     echo "Release builds created"
 
 elif [ "$env" = beta ]; then
@@ -63,10 +59,6 @@ elif [ "$env" = beta ]; then
     options="--version=$version --branch=$branch --dest=$destPath --name=AdguardBeta --browser=safari  --extensionId=com.adguard.safaribeta --update-url=https://chrome.adtidy.org/safari/updates.xml"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
-    #safari new beta
-    options="--version=$version --branch=$branch --dest=$destPath --name=AdguardNewBeta --browser=safari_new  --extensionId=com.adguard.safarinewbeta --update-url=https://chrome.adtidy.org/safari/updates.xml"
-    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
-
     echo "Beta builds created"
 
 else
@@ -90,10 +82,6 @@ else
 
     #safari
     options="--version=$version --branch=$branch --dest=$destPath --name=AdguardDev --browser=safari --extensionId=com.adguard.safaridev"
-    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
-
-    #safari_new
-    options="--version=$version --branch=$branch --dest=$destPath --name=AdguardNewDev --browser=safari_new --extensionId=com.adguard.safarinewdev"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     echo "Dev builds created"
