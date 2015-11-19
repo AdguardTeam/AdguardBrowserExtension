@@ -16,27 +16,30 @@
  */
 
 var SafariContentBlocker = require('content-blocker').SafariContentBlocker;
+var Utils = require('utils/browser-utils').Utils;
 
 (function () {
 
-    EventNotifier.addListener(function (event, params) {
-        if (event == EventNotifierTypes.CHANGE_USER_SETTINGS
-            && params == userSettings.settings.DISABLE_FILTERING
-            && userSettings.isFilteringDisabled()) {
+    if (Utils.isSafari9Plus()) {
+        EventNotifier.addListener(function (event, params) {
+            if (event == EventNotifierTypes.CHANGE_USER_SETTINGS
+                && params == userSettings.settings.DISABLE_FILTERING
+                && userSettings.isFilteringDisabled()) {
 
-            SafariContentBlocker.clearFilters();
-            return;
-        }
+                SafariContentBlocker.clearFilters();
+                return;
+            }
 
-        if (event == EventNotifierTypes.REBUILD_REQUEST_FILTER_END
-            || event == EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES
-            || event == EventNotifierTypes.CHANGE_USER_SETTINGS) {
+            if (event == EventNotifierTypes.REBUILD_REQUEST_FILTER_END
+                || event == EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES
+                || event == EventNotifierTypes.CHANGE_USER_SETTINGS) {
 
-            var rules = antiBannerService.getRequestFilter().getRules();
-            rules = rules.concat(whiteListService.getRules());
+                var rules = antiBannerService.getRequestFilter().getRules();
+                rules = rules.concat(whiteListService.getRules());
 
-            SafariContentBlocker.loadFilters(rules);
-        }
-    });
+                SafariContentBlocker.loadFilters(rules);
+            }
+        });
+    }
 
 })();
