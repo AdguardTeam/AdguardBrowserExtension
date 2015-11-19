@@ -187,6 +187,7 @@ var EventNotifierTypes = exports.EventNotifierTypes = {
     LOG_EVENT: "event.log.track",
     UPDATE_TAB_BUTTON_STATE: "event.update.tab.button.state",
     REBUILD_REQUEST_FILTER_END: "event.rebuild.request.filter.end",
+    INIT_REQUEST_FILTER_END: "event.init.request.filter.end",
     CHANGE_USER_SETTINGS: "event.change.user.settings",
     UPDATE_FILTERS_SHOW_POPUP: "event.update.filters.show.popup",
     UPDATE_USER_FILTER_RULES: "event.update.user.filter.rules",

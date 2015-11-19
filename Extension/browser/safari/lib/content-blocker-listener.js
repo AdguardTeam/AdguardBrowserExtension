@@ -31,6 +31,7 @@ var Utils = require('utils/browser-utils').Utils;
             }
 
             if (event == EventNotifierTypes.REBUILD_REQUEST_FILTER_END
+                || event == EventNotifierTypes.INIT_REQUEST_FILTER_END
                 || event == EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES
                 || event == EventNotifierTypes.CHANGE_USER_SETTINGS) {
 

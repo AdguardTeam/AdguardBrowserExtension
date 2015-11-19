@@ -145,6 +145,7 @@ AntiBannerService.prototype = {
             whiteListService.initWhiteListFilters();
             context._createRequestFilter(function () {
                 this._addFiltersChangeEventListener();
+                EventNotifier.notifyListeners(EventNotifierTypes.INIT_REQUEST_FILTER_END);
                 onServiceInitialized(runInfo);
             }.bind(this));
         }.bind(this);
