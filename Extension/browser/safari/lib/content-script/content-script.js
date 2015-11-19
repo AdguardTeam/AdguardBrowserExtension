@@ -69,42 +69,32 @@
 
 	if (window.top === window) {
 
-        if (isContentBlockerEnabled) {
+		if (!isContentBlockerEnabled) {
+			safari.self.tab.dispatchMessage("loading", document.location.href);
+		}
 
-			function createMainFrameEvent(type) {
-				var data = {
-					url: document.location.href,
-					type: "main_frame",
-					frameId: 0
-				};
+		function createMainFrameEvent(type) {
+			var data = {
+				url: document.location.href,
+				type: "main_frame",
+				frameId: 0
+			};
 
+			if (isContentBlockerEnabled) {
 				safari.self.tab.dispatchMessage('canLoad', {
 					type: type,
 					data: data
 				});
-			};
-
-			createMainFrameEvent("safariWebRequest");
-			createMainFrameEvent("safariHeadersRequest");
-
-		} else {
-
-			safari.self.tab.dispatchMessage("loading", document.location.href);
-
-			function createMainFrameEvent(type) {
-				var data = {
-					url: document.location.href,
-					type: "main_frame",
-					frameId: 0
-				};
+			} else {
 				var evt = document.createEvent("Event");
 				evt.initEvent("beforeload");
 				safari.self.tab.canLoad(evt, {type: type, data: data});
 			}
 
-			createMainFrameEvent("safariWebRequest");
-			createMainFrameEvent("safariHeadersRequest");
-		}
+		};
+
+		createMainFrameEvent("safariWebRequest");
+		createMainFrameEvent("safariHeadersRequest");
 	}
 
 	if (!isContentBlockerEnabled) {
