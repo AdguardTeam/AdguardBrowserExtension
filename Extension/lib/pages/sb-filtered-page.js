@@ -36,6 +36,10 @@ function onToggleClicked(toggleButton, reportButton, goButton) {
     goButton.attr('class', 'redlink');
 }
 
+function isValid(param) {
+    return param && param.indexOf('<') < 0;
+}
+
 $(document).ready(function () {
 
     var toggleButton = $("#toggle-button");
@@ -56,28 +60,38 @@ $(document).ready(function () {
     var ref = params["ref"];
 
     if (host) {
-        reportButton.attr("href", "https://adguard.com/site.html?domain=" + host + "&utm_source=extension&aid=16593");
         var decodeHost = decodeURIComponent(host);
-
-        i18n.translateElement(document.getElementById("malware-text"), "sb_malware_site", [decodeHost]);
-        i18n.translateElement(document.getElementById("phishing-text"), "sb_phishing_site", [decodeHost]);
+        if (isValid(decodeHost)) {
+            reportButton.attr("href", "https://adguard.com/site.html?domain=" + host + "&utm_source=extension&aid=16593");
+            i18n.translateElement(document.getElementById("malware-text"), "sb_malware_site", [decodeHost]);
+            i18n.translateElement(document.getElementById("phishing-text"), "sb_phishing_site", [decodeHost]);
+        }
     }
+
     if (url) {
-        goButton.attr("href", decodeURIComponent(url));
+        url = decodeURIComponent(url);
+        if (isValid(url)) {
+            goButton.attr("href", url);
+            goButton.on('click', function (e) {
+                e.preventDefault();
+                contentPage.sendMessage({type: 'openSafebrowsingTrusted', url: this.href});
+            });
+        }
     }
 
-    goBackButton.attr("href", decodeURIComponent(ref));
-    goBackButton.on('click', function (e) {
-        e.preventDefault();
-        document.location = decodeURIComponent(ref);
-    });
+    if (ref) {
+        ref = decodeURIComponent(ref);
+        if (isValid(ref)) {
+            goBackButton.attr("href", ref);
+            goBackButton.on('click', function (e) {
+                e.preventDefault();
+                document.location = ref;
+            });
+        }
+    }
 
     toggleButton.on('click', function (e) {
         e.preventDefault();
         onToggleClicked(toggleButton, reportButton, goButton);
-    });
-    goButton.on('click', function (e) {
-        e.preventDefault();
-        contentPage.sendMessage({type: 'openSafebrowsingTrusted', url: this.href});
     });
 });
