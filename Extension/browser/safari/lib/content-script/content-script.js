@@ -17,95 +17,57 @@
 
 (function () {
 
-	var isSafariNew = function () {
-		var parseSafariVersion = function () {
-			var userAgent = navigator.userAgent;
-			var i = userAgent.indexOf("Version/");
-			if (i == 0) return "";
+	var ContentScript = {
 
-			var end = userAgent.indexOf(" ", i);
-			return userAgent.substring(i + 8, end > 0 ? end : userAgent.length);
-		};
+		init: function(){
 
-		var isGreaterOrEqualsVersion = function (leftVersion, rightVersion) {
-			var Version = function (version) {
+			this.contentBlockerEnabled = this._isContentBlockerEnabled();
 
-				this.version = Object.create(null);
-
-				var parts = (version || "").split(".");
-
-				function parseVersionPart(part) {
-					if (isNaN(part)) {
-						return 0;
-					}
-					return Math.max(part - 0, 0);
-				}
-
-				for (var i = 3; i >= 0; i--) {
-					this.version[i] = parseVersionPart(parts[i]);
-				}
-			};
-
-			Version.prototype.compare = function (o) {
-				for (var i = 0; i < 4; i++) {
-					if (this.version[i] > o.version[i]) {
-						return 1;
-					} else if (this.version[i] < o.version[i]) {
-						return -1;
-					}
-				}
-				return 0;
-			};
-
-			var left = new Version(leftVersion);
-			var right = new Version(rightVersion);
-			return left.compare(right) >= 0;
-		};
-
-		var version = parseSafariVersion();
-		return isGreaterOrEqualsVersion(version, "9.0");
-	};
-	var isContentBlockerEnabled = isSafariNew();
-
-	if (window.top === window) {
-
-		safari.self.tab.dispatchMessage("loading", document.location.href);
-
-		function createMainFrameEvent(type) {
-			var data = {
-				url: document.location.href,
-				type: "main_frame",
-				frameId: 0
-			};
-
-			if (isContentBlockerEnabled) {
-				safari.self.tab.dispatchMessage('canLoad', {
-					type: type,
-					data: data
-				});
-			} else {
-				var evt = document.createEvent("Event");
-				evt.initEvent("beforeload");
-				safari.self.tab.canLoad(evt, {type: type, data: data});
+			if(window === window.top){
+				this._dispatchLoading();
+				this._sendMainFrameLoadedEvent(this.contentBlockerEnabled);
 			}
 
-		};
+			if(!this.contentBlockerEnabled){
+				this._addOnbeforeLoadEventListener();
+			}
+		},
 
-		createMainFrameEvent("safariWebRequest");
-		createMainFrameEvent("safariHeadersRequest");
-	}
+		_sendMainFrameLoadedEvent: function(contentBlockerEnabled){
+			function createMainFrameEvent(type) {
+				var data = {
+					url: document.location.href,
+					type: "main_frame",
+					frameId: 0
+				};
 
-	if (!isContentBlockerEnabled) {
+				if (contentBlockerEnabled) {
+					safari.self.tab.dispatchMessage('canLoad', {
+						type: type,
+						data: data
+					});
+				} else {
+					var evt = document.createEvent("Event");
+					evt.initEvent("beforeload");
+					safari.self.tab.canLoad(evt, {type: type, data: data});
+				}
 
-		var contentScriptId = Date.now() + Math.random().toString(10).slice(2);
+			};
 
-		var absoluteUrlHelper = document.createElement("a");
+			createMainFrameEvent("safariWebRequest");
+			createMainFrameEvent("safariHeadersRequest");
+		},
 
-		var onFirstLoadOccurred = false;
+		_addOnbeforeLoadEventListener: function(){
+			var contentScriptId = Date.now() + Math.random().toString(10).slice(2);
 
-		var execTmpScript = function () {
-			var tmpJS = document.createElement("script");
-			tmpJS.textContent = '(function () {\
+			var absoluteUrlHelper = document.createElement("a");
+
+			var onFirstLoadOccurred = false;
+
+			var execTmpScript = function () {
+				var tmpJS = document.createElement("script");
+				tmpJS.textContent = '(function () {\
 									var block = function (url, type) {\
 										var event = new CustomEvent("' + contentScriptId + '", {\
 											detail: {\
@@ -128,93 +90,149 @@
 										}\
 									}\
 								})();';
-			document.documentElement.removeChild(document.documentElement.appendChild(tmpJS));
-		};
+				document.documentElement.removeChild(document.documentElement.appendChild(tmpJS));
+			};
 
-		var canLoadRequest = function (url, type, frameId) {
-			return safari.self.tab.canLoad(event, {
-				type: "safariWebRequest", data: {
-					url: url,
-					type: type,
-					frameId: frameId,
-					requestFrameId: 0
-				}
-			});
-		};
-
-		var onBeforeLoad = function (event) {
-
-			if (!onFirstLoadOccurred) {
-				onFirstLoad();
-			}
-
-			absoluteUrlHelper.href = event.url;
-			var url = absoluteUrlHelper.href;
-
-			if (!/^https?:/.test(url)) {
-				return;
-			}
-
-			var type;
-			switch (event.target.localName) {
-				case "link":
-					if (/(^|\s)stylesheet($|\s)/i.test(event.target.rel)) {
-						type = "stylesheet";
-						break;
+			var canLoadRequest = function (url, type, frameId) {
+				return safari.self.tab.canLoad(event, {
+					type: "safariWebRequest", data: {
+						url: url,
+						type: type,
+						frameId: frameId,
+						requestFrameId: 0
 					}
-				case "img":
-					type = "image";
-					break;
-				case "frame":
-				case "iframe":
-					type = "sub_frame";
-					break;
-				case "object":
-				case "embed":
-					type = "object";
-					break;
-				case "script":
-					type = "script";
-					break;
-				default:
-					type = "other";
-					break;
-			}
+				});
+			};
 
-			var frameId;
-			if (type == "sub_frame") {
-				frameId = Math.random();
-			}
+			var onBeforeLoad = function (event) {
 
-			if (!canLoadRequest(url, type, frameId)) {
-
-				event.preventDefault();
-
-				if (type != "sub_frame") {
-					setTimeout(function () {
-						var evt = document.createEvent("Event");
-						evt.initEvent("error");
-						event.target.dispatchEvent(evt);
-					}, 0);
+				if (!onFirstLoadOccurred) {
+					onFirstLoad();
 				}
-			}
 
-		};
-		document.addEventListener("beforeload", onBeforeLoad, true);
+				absoluteUrlHelper.href = event.url;
+				var url = absoluteUrlHelper.href;
 
-		var onFirstLoad = function () {
-			document.removeEventListener("DOMContentLoaded", onFirstLoad, true);
-			onFirstLoadOccurred = true;
-			document.addEventListener(contentScriptId, function (e) {
-				absoluteUrlHelper.href = e.detail.url;
-				if (!canLoadRequest(absoluteUrlHelper.href, e.detail.type)) {
-					e.detail.url = false;
+				if (!/^https?:/.test(url)) {
+					return;
 				}
-			});
-			execTmpScript();
-		};
-		document.addEventListener("DOMContentLoaded", onFirstLoad, true);
-	}
+
+				var type;
+				switch (event.target.localName) {
+					case "link":
+						if (/(^|\s)stylesheet($|\s)/i.test(event.target.rel)) {
+							type = "stylesheet";
+							break;
+						}
+					case "img":
+						type = "image";
+						break;
+					case "frame":
+					case "iframe":
+						type = "sub_frame";
+						break;
+					case "object":
+					case "embed":
+						type = "object";
+						break;
+					case "script":
+						type = "script";
+						break;
+					default:
+						type = "other";
+						break;
+				}
+
+				var frameId;
+				if (type == "sub_frame") {
+					frameId = Math.random();
+				}
+
+				if (!canLoadRequest(url, type, frameId)) {
+
+					event.preventDefault();
+
+					if (type != "sub_frame") {
+						setTimeout(function () {
+							var evt = document.createEvent("Event");
+							evt.initEvent("error");
+							event.target.dispatchEvent(evt);
+						}, 0);
+					}
+				}
+
+			};
+			document.addEventListener("beforeload", onBeforeLoad, true);
+
+			var onFirstLoad = function () {
+				document.removeEventListener("DOMContentLoaded", onFirstLoad, true);
+				onFirstLoadOccurred = true;
+				document.addEventListener(contentScriptId, function (e) {
+					absoluteUrlHelper.href = e.detail.url;
+					if (!canLoadRequest(absoluteUrlHelper.href, e.detail.type)) {
+						e.detail.url = false;
+					}
+				});
+				execTmpScript();
+			};
+			document.addEventListener("DOMContentLoaded", onFirstLoad, true);
+		},
+
+		_dispatchLoading: function() {
+			safari.self.tab.dispatchMessage("loading", document.location.href);
+		},
+
+		_isContentBlockerEnabled: function(){
+			var parseSafariVersion = function () {
+				var userAgent = navigator.userAgent;
+				var i = userAgent.indexOf("Version/");
+				if (i == 0) return "";
+
+				var end = userAgent.indexOf(" ", i);
+				return userAgent.substring(i + 8, end > 0 ? end : userAgent.length);
+			};
+
+			var isGreaterOrEqualsVersion = function (leftVersion, rightVersion) {
+				var Version = function (version) {
+
+					this.version = Object.create(null);
+
+					var parts = (version || "").split(".");
+
+					function parseVersionPart(part) {
+						if (isNaN(part)) {
+							return 0;
+						}
+						return Math.max(part - 0, 0);
+					}
+
+					for (var i = 3; i >= 0; i--) {
+						this.version[i] = parseVersionPart(parts[i]);
+					}
+				};
+
+				Version.prototype.compare = function (o) {
+					for (var i = 0; i < 4; i++) {
+						if (this.version[i] > o.version[i]) {
+							return 1;
+						} else if (this.version[i] < o.version[i]) {
+							return -1;
+						}
+					}
+					return 0;
+				};
+
+				var left = new Version(leftVersion);
+				var right = new Version(rightVersion);
+				return left.compare(right) >= 0;
+			};
+
+			var version = parseSafariVersion();
+			return isGreaterOrEqualsVersion(version, "9.0");
+		}
+	};
+
+	ContentScript.init();
 
 })();
 
