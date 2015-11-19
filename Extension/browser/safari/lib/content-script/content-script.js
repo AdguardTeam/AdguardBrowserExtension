@@ -69,9 +69,7 @@
 
 	if (window.top === window) {
 
-		if (!isContentBlockerEnabled) {
-			safari.self.tab.dispatchMessage("loading", document.location.href);
-		}
+		safari.self.tab.dispatchMessage("loading", document.location.href);
 
 		function createMainFrameEvent(type) {
 			var data = {
