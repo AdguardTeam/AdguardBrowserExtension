@@ -20,7 +20,7 @@ var Utils = require('utils/browser-utils').Utils;
 
 (function () {
 
-    if (Utils.isSafari9Plus()) {
+    if (Utils.isContentBlockerEnabled()) {
         EventNotifier.addListener(function (event, params) {
             if (event == EventNotifierTypes.CHANGE_USER_SETTINGS
                 && params == userSettings.settings.DISABLE_FILTERING

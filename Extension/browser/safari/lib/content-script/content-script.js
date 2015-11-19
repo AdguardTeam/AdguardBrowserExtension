@@ -64,11 +64,11 @@
 		var version = parseSafariVersion();
 		return isGreaterOrEqualsVersion(version, "9.0");
 	};
-	var safariNew = isSafariNew();
+	var isContentBlockerEnabled = isSafariNew();
 
 	if (window.top === window) {
 
-        if (safariNew) {
+        if (isContentBlockerEnabled) {
 
 			function createMainFrameEvent(type) {
 				var data = {
@@ -106,7 +106,7 @@
 		}
 	}
 
-	if (!safariNew) {
+	if (!isContentBlockerEnabled) {
 
 		var contentScriptId = Date.now() + Math.random().toString(10).slice(2);
 

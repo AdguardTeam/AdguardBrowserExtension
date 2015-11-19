@@ -235,7 +235,7 @@ PageController.prototype = {
             $('#resetStats').hide();
         }
         //Hide some functionality for content blocker safari browsers
-        if (environmentOptions.isSafari9PlusBrowser) {
+        if (environmentOptions.isContentBlockerEnabled) {
             $('#openLog').hide();
             $('#resetStats').hide();
             $('.page-stats-switch-block').hide();

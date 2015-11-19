@@ -89,6 +89,10 @@ var Utils = exports.Utils = {
         return this.navigator.platform.toUpperCase().indexOf('MAC') >= 0;
     },
 
+    isContentBlockerEnabled: function () {
+        return this.isSafari9Plus();
+    },
+
     getExtensionStoreLink: function () {
         var urlBuilder = ["http://adguard.com/"];
 
