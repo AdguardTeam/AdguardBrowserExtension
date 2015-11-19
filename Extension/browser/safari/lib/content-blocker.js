@@ -34,8 +34,12 @@ var SafariContentBlocker = exports.SafariContentBlocker = {
         Log.info('Starting loading content blocker.');
 
         var converted = SafariContentBlockerConverter.convertArray(rules, this.rulesLimit);
-
-        this._setContentBlocker(JSON.parse(converted.converted));
+        if (converted && converted.converted) {
+            this._setContentBlocker(JSON.parse(converted.converted));
+        } else {
+            Log.info('No rules to setup for content blocker.');
+            this.clearFilters();
+        }
     },
 
     /**

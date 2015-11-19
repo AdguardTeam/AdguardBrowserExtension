@@ -745,8 +745,13 @@ exports.SafariContentBlockerConverter = {
     convertArray: function (rules, limit) {
         this._addVersionMessage();
 
-        if (rules == null || rules.length == 0) {
+        if (rules == null) {
             Log.error('Invalid argument rules');
+            return null;
+        }
+
+        if (rules.length == 0) {
+            Log.info('No rules presented for convertation');
             return null;
         }
 
