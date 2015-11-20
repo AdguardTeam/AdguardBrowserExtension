@@ -134,7 +134,11 @@ var ext;
 		checkIncognitoMode: function (tab) {
 			//do nothing
 		},
-		isIncognito: function () {
+		isIncognito: function (tab) {
+			if (tab && tab.safariTab && tab.safariTab.private != undefined) {
+				return tab.safariTab.private;
+			}
+
 			return safari.application.privateBrowsing.enabled;
 		},
 		remove: function (tab) {
