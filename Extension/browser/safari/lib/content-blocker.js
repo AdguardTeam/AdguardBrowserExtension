@@ -79,12 +79,28 @@ var SafariContentBlocker = exports.SafariContentBlocker = {
     },
 
     _setContentBlocker: function (json) {
+        if (this.wait) {
+            this.json = json;
+            Log.info('Waiting to set content blocker');
+            return;
+        }
+
+        this.wait = true;
+        delete this.json;
+
         try {
             Log.info('Setting content blocker. Length=' + json.length);
             safari.extension.setContentBlocker(json);
             Log.info('Content blocker has been set.');
         } catch (ex) {
             Log.error('Error while setting content blocker: ' + ex);
+        }
+
+        delete this.wait;
+
+        if (this.json) {
+            Log.info('Setting content blocker from the queue');
+            this._setContentBlocker(this.json);
         }
     }
 };
