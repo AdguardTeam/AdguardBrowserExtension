@@ -17,6 +17,7 @@
 
 var Log = require('utils/log').Log;
 var SafariContentBlockerConverter = require('converter').SafariContentBlockerConverter;
+var setTimeout = require('sdk/timers').setTimeout;
 
 /**
  * Safari Content Blocker helper
@@ -79,28 +80,17 @@ var SafariContentBlocker = exports.SafariContentBlocker = {
     },
 
     _setContentBlocker: function (json) {
-        if (this.wait) {
-            this.json = json;
-            Log.info('Waiting to set content blocker');
-            return;
-        }
+        this.json = json;
 
-        this.wait = true;
-        delete this.json;
-
-        try {
-            Log.info('Setting content blocker. Length=' + json.length);
-            safari.extension.setContentBlocker(json);
-            Log.info('Content blocker has been set.');
-        } catch (ex) {
-            Log.error('Error while setting content blocker: ' + ex);
-        }
-
-        delete this.wait;
-
-        if (this.json) {
-            Log.info('Setting content blocker from the queue');
-            this._setContentBlocker(this.json);
-        }
+        var self = this;
+        setTimeout(function() {
+            try {
+                Log.info('Setting content blocker. Length=' + self.json.length);
+                safari.extension.setContentBlocker(self.json);
+                Log.info('Content blocker has been set.');
+            } catch (ex) {
+                Log.error('Error while setting content blocker: ' + ex);
+            }
+        }, 100);
     }
 };
