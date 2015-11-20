@@ -35,10 +35,12 @@ var Utils = require('utils/browser-utils').Utils;
                 || event == EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES
                 || event == EventNotifierTypes.CHANGE_USER_SETTINGS) {
 
-                var rules = antiBannerService.getRequestFilter().getRules();
-                rules = rules.concat(whiteListService.getRules());
+                if (!userSettings.isFilteringDisabled()) {
+                    var rules = antiBannerService.getRequestFilter().getRules();
+                    rules = rules.concat(whiteListService.getRules());
 
-                SafariContentBlocker.loadFilters(rules);
+                    SafariContentBlocker.loadFilters(rules);
+                }
             }
         });
     }
