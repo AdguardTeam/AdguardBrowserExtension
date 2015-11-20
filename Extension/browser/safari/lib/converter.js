@@ -18,7 +18,7 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.2.1';
+var CONVERTER_VERSION = '1.2.2';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var URL_FILTER_ANY_URL = ".*";
@@ -257,7 +257,8 @@ exports.SafariContentBlockerConverter = {
             }
 
             function isUrlBlockRule(r) {
-                return r.permittedContentType == (UrlFilterRule.contentTypes.URLBLOCK | UrlFilterRule.contentTypes.ALL);
+                return ((r.permittedContentType == (UrlFilterRule.contentTypes.URLBLOCK | UrlFilterRule.contentTypes.ALL))
+                    || (r.permittedContentType == (UrlFilterRule.contentTypes.GENERICBLOCK | UrlFilterRule.contentTypes.ALL)));
             }
 
             if (rule.whiteListRule && rule.whiteListRule === true) {
@@ -300,7 +301,7 @@ exports.SafariContentBlockerConverter = {
                     result.trigger["url-filter"] = URL_FILTER_ANY_URL;
                     delete result.trigger["resource-type"];
 
-                } else if (rule.permittedContentType & UrlFilterRule.contentTypes.ELEMHIDE) {
+                } else if (rule.permittedContentType & (UrlFilterRule.contentTypes.ELEMHIDE || UrlFilterRule.contentTypes.GENERICHIDE)) {
                     result.trigger["resource-type"] = ['document'];
                 }
             }
