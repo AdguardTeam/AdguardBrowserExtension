@@ -23,8 +23,6 @@ var CONVERTER_VERSION = '1.3.0';
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var URL_FILTER_ANY_URL = ".*";
 
-var punycode = require('punycode');
-
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
 require('filter/rules/filter-classes');
 var CssFilterRule = require('filter/rules/css-filter-rule').CssFilterRule;
@@ -40,14 +38,14 @@ exports.SafariContentBlockerConverter = {
 
         _parseDomains: function (rule, included, excluded) {
             if (rule.permittedDomain) {
-                var domain = punycode.toASCII(rule.permittedDomain.toLowerCase());
+                var domain = UrlUtils.toPunyCode(rule.permittedDomain.toLowerCase());
                 included.push(domain);
             } else if (rule.permittedDomains) {
                 var domains = rule.permittedDomains;
                 for (var i in domains) {
                     if (domains[i] != "") {
                         var domain = domains[i];
-                        domain = punycode.toASCII(domain.toLowerCase());
+                        domain = UrlUtils.toPunyCode(domain.toLowerCase());
 
                         included.push(domain);
                     }
@@ -55,14 +53,14 @@ exports.SafariContentBlockerConverter = {
             }
 
             if (rule.restrictedDomain) {
-                var domain = punycode.toASCII(rule.restrictedDomain.toLowerCase());
+                var domain = UrlUtils.toPunyCode(rule.restrictedDomain.toLowerCase());
                 excluded.push(domain);
             } else if (rule.restrictedDomains) {
                 var domains = rule.restrictedDomains;
                 for (var i in domains) {
                     var domain = domains[i];
                     if (domain) {
-                        domain = punycode.toASCII(domain.toLowerCase());
+                        domain = UrlUtils.toPunyCode(domain.toLowerCase());
                         excluded.push(domain);
                     }
                 }
