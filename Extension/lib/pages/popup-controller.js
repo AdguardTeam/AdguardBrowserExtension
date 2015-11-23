@@ -156,7 +156,7 @@ PopupController.prototype = {
 			template = this.siteProtectionDisabledMessageTemplate;
 		} else if (tabInfo.urlFilteringDisabled) {
 			template = this.siteFilteringDisabledMessageTemplate;
-		} else if (this.showStatsSupported) {
+		} else if (this.showStatsSupported == null || this.showStatsSupported) {
 			template = this.siteStatsTemplate;
 			var titleBlocked = template.find('.w-popup-filter-title-blocked');
 			i18n.translateElement(titleBlocked[0], 'popup_tab_blocked', [formatNumber(tabInfo.totalBlockedTab || 0)]);
