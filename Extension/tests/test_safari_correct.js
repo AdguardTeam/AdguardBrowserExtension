@@ -47,14 +47,6 @@ var safariCorrectRules = [
   {
     "trigger": {
       "url-filter": "^https?://([a-z0-9-_.]+\\.)?tardangro\\.com([^ a-zA-Z0-9.%])",
-      "resource-type": [
-        "image",
-        "style-sheet",
-        "script",
-        "media",
-        "raw",
-        "font"
-      ],
       "load-type": [
         "third-party"
       ]
@@ -84,15 +76,7 @@ var safariCorrectRules = [
   },
   {
     "trigger": {
-      "url-filter": "^https?://([a-z0-9-_.]+\\.)?b\\.babylon\\.com([^ a-zA-Z0-9.%])",
-      "resource-type": [
-        "image",
-        "style-sheet",
-        "script",
-        "media",
-        "raw",
-        "font"
-      ]
+      "url-filter": "^https?://([a-z0-9-_.]+\\.)?b\\.babylon\\.com([^ a-zA-Z0-9.%])"
     },
     "action": {
       "type": "block"
@@ -102,13 +86,7 @@ var safariCorrectRules = [
     "trigger": {
       "url-filter": "^https?://([a-z0-9-_.]+\\.)?getsecuredfiles\\.com([^ a-zA-Z0-9.%])",
       "resource-type": [
-        "image",
-        "style-sheet",
-        "script",
-        "media",
         "popup",
-        "raw",
-        "font"
       ],
       "load-type": [
         "third-party"
@@ -120,15 +98,7 @@ var safariCorrectRules = [
   },
   {
     "trigger": {
-      "url-filter": "\\/addyn\\|.*\\|adtech;",
-      "resource-type": [
-        "image",
-        "style-sheet",
-        "script",
-        "media",
-        "raw",
-        "font"
-      ]
+      "url-filter": "\\/addyn\\|.*\\|adtech;"
     },
     "action": {
       "type": "block"

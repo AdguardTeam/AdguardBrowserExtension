@@ -104,33 +104,42 @@ exports.SafariContentBlockerConverter = {
             }
         },
 
+        _hasContentType: function(rule, contentType) {
+            return (rule.permittedContentType & contentType) &&
+                !(rule.restrictedContentType & contentType);
+        },
+
         _addResourceType: function (rule, result) {
             var types = [];
 
-            if (rule.permittedContentType == 255) {
+            if (rule.permittedContentType == UrlFilterRule.contentTypes.ALL &&
+                rule.restrictedContentType == 0) {
                 // Safari does not support all other default content types, like subdocument etc.
                 // So we can use default safari content types instead.
                 return;
             }
 
-            if (rule.permittedContentType & UrlFilterRule.contentTypes.IMAGE)
+            if (this._hasContentType(rule, UrlFilterRule.contentTypes.IMAGE))
                 types.push("image");
-            if (rule.permittedContentType & UrlFilterRule.contentTypes.STYLESHEET)
+            if (this._hasContentType(rule, UrlFilterRule.contentTypes.STYLESHEET))
                 types.push("style-sheet");
-            if (rule.permittedContentType & UrlFilterRule.contentTypes.SCRIPT)
+            if (this._hasContentType(rule, UrlFilterRule.contentTypes.SCRIPT))
                 types.push("script");
-            if (rule.permittedContentType & UrlFilterRule.contentTypes.MEDIA)
+            if (this._hasContentType(rule, UrlFilterRule.contentTypes.MEDIA))
                 types.push("media");
-            if (rule.permittedContentType & UrlFilterRule.contentTypes.POPUP)
-                types.push("popup");
-            if (rule.permittedContentType & (UrlFilterRule.contentTypes.XMLHTTPREQUEST | UrlFilterRule.contentTypes.OTHER))
+            if (this._hasContentType(rule, UrlFilterRule.contentTypes.XMLHTTPREQUEST) ||
+                this._hasContentType(rule, UrlFilterRule.contentTypes.OTHER))
                 types.push("raw");
-            if (rule.permittedContentType & UrlFilterRule.contentTypes.FONT)
+            if (this._hasContentType(rule, UrlFilterRule.contentTypes.FONT))
                 types.push("font");
-
-            //Use document for subdocument
-            if (rule.permittedContentType == UrlFilterRule.contentTypes.SUBDOCUMENT)
+            if (this._hasContentType(rule.permittedContentType, UrlFilterRule.contentTypes.SUBDOCUMENT))
                 types.push("document");
+
+
+            if (this._hasContentType(rule, UrlFilterRule.contentTypes.POPUP)) {
+                // Ignore other in case of $popup modifier
+                types = [ "popup" ];
+            }
 
             //Not supported modificators
             if (rule.permittedContentType == UrlFilterRule.contentTypes.OBJECT) {
@@ -143,7 +152,6 @@ exports.SafariContentBlockerConverter = {
             if (rule.permittedContentType == (UrlFilterRule.contentTypes.JSINJECT | UrlFilterRule.contentTypes.ALL)) {
                 throw new Error('$jsinject rules are ignored.');
             }
-
 
             if (types.length > 0) {
                 result.trigger["resource-type"] = types;
