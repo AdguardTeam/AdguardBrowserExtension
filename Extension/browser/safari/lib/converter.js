@@ -18,7 +18,7 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.2.2';
+var CONVERTER_VERSION = '1.3.0';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var URL_FILTER_ANY_URL = ".*";
@@ -631,10 +631,11 @@ exports.SafariContentBlockerConverter = {
      * Converts array of rules to JSON
      *
      * @param rules array of strings or AG rules objects
+     * @param optimize if true - ignore slow rules
      * @return content blocker object with converted rules grouped by type
      */
-    _convertLines: function (rules) {
-        Log.info('Converting ' + rules.length + ' rules');
+    _convertLines: function (rules, optimize) {
+        Log.info('Converting ' + rules.length + ' rules. Optimize=' + optimize);
 
         var contentBlocker = {
             // Elemhide rules (##)
@@ -692,7 +693,9 @@ exports.SafariContentBlockerConverter = {
         // Applying CSS exceptions
         cssBlocking = this._applyCssExceptions(cssBlocking, cssExceptions);
         var cssCompact = this._compactCssRules(cssBlocking);
-        contentBlocker.cssBlockingWide = cssCompact.cssBlockingWide;
+        if (!optimize) {
+            contentBlocker.cssBlockingWide = cssCompact.cssBlockingWide;
+        }
         contentBlocker.cssBlockingDomainSensitive = cssCompact.cssBlockingDomainSensitive;
 
         var convertedCount = rules.length - contentBlocker.errors.length;
@@ -707,7 +710,7 @@ exports.SafariContentBlockerConverter = {
         return contentBlocker;
     },
 
-    _createConvertationResult: function (contentBlocker, limit) {
+    _createConversionResult: function (contentBlocker, limit) {
         var overLimit = false;
         var converted = [];
         converted = converted.concat(contentBlocker.cssBlockingWide);
@@ -742,8 +745,9 @@ exports.SafariContentBlockerConverter = {
      *
      * @param rules array of strings
      * @param limit over that limit rules will be ignored
+     * @param optimize if true - "wide" rules will be ignored
      */
-    convertArray: function (rules, limit) {
+    convertArray: function (rules, limit, optimize) {
         this._addVersionMessage();
 
         if (rules == null) {
@@ -756,8 +760,7 @@ exports.SafariContentBlockerConverter = {
             return null;
         }
 
-        var contentBlocker = this._convertLines(rules);
-
-        return this._createConvertationResult(contentBlocker, limit);
+        var contentBlocker = this._convertLines(rules, !!optimize);
+        return this._createConversionResult(contentBlocker, limit);
     }
 };

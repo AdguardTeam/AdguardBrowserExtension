@@ -1,4 +1,13 @@
-[
+var safariCorrectRules = [
+  { 
+    "trigger": { 
+      "url-filter": ".*" 
+    }, 
+    "action": { 
+      "type": "css-display-none", 
+      "selector": ".banner" 
+    } 
+  },
   {
     "trigger": {
       "url-filter": ".*",

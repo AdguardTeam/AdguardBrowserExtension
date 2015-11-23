@@ -59,22 +59,12 @@ var rules = [
     'yandex.ru###pub',
     'yandex.ru#@##pub',
     '@@/^https?\:\/\/(?!(qs\.ivwbox\.de|qs\.ioam.de|platform\.twitter\.com|connect\.facebook\.net|de\.ioam\.de|pubads\.g\.doubleclick\.net|stats\.wordpress\.com|www\.google-analytics\.com|www\.googletagservices\.com|apis\.google\.com|script\.ioam\.de)\/)/$script,third-party,domain=gamona.de',
-    '/\.filenuke\.com/.*[a-zA-Z0-9]{4}/$script'
+    '/\.filenuke\.com/.*[a-zA-Z0-9]{4}/$script',
+    '##.banner'
 ];
 
 var safariJSON = SafariContentBlockerConverter.convertArray(rules);
 Log.debug(safariJSON);
-
-function loadCorrect() {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", 'test_safari_correct.json', false);
-    try {
-        xhr.send();
-    } catch (e) {
-        return null;
-    }
-    return JSON.parse(xhr.responseText);
-}
 
 function checkResult(json, errors) {
     var expectedErrorsCount = 4;
@@ -169,7 +159,8 @@ function checkResult(json, errors) {
         }
     }
 
-    var correct = loadCorrect();
+    // From test_safari_correct.js
+    var correct = safariCorrectRules;
 
     converted.forEach(function (current, i) {
         var expected = correct[i];
