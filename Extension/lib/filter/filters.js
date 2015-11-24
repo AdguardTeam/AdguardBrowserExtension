@@ -31,6 +31,7 @@ var UrlUtils = require('utils/url').UrlUtils;
 var StringUtils = require('utils/common').StringUtils;
 var Prefs = require('prefs').Prefs;
 var userSettings = require('utils/user-settings').userSettings;
+var RequestTypes = require('utils/common').RequestTypes;
 
 /**
  * Request filter is main class which applies filter rules.
@@ -383,7 +384,9 @@ RequestFilter.prototype = {
 
         var rule = this._checkUrlBlockingList(requestUrl, refHost, requestType, thirdParty);
         if (rule != null) {
-            if (rule.isGeneric()) {
+            //For document and subdocument requests check for genericblock rule
+            if (rule.isGeneric()
+                && (requestType == RequestTypes.DOCUMENT || requestType == RequestTypes.SUBDOCUMENT)) {
                 var genericUrlBlockRule = this._checkWhiteList(referrer, refHost, "GENERICBLOCK", thirdParty);
                 if (genericUrlBlockRule) {
                     return genericUrlBlockRule;
