@@ -774,7 +774,6 @@ exports.SafariContentBlockerConverter = {
             return null;
         }
 
-        Log.info('Preparing UrlFilterRule');
         var contentBlocker = this._convertLines(rules, !!optimize);
         return this._createConversionResult(contentBlocker, limit);
     }
