@@ -5,7 +5,7 @@
 var Log = require('lib/utils/log').Log;
 var SafariContentBlockerConverter = require('converter').SafariContentBlockerConverter;
 
-//Setup
+// Setup test
 var specials = [
     '.',
     '+',
@@ -25,11 +25,7 @@ var regex = new RegExp('[' + specials.join('\\') + ']', 'g');
 var escapeRegExp = function (str) {
     return str.replace(regex, "\\$&");
 };
-//Setup
 
-Log.info('>>>>>>>>>>>>>>TEST started>>>>>>>>>>>>>>');
-
-Log.info('>>>>>>>>>>>>>>Convert array>>>>>>>>>>>>>>');
 var rules = [
     '||tardangro.com^$third-party',
     '||videoplaza.com^$~object-subrequest,third-party',
@@ -49,9 +45,9 @@ var rules = [
     '/addyn|*|adtech;',
     '@@||hulu-jsinject.com$jsinject',
     '@@||hulu-jsinject-image.com$image,jsinject',
-    '@@test-document.com$document',
-    '@@test-urlblock.com$urlblock',
-    '@@test-elemhide.com$elemhide',
+    '@@||test-document.com$document',
+    '@@||test-urlblock.com$urlblock',
+    '@@||test-elemhide.com$elemhide',
     '@@/testelemhidenodomain$document',
     'lenta1.ru#@##social',
     'lenta2.ru#@##social',
@@ -62,11 +58,72 @@ var rules = [
     '/\.filenuke\.com/.*[a-zA-Z0-9]{4}/$script',
     '##.banner'
 ];
+// Setup
 
-var safariJSON = SafariContentBlockerConverter.convertArray(rules);
-Log.debug(safariJSON);
+/**
+ * Checks Safari content blocker converter
+ */
+function testConvertRulesToJson() {
+    var safariJSON = SafariContentBlockerConverter.convertArray(rules);
+    var errors = [];
+    _checkResult(safariJSON, errors);
 
-function checkResult(json, errors) {
+    if (errors.length == 0) {
+        return;
+    } else {
+        var message = 'Errors: ' + errors.length + '\n';
+
+        errors.forEach(function (e) {
+            message += e;
+            message += '\n';
+        });
+
+        throw message;
+    }
+};
+addTestCase(testConvertRulesToJson);
+
+/**
+ * Checks regexp performance
+ */
+function testRegexpPerformance() {
+
+    var count = 5 * 1000 * 1000;
+
+    // Test URL with domain rule
+    var regExp1 = new RegExp('^https?://([a-z0-9-_.]+\\.)?some-domain.com\\.com([^ a-zA-Z0-9.%]|$)', 'i');
+    var regExp2 = new RegExp('^https?://[^.]+\\.?some-domain.com\\.com[/:&?]?', 'i');
+    _testCompare(regExp1, regExp2, count);
+};
+
+function _testCompare(regExp1, regExp2, count) {
+    var startTime1 = new Date().getTime();
+    _testRegex(regExp1, count);
+
+    var startTime2 = new Date().getTime();
+    _testRegex(regExp2, count);
+
+    var elapsed1 = startTime2 - startTime1;
+    var elapsed2 = new Date().getTime() - startTime2;
+
+    var diff = Math.round((elapsed1 - elapsed2) / elapsed1 * 100, 2);
+    _logDebug('Performance gain: ' + diff + '%');
+}
+
+function _testRegex(regExp, count) {
+
+    var testUrl = 'http://www.some-domain.com/some-very/long/path/here/';
+    var startTime = new Date().getTime();
+    for (var i = 0; i < count; i++) {
+        regExp.test(testUrl);
+    }
+    var elapsed = new Date().getTime() - startTime;
+    _logDebug('Elapsed: ' + elapsed + 'ms');
+}
+addTestCase(testRegexpPerformance);
+
+
+function _checkResult(json, errors) {
     var expectedErrorsCount = 4;
     var expectedCssTrunkatedCount = 4;
 
@@ -169,23 +226,5 @@ function checkResult(json, errors) {
         //Log.debug(expected);
 
         checkRule(current, expected);
-    });
-}
-
-var errors = [];
-checkResult(safariJSON, errors);
-
-Log.info('>>>>>>>>>>>>>>TEST finished>>>>>>>>>>>>>>');
-if (errors.length == 0) {
-    Log.info('>>>>>>>>>>>>>>SUCCESS>>>>>>>>>>>>>>');
-
-    //var rules = [new FilterClasses.UrlFilterRule('test.com')];
-    //var safariJSON = SafariContentBlockerConverter.convertArray(rules);
-    //Log.debug(safariJSON);
-} else {
-    Log.error('>>>>>>>>>>>>>>FAILED>>>>>>>>>>>>>>');
-    Log.error('>>>>>>>>>>>>>>Errors: ' + errors.length + '>>>>>>>>>>>>>>');
-    errors.forEach(function (e) {
-        Log.error(e);
     });
 }

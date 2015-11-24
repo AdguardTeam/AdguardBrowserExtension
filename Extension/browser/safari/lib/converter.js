@@ -18,10 +18,14 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.0';
+var CONVERTER_VERSION = '1.3.1';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var URL_FILTER_ANY_URL = ".*";
+// Improved regular expression instead of UrlFilterRule.REGEXP_START_URL
+var URL_FILTER_REGEXP_START_URL = "^https?://[^.]+\\.?";
+// Simplified separator (to fix an issue with $ restriction - it can be only in the end of regexp)
+var URL_FILTER_REGEXP_SEPARATOR = "[/:&?]?";
 
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
 require('filter/rules/filter-classes');
@@ -236,7 +240,8 @@ exports.SafariContentBlockerConverter = {
 
             var result = {
                 trigger: {
-                    "url-filter": URL_FILTER_ANY_URL
+                    "url-filter": URL_FILTER_ANY_URL,
+                    "resource-type": [ "document" ]
                 },
                 action: {
                     type: "css-display-none",
@@ -317,8 +322,9 @@ exports.SafariContentBlockerConverter = {
 
             var urlFilter = this._createUrlFilterString(rule);
 
-            // For delimiter rules we just cut ending |$
-            urlFilter = urlFilter.replace(/\|\$/g, "");
+            // Redefine some of regular expressions
+            urlFilter = StringUtils.replaceAll(urlFilter, UrlFilterRule.REGEXP_START_URL, URL_FILTER_REGEXP_START_URL);
+            urlFilter = StringUtils.replaceAll(urlFilter, UrlFilterRule.REGEXP_SEPARATOR, URL_FILTER_REGEXP_SEPARATOR);
 
             // Safari doesn't support {digit} in regular expressions
             if (urlFilter.match(/\{\d*.\}/g)) {
@@ -601,7 +607,8 @@ exports.SafariContentBlockerConverter = {
 
             var rule = {
                 trigger: {
-                    "url-filter": URL_FILTER_ANY_URL
+                    "url-filter": URL_FILTER_ANY_URL,
+                    "resource-type": [ "document" ]
                 },
                 action: {
                     type: "css-display-none",
@@ -682,14 +689,15 @@ exports.SafariContentBlockerConverter = {
                 } else if (item.action.type == 'css-display-none') {
                     cssBlocking.push(item);
                 } else if (item.action.type == 'ignore-previous-rules'
-                    && (item.trigger["resource-type"] && item.trigger["resource-type"].length > 0
-                    && item.trigger["resource-type"][0] == 'document')) {
-                    //elemhide rules
-                    contentBlocker.cssElemhide.push(item);
-                } else if (item.action.type == 'ignore-previous-rules'
                     && (item.action.selector && item.action.selector != '')) {
                     // #@# rules
                     cssExceptions.push(item);
+                } else if (item.action.type == 'ignore-previous-rules' &&
+                        (item.trigger["resource-type"] &&
+                        item.trigger["resource-type"].length > 0 &&
+                        item.trigger["resource-type"][0] == 'document')) {
+                    // elemhide rules
+                    contentBlocker.cssElemhide.push(item);
                 } else {
                     contentBlocker.other.push(item);
                 }
@@ -766,6 +774,7 @@ exports.SafariContentBlockerConverter = {
             return null;
         }
 
+        Log.info('Preparing UrlFilterRule');
         var contentBlocker = this._convertLines(rules, !!optimize);
         return this._createConversionResult(contentBlocker, limit);
     }

@@ -526,5 +526,3 @@ var escapeRegExp;
         return str.replace(regex, "\\$&");
     };
 }());
-
-

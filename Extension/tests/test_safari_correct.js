@@ -1,16 +1,22 @@
 var safariCorrectRules = [
-  { 
-    "trigger": { 
-      "url-filter": ".*" 
-    }, 
-    "action": { 
-      "type": "css-display-none", 
-      "selector": ".banner" 
-    } 
+  {
+    "trigger": {
+      "url-filter": ".*",
+      "resource-type": [
+        "document"
+      ]
+    },
+    "action": {
+      "type": "css-display-none",
+      "selector": ".banner"
+    }
   },
   {
     "trigger": {
       "url-filter": ".*",
+      "resource-type": [
+        "document"
+      ],
       "if-domain": [
         "*popsugar.com"
       ]
@@ -23,6 +29,9 @@ var safariCorrectRules = [
   {
     "trigger": {
       "url-filter": ".*",
+      "resource-type": [
+        "document"
+      ],
       "unless-domain": [
         "*lenta1.ru",
         "*lenta2.ru"
@@ -35,7 +44,7 @@ var safariCorrectRules = [
   },
   {
     "trigger": {
-      "url-filter": "test-elemhide\\.com",
+      "url-filter": "^https?://[^.]+\\.?test-elemhide\\.com",
       "resource-type": [
         "document"
       ]
@@ -46,7 +55,7 @@ var safariCorrectRules = [
   },
   {
     "trigger": {
-      "url-filter": "^https?://([a-z0-9-_.]+\\.)?tardangro\\.com([^ a-zA-Z0-9.%])",
+      "url-filter": "^https?://[^.]+\\.?tardangro\\.com[/:&?]?",
       "load-type": [
         "third-party"
       ]
@@ -57,7 +66,7 @@ var safariCorrectRules = [
   },
   {
     "trigger": {
-      "url-filter": "^https?://([a-z0-9-_.]+\\.)?videoplaza\\.com([^ a-zA-Z0-9.%])",
+      "url-filter": "^https?://[^.]+\\.?videoplaza\\.com[/:&?]?",
       "resource-type": [
         "image",
         "style-sheet",
@@ -76,7 +85,7 @@ var safariCorrectRules = [
   },
   {
     "trigger": {
-      "url-filter": "^https?://([a-z0-9-_.]+\\.)?b\\.babylon\\.com([^ a-zA-Z0-9.%])"
+      "url-filter": "^https?://[^.]+\\.?b\\.babylon\\.com[/:&?]?"
     },
     "action": {
       "type": "block"
@@ -84,7 +93,7 @@ var safariCorrectRules = [
   },
   {
     "trigger": {
-      "url-filter": "^https?://([a-z0-9-_.]+\\.)?getsecuredfiles\\.com([^ a-zA-Z0-9.%])",
+      "url-filter": "^https?://[^.]+\\.?getsecuredfiles\\.com[/:&?]?",
       "resource-type": [
         "popup",
       ],
@@ -106,7 +115,7 @@ var safariCorrectRules = [
   },
   {
     "trigger": {
-      "url-filter": "^https?://([a-z0-9-_.]+\\.)?emjcd\\.com([^ a-zA-Z0-9.%])",
+      "url-filter": "^https?://[^.]+\\.?emjcd\\.com[/:&?]?",
       "resource-type": [
         "image"
       ],
@@ -121,7 +130,7 @@ var safariCorrectRules = [
   },
   {
     "trigger": {
-      "url-filter": "^https?://([a-z0-9-_.]+\\.)?intellitxt\\.com\\/ast\\/js\\/nbcuni\\/",
+      "url-filter": "^https?://[^.]+\\.?intellitxt\\.com\\/ast\\/js\\/nbcuni\\/",
       "resource-type": [
         "script"
       ]
@@ -132,7 +141,7 @@ var safariCorrectRules = [
   },
   {
     "trigger": {
-      "url-filter": "^https?://([a-z0-9-_.]+\\.)?hulu\\.com\\/embed"
+      "url-filter": "^https?://[^.]+\\.?hulu\\.com\\/embed"
     },
     "action": {
       "type": "ignore-previous-rules"
@@ -206,7 +215,7 @@ var safariCorrectRules = [
   },
   {
     "trigger": {
-      "url-filter": "^https?://([a-z0-9-_.]+\\.)?hulu-jsinject-image\\.com",
+      "url-filter": "^https?://[^.]+\\.?hulu-jsinject-image\\.com",
       "resource-type": [
         "image"
       ]

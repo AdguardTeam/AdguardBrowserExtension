@@ -59,7 +59,8 @@ var Log = exports.Log = {
 			return typeof  args[number] != "undefined" ? args[number] : match;
 		});
 		if (Log.LogLevels[level] >= Log.LogLevels["INFO"]) {
-			formatted = (new Date().toUTCString()) + ": " + formatted;
+			var now = new Date();
+			formatted = now.toISOString() + ": " + formatted;
 		}
 		console[method](formatted);
 	}
