@@ -27,6 +27,7 @@ var escapeRegExp = function (str) {
 };
 
 var rules = [
+    '||pics.rbc.ru/js/swf',
     '||tardangro.com^$third-party',
     '||videoplaza.com^$~object-subrequest,third-party',
     '||videoplaza.tv^$object-subrequest,third-party,domain=tv4play.se',
