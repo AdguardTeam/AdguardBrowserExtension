@@ -239,7 +239,7 @@ UrlFilterRule.prototype._loadOptions = function (options) {
             default:
                 optionName = optionName.toUpperCase();
                 if (optionName in UrlFilterRule.contentTypes) {
-                    permittedContentType |= UrlFilterRule.contentTypes[optionName];
+                    additionalContentType |= UrlFilterRule.contentTypes[optionName];
                 } else if (optionName[0] == FilterRule.NOT_MARK && optionName.substring(1) in UrlFilterRule.contentTypes) {
                     restrictedContentType |= UrlFilterRule.contentTypes[optionName.substring(1)];
                 } else if (optionName in UrlFilterRule.ignoreOptions) {

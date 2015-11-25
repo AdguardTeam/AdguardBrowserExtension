@@ -153,7 +153,7 @@ exports.SafariContentBlockerConverter = {
                 throw new Error('Object_subrequest content type is not yet supported');
             }
 
-            if (rule.permittedContentType == (UrlFilterRule.contentTypes.JSINJECT | UrlFilterRule.contentTypes.ALL)) {
+            if (rule.permittedContentType == UrlFilterRule.contentTypes.JSINJECT) {
                 throw new Error('$jsinject rules are ignored.');
             }
 
@@ -268,8 +268,8 @@ exports.SafariContentBlockerConverter = {
             }
 
             function isUrlBlockRule(r) {
-                return ((r.permittedContentType == (UrlFilterRule.contentTypes.URLBLOCK | UrlFilterRule.contentTypes.ALL))
-                    || (r.permittedContentType == (UrlFilterRule.contentTypes.GENERICBLOCK | UrlFilterRule.contentTypes.ALL)));
+                return ((r.permittedContentType == UrlFilterRule.contentTypes.URLBLOCK)
+                    || (r.permittedContentType == UrlFilterRule.contentTypes.GENERICBLOCK));
             }
 
             if (rule.whiteListRule && rule.whiteListRule === true) {
@@ -750,10 +750,6 @@ exports.SafariContentBlockerConverter = {
             overLimit: overLimit,
             converted: JSON.stringify(converted, null, "\t")
         };
-
-        for (var i = 0, len = contentBlocker.errors.length; i < len; i++) {
-            console.log(contentBlocker.errors[i]);
-        }
 
         return result;
     },
