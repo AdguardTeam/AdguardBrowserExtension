@@ -215,24 +215,30 @@ UrlFilterRule.prototype._loadOptions = function (options) {
                 break;
             case UrlFilterRule.ELEMHIDE_OPTION:
                 additionalContentType |= UrlFilterRule.contentTypes.ELEMHIDE;
+                restrictedContentType |= (UrlFilterRule.contentTypes.ALL ^ UrlFilterRule.contentTypes.DOCUMENT);
                 break;
             case UrlFilterRule.GENERICHIDE_OPTION:
                 additionalContentType |= UrlFilterRule.contentTypes.GENERICHIDE;
+                restrictedContentType |= (UrlFilterRule.contentTypes.ALL ^ UrlFilterRule.contentTypes.DOCUMENT);
                 break;
             case UrlFilterRule.JSINJECT_OPTION:
                 additionalContentType |= UrlFilterRule.contentTypes.JSINJECT;
+                restrictedContentType |= (UrlFilterRule.contentTypes.ALL ^ UrlFilterRule.contentTypes.DOCUMENT);
                 break;
             case UrlFilterRule.URLBLOCK_OPTION:
                 additionalContentType |= UrlFilterRule.contentTypes.URLBLOCK;
+                restrictedContentType |= (UrlFilterRule.contentTypes.ALL ^ UrlFilterRule.contentTypes.DOCUMENT);
                 break;
             case UrlFilterRule.GENERICBLOCK_OPTION:
                 additionalContentType |= UrlFilterRule.contentTypes.GENERICBLOCK;
+                restrictedContentType |= (UrlFilterRule.contentTypes.ALL ^ UrlFilterRule.contentTypes.DOCUMENT);
                 break;
             case UrlFilterRule.DOCUMENT_OPTION:
                 additionalContentType |= UrlFilterRule.contentTypes.DOCUMENT;
                 break;
             case UrlFilterRule.POPUP_OPTION:
                 additionalContentType |= UrlFilterRule.contentTypes.POPUP;
+                restrictedContentType |= (UrlFilterRule.contentTypes.ALL ^ UrlFilterRule.contentTypes.DOCUMENT);
                 break;
             default:
                 optionName = optionName.toUpperCase();
@@ -254,6 +260,9 @@ UrlFilterRule.prototype._loadOptions = function (options) {
     if (restrictedContentType > 0) {
         this.restrictedContentType = restrictedContentType;
     }
+
+    //if(additionalContentType > 0)
+    //    this.permittedContentType = additionalContentType;
     this.permittedContentType |= additionalContentType;
 };
 
