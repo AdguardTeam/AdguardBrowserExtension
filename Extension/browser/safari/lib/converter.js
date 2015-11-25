@@ -264,7 +264,7 @@ exports.SafariContentBlockerConverter = {
 
         _checkWhiteListExceptions: function (rule, result) {
             function isDocumentRule(r) {
-                return r.permittedContentType == (UrlFilterRule.contentTypes.DOCUMENT | UrlFilterRule.contentTypes.ALL);
+                return r.permittedContentType == UrlFilterRule.contentTypes.DOCUMENT;
             }
 
             function isUrlBlockRule(r) {
@@ -750,6 +750,10 @@ exports.SafariContentBlockerConverter = {
             overLimit: overLimit,
             converted: JSON.stringify(converted, null, "\t")
         };
+
+        for (var i = 0, len = contentBlocker.errors.length; i < len; i++) {
+            console.log(contentBlocker.errors[i]);
+        }
 
         return result;
     },

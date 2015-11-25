@@ -215,28 +215,18 @@ UrlFilterRule.prototype._loadOptions = function (options) {
                 break;
             case UrlFilterRule.ELEMHIDE_OPTION:
                 additionalContentType |= UrlFilterRule.contentTypes.ELEMHIDE;
-                additionalContentType |= UrlFilterRule.contentTypes.DOCUMENT;
-                additionalContentType |= UrlFilterRule.contentTypes.SUBDOCUMENT;
                 break;
             case UrlFilterRule.GENERICHIDE_OPTION:
                 additionalContentType |= UrlFilterRule.contentTypes.GENERICHIDE;
-                additionalContentType |= UrlFilterRule.contentTypes.DOCUMENT;
-                additionalContentType |= UrlFilterRule.contentTypes.SUBDOCUMENT;
                 break;
             case UrlFilterRule.JSINJECT_OPTION:
                 additionalContentType |= UrlFilterRule.contentTypes.JSINJECT;
-                additionalContentType |= UrlFilterRule.contentTypes.DOCUMENT;
-                additionalContentType |= UrlFilterRule.contentTypes.SUBDOCUMENT;
                 break;
             case UrlFilterRule.URLBLOCK_OPTION:
                 additionalContentType |= UrlFilterRule.contentTypes.URLBLOCK;
-                additionalContentType |= UrlFilterRule.contentTypes.DOCUMENT;
-                additionalContentType |= UrlFilterRule.contentTypes.SUBDOCUMENT;
                 break;
             case UrlFilterRule.GENERICBLOCK_OPTION:
                 additionalContentType |= UrlFilterRule.contentTypes.GENERICBLOCK;
-                additionalContentType |= UrlFilterRule.contentTypes.DOCUMENT;
-                additionalContentType |= UrlFilterRule.contentTypes.SUBDOCUMENT;
                 break;
             case UrlFilterRule.DOCUMENT_OPTION:
                 additionalContentType |= UrlFilterRule.contentTypes.DOCUMENT;
