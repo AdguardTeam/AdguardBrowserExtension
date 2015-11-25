@@ -215,30 +215,36 @@ UrlFilterRule.prototype._loadOptions = function (options) {
                 break;
             case UrlFilterRule.ELEMHIDE_OPTION:
                 additionalContentType |= UrlFilterRule.contentTypes.ELEMHIDE;
-                restrictedContentType |= (UrlFilterRule.contentTypes.ALL ^ UrlFilterRule.contentTypes.DOCUMENT);
+                additionalContentType |= UrlFilterRule.contentTypes.DOCUMENT;
+                additionalContentType |= UrlFilterRule.contentTypes.SUBDOCUMENT;
                 break;
             case UrlFilterRule.GENERICHIDE_OPTION:
                 additionalContentType |= UrlFilterRule.contentTypes.GENERICHIDE;
-                restrictedContentType |= (UrlFilterRule.contentTypes.ALL ^ UrlFilterRule.contentTypes.DOCUMENT);
+                additionalContentType |= UrlFilterRule.contentTypes.DOCUMENT;
+                additionalContentType |= UrlFilterRule.contentTypes.SUBDOCUMENT;
                 break;
             case UrlFilterRule.JSINJECT_OPTION:
                 additionalContentType |= UrlFilterRule.contentTypes.JSINJECT;
-                restrictedContentType |= (UrlFilterRule.contentTypes.ALL ^ UrlFilterRule.contentTypes.DOCUMENT);
+                additionalContentType |= UrlFilterRule.contentTypes.DOCUMENT;
+                additionalContentType |= UrlFilterRule.contentTypes.SUBDOCUMENT;
                 break;
             case UrlFilterRule.URLBLOCK_OPTION:
                 additionalContentType |= UrlFilterRule.contentTypes.URLBLOCK;
-                restrictedContentType |= (UrlFilterRule.contentTypes.ALL ^ UrlFilterRule.contentTypes.DOCUMENT);
+                additionalContentType |= UrlFilterRule.contentTypes.DOCUMENT;
+                additionalContentType |= UrlFilterRule.contentTypes.SUBDOCUMENT;
                 break;
             case UrlFilterRule.GENERICBLOCK_OPTION:
                 additionalContentType |= UrlFilterRule.contentTypes.GENERICBLOCK;
-                restrictedContentType |= (UrlFilterRule.contentTypes.ALL ^ UrlFilterRule.contentTypes.DOCUMENT);
+                additionalContentType |= UrlFilterRule.contentTypes.DOCUMENT;
+                additionalContentType |= UrlFilterRule.contentTypes.SUBDOCUMENT;
                 break;
             case UrlFilterRule.DOCUMENT_OPTION:
                 additionalContentType |= UrlFilterRule.contentTypes.DOCUMENT;
                 break;
             case UrlFilterRule.POPUP_OPTION:
                 additionalContentType |= UrlFilterRule.contentTypes.POPUP;
-                restrictedContentType |= (UrlFilterRule.contentTypes.ALL ^ UrlFilterRule.contentTypes.DOCUMENT);
+                additionalContentType |= UrlFilterRule.contentTypes.DOCUMENT;
+                additionalContentType |= UrlFilterRule.contentTypes.SUBDOCUMENT;
                 break;
             default:
                 optionName = optionName.toUpperCase();
@@ -261,9 +267,9 @@ UrlFilterRule.prototype._loadOptions = function (options) {
         this.restrictedContentType = restrictedContentType;
     }
 
-    //if(additionalContentType > 0)
-    //    this.permittedContentType = additionalContentType;
-    this.permittedContentType |= additionalContentType;
+    if(additionalContentType > 0) {
+        this.permittedContentType = additionalContentType;
+    }
 };
 
 UrlFilterRule.OPTIONS_DELIMITER = "$";
