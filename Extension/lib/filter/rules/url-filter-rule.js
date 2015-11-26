@@ -182,7 +182,6 @@ UrlFilterRule.prototype._loadOptions = function (options) {
 
     var permittedContentType = 0;
     var restrictedContentType = 0;
-    var additionalContentType = 0;
     for (var i = 0; i < optionsParts.length; i++) {
         var option = optionsParts[i];
         var optionsKeyValue = option.split(FilterRule.EQUAL);
@@ -214,32 +213,32 @@ UrlFilterRule.prototype._loadOptions = function (options) {
                 this.matchCase = true;
                 break;
             case UrlFilterRule.ELEMHIDE_OPTION:
-                additionalContentType |= UrlFilterRule.contentTypes.ELEMHIDE;
+                permittedContentType |= UrlFilterRule.contentTypes.ELEMHIDE;
                 break;
             case UrlFilterRule.GENERICHIDE_OPTION:
-                additionalContentType |= UrlFilterRule.contentTypes.GENERICHIDE;
+                permittedContentType |= UrlFilterRule.contentTypes.GENERICHIDE;
                 break;
             case UrlFilterRule.JSINJECT_OPTION:
-                additionalContentType |= UrlFilterRule.contentTypes.JSINJECT;
+                permittedContentType |= UrlFilterRule.contentTypes.JSINJECT;
                 break;
             case UrlFilterRule.URLBLOCK_OPTION:
-                additionalContentType |= UrlFilterRule.contentTypes.URLBLOCK;
+                permittedContentType |= UrlFilterRule.contentTypes.URLBLOCK;
                 break;
             case UrlFilterRule.GENERICBLOCK_OPTION:
-                additionalContentType |= UrlFilterRule.contentTypes.GENERICBLOCK;
+                permittedContentType |= UrlFilterRule.contentTypes.GENERICBLOCK;
                 break;
             case UrlFilterRule.DOCUMENT_OPTION:
-                additionalContentType |= UrlFilterRule.contentTypes.DOCUMENT;
+                permittedContentType |= UrlFilterRule.contentTypes.DOCUMENT;
                 break;
             case UrlFilterRule.POPUP_OPTION:
-                additionalContentType |= UrlFilterRule.contentTypes.POPUP;
-                additionalContentType |= UrlFilterRule.contentTypes.DOCUMENT;
-                additionalContentType |= UrlFilterRule.contentTypes.SUBDOCUMENT;
+                permittedContentType |= UrlFilterRule.contentTypes.POPUP;
+                permittedContentType |= UrlFilterRule.contentTypes.DOCUMENT;
+                permittedContentType |= UrlFilterRule.contentTypes.SUBDOCUMENT;
                 break;
             default:
                 optionName = optionName.toUpperCase();
                 if (optionName in UrlFilterRule.contentTypes) {
-                    additionalContentType |= UrlFilterRule.contentTypes[optionName];
+                    permittedContentType |= UrlFilterRule.contentTypes[optionName];
                 } else if (optionName[0] == FilterRule.NOT_MARK && optionName.substring(1) in UrlFilterRule.contentTypes) {
                     restrictedContentType |= UrlFilterRule.contentTypes[optionName.substring(1)];
                 } else if (optionName in UrlFilterRule.ignoreOptions) {
@@ -255,10 +254,6 @@ UrlFilterRule.prototype._loadOptions = function (options) {
     }
     if (restrictedContentType > 0) {
         this.restrictedContentType = restrictedContentType;
-    }
-
-    if(additionalContentType > 0) {
-        this.permittedContentType = additionalContentType;
     }
 };
 
