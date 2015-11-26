@@ -78,6 +78,7 @@ PageController.prototype = {
         this.enableHitsCountCheckbox = $("#enableHitsCount");
         this.resetStatsPopup = $("#resetStatsPopup");
         this.enableShowContextMenuCheckbox = $('#enableShowContextMenu');
+        this.useOptimizedFiltersCheckbox = $('#useOptimizedFilters');
         this.changeDefaultWhiteListModeCheckbox = $('#changeDefaultWhiteListMode');
         if (environmentOptions.isSafariBrowser) {
             this.enableShowContextMenuCheckbox.closest('.s-page-table-row').hide();
@@ -94,6 +95,7 @@ PageController.prototype = {
         this.showInfoAboutAdguardFullVersionCheckbox.on('change', this.updateShowInfoAboutAdguardFullVersion);
         this.enableHitsCountCheckbox.on('change', this.changeEnableHitsCount);
         this.enableShowContextMenuCheckbox.on('change', this.changeEnableShowContextMenu);
+        this.useOptimizedFiltersCheckbox.on('change', this.changeUseOptimizedFilters);
         this.changeDefaultWhiteListModeCheckbox.on('change', this.changeDefaultWhiteListMode.bind(this));
         $("#resetStats").on('click', this.onResetStatsClicked.bind(this));
 
@@ -217,6 +219,7 @@ PageController.prototype = {
         var showAdguardPromo = !userSettings.values[userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO];
         var collectHitsCount = !userSettings.values[userSettings.names.DISABLE_COLLECT_HITS];
         var showContextMenu = !userSettings.values[userSettings.names.DISABLE_SHOW_CONTEXT_MENU];
+        var useOptimizedFilters = userSettings.values[userSettings.names.USE_OPTIMIZED_FILTERS];
         var defaultWhitelistMode = userSettings.values[userSettings.names.DEFAULT_WHITE_LIST_MODE];
         var acceptableAdsEnabled = AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID in enabledFilters;
 
@@ -230,6 +233,7 @@ PageController.prototype = {
         this._renderShowInfoAboutAdguardFullVersion(showAdguardPromo);
         this._renderCollectHitsCount(collectHitsCount);
         this._renderShowContextMenu(showContextMenu);
+        this._renderUseOptimizedFilters(useOptimizedFilters);
         this._renderDefaultWhiteListMode(defaultWhitelistMode);
         if (environmentOptions.Prefs.mobile) {
             $('#resetStats').hide();
@@ -359,6 +363,15 @@ PageController.prototype = {
             type: 'changeUserSetting',
             key: userSettings.names.DISABLE_SHOW_CONTEXT_MENU,
             value: !this.checked
+        });
+    },
+
+    changeUseOptimizedFilters: function (e) {
+        e.preventDefault();
+        contentPage.sendMessage({
+            type: 'changeUserSetting',
+            key: userSettings.names.USE_OPTIMIZED_FILTERS,
+            value: this.checked
         });
     },
 
@@ -825,6 +838,10 @@ PageController.prototype = {
 
     _renderShowContextMenu: function (show) {
         this.enableShowContextMenuCheckbox.updateCheckbox(show);
+    },
+
+    _renderUseOptimizedFilters: function (show) {
+        this.useOptimizedFiltersCheckbox.updateCheckbox(show);
     },
 
     _renderDefaultWhiteListMode: function (defaultWhiteListMode) {
