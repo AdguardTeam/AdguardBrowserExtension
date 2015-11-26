@@ -1280,7 +1280,7 @@ AntiBannerService.prototype = {
             callback(false);
         };
 
-        this.serviceClient.loadFilterRules(filter.filterId, successCallback, errorCallback);
+        this.serviceClient.loadFilterRules(filter.filterId, userSettings.isUseOptimizedFiltersEnabled(), successCallback, errorCallback);
     },
 
     /**

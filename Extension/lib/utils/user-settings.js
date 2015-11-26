@@ -54,6 +54,7 @@ var UserSettings = function () {
     this.defaultProperties[this.settings.DISABLE_COLLECT_HITS] = true;
     this.defaultProperties[this.settings.DISABLE_SEND_SAFEBROWSING_STATS] = true;
     this.defaultProperties[this.settings.DEFAULT_WHITE_LIST_MODE] = true;
+    this.defaultProperties[this.settings.USE_OPTIMIZED_FILTERS] = Utils.isContentBlockerEnabled();
 
     this.properties = Object.create(null);
 };
@@ -152,6 +153,10 @@ UserSettings.prototype.changeShowContextMenu = function (enabled) {
 
 UserSettings.prototype.isDefaultWhiteListMode = function () {
     return this.getProperty(this.settings.DEFAULT_WHITE_LIST_MODE);
+};
+
+UserSettings.prototype.isUseOptimizedFiltersEnabled = function () {
+    return this.getProperty(this.settings.USE_OPTIMIZED_FILTERS);
 };
 
 UserSettings.prototype.changeDefaultWhiteListMode = function (enabled) {

@@ -368,6 +368,10 @@ PageController.prototype = {
 
     changeUseOptimizedFilters: function (e) {
         e.preventDefault();
+
+        //TODO: Set filter versions to 1.0
+        //TODO: If ContentBlocker set filters to 1.0 on first start
+
         contentPage.sendMessage({
             type: 'changeUserSetting',
             key: userSettings.names.USE_OPTIMIZED_FILTERS,
