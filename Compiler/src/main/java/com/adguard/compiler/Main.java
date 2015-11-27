@@ -89,7 +89,8 @@ public class Main {
 
 		if (updateFilters) {
 			FilterUtils.updateGroupsAndFiltersMetadata(source);
-			FilterUtils.updateLocalFilters(source);
+			FilterUtils.updateLocalFilters(source, new File(source, "filters"), FilterUtils.FILTER_DOWNLOAD_URL);
+			FilterUtils.updateLocalFilters(source, new File(source, "filters_mobile"), FilterUtils.MOBILE_FILTER_DOWNLOAD_URL);
 		}
 
 		Set<String> scriptRules = FilterUtils.getScriptRules(source);
@@ -97,8 +98,10 @@ public class Main {
 		File buildResult = createBuild(source, dest, scriptRules, extensionId, updateUrl, browser, version, branch);
 
 		if (updateFilters && browser == Browser.SAFARI) {
-			FilterUtils.loadEnglishFilterForSafari(new File(buildResult, "filters"));
-			FilterUtils.loadMobileSafariFilter(new File(buildResult, "filters"));
+			FilterUtils.loadEnglishFilterForSafari(new File(buildResult, "filters"), FilterUtils.FILTER_DOWNLOAD_URL);
+			FilterUtils.loadEnglishFilterForSafari(new File(buildResult, "filters_mobile"), FilterUtils.MOBILE_FILTER_DOWNLOAD_URL);
+			FilterUtils.loadMobileSafariFilter(new File(buildResult, "filters"), FilterUtils.FILTER_DOWNLOAD_URL);
+			FilterUtils.loadMobileSafariFilter(new File(buildResult, "filters_mobile"), FilterUtils.MOBILE_FILTER_DOWNLOAD_URL);
 		}
 
 		File packedFile = null;

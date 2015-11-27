@@ -202,11 +202,12 @@ ServiceClient.prototype = {
 	/**
 	 * Loads filter rules from local file
 	 *
-	 * @param filterId          Filter identifier
-	 * @param successCallback   Called on success
-	 * @param errorCallback     Called on error
+	 * @param filterId          	Filter identifier
+	 * @param useOptimizedFilters 	Download optimized filters flag
+	 * @param successCallback   	Called on success
+	 * @param errorCallback     	Called on error
 	 */
-	loadLocalFilter: function (filterId, successCallback, errorCallback) {
+	loadLocalFilter: function (filterId, useOptimizedFilters, successCallback, errorCallback) {
 
 		var AdguardFilterVersion = require('filter/antibanner').AdguardFilterVersion;
 
@@ -231,7 +232,12 @@ ServiceClient.prototype = {
 			var filterVersion = new AdguardFilterVersion(timeUpdated.getTime(), version, filterId);
 			successCallback(filterVersion, rules);
 		};
+
 		var url = Prefs.getLocalFilterPath(filterId);
+		if (useOptimizedFilters) {
+			url = Prefs.getLocalMobileFilterPath(filterId);
+		}
+
 		this._executeRequestAsync(url, "text/plain", success, errorCallback);
 	},
 

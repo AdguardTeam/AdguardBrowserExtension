@@ -178,7 +178,7 @@ AntiBannerService.prototype = {
             }
 
             // Schedule filters update job
-            context._scheduleFiltersUpdate(runInfo.isFirstRun);
+            context._scheduleFiltersUpdate();
 
         }.bind(this);
 
@@ -1172,11 +1172,8 @@ AntiBannerService.prototype = {
      * @isFirstRun
      * @private
      */
-    _scheduleFiltersUpdate: function (isFirstRun) {
+    _scheduleFiltersUpdate: function () {
         var updateFunc = this.checkAntiBannerFiltersUpdate.bind(this);
-        if (isFirstRun && Utils.isContentBlockerEnabled()) {
-            updateFunc = this.reloadAntiBannerFilters.bind(this);
-        }
 
         // First run delay
         setTimeout(updateFunc, this.UPDATE_FILTERS_DELAY);
@@ -1371,7 +1368,7 @@ AntiBannerService.prototype = {
             callback(false);
         };
 
-        this.serviceClient.loadLocalFilter(filter.filterId, successCallback, errorCallback);
+        this.serviceClient.loadLocalFilter(filter.filterId, userSettings.isUseOptimizedFiltersEnabled(), successCallback, errorCallback);
     }
 };
 

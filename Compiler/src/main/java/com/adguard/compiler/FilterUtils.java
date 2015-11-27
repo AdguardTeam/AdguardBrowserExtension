@@ -33,7 +33,8 @@ public class FilterUtils {
 
     private final static String GROUPS_METADATA_DOWNLOAD_URL = "http://adtidy.org/get-groups.html";
     private final static String FILTERS_METADATA_DOWNLOAD_URL = "http://adtidy.org/get-filters.html";
-    private final static String FILTER_DOWNLOAD_URL = "http://chrome.adtidy.org/getfilter.html?filterid=%s&key=4DDBE80A3DA94D819A00523252FB6380";
+    public final static String FILTER_DOWNLOAD_URL = "http://chrome.adtidy.org/getfilter.html?filterid=%s&key=4DDBE80A3DA94D819A00523252FB6380";
+    public final static String MOBILE_FILTER_DOWNLOAD_URL = "http://mobile.adtidy.org/api/1.0/getfilter.html?filterid=%s&key=4DDBE80A3DA94D819A00523252FB6380";
 
     private final static int ENGLISH_FILTER_ID = 2;
     private final static int MOBILE_SAFARI_FILTER_ID = 12;
@@ -43,12 +44,13 @@ public class FilterUtils {
      * Downloads filters from our backend server
      *
      * @param source Path to extension sources
+     * @param filtersDir
+     * @param filterDownloadUrl
      * @throws IOException
      */
-    public static void updateLocalFilters(File source) throws IOException {
+    public static void updateLocalFilters(File source, File filtersDir, String filterDownloadUrl) throws IOException {
 
         File dest = new File(source, "tmp-filters");
-        File filtersDir = new File(source, "filters");
 
         List<File> filesToCopy = new ArrayList<File>();
         try {
@@ -60,7 +62,7 @@ public class FilterUtils {
 
                 log.debug("Start download filter " + filterId);
 
-                String downloadUrl = String.format(FILTER_DOWNLOAD_URL, filterId);
+                String downloadUrl = String.format(filterDownloadUrl, filterId);
                 String response = UrlUtils.downloadString(new URL(downloadUrl), "UTF-8");
 
                 File filterFile = new File(dest, "filter_" + filterId + ".txt");
@@ -85,11 +87,12 @@ public class FilterUtils {
      * It contains big javascript rule for youtube ad blocking.
      *
      * @param destDir Destination directory.
+     * @param filterDownloadUrl
      * @throws IOException
      */
-    public static void loadEnglishFilterForSafari(File destDir) throws IOException {
+    public static void loadEnglishFilterForSafari(File destDir, String filterDownloadUrl) throws IOException {
         log.info("Start download filter ENGLISH filter for safari");
-        String downloadUrl = String.format(FILTER_DOWNLOAD_URL, ENGLISH_FILTER_ID);
+        String downloadUrl = String.format(filterDownloadUrl, ENGLISH_FILTER_ID);
         String response = UrlUtils.downloadString(new URL(downloadUrl), "UTF-8", USER_AGENT_SAFARI);
         FileUtils.writeStringToFile(new File(destDir, "filter_" + ENGLISH_FILTER_ID + ".txt"), response, "utf-8");
     }
@@ -100,11 +103,12 @@ public class FilterUtils {
      * This filters contains some special fix rules for safari content blocker
      *
      * @param destDir Destination directory.
+     * @param filterDownloadUrl
      * @throws IOException
      */
-    public static void loadMobileSafariFilter(File destDir) throws IOException {
+    public static void loadMobileSafariFilter(File destDir, String filterDownloadUrl) throws IOException {
         log.info("Start download filter mobile safari filter");
-        String downloadUrl = String.format(FILTER_DOWNLOAD_URL, MOBILE_SAFARI_FILTER_ID);
+        String downloadUrl = String.format(filterDownloadUrl, MOBILE_SAFARI_FILTER_ID);
         String response = UrlUtils.downloadString(new URL(downloadUrl), "UTF-8");
         FileUtils.writeStringToFile(new File(destDir, "filter_" + MOBILE_SAFARI_FILTER_ID + ".txt"), response, "utf-8");
     }
