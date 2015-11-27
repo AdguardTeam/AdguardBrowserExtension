@@ -845,7 +845,7 @@ AntiBannerService.prototype = {
      * Resets all filters versions
      */
     _resetFiltersVersion: function () {
-        var RESET_VERSION = "1.0.0.0";
+        var RESET_VERSION = "0.0.0.0";
 
         for (var i = 0; i < this.adguardFilters.length; i++) {
             this.adguardFilters[i].version = RESET_VERSION;
