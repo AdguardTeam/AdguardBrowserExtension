@@ -38,7 +38,7 @@ var ServiceClient = exports.ServiceClient = function () {
 
 	// Base url of our backend server
 	this.backendUrl = "https://chrome.adtidy.org";
-	this.mobileBackendUrl = "https://mobile.adtidy.org";
+	this.mobileBackendUrl = "http://mobile.adtidy.org/api/1.0";
     this.apiKey = "4DDBE80A3DA94D819A00523252FB6380";
 
 	//URL for downloading AG filters

@@ -302,6 +302,14 @@ var UI = exports.UI = {
         });
     },
 
+    reloadAntiBannerFilters: function () {
+        this.antiBannerService.reloadAntiBannerFilters(function (updatedFilters) {
+            EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTERS_SHOW_POPUP, true, updatedFilters);
+        }, function () {
+            EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTERS_SHOW_POPUP, false);
+        });
+    },
+
     getLocalizedMessage: function (messageId, args) {
         return i18n.getMessage(messageId, args);
     },

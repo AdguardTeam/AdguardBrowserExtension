@@ -178,7 +178,7 @@ AntiBannerService.prototype = {
             }
 
             // Schedule filters update job
-            context._scheduleFiltersUpdate();
+            context._scheduleFiltersUpdate(runInfo.isFirstRun);
 
         }.bind(this);
 
@@ -723,6 +723,17 @@ AntiBannerService.prototype = {
     },
 
     /**
+     * Reloads filters from backend
+     *
+     * @param successCallback
+     * @param errorCallback
+     */
+    reloadAntiBannerFilters: function (successCallback, errorCallback) {
+        this._resetFiltersVersion();
+        this.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback);
+    },
+
+    /**
      * Checks filters updates.
      *
      * @param forceUpdate Normally we respect filter update period. But if this parameter is
@@ -827,6 +838,17 @@ AntiBannerService.prototype = {
                 Log.error("Error download subscription by url {0}, cause: {1} {2}", subscriptionUrl, request.statusText, cause || "");
             };
             this.serviceClient.loadFilterRulesBySubscriptionUrl(subscriptionUrl, successCallback, errorCallback);
+        }
+    },
+
+    /**
+     * Resets all filters versions
+     */
+    _resetFiltersVersion: function () {
+        var RESET_VERSION = "1.0.0.0";
+
+        for (var i = 0; i < this.adguardFilters.length; i++) {
+            this.adguardFilters[i].version = RESET_VERSION;
         }
     },
 
@@ -1147,10 +1169,15 @@ AntiBannerService.prototype = {
 
     /**
      * Schedules filters update job
+     * @isFirstRun
      * @private
      */
-    _scheduleFiltersUpdate: function () {
+    _scheduleFiltersUpdate: function (isFirstRun) {
         var updateFunc = this.checkAntiBannerFiltersUpdate.bind(this);
+        if (isFirstRun && Utils.isContentBlockerEnabled()) {
+            updateFunc = this.reloadAntiBannerFilters.bind(this);
+        }
+
         // First run delay
         setTimeout(updateFunc, this.UPDATE_FILTERS_DELAY);
 
