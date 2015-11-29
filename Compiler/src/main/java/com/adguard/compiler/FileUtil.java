@@ -66,6 +66,11 @@ public class FileUtil {
 		File destFilters = new File(dest, "filters");
 		copyDirectory(sourceFilters, destFilters);
 
+		//copy optimized filters and subscriptions
+		File sourceOptimizedFilters = new File(source, "filters_mobile");
+		File destOptimizedFilters = new File(dest, "filters_mobile");
+		copyDirectory(sourceOptimizedFilters, destOptimizedFilters);
+
 		//copy locales
 		File sourceLocales = new File(source, "_locales");
 		File destLocales = new File(dest, "_locales");
