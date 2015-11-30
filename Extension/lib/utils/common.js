@@ -191,7 +191,8 @@ var EventNotifierTypes = exports.EventNotifierTypes = {
     CHANGE_USER_SETTINGS: "event.change.user.settings",
     UPDATE_FILTERS_SHOW_POPUP: "event.update.filters.show.popup",
     UPDATE_USER_FILTER_RULES: "event.update.user.filter.rules",
-    UPDATE_WHITELIST_FILTER_RULES: "event.update.whitelist.filter.rules"
+    UPDATE_WHITELIST_FILTER_RULES: "event.update.whitelist.filter.rules",
+    CONTENT_BLOCKER_UPDATED: "event.content.blocker.updated"
 };
 
 /**

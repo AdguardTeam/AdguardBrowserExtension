@@ -465,6 +465,13 @@ PageController.prototype = {
         contentPage.sendMessage({type: 'clearWhiteListFilter'});
     },
 
+    _renderAntibannerInfo: function (rulesCount) {
+        console.log("RULES:" + rulesCount);
+
+        //TODO: Render message
+        //TODO: Add listener to request filter init
+    },
+
     _renderSearchFilters: function (input, listEl, clearButton, sResult, renderFunc, searchFunc, loadNext) {
 
         loadNext = loadNext === true;
@@ -1005,6 +1012,8 @@ PageController.prototype = {
 
     checkSubscriptionsCount: function () {
 
+        //TODO: handle content blocker
+
         var modalOpen = this.subscriptionModalEl.is('.in');
         if (!modalOpen) {
             this.tooManySubscriptionsEl.hide();
@@ -1110,7 +1119,8 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
             EventNotifierTypes.SUCCESS_DOWNLOAD_FILTER,
             EventNotifierTypes.ERROR_DOWNLOAD_FILTER,
             EventNotifierTypes.UPDATE_USER_FILTER_RULES,
-            EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES
+            EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES,
+            EventNotifierTypes.CONTENT_BLOCKER_UPDATED
         ];
 
         function eventListener(event, filter) {
@@ -1144,6 +1154,13 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
                         break;
                     }
                     controller._renderWhiteListFilters();
+                    break;
+                case EventNotifierTypes.CONTENT_BLOCKER_UPDATED:
+                    if (controller.omitRenderEventsCount > 0) {
+                        controller.omitRenderEventsCount--;
+                        break;
+                    }
+                    controller._renderAntibannerInfo(filter);
                     break;
             }
         }
