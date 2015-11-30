@@ -89,20 +89,12 @@ public class Main {
 
 		if (updateFilters) {
 			FilterUtils.updateGroupsAndFiltersMetadata(source);
-			FilterUtils.updateLocalFilters(source, new File(source, "filters"), FilterUtils.FILTER_DOWNLOAD_URL);
-			FilterUtils.updateLocalFilters(source, new File(source, "filters_mobile"), FilterUtils.MOBILE_FILTER_DOWNLOAD_URL);
+			FilterUtils.updateLocalFilters(source, new File(source, "filters"));
 		}
 
 		Set<String> scriptRules = FilterUtils.getScriptRules(source);
 
 		File buildResult = createBuild(source, dest, scriptRules, extensionId, updateUrl, browser, version, branch);
-
-		if (updateFilters && browser == Browser.SAFARI) {
-			FilterUtils.loadEnglishFilterForSafari(new File(buildResult, "filters"), FilterUtils.FILTER_DOWNLOAD_URL);
-			FilterUtils.loadEnglishFilterForSafari(new File(buildResult, "filters_mobile"), FilterUtils.MOBILE_FILTER_DOWNLOAD_URL);
-			FilterUtils.loadMobileSafariFilter(new File(buildResult, "filters"), FilterUtils.FILTER_DOWNLOAD_URL);
-			FilterUtils.loadMobileSafariFilter(new File(buildResult, "filters_mobile"), FilterUtils.MOBILE_FILTER_DOWNLOAD_URL);
-		}
 
 		File packedFile = null;
 		if (packMethod != null) {

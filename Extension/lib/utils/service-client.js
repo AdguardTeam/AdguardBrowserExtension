@@ -38,6 +38,7 @@ var ServiceClient = exports.ServiceClient = function () {
 
 	// Base url of our backend server
 	this.backendUrl = "https://chrome.adtidy.org";
+	//TODO: Add mobile filters to extension backend instead.
 	this.mobileBackendUrl = "http://mobile.adtidy.org/api/1.0";
     this.apiKey = "4DDBE80A3DA94D819A00523252FB6380";
 

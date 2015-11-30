@@ -1,10 +1,10 @@
 ! Title: Spyware filter
-! Version: 1.0.3.92
+! Version: 1.0.3.97
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet be tracked, use this filter.
 ! NameEn: Spyware filter
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2015-11-27T17:57:05.707+04:00
+! TimeUpdated: 2015-11-30T16:51:26.153+04:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -32,12 +32,20 @@ echo.msk.ru$$script[tag-content="s=screen;"][max-length="200"]
 ~yandex.by,~yandex.com,~yandex.kz,~yandex.ru,~yandex.ua##a[href^="https://metrika.yandex.ru/stat/"]
 ##img[src*="counter.yadro.ru"]
 ~mozhor.ru,~onliner.by,~yandex.by,~yandex.com,~yandex.com.tr,~yandex.ru,~yandex.ua##img[width="88"][height="31"]
+||stats.wordpress.com^
+||dmtracking2.alibaba.com^
+||criteo.com/event?$third-party
+||alibaba.com/js/beacon_
+||stat.alibaba.com^
+||tracelog.www.alibaba.com^
+||ynuf.alipay.com/service/
 ||sinajs.cn/open/analytics/$third-party
 ||tanx.com^$third-party
 ||arlime.com^$third-party
 ||beanstock.com^$third-party
 ||optimize-stats.voxmedia.com^$third-party
-||counter.ukr.net^$third-party
+||counter.ukr.net^
+||target.ukr.net^
 ||onthe.io^$third-party
 ||erkaseriilan.com.tr^$third-party
 ||ntvk1.ru^$third-party
@@ -1586,6 +1594,7 @@ http://r.i.ua/s?
 /xtcore.js
 /zanox.js
 ://top.*/count/cnt.php?
+||cmap.alibaba.com/landing_ae.gif
 sinoptik.ua###bigmirTop
 ||sinst.fwdcdn.com/img/newImg/liveinternet.gif
 3dnews.ru##a[href^="http://metrika.yandex.ru/"]
@@ -1661,8 +1670,9 @@ washingtonpost.com##.social-tools-wrapper-bottom
 ||wo.washingtonpost.com^
 ||wow-impulse.net/track/
 ||zive.cz/Client.Scripts/tracking.js
+@@||googletagmanager.com/gtm.js$domain=rollingstone.com
 @@||analytics.edgesuite.net/html5/akamaihtml$domain=video.foxnews.com
-@@||b.scorecardresearch.com/r?$domain=macworld.com
+@@||b.scorecardresearch.com^$domain=macworld.com
 @@||omtrdc.net/b/ss/$domain=macworld.com
 @@||googletagmanager.com/gtm.js$domain=maximonline.ru
 @@||google-analytics.com/analytics.js$domain=maximonline.ru
