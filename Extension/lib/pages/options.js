@@ -466,9 +466,18 @@ PageController.prototype = {
     },
 
     _renderAntibannerInfo: function (rulesCount) {
-        console.log("RULES:" + rulesCount);
+        //TODO: Check rules limit for safari
+        //TODO: Call on options init
 
-        //TODO: Render message
+        var el = $('.settings-page-title-info');
+        if (rulesCount == null) {
+            el.hide();
+        }
+
+        var message = i18n.getMessage("options_antibanner_info");
+        message = message.replace('$1', rulesCount);
+        el.text(message);
+        el.show();
     },
 
     _renderSearchFilters: function (input, listEl, clearButton, sResult, renderFunc, searchFunc, loadNext) {
