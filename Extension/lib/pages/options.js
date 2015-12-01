@@ -84,6 +84,7 @@ PageController.prototype = {
         }
         this.subscriptionModalEl = $('#subscriptionModal');
         this.tooManySubscriptionsEl = $('#tooManySubscriptions');
+        this.tooManyRulesEl = $('#tooManyRules');
 
         this.safebrowsingEnabledCheckbox.on('change', this.safebrowsingEnabledChange);
         this.sendSafebrowsingStatsCheckbox.on('change', this.sendSafebrowsingStatsChange);
@@ -231,6 +232,7 @@ PageController.prototype = {
         this._renderCollectHitsCount(collectHitsCount);
         this._renderShowContextMenu(showContextMenu);
         this._renderDefaultWhiteListMode(defaultWhitelistMode);
+        this._renderAntibannerInfo(rulesCount);
         if (environmentOptions.Prefs.mobile) {
             $('#resetStats').hide();
         }
@@ -465,10 +467,17 @@ PageController.prototype = {
         contentPage.sendMessage({type: 'clearWhiteListFilter'});
     },
 
-    _renderAntibannerInfo: function (rulesCount) {
-        //TODO: Check rules limit for safari
-        //TODO: Call on options init
+    _checkSafariContentBlockerRulesLimit: function (rulesCount) {
+        if (environmentOptions.isSafariBrowser) {
+            if (rulesCount > 50000) {
+                this.tooManyRulesEl.show();
+            } else {
+                this.tooManyRulesEl.hide();
+            }
+        }
+    },
 
+    _renderAntibannerInfo: function (rulesCount) {
         var el = $('.settings-page-title-info');
         if (rulesCount == null) {
             el.hide();
@@ -478,6 +487,8 @@ PageController.prototype = {
         message = message.replace('$1', rulesCount);
         el.text(message);
         el.show();
+
+        this._checkSafariContentBlockerRulesLimit(rulesCount);
     },
 
     _renderSearchFilters: function (input, listEl, clearButton, sResult, renderFunc, searchFunc, loadNext) {
@@ -1019,9 +1030,6 @@ PageController.prototype = {
     },
 
     checkSubscriptionsCount: function () {
-
-        //TODO: handle content blocker
-
         var modalOpen = this.subscriptionModalEl.is('.in');
         if (!modalOpen) {
             this.tooManySubscriptionsEl.hide();
@@ -1101,6 +1109,7 @@ PageController.prototype = {
 var userSettings;
 var enabledFilters;
 var environmentOptions;
+var rulesCount;
 var AntiBannerFiltersId;
 var EventNotifierTypes;
 
@@ -1109,6 +1118,7 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
     userSettings = response.userSettings;
     enabledFilters = response.enabledFilters;
     environmentOptions = response.environmentOptions;
+    rulesCount = response.rulesCount;
 
     AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
     EventNotifierTypes = response.constants.EventNotifierTypes;

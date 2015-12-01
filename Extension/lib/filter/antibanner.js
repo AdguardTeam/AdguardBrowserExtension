@@ -1016,7 +1016,7 @@ AntiBannerService.prototype = {
         return dfd;
     },
 
-    _getRulesCount: function () {
+    getRulesCount: function () {
         if (this.dirtyRules) {
             return Object.keys(this.dirtyRules).length;
         }
