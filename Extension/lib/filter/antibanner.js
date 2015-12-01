@@ -199,9 +199,9 @@ AntiBannerService.prototype = {
         var localeFilterIds = this.localeDetectorService.getFilterIdsForLanguage(Prefs.locale);
         filterIds = filterIds.concat(localeFilterIds);
 
-        // Add mobile safari filter for safari 9+
-        if (Utils.isContentBlockerEnabled()) {
-            filterIds.push(AntiBannerFiltersId.MOBILE_SAFARI_FILTER);
+        // Add safari filter for safari browser
+        if (Utils.isSafariBrowser()) {
+            filterIds.push(AntiBannerFiltersId.SAFARI_FILTER);
         }
 
         // This callback is used to activate language-specific filter after user's country is detected
