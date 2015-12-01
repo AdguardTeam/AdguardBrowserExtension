@@ -950,7 +950,7 @@ AntiBannerService.prototype = {
                 Log.info('Finished request filter init in ' + (new Date().getTime() - start) + 'ms');
 
                 if (callback) {
-                    callback();
+                    callback(rules);
                 }
             }.bind(this));
         }.bind(this);
@@ -1016,6 +1016,23 @@ AntiBannerService.prototype = {
         return dfd;
     },
 
+    _getRulesCount: function () {
+        if (this.dirtyRules) {
+            return Object.keys(this.dirtyRules).length;
+        }
+
+        if (!this.requestFilter) {
+            return null;
+        }
+
+        var rules = this.requestFilter.getRules();
+        if (!rules) {
+            return null;
+        }
+
+        return rules.length;
+    },
+
     /**
      * Adds event listener for filters changes.
      * If filter is somehow changed this method checks if we should save changes to the storage
@@ -1028,8 +1045,10 @@ AntiBannerService.prototype = {
         var filterEventsHistory = [];
         var onFilterChangeTimeout = null;
 
-        var onEventsProcessDone = function () {
-            EventNotifier.notifyListeners(EventNotifierTypes.REBUILD_REQUEST_FILTER_END);
+        var self = this;
+        var onEventsProcessDone = function (rules) {
+            var rulesCount = rules ? Object.keys(rules).length : self._getRulesCount();
+            EventNotifier.notifyListeners(EventNotifierTypes.REBUILD_REQUEST_FILTER_END, rulesCount);
         };
 
         var processFilterEvent = function (event, filter, rules) {

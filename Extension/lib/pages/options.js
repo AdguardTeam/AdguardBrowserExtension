@@ -469,7 +469,6 @@ PageController.prototype = {
         console.log("RULES:" + rulesCount);
 
         //TODO: Render message
-        //TODO: Add listener to request filter init
     },
 
     _renderSearchFilters: function (input, listEl, clearButton, sResult, renderFunc, searchFunc, loadNext) {
@@ -1120,7 +1119,8 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
             EventNotifierTypes.ERROR_DOWNLOAD_FILTER,
             EventNotifierTypes.UPDATE_USER_FILTER_RULES,
             EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES,
-            EventNotifierTypes.CONTENT_BLOCKER_UPDATED
+            EventNotifierTypes.CONTENT_BLOCKER_UPDATED,
+            EventNotifierTypes.REBUILD_REQUEST_FILTER_END
         ];
 
         function eventListener(event, filter) {
@@ -1155,6 +1155,7 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
                     }
                     controller._renderWhiteListFilters();
                     break;
+                case EventNotifierTypes.REBUILD_REQUEST_FILTER_END:
                 case EventNotifierTypes.CONTENT_BLOCKER_UPDATED:
                     if (controller.omitRenderEventsCount > 0) {
                         controller.omitRenderEventsCount--;
