@@ -493,16 +493,17 @@ PageController.prototype = {
      */
     _renderAntibannerInfo: function (rulesCount) {
         var el = $('.settings-page-title-info');
-        if (rulesCount > 0) {
-            var message = i18n.getMessage("options_antibanner_info");
-            message = message.replace('$1', rulesCount);
-            el.text(message);
-            el.show();
-
-            this._checkSafariContentBlockerRulesLimit(rulesCount);
-        } else {
+        if (!rulesCount) {
             el.hide();
+            return;
         }
+
+        var message = i18n.getMessage("options_antibanner_info");
+        message = message.replace('$1', rulesCount);
+        el.text(message);
+        el.show();
+
+        this._checkSafariContentBlockerRulesLimit(rulesCount);
     },
 
     _renderSearchFilters: function (input, listEl, clearButton, sResult, renderFunc, searchFunc, loadNext) {
@@ -1153,7 +1154,6 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
             EventNotifierTypes.UPDATE_USER_FILTER_RULES,
             EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES,
             EventNotifierTypes.CONTENT_BLOCKER_UPDATED,
-            EventNotifierTypes.REQUEST_FILTER_UPDATED,
             EventNotifierTypes.REBUILD_REQUEST_FILTER_END
         ];
 
@@ -1181,6 +1181,9 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
                         break;
                     }
                     controller._renderUserFilters();
+                    if (!environmentOptions.isContentBlockerEnabled) {
+                        controller._renderAntibannerInfo(filter);
+                    }
                     break;
                 case EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES:
                     if (controller.omitRenderEventsCount > 0) {
@@ -1189,9 +1192,7 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
                     }
                     controller._renderWhiteListFilters();
                     break;
-                case EventNotifierTypes.REQUEST_FILTER_UPDATED:
                 case EventNotifierTypes.REBUILD_REQUEST_FILTER_END:
-                case EventNotifierTypes.UPDATE_USER_FILTER_RULES:
                     if (environmentOptions.isContentBlockerEnabled) {
                         break;
                     }

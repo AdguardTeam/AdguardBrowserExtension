@@ -145,7 +145,6 @@ AntiBannerService.prototype = {
             whiteListService.initWhiteListFilters();
             context._createRequestFilter(function () {
                 this._addFiltersChangeEventListener();
-                EventNotifier.notifyListeners(EventNotifierTypes.INIT_REQUEST_FILTER_END);
                 onServiceInitialized(runInfo);
             }.bind(this));
         }.bind(this);
@@ -277,7 +276,7 @@ AntiBannerService.prototype = {
             // Request filter is ready
             this.requestFilter = requestFilter;
 
-            EventNotifier.notifyListeners(EventNotifierTypes.REQUEST_FILTER_UPDATED, this.getRulesCount());
+            EventNotifier.notifyListeners(EventNotifierTypes.REBUILD_REQUEST_FILTER_END, this.getRulesCount());
 
             // No need in dirtyRules collection anymore
             this.dirtyRules = null;
@@ -923,7 +922,7 @@ AntiBannerService.prototype = {
      * @param callback Called after request filter has been created
      * @private
      */
-    _createRequestFilter: function (callback) {
+    _createRequestFilter: function () {
 
         var start = new Date().getTime();
         Log.info('Start request filter init');
@@ -933,13 +932,13 @@ AntiBannerService.prototype = {
         var loadAllFilterRulesDone = function () {
             // Depending on Prefs.speedupStartup we either load filter rules asynchronously
             // Or we do it on the main thread.
-            function getRulesFromTextAsyncUnique(rulesFilterMap, callback) {
+            function getRulesFromTextAsyncUnique(rulesFilterMap, callbackFunc) {
                 if (Prefs && Prefs.speedupStartup()) {
                     setTimeout(function () {
-                        callback(CollectionUtils.getRulesFromTextUnique(rulesFilterMap));
+                        callbackFunc(CollectionUtils.getRulesFromTextUnique(rulesFilterMap));
                     }, 500);
                 } else {
-                    callback(CollectionUtils.getRulesFromTextUnique(rulesFilterMap));
+                    callbackFunc(CollectionUtils.getRulesFromTextUnique(rulesFilterMap));
                 }
             }
 
@@ -951,9 +950,6 @@ AntiBannerService.prototype = {
 
                 Log.info('Finished request filter init in ' + (new Date().getTime() - start) + 'ms');
 
-                if (callback) {
-                    callback();
-                }
             }.bind(this));
         }.bind(this);
 
@@ -1040,11 +1036,7 @@ AntiBannerService.prototype = {
 
         var filterEventsHistory = [];
         var onFilterChangeTimeout = null;
-
         var self = this;
-        var onEventsProcessDone = function () {
-            EventNotifier.notifyListeners(EventNotifierTypes.REBUILD_REQUEST_FILTER_END, self.getRulesCount());
-        };
 
         var processFilterEvent = function (event, filter, rules) {
 
@@ -1087,9 +1079,11 @@ AntiBannerService.prototype = {
                 }
 
                 if (needCreateRequestFilter) {
-                    Promise.all(dfds).then(this._createRequestFilter.bind(this, onEventsProcessDone));
+                    //Rules will be added to request filter lazy, listeners will be notified about REBUILD_REQUEST_FILTER_END later
+                    Promise.all(dfds).then(this._createRequestFilter.bind(this));
                 } else {
-                    onEventsProcessDone();
+                    //Rules already in request filter, notify listeners
+                    EventNotifier.notifyListeners(EventNotifierTypes.REBUILD_REQUEST_FILTER_END, self.getRulesCount());
                 }
 
             }.bind(this), 500);
