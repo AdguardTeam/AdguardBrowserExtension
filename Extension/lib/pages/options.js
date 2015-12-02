@@ -467,6 +467,14 @@ PageController.prototype = {
         contentPage.sendMessage({type: 'clearWhiteListFilter'});
     },
 
+    /**
+     * Checks Safari content blocker rules limit, shows alert message for rules overlimit.
+     * It's important to check that limit because of Safari limitations.
+     * Content blocker with too many rules won't work at all.
+     *
+     * @param rulesCount used rules count
+     * @private
+     */
     _checkSafariContentBlockerRulesLimit: function (rulesCount) {
         if (environmentOptions.isSafariBrowser) {
             if (rulesCount > 50000) {
@@ -477,9 +485,15 @@ PageController.prototype = {
         }
     },
 
+    /**
+     * Renders rules info panel
+     *
+     * @param rulesCount used rules count
+     * @private
+     */
     _renderAntibannerInfo: function (rulesCount) {
         var el = $('.settings-page-title-info');
-        if (rulesCount == null) {
+        if (rulesCount == null || rulesCount == 0) {
             el.hide();
         }
 
@@ -1175,6 +1189,15 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
                     controller._renderWhiteListFilters();
                     break;
                 case EventNotifierTypes.REBUILD_REQUEST_FILTER_END:
+                    if (environmentOptions.isContentBlockerEnabled()) {
+                        break;
+                    }
+                    if (controller.omitRenderEventsCount > 0) {
+                        controller.omitRenderEventsCount--;
+                        break;
+                    }
+                    controller._renderAntibannerInfo(filter);
+                    break;
                 case EventNotifierTypes.CONTENT_BLOCKER_UPDATED:
                     if (controller.omitRenderEventsCount > 0) {
                         controller.omitRenderEventsCount--;
