@@ -277,6 +277,8 @@ AntiBannerService.prototype = {
             // Request filter is ready
             this.requestFilter = requestFilter;
 
+            EventNotifier.notifyListeners(EventNotifierTypes.REQUEST_FILTER_UPDATED, this.getRulesCount());
+
             // No need in dirtyRules collection anymore
             this.dirtyRules = null;
         }
@@ -322,7 +324,7 @@ AntiBannerService.prototype = {
         this.userRules = [];
         var filter = this._getFilterById(AntiBannerFiltersId.USER_FILTER_ID);
         EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTER_RULES, filter, []);
-        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES);
+        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES, this.getRulesCount());
     },
 
     /**
@@ -337,7 +339,7 @@ AntiBannerService.prototype = {
             this._addRuleToFilter(AntiBannerFiltersId.USER_FILTER_ID, rule);
             this.userRules.push(rule.ruleText);
         }
-        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES);
+        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES, this.getRulesCount());
     },
 
     /**
@@ -355,7 +357,7 @@ AntiBannerService.prototype = {
             }
         }
         this._addRulesToFilter(AntiBannerFiltersId.USER_FILTER_ID, rules);
-        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES);
+        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES, this.getRulesCount());
         return rules;
     },
 
@@ -372,7 +374,7 @@ AntiBannerService.prototype = {
             EventNotifier.notifyListeners(EventNotifierTypes.REMOVE_RULE, filter, [rule]);
         }
         CollectionUtils.removeAll(this.userRules, ruleText);
-        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES);
+        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES, this.getRulesCount());
     },
 
     /**
@@ -950,7 +952,7 @@ AntiBannerService.prototype = {
                 Log.info('Finished request filter init in ' + (new Date().getTime() - start) + 'ms');
 
                 if (callback) {
-                    callback(rules);
+                    callback();
                 }
             }.bind(this));
         }.bind(this);
@@ -1016,21 +1018,15 @@ AntiBannerService.prototype = {
         return dfd;
     },
 
+    /**
+     * @returns int used rules count
+     */
     getRulesCount: function () {
-        if (this.dirtyRules) {
-            return Object.keys(this.dirtyRules).length;
-        }
-
         if (!this.requestFilter) {
             return null;
         }
 
-        var rules = this.requestFilter.getRules();
-        if (!rules) {
-            return null;
-        }
-
-        return rules.length;
+        return this.requestFilter.rulesCount;
     },
 
     /**
@@ -1046,9 +1042,8 @@ AntiBannerService.prototype = {
         var onFilterChangeTimeout = null;
 
         var self = this;
-        var onEventsProcessDone = function (rules) {
-            var rulesCount = rules ? Object.keys(rules).length : self._getRulesCount();
-            EventNotifier.notifyListeners(EventNotifierTypes.REBUILD_REQUEST_FILTER_END, rulesCount);
+        var onEventsProcessDone = function () {
+            EventNotifier.notifyListeners(EventNotifierTypes.REBUILD_REQUEST_FILTER_END, self.getRulesCount());
         };
 
         var processFilterEvent = function (event, filter, rules) {
