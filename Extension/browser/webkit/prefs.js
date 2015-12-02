@@ -28,7 +28,7 @@ var Prefs = exports.Prefs = {
 		return ext.getURL(url);
 	},
 	getLocalMobileFilterPath: function (filterId) {
-		var url = "filters_mobile/filter_" + filterId + ".txt";
+		var url = "filters/filter_mobile_" + filterId + ".txt";
 		return ext.getURL(url);
 	},
 	localGroupsMetadataPath: ext.getURL('filters/groups.xml'),

@@ -36,19 +36,14 @@ public class FilterUtils {
     public final static String FILTER_DOWNLOAD_URL = "http://chrome.adtidy.org/getfilter.html?filterid=%s&key=4DDBE80A3DA94D819A00523252FB6380";
     public final static String MOBILE_FILTER_DOWNLOAD_URL = "http://mobile.adtidy.org/api/1.0/getfilter.html?filterid=%s&key=4DDBE80A3DA94D819A00523252FB6380";
 
-    private final static int ENGLISH_FILTER_ID = 2;
-    private final static int MOBILE_SAFARI_FILTER_ID = 12;
-    private final static String USER_AGENT_SAFARI = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.78.2 (KHTML, like Gecko) Version/7.0.6 Safari/537.78.2";
-
     /**
      * Downloads filters from our backend server
      *
      * @param source Path to extension sources
      * @param filtersDir
-     * @param filterDownloadUrl
      * @throws IOException
      */
-    public static void updateLocalFilters(File source, File filtersDir, String filterDownloadUrl) throws IOException {
+    public static void updateLocalFilters(File source, File filtersDir) throws IOException {
 
         File dest = new File(source, "tmp-filters");
 
@@ -60,16 +55,11 @@ public class FilterUtils {
                     continue;
                 }
 
-                log.debug("Start download filter " + filterId);
-
-                String downloadUrl = String.format(filterDownloadUrl, filterId);
-                String response = UrlUtils.downloadString(new URL(downloadUrl), "UTF-8");
-
-                File filterFile = new File(dest, "filter_" + filterId + ".txt");
-                FileUtils.write(filterFile, response);
+                File filterFile = downloadFilterFile(dest, filterId, FilterUtils.FILTER_DOWNLOAD_URL, "filter_" + filterId + ".txt");
                 filesToCopy.add(filterFile);
 
-                log.debug("Filter " + filterId + " download successfully");
+                File optimizedFilterFile = downloadFilterFile(dest, filterId, FilterUtils.MOBILE_FILTER_DOWNLOAD_URL, "filter_mobile_" + filterId + ".txt");
+                filesToCopy.add(optimizedFilterFile);
             }
 
             for (File file : filesToCopy) {
@@ -80,37 +70,17 @@ public class FilterUtils {
         }
     }
 
-    /**
-     * Loads english filter for safari.
-     * <p/>
-     * The thing is that English filter is customized in case of Safari.
-     * It contains big javascript rule for youtube ad blocking.
-     *
-     * @param destDir Destination directory.
-     * @param filterDownloadUrl
-     * @throws IOException
-     */
-    public static void loadEnglishFilterForSafari(File destDir, String filterDownloadUrl) throws IOException {
-        log.info("Start download filter ENGLISH filter for safari");
-        String downloadUrl = String.format(filterDownloadUrl, ENGLISH_FILTER_ID);
-        String response = UrlUtils.downloadString(new URL(downloadUrl), "UTF-8", USER_AGENT_SAFARI);
-        FileUtils.writeStringToFile(new File(destDir, "filter_" + ENGLISH_FILTER_ID + ".txt"), response, "utf-8");
-    }
+    private static File downloadFilterFile(File dest, int filterId, String filterDownloadUrl, String fileName) throws IOException {
+        log.debug("Start download filter " + filterId + " from " + filterDownloadUrl);
 
-    /**
-     * Loads mobile safari filter for safari.
-     * <p/>
-     * This filters contains some special fix rules for safari content blocker
-     *
-     * @param destDir Destination directory.
-     * @param filterDownloadUrl
-     * @throws IOException
-     */
-    public static void loadMobileSafariFilter(File destDir, String filterDownloadUrl) throws IOException {
-        log.info("Start download filter mobile safari filter");
-        String downloadUrl = String.format(filterDownloadUrl, MOBILE_SAFARI_FILTER_ID);
+        String downloadUrl = String.format(filterDownloadUrl, filterId);
         String response = UrlUtils.downloadString(new URL(downloadUrl), "UTF-8");
-        FileUtils.writeStringToFile(new File(destDir, "filter_" + MOBILE_SAFARI_FILTER_ID + ".txt"), response, "utf-8");
+
+        File filterFile = new File(dest, fileName);
+        FileUtils.write(filterFile, response);
+
+        log.debug("Filter " + filterId + " download successfully");
+        return filterFile;
     }
 
     /**

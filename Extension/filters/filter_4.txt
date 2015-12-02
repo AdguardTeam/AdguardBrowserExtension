@@ -1,9 +1,9 @@
-! Version: 1.0.7.42
+! Version: 1.0.7.46
 ! Name: Social media filter
 ! Description: A filter for social media widgets ("Like" buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2015-11-27T16:57:12.838+03:00
+! TimeUpdated: 2015-11-30T15:51:32.611+03:00
 ! Adguard Social Media Filter
 !
 ! If you do not like numerous «Like» and «Tweet» buttons on all the popular websites on the Internet,
@@ -30,6 +30,7 @@
 !
 ! This section contains rules for common trackers/buttons
 !
+||facebook.com/tr/?
 /wp-content/plugins/flare/
 /wp-content/plugins/social-warfare/
 ||addthis.com^$third-party,domain=~civilization.com|~imgur.com|~tscan.mg
@@ -251,6 +252,8 @@ softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 !
 ! Contains rules for specific web sites
 !
+engadget.com###pinned
+ign.com##.sharer
 echo.msk.ru##.tooltipster-default
 metacritic.com##.sharing
 metacritic.com##.social_btm
@@ -822,6 +825,7 @@ komarovskiy.net##ul[class="social-bookmarks"]
 !
 ! Section contains list general hiding rules
 !
+##.mom-social-share
 ###chorus-social-fixed
 ~reddit.com##a[href^="http://www.reddit.com/submit"]
 ###ShareModule
@@ -1353,6 +1357,7 @@ livejournal.com##.b-ljtimes-wrapper
 ~tumblr.com##a[href^="http://www.tumblr.com/share"]
 ~facebook.com##a[href^="https://facebook.com/sharer.php?"]
 ~plus.google.com##a[href^="https://plus.google.com/share"]
+~plus.google.com##a[href^="//plus.google.com/share"]
 ~twitter.com##a[href^="https://twitter.com/intent/follow?"]
 ~twitter.com##a[href^="https://twitter.com/intent/retweet?tweet_id"]
 ~yellosoft.us##a[href^="https://twitter.com/intent/tweet?"]
@@ -1388,6 +1393,8 @@ livejournal.com##.b-ljtimes-wrapper
 !
 ! Section fixing issues caused by social filter
 !
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/998
+macrumors.com#@#.social-media
 ! logaster.com - login buttons was hidden
 logaster.com#@#.icon-gplus
 logaster.com#@#.icon-facebook

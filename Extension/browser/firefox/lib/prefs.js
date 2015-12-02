@@ -37,7 +37,7 @@ var Prefs = exports.Prefs = {
 		return self.data.url(url);
 	},
 	getLocalMobileFilterPath: function (filterId) {
-		var url = "filters_mobile/filter_" + filterId + ".txt";
+		var url = "filters/filter_mobile_" + filterId + ".txt";
 		return self.data.url(url);
 	},
 	localGroupsMetadataPath: self.data.url('filters/groups.xml'),

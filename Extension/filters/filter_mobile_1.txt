@@ -1,15 +1,19 @@
 ! Title: Russian filter
-! Version: 1.0.28.86
+! Version: 1.0.28.91
 ! Name: Russian filter
 ! Description: Filter that enables removing of the ads from websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2015-11-27T20:10:51.515+04:00
+! TimeUpdated: 2015-11-30T16:51:01.665+04:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#window.AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+||directadvert.net^$third-party
+||sadreno.com^$third-party
+||smilered.com^$third-party
+||obhodsb.com^$third-party
 ||lapumo.com^$third-party
 ||wedtor.com^$third-party
 ||reborko.com^$third-party
@@ -1355,6 +1359,8 @@ http://wq3.ru/$third-party
 ||zxrtn.com^$third-party
 ||v.adfox.ru^
 //v.*.space/v?bid=$third-party
+@@||adultmult.ru/advert.js
+@@||static.videocore.tv/advert*.js
 @@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=50na50.net
 @@||hdserials.tv/upload/banners/banner.jpg
 cnews.ru##html > body > div[id] > div[id]:not([id^="cnComment"])
@@ -2181,13 +2187,12 @@ sport.ua#$#body[style] { padding-top: 0px!important; }
 meteo-tv.ru#$#body {background-image: none!important;}
 meteo-tv.ru#$##wrapper > div.wrap > div.main { margin-top: 0px!important; }
 4pda.ru#$##rnd-replace-main { background-image: none!important; }
-4pda.ru#$#html > body > #wrapper > div[class] > div[class] > div[id] > div[class] article { background-image: none!important;
+4pda.ru#$#html > body > #wrapper > div[class] > div[class] > div[id] > div[class] article { background-image: none!important; }
 4pda.ru#$##wrapper > div[class] > div[class]  > div[id] { background-size: 0px!important; }
 thg.ru#$#body { background: transparent!important; }
 thg.ru#$#div[style^="width:1010px; margin-top: 250px;"] { margin-top: 0px!important; }
 fatalgame.com#$##rexpage {background: transparent!important;}
 aif.ru#$#body > div.bg_and_top_adv { margin-top: 0px!important; }
-baibako.tv#$#.topserial { height: 20px!important; }
 i.ua#$#body { background-color:rgb(255, 255, 255)!important; }
 tvfru.net#$#body { background: #ddd!important; }
 megashara.com#$#div[class^="brand_bg"] { padding-top: 0px!important; }
@@ -3064,6 +3069,20 @@ ucoz.ru/informer/
 ||seemore.ru/js/$third-party
 ||sv-pr.ru^$third-party
 ||target.smi2.net^$third-party
+||forum.hdtv.ru/jscripts/main_banner.js
+de-online.ru##div[style="float:left; width: 360px; height:300px;"]
+autotraveler.ru##.ad_yad
+pdd.ua##.b-stella
+de-online.ru##img[src^="/banners/"]
+||videoprobki.com.ua/themes/videoprobki/brand/
+||videoprobki.ua/sites/default/files/banners/
+videoprobki.ua##.banners-right
+||fotosetxxx.ru/java/adv_java.js
+mmgp.ru##noindex > table
+mmgp.ru##div[id^="adsign"]
+||fwdcdn.com/img/commercial/$domain=ukr.net
+||upst.fwdcdn.com/img/commercial/teletrade-
+spaces.ru###page_ofk
 yarportal.ru##a[href^="http://yarportal.ru/stat/goto.php"] > img
 ||moevideo.net/mnb/$domain=playreplay.net
 kset.kz###topLink
@@ -3126,7 +3145,7 @@ serialu.net##.h-banner
 ||lifehacker.ru/wp-content/uploads/2015/11/banner_underpost_1447422902-1024x256.jpg
 ||rustorka.com/forum/misc/js/mzoell.js
 ||iframe.tvzavr.ru^$domain=myzuka.org
-||antistarforce.com/js/kwocwl.js
+||antistarforce.com/js/
 ||tvzavr.ru/liveinternet/
 ||stat.tvzavr.ru/advstat/
 ||stat.tvzavr.ru/auxstat/
@@ -4246,7 +4265,6 @@ fishki.net##a[href^="http://li.ru/go?"]
 bigtorrent.org,bigtorrents.ru##a[href^="http://lolx.ru/"]
 samlab.ws##a[href^="http://mediaget.com/torrent.php?r="]
 gorodgeev.net##a[href^="http://misterm.ru/"]
-baibako.tv##a[href^="http://moonbit.co.in/?ref="]
 cimislia.net##a[href^="http://multfun.ru/"]
 anistar.ru##a[href^="http://my.blazingfast.io/?affid="]
 glasscannon.ru##a[href^="http://n.actionpay.ru/click/"]
@@ -5488,6 +5506,7 @@ webware.ru/*/clients/
 ||рефераты-и-сочинения.рф/images/hosting.gif
 @@||video.videonow.ru^$domain=echo.msk.ru
 @@||video.videonow.ru^$domain=api.cybergame.tv
+@@||videoprobki.ua/sites/default/files/banners/googleplay.png
 @@||out.pladform.ru/player$domain=afisha.mail.ru
 @@||footballhd.ru/engine/ajax/$document
 hawk.ru#@#.adv
@@ -6003,7 +6022,6 @@ zastava.net.ua#@#.banners
 @@||tile.openstreetmap.org
 @@||tvnz.co.nz/stylesheets/tvnz/lib/js/advertisement.js
 @@||twitter.com/widgets$domain=charter97.org
-@@||ukr.net$domain=ukr.net
 @@||vkbot.ru/style/images/
 @@||vkontakte.ru/js/api/share.js$domain=smotri.com
 @@||vox-static.liverail.com/swf/*/admanager.swf

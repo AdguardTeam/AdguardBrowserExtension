@@ -1,9 +1,9 @@
-! Version: 1.0.28.86
+! Version: 1.0.28.91
 ! Name: Russian filter
 ! Description: Filter that enables removing of the ads from websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2015-11-27T19:10:51.515+03:00
+! TimeUpdated: 2015-11-30T15:51:01.665+03:00
 ! Adguard Russian Filter
 !
 ! Filter that enables removing of the ads from websites with Russian content.
@@ -30,6 +30,10 @@
 !
 ! Содержит доменные имена, использующиеся рекламными сетями.
 !
+||directadvert.net^$third-party
+||sadreno.com^$third-party
+||smilered.com^$third-party
+||obhodsb.com^$third-party
 ||lapumo.com^$third-party
 ||wedtor.com^$third-party
 ||reborko.com^$third-party
@@ -2952,6 +2956,10 @@ http://wq3.ru/$third-party
 !-------------------------------------------------------------------------------!
 !------------------ Common anti-adblock ----------------------------------------!
 !-------------------------------------------------------------------------------!
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1001
+@@||adultmult.ru/advert.js
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/989
+@@||static.videocore.tv/advert*.js
 ! http://50na50.net/ru/proxy/httplist
 ! proxy list is removed
 @@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=50na50.net
@@ -3968,7 +3976,7 @@ meteo-tv.ru#$#body {background-image: none!important;}
 meteo-tv.ru#$##wrapper > div.wrap > div.main { margin-top: 0px!important; }
 ! 4pda - branding
 4pda.ru#$##rnd-replace-main { background-image: none!important; }
-4pda.ru#$#html > body > #wrapper > div[class] > div[class] > div[id] > div[class] article { background-image: none!important;
+4pda.ru#$#html > body > #wrapper > div[class] > div[class] > div[id] > div[class] article { background-image: none!important; }
 4pda.ru#$##wrapper > div[class] > div[class]  > div[id] { background-size: 0px!important; }
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/825
 thg.ru#$#body { background: transparent!important; }
@@ -3977,8 +3985,6 @@ thg.ru#$#div[style^="width:1010px; margin-top: 250px;"] { margin-top: 0px!import
 fatalgame.com#$##rexpage {background: transparent!important;}
 ! aif.ru - удаление отступа сверху
 aif.ru#$#body > div.bg_and_top_adv { margin-top: 0px!important; }
-! baibako.tv - удаление отступа сверху
-baibako.tv#$#.topserial { height: 20px!important; }
 ! i.ua - удаление брендированного фона
 i.ua#$#body { background-color:rgb(255, 255, 255)!important; }
 ! tvfru.net - удаление брендированного фона
@@ -6108,6 +6114,20 @@ polezno-2012.info^
 !
 ! Правила специфичные для конкретных сайтов.
 !
+||forum.hdtv.ru/jscripts/main_banner.js
+de-online.ru##div[style="float:left; width: 360px; height:300px;"]
+autotraveler.ru##.ad_yad
+pdd.ua##.b-stella
+de-online.ru##img[src^="/banners/"]
+||videoprobki.com.ua/themes/videoprobki/brand/
+||videoprobki.ua/sites/default/files/banners/
+videoprobki.ua##.banners-right
+||fotosetxxx.ru/java/adv_java.js
+mmgp.ru##noindex > table
+mmgp.ru##div[id^="adsign"]
+||fwdcdn.com/img/commercial/$domain=ukr.net
+||upst.fwdcdn.com/img/commercial/teletrade-
+spaces.ru###page_ofk
 yarportal.ru##a[href^="http://yarportal.ru/stat/goto.php"] > img
 ||moevideo.net/mnb/$domain=playreplay.net
 kset.kz###topLink
@@ -6170,7 +6190,7 @@ serialu.net##.h-banner
 ||lifehacker.ru/wp-content/uploads/2015/11/banner_underpost_1447422902-1024x256.jpg
 ||rustorka.com/forum/misc/js/mzoell.js
 ||iframe.tvzavr.ru^$domain=myzuka.org
-||antistarforce.com/js/kwocwl.js
+||antistarforce.com/js/
 ||tvzavr.ru/liveinternet/
 ||stat.tvzavr.ru/advstat/
 ||stat.tvzavr.ru/auxstat/
@@ -8298,7 +8318,6 @@ samlab.ws##a[href^="http://mediaget.com/torrent.php?r="]
 sport.bigmir.net##a[href^="http://mediatraffic.com.ua/"]
 oceanvideo.ru##a[href^="http://mgnstyle.ru/shop/"]
 gorodgeev.net##a[href^="http://misterm.ru/"]
-baibako.tv##a[href^="http://moonbit.co.in/?ref="]
 cimislia.net##a[href^="http://multfun.ru/"]
 anistar.ru##a[href^="http://my.blazingfast.io/?affid="]
 glasscannon.ru##a[href^="http://n.actionpay.ru/click/"]
@@ -8466,7 +8485,6 @@ e1.ru##div[class*="advlink-hide-"]
 gamer.ru##div[class*="alarmalarm-banner-"]
 nvua.net,segodnya.ua##div[class*="banner_"]
 015.by,01regionpro.ru,032.ua,0332.ua,0342.ua,0352.ua,0362.ua,0372.ua,0412.ua,0432.ua,04565.com.ua,04578.in.ua,0462.ua,0472.ua,048.ua,04868.com.ua,0512.com.ua,0522.ua,0532.ua,05366.com.ua,0542.ua,0552.ua,056.ua,0564.ua,057.ua,061.ua,06153.com.ua,0623.com.ua,06239.com.ua,06242.com.ua,06252.com.ua,06254.in.ua,06255.com.ua,06257.in.ua,06274.com.ua,0629.com.ua,0642.ua,06432.in.ua,06434.com.ua,0652.ua,0654.com.ua,06562.com.ua,0692.ua,3462city.ru,44.ua,5692.com.ua,62.ua,6264.com.ua,8352city.ru,8422city.ru,86155city.ru,8634city.ru,city3012.ru,go31.ru,go812.ru,go862.ru,goroddomodedovo.ru,gorodpushkin.ru,labaved.ru,prokolpino.ru,pronews48.ru##div[class*="banner_box"]
-videoprobki.ua##div[class*="banners"]
 sevnews.info##div[class*="banners_"]
 gorod.cn.ua##div[class*="branding_"] > .cont_adv
 footballtop.ru##div[class*="ft-banner"]
@@ -10160,7 +10178,6 @@ xn--90aiguyb.com/files.php?
 ||realty.dmir.ru/img/nic.png
 ||realty.vesti.ru/i/banners/
 ||red-town.ru/img/b/
-||redlondon.ru^$domain=baibako.tv
 ||referats.allbest.ru/l2.js
 ||regard.ru/photo/baner/
 ||reine.ru^$domain=pornolab.net
@@ -10665,6 +10682,8 @@ xn--90aiguyb.com/files.php?
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/814
 @@||video.videonow.ru^$domain=api.cybergame.tv
 !!!
+! videoprobki.ua - unblock their app's banner
+@@||videoprobki.ua/sites/default/files/banners/googleplay.png
 ! http://forum.adguard.com/showthread.php?7754
 @@||out.pladform.ru/player$domain=afisha.mail.ru
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/952
@@ -11833,7 +11852,6 @@ zastava.net.ua#@#.banners
 @@||turner.com^*/advertisement/cnnmoney_sponsors.gif$domain=money.cnn.com
 @@||tvnz.co.nz/stylesheets/tvnz/lib/js/advertisement.js
 @@||twitter.com/widgets$domain=charter97.org
-@@||ukr.net$domain=ukr.net
 @@||utarget.co.uk/crossdomain.xml$object-subrequest,domain=tvcatchup.com
 @@||vesti-moscow.ru/v.xml$document
 @@||video-cdn.abcnews.com/ad_$object-subrequest

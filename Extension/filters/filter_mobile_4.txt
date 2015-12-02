@@ -1,15 +1,16 @@
 ! Title: Social media filter
-! Version: 1.0.7.42
+! Version: 1.0.7.46
 ! Name: Social media filter
 ! Description: A filter for social media widgets ("Like" buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2015-11-27T17:57:12.838+04:00
+! TimeUpdated: 2015-11-30T16:51:32.611+04:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#window.AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+||facebook.com/tr/?
 /wp-content/plugins/flare/
 /wp-content/plugins/social-warfare/
 ||addthis.com^$third-party,domain=~civilization.com|~imgur.com|~tscan.mg
@@ -189,6 +190,8 @@ crimea-kurort.com#$#img[width="88"][height="31"] {visibility: hidden!important;}
 maskme.ru#$#img[width="88"][height="31"] {visibility: hidden!important;}
 gamesradar.com#$#.shareSocialArticle-wrap { visibility: hidden; }
 softwares-serials.in#$##FTslide { visibility: hidden;!important; }
+engadget.com###pinned
+ign.com##.sharer
 echo.msk.ru##.tooltipster-default
 metacritic.com##.sharing
 metacritic.com##.social_btm
@@ -691,6 +694,7 @@ kinopoisk.ru##ul[class="addTo"]
 ||virusinfo.info/helper_statistic/footer_follow.js
 ||widget.breakingburner.com/js/jwidget.js$domain=novayagazeta.ru
 ||wow.ya.ru/ajax/share-counter.xml$third-party
+##.mom-social-share
 ###chorus-social-fixed
 ~reddit.com##a[href^="http://www.reddit.com/submit"]
 ###ShareModule
@@ -1222,6 +1226,7 @@ livejournal.com##.b-ljtimes-wrapper
 ~tumblr.com##a[href^="http://www.tumblr.com/share"]
 ~facebook.com##a[href^="https://facebook.com/sharer.php?"]
 ~plus.google.com##a[href^="https://plus.google.com/share"]
+~plus.google.com##a[href^="//plus.google.com/share"]
 ~twitter.com##a[href^="https://twitter.com/intent/follow?"]
 ~twitter.com##a[href^="https://twitter.com/intent/retweet?tweet_id"]
 ~yellosoft.us##a[href^="https://twitter.com/intent/tweet?"]
@@ -1251,6 +1256,7 @@ livejournal.com##.b-ljtimes-wrapper
 ~facebook.com##input.fb
 ~twitter.com##input.tweet
 ~vk.com,~vkontakte.ru##input.vk
+macrumors.com#@#.social-media
 logaster.com#@#.icon-gplus
 logaster.com#@#.icon-facebook
 @@||yastatic.net/share/share.js$domain=lixty.net
