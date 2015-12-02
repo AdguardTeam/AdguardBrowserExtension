@@ -1154,7 +1154,7 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
             EventNotifierTypes.UPDATE_USER_FILTER_RULES,
             EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES,
             EventNotifierTypes.CONTENT_BLOCKER_UPDATED,
-            EventNotifierTypes.REBUILD_REQUEST_FILTER_END
+            EventNotifierTypes.REQUEST_FILTER_UPDATED
         ];
 
         function eventListener(event, filter) {
@@ -1192,7 +1192,7 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
                     }
                     controller._renderWhiteListFilters();
                     break;
-                case EventNotifierTypes.REBUILD_REQUEST_FILTER_END:
+                case EventNotifierTypes.REQUEST_FILTER_UPDATED:
                     if (environmentOptions.isContentBlockerEnabled) {
                         break;
                     }

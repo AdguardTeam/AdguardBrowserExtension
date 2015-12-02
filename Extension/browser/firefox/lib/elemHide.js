@@ -58,7 +58,7 @@ ElemHide = exports.ElemHide = {
 
         EventNotifier.addListener(function (event, settings) {
             switch (event) {
-                case EventNotifierTypes.REBUILD_REQUEST_FILTER_END:
+                case EventNotifierTypes.REQUEST_FILTER_UPDATED:
                     if (!userSettings.collectHitsCount()) {
                         // "Send statistics for ad filters usage" option is disabled
                         // Do nothing in this case

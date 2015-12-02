@@ -276,7 +276,7 @@ AntiBannerService.prototype = {
             // Request filter is ready
             this.requestFilter = requestFilter;
 
-            EventNotifier.notifyListeners(EventNotifierTypes.REBUILD_REQUEST_FILTER_END, this.getRulesCount());
+            EventNotifier.notifyListeners(EventNotifierTypes.REQUEST_FILTER_UPDATED, this.getRulesCount());
 
             // No need in dirtyRules collection anymore
             this.dirtyRules = null;
@@ -922,7 +922,7 @@ AntiBannerService.prototype = {
      * @param callback Called after request filter has been created
      * @private
      */
-    _createRequestFilter: function () {
+    _createRequestFilter: function (callback) {
 
         var start = new Date().getTime();
         Log.info('Start request filter init');
@@ -949,6 +949,10 @@ AntiBannerService.prototype = {
                 setTimeout(this.getRequestFilter.bind(this), 100);
 
                 Log.info('Finished request filter init in ' + (new Date().getTime() - start) + 'ms');
+
+                if (callback && typeof callback === "function") {
+                    callback();
+                }
 
             }.bind(this));
         }.bind(this);
@@ -1079,11 +1083,11 @@ AntiBannerService.prototype = {
                 }
 
                 if (needCreateRequestFilter) {
-                    //Rules will be added to request filter lazy, listeners will be notified about REBUILD_REQUEST_FILTER_END later
+                    //Rules will be added to request filter lazy, listeners will be notified about REQUEST_FILTER_UPDATED later
                     Promise.all(dfds).then(this._createRequestFilter.bind(this));
                 } else {
                     //Rules already in request filter, notify listeners
-                    EventNotifier.notifyListeners(EventNotifierTypes.REBUILD_REQUEST_FILTER_END, self.getRulesCount());
+                    EventNotifier.notifyListeners(EventNotifierTypes.REQUEST_FILTER_UPDATED, self.getRulesCount());
                 }
 
             }.bind(this), 500);
