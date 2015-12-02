@@ -354,13 +354,9 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
      */
     this.updateBlockedAdsCount = function (tab, blocked) {
         var frameData = this.getMainFrame(tab);
-
-        if (WorkaroundUtils.shouldUpdateBlockedCount(frameData)) {
-            frameData.blocked = (frameData.blocked || 0) + blocked;
-            pageStatistic.updateTotalBlocked(blocked);
-            return frameData.blocked;
-        }
-        return null;
+        frameData.blocked = (frameData.blocked || 0) + blocked;
+        pageStatistic.updateTotalBlocked(blocked);
+        return frameData.blocked;
     };
 
     /**

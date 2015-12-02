@@ -57,21 +57,6 @@ var WorkaroundUtils = exports.WorkaroundUtils = {
 	},
 
 	/**
-	 * Checks if we should update frame's blocked requests counter.
-	 * This method checks frame's creation time and does not allow
-	 * updating blocked count for old frames.
-	 *
-	 * Thus we trying to fix an issue with pages making ad requests constantly.
-	 *
-	 * @param frameData Frame data
-	 */
-	shouldUpdateBlockedCount: function(frameData) {
-
-		// max age is 60 seconds
-		return frameData && (frameData.timeAdded + 60000 > Date.now());
-	},
-
-	/**
 	 * Converts blocked counter to the badge text.
 	 * Workaround for FF - make 99 max.
 	 *
@@ -80,8 +65,9 @@ var WorkaroundUtils = exports.WorkaroundUtils = {
 	getBlockedCountText: function(blocked) {
 		var blockedText = blocked == "0" ? "" : blocked;
 		if (blocked - 0 > 99) {
-			blockedText = "99";
+			blockedText = '\u221E';
 		}
+
 		return blockedText;
 	},
 

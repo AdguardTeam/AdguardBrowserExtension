@@ -42,6 +42,20 @@ var UI = {
 	},
 
 	/**
+	 * Converts blocked counter to the badge text.
+	 *
+	 * @param blocked Blocked requests count
+	 */
+	_getBlockedCountText: function(blocked) {
+		var blockedText = blocked == "0" ? "" : blocked;
+		if (blocked - 0 > 999) {
+			blockedText = '\u221E';
+		}
+
+		return blockedText;
+	},
+
+	/**
 	 * Update icon for tab
 	 * @param tab Tab
 	 * @param options Options for icon or badge values
@@ -76,7 +90,7 @@ var UI = {
 				}
 			}
 
-			badge = blocked == "0" ? "" : blocked;
+			badge = this._getBlockedCountText(blocked);
 
 			if (disabled) {
 				icon = this.ICON_GRAY;
