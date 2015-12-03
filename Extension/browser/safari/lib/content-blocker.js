@@ -82,22 +82,13 @@ var SafariContentBlocker = exports.SafariContentBlocker = {
 
     onSetContentBlockerTimeout: null,
 
-    _setContentBlocker: function (json) {
-        this.json = json;
-        var self = this;
-
-        if (self.onSetContentBlockerTimeout != null) {
-            clearTimeout(self.onSetContentBlockerTimeout);
+    _setContentBlocker: Utils.debounce(function (json) {
+        try {
+            Log.info('Setting content blocker. Length=' + json.length);
+            safari.extension.setContentBlocker(json);
+            Log.info('Content blocker has been set.');
+        } catch (ex) {
+            Log.error('Error while setting content blocker: ' + ex);
         }
-
-        self.onSetContentBlockerTimeout = setTimeout(function() {
-            try {
-                Log.info('Setting content blocker. Length=' + self.json.length);
-                safari.extension.setContentBlocker(self.json);
-                Log.info('Content blocker has been set.');
-            } catch (ex) {
-                Log.error('Error while setting content blocker: ' + ex);
-            }
-        }, 250);
-    }
+    }, 250)
 };
