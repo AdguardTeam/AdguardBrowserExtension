@@ -317,9 +317,7 @@ exports.SafariContentBlockerConverter = {
                     result.trigger["url-filter"] = URL_FILTER_ANY_URL;
                     delete result.trigger["resource-type"];
 
-                } else if (this._hasContentType(rule, UrlFilterRule.contentTypes.ELEMHIDE || UrlFilterRule.contentTypes.GENERICHIDE)) {
-                //} else if (this._hasContentType(UrlFilterRule.contentTypes.ELEMHIDE)
-                //    || this._hasContentType(UrlFilterRule.contentTypes.GENERICHIDE)) {
+                } else if (this._hasContentType(rule, UrlFilterRule.contentTypes.ELEMHIDE | UrlFilterRule.contentTypes.GENERICHIDE)) {
                     result.trigger["resource-type"] = ['document'];
                 }
             }
