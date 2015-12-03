@@ -145,7 +145,6 @@ AntiBannerService.prototype = {
             whiteListService.initWhiteListFilters();
             context._createRequestFilter(function () {
                 this._addFiltersChangeEventListener();
-                EventNotifier.notifyListeners(EventNotifierTypes.INIT_REQUEST_FILTER_END);
                 onServiceInitialized(runInfo);
             }.bind(this));
         }.bind(this);
@@ -277,6 +276,8 @@ AntiBannerService.prototype = {
             // Request filter is ready
             this.requestFilter = requestFilter;
 
+            EventNotifier.notifyListeners(EventNotifierTypes.REQUEST_FILTER_UPDATED, this.getRulesCount());
+
             // No need in dirtyRules collection anymore
             this.dirtyRules = null;
         }
@@ -322,7 +323,7 @@ AntiBannerService.prototype = {
         this.userRules = [];
         var filter = this._getFilterById(AntiBannerFiltersId.USER_FILTER_ID);
         EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTER_RULES, filter, []);
-        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES);
+        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES, this.getRulesCount());
     },
 
     /**
@@ -337,7 +338,7 @@ AntiBannerService.prototype = {
             this._addRuleToFilter(AntiBannerFiltersId.USER_FILTER_ID, rule);
             this.userRules.push(rule.ruleText);
         }
-        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES);
+        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES, this.getRulesCount());
     },
 
     /**
@@ -355,7 +356,7 @@ AntiBannerService.prototype = {
             }
         }
         this._addRulesToFilter(AntiBannerFiltersId.USER_FILTER_ID, rules);
-        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES);
+        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES, this.getRulesCount());
         return rules;
     },
 
@@ -372,7 +373,7 @@ AntiBannerService.prototype = {
             EventNotifier.notifyListeners(EventNotifierTypes.REMOVE_RULE, filter, [rule]);
         }
         CollectionUtils.removeAll(this.userRules, ruleText);
-        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES);
+        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES, this.getRulesCount());
     },
 
     /**
@@ -931,13 +932,13 @@ AntiBannerService.prototype = {
         var loadAllFilterRulesDone = function () {
             // Depending on Prefs.speedupStartup we either load filter rules asynchronously
             // Or we do it on the main thread.
-            function getRulesFromTextAsyncUnique(rulesFilterMap, callback) {
+            function getRulesFromTextAsyncUnique(rulesFilterMap, callbackFunc) {
                 if (Prefs && Prefs.speedupStartup()) {
                     setTimeout(function () {
-                        callback(CollectionUtils.getRulesFromTextUnique(rulesFilterMap));
+                        callbackFunc(CollectionUtils.getRulesFromTextUnique(rulesFilterMap));
                     }, 500);
                 } else {
-                    callback(CollectionUtils.getRulesFromTextUnique(rulesFilterMap));
+                    callbackFunc(CollectionUtils.getRulesFromTextUnique(rulesFilterMap));
                 }
             }
 
@@ -949,9 +950,10 @@ AntiBannerService.prototype = {
 
                 Log.info('Finished request filter init in ' + (new Date().getTime() - start) + 'ms');
 
-                if (callback) {
+                if (callback && typeof callback === "function") {
                     callback();
                 }
+
             }.bind(this));
         }.bind(this);
 
@@ -1017,6 +1019,17 @@ AntiBannerService.prototype = {
     },
 
     /**
+     * @returns int used rules count
+     */
+    getRulesCount: function () {
+        if (!this.requestFilter) {
+            return null;
+        }
+
+        return this.requestFilter.rulesCount;
+    },
+
+    /**
      * Adds event listener for filters changes.
      * If filter is somehow changed this method checks if we should save changes to the storage
      * and if we should recreate RequestFilter.
@@ -1027,10 +1040,7 @@ AntiBannerService.prototype = {
 
         var filterEventsHistory = [];
         var onFilterChangeTimeout = null;
-
-        var onEventsProcessDone = function () {
-            EventNotifier.notifyListeners(EventNotifierTypes.REBUILD_REQUEST_FILTER_END);
-        };
+        var self = this;
 
         var processFilterEvent = function (event, filter, rules) {
 
@@ -1073,9 +1083,11 @@ AntiBannerService.prototype = {
                 }
 
                 if (needCreateRequestFilter) {
-                    Promise.all(dfds).then(this._createRequestFilter.bind(this, onEventsProcessDone));
+                    //Rules will be added to request filter lazy, listeners will be notified about REQUEST_FILTER_UPDATED later
+                    Promise.all(dfds).then(this._createRequestFilter.bind(this));
                 } else {
-                    onEventsProcessDone();
+                    //Rules already in request filter, notify listeners
+                    EventNotifier.notifyListeners(EventNotifierTypes.REQUEST_FILTER_UPDATED, self.getRulesCount());
                 }
 
             }.bind(this), 500);

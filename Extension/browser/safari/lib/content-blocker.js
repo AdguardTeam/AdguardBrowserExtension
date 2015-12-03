@@ -17,6 +17,8 @@
 
 var Log = require('utils/log').Log;
 var SafariContentBlockerConverter = require('converter').SafariContentBlockerConverter;
+var EventNotifier = require('utils/notifier').EventNotifier;
+var EventNotifierTypes = require('utils/common').EventNotifierTypes;
 var Utils = require('utils/browser-utils').Utils;
 
 /**
@@ -83,6 +85,9 @@ var SafariContentBlocker = exports.SafariContentBlocker = {
         try {
             Log.info('Setting content blocker. Length=' + json.length);
             safari.extension.setContentBlocker(json);
+
+            EventNotifier.notifyListeners(EventNotifierTypes.CONTENT_BLOCKER_UPDATED, json.length);
+
             Log.info('Content blocker has been set.');
         } catch (ex) {
             Log.error('Error while setting content blocker: ' + ex);

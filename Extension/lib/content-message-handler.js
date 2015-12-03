@@ -295,6 +295,7 @@ ContentMessageHandler.prototype = {
             userSettings: userSettings.getAllSettings(),
             enabledFilters: enabledFilters,
             filtersMetadata: this.antiBannerService.getFiltersMetadata(),
+            rulesCount: this.antiBannerService.getRulesCount(),
             environmentOptions: {
                 isMacOs: Utils.isMacOs(),
                 isSafariBrowser: Utils.isSafariBrowser(),
