@@ -31,7 +31,6 @@ var UrlUtils = require('utils/url').UrlUtils;
 var StringUtils = require('utils/common').StringUtils;
 var Prefs = require('prefs').Prefs;
 var userSettings = require('utils/user-settings').userSettings;
-var RequestTypes = require('utils/common').RequestTypes;
 
 /**
  * Request filter is main class which applies filter rules.
