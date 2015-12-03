@@ -232,8 +232,6 @@ UrlFilterRule.prototype._loadOptions = function (options) {
                 break;
             case UrlFilterRule.POPUP_OPTION:
                 permittedContentType |= UrlFilterRule.contentTypes.POPUP;
-                permittedContentType |= UrlFilterRule.contentTypes.DOCUMENT;
-                permittedContentType |= UrlFilterRule.contentTypes.SUBDOCUMENT;
                 break;
             default:
                 optionName = optionName.toUpperCase();
