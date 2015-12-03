@@ -182,7 +182,6 @@ UrlFilterRule.prototype._loadOptions = function (options) {
 
     var permittedContentType = 0;
     var restrictedContentType = 0;
-    var additionalContentType = 0;
     for (var i = 0; i < optionsParts.length; i++) {
         var option = optionsParts[i];
         var optionsKeyValue = option.split(FilterRule.EQUAL);
@@ -214,25 +213,25 @@ UrlFilterRule.prototype._loadOptions = function (options) {
                 this.matchCase = true;
                 break;
             case UrlFilterRule.ELEMHIDE_OPTION:
-                additionalContentType |= UrlFilterRule.contentTypes.ELEMHIDE;
+                permittedContentType |= UrlFilterRule.contentTypes.ELEMHIDE;
                 break;
             case UrlFilterRule.GENERICHIDE_OPTION:
-                additionalContentType |= UrlFilterRule.contentTypes.GENERICHIDE;
+                permittedContentType |= UrlFilterRule.contentTypes.GENERICHIDE;
                 break;
             case UrlFilterRule.JSINJECT_OPTION:
-                additionalContentType |= UrlFilterRule.contentTypes.JSINJECT;
+                permittedContentType |= UrlFilterRule.contentTypes.JSINJECT;
                 break;
             case UrlFilterRule.URLBLOCK_OPTION:
-                additionalContentType |= UrlFilterRule.contentTypes.URLBLOCK;
+                permittedContentType |= UrlFilterRule.contentTypes.URLBLOCK;
                 break;
             case UrlFilterRule.GENERICBLOCK_OPTION:
-                additionalContentType |= UrlFilterRule.contentTypes.GENERICBLOCK;
+                permittedContentType |= UrlFilterRule.contentTypes.GENERICBLOCK;
                 break;
             case UrlFilterRule.DOCUMENT_OPTION:
-                additionalContentType |= UrlFilterRule.contentTypes.DOCUMENT;
+                permittedContentType |= UrlFilterRule.contentTypes.DOCUMENT;
                 break;
             case UrlFilterRule.POPUP_OPTION:
-                additionalContentType |= UrlFilterRule.contentTypes.POPUP;
+                permittedContentType |= UrlFilterRule.contentTypes.POPUP;
                 break;
             default:
                 optionName = optionName.toUpperCase();
@@ -254,7 +253,6 @@ UrlFilterRule.prototype._loadOptions = function (options) {
     if (restrictedContentType > 0) {
         this.restrictedContentType = restrictedContentType;
     }
-    this.permittedContentType |= additionalContentType;
 };
 
 UrlFilterRule.OPTIONS_DELIMITER = "$";
