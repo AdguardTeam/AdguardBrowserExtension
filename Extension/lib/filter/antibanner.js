@@ -1040,7 +1040,6 @@ AntiBannerService.prototype = {
 
         var filterEventsHistory = [];
         var onFilterChangeTimeout = null;
-        var self = this;
 
         var processFilterEvent = function (event, filter, rules) {
 
@@ -1087,7 +1086,7 @@ AntiBannerService.prototype = {
                     Promise.all(dfds).then(this._createRequestFilter.bind(this));
                 } else {
                     //Rules already in request filter, notify listeners
-                    EventNotifier.notifyListeners(EventNotifierTypes.REQUEST_FILTER_UPDATED, self.getRulesCount());
+                    EventNotifier.notifyListeners(EventNotifierTypes.REQUEST_FILTER_UPDATED, this.getRulesCount());
                 }
 
             }.bind(this), 500);
