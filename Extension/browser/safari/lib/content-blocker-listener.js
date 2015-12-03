@@ -16,14 +16,16 @@
  */
 
 var SafariContentBlocker = require('content-blocker').SafariContentBlocker;
+var EventNotifier = require('utils/notifier').EventNotifier;
+var EventNotifierTypes = require('utils/common').EventNotifierTypes;
 var Utils = require('utils/browser-utils').Utils;
+var whiteListService = require('filter/whitelist').whiteListService;
 
 (function () {
 
     if (Utils.isContentBlockerEnabled()) {
         EventNotifier.addListener(function (event, params) {
-            if (event == EventNotifierTypes.CHANGE_USER_SETTINGS
-                && params == userSettings.settings.DISABLE_FILTERING
+            if (event == EventNotifierTypes.CHANGE_USER_SETTINGS && params == userSettings.settings.DISABLE_FILTERING
                 && userSettings.isFilteringDisabled()) {
 
                 SafariContentBlocker.clearFilters();
@@ -32,7 +34,7 @@ var Utils = require('utils/browser-utils').Utils;
 
             if (event == EventNotifierTypes.REQUEST_FILTER_UPDATED
                 || event == EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES
-                || event == EventNotifierTypes.CHANGE_USER_SETTINGS) {
+                || (event == EventNotifierTypes.CHANGE_USER_SETTINGS && params == userSettings.settings.DISABLE_FILTERING)) {
 
                 if (!userSettings.isFilteringDisabled()) {
                     var rules = antiBannerService.getRequestFilter().getRules();

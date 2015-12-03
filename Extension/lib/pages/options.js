@@ -1193,20 +1193,13 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
                     controller._renderWhiteListFilters();
                     break;
                 case EventNotifierTypes.REQUEST_FILTER_UPDATED:
+                    // Don't react on this event. If ContentBlockerEnabled CONTENT_BLOCKER_UPDATED event will be received.
                     if (environmentOptions.isContentBlockerEnabled) {
-                        break;
-                    }
-                    if (controller.omitRenderEventsCount > 0) {
-                        controller.omitRenderEventsCount--;
                         break;
                     }
                     controller._renderAntibannerInfo(filter);
                     break;
                 case EventNotifierTypes.CONTENT_BLOCKER_UPDATED:
-                    if (controller.omitRenderEventsCount > 0) {
-                        controller.omitRenderEventsCount--;
-                        break;
-                    }
                     controller._renderAntibannerInfo(filter);
                     break;
             }
