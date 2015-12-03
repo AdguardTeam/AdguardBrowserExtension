@@ -385,8 +385,7 @@ RequestFilter.prototype = {
         var rule = this._checkUrlBlockingList(requestUrl, refHost, requestType, thirdParty);
         if (rule != null) {
             //For document and subdocument requests check for genericblock rule
-            if (rule.isGeneric()
-                && (requestType == RequestTypes.DOCUMENT || requestType == RequestTypes.SUBDOCUMENT)) {
+            if (rule.isGeneric()) {
                 var genericUrlBlockRule = this._checkWhiteList(referrer, refHost, "GENERICBLOCK", thirdParty);
                 if (genericUrlBlockRule) {
                     return genericUrlBlockRule;
