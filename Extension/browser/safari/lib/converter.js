@@ -18,7 +18,7 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.1';
+var CONVERTER_VERSION = '1.3.2';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var URL_FILTER_ANY_URL = ".*";
@@ -113,10 +113,14 @@ exports.SafariContentBlockerConverter = {
                 !(rule.restrictedContentType & contentType);
         },
 
+        _isContentType: function(rule, contentType) {
+            return rule.permittedContentType == contentType;
+        },
+
         _addResourceType: function (rule, result) {
             var types = [];
 
-            if (rule.permittedContentType == UrlFilterRule.contentTypes.ALL &&
+            if (this._isContentType(rule, UrlFilterRule.contentTypes.ALL) &&
                 rule.restrictedContentType == 0) {
                 // Safari does not support all other default content types, like subdocument etc.
                 // So we can use default safari content types instead.
@@ -136,7 +140,7 @@ exports.SafariContentBlockerConverter = {
                 types.push("raw");
             if (this._hasContentType(rule, UrlFilterRule.contentTypes.FONT))
                 types.push("font");
-            if (this._hasContentType(rule.permittedContentType, UrlFilterRule.contentTypes.SUBDOCUMENT))
+            if (this._hasContentType(rule, UrlFilterRule.contentTypes.SUBDOCUMENT))
                 types.push("document");
 
 
@@ -146,14 +150,14 @@ exports.SafariContentBlockerConverter = {
             }
 
             //Not supported modificators
-            if (rule.permittedContentType == UrlFilterRule.contentTypes.OBJECT) {
+            if (this._isContentType(rule, UrlFilterRule.contentTypes.OBJECT)) {
                 throw new Error('Object content type is not yet supported');
             }
-            if (rule.permittedContentType == UrlFilterRule.contentTypes['OBJECT-SUBREQUEST']) {
+            if (this._isContentType(rule, UrlFilterRule.contentTypes['OBJECT-SUBREQUEST'])) {
                 throw new Error('Object_subrequest content type is not yet supported');
             }
 
-            if (rule.permittedContentType == (UrlFilterRule.contentTypes.JSINJECT | UrlFilterRule.contentTypes.ALL)) {
+            if (this._isContentType(rule, UrlFilterRule.contentTypes.JSINJECT)) {
                 throw new Error('$jsinject rules are ignored.');
             }
 
@@ -263,13 +267,14 @@ exports.SafariContentBlockerConverter = {
         },
 
         _checkWhiteListExceptions: function (rule, result) {
+            var self = this;
             function isDocumentRule(r) {
-                return r.permittedContentType == (UrlFilterRule.contentTypes.DOCUMENT | UrlFilterRule.contentTypes.ALL);
+                return self._isContentType(r, UrlFilterRule.contentTypes.DOCUMENT);
             }
 
             function isUrlBlockRule(r) {
-                return ((r.permittedContentType == (UrlFilterRule.contentTypes.URLBLOCK | UrlFilterRule.contentTypes.ALL))
-                    || (r.permittedContentType == (UrlFilterRule.contentTypes.GENERICBLOCK | UrlFilterRule.contentTypes.ALL)));
+                return self._isContentType(r, UrlFilterRule.contentTypes.URLBLOCK)
+                    || self._isContentType(r, UrlFilterRule.contentTypes.GENERICBLOCK);
             }
 
             if (rule.whiteListRule && rule.whiteListRule === true) {
@@ -312,7 +317,7 @@ exports.SafariContentBlockerConverter = {
                     result.trigger["url-filter"] = URL_FILTER_ANY_URL;
                     delete result.trigger["resource-type"];
 
-                } else if (rule.permittedContentType & (UrlFilterRule.contentTypes.ELEMHIDE || UrlFilterRule.contentTypes.GENERICHIDE)) {
+                } else if (this._hasContentType(rule, UrlFilterRule.contentTypes.ELEMHIDE | UrlFilterRule.contentTypes.GENERICHIDE)) {
                     result.trigger["resource-type"] = ['document'];
                 }
             }

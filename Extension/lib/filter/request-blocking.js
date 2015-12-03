@@ -35,6 +35,7 @@ var WebRequestService = exports.WebRequestService = function (framesMap, antiBan
 
 /**
  * Prepares CSS and JS which should be injected to the page.
+ *
  * @param tab           Tab
  * @param documentUrl   Document URL
  * @returns {*}

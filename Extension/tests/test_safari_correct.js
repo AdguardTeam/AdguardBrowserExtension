@@ -81,7 +81,8 @@ var safariCorrectRules = [
         "script",
         "media",
         "raw",
-        "font"
+        "font",
+        "document"
       ],
       "load-type": [
         "third-party"

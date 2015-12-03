@@ -118,7 +118,9 @@ function testUrlBlockingRule() {
 	assertEquals("/^https?:\\/\\/([a-z0-9-_.]+\\.)?test\\.ru\\/([^ a-zA-Z0-9.%]|$)/", rule.getUrlRegExp().toString());
 
 	// Check rule work
-	assertTrue(rule.isFiltered("http://test.ru/", true, RequestTypes.SUBDOCUMENT));
+	assertTrue(rule.isFiltered("http://test.ru/", true, RequestTypes.POPUP));
+	assertFalse(rule.isFiltered("http://test.ru/", true, RequestTypes.DOCUMENT));
+	assertFalse(rule.isFiltered("http://test.ru/", true, RequestTypes.SUBDOCUMENT));
 	assertFalse(rule.isFiltered("http://TEst.ru/", false, RequestTypes.SUBDOCUMENT));
 	assertFalse(rule.isFiltered("http://test.ru", true, RequestTypes.SUBDOCUMENT));
 	assertTrue(rule.isPermitted("google.com"));

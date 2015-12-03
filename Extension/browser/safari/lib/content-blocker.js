@@ -19,6 +19,7 @@ var Log = require('utils/log').Log;
 var SafariContentBlockerConverter = require('converter').SafariContentBlockerConverter;
 var EventNotifier = require('utils/notifier').EventNotifier;
 var EventNotifierTypes = require('utils/common').EventNotifierTypes;
+var Utils = require('utils/browser-utils').Utils;
 
 /**
  * Safari Content Blocker helper
@@ -80,7 +81,7 @@ var SafariContentBlocker = exports.SafariContentBlocker = {
         }
     },
 
-    _setContentBlocker: function (json) {
+    _setContentBlocker: Utils.debounce(function (json) {
         try {
             Log.info('Setting content blocker. Length=' + json.length);
             safari.extension.setContentBlocker(json);
@@ -91,5 +92,5 @@ var SafariContentBlocker = exports.SafariContentBlocker = {
         } catch (ex) {
             Log.error('Error while setting content blocker: ' + ex);
         }
-    }
+    }, 250)
 };
