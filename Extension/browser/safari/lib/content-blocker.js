@@ -17,8 +17,7 @@
 
 var Log = require('utils/log').Log;
 var SafariContentBlockerConverter = require('converter').SafariContentBlockerConverter;
-var setTimeout = require('sdk/timers').setTimeout;
-var clearTimeout = require('sdk/timers').clearTimeout;
+var Utils = require('utils/browser-utils').Utils;
 
 /**
  * Safari Content Blocker helper
@@ -79,8 +78,6 @@ var SafariContentBlocker = exports.SafariContentBlocker = {
             Log.error('Error while starting load of ' + url + ': ' + e);
         }
     },
-
-    onSetContentBlockerTimeout: null,
 
     _setContentBlocker: Utils.debounce(function (json) {
         try {
