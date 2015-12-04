@@ -276,10 +276,10 @@ AntiBannerService.prototype = {
             // Request filter is ready
             this.requestFilter = requestFilter;
 
-            EventNotifier.notifyListeners(EventNotifierTypes.REQUEST_FILTER_UPDATED, this.getRulesCount());
-
             // No need in dirtyRules collection anymore
             this.dirtyRules = null;
+
+            EventNotifier.notifyListeners(EventNotifierTypes.REQUEST_FILTER_UPDATED, this.getRulesCount());
         }
 
         return this.requestFilter;
