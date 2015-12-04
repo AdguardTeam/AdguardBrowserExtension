@@ -1,3 +1,6 @@
+/* global assertEquals */
+/* global _logDebug */
+/* global addTestCase */
 /**
  * Test script for Safari content-blocking rules converter
  */
@@ -85,11 +88,32 @@ function testConvertRulesToJson() {
 addTestCase(testConvertRulesToJson);
 
 /**
+ * Tests rule with empty regexp conversion
+ */
+function testConvertRuleWithEmptyRegexp() {
+    var ruleText = "@@$image,domain=moonwalk.cc";
+    var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    assertEquals(1, result.convertedCount);
+    assertEquals(0, result.errorsCount);
+    var converted = JSON.parse(result.converted);
+    assertEquals(1, converted.length);
+
+    var convertedRule = converted[0];
+    assertEquals(".*", convertedRule.trigger["url-filter"]);
+    assertEquals(1, convertedRule.trigger["if-domain"].length);
+    assertEquals("*moonwalk.cc", convertedRule.trigger["if-domain"][0]);
+    assertEquals(1, convertedRule.trigger["resource-type"].length);
+    assertEquals("image", convertedRule.trigger["resource-type"][0]);
+    assertEquals("ignore-previous-rules", convertedRule.action.type);
+}
+addTestCase(testConvertRuleWithEmptyRegexp);
+
+/**
  * Checks regexp performance
  */
 function testRegexpPerformance() {
 
-    var count = 5 * 1000 * 1000;
+    var count = 1 * 1000 * 1000;
 
     // Test URL with domain rule
     var regExp1 = new RegExp('^https?://([a-z0-9-_.]+\\.)?some-domain.com\\.com([^ a-zA-Z0-9.%]|$)', 'i');

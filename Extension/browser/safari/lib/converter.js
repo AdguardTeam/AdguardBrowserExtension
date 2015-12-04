@@ -179,10 +179,10 @@ exports.SafariContentBlockerConverter = {
                 if (urlRegExpSource && urlRegExpSource != "") {
                     return urlRegExpSource;
                 }
-
             }
 
-            return filter.ruleText;
+            // Rule with empty regexp
+            return URL_FILTER_ANY_URL;
         },
 
         _parseRuleDomain: function (ruleText) {
@@ -208,7 +208,7 @@ exports.SafariContentBlockerConverter = {
                 }
 
                 if (startIndex == -1) {
-                    return "";
+                    return null;
                 }
 
                 var symbolIndex = -1;
@@ -217,7 +217,7 @@ exports.SafariContentBlockerConverter = {
                     var index = ruleText.indexOf(contain, startIndex);
                     if (index >= 0) {
                         symbolIndex = index;
-                        break
+                        break;
                     }
                 }
 
@@ -227,7 +227,7 @@ exports.SafariContentBlockerConverter = {
                 return {
                     domain: UrlUtils.toPunyCode(domain),
                     path: path
-                }
+                };
 
             } catch (ex) {
                 Log.error("Error parsing domain from {0}, cause {1}", ruleText, ex);
@@ -278,11 +278,9 @@ exports.SafariContentBlockerConverter = {
             }
 
             if (rule.whiteListRule && rule.whiteListRule === true) {
-                //Log.debug(rule);
 
                 if (isDocumentRule(rule) || isUrlBlockRule(rule)) {
                     var parseDomainResult = this._parseRuleDomain(rule.urlRuleText);
-                    //Log.debug(parseDomainResult);
 
                     if (isDocumentRule(rule)) {
                         //http://jira.performix.ru/browse/AG-8715
