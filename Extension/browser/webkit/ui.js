@@ -558,14 +558,6 @@ var UI = {
 		});
 	},
 
-	reloadAntiBannerFilters: function () {
-		antiBannerService.reloadAntiBannerFilters(function (updatedFilters) {
-			EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTERS_SHOW_POPUP, true, updatedFilters);
-		}, function () {
-			EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTERS_SHOW_POPUP, false);
-		});
-	},
-
 	checkAntiBannerFiltersUpdate: function () {
 		antiBannerService.checkAntiBannerFiltersUpdate(true, function (updatedFilters) {
 			EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTERS_SHOW_POPUP, true, updatedFilters);

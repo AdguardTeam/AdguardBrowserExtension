@@ -727,11 +727,23 @@ AntiBannerService.prototype = {
      *
      * @param successCallback
      * @param errorCallback
+     * @private
      */
-    reloadAntiBannerFilters: Utils.debounce(function(successCallback, errorCallback) {
+    _reloadAntiBannerFilters: Utils.debounce(function(successCallback, errorCallback) {
         this._resetFiltersVersion();
         this.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback);
     }, 250),
+
+    /**
+     * Reloads filters from backend
+     */
+    reloadAntiBannerFilters: function () {
+        this._reloadAntiBannerFilters(function (updatedFilters) {
+            EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTERS_SHOW_POPUP, true, updatedFilters);
+        }, function () {
+            EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTERS_SHOW_POPUP, false);
+        })
+    },
 
     /**
      * Checks filters updates.
