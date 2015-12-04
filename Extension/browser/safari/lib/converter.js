@@ -173,12 +173,10 @@ exports.SafariContentBlockerConverter = {
             if (filter.urlRegExp) {
                 return filter.urlRegExp.source;
             }
-
-            if (filter.getUrlRegExpSource) {
-                var urlRegExpSource = filter.getUrlRegExpSource();
-                if (urlRegExpSource && urlRegExpSource != "") {
-                    return urlRegExpSource;
-                }
+            
+            var urlRegExpSource = filter.getUrlRegExpSource();
+            if (urlRegExpSource) {
+                return urlRegExpSource;
             }
 
             // Rule with empty regexp
