@@ -111,10 +111,6 @@ ContentMessageHandler.prototype = {
                 this.UI.checkAntiBannerFiltersUpdate();
                 callback({});
                 break;
-            case 'reloadAntiBannerFilters':
-                this.antiBannerService.reloadAntiBannerFilters();
-                callback({});
-                break;
             case 'getAntiBannerFiltersForOptionsPage':
                 var renderedFilters = this.antiBannerService.getAntiBannerFiltersForOptionsPage();
                 callback({filters: renderedFilters});

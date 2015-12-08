@@ -96,6 +96,9 @@ AntiBannerService.prototype = {
      */
     UPDATE_FILTERS_DELAY: 5 * 60 * 1000,
 
+    FILTERS_CHANGE_DEBOUCE_PERIOD: 500,
+    RELOAD_FILTERS_DEBOUNCE_PERIOD: 500,
+
     /**
      * AntiBannerService constructor
      * @param options Constructor options
@@ -163,6 +166,9 @@ AntiBannerService.prototype = {
             // For instance "Dutch filter" linked to "nl" language code.
             // These mappings are then used by LocaleDetectorService to auto-enable language-specific filter.
             this.localeDetectorService.setFiltersLanguages(this.subscriptionService.getFiltersLanguages());
+
+            // Subscribe to events which lead to update filters (e.g. switсh to optimized and back to default)
+            this._subscribeToFiltersChangeEvents();
 
             if (runInfo.isFirstRun) {
                 // Add event listener for filters change
@@ -729,20 +735,9 @@ AntiBannerService.prototype = {
      * @param errorCallback
      * @private
      */
-    _reloadAntiBannerFilters: Utils.debounce(function(successCallback, errorCallback) {
+    _reloadAntiBannerFilters: function (successCallback, errorCallback) {
         this._resetFiltersVersion();
         this.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback);
-    }, 250),
-
-    /**
-     * Reloads filters from backend
-     */
-    reloadAntiBannerFilters: function () {
-        this._reloadAntiBannerFilters(function (updatedFilters) {
-            EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTERS_SHOW_POPUP, true, updatedFilters);
-        }, function () {
-            EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTERS_SHOW_POPUP, false);
-        })
     },
 
     /**
@@ -1112,7 +1107,7 @@ AntiBannerService.prototype = {
                     onEventsProcessDone();
                 }
 
-            }.bind(this), 500);
+            }.bind(this), this.FILTERS_CHANGE_DEBOUCE_PERIOD);
 
         }.bind(this);
 
@@ -1177,6 +1172,22 @@ AntiBannerService.prototype = {
         }.bind(this));
 
         return dfd;
+    },
+
+    /**
+     * Subscribe to events which lead to filters update.
+     * @private
+     */
+    _subscribeToFiltersChangeEvents: function () {
+
+        // on USE_OPTIMIZED_FILTERS setting change we need to reload filters
+        var onUsedOptimizedFiltersChange = Utils.debounce(this._reloadAntiBannerFilters.bind(this), this.RELOAD_FILTERS_DEBOUNCE_PERIOD);
+
+        EventNotifier.addListener(function (event, setting) {
+            if (event === EventNotifierTypes.CHANGE_USER_SETTINGS && setting === userSettings.settings.USE_OPTIMIZED_FILTERS) {
+                onUsedOptimizedFiltersChange();
+            }
+        });
     },
 
     /**
@@ -1516,6 +1527,7 @@ var UPDATE_REQUEST_FILTER_EVENTS = [EventNotifierTypes.UPDATE_FILTER_RULES, Even
 var SAVE_FILTER_RULES_TO_FS_EVENTS = [EventNotifierTypes.UPDATE_FILTER_RULES, EventNotifierTypes.ADD_RULE, EventNotifierTypes.ADD_RULES, EventNotifierTypes.REMOVE_RULE];
 
 // Events
+// TODO: move to UI.js.
 (function () {
 
     //on filter auto-enabled event
