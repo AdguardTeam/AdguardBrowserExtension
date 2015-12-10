@@ -27,6 +27,10 @@ var Prefs = exports.Prefs = {
 		var url = "filters/filter_" + filterId + ".txt";
 		return ext.getURL(url);
 	},
+	getLocalMobileFilterPath: function (filterId) {
+		var url = "filters/filter_mobile_" + filterId + ".txt";
+		return ext.getURL(url);
+	},
 	localGroupsMetadataPath: ext.getURL('filters/groups.xml'),
 	localFiltersMetadataPath: ext.getURL('filters/filters.xml'),
 	safebrowsingPagePath: ext.getURL("pages/sb.html"),

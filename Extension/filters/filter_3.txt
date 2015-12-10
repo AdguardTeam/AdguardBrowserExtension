@@ -1,9 +1,9 @@
-! Version: 1.0.3.81
+! Version: 1.0.3.97
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet be tracked, use this filter.
 ! NameEn: Spyware filter
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2015-11-17T19:08:32.452+03:00
+! TimeUpdated: 2015-11-30T15:51:26.153+03:00
 ! Adguard Spyware Filter
 !
 ! The most comprehensive list of various online counters and web analytics tools.
@@ -72,6 +72,23 @@ popmech.ru#%#AG_onLoad(function() { window.POPMECH.increaseCounters = function()
 !-------------------------------------------------------------------------------!
 !-------------- Tracking servers list  -----------------------------------------!
 !-------------------------------------------------------------------------------!
+||stats.wordpress.com^
+||dmtracking2.alibaba.com^
+||criteo.com/event?$third-party
+||alibaba.com/js/beacon_
+||stat.alibaba.com^
+||tracelog.www.alibaba.com^
+||ynuf.alipay.com/service/
+||sinajs.cn/open/analytics/$third-party
+||tanx.com^$third-party
+||arlime.com^$third-party
+||beanstock.com^$third-party
+||optimize-stats.voxmedia.com^$third-party
+||counter.ukr.net^
+||target.ukr.net^
+||onthe.io^$third-party
+||erkaseriilan.com.tr^$third-party
+||ntvk1.ru^$third-party
 ||c.bing.com/c.gif
 /wp-slimstat/
 ||tut.by/stat/
@@ -2583,6 +2600,9 @@ http://r.i.ua/s?
 !-------------------------------------------------------------------------------!
 !-------------- Specific web sites ---------------------------------------------!
 !-------------------------------------------------------------------------------!
+||cmap.alibaba.com/landing_ae.gif
+sinoptik.ua###bigmirTop
+||sinst.fwdcdn.com/img/newImg/liveinternet.gif
 3dnews.ru##a[href^="http://metrika.yandex.ru/"]
 allfilms.net.ua##img[src^="http://c.hit.ua/hit"]
 artmoney.ru##noindex > a
@@ -2644,7 +2664,6 @@ washingtonpost.com##.social-tools-wrapper-bottom
 ||metrics.aviasales.ru^
 ||nbcnews.com/databox/databoxservice.asmx/GetLocation$domain=nbcnews.com
 ||nbcnews.com/trackingService/$domain=nbcnews.com
-||onthe.io^$domain=lenta.ru|tut.by
 ||pic4you.ru/img/footer.js
 ||pornhub.com/pix.php?s=
 ||ranking.fc2.com/analyze.js
@@ -2664,6 +2683,18 @@ washingtonpost.com##.social-tools-wrapper-bottom
 !-------------------------------------------------------------------------------!
 !-------------- Whitelist ------------------------------------------------------!
 !-------------------------------------------------------------------------------!
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/994
+@@||googletagmanager.com/gtm.js$domain=rollingstone.com
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/983
+@@||analytics.edgesuite.net/html5/akamaihtml$domain=video.foxnews.com
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/982
+@@||b.scorecardresearch.com^$domain=macworld.com
+@@||omtrdc.net/b/ss/$domain=macworld.com
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/969
+@@||googletagmanager.com/gtm.js$domain=maximonline.ru
+@@||google-analytics.com/analytics.js$domain=maximonline.ru
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/970
+@@||2o7.net^$domain=audiusa.com
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/906
 @@||de.sitestat.com/sueddeutsche/sueddeutsche/$domain=sueddeutsche.de
 ! http://forum.adguard.com/showthread.php?7344

@@ -40,11 +40,14 @@ var ServiceClient = exports.ServiceClient = function () {
 	this.backendUrl = "https://chrome.adtidy.org";
     this.apiKey = "4DDBE80A3DA94D819A00523252FB6380";
 
+	// URL for downloading AG filters
+	this.getFilterRulesUrl = this.backendUrl + "/getfilter.html";
+
+	// URL for downloading optimized AG filters
+	this.getOptimizedFilterRulesUrl = this.backendUrl + "/getoptimizedfilter.html";
+
     // URL for checking filter updates
 	this.checkFilterVersionsUrl = this.backendUrl + "/checkfilterversions.html";
-
-    // URL for downloading AG filters
-	this.getFilterRulesUrl = this.backendUrl + "/getfilter.html";
 
     // URL for user complaints on missed ads or malware/phishing websites
 	this.reportUrl = this.backendUrl + "/url-report.html";
@@ -139,11 +142,12 @@ ServiceClient.prototype = {
 	/**
 	 * Downloads filter rules by filter ID
 	 *
-	 * @param filterId          Filter identifier
-	 * @param successCallback   Called on success
-	 * @param errorCallback     Called on error
+	 * @param filterId          	Filter identifier
+	 * @param useOptimizedFilters 	Download optimized filters flag
+	 * @param successCallback   	Called on success
+	 * @param errorCallback     	Called on error
 	 */
-	loadFilterRules: function (filterId, successCallback, errorCallback) {
+	loadFilterRules: function (filterId, useOptimizedFilters, successCallback, errorCallback) {
 
 		var AdguardFilterVersion = require('filter/antibanner').AdguardFilterVersion;
 
@@ -180,20 +184,31 @@ ServiceClient.prototype = {
 			var filterVersion = new AdguardFilterVersion(timeUpdated.getTime(), version, filterId);
 			successCallback(filterVersion, rules);
 		};
-		var url = this.getFilterRulesUrl + "?filterid=" + filterId;
+		var url = this._getFilterRulesUrl(useOptimizedFilters) + "?filterid=" + filterId;
 		url += this.APP_PARAM;
 		url = this._addKeyParameter(url);
 		this._executeRequestAsync(url, "text/plain", success, errorCallback);
 	},
 
 	/**
+	 * URL for downloading AG filters
+	 *
+	 * @param useOptimizedFilters
+	 * @private
+	 */
+	_getFilterRulesUrl: function (useOptimizedFilters) {
+		return useOptimizedFilters ? this.getOptimizedFilterRulesUrl : this.getFilterRulesUrl;
+	},
+
+	/**
 	 * Loads filter rules from local file
 	 *
-	 * @param filterId          Filter identifier
-	 * @param successCallback   Called on success
-	 * @param errorCallback     Called on error
+	 * @param filterId          	Filter identifier
+	 * @param useOptimizedFilters 	Download optimized filters flag
+	 * @param successCallback   	Called on success
+	 * @param errorCallback     	Called on error
 	 */
-	loadLocalFilter: function (filterId, successCallback, errorCallback) {
+	loadLocalFilter: function (filterId, useOptimizedFilters, successCallback, errorCallback) {
 
 		var AdguardFilterVersion = require('filter/antibanner').AdguardFilterVersion;
 
@@ -218,7 +233,12 @@ ServiceClient.prototype = {
 			var filterVersion = new AdguardFilterVersion(timeUpdated.getTime(), version, filterId);
 			successCallback(filterVersion, rules);
 		};
+
 		var url = Prefs.getLocalFilterPath(filterId);
+		if (useOptimizedFilters) {
+			url = Prefs.getLocalMobileFilterPath(filterId);
+		}
+
 		this._executeRequestAsync(url, "text/plain", success, errorCallback);
 	},
 

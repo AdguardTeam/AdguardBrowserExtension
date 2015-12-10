@@ -1,9 +1,9 @@
-! Version: 1.0.7.32
+! Version: 1.0.7.46
 ! Name: Social media filter
 ! Description: A filter for social media widgets ("Like" buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2015-11-16T16:53:28.876+03:00
+! TimeUpdated: 2015-11-30T15:51:32.611+03:00
 ! Adguard Social Media Filter
 !
 ! If you do not like numerous «Like» and «Tweet» buttons on all the popular websites on the Internet,
@@ -30,6 +30,7 @@
 !
 ! This section contains rules for common trackers/buttons
 !
+||facebook.com/tr/?
 /wp-content/plugins/flare/
 /wp-content/plugins/social-warfare/
 ||addthis.com^$third-party,domain=~civilization.com|~imgur.com|~tscan.mg
@@ -211,7 +212,7 @@ lj_bookmarklet
 !-------------------
 ! injecting gapi object to avoid breaking website's javascript
 ~google.cn,~google.by,~google.be,~google.at,~google.ae,~google.ca,~google.ch,~google.cl,~google.cn,~google.co.id,~google.co.in,~google.co.jp,~google.co.th,~google.co.uk,~google.co.ve,~google.co.za,~google.com,~google.com.ar,~google.com.au,~google.com.bd,~google.com.br,~google.com.co,~google.com.eg,~google.com.hk,~google.com.mx,~google.com.my,~google.com.ng,~google.com.pe,~google.com.pe,~google.com.ph,~google.com.pk,~google.com.sa,~google.com.sg,~google.com.tr,~google.com.tw,~google.com.ua,~google.com.vn,~google.de,~google.dk,~google.es,~google.fr,~google.gr,~google.hu,~google.ie,~google.it,~google.nl,~google.no,~google.pl,~google.ru,~google.pt,~google.ro,~google.rs,~google.se,~google.sk,~google.tn,~google.ee,~youtube.com,~9gag.com,~xda-developers.com,~driveplayer.com#%#window.gapi={ plusone: { go: function(){}, render: function(){} }};
-~milli-firka.org,~assassinscreed.com,~surfingbird.ru,~samsung.com,~imgur.com,~rockstargames.com#%#var addthis = { init: function() {}, addEventListener: function() {}, button: function() {}, counter: function() {} };
+~wetter.com,~milli-firka.org,~assassinscreed.com,~surfingbird.ru,~samsung.com,~imgur.com,~rockstargames.com#%#var addthis = { init: function() {}, addEventListener: function() {}, button: function() {}, counter: function() {} };
 hopesandfears.com#%#twttr={events: { bind: function() {} }};
 ! Fixing CNN gallery
 #%#var stLight = { options: function() {} };
@@ -251,6 +252,17 @@ softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 !
 ! Contains rules for specific web sites
 !
+engadget.com###pinned
+ign.com##.sharer
+echo.msk.ru##.tooltipster-default
+metacritic.com##.sharing
+metacritic.com##.social_btm
+engadget.com###pinned
+polygon.com###follow-bar-buttons
+xlivetv.sx###vkjoin
+meduza.io##.MaterialTopBar-shareButtons
+dlh.net###socialshareprivacy
+m.huffpost.com##.share-bar
 imageshack.us###Actions
 meduza.io###DailySubscriber
 washingtonpost.com###NN-module-rr
@@ -813,6 +825,9 @@ komarovskiy.net##ul[class="social-bookmarks"]
 !
 ! Section contains list general hiding rules
 !
+##.mom-social-share
+###chorus-social-fixed
+~reddit.com##a[href^="http://www.reddit.com/submit"]
 ###ShareModule
 ###SocialButtons
 ###SocialSharingBtns
@@ -1339,17 +1354,17 @@ livejournal.com##.b-ljtimes-wrapper
 ~linkedin.com##a[href^="http://www.linkedin.com/shareArticle?"]
 ##a[href^="http://www.odnoklassniki.ru/dk?st.cmd=addShare"]
 ~sharethis.com##a[href^="http://www.sharethis.com/share/?publisher="]
-~tumblr.com##a[href^="http://www.tumblr.com/share/"]
-~tumblr.com##a[href^="http://www.tumblr.com/share?u="]
+~tumblr.com##a[href^="http://www.tumblr.com/share"]
 ~facebook.com##a[href^="https://facebook.com/sharer.php?"]
-~plus.google.com##a[href^="https://plus.google.com/share?url="]
+~plus.google.com##a[href^="https://plus.google.com/share"]
+~plus.google.com##a[href^="//plus.google.com/share"]
 ~twitter.com##a[href^="https://twitter.com/intent/follow?"]
 ~twitter.com##a[href^="https://twitter.com/intent/retweet?tweet_id"]
 ~yellosoft.us##a[href^="https://twitter.com/intent/tweet?"]
-~twitter.com##a[href^="https://twitter.com/share?"]
+~twitter.com##a[href^="https://twitter.com/share"]
 ~vk.com##a[href^="https://vk.com/share.php"]
 ~facebook.com##a[href^="https://www.facebook.com/sharer.php?"]
-~facebook.com##a[href^="https://www.facebook.com/sharer/sharer.php?u="]
+~facebook.com##a[href^="https://www.facebook.com/sharer/sharer.php"]
 ##a[href^="https://www.linkedin.com/cws/share?url="]
 ~stumbleupon.com##a[href^="https://www.stumbleupon.com/submit?url="]
 ~facebook.com##a[name="fb_share"]
@@ -1378,6 +1393,13 @@ livejournal.com##.b-ljtimes-wrapper
 !
 ! Section fixing issues caused by social filter
 !
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/998
+macrumors.com#@#.social-media
+! logaster.com - login buttons was hidden
+logaster.com#@#.icon-gplus
+logaster.com#@#.icon-facebook
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/943
+@@||yastatic.net/share/share.js$domain=lixty.net
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/932
 @@||talon.by/squeeze/
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/921

@@ -89,17 +89,12 @@ public class Main {
 
 		if (updateFilters) {
 			FilterUtils.updateGroupsAndFiltersMetadata(source);
-			FilterUtils.updateLocalFilters(source);
+			FilterUtils.updateLocalFilters(source, new File(source, "filters"));
 		}
 
 		Set<String> scriptRules = FilterUtils.getScriptRules(source);
 
 		File buildResult = createBuild(source, dest, scriptRules, extensionId, updateUrl, browser, version, branch);
-
-		if (updateFilters && browser == Browser.SAFARI) {
-			FilterUtils.loadEnglishFilterForSafari(new File(buildResult, "filters"));
-			FilterUtils.loadMobileSafariFilter(new File(buildResult, "filters"));
-		}
 
 		File packedFile = null;
 		if (packMethod != null) {

@@ -36,6 +36,10 @@ var Prefs = exports.Prefs = {
 		var url = "filters/filter_" + filterId + ".txt";
 		return self.data.url(url);
 	},
+	getLocalMobileFilterPath: function (filterId) {
+		var url = "filters/filter_mobile_" + filterId + ".txt";
+		return self.data.url(url);
+	},
 	localGroupsMetadataPath: self.data.url('filters/groups.xml'),
 	localFiltersMetadataPath: self.data.url('filters/filters.xml'),
 	safebrowsingPagePath: 'sb.html',

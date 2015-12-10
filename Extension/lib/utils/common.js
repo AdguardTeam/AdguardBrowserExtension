@@ -244,7 +244,7 @@ var AntiBannerFiltersId = exports.AntiBannerFiltersId = {
     TRACKING_FILTER_ID: 3,
     SOCIAL_FILTER_ID: 4,
     ACCEPTABLE_ADS_FILTER_ID: 10,
-    MOBILE_SAFARI_FILTER: 12,
+    SAFARI_FILTER: 12,
     WHITE_LIST_FILTER_ID: 100,
     EASY_PRIVACY: 118,
     FANBOY_ANNOYANCES: 122,
@@ -272,7 +272,7 @@ var FilterUtils = exports.FilterUtils = {
 
     isAdguardFilter: function (filter) {
         return filter.filterId <= AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID ||
-            filter.filterId == AntiBannerFiltersId.MOBILE_SAFARI_FILTER;
+            filter.filterId == AntiBannerFiltersId.SAFARI_FILTER;
     },
 
     isUserFilterRule: function (rule) {

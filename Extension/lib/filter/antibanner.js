@@ -96,6 +96,9 @@ AntiBannerService.prototype = {
      */
     UPDATE_FILTERS_DELAY: 5 * 60 * 1000,
 
+    FILTERS_CHANGE_DEBOUCE_PERIOD: 500,
+    RELOAD_FILTERS_DEBOUNCE_PERIOD: 500,
+
     /**
      * AntiBannerService constructor
      * @param options Constructor options
@@ -163,6 +166,9 @@ AntiBannerService.prototype = {
             // These mappings are then used by LocaleDetectorService to auto-enable language-specific filter.
             this.localeDetectorService.setFiltersLanguages(this.subscriptionService.getFiltersLanguages());
 
+            // Subscribe to events which lead to update filters (e.g. switсh to optimized and back to default)
+            this._subscribeToFiltersChangeEvents();
+
             if (runInfo.isFirstRun) {
                 // Add event listener for filters change
                 context._addFiltersChangeEventListener();
@@ -198,9 +204,9 @@ AntiBannerService.prototype = {
         var localeFilterIds = this.localeDetectorService.getFilterIdsForLanguage(Prefs.locale);
         filterIds = filterIds.concat(localeFilterIds);
 
-        // Add mobile safari filter for safari 9+
-        if (Utils.isContentBlockerEnabled()) {
-            filterIds.push(AntiBannerFiltersId.MOBILE_SAFARI_FILTER);
+        // Add safari filter for safari browser
+        if (Utils.isSafariBrowser()) {
+            filterIds.push(AntiBannerFiltersId.SAFARI_FILTER);
         }
 
         // This callback is used to activate language-specific filter after user's country is detected
@@ -724,6 +730,18 @@ AntiBannerService.prototype = {
     },
 
     /**
+     * Reloads filters from backend
+     *
+     * @param successCallback
+     * @param errorCallback
+     * @private
+     */
+    _reloadAntiBannerFilters: function (successCallback, errorCallback) {
+        this._resetFiltersVersion();
+        this.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback);
+    },
+
+    /**
      * Checks filters updates.
      *
      * @param forceUpdate Normally we respect filter update period. But if this parameter is
@@ -828,6 +846,17 @@ AntiBannerService.prototype = {
                 Log.error("Error download subscription by url {0}, cause: {1} {2}", subscriptionUrl, request.statusText, cause || "");
             };
             this.serviceClient.loadFilterRulesBySubscriptionUrl(subscriptionUrl, successCallback, errorCallback);
+        }
+    },
+
+    /**
+     * Resets all filters versions
+     */
+    _resetFiltersVersion: function () {
+        var RESET_VERSION = "0.0.0.0";
+
+        for (var i = 0; i < this.adguardFilters.length; i++) {
+            this.adguardFilters[i].version = RESET_VERSION;
         }
     },
 
@@ -1089,7 +1118,7 @@ AntiBannerService.prototype = {
                     EventNotifier.notifyListeners(EventNotifierTypes.REQUEST_FILTER_UPDATED, this.getRulesCount());
                 }
 
-            }.bind(this), 500);
+            }.bind(this), this.FILTERS_CHANGE_DEBOUCE_PERIOD);
 
         }.bind(this);
 
@@ -1157,11 +1186,29 @@ AntiBannerService.prototype = {
     },
 
     /**
+     * Subscribe to events which lead to filters update.
+     * @private
+     */
+    _subscribeToFiltersChangeEvents: function () {
+
+        // on USE_OPTIMIZED_FILTERS setting change we need to reload filters
+        var onUsedOptimizedFiltersChange = Utils.debounce(this._reloadAntiBannerFilters.bind(this), this.RELOAD_FILTERS_DEBOUNCE_PERIOD);
+
+        EventNotifier.addListener(function (event, setting) {
+            if (event === EventNotifierTypes.CHANGE_USER_SETTINGS && setting === userSettings.settings.USE_OPTIMIZED_FILTERS) {
+                onUsedOptimizedFiltersChange();
+            }
+        });
+    },
+
+    /**
      * Schedules filters update job
+     * @isFirstRun
      * @private
      */
     _scheduleFiltersUpdate: function () {
         var updateFunc = this.checkAntiBannerFiltersUpdate.bind(this);
+
         // First run delay
         setTimeout(updateFunc, this.UPDATE_FILTERS_DELAY);
 
@@ -1291,7 +1338,7 @@ AntiBannerService.prototype = {
             callback(false);
         };
 
-        this.serviceClient.loadFilterRules(filter.filterId, successCallback, errorCallback);
+        this.serviceClient.loadFilterRules(filter.filterId, userSettings.isUseOptimizedFiltersEnabled(), successCallback, errorCallback);
     },
 
     /**
@@ -1355,7 +1402,7 @@ AntiBannerService.prototype = {
             callback(false);
         };
 
-        this.serviceClient.loadLocalFilter(filter.filterId, successCallback, errorCallback);
+        this.serviceClient.loadLocalFilter(filter.filterId, userSettings.isUseOptimizedFiltersEnabled(), successCallback, errorCallback);
     }
 };
 
@@ -1491,6 +1538,7 @@ var UPDATE_REQUEST_FILTER_EVENTS = [EventNotifierTypes.UPDATE_FILTER_RULES, Even
 var SAVE_FILTER_RULES_TO_FS_EVENTS = [EventNotifierTypes.UPDATE_FILTER_RULES, EventNotifierTypes.ADD_RULE, EventNotifierTypes.ADD_RULES, EventNotifierTypes.REMOVE_RULE];
 
 // Events
+// TODO: move to UI.js.
 (function () {
 
     //on filter auto-enabled event
