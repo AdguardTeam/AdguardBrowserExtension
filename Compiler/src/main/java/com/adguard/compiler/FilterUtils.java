@@ -34,7 +34,7 @@ public class FilterUtils {
     private final static String GROUPS_METADATA_DOWNLOAD_URL = "http://adtidy.org/get-groups.html";
     private final static String FILTERS_METADATA_DOWNLOAD_URL = "http://adtidy.org/get-filters.html";
     public final static String FILTER_DOWNLOAD_URL = "http://chrome.adtidy.org/getfilter.html?filterid=%s&key=4DDBE80A3DA94D819A00523252FB6380";
-    public final static String MOBILE_FILTER_DOWNLOAD_URL = "http://mobile.adtidy.org/api/1.0/getfilter.html?filterid=%s&key=4DDBE80A3DA94D819A00523252FB6380";
+    public final static String OPTIMIZED_FILTER_DOWNLOAD_URL = "http://chrome.adtidy.org/getoptimizedfilter.html?filterid=%s&key=4DDBE80A3DA94D819A00523252FB6380";
 
     /**
      * Downloads filters from our backend server
@@ -58,7 +58,7 @@ public class FilterUtils {
                 File filterFile = downloadFilterFile(dest, filterId, FilterUtils.FILTER_DOWNLOAD_URL, "filter_" + filterId + ".txt");
                 filesToCopy.add(filterFile);
 
-                File optimizedFilterFile = downloadFilterFile(dest, filterId, FilterUtils.MOBILE_FILTER_DOWNLOAD_URL, "filter_mobile_" + filterId + ".txt");
+                File optimizedFilterFile = downloadFilterFile(dest, filterId, FilterUtils.OPTIMIZED_FILTER_DOWNLOAD_URL, "filter_mobile_" + filterId + ".txt");
                 filesToCopy.add(optimizedFilterFile);
             }
 

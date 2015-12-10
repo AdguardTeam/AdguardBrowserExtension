@@ -38,12 +38,13 @@ var ServiceClient = exports.ServiceClient = function () {
 
 	// Base url of our backend server
 	this.backendUrl = "https://chrome.adtidy.org";
-	//TODO: Add mobile filters to extension backend instead.
-	this.mobileBackendUrl = "http://mobile.adtidy.org/api/1.0";
     this.apiKey = "4DDBE80A3DA94D819A00523252FB6380";
 
-	//URL for downloading AG filters
-	this.getFilterRulesUrl = "/getfilter.html";
+	// URL for downloading AG filters
+	this.getFilterRulesUrl = this.backendUrl + "/getfilter.html";
+
+	// URL for downloading optimized AG filters
+	this.getOptimizedFilterRulesUrl = this.backendUrl + "/getoptimizedfilter.html";
 
     // URL for checking filter updates
 	this.checkFilterVersionsUrl = this.backendUrl + "/checkfilterversions.html";
@@ -196,8 +197,7 @@ ServiceClient.prototype = {
 	 * @private
 	 */
 	_getFilterRulesUrl: function (useOptimizedFilters) {
-		var host = useOptimizedFilters ? this.mobileBackendUrl : this.backendUrl;
-		return host + this.getFilterRulesUrl;
+		return useOptimizedFilters ? this.getOptimizedFilterRulesUrl : this.getFilterRulesUrl;
 	},
 
 	/**
