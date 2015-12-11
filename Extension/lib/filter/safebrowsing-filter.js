@@ -92,6 +92,8 @@ SafebrowsingFilter.prototype = {
             return;
         }
 
+        var hashesMap = this._createHashesMap(hosts);
+
         var successCallback = function (response) {
             if (response.status >= 500) {
                 // Error on server side, suspend request
@@ -101,7 +103,11 @@ SafebrowsingFilter.prototype = {
             }
             this._resumeSafebrowsing();
 
-            var sbList = this._processSbResponse(response.responseText) || this.SB_WHITE_LIST;
+            var sbList = this.SB_WHITE_LIST;
+            if (response.status != 204) {
+                sbList = this._processSbResponse(response.responseText, hashesMap) || this.SB_WHITE_LIST;
+            }
+
             this.safebrowsingCache.saveValue(host, sbList, Date.now() + this.SB_TTL);
 
             lookupUrlCallback(this._createResponse(sbList));
@@ -113,7 +119,13 @@ SafebrowsingFilter.prototype = {
             this._suspendSafebrowsing();
         }.bind(this);
 
-        this.serviceClient.lookupSafebrowsing(host, successCallback, errorCallback);
+        var hashes = Object.keys(hashesMap);
+        var shortHashes = [];
+        for (var i = 0; i < hashes.length; i++) {
+            shortHashes.push(hashes[i].substring(0, 8));
+        }
+
+        this.serviceClient.lookupSafebrowsing(shortHashes, successCallback, errorCallback);
     },
 
     /**
@@ -160,19 +172,32 @@ SafebrowsingFilter.prototype = {
      * Parses safebrowsing service response
      *
      * @param responseText  Response text
+     * @param hashesMap  Hashes hosts map
      * @returns Safebrowsing list or null
      * @private
      */
-    _processSbResponse: function (responseText) {
+    _processSbResponse: function (responseText, hashesMap) {
         if (!responseText || responseText.length > 10 * 1024) {
             return null;
         }
+
         try {
-            var lookupResult = JSON.parse(responseText);
-            if (lookupResult && (lookupResult.list == "adguard-malware-shavar" ||
-                lookupResult.list == "adguard-phishing-shavar")) {
-                return lookupResult.list;
+            var result = Object.create(null);
+
+            var lines = responseText.split('\n');
+            for (var i = 0; i < lines.length; i++) {
+                var r = lines[i].split(":");
+                var hash = r[2];
+                var host = hashesMap[hash];
+                if (host != null) {
+                    result['list'] = r[0];
+                    result['host'] = host;
+
+                    return result;
+                }
             }
+
+            return null;
         } catch (ex) {
             Log.error("Error parse safebrowsing response, cause {0}", ex);
         }
@@ -255,17 +280,16 @@ SafebrowsingFilter.prototype = {
      * gets prefixes for calculated hashes
      *
      * @param hosts
-     * @returns Array of prefixes
+     * @returns Map object of prefixes
      * @private
      */
-    _calcHashes: function (hosts) {
-        var result = [];
+    _createHashesMap: function (hosts) {
+        var result = Object.create(null);
 
         for (var i = 0; i < hosts.length; i++) {
-            var host = hosts[i] + '/';
-            var hash = SHA256_hash(host);
-            hash = hash.substring(0, 8);
-            result.push(hash);
+            var host = hosts[i];
+            var hash = SHA256_hash(host  + '/');
+            result[hash.toUpperCase()] = host;
         }
 
         return result;
