@@ -26,6 +26,7 @@ var Log = require('utils/log').Log;
 var LS = require('utils/local-storage').LS;
 var Prefs = require('prefs').Prefs;
 var StringUtils = require('utils/common').StringUtils;
+require('utils/jssha256');
 
 /**
  * Initializing SafebrowsingFilter.
@@ -226,7 +227,7 @@ SafebrowsingFilter.prototype = {
      * This method returns all sub-domains and IP address of the specified host.
      *
      * @param host Host
-     * @returns List of extracted host names
+     * @returns Array of extracted host names
      * @private
      */
     _extractHosts: function (host) {
@@ -247,5 +248,26 @@ SafebrowsingFilter.prototype = {
         }
 
         return hosts;
+    },
+
+    /**
+     * Calculates SHA256 hashes for strings in hosts and then
+     * gets prefixes for calculated hashes
+     *
+     * @param hosts
+     * @returns Array of prefixes
+     * @private
+     */
+    _calcHashes: function (hosts) {
+        var result = [];
+
+        for (var i = 0; i < hosts.length; i++) {
+            var host = hosts[i] + '/';
+            var hash = SHA256_hash(host);
+            hash = hash.substring(0, 8);
+            result.push(hash);
+        }
+
+        return result;
     }
 };
