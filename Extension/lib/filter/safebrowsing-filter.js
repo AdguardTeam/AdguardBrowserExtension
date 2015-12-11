@@ -182,18 +182,13 @@ SafebrowsingFilter.prototype = {
         }
 
         try {
-            var result = Object.create(null);
-
             var lines = responseText.split('\n');
             for (var i = 0; i < lines.length; i++) {
                 var r = lines[i].split(":");
                 var hash = r[2];
                 var host = hashesMap[hash];
                 if (host != null) {
-                    result['list'] = r[0];
-                    result['host'] = host;
-
-                    return result;
+                    return r[0];
                 }
             }
 
@@ -211,7 +206,7 @@ SafebrowsingFilter.prototype = {
      * @private
      */
     _createResponse: function (sbList) {
-        return sbList == this.SB_WHITE_LIST ? null : sbList;
+        return (sbList == this.SB_WHITE_LIST) ? null : sbList;
     },
 
     /**
