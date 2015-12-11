@@ -26,7 +26,7 @@ var Log = require('utils/log').Log;
 var LS = require('utils/local-storage').LS;
 var Prefs = require('prefs').Prefs;
 var StringUtils = require('utils/common').StringUtils;
-require('utils/jssha256');
+require('utils/sha256');
 
 /**
  * Initializing SafebrowsingFilter.
@@ -283,7 +283,7 @@ SafebrowsingFilter.prototype = {
 
         for (var i = 0; i < hosts.length; i++) {
             var host = hosts[i];
-            var hash = SHA256_hash(host  + '/');
+            var hash = Sha256.hash(host  + '/');
             result[hash.toUpperCase()] = host;
         }
 
