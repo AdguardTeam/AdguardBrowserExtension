@@ -161,12 +161,16 @@ var WebRequestHelper = exports.WebRequestHelper = {
             return contextData.tab;
         }
         if (contextData && contextData.browser) {
-            if (contextData.browser.contentWindow) {
-                //getTabForBrowser() returns null for FF 38 ESR
-                return tabUtils.getTabForContentWindow(contextData.browser.contentWindow);
+            var browser = contextData.browser;
+            if (browser.docShell && browser.contentWindow) {
+                // TODO: temporary fix
+                // If browser.docShell returns null then browser.contentWindow throws exception: this.docShell is null
+
+                // getTabForBrowser() returns null for FF 38 ESR
+                return tabUtils.getTabForContentWindow(browser.contentWindow);
             }
 
-            return tabUtils.getTabForBrowser(contextData.browser);
+            return tabUtils.getTabForBrowser(browser);
         }
         return null;
     },
