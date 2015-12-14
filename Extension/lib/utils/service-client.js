@@ -69,9 +69,8 @@ var ServiceClient = exports.ServiceClient = function () {
 
     /**
      * Browsing Security lookups. In case of Firefox lookups are disabled for HTTPS urls.
-     * TODO: Switch to using SHA256 hashes instead of plain text domain names.
      */
-	this.safebrowsingLookupUrl = "https://sb.adtidy.org/safebrowsing-lookup-domain.html";
+	this.safebrowsingLookupUrl = "https://sb.adtidy.org/safebrowsing-lookup-hash.html";
 
     /**
      * URL for collecting Browsing Security stats.
@@ -349,14 +348,14 @@ ServiceClient.prototype = {
 	},
 
 	/**
-	 * Checks specified host with our safebrowsing service
+	 * Checks specified host hashes with our safebrowsing service
 	 *
-	 * @param host                  Host name
+	 * @param hashes                Host hashes
 	 * @param successCallback       Called on success
 	 * @param errorCallback         Called on error
 	 */
-	lookupSafebrowsing: function (host, successCallback, errorCallback) {
-		var url = this.safebrowsingLookupUrl + "?domain=" + encodeURIComponent(host);
+	lookupSafebrowsing: function (hashes, successCallback, errorCallback) {
+		var url = this.safebrowsingLookupUrl + "?prefixes=" + encodeURIComponent(hashes.join('/'));
 		this._executeRequestAsync(url, "application/json", successCallback, errorCallback);
 	},
 

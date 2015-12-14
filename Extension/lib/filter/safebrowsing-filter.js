@@ -26,6 +26,7 @@ var Log = require('utils/log').Log;
 var LS = require('utils/local-storage').LS;
 var Prefs = require('prefs').Prefs;
 var StringUtils = require('utils/common').StringUtils;
+var SHA256 = require('utils/sha256.patched').SHA256;
 
 /**
  * Initializing SafebrowsingFilter.
@@ -91,6 +92,8 @@ SafebrowsingFilter.prototype = {
             return;
         }
 
+        var hashesMap = this._createHashesMap(hosts);
+
         var successCallback = function (response) {
             if (response.status >= 500) {
                 // Error on server side, suspend request
@@ -100,7 +103,11 @@ SafebrowsingFilter.prototype = {
             }
             this._resumeSafebrowsing();
 
-            var sbList = this._processSbResponse(response.responseText) || this.SB_WHITE_LIST;
+            var sbList = this.SB_WHITE_LIST;
+            if (response.status != 204) {
+                sbList = this._processSbResponse(response.responseText, hashesMap) || this.SB_WHITE_LIST;
+            }
+
             this.safebrowsingCache.saveValue(host, sbList, Date.now() + this.SB_TTL);
 
             lookupUrlCallback(this._createResponse(sbList));
@@ -112,7 +119,13 @@ SafebrowsingFilter.prototype = {
             this._suspendSafebrowsing();
         }.bind(this);
 
-        this.serviceClient.lookupSafebrowsing(host, successCallback, errorCallback);
+        var hashes = Object.keys(hashesMap);
+        var shortHashes = [];
+        for (var i = 0; i < hashes.length; i++) {
+            shortHashes.push(hashes[i].substring(0, 8));
+        }
+
+        this.serviceClient.lookupSafebrowsing(shortHashes, successCallback, errorCallback);
     },
 
     /**
@@ -159,19 +172,27 @@ SafebrowsingFilter.prototype = {
      * Parses safebrowsing service response
      *
      * @param responseText  Response text
+     * @param hashesMap  Hashes hosts map
      * @returns Safebrowsing list or null
      * @private
      */
-    _processSbResponse: function (responseText) {
+    _processSbResponse: function (responseText, hashesMap) {
         if (!responseText || responseText.length > 10 * 1024) {
             return null;
         }
+
         try {
-            var lookupResult = JSON.parse(responseText);
-            if (lookupResult && (lookupResult.list == "adguard-malware-shavar" ||
-                lookupResult.list == "adguard-phishing-shavar")) {
-                return lookupResult.list;
+            var lines = responseText.split('\n');
+            for (var i = 0; i < lines.length; i++) {
+                var r = lines[i].split(":");
+                var hash = r[2];
+                var host = hashesMap[hash];
+                if (host != null) {
+                    return r[0];
+                }
             }
+
+            return null;
         } catch (ex) {
             Log.error("Error parse safebrowsing response, cause {0}", ex);
         }
@@ -185,7 +206,7 @@ SafebrowsingFilter.prototype = {
      * @private
      */
     _createResponse: function (sbList) {
-        return sbList == this.SB_WHITE_LIST ? null : sbList;
+        return (sbList == this.SB_WHITE_LIST) ? null : sbList;
     },
 
     /**
@@ -226,7 +247,7 @@ SafebrowsingFilter.prototype = {
      * This method returns all sub-domains and IP address of the specified host.
      *
      * @param host Host
-     * @returns List of extracted host names
+     * @returns Array of extracted host names
      * @private
      */
     _extractHosts: function (host) {
@@ -247,5 +268,26 @@ SafebrowsingFilter.prototype = {
         }
 
         return hosts;
+    },
+
+    /**
+     * Calculates SHA256 hashes for strings in hosts and then
+     * gets prefixes for calculated hashes
+     *
+     * @param hosts
+     * @returns Map object of prefixes
+     * @private
+     */
+    _createHashesMap: function (hosts) {
+
+        var result = Object.create(null);
+
+        for (var i = 0; i < hosts.length; i++) {
+            var host = hosts[i];
+            var hash = SHA256.hash(host + '/');
+            result[hash.toUpperCase()] = host;
+        }
+
+        return result;
     }
 };
