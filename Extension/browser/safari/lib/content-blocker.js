@@ -20,77 +20,93 @@ var SafariContentBlockerConverter = require('converter').SafariContentBlockerCon
 var EventNotifier = require('utils/notifier').EventNotifier;
 var EventNotifierTypes = require('utils/common').EventNotifierTypes;
 var Utils = require('utils/browser-utils').Utils;
+var userSettings = require('utils/user-settings').userSettings;
+var whiteListService = require('filter/whitelist').whiteListService;
 
 /**
  * Safari Content Blocker helper
  */
-var SafariContentBlocker = exports.SafariContentBlocker = {
+exports.SafariContentBlocker = {
+
+    RULES_LIMIT: 50000,
+
     emptyBlockerUrl: 'config/empty.json',
-    rulesLimit: 50000,
+    emptyBlockerJSON: null,
 
     /**
-     * Loads array of rules to content blocker
-     *
-     * @param rules
+     * Load content blocker
      */
-    loadFilters: function (rules) {
-        Log.info('Starting loading content blocker.');
+    updateContentBlocker: function () {
 
-        var converted = SafariContentBlockerConverter.convertArray(rules, this.rulesLimit);
-        if (converted && converted.converted) {
-            this._setContentBlocker(JSON.parse(converted.converted));
-        } else {
-            Log.info('No rules to setup for content blocker.');
-            this.clearFilters();
-        }
+        this._loadAndConvertRules(this.RULES_LIMIT, function (result) {
+
+            if (!result) {
+                this._clearFilters();
+                return;
+            }
+
+            var json = JSON.parse(result.converted);
+            this._setSafariContentBlocker(json);
+            EventNotifier.notifyListeners(EventNotifierTypes.CONTENT_BLOCKER_UPDATED, {rulesCount: json.length, rulesOverLimit: result.overLimit});
+
+        }.bind(this));
     },
 
     /**
      * Disables content blocker
+     * @private
      */
-    clearFilters: function () {
-        Log.info('Disabling content blocker.');
-        this._loadUrl(this.emptyBlockerUrl, this._setContentBlocker);
+    _clearFilters: function () {
+        this._setSafariContentBlocker(this._getEmptyBlockerJson());
     },
 
-    _loadUrl: function (url, onSuccess) {
-        Log.info('Loading ' + url);
-        var xhr = new XMLHttpRequest();
-        try {
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState != 4) {
-                    return;
-                }
-
-                var responseText = xhr.responseText;
-                Log.info('Successfully loaded ' + url + '. Length=' + responseText.length);
-
-                if (xhr.responseText) {
-                    onSuccess(xhr.responseText);
-                }
-            };
-
-            xhr.onerror = function (error) {
-                Log.error('Error while loading ' + url + ': ' + error);
-            };
-
-            xhr.open("GET", url, true);
+    /**
+     * @returns JSON for empty content blocker
+     * @private
+     */
+    _getEmptyBlockerJson: function () {
+        if (!this.emptyBlockerJSON) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", this.emptyBlockerUrl, false);
             xhr.send(null);
-        } catch (e) {
-            Log.error('Error while starting load of ' + url + ': ' + e);
+            this.emptyBlockerJSON = JSON.parse(xhr.responseText);
         }
+        return this.emptyBlockerJSON;
     },
 
-    _setContentBlocker: Utils.debounce(function (json) {
+    /**
+     * Load rules from requestFilter and WhiteListService and convert for ContentBlocker
+     * @private
+     */
+    _loadAndConvertRules: Utils.debounce(function (rulesLimit, callback) {
+
+        if (userSettings.isFilteringDisabled()) {
+            Log.info('Disabling content blocker.');
+            callback(null);
+            return;
+        }
+
+        Log.info('Starting loading content blocker.');
+
+        var rules = antiBannerService.getRequestFilter().getRules();
+        rules = rules.concat(whiteListService.getRules());
+
+        var result = SafariContentBlockerConverter.convertArray(rules, rulesLimit);
+        if (result && result.converted) {
+            callback(result);
+        } else {
+            callback(null);
+        }
+
+    }, 500),
+
+    _setSafariContentBlocker: function (json) {
         try {
             Log.info('Setting content blocker. Length=' + json.length);
             safari.extension.setContentBlocker(json);
-
-            EventNotifier.notifyListeners(EventNotifierTypes.CONTENT_BLOCKER_UPDATED, json.length);
-
             Log.info('Content blocker has been set.');
         } catch (ex) {
             Log.error('Error while setting content blocker: ' + ex);
         }
-    }, 250)
+    }
 };

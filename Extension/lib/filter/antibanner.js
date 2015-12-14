@@ -100,6 +100,14 @@ AntiBannerService.prototype = {
     RELOAD_FILTERS_DEBOUNCE_PERIOD: 500,
 
     /**
+     * Persist state of content blocker
+     */
+    contentBlockerInfo: {
+        rulesCount: 0,
+        rulesOverLimit: false
+    },
+
+    /**
      * AntiBannerService constructor
      * @param options Constructor options
      */
@@ -285,7 +293,7 @@ AntiBannerService.prototype = {
             // No need in dirtyRules collection anymore
             this.dirtyRules = null;
 
-            EventNotifier.notifyListeners(EventNotifierTypes.REQUEST_FILTER_UPDATED, this.getRulesCount());
+            EventNotifier.notifyListeners(EventNotifierTypes.REQUEST_FILTER_UPDATED, this.getRequestFilterInfo());
         }
 
         return this.requestFilter;
@@ -329,7 +337,7 @@ AntiBannerService.prototype = {
         this.userRules = [];
         var filter = this._getFilterById(AntiBannerFiltersId.USER_FILTER_ID);
         EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTER_RULES, filter, []);
-        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES, this.getRulesCount());
+        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES, this.getRequestFilterInfo());
     },
 
     /**
@@ -344,7 +352,7 @@ AntiBannerService.prototype = {
             this._addRuleToFilter(AntiBannerFiltersId.USER_FILTER_ID, rule);
             this.userRules.push(rule.ruleText);
         }
-        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES, this.getRulesCount());
+        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES, this.getRequestFilterInfo());
     },
 
     /**
@@ -362,7 +370,7 @@ AntiBannerService.prototype = {
             }
         }
         this._addRulesToFilter(AntiBannerFiltersId.USER_FILTER_ID, rules);
-        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES, this.getRulesCount());
+        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES, this.getRequestFilterInfo());
         return rules;
     },
 
@@ -379,7 +387,7 @@ AntiBannerService.prototype = {
             EventNotifier.notifyListeners(EventNotifierTypes.REMOVE_RULE, filter, [rule]);
         }
         CollectionUtils.removeAll(this.userRules, ruleText);
-        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES, this.getRulesCount());
+        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_USER_FILTER_RULES, this.getRequestFilterInfo());
     },
 
     /**
@@ -1048,14 +1056,33 @@ AntiBannerService.prototype = {
     },
 
     /**
-     * @returns int used rules count
+     * @returns Request Filter info
      */
-    getRulesCount: function () {
-        if (!this.requestFilter) {
-            return null;
+    getRequestFilterInfo: function () {
+        var rulesCount = 0;
+        if (this.requestFilter) {
+            rulesCount = this.requestFilter.rulesCount;
         }
+        return {
+            rulesCount: rulesCount
+        };
+    },
 
-        return this.requestFilter.rulesCount;
+    /**
+     * Update content blocker info
+     * We save state of content blocker for properly show in options page (converted rules count and over limit flag)
+     * @param info Content blocker info
+     */
+    updateContentBlockerInfo: function (info) {
+        this.contentBlockerInfo.rulesCount = info.rulesCount;
+        this.contentBlockerInfo.rulesOverLimit = info.rulesOverLimit;
+    },
+
+    /**
+     * @returns Content Blocker info
+     */
+    getContentBlockerInfo: function () {
+        return this.contentBlockerInfo;
     },
 
     /**
@@ -1115,7 +1142,7 @@ AntiBannerService.prototype = {
                     Promise.all(dfds).then(this._createRequestFilter.bind(this));
                 } else {
                     //Rules already in request filter, notify listeners
-                    EventNotifier.notifyListeners(EventNotifierTypes.REQUEST_FILTER_UPDATED, this.getRulesCount());
+                    EventNotifier.notifyListeners(EventNotifierTypes.REQUEST_FILTER_UPDATED, this.getRequestFilterInfo());
                 }
 
             }.bind(this), this.FILTERS_CHANGE_DEBOUCE_PERIOD);

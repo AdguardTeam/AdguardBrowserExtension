@@ -25,6 +25,8 @@ PageController.prototype = {
 
     linkHelper: null,
 
+    SUBSCRIPTIONS_LIMIT: 9,
+
     init: function () {
 
         this.linkHelper = document.createElement('a');
@@ -236,7 +238,10 @@ PageController.prototype = {
         this._renderShowContextMenu(showContextMenu);
         this._renderUseOptimizedFilters(useOptimizedFilters);
         this._renderDefaultWhiteListMode(defaultWhitelistMode);
-        this._renderAntibannerInfo(rulesCount);
+
+        var rulesInfo = environmentOptions.isContentBlockerEnabled ? contentBlockerInfo : requestFilterInfo;
+        this.renderFilterRulesInfo(rulesInfo);
+
         if (environmentOptions.Prefs.mobile) {
             $('#resetStats').hide();
         }
@@ -485,38 +490,36 @@ PageController.prototype = {
      * It's important to check that limit because of Safari limitations.
      * Content blocker with too many rules won't work at all.
      *
-     * @param rulesCount used rules count
+     * @param rulesOverLimit True if loaded rules more than limit
      * @private
      */
-    _checkSafariContentBlockerRulesLimit: function (rulesCount) {
-        if (environmentOptions.isSafariBrowser) {
-            if (rulesCount > 50000) {
-                this.tooManyRulesEl.show();
-            } else {
-                this.tooManyRulesEl.hide();
-            }
+    _checkSafariContentBlockerRulesLimit: function (rulesOverLimit) {
+        if (rulesOverLimit) {
+            this.tooManyRulesEl.show();
+        } else {
+            this.tooManyRulesEl.hide();
         }
     },
 
     /**
      * Renders rules info panel
      *
-     * @param rulesCount used rules count
-     * @private
+     * @param info Object contains loaded rules count
      */
-    _renderAntibannerInfo: function (rulesCount) {
+    renderFilterRulesInfo: function (info) {
         var el = $('.settings-page-title-info');
-        if (!rulesCount) {
+        if (!info.rulesCount) {
             el.hide();
             return;
         }
 
-        var message = i18n.getMessage("options_antibanner_info");
-        message = message.replace('$1', rulesCount);
+        var message = i18n.getMessage("options_antibanner_info", [info.rulesCount]);
         el.text(message);
         el.show();
 
-        this._checkSafariContentBlockerRulesLimit(rulesCount);
+        if (environmentOptions.isContentBlockerEnabled) {
+            this._checkSafariContentBlockerRulesLimit(info.rulesOverLimit);
+        }
     },
 
     _renderSearchFilters: function (input, listEl, clearButton, sResult, renderFunc, searchFunc, loadNext) {
@@ -1068,9 +1071,13 @@ PageController.prototype = {
             return;
         }
 
+        if (environmentOptions.isContentBlockerEnabled) {
+            return;
+        }
+
         var enabledCount = this.subscriptionModalEl.find('input[name="modalFilterId"]:checked').length;
 
-        if (enabledCount >= 9) {
+        if (enabledCount >= this.SUBSCRIPTIONS_LIMIT) {
             this.tooManySubscriptionsEl.show();
         } else {
             this.tooManySubscriptionsEl.hide();
@@ -1141,16 +1148,18 @@ PageController.prototype = {
 var userSettings;
 var enabledFilters;
 var environmentOptions;
-var rulesCount;
 var AntiBannerFiltersId;
 var EventNotifierTypes;
+var requestFilterInfo;
+var contentBlockerInfo;
 
 contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
 
     userSettings = response.userSettings;
     enabledFilters = response.enabledFilters;
     environmentOptions = response.environmentOptions;
-    rulesCount = response.rulesCount;
+    requestFilterInfo = response.requestFilterInfo;
+    contentBlockerInfo = response.contentBlockerInfo;
 
     AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
     EventNotifierTypes = response.constants.EventNotifierTypes;
@@ -1199,7 +1208,7 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
                     }
                     controller._renderUserFilters();
                     if (!environmentOptions.isContentBlockerEnabled) {
-                        controller._renderAntibannerInfo(filter);
+                        controller.renderFilterRulesInfo(filter);
                     }
                     break;
                 case EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES:
@@ -1214,10 +1223,10 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
                     if (environmentOptions.isContentBlockerEnabled) {
                         break;
                     }
-                    controller._renderAntibannerInfo(filter);
+                    controller.renderFilterRulesInfo(filter);
                     break;
                 case EventNotifierTypes.CONTENT_BLOCKER_UPDATED:
-                    controller._renderAntibannerInfo(filter);
+                    controller.renderFilterRulesInfo(filter);
                     break;
             }
         }

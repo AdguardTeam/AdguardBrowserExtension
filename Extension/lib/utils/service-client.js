@@ -24,7 +24,6 @@ var Utils = require('utils/browser-utils').Utils;
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
 require('filter/rules/filter-classes');
 var Prefs = require('prefs').Prefs;
-var LS = require('utils/local-storage').LS;
 var Cc = require('chrome').Cc;
 var Ci = require('chrome').Ci;
 var XMLHttpRequestConstructor = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"];

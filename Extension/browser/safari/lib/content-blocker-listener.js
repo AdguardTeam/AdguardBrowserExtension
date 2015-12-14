@@ -19,29 +19,26 @@ var SafariContentBlocker = require('content-blocker').SafariContentBlocker;
 var EventNotifier = require('utils/notifier').EventNotifier;
 var EventNotifierTypes = require('utils/common').EventNotifierTypes;
 var Utils = require('utils/browser-utils').Utils;
-var whiteListService = require('filter/whitelist').whiteListService;
 
 (function () {
 
     if (Utils.isContentBlockerEnabled()) {
-        EventNotifier.addListener(function (event, params) {
-            if (event == EventNotifierTypes.CHANGE_USER_SETTINGS && params == userSettings.settings.DISABLE_FILTERING
-                && userSettings.isFilteringDisabled()) {
 
-                SafariContentBlocker.clearFilters();
-                return;
-            }
+        // Subscribe to events which lead to content blocker update
+        EventNotifier.addListener(function (event, params) {
 
             if (event == EventNotifierTypes.REQUEST_FILTER_UPDATED
                 || event == EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES
                 || (event == EventNotifierTypes.CHANGE_USER_SETTINGS && params == userSettings.settings.DISABLE_FILTERING)) {
 
-                if (!userSettings.isFilteringDisabled()) {
-                    var rules = antiBannerService.getRequestFilter().getRules();
-                    rules = rules.concat(whiteListService.getRules());
+                SafariContentBlocker.updateContentBlocker();
+            }
+        });
 
-                    SafariContentBlocker.loadFilters(rules);
-                }
+        // When content blocker is updated we need to save finally converted rules count and over limit flag
+        EventNotifier.addListener(function (event, info) {
+            if (event === EventNotifierTypes.CONTENT_BLOCKER_UPDATED) {
+                antiBannerService.updateContentBlockerInfo(info);
             }
         });
     }
