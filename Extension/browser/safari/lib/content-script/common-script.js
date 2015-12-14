@@ -122,6 +122,7 @@ var BaseEvent, OnMessageEvent, SendMessageFunction, I18NSupport;
 	var I18n = function () {
 		this._uiLocale = this._getLocale();
 		this._messages = null;
+		this._defaultMessages = null;
 	};
 
 	I18n.prototype = {
@@ -152,7 +153,7 @@ var BaseEvent, OnMessageEvent, SendMessageFunction, I18NSupport;
 			try {
 				xhr.send();
 			} catch (e) {
-				return null;
+				return Object.create(null);
 			}
 			return JSON.parse(xhr.responseText);
 		},
@@ -169,18 +170,22 @@ var BaseEvent, OnMessageEvent, SendMessageFunction, I18NSupport;
 
 			if (!this._messages) {
 				this._messages = this._getMessages(this._uiLocale);
+				if (this._uiLocale == this.defaultLocale) {
+					this._defaultMessages = this._messages;
+				}
 			}
 
-			return this._getI18nMessage(this._messages, msgId, substitutions);
+			// Load messages for default locale
+			if (!this._defaultMessages) {
+				this._defaultMessages = this._getMessages(this.defaultLocale);
+			}
+
+			return this._getI18nMessage(msgId, substitutions);
 		},
 
-		_getI18nMessage: function (messages, msgId, substitutions) {
+		_getI18nMessage: function (msgId, substitutions) {
 
-			if (!messages) {
-				return "";
-			}
-
-			var msg = messages[msgId];
+			var msg = this._messages[msgId] || this._defaultMessages[msgId];
 			if (!msg) {
 				return "";
 			}
