@@ -146,15 +146,15 @@ HidingChannel.prototype = {
 				// The element will be collapsed because of empty binding (it does not contain dummy element which is requested by the URL)
 				data = this.hideData;
 				// Track filter rule usage
-				var rule = this._getRuleText(this.URI.path);
+				var rule = this._getRuleByText(this.URI.path);
 				if (rule) {
 					var domain = this.framesMap.getFrameDomain(tab);
 					if (!rule.isPermitted(domain)) {
 						data = this.notHideData;
 					}
 
-					//Rules without domain should be ignored
-					if (!rule.isGeneric() && this._isGenericHideWhiteListed(tab)) {
+					// Rules without domain should be ignored
+					if (rule.isGeneric() && this._isGenericHideWhiteListed(tab)) {
 						data = this.notHideData;
 					}
 
@@ -191,7 +191,7 @@ HidingChannel.prototype = {
 		return frameData.genericHideWhiteListRule;
 	},
 
-	_getRuleText: function (path) {
+	_getRuleByText: function (path) {
 		var index = path.lastIndexOf('?');
 		if (index > 0) {
 			var key = path.substring(index + 1);

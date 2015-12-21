@@ -146,7 +146,7 @@ CssFilter.prototype = {
 				});
 			}
 
-			return this._buildCssByRules(nonGenericRules);;
+			return this._buildCssByRules(nonGenericRules);
 		}
 
 		var css = this._buildCssByRules(domainRules);
