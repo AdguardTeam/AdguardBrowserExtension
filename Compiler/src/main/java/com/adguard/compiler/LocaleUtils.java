@@ -1,16 +1,16 @@
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
- * <p/>
+ * <p>
  * Adguard Browser Extension is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * <p/>
+ * <p>
  * Adguard Browser Extension is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * <p/>
+ * <p>
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -25,9 +25,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Helper class for working with locales
@@ -81,7 +79,12 @@ public class LocaleUtils {
 
 		File chromeLocalesDir = new File(dest, "_locales");
 
-		for (File file : chromeLocalesDir.listFiles()) {
+		File[] files = chromeLocalesDir.listFiles();
+		if (files == null) {
+			throw new IOException("Unable to fetch list files from " + chromeLocalesDir);
+		}
+
+		for (File file : files) {
 
 			File chromeLocaleFile = new File(file, "messages.json");
 
@@ -109,7 +112,15 @@ public class LocaleUtils {
 
 	public static void convertFromChromeToFirefoxLocales(File chromeLocalesDir) throws IOException {
 
-		for (File file : chromeLocalesDir.listFiles()) {
+		File[] files = chromeLocalesDir.listFiles();
+		if (files == null) {
+			throw new IOException("Unable to fetch list files from " + chromeLocalesDir);
+		}
+
+		// Populate collection of messages for EN locale
+		Map<String, String> enLocaleMessages = readMessagesToMap(new File(chromeLocalesDir, "en/messages.json"));
+
+		for (File file : files) {
 
 			File chromeLocaleFile = new File(file, "messages.json");
 			if (!SupportedLocales.supported(file.getName())) {
@@ -117,19 +128,26 @@ public class LocaleUtils {
 				continue;
 			}
 
-			String firefoxLocale = StringUtils.replace(file.getName(), "_", "-");
-			File appLocaleFile = new File(chromeLocalesDir, firefoxLocale + ".properties");
+			String firefoxLocaleFilename = StringUtils.replace(file.getName(), "_", "-") + ".properties";
+			File firefoxLocalFile = new File(chromeLocalesDir, firefoxLocaleFilename);
 
-			byte[] content = FileUtils.readFileToByteArray(chromeLocaleFile);
-			Map map = objectMapper.readValue(content, Map.class);
+			Map<String, String> localeMessages = readMessagesToMap(chromeLocaleFile);
+
+			Set<String> msgIds = enLocaleMessages.keySet();
+
 			StringBuilder sb = new StringBuilder();
-			for (Object key : map.keySet()) {
-				String message = (String) ((Map) map.get(key)).get("message");
+			for (String msgId : msgIds) {
+				String message = localeMessages.get(msgId);
+				if (message == null) {
+					// Use en message
+					message = enLocaleMessages.get(msgId);
+				}
 				message = message.replaceAll("\n", "\\\\n");
-				sb.append(key).append("=").append(message);
+				sb.append(msgId).append("=").append(message);
 				sb.append(System.lineSeparator());
 			}
-			FileUtils.writeStringToFile(appLocaleFile, sb.toString(), "utf-8");
+
+			FileUtils.writeStringToFile(firefoxLocalFile, sb.toString(), "utf-8");
 			FileUtils.deleteQuietly(file);
 		}
 	}
@@ -167,12 +185,21 @@ public class LocaleUtils {
 		FileUtils.writeStringToFile(installManifest, content, "utf-8");
 	}
 
+	private static Map<String, String> readMessagesToMap(File localeFile) throws IOException {
+		@SuppressWarnings("unchecked") Map<String, Map> m = objectMapper.readValue(FileUtils.readFileToByteArray(localeFile), Map.class);
+		Map<String, String> messages = new LinkedHashMap<String, String>();
+		for (String msgId : m.keySet()) {
+			String message = (String) m.get(msgId).get("message");
+			messages.put(msgId, message);
+		}
+		return messages;
+	}
+
 	public static List<String> getMessageIds(File source) throws IOException {
 		File enMessages = new File(source, "_locales/en/messages.json");
-		byte[] content = FileUtils.readFileToByteArray(enMessages);
-		Map map = objectMapper.readValue(content, Map.class);
+		Set<String> ids = readMessagesToMap(enMessages).keySet();
 		List<String> messageIds = new ArrayList<String>();
-		for (Object msgId : map.keySet()) {
+		for (String msgId : ids) {
 			messageIds.add("\"" + String.valueOf(msgId) + "\"");
 		}
 		return messageIds;
