@@ -173,6 +173,10 @@ exports.SafariContentBlockerConverter = {
             if (filter.urlRegExp) {
                 return filter.urlRegExp.source;
             }
+
+            if (filter.urlRuleText == '||*') {
+                return URL_FILTER_ANY_URL;
+            }
             
             var urlRegExpSource = filter.getUrlRegExpSource();
             if (urlRegExpSource) {

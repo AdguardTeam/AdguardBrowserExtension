@@ -109,6 +109,26 @@ function testConvertRuleWithEmptyRegexp() {
 addTestCase(testConvertRuleWithEmptyRegexp);
 
 /**
+ * Tests rule for inverted whitelist
+ */
+function testInvertedWhitelist() {
+    var ruleText = "@@||*$domain=~whitelisted.domain.com|~whitelisted.domain2.com";
+    var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    assertEquals(1, result.convertedCount);
+    assertEquals(0, result.errorsCount);
+    var converted = JSON.parse(result.converted);
+    assertEquals(1, converted.length);
+
+    var convertedRule = converted[0];
+    assertEquals(".*", convertedRule.trigger["url-filter"]);
+    assertEquals(2, convertedRule.trigger["unless-domain"].length);
+    assertEquals("*whitelisted.domain.com", convertedRule.trigger["unless-domain"][0]);
+    assertEquals("*whitelisted.domain2.com", convertedRule.trigger["unless-domain"][1]);
+    assertEquals("ignore-previous-rules", convertedRule.action.type);
+}
+addTestCase(testInvertedWhitelist);
+
+/**
  * Checks regexp performance
  */
 function testRegexpPerformance() {
