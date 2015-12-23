@@ -1,15 +1,19 @@
 ! Title: Russian filter
-! Version: 1.0.29.48
+! Version: 1.0.29.50
 ! Name: Russian filter
 ! Description: Filter that enables removing of the ads from websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2015-12-22T19:27:11.779+03:00
+! TimeUpdated: 2015-12-23T19:50:26.025+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#window.AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+||sunior.loftlm.ru^$third-party
+||bannersold.eu^$third-party
+||promocenter.biz^$third-party
+||tiz-et.ru^$third-party
 ||rutorads.com^$third-party
 ||reterafu.torplanet.ru^$third-party
 ||mutrik.com^$third-party
@@ -3122,6 +3126,18 @@ ucoz.ru/informer/
 ||seemore.ru/js/$third-party
 ||sv-pr.ru^$third-party
 ||target.smi2.net^$third-party
+||pslan.com/banera/
+films-torrent.ru##a[href^="http://go.ad2up.com/"]
+films-torrent.ru##.dwntorrent_tblc
+||2tt2.ru/images/2tt2.gif$third-party
+||filmitorrent.org/25ad25/btn.png
+pirat.ca##.download_button > a[href^="/redirect.php?"]
+||seedoff.net/images/banners/
+nntt.org##img[width="768"][height="90 "]
+nntt.org##.tablebg div.postbody > table[width="100%"][bgcolor="#76c0e8"]
+nntt.org##a[href^="http://numbuster.com/"]
+nntt.org##a[href^="http://www.cenam.net/"]
+manytorrents.net##.download_button > div.download_media > a[href][download_sid]
 varlamov.ru##iframe[src^="http://varlamovpodarki.livejournal.com/"]
 ||varlamov.me/2015/-/lavkavernika.jpg
 pb.wtf##div[style*="display: block !important;"] > div[style][id] > a[href^="/ext/"]
@@ -4322,7 +4338,7 @@ torrentino.com##.zona-btn
 /pics/bn/$domain=tavto.ru
 /pre-roll.js$domain=goha.ru
 /preroll.js$domain=goha.ru
-/protJS/$third-party,domain=armourbook.com|mskd-ru.net|payforpic.ru|piccash.net|nolamers.net|svetmonet.ru|torrentx.net|pitsib.org|pslan.com
+/protJS/$third-party,domain=armourbook.com|mskd-ru.net|payforpic.ru|piccash.net|nolamers.net|svetmonet.ru|torrentx.net|pitsib.org|pslan.com|img24.org
 /rose.ixbt.
 /someshit*.js$domain=dolinadom.com|evrodom-m.ru|poseloks.ru
 /tds/url.php$domain=gallery-xxx.org|rusex.biz|tv-porn.net
@@ -5679,6 +5695,7 @@ webware.ru/*/clients/
 @@||yakitoriya.ru^$document,~third-party
 @@||video.videonow.ru^$domain=echo.msk.ru
 @@||video.videonow.ru^$domain=api.cybergame.tv
+@@/min/index.php?f=misc/js/jquery.pack.js
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=online-tnt.tv|online-sts.tv|online-rossiya1.tv|online-match.tv|online-rossiya24.tv|online-tv3.tv|online-domashniy.tv|online-perviy.tv|online-che.tv|online-u.tv|online-ntv.tv|online-ren.tv|online-tvc.tv|online-zvezda.tv
 @@||adriver.ru^$~third-party
 @@||megafon.ru/ai/adbanner/
