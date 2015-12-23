@@ -18,7 +18,7 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.2';
+var CONVERTER_VERSION = '1.3.3';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var URL_FILTER_ANY_URL = ".*";
@@ -127,23 +127,29 @@ exports.SafariContentBlockerConverter = {
                 return;
             }
 
-            if (this._hasContentType(rule, UrlFilterRule.contentTypes.IMAGE))
-                types.push("image");
-            if (this._hasContentType(rule, UrlFilterRule.contentTypes.STYLESHEET))
-                types.push("style-sheet");
-            if (this._hasContentType(rule, UrlFilterRule.contentTypes.SCRIPT))
-                types.push("script");
-            if (this._hasContentType(rule, UrlFilterRule.contentTypes.MEDIA))
-                types.push("media");
+            if (this._hasContentType(rule, UrlFilterRule.contentTypes.IMAGE)) {
+                types.push("image");                
+            }
+
+            if (this._hasContentType(rule, UrlFilterRule.contentTypes.STYLESHEET)) {
+                types.push("style-sheet");                
+            }
+            if (this._hasContentType(rule, UrlFilterRule.contentTypes.SCRIPT)) {
+                types.push("script");                
+            }
+            if (this._hasContentType(rule, UrlFilterRule.contentTypes.MEDIA)) {
+                types.push("media");                
+            }
             if (this._hasContentType(rule, UrlFilterRule.contentTypes.XMLHTTPREQUEST) ||
-                this._hasContentType(rule, UrlFilterRule.contentTypes.OTHER))
-                types.push("raw");
-            if (this._hasContentType(rule, UrlFilterRule.contentTypes.FONT))
-                types.push("font");
-            if (this._hasContentType(rule, UrlFilterRule.contentTypes.SUBDOCUMENT))
-                types.push("document");
-
-
+                this._hasContentType(rule, UrlFilterRule.contentTypes.OTHER)) {
+                types.push("raw");                    
+            }
+            if (this._hasContentType(rule, UrlFilterRule.contentTypes.FONT)) {
+                types.push("font");                
+            }
+            if (this._hasContentType(rule, UrlFilterRule.contentTypes.SUBDOCUMENT)) {
+                types.push("document");                
+            }
             if (this._hasContentType(rule, UrlFilterRule.contentTypes.POPUP)) {
                 // Ignore other in case of $popup modifier
                 types = [ "popup" ];
@@ -225,6 +231,11 @@ exports.SafariContentBlockerConverter = {
 
                 var domain = symbolIndex == -1 ? ruleText.substring(startIndex) : ruleText.substring(startIndex, symbolIndex);
                 var path = symbolIndex == -1 ? null : ruleText.substring(symbolIndex);
+                
+                if (!/^[a-zA-Z0-9][a-zA-Z0-9-.]*[a-zA-Z0-9]\.[a-zA-Z-]{2,}$/.test(domain)) {
+                    // Not a valid domain name, ignore it
+                    return null;
+                }
 
                 return {
                     domain: UrlUtils.toPunyCode(domain),
@@ -280,14 +291,16 @@ exports.SafariContentBlockerConverter = {
             }
 
             if (rule.whiteListRule && rule.whiteListRule === true) {
-
-                if (isDocumentRule(rule) || isUrlBlockRule(rule)) {
-                    var parseDomainResult = this._parseRuleDomain(rule.urlRuleText);
-
-                    if (isDocumentRule(rule)) {
+                
+                var documentRule = isDocumentRule(rule); 
+                
+                if (documentRule || isUrlBlockRule(rule)) {
+                    if (documentRule) {
                         //http://jira.performix.ru/browse/AG-8715
                         delete result.trigger["resource-type"];
                     }
+                    
+                    var parseDomainResult = this._parseRuleDomain(rule.urlRuleText);                    
 
                     if (parseDomainResult != null
                         && parseDomainResult.path != null

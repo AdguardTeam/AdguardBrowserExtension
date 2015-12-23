@@ -120,8 +120,9 @@ exports.SafariContentBlocker = {
 
     _constructInvertedWhitelistRule: function () {
         var domains = whiteListService.getWhiteList();
+        var invertedWhitelistRule = '@@||*$document';
         if (domains && domains.length > 0) {
-            var invertedWhitelistRule = '@@||*$domain=';
+            invertedWhitelistRule += ",domain=";
             for (var i = 0, len = domains.length; i < len; i++) {
                 if (i > 0) {
                     invertedWhitelistRule += '|';
@@ -129,10 +130,8 @@ exports.SafariContentBlocker = {
 
                 invertedWhitelistRule += '~' + domains[i];
             }
-
-            return invertedWhitelistRule;
         }
 
-        return null;
+            return invertedWhitelistRule;
     }
 };
