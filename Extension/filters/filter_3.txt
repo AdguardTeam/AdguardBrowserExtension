@@ -1,10 +1,11 @@
-! Version: 1.0.3.97
+! Title: Spyware filter
+! Version: 1.0.4.25
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet be tracked, use this filter.
 ! NameEn: Spyware filter
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2015-11-30T15:51:26.153+03:00
-! Adguard Spyware Filter
+! TimeUpdated: 2015-12-22T19:27:36.087+03:00
+! Title: Adguard Spyware Filter
 !
 ! The most comprehensive list of various online counters and web analytics tools.
 ! If you do not want your actions on the Internet be tracked, use this filter.
@@ -72,6 +73,32 @@ popmech.ru#%#AG_onLoad(function() { window.POPMECH.increaseCounters = function()
 !-------------------------------------------------------------------------------!
 !-------------- Tracking servers list  -----------------------------------------!
 !-------------------------------------------------------------------------------!
+||nuggad.net^$third-party
+||log.outbrain.com^$third-party
+||odb.outbrain.com^$third-party
+||pages03.net/WTS/event.jpeg?
+||addthis.com/live/$script,third-party
+||tracking-rce.veeseo.com^$third-party
+||veeseo.com/tracking/$third-party
+||tm.zedo.com^$third-party
+||state.sml2.ru^$third-party
+||mmi.bemobile.ua^
+||wordkeyhelper.com^$third-party
+||metakeyproducer.com^
+||singleice.link^
+||barlive.link^$third-party
+||pixel.wp.com^
+||webtemsilcisi.com^$third-party
+||lijit.com^$third-party
+||declaredthoughtfulness.co^$third-party
+||springserve.com^$third-party
+||web100kz.com^$third-party
+||script.ioam.de/iam.js$third-party
+||webtemsilcisi.com^$third-party
+||dtscout.com^$third-party
+||reali.st^$third-party
+||junbi-tracker.com^$third-party
+||api.apisolutions.work/track/$third-party
 ||stats.wordpress.com^
 ||dmtracking2.alibaba.com^
 ||criteo.com/event?$third-party
@@ -1409,7 +1436,6 @@ http://r.i.ua/s?
 ||mongoosemetrics.com^$third-party
 ||monitis.com^$third-party
 ||monitus.net^$third-party
-||montblanc.rambler.ru^$third-party
 ||moreusers.info^$third-party
 ||morevisits.info^$third-party
 ||motorpresse-statistik.de^$third-party
@@ -2085,7 +2111,6 @@ http://r.i.ua/s?
 ||tamedia.ch^$third-party
 ||taps.io/$third-party
 ||tapstream.com^$third-party
-||target.ukr.net^
 ||targetfuel.com^$third-party
 ||tatap.org/img_$third-party
 ||tcactivity.net^$third-party
@@ -2495,6 +2520,7 @@ http://r.i.ua/s?
 !-------------------------------------------------------------------------------!
 !-------------- General (unsorted) url blocking --------------------------------!
 !-------------------------------------------------------------------------------!
+/js/iMAWebCookie.js?
 .gatracking.js
 .histats.*.js
 .hit.gemius.*.js
@@ -2600,6 +2626,18 @@ http://r.i.ua/s?
 !-------------------------------------------------------------------------------!
 !-------------- Specific web sites ---------------------------------------------!
 !-------------------------------------------------------------------------------!
+||rem-track.bild.de^
+||bild.de/code/webtrekk-core*.bild.js
+||newsweek.com/www/js/mar2015/counter.js
+||metrics.amd.com/b/ss/
+||istatistik.milliyet.com.tr/CntRpt.aspx
+||vplayer.mmi.bemobile.ua/vplayer/VPlayerEntry?cookie$domain=podrobnosti.ua
+||montblanc.rambler.ru^
+||montblanc.lenta.ru^
+armyrecognition.com##a[href^="http://cqcounter.com/"]
+makeserver.kz##.hits
+nadavi.com.ua##img[src^="http://banstat.nadavi.net/"]
+||stat.sports.ru^
 ||cmap.alibaba.com/landing_ae.gif
 sinoptik.ua###bigmirTop
 ||sinst.fwdcdn.com/img/newImg/liveinternet.gif
@@ -2683,12 +2721,41 @@ washingtonpost.com##.social-tools-wrapper-bottom
 !-------------------------------------------------------------------------------!
 !-------------- Whitelist ------------------------------------------------------!
 !-------------------------------------------------------------------------------!
+! http://forum.adguard.com/showthread.php?8225
+@@||google-analytics.com/analytics.js$domain=amd.com
+@@||google-analytics.com/plugins/$domain=amd.com
+@@||googletagmanager.com/gtm.js$domain=amd.com
+! singaporeseen.stomp.com.sg - broken gallery
+@@||stomp.com.sg/xtcore.js
+@@||cdn.cxense.com/cx.js$domain=stomp.com.sg
+! http://mgts.ru/gpon/check/
+@@||mc.yandex.ru/metrika/watch.js$domain=mgts.ru
+@@||google-analytics.com/analytics.js$domain=mgts.ru
+@@||google-analytics.com/plugins/ua/linkid.js$domain=mgts.ru
+@@||mc.yandex.ru/webvisor/$domain=mgts.ru
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1118
+@@||googletagmanager.com/gtm.js$domain=besplatnyeprogrammy.ru|softobase.com|freeversion.ru|softmen.ru|freeversions.ru|moiprogrammy.net
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1076
+@@||tags.bkrtx.com/js/bk-coretag.js$domain=mobile.pcmag.com
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1073
+@@||nexus.ensighten.com/alma/iltalehti/$domain=iltalehti.fi
+! http://forum.adguard.com/showthread.php?7960
+@@||js-agent.newrelic.com/nr-*.min.js$domain=copy.com
+! http://forum.adguard.com/showthread.php?8079
+@@||dw.cbsi.com/anonc.js$domain=gamespot.com
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1023
+@@||stat.sports.ru/*.json$domain=sports.ru
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/75
+@@||scorecardresearch.com^$third-party,domain=nissan.ru
+! for Megogo.net in IE and Opera 12(+exclusions in Russian filter)
+@@||b.scorecardresearch.com/crossdomain.xml
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1009
+@@||logi5.xiti.com/go.click$domain=schneider-electric.com
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/994
 @@||googletagmanager.com/gtm.js$domain=rollingstone.com
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/983
 @@||analytics.edgesuite.net/html5/akamaihtml$domain=video.foxnews.com
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/982
-@@||b.scorecardresearch.com^$domain=macworld.com
 @@||omtrdc.net/b/ss/$domain=macworld.com
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/969
 @@||googletagmanager.com/gtm.js$domain=maximonline.ru
@@ -2704,7 +2771,7 @@ washingtonpost.com##.social-tools-wrapper-bottom
 @@||sec.levexis.com/clients/nbty/$domain=puritan.com
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/830
 @@||myfamilycominc.tt.omtrdc.net^$domain=ancestry.com|ancestry.co.uk|ancestry.ca|ancestry.de|ancestry.it|ancestry.fr|ancestry.se|ancestry.mx
-@@||b.scorecardresearch.com/r$domain=ancestry.com|ancestry.co.uk|ancestry.ca|ancestry.de|ancestry.it|ancestry.fr|ancestry.se|ancestry.mx
+@@||b.scorecardresearch.com/r$domain=macworld.com|elmundo.es|pcworld.com|seattletimes.com|ancestry.com|ancestry.co.uk|ancestry.ca|ancestry.de|ancestry.it|ancestry.fr|ancestry.se|ancestry.mx
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/809
 @@||google-analytics.com/ga.js$domain=media.zie.nl
 ! http://forum.adguard.com/showthread.php?7088
@@ -2724,10 +2791,7 @@ washingtonpost.com##.social-tools-wrapper-bottom
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/738
 @@||partner.googleadservices.com/gpt/pubads_$domain=mlb.com
 @@||googletagservices.com/tag/js/gpt.js$domain=mlb.com
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/591
-@@||b.scorecardresearch.com/r?$domain=elmundo.es
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/734
-@@||b.scorecardresearch.com/r?c2=$domain=pcworld.com
 @@||omtrdc.net^$domain=pcworld.com
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/733
 @@||2gis.ru/assets/apitracker-*.$domain=2gis.ru
@@ -2801,8 +2865,6 @@ maskme.ru#@#img[width="88"][height="31"]
 mozilla-russia.org#@#img[width="88"][height="31"]
 ! http://forum.adguard.com/showthread.php?2565
 @@||svtrd.com^$domain=moneyou.de
-! http://forum.adguard.com/showthread.php?2389
-@@||b.scorecardresearch.com^$domain=seattletimes.com
 ! http://forum.adguard.com/showthread.php?1098
 @@||google-analytics.com/ga.js$domain=dailysteals.com
 @@||mxpnl.com^$domain=dailysteals.com
@@ -3186,8 +3248,7 @@ mozilla-russia.org#@#img[width="88"][height="31"]
 @@||metrics.target.com/b/ss/$image
 @@||metrics.ticketmaster.com/b/ss/$image
 @@||oms.dowjoneson.com/b/ss/$image,domain=wsj.com
-@@||scorecardresearch.com/r2?$image,domain=billetnet.dk|billettservice.no|lippupalvelu.fi|pcworld.com|techhive.com|ticketmaster.ae|ticketmaster.co.uk|ticketmaster.de|ticketmaster.ie|ticketmaster.nl|ticnet.se|wsj.com
-@@||scorecardresearch.com/r?$image,domain=billetnet.dk|billettservice.no|lippupalvelu.fi|pcworld.com|techhive.com|ticketmaster.ae|ticketmaster.co.uk|ticketmaster.de|ticketmaster.ie|ticketmaster.nl|ticnet.se|wsj.com
+@@||scorecardresearch.com/r$image,domain=billetnet.dk|billettservice.no|lippupalvelu.fi|pcworld.com|techhive.com|ticketmaster.ae|ticketmaster.co.uk|ticketmaster.de|ticketmaster.ie|ticketmaster.nl|ticnet.se|wsj.com
 @@||simyo.de/b/ss/$image
 @@||smetrics.target.com/b/ss/$image
 @@||smetrics.ticketmaster.com/b/ss/$image

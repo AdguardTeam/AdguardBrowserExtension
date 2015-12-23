@@ -1,10 +1,10 @@
 ! Title: Spanish/Portuguese filter
-! Version: 1.0.86.10
+! Version: 1.0.86.13
 ! Name: Spanish/Portuguese filter
 ! Description: Filter that enables removing of the ads from websites in Spanish and Portuguese.
 ! NameEn: Spanish/Portuguese filter
 ! DescriptionEn: Filter that enables blocking of ads on websites in Spanish and Portuguese.
-! TimeUpdated: 2015-11-24T17:04:36.470+04:00
+! TimeUpdated: 2015-12-16T19:29:55.739+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -28,6 +28,8 @@ revistasgratis.ws###adsacumulada
 revistasgratis.ws###adsalosexo
 revistasgratis.ws###adspb
 revistasgratis.ws###amigos
+@@||autonocion.com/js/advertisement.js
+@@||subedlc.com^$elemhide
 @@||zerozero.pt^$elemhide
 @@||calcularindemnizacion.es^$elemhide
 @@||b.scorecardresearch.com^$domain=marca.com

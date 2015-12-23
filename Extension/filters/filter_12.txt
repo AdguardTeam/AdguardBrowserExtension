@@ -1,16 +1,28 @@
-! Version: 1.0.0.14
+! Title: Safari Filter
+! Version: 1.0.0.19
 ! Name: Safari Filter
 ! Description: Special filter for Safari 9+. We need a separate filter for Safari because it does not fully support rules syntax.
 ! NameEn: Safari Filter
 ! DescriptionEn: Special filter for Safari 9+. We need a separate filter for Safari because it does not fully support rules syntax.
-! TimeUpdated: 2015-11-30T02:56:44.186+03:00
-! Safari Filter
+! TimeUpdated: 2015-12-17T16:42:35.605+03:00
+! Title: Adguard Safari Filter
 !
 ! Special filter for Safari. We need a separate filter for Safari because it does not fully support rules syntax.
 !
 ! Homepage: http://adguard.com/filters.html#safari
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
 !
+! bild.de [Adblock detection]
+! until the $generichide is not supperted
+@@||bild.de^$elemhide
+@@||smartadserver.com/diff/*/partners/$domain=bild.de
+@@||smartadserver.com/diff/*/smartad.js$domain=bild.de
+@@||sascdn.com^$domain=bild.de,script
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/910
+! Fixing m.market.yandex.ru
+@@||mc.yandex.ru/metrika/watch.js$domain=m.market.yandex.ru
+! http://forum.adguard.com/showthread.php?5125 (the slider on the main page will be broket, but there is not other way to block fullscrean ad)
+||gamer.ru/alarmalarm/js/
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/955 [popups]
 ||ac.tvas-c.pw^$popup,domain=thevideo.me
 ||tradeadexchange.com^$popup,domain=thevideo.me
@@ -58,3 +70,6 @@ youtube.com#%#(function () {try {var youtubeAdRegExp = /^((.*_)?(ad|ads|afv|adse
 ||sports.ru/desktop/special/$subdocument,domain=sports.ru
 ! We should also hide that iframe because blocking by URL won't remove the whitespace
 m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1085
+@@||imasdk.googleapis.com/js/$domain=vipvideo.cari.com.my
+vipvideo.cari.com.my###cvidloader

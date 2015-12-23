@@ -77,7 +77,7 @@ public class FilterUtils {
         String response = UrlUtils.downloadString(new URL(downloadUrl), "UTF-8");
 
         File filterFile = new File(dest, fileName);
-        FileUtils.write(filterFile, response);
+        FileUtils.write(filterFile, response, "utf-8");
 
         log.debug("Filter " + filterId + " download successfully");
         return filterFile;
@@ -97,12 +97,12 @@ public class FilterUtils {
 
         log.info("Start download groups metadata");
         String response = UrlUtils.downloadString(new URL(GROUPS_METADATA_DOWNLOAD_URL), "utf-8");
-        FileUtils.write(groupsMetadataFile, response);
+        FileUtils.write(groupsMetadataFile, response, "utf-8");
         log.info("Write groups metadata to " + groupsMetadataFile);
 
         log.info("Start download filters metadata");
         response = UrlUtils.downloadString(new URL(FILTERS_METADATA_DOWNLOAD_URL), "utf-8");
-        FileUtils.write(filtersMetadataFile, response);
+        FileUtils.write(filtersMetadataFile, response, "utf-8");
         log.info("Write filters metadata to " + filtersMetadataFile);
     }
 
