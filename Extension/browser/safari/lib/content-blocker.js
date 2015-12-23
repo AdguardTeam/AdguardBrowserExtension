@@ -89,7 +89,15 @@ exports.SafariContentBlocker = {
         Log.info('Starting loading content blocker.');
 
         var rules = antiBannerService.getRequestFilter().getRules();
-        rules = rules.concat(whiteListService.getRules());
+
+        if (userSettings.isDefaultWhiteListMode()) {
+            rules = rules.concat(whiteListService.getRules());
+        } else {
+            var invertedWhitelistRule = this._constructInvertedWhitelistRule();
+            if (invertedWhitelistRule) {
+                rules = rules.concat(invertedWhitelistRule);
+            }
+        }
 
         var result = SafariContentBlockerConverter.convertArray(rules, rulesLimit);
         if (result && result.converted) {
@@ -108,5 +116,23 @@ exports.SafariContentBlocker = {
         } catch (ex) {
             Log.error('Error while setting content blocker: ' + ex);
         }
+    },
+
+    _constructInvertedWhitelistRule: function () {
+        var domains = whiteListService.getWhiteList();
+        if (domains && domains.length > 0) {
+            var invertedWhitelistRule = '@@||*$domain=';
+            for (var i = 0, len = domains.length; i < len; i++) {
+                if (i > 0) {
+                    invertedWhitelistRule += '|';
+                }
+
+                invertedWhitelistRule += '~' + domains[i];
+            }
+
+            return invertedWhitelistRule;
+        }
+
+        return null;
     }
 };

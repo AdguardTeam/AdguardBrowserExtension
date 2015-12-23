@@ -250,7 +250,6 @@ PageController.prototype = {
             $('#openLog').hide();
             $('#resetStats').hide();
             $('.page-stats-switch-block').hide();
-            $('.whitelist-mode-switch').hide();
         }
         this._initializeSubscriptionModal();
         this.checkSubscriptionsCount();
