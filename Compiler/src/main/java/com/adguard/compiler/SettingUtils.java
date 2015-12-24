@@ -109,6 +109,8 @@ public class SettingUtils {
 				contentInfoPlist = StringUtils.replace(contentInfoPlist, "${extensionId}", extensionId);
 				contentInfoPlist = StringUtils.replace(contentInfoPlist, "${version}", version);
 				contentInfoPlist = StringUtils.replace(contentInfoPlist, "${updateURL}", updateUrl != null ? updateUrl : "");
+				String updateFromGallery = StringUtils.contains(extensionId, "beta") ? "false" : "true"; 
+				contentInfoPlist = StringUtils.replace(contentInfoPlist, "${updateFromGallery}", updateFromGallery);
 				contentInfoPlist = StringUtils.replace(contentInfoPlist, "${extensionNamePostfix}", extensionNamePostfix);
 				FileUtils.writeStringToFile(infoPlistFile, contentInfoPlist);
 				break;
