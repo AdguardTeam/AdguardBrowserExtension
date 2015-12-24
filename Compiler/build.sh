@@ -25,6 +25,10 @@ if [ "$env" = release ]; then
     #firefox release xpi for amo
     options="--version=$version --dest=$destPath --name=firefox --browser=firefox --pack=xpi --extensionId=adguardadblocker@adguard.com"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
+    
+    #firefox beta xpi for AMO
+    options="--version=$version-beta --dest=$destPath --name=firefox --browser=firefox --pack=xpi --extensionId=adguardadblocker@adguard.com"
+    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #safari release for extensions.apple.com
     options="--version=$version --dest=$destPath --name=Adguard --browser=safari  --extensionId=com.adguard.safari --update-url=https://chrome.adtidy.org/safari/updates.xml"
@@ -40,7 +44,7 @@ elif [ "$env" = beta ]; then
     branch=beta
 
     #chrome beta zip
-    options="--version=$version --branch=$branch --dest=$destPath --name=main --browser=chrome --pack=zip --update-filters=true"
+    options="--version=$version --branch=$branch --dest=$destPath --name=main --browser=chrome --pack=zip --update-filters=false"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #chrome beta crx
