@@ -216,6 +216,6 @@ public class FileUtil {
 			IOUtils.closeQuietly(out);
 		}
 
-		FileUtils.writeStringToFile(file, result);
+		FileUtils.writeStringToFile(file, result, "utf-8");
 	}
 }

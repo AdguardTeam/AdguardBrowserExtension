@@ -1,10 +1,10 @@
 ! Title: Russian filter
-! Version: 1.0.29.50
+! Version: 1.0.29.51
 ! Name: Russian filter
 ! Description: Filter that enables removing of the ads from websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2015-12-23T19:50:26.025+03:00
+! TimeUpdated: 2015-12-24T16:02:06.428+03:00
 ! Title: Adguard Russian Filter
 !
 ! Filter that enables removing of the ads from websites with Russian content.
@@ -2994,7 +2994,7 @@ http://v.*.space/vv?$third-party
 http://v.*.space/x?$third-party
 http://v.*.com/*&bid=$third-party
 http://v.*.space/*&bid=$third-party
-.space/xx?qq&bid=$script,third-party
+.space/xx?*&bid=$script,third-party
 ! TeaserNet ads
 ! Example: http://www.traht.org/
 /static/bc.js?$third-party
@@ -6182,6 +6182,10 @@ polezno-2012.info^
 !
 ! Правила специфичные для конкретных сайтов.
 !
+||online.anidub.com/uploads/fotos/240x400*.html$subdocument
+lady.mail.ru##.pc-branding__top
+lady.mail.ru##.rb-slot
+lady.mail.ru##.branding-poly-bottom
 ||pslan.com/banera/
 films-torrent.ru##a[href^="http://go.ad2up.com/"]
 films-torrent.ru##.dwntorrent_tblc

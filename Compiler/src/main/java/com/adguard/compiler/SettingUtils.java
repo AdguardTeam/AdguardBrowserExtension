@@ -81,12 +81,12 @@ public class SettingUtils {
 	public static void writeLocalScriptRulesToFile(File dest, Set<String> scriptRules) throws IOException {
 		String scriptRulesText = getScriptRulesText(scriptRules);
 		String settings = String.format(LOCAL_SCRIPT_RULES_FILE_TEMPLATE, scriptRulesText);
-		FileUtils.writeStringToFile(getLocalScriptRulesFile(dest), settings);
+		FileUtils.writeStringToFile(getLocalScriptRulesFile(dest), settings, "utf-8");
 	}
 
 	public static void writeMessageIdsToFile(File dest, List<String> messageIds) throws IOException {
 		String i18nMessages = String.format(MESSAGE_IDS_FILE_TEMPLATE, StringUtils.join(messageIds, ",\r\n"));
-		FileUtils.writeStringToFile(getMessageIdsFile(dest), i18nMessages);
+		FileUtils.writeStringToFile(getMessageIdsFile(dest), i18nMessages, "utf-8");
 	}
 
 	public static void updateManifestFile(File dest, Browser browser, String version, String extensionId, String updateUrl, String extensionNamePostfix) throws IOException {
@@ -101,7 +101,7 @@ public class SettingUtils {
 					content = content + "\t\"update_url\": \"" + updateUrl + "\"\r\n}";
 				}
 				content = StringUtils.replace(content, "${version}", version);
-				FileUtils.writeStringToFile(manifestFile, content);
+				FileUtils.writeStringToFile(manifestFile, content, "utf-8");
 				break;
 			case SAFARI:
 				File infoPlistFile = new File(dest, "Info.plist");
@@ -112,7 +112,7 @@ public class SettingUtils {
 				String updateFromGallery = StringUtils.contains(extensionId, "beta") ? "false" : "true"; 
 				contentInfoPlist = StringUtils.replace(contentInfoPlist, "${updateFromGallery}", updateFromGallery);
 				contentInfoPlist = StringUtils.replace(contentInfoPlist, "${extensionNamePostfix}", extensionNamePostfix);
-				FileUtils.writeStringToFile(infoPlistFile, contentInfoPlist);
+				FileUtils.writeStringToFile(infoPlistFile, contentInfoPlist, "utf-8");
 				break;
 			case FIREFOX:
 			case FIREFOX_LEGACY:
@@ -127,14 +127,14 @@ public class SettingUtils {
 				contentRdf = StringUtils.replace(contentRdf, "${updateUrl}", updateUrl);
 				contentRdf = StringUtils.replace(contentRdf, "${version}", version);
 				contentRdf = StringUtils.replace(contentRdf, "${extensionId}", extensionId);
-				FileUtils.writeStringToFile(installRdf, contentRdf);
+				FileUtils.writeStringToFile(installRdf, contentRdf, "utf-8");
 				//write version
 				File packageJson = new File(dest, "package.json");
-				String contentPackageJson = FileUtils.readFileToString(packageJson);
+				String contentPackageJson = FileUtils.readFileToString(packageJson, "utf-8");
 				contentPackageJson = StringUtils.replace(contentPackageJson, "${version}", version);
 				contentPackageJson = StringUtils.replace(contentPackageJson, "${extensionId}", extensionId);
 				contentPackageJson = StringUtils.replace(contentPackageJson, "${extensionNamePostfix}", extensionNamePostfix);
-				FileUtils.writeStringToFile(packageJson, contentPackageJson);
+				FileUtils.writeStringToFile(packageJson, contentPackageJson, "utf-8");
 				break;
 		}
 	}

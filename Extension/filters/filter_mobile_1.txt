@@ -1,10 +1,10 @@
 ! Title: Russian filter
-! Version: 1.0.29.50
+! Version: 1.0.29.51
 ! Name: Russian filter
 ! Description: Filter that enables removing of the ads from websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2015-12-23T19:50:26.025+03:00
+! TimeUpdated: 2015-12-24T16:02:06.428+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -1399,7 +1399,7 @@ http://v.*.space/vv?$third-party
 http://v.*.space/x?$third-party
 http://v.*.com/*&bid=$third-party
 http://v.*.space/*&bid=$third-party
-.space/xx?qq&bid=$script,third-party
+.space/xx?*&bid=$script,third-party
 /static/bc.js?$third-party
 ||torrent.rus.ec/a-detector/
 @@||happy-hack.ru^$elemhide
@@ -2423,7 +2423,7 @@ all-episodes.com#$#div[id="ad2"] { height: 30px; }
 e1.ru#$#.brand-skin {padding-top: 0px!important;}
 news.sportbox.ru#$#body { background: #415b14 !important; }
 news.sportbox.ru#$#.sb_t_secs_main {margin-top: 0px!important; }
-pics-money.ru,picspay.ru,free-torrents.org,free-torrent.org$$script[tag-content="visitweb_script"][max-length="700"]
+jpgstore.ru,pics-money.ru,picspay.ru,free-torrents.org,free-torrent.org$$script[tag-content="visitweb_script"][max-length="700"]
 4pda.ru$$article[class="post"][tag-content="tr.gerkon.eu"][max-length="2500"]
 geektimes.ru,habrahabr.ru,megamozg.ru$$script[tag-content="adriver"]
 webdesignmagazine.ru$$script[tag-content="mc.yandex.ru/metrika/"][max-length="1000"]
@@ -3126,6 +3126,10 @@ ucoz.ru/informer/
 ||seemore.ru/js/$third-party
 ||sv-pr.ru^$third-party
 ||target.smi2.net^$third-party
+||online.anidub.com/uploads/fotos/240x400*.html$subdocument
+lady.mail.ru##.pc-branding__top
+lady.mail.ru##.rb-slot
+lady.mail.ru##.branding-poly-bottom
 ||pslan.com/banera/
 films-torrent.ru##a[href^="http://go.ad2up.com/"]
 films-torrent.ru##.dwntorrent_tblc

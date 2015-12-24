@@ -106,7 +106,7 @@ public class LocaleUtils {
 				IOUtils.closeQuietly(reader);
 			}
 
-			FileUtils.writeStringToFile(chromeLocaleFile, sb.toString());
+			FileUtils.writeStringToFile(chromeLocaleFile, sb.toString(), "utf-8");
 		}
 	}
 
@@ -168,7 +168,7 @@ public class LocaleUtils {
 		StringBuilder sb = new StringBuilder();
 		for (SupportedLocales locale : SupportedLocales.values()) {
 			File localeFile = new File(dest, "locale/" + locale.code.replace("_", "-") + ".properties");
-			String[] messages = StringUtils.split(FileUtils.readFileToString(localeFile), System.lineSeparator());
+			String[] messages = StringUtils.split(FileUtils.readFileToString(localeFile, "utf-8"), System.lineSeparator());
 			String name = findMessage(messages, "name") + extensionNamePostfix;
 			String description = findMessage(messages, "description");
 			sb.append("<em:localized>").append(System.lineSeparator());
@@ -180,7 +180,7 @@ public class LocaleUtils {
 			sb.append("</em:localized>").append(System.lineSeparator());
 		}
 
-		String content = FileUtils.readFileToString(installManifest);
+		String content = FileUtils.readFileToString(installManifest, "utf-8");
 		content = StringUtils.replace(content, "${localised}", sb.toString());
 		FileUtils.writeStringToFile(installManifest, content, "utf-8");
 	}

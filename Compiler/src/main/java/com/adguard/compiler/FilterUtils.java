@@ -120,7 +120,7 @@ public class FilterUtils {
         File filtersDir = new File(source, "filters");
         for (int filterId = 1; filterId <= 10; filterId++) {
             File filterFile = new File(filtersDir, "filter_" + filterId + ".txt");
-            List<String> lines = FileUtils.readLines(filterFile);
+            List<String> lines = FileUtils.readLines(filterFile, "utf-8");
             for (String line : lines) {
                 if (line.contains("#%#")) {
                     scriptRules.add(line.trim());
