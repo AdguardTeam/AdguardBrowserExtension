@@ -112,7 +112,7 @@ public class SettingUtils {
 				String updateFromGallery = StringUtils.contains(extensionId, "beta") ? "false" : "true"; 
 				contentInfoPlist = StringUtils.replace(contentInfoPlist, "${updateFromGallery}", updateFromGallery);
 				contentInfoPlist = StringUtils.replace(contentInfoPlist, "${extensionNamePostfix}", extensionNamePostfix);
-				FileUtils.writeStringToFile(infoPlistFile, contentInfoPlist, "utf-8");
+				FileUtils.writeStringToFile(infoPlistFile, contentInfoPlist);
 				break;
 			case FIREFOX:
 			case FIREFOX_LEGACY:
@@ -134,7 +134,7 @@ public class SettingUtils {
 				contentPackageJson = StringUtils.replace(contentPackageJson, "${version}", version);
 				contentPackageJson = StringUtils.replace(contentPackageJson, "${extensionId}", extensionId);
 				contentPackageJson = StringUtils.replace(contentPackageJson, "${extensionNamePostfix}", extensionNamePostfix);
-				FileUtils.writeStringToFile(packageJson, contentPackageJson, "utf-8");
+				FileUtils.writeStringToFile(packageJson, contentPackageJson);
 				break;
 		}
 	}
