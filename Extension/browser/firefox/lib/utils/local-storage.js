@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var SimpleStorage = require('sdk/simple-storage');
+var SimplePrefs = require('sdk/simple-prefs');
 var Log = require('utils/log').Log;
 
 /**
@@ -22,7 +22,7 @@ var Log = require('utils/log').Log;
  */
 var LS = exports.LS = {
 
-	storage: SimpleStorage.storage,
+	storage: SimplePrefs.prefs,
 
 	getItem: function (key) {
 		return LS.storage[key];
