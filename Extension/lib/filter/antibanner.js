@@ -278,13 +278,23 @@ AntiBannerService.prototype = {
             // Creates request filter
             var requestFilter = new RequestFilter();
 
+            var userFilterRules = [];
             for (var ruleText in this.dirtyRules) {
                 var filterId = this.dirtyRules[ruleText];
                 var rule = FilterRule.createRule(ruleText, filterId);
 
+                if (rule != null && filterId == AntiBannerFiltersId.USER_FILTER_ID) {
+                    userFilterRules.push(rule);
+                    continue;
+                }
+
                 if (rule != null) {
                     requestFilter.addRule(rule);
                 }
+            }
+
+            for (var i = 0; i < userFilterRules.length; i++) {
+                requestFilter.addRule(userFilterRules[i]);
             }
 
             // Request filter is ready
