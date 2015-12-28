@@ -19,6 +19,7 @@ var self = require('sdk/self');
 var l10n = require('sdk/l10n');
 var tabs = require('sdk/tabs');
 var simplePrefs = require('sdk/simple-prefs');
+var simpleStorage = require('sdk/simple-storage');
 var unload = require('sdk/system/unload');
 var pageMod = require('sdk/page-mod');
 
@@ -33,6 +34,7 @@ var sdkModules = {
     'sdk/tabs/utils': require('sdk/tabs/utils'),
     'sdk/system': require('sdk/system'),
     'sdk/simple-prefs': simplePrefs,
+    'sdk/simple-storage': simpleStorage,
     'sdk/self': self,
     'sdk/page-mod': pageMod,
     'sdk/l10n': l10n,
@@ -61,8 +63,6 @@ exports.main = function (options, callbacks) {
         var {Log} = loadAdguardModule('utils/log');
         var {FS} = loadAdguardModule('utils/file-storage');
         if (options.loadReason == 'install' || options.loadReason == 'downgrade') {
-            //TODO: clean up prefs
-            //simplePrefs.storage = Object.create(Object.prototype);
             FS.removeAdguardDir();
         }
 
