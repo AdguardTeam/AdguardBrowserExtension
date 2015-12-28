@@ -82,8 +82,9 @@ exports.ApplicationUpdateService = {
 			methods.push(this._onUpdateRuleHitStats);
 		}
 		var storageVersion = SimpleStorage.storage['app-version'];
-        if (storageVersion != null) {
+        if (storageVersion != null && Utils.isFirefoxBrowser()) {
 			delete SimpleStorage.storage['app-version'];
+
 			methods.push(this._onUpdateFirefoxStorage);
 		}
 
@@ -266,19 +267,16 @@ exports.ApplicationUpdateService = {
 	_onUpdateFirefoxStorage: function () {
 		Log.info('Call update to version 2.1.1');
 
-		if (Utils.isFirefoxBrowser()) {
-			var dfd = new Promise();
+		var dfd = new Promise();
 
-			var items = LS.items;
-
-			for (var i = 0; i < items.length; i++) {
-				LS.setItem(items[i], SimpleStorage.storage[items[i]]);
-				delete SimpleStorage.storage[items[i]];
-			}
-
-			dfd.resolve();
-			return dfd;
+		var items = LS.items;
+		for (var i = 0; i < items.length; i++) {
+			LS.setItem(items[i], SimpleStorage.storage[items[i]]);
+			delete SimpleStorage.storage[items[i]];
 		}
+
+		dfd.resolve();
+		return dfd;
 	},
 
 	/**
