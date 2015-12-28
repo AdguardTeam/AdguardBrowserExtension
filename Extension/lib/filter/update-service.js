@@ -81,11 +81,14 @@ exports.ApplicationUpdateService = {
 		if (Utils.isGreaterVersion("2.0.10", runInfo.prevVersion)) {
 			methods.push(this._onUpdateRuleHitStats);
 		}
-		var storageVersion = SimpleStorage.storage['app-version'];
-        if (storageVersion != null && Utils.isFirefoxBrowser()) {
-			delete SimpleStorage.storage['app-version'];
 
-			methods.push(this._onUpdateFirefoxStorage);
+        if (Utils.isFirefoxBrowser()) {
+			var storageVersion = SimpleStorage.storage['app-version'];
+			if (storageVersion != null) {
+				delete SimpleStorage.storage['app-version'];
+
+				methods.push(this._onUpdateFirefoxStorage);
+			}
 		}
 
 		var dfd = this._executeMethods(methods);
