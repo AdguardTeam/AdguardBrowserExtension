@@ -294,6 +294,7 @@ AntiBannerService.prototype = {
             }
 
             //Add user filter rules to the end.
+            //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/117
             for (var i = 0; i < userFilterRules.length; i++) {
                 requestFilter.addRule(userFilterRules[i]);
             }
