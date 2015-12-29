@@ -293,6 +293,7 @@ AntiBannerService.prototype = {
                 }
             }
 
+            //Add user filter rules to the end.
             for (var i = 0; i < userFilterRules.length; i++) {
                 requestFilter.addRule(userFilterRules[i]);
             }
