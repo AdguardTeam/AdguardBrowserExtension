@@ -44,7 +44,7 @@ var safariCorrectRules = [
   },
   {
     "trigger": {
-      "url-filter": "^https?://[^.]*\\.?test-elemhide\\.com",
+      "url-filter": "^https?://[^.]*\\.*?test-elemhide\\.com",
       "resource-type": [
         "document"
       ]
@@ -55,7 +55,7 @@ var safariCorrectRules = [
   },
   {
       "trigger": {
-          "url-filter": "^https?://[^.]*\\.?pics\\.rbc\\.ru\\/js\\/swf"
+          "url-filter": "^https?://[^.]*\\.*?pics\\.rbc\\.ru\\/js\\/swf"
       },
       "action": {
           "type":"block"
@@ -63,7 +63,7 @@ var safariCorrectRules = [
   },
   {
     "trigger": {
-      "url-filter": "^https?://[^.]*\\.?tardangro\\.com[/:&?]?",
+      "url-filter": "^https?://[^.]*\\.*?tardangro\\.com[/:&?]?",
       "load-type": [
         "third-party"
       ]
@@ -74,7 +74,7 @@ var safariCorrectRules = [
   },
   {
     "trigger": {
-      "url-filter": "^https?://[^.]*\\.?videoplaza\\.com[/:&?]?",
+      "url-filter": "^https?://[^.]*\\.*?videoplaza\\.com[/:&?]?",
       "resource-type": [
         "image",
         "style-sheet",
@@ -94,7 +94,7 @@ var safariCorrectRules = [
   },
   {
     "trigger": {
-      "url-filter": "^https?://[^.]*\\.?b\\.babylon\\.com[/:&?]?"
+      "url-filter": "^https?://[^.]*\\.*?b\\.babylon\\.com[/:&?]?"
     },
     "action": {
       "type": "block"
@@ -102,7 +102,7 @@ var safariCorrectRules = [
   },
   {
     "trigger": {
-      "url-filter": "^https?://[^.]*\\.?getsecuredfiles\\.com[/:&?]?",
+      "url-filter": "^https?://[^.]*\\.*?getsecuredfiles\\.com[/:&?]?",
       "resource-type": [
         "popup",
       ],
@@ -124,7 +124,7 @@ var safariCorrectRules = [
   },
   {
     "trigger": {
-      "url-filter": "^https?://[^.]*\\.?emjcd\\.com[/:&?]?",
+      "url-filter": "^https?://[^.]*\\.*?emjcd\\.com[/:&?]?",
       "resource-type": [
         "image"
       ],
@@ -139,7 +139,7 @@ var safariCorrectRules = [
   },
   {
     "trigger": {
-      "url-filter": "^https?://[^.]*\\.?intellitxt\\.com\\/ast\\/js\\/nbcuni\\/",
+      "url-filter": "^https?://[^.]*\\.*?intellitxt\\.com\\/ast\\/js\\/nbcuni\\/",
       "resource-type": [
         "script"
       ]
@@ -150,7 +150,7 @@ var safariCorrectRules = [
   },
   {
     "trigger": {
-      "url-filter": "^https?://[^.]*\\.?hulu\\.com\\/embed"
+      "url-filter": "^https?://[^.]*\\.*?hulu\\.com\\/embed"
     },
     "action": {
       "type": "ignore-previous-rules"
@@ -213,10 +213,7 @@ var safariCorrectRules = [
   },
   {
     "trigger": {
-      "url-filter": ".*",
-      "if-domain": [
-        "*.instantservice.com"
-      ]
+      "url-filter": "\\.instantservice\\.com"
     },
     "action": {
       "type": "ignore-previous-rules"
@@ -224,7 +221,7 @@ var safariCorrectRules = [
   },
   {
     "trigger": {
-      "url-filter": "^https?://[^.]*\\.?hulu-jsinject-image\\.com",
+      "url-filter": "^https?://[^.]*\\.*?hulu-jsinject-image\\.com",
       "resource-type": [
         "image"
       ]
