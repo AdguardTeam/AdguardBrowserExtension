@@ -138,7 +138,9 @@ function testRegexpPerformance() {
     // Test URL with domain rule
     var regExp1 = new RegExp('^https?://([a-z0-9-_.]+\\.)?some-domain.com\\.com([^ a-zA-Z0-9.%]|$)', 'i');
     var regExp2 = new RegExp('^https?://[^.]+\\.?some-domain.com\\.com[/:&?]?', 'i');
+    var regExp3 = new RegExp('^https?://[^.][^/]+\\.?some-domain.com\\.com[/:&?]?', 'i');
     _testCompare(regExp1, regExp2, count);
+    _testCompare(regExp1, regExp3, count);
 };
 
 function _testCompare(regExp1, regExp2, count) {
