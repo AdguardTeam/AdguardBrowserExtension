@@ -62,7 +62,9 @@ exports.main = function (options, callbacks) {
 
         var {Log} = loadAdguardModule('utils/log');
         var {FS} = loadAdguardModule('utils/file-storage');
+        var {LS} = loadAdguardModule('utils/local-storage');
         if (options.loadReason == 'install' || options.loadReason == 'downgrade') {
+            LS.clean();
             FS.removeAdguardDir();
         }
 

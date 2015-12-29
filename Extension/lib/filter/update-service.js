@@ -272,10 +272,13 @@ exports.ApplicationUpdateService = {
 
 		var dfd = new Promise();
 
-		var items = LS.items;
-		for (var i = 0; i < items.length; i++) {
-			LS.setItem(items[i], SimpleStorage.storage[items[i]]);
-			delete SimpleStorage.storage[items[i]];
+		var ss = SimpleStorage.storage;
+		for (var k in ss) {
+			if (ss.hasOwnProperty(k)) {
+				var v = ss[k];
+				LS.setItem(k, v);
+				delete ss[k];
+			}
 		}
 
 		dfd.resolve();

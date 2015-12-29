@@ -24,21 +24,6 @@ var LS = exports.LS = {
 
 	storage: SimplePrefs.prefs,
 
-	items : ['block-list-domains',
-		'context-menu-disabled',
-		'default-whitelist-mode',
-		'detect-filters-disabled',
-		'disable-show-page-statistic',
-		'filters-state',
-		'filters-version',
-		'hits-count-disabled',
-		'page-statistic',
-		'safebrowsing-disabled',
-		'safebrowsing-stats-disabled',
-		'show-info-about-adguard-disabled',
-		'use-optimized-filters',
-		'white-list-domains'],
-
 	getItem: function (key) {
 		return LS.storage[key];
 	},
@@ -55,9 +40,7 @@ var LS = exports.LS = {
 		delete LS.storage[key];
 	},
 
-	clear: function () {
-		for (var i = 0; i < this.items.length; i++) {
-			this.removeItem(this.items[i]);
-		}
+	clean: function () {
+		//TODO: delete prefs branch
 	}
 };
