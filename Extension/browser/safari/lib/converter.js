@@ -126,11 +126,9 @@ exports.SafariContentBlockerConverter = {
                 // So we can use default safari content types instead.
                 return;
             }
-
             if (this._hasContentType(rule, UrlFilterRule.contentTypes.IMAGE)) {
                 types.push("image");                
             }
-
             if (this._hasContentType(rule, UrlFilterRule.contentTypes.STYLESHEET)) {
                 types.push("style-sheet");                
             }

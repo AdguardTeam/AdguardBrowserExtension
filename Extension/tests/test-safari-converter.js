@@ -1,3 +1,6 @@
+/* global assertNotEmpty */
+/* global assertEmpty */
+/* global URL_FILTER_REGEXP_START_URL */
 /* global assertEquals */
 /* global _logDebug */
 /* global addTestCase */
@@ -86,6 +89,29 @@ function testConvertRulesToJson() {
     }
 };
 addTestCase(testConvertRulesToJson);
+
+/**
+ * Tests rule with $~third-party modifier
+ */
+function testConvertFirstPartyRule() {
+    var ruleText = "@@||adriver.ru^$~third-party";
+    var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    assertEquals(1, result.convertedCount);
+    assertEquals(0, result.errorsCount);
+    console.log(result);
+    
+    var converted = JSON.parse(result.converted);
+    assertEquals(1, converted.length);
+
+    var convertedRule = converted[0];
+    assertEquals(URL_FILTER_REGEXP_START_URL + "adriver\\.ru[/:&?]?", convertedRule.trigger["url-filter"]);
+    assertEmpty(convertedRule.trigger["if-domain"]);
+    assertEmpty(convertedRule.trigger["unless-domain"]);
+    assertNotEmpty(convertedRule.trigger["load-type"]);
+    assertEquals("first-party", convertedRule.trigger["load-type"][0]);
+    assertEquals("ignore-previous-rules", convertedRule.action.type);
+}
+addTestCase(testConvertFirstPartyRule);
 
 /**
  * Tests rule with empty regexp conversion

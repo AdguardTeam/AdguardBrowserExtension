@@ -6,6 +6,16 @@ var assertNotNull = function (value) {
 	}
 };
 
+var assertNotEmpty = function(value) {
+	assertNotNull(value);
+}
+
+var assertEmpty = function (value) {
+	if (value) {
+		throw new Error('Value is not empty');
+	}
+};
+
 var assertEquals = function (actual, expected) {
 	if (actual !== expected) {
 		throw new Error(actual + ' !== ' + expected);
