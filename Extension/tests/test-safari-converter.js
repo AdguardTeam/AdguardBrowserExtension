@@ -98,8 +98,7 @@ function testConvertFirstPartyRule() {
     var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
     assertEquals(1, result.convertedCount);
     assertEquals(0, result.errorsCount);
-    console.log(result);
-    
+
     var converted = JSON.parse(result.converted);
     assertEquals(1, converted.length);
 
