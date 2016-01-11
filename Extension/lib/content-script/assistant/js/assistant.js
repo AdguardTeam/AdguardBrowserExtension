@@ -449,7 +449,7 @@ var Adguard = function () {
 		}
 
 		var blockUrl = urlMask.replace(/^http:\/\/(www\.)?/, "||");
-		if (blockUrl.startsWith('.')) {
+		if (blockUrl.indexOf('.') == 0) {
 			blockUrl = blockUrl.substring(1);
 		}
 
