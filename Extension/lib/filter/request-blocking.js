@@ -61,7 +61,6 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
     var genericHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "GENERICHIDE");
     var elemHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "ELEMHIDE");
     if (!elemHideRule) {
-        console.warn("Loading all selectors:" + loadAllSelectors);
         if ((Utils.isFirefoxBrowser() && userSettings.collectHitsCount())
             || (!loadAllSelectors && Utils.isContentBlockerEnabled())) {
             selectors = this.antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideRule);
