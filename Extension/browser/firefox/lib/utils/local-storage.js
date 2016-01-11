@@ -25,18 +25,18 @@ var self = require('sdk/self');
 /**
  * Local storage adapter
  */
-var LS = exports.LS = {
+exports.LS = {
 
 	storage: SimplePrefs.prefs,
 	branch: Services.prefs.getBranch('extensions.' + self.id + '.'),
 
 	getItem: function (key) {
-		return LS.storage[key];
+		return this.storage[key];
 	},
 
 	setItem: function (key, value) {
 		try {
-			LS.storage[key] = value;
+			this.storage[key] = value;
 		} catch (ex) {
 			Log.error("Error save item cause: {0}", ex);
 		}
@@ -47,6 +47,8 @@ var LS = exports.LS = {
 	},
 
 	clean: function () {
-		this.branch.deleteBranch('');
+		for (var key in this.storage) {
+			this.removeItem(key);
+		}
 	}
 };

@@ -68,6 +68,14 @@ exports.main = function (options, callbacks) {
             FS.removeAdguardDir();
         }
 
+        // In case of firefox browser we move application data from simple-storage to prefs.
+        // So we need move app-version to prefs for properly update
+        var appVersion = simpleStorage.storage['app-version'];
+        if (appVersion) {
+            LS.setItem('app-version', appVersion);
+            delete simpleStorage.storage['app-version'];
+        }
+
         var SdkPanel = null;
         // PaleMoon (25) and fennec doesn't support sdk/panel
         try {

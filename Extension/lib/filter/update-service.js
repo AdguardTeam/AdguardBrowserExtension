@@ -29,7 +29,7 @@ var FilterStorage = require('filter/storage').FilterStorage;
 var CollectionUtils = require('utils/common').CollectionUtils;
 var Promise = require('utils/promises').Promise;
 var filterRulesHitCount = require('filter/filters-hit').filterRulesHitCount;
-var SimpleStorage = require('sdk/simple-storage');
+var simpleStorage = require('sdk/simple-storage');
 
 /**
  * Service that manages extension version information and handles
@@ -81,14 +81,8 @@ exports.ApplicationUpdateService = {
 		if (Utils.isGreaterVersion("2.0.10", runInfo.prevVersion)) {
 			methods.push(this._onUpdateRuleHitStats);
 		}
-
-        if (Utils.isFirefoxBrowser()) {
-			var storageVersion = SimpleStorage.storage['app-version'];
-			if (storageVersion != null) {
-				delete SimpleStorage.storage['app-version'];
-
-				methods.push(this._onUpdateFirefoxStorage);
-			}
+		if (Utils.isGreaterVersion("2.1.1", runInfo.prevVersion) && Utils.isFirefoxBrowser()) {
+			methods.push(this._onUpdateFirefoxStorage);
 		}
 
 		var dfd = this._executeMethods(methods);
@@ -268,11 +262,12 @@ exports.ApplicationUpdateService = {
 	 * @private
 	 */
 	_onUpdateFirefoxStorage: function () {
+
 		Log.info('Call update to version 2.1.1');
 
 		var dfd = new Promise();
 
-		var ss = SimpleStorage.storage;
+		var ss = simpleStorage.storage;
 		for (var k in ss) {
 			if (ss.hasOwnProperty(k)) {
 				var v = ss[k];
