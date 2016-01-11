@@ -14,29 +14,41 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var SimpleStorage = require('sdk/simple-storage');
+var Cu = require('chrome').Cu;
+Cu.import("resource://gre/modules/Services.jsm");
+
+var SimplePrefs = require('sdk/simple-prefs');
 var Log = require('utils/log').Log;
+
+var self = require('sdk/self');
 
 /**
  * Local storage adapter
  */
-var LS = exports.LS = {
+exports.LS = {
 
-	storage: SimpleStorage.storage,
+	storage: SimplePrefs.prefs,
+	branch: Services.prefs.getBranch('extensions.' + self.id + '.'),
 
 	getItem: function (key) {
-		return LS.storage[key];
+		return this.storage[key];
 	},
 
 	setItem: function (key, value) {
 		try {
-			LS.storage[key] = value;
+			this.storage[key] = value;
 		} catch (ex) {
 			Log.error("Error save item cause: {0}", ex);
 		}
 	},
 
 	removeItem: function (key) {
-		delete LS.storage[key];
+		this.branch.clearUserPref(key);
+	},
+
+	clean: function () {
+		for (var key in this.storage) {
+			this.removeItem(key);
+		}
 	}
 };

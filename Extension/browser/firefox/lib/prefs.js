@@ -16,14 +16,12 @@
  */
 var self = require('sdk/self');
 var platform = require('sdk/system').platform;
+var simplePrefs = require('sdk/simple-prefs');
 const {Cc, Ci} = require('chrome');
 
 var locale = (function () {
 	return Cc["@mozilla.org/chrome/chrome-registry;1"].getService(Ci.nsIXULChromeRegistry).getSelectedLocale('global');
 })();
-
-var prefsService = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService);
-var prefsBranch = prefsService.getBranch("extensions." + self.id + ".");
 
 /**
  * Global preferences for Firefox extension
@@ -58,6 +56,6 @@ var Prefs = exports.Prefs = {
 		return Prefs.browser;
 	},
 	speedupStartup: function () {
-		return prefsBranch.getBoolPref("speedup_startup");
+		return simplePrefs.prefs['speedup_startup'];
 	}
 };
