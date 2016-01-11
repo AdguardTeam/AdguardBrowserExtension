@@ -36,11 +36,12 @@ var WebRequestService = exports.WebRequestService = function (framesMap, antiBan
 /**
  * Prepares CSS and JS which should be injected to the page.
  *
- * @param tab           Tab
- * @param documentUrl   Document URL
+ * @param tab                   Tab
+ * @param documentUrl           Document URL
+ * @param loadAllSelectors      Collapse all elements
  * @returns {*}
  */
-WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, documentUrl) {
+WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, documentUrl, loadAllSelectors) {
 
     if (!tab) {
         return null;
@@ -60,7 +61,9 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
     var genericHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "GENERICHIDE");
     var elemHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "ELEMHIDE");
     if (!elemHideRule) {
-        if ((Utils.isFirefoxBrowser() && userSettings.collectHitsCount()) || Utils.isContentBlockerEnabled()) {
+        console.warn("Loading all selectors:" + loadAllSelectors);
+        if ((Utils.isFirefoxBrowser() && userSettings.collectHitsCount())
+            || (!loadAllSelectors && Utils.isContentBlockerEnabled())) {
             selectors = this.antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideRule);
         } else {
             selectors = this.antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl, genericHideRule);

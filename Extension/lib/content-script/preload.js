@@ -62,10 +62,12 @@ var PreloadHelper = {
      * Loads CSS and JS injections
      */
     tryLoadCssAndScripts: function () {
+        var self = this;
         contentPage.sendMessage(
             {
                 type: 'getSelectorsAndScripts',
-                documentUrl: window.location.href
+                documentUrl: window.location.href,
+                loadAllSelectors: self.collapseAllElements
             },
             this.processCssAndScriptsResponse.bind(this)
         )
@@ -80,12 +82,11 @@ var PreloadHelper = {
             // This flag means that requestFilter is not yet initialized
             // This is possible only on browser startup.
             // In this case we'll delay injections until extension is fully initialized.
+            this.collapseAllElements = true;
             var loadCssAndScripts = this.tryLoadCssAndScripts.bind(this);
             setTimeout(function () {
                 loadCssAndScripts();
             }, 100);
-            // Request filter not yet ready, delay elements collapse
-            this.collapseAllElements = true;
         } else {
             this._applySelectors(response.selectors);
             this._applyScripts(response.scripts);
