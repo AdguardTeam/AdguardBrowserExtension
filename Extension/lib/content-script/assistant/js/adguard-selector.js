@@ -21,8 +21,7 @@
 var AdguardSelectorLib = {
 
     /**
-     * Initializes selector module.
-     * Shows default selection after setup.
+     * Starts selector module.
      *
      * @param onElementSelected callback function
      */
@@ -32,45 +31,27 @@ var AdguardSelectorLib = {
 
     /**
      * Resets state of selector.
-     * Sets selection to default.
+     * Clears current selection.
      */
     reset: function () {
 
     },
 
     /**
-     * Closes selector module.
+     * Destroys selector module.
+     * Removes all selector elements and unbinds event handlers.
      */
     close: function () {
 
     },
 
     /**
-     * Marks current selected element.
-     */
-    showSelection: function () {
-
-    },
-
-    /**
-     * Hides selection mark on current selected element.
-     */
-    hideSelection: function () {
-
-    },
-
-    /**
-     * Returns selection object info.
-     */
-    getSelection: function () {
-
-    },
-
-    /**
      * Changes scope of current selection.
      * Scope can be changed in parent-child direction.
+     *
+     * @param onScopeChanged callback function
      */
-    changeScope: function () {
+    changeScope: function (onScopeChanged) {
 
     }
 };
