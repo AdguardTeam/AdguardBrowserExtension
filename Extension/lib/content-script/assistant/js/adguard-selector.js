@@ -24,8 +24,9 @@ var AdguardSelectorLib = {
      * Starts selector module.
      *
      * @param onElementSelected callback function
+     * @param selectionRenderer optional function contains selection presentation implementation
      */
-    init: function (onElementSelected) {
+    init: function (onElementSelected, selectionRenderer) {
 
     },
 
