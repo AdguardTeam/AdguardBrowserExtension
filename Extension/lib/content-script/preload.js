@@ -62,12 +62,11 @@ var PreloadHelper = {
      * Loads CSS and JS injections
      */
     tryLoadCssAndScripts: function () {
-        var self = this;
         contentPage.sendMessage(
             {
                 type: 'getSelectorsAndScripts',
                 documentUrl: window.location.href,
-                loadAllSelectors: self.collapseAllElements
+                loadAllSelectors: this.collapseAllElements
             },
             this.processCssAndScriptsResponse.bind(this)
         )
