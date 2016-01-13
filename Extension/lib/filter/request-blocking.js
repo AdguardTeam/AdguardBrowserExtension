@@ -38,7 +38,7 @@ var WebRequestService = exports.WebRequestService = function (framesMap, antiBan
  *
  * @param tab                   Tab
  * @param documentUrl           Document URL
- * @param loadAllSelectors      Collapse all elements
+ * @param loadAllSelectors      Collapse all elements. Check https://github.com/AdguardTeam/AdguardBrowserExtension/issues/124.
  * @returns {*}
  */
 WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, documentUrl, loadAllSelectors) {
