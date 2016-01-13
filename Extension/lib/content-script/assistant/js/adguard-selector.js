@@ -55,5 +55,14 @@ var AdguardSelectorLib = {
      */
     changeScope: function (scope) {
 
+    },
+
+    /**
+     * Selects specified element and calls callback function.
+     *
+     * @param element
+     */
+    selectElement: function (element) {
+
     }
 };
