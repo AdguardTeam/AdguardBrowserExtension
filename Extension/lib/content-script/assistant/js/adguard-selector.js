@@ -47,17 +47,6 @@ var AdguardSelectorLib = {
     },
 
     /**
-     * Changes scope of current selection.
-     * Scope can be changed in parent-child direction.
-     * Calls onElementSelected callback.
-     *
-     * @param scope signed integer coefficient
-     */
-    changeScope: function (scope) {
-
-    },
-
-    /**
      * Selects specified element and calls callback function.
      *
      * @param element
