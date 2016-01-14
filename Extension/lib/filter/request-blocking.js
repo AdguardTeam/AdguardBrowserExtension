@@ -81,7 +81,8 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
 
     return {
         selectors: selectors,
-        scripts: scripts
+        scripts: scripts,
+        allSelectorsLoaded: loadAllSelectors
     };
 };
 
