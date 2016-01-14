@@ -36,12 +36,11 @@ var WebRequestService = exports.WebRequestService = function (framesMap, antiBan
 /**
  * Prepares CSS and JS which should be injected to the page.
  *
- * @param tab                   Tab
- * @param documentUrl           Document URL
- * @param loadAllSelectors      Collapse all elements. Check https://github.com/AdguardTeam/AdguardBrowserExtension/issues/124.
+ * @param tab           Tab
+ * @param documentUrl   Document URL
  * @returns {*}
  */
-WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, documentUrl, loadAllSelectors) {
+WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, documentUrl) {
 
     if (!tab) {
         return null;
@@ -49,12 +48,6 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
 
     if (!this.antiBannerService.requestFilterReady) {
         return {requestFilterReady: false};
-    }
-
-    var forceLoadAllSelectors = loadAllSelectors;
-    if (Utils.isContentBlockerEnabled()
-        && !this.antiBannerService.getContentBlockerInfo()) {
-        forceLoadAllSelectors = true;
     }
 
     if (this.framesMap.isTabAdguardDetected(tab) || this.framesMap.isTabProtectionDisabled(tab) || this.framesMap.isTabWhiteListed(tab)) {
@@ -67,8 +60,7 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
     var genericHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "GENERICHIDE");
     var elemHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "ELEMHIDE");
     if (!elemHideRule) {
-        if ((Utils.isFirefoxBrowser() && userSettings.collectHitsCount())
-            || (Utils.isContentBlockerEnabled() && (!loadAllSelectors || contentBlockerReady === false))) {
+        if ((Utils.isFirefoxBrowser() && userSettings.collectHitsCount()) || Utils.isContentBlockerEnabled()) {
             selectors = this.antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideRule);
         } else {
             selectors = this.antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl, genericHideRule);
