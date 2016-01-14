@@ -62,6 +62,7 @@ var PreloadHelper = {
      * Loads CSS and JS injections
      */
     tryLoadCssAndScripts: function () {
+        console.warn('try load call:' + this.collapseAllElements);
         contentPage.sendMessage(
             {
                 type: 'getSelectorsAndScripts',
@@ -77,19 +78,23 @@ var PreloadHelper = {
      * @param response
      */
     processCssAndScriptsResponse: function (response) {
-        if (!response || response.requestFilterReady === false) {
+        if (!response
+            || response.requestFilterReady === false) {
+            console.warn('not ready');
             // This flag means that requestFilter is not yet initialized
             // This is possible only on browser startup.
             // In this case we'll delay injections until extension is fully initialized.
             this.collapseAllElements = true;
             var loadCssAndScripts = this.tryLoadCssAndScripts.bind(this);
             setTimeout(function () {
+                console.warn('timeout');
                 loadCssAndScripts();
             }, 100);
         } else {
+            console.warn('ready:' + this.collapseAllElements + response.contentBlockerReady);
             this._applySelectors(response.selectors);
             this._applyScripts(response.scripts);
-            if (this.collapseAllElements) {
+            if (this.collapseAllElements || response.contentBlockerReady === false) {
                 // This flag means that we're on browser startup
                 // In this case we'll check all page elements and collapse them if needed.
                 // Why? On browser startup we can't block some ad/tracking requests

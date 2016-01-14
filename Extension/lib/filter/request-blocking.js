@@ -51,6 +51,12 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
         return {requestFilterReady: false};
     }
 
+    var forceLoadAllSelectors = loadAllSelectors;
+    if (Utils.isContentBlockerEnabled()
+        && !this.antiBannerService.getContentBlockerInfo()) {
+        forceLoadAllSelectors = true;
+    }
+
     if (this.framesMap.isTabAdguardDetected(tab) || this.framesMap.isTabProtectionDisabled(tab) || this.framesMap.isTabWhiteListed(tab)) {
         return null;
     }
@@ -62,7 +68,7 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
     var elemHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "ELEMHIDE");
     if (!elemHideRule) {
         if ((Utils.isFirefoxBrowser() && userSettings.collectHitsCount())
-            || (!loadAllSelectors && Utils.isContentBlockerEnabled())) {
+            || (Utils.isContentBlockerEnabled() && (!loadAllSelectors || contentBlockerReady === false))) {
             selectors = this.antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideRule);
         } else {
             selectors = this.antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl, genericHideRule);
