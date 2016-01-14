@@ -82,15 +82,13 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
 };
 
 WebRequestService.prototype.shouldLoadAllSelectors = function () {
-    var loadAllSelectors = !Utils.isContentBlockerEnabled() && !(Utils.isFirefoxBrowser() && userSettings.collectHitsCount());
-    if (Utils.isContentBlockerEnabled()
-        && this.antiBannerService.getContentBlockerInfo().rulesCount == 0) {
-        //Content blocker is not yet loaded - we should load all selectors
-        //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/124
-        loadAllSelectors = true;
+    if (Utils.isFirefoxBrowser() && userSettings.collectHitsCount()) {
+        return false;
     }
 
-    return loadAllSelectors;
+    //If content blocker is not yet loaded - we should load all selectors
+    //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/124
+    return !Utils.isContentBlockerEnabled() || this.antiBannerService.getContentBlockerInfo().rulesCount == 0;
 };
 
 WebRequestService.prototype.processShouldCollapse = function (tab, requestUrl, referrerUrl, requestType) {
