@@ -56,8 +56,9 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
 
     var loadAllSelectors = !Utils.isContentBlockerEnabled() && !(Utils.isFirefoxBrowser() && userSettings.collectHitsCount());
     if (Utils.isContentBlockerEnabled()
-        && !this.antiBannerService.getContentBlockerInfo()) {
+        && this.antiBannerService.getContentBlockerInfo().rulesCount == 0) {
         //Content blocker is not yet loaded - we should load all selectors
+        //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/124
         loadAllSelectors = true;
     }
 
