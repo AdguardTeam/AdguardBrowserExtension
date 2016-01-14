@@ -300,6 +300,17 @@ AntiBannerService.prototype = {
     },
 
     /**
+     * @returns boolean request filter ready
+     */
+    isRequestFilterReady: function () {
+        if (Utils.isContentBlockerEnabled()) {
+            return this.contentBlockerInfo.rulesCount > 0;
+        } else {
+            return this.requestFilterReady;
+        }
+    },
+
+    /**
      * Method is used to detect language of the page opened in the browser tab.
      * LocaleDetectorService then checks if we need to auto-enable language specific filter.
      *

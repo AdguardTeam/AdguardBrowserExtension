@@ -38,15 +38,16 @@ var WebRequestService = exports.WebRequestService = function (framesMap, antiBan
  *
  * @param tab           Tab
  * @param documentUrl   Document URL
+ * @param loadAllSelectors Load all selectors flag
  * @returns {*}
  */
-WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, documentUrl) {
+WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, documentUrl, loadAllSelectors) {
 
     if (!tab) {
         return null;
     }
 
-    if (!this.antiBannerService.requestFilterReady) {
+    if (!this.antiBannerService.isRequestFilterReady()) {
         return {requestFilterReady: false};
     }
 
@@ -54,15 +55,13 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
         return null;
     }
 
-    var loadAllSelectors = this.shouldLoadAllSelectors();
-
     var selectors = null;
     var scripts = null;
 
     var genericHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "GENERICHIDE");
     var elemHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "ELEMHIDE");
     if (!elemHideRule) {
-        if (loadAllSelectors) {
+        if (loadAllSelectors || this.shouldLoadAllSelectors()) {
             selectors = this.antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl, genericHideRule);
         } else {
             selectors = this.antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideRule);
@@ -76,8 +75,7 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
 
     return {
         selectors: selectors,
-        scripts: scripts,
-        allSelectorsLoaded: loadAllSelectors
+        scripts: scripts
     };
 };
 
@@ -86,9 +84,7 @@ WebRequestService.prototype.shouldLoadAllSelectors = function () {
         return false;
     }
 
-    //If content blocker is not yet loaded - we should load all selectors
-    //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/124
-    return !Utils.isContentBlockerEnabled() || this.antiBannerService.getContentBlockerInfo().rulesCount == 0;
+    return !Utils.isContentBlockerEnabled();
 };
 
 WebRequestService.prototype.processShouldCollapse = function (tab, requestUrl, referrerUrl, requestType) {

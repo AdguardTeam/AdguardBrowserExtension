@@ -186,7 +186,7 @@ ContentMessageHandler.prototype = {
                     callback({});
                     return;
                 }
-                var cssAndScripts = this.webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl);
+                var cssAndScripts = this.webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl, message.loadAllSelectors);
                 callback(cssAndScripts || {});
                 break;
             case 'processShouldCollapse':
