@@ -89,7 +89,7 @@ var PreloadHelper = {
         } else {
             this._applySelectors(response.selectors);
             this._applyScripts(response.scripts);
-            if (this.collapseAllElements) {
+            if (this.collapseAllElements || response.contentBlockerReady === false) {
                 // This flag means that we're on browser startup
                 // In this case we'll check all page elements and collapse them if needed.
                 // Why? On browser startup we can't block some ad/tracking requests

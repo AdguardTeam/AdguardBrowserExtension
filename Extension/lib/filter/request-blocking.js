@@ -54,16 +54,23 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
         return null;
     }
 
+    var loadAllSelectors = !Utils.isContentBlockerEnabled() && !(Utils.isFirefoxBrowser() && userSettings.collectHitsCount());
+    if (Utils.isContentBlockerEnabled()
+        && !this.antiBannerService.getContentBlockerInfo()) {
+        //Content blocker is not yet loaded - we should load all selectors
+        loadAllSelectors = true;
+    }
+
     var selectors = null;
     var scripts = null;
 
     var genericHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "GENERICHIDE");
     var elemHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "ELEMHIDE");
     if (!elemHideRule) {
-        if ((Utils.isFirefoxBrowser() && userSettings.collectHitsCount()) || Utils.isContentBlockerEnabled()) {
-            selectors = this.antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideRule);
-        } else {
+        if (loadAllSelectors) {
             selectors = this.antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl, genericHideRule);
+        } else {
+            selectors = this.antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideRule);
         }
     }
 
