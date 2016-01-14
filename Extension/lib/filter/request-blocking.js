@@ -54,13 +54,7 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
         return null;
     }
 
-    var loadAllSelectors = !Utils.isContentBlockerEnabled() && !(Utils.isFirefoxBrowser() && userSettings.collectHitsCount());
-    if (Utils.isContentBlockerEnabled()
-        && this.antiBannerService.getContentBlockerInfo().rulesCount == 0) {
-        //Content blocker is not yet loaded - we should load all selectors
-        //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/124
-        loadAllSelectors = true;
-    }
+    var loadAllSelectors = this.shouldLoadAllSelectors();
 
     var selectors = null;
     var scripts = null;
@@ -85,6 +79,18 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
         scripts: scripts,
         allSelectorsLoaded: loadAllSelectors
     };
+};
+
+WebRequestService.prototype.shouldLoadAllSelectors = function () {
+    var loadAllSelectors = !Utils.isContentBlockerEnabled() && !(Utils.isFirefoxBrowser() && userSettings.collectHitsCount());
+    if (Utils.isContentBlockerEnabled()
+        && this.antiBannerService.getContentBlockerInfo().rulesCount == 0) {
+        //Content blocker is not yet loaded - we should load all selectors
+        //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/124
+        loadAllSelectors = true;
+    }
+
+    return loadAllSelectors;
 };
 
 WebRequestService.prototype.processShouldCollapse = function (tab, requestUrl, referrerUrl, requestType) {
