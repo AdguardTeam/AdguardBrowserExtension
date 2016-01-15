@@ -1036,7 +1036,9 @@ AntiBannerService.prototype = {
         // At that moment we use dirtyRulesMap
         var triggerRequestFilterCreation = function() {
             this.getRequestFilter();
-            callback();
+            if (callback && typeof callback === "function") {		
+                callback();		
+            }
         }.bind(this);
 
         // Called when all filter rules has been loaded from storage
