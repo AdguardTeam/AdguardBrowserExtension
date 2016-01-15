@@ -78,7 +78,7 @@ var AntiBannerService = exports.AntiBannerService = function () {
     this.applicationFilteringDisabled = userSettings.isFilteringDisabled();
 
     //Service is not initialized yet
-    this.requestFilterReady = false;
+    this._requestFilterInitTime = 0;
 };
 
 /**
@@ -128,7 +128,7 @@ AntiBannerService.prototype = {
         var onServiceInitialized = function (runInfo) {
 
             //set request filter is ready
-            this.requestFilterReady = true;
+            this._requestFilterInitTime = new Date().getTime();
 
             if (options.runCallback) {
                 options.runCallback(runInfo);
@@ -297,6 +297,24 @@ AntiBannerService.prototype = {
         }
 
         return this.requestFilter;
+    },
+
+    /**
+     * @returns boolean request filter ready
+     */
+    isRequestFilterReady: function () {
+        return this._requestFilterInitTime > 0;
+    },
+
+    /**
+     * We do this because we don't know the precise time when content blocker is really compiled and registered.
+     * So we assume that first 3 seconds it is not yet ready and we should use the old way to collapse elements.
+     *
+     * @returns boolean content blocker ready
+     */
+    isContentBlockerReady: function () {
+        return (this._requestFilterInitTime > 0)
+            && (this._requestFilterInitTime + 3000 < new Date().getTime());
     },
 
     /**

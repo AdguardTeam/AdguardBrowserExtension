@@ -73,30 +73,29 @@ var PreloadHelper = {
 
     /**
      * Processes response from the background page containing CSS and JS injections
+     *
      * @param response
      */
     processCssAndScriptsResponse: function (response) {
         if (!response || response.requestFilterReady === false) {
-            // This flag means that requestFilter is not yet initialized
+            // This flag means that we should wait for a while, cause the request filter is not ready yet.
             // This is possible only on browser startup.
             // In this case we'll delay injections until extension is fully initialized.
             var loadCssAndScripts = this.tryLoadCssAndScripts.bind(this);
             setTimeout(function () {
                 loadCssAndScripts();
             }, 100);
-            // Request filter not yet ready, delay elements collapse
-            this.collapseAllElements = true;
+        } else if (response.collapseAllElements) {
+            // This flag means that we should check all page elements and collapse them if needed.
+            // Why? On browser startup we can't block some ad/tracking requests
+            // because extension is not yet initialized when these requests are executed.
+            // At least we could hide these elements.
+            this._applySelectors(response.selectors);
+            this._applyScripts(response.scripts);
+            this._initCollapseMany();
         } else {
             this._applySelectors(response.selectors);
             this._applyScripts(response.scripts);
-            if (this.collapseAllElements) {
-                // This flag means that we're on browser startup
-                // In this case we'll check all page elements and collapse them if needed.
-                // Why? On browser startup we can't block some ad/tracking requests
-                // because extension is not yet initialized when these requests are executed.
-                // At least we could hide these elements.
-                this._initCollapseMany();
-            }
         }
     },
 
