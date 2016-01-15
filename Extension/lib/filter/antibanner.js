@@ -78,7 +78,7 @@ var AntiBannerService = exports.AntiBannerService = function () {
     this.applicationFilteringDisabled = userSettings.isFilteringDisabled();
 
     //Service is not initialized yet
-    this.requestFilterReady = false;
+    this._requestFilterInitTime = 0;
 };
 
 /**
@@ -128,7 +128,7 @@ AntiBannerService.prototype = {
         var onServiceInitialized = function (runInfo) {
 
             //set request filter is ready
-            this.requestFilterReady = true;
+            this._requestFilterInitTime = new Date().getTime();
 
             if (options.runCallback) {
                 options.runCallback(runInfo);
@@ -303,11 +303,15 @@ AntiBannerService.prototype = {
      * @returns boolean request filter ready
      */
     isRequestFilterReady: function () {
-        if (Utils.isContentBlockerEnabled()) {
-            return this.contentBlockerInfo.rulesCount > 0;
-        } else {
-            return this.requestFilterReady;
-        }
+        return this._requestFilterInitTime > 0;
+    },
+
+    /**
+     * @returns boolean content blocker ready
+     */
+    isContentBlockerReady: function () {
+        return (this._requestFilterInitTime > 0)
+            && (this._requestFilterInitTime + 3000 < new Date().getTime());
     },
 
     /**
