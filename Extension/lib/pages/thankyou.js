@@ -37,11 +37,13 @@ PageController.prototype = {
 		this.trackingFilterEnabledCheckbox = $("#trackingFilterEnabledCheckbox");
 		this.socialFilterEnabledCheckbox = $("#socialFilterEnabledCheckbox");
 		this.sendSafebrowsingStatsCheckbox = $("#sendSafebrowsingStatsCheckbox");
+        this.allowAcceptableAdsCheckbox = $("#allowAcceptableAds");
 
 		this.safebrowsingEnabledCheckbox.on('change', this.safebrowsingEnabledChange);
 		this.trackingFilterEnabledCheckbox.on('change', this.trackingFilterEnabledChange);
 		this.socialFilterEnabledCheckbox.on('change', this.socialFilterEnabledChange);
 		this.sendSafebrowsingStatsCheckbox.on('change', this.sendSafebrowsingStatsChange);
+        this.allowAcceptableAdsCheckbox.on('change', this.allowAcceptableAdsChange);
 
 		$(".openExtensionStore").on('click', function (e) {
 			e.preventDefault();
@@ -85,6 +87,14 @@ PageController.prototype = {
 			value: !this.checked
 		});
 	},
+    
+    allowAcceptableAdsChange: function() {
+		if (this.checked) {
+			contentPage.sendMessage({type: 'addAndEnableFilter', filterId: AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID});
+		} else {
+			contentPage.sendMessage({type: 'removeAntiBannerFilter', filterId: AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID});
+		}
+    },
 
 	_render: function () {
 
@@ -93,10 +103,12 @@ PageController.prototype = {
 		var collectHitsCount = !userSettings.values[userSettings.names.DISABLE_COLLECT_HITS];
 		var trackingFilterEnabled = AntiBannerFiltersId.TRACKING_FILTER_ID in enabledFilters;
 		var socialFilterEnabled = AntiBannerFiltersId.SOCIAL_FILTER_ID in enabledFilters;
+        var allowAcceptableAdsEnabled = AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID in enabledFilters;
 
 		this._renderSafebrowsingSection(safebrowsingEnabled, sendSafebrowsingStats, collectHitsCount);
 		this._renderFilter(this.trackingFilterEnabledCheckbox, trackingFilterEnabled);
 		this._renderFilter(this.socialFilterEnabledCheckbox, socialFilterEnabled);
+        this._renderFilter(this.allowAcceptableAdsCheckbox, allowAcceptableAdsEnabled);
 	},
 
 	_renderSafebrowsingSection: function (safebrowsingEnabled, sendSafebrowsingStats, collectHitStats) {
