@@ -284,12 +284,14 @@ AntiBannerService.prototype = {
         var uniqueRules = Object.create(null);
         var rulesFilterMap = this.dirtyRulesMap;
         
-        // Supplement function to add rules to the request filter
+        // Supplement function for adding rules to the request filter
         var addRules = function(filterId, rulesTexts) {
             if (!rulesTexts) {
                 return;
             }
             
+            // To number
+            filterId = filterId - 0;
             for (var i = 0; i < rulesTexts.length; i++) {
                 var ruleText = rulesTexts[i];
                 if (ruleText in uniqueRules) {
