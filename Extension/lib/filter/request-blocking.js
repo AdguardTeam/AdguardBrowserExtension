@@ -57,11 +57,11 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
     var selectors = null;
     var scripts = null;
 
-    var collapseAllElements = this.shouldLoadAllSelectors();
+    var shouldLoadAllSelectors = this.shouldLoadAllSelectors();
     var genericHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "GENERICHIDE");
     var elemHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "ELEMHIDE");
     if (!elemHideRule) {
-        if (collapseAllElements) {
+        if (shouldLoadAllSelectors) {
             selectors = this.antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl, genericHideRule);
         } else {
             selectors = this.antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideRule);
@@ -76,7 +76,7 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
     return {
         selectors: selectors,
         scripts: scripts,
-        collapseAllElements: collapseAllElements
+        collapseAllElements: shouldLoadAllSelectors
     };
 };
 

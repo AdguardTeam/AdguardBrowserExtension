@@ -307,6 +307,9 @@ AntiBannerService.prototype = {
     },
 
     /**
+     * We do this because we don't know the precise time when content blocker is really compiled and registered.
+     * So we assume that first 3 seconds it is not yet ready and we should use the old way to collapse elements.
+     *
      * @returns boolean content blocker ready
      */
     isContentBlockerReady: function () {
