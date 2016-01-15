@@ -46,7 +46,7 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
         return null;
     }
 
-    if (!this.antiBannerService.requestFilterReady) {
+    if (!this.antiBannerService.isRequestFilterReady()) {
         return {requestFilterReady: false};
     }
 
@@ -57,13 +57,14 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
     var selectors = null;
     var scripts = null;
 
+    var shouldLoadAllSelectors = this.shouldLoadAllSelectors();
     var genericHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "GENERICHIDE");
     var elemHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "ELEMHIDE");
     if (!elemHideRule) {
-        if ((Utils.isFirefoxBrowser() && userSettings.collectHitsCount()) || Utils.isContentBlockerEnabled()) {
-            selectors = this.antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideRule);
-        } else {
+        if (shouldLoadAllSelectors) {
             selectors = this.antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl, genericHideRule);
+        } else {
+            selectors = this.antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideRule);
         }
     }
 
@@ -74,8 +75,17 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
 
     return {
         selectors: selectors,
-        scripts: scripts
+        scripts: scripts,
+        collapseAllElements: shouldLoadAllSelectors
     };
+};
+
+WebRequestService.prototype.shouldLoadAllSelectors = function () {
+    if (Utils.isFirefoxBrowser() && userSettings.collectHitsCount()) {
+        return false;
+    }
+
+    return !Utils.isContentBlockerEnabled() || !this.antiBannerService.isContentBlockerReady();
 };
 
 WebRequestService.prototype.processShouldCollapse = function (tab, requestUrl, referrerUrl, requestType) {

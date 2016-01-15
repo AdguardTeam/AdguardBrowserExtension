@@ -444,8 +444,15 @@ var Adguard = function () {
 			return 'false';
 		}
 		var urlMask = getUrlBlockAttribute(settings.selectedElement);
-		if (!urlMask || urlMask == '') return 'false';
+		if (!urlMask || urlMask == '') {
+			return 'false';
+		}
+
 		var blockUrl = urlMask.replace(/^http:\/\/(www\.)?/, "||");
+		if (blockUrl.indexOf('.') == 0) {
+			blockUrl = blockUrl.substring(1);
+		}
+
 		var value;
 		if (!iframe.find("#oneDomainRadio").is(':checked')) {
 			value = "domain=" + getCroppedDomain();
@@ -454,6 +461,7 @@ var Adguard = function () {
 		var filterRule = iframe.find('#filter-rule');
 		filterRule.val(result ? blockUrl + "$" + result : blockUrl);
 		settings.urlBlockPath = filterRule.val();
+
 		return 'true';
 	};
 

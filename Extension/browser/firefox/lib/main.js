@@ -18,6 +18,7 @@ var chrome = require('chrome');
 var self = require('sdk/self');
 var l10n = require('sdk/l10n');
 var tabs = require('sdk/tabs');
+var simplePrefs = require('sdk/simple-prefs');
 var simpleStorage = require('sdk/simple-storage');
 var unload = require('sdk/system/unload');
 var pageMod = require('sdk/page-mod');
@@ -32,6 +33,7 @@ var sdkModules = {
     'sdk/tabs': tabs,
     'sdk/tabs/utils': require('sdk/tabs/utils'),
     'sdk/system': require('sdk/system'),
+    'sdk/simple-prefs': simplePrefs,
     'sdk/simple-storage': simpleStorage,
     'sdk/self': self,
     'sdk/page-mod': pageMod,
@@ -60,9 +62,18 @@ exports.main = function (options, callbacks) {
 
         var {Log} = loadAdguardModule('utils/log');
         var {FS} = loadAdguardModule('utils/file-storage');
+        var {LS} = loadAdguardModule('utils/local-storage');
         if (options.loadReason == 'install' || options.loadReason == 'downgrade') {
-            simpleStorage.storage = Object.create(Object.prototype);
+            LS.clean();
             FS.removeAdguardDir();
+        }
+
+        // In case of firefox browser we move application data from simple-storage to prefs.
+        // So we need move app-version to prefs for properly update
+        var appVersion = simpleStorage.storage['app-version'];
+        if (appVersion) {
+            LS.setItem('app-version', appVersion);
+            delete simpleStorage.storage['app-version'];
         }
 
         var SdkPanel = null;

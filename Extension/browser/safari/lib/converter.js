@@ -18,7 +18,7 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.4';
+var CONVERTER_VERSION = '1.3.5';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var URL_FILTER_ANY_URL = ".*";
@@ -72,9 +72,12 @@ exports.SafariContentBlockerConverter = {
 
         },
 
+        /**
+         * Adds load-type specification
+         */
         _addThirdParty: function (trigger, rule) {
-            if (rule.isThirdParty != null && rule.isThirdParty) {
-                trigger["load-type"] = ["third-party"];
+            if (rule.checkThirdParty) {
+                trigger["load-type"] = rule.isThirdParty ? ["third-party"] : ["first-party"];
             }
         },
 
