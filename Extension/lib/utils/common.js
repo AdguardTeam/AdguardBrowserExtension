@@ -148,23 +148,6 @@ var CollectionUtils = exports.CollectionUtils = {
             text.push(collection[i].ruleText);
         }
         return text;
-    },
-
-    getRulesFromTextUnique: function (rulesFilterMap) {
-
-        var rules = Object.create(null);
-
-        for (var filterId in rulesFilterMap) {
-            var rulesTexts = rulesFilterMap[filterId];
-            for (var i = 0; i < rulesTexts.length; i++) {
-                var ruleText = rulesTexts[i];
-                if (ruleText in rules) {
-                    continue;
-                }
-                rules[ruleText] = filterId - 0;
-            }
-        }
-        return rules;
     }
 };
 

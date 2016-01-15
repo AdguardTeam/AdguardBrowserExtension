@@ -56,7 +56,7 @@ FilterRule.createRule = function (ruleText, filterId) {
             rule = new UrlFilterRule(ruleText, filterId);
         }
     } catch (ex) {
-        Log.warn("Cannot create rule from {0}, cause {1}", ruleText, ex);
+        Log.warn("Cannot create rule from filter {0}: {1}, cause {2}", filterId, ruleText, ex);
     }
     return rule;
 };
