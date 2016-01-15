@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global contentPage */
 var PreloadHelper = {
 
     AG_HIDDEN_ATTRIBUTE: "adg-hidden",
@@ -36,7 +37,6 @@ var PreloadHelper = {
      * Initializing content script
      */
     init: function () {
-
         if (!(document instanceof HTMLDocument)) {
             return;
         }
@@ -45,7 +45,8 @@ var PreloadHelper = {
             // Do not inject CSS into small frames
             var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
             var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-            if ((height * width) < 100000) {//near 240*400 px
+            if ((height * width) < 100000) {
+                // ~240*400 px
                 return;
             }
         }
@@ -68,7 +69,7 @@ var PreloadHelper = {
                 documentUrl: window.location.href
             },
             this.processCssAndScriptsResponse.bind(this)
-        )
+        );
     },
 
     /**

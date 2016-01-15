@@ -231,6 +231,7 @@ CssFilter.prototype = {
 		this._rebuildBinding();
 		return this._buildCssStringForInject();
 	},
+
 	/**
 	 * Gets rule by it's ID.
 	 * ID is generated in _addRuleToMap method.

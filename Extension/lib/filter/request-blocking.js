@@ -47,7 +47,9 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
     }
 
     if (!this.antiBannerService.isRequestFilterReady()) {
-        return {requestFilterReady: false};
+        return {
+            requestFilterReady: false
+        };
     }
 
     if (this.framesMap.isTabAdguardDetected(tab) || this.framesMap.isTabProtectionDisabled(tab) || this.framesMap.isTabWhiteListed(tab)) {
@@ -72,7 +74,7 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
     if (!jsInjectRule) {
         scripts = this.antiBannerService.getRequestFilter().getScriptsForUrl(documentUrl);
     }
-
+    
     return {
         selectors: selectors,
         scripts: scripts,
