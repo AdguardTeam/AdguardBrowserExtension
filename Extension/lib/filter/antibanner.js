@@ -74,10 +74,10 @@ var AntiBannerService = exports.AntiBannerService = function () {
     // Custom user rules
     this.userRules = [];
 
-    //retrieve filtering state
+    // Retrieve filtering state
     this.applicationFilteringDisabled = userSettings.isFilteringDisabled();
 
-    //Service is not initialized yet
+    // Service is not initialized yet
     this._requestFilterInitTime = 0;
 };
 
@@ -127,8 +127,10 @@ AntiBannerService.prototype = {
          */
         var onServiceInitialized = function (runInfo) {
 
-            //set request filter is ready
-            this._requestFilterInitTime = new Date().getTime();
+            if (this._requestFilterInitTime === 0) {
+                // Setting the time of request filter very first initialization
+                this._requestFilterInitTime = new Date().getTime();                
+            }
 
             if (options.runCallback) {
                 options.runCallback(runInfo);
@@ -152,7 +154,7 @@ AntiBannerService.prototype = {
          */
         var initRequestFilter = function () {
             context._loadFiltersVersionAndStateInfo();
-            //init white list filter
+            // init white list filter
             whiteListService.initWhiteListFilters();
             context._createRequestFilter(function () {
                 this._addFiltersChangeEventListener();
@@ -300,21 +302,26 @@ AntiBannerService.prototype = {
     },
 
     /**
-     * @returns boolean request filter ready
+     * @returns boolean true when request filter was initialized first time
      */
     isRequestFilterReady: function () {
         return this._requestFilterInitTime > 0;
     },
 
     /**
-     * We do this because we don't know the precise time when content blocker is really compiled and registered.
-     * So we assume that first 3 seconds it is not yet ready and we should use the old way to collapse elements.
+     * When browser just started we need some time on request filter initialization.
+     * This could be a problem in case when browser has a homepage and it is just started.
+     * In this case request filter is not yet initalized so we don't block requests and inject css.
+     * To fix this, content script will repeat requests for selectors until request filter is ready
+     * and it will also collapse all elements which should have been blocked.  
      *
-     * @returns boolean content blocker ready
+     * @returns boolean true if we should collapse elements with content script
      */
-    isContentBlockerReady: function () {
+    shouldCollapseAllElements: function () {
+        // We assume that if content script is requesting CSS in first 3 seconds after request filter init,
+        // then it is possible, that we've missed some elements and now we should collapse these elements        
         return (this._requestFilterInitTime > 0)
-            && (this._requestFilterInitTime + 3000 < new Date().getTime());
+            && (this._requestFilterInitTime + 3000 > new Date().getTime());
     },
 
     /**

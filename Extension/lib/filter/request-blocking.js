@@ -57,11 +57,11 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
     var selectors = null;
     var scripts = null;
 
-    var shouldLoadAllSelectors = this.shouldLoadAllSelectors();
+    var collapseAllElements = this.antiBannerService.shouldCollapseAllElements();
     var genericHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "GENERICHIDE");
     var elemHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "ELEMHIDE");
     if (!elemHideRule) {
-        if (shouldLoadAllSelectors) {
+        if (this.shouldLoadAllSelectors(collapseAllElements)) {
             selectors = this.antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl, genericHideRule);
         } else {
             selectors = this.antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideRule);
@@ -76,16 +76,27 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
     return {
         selectors: selectors,
         scripts: scripts,
-        collapseAllElements: shouldLoadAllSelectors
+        collapseAllElements: collapseAllElements
     };
 };
 
-WebRequestService.prototype.shouldLoadAllSelectors = function () {
+WebRequestService.prototype.shouldLoadAllSelectors = function (collapseAllElements) {
     if (Utils.isFirefoxBrowser() && userSettings.collectHitsCount()) {
+        // We don't need all CSS selectors in case of FF collecting filter hits
+        // as in this case we register browser wide stylesheet which will be
+        // applied even if page was already loaded 
         return false;
     }
 
-    return !Utils.isContentBlockerEnabled() || !this.antiBannerService.isContentBlockerReady();
+    var safariContentBlockerEnabled = Utils.isContentBlockerEnabled();
+    if (safariContentBlockerEnabled && collapseAllElements) {
+        // For Safari 9+ we will load all selectors when browser is just started
+        // as at that moment content blocker may not been initialized
+        return true;
+    }
+
+    // In other cases we should load all selectors every time
+    return !safariContentBlockerEnabled;
 };
 
 WebRequestService.prototype.processShouldCollapse = function (tab, requestUrl, referrerUrl, requestType) {
