@@ -1,10 +1,10 @@
 ! Title: Dutch filter
-! Version: 1.0.8.60
+! Version: 1.0.8.64
 ! Name: Dutch filter
 ! Description: Filter that enables removing of the ads from websites with Dutch content.
 ! NameEn: Dutch filter
 ! DescriptionEn: Filter that enables blocking of ads on websites with Dutch content.
-! TimeUpdated: 2015-12-04T18:30:40.505+03:00
+! TimeUpdated: 2016-01-14T17:35:27.997+03:00
 ! Title: Adguard Dutch Filter.
 !
 ! Filter that enables removing of the ads from websites with Dutch content.
@@ -15,17 +15,15 @@
 ! Homepage: http://adguard.com/filters.html#dutch
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
 !
-!-------------------------------------------------------------------------------!
+!------------------------------------------------------------------------------------!
 !------------------ General JS API ---------------------------------------------!
-!-------------------------------------------------------------------------------!
+!------------------------------------------------------------------------------------!
 ! JS API START
-!
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#window.AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
-!
 ! JS API FINISH
 !
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/809
@@ -756,6 +754,7 @@ _advertentieleaderboardhome.
 @@||ima3vpaid.appspot.com/crossdomain.xml$object-subrequest,domain=rtlxl.nl
 @@||imasdk.googleapis.com/flash/core/3.*/adsapi.swf$object-subrequest,domain=2be.be|jim.be|vitaya.be|vtm.be|vtmkzoom.be
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=vtm.be
+@@||libs.medialaancdn.be/data/freewheel/*//admanager/checkup.js$domain=watch.stievie.be
 @@||pagead2.googlesyndication.com/pagead/show_ads.js$domain=alfaforum.nl
 @@||partner.googleadservices.com/gpt/pubads_impl_$script,domain=vtm.be
 @@||pubads.g.doubleclick.net/gampad/ads?$object-subrequest,domain=vtm.be

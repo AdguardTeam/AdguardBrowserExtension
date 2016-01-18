@@ -1,10 +1,10 @@
 ! Title: Japanese filter
-! Version: 1.0.92.89
+! Version: 1.0.92.91
 ! Name: Japanese filter
 ! Description: Filter that enables removing of the ads from websites in Japanese.
 ! NameEn: Japanese filter
 ! DescriptionEn: Filter that enables blocking of ads on websites in Japanese.
-! TimeUpdated: 2015-12-04T18:30:32.966+03:00
+! TimeUpdated: 2016-01-14T17:35:20.952+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -223,7 +223,6 @@ zdnet.com##div[class^="style_kwad_"]
 ||adjust-net.jp^$third-party
 ||adlantis.jp/ad/
 ||adm.shinobi.jp^
-||adm.shinobi.jp^$third-party
 ||adonavi.jp^$third-party
 ||adplan-ds.com^$third-party
 ||adresult-sp.jp^$third-party
