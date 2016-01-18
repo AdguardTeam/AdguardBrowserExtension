@@ -985,7 +985,7 @@ AntiBannerService.prototype = {
         
         /**
          * STEP 3: Called when request filter has been filled with rules.
-         * This is last step of request filter initialization.
+         * This is the last step of request filter initialization.
          */
         var requestFilterInitialized = function() {
             
@@ -1014,8 +1014,6 @@ AntiBannerService.prototype = {
                 return;
             }
             
-            // To number
-            filterId = filterId - 0;
             for (var i = startIdx; i < rulesTexts.length && i < endIdx; i++) {
                 var ruleText = rulesTexts[i];
                 if (ruleText in uniqueRules) {
@@ -1066,6 +1064,9 @@ AntiBannerService.prototype = {
             
             // Go through all filters in the map
             for (var filterId in rulesFilterMap) {
+                
+                // To number
+                filterId = filterId - 0;
                 if (filterId != AntiBannerFiltersId.USER_FILTER_ID) {
                     var rulesTexts = rulesFilterMap[filterId];
                     
