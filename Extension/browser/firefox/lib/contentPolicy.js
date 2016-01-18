@@ -239,6 +239,7 @@ var WebRequestHelper = exports.WebRequestHelper = {
                 // NS_ERROR_UNEXPECTED.
                 associatedWindow = loadContext.associatedWindow;
             } catch (e) {
+                // Ignore
             }
         }
 
@@ -787,5 +788,3 @@ var WebRequestImpl = exports.WebRequestImpl = {
 
     QueryInterface: XPCOMUtils.generateQI([Ci.nsIContentPolicy, Ci.nsIObserver, Ci.nsIChannelEventSink, Ci.nsIFactory, Ci.nsISupportsWeakReference])
 };
-
-

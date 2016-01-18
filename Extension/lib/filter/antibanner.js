@@ -60,10 +60,6 @@ var AntiBannerService = exports.AntiBannerService = function () {
     // This class does the actual filtering (checking URLs, constructing CSS/JS to inject, etc)
     this.requestFilter = new RequestFilter();
 
-    // Object containing filter rules (object key is filter id, object value is list of filter rules)
-    // We use it to make extension initialization faster.
-    this.dirtyRulesMap = null;
-
     // Initialize service that detects webpage locale
     // Depending on the locale we can enable language-specific filter
     this.localeDetectorService = new LocaleDetectService(this._onFilterDetectedByLocale.bind(this));
@@ -272,74 +268,9 @@ AntiBannerService.prototype = {
     },
     
     /**
-     * Function that creates request filter from dirtyRulesMap field
-     */
-    _createRequestFilterFromDirtyRulesMap: function() {
-        var start = new Date().getTime();
-        
-        // Creates request filter
-        var requestFilter = new RequestFilter();
-
-        // Supplement object to make sure that we use only unique filter rules
-        var uniqueRules = Object.create(null);
-        var rulesFilterMap = this.dirtyRulesMap;
-        
-        // Supplement function for adding rules to the request filter
-        var addRules = function(filterId, rulesTexts) {
-            if (!rulesTexts) {
-                return;
-            }
-            
-            // To number
-            filterId = filterId - 0;
-            for (var i = 0; i < rulesTexts.length; i++) {
-                var ruleText = rulesTexts[i];
-                if (ruleText in uniqueRules) {
-                    // Do not allow duplicates
-                    continue;
-                }
-                uniqueRules[ruleText] = true;
-                var rule = FilterRule.createRule(ruleText, filterId);
-
-                if (rule != null) {
-                    requestFilter.addRule(rule);
-                }
-            }
-        };
-        
-        // Go through all filters in the map
-        for (var filterId in rulesFilterMap) {
-            if (filterId != AntiBannerFiltersId.USER_FILTER_ID) {
-                var rulesTexts = rulesFilterMap[filterId];
-                addRules(filterId, rulesTexts);
-            }
-        }
-
-        // User filter should be the last
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/117
-        addRules(rulesFilterMap[AntiBannerFiltersId.USER_FILTER_ID]);
-
-        // Request filter is ready
-        this.requestFilter = requestFilter;
-
-        // No need in dirtyRulesMap collection anymore
-        this.dirtyRulesMap = null;
-        
-        Log.info("Elapsed on request filter creation: {0} ms", (new Date().getTime() - start));
-
-        EventNotifier.notifyListeners(EventNotifierTypes.REQUEST_FILTER_UPDATED, this.getRequestFilterInfo());
-    },
-
-    /**
      * Getter for request filter
      */
     getRequestFilter: function () {
-
-        // Check if we should lazy-init request filter
-        if (this.dirtyRulesMap) {            
-            this._createRequestFilterFromDirtyRulesMap();
-        }
-
         return this.requestFilter;
     },
 
@@ -1031,44 +962,141 @@ AntiBannerService.prototype = {
     _createRequestFilter: function (callback) {
 
         var start = new Date().getTime();
-        Log.info('Start request filter init');
+        Log.info('Starting request filter initialization');
+        
+        // Prepare map for filter rules
+        // Map key is filter ID
+        // Map value is array with filter rules
         var rulesFilterMap = Object.create(null);
-
-        // Supplement function that triggers request filter creation
-        // At that moment we use dirtyRulesMap
-        var triggerRequestFilterCreation = function() {
-            this.getRequestFilter();
+        
+        // We create filter rules using a chunks of the specified length
+        // We are doing this for FF as everything in FF is done on the UI thread
+        // Request filter creation is rather slow operation so we should
+        // use setTimeout calls to give UI thread some time.
+        var async = Prefs.speedupStartup();
+        // No need in small chunks in case of Chromium based browsers
+        var step = async ? 1000 : 1000000;        
+        
+        // Empty request filter
+        var requestFilter = new RequestFilter();
+        
+        // Supplement object to make sure that we use only unique filter rules
+        var uniqueRules = Object.create(null);
+        
+        /**
+         * STEP 3: Called when request filter has been filled with rules.
+         * This is last step of request filter initialization.
+         */
+        var requestFilterInitialized = function() {
+            
+            // Request filter is ready
+            this.requestFilter = requestFilter;            
+            
             if (callback && typeof callback === "function") {		
                 callback();		
             }
-        }.bind(this);
-
-        // Called when all filter rules has been loaded from storage
-        var loadAllFilterRulesDone = function () {
             
-            // Prepare map with rules
-            // Map key is filter ID
-            // Map value is array with filter rules
-            this.dirtyRulesMap = rulesFilterMap;
+            EventNotifier.notifyListeners(EventNotifierTypes.REQUEST_FILTER_UPDATED, this.getRequestFilterInfo());
             
-            // Depending on Prefs.speedupStartup we either load filter rules asynchronously
-            // Or we do it on the main thread.
-            if (Prefs && Prefs.speedupStartup()) {
-                setTimeout(triggerRequestFilterCreation, 100);
-            } else {
-                triggerRequestFilterCreation();
+            Log.info("Finished request filter initialization in {0} ms. Rules count: {1}", (new Date().getTime() - start), requestFilter.rulesCount);
+        }.bind(this);        
+        
+        /**
+         * Supplement function for adding rules to the request filter
+         * 
+         * @param filterId Filter identifier
+         * @param rulesTexts Array with filter rules
+         * @param startIdx Start index of the rules array
+         * @param endIdx End index of the rules array
+         */
+        var addRules = function(filterId, rulesTexts, startIdx, endIdx) {
+            if (!rulesTexts) {
+                return;
             }
-            Log.info('Finished request filter init in {0} ms', (new Date().getTime() - start));
+            
+            // To number
+            filterId = filterId - 0;
+            for (var i = startIdx; i < rulesTexts.length && i < endIdx; i++) {
+                var ruleText = rulesTexts[i];
+                if (ruleText in uniqueRules) {
+                    // Do not allow duplicates
+                    continue;
+                }
+                uniqueRules[ruleText] = true;
+                var rule = FilterRule.createRule(ruleText, filterId);
+
+                if (rule != null) {
+                    requestFilter.addRule(rule);
+                }
+            }
+        };
+        
+        /**
+         * Asyncronously adds rules to the request filter.
+         */
+        var addRulesAsync = function(filterId, rulesTexts, startIdx, stopIdx, prevDfd) {
+            
+            var dfd = new Promise();
+            
+            prevDfd.then(function() {
+                if (async) {
+                    setTimeout(function() {
+                        addRules(filterId, rulesTexts, startIdx, stopIdx);
+                        dfd.resolve();    
+                    }, 1);                    
+                } else {
+                    addRules(filterId, rulesTexts, startIdx, stopIdx);
+                    dfd.resolve();
+                }
+            });
+
+            return dfd;            
+        };
+
+        /**
+         * STEP 2: Called when all filter rules has been loaded from storage
+         */
+        var loadAllFilterRulesDone = function () {            
+            Log.info('Finished loading filter rules from storage in {0} ms', (new Date().getTime() - start));            
+            
+            // Async loading starts when we resolve this promise
+            var rootDfd = new Promise();
+            var prevDfd = null;
+            var dfds = [];
+            
+            // Go through all filters in the map
+            for (var filterId in rulesFilterMap) {
+                if (filterId != AntiBannerFiltersId.USER_FILTER_ID) {
+                    var rulesTexts = rulesFilterMap[filterId];
+                    
+                    for (var i = 0; i < rulesTexts.length; i += step) {
+                        prevDfd = addRulesAsync(filterId, rulesTexts, i, i + step, prevDfd || rootDfd);
+                        dfds.push(prevDfd);
+                    }
+                }
+            }
+            
+            // User filter should be the last
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/117
+            var userRules = rulesFilterMap[AntiBannerFiltersId.USER_FILTER_ID];
+            addRulesAsync(AntiBannerFiltersId.USER_FILTER_ID, userRules, 0, userRules.length, prevDfd || rootDfd);
+
+            Promise.all(dfds).then(function() {
+                requestFilterInitialized();
+            });
+            
+            // Start execution
+            rootDfd.resolve();
         }.bind(this);
 
         /**
-         * Deferred filter rules load
+         * Loads filter rules from storage
          *
          * @param filterId Filter identifier
          * @param rulesFilterMap Map for loading rules
          * @returns {*} Deferred object
          */
-        var loadFilterRules = function (filterId, rulesFilterMap) {
+        var loadFilterRulesFromStorage = function (filterId, rulesFilterMap) {
             var dfd = new Promise();
 
             FilterStorage.loadFilterRules(filterId, function (rulesText) {
@@ -1080,18 +1108,25 @@ AntiBannerService.prototype = {
 
             return dfd;
         };
-
-        var dfds = [];
-        for (var i = 0; i < this.adguardFilters.length; i++) {
-            var filter = this.adguardFilters[i];
-            if (filter.enabled) {
-                dfds.push(loadFilterRules(filter.filterId, rulesFilterMap));
+        
+        /**
+         * STEP 1: load all filters from the storage.
+         */
+        var loadFilterRules = function() {
+            var dfds = [];
+            for (var i = 0; i < this.adguardFilters.length; i++) {
+                var filter = this.adguardFilters[i];
+                if (filter.enabled) {
+                    dfds.push(loadFilterRulesFromStorage(filter.filterId, rulesFilterMap));
+                }
             }
-        }
-        dfds.push(this._loadUserRulesToRequestFilter(rulesFilterMap));
+            dfds.push(this._loadUserRulesToRequestFilter(rulesFilterMap));
 
-        // Load all filters and then recreate request filter
-        Promise.all(dfds).then(loadAllFilterRulesDone);
+            // Load all filters and then recreate request filter
+            Promise.all(dfds).then(loadAllFilterRulesDone);            
+        }.bind(this);
+
+        loadFilterRules();
     },
 
     /**
@@ -1206,10 +1241,10 @@ AntiBannerService.prototype = {
                 }
 
                 if (needCreateRequestFilter) {
-                    //Rules will be added to request filter lazy, listeners will be notified about REQUEST_FILTER_UPDATED later
+                    // Rules will be added to request filter lazy, listeners will be notified about REQUEST_FILTER_UPDATED later
                     Promise.all(dfds).then(this._createRequestFilter.bind(this));
                 } else {
-                    //Rules already in request filter, notify listeners
+                    // Rules are already in request filter, notify listeners
                     EventNotifier.notifyListeners(EventNotifierTypes.REQUEST_FILTER_UPDATED, this.getRequestFilterInfo());
                 }
 
