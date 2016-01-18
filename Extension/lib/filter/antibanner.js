@@ -945,7 +945,7 @@ AntiBannerService.prototype = {
         this._addAndEnableFilters(filterIds, function (enabledFilterIds) {
             var enabledFilters = [];
             for (var i = 0; i < enabledFilterIds.length; i++) {
-                enabledFilters.push(this._getFilterById(enabledFilterIds[i]))
+                enabledFilters.push(this._getFilterById(enabledFilterIds[i]));
             }
             if (enabledFilters.length > 0) {
                 EventNotifier.notifyListeners(EventNotifierTypes.ENABLE_FILTER_SHOW_POPUP, enabledFilters);
