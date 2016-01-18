@@ -66,8 +66,7 @@ var AdguardSelectorLib = {
         });
         this.prediction_helper = new DomPredictionHelper($, String);
 
-        //TODO: Implement
-
+        this._setupEventHandlers();
         this.unbound = false;
     },
 
@@ -76,7 +75,8 @@ var AdguardSelectorLib = {
      * Clears current selection.
      */
     reset: function () {
-        //TODO: Implement
+        this._clearSelected();
+        this._setPath();
     },
 
     /**
@@ -84,7 +84,10 @@ var AdguardSelectorLib = {
      * Removes all selector elements and unbinds event handlers.
      */
     close: function () {
-        //TODO: Implement
+        this.unbound = true;
+
+        this._removeBorderFromDom();
+        this._deleteEventHandlers();
     },
 
     /**
@@ -181,6 +184,15 @@ var AdguardSelectorLib = {
         document.body.appendChild(this.b_bottom.get(0));
         document.body.appendChild(this.b_left.get(0));
         document.body.appendChild(this.b_right.get(0));
+    },
+
+    _removeBorderFromDom: function () {
+        if (this.b_top) {
+            this.b_top.remove();
+            this.b_bottom.remove();
+            this.b_left.remove();
+            this.b_right.remove();
+        }
     },
 
     _getTagPath: function (element) {
@@ -386,6 +398,17 @@ var AdguardSelectorLib = {
         }, 400);
 
         return false;
+    },
+
+    _clearSelected: function () {
+        this.selected_elements = [];
+        this.rejected_elements = [];
+
+        $('.sg_selected').removeClass(this.SELECTED_CLASS);
+        $('.sg_rejected').removeClass(this.REJECTED_CLASS);
+
+        this._removeBorders();
+        this._clearSuggested();
     },
 
     _firstSelectedOrSuggestedParent: function (element) {
