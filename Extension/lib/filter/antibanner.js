@@ -1052,7 +1052,7 @@ AntiBannerService.prototype = {
         };
 
         /**
-         * STEP 2: Called when all filter rules has been loaded from storage
+         * STEP 2: Called when all filter rules have been loaded from storage
          */
         var loadAllFilterRulesDone = function () {            
             Log.info('Finished loading filter rules from storage in {0} ms', (new Date().getTime() - start));            
