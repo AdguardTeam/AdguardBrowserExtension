@@ -258,7 +258,7 @@ exports.ApplicationUpdateService = {
 	/**
 	 * Update Firefox storage by moving to prefs
 	 *
-	 * Version 2.1.1
+	 * Version 2.1.2
 	 * @returns {exports.Promise}
 	 * @private
 	 */
