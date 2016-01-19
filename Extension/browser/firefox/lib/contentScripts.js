@@ -108,7 +108,7 @@ ContentScripts.prototype = {
             'content/content-script/content-script.js', // Message passing
             'content/content-script/assistant/js/start-assistant.js',
             'content/content-script/assistant/js/tools.js',
-            'content/content-script/assistant/js/selector.js',
+            'content/content-script/assistant/js/adguard-selector.js',
             'content/content-script/assistant/js/assistant.js'
         ], 'ready', ['top', 'existing']);
 

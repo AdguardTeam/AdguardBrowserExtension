@@ -388,8 +388,8 @@ var AdguardSelectorLib = {
     _blockClicksOn: function (elem) {
         elem = $(elem);
         var p = elem.offset();
-        var block = $('<div>').css('position', 'absolute').css('z-index', '9999999').css('width', this.px(elem.outerWidth())).
-            css('height', this.px(elem.outerHeight())).css('top', this.px(p.top)).css('left', this.px(p.left)).
+        var block = $('<div>').css('position', 'absolute').css('z-index', '9999999').css('width', this._px(elem.outerWidth())).
+            css('height', this._px(elem.outerHeight())).css('top', this._px(p.top)).css('left', this._px(p.left)).
             css('background-color', '');
         document.body.appendChild(block.get(0));
 

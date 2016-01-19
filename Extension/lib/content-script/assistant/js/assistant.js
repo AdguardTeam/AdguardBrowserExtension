@@ -393,8 +393,7 @@ var Adguard = function () {
 	 */
 	var cancelSelectMode = function () {
 		if (self.selector) {
-			self.selector.unbind();
-			self.selector.removeBorders();
+			self.selector.close();
 		}
 	};
 
@@ -402,7 +401,7 @@ var Adguard = function () {
 		settings.selectedElement = element;
 		settings.path = path;
 		settings.similarPath = similarPath;
-		self.selector.closeSelector();
+		self.selector.close();
 		var urlBlock = haveUrlBlockParameter(element);
 		var blockSimilar = haveClassAttribute(element);
 		showHidingRuleWindow(settings.path, element, urlBlock, blockSimilar);
@@ -418,9 +417,12 @@ var Adguard = function () {
 	 */
 	var startSelector = function () {
 		// Initializing AdguardSelector with default configuration
-		if (self.selector) self.selector.clearEverything();
-		self.selector = new AdguardSelector(onElementSelected);
-		self.selector.setup();
+		if (self.selector) {
+			self.selector.reset();
+		}
+
+		self.selector = Object.create(AdguardSelectorLib);
+		self.selector.init(onElementSelected);
 	};
 
 	var haveUrlBlockParameter = function (element) {
@@ -556,7 +558,7 @@ var Adguard = function () {
 		var loaded = showDetailedMenu();
 		loaded.done(function () {
 			createSlider(element);
-			self.selector.reset(element);
+			self.selector.selectElement(element);
 			setPath(path);
 			onScopeChange();
 			setScopeOneDomainText();
@@ -760,9 +762,10 @@ var Adguard = function () {
 	var onSliderMove = function (element) {
 		removePreview();
 		settings.selectedElement = element;
-		self.selector.makeBorders(element);
-		settings.path = self.selector.getSelectorPath(element);
-		settings.similarPath = self.selector.getSelectorSimilarPath(element);
+		self.selector.selectElement(element);
+		//TODO: Add public funcs
+		settings.path = self.selector._getSelectorPath(element);
+		settings.similarPath = self.selector._getSelectorSimilarPath(element);
 		settings.similarBlock = false;
 		setPath(settings.path);
 		makeDefaultCheckboxesForDetailedMenu();
@@ -798,7 +801,7 @@ var Adguard = function () {
 		if (settings.lastPreview) {
 			removePreview();
 			findInIframe('#adg-preview > span').text(getMessage("assistant_preview_start"));
-			self.selector.showBorders();
+			self.selector._showBorders();
 			findInIframe('#slider').show();
 			findInIframe('.adg-slide-text').show();
 			findInIframe('#ExtendedSettingsText').show();
@@ -813,7 +816,8 @@ var Adguard = function () {
 	};
 
 	var hideElement = function () {
-		self.selector.removeBorders();
+		//TODO: Add public func
+		self.selector._removeBorders();
 		var selector = getSelector();
 		var style = document.createElement("style");
 		style.setAttribute("type", "text/css");
@@ -884,7 +888,7 @@ var Adguard = function () {
 	var windowZoomFix = function () {
 		$(window).resize(function () {
 			if (settings.selectedElement && self.selector) {
-				self.selector.makeBorders(settings.selectedElement);
+				self.selector.selectElement(settings.selectedElement);
 			}
 		});
 	};
