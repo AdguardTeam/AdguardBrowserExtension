@@ -1,10 +1,10 @@
 ! Title: Russian filter
-! Version: 1.0.30.17
+! Version: 1.0.30.19
 ! Name: Russian filter
 ! Description: Filter that enables removing of the ads from websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-01-18T23:49:42.143+03:00
+! TimeUpdated: 2016-01-19T16:44:22.948+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -939,6 +939,7 @@ thr.ru##.top_branding
 ||portech315.net^$third-party
 ||post.rmbn.net^
 ||post.rmbn.ru^
+||potined.com/sys/js/$third-party
 ||ppvlj.com^$third-party
 ||pr28.com^$third-party
 ||prcy.myws.ru/img/
@@ -4306,7 +4307,7 @@ torrentino.com##.zona-btn
 /protJS/*$third-party,domain=armourbook.com|img24.org|mskd-ru.net|nolamers.net|online-porno.club|payforpic.ru|piccash.net|pitsib.org|pslan.com|svetmonet.ru|torrentx.net
 /rose.ixbt.
 /someshit*.js$domain=dolinadom.com|evrodom-m.ru|poseloks.ru
-/sys/js/*.js$third-party,domain=bobfilm.net|dom-filmov.ru|fastpic.ru|filmix.net|katushka.net|kino-dom.tv|kino-live.red|kino-live2.org|kinobanda.net|kinogo.co|kinokong.net|kinoriver.net|nnm-club.me|onlainfilm.ucoz.ua|online-life.cc|ostfilm.org|ranet.tv|smotri-filmi.net|tfile.me|the-cinema.ru|tushkan.tv|zagonka.ru
+/sys/js/*.js$third-party,domain=bobfilm.net|dom-filmov.ru|fastpic.ru|filmix.net|katushka.net|kino-dom.tv|kino-live.red|kino-live2.org|kinobanda.net|kinogo.co|kinokong.net|kinoriver.net|nnm-club.me|onlainfilm.ucoz.ua|online-life.cc|ostfilm.org|ranet.tv|smotri-filmi.net|tfile.me|the-cinema.ru|torrent-baza.net|tushkan.tv|zagonka.ru
 /tds/url.php$domain=rusex.biz|tv-porn.net
 /tizer/*$domain=allfishinggames.ru
 /trumedia$domain=goha.ru
@@ -4821,6 +4822,7 @@ camelot.multilocal.ru,camelot.userlan.ru,город-кингисепп.рф##img
 3pingvina.net,rutracker.org##img[width="200"][height="300"]
 stopgame.ru##img[width="239"][height="400"]
 forum.sakh.com##img[width="240"][height="120"]
+pics-money.ru##img[width="280"][height="60"]
 cqham.ru##img[width="380"][height="60"]
 blackhacker.ru##img[width="410"][height="60"]
 imagefile.org##img[width="468px"]
@@ -5037,7 +5039,9 @@ webware.ru/*/clients/
 ||aq.censor.net.ua^
 ||aroundapple.com/*-banner-
 ||astromeridian.ru/assets/images/705/154/brend.jpg
+||audio-hi-fi.ru/partner/
 ||audit-it.ru/include/popup/
+||author24.ru/assets/img/promo/partner/
 ||auto-dvrs.ru/wp-content/uploads/2015/12/trend_vision.gif
 ||avatarko.ru/v-img/labradory.
 ||avatarko.ru/v-img/stickers.
@@ -5512,6 +5516,7 @@ webware.ru/*/clients/
 ||opennet.ru/adv_lc.html
 ||opennet.ru/img/lanbilling
 ||opennet.ru/img/rit300x600.gif
+||openssource.biz/st/pic/
 ||oren.ru.images.1c-bitrix-cdn.ru/upload/rk/
 ||orer.am/banners/
 ||osd.ru/RCL/BAN/
@@ -5843,6 +5848,7 @@ webware.ru/*/clients/
 ||videoprobki.com.ua/themes/videoprobki/brand/
 ||videoprobki.ua/*/*baners/
 ||videoprobki.ua/sites/default/files/banners/
+||videoseed.ru^$domain=kinovo.tv
 ||virusinfo.info/images/styles/virusinfo/brand/
 ||vizi.pornik.net/v/
 ||vk.com/ads_rotate.php
@@ -5882,6 +5888,7 @@ webware.ru/*/clients/
 ||www.n-tura.ru/sites/default/files/kir1.jpg
 ||www.n-tura.ru/sites/default/files/users/user4/700x70.swf
 ||x360-club.org/themes/xbox/images/468x*.
+||xakep.org/images/pic/change.gif
 ||xf.xyu.tv/make.js
 ||xrutor.org/m/css2.js
 ||xxmuz.ru/mayka.
@@ -6099,7 +6106,6 @@ ntv.ru#@#object[width="240"][height="400"]
 @@||rl0.ru/widget/js/ticketmanager.js
 @@.nevomedia.ru/fs/rel/?apiUrl=$urlblock,domain=fotostrana.ru|nevomedia.ru
 @@||wysegames.com/login/$jsinject,domain=fotostrana.ru|wysegames.com
-banki.ru$@$script[tag-content=""][max-length="5000"]
 @@||1-ps.googleusercontent.com/hk/$domain=5.ua
 @@||cdn-any.pladform.ru/video/$domain=seasonvar.ru
 @@||out.pladform.ru/getPlaylist?pl=$domain=seasonvar.ru
