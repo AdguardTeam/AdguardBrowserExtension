@@ -92,8 +92,8 @@ AntiBannerService.prototype = {
      */
     UPDATE_FILTERS_DELAY: 5 * 60 * 1000,
 
-    FILTERS_CHANGE_DEBOUCE_PERIOD: 500,
-    RELOAD_FILTERS_DEBOUNCE_PERIOD: 500,
+    FILTERS_CHANGE_DEBOUCE_PERIOD: 1000,
+    RELOAD_FILTERS_DEBOUNCE_PERIOD: 1000,
 
     /**
      * Persist state of content blocker
