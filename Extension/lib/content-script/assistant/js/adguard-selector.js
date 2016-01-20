@@ -91,13 +91,16 @@ var AdguardSelectorLib = {
     },
 
     /**
-     * Selects specified element and calls callback function.
+     * Selects specified element.
+     * Marks element as selected and holds selection on it.
      *
      * @param element
      */
     selectElement: function (element) {
-        //TODO: Implement
         this._selectionRenderer(element);
+
+        this.unbound = true;
+        this._deleteEventHandlers();
     },
 
 

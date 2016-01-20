@@ -401,7 +401,7 @@ var Adguard = function () {
 		settings.selectedElement = element;
 		settings.path = path;
 		settings.similarPath = similarPath;
-		self.selector.close();
+		//self.selector.close();
 		var urlBlock = haveUrlBlockParameter(element);
 		var blockSimilar = haveClassAttribute(element);
 		showHidingRuleWindow(settings.path, element, urlBlock, blockSimilar);
