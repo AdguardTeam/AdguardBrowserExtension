@@ -57,5 +57,9 @@ var Prefs = exports.Prefs = {
 	},
 	speedupStartup: function () {
 		return simplePrefs.prefs['speedup_startup'];
-	}
+	},
+    _collapseByContentScript: simplePrefs.prefs['collapse_by_content_script'], 
+    collapseByContentScript: function() {
+        return Prefs._collapseByContentScript;
+    }
 };

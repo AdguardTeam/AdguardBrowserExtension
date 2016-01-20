@@ -16,7 +16,8 @@
  */
 
 /**
- * Extension global preferences
+ * Extension global preferences.
+ * (!) Firefox has it's own implementation
  */
 var Prefs = exports.Prefs = {
 
@@ -53,7 +54,9 @@ var Prefs = exports.Prefs = {
 			if (browser == "Safari") {
 				var parseSafariVersion = function() {
 					var i = userAgent.indexOf("Version/");
-					if (i == 0) return "";
+					if (i == 0) {
+                        return "";
+                    }
 
 					var end = userAgent.indexOf(" ", i);
                     return userAgent.substring(i + 8, end > 0 ? end : userAgent.length);
@@ -66,5 +69,8 @@ var Prefs = exports.Prefs = {
 	},
 	speedupStartup: function () {
 		return false;
-	}
+	},
+    collapseByContentScript: function() {
+        return false;
+    }
 };

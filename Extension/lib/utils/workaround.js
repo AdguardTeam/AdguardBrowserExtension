@@ -28,35 +28,6 @@ var UrlUtils = require('utils/url').UrlUtils;
 var WorkaroundUtils = exports.WorkaroundUtils = {
 
 	/**
-	 * @returns true if e10s is enabled
-	 */
-	isMultiProcessFirefoxMode: function() {
-		return this.multiProcessFirefoxMode;
-	},
-
-	/**
-	 * Saves FF multi-process flag.
-	 *
-	 * In case if FF is working in e10s we change the way we do the following:
-	 * 1. No more collapsing elements from the chrome process.
-	 * We now use the same way as chromium extension - collapsing elements in the content script.
-	 * It is slow, but it won't slow down the browser.
-	 *
-	 * More info:
-	 * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/4
-	 *
-	 * @param value true if multiprocess
-	 */
-	setMultiProcessFirefoxMode: function(value) {
-
-		if (this.multiProcessFirefoxMode !== value) {
-			Log.info("Set multi-process mode to {0}", value);
-		}
-
-		this.multiProcessFirefoxMode = value;
-	},
-
-	/**
 	 * Converts blocked counter to the badge text.
 	 * Workaround for FF - make 99 max.
 	 *

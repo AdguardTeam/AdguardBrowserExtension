@@ -190,19 +190,15 @@ ContentMessageHandler.prototype = {
                 callback(cssAndScripts || {});
                 break;
             case 'processShouldCollapse':
-                /**
-                 * In case of e10s we use the same way as in Chromium - blocked elements are collapsed in content script.
-                 * In single process mode blocked elements are collapsed by content policy.
-                 */
-                if (Prefs.platform == 'firefox' && !WorkaroundUtils.isMultiProcessFirefoxMode()) {
-                    // Collapsed by content policy
-                    callback({collapse: false, requestId: message.requestId});
-                } else {
+                if (Prefs.collapseByContentScript()) {
                     var collapse = this.webRequestService.processShouldCollapse(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
                     callback({
                         collapse: collapse,
                         requestId: message.requestId
                     });
+                } else {
+                    // In case of FF we may collapse nodes with nsiContentPolicy
+                    callback({collapse: false, requestId: message.requestId});                    
                 }
                 break;
             case 'processShouldCollapseMany':

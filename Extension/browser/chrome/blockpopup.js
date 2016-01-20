@@ -1,3 +1,9 @@
+/* global RequestTypes */
+/* global framesMap */
+/* global BrowserTab */
+/* global chrome */
+/* global webRequestService */
+/* global UrlUtils */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
