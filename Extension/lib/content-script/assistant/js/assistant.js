@@ -397,10 +397,33 @@ var Adguard = function () {
 		}
 	};
 
-	var onElementSelected = function (path, similarPath, element) {
+	var getSelectorPath = function (selectedElement) {
+		if (!selectedElement) {
+			return;
+		}
+
+		var selector = Adguard.makeCssNthChildFilter(selectedElement);
+		return selector ? "##" + selector : "";
+	};
+
+	var getSelectorSimilarPath = function (selectedElement) {
+		if (!selectedElement) {
+			return "";
+		}
+
+		var className = selectedElement.className;
+		if (!className) {
+			return "";
+		}
+
+		var selector = className.trim().replace(/\s+/g, ', .');
+		return selector ? "##" + '.' + selector : "";
+	};
+
+	var onElementSelected = function (element) {
 		settings.selectedElement = element;
-		settings.path = path;
-		settings.similarPath = similarPath;
+		settings.path = getSelectorPath(element);
+		settings.similarPath = getSelectorSimilarPath(element);
 
 		var urlBlock = haveUrlBlockParameter(element);
 		var blockSimilar = haveClassAttribute(element);
@@ -761,13 +784,14 @@ var Adguard = function () {
 
 	var onSliderMove = function (element) {
 		removePreview();
+
 		settings.selectedElement = element;
 		self.selector.selectElement(element);
-		//TODO: remove private func call
-		settings.path = self.selector._getSelectorPath(element);
-		settings.similarPath = self.selector._getSelectorSimilarPath(element);
+		settings.path = getSelectorPath(element);
+		settings.similarPath = getSelectorSimilarPath(element);
 		settings.similarBlock = false;
 		setPath(settings.path);
+
 		makeDefaultCheckboxesForDetailedMenu();
 		onScopeChange();
 		makeRadioButtonsAndCheckBoxes();
@@ -920,4 +944,64 @@ var Adguard = function () {
 		cancelSelectMode();
 		closeAssistant();
 	}
+};
+
+Adguard.makeCssNthChildFilter = function (element) {
+
+	var path = [];
+	var el = element;
+	while (el.parentNode) {
+		var nodeName = el && el.nodeName ? el.nodeName.toUpperCase() : "";
+		if (nodeName == "BODY") {
+			break;
+		}
+		if (el.id) {
+			var id = el.id.split(':').join('\\:');//case of colon in id. Need to escape
+			if (el.id.indexOf('.') > -1) {
+				path.unshift('[id="' + id + '"]');
+			} else {
+				path.unshift('#' + id);
+			}
+			break;
+		} else {
+			var c = 1;
+			for (var e = el; e.previousSibling; e = e.previousSibling) {
+				if (e.previousSibling.nodeType === 1) {
+					c++;
+				}
+			}
+
+			var cldCount = 0;
+			for (var i = 0; el.parentNode && i < el.parentNode.childNodes.length; i++) {
+				cldCount += el.parentNode.childNodes[i].nodeType == 1 ? 1 : 0;
+			}
+
+			var ch;
+			if (cldCount == 0 || cldCount == 1) {
+				ch = "";
+			} else if (c == 1) {
+				ch = ":first-child";
+			} else if (c == cldCount) {
+				ch = ":last-child";
+			} else {
+				ch = ":nth-child(" + c + ")";
+			}
+
+			var className = el.className;
+			if (className) {
+				if (className.indexOf('.') > 0) {
+					className = '[class="' + className + '"]';
+				} else {
+					className = className.trim().replace(/ +(?= )/g, ''); //delete more than one space between classes;
+					className = '.' + className.replace(/\s/g, ".");
+				}
+			} else {
+				className = '';
+			}
+			path.unshift(el.tagName + className + ch);
+
+			el = el.parentNode;
+		}
+	}
+	return path.join(" > ");
 };

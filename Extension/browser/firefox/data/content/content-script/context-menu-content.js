@@ -50,7 +50,7 @@ function getContextDetails(node) {
         tagName: node.localName.toUpperCase()
     };
     if (details.tagName == "IMG") {
-        details.cssSelector = AdguardSelectorLib.makeCssNthChildFilter(node)
+        details.cssSelector = Adguard.makeCssNthChildFilter(node)
     }
     return details;
 }
