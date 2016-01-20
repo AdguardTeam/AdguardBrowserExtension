@@ -55,9 +55,13 @@ exports.Ci = {
 
 exports.Cu = {
 
-	import: function () {
+    modules: {
+        'resource://gre/modules/devtools/Console.jsm': {console: console}
+    },
 
-	}
+    import: function (module) {
+        return this.modules[module];
+    }
 };
 
 exports.punycode = window.punycode;
