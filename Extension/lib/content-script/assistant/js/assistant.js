@@ -401,7 +401,7 @@ var Adguard = function () {
 		settings.selectedElement = element;
 		settings.path = path;
 		settings.similarPath = similarPath;
-		//self.selector.close();
+
 		var urlBlock = haveUrlBlockParameter(element);
 		var blockSimilar = haveClassAttribute(element);
 		showHidingRuleWindow(settings.path, element, urlBlock, blockSimilar);
@@ -763,7 +763,7 @@ var Adguard = function () {
 		removePreview();
 		settings.selectedElement = element;
 		self.selector.selectElement(element);
-		//TODO: Add public funcs
+		//TODO: remove private func call
 		settings.path = self.selector._getSelectorPath(element);
 		settings.similarPath = self.selector._getSelectorSimilarPath(element);
 		settings.similarBlock = false;
@@ -798,16 +798,23 @@ var Adguard = function () {
 		if (e) {
 			e.preventDefault();
 		}
+
 		if (settings.lastPreview) {
+			// On finish preview and come back to selected
 			removePreview();
 			findInIframe('#adg-preview > span').text(getMessage("assistant_preview_start"));
-			self.selector._showBorders();
+
+			self.selector.selectElement(settings.selectedElement);
+
 			findInIframe('#slider').show();
 			findInIframe('.adg-slide-text').show();
 			findInIframe('#ExtendedSettingsText').show();
+
 			return;
 		}
+
 		hideElement();
+
 		findInIframe('#adg-preview >span').text(getMessage("assistant_preview_end"));
 		findInIframe('#slider').hide();
 		findInIframe('.adg-slide-text').hide();
@@ -816,8 +823,8 @@ var Adguard = function () {
 	};
 
 	var hideElement = function () {
-		//TODO: Add public func
-		self.selector._removeBorders();
+		self.selector.reset();
+
 		var selector = getSelector();
 		var style = document.createElement("style");
 		style.setAttribute("type", "text/css");

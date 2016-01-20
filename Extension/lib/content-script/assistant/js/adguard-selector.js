@@ -475,11 +475,6 @@ var AdguardSelectorLib = {
 
     _clearSuggested: function () {
         $('.sg_suggested').removeClass(this.SUGGESTED_CLASS);
-
-        //TODO: What is clear_button?
-        if (this.clear_button) {
-            this.clear_button.attr('value', 'Clear');
-        }
     },
 
     _suggestPredicted: function (prediction) {
@@ -494,15 +489,6 @@ var AdguardSelectorLib = {
                     $(this).addClass(self.SUGGESTED_CLASS);
                 }
             });
-
-            //TODO: What is clear_button?
-            if (this.clear_button) {
-                if (count > 0) {
-                    this.clear_button.attr('value', 'Clear (' + count + ')');
-                } else {
-                    this.clear_button.attr('value', 'Clear');
-                }
-            }
         }
     },
 
@@ -513,7 +499,7 @@ var AdguardSelectorLib = {
         }
 
         var selector = AdguardSelectorLib.makeCssNthChildFilter(selectedElement);
-        return selector ? this._makeDomainPrefix() + selector : "";
+        return selector ? "##" + selector : "";
     },
 
     _getSelectorSimilarPath: function (selectedElement) {
@@ -527,21 +513,7 @@ var AdguardSelectorLib = {
         }
 
         var selector = className.trim().replace(/\s+/g, ', .');
-        return selector ? this._makeDomainPrefix() + '.' + selector : "";
-    },
-
-    _makeDomainPrefix: function () {
-        //TODO: ???
-
-        var result;
-        var scope = $('adguard-assistant-dialog').find('#oneDomainRadio').get(0);
-        if (scope && scope.checked) {
-            result = this.croppedDomain + this.domainRule;
-        } else {
-            result = "##";
-        }
-
-        return result;
+        return selector ? "##" + '.' + selector : "";
     }
 };
 
