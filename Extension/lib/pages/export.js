@@ -16,77 +16,76 @@
  */
 $(document).ready(function () {
 
-	var callback = function (response) {
+    var callback = function (response) {
 
-		var rules = response.rules;
+        var rules = response.rules;
 
-		if (!rules || rules.length == 0) {
-			return;
-		}
+        if (!rules || rules.length == 0) {
+            return;
+        }
 
-		var el = $('<pre/>');
-		var rulesText = rules ? rules.join('\r\n') : '';
-		el.text(rulesText);
-		$("body").append(el);
+        var el = $('<pre/>');
+        var rulesText = rules ? rules.join('\r\n') : '';
+        el.text(rulesText);
+        $("body").append(el);
 
-		var filename = whitelist ? 'whitelist.txt' : 'rules.txt';
-		if (showSaveFunc) {
-			showSaveFunc(rulesText, filename, 'text/plain;charset=utf-8');
-		}
-	};
+        var filename = whitelist ? 'whitelist.txt' : 'rules.txt';
+        if (showSaveFunc) {
+            showSaveFunc(rulesText, filename, 'text/plain;charset=utf-8');
+        }
+    };
 
-	var whitelist = document.location.hash == '#wl';
-	var messageType;
-	if (whitelist) {
-		messageType = 'getWhiteListDomains';
-	} else {
-		messageType = 'getUserFilters';
-	}
+    var whitelist = document.location.hash == '#wl';
+    var messageType;
+    if (whitelist) {
+        messageType = 'getWhiteListDomains';
+    } else {
+        messageType = 'getUserFilters';
+    }
 
-	contentPage.sendMessage({type: messageType}, callback);
+    contentPage.sendMessage({type: messageType}, callback);
 });
 
 var showSaveFunc = (function () {
 
-	var showSave;
-	var DownloadAttributeSupport = 'download' in document.createElement('a');
+    var showSave;
+    var DownloadAttributeSupport = 'download' in document.createElement('a');
 
-	var Blob = window.Blob || window.WebKitBlob || window.MozBlob;
-	var URL = window.URL || window.webkitURL || window.mozURL;
+    var Blob = window.Blob || window.WebKitBlob || window.MozBlob;
+    var URL = window.URL || window.webkitURL || window.mozURL;
 
-	navigator.saveBlob = navigator.saveBlob || navigator.mozSaveBlob || navigator.webkitSaveBlob;
-	window.saveAs = window.saveAs || window.webkitSaveAs || window.mozSaveAs || window.msSaveAs;
+    navigator.saveBlob = navigator.saveBlob || navigator.mozSaveBlob || navigator.webkitSaveBlob;
+    window.saveAs = window.saveAs || window.webkitSaveAs || window.mozSaveAs || window.msSaveAs;
 
-	if (Blob && navigator.saveBlob) {
-		showSave = function (data, name, mimetype) {
-			var blob = new Blob([data], {type: mimetype});
-			if (window.saveAs) {
-				window.saveAs(blob, name);
-			} else {
-				navigator.saveBlob(blob, name);
-			}
-		};
-	} else if (Blob && URL) {
-		showSave = function (data, name, mimetype) {
-			var blob, url;
-			if (DownloadAttributeSupport) {
-				blob = new Blob([data], {type: mimetype});
-				url = URL.createObjectURL(blob);
-				var link = document.createElement("a");
-				link.setAttribute("href", url);
-				link.setAttribute("download", name || "Download.bin");
-				var event = document.createEvent('MouseEvents');
-				event.initMouseEvent('click', true, true, window, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
-				link.dispatchEvent(event);
-			} else {
-				blob = new Blob([data], {type: mimetype});
-				url = URL.createObjectURL(blob);
-				window.open(url, '_blank', '');
-			}
-			setTimeout(function () {
-				URL.revokeObjectURL(url);
-			}, 250);
-		};
-	}
-	return showSave;
+    if (Blob && navigator.saveBlob) {
+        showSave = function (data, name, mimetype) {
+            var blob = new Blob([data], {type: mimetype});
+            if (window.saveAs) {
+                window.saveAs(blob, name);
+            } else {
+                navigator.saveBlob(blob, name);
+            }
+        };
+    } else if (Blob && URL) {
+        showSave = function (data, name, mimetype) {
+            var blob, url;
+            if (DownloadAttributeSupport) {
+                blob = new Blob([data], {type: mimetype});
+                url = URL.createObjectURL(blob);
+                var link = document.createElement("a");
+                link.setAttribute("href", url);
+                link.setAttribute("download", name || "Download.bin");
+                $('body').append(link);
+                $(link).get(0).click();
+            } else {
+                blob = new Blob([data], {type: mimetype});
+                url = URL.createObjectURL(blob);
+                window.open(url, '_blank', '');
+            }
+            setTimeout(function () {
+                URL.revokeObjectURL(url);
+            }, 250);
+        };
+    }
+    return showSave;
 })();
