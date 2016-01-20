@@ -167,7 +167,6 @@ var AdguardSelectorLib = {
         if (!this.b_top) {
             var width = this._px(this.BORDER_WIDTH);
 
-            //TODO: Move to setupEventHandlers
             this.b_top = $('<div>').addClass(this.BORDER_CLASS).css('height', width).hide()
                 .on("click", {'self': this}, this._sgMousedown);
             this.b_bottom = $('<div>').addClass(this.BORDER_CLASS).addClass('sg_bottom_border')
