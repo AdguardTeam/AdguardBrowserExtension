@@ -193,7 +193,7 @@ var UrlUtils = exports.UrlUtils = {
 	 * @returns boolean true if there is suitable domain in domainNames
 	 */
 	isDomainOrSubDomainOfAny: function (domainNameToCheck, domainNames) {
-		if (domainNames == null || domainNames.length == 0) {
+		if (!domainNames || domainNames.length == 0) {
 			return false;
 		}
 

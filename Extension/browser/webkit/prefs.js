@@ -70,7 +70,5 @@ var Prefs = exports.Prefs = {
 	speedupStartup: function () {
 		return false;
 	},
-    collapseByContentScript: function() {
-        return false;
-    }
+    collapseByContentScript: false
 };

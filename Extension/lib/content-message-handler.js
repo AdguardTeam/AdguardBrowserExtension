@@ -190,7 +190,7 @@ ContentMessageHandler.prototype = {
                 callback(cssAndScripts || {});
                 break;
             case 'processShouldCollapse':
-                if (Prefs.collapseByContentScript()) {
+                if (Prefs.collapseByContentScript) {
                     var collapse = this.webRequestService.processShouldCollapse(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
                     callback({
                         collapse: collapse,

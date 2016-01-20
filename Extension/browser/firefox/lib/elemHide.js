@@ -114,7 +114,7 @@ var ElemHide = exports.ElemHide = {
      * @param node Node
      */
     collapseNode: function (node) {
-        if (Prefs.collapseByContentScript()) {
+        if (Prefs.collapseByContentScript) {
             return;
         }
 

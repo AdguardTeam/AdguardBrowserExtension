@@ -17,6 +17,7 @@
 var self = require('sdk/self');
 var platform = require('sdk/system').platform;
 var simplePrefs = require('sdk/simple-prefs');
+var unload = require('sdk/system/unload');
 const {Cc, Ci} = require('chrome');
 
 var locale = (function () {
@@ -58,8 +59,13 @@ var Prefs = exports.Prefs = {
 	speedupStartup: function () {
 		return simplePrefs.prefs['speedup_startup'];
 	},
-    _collapseByContentScript: simplePrefs.prefs['collapse_by_content_script'], 
-    collapseByContentScript: function() {
-        return Prefs._collapseByContentScript;
-    }
+    collapseByContentScript: simplePrefs.prefs['collapse_by_content_script']
 };
+
+var onPreferenceChanged = function() {
+    Prefs.collapseByContentScript = simplePrefs.prefs['collapse_by_content_script'];
+};
+simplePrefs.on('collapse_by_content_script', onPreferenceChanged);
+unload.when(function() {
+    simplePrefs.removeListener('collapse_by_content_script', onPreferenceChanged);
+});

@@ -1,8 +1,10 @@
+/* global i18n */
 var Cu = require('chrome').Cu;
 var Cc = require('chrome').Cc;
 var Ci = require('chrome').Ci;
 var LS = require('utils/local-storage').LS;
 var Prefs = require('prefs').Prefs;
+var RequestTypes = require('utils/common').RequestTypes;
 var setTimeout = require('sdk/timers').setTimeout;
 var clearTimeout = require('sdk/timers').clearTimeout;
 Cu.import("resource://gre/modules/Services.jsm");
@@ -153,7 +155,7 @@ var Utils = exports.Utils = {
         return {
             title: title,
             text: text
-        }
+        };
     },
 
     getFiltersEnabledResultMessage: function (enabledFilters) {
@@ -169,7 +171,7 @@ var Utils = exports.Utils = {
         return {
             title: title,
             text: text
-        }
+        };
     },
 
     findHeaderByName: function (headers, headerName) {
