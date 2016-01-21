@@ -147,6 +147,7 @@ var ContextMenu = exports.ContextMenu = {
 		this.menu = this.contextMenu.Menu({
 			label: "Adguard",
 			contentScriptFile: [
+				self.data.url('content/content-script/assistant/js/adguard-rules-constructor.js'),
 				self.data.url('content/content-script/assistant/js/assistant.js'),
 				self.data.url('content/content-script/context-menu-content.js')
 			],
@@ -199,6 +200,7 @@ var ContextMenu = exports.ContextMenu = {
 				if (contextDetails.tagName == "IMG") {
 					this.blockImageMenu = this._createItem('context_block_site_image', null, {
 						contentScriptFile: [
+							self.data.url('content/content-script/assistant/js/adguard-rules-constructor.js'),
 							self.data.url('content/content-script/assistant/js/assistant.js'),
 							self.data.url('content/content-script/context-menu-content.js')
 						],

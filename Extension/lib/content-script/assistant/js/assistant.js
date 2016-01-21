@@ -31,8 +31,7 @@ var Adguard = function () {
 		cssRuleIndex: null,
 		urlBlockAttributes: ["src", "data"],
 		urlInfo: null,
-		croppedDomain: null,
-		domainRule: '##'
+		croppedDomain: null
 	};
 
 	var constants = {
@@ -101,29 +100,6 @@ var Adguard = function () {
 
 		cropDomain: function (domain) {
 			return domain.replace("www.", "");
-		},
-
-		isScopeOne: function () {
-			var scope = findInIframe('#oneDomainRadio').get(0);
-			if (scope) {
-				return scope.checked;
-			} else {
-				return null;
-			}
-		},
-		makeDomainPrefix: function (inverse) {
-			var result;
-			var isOneDomain = utils.isScopeOne();
-			if (inverse && inverse == 'true') {
-				isOneDomain = !isOneDomain;
-			}
-			if (isOneDomain) {
-				result = getCroppedDomain() + settings.domainRule;
-			} else {
-				result = "##";
-			}
-
-			return result;
 		}
 	};
 
@@ -397,37 +373,14 @@ var Adguard = function () {
 		}
 	};
 
-	var getSelectorPath = function (selectedElement) {
-		if (!selectedElement) {
-			return;
-		}
-
-		var selector = Adguard.makeCssNthChildFilter(selectedElement);
-		return selector ? "##" + selector : "";
-	};
-
-	var getSelectorSimilarPath = function (selectedElement) {
-		if (!selectedElement) {
-			return "";
-		}
-
-		var className = selectedElement.className;
-		if (!className) {
-			return "";
-		}
-
-		var selector = className.trim().replace(/\s+/g, ', .');
-		return selector ? "##" + '.' + selector : "";
-	};
-
 	var onElementSelected = function (element) {
 		settings.selectedElement = element;
-		settings.path = getSelectorPath(element);
-		settings.similarPath = getSelectorSimilarPath(element);
+		settings.ruleText = AdguardRulesConstructorLib.createRuleText(element);
+		settings.similarRuleText = AdguardRulesConstructorLib.createSimilarRuleText(element);
 
 		var urlBlock = haveUrlBlockParameter(element);
 		var blockSimilar = haveClassAttribute(element);
-		showHidingRuleWindow(settings.path, element, urlBlock, blockSimilar);
+		showHidingRuleWindow(settings.ruleText, element, urlBlock, blockSimilar);
 	};
 
 	var closeAssistant = function () {
@@ -458,34 +411,15 @@ var Adguard = function () {
 		return className && className.trim() != '';
 	};
 
-	var setPath = function (path) {
-		findInIframe('#filter-rule').val(path);
+	var setFilterRuleInputText = function (ruleText) {
+		findInIframe('#filter-rule').val(ruleText);
 	};
 
 	var makeUrlBlockFilter = function () {
-		var iframe = findIframe().contents();
-		var needMakeUrlBlock = iframe.find('#blockByUrl').is(':checked');
+		var needMakeUrlBlock = findInIframe('#blockByUrl').is(':checked');
 		if (!needMakeUrlBlock) {
 			return 'false';
 		}
-		var urlMask = getUrlBlockAttribute(settings.selectedElement);
-		if (!urlMask || urlMask == '') {
-			return 'false';
-		}
-
-		var blockUrl = urlMask.replace(/^http:\/\/(www\.)?/, "||");
-		if (blockUrl.indexOf('.') == 0) {
-			blockUrl = blockUrl.substring(1);
-		}
-
-		var value;
-		if (!iframe.find("#oneDomainRadio").is(':checked')) {
-			value = "domain=" + getCroppedDomain();
-		}
-		var result = value;
-		var filterRule = iframe.find('#filter-rule');
-		filterRule.val(result ? blockUrl + "$" + result : blockUrl);
-		settings.urlBlockPath = filterRule.val();
 
 		return 'true';
 	};
@@ -577,20 +511,17 @@ var Adguard = function () {
 		return d;
 	};
 
-	var showHidingRuleWindow = function (path, element, urlBlock, blockSimilar) {
+	var showHidingRuleWindow = function (ruleText, element, urlBlock, blockSimilar) {
 		var loaded = showDetailedMenu();
 		loaded.done(function () {
 			createSlider(element);
+
 			self.selector.selectElement(element);
-			setPath(path);
+			setFilterRuleInputText(ruleText);
+
 			onScopeChange();
 			setScopeOneDomainText();
-			if (urlBlock) {
-				findInIframe('#block-by-url-p').show();
-			}
-			if (blockSimilar) {
-				findInIframe('#block-similar-p').show();
-			}
+			handleShowBlockSettings(urlBlock, blockSimilar);
 		});
 	};
 
@@ -787,10 +718,11 @@ var Adguard = function () {
 
 		settings.selectedElement = element;
 		self.selector.selectElement(element);
-		settings.path = getSelectorPath(element);
-		settings.similarPath = getSelectorSimilarPath(element);
+
+		settings.ruleText = AdguardRulesConstructorLib.createRuleText(element);
+		settings.similarRuleText = AdguardRulesConstructorLib.createSimilarRuleText(element);
 		settings.similarBlock = false;
-		setPath(settings.path);
+		setFilterRuleInputText(settings.ruleText);
 
 		makeDefaultCheckboxesForDetailedMenu();
 		onScopeChange();
@@ -862,7 +794,7 @@ var Adguard = function () {
 	};
 
 	var getSelector = function () {
-		var path = settings.similarBlock ? settings.similarPath : settings.path;
+		var path = settings.similarBlock ? settings.similarRuleText : settings.ruleText;
 		var index = path.indexOf('##');
 		return index == -1 ? path.substring(0, path.length) : path.substring(index + 2, path.length);
 	};
@@ -881,37 +813,48 @@ var Adguard = function () {
 
 	var onScopeChange = function () {
 
-		var iframe = findIframe().contents();
-		var isBlockByUrl = iframe.find('#blockByUrl').is(':checked');
-		var isBlockSimilar = iframe.find('#blockSimilar').is(':checked');
+		var isBlockByUrl = findInIframe('#blockByUrl').is(':checked');
+		var isBlockSimilar = findInIframe('#blockSimilar').is(':checked');
+		var isBlockOneDomain = findInIframe("#oneDomainRadio").is(':checked');
+
 		handleShowBlockSettings(haveUrlBlockParameter(settings.selectedElement) && !isBlockSimilar, haveClassAttribute(settings.selectedElement) && !isBlockByUrl);
 
-		var isUrlBlock = makeUrlBlockFilter();
-		if (isUrlBlock == 'true') {
-			return;
+		var ruleText = AdguardRulesConstructorLib.constructRuleText(settings.selectedElement, isBlockByUrl, isBlockSimilar, isBlockOneDomain, getCroppedDomain());
+		if (!isBlockByUrl) {
+			settings.ruleText = ruleText;
 		}
 
-		var path = settings.path;
-		var similarPath = settings.similarPath;
-		var indexSub = path.indexOf('##');
-		path = path.substring(indexSub + 2);
-		similarPath = similarPath.substring(indexSub + 2);
-		var isNeedReverse = 'true';
-		var prefix = utils.makeDomainPrefix(isNeedReverse);
-
-		settings.path = prefix + path;
-		settings.similarPath = prefix + similarPath;
-		settings.similarBlock = isBlockSimilar;
-
-		setPath(!isBlockSimilar ? settings.path : settings.similarPath);
+		//if (isBlockByUrl) {
+         //   var blockUrlRuleText = constructUrlBlockRuleText(settings.selectedElement, isBlockOneDomain);
+		//	if (blockUrlRuleText) {
+		//		setFilterRuleInputText(blockUrlRuleText);
+		//		return;
+		//	}
+		//}
+        //
+		//var path = settings.ruleText;
+		//var similarPath = settings.similarRuleText;
+		//
+		//if (!isBlockOneDomain) {
+		//	path = getCroppedDomain() + path;
+		//	similarPath = getCroppedDomain() + similarPath;
+		//}
+        //
+		//var ruleText = !isBlockSimilar ? path : similarPath;
+        //setFilterRuleInputText(ruleText);
+        //
+		//settings.ruleText = path;
+		//settings.similarRuleText = similarPath;
+		//settings.similarBlock = isBlockSimilar;
 	};
 
 	var onRuleAccept = function () {
 		removePreview();
 		onRulePreview();
 		settings.lastPreview = null;
-		var path = findInIframe('#filter-rule').val();
-		contentPage.sendMessage({type: 'addUserRule', ruleText: path}, function () {
+
+		var ruleText = findInIframe('#filter-rule').val();
+		contentPage.sendMessage({type: 'addUserRule', ruleText: ruleText}, function () {
 			closeAssistant();
 		});
 	};
@@ -946,6 +889,7 @@ var Adguard = function () {
 	}
 };
 
+//TODO: Move to rule constructor
 Adguard.makeCssNthChildFilter = function (element) {
 
 	var path = [];

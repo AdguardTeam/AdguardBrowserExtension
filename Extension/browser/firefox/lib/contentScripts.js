@@ -109,6 +109,7 @@ ContentScripts.prototype = {
             'content/content-script/assistant/js/start-assistant.js',
             'content/content-script/assistant/js/tools.js',
             'content/content-script/assistant/js/adguard-selector.js',
+            'content/content-script/assistant/js/adguard-rules-constructor.js',
             'content/content-script/assistant/js/assistant.js'
         ], 'ready', ['top', 'existing']);
 
