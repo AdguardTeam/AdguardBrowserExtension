@@ -375,12 +375,11 @@ var Adguard = function () {
 
 	var onElementSelected = function (element) {
 		settings.selectedElement = element;
-		settings.ruleText = AdguardRulesConstructorLib.createRuleText(element);
-		settings.similarRuleText = AdguardRulesConstructorLib.createSimilarRuleText(element);
 
 		var urlBlock = haveUrlBlockParameter(element);
 		var blockSimilar = haveClassAttribute(element);
-		showHidingRuleWindow(settings.ruleText, element, urlBlock, blockSimilar);
+
+		showHidingRuleWindow(element, urlBlock, blockSimilar);
 	};
 
 	var closeAssistant = function () {
@@ -413,15 +412,6 @@ var Adguard = function () {
 
 	var setFilterRuleInputText = function (ruleText) {
 		findInIframe('#filter-rule').val(ruleText);
-	};
-
-	var makeUrlBlockFilter = function () {
-		var needMakeUrlBlock = findInIframe('#blockByUrl').is(':checked');
-		if (!needMakeUrlBlock) {
-			return 'false';
-		}
-
-		return 'true';
 	};
 
 	var localizeMenu = function () {
@@ -511,13 +501,12 @@ var Adguard = function () {
 		return d;
 	};
 
-	var showHidingRuleWindow = function (ruleText, element, urlBlock, blockSimilar) {
+	var showHidingRuleWindow = function (element, urlBlock, blockSimilar) {
 		var loaded = showDetailedMenu();
 		loaded.done(function () {
 			createSlider(element);
 
 			self.selector.selectElement(element);
-			setFilterRuleInputText(ruleText);
 
 			onScopeChange();
 			setScopeOneDomainText();
@@ -719,11 +708,6 @@ var Adguard = function () {
 		settings.selectedElement = element;
 		self.selector.selectElement(element);
 
-		settings.ruleText = AdguardRulesConstructorLib.createRuleText(element);
-		settings.similarRuleText = AdguardRulesConstructorLib.createSimilarRuleText(element);
-		settings.similarBlock = false;
-		setFilterRuleInputText(settings.ruleText);
-
 		makeDefaultCheckboxesForDetailedMenu();
 		onScopeChange();
 		makeRadioButtonsAndCheckBoxes();
@@ -794,9 +778,13 @@ var Adguard = function () {
 	};
 
 	var getSelector = function () {
-		var path = settings.similarBlock ? settings.similarRuleText : settings.ruleText;
-		var index = path.indexOf('##');
-		return index == -1 ? path.substring(0, path.length) : path.substring(index + 2, path.length);
+		var ruleText = findInIframe('#filter-rule').val();
+		var index = ruleText.indexOf('##');
+		if (index != -1) {
+			ruleText = ruleText.substring(index + 2, ruleText.length);
+		}
+
+		return ruleText;
 	};
 
 	var removePreview = function () {
@@ -819,33 +807,16 @@ var Adguard = function () {
 
 		handleShowBlockSettings(haveUrlBlockParameter(settings.selectedElement) && !isBlockSimilar, haveClassAttribute(settings.selectedElement) && !isBlockByUrl);
 
-		var ruleText = AdguardRulesConstructorLib.constructRuleText(settings.selectedElement, isBlockByUrl, isBlockSimilar, isBlockOneDomain, getCroppedDomain());
-		if (!isBlockByUrl) {
-			settings.ruleText = ruleText;
-		}
+		var options = {
+			isBlockByUrl: isBlockByUrl,
+			urlMask: getUrlBlockAttribute(settings.selectedElement),
+			isBlockSimilar : isBlockSimilar,
+			isBlockOneDomain: isBlockOneDomain,
+			domain: getCroppedDomain()
+		};
+		var ruleText = AdguardRulesConstructorLib.constructRuleText(settings.selectedElement, options);
 
-		//if (isBlockByUrl) {
-         //   var blockUrlRuleText = constructUrlBlockRuleText(settings.selectedElement, isBlockOneDomain);
-		//	if (blockUrlRuleText) {
-		//		setFilterRuleInputText(blockUrlRuleText);
-		//		return;
-		//	}
-		//}
-        //
-		//var path = settings.ruleText;
-		//var similarPath = settings.similarRuleText;
-		//
-		//if (!isBlockOneDomain) {
-		//	path = getCroppedDomain() + path;
-		//	similarPath = getCroppedDomain() + similarPath;
-		//}
-        //
-		//var ruleText = !isBlockSimilar ? path : similarPath;
-        //setFilterRuleInputText(ruleText);
-        //
-		//settings.ruleText = path;
-		//settings.similarRuleText = similarPath;
-		//settings.similarBlock = isBlockSimilar;
+		setFilterRuleInputText(ruleText);
 	};
 
 	var onRuleAccept = function () {
@@ -887,65 +858,4 @@ var Adguard = function () {
 		cancelSelectMode();
 		closeAssistant();
 	}
-};
-
-//TODO: Move to rule constructor
-Adguard.makeCssNthChildFilter = function (element) {
-
-	var path = [];
-	var el = element;
-	while (el.parentNode) {
-		var nodeName = el && el.nodeName ? el.nodeName.toUpperCase() : "";
-		if (nodeName == "BODY") {
-			break;
-		}
-		if (el.id) {
-			var id = el.id.split(':').join('\\:');//case of colon in id. Need to escape
-			if (el.id.indexOf('.') > -1) {
-				path.unshift('[id="' + id + '"]');
-			} else {
-				path.unshift('#' + id);
-			}
-			break;
-		} else {
-			var c = 1;
-			for (var e = el; e.previousSibling; e = e.previousSibling) {
-				if (e.previousSibling.nodeType === 1) {
-					c++;
-				}
-			}
-
-			var cldCount = 0;
-			for (var i = 0; el.parentNode && i < el.parentNode.childNodes.length; i++) {
-				cldCount += el.parentNode.childNodes[i].nodeType == 1 ? 1 : 0;
-			}
-
-			var ch;
-			if (cldCount == 0 || cldCount == 1) {
-				ch = "";
-			} else if (c == 1) {
-				ch = ":first-child";
-			} else if (c == cldCount) {
-				ch = ":last-child";
-			} else {
-				ch = ":nth-child(" + c + ")";
-			}
-
-			var className = el.className;
-			if (className) {
-				if (className.indexOf('.') > 0) {
-					className = '[class="' + className + '"]';
-				} else {
-					className = className.trim().replace(/ +(?= )/g, ''); //delete more than one space between classes;
-					className = '.' + className.replace(/\s/g, ".");
-				}
-			} else {
-				className = '';
-			}
-			path.unshift(el.tagName + className + ch);
-
-			el = el.parentNode;
-		}
-	}
-	return path.join(" > ");
 };
