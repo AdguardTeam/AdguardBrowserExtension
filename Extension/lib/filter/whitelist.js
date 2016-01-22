@@ -15,18 +15,18 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var Utils = require('utils/browser-utils').Utils;
-var StringUtils = require('utils/common').StringUtils;
-var UrlUtils = require('utils/url').UrlUtils;
-var CollectionUtils = require('utils/common').CollectionUtils;
-var AntiBannerFiltersId = require('utils/common').AntiBannerFiltersId;
-var RequestTypes = require('utils/common').RequestTypes;
-var LS = require('utils/local-storage').LS;
-var userSettings = require('utils/user-settings').userSettings;
+var Utils = require('../../lib/utils/browser-utils').Utils;
+var StringUtils = require('../../lib/utils/common').StringUtils;
+var UrlUtils = require('../../lib/utils/url').UrlUtils;
+var CollectionUtils = require('../../lib/utils/common').CollectionUtils;
+var AntiBannerFiltersId = require('../../lib/utils/common').AntiBannerFiltersId;
+var RequestTypes = require('../../lib/utils/common').RequestTypes;
+var LS = require('../../lib/utils/local-storage').LS;
+var userSettings = require('../../lib/utils/user-settings').userSettings;
 
-var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
-require('filter/rules/filter-classes');
-var UrlFilter = require('filter/rules/url-filter').UrlFilter;
+var FilterRule = require('../../lib/filter/rules/base-filter-rule').FilterRule;
+require('../../lib/filter/rules/filter-classes');
+var UrlFilter = require('../../lib/filter/rules/url-filter').UrlFilter;
 
 var allowAllWhiteListRule = {
     whiteListRule: true,

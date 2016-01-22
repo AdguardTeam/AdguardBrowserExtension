@@ -21,13 +21,13 @@
  */
 var setTimeout = require('sdk/timers').setTimeout;
 var clearTimeout = require('sdk/timers').clearTimeout;
-var ServiceClient = require('utils/service-client').ServiceClient;
-var LS = require('utils/local-storage').LS;
-var userSettings = require('utils/user-settings').userSettings;
-var EventNotifier = require('utils/notifier').EventNotifier;
-var EventNotifierTypes = require('utils/common').EventNotifierTypes;
-var Log = require('utils/log').Log;
-var UrlUtils = require('utils/url').UrlUtils;
+var ServiceClient = require('../../lib/utils/service-client').ServiceClient;
+var LS = require('../../lib/utils/local-storage').LS;
+var userSettings = require('../../lib/utils/user-settings').userSettings;
+var EventNotifier = require('../../lib/utils/notifier').EventNotifier;
+var EventNotifierTypes = require('../../lib/utils/common').EventNotifierTypes;
+var Log = require('../../lib/utils/log').Log;
+var UrlUtils = require('../../lib/utils/url').UrlUtils;
 
 /**
  * This object is used to store and track ad filters usage stats.

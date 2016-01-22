@@ -22,10 +22,10 @@ Cu.import("resource://gre/modules/Services.jsm");
 var self = require('sdk/self');
 var tabs = require('sdk/tabs');
 
-var WorkaroundUtils = require('utils/workaround').WorkaroundUtils;
-var UiUtils = require('uiUtils').UiUtils;
-var styleService = require('styleSheetService');
-var contentScripts = require('contentScripts').contentScripts;
+var WorkaroundUtils = require('./utils/workaround').WorkaroundUtils;
+var UiUtils = require('./uiUtils').UiUtils;
+var styleService = require('./styleSheetService');
+var contentScripts = require('./contentScripts').contentScripts;
 
 /**
  * Object that manages toolbar button rendering.

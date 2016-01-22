@@ -19,12 +19,12 @@
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
-var LS = require('utils/local-storage').LS;
-var Log = require('utils/log').Log;
-var Prefs = require('prefs').Prefs;
+var LS = require('../../lib/utils/local-storage').LS;
+var Log = require('../../lib/utils/log').Log;
+var Prefs = require('../../lib/prefs').Prefs;
 var Locale = Prefs.locale.substring(0, 2).toLowerCase();
-var ServiceClient = require('utils/service-client').ServiceClient;
-var Promise = require('utils/promises').Promise;
+var ServiceClient = require('../../lib/utils/service-client').ServiceClient;
+var Promise = require('../../lib/utils/promises').Promise;
 
 /**
  * Service that loads and parses filters metadata from backend server.

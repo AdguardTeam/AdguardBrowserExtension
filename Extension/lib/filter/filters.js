@@ -19,18 +19,18 @@
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
-var UrlFilter = require('filter/rules/url-filter').UrlFilter;
-var CssFilter = require('filter/rules/css-filter').CssFilter;
-var CssFilterRule = require('filter/rules/css-filter-rule').CssFilterRule;
-var ScriptFilter = require('filter/rules/script-filter').ScriptFilter;
-var ScriptFilterRule = require('filter/rules/script-filter-rule').ScriptFilterRule;
-var UrlFilterRule = require('filter/rules/url-filter-rule').UrlFilterRule;
-var SafebrowsingFilter = require('filter/safebrowsing-filter').SafebrowsingFilter;
-var Log = require('utils/log').Log;
-var UrlUtils = require('utils/url').UrlUtils;
-var StringUtils = require('utils/common').StringUtils;
-var Prefs = require('prefs').Prefs;
-var userSettings = require('utils/user-settings').userSettings;
+var UrlFilter = require('../../lib/filter/rules/url-filter').UrlFilter;
+var CssFilter = require('../../lib/filter/rules/css-filter').CssFilter;
+var CssFilterRule = require('../../lib/filter/rules/css-filter-rule').CssFilterRule;
+var ScriptFilter = require('../../lib/filter/rules/script-filter').ScriptFilter;
+var ScriptFilterRule = require('../../lib/filter/rules/script-filter-rule').ScriptFilterRule;
+var UrlFilterRule = require('../../lib/filter/rules/url-filter-rule').UrlFilterRule;
+var SafebrowsingFilter = require('../../lib/filter/safebrowsing-filter').SafebrowsingFilter;
+var Log = require('../../lib/utils/log').Log;
+var UrlUtils = require('../../lib/utils/url').UrlUtils;
+var StringUtils = require('../../lib/utils/common').StringUtils;
+var Prefs = require('../../lib/prefs').Prefs;
+var userSettings = require('../../lib/utils/user-settings').userSettings;
 
 /**
  * Request filter is main class which applies filter rules.

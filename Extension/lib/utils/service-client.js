@@ -19,11 +19,11 @@
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
-var Log = require('utils/log').Log;
-var Utils = require('utils/browser-utils').Utils;
-var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
-require('filter/rules/filter-classes');
-var Prefs = require('prefs').Prefs;
+var Log = require('../../lib/utils/log').Log;
+var Utils = require('../../lib/utils/browser-utils').Utils;
+var FilterRule = require('../../lib/filter/rules/base-filter-rule').FilterRule;
+require('../../lib/filter/rules/filter-classes');
+var Prefs = require('../../lib/prefs').Prefs;
 var Cc = require('chrome').Cc;
 var Ci = require('chrome').Ci;
 var XMLHttpRequestConstructor = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"];

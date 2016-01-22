@@ -23,13 +23,13 @@ var PrincipalService = Cc["@mozilla.org/systemprincipal;1"].getService(Ci.nsIPri
 
 var unload = require('sdk/system/unload');
 
-var filterRulesHitCount = require('filter/filters-hit').filterRulesHitCount;
+var filterRulesHitCount = require('./filter/filters-hit').filterRulesHitCount;
 
-var ConcurrentUtils = require('utils/browser-utils').ConcurrentUtils;
-var Log = require('utils/log').Log;
-var UrlUtils = require('utils/url').UrlUtils;
-var FilterUtils = require('utils/common').FilterUtils;
-var WebRequestHelper = require('contentPolicy').WebRequestHelper;
+var ConcurrentUtils = require('./utils/browser-utils').ConcurrentUtils;
+var Log = require('./utils/log').Log;
+var UrlUtils = require('./utils/url').UrlUtils;
+var FilterUtils = require('./utils/common').FilterUtils;
+var WebRequestHelper = require('./contentPolicy').WebRequestHelper;
 
 /**
  * Handler that intercepts requests to about:adg-intercept.

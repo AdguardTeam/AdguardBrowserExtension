@@ -25,7 +25,7 @@ var tabs = require('sdk/tabs');
 var events = require('sdk/system/events');
 var unload = require('sdk/system/unload');
 
-var {UiUtils, WindowObserver} = require('uiUtils');
+var {UiUtils, WindowObserver} = require('./uiUtils');
 
 /**
  * Object that manages mobile menu rendering.

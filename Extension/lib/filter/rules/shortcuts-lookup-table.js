@@ -19,9 +19,9 @@
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
-var StringUtils = require('utils/common').StringUtils;
-var CollectionUtils = require('utils/common').CollectionUtils;
-var Utils = require('utils/browser-utils').Utils;
+var StringUtils = require('../../../lib/utils/common').StringUtils;
+var CollectionUtils = require('../../../lib/utils/common').CollectionUtils;
+var Utils = require('../../../lib/utils/browser-utils').Utils;
 
 /**
  * Special hash table that greatly increases speed of searching url filter rule by its shortcut

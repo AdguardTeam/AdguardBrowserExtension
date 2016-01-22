@@ -117,19 +117,19 @@ exports.main = function (options, callbacks) {
         var {contentScripts} = loadAdguardModule('contentScripts');
 
         // These require-calls are needed for proper build by cfx.
-        require('prefs');
-        require('elemHide');
-        require('tabsMap');
-        require('contentPolicy');
-        require('elemHideIntercepter');
-        require('content-message-handler');
-        require('ui');
-        require('utils/frames');
-        require('utils/common');
-        require('utils/browser-utils');
-        require('utils/user-settings');
-        require('filter/integration');
-        require('filter/filtering-log');
+        require('lib/prefs');
+        require('lib/elemHide');
+        require('lib/tabsMap');
+        require('lib/contentPolicy');
+        require('lib/elemHideIntercepter');
+        require('lib/content-message-handler');
+        require('lib/ui');
+        require('lib/utils/frames');
+        require('lib/utils/common');
+        require('lib/utils/browser-utils');
+        require('lib/utils/user-settings');
+        require('lib/filter/integration');
+        require('lib/filter/filtering-log');
 
         Log.info('Starting adguard addon...');
 

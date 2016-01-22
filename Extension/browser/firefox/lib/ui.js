@@ -21,20 +21,20 @@ var unload = require('sdk/system/unload');
 var tabUtils = require('sdk/tabs/utils');
 var sdkWindows = require('sdk/windows').browserWindows;
 
-var Prefs = require('prefs').Prefs;
-var ContextMenu = require('contextMenu').ContextMenu;
-var PopupButton = require('popupButton').PopupButton;
-var MobileMenu = require('mobileMenu').MobileMenu;
-var UrlUtils = require('utils/url').UrlUtils;
-var Utils = require('utils/browser-utils').Utils;
-var StringUtils = require('utils/common').StringUtils;
-var EventNotifier = require('utils/notifier').EventNotifier;
-var EventNotifierTypes = require('utils/common').EventNotifierTypes;
-var RequestTypes = require('utils/common').RequestTypes;
-var userSettings = require('utils/user-settings').userSettings;
-var UiUtils = require('uiUtils').UiUtils;
-var Log = require('utils/log').Log;
-var contentScripts = require('contentScripts').contentScripts;
+var Prefs = require('./prefs').Prefs;
+var ContextMenu = require('./contextMenu').ContextMenu;
+var PopupButton = require('./popupButton').PopupButton;
+var MobileMenu = require('./mobileMenu').MobileMenu;
+var UrlUtils = require('./utils/url').UrlUtils;
+var Utils = require('./utils/browser-utils').Utils;
+var StringUtils = require('./utils/common').StringUtils;
+var EventNotifier = require('./utils/notifier').EventNotifier;
+var EventNotifierTypes = require('./utils/common').EventNotifierTypes;
+var RequestTypes = require('./utils/common').RequestTypes;
+var userSettings = require('./utils/user-settings').userSettings;
+var UiUtils = require('./uiUtils').UiUtils;
+var Log = require('./utils/log').Log;
+var contentScripts = require('./contentScripts').contentScripts;
 
 /**
  * UI entry point.

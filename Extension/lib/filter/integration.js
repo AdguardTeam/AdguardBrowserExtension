@@ -19,13 +19,13 @@
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
-var userSettings = require('utils/user-settings').userSettings;
-var ServiceClient = require('utils/service-client').ServiceClient;
-var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
-require('filter/rules/filter-classes');
-var UrlFilterRule = require('filter/rules/url-filter-rule').UrlFilterRule;
-var StringUtils = require('utils/common').StringUtils;
-var RequestTypes = require('utils/common').RequestTypes;
+var userSettings = require('../../lib/utils/user-settings').userSettings;
+var ServiceClient = require('../../lib/utils/service-client').ServiceClient;
+var FilterRule = require('../../lib/filter/rules/base-filter-rule').FilterRule;
+require('../../lib/filter/rules/filter-classes');
+var UrlFilterRule = require('../../lib/filter/rules/url-filter-rule').UrlFilterRule;
+var StringUtils = require('../../lib/utils/common').StringUtils;
+var RequestTypes = require('../../lib/utils/common').RequestTypes;
 
 /**
  * AdguardApplication is used for integration of Adguard extension and Adguard for Windows/Mac/Android versions.
