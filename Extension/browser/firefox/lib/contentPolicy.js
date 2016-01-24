@@ -585,7 +585,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
 
         if (!!requestProperties) {  
             // Calling postProcessRequest only for requests which were previously processed by "shouldLoad"
-            var filteringRule = !!requestProperties ? requestProperties.shouldLoadResult.rule : null;
+            var filteringRule = requestProperties.shouldLoadResult.rule;
             this.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, filteringRule);
         }
         this.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
