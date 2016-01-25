@@ -117,19 +117,19 @@ exports.main = function (options, callbacks) {
         var {contentScripts} = loadAdguardModule('../lib/contentScripts');
 
         // These require-calls are needed for proper build by cfx.
-        require('../lib/prefs');
-        require('../lib/elemHide');
-        require('../lib/tabsMap');
-        require('../lib/contentPolicy');
-        require('../lib/elemHideIntercepter');
-        require('../lib/content-message-handler');
-        require('../lib/ui');
-        require('../lib/utils/frames');
-        require('../lib/utils/common');
-        require('../lib/utils/browser-utils');
-        require('../lib/utils/user-settings');
-        require('../lib/filter/integration');
-        require('../lib/filter/filtering-log');
+        //require('../lib/prefs');
+        //require('../lib/elemHide');
+        //require('../lib/tabsMap');
+        //require('../lib/contentPolicy');
+        //require('../lib/elemHideIntercepter');
+        //require('../lib/content-message-handler');
+        //require('../lib/ui');
+        //require('../lib/utils/frames');
+        //require('../lib/utils/common');
+        //require('../lib/utils/browser-utils');
+        //require('../lib/utils/user-settings');
+        //require('../lib/filter/integration');
+        //require('../lib/filter/filtering-log');
 
         Log.info('Starting adguard addon...');
 
@@ -289,7 +289,9 @@ var loadAdguardModule = function (module) {
         }
 
         var modulePath = module + ".js";
-        var url = self.data.url('../lib/' + modulePath).replace("data/../lib/" + modulePath, 'lib/' + modulePath);
+        var url = self.data.url('../lib/' + modulePath);
+        url = url.replace("data/../lib/" + modulePath, 'lib/' + modulePath);
+
         var scope = scopes[moduleName] = {
             require: function (module) {
                 if (module in sdkModules) {
@@ -300,6 +302,7 @@ var loadAdguardModule = function (module) {
             i18n: i18n,
             exports: Object.create(Object.prototype)
         };
+
         Services.scriptloader.loadSubScript(url, scope);
 
         return scope.exports;

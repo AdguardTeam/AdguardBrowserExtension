@@ -1,13 +1,13 @@
 var Cu = require('chrome').Cu;
 var Cc = require('chrome').Cc;
 var Ci = require('chrome').Ci;
-var LS = require('../../lib/utils/local-storage').LS;
-var Prefs = require('../../lib/prefs').Prefs;
+var LS = require('../lib/utils/local-storage').LS;
+var Prefs = require('../lib/prefs').Prefs;
 var setTimeout = require('sdk/timers').setTimeout;
 var clearTimeout = require('sdk/timers').clearTimeout;
 Cu.import("resource://gre/modules/Services.jsm");
 
-var Log = require('../../lib/utils/log').Log;
+var Log = require('../lib/utils/log').Log;
 
 var Utils = exports.Utils = {
 

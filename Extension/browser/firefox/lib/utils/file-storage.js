@@ -27,7 +27,7 @@ converter.charset = "UTF-8";
 
 var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
 
-var Log = require('../../lib/utils/log').Log;
+var Log = require('../lib/utils/log').Log;
 
 /**
  * File storage adapter

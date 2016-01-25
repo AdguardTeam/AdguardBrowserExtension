@@ -1,6 +1,6 @@
-var StringUtils = require('../../../lib/utils/common').StringUtils;
-var FilterRule = require('../../../lib/filter/rules/base-filter-rule').FilterRule;
-var Log = require('../../../lib/utils/log').Log;
+var StringUtils = require('../lib/utils/common').StringUtils;
+var FilterRule = require('../lib/filter/rules/base-filter-rule').FilterRule;
+var Log = require('../lib/utils/log').Log;
 
 /**
  * Filter classes enumeration
@@ -9,9 +9,9 @@ var classes = null;
 function getClasses() {
     if (!classes) {
         classes = {
-            CssFilterRule: require('../../../lib/filter/rules/css-filter-rule').CssFilterRule,
-            UrlFilterRule: require('../../../lib/filter/rules/url-filter-rule').UrlFilterRule,
-            ScriptFilterRule: require('../../../lib/filter/rules/script-filter-rule').ScriptFilterRule
+            CssFilterRule: require('../lib/filter/rules/css-filter-rule').CssFilterRule,
+            UrlFilterRule: require('../lib/filter/rules/url-filter-rule').UrlFilterRule,
+            ScriptFilterRule: require('../lib/filter/rules/script-filter-rule').ScriptFilterRule
         }
     }
     return classes;

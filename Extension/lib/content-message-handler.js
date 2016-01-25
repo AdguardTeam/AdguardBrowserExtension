@@ -14,15 +14,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var userSettings = require('../../lib/utils/user-settings').userSettings;
-var EventNotifier = require('../../lib/utils/notifier').EventNotifier;
-var Utils = require('../../lib/utils/browser-utils').Utils;
+var userSettings = require('../lib/utils/user-settings').userSettings;
+var EventNotifier = require('../lib/utils/notifier').EventNotifier;
+var Utils = require('../lib/utils/browser-utils').Utils;
 var Prefs = require('./prefs').Prefs;
 
-var EventNotifierTypes = require('../../lib/utils/common').EventNotifierTypes;
-var AntiBannerFiltersId = require('../../lib/utils/common').AntiBannerFiltersId;
-var LogEvents = require('../../lib/utils/common').LogEvents;
-var WorkaroundUtils = require('../../lib/utils/workaround').WorkaroundUtils;
+var EventNotifierTypes = require('../lib/utils/common').EventNotifierTypes;
+var AntiBannerFiltersId = require('../lib/utils/common').AntiBannerFiltersId;
+var LogEvents = require('../lib/utils/common').LogEvents;
+var WorkaroundUtils = require('../lib/utils/workaround').WorkaroundUtils;
 
 var ContentMessageHandler = exports.ContentMessageHandler = function () {
     this.handleMessage = this.handleMessage.bind(this);

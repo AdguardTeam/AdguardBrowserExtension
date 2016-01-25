@@ -19,10 +19,10 @@
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
-var Log = require('../../lib/utils/log').Log;
-var FS = require('../../lib/utils/file-storage').FS;
-var FilterRule = require('../../lib/filter/rules/base-filter-rule').FilterRule;
-require('../../lib/filter/rules/filter-classes');
+var Log = require('../lib/utils/log').Log;
+var FS = require('../lib/utils/file-storage').FS;
+var FilterRule = require('../lib/filter/rules/base-filter-rule').FilterRule;
+require('../lib/filter/rules/filter-classes');
 
 /**
  * This class manages file storage for filters.

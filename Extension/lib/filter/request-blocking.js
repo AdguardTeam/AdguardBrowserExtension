@@ -15,16 +15,16 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var filterRulesHitCount = require('../../lib/filter/filters-hit').filterRulesHitCount;
-var UrlUtils = require('../../lib/utils/url').UrlUtils;
-var FilterUtils = require('../../lib/utils/common').FilterUtils;
-var EventNotifier = require('../../lib/utils/notifier').EventNotifier;
-var EventNotifierTypes = require('../../lib/utils/common').EventNotifierTypes;
-var ServiceClient = require('../../lib/utils/service-client').ServiceClient;
-var WorkaroundUtils = require('../../lib/utils/workaround').WorkaroundUtils;
-var Utils = require('../../lib/utils/browser-utils').Utils;
-var RequestTypes = require('../../lib/utils/common').RequestTypes;
-var userSettings = require('../../lib/utils/user-settings').userSettings;
+var filterRulesHitCount = require('../lib/filter/filters-hit').filterRulesHitCount;
+var UrlUtils = require('../lib/utils/url').UrlUtils;
+var FilterUtils = require('../lib/utils/common').FilterUtils;
+var EventNotifier = require('../lib/utils/notifier').EventNotifier;
+var EventNotifierTypes = require('../lib/utils/common').EventNotifierTypes;
+var ServiceClient = require('../lib/utils/service-client').ServiceClient;
+var WorkaroundUtils = require('../lib/utils/workaround').WorkaroundUtils;
+var Utils = require('../lib/utils/browser-utils').Utils;
+var RequestTypes = require('../lib/utils/common').RequestTypes;
+var userSettings = require('../lib/utils/user-settings').userSettings;
 
 var WebRequestService = exports.WebRequestService = function (framesMap, antiBannerService, filteringLog, adguardApplication) {
     this.framesMap = framesMap;

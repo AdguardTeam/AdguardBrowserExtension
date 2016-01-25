@@ -19,7 +19,7 @@
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
-var CollectionUtils = require('../../../lib/utils/common').CollectionUtils;
+var CollectionUtils = require('../lib/utils/common').CollectionUtils;
 
 /**
  * Filter that manages JS injection rules.

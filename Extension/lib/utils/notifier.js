@@ -19,7 +19,7 @@
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
-var Log = require('../../lib/utils/log').Log;
+var Log = require('../lib/utils/log').Log;
 
 /**
  * Simple mediator

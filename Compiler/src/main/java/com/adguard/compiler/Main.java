@@ -35,11 +35,13 @@ public class Main {
 	private static final String CRX_MAKE_PATH = "../scripts/chrome/crxmake.sh";
 	private static final String ZIP_MAKE_PATH = "../scripts/chrome/zipmake.sh";
 	private static final String XPI_MAKE_PATH = "../scripts/firefox/xpimake.sh";
+	private static final String XPI_CFX_MAKE_PATH = "../scripts/firefox_legacy/xpimake.sh";
 	private static final File CHROME_CERT_FILE = new File("../certificate.pem");
 
 	private static final String PACK_METHOD_ZIP = "zip";
 	private static final String PACK_METHOD_CRX = "crx";
 	private static final String PACK_METHOD_XPI = "xpi";
+	private static final String PACK_METHOD_XPI_CFX = "xpi_cfx";
 
 	/**
 	 * Script for building extension
@@ -108,6 +110,9 @@ public class Main {
 			} else if (PACK_METHOD_XPI.equals(packMethod)) {
 				String jpmXpiName = extensionId + "-" + version;
 				packedFile = PackageUtils.createXpi(XPI_MAKE_PATH, buildResult, jpmXpiName);
+				FileUtils.deleteQuietly(buildResult);
+			} else if (PACK_METHOD_XPI_CFX.equals(packMethod)) {
+				packedFile = PackageUtils.createXpi(XPI_CFX_MAKE_PATH, buildResult, "adguard-adblocker");
 				FileUtils.deleteQuietly(buildResult);
 			}
 		}
@@ -239,9 +244,14 @@ public class Main {
 				log.error("Safari doesn't support pack methods. Pack extension manually.");
 				return false;
 			case FIREFOX:
-			case FIREFOX_LEGACY:
 				if (!PACK_METHOD_XPI.equals(packMethod)) {
 					log.error("Firefox support only xpi pack methods");
+					return false;
+				}
+				return true;
+			case FIREFOX_LEGACY:
+				if (!PACK_METHOD_XPI_CFX.equals(packMethod)) {
+					log.error("Firefox support only xpi through cfx pack method");
 					return false;
 				}
 				return true;
