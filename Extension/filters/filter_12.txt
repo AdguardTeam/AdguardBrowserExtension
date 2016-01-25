@@ -1,10 +1,10 @@
 ! Title: Safari Filter
-! Version: 1.0.0.20
+! Version: 1.0.0.38
 ! Name: Safari Filter
 ! Description: Special filter for Safari 9+. We need a separate filter for Safari because it does not fully support rules syntax.
 ! NameEn: Safari Filter
 ! DescriptionEn: Special filter for Safari 9+. We need a separate filter for Safari because it does not fully support rules syntax.
-! TimeUpdated: 2015-12-23T19:20:10.079+03:00
+! TimeUpdated: 2016-01-22T19:20:52.946+03:00
 ! Title: Adguard Safari Filter
 !
 ! Special filter for Safari. We need a separate filter for Safari because it does not fully support rules syntax.
@@ -12,8 +12,75 @@
 ! Homepage: http://adguard.com/filters.html#safari
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
 !
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1341
+! espn - fixing video
+@@||adm.fwmrm.net/p/release/latest-JS/adm/prd/AdManager.js$domain=espn.go.com
+@@||v.fwmrm.net/ad/*?prof=$domain=espn.go.com
+@@||go.com/b/ss/wdgespcom,wdgespvideo,wdgespge/$domain=espn.go.com
+@@||once.unicornmedia.com/now/*/content.once?$domain=espn.go.com
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1071
+! nfl.com - fixing video
+@@||googletagservices.com/tag/js/gpt.js$domain=nfl.com
+@@||imasdk.googleapis.com/js/core/bridge*.html$domain=nfl.com
+!--------------------------------
+!---------- lost rules ----------
+!--------------------------------
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1255
+||reactiv.$third-party
+||psmardr.com^$third-party
+||smilered.com^$third-party
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1252
+etfdailynews.com##div[style="width:300px;border:1px solid black"]
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/923
+@@||moonwalk.cc/video/*/iframe$elemhide
+||securewebboard.com^$third-party
+||skycdnhost.com^$third-party
+!
+##.banner-top
+! citilink.ru - unblock self-promo
+@@||banners.*.citilink.ru/banner_promo_$domain=citilink.ru
+! nfl.com - video is broken
+@@||imasdk.googleapis.com/js/core/bridge*.html
+!--------------------------------
+!--------------------------------
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1235#issuecomment-173296350
+! finn.no - fixing advertisement, which opens in the new tab
+@@||m.finn.no/*/ad.html?
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1142
+@@||static.pornhub.phncdn.com^$domain=pornhub.com
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1251
+||admin.appnext.com^$third-party
+! http://forum.adguard.com/showthread.php?8419
+! Ads can't be removed without JS. Partially solution:
+pb.wtf##div[id][class] > div[style][id] > a > img
+!--- Anti-adblock ---
+! brb.to,cxz.to,fs.to
+brb.to,cxz.to,fs.to##a[data-proxied^="//core.adproxy2.com/click?"]
+brb.to,cxz.to,fs.to##div[class*="universal_ads"]
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1353
+@@||forbes.com^$elemhide
+@@http://$domain=forbes.com
+@@https://$domain=forbes.com
+!--------------------
+!
+@@||idevice.ro^$generichide
+!
 ! Ads in Moscow subway
-||cdn.vmet.ro/brandings/*/index.html$subdocument
+! Moscow metro WiFi - iOS
+||static0.wi-fi.ru/static/000/ios/index.html
+||login.wi-fi.ru^$script,third-party
+||static.wi-fi.ru/brandings/rb/
+||vmet.ro^$third-party
+||wi-fi.ru/ad_video/
+!
+login.wi-fi.ru###branding
+wi-fi.ru##.b-banner-full
+wi-fi.ru##.b-banner-middle
+wi-fi.ru##.b-bnr
+wi-fi.ru##.vb
+wi-fi.ru,vmet.ro###fullscreenBanner
+wi-fi.ru,vmet.ro#video-b
+||wi-fi.ru^$script,third-party
 ! bild.de [Adblock detection]
 ! until the $generichide is not supperted
 @@||bild.de^$elemhide
@@ -73,5 +140,7 @@ youtube.com#%#(function () {try {var youtubeAdRegExp = /^((.*_)?(ad|ads|afv|adse
 ! We should also hide that iframe because blocking by URL won't remove the whitespace
 m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1085
-@@||imasdk.googleapis.com/js/$domain=vipvideo.cari.com.my
-vipvideo.cari.com.my###cvidloader
+@@||imasdk.googleapis.com/js/$domain=cari.com.my
+cari.com.my###cvidloader
+! Temporary, look here for details: https://github.com/AdguardTeam/ExperimentalFilter/issues/1192
+||media.innity.net^$third-party

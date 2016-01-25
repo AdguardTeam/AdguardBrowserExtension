@@ -1,11 +1,49 @@
 ! Title: Safari Filter
-! Version: 1.0.0.20
+! Version: 1.0.0.38
 ! Name: Safari Filter
 ! Description: Special filter for Safari 9+. We need a separate filter for Safari because it does not fully support rules syntax.
 ! NameEn: Safari Filter
 ! DescriptionEn: Special filter for Safari 9+. We need a separate filter for Safari because it does not fully support rules syntax.
-! TimeUpdated: 2015-12-23T19:20:10.079+03:00
-||cdn.vmet.ro/brandings/*/index.html$subdocument
+! TimeUpdated: 2016-01-22T19:20:52.946+03:00
+@@||adm.fwmrm.net/p/release/latest-JS/adm/prd/AdManager.js$domain=espn.go.com
+@@||v.fwmrm.net/ad/*?prof=$domain=espn.go.com
+@@||go.com/b/ss/wdgespcom,wdgespvideo,wdgespge/$domain=espn.go.com
+@@||once.unicornmedia.com/now/*/content.once?$domain=espn.go.com
+@@||googletagservices.com/tag/js/gpt.js$domain=nfl.com
+@@||imasdk.googleapis.com/js/core/bridge*.html$domain=nfl.com
+||reactiv.$third-party
+||psmardr.com^$third-party
+||smilered.com^$third-party
+etfdailynews.com##div[style="width:300px;border:1px solid black"]
+@@||moonwalk.cc/video/*/iframe$elemhide
+||securewebboard.com^$third-party
+||skycdnhost.com^$third-party
+##.banner-top
+@@||banners.*.citilink.ru/banner_promo_$domain=citilink.ru
+@@||imasdk.googleapis.com/js/core/bridge*.html
+@@||m.finn.no/*/ad.html?
+@@||static.pornhub.phncdn.com^$domain=pornhub.com
+||admin.appnext.com^$third-party
+pb.wtf##div[id][class] > div[style][id] > a > img
+brb.to,cxz.to,fs.to##a[data-proxied^="//core.adproxy2.com/click?"]
+brb.to,cxz.to,fs.to##div[class*="universal_ads"]
+@@||forbes.com^$elemhide
+@@http://$domain=forbes.com
+@@https://$domain=forbes.com
+@@||idevice.ro^$generichide
+||static0.wi-fi.ru/static/000/ios/index.html
+||login.wi-fi.ru^$script,third-party
+||static.wi-fi.ru/brandings/rb/
+||vmet.ro^$third-party
+||wi-fi.ru/ad_video/
+login.wi-fi.ru###branding
+wi-fi.ru##.b-banner-full
+wi-fi.ru##.b-banner-middle
+wi-fi.ru##.b-bnr
+wi-fi.ru##.vb
+wi-fi.ru,vmet.ro###fullscreenBanner
+wi-fi.ru,vmet.ro#video-b
+||wi-fi.ru^$script,third-party
 @@||bild.de^$elemhide
 @@||smartadserver.com/diff/*/partners/$domain=bild.de
 @@||smartadserver.com/diff/*/smartad.js$domain=bild.de
@@ -42,5 +80,6 @@ youtube.com#%#(function () {try {var youtubeAdRegExp = /^((.*_)?(ad|ads|afv|adse
 @@||ad.doubleclick.net/*/pfadx/$domain=m.youtube.com
 ||sports.ru/desktop/special/$subdocument,domain=sports.ru
 m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
-@@||imasdk.googleapis.com/js/$domain=vipvideo.cari.com.my
-vipvideo.cari.com.my###cvidloader
+@@||imasdk.googleapis.com/js/$domain=cari.com.my
+cari.com.my###cvidloader
+||media.innity.net^$third-party

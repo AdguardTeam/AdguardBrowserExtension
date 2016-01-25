@@ -51,7 +51,7 @@ public class PackageUtils {
 	}
 
 	public static File createXpi(String makeXpiSh, File file, String xpiName) throws Exception {
-		execute(makeXpiSh, file.getAbsolutePath());
+		execute(makeXpiSh, file.getAbsolutePath(), xpiName);
 		File xpiFile = new File(file, xpiName + ".xpi");
 		File destXpiFile = new File(file.getParentFile(), file.getName() + ".xpi");
 		if (destXpiFile.exists()) {

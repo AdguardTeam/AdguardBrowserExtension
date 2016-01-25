@@ -25,6 +25,7 @@ import java.io.File;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
+import java.util.Objects;
 import java.util.Set;
 
 public class Main {
@@ -105,7 +106,8 @@ public class Main {
 				packedFile = PackageUtils.createCrx(CRX_MAKE_PATH, buildResult, CHROME_CERT_FILE);
 				FileUtils.deleteQuietly(buildResult);
 			} else if (PACK_METHOD_XPI.equals(packMethod)) {
-				packedFile = PackageUtils.createXpi(XPI_MAKE_PATH, buildResult, "adguard-adblocker");
+				String jpmXpiName = extensionId + "-" + version;
+				packedFile = PackageUtils.createXpi(XPI_MAKE_PATH, buildResult, jpmXpiName);
 				FileUtils.deleteQuietly(buildResult);
 			}
 		}
