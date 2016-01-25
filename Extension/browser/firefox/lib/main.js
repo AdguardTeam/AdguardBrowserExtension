@@ -60,9 +60,9 @@ exports.main = function (options, callbacks) {
 
     try {
 
-        var {Log} = loadAdguardModule('utils/log');
-        var {FS} = loadAdguardModule('utils/file-storage');
-        var {LS} = loadAdguardModule('utils/local-storage');
+        var {Log} = loadAdguardModule('../lib/utils/log');
+        var {FS} = loadAdguardModule('../lib/utils/file-storage');
+        var {LS} = loadAdguardModule('../lib/utils/local-storage');
         if (options.loadReason == 'install' || options.loadReason == 'downgrade') {
             LS.clean();
             FS.removeAdguardDir();
@@ -99,37 +99,37 @@ exports.main = function (options, callbacks) {
             Log.info('Module sdk/ui/button/toggle is not supported');
         }
 
-        var {Prefs} = loadAdguardModule('prefs');
-        var {AntiBannerFiltersId} = loadAdguardModule('utils/common');
-        var {Utils} = loadAdguardModule('utils/browser-utils');
-        var {TabsMap} = loadAdguardModule('tabsMap');
-        var {FramesMap} = loadAdguardModule('utils/frames');
-        var {AdguardApplication} = loadAdguardModule('filter/integration');
-        var {filterRulesHitCount} = loadAdguardModule('filter/filters-hit');
-        var {FilteringLog} = loadAdguardModule('filter/filtering-log');
-        var {WebRequestService}= loadAdguardModule('filter/request-blocking');
-        var {AntiBannerService} = loadAdguardModule('filter/antibanner');
-        var {ElemHide} = loadAdguardModule('elemHide');
-        var {WebRequestImpl} = loadAdguardModule('contentPolicy');
-        var {InterceptHandler} = loadAdguardModule('elemHideIntercepter');
-        var {UI} = loadAdguardModule('ui');
-        var {ContentMessageHandler}= loadAdguardModule('content-message-handler');
-        var {contentScripts} = loadAdguardModule('contentScripts');
+        var {Prefs} = loadAdguardModule('../lib/prefs');
+        var {AntiBannerFiltersId} = loadAdguardModule('../lib/utils/common');
+        var {Utils} = loadAdguardModule('../lib/utils/browser-utils');
+        var {TabsMap} = loadAdguardModule('../lib/tabsMap');
+        var {FramesMap} = loadAdguardModule('../lib/utils/frames');
+        var {AdguardApplication} = loadAdguardModule('../lib/filter/integration');
+        var {filterRulesHitCount} = loadAdguardModule('../lib/filter/filters-hit');
+        var {FilteringLog} = loadAdguardModule('../lib/filter/filtering-log');
+        var {WebRequestService}= loadAdguardModule('../lib/filter/request-blocking');
+        var {AntiBannerService} = loadAdguardModule('../lib/filter/antibanner');
+        var {ElemHide} = loadAdguardModule('../lib/elemHide');
+        var {WebRequestImpl} = loadAdguardModule('../lib/contentPolicy');
+        var {InterceptHandler} = loadAdguardModule('../lib/elemHideIntercepter');
+        var {UI} = loadAdguardModule('../lib/ui');
+        var {ContentMessageHandler}= loadAdguardModule('../lib/content-message-handler');
+        var {contentScripts} = loadAdguardModule('../lib/contentScripts');
 
         // These require-calls are needed for proper build by cfx.
-        require('lib/prefs');
-        require('lib/elemHide');
-        require('lib/tabsMap');
-        require('lib/contentPolicy');
-        require('lib/elemHideIntercepter');
-        require('lib/content-message-handler');
-        require('lib/ui');
-        require('lib/utils/frames');
-        require('lib/utils/common');
-        require('lib/utils/browser-utils');
-        require('lib/utils/user-settings');
-        require('lib/filter/integration');
-        require('lib/filter/filtering-log');
+        require('../lib/prefs');
+        require('../lib/elemHide');
+        require('../lib/tabsMap');
+        require('../lib/contentPolicy');
+        require('../lib/elemHideIntercepter');
+        require('../lib/content-message-handler');
+        require('../lib/ui');
+        require('../lib/utils/frames');
+        require('../lib/utils/common');
+        require('../lib/utils/browser-utils');
+        require('../lib/utils/user-settings');
+        require('../lib/filter/integration');
+        require('../lib/filter/filtering-log');
 
         Log.info('Starting adguard addon...');
 
@@ -264,24 +264,46 @@ var i18n = (function () {
  * @param module
  */
 var loadAdguardModule = function (module) {
-    try {
-        var scopes = loadAdguardModule.scopes;
-        if (!(module in scopes)) {
-            var modulePath = module + ".js";
-            var url = self.data.url('../lib/' + modulePath).replace("data/../lib/" + modulePath, 'lib/' + modulePath);
-            scopes[module] = {
-                require: function (module) {
-                    if (module in sdkModules) {
-                        return sdkModules[module];
-                    }
-                    return loadAdguardModule(module);
-                },
-                i18n: i18n,
-                exports: Object.create(Object.prototype)
-            };
-            Services.scriptloader.loadSubScript(url, scopes[module]);
+
+    // Module name is full path from lib folder (e.g /lib/filter/antibanner or /lib/elemHide)
+    var moduleName;
+
+    // Detect module name and path
+    var index = module.lastIndexOf('../lib');
+    if (index >= 0) {
+        moduleName = module.substring(index + 2);
+    } else {
+        if (module.indexOf('./') == 0) {
+            moduleName = '/lib' + module.substring(1);
         }
-        return scopes[module].exports;
+    }
+    if (!moduleName) {
+        throw 'Wrong module path ' + module + '. Use relative path!';
+    }
+
+    try {
+
+        var scopes = loadAdguardModule.scopes;
+        if (moduleName in scopes) {
+            return scopes[moduleName].exports;
+        }
+
+        var modulePath = module + ".js";
+        var url = self.data.url('../lib/' + modulePath).replace("data/../lib/" + modulePath, 'lib/' + modulePath);
+        var scope = scopes[moduleName] = {
+            require: function (module) {
+                if (module in sdkModules) {
+                    return sdkModules[module];
+                }
+                return loadAdguardModule(module);
+            },
+            i18n: i18n,
+            exports: Object.create(Object.prototype)
+        };
+        Services.scriptloader.loadSubScript(url, scope);
+
+        return scope.exports;
+
     } catch (ex) {
         Cu.reportError('Error while loading module: ' + module);
         Cu.reportError(ex);

@@ -108,7 +108,7 @@ ServiceClient.prototype = {
 			return;
 		}
 
-		var AdguardFilterVersion = require('filter/antibanner').AdguardFilterVersion;
+		var AdguardFilterVersion = require('../../lib/filter/antibanner').AdguardFilterVersion;
 
 		var success = function (response) {
 			var xml = response.responseXML;
@@ -147,7 +147,7 @@ ServiceClient.prototype = {
 	 */
 	loadFilterRules: function (filterId, useOptimizedFilters, successCallback, errorCallback) {
 
-		var AdguardFilterVersion = require('filter/antibanner').AdguardFilterVersion;
+		var AdguardFilterVersion = require('../../lib/filter/antibanner').AdguardFilterVersion;
 
 		var success = function (response) {
 
@@ -208,7 +208,7 @@ ServiceClient.prototype = {
 	 */
 	loadLocalFilter: function (filterId, useOptimizedFilters, successCallback, errorCallback) {
 
-		var AdguardFilterVersion = require('filter/antibanner').AdguardFilterVersion;
+		var AdguardFilterVersion = require('../../lib/filter/antibanner').AdguardFilterVersion;
 
 		var success = function (response) {
 			var responseText = response.responseText;
@@ -296,7 +296,7 @@ ServiceClient.prototype = {
 	 */
 	loadLocalGroupsMetadata: function (successCallback, errorCallback) {
 
-		var SubscriptionGroup = require('filter/subscription').SubscriptionGroup;
+		var SubscriptionGroup = require('../../lib/filter/subscription').SubscriptionGroup;
 
 		var success = function (response) {
 			var xml = response.responseXML;
@@ -325,7 +325,7 @@ ServiceClient.prototype = {
 	 */
 	loadLocalFiltersMetadata: function (successCallback, errorCallback) {
 
-		var SubscriptionFilter = require('filter/subscription').SubscriptionFilter;
+		var SubscriptionFilter = require('../../lib/filter/subscription').SubscriptionFilter;
 
 		var success = function (response) {
 			var xml = response.responseXML;
