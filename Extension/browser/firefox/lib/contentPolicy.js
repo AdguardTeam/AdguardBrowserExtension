@@ -1,3 +1,4 @@
+/* global XPCOMUtils */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -162,15 +163,19 @@ var WebRequestHelper = exports.WebRequestHelper = {
         }
         if (contextData && contextData.browser) {
             var browser = contextData.browser;
-            if (browser.docShell && browser.contentWindow) {
+            
+            var xulTab = tabUtils.getTabForBrowser(browser);
+            
+            // getTabForBrowser() returns null for FF 38 ESR
+            if (!xulTab) {
                 // TODO: temporary fix
                 // If browser.docShell returns null then browser.contentWindow throws exception: this.docShell is null
-
-                // getTabForBrowser() returns null for FF 38 ESR
-                return tabUtils.getTabForContentWindow(browser.contentWindow);
+                if (browser.docShell && browser.contentWindow) {
+                    xulTab = tabUtils.getTabForContentWindow(browser.contentWindow);                    
+                }
             }
 
-            return tabUtils.getTabForBrowser(browser);
+            return xulTab;
         }
         return null;
     },
@@ -239,6 +244,7 @@ var WebRequestHelper = exports.WebRequestHelper = {
                 // NS_ERROR_UNEXPECTED.
                 associatedWindow = loadContext.associatedWindow;
             } catch (e) {
+                // Ignore
             }
         }
 
@@ -250,9 +256,6 @@ var WebRequestHelper = exports.WebRequestHelper = {
         // https://bugzilla.mozilla.org/show_bug.cgi?id=1113294
         // https://developer.mozilla.org/en-US/Firefox/Multiprocess_Firefox/Limitations_of_chrome_scripts#HTTP_requests
         if (topFrameElement) {
-            if (!associatedWindow) {
-                WorkaroundUtils.setMultiProcessFirefoxMode(true);
-            }
             return {
                 browser: topFrameElement
             };
@@ -321,36 +324,36 @@ var WebRequestHelper = exports.WebRequestHelper = {
     },
 
     /**
-     * Attaches request type property to the http channel.
+     * Attaches request properties to the http channel.
+     * We get these
      *
      * @param request nsIHttpChannel
-     * @param contentType Content type (will be transformed to requestType from RequestTypes enumeration)
+     * @param requestProperties Contains 
      */
-    attachRequestType: function (request, contentType) {
+    attachRequestProperties: function (request, requestProperties) {
         if (request instanceof Ci.nsIWritablePropertyBag) {
-            var requestType = this.getRequestType(contentType, request.URI);
-            request.setProperty("lastRequestType", requestType);
+            request.setProperty("requestProperties", requestProperties);
         }
     },
 
     /**
-     * Gets request type from request properties.
+     * Gets request properties from http channel.
      * This property is attached in http-on-opening-request handler.
      *
      * @param request nsIHttpChannel
-     * @returns Content type or null
+     * @returns Request properties or null
      */
-    retrieveRequestType: function (request) {
-        var requestType;
+    retrieveRequestProperties: function (request) {
+        var requestProperties = null;
         if (request instanceof Ci.nsIPropertyBag) {
             try {
-                requestType = request.getProperty("lastRequestType");
+                requestProperties = request.getProperty("requestProperties");
             } catch (ex) {
-                // property doesn't exist
-                return null;
+                // Property doesn't exist, ignore exception
             }
         }
-        return requestType;
+
+        return requestProperties;
     }
 };
 
@@ -398,7 +401,8 @@ var WebRequestImpl = exports.WebRequestImpl = {
 
         let registrar = components.manager.QueryInterface(Ci.nsIComponentRegistrar);
         registrar.registerFactory(this.classID, this.classDescription, this.contractID, this);
-        for each(let category in this.xpcom_categories) {
+        for (let i = 0; i < this.xpcom_categories.length; i++) {
+            let category = this.xpcom_categories[i];
             categoryManager.addCategoryEntry(category, this.contractID, this.contractID, false, true);
         }
 
@@ -417,7 +421,8 @@ var WebRequestImpl = exports.WebRequestImpl = {
             events.off("http-on-opening-request", observeListener);
 
             var registrar = components.manager.QueryInterface(Ci.nsIComponentRegistrar);
-            for each(let category in WebRequestImpl.xpcom_categories) {
+            for (let i = 0; i < WebRequestImpl.xpcom_categories.length; i++) {
+                let category = WebRequestImpl.xpcom_categories[i];
                 categoryManager.deleteCategoryEntry(category, this.contractID, false);
             }
             registrar.unregisterFactory(WebRequestImpl.classID, this);
@@ -434,7 +439,8 @@ var WebRequestImpl = exports.WebRequestImpl = {
      * @param contentType       The type of content being tested. This will be one one of the TYPE_* constants.
      * @param contentLocation   The location of the content being checked; must not be null.
      * @param requestOrigin     OPTIONAL. The location of the resource that initiated this load request; can be null if inapplicable.
-     * @param                   node OPTIONAL. The nsIDOMNode or nsIDOMWindow that initiated the request, or something that can Query Interface to one of those; can be null if inapplicable.
+     * @param aContext          OPTIONAL. The nsIDOMNode or nsIDOMWindow that initiated the request, or something that can Query Interface to one of those; can be null if inapplicable.
+     *                          Note: aContext is the new tab/window when a user uses the context menu to open a link in a new tab/window or cmd/ctrl + clicks the link (i.e., aContext is not the tab which the link was on in these cases).
      * @param mimeTypeGuess     OPTIONAL. a guess for the requested content's MIME type, based on information available to the request initiator
      *                              (e.g., an OBJECT's type attribute); does not reliably reflect the actual MIME type of the requested content.
      * @param extra             An OPTIONAL argument, pass-through for non-Gecko callers to pass extra data to callees.
@@ -443,16 +449,13 @@ var WebRequestImpl = exports.WebRequestImpl = {
      *                          that caused this load.
      * @returns ACCEPT or REJECT_*
      */
-    shouldLoad: function (contentType, contentLocation, requestOrigin, node, mimeTypeGuess, extra, aRequestPrincipal) {
+    shouldLoad: function (contentType, contentLocation, requestOrigin, aContext, mimeTypeGuess, extra, aRequestPrincipal) {
 
-        // Save lastRequest so it can be reused further in http-on-opening-request method
-        this.lastRequest = {URI: contentLocation, contentType: contentType};
-
-        if (!node) {
+        if (!aContext) {
             return WebRequestHelper.ACCEPT;
         }
 
-        var xulTab = WebRequestHelper.getTabForContext(node);
+        var xulTab = WebRequestHelper.getTabForContext(aContext);
         if (!xulTab) {
             return WebRequestHelper.ACCEPT;
         }
@@ -460,17 +463,11 @@ var WebRequestImpl = exports.WebRequestImpl = {
         var tab = {id: tabUtils.getTabId(xulTab)};
         var requestUrl = contentLocation.asciiSpec;
         var requestType = WebRequestHelper.getRequestType(contentType, contentLocation);
-
-        if (requestType == RequestTypes.DOCUMENT) {
-            var context = node.contentWindow || node;
-            if (context.top === context) {
-                this._saveContextOpenerTab(context);
-            }
-        }
-
-        var block = this._shouldBlockRequest(tab, requestUrl, requestType, node);
-
-        return block ? WebRequestHelper.REJECT : WebRequestHelper.ACCEPT;
+        var result = this._shouldBlockRequest(tab, requestUrl, requestType, aContext);
+        
+        Log.debug('shouldLoad: {0} {1}. Result: {2}', requestUrl, requestType, result.blocked);
+        this._saveLastRequestProperties(requestUrl, requestType, result, aContext);
+        return result.blocked ? WebRequestHelper.REJECT : WebRequestHelper.ACCEPT;
     },
 
     /**
@@ -492,9 +489,10 @@ var WebRequestImpl = exports.WebRequestImpl = {
     asyncOnChannelRedirect: function (oldChannel, newChannel, flags, callback) {
         var result = Cr.NS_OK;
         try {
-
-            var requestType = WebRequestHelper.retrieveRequestType(oldChannel);
-            if (!requestType) {
+            var requestProperties = WebRequestHelper.retrieveRequestProperties(oldChannel);
+            if (!requestProperties) {
+                // Empty requestProperties means that this request was not processed by shouldLoad.
+                // We should ignore such requests.
                 return;
             }
 
@@ -505,14 +503,15 @@ var WebRequestImpl = exports.WebRequestImpl = {
 
             var tab = {id: tabUtils.getTabId(xulTab)};
             var requestUrl = newChannel.URI.asciiSpec;
+            var shouldBlockResult = this._shouldBlockRequest(tab, requestUrl, requestProperties.requestType, null); 
 
-            if (this._shouldBlockRequest(tab, requestUrl, requestType, null)) {
+            Log.debug('asyncOnChannelRedirect: {0} {1}. Blocked={2}', requestUrl, requestProperties.requestType, shouldBlockResult.blocked);
+            if (shouldBlockResult.blocked) {
                 result = Cr.NS_BINDING_ABORTED;
             }
-
-        } catch (e) {
-            // don't throw exceptions
-            Log.error('asyncOnChannelRedirect: Error while processing redirect: {0}', e);
+        } catch (ex) {
+            // Don't throw exception further
+            Log.error('asyncOnChannelRedirect: Error while processing redirect: {0}', ex);
         } finally {
             callback.onRedirectVerifyCallback(result);
         }
@@ -558,14 +557,15 @@ var WebRequestImpl = exports.WebRequestImpl = {
         if (!xulTab) {
             return;
         }
-
+        
         var tab = {id: tabUtils.getTabId(xulTab)};
         var requestUrl = subject.URI.asciiSpec;
         var responseHeaders = WebRequestHelper.getResponseHeaders(subject);
 
         // Get content type
         var isDocument = (subject.loadFlags & subject.LOAD_DOCUMENT_URI);
-        var requestType = WebRequestHelper.retrieveRequestType(subject);
+        var requestProperties = WebRequestHelper.retrieveRequestProperties(subject);
+        var requestType = !!requestProperties ? requestProperties.requestType : null;
 
         if (!requestType && isDocument) {
             requestType = RequestTypes.DOCUMENT;
@@ -580,9 +580,14 @@ var WebRequestImpl = exports.WebRequestImpl = {
             this.framesMap.recordFrame(tab, 0, requestUrl, requestType);
         }
 
-        // Retrieve referrer
+        // Retrieve referrer URL
         var referrerUrl = this.framesMap.getFrameUrl(tab, 0);
 
+        if (!!requestProperties) {  
+            // Calling postProcessRequest only for requests which were previously processed by "shouldLoad"
+            var filteringRule = requestProperties.shouldLoadResult.rule;
+            this.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, filteringRule);
+        }
         this.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
 
         if (isMainFrame) {
@@ -629,16 +634,17 @@ var WebRequestImpl = exports.WebRequestImpl = {
         }
 
         var openerTab;
-        if (this.lastRequest && subject.URI.asciiSpec == this.lastRequest.URI.asciiSpec) {
-
-            // Stores lastRequestType, it is then used in
-            // asyncOnChannelRedirect method and other http observers
-            WebRequestHelper.attachRequestType(subject, this.lastRequest.contentType);
-            openerTab = this.lastRequest.openerTab;
-            this.lastRequest = null;
+        if (this.lastRequestProperties && subject.URI.asciiSpec == this.lastRequestProperties.requestUrl) {
+            /**
+             * Stores requestProperties, it is then used in asyncOnChannelRedirect 
+             * and httpOnExamineResponse callback methods
+             */
+            WebRequestHelper.attachRequestProperties(subject, this.lastRequestProperties);
+            openerTab = this.lastRequestProperties.openerTab;
+            this.lastRequestProperties = null;
         }
 
-        //check for opener
+        // Check for opener
         if (openerTab && this._checkPopupRule(subject.URI.asciiSpec, openerTab)) {
             subject.cancel(Cr.NS_BINDING_ABORTED);
             tabUtils.closeTab(xulTab);
@@ -663,41 +669,66 @@ var WebRequestImpl = exports.WebRequestImpl = {
      * @param requestUrl Request url
      * @param requestType Request type
      * @param node DOM node
-     * @returns {boolean} true if request should be blocked
+     * @returns {*} object with two properties: "blocked" and "rule"
      * @private
      */
     _shouldBlockRequest: function (tab, requestUrl, requestType, node) {
 
+        var result = {
+            blocked: false,
+            rule: null
+        };
+
         if (requestType === RequestTypes.DOCUMENT) {
-            return false;
+            return result;
         }
 
         if (!UrlUtils.isHttpRequest(requestUrl)) {
-            return false;
+            return result;
         }
 
         var tabUrl = this.framesMap.getFrameUrl(tab, 0);
 
-        var requestRule = this.webRequestService.getRuleForRequest(tab, requestUrl, tabUrl, requestType);
-        var requestBlocked = this.webRequestService.isRequestBlockedByRule(requestRule);
-        if (requestBlocked) {
+        result.rule = this.webRequestService.getRuleForRequest(tab, requestUrl, tabUrl, requestType);
+        result.blocked = this.webRequestService.isRequestBlockedByRule(result.rule);
+        if (result.blocked) {
             this._collapseElement(node, requestType);
+            
+            // Usually we call this method in _httpOnExamineResponse callback
+            // But it won't be called if request is blocked here
+            this.webRequestService.postProcessRequest(tab, requestUrl, tabUrl, requestType, result.rule);            
         }
-        this.webRequestService.postProcessRequest(tab, requestUrl, tabUrl, requestType, requestRule);
 
-        return requestBlocked;
+        return result;
     },
-
+    
     /**
-     *
-     * @param context contentWindow for main frame or node
-     * @private
+     * Save request properties to be reused further in http-on-opening-request method.
+     * This is ugly, but I have not found a better solution to pass requestType and shouldLoadResult
+     * NOTE: Hi, AMO reviewer! Maybe you know a better solution?:)
+     * 
+     * @param requestUrl        Request URL
+     * @param requestType       Request content type
+     * @param shouldLoadResult  Result of the "shouldLoad" call
+     * @param aContext          aContext from the "shouldLoad"" call
      */
-    _saveContextOpenerTab: function (context) {
-        if (context.opener && context.opener !== context) {
-            var openerXulTab = WebRequestHelper.getTabForContext(context.opener);
+    _saveLastRequestProperties: function(requestUrl, requestType, shouldLoadResult, aContext) {
+        this.lastRequestProperties = {
+            requestUrl: requestUrl, 
+            requestType: requestType,
+            shouldLoadResult: shouldLoadResult
+        };
+        
+        // Also check if window has an "opener" and save it to request properties
+        if (requestType != RequestTypes.DOCUMENT) {
+            return;
+        }
+
+        var window = aContext.contentWindow || aContext;
+        if (window.top === window && window.opener && window.opener !== window) {
+            var openerXulTab = WebRequestHelper.getTabForContext(window.opener);
             if (openerXulTab) {
-                this.lastRequest.openerTab = {id: tabUtils.getTabId(openerXulTab)};
+                this.lastRequestProperties.openerTab = {id: tabUtils.getTabId(openerXulTab)};
             }
         }
     },
@@ -787,5 +818,3 @@ var WebRequestImpl = exports.WebRequestImpl = {
 
     QueryInterface: XPCOMUtils.generateQI([Ci.nsIContentPolicy, Ci.nsIObserver, Ci.nsIChannelEventSink, Ci.nsIFactory, Ci.nsISupportsWeakReference])
 };
-
-

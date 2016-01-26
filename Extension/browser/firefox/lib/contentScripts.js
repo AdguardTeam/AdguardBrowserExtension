@@ -239,6 +239,7 @@ ContentScripts.prototype = {
         worker.port.on(this.CONTENT_TO_BACKGROUND_CHANNEL, function (message) {
 
             var callback = function () {
+                // Empty
             };
 
             if ('callbackId' in message) {

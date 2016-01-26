@@ -24,6 +24,7 @@ Cu.import("resource://gre/modules/Services.jsm");
 
 var LS = require('../../lib/utils/local-storage').LS;
 var Prefs = require('../../lib/prefs').Prefs;
+var RequestTypes = require('../../lib/utils/common').RequestTypes;
 var Log = require('../../lib/utils/log').Log;
 
 var Utils = exports.Utils = {
@@ -170,7 +171,7 @@ var Utils = exports.Utils = {
         return {
             title: title,
             text: text
-        }
+        };
     },
 
     getFiltersEnabledResultMessage: function (enabledFilters) {
@@ -186,7 +187,7 @@ var Utils = exports.Utils = {
         return {
             title: title,
             text: text
-        }
+        };
     },
 
     findHeaderByName: function (headers, headerName) {

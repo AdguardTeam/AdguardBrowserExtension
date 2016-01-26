@@ -193,7 +193,7 @@ exports.main = function (options, callbacks) {
             QueryInterface: XPCOMUtils.generateQI([Ci.nsISupportsWeakReference, Ci.nsIObserver])
         };
         Services.obs.addObserver(RequireObserver, RequireObserver.LOAD_MODULE_TOPIC, true);
-        //remove observer on unload
+        // Remove observer on unload
         unload.when(function () {
             Services.obs.removeObserver(RequireObserver, RequireObserver.LOAD_MODULE_TOPIC);
         });

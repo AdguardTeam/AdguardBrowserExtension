@@ -15,6 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+var Cu = require('chrome').Cu;
+var console = Cu.import('resource://gre/modules/devtools/Console.jsm', {}).console;
+
 /**
  * Simple logger with log levels
  */

@@ -81,7 +81,7 @@ exports.ApplicationUpdateService = {
 		if (Utils.isGreaterVersion("2.0.10", runInfo.prevVersion)) {
 			methods.push(this._onUpdateRuleHitStats);
 		}
-		if (Utils.isGreaterVersion("2.1.1", runInfo.prevVersion) && Utils.isFirefoxBrowser()) {
+		if (Utils.isGreaterVersion("2.1.2", runInfo.prevVersion) && Utils.isFirefoxBrowser()) {
 			methods.push(this._onUpdateFirefoxStorage);
 		}
 
@@ -137,6 +137,7 @@ exports.ApplicationUpdateService = {
 
 					//cleanup old file
 					var removeCallback = function () {
+                        // Ignore
 					};
 					FS.removeFile(FilterStorage.FILE_PATH, removeCallback, removeCallback);
 					updateDfd.resolve();
@@ -257,13 +258,13 @@ exports.ApplicationUpdateService = {
 	/**
 	 * Update Firefox storage by moving to prefs
 	 *
-	 * Version 2.1.1
+	 * Version 2.1.2
 	 * @returns {exports.Promise}
 	 * @private
 	 */
 	_onUpdateFirefoxStorage: function () {
 
-		Log.info('Call update to version 2.1.1');
+		Log.info('Call update to version 2.1.2');
 
 		var dfd = new Promise();
 

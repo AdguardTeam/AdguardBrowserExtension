@@ -35,6 +35,10 @@ var StringUtils = exports.StringUtils = {
         if (!str || !postfix) {
             return false;
         }
+        
+        if (str.endsWith) {
+            return str.endsWith(postfix);
+        }
         var t = String(postfix);
         var index = str.lastIndexOf(t);
         return index >= 0 && index === str.length - t.length;

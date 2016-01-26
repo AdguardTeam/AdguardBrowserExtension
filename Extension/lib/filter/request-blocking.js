@@ -38,12 +38,14 @@ var WebRequestService = exports.WebRequestService = function (framesMap, antiBan
  *
  * @param tab           Tab
  * @param documentUrl   Document URL
- * @returns {*}
+ * @returns {*} null or object the following properties: "selectors", "scripts", "collapseAllElements"
  */
 WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, documentUrl) {
 
+    var result = null;
+
     if (!tab) {
-        return null;
+        return result;
     }
 
     if (!this.antiBannerService.isRequestFilterReady()) {
@@ -53,33 +55,31 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
     }
 
     if (this.framesMap.isTabAdguardDetected(tab) || this.framesMap.isTabProtectionDisabled(tab) || this.framesMap.isTabWhiteListed(tab)) {
-        return null;
+        return result;
     }
+    
+    result = {
+        selectors: null,
+        scripts: null,
+        collapseAllElements: this.antiBannerService.shouldCollapseAllElements()
+    };
 
-    var selectors = null;
-    var scripts = null;
-
-    var collapseAllElements = this.antiBannerService.shouldCollapseAllElements();
     var genericHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "GENERICHIDE");
     var elemHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "ELEMHIDE");
     if (!elemHideRule) {
-        if (this.shouldLoadAllSelectors(collapseAllElements)) {
-            selectors = this.antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl, genericHideRule);
+        if (this.shouldLoadAllSelectors(result.collapseAllElements)) {
+            result.selectors = this.antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl, genericHideRule);
         } else {
-            selectors = this.antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideRule);
+            result.selectors = this.antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideRule);
         }
     }
 
     var jsInjectRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "JSINJECT");
     if (!jsInjectRule) {
-        scripts = this.antiBannerService.getRequestFilter().getScriptsForUrl(documentUrl);
+        result.scripts = this.antiBannerService.getRequestFilter().getScriptsForUrl(documentUrl);
     }
     
-    return {
-        selectors: selectors,
-        scripts: scripts,
-        collapseAllElements: collapseAllElements
-    };
+    return result;
 };
 
 WebRequestService.prototype.shouldLoadAllSelectors = function (collapseAllElements) {
@@ -152,7 +152,7 @@ WebRequestService.prototype.getRuleForRequest = function (tab, requestUrl, refer
  * Processes HTTP response.
  * It could do the following:
  * 1. Detect desktop AG and switch to integration mode
- * 2. Add event to filtering log
+ * 2. Add event to filtering log (for DOCUMENT requests)
  * 3. Record page stats (if it's enabled)
  *
  * @param tab Tab object

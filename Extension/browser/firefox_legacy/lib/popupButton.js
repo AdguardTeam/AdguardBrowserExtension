@@ -132,7 +132,7 @@ var PopupButton = exports.PopupButton = {
 
 		this.CustomizableUI.createWidget(options);
 
-		//cleanup on unload
+		// Cleanup on unload
 		unload.when(function () {
 			this.CustomizableUI.destroyWidget(this.TOOLBAR_BUTTON_ID);
 		}.bind(this));

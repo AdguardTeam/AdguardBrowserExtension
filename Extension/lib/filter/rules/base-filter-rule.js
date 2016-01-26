@@ -161,7 +161,7 @@ FilterRule.prototype = {
 	 */
 	isPermitted: function (domainName) {
 
-		if (StringUtils.isEmpty(domainName)) {
+		if (!domainName) {
 			return false;
 		}
 

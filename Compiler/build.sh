@@ -15,7 +15,7 @@ if [ "$env" = release ]; then
     destPath=../../Build/Release
 
     #chrome release zip for chrome.store
-    options="--version=$version --dest=$destPath --name=main --browser=chrome --pack=zip --update-filters=true"
+    options="--version=$version --dest=$destPath --name=chromium --browser=chrome --pack=zip --update-filters=true"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #opera release crx for addons.opera.com
@@ -23,11 +23,11 @@ if [ "$env" = release ]; then
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox release xpi for amo
-    options="--version=$version --dest=$destPath --name=firefox --browser=firefox --pack=xpi --extensionId=adguardadblocker@adguard.com"
+    options="--version=$version --dest=$destPath --name=firefox-amo --browser=firefox --pack=xpi --extensionId=adguardadblocker@adguard.com"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
     
     #firefox beta xpi for AMO
-    options="--version=$version-beta --dest=$destPath --name=firefox --browser=firefox --pack=xpi --extensionId=adguardadblocker@adguard.com"
+    options="--version=$version-beta --dest=$destPath --name=firefox-amo --browser=firefox --pack=xpi --extensionId=adguardadblocker@adguard.com"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #safari release for extensions.apple.com
@@ -44,15 +44,15 @@ elif [ "$env" = beta ]; then
     branch=beta
 
     #chrome beta zip
-    options="--version=$version --branch=$branch --dest=$destPath --name=main --browser=chrome --pack=zip --update-filters=false"
+    options="--version=$version --branch=$branch --dest=$destPath --name=chromium-beta --browser=chrome --pack=zip --update-filters=false"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #chrome beta crx
-    options="--version=$version --branch=$branch --dest=$destPath --name=main --browser=chrome --pack=crx --update-url=https://chrome.adtidy.org/updates.xml"
+    options="--version=$version --branch=$branch --dest=$destPath --name=chromium-beta --browser=chrome --pack=crx --update-url=https://chrome.adtidy.org/updates.xml"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox beta xpi
-    options="--version=$version --branch=$branch --dest=$destPath --name=main --browser=firefox --pack=xpi --extensionId=adguardadblockerbeta@adguard.com --update-url=https://chrome.adtidy.org/updates.rdf"
+    options="--version=$version --branch=$branch --dest=$destPath --name=firefox-standalone --browser=firefox --pack=xpi --extensionId=adguardadblockerbeta@adguard.com --update-url=https://chrome.adtidy.org/updates.rdf"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox beta legacy xpi

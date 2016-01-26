@@ -29,6 +29,7 @@ var {Log} = require('./utils/log');
 var {userSettings} = require('./utils/user-settings');
 var {WorkaroundUtils} = require('./utils/workaround');
 var {UrlUtils} = require('./utils/url');
+var Prefs = require('./prefs').Prefs;
 var styleService = require('./styleSheetService');
 
 /**
@@ -38,7 +39,7 @@ var styleService = require('./styleSheetService');
  * 1. Registering browser-wide stylesheet
  * 2. Injecting CSS/JS with content-script/preload.js script
  */
-ElemHide = exports.ElemHide = {
+var ElemHide = exports.ElemHide = {
 
     collapsedClass: null,
     collapseStyle: null,
@@ -113,8 +114,7 @@ ElemHide = exports.ElemHide = {
      * @param node Node
      */
     collapseNode: function (node) {
-        if (WorkaroundUtils.isMultiProcessFirefoxMode()) {
-            // In case of e10s blocked elements are collapsed by content script
+        if (Prefs.collapseByContentScript) {
             return;
         }
 
