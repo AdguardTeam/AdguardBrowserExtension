@@ -22,7 +22,7 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 var winMediator = Cc['@mozilla.org/appshell/window-mediator;1'].getService(Ci.nsIWindowMediator);
 
 var unload = require('sdk/system/unload');
-var Prefs = require('prefs').Prefs;
+var Prefs = require('./prefs').Prefs;
 var Mobile = Prefs.mobile;
 
 /**

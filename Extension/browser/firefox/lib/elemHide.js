@@ -21,16 +21,16 @@ Cu.import("resource://gre/modules/FileUtils.jsm");
 
 var self = require('sdk/self');
 
-var {EventNotifier} = require('utils/notifier');
-let {FilterStorage} = require('filter/storage');
-var {EventNotifierTypes} = require('utils/common');
-var {ConcurrentUtils} = require('utils/browser-utils');
-var {Log} = require('utils/log');
-var {userSettings} = require('utils/user-settings');
-var {WorkaroundUtils} = require('utils/workaround');
-var {UrlUtils} = require('utils/url');
-var Prefs = require('prefs').Prefs;
-var styleService = require('styleSheetService');
+var {EventNotifier} = require('./utils/notifier');
+let {FilterStorage} = require('./filter/storage');
+var {EventNotifierTypes} = require('./utils/common');
+var {ConcurrentUtils} = require('./utils/browser-utils');
+var {Log} = require('./utils/log');
+var {userSettings} = require('./utils/user-settings');
+var {WorkaroundUtils} = require('./utils/workaround');
+var {UrlUtils} = require('./utils/url');
+var Prefs = require('./prefs').Prefs;
+var styleService = require('./styleSheetService');
 
 /**
  * This object manages CSS and JS rules.

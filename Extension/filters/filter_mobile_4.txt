@@ -1,10 +1,10 @@
 ! Title: Social media filter
-! Version: 1.0.8.12
+! Version: 1.0.8.22
 ! Name: Social media filter
 ! Description: A filter for social media widgets ("Like" buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2016-01-19T16:44:50.512+03:00
+! TimeUpdated: 2016-01-26T16:51:31.915+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -163,6 +163,7 @@
 /share_button.png
 /shareaholic.js
 /sharebox.min.js
+/sharedaddy/sharing.js
 /sharing_buttons.js
 /social-likes.min.js
 /social_networks.js
@@ -202,6 +203,10 @@ crimea-kurort.com#$#img[width="88"][height="31"] {visibility: hidden!important;}
 maskme.ru#$#img[width="88"][height="31"] {visibility: hidden!important;}
 gamesradar.com#$#.shareSocialArticle-wrap { visibility: hidden; }
 softwares-serials.in#$##FTslide { visibility: hidden;!important; }
+liberallogic101.com###social-buttons
+ramlife.ru##.bookmarks
+tagesschau.de##.modSharing
+extra.cz##.social
 meduza.io###DailySubscriber
 washingtonpost.com###NN-module-rr
 ng72.ru###VKGroupInvite
@@ -578,6 +583,7 @@ sobesednik.ru##.social-block-tabs-wrapper
 wday.ru##.social-blocks
 portableapps.com##.social-bottons
 66.ru##.social-button:not(.social-button_blablanator)
+forbes.com##.social-expand-control
 depo.ua##.social-groups
 asiaone.com##.social-icon-bar
 jpost.com##.social-icon-wrap
@@ -637,11 +643,13 @@ motor.ru##.topic-social__caption
 motor.ru##.topic-social__list
 comss.ru##.toplogo > span
 pastebin.com##.tweet
+forbes.com##.tweet-this
 bandcamp.com##.tweetThis
 businessinsider.com,digitaltrends.com,fullfilmizlesin.com,kickstarter.com,tvstar.ch##.twitter
 habrahabr.ru##.twitter,.vkontakte,.googleplus,.facebook
 meizufans.eu##.twitter-share
 browserleaks.com##.twt
+utsports.com##.twttr-widget-wrap
 joyreactor.cc##.uhead_share
 aliexpress.com##.ui-fixed-panel-shares
 usatoday.com##.util-bar-btn-share
@@ -672,6 +680,7 @@ slashdot.org##a[data-provider="twitter"]
 auto.vesti.ru##a[href*="liveinternet.ru/journal_post.php?"]
 therussiantimes.com##a[href="#fb_widget"]
 lostfilm.tv##a[href^="//twitter.com/home?status"]
+ccm.net##a[href^="https://twitter.com/intent/tweet/"]
 bits.media##a[id*="_link"][onclick]
 fcore.eu,filecore.co.nz##a[onclick^="share_facebook"]
 fcore.eu,filecore.co.nz##a[onclick^="share_gplus"]
@@ -741,6 +750,7 @@ kinopoisk.ru##ul[class="addTo"]
 ||graph.facebook.com/?*id=https://$third-party
 ||graph.facebook.com/?callback=*&ids=http://$third-party
 ||graph.facebook.com/?callback=*&ids=https://$third-party
+||grfx.cstv.com/scripts/csui/twitterfeed/
 ||idfl.me/fancybox/launch.js
 ||infranken.de/fileadmin/scripts/shariff/
 ||infranken.de/fileadmin/scripts/socialshareprivacy/
@@ -1013,7 +1023,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.help-social-buttons
 ##.i_v_fb_like
 ##.icon-digg
-~comediansincarsgettingcoffee.com,~iguides.ru,~logaster.com##.icon-facebook
+~comediansincarsgettingcoffee.com,~forbes.com,~iguides.ru,~logaster.com##.icon-facebook
 ~slashdot.org##.icon-facebook-squared
 ##.icon-google-plus
 ~iguides.ru,~logaster.com##.icon-gplus
@@ -1023,7 +1033,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.icon-reddit
 ~3dnews.ru,~iguides.ru##.icon-rss
 ##.icon-stumbleupon
-~comediansincarsgettingcoffee.com##.icon-twitter
+~comediansincarsgettingcoffee.com,~forbes.com##.icon-twitter
 ~dailymail.co.uk##.img-share
 ##.img__sharer
 ##.inline_socials
@@ -1375,6 +1385,7 @@ bitiworld.com##a[title="share on twitter"]
 ~facebook.com##input.fb
 ~twitter.com##input.tweet
 ~vk.com,~vkontakte.ru##input.vk
+@@||kino-max.com/templates/kinomax/js/social-likes.min.js
 @@||platform.twitter.com/oct.js$domain=vulcun.com
 @@||yastatic.net/share/share.js$domain=pix.playground.ru
 @@||yastatic.net/share/share.js$domain=lixty.net

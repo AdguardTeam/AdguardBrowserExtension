@@ -28,7 +28,6 @@ var URL_FILTER_REGEXP_START_URL = "^https?://([^/]*\\.)?";
 var URL_FILTER_REGEXP_SEPARATOR = "[/:&?]?";
 
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
-require('filter/rules/filter-classes');
 var CssFilterRule = require('filter/rules/css-filter-rule').CssFilterRule;
 var UrlFilterRule = require('filter/rules/url-filter-rule').UrlFilterRule;
 var ScriptFilterRule = require('filter/rules/script-filter-rule').ScriptFilterRule;

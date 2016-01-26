@@ -18,7 +18,7 @@ var Cu = require('chrome').Cu;
 Cu.import("resource://gre/modules/Services.jsm");
 
 var SimplePrefs = require('sdk/simple-prefs');
-var Log = require('utils/log').Log;
+var Log = require('../../lib/utils/log').Log;
 
 var self = require('sdk/self');
 

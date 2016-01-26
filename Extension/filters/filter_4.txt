@@ -1,10 +1,10 @@
 ! Title: Social media filter
-! Version: 1.0.8.12
+! Version: 1.0.8.22
 ! Name: Social media filter
 ! Description: A filter for social media widgets ("Like" buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2016-01-19T16:44:50.512+03:00
+! TimeUpdated: 2016-01-26T16:51:31.915+03:00
 ! Title: Adguard Social Media Filter
 !
 ! If you do not like numerous «Like» and «Tweet» buttons on all the popular websites on the Internet,
@@ -190,6 +190,7 @@
 /share_button.png
 /shareaholic.js
 /sharebox.min.js
+/sharedaddy/sharing.js
 /sharing_buttons.js
 /social-likes.min.js
 /social_networks.js
@@ -262,6 +263,10 @@ softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 !
 ! Contains rules for specific web sites
 !
+liberallogic101.com###social-buttons
+ramlife.ru##.bookmarks
+tagesschau.de##.modSharing
+extra.cz##.social
 imageshack.us###Actions
 meduza.io###DailySubscriber
 washingtonpost.com###NN-module-rr
@@ -683,6 +688,7 @@ sobesednik.ru##.social-block-tabs-wrapper
 wday.ru##.social-blocks
 portableapps.com##.social-bottons
 66.ru##.social-button:not(.social-button_blablanator)
+forbes.com##.social-expand-control
 depo.ua##.social-groups
 asiaone.com##.social-icon-bar
 jpost.com##.social-icon-wrap
@@ -745,12 +751,14 @@ motor.ru##.topic-social__caption
 motor.ru##.topic-social__list
 comss.ru##.toplogo > span
 pastebin.com##.tweet
+forbes.com##.tweet-this
 bandcamp.com##.tweetThis
 businessinsider.com,digitaltrends.com,fullfilmizlesin.com,kickstarter.com,tvstar.ch##.twitter
 habrahabr.ru##.twitter,.vkontakte,.googleplus,.facebook
 meizufans.eu##.twitter-share
 mger2020.ru##.twitter-w
 browserleaks.com##.twt
+utsports.com##.twttr-widget-wrap
 joyreactor.cc##.uhead_share
 aliexpress.com##.ui-fixed-panel-shares
 guardian.co.uk##.undocked-share
@@ -784,6 +792,7 @@ slashdot.org##a[data-provider="twitter"]
 auto.vesti.ru##a[href*="liveinternet.ru/journal_post.php?"]
 therussiantimes.com##a[href="#fb_widget"]
 lostfilm.tv##a[href^="//twitter.com/home?status"]
+ccm.net##a[href^="https://twitter.com/intent/tweet/"]
 bits.media##a[id*="_link"][onclick]
 qiq.ws##a[onclick^="return addSoc"]
 fcore.eu,filecore.co.nz##a[onclick^="share_facebook"]
@@ -860,6 +869,7 @@ komarovskiy.net##ul[class="social-bookmarks"]
 ||graph.facebook.com/?*id=https://$third-party
 ||graph.facebook.com/?callback=*&ids=http://$third-party
 ||graph.facebook.com/?callback=*&ids=https://$third-party
+||grfx.cstv.com/scripts/csui/twitterfeed/
 ||idfl.me/fancybox/launch.js
 ||infranken.de/fileadmin/scripts/shariff/
 ||infranken.de/fileadmin/scripts/socialshareprivacy/
@@ -1141,7 +1151,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.help-social-buttons
 ##.i_v_fb_like
 ##.icon-digg
-~comediansincarsgettingcoffee.com,~iguides.ru,~logaster.com##.icon-facebook
+~comediansincarsgettingcoffee.com,~forbes.com,~iguides.ru,~logaster.com##.icon-facebook
 ~slashdot.org##.icon-facebook-squared
 ##.icon-google-plus
 ~iguides.ru,~logaster.com##.icon-gplus
@@ -1151,7 +1161,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.icon-reddit
 ~3dnews.ru,~iguides.ru##.icon-rss
 ##.icon-stumbleupon
-~comediansincarsgettingcoffee.com##.icon-twitter
+~comediansincarsgettingcoffee.com,~forbes.com##.icon-twitter
 ~dailymail.co.uk##.img-share
 ##.img__sharer
 ##.inline_socials
@@ -1509,6 +1519,8 @@ bitiworld.com##a[title="share on twitter"]
 !
 ! Section fixing issues caused by social filter
 !
+! http://forum.adguard.com/showthread.php?8840
+@@||kino-max.com/templates/kinomax/js/social-likes.min.js
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1185
 @@||platform.twitter.com/oct.js$domain=vulcun.com
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1120

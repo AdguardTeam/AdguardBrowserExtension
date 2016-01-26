@@ -19,8 +19,8 @@
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
-var Log = require('utils/log').Log;
-var UrlUtils = require('utils/url').UrlUtils;
+var Log = require('../../lib/utils/log').Log;
+var UrlUtils = require('../../lib/utils/url').UrlUtils;
 
 /**
  * We collect here all workarounds and ugly hacks:)

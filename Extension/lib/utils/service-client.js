@@ -19,14 +19,14 @@
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
-var Log = require('utils/log').Log;
-var Utils = require('utils/browser-utils').Utils;
-var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
-require('filter/rules/filter-classes');
-var Prefs = require('prefs').Prefs;
 var Cc = require('chrome').Cc;
 var Ci = require('chrome').Ci;
 var XMLHttpRequestConstructor = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"];
+
+var Log = require('../../lib/utils/log').Log;
+var Utils = require('../../lib/utils/browser-utils').Utils;
+var FilterRule = require('../../lib/filter/rules/base-filter-rule').FilterRule;
+var Prefs = require('../../lib/prefs').Prefs;
 
 /**
  * Class for working with our backend server.
@@ -108,7 +108,7 @@ ServiceClient.prototype = {
 			return;
 		}
 
-		var AdguardFilterVersion = require('filter/antibanner').AdguardFilterVersion;
+		var AdguardFilterVersion = require('../../lib/filter/antibanner').AdguardFilterVersion;
 
 		var success = function (response) {
 			var xml = response.responseXML;
@@ -147,7 +147,7 @@ ServiceClient.prototype = {
 	 */
 	loadFilterRules: function (filterId, useOptimizedFilters, successCallback, errorCallback) {
 
-		var AdguardFilterVersion = require('filter/antibanner').AdguardFilterVersion;
+		var AdguardFilterVersion = require('../../lib/filter/antibanner').AdguardFilterVersion;
 
 		var success = function (response) {
 
@@ -208,7 +208,7 @@ ServiceClient.prototype = {
 	 */
 	loadLocalFilter: function (filterId, useOptimizedFilters, successCallback, errorCallback) {
 
-		var AdguardFilterVersion = require('filter/antibanner').AdguardFilterVersion;
+		var AdguardFilterVersion = require('../../lib/filter/antibanner').AdguardFilterVersion;
 
 		var success = function (response) {
 			var responseText = response.responseText;
@@ -296,7 +296,7 @@ ServiceClient.prototype = {
 	 */
 	loadLocalGroupsMetadata: function (successCallback, errorCallback) {
 
-		var SubscriptionGroup = require('filter/subscription').SubscriptionGroup;
+		var SubscriptionGroup = require('../../lib/filter/subscription').SubscriptionGroup;
 
 		var success = function (response) {
 			var xml = response.responseXML;
@@ -325,7 +325,7 @@ ServiceClient.prototype = {
 	 */
 	loadLocalFiltersMetadata: function (successCallback, errorCallback) {
 
-		var SubscriptionFilter = require('filter/subscription').SubscriptionFilter;
+		var SubscriptionFilter = require('../../lib/filter/subscription').SubscriptionFilter;
 
 		var success = function (response) {
 			var xml = response.responseXML;

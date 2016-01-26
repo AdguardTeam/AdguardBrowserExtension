@@ -22,29 +22,28 @@
 var setTimeout = require('sdk/timers').setTimeout;
 var clearTimeout = require('sdk/timers').clearTimeout;
 
-var Promise = require('utils/promises').Promise;
-var ServiceClient = require('utils/service-client').ServiceClient;
-var RequestFilter = require('filter/filters').RequestFilter;
-var LocaleDetectService = require('filter/locale-detect').LocaleDetectService;
-var Log = require('utils/log').Log;
-var AntiBannerFiltersId = require('utils/common').AntiBannerFiltersId;
-var StringUtils = require('utils/common').StringUtils;
-var FilterUtils = require('utils/common').FilterUtils;
-var EventNotifierTypes = require('utils/common').EventNotifierTypes;
-var Utils = require('utils/browser-utils').Utils;
-var CollectionUtils = require('utils/common').CollectionUtils;
-var UrlUtils = require('utils/url').UrlUtils;
-var FilterStorage = require('filter/storage').FilterStorage;
-var userSettings = require('utils/user-settings').userSettings;
-var EventNotifier = require('utils/notifier').EventNotifier;
-var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
-require('filter/rules/filter-classes');
-var LS = require('utils/local-storage').LS;
-var Prefs = require('prefs').Prefs;
-var SubscriptionService = require('filter/subscription').SubscriptionService;
-var ApplicationUpdateService = require('filter/update-service').ApplicationUpdateService;
-var whiteListService = require('filter/whitelist').whiteListService;
-var UI = require('ui').UI;
+var Promise = require('../../lib/utils/promises').Promise;
+var ServiceClient = require('../../lib/utils/service-client').ServiceClient;
+var RequestFilter = require('../../lib/filter/filters').RequestFilter;
+var LocaleDetectService = require('../../lib/filter/locale-detect').LocaleDetectService;
+var Log = require('../../lib/utils/log').Log;
+var AntiBannerFiltersId = require('../../lib/utils/common').AntiBannerFiltersId;
+var StringUtils = require('../../lib/utils/common').StringUtils;
+var FilterUtils = require('../../lib/utils/common').FilterUtils;
+var EventNotifierTypes = require('../../lib/utils/common').EventNotifierTypes;
+var Utils = require('../../lib/utils/browser-utils').Utils;
+var CollectionUtils = require('../../lib/utils/common').CollectionUtils;
+var UrlUtils = require('../../lib/utils/url').UrlUtils;
+var FilterStorage = require('../../lib/filter/storage').FilterStorage;
+var userSettings = require('../../lib/utils/user-settings').userSettings;
+var EventNotifier = require('../../lib/utils/notifier').EventNotifier;
+var FilterRule = require('../../lib/filter/rules/base-filter-rule').FilterRule;
+var LS = require('../../lib/utils/local-storage').LS;
+var Prefs = require('../../lib/prefs').Prefs;
+var SubscriptionService = require('../../lib/filter/subscription').SubscriptionService;
+var ApplicationUpdateService = require('../../lib/filter/update-service').ApplicationUpdateService;
+var whiteListService = require('../../lib/filter/whitelist').whiteListService;
+var UI = require('../../lib/ui').UI;
 
 /**
  * Creating service that manages our filter rules.

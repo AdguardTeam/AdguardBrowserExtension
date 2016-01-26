@@ -1,10 +1,16 @@
 ! Title: Safari Filter
-! Version: 1.0.0.31
+! Version: 1.0.0.39
 ! Name: Safari Filter
 ! Description: Special filter for Safari 9+. We need a separate filter for Safari because it does not fully support rules syntax.
 ! NameEn: Safari Filter
 ! DescriptionEn: Special filter for Safari 9+. We need a separate filter for Safari because it does not fully support rules syntax.
-! TimeUpdated: 2016-01-19T15:01:38.812+03:00
+! TimeUpdated: 2016-01-26T12:28:28.404+03:00
+@@||adm.fwmrm.net/p/release/latest-JS/adm/prd/AdManager.js$domain=espn.go.com
+@@||v.fwmrm.net/ad/*?prof=$domain=espn.go.com
+@@||go.com/b/ss/wdgespcom,wdgespvideo,wdgespge/$domain=espn.go.com
+@@||once.unicornmedia.com/now/*/content.once?$domain=espn.go.com
+@@||googletagservices.com/tag/js/gpt.js$domain=nfl.com
+@@||imasdk.googleapis.com/js/core/bridge*.html$domain=nfl.com
 ||reactiv.$third-party
 ||psmardr.com^$third-party
 ||smilered.com^$third-party
@@ -15,11 +21,20 @@ etfdailynews.com##div[style="width:300px;border:1px solid black"]
 ##.banner-top
 @@||banners.*.citilink.ru/banner_promo_$domain=citilink.ru
 @@||imasdk.googleapis.com/js/core/bridge*.html
+@@||m.finn.no/*/ad.html?
+@@||static.pornhub.phncdn.com^$domain=pornhub.com
 ||admin.appnext.com^$third-party
 pb.wtf##div[id][class] > div[style][id] > a > img
 brb.to,cxz.to,fs.to##a[data-proxied^="//core.adproxy2.com/click?"]
 brb.to,cxz.to,fs.to##div[class*="universal_ads"]
-@@||idevice.ro^$generichide
+@@||forbes.com^$elemhide
+@@http://$domain=forbes.com
+@@https://$domain=forbes.com
+||static0.wi-fi.ru/static/000/ios/index.html
+||login.wi-fi.ru^$script,third-party
+||static.wi-fi.ru/brandings/rb/
+||vmet.ro^$third-party
+||wi-fi.ru/ad_video/
 login.wi-fi.ru###branding
 wi-fi.ru##.b-banner-full
 wi-fi.ru##.b-banner-middle

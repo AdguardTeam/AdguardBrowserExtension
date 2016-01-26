@@ -26,13 +26,13 @@ var tabUtils = require('sdk/tabs/utils');
 var unload = require('sdk/system/unload');
 var events = require('sdk/system/events');
 
-var {Log} = require('utils/log');
-var {EventNotifier} = require('utils/notifier');
-var {EventNotifierTypes,RequestTypes} = require('utils/common');
-var {UrlUtils} = require('utils/url');
-var {Utils} = require('utils/browser-utils');
-var {WebRequestService} = require('filter/request-blocking');
-var {WorkaroundUtils} = require('utils/workaround');
+var {Log} = require('./utils/log');
+var {EventNotifier} = require('./utils/notifier');
+var {EventNotifierTypes,RequestTypes} = require('./utils/common');
+var {UrlUtils} = require('./utils/url');
+var {Utils} = require('./utils/browser-utils');
+var {WebRequestService} = require('./filter/request-blocking');
+var {WorkaroundUtils} = require('./utils/workaround');
 
 /**
  * Helper object to work with web requests.

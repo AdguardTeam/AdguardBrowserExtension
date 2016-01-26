@@ -19,8 +19,8 @@
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
-var StringUtils = require('utils/common').StringUtils;
-var punycode = require('utils/punycode').punycode;
+var StringUtils = require('../../lib/utils/common').StringUtils;
+var punycode = require('../../lib/utils/punycode').punycode;
 
 /**
  * Helper methods to work with URLs

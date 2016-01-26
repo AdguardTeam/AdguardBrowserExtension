@@ -56,7 +56,7 @@ elif [ "$env" = beta ]; then
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox beta legacy xpi
-    options="--version=$version --branch=legacy --dest=$destPath --name=legacy --browser=firefox_legacy --pack=xpi --extensionId=adguardadblockerlegacy@adguard.com --update-url=https://chrome.adtidy.org/updates.rdf"
+    options="--version=$version --branch=legacy --dest=$destPath --name=legacy --browser=firefox_legacy --pack=xpi_cfx --extensionId=adguardadblockerlegacy@adguard.com --update-url=https://chrome.adtidy.org/updates.rdf"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #safari beta

@@ -19,8 +19,8 @@
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
-var LS = require('utils/local-storage').LS;
-var Log = require('utils/log').Log;
+var LS = require('../../lib/utils/local-storage').LS;
+var Log = require('../../lib/utils/log').Log;
 
 /**
  * Global stats

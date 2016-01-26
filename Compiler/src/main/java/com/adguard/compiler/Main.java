@@ -29,279 +29,295 @@ import java.util.Set;
 
 public class Main {
 
-	private static Logger log = Logger.getLogger(Main.class);
+    private static Logger log = Logger.getLogger(Main.class);
 
-	private static final String CRX_MAKE_PATH = "../scripts/chrome/crxmake.sh";
-	private static final String ZIP_MAKE_PATH = "../scripts/chrome/zipmake.sh";
-	private static final String XPI_MAKE_PATH = "../scripts/firefox/xpimake.sh";
-	private static final File CHROME_CERT_FILE = new File("../certificate.pem");
+    private static final String CRX_MAKE_PATH = "../scripts/chrome/crxmake.sh";
+    private static final String ZIP_MAKE_PATH = "../scripts/chrome/zipmake.sh";
+    private static final String XPI_MAKE_PATH = "../scripts/firefox/xpimake.sh";
+    private static final String XPI_CFX_MAKE_PATH = "../scripts/firefox_legacy/xpimake.sh";
+    private static final File CHROME_CERT_FILE = new File("../certificate.pem");
 
-	private static final String PACK_METHOD_ZIP = "zip";
-	private static final String PACK_METHOD_CRX = "crx";
-	private static final String PACK_METHOD_XPI = "xpi";
+    private static final String PACK_METHOD_ZIP = "zip";
+    private static final String PACK_METHOD_CRX = "crx";
+    private static final String PACK_METHOD_XPI = "xpi";
+    private static final String PACK_METHOD_XPI_CFX = "xpi_cfx";
 
-	/**
-	 * Script for building extension
-	 *
-	 * @param args Arguments
-	 * @throws Exception
-	 */
-	public static void main(String[] args) throws Exception {
+    /**
+     * Script for building extension
+     *
+     * @param args Arguments
+     * @throws Exception
+     */
+    public static void main(String[] args) throws Exception {
 
-		disableSslValidation();
+        disableSslValidation();
 
-		String sourcePath = getParamValue(args, "--source", "../../Extension");
-		String destPath = getParamValue(args, "--dest", "../../Build");
+        String sourcePath = getParamValue(args, "--source", "../../Extension");
+        String destPath = getParamValue(args, "--dest", "../../Build");
 
-		//final build name
-		String buildName = getParamValue(args, "--name", null);
+        //final build name
+        String buildName = getParamValue(args, "--name", null);
 
-		//version
-		String version = getParamValue(args, "--version", null);
+        //version
+        String version = getParamValue(args, "--version", null);
 
-		//build branch
-		String branch = getParamValue(args, "--branch", null);
+        //build branch
+        String branch = getParamValue(args, "--branch", null);
 
-		//browser
-		String configBrowser = getParamValue(args, "--browser", null);
-		Browser browser = Browser.getByName(configBrowser);
+        //browser
+        String configBrowser = getParamValue(args, "--browser", null);
+        Browser browser = Browser.getByName(configBrowser);
 
-		//download filters before build
-		boolean updateFilters = Boolean.valueOf(getParamValue(args, "--update-filters", "false"));
+        //download filters before build
+        boolean updateFilters = Boolean.valueOf(getParamValue(args, "--update-filters", "false"));
 
-		//update url for extension
-		String updateUrl = getParamValue(args, "--update-url", null);
+        //update url for extension
+        String updateUrl = getParamValue(args, "--update-url", null);
 
-		//safari extension id
-		String extensionId = getParamValue(args, "--extensionId", null);
+        //safari extension id
+        String extensionId = getParamValue(args, "--extensionId", null);
 
-		//pack method
-		String packMethod = getParamValue(args, "--pack", null);
+        //pack method
+        String packMethod = getParamValue(args, "--pack", null);
 
-		if (!validateParameters(sourcePath, buildName, version, extensionId, configBrowser, packMethod)) {
-			System.exit(-1);
-		}
+        if (!validateParameters(sourcePath, buildName, version, extensionId, configBrowser, packMethod)) {
+            System.exit(-1);
+        }
 
-		File source = new File(sourcePath);
+        File source = new File(sourcePath);
 
-		buildName = getBuildName(buildName, browser, version);
-		File dest = new File(destPath, buildName);
+        buildName = getBuildName(buildName, browser, version);
+        File dest = new File(destPath, buildName);
 
-		if (updateFilters) {
-			FilterUtils.updateGroupsAndFiltersMetadata(source);
-			FilterUtils.updateLocalFilters(source, new File(source, "filters"));
-		}
+        if (updateFilters) {
+            FilterUtils.updateGroupsAndFiltersMetadata(source);
+            FilterUtils.updateLocalFilters(source, new File(source, "filters"));
+        }
 
-		Set<String> scriptRules = FilterUtils.getScriptRules(source);
+        Set<String> scriptRules = FilterUtils.getScriptRules(source);
 
-		File buildResult = createBuild(source, dest, scriptRules, extensionId, updateUrl, browser, version, branch);
+        File buildResult = createBuild(source, dest, scriptRules, extensionId, updateUrl, browser, version, branch);
 
-		File packedFile = null;
-		if (packMethod != null) {
-			if (PACK_METHOD_ZIP.equals(packMethod)) {
-				packedFile = PackageUtils.createZip(ZIP_MAKE_PATH, buildResult);
-				FileUtils.deleteQuietly(buildResult);
-			} else if (PACK_METHOD_CRX.equals(packMethod)) {
-				packedFile = PackageUtils.createCrx(CRX_MAKE_PATH, buildResult, CHROME_CERT_FILE);
-				FileUtils.deleteQuietly(buildResult);
-			} else if (PACK_METHOD_XPI.equals(packMethod)) {
-				packedFile = PackageUtils.createXpi(XPI_MAKE_PATH, buildResult, "adguard-adblocker");
-				FileUtils.deleteQuietly(buildResult);
-			}
-		}
+        File packedFile = null;
+        if (packMethod != null) {
+            if (PACK_METHOD_ZIP.equals(packMethod)) {
+                packedFile = PackageUtils.createZip(ZIP_MAKE_PATH, buildResult);
+                FileUtils.deleteQuietly(buildResult);
+            } else if (PACK_METHOD_CRX.equals(packMethod)) {
+                packedFile = PackageUtils.createCrx(CRX_MAKE_PATH, buildResult, CHROME_CERT_FILE);
+                FileUtils.deleteQuietly(buildResult);
+            } else if (PACK_METHOD_XPI.equals(packMethod)) {
+                String jpmXpiName = extensionId + "-" + version;
+                packedFile = PackageUtils.createXpi(XPI_MAKE_PATH, buildResult, jpmXpiName);
+                FileUtils.deleteQuietly(buildResult);
+            } else if (PACK_METHOD_XPI_CFX.equals(packMethod)) {
+                packedFile = PackageUtils.createXpi(XPI_CFX_MAKE_PATH, buildResult, "adguard-adblocker");
+                FileUtils.deleteQuietly(buildResult);
+            }
+        }
 
-		log.info("Build created. Version: " + version);
-		if (packedFile != null) {
-			log.info("File: " + packedFile.getName());
-		} else {
-			log.info("File: " + buildResult.getName());
-		}
-		if (extensionId != null) {
-			log.info("ExtensionId: " + extensionId);
-		}
-		log.info("Browser: " + browser);
-		if (updateUrl != null) {
-			log.info("UpdateUrl: " + updateUrl);
-		}
-	}
+        log.info("Build created. Version: " + version);
+        if (packedFile != null) {
+            log.info("File: " + packedFile.getName());
+        } else {
+            log.info("File: " + buildResult.getName());
+        }
+        if (extensionId != null) {
+            log.info("ExtensionId: " + extensionId);
+        }
+        log.info("Browser: " + browser);
+        if (updateUrl != null) {
+            log.info("UpdateUrl: " + updateUrl);
+        }
+    }
 
-	private static boolean validateParameters(String sourcePath, String buildName, String version, String extensionId, String configBrowser, String packMethod) {
+    private static boolean validateParameters(String sourcePath, String buildName, String version, String extensionId, String configBrowser, String packMethod) {
 
-		if (buildName == null) {
-			log.error("Name is required");
-			return false;
-		}
+        if (buildName == null) {
+            log.error("Name is required");
+            return false;
+        }
 
-		if (version == null) {
-			log.error("Version is required");
-			return false;
-		}
+        if (version == null) {
+            log.error("Version is required");
+            return false;
+        }
 
-		Browser browser = Browser.getByName(configBrowser);
-		if (browser == null) {
-			log.error("Unknown browser: " + configBrowser);
-			return false;
-		}
+        Browser browser = Browser.getByName(configBrowser);
+        if (browser == null) {
+            log.error("Unknown browser: " + configBrowser);
+            return false;
+        }
 
-		if (!validatePackMethod(browser, packMethod)) {
-			return false;
-		}
+        if (!validatePackMethod(browser, packMethod)) {
+            return false;
+        }
 
-		File source = new File(sourcePath);
-		if (!source.exists()) {
-			log.error("Source path '" + source.getAbsolutePath() + "' not found");
-			return false;
-		}
+        File source = new File(sourcePath);
+        if (!source.exists()) {
+            log.error("Source path '" + source.getAbsolutePath() + "' not found");
+            return false;
+        }
 
-		if (extensionId == null && browser == Browser.SAFARI) {
-			log.error("Set --extensionId for Safari build");
-			return false;
-		}
+        if (extensionId == null && browser == Browser.SAFARI) {
+            log.error("Set --extensionId for Safari build");
+            return false;
+        }
 
-		if (extensionId == null && (browser == Browser.FIREFOX || browser == Browser.FIREFOX_LEGACY)) {
-			log.error("Set --extensionId for Safari build");
-			return false;
-		}
+        if (extensionId == null && (browser == Browser.FIREFOX || browser == Browser.FIREFOX_LEGACY)) {
+            log.error("Set --extensionId for Safari build");
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * Builds extension
-	 *
-	 * @param source             Source path
-	 * @param dest               Destination folder
-	 * @param scriptRules List of javascript injection rules.
-	 *                           For AMO and addons.opera.com we embed all
-	 *                           js rules into the extension and do not update them
-	 *                           from remote server.
-	 * @param extensionId        Extension identifier (Use for safari)
-	 * @param updateUrl          Add to manifest update url.
-	 *                           Otherwise - do not add it.
-	 *                           All extension stores have their own update channels so
-	 *                           we shouldn't add update channel to the manifest.
-	 * @param browser            Browser type
-	 * @param version            Build version
-	 * @param branch             Build branch
-	 * @return Path to build result
-	 * @throws Exception
-	 */
-	private static File createBuild(File source, File dest,
-									Set<String> scriptRules,
-									String extensionId, String updateUrl, Browser browser, String version, String branch) throws Exception {
+    /**
+     * Builds extension
+     *
+     * @param source      Source path
+     * @param dest        Destination folder
+     * @param scriptRules List of javascript injection rules.
+     *                    For AMO and addons.opera.com we embed all
+     *                    js rules into the extension and do not update them
+     *                    from remote server.
+     * @param extensionId Extension identifier (Use for safari)
+     * @param updateUrl   Add to manifest update url.
+     *                    Otherwise - do not add it.
+     *                    All extension stores have their own update channels so
+     *                    we shouldn't add update channel to the manifest.
+     * @param browser     Browser type
+     * @param version     Build version
+     * @param branch      Build branch
+     * @return Path to build result
+     * @throws Exception
+     */
+    private static File createBuild(File source, File dest,
+                                    Set<String> scriptRules,
+                                    String extensionId, String updateUrl, Browser browser, String version, String branch) throws Exception {
 
-		if (dest.exists()) {
-			log.debug("Removed previous build: " + dest.getName());
-			FileUtils.deleteQuietly(dest);
-		}
+        if (dest.exists()) {
+            log.debug("Removed previous build: " + dest.getName());
+            FileUtils.deleteQuietly(dest);
+        }
 
-		FileUtil.copyFiles(source, dest, browser);
+        FileUtil.copyFiles(source, dest, browser);
 
-		SettingUtils.writeMessageIdsToFile(dest, LocaleUtils.getMessageIds(source));
-		SettingUtils.writeLocalScriptRulesToFile(dest, scriptRules);
+        SettingUtils.writeMessageIdsToFile(dest, LocaleUtils.getMessageIds(source));
+        SettingUtils.writeLocalScriptRulesToFile(dest, scriptRules);
 
-		String extensionNamePostfix = "";
-		if (StringUtils.isNotEmpty(branch)) {
-			extensionNamePostfix = " (" + StringUtils.capitalize(branch) + ")";
-		}
+        String extensionNamePostfix = "";
+        if (StringUtils.isNotEmpty(branch)) {
+            extensionNamePostfix = " (" + StringUtils.capitalize(branch) + ")";
+        }
 
-		SettingUtils.updateManifestFile(dest, browser, version, extensionId, updateUrl, extensionNamePostfix);
+        SettingUtils.updateManifestFile(dest, browser, version, extensionId, updateUrl, extensionNamePostfix);
 
-		if (browser == Browser.CHROMIUM) {
-			LocaleUtils.updateExtensionNameForChromeLocales(dest, extensionNamePostfix);
-		}
+        if (browser == Browser.CHROMIUM) {
+            LocaleUtils.updateExtensionNameForChromeLocales(dest, extensionNamePostfix);
+        }
 
-		if (browser == Browser.FIREFOX || browser == Browser.FIREFOX_LEGACY) {
-			LocaleUtils.writeLocalesToFirefoxInstallRdf(dest, extensionNamePostfix);
-		}
+        if (browser == Browser.FIREFOX || browser == Browser.FIREFOX_LEGACY) {
+            LocaleUtils.writeLocalesToFirefoxInstallRdf(dest, extensionNamePostfix);
+        }
 
-		return dest;
-	}
+        if (browser == Browser.FIREFOX_LEGACY) {
+            log.info("Update 'require' parameters in order to pack with CFX");
+            SettingUtils.updateRequirePathForCfx(dest);
+        }
 
-	private static boolean validatePackMethod(Browser browser, String packMethod) {
-		if (packMethod == null) {
-			return true;
-		}
-		switch (browser) {
-			case CHROMIUM:
-				if (!PACK_METHOD_CRX.equals(packMethod) && !PACK_METHOD_ZIP.equals(packMethod)) {
-					log.error("Chrome support only crx and zip pack methods");
-					return false;
-				}
-				if (PACK_METHOD_CRX.equals(packMethod) && !CHROME_CERT_FILE.exists()) {
-					log.error("Chrome cert file " + CHROME_CERT_FILE + " not found");
-					return false;
-				}
-				return true;
-			case SAFARI:
-				log.error("Safari doesn't support pack methods. Pack extension manually.");
-				return false;
-			case FIREFOX:
-			case FIREFOX_LEGACY:
-				if (!PACK_METHOD_XPI.equals(packMethod)) {
-					log.error("Firefox support only xpi pack methods");
-					return false;
-				}
-				return true;
-		}
-		return true;
-	}
+        return dest;
+    }
 
-	private static String getBuildName(String buildName, Browser browser, String version) {
-		String result = buildName + "-" + version;
-		if (browser == Browser.SAFARI) {
-			result += ".safariextension";
-		}
-		return result;
-	}
+    private static boolean validatePackMethod(Browser browser, String packMethod) {
+        if (packMethod == null) {
+            return true;
+        }
+        switch (browser) {
+            case CHROMIUM:
+                if (!PACK_METHOD_CRX.equals(packMethod) && !PACK_METHOD_ZIP.equals(packMethod)) {
+                    log.error("Chrome support only crx and zip pack methods");
+                    return false;
+                }
+                if (PACK_METHOD_CRX.equals(packMethod) && !CHROME_CERT_FILE.exists()) {
+                    log.error("Chrome cert file " + CHROME_CERT_FILE + " not found");
+                    return false;
+                }
+                return true;
+            case SAFARI:
+                log.error("Safari doesn't support pack methods. Pack extension manually.");
+                return false;
+            case FIREFOX:
+                if (!PACK_METHOD_XPI.equals(packMethod)) {
+                    log.error("Firefox support only xpi pack methods");
+                    return false;
+                }
+                return true;
+            case FIREFOX_LEGACY:
+                if (!PACK_METHOD_XPI_CFX.equals(packMethod)) {
+                    log.error("Firefox support only xpi through cfx pack method");
+                    return false;
+                }
+                return true;
+        }
+        return true;
+    }
 
-	private static String getParamValue(String[] args, String paramName, String defaultValue) {
-		if (args == null) {
-			return defaultValue;
-		}
-		for (String arg : args) {
-			if (arg.startsWith(paramName)) {
-				return arg.replaceFirst(paramName + "=", "");
-			}
-		}
+    private static String getBuildName(String buildName, Browser browser, String version) {
+        String result = buildName + "-" + version;
+        if (browser == Browser.SAFARI) {
+            result += ".safariextension";
+        }
+        return result;
+    }
 
-		return defaultValue;
-	}
+    private static String getParamValue(String[] args, String paramName, String defaultValue) {
+        if (args == null) {
+            return defaultValue;
+        }
+        for (String arg : args) {
+            if (arg.startsWith(paramName)) {
+                return arg.replaceFirst(paramName + "=", "");
+            }
+        }
 
-	/**
-	 * Disable SSL validation (it may work wrong sometimes)
-	 *
-	 * @throws NoSuchAlgorithmException
-	 * @throws KeyManagementException
-	 */
-	private static void disableSslValidation() throws NoSuchAlgorithmException, KeyManagementException {
-		// Create a trust manager that does not validate certificate chains
-		TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
-			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-				return null;
-			}
+        return defaultValue;
+    }
 
-			public void checkClientTrusted(X509Certificate[] certs, String authType) {
-			}
+    /**
+     * Disable SSL validation (it may work wrong sometimes)
+     *
+     * @throws NoSuchAlgorithmException
+     * @throws KeyManagementException
+     */
+    private static void disableSslValidation() throws NoSuchAlgorithmException, KeyManagementException {
+        // Create a trust manager that does not validate certificate chains
+        TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
 
-			public void checkServerTrusted(X509Certificate[] certs, String authType) {
-			}
-		}
-		};
+            public void checkClientTrusted(X509Certificate[] certs, String authType) {
+            }
 
-		// Install the all-trusting trust manager
-		SSLContext sc = SSLContext.getInstance("SSL");
-		sc.init(null, trustAllCerts, new java.security.SecureRandom());
-		HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            public void checkServerTrusted(X509Certificate[] certs, String authType) {
+            }
+        }
+        };
 
-		// Create all-trusting host name verifier
-		HostnameVerifier allHostsValid = new HostnameVerifier() {
-			public boolean verify(String hostname, SSLSession session) {
-				return true;
-			}
-		};
+        // Install the all-trusting trust manager
+        SSLContext sc = SSLContext.getInstance("SSL");
+        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 
-		// Install the all-trusting host verifier
-		HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-	}
+        // Create all-trusting host name verifier
+        HostnameVerifier allHostsValid = new HostnameVerifier() {
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
+            }
+        };
+
+        // Install the all-trusting host verifier
+        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+    }
 }
