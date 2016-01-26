@@ -19,11 +19,11 @@
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
-var Utils = require('../lib/utils/browser-utils').Utils;
-var LS = require('../lib/utils/local-storage').LS;
-var Log = require('../lib/utils/log').Log;
-var EventNotifier = require('../lib/utils/notifier').EventNotifier;
-var EventNotifierTypes = require('../lib/utils/common').EventNotifierTypes;
+var Utils = require('../../lib/utils/browser-utils').Utils;
+var LS = require('../../lib/utils/local-storage').LS;
+var Log = require('../../lib/utils/log').Log;
+var EventNotifier = require('../../lib/utils/notifier').EventNotifier;
+var EventNotifierTypes = require('../../lib/utils/common').EventNotifierTypes;
 
 /**
  * Object that manages user settings.

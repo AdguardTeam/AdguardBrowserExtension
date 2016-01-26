@@ -19,15 +19,14 @@
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
-var CollectionUtils = require('../lib/utils/common').CollectionUtils;
-var StringUtils = require('../lib/utils/common').StringUtils;
-var Prefs = require('../lib/prefs').Prefs;
-var FilterUtils = require('../lib/utils/common').FilterUtils;
-var FilterRule = require('../lib/filter/rules/base-filter-rule').FilterRule;
-require('../lib/filter/rules/filter-classes');
-var EventNotifier = require('../lib/utils/notifier').EventNotifier;
-var EventNotifierTypes = require('../lib/utils/common').EventNotifierTypes;
-var userSettings = require('../lib/utils/user-settings').userSettings;
+var CollectionUtils = require('../../../lib/utils/common').CollectionUtils;
+var StringUtils = require('../../../lib/utils/common').StringUtils;
+var Prefs = require('../../../lib/prefs').Prefs;
+var FilterUtils = require('../../../lib/utils/common').FilterUtils;
+var FilterRule = require('../../../lib/filter/rules/base-filter-rule').FilterRule;
+var EventNotifier = require('../../../lib/utils/notifier').EventNotifier;
+var EventNotifierTypes = require('../../../lib/utils/common').EventNotifierTypes;
+var userSettings = require('../../../lib/utils/user-settings').userSettings;
 
 var isFirefox = Prefs.platform == "firefox";
 

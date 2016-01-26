@@ -15,14 +15,14 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var PageStatistic = require('../lib/utils/page-stats').PageStatistic;
-var FilterUtils = require('../lib/utils/common').FilterUtils;
-var RequestTypes = require('../lib/utils/common').RequestTypes;
-var UrlUtils = require('../lib/utils/url').UrlUtils;
-var WorkaroundUtils = require('../lib/utils/workaround').WorkaroundUtils;
+var PageStatistic = require('../../lib/utils/page-stats').PageStatistic;
+var FilterUtils = require('../../lib/utils/common').FilterUtils;
+var RequestTypes = require('../../lib/utils/common').RequestTypes;
+var UrlUtils = require('../../lib/utils/url').UrlUtils;
+var WorkaroundUtils = require('../../lib/utils/workaround').WorkaroundUtils;
 
-var whiteListService = require('../lib/filter/whitelist').whiteListService;
-var AntiBannerFiltersId = require('../lib/utils/common').AntiBannerFiltersId;
+var whiteListService = require('../../lib/filter/whitelist').whiteListService;
+var AntiBannerFiltersId = require('../../lib/utils/common').AntiBannerFiltersId;
 
 /**
  * Map that contains info about every browser tab.

@@ -19,8 +19,8 @@
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
-var StringUtils = require('../lib/utils/common').StringUtils;
-var FilterRule = require('../lib/filter/rules/base-filter-rule').FilterRule;
+var StringUtils = require('../../../lib/utils/common').StringUtils;
+var FilterRule = require('../../../lib/filter/rules/base-filter-rule').FilterRule;
 
 /**
  * CSS rule.

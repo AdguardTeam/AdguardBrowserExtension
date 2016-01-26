@@ -26,8 +26,8 @@ var system = require('sdk/system');
 var tabs = require('sdk/tabs');
 var unload = require('sdk/system/unload');
 
-var {UiUtils, WindowObserver} = require('../lib/uiUtils');
-var WorkaroundUtils = require('../lib/utils/workaround').WorkaroundUtils;
+var {UiUtils, WindowObserver} = require('./uiUtils');
+var WorkaroundUtils = require('./utils/workaround').WorkaroundUtils;
 
 function findEl(id, element) {
 	for (var i = 0; i < element.children.length; i++) {
@@ -88,7 +88,7 @@ var PopupButton = exports.PopupButton = {
 			this.CustomizableUI = Cu.import("resource:///modules/CustomizableUI.jsm").CustomizableUI;
 		} catch (e) {
 			// No built-in CustomizableUI API, use our own implementation.
-			this.CustomizableUI = require('../lib/customizableUI').CustomizableUI;
+			this.CustomizableUI = require('./customizableUI').CustomizableUI;
 		}
 
 		var window = UiUtils.getMostRecentWindow();

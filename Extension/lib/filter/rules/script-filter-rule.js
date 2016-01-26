@@ -19,10 +19,10 @@
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
-var StringUtils = require('../lib/utils/common').StringUtils;
-var FilterRule = require('../lib/filter/rules/base-filter-rule').FilterRule;
-var AntiBannerFiltersId = require('../lib/utils/common').AntiBannerFiltersId;
-var DEFAULT_SCRIPT_RULES = require('../lib/utils/local-script-rules').DEFAULT_SCRIPT_RULES;
+var StringUtils = require('../../../lib/utils/common').StringUtils;
+var FilterRule = require('../../../lib/filter/rules/base-filter-rule').FilterRule;
+var AntiBannerFiltersId = require('../../../lib/utils/common').AntiBannerFiltersId;
+var DEFAULT_SCRIPT_RULES = require('../../../lib/utils/local-script-rules').DEFAULT_SCRIPT_RULES;
 
 /**
  * JS injection rule:
