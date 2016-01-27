@@ -18,7 +18,7 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.5';
+var CONVERTER_VERSION = '1.3.6';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var URL_FILTER_ANY_URL = ".*";
@@ -49,7 +49,6 @@ exports.SafariContentBlockerConverter = {
                     if (domains[i] != "") {
                         var domain = domains[i];
                         domain = UrlUtils.toPunyCode(domain.toLowerCase());
-
                         included.push(domain);
                     }
                 }
@@ -91,10 +90,12 @@ exports.SafariContentBlockerConverter = {
                 throw new Error('Safari does not support both permitted and restricted domains');
             }
 
-            if (included.length > 0)
+            if (included.length > 0) {
                 trigger["if-domain"] = included;
-            if (excluded.length > 0)
+            }
+            if (excluded.length > 0) {
                 trigger["unless-domain"] = excluded;
+            }
         },
 
         _addDomainOptions: function (trigger, rule) {
@@ -155,7 +156,7 @@ exports.SafariContentBlockerConverter = {
                 types = [ "popup" ];
             }
 
-            //Not supported modificators
+            // Not supported modificators
             if (this._isContentType(rule, UrlFilterRule.contentTypes.OBJECT)) {
                 throw new Error('Object content type is not yet supported');
             }
@@ -172,7 +173,6 @@ exports.SafariContentBlockerConverter = {
             }
 
             //TODO: Add restricted content types?
-
         },
 
         _createUrlFilterString: function (filter) {
@@ -278,6 +278,21 @@ exports.SafariContentBlockerConverter = {
             // There is no way to convert these rules to safari format
             throw new Error("Script-injection rule " + rule.ruleText + " cannot be converted");
         },
+        
+        /**
+         * Validates url blocking rule and discards rules considered dangerous or invalid.
+         */
+        _validateUrlBlockingRule: function(rule) {
+            
+            if (rule.action.type == "block" &&
+                rule.trigger["resource-type"] &&
+                rule.trigger["resource-type"].indexOf("document") >= 0 &&
+                !rule.trigger["if-domain"] &&
+                (!rule.trigger["load-type"] || rule.trigger["load-type"].indexOf("third-party") == -1)) {
+                // Due to https://github.com/AdguardTeam/AdguardBrowserExtension/issues/145
+                throw new Error("Document blocking rules are allowed only along with third-party or if-domain modifiers");        
+            }
+        },
 
         _checkWhiteListExceptions: function (rule, result) {
             var self = this;
@@ -374,8 +389,11 @@ exports.SafariContentBlockerConverter = {
             this._addMatchCase(result.trigger, rule);
             this._addDomainOptions(result.trigger, rule);
 
-            //Check whitelist exceptions
+            // Check whitelist exceptions
             this._checkWhiteListExceptions(rule, result);
+            
+            // Validate the rule
+            this._validateUrlBlockingRule(result);
 
             return result;
         }

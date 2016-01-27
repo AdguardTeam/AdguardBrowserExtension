@@ -113,6 +113,41 @@ function testConvertFirstPartyRule() {
 addTestCase(testConvertFirstPartyRule);
 
 /**
+ * Test to check that we do not allow subdocument rules without third-party modifier
+ */
+function testConvertSubdocumentFirstPartyRule() {
+    var ruleText = "||youporn.com^$subdocument,~third-party";
+    var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    assertEquals(0, result.convertedCount);
+    assertEquals(1, result.errorsCount);   
+}
+addTestCase(testConvertSubdocumentFirstPartyRule);
+
+/**
+ * Test to check that we allow subdocument rules with third-party modifier
+ */
+function testConvertSubdocumentThirdPartyRule() {
+    var ruleText = "||youporn.com^$subdocument,third-party";
+    var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    assertEquals(1, result.convertedCount);
+    assertEquals(0, result.errorsCount);
+    
+    var converted = JSON.parse(result.converted);
+    assertEquals(1, converted.length);    
+    
+    var convertedRule = converted[0];
+    assertEquals(URL_FILTER_REGEXP_START_URL + "youporn\\.com[/:&?]?", convertedRule.trigger["url-filter"]);
+    assertEmpty(convertedRule.trigger["if-domain"]);
+    assertEmpty(convertedRule.trigger["unless-domain"]);
+    assertNotEmpty(convertedRule.trigger["load-type"]);
+    assertNotEmpty(convertedRule.trigger["resource-type"]);
+    assertEquals("third-party", convertedRule.trigger["load-type"][0]);
+    assertEquals("document", convertedRule.trigger["resource-type"][0]);
+    assertEquals("block", convertedRule.action.type);   
+}
+addTestCase(testConvertSubdocumentThirdPartyRule);
+
+/**
  * Tests rule with empty regexp conversion
  */
 function testConvertRuleWithEmptyRegexp() {
@@ -195,7 +230,6 @@ function _testRegex(regExp, count) {
     _logDebug('Elapsed: ' + elapsed + 'ms');
 }
 addTestCase(testRegexpPerformance);
-
 
 function _checkResult(json, errors) {
     var expectedErrorsCount = 4;
