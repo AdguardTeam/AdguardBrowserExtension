@@ -109,7 +109,7 @@ var Utils = exports.Utils = {
     
     isContentBlockerEnabled: function () {
         
-        if (!safari || !this.isSafari9Plus()) {
+        if (typeof safari == 'undefined' || !this.isSafari9Plus()) {
             return false;
         }
         
