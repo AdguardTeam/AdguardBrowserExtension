@@ -28,6 +28,7 @@ var ContentMessageHandler = exports.ContentMessageHandler = function () {
     this.handleMessage = this.handleMessage.bind(this);
 };
 
+
 ContentMessageHandler.prototype = {
 
     eventListeners: Object.create(null),
@@ -40,6 +41,22 @@ ContentMessageHandler.prototype = {
         this.adguardApplication = adguardApplication;
         this.filteringLog = filteringLog;
         this.UI = UI;
+        
+        var Listener = function() {
+        };
+        Listener.prototype.receiveMessage = function(message) {
+            require('./utils/log').Log.info('chrome script: {0}', message.data.url);
+            message.target
+                    .QueryInterface(Ci.nsIFrameLoaderOwner)
+                    .frameLoader
+                    .messageManager
+                    .sendAsyncMessage("pong", {});
+        };
+
+        var {Cu,Cc,Ci} = require('chrome');
+        var messageManager = Cc["@mozilla.org/globalmessagemanager;1"].getService(Ci.nsIMessageListenerManager);
+        messageManager.addMessageListener("ping", new Listener());
+        messageManager.loadFrameScript('chrome://adguard/content/content-script/frame-script.js', true);
     },
 
     setSendMessageToSender: function (sendMessageToSender) {

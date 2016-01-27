@@ -39,7 +39,7 @@ public class Main {
 
     private static final String PACK_METHOD_ZIP = "zip";
     private static final String PACK_METHOD_CRX = "crx";
-    private static final String PACK_METHOD_XPI = "xpi";
+    private static final String PACK_METHOD_XPI_JPM = "xpi_jpm";
     private static final String PACK_METHOD_XPI_CFX = "xpi_cfx";
 
     /**
@@ -106,7 +106,7 @@ public class Main {
             } else if (PACK_METHOD_CRX.equals(packMethod)) {
                 packedFile = PackageUtils.createCrx(CRX_MAKE_PATH, buildResult, CHROME_CERT_FILE);
                 FileUtils.deleteQuietly(buildResult);
-            } else if (PACK_METHOD_XPI.equals(packMethod)) {
+            } else if (PACK_METHOD_XPI_JPM.equals(packMethod)) {
                 String jpmXpiName = extensionId + "-" + version;
                 packedFile = PackageUtils.createXpi(XPI_MAKE_PATH, buildResult, jpmXpiName);
                 FileUtils.deleteQuietly(buildResult);
@@ -219,6 +219,7 @@ public class Main {
 
         if (browser == Browser.FIREFOX || browser == Browser.FIREFOX_LEGACY) {
             LocaleUtils.writeLocalesToFirefoxInstallRdf(dest, extensionNamePostfix);
+            LocaleUtils.writeLocalesToChromeManifest(dest);
         }
 
         if (browser == Browser.FIREFOX_LEGACY) {
@@ -248,7 +249,7 @@ public class Main {
                 log.error("Safari doesn't support pack methods. Pack extension manually.");
                 return false;
             case FIREFOX:
-                if (!PACK_METHOD_XPI.equals(packMethod)) {
+                if (!PACK_METHOD_XPI_JPM.equals(packMethod)) {
                     log.error("Firefox support only xpi pack methods");
                     return false;
                 }

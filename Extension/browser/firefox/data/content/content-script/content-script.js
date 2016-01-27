@@ -34,7 +34,7 @@ var contentPage = {
         if (!this.listenerRegistered) {
 
             this.listenerRegistered = true;
-
+            
             self.port.on(this.CONTENT_TO_BACKGROUND_CHANNEL, function (response) {
                 if ('callbackId' in response) {
                     var callbackId = response.callbackId;

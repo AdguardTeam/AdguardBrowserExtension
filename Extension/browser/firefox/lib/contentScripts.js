@@ -1,9 +1,7 @@
 var pageMod = require('sdk/page-mod');
-var l10n = require('sdk/l10n');
 var self = require('sdk/self');
 
 var I18N_MESSAGES = require('./utils/i18n-messages').I18N_MESSAGES;
-var userSettings = require('./utils/user-settings').userSettings;
 
 var ContentScripts = function () {
     this.onAttach = this.onAttach.bind(this);
@@ -271,7 +269,7 @@ ContentScripts.prototype = {
         var messages = Object.create(null);
         for (var i = 0; i < I18N_MESSAGES.length; i++) {
             var messageId = I18N_MESSAGES[i];
-            messages[messageId] = l10n.get(messageId);
+            messages[messageId] = i18n.getMessage(messageId);
         }
         return messages;
     },

@@ -20,4 +20,3 @@ var contentPage = {
 };
 
 var i18n = chrome.i18n;
-

@@ -412,6 +412,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
         events.on("http-on-examine-cached-response", observeListener, true);
         events.on("http-on-examine-merged-response", observeListener, true);
         events.on("http-on-opening-request", observeListener, true);
+        events.on("document-element-inserted", observeListener, true);
 
         unload.when(function () {
 
@@ -419,6 +420,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
             events.off("http-on-examine-cached-response", observeListener);
             events.off("http-on-examine-merged-response", observeListener);
             events.off("http-on-opening-request", observeListener);
+            events.off("document-element-inserted", observeListener, true);
 
             var registrar = components.manager.QueryInterface(Ci.nsIComponentRegistrar);
             for (let i = 0; i < WebRequestImpl.xpcom_categories.length; i++) {
@@ -537,6 +539,9 @@ var WebRequestImpl = exports.WebRequestImpl = {
                 break;
             case "http-on-opening-request":
                 this._httpOnOpeningRequest(subject);
+                break;
+            case "document-element-inserted":
+                //subject.defaultView.messageManager.sendAsyncMessage('loaded', {});
                 break;
         }
     },

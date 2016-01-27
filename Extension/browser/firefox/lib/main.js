@@ -17,7 +17,6 @@
  */
 var chrome = require('chrome');
 var self = require('sdk/self');
-var l10n = require('sdk/l10n');
 var tabs = require('sdk/tabs');
 var simplePrefs = require('sdk/simple-prefs');
 var simpleStorage = require('sdk/simple-storage');
@@ -38,7 +37,6 @@ var sdkModules = {
     'sdk/simple-storage': simpleStorage,
     'sdk/self': self,
     'sdk/page-mod': pageMod,
-    'sdk/l10n': l10n,
     'sdk/system/unload': unload,
     'sdk/system/events': require('sdk/system/events'),
     'sdk/core/promise': require('sdk/core/promise'),
@@ -237,6 +235,9 @@ exports.main = function (options, callbacks) {
 };
 
 var i18n = (function () {
+    
+    // Randomize URI to work around bug 719376
+    var stringBundle = Services.strings.createBundle('chrome://adguard/locale/messages.properties?' + Math.random());
 
     function getText(text, args) {
         if (!text) {
@@ -252,7 +253,12 @@ var i18n = (function () {
 
     return {
         getMessage: function (key, args) {
-            return getText(l10n.get(key), args);
+            try {
+                return getText(stringBundle.GetStringFromName(key), args);                
+            } catch (ex) {
+                // Key not found, simply return it as a translation
+                return key;
+            }
         }
     };
 })();

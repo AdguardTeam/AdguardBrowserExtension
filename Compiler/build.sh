@@ -23,11 +23,11 @@ if [ "$env" = release ]; then
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox release xpi for amo
-    options="--version=$version --dest=$destPath --name=firefox-amo --browser=firefox --pack=xpi --extensionId=adguardadblocker@adguard.com"
+    options="--version=$version --dest=$destPath --name=firefox-amo --browser=firefox --pack=xpi_jpm --extensionId=adguardadblocker@adguard.com"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
     
     #firefox beta xpi for AMO
-    options="--version=$version-beta --dest=$destPath --name=firefox-amo --browser=firefox --pack=xpi --extensionId=adguardadblocker@adguard.com"
+    options="--version=$version-beta --dest=$destPath --name=firefox-amo --browser=firefox --pack=xpi_jpm --extensionId=adguardadblocker@adguard.com"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #safari release for extensions.apple.com
@@ -52,7 +52,7 @@ elif [ "$env" = beta ]; then
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox beta xpi
-    options="--version=$version --branch=$branch --dest=$destPath --name=firefox-standalone --browser=firefox --pack=xpi --extensionId=adguardadblockerbeta@adguard.com --update-url=https://chrome.adtidy.org/updates.rdf"
+    options="--version=$version --branch=$branch --dest=$destPath --name=firefox-standalone --browser=firefox --pack=xpi_jpm --extensionId=adguardadblockerbeta@adguard.com --update-url=https://chrome.adtidy.org/updates.rdf"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox beta legacy xpi
