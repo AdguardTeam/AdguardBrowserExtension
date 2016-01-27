@@ -1,3 +1,4 @@
+/* global safari */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -19,8 +20,7 @@
 
 	var ContentScript = {
 
-		init: function(){
-
+		init: function() {
 			this.contentBlockerEnabled = this._isContentBlockerEnabled();
 
 			if(window === window.top){
@@ -51,18 +51,15 @@
 					evt.initEvent("beforeload");
 					safari.self.tab.canLoad(evt, {type: type, data: data});
 				}
-
 			};
 
 			createMainFrameEvent("safariWebRequest");
 			createMainFrameEvent("safariHeadersRequest");
 		},
 
-		_addOnbeforeLoadEventListener: function(){
+		_addOnbeforeLoadEventListener: function() {
 			var contentScriptId = Date.now() + Math.random().toString(10).slice(2);
-
 			var absoluteUrlHelper = document.createElement("a");
-
 			var onFirstLoadOccurred = false;
 
 			var execTmpScript = function () {
@@ -182,11 +179,34 @@
 			safari.self.tab.dispatchMessage("loading", document.location.href);
 		},
 
-		_isContentBlockerEnabled: function(){
+        /**
+         * By default we use new Content Blocker API for Safari 9+.
+         */
+		_isContentBlockerEnabled: function() {
+            
+            var contentBlockerEnabled = this.isSafari9OrNewer();
+            
+            if (contentBlockerEnabled && safari.self && safari.self.tab && safari.self.tab.canLoad) {
+                // Now check if content blocker API is not overriden in extension settings
+                var evt = document.createEvent("Event");
+                evt.initEvent("useOldSafariAPI");
+                var useOldSafariApi = safari.self.tab.canLoad(evt, {type: "useOldSafariAPI", data: {}});
+                return contentBlockerEnabled && !useOldSafariApi;                
+            }
+            
+            return contentBlockerEnabled;
+		},
+        
+        /**
+         * Checks Safari version
+         */
+        isSafari9OrNewer: function() {
 			var parseSafariVersion = function () {
 				var userAgent = navigator.userAgent;
 				var i = userAgent.indexOf("Version/");
-				if (i == 0) return "";
+				if (i == 0) {
+                    return "";
+                }
 
 				var end = userAgent.indexOf(" ", i);
 				return userAgent.substring(i + 8, end > 0 ? end : userAgent.length);
@@ -228,15 +248,14 @@
 			};
 
 			var version = parseSafariVersion();
-			return isGreaterOrEqualsVersion(version, "9.0");
-		}
+			return isGreaterOrEqualsVersion(version, "9.0");            
+        }
 	};
-
-	ContentScript.init();
-
+    
+    ContentScript.init();
 })();
 
-//Content script API implementation
+// Content script API implementation
 var contentPage = {
 	_eventTarget: safari.self,
 	_messageDispatcher: safari.self.tab,

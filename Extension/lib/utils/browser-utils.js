@@ -106,9 +106,18 @@ var Utils = exports.Utils = {
     isMacOs: function () {
         return this.navigator.platform.toUpperCase().indexOf('MAC') >= 0;
     },
-
+    
     isContentBlockerEnabled: function () {
-        return this.isSafari9Plus();
+        
+        if (!safari || !this.isSafari9Plus()) {
+            return false;
+        }
+        
+        if (typeof this._useOldSafariAPI == 'undefined') {
+            this._useOldSafariAPI = safari.extension.settings.getItem('useOldSafariAPI');
+        }
+        
+        return !this._useOldSafariAPI;
     },
 
     getExtensionStoreLink: function () {

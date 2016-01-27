@@ -1,3 +1,4 @@
+/* global Log */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -18,9 +19,8 @@ var BrowserTab, BrowserTabs;
 var ext;
 
 (function () {
-
-	//Tab events implementation
-
+    
+	// Tab events implementation
 	var SafariTabEvent = function () {
 		BaseEvent.apply(this, arguments);
 	};
@@ -53,7 +53,7 @@ var ext;
 		}
 	};
 
-	//Browser Tab implementation
+	// Browser Tab implementation
 	BrowserTab = function (tab) {
 		this.safariTab = tab;
 		this._eventTarget = tab;
@@ -91,8 +91,7 @@ var ext;
 		sendMessage: SendMessageFunction
 	};
 
-	//Browser Tabs collection implementation
-
+	// Browser Tabs collection implementation
 	BrowserTabs = function () {
 
 		this.safariTabs = [];
@@ -157,8 +156,7 @@ var ext;
 		}
 	};
 
-	//Browser Windows implementation
-
+	// Browser Window implementation
 	var BrowserWindow = function (win) {
 		this._win = win;
 	};
@@ -185,11 +183,11 @@ var ext;
 
 	var emptyListener = {
 		addListener: function () {
+            // Empty
 		}
 	};
 
 	// Web Request Blocking implementation
-
 	function getRequestDetails(message, tab) {
 
 		var requestType;
@@ -214,8 +212,7 @@ var ext;
 		};
 	}
 
-	//Extension API for background page
-
+	// Extension API for background page
 	ext = {};
 	ext.webRequest = {
 
@@ -285,8 +282,7 @@ var ext;
 		onBeforeSendHeaders: emptyListener
 	};
 
-	//Synchronous message passing implementation
-
+	// Synchronous message passing implementation
 	safari.application.addEventListener("message", function (event) {
 		if (event.name != "canLoad") {
 			return;
@@ -299,6 +295,9 @@ var ext;
 			case "safariHeadersRequest":
 				messageHandler = ext.webRequest.onHeadersReceived;
 				break;
+            case "useOldSafariAPI":
+                event.message = !Utils.isContentBlockerEnabled();
+                return;
 		}
 		event.message = messageHandler.processMessage(event.message.data, event.target);
 	}, true);
@@ -355,7 +354,6 @@ var ext;
 	};
 
 	/* Browser actions */
-
 	function setBrowserAction(tab, name, value) {
 		var items = safari.extension.toolbarItems;
 		for (var i = 0; i < items.length; i++) {
@@ -384,8 +382,10 @@ var ext;
 
 	ext.contextMenus = {
 		removeAll: function () {
+            // Empty
 		},
 		create: function () {
+            // Empty
 		}
 	}
 })();
