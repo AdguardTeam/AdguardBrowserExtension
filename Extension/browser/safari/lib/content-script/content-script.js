@@ -187,11 +187,15 @@
             var contentBlockerEnabled = this.isSafari9OrNewer();
             
             if (contentBlockerEnabled && safari.self && safari.self.tab && safari.self.tab.canLoad) {
-                // Now check if content blocker API is not overriden in extension settings
-                var evt = document.createEvent("Event");
-                evt.initEvent("useOldSafariAPI");
-                var useOldSafariApi = safari.self.tab.canLoad(evt, {type: "useOldSafariAPI", data: {}});
-                return contentBlockerEnabled && !useOldSafariApi;                
+                try {
+                    // Now check if content blocker API is not overriden in extension settings
+                    var evt = document.createEvent("Event");
+                    evt.initEvent("useOldSafariAPI");
+                    var useOldSafariApi = safari.self.tab.canLoad(evt, {type: "useOldSafariAPI", data: {}});
+                    return contentBlockerEnabled && !useOldSafariApi;                    
+                } catch (ex) {
+                    // Ignore
+                }
             }
             
             return contentBlockerEnabled;
