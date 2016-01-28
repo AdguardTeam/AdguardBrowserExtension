@@ -22,6 +22,7 @@
 var userSettings = require('../../lib/utils/user-settings').userSettings;
 var ServiceClient = require('../../lib/utils/service-client').ServiceClient;
 var FilterRule = require('../../lib/filter/rules/base-filter-rule').FilterRule;
+var FilterRuleBuilder = require('../../lib/filter/rules/filter-rule-builder').FilterRuleBuilder;
 var UrlFilterRule = require('../../lib/filter/rules/url-filter-rule').UrlFilterRule;
 var StringUtils = require('../../lib/utils/common').StringUtils;
 var RequestTypes = require('../../lib/utils/common').RequestTypes;
@@ -325,6 +326,6 @@ AdguardApplication.prototype = {
 			headerInfo[keyAndValue[0]] = decodeURIComponent(keyAndValue[1]);
 		}
 
-		return FilterRule.createRule(headerInfo.rule, headerInfo.filterId - 0);
+		return FilterRuleBuilder.createRule(headerInfo.rule, headerInfo.filterId - 0);
 	}
 };
