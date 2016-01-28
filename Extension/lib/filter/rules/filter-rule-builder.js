@@ -17,9 +17,7 @@ function getClasses() {
     return classes;
 }
 
-var FilterRuleBuilder = exports.FilterRuleBuilder = function () {};
-
-FilterRuleBuilder.prototype = {
+exports.FilterRuleBuilder = {
 
     /**
      * Method that parses rule text and creates object of a suitable class.
