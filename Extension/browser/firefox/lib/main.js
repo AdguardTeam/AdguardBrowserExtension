@@ -28,6 +28,8 @@ const {Cc, Ci, Cr, Cu} = chrome;
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 
+var console = Cu.import('resource://gre/modules/devtools/Console.jsm', {}).console;
+
 var sdkModules = {
     'chrome': chrome,
     'sdk/timers': require('sdk/timers'),
@@ -257,8 +259,6 @@ var i18n = (function () {
     };
 })();
 
-var console = Cu.import('resource://gre/modules/devtools/Console.jsm', {}).console;
-
 /**
  * Loads Adguard module.
  *
@@ -303,6 +303,7 @@ var loadAdguardModule = function (modulePath) {
                 return loadAdguardModule(module);
             },
             i18n: i18n,
+            console: console,
             exports: Object.create(Object.prototype)
         };
 
