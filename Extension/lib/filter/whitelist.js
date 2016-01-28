@@ -25,6 +25,7 @@ var LS = require('../../lib/utils/local-storage').LS;
 var userSettings = require('../../lib/utils/user-settings').userSettings;
 
 var FilterRule = require('../../lib/filter/rules/base-filter-rule').FilterRule;
+var FilterRuleBuilder = require('../../lib/filter/rules/filter-rule-builder').FilterRuleBuilder;
 var UrlFilter = require('../../lib/filter/rules/url-filter').UrlFilter;
 
 var allowAllWhiteListRule = {
@@ -202,7 +203,7 @@ WhiteListService.prototype = {
         if (StringUtils.isEmpty(domain)) {
             return null;
         }
-        return FilterRule.createRule("@@//" + domain + "$document", AntiBannerFiltersId.WHITE_LIST_FILTER_ID);
+        return FilterRuleBuilder.createRule("@@//" + domain + "$document", AntiBannerFiltersId.WHITE_LIST_FILTER_ID);
     },
 
     _addToArray: function (domain) {
