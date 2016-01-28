@@ -128,19 +128,19 @@ PageController.prototype = {
 		this.searchBlocked = false;
 		this.searchWhitelisted = false;
 
-		//bind click to reload tab
+		// Bind click to reload tab
 		$('.task-manager').on('click', '.reloadTab', function (e) {
 			e.preventDefault();
 			contentPage.sendMessage({type: 'reloadTabById', tabId: this.currentTabId});
 		}.bind(this));
 
-		//bind click to clear events
+		// Bind click to clear events
 		$('#clearTabLog').on('click', function (e) {
 			e.preventDefault();
 			contentPage.sendMessage({type: 'clearEventsByTabId', tabId: this.currentTabId});
 		}.bind(this));
 
-		//bind click to show request info
+		// Bind click to show request info
 		var self = this;
 		this.logTable.on('click', '.task-manager-content-header-body-row', function () {
 			var filteringEvent = $(this).data();
@@ -155,14 +155,14 @@ PageController.prototype = {
 
 		this._bindSearchFilters();
 
-		//synchronize opened tabs
+		// Synchronize opened tabs
 		contentPage.sendMessage({type: 'synchronizeOpenTabs'}, function () {
 			this._onOpenedTabsReceived();
 		}.bind(this));
 	},
 
 	_onOpenedTabsReceived: function () {
-		//try to retrieve tabId from query string
+		// Try to retrieve tabId from query string
 		var tabId = UrlUtils.getParamValue(document.location.href, 'tabId');
 		if (tabId) {
 			this.currentTabId = tabId;

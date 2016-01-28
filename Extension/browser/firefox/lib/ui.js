@@ -62,7 +62,9 @@ var UI = exports.UI = {
         }
 
         //record frame and update popup button if needed
-        for each(var tab in this._getAllTabs()) {
+        var allTabs = this._getAllTabs();
+        for (var i = 0; i < allTabs.length; i++) {
+            var tab = allTabs[i];
             this.framesMap.recordFrame(tab, 0, tab.url, RequestTypes.DOCUMENT);
             this.framesMap.checkTabIncognitoMode(tab);
             this._updatePopupButtonState(tab);
@@ -390,7 +392,7 @@ var UI = exports.UI = {
             if (event != EventNotifierTypes.ADS_BLOCKED || !tab) {
                 return;
             }
-
+            
             var blockedAds = framesMap.updateBlockedAdsCount(tab, blocked);
 
             if (blockedAds == null || Prefs.mobile || !userSettings.showPageStatistic()) {
@@ -468,7 +470,7 @@ var UI = exports.UI = {
         var result = [];
         for (var i = 0; i < tabs.length; i++) {
             var tab = tabs[i];
-            //fennec case (tab maybe undefined)
+            // Fennec case (tab maybe undefined)
             if (tab) {
                 result.push(tab);
             }

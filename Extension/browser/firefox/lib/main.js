@@ -214,17 +214,17 @@ exports.main = function (options, callbacks) {
         throw  ex;
     }
 
-    //cleanup stored frames
+    // Cleanup stored frames
     tabs.on('close', function (tab) {
         framesMap.removeFrame(tab);
     });
 
-    // language detect on tab ready event
+    // Language detect on tab ready event
     tabs.on('ready', function (tab) {
         antiBannerService.checkTabLanguage(tab.id, tab.url);
     });
 
-    //initialize filtering log
+    // Initialize filtering log
     filteringLog.synchronizeOpenTabs();
     tabs.on('open', function (tab) {
         filteringLog.addTab(tab);
@@ -282,7 +282,7 @@ var loadAdguardModule = function (modulePath) {
     } else {
         // Tihs means path is absolute
         // This can be only when add-on code is pre-compiled in order to be "cfx-friendly"
-        moduleName = modulePath;
+        moduleName = '/lib/' + modulePath;
     }
 
     try {
