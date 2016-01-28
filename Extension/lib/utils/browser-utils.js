@@ -114,7 +114,8 @@ var Utils = exports.Utils = {
         }
         
         if (typeof this._useOldSafariAPI == 'undefined') {
-            this._useOldSafariAPI = safari.extension.settings.getItem('useOldSafariAPI');
+            // Seems that getItem returns a string, but we'll cast it explicitly to be sure
+            this._useOldSafariAPI = (String(safari.extension.settings.getItem('useOldSafariAPI')) == 'true');
         }
         
         return !this._useOldSafariAPI;
