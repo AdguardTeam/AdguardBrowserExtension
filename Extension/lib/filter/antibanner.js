@@ -38,6 +38,7 @@ var FilterStorage = require('../../lib/filter/storage').FilterStorage;
 var userSettings = require('../../lib/utils/user-settings').userSettings;
 var EventNotifier = require('../../lib/utils/notifier').EventNotifier;
 var FilterRule = require('../../lib/filter/rules/base-filter-rule').FilterRule;
+var FilterRuleBuilder = require('../../lib/filter/rules/filter-rule-builder').FilterRuleBuilder;
 var LS = require('../../lib/utils/local-storage').LS;
 var Prefs = require('../../lib/prefs').Prefs;
 var SubscriptionService = require('../../lib/filter/subscription').SubscriptionService;
@@ -344,7 +345,7 @@ AntiBannerService.prototype = {
      * @returns Rule created
      */
     addUserFilterRule: function (ruleText) {
-        var rule = FilterRule.createRule(ruleText, AntiBannerFiltersId.USER_FILTER_ID);
+        var rule = FilterRuleBuilder.createRule(ruleText, AntiBannerFiltersId.USER_FILTER_ID);
         if (rule != null) {
             this._addRuleToFilter(AntiBannerFiltersId.USER_FILTER_ID, rule);
             this.userRules.push(rule.ruleText);
@@ -360,7 +361,7 @@ AntiBannerService.prototype = {
     addUserFilterRules: function (rulesToAdd) {
         var rules = [];
         for (var i = 0; i < rulesToAdd.length; i++) {
-            var rule = FilterRule.createRule(rulesToAdd[i], AntiBannerFiltersId.USER_FILTER_ID);
+            var rule = FilterRuleBuilder.createRule(rulesToAdd[i], AntiBannerFiltersId.USER_FILTER_ID);
             if (rule != null) {
                 rules.push(rule);
                 this.userRules.push(rule.ruleText);
@@ -377,7 +378,7 @@ AntiBannerService.prototype = {
      * @param ruleText Rule text
      */
     removeUserFilter: function (ruleText) {
-        var rule = FilterRule.createRule(ruleText, AntiBannerFiltersId.USER_FILTER_ID);
+        var rule = FilterRuleBuilder.createRule(ruleText, AntiBannerFiltersId.USER_FILTER_ID);
         if (rule != null) {
             var filter = this._getFilterById(AntiBannerFiltersId.USER_FILTER_ID);
             this.requestFilter.removeRule(rule);
@@ -1020,7 +1021,7 @@ AntiBannerService.prototype = {
                     continue;
                 }
                 uniqueRules[ruleText] = true;
-                var rule = FilterRule.createRule(ruleText, filterId);
+                var rule = FilterRuleBuilder.createRule(ruleText, filterId);
 
                 if (rule != null) {
                     requestFilter.addRule(rule);

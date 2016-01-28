@@ -22,6 +22,7 @@
 var Log = require('../../lib/utils/log').Log;
 var FS = require('../../lib/utils/file-storage').FS;
 var FilterRule = require('../../lib/filter/rules/base-filter-rule').FilterRule;
+var FilterRuleBuilder = require('../../lib/filter/rules/filter-rule-builder').FilterRuleBuilder;
 
 /**
  * This class manages file storage for filters.
@@ -220,7 +221,7 @@ FilterParser.prototype = {
 						break;
 					case FilterParser.Sections.RULES_START:
 						if (line && this.currentRules) {
-							var rule = FilterRule.createRule(line, this.currentFilter.filterId - 0);
+							var rule = FilterRuleBuilder.createRule(line, this.currentFilter.filterId - 0);
 							if (rule != null) {
 								this.currentRules.push(rule);
 							}

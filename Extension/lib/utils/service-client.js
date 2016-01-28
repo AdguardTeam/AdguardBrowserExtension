@@ -26,6 +26,7 @@ var XMLHttpRequestConstructor = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"];
 var Log = require('../../lib/utils/log').Log;
 var Utils = require('../../lib/utils/browser-utils').Utils;
 var FilterRule = require('../../lib/filter/rules/base-filter-rule').FilterRule;
+var FilterRuleBuilder = require('../../lib/filter/rules/filter-rule-builder').FilterRuleBuilder;
 var Prefs = require('../../lib/prefs').Prefs;
 
 /**
@@ -174,7 +175,7 @@ ServiceClient.prototype = {
 			}
 			var rules = [];
 			for (i = 0; i < lines.length; i++) {
-				var rule = FilterRule.createRule(lines[i], filterId);
+				var rule = FilterRuleBuilder.createRule(lines[i], filterId);
 				if (rule != null) {
 					rules.push(rule);
 				}
@@ -223,7 +224,7 @@ ServiceClient.prototype = {
 				} else if (/!\s+TimeUpdated:\s+(.+)$/.test(line)) {
 					timeUpdated = timeUpdated || new Date(RegExp.$1);
 				}
-				var rule = FilterRule.createRule(line, filterId);
+				var rule = FilterRuleBuilder.createRule(line, filterId);
 				if (rule != null) {
 					rules.push(rule);
 				}

@@ -28,6 +28,7 @@ var URL_FILTER_REGEXP_START_URL = "^https?://([^/]*\\.)?";
 var URL_FILTER_REGEXP_SEPARATOR = "[/:&?]?";
 
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
+var FilterRuleBuilder = require('filter/rules/filter-rule-builder').FilterRuleBuilder;
 var CssFilterRule = require('filter/rules/css-filter-rule').CssFilterRule;
 var UrlFilterRule = require('filter/rules/url-filter-rule').UrlFilterRule;
 var ScriptFilterRule = require('filter/rules/script-filter-rule').ScriptFilterRule;
@@ -423,7 +424,7 @@ exports.SafariContentBlockerConverter = {
                 return null;
             }
 
-            var agRule = FilterRule.createRule(ruleText);
+            var agRule = FilterRuleBuilder.createRule(ruleText);
             if (agRule == null) {
                 throw new Error('Cannot create rule from: ' + ruleText);
             }
