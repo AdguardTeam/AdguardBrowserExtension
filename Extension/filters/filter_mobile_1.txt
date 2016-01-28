@@ -1,10 +1,10 @@
 ! Title: Russian filter
-! Version: 1.0.30.43
+! Version: 1.0.30.44
 ! Name: Russian filter
 ! Description: Filter that enables removing of the ads from websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-01-28T20:17:28.285+03:00
+! TimeUpdated: 2016-01-28T20:35:07.489+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -5957,6 +5957,8 @@ webware.ru/*/clients/
 http://*.space^$script,domain=free-torrent.org|free-torrents.org|jpgstore.ru|pic4cash.ru|pics-money.ru|pics2pay.ru|picspay.ru
 @@||video.videonow.ru^$domain=echo.msk.ru
 @@||video.videonow.ru^$domain=api.cybergame.tv
+cheb.ru#@##TopAd
+cheb.ru#@##HeroAd
 @@||fishki.net/comment/more/$document
 @@||pear-advert.ru/$domain=pear-advert.ru
 @@||cdn.webclicks24.com^$domain=rulertube.com,image

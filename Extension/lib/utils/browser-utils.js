@@ -115,7 +115,8 @@ var Utils = exports.Utils = {
         
         if (typeof this._useOldSafariAPI == 'undefined') {
             // Seems that getItem returns a string
-            this._useOldSafariAPI = (safari.extension.settings.getItem('useOldSafariAPI') == 'true');
+            // Cast it to string as I don't understand why it's type randomly changes (in dev build it is string, in beta - boolean)
+            this._useOldSafariAPI = (String(safari.extension.settings.getItem('useOldSafariAPI')) == 'true');
         }
         
         return !this._useOldSafariAPI;
