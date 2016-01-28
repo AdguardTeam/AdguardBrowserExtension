@@ -257,6 +257,8 @@ var i18n = (function () {
     };
 })();
 
+var console = Cu.import('resource://gre/modules/devtools/Console.jsm', {}).console;
+
 /**
  * Loads Adguard module.
  *
