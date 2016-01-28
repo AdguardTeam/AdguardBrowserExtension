@@ -1,10 +1,10 @@
 ! Title: Experimental filter
-! Version: 1.0.23.83
+! Version: 1.0.23.84
 ! Name: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: Experimental filter
 ! DescriptionEn: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! TimeUpdated: 2016-01-27T21:00:16.001+03:00
+! TimeUpdated: 2016-01-28T21:00:23.872+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -143,6 +143,7 @@ overclockers.ru##div[style="border: 1px solid #aaa"]
 softportal.com##div[style="text-align:center; margin:1.5em auto; width:285px;"]
 ||safety-gate.me/images/comss-logo.png
 imagebam.com###sponsor-modal
+theguardian.com##.adblock-sticky__message
 t3n.de##.ab-notice
 ||hardwareslave.com/wp-content/uploads/an-temp/
 @@||seedoff.tv/jscript/antiadblock.js
@@ -292,6 +293,7 @@ videogamesblogger.com#%#AG_onLoad(function() { window.num_seconds = 1; });
 rusfolder.com,rusfolder.net#%#AG_onLoad(function() { $('a[href^="http://ints.rusfolder.com/ints/sponsor/?bi="]').trigger('click'); });
 letitbit.net##img[class="mcmp_postrol_img"]
 revclouds.com#%#AG_onLoad(function() {document.getElementById("tick-dwn").click();});
+||onceux.unicornmedia.com$replace=/(<VAST(.|\s)*?>)(.|\s)*<\/VAST>/\$1<\/VAST>/,domain=gamespot.com
 ||schneevonmorgen.com.s3.amazonaws.com/*config.json$replace=/"enabled": true\,/"enabled": false\,/i,domain=rtl.de
 ||cdn.videoplaza.tv/contrib/de-ipd/svm/homadConfigVideoplaza-n-tv.json$replace=/"enabled": true\,/"enabled": false\,/i,domain=n-tv.de
 ||adfarm*.adition.com/banner$replace=/(<VAST(.|\s)*?>)(.|\s)*<\/VAST>/\$1<\/VAST>/,domain=spiegel.de

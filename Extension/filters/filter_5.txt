@@ -1,10 +1,10 @@
 ! Title: Experimental filter
-! Version: 1.0.23.83
+! Version: 1.0.23.84
 ! Name: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: Experimental filter
 ! DescriptionEn: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! TimeUpdated: 2016-01-27T21:00:16.001+03:00
+! TimeUpdated: 2016-01-28T21:00:23.872+03:00
 ! Title: Adguard Experimental Filter
 !
 ! Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
@@ -427,6 +427,7 @@ imagebam.com###sponsor-modal
 !------------------ Anti-adblock messages --------------------------
 !---------- which does not affect the functioning of site ----------
 !-------------------------------------------------------------------
+theguardian.com##.adblock-sticky__message
 t3n.de##.ab-notice
 ||hardwareslave.com/wp-content/uploads/an-temp/
 @@||seedoff.tv/jscript/antiadblock.js
@@ -652,6 +653,8 @@ revclouds.com#%#AG_onLoad(function() {document.getElementById("tick-dwn").click(
 !------------------------------------------------------
 !---------------------- Replacing rules ---------------
 !------------------------------------------------------
+! http://forum.adguard.com/showthread.php?8906
+||onceux.unicornmedia.com$replace=/(<VAST(.|\s)*?>)(.|\s)*<\/VAST>/\$1<\/VAST>/,domain=gamespot.com
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1344
 ||schneevonmorgen.com.s3.amazonaws.com/*config.json$replace=/"enabled": true\,/"enabled": false\,/i,domain=rtl.de
 ! http://forum.adguard.com/showthread.php?8784
