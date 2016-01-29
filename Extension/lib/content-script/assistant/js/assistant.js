@@ -368,9 +368,7 @@ var Adguard = function () {
 	 * Cancels select mode, removes all elements using for selecting
 	 */
 	var cancelSelectMode = function () {
-		if (self.selector) {
-			self.selector.close();
-		}
+		AdguardSelectorLib.close();
 	};
 
 	var onElementSelected = function (element) {
@@ -392,12 +390,8 @@ var Adguard = function () {
 	 */
 	var startSelector = function () {
 		// Initializing AdguardSelector with default configuration
-		if (self.selector) {
-			self.selector.reset();
-		}
-
-		self.selector = Object.create(AdguardSelectorLib);
-		self.selector.init(onElementSelected);
+		AdguardSelectorLib.reset();
+		AdguardSelectorLib.init(onElementSelected);
 	};
 
 	var haveUrlBlockParameter = function (element) {
@@ -506,7 +500,7 @@ var Adguard = function () {
 		loaded.done(function () {
 			createSlider(element);
 
-			self.selector.selectElement(element);
+			AdguardSelectorLib.selectElement(element);
 
 			onScopeChange();
 			setScopeOneDomainText();
@@ -706,7 +700,7 @@ var Adguard = function () {
 		removePreview();
 
 		settings.selectedElement = element;
-		self.selector.selectElement(element);
+		AdguardSelectorLib.selectElement(element);
 
 		makeDefaultCheckboxesForDetailedMenu();
 		onScopeChange();
@@ -744,7 +738,7 @@ var Adguard = function () {
 			removePreview();
 			findInIframe('#adg-preview > span').text(getMessage("assistant_preview_start"));
 
-			self.selector.selectElement(settings.selectedElement);
+			AdguardSelectorLib.selectElement(settings.selectedElement);
 
 			findInIframe('#slider').show();
 			findInIframe('.adg-slide-text').show();
@@ -763,7 +757,7 @@ var Adguard = function () {
 	};
 
 	var hideElement = function () {
-		self.selector.reset();
+		AdguardSelectorLib.reset();
 
 		var selector = getSelector();
 		var style = document.createElement("style");
@@ -832,8 +826,8 @@ var Adguard = function () {
 
 	var windowZoomFix = function () {
 		$(window).resize(function () {
-			if (settings.selectedElement && self.selector) {
-				self.selector.selectElement(settings.selectedElement);
+			if (settings.selectedElement) {
+				AdguardSelectorLib.selectElement(settings.selectedElement);
 			}
 		});
 	};

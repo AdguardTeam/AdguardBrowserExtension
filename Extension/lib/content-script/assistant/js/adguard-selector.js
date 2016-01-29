@@ -18,91 +18,173 @@
 /**
  * Adguard selector library
  */
-var AdguardSelectorLib = {
 
-    BORDER_WIDTH: 5,
-    BORDER_PADDING: 2,
-    BORDER_CLASS: "sg_border",
+var AdguardSelectorLib = (function (api) {
 
-    b_top: null,
-    b_left: null,
-    b_right: null,
-    b_bottom: null,
+    // PRIVATE FIELDS
+    var BORDER_WIDTH = 5;
+    var BORDER_PADDING = 2;
+    var BORDER_CLASS = "sg_border";
 
-    PLACEHOLDER_PREFIX: 'adguard-placeholder',
-    placeholder_elements: null,
+    var b_top = null;
+    var b_left = null;
+    var b_right = null;
+    var b_bottom = null;
 
-    restricted_elements: null,
-    prediction_helper: null,
+    var PLACEHOLDER_PREFIX = 'adguard-placeholder';
+    var placeholder_elements = null;
 
-    SUGGESTED_CLASS: "sg_suggested",
-    SELECTED_CLASS: "sg_selected",
-    REJECTED_CLASS: "sg_rejected",
-    IGNORED_CLASS: "sg_ignore",
+    var restricted_elements = null;
+    var prediction_helper = null;
 
-    selected_elements: [],
-    rejected_elements: [],
+    var SUGGESTED_CLASS = "sg_suggested";
+    var SELECTED_CLASS = "sg_selected";
+    var REJECTED_CLASS = "sg_rejected";
+    var IGNORED_CLASS = "sg_ignore";
 
-    path_output_field: null,
-    select_mode: 'exact',
-    unbound: true,
-    _onElementSelected: null,
+    var selected_elements = [];
+    var rejected_elements = [];
 
-    /**
-     * Starts selector module.
-     *
-     * @param onElementSelected callback function
-     * @param selectionRenderer optional function contains selection presentation implementation
-     */
-    init: function (onElementSelected, selectionRenderer) {
+    var path_output_field = null;
+    var select_mode = 'exact';
+    var unbound = true;
+    var _onElementSelected = null;
 
-        this._onElementSelected = onElementSelected;
-        if (selectionRenderer && typeof selectionRenderer === "function") {
-            this._selectionRenderer = selectionRenderer;
+
+    // PRIVATE METHODS
+
+    var _clearSuggested = function () {
+        $('.sg_suggested').removeClass(SUGGESTED_CLASS);
+    };
+
+    var _suggestPredicted = function (prediction) {
+        if (prediction && prediction != '') {
+            var count = 0;
+            $(prediction).each(function () {
+                count += 1;
+                if (!$(this).hasClass(SELECTED_CLASS)
+                    && !$(this).hasClass(IGNORED_CLASS)
+                    && !$(this).hasClass(REJECTED_CLASS)) {
+                    $(this).addClass(SUGGESTED_CLASS);
+                }
+            });
+        }
+    };
+
+    var _setPath = function (prediction) {
+        if (path_output_field != null) {
+            if (prediction && prediction.length > 0) {
+                path_output_field.value = prediction;
+            }
+            else {
+                path_output_field.value = 'No valid path found.';
+            }
+        }
+    };
+
+    var _makePredictionPath = function (elem) {
+        var w_elem = $(elem);
+
+        if (w_elem.hasClass(SELECTED_CLASS)) {
+            w_elem.removeClass(SELECTED_CLASS);
+            selected_elements.splice($.inArray(elem, selected_elements), 1);
+        } else if (w_elem.hasClass(REJECTED_CLASS)) {
+            w_elem.removeClass(REJECTED_CLASS);
+            rejected_elements.splice($.inArray(elem, rejected_elements), 1);
+        } else if (w_elem.hasClass(SUGGESTED_CLASS)) {
+            w_elem.addClass(REJECTED_CLASS);
+            rejected_elements.push(elem);
+        } else {
+            if (select_mode == 'exact' && selected_elements.length > 0) {
+                $('.sg_selected').removeClass(SELECTED_CLASS);
+                selected_elements = [];
+            }
+            //w_elem.addClass('sg_selected');
+            selected_elements.push(elem);
         }
 
-        this.restricted_elements = $.map(['html', 'body', 'head', 'base'], function (selector) {
-            return $(selector).get(0);
-        });
-        this.prediction_helper = new DomPredictionHelper($, String);
+        var prediction = prediction_helper.predictCss(selected_elements,
+            rejected_elements.concat(restricted_elements));
 
-        this._setupEventHandlers();
-        this.unbound = false;
-    },
+        if (select_mode == 'similar') {
+            _clearSuggested();
+            _suggestPredicted(prediction);
+        }
 
-    /**
-     * Resets state of selector.
-     * Clears current selection.
-     */
-    reset: function () {
-        this._clearSelected();
-        this._setPath();
-    },
+        return prediction;
+    };
 
-    /**
-     * Destroys selector module.
-     * Removes all selector elements and unbinds event handlers.
-     */
-    close: function () {
-        this.unbound = true;
+    var _firstSelectedOrSuggestedParent = function (element) {
+        if ($(element).hasClass(SUGGESTED_CLASS) || $(element).hasClass(SELECTED_CLASS)) {
+            return element;
+        }
 
-        this._removeBorderFromDom();
-        this._deleteEventHandlers();
-    },
+        while (element.parentNode && (element = element.parentNode)) {
+            if ($.inArray(element, restricted_elements) == -1) {
+                if ($(element).hasClass(SUGGESTED_CLASS) || $(element).hasClass(SELECTED_CLASS)) {
+                    return element;
+                }
+            }
+        }
 
-    /**
-     * Selects specified element.
-     * Marks element as selected and holds selection on it.
-     *
-     * @param element
-     */
-    selectElement: function (element) {
-        this._selectionRenderer(element);
+        return null;
+    };
 
-        this.unbound = true;
-        this._deleteEventHandlers();
-    },
 
+    var _px = function (p) {
+        return p + 'px';
+    };
+
+    var _getTagPath = function (element) {
+        if (element.parentNode) {
+            return element.parentNode.tagName.toLowerCase() + ' ' + element.tagName.toLowerCase();
+        } else {
+            return element.tagName.toLowerCase();
+        }
+    };
+
+    var _removeBorderFromDom = function () {
+        if (b_top) {
+            b_top.remove();
+            b_bottom.remove();
+            b_left.remove();
+            b_right.remove();
+        }
+    };
+
+    var _addBorderToDom = function () {
+        document.body.appendChild(b_top.get(0));
+        document.body.appendChild(b_bottom.get(0));
+        document.body.appendChild(b_left.get(0));
+        document.body.appendChild(b_right.get(0));
+    };
+
+    var _showBorders = function () {
+        b_top.show();
+        b_bottom.show();
+        b_left.show();
+        b_right.show();
+    };
+
+    var _removeBorders = function () {
+        if (b_top) {
+            b_top.hide();
+            b_bottom.hide();
+            b_left.hide();
+            b_right.hide();
+        }
+    };
+
+    var _clearSelected = function () {
+        selected_elements = [];
+        rejected_elements = [];
+
+        $('.sg_selected').removeClass(SELECTED_CLASS);
+        $('.sg_rejected').removeClass(REJECTED_CLASS);
+
+        _removeBorders();
+        _clearSuggested();
+    };
 
     /**
      * Adds borders to selected element.
@@ -113,9 +195,9 @@ var AdguardSelectorLib = {
      * @param element
      * @private
      */
-    _selectionRenderer: function (element) {
-        this._removeBorders();
-        this._setupBorders();
+    var _selectionRenderer = function (element) {
+        _removeBorders();
+        _setupBorders();
 
         if (!element) {
             return;
@@ -129,135 +211,33 @@ var AdguardSelectorLib = {
         var width = elem.outerWidth();
         var height = elem.outerHeight();
 
-        this.b_top.css('width', this._px(width + this.BORDER_PADDING * 2 + this.BORDER_WIDTH * 2)).
-            css('top', this._px(top - this.BORDER_WIDTH - this.BORDER_PADDING)).
-            css('left', this._px(left - this.BORDER_PADDING - this.BORDER_WIDTH));
-        this.b_bottom.css('width', this._px(width + this.BORDER_PADDING * 2 + this.BORDER_WIDTH * 2 - 5)).
-            css('top', this._px(top + height + this.BORDER_PADDING)).
-            css('left', this._px(left - this.BORDER_PADDING - this.BORDER_WIDTH)).text(this._getTagPath(element));
-        this.b_left.css('height', this._px(height + this.BORDER_PADDING * 2)).
-            css('top', this._px(top - this.BORDER_PADDING)).
-            css('left', this._px(left - this.BORDER_PADDING - this.BORDER_WIDTH));
-        this.b_right.css('height', this._px(height + this.BORDER_PADDING * 2)).
-            css('top', this._px(top - this.BORDER_PADDING)).
-            css('left', this._px(left + width + this.BORDER_PADDING));
+        b_top.css('width', _px(width + BORDER_PADDING * 2 + BORDER_WIDTH * 2)).
+            css('top', _px(top - BORDER_WIDTH - BORDER_PADDING)).
+            css('left', _px(left - BORDER_PADDING - BORDER_WIDTH));
+        b_bottom.css('width', _px(width + BORDER_PADDING * 2 + BORDER_WIDTH * 2 - 5)).
+            css('top', _px(top + height + BORDER_PADDING)).
+            css('left', _px(left - BORDER_PADDING - BORDER_WIDTH)).text(_getTagPath(element));
+        b_left.css('height', _px(height + BORDER_PADDING * 2)).
+            css('top', _px(top - BORDER_PADDING)).
+            css('left', _px(left - BORDER_PADDING - BORDER_WIDTH));
+        b_right.css('height', _px(height + BORDER_PADDING * 2)).
+            css('top', _px(top - BORDER_PADDING)).
+            css('left', _px(left + width + BORDER_PADDING));
 
-        this.b_right.get(0).target_elem = this.b_left.get(0).target_elem = this.b_top.get(0).target_elem = this.b_bottom.get(0).target_elem = element;
+        b_right.get(0).target_elem = b_left.get(0).target_elem = b_top.get(0).target_elem = b_bottom.get(0).target_elem = element;
 
-        this._showBorders();
-    },
+        _showBorders();
+    };
 
-    _showBorders: function () {
-        this.b_top.show();
-        this.b_bottom.show();
-        this.b_left.show();
-        this.b_right.show();
-    },
+    var _getHost = function (url) {
+        if (!url) return "";
 
-    _removeBorders: function () {
-        if (this.b_top) {
-            this.b_top.hide();
-            this.b_bottom.hide();
-            this.b_left.hide();
-            this.b_right.hide();
-        }
-    },
+        var a = document.createElement('a');
+        a.href = url;
+        return a.hostname;
+    };
 
-    _setupBorders: function () {
-        if (!this.b_top) {
-            var width = this._px(this.BORDER_WIDTH);
-
-            this.b_top = $('<div>').addClass(this.BORDER_CLASS).css('height', width).hide()
-                .on("click", {'self': this}, this._sgMousedown);
-            this.b_bottom = $('<div>').addClass(this.BORDER_CLASS).addClass('sg_bottom_border')
-                .css('height', this._px(this.BORDER_WIDTH + 6)).hide()
-                .bind("click", {'self': this}, this._sgMousedown);
-            this.b_left = $('<div>').addClass(this.BORDER_CLASS).css('width', width).hide()
-                .on("click", {'self': this}, this._sgMousedown);
-            this.b_right = $('<div>').addClass(this.BORDER_CLASS).css('width', width).hide()
-                .on("click", {'self': this}, this._sgMousedown);
-
-            this._addBorderToDom();
-        }
-    },
-
-    _addBorderToDom: function () {
-        document.body.appendChild(this.b_top.get(0));
-        document.body.appendChild(this.b_bottom.get(0));
-        document.body.appendChild(this.b_left.get(0));
-        document.body.appendChild(this.b_right.get(0));
-    },
-
-    _removeBorderFromDom: function () {
-        if (this.b_top) {
-            this.b_top.remove();
-            this.b_bottom.remove();
-            this.b_left.remove();
-            this.b_right.remove();
-        }
-    },
-
-    _getTagPath: function (element) {
-        if (element.parentNode) {
-            return element.parentNode.tagName.toLowerCase() + ' ' + element.tagName.toLowerCase();
-        } else {
-            return element.tagName.toLowerCase();
-        }
-    },
-
-    _px: function (p) {
-        return p + 'px';
-    },
-
-
-    _setupEventHandlers: function () {
-        this._makeIFrameAndEmbededSelector();
-
-        var sgIgnore = $("body *:not(.sg_ignore)");
-        sgIgnore.on("mouseover", {'self': this}, this._sgMouseover);
-        sgIgnore.on("mouseout", {'self': this}, this._sgMouseout);
-        sgIgnore.on("click", {'self': this}, this._sgMousedown);
-    },
-
-    _deleteEventHandlers: function () {
-        this._removePlaceholders();
-
-        var elements = $("body *");
-        elements.off("mouseover", this._sgMouseover);
-        elements.off("mouseout", this._sgMouseout);
-        elements.off("click", this._sgMousedown);
-    },
-
-    _makeIFrameAndEmbededSelector: function () {
-        this.placeholder_elements = $('iframe:not(.sg_ignore,:hidden),embed,object');
-        var elements = this.placeholder_elements;
-        for (var i = 0; i < elements.length; i++) {
-            var current = elements[i];
-            var placeHolder = this._makePlaceholderImage(current);
-            var id = this.PLACEHOLDER_PREFIX + i;
-
-            placeHolder.setAttribute("id", id);
-            $(current).replaceWith(placeHolder);
-            $('#' + id).on('click', {'self': this, 'actualElement': current}, this._placeholderClick);
-        }
-    },
-
-    _removePlaceholders: function () {
-        if (!this.placeholder_elements) {
-            return;
-        }
-
-        var elements = this.placeholder_elements;
-        for (var i = 0; i < elements.length; i++) {
-            var current = elements[i];
-            var id = this.PLACEHOLDER_PREFIX + i;
-            $('#' + id).replaceWith($(current));
-        }
-
-        this.placeholder_elements = null;
-    },
-
-    _makePlaceholderImage: function (element) {
+    var _makePlaceholderImage = function (element) {
         var jElement = $(element);
 
         var placeHolder = document.createElement('div');
@@ -268,43 +248,61 @@ var AdguardSelectorLib = {
         placeHolder.style.bottom = jElement.css('bottom');
         placeHolder.style.left = jElement.css('left');
         placeHolder.style.right = jElement.css('right');
-        placeHolder.className += this.PLACEHOLDER_PREFIX;
+        placeHolder.className += PLACEHOLDER_PREFIX;
 
         var icon = document.createElement('div');
-        icon.className += this.PLACEHOLDER_PREFIX + "-icon sg_ignore";
+        icon.className += PLACEHOLDER_PREFIX + "-icon sg_ignore";
 
         var domain = document.createElement('div');
-        domain.textContent = this._getHost(element.src);
-        domain.className += this.PLACEHOLDER_PREFIX + "-domain sg_ignore";
+        domain.textContent = _getHost(element.src);
+        domain.className += PLACEHOLDER_PREFIX + "-domain sg_ignore";
 
         icon.appendChild(domain);
         placeHolder.appendChild(icon);
 
         return placeHolder;
-    },
+    };
 
-    _getHost: function (url) {
-        if (!url) return "";
+    var _removePlaceholders = function () {
+        if (!placeholder_elements) {
+            return;
+        }
 
-        var a = document.createElement('a');
-        a.href = url;
-        return a.hostname;
-    },
+        var elements = placeholder_elements;
+        for (var i = 0; i < elements.length; i++) {
+            var current = elements[i];
+            var id = PLACEHOLDER_PREFIX + i;
+            $('#' + id).replaceWith($(current));
+        }
 
+        placeholder_elements = null;
+    };
 
-    _placeholderClick: function (e) {
-        var gadget = e.data.self;
+    var _placeholderClick = function (e) {
         var element = e.data.actualElement;
 
-        gadget._removeBorders();
-        gadget._removePlaceholders();
+        _removeBorders();
+        _removePlaceholders();
 
-        gadget._onElementSelected(element);
-    },
+        _onElementSelected(element);
+    };
 
-    _sgMouseover: function (e) {
-        var gadget = e.data.self;
-        if (gadget.unbound) {
+    var _makeIFrameAndEmbededSelector = function () {
+        placeholder_elements = $('iframe:not(.sg_ignore,:hidden),embed,object');
+        var elements = placeholder_elements;
+        for (var i = 0; i < elements.length; i++) {
+            var current = elements[i];
+            var placeHolder = _makePlaceholderImage(current);
+            var id = PLACEHOLDER_PREFIX + i;
+
+            placeHolder.setAttribute("id", id);
+            $(current).replaceWith(placeHolder);
+            $('#' + id).on('click', {'self': this, 'actualElement': current}, _placeholderClick);
+        }
+    };
+
+    var _sgMouseover = function () {
+        if (unbound) {
             return true;
         }
 
@@ -312,25 +310,19 @@ var AdguardSelectorLib = {
             return false;
         }
 
-        var parent = gadget._firstSelectedOrSuggestedParent(this);
+        var parent = _firstSelectedOrSuggestedParent(this);
         if (parent != null && parent != this) {
-            gadget._selectionRenderer(parent, true);
+            _selectionRenderer(parent, true);
         }
         else {
-            gadget._selectionRenderer(this);
+            _selectionRenderer(this);
         }
 
-        /*
-         if (!$('.sg_selected', this).get(0)) {
-         gadget._selectionRenderer(this);
-         }*/
-
         return false;
-    },
+    };
 
-    _sgMouseout: function (e) {
-        var gadget = e.data.self;
-        if (gadget.unbound) {
+    var _sgMouseout = function () {
+        if (unbound) {
             return true;
         }
 
@@ -338,21 +330,42 @@ var AdguardSelectorLib = {
             return false;
         }
 
-        gadget._removeBorders();
+        _removeBorders();
         return false;
-    },
+    };
 
-    _sgMousedown: function (e) {
+    /**
+     * Block clicks for a moment by covering this element with a div.
+     *
+     * @param elem
+     * @returns {boolean}
+     * @private
+     */
+    var _blockClicksOn = function (elem) {
+        elem = $(elem);
+        var p = elem.offset();
+        var block = $('<div>').css('position', 'absolute').css('z-index', '9999999').css('width', _px(elem.outerWidth())).
+            css('height', _px(elem.outerHeight())).css('top', _px(p.top)).css('left', _px(p.left)).
+            css('background-color', '');
+        document.body.appendChild(block.get(0));
+
+        setTimeout(function () {
+            block.remove();
+        }, 400);
+
+        return false;
+    };
+
+    var _sgMousedown = function (e) {
         e.preventDefault();
 
-        var gadget = e.data.self;
-        if (gadget.unbound) {
+        if (unbound) {
             return true;
         }
 
         var elem = this;
         var w_elem = $(elem);
-        if (w_elem.hasClass(gadget.BORDER_CLASS)) {
+        if (w_elem.hasClass(BORDER_CLASS)) {
             //Clicked on one of our floating borders, target the element that we are bordering.
             elem = elem.target_elem || elem;
         }
@@ -363,132 +376,118 @@ var AdguardSelectorLib = {
 
         // Don't allow selection of elements that have a selected child.
         if ($('.sg_selected', this).get(0)) {
-            gadget._blockClicksOn(elem);
+            _blockClicksOn(elem);
         }
 
-        var prediction = gadget._makePredictionPath(elem);
-        gadget._setPath(prediction);
+        var prediction = _makePredictionPath(elem);
+        _setPath(prediction);
 
-        gadget._removeBorders();
-        gadget._blockClicksOn(elem);
+        _removeBorders();
+        _blockClicksOn(elem);
 
         // Refresh the borders by triggering a new mouseover event.
-        w_elem.trigger("mouseover", {'self': gadget});
+        w_elem.trigger("mouseover", {'self': this});
 
-        gadget._onElementSelected(elem);
+        _onElementSelected(elem);
 
         return false;
-    },
+    };
+
+
+    var _setupEventHandlers = function () {
+        _makeIFrameAndEmbededSelector();
+
+        var sgIgnore = $("body *:not(.sg_ignore)");
+        sgIgnore.on("mouseover", {'self': this}, _sgMouseover);
+        sgIgnore.on("mouseout", {'self': this}, _sgMouseout);
+        sgIgnore.on("click", {'self': this}, _sgMousedown);
+    };
+
+    var _deleteEventHandlers = function () {
+        _removePlaceholders();
+
+        var elements = $("body *");
+        elements.off("mouseover", _sgMouseover);
+        elements.off("mouseout", _sgMouseout);
+        elements.off("click", _sgMousedown);
+    };
+
+    var _setupBorders = function () {
+        if (!b_top) {
+            var width = _px(BORDER_WIDTH);
+
+            b_top = $('<div>').addClass(BORDER_CLASS).css('height', width).hide()
+                .on("click", {'self': this}, _sgMousedown);
+            b_bottom = $('<div>').addClass(BORDER_CLASS).addClass('sg_bottom_border')
+                .css('height', _px(BORDER_WIDTH + 6)).hide()
+                .bind("click", {'self': this}, _sgMousedown);
+            b_left = $('<div>').addClass(BORDER_CLASS).css('width', width).hide()
+                .on("click", {'self': this}, _sgMousedown);
+            b_right = $('<div>').addClass(BORDER_CLASS).css('width', width).hide()
+                .on("click", {'self': this}, _sgMousedown);
+
+            _addBorderToDom();
+        }
+    };
+
+
+    // PUBLIC API
 
     /**
-     * Block clicks for a moment by covering this element with a div.
+     * Starts selector module.
      *
-     * @param elem
-     * @returns {boolean}
-     * @private
+     * @param onElementSelected callback function
+     * @param selectionRenderer optional function contains selection presentation implementation
      */
-    _blockClicksOn: function (elem) {
-        elem = $(elem);
-        var p = elem.offset();
-        var block = $('<div>').css('position', 'absolute').css('z-index', '9999999').css('width', this._px(elem.outerWidth())).
-            css('height', this._px(elem.outerHeight())).css('top', this._px(p.top)).css('left', this._px(p.left)).
-            css('background-color', '');
-        document.body.appendChild(block.get(0));
+    api.init = function (onElementSelected, selectionRenderer) {
 
-        setTimeout(function () {
-            block.remove();
-        }, 400);
-
-        return false;
-    },
-
-    _clearSelected: function () {
-        this.selected_elements = [];
-        this.rejected_elements = [];
-
-        $('.sg_selected').removeClass(this.SELECTED_CLASS);
-        $('.sg_rejected').removeClass(this.REJECTED_CLASS);
-
-        this._removeBorders();
-        this._clearSuggested();
-    },
-
-    _firstSelectedOrSuggestedParent: function (element) {
-        if ($(element).hasClass(this.SUGGESTED_CLASS) || $(element).hasClass(this.SELECTED_CLASS)) {
-            return element;
+        _onElementSelected = onElementSelected;
+        if (selectionRenderer && typeof selectionRenderer === "function") {
+            _selectionRenderer = selectionRenderer;
         }
 
-        while (element.parentNode && (element = element.parentNode)) {
-            if ($.inArray(element, this.restricted_elements) == -1) {
-                if ($(element).hasClass(this.SUGGESTED_CLASS) || $(element).hasClass(this.SELECTED_CLASS)) {
-                    return element;
-                }
-            }
-        }
+        restricted_elements = $.map(['html', 'body', 'head', 'base'], function (selector) {
+            return $(selector).get(0);
+        });
+        prediction_helper = new DomPredictionHelper($, String);
 
-        return null;
-    },
+        _setupEventHandlers();
+        unbound = false;
+    };
 
-    _makePredictionPath: function (elem) {
-        var w_elem = $(elem);
+    /**
+     * Resets state of selector.
+     * Clears current selection.
+     */
+    api.reset = function () {
+        _clearSelected();
+        _setPath();
+    };
 
-        if (w_elem.hasClass(this.SELECTED_CLASS)) {
-            w_elem.removeClass(this.SELECTED_CLASS);
-            this.selected_elements.splice($.inArray(elem, this.selected_elements), 1);
-        } else if (w_elem.hasClass(this.REJECTED_CLASS)) {
-            w_elem.removeClass(this.REJECTED_CLASS);
-            this.rejected_elements.splice($.inArray(elem, this.rejected_elements), 1);
-        } else if (w_elem.hasClass(this.SUGGESTED_CLASS)) {
-            w_elem.addClass(this.REJECTED_CLASS);
-            this.rejected_elements.push(elem);
-        } else {
-            if (this.select_mode == 'exact' && this.selected_elements.length > 0) {
-                $('.sg_selected').removeClass(this.SELECTED_CLASS);
-                this.selected_elements = [];
-            }
-            //w_elem.addClass('sg_selected');
-            this.selected_elements.push(elem);
-        }
+    /**
+     * Destroys selector module.
+     * Removes all selector elements and unbinds event handlers.
+     */
+    api.close = function () {
+        unbound = true;
 
-        var prediction = this.prediction_helper.predictCss(this.selected_elements,
-            this.rejected_elements.concat(this.restricted_elements));
+        _removeBorderFromDom();
+        _deleteEventHandlers();
+    };
 
-        if (this.select_mode == 'similar') {
-            this._clearSuggested();
-            this._suggestPredicted(prediction);
-        }
+    /**
+     * Selects specified element.
+     * Marks element as selected and holds selection on it.
+     *
+     * @param element
+     */
+    api.selectElement = function (element) {
+        _selectionRenderer(element);
 
-        return prediction;
-    },
+        unbound = true;
+        _deleteEventHandlers();
+    };
 
-    _setPath: function (prediction) {
-        if (this.path_output_field != null) {
-            if (prediction && prediction.length > 0) {
-                this.path_output_field.value = prediction;
-            }
-            else {
-                this.path_output_field.value = 'No valid path found.';
-            }
-        }
+    return api;
 
-    },
-
-    _clearSuggested: function () {
-        $('.sg_suggested').removeClass(this.SUGGESTED_CLASS);
-    },
-
-    _suggestPredicted: function (prediction) {
-        if (prediction && prediction != '') {
-            var count = 0;
-            var self = this;
-            $(prediction).each(function () {
-                count += 1;
-                if (!$(this).hasClass(self.SELECTED_CLASS)
-                    && !$(this).hasClass(self.IGNORED_CLASS)
-                    && !$(this).hasClass(self.REJECTED_CLASS)) {
-                    $(this).addClass(self.SUGGESTED_CLASS);
-                }
-            });
-        }
-    }
-};
+})(AdguardSelectorLib || {});
