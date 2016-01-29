@@ -18,7 +18,6 @@
 /**
  * Adguard selector library
  */
-
 var AdguardSelectorLib = (function (api) {
 
     // PRIVATE FIELDS
