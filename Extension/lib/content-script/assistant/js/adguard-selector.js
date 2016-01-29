@@ -46,7 +46,6 @@ var AdguardSelectorLib = (function (api) {
     var selectedElements = [];
     var rejectedElements = [];
 
-    var pathOutputField = null;
     var selectMode = 'exact';
     var unbound = true;
     var onElementSelectedHandler = null;
@@ -69,17 +68,6 @@ var AdguardSelectorLib = (function (api) {
                     $(this).addClass(SUGGESTED_CLASS);
                 }
             });
-        }
-    };
-
-    var setPath = function (prediction) {
-        if (pathOutputField != null) {
-            if (prediction && prediction.length > 0) {
-                pathOutputField.value = prediction;
-            }
-            else {
-                pathOutputField.value = 'No valid path found.';
-            }
         }
     };
 
@@ -380,8 +368,7 @@ var AdguardSelectorLib = (function (api) {
             blockClicksOn(elem);
         }
 
-        var prediction = makePredictionPath(elem);
-        setPath(prediction);
+        makePredictionPath(elem);
 
         removeBorders();
         blockClicksOn(elem);
@@ -462,7 +449,6 @@ var AdguardSelectorLib = (function (api) {
      */
     api.reset = function () {
         clearSelected();
-        setPath();
     };
 
     /**
