@@ -22,42 +22,43 @@
 var AdguardSelectorLib = (function (api) {
 
     // PRIVATE FIELDS
+
     var BORDER_WIDTH = 5;
     var BORDER_PADDING = 2;
     var BORDER_CLASS = "sg_border";
 
-    var b_top = null;
-    var b_left = null;
-    var b_right = null;
-    var b_bottom = null;
+    var borderTop = null;
+    var borderLeft = null;
+    var borderRight = null;
+    var borderBottom = null;
 
     var PLACEHOLDER_PREFIX = 'adguard-placeholder';
-    var placeholder_elements = null;
+    var placeholderElements = null;
 
-    var restricted_elements = null;
-    var prediction_helper = null;
+    var restrictedElements = null;
+    var predictionHelper = null;
 
     var SUGGESTED_CLASS = "sg_suggested";
     var SELECTED_CLASS = "sg_selected";
     var REJECTED_CLASS = "sg_rejected";
     var IGNORED_CLASS = "sg_ignore";
 
-    var selected_elements = [];
-    var rejected_elements = [];
+    var selectedElements = [];
+    var rejectedElements = [];
 
-    var path_output_field = null;
-    var select_mode = 'exact';
+    var pathOutputField = null;
+    var selectMode = 'exact';
     var unbound = true;
-    var _onElementSelected = null;
+    var onElementSelectedHandler = null;
 
 
     // PRIVATE METHODS
 
-    var _clearSuggested = function () {
+    var clearSuggested = function () {
         $('.sg_suggested').removeClass(SUGGESTED_CLASS);
     };
 
-    var _suggestPredicted = function (prediction) {
+    var suggestPredicted = function (prediction) {
         if (prediction && prediction != '') {
             var count = 0;
             $(prediction).each(function () {
@@ -71,56 +72,56 @@ var AdguardSelectorLib = (function (api) {
         }
     };
 
-    var _setPath = function (prediction) {
-        if (path_output_field != null) {
+    var setPath = function (prediction) {
+        if (pathOutputField != null) {
             if (prediction && prediction.length > 0) {
-                path_output_field.value = prediction;
+                pathOutputField.value = prediction;
             }
             else {
-                path_output_field.value = 'No valid path found.';
+                pathOutputField.value = 'No valid path found.';
             }
         }
     };
 
-    var _makePredictionPath = function (elem) {
+    var makePredictionPath = function (elem) {
         var w_elem = $(elem);
 
         if (w_elem.hasClass(SELECTED_CLASS)) {
             w_elem.removeClass(SELECTED_CLASS);
-            selected_elements.splice($.inArray(elem, selected_elements), 1);
+            selectedElements.splice($.inArray(elem, selectedElements), 1);
         } else if (w_elem.hasClass(REJECTED_CLASS)) {
             w_elem.removeClass(REJECTED_CLASS);
-            rejected_elements.splice($.inArray(elem, rejected_elements), 1);
+            rejectedElements.splice($.inArray(elem, rejectedElements), 1);
         } else if (w_elem.hasClass(SUGGESTED_CLASS)) {
             w_elem.addClass(REJECTED_CLASS);
-            rejected_elements.push(elem);
+            rejectedElements.push(elem);
         } else {
-            if (select_mode == 'exact' && selected_elements.length > 0) {
+            if (selectMode == 'exact' && selectedElements.length > 0) {
                 $('.sg_selected').removeClass(SELECTED_CLASS);
-                selected_elements = [];
+                selectedElements = [];
             }
             //w_elem.addClass('sg_selected');
-            selected_elements.push(elem);
+            selectedElements.push(elem);
         }
 
-        var prediction = prediction_helper.predictCss(selected_elements,
-            rejected_elements.concat(restricted_elements));
+        var prediction = predictionHelper.predictCss(selectedElements,
+            rejectedElements.concat(restrictedElements));
 
-        if (select_mode == 'similar') {
-            _clearSuggested();
-            _suggestPredicted(prediction);
+        if (selectMode == 'similar') {
+            clearSuggested();
+            suggestPredicted(prediction);
         }
 
         return prediction;
     };
 
-    var _firstSelectedOrSuggestedParent = function (element) {
+    var firstSelectedOrSuggestedParent = function (element) {
         if ($(element).hasClass(SUGGESTED_CLASS) || $(element).hasClass(SELECTED_CLASS)) {
             return element;
         }
 
         while (element.parentNode && (element = element.parentNode)) {
-            if ($.inArray(element, restricted_elements) == -1) {
+            if ($.inArray(element, restrictedElements) == -1) {
                 if ($(element).hasClass(SUGGESTED_CLASS) || $(element).hasClass(SELECTED_CLASS)) {
                     return element;
                 }
@@ -131,11 +132,11 @@ var AdguardSelectorLib = (function (api) {
     };
 
 
-    var _px = function (p) {
+    var px = function (p) {
         return p + 'px';
     };
 
-    var _getTagPath = function (element) {
+    var getTagPath = function (element) {
         if (element.parentNode) {
             return element.parentNode.tagName.toLowerCase() + ' ' + element.tagName.toLowerCase();
         } else {
@@ -143,47 +144,47 @@ var AdguardSelectorLib = (function (api) {
         }
     };
 
-    var _removeBorderFromDom = function () {
-        if (b_top) {
-            b_top.remove();
-            b_bottom.remove();
-            b_left.remove();
-            b_right.remove();
+    var removeBorderFromDom = function () {
+        if (borderTop) {
+            borderTop.remove();
+            borderBottom.remove();
+            borderLeft.remove();
+            borderRight.remove();
         }
     };
 
-    var _addBorderToDom = function () {
-        document.body.appendChild(b_top.get(0));
-        document.body.appendChild(b_bottom.get(0));
-        document.body.appendChild(b_left.get(0));
-        document.body.appendChild(b_right.get(0));
+    var addBorderToDom = function () {
+        document.body.appendChild(borderTop.get(0));
+        document.body.appendChild(borderBottom.get(0));
+        document.body.appendChild(borderLeft.get(0));
+        document.body.appendChild(borderRight.get(0));
     };
 
-    var _showBorders = function () {
-        b_top.show();
-        b_bottom.show();
-        b_left.show();
-        b_right.show();
+    var showBorders = function () {
+        borderTop.show();
+        borderBottom.show();
+        borderLeft.show();
+        borderRight.show();
     };
 
-    var _removeBorders = function () {
-        if (b_top) {
-            b_top.hide();
-            b_bottom.hide();
-            b_left.hide();
-            b_right.hide();
+    var removeBorders = function () {
+        if (borderTop) {
+            borderTop.hide();
+            borderBottom.hide();
+            borderLeft.hide();
+            borderRight.hide();
         }
     };
 
-    var _clearSelected = function () {
-        selected_elements = [];
-        rejected_elements = [];
+    var clearSelected = function () {
+        selectedElements = [];
+        rejectedElements = [];
 
         $('.sg_selected').removeClass(SELECTED_CLASS);
         $('.sg_rejected').removeClass(REJECTED_CLASS);
 
-        _removeBorders();
-        _clearSuggested();
+        removeBorders();
+        clearSuggested();
     };
 
     /**
@@ -195,9 +196,9 @@ var AdguardSelectorLib = (function (api) {
      * @param element
      * @private
      */
-    var _selectionRenderer = function (element) {
-        _removeBorders();
-        _setupBorders();
+    var selectionRenderer = function (element) {
+        removeBorders();
+        setupBorders();
 
         if (!element) {
             return;
@@ -211,25 +212,25 @@ var AdguardSelectorLib = (function (api) {
         var width = elem.outerWidth();
         var height = elem.outerHeight();
 
-        b_top.css('width', _px(width + BORDER_PADDING * 2 + BORDER_WIDTH * 2)).
-            css('top', _px(top - BORDER_WIDTH - BORDER_PADDING)).
-            css('left', _px(left - BORDER_PADDING - BORDER_WIDTH));
-        b_bottom.css('width', _px(width + BORDER_PADDING * 2 + BORDER_WIDTH * 2 - 5)).
-            css('top', _px(top + height + BORDER_PADDING)).
-            css('left', _px(left - BORDER_PADDING - BORDER_WIDTH)).text(_getTagPath(element));
-        b_left.css('height', _px(height + BORDER_PADDING * 2)).
-            css('top', _px(top - BORDER_PADDING)).
-            css('left', _px(left - BORDER_PADDING - BORDER_WIDTH));
-        b_right.css('height', _px(height + BORDER_PADDING * 2)).
-            css('top', _px(top - BORDER_PADDING)).
-            css('left', _px(left + width + BORDER_PADDING));
+        borderTop.css('width', px(width + BORDER_PADDING * 2 + BORDER_WIDTH * 2)).
+            css('top', px(top - BORDER_WIDTH - BORDER_PADDING)).
+            css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
+        borderBottom.css('width', px(width + BORDER_PADDING * 2 + BORDER_WIDTH * 2 - 5)).
+            css('top', px(top + height + BORDER_PADDING)).
+            css('left', px(left - BORDER_PADDING - BORDER_WIDTH)).text(getTagPath(element));
+        borderLeft.css('height', px(height + BORDER_PADDING * 2)).
+            css('top', px(top - BORDER_PADDING)).
+            css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
+        borderRight.css('height', px(height + BORDER_PADDING * 2)).
+            css('top', px(top - BORDER_PADDING)).
+            css('left', px(left + width + BORDER_PADDING));
 
-        b_right.get(0).target_elem = b_left.get(0).target_elem = b_top.get(0).target_elem = b_bottom.get(0).target_elem = element;
+        borderRight.get(0).target_elem = borderLeft.get(0).target_elem = borderTop.get(0).target_elem = borderBottom.get(0).target_elem = element;
 
-        _showBorders();
+        showBorders();
     };
 
-    var _getHost = function (url) {
+    var getHost = function (url) {
         if (!url) return "";
 
         var a = document.createElement('a');
@@ -237,7 +238,7 @@ var AdguardSelectorLib = (function (api) {
         return a.hostname;
     };
 
-    var _makePlaceholderImage = function (element) {
+    var makePlaceholderImage = function (element) {
         var jElement = $(element);
 
         var placeHolder = document.createElement('div');
@@ -254,7 +255,7 @@ var AdguardSelectorLib = (function (api) {
         icon.className += PLACEHOLDER_PREFIX + "-icon sg_ignore";
 
         var domain = document.createElement('div');
-        domain.textContent = _getHost(element.src);
+        domain.textContent = getHost(element.src);
         domain.className += PLACEHOLDER_PREFIX + "-domain sg_ignore";
 
         icon.appendChild(domain);
@@ -263,45 +264,45 @@ var AdguardSelectorLib = (function (api) {
         return placeHolder;
     };
 
-    var _removePlaceholders = function () {
-        if (!placeholder_elements) {
+    var removePlaceholders = function () {
+        if (!placeholderElements) {
             return;
         }
 
-        var elements = placeholder_elements;
+        var elements = placeholderElements;
         for (var i = 0; i < elements.length; i++) {
             var current = elements[i];
             var id = PLACEHOLDER_PREFIX + i;
             $('#' + id).replaceWith($(current));
         }
 
-        placeholder_elements = null;
+        placeholderElements = null;
     };
 
-    var _placeholderClick = function (e) {
+    var placeholderClick = function (e) {
         var element = e.data.actualElement;
 
-        _removeBorders();
-        _removePlaceholders();
+        removeBorders();
+        removePlaceholders();
 
-        _onElementSelected(element);
+        onElementSelectedHandler(element);
     };
 
-    var _makeIFrameAndEmbededSelector = function () {
-        placeholder_elements = $('iframe:not(.sg_ignore,:hidden),embed,object');
-        var elements = placeholder_elements;
+    var makeIFrameAndEmbededSelector = function () {
+        placeholderElements = $('iframe:not(.sg_ignore,:hidden),embed,object');
+        var elements = placeholderElements;
         for (var i = 0; i < elements.length; i++) {
             var current = elements[i];
-            var placeHolder = _makePlaceholderImage(current);
+            var placeHolder = makePlaceholderImage(current);
             var id = PLACEHOLDER_PREFIX + i;
 
             placeHolder.setAttribute("id", id);
             $(current).replaceWith(placeHolder);
-            $('#' + id).on('click', {'self': this, 'actualElement': current}, _placeholderClick);
+            $('#' + id).on('click', {'self': this, 'actualElement': current}, placeholderClick);
         }
     };
 
-    var _sgMouseover = function () {
+    var sgMouseoverHandler = function () {
         if (unbound) {
             return true;
         }
@@ -310,18 +311,18 @@ var AdguardSelectorLib = (function (api) {
             return false;
         }
 
-        var parent = _firstSelectedOrSuggestedParent(this);
+        var parent = firstSelectedOrSuggestedParent(this);
         if (parent != null && parent != this) {
-            _selectionRenderer(parent, true);
+            selectionRenderer(parent, true);
         }
         else {
-            _selectionRenderer(this);
+            selectionRenderer(this);
         }
 
         return false;
     };
 
-    var _sgMouseout = function () {
+    var sgMouseoutHandler = function () {
         if (unbound) {
             return true;
         }
@@ -330,7 +331,7 @@ var AdguardSelectorLib = (function (api) {
             return false;
         }
 
-        _removeBorders();
+        removeBorders();
         return false;
     };
 
@@ -341,11 +342,11 @@ var AdguardSelectorLib = (function (api) {
      * @returns {boolean}
      * @private
      */
-    var _blockClicksOn = function (elem) {
+    var blockClicksOn = function (elem) {
         elem = $(elem);
         var p = elem.offset();
-        var block = $('<div>').css('position', 'absolute').css('z-index', '9999999').css('width', _px(elem.outerWidth())).
-            css('height', _px(elem.outerHeight())).css('top', _px(p.top)).css('left', _px(p.left)).
+        var block = $('<div>').css('position', 'absolute').css('z-index', '9999999').css('width', px(elem.outerWidth())).
+            css('height', px(elem.outerHeight())).css('top', px(p.top)).css('left', px(p.left)).
             css('background-color', '');
         document.body.appendChild(block.get(0));
 
@@ -356,7 +357,7 @@ var AdguardSelectorLib = (function (api) {
         return false;
     };
 
-    var _sgMousedown = function (e) {
+    var sgMousedownHandler = function (e) {
         e.preventDefault();
 
         if (unbound) {
@@ -376,57 +377,57 @@ var AdguardSelectorLib = (function (api) {
 
         // Don't allow selection of elements that have a selected child.
         if ($('.sg_selected', this).get(0)) {
-            _blockClicksOn(elem);
+            blockClicksOn(elem);
         }
 
-        var prediction = _makePredictionPath(elem);
-        _setPath(prediction);
+        var prediction = makePredictionPath(elem);
+        setPath(prediction);
 
-        _removeBorders();
-        _blockClicksOn(elem);
+        removeBorders();
+        blockClicksOn(elem);
 
         // Refresh the borders by triggering a new mouseover event.
         w_elem.trigger("mouseover", {'self': this});
 
-        _onElementSelected(elem);
+        onElementSelectedHandler(elem);
 
         return false;
     };
 
 
-    var _setupEventHandlers = function () {
-        _makeIFrameAndEmbededSelector();
+    var setupEventHandlers = function () {
+        makeIFrameAndEmbededSelector();
 
         var sgIgnore = $("body *:not(.sg_ignore)");
-        sgIgnore.on("mouseover", {'self': this}, _sgMouseover);
-        sgIgnore.on("mouseout", {'self': this}, _sgMouseout);
-        sgIgnore.on("click", {'self': this}, _sgMousedown);
+        sgIgnore.on("mouseover", {'self': this}, sgMouseoverHandler);
+        sgIgnore.on("mouseout", {'self': this}, sgMouseoutHandler);
+        sgIgnore.on("click", {'self': this}, sgMousedownHandler);
     };
 
-    var _deleteEventHandlers = function () {
-        _removePlaceholders();
+    var deleteEventHandlers = function () {
+        removePlaceholders();
 
         var elements = $("body *");
-        elements.off("mouseover", _sgMouseover);
-        elements.off("mouseout", _sgMouseout);
-        elements.off("click", _sgMousedown);
+        elements.off("mouseover", sgMouseoverHandler);
+        elements.off("mouseout", sgMouseoutHandler);
+        elements.off("click", sgMousedownHandler);
     };
 
-    var _setupBorders = function () {
-        if (!b_top) {
-            var width = _px(BORDER_WIDTH);
+    var setupBorders = function () {
+        if (!borderTop) {
+            var width = px(BORDER_WIDTH);
 
-            b_top = $('<div>').addClass(BORDER_CLASS).css('height', width).hide()
-                .on("click", {'self': this}, _sgMousedown);
-            b_bottom = $('<div>').addClass(BORDER_CLASS).addClass('sg_bottom_border')
-                .css('height', _px(BORDER_WIDTH + 6)).hide()
-                .bind("click", {'self': this}, _sgMousedown);
-            b_left = $('<div>').addClass(BORDER_CLASS).css('width', width).hide()
-                .on("click", {'self': this}, _sgMousedown);
-            b_right = $('<div>').addClass(BORDER_CLASS).css('width', width).hide()
-                .on("click", {'self': this}, _sgMousedown);
+            borderTop = $('<div>').addClass(BORDER_CLASS).css('height', width).hide()
+                .on("click", {'self': this}, sgMousedownHandler);
+            borderBottom = $('<div>').addClass(BORDER_CLASS).addClass('sg_bottom_border')
+                .css('height', px(BORDER_WIDTH + 6)).hide()
+                .bind("click", {'self': this}, sgMousedownHandler);
+            borderLeft = $('<div>').addClass(BORDER_CLASS).css('width', width).hide()
+                .on("click", {'self': this}, sgMousedownHandler);
+            borderRight = $('<div>').addClass(BORDER_CLASS).css('width', width).hide()
+                .on("click", {'self': this}, sgMousedownHandler);
 
-            _addBorderToDom();
+            addBorderToDom();
         }
     };
 
@@ -441,17 +442,17 @@ var AdguardSelectorLib = (function (api) {
      */
     api.init = function (onElementSelected, selectionRenderer) {
 
-        _onElementSelected = onElementSelected;
+        onElementSelectedHandler = onElementSelected;
         if (selectionRenderer && typeof selectionRenderer === "function") {
-            _selectionRenderer = selectionRenderer;
+            selectionRenderer = selectionRenderer;
         }
 
-        restricted_elements = $.map(['html', 'body', 'head', 'base'], function (selector) {
+        restrictedElements = $.map(['html', 'body', 'head', 'base'], function (selector) {
             return $(selector).get(0);
         });
-        prediction_helper = new DomPredictionHelper($, String);
+        predictionHelper = new DomPredictionHelper($, String);
 
-        _setupEventHandlers();
+        setupEventHandlers();
         unbound = false;
     };
 
@@ -460,8 +461,8 @@ var AdguardSelectorLib = (function (api) {
      * Clears current selection.
      */
     api.reset = function () {
-        _clearSelected();
-        _setPath();
+        clearSelected();
+        setPath();
     };
 
     /**
@@ -471,8 +472,8 @@ var AdguardSelectorLib = (function (api) {
     api.close = function () {
         unbound = true;
 
-        _removeBorderFromDom();
-        _deleteEventHandlers();
+        removeBorderFromDom();
+        deleteEventHandlers();
     };
 
     /**
@@ -482,10 +483,10 @@ var AdguardSelectorLib = (function (api) {
      * @param element
      */
     api.selectElement = function (element) {
-        _selectionRenderer(element);
+        selectionRenderer(element);
 
         unbound = true;
-        _deleteEventHandlers();
+        deleteEventHandlers();
     };
 
     return api;
