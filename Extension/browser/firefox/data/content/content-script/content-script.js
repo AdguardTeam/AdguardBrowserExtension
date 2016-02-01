@@ -1,3 +1,6 @@
+/* global sendFrameEvent */
+/* global addFrameEventListener */
+/* global I18nHelper */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -14,70 +17,130 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var contentPage = {
 
-    listenerRegistered: false,
-    callbacks: Object.create(null),
-    callbackId: 0,
-
-    CONTENT_TO_BACKGROUND_CHANNEL: 'content-background-channel',
-    BACKGROUND_TO_CONTENT_CHANNEL: 'background-content-channel',
-
-    sendMessage: function (message, callback) {
+/**
+ * contentPage object is used for messaging between a content script and a frame script.
+ */
+var contentPage = (function(api) {
+    
+    var CONTENT_TO_BACKGROUND_CHANNEL = 'content-background-channel';
+    var BACKGROUND_TO_CONTENT_CHANNEL = 'background-content-channel';
+    
+    var listenerRegistered = false;
+    var callbacks = Object.create(null);
+    var callbackId = 0;
+    
+    /**
+     * Called when response is received from the chrome process
+     * 
+     * @param response Response object got from the chrome process
+     * @private
+     */
+    var onResponseReceived = function(response) {
+        if ('callbackId' in response) {
+            var callbackId = response.callbackId;
+            var callback = callbacks[callbackId];
+            callback(response);
+            delete callbacks[callbackId];
+        }
+    };
+    
+    /**
+     * Sends message to the chrome process
+     * 
+     * @param message Message to send
+     * @param callback Method that will be called in response
+     * @public
+     */
+    var sendMessage = function (message, callback) {
 
         if (callback) {
-            var callbackId = (this.callbackId += 1);
-            message.callbackId = callbackId;
-            this.callbacks[callbackId] = callback;
+            var messageCallbackId = (callbackId += 1);
+            message.callbackId = messageCallbackId;
+            callbacks[messageCallbackId] = callback;
         }
 
-        if (!this.listenerRegistered) {
+        if (!listenerRegistered) {
+            listenerRegistered = true;
 
-            this.listenerRegistered = true;
-            
-            self.port.on(this.CONTENT_TO_BACKGROUND_CHANNEL, function (response) {
-                if ('callbackId' in response) {
-                    var callbackId = response.callbackId;
-                    var callback = this.callbacks[callbackId];
-                    callback(response);
-                    delete this.callbacks[callbackId];
+            if (typeof addFrameEventListener != 'undefined') {
+                addFrameEventListener(CONTENT_TO_BACKGROUND_CHANNEL, onResponseReceived);
+            } else {
+                // TODO: Remove, deprecated
+                self.port.on(CONTENT_TO_BACKGROUND_CHANNEL, onResponseReceived);                
+            }
+        }
+        
+        if (typeof sendFrameEvent != 'undefined') {
+            sendFrameEvent(CONTENT_TO_BACKGROUND_CHANNEL, message);
+        } else {
+            // TODO: Remove, deprecated
+            self.port.emit(CONTENT_TO_BACKGROUND_CHANNEL, message);            
+        }
+    };
+    
+    var onMessage = (function(onMessage) {
+        var listeners = null;
+        
+        /**
+         * This method is getting called when we get an event from the chrome process.
+         */
+        var onMessageReceived = function(message) {
+            for (var i = 0; i < listeners.length; i++) {
+                var listener = listeners[i];
+                listener(message);
+            }            
+        };
+        
+        var addListener = function (listener) {
+
+            if (!listeners) {
+                listeners = [];
+                
+                if (typeof addFrameEventListener != 'undefined') {
+                    addFrameEventListener(BACKGROUND_TO_CONTENT_CHANNEL, onMessageReceived);
+                } else {
+                    // TODO: Remove, deprecated
+                    self.port.on(BACKGROUND_TO_CONTENT_CHANNEL, onMessageReceived);                    
                 }
-            }.bind(this));
-        }
-
-        self.port.emit(this.CONTENT_TO_BACKGROUND_CHANNEL, message);
-    },
-
-    onMessage: {
-
-        listeners: null,
-
-        addListener: function (listener) {
-
-            if (!this.listeners) {
-
-                this.listeners = [];
-
-                self.port.on(contentPage.BACKGROUND_TO_CONTENT_CHANNEL, function (message) {
-                    for (var i = 0; i < this.listeners.length; i++) {
-                        var listener = this.listeners[i];
-                        listener(message);
-                    }
-                }.bind(this));
             }
 
-            this.listeners.push(listener);
-        }
-    }
-};
+            listeners.push(listener);
+        };
+        
+        /**
+         * Expose onMessage API
+         */
+        onMessage.addListener = addListener;
+        return onMessage;
+    })(onMessage || {}); 
 
-var i18n = {
+    /**
+     * Expose contentPage public API
+     */
+    api.sendMessage = sendMessage;
+    api.onMessage = onMessage;
+    return api;
+})(contentPage || {});
 
-    getMessage: function (messageId, args) {
+/**
+ * This object is used to pass translations from the chrome process to the content.
+ */
+var i18n = (function(api) {
+    
+    var getMessage = function (messageId, args) {
+        
+        // TODO: There is no more "self.options" object
         var message = self.options.i18nMessages[messageId];
         if (!message) {
             throw 'Message ' + messageId + ' not found';
         }
         return I18nHelper.replacePlaceholders(message, args);
-    }
-};
+    };
+    
+    /**
+     * Expose i18n public API
+     */
+    api.getMessage = getMessage;
+    return api;    
+})(i18n || {});

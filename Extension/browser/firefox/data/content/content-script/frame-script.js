@@ -39,21 +39,28 @@ var nextSandboxId = 0;
 
 /**
  * The DOMWindowCreated event is executed when a Window object has been created.
+ * @param event DOMWindowCreated event https://developer.mozilla.org/en-US/docs/Web/Events/DOMWindowCreated
  */
-var onDomWindowCreated = function() {
+var onDomWindowCreated = function(event) {
     
-    if (!content.window || !content.document) {
+    var document = event.target;
+    var window = document.defaultView;
+    
+    // TODO: TEMP
+    console.log(document);
+    console.log(window);
+    
+    if (!window || !window.location) {
         return;
     }
     
-    var location = content.window.location;
-    
+    var location = window.location;    
     if (!location || !location.href) {
         return;
     }
     
     if (location.protocol == 'http:' || location.protocol == 'https:') {
-        attachContentScripts(['content-script/preload.js']);
+        attachContentScripts(window, ['content-script/preload.js']);
     } else if (location.protocol == 'chrome:') {
         // TODO: Handle
     }
@@ -68,8 +75,9 @@ var onUnload = function() {
 
 /**
  * Creates sandbox object which will be a principal object for the content scripts.
+ * @param window Window to be sandboxed
  */
-var createSandbox = function() {
+var createSandbox = function(window) {
     
     /**
      * A string value which identifies the sandbox in about:memory (and possibly other places in the future). 
@@ -79,29 +87,30 @@ var createSandbox = function() {
      * As of Gecko 13 (Firefox 13.0 / Thunderbird 13.0 / SeaMonkey 2.10), if you don't specify a sandbox name it 
      * will default to the caller's filename.
      */
-    var sandboxName = '[' + (nextSandboxId++) + '] ' + content.window.location.href;
+    var isIframe = window.top != window;
+    var sandboxName = '[' + (nextSandboxId++) + '] ' + (isIframe ? '[iframe] ' : '[window] ') + window.location.href;
     console.log('Attach to ' + sandboxName); 
     
     // "content" is a DOM window here 
     // Creating "expanded" sandbox from it: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Language_Bindings/Components.utils.Sandbox#Expanded_principal
-    var sandbox = Cu.Sandbox([content.window], {
+    var sandbox = Cu.Sandbox([window], {
         sandboxName: sandboxName,
-        sameZoneAs: content.window.top,
-        sandboxPrototype: content.window,
+        sameZoneAs: window.top,
+        sandboxPrototype: window,
         wantComponents: false,
         wantXHRConstructor: false
     });
     
+    // Expose messaging API
+    sandbox.addFrameEventListener = function(name, listener) {
+        console.log(new Date().toISOString() + ' addFrameEventListener ' + name);
+    };
+    sandbox.sendFrameEvent = function(name, message) {
+        console.log(new Date().toISOString() + ' addFrameEventListener ' + name);
+    };
+    
     // Add to sandbox an object used for localization
     Services.scriptloader.loadSubScript('chrome://adguard/content/content-script/i18n-helper.js', sandbox);
-    
-    // You can't expose objects, only functions
-    sandbox.portListen = function(name, listener) {
-        console.log(new Date().toISOString() + 'portListen ' + name);
-    };
-    sandbox.portSend = function(name, message) {
-        console.log(new Date().toISOString() + 'portSend ' + name);
-    };
     Services.scriptloader.loadSubScript('chrome://adguard/content/content-script/content-script.js', sandbox);
     
         
@@ -144,10 +153,11 @@ var createSandbox = function() {
 /**
  * Attaches specified content scripts to the current DOM window.
  * 
- * @param array with scripts relative path
+ * @param window  Window to attach to
+ * @param scripts Array with scripts relative path
  */
-var attachContentScripts = function(scripts) {
-    var sandbox = createSandbox();
+var attachContentScripts = function(window, scripts) {
+    var sandbox = createSandbox(window);
     
     for (var i = 0; i < scripts.length; i++) {
         var scriptPath = 'chrome://adguard/content/' + scripts[i];
@@ -184,19 +194,15 @@ var initFrameScript = function() {
     // First of all, init translation
     initI18n();
     
-    addEventListener('DOMWindowCreated', function() { 
-        onDomWindowCreated();
+    // Listen to DOMWindowCreated and execute content scripts for newly created windows
+    addEventListener('DOMWindowCreated', function(event) {
+        onDomWindowCreated(event);
     });
 
+    // Clean up on frame script unload
     addEventListener('unload', function() {
         onUnload();
     });
-    
-    if (content && content.window) {
-        // This means the script was just loaded into existing window
-        // Attach content scripts immediately
-        onDomWindowCreated();
-    }
 };
 
 initFrameScript();
