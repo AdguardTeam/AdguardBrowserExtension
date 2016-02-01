@@ -37,6 +37,14 @@ var i18nMessages = Object.create(null);
 // Used for sandbox creation
 var nextSandboxId = 0;
 
+// Logger
+var Log = {
+    debug: function(message) {        
+        var now = new Date();
+        console.debug(now.toISOString() + ": " + message);
+    }
+};
+
 /**
  * The DOMWindowCreated event is executed when a Window object has been created.
  * @param event DOMWindowCreated event https://developer.mozilla.org/en-US/docs/Web/Events/DOMWindowCreated
@@ -47,8 +55,8 @@ var onDomWindowCreated = function(event) {
     var window = document.defaultView;
     
     // TODO: TEMP
-    console.log(document);
-    console.log(window);
+    Log.debug(document);
+    Log.debug(window);
     
     if (!window || !window.location) {
         return;
@@ -70,11 +78,12 @@ var onDomWindowCreated = function(event) {
  * Fires when the frame script environment is shut down, i.e. when a tab gets closed.
  */
 var onUnload = function() {
-    // TODO: Remove listeners
+    // TODO: Clean up
 };
 
 /**
  * Creates sandbox object which will be a principal object for the content scripts.
+ * 
  * @param window Window to be sandboxed
  */
 var createSandbox = function(window) {
@@ -88,8 +97,8 @@ var createSandbox = function(window) {
      * will default to the caller's filename.
      */
     var isIframe = window.top != window;
-    var sandboxName = '[' + (nextSandboxId++) + '] ' + (isIframe ? '[iframe] ' : '[window] ') + window.location.href;
-    console.log('Attach to ' + sandboxName); 
+    var sandboxName = '[' + (nextSandboxId++) + ']' + (isIframe ? '[iframe] ' : '[window] ') + window.location.href;
+    Log.debug('Attaching content scripts to ' + sandboxName); 
     
     // "content" is a DOM window here 
     // Creating "expanded" sandbox from it: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Language_Bindings/Components.utils.Sandbox#Expanded_principal
@@ -103,49 +112,15 @@ var createSandbox = function(window) {
     
     // Expose messaging API
     sandbox.addFrameEventListener = function(name, listener) {
-        console.log(new Date().toISOString() + ' addFrameEventListener ' + name);
+        Log.debug('addFrameEventListener ' + name);
     };
     sandbox.sendFrameEvent = function(name, message) {
-        console.log(new Date().toISOString() + ' addFrameEventListener ' + name);
+        Log.debug('addFrameEventListener ' + name);
     };
     
     // Add to sandbox an object used for localization
     Services.scriptloader.loadSubScript('chrome://adguard/content/content-script/i18n-helper.js', sandbox);
     Services.scriptloader.loadSubScript('chrome://adguard/content/content-script/content-script.js', sandbox);
-    
-        
-    // sandbox.i18n = {
-    //     getMessage: function (messageId, args) {
-    //         var message = i18nMessages[messageId];
-    //         if (!message) {
-    //             throw 'Message ' + messageId + ' not found';
-    //         }
-    //         return sandbox.I18nHelper.replacePlaceholders(message, args);
-    //     }
-    // };
-    
-    // // Now add contentPage object
-    // sandbox.contentPage = {
-
-    //     listenerRegistered: false,
-    //     callbacks: Object.create(null),
-    //     callbackId: 0,
-
-    //     sendMessage: function (message, callback) {
-    //         console.log('Send a message from the content script');
-    //     },
-
-    //     onMessage: {
-    //         listeners: null,
-    //         addListener: function (listener) {
-    //             if (!this.listeners) {
-    //                 this.listeners = [];
-    //             }
-
-    //             this.listeners.push(listener);
-    //         }
-    //     }
-    // };
     
     return sandbox;
 };
