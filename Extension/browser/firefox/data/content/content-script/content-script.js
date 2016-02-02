@@ -129,13 +129,16 @@ var contentPage = (function(api) {
 var i18n = (function(api) {
     
     var getMessage = function (messageId, args) {
-        
-        // TODO: There is no more "self.options" object
-        var message = self.options.i18nMessages[messageId];
-        if (!message) {
-            throw 'Message ' + messageId + ' not found';
+        if (typeof getI18nMessage != 'undefined') {
+            var message = getI18nMessage[messageId];
+            if (!message) {
+                throw 'Message ' + messageId + ' not found';
+            }
+
+            return I18nHelper.replacePlaceholders(message, args);
         }
-        return I18nHelper.replacePlaceholders(message, args);
+
+        return null;
     };
     
     /**
