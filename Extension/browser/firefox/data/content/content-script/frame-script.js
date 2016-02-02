@@ -118,10 +118,6 @@ var createSandbox = function(window) {
         Log.debug('addFrameEventListener ' + name);
     };
     
-    // Add to sandbox an object used for localization
-    Services.scriptloader.loadSubScript('chrome://adguard/content/content-script/i18n-helper.js', sandbox);
-    Services.scriptloader.loadSubScript('chrome://adguard/content/content-script/content-script.js', sandbox);
-    
     return sandbox;
 };
 
@@ -132,8 +128,15 @@ var createSandbox = function(window) {
  * @param scripts Array with scripts relative path
  */
 var attachContentScripts = function(window, scripts) {
+    // Creating sandbox wrapper for window object
     var sandbox = createSandbox(window);
     
+    // Executing i18n-helper.js and content-script.js for every content script.
+    // These two scripts contains helper functions for messaging and localization.
+    Services.scriptloader.loadSubScript('chrome://adguard/content/content-script/i18n-helper.js', sandbox);
+    Services.scriptloader.loadSubScript('chrome://adguard/content/content-script/content-script.js', sandbox);
+    
+    // Executing content scripts specified in "scripts" parameter
     for (var i = 0; i < scripts.length; i++) {
         var scriptPath = 'chrome://adguard/content/' + scripts[i];
         Services.scriptloader.loadSubScript(scriptPath, sandbox);
