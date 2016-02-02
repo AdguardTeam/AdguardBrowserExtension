@@ -117,6 +117,11 @@ var createSandbox = function(window) {
     sandbox.sendFrameEvent = function(name, message) {
         Log.debug('addFrameEventListener ' + name);
     };
+
+    // Expose localization API
+    sandbox.getI18nMessage = function(messageId) {
+        return i18nMessages[messageId];
+    };
     
     return sandbox;
 };

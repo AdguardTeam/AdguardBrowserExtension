@@ -136,9 +136,14 @@ var i18n = (function(api) {
             }
 
             return I18nHelper.replacePlaceholders(message, args);
+        } else {
+            // TODO: Remove, deprecated
+            var message = self.options.i18nMessages[messageId];
+            if (!message) {
+                throw 'Message ' + messageId + ' not found';
+            }
+            return I18nHelper.replacePlaceholders(message, args);
         }
-
-        return null;
     };
     
     /**
