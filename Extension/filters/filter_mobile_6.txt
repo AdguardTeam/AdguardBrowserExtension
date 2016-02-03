@@ -1,10 +1,10 @@
 ! Title: German filter
-! Version: 1.0.23.27
+! Version: 1.0.23.28
 ! Name: German filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: German filter
 ! DescriptionEn: Filter that enables removing of the ads from websites with German content.
-! TimeUpdated: 2016-02-02T23:00:58.943+03:00
+! TimeUpdated: 2016-02-03T16:00:03.264+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -74,6 +74,7 @@ nowtv.de#@#object[width="200"][height="200"]
 t3n.de##.abContentMsg
 @@||4p.de/*adtag.check.js
 teleboy.ch#@#.adWrapper
+||static.p7s1.com/vendor/webtrekk
 ||videoplaza1.tv/proxy/^$domain=tv4play.se
 berlindailysun.com##.bannergroup
 ||berlindailysun.com/images/banners/
@@ -177,7 +178,6 @@ netmoms.de##.partnerbox.sponsorbox
 freundin.de##a[href^="http://www.ebalance.de/?"]
 ||freundin.de/*-widecolBanner-
 freundin.de##a[href*="sponsored-post"]
-||abpxy.p7s1dns.net^
 gamestar.de##.centeredDiv>div[id][style*="inline-block"]
 ||sky.de/web/cms/static/img/595x80_
 gta-5-forum.de###mpu

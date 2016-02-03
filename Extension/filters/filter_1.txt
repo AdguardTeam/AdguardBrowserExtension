@@ -1,10 +1,10 @@
 ! Title: Russian filter
-! Version: 1.0.30.66
+! Version: 1.0.30.67
 ! Name: Russian filter
 ! Description: Filter that enables removing of the ads from websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-02-03T01:22:25.193+03:00
+! TimeUpdated: 2016-02-03T15:59:25.706+03:00
 ! Title: Adguard Russian Filter
 !
 ! Filter that enables removing of the ads from websites with Russian content.
@@ -3072,6 +3072,7 @@ kingofdown.com#%#var AG_AntiAntiBlock = function() { var baseCreateElement = doc
 kingofdown.com#%#AG_onLoad(function() { AG_AntiAntiBlock(); });
 ! http://forum.adguard.com/showthread.php?8732
 @@||cdn.hd720hd.com/video/*/iframe$elemhide
+@@||cdn.hd720hd.com/serial/*/iframe$elemhide
 @@||cdn.hd720hd.com/upload/banners/banner.jpg
 ! http://forum.adguard.com/showthread.php?8515
 @@||stream.1tv.ru/assets/player-current/ads.js?callback$xmlhttprequest
@@ -3088,6 +3089,7 @@ lifenews78.ru,lifenews.ru#%#(function(){var noopfn=function(){;}; var Fab=functi
 @@||vtomske.ru/js/adv*.js
 ! http://forum.adguard.com/showthread.php?8432
 @@||online.the-cinema.tv/video/*/iframe$elemhide
+@@||online.the-cinema.tv/serial/*/iframe$elemhide
 @@||online.the-cinema.tv/upload/banners/banner.jpg
 ! http://forum.adguard.com/showthread.php?8344
 kino-dom.org###my_abadiv
@@ -3265,7 +3267,8 @@ mybuses.ru#%#window.setTimeout=function() {};
 lostfilmonline.tv#%#function setTimeout() {};
 ! http://forum.adguard.com/showthread.php?5592
 @@||moonwalk.cc/video/*/iframe$elemhide
-||moonwalk.cc/upload/banners/banner.jpg
+@@||moonwalk.cc/serial/*/iframe$elemhide
+@@||moonwalk.cc/upload/banners/banner.jpg
 ! dedushka.org - remove anti-adblock message
 dedushka.org##.dsa-please
 ! chatovod.ru anti-adblock
@@ -6224,6 +6227,7 @@ polezno-2012.info^
 ! 4pda forum
 ! ||s.4pda.to/*.css?_=2|
 !
+filmix.net##.bottom-avd
 cxz.to,fs.to,brb.to##div[class^="b-"][style="position: relative;"]
 vestifinance.ru###ADV60
 smotri.com###BannerUnderBroPlayer
@@ -10957,6 +10961,8 @@ http://*.space^$script,domain=free-torrent.org|free-torrents.org|jpgstore.ru|pic
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/814
 @@||video.videonow.ru^$domain=api.cybergame.tv
 !!!
+! gosuslugi.ru - broken slideshow
+@@||gosuslugi.ru/pgu/content/
 ! cheb.ru - broken edit button on the forum
 cheb.ru#@##TopAd
 ! cheb.ru - broken avatars
@@ -11457,7 +11463,6 @@ wowjp.net#@#noindex a[rel="nofollow"] > img
 splkirov.ru#@#.main-ads
 ! http://forum.adguard.com/showthread.php?4135
 @@||gibdd.ru^$document
-@@||gosuslugi.ru^$document
 @@||magnitogorsk.ru^$document
 @@||platron.ru/admin/$document
 gorodkirov.ru#@#.reklama

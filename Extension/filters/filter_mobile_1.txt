@@ -1,10 +1,10 @@
 ! Title: Russian filter
-! Version: 1.0.30.66
+! Version: 1.0.30.67
 ! Name: Russian filter
 ! Description: Filter that enables removing of the ads from websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-02-03T01:22:25.193+03:00
+! TimeUpdated: 2016-02-03T15:59:25.706+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -1497,6 +1497,7 @@ online.anidub.com#%#AG_onLoad(function() { window.ogonekstart = function() { if 
 kingofdown.com#%#var AG_AntiAntiBlock = function() { var baseCreateElement = document.createElement; document.createElement = function(name) { if (name && name.match(/div|font|center/i)) { return null; } else { return baseCreateElement(name); } } };
 kingofdown.com#%#AG_onLoad(function() { AG_AntiAntiBlock(); });
 @@||cdn.hd720hd.com/video/*/iframe$elemhide
+@@||cdn.hd720hd.com/serial/*/iframe$elemhide
 @@||cdn.hd720hd.com/upload/banners/banner.jpg
 @@||stream.1tv.ru/assets/player-current/ads.js?callback$xmlhttprequest
 @@||postila.ru/js/libs/blockadblock.js
@@ -1506,6 +1507,7 @@ lifenews78.ru,lifenews.ru#%#(function(){var noopfn=function(){;}; var Fab=functi
 ||spruto.tv/js/adbdetect.js
 @@||vtomske.ru/js/adv*.js
 @@||online.the-cinema.tv/video/*/iframe$elemhide
+@@||online.the-cinema.tv/serial/*/iframe$elemhide
 @@||online.the-cinema.tv/upload/banners/banner.jpg
 kino-dom.org###my_abadiv
 kino-dom.org#$##all_players { display: block!important; }
@@ -1607,7 +1609,8 @@ mybuses.ru#%#window.setTimeout=function() {};
 @@||ktozvonit.com.ua/src/js/ads.js
 lostfilmonline.tv#%#function setTimeout() {};
 @@||moonwalk.cc/video/*/iframe$elemhide
-||moonwalk.cc/upload/banners/banner.jpg
+@@||moonwalk.cc/serial/*/iframe$elemhide
+@@||moonwalk.cc/upload/banners/banner.jpg
 dedushka.org##.dsa-please
 @@||only-paper.ru/advertisement.js
 kinomoov.net#@#img[width="88"][height="31"]
@@ -3251,6 +3254,7 @@ ucoz.ru/informer/
 ||admulti.com/javascripts/rot.js
 ||gag.admulti.com/rotator
 ||info.zonasearch.com/ad/admulti-async.js
+filmix.net##.bottom-avd
 cxz.to,fs.to,brb.to##div[class^="b-"][style="position: relative;"]
 vestifinance.ru###ADV60
 smotri.com###BannerUnderBroPlayer
@@ -6002,6 +6006,7 @@ webware.ru/*/clients/
 http://*.space^$script,domain=free-torrent.org|free-torrents.org|jpgstore.ru|pic4cash.ru|pics-money.ru|pics2pay.ru|picspay.ru
 @@||video.videonow.ru^$domain=echo.msk.ru
 @@||video.videonow.ru^$domain=api.cybergame.tv
+@@||gosuslugi.ru/pgu/content/
 cheb.ru#@##TopAd
 cheb.ru#@##HeroAd
 @@||fishki.net/comment/more/$document
@@ -6261,7 +6266,6 @@ wowjp.net#@#noindex a[rel="nofollow"] > img
 @@||qrz.ru/js/advert.js
 splkirov.ru#@#.main-ads
 @@||gibdd.ru^$document
-@@||gosuslugi.ru^$document
 @@||magnitogorsk.ru^$document
 gorodkirov.ru#@#.reklama
 @@adfox.ru/$domain=ozon.ru
