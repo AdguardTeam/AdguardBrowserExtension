@@ -60,7 +60,7 @@ ContentMessageHandler.prototype = {
         var {Cu,Cc,Ci} = require('chrome');
         var messageManager = Cc["@mozilla.org/globalmessagemanager;1"].getService(Ci.nsIMessageListenerManager);
         messageManager.addMessageListener(CONTENT_TO_BACKGROUND_CHANNEL, new Listener());
-        messageManager.addMessageListener(BACKGROUND_TO_CONTENT_CHANNEL, new Listener());
+        //messageManager.addMessageListener(BACKGROUND_TO_CONTENT_CHANNEL, new Listener());
         messageManager.loadFrameScript('chrome://adguard/content/content-script/frame-script.js', true);
     },
 

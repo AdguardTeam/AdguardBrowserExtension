@@ -112,12 +112,12 @@ var createSandbox = function(window) {
     
     // Expose messaging API
     sandbox.addFrameEventListener = function(name, listener) {
-        Log.debug('addFrameEventListener ' + name);
+        Log.debug(name + ': addFrameEventListener');
 
         ContentFrameMessageManager.addMessageListener(name, listener);
     };
     sandbox.sendFrameEvent = function(name, message) {
-        Log.debug('addFrameEventListener ' + name);
+        Log.debug(name + ': sendFrameEvent ' + message);
 
         ContentFrameMessageManager.sendAsyncMessage(name, message);
     };
