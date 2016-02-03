@@ -1,10 +1,10 @@
 ! Title: Experimental filter
-! Version: 1.0.23.84
+! Version: 1.0.23.91
 ! Name: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: Experimental filter
 ! DescriptionEn: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! TimeUpdated: 2016-01-28T21:00:23.872+03:00
+! TimeUpdated: 2016-02-02T21:00:46.306+03:00
 ! Title: Adguard Experimental Filter
 !
 ! Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
@@ -240,6 +240,10 @@ armyrecognition.com##header#header > div[id^="position"]
 armyrecognition.com##section#content > div[id^="position"]
 armyrecognition.com##div[class="sidebar_module sidebar_module_"] > .sidebar_module_content > .custom > table[style="width: 314px; height: 1667px;"]
 !
+! malina.am - уменьшение отступа сверху
+malina.am#$##content{ padding-top: 83px!important; }
+! http://forum.adguard.com/showthread.php?8916
+avxhome.in##.news
 ! http://forum.adguard.com/showthread.php?8656
 freshideen.com##footer[class$="single-elements"] > div[style$="width: auto; margin: 0px auto;  margin-bottom: 20px; border-bottom: 1px solid #CFCFD0; border-top: 1px solid #CFCFD0; padding-bottom: 10px; padding-top: 5px; text-align: center; margin-right: 10px;"]
 ! http://forum.adguard.com/showthread.php?8531
@@ -427,6 +431,8 @@ imagebam.com###sponsor-modal
 !------------------ Anti-adblock messages --------------------------
 !---------- which does not affect the functioning of site ----------
 !-------------------------------------------------------------------
+phonearena.com##.adblock_awareness
+winbeta.org##.ad-blocking-advisor-wrapper
 theguardian.com##.adblock-sticky__message
 t3n.de##.ab-notice
 ||hardwareslave.com/wp-content/uploads/an-temp/
@@ -456,7 +462,9 @@ lifehacker.com.au##.ad-block-message
 !--------------- Donations, friends, apps for sites ----------------
 !----------------- cookie notifications ----------------------------
 !-------------------------------------------------------------------
+!
 !----------- START: EU cookie notifications -----------
+dobreprogramy.pl###cookiesPanel
 fujirumors.com##.pea_cook_wrapper
 /libs/cookieconsent2/
 armyrecognition.com##.cadre_alert_cookies
@@ -490,6 +498,8 @@ lifenews.ru##html > body > div.lifecorr-banner
 0lik.ru###simplemodal-container
 0lik.ru###simplemodal-overlay
 !----------- END:  Annoying popups --------------------
+! savepic.ru - блок новостей
+savepic.ru##.news-feed
 ! inopressa.ru - пустой блок снизу
 inopressa.ru##.alignleft > table[width="715"][border="0"][bgcolor="#DDDDDD"]
 ! lostfilmonline.ru - пустой блок сверху
@@ -546,7 +556,10 @@ santikov.net##a[href^="http://www.oplata.info/asp/pay_wm.asp"]
 !
 vchaspik.ua##div[id="conteiner"][style="height: 410px;"]
 otzyv.ru##div[align="center"] > .aviasales
+!---------------------------------
 !--- Mobile apps for the sites ---
+!---------------------------------
+mangareader.net###googleModal > a[href="http://www.animemobile.com/MangaApp/"]
 baidu.com###main > div[lgoinprompt="prompt"]
 ||s.livelib.ru/js/smartbanner.
 m24.ru###AndroidMobileAppBanner
@@ -558,6 +571,11 @@ slatedroid.com###tt_mobile_banner
 /mobiquo/smartbanner/appbanner.js
 ||unleashedprepaids.com/mobiquo/smartbanner/
 ||mol.im/i/mobileimages/
+tripadvisor.co.uk,tripadvisor.ca,tripadvisor.co,tripadvisor.co.id,tripadvisor.co.uk,tripadvisor.com,tripadvisor.com.au,tripadvisor.com.br,tripadvisor.com.gr,tripadvisor.com.mx,tripadvisor.com.my,tripadvisor.com.sg,tripadvisor.com.tr,tripadvisor.com.tw,tripadvisor.es,tripadvisor.fr,tripadvisor.ie,tripadvisor.in,tripadvisor.it,tripadvisor.jp,tripadvisor.ma,tripadvisor.net,tripadvisor.nl,tripadvisor.org,tripadvisor.se##.ppr_priv_mobile_full_page_interstitial
+tripadvisor.co.uk,tripadvisor.ca,tripadvisor.co,tripadvisor.co.id,tripadvisor.co.uk,tripadvisor.com,tripadvisor.com.au,tripadvisor.com.br,tripadvisor.com.gr,tripadvisor.com.mx,tripadvisor.com.my,tripadvisor.com.sg,tripadvisor.com.tr,tripadvisor.com.tw,tripadvisor.es,tripadvisor.fr,tripadvisor.ie,tripadvisor.in,tripadvisor.it,tripadvisor.jp,tripadvisor.ma,tripadvisor.net,tripadvisor.nl,tripadvisor.org,tripadvisor.se##.app_download_cta
+tripadvisor.co.uk,tripadvisor.jp,tripadvisor.com.br###partialScreenInterrupter
+tripadvisor.co.uk,tripadvisor.jp,tripadvisor.com.br###smartbanner
+tripadvisor.co.uk,tripadvisor.jp,tripadvisor.com.br#$##PAGE_CONTAINER.smartbanner_shown_on_top { top: 0px!important; }
 !------------------------------------------------------
 !---------------- Low-attendance sites ----------------
 !------------- less then 30k visits/month -------------
@@ -653,6 +671,8 @@ revclouds.com#%#AG_onLoad(function() {document.getElementById("tick-dwn").click(
 !------------------------------------------------------
 !---------------------- Replacing rules ---------------
 !------------------------------------------------------
+! http://forum.adguard.com/showthread.php?8976
+||damoh.tv4play.se$replace=/"enabled": true\,/"enabled": false\,/i
 ! http://forum.adguard.com/showthread.php?8906
 ||onceux.unicornmedia.com$replace=/(<VAST(.|\s)*?>)(.|\s)*<\/VAST>/\$1<\/VAST>/,domain=gamespot.com
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1344
