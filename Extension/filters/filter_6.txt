@@ -1,10 +1,10 @@
 ! Title: German filter
-! Version: 1.0.23.28
+! Version: 1.0.23.29
 ! Name: German filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: German filter
 ! DescriptionEn: Filter that enables removing of the ads from websites with German content.
-! TimeUpdated: 2016-02-03T16:00:03.264+03:00
+! TimeUpdated: 2016-02-03T19:31:21.995+03:00
 ! Title: Adguard German Filter.
 !
 ! Filter that enables removing of the ads from websites with German content.
@@ -57,8 +57,6 @@
 @@||cdn.videoplaza.tv/*/homadConfigVideoplaza-*.json$domain=nowtv.de|rtl2.de|bilder.static-fra.de|toggo.de
 ! http://forum.adguard.com/showthread.php?6081
 @@||ad.71i.de^$domain=prosieben.de
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/957
-@@||sueddeutsche.de^$elemhide
 ! http://forum.adguard.com/showthread.php?7179
 @@||ndr.de/common/mediaplayer/branding/*.css
 ! http://forum.adguard.com/showthread.php?2874-servustv-com-(google-chrome-firefox)
@@ -138,6 +136,7 @@ teleboy.ch#@#.adWrapper
 ! http://forum.adguard.com/showthread.php?8979 (#17)
 ||static.p7s1.com/vendor/webtrekk
 !
+winfuture.de##.acceptable_ad
 ||videoplaza1.tv/proxy/^$domain=tv4play.se
 berlindailysun.com##.bannergroup
 ||berlindailysun.com/images/banners/
@@ -363,6 +362,8 @@ freshideen.com##div[class^="adHolder"]
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
 ! JS API FINISH
 !-------------- JS rules -------------------------------------------------!
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1411
+sueddeutsche.de#%#window.blockAdBlock = function() {};
 ! http://forum.adguard.com/showthread.php?8887
 giga.de#%#AG_onLoad(function() { $('span[class="adteaser"]').closest('article[class="teaser"]').remove(); });
 ! http://forum.adguard.com/showthread.php?6186

@@ -1,10 +1,10 @@
 ! Title: German filter
-! Version: 1.0.23.28
+! Version: 1.0.23.29
 ! Name: German filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: German filter
 ! DescriptionEn: Filter that enables removing of the ads from websites with German content.
-! TimeUpdated: 2016-02-03T16:00:03.264+03:00
+! TimeUpdated: 2016-02-03T19:31:21.995+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -24,7 +24,6 @@
 @@||spiele.rtl.de/landingpage/index/$document
 @@||cdn.videoplaza.tv/*/homadConfigVideoplaza-*.json$domain=nowtv.de|rtl2.de|bilder.static-fra.de|toggo.de
 @@||ad.71i.de^$domain=prosieben.de
-@@||sueddeutsche.de^$elemhide
 @@||ndr.de/common/mediaplayer/branding/*.css
 @@||ad3.adfarm1.adition.com^$domain=servustv.com,other
 @@||smartadserver.com/diff/*/smartad.js$domain=onmeda.de
@@ -75,6 +74,7 @@ t3n.de##.abContentMsg
 @@||4p.de/*adtag.check.js
 teleboy.ch#@#.adWrapper
 ||static.p7s1.com/vendor/webtrekk
+winfuture.de##.acceptable_ad
 ||videoplaza1.tv/proxy/^$domain=tv4play.se
 berlindailysun.com##.bannergroup
 ||berlindailysun.com/images/banners/
@@ -202,6 +202,7 @@ freshideen.com##div[class^="adHolder"]
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#window.AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+sueddeutsche.de#%#window.blockAdBlock = function() {};
 giga.de#%#AG_onLoad(function() { $('span[class="adteaser"]').closest('article[class="teaser"]').remove(); });
 pcgameshardware.de#%#AG_onLoad(function() { $('a[href^="/E-Commerce-Thema-"]').closest('div[class*="item miniImg "]').remove(); });
 pcgameshardware.de#%#AG_onLoad(function() { $('a[href*="amazon-blitzangebote-schnaeppchen"]').closest('div[class*="item noImg"]').remove(); });

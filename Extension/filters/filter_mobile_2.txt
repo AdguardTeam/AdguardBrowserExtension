@@ -1,10 +1,10 @@
 ! Title: English filter
-! Version: 1.0.76.47
+! Version: 1.0.76.49
 ! Name: English filter
 ! Description: Based on EasyList. Filter that enables removing of the ads from websites with English content.
 ! NameEn: English filter
 ! DescriptionEn: Based on EasyList. Filter that enables removing of the ads from websites with English content.
-! TimeUpdated: 2016-02-03T15:59:42.921+03:00
+! TimeUpdated: 2016-02-03T20:09:41.670+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -881,6 +881,7 @@ brandbuffet.in.th#@#.category-advertorial
 ##a[href^="http://stateresolver.link/"]
 ##div[id^="google_ads_iframe_"]
 ##img[title^="advertisement"]
+benchmarkreviews.com#%#Object.defineProperty(window, 'bg_backgrounds', { get: function() { return []; } });
 thinkcomputers.org#%#window.myatu_bgm = 0;
 educationcanada.com#%#AG_onLoad(function() { window.AG_removeElementBySelector('ins[id^="aswift_"]'); });
 clipconverter.cc#%#window.open = function() {};
@@ -922,6 +923,7 @@ imagebam.com#%#window.open = function() {};
 freeimgup.com#%#document.cookie = "popundr=1";
 calameo.com#%#AG_onLoad(function() { document.getElementsByTagName('body')[0].className = ''; });
 zippymoviez.com#%#window.open = function() {};
+benchmarkreviews.com#$#html > body { background-image: none!important; }
 thinkcomputers.org#$#html > body.myatu_bgm_body { background-image: none !important; }
 liberallogic101.com#$#aside#text-37 { visibility: hidden!important; width: 0px!important; position: absolute!important; }
 limetorrents.cc#$#div[style^="float:left"] > a[rel="nofollow"] { visibility: hidden!important; position: fixed!important; }
@@ -999,6 +1001,8 @@ _200x250.png
 Banner468x60
 http://www.ads.$third-party
 google.ae,google.at,google.be,google.by,google.ca,google.ch,google.cl,google.cn,google.co.id,google.co.in,google.co.jp,google.co.th,google.co.uk,google.co.ve,google.co.za,google.com,google.com.ar,google.com.au,google.com.bd,google.com.br,google.com.co,google.com.eg,google.com.hk,google.com.mx,google.com.my,google.com.ng,google.com.pe,google.com.ph,google.com.pk,google.com.sa,google.com.sg,google.com.tr,google.com.tw,google.com.ua,google.com.vn,google.de,google.dk,google.ee,google.es,google.fr,google.gr,google.hu,google.ie,google.it,google.nl,google.no,google.pl,google.pt,google.ro,google.rs,google.ru,google.se,google.sk,google.tn###taw #tvcap ._hsi.mnr-c
+washingtonpost.com##div[moat-id="ad/leaderboard"]
+||thessdreview1.netdna-cdn.com/wp-content/uploads/*/*-bg-banner-
 windowscentral.com##a[href^="http://clkuk.tradedoubler.com/click?"]
 windowscentral.com##a[href^="http://www.amazon.com/gp/new-releases?tag=mbn"]
 windowscentral.com###msny15banner
@@ -2934,6 +2938,7 @@ implbits.com#@#.banner_container
 /bserver/*
 /burt/adv_
 /buysellads.
+/cactus-ads/*
 /cads-min.js
 /call/pubj/*
 /camaoadsense.
@@ -3690,6 +3695,7 @@ implbits.com#@#.banner_container
 /vghd.swf
 /VHDpoppingModels/*
 /vice-ads.
+/video-ads-management.
 /video_ad_
 /video_ads/*
 /videoad.

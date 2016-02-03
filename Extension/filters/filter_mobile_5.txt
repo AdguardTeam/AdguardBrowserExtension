@@ -1,10 +1,10 @@
 ! Title: Experimental filter
-! Version: 1.0.23.91
+! Version: 1.0.23.92
 ! Name: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: Experimental filter
 ! DescriptionEn: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! TimeUpdated: 2016-02-02T21:00:46.306+03:00
+! TimeUpdated: 2016-02-03T21:00:42.403+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -199,6 +199,7 @@ kia.ru##.notif_cookie_panel
 lifenews.ru##html > body > div.lifecorr-banner
 0lik.ru###simplemodal-container
 0lik.ru###simplemodal-overlay
+benchmarkreviews.com###content > div#sidebar2 > div
 savepic.ru##.news-feed
 inopressa.ru##.alignleft > table[width="715"][border="0"][bgcolor="#DDDDDD"]
 lostfilmonline.ru###rt-drawer
@@ -305,6 +306,7 @@ videogamesblogger.com#%#AG_onLoad(function() { window.num_seconds = 1; });
 rusfolder.com,rusfolder.net#%#AG_onLoad(function() { $('a[href^="http://ints.rusfolder.com/ints/sponsor/?bi="]').trigger('click'); });
 letitbit.net##img[class="mcmp_postrol_img"]
 revclouds.com#%#AG_onLoad(function() {document.getElementById("tick-dwn").click();});
+||amazonaws.com/homad-global-configs.schneevonmorgen.com/www.focus.de/config.json$replace=/"enabled": true\,/"enabled": false\,/i,domain=focus.de
 ||damoh.tv4play.se$replace=/"enabled": true\,/"enabled": false\,/i
 ||onceux.unicornmedia.com$replace=/(<VAST(.|\s)*?>)(.|\s)*<\/VAST>/\$1<\/VAST>/,domain=gamespot.com
 ||schneevonmorgen.com.s3.amazonaws.com/*config.json$replace=/"enabled": true\,/"enabled": false\,/i,domain=rtl.de

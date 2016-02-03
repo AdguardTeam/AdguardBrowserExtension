@@ -1,10 +1,10 @@
 ! Title: Russian filter
-! Version: 1.0.30.67
+! Version: 1.0.30.68
 ! Name: Russian filter
 ! Description: Filter that enables removing of the ads from websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-02-03T15:59:25.706+03:00
+! TimeUpdated: 2016-02-03T19:30:44.505+03:00
 ! Title: Adguard Russian Filter
 !
 ! Filter that enables removing of the ads from websites with Russian content.
@@ -4134,6 +4134,8 @@ zlovemother.com#%#Object.defineProperty(window, 'iframe_adv_enabled', { get: fun
 !-----------------------
 !------- CSS -----------
 !-----------------------
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1407
+soundpark.su#$##top_groundnew { height: 57px!important; }
 ! ok.ru - ads in the feed
 odnoklassniki.ru,ok.ru#$#div[debug-fid*="BANNER"] * { height: 0px!important; padding: 0px!important; border: none!important; color: transparent!important; }
 ! otvet.mail.ru - Яндекс Директ
@@ -6227,6 +6229,9 @@ polezno-2012.info^
 ! 4pda forum
 ! ||s.4pda.to/*.css?_=2|
 !
+prostitutka-ket.livejournal.com##dl[class="sidebar-block sidebar-custom"]
+||b.netall.ru^
+||soundpark.su/banners/
 filmix.net##.bottom-avd
 cxz.to,fs.to,brb.to##div[class^="b-"][style="position: relative;"]
 vestifinance.ru###ADV60
