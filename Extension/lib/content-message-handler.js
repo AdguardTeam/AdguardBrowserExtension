@@ -46,19 +46,41 @@ ContentMessageHandler.prototype = {
         var CONTENT_TO_BACKGROUND_CHANNEL = 'content-background-channel';
         var BACKGROUND_TO_CONTENT_CHANNEL = 'background-content-channel';
 
+        var {Cu,Cc,Ci} = require('chrome');
+        var messageManager = Cc["@mozilla.org/globalmessagemanager;1"].getService(Ci.nsIMessageListenerManager);
+
         var Listener = function() {
         };
         Listener.prototype.receiveMessage = function(message) {
-            require('./utils/log').Log.info('message: {0}', message.data.url);
-            //message.target
-            //        .QueryInterface(Ci.nsIFrameLoaderOwner)
-            //        .frameLoader
-            //        .messageManager
-            //        .sendAsyncMessage("pong", {});
+            require('./utils/log').Log.info('message: {0}', message);
+
+            var callback = function () {
+                // Empty
+            };
+
+            if ('callbackId' in message.data) {
+
+                callback = function (result) {
+
+                    if ('callbackId' in result) {
+                        throw 'callbackId present in result';
+                    }
+                    if ('type' in result) {
+                        throw 'type present in result';
+                    }
+
+                    // Passing type and callbackId to response
+                    result.type = message.data.type;
+                    result.callbackId = message.data.callbackId;
+
+                    messageManager.sendAsyncMessage(CONTENT_TO_BACKGROUND_CHANNEL, result);
+
+                }.bind(this);
+            }
+
+            this.handleMessage(message.data, messageManager, callback);
         };
 
-        var {Cu,Cc,Ci} = require('chrome');
-        var messageManager = Cc["@mozilla.org/globalmessagemanager;1"].getService(Ci.nsIMessageListenerManager);
         messageManager.addMessageListener(CONTENT_TO_BACKGROUND_CHANNEL, new Listener());
         //messageManager.addMessageListener(BACKGROUND_TO_CONTENT_CHANNEL, new Listener());
         messageManager.loadFrameScript('chrome://adguard/content/content-script/frame-script.js', true);
