@@ -42,7 +42,7 @@ var WebRequestService = exports.WebRequestService = function (framesMap, antiBan
  */
 WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, documentUrl) {
 
-    var result = null;
+    var result = {};
 
     if (!tab) {
         return result;
@@ -61,7 +61,8 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
     result = {
         selectors: null,
         scripts: null,
-        collapseAllElements: this.antiBannerService.shouldCollapseAllElements()
+        collapseAllElements: this.antiBannerService.shouldCollapseAllElements(),
+        useShadowDom: Utils.isShadowDomSupported()
     };
 
     var genericHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "GENERICHIDE");

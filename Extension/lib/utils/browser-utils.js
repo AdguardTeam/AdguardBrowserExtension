@@ -1,3 +1,4 @@
+/* global safari */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -107,6 +108,22 @@ var Utils = exports.Utils = {
         return this.navigator.platform.toUpperCase().indexOf('MAC') >= 0;
     },
     
+    /**
+     * Returns true if Shadow DOM is supported.
+     * http://caniuse.com/#feat=shadowdom
+     * 
+     * In this case we transform CSS selectors and inject CSS to shadow DOM.
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/44
+     */
+    isShadowDomSupported: function() {
+        
+        // Shadow DOM is supported by all modern chromium browsers
+        return Prefs.platform == 'chromium';
+    },
+    
+    /**
+     * Returns true if Safari content blocker API is supported
+     */
     isContentBlockerEnabled: function () {
         
         if (typeof safari == 'undefined' || !this.isSafari9Plus()) {

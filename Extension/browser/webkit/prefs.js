@@ -1,3 +1,5 @@
+/* global safari */
+/* global ext */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -35,7 +37,7 @@ var Prefs = exports.Prefs = {
 	localGroupsMetadataPath: ext.getURL('filters/groups.xml'),
 	localFiltersMetadataPath: ext.getURL('filters/filters.xml'),
 	safebrowsingPagePath: ext.getURL("pages/sb.html"),
-	platform: "chromium",
+	platform: (typeof safari == 'undefined' ? "chromium" : "webkit"),
 	getBrowser: function () {
 		if (!Prefs.browser) {
 			var browser;

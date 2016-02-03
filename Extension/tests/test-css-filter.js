@@ -1,3 +1,9 @@
+/* global addTestCase */
+/* global assertFalse */
+/* global CssFilter */
+/* global CssFilterRule */
+/* global assertEquals */
+/* global assertTrue */
 function testCssFilterRule() {
 
 	var ruleText = "~gamespot.com,~mint.com,~slidetoplay.com,~smh.com.au,~zattoo.com##.sponsored";

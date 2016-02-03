@@ -28,7 +28,7 @@ var EventNotifier = require('../../../lib/utils/notifier').EventNotifier;
 var EventNotifierTypes = require('../../../lib/utils/common').EventNotifierTypes;
 var userSettings = require('../../../lib/utils/user-settings').userSettings;
 
-var isFirefox = Prefs.platform == "firefox";
+var isFirefox = (Prefs.platform == "firefox");
 
 /**
  * This class manages CSS rules and builds styles to inject to pages.

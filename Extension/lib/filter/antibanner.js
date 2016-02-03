@@ -974,8 +974,7 @@ AntiBannerService.prototype = {
         // Request filter creation is rather slow operation so we should
         // use setTimeout calls to give UI thread some time.
         var async = Prefs.speedupStartup();
-        // No need in small chunks in case of Chromium based browsers
-        var step = async ? 1000 : 1000000;        
+        var asyncStep = 1000;
         
         // Empty request filter
         var requestFilter = new RequestFilter();
@@ -1037,26 +1036,19 @@ AntiBannerService.prototype = {
             var dfd = new Promise();
             
             prevDfd.then(function() {
-                if (async) {
-                    setTimeout(function() {
-                        addRules(filterId, rulesTexts, startIdx, stopIdx);
-                        dfd.resolve();    
-                    }, 1);                    
-                } else {
+                setTimeout(function() {
                     addRules(filterId, rulesTexts, startIdx, stopIdx);
-                    dfd.resolve();
-                }
+                    dfd.resolve();    
+                }, 1);
             });
 
             return dfd;            
         };
-
+        
         /**
-         * STEP 2: Called when all filter rules have been loaded from storage
+         * Asynchronously fills request filter with rules.
          */
-        var loadAllFilterRulesDone = function () {            
-            Log.info('Finished loading filter rules from storage in {0} ms', (new Date().getTime() - start));            
-            
+        var fillRequestFilterAsync = function() {
             // Async loading starts when we resolve this promise
             var rootDfd = new Promise();
             var prevDfd = null;
@@ -1070,8 +1062,8 @@ AntiBannerService.prototype = {
                 if (filterId != AntiBannerFiltersId.USER_FILTER_ID) {
                     var rulesTexts = rulesFilterMap[filterId];
                     
-                    for (var i = 0; i < rulesTexts.length; i += step) {
-                        prevDfd = addRulesAsync(filterId, rulesTexts, i, i + step, prevDfd || rootDfd);
+                    for (var i = 0; i < rulesTexts.length; i += asyncStep) {
+                        prevDfd = addRulesAsync(filterId, rulesTexts, i, i + asyncStep, prevDfd || rootDfd);
                         dfds.push(prevDfd);
                     }
                 }
@@ -1087,8 +1079,44 @@ AntiBannerService.prototype = {
             });
             
             // Start execution
-            rootDfd.resolve();
-        }.bind(this);
+            rootDfd.resolve();            
+        };
+        
+        /**
+         * Synchronously fills request filter with rules
+         */
+        var fillRequestFilterSync = function() {
+            
+            // Go through all filters in the map
+            for (var filterId in rulesFilterMap) {
+                
+                // To number
+                filterId = filterId - 0;
+                if (filterId != AntiBannerFiltersId.USER_FILTER_ID) {
+                    var rulesTexts = rulesFilterMap[filterId];
+                    addRules(filterId, rulesTexts, 0, rulesTexts.length);
+                }
+            }
+            
+            // User filter should be the last
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/117
+            var userRules = rulesFilterMap[AntiBannerFiltersId.USER_FILTER_ID];
+            addRules(AntiBannerFiltersId.USER_FILTER_ID, userRules, 0, userRules.length);
+            requestFilterInitialized();
+        };
+
+        /**
+         * STEP 2: Called when all filter rules have been loaded from storage
+         */
+        var loadAllFilterRulesDone = function() {            
+            Log.info('Finished loading filter rules from storage in {0} ms', (new Date().getTime() - start));
+            
+            if (async) {
+                fillRequestFilterAsync();
+            } else {
+                fillRequestFilterSync();
+            }
+        };
 
         /**
          * Loads filter rules from storage

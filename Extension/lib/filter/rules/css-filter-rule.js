@@ -21,6 +21,9 @@
  */
 var StringUtils = require('../../../lib/utils/common').StringUtils;
 var FilterRule = require('../../../lib/filter/rules/base-filter-rule').FilterRule;
+var Utils = require('./utils/browser-utils').Utils;
+
+var isShadowDomSupported = Utils.isShadowDomSupported();
 
 /**
  * CSS rule.
@@ -53,7 +56,11 @@ var CssFilterRule = exports.CssFilterRule = function (rule, filterId) {
 		var domains = rule.substring(0, indexOfMask);
 		this.loadDomains(domains);
 	}
-	this.cssSelector = rule.substring(indexOfMask + mask.length);
+    
+    this.cssSelector = rule.substring(indexOfMask + mask.length);
+    if (isShadowDomSupported) {
+	   this.cssSelector = "::content " + this.cssSelector;        
+    }
 };
 
 CssFilterRule.prototype = Object.create(FilterRule.prototype);

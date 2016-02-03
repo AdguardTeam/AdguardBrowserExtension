@@ -299,9 +299,9 @@ UrlFilterRule.contentTypes = {
 };
 
 // https://code.google.com/p/chromium/issues/detail?id=410382
-if (Prefs.platform === 'chromium') {
+if (Prefs.platform === 'chromium' || Prefs.platform == 'webkit') {
     UrlFilterRule.contentTypes['OBJECT-SUBREQUEST'] = UrlFilterRule.contentTypes.OBJECT;
-}
+};
 
 UrlFilterRule.ignoreOptions = {
     // Deprecated modifiers

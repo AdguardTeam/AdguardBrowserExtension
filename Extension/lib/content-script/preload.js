@@ -15,11 +15,11 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 /* global contentPage */
-var PreloadHelper = {
-
-    AG_HIDDEN_ATTRIBUTE: "adg-hidden",
-
-    requestTypeMap: {
+try {
+(function() {
+    var AG_HIDDEN_ATTRIBUTE = "adg-hidden";
+    
+    var requestTypeMap = {
         "img": "IMAGE",
         "input": "IMAGE",
         "audio": "OBJECT",
@@ -27,16 +27,28 @@ var PreloadHelper = {
         "object": "OBJECT",
         "frame": "SUBDOCUMENT",
         "iframe": "SUBDOCUMENT"
-    },
-
-    collapseRequests: Object.create(null),
-    collapseRequestId: 1,
-    collapseAllElements: false,
-
+    };
+    
+    /**
+     * Do not use shadow DOM on some websites
+     * https://code.google.com/p/chromium/issues/detail?id=496055
+     */
+    var shadowDomExceptions = [
+        'mail.google.com',
+        'inbox.google.com',
+        'productforums.google.com'
+    ];
+    
+    var collapseRequests = Object.create(null);
+    var collapseRequestId = 1;
+    var isFirefox = false;
+    var isOpera = false;
+    var shadowRoot = null;
+    
     /**
      * Initializing content script
      */
-    init: function () {
+    var init = function() {
         if (!(document instanceof HTMLDocument)) {
             return;
         }
@@ -50,92 +62,120 @@ var PreloadHelper = {
                 return;
             }
         }
+        
+        // We use shadow DOM when it's available to minimize our impact on web page DOM tree.
+        // According to ABP issue #452, creating a shadow root breaks running CSS transitions.
+        // Because of this, we create shadow root right after content script is initialized.
+        if ("createShadowRoot" in document.documentElement && shadowDomExceptions.indexOf(document.domain) == -1) {
+            shadowRoot = document.documentElement.createShadowRoot();
+            shadowRoot.appendChild(document.createElement("shadow"));
+        }
 
         var userAgent = navigator.userAgent.toLowerCase();
-        this.isFirefox = userAgent.indexOf('firefox') > -1;
-        this.isOpera = userAgent.indexOf('opera') > -1 || userAgent.indexOf('opr') > -1;
+        isFirefox = userAgent.indexOf('firefox') > -1;
+        isOpera = userAgent.indexOf('opera') > -1 || userAgent.indexOf('opr') > -1;
 
-        this._initCollapse();
-        this.tryLoadCssAndScripts();
-    },
+        initCollapseEventListeners();
+        tryLoadCssAndScripts();
+    };
 
     /**
      * Loads CSS and JS injections
      */
-    tryLoadCssAndScripts: function () {
-        contentPage.sendMessage(
-            {
-                type: 'getSelectorsAndScripts',
-                documentUrl: window.location.href
-            },
-            this.processCssAndScriptsResponse.bind(this)
-        );
-    },
-
+    var tryLoadCssAndScripts = function() {
+        var message = {
+            type: 'getSelectorsAndScripts',
+            documentUrl: window.location.href            
+        };
+        
+        /**
+         * Sending message to background page and passing a callback function  
+         */ 
+        contentPage.sendMessage(message, processCssAndScriptsResponse);
+    };
+    
     /**
      * Processes response from the background page containing CSS and JS injections
      *
-     * @param response
+     * @param response Response from the background page
      */
-    processCssAndScriptsResponse: function (response) {
+    var processCssAndScriptsResponse = function(response) {
         if (!response || response.requestFilterReady === false) {
-            // This flag means that we should wait for a while, cause the request filter is not ready yet.
-            // This is possible only on browser startup.
-            // In this case we'll delay injections until extension is fully initialized.
-            var loadCssAndScripts = this.tryLoadCssAndScripts.bind(this);
+            /**
+             * This flag (requestFilterReady) means that we should wait for a while, because the 
+             * request filter is not ready yet. This is possible only on browser startup. 
+             * In this case we'll delay injections until extension is fully initialized.
+             */
             setTimeout(function () {
-                loadCssAndScripts();
+                tryLoadCssAndScripts();
             }, 100);
         } else if (response.collapseAllElements) {
-            // This flag means that we should check all page elements and collapse them if needed.
-            // Why? On browser startup we can't block some ad/tracking requests
-            // because extension is not yet initialized when these requests are executed.
-            // At least we could hide these elements.
-            this._applySelectors(response.selectors);
-            this._applyScripts(response.scripts);
-            this._initCollapseMany();
+            
+            /**
+             * This flag (collapseAllElements) means that we should check all page elements 
+             * and collapse them if needed. Why? On browser startup we can't block some 
+             * ad/tracking requests because extension is not yet initialized when 
+             * these requests are executed. At least we could hide these elements.
+             */
+            applySelectors(response.selectors, response.useShadowDom);
+            applyScripts(response.scripts);
+            initBatchCollapse();
         } else {
-            this._applySelectors(response.selectors);
-            this._applyScripts(response.scripts);
+            applySelectors(response.selectors, response.useShadowDom);
+            applyScripts(response.scripts);
         }
-    },
-
+    };
+    
+    /**
+     * Sets "style" DOM element content.
+     * 
+     * @param styleEl       "style" DOM element
+     * @param cssContent    CSS content to set
+     * @param useShadowDom  true if we want to use shadow DOM
+     */
+    var setStyleContent = function(styleEl, cssContent, useShadowDom) {
+        
+        if (useShadowDom && !shadowRoot) {
+            // Despite our will to use shadow DOM we cannot
+            // It is rare case, but anyway: https://code.google.com/p/chromium/issues/detail?id=496055
+            // The only thing we can do is to append styles to document root
+            // We should remove ::content pseudo-element first
+            cssContent = cssContent.replace(new RegExp('::content ', 'g'), '');
+        }
+        
+        styleEl.textContent = cssContent;
+    };
+    
     /**
      * Applies CSS selectors
-     * @param selectors Array with CSS stylesheets
-     * @private
+     * 
+     * @param selectors     Array with CSS stylesheets.
+     * @param useShadowDom  If true - add styles to shadow DOM instead of normal DOM. 
      */
-    _applySelectors: function (selectors) {
+    var applySelectors = function (selectors, useShadowDom) {
         if (!selectors || selectors.length == 0) {
             return;
-        }
-
-        function setSelectors(element, cssSelectors) {
-            if (!element.sheet) {
-                window.setTimeout(function () {
-                    setSelectors(element, cssSelectors);
-                }, 0);
-                return;
-            }
-            element.textContent = cssSelectors;
         }
 
         for (var i = 0; i < selectors.length; i++) {
             var styleEl = document.createElement("style");
             styleEl.setAttribute("type", "text/css");
-            (document.head || document.documentElement).appendChild(styleEl);
-            setSelectors(styleEl, selectors[i]);
-        }
-    },
+            setStyleContent(styleEl, selectors[i]);
 
+            if (useShadowDom && shadowRoot) {
+                shadowRoot.appendChild(styleEl);
+            } else {
+                (document.head || document.documentElement).appendChild(styleEl);                
+            }
+        }
+    };
+    
     /**
      * Applies JS injections.
      *
      * @param scripts Array with JS scripts and scriptSource ('remote' or 'local')
-     * @private
      */
-    _applyScripts: function (scripts) {
-
+    var applyScripts = function(scripts) {
         if (!scripts || scripts.length == 0) {
             return;
         }
@@ -154,7 +194,7 @@ var PreloadHelper = {
                      * In case of Firefox and Opera add-ons, JS filtering rules are hardcoded into add-on code.
                      * Look at WorkaroundUtils.getScriptSource to learn more.
                      */
-                    if (!this.isFirefox && !this.isOpera) {
+                    if (!isFirefox && !isOpera) {
                         scriptsToApply.push(scriptRule.rule);
                     }
                     break;
@@ -164,7 +204,6 @@ var PreloadHelper = {
         /**
          * JS injections are created by JS filtering rules:
          * http://adguard.com/en/filterrules.html#javascriptInjection
-         *
          */
         var script = document.createElement("script");
         script.setAttribute("type", "text/javascript");
@@ -172,33 +211,32 @@ var PreloadHelper = {
         scriptsToApply.push("} catch (ex) { console.error('Error executing AG js: ' + ex); }");
         script.textContent = scriptsToApply.join("\r\n");
         (document.head || document.documentElement).appendChild(script);
-    },
-
+    };
+    
     /**
      * Init listeners for error and load events.
      * We will then check loaded elements if they are blocked by our extension.
      * In this case we'll hide these blocked elements.
-     * @private
      */
-    _initCollapse: function () {
-        document.addEventListener("error", this._checkShouldCollapse.bind(this), true);
+    var initCollapseEventListeners = function() {
+        document.addEventListener("error", checkShouldCollapse, true);
 
         // We need to listen for load events to hide blocked iframes (they don't raise error event)
-        document.addEventListener("load", this._checkShouldCollapse.bind(this), true);
-    },
-
+        document.addEventListener("load", checkShouldCollapse, true);
+    };
+    
     /**
      * Checks if loaded element is blocked by AG and should be hidden
+     * 
      * @param event Load or error event
-     * @private
      */
-    _checkShouldCollapse: function (event) {
+    var checkShouldCollapse = function(event) {
 
         var element = event.target;
         var eventType = event.type;
         var tagName = element.tagName.toLowerCase();
 
-        var requestType = this.requestTypeMap[tagName];
+        var requestType = requestTypeMap[tagName];
         if (!requestType) {
             return;
         }
@@ -213,72 +251,85 @@ var PreloadHelper = {
             return;
         }
 
-        var requestId = this.collapseRequestId++;
-        this.collapseRequests[requestId] = {
+        // Save request to a map (it will be used in response callback)
+        var requestId = collapseRequestId++;
+        collapseRequests[requestId] = {
             element: element,
             tagName: tagName
         };
 
         if (eventType == "error") {
             // Hide elements with "error" type right now
-            this._hideElement(element, tagName);
+            // We will roll it back if element should not be collapsed
+            collapseElement(element, tagName);
         }
+        
+        // Send a message to the background page to check if the element really should be collapsed
+        var message = {
+            type: 'processShouldCollapse',
+            elementUrl: elementUrl,
+            documentUrl: document.URL,
+            requestType: requestType,
+            requestId: requestId
+        };
 
-        contentPage.sendMessage({
-                type: 'processShouldCollapse',
-                elementUrl: elementUrl,
-                documentUrl: document.URL,
-                requestType: requestType,
-                requestId: requestId
-            },
-            this._onProcessShouldCollapseResponse.bind(this)
-        )
-    },
-
-    _onProcessShouldCollapseResponse: function (response) {
+        contentPage.sendMessage(message, onProcessShouldCollapseResponse);
+    };
+    
+    /**
+     * Response callback for "processShouldCollapse" message.
+     * 
+     * @param response Response got from the background page
+     */
+    var onProcessShouldCollapseResponse = function(response) {
 
         if (!response) {
-            return
+            return;
         }
-
-        var collapseRequest = this.collapseRequests[response.requestId];
+        
+        // Get original collapse request
+        var collapseRequest = collapseRequests[response.requestId];
         if (!collapseRequest) {
             return;
         }
-        delete this.collapseRequests[response.requestId];
+        delete collapseRequests[response.requestId];
 
         if (response.collapse !== true) {
-            // Return element visibility in case of it should not be collapsed
-            this._toggleElement(collapseRequest.element);
+            // Return element visibility in case if it should not be collapsed
+            toggleElement(collapseRequest.element);
             return;
         }
 
         var element = collapseRequest.element;
         var tagName = collapseRequest.tagName;
-        this._hideElement(element, tagName);
-    },
-
-    _initCollapseMany: function () {
+        collapseElement(element, tagName);
+    };
+    
+    /**
+     * This method is used when we need to check all page elements with collapse rules.
+     * We need this when the browser is just started and add-on is not yet initialized.
+     * In this case content scripts waits for add-on initialization and the
+     * checks all page elements.  
+     */
+    var initBatchCollapse = function() {
         if (document.readyState === 'complete' ||
             document.readyState === 'loaded' ||
             document.readyState === 'interactive') {
-            this._checkShouldCollapseMany();
+            checkBatchShouldCollapse();
         } else {
-            document.addEventListener('DOMContentLoaded', this._checkShouldCollapseMany.bind(this));
+            document.addEventListener('DOMContentLoaded', checkBatchShouldCollapse);
         }
-    },
-
+    };
+    
     /**
-     * Collects all elements from the page and check if we should hide them
-     * @private
+     * Collects all elements from the page and checks if we should hide them.
      */
-    _checkShouldCollapseMany: function () {
-
+    var checkBatchShouldCollapse = function() {
         var requests = [];
 
-        for (var tagName in this.requestTypeMap) {
-
-            var requestType = this.requestTypeMap[tagName];
+        // Collect collapse requests
+        for (var tagName in requestTypeMap) {
+            var requestType = requestTypeMap[tagName];
 
             var elements = document.getElementsByTagName(tagName);
             for (var j = 0; j < elements.length; j++) {
@@ -289,36 +340,36 @@ var PreloadHelper = {
                     continue;
                 }
 
-                var requestId = this.collapseRequestId++;
+                var requestId = collapseRequestId++;
                 requests.push({
                     elementUrl: elementUrl,
                     requestType: requestType,
                     requestId: requestId,
                     tagName: tagName
                 });
-                this.collapseRequests[requestId] = {
+                collapseRequests[requestId] = {
                     element: element,
                     tagName: tagName
                 };
             }
         }
 
-        contentPage.sendMessage({
-                type: 'processShouldCollapseMany',
-                requests: requests,
-                documentUrl: document.URL
-            },
-            this._onProcessShouldCollapseManyResponse.bind(this)
-        );
-    },
+        var message = {
+            type: 'processShouldCollapseMany',
+            requests: requests,
+            documentUrl: document.URL            
+        };
 
+        // Send all prepared requests in one message
+        contentPage.sendMessage(message, onProcessShouldCollapseManyResponse);
+    };
+    
     /**
-     * Processes response from background page
+     * Response callback for "processShouldCollapseMany" message.
      *
-     * @param response Response from bg page
-     * @private
+     * @param response Response from bg page.
      */
-    _onProcessShouldCollapseManyResponse: function (response) {
+    var onProcessShouldCollapseManyResponse = function(response) {
 
         if (!response) {
             return;
@@ -327,18 +378,17 @@ var PreloadHelper = {
         var requests = response.requests;
         for (var i = 0; i < requests.length; i++) {
             var collapseRequest = requests[i];
-            this._onProcessShouldCollapseResponse(collapseRequest);
+            onProcessShouldCollapseResponse(collapseRequest);
         }
-    },
-
+    };
+    
     /**
      * Hides specified element.
      *
-     * @param element Element
-     * @param tagName Element tag name
-     * @private
+     * @param element Element to hide
+     * @param tagName Element's tag name
      */
-    _hideElement: function (element, tagName) {
+    var collapseElement = function(element, tagName) {
 
         var cssProperty = "display";
         var cssValue = "none";
@@ -357,21 +407,20 @@ var PreloadHelper = {
             elementStyle.setProperty(cssProperty, cssValue, cssPriority);
 
             var originalCss = cssProperty + ';' + (elCssValue ? elCssValue : '') + ';' + (elCssPriority ? elCssPriority : '');
-            element.setAttribute(PreloadHelper.AG_HIDDEN_ATTRIBUTE, originalCss);
+            element.setAttribute(AG_HIDDEN_ATTRIBUTE, originalCss);
         }
-    },
-
+    };
+    
     /**
      * Toggles element visibility back
      *
      * @param element Element to show
-     * @private
      */
-    _toggleElement: function (element) {
+    var toggleElement = function(element) {
 
-        if (element.hasAttribute(PreloadHelper.AG_HIDDEN_ATTRIBUTE)) {
+        if (element.hasAttribute(AG_HIDDEN_ATTRIBUTE)) {
 
-            var originalCssParts = element.getAttribute(PreloadHelper.AG_HIDDEN_ATTRIBUTE).split(';');
+            var originalCssParts = element.getAttribute(AG_HIDDEN_ATTRIBUTE).split(';');
 
             var cssProperty = originalCssParts[0];
             var elCssValue = originalCssParts[1];
@@ -384,9 +433,11 @@ var PreloadHelper = {
                 element.style.removeProperty(cssProperty);
             }
 
-            element.removeAttribute(PreloadHelper.AG_HIDDEN_ATTRIBUTE);
+            element.removeAttribute(AG_HIDDEN_ATTRIBUTE);
         }
-    }
-};
-
-PreloadHelper.init();
+    };
+    
+    // Start the content script
+    init();
+})();
+} catch(ex) {console.error(ex);}
