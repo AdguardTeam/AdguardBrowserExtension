@@ -249,6 +249,7 @@ var ext;
 			}
 		},
 		handlerBehaviorChanged: function () {
+            // Empty
 		},
 		onCompleted: emptyListener,
 		onErrorOccurred: emptyListener,

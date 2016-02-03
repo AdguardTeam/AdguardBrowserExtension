@@ -21,7 +21,7 @@
  */
 var StringUtils = require('../../../lib/utils/common').StringUtils;
 var FilterRule = require('../../../lib/filter/rules/base-filter-rule').FilterRule;
-var Utils = require('./utils/browser-utils').Utils;
+var Utils = require('../../../lib/utils/browser-utils').Utils;
 
 var isShadowDomSupported = Utils.isShadowDomSupported();
 

@@ -1,3 +1,5 @@
+/* global SafariBrowserTab */
+/* global BrowserTab */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -18,8 +20,7 @@ var BaseEvent, OnMessageEvent, SendMessageFunction, I18NSupport;
 
 (function () {
 
-	//Safari variable may be undefined in frame
-
+	// Safari variable may be undefined in a frame
 	(function () {
 		if (typeof safari === "undefined" && typeof chrome === "undefined") {
 			var w = window;
@@ -30,8 +31,7 @@ var BaseEvent, OnMessageEvent, SendMessageFunction, I18NSupport;
 		}
 	})();
 
-	//Event implementation
-
+	// Event implementation
 	BaseEvent = function (target, eventName, capture) {
 
 		this.eventListeners = [];
@@ -62,8 +62,7 @@ var BaseEvent, OnMessageEvent, SendMessageFunction, I18NSupport;
 		}
 	};
 
-	//OnMessage event implementation
-
+	// OnMessage event implementation
 	OnMessageEvent = function (target) {
 		BaseEvent.call(this, target, "message", false);
 	};
@@ -82,7 +81,9 @@ var BaseEvent, OnMessageEvent, SendMessageFunction, I18NSupport;
 				var sender = {};
 				var dispatcher;
 
-				if ("BrowserTab" in window && "SafariBrowserTab" in window && event.target instanceof SafariBrowserTab) {
+				if ("BrowserTab" in window && "SafariBrowserTab" in window && 
+                        event.target instanceof SafariBrowserTab) {
+
 					dispatcher = event.target.page;
 					sender.tab = new BrowserTab(event.target);
 				} else {
@@ -98,8 +99,7 @@ var BaseEvent, OnMessageEvent, SendMessageFunction, I18NSupport;
 	};
 
 
-	//Message passing implementation
-
+	// Messaging implementation
 	var nextRequestNumber = 0;
 
 	SendMessageFunction = function (message, responseCallback) {
@@ -117,8 +117,7 @@ var BaseEvent, OnMessageEvent, SendMessageFunction, I18NSupport;
 		this._messageDispatcher.dispatchMessage("request-" + requestId, message);
 	};
 
-	//I18n implementation
-
+	// I18n implementation
 	var I18n = function () {
 		this._uiLocale = this._getLocale();
 		this._messages = null;

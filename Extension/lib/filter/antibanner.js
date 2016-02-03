@@ -952,35 +952,29 @@ AntiBannerService.prototype = {
             }
         }.bind(this));
     },
-
+    
     /**
-     * Create new request filter and add distinct rules from the storage.
-     *
-     * @param callback Called after request filter has been created
-     * @private
+     * Called when filters were loaded from the storage
+     * 
+     * @param callback Called when request filter is initialized
      */
-    _createRequestFilter: function (callback) {
-
+    _onFiltersLoadedFromStorage: function (rulesFilterMap, callback) {
+        
         var start = new Date().getTime();
         Log.info('Starting request filter initialization');
-        
-        // Prepare map for filter rules
-        // Map key is filter ID
-        // Map value is array with filter rules
-        var rulesFilterMap = Object.create(null);
-        
-        // We create filter rules using a chunks of the specified length
-        // We are doing this for FF as everything in FF is done on the UI thread
-        // Request filter creation is rather slow operation so we should
-        // use setTimeout calls to give UI thread some time.
-        var async = Prefs.speedupStartup();
-        var asyncStep = 1000;
         
         // Empty request filter
         var requestFilter = new RequestFilter();
         
         // Supplement object to make sure that we use only unique filter rules
-        var uniqueRules = Object.create(null);
+        var uniqueRules = Object.create(null);        
+        
+        // We create filter rules using chunks of the specified length
+        // We are doing this for FF as everything in FF is done on the UI thread
+        // Request filter creation is rather slow operation so we should
+        // use setTimeout calls to give UI thread some time.
+        var async = Prefs.speedupStartup();
+        var asyncStep = 1000;
         
         /**
          * STEP 3: Called when request filter has been filled with rules.
@@ -989,16 +983,15 @@ AntiBannerService.prototype = {
         var requestFilterInitialized = function() {
             
             // Request filter is ready
-            this.requestFilter = requestFilter;            
+            this.requestFilter = requestFilter;
             
             if (callback && typeof callback === "function") {		
                 callback();		
             }
             
-            EventNotifier.notifyListeners(EventNotifierTypes.REQUEST_FILTER_UPDATED, this.getRequestFilterInfo());
-            
+            EventNotifier.notifyListeners(EventNotifierTypes.REQUEST_FILTER_UPDATED, this.getRequestFilterInfo());            
             Log.info("Finished request filter initialization in {0} ms. Rules count: {1}", (new Date().getTime() - start), requestFilter.rulesCount);
-        }.bind(this);        
+        }.bind(this);
         
         /**
          * Supplement function for adding rules to the request filter
@@ -1104,19 +1097,37 @@ AntiBannerService.prototype = {
             addRules(AntiBannerFiltersId.USER_FILTER_ID, userRules, 0, userRules.length);
             requestFilterInitialized();
         };
+        
+        if (async) {
+            fillRequestFilterAsync();
+        } else {
+            fillRequestFilterSync();
+        }
+    },
+
+    /**
+     * Create new request filter and add distinct rules from the storage.
+     *
+     * @param callback Called after request filter has been created
+     * @private
+     */
+    _createRequestFilter: function (callback) {
+
+        var start = new Date().getTime();
+        Log.info('Starting loading filter rules from the storage');
+        
+        // Prepare map for filter rules
+        // Map key is filter ID
+        // Map value is array with filter rules
+        var rulesFilterMap = Object.create(null);
 
         /**
          * STEP 2: Called when all filter rules have been loaded from storage
          */
         var loadAllFilterRulesDone = function() {            
-            Log.info('Finished loading filter rules from storage in {0} ms', (new Date().getTime() - start));
-            
-            if (async) {
-                fillRequestFilterAsync();
-            } else {
-                fillRequestFilterSync();
-            }
-        };
+            Log.info('Finished loading filter rules from the storage in {0} ms', (new Date().getTime() - start));
+            this._onFiltersLoadedFromStorage(rulesFilterMap, callback);
+        }.bind(this);
 
         /**
          * Loads filter rules from storage

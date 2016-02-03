@@ -47,7 +47,7 @@
     /**
      * Initializing content script
      */
-    var init = function() {
+    var init = function() {       
         if (!(document instanceof HTMLDocument)) {
             return;
         }
@@ -435,6 +435,26 @@
             element.removeAttribute(AG_HIDDEN_ATTRIBUTE);
         }
     };
+    
+    /**
+     * Called when document become visible.
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/159
+     */
+    var onVisibilityChange = function(event) {
+
+        if (document.hidden == false) {
+            document.removeEventListener("visibilitychange", onVisibilityChange);
+            init();
+        }
+    };
+    
+    /**
+     * Messaging won't work when page is loaded by Safari top hits
+     */        
+    if (typeof safari != 'undefined' && document.hidden) {
+        document.addEventListener("visibilitychange", onVisibilityChange);
+        return;
+    }
     
     // Start the content script
     init();

@@ -1,3 +1,11 @@
+/* global RequestTypes */
+/* global UI */
+/* global AdguardApplication */
+/* global BrowserTabs */
+/* global FilteringLog */
+/* global WebRequestService */
+/* global ContentMessageHandler */
+/* global ext */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *

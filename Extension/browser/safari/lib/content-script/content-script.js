@@ -23,7 +23,7 @@
 		init: function() {
 			this.contentBlockerEnabled = this._isContentBlockerEnabled();
 
-			if(window === window.top){
+			if (window === window.top){
 				this._dispatchLoading();
 				this._sendMainFrameLoadedEvent(this.contentBlockerEnabled);
 			}

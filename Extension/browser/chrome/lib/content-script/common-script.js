@@ -1,3 +1,4 @@
+/* global chrome */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -32,7 +33,7 @@ var BaseEvent, OnMessageEvent, SendMessageFunction;
 		if (chrome.runtime && chrome.runtime.sendMessage) {
 			return chrome.runtime.sendMessage;
 		} else if (chrome.extension.sendMessage) {
-			return chrome.extension.sendMessage
+			return chrome.extension.sendMessage;
 		} else {
 			return chrome.extension.sendRequest;
 		}
