@@ -113,9 +113,13 @@ var createSandbox = function(window) {
     // Expose messaging API
     sandbox.addFrameEventListener = function(name, listener) {
         Log.debug('addFrameEventListener ' + name);
+
+        ContentFrameMessageManager.addMessageListener(name, listener);
     };
     sandbox.sendFrameEvent = function(name, message) {
         Log.debug('addFrameEventListener ' + name);
+
+        ContentFrameMessageManager.sendAsyncMessage(name, message);
     };
 
     // Expose localization API

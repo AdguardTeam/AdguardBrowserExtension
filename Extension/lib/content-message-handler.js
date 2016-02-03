@@ -41,21 +41,26 @@ ContentMessageHandler.prototype = {
         this.adguardApplication = adguardApplication;
         this.filteringLog = filteringLog;
         this.UI = UI;
-        
+
+        //TODO: TEMP
+        var CONTENT_TO_BACKGROUND_CHANNEL = 'content-background-channel';
+        var BACKGROUND_TO_CONTENT_CHANNEL = 'background-content-channel';
+
         var Listener = function() {
         };
         Listener.prototype.receiveMessage = function(message) {
-            require('./utils/log').Log.info('chrome script: {0}', message.data.url);
-            message.target
-                    .QueryInterface(Ci.nsIFrameLoaderOwner)
-                    .frameLoader
-                    .messageManager
-                    .sendAsyncMessage("pong", {});
+            require('./utils/log').Log.info('message: {0}', message.data.url);
+            //message.target
+            //        .QueryInterface(Ci.nsIFrameLoaderOwner)
+            //        .frameLoader
+            //        .messageManager
+            //        .sendAsyncMessage("pong", {});
         };
 
         var {Cu,Cc,Ci} = require('chrome');
         var messageManager = Cc["@mozilla.org/globalmessagemanager;1"].getService(Ci.nsIMessageListenerManager);
-        messageManager.addMessageListener("ping", new Listener());
+        messageManager.addMessageListener(CONTENT_TO_BACKGROUND_CHANNEL, new Listener());
+        messageManager.addMessageListener(BACKGROUND_TO_CONTENT_CHANNEL, new Listener());
         messageManager.loadFrameScript('chrome://adguard/content/content-script/frame-script.js', true);
     },
 
