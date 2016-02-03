@@ -159,7 +159,7 @@
         for (var i = 0; i < selectors.length; i++) {
             var styleEl = document.createElement("style");
             styleEl.setAttribute("type", "text/css");
-            setStyleContent(styleEl, selectors[i]);
+            setStyleContent(styleEl, selectors[i], useShadowDom);
 
             if (useShadowDom && shadowRoot) {
                 shadowRoot.appendChild(styleEl);
