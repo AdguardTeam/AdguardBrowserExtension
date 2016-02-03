@@ -15,7 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 /* global contentPage */
-try {
 (function() {
     var AG_HIDDEN_ATTRIBUTE = "adg-hidden";
     
@@ -440,4 +439,3 @@ try {
     // Start the content script
     init();
 })();
-} catch(ex) {console.error(ex);}
