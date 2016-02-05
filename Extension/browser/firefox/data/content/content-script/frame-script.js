@@ -27,10 +27,6 @@ var {classes: Cc, interfaces: Ci, utils: Cu, results: Cr} = Components;
 var Services = Cu.import("resource://gre/modules/Services.jsm", {}).Services;
 var console = Cu.import('resource://gre/modules/devtools/Console.jsm', {}).console;
 
-// Message names for send*Event methods
-var CONTENT_TO_BACKGROUND_CHANNEL = 'adguard@content-background-channel';
-var BACKGROUND_TO_CONTENT_CHANNEL = 'adguard@background-content-channel';
-
 // JSON for localized strings (look at initI18n method)
 var i18nMessages = Object.create(null);
 
