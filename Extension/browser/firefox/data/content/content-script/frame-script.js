@@ -33,6 +33,9 @@ var i18nMessages = Object.create(null);
 // Used for sandbox creation
 var nextSandboxId = 0;
 
+// Map object for pages scripts
+var pagesScripts = Object.create(null);
+
 // Logger
 var Log = {
     debug: function(message) {        
@@ -40,6 +43,24 @@ var Log = {
         console.debug(now.toISOString() + ": " + message);
     }
 };
+
+
+var registerChromeContentScript = function (url, paths) {
+    pagesScripts[url] = paths;
+};
+
+var registerPageScripts = function() {
+    registerChromeContentScript('chrome://adguard/content/filter-download.html*', [
+        'libs/jquery-1.8.3.min.js',
+        'libs/nprogress.patched.js',
+        'pages/i18n.js',
+        'pages/script.js',
+        'pages/filter-download.js'
+    ]);
+
+    //TODO: Add other pages
+};
+
 
 /**
  * The DOMWindowCreated event is executed when a Window object has been created.
@@ -65,8 +86,9 @@ var onDomWindowCreated = function(event) {
     
     if (location.protocol == 'http:' || location.protocol == 'https:') {
         attachContentScripts(window, ['content-script/preload.js']);
+        // TODO: Add other scripts
     } else if (location.protocol == 'chrome:') {
-        // TODO: Handle
+        attachContentScripts(window, pagesScripts[location.href]);
     }
 };
 
@@ -176,6 +198,9 @@ var initFrameScript = function() {
     
     // First of all, init translation
     initI18n();
+
+    // Register page scripts
+    registerPageScripts();
     
     // Listen to DOMWindowCreated and execute content scripts for newly created windows
     addEventListener('DOMWindowCreated', function(event) {
