@@ -50,12 +50,19 @@ var registerChromeContentScript = function (url, paths) {
 };
 
 var registerPageScripts = function() {
-    registerChromeContentScript('chrome://adguard/content/filter-download.html*', [
+    registerChromeContentScript('chrome://adguard/content/filter-download.html', [
         'libs/jquery-1.8.3.min.js',
         'libs/nprogress.patched.js',
         'pages/i18n.js',
         'pages/script.js',
         'pages/filter-download.js'
+    ]);
+
+    registerChromeContentScript('chrome://adguard/content/thankyou.html', [
+        'libs/jquery-1.8.3.min.js',
+        'pages/i18n.js',
+        'pages/script.js',
+        'pages/thankyou.js'
     ]);
 
     //TODO: Add other pages
