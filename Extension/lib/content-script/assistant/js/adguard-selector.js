@@ -52,12 +52,12 @@ var AdguardSelectorLib = (function (api) {
 
     // PRIVATE METHODS
 
-    var clearSuggested = function () {
-        $('.sg_suggested').removeClass(SUGGESTED_CLASS);
+    var removeClassName = function(className){
+        $('.' + className).removeClass(className);
     };
 
     var suggestPredicted = function (prediction) {
-        if (prediction && prediction != '') {
+        if (prediction) {
             var count = 0;
             $(prediction).each(function () {
                 count += 1;
@@ -84,7 +84,7 @@ var AdguardSelectorLib = (function (api) {
             rejectedElements.push(elem);
         } else {
             if (selectMode == 'exact' && selectedElements.length > 0) {
-                $('.sg_selected').removeClass(SELECTED_CLASS);
+                removeClassName(SELECTED_CLASS);
                 selectedElements = [];
             }
             //w_elem.addClass('sg_selected');
@@ -95,7 +95,7 @@ var AdguardSelectorLib = (function (api) {
             rejectedElements.concat(restrictedElements));
 
         if (selectMode == 'similar') {
-            clearSuggested();
+            removeClassName(SUGGESTED_CLASS);
             suggestPredicted(prediction);
         }
 
@@ -167,11 +167,11 @@ var AdguardSelectorLib = (function (api) {
         selectedElements = [];
         rejectedElements = [];
 
-        $('.sg_selected').removeClass(SELECTED_CLASS);
-        $('.sg_rejected').removeClass(REJECTED_CLASS);
+        removeClassName(SELECTED_CLASS);
+        removeClassName(REJECTED_CLASS);
 
         removeBorders();
-        clearSuggested();
+        removeClassName(SUGGESTED_CLASS);
     };
 
     /**
@@ -217,12 +217,14 @@ var AdguardSelectorLib = (function (api) {
         showBorders();
     };
 
+    var linkHelper = document.createElement('a');
     var getHost = function (url) {
-        if (!url) return "";
+        if (!url) {
+            return "";
+        }
 
-        var a = document.createElement('a');
-        a.href = url;
-        return a.hostname;
+        linkHelper.href = url;
+        return linkHelper.hostname;
     };
 
     var makePlaceholderImage = function (element) {
@@ -239,11 +241,11 @@ var AdguardSelectorLib = (function (api) {
         placeHolder.className += PLACEHOLDER_PREFIX;
 
         var icon = document.createElement('div');
-        icon.className += PLACEHOLDER_PREFIX + "-icon sg_ignore";
+        icon.className += PLACEHOLDER_PREFIX + "-icon " + IGNORED_CLASS;
 
         var domain = document.createElement('div');
         domain.textContent = getHost(element.src);
-        domain.className += PLACEHOLDER_PREFIX + "-domain sg_ignore";
+        domain.className += PLACEHOLDER_PREFIX + "-domain "  + IGNORED_CLASS;
 
         icon.appendChild(domain);
         placeHolder.appendChild(icon);
@@ -276,7 +278,7 @@ var AdguardSelectorLib = (function (api) {
     };
 
     var makeIFrameAndEmbededSelector = function () {
-        placeholderElements = $('iframe:not(.sg_ignore,:hidden),embed,object');
+        placeholderElements = $('iframe:not(.' + IGNORED_CLASS + ',:hidden),embed,object');
         var elements = placeholderElements;
         for (var i = 0; i < elements.length; i++) {
             var current = elements[i];
@@ -363,7 +365,7 @@ var AdguardSelectorLib = (function (api) {
         }
 
         // Don't allow selection of elements that have a selected child.
-        if ($('.sg_selected', this).get(0)) {
+        if ($('.' + SELECTED_CLASS, this).get(0)) {
             blockClicksOn(elem);
         }
 
@@ -384,7 +386,7 @@ var AdguardSelectorLib = (function (api) {
     var setupEventHandlers = function () {
         makeIFrameAndEmbededSelector();
 
-        var sgIgnore = $("body *:not(.sg_ignore)");
+        var sgIgnore = $("body *:not(." + IGNORED_CLASS + ")");
         sgIgnore.on("mouseover", {'self': this}, sgMouseoverHandler);
         sgIgnore.on("mouseout", {'self': this}, sgMouseoutHandler);
         sgIgnore.on("click", {'self': this}, sgMousedownHandler);
@@ -424,13 +426,13 @@ var AdguardSelectorLib = (function (api) {
      * Starts selector module.
      *
      * @param onElementSelected callback function
-     * @param selectionRenderer optional function contains selection presentation implementation
+     * @param selectionRenderFunc optional function contains selection presentation implementation
      */
-    api.init = function (onElementSelected, selectionRenderer) {
+    api.init = function (onElementSelected, selectionRenderFunc) {
 
         onElementSelectedHandler = onElementSelected;
-        if (selectionRenderer && typeof selectionRenderer === "function") {
-            selectionRenderer = selectionRenderer;
+        if (selectionRenderFunc && typeof selectionRenderFunc === "function") {
+            selectionRenderer = selectionRenderFunc;
         }
 
         restrictedElements = $.map(['html', 'body', 'head', 'base'], function (selector) {
