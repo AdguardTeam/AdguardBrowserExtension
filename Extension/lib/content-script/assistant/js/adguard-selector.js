@@ -16,9 +16,116 @@
  */
 
 /**
+ * Balalaika library
+ *
+ * https://github.com/finom/balalaika/blob/master/balalaika.js
+ */
+//var balalaika=function(t,e,n,i,o,r,s,u,c,f,l,h){return h=function(t,e){return new h.i(t,e)},h.i=function(i,o){n.push.apply(this,i?i.nodeType||i==t?[i]:""+i===i?/</.test(i)?((u=e.createElement(o||"q")).innerHTML=i,u.children):(o&&h(o)[0]||e).querySelectorAll(i):/f/.test(typeof i)?/c/.test(e.readyState)?i():h(e).on("DOMContentLoaded",i):i:n)},h.i[l="prototype"]=(h.extend=function(t){for(f=arguments,u=1;u<f.length;u++)if(l=f[u])for(c in l)t[c]=l[c];return t})(h.fn=h[l]=n,{on:function(t,e){return t=t.split(i),this.map(function(n){(i[u=t[0]+(n.b$=n.b$||++o)]=i[u]||[]).push([e,t[1]]),n["add"+r](t[0],e)}),this},off:function(t,e){return t=t.split(i),l="remove"+r,this.map(function(n){if(f=i[t[0]+n.b$],u=f&&f.length)for(;c=f[--u];)e&&e!=c[0]||t[1]&&t[1]!=c[1]||(n[l](t[0],c[0]),f.splice(u,1));else!t[1]&&n[l](t[0],e)}),this},is:function(t){return u=this[0],(u.matches||u["webkit"+s]||u["moz"+s]||u["ms"+s]).call(u,t)}}),h}(window,document,[],/\.(.+)/,0,"EventListener","MatchesSelector");
+
+var balalaika = (function (window, document, fn, nsRegAndEvents, id, s_EventListener, s_MatchesSelector, i, j, k, l, $) {
+    $ = function (s, context) {
+        return new $.i(s, context);
+    };
+
+    $.i = function (s, context) {
+        fn.push.apply(this, !s ? fn : s.nodeType || s == window ? [s] : "" + s === s ? /</.test(s)
+            ? ( ( i = document.createElement(context || 'q') ).innerHTML = s, i.children ) : (context && $(context)[0] || document).querySelectorAll(s) : /f/.test(typeof s) ? /c/.test(document.readyState) ? s() : $(document).on('DOMContentLoaded', s) : s);
+    };
+
+    $.i[l = 'prototype'] = ( $.extend = function (obj) {
+        k = arguments;
+        for (i = 1; i < k.length; i++) {
+            if (l = k[i]) {
+                for (j in l) {
+                    obj[j] = l[j];
+                }
+            }
+        }
+
+        return obj;
+    })($.fn = $[l] = fn, { // $.fn = $.prototype = fn
+        on: function (n, f) {
+            // n = [ eventName, nameSpace ]
+            n = n.split(nsRegAndEvents);
+            this.map(function (item) {
+                // item.b$ is balalaika_id for an element
+                // i is eventName + id ("click75")
+                // nsRegAndEvents[ i ] is array of events (eg all click events for element#75) ([[namespace, handler], [namespace, handler]])
+                ( nsRegAndEvents[i = n[0] + ( item.b$ = item.b$ || ++id )] = nsRegAndEvents[i] || [] ).push([f, n[1]]);
+                // item.addEventListener( eventName, f )
+                item['add' + s_EventListener](n[0], f);
+            });
+            return this;
+        },
+        off: function (n, f) {
+            // n = [ eventName, nameSpace ]
+            n = n.split(nsRegAndEvents);
+            // l = 'removeEventListener'
+            l = 'remove' + s_EventListener;
+            this.map(function (item) {
+                // k - array of events
+                // item.b$ - balalaika_id for an element
+                // n[ 0 ] + item.b$ - eventName + id ("click75")
+                k = nsRegAndEvents[n[0] + item.b$];
+                // if array of events exist then i = length of array of events
+                if (i = k && k.length) {
+                    // while j = one of array of events
+                    while (j = k[--i]) {
+                        // if( no f and no namespace || f but no namespace || no f but namespace || f and namespace )
+                        if (( !f || f == j[0] ) && ( !n[1] || n[1] == j[1] )) {
+                            // item.removeEventListener( eventName, handler );
+                            item[l](n[0], j[0]);
+                            // remove event from array of events
+                            k.splice(i, 1);
+                        }
+                    }
+                } else {
+                    // if event added before using addEventListener, just remove it using item.removeEventListener( eventName, f )
+                    !n[1] && item[l](n[0], f);
+                }
+            });
+            return this;
+        },
+        is: function (s) {
+            i = this[0];
+            return (i.matches
+            || i['webkit' + s_MatchesSelector]
+            || i['moz' + s_MatchesSelector]
+            || i['ms' + s_MatchesSelector]
+            || i['o' + s_MatchesSelector]).call(i, s);
+        }
+    });
+    return $;
+})(window, document, [], /\.(.+)/, 0, 'EventListener', 'MatchesSelector');
+
+/**
+ * Add some more functions to balalaika
+ */
+balalaika.fn.hasClass = function (className) {
+    return !!this[0] && this[0].classList.contains(className);
+};
+
+balalaika.fn.addClass = function (className) {
+    this.forEach(function (item) {
+        var classList = item.classList;
+        classList.add.apply(classList, className.split(/\s/));
+    });
+    return this;
+};
+
+balalaika.fn.removeClass = function (className) {
+    this.forEach(function (item) {
+        var classList = item.classList;
+        classList.remove.apply(classList, className.split(/\s/));
+    });
+    return this;
+};
+
+
+/**
  * Adguard selector library
  */
-var AdguardSelectorLib = (function (api) {
+var AdguardSelectorLib = (function (api, $) {
 
     // PRIVATE FIELDS
 
@@ -52,7 +159,7 @@ var AdguardSelectorLib = (function (api) {
 
     // PRIVATE METHODS
 
-    var removeClassName = function(className){
+    var removeClassName = function (className) {
         $('.' + className).removeClass(className);
     };
 
@@ -245,7 +352,7 @@ var AdguardSelectorLib = (function (api) {
 
         var domain = document.createElement('div');
         domain.textContent = getHost(element.src);
-        domain.className += PLACEHOLDER_PREFIX + "-domain "  + IGNORED_CLASS;
+        domain.className += PLACEHOLDER_PREFIX + "-domain " + IGNORED_CLASS;
 
         icon.appendChild(domain);
         placeHolder.appendChild(icon);
@@ -435,7 +542,7 @@ var AdguardSelectorLib = (function (api) {
             selectionRenderer = selectionRenderFunc;
         }
 
-        restrictedElements = $.map(['html', 'body', 'head', 'base'], function (selector) {
+        restrictedElements = ['html', 'body', 'head', 'base'].map(function (selector) {
             return $(selector).get(0);
         });
         predictionHelper = new DomPredictionHelper($, String);
@@ -478,4 +585,4 @@ var AdguardSelectorLib = (function (api) {
 
     return api;
 
-})(AdguardSelectorLib || {});
+})(AdguardSelectorLib || {}, balalaika);
