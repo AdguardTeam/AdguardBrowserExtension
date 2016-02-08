@@ -20,6 +20,9 @@ var simplePrefs = require('sdk/simple-prefs');
 var unload = require('sdk/system/unload');
 const {Cc, Ci} = require('chrome');
 
+var EventNotifier = require('./utils/notifier').EventNotifier;
+var EventNotifierTypes = require('./utils/common').EventNotifierTypes;
+
 var locale = (function () {
 	return Cc["@mozilla.org/chrome/chrome-registry;1"].getService(Ci.nsIXULChromeRegistry).getSelectedLocale('global');
 })();
@@ -63,9 +66,10 @@ var Prefs = exports.Prefs = {
     useGlobalStyleSheet: simplePrefs.prefs['use_global_style_sheet']
 };
 
-var onPreferenceChanged = function() {
+var onPreferenceChanged = function(prefName) {
     Prefs.collapseByContentScript = simplePrefs.prefs['collapse_by_content_script'];
     Prefs.useGlobalStyleSheet = simplePrefs.prefs['use_global_style_sheet'];
+	EventNotifier.notifyListeners(EventNotifierTypes.CHANGE_PREFS, prefName);
 };
 simplePrefs.on('collapse_by_content_script', onPreferenceChanged);
 simplePrefs.on('use_global_style_sheet', onPreferenceChanged);

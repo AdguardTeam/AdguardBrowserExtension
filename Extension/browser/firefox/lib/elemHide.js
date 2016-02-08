@@ -27,8 +27,6 @@ var {EventNotifierTypes} = require('./utils/common');
 var {ConcurrentUtils} = require('./utils/browser-utils');
 var {Log} = require('./utils/log');
 var {userSettings} = require('./utils/user-settings');
-var {WorkaroundUtils} = require('./utils/workaround');
-var {UrlUtils} = require('./utils/url');
 var Prefs = require('./prefs').Prefs;
 var styleService = require('./styleSheetService');
 
@@ -67,7 +65,14 @@ var ElemHide = exports.ElemHide = {
                     this._saveStyleSheetToDisk();
                     break;
                 case EventNotifierTypes.CHANGE_USER_SETTINGS:
-                    this.changeElemhideMethod(settings);
+                    if (settings == userSettings.settings.DISABLE_COLLECT_HITS) {
+                        this.changeElemhideMethod(settings);
+                    }
+                    break;
+                case EventNotifierTypes.CHANGE_PREFS:
+                    if (settings == 'use_global_style_sheet') {
+                        this.changeElemhideMethod(settings);
+                    }
                     break;
             }
         }.bind(this));
@@ -78,16 +83,11 @@ var ElemHide = exports.ElemHide = {
     },
 
     /**
-     * Called if user settings have been changed.
-     * In this case we check "Send statistics for ad filters usage" option value.
+     * Called if user settings or prefs have been changed.
+     * In this case we check "Send statistics for ad filters usage" option value or "use_global_style_sheet" preference.
      * If this flag has been changed - switching CSS injection method.
-     *
-     * @param settings
      */
-    changeElemhideMethod: function (settings) {
-        if (settings != userSettings.settings.DISABLE_COLLECT_HITS) {
-            return;
-        }
+    changeElemhideMethod: function () {
         if (this._isGlobalStyleSheetEnabled()) {
             this._saveStyleSheetToDisk();
         } else {
@@ -104,11 +104,11 @@ var ElemHide = exports.ElemHide = {
     _disableStyleSheet: function (uri) {
         styleService.unloadUserSheetByUri(uri);
     },
-    
+
     /**
      * Returns true if we should register global style sheet
      */
-    _isGlobalStyleSheetEnabled: function() {
+    _isGlobalStyleSheetEnabled: function () {
         return userSettings.collectHitsCount() || Prefs.useGlobalStyleSheet;
     },
 
