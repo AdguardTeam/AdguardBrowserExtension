@@ -74,10 +74,20 @@ var registerPageScripts = function() {
  * @param event DOMWindowCreated event https://developer.mozilla.org/en-US/docs/Web/Events/DOMWindowCreated
  */
 var onDomWindowCreated = function(event) {
-    
+
+    //var window = content;
     var document = event.target;
+    console.log(document);
+    if (!document || !document.defaultView) {
+        return;
+    }
+
     var window = document.defaultView;
-    
+
+    //console.log(window);
+    //console.log(window.document);
+    //console.log(window.document.documentElement);
+
     if (!window || !window.location) {
         return;
     }
@@ -127,8 +137,7 @@ var createSandbox = function(window) {
         sandboxName: sandboxName,
         sameZoneAs: window.top,
         sandboxPrototype: window,
-        wantComponents: false,
-        wantXHRConstructor: false
+        wantComponents: false
     });
 
     // Expose messaging API
