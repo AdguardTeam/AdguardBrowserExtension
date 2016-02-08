@@ -28,7 +28,6 @@ var filterRulesHitCount = require('./filter/filters-hit').filterRulesHitCount;
 
 var ConcurrentUtils = require('./utils/browser-utils').ConcurrentUtils;
 var Log = require('./utils/log').Log;
-var UrlUtils = require('./utils/url').UrlUtils;
 var FilterUtils = require('./utils/common').FilterUtils;
 var WebRequestHelper = require('./contentPolicy').WebRequestHelper;
 
@@ -68,24 +67,25 @@ var InterceptHandler = exports.InterceptHandler =
 
 	createInstance: function (outer, iid) {
 		if (outer != null) {
-			throw Cr.NS_ERROR_NO_AGGREGATION;            
+			throw Cr.NS_ERROR_NO_AGGREGATION;
         }
 
 		return this.QueryInterface(iid);
 	},
 
-	newChannel: function (uri) {
-		return new HidingChannel(uri, this.framesMap, this.antiBannerService);
-	},
+    newChannel: function (uri, loadInfo) {
+        return new HidingChannel(uri, loadInfo, this.framesMap, this.antiBannerService);
+    },
 
 	QueryInterface: XPCOMUtils.generateQI([Ci.nsIFactory, Ci.nsIAboutModule])
 };
 
 
-function HidingChannel(uri, framesMap, antiBannerService) {
-	this.URI = this.originalURI = uri;
-	this.framesMap = framesMap;
-	this.antiBannerService = antiBannerService;
+function HidingChannel(uri, loadInfo, framesMap, antiBannerService) {
+    this.URI = this.originalURI = uri;
+    this.loadInfo = loadInfo;
+    this.framesMap = framesMap;
+    this.antiBannerService = antiBannerService;
 }
 
 /**
@@ -131,6 +131,13 @@ HidingChannel.prototype = {
 			}
 		}, this);
 	},
+
+    asyncOpen2: function (listener) {
+        if (this.loadInfo && !this.loadInfo.triggeringPrincipal.equals(PrincipalService)) {
+            throw Cr.NS_ERROR_FAILURE;
+        }
+        this.asyncOpen(listener, null);
+    },
 
 	open: function () {
 		var data = this.notHideData;
