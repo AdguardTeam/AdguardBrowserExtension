@@ -34,7 +34,7 @@ var i18nMessages = Object.create(null);
 var nextSandboxId = 0;
 
 // Map object for pages scripts
-var pagesScripts = Object.create(null);
+var pagesScriptsMap = Object.create(null);
 
 // Logger
 var Log = {
@@ -46,24 +46,24 @@ var Log = {
 
 
 var registerChromeContentScript = function (url, paths) {
-    pagesScripts[url] = paths;
+    pagesScriptsMap[url] = paths;
 };
 
 var registerPageScripts = function() {
     registerChromeContentScript('chrome://adguard/content/filter-download.html', [
-        'libs/jquery-1.8.3.min.js',
+        'libs/jquery-1.8.3.js',
         'libs/nprogress.patched.js',
         'pages/i18n.js',
         'pages/script.js',
         'pages/filter-download.js'
     ]);
 
-    registerChromeContentScript('chrome://adguard/content/thankyou.html', [
-        'libs/jquery-1.8.3.min.js',
-        'pages/i18n.js',
-        'pages/script.js',
-        'pages/thankyou.js'
-    ]);
+    //registerChromeContentScript('chrome://adguard/content/thankyou.html', [
+    //    'libs/jquery-1.8.3.min.js',
+    //    'pages/i18n.js',
+    //    'pages/script.js',
+    //    'pages/thankyou.js'
+    //]);
 
     //TODO: Add other pages
 };
@@ -78,10 +78,6 @@ var onDomWindowCreated = function(event) {
     var document = event.target;
     var window = document.defaultView;
     
-    // TODO: TEMP
-    Log.debug(document);
-    Log.debug(window);
-    
     if (!window || !window.location) {
         return;
     }
@@ -92,10 +88,10 @@ var onDomWindowCreated = function(event) {
     }
     
     if (location.protocol == 'http:' || location.protocol == 'https:') {
-        attachContentScripts(window, ['content-script/preload.js']);
+        //attachContentScripts(window, ['content-script/preload.js']);
         // TODO: Add other scripts
     } else if (location.protocol == 'chrome:') {
-        attachContentScripts(window, pagesScripts[location.href]);
+        attachContentScripts(window, pagesScriptsMap[location.href]);
     }
 };
 
@@ -123,18 +119,18 @@ var createSandbox = function(window) {
      */
     var isIframe = window.top != window;
     var sandboxName = '[' + (nextSandboxId++) + ']' + (isIframe ? '[iframe] ' : '[window] ') + window.location.href;
-    Log.debug('Attaching content scripts to ' + sandboxName); 
-    
+    Log.debug('Attaching content scripts to ' + sandboxName);
+
     // "content" is a DOM window here 
     // Creating "expanded" sandbox from it: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Language_Bindings/Components.utils.Sandbox#Expanded_principal
-    var sandbox = Cu.Sandbox([window], {
+    var sandbox = Cu.Sandbox(window, {
         sandboxName: sandboxName,
         sameZoneAs: window.top,
         sandboxPrototype: window,
         wantComponents: false,
         wantXHRConstructor: false
     });
-    
+
     // Expose messaging API
     sandbox.addFrameEventListener = function(name, listener) {
         Log.debug(name + ': addFrameEventListener');
@@ -162,18 +158,33 @@ var createSandbox = function(window) {
  * @param scripts Array with scripts relative path
  */
 var attachContentScripts = function(window, scripts) {
-    // Creating sandbox wrapper for window object
-    var sandbox = createSandbox(window);
-    
-    // Executing i18n-helper.js and content-script.js for every content script.
-    // These two scripts contains helper functions for messaging and localization.
-    Services.scriptloader.loadSubScript('chrome://adguard/content/content-script/i18n-helper.js', sandbox);
-    Services.scriptloader.loadSubScript('chrome://adguard/content/content-script/content-script.js', sandbox);
-    
-    // Executing content scripts specified in "scripts" parameter
-    for (var i = 0; i < scripts.length; i++) {
-        var scriptPath = 'chrome://adguard/content/' + scripts[i];
-        Services.scriptloader.loadSubScript(scriptPath, sandbox);
+    if (!scripts || scripts.length == 0) {
+        return;
+    }
+
+    try {
+
+        // Creating sandbox wrapper for window object
+        var sandbox = createSandbox(window);
+
+        console.log('Loading content scripts..');
+        // Executing i18n-helper.js and content-script.js for every content script.
+        // These two scripts contains helper functions for messaging and localization.
+        Services.scriptloader.loadSubScript('chrome://adguard/content/content-script/i18n-helper.js', sandbox);
+        Services.scriptloader.loadSubScript('chrome://adguard/content/content-script/content-script.js', sandbox);
+
+        console.log('Loading additional content scripts..' + scripts.length);
+
+        // Executing content scripts specified in "scripts" parameter
+        for (var i = 0; i < scripts.length; i++) {
+            var scriptPath = 'chrome://adguard/content/' + scripts[i];
+            console.log('Attaching script:' + scriptPath);
+            Services.scriptloader.loadSubScript(scriptPath, sandbox);
+        }
+
+        console.log('All content scripts loaded.');
+    } catch (ex) {
+        console.error(ex);
     }
 };
 

@@ -23,25 +23,25 @@ ContentScripts.prototype = {
         this.i18nMessages = this._getI18nMessages();
 
         // Filter-download.html
-        this.registerChromeContentScript('chrome://adguard/content/filter-download.html*', [
-            'content/libs/jquery-1.8.3.min.js',
-            'content/libs/nprogress.patched.js',
-            'content/content-script/content-script.js',
-            'content/content-script/i18n-helper.js',
-            'content/pages/i18n.js',
-            'content/pages/script.js',
-            'content/pages/filter-download.js'
-        ]);
+        //this.registerChromeContentScript('chrome://adguard/content/filter-download.html*', [
+        //    'content/libs/jquery-1.8.3.min.js',
+        //    'content/libs/nprogress.patched.js',
+        //    'content/content-script/content-script.js',
+        //    'content/content-script/i18n-helper.js',
+        //    'content/pages/i18n.js',
+        //    'content/pages/script.js',
+        //    'content/pages/filter-download.js'
+        //]);
 
         // Thankyou.html
-        this.registerChromeContentScript('chrome://adguard/content/thankyou.html*', [
-            'content/libs/jquery-1.8.3.min.js',
-            'content/content-script/content-script.js',
-            'content/content-script/i18n-helper.js',
-            'content/pages/i18n.js',
-            'content/pages/script.js',
-            'content/pages/thankyou.js'
-        ]);
+        //this.registerChromeContentScript('chrome://adguard/content/thankyou.html*', [
+        //    'content/libs/jquery-1.8.3.min.js',
+        //    'content/content-script/content-script.js',
+        //    'content/content-script/i18n-helper.js',
+        //    'content/pages/i18n.js',
+        //    'content/pages/script.js',
+        //    'content/pages/thankyou.js'
+        //]);
 
         // Options.html
         this.registerChromeContentScript('chrome://adguard/content/options.html*', [
