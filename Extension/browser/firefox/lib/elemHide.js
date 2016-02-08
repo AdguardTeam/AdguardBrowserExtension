@@ -60,9 +60,8 @@ var ElemHide = exports.ElemHide = {
         EventNotifier.addListener(function (event, settings) {
             switch (event) {
                 case EventNotifierTypes.REQUEST_FILTER_UPDATED:
-                    if (!userSettings.collectHitsCount()) {
-                        // "Send statistics for ad filters usage" option is disabled
-                        // Do nothing in this case
+                    if (!this._isGlobalStyleSheetEnabled()) {
+                        // Do nothing if global stylesheet is disabled
                         return;
                     }
                     this._saveStyleSheetToDisk();
@@ -73,7 +72,7 @@ var ElemHide = exports.ElemHide = {
             }
         }.bind(this));
 
-        if (userSettings.collectHitsCount()) {
+        if (this._isGlobalStyleSheetEnabled()) {
             this._applyCssStyleSheet(FilterStorage.getInjectCssFileURI(), true);
         }
     },
@@ -89,8 +88,7 @@ var ElemHide = exports.ElemHide = {
         if (settings != userSettings.settings.DISABLE_COLLECT_HITS) {
             return;
         }
-        var enableCss = userSettings.collectHitsCount();
-        if (enableCss) {
+        if (this._isGlobalStyleSheetEnabled()) {
             this._saveStyleSheetToDisk();
         } else {
             this._disableStyleSheet(FilterStorage.getInjectCssFileURI());
@@ -105,6 +103,13 @@ var ElemHide = exports.ElemHide = {
      */
     _disableStyleSheet: function (uri) {
         styleService.unloadUserSheetByUri(uri);
+    },
+    
+    /**
+     * Returns true if we should register global style sheet
+     */
+    _isGlobalStyleSheetEnabled: function() {
+        return userSettings.collectHitsCount() || Prefs.useGlobalStyleSheet;
     },
 
     /**
@@ -222,9 +227,9 @@ var ElemHide = exports.ElemHide = {
             if (uri) {
                 if (needCheckFileExist) {
                     if (uri.file) {
-                        var existed = uri.file.exists();
-                        if (!existed) {
-                            Log.info('Css stylesheet does not apply file: ' + uri.path + ' because file does not exist');
+                        var exists = uri.file.exists();
+                        if (!exists) {
+                            Log.info('Css stylesheet cannot apply file: ' + uri.path + ' because file does not exist');
                             return;
                         }
                     }

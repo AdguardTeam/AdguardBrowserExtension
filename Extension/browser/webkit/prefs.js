@@ -69,8 +69,18 @@ var Prefs = exports.Prefs = {
 		}
 		return Prefs.browser;
 	},
+    /**
+     * Makes sense in case of FF add-on only
+     */
 	speedupStartup: function () {
 		return false;
 	},
-    collapseByContentScript: true
+    /**
+     * Makes sense in case of FF add-on only
+     */
+    collapseByContentScript: true,
+    /**
+     * Makes sense in case of FF add-on only
+     */
+    useGlobalStyleSheet: false
 };

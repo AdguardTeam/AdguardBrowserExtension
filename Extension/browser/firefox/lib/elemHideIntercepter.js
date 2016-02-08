@@ -1,3 +1,4 @@
+/* global XPCOMUtils */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -66,8 +67,9 @@ var InterceptHandler = exports.InterceptHandler =
 	},
 
 	createInstance: function (outer, iid) {
-		if (outer != null)
-			throw Cr.NS_ERROR_NO_AGGREGATION;
+		if (outer != null) {
+			throw Cr.NS_ERROR_NO_AGGREGATION;            
+        }
 
 		return this.QueryInterface(iid);
 	},
@@ -145,23 +147,26 @@ HidingChannel.prototype = {
 				// Return empty binding.
 				// The element will be collapsed because of empty binding (it does not contain dummy element which is requested by the URL)
 				data = this.hideData;
-				// Track filter rule usage
-				var rule = this._getRuleByText(this.URI.path);
-				if (rule) {
-					var domain = this.framesMap.getFrameDomain(tab);
-					if (!rule.isPermitted(domain)) {
-						data = this.notHideData;
-					}
 
-					// Rules without domain should be ignored
-					if (rule.isGeneric() && this._isGenericHideWhiteListed(tab)) {
-						data = this.notHideData;
-					}
+                var rule = this._getRuleByText(this.URI.path);
+                if (rule) {
+                    var domain = this.framesMap.getFrameDomain(tab);
+                    if (!rule.isPermitted(domain)) {
+                        data = this.notHideData;
+                    }
 
-					if (!FilterUtils.isUserFilterRule(rule) && !this.framesMap.isIncognitoTab(tab)) {
-						filterRulesHitCount.addRuleHit(domain, rule.ruleText, rule.filterId);
-					}
-				}
+                    // Rules without domain should be ignored if there is a $generichide rule applied
+                    if (this._isGenericHideWhiteListed(tab) && rule.isGeneric()) {
+                        data = this.notHideData;
+                    }
+
+                    // Track filter rule usage if user has enabled "collect ad filters usage stats"
+                    if (filterRulesHitCount.collectStatsEnabled) {
+                        if (!FilterUtils.isUserFilterRule(rule) && !this.framesMap.isIncognitoTab(tab)) {
+                            filterRulesHitCount.addRuleHit(domain, rule.ruleText, rule.filterId);
+                        }
+                    }
+                }
 			}
 		} finally {
 			// Write response data to the stream

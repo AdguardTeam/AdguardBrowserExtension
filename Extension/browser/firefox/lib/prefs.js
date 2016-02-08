@@ -59,13 +59,17 @@ var Prefs = exports.Prefs = {
 	speedupStartup: function () {
 		return simplePrefs.prefs['speedup_startup'];
 	},
-    collapseByContentScript: simplePrefs.prefs['collapse_by_content_script']
+    collapseByContentScript: simplePrefs.prefs['collapse_by_content_script'],
+    useGlobalStyleSheet: simplePrefs.prefs['use_global_style_sheet']
 };
 
 var onPreferenceChanged = function() {
     Prefs.collapseByContentScript = simplePrefs.prefs['collapse_by_content_script'];
+    Prefs.useGlobalStyleSheet = simplePrefs.prefs['use_global_style_sheet'];
 };
 simplePrefs.on('collapse_by_content_script', onPreferenceChanged);
+simplePrefs.on('use_global_style_sheet', onPreferenceChanged);
 unload.when(function() {
     simplePrefs.removeListener('collapse_by_content_script', onPreferenceChanged);
+    simplePrefs.removeListener('use_global_style_sheet', onPreferenceChanged);
 });
