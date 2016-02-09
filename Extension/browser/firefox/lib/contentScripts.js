@@ -1,5 +1,6 @@
 var pageMod = require('sdk/page-mod');
 var self = require('sdk/self');
+var {Cu,Cc,Ci} = require('chrome');
 
 var I18N_MESSAGES = require('./utils/i18n-messages').I18N_MESSAGES;
 
@@ -21,30 +22,31 @@ ContentScripts.prototype = {
 
         this.contentMessageHandler = contentMessageHandler;
         this.i18nMessages = this._getI18nMessages();
+        this.scripts = [];
 
         // Filter-download.html
-        //this.registerChromeContentScript('chrome://adguard/content/filter-download.html*', [
-        //    'content/libs/jquery-1.8.3.min.js',
-        //    'content/libs/nprogress.patched.js',
-        //    'content/content-script/content-script.js',
-        //    'content/content-script/i18n-helper.js',
-        //    'content/pages/i18n.js',
-        //    'content/pages/script.js',
-        //    'content/pages/filter-download.js'
-        //]);
+        this.registerChromeContentScript('chrome://adguard/content/filter-download.html', [
+            'content/libs/jquery-1.8.3.min.js',
+            'content/libs/nprogress.patched.js',
+            'content/content-script/content-script.js',
+            'content/content-script/i18n-helper.js',
+            'content/pages/i18n.js',
+            'content/pages/script.js',
+            'content/pages/filter-download.js'
+        ]);
 
-        // Thankyou.html
-        //this.registerChromeContentScript('chrome://adguard/content/thankyou.html*', [
-        //    'content/libs/jquery-1.8.3.min.js',
-        //    'content/content-script/content-script.js',
-        //    'content/content-script/i18n-helper.js',
-        //    'content/pages/i18n.js',
-        //    'content/pages/script.js',
-        //    'content/pages/thankyou.js'
-        //]);
+        //Thankyou.html
+        this.registerChromeContentScript('chrome://adguard/content/thankyou.html', [
+            'content/libs/jquery-1.8.3.min.js',
+            'content/content-script/content-script.js',
+            'content/content-script/i18n-helper.js',
+            'content/pages/i18n.js',
+            'content/pages/script.js',
+            'content/pages/thankyou.js'
+        ]);
 
         // Options.html
-        this.registerChromeContentScript('chrome://adguard/content/options.html*', [
+        this.registerChromeContentScript('chrome://adguard/content/options.html', [
             'content/libs/jquery-1.8.3.min.js',
             'content/libs/bootstrap.min.js',
             'content/libs/jquery.mousewheel.min.js',
@@ -58,7 +60,7 @@ ContentScripts.prototype = {
         ]);
 
         // Log.html
-        this.registerChromeContentScript('chrome://adguard/content/log.html*', [
+        this.registerChromeContentScript('chrome://adguard/content/log.html', [
             'content/libs/jquery-1.8.3.min.js',
             'content/libs/bootstrap.min.js',
             'content/libs/moment-with-locales.min.js',
@@ -70,14 +72,14 @@ ContentScripts.prototype = {
         ]);
 
         // Export.html
-        this.registerChromeContentScript('chrome://adguard/content/export.html*', [
+        this.registerChromeContentScript('chrome://adguard/content/export.html', [
             'content/libs/jquery-1.8.3.min.js',
             'content/content-script/content-script.js',
             'content/pages/export.js'
         ]);
 
         // Sb.html
-        this.registerChromeContentScript('chrome://adguard/content/sb.html*', [
+        this.registerChromeContentScript('chrome://adguard/content/sb.html', [
             'content/libs/jquery-1.8.3.min.js',
             'content/content-script/content-script.js',
             'content/content-script/i18n-helper.js',
@@ -89,12 +91,12 @@ ContentScripts.prototype = {
         this.registerPageContentScript(['http://*', 'https://*'], [
             'content/content-script/content-script.js',
             'content/content-script/preload.js'
-        ], 'start');
+        ], 'document_start');
 
         this.registerPageContentScript(['http://*', 'https://*'], [
             'content/content-script/content-script.js', // Message passing
             'content/content-script/content-utils.js'   // Show alert popup and reload without cache functionality
-        ], 'start', ['top', 'existing']);
+        ], 'document_start', ['top', 'existing']);
 
         // Assistant
         this.registerPageContentScript(['http://*', 'https://*'], [
@@ -108,7 +110,7 @@ ContentScripts.prototype = {
             'content/content-script/assistant/js/tools.js',
             'content/content-script/assistant/js/selector.js',
             'content/content-script/assistant/js/assistant.js'
-        ], 'ready', ['top', 'existing']);
+        ], 'document_end', ['top', 'existing']);
 
 
         // abp:subscribe
@@ -147,7 +149,78 @@ ContentScripts.prototype = {
             'content/content-script/content-script.js', // message-passing
             'content/content-script/content-utils.js',  // showAlertPopup function
             'content/content-script/subscribe.js'
-        ], 'ready', ['top', 'existing']);
+        ], 'document_end', ['top', 'existing']);
+
+
+        var scripts = this.scripts;
+
+        var i18nMessages = (function () {
+
+            // Randomize URI to work around bug 719376
+            var stringBundle = Services.strings.createBundle('chrome://adguard/locale/messages.properties?' + Math.random());
+
+            // MDN says getSimpleEnumeration returns nsIPropertyElement // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIStringBundle#getSimpleEnumeration%28%29
+            var props = stringBundle.getSimpleEnumeration();
+
+            var messages = Object.create(null);
+            while (props.hasMoreElements()) {
+                var prop = props.getNext();
+                var propEl = prop.QueryInterface(Ci.nsIPropertyElement);
+                var key = propEl.key;
+                messages[key] = propEl.value;
+            }
+            return messages;
+        })();
+
+        var ppmm = Cc["@mozilla.org/parentprocessmessagemanager;1"].getService(Ci.nsIMessageListenerManager);
+        ppmm.addMessageListener('adguard:update-content-scripts', function () {
+            return scripts;
+        });
+        ppmm.addMessageListener('adguard:get-i18n-messages', function () {
+            return i18nMessages;
+        });
+
+        var Listener = function () {
+        };
+
+        Listener.prototype.receiveMessage = function (message) {
+
+            var callback = function () {
+                // Empty
+            };
+
+            if ('callbackId' in message.data) {
+
+                callback = function (result) {
+
+                    if ('callbackId' in result) {
+                        throw 'callbackId present in result';
+                    }
+                    if ('type' in result) {
+                        throw 'type present in result';
+                    }
+
+                    // Passing type and callbackId to response
+                    result.type = message.data.type;
+                    result.callbackId = message.data.callbackId;
+
+                    message.target
+                        .QueryInterface(Ci.nsIFrameLoaderOwner)
+                        .frameLoader
+                        .messageManager
+                        .sendAsyncMessage('adguard:send-message-channel', result);
+                };
+            }
+
+            this.contentMessageHandler.handleMessage(message.data, messageManager, callback);
+
+        }.bind(this);
+
+        var frameScriptListener = new Listener();
+        var messageManager = Cc["@mozilla.org/globalmessagemanager;1"].getService(Ci.nsIMessageListenerManager);
+        //messageManager.addMessageListener('adguard:on-message-channel', frameScriptListener);
+        messageManager.addMessageListener('adguard:send-message-channel', frameScriptListener);
+        messageManager.loadFrameScript('chrome://adguard/content/content-script/frame-script.js', true);
     },
 
     getContentScriptOptions: function () {
@@ -191,14 +264,12 @@ ContentScripts.prototype = {
             contentScriptFile.push(self.data.url(paths[i]));
         }
 
-        var contentScriptOptions = this.getContentScriptOptions();
-
-        pageMod.PageMod({
-            include: url,
-            contentScriptFile: contentScriptFile,
-            contentScriptWhen: 'start',
-            contentScriptOptions: contentScriptOptions,
-            onAttach: this.onAttach
+        this.scripts.push({
+            schemes: ['chrome:'],
+            url: url,
+            files: contentScriptFile,
+            allFrames: false,
+            runAt: 'document_start'
         });
     },
 
@@ -209,18 +280,23 @@ ContentScripts.prototype = {
             contentScriptFile.push(self.data.url(paths[i]));
         }
 
-        var pageModOptions = {
-            include: url,
-            contentScriptFile: contentScriptFile,
-            contentScriptWhen: when,
-            onAttach: this.onAttach
-        };
+        //var pageModOptions = {
+        //    include: url,
+        //    contentScriptFile: contentScriptFile,
+        //    contentScriptWhen: when,
+        //    onAttach: this.onAttach
+        //};
+        //
+        //if (attachTo) {
+        //    pageModOptions.attachTo = attachTo;
+        //}
 
-        if (attachTo) {
-            pageModOptions.attachTo = attachTo;
-        }
-
-        pageMod.PageMod(pageModOptions);
+        this.scripts.push({
+            schemes: ['http:', 'https:'],
+            files: contentScriptFile,
+            allFrames: false, //TODO: define
+            runAt: when
+        });
     },
 
 

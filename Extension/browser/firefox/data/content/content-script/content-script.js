@@ -21,134 +21,132 @@
 /**
  * contentPage object is used for messaging between a content script and a frame script.
  */
-var contentPage = (function(api) {
-    
-    var CONTENT_TO_BACKGROUND_CHANNEL = 'content-background-channel';
-    var BACKGROUND_TO_CONTENT_CHANNEL = 'background-content-channel';
-    
-    var listenerRegistered = false;
-    var callbacks = Object.create(null);
-    var callbackId = 0;
-    
-    /**
-     * Called when response is received from the chrome process
-     * 
-     * @param response Response object got from the chrome process
-     * @private
-     */
-    var onResponseReceived = function(response) {
-        if ('callbackId' in response) {
-            var callbackId = response.callbackId;
-            var callback = callbacks[callbackId];
-            callback(response);
-            delete callbacks[callbackId];
-        }
-    };
-    
-    /**
-     * Sends message to the chrome process
-     * 
-     * @param message Message to send
-     * @param callback Method that will be called in response
-     * @public
-     */
-    var sendMessage = function (message, callback) {
+var contentPage = (function (api) {
 
-        if (callback) {
-            var messageCallbackId = (callbackId += 1);
-            message.callbackId = messageCallbackId;
-            callbacks[messageCallbackId] = callback;
-        }
-
-        if (!listenerRegistered) {
-            listenerRegistered = true;
-
-            if (typeof addFrameEventListener != 'undefined') {
-                addFrameEventListener(CONTENT_TO_BACKGROUND_CHANNEL, onResponseReceived);
-            } else {
-                // TODO: Remove, deprecated
-                self.port.on(CONTENT_TO_BACKGROUND_CHANNEL, onResponseReceived);                
-            }
-        }
-        
-        if (typeof sendFrameEvent != 'undefined') {
-            sendFrameEvent(CONTENT_TO_BACKGROUND_CHANNEL, message);
-        } else {
-            // TODO: Remove, deprecated
-            self.port.emit(CONTENT_TO_BACKGROUND_CHANNEL, message);            
-        }
-    };
-    
-    var onMessage = (function(onMessage) {
-        var listeners = null;
-        
-        /**
-         * This method is getting called when we get an event from the chrome process.
-         */
-        var onMessageReceived = function(message) {
-            for (var i = 0; i < listeners.length; i++) {
-                var listener = listeners[i];
-                listener(message);
-            }            
-        };
-        
-        var addListener = function (listener) {
-
-            if (!listeners) {
-                listeners = [];
-                
-                if (typeof addFrameEventListener != 'undefined') {
-                    addFrameEventListener(BACKGROUND_TO_CONTENT_CHANNEL, onMessageReceived);
-                } else {
-                    // TODO: Remove, deprecated
-                    self.port.on(BACKGROUND_TO_CONTENT_CHANNEL, onMessageReceived);                    
-                }
-            }
-
-            listeners.push(listener);
-        };
-        
-        /**
-         * Expose onMessage API
-         */
-        onMessage.addListener = addListener;
-        return onMessage;
-    })(onMessage || {}); 
+    //var CONTENT_TO_BACKGROUND_CHANNEL = 'content-background-channel';
+    //var BACKGROUND_TO_CONTENT_CHANNEL = 'background-content-channel';
+    //
+    //var listenerRegistered = false;
+    //var callbacks = Object.create(null);
+    //var callbackId = 0;
+    //
+    ///**
+    // * Called when response is received from the chrome process
+    // *
+    // * @param response Response object got from the chrome process
+    // * @private
+    // */
+    //var onResponseReceived = function(response) {
+    //    if ('callbackId' in response) {
+    //        var callbackId = response.callbackId;
+    //        var callback = callbacks[callbackId];
+    //        callback(response);
+    //        delete callbacks[callbackId];
+    //    }
+    //};
+    //
+    ///**
+    // * Sends message to the chrome process
+    // *
+    // * @param message Message to send
+    // * @param callback Method that will be called in response
+    // * @public
+    // */
+    //var sendMessage = function (message, callback) {
+    //
+    //    if (callback) {
+    //        var messageCallbackId = (callbackId += 1);
+    //        message.callbackId = messageCallbackId;
+    //        callbacks[messageCallbackId] = callback;
+    //    }
+    //
+    //    if (!listenerRegistered) {
+    //        listenerRegistered = true;
+    //
+    //        if (typeof addFrameEventListener != 'undefined') {
+    //            addFrameEventListener(CONTENT_TO_BACKGROUND_CHANNEL, onResponseReceived);
+    //        } else {
+    //            // TODO: Remove, deprecated
+    //            self.port.on(CONTENT_TO_BACKGROUND_CHANNEL, onResponseReceived);
+    //        }
+    //    }
+    //
+    //    if (typeof sendFrameEvent != 'undefined') {
+    //        sendFrameEvent(CONTENT_TO_BACKGROUND_CHANNEL, message);
+    //    } else {
+    //        // TODO: Remove, deprecated
+    //        self.port.emit(CONTENT_TO_BACKGROUND_CHANNEL, message);
+    //    }
+    //};
+    //
+    //var onMessage = (function(onMessage) {
+    //    var listeners = null;
+    //
+    //    /**
+    //     * This method is getting called when we get an event from the chrome process.
+    //     */
+    //    var onMessageReceived = function(message) {
+    //        for (var i = 0; i < listeners.length; i++) {
+    //            var listener = listeners[i];
+    //            listener(message);
+    //        }
+    //    };
+    //
+    //    var addListener = function (listener) {
+    //
+    //        if (!listeners) {
+    //            listeners = [];
+    //
+    //            if (typeof addFrameEventListener != 'undefined') {
+    //                addFrameEventListener(BACKGROUND_TO_CONTENT_CHANNEL, onMessageReceived);
+    //            } else {
+    //                // TODO: Remove, deprecated
+    //                self.port.on(BACKGROUND_TO_CONTENT_CHANNEL, onMessageReceived);
+    //            }
+    //        }
+    //
+    //        listeners.push(listener);
+    //    };
+    //
+    //    /**
+    //     * Expose onMessage API
+    //     */
+    //    onMessage.addListener = addListener;
+    //    return onMessage;
+    //})(onMessage || {});
 
     /**
      * Expose contentPage public API
      */
-    api.sendMessage = sendMessage;
-    api.onMessage = onMessage;
+    api.sendMessage = sendMessageApi;
+    api.onMessage = onMessageApi;
     return api;
+
 })(contentPage || {});
 
 /**
  * This object is used to pass translations from the chrome process to the content.
  */
-var i18n = (function(api) {
-    
-    var getMessage = function (messageId, args) {
-        if (typeof getI18nMessage != 'undefined') {
-            var message = getI18nMessage[messageId];
-            if (!message) {
-                throw 'Message ' + messageId + ' not found';
-            }
+var i18n = (function (api) {
 
-            return I18nHelper.replacePlaceholders(message, args);
-        } else {
-            // TODO: Remove, deprecated
-            var message = self.options.i18nMessages[messageId];
-            if (!message) {
-                throw 'Message ' + messageId + ' not found';
-            }
-            return I18nHelper.replacePlaceholders(message, args);
-        }
-    };
-    
     /**
      * Expose i18n public API
      */
-    api.getMessage = getMessage;
-    return api;    
+    api.getMessage = function (messageId, args) {
+        //if (typeof getI18nMessage != 'undefined') {
+        var message = i18nMessageApi(messageId);
+        if (!message) {
+            throw 'Message ' + messageId + ' not found';
+        }
+        return I18nHelper.replacePlaceholders(message, args);
+        //} else {
+        //    // TODO: Remove, deprecated
+        //    var message = self.options.i18nMessages[messageId];
+        //    if (!message) {
+        //        throw 'Message ' + messageId + ' not found';
+        //    }
+        //    return I18nHelper.replacePlaceholders(message, args);
+        //}
+    };
+    return api;
 })(i18n || {});

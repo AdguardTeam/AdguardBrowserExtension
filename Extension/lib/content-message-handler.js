@@ -28,7 +28,6 @@ var ContentMessageHandler = exports.ContentMessageHandler = function () {
     this.handleMessage = this.handleMessage.bind(this);
 };
 
-
 ContentMessageHandler.prototype = {
 
     eventListeners: Object.create(null),
@@ -41,49 +40,6 @@ ContentMessageHandler.prototype = {
         this.adguardApplication = adguardApplication;
         this.filteringLog = filteringLog;
         this.UI = UI;
-
-        //TODO: TEMP
-        var CONTENT_TO_BACKGROUND_CHANNEL = 'content-background-channel';
-        var BACKGROUND_TO_CONTENT_CHANNEL = 'background-content-channel';
-
-        var {Cu,Cc,Ci} = require('chrome');
-        var messageManager = Cc["@mozilla.org/globalmessagemanager;1"].getService(Ci.nsIMessageListenerManager);
-
-        var Listener = function() {
-        };
-        Listener.prototype.receiveMessage = function(message) {
-            require('./utils/log').Log.info('message: {0}', message);
-
-            var callback = function () {
-                // Empty
-            };
-
-            if ('callbackId' in message.data) {
-
-                callback = function (result) {
-
-                    if ('callbackId' in result) {
-                        throw 'callbackId present in result';
-                    }
-                    if ('type' in result) {
-                        throw 'type present in result';
-                    }
-
-                    // Passing type and callbackId to response
-                    result.type = message.data.type;
-                    result.callbackId = message.data.callbackId;
-
-                    messageManager.sendAsyncMessage(CONTENT_TO_BACKGROUND_CHANNEL, result);
-
-                }.bind(this);
-            }
-
-            this.handleMessage(message.data, messageManager, callback);
-        };
-
-        messageManager.addMessageListener(CONTENT_TO_BACKGROUND_CHANNEL, new Listener());
-        //messageManager.addMessageListener(BACKGROUND_TO_CONTENT_CHANNEL, new Listener());
-        messageManager.loadFrameScript('chrome://adguard/content/content-script/frame-script.js', true);
     },
 
     setSendMessageToSender: function (sendMessageToSender) {
@@ -242,7 +198,7 @@ ContentMessageHandler.prototype = {
                     });
                 } else {
                     // In case of FF we may collapse nodes with nsiContentPolicy
-                    callback({collapse: false, requestId: message.requestId});                    
+                    callback({collapse: false, requestId: message.requestId});
                 }
                 break;
             case 'processShouldCollapseMany':
