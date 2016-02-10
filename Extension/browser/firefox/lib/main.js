@@ -42,7 +42,8 @@ var sdkModules = {
     'sdk/core/promise': require('sdk/core/promise'),
     'sdk/io/file': require('sdk/io/file'),
     'sdk/windows': require('sdk/windows'),
-    'sdk/private-browsing': require('sdk/private-browsing')
+    'sdk/private-browsing': require('sdk/private-browsing'),
+    'sdk/view/core': require('sdk/view/core')
 };
 
 exports.onUnload = function (reason) {

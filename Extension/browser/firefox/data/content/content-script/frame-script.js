@@ -19,98 +19,77 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * This script is registered by "loadFrameScript" everywhere.
- * It decides whether we should load our content scripts to the loaded DOMWindow.
- */
-var {classes: Cc, interfaces: Ci, utils: Cu, results: Cr} = Components;
-var Services = Cu.import("resource://gre/modules/Services.jsm", {}).Services;
-var console = Cu.import('resource://gre/modules/devtools/Console.jsm', {}).console;
+(function (context) {
 
-// Used for sandbox creation
-var nextSandboxId = 0;
+    'use strict';
 
-// Map object for pages scripts
-var pagesScriptsMap = Object.create(null);
+    /**
+     * This script is registered by "loadFrameScript" everywhere.
+     * It decides whether we should load our content scripts to the loaded DOMWindow.
+     */
+    var {classes: Cc, interfaces: Ci, utils: Cu, results: Cr} = Components;
+    var Services = Cu.import("resource://gre/modules/Services.jsm", {}).Services;
 
-// Logger
-var Log = {
-    debug: function (message) {
-        var now = new Date();
-        console.error(now.toISOString() + ": " + message);
-    }
-};
+    // Used for sandbox creation
+    var nextSandboxId = 0;
 
-var registeredScripts = [];
-// JSON for localized strings (look at initI18n method)
-var i18nMessages = Object.create(null);
+    var registeredScripts = [];
+    var i18nMessages = Object.create(null);
 
-(function () {
-    var cpmm = Cc["@mozilla.org/childprocessmessagemanager;1"].getService(Ci.nsISyncMessageSender);
-    registeredScripts = cpmm.sendSyncMessage('adguard:update-content-scripts')[0];
-    i18nMessages = cpmm.sendSyncMessage('adguard:get-i18n-messages')[0];
-})();
+    var addChromeMessageListener = (function () {
 
-//var registerChromeContentScript = function (url, paths) {
-//    pagesScriptsMap[url] = paths;
-//};
+        var contentListeners = [];
 
-//var registerPageScripts = function () {
-//    registerChromeContentScript('chrome://adguard/content/filter-download.html', [
-//        'libs/jquery-1.8.3.js',
-//        'libs/nprogress.patched.js',
-//        'pages/i18n.js',
-//        'pages/script.js',
-//        'pages/filter-download.js'
-//    ]);
-//
-//    //registerChromeContentScript('chrome://adguard/content/thankyou.html', [
-//    //    'libs/jquery-1.8.3.min.js',
-//    //    'pages/i18n.js',
-//    //    'pages/script.js',
-//    //    'pages/thankyou.js'
-//    //]);
-//
-//    //TODO: Add other pages
-//};
-
-//TODO: move to another file
-var onNewDocument = (function () {
-
-    var callbacks = new WeakMap();
-
-    var OBSERVED_TOPIC = 'document-element-inserted';
-
-    var contentObserver = {
-
-        observe: function (subject, topic) {
-
-            switch (topic) {
-                case OBSERVED_TOPIC:
-                    var doc = subject;
-                    var win = doc && doc.defaultView;
-                    if (!doc || !win) {
-                        return;
-                    }
-                    var topWin = win.top;
-                    var frameCallback = callbacks.get(topWin);
-                    if (frameCallback) {
-                        frameCallback(win);
-                    }
-                    break;
+        var onMessageFromChrome = function (message) {
+            for (var i = 0; i < contentListeners.length; i++) {
+                contentListeners[i](JSON.stringify(message.data));
             }
+        };
+        context.addMessageListener('Adguard:on-message-channel', onMessageFromChrome);
+
+        return {
+            addListener: function (listener) {
+                contentListeners.push(listener);
+            },
+            unload: function () {
+                context.removeMessageListener('Adguard:on-message-channel', onMessageFromChrome);
+            }
+        };
+
+    })();
+
+    var sendMessageToChrome = (function () {
+
+        var callbackId = 0;
+        var callbacks = Object.create(null);
+
+        var onMessageFromChrome = function (response) {
+            var message = response.data;
+            var callback = callbacks[message.callbackId];
+            if (callback) {
+                callback(JSON.stringify(message));
+                delete callbacks[message.callbackId];
+            }
+        };
+        context.addMessageListener('Adguard:send-message-channel', onMessageFromChrome);
+
+        function sendMessage(message, callback) {
+            if (callback) {
+                callbackId++;
+                callbacks[callbackId] = callback;
+                message.callbackId = callbackId;
+            }
+            context.sendAsyncMessage('Adguard:send-message-channel', message);
         }
-    };
 
-    Services.obs.addObserver(contentObserver, OBSERVED_TOPIC, false);
+        return {
+            sendMessage: sendMessage,
+            unload: function () {
+                context.removeMessageListener('Adguard:send-message-channel', onMessageFromChrome);
+            }
+        };
 
-    return function (topWindow, callback) {
-        callbacks.set(topWindow, callback);
-    }
-
-})();
-
-var runScripts = (function () {
+    })();
 
     function schemeForWin(aContentWin) {
         return aContentWin.document.location.protocol;
@@ -144,7 +123,7 @@ var runScripts = (function () {
         return true;
     }
 
-    function injectScripts(runAt, scripts, win) {
+    var injectScripts = function (runAt, win) {
 
         var url = urlForWin(win);
         var isTopWin = windowIsTop(win);
@@ -167,9 +146,7 @@ var runScripts = (function () {
             return true;
         };
 
-        scripts = scripts.filter(filter);
-        console.log(scripts);
-
+        var scripts = registeredScripts.filter(filter);
         if (scripts.length == 0) {
             return;
         }
@@ -178,279 +155,148 @@ var runScripts = (function () {
 
         for (var i = 0; i < scripts.length; i++) {
             var script = scripts[i];
-            if (isTopWin && script.allFrames) {
-                continue;
-            }
             runScriptInSandbox(script, sandbox);
         }
-    }
-
-    return function (runAt, win) {
-        injectScripts(runAt, registeredScripts, win);
-    }
-})();
-
-/**
- * The DOMWindowCreated event is executed when a Window object has been created.
- * @param event DOMWindowCreated event https://developer.mozilla.org/en-US/docs/Web/Events/DOMWindowCreated
- */
-var onDomWindowCreated = function () {
-    onNewDocument(content, contentObserver);
-};
-
-var contentLoaded = function (event) {
-
-    //TODO: implement
-
-    var contentWin = event.target.defaultView;
-
-    // Remove event listeners
-    contentWin.removeEventListener('DOMContentLoaded', contentLoaded, true);
-    contentWin.removeEventListener('load', contentLoaded, true);
-
-    runScripts('document_end', contentWin);
-};
-
-var contentObserver = function (win) {
-
-    var doc = win.document;
-    var url = doc.documentURI;
-
-    win.addEventListener('DOMContentLoaded', contentLoaded, true);
-    win.addEventListener('load', contentLoaded, true);
-
-    runScripts('document_start', win);
-
-    ////var window = content;
-    //var document = event.target;
-    //console.log(document);
-    //if (!document || !document.defaultView) {
-    //    return;
-    //}
-    //
-    //var window = document.defaultView;
-    //
-    ////console.log(window);
-    ////console.log(window.document);
-    ////console.log(window.document.documentElement);
-    //
-    //if (!window || !window.location) {
-    //    return;
-    //}
-    //
-    //var location = window.location;
-    //if (!location || !location.href) {
-    //    return;
-    //}
-    //
-    //if (location.protocol == 'http:' || location.protocol == 'https:') {
-    //    //attachContentScripts(window, ['content-script/preload.js']);
-    //    // TODO: Add other scripts
-    //} else if (location.protocol == 'chrome:') {
-    //    attachContentScripts(window, pagesScriptsMap[location.href]);
-    //}
-};
-
-/**
- * Fires when the frame script environment is shut down, i.e. when a tab gets closed.
- */
-var onUnload = function () {
-    // TODO: Clean up
-};
-
-var onMessageApi = (function () {
-
-    var contentListeners = [];
-
-    var onMessageFromChrome = function (message) {
-        for (var i = 0; i < contentListeners.length; i++) {
-            contentListeners[i](message.data);
-        }
     };
-    addMessageListener('adguard:on-message-channel', onMessageFromChrome);
-
-    return {
-        addListener: function (listener) {
-            contentListeners.push(listener);
-        }
-    }
-})();
-
-var sendMessageApi = (function () {
-
-    var callbackId = 0;
-    var callbacks = Object.create(null);
-
-    var onMessageFromChrome = function (response) {
-        var message = response.data;
-        var callback = callbacks[message.callbackId];
-        if (callback) {
-            callback(message);
-            delete callbacks[message.callbackId];
-        }
-        console.log('Received message from chrome');
-        console.log(message);
-    };
-    addMessageListener('adguard:send-message-channel', onMessageFromChrome);
-
-    function sendMessageImpl(message, callback) {
-        if (callback) {
-            callbackId++;
-            callbacks[callbackId] = callback;
-            message.callbackId = callbackId;
-        }
-        console.log('Send message to chrome');
-        console.log(message);
-        sendAsyncMessage('adguard:send-message-channel', message);
-    }
-
-    return sendMessageImpl;
-
-})();
-
-
-/**
- * Creates sandbox object which will be a principal object for the content scripts.
- *
- * @param win Window to be sandboxed
- */
-var createSandbox = function (win, url) {
 
     /**
-     * A string value which identifies the sandbox in about:memory (and possibly other places in the future).
+     * Creates sandbox object which will be a principal object for the content scripts.
      *
-     * This property is optional, but very useful for tracking memory usage of add-ons and other JavaScript compartments.
-     * A recommended value for this property is an absolute path to the script responsible for creating the sandbox.
-     * As of Gecko 13 (Firefox 13.0 / Thunderbird 13.0 / SeaMonkey 2.10), if you don't specify a sandbox name it
-     * will default to the caller's filename.
+     * @param win Window to be sandboxed
+     * @param url Window URL
      */
-    //var isIframe = win.top != win;
-    var sandboxName = '[' + (nextSandboxId++) + ']' + url;
+    var createSandbox = function (win, url) {
 
-    // "content" is a DOM window here 
-    // Creating "expanded" sandbox from it: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Language_Bindings/Components.utils.Sandbox#Expanded_principal
-    var sandbox = Cu.Sandbox(win, {
-        sandboxName: sandboxName,
-        sameZoneAs: win,
-        sandboxPrototype: win,
-        wantComponents: false
-    });
+        /**
+         * A string value which identifies the sandbox in about:memory (and possibly other places in the future).
+         *
+         * This property is optional, but very useful for tracking memory usage of add-ons and other JavaScript compartments.
+         * A recommended value for this property is an absolute path to the script responsible for creating the sandbox.
+         * As of Gecko 13 (Firefox 13.0 / Thunderbird 13.0 / SeaMonkey 2.10), if you don't specify a sandbox name it
+         * will default to the caller's filename.
+         */
+        //var isIframe = win.top != win;
+        var sandboxName = '[' + (nextSandboxId++) + ']' + url;
 
-    //// Expose messaging API
-    //sandbox.addFrameEventListener = function (name, listener) {
-    //    Log.debug(name + ': addFrameEventListener');
-    //    addMessageListener(name, listener);
-    //};
-    //sandbox.sendFrameEvent = function (name, message) {
-    //    Log.debug(name + ': sendFrameEvent ' + message);
-    //    sendAsyncMessage(name, message);
-    //};
+        // "content" is a DOM window here
+        // Creating "expanded" sandbox from it: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Language_Bindings/Components.utils.Sandbox#Expanded_principal
+        var sandbox = Cu.Sandbox(win, {
+            sandboxName: sandboxName,
+            sameZoneAs: win,
+            sandboxPrototype: win,
+            wantComponents: false
+        });
 
-    sandbox.onMessageApi = onMessageApi;
-    sandbox.sendMessageApi = sendMessageApi;
+        sandbox.addChromeMessageListener = addChromeMessageListener.addListener;
+        sandbox.sendMessageToChrome = sendMessageToChrome.sendMessage;
 
-    // Expose localization API
-    sandbox.i18nMessageApi = function (messageId) {
-        return i18nMessages[messageId];
+        // Expose localization API
+        sandbox.i18nMessageApi = function (messageId) {
+            return i18nMessages[messageId];
+        };
+
+        return sandbox;
     };
 
-    Log.debug('Attaching content scripts to ' + sandboxName);
+    var runScriptInSandbox = function (script, sandbox) {
+        var files = script.files;
+        for (var i = 0; i < files.length; i++) {
+            var file = script.files[i];
+            Services.scriptloader.loadSubScript(file, sandbox, 'UTF-8');
+        }
+    };
 
-    return sandbox;
-};
+    var onDocumentEnd = function (event) {
 
-var runScriptInSandbox = function (script, sandbox) {
-    var files = script.files;
-    for (var i = 0; i < files.length; i++) {
-        var file = script.files[i];
-        Services.scriptloader.loadSubScript(file, sandbox, 'UTF-8');
-    }
-};
+        //TODO: implement
 
-/**
- * Attaches specified content scripts to the current DOM window.
- *
- * @param window  Window to attach to
- * @param scripts Array with scripts relative path
- */
-//var attachContentScripts = function (window, scripts) {
-//    if (!scripts || scripts.length == 0) {
-//        return;
-//    }
-//
-//    try {
-//
-//        // Creating sandbox wrapper for window object
-//        var sandbox = createSandbox(window);
-//
-//        console.log('Loading content scripts..');
-//        // Executing i18n-helper.js and content-script.js for every content script.
-//        // These two scripts contains helper functions for messaging and localization.
-//        Services.scriptloader.loadSubScript('chrome://adguard/content/content-script/i18n-helper.js', sandbox);
-//        Services.scriptloader.loadSubScript('chrome://adguard/content/content-script/content-script.js', sandbox);
-//
-//        console.log('Loading additional content scripts..' + scripts.length);
-//
-//        // Executing content scripts specified in "scripts" parameter
-//        for (var i = 0; i < scripts.length; i++) {
-//            var scriptPath = 'chrome://adguard/content/' + scripts[i];
-//            console.log('Attaching script:' + scriptPath);
-//            Services.scriptloader.loadSubScript(scriptPath, sandbox);
-//        }
-//
-//        console.log('All content scripts loaded.');
-//    } catch (ex) {
-//        console.error(ex);
-//    }
-//};
+        var contentWin = event.target.defaultView;
 
-///**
-// * Initialize a JSON object with translations
-// */
-//var initI18n = function () {
-//    // Randomize URI to work around bug 719376
-//    var stringBundle = Services.strings.createBundle('chrome://adguard/locale/messages.properties?' + Math.random());
-//
-//    // MDN says getSimpleEnumeration returns nsIPropertyElement // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIStringBundle#getSimpleEnumeration%28%29
-//    var props = stringBundle.getSimpleEnumeration();
-//
-//    var msgCount = 0;
-//    while (props.hasMoreElements()) {
-//        var prop = props.getNext();
-//        var propEl = prop.QueryInterface(Ci.nsIPropertyElement);
-//        var key = propEl.key;
-//        i18nMessages[key] = propEl.value;
-//        msgCount++;
-//    }
-//
-//    Log.debug('Initialized with ' + msgCount + ' messages');
-//};
+        // Remove event listeners
+        contentWin.removeEventListener('DOMContentLoaded', onDocumentEnd, true);
 
-/**
- * Entry point
- */
-var initFrameScript = function () {
+        injectScripts('document_end', contentWin);
+    };
 
-    //// First of all, init translation
-    //initI18n();
+    var onDocumentStart = function (win) {
 
-    // Register page scripts
-    //registerPageScripts();
+        win.addEventListener('DOMContentLoaded', onDocumentEnd, true);
 
-    addEventListener('DOMWindowCreated', onDomWindowCreated);
-    if (content) {
-        onDomWindowCreated();
-    }
+        injectScripts('document_start', win);
+    };
 
-    //// Listen to DOMWindowCreated and execute content scripts for newly created windows
-    //addEventListener('DOMWindowCreated', function (event) {
-    //    onDomWindowCreated(event);
-    //});
+    var documentObserver = (function () {
 
-    // Clean up on frame script unload
-    addEventListener('unload', function () {
-        onUnload();
-    });
-};
+        var TOPIC = 'document-element-inserted';
+        var callbacks = new WeakMap();
 
-initFrameScript();
+        var contentObserver = {
+            observe: function (subject, topic) {
+
+                switch (topic) {
+                    case TOPIC:
+                        var doc = subject;
+                        var win = doc && doc.defaultView;
+                        if (!doc || !win) return;
+                        var topWin = win.top;
+
+                        var frameCallback = callbacks.get(topWin);
+                        if (frameCallback) {
+                            frameCallback(win);
+                        }
+                        break;
+                }
+            },
+            QueryInterface: XPCOMUtils.generateQI([Ci.nsIObserver, Ci.nsISupportsWeakReference])
+        };
+
+        Services.obs.addObserver(contentObserver, TOPIC, false);
+
+        return {
+            onNewDocument: function (topWindow, callback) {
+                callbacks.set(topWindow, callback);
+            },
+            unload: function () {
+                Services.obs.removeObserver(contentObserver, TOPIC);
+            }
+        };
+
+    })();
+
+    var onWindowCreated = function () {
+        documentObserver.onNewDocument(context.content, onDocumentStart);
+    };
+
+    /**
+     * Fires when the frame script environment is shut down, i.e. when a tab gets closed.
+     */
+    var onUnload = function (ev) {
+        console.log('unload');
+        if (ev.target !== context) {
+            return;
+        }
+        // TODO: Clean up
+        documentObserver.unload();
+        addChromeMessageListener.unload();
+        sendMessageToChrome.unload();
+        console.log('unload done');
+    };
+
+    /**
+     * Entry point
+     */
+    var initFrameScript = function () {
+
+        var cpmm = Cc["@mozilla.org/childprocessmessagemanager;1"].getService(Ci.nsISyncMessageSender);
+        registeredScripts = cpmm.sendSyncMessage('adguard:update-content-scripts')[0];
+        i18nMessages = cpmm.sendSyncMessage('adguard:get-i18n-messages')[0];
+
+        context.addEventListener('DOMWindowCreated', onWindowCreated);
+
+        // Clean up on frame script unload
+        context.addEventListener('unload', onUnload);
+    };
+
+    initFrameScript();
+
+})(this);
