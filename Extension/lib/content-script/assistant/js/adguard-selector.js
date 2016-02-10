@@ -121,6 +121,10 @@ balalaika.fn.removeClass = function (className) {
     return this;
 };
 
+balalaika.fn.get = function (index) {
+    return this.length > index ? this[index] : null;
+};
+
 
 /**
  * Adguard selector library
