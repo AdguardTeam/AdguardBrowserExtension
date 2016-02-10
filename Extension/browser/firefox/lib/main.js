@@ -43,7 +43,8 @@ var sdkModules = {
     'sdk/io/file': require('sdk/io/file'),
     'sdk/windows': require('sdk/windows'),
     'sdk/private-browsing': require('sdk/private-browsing'),
-    'sdk/view/core': require('sdk/view/core')
+    'sdk/view/core': require('sdk/view/core'),
+    'sdk/window/utils': require('sdk/window/utils')
 };
 
 exports.onUnload = function (reason) {

@@ -1,7 +1,7 @@
 var {Cc,Ci} = require('chrome');
-var self = require('sdk/self');
 var tabUtils = require('sdk/tabs/utils');
 var {viewFor} = require('sdk/view/core');
+var winUtils = require('sdk/window/utils');
 
 var ContentScripts = function () {
 };
@@ -104,44 +104,44 @@ ContentScripts.prototype = {
             'libs/dom.js',
             'content-script/i18n-helper.js',    // Localization placeholders
             'content-script/content-script.js', // Message passing
-            'content-script/assistant/js/start-assistant.js',
             'content-script/assistant/js/tools.js',
             'content-script/assistant/js/selector.js',
-            'content-script/assistant/js/assistant.js'
+            'content-script/assistant/js/assistant.js',
+            'content-script/assistant/js/start-assistant.js'
         ], 'document_end', false);
 
 
         // abp:subscribe
         var subscribeIncludeDomains = [
-            "*.abpchina.org",
-            "*.abpindo.blogspot.com",
-            "*.abpvn.com",
-            "*.adblock-listefr.com",
-            "*.adblock.gardar.net",
-            "*.adblockplus.org",
-            "*.adblockplus.me",
-            "*.adguard.com",
-            "*.certyficate.it",
-            "*.code.google.com",
-            "*.dajbych.net",
-            "*.fanboy.co.nz",
-            "*.fredfiber.no",
-            "*.gardar.net",
-            "*.github.com",
-            "*.henrik.schack.dk",
-            "*.latvian-list.site11.com",
-            "*.liamja.co.uk",
-            "*.malwaredomains.com",
-            "*.margevicius.lt",
-            "*.nauscopio.nireblog.com",
-            "*.nireblog.com",
-            "*.noads.it",
-            "*.schack.dk",
-            "*.spam404.com",
-            "*.stanev.org",
-            "*.void.gr",
-            "*.yoyo.org",
-            "*.zoso.ro"
+            "abpchina.org",
+            "abpindo.blogspot.com",
+            "abpvn.com",
+            "adblock-listefr.com",
+            "adblock.gardar.net",
+            "adblockplus.org",
+            "adblockplus.me",
+            "adguard.com",
+            "certyficate.it",
+            "code.google.com",
+            "dajbych.net",
+            "fanboy.co.nz",
+            "fredfiber.no",
+            "gardar.net",
+            "github.com",
+            "henrik.schack.dk",
+            "latvian-list.site11.com",
+            "liamja.co.uk",
+            "malwaredomains.com",
+            "margevicius.lt",
+            "nauscopio.nireblog.com",
+            "nireblog.com",
+            "noads.it",
+            "schack.dk",
+            "spam404.com",
+            "stanev.org",
+            "void.gr",
+            "yoyo.org",
+            "zoso.ro"
         ];
         this.registerPageContentScript([
             'content-script/content-script.js', // message-passing
@@ -161,8 +161,15 @@ ContentScripts.prototype = {
     },
 
     sendMessageToTab: function (tab, message) {
-        // get the XUL tab that corresponds to this high-level tab
-        var lowLevelTab = viewFor(tab);
+        var lowLevelTab;
+        if (typeof viewFor != 'undefined') {
+            // Convert sdk tab to xul tab
+            lowLevelTab = viewFor(tab);
+        } else {
+            // Legacy support for PaleMoon and old Firefox.
+            var browserWindow = winUtils.getMostRecentBrowserWindow();
+            lowLevelTab = tabUtils.getTabForContentWindow(browserWindow.content);
+        }
         var browser = tabUtils.getBrowserForTab(lowLevelTab);
         browser.messageManager.sendAsyncMessage('Adguard:on-message-channel', message);
     },
@@ -186,7 +193,7 @@ ContentScripts.prototype = {
 
         var files = [];
         for (var i = 0; i < paths.length; i++) {
-            files.push(self.data.url('content/' + paths[i]));
+            files.push(this._contentUrl(paths[i]));
         }
 
         this.scripts.push({
@@ -202,7 +209,7 @@ ContentScripts.prototype = {
 
         var files = [];
         for (var i = 0; i < paths.length; i++) {
-            files.push(self.data.url('content/' + paths[i]));
+            files.push(this._contentUrl(paths[i]));
         }
 
         this.scripts.push({
@@ -218,11 +225,11 @@ ContentScripts.prototype = {
 
         var ppmm = Cc["@mozilla.org/parentprocessmessagemanager;1"].getService(Ci.nsIMessageListenerManager);
 
-        ppmm.addMessageListener('adguard:update-content-scripts', function () {
+        ppmm.addMessageListener('Adguard:get-content-scripts', function () {
             return this.scripts;
         }.bind(this));
 
-        ppmm.addMessageListener('adguard:get-i18n-messages', function () {
+        ppmm.addMessageListener('Adguard:get-i18n-messages', function () {
             return this.i18nMessages;
         }.bind(this));
 
@@ -232,6 +239,11 @@ ContentScripts.prototype = {
         Listener.prototype.receiveMessage = function (message) {
 
             var tab = tabUtils.getTabForBrowser(message.target);
+            if (!tab) {
+                // Legacy support. For PaleMoon and old Firefox getTabForBrowser returns null
+                tab = tabUtils.getTabForContentWindow(message.target.contentWindow)
+            }
+
             var messageManager = message.target
                 .QueryInterface(Ci.nsIFrameLoaderOwner)
                 .frameLoader

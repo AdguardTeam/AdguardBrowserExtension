@@ -38,21 +38,35 @@
 
     var addChromeMessageListener = (function () {
 
-        var contentListeners = [];
+        var listeners = new WeakMap();
 
         var onMessageFromChrome = function (message) {
-            for (var i = 0; i < contentListeners.length; i++) {
-                contentListeners[i](JSON.stringify(message.data));
+            var winListeners = listeners.get(message.target.content);
+            if (winListeners) {
+                for (var i = 0; i < winListeners.length; i++) {
+                    winListeners[i](JSON.stringify(message.data));
+                }
             }
         };
         context.addMessageListener('Adguard:on-message-channel', onMessageFromChrome);
 
         return {
-            addListener: function (listener) {
-                contentListeners.push(listener);
+            addListener: function (win, listener) {
+                var winListeners = listeners.get(win);
+                if (!winListeners) {
+                    winListeners = [];
+                    listeners.set(win, winListeners);
+                }
+                winListeners.push(listener);
+            },
+            onWindowUnload: function (win) {
+                if (listeners) {
+                    listeners.delete(win);
+                }
             },
             unload: function () {
                 context.removeMessageListener('Adguard:on-message-channel', onMessageFromChrome);
+                listeners = null;
             }
         };
 
@@ -60,7 +74,7 @@
 
     var sendMessageToChrome = (function () {
 
-        var callbackId = 0;
+        var uniqueCallbackId = 0;
         var callbacks = Object.create(null);
 
         var onMessageFromChrome = function (response) {
@@ -75,46 +89,34 @@
 
         function sendMessage(message, callback) {
             if (callback) {
-                callbackId++;
-                callbacks[callbackId] = callback;
-                message.callbackId = callbackId;
+                uniqueCallbackId++;
+                callbacks[uniqueCallbackId] = callback;
+                message.callbackId = uniqueCallbackId;
             }
             context.sendAsyncMessage('Adguard:send-message-channel', message);
         }
 
         return {
             sendMessage: sendMessage,
+            onWindowUnload: function () {
+                // Do nothing
+            },
             unload: function () {
                 context.removeMessageListener('Adguard:send-message-channel', onMessageFromChrome);
+                callbacks = null;
             }
         };
 
     })();
 
-    function schemeForWin(aContentWin) {
-        return aContentWin.document.location.protocol;
-    }
-
-    function urlForWin(aContentWin) {
-        // See #1970
-        // When content does (e.g.) history.replacestate() in an inline script,
-        // the location.href changes between document-start and document-end time.
-        // But the content can call replacestate() much later, too.  The only way to
-        // be consistent is to ignore it.  Luckily, the  document.documentURI does
-        // _not_ change, so always use it when deciding whether to run scripts.
-        return aContentWin.document.documentURI;
-        // But ( #1631 ) ignore user/pass in the URL.
-        //return url.replace(gStripUserPassRegexp, '$1');
-    }
-
-    function windowIsTop(aContentWin) {
+    function windowIsTop(win) {
         try {
-            aContentWin.QueryInterface(Ci.nsIDOMWindow);
-            if (aContentWin.frameElement) return false;
+            win.QueryInterface(Ci.nsIDOMWindow);
+            if (win.frameElement) return false;
         } catch (e) {
             var url = 'unknown';
             try {
-                url = aContentWin.location.href;
+                url = win.location.href;
             } catch (e) {
             }
             // Ignore non-DOM-windows.
@@ -125,9 +127,15 @@
 
     var injectScripts = function (runAt, win) {
 
-        var url = urlForWin(win);
-        var isTopWin = windowIsTop(win);
-        var scheme = schemeForWin(win);
+        var location = win.document.location;
+        if (!location) {
+            return;
+        }
+
+        var isTopWin = win === win.top;
+        var scheme = location.protocol;
+        var domain = location.hostname;
+        var url = [scheme, '//', domain, location.pathname].join('');
 
         var filter = function (script) {
             if (script.runAt != runAt) {
@@ -139,8 +147,16 @@
             if (script.schemes.indexOf(scheme) < 0) {
                 return false;
             }
-            //TODO: fix urls match with parameters
             if (script.url && url != script.url) {
+                return false;
+            }
+            var domains = script.domains;
+            if (domains && domains.length > 0) {
+                for (var i = 0; i < domains.length; i++) {
+                    if (domain.endsWith(domains[i])) {
+                        return true;
+                    }
+                }
                 return false;
             }
             return true;
@@ -175,8 +191,8 @@
          * As of Gecko 13 (Firefox 13.0 / Thunderbird 13.0 / SeaMonkey 2.10), if you don't specify a sandbox name it
          * will default to the caller's filename.
          */
-        //var isIframe = win.top != win;
-        var sandboxName = '[' + (nextSandboxId++) + ']' + url;
+        var isTop = win.top === win;
+        var sandboxName = '[' + (nextSandboxId++) + ']' + '[' + url + '][' + isTop + ']';
 
         // "content" is a DOM window here
         // Creating "expanded" sandbox from it: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Language_Bindings/Components.utils.Sandbox#Expanded_principal
@@ -208,33 +224,32 @@
 
     var onDocumentEnd = function (event) {
 
-        //TODO: implement
-
-        var contentWin = event.target.defaultView;
+        var win = event.target.defaultView;
 
         // Remove event listeners
-        contentWin.removeEventListener('DOMContentLoaded', onDocumentEnd, true);
+        win.removeEventListener('DOMContentLoaded', onDocumentEnd, true);
 
-        injectScripts('document_end', contentWin);
+        injectScripts('document_end', win);
     };
 
     var onDocumentStart = function (win) {
 
         win.addEventListener('DOMContentLoaded', onDocumentEnd, true);
+        win.addEventListener('unload', onWindowUnload, true);
 
         injectScripts('document_start', win);
     };
 
     var documentObserver = (function () {
 
-        var TOPIC = 'document-element-inserted';
+        var OBS_TOPIC = 'document-element-inserted';
         var callbacks = new WeakMap();
 
         var contentObserver = {
             observe: function (subject, topic) {
 
                 switch (topic) {
-                    case TOPIC:
+                    case OBS_TOPIC:
                         var doc = subject;
                         var win = doc && doc.defaultView;
                         if (!doc || !win) return;
@@ -250,14 +265,14 @@
             QueryInterface: XPCOMUtils.generateQI([Ci.nsIObserver, Ci.nsISupportsWeakReference])
         };
 
-        Services.obs.addObserver(contentObserver, TOPIC, false);
+        Services.obs.addObserver(contentObserver, OBS_TOPIC, false);
 
         return {
             onNewDocument: function (topWindow, callback) {
                 callbacks.set(topWindow, callback);
             },
             unload: function () {
-                Services.obs.removeObserver(contentObserver, TOPIC);
+                Services.obs.removeObserver(contentObserver, OBS_TOPIC);
             }
         };
 
@@ -267,19 +282,24 @@
         documentObserver.onNewDocument(context.content, onDocumentStart);
     };
 
+    var onWindowUnload = function (e) {
+        var win = e.target.defaultView;
+        if (win) {
+            addChromeMessageListener.onWindowUnload(win);
+            sendMessageToChrome.onWindowUnload(win);
+        }
+    };
+
     /**
      * Fires when the frame script environment is shut down, i.e. when a tab gets closed.
      */
-    var onUnload = function (ev) {
-        console.log('unload');
-        if (ev.target !== context) {
+    var onUnload = function (e) {
+        if (e.target !== context) {
             return;
         }
-        // TODO: Clean up
         documentObserver.unload();
         addChromeMessageListener.unload();
         sendMessageToChrome.unload();
-        console.log('unload done');
     };
 
     /**
@@ -288,8 +308,8 @@
     var initFrameScript = function () {
 
         var cpmm = Cc["@mozilla.org/childprocessmessagemanager;1"].getService(Ci.nsISyncMessageSender);
-        registeredScripts = cpmm.sendSyncMessage('adguard:update-content-scripts')[0];
-        i18nMessages = cpmm.sendSyncMessage('adguard:get-i18n-messages')[0];
+        registeredScripts = cpmm.sendSyncMessage('Adguard:get-content-scripts')[0];
+        i18nMessages = cpmm.sendSyncMessage('Adguard:get-i18n-messages')[0];
 
         context.addEventListener('DOMWindowCreated', onWindowCreated);
 

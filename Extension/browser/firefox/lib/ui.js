@@ -307,12 +307,13 @@ var UI = exports.UI = {
     },
 
     showAlertMessagePopup: function (title, text) {
-        var worker = tabs.activeTab.attach({
-            contentScriptFile: [
-                self.data.url('content/content-script/content-script.js'),
-                self.data.url('content/content-script/content-utils.js')]
-        });
-        contentScripts.sendMessageToWorker(worker, {type: 'show-alert-popup', title: title, text: text});
+        //var worker = tabs.activeTab.attach({
+        //    contentScriptFile: [
+        //        self.data.url('content/content-script/content-script.js'),
+        //        self.data.url('content/content-script/content-utils.js')]
+        //});
+        //contentScripts.sendMessageToWorker(worker, {type: 'show-alert-popup', title: title, text: text});
+        contentScripts.sendMessageToTab(tabs.activeTab, {type: 'show-alert-popup', title: title, text: text});
     },
 
     _initAbusePanel: function (SdkPanel) {
@@ -490,11 +491,12 @@ var UI = exports.UI = {
 
     _reloadWithoutCache: function (tab) {
         //reload page without cache via content script
-        var worker = tab.attach({
-            contentScriptFile: [
-                self.data.url('content/content-script/content-script.js'),
-                self.data.url('content/content-script/content-utils.js')]
-        });
-        contentScripts.sendMessageToWorker(worker, {type: 'no-cache-reload'});
+        //var worker = tab.attach({
+        //    contentScriptFile: [
+        //        self.data.url('content/content-script/content-script.js'),
+        //        self.data.url('content/content-script/content-utils.js')]
+        //});
+        //contentScripts.sendMessageToWorker(worker, {type: 'no-cache-reload'});
+        contentScripts.sendMessageToTab(tabs.activeTab, {type: 'no-cache-reload'});
     }
 };

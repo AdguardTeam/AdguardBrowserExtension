@@ -78,7 +78,7 @@ var contentPage = (function (api) {
             var wrapper = function (msg) {
                 return listener(JSON.parse(msg));
             };
-            return addChromeMessageListener(wrapper);
+            return addChromeMessageListener(window, wrapper);
         };
     } else {
         // TODO: Remove, deprecated

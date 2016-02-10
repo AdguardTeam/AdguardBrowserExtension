@@ -162,7 +162,7 @@ public class LocaleUtils {
 
         StringBuilder sb = new StringBuilder("\n");
         for (SupportedLocales locale : SupportedLocales.values()) {
-            sb.append("\nlocale adguard " + locale.code.replace("_", "-") + " ./locale/" + locale.code.replace("_", "-") + "/");
+            sb.append("\nlocale adguard " + locale.code.replace("_", "-") + " ./chrome/locale/" + locale.code.replace("_", "-") + "/");
         }
 
         String content = FileUtils.readFileToString(chromeManifest, "utf-8");
@@ -185,7 +185,7 @@ public class LocaleUtils {
 
         StringBuilder sb = new StringBuilder();
         for (SupportedLocales locale : SupportedLocales.values()) {
-            File localeFile = new File(dest, "locale/" + locale.code.replace("_", "-") + "/messages.properties");
+            File localeFile = new File(dest, "chrome/locale/" + locale.code.replace("_", "-") + "/messages.properties");
             String[] messages = StringUtils.split(FileUtils.readFileToString(localeFile, "utf-8"), System.lineSeparator());
             String name = findMessage(messages, "name") + extensionNamePostfix;
             String description = findMessage(messages, "description");
