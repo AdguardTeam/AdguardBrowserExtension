@@ -21,7 +21,6 @@ var tabs = require('sdk/tabs');
 var simplePrefs = require('sdk/simple-prefs');
 var simpleStorage = require('sdk/simple-storage');
 var unload = require('sdk/system/unload');
-var pageMod = require('sdk/page-mod');
 
 const {Cc, Ci, Cr, Cu} = chrome;
 Cu.import("resource://gre/modules/Services.jsm");
@@ -36,7 +35,6 @@ var sdkModules = {
     'sdk/simple-prefs': simplePrefs,
     'sdk/simple-storage': simpleStorage,
     'sdk/self': self,
-    'sdk/page-mod': pageMod,
     'sdk/system/unload': unload,
     'sdk/system/events': require('sdk/system/events'),
     'sdk/core/promise': require('sdk/core/promise'),
