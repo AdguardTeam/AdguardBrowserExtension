@@ -130,13 +130,6 @@ balalaika.fn.css = function (attr, value) {
     return this;
 };
 
-balalaika.fn.text = function (value) {
-    this.forEach(function (item) {
-        item.textContent = value;
-    });
-    return this;
-};
-
 balalaika.fn.hide = function () {
     this.forEach(function (item) {
         item.style['display'] = 'none';
@@ -381,7 +374,7 @@ var AdguardSelectorLib = (function (api, $) {
             css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
         borderBottom.css('width', px(width + BORDER_PADDING * 2 + BORDER_WIDTH * 2 - 5)).
             css('top', px(top + height + BORDER_PADDING)).
-            css('left', px(left - BORDER_PADDING - BORDER_WIDTH)).text(getTagPath(element));
+            css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
         borderLeft.css('height', px(height + BORDER_PADDING * 2)).
             css('top', px(top - BORDER_PADDING)).
             css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
@@ -389,6 +382,7 @@ var AdguardSelectorLib = (function (api, $) {
             css('top', px(top - BORDER_PADDING)).
             css('left', px(left + width + BORDER_PADDING));
 
+        borderBottom.get(0).textContent = getTagPath(element);
         borderRight.get(0).target_elem = borderLeft.get(0).target_elem = borderTop.get(0).target_elem = borderBottom.get(0).target_elem = element;
 
         showBorders();
