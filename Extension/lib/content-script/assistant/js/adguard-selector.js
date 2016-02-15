@@ -20,8 +20,6 @@
  *
  * https://github.com/finom/balalaika/blob/master/balalaika.js
  */
-//var balalaika=function(t,e,n,i,o,r,s,u,c,f,l,h){return h=function(t,e){return new h.i(t,e)},h.i=function(i,o){n.push.apply(this,i?i.nodeType||i==t?[i]:""+i===i?/</.test(i)?((u=e.createElement(o||"q")).innerHTML=i,u.children):(o&&h(o)[0]||e).querySelectorAll(i):/f/.test(typeof i)?/c/.test(e.readyState)?i():h(e).on("DOMContentLoaded",i):i:n)},h.i[l="prototype"]=(h.extend=function(t){for(f=arguments,u=1;u<f.length;u++)if(l=f[u])for(c in l)t[c]=l[c];return t})(h.fn=h[l]=n,{on:function(t,e){return t=t.split(i),this.map(function(n){(i[u=t[0]+(n.b$=n.b$||++o)]=i[u]||[]).push([e,t[1]]),n["add"+r](t[0],e)}),this},off:function(t,e){return t=t.split(i),l="remove"+r,this.map(function(n){if(f=i[t[0]+n.b$],u=f&&f.length)for(;c=f[--u];)e&&e!=c[0]||t[1]&&t[1]!=c[1]||(n[l](t[0],c[0]),f.splice(u,1));else!t[1]&&n[l](t[0],e)}),this},is:function(t){return u=this[0],(u.matches||u["webkit"+s]||u["moz"+s]||u["ms"+s]).call(u,t)}}),h}(window,document,[],/\.(.+)/,0,"EventListener","MatchesSelector");
-
 var balalaika = (function (window, document, fn, nsRegAndEvents, id, s_EventListener, s_MatchesSelector, i, j, k, l, $) {
     $ = function (s, context) {
         return new $.i(s, context);
@@ -102,7 +100,7 @@ var balalaika = (function (window, document, fn, nsRegAndEvents, id, s_EventList
  * Add some more functions to balalaika
  */
 balalaika.fn.hasClass = function (className) {
-    return !!this[0] && this[0].classList.contains(className);
+    return !!this[0] && (this[0].classList != undefined) && this[0].classList.contains(className);
 };
 
 balalaika.fn.addClass = function (className) {
@@ -125,6 +123,51 @@ balalaika.fn.get = function (index) {
     return this.length > index ? this[index] : null;
 };
 
+balalaika.fn.css = function (attr, value) {
+    this.forEach(function (item) {
+        item.style[attr] = value;
+    });
+    return this;
+};
+
+balalaika.fn.text = function (value) {
+    this.forEach(function (item) {
+        item.textContent = value;
+    });
+    return this;
+};
+
+//balalaika.fn.css = function (attr) {
+//    return !!this[0] ? this[0].style[attr] : null;
+//};
+
+balalaika.fn.hide = function () {
+    this.forEach(function (item) {
+        //item.style['display'] = 'none';
+    });
+    return this;
+};
+
+balalaika.fn.show = function () {
+    this.forEach(function (item) {
+        item.style['display'] = '';
+    });
+    return this;
+};
+
+balalaika.fn.trigger = function (eventName, options) {
+    this.forEach(function (item) {
+        if (window.CustomEvent) {
+            var event = new CustomEvent(eventName, {detail: options});
+        } else {
+            var event = document.createEvent('CustomEvent');
+            event.initCustomEvent(eventName, true, true, options);
+        }
+
+        item.dispatchEvent(event);
+    });
+    return this;
+};
 
 /**
  * Adguard selector library
@@ -219,7 +262,7 @@ var AdguardSelectorLib = (function (api, $) {
         }
 
         while (element.parentNode && (element = element.parentNode)) {
-            if ($.inArray(element, restrictedElements) == -1) {
+            if (restrictedElements.indexOf(element) == -1) {
                 if ($(element).hasClass(SUGGESTED_CLASS) || $(element).hasClass(SELECTED_CLASS)) {
                     return element;
                 }
@@ -266,7 +309,7 @@ var AdguardSelectorLib = (function (api, $) {
     };
 
     var removeBorders = function () {
-        if (borderTop) {
+        if (borderTop && borderBottom && borderLeft && borderRight) {
             borderTop.hide();
             borderBottom.hide();
             borderLeft.hide();
@@ -283,6 +326,17 @@ var AdguardSelectorLib = (function (api, $) {
 
         removeBorders();
         removeClassName(SUGGESTED_CLASS);
+    };
+
+    var getOffset = function (elem) {
+        var rect = elem.getBoundingClientRect();
+
+        return {
+            top: rect.top + document.body.scrollTop,
+            left: rect.left + document.body.scrollLeft,
+            outerWidth: elem.offsetWidth,
+            outerHeight: elem.offsetHeight
+        };
     };
 
     /**
@@ -302,13 +356,13 @@ var AdguardSelectorLib = (function (api, $) {
             return;
         }
 
-        var elem = $(element);
-        var p = elem.offset();
+        //var elem = $(element);
+        var p = getOffset(element);
 
         var top = p.top;
         var left = p.left;
-        var width = elem.outerWidth();
-        var height = elem.outerHeight();
+        var width = p.outerWidth;
+        var height = p.outerHeight;
 
         borderTop.css('width', px(width + BORDER_PADDING * 2 + BORDER_WIDTH * 2)).
             css('top', px(top - BORDER_WIDTH - BORDER_PADDING)).
@@ -389,7 +443,10 @@ var AdguardSelectorLib = (function (api, $) {
     };
 
     var makeIFrameAndEmbededSelector = function () {
-        placeholderElements = $('iframe:not(.' + IGNORED_CLASS + ',:hidden),embed,object');
+        placeholderElements = $('iframe:not(.' + IGNORED_CLASS + '),embed,object').filter(function() {
+            return $(this).css("display") != "none";
+        });
+
         var elements = placeholderElements;
         for (var i = 0; i < elements.length; i++) {
             var current = elements[i];
@@ -398,11 +455,15 @@ var AdguardSelectorLib = (function (api, $) {
 
             placeHolder.setAttribute("id", id);
             $(current).replaceWith(placeHolder);
-            $('#' + id).on('click', {'self': this, 'actualElement': current}, placeholderClick);
+            //$('#' + id).on('click', {'self': this, 'actualElement': current}, placeholderClick);
+            //TODO: Fix
+            $('#' + id).on('click', placeholderClick);
         }
     };
 
-    var sgMouseoverHandler = function () {
+    var sgMouseoverHandler = function (e) {
+        e.stopPropagation();
+
         if (unbound) {
             return true;
         }
@@ -414,8 +475,7 @@ var AdguardSelectorLib = (function (api, $) {
         var parent = firstSelectedOrSuggestedParent(this);
         if (parent != null && parent != this) {
             selectionRenderer(parent, true);
-        }
-        else {
+        } else {
             selectionRenderer(this);
         }
 
@@ -443,15 +503,18 @@ var AdguardSelectorLib = (function (api, $) {
      * @private
      */
     var blockClicksOn = function (elem) {
-        elem = $(elem);
-        var p = elem.offset();
-        var block = $('<div>').css('position', 'absolute').css('z-index', '9999999').css('width', px(elem.outerWidth())).
-            css('height', px(elem.outerHeight())).css('top', px(p.top)).css('left', px(p.left)).
+        var p = getOffset(elem);
+        var block = $('<div/>').css('position', 'absolute').css('z-index', '9999999').css('width', px(p.outerWidth)).
+            css('height', px(p.outerHeight)).css('top', px(p.top)).css('left', px(p.left)).
             css('background-color', '');
-        document.body.appendChild(block.get(0));
+
+        var blockElement = block.get(0);
+        document.body.appendChild(blockElement);
 
         setTimeout(function () {
-            block.remove();
+            if (blockElement) {
+                blockElement.parentNode.removeChild(blockElement);
+            }
         }, 400);
 
         return false;
@@ -498,9 +561,9 @@ var AdguardSelectorLib = (function (api, $) {
         makeIFrameAndEmbededSelector();
 
         var sgIgnore = $("body *:not(." + IGNORED_CLASS + ")");
-        sgIgnore.on("mouseover", {'self': this}, sgMouseoverHandler);
-        sgIgnore.on("mouseout", {'self': this}, sgMouseoutHandler);
-        sgIgnore.on("click", {'self': this}, sgMousedownHandler);
+        sgIgnore.on("mouseover", sgMouseoverHandler);
+        sgIgnore.on("mouseout", sgMouseoutHandler);
+        sgIgnore.on("click", sgMousedownHandler);
     };
 
     var deleteEventHandlers = function () {
@@ -516,15 +579,15 @@ var AdguardSelectorLib = (function (api, $) {
         if (!borderTop) {
             var width = px(BORDER_WIDTH);
 
-            borderTop = $('<div>').addClass(BORDER_CLASS).css('height', width).hide()
-                .on("click", {'self': this}, sgMousedownHandler);
-            borderBottom = $('<div>').addClass(BORDER_CLASS).addClass('sg_bottom_border')
+            borderTop = $('<div/>').addClass(BORDER_CLASS).css('height', width).hide()
+                .on("click", sgMousedownHandler);
+            borderBottom = $('<div/>').addClass(BORDER_CLASS).addClass('sg_bottom_border')
                 .css('height', px(BORDER_WIDTH + 6)).hide()
-                .bind("click", {'self': this}, sgMousedownHandler);
-            borderLeft = $('<div>').addClass(BORDER_CLASS).css('width', width).hide()
-                .on("click", {'self': this}, sgMousedownHandler);
-            borderRight = $('<div>').addClass(BORDER_CLASS).css('width', width).hide()
-                .on("click", {'self': this}, sgMousedownHandler);
+                .on("click", sgMousedownHandler);
+            borderLeft = $('<div/>').addClass(BORDER_CLASS).css('width', width).hide()
+                .on("click", sgMousedownHandler);
+            borderRight = $('<div/>').addClass(BORDER_CLASS).css('width', width).hide()
+                .on("click", sgMousedownHandler);
 
             addBorderToDom();
         }
