@@ -143,14 +143,14 @@ balalaika.fn.text = function (value) {
 
 balalaika.fn.hide = function () {
     this.forEach(function (item) {
-        //item.style['display'] = 'none';
+        item.style['display'] = 'none';
     });
     return this;
 };
 
 balalaika.fn.show = function () {
     this.forEach(function (item) {
-        item.style['display'] = '';
+        item.style['display'] = 'block';
     });
     return this;
 };
@@ -286,11 +286,15 @@ var AdguardSelectorLib = (function (api, $) {
     };
 
     var removeBorderFromDom = function () {
-        if (borderTop) {
-            borderTop.remove();
-            borderBottom.remove();
-            borderLeft.remove();
-            borderRight.remove();
+        if (borderTop && borderTop.get(0)) {
+            var parent = borderTop.get(0).parentNode;
+
+            if (parent) {
+                parent.removeChild(borderTop.get(0));
+                parent.removeChild(borderBottom.get(0));
+                parent.removeChild(borderLeft.get(0));
+                parent.removeChild(borderRight.get(0));
+            }
         }
     };
 
@@ -528,8 +532,7 @@ var AdguardSelectorLib = (function (api, $) {
         }
 
         var elem = this;
-        var w_elem = $(elem);
-        if (w_elem.hasClass(BORDER_CLASS)) {
+        if ($(elem).hasClass(BORDER_CLASS)) {
             //Clicked on one of our floating borders, target the element that we are bordering.
             elem = elem.target_elem || elem;
         }
@@ -547,9 +550,6 @@ var AdguardSelectorLib = (function (api, $) {
 
         removeBorders();
         blockClicksOn(elem);
-
-        // Refresh the borders by triggering a new mouseover event.
-        w_elem.trigger("mouseover", {'self': this});
 
         onElementSelectedHandler(elem);
 
