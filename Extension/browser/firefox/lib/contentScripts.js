@@ -104,6 +104,7 @@ ContentScripts.prototype = {
             'content/libs/jquery-ui.min.js',
             'content/libs/diff_match_patch.js',
             'content/libs/dom.js',
+            'content/libs/balalaika.patched.js',
             'content/content-script/i18n-helper.js',    // Localization placeholders
             'content/content-script/content-script.js', // Message passing
             'content/content-script/assistant/js/start-assistant.js',
