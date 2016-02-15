@@ -296,6 +296,8 @@ var AdguardSelectorLib = (function (api, $) {
                 parent.removeChild(borderRight.get(0));
             }
         }
+
+        borderTop = borderBottom = borderRight = borderLeft = null;
     };
 
     var addBorderToDom = function () {
