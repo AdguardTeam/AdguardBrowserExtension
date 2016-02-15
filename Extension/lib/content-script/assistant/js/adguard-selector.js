@@ -137,10 +137,6 @@ balalaika.fn.text = function (value) {
     return this;
 };
 
-//balalaika.fn.css = function (attr) {
-//    return !!this[0] ? this[0].style[attr] : null;
-//};
-
 balalaika.fn.hide = function () {
     this.forEach(function (item) {
         item.style['display'] = 'none';
@@ -186,7 +182,7 @@ var AdguardSelectorLib = (function (api, $) {
     var borderBottom = null;
 
     var PLACEHOLDER_PREFIX = 'adguard-placeholder';
-    var placeholderElements = null;
+    var placeholdedElements = null;
 
     var restrictedElements = null;
     var predictionHelper = null;
@@ -308,10 +304,12 @@ var AdguardSelectorLib = (function (api, $) {
     };
 
     var showBorders = function () {
-        borderTop.show();
-        borderBottom.show();
-        borderLeft.show();
-        borderRight.show();
+        if (borderTop && borderBottom && borderLeft && borderRight) {
+            borderTop.show();
+            borderBottom.show();
+            borderLeft.show();
+            borderRight.show();
+        }
     };
 
     var removeBorders = function () {
@@ -334,12 +332,21 @@ var AdguardSelectorLib = (function (api, $) {
         removeClassName(SUGGESTED_CLASS);
     };
 
-    var getOffset = function (elem) {
+    /**
+     * Returns element offset coordinates extended with width and height values.
+     *
+     * @param elem
+     * @returns {{top: number, left: number, outerWidth: number, outerHeight: number}}
+     */
+    var getOffsetExtended = function (elem) {
         var rect = elem.getBoundingClientRect();
 
+        var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
         return {
-            top: rect.top + document.body.scrollTop,
-            left: rect.left + document.body.scrollLeft,
+            top: rect.top + scrollTop,
+            left: rect.left + scrollLeft,
             outerWidth: elem.offsetWidth,
             outerHeight: elem.offsetHeight
         };
@@ -362,8 +369,7 @@ var AdguardSelectorLib = (function (api, $) {
             return;
         }
 
-        //var elem = $(element);
-        var p = getOffset(element);
+        var p = getOffsetExtended(element);
 
         var top = p.top;
         var left = p.left;
@@ -399,16 +405,14 @@ var AdguardSelectorLib = (function (api, $) {
     };
 
     var makePlaceholderImage = function (element) {
-        var jElement = $(element);
-
         var placeHolder = document.createElement('div');
-        placeHolder.style.height = jElement.height() + 'px';
-        placeHolder.style.width = jElement.width() + 'px';
-        placeHolder.style.position = jElement.css('position');
-        placeHolder.style.top = jElement.css('top');
-        placeHolder.style.bottom = jElement.css('bottom');
-        placeHolder.style.left = jElement.css('left');
-        placeHolder.style.right = jElement.css('right');
+        placeHolder.style.height = element.style.height;
+        placeHolder.style.width = element.style.width;
+        placeHolder.style.position = element.style.position;
+        placeHolder.style.top = element.style.top;
+        placeHolder.style.bottom = element.style.bottom;
+        placeHolder.style.left = element.style.left;
+        placeHolder.style.right = element.style.right;
         placeHolder.className += PLACEHOLDER_PREFIX;
 
         var icon = document.createElement('div');
@@ -425,23 +429,25 @@ var AdguardSelectorLib = (function (api, $) {
     };
 
     var removePlaceholders = function () {
-        if (!placeholderElements) {
+        if (!placeholdedElements) {
             return;
         }
 
-        var elements = placeholderElements;
+        var elements = placeholdedElements;
         for (var i = 0; i < elements.length; i++) {
             var current = elements[i];
             var id = PLACEHOLDER_PREFIX + i;
-            $('#' + id).replaceWith($(current));
+
+            var placeHolder = $('#' + id).get(0);
+            if (placeHolder) {
+                placeHolder.outherHTML = current.outherHTML;
+            }
         }
 
-        placeholderElements = null;
+        placeholdedElements = null;
     };
 
-    var placeholderClick = function (e) {
-        var element = e.data.actualElement;
-
+    var placeholderClick = function (element) {
         removeBorders();
         removePlaceholders();
 
@@ -449,21 +455,23 @@ var AdguardSelectorLib = (function (api, $) {
     };
 
     var makeIFrameAndEmbededSelector = function () {
-        placeholderElements = $('iframe:not(.' + IGNORED_CLASS + '),embed,object').filter(function() {
-            return $(this).css("display") != "none";
+        placeholdedElements = $('iframe:not(.' + IGNORED_CLASS + '),embed,object').filter(function(elem) {
+            return elem.style["display"] != "none";
         });
 
-        var elements = placeholderElements;
+        var elements = placeholdedElements;
         for (var i = 0; i < elements.length; i++) {
             var current = elements[i];
             var placeHolder = makePlaceholderImage(current);
             var id = PLACEHOLDER_PREFIX + i;
 
             placeHolder.setAttribute("id", id);
-            $(current).replaceWith(placeHolder);
-            //$('#' + id).on('click', {'self': this, 'actualElement': current}, placeholderClick);
-            //TODO: Fix
-            $('#' + id).on('click', placeholderClick);
+            current.outerHTML = placeHolder.outherHTML;
+            $('#' + id).on('click', function (e) {
+                e.preventDefault();
+
+                placeholderClick(current);
+            });
         }
     };
 
@@ -509,7 +517,7 @@ var AdguardSelectorLib = (function (api, $) {
      * @private
      */
     var blockClicksOn = function (elem) {
-        var p = getOffset(elem);
+        var p = getOffsetExtended(elem);
         var block = $('<div/>').css('position', 'absolute').css('z-index', '9999999').css('width', px(p.outerWidth)).
             css('height', px(p.outerHeight)).css('top', px(p.top)).css('left', px(p.left)).
             css('background-color', '');
