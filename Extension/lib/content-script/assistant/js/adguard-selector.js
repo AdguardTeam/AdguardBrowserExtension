@@ -58,9 +58,7 @@ var AdguardSelectorLib = (function (api, $) {
 
     var suggestPredicted = function (prediction) {
         if (prediction) {
-            var count = 0;
             $(prediction).each(function () {
-                count += 1;
                 if (!$(this).hasClass(SELECTED_CLASS)
                     && !$(this).hasClass(IGNORED_CLASS)
                     && !$(this).hasClass(REJECTED_CLASS)) {
@@ -313,16 +311,18 @@ var AdguardSelectorLib = (function (api, $) {
         var elements = placeholdedElements;
         for (var i = 0; i < elements.length; i++) {
             var current = elements[i];
-            var placeHolder = makePlaceholderImage(current);
-            var id = PLACEHOLDER_PREFIX + i;
+            (function(current){
+                var placeHolder = makePlaceholderImage(current);
+                var id = PLACEHOLDER_PREFIX + i;
 
-            placeHolder.setAttribute("id", id);
-            current.outerHTML = placeHolder.outherHTML;
-            $('#' + id).on('click', function (e) {
-                e.preventDefault();
+                placeHolder.setAttribute("id", id);
+                current.outerHTML = placeHolder.outherHTML;
+                $('#' + id).on('click', function (e) {
+                    e.preventDefault();
 
-                placeholderClick(current);
-            });
+                    placeholderClick(current);
+                });
+            })(current);
         }
     };
 
