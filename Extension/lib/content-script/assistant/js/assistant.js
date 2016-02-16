@@ -759,7 +759,7 @@ var Adguard = function () {
 	var hideElement = function () {
 		AdguardSelectorLib.reset();
 
-		var selector = getSelector();
+		var selector = AdguardRulesConstructorLib.makeCssNthChildFilter(settings.selectedElement);
 		var style = document.createElement("style");
 		style.setAttribute("type", "text/css");
 		settings.lastPreview = style;
@@ -769,16 +769,6 @@ var Adguard = function () {
 			style.appendChild(document.createTextNode(selector + " {display: none !important;}"));
 			head.appendChild(style);
 		}
-	};
-
-	var getSelector = function () {
-		var ruleText = findInIframe('#filter-rule').val();
-		var index = ruleText.indexOf('##');
-		if (index != -1) {
-			ruleText = ruleText.substring(index + 2, ruleText.length);
-		}
-
-		return ruleText;
 	};
 
 	var removePreview = function () {
