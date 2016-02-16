@@ -3,6 +3,8 @@ var tabUtils = require('sdk/tabs/utils');
 var {viewFor} = require('sdk/view/core');
 var winUtils = require('sdk/window/utils');
 
+var {Log} = require('./utils/log');
+
 var ContentScripts = function () {
 };
 
@@ -233,56 +235,77 @@ ContentScripts.prototype = {
             return this.i18nMessages;
         }.bind(this));
 
-        var Listener = function () {
-        };
+        var listener = (function (contentMessageHandler) {
 
-        Listener.prototype.receiveMessage = function (message) {
-
-            var tab = tabUtils.getTabForBrowser(message.target);
-            if (!tab) {
-                // Legacy support. For PaleMoon and old Firefox getTabForBrowser returns null
-                tab = tabUtils.getTabForContentWindow(message.target.contentWindow)
+            function getTabFromTarget(target) {
+                var tab = tabUtils.getTabForBrowser(target);
+                if (!tab) {
+                    // Legacy support. For PaleMoon and old Firefox getTabForBrowser returns null
+                    tab = tabUtils.getTabForContentWindow(target.contentWindow)
+                }
+                return tab;
             }
 
-            var messageManager = message.target
-                .QueryInterface(Ci.nsIFrameLoaderOwner)
-                .frameLoader
-                .messageManager;
-
-            var sender = {
-                tab: {id: tabUtils.getTabId(tab)},
-                messageManager: messageManager
-            };
-
-            var callback = function () {
-                // Empty
-            };
-
-            if ('callbackId' in message.data) {
-
-                callback = function (result) {
-
-                    if ('callbackId' in result) {
-                        throw 'callbackId present in result';
-                    }
-                    if ('type' in result) {
-                        throw 'type present in result';
-                    }
-
-                    // Passing type and callbackId to response
-                    result.type = message.data.type;
-                    result.callbackId = message.data.callbackId;
-
-                    messageManager.sendAsyncMessage('Adguard:send-message-channel', result);
+            function wrapResponseResult(result, message) {
+                // Passing callbackId to response
+                return {
+                    type: message.data.type,
+                    callbackId: message.data.callbackId,
+                    result: result
                 };
             }
 
-            this.contentMessageHandler.handleMessage(message.data, sender, callback);
+            var receiveMessage = function (message) {
 
-        }.bind(this);
+                var tab = getTabFromTarget(message.target);
+                if (!tab) {
+                    Log.error('Unable to retrieve tab from {0}', message);
+                    return;
+                }
+
+                var messageManager = message.target
+                    .QueryInterface(Ci.nsIFrameLoaderOwner)
+                    .frameLoader
+                    .messageManager;
+
+                var sender = {
+                    tab: {id: tabUtils.getTabId(tab)},
+                    messageManager: messageManager
+                };
+
+                var sendResponse = function () {
+                    // Empty
+                };
+
+                if ('callbackId' in message.data) {
+                    sendResponse = function (result) {
+                        messageManager.sendAsyncMessage('Adguard:send-message-channel', wrapResponseResult(result, message));
+                    };
+                }
+
+                var result = contentMessageHandler.handleMessage(message.data, sender, sendResponse);
+                var async = result === true;
+
+                if (async) {
+                    // If async sendResponse will be invoked later
+                    return;
+                }
+
+                if (message.sync) {
+                    return wrapResponseResult(result, message);
+                } else {
+                    sendResponse(result);
+                }
+            };
+
+            return {
+                receiveMessage: receiveMessage
+            };
+
+        })(this.contentMessageHandler);
 
         var messageManager = Cc["@mozilla.org/globalmessagemanager;1"].getService(Ci.nsIMessageListenerManager);
-        messageManager.addMessageListener('Adguard:send-message-channel', new Listener());
+        messageManager.addMessageListener('Adguard:send-message-channel', listener);
         messageManager.loadFrameScript(this._contentUrl('content-script/frame-script.js'), true);
     },
 

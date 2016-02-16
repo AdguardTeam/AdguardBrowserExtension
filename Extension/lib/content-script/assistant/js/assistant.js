@@ -251,8 +251,8 @@ var Adguard = function () {
 			frameBorder: 0,
 			allowTransparency: 'true'
 		}).css(cssStyle).appendTo('body');
-		//load styles
-		loadDefaultScriptsAndStyles(iframe, dfd);
+		// Wait for iframe load and then apply styles
+		iframe.on('load', loadDefaultScriptsAndStyles.bind(null, iframe, dfd));
 		return iframe;
 	};
 

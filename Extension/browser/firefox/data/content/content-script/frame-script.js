@@ -74,26 +74,51 @@
 
     var sendMessageToChrome = (function () {
 
-        var uniqueCallbackId = 0;
+        var MSG_CHANNEL = 'Adguard:send-message-channel';
+
+        var uniqueCallbackId = 1;
         var callbacks = Object.create(null);
 
-        var onMessageFromChrome = function (response) {
-            var message = response.data;
-            var callback = callbacks[message.callbackId];
+        var bindResponseCallback = function (message, callback) {
             if (callback) {
-                callback(JSON.stringify(message));
-                delete callbacks[message.callbackId];
+                var callbackId = uniqueCallbackId++;
+                callbacks[callbackId] = callback;
+                message.callbackId = callbackId;
             }
         };
-        context.addMessageListener('Adguard:send-message-channel', onMessageFromChrome);
+
+        var processResponse = function (response) {
+            if (!response) {
+                return;
+            }
+            var callbackId = response.callbackId;
+            var callback = callbacks[callbackId];
+            if (callback) {
+                var json = null;
+                if (response.result !== undefined) {
+                    json = JSON.stringify(response.result);
+                }
+                callback(json);
+            }
+        };
+
+        context.addMessageListener(MSG_CHANNEL, function (message) {
+            processResponse(message.data);
+        });
 
         function sendMessage(message, callback) {
-            if (callback) {
-                uniqueCallbackId++;
-                callbacks[uniqueCallbackId] = callback;
-                message.callbackId = uniqueCallbackId;
+            bindResponseCallback(message, callback);
+            // For debug purposes
+            if (message.async === true) {
+                context.sendAsyncMessage(MSG_CHANNEL, message);
+            } else {
+                var response = context.sendSyncMessage(MSG_CHANNEL, message)[0];
+                // In case of async processing on background page, response may be undefined
+                // We will be received message later via MSG_CHANNEL
+                if (response) {
+                    processResponse(response);
+                }
             }
-            context.sendAsyncMessage('Adguard:send-message-channel', message);
         }
 
         return {
@@ -102,28 +127,12 @@
                 // Do nothing
             },
             unload: function () {
-                context.removeMessageListener('Adguard:send-message-channel', onMessageFromChrome);
+                context.removeMessageListener(MSG_CHANNEL, processResponse);
                 callbacks = null;
             }
         };
 
     })();
-
-    function windowIsTop(win) {
-        try {
-            win.QueryInterface(Ci.nsIDOMWindow);
-            if (win.frameElement) return false;
-        } catch (e) {
-            var url = 'unknown';
-            try {
-                url = win.location.href;
-            } catch (e) {
-            }
-            // Ignore non-DOM-windows.
-            dump('Could not QI window to nsIDOMWindow at\n' + url + ' ?!\n');
-        }
-        return true;
-    }
 
     var injectScripts = function (runAt, win) {
 

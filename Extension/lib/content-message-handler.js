@@ -50,33 +50,24 @@ ContentMessageHandler.prototype = {
         switch (message.type) {
             case 'unWhiteListFrame':
                 this.antiBannerService.unWhiteListFrame(message.frameInfo);
-                callback({});
                 break;
             case 'addRuleToApp':
                 this.adguardApplication.addRuleToApp(message.ruleText);
-                callback({});
                 break;
             case 'removeRuleFromApp':
                 this.adguardApplication.removeRuleFromApp(message.ruleText);
-                callback({});
                 break;
             case 'addEventListener':
-                var listenerInfo = this._processAddEventListener(message, sender);
-                callback(listenerInfo);
-                break;
+                return this._processAddEventListener(message, sender);
             case 'removeListener':
                 var listenerId = message.listenerId;
                 EventNotifier.removeListener(listenerId);
                 delete this.eventListeners[listenerId];
-                callback({});
                 break;
             case 'initializeFrameScript':
-                var response = this._processInitializeFrameScriptRequest();
-                callback(response);
-                break;
+                return this._processInitializeFrameScriptRequest();
             case 'changeUserSetting':
                 userSettings.setProperty(message.key, message.value);
-                callback({});
                 break;
             case 'initializeFiltersOnInstall':
                 this.antiBannerService.initializeFiltersOnInstall(function (enabledFilterIds) {
@@ -85,168 +76,131 @@ ContentMessageHandler.prototype = {
                 return true; // Async
             case 'addAndEnableFilter':
                 this.antiBannerService.addAndEnableFilter(message.filterId);
-                callback({});
                 break;
             case 'removeAntiBannerFilter':
                 this.antiBannerService.removeAntiBannerFilter(message.filterId);
-                callback({});
                 break;
             case 'enableAntiBannerFilter':
                 this.antiBannerService.enableAntiBannerFilter(message.filterId);
-                callback({});
                 break;
             case 'disableAntiBannerFilter':
                 this.antiBannerService.disableAntiBannerFilter(message.filterId);
-                callback({});
                 break;
             case 'getWhiteListDomains':
                 var whiteListDomains = this.antiBannerService.getWhiteListDomains(message.offset, message.limit, message.text);
-                callback({rules: whiteListDomains});
-                break;
+                return {rules: whiteListDomains};
             case 'getUserFilters':
                 var userFilters = this.antiBannerService.getUserFilters(message.offset, message.limit, message.text);
-                callback({rules: userFilters});
-                break;
+                return {rules: userFilters};
             case 'checkAntiBannerFiltersUpdate':
                 this.UI.checkAntiBannerFiltersUpdate();
-                callback({});
                 break;
             case 'getAntiBannerFiltersForOptionsPage':
                 var renderedFilters = this.antiBannerService.getAntiBannerFiltersForOptionsPage();
-                callback({filters: renderedFilters});
-                break;
+                return {filters: renderedFilters};
             case 'changeDefaultWhiteListMode':
                 this.antiBannerService.changeDefaultWhiteListMode(message.enabled);
-                callback({});
                 break;
             case 'clearUserFilter':
                 this.antiBannerService.clearUserFilter();
-                callback({});
                 break;
             case 'clearWhiteListFilter':
                 this.antiBannerService.clearWhiteListFilter();
-                callback({});
                 break;
             case 'addWhiteListDomain':
                 this.antiBannerService.addWhiteListDomain(message.text);
-                callback({});
                 break;
             case 'removeWhiteListDomain':
                 this.antiBannerService.removeWhiteListDomain(message.text);
-                callback({});
                 break;
             case 'addUserFilterRule':
                 this.antiBannerService.addUserFilterRule(message.text);
-                callback({});
                 break;
             case 'removeUserFilter':
                 this.antiBannerService.removeUserFilter(message.text);
-                callback({});
                 break;
             case 'addUserFilterRules':
                 this.antiBannerService.addUserFilterRules(message.rules);
-                callback({});
                 break;
             case 'addWhiteListDomains':
                 this.antiBannerService.addWhiteListDomains(message.domains);
-                callback({});
                 break;
             case 'onFiltersSubscriptionChange':
                 this.antiBannerService.onFiltersSubscriptionChange(message.filterIds);
-                callback({});
                 break;
             case 'getFiltersMetadata':
-                var metadataResponse = this._processGetFiltersMetadata();
-                callback(metadataResponse);
-                break;
+                return this._processGetFiltersMetadata();
             case 'openThankYouPage':
                 this.UI.openThankYouPage();
-                return true;
+                break;
             case 'openExtensionStore':
                 this.UI.openExtensionStore();
-                return true;
+                break;
             case 'openFilteringLog':
                 this.UI.openFilteringLog();
-                return true;
+                break;
             case 'openExportRulesTab':
                 this.UI.openExportRulesTab(message.whitelist);
-                return true;
+                break;
             case 'openSafebrowsingTrusted':
                 this.antiBannerService.getRequestFilter().addToSafebrowsingTrusted(message.url);
                 this.UI.reloadCurrentTab(message.url);
-                return true;
+                break;
             case 'openTab':
                 this.UI.openTab(message.url, message.options);
-                return true;
+                break;
             case 'resetBlockedAdsCount':
                 this.framesMap.resetBlockedAdsCount();
-                return true;
+                break;
             case 'getSelectorsAndScripts':
                 if (WorkaroundUtils.isFacebookIframe(message.documentUrl)) {
-                    callback({});
-                    return;
+                    return {};
                 }
                 var cssAndScripts = this.webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl);
-                callback(cssAndScripts || {});
-                break;
+                return cssAndScripts || {};
             case 'processShouldCollapse':
                 if (Prefs.collapseByContentScript) {
                     var collapse = this.webRequestService.processShouldCollapse(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
-                    callback({
-                        collapse: collapse,
-                        requestId: message.requestId
-                    });
+                    return {collapse: collapse, requestId: message.requestId};
                 } else {
                     // In case of FF we may collapse nodes with nsiContentPolicy
-                    callback({collapse: false, requestId: message.requestId});
+                    return {collapse: false, requestId: message.requestId};
                 }
                 break;
             case 'processShouldCollapseMany':
                 var requests = this.webRequestService.processShouldCollapseMany(sender.tab, message.documentUrl, message.requests);
-                callback({
-                    requests: requests
-                });
-                break;
+                return {requests: requests};
             case 'loadAssistant':
-                var options = this._processLoadAssistant();
-                callback(options);
-                break;
+                return this._processLoadAssistant();
             case 'addUserRule':
                 this.antiBannerService.addUserFilterRule(message.ruleText);
                 if (this.framesMap.isTabAdguardDetected(sender.tab)) {
                     this.adguardApplication.addRuleToApp(message.ruleText);
                 }
-                callback({});
                 break;
             case 'onOpenFilteringLogPage':
                 this.filteringLog.onOpenFilteringLogPage();
-                callback({});
                 break;
             case 'onCloseFilteringLogPage':
                 this.filteringLog.onCloseFilteringLogPage();
-                callback({});
                 break;
             case 'reloadTabById':
                 this.filteringLog.reloadTabById(message.tabId);
-                callback({});
                 break;
             case 'clearEventsByTabId':
                 this.filteringLog.clearEventsByTabId(message.tabId);
-                callback({});
                 break;
             case 'getTabFrameInfoById':
                 var frameInfo = this.filteringLog.getTabFrameInfoById(message.tabId);
-                callback({frameInfo: frameInfo});
-                break;
+                return {frameInfo: frameInfo};
             case 'getTabInfoById':
                 var tabInfo = this.filteringLog.getTabInfoById(message.tabId);
-                callback({tabInfo: this.filteringLog.serializeTabInfo(tabInfo)});
-                break;
+                return {tabInfo: this.filteringLog.serializeTabInfo(tabInfo)};
             case 'synchronizeOpenTabs':
                 this.filteringLog.synchronizeOpenTabs(function () {
                     callback({});
                 });
-                return true;
+                return true; // Async
             case 'checkSubscriptionUrl':
                 var filterMetadata = this.antiBannerService.findFilterMetadataBySubscriptionUrl(message.url);
                 var confirmText;
@@ -257,8 +211,7 @@ ContentMessageHandler.prototype = {
                     //filter not found
                     confirmText = i18n.getMessage('abp_subscribe_confirm_import', [message.title]);
                 }
-                callback({confirmText: confirmText});
-                break;
+                return {confirmText: confirmText};
             case 'enableSubscription':
                 this.antiBannerService.processAbpSubscriptionUrl(message.url, function (rulesAddedCount) {
                     callback({
@@ -268,8 +221,7 @@ ContentMessageHandler.prototype = {
                 });
                 return true; // Async
             default :
-                callback({});
-                break;
+                throw 'Unknown message: ' + message;
         }
     },
 
