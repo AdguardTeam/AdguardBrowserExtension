@@ -437,6 +437,7 @@ var ext;
             });
         },
         getLastFocused: function (callback) {
+            //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/134
             chrome.windows.getLastFocused(function (win) {
                 callback(new BrowserWindow(win));
             });
@@ -503,7 +504,14 @@ var ext;
         onUpdated: new OnUpdatedTabEvent(),
         onCompleted: new OnCompletedTabEvent(),
         onActivated: new OnActivatedTabEvent(),
-        onRemoved: new OnRemovedTabEvent()
+        onRemoved: new OnRemovedTabEvent(),
+        getLastFocused: function (callback) {
+            chrome.tabs.query({lastFocusedWindow: true, active: true}, function (tabs) {
+                if (callback && tabs && tabs.length > 0) {
+                    callback(new BrowserTab(tabs[0]));
+                }
+            });
+        }
     };
 
     ext.webRequest = {

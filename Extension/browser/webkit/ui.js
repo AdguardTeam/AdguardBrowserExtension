@@ -567,12 +567,10 @@ var UI = {
 	},
 
 	_getCurrentTab: function (callback) {
-		ext.windows.getLastFocused(function (win) {
-			win.getActiveTab(function (tab) {
-				if (tab && callback) {
-					callback(tab);
-				}
-			});
+		ext.tabs.getLastFocused(function (tab) {
+			if (tab && callback) {
+				callback(tab);
+			}
 		});
 	},
 
