@@ -524,7 +524,7 @@ AdguardSelector.makeCssNthChildFilter = function (element) {
 				if (className.indexOf('.') > 0) {
 					className = '[class="' + className + '"]';
 				} else {
-					className = className.trim().replace(/ +(?= )/g, ''); //delete more than one space between classes;
+					className = className.trim().replace(/\s+(?= )/g, ''); //delete more than one space between classes;
 					className = '.' + className.replace(/\s/g, ".");
 				}
 			} else {
