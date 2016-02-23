@@ -339,7 +339,10 @@ var ext;
 		onCompleted: new SafariTabEvent(safari.application, "navigate", true),
 		onActivated: new SafariTabEvent(safari.application, "activate", true),
 		onRemoved: new SafariTabEvent(safari.application, "close", true),
-		onUpdated: new SafariTabEvent(safari.application, "navigate", true)
+		onUpdated: new SafariTabEvent(safari.application, "navigate", true),
+		getLastFocused: function (callback) {
+			callback(new BrowserTab(safari.application.activeBrowserWindow.activeTab));
+		}
 	};
 
 	ext.backgroundPage = {
