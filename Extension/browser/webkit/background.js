@@ -52,7 +52,15 @@ contentMessageHandler.init(antiBannerService, webRequestService, framesMap, adgu
 contentMessageHandler.setSendMessageToSender(function (sender, message) {
     sender.tab.sendMessage(message);
 });
-ext.onMessage.addListener(contentMessageHandler.handleMessage);
+ext.onMessage.addListener(function (message, sender, sendResponse) {
+    var response = contentMessageHandler.handleMessage(message, sender, sendResponse);
+    var async = response === true;
+    if (!async) {
+        sendResponse(response);
+    }
+    // If async sendResponse will be invoked later
+    return async;
+});
 
 //record opened tabs
 UI.getAllOpenedTabs(function (tabs) {

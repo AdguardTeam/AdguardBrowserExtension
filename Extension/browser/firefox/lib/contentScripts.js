@@ -1,12 +1,11 @@
-var pageMod = require('sdk/page-mod');
-var l10n = require('sdk/l10n');
-var self = require('sdk/self');
+var {Cc,Ci} = require('chrome');
+var tabUtils = require('sdk/tabs/utils');
+var {viewFor} = require('sdk/view/core');
+var winUtils = require('sdk/window/utils');
 
-var I18N_MESSAGES = require('./utils/i18n-messages').I18N_MESSAGES;
-var userSettings = require('./utils/user-settings').userSettings;
+var {Log} = require('./utils/log');
 
 var ContentScripts = function () {
-    this.onAttach = this.onAttach.bind(this);
 };
 
 ContentScripts.prototype = {
@@ -15,141 +14,166 @@ ContentScripts.prototype = {
     BACKGROUND_TO_CONTENT_CHANNEL: 'background-content-channel',
 
     contentMessageHandler: null,
-    i18nMessages: Object.create(null),
 
     workers: [],
+    scripts: [],
+    i18nMessages: Object.create(null),
 
     init: function (contentMessageHandler) {
 
         this.contentMessageHandler = contentMessageHandler;
-        this.i18nMessages = this._getI18nMessages();
+        this.i18nMessages = this._geti18nMessages();
 
         // Filter-download.html
-        this.registerChromeContentScript('chrome://adguard/content/filter-download.html*', [
-            'content/libs/jquery-1.8.3.min.js',
-            'content/libs/nprogress.patched.js',
-            'content/content-script/content-script.js',
-            'content/content-script/i18n-helper.js',
-            'content/pages/i18n.js',
-            'content/pages/script.js',
-            'content/pages/filter-download.js'
+        this.registerChromeContentScript('filter-download.html', [
+            'libs/jquery-1.8.3.min.js',
+            'libs/nprogress.patched.js',
+            'content-script/content-script.js',
+            'content-script/i18n-helper.js',
+            'pages/i18n.js',
+            'pages/script.js',
+            'pages/filter-download.js'
         ]);
 
-        // Thankyou.html
-        this.registerChromeContentScript('chrome://adguard/content/thankyou.html*', [
-            'content/libs/jquery-1.8.3.min.js',
-            'content/content-script/content-script.js',
-            'content/content-script/i18n-helper.js',
-            'content/pages/i18n.js',
-            'content/pages/script.js',
-            'content/pages/thankyou.js'
+        //Thankyou.html
+        this.registerChromeContentScript('thankyou.html', [
+            'libs/jquery-1.8.3.min.js',
+            'content-script/content-script.js',
+            'content-script/i18n-helper.js',
+            'pages/i18n.js',
+            'pages/script.js',
+            'pages/thankyou.js'
         ]);
 
         // Options.html
-        this.registerChromeContentScript('chrome://adguard/content/options.html*', [
-            'content/libs/jquery-1.8.3.min.js',
-            'content/libs/bootstrap.min.js',
-            'content/libs/jquery.mousewheel.min.js',
-            'content/libs/jquery.jscrollpane.min.js',
-            'content/libs/moment-with-locales.min.js',
-            'content/content-script/content-script.js',
-            'content/content-script/i18n-helper.js',
-            'content/pages/i18n.js',
-            'content/pages/script.js',
-            'content/pages/options.js'
+        this.registerChromeContentScript('options.html', [
+            'libs/jquery-1.8.3.min.js',
+            'libs/bootstrap.min.js',
+            'libs/jquery.mousewheel.min.js',
+            'libs/jquery.jscrollpane.min.js',
+            'libs/moment-with-locales.min.js',
+            'content-script/content-script.js',
+            'content-script/i18n-helper.js',
+            'pages/i18n.js',
+            'pages/script.js',
+            'pages/options.js'
         ]);
 
         // Log.html
-        this.registerChromeContentScript('chrome://adguard/content/log.html*', [
-            'content/libs/jquery-1.8.3.min.js',
-            'content/libs/bootstrap.min.js',
-            'content/libs/moment-with-locales.min.js',
-            'content/content-script/content-script.js',
-            'content/content-script/i18n-helper.js',
-            'content/pages/i18n.js',
-            'content/pages/script.js',
-            'content/pages/log.js'
+        this.registerChromeContentScript('log.html', [
+            'libs/jquery-1.8.3.min.js',
+            'libs/bootstrap.min.js',
+            'libs/moment-with-locales.min.js',
+            'content-script/content-script.js',
+            'content-script/i18n-helper.js',
+            'pages/i18n.js',
+            'pages/script.js',
+            'pages/log.js'
         ]);
 
         // Export.html
-        this.registerChromeContentScript('chrome://adguard/content/export.html*', [
-            'content/libs/jquery-1.8.3.min.js',
-            'content/content-script/content-script.js',
-            'content/pages/export.js'
+        this.registerChromeContentScript('export.html', [
+            'libs/jquery-1.8.3.min.js',
+            'content-script/content-script.js',
+            'pages/export.js'
         ]);
 
         // Sb.html
-        this.registerChromeContentScript('chrome://adguard/content/sb.html*', [
-            'content/libs/jquery-1.8.3.min.js',
-            'content/content-script/content-script.js',
-            'content/content-script/i18n-helper.js',
-            'content/pages/i18n.js',
-            'content/pages/sb-filtered-page.js'
+        this.registerChromeContentScript('sb.html', [
+            'libs/jquery-1.8.3.min.js',
+            'content-script/content-script.js',
+            'content-script/i18n-helper.js',
+            'pages/i18n.js',
+            'pages/sb-filtered-page.js'
         ]);
 
         // Css and Script Injections
-        this.registerPageContentScript(['http://*', 'https://*'], [
-            'content/content-script/content-script.js',
-            'content/content-script/preload.js'
-        ], 'start');
+        this.registerPageContentScript([
+            'content-script/content-script.js',
+            'content-script/preload.js'
+        ], 'document_start', true);
 
-        this.registerPageContentScript(['http://*', 'https://*'], [
-            'content/content-script/content-script.js', // Message passing
-            'content/content-script/content-utils.js'   // Show alert popup and reload without cache functionality
-        ], 'start', ['top', 'existing']);
+        this.registerPageContentScript([
+            'content-script/content-script.js', // Message passing
+            'content-script/content-utils.js'   // Show alert popup and reload without cache functionality
+        ], 'document_start', false);
 
         // Assistant
-        this.registerPageContentScript(['http://*', 'https://*'], [
-            'content/libs/jquery-1.8.3.min.js',
-            'content/libs/jquery-ui.min.js',
-            'content/libs/diff_match_patch.js',
-            'content/libs/dom.js',
-            'content/content-script/i18n-helper.js',    // Localization placeholders
-            'content/content-script/content-script.js', // Message passing
-            'content/content-script/assistant/js/start-assistant.js',
-            'content/content-script/assistant/js/tools.js',
-            'content/content-script/assistant/js/selector.js',
-            'content/content-script/assistant/js/assistant.js'
-        ], 'ready', ['top', 'existing']);
+        this.registerPageContentScript([
+            'libs/jquery-1.8.3.min.js',
+            'libs/jquery-ui.min.js',
+            'libs/diff_match_patch.js',
+            'libs/dom.js',
+            'content-script/i18n-helper.js',    // Localization placeholders
+            'content-script/content-script.js', // Message passing
+            'content-script/assistant/js/tools.js',
+            'content-script/assistant/js/selector.js',
+            'content-script/assistant/js/assistant.js',
+            'content-script/assistant/js/start-assistant.js'
+        ], 'document_end', false);
 
 
         // abp:subscribe
         var subscribeIncludeDomains = [
-            "*.abpchina.org",
-            "*.abpindo.blogspot.com",
-            "*.abpvn.com",
-            "*.adblock-listefr.com",
-            "*.adblock.gardar.net",
-            "*.adblockplus.org",
-            "*.adblockplus.me",
-            "*.adguard.com",
-            "*.certyficate.it",
-            "*.code.google.com",
-            "*.dajbych.net",
-            "*.fanboy.co.nz",
-            "*.fredfiber.no",
-            "*.gardar.net",
-            "*.github.com",
-            "*.henrik.schack.dk",
-            "*.latvian-list.site11.com",
-            "*.liamja.co.uk",
-            "*.malwaredomains.com",
-            "*.margevicius.lt",
-            "*.nauscopio.nireblog.com",
-            "*.nireblog.com",
-            "*.noads.it",
-            "*.schack.dk",
-            "*.spam404.com",
-            "*.stanev.org",
-            "*.void.gr",
-            "*.yoyo.org",
-            "*.zoso.ro"
+            "abpchina.org",
+            "abpindo.blogspot.com",
+            "abpvn.com",
+            "adblock-listefr.com",
+            "adblock.gardar.net",
+            "adblockplus.org",
+            "adblockplus.me",
+            "adguard.com",
+            "certyficate.it",
+            "code.google.com",
+            "dajbych.net",
+            "fanboy.co.nz",
+            "fredfiber.no",
+            "gardar.net",
+            "github.com",
+            "henrik.schack.dk",
+            "latvian-list.site11.com",
+            "liamja.co.uk",
+            "malwaredomains.com",
+            "margevicius.lt",
+            "nauscopio.nireblog.com",
+            "nireblog.com",
+            "noads.it",
+            "schack.dk",
+            "spam404.com",
+            "stanev.org",
+            "void.gr",
+            "yoyo.org",
+            "zoso.ro"
         ];
-        this.registerPageContentScript(subscribeIncludeDomains, [
-            'content/content-script/content-script.js', // message-passing
-            'content/content-script/content-utils.js',  // showAlertPopup function
-            'content/content-script/subscribe.js'
-        ], 'ready', ['top', 'existing']);
+        this.registerPageContentScript([
+            'content-script/content-script.js', // message-passing
+            'content-script/content-utils.js',  // showAlertPopup function
+            'content-script/subscribe.js'
+        ], 'document_end', false, subscribeIncludeDomains);
+
+        this._loadFrameScript();
+    },
+
+    sendMessageToWorker: function (worker, message) {
+        if ('port' in worker) {
+            worker.port.emit(this.BACKGROUND_TO_CONTENT_CHANNEL, message);
+        } else {
+            worker.messageManager.sendAsyncMessage('Adguard:on-message-channel', message);
+        }
+    },
+
+    sendMessageToTab: function (tab, message) {
+        var lowLevelTab;
+        if (typeof viewFor != 'undefined') {
+            // Convert sdk tab to xul tab
+            lowLevelTab = viewFor(tab);
+        } else {
+            // Legacy support for PaleMoon and old Firefox.
+            var browserWindow = winUtils.getMostRecentBrowserWindow();
+            lowLevelTab = tabUtils.getTabForContentWindow(browserWindow.content);
+        }
+        var browser = tabUtils.getBrowserForTab(lowLevelTab);
+        browser.messageManager.sendAsyncMessage('Adguard:on-message-channel', message);
     },
 
     getContentScriptOptions: function () {
@@ -158,129 +182,153 @@ ContentScripts.prototype = {
         };
     },
 
-    sendMessageToWorker: function (worker, message) {
-        worker.port.emit(this.BACKGROUND_TO_CONTENT_CHANNEL, message);
-    },
-
-    sendMessageToTab: function (tab, message) {
-        var workers = this.getWorkersForTab(tab);
-        for (var i = 0; i < workers.length; i++) {
-            this.sendMessageToWorker(workers[i], message);
-        }
-    },
-
     addContentScriptMessageListener: function (worker, callback) {
+        if (!('port' in worker)) {
+            throw 'Unable to add port listener to ' + worker;
+        }
         worker.port.on(this.CONTENT_TO_BACKGROUND_CHANNEL, function (message) {
             callback(message);
         });
     },
 
-    getWorkersForTab: function (tab) {
-        var workers = [];
-        for (var i = 0; i < this.workers.length; i++) {
-            var worker = this.workers[i];
-            if (worker.tab === tab) {
-                workers.push(worker);
+    registerChromeContentScript: function (url, paths, when) {
+
+        var files = [];
+        for (var i = 0; i < paths.length; i++) {
+            files.push(this._contentUrl(paths[i]));
+        }
+
+        this.scripts.push({
+            schemes: ['chrome:'],
+            url: this._contentUrl(url),
+            files: files,
+            allFrames: false,
+            runAt: when || 'document_start'
+        });
+    },
+
+    registerPageContentScript: function (paths, when, allFrames, domains) {
+
+        var files = [];
+        for (var i = 0; i < paths.length; i++) {
+            files.push(this._contentUrl(paths[i]));
+        }
+
+        this.scripts.push({
+            schemes: ['http:', 'https:'],
+            files: files,
+            allFrames: allFrames,
+            runAt: when || 'document_start',
+            domains: domains || []
+        });
+    },
+
+    _loadFrameScript: function () {
+
+        var ppmm = Cc["@mozilla.org/parentprocessmessagemanager;1"].getService(Ci.nsIMessageListenerManager);
+
+        ppmm.addMessageListener('Adguard:get-content-scripts', function () {
+            return this.scripts;
+        }.bind(this));
+
+        ppmm.addMessageListener('Adguard:get-i18n-messages', function () {
+            return this.i18nMessages;
+        }.bind(this));
+
+        var listener = (function (contentMessageHandler) {
+
+            function getTabFromTarget(target) {
+                var tab = tabUtils.getTabForBrowser(target);
+                if (!tab) {
+                    // Legacy support. For PaleMoon and old Firefox getTabForBrowser returns null
+                    tab = tabUtils.getTabForContentWindow(target.contentWindow)
+                }
+                return tab;
             }
-        }
-        return workers;
-    },
 
-    registerChromeContentScript: function (url, paths) {
+            function wrapResponseResult(result, message) {
+                // Passing callbackId to response
+                return {
+                    type: message.data.type,
+                    callbackId: message.data.callbackId,
+                    result: result
+                };
+            }
 
-        var contentScriptFile = [];
-        for (var i = 0; i < paths.length; i++) {
-            contentScriptFile.push(self.data.url(paths[i]));
-        }
+            var receiveMessage = function (message) {
 
-        var contentScriptOptions = this.getContentScriptOptions();
+                var tab = getTabFromTarget(message.target);
+                if (!tab) {
+                    Log.error('Unable to retrieve tab from {0}', message);
+                    return;
+                }
 
-        pageMod.PageMod({
-            include: url,
-            contentScriptFile: contentScriptFile,
-            contentScriptWhen: 'start',
-            contentScriptOptions: contentScriptOptions,
-            onAttach: this.onAttach
-        });
-    },
+                var messageManager = message.target
+                    .QueryInterface(Ci.nsIFrameLoaderOwner)
+                    .frameLoader
+                    .messageManager;
 
-    registerPageContentScript: function (url, paths, when, attachTo) {
+                var sender = {
+                    tab: {id: tabUtils.getTabId(tab)},
+                    messageManager: messageManager
+                };
 
-        var contentScriptFile = [];
-        for (var i = 0; i < paths.length; i++) {
-            contentScriptFile.push(self.data.url(paths[i]));
-        }
+                var sendResponse = function () {
+                    // Empty
+                };
 
-        var pageModOptions = {
-            include: url,
-            contentScriptFile: contentScriptFile,
-            contentScriptWhen: when,
-            onAttach: this.onAttach
-        };
+                if ('callbackId' in message.data) {
+                    sendResponse = function (result) {
+                        messageManager.sendAsyncMessage('Adguard:send-message-channel', wrapResponseResult(result, message));
+                    };
+                }
 
-        if (attachTo) {
-            pageModOptions.attachTo = attachTo;
-        }
+                var result = contentMessageHandler.handleMessage(message.data, sender, sendResponse);
+                var async = result === true;
 
-        pageMod.PageMod(pageModOptions);
-    },
+                if (async) {
+                    // If async sendResponse will be invoked later
+                    return;
+                }
 
-
-    onAttach: function (worker) {
-
-        this.workers.push(worker);
-
-        // Cleanup
-        var self = this;
-        worker.on('detach', function () {
-            self._detachWorker(this);
-        });
-
-        worker.port.on(this.CONTENT_TO_BACKGROUND_CHANNEL, function (message) {
-
-            var callback = function () {
-                // Empty
+                if (message.sync) {
+                    return wrapResponseResult(result, message);
+                } else {
+                    sendResponse(result);
+                }
             };
 
-            if ('callbackId' in message) {
+            return {
+                receiveMessage: receiveMessage
+            };
 
-                callback = function (result) {
+        })(this.contentMessageHandler);
 
-                    if ('callbackId' in result) {
-                        throw 'callbackId present in result';
-                    }
-                    if ('type' in result) {
-                        throw 'type present in result';
-                    }
-
-                    // Passing type and callbackId to response
-                    result.type = message.type;
-                    result.callbackId = message.callbackId;
-
-                    worker.port.emit(this.CONTENT_TO_BACKGROUND_CHANNEL, result);
-
-                }.bind(this);
-            }
-
-            this.contentMessageHandler.handleMessage(message, worker, callback);
-
-        }.bind(this));
+        var messageManager = Cc["@mozilla.org/globalmessagemanager;1"].getService(Ci.nsIMessageListenerManager);
+        messageManager.addMessageListener('Adguard:send-message-channel', listener);
+        messageManager.loadFrameScript(this._contentUrl('content-script/frame-script.js'), true);
     },
 
-    _getI18nMessages: function () {
+    _contentUrl: function (resource) {
+        return 'chrome://adguard/content/' + resource;
+    },
+
+    _geti18nMessages: function () {
+
+        // Randomize URI to work around bug 719376
+        var stringBundle = Services.strings.createBundle('chrome://adguard/locale/messages.properties?' + Math.random());
+
+        // MDN says getSimpleEnumeration returns nsIPropertyElement // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIStringBundle#getSimpleEnumeration%28%29
+        var props = stringBundle.getSimpleEnumeration();
+
         var messages = Object.create(null);
-        for (var i = 0; i < I18N_MESSAGES.length; i++) {
-            var messageId = I18N_MESSAGES[i];
-            messages[messageId] = l10n.get(messageId);
+        while (props.hasMoreElements()) {
+            var prop = props.getNext();
+            var propEl = prop.QueryInterface(Ci.nsIPropertyElement);
+            var key = propEl.key;
+            messages[key] = propEl.value;
         }
         return messages;
-    },
-
-    _detachWorker: function (worker) {
-        var index = this.workers.indexOf(worker);
-        if (index != -1) {
-            this.workers.splice(index, 1);
-        }
     }
 };
 

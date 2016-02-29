@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 var I18nHelper = {
 
     translateElement: function (element, message) {
@@ -26,6 +25,7 @@ var I18nHelper = {
 
             this.processString(message, element);
         } catch (ex) {
+            // Ignore exceptions
         }
     },
 

@@ -17,12 +17,10 @@
  */
 var chrome = require('chrome');
 var self = require('sdk/self');
-var l10n = require('sdk/l10n');
 var tabs = require('sdk/tabs');
 var simplePrefs = require('sdk/simple-prefs');
 var simpleStorage = require('sdk/simple-storage');
 var unload = require('sdk/system/unload');
-var pageMod = require('sdk/page-mod');
 
 const {Cc, Ci, Cr, Cu} = chrome;
 Cu.import("resource://gre/modules/Services.jsm");
@@ -39,14 +37,14 @@ var sdkModules = {
     'sdk/simple-prefs': simplePrefs,
     'sdk/simple-storage': simpleStorage,
     'sdk/self': self,
-    'sdk/page-mod': pageMod,
-    'sdk/l10n': l10n,
     'sdk/system/unload': unload,
     'sdk/system/events': require('sdk/system/events'),
     'sdk/core/promise': require('sdk/core/promise'),
     'sdk/io/file': require('sdk/io/file'),
     'sdk/windows': require('sdk/windows'),
-    'sdk/private-browsing': require('sdk/private-browsing')
+    'sdk/private-browsing': require('sdk/private-browsing'),
+    'sdk/view/core': require('sdk/view/core'),
+    'sdk/window/utils': require('sdk/window/utils')
 };
 
 exports.onUnload = function (reason) {
@@ -239,6 +237,9 @@ exports.main = function (options, callbacks) {
 };
 
 var i18n = (function () {
+    
+    // Randomize URI to work around bug 719376
+    var stringBundle = Services.strings.createBundle('chrome://adguard/locale/messages.properties?' + Math.random());
 
     function getText(text, args) {
         if (!text) {
@@ -254,7 +255,12 @@ var i18n = (function () {
 
     return {
         getMessage: function (key, args) {
-            return getText(l10n.get(key), args);
+            try {
+                return getText(stringBundle.GetStringFromName(key), args);                
+            } catch (ex) {
+                // Key not found, simply return it as a translation
+                return key;
+            }
         }
     };
 })();

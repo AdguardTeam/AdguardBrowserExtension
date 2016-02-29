@@ -51,7 +51,7 @@
         if (!(document instanceof HTMLDocument)) {
             return;
         }
-
+        
         if (window !== window.top) {
             // Do not inject CSS into small frames
             var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);

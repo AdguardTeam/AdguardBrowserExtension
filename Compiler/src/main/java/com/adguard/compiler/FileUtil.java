@@ -164,7 +164,7 @@ public class FileUtil {
 
 		//convert chrome style locales to firefox style
 		File sourceLocalesDir = new File(dest, "_locales");
-		File destLocalesDir = new File(dest, "locale");
+		File destLocalesDir = new File(dest, "chrome/locale");
 		LocaleUtils.convertFromChromeToFirefoxLocales(sourceLocalesDir);
 		//rename folder
 		FileUtils.moveDirectory(sourceLocalesDir, destLocalesDir);

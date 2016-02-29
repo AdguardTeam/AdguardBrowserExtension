@@ -32,127 +32,145 @@ import java.util.*;
  */
 public class LocaleUtils {
 
-	public enum SupportedLocales {
+    public enum SupportedLocales {
 
-		EN("en"), // English
-		RU("ru"), // Russian
-		DE("de"), // German
-		TR("tr"), // Turkish
-		UK("uk"), // Ukrainian
-		PL("pl"), // Polish
-		PT_BR("pt_BR"), // Portuguese (Brazil)
-		PT_PT("pt_PT"), // Portuguese (Portugal)
-		KO("ko"), // Korean
-		zh_CN("zh_CN"), // Chinese (China)
-		SR("sr"), // Serbian
-		FR("fr"), // French
-		SK("sk"), // Slovak
-		HY("hy"), // Armenian
-		ES_419("es_419"), // Spanish (Latin American)
-		ES("es"), // Spanish
-		IT("it"), // Italian
-		ID("id"); // Indonesian
+        EN("en"), // English
+        RU("ru"), // Russian
+        DE("de"), // German
+        TR("tr"), // Turkish
+        UK("uk"), // Ukrainian
+        PL("pl"), // Polish
+        PT_BR("pt_BR"), // Portuguese (Brazil)
+        PT_PT("pt_PT"), // Portuguese (Portugal)
+        KO("ko"), // Korean
+        zh_CN("zh_CN"), // Chinese (China)
+        SR("sr"), // Serbian
+        FR("fr"), // French
+        SK("sk"), // Slovak
+        HY("hy"), // Armenian
+        ES_419("es_419"), // Spanish (Latin American)
+        ES("es"), // Spanish
+        IT("it"), // Italian
+        ID("id"); // Indonesian
 
-		private String code;
+        private String code;
 
-		SupportedLocales(String code) {
-			this.code = code;
-		}
+        SupportedLocales(String code) {
+            this.code = code;
+        }
 
-		public static boolean supported(String code) {
-			for (SupportedLocales locale : values()) {
-				if (locale.code.equalsIgnoreCase(code)) {
-					return true;
-				}
-			}
-			return false;
-		}
-	}
+        public static boolean supported(String code) {
+            for (SupportedLocales locale : values()) {
+                if (locale.code.equalsIgnoreCase(code)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
 
-	private static ObjectMapper objectMapper = new ObjectMapper();
+    private static ObjectMapper objectMapper = new ObjectMapper();
 
-	public static void updateExtensionNameForChromeLocales(File dest, String extensionNamePostfix) throws IOException {
+    public static void updateExtensionNameForChromeLocales(File dest, String extensionNamePostfix) throws IOException {
 
-		if (StringUtils.isEmpty(extensionNamePostfix)) {
-			return;
-		}
+        if (StringUtils.isEmpty(extensionNamePostfix)) {
+            return;
+        }
 
-		File chromeLocalesDir = new File(dest, "_locales");
+        File chromeLocalesDir = new File(dest, "_locales");
 
-		File[] files = chromeLocalesDir.listFiles();
-		if (files == null) {
-			throw new IOException("Unable to fetch list files from " + chromeLocalesDir);
-		}
+        File[] files = chromeLocalesDir.listFiles();
+        if (files == null) {
+            throw new IOException("Unable to fetch list files from " + chromeLocalesDir);
+        }
 
-		for (File file : files) {
+        for (File file : files) {
 
-			File chromeLocaleFile = new File(file, "messages.json");
+            File chromeLocaleFile = new File(file, "messages.json");
 
-			StringBuilder sb = new StringBuilder();
-			BufferedReader reader = null;
-			try {
-				reader = new BufferedReader(new FileReader(chromeLocaleFile));
-				String line;
-				while ((line = reader.readLine()) != null) {
-					sb.append(line).append("\r\n");
-					if (line.trim().startsWith("\"name\":") || line.trim().startsWith("\"short_name\":")) {
-						line = reader.readLine();
-						String[] parts = StringUtils.split(line, ":");
-						String message = StringUtils.removeEnd(parts[1].trim(), "\"") + extensionNamePostfix + "\"";
-						sb.append("\t\"message\": ").append(message).append("\r\n");
-					}
-				}
-			} finally {
-				IOUtils.closeQuietly(reader);
-			}
+            StringBuilder sb = new StringBuilder();
+            BufferedReader reader = null;
+            try {
+                reader = new BufferedReader(new FileReader(chromeLocaleFile));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append("\r\n");
+                    if (line.trim().startsWith("\"name\":") || line.trim().startsWith("\"short_name\":")) {
+                        line = reader.readLine();
+                        String[] parts = StringUtils.split(line, ":");
+                        String message = StringUtils.removeEnd(parts[1].trim(), "\"") + extensionNamePostfix + "\"";
+                        sb.append("\t\"message\": ").append(message).append("\r\n");
+                    }
+                }
+            } finally {
+                IOUtils.closeQuietly(reader);
+            }
 
-			FileUtils.writeStringToFile(chromeLocaleFile, sb.toString(), "utf-8");
-		}
-	}
+            FileUtils.writeStringToFile(chromeLocaleFile, sb.toString(), "utf-8");
+        }
+    }
 
-	public static void convertFromChromeToFirefoxLocales(File chromeLocalesDir) throws IOException {
+    public static void convertFromChromeToFirefoxLocales(File chromeLocalesDir) throws IOException {
 
-		File[] files = chromeLocalesDir.listFiles();
-		if (files == null) {
-			throw new IOException("Unable to fetch list files from " + chromeLocalesDir);
-		}
+        File[] files = chromeLocalesDir.listFiles();
+        if (files == null) {
+            throw new IOException("Unable to fetch list files from " + chromeLocalesDir);
+        }
 
-		// Populate collection of messages for EN locale
-		Map<String, String> enLocaleMessages = readMessagesToMap(new File(chromeLocalesDir, "en/messages.json"));
+        // Populate collection of messages for EN locale
+        Map<String, String> enLocaleMessages = readMessagesToMap(new File(chromeLocalesDir, "en/messages.json"));
 
-		for (File file : files) {
+        for (File file : files) {
 
-			File chromeLocaleFile = new File(file, "messages.json");
-			if (!SupportedLocales.supported(file.getName())) {
-				FileUtils.deleteQuietly(file);
-				continue;
-			}
+            File chromeLocaleFile = new File(file, "messages.json");
+            if (!SupportedLocales.supported(file.getName())) {
+                FileUtils.deleteQuietly(file);
+                continue;
+            }
 
-			String firefoxLocaleFilename = StringUtils.replace(file.getName(), "_", "-") + ".properties";
-			File firefoxLocalFile = new File(chromeLocalesDir, firefoxLocaleFilename);
+            File firefoxLocalFile = new File(chromeLocalesDir, StringUtils.replace(file.getName(), "_", "-") + "/");
+            firefoxLocalFile.mkdirs();
+            firefoxLocalFile = new File(firefoxLocalFile, "messages.properties");
 
-			Map<String, String> localeMessages = readMessagesToMap(chromeLocaleFile);
+            Map<String, String> localeMessages = readMessagesToMap(chromeLocaleFile);
 
-			Set<String> msgIds = enLocaleMessages.keySet();
+            Set<String> msgIds = enLocaleMessages.keySet();
 
-			StringBuilder sb = new StringBuilder();
-			for (String msgId : msgIds) {
-				String message = localeMessages.get(msgId);
-				if (message == null) {
-					// Use en message
-					message = enLocaleMessages.get(msgId);
-				}
-				message = message.replaceAll("\n", "\\\\n");
-				sb.append(msgId).append("=").append(message);
-				sb.append(System.lineSeparator());
-			}
+            StringBuilder sb = new StringBuilder();
+            for (String msgId : msgIds) {
+                String message = localeMessages.get(msgId);
+                if (message == null) {
+                    // Use en message
+                    message = enLocaleMessages.get(msgId);
+                }
+                message = message.replaceAll("\n", "\\\\n");
+                sb.append(msgId).append("=").append(message);
+                sb.append(System.lineSeparator());
+            }
 
-			FileUtils.writeStringToFile(firefoxLocalFile, sb.toString(), "utf-8");
-			FileUtils.deleteQuietly(file);
-		}
-	}
+            FileUtils.writeStringToFile(firefoxLocalFile, sb.toString(), "utf-8");
+            FileUtils.deleteQuietly(chromeLocaleFile);
+            if (StringUtils.contains(file.getName(), "_")) {
+                FileUtils.deleteQuietly(file);
+            }
+        }
+    }
 
-	public static void writeLocalesToFirefoxInstallRdf(File dest, String extensionNamePostfix) throws IOException {
+    public static void writeLocalesToChromeManifest(File dest) throws IOException {
+
+        File chromeManifest = new File(dest, "chrome.manifest");
+
+        StringBuilder sb = new StringBuilder("\n");
+        for (SupportedLocales locale : SupportedLocales.values()) {
+            sb.append("\nlocale adguard " + locale.code.replace("_", "-") + " ./chrome/locale/" + locale.code.replace("_", "-") + "/");
+        }
+
+        String content = FileUtils.readFileToString(chromeManifest, "utf-8");
+        content += sb.toString();
+        FileUtils.writeStringToFile(chromeManifest, content, "utf-8");
+    }
+
+    public static void writeLocalesToFirefoxInstallRdf(File dest, String extensionNamePostfix) throws IOException {
 //		<em:localized>
 //		<Description>
 //		<em:locale>en</em:locale>
@@ -160,57 +178,57 @@ public class LocaleUtils {
 //		<em:description>Adguard AdBlocker</em:description>
 //		</Description>
 //		</em:localized>
-		File installManifest = new File(dest, "install.rdf");
-		if (!installManifest.exists()) {
-			return;
-		}
+        File installManifest = new File(dest, "install.rdf");
+        if (!installManifest.exists()) {
+            return;
+        }
 
-		StringBuilder sb = new StringBuilder();
-		for (SupportedLocales locale : SupportedLocales.values()) {
-			File localeFile = new File(dest, "locale/" + locale.code.replace("_", "-") + ".properties");
-			String[] messages = StringUtils.split(FileUtils.readFileToString(localeFile, "utf-8"), System.lineSeparator());
-			String name = findMessage(messages, "name") + extensionNamePostfix;
-			String description = findMessage(messages, "description");
-			sb.append("<em:localized>").append(System.lineSeparator());
-			sb.append("\t<Description>").append(System.lineSeparator());
-			sb.append("\t\t<em:locale>").append(locale.code).append("</em:locale>").append(System.lineSeparator());
-			sb.append("\t\t<em:name>").append(name).append("</em:name>").append(System.lineSeparator());
-			sb.append("\t\t<em:description>").append(description).append("</em:description>").append(System.lineSeparator());
-			sb.append("\t</Description>").append(System.lineSeparator());
-			sb.append("</em:localized>").append(System.lineSeparator());
-		}
+        StringBuilder sb = new StringBuilder();
+        for (SupportedLocales locale : SupportedLocales.values()) {
+            File localeFile = new File(dest, "chrome/locale/" + locale.code.replace("_", "-") + "/messages.properties");
+            String[] messages = StringUtils.split(FileUtils.readFileToString(localeFile, "utf-8"), System.lineSeparator());
+            String name = findMessage(messages, "name") + extensionNamePostfix;
+            String description = findMessage(messages, "description");
+            sb.append("<em:localized>").append(System.lineSeparator());
+            sb.append("\t<Description>").append(System.lineSeparator());
+            sb.append("\t\t<em:locale>").append(locale.code).append("</em:locale>").append(System.lineSeparator());
+            sb.append("\t\t<em:name>").append(name).append("</em:name>").append(System.lineSeparator());
+            sb.append("\t\t<em:description>").append(description).append("</em:description>").append(System.lineSeparator());
+            sb.append("\t</Description>").append(System.lineSeparator());
+            sb.append("</em:localized>").append(System.lineSeparator());
+        }
 
-		String content = FileUtils.readFileToString(installManifest, "utf-8");
-		content = StringUtils.replace(content, "${localised}", sb.toString());
-		FileUtils.writeStringToFile(installManifest, content, "utf-8");
-	}
+        String content = FileUtils.readFileToString(installManifest, "utf-8");
+        content = StringUtils.replace(content, "${localised}", sb.toString());
+        FileUtils.writeStringToFile(installManifest, content, "utf-8");
+    }
 
-	private static Map<String, String> readMessagesToMap(File localeFile) throws IOException {
-		@SuppressWarnings("unchecked") Map<String, Map> m = objectMapper.readValue(FileUtils.readFileToByteArray(localeFile), Map.class);
-		Map<String, String> messages = new LinkedHashMap<String, String>();
-		for (String msgId : m.keySet()) {
-			String message = (String) m.get(msgId).get("message");
-			messages.put(msgId, message);
-		}
-		return messages;
-	}
+    private static Map<String, String> readMessagesToMap(File localeFile) throws IOException {
+        @SuppressWarnings("unchecked") Map<String, Map> m = objectMapper.readValue(FileUtils.readFileToByteArray(localeFile), Map.class);
+        Map<String, String> messages = new LinkedHashMap<String, String>();
+        for (String msgId : m.keySet()) {
+            String message = (String) m.get(msgId).get("message");
+            messages.put(msgId, message);
+        }
+        return messages;
+    }
 
-	public static List<String> getMessageIds(File source) throws IOException {
-		File enMessages = new File(source, "_locales/en/messages.json");
-		Set<String> ids = readMessagesToMap(enMessages).keySet();
-		List<String> messageIds = new ArrayList<String>();
-		for (String msgId : ids) {
-			messageIds.add("\"" + String.valueOf(msgId) + "\"");
-		}
-		return messageIds;
-	}
+    public static List<String> getMessageIds(File source) throws IOException {
+        File enMessages = new File(source, "_locales/en/messages.json");
+        Set<String> ids = readMessagesToMap(enMessages).keySet();
+        List<String> messageIds = new ArrayList<String>();
+        for (String msgId : ids) {
+            messageIds.add("\"" + String.valueOf(msgId) + "\"");
+        }
+        return messageIds;
+    }
 
-	private static String findMessage(String[] messages, String key) {
-		for (String message : messages) {
-			if (message.startsWith(key + "=")) {
-				return StringUtils.substringAfter(message, key + "=");
-			}
-		}
-		throw new IllegalStateException("Can't find message " + key);
-	}
+    private static String findMessage(String[] messages, String key) {
+        for (String message : messages) {
+            if (message.startsWith(key + "=")) {
+                return StringUtils.substringAfter(message, key + "=");
+            }
+        }
+        throw new IllegalStateException("Can't find message " + key);
+    }
 }

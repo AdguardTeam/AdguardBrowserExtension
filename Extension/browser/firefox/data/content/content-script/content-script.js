@@ -1,3 +1,6 @@
+/* global sendFrameEvent */
+/* global addFrameEventListener */
+/* global I18nHelper */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -14,70 +17,126 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var contentPage = {
 
-    listenerRegistered: false,
-    callbacks: Object.create(null),
-    callbackId: 0,
+/**
+ * contentPage object is used for messaging between a content script and a frame script.
+ */
+var contentPage = (function (api) {
 
-    CONTENT_TO_BACKGROUND_CHANNEL: 'content-background-channel',
-    BACKGROUND_TO_CONTENT_CHANNEL: 'background-content-channel',
+    var sendMessage;
+    if (typeof sendMessageToChrome != 'undefined') {
+        sendMessage = function (message, callback) {
+            var wrapper;
+            if (callback) {
+                wrapper = function (msg) {
+                    return callback(JSON.parse(msg));
+                }
+            }
+            return sendMessageToChrome(message, wrapper);
+        };
+    } else {
+        // TODO: Remove, deprecated
+        sendMessage = (function () {
 
-    sendMessage: function (message, callback) {
+            var CONTENT_TO_BACKGROUND_CHANNEL = 'content-background-channel';
 
-        if (callback) {
-            var callbackId = (this.callbackId += 1);
-            message.callbackId = callbackId;
-            this.callbacks[callbackId] = callback;
-        }
+            var listenerRegistered = false;
+            var callbacks = Object.create(null);
+            var callbackId = 0;
 
-        if (!this.listenerRegistered) {
-
-            this.listenerRegistered = true;
-
-            self.port.on(this.CONTENT_TO_BACKGROUND_CHANNEL, function (response) {
+            var onResponseReceived = function (response) {
                 if ('callbackId' in response) {
                     var callbackId = response.callbackId;
-                    var callback = this.callbacks[callbackId];
+                    var callback = callbacks[callbackId];
                     callback(response);
-                    delete this.callbacks[callbackId];
+                    delete callbacks[callbackId];
                 }
-            }.bind(this));
-        }
+            };
 
-        self.port.emit(this.CONTENT_TO_BACKGROUND_CHANNEL, message);
-    },
+            return function (message, callback) {
 
-    onMessage: {
+                if (callback) {
+                    var messageCallbackId = (callbackId += 1);
+                    message.callbackId = messageCallbackId;
+                    callbacks[messageCallbackId] = callback;
+                }
 
-        listeners: null,
+                if (!listenerRegistered) {
+                    listenerRegistered = true;
+                    self.port.on(CONTENT_TO_BACKGROUND_CHANNEL, onResponseReceived);
+                }
 
-        addListener: function (listener) {
+                self.port.emit(CONTENT_TO_BACKGROUND_CHANNEL, message);
+            };
 
-            if (!this.listeners) {
-
-                this.listeners = [];
-
-                self.port.on(contentPage.BACKGROUND_TO_CONTENT_CHANNEL, function (message) {
-                    for (var i = 0; i < this.listeners.length; i++) {
-                        var listener = this.listeners[i];
-                        listener(message);
-                    }
-                }.bind(this));
-            }
-
-            this.listeners.push(listener);
-        }
+        })();
     }
-};
 
-var i18n = {
+    var addMessageListener;
+    if (typeof addChromeMessageListener != 'undefined') {
+        addMessageListener = function (listener) {
+            var wrapper = function (msg) {
+                return listener(JSON.parse(msg));
+            };
+            return addChromeMessageListener(window, wrapper);
+        };
+    } else {
+        // TODO: Remove, deprecated
+        addMessageListener = (function () {
 
-    getMessage: function (messageId, args) {
-        var message = self.options.i18nMessages[messageId];
+            var BACKGROUND_TO_CONTENT_CHANNEL = 'background-content-channel';
+
+            var listeners = null;
+
+            var onMessageReceived = function (message) {
+                for (var i = 0; i < listeners.length; i++) {
+                    var listener = listeners[i];
+                    listener(message);
+                }
+            };
+
+            return function (listener) {
+                if (!listeners) {
+                    listeners = [];
+                    self.port.on(BACKGROUND_TO_CONTENT_CHANNEL, onMessageReceived);
+                }
+                listeners.push(listener);
+            };
+        })();
+    }
+
+    /**
+     * Expose contentPage public API
+     */
+    api.sendMessage = sendMessage;
+    api.onMessage = {
+        addListener: addMessageListener
+    };
+
+    return api;
+
+})(contentPage || {});
+
+/**
+ * This object is used to pass translations from the chrome process to the content.
+ */
+var i18n = (function (api) {
+
+    /**
+     * Expose i18n public API
+     */
+    api.getMessage = function (messageId, args) {
+        var message;
+        if (typeof i18nMessageApi != 'undefined') {
+            message = i18nMessageApi(messageId);
+        } else {
+            // TODO: Remove, deprecated
+            message = self.options.i18nMessages[messageId];
+        }
         if (!message) {
             throw 'Message ' + messageId + ' not found';
         }
         return I18nHelper.replacePlaceholders(message, args);
-    }
-};
+    };
+    return api;
+})(i18n || {});

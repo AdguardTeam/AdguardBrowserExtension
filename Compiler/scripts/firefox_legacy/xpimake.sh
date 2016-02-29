@@ -13,8 +13,10 @@ xpi="$name.xpi"
 
 # xpi up the dir
 (cd "$dir" && cfx xpi)
-(cd "$dir" && unzip adguard-adblocker.xpi -d adguard-adblocker)
+(cd "$dir" && unzip adguard-adblocker.xpi -d adguard-adblocker) || true
 (cd "$dir" && cp install.rdf adguard-adblocker/)
 echo "Copy install.rdf"
+(cd "$dir" && rm -r adguard-adblocker/locale/)
+echo "Remove xpi locale file"
 (cd "$dir/adguard-adblocker" && zip -r adguard-adblocker.xpi *)
-(cd "$dir" && cp adguard-adblocker/adguard-adblocker.xpi .)
+(cd "$dir" && mv adguard-adblocker/adguard-adblocker.xpi .)
