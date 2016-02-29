@@ -31,8 +31,7 @@ var Adguard = function () {
 		cssRuleIndex: null,
 		urlBlockAttributes: ["src", "data"],
 		urlInfo: null,
-		croppedDomain: null,
-		domainRule: '##'
+		croppedDomain: null
 	};
 
 	var constants = {
@@ -101,29 +100,6 @@ var Adguard = function () {
 
 		cropDomain: function (domain) {
 			return domain.replace("www.", "");
-		},
-
-		isScopeOne: function () {
-			var scope = findInIframe('#oneDomainRadio').get(0);
-			if (scope) {
-				return scope.checked;
-			} else {
-				return null;
-			}
-		},
-		makeDomainPrefix: function (inverse) {
-			var result;
-			var isOneDomain = utils.isScopeOne();
-			if (inverse && inverse == 'true') {
-				isOneDomain = !isOneDomain;
-			}
-			if (isOneDomain) {
-				result = getCroppedDomain() + settings.domainRule;
-			} else {
-				result = "##";
-			}
-
-			return result;
 		}
 	};
 
@@ -392,20 +368,16 @@ var Adguard = function () {
 	 * Cancels select mode, removes all elements using for selecting
 	 */
 	var cancelSelectMode = function () {
-		if (self.selector) {
-			self.selector.unbind();
-			self.selector.removeBorders();
-		}
+		AdguardSelectorLib.close();
 	};
 
-	var onElementSelected = function (path, similarPath, element) {
+	var onElementSelected = function (element) {
 		settings.selectedElement = element;
-		settings.path = path;
-		settings.similarPath = similarPath;
-		self.selector.closeSelector();
+
 		var urlBlock = haveUrlBlockParameter(element);
 		var blockSimilar = haveClassAttribute(element);
-		showHidingRuleWindow(settings.path, element, urlBlock, blockSimilar);
+
+		showHidingRuleWindow(element, urlBlock, blockSimilar);
 	};
 
 	var closeAssistant = function () {
@@ -418,9 +390,8 @@ var Adguard = function () {
 	 */
 	var startSelector = function () {
 		// Initializing AdguardSelector with default configuration
-		if (self.selector) self.selector.clearEverything();
-		self.selector = new AdguardSelector(onElementSelected);
-		self.selector.setup();
+		AdguardSelectorLib.reset();
+		AdguardSelectorLib.init(onElementSelected);
 	};
 
 	var haveUrlBlockParameter = function (element) {
@@ -433,36 +404,8 @@ var Adguard = function () {
 		return className && className.trim() != '';
 	};
 
-	var setPath = function (path) {
-		findInIframe('#filter-rule').val(path);
-	};
-
-	var makeUrlBlockFilter = function () {
-		var iframe = findIframe().contents();
-		var needMakeUrlBlock = iframe.find('#blockByUrl').is(':checked');
-		if (!needMakeUrlBlock) {
-			return 'false';
-		}
-		var urlMask = getUrlBlockAttribute(settings.selectedElement);
-		if (!urlMask || urlMask == '') {
-			return 'false';
-		}
-
-		var blockUrl = urlMask.replace(/^http:\/\/(www\.)?/, "||");
-		if (blockUrl.indexOf('.') == 0) {
-			blockUrl = blockUrl.substring(1);
-		}
-
-		var value;
-		if (!iframe.find("#oneDomainRadio").is(':checked')) {
-			value = "domain=" + getCroppedDomain();
-		}
-		var result = value;
-		var filterRule = iframe.find('#filter-rule');
-		filterRule.val(result ? blockUrl + "$" + result : blockUrl);
-		settings.urlBlockPath = filterRule.val();
-
-		return 'true';
+	var setFilterRuleInputText = function (ruleText) {
+		findInIframe('#filter-rule').val(ruleText);
 	};
 
 	var localizeMenu = function () {
@@ -552,20 +495,16 @@ var Adguard = function () {
 		return d;
 	};
 
-	var showHidingRuleWindow = function (path, element, urlBlock, blockSimilar) {
+	var showHidingRuleWindow = function (element, urlBlock, blockSimilar) {
 		var loaded = showDetailedMenu();
 		loaded.done(function () {
 			createSlider(element);
-			self.selector.reset(element);
-			setPath(path);
+
+			AdguardSelectorLib.selectElement(element);
+
 			onScopeChange();
 			setScopeOneDomainText();
-			if (urlBlock) {
-				findInIframe('#block-by-url-p').show();
-			}
-			if (blockSimilar) {
-				findInIframe('#block-similar-p').show();
-			}
+			handleShowBlockSettings(urlBlock, blockSimilar);
 		});
 	};
 
@@ -759,12 +698,10 @@ var Adguard = function () {
 
 	var onSliderMove = function (element) {
 		removePreview();
+
 		settings.selectedElement = element;
-		self.selector.makeBorders(element);
-		settings.path = self.selector.getSelectorPath(element);
-		settings.similarPath = self.selector.getSelectorSimilarPath(element);
-		settings.similarBlock = false;
-		setPath(settings.path);
+		AdguardSelectorLib.selectElement(element);
+
 		makeDefaultCheckboxesForDetailedMenu();
 		onScopeChange();
 		makeRadioButtonsAndCheckBoxes();
@@ -795,16 +732,23 @@ var Adguard = function () {
 		if (e) {
 			e.preventDefault();
 		}
+
 		if (settings.lastPreview) {
+			// On finish preview and come back to selected
 			removePreview();
 			findInIframe('#adg-preview > span').text(getMessage("assistant_preview_start"));
-			self.selector.showBorders();
+
+			AdguardSelectorLib.selectElement(settings.selectedElement);
+
 			findInIframe('#slider').show();
 			findInIframe('.adg-slide-text').show();
 			findInIframe('#ExtendedSettingsText').show();
+
 			return;
 		}
+
 		hideElement();
+
 		findInIframe('#adg-preview >span').text(getMessage("assistant_preview_end"));
 		findInIframe('#slider').hide();
 		findInIframe('.adg-slide-text').hide();
@@ -813,8 +757,9 @@ var Adguard = function () {
 	};
 
 	var hideElement = function () {
-		self.selector.removeBorders();
-		var selector = getSelector();
+		AdguardSelectorLib.reset();
+
+		var selector = AdguardRulesConstructorLib.makeCssNthChildFilter(settings.selectedElement);
 		var style = document.createElement("style");
 		style.setAttribute("type", "text/css");
 		settings.lastPreview = style;
@@ -824,12 +769,6 @@ var Adguard = function () {
 			style.appendChild(document.createTextNode(selector + " {display: none !important;}"));
 			head.appendChild(style);
 		}
-	};
-
-	var getSelector = function () {
-		var path = settings.similarBlock ? settings.similarPath : settings.path;
-		var index = path.indexOf('##');
-		return index == -1 ? path.substring(0, path.length) : path.substring(index + 2, path.length);
 	};
 
 	var removePreview = function () {
@@ -846,45 +785,39 @@ var Adguard = function () {
 
 	var onScopeChange = function () {
 
-		var iframe = findIframe().contents();
-		var isBlockByUrl = iframe.find('#blockByUrl').is(':checked');
-		var isBlockSimilar = iframe.find('#blockSimilar').is(':checked');
+		var isBlockByUrl = findInIframe('#blockByUrl').is(':checked');
+		var isBlockSimilar = findInIframe('#blockSimilar').is(':checked');
+		var isBlockOneDomain = findInIframe("#oneDomainRadio").is(':checked');
+
 		handleShowBlockSettings(haveUrlBlockParameter(settings.selectedElement) && !isBlockSimilar, haveClassAttribute(settings.selectedElement) && !isBlockByUrl);
 
-		var isUrlBlock = makeUrlBlockFilter();
-		if (isUrlBlock == 'true') {
-			return;
-		}
+		var options = {
+			isBlockByUrl: isBlockByUrl,
+			urlMask: getUrlBlockAttribute(settings.selectedElement),
+			isBlockSimilar : isBlockSimilar,
+			isBlockOneDomain: isBlockOneDomain,
+			domain: getCroppedDomain()
+		};
+		var ruleText = AdguardRulesConstructorLib.constructRuleText(settings.selectedElement, options);
 
-		var path = settings.path;
-		var similarPath = settings.similarPath;
-		var indexSub = path.indexOf('##');
-		path = path.substring(indexSub + 2);
-		similarPath = similarPath.substring(indexSub + 2);
-		var isNeedReverse = 'true';
-		var prefix = utils.makeDomainPrefix(isNeedReverse);
-
-		settings.path = prefix + path;
-		settings.similarPath = prefix + similarPath;
-		settings.similarBlock = isBlockSimilar;
-
-		setPath(!isBlockSimilar ? settings.path : settings.similarPath);
+		setFilterRuleInputText(ruleText);
 	};
 
 	var onRuleAccept = function () {
 		removePreview();
 		onRulePreview();
 		settings.lastPreview = null;
-		var path = findInIframe('#filter-rule').val();
-		contentPage.sendMessage({type: 'addUserRule', ruleText: path}, function () {
+
+		var ruleText = findInIframe('#filter-rule').val();
+		contentPage.sendMessage({type: 'addUserRule', ruleText: ruleText}, function () {
 			closeAssistant();
 		});
 	};
 
 	var windowZoomFix = function () {
 		$(window).resize(function () {
-			if (settings.selectedElement && self.selector) {
-				self.selector.makeBorders(settings.selectedElement);
+			if (settings.selectedElement) {
+				AdguardSelectorLib.selectElement(settings.selectedElement);
 			}
 		});
 	};
