@@ -100,18 +100,18 @@ ContentScripts.prototype = {
 
         // Assistant
         this.registerPageContentScript([
-            'content/libs/jquery-1.8.3.min.js',
-            'content/libs/jquery-ui.min.js',
-            'content/libs/diff_match_patch.js',
-            'content/libs/dom.patched.js',
-            'content/libs/balalaika.patched.js',
-            'content/content-script/i18n-helper.js',    // Localization placeholders
-            'content/content-script/content-script.js', // Message passing
-            'content/content-script/assistant/js/start-assistant.js',
-            'content/content-script/assistant/js/tools.js',
-            'content/content-script/assistant/js/adguard-selector.js',
-            'content/content-script/assistant/js/adguard-rules-constructor.js',
-            'content/content-script/assistant/js/assistant.js'
+            'libs/jquery-1.8.3.min.js',
+            'libs/jquery-ui.min.js',
+            'libs/diff_match_patch.js',
+            'libs/dom.patched.js',
+            'libs/balalaika.patched.js',
+            'content-script/i18n-helper.js',    // Localization placeholders
+            'content-script/content-script.js', // Message passing
+            'content-script/assistant/js/start-assistant.js',
+            'content-script/assistant/js/tools.js',
+            'content-script/assistant/js/adguard-selector.js',
+            'content-script/assistant/js/adguard-rules-constructor.js',
+            'content-script/assistant/js/assistant.js'
         ], 'document_end', false);
 
         // abp:subscribe
