@@ -45,8 +45,6 @@ var FilterRulesHitCount = function () {
     EventNotifier.addListener(function (event, setting) {
         if (event == EventNotifierTypes.CHANGE_USER_SETTINGS && setting == userSettings.settings.DISABLE_COLLECT_HITS) {
             this.collectStatsEnabled = userSettings.collectHitsCount();
-            //force rebuild css-filter
-            this.antiBannerService.getRequestFilter().cssFilter.dirty = true;
         }
     }.bind(this));
 };

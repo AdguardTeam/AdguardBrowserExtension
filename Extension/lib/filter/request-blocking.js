@@ -25,6 +25,7 @@ var WorkaroundUtils = require('../../lib/utils/workaround').WorkaroundUtils;
 var Utils = require('../../lib/utils/browser-utils').Utils;
 var RequestTypes = require('../../lib/utils/common').RequestTypes;
 var userSettings = require('../../lib/utils/user-settings').userSettings;
+var Prefs = require('../../lib/prefs').Prefs;
 
 var WebRequestService = exports.WebRequestService = function (framesMap, antiBannerService, filteringLog, adguardApplication) {
     this.framesMap = framesMap;
@@ -84,8 +85,8 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
 };
 
 WebRequestService.prototype.shouldLoadAllSelectors = function (collapseAllElements) {
-    if (Utils.isFirefoxBrowser() && userSettings.collectHitsCount()) {
-        // We don't need all CSS selectors in case of FF collecting filter hits
+    if ((Utils.isFirefoxBrowser() && userSettings.collectHitsCount()) || Prefs.useGlobalStyleSheet) {
+        // We don't need all CSS selectors in case of FF using global stylesheet
         // as in this case we register browser wide stylesheet which will be
         // applied even if page was already loaded 
         return false;

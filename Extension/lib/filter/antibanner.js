@@ -1367,6 +1367,11 @@ AntiBannerService.prototype = {
         EventNotifier.addListener(function (event, setting) {
             if (event === EventNotifierTypes.CHANGE_USER_SETTINGS && setting === userSettings.settings.USE_OPTIMIZED_FILTERS) {
                 onUsedOptimizedFiltersChange();
+                return;
+            }
+            if (event == EventNotifierTypes.CHANGE_USER_SETTINGS && setting == userSettings.settings.DISABLE_COLLECT_HITS ||
+                event == EventNotifierTypes.CHANGE_PREFS && setting == 'use_global_style_sheet') {
+                this.getRequestFilter().cssFilter.dirty = true;
             }
         });
     },

@@ -1,3 +1,4 @@
+/* global XPCOMUtils */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -27,7 +28,6 @@ var filterRulesHitCount = require('./filter/filters-hit').filterRulesHitCount;
 
 var ConcurrentUtils = require('./utils/browser-utils').ConcurrentUtils;
 var Log = require('./utils/log').Log;
-var UrlUtils = require('./utils/url').UrlUtils;
 var FilterUtils = require('./utils/common').FilterUtils;
 var WebRequestHelper = require('./contentPolicy').WebRequestHelper;
 
@@ -66,24 +66,26 @@ var InterceptHandler = exports.InterceptHandler =
 	},
 
 	createInstance: function (outer, iid) {
-		if (outer != null)
+		if (outer != null) {
 			throw Cr.NS_ERROR_NO_AGGREGATION;
+        }
 
 		return this.QueryInterface(iid);
 	},
 
-	newChannel: function (uri) {
-		return new HidingChannel(uri, this.framesMap, this.antiBannerService);
-	},
+    newChannel: function (uri, loadInfo) {
+        return new HidingChannel(uri, loadInfo, this.framesMap, this.antiBannerService);
+    },
 
 	QueryInterface: XPCOMUtils.generateQI([Ci.nsIFactory, Ci.nsIAboutModule])
 };
 
 
-function HidingChannel(uri, framesMap, antiBannerService) {
-	this.URI = this.originalURI = uri;
-	this.framesMap = framesMap;
-	this.antiBannerService = antiBannerService;
+function HidingChannel(uri, loadInfo, framesMap, antiBannerService) {
+    this.URI = this.originalURI = uri;
+    this.loadInfo = loadInfo;
+    this.framesMap = framesMap;
+    this.antiBannerService = antiBannerService;
 }
 
 /**
@@ -130,6 +132,13 @@ HidingChannel.prototype = {
 		}, this);
 	},
 
+    asyncOpen2: function (listener) {
+        if (this.loadInfo && !this.loadInfo.triggeringPrincipal.equals(PrincipalService)) {
+            throw Cr.NS_ERROR_FAILURE;
+        }
+        this.asyncOpen(listener, null);
+    },
+
 	open: function () {
 		var data = this.notHideData;
 		try {
@@ -145,23 +154,26 @@ HidingChannel.prototype = {
 				// Return empty binding.
 				// The element will be collapsed because of empty binding (it does not contain dummy element which is requested by the URL)
 				data = this.hideData;
-				// Track filter rule usage
-				var rule = this._getRuleByText(this.URI.path);
-				if (rule) {
-					var domain = this.framesMap.getFrameDomain(tab);
-					if (!rule.isPermitted(domain)) {
-						data = this.notHideData;
-					}
 
-					// Rules without domain should be ignored
-					if (rule.isGeneric() && this._isGenericHideWhiteListed(tab)) {
-						data = this.notHideData;
-					}
+                var rule = this._getRuleByText(this.URI.path);
+                if (rule) {
+                    var domain = this.framesMap.getFrameDomain(tab);
+                    if (!rule.isPermitted(domain)) {
+                        data = this.notHideData;
+                    }
 
-					if (!FilterUtils.isUserFilterRule(rule) && !this.framesMap.isIncognitoTab(tab)) {
-						filterRulesHitCount.addRuleHit(domain, rule.ruleText, rule.filterId);
-					}
-				}
+                    // Rules without domain should be ignored if there is a $generichide rule applied
+                    if (this._isGenericHideWhiteListed(tab) && rule.isGeneric()) {
+                        data = this.notHideData;
+                    }
+
+                    // Track filter rule usage if user has enabled "collect ad filters usage stats"
+                    if (filterRulesHitCount.collectStatsEnabled) {
+                        if (!FilterUtils.isUserFilterRule(rule) && !this.framesMap.isIncognitoTab(tab)) {
+                            filterRulesHitCount.addRuleHit(domain, rule.ruleText, rule.filterId);
+                        }
+                    }
+                }
 			}
 		} finally {
 			// Write response data to the stream

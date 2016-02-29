@@ -27,8 +27,6 @@ var {EventNotifierTypes} = require('./utils/common');
 var {ConcurrentUtils} = require('./utils/browser-utils');
 var {Log} = require('./utils/log');
 var {userSettings} = require('./utils/user-settings');
-var {WorkaroundUtils} = require('./utils/workaround');
-var {UrlUtils} = require('./utils/url');
 var Prefs = require('./prefs').Prefs;
 var styleService = require('./styleSheetService');
 
@@ -60,37 +58,37 @@ var ElemHide = exports.ElemHide = {
         EventNotifier.addListener(function (event, settings) {
             switch (event) {
                 case EventNotifierTypes.REQUEST_FILTER_UPDATED:
-                    if (!userSettings.collectHitsCount()) {
-                        // "Send statistics for ad filters usage" option is disabled
-                        // Do nothing in this case
+                    if (!this._isGlobalStyleSheetEnabled()) {
+                        // Do nothing if global stylesheet is disabled
                         return;
                     }
                     this._saveStyleSheetToDisk();
                     break;
                 case EventNotifierTypes.CHANGE_USER_SETTINGS:
-                    this.changeElemhideMethod(settings);
+                    if (settings == userSettings.settings.DISABLE_COLLECT_HITS) {
+                        this.changeElemhideMethod(settings);
+                    }
+                    break;
+                case EventNotifierTypes.CHANGE_PREFS:
+                    if (settings == 'use_global_style_sheet') {
+                        this.changeElemhideMethod(settings);
+                    }
                     break;
             }
         }.bind(this));
 
-        if (userSettings.collectHitsCount()) {
+        if (this._isGlobalStyleSheetEnabled()) {
             this._applyCssStyleSheet(FilterStorage.getInjectCssFileURI(), true);
         }
     },
 
     /**
-     * Called if user settings have been changed.
-     * In this case we check "Send statistics for ad filters usage" option value.
+     * Called if user settings or prefs have been changed.
+     * In this case we check "Send statistics for ad filters usage" option value or "use_global_style_sheet" preference.
      * If this flag has been changed - switching CSS injection method.
-     *
-     * @param settings
      */
-    changeElemhideMethod: function (settings) {
-        if (settings != userSettings.settings.DISABLE_COLLECT_HITS) {
-            return;
-        }
-        var enableCss = userSettings.collectHitsCount();
-        if (enableCss) {
+    changeElemhideMethod: function () {
+        if (this._isGlobalStyleSheetEnabled()) {
             this._saveStyleSheetToDisk();
         } else {
             this._disableStyleSheet(FilterStorage.getInjectCssFileURI());
@@ -105,6 +103,13 @@ var ElemHide = exports.ElemHide = {
      */
     _disableStyleSheet: function (uri) {
         styleService.unloadUserSheetByUri(uri);
+    },
+
+    /**
+     * Returns true if we should register global style sheet
+     */
+    _isGlobalStyleSheetEnabled: function () {
+        return userSettings.collectHitsCount() || Prefs.useGlobalStyleSheet;
     },
 
     /**
@@ -222,9 +227,9 @@ var ElemHide = exports.ElemHide = {
             if (uri) {
                 if (needCheckFileExist) {
                     if (uri.file) {
-                        var existed = uri.file.exists();
-                        if (!existed) {
-                            Log.info('Css stylesheet does not apply file: ' + uri.path + ' because file does not exist');
+                        var exists = uri.file.exists();
+                        if (!exists) {
+                            Log.info('Css stylesheet cannot apply file: ' + uri.path + ' because file does not exist');
                             return;
                         }
                     }

@@ -132,7 +132,7 @@ UserSettings.prototype.getSafebrowsingInfo = function () {
     return {
         enabled: !this.getProperty(this.settings.DISABLE_SAFEBROWSING),
         sendStats: !this.getProperty(this.settings.DISABLE_SEND_SAFEBROWSING_STATS)
-    }
+    };
 };
 
 UserSettings.prototype.collectHitsCount = function () {
