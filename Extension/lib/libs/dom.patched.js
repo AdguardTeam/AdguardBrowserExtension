@@ -60,9 +60,9 @@ DomPredictionHelper.prototype.pathOf = function (elem) {
             if (e.className) {
                 var split = e.className.split(/ /);
 
-                for (var i = 0; i < split.length; i++) {
-                    var escaped = self.escapeCssNames(split[i]);
-                    if (split[i] && escaped.length > 0) {
+                for (var j = 0; j < split.length; j++) {
+                    var escaped = self.escapeCssNames(split[j]);
+                    if (split[j] && escaped.length > 0) {
                         path += '.' + escaped;
                     }
                 }

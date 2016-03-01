@@ -226,9 +226,12 @@ var Adguard = function () {
 			'class': 'sg_ignore adg-view-important',
 			frameBorder: 0,
 			allowTransparency: 'true'
-		}).css(cssStyle).appendTo('body');
+		}).css(cssStyle);
+
 		// Wait for iframe load and then apply styles
 		iframe.on('load', loadDefaultScriptsAndStyles.bind(null, iframe, dfd));
+		iframe.appendTo('body');
+
 		return iframe;
 	};
 
