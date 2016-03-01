@@ -1,10 +1,10 @@
-! Title: Safari Filter
-! Version: 1.0.0.40
+! Title: Safari filter
+! Version: 1.0.0.49
 ! Name: Safari Filter
 ! Description: Special filter for Safari 9+. We need a separate filter for Safari because it does not fully support rules syntax.
-! NameEn: Safari Filter
-! DescriptionEn: Special filter for Safari 9+. We need a separate filter for Safari because it does not fully support rules syntax.
-! TimeUpdated: 2016-01-30T20:28:16.731+03:00
+! NameEn: Safari filter
+! DescriptionEn: Special filter for Mobile Safari. We need a separate filter for Safari because it does not fully support rules syntax.
+! TimeUpdated: 2016-02-29T19:35:36.024+03:00
 ! Title: Adguard Safari Filter
 !
 ! Special filter for Safari. We need a separate filter for Safari because it does not fully support rules syntax.
@@ -12,6 +12,21 @@
 ! Homepage: http://adguard.com/filters.html#safari
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
 !
+!
+! http://forum.adguard.com/showthread.php?6936
+@@||go.admost.com/adx/js/admost.js^$domain=mackolik.com
+! http://forum.adguard.com/showthread.php?7046
+@@||app.medyanetads.com/ad.js$domain=mackolik.com
+@@||app.medyanetads.com/Session$domain=mackolik.com
+@@||app.medyanetads.com/Session?publisher=$domain=sahadan.com
+@@||go.admost.com/adx/get.ashx&accptck$domain=sahadan.com
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1464
+@@||static.pornhub.phncdn.com^$domain=pornhub.com
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1511
+! fixing issue with RU AdList: Counters
+@@||yandex.ru/clck/jsredir?$domain=yandex.ru
+@@||yandex.ua/clck/jsredir?$domain=yandex.ua
+@@||yandex.by/clck/jsredir?$domain=yandex.by
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1341
 ! espn - fixing video
 @@||adm.fwmrm.net/p/release/latest-JS/adm/prd/AdManager.js$domain=espn.go.com
@@ -25,6 +40,15 @@
 !--------------------------------
 !---------- lost rules ----------
 !--------------------------------
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1542
+||i-vengo.com^$empty
+rg.ru###yandex_ads_hor_pda
+||partner.mediametrics.ru^$third-party
+||adfox.ru^$third-party
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1286
+http://*.*.space/v/$third-party
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1459
+||d3nvrqlo8rj1kw.cloudfront.net^
 ! for nnm-club.me
 ! http://forum.adguard.com/showthread.php?7082
 ||directadvert.ru^$third-party
@@ -57,6 +81,10 @@ etfdailynews.com##div[style="width:300px;border:1px solid black"]
 ! Ads can't be removed without JS. Partially solution:
 pb.wtf##div[id][class] > div[style][id] > a > img
 !--- Anti-adblock ---
+! wired.com
+wired.com###veil
+@@||assets.adobedtm.com^$domain=wired.com
+@@||wired.com^$elemhide
 ! brb.to,cxz.to,fs.to
 brb.to,cxz.to,fs.to##a[data-proxied^="//core.adproxy2.com/click?"]
 brb.to,cxz.to,fs.to##div[class*="universal_ads"]

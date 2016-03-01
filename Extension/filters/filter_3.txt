@@ -1,10 +1,10 @@
 ! Title: Spyware filter
-! Version: 1.0.4.70
+! Version: 1.0.4.89
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet be tracked, use this filter.
 ! NameEn: Spyware filter
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2016-02-01T23:24:32.657+03:00
+! TimeUpdated: 2016-02-26T18:56:26.077+03:00
 ! Title: Adguard Spyware Filter
 !
 ! The most comprehensive list of various online counters and web analytics tools.
@@ -235,6 +235,7 @@ http://r.i.ua/s?
 ||analytics.aweber.com^$third-party
 ||analytics.edgesuite.net^
 ||analytics.electro-com.ru^$third-party
+||analytics.newsinc.com^
 ||analytics.query.yahoo.com^$third-party
 ||analytics.rechtslupe.org^
 ||analytics.twitter.com^$third-party
@@ -413,6 +414,8 @@ http://r.i.ua/s?
 ||c.hit.ua^$third-party
 ||c.imrk.net^$third-party
 ||c.msn.com^
+||c.newsinc.com^
+||c.opinion.com.ua^
 ||c.tbex.ru^$third-party
 ||c3metrics.com^$third-party
 ||c3tag.com^$third-party
@@ -568,14 +571,13 @@ http://r.i.ua/s?
 ||counter.gd^$third-party
 ||counter.nn.ru^
 ||counter.ok.ee^$third-party
-||counter.opinion.com.ua^$third-party
+||counter.opinion.com.ua^
 ||counter.rambler.ru^
 ||counter.scribblelive.com^
 ||counter.scribblelive.net^
 ||counter.top.ge^$third-party
 ||counter.top.kg^$third-party
 ||counter.ukr.net^
-||counter.yadro.ru^$third-party
 ||counter160.com^$third-party
 ||counter27.ch^$third-party
 ||counter4all.de^$third-party
@@ -1292,6 +1294,7 @@ http://r.i.ua/s?
 ||lloogg.com^$third-party
 ||lockview.cn^$third-party
 ||log.go.com^
+||log.krs-ix.ru^
 ||log.outbrain.com^$third-party
 ||logaholic.com^$third-party
 ||logcounter.com^$third-party
@@ -1380,6 +1383,7 @@ http://r.i.ua/s?
 ||mercent.com^$third-party
 ||metakeyproducer.com^
 ||metalyzer.com^$third-party
+||metaprom.ru/top100/counter.php
 ||meteorsolutions.com^$third-party
 ||meter-svc.nytimes.com^
 ||metka.ru/counter/^$third-party
@@ -1878,6 +1882,7 @@ http://r.i.ua/s?
 ||sa.bbc.com^
 ||sageanalyst.net^$third-party
 ||saletrack.co.uk^$third-party
+||sana.newsinc.com.s3.amazonaws.com^
 ||sapha.com^$third-party
 ||sarevtop.com^$third-party
 ||sayutracking.co.uk^$third-party
@@ -2104,6 +2109,10 @@ http://r.i.ua/s?
 ||submitnet.net^$third-party
 ||subscribe.ru/stat/$third-party
 ||suchmaschinen-ranking-hits.de^$third-party
+||sumome.com/api/event/?
+||sumome.com/api/load/
+||sumome.com/apps/contentanalytics/
+||sumome.com/apps/heatmaps/
 ||sundaysky.com^$third-party
 ||sunhome.ru/counter.php$third-party
 ||sunios.de^$third-party
@@ -2733,8 +2742,11 @@ dreamprogs.net##td[width="88"][height="31"]
 ||click.xda-developers.com/api/pixel.gif
 ||cmap.alibaba.com/landing_ae.gif
 ||cmexota.ru/templates/default/images/livinternet.png
+||downloads-photoshop.ru/templates/dp/images/count.png
+||downloads-photoshop.ru/templates/dp/images/count_top.png
 ||facebook.com/impression.php
 ||fool.com/tracking/
+||forum.krasmama.ru/js/adv_cnt_
 ||gamespot.com/js/compiled/trackingWithCT.js
 ||github.com/notifications/beacon/
 ||horizon.businessinsider.com/*/track
@@ -2782,6 +2794,21 @@ dreamprogs.net##td[width="88"][height="31"]
 !-------------------------------------------------------------------------------!
 !-------------- Whitelist ------------------------------------------------------!
 !-------------------------------------------------------------------------------!
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1639
+@@||googletagmanager.com/gtm.js$domain=unbiased.co.uk
+!
+@@||mpsnare.iesnare.com/snare.js$domain=citi.com|citibank.com|enmasse.com|login.skype.com|westernunion.com
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1554
+@@||b.scorecardresearch.com/r$domain=techhive.com
+@@||pcworldcommunication.d2.sc.omtrdc.net/b/ss/$domain=techhive.com
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1476
+@@||tags.bkrtx.com/js/bk-coretag.js^$domain=abc7.com
+! http://forum.adguard.com/showthread.php?8838
+@@||amazoncustomerservice.d2.sc.omtrdc.net^$domain=amazon.es
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1278
+@@||zdbb.net/r/?*&mailing
+! https://www.tinkoff.ru/cardtocard/
+@@||tinkoffcreditsystems.d3.sc.omtrdc.net/b/ss/$domain=tinkoff.ru,image
 ! http://forum.adguard.com/showthread.php?8784
 @@||script.ioam.de/iam.js$domain=snacktv.de|hoerzu.de|n-tv.de
 ! iguides.ru - fixing loading when scrolled to the end of the page

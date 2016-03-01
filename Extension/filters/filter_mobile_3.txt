@@ -1,10 +1,10 @@
 ! Title: Spyware filter
-! Version: 1.0.4.70
+! Version: 1.0.4.89
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet be tracked, use this filter.
 ! NameEn: Spyware filter
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2016-02-01T23:24:32.657+03:00
+! TimeUpdated: 2016-02-26T18:56:26.077+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -127,6 +127,7 @@ http://r.i.ua/s?
 ||analytics.aweber.com^$third-party
 ||analytics.edgesuite.net^
 ||analytics.electro-com.ru^$third-party
+||analytics.newsinc.com^
 ||analytics.query.yahoo.com^$third-party
 ||analytics.twitter.com^$third-party
 ||analytics.yahoo.com^
@@ -236,6 +237,8 @@ http://r.i.ua/s?
 ||c.hit.ua^$third-party
 ||c.imrk.net^$third-party
 ||c.msn.com^
+||c.newsinc.com^
+||c.opinion.com.ua^
 ||c.tbex.ru^$third-party
 ||c3tag.com^$third-party
 ||callmeasurement.com^$third-party
@@ -326,12 +329,11 @@ http://r.i.ua/s?
 ||counter.gd^$third-party
 ||counter.nn.ru^
 ||counter.ok.ee^$third-party
-||counter.opinion.com.ua^$third-party
+||counter.opinion.com.ua^
 ||counter.rambler.ru^
 ||counter.scribblelive.com^
 ||counter.top.ge^$third-party
 ||counter.ukr.net^
-||counter.yadro.ru^$third-party
 ||counter160.com^$third-party
 ||counter4all.de^$third-party
 ||countercentral.com^$third-party
@@ -767,6 +769,7 @@ http://r.i.ua/s?
 ||lloogg.com^$third-party
 ||lockview.cn^$third-party
 ||log.go.com^
+||log.krs-ix.ru^
 ||log.outbrain.com^$third-party
 ||logcounter.com^$third-party
 ||logger.co.kr^$third-party
@@ -826,6 +829,7 @@ http://r.i.ua/s?
 ||mercent.com^$third-party
 ||metakeyproducer.com^
 ||metalyzer.com^$third-party
+||metaprom.ru/top100/counter.php
 ||meteorsolutions.com^$third-party
 ||meter-svc.nytimes.com^
 ||metka.ru/counter/^$third-party
@@ -1134,6 +1138,7 @@ http://r.i.ua/s?
 ||sa.aol.com^$third-party
 ||sa.bbc.co.uk^
 ||sa.bbc.com^
+||sana.newsinc.com.s3.amazonaws.com^
 ||sayutracking.co.uk^$third-party
 ||sayyac.com^$third-party
 ||sayyac.net^$third-party
@@ -1271,6 +1276,10 @@ http://r.i.ua/s?
 ||strs.jp/$third-party
 ||sub2tech.com^$third-party
 ||subscribe.ru/stat/$third-party
+||sumome.com/api/event/?
+||sumome.com/api/load/
+||sumome.com/apps/contentanalytics/
+||sumome.com/apps/heatmaps/
 ||sundaysky.com^$third-party
 ||sunhome.ru/counter.php$third-party
 ||supercounters.com^$third-party
@@ -1729,8 +1738,11 @@ dreamprogs.net##td[width="88"][height="31"]
 ||click.xda-developers.com/api/pixel.gif
 ||cmap.alibaba.com/landing_ae.gif
 ||cmexota.ru/templates/default/images/livinternet.png
+||downloads-photoshop.ru/templates/dp/images/count.png
+||downloads-photoshop.ru/templates/dp/images/count_top.png
 ||facebook.com/impression.php
 ||fool.com/tracking/
+||forum.krasmama.ru/js/adv_cnt_
 ||gamespot.com/js/compiled/trackingWithCT.js
 ||github.com/notifications/beacon/
 ||horizon.businessinsider.com/*/track
@@ -1774,6 +1786,14 @@ dreamprogs.net##td[width="88"][height="31"]
 ||do-not-tracker.org^$third-party
 ||eviltracker.net^$third-party
 ||trackersimulator.org^$third-party
+@@||googletagmanager.com/gtm.js$domain=unbiased.co.uk
+@@||mpsnare.iesnare.com/snare.js$domain=citi.com|citibank.com|enmasse.com|login.skype.com|westernunion.com
+@@||b.scorecardresearch.com/r$domain=techhive.com
+@@||pcworldcommunication.d2.sc.omtrdc.net/b/ss/$domain=techhive.com
+@@||tags.bkrtx.com/js/bk-coretag.js^$domain=abc7.com
+@@||amazoncustomerservice.d2.sc.omtrdc.net^$domain=amazon.es
+@@||zdbb.net/r/?*&mailing
+@@||tinkoffcreditsystems.d3.sc.omtrdc.net/b/ss/$domain=tinkoff.ru,image
 @@||script.ioam.de/iam.js$domain=snacktv.de|hoerzu.de|n-tv.de
 @@||mc.yandex.ru/metrika/watch.js$domain=iguides.ru
 @@||googletagmanager.com/gtm.js?$domain=renault.ua

@@ -1,10 +1,10 @@
 ! Title: German filter
-! Version: 1.0.23.29
+! Version: 1.0.23.82
 ! Name: German filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: German filter
 ! DescriptionEn: Filter that enables removing of the ads from websites with German content.
-! TimeUpdated: 2016-02-03T19:31:21.995+03:00
+! TimeUpdated: 2016-03-01T03:00:50.488+03:00
 ! Title: Adguard German Filter.
 !
 ! Filter that enables removing of the ads from websites with German content.
@@ -16,9 +16,9 @@
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
 !
 !
-!-------------------------------------------------------------------------------!
-!------------------ General JS API ---------------------------------------------!
-!-------------------------------------------------------------------------------!
+!---------------------------------------------------------------------------!
+!-------------- General JS API ---------------------------------------------!
+!---------------------------------------------------------------------------!
 ! JS API START
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -26,45 +26,45 @@
 #%#window.AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
 ! JS API FINISH
-!--------------------------------------------------------!
-!-------------- AD networks -----------------------------!
-!--------------------------------------------------------!
+!---------------------------------------------------------------------------!
+!-------------- Advertising networks ---------------------------------------!
+!---------------------------------------------------------------------------!
+||adshot.de^$third-party
 ||car4you.ch/widgets/$third-party
+||content.acc-hd.de^$third-party
 ||stroeerdigitalmedia.de^$third-party
 ||veeseo.com^$third-party
-||content.acc-hd.de^$third-party
-||adshot.de^$third-party
-!--------------------------------------------------------!
-!-------------- Whitelist -------------------------------!
-!--------------------------------------------------------!
-! http://forum.adguard.com/showthread.php?8976
-! for correct blocking ads on tv4play.se
-@@||videoplaza1.tv/proxy/as3_vp_player-ku
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/1395
-@@||lotto-bw.de^$jsinject
-! http://forum.adguard.com/showthread.php?8387
-@@||lustich.de.adadapter.netzathleten-media.de/API-1.0/*/naMediaAd.js$domain=lustich.de
-! http://forum.adguard.com/showthread.php?7970
-@@||toggo.de/module/catchup/admeta.php
-! rtl.de - broken player
-@@||cdn.videoplaza.tv/contrib/de-ipd/svm/homadConfigVideoplaza-rtl.json$domain=rtl.de
-! http://forum.adguard.com/showthread.php?8058
-@@||smartadserver.com/ac?$domain=bildderfrau.de
-! http://forum.adguard.com/showthread.php?8061
-@@||spiele.rtl.de/landingpage/index/$document
-! http://forum.adguard.com/showthread.php?7925
-! http://forum.adguard.com/showthread.php?7970
-@@||cdn.videoplaza.tv/*/homadConfigVideoplaza-*.json$domain=nowtv.de|rtl2.de|bilder.static-fra.de|toggo.de
-! http://forum.adguard.com/showthread.php?6081
-@@||ad.71i.de^$domain=prosieben.de
-! http://forum.adguard.com/showthread.php?7179
-@@||ndr.de/common/mediaplayer/branding/*.css
-! http://forum.adguard.com/showthread.php?2874-servustv-com-(google-chrome-firefox)
-@@||ad3.adfarm1.adition.com^$domain=servustv.com,other
-!--------------------------------------------------------!
-!-------------- Anti-adblock rules ----------------------!
-!--------------------------------------------------------!
+!---------------------------------------------------------------------------!
+!-------------- Anti-adblock rules -----------------------------------------!
+!---------------------------------------------------------------------------!
+!
+! These rules are against anti-adblock scripts
+!
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/316
+kurier.at#@#.adblock
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1608
+||laterpay.net^$domain=sport1.de
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1538
+@@||smartadserver.com/diff/*/smartad.js$domain=autobild.de
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1492
+||laterpay.net^$domain=schoener-wohnen.de
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1493
+||laterpay.net^$domain=livingathome.de
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1494
+||laterpay.net^$domain=essen-und-trinken.de
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1491
+@@||js.chefkoch-cdn.de/js/default/userinfo/werbe-banner/*.doubleclicktag.js
+! http://forum.adguard.com/showthread.php?8908
+@@||cdn.videoplaza.tv/contrib/fr-canalplus/svm/homadConfigVideoplaza-d8.json^$domain=d8.tv
+@@||cdn.videoplaza.tv/contrib/de-ipd/svm/homadConfigVideoplaza-vox.json$domain=vox.de
+@@||cdn.videoplaza.tv/contrib/de-ipd/svm/homadConfigVideoplaza-nowtv.json
+@@||cdn.static-fra.de/*/adcontrol.min.js$domain=rtl.de|clipfish.de|nowtv.de
+@@||cdn.videoplaza.tv/contrib/de-ipd/svm/homadConfigVideoplaza-rtl.json
+@@||clipfish.de^$generichide
+@@||nowtv.de^$elemhide
+@@||rtl.de^$generichide
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1441#event-534317584
+@@||smartadserver.com/diff/*/divscripte/$domain=onmeda.de
 @@||smartadserver.com/diff/*/smartad.js$domain=onmeda.de
 @@||sascdn.com/diff/*/pages/onmeda.js$domain=onmeda.de
 ! http://forum.adguard.com/showthread.php?8892
@@ -77,7 +77,7 @@
 @@||adswithsalt.com/*/ad-loading.pic
 @@||adternal.com/*/ad-loading.bmp
 ! Prevent AdFender detection
-@@/ad_bomb/*$image,domain=sat1.de|pcwelt.de|wiesbadener-kurier.de|wiesbadener-tagblatt.de|lampertheimer-zeitung.de|boerse-online.de|welt.de|wetter.com
+@@/ad_bomb/*$image,domain=gamepro.de|brigitte.de|gala.de|hoerzu.de|autobild.de|sat1.de|pcwelt.de|wiesbadener-kurier.de|wiesbadener-tagblatt.de|lampertheimer-zeitung.de|boerse-online.de|welt.de|wetter.com
 ! lustich.de - AdFender
 ||uobsoe.com^$domain=lustich.de
 ! bild.de
@@ -130,238 +130,15 @@ t3n.de##.abContentMsg
 @@||4p.de/*adtag.check.js
 !
 teleboy.ch#@#.adWrapper
-!--------------------------------------------------------!
-!-------------------- Specific rules --------------------!
-!--------------------------------------------------------!
-! http://forum.adguard.com/showthread.php?8979 (#17)
-||static.p7s1.com/vendor/webtrekk
-!
-winfuture.de##.acceptable_ad
-||videoplaza1.tv/proxy/^$domain=tv4play.se
-berlindailysun.com##.bannergroup
-||berlindailysun.com/images/banners/
-t3n.de##iframe[class*="hb-large"]
-computerwoche.de##.idgContentListExtendableCommercial
-hardwareluxx.de##aside[id^="rec"]
-||assets.wallstreet-online.de/_media/5688/degiro-300x50.gif
-t-online.de##.sky_anz
-chip.de##div[id^="contentad-"]
-chip.de##.NewsArticle__SponsoredLinks
-chip.de##a[href^="http://adx.chip.de/www/delivery/ck.php"]
-||amazon.de/mn/search/ajax/ref=sr_pg_
-||puls4.com/win2day/
-spiegel.de##.adition
-||video.n-tv.de/abr/*/opener*.mp4
-express.de##article[data-title$="Anzeige"]
-utopia.de##.ad-intern
-utopia.de###billboard
-general-anzeiger-bonn.de##div[class$="box teaserbanner"]
-general-anzeiger-bonn.de##a[href^="http://a.twiago.com/adnoclick.php"]
-delamar.de##a[onclick^="_gaq.push("]
-delamar.de##div[class^="wk wk_"]
-metal-hammer.de##div[class$="grid-box-optional_ad"]
-metal-hammer.de##div[class^="ph-ad"]
-musikexpress.de##div[class^="ph-ad"]
-pz-news.de##.nfy-ts-ads
-pz-news.de##img[data-src^="/pu_pz/scripts/holder.js"]
-pz-news.de##aside[class*="adslider"]
-pz-news.de##aside[class*="nfy-ads"]
-pz-news.de##aside[class*="nfy-merge-marked"]
-del.org##a[href^="http://aus.laola1.tv/RealMedia/ads"]
-||cdnb.allaboutvision.com/i/slug-ad
-apotheken-umschau.de##div[class$="advertMedRec visibleAd"]
-operationauge.de##.inPageAdd300x250-wrapper
-||partner.gewinnspiele.de^
-kn-online.de##a[href^="http://partner.gewinnspiele.de/"]
-pcgames.de###saturn_teaser
-videogameszone.de##.saturn_katalog
-boerse-online.de###hvb-homepage-integration-container
-||boerse-online.de/Images/b_partner/
-isnichwahr.de##div[class*="simpleads-ad-"]
-/commoncfm/images/microsoftxboxone/$domain=buffed.de|videogameszone.de|gamesaktuell.de|pcgames.de|gamezone.de
-||magine.com/de/promotions/_banners/$third-party
-bild.de##div[data-vr-zone="tr-stoerer-auto-erotik"]
-t-online.de##a[href^="http://im.banner.t-online.de/adlink"]
-bravo.de##section[class*="teaserAd"]
-cosmopolitan.de##li[class*="tsr anzeige"]
-glamour.de##a[data-custom-tracking*="track.adform.net"]
-glamour.de##a[href^="http://bit.ly"][class^="teaser"]
-helles-koepfchen.de##div[id^="Superbanner"]
-helles-koepfchen.de###Skyscraper
-helles-koepfchen.de###Sky_left
-helles-koepfchen.de##.Wer
-spielaffe.de##div[id^="app_advertising"]
-spielaffe.de###partner_container_body
-all-in.de##div[id^="tplident"]
-all-in.de##.werb
-all-in.de##div[onclick^="javascript:window.location.href='"][class$="specbox"]
-garten-landschaft.de##aside[id*="adrotate"]
-20min.ch##.teaser.panelbox
-bluewin.ch##div[class$="mod modDirectTo logos"]
-tagesanzeiger.ch##p[class$="adsTitle"]
-tagesanzeiger.ch##span[class$="labelAd"]
-oe24.at##.marker.ads
-meinestadt.de##div[id^="ms_ad_wrapper_"]
-! http://forum.adguard.com/showthread.php?4327
-bild.de##div[data-mark$="Anzeige"]
-bild.de##a[class$="mark"]
-bild.de##img[alt$="Railnation "]
-bild.de##img[alt$="Mobile.de "]
-bild.de##img[alt$="Horoskop bei Bild "]
-bild.de##div[class$="rectangle ad-mark"]
-! http://forum.adguard.com/showthread.php?6898
-gamezone.de##a[href="/microsoftxboxone/"]
-! http://forum.adguard.com/showthread.php?7827
-||infranken.de/*/AdDeveloper*.php?*
-! http://forum.adguard.com/showthread.php?7782
-pcgameshardware.de,pcgames.de###paperchase
-pcgameshardware.de###plakatinhalttag_1
-pcgameshardware.de###plakatinhalttag_2
-pcgames.de,pcgameshardware.de###pricehitsTextTeaser
-pcgameshardware.de##.bargainLp
-pcgameshardware.de##.topFrameEddie
-pcgameshardware.de##.contentFrameEddie
-! http://forum.adguard.com/showthread.php?7826
-futurezone.at##div[class*="karriereat"]
-||durchblicker.at/iframes^$third-party
-! http://forum.adguard.com/showthread.php?7766
-merkur.de##.id-Teaser-el--promotion
-merkur.de##.id-Container--promotion
-! http://forum.adguard.com/showthread.php?7768
-fr-online.de##.ad-location-container
-! http://forum.adguard.com/showthread.php?7763
-wetter24.de###ads_placeholder
-! http://forum.adguard.com/showthread.php?7764
-tz.de##div[class*="id-Container--promo"]
-! http://forum.adguard.com/showthread.php?7756
-||dlh.net/brandings/
-! http://forum.adguard.com/showthread.php?7735
-welt.de##div[class^="bitextanz"]
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/935
-spiegel.de##div#wrapper > div#spColumnAd+div[id][class] > img
-spiegel.de##div#spOasTop+div[class] > div[id] > img
-!
-dvdschnaeppchen.de###myatu_bgm_img_group
-||pcgames.de/tsimg/432132/gamesbusiness_promobox_300x150px.gif
-arcor.de##a[href$="https://zuhauseplus.vodafone.de/dsl/zuhause-m.html"]
-bild.de###fullBanner
-! http://forum.adguard.com/showthread.php?7074
-notebooksbilliger.de##.banner_top
-! http://forum.adguard.com/showthread.php?6660
-sport.de##.related > div[style="width:300px;height:510px;"]
-!
-! http://forum.adguard.com/showthread.php?6213
-nordbayern.de##div[id*="-web-ad-"]
-! http://forum.adguard.com/showthread.php?6201
-netmoms.de##.advertised-teaser
-netmoms.de##.partnerbox.sponsorbox
-! http://forum.adguard.com/showthread.php?6200
-freundin.de##a[href^="http://www.ebalance.de/?"]
-||freundin.de/*-widecolBanner-
-freundin.de##a[href*="sponsored-post"]
-! http://forum.adguard.com/showthread.php?6082
-gamestar.de##.centeredDiv>div[id][style*="inline-block"]
-! forum.adguard.com/showthread.php?5074
-||sky.de/web/cms/static/img/595x80_
-! http://forum.adguard.com/showthread.php?5521
-gta-5-forum.de###mpu
-gta-5-forum.de##.blocksubhead
-||teccentral.de/images/tec/entertainment.png$domain=gta-5-forum.de
-! http://forum.adguard.com/showthread.php?5084
-pcwelt.de##.idgGoogleAdTag
-! http://forum.adguard.com/showthread.php?4492
-syfy.de###block-block-2 p[style="text-align: right; margin: 0; width: 305px;"]
-! http://forum.adguard.com/showthread.php?4493
-syfy.com##.tile--ad
-! http://forum.adguard.com/showthread.php?4520
-allaboutsamsung.de##div[style="width:300px;min-height:250px;padding-bottom:4px;padding-top:4px;"]
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/316
-kurier.at#@#.adblock
-! http://forum.adguard.com/showthread.php?3950
-sky.de##div[class*="banner300"]
-sky.de##div[id^="werbung"]
-! vip.de
-vip.de##.vip-medium-rectangle.rtli-mr-large
-vip.de##.vip-teaser.large
-vip.de##.vip-medium-rectangle.teaser_item
-! sat1.de
-sat1.de##body #ad-fullbanner-outer
-sat1.de##a[href="http://www.sat1.de/service/warum-werbung"]
-! stern.de
-||stern.de/media/flash/brightcove-plugins/homad/
-||stern.de/faibl_adblocker_detector/
-stern.de##.xbCiOLzG
-stern.de##.aqFeZjmy
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/132
-focus.de##a[href="http://www.focus.de/intern/adblocker/"]
-southpark.de##div[style*="background: url('/layout/common/img/geoblock/background.png')"]
-! http://forum.adguard.com/showthread.php?1810
-spiegel.de##img[src^="http://adserv."]
-! http://forum.adguard.com/showthread.php?4428
-amica.de###teasBoxfwid19 > div.pd-b15
-amica.de###teasBoxfwid18 > div.pd-b15
-amica.de##.mg-l1.pd-l19
-! http://forum.adguard.com/showthread.php?4331
-abendzeitung-muenchen.de###id_423d7455_84ab_4957_ba5a_82b83784f89d
-abendzeitung-muenchen.de###id_207f662e_7487_4dc7_87f8_ae31d2603810
-abendzeitung-muenchen.de##.AnzeigenHead
-||millionenchance.de/externalWidget/$domain=abendzeitung-muenchen.de
-! http://forum.adguard.com/showthread.php?4334
-bbv-net.de##.adtext
-! http://forum.adguard.com/showthread.php?4343
-merkur-online.de##.id-Container--promotion
-! http://forum.adguard.com/showthread.php?4344
-jeversches-wochenblatt.de##style[style="font-size:9px;color:#2b2b2b;"]
-jeversches-wochenblatt.de##.superbanner
-! http://forum.adguard.com/showthread.php?4345
-svz.de##.ext-content.hidden-phone
-! http://forum.adguard.com/showthread.php?4346
-waz-online.de##.pda-adhead
-waz-online.de##.pda-ad-dart
-! http://forum.adguard.com/showthread.php?4342
-mz-web.de##.ad-location-container
-! http://forum.adguard.com/showthread.php?4341
-westfalen-blatt.de##div[style="margin-top: 30px; padding: 5px 0 5px 0; text-align: center; background-color: #f2f2f2"]
-! http://forum.adguard.com/showthread.php?4335
-bodensee-woche.de##span.anzeigehinweis
-! http://forum.adguard.com/showthread.php?4328
-tvtoday.de##a[href^="https://www.vicampo.de/"]
-||snacktv.de/snacktag/snacktag.js$domain=tvtoday.de
-! http://forum.adguard.com/showthread.php?4327
-bild.de##div[data-vr-zone^="tb-1414"]
-! http://forum.adguard.com/showthread.php?4326
-computerbild.de###mailderrteaser
-! http://forum.adguard.com/showthread.php?4333
-||morgenpost.de/bin/src-115530370.png
-morgenpost.de###hsmrect01
-morgenpost.de##.grid_4.alpha
-! http://forum.adguard.com/showthread.php?4332
-augsburger-allgemeine.de##div.anzeige_box
-! http://forum.adguard.com/showthread.php?4330
-onlinenewspapers.com##p.ad
-! http://forum.adguard.com/showthread.php?4329
-tvdigital.de##span.ad
-! http://forum.adguard.com/showthread.php?4336
-westline.de##div[class^="anzeige"]
-! http://forum.adguard.com/showthread.php?4223
-gamona.de##.werbung ._container ~ .ad-label
-! http://forum.adguard.com/showthread.php?4259
-||static.focus.de/fol/multimedia/pkv_rechner/$third-party
-!
-energy.de##.adverttitle
-tvspielfilm.de##div[class^="netflix"]
-tvtoday.de###Netflix
-weltderwunder.de##div[class^="adHint"]
-freshideen.com##div[class^="adHolder"]
-!-------------- General JS API -------------------------------------------!
-! JS API START
-#%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
-#%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
-#%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
-#%#window.AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
-#%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
-! JS API FINISH
-!-------------- JS rules -------------------------------------------------!
+!---------------------------------------------------------------------------!
+!-------------- General element hiding rules -------------------------------!
+!---------------------------------------------------------------------------!
+!---------------------------------------------------------------------------!
+!-------------- General javascript, CSS and HTML extensions ----------------!
+!---------------------------------------------------------------------------!
+!--------------------------------------!
+!------- JS rules ---------------------!
+!--------------------------------------!
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1411
 sueddeutsche.de#%#window.blockAdBlock = function() {};
 ! http://forum.adguard.com/showthread.php?8887
@@ -394,14 +171,303 @@ pcgames.de#%#AG_onLoad(function() { $('a[href*="/E-Commerce"]').closest('div[cla
 menshealth.de#%#function google_ad_request_done() {};
 !
 motorsport-total.com,donnerwetter.de#%#window.trckd = true;
-welt.de,tvspielfilm.de,20min.ch,focus.de,wiesbadener-kurier.de,wiesbadener-tagblatt.de,lampertheimer-zeitung.de,abendzeitung-muenchen.de,winboard.org,wetteronline.at,spiegel.de,rp-online.de,shz.de,arcor.de,notebookcheck.net,computerbild.de,webfail.com,finanzen.net,prosiebenmaxx.de,sat1gold.de,wetter.com,kabeleins.de,prosieben.de,serienjunkies.de,menshealth.de,chip.de,teccentral.de,ransfermarkt.de,transfermarkt.de,wetteronline.de,notebookcheck.com,gamestar.de,ran.de#%#window.uabInject = function() {};
-wetteronline.de,gamona.de,gamepro.de,gta-5-forum.de,gamestar.de,prosieben.de,stern.de,webfail.com,focus.de,finanzen.net,prosiebenmaxx.de,sixx.de,kabeleins.de,sat1gold.de,tvtoday.de,tvspielfilm.de,wetter.com,gamestar.de#%#window.UABPtracked = true;
+autobild.de,welt.de,tvspielfilm.de,20min.ch,focus.de,wiesbadener-kurier.de,wiesbadener-tagblatt.de,lampertheimer-zeitung.de,abendzeitung-muenchen.de,winboard.org,wetteronline.at,spiegel.de,rp-online.de,shz.de,arcor.de,notebookcheck.net,computerbild.de,webfail.com,finanzen.net,prosiebenmaxx.de,sat1gold.de,wetter.com,kabeleins.de,prosieben.de,serienjunkies.de,menshealth.de,chip.de,teccentral.de,ransfermarkt.de,transfermarkt.de,wetteronline.de,notebookcheck.com,gamestar.de,ran.de,tvtoday.de,hoerzu.de,gala.de,brigitte.de,gamepro.de#%#window.uabInject = function() {};
+wetteronline.de,gamona.de,gamepro.de,gta-5-forum.de,prosieben.de,stern.de,webfail.com,focus.de,finanzen.net,prosiebenmaxx.de,sixx.de,kabeleins.de,sat1gold.de,tvtoday.de,tvspielfilm.de,wetter.com,gamestar.de#%#window.UABPtracked = true;
 prosieben.de,stern.de,webfail.com,focus.de,finanzen.net,prosiebenmaxx.de,sixx.de,kabeleins.de#%#AG_onLoad(function() { window.UABPTrack = function() {}; });
-!-------------- HTML rules -----------------------------------------------!
+!--------------------------------------!
+!------- CSS fixes --------------------!
+!--------------------------------------!
+!
+!--------------------------------------!
+!------- Content filtering rules ------!
+!--------------------------------------!
 ! http://forum.adguard.com/showthread.php?8888
 ! http://forum.adguard.com/showthread.php?8887
 ! http://forum.adguard.com/showthread.php?8853
-!-------------- Easylist Germany rules -----------------------------------!
+!---------------------------------------------------------------------------!
+!-------------- General URL blocking rules ---------------------------------!
+!---------------------------------------------------------------------------!
+!---------------------------------------------------------------------------!
+!-------------- Rules for specific websites --------------------------------!
+!---------------------------------------------------------------------------!
+!--------------------------------------------------------!
+!-------------------- Specific rules --------------------!
+!--------------------------------------------------------!
+! http://forum.adguard.com/showthread.php?8979 (#17)
+||static.p7s1.com/vendor/webtrekk
+!
+regensburg-digital.de##img[alt$="_werbung"]
+wanted.de##div[class$="Tts Tmc0v Twpx300 Thpx250"]
+wanted.de##div[class$="Tts Tadha Twpx300 Thpx600"]
+teltarif.de###LxShop
+helles-koepfchen.de###Sky_left
+helles-koepfchen.de###Skyscraper
+utopia.de###billboard
+boerse-online.de###hvb-homepage-integration-container
+spielaffe.de###partner_container_body
+pcgames.de###saturn_teaser
+chip.de##.NewsArticle__SponsoredLinks
+helles-koepfchen.de##.Wer
+winfuture.de##.acceptable_ad
+utopia.de##.ad-intern
+spiegel.de##.adition
+tvspielfilm.de##.adsd_rectangle
+tvspielfilm.de##.advertising-box
+berlindailysun.com##.bannergroup
+computerwoche.de##.idgContentListExtendableCommercial
+operationauge.de##.inPageAdd300x250-wrapper
+oe24.at##.marker.ads
+pz-news.de##.nfy-ts-ads
+autobild.de##.partnerlabel
+videogameszone.de##.saturn_katalog
+t-online.de##.sky_anz
+20min.ch##.teaser.panelbox
+autobild.de##.teaserbox.rectangle
+all-in.de##.werb
+gaeubote.de##.werbung_oben_rechts
+/commoncfm/images/microsoftxboxone/$domain=buffed.de|gamesaktuell.de|gamezone.de|pcgames.de|videogameszone.de
+glamour.de##a[data-custom-tracking*="track.adform.net"]
+general-anzeiger-bonn.de##a[href^="http://a.twiago.com/adnoclick.php"]
+chip.de##a[href^="http://adx.chip.de/www/delivery/ck.php"]
+del.org##a[href^="http://aus.laola1.tv/RealMedia/ads"]
+glamour.de##a[href^="http://bit.ly"][class^="teaser"]
+t-online.de##a[href^="http://im.banner.t-online.de/adlink"]
+kn-online.de##a[href^="http://partner.gewinnspiele.de/"]
+delamar.de##a[onclick^="_gaq.push("]
+express.de##article[data-title$="Anzeige"]
+pz-news.de##aside[class*="adslider"]
+pz-news.de##aside[class*="nfy-ads"]
+pz-news.de##aside[class*="nfy-merge-marked"]
+garten-landschaft.de##aside[id*="adrotate"]
+hardwareluxx.de##aside[id^="rec"]
+computerbild.de##body > div[id][style^="z-index:"]
+gamestar.de##div[class$="ads_outer"]
+apotheken-umschau.de##div[class$="advertMedRec visibleAd"]
+general-anzeiger-bonn.de##div[class$="box teaserbanner"]
+metal-hammer.de##div[class$="grid-box-optional_ad"]
+bluewin.ch##div[class$="mod modDirectTo logos"]
+wired.de##div[class*="featured-advertise"]
+isnichwahr.de##div[class*="simpleads-ad-"]
+metal-hammer.de,musikexpress.de##div[class^="ph-ad"]
+delamar.de##div[class^="wk wk_"]
+bild.de##div[data-vr-zone="tr-stoerer-auto-erotik"]
+helles-koepfchen.de##div[id^="Superbanner"]
+spielaffe.de##div[id^="app_advertising"]
+chip.de##div[id^="contentad-"]
+meinestadt.de##div[id^="ms_ad_wrapper_"]
+all-in.de##div[id^="tplident"]
+tvspielfilm.de##div[id^="wallpaper"]
+all-in.de##div[onclick^="javascript:window.location.href='"][class$="specbox"]
+t3n.de##iframe[class*="hb-large"]
+pz-news.de##img[data-src^="/pu_pz/scripts/holder.js"]
+computerbild.de##img[height="250"][width="1000"]
+cosmopolitan.de##li[class*="tsr anzeige"]
+tagesanzeiger.ch##p[class$="adsTitle"]
+bravo.de##section[class*="teaserAd"]
+tagesanzeiger.ch##span[class$="labelAd"]
+||amazon.de/mn/search/ajax/ref=sr_pg_
+||assets.wallstreet-online.de/_media/5688/degiro-300x50.gif
+||berlindailysun.com/images/banners/
+||boerse-online.de/Images/b_partner/
+||cdnb.allaboutvision.com/i/slug-ad
+||magine.com/de/promotions/_banners/$third-party
+||partner.gewinnspiele.de^
+||puls4.com/win2day/
+||video.n-tv.de/abr/*/opener*.mp4
+||videoplaza1.tv/proxy/^$domain=tv4play.se
+||widgets.outbrain.com/outbrain.js$domain=netzwelt.de
+||widgets.outbrain.com/outbrain.js$domain=winfuture.de
+! http://forum.adguard.com/showthread.php?4327
+bild.de##a[class$="mark"]
+bild.de##div[class$="rectangle ad-mark"]
+bild.de##div[data-mark$="Anzeige"]
+bild.de##img[alt$="Horoskop bei Bild "]
+bild.de##img[alt$="Mobile.de "]
+bild.de##img[alt$="Railnation "]
+! http://forum.adguard.com/showthread.php?6898
+gamezone.de##a[href="/microsoftxboxone/"]
+! http://forum.adguard.com/showthread.php?7827
+||infranken.de/*/AdDeveloper*.php?
+! http://forum.adguard.com/showthread.php?7782
+pcgames.de,pcgameshardware.de###paperchase
+pcgameshardware.de###plakatinhalttag_1
+pcgameshardware.de###plakatinhalttag_2
+pcgames.de,pcgameshardware.de###pricehitsTextTeaser
+pcgameshardware.de##.bargainLp
+pcgameshardware.de##.contentFrameEddie
+pcgameshardware.de##.topFrameEddie
+! http://forum.adguard.com/showthread.php?7826
+futurezone.at##div[class*="karriereat"]
+||durchblicker.at/iframes^$third-party
+! http://forum.adguard.com/showthread.php?7766
+merkur.de##.id-Container--promotion
+merkur.de##.id-Teaser-el--promotion
+! http://forum.adguard.com/showthread.php?7768
+fr-online.de##.ad-location-container
+! http://forum.adguard.com/showthread.php?7763
+wetter24.de###ads_placeholder
+! http://forum.adguard.com/showthread.php?7764
+tz.de##div[class*="id-Container--promo"]
+! http://forum.adguard.com/showthread.php?7756
+||dlh.net/brandings/
+! http://forum.adguard.com/showthread.php?7735
+welt.de##div[class^="bitextanz"]
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/935
+spiegel.de##div#spOasTop + div[class] > div[id] > img
+spiegel.de##div#wrapper > div#spColumnAd + div[id][class] > img
+!
+bild.de###fullBanner
+dvdschnaeppchen.de###myatu_bgm_img_group
+arcor.de##a[href$="https://zuhauseplus.vodafone.de/dsl/zuhause-m.html"]
+||pcgames.de/tsimg/432132/gamesbusiness_promobox_300x150px.gif
+! http://forum.adguard.com/showthread.php?7074
+notebooksbilliger.de##.banner_top
+! http://forum.adguard.com/showthread.php?6660
+sport.de##.related > div[style="width:300px;height:510px;"]
+!
+! http://forum.adguard.com/showthread.php?6213
+nordbayern.de##div[id*="-web-ad-"]
+! http://forum.adguard.com/showthread.php?6201
+netmoms.de##.advertised-teaser
+netmoms.de##.partnerbox.sponsorbox
+! http://forum.adguard.com/showthread.php?6200
+freundin.de##a[href*="sponsored-post"]
+freundin.de##a[href^="http://www.ebalance.de/?"]
+||freundin.de/*-widecolBanner-
+! http://forum.adguard.com/showthread.php?6082
+gamestar.de##.centeredDiv > div[id][style*="inline-block"]
+! forum.adguard.com/showthread.php?5074
+||sky.de/web/cms/static/img/595x80_
+! http://forum.adguard.com/showthread.php?5521
+gta-5-forum.de###mpu
+gta-5-forum.de##.blocksubhead
+||teccentral.de/images/tec/entertainment.png$domain=gta-5-forum.de
+! http://forum.adguard.com/showthread.php?5084
+pcwelt.de##.idgGoogleAdTag
+! http://forum.adguard.com/showthread.php?4492
+syfy.de###block-block-2 p[style="text-align: right; margin: 0; width: 305px;"]
+! http://forum.adguard.com/showthread.php?4493
+syfy.com##.tile--ad
+! http://forum.adguard.com/showthread.php?4520
+allaboutsamsung.de##div[style="width:300px;min-height:250px;padding-bottom:4px;padding-top:4px;"]
+! http://forum.adguard.com/showthread.php?3950
+sky.de##div[class*="banner300"]
+sky.de##div[id^="werbung"]
+! vip.de
+vip.de##.vip-medium-rectangle.rtli-mr-large
+vip.de##.vip-medium-rectangle.teaser_item
+vip.de##.vip-teaser.large
+! sat1.de
+sat1.de##a[href="http://www.sat1.de/service/warum-werbung"]
+sat1.de##body #ad-fullbanner-outer
+! stern.de
+stern.de##.aqFeZjmy
+stern.de##.xbCiOLzG
+||stern.de/faibl_adblocker_detector/
+||stern.de/media/flash/brightcove-plugins/homad/
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/132
+focus.de##a[href="http://www.focus.de/intern/adblocker/"]
+southpark.de##div[style*="background: url('/layout/common/img/geoblock/background.png')"]
+! http://forum.adguard.com/showthread.php?1810
+spiegel.de##img[src^="http://adserv."]
+! http://forum.adguard.com/showthread.php?4428
+amica.de###teasBoxfwid18 > div.pd-b15
+amica.de###teasBoxfwid19 > div.pd-b15
+amica.de##.mg-l1.pd-l19
+! http://forum.adguard.com/showthread.php?4331
+abendzeitung-muenchen.de###id_207f662e_7487_4dc7_87f8_ae31d2603810
+abendzeitung-muenchen.de###id_423d7455_84ab_4957_ba5a_82b83784f89d
+abendzeitung-muenchen.de##.AnzeigenHead
+||millionenchance.de/externalWidget/$domain=abendzeitung-muenchen.de
+! http://forum.adguard.com/showthread.php?4334
+bbv-net.de##.adtext
+! http://forum.adguard.com/showthread.php?4343
+merkur-online.de##.id-Container--promotion
+! http://forum.adguard.com/showthread.php?4344
+jeversches-wochenblatt.de##.superbanner
+jeversches-wochenblatt.de##style[style="font-size:9px;color:#2b2b2b;"]
+! http://forum.adguard.com/showthread.php?4345
+svz.de##.ext-content.hidden-phone
+! http://forum.adguard.com/showthread.php?4346
+waz-online.de##.pda-ad-dart
+waz-online.de##.pda-adhead
+! http://forum.adguard.com/showthread.php?4342
+mz-web.de##.ad-location-container
+! http://forum.adguard.com/showthread.php?4341
+westfalen-blatt.de##div[style="margin-top: 30px; padding: 5px 0 5px 0; text-align: center; background-color: #f2f2f2"]
+! http://forum.adguard.com/showthread.php?4335
+bodensee-woche.de##span.anzeigehinweis
+! http://forum.adguard.com/showthread.php?4328
+tvtoday.de##a[href^="https://www.vicampo.de/"]
+||snacktv.de/snacktag/snacktag.js$domain=tvtoday.de
+! http://forum.adguard.com/showthread.php?4327
+bild.de##div[data-vr-zone^="tb-1414"]
+! http://forum.adguard.com/showthread.php?4326
+computerbild.de###mailderrteaser
+! http://forum.adguard.com/showthread.php?4333
+morgenpost.de###hsmrect01
+morgenpost.de##.grid_4.alpha
+||morgenpost.de/bin/src-115530370.png
+! http://forum.adguard.com/showthread.php?4332
+augsburger-allgemeine.de##div.anzeige_box
+! http://forum.adguard.com/showthread.php?4330
+onlinenewspapers.com##p.ad
+! http://forum.adguard.com/showthread.php?4329
+tvdigital.de##span.ad
+! http://forum.adguard.com/showthread.php?4336
+westline.de##div[class^="anzeige"]
+! http://forum.adguard.com/showthread.php?4223
+gamona.de##.werbung ._container ~ .ad-label
+! http://forum.adguard.com/showthread.php?4259
+||static.focus.de/fol/multimedia/pkv_rechner/$third-party
+!
+tvtoday.de###Netflix
+energy.de##.adverttitle
+weltderwunder.de##div[class^="adHint"]
+freshideen.com##div[class^="adHolder"]
+tvspielfilm.de##div[class^="netflix"]
+!---------------------------------------------------------------------------!
+!------ White list. Fixing filtration errors (false-positive) --------------!
+!---------------------------------------------------------------------------!
+!
+! White list. Fixing filtration errors (false-positive)
+!
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1648
+@@||cdn.inside-handy.de/ih/top/
+! http://forum.adguard.com/showthread.php?9165
+@@||google-analytics.com/analytics.js^$domain=freshmilk.tv
+! http://forum.adguard.com/showthread.php?9166
+@@||assets.sport1.de/bundles/
+@@||doubleclick.net^$domain=video.sport1.de
+@@||nuggad.net^$domain=video.sport1.de
+@@||ad.71i.de^$domain=video.sport1.de
+! fixing n-tv.de
+@@||n-tv.de/stat/
+! http://forum.adguard.com/showthread.php?8976
+! for correct blocking ads on tv4play.se
+@@||videoplaza1.tv/proxy/as3_vp_player-ku
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1395
+@@||lotto-bw.de^$jsinject
+! http://forum.adguard.com/showthread.php?8387
+@@||lustich.de.adadapter.netzathleten-media.de/API-1.0/*/naMediaAd.js$domain=lustich.de
+! http://forum.adguard.com/showthread.php?7970
+@@||toggo.de/module/catchup/admeta.php
+! rtl.de - broken player
+@@||cdn.videoplaza.tv/contrib/de-ipd/svm/homadConfigVideoplaza-rtl.json$domain=rtl.de
+! http://forum.adguard.com/showthread.php?8058
+@@||smartadserver.com/ac?$domain=bildderfrau.de
+! http://forum.adguard.com/showthread.php?8061
+@@||spiele.rtl.de/landingpage/index/$document
+! http://forum.adguard.com/showthread.php?7925
+! http://forum.adguard.com/showthread.php?7970
+@@||cdn.videoplaza.tv/*/homadConfigVideoplaza-*.json$domain=nowtv.de|rtl2.de|bilder.static-fra.de|toggo.de
+! http://forum.adguard.com/showthread.php?6081
+@@||ad.71i.de^$domain=prosieben.de
+! http://forum.adguard.com/showthread.php?7179
+@@||ndr.de/common/mediaplayer/branding/*.css
+! http://forum.adguard.com/showthread.php?2874-servustv-com-(google-chrome-firefox)
+@@||ad3.adfarm1.adition.com^$domain=servustv.com,other
+!-------------- Easylist Germany rules -------------------------------------!
 &werbemittel=
 -werb_hori.
 -werb_vert.
@@ -602,6 +668,7 @@ _woz_banner_vote.
 ###sspot_impopad_wrapper
 ###startwerbung
 ###t_werbung
+###text-ads-mitte
 ###textwerbung
 ###tmobilefreikarte
 ###topwerbung
@@ -626,6 +693,7 @@ _woz_banner_vote.
 ###werbetrenner
 ###werbung
 ###werbung-banner
+###werbung-fb
 ###werbung-left
 ###werbung-map-top
 ###werbung-rectangle1
@@ -714,6 +782,7 @@ _woz_banner_vote.
 ##.plistaList > .plista_widget_underArticle_item[data-type="pet"]
 ##.popup_werbung_oben_tom
 ##.popup_werbung_rechts_tom
+##.ps-trackingposition_Werbungskasten
 ##.rahmen_ad
 ##.reklame
 ##.right-content-werbung
@@ -900,6 +969,7 @@ di.fm#@#.firstload
 esvkticker.sports-stream.de#@#.google_adsense
 immobilienscout24.de#@#.has-ad
 guterhut.de#@#.img_ad
+hochzeitswahn.de#@#.internal-ad
 frankenlist.de#@#.item-ad
 frankenlist.de#@#.list-ad
 styleranking.de#@#.medrect-ad
@@ -954,6 +1024,8 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||ad-serving.de^$third-party
 ||ad-sun.de^$third-party
 ||ad-traffic.de^$third-party
+||ad.de.doubleclick.net^$~object-subrequest,third-party
+||ad.netzquadrat.de^$third-party
 ||ad2net.de^$third-party
 ||ad2web.net^$third-party
 ||ad4cash.de^$third-party
@@ -980,6 +1052,7 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||admonkey.cc^$third-party
 ||adnited.net^$third-party
 ||adpark.de^$third-party
+||adperform.de^$third-party
 ||adquality.ch^$third-party
 ||adreport.de^$third-party
 ||adrolays.de^$third-party
@@ -1104,6 +1177,7 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||doubleclick.net/pfadx/telewest.de/$third-party
 ||doubleclick.net/pfadx/toggo.de/$third-party
 ||doubleclick.net/pfadx/www.teleboerse.de/$third-party
+||doubleclick.net^$third-party,domain=augsburger-allgemeine.de|autobild.de|bigbrother.de|bild.de|buffed.de|bunch.tv|bundesliga.de|cnet.de|comedycentral.de|computerbild.de|dashausanubis.de|de.msn.com|dooloop.tv|eyep.tv|filmjunkies.de|flashgames.de|focus.de|frauenzimmer.de|gameone.de|gamepro.de|gamesaktuell.de|gamestar.de|gameswelt.at|gameswelt.ch|gameswelt.de|gameswelt.tv|gamezone.de|gzsz.rtl.de|hatenight.com|homerj.de|icarly.de|kino.de|kochbar.de|laola1.tv|lustich.de|motorvision.de|myvideo.at|myvideo.ch|myvideo.de|n-tv.de|onlinewelten.com|pcgames.de|pcgameshardware.de|pcwelt.de|radio.de|ran.de|rtlregional.de|southpark.de|spiegel.tv|spiele-zone.de|spongebob.de|sport.de|spox.com|spreeradio.de|t-online.de|tape.tv|teleboerse.de|the-hills.tv|trailerseite.de|tvmovie.de|video.de|videogameszone.de|vip.de|vodafonelive.de|vox.de|welt.de|wetter.de|wetterschnecken.de|wikifit.de|www.rtl2.de|zdnet.de
 ||doubleclick.net^*/DE_PUTPATTV/$third-party
 ||doubleclick.net^*/pfadx/DE_N24.*.video/*;vpos=*;zz=*;fs=$third-party
 ||doubleclick.net^*/pfadx/tele5.de/$third-party
@@ -1124,6 +1198,7 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||elite-layer.de^$third-party
 ||eroppc.com^$third-party
 ||erovation.com^$third-party
+||eset-affiliate.de^$third-party
 ||et.twyn-group.com^$third-party
 ||et.twyn.com^$third-party
 ||ethnarc.de^$third-party
@@ -1132,6 +1207,7 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||falkag.de^$third-party
 ||feropt.de^$third-party
 ||firstads.de^$third-party
+||firstload.us^$third-party
 ||firstsponsor.de^$third-party
 ||flatad.de^$third-party
 ||forced-boom.de^$third-party
@@ -1139,6 +1215,7 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||frvfrv.com^$third-party
 ||funtastic-ads.de^$third-party
 ||gamesaffiliate.de^$third-party
+||gamigoads.com^$third-party
 ||gamrz.de^$third-party
 ||geldcounter.de^$third-party
 ||gigapromo.de^$third-party
@@ -1295,6 +1372,7 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||sponsortown.de^$third-party
 ||stilanzeigen.net^$third-party
 ||sunnysales.biz^$third-party
+||superclix.de^$third-party
 ||superpromo24.de^$third-party
 ||szene-traffic.com^$third-party
 ||td-tracker.com^$third-party
@@ -1329,6 +1407,7 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||w-m-w.net^$third-party
 ||w3hoster.de^$third-party
 ||web20-traffic-system.de^$third-party
+||websc.org^$third-party
 ||webspiration.de^$third-party
 ||werbe-system.com^$third-party
 ||werbeflut.net^$third-party
@@ -1430,6 +1509,7 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||bn.gewinn24.de^
 ||bn.profiwin.de^$third-party
 ||bodyguardapotheke.com^*/banner/
+||boerse.bz/toplist/vote/$third-party
 ||boerse.bz^*/banners/$third-party
 ||boxen1.com^*/jessica1.jpg
 ||boxen1.com^*/luxus-villa-zu-verkaufen.gif
@@ -2025,6 +2105,7 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 /oase_banner.jpg$domain=mysummit.wordpress.com
 /www/images/*$domain=technic3d.com
 ^what=zone^$domain=ww3.cad.de
+|http://$subdocument,third-party,domain=bonimail.de
 |http://byte.to^$script
 |http://lustich.de/bilder/*_*-
 ||0815sms.com/doku/$script
@@ -2048,6 +2129,7 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||4-seasons.tv^*/FsProducts.swf
 ||4memes.net/rec$subdocument
 ||4pcdn.de/premium/GameAccessories/*/310x120mifcom_battlebox.jpg$domain=4players.de
+||4pcdn.de/sourcen/portal/MIFcom/$domain=4players.de
 ||4players.de/4pl/wallpaper/
 ||4players.de/javascript/4players/billiger.de.js
 ||4players.de/sourcen/portal/4players/utraforce/
@@ -2211,6 +2293,7 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||benzinpreis.de/140_x_160.gif
 ||benzinpreis.de/gfx/rc_banner.jpg
 ||benzinpreis.de/zahn.gif
+||berlinertageszeitung.com/images/banners/
 ||bestboyz.de/wp-content/uploads/*-300x600_
 ||bestboyz.de/wp-content/uploads/*/ggsim_banner_blog_
 ||bgstatic.de/images/was/campagnes/*/wallpaper/$domain=browsergames.de
@@ -2293,6 +2376,7 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||center.tv^*_pimpmyleasing.jpg
 ||centertv.de/upload/anzeigen/
 ||chefkoch-cdn.de^*/partnerlogos/
+||chefkoch.de/produkte/widget/loader.js
 ||chillmo.com/wp-content/plugins/background-manager/
 ||chillmo.com/wp-content/uploads/*/acunitywp.jpg
 ||chillmo.com/wp-content/uploads/*/fc4ks.jpg
@@ -2583,6 +2667,7 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||epicspeedload.in^*/wgpopup.js
 ||epochtimes.de/js/businessad.js
 ||erdbeerlounge.de/addons/common/pics/coop/
+||erotikforum.at/images/banner/
 ||eselfilme.com/premium/$image
 ||eselfilme.com/werbung/
 ||eslgfx.net/media/masters/esl_sitebranding_homefront.jpg
@@ -2605,6 +2690,8 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||express.de/image/view/*,data,lotto_sommer.gif
 ||ext.platinnetz.de^
 ||fahrzeuglackiererforum.de/layer.js
+||fahrzeugseiten.de/autoteiledirekt_
+||fahrzeugseiten.de/Tirendo-Gutschein.jpg
 ||fail.to/deadok.php
 ||fail.to/deal.php
 ||fail.to/failto.php
@@ -2666,6 +2753,7 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||flugzeugbilder.de/adria.gif
 ||flugzeugbilder.de/schriftklein.jpg
 ||fm-arena.de/images/fm10/*x128.gif
+||focus.de/js_ng/js_ng_fol_gpt.js$domain=focus.de
 ||forendienst.de/ad/
 ||forenhoster.net/index.php?wbu=$subdocument
 ||formel1.de/image/$subdocument,domain=formel1.de
@@ -2913,6 +3001,7 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||heldendesalltags.net/rss/handyz_rss_.php
 ||hertener-allgemeine.de^*/anzeigen/
 ||hg-saarlouis.de/uploads/pics/swsls_vdsl_
+||hierspielen.com/vda/$subdocument
 ||hifitest.de/wb/*_MediumRectangle
 ||hifitest.de/wb/*_Offerbox
 ||hifitest.de/wb/*_Skyscraper
@@ -3370,12 +3459,14 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||onlinemarketing.de/wp-content/themes/stream/images/sponsor/logo-d3media.jpg
 ||onlinemarketing.de/wp-content/uploads/*/125x125-onlinebanner_omd.png
 ||onlinemarketing.de/wp-content/uploads/*/onpage_ebook.png
+||onlinemarketingrockstars.de/wp-content/themes/daily/js/omr_RS7_pdc_banner_$script
 ||onlinereports.ch/uploads/tx_macinabanners/
 ||onlinetvrecorder.com^*/ingoslayer.js
 ||onlinewahn.de/sky.js
 ||onlinewelten.com/img/sponsor/
 ||onlinewelten.com/uploads/brandings/
 ||orf.at/mojo/*/banner.html
+||orientierungslauf.de/images/anzeige_neu/
 ||orientierungslauf.de/images/anzeigen/
 ||orschlurch.net/cgde.js
 ||orschlurch.net/cgde2.js
@@ -3884,6 +3975,7 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||teltarif.de/ad/
 ||testreich.com/layer*.html
 ||ticket-leistung.de^*/banner/
+||tinyurl.com^$domain=g-stream.in|hardcoremetal.biz|hd-world.org|hoerbuch.us|kino24.to|kinox.tv|lesen.to|linkfarm.in|movie-blog.org|playporn.to|pornkino.to|rapidvideo.com|relink.us|smsit.me|xxx-blog.to
 ||titanic-magazin.de/fileadmin/content/anzeigen/
 ||tobitech.de/images/*.swf
 ||tollesthueringen.de/img_proximus/anzeigen/
@@ -4095,6 +4187,7 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 ||wohnmobilforum.de/safety.jpg
 ||wohnmobilforum.de/waeco.jpg
 ||wohnmobilforum.de/wget/ebay.php
+||wohnungswirtschaft-heute.de/dokumente/banners/
 ||wohnwagen.net/forum/wget/get_xml.php
 ||wolfenbuettelheute.de/platzierungen/
 ||wonnemar.de^*/magnum_banner1.swf
@@ -4189,95 +4282,91 @@ mov-world.net#@#a[href^="http://www.FriendlyDuck.com/AF_"]
 .net/ad-$domain=gamestar.de
 @@||adserver.adtech.de/addyn|*|ADTECH$script,domain=woxikon.de
 @@||adtech.de/dt/common/DAC.js$domain=woxikon.de
-@@||amazon-adsystem.com/aax2/amzn_ads.js$domain=focus.de|gamestar.de
+@@||amazon-adsystem.com/aax2/amzn_ads.js$domain=gamestar.de
 @@||g.doubleclick.net/gampad/ads?$script,domain=fanfiktion.de
-@@||g.doubleclick.net/gampad/ads?*^sz=160x600^$script,domain=focus.de
 @@||g.doubleclick.net/gampad/ads?*^sz=1x1^$script,domain=comunio.de
-@@||g.doubleclick.net/gampad/ads?*^sz=300x251^$script,domain=focus.de
-@@||g.doubleclick.net/gampad/ads?*^sz=728x90%7C970x250%7C970x90%7C800x250^$script,domain=focus.de
-@@||g.doubleclick.net/gampad/ads?sz=400x300^$xmlhttprequest,domain=focus.de
 @@||notebookchat.com^$genericblock,generichide
 @@||notebookcheck.com^$genericblock,generichide
 @@||pagead2.googlesyndication.com/pagead/js/*/show_ads_impl.js$domain=boote-forum.de|woxikon.de
 @@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=boote-forum.de
 @@||pagead2.googlesyndication.com/pagead/show_ads.js$domain=woxikon.de
-@@||partner.googleadservices.com/gpt/pubads_impl_$script,domain=comunio.de|fanfiktion.de|focus.de|notebookcheck.com
+@@||partner.googleadservices.com/gpt/pubads_impl_$script,domain=comunio.de|fanfiktion.de|notebookcheck.com
 _ad2.$domain=gamestar.de
 _ad_integration.$domain=gamestar.de
-||2mdn.net^$~object-subrequest,domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||360yield.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||ad-emea.doubleclick.net^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||ad-srv.net^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||ad.71i.de^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||ad.doubleclick.net^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||adform.net^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||adition.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||adnxs.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||ads.stickyadstv.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||adsafeprotected.com^$domain=boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|imasdk.googleapis.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||2mdn.net^$~object-subrequest,domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||360yield.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||ad-emea.doubleclick.net^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||ad-srv.net^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||ad.71i.de^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||ad.de.doubleclick.net^$~object-subrequest,domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||ad.doubleclick.net^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||adform.net^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||adition.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||adnxs.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||ads.stickyadstv.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||adsafeprotected.com^$domain=boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|imasdk.googleapis.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
 ||adserver.gb4.motorpresse.de^$domain=planetsnow.de
-||adspirit.de^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||adtech.de^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|t-online.de|tvspielfilm.de|woxikon.de
+||adspirit.de^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||adtech.de^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|t-online.de|tvspielfilm.de|woxikon.de
 ||adtechus.com^$domain=t-online.de
-||affiliate.quotatis.de^$domain=focus.de
-||amazon-adsystem.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||amazonaws.com/prod.iqdcontroller.iqdigital/*/live/iqadcontroller.js.gz$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||apprupt.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||amazon-adsystem.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||amazonaws.com/prod.iqdcontroller.iqdigital/*/live/iqadcontroller.js.gz$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||apprupt.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
 ||ariva.de/werb/adcount.m?id=$domain=ariva.de
-||betrad.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||cas.*.criteo.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||cas.criteo.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||caw.*.criteo.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||caw.criteo.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||d1lmlef7bqclht.cloudfront.net^$domain=focus.de
+||betrad.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||cas.*.criteo.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||cas.criteo.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||caw.*.criteo.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||caw.criteo.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
 ||doubleclick.net/pfadx/*.planetsnow_video.de_de/$domain=imasdk.googleapis.com|planetsnow.de
-||flashtalking.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||g.doubleclick.net^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|pixelio.de|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||gmads.net^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||google.com/adsense/$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||googlesyndication.com/pagead/$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||googlesyndication.com/safeframe/$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|pixelio.de|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||googlesyndication.com/simgad/$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||doubleclick.net^$~object-subrequest,domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||flashtalking.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||g.doubleclick.net^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|pixelio.de|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||gmads.net^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||google.com/adsense/$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||googleadservices.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||googlesyndication.com/pagead/$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||googlesyndication.com/safeframe/$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|pixelio.de|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||googlesyndication.com/simgad/$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
 ||im.banner.t-online.de^$domain=t-online.de
-||images.*.criteo.net^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||images.criteo.net^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||imasdk.googleapis.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||intellitxt.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||iqcontentplatform.de^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||kka.agitos.de^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||lotto24.de/?partner=$subdocument,third-party,domain=focus.de
-||moatads.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||mookie1.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||mpnrs.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||pagead2.googlesyndication.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||partner.bon-kredit.de^$domain=focus.de
-||partner.googleadservices.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|pixelio.de|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||plista.com/pictureads/$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||qservz.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||revsci.net^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|t-online.de|tvspielfilm.de|woxikon.de
-||sascdn.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||serving-sys.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||smartadserver.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||smartredirect.de^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||static.*.criteo.net/design^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||static.*.criteo.net/flash^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||static.*.criteo.net/images^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||static.*.criteo.net/js/duplo^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||static.criteo.com/design^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||static.criteo.com/flash^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||static.criteo.com/images^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||static.criteo.com/js/duplo^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||static.criteo.net/design^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||static.criteo.net/flash^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||static.criteo.net/images^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||static.criteo.net/js/duplo^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||static.plista.com^*/resized/$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||stickyadstv.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||teads.tv^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||images.*.criteo.net^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||images.criteo.net^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||imasdk.googleapis.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||intellitxt.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||iqcontentplatform.de^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||kka.agitos.de^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||ligatus.com^$domain=boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|veeseo.com|woxikon.de
+||moatads.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||mookie1.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||mpnrs.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||pagead2.googlesyndication.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||partner.googleadservices.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|pixelio.de|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||plista.com/pictureads/$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||qservz.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||revsci.net^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|t-online.de|tvspielfilm.de|woxikon.de
+||sascdn.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||serving-sys.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||smartadserver.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||smartredirect.de^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||static.*.criteo.net/design^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||static.*.criteo.net/flash^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||static.*.criteo.net/images^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||static.*.criteo.net/js/duplo^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||static.criteo.com/design^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||static.criteo.com/flash^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||static.criteo.com/images^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||static.criteo.com/js/duplo^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||static.criteo.net/design^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||static.criteo.net/flash^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||static.criteo.net/images^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||static.criteo.net/js/duplo^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||static.plista.com^*/resized/$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||stickyadstv.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||teads.tv^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
 ||tfag.de^$domain=boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|planetsnow.de|tvspielfilm.de|woxikon.de
-||twiago.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||yieldlab.net^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
-||zanox.com/ppv/$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|focus.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||twiago.com^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||yieldlab.net^$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
+||zanox.com/ppv/$domain=ariva.de|boote-forum.de|comunio.de|fanfiktion.de|gamestar.de|notebookchat.com|notebookcheck.com|planetsnow.de|prosieben.at|prosieben.ch|prosieben.de|tvspielfilm.de|woxikon.de
 .gif|$popup,domain=autozeitung.de|formel1.de|fremdwort.de|inside-handy.de|motorsport-total.com|news.de|seniorbook.de
 .png|$popup,domain=audio.de|colorfoto.de|connect.de|connected-home.de|epochtimes.de|pc-magazin.de|video-magazin.de
 ^utm_campaign^$popup,domain=jappy.de
@@ -4431,7 +4520,7 @@ onmeda.de###PARTNERANGEBOTE
 pocketpc.ch###PPCAdLeaderBoard_Filler
 sgcoburg.de###PromoHead
 sgcoburg.de###PromoRight
-volksfreund.de###Rectangle
+unixboard.de,volksfreund.de###Rectangle
 volksfreund.de###RectangleOMS
 rclineforum.de###RotBanner
 express.de###RotatingPartner
@@ -4459,7 +4548,6 @@ namibia-forum.ch###abakus
 1jux.net###abp
 handballworld.com###absolute > .bannergroup
 20min.ch,anime-loads.org,doku.to,german-foreign-policy.com,hardwarelabs.de,otrkey.com,otrking.com,radiolisten.de,webos-blog.de,xboxaktuell.de###ad
-netzwelt.de###ad-skyscraper1-outer + div
 radiolisten.de###ad3
 carpassion.com,high-minded.us,messerforum.net,mmorpg-core.com,schachburg.de,thinkpad-forum.de,unixboard.de,world-of-hentai.to###ad_global_below_navbar
 musicelster.net###ad_global_below_navbar > center > div[style="float:right; width:50%;"]
@@ -4562,6 +4650,7 @@ radiohamburg.de###bannerleiste
 rp-online.de###banneroben
 fremdwort.de###bannerright
 breakpoint.untergrund.net,eiskaltmacher.de###banners
+erotikforum.at###banners11608
 handball-world.com###bannersky
 maerkischeallgemeine.de,saz-aktuell.com,webfail.at###bannertop
 report-k.de###bantabelle
@@ -4577,7 +4666,7 @@ osthessen-news.de###bigklick
 fremdwort.de,tikonline.de###bigsize
 magistrix.de###bigsize-top
 pcpraxis.de,rund-magazin.de###bigsizebanner
-computerbild.de,prad.de,volksfreund.de###billboard
+autozeitung.de,computerbild.de,prad.de,volksfreund.de###billboard
 prad.de###billboardbig
 4players.de###billiger-charts
 geizkragen.de###bl_top
@@ -4770,6 +4859,7 @@ quoka.de###gadpos1
 quoka.de###gadtopright
 spielaffe.de###game_background_content
 spielaffe.de###game_instruction_container
+hierspielen.com###gamelead
 playmassive.de,playnation.de###games_wr_st > .lb
 pooltrax.com###gas
 lyrics.de,testreich.com,trendmile.de,wallpaper.to###genlayer
@@ -4832,7 +4922,6 @@ sueddeutsche.de###iqd_medrecAd
 mein-schoener-garten.de###ivw_img + noscript + script + script + div[style="height:132px;"]
 boerse-online.de###ivwimg
 sein.de###ja-col1 a[target="_blank"] > img[alt=""]
-spiegel.de###js-article-column div[id][class] > a[class][href] > img
 redhocks.de###jsn-promo
 general-anzeiger-bonn.de###kala
 express.de,fr-online.de,general-anzeiger-bonn.de,ksta.de,mz-web.de,rhein-zeitung.de,wz-newsline.de###kalaydo
@@ -4872,6 +4961,7 @@ grosseleute.de###leftboxcontent > :nth-child(n) a[href] div img[src^="image/"]
 kuechentipps.de###leftside > .promo
 satempfang-magazin.de###leserumfrage-close
 duden.de###lexem_ad
+tabtech.de###linkabletitlehtmlandphpwidget-6
 anderes-wort.de###linkline
 notebookcheck.com###linklist1:first-child:last-child > div[style="text-align: center;"]
 totalbash.org###links > .links1_hg
@@ -4937,6 +5027,7 @@ handball-neuhausen.de###middleWrapper > #cols3Right[style="height: 1062px;"]
 immonet.de###mietkautionslink
 20min.ch###min_billboard
 bunte.de###mini-panel-home_header_shopping_teaser
+autozeitung.de###mini-panel-sidebar_default div[id] > img[src^="/images/"]
 20min.ch###minrectangle
 totalbash.org###mitte > .menueoben + .beitrag_oben2
 totalbash.org###mitte > .menueoben + .beitrag_oben2 + .beitrag
@@ -5147,6 +5238,8 @@ mailhilfe.de###second > #text-2
 mikrocontroller.net###second-alayer
 mikrocontroller.net###second-palayer
 allfacebook.de###secondary > #text-10
+onlinemarketingrockstars.de###secondary > #text-27
+onlinemarketingrockstars.de###secondary > #text-28
 allfacebook.de###secondary > #text-4
 allfacebook.de###secondary > #text-7
 scifi-forum.de###sff_header_top
@@ -5163,6 +5256,9 @@ stopadblock.org###sidebar > div[style] + div[id][style]
 abnehmen.com,aquariumforum.de,pferd.de,radforum.de###sidebar > li > .ffwidget_sidebar
 tgs-pforzheim.de###sidebar > ul > #aioslideshow-widget-2
 mamamiez.de###sidebar > ul > #text-7
+autozeitung.de###sidebar div[id] > img[src^="/imags/"]
+infosperber.ch###sidebar-inner-content > .bildbox
+infosperber.ch###sidebar-inner-content > .expertenjobs
 mikrocontroller.net###sidebar-right > div[style]:last-child > div[id]:last-child > div[style]
 mikrocontroller.net###sidebar-right > div[style]:last-child > script + div[style]:last-child
 grenzwissenschaft-aktuell.blogspot.de###sidebar-right-1 > #HTML1 > .widget-content:first-child
@@ -5195,7 +5291,8 @@ t-online.de,wetter.info###sky_anz
 frimon.de###sky_right
 xboxdynasty.de###skyright
 ebay.at,ebay.ch,ebay.de###skyscrape
-alternate.de,apotheke-adhoc.de,boomerangtv.de,busliniensuche.de,centertv.de,charivari986.de,china.ahk.de,curt.de,das-inserat.de,eurogamer.de,gamingxp.com,halle.de,msxfaq.de,nickles.de,schweizamsonntag.ch,sf.tv,surffact.de,vanion.eu###skyscraper
+alternate.de,apotheke-adhoc.de,autozeitung.de,boomerangtv.de,busliniensuche.de,centertv.de,charivari986.de,china.ahk.de,curt.de,das-inserat.de,eurogamer.de,gamingxp.com,halle.de,msxfaq.de,nickles.de,schweizamsonntag.ch,sf.tv,surffact.de,vanion.eu###skyscraper
+autozeitung.de###skyscraper + div
 apotheke-adhoc.de###skyscraper-left
 apotheke-adhoc.de###skyscraper-right
 dashitradio.de###skyscraper-wide
@@ -5213,6 +5310,7 @@ bigfm.de###smartclip-overlay
 ddl-warez.in###smoozed
 ddl-music.org,ddl-warez.in,pornlounge.org###so_ad
 magistrix.de###songtext > .visible-desktop
+spiegel.de###spVeeseo + div[class] > a[href] > img[src]
 wuppertaler-rundschau.de###spalte_anzeigen_links
 wuppertaler-rundschau.de###spalte_anzeigen_rechts
 museumsdienst-hamburg.de###spb
@@ -5252,7 +5350,7 @@ sims-3.net###subheader
 xolopo.de###subnav_partner
 nanu.de###superBanner
 t-online.de###superBannerContainer
-apotheke-adhoc.de,boulevard-baden.de,braunschweiger-zeitung.de,deutsche-wirtschafts-nachrichten.de,donaukurier.de,golem.de,internetworld.de,itwissen.info,lecker.de,lpgforum.de,morgenpost.de,morgenweb.de,netdoktor.at,neue-braunschweiger.de,pkw-forum.de,rtl.de,stimme.de,tvh1.de,vogue.de,wer-kennt-wen.de,winboard.org###superbanner
+apotheke-adhoc.de,autozeitung.de,boulevard-baden.de,braunschweiger-zeitung.de,deutsche-wirtschafts-nachrichten.de,donaukurier.de,golem.de,internetworld.de,itwissen.info,lecker.de,lpgforum.de,morgenpost.de,morgenweb.de,netdoktor.at,neue-braunschweiger.de,pkw-forum.de,rtl.de,stimme.de,tvh1.de,vogue.de,wer-kennt-wen.de,winboard.org###superbanner
 juve.de###superbanner_side
 juve.de###superbanner_top
 tri-mag.de###superbanner_wide
@@ -5287,7 +5385,7 @@ wavetv.de###top_advertisement
 jobanova.de###top_afs_container
 allround-pc.com###top_banner
 wintotal.de###topads
-3druck.com,am-ende-des-tages.de,bitsundso.de,motor-talk.de,newsclick.de###topbanner
+3druck.com,am-ende-des-tages.de,bitsundso.de,motor-talk.de,newsclick.de,wohnungswirtschaft-heute.de###topbanner
 dotnetpro.de###topbar
 byte.to###topclips
 byte.to###topclipsbar
@@ -5449,6 +5547,7 @@ paradisi.de##.adcontent
 paradisi.de##.adcontenttext
 derhandel.de##.add
 pressebox.de##.add-left
+tabtech.de##.add-panel
 pressebox.de##.add-right
 yelp.de##.add-search-result
 sport1.de##.addPicture
@@ -5456,12 +5555,13 @@ aero.de##.add_balken
 tes-5-skyrim.de##.addleft
 oxygen-scene.com##.adoxygen
 baronbuff.de##.adp_pls
-20min.ch,250kb.de,app-kostenlos.de,arbeitszeugnisgenerator.de,bild.de,channelpartner.de,dhb.de,eintracht.de,erdbeerlounge.de,fischkopf.de,giga.de,helpster.de,israelnetz.com,mtv.de,playmassive.de,tageblatt.lu,tecchannel.de,tus-n-luebbecke.de,viamichelin.at,viamichelin.ch,worldofminecraft.eu,zdnet.de##.ads
+20min.ch,250kb.de,app-kostenlos.de,arbeitszeugnisgenerator.de,bild.de,channelpartner.de,dhb.de,eintracht.de,erdbeerlounge.de,fischkopf.de,focus.de,giga.de,helpster.de,israelnetz.com,mtv.de,playmassive.de,tageblatt.lu,tecchannel.de,tus-n-luebbecke.de,viamichelin.at,viamichelin.ch,worldofminecraft.eu,zdnet.de##.ads
 psychic.de##.ads5
 duden.de##.adsense
 skodacommunity.de##.adsenseContainer + div[align="center"]
 preisvergleich.de##.adswsk
 tech-blog.net##.adsxtrm
+hierspielen.com##.adtitle
 comedycentral.de,mobile.de,viva.tv##.adv
 web.de##.adv-promotion
 bluewin.ch##.adv-taz
@@ -5533,6 +5633,7 @@ digitale-schule-bayern.de##.app > #t_container
 zdnet.de##.apraxazz_sidebar
 teltarif.de##.arial2[style="clear: both; color: #CCCCCC; margin: 9px 13px; border-bottom: #CCCCCC 1px solid;"]
 tvspielfilm.de##.article-body > div[style="margin:0 0 20px;text-align:center"]
+spiegel.de##.article-section span[id][class] > a[class][href] > img[src]
 computerbase.de##.article-view__rectangle
 sosuanachrichten.com##.article[style="width: 440px; background-color: #000066; margin: 6px; margin-top: 6px;"]
 gamona.de##.articlebody > .list_base.small-icon
@@ -5599,7 +5700,7 @@ pixelio.de##.banner_top
 handy-player.de,maclife.de##.bannerbox
 boerse.de##.bannerbox_container
 was-verdient-ein.de##.bannerga
-hardware-factory.com,lesben.org,nh24.de,pc-experience.de,primavera24.de,vfl-bad-schwartau.de,waldecker-tagblatt.de,wander-pfade.de,wintotal.de,witz.de##.bannergroup
+berlinertageszeitung.com,enduro-austria.at,hardware-factory.com,lesben.org,nh24.de,pc-experience.de,primavera24.de,vfl-bad-schwartau.de,waldecker-tagblatt.de,wander-pfade.de,wintotal.de,witz.de##.bannergroup
 pcpraxis.de##.bannergroup-blank
 kulturmarken.de##.bannergroup-part2
 flashmob.de,minibhkw.de##.bannergroup_text
@@ -5752,6 +5853,7 @@ winload.de##.darklayer
 3dl.tv##.ddl-mirror-box[target="blank_"]
 fail.to##.dealheader
 gamona.de,gesichtskirmes.net##.deals
+wetter.com##.desk-one-third a[id][href] > img[src]
 filmpalast.to##.detail > li > span > a
 menshealth.de##.dfp_rand1
 menshealth.de##.dfp_ss1
@@ -5823,7 +5925,7 @@ emok.tv##.fenster_gadgets
 rechnungswesenforum.de##.ffwidget_sidebar
 bloggospace.de##.first_pub
 preisvergleich.de##.flexTop
-wochenblitz.com##.flexbannergroup
+wochenblitz.com,wohnungswirtschaft-heute.de##.flexbannergroup
 buchhalterprofi.de##.flexi-bnrs
 one2stream.com##.floater
 computerwissen.de##.floater[style="display: block;"]
@@ -6005,8 +6107,10 @@ netdoktor.at##.menu-sponsor
 sinn-frei.com##.menu_feat
 eliteanimes.com##.menu_rechts_sonstiges > a[target="_blank"]
 goldesel.to##.menue + ul > li > a > img
+wasserurlaub.info##.message > .container-2.guestPost
 franken-tv.de,kanal8.de,radio-trausnitz.de##.metrieanzeigen
 radio7.de##.microbanner
+wetter.com##.middle > div[id][class]:first-child > a[href]:last-child > img[src]:first-child:last-child
 fettspielen.de##.middle-leaderboard
 wetterspiegel.de##.mir-wallpaper-background[align="right"][style="height: 250px"]
 wetterspiegel.de##.mir-wallpaper-background[height="90"][align="right"]
@@ -6034,11 +6138,13 @@ alle-autos-in.de##.naviP
 wetter.at##.nearestLocations ~ div
 gamers.at##.networkbanner + script + a
 gamers.at##.networkbanner + script + a + a
+codecheck.info##.news-adv
 digitalvideoschnitt.de##.news-list-container + div[style="text-align:center; padding-top:20px; width:160px; margin:auto;"]
 digitalvideoschnitt.de##.news-list-container > .news[style="height:80px;"]
 glocalist.com##.news-single-content > a + div[style="text-align:center;"]
 urlauburlaub.at##.newsitem
 pc-magazin.de##.newsletterTeaser
+chip.de##.newsticker-item-link[\"][rel="nofollow"]
 dslteam.de##.newstxt > table[cellspacing="0"][cellpadding="0"][border="0"][align="right"][width="308"]
 onlinekosten.de##.newstxt > table[width="308"][cellspacing="0"][cellpadding="0"][border="0"][align="right"]
 beichthaus.com##.no > a[href^="http://bit.ly/"]
@@ -6214,7 +6320,7 @@ lokalisten.de##.skyScraper
 t-online.de##.skybannerWrapper
 internet-sms.com##.skybg
 spiele-kostenlos-online.de##.skycraper
-ak-kurier.de,auto-motor-und-sport.de,buffed.de,bvb.de,chat4free.de,dmax.de,dynamo-dresden.de,erotikchat4free.de,freechat.de,gamesaktuell.de,genderblog.de,gentleman-blog.de,kanu.de,magistrix.de,nonstopnews.de,nr-kurier.de,pcgames.de,spielefilmetechnik.de,spielen.de,swoodoo.com,techno4ever.fm,tsv1860.de,videogameszone.de,ww-kurier.de##.skyscraper
+ak-kurier.de,auto-motor-und-sport.de,buffed.de,bvb.de,chat4free.de,dmax.de,dynamo-dresden.de,erotikchat4free.de,freechat.de,gamesaktuell.de,genderblog.de,gentleman-blog.de,kanu.de,magistrix.de,nonstopnews.de,nr-kurier.de,pcgames.de,spielefilmetechnik.de,spielen.de,swoodoo.com,tabtech.de,techno4ever.fm,tsv1860.de,videogameszone.de,ww-kurier.de##.skyscraper
 fettspielen.de##.skyscraper-container
 b2run.de##.skyscraperContainer
 kidszone.de##.skyscraper_background
@@ -6333,6 +6439,7 @@ www.google.de##.ts[style="margin:0 0 12px;height:92px;width:100%"]
 t-online.de##.tsc_www_p4p
 t-online.de##.tsc_www_p4p_bottom
 teltarif.de##.ttcen1[style="height: 59px; margin: 0; padding-bottom: 21px;"]
+enduro-austria.at##.ttr_banner_menu_inner_above0
 teltarif.de##.ttsidecol > aside > div[style="text-align:right;color:#CCCCCC"]:first-child
 computerhilfen.de##.tuneupshop1
 wetter24.de##.two_big_rows > .two_big_rows_second > .one_big_row_html
@@ -6889,7 +6996,9 @@ gamepro.de,gamestar.de##a[href^="https://itunes.apple.com/"][href*="&affId="]
 ddl-warez.in##a[href^="https://share-online.biz/affiliate/"]
 ddl-warez.in##a[href^="https://uploaded.net/ref/"]
 gamiano.de##a[href^="https://www.amazon.de/"][href*="?tag=gamiano-21&"]
+chip.de##a[href^="https://www.amazon.de/gp/video/primesignup?tag="]
 livestreamfussball.org##a[href^="https://www.bwin.com/de/registration?wm="]
+chip.de##a[href^="https://www.expertiger.de/partner/"]
 ebook-hell.to##a[href^="https://www.filemonkey.in/ref/"]
 filecrypt.cc##a[href^="https://www.g2a.com/?reflink="]
 atomload.to##a[href^="https://www.oboom.com/ref/"]
@@ -6942,6 +7051,7 @@ stream4.org##a[style="color:yellow;font-size:15px;"]
 magistrix.de##a[style="display:block; position: fixed; left:0; top:0; outline: 0; width:100%; height:100%"]
 handy-faq.de##a[style="text-decoration:underline; color:red; font-size:18px;"]
 fragster.de##a[style^="background: url(http://media.fragster.de/avw.php?zoneid="]
+enduro-austria.at##a[target="_blank"] > img[style="margin-top: 2px; margin-right: 2px; margin-bottom: 2px; vertical-align: middle;"]
 g-stream.in##a[target="_blank"] > img[width="468"][height="60"]
 g-stream.in##a[target="_blank"] > img[width="720"][height="90"]
 t-online.de##a[target="_blank"][href*=".sptopf.de/tshp/RE?ID="]
@@ -7138,6 +7248,7 @@ gamingxp.com##div[style*="background-image: url(http://www.gamingxp.com/pictures
 picdumps.com##div[style*="background:#fff;"]
 picdumps.com##div[style*="background:#fffffe;width: 646px"]
 picdumps.com##div[style*="background:#fffffe;width:646px"]
+abacho.de,autozeitung.de,de.filsh.net,dialo.de,donnerwetter.de,e-hausaufgaben.de,fanfiktion.de,formel1.de,fremdwort.de,helles-koepfchen.de,infranken.de,inside-digital.de,inside-handy.de,motorsport-total.com,news.de,nickles.de,pixelio.de,seniorbook.de,tabtech.de,tellows.de,weristdeinfreund.de##div[style*="display: block ! important"]
 onlinewelten.com##div[style*="height:600px;width:160px;"]
 onlinewelten.com##div[style*="height:90px;width:728px;"]
 ingame.de##div[style*="width: 325px; height:300px;  position: absolute;"]
@@ -7179,8 +7290,8 @@ ibash.de##div[style="clear:left; font-family: Verdana,Tahoma,Geneva,Verdana,sans
 formel1.de##div[style="cursor: pointer; height: 90px; width: 940px; text-align: center; margin-left: 10px;"]
 formel1.de##div[style="cursor: pointer; width: 160px; height: 600px; position: absolute; left: 960px; margin-top: 10px;"]
 formel1.de##div[style="cursor: pointer; width: 300px; height: 250px; text-align: center;"]
-abacho.de,autozeitung.de,de.filsh.net,dialo.de,donnerwetter.de,e-hausaufgaben.de,fanfiktion.de,formel1.de,fremdwort.de,helles-koepfchen.de,infranken.de,inside-digital.de,inside-handy.de,motorsport-total.com,news.de,nickles.de,pixelio.de,seniorbook.de,tabtech.de,tellows.de,weristdeinfreund.de##div[style="display: block ! important; cursor: pointer;"]
 satempfang-magazin.de##div[style="display: block; position: absolute; overflow: hidden; z-index: 1001; outline: 0px none; height: auto; width: 800px; top: 216px; left: 551.5px;"]
+codecheck.info##div[style="display: inline-block; float: right; height: 30px; margin: 10px 10px 0 0; font-size: 14px; color: #7b8d94;"] > span[style="z-index: 8; position: relative;"]
 netzwelt.de##div[style="display: table-row;"] > #ml
 suedtirolnews.it##div[style="display: table; position: static;background: none repeat scroll 0px 0px rgb(252, 252, 251); border: 1px solid rgb(239, 238, 236); padding:5px; float: right; width: 418px; text-align: center; margin: 0px 10px 10px 0px; height:356px;"]
 magistrix.de##div[style="display:inline-block; width:728px; height:90px"]
@@ -7190,6 +7301,7 @@ pocketpc.ch##div[style="float: left;width:740px;text-align:left;padding-bottom:5
 ifun.de,iphone-ticker.de##div[style="float: right; display: block; width: 300px; height: 250px; border: 1px solid rgb(220,220,220); margin: 7px 0 24px 36px;"]
 ifun.de,iphone-ticker.de##div[style="float: right; display: block; width: 300px; height: 250px; border: 1px solid rgb(220,220,220);"]
 ifun.de,iphone-ticker.de##div[style="float: right; display: block; width: 300px; height: 600px; border: 1px solid rgb(220,220,220);"]
+epochtimes.de##div[style="float: right; margin: 0 0 1rem 0; border:1px solid #CCC; height:266px; width:302px;"]
 14-tage-wettervorhersage.de##div[style="float:left; margin-bottom:15px; margin-right:22px;"]
 androidpit.de##div[style="float:left; width:1200px; height:100px; position:relative; left:-120px; top:0px"]
 xpbulletin.de##div[style="float:left; width:300px; height:250px; margin-right:10px; padding: 0;"]
@@ -7410,6 +7522,8 @@ schoener-fernsehen.com##img[id$="icon"]
 schoener-fernsehen.com##img[id$="icon"] + p
 ak-kurier.de,nr-kurier.de,ww-kurier.de##img[name="banner"]
 seatforum.de##img[src="http://www.seatforum.de/forum/images/anzeige.gif"] + a[target="_blank"] > img
+epochtimes.de##img[style*="display: block ! important"]
+wintotal.de##img[style*="display: block ! important;"]
 tsv1860ro-fussball.de##img[style="left: 0px; top: 1100px; width: 400px; height: 200px;"]
 tsv1860ro-fussball.de##img[style="left: 0px; top: 749px; width: 200px; height: 134px;"]
 tsv1860ro-fussball.de##img[style="left: 33px; top: 577px; width: 134px; height: 167px;"]
@@ -7520,6 +7634,7 @@ spielefilmetechnik.de##table[background="/_cinc/img/flatrate.gif"]
 pcgameshardware.de##table[background^="/common/gfx/metaboli/"]
 widescreen-online.de##table[bgcolor="#FFC990"][align="center"][width="158"][style="border:1px solid #D25802;"]
 adhs-zentrum.de##table[bgcolor="#FFCC00"]
+enduro-austria.at##table[border="0"][align="center"][style="width: 220px; margin-right: auto; margin-left: auto;"]
 lesen.to##table[cellpadding="0"][bgcolor="#FFFFFF"][style="width: 750px;"] > tbody > tr > td > center:first-child > a[target="_blank"] > img
 ksta.de##table[cellspacing="0"][cellpadding="0"][border="0"][style="background-color: #76003d; width: 300px; height: 100px;"]
 cine24.tv##table[cellspacing="0"][cellpadding="0"][border="0"][width] > tbody > tr > td[style^="text-align:center"]
@@ -7687,48 +7802,57 @@ ddl-warez.in##tr[style="background:#D0F5A9"]
 radforum.de##ul[class^="ebayitems"]
 r-b-a.de##ul[style="padding: 0px; margin: 0px; border: 0px none;"]
 news.de##.plista_widget_underArticle_item + div[style="position: relative;"] > style + div[id]
-focus.de,netzwelt.de##.ob_container a[data-redirect^="http://paid.outbrain.com/network/redir?"]
-focus.de,netzwelt.de##.ob_dual_right > .ob_ads_header ~ .odb_div
-ariva.de,boote-forum.de,comunio.de,fanfiktion.de,focus.de,notebookchat.com,notebookcheck.com,planetsnow.de,prosieben.at,prosieben.ch,prosieben.de,tvspielfilm.de,woxikon.de##.plistaList > .itemLinkPET
+googlesyndication.com###adunit
+netzwelt.de##.ob_container a[data-redirect^="http://paid.outbrain.com/network/redir?"]
+netzwelt.de##.ob_dual_right > .ob_ads_header ~ .odb_div
+ariva.de,boote-forum.de,comunio.de,fanfiktion.de,notebookchat.com,notebookcheck.com,planetsnow.de,prosieben.at,prosieben.ch,prosieben.de,tvspielfilm.de,woxikon.de##.plistaList > .itemLinkPET
 plista.com##.plistaList > .plista_widget_belowArticle_item[data-type="pet"]
-ariva.de,boote-forum.de,comunio.de,fanfiktion.de,focus.de,gamestar.de,netzwelt.de,notebookchat.com,notebookcheck.com,planetsnow.de,prosieben.at,prosieben.ch,prosieben.de,tvspielfilm.de,woxikon.de##.plistaList > .plista_widget_underArticle_item[data-type="pet"]
+ariva.de,boote-forum.de,comunio.de,fanfiktion.de,gamestar.de,netzwelt.de,notebookchat.com,notebookcheck.com,planetsnow.de,prosieben.at,prosieben.ch,prosieben.de,tvspielfilm.de,woxikon.de##.plistaList > .plista_widget_underArticle_item[data-type="pet"]
 plista.com##a[href^="http://click.plista.com/pets"]
 netzwelt.de##a[onmousedown^="this.href='http://paid.outbrain.com/network/redir?"][target="_blank"]
-dasheimwerkerforum.de,modernboard.de,skodacommunity.de,vermieter-forum.com###Rectangle > [-abp-properties='cursor: pointer;']
+1erforum.de,dasheimwerkerforum.de,modernboard.de,skodacommunity.de,vermieter-forum.com###Rectangle > [-abp-properties='cursor: pointer;']
 ran.de###aside-zone > [-abp-properties='cursor: pointer; margin-bottom: 2*px;']
 womenshealth.de###col-left > [-abp-properties='cursor: pointer;']
+pcwelt.de###content > [-abp-properties='margin-left: 3*px;']
 lustich.de###contentTopBg > [-abp-properties='height: 9*px; margin-bottom: *px; margin-left: *px; margin-right: *;']
 spox.com###frnMain > [-abp-properties='cursor: pointer; height: *px; margin-bottom: 5px; margin-top: *px; width: *px;']
 lustich.de###ip_content_wrapper > [-abp-properties='height: *px; left: *; margin-left: *px; position: absolute; top: *px; vertical-align: *; width: *px;']
-spiegel.de###js-article-column > [-abp-properties='margin-bottom: 1*px; padding-bottom: 1*px;']
-spiegel.de###js-article-column > [-abp-properties='margin-bottom: 15px; padding-bottom: 15px;']
-spiegel.de###js-article-column [-abp-properties='background-*; border-*3px*; margin-bottom: *px;']
-spiegel.de###js-article-column [-abp-properties='border*; margin-bottom: *px; padding-bottom: *px;']
-spiegel.de###js-article-column [-abp-properties='cursor: pointer;']
-spiegel.de###js-article-column [-abp-properties='float: *; margin-bottom: *px; margin-left: *px;']
-spiegel.de###js-article-column [-abp-properties='float: *; margin-left: *px;']
-spiegel.de###js-article-column [-abp-properties='margin-bottom: 1*px; margin-left: 1*px;']
-spiegel.de###js-article-column [-abp-properties='margin-bottom: 15px; padding-bottom: 16px;']
-spiegel.de###js-article-column [-abp-properties='margin-bottom: 16px; margin-left: 15px;']
+spiegel.de###js-article-column [-abp-properties='border-*; float: right;']
+spiegel.de###js-article-column [-abp-properties='float: left; margin-right: 1*px;']
+spiegel.de###js-article-column [-abp-properties='float: left; margin-right: 10px;']
+spiegel.de###js-article-column [-abp-properties='float: left; margin-right: 9px;']
+spiegel.de###js-article-column [-abp-properties='float: right;'] > a
+spiegel.de###js-article-column [-abp-properties='float: right;'] > div > a
 lustich.de###laContentMiddleBg > [-abp-properties='text-align: *; vertical-align: *;']
 lustich.de###laContentMiddleBg > [-abp-properties='text-align: center;']
 ran.de###left-zone > [-abp-properties='cursor: pointer; margin-bottom: 2*px;']
-autoexperience.de,daselternforum.de,fitness-foren.de,flugzeugforum.de,handy-hilfeforum.de,kreatives-wohnforum.de,mazda-forum.info,notebookforum.at,teccentral.de,usp-forum.de,win-8-forum.net,windows-7-forum.net,windows-8-forum.net###rectangle > [-abp-properties='cursor: pointer;']
+autoexperience.de,daselternforum.de,fitness-foren.de,flugzeugforum.de,handy-hilfeforum.de,kreatives-wohnforum.de,lpgforum.de,mazda-forum.info,notebookforum.at,pkw-forum.de,teccentral.de,usp-forum.de,win-8-forum.net,windows-7-forum.net,windows-8-forum.net###rectangle > [-abp-properties='cursor: pointer;']
 main-spitze.de###rightbar > [-abp-properties='cursor: pointer']
+echo-online.de###rightbar > [-abp-properties='margin-bottom: 3*px; padding*: 1*px;']
 wetteronline.de###rightcontainer > [-abp-properties='cursor: pointer; margin-top: *px;']
 brigitte.de###sidebar > [-abp-properties='cursor: pointer; margin-bottom: 2*px;']
 wetteronline.de###sidebar > [-abp-properties='cursor: pointer; padding-top: 1*px;']
+brigitte.de###sidebar > [-abp-properties='margin-bottom: 20px;']
+brigitte.de###sidebar > [-abp-properties='margin-bottom: 25px;']
 runnersworld.de###stage-right > [-abp-properties='cursor: pointer;']
 eatsmarter.de##.ad > [-abp-properties='cursor: pointer;']
-spiegel.de##.article-section > [-abp-properties='float: right;'] > div
+spiegel.de##.article-section > [-abp-properties='float: right;']
+fem.com##.block-type-content-grid > [-abp-properties='cursor: pointer;']
 gamepro.de##.content > [-abp-properties='cursor: pointer;']
 gamestar.de##.content > [-abp-properties='padding-top: 20px;']
 boerse.de##.content_box > [-abp-properties='cursor: pointer']
 gamepro.de##.homeContReg > [-abp-properties='cursor: pointer;']
 gamestar.de##.homeContReg > [-abp-properties='padding-top: 20px;']
+arcor.de##.image > [-abp-properties='margin-left: 1*px; margin-right: 1*px;']
 tvtoday.de##.marginContent > [-abp-properties='clear: both; margin-bottom: 12px;']
 arcor.de##.pWrap > [-abp-properties='position: *; text-align: *; width: *px;']
+spiegel.de##.page-bottom-content [-abp-properties='background-color: *; margin-bottom: *px;']
+spiegel.de##.page-bottom-content [-abp-properties='cursor: pointer;']
 shz.de##.span1 > [-abp-properties='cursor: pointer;']
+arcor.de##.teaserArea > [-abp-properties='cursor: pointer;']
+arcor.de##.teaserArea > [-abp-properties='margin-left: 1*px; margin-right: 1*px;']
+arcor.de##.teaserArea > [-abp-properties='margin-right: 1*px; padding-left: 1*px;']
+arcor.de##.teaserArea > [-abp-properties='vertical-align: top;']
 gamona.de##.wallpaper > [-abp-properties='cursor: pointer; left: *; position: *; right: *; top: *;']
 general-anzeiger-bonn.de##.widget > [-abp-properties='cursor: pointer;'] > img
 motorradonline.de##.zerobox > [-abp-properties='cursor: pointer;'] > img
@@ -7738,12 +7862,12 @@ tvspielfilm.de,tvtoday.de##[-abp-properties='background-color: *; clear: both; c
 tvspielfilm.de,tvtoday.de##[-abp-properties='clear: both; cursor: pointer; margin-left: 47px;']
 tvtoday.de##[-abp-properties='clear: both; margin-bottom: 13px;']
 tvtoday.de##[-abp-properties='clear: both; margin-left: 48px;']
-spiegel.de##[-abp-properties='clear: right; float: right;'] > div > img
 wetteronline.de##[-abp-properties='cursor: pointer; float: left; height: 9*px; left: 0px; margin-left: 2*px; position: absolute; width: 7*px; z-index: *;']
 usp-forum.de##[-abp-properties='cursor: pointer; height: 9*px; width: 72*px;']
 finanzen.net##[-abp-properties='cursor: pointer; height: 90px; margin-left: 72px; width: 769px;']
 giga.de##[-abp-properties='cursor: pointer; left: *; position: *; right: *; top: *; z-index: 1;']
 pcwelt.de##[-abp-properties='cursor: pointer; left: 242px; position: absolute;']
+transfermarkt.de##[-abp-properties='cursor: pointer; left: 944px; margin-left: 100px; position: absolute; top: 102px; width: 160px; z-index: 100;']
 prosieben.de,sixx.de##[-abp-properties='cursor: pointer; left: 950px; position: absolute; top: 100px;']
 tvspielfilm.de##[-abp-properties='cursor: pointer; left: 974px; position: absolute; top: 100px;']
 gamestar.de##[-abp-properties='cursor: pointer; left: 990px; position: absolute; top: 100px;']
@@ -7757,40 +7881,44 @@ gala.de##[-abp-properties='cursor: pointer; margin-bottom: 45px; margin-left: 10
 auto-motor-und-sport.de,pcwelt.de##[-abp-properties='cursor: pointer; margin-left: *px;']
 gala.de##[-abp-properties='cursor: pointer; margin-left: 116px;']
 finanzen.net##[-abp-properties='cursor: pointer; margin-left: 13px;']
-e-mountainbike.com,elektrobike-online.com,focus.de,klettern-magazin.de,klettern.de,mountainbike-magazin.de,outdoor-magazin.com,roadbike.de##[-abp-properties='cursor: pointer; margin-left: 15px;']
+e-mountainbike.com,elektrobike-online.com,klettern-magazin.de,klettern.de,mountainbike-magazin.de,outdoor-magazin.com,roadbike.de##[-abp-properties='cursor: pointer; margin-left: 15px;']
 ran.de##[-abp-properties='cursor: pointer; margin-left: 2*px;']
 gamestar.de##[-abp-properties='cursor: pointer; margin-left: 252px; margin-top: 10px;']
-focus.de,transfermarkt.de##[-abp-properties='cursor: pointer; margin-left: 3*px;']
 shz.de##[-abp-properties='cursor: pointer; margin-left: 46px;']
 wetteronline.de##[-abp-properties='cursor: pointer; margin-left: 7px; margin-top: 5px; padding-top: 12px;']
+transfermarkt.de##[-abp-properties='cursor: pointer; margin-top: 10px;']
 gamestar.de##[-abp-properties='cursor: pointer; text-align: center;'] > img
-finanzen.net##[-abp-properties='cursor: pointer;']
+finanzen.net,gala.de##[-abp-properties='cursor: pointer;']
 boerse-online.de,fem.com##[-abp-properties='cursor: pointer;'] > img
 brigitte.de##[-abp-properties='float: left; height: 1*px; margin-bottom: 1*px; position: relative; width: 9*px;']
-spiegel.de##[-abp-properties='float: right; margin-bottom: 15px; margin-left: 15px;']
-spiegel.de##[-abp-properties='float: right; margin-left: 15px; padding-bottom: 15px;']
 boerse.de##[-abp-properties='height: 1*px; margin-right: 17*px; position: relative;']
 ariva.de##[-abp-properties='height: 10*px; margin-right: 30*px; position: relative;']
 autoexperience.de,lpgforum.de,winboard.org##[-abp-properties='height: 600px; *width: 160px;']
+lpgforum.de##[-abp-properties='height: 9*px; margin-bottom: 1*px; margin-top: 1*px; position: relative; text-align: *; width: 10*px;']
 finanzen.net##[-abp-properties='height: 9*px; margin-left: 7*px; width: 7*px;']
+pcwelt.de##[-abp-properties='height: 9*px; position: relative; width: 98*px;']
 1erforum.de,autoextrem.de,dasheimwerkerforum.de,fitness-foren.de,handy-hilfeforum.de,kreatives-wohnforum.de,mazda-forum.info,mercedes-forum.com,modernboard.de,pkw-forum.de,skodacommunity.de,teccentral.de,vermieter-forum.com,winboard.org,windows-7-forum.net##[-abp-properties='height: 90px; *width: 1*px;']
 autobild.de,autoexperience.de,lpgforum.de,winboard.org##[-abp-properties='height: 90px; *width: 728px;']
 boerse-online.de,flugzeugforum.de,gamepro.de,gamestar.de,general-anzeiger-bonn.de,kabeleins.de,pcwelt.de,prosieben.de,prosiebenmaxx.de,sat1.de,sat1gold.de,serienjunkies.de,sixx.de,sportal.de,the-voice-of-germany.de,tvspielfilm.de,tvtoday.de,wn.de##[-abp-properties='height: 90px; margin*; width: *px;']
 finanzen.net##[-abp-properties='height: 90px; position: relative;']
 filecrypt.cc##[-abp-properties='height: 90px; width: 728px;']
+pcwelt.de##[-abp-properties='height: 91px; position: relative; width: 980px;']
 gamona.de##[-abp-properties='left: 0px; top: 0px; width: 1000px;']
-autobild.de,caravaning.de,computerbild.de,e-mountainbike.com,eatsmarter.de,elektrobike-online.com,focus.de,klettern-magazin.de,klettern.de,mountainbike-magazin.de,outdoor-magazin.com,outdoorchannel.de,promobil.de,roadbike.de,shz.de,transfermarkt.de##[-abp-properties='left: 10*px; position: absolute; top: *px;']
+autobild.de,caravaning.de,computerbild.de,e-mountainbike.com,eatsmarter.de,elektrobike-online.com,klettern-magazin.de,klettern.de,mountainbike-magazin.de,outdoor-magazin.com,outdoorchannel.de,promobil.de,roadbike.de,shz.de,transfermarkt.de##[-abp-properties='left: 10*px; position: absolute; top: *px;']
 cavallo.de,pnn.de##[-abp-properties='left: 10*px; position: absolute; top: 1*px;']
 gamona.de##[-abp-properties='left: 1000px; position: absolute; top: 0px;']
 wetter.com##[-abp-properties='left: 1160px; margin-top: 311px; position: absolute; width: 100%; z-index: *;']
+wetter.com##[-abp-properties='left: 1160px; margin-top: 312px; position: absolute; z-index: 13;']
 lustich.de##[-abp-properties='left: 50%; margin-left: 355px; position: absolute; top: 70px;']
 gamepro.de,gamestar.de,runnersworld.de,spox.com##[-abp-properties='left: 9*px; position: absolute; top: *px;']
 abendzeitung-muenchen.de,ran.de##[-abp-properties='left: 9*px; position: absolute; top: 1*px;']
+hoerzu.de##[-abp-properties='left: 9*px; position: absolute; top: 9*px; z-index: 10*;']
+brigitte.de##[-abp-properties='left: 970px; position: absolute; top: *px;']
+brigitte.de##[-abp-properties='left: 971px; position: absolute; top: -240px;']
 gamepro.de,gamestar.de##[-abp-properties='left: 990px; position: absolute;']
 gala.de,kabeleins.de,prosieben.de,prosiebenmaxx.de,sat1.de,sat1gold.de,serienjunkies.de,sixx.de,the-voice-of-germany.de,tvspielfilm.de,wn.de##[-abp-properties='margin*: *px;']
 computerbild.de##[-abp-properties='margin-bottom: *px; position: relative; width: 10*px;']
 finanzen.net##[-abp-properties='margin-bottom: 1*px; margin-left: 1*px; width: 7*px;']
-focus.de##[-abp-properties='margin-bottom: 1*px; margin-left: 2*px; width: 7*px;']
 tvtoday.de##[-abp-properties='margin-bottom: 1*px; margin-left: 2*px;']
 pnn.de##[-abp-properties='margin-bottom: 1*px; margin-left: 3*px;']
 fem.com,general-anzeiger-bonn.de,womenshealth.de##[-abp-properties='margin-bottom: 10px; margin-left: 1*px;']
@@ -7800,30 +7928,43 @@ runnersworld.de##[-abp-properties='margin-bottom: 10px; margin-left: 202px;']
 e-mountainbike.com,elektrobike-online.com,outdoorchannel.de,roadbike.de##[-abp-properties='margin-bottom: 10px; margin-left: 292px;']
 main-spitze.de##[-abp-properties='margin-bottom: 10px; margin-left: 45px;']
 lustich.de##[-abp-properties='margin-bottom: 10px; margin-left: 50px; margin-right: auto;']
-spiegel.de##[-abp-properties='margin-bottom: 15px; padding-bottom: 15px;']
 boerse-online.de##[-abp-properties='margin-bottom: 20px; margin-left: 10px; margin-right: 10px;']
+wetter.com##[-abp-properties='margin-bottom: 30px; padding-bottom: 3px; padding-top: 3px;']
 arcor.de##[-abp-properties='margin-left: 10px; margin-right: 10px;']
 auto-motor-und-sport.de,cavallo.de,pnn.de##[-abp-properties='margin-left: 15px;']
 filecrypt.cc##[-abp-properties='margin-left: 15px;']:first-child
 gamepro.de,gamestar.de,sportal.de##[-abp-properties='margin-left: 2*px; margin-top: *px;'] > img
 motorradonline.de##[-abp-properties='margin-left: 20px; position: relative; width: 910px;']
+wetter.com##[-abp-properties='margin-left: 238px; margin-top: 24px;']
+wetter.com##[-abp-properties='margin-left: 238px; margin-top: 25px;']
 wetter.com##[-abp-properties='margin-left: 239px; margin-top: 25px;']
+transfermarkt.de##[-abp-properties='margin-left: 307px;']
 boerse.de##[-abp-properties='margin-left: 34px;']
-transfermarkt.de##[-abp-properties='margin-top: 10px; padding*: 10px;']
+pcwelt.de##[-abp-properties='margin-left: 35px;']
+usp-forum.de##[-abp-properties='margin-top: *; position: *; text-align: *; width: 1080px;']
+wetter.com##[-abp-properties='margin-top: 30px; padding-bottom: 3px; padding-top: 3px; text-align: center;']
 gamepro.de,gamestar.de##[-abp-properties='margin-top: 9px; padding-left: 252px;']
 autozeitung.de,de.filsh.net,dialo.de,donnerwetter.de,e-hausaufgaben.de,fanfiktion.de,finya.de,formel1.de,fremdwort.de,helles-koepfchen.de,infranken.de,inside-digital.de,inside-handy.de,motorsport-total.com,news.de,nickles.de,pixelio.de,seniorbook.de,tabtech.de,weristdeinfreund.de##[-abp-properties='max-height: *px; max-width: *px; position: *;']
+unixboard.de##[-abp-properties='max-width: 12*px; position: relative; text-align: center; width: 12*px;']
 ariva.de##[-abp-properties='position: absolute; right: *px; width: *px;']
 gamona.de##[-abp-properties='position: absolute; right: 1000px; top: 0px;']
 woxikon.de##[-abp-properties='position: absolute; top: *px; width: *px;']
 auto-motor-und-sport.de##[-abp-properties='position: absolute; top: 160px; width: 1020px;']
+autoexperience.de##[-abp-properties='position: relative; text-align: *; width: 10*px;']
 giga.de##[-abp-properties='position: relative; top: *px; width: 10*px;']
-main-spitze.de##[-abp-properties='position: relative; width: 10*px;']
+arcor.de,main-spitze.de##[-abp-properties='position: relative; width: 10*px;']
+arcor.de##[-abp-properties='position: relative; width: 1005px;']
+echo-online.de##[-abp-properties='position: relative; width: 8*px;']
+arcor.de##[-abp-properties='position: relative; width: 90*px;']
+finanzen.net##[-abp-properties='position: relative;']
+hoerzu.de##[-abp-properties='text-align: center;'] > img
 caravaning.de,promobil.de,prosieben.de,sixx.de##[-abp-properties='width: 728px;']
 @@/adpop.js$domain=freenet.de
 @@/cdn-cgi/pe/bag2?r[]=*ads.exoclick.com$xmlhttprequest,domain=playporn.to
 @@/cdn-cgi/pe/bag2?r[]=*popads.net$xmlhttprequest,domain=playporn.to
 @@|http://byte.to/js/javascript.js|
 @@|http://byte.to/js/wz_tooltip.js|
+@@|https://*.js?_=$script,domain=freenet.de
 @@||0815sms.com/img/pagepeel.php?$image
 @@||1000steine.de/img/ads/
 @@||123people.us/trackads/display?zones=$script,domain=123people.de
@@ -7856,6 +7997,7 @@ caravaning.de,promobil.de,prosieben.de,sixx.de##[-abp-properties='width: 728px;'
 @@||adition.com/banners/$image,domain=ambellis.de|dsl.freenet.de|mirapodo.de|mytoys.de
 @@||adition.com/banners/$image,object,domain=payback.de
 @@||adition.com/crossdomain.xml$object-subrequest,domain=hd-plus.de
+@@||adition.com/js/adition.js$domain=ambellis.de|mirapodo.de|mytoys.de
 @@||adition.com/js?wp_id=$script,domain=ambellis.de|jam.fm|mirapodo.de|mytoys.de
 @@||adition.com/track?$object-subrequest,domain=hd-plus.de
 @@||adlink.net/js?*&s=c&$script,domain=cinemaxx.de
@@ -7863,6 +8005,7 @@ caravaning.de,promobil.de,prosieben.de,sixx.de##[-abp-properties='width: 728px;'
 @@||admeld.com/ad/js/*/game-page?$script,domain=jetztspielen.de|spielen.com
 @@||admeld.com/meld128.js$domain=jetztspielen.de|spielen.com
 @@||admin.brightcove.com/viewer/*/advertisingmodule.swf$domain=bunch.tv|dmax.de|morgenpost.de
+@@||adnxs.com/prebid/static/*/prebid.js$domain=netzwelt.de
 @@||adonline.anonza.de^$~document,~third-party
 @@||adpartner.de^$~third-party
 @@||ads.autoscout24.com/adserver/*&elementid=ctl00_ctl00_decoratedarea_contentarea_fsbox0&$script,domain=autoscout24.de
@@ -7872,6 +8015,7 @@ caravaning.de,promobil.de,prosieben.de,sixx.de##[-abp-properties='width: 728px;'
 @@||ads.mybet.com/redirect.aspx?pid=$popup,domain=gewinnspiele.freenet.de
 @@||ads.radioffn.c.nmdn.net/ps-radioffn/livestream.mp3$object-subrequest,domain=radio.de
 @@||ads.radiohamburg.c.nmdn.net^*/livestream128.mp3$object-subrequest
+@@||ads.smartfeedads.com^$domain=motorrad2000.de
 @@||adserv.quality-channel.de/crossdomain.xml$object-subrequest,domain=glamour.de|gq-magazin.de|myself.de|vanityfair.de|vogue.de
 @@||adserv.quality-channel.de/realmedia/ads/*?videoad$object-subrequest,domain=glamour.de|gq-magazin.de|myself.de|vanityfair.de|vogue.de
 @@||adserver.71i.de/global_js/globalv6.js$domain=hausgemacht.tv
@@ -8003,7 +8147,6 @@ caravaning.de,promobil.de,prosieben.de,sixx.de##[-abp-properties='width: 728px;'
 @@||fh-muenster.de/leitbild/banner.php
 @@||filecrypt.cc/index.php?Action=Go&id=$subdocument,domain=filecrypt.cc
 @@||fn-neon.de/javascript/adserver_banner.js
-@@||focus.de^$genericblock,generichide
 @@||forum-duewupp.de/images/ad-gallery/$~third-party
 @@||forum.froxlor.org^*/adsense.css
 @@||fotoschloebe.de/Werbung/$~third-party
@@ -8025,7 +8168,6 @@ caravaning.de,promobil.de,prosieben.de,sixx.de##[-abp-properties='width: 728px;'
 @@||games.myvideo.de/ressource/js/sevengames/sevengames/adtags.*.js?
 @@||games.tfag.de^$domain=fitforfun.de
 @@||gamestar.de/js/gamestar/my_ad_integration.min.js$domain=gamestar.de
-@@||gamestar.de^*.html$genericblock,generichide
 @@||general-anzeiger-bonn.de/oa/www/delivery/spcjs.php?id=*&block=$script
 @@||gfsrv.net/ad/$domain=ogame.de
 @@||gmx.net^*/video-adserver-config.xml$object-subrequest
@@ -8036,6 +8178,7 @@ caravaning.de,promobil.de,prosieben.de,sixx.de##[-abp-properties='width: 728px;'
 @@||google.com/uds/api/ads/*/search.in.js$domain=marktplatz.nordclick.de
 @@||google.de/ads/css/ads-base.$stylesheet
 @@||google.de/search?q=$xmlhttprequest
+@@||googlesyndication.com/safeframe/$subdocument,domain=netzwelt.de
 @@||googlesyndication.com/simgad/14155692645477451130$image,domain=guterhut.de
 @@||googlewatchblog.de^*/adsense.png
 @@||goolive.de/templatesv2/smileys/ad.gif
@@ -8103,6 +8246,7 @@ caravaning.de,promobil.de,prosieben.de,sixx.de##[-abp-properties='width: 728px;'
 @@||n24.de^*/my_ad_integration.js
 @@||nadann.de/small_ads/$~third-party
 @@||netzathleten-media.de^*/naMediaAd.js$domain=kino-vorschau.com
+@@||netzwelt.de^$xmlhttprequest,domain=netzwelt.de
 @@||nonstoppartner.net/a/?$subdocument,domain=gutscheindoktor.de
 @@||nonstoppartner.net^$image,domain=sunsteps.org
 @@||nordclick.de/js/colors/adsense_colors.js
@@ -8231,7 +8375,6 @@ caravaning.de,promobil.de,prosieben.de,sixx.de##[-abp-properties='width: 728px;'
 @@||tradedoubler.com/file/$image,domain=sunsteps.org
 @@||tradedoubler.com/redirect/*^affID^$subdocument,domain=gutscheindoktor.de
 @@||tv.derstandard.at/adserver.php?*&pos=video$subdocument
-@@||tvspielfilm.de^$genericblock,generichide
 @@||ui-portal.de^*/video-adserver-config.xml$object-subrequest
 @@||uicdn.com^*/video-adserver-config.xml$object-subrequest
 @@||v.fwmrm.net/ad/p/1?$object-subrequest,domain=southpark.de
@@ -8318,7 +8461,6 @@ kalender-365.de#@#.adsbygoogle
 @@||alle-news.com^$image,script,domain=news.feed-reader.net
 @@||alysson.de^$document,subdocument,domain=gamona.de
 @@||amazonaws.com^$image,domain=podcast.de
-@@||amazonaws.com^$object-subrequest,domain=gmx.net|homerj.de|spiegel.tv|sueddeutsche.de|web.de
 @@||amazonaws.com^$script,domain=jappy.de
 @@||amgdgt.com/ads?$object-subrequest,domain=clipfish.de
 @@||atonato.de^$document,subdocument,domain=gamona.de

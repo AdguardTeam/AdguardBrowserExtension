@@ -1,15 +1,17 @@
 ! Title: Dutch filter
-! Version: 1.0.8.65
+! Version: 1.0.8.70
 ! Name: Dutch filter
 ! Description: Filter that enables removing of the ads from websites with Dutch content.
 ! NameEn: Dutch filter
 ! DescriptionEn: Filter that enables blocking of ads on websites with Dutch content.
-! TimeUpdated: 2016-01-24T17:06:49.814+03:00
+! TimeUpdated: 2016-02-13T15:00:55.458+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#window.AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+@@||telegraaf.tcdn.nl/javascript/showads*.js
+||totaaltv.nl/upload/Banner-sep-astrasat.gif
 ||servedby.rtbiddingplatform.com^$domain=media.zie.nl
 ||bs.serving-sys.com/BurstingPipe/adServer.bs$domain=kijk.nl
 ||serving-sys.com/*.mp4^$domain=kijk.nl
@@ -43,6 +45,7 @@ _advertentieleaderboardhome.
 ||admatcher.videostrip.com^$domain=q-music.nl|radioveronica.nl|skoften.net|sport1.nl|vi.nl
 ||admerize.be^$third-party
 ||adrcdn.com^$third-party
+||affiliatepartners.com^$third-party
 ||am.seoptics.nl^$third-party
 ||asp.unitedconsumers.com^$third-party
 ||assets.nudeal.nl^$third-party
@@ -349,8 +352,11 @@ _advertentieleaderboardhome.
 @@||zomoto.nl/js/advertisement.js?
 @@||zuka.nl/images/ad_$image
 @@||alfaforum.nl/forum/images/misc/vbulletin4_logo.png#$image
+@@||alfaforum.nl^$generichide
 @@||autoblog.nl/javascript/advertisement2.js
+@@||calorielijst.nl^$generichide
 @@||dumpert.nl^*/admatcher.doubleclick.net
+@@||embed.kijk.nl/video/$generichide
 @@||motor-forum.nl/motorshopper/json/advertenties/$xmlhttprequest
 @@||tijd.be/s2014/js/site/advertisement.js?
 ###adRechts
@@ -394,6 +400,7 @@ _advertentieleaderboardhome.
 ##.gesponsordelink
 ##.justLease_ad
 ##.mp-adsense-header-top
+##.ontwerp_ads
 ##.reclame
 ##.reclameIndex
 ##.reclamekop

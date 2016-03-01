@@ -1,10 +1,10 @@
 ! Title: Social media filter
-! Version: 1.0.8.40
+! Version: 1.0.8.74
 ! Name: Social media filter
 ! Description: A filter for social media widgets ("Like" buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2016-02-03T15:59:54.647+03:00
+! TimeUpdated: 2016-03-01T15:57:56.897+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -112,7 +112,7 @@
 ||vk.com/images/upload.gif$domain=~vk.com|~vkontakte.ru
 ||vk.com/js/api/share.js$third-party
 ||vk.com/share.php$third-party
-||vk.com/widget_$third-party
+||vk.com/widget_$domain=~redspell.ru|~vk.com
 ||vkontakte.ru/js/api/share.js$third-party
 ||vkontakte.ru/share.php$third-party
 ||vkontakte.ru/widget_like.php$third-party
@@ -125,8 +125,8 @@
 ||woobox.com^$third-party
 ||x.pluso.ru^$third-party
 ||xing-share.com^$third-party
-||yandex.st/share/share.js$domain=~calculatewater.ru|~novoeradio.by|~pikucha.ru|~realty.dmir.ru|~yandex.com|~yandex.ru|~yandex.ua
-||yastatic.net/share/$third-party,domain=~yandex.by|~yandex.kz|~yandex.ru|~yandex.ua
+||yandex.st/share/share.js$domain=24auto.ru|~calculatewater.ru|~novoeradio.by|~pikucha.ru|~realty.dmir.ru|~yandex.com|~yandex.ru|~yandex.ua
+||yastatic.net/share/$third-party,domain=~avtodispetcher.ru|~yandex.by|~yandex.kz|~yandex.ru|~yandex.ua
 ||youtube.com/subscribe_widget$third-party
 /asd.share.buttons/*
 /copy_to_blog_button_
@@ -202,8 +202,10 @@ crimea-kurort.com#$#img[width="88"][height="31"] {visibility: hidden!important;}
 maskme.ru#$#img[width="88"][height="31"] {visibility: hidden!important;}
 gamesradar.com#$#.shareSocialArticle-wrap { visibility: hidden; }
 softwares-serials.in#$##FTslide { visibility: hidden;!important; }
+sueddeutshe.de##li[onclick^="window.open('https://www.facebook.com/sharer/sharer.php"]
 meduza.io###DailySubscriber
 washingtonpost.com###NN-module-rr
+tekdizifilmizle.com###SociaLKare
 ng72.ru###VKGroupInvite
 naukatv.ru###VKPopupWrapper
 smotri.com###VideoSharingFirstLine
@@ -236,7 +238,7 @@ pikabu.ru###facebook_page_block
 pikabu.ru###facebook_page_block_lenta
 vioyun.com###facebookpopup-fanback
 fulloyunindirsene.com###fadeinbox
-idevice.ro,majorgeeks.com,ridus.ru,tweaktown.com###fanback
+for-ua.com,idevice.ro,majorgeeks.com,ridus.ru,tweaktown.com###fanback
 mackolik.com###fancybox-close
 mackolik.com###fancybox-frame
 fishki.net###fb-scroll-popup
@@ -254,13 +256,14 @@ pozdravlandia.ru###imCel_Vkontakte
 riotpixels.com###index-social
 adme.ru###js-article-share-top
 surfingbird.ru###js-share
-savunmaveteknoloji.com###koddostu-face8
+haberevet.com,savunmaveteknoloji.com###koddostu-face8
 icaravan.com.ua###like_popup
+emlakkulisi.com###modal
 bitterwallet.com###module-widget-meta-4
 qrrro.com###netkevin-overlay
 qrrro.com###netkevin-popup
 kp.ru###ok-popup
-ifootball.pro,strana.in.ua,study.ru###overlay
+emlakkulisi.com,ifootball.pro,strana.in.ua,study.ru###overlay
 takprosto.cc###parent-popup
 myserial.org###parent_popup
 engadget.com###pinned
@@ -269,12 +272,14 @@ mega-u.ru,pinu.com.ua###popup-message-background
 mega-u.ru,pinu.com.ua###popup-message-window
 ruscur.ru,utro.ru###popup_box
 vokrug.tv###portamento_container
+techhive.com###primarySocialSharing
 aliexpress.com###ru-sns
 xperia-droid.ru###sb_popup
 delfi.lv###sbookmarks-left
 geek.com,greasyfork.org,hackworthy.blogspot.de,wunderground.com###share
 rantlifestyle.com###share-below-desktop
 downloadlinks.net,the-area51.com###share-post
+dailylocal.com###shareBarWrapper
 scroll.com.tr###shareButtons
 itbox.ua###share_data
 utsports.com###sharebar-wrapper
@@ -292,6 +297,7 @@ ictv.ua###soc_main
 telegraf.com.ua###soc_popup
 liberallogic101.com###social-buttons
 podrobnosti.ua###social_popup
+bursadabugun.com###socialfollowbox
 regnum.ru###socialine
 015.by,032.ua,0332.ua,0342.ua,0352.ua,0362.ua,0372.ua,0412.ua,0432.ua,04565.com.ua,04578.in.ua,0462.ua,0472.ua,048.ua,04868.com.ua,0512.com.ua,0522.ua,0532.ua,05366.com.ua,0542.ua,0552.ua,056.ua,0564.ua,057.ua,061.ua,06153.com.ua,0623.com.ua,06239.com.ua,06242.com.ua,06252.com.ua,06254.in.ua,06255.com.ua,06257.in.ua,06274.com.ua,0629.com.ua,0642.ua,06432.in.ua,06434.com.ua,0652.ua,0654.com.ua,06562.com.ua,0692.ua,3462city.ru,44.ua,5692.com.ua,62.ua,6264.com.ua,8352city.ru,8422city.ru,86155city.ru,8634city.ru,city3012.ru,go31.ru,go812.ru,go862.ru,goroddomodedovo.ru,gorodpushkin.ru,kinokadr.ru,labaved.ru,prokolpino.ru,pronews48.ru###socialpopup
 kinokadr.ru###socialpopup2
@@ -306,6 +312,7 @@ forum.xda-developers.com###thread-header-social
 amazon.com###twitter
 wsj.com###valetTools-left
 travelask.ru###vk-popup
+newsvo.ru###vk_group_layer
 spec-komp.com###vk_groups1
 eminem.pro,igromania.ru###vk_groups2
 lyrsense.com###vk_groups_ls
@@ -393,6 +400,7 @@ battle.net##.community-share
 abendzeitung-muenchen.de##.communitySingleWidget
 washingtonpost.com##.connect
 anti-malware.ru##.content > div#slidebox
+netzwelt.de##.ctcr div[class="sb tco fi"][data-service] > div[class]
 genius.com##.custom_share
 adme.ru##.d-social-widjets
 hearthzone.ru##.decom-share
@@ -410,8 +418,9 @@ omgchrome.com,sanook.com##.entry-share
 myscienceacademy.org##.entry-socials
 onlinedizi.co,xda-developers.com##.et_social_icons_container
 fiveironfrenzy.com##.et_social_popup
-businessinsider.com,digitaltrends.com,fullfilmizlesin.com,kickstarter.com##.facebook
+businessinsider.com,digitaltrends.com,fullfilmizlesin.com,habrahabr.ru,kickstarter.com##.facebook
 sovsport.ru##.facebook-bn_site-overlay
+formulalubvi.com##.facebook-popup
 travelask.ru##.facebook-toolbar
 waronline.org##.facebookLike
 bandcamp.com##.facebookThis
@@ -436,7 +445,7 @@ idevice.ro##.getsocial
 pcworld.com##.gig-comment-shareLink
 pcworld.com##.gig-composebox-share
 meizufans.eu##.google-share
-businessinsider.com##.googleplus
+businessinsider.com,habrahabr.ru##.googleplus
 digitaltrends.com##.gplus
 reference.com##.hdrsc
 yurtgazetesi.com.tr##.hh-socialmedia
@@ -458,12 +467,13 @@ metrolyrics.com##.js-sd-social
 about.com,metrolyrics.com,surfingbird.ru##.js-share
 rbc.ru##.js-social-invite-mini
 popmech.ru##.js-toggle-share-block
-fulleindir.com##.koddostufacee
+fulleindir.com,silentall.com##.koddostufacee
 kulturologia.ru##.lb_overlay
 muz.ru##.like > .share
 nashe.ru##.like-b
 giveawayoftheday.com##.like_block_rendered
 memes.genius.com##.like_button
+newsvo.ru##.like_widget
 focus.ua##.likeboxes
 svoboda.org##.likebutton
 gorodkirov.ru##.likely__widget
@@ -477,6 +487,7 @@ digitaltrends.com##.m-share_site
 gazeta.ua##.mailmunch-overlay
 gazeta.ua##.mailmunch-popover
 theblaze.com##.main-sub-social
+formulalubvi.com##.mobile-facebook
 tagesschau.de##.modSharing
 forums.macrumors.com##.mr_shareLabel
 moskva.fm##.msk-well-social
@@ -649,11 +660,7 @@ comss.ru##.toplogo > span
 pastebin.com##.tweet
 forbes.com##.tweet-this
 bandcamp.com##.tweetThis
-businessinsider.com,digitaltrends.com,fullfilmizlesin.com,kickstarter.com,tvstar.ch##.twitter
-habrahabr.ru##.twitter
-habrahabr.ru##.vkontakte
-habrahabr.ru##.googleplus
-habrahabr.ru##.facebook
+businessinsider.com,digitaltrends.com,fullfilmizlesin.com,habrahabr.ru,kickstarter.com,tvstar.ch##.twitter
 meizufans.eu##.twitter-share
 browserleaks.com##.twt
 utsports.com##.twttr-widget-wrap
@@ -663,6 +670,7 @@ usatoday.com##.util-bar-btn-share
 comediansincarsgettingcoffee.com##.video--share
 vid.me##.video_share
 povarenok.ru##.vkfb
+habrahabr.ru##.vkontakte
 blogs.wsj.com##.vltSocialLinks
 rbc.ru##.win-subscribe-popup-box
 softonic.com##.wrapper-fixed-social-buttons
@@ -700,6 +708,11 @@ softbuild.ru##a[onclick^="window.open('http://vkontakte.ru/share.php"]
 softbuild.ru##a[onclick^="window.open('http://www.liveinternet.ru/journal_post.php"]
 softbuild.ru##a[onclick^="window.open('http://www.livejournal.com/update.bml"]
 ozgurgorgulu.com##a[title^="Share on"]
+zuketapaajabhisa.blogspot.com##body #fanback
+maydanozhaber.com##body > #kodac
+u-f.ru##body > div#pp
+u-f.ru##body > div#pp-bg
+teknokulis.com##body > div[id^="TB_"]
 digitaltrends.com$$script[tag-content="facebook_like"][max-length="2000"]
 adibudi.com##div.buttons
 elitedaily.com##div[class*="article-shar"]
@@ -710,6 +723,7 @@ travelask.ru##div[class^="post-shares"]
 mobiltelefon.ru##div[class^="social_like_btns"]
 yandex.ru##div[class^="ya-share"]
 msn.com##div[data-aop="sharingtoolbar_social"]
+pcgamesn.com##div[data-share-url]
 gazeta.ua##div[id*="-socials-"]
 finam.ru##div[id*="socnet-btns"]
 androidopentutorials.com##div[id^="google-badge-box"]
@@ -719,9 +733,6 @@ lifehacker.ru##div[rel="Like"]
 dealspwn.com##div[style="float: right;"]
 kinopoisk.ru##dl.add_to
 er.ru##dl.shareBlock
-zuketapaajabhisa.blogspot.com##html > body #fanback
-u-f.ru##html > body > div#pp
-u-f.ru##html > body > div#pp-bg
 foxitsoftware.com##iframe#share
 news.sportbox.ru##iframe[name="vk_community"]
 vkrugudruzei.ru##iframe[src*="facebook.com/plugins/likebox.php"]
@@ -746,6 +757,7 @@ kinopoisk.ru##ul[class="addTo addToBottom"]
 kinopoisk.ru##ul[class="addTo"]
 ||anti-malware.ru/misc/footer_follow.js
 ||api.pinterest.com/*/urls/count.json?callback=jQuery*&url=$third-party
+||bursadabugun.com/socialmediabox.php
 ||cdn.comss.net/action/vk_comss.png
 ||cdnx.livetv.sx/img/soc/
 ||connect.ok.ru/dk?st.cmd=WidgetShare$domain=gazeta.ua
@@ -792,6 +804,7 @@ kinopoisk.ru##ul[class="addTo"]
 ||rusradio.ru/upload/images/js/additional.js
 ||satsis.ru/img/share.js
 ||share.baidu.com^$third-party
+||sinemapol.com/wp-content/plugins/like-jacking-ninja/
 ||sletat.ru/Services/SletatCounter.ashx
 ||strana.in.ua/templates/*/js/popup.js
 ||stranamam.ru/i/share_icons.png
@@ -930,10 +943,9 @@ kinopoisk.ru##ul[class="addTo"]
 ###twitter-icon
 ###twitterTweet
 ###vk-share
-~vk.com,~vkontakte.ru###vk_auth
 ~vk.com,~vkontakte.ru###vk_donate
 ~vk.com,~vkontakte.ru###vk_group
-~vk.com,~vkontakte.ru###vk_groups
+~redspell.ru,~vk.com,~vkontakte.ru###vk_groups
 ~vk.com,~vkontakte.ru###vk_like
 ~vk.com,~vkontakte.ru###vk_poll
 ~vk.com,~vkontakte.ru###vk_share
@@ -988,7 +1000,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.bottom-share-buttons
 ##.box-social
 ##.box_btn_like
-~sports.ru##.btn-social
+~avito.ru,~sports.ru##.btn-social
 ##.buttons_share
 ##.c-social-likes
 ##.contentSocialBar
@@ -1033,7 +1045,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.help-social-buttons
 ##.i_v_fb_like
 ##.icon-digg
-~comediansincarsgettingcoffee.com,~forbes.com,~iguides.ru,~logaster.com,~t3n.de##.icon-facebook
+~comediansincarsgettingcoffee.com,~forbes.com,~iguides.ru,~logaster.com,~t3n.de,~theverge##.icon-facebook
 ~slashdot.org##.icon-facebook-squared
 ~t3n.de##.icon-google-plus
 ~iguides.ru,~logaster.com##.icon-gplus
@@ -1041,7 +1053,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.icon-pinterest
 ##.icon-pinterest-share
 ##.icon-reddit
-~3dnews.ru,~iguides.ru,~t3n.de##.icon-rss
+~3dnews.ru,~iguides.ru,~t3n.de,~theverge##.icon-rss
 ##.icon-stumbleupon
 ~comediansincarsgettingcoffee.com,~forbes.com,~t3n.de##.icon-twitter
 ~dailymail.co.uk##.img-share
@@ -1382,6 +1394,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##a[onlick*="https://www.facebook.com/sharer/"]
 bitiworld.com##a[title="share on twitter"]
 ~twitter.com##body .twitter-share-button
+~pinterest.com##body div a[class*="pin_it_button"]
 ##div[class^="juiz_sps_"]
 ##div[class^="widget-social"]
 ##div[id^="___plus_"]
@@ -1391,10 +1404,12 @@ bitiworld.com##a[title="share on twitter"]
 ##div[id^="vk_like_"]
 ##ebayShare_2
 ~livejournal.com,~lj.com##form[action*="livejournal.com/update.bml"]
-~pinterest.com##html > body div a[class*="pin_it_button"]
 ~facebook.com##input.fb
 ~twitter.com##input.tweet
 ~vk.com,~vkontakte.ru##input.vk
+@@/share42.js$domain=paraknig.ru
+@@||vk.com/widget_auth.php
+@@||podfm.ru/js/social-likes/social-likes.min.js$script
 @@||zona.mobi/js/build/libs/likely.js
 @@||yastatic.net/share/share.js$domain=universarium.org
 @@||kino-max.com/templates/kinomax/js/social-likes.min.js
@@ -1409,7 +1424,7 @@ bitiworld.com##a[title="share on twitter"]
 @@||i.po.st^$domain=rolandgarros.com
 @@||apis.google.com/js/plusone.js$domain=netimperative.com
 @@||veterok.tv/images/social/$domain=veterok.tv
-@@||vk.com/widget_comments.php$document
+@@||vk.com/widget_comments.php
 @@||vk.com/widget_post.php
 @@||facebook.com/plugins/comments
 @@||facebook.com/plugins/livefeed.php$document
