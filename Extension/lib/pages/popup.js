@@ -47,6 +47,10 @@ $(document).ready(function () {
 
             tab = t;
 
+            if (!tab.id) {
+                tab = UI.getActiveTab();
+            }
+
             var tabInfo = framesMap.getFrameInfo(tab);
             var filteringInfo = filteringLog.getTabInfo(tab);
 

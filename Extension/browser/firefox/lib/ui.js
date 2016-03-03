@@ -143,7 +143,7 @@ var UI = exports.UI = {
     },
 
     openCurrentTabFilteringLog: function () {
-        var tabInfo = this.filteringLog.getTabInfo(this._getActiveTab());
+        var tabInfo = this.filteringLog.getTabInfo(this.getActiveTab());
         var tabId = tabInfo ? tabInfo.tabId : null;
         UI.openFilteringLog(tabId);
     },
@@ -225,7 +225,7 @@ var UI = exports.UI = {
     },
 
     updateCurrentTabButtonState: function () {
-        var currentTab = this._getActiveTab();
+        var currentTab = this.getActiveTab();
         if (currentTab) {
             this._updatePopupButtonState(currentTab, true);
         }
@@ -247,7 +247,7 @@ var UI = exports.UI = {
     },
 
     whiteListCurrentTab: function () {
-        var tab = this._getActiveTab();
+        var tab = this.getActiveTab();
         this.whiteListTab(tab);
     },
 
@@ -269,7 +269,7 @@ var UI = exports.UI = {
     },
 
     unWhiteListCurrentTab: function () {
-        var tab = this._getActiveTab();
+        var tab = this.getActiveTab();
         this.unWhiteListTab(tab);
     },
 
@@ -278,8 +278,20 @@ var UI = exports.UI = {
         this.updateCurrentTabButtonState();
     },
 
+    getActiveTab: function () {
+        var tab = tabs.activeTab;
+        if (tab.id && tab.url) {
+            return tab;
+        }
+        //https://bugzilla.mozilla.org/show_bug.cgi?id=942511
+        var win = UiUtils.getMostRecentWindow();
+        var xulTab = tabUtils.getActiveTab(win);
+        var tabId = tabUtils.getTabId(xulTab);
+        return {id: tabId};
+    },
+
     getCurrentTabInfo: function (reloadFrameData) {
-        var currentTab = this._getActiveTab();
+        var currentTab = this.getActiveTab();
         if (reloadFrameData) {
             this.framesMap.reloadFrameData(currentTab);
         }
@@ -287,12 +299,12 @@ var UI = exports.UI = {
     },
 
     getCurrentTabFilteringInfo: function () {
-        var currentTab = this._getActiveTab();
+        var currentTab = this.getActiveTab();
         return this.filteringLog.getTabInfo(currentTab);
     },
 
     isCurrentTabAdguardDetected: function () {
-        var currentTab = this._getActiveTab();
+        var currentTab = this.getActiveTab();
         return this.framesMap.isTabAdguardDetected(currentTab);
     },
 
@@ -374,7 +386,7 @@ var UI = exports.UI = {
                 return;
             }
 
-            var activeTab = this._getActiveTab();
+            var activeTab = this.getActiveTab();
             if (tab.id != activeTab.id) {
                 return;
             }
@@ -405,7 +417,7 @@ var UI = exports.UI = {
         }.bind(this));
 
         var updateActiveTabIcon = function (tab) {
-            var activeTab = this._getActiveTab();
+            var activeTab = this.getActiveTab();
             if (!tab.id || tab.id == activeTab.id) {
                 this._updatePopupButtonState(activeTab, true);
             }
@@ -417,13 +429,13 @@ var UI = exports.UI = {
         tabs.on('ready', updateActiveTabIcon);
         //on focus change
         sdkWindows.on('activate', function () {
-            var activeTab = this._getActiveTab();
+            var activeTab = this.getActiveTab();
             this._updatePopupButtonState(activeTab, true);
         }.bind(this));
     },
 
     _updateBadgeAsync: Utils.debounce(function (tabId, number) {
-        var activeTab = UI._getActiveTab();
+        var activeTab = UI.getActiveTab();
         if (tabId != activeTab.id) {
             return;
         }
@@ -477,18 +489,6 @@ var UI = exports.UI = {
             }
         }
         return result;
-    },
-
-    _getActiveTab: function () {
-        var tab = tabs.activeTab;
-        if (tab.id && tab.url) {
-            return tab;
-        }
-        //https://bugzilla.mozilla.org/show_bug.cgi?id=942511
-        var win = UiUtils.getMostRecentWindow();
-        var xulTab = tabUtils.getActiveTab(win);
-        var tabId = tabUtils.getTabId(xulTab);
-        return {id: tabId};
     },
 
     _reloadWithoutCache: function (tab) {
