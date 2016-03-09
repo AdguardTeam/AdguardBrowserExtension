@@ -45,7 +45,7 @@ var Adguard = function () {
 			baseWidth: 560,
 			extendDetailedSettingsHeight: 460,
 			detailedMenuHeight: 270,
-			selectorMenuHeight: 95,
+			selectorMenuHeight: 213,
 			topOffset: 25
 		}
 	};
@@ -451,14 +451,13 @@ var Adguard = function () {
 	};
 
 	var createAdguardSelectorMenu = function () {
-		return $('<div>', {class: 'adg-container adg-auto-width sg_ignore'})
-			.append($('<div>', {id: 'drag-handle', class: 'adg-head'})
-				.append($('<div>', {id: 'close-button', class: 'adg-close'}))
-				.append($('<div>', {class: 'adg-head-h', i18n: 'assistant_select_element'}))
-				.append($('<div>', {class: 'adg-head-opt comment'})
-					.append($('<span>', {i18n: 'assistant_select_element_ext'}))
-					.append($('<span>')
-						.append($('<a>', {id: 'cancel-select-mode', href: '#', i18n: 'assistant_select_element_cancel'})))));
+		return $('<div>', {class: 'main sg_ignore'})
+			.append($('<div>', {id: 'close-button', class: 'close adg-close'}))
+			.append($('<div>', {id: 'drag-handle', class: 'head'})
+				.append($('<div>', {class: 'head_title', i18n: 'assistant_select_element'}))
+				.append($('<div>', {class: 'head_text', i18n: 'assistant_select_element_ext'})))
+			.append($('<div>', {class: 'foot'})
+				.append($('<button>', {id: 'cancel-select-mode', class:'btn btn-default', type:'button', i18n: 'assistant_select_element_cancel'})));
 	};
 
 	var showDetailedMenu = function () {
