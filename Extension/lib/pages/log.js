@@ -403,8 +403,9 @@ PageController.prototype = {
 		var show = !this.searchRequest || StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest);
 		show &= this.searchTypes.length == 0 || this.searchTypes.indexOf(filterData.requestType) >= 0;
 		show &= !this.searchThirdParty || filterData.requestThirdParty;
-		show &= !this.searchWhitelisted || (filterData.requestRule && filterData.requestRule.whiteListRule);
-		show &= !this.searchBlocked || (filterData.requestRule && !filterData.requestRule.whiteListRule);
+		show &= ((!this.searchWhitelisted && !this.searchBlocked)
+			|| (this.searchWhitelisted && filterData.requestRule && filterData.requestRule.whiteListRule)
+			|| (this.searchBlocked && filterData.requestRule && !filterData.requestRule.whiteListRule));
 
 		if (show) {
 			el.removeClass('hidden');
