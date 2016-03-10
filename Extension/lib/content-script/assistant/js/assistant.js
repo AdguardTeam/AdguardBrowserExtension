@@ -811,9 +811,8 @@ var Adguard = function () {
 
 		hideElement();
 
-		//TODO: Add messages for head content
-		findInIframe('#head_title').text(getMessage("assistant_preview_end"));
-		findInIframe('#head_text').text(getMessage("assistant_preview_end"));
+		findInIframe('#head_title').text(getMessage("assistant_preview_header"));
+		findInIframe('#head_text').text(getMessage("assistant_preview_header_info"));
 		findInIframe('#adg-preview').text(getMessage("assistant_preview_end"));
 		findInIframe('.content').hide();
 	};
