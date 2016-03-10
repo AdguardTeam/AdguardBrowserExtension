@@ -108,7 +108,6 @@ ContentScripts.prototype = {
             'content-script/i18n-helper.js',    // Localization placeholders
             'content-script/content-script.js', // Message passing
             'content-script/assistant/js/start-assistant.js',
-            'content-script/assistant/js/tools.js',
             'content-script/assistant/js/adguard-selector.js',
             'content-script/assistant/js/adguard-rules-constructor.js',
             'content-script/assistant/js/assistant.js'

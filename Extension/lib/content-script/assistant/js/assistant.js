@@ -360,11 +360,6 @@ var Adguard = function () {
 		});
 	};
 
-	var makeRadioButtonsAndCheckBoxes = function () {
-		findInIframe('.radiobox').radioButton();
-		findInIframe('.checkbox').checkbox();
-	};
-
 	var onCancelSelectModeClicked = function (e) {
 		e.preventDefault();
 
@@ -446,18 +441,18 @@ var Adguard = function () {
 					).append($('<div>', {id: 'adv-settings', "class": 'element-rule_form'})
 						.append($('<div>', {"class": 'element-rule_form-cont'})
 							.append($('<div>', {id: 'one-domain-p', "class": 'element-rule_fieldset'})
-								.append($('<input>', {type:'checkbox', "class": 'form-ui-control'}))
-								.append($('<label>', {"class": 'form-ui'})
+								.append($('<input>', {id:'oneDomainRadio', type:'checkbox', "class": 'form-ui-control checkbox'}))
+								.append($('<label>', {"class": 'form-ui', "for":'oneDomainRadio'})
 									.append($('<span>', {"class": 'form-ui-txt', i18n: 'assistant_apply_rule_to_all_sites'}))
 								)
 							).append($('<div>', {id: 'block-by-url-p', "class": 'element-rule_fieldset', style: 'display: none;'})
-								.append($('<input>', {type:'checkbox', "class": 'form-ui-control'}))
-								.append($('<label>', {"class": 'form-ui'})
+								.append($('<input>', {id:'blockByUrl', type:'checkbox', "class": 'form-ui-control checkbox'}))
+								.append($('<label>', {"class": 'form-ui', "for":'blockByUrl'})
 									.append($('<span>', {"class": 'form-ui-txt', i18n: 'assistant_block_by_reference'}))
 								)
 							).append($('<div>', {id: 'block-similar-p',"class": 'element-rule_fieldset', style: 'display: none;'})
-								.append($('<input>', {type:'checkbox', "class": 'form-ui-control'}))
-								.append($('<label>', {"class": 'form-ui'})
+								.append($('<input>', {id:'blockSimilar', type:'checkbox', "class": 'form-ui-control checkbox'}))
+								.append($('<label>', {"class": 'form-ui', "for":'blockSimilar'})
 									.append($('<span>', {"class": 'form-ui-txt', i18n: 'assistant_block_similar'}))
 								)
 							).append($('<div>', {"class": 'element-rule_fieldset'})
@@ -533,7 +528,6 @@ var Adguard = function () {
 			d.resolve('');
 		}, function () {
 			localizeMenu();
-			makeRadioButtonsAndCheckBoxes();
 		});
 		return d;
 	};
@@ -765,7 +759,6 @@ var Adguard = function () {
 
 		makeDefaultCheckboxesForDetailedMenu();
 		onScopeChange();
-		makeRadioButtonsAndCheckBoxes();
 		handleShowBlockSettings(haveUrlBlockParameter(element), haveClassAttribute(element));
 	};
 
@@ -774,9 +767,6 @@ var Adguard = function () {
 		findInIframe('#blockByUrl').attr('checked', false);
 		findInIframe('#blockSimilar').attr('checked', false);
 		findInIframe('#oneDomainRadio').attr('checked', false);
-		findInIframe('#block-by-url-p >div >span').removeClass('active');
-		findInIframe('#block-similar-p >div >span').removeClass('active');
-		findInIframe('#one-domain-p >div >span').removeClass('active');
 	};
 
 	var getUrlBlockAttribute = function (element) {
