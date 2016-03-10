@@ -440,19 +440,19 @@ var Adguard = function () {
 						)
 					).append($('<div>', {id: 'adv-settings', "class": 'element-rule_form'})
 						.append($('<div>', {"class": 'element-rule_form-cont'})
-							.append($('<div>', {id: 'one-domain-p', "class": 'element-rule_fieldset'})
-								.append($('<input>', {id:'oneDomainRadio', type:'checkbox', "class": 'form-ui-control checkbox'}))
-								.append($('<label>', {"class": 'form-ui', "for":'oneDomainRadio'})
+							.append($('<div>', {id: 'one-domain-checkbox-block', "class": 'element-rule_fieldset'})
+								.append($('<input>', {id:'one-domain-checkbox', type:'checkbox', "class": 'form-ui-control'}))
+								.append($('<label>', {"class": 'form-ui', "for":'one-domain-checkbox'})
 									.append($('<span>', {"class": 'form-ui-txt', i18n: 'assistant_apply_rule_to_all_sites'}))
 								)
-							).append($('<div>', {id: 'block-by-url-p', "class": 'element-rule_fieldset', style: 'display: none;'})
-								.append($('<input>', {id:'blockByUrl', type:'checkbox', "class": 'form-ui-control checkbox'}))
-								.append($('<label>', {"class": 'form-ui', "for":'blockByUrl'})
+							).append($('<div>', {id: 'block-by-url-checkbox-block', "class": 'element-rule_fieldset', style: 'display: none;'})
+								.append($('<input>', {id:'block-by-url-checkbox', type:'checkbox', "class": 'form-ui-control'}))
+								.append($('<label>', {"class": 'form-ui', "for":'block-by-url-checkbox'})
 									.append($('<span>', {"class": 'form-ui-txt', i18n: 'assistant_block_by_reference'}))
 								)
-							).append($('<div>', {id: 'block-similar-p',"class": 'element-rule_fieldset', style: 'display: none;'})
-								.append($('<input>', {id:'blockSimilar', type:'checkbox', "class": 'form-ui-control checkbox'}))
-								.append($('<label>', {"class": 'form-ui', "for":'blockSimilar'})
+							).append($('<div>', {id: 'block-similar-checkbox-block',"class": 'element-rule_fieldset', style: 'display: none;'})
+								.append($('<input>', {id:'block-similar-checkbox', type:'checkbox', "class": 'form-ui-control'}))
+								.append($('<label>', {"class": 'form-ui', "for":'block-similar-checkbox'})
 									.append($('<span>', {"class": 'form-ui-txt', i18n: 'assistant_block_similar'}))
 								)
 							).append($('<div>', {"class": 'element-rule_fieldset'})
@@ -470,36 +470,6 @@ var Adguard = function () {
 					)
 				)
 			);
-
-		//return $('<div>', {class: 'adg-container'})
-		//	.append($('<div>', {id: 'drag-handle', class: 'adg-head'})
-		//		.append($('<div>', {class: 'adg-close'}))
-		//		.append($('<div>', {class: 'adg-head-h', i18n: 'assistant_block_element'}))
-		//		.append($('<div>', {class: 'adg-head-opt comment'})
-		//			.append($('<span>', {i18n: 'assistant_block_element_explain'}))))
-		//	.append($('<div>', {class: 'adg-content'})
-		//		.append($('<div>', {class: 'adg-slide-block'})
-		//			.append($('<div>', {class: 'adg-slide-text', i18n: 'assistant_slider_explain'}))
-		//			.append($('<div>', {id: 'slider', class: 'adg-slide'})
-		//				.append($('<div>', {class: 'adg-slide-clue-max', i18n: 'assistant_slider_min'}))
-		//				.append($('<div>', {class: 'adg-slide-clue-min', i18n: 'assistant_slider_max'})))))
-		//	.append($('<div>', {class: 'adg-more'})
-		//		.append($('<a>', {id: 'ExtendedSettingsText', i18n: 'assistant_extended_settings'})))
-		//	.append($('<div>', {id: 'adv-settings', class: 'adg-form-block', style: 'display: none;'})
-		//		.append($('<span>')
-		//			.append($('<strong>', {i18n: 'assistant_rule_parameters'})))
-		//		.append($('<p>', {id: 'one-domain-p'})
-		//			.append($('<label>', {class: 'checkbox-label', i18n: 'assistant_apply_rule_to_all_sites'})))
-		//		.append($('<p>', {id: 'block-by-url-p', style: 'display: none;'})
-		//			.append($('<label>', {class: 'checkbox-label', i18n: 'assistant_block_by_reference'})))
-		//		.append($('<p>', {id: 'block-similar-p', style: 'display: none;'})
-		//			.append($('<label>', {class: 'checkbox-label', i18n: 'assistant_block_similar'})))
-		//		.append($('<p>')
-		//			.append($('<input>', {id: 'filter-rule', type: 'type'}))))
-		//	.append($('<div>', {class: 'adg-foot clearfix2'})
-		//		.append($('<a>', {id: 'adg-accept', class: 'btn btn-blue', href: '#'}).append($('<span>', {i18n: 'assistant_block'})))
-		//		.append($('<a>', {id: 'adg-cancel', class: 'btn btn-gray f-right', href: '#'}).append($('<span>', {i18n: 'assistant_another_element'})))
-		//		.append($('<a>', {id: 'adg-preview', class: 'btn btn-gray f-right', href: '#'}).append($('<span>', {i18n: 'assistant_preview'}))));
 	};
 
 	var createAdguardSelectorMenu = function () {
@@ -738,16 +708,16 @@ var Adguard = function () {
 
 	var handleShowBlockSettings = function (showBlockByUrl, showBlockSimilar) {
 		if (showBlockByUrl) {
-			findInIframe('#block-by-url-p').show();
+			findInIframe('#block-by-url-checkbox-block').show();
 		} else {
-			findInIframe('#blockByUrl').attr('checked', false);
-			findInIframe('#block-by-url-p').hide();
+			findInIframe('#block-by-url-checkbox').attr('checked', false);
+			findInIframe('#block-by-url-checkbox-block').hide();
 		}
 		if (showBlockSimilar) {
-			findInIframe('#block-similar-p').show();
+			findInIframe('#block-similar-checkbox-block').show();
 		} else {
-			findInIframe('#blockSimilar').attr('checked', false);
-			findInIframe('#block-similar-p').hide();
+			findInIframe('#block-similar-checkbox').attr('checked', false);
+			findInIframe('#block-similar-checkbox-block').hide();
 		}
 	};
 
@@ -762,11 +732,10 @@ var Adguard = function () {
 		handleShowBlockSettings(haveUrlBlockParameter(element), haveClassAttribute(element));
 	};
 
-	//TODO: Fix advanced settings
 	var makeDefaultCheckboxesForDetailedMenu = function () {
-		findInIframe('#blockByUrl').attr('checked', false);
-		findInIframe('#blockSimilar').attr('checked', false);
-		findInIframe('#oneDomainRadio').attr('checked', false);
+		findInIframe('#block-by-url-checkbox').attr('checked', false);
+		findInIframe('#block-similar-checkbox').attr('checked', false);
+		findInIframe('#one-domain-checkbox').attr('checked', false);
 	};
 
 	var getUrlBlockAttribute = function (element) {
@@ -837,9 +806,9 @@ var Adguard = function () {
 
 	var onScopeChange = function () {
 
-		var isBlockByUrl = findInIframe('#blockByUrl').is(':checked');
-		var isBlockSimilar = findInIframe('#blockSimilar').is(':checked');
-		var isBlockOneDomain = findInIframe("#oneDomainRadio").is(':checked');
+		var isBlockByUrl = findInIframe('#block-by-url-checkbox').is(':checked');
+		var isBlockSimilar = findInIframe("#block-similar-checkbox").is(':checked');
+		var isBlockOneDomain = findInIframe("#one-domain-checkbox").is(':checked');
 
 		handleShowBlockSettings(haveUrlBlockParameter(settings.selectedElement) && !isBlockSimilar, haveClassAttribute(settings.selectedElement) && !isBlockByUrl);
 
