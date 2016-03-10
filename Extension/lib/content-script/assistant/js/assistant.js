@@ -23,6 +23,7 @@ var Adguard = function () {
 			return self.localization[id];
 		}
 	};
+
 	var settings = {
 		iframeId: 'adguard-assistant-dialog',
 		path: null,
@@ -42,9 +43,9 @@ var Adguard = function () {
 		minComplaintMessageLength: 8,
 		maxComplaintCommentLength: 500,
 		iframe: {//maximum values for all browsers was leaved for compatibility
-			baseWidth: 560,
-			extendDetailedSettingsHeight: 460,
-			detailedMenuHeight: 270,
+			baseWidth: 668,
+			extendDetailedSettingsHeight: 503,
+			detailedMenuHeight: 340,
 			selectorMenuHeight: 213,
 			topOffset: 25
 		}
@@ -59,6 +60,7 @@ var Adguard = function () {
 			}
 			return childArray;
 		},
+
 		getChildren: function (element) {
 			var childs = element.childNodes;
 			if (childs) {
@@ -74,6 +76,7 @@ var Adguard = function () {
 			}
 			return count == 1 ? child : null;
 		},
+
 		getParentsLevel: function (element) {
 			var parent = element;
 			var parentArr = [];
@@ -114,6 +117,7 @@ var Adguard = function () {
 		if (!settings.urlInfo) {
 			settings.urlInfo = utils.getUrl(document.location);
 		}
+
 		return settings.urlInfo;
 	};
 
@@ -347,6 +351,7 @@ var Adguard = function () {
 
 	var onSelectElementClicked = function (e) {
 		e.preventDefault();
+
 		var loaded = showSelectorMenu();
 		loaded.done(function () {
 			localizeMenu();
@@ -362,6 +367,7 @@ var Adguard = function () {
 
 	var onCancelSelectModeClicked = function (e) {
 		e.preventDefault();
+
 		removePreview();
 		cancelSelectMode();
 		closeAssistant();
@@ -419,35 +425,86 @@ var Adguard = function () {
 	};
 
 	var createAdguardDetailedMenu = function () {
-		return $('<div>', {class: 'adg-container'})
-			.append($('<div>', {id: 'drag-handle', class: 'adg-head'})
-				.append($('<div>', {class: 'adg-close'}))
-				.append($('<div>', {class: 'adg-head-h', i18n: 'assistant_block_element'}))
-				.append($('<div>', {class: 'adg-head-opt comment'})
-					.append($('<span>', {i18n: 'assistant_block_element_explain'}))))
-			.append($('<div>', {class: 'adg-content'})
-				.append($('<div>', {class: 'adg-slide-block'})
-					.append($('<div>', {class: 'adg-slide-text', i18n: 'assistant_slider_explain'}))
-					.append($('<div>', {id: 'slider', class: 'adg-slide'})
-						.append($('<div>', {class: 'adg-slide-clue-max', i18n: 'assistant_slider_min'}))
-						.append($('<div>', {class: 'adg-slide-clue-min', i18n: 'assistant_slider_max'})))))
-			.append($('<div>', {class: 'adg-more'})
-				.append($('<a>', {id: 'ExtendedSettingsText', i18n: 'assistant_extended_settings'})))
-			.append($('<div>', {id: 'adv-settings', class: 'adg-form-block', style: 'display: none;'})
-				.append($('<span>')
-					.append($('<strong>', {i18n: 'assistant_rule_parameters'})))
-				.append($('<p>', {id: 'one-domain-p'})
-					.append($('<label>', {class: 'checkbox-label', i18n: 'assistant_apply_rule_to_all_sites'})))
-				.append($('<p>', {id: 'block-by-url-p', style: 'display: none;'})
-					.append($('<label>', {class: 'checkbox-label', i18n: 'assistant_block_by_reference'})))
-				.append($('<p>', {id: 'block-similar-p', style: 'display: none;'})
-					.append($('<label>', {class: 'checkbox-label', i18n: 'assistant_block_similar'})))
-				.append($('<p>')
-					.append($('<input>', {id: 'filter-rule', type: 'type'}))))
-			.append($('<div>', {class: 'adg-foot clearfix2'})
-				.append($('<a>', {id: 'adg-accept', class: 'btn btn-blue', href: '#'}).append($('<span>', {i18n: 'assistant_block'})))
-				.append($('<a>', {id: 'adg-cancel', class: 'btn btn-gray f-right', href: '#'}).append($('<span>', {i18n: 'assistant_another_element'})))
-				.append($('<a>', {id: 'adg-preview', class: 'btn btn-gray f-right', href: '#'}).append($('<span>', {i18n: 'assistant_preview'}))));
+		return $('<div>', {class: 'main'})
+			.append($('<div>', {class: 'close adg-close'}))
+			.append($('<div>', {class: 'head'})
+				.append($('<div>', {id: 'head_title', class: 'head_title', i18n: 'assistant_block_element'}))
+				.append($('<div>', {id: 'head_text', class: 'head_text', i18n: 'assistant_block_element_explain'}))
+			).append($('<div>', {class: 'content'})
+				.append($('<div>', {class: 'element-rule'})
+					.append($('<div>', {class: 'element-rule_text', i18n: 'assistant_slider_explain'}))
+					.append($('<div>', {class: 'element-rule_slider'})
+						.append($('<div>', {id: 'slider', class: 'adg-slide'})
+							.append($('<div>', {class: 'adg-slide-clue-max', i18n: 'assistant_slider_min'}))
+							.append($('<div>', {class: 'adg-slide-clue-min', i18n: 'assistant_slider_max'}))
+						)
+					).append($('<div>', {class: 'element-rule_more'})
+						.append($('<span>', {id: 'ExtendedSettingsText', class: 'element-rule_expand-link'})
+							.append($('<span>', {class: 'element-rule_expand-link_txt', i18n: 'assistant_extended_settings'}))
+							.append($('<span>', {class: 'element-rule_expand-link_arr'}))
+						)
+					).append($('<div>', {id: 'adv-settings', class: 'element-rule_form'})
+						.append($('<div>', {class: 'element-rule_form-cont'})
+							.append($('<div>', {id: 'one-domain-p', class: 'element-rule_fieldset'})
+								.append($('<input>', {type:'checkbox', class: 'form-ui-control'}))
+								.append($('<label>', {class: 'form-ui'})
+									.append($('<span>', {class: 'form-ui-txt', i18n: 'assistant_apply_rule_to_all_sites'}))
+								)
+							).append($('<div>', {id: 'block-by-url-p', class: 'element-rule_fieldset', style: 'display: none;'})
+								.append($('<input>', {type:'checkbox', class: 'form-ui-control'}))
+								.append($('<label>', {class: 'form-ui'})
+									.append($('<span>', {class: 'form-ui-txt', i18n: 'assistant_block_by_reference'}))
+								)
+							).append($('<div>', {id: 'block-similar-p',class: 'element-rule_fieldset', style: 'display: none;'})
+								.append($('<input>', {type:'checkbox', class: 'form-ui-control'}))
+								.append($('<label>', {class: 'form-ui'})
+									.append($('<span>', {class: 'form-ui-txt', i18n: 'assistant_block_similar'}))
+								)
+							).append($('<div>', {class: 'element-rule_fieldset'})
+								.append($('<input>', {id: 'filter-rule', type: 'text', class: 'form-control'}))
+							)
+						)
+					)
+				)
+			).append($('<div>', {class: 'foot'})
+				.append($('<button>', {id: 'adg-cancel', class:'btn btn-default', type:'button', i18n: 'assistant_another_element'}))
+				.append($('<div>', {class: 'foot_action'})
+					.append($('<div>', {class: 'foot_action_btn'})
+						.append($('<button>', {id: 'adg-preview', class:'btn btn-primary', type:'button', i18n: 'assistant_preview'}))
+						.append($('<button>', {id: 'adg-accept', class:'btn btn-cancel', type:'button', i18n: 'assistant_block'}))
+					)
+				)
+			);
+
+		//return $('<div>', {class: 'adg-container'})
+		//	.append($('<div>', {id: 'drag-handle', class: 'adg-head'})
+		//		.append($('<div>', {class: 'adg-close'}))
+		//		.append($('<div>', {class: 'adg-head-h', i18n: 'assistant_block_element'}))
+		//		.append($('<div>', {class: 'adg-head-opt comment'})
+		//			.append($('<span>', {i18n: 'assistant_block_element_explain'}))))
+		//	.append($('<div>', {class: 'adg-content'})
+		//		.append($('<div>', {class: 'adg-slide-block'})
+		//			.append($('<div>', {class: 'adg-slide-text', i18n: 'assistant_slider_explain'}))
+		//			.append($('<div>', {id: 'slider', class: 'adg-slide'})
+		//				.append($('<div>', {class: 'adg-slide-clue-max', i18n: 'assistant_slider_min'}))
+		//				.append($('<div>', {class: 'adg-slide-clue-min', i18n: 'assistant_slider_max'})))))
+		//	.append($('<div>', {class: 'adg-more'})
+		//		.append($('<a>', {id: 'ExtendedSettingsText', i18n: 'assistant_extended_settings'})))
+		//	.append($('<div>', {id: 'adv-settings', class: 'adg-form-block', style: 'display: none;'})
+		//		.append($('<span>')
+		//			.append($('<strong>', {i18n: 'assistant_rule_parameters'})))
+		//		.append($('<p>', {id: 'one-domain-p'})
+		//			.append($('<label>', {class: 'checkbox-label', i18n: 'assistant_apply_rule_to_all_sites'})))
+		//		.append($('<p>', {id: 'block-by-url-p', style: 'display: none;'})
+		//			.append($('<label>', {class: 'checkbox-label', i18n: 'assistant_block_by_reference'})))
+		//		.append($('<p>', {id: 'block-similar-p', style: 'display: none;'})
+		//			.append($('<label>', {class: 'checkbox-label', i18n: 'assistant_block_similar'})))
+		//		.append($('<p>')
+		//			.append($('<input>', {id: 'filter-rule', type: 'type'}))))
+		//	.append($('<div>', {class: 'adg-foot clearfix2'})
+		//		.append($('<a>', {id: 'adg-accept', class: 'btn btn-blue', href: '#'}).append($('<span>', {i18n: 'assistant_block'})))
+		//		.append($('<a>', {id: 'adg-cancel', class: 'btn btn-gray f-right', href: '#'}).append($('<span>', {i18n: 'assistant_another_element'})))
+		//		.append($('<a>', {id: 'adg-preview', class: 'btn btn-gray f-right', href: '#'}).append($('<span>', {i18n: 'assistant_preview'}))));
 	};
 
 	var createAdguardSelectorMenu = function () {
@@ -512,12 +569,15 @@ var Adguard = function () {
 
 	var resizeIframe = function (width, height) {
 		var iframe = findIframe().get(0);
+
 		if (height) {
 			iframe.style.height = height + "px";
 		}
+
 		if (width) {
 			iframe.style.width = width + "px";
 		}
+
 		checkPosition();
 	};
 
@@ -542,21 +602,16 @@ var Adguard = function () {
 		}
 	};
 
-	var extendAdvSettings = function (width, height) {
-		resizeIframe(width, height);
-		findInIframe('#adv-settings').slideToggle(100);
-	};
-
 	var onExtendDetailedSettings = function () {
-		var hidden = findInIframe('#adv-settings').is(":hidden");
-		if (hidden)
-			extendAdvSettings(null, constants.iframe.extendDetailedSettingsHeight, null);
-		else {
-			var animationCallback = function () {
-				resizeIframe(null, constants.iframe.detailedMenuHeight);
-			};
-			findInIframe('#adv-settings').slideToggle({duration: 100, complete: animationCallback});
-
+		var hidden = !(findInIframe('#adv-settings').hasClass("open"));
+		if (hidden) {
+			resizeIframe(null, constants.iframe.extendDetailedSettingsHeight);
+			findInIframe('#adv-settings').addClass('open');
+			findInIframe('#ExtendedSettingsText').addClass('active');
+		} else {
+			resizeIframe(null, constants.iframe.detailedMenuHeight);
+			findInIframe('#adv-settings').removeClass('open');
+			findInIframe('#ExtendedSettingsText').removeClass('active');
 		}
 	};
 
@@ -634,13 +689,13 @@ var Adguard = function () {
 			var i;
 			for (i = 0; i < ticks.length; i++) {
 				if (i + 1 < value) {
-					findInIframe(ticks[i]).css('background-color', '#86BFCE');
-				}
-				else {
-					findInIframe(ticks[i]).css('background-color', '#E6ECED');
+					findInIframe(ticks[i]).css('background-color', '#36BA53');
+				} else {
+					findInIframe(ticks[i]).css('background-color', '#E0DFDB');
 				}
 			}
 		};
+
 		//render slider items
 		var prepare = function (i) {
 			var tick = $('<div>', {class: 'tick ui-widget-content'}).appendTo($slider);
@@ -649,24 +704,27 @@ var Adguard = function () {
 				width: (100 / sliderItemsCount) + '%'
 			});
 		};
+
 		for (var i = 0; i < sliderItemsCount; i++) {
 			prepare(i);
 		}
+
 		refreshTicks(options.value);
 	};
 
 	var createSlider = function (element) {
 		var parents = utils.getParentsLevel(element);
-		var childs = utils.getAllChilds(element);
+		var children = utils.getAllChilds(element);
 		var value = Math.abs(parents.length + 1);
-		var max = parents.length + childs.length + 1;
+		var max = parents.length + children.length + 1;
 		var min = 1;
 		var options = {value: value, min: min, max: max};
 		if (min == max) {
 			//hide slider text
 			findInIframe('#slider').hide();
-			findInIframe('.adg-slide-text').text(getMessage("assistant_slider_if_hide"));
+			findInIframe('.element-rule_text').text(getMessage("assistant_slider_if_hide"));
 		}
+
 		options.onSliderMove = function (delta) {
 			var elem;
 			if (delta > 0) {
@@ -676,10 +734,11 @@ var Adguard = function () {
 				elem = element;
 			}
 			if (delta < 0) {
-				elem = childs[Math.abs(delta + 1)];
+				elem = children[Math.abs(delta + 1)];
 			}
 			onSliderMove(elem);
 		};
+
 		renderSliderAndBindEvents(options);
 	};
 
@@ -710,6 +769,7 @@ var Adguard = function () {
 		handleShowBlockSettings(haveUrlBlockParameter(element), haveClassAttribute(element));
 	};
 
+	//TODO: Fix advanced settings
 	var makeDefaultCheckboxesForDetailedMenu = function () {
 		findInIframe('#blockByUrl').attr('checked', false);
 		findInIframe('#blockSimilar').attr('checked', false);
@@ -738,24 +798,24 @@ var Adguard = function () {
 		if (settings.lastPreview) {
 			// On finish preview and come back to selected
 			removePreview();
-			findInIframe('#adg-preview > span').text(getMessage("assistant_preview_start"));
+			findInIframe('#head_title').text(getMessage("assistant_block_element"));
+			findInIframe('#head_text').text(getMessage("assistant_block_element_explain"));
+			findInIframe('#adg-preview').text(getMessage("assistant_preview_start"));
 
 			AdguardSelectorLib.selectElement(settings.selectedElement);
 
-			findInIframe('#slider').show();
-			findInIframe('.adg-slide-text').show();
-			findInIframe('#ExtendedSettingsText').show();
+			findInIframe('.content').show();
 
 			return;
 		}
 
 		hideElement();
 
-		findInIframe('#adg-preview >span').text(getMessage("assistant_preview_end"));
-		findInIframe('#slider').hide();
-		findInIframe('.adg-slide-text').hide();
-		findInIframe('#ExtendedSettingsText').hide();
-		findInIframe('#adv-settings').hide();
+		//TODO: Add messages for head content
+		findInIframe('#head_title').text(getMessage("assistant_preview_end"));
+		findInIframe('#head_text').text(getMessage("assistant_preview_end"));
+		findInIframe('#adg-preview').text(getMessage("assistant_preview_end"));
+		findInIframe('.content').hide();
 	};
 
 	var hideElement = function () {
@@ -782,6 +842,7 @@ var Adguard = function () {
 		if (head) {
 			head.removeChild(settings.lastPreview);
 		}
+
 		settings.lastPreview = null;
 	};
 
