@@ -19,7 +19,7 @@ else
     cd deploy
 fi
 
-version="2.2"
+version="2.2.1"
 
 if [ "$env" = release ]; then
 
