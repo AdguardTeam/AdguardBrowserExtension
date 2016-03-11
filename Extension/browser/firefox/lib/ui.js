@@ -315,7 +315,7 @@ var UI = exports.UI = {
         //        self.data.url('content/content-script/content-utils.js')]
         //});
         //contentScripts.sendMessageToWorker(worker, {type: 'show-alert-popup', title: title, text: text});
-        contentScripts.sendMessageToTab(tabs.activeTab, {type: 'show-alert-popup', title: title, text: text});
+        contentScripts.sendMessageToTab(this._getActiveTab(), {type: 'show-alert-popup', title: title, text: text});
     },
 
     _initAbusePanel: function (SdkPanel) {

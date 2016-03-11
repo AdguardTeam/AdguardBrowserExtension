@@ -39,6 +39,7 @@ ContentScripts.prototype = {
         this.registerChromeContentScript('thankyou.html', [
             'libs/jquery-1.8.3.min.js',
             'content-script/content-script.js',
+            'content-script/content-utils.js',
             'content-script/i18n-helper.js',
             'pages/i18n.js',
             'pages/script.js',
@@ -53,6 +54,7 @@ ContentScripts.prototype = {
             'libs/jquery.jscrollpane.min.js',
             'libs/moment-with-locales.min.js',
             'content-script/content-script.js',
+            'content-script/content-utils.js',
             'content-script/i18n-helper.js',
             'pages/i18n.js',
             'pages/script.js',
@@ -65,6 +67,7 @@ ContentScripts.prototype = {
             'libs/bootstrap.min.js',
             'libs/moment-with-locales.min.js',
             'content-script/content-script.js',
+            'content-script/content-utils.js',
             'content-script/i18n-helper.js',
             'pages/i18n.js',
             'pages/script.js',
