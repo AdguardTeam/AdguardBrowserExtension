@@ -317,8 +317,8 @@
     var initFrameScript = function () {
 
         var cpmm = Cc["@mozilla.org/childprocessmessagemanager;1"].getService(Ci.nsISyncMessageSender);
-        registeredScripts = cpmm.sendSyncMessage('Adguard:get-content-scripts')[0];
-        i18nMessages = cpmm.sendSyncMessage('Adguard:get-i18n-messages')[0];
+        registeredScripts = cpmm.sendRpcMessage('Adguard:get-content-scripts')[0];
+        i18nMessages = cpmm.sendRpcMessage('Adguard:get-i18n-messages')[0];
 
         context.addEventListener('DOMWindowCreated', onWindowCreated);
 
