@@ -1,10 +1,23 @@
-#!/bin/sh
+#!/bin/bash
 
+if [[ ! ("$#" == 1) ]] || [[ ! ($1 = dev) && ! ($1 = release) && ! ($1 = beta) ]] ; then
+    echo "Pass a single argument as an environment value"
+    exit 2
+fi
 env=$1
-
-mvn package;
-
-cd deploy;
+if [ -z $(which jpm 2> /dev/null) ] || [ -z $(which cfx 2> /dev/null) ]; then
+    echo "Release or beta bundle creation would fail, please install cfx and jpm utilities"
+fi
+mvn package
+if [ -d deploy ]; then
+    cd deploy
+elif [ -e deploy ]; then
+    echo "deploy target exists and it is not a directory"
+    exit 2
+else
+    mkdir deploy
+    cd deploy
+fi
 
 version="2.2"
 
