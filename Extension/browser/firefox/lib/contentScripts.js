@@ -263,7 +263,7 @@ ContentScripts.prototype = {
 
                 var tab = getTabFromTarget(message.target);
                 if (!tab) {
-                    Log.error('Unable to retrieve tab from {0}', message);
+                    Log.debug('Unable to retrieve tab from {0}', message.target);
                     return;
                 }
 
