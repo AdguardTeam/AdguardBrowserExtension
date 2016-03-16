@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var Adguard = function () {
+var AdguardAssistant = function () {
 
 	var self = this;
 
@@ -225,7 +225,7 @@ var Adguard = function () {
 			top: positions.top
 		};
 		//for src
-		var iframe = $('<iframe />"').attr({
+		var iframe = $('<iframe />').attr({
 			id: settings.iframeId,
 			'class': 'sg_ignore adg-view-important',
 			frameBorder: 0,
