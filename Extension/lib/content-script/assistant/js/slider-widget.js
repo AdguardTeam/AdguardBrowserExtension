@@ -76,7 +76,7 @@ var SliderWidget = (function (api, $) {
         refresh();
     };
 
-    var setValue = function(v) {
+    var setValue = function (v) {
         value = v;
 
         refresh();
@@ -103,7 +103,7 @@ var SliderWidget = (function (api, $) {
         var $sliderWidth = $placeholder.width();
 
         var getSliderValue = function (pageX) {
-            return (max - min) / $sliderWidth * (pageX - $sliderOffsetLeft) + min;
+            return Math.round((max - min) / $sliderWidth * (pageX - $sliderOffsetLeft) + min);
         };
 
         //This will prevent the slider from moving if the mouse is taken out of the

@@ -101,7 +101,6 @@ ContentScripts.prototype = {
         // Assistant
         this.registerPageContentScript([
             'libs/jquery-1.8.3.min.js',
-            //'libs/jquery-ui.min.js',
             'libs/diff_match_patch.js',
             'libs/dom.patched.js',
             'libs/balalaika.patched.js',
