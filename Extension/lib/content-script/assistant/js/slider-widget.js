@@ -21,8 +21,10 @@
 var SliderWidget = (function (api, $) {
 
     var PLACEHOLDER_CLASS = "adg-slide ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all";
-    var HANDLE_CLASS = "ui-slider-handle ui-state-default ui-corner-all";
-    var TICK_CLASS = "tick ui-widget-content";
+    var HANDLE_CLASS = "ui-slider-handle";
+    var HANDLE_FULL_CLASS = "ui-slider-handle ui-state-default ui-corner-all";
+    var TICK_CLASS = "tick";
+    var TICK_FULL_CLASS = "tick ui-widget-content";
     var TICK_LEFT_COLOR = "#36BA53";
     var TICK_RIGHT_COLOR = "#E0DFDB";
 
@@ -36,10 +38,10 @@ var SliderWidget = (function (api, $) {
 
 
     var refresh = function () {
-        var handle = $(placeholder).find(".ui-slider-handle");
+        var handle = $(placeholder).find("." + HANDLE_CLASS);
         handle.css('left', (value - 1) * 100 / (max - min) + "%");
 
-        var ticks = $(placeholder).find(".tick");
+        var ticks = $(placeholder).find("." + TICK_CLASS);
         for (var i = 0; i < ticks.length; i++) {
             if (i + 1 < value) {
                 $(ticks[i]).css('background-color', TICK_LEFT_COLOR);
@@ -54,13 +56,13 @@ var SliderWidget = (function (api, $) {
 
         var handle = $('<a>', {
             "href": "#",
-            "class": HANDLE_CLASS
+            "class": HANDLE_FULL_CLASS
         });
         $(placeholder).append(handle);
 
         var count = max - min;
         var prepare = function (i) {
-            var tick = $('<div>', {"class": TICK_CLASS}).appendTo($(placeholder));
+            var tick = $('<div>', {"class": TICK_FULL_CLASS}).appendTo($(placeholder));
             tick.css({
                 left: (100 / count * i) + '%',
                 width: (100 / count) + '%'
@@ -74,44 +76,56 @@ var SliderWidget = (function (api, $) {
         refresh();
     };
 
+    var setValue = function(v) {
+        value = v;
+
+        refresh();
+
+        onValueChanged(value);
+    };
+
     var bindEvents = function () {
+        var $placeholder = $(placeholder);
+        var $handle = $(placeholder).find("." + HANDLE_CLASS);
+
         $(document).mouseup(function () {
-            $('.slider,.ui-slider-handle', $document).unbind('mousemove');
+            $placeholder.unbind('mousemove');
+            $handle.unbind('mousemove');
         });
 
         //While the ui-slider-handle is being held down reference it parent.
-        $('.ui-slider-handle', $document).mousedown(function (e) {
+        $handle.mousedown(function (e) {
             e.preventDefault();
             return $(this).parent().mousedown();
         });
 
-        var $sliderOffsetLeft = $slider.offset().left;
-        var $sliderWidth = $slider.width();
+        var $sliderOffsetLeft = $placeholder.offset().left;
+        var $sliderWidth = $placeholder.width();
 
         var getSliderValue = function (pageX) {
-            return (options.max - options.min) / $sliderWidth * (pageX - $sliderOffsetLeft) + options.min;
+            return (max - min) / $sliderWidth * (pageX - $sliderOffsetLeft) + min;
         };
 
         //This will prevent the slider from moving if the mouse is taken out of the
         //slider area before the mouse down has been released.
-        $slider.hover(function () {
-            $slider.bind('click', function (e) {
+        $placeholder.hover(function () {
+            $placeholder.bind('click', function (e) {
                 //calculate the correct position of the slider set the value
                 var value = getSliderValue(e.pageX);
-                $slider.slider('value', value);
+                setValue(value);
             });
-            $slider.mousedown(function () {
+            $placeholder.mousedown(function () {
                 $(this).bind('mousemove', function (e) {
                     //calculate the correct position of the slider set the value
                     var value = getSliderValue(e.pageX);
-                    $(this).slider('value', value);
+                    setValue(value);
                 });
             }).mouseup(function () {
                 $(this).unbind('mousemove');
-            })
+            });
         }, function () {
-            $('#slider', $document).unbind('mousemove');
-            $('#slider', $document).unbind('click');
+            $placeholder.unbind('mousemove');
+            $placeholder.unbind('click');
         });
     };
 
@@ -129,7 +143,7 @@ var SliderWidget = (function (api, $) {
         onValueChanged = options.onValueChanged;
 
         render();
-        //bindEvents();
+        bindEvents();
     };
 
     return api;
