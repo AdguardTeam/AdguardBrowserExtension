@@ -29,15 +29,17 @@ var SliderWidget = (function (api, $) {
     var placeholder = null;
 
     var min = 0;
-    var max = 4;
-    var value = null;
+    var max = 1;
+    var value = 0;
 
     var onValueChanged = null;
 
 
-    var refreshTicks = function () {
-        var ticks = $(placeholder).find(".tick");
+    var refresh = function () {
+        var handle = $(placeholder).find(".ui-slider-handle");
+        handle.css('left', (value - 1) * 100 / (max - min) + "%");
 
+        var ticks = $(placeholder).find(".tick");
         for (var i = 0; i < ticks.length; i++) {
             if (i + 1 < value) {
                 $(ticks[i]).css('background-color', TICK_LEFT_COLOR);
@@ -48,17 +50,15 @@ var SliderWidget = (function (api, $) {
     };
 
     var render = function () {
-        var count = max - min;
-
         $(placeholder).addClass(PLACEHOLDER_CLASS);
 
         var handle = $('<a>', {
             "href": "#",
-            "class": HANDLE_CLASS,
-            "style": "left: " + (value - 1) * 100 / count + "%;"
+            "class": HANDLE_CLASS
         });
         $(placeholder).append(handle);
 
+        var count = max - min;
         var prepare = function (i) {
             var tick = $('<div>', {"class": TICK_CLASS}).appendTo($(placeholder));
             tick.css({
@@ -71,7 +71,7 @@ var SliderWidget = (function (api, $) {
             prepare(i);
         }
 
-        refreshTicks();
+        refresh();
     };
 
     var bindEvents = function () {

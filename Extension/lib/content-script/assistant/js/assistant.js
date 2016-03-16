@@ -644,36 +644,36 @@ var AdguardAssistant = function () {
 			$('#slider', $document).unbind('click');
 		});
 
-		//render slider items
-		var sliderItemsCount = options.max - 1;
+		////render slider items
+		//var sliderItemsCount = options.max - 1;
 
-		//update slider items color
-		var refreshTicks = function (value) {
-			var ticks = findInIframe(".tick");
-			var i;
-			for (i = 0; i < ticks.length; i++) {
-				if (i + 1 < value) {
-					findInIframe(ticks[i]).css('background-color', '#36BA53');
-				} else {
-					findInIframe(ticks[i]).css('background-color', '#E0DFDB');
-				}
-			}
-		};
+		////update slider items color
+		//var refreshTicks = function (value) {
+		//	var ticks = findInIframe(".tick");
+		//	var i;
+		//	for (i = 0; i < ticks.length; i++) {
+		//		if (i + 1 < value) {
+		//			findInIframe(ticks[i]).css('background-color', '#36BA53');
+		//		} else {
+		//			findInIframe(ticks[i]).css('background-color', '#E0DFDB');
+		//		}
+		//	}
+		//};
 
-		//render slider items
-		var prepare = function (i) {
-			var tick = $('<div>', {"class": 'tick ui-widget-content'}).appendTo($slider);
-			tick.css({
-				left: (100 / sliderItemsCount * i) + '%',
-				width: (100 / sliderItemsCount) + '%'
-			});
-		};
-
-		for (var i = 0; i < sliderItemsCount; i++) {
-			prepare(i);
-		}
-
-		refreshTicks(options.value);
+		////render slider items
+		//var prepare = function (i) {
+		//	var tick = $('<div>', {"class": 'tick ui-widget-content'}).appendTo($slider);
+		//	tick.css({
+		//		left: (100 / sliderItemsCount * i) + '%',
+		//		width: (100 / sliderItemsCount) + '%'
+		//	});
+		//};
+        //
+		//for (var i = 0; i < sliderItemsCount; i++) {
+		//	prepare(i);
+		//}
+        //
+		//refreshTicks(options.value);
 	};
 
 	var createSlider = function (element) {
