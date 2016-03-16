@@ -586,24 +586,24 @@ var AdguardAssistant = function () {
 
 	var renderSliderAndBindEvents = function (options) {
 
-		var $document = findIframe().contents();
-		var $slider = $("#slider", $document);
+		//var $document = findIframe().contents();
+		//var $slider = $("#slider", $document);
 
-		$slider.slider({
-			min: options.min,
-			max: options.max,
-			range: 'min',
-			value: options.value,
-			//Prevent the slider from doing anything from the start
-			start: function () {
-				return false;
-			},
-			change: function (event, ui) {
-				refreshTicks(ui.value);
-				var delta = options.value - ui.value;
-				options.onSliderMove(delta);
-			}
-		});
+		//$slider.slider({
+		//	min: options.min,
+		//	max: options.max,
+		//	range: 'min',
+		//	value: options.value,
+		//	//Prevent the slider from doing anything from the start
+		//	start: function () {
+		//		return false;
+		//	},
+		//	change: function (event, ui) {
+		//		refreshTicks(ui.value);
+		//		var delta = options.value - ui.value;
+		//		options.onSliderMove(delta);
+		//	}
+		//});
 
 		$(document).mouseup(function () {
 			$('.slider,.ui-slider-handle', $document).unbind('mousemove');
@@ -703,7 +703,20 @@ var AdguardAssistant = function () {
 			onSliderMove(elem);
 		};
 
-		renderSliderAndBindEvents(options);
+		var $document = findIframe().contents();
+		var $slider = $("#slider", $document);
+
+		SliderWidget.init($slider.get(0), {
+			min: options.min,
+			max: options.max,
+			value: options.value,
+			onValueChanged: function (value) {
+				var delta = options.value - value;
+				options.onSliderMove(delta);
+			}
+		});
+
+		//renderSliderAndBindEvents(options);
 	};
 
 	var handleShowBlockSettings = function (showBlockByUrl, showBlockSimilar) {
