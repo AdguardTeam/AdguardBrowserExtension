@@ -1,10 +1,10 @@
 ! Title: Experimental filter
-! Version: 1.0.24.35
+! Version: 1.0.24.44
 ! Name: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: Experimental filter
 ! DescriptionEn: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! TimeUpdated: 2016-03-10T21:03:10.871+03:00
+! TimeUpdated: 2016-03-16T13:00:36.526+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -24,6 +24,8 @@ yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by##.stripe-universal-wrapper
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by##.universal-stripe-wrapper
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by##.serp-adv__all > a[href^="http://direct.yandex.ru/"]
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by##.z-default-search
+t-online.de##div[itemprop$="articleBody"] > div[id$="Ttub1"]
+comss.ru##body > [style="padding-top:12px;"]
 avxhome.se,avxhome.in$$div[tag-content="Best Internet Links"]
 avxhome.se,avxhome.in##.news > center > div > b
 avxhome.se,avxhome.in##.col-md-12 > center > b
@@ -160,6 +162,12 @@ overclockers.ru##div[style="border: 1px solid #aaa"]
 softportal.com##div[style="text-align:center; margin:1.5em auto; width:285px;"]
 ||safety-gate.me/images/comss-logo.png
 imagebam.com###sponsor-modal
+megamozg.ru##.js-ad_sticky
+megamozg.ru##div[class^="js-ad_sticky"]
+@@||9now.com.au^$generichide
+digitalpoint.com##.importantMessage
+sport365.live###popup-wrapper
+@@||maclife.de/sites/all/modules/custom/tec_common/js/adframe.js
 @@||clipiki.ru/js/advert.js
 weser-kurier.de##div[class^="webBanner"]
 @@||cdn.miped.ru/templates/miped/js/advertisement.js
@@ -216,6 +224,11 @@ pastebin.com###abrpm
 lifehacker.com.au##.ad-block-message
 reactor.cc,joyreactor.cc$$script[tag-content="CTRManager.show"][max-length="300"]
 reactor.cc,joyreactor.cc#%#Object.defineProperty(window, 'CTRManager', { get: function() { return {}; } });
+wykop.pl##div[class$="cookie"]
+wykop.pl#$#.type-permanent+#nav { top: 0px!important; }
+shinden.pl###cookie-bar
+investing.com###sideNotificationZone
+###cookie-information-wrapper
 dfiles.ru##.cookie_popup
 computerbild.de###cookienotifier
 4players.de###cookpol
@@ -393,6 +406,7 @@ revclouds.com#%#AG_onLoad(function() {document.getElementById("tick-dwn").click(
 ||amazonaws.com/homad-global-configs.schneevonmorgen.com/www.focus.de/config.json$replace=/"enabled": true\,/"enabled": false\,/i,domain=focus.de
 ||damoh.tv4play.se$replace=/"enabled": true\,/"enabled": false\,/i
 ||onceux.unicornmedia.com$replace=/(<VAST(.|\s)*?>)(.|\s)*<\/VAST>/\$1<\/VAST>/,domain=gamespot.com
+||v2.gamespot.com/now/ads/vmap/adaptive$replace=/(<VAST(.|\s)*?>)(.|\s)*<\/VAST>/\$1<\/VAST>/
 ||schneevonmorgen.com.s3.amazonaws.com/*config.json$replace=/"enabled": true\,/"enabled": false\,/i,domain=rtl.de
 ||cdn.videoplaza.tv/contrib/de-ipd/svm/homadConfigVideoplaza-n-tv.json$replace=/"enabled": true\,/"enabled": false\,/i,domain=n-tv.de
 ||adfarm*.adition.com/banner$replace=/(<VAST(.|\s)*?>)(.|\s)*<\/VAST>/\$1<\/VAST>/,domain=spiegel.de
@@ -412,3 +426,4 @@ revclouds.com#%#AG_onLoad(function() {document.getElementById("tick-dwn").click(
 ||fsua.dotua.org/jsmin/*/common-player-iframe.min.js$replace=/prerollsEnabled:true\,/prerollsEnabled:false\,/i
 @@||cdn.videoplaza.tv/contrib/no-vg/svm/homadConfigVideoplaza-vgtv.json^$domain=vgtv.no
 ||cdn.videoplaza.tv/contrib/no-vg/svm/homadConfigVideoplaza-vgtv.json$replace=/"enabled": true\,/"enabled": false\,/i,domain=vgtv.no
+||a*.dot*.org/f*h.js$replace=/FJCaller/FJCaller2/

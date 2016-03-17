@@ -1,10 +1,10 @@
 ! Title: Experimental filter
-! Version: 1.0.24.35
+! Version: 1.0.24.44
 ! Name: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: Experimental filter
 ! DescriptionEn: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! TimeUpdated: 2016-03-10T21:03:10.871+03:00
+! TimeUpdated: 2016-03-16T13:00:36.526+03:00
 ! Title: Adguard Experimental Filter
 !
 ! Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
@@ -236,6 +236,10 @@ yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by##.universal-stripe-wrapper
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by##.serp-adv__all > a[href^="http://direct.yandex.ru/"]
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by##.z-default-search
 !
+! http://forum.adguard.com/showthread.php?9614
+t-online.de##div[itemprop$="articleBody"] > div[id$="Ttub1"]
+! http://forum.adguard.com/showthread.php?9560
+comss.ru##body > [style="padding-top:12px;"]
 ! http://forum.adguard.com/showthread.php?9540
 avxhome.se,avxhome.in##.news > center > div > b
 avxhome.se,avxhome.in##.col-md-12 > center > b
@@ -459,6 +463,12 @@ imagebam.com###sponsor-modal
 !------------------ Anti-adblock messages --------------------------
 !---------- which does not affect the functioning of site ----------
 !-------------------------------------------------------------------
+megamozg.ru##.js-ad_sticky
+megamozg.ru##div[class^="js-ad_sticky"]
+@@||9now.com.au^$generichide
+digitalpoint.com##.importantMessage
+sport365.live###popup-wrapper
+@@||maclife.de/sites/all/modules/custom/tec_common/js/adframe.js
 @@||clipiki.ru/js/advert.js
 weser-kurier.de##div[class^="webBanner"]
 @@||cdn.miped.ru/templates/miped/js/advertisement.js
@@ -522,6 +532,13 @@ reactor.cc,joyreactor.cc#%#Object.defineProperty(window, 'CTRManager', { get: fu
 !-------------------------------------------------------------------
 !
 !----------- START: EU cookie notifications -----------
+!
+wykop.pl##div[class$="cookie"]
+wykop.pl#$#.type-permanent+#nav { top: 0px!important; }
+!
+shinden.pl###cookie-bar
+investing.com###sideNotificationZone
+###cookie-information-wrapper
 dfiles.ru##.cookie_popup
 computerbild.de###cookienotifier
 4players.de###cookpol
@@ -794,6 +811,7 @@ revclouds.com#%#AG_onLoad(function() {document.getElementById("tick-dwn").click(
 ||damoh.tv4play.se$replace=/"enabled": true\,/"enabled": false\,/i
 ! http://forum.adguard.com/showthread.php?8906
 ||onceux.unicornmedia.com$replace=/(<VAST(.|\s)*?>)(.|\s)*<\/VAST>/\$1<\/VAST>/,domain=gamespot.com
+||v2.gamespot.com/now/ads/vmap/adaptive$replace=/(<VAST(.|\s)*?>)(.|\s)*<\/VAST>/\$1<\/VAST>/
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1344
 ||schneevonmorgen.com.s3.amazonaws.com/*config.json$replace=/"enabled": true\,/"enabled": false\,/i,domain=rtl.de
 ! http://forum.adguard.com/showthread.php?8784
@@ -826,3 +844,5 @@ revclouds.com#%#AG_onLoad(function() {document.getElementById("tick-dwn").click(
 !
 @@||cdn.videoplaza.tv/contrib/no-vg/svm/homadConfigVideoplaza-vgtv.json^$domain=vgtv.no
 ||cdn.videoplaza.tv/contrib/no-vg/svm/homadConfigVideoplaza-vgtv.json$replace=/"enabled": true\,/"enabled": false\,/i,domain=vgtv.no
+!
+||a*.dot*.org/f*h.js$replace=/FJCaller/FJCaller2/

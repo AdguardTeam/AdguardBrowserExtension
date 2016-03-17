@@ -1,10 +1,10 @@
 ! Title: German filter
-! Version: 1.0.24.15
+! Version: 1.0.24.21
 ! Name: German filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: German filter
 ! DescriptionEn: Filter that enables removing of the ads from websites with German content.
-! TimeUpdated: 2016-03-11T20:00:55.134+03:00
+! TimeUpdated: 2016-03-16T17:17:59.422+03:00
 ! Title: Adguard German Filter.
 !
 ! Filter that enables removing of the ads from websites with German content.
@@ -77,7 +77,7 @@ kurier.at#@#.adblock
 @@||adswithsalt.com/*/ad-loading.pic
 @@||adternal.com/*/ad-loading.bmp
 ! Prevent AdFender detection
-@@/ad_bomb/*$image,domain=gamepro.de|brigitte.de|gala.de|hoerzu.de|autobild.de|sat1.de|pcwelt.de|wiesbadener-kurier.de|wiesbadener-tagblatt.de|lampertheimer-zeitung.de|boerse-online.de|welt.de|wetter.com
+@@/ad_bomb/*$image,domain=pcgameshardware.de|gamepro.de|brigitte.de|gala.de|hoerzu.de|autobild.de|sat1.de|pcwelt.de|wiesbadener-kurier.de|wiesbadener-tagblatt.de|lampertheimer-zeitung.de|boerse-online.de|welt.de|wetter.com
 ! lustich.de - AdFender
 ||uobsoe.com^$domain=lustich.de
 ! bild.de
@@ -172,7 +172,7 @@ pcgames.de#%#AG_onLoad(function() { $('a[href*="/E-Commerce"]').closest('div[cla
 menshealth.de#%#function google_ad_request_done() {};
 !
 motorsport-total.com,donnerwetter.de#%#window.trckd = true;
-autobild.de,welt.de,tvspielfilm.de,20min.ch,focus.de,wiesbadener-kurier.de,wiesbadener-tagblatt.de,lampertheimer-zeitung.de,abendzeitung-muenchen.de,winboard.org,wetteronline.at,spiegel.de,rp-online.de,shz.de,arcor.de,notebookcheck.net,computerbild.de,webfail.com,finanzen.net,prosiebenmaxx.de,sat1gold.de,wetter.com,kabeleins.de,prosieben.de,serienjunkies.de,menshealth.de,chip.de,teccentral.de,ransfermarkt.de,transfermarkt.de,wetteronline.de,notebookcheck.com,gamestar.de,ran.de,tvtoday.de,hoerzu.de,gala.de,brigitte.de,gamepro.de#%#window.uabInject = function() {};
+pcgameshardware.de,autobild.de,welt.de,tvspielfilm.de,20min.ch,focus.de,wiesbadener-kurier.de,wiesbadener-tagblatt.de,lampertheimer-zeitung.de,abendzeitung-muenchen.de,winboard.org,wetteronline.at,spiegel.de,rp-online.de,shz.de,arcor.de,notebookcheck.net,computerbild.de,webfail.com,finanzen.net,prosiebenmaxx.de,sat1gold.de,wetter.com,kabeleins.de,prosieben.de,serienjunkies.de,menshealth.de,chip.de,teccentral.de,ransfermarkt.de,transfermarkt.de,wetteronline.de,notebookcheck.com,gamestar.de,ran.de,tvtoday.de,hoerzu.de,gala.de,brigitte.de,gamepro.de#%#window.uabInject = function() {};
 wetteronline.de,gamona.de,gamepro.de,gta-5-forum.de,prosieben.de,stern.de,webfail.com,focus.de,finanzen.net,prosiebenmaxx.de,sixx.de,kabeleins.de,sat1gold.de,tvtoday.de,tvspielfilm.de,wetter.com,gamestar.de#%#window.UABPtracked = true;
 prosieben.de,stern.de,webfail.com,focus.de,finanzen.net,prosiebenmaxx.de,sixx.de,kabeleins.de#%#AG_onLoad(function() { window.UABPTrack = function() {}; });
 !--------------------------------------!
@@ -182,6 +182,7 @@ prosieben.de,stern.de,webfail.com,focus.de,finanzen.net,prosiebenmaxx.de,sixx.de
 !--------------------------------------!
 !------- Content filtering rules ------!
 !--------------------------------------!
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1758
 ! http://forum.adguard.com/showthread.php?8888
 ! http://forum.adguard.com/showthread.php?8887
 ! http://forum.adguard.com/showthread.php?8853
@@ -254,6 +255,8 @@ general-anzeiger-bonn.de##div[class$="box teaserbanner"]
 krone.at##div[class$="c_widescreen_teaser_2x4"]
 metal-hammer.de##div[class$="grid-box-optional_ad"]
 bluewin.ch##div[class$="mod modDirectTo logos"]
+lokalkompass.de##div[class$="teaserBox left"]
+lokalkompass.de##div[class$="teaserBox right"]
 jetztspielen.de##div[class*="advert"]
 wired.de##div[class*="featured-advertise"]
 isnichwahr.de##div[class*="simpleads-ad-"]
@@ -452,6 +455,10 @@ tvspielfilm.de##div[class^="netflix"]
 !
 ! White list. Fixing filtration errors (false-positive)
 !
+!###TEMPORARY###
+! https://github.com/AdguardTeam/AdguardForWindows/issues/960
+@@||gofeminin.de^$content
+!###############
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1648
 @@||cdn.inside-handy.de/ih/top/
 ! http://forum.adguard.com/showthread.php?9165
@@ -1464,6 +1471,7 @@ guterhut.de#@#iframe[id^="google_ads_iframe"]
 ||aldi-sued.de^*/zeitungen-banner/$third-party
 ||alfahosting.org/forum/f_bild/ban-kopf-
 ||all-inkl.com^*/banner/$third-party
+||am.dynatracker.de^$third-party
 ||amadeal.de/banner/$third-party
 ||amarotic.com^*.php?wmid=$script,third-party
 ||amateurbusters.com^*.php?wmid=$script,third-party
@@ -4527,7 +4535,6 @@ handballworld.com###absolute > .bannergroup
 radiolisten.de###ad3
 carpassion.com,high-minded.us,messerforum.net,mmorpg-core.com,schachburg.de,thinkpad-forum.de,unixboard.de,world-of-hentai.to###ad_global_below_navbar
 musicelster.net###ad_global_below_navbar > center > div[style="float:right; width:50%;"]
-pcwelt.de###ad_mpu + div
 motorsport-xl.de###adala
 motorsport-xl.de###adala_bgholder
 fem.com###add_square
@@ -8503,6 +8510,7 @@ kalender-365.de#@#.adsbygoogle
 @@||adserv3.deutschland-spion.de/www/delivery/spc.php?$script,domain=mv-spion.de
 @@||adserv3.deutschland-spion.de/www/delivery/spcjs.php?$script,domain=mv-spion.de
 @@||adspaces.ero-advertising.com/adspace/214418.js$domain=berlin-nutten.com
+@@||adternal.com^$image,domain=motorsport-total.com
 @@||ae.amgdgt.com/ads?t=$object-subrequest,domain=dctp.tv|homerj.de
 @@||aktuelles-handelsrecht.info^$elemhide
 @@||alle-news.com^$image,script,domain=news.feed-reader.net

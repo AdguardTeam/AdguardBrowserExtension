@@ -1,3 +1,4 @@
+/* global require, exports */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -14,14 +15,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
 var Log = require('../../lib/utils/log').Log;
 var FS = require('../../lib/utils/file-storage').FS;
-var FilterRule = require('../../lib/filter/rules/base-filter-rule').FilterRule;
 var FilterRuleBuilder = require('../../lib/filter/rules/filter-rule-builder').FilterRuleBuilder;
 
 /**
@@ -64,7 +59,7 @@ var FilterStorage = exports.FilterStorage = {
 		var filePath = FilterStorage._getFilePath(filterId);
 		FS.readFromFile(filePath, function (e, rules) {
 			if (e) {
-				Log.error("Error read rules from file {0} cause: {1}", filePath, FS.translateError(e));
+				Log.error("Error while reading rules from file {0} cause: {1}", filePath, FS.translateError(e));
 			}
 			callback(rules);
 		}.bind(this));
@@ -199,7 +194,7 @@ FilterParser.prototype = {
 			case FilterParser.Sections.FILTER_END:
 				if (this.currentFilter) {
 					var antiBannerFilter = FilterParser.fromObject(this.currentFilter);
-					if (antiBannerFilter != null) {
+					if (antiBannerFilter !== null) {
 						antiBannerFilter.filterRules = this.currentRules;
 						this.antiBannerFilters.push(antiBannerFilter);
 					}
@@ -222,7 +217,7 @@ FilterParser.prototype = {
 					case FilterParser.Sections.RULES_START:
 						if (line && this.currentRules) {
 							var rule = FilterRuleBuilder.createRule(line, this.currentFilter.filterId - 0);
-							if (rule != null) {
+							if (rule !== null) {
 								this.currentRules.push(rule);
 							}
 						}
