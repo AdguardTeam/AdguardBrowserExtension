@@ -1379,7 +1379,7 @@ AntiBannerService.prototype = {
                 event == EventNotifierTypes.CHANGE_PREFS && setting == 'use_global_style_sheet') {
                 this.getRequestFilter().cssFilter.dirty = true;
             }
-        });
+        }.bind(this));
     },
 
     /**

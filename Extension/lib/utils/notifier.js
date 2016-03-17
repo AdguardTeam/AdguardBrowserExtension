@@ -1,3 +1,4 @@
+/* global require, exports */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -71,7 +72,7 @@ var EventNotifier = exports.EventNotifier = {
 	 * Notifies listeners about the events passed as arguments of this function.
 	 */
 	notifyListeners: function () {
-		for (var listenerId in this.listenersMap) {
+		for (var listenerId in this.listenersMap) { // jshint ignore:line
 			var events = this.listenersEventsMap[listenerId];
 			if (events && events.length > 0 && events.indexOf(arguments[0]) < 0) {
 				continue;
@@ -80,7 +81,7 @@ var EventNotifier = exports.EventNotifier = {
 				var listener = this.listenersMap[listenerId];
 				listener.apply(listener, arguments);
 			} catch (ex) {
-				Log.error("Error invoke listener for {0} cause: {1}", arguments[0], ex);
+				Log.error("Error invokeing listener for {0} cause: {1}", arguments[0], ex);
 			}
 		}
 	}
