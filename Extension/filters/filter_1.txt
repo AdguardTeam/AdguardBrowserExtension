@@ -1,10 +1,10 @@
 ! Title: Russian filter
-! Version: 1.0.31.96
+! Version: 1.0.31.98
 ! Name: Russian filter
 ! Description: Filter that enables removing of the ads from websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-03-17T11:51:59.855+03:00
+! TimeUpdated: 2016-03-17T18:43:05.951+03:00
 ! Title: Adguard Russian Filter
 !
 ! Filter that enables removing of the ads from websites with Russian content.
@@ -29,6 +29,7 @@
 !
 ! Содержит доменные имена, использующиеся рекламными сетями.
 !
+||astob.com^$third-party
 ||bistroduy.ru^$third-party
 ||vorinteon.ru^$third-party
 ||barbys.ru^$third-party
@@ -4300,6 +4301,8 @@ hdkinoteatr.com#%#Object.defineProperty(window, 'iframe_adv_enabled', { get: fun
 !-----------------------
 !------- CSS -----------
 !-----------------------
+! eurolab.ua - удаление отступа сверху
+eurolab.ua#$#body { padding-top: 0px!important; }
 ! http://forum.adguard.com/showthread.php?9625
 lets-play.tv#$##branding {padding-top: 0px!important; }
 ! new-rutor.org - удаление отступа сверху
@@ -6407,6 +6410,17 @@ polezno-2012.info^
 ! For mobile Yandex search
 yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua##.serp-adv-item
 !
+||antimuh.ru/images/banners/
+friday.ru##.banner240x400
+friday.ru##div[class="rc"][style="right: 332.5px; display: block;"]
+||r.yaplakal.com/video/get/?
+gazeta.ua##.branding-header
+||static.gazeta.ua/images/branding/
+ogoa.ru##.rekl_table
+ogoa.ru##div[id^="re_banner"]
+||paywall.rambler.ru/paywall/$domain=lenta.ru
+present-dv.ru##.banner-group
+present-dv.ru##body > div.layout-container > div.layout-pub
 lady.mail.ru##div[id^="rb_vid_"]
 ||express-prigorod.ru/upload/images/banners/
 ||stu.ru/images/banners/
@@ -6464,7 +6478,6 @@ myshared.ru###ads_1
 avito.ru###ads_direct_low
 mmovote.ru###ads_page
 oszone.net###adscube
-rutracker.org###adsel-bn-topic
 lan23.ru###adsense_firstpost
 underverse.su###adtemp
 cheboksary.ru,cornery.ru,opennet.ru,reffs.ru###adv
@@ -6527,7 +6540,6 @@ aviasales.ru,bigcinema.tv,empiretv.org,goha.ru,kafa-info.com.ua,link.ac,nakarte.
 sport.ua###banner-240_400
 mail.rambler.ru###banner-left
 maps.mail.ru###banner-left-200
-rutracker.org###banner-stub
 mail.rambler.ru###banner-top-content
 pn.com.ua###banner-top-stretching
 imghost.pro###banner-top-wide
@@ -6562,8 +6574,6 @@ delo.ua###bg-hws-promo
 kinoprofi.net###bg_branding
 topgame.su###bg_img
 astromeridian.ru###bglink
-rutracker.org###bgn-idx
-rutracker.org###bgn-topic
 lib.rus.ec###bid576
 gidonline.club###big
 ngs24.ru,ngs38.ru,ngs42.ru,ngs55.ru,ngs70.ru###big-dituw
@@ -6586,13 +6596,9 @@ allboxing.ru###block-views-banner_random-block_1
 inoe.name,madem.ru###block1
 inoe.name,madem.ru###blocke
 picage.ru###blocked_block > .blocked_text
-rutracker.org###bn-baltplay
 dwnld.net.ua,rutracker.org###bn-bot-wrap
 rutracker.org###bn-drg-1
 pornolab.net###bn-girlsforyou-1
-rutracker.org###bn-idx-2
-rutracker.org###bn-idx-4
-rutracker.org###bn-tio-1
 pornolab.net###bn-traffic-top
 pornolab.net###bn-traffic-topf
 spartak.com###bn13
@@ -6669,14 +6675,12 @@ mskd-ru.net###content > table[width="600px"]
 megogo.net###contentShifter
 kinopoisk.ru###counterCode
 capa.ru###cpays2
-rutracker.org###crn-1
 gorod55.ru###ctl00_ctl00_body_body_banCenter1Container
 gorod55.ru###ctl00_ctl00_body_body_ucLove_panelLove
 rusfolder.com,rusfolder.net,rusfolder.ru###custom-top-banner
 pornolab.net###dd-900x9
+cloud.mail.ru##div[id^="rb_banner"]
 pornolab.net###dd-900x90
-rutracker.org###ddest-bn-1
-rutracker.org###ddest-bn-2
 povarenok.ru###delta_14
 diets.ru###delta_18
 1kino.com###dematom
@@ -6745,7 +6749,6 @@ seonews.ru###gerl_div
 my-hit.org###gif_header div[id^="b_pr"]
 5ka.su###girlsBar
 rl-team.net###glad
-rutracker.org###glad-idx
 gameround.ru###global_back_link
 chepetsk.ru###glory
 muzofon.com###gn-popin-ready
@@ -6790,11 +6793,6 @@ ex.ua###html-id > div[style="height: 240px;"]
 sport.ua###html5_banner
 opennet.ru###ibm_adv
 kino-butterfly.com.ua###id_banner
-rutracker.org###idx-2
-rutracker.org###idx-3
-rutracker.org###idx-bsfg
-rutracker.org###idx-mail-ru
-rutracker.org###idx-mgid
 pozdravlandia.ru###imCel_Rekl
 pozdravlandia.ru###imCel_SideBar
 gagarinm.ru###imSplashBox
@@ -6808,7 +6806,6 @@ inoe.name###inoe-banner
 inoe.name###inoe-banner2
 linux.org.ru###interpage-adv
 megashara.com###irod
-rutracker.org###it-top
 fishki.net###izobility
 gameguru.ru###jointNew
 vz.ru###journalAnnosTop
@@ -6888,7 +6885,6 @@ vashdom.ru###out_banner
 materialscience.ru###overlay
 gorod.cn.ua###overlay-soc
 magtimes.info###owl-example > div
-rutracker.org###owo-idx-5
 news.mail.ru###p-Ears-Cont
 absurdopedia.net###p-lolads
 wikireality.ru###p-sidebar-extlinks
@@ -6973,8 +6969,6 @@ overclockers.ru###rightplace > div[align="center"] > a > img
 fastpic.ru###rightside
 bigtorrent.org,bigtorrents.ru###rightside > .ins > .ins > .block:first-child
 fxgeneral.com###rightvisual
-rutracker.org###rmbn-idx-1
-rutracker.org###rmbn-idx-2
 chaynikam.net###rotator
 rsload.net###rsload-block
 ruslife.eu###ruslife-banner
@@ -6994,9 +6988,7 @@ systalk.ru###sidebar > div.sidebar-block > noindex
 5peciali5t.tk###sidebar-left-1 #HTML5
 5peciali5t.tk###sidebar-left-1 #Text3
 5peciali5t.tk###sidebar-left-1 div[id^="Feed"]
-rutracker.org###sidebar1 a[href="info.php?show=advert"]
 tltorrent.ru###sidebar1-wrap > center:last-child > a:first-child > img
-rutracker.org###sidebar1_wrap > div[style*="height: 300px;"]
 pirat.ca###sidebar2
 simpalsid.com###simpalsid-news
 101.ru,orangefit.ru###simplemodal-container
@@ -7042,7 +7034,6 @@ smart-ip.net###top-add-block
 ketchuptv.ru###top-b > div[style="width: 980px;"]
 sports.ru###top-banner-place
 ivanovonews.ru###top-banners
-rutracker.org###top-bn
 trinixy.ru,yap.ru,yaplakal.com###top-line
 xetcom.com###top-line + .art-block
 porjati.ru###top-right-right
@@ -7069,7 +7060,6 @@ elec.ru,geektimes.ru,habrahabr.ru,myvi.ru###topline
 vpleer.ru###toplinka
 sys-admin.kz###topper
 pikabu.ru###tr_3256920
-rutracker.org###traf-ru
 vkfriend.ru###trap
 tfile.me###tvmir_roller
 pornolab.net###tvoi-dosug
@@ -7101,7 +7091,6 @@ oszone.net###wd_loadingbox
 gismeteo.by,gismeteo.com,gismeteo.kz,gismeteo.md,gismeteo.ru,gismeteo.ua###weather-news li[class="news item links-black links-blue"][style="height: 57px;"]
 hopesandfears.com###widget_banner_comments
 fileplaneta.com###winvideoPlayer
-rutracker.org###wiw-idx
 playground.ru###wotTankCelebrate
 kyzyl-online.ru###wrapper > #sliderwrap
 waralbum.ru###wrapper > noindex
@@ -7491,6 +7480,7 @@ focus.ua##.bn-holder
 rutracker.org##.bn-idx
 moskva.fm,piter.fm##.bn-top
 rutracker.org##.bn-topic
+||t-ru.org/misc/ddos-guard-
 xutor.net##.bn_table
 onliner.by##.bnr-top-wide
 doska.vse42.ru##.bnr_topwide
@@ -8569,7 +8559,6 @@ rosrealt.ru##a[href="http://privatarenda.ru"] > img
 linux.org.ru##a[href="http://qrator.net/"]
 filebase.ws##a[href="http://rf.essin.ru/"]
 stolica-s.su##a[href="http://russkiyproekt.ru/"]
-rutracker.org##a[href="http://rutracker.org/forum/info.php?show=advert"]
 tltnews.ru##a[href="http://samara.propartner.ru/"]
 vp-news.ru##a[href="http://saturn-auto66.ru/"]
 hdclub.org##a[href="http://seedbox.org.ua/"]
@@ -8985,7 +8974,6 @@ brb.to,cxz.to,fs.to##div[id*="_universal_"] > div[class*="-universal"]
 interfax.ru##div[id*="ban"] > div > a[href^="/goto.asp?id="][target="_blank"]
 interfax.ru##div[id*="ban"] > div.mgrBot
 povarenok.ru##div[id*="google_ads"]
-rutracker.org##div[id="1100ad"]
 yap.ru,yaplakal.com,yaplakal.ru##div[id="footer"][class="no-compress"]
 fileplaneta.com##div[id="mv"][style]
 newsru.ua,ren.tv,riafan.ru,spbdnevnik.ru,therussiantimes.com##div[id^="LentaInform"]
@@ -9186,7 +9174,6 @@ dfiles.ru##iframe[id^="ads_"]
 news.allcrimea.net##iframe[id^="yottos"]
 ykt.ru##iframe[name^="adv"]
 torrent.kg##iframe[src*=".ts.kg/torrent/"]
-rutracker.org##iframe[src*="/195.82.146.52/"]
 utro.ru##iframe[src*="/includes5/banners/"]
 emls.ru##iframe[src*="/special/"]
 torrent.kg##iframe[src*="banner_news_"]
@@ -9251,7 +9238,6 @@ lada-granta.net,lkforum.ru##img[width="150"][height="22"]
 lada-granta.net,lkforum.ru##img[width="150"][height="250"]
 pozdravok.ru##img[width="200"][height="100"]
 camelot.multilocal.ru,camelot.userlan.ru,город-кингисепп.рф##img[width="200"][height="200"]
-3pingvina.net,rutracker.org##img[width="200"][height="300"]
 china-iphone.ru##img[width="234"][height="60"]
 stopgame.ru##img[width="239"][height="400"]
 forum.sakh.com##img[width="240"][height="120"]
@@ -11316,6 +11302,8 @@ http://*.space^$script,domain=free-torrent.org|free-torrents.org|jpgstore.ru|pic
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/814
 @@||video.videonow.ru^$domain=api.cybergame.tv
 !!!
+! abo.ua filter is broken by Adguard injections
+@@||abo.ua/*/?ajax$document
 ! ek.ua - comments are broken by Adguard injections
 @@||ek.ua/mtools/dot_output/mui_review.php$document
 ! http://forum.adguard.com/showthread.php?9347

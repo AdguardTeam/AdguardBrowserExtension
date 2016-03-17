@@ -968,13 +968,6 @@ AntiBannerService.prototype = {
     _onFiltersLoadedFromStorage: function (rulesFilterMap, callback) {
         
         var start = new Date().getTime();
-        Log.info('Starting request filter initialization');
-        
-        // Empty request filter
-        var requestFilter = new RequestFilter();
-        
-        // Supplement object to make sure that we use only unique filter rules
-        var uniqueRules = Object.create(null);        
         
         // We create filter rules using chunks of the specified length
         // We are doing this for FF as everything in FF is done on the UI thread
@@ -982,6 +975,13 @@ AntiBannerService.prototype = {
         // use setTimeout calls to give UI thread some time.
         var async = Prefs.speedupStartup();
         var asyncStep = 1000;
+        Log.info('Starting request filter initialization. Async={0}', async);
+        
+        // Empty request filter
+        var requestFilter = new RequestFilter();
+        
+        // Supplement object to make sure that we use only unique filter rules
+        var uniqueRules = Object.create(null);        
         
         /**
          * STEP 3: Called when request filter has been filled with rules.

@@ -1,10 +1,10 @@
 ! Title: German filter
-! Version: 1.0.24.22
+! Version: 1.0.24.23
 ! Name: German filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: German filter
 ! DescriptionEn: Filter that enables removing of the ads from websites with German content.
-! TimeUpdated: 2016-03-17T11:52:28.041+03:00
+! TimeUpdated: 2016-03-17T18:49:08.672+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -76,6 +76,7 @@ nowtv.de#@#object[width="200"][height="200"]
 @@||adheart.de/*/ad-loading.jpg
 @@||serienjunkies.de/img/ad_data/
 t3n.de##.abContentMsg
+4players.de#%#Object.defineProperty(window, 'abWarningMobile', { get: function() { return function abWarningMobile(){} } });
 @@||ads.adthebest.de/delivery/ajs.php^$domain=4players.de
 @@||4p.de/*adtag.check.js
 teleboy.ch#@#.adWrapper
