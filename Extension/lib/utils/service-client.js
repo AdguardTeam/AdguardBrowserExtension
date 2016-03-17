@@ -104,7 +104,7 @@ ServiceClient.prototype = {
 	 */
 	checkFilterVersions: function (filterIds, successCallback, errorCallback) {
 
-		if (!filterIds || filterIds.length == 0) {
+		if (!filterIds || filterIds.length === 0) {
 			successCallback([]);
 			return;
 		}
@@ -131,7 +131,7 @@ ServiceClient.prototype = {
 		};
 		var url = this.checkFilterVersionsUrl;
 		for (var i = 0; i < filterIds.length; i++) {
-			url += (i == 0 ? "?filterid=" : "&filterid=") + filterIds[i];
+			url += (i === 0 ? "?filterid=" : "&filterid=") + filterIds[i];
 		}
 		url += this.APP_PARAM;
 		url = this._addKeyParameter(url);
@@ -176,7 +176,7 @@ ServiceClient.prototype = {
 			var rules = [];
 			for (i = 0; i < lines.length; i++) {
 				var rule = FilterRuleBuilder.createRule(lines[i], filterId);
-				if (rule != null) {
+				if (rule !== null) {
 					rules.push(rule);
 				}
 			}
@@ -225,7 +225,7 @@ ServiceClient.prototype = {
 					timeUpdated = timeUpdated || new Date(RegExp.$1);
 				}
 				var rule = FilterRuleBuilder.createRule(line, filterId);
-				if (rule != null) {
+				if (rule !== null) {
 					rules.push(rule);
 				}
 			}

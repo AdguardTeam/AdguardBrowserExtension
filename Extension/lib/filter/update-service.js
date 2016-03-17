@@ -55,7 +55,7 @@ exports.ApplicationUpdateService = {
 			isUpdate: isUpdate,
 			currentVersion: currentVersion,
 			prevVersion: prevVersion
-		}
+		};
 	},
 
 	/**
