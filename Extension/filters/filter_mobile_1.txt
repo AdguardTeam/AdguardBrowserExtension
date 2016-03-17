@@ -1,10 +1,10 @@
 ! Title: Russian filter
-! Version: 1.0.31.95
+! Version: 1.0.31.96
 ! Name: Russian filter
 ! Description: Filter that enables removing of the ads from websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-03-16T19:05:58.322+03:00
+! TimeUpdated: 2016-03-17T11:51:59.855+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -3414,6 +3414,7 @@ ucoz.ru/informer/
 ||gag.admulti.com/rotator
 ||info.zonasearch.com/ad/admulti-async.js
 yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua##.serp-adv-item
+lady.mail.ru##div[id^="rb_vid_"]
 ||express-prigorod.ru/upload/images/banners/
 ||stu.ru/images/banners/
 ||poker-bot.ru/images/vulkan_

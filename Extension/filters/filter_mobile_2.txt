@@ -1,10 +1,10 @@
 ! Title: English filter
-! Version: 1.0.79.46
+! Version: 1.0.79.47
 ! Name: English filter
 ! Description: Based on EasyList. Filter that enables removing of the ads from websites with English content.
 ! NameEn: English filter
 ! DescriptionEn: Based on EasyList. Filter that enables removing of the ads from websites with English content.
-! TimeUpdated: 2016-03-16T19:06:07.560+03:00
+! TimeUpdated: 2016-03-16T23:00:25.824+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -3845,7 +3845,7 @@ implbits.com#@#.banner_container
 /smartad.
 /smartAd?
 /smartads.
-/smartadserver.
+/smartadserver.$domain=~smartadserver.com|~smartadserver.com.br|~smartadserver.de|~smartadserver.es|~smartadserver.fr|~smartadserver.it|~smartadserver.pl|~smartadserver.ru
 /smeadvertisement/*
 /smoozed-ad/*
 /sp/delivery/*
@@ -21228,6 +21228,7 @@ interviewmagazine.com#@#.ad90
 abcfamily.go.com,livestrong.com,locatetv.com#@#.adBlock
 aftenposten.no#@#.adBottomBoard
 expedia.com,ksl.com#@#.adBox
+thoughtcatalog.com#@#.adChoicesLogo
 amfiindia.com,expressz.hu,gumtree.co.za,hotgamesforgirls.com,mycareer.com.au,quotefx.com#@#.adContent
 superbikeplanet.com#@#.adDiv
 contracostatimes.com,insidebayarea.com,mercurynews.com,siliconvalley.com#@#.adElement
@@ -21511,6 +21512,7 @@ getprice.com.au#@#.sponsoredLinks
 golfmanagerlive.com#@#.sponsorlink
 giantlife.com,hellobeautiful.com,newsone.com,theurbandaily.com#@#.sticky-ad
 technical.ly#@#.story-ad
+thoughtcatalog.com#@#.tc_ad_unit
 kanui.com.br,nytimes.com#@#.text-ad
 kingsofchaos.com#@#.textad
 antronio.com,cdf.cl,frogueros.com#@#.textads
@@ -21916,7 +21918,8 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad-"]
 ||andomedia.com^$third-party
 ||anet*.tradedoubler.com^$third-party
 ||angege.com^$third-party
-||anrdoezrs.net^$third-party
+||anrdoezrs.net/image-$third-party
+||anrdoezrs.net/placeholder-$third-party
 ||anymedia.lv^$third-party
 ||appendad.com^$third-party
 ||apportium.com^$third-party
@@ -22180,7 +22183,8 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad-"]
 ||down1oads.com^$third-party
 ||downloadboutique.com^$third-party
 ||dp25.kr^$third-party
-||dpbolvw.net^$third-party
+||dpbolvw.net/image-$third-party
+||dpbolvw.net/placeholder-$third-party
 ||dpmsrv.com^$third-party
 ||dpsrexor.com^$third-party
 ||dpstack.com^$third-party
@@ -22280,6 +22284,7 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad-"]
 ||ftv-publicite.fr^$third-party
 ||fungoiddempseyimpasse.info^$third-party
 ||funklicks.com^$third-party
+||furginator.pw^$third-party
 ||fusionads.net^$third-party
 ||gagacon.com^$third-party
 ||gambling-affiliation.com^$third-party
@@ -22416,7 +22421,8 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad-"]
 ||jango.com^$third-party
 ||jangonetwork.com^$third-party
 ||jarvinzo.com^$popup
-||jdoqocy.com^$third-party
+||jdoqocy.com/image-$third-party
+||jdoqocy.com/placeholder-$third-party
 ||jiawen88.com^$third-party
 ||jivox.com^$third-party
 ||jiwire.com^$third-party
@@ -22444,7 +22450,8 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad-"]
 ||kontextua.com^$third-party
 ||korrelate.net^$third-party
 ||kovla.com^$third-party
-||kqzyfj.com^$third-party
+||kqzyfj.com/image-$third-party
+||kqzyfj.com/placeholder-$third-party
 ||kromeleta.ru^$third-party
 ||kumpulblogger.com^$third-party
 ||l3op.info^$third-party
@@ -22938,7 +22945,8 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad-"]
 ||tidaltv.com^$third-party
 ||tightexact.net^$third-party
 ||tissage-extension.com^$third-party
-||tkqlhce.com^$third-party
+||tkqlhce.com/image-$third-party
+||tkqlhce.com/placeholder-$third-party
 ||tlvmedia.com^$third-party
 ||tnyzin.ru^$third-party
 ||toboads.com^$third-party
@@ -25406,6 +25414,7 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad-"]
 ||short.zain.biz^$popup,domain=up09.com
 ||thevideo.me/mpa/$popup
 ||thevideo.me/script/$popup
+||thevideo.me^*/ttc.php$popup
 ||torrentz.*/wgmpop/$popup
 ||torrentz.eu/search*=$popup,~third-party
 ||tozer.youwatch.org^$popup
@@ -25792,6 +25801,7 @@ youtube.com,youtubeproxy.pk###feed-pyv-container
 forexpros.com,investing.com###findABroker
 mixx.com,popurls.com###fmb
 thevideo.me###foffab
+thevideo.me###foffab_never_gonna_let_you_down
 thevideo.me###foffab_seriously
 chaifm.com,coinurl.com,oocities.org,palipost.com,sh.st,sicilyintheworld.com,spin.ph,techcentral.co.za,tribejournal.com###footer
 adelaidestrikers.com.au,bigbash.com.au,brisbaneheat.com.au,hobarthurricanes.com.au,melbournerenegades.com.au,melbournestars.com.au,perthscorchers.com.au,sydneysixers.com.au,sydneythunder.com.au###footer-sponsors
@@ -29217,7 +29227,7 @@ www.google.com#@##videoads
 @@||bet365.com/home/?affiliate=$popup,domain=betbeaver.com|betwonga.com|betyper.com
 @@||casino.com^*&affiliate=$popup,domain=internetcasinot.com
 @@||cloudzilla.to^$popup,domain=putlocker.is
-@@||doubleclick.net/clk;$popup,domain=4g.co.uk|hotukdeals.com|jobamatic.com|play.google.com|santander.co.uk|techrepublic.com
+@@||doubleclick.net/clk;$popup,domain=3g.co.uk|4g.co.uk|hotukdeals.com|jobamatic.com|play.google.com|santander.co.uk|techrepublic.com
 @@||doubleclick.net/ddm/clk/$popup,domain=4g.co.uk|couponcodeswap.com
 @@||doubleclick.net/ddm/trackclk/$popup,domain=casinosonline.co.uk|onlinecasinos.co.uk|vouchercodes.co.uk
 @@||eurogrand.com^$popup,domain=casinosonline.co.uk|onlinecasinos.co.uk
