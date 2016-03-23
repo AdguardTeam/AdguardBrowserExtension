@@ -202,10 +202,38 @@ var AdguardSelectorLib = (function (api, $) {
      */
      var selectionRenderer = {
 
+         /**
+            Preparing renderer.
+         */
+         init: function(){
+
+             if (!borderTop) {
+                 var width = px(BORDER_WIDTH);
+
+                 borderTop = $('<div/>').addClass(BORDER_CLASS).css('height', width).hide()
+                     .on("click", sgMousedownHandler);
+                 borderBottom = $('<div/>').addClass(BORDER_CLASS).addClass('sg_bottom_border')
+                     .css('height', px(BORDER_WIDTH + 6)).hide()
+                     .on("click", sgMousedownHandler);
+                 borderLeft = $('<div/>').addClass(BORDER_CLASS).css('width', width).hide()
+                     .on("click", sgMousedownHandler);
+                 borderRight = $('<div/>').addClass(BORDER_CLASS).css('width', width).hide()
+                     .on("click", sgMousedownHandler);
+
+                 addBorderToDom();
+             }
+         },
+
+         /**
+            Clearing DOM and so on.
+         */
+         finalize: function(){
+
+             removeBorderFromDom();
+         },
+
          add: function (element) {
-             console.log('This = '+this + 'this.remove= '+ this.remove);
              this.remove();
-             setupBorders();
 
              if (!element) {
                  return;
@@ -440,25 +468,6 @@ var AdguardSelectorLib = (function (api, $) {
         elements.off("click", sgMousedownHandler);
     };
 
-    var setupBorders = function () {
-        if (!borderTop) {
-            var width = px(BORDER_WIDTH);
-
-            borderTop = $('<div/>').addClass(BORDER_CLASS).css('height', width).hide()
-                .on("click", sgMousedownHandler);
-            borderBottom = $('<div/>').addClass(BORDER_CLASS).addClass('sg_bottom_border')
-                .css('height', px(BORDER_WIDTH + 6)).hide()
-                .on("click", sgMousedownHandler);
-            borderLeft = $('<div/>').addClass(BORDER_CLASS).css('width', width).hide()
-                .on("click", sgMousedownHandler);
-            borderRight = $('<div/>').addClass(BORDER_CLASS).css('width', width).hide()
-                .on("click", sgMousedownHandler);
-
-            addBorderToDom();
-        }
-    };
-
-
     // PUBLIC API
 
     /**
@@ -479,6 +488,7 @@ var AdguardSelectorLib = (function (api, $) {
         });
         predictionHelper = new DomPredictionHelper($, String);
 
+        selectionRenderer.init();
         setupEventHandlers();
         unbound = false;
     };
@@ -498,7 +508,7 @@ var AdguardSelectorLib = (function (api, $) {
     api.close = function () {
         unbound = true;
 
-        removeBorderFromDom();
+        selectionRenderer.finalize();
         deleteEventHandlers();
     };
 
