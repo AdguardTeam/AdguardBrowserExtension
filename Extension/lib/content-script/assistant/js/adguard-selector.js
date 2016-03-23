@@ -49,6 +49,16 @@ var AdguardSelectorLib = (function (api, $) {
     var unbound = true;
     var onElementSelectedHandler = null;
 
+    /********** iOS modifications ***************/
+
+    var isIOS = (navigator.platform === 'iPad' || navigator.platform === 'iPhone');
+
+    /**
+    We need use touch event model, because exists HITROZHOPYE web designers
+    */
+    var ignoreTouchEvent = 0;
+    /*******************************************/
+
 
     // PRIVATE METHODS
 
@@ -449,14 +459,62 @@ var AdguardSelectorLib = (function (api, $) {
         return false;
     };
 
+    /********** iOS modifications ***************/
+    var iosElementSelectHandler = function(e){
+
+        sgMouseoverHandler.call(this,e);
+        sgMousedownHandler.call(this,e);
+    };
+
+    var iosElementTouchendHandler = function(e){
+       e.stopPropagation();
+
+      if(ignoreTouchEvent > 0){
+
+        console.log('Ignore touchend event: '+ ignoreTouchEvent);
+        ignoreTouchEvent--;
+        return true;
+      }
+
+      iosElementSelectHandler.call(this, e);
+      return false;
+    }
+
+    var iosPreventEventHandler = function(e){
+
+      e.stopPropagation();
+      // e.preventDefault();
+
+      console.log('Event stoped:'+ e.type);
+
+      return false;
+    }
+    /*******************************************/
 
     var setupEventHandlers = function () {
         makeIFrameAndEmbededSelector();
 
         var sgIgnore = $("body *:not(." + IGNORED_CLASS + ")");
-        sgIgnore.on("mouseover", sgMouseoverHandler);
-        sgIgnore.on("mouseout", sgMouseoutHandler);
-        sgIgnore.on("click", sgMousedownHandler);
+
+        if (isIOS) {
+
+            console.log('Setup events for iOS.');
+            // sgIgnore.on("touchstart", iosPreventEventHandler);
+            // sgIgnore.on("mouseup", iosElementSelectHandler);
+            // sgIgnore.on("mousedown", iosElementSelectHandler);
+
+            sgIgnore.on("gestureend", function(e){ignoreTouchEvent = 2; return true;});
+            sgIgnore.on("touchmove", function(e){ignoreTouchEvent = 1; return true;});
+            sgIgnore.on("touchend", iosElementTouchendHandler);
+        }
+        else {
+            console.log('Setup events for Desktop.');
+
+            sgIgnore.on("mouseover", sgMouseoverHandler);
+            sgIgnore.on("mouseout", sgMouseoutHandler);
+            sgIgnore.on("click", sgMousedownHandler);
+            sgIgnore.on("mouseover", iosPreventEventHandler);
+        }
     };
 
     var deleteEventHandlers = function () {
