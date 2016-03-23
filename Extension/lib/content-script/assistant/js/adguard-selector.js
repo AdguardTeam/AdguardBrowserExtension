@@ -160,15 +160,6 @@ var AdguardSelectorLib = (function (api, $) {
         }
     };
 
-    var removeBorders = function () {
-        if (borderTop && borderBottom && borderLeft && borderRight) {
-            borderTop.hide();
-            borderBottom.hide();
-            borderLeft.hide();
-            borderRight.hide();
-        }
-    };
-
     var clearSelected = function () {
         selectedElements = [];
         rejectedElements = [];
@@ -176,7 +167,7 @@ var AdguardSelectorLib = (function (api, $) {
         removeClassName(SELECTED_CLASS);
         removeClassName(REJECTED_CLASS);
 
-        removeBorders();
+        selectionRenderer.remove();
         removeClassName(SUGGESTED_CLASS);
     };
 
@@ -209,39 +200,51 @@ var AdguardSelectorLib = (function (api, $) {
      * @param element
      * @private
      */
-    var selectionRenderer = function (element) {
-        removeBorders();
-        setupBorders();
+     var selectionRenderer = {
 
-        if (!element) {
-            return;
-        }
+         add: function (element) {
+             this.remove();
+             setupBorders();
 
-        var p = getOffsetExtended(element);
+             if (!element) {
+                 return;
+             }
 
-        var top = p.top;
-        var left = p.left;
-        var width = p.outerWidth;
-        var height = p.outerHeight;
+             var p = getOffsetExtended(element);
 
-        borderTop.css('width', px(width + BORDER_PADDING * 2 + BORDER_WIDTH * 2)).
-            css('top', px(top - BORDER_WIDTH - BORDER_PADDING)).
-            css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
-        borderBottom.css('width', px(width + BORDER_PADDING * 2 + BORDER_WIDTH * 2 - 5)).
-            css('top', px(top + height + BORDER_PADDING)).
-            css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
-        borderLeft.css('height', px(height + BORDER_PADDING * 2)).
-            css('top', px(top - BORDER_PADDING)).
-            css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
-        borderRight.css('height', px(height + BORDER_PADDING * 2)).
-            css('top', px(top - BORDER_PADDING)).
-            css('left', px(left + width + BORDER_PADDING));
+             var top = p.top;
+             var left = p.left;
+             var width = p.outerWidth;
+             var height = p.outerHeight;
 
-        borderBottom.get(0).textContent = getTagPath(element);
-        borderRight.get(0).target_elem = borderLeft.get(0).target_elem = borderTop.get(0).target_elem = borderBottom.get(0).target_elem = element;
+             borderTop.css('width', px(width + BORDER_PADDING * 2 + BORDER_WIDTH * 2)).
+             css('top', px(top - BORDER_WIDTH - BORDER_PADDING)).
+             css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
+             borderBottom.css('width', px(width + BORDER_PADDING * 2 + BORDER_WIDTH * 2 - 5)).
+             css('top', px(top + height + BORDER_PADDING)).
+             css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
+             borderLeft.css('height', px(height + BORDER_PADDING * 2)).
+             css('top', px(top - BORDER_PADDING)).
+             css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
+             borderRight.css('height', px(height + BORDER_PADDING * 2)).
+             css('top', px(top - BORDER_PADDING)).
+             css('left', px(left + width + BORDER_PADDING));
 
-        showBorders();
-    };
+             borderBottom.get(0).textContent = getTagPath(element);
+             borderRight.get(0).target_elem = borderLeft.get(0).target_elem = borderTop.get(0).target_elem = borderBottom.get(0).target_elem = element;
+
+             showBorders();
+         },
+
+         remove: function () {
+             if (borderTop && borderBottom && borderLeft && borderRight) {
+                 borderTop.hide();
+                 borderBottom.hide();
+                 borderLeft.hide();
+                 borderRight.hide();
+             }
+         }
+     };
 
     var linkHelper = document.createElement('a');
     var getHost = function (url) {
@@ -297,7 +300,7 @@ var AdguardSelectorLib = (function (api, $) {
     };
 
     var placeholderClick = function (element) {
-        removeBorders();
+        selectionRenderer.remove();
         removePlaceholders();
 
         onElementSelectedHandler(element);
@@ -339,9 +342,9 @@ var AdguardSelectorLib = (function (api, $) {
 
         var parent = firstSelectedOrSuggestedParent(this);
         if (parent != null && parent != this) {
-            selectionRenderer(parent, true);
+            selectionRenderer.add(parent);
         } else {
-            selectionRenderer(this);
+            selectionRenderer.add(this);
         }
 
         return false;
@@ -356,7 +359,7 @@ var AdguardSelectorLib = (function (api, $) {
             return false;
         }
 
-        removeBorders();
+        selectionRenderer.remove();
         return false;
     };
 
@@ -409,7 +412,7 @@ var AdguardSelectorLib = (function (api, $) {
 
         makePredictionPath(elem);
 
-        removeBorders();
+        selectionRenderer.remove();
         blockClicksOn(elem);
 
         onElementSelectedHandler(elem);
@@ -505,7 +508,7 @@ var AdguardSelectorLib = (function (api, $) {
      * @param element
      */
     api.selectElement = function (element) {
-        selectionRenderer(element);
+        selectionRenderer.add(element);
 
         unbound = true;
         deleteEventHandlers();
