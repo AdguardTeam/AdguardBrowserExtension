@@ -203,6 +203,7 @@ var AdguardSelectorLib = (function (api, $) {
      var selectionRenderer = {
 
          add: function (element) {
+             console.log('This = '+this + 'this.remove= '+ this.remove);
              this.remove();
              setupBorders();
 
