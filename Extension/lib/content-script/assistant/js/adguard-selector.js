@@ -478,7 +478,7 @@ var AdguardSelectorLib = (function (api, $) {
 
       iosElementSelectHandler.call(this, e);
       return false;
-    }
+    };
 
     var iosPreventEventHandler = function(e){
 
@@ -488,7 +488,18 @@ var AdguardSelectorLib = (function (api, $) {
       console.log('Event stoped:'+ e.type);
 
       return false;
-    }
+    };
+
+    var iosGestureEndHandler = function(e){
+        ignoreTouchEvent = 2;
+        return true;
+    };
+
+    var iosTouchMoveHandler = function(e){
+        ignoreTouchEvent = 1;
+        return true;
+    };
+
     /*******************************************/
 
     var setupEventHandlers = function () {
@@ -503,8 +514,8 @@ var AdguardSelectorLib = (function (api, $) {
             // sgIgnore.on("mouseup", iosElementSelectHandler);
             // sgIgnore.on("mousedown", iosElementSelectHandler);
 
-            sgIgnore.on("gestureend", function(e){ignoreTouchEvent = 2; return true;});
-            sgIgnore.on("touchmove", function(e){ignoreTouchEvent = 1; return true;});
+            sgIgnore.on("gestureend", iosGestureEndHandler);
+            sgIgnore.on("touchmove", iosTouchMoveHandler);
             sgIgnore.on("touchend", iosElementTouchendHandler);
         }
         else {
@@ -521,9 +532,16 @@ var AdguardSelectorLib = (function (api, $) {
         removePlaceholders();
 
         var elements = $("body *");
-        elements.off("mouseover", sgMouseoverHandler);
-        elements.off("mouseout", sgMouseoutHandler);
-        elements.off("click", sgMousedownHandler);
+        if (isIOS) {
+            elements.off("gestureend", iosGestureEndHandler);
+            elements.off("touchmove", iosTouchMoveHandler);
+            elements.off("touchend", iosElementTouchendHandler);
+        }
+        else{
+            elements.off("mouseover", sgMouseoverHandler);
+            elements.off("mouseout", sgMouseoutHandler);
+            elements.off("click", sgMousedownHandler);
+        }
     };
 
     // PUBLIC API
@@ -581,6 +599,15 @@ var AdguardSelectorLib = (function (api, $) {
 
         unbound = true;
         deleteEventHandlers();
+    };
+
+    /**
+        Returns css class name.
+        If this class assigns to HTML element, then Adguard Selector ignores it.
+    */
+    api.ignoreClassName = function (){
+
+    return IGNORED_CLASS;
     };
 
     return api;
