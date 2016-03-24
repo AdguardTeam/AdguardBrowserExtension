@@ -297,13 +297,14 @@ var AdguardSelectorLib = (function (api, $) {
 
     var makePlaceholderImage = function (element) {
         var placeHolder = document.createElement('div');
-        placeHolder.style.height = element.style.height;
-        placeHolder.style.width = element.style.width;
-        placeHolder.style.position = element.style.position;
-        placeHolder.style.top = element.style.top;
-        placeHolder.style.bottom = element.style.bottom;
-        placeHolder.style.left = element.style.left;
-        placeHolder.style.right = element.style.right;
+        var style = window.getComputedStyle(element);
+        placeHolder.style.height = style.height;
+        placeHolder.style.width = style.width;
+        placeHolder.style.position = style.position;
+        placeHolder.style.top = style.top;
+        placeHolder.style.bottom = style.bottom;
+        placeHolder.style.left = style.left;
+        placeHolder.style.right = style.right;
         placeHolder.className += PLACEHOLDER_PREFIX;
 
         var icon = document.createElement('div');
@@ -331,7 +332,10 @@ var AdguardSelectorLib = (function (api, $) {
 
             var placeHolder = $('#' + id).get(0);
             if (placeHolder) {
-                placeHolder.outherHTML = current.outherHTML;
+                var parent = placeHolder.parentNode;
+                if (parent) {
+                    parent.replaceChild(current, placeHolder);
+                }
             }
         }
 
@@ -357,13 +361,34 @@ var AdguardSelectorLib = (function (api, $) {
                 var placeHolder = makePlaceholderImage(current);
                 var id = PLACEHOLDER_PREFIX + i;
 
-                placeHolder.setAttribute("id", id);
-                current.outerHTML = placeHolder.outherHTML;
-                $('#' + id).on('click', function (e) {
-                    e.preventDefault();
+                placeHolder.id = id;
 
-                    placeholderClick(current);
-                });
+                var parent = current.parentNode;
+                if (parent) {
+                    parent.replaceChild(placeHolder, current);
+                    if (isIOS) {
+
+                        $(placeHolder).on("gestureend", iosGestureEndHandler);
+                        $(placeHolder).on("touchmove", iosTouchMoveHandler);
+                        $(placeHolder).on("touchend", function(e) {
+                            e.preventDefault();
+                            if (needIgnoreTouchEvent()) {
+                                return true;
+                            }
+                            placeholderClick(current);
+                        });
+                    }
+                    else{
+
+                        $(placeHolder).on('click', function (e) {
+                            e.preventDefault();
+
+                            placeholderClick(current);
+                        });
+                    }
+
+                }
+
             })(current);
         }
     };
@@ -466,14 +491,22 @@ var AdguardSelectorLib = (function (api, $) {
         sgMousedownHandler.call(this,e);
     };
 
+    var needIgnoreTouchEvent = function(){
+
+        if(ignoreTouchEvent > 0){
+
+          ignoreTouchEvent--;
+          return true;
+        }
+
+        return false;
+    }
+
     var iosElementTouchendHandler = function(e){
        e.stopPropagation();
 
-      if(ignoreTouchEvent > 0){
-
-        console.log('Ignore touchend event: '+ ignoreTouchEvent);
-        ignoreTouchEvent--;
-        return true;
+      if (needIgnoreTouchEvent()) {
+          return true;
       }
 
       iosElementSelectHandler.call(this, e);
@@ -484,8 +517,6 @@ var AdguardSelectorLib = (function (api, $) {
 
       e.stopPropagation();
       // e.preventDefault();
-
-      console.log('Event stoped:'+ e.type);
 
       return false;
     };
@@ -509,22 +540,16 @@ var AdguardSelectorLib = (function (api, $) {
 
         if (isIOS) {
 
-            console.log('Setup events for iOS.');
-            // sgIgnore.on("touchstart", iosPreventEventHandler);
-            // sgIgnore.on("mouseup", iosElementSelectHandler);
-            // sgIgnore.on("mousedown", iosElementSelectHandler);
-
             sgIgnore.on("gestureend", iosGestureEndHandler);
             sgIgnore.on("touchmove", iosTouchMoveHandler);
             sgIgnore.on("touchend", iosElementTouchendHandler);
+            sgIgnore.on('touchstart', iosPreventEventHandler);
         }
         else {
-            console.log('Setup events for Desktop.');
 
             sgIgnore.on("mouseover", sgMouseoverHandler);
             sgIgnore.on("mouseout", sgMouseoutHandler);
             sgIgnore.on("click", sgMousedownHandler);
-            sgIgnore.on("mouseover", iosPreventEventHandler);
         }
     };
 
@@ -536,6 +561,7 @@ var AdguardSelectorLib = (function (api, $) {
             elements.off("gestureend", iosGestureEndHandler);
             elements.off("touchmove", iosTouchMoveHandler);
             elements.off("touchend", iosElementTouchendHandler);
+            elements.off('touchstart', iosPreventEventHandler);
         }
         else{
             elements.off("mouseover", sgMouseoverHandler);
@@ -555,7 +581,7 @@ var AdguardSelectorLib = (function (api, $) {
     api.init = function (onElementSelected, selectionRenderFunc) {
 
         onElementSelectedHandler = onElementSelected;
-        if (selectionRenderFunc && typeof selectionRenderFunc === "function") {
+        if (selectionRenderFunc && typeof selectionRenderFunc === "object") {
             selectionRenderer = selectionRenderFunc;
         }
 
