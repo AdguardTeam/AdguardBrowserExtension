@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var AdguardAssistant = function () {
+var AdguardAssistant = function ($) {
 
 	var self = this;
 
@@ -138,7 +138,12 @@ var AdguardAssistant = function () {
 
 		var offset = Object.create(null);
 
-		// Generalized function to get position of an event (like mousedown, mousemove, etc)
+		/**
+		 * Generalized function to get position of an event (like mousedown, mousemove, etc)
+		 *
+		 * @param e
+		 * @returns {{x: (Number|number), y: (Number|number)}}
+		 */
 		var getEventPosition = function (e) {
 			if (!e) {
 				e = window.event;
@@ -151,6 +156,7 @@ var AdguardAssistant = function () {
 
 		/**
 		 * Function that does actual "dragging"
+		 *
 		 * @param x
 		 * @param y
 		 */
@@ -165,13 +171,11 @@ var AdguardAssistant = function () {
 				newPositionY = 0;
 			}
 
-			iframeJ.css({
-				left: newPositionX + 'px',
-				top: newPositionY + 'px'
-			});
+			iframeJ.css('left', newPositionX + 'px');
+			iframeJ.css('top', newPositionY + 'px');
 		};
 
-		var cancelIfameSelection = function (e) {
+		var cancelIFrameSelection = function (e) {
 			e.preventDefault();
 			e.stopPropagation();
 		};
@@ -184,16 +188,19 @@ var AdguardAssistant = function () {
 		var onMouseDown = function (e) {
 
 			var eventPosition = getEventPosition(e);
-			offset.x = iframeJ.offset().left - $(window).scrollLeft() + dragHandle.position().left - eventPosition.x;
-			offset.y = iframeJ.offset().top - $(window).scrollTop() + dragHandle.position().top - eventPosition.y;
+			var dragHandleEl = dragHandle.get(0);
+			var rect = iframeJ.get(0).getBoundingClientRect();
+
+			offset.x = rect.left + dragHandleEl.offsetLeft - eventPosition.x;
+			offset.y = rect.top + dragHandleEl.offsetTop - eventPosition.y;
 
 			$iframeDocument.on('mousemove', onMouseMove);
-			$iframeDocument.on('selectstart', cancelIfameSelection);
+			$iframeDocument.on('selectstart', cancelIFrameSelection);
 		};
 
 		var onMouseUp = function () {
 			$iframeDocument.off('mousemove', onMouseMove);
-			$iframeDocument.off('selectstart', cancelIfameSelection);
+			$iframeDocument.off('selectstart', cancelIFrameSelection);
 		};
 
 		dragHandle.on('mousedown', onMouseDown);
