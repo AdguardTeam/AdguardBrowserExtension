@@ -1,10 +1,10 @@
 ! Title: Experimental filter
-! Version: 1.0.24.24
+! Version: 1.0.24.45
 ! Name: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: Experimental filter
 ! DescriptionEn: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! TimeUpdated: 2016-02-27T21:00:21.903+03:00
+! TimeUpdated: 2016-03-16T21:00:20.699+03:00
 ! Title: Adguard Experimental Filter
 !
 ! Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
@@ -214,9 +214,13 @@ antiblock.org#%#AG_onLoad(function() { AG_AntiAntiBlock(); });
 !------------------------------------------------------------------------
 !
 !------------------ START: Advertising Annoyances ------------------
+! Remains of ads and dangerous rules
 !
 ! Dangerous "nofollow" links blocking rule
 ~sobytiya.info,~hcdinamo.by,~mixupload.com,~bloknot-krasnodar.ru,~bloknot-stavropol.ru,~edp.kiev.ua,~gamegpu.ru,~joomla.ru,~keddr.com,~allkey.org,~wowjp.net,~bucwar.ru,~fsm-portal.net,~crox.ws,~softek.ucoz.ru,~dfm.ru,~hitfm.ru,~montecarlo.ru,~maximum.ru,~rusradio.ru,~metallurg.ru,~onlinefilmu.ru,~forum.ixbt.com,~igromania.ru,~yarportal.ru,~maxthon.org.ru,~firstvds.ru,~smotretfilmy.ru,~speedy-warez.ru,~blogig.org,~respecta.net,~moviez.kz,~games-java.ru,~rulit.net,~art-on.ru,~kinoshka-new.ru,~forum.esetnod32.ru,~kahai.ru,~planetaua.net,~capa.me,~delo.ua,~uznayvse.ru,~gamai.ru,~bloknot-rostov.ru,~car72.ru,~gradmart.ru,~f1comp.ru,~bukvaved.biz##noindex a[rel="nofollow"]>img
+!
+!------- Google Chrome banner in IE -------------------
+google.ae,google.at,google.be,google.by,google.ca,google.ch,google.cl,google.cn,google.co.id,google.co.in,google.co.jp,google.co.th,google.co.uk,google.co.ve,google.co.za,google.com,google.com.ar,google.com.bd,google.com.br,google.com.co,google.com.eg,google.com.hk,google.com.mx,google.com.my,google.com.ng,google.com.pe,google.com.ph,google.com.pk,google.com.sa,google.com.sg,google.com.tr,google.com.tw,google.com.ua,google.com.vn,google.de,google.dk,google.ee,google.es,google.fr,google.gr,google.hu,google.ie,google.it,google.nl,google.no,google.pl,google.pt,google.ro,google.rs,google.ru,google.se,google.sk,google.tn##div[aria-label="promo"]
 !
 !--- START: Google Chrome banner in non-IE browsers ---
 translate.google.ru,translate.google.com##body > div[ng-non-bindable] > div[class^="gb_sc"]
@@ -232,6 +236,19 @@ yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by##.universal-stripe-wrapper
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by##.serp-adv__all > a[href^="http://direct.yandex.ru/"]
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by##.z-default-search
 !
+! http://forum.adguard.com/showthread.php?9614
+t-online.de##div[itemprop$="articleBody"] > div[id$="Ttub1"]
+! http://forum.adguard.com/showthread.php?9560
+comss.ru##body > [style="padding-top:12px;"]
+! http://forum.adguard.com/showthread.php?9540
+avxhome.se,avxhome.in##.news > center > div > b
+avxhome.se,avxhome.in##.col-md-12 > center > b
+! http://forum.adguard.com/showthread.php?9480
+zdnet.de##div[id$="articleContent"] > div[class$="highlight clearfix"]
+! http://forum.adguard.com/showthread.php?9439
+reich-der-spiele.de##section[class$="region region-sidebar-second column sidebar"]
+! http://forum.adguard.com/showthread.php?9446
+kidsweb.de##div[align="center"] > span[class$="Stil36"]
 ! http://forum.adguard.com/showthread.php?8438
 free-torrents.org,free-torrent.org##table[class="attach bordered med"] td[width="15%"] > div[id][class]
 ! http://forum.adguard.com/showthread.php?8654
@@ -285,8 +302,8 @@ f-picture.net,radical-foto.ru,radikal.cc,radikal.ru##.site-footer a[target="_bla
 di.fm##.secondary > .bare
 ! http://forum.adguard.com/showthread.php?6154
 business-gazeta.ru##.left-colum > div.box > div.ctext.ctext_2
-! pikabu.ru - top banner
-pikabu.ru##table#inner_wrap_3500685
+! http://forum.adguard.com/showthread.php?9444
+weser-kurier.de##table[class$="main-content adobj publication"]
 ! film.ru - удаление отступа сверху
 film.ru##body > div[style="height: 269px;"]
 ! oper.ru - удаление пустоты от баннеров
@@ -446,6 +463,16 @@ imagebam.com###sponsor-modal
 !------------------ Anti-adblock messages --------------------------
 !---------- which does not affect the functioning of site ----------
 !-------------------------------------------------------------------
+urbia.de###project-sdi
+speedtest.net#%#window.checkState = function() {};
+megamozg.ru##.js-ad_sticky
+megamozg.ru##div[class^="js-ad_sticky"]
+@@||9now.com.au^$generichide
+digitalpoint.com##.importantMessage
+sport365.live###popup-wrapper
+@@||maclife.de/sites/all/modules/custom/tec_common/js/adframe.js
+@@||clipiki.ru/js/advert.js
+weser-kurier.de##div[class^="webBanner"]
 @@||cdn.miped.ru/templates/miped/js/advertisement.js
 medicalxpress.com#%#window.blockAdBlock = function() {};
 creativeuncut.com###g_abox
@@ -460,6 +487,7 @@ techxplore.com#%#window.blockAdBlock = function() {};
 demiart.ru##.sys > div[style]
 101.ru#@##advert-1
 101.ru#@##.advert-1
+professorweb.ru#@#.text_ads
 citysmile.org##.plusplus-show
 ||flexinetsolutions.com/cdn/js/detectab.js$domain=damngeeky.com
 phys.org#%#window.blockAdBlock = function() {};
@@ -506,6 +534,19 @@ reactor.cc,joyreactor.cc#%#Object.defineProperty(window, 'CTRManager', { get: fu
 !-------------------------------------------------------------------
 !
 !----------- START: EU cookie notifications -----------
+!
+wykop.pl##div[class$="cookie"]
+wykop.pl#$#.type-permanent+#nav { top: 0px!important; }
+!
+shinden.pl###cookie-bar
+investing.com###sideNotificationZone
+###cookie-information-wrapper
+dfiles.ru##.cookie_popup
+computerbild.de###cookienotifier
+4players.de###cookpol
+netzwelt.de##div[class="ckch idx"]
+##.cookie-notification:not(body)
+micky-maus.de###cookiebar
 unbiased.co.uk##.cookie-popup
 mediaset.it###cookieAdv
 chefkoch.de###ck-cookie-statement
@@ -536,6 +577,7 @@ kia.ru##.notif_cookie_panel
 !----------- END: EU cookie notifications -------------
 !
 !----------- START: Annoying popups -------------------
+nitroflare.com##div[id^="superbox-"]
 duzcepostasi.com##div[id^="fancybox"]
 m.gd.ru##.megaShadow
 ||mediaset.it/include/js/attivaPopUpEstero.js
@@ -543,6 +585,8 @@ korayspor.com##.sp-fancybox-wrap
 ||malerex.ru^$third-party
 45.ru,93.ru,86.ru,56.ru,164.ru,mgorsk.ru,62.ru,48.ru,kbs.ru,26.ru,tolyatty.ru,178.ru,89.ru,proizhevsk.ru,51.ru,irkutsk.ru,sochi1.ru,70.ru,provoronezh.ru,71.ru,154.ru,sterlitamak1.ru,ekat.ru,42.ru,43.ru,14.ru,68.ru,75.ru,35.ru,omsk1.ru,53.ru,60.ru,29.ru,76.ru,116.ru,v1.ru,ufa1.ru,161.ru,74.ru,72.ru,63.ru,59.ru###popup_container
 45.ru,93.ru,86.ru,56.ru,164.ru,mgorsk.ru,62.ru,48.ru,kbs.ru,26.ru,tolyatty.ru,178.ru,89.ru,proizhevsk.ru,51.ru,irkutsk.ru,sochi1.ru,70.ru,provoronezh.ru,71.ru,154.ru,sterlitamak1.ru,ekat.ru,42.ru,43.ru,14.ru,68.ru,75.ru,35.ru,omsk1.ru,53.ru,60.ru,29.ru,76.ru,116.ru,v1.ru,ufa1.ru,161.ru,74.ru,72.ru,63.ru,59.ru###fade
+! nitroflare.com - popup with self promotion
+nitroflare.com##div[id^="superbox-"]
 ! lifenews.ru - всплывающее сообщение с предложениями
 lifenews.ru##html > body > div.lifecorr-banner
 ! 0lik.ru - всплывающее сообщение с предложениями
@@ -701,6 +745,9 @@ forum.gamezone.de#%#AG_onLoad(function() { $('dl[class*="userinfo_extra"]').clos
 !------------------------------------------------------
 !---------------------- Some fixes --------------------
 !------------------------------------------------------
+! http://forum.adguard.com/showthread.php?9454
+! Skip timer
+adf.ly#%#Object.defineProperty(window, 'countdown', { get: function() { return -1; } });
 ! gboxes.com - disable timeout for showing buttons
 gboxes.com#%#AG_onLoad(function() { func1(); });
 ! lostfilm.tv - remove background with logo, appeng logo to URL
@@ -769,6 +816,7 @@ revclouds.com#%#AG_onLoad(function() {document.getElementById("tick-dwn").click(
 ||damoh.tv4play.se$replace=/"enabled": true\,/"enabled": false\,/i
 ! http://forum.adguard.com/showthread.php?8906
 ||onceux.unicornmedia.com$replace=/(<VAST(.|\s)*?>)(.|\s)*<\/VAST>/\$1<\/VAST>/,domain=gamespot.com
+||v2.gamespot.com/now/ads/vmap/adaptive$replace=/(<VAST(.|\s)*?>)(.|\s)*<\/VAST>/\$1<\/VAST>/
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1344
 ||schneevonmorgen.com.s3.amazonaws.com/*config.json$replace=/"enabled": true\,/"enabled": false\,/i,domain=rtl.de
 ! http://forum.adguard.com/showthread.php?8784
@@ -801,3 +849,5 @@ revclouds.com#%#AG_onLoad(function() {document.getElementById("tick-dwn").click(
 !
 @@||cdn.videoplaza.tv/contrib/no-vg/svm/homadConfigVideoplaza-vgtv.json^$domain=vgtv.no
 ||cdn.videoplaza.tv/contrib/no-vg/svm/homadConfigVideoplaza-vgtv.json$replace=/"enabled": true\,/"enabled": false\,/i,domain=vgtv.no
+!
+||a*.dot*.org/f*h.js$replace=/FJCaller/FJCaller2/

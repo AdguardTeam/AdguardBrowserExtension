@@ -1,10 +1,10 @@
 ! Title: Social media filter
-! Version: 1.0.8.74
+! Version: 1.0.8.98
 ! Name: Social media filter
 ! Description: A filter for social media widgets ("Like" buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2016-03-01T15:57:56.897+03:00
+! TimeUpdated: 2016-03-17T18:43:26.413+03:00
 ! Title: Adguard Social Media Filter
 !
 ! If you do not like numerous «Like» and «Tweet» buttons on all the popular websites on the Internet,
@@ -29,6 +29,7 @@
 !
 ! This section contains rules for common trackers/buttons
 !
+||addnow.com/widget/$third-party
 ||addthis.com^$third-party,domain=~civilization.com|~imgur.com|~tscan.mg
 ||addthiscdn.com^$third-party
 ||addtoany.com/share$third-party
@@ -95,6 +96,7 @@
 ||pinterest.com/v1/urls/count.json$third-party
 ||platform.linkedin.com^$third-party
 ||platform.stumbleupon.com/*/widgets.js$third-party
+||platform.twitter.com/js/button.$third-party
 ||platform.twitter.com/oct.js$third-party
 ||platform.twitter.com/widgets/follow_button$third-party
 ||platform.twitter.com/widgets/tweet_button$third-party
@@ -146,8 +148,9 @@
 ||woobox.com^$third-party
 ||x.pluso.ru^$third-party
 ||xing-share.com^$third-party
-||yandex.st/share/share.js$domain=24auto.ru|~calculatewater.ru|~novoeradio.by|~pikucha.ru|~realty.dmir.ru|~yandex.com|~yandex.ru|~yandex.ua
+||yandex.st/share/share.js$domain=~24auto.ru|~calculatewater.ru|~novoeradio.by|~pikucha.ru|~realty.dmir.ru|~yandex.com|~yandex.ru|~yandex.ua
 ||yastatic.net/share/$third-party,domain=~avtodispetcher.ru|~yandex.by|~yandex.kz|~yandex.ru|~yandex.ua
+||yastatic.net/share2/$third-party,domain=~yandex.by|~yandex.kz|~yandex.ru|~yandex.ua
 ||youtube.com/subscribe_widget$third-party
 !-------------------------------------------------------------------------------!
 !-------------- Unsorted urls  -------------------------------------------------!
@@ -189,7 +192,7 @@
 /share_button.png
 /shareaholic.js
 /sharebox.min.js
-/sharedaddy/sharing.js
+/sharedaddy/sharing.js$domain=~quoidenoeuf.com
 /sharing_buttons.js
 /social-likes.min.js
 /social_networks.js
@@ -262,7 +265,7 @@ softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 !
 ! Contains rules for specific web sites
 !
-sueddeutshe.de##li[onclick^="window.open('https://www.facebook.com/sharer/sharer.php"]
+psarips.com##.sharrre-container
 imageshack.us###Actions
 meduza.io###DailySubscriber
 washingtonpost.com###NN-module-rr
@@ -303,10 +306,12 @@ pikabu.ru###facebook_page_block_lenta
 habrahabr.ru###facebook_reader_wrapper
 softwares-serials.in###facebook_right
 vioyun.com###facebookpopup-fanback
+fulldiziizleyelimm.com###faceuyari
 fulloyunindirsene.com###fadeinbox
 for-ua.com,idevice.ro,majorgeeks.com,ridus.ru,tweaktown.com###fanback
 mackolik.com###fancybox-close
 mackolik.com###fancybox-frame
+cinema-hd.ru###fancybox-overlay
 fishki.net###fb-scroll-popup
 therussiantimes.com###fb_widget
 huffingtonpost.com###float_tracker
@@ -351,6 +356,7 @@ cafemom.com###return_container
 aliexpress.com###ru-sns
 xperia-droid.ru###sb_popup
 delfi.lv###sbookmarks-left
+regionews.sumy.ua###shadowblock
 geek.com,greasyfork.org,hackworthy.blogspot.de,wunderground.com###share
 rantlifestyle.com###share-above-desktop
 rantlifestyle.com###share-below-desktop
@@ -404,6 +410,8 @@ rsn.ru###vk_groups_new
 3dnews.ru###vk_right
 xlivetv.sx###vkjoin
 socportal.info###vspliv_w
+gotennis.ru###vv_moduleFacebook_overlay
+mafia-daily.net,mydivision.net###wbounce-modal
 lifenews.ru###widget-socials
 bugaga.ru###z_social
 bugaga.ru###z_socialBg
@@ -428,8 +436,8 @@ bad-good.ru##.addtoany
 kp.ru##.all_partners
 dni.ru##.app big-vkontakte
 vz.ru##.append-other-applecations > .append
-film.ru##.arcticmodal-container
-film.ru##.arcticmodal-overlay
+film.ru,megaserial.net##.arcticmodal-container
+film.ru,megaserial.net##.arcticmodal-overlay
 idnes.cz##.art-sharing
 newsweek.com##.article--share
 forbes.com##.article-fbs-sharing
@@ -525,6 +533,7 @@ apparat.cc##.fb_like_wrap
 sport.de##.fblikebox
 ok.ru##.feed-list > div[class="feed"][data-log-click*="promo"]
 straitstimes.com##.field-name-social-media-buttons-bottom
+regionews.sumy.ua##.firstblockfb
 mynet.com##.fix-share
 travelask.ru##.fixed-like-box
 dailytekk.com##.flare
@@ -589,6 +598,7 @@ formulalubvi.com##.mobile-facebook
 tagesschau.de##.modSharing
 forums.macrumors.com##.mr_shareLabel
 moskva.fm##.msk-well-social
+mafia-daily.net,mydivision.net##.naked-social-share
 disk.yandex.com.tr,disk.yandex.ru,disk.yandex.ua##.nb-share
 filehorse.com##.networking
 sporx.com##.news-share
@@ -626,6 +636,7 @@ rabota.ngs.ru##.ra-side__social
 screen.yahoo.com##.rapidnofollow
 travelask.ru##.rats
 memes.genius.com##.reblog_button
+dailymail.co.uk##.related-carousel > .fb
 utro.ru##.repost-container
 reuters.com##.reuters-share
 glavpost.com##.right-slider-fb
@@ -648,12 +659,14 @@ openload.co##.share-icons
 the-village.ru##.share-images
 economist.com##.share-inline-footer-reddit
 skidkaonline.ru##.share-item
+nytimes.com##.share-list-container
 css-tricks.com##.share-on-link
 css-tricks.com##.share-on-title
 sonymobile.com##.share-post
 creativemarket.com##.share-stuff
 hearthzone.ru##.share-top
 slashdot.org##.share.tappable
+mtv.com##.shareActions
 videoben.com##.shareBig
 askmen.com##.shareBlock
 kp.ru##.shareBox > .shared
@@ -677,6 +690,7 @@ msn.com##.sharingtb
 aksam.com.tr##.sharingwrap
 droid-life.com##.sharrre
 forum.xda-developers.com##.showthread-social
+mspoweruser.com##.shunno-share-block
 mkyong.com##.sidebar-fb-container
 rozetka.com.ua##.sidebar-widgets
 freshideen.com##.single-social
@@ -829,7 +843,9 @@ adibudi.com##div.buttons
 elitedaily.com##div[class*="article-shar"]
 samara24.ru##div[class*="share-button"]
 myscienceacademy.org##div[class*="sticky-social"]
+tune.com##div[class*="us_share_buttons"]
 yahoo.com##div[class^="article-aft-share-buttons-"]
+cinema-hd.ru##div[class^="fancybox-wrap"]
 travelask.ru##div[class^="post-shares"]
 mobiltelefon.ru##div[class^="social_like_btns"]
 yandex.ru##div[class^="ya-share"]
@@ -856,12 +872,14 @@ huffingtonpost.co.uk##li.twitter
 vivathematadors.com##li[class="m-site-nav__social-btn"]
 sueddeutsche.de##li[data-linktrack^="onclick.sharingbar"]
 neowin.net##li[id^="article-interact-"]
+sueddeutshe.de##li[onclick^="window.open('https://www.facebook.com/sharer/sharer.php"]
 plus-soft.ru##noindex > center
 progorod43.ru##noindex > div.Like
 aif.ru##section[class="clearfix soc_wid"]
 glav.su##span.forumMessagesListMessageShareButton
 e1.ru##span.sharing-data-placeholder
 ngs.ru##span[class="share_button_wrapper"]
+latimes.com##span[data-role="socialshare_share"]
 fotostrana.ru##span[onclick^="newCatalogJS.appShare."]
 povarenok.ru##table[class="haier_share"]
 kinopoisk.ru##ul[class="addTo addToBottom"]
@@ -1477,6 +1495,7 @@ livejournal.com##.b-ljtimes-wrapper
 ~twitthis.com##a[href^="http://twitthis.com/twit?url"]
 ~vk.com##a[href^="http://vk.com/share.php"]
 ~vk.com,~vkontakte.ru##a[href^="http://vkontakte.ru/share.php"]
+~yandex.by,~yandex.com,~yandex.kz,~yandex.ru,~yandex.ua##a[href^="http://wow.ya.ru/posts_share_link.xml"]
 ~digg.com##a[href^="http://www.digg.com/submit?"]
 ~facebook.com##a[href^="http://www.facebook.com/share.php?u="]
 ~facebook.com##a[href^="http://www.facebook.com/sharer.php?"]
@@ -1537,6 +1556,10 @@ bitiworld.com##a[title="share on twitter"]
 !
 ! Section fixing issues caused by social filter
 !
+! http://forum.adguard.com/showthread.php?9586
+@@||miuipro.ru/wp-content/plugins/easy-vkontakte-connect/js/social-likes.min.js$domain=miuipro.ru
+! tune.com - fixing broken navigation bar
+@@||tune.com/blog/wp-content/plugins/ultimate-social-deux/public/assets/css/style.css
 ! paraknig.ru
 @@/share42.js$domain=paraknig.ru
 ! Fixing authorization via vk.com

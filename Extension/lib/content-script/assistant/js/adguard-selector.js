@@ -289,7 +289,7 @@ var AdguardSelectorLib = (function (api, $) {
 
             var placeHolder = $('#' + id).get(0);
             if (placeHolder) {
-                placeHolder.outherHTML = current.outherHTML;
+                placeHolder.outerHTML = current.outerHTML;
             }
         }
 
@@ -316,7 +316,7 @@ var AdguardSelectorLib = (function (api, $) {
                 var id = PLACEHOLDER_PREFIX + i;
 
                 placeHolder.setAttribute("id", id);
-                current.outerHTML = placeHolder.outherHTML;
+                current.outerHTML = placeHolder.outerHTML;
                 $('#' + id).on('click', function (e) {
                     e.preventDefault();
 

@@ -1,3 +1,4 @@
+/* global require, exports */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -14,7 +15,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 var {components, Cu, Ci, Cc} = require('chrome');
 var sdkPathFor = require('sdk/system').pathFor;
 var sdkFile = require('sdk/io/file');
@@ -40,29 +40,45 @@ var FS = exports.FS = {
 
     readFromFile: function (filename, callback) {
 
-        var filePath = FileUtils.getFile(this.PROFILE_DIR, [this.ADGUARD_DIR, filename]);
-        if (!filePath.exists() || filePath.fileSize == 0) {
-            callback(null, []);
-            return;
-        }
-        NetUtil.asyncFetch(filePath, function (inputStream, status) {
-            if (components.isSuccessCode(status)) {
-                try {
-                    var data = NetUtil.readInputStreamToString(inputStream, inputStream.available());
-                    data = converter.ConvertToUnicode(data);
-                    var lines = data.split(/[\r\n]+/);
-                    if (!data) {
-                        callback(null, []);
-                        return;
-                    }
-                    callback(null, lines);
-                } catch (ex) {
-                    callback(ex);
-                }
-            } else {
-                callback(status);
+        try {
+            var filePath = FileUtils.getFile(this.PROFILE_DIR, [this.ADGUARD_DIR, filename]);
+            if (!filePath.exists() || filePath.fileSize === 0) {
+                callback(null, []);
+                return;
             }
-        });
+            var fetchCallback = function (inputStream, status) {
+                if (components.isSuccessCode(status)) {
+                    try {
+                        var data = NetUtil.readInputStreamToString(inputStream, inputStream.available());
+                        data = converter.ConvertToUnicode(data);
+                        var lines = data.split(/[\r\n]+/);
+                        if (!data) {
+                            callback(null, []);
+                            return;
+                        }
+                        callback(null, lines);
+                    } catch (ex) {
+                        callback(ex);
+                    }
+                } else {
+                    callback(status);
+                }
+            };
+            
+            try {
+                NetUtil.asyncFetch(filePath, fetchCallback);
+            } catch (ex) {
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/199                
+                var aSource = {
+                    uri: filePath,
+                    loadUsingSystemPrincipal: true
+                };
+                
+                NetUtil.asyncFetch(aSource, fetchCallback);                
+            }
+        } catch (ex) {
+            callback(ex);
+        }
     },
 
     writeToFile: function (filename, data, callback) {
@@ -82,7 +98,7 @@ var FS = exports.FS = {
             });
 
         } catch (ex) {
-            Log.error("Error read file {0}, cause: {1}", filename, ex);
+            Log.error("Error writing to file {0}, cause: {1}", filename, ex);
             callback(ex);
         }
     },
@@ -163,9 +179,9 @@ var FS = exports.FS = {
         return ioService.newFileURI(styleFile).QueryInterface(Ci.nsIFileURL);
     },
 
-    removeFile: function (path, successCallback, errorCallback) {
+    removeFile: function (path, successCallback) {
         var file = FileUtils.getFile(this.PROFILE_DIR, [this.ADGUARD_DIR, path]);
-        if (!file.exists() || file.fileSize == 0) {
+        if (!file.exists() || file.fileSize === 0) {
             successCallback();
             return;
         }
