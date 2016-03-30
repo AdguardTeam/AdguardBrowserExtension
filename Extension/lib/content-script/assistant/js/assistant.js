@@ -224,24 +224,22 @@ var AdguardAssistant = function ($) {
 	var createIframe = function (width, height, dfd) {
 		var viewPort = getViewport();
 		var positions = getPositionsForIframe(constants.iframe.topOffset, viewPort, height, width);
-		var cssStyle = {
-			width: width,
-			height: height,
-			position: 'fixed',
-			left: positions.left,
-			top: positions.top
-		};
-		//for src
-		var iframe = $('<iframe />').attr({
-			id: settings.iframeId,
-			'class': 'sg_ignore adg-view-important',
-			frameBorder: 0,
-			allowTransparency: 'true'
-		}).css(cssStyle);
+
+		var iframe = document.createElement('iframe');
+		iframe.setAttribute('id', settings.iframeId);
+		iframe.setAttribute('class', 'sg_ignore adg-view-important');
+		iframe.setAttribute('frameBorder', '0');
+		iframe.setAttribute('allowTransparency', 'true');
+
+		iframe.style.width = width + 'px';
+		iframe.style.height = height + 'px';
+		iframe.style.position = 'fixed';
+		iframe.style.left = positions.left + 'px';
+		iframe.style.top = positions.top + 'px';
 
 		// Wait for iframe load and then apply styles
-		iframe.on('load', loadDefaultScriptsAndStyles.bind(null, iframe, dfd));
-		iframe.appendTo('body');
+		$(iframe).on('load', loadDefaultScriptsAndStyles.bind(null, iframe, dfd));
+		document.body.appendChild(iframe);
 
 		return iframe;
 	};
@@ -250,7 +248,7 @@ var AdguardAssistant = function ($) {
 
 		// Chrome doesn't inject scripts in empty iframe
 		try {
-			var doc = iframe[0].contentDocument;
+			var doc = iframe.contentDocument;
 			doc.open();
 			doc.write("<html><head></head></html>");
 			doc.close();
@@ -287,12 +285,8 @@ var AdguardAssistant = function ($) {
 		});
 	};
 
-	var findIframe = function (iframeId) {
-		if (iframeId) {
-			return $('#' + iframeId);
-		} else {
-			return $('#' + settings.iframeId);
-		}
+	var findIframe = function () {
+		return $('#' + settings.iframeId);
 	};
 
 	var findInIframe = function (selector) {
@@ -335,7 +329,7 @@ var AdguardAssistant = function ($) {
 		}
 
 		var dfd = $.Deferred();
-		var iframe = createIframe(width, height, dfd);
+		var iframe = $(createIframe(width, height, dfd));
 		$.when(dfd).done(appendContent);
 	};
 
