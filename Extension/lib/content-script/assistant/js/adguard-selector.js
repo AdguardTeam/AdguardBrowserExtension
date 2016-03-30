@@ -54,8 +54,8 @@ var AdguardSelectorLib = (function (api, $) {
     var isIOS = (navigator.platform === 'iPad' || navigator.platform === 'iPhone');
 
     /**
-    We need use touch event model, because exists HITROZHOPYE web designers
-    */
+     We need use touch event model, because exists HITROZHOPYE web designers
+     */
     var ignoreTouchEvent = 0;
     /*******************************************/
 
@@ -210,80 +210,80 @@ var AdguardSelectorLib = (function (api, $) {
      * @param element
      * @private
      */
-     var selectionRenderer = {
+    var selectionRenderer = {
 
-         /**
-            Preparing renderer.
+        /**
+         Preparing renderer.
          */
-         init: function(){
+        init: function () {
 
-             if (!borderTop) {
-                 var width = px(BORDER_WIDTH);
+            if (!borderTop) {
+                var width = px(BORDER_WIDTH);
 
-                 borderTop = $('<div/>').addClass(BORDER_CLASS).css('height', width).hide()
-                     .on("click", sgMousedownHandler);
-                 borderBottom = $('<div/>').addClass(BORDER_CLASS).addClass('sg_bottom_border')
-                     .css('height', px(BORDER_WIDTH + 6)).hide()
-                     .on("click", sgMousedownHandler);
-                 borderLeft = $('<div/>').addClass(BORDER_CLASS).css('width', width).hide()
-                     .on("click", sgMousedownHandler);
-                 borderRight = $('<div/>').addClass(BORDER_CLASS).css('width', width).hide()
-                     .on("click", sgMousedownHandler);
+                borderTop = $('<div/>').addClass(BORDER_CLASS).css('height', width).hide()
+                    .on("click", sgMousedownHandler);
+                borderBottom = $('<div/>').addClass(BORDER_CLASS).addClass('sg_bottom_border')
+                    .css('height', px(BORDER_WIDTH + 6)).hide()
+                    .on("click", sgMousedownHandler);
+                borderLeft = $('<div/>').addClass(BORDER_CLASS).css('width', width).hide()
+                    .on("click", sgMousedownHandler);
+                borderRight = $('<div/>').addClass(BORDER_CLASS).css('width', width).hide()
+                    .on("click", sgMousedownHandler);
 
-                 addBorderToDom();
-             }
-         },
+                addBorderToDom();
+            }
+        },
 
-         /**
-            Clearing DOM and so on.
+        /**
+         Clearing DOM and so on.
          */
-         finalize: function(){
+        finalize: function () {
 
-             removeBorderFromDom();
-         },
+            removeBorderFromDom();
+        },
 
-         add: function (element) {
-             this.remove();
+        add: function (element) {
+            this.remove();
 
-             if (!element) {
-                 return;
-             }
+            if (!element) {
+                return;
+            }
 
-             var p = getOffsetExtended(element);
+            var p = getOffsetExtended(element);
 
-             var top = p.top;
-             var left = p.left;
-             var width = p.outerWidth;
-             var height = p.outerHeight;
+            var top = p.top;
+            var left = p.left;
+            var width = p.outerWidth;
+            var height = p.outerHeight;
 
-             borderTop.css('width', px(width + BORDER_PADDING * 2 + BORDER_WIDTH * 2)).
-             css('top', px(top - BORDER_WIDTH - BORDER_PADDING)).
-             css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
-             borderBottom.css('width', px(width + BORDER_PADDING * 2 + BORDER_WIDTH * 2 - 5)).
-             css('top', px(top + height + BORDER_PADDING)).
-             css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
-             borderLeft.css('height', px(height + BORDER_PADDING * 2)).
-             css('top', px(top - BORDER_PADDING)).
-             css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
-             borderRight.css('height', px(height + BORDER_PADDING * 2)).
-             css('top', px(top - BORDER_PADDING)).
-             css('left', px(left + width + BORDER_PADDING));
+            borderTop.css('width', px(width + BORDER_PADDING * 2 + BORDER_WIDTH * 2)).
+                css('top', px(top - BORDER_WIDTH - BORDER_PADDING)).
+                css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
+            borderBottom.css('width', px(width + BORDER_PADDING * 2 + BORDER_WIDTH * 2 - 5)).
+                css('top', px(top + height + BORDER_PADDING)).
+                css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
+            borderLeft.css('height', px(height + BORDER_PADDING * 2)).
+                css('top', px(top - BORDER_PADDING)).
+                css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
+            borderRight.css('height', px(height + BORDER_PADDING * 2)).
+                css('top', px(top - BORDER_PADDING)).
+                css('left', px(left + width + BORDER_PADDING));
 
-             borderBottom.get(0).textContent = getTagPath(element);
-             borderRight.get(0).target_elem = borderLeft.get(0).target_elem = borderTop.get(0).target_elem = borderBottom.get(0).target_elem = element;
+            borderBottom.get(0).textContent = getTagPath(element);
+            borderRight.get(0).target_elem = borderLeft.get(0).target_elem = borderTop.get(0).target_elem = borderBottom.get(0).target_elem = element;
 
-             showBorders();
-         },
+            showBorders();
+        },
 
-         remove: function () {
-             if (borderTop && borderBottom && borderLeft && borderRight) {
-                 borderTop.hide();
-                 borderBottom.hide();
-                 borderLeft.hide();
-                 borderRight.hide();
-             }
-         }
-     };
+        remove: function () {
+            if (borderTop && borderBottom && borderLeft && borderRight) {
+                borderTop.hide();
+                borderBottom.hide();
+                borderLeft.hide();
+                borderRight.hide();
+            }
+        }
+    };
 
     var linkHelper = document.createElement('a');
     var getHost = function (url) {
@@ -350,18 +350,16 @@ var AdguardSelectorLib = (function (api, $) {
     };
 
     var makeIFrameAndEmbededSelector = function () {
-        placeholdedElements = $('iframe:not(.' + IGNORED_CLASS + '),embed,object').filter(function(elem) {
+        placeholdedElements = $('iframe:not(.' + IGNORED_CLASS + '),embed,object').filter(function (elem) {
             return elem.style["display"] != "none";
         });
 
         var elements = placeholdedElements;
         for (var i = 0; i < elements.length; i++) {
             var current = elements[i];
-            (function(current){
+            (function (current) {
                 var placeHolder = makePlaceholderImage(current);
-                var id = PLACEHOLDER_PREFIX + i;
-
-                placeHolder.id = id;
+                placeHolder.id = PLACEHOLDER_PREFIX + i;
 
                 var parent = current.parentNode;
                 if (parent) {
@@ -370,15 +368,14 @@ var AdguardSelectorLib = (function (api, $) {
 
                         $(placeHolder).on("gestureend", iosGestureEndHandler);
                         $(placeHolder).on("touchmove", iosTouchMoveHandler);
-                        $(placeHolder).on("touchend", function(e) {
+                        $(placeHolder).on("touchend", function (e) {
                             e.preventDefault();
                             if (needIgnoreTouchEvent()) {
                                 return true;
                             }
                             placeholderClick(current);
                         });
-                    }
-                    else{
+                    } else {
 
                         $(placeHolder).on('click', function (e) {
                             e.preventDefault();
@@ -485,48 +482,47 @@ var AdguardSelectorLib = (function (api, $) {
     };
 
     /********** iOS modifications ***************/
-    var iosElementSelectHandler = function(e){
+    var iosElementSelectHandler = function (e) {
 
-        sgMouseoverHandler.call(this,e);
-        sgMousedownHandler.call(this,e);
+        sgMouseoverHandler.call(this, e);
+        sgMousedownHandler.call(this, e);
     };
 
-    var needIgnoreTouchEvent = function(){
+    var needIgnoreTouchEvent = function () {
 
-        if(ignoreTouchEvent > 0){
+        if (ignoreTouchEvent > 0) {
 
-          ignoreTouchEvent--;
-          return true;
+            ignoreTouchEvent--;
+            return true;
         }
 
         return false;
-    }
-
-    var iosElementTouchendHandler = function(e){
-       e.stopPropagation();
-
-      if (needIgnoreTouchEvent()) {
-          return true;
-      }
-
-      iosElementSelectHandler.call(this, e);
-      return false;
     };
 
-    var iosPreventEventHandler = function(e){
+    var iosElementTouchendHandler = function (e) {
+        e.stopPropagation();
 
-      e.stopPropagation();
-      // e.preventDefault();
+        if (needIgnoreTouchEvent()) {
+            return true;
+        }
 
-      return false;
+        iosElementSelectHandler.call(this, e);
+        return false;
     };
 
-    var iosGestureEndHandler = function(e){
+    var iosPreventEventHandler = function (e) {
+        e.stopPropagation();
+        // e.preventDefault();
+
+        return false;
+    };
+
+    var iosGestureEndHandler = function (e) {
         ignoreTouchEvent = 2;
         return true;
     };
 
-    var iosTouchMoveHandler = function(e){
+    var iosTouchMoveHandler = function (e) {
         ignoreTouchEvent = 1;
         return true;
     };
@@ -539,14 +535,11 @@ var AdguardSelectorLib = (function (api, $) {
         var sgIgnore = $("body *:not(." + IGNORED_CLASS + ")");
 
         if (isIOS) {
-
             sgIgnore.on("gestureend", iosGestureEndHandler);
             sgIgnore.on("touchmove", iosTouchMoveHandler);
             sgIgnore.on("touchend", iosElementTouchendHandler);
             sgIgnore.on('touchstart', iosPreventEventHandler);
-        }
-        else {
-
+        } else {
             sgIgnore.on("mouseover", sgMouseoverHandler);
             sgIgnore.on("mouseout", sgMouseoutHandler);
             sgIgnore.on("click", sgMousedownHandler);
@@ -562,8 +555,7 @@ var AdguardSelectorLib = (function (api, $) {
             elements.off("touchmove", iosTouchMoveHandler);
             elements.off("touchend", iosElementTouchendHandler);
             elements.off('touchstart', iosPreventEventHandler);
-        }
-        else{
+        } else {
             elements.off("mouseover", sgMouseoverHandler);
             elements.off("mouseout", sgMouseoutHandler);
             elements.off("click", sgMousedownHandler);
@@ -628,12 +620,11 @@ var AdguardSelectorLib = (function (api, $) {
     };
 
     /**
-        Returns css class name.
-        If this class assigns to HTML element, then Adguard Selector ignores it.
-    */
-    api.ignoreClassName = function (){
-
-    return IGNORED_CLASS;
+     Returns css class name.
+     If this class assigns to HTML element, then Adguard Selector ignores it.
+     */
+    api.ignoreClassName = function () {
+        return IGNORED_CLASS;
     };
 
     return api;
