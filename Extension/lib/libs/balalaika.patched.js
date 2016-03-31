@@ -127,6 +127,27 @@ balalaika.fn.show = function () {
     return this;
 };
 
+balalaika.fn.remove = function () {
+    this.forEach(function (item) {
+        item.parentNode.removeChild(item);
+    });
+    return this;
+};
+
+balalaika.fn.text = function (v) {
+    this.forEach(function (item) {
+        item.textContent = v;
+    });
+    return this;
+};
+
+balalaika.fn.attr = function (k, v) {
+    this.forEach(function (item) {
+        item.setAttribute(k, v);
+    });
+    return this;
+};
+
 balalaika.fn.trigger = function (eventName, options) {
     this.forEach(function (item) {
         if (window.CustomEvent) {

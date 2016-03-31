@@ -134,7 +134,7 @@ var AdguardAssistant = function ($) {
 
 		var iframeJ = findIframe();
 		var dragHandle = findInIframe('#drag-handle');
-		var $iframeDocument = $(iframe.get(0).contentDocument);
+		var $iframeDocument = $(iframe.contentDocument);
 
 		var offset = Object.create(null);
 
@@ -290,7 +290,7 @@ var AdguardAssistant = function ($) {
 	};
 
 	var findInIframe = function (selector) {
-		return findIframe().contents().find(selector);
+		return $(findIframe().get(0).contentDocument.querySelectorAll(selector));
 	};
 
 	var runCallbacks = function (iframe, beforeUnhide, afterUnhide) {
@@ -322,31 +322,36 @@ var AdguardAssistant = function ($) {
 
 		var existIframe = findIframe();
 		if (existIframe.size() > 0) {
-			iframe = existIframe;
-			changeCurrentIframe(width, height, existIframe);
+			iframe = existIframe.get(0);
+			changeCurrentIframe(width, height, iframe);
 			appendContent();
 			return;
 		}
 
 		var dfd = $.Deferred();
-		var iframe = $(createIframe(width, height, dfd));
+		var iframe = createIframe(width, height, dfd);
 		$.when(dfd).done(appendContent);
 	};
 
-	var changeCurrentIframe = function (width, height, existIframe) {
-		existIframe.css({width: width, height: height});
+	var changeCurrentIframe = function (width, height, iframe) {
+		iframe.style.width = width + 'px';
+		iframe.style.height = height + 'px';
 	};
 
 	var appendContentToIframe = function (iframe, content) {
-		iframe.contents().find('body').children().remove();
-		iframe.contents().find('body').append(content);
+		var body = iframe.contentDocument.body;
+		for (var i = 0; i < body.children.length; i++) {
+			body.removeChild(body.children[i]);
+		}
+
+		body.appendChild(content.get(0));
 		findInIframe('body').addClass('adg-hide');
 	};
 
 
 	var bindClicks = function (iframe, events) {
 		$.each(events, function (key, value) {
-			iframe.contents().find(key).click(value);
+			$(iframe.contentDocument.querySelectorAll(key)).click(value);
 		});
 	};
 
@@ -410,12 +415,12 @@ var AdguardAssistant = function ($) {
 	};
 
 	var setFilterRuleInputText = function (ruleText) {
-		findInIframe('#filter-rule').val(ruleText);
+		findInIframe('#filter-rule').get(0).value = ruleText;
 	};
 
 	var localizeMenu = function () {
 		$.each(findInIframe("[i18n]"), function () {
-			var message = getMessage($(this).attr("i18n"));
+			var message = getMessage(this.getAttribute("i18n"));
 			I18nHelper.translateElement(this, message);
 		});
 	};
@@ -612,10 +617,7 @@ var AdguardAssistant = function ($) {
 			onSliderMove(elem);
 		};
 
-		var $document = findIframe().contents();
-		var $slider = $("#slider", $document);
-
-		SliderWidget.init($slider.get(0), {
+		SliderWidget.init(findInIframe("#slider").get(0), {
 			min: options.min,
 			max: options.max,
 			value: options.value,
@@ -749,7 +751,7 @@ var AdguardAssistant = function ($) {
 		onRulePreview();
 		settings.lastPreview = null;
 
-		var ruleText = findInIframe('#filter-rule').val();
+		var ruleText = findInIframe('#filter-rule').get(0).value;
 		contentPage.sendMessage({type: 'addUserRule', ruleText: ruleText}, function () {
 			closeAssistant();
 		});
