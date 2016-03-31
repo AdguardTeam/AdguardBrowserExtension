@@ -426,66 +426,78 @@ var AdguardAssistant = function ($) {
 	};
 
 	var createAdguardDetailedMenu = function () {
-		return $('<div>', {"class": 'main'})
-			.append($('<div>', {"class": 'close adg-close'}))
-			.append($('<div>', {"class": 'head'})
-				.append($('<div>', {id: 'head_title', "class": 'head_title', i18n: 'assistant_block_element'}))
-				.append($('<div>', {id: 'head_text', "class": 'head_text', i18n: 'assistant_block_element_explain'}))
-			).append($('<div>', {"class": 'content'})
-				.append($('<div>', {"class": 'element-rule'})
-					.append($('<div>', {"class": 'element-rule_text', i18n: 'assistant_slider_explain'}))
-					.append($('<div>', {"class": 'element-rule_slider'})
-						.append($('<div>', {id: 'slider', "class": 'adg-slide'})
-							.append($('<div>', {"class": 'adg-slide-clue-max', i18n: 'assistant_slider_min'}))
-							.append($('<div>', {"class": 'adg-slide-clue-min', i18n: 'assistant_slider_max'}))
-						)
-					).append($('<div>', {"class": 'element-rule_more'})
-						.append($('<span>', {id: 'ExtendedSettingsText', "class": 'element-rule_expand-link'})
-							.append($('<span>', {"class": 'element-rule_expand-link_txt', i18n: 'assistant_extended_settings'}))
-							.append($('<span>', {"class": 'element-rule_expand-link_arr'}))
-						)
-					).append($('<div>', {id: 'adv-settings', "class": 'element-rule_form'})
-						.append($('<div>', {"class": 'element-rule_form-cont'})
-							.append($('<div>', {id: 'one-domain-checkbox-block', "class": 'element-rule_fieldset'})
-								.append($('<input>', {id:'one-domain-checkbox', type:'checkbox', "class": 'form-ui-control'}))
-								.append($('<label>', {"class": 'form-ui', "for":'one-domain-checkbox'})
-									.append($('<span>', {"class": 'form-ui-txt', i18n: 'assistant_apply_rule_to_all_sites'}))
-								)
-							).append($('<div>', {id: 'block-by-url-checkbox-block', "class": 'element-rule_fieldset', style: 'display: none;'})
-								.append($('<input>', {id:'block-by-url-checkbox', type:'checkbox', "class": 'form-ui-control'}))
-								.append($('<label>', {"class": 'form-ui', "for":'block-by-url-checkbox'})
-									.append($('<span>', {"class": 'form-ui-txt', i18n: 'assistant_block_by_reference'}))
-								)
-							).append($('<div>', {id: 'block-similar-checkbox-block',"class": 'element-rule_fieldset', style: 'display: none;'})
-								.append($('<input>', {id:'block-similar-checkbox', type:'checkbox', "class": 'form-ui-control'}))
-								.append($('<label>', {"class": 'form-ui', "for":'block-similar-checkbox'})
-									.append($('<span>', {"class": 'form-ui-txt', i18n: 'assistant_block_similar'}))
-								)
-							).append($('<div>', {"class": 'element-rule_fieldset'})
-								.append($('<input>', {id: 'filter-rule', type: 'text', "class": 'form-control'}))
-							)
-						)
-					)
-				)
-			).append($('<div>', {"class": 'foot'})
-				.append($('<button>', {id: 'adg-cancel', "class":'btn btn-default', type:'button', i18n: 'assistant_another_element'}))
-				.append($('<div>', {"class": 'foot_action'})
-					.append($('<div>', {"class": 'foot_action_btn'})
-						.append($('<button>', {id: 'adg-preview', "class":'btn btn-primary', type:'button', i18n: 'assistant_preview'}))
-						.append($('<button>', {id: 'adg-accept', "class":'btn btn-cancel', type:'button', i18n: 'assistant_block'}))
-					)
-				)
-			);
+		return $('<div class="main">' +
+			'<div class="close adg-close"></div>' +
+			'<div class="head">' +
+			'	<div i18n="assistant_block_element" class="head_title" id="head_title"></div>' +
+			'	<div i18n="assistant_block_element_explain" class="head_text" id="head_text"></div>' +
+			'</div>' +
+			'<div class="content">' +
+			'	<div class="element-rule">' +
+			'		<div i18n="assistant_slider_explain" class="element-rule_text"></div>' +
+			'		<div class="element-rule_slider">' +
+			'			<div class="adg-slide" id="slider">' +
+			'				<div i18n="assistant_slider_min" class="adg-slide-clue-max"></div>' +
+			'				<div i18n="assistant_slider_max" class="adg-slide-clue-min"></div>' +
+			'			</div>' +
+			'		</div>' +
+			'		<div class="element-rule_more">' +
+			'			<span class="element-rule_expand-link" id="ExtendedSettingsText">' +
+			'				<span i18n="assistant_extended_settings" class="element-rule_expand-link_txt"></span>' +
+			'				<span class="element-rule_expand-link_arr"></span>' +
+			'			</span>' +
+			'		</div>' +
+			'		<div class="element-rule_form" id="adv-settings">' +
+			'			<div class="element-rule_form-cont">' +
+			'				<div class="element-rule_fieldset" id="one-domain-checkbox-block">' +
+			'					<input class="form-ui-control" id="one-domain-checkbox" type="checkbox">' +
+			'					<label for="one-domain-checkbox" class="form-ui">' +
+			'						<span i18n="assistant_apply_rule_to_all_sites" class="form-ui-txt"></span>' +
+			'					</label>' +
+			'				</div>' +
+			'				<div style="display: none;" class="element-rule_fieldset" id="block-by-url-checkbox-block">' +
+			'					<input class="form-ui-control" id="block-by-url-checkbox" type="checkbox">' +
+			'					<label for="block-by-url-checkbox" class="form-ui">' +
+			'						<span i18n="assistant_block_by_reference" class="form-ui-txt"></span>' +
+			'					</label>' +
+			'				</div>' +
+			'				<div style="display: none;" class="element-rule_fieldset" id="block-similar-checkbox-block">' +
+			'					<input class="form-ui-control" id="block-similar-checkbox" type="checkbox">' +
+			'					<label for="block-similar-checkbox" class="form-ui">' +
+			'						<span i18n="assistant_block_similar" class="form-ui-txt"></span>' +
+			'					</label>' +
+			'				</div>' +
+			'				<div class="element-rule_fieldset">' +
+			'					<input class="form-control" id="filter-rule" type="text">' +
+			'				</div>' +
+			'			</div>' +
+			'		</div>' +
+			'	</div>' +
+			'</div>' +
+			'<div class="foot">' +
+			'	<button i18n="assistant_another_element" type="button" class="btn btn-default" id="adg-cancel"></button>' +
+			'	<div class="foot_action">' +
+			'		<div class="foot_action_btn">' +
+			'			<button i18n="assistant_preview" type="button" class="btn btn-primary" id="adg-preview"></button>' +
+			'			<button i18n="assistant_block" type="button" class="btn btn-cancel" id="adg-accept"></button>' +
+			'		</div>' +
+			'	</div>' +
+			'</div>' +
+			'</div>');
+
 	};
 
 	var createAdguardSelectorMenu = function () {
-		return $('<div>', {"class": 'main sg_ignore'})
-			.append($('<div>', {id: 'close-button', "class": 'close adg-close'}))
-			.append($('<div>', {id: 'drag-handle', "class": 'head'})
-				.append($('<div>', {"class": 'head_title', i18n: 'assistant_select_element'}))
-				.append($('<div>', {"class": 'head_text', i18n: 'assistant_select_element_ext'})))
-			.append($('<div>', {"class": 'foot'})
-				.append($('<button>', {id: 'cancel-select-mode', "class":'btn btn-default', type:'button', i18n: 'assistant_select_element_cancel'})));
+		return $('<div class="main sg_ignore">' +
+			'<div class="close adg-close" id="close-button"></div>' +
+			'<div class="head" id="drag-handle">' +
+			'	<div i18n="assistant_select_element" class="head_title"></div>' +
+			'	<div i18n="assistant_select_element_ext" class="head_text"></div>' +
+			'</div>' +
+			'<div class="foot">' +
+			'	<button i18n="assistant_select_element_cancel" type="button" class="btn btn-default" id="cancel-select-mode"></button>' +
+			'</div>' +
+			'</div>');
 	};
 
 	var showDetailedMenu = function () {
