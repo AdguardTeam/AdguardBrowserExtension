@@ -552,23 +552,18 @@ var AdguardAssistant = function ($) {
 	};
 
 	var checkPosition = function () {
+		var winHeight = window.innerHeight;
+		var bottom = document.body.scrollTop + winHeight;
 
-		var w = $(window);
-		var winHeight = w.height();
-		var bottom = w.scrollTop() + winHeight;
-
-		var iframe = findIframe();
-		var offset = iframe.offset();
-		var height = iframe.outerHeight();
-		if (offset.top + height > bottom) {
-			//replace
+		var iframe = findIframe().get(0);
+		var offsetTop = iframe.getBoundingClientRect().top + document.body.scrollTop;
+		var height = iframe.offsetHeight;
+		if (offsetTop + height > bottom) {
 			var top = winHeight - height - constants.iframe.topOffset;
 			if (top < 0) {
 				top = constants.iframe.topOffset;
 			}
-			iframe.css({
-				top: top
-			});
+			iframe.style.top = top + 'px';
 		}
 	};
 
