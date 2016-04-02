@@ -328,9 +328,9 @@ var AdguardAssistant = function ($) {
 			return;
 		}
 
-		var dfd = $.Deferred();
+		var dfd = new Deferred();
+		dfd.done(appendContent);
 		var iframe = createIframe(width, height, dfd);
-		$.when(dfd).done(appendContent);
 	};
 
 	var changeCurrentIframe = function (width, height, iframe) {
@@ -502,8 +502,7 @@ var AdguardAssistant = function ($) {
 			'</div>');
 	};
 
-	var showDetailedMenu = function () {
-		var d = $.Deferred();
+	var showDetailedMenu = function (dfd) {
 		var content = createAdguardDetailedMenu();
 		showDialog(content, constants.iframe.baseWidth, constants.iframe.detailedMenuHeight, function (iframe) {
 			bindClicks(iframe, {
@@ -515,11 +514,10 @@ var AdguardAssistant = function ($) {
 				'#adg-accept': onRuleAccept,
 				'#ExtendedSettingsText': onExtendDetailedSettings
 			});
-			d.resolve('');
+			dfd.resolve();
 		}, function () {
 			localizeMenu();
 		});
-		return d;
 	};
 
 	/**
@@ -533,13 +531,13 @@ var AdguardAssistant = function ($) {
 				'#cancel-select-mode': onCancelSelectModeClicked,
 				'.adg-close': onCancelSelectModeClicked
 			});
-			dfd.resolve('');
+			dfd.resolve();
 		}, null);
 	};
 
 	var showHidingRuleWindow = function (element, urlBlock, blockSimilar) {
-		var loaded = showDetailedMenu();
-		loaded.done(function () {
+		var dfd = new Deferred();
+		dfd.done(function () {
 			createSlider(element);
 
 			AdguardSelectorLib.selectElement(element);
@@ -548,6 +546,8 @@ var AdguardAssistant = function ($) {
 			setScopeOneDomainText();
 			handleShowBlockSettings(urlBlock, blockSimilar);
 		});
+
+		showDetailedMenu(dfd);
 	};
 
 	var resizeIframe = function (width, height) {
@@ -794,41 +794,5 @@ var AdguardAssistant = function ($) {
 		removePreview();
 		cancelSelectMode();
 		closeAssistant();
-	}
-};
-
-
-function Deferred() {
-	this._context = null;
-	this._done = [];
-	this._fail = [];
-}
-
-Deferred.prototype = {
-	execute: function (list, args) {
-		var i = list.length;
-
-		// convert arguments to an array
-		// so they can be sent to the
-		// callbacks via the apply method
-		args = Array.prototype.slice.call(args);
-
-		while (i--) {
-			list[i].apply(this._context, args);
-		}
-	},
-	resolve: function () {
-		this.execute(this._done, arguments);
-	},
-	reject: function () {
-		this.execute(this._fail, arguments);
-	},
-	done: function (callback, ctx) {
-		this._context = ctx;
-		this._done.push(callback);
-	},
-	fail: function (callback, ctx) {
-		this._context = ctx;
-		this._fail.push(callback);
 	}
 };

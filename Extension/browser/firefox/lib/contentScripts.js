@@ -142,6 +142,7 @@ ContentScripts.prototype = {
             'libs/diff_match_patch.js',
             'libs/dom.patched.js',
             'libs/balalaika.patched.js',
+            'libs/deferred.js',
             'content-script/i18n-helper.js',    // Localization placeholders
             'content-script/content-script.js', // Message passing
             'content-script/assistant/js/slider-widget.js',
