@@ -358,12 +358,14 @@ var AdguardAssistant = function ($) {
 	var onSelectElementClicked = function (e) {
 		e.preventDefault();
 
-		var loaded = showSelectorMenu();
-		loaded.done(function () {
+		var dfd = new Deferred();
+		dfd.done(function () {
 			localizeMenu();
 			removePreview();
 			startSelector();
 		});
+
+		showSelectorMenu(dfd);
 	};
 
 	var onCancelSelectModeClicked = function (e) {
@@ -523,17 +525,16 @@ var AdguardAssistant = function ($) {
 	/**
 	 * Shows Adguard selector menu
 	 */
-	var showSelectorMenu = function () {
+	var showSelectorMenu = function (dfd) {
 		var content = createAdguardSelectorMenu();
-		var d = $.Deferred();
+
 		showDialog(content, constants.iframe.baseWidth, constants.iframe.selectorMenuHeight, function (iframe) {
 			bindClicks(iframe, {
 				'#cancel-select-mode': onCancelSelectModeClicked,
 				'.adg-close': onCancelSelectModeClicked
 			});
-			d.resolve('');
+			dfd.resolve('');
 		}, null);
-		return d;
 	};
 
 	var showHidingRuleWindow = function (element, urlBlock, blockSimilar) {
@@ -775,8 +776,8 @@ var AdguardAssistant = function ($) {
 
 	this.init = function (options) {
 		self.localization = options.localization;
-		var loaded = showSelectorMenu();
-		loaded.done(function () {
+		var dfd = new Deferred();
+		dfd.done(function () {
 			localizeMenu();
 			removePreview();
 			startSelector();
@@ -785,6 +786,8 @@ var AdguardAssistant = function ($) {
 				$(options.selectedElement).click();
 			}
 		});
+
+		showSelectorMenu(dfd);
 	};
 
 	this.destroy = function () {
@@ -794,12 +797,12 @@ var AdguardAssistant = function ($) {
 	}
 };
 
+
 function Deferred() {
 	this._context = null;
 	this._done = [];
 	this._fail = [];
 }
-
 
 Deferred.prototype = {
 	execute: function (list, args) {
@@ -810,7 +813,9 @@ Deferred.prototype = {
 		// callbacks via the apply method
 		args = Array.prototype.slice.call(args);
 
-		while (i--) list[i].apply(this._context, args);
+		while (i--) {
+			list[i].apply(this._context, args);
+		}
 	},
 	resolve: function () {
 		this.execute(this._done, arguments);
