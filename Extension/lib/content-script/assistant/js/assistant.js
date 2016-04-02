@@ -450,25 +450,25 @@ var AdguardAssistant = function ($) {
 			'		<div class="element-rule_form" id="adv-settings">' +
 			'			<div class="element-rule_form-cont">' +
 			'				<div class="element-rule_fieldset" id="one-domain-checkbox-block">' +
-			'					<input class="form-ui-control" id="one-domain-checkbox" type="checkbox">' +
+			'					<input class="form-ui-control" id="one-domain-checkbox" type="checkbox"/>' +
 			'					<label for="one-domain-checkbox" class="form-ui">' +
 			'						<span i18n="assistant_apply_rule_to_all_sites" class="form-ui-txt"></span>' +
 			'					</label>' +
 			'				</div>' +
 			'				<div style="display: none;" class="element-rule_fieldset" id="block-by-url-checkbox-block">' +
-			'					<input class="form-ui-control" id="block-by-url-checkbox" type="checkbox">' +
+			'					<input class="form-ui-control" id="block-by-url-checkbox" type="checkbox"/>' +
 			'					<label for="block-by-url-checkbox" class="form-ui">' +
 			'						<span i18n="assistant_block_by_reference" class="form-ui-txt"></span>' +
 			'					</label>' +
 			'				</div>' +
 			'				<div style="display: none;" class="element-rule_fieldset" id="block-similar-checkbox-block">' +
-			'					<input class="form-ui-control" id="block-similar-checkbox" type="checkbox">' +
+			'					<input class="form-ui-control" id="block-similar-checkbox" type="checkbox"/>' +
 			'					<label for="block-similar-checkbox" class="form-ui">' +
 			'						<span i18n="assistant_block_similar" class="form-ui-txt"></span>' +
 			'					</label>' +
 			'				</div>' +
 			'				<div class="element-rule_fieldset">' +
-			'					<input class="form-control" id="filter-rule" type="text">' +
+			'					<input class="form-control" id="filter-rule" type="text"/>' +
 			'				</div>' +
 			'			</div>' +
 			'		</div>' +
@@ -791,5 +791,39 @@ var AdguardAssistant = function ($) {
 		removePreview();
 		cancelSelectMode();
 		closeAssistant();
+	}
+};
+
+function Deferred() {
+	this._context = null;
+	this._done = [];
+	this._fail = [];
+}
+
+
+Deferred.prototype = {
+	execute: function (list, args) {
+		var i = list.length;
+
+		// convert arguments to an array
+		// so they can be sent to the
+		// callbacks via the apply method
+		args = Array.prototype.slice.call(args);
+
+		while (i--) list[i].apply(this._context, args);
+	},
+	resolve: function () {
+		this.execute(this._done, arguments);
+	},
+	reject: function () {
+		this.execute(this._fail, arguments);
+	},
+	done: function (callback, ctx) {
+		this._context = ctx;
+		this._done.push(callback);
+	},
+	fail: function (callback, ctx) {
+		this._context = ctx;
+		this._fail.push(callback);
 	}
 };
