@@ -321,7 +321,7 @@ var AdguardAssistant = function ($) {
 		};
 
 		var existIframe = findIframe();
-		if (existIframe.size() > 0) {
+		if (existIframe.length > 0) {
 			iframe = existIframe.get(0);
 			changeCurrentIframe(width, height, iframe);
 			appendContent();
@@ -350,9 +350,9 @@ var AdguardAssistant = function ($) {
 
 
 	var bindClicks = function (iframe, events) {
-		$.each(events, function (key, value) {
-			$(iframe.contentDocument.querySelectorAll(key)).click(value);
-		});
+		for (var event in events) {
+			$(iframe.contentDocument.querySelectorAll(event)).on('click', events[event]);
+		}
 	};
 
 	var onSelectElementClicked = function (e) {
@@ -421,10 +421,11 @@ var AdguardAssistant = function ($) {
 	};
 
 	var localizeMenu = function () {
-		$.each(findInIframe("[i18n]"), function () {
-			var message = getMessage(this.getAttribute("i18n"));
-			I18nHelper.translateElement(this, message);
-		});
+		var elements = findInIframe("[i18n]");
+		for (var i = 0; i < elements.length; i++) {
+			var message = getMessage(elements[i].getAttribute("i18n"));
+			I18nHelper.translateElement(elements[i], message);
+		}
 	};
 
 	var createAdguardDetailedMenu = function () {
@@ -766,7 +767,7 @@ var AdguardAssistant = function ($) {
 	};
 
 	var windowZoomFix = function () {
-		$(window).resize(function () {
+		$(window).on('resize', function () {
 			if (settings.selectedElement) {
 				AdguardSelectorLib.selectElement(settings.selectedElement);
 			}

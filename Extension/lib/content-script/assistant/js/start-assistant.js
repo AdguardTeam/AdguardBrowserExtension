@@ -32,7 +32,7 @@ if (window.top === window && document.documentElement instanceof HTMLElement) {
                 if (adguard) {
                     adguard.destroy();
                 } else {
-                    adguard = new AdguardAssistant($);
+                    adguard = new AdguardAssistant(balalaika);
                 }
                 var selectedElement;
                 var options = message.options;
