@@ -676,12 +676,7 @@ AntiBannerService.prototype = {
                 filter.installed = true;
                 FilterLSUtils.updateFilterStateInfo(filter);
                 EventNotifier.notifyListeners(EventNotifierTypes.ADD_FILTER, filter);
-            } else {
-                if (filter.corrupted) {
-                    this.addAntiBannerFilter(filterId, callback);
-                }
             }
-
             callback(success);
         };
 
@@ -690,11 +685,10 @@ AntiBannerService.prototype = {
             return;
         }
 
-        if (FilterUtils.isAdguardFilter(filter) && !filter.corrupted) {
-            this._loadFilterFromFS(filterId, onFilterLoaded.bind(this));
+        if (FilterUtils.isAdguardFilter(filter)) {
+            this._loadFilterFromFS(filterId, onFilterLoaded);
         } else {
-            delete filter.corrupted;
-            this._loadFilterFromBackend(filterId, onFilterLoaded.bind(this));
+            this._loadFilterFromBackend(filterId, onFilterLoaded);
         }
     },
 
@@ -1576,11 +1570,6 @@ AntiBannerService.prototype = {
         var successCallback = function (filterVersion, filterRules) {
             Log.info("Load local filter {0}, rules count: {1}", filter.filterId, filterRules.length);
             delete filter._isDownloading;
-            if (filterRules.length == 0) {
-                filter.corrupted = true;
-                callback(false);
-                return;
-            }
             filter.version = filterVersion.version;
             filter.lastUpdateTime = filterVersion.timeUpdated;
             filter.loaded = true;
