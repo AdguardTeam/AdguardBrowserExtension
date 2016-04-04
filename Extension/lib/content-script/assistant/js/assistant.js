@@ -737,9 +737,9 @@ var AdguardAssistant = function ($) {
 
 	var onScopeChange = function () {
 
-		var isBlockByUrl = findInIframe('#block-by-url-checkbox').is(':checked');
-		var isBlockSimilar = findInIframe("#block-similar-checkbox").is(':checked');
-		var isBlockOneDomain = findInIframe("#one-domain-checkbox").is(':checked');
+		var isBlockByUrl = findInIframe('#block-by-url-checkbox').get(0).checked;
+		var isBlockSimilar = findInIframe("#block-similar-checkbox").get(0).checked;
+		var isBlockOneDomain = findInIframe("#one-domain-checkbox").get(0).checked;
 
 		handleShowBlockSettings(haveUrlBlockParameter(settings.selectedElement) && !isBlockSimilar, haveClassAttribute(settings.selectedElement) && !isBlockByUrl);
 
