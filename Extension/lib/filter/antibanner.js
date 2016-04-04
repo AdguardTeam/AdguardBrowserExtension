@@ -1005,6 +1005,7 @@ AntiBannerService.prototype = {
                 this._reloadAntiBannerFilters();
                 this.reloadedRules = true;
             } else if (requestFilter.rulesCount > 0 && this.reloadedRules) {
+                Log.info("Filters reloaded, deleting reloadRules flag");
                 delete this.reloadedRules;
             }
 
