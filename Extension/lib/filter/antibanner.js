@@ -1004,11 +1004,10 @@ AntiBannerService.prototype = {
                 Log.info("No rules have been found - checking filter updates");
                 this._reloadAntiBannerFilters();
                 this.reloadedRules = true;
-
-                setTimeout(function () {
-                    delete this.reloadedRules;
-                }.bind(this), 150 * 1000);
+            } else if (requestFilter.rulesCount > 0 && this.reloadedRules) {
+                delete this.reloadedRules;
             }
+
         }.bind(this);
         
         /**
