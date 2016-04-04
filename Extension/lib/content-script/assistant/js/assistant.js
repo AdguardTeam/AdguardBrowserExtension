@@ -641,13 +641,13 @@ var AdguardAssistant = function ($) {
 		if (showBlockByUrl) {
 			findInIframe('#block-by-url-checkbox-block').show();
 		} else {
-			findInIframe('#block-by-url-checkbox').attr('checked', false);
+			findInIframe('#block-by-url-checkbox').get(0).checked = false;
 			findInIframe('#block-by-url-checkbox-block').hide();
 		}
 		if (showBlockSimilar) {
 			findInIframe('#block-similar-checkbox-block').show();
 		} else {
-			findInIframe('#block-similar-checkbox').attr('checked', false);
+			findInIframe('#block-similar-checkbox').get(0).checked = false;
 			findInIframe('#block-similar-checkbox-block').hide();
 		}
 	};
@@ -664,9 +664,9 @@ var AdguardAssistant = function ($) {
 	};
 
 	var makeDefaultCheckboxesForDetailedMenu = function () {
-		findInIframe('#block-by-url-checkbox').attr('checked', false);
-		findInIframe('#block-similar-checkbox').attr('checked', false);
-		findInIframe('#one-domain-checkbox').attr('checked', false);
+		findInIframe('#block-by-url-checkbox').get(0).checked = false;
+		findInIframe('#block-similar-checkbox').get(0).checked = false;
+		findInIframe('#one-domain-checkbox').get(0).checked = false;
 	};
 
 	var getUrlBlockAttribute = function (element) {
@@ -750,7 +750,9 @@ var AdguardAssistant = function ($) {
 			isBlockOneDomain: isBlockOneDomain,
 			domain: getCroppedDomain()
 		};
+		console.log(options);
 		var ruleText = AdguardRulesConstructorLib.constructRuleText(settings.selectedElement, options);
+		console.log(ruleText);
 
 		setFilterRuleInputText(ruleText);
 	};
