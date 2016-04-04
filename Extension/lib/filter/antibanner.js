@@ -998,10 +998,16 @@ AntiBannerService.prototype = {
             
             EventNotifier.notifyListeners(EventNotifierTypes.REQUEST_FILTER_UPDATED, this.getRequestFilterInfo());            
             Log.info("Finished request filter initialization in {0} ms. Rules count: {1}", (new Date().getTime() - start), requestFilter.rulesCount);
+
             if (requestFilter.rulesCount == 0 && !this.reloadedRules) {
+                //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/205
                 Log.info("No rules have been found - checking filter updates");
                 this._reloadAntiBannerFilters();
                 this.reloadedRules = true;
+
+                setTimeout(function () {
+                    delete this.reloadedRules;
+                }.bind(this), 150 * 1000);
             }
         }.bind(this);
         
