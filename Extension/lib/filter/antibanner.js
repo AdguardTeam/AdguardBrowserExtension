@@ -1,3 +1,4 @@
+/* global require, exports */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -33,11 +34,9 @@ var FilterUtils = require('../../lib/utils/common').FilterUtils;
 var EventNotifierTypes = require('../../lib/utils/common').EventNotifierTypes;
 var Utils = require('../../lib/utils/browser-utils').Utils;
 var CollectionUtils = require('../../lib/utils/common').CollectionUtils;
-var UrlUtils = require('../../lib/utils/url').UrlUtils;
 var FilterStorage = require('../../lib/filter/storage').FilterStorage;
 var userSettings = require('../../lib/utils/user-settings').userSettings;
 var EventNotifier = require('../../lib/utils/notifier').EventNotifier;
-var FilterRule = require('../../lib/filter/rules/base-filter-rule').FilterRule;
 var FilterRuleBuilder = require('../../lib/filter/rules/filter-rule-builder').FilterRuleBuilder;
 var LS = require('../../lib/utils/local-storage').LS;
 var Prefs = require('../../lib/prefs').Prefs;
@@ -241,14 +240,14 @@ AntiBannerService.prototype = {
 
         var enabledFilterIds = [];
 
-        if (!filterIds || filterIds.length == 0) {
+        if (!filterIds || filterIds.length === 0) {
             callback(enabledFilterIds);
             return;
         }
 
 
         var loadNextFilter = function () {
-            if (filterIds.length == 0) {
+            if (filterIds.length === 0) {
                 callback(enabledFilterIds);
             } else {
                 var filterId = filterIds.shift();
@@ -293,8 +292,8 @@ AntiBannerService.prototype = {
     shouldCollapseAllElements: function () {
         // We assume that if content script is requesting CSS in first 3 seconds after request filter init,
         // then it is possible, that we've missed some elements and now we should collapse these elements        
-        return (this._requestFilterInitTime > 0)
-            && (this._requestFilterInitTime + 3000 > new Date().getTime());
+        return (this._requestFilterInitTime > 0) && 
+            (this._requestFilterInitTime + 3000 > new Date().getTime());
     },
 
     /**
@@ -346,7 +345,7 @@ AntiBannerService.prototype = {
      */
     addUserFilterRule: function (ruleText) {
         var rule = FilterRuleBuilder.createRule(ruleText, AntiBannerFiltersId.USER_FILTER_ID);
-        if (rule != null) {
+        if (rule !== null) {
             this._addRuleToFilter(AntiBannerFiltersId.USER_FILTER_ID, rule);
             this.userRules.push(rule.ruleText);
         }
@@ -362,7 +361,7 @@ AntiBannerService.prototype = {
         var rules = [];
         for (var i = 0; i < rulesToAdd.length; i++) {
             var rule = FilterRuleBuilder.createRule(rulesToAdd[i], AntiBannerFiltersId.USER_FILTER_ID);
-            if (rule != null) {
+            if (rule !== null) {
                 rules.push(rule);
                 this.userRules.push(rule.ruleText);
             }
@@ -379,7 +378,7 @@ AntiBannerService.prototype = {
      */
     removeUserFilter: function (ruleText) {
         var rule = FilterRuleBuilder.createRule(ruleText, AntiBannerFiltersId.USER_FILTER_ID);
-        if (rule != null) {
+        if (rule !== null) {
             var filter = this._getFilterById(AntiBannerFiltersId.USER_FILTER_ID);
             this.requestFilter.removeRule(rule);
             EventNotifier.notifyListeners(EventNotifierTypes.REMOVE_RULE, filter, [rule]);
@@ -492,7 +491,8 @@ AntiBannerService.prototype = {
      */
     getAntiBannerFiltersForOptionsPage: function () {
         return this.adguardFilters.filter(function (f) {
-            return f.installed && f.filterId != AntiBannerFiltersId.USER_FILTER_ID &&
+            return f.installed && 
+                f.filterId != AntiBannerFiltersId.USER_FILTER_ID &&
                 f.filterId != AntiBannerFiltersId.WHITE_LIST_FILTER_ID &&
                 f.filterId != AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID;
         });
@@ -763,6 +763,8 @@ AntiBannerService.prototype = {
         errorCallback = errorCallback || function () {
             // Empty callback
         };
+        
+        Log.info("Start checking filters updates");
 
         // Select filters for update
         var filterIdsToUpdate = [];
@@ -777,12 +779,14 @@ AntiBannerService.prototype = {
             }
         }
 
-        if (filterIdsToUpdate.length == 0) {
+        if (filterIdsToUpdate.length === 0) {
             if (successCallback) {
                 successCallback([]);
                 return;
             }
         }
+        
+        Log.info("Checking updates for {0} filters", filterIdsToUpdate.length);
 
         // Load filters with changed version
         var loadFiltersFromBackend = function (filterIdsToUpdate) {
@@ -810,7 +814,7 @@ AntiBannerService.prototype = {
                 for (var i = 0; i < filterVersions.length; i++) {
                     var filterVersion = filterVersions[i];
                     var filter = this._getFilterById(filterVersion.filterId);
-                    if (filterVersion.version != null && Utils.isGreaterVersion(filterVersion.version, filter.version)) {
+                    if (filterVersion.version !== null && Utils.isGreaterVersion(filterVersion.version, filter.version)) {
                         Log.info("Updating filter {0} to version {1}", filter.filterId, filterVersion.version);
                         filterIdsToUpdate.push(filter.filterId);
                     }
@@ -907,10 +911,13 @@ AntiBannerService.prototype = {
      */
     _loadFiltersVersionAndStateInfo: function () {
 
+        // Define it here: for jshint to cool down
+        var filter = null;
+
         // Load filters metadata from the storage
         var filtersVersionInfo = FilterLSUtils.getFiltersVersionInfo();
         for (var i = 0; i < this.adguardFilters.length; i++) {
-            var filter = this.adguardFilters[i];
+            filter = this.adguardFilters[i];
             var versionInfo = filtersVersionInfo[filter.filterId];
             if (versionInfo) {
                 filter.version = versionInfo.version;
@@ -961,13 +968,6 @@ AntiBannerService.prototype = {
     _onFiltersLoadedFromStorage: function (rulesFilterMap, callback) {
         
         var start = new Date().getTime();
-        Log.info('Starting request filter initialization');
-        
-        // Empty request filter
-        var requestFilter = new RequestFilter();
-        
-        // Supplement object to make sure that we use only unique filter rules
-        var uniqueRules = Object.create(null);        
         
         // We create filter rules using chunks of the specified length
         // We are doing this for FF as everything in FF is done on the UI thread
@@ -975,6 +975,13 @@ AntiBannerService.prototype = {
         // use setTimeout calls to give UI thread some time.
         var async = Prefs.speedupStartup();
         var asyncStep = 1000;
+        Log.info('Starting request filter initialization. Async={0}', async);
+        
+        // Empty request filter
+        var requestFilter = new RequestFilter();
+        
+        // Supplement object to make sure that we use only unique filter rules
+        var uniqueRules = Object.create(null);        
         
         /**
          * STEP 3: Called when request filter has been filled with rules.
@@ -991,6 +998,17 @@ AntiBannerService.prototype = {
             
             EventNotifier.notifyListeners(EventNotifierTypes.REQUEST_FILTER_UPDATED, this.getRequestFilterInfo());            
             Log.info("Finished request filter initialization in {0} ms. Rules count: {1}", (new Date().getTime() - start), requestFilter.rulesCount);
+
+            if (requestFilter.rulesCount == 0 && !this.reloadedRules) {
+                //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/205
+                Log.info("No rules have been found - checking filter updates");
+                this._reloadAntiBannerFilters();
+                this.reloadedRules = true;
+            } else if (requestFilter.rulesCount > 0 && this.reloadedRules) {
+                Log.info("Filters reloaded, deleting reloadRules flag");
+                delete this.reloadedRules;
+            }
+
         }.bind(this);
         
         /**
@@ -1015,7 +1033,7 @@ AntiBannerService.prototype = {
                 uniqueRules[ruleText] = true;
                 var rule = FilterRuleBuilder.createRule(ruleText, filterId);
 
-                if (rule != null) {
+                if (rule !== null) {
                     requestFilter.addRule(rule);
                 }
             }
@@ -1049,7 +1067,6 @@ AntiBannerService.prototype = {
             
             // Go through all filters in the map
             for (var filterId in rulesFilterMap) {
-                
                 // To number
                 filterId = filterId - 0;
                 if (filterId != AntiBannerFiltersId.USER_FILTER_ID) {
@@ -1243,7 +1260,7 @@ AntiBannerService.prototype = {
 
             filterEventsHistory.push({event: event, filter: filter, rules: rules});
 
-            if (onFilterChangeTimeout != null) {
+            if (onFilterChangeTimeout !== null) {
                 clearTimeout(onFilterChangeTimeout);
             }
 
@@ -1373,7 +1390,7 @@ AntiBannerService.prototype = {
                 event == EventNotifierTypes.CHANGE_PREFS && setting == 'use_global_style_sheet') {
                 this.getRequestFilter().cssFilter.dirty = true;
             }
-        });
+        }.bind(this));
     },
 
     /**
@@ -1458,7 +1475,7 @@ AntiBannerService.prototype = {
         var loadedFilters = [];
 
         var loadNextFilter = function () {
-            if (filterIds.length == 0) {
+            if (filterIds.length === 0) {
                 callback(true, loadedFilters);
             } else {
                 var filterId = filterIds.shift();
@@ -1525,7 +1542,7 @@ AntiBannerService.prototype = {
      */
     _loadFiltersVersionsFromBackend: function (filterIds, callback) {
 
-        if (filterIds.length == 0) {
+        if (filterIds.length === 0) {
             callback(true, []);
             return;
         }

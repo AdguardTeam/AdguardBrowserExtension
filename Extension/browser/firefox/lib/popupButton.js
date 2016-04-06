@@ -88,7 +88,7 @@ var PopupButton = exports.PopupButton = {
                 button.state('window', {checked: false});
             }.bind(this),
             onShow: function () {
-                //force resize panel popup
+                // Force resize panel popup
                 contentScripts.sendMessageToWorker(panel, {type: 'resizePanelPopup'});
             }
         });
