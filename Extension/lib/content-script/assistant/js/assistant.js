@@ -817,14 +817,17 @@ var Adguard = function () {
 		});
 	};
 
-	var windowZoomFix = function () {
-		$(window).resize(function () {
+	var windowChangeFix = function () {
+		var reselectElement = function () {
 			if (settings.selectedElement) {
 				AdguardSelectorLib.selectElement(settings.selectedElement);
 			}
-		});
+		};
+
+		$(window).on('resize', reselectElement);
+		$(window).on('scroll', reselectElement);
 	};
-	windowZoomFix();
+	windowChangeFix();
 
 	this.init = function (options) {
 		self.localization = options.localization;
