@@ -1,6 +1,4 @@
-/* global sendFrameEvent */
-/* global addFrameEventListener */
-/* global I18nHelper */
+/* global sendMessageToChrome, addChromeMessageListener, self, i18nMessageApi, I18nHelper */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -24,18 +22,19 @@
 var contentPage = (function (api) {
 
     var sendMessage;
-    if (typeof sendMessageToChrome != 'undefined') {
+    if (typeof sendMessageToChrome !== 'undefined') {
         sendMessage = function (message, callback) {
             var wrapper;
             if (callback) {
                 wrapper = function (msg) {
                     return callback(JSON.parse(msg));
-                }
+                };
             }
             return sendMessageToChrome(message, wrapper);
         };
     } else {
-        // TODO: Remove, deprecated
+        
+        // TODO: Remove this when we finally drop addon SDK
         sendMessage = (function () {
 
             var CONTENT_TO_BACKGROUND_CHANNEL = 'content-background-channel';
@@ -73,7 +72,7 @@ var contentPage = (function (api) {
     }
 
     var addMessageListener;
-    if (typeof addChromeMessageListener != 'undefined') {
+    if (typeof addChromeMessageListener !== 'undefined') {
         addMessageListener = function (listener) {
             var wrapper = function (msg) {
                 return listener(JSON.parse(msg));
@@ -127,10 +126,10 @@ var i18n = (function (api) {
      */
     api.getMessage = function (messageId, args) {
         var message;
-        if (typeof i18nMessageApi != 'undefined') {
+        if (typeof i18nMessageApi !== 'undefined') {
             message = i18nMessageApi(messageId);
         } else {
-            // TODO: Remove, deprecated
+            // TODO: Remove this when we finally drop addon SDK
             message = self.options.i18nMessages[messageId];
         }
         if (!message) {

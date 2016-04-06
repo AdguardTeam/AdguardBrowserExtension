@@ -1,3 +1,4 @@
+/* global require, exports, i18n */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -31,6 +32,11 @@ var ContentMessageHandler = exports.ContentMessageHandler = function () {
 ContentMessageHandler.prototype = {
 
     eventListeners: Object.create(null),
+    
+    /**
+     * Function that allows to send a message back to sender (either content script or SDK worker).
+     * This function implementation is specific to browser.
+     */
     sendMessageToSender: null,
 
     init: function (antiBannerService, webRequestService, framesMap, adguardApplication, filteringLog, UI) {
@@ -41,7 +47,10 @@ ContentMessageHandler.prototype = {
         this.filteringLog = filteringLog;
         this.UI = UI;
     },
-
+    
+    /**
+     * Sets sendMessageToSender function implementation
+     */
     setSendMessageToSender: function (sendMessageToSender) {
         this.sendMessageToSender = sendMessageToSender;
     },
@@ -159,14 +168,14 @@ ContentMessageHandler.prototype = {
                 var cssAndScripts = this.webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl);
                 return cssAndScripts || {};
             case 'processShouldCollapse':
-                if (Prefs.collapseByContentScript) {
-                    var collapse = this.webRequestService.processShouldCollapse(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
-                    return {collapse: collapse, requestId: message.requestId};
-                } else {
+                
+                if (!Prefs.collapseByContentScript) {
                     // In case of FF we may collapse nodes with nsiContentPolicy
                     return {collapse: false, requestId: message.requestId};
                 }
-                break;
+                
+                var collapse = this.webRequestService.processShouldCollapse(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
+                return {collapse: collapse, requestId: message.requestId};
             case 'processShouldCollapseMany':
                 var requests = this.webRequestService.processShouldCollapseMany(sender.tab, message.documentUrl, message.requests);
                 return {requests: requests};
