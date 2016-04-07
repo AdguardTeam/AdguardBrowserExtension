@@ -227,9 +227,10 @@ var AdguardSelectorLib = (function (api, $) {
         borderTop.css('width', px(width + BORDER_PADDING * 2 + BORDER_WIDTH * 2)).
             css('top', px(top - BORDER_WIDTH - BORDER_PADDING)).
             css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
-        borderBottom.css('width', px(width + BORDER_PADDING * 2 + BORDER_WIDTH * 2 - 5)).
+        borderBottom.css('width', px(width + BORDER_PADDING * 2 + BORDER_WIDTH)).
             css('top', px(top + height + BORDER_PADDING)).
-            css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
+            css('left', px(left - BORDER_PADDING - BORDER_WIDTH)).
+            css('box-sizing', 'unset');
         borderLeft.css('height', px(height + BORDER_PADDING * 2)).
             css('top', px(top - BORDER_PADDING)).
             css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
