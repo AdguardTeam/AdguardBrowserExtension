@@ -819,7 +819,7 @@ var Adguard = function () {
 
 	var windowChangeFix = function () {
 		var reselectElement = function () {
-			if (settings.selectedElement) {
+			if (settings.selectedElement && !settings.lastPreview) {
 				AdguardSelectorLib.selectElement(settings.selectedElement);
 			}
 		};
