@@ -384,7 +384,7 @@ RequestFilter.prototype = {
             return referrerWhiteRule;
         }
 
-        var rule = this._checkUrlBlockingList(requestUrl, referrer, refHost, requestType, thirdParty, referrer);
+        var rule = this._checkUrlBlockingList(requestUrl, referrer, refHost, requestType, thirdParty);
         if (rule != null) {
             Log.debug("{4} list rule {0} found for url: {1}, referrer: {2}, requestType: {3}", rule.ruleText, requestUrl, refHost, requestType, rule.whiteListRule ? "White" : "Black");
         }

@@ -87,7 +87,7 @@ UrlFilter.prototype = {
 	 * @param requestType   Request content type (UrlFilterRule.contentTypes)
 	 * @param thirdParty    true if request is third-party
 	 * @param genericUrlBlockRule    genericblock rule or null
-	 * @return First matching rule or null if no match found
+	 * @return matching rule or null if no match found
 	 */
 	isFiltered: function (url, refHost, requestType, thirdParty, genericUrlBlockRule) {
 		var rule;
