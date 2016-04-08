@@ -102,10 +102,10 @@ function testGenericRuleDomainSpecific() {
     var filter = new UrlFilter([rule]);
     assertTrue(filter.isFiltered("http://cdn.innity.net/admanager.js","sharejunction.com", RequestTypes.SCRIPT, true) != null);
 
-    var genericBlockRuleText = "@@||sharejunction.com^$genericblock,generichide";
-    var genericBlockRule = new UrlFilterRule(genericBlockRuleText);
+    //var genericBlockRuleText = "@@||sharejunction.com^$genericblock,generichide";
+    //var genericBlockRule = new UrlFilterRule(genericBlockRuleText);
 
-    var filtered = filter.isFiltered("http://cdn.innity.net/admanager.js", "sharejunction.com", RequestTypes.SCRIPT, true, genericBlockRule);
+    var filtered = filter.isFiltered("http://cdn.innity.net/admanager.js", "sharejunction.com", RequestTypes.SCRIPT, true, true);
     assertTrue(filtered != null);
     assertFalse(filtered.whiteListRule);
 
@@ -118,24 +118,21 @@ function testGenericRuleDomainSpecific() {
     assertTrue(genericRule.isThirdParty);
     assertTrue(genericRule.isGeneric());
 
+    //Should be blocked by generic
     filter = new UrlFilter([genericRule]);
     filtered = filter.isFiltered("http://cdn.innity.net/admanager.js", "sharejunction.com", RequestTypes.SCRIPT, true);
     assertTrue(filtered != null);
-    //Should be blocked by generic
-    assertFalse(filtered.whiteListRule);
 
-    filtered = filter.isFiltered("http://cdn.innity.net/admanager.js", "sharejunction.com", RequestTypes.SCRIPT, true, genericBlockRule);
-    assertTrue(filtered != null);
     //Should be whitelisted by generic block
-    assertTrue(filtered.whiteListRule);
+    filtered = filter.isFiltered("http://cdn.innity.net/admanager.js", "sharejunction.com", RequestTypes.SCRIPT, true, true);
+    assertFalse(filtered != null);
 
 
     //2 rules together
-    filter = new UrlFilter([rule, genericRule]);
-    filtered = filter.isFiltered("http://cdn.innity.net/admanager.js", "sharejunction.com", RequestTypes.SCRIPT, true, genericBlockRule);
-    assertTrue(filtered != null);
     //Should be blocked by domain specific
-    assertFalse(filtered.whiteListRule);
+    filter = new UrlFilter([rule, genericRule]);
+    filtered = filter.isFiltered("http://cdn.innity.net/admanager.js", "sharejunction.com", RequestTypes.SCRIPT, true, true);
+    assertTrue(filtered != null);
 }
 addTestCase(testGenericRuleDomainSpecific);
 

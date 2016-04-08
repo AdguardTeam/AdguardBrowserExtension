@@ -86,33 +86,16 @@ UrlFilter.prototype = {
 	 * @param refHost       Referrer host
 	 * @param requestType   Request content type (UrlFilterRule.contentTypes)
 	 * @param thirdParty    true if request is third-party
-	 * @param genericUrlBlockRule    genericblock rule or null
+	 * @param skipGenericRules    skip generic rules
 	 * @return matching rule or null if no match found
 	 */
-	isFiltered: function (url, refHost, requestType, thirdParty, genericUrlBlockRule) {
+	isFiltered: function (url, refHost, requestType, thirdParty, skipGenericRules) {
 		var rule;
-		var genericBlockRuleFired;
-
-		var _isFiltered = function (url, refHost, rules, requestType, thirdParty, genericRulesAllowed) {
-
-			for (var i = 0; i < rules.length; i++) {
-				var rule = rules[i];
-				if (rule.isPermitted(refHost) && rule.isFiltered(url, thirdParty, requestType)) {
-					if (genericRulesAllowed || !rule.isGeneric()) {
-						return rule;
-					} else if (rule.isGeneric()) {
-						genericBlockRuleFired = true;
-					}
-				}
-			}
-
-			return null;
-		};
 
 		var rules = this.lookupTable.lookupRules(url.toLowerCase());
 		// Check against rules with shortcuts
 		if (rules && rules.length > 0) {
-			rule = _isFiltered(url, refHost, rules, requestType, thirdParty, !genericUrlBlockRule);
+			rule = this._isFiltered(url, refHost, rules, requestType, thirdParty, !skipGenericRules);
 			if (rule != null) {
 				return rule;
 			}
@@ -120,14 +103,10 @@ UrlFilter.prototype = {
 
 		// Check against rules without shortcuts
 		if (this.rulesWithoutShortcuts != null && this.rulesWithoutShortcuts.length > 0) {
-			rule = _isFiltered(url, refHost, this.rulesWithoutShortcuts, requestType, thirdParty, !genericUrlBlockRule);
+			rule = this._isFiltered(url, refHost, this.rulesWithoutShortcuts, requestType, thirdParty, !skipGenericRules);
 			if (rule != null) {
 				return rule;
 			}
-		}
-
-		if (genericBlockRuleFired) {
-			return genericUrlBlockRule;
 		}
 
 		return null;
@@ -139,5 +118,19 @@ UrlFilter.prototype = {
 	getRules: function () {
 		var rules = this.lookupTable.getRules();
 		return rules.concat(this.rulesWithoutShortcuts);
+	},
+
+	_isFiltered: function (url, refHost, rules, requestType, thirdParty, genericRulesAllowed) {
+
+		for (var i = 0; i < rules.length; i++) {
+			var rule = rules[i];
+			if (rule.isPermitted(refHost) && rule.isFiltered(url, thirdParty, requestType)) {
+				if (genericRulesAllowed || !rule.isGeneric()) {
+					return rule;
+				}
+			}
+		}
+
+		return null;
 	}
 };
