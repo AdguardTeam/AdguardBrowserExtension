@@ -86,27 +86,48 @@ UrlFilter.prototype = {
 	 * @param refHost       Referrer host
 	 * @param requestType   Request content type (UrlFilterRule.contentTypes)
 	 * @param thirdParty    true if request is third-party
+	 * @param genericUrlBlockRule    genericblock rule or null
 	 * @return First matching rule or null if no match found
 	 */
-	isFiltered: function (url, refHost, requestType, thirdParty) {
+	isFiltered: function (url, refHost, requestType, thirdParty, genericUrlBlockRule) {
 		var rule;
+		var genericBlockRuleFired;
+
+		var _isFiltered = function (url, refHost, rules, requestType, thirdParty, genericRulesAllowed) {
+
+			for (var i = 0; i < rules.length; i++) {
+				var rule = rules[i];
+				if (rule.isPermitted(refHost) && rule.isFiltered(url, thirdParty, requestType)) {
+					if (genericRulesAllowed || !rule.isGeneric()) {
+						return rule;
+					} else if (rule.isGeneric()) {
+						genericBlockRuleFired = true;
+					}
+				}
+			}
+
+			return null;
+		};
 
 		var rules = this.lookupTable.lookupRules(url.toLowerCase());
-
 		// Check against rules with shortcuts
 		if (rules && rules.length > 0) {
-			rule = this._isFiltered(url, refHost, rules, requestType, thirdParty);
-			if (rule) {
+			rule = _isFiltered(url, refHost, rules, requestType, thirdParty, !genericUrlBlockRule);
+			if (rule != null) {
 				return rule;
 			}
 		}
 
 		// Check against rules without shortcuts
 		if (this.rulesWithoutShortcuts != null && this.rulesWithoutShortcuts.length > 0) {
-			rule = this._isFiltered(url, refHost, this.rulesWithoutShortcuts, requestType, thirdParty);
+			rule = _isFiltered(url, refHost, this.rulesWithoutShortcuts, requestType, thirdParty, !genericUrlBlockRule);
 			if (rule != null) {
 				return rule;
 			}
+		}
+
+		if (genericBlockRuleFired) {
+			return genericUrlBlockRule;
 		}
 
 		return null;
@@ -118,27 +139,5 @@ UrlFilter.prototype = {
 	getRules: function () {
 		var rules = this.lookupTable.getRules();
 		return rules.concat(this.rulesWithoutShortcuts);
-	},
-
-	/**
-	 * Searches for first rule in "rules" collection matching specified request
-	 *
-	 * @param url           Request url
-	 * @param refHost       Referrer host
-	 * @param rules         Rules collection
-	 * @param requestType   Request content type (UrlFilterRule.contentTypes)
-	 * @param thirdParty    true if request is third-party
-	 * @return First matching rule or null if no match found
-	 */
-	_isFiltered: function (url, refHost, rules, requestType, thirdParty) {
-
-		for (var i = 0; i < rules.length; i++) {
-			var rule = rules[i];
-			if (rule.isPermitted(refHost) && rule.isFiltered(url, thirdParty, requestType)) {
-				return rule;
-			}
-		}
-
-		return null;
 	}
 };
