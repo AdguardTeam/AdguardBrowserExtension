@@ -175,7 +175,7 @@ PageController.prototype = {
 		if (!tabInfo.isHttp) {
 			return;
 		}
-		this.tabSelectorList.append($('<div>', {class: 'task-manager-header-dropdown-select-list-item', text: tabInfo.tab.title, 'data-tab-id': tabInfo.tabId}));
+		this.tabSelectorList.append($('<div>', {'class': 'task-manager-header-dropdown-select-list-item', text: tabInfo.tab.title, 'data-tab-id': tabInfo.tabId}));
 		if (!this.currentTabId) {
 			this.onSelectedTabChange();
 		}
@@ -368,7 +368,7 @@ PageController.prototype = {
 
 	_renderTemplate: function (event) {
 
-		var metadata = {data: event, class: 'task-manager-content-header-body-row cf'};
+		var metadata = {data: event, 'class': 'task-manager-content-header-body-row cf'};
 		if (event.requestRule) {
 			metadata.class += event.requestRule.whiteListRule ? ' green' : ' red';
 		}
@@ -388,10 +388,10 @@ PageController.prototype = {
 		}
 
 		var el = $('<div>', metadata);
-		el.append($('<div>', {text: event.requestUrl, class: 'task-manager-content-header-body-col task-manager-content-item-url'}));
-		el.append($('<div>', {text: RequestWizard.getRequestType(event.requestType), class: requestTypeClass}));
-		el.append($('<div>', {text: ruleText, class: 'task-manager-content-header-body-col task-manager-content-item-rule'}));
-		el.append($('<div>', {text: RequestWizard.getSource(event.frameDomain), class: 'task-manager-content-header-body-col task-manager-content-item-source'}));
+		el.append($('<div>', {text: event.requestUrl, 'class': 'task-manager-content-header-body-col task-manager-content-item-url'}));
+		el.append($('<div>', {text: RequestWizard.getRequestType(event.requestType), 'class': requestTypeClass}));
+		el.append($('<div>', {text: ruleText, 'class': 'task-manager-content-header-body-col task-manager-content-item-rule'}));
+		el.append($('<div>', {text: RequestWizard.getSource(event.frameDomain), 'class': 'task-manager-content-header-body-col task-manager-content-item-source'}));
 
 		return el;
 	},
@@ -402,9 +402,12 @@ PageController.prototype = {
 
 		var show = !this.searchRequest || StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest);
 		show &= this.searchTypes.length == 0 || this.searchTypes.indexOf(filterData.requestType) >= 0;
-		show &= !this.searchThirdParty || filterData.requestThirdParty;
-		show &= !this.searchWhitelisted || (filterData.requestRule && filterData.requestRule.whiteListRule);
-		show &= !this.searchBlocked || (filterData.requestRule && !filterData.requestRule.whiteListRule);
+
+		var checkboxes = !(this.searchWhitelisted || this.searchBlocked || this.searchThirdParty);
+		checkboxes |= this.searchWhitelisted && filterData.requestRule && filterData.requestRule.whiteListRule;
+		checkboxes |= this.searchBlocked && filterData.requestRule && !filterData.requestRule.whiteListRule;
+		checkboxes |= this.searchThirdParty && filterData.requestThirdParty;
+		show &= checkboxes;
 
 		if (show) {
 			el.removeClass('hidden');
@@ -573,9 +576,9 @@ RequestWizard.prototype.showCreateExceptionRuleModal = function (frameInfo, filt
 RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, patterns, urlDomain, isThirdPartyRequest) {
 	var rulePatternsEl = template.find('#rulePatterns');
 	for (var i = 0; i < patterns.length; i++) {
-		var patternEl = $('<div>', {class: 'radio radio-patterns'});
-		var input = $('<input>', {class: 'radio-input', type: 'radio', name: 'rulePattern', id: 'pattern' + i, value: patterns[i]});
-		var label = $('<label>', {class: 'radio-label', for: 'pattern' + i}).append($('<span>', {class: 'radio-icon'})).append($('<span>', {class: 'radio-label-text', text: patterns[i]}));
+		var patternEl = $('<div>', {'class': 'radio radio-patterns'});
+		var input = $('<input>', {'class': 'radio-input', type: 'radio', name: 'rulePattern', id: 'pattern' + i, value: patterns[i]});
+		var label = $('<label>', {'class': 'radio-label', 'for': 'pattern' + i}).append($('<span>', {'class': 'radio-icon'})).append($('<span>', {'class': 'radio-label-text', text: patterns[i]}));
 		patternEl.append(input);
 		patternEl.append(label);
 		rulePatternsEl.append(patternEl);
