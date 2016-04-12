@@ -89,7 +89,7 @@ var AdguardRulesConstructorLib = (function (api) {
         return selector ? "##" + selector : "";
     };
 
-    var createSimilarRuleText = function (element) {
+    var createSimilarElementSelector = function (element) {
         if (!element) {
             return "";
         }
@@ -99,8 +99,12 @@ var AdguardRulesConstructorLib = (function (api) {
             return "";
         }
 
-        var selector = className.trim().replace(/\s+/g, ', .');
-        return selector ? "##" + '.' + selector : "";
+        return '.' + className.trim().replace(/\s+/g, ', .');
+    };
+
+    var createSimilarRuleText = function (element) {
+        var selector = createSimilarElementSelector(element);
+        return selector ? "##" + selector : "";
     };
 
     var constructUrlBlockRuleText = function (element, urlBlockAttribute, oneDomain, domain) {
@@ -127,6 +131,23 @@ var AdguardRulesConstructorLib = (function (api) {
      * @returns {string}
      */
     api.makeCssNthChildFilter = makeCssNthChildFilter;
+
+    /**
+     * Constructs css selector for element
+     *
+     * @param element
+     * @param isBlockSimilar
+     */
+    api.constructCssSelector = function (element, isBlockSimilar) {
+        if (isBlockSimilar) {
+            var selector = createSimilarElementSelector(element);
+            if (selector) {
+                return selector;
+            }
+        }
+
+        return makeCssNthChildFilter(element);
+    };
 
     /**
      * Constructs adguard rule text from element node and specified options
