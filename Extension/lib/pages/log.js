@@ -402,10 +402,12 @@ PageController.prototype = {
 
 		var show = !this.searchRequest || StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest);
 		show &= this.searchTypes.length == 0 || this.searchTypes.indexOf(filterData.requestType) >= 0;
-		show &= !this.searchThirdParty || filterData.requestThirdParty;
-		show &= ((!this.searchWhitelisted && !this.searchBlocked)
-			|| (this.searchWhitelisted && filterData.requestRule && filterData.requestRule.whiteListRule)
-			|| (this.searchBlocked && filterData.requestRule && !filterData.requestRule.whiteListRule));
+
+		var checkboxes = !(this.searchWhitelisted || this.searchBlocked || this.searchThirdParty);
+		checkboxes |= this.searchWhitelisted && filterData.requestRule && filterData.requestRule.whiteListRule;
+		checkboxes |= this.searchBlocked && filterData.requestRule && !filterData.requestRule.whiteListRule;
+		checkboxes |= this.searchThirdParty && filterData.requestThirdParty;
+		show &= checkboxes;
 
 		if (show) {
 			el.removeClass('hidden');
