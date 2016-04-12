@@ -819,14 +819,17 @@ var Adguard = function () {
 		});
 	};
 
-	var windowZoomFix = function () {
-		$(window).resize(function () {
-			if (settings.selectedElement) {
+	var windowChangeFix = function () {
+		var reselectElement = function () {
+			if (settings.selectedElement && !settings.lastPreview) {
 				AdguardSelectorLib.selectElement(settings.selectedElement);
 			}
-		});
+		};
+
+		$(window).on('resize', reselectElement);
+		$(window).on('scroll', reselectElement);
 	};
-	windowZoomFix();
+	windowChangeFix();
 
 	this.init = function (options) {
 		self.localization = options.localization;
