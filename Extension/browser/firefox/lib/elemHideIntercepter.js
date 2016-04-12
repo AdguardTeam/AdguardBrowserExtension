@@ -53,7 +53,7 @@ var InterceptHandler = exports.InterceptHandler =
 		this.antiBannerService = antiBannerService;
 
 		var registrar = components.manager.QueryInterface(Ci.nsIComponentRegistrar);
-		registrar.registerFactory(this.classID, this.classDescription, "@mozilla.org/network/protocol/https;1?what=" + this.aboutPrefix, this);
+		registrar.registerFactory(this.classID, this.classDescription, "@mozilla.org/network/protocol/about;1?what=" + this.aboutPrefix, this);
 
 		unload.when(function () {
 			var registrar = components.manager.QueryInterface(Ci.nsIComponentRegistrar);
@@ -140,46 +140,28 @@ HidingChannel.prototype = {
     },
 
 	open: function () {
-		var data = this.notHideData;
 		try {
 			var tabId = WebRequestHelper.getTabIdForChannel(this);
 			var tab = {id: tabId};
 
-			if (!tabId
-				|| this._isTabWhiteListed(tab)
-				|| this._isElemHideWhiteListed(tab)) {
-				// Return dummy binding if there is an exception rule for this URL
-				data = this.notHideData;
-			} else {
-				// Return empty binding.
-				// The element will be collapsed because of empty binding (it does not contain dummy element which is requested by the URL)
-				data = this.hideData;
+			if (tabId
+				&& !this._isTabWhiteListed(tab)
+				&& !this._isElemHideWhiteListed(tab)) {
 
-                var rule = this._getRuleByText(this.URI.path);
-                if (rule) {
-                    var domain = this.framesMap.getFrameDomain(tab);
-                    if (!rule.isPermitted(domain)) {
-                        data = this.notHideData;
-                    }
+				var rule = this._getRuleByText(this.URI.path);
+				if (rule) {
+					var domain = this.framesMap.getFrameDomain(tab);
 
-                    // Rules without domain should be ignored if there is a $generichide rule applied
-                    if (this._isGenericHideWhiteListed(tab) && rule.isGeneric()) {
-                        data = this.notHideData;
-                    }
-
-                    // Track filter rule usage if user has enabled "collect ad filters usage stats"
-                    if (filterRulesHitCount.collectStatsEnabled) {
-                        if (!FilterUtils.isUserFilterRule(rule) && !this.framesMap.isIncognitoTab(tab)) {
-                            filterRulesHitCount.addRuleHit(domain, rule.ruleText, rule.filterId);
-                        }
-                    }
-                }
+					// Track filter rule usage if user has enabled "collect ad filters usage stats"
+					if (filterRulesHitCount.collectStatsEnabled) {
+						if (!FilterUtils.isUserFilterRule(rule) && !this.framesMap.isIncognitoTab(tab)) {
+							filterRulesHitCount.addRuleHit(domain, rule.ruleText, rule.filterId);
+						}
+					}
+				}
 			}
 		} finally {
-			// Write response data to the stream
-			var stream = Cc["@mozilla.org/io/string-input-stream;1"].createInstance(Ci.nsIStringInputStream);
-			stream.setData(data, data.length);
-			return stream;
+			throw Cr.NS_ERROR_NOT_IMPLEMENTED;
 		}
 	},
 

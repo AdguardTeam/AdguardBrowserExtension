@@ -373,7 +373,7 @@ CssFilter.prototype = {
 			return "\\" + match.charCodeAt(0).toString(16) + " ";
 		}
 
-		var cssTemplate = "-moz-binding: url(\"https://" + this.interceptPrefix + "?%ID%#dummy\") !important;";
+		var cssTemplate = "-moz-binding: url(\"about:" + this.interceptPrefix + "?%ID%#dummy\") !important;";
 		var result = [];
 		for (var domain in domainsAndRules) {
 
