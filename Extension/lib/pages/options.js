@@ -516,7 +516,7 @@ PageController.prototype = {
         el.removeAttr('i18n');
 
         var message = i18n.getMessage("options_antibanner_info", [info.rulesCount]);
-        el.html(message);
+        el.text(message);
         el.show();
 
         if (environmentOptions.isContentBlockerEnabled) {
