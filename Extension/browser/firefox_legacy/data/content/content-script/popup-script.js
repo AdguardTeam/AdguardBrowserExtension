@@ -74,11 +74,7 @@ var ext = (function () {
             getLastFocused: function (callback) {
                 var win = {
                     getActiveTab: function (callback) {
-                        var tabs = loadAdguardModule('tabs');
-                        if (!tabs) {
-                            return;
-                        }
-                        callback(tabs.activeTab);
+                        callback(ext.backgroundPage.getWindow().UI.getActiveTab());
                     }
                 };
                 callback(win);
