@@ -431,7 +431,7 @@ var AdguardAssistant = function ($) {
 	var createAdguardDetailedMenu = function () {
 		return $('<div class="main">' +
 			'<div class="close adg-close"></div>' +
-			'<div class="head">' +
+			'<div class="head" id="drag-handle">' +
 			'	<div i18n="assistant_block_element" class="head_title" id="head_title"></div>' +
 			'	<div i18n="assistant_block_element_explain" class="head_text" id="head_text"></div>' +
 			'</div>' +
