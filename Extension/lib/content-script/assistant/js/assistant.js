@@ -750,10 +750,8 @@ var AdguardAssistant = function ($) {
 			isBlockOneDomain: isBlockOneDomain,
 			domain: getCroppedDomain()
 		};
-		console.log(options);
-		var ruleText = AdguardRulesConstructorLib.constructRuleText(settings.selectedElement, options);
-		console.log(ruleText);
 
+		var ruleText = AdguardRulesConstructorLib.constructRuleText(settings.selectedElement, options);
 		setFilterRuleInputText(ruleText);
 	};
 
