@@ -360,31 +360,6 @@ var AdguardSelectorLib = (function (api, $) {
         return false;
     };
 
-    /**
-     * Block clicks for a moment by covering this element with a div.
-     *
-     * @param elem
-     * @returns {boolean}
-     * @private
-     */
-    var blockClicksOn = function (elem) {
-        var p = getOffsetExtended(elem);
-        var block = $('<div/>').css('position', 'absolute').css('z-index', '9999999').css('width', px(p.outerWidth)).
-            css('height', px(p.outerHeight)).css('top', px(p.top)).css('left', px(p.left)).
-            css('background-color', '');
-
-        var blockElement = block.get(0);
-        document.body.appendChild(blockElement);
-
-        setTimeout(function () {
-            if (blockElement) {
-                blockElement.parentNode.removeChild(blockElement);
-            }
-        }, 400);
-
-        return false;
-    };
-
     var sgMousedownHandler = function (e) {
         e.preventDefault();
         e.stopImmediatePropagation();
@@ -403,15 +378,8 @@ var AdguardSelectorLib = (function (api, $) {
             return;
         }
 
-        // Don't allow selection of elements that have a selected child.
-        if ($('.' + SELECTED_CLASS, elem).get(0)) {
-            blockClicksOn(elem);
-        }
-
         makePredictionPath(elem);
-
         removeBorders();
-        blockClicksOn(elem);
 
         onElementSelectedHandler(elem);
 
@@ -434,9 +402,11 @@ var AdguardSelectorLib = (function (api, $) {
         removePlaceholders();
 
         var elements = $("body *");
-        elements.off("mouseover", sgMouseoverHandler);
-        elements.off("mouseout", sgMouseoutHandler);
-        elements.off("click", sgMousedownHandler);
+        elements.forEach(function (el) {
+            el.removeEventListener("mouseover", sgMouseoverHandler);
+            el.removeEventListener("mouseout", sgMouseoutHandler);
+            el.removeEventListener("click", sgMousedownHandler, true);
+        });
     };
 
     var setupBorders = function () {
