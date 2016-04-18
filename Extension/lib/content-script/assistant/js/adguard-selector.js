@@ -393,7 +393,7 @@ var AdguardSelectorLib = (function (api, $) {
             return true;
         }
 
-        var elem = this;
+        var elem = e.target;
         if ($(elem).hasClass(BORDER_CLASS)) {
             //Clicked on one of our floating borders, target the element that we are bordering.
             elem = elem.target_elem || elem;
@@ -404,7 +404,7 @@ var AdguardSelectorLib = (function (api, $) {
         }
 
         // Don't allow selection of elements that have a selected child.
-        if ($('.' + SELECTED_CLASS, this).get(0)) {
+        if ($('.' + SELECTED_CLASS, elem).get(0)) {
             blockClicksOn(elem);
         }
 
@@ -423,9 +423,11 @@ var AdguardSelectorLib = (function (api, $) {
         makeIFrameAndEmbededSelector();
 
         var sgIgnore = $("body *:not(." + IGNORED_CLASS + ")");
-        sgIgnore.on("mouseover", sgMouseoverHandler);
-        sgIgnore.on("mouseout", sgMouseoutHandler);
-        sgIgnore.on("click", sgMousedownHandler);
+        sgIgnore.forEach(function (el) {
+            el.addEventListener("mouseover", sgMouseoverHandler);
+            el.addEventListener("mouseout", sgMouseoutHandler);
+            el.addEventListener("click", sgMousedownHandler, true);
+        });
     };
 
     var deleteEventHandlers = function () {
