@@ -387,6 +387,7 @@ var AdguardSelectorLib = (function (api, $) {
 
     var sgMousedownHandler = function (e) {
         e.preventDefault();
+        e.stopImmediatePropagation();
 
         if (unbound) {
             return true;
