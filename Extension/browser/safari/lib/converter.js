@@ -18,7 +18,7 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.6';
+var CONVERTER_VERSION = '1.3.7';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var URL_FILTER_ANY_URL = ".*";
@@ -373,6 +373,11 @@ exports.SafariContentBlockerConverter = {
             // Safari doesn't support non-ASCII characters in regular expressions
             if (urlFilter.match(/[^\x00-\x7F]/g)) {
                 throw new Error("Safari doesn't support non-ASCII characters in regular expressions");
+            }
+
+            // Safari doesn't support negative lookahead (?!...) in regular expressions
+            if (urlFilter.match(/\(\?!.*\)/g)) {
+                throw new Error("Safari doesn't support negative lookahead in regular expressions");
             }
 
             var result = {
