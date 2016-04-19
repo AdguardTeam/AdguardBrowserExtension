@@ -189,6 +189,22 @@ function testInvertedWhitelist() {
 addTestCase(testInvertedWhitelist);
 
 /**
+ * Tests some regexp rules
+ */
+function testRegexpRules() {
+    var ruleText = "/^https?://(?!static\.)([^.]+\.)+?fastpic\.ru[:/]/$script,domain=fastpic.ru";
+    var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    assertEquals(0, result.convertedCount);
+    assertEquals(1, result.errorsCount);
+
+    ruleText = "^https?://(?!static)([^.]+)+?fastpicru[:/]$script,domain=fastpic.ru";
+    result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    assertEquals(1, result.convertedCount);
+    assertEquals(0, result.errorsCount);
+}
+addTestCase(testRegexpRules);
+
+/**
  * Checks regexp performance
  */
 function testRegexpPerformance() {
