@@ -445,8 +445,8 @@ var AdguardAssistant = function ($) {
 			'		<div i18n="assistant_slider_explain" class="element-rule_text"></div>' +
 			'		<div class="element-rule_slider">' +
 			'			<div class="adg-slide" id="slider">' +
-			'				<div i18n="assistant_slider_min" class="adg-slide-clue-max"></div>' +
-			'				<div i18n="assistant_slider_max" class="adg-slide-clue-min"></div>' +
+			'				<div class="adg-slide-clue-max">MAX</div>' +
+			'				<div class="adg-slide-clue-min">MIN</div>' +
 			'			</div>' +
 			'		</div>' +
 			'		<div class="element-rule_more">' +
