@@ -426,6 +426,11 @@ var AdguardAssistant = function ($) {
 			var message = getMessage(elements[i].getAttribute("i18n"));
 			I18nHelper.translateElement(elements[i], message);
 		}
+
+		//TODO: Remove after all translations update
+		findInIframe('#blockSimilar').hide();
+		findInIframe('#blockByUrl').hide();
+		findInIframe('#oneDomainRadio').hide();
 	};
 
 	var createAdguardDetailedMenu = function () {

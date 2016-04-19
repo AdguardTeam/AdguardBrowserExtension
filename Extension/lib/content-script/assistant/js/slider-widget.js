@@ -103,7 +103,7 @@ var SliderWidget = (function (api, $) {
         //While the ui-slider-handle is being held down reference it parent.
         $handle.on('mousedown', function (e) {
             e.preventDefault();
-            return this.parentNode.trigger('mousedown');
+            return $(this.parentNode).trigger('mousedown');
         });
 
         var rect = placeholder.getBoundingClientRect();
