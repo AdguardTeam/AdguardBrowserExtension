@@ -212,7 +212,7 @@ var UI = exports.UI = {
 
     getAssistantCssOptions: function () {
         return {
-            cssContent: self.data.load("content/content-script/assistant/css/assistant.css")
+            cssLink: self.data.url("content/content-script/assistant/css/assistant.css")
         };
     },
 
