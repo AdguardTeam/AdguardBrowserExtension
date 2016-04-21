@@ -715,7 +715,7 @@ var AdguardAssistant = function ($) {
 	var hideElement = function () {
 		AdguardSelectorLib.reset();
 
-		var isBlockSimilar = findInIframe('#blockSimilar').is(':checked');
+		var isBlockSimilar = findInIframe("#block-similar-checkbox").get(0).checked;
 
 		var selector = AdguardRulesConstructorLib.constructCssSelector(settings.selectedElement, isBlockSimilar);
 		var style = document.createElement("style");
