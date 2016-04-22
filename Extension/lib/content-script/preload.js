@@ -47,8 +47,8 @@
     /**
      * Initializing content script
      */
-    var init = function() {       
-        if (!(document instanceof HTMLDocument)) {
+    var init = function () {
+        if (!isHtml()) {
             return;
         }
         
@@ -79,17 +79,28 @@
     };
 
     /**
+     * Checks if it is html document
+     *
+     * @returns {boolean}
+     */
+    var isHtml = function () {
+        return (document instanceof HTMLDocument) ||
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/233
+            ((document instanceof XMLDocument) && (document.createElement('div') instanceof HTMLDivElement));
+    };
+
+    /**
      * Loads CSS and JS injections
      */
-    var tryLoadCssAndScripts = function() {
+    var tryLoadCssAndScripts = function () {
         var message = {
             type: 'getSelectorsAndScripts',
-            documentUrl: window.location.href            
+            documentUrl: window.location.href
         };
-        
+
         /**
-         * Sending message to background page and passing a callback function  
-         */ 
+         * Sending message to background page and passing a callback function
+         */
         contentPage.sendMessage(message, processCssAndScriptsResponse);
     };
     
