@@ -102,7 +102,7 @@ var AdguardAssistant = function ($) {
 		},
 
 		cropDomain: function (domain) {
-			return domain.replace("www.", "");
+			return domain.replace("www.", "").replace(/:\d+/, '');
 		}
 	};
 
