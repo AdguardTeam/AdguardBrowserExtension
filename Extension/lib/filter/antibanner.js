@@ -751,7 +751,7 @@ AntiBannerService.prototype = {
      * Checks filters updates.
      *
      * @param forceUpdate Normally we respect filter update period. But if this parameter is
-     *                    true - we ignore it and check all enabled filters updates.
+     *                    true - we ignore it and check updates for all filters.
      * @param successCallback Called if filters were updated successfully
      * @param errorCallback Called if something gone wrong
      */
@@ -770,7 +770,7 @@ AntiBannerService.prototype = {
         var filterIdsToUpdate = [];
         for (var i = 0; i < this.adguardFilters.length; i++) {
             var filter = this.adguardFilters[i];
-            if (filter.enabled && filter.filterId != AntiBannerFiltersId.USER_FILTER_ID && filter.filterId != AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+            if ((forceUpdate || filter.enabled) && filter.filterId != AntiBannerFiltersId.USER_FILTER_ID && filter.filterId != AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
                 // Check filters update period (or forceUpdate flag)
                 var needUpdate = forceUpdate || (!filter.lastCheckTime || (Date.now() - filter.lastCheckTime) >= this.UPDATE_FILTERS_PERIOD);
                 if (needUpdate) {

@@ -281,7 +281,7 @@ PageController.prototype = {
     _showFilterLoader: function (antiBannerFilter) {
         var el = $("input[name='filterId'][value='" + antiBannerFilter.filterId + "']").closest(".s-page-table-row");
         var acceptableAdsFilter = antiBannerFilter.filterId == AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID; // Don't render for acceptable ads filter
-        if (el.length == 0 && !acceptableAdsFilter) {
+        if (el.length == 0 && antiBannerFilter.enabled && !acceptableAdsFilter) {
             el = this._renderAntiBannerFilter(antiBannerFilter);
             this.antiBannerFiltersList.append(el);
         }
