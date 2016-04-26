@@ -256,13 +256,14 @@ var AdguardSelectorLib = (function (api, $) {
 
     var makePlaceholderImage = function (element) {
         var placeHolder = document.createElement('div');
-        placeHolder.style.height = element.style.height;
-        placeHolder.style.width = element.style.width;
-        placeHolder.style.position = element.style.position;
-        placeHolder.style.top = element.style.top;
-        placeHolder.style.bottom = element.style.bottom;
-        placeHolder.style.left = element.style.left;
-        placeHolder.style.right = element.style.right;
+        var style = window.getComputedStyle(element);
+        placeHolder.style.height = style.height;
+        placeHolder.style.width = style.width;
+        placeHolder.style.position = style.position;
+        placeHolder.style.top = style.top;
+        placeHolder.style.bottom = style.bottom;
+        placeHolder.style.left = style.left;
+        placeHolder.style.right = style.right;
         placeHolder.className += PLACEHOLDER_PREFIX;
 
         var icon = document.createElement('div');
