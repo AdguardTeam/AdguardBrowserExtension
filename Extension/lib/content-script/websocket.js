@@ -24,28 +24,38 @@ var overrideWebSocket = function () {
         this.readyState = 0; // CONNECTING
 
         // Send a message to the background page to check if the request should be blocked
-        //var message = {
-        //    type: 'processShouldCollapse',
-        //    elementUrl: server,
-        //    documentUrl: document.URL,
-        //    requestType: "SUBDOCUMENT",
-        //    requestId: 0
-        //};
-        //
-        //console.log(message);
-        //
-        //contentPage.sendMessage(message, function (response) {
-        //    console.log(response);
-        //});
+        var message = {
+            type: 'processShouldCollapse',
+            elementUrl: server,
+            documentUrl: document.URL,
+            requestType: "SUBDOCUMENT",
+            requestId: 0
+        };
+
+        //window.postMessage({
+        //    direction: "from-page-script",
+        //    message: "Message from the page"
+        //}, "*");
+
+        window.postMessage('test question', "*");
+
+        function messageListener(event) {
+            //TODO: Check message
+
+            console.log('--- Page received message');
+            console.log(event);
+        }
+
+        window.addEventListener("message", messageListener, false);
 
         //spyOn(this, 'send');
-        var that = this;
-        setTimeout(function () {
-            that.readyState = 1; // OPEN
-            if (that.onopen) {
-                that.onopen();
-            }
-        }, 0);
+        //var that = this;
+        //setTimeout(function () {
+        //    that.readyState = 1; // OPEN
+        //    if (that.onopen) {
+        //        that.onopen();
+        //    }
+        //}, 0);
     }
 
     FakeWebSocket.prototype = {

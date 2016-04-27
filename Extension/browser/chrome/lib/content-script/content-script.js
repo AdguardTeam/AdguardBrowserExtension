@@ -20,3 +20,20 @@ var contentPage = {
 };
 
 var i18n = chrome.i18n;
+
+
+function pageMessageListener(event) {
+    //TODO: Check message
+
+    console.log('--- content script received message');
+    console.log(event);
+
+    //event.source.postMessage({
+    //    direction: "from-page-script",
+    //    message: "Message from the page"
+    //}, "*");
+
+    event.source.postMessage('test answer', event.origin);
+}
+
+window.addEventListener("message", pageMessageListener, false);
