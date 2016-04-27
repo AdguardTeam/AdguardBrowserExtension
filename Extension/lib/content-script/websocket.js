@@ -16,46 +16,50 @@
  */
 
 var overrideWebSocket = function () {
-    console.log('loading ws implementation');
 
     function FakeWebSocket(server, protocol) {
         console.log('WS init: ' + server + ' ' + protocol);
 
         this.readyState = 0; // CONNECTING
+        var that = this;
 
         // Send a message to the background page to check if the request should be blocked
-        var message = {
-            type: 'processShouldCollapse',
-            elementUrl: server,
-            documentUrl: document.URL,
-            requestType: "SUBDOCUMENT",
-            requestId: 0
-        };
-
-        //window.postMessage({
-        //    direction: "from-page-script",
-        //    message: "Message from the page"
-        //}, "*");
-
-        window.postMessage('test question', "*");
-
         function messageListener(event) {
-            //TODO: Check message
+            if (!(event.data.direction &&
+                event.data.direction == "to-page-script" &&
+                event.data.elementUrl == server &&
+                event.data.documentUrl == document.URL)) {
+                return;
+            }
 
             console.log('--- Page received message');
-            console.log(event);
+            console.log(event.data);
+
+            setTimeout(function () {
+                if (event.data.collapse == true) {
+                    that.readyState = 3; // CLOSED
+                    if (that.onerror) {
+                        that.onerror();
+                    }
+                } else {
+                    that.readyState = 1; // OPEN
+                    if (that.onopen) {
+                        that.onopen();
+                    }
+                }
+            }, 0);
+
         }
 
         window.addEventListener("message", messageListener, false);
 
-        //spyOn(this, 'send');
-        //var that = this;
-        //setTimeout(function () {
-        //    that.readyState = 1; // OPEN
-        //    if (that.onopen) {
-        //        that.onopen();
-        //    }
-        //}, 0);
+        var message = {
+            direction: 'from-page-script',
+            elementUrl: server,
+            documentUrl: document.URL
+        };
+
+        window.postMessage(message, "*");
     }
 
     FakeWebSocket.prototype = {
@@ -68,7 +72,6 @@ var overrideWebSocket = function () {
             }, 0);
         },
 
-        // Useful testing functions
         receiveMessage: function (msg) {
             if (this.onmessage) this.onmessage({data: msg});
         },
@@ -82,17 +85,4 @@ var overrideWebSocket = function () {
     FakeWebSocket.orig = window.WebSocket;
 
     window.WebSocket = FakeWebSocket;
-
-    console.log('loading ws implementation done');
-
-
-    //TODO: Remove debugging
-    console.log('Trying to send message..');
-
-    if (true) {
-        var exampleSocket = new window.WebSocket('ws://wsp.marketgid.com:8040/ws');
-        exampleSocket.send("Here's some text that the server is urgently awaiting!");
-    }
-
-    console.log('Message send');
 };
