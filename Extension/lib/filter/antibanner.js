@@ -770,7 +770,9 @@ AntiBannerService.prototype = {
         var filterIdsToUpdate = [];
         for (var i = 0; i < this.adguardFilters.length; i++) {
             var filter = this.adguardFilters[i];
-            if ((forceUpdate || filter.enabled) && filter.filterId != AntiBannerFiltersId.USER_FILTER_ID && filter.filterId != AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+            if (((forceUpdate && filter.loaded) || filter.enabled)
+                && filter.filterId != AntiBannerFiltersId.USER_FILTER_ID
+                && filter.filterId != AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
                 // Check filters update period (or forceUpdate flag)
                 var needUpdate = forceUpdate || (!filter.lastCheckTime || (Date.now() - filter.lastCheckTime) >= this.UPDATE_FILTERS_PERIOD);
                 if (needUpdate) {
