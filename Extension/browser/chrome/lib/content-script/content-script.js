@@ -21,7 +21,7 @@ var contentPage = {
 
 var i18n = chrome.i18n;
 
-
+//TODO: Move it somewhere
 function pageMessageListener(event) {
     if (!(event.source == window &&
         event.data.direction &&
@@ -30,9 +30,6 @@ function pageMessageListener(event) {
         event.data.documentUrl)) {
         return;
     }
-
-    console.log('--- content script received message');
-    console.log(event.data);
 
     var message = {
         type: 'processShouldCollapse',

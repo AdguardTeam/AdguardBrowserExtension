@@ -18,12 +18,9 @@
 var overrideWebSocket = function () {
 
     function FakeWebSocket(server, protocol) {
-        console.log('WS init: ' + server + ' ' + protocol);
-
         this.readyState = 0; // CONNECTING
         var that = this;
 
-        // Send a message to the background page to check if the request should be blocked
         function messageListener(event) {
             if (!(event.data.direction &&
                 event.data.direction == "to-page-script" &&
@@ -31,9 +28,6 @@ var overrideWebSocket = function () {
                 event.data.documentUrl == document.URL)) {
                 return;
             }
-
-            console.log('--- Page received message');
-            console.log(event.data);
 
             setTimeout(function () {
                 if (event.data.collapse == true) {
@@ -59,6 +53,7 @@ var overrideWebSocket = function () {
             documentUrl: document.URL
         };
 
+        // Send a message to the background page to check if the request should be blocked
         window.postMessage(message, "*");
     }
 
