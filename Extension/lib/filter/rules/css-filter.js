@@ -27,8 +27,10 @@ var FilterRule = require('../../../lib/filter/rules/base-filter-rule').FilterRul
 var EventNotifier = require('../../../lib/utils/notifier').EventNotifier;
 var EventNotifierTypes = require('../../../lib/utils/common').EventNotifierTypes;
 var userSettings = require('../../../lib/utils/user-settings').userSettings;
+var Utils = require('../../../lib/utils/browser-utils').Utils;
 
 var isFirefox = (Prefs.platform == "firefox");
+var isShadowDomSupported = Utils.isShadowDomSupported();
 
 /**
  * This class manages CSS rules and builds styles to inject to pages.
@@ -571,9 +573,9 @@ CssFilter.prototype = {
 			var rule = rules[i];
 
 			if (rule.isInjectRule) {
-				cssSb.push(rule.cssSelector);
+				cssSb.push(this._getRuleCssSelector(rule.cssSelector));
 			} else {
-				elemHideSb.push(rule.cssSelector);
+				elemHideSb.push(this._getRuleCssSelector(rule.cssSelector));
 				++selectorsCount;
 				if (selectorsCount % CSS_SELECTORS_PER_LINE == 0) {
 					elemHideSb.push(ELEMHIDE_CSS_STYLE);
@@ -629,9 +631,9 @@ CssFilter.prototype = {
 			var rule = rules[i];
 
 			if (rule.isInjectRule) {
-				cssSb.push(rule.cssSelector);
+				cssSb.push(this._getRuleCssSelector(rule.cssSelector));
 			} else {
-				elemHideSb.push(rule.cssSelector);
+				elemHideSb.push(this._getRuleCssSelector(rule.cssSelector));
 				if (FilterUtils.isUserFilterRule(rule)) {
 					elemHideSb.push(ELEMHIDE_CSS_STYLE);
 				} else {
@@ -657,6 +659,10 @@ CssFilter.prototype = {
 		}
 
 		return styles;
+	},
+
+	_getRuleCssSelector: function (cssSelector) {
+		return isShadowDomSupported ? "::content " + cssSelector : cssSelector;
 	},
 
 	_getDomainsSource: function (rule) {
