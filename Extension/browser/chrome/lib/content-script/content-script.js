@@ -20,37 +20,3 @@ var contentPage = {
 };
 
 var i18n = chrome.i18n;
-
-//TODO: Move it somewhere
-function pageMessageListener(event) {
-    if (!(event.source == window &&
-        event.data.direction &&
-        event.data.direction == "from-page-script" &&
-        event.data.elementUrl &&
-        event.data.documentUrl)) {
-        return;
-    }
-
-    var message = {
-        type: 'processShouldCollapse',
-        elementUrl: event.data.elementUrl,
-        documentUrl: event.data.documentUrl,
-        requestType: "SUBDOCUMENT",
-        requestId: 0
-    };
-
-    contentPage.sendMessage(message, function(response) {
-        if (!response) {
-            return;
-        }
-
-        event.source.postMessage({
-            direction: 'to-page-script',
-            elementUrl: event.data.elementUrl,
-            documentUrl: event.data.documentUrl,
-            collapse: response.collapse
-        }, event.origin);
-    });
-}
-
-window.addEventListener("message", pageMessageListener, false);

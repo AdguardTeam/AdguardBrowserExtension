@@ -213,8 +213,7 @@
 
         // Override window.WebSocket
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/203
-        scriptsToApply.unshift('overrideWebSocket();');
-        scriptsToApply.unshift('var overrideWebSocket = ' + overrideWebSocket.toString());
+        scriptsToApply.unshift('(' + overrideWebSocket.toString() + ')();');
 
         /**
          * JS injections are created by JS filtering rules:

@@ -17,67 +17,276 @@
 
 var overrideWebSocket = function () {
 
-    function FakeWebSocket(server, protocol) {
-        this.readyState = 0; // CONNECTING
+    'use strict';
+    var Wrapped = window.WebSocket;
+    var toWrapped = new WeakMap();
+    var onResponseReceived = function (wrapper, ok) {
+
+        var bag = toWrapped.get(wrapper);
+        if (!ok) {
+            if (bag.properties.onerror) {
+                bag.properties.onerror(new window.ErrorEvent('error'));
+            }
+            return;
+        }
+        var wrapped = null;
+        try {
+            wrapped = new Wrapped(bag.args.url, bag.args.protocols);
+        } catch (ex) {
+            console.error(ex.toString());
+        }
+        if (wrapped === null) {
+            return;
+        }
+        for (var p in bag.properties) {
+            wrapped[p] = bag.properties[p];
+        }
+        for (var i = 0, l; i < bag.listeners.length; i++) {
+            l = bag.listeners[i];
+            wrapped.addEventListener(l.ev, l.cb, l.fl);
+        }
+        toWrapped.set(wrapper, wrapped);
+    };
+    var noopfn = function () {
+    };
+    var fallthruGet = function (wrapper, prop, value) {
+        var wrapped = toWrapped.get(wrapper);
+        if (!wrapped) {
+            return value;
+        }
+        if (wrapped instanceof Wrapped) {
+            return wrapped[prop];
+        }
+        return wrapped.properties.hasOwnProperty(prop) ?
+            wrapped.properties[prop] :
+            value;
+    };
+    var fallthruSet = function (wrapper, prop, value) {
+        if (value instanceof Function) {
+            value = value.bind(wrapper);
+        }
+        var wrapped = toWrapped.get(wrapper);
+        if (!wrapped) {
+            return;
+        }
+        if (wrapped instanceof Wrapped) {
+            wrapped[prop] = value;
+        } else {
+            wrapped.properties[prop] = value;
+        }
+    };
+    var WebSocket = function (url, protocols) {
+        'native';
+        if (
+            window.location.protocol === 'https:' &&
+            url.lastIndexOf('ws:', 0) === 0
+        ) {
+            var ws = new Wrapped(url, protocols);
+            if (ws) {
+                ws.close();
+            }
+        }
+        Object.defineProperties(this, {
+            'binaryType': {
+                get: function () {
+                    return fallthruGet(this, 'binaryType', 'blob');
+                },
+                set: function (value) {
+                    fallthruSet(this, 'binaryType', value);
+                }
+            },
+            'bufferedAmount': {
+                get: function () {
+                    return fallthruGet(this, 'bufferedAmount', 0);
+                },
+                set: noopfn
+            },
+            'extensions': {
+                get: function () {
+                    return fallthruGet(this, 'extensions', '');
+                },
+                set: noopfn
+            },
+            'onclose': {
+                get: function () {
+                    return fallthruGet(this, 'onclose', null);
+                },
+                set: function (value) {
+                    fallthruSet(this, 'onclose', value);
+                }
+            },
+            'onerror': {
+                get: function () {
+                    return fallthruGet(this, 'onerror', null);
+                },
+                set: function (value) {
+                    fallthruSet(this, 'onerror', value);
+                }
+            },
+            'onmessage': {
+                get: function () {
+                    return fallthruGet(this, 'onmessage', null);
+                },
+                set: function (value) {
+                    fallthruSet(this, 'onmessage', value);
+                }
+            },
+            'onopen': {
+                get: function () {
+                    return fallthruGet(this, 'onopen', null);
+                },
+                set: function (value) {
+                    fallthruSet(this, 'onopen', value);
+                }
+            },
+            'protocol': {
+                get: function () {
+                    return fallthruGet(this, 'protocol', '');
+                },
+                set: noopfn
+            },
+            'readyState': {
+                get: function () {
+                    return fallthruGet(this, 'readyState', 0);
+                },
+                set: noopfn
+            },
+            'url': {
+                get: function () {
+                    return fallthruGet(this, 'url', '');
+                },
+                set: noopfn
+            }
+        });
+        toWrapped.set(this, {
+            args: {url: url, protocols: protocols},
+            listeners: [],
+            properties: {}
+        });
+
         var that = this;
 
         function messageListener(event) {
             if (!(event.data.direction &&
                 event.data.direction == "to-page-script" &&
-                event.data.elementUrl == server &&
+                event.data.elementUrl == url &&
                 event.data.documentUrl == document.URL)) {
                 return;
             }
 
-            setTimeout(function () {
-                if (event.data.collapse == true) {
-                    that.readyState = 3; // CLOSED
-                    if (that.onerror) {
-                        that.onerror();
-                    }
-                } else {
-                    that.readyState = 1; // OPEN
-                    if (that.onopen) {
-                        that.onopen();
-                    }
-                }
-            }, 0);
-
+            onResponseReceived(that, !event.data.collapse)
         }
 
         window.addEventListener("message", messageListener, false);
 
         var message = {
             direction: 'from-page-script',
-            elementUrl: server,
+            elementUrl: url,
             documentUrl: document.URL
         };
 
         // Send a message to the background page to check if the request should be blocked
         window.postMessage(message, "*");
+
+    };
+
+    WebSocket.prototype = Object.create(window.EventTarget.prototype, {
+        CONNECTING: {value: 0},
+        OPEN: {value: 1},
+        CLOSING: {value: 2},
+        CLOSED: {value: 3},
+        addEventListener: {
+            enumerable: true,
+            value: function (ev, cb, fl) {
+                if (cb instanceof Function === false) {
+                    return;
+                }
+                var wrapped = toWrapped.get(this);
+                if (!wrapped) {
+                    return;
+                }
+                var cbb = cb.bind(this);
+                if (wrapped instanceof Wrapped) {
+                    wrapped.addEventListener(ev, cbb, fl);
+                } else {
+                    wrapped.listeners.push({ev: ev, cb: cbb, fl: fl});
+                }
+            },
+            writable: true
+        },
+        close: {
+            enumerable: true,
+            value: function (code, reason) {
+                'native';
+                var wrapped = toWrapped.get(this);
+                if (wrapped instanceof Wrapped) {
+                    wrapped.close(code, reason);
+                }
+            },
+            writable: true
+        },
+        removeEventListener: {
+            enumerable: true,
+            value: function (ev, cb, fl) {
+            },
+            writable: true
+        },
+        send: {
+            enumerable: true,
+            value: function (data) {
+                'native';
+                var wrapped = toWrapped.get(this);
+                if (wrapped instanceof Wrapped) {
+                    wrapped.send(data);
+                }
+            },
+            writable: true
+        }
+    });
+    WebSocket.CONNECTING = 0;
+    WebSocket.OPEN = 1;
+    WebSocket.CLOSING = 2;
+    WebSocket.CLOSED = 3;
+    window.WebSocket = WebSocket;
+    var me = document.currentScript;
+    if (me && me.parentNode !== null) {
+        me.parentNode.removeChild(me);
     }
 
-    FakeWebSocket.prototype = {
-        send: function () {},
-        close: function () {
-            var that = this;
-            setTimeout(function () {
-                that.readyState = 3; // CLOSED
-                if (that.onclose) that.onclose({code: 3});
-            }, 0);
-        },
-
-        receiveMessage: function (msg) {
-            if (this.onmessage) this.onmessage({data: msg});
-        },
-        causeError: function (e) {
-            if (this.onerror) this.onerror(e);
-        }
-    };
-    FakeWebSocket.CONNECTING = 0;
-    FakeWebSocket.OPEN = 1;
-    FakeWebSocket.CLOSED = 3;
-    FakeWebSocket.orig = window.WebSocket;
-
-    window.WebSocket = FakeWebSocket;
 };
+
+
+function pageMessageListener(event) {
+    if (!(event.source == window &&
+        event.data.direction &&
+        event.data.direction == "from-page-script" &&
+        event.data.elementUrl &&
+        event.data.documentUrl)) {
+        return;
+    }
+
+    console.log('Received message:' + event.data);
+
+    var message = {
+        type: 'processShouldCollapse',
+        elementUrl: event.data.elementUrl,
+        documentUrl: event.data.documentUrl,
+        requestType: "SUBDOCUMENT",
+        requestId: 0
+    };
+
+    contentPage.sendMessage(message, function (response) {
+        if (!response) {
+            return;
+        }
+
+        event.source.postMessage({
+            direction: 'to-page-script',
+            elementUrl: event.data.elementUrl,
+            documentUrl: event.data.documentUrl,
+            collapse: response.collapse
+        }, event.origin);
+    });
+}
+
+window.addEventListener("message", pageMessageListener, false);
