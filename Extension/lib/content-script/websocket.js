@@ -198,7 +198,8 @@ var overrideWebSocket = function () {
 
     };
 
-    WebSocket.prototype = Object.create(window.EventTarget.prototype, {
+    var EventTarget = window.EventTarget || Element;
+    WebSocket.prototype = Object.create(EventTarget.prototype, {
         CONNECTING: {value: 0},
         OPEN: {value: 1},
         CLOSING: {value: 2},
