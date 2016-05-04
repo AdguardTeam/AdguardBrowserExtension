@@ -20,6 +20,7 @@ var overrideWebSocket = function () {
     'use strict';
     var Wrapped = window.WebSocket;
     var toWrapped = new WeakMap();
+
     var onResponseReceived = function (wrapper, ok) {
 
         var bag = toWrapped.get(wrapper);
@@ -27,17 +28,21 @@ var overrideWebSocket = function () {
             if (bag.properties.onerror) {
                 bag.properties.onerror(new window.ErrorEvent('error'));
             }
+
             return;
         }
+
         var wrapped = null;
         try {
             wrapped = new Wrapped(bag.args.url, bag.args.protocols);
         } catch (ex) {
-            console.error(ex.toString());
+            //Ignore ex
         }
+
         if (wrapped === null) {
             return;
         }
+
         for (var p in bag.properties) {
             wrapped[p] = bag.properties[p];
         }
@@ -45,10 +50,12 @@ var overrideWebSocket = function () {
             l = bag.listeners[i];
             wrapped.addEventListener(l.ev, l.cb, l.fl);
         }
+
         toWrapped.set(wrapper, wrapped);
     };
-    var noopfn = function () {
-    };
+
+    var noopfn = function () {};
+
     var fallthruGet = function (wrapper, prop, value) {
         var wrapped = toWrapped.get(wrapper);
         if (!wrapped) {
@@ -61,6 +68,7 @@ var overrideWebSocket = function () {
             wrapped.properties[prop] :
             value;
     };
+
     var fallthruSet = function (wrapper, prop, value) {
         if (value instanceof Function) {
             value = value.bind(wrapper);
@@ -75,17 +83,17 @@ var overrideWebSocket = function () {
             wrapped.properties[prop] = value;
         }
     };
+
     var WebSocket = function (url, protocols) {
         'native';
-        if (
-            window.location.protocol === 'https:' &&
-            url.lastIndexOf('ws:', 0) === 0
-        ) {
+        if (window.location.protocol === 'https:'
+            && url.lastIndexOf('ws:', 0) === 0) {
             var ws = new Wrapped(url, protocols);
             if (ws) {
                 ws.close();
             }
         }
+
         Object.defineProperties(this, {
             'binaryType': {
                 get: function () {
@@ -243,16 +251,13 @@ var overrideWebSocket = function () {
             writable: true
         }
     });
+
     WebSocket.CONNECTING = 0;
     WebSocket.OPEN = 1;
     WebSocket.CLOSING = 2;
     WebSocket.CLOSED = 3;
-    window.WebSocket = WebSocket;
-    var me = document.currentScript;
-    if (me && me.parentNode !== null) {
-        me.parentNode.removeChild(me);
-    }
 
+    window.WebSocket = WebSocket;
 };
 
 
@@ -264,8 +269,6 @@ function pageMessageListener(event) {
         event.data.documentUrl)) {
         return;
     }
-
-    console.log('Received message:' + event.data);
 
     var message = {
         type: 'processShouldCollapse',
