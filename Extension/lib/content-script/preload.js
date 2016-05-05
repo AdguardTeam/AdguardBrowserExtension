@@ -74,6 +74,7 @@
         isFirefox = userAgent.indexOf('firefox') > -1;
         isOpera = userAgent.indexOf('opera') > -1 || userAgent.indexOf('opr') > -1;
 
+        initWebSocketWrapper();
         initCollapseEventListeners();
         tryLoadCssAndScripts();
     };
@@ -87,6 +88,26 @@
         return (document instanceof HTMLDocument) ||
                 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/233
             ((document instanceof XMLDocument) && (document.createElement('div') instanceof HTMLDivElement));
+    };
+
+    /**
+     * Overrides window.WebSocket running the function from websocket.js
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/203
+     */
+    var initWebSocketWrapper = function () {
+        if (overrideWebSocket
+            && typeof overrideWebSocket == 'function') {
+
+            var content = "try {";
+            content += '(' + overrideWebSocket.toString() + ')();';
+            content += "} catch (ex) { console.error('Error executing AG js: ' + ex); }";
+
+            var script = document.createElement("script");
+            script.setAttribute("type", "text/javascript");
+            script.textContent = content;
+
+            (document.head || document.documentElement).appendChild(script);
+        }
     };
 
     /**
@@ -210,10 +231,6 @@
                     break;
             }
         }
-
-        // Override window.WebSocket running the function from websocket.js
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/203
-        scriptsToApply.unshift('(' + overrideWebSocket.toString() + ')();');
 
         /**
          * JS injections are created by JS filtering rules:
