@@ -41,10 +41,10 @@ var overrideWebSocket = function () {
      */
     var initConnection = function (wrapper, blockConnection) {
 
-        var bag = map.get(wrapper);
+        var wrappedWebSocket = map.get(wrapper);
         if (blockConnection) {
-            if (bag.properties.onerror) {
-                bag.properties.onerror(new window.ErrorEvent('error'));
+            if (wrappedWebSocket.properties.onerror) {
+                wrappedWebSocket.properties.onerror(new window.ErrorEvent('error'));
             }
 
             return;
@@ -52,7 +52,7 @@ var overrideWebSocket = function () {
 
         var wrapped = null;
         try {
-            wrapped = new Wrapped(bag.args.url, bag.args.protocols);
+            wrapped = new Wrapped(wrappedWebSocket.args.url, wrappedWebSocket.args.protocols);
         } catch (ex) {
             console.error(ex);
         }
@@ -61,23 +61,34 @@ var overrideWebSocket = function () {
             return;
         }
 
-        for (var p in bag.properties) {
-            wrapped[p] = bag.properties[p];
+        for (var p in wrappedWebSocket.properties) {
+            wrapped[p] = wrappedWebSocket.properties[p];
         }
-        for (var i = 0, l; i < bag.listeners.length; i++) {
-            l = bag.listeners[i];
+        for (var i = 0, l; i < wrappedWebSocket.listeners.length; i++) {
+            l = wrappedWebSocket.listeners[i];
             wrapped.addEventListener(l.ev, l.cb, l.fl);
         }
 
         map.set(wrapper, wrapped);
     };
 
+    /**
+     * Dummy function
+     */
     var emptyFunction = function () {};
 
-    var fallthruGet = function (wrapper, prop, value) {
+    /**
+     * Get property value from wrapped instance
+     *
+     * @param wrapper
+     * @param prop
+     * @param defaultValue
+     * @returns {*}
+     */
+    var getWrappedProperty = function (wrapper, prop, defaultValue) {
         var wrapped = map.get(wrapper);
         if (!wrapped) {
-            return value;
+            return defaultValue;
         }
 
         if (wrapped instanceof Wrapped) {
@@ -86,10 +97,17 @@ var overrideWebSocket = function () {
 
         return wrapped.properties.hasOwnProperty(prop) ?
             wrapped.properties[prop] :
-            value;
+            defaultValue;
     };
 
-    var fallthruSet = function (wrapper, prop, value) {
+    /**
+     * Set property value for wrapped instance
+     *
+     * @param wrapper
+     * @param prop
+     * @param value
+     */
+    var setWrappedProperty = function (wrapper, prop, value) {
         if (value instanceof Function) {
             value = value.bind(wrapper);
         }
@@ -126,71 +144,71 @@ var overrideWebSocket = function () {
         Object.defineProperties(this, {
             'binaryType': {
                 get: function () {
-                    return fallthruGet(this, 'binaryType', 'blob');
+                    return getWrappedProperty(this, 'binaryType', 'blob');
                 },
                 set: function (value) {
-                    fallthruSet(this, 'binaryType', value);
+                    setWrappedProperty(this, 'binaryType', value);
                 }
             },
             'bufferedAmount': {
                 get: function () {
-                    return fallthruGet(this, 'bufferedAmount', 0);
+                    return getWrappedProperty(this, 'bufferedAmount', 0);
                 },
                 set: emptyFunction
             },
             'extensions': {
                 get: function () {
-                    return fallthruGet(this, 'extensions', '');
+                    return getWrappedProperty(this, 'extensions', '');
                 },
                 set: emptyFunction
             },
             'onclose': {
                 get: function () {
-                    return fallthruGet(this, 'onclose', null);
+                    return getWrappedProperty(this, 'onclose', null);
                 },
                 set: function (value) {
-                    fallthruSet(this, 'onclose', value);
+                    setWrappedProperty(this, 'onclose', value);
                 }
             },
             'onerror': {
                 get: function () {
-                    return fallthruGet(this, 'onerror', null);
+                    return getWrappedProperty(this, 'onerror', null);
                 },
                 set: function (value) {
-                    fallthruSet(this, 'onerror', value);
+                    setWrappedProperty(this, 'onerror', value);
                 }
             },
             'onmessage': {
                 get: function () {
-                    return fallthruGet(this, 'onmessage', null);
+                    return getWrappedProperty(this, 'onmessage', null);
                 },
                 set: function (value) {
-                    fallthruSet(this, 'onmessage', value);
+                    setWrappedProperty(this, 'onmessage', value);
                 }
             },
             'onopen': {
                 get: function () {
-                    return fallthruGet(this, 'onopen', null);
+                    return getWrappedProperty(this, 'onopen', null);
                 },
                 set: function (value) {
-                    fallthruSet(this, 'onopen', value);
+                    setWrappedProperty(this, 'onopen', value);
                 }
             },
             'protocol': {
                 get: function () {
-                    return fallthruGet(this, 'protocol', '');
+                    return getWrappedProperty(this, 'protocol', '');
                 },
                 set: emptyFunction
             },
             'readyState': {
                 get: function () {
-                    return fallthruGet(this, 'readyState', 0);
+                    return getWrappedProperty(this, 'readyState', 0);
                 },
                 set: emptyFunction
             },
             'url': {
                 get: function () {
-                    return fallthruGet(this, 'url', '');
+                    return getWrappedProperty(this, 'url', '');
                 },
                 set: emptyFunction
             }
