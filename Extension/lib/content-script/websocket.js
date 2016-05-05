@@ -17,10 +17,13 @@
 
 /**
  * The function overrides window.WebSocket with our wrapper,
- * that will check url with filters through messaging with content script.
+ * that will check url with filters through messaging with content-script.
  *
  * This function will be inlined as page script.
  * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/203
+ *
+ * WebSocket wrapper implementation is based on:
+ * https://github.com/gorhill/uBO-WebSocket
  */
 var overrideWebSocket = function () {
 
