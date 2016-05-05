@@ -29,12 +29,20 @@ var overrideWebSocket = function () {
 
     'use strict';
     var Wrapped = window.WebSocket;
-    var toWrapped = new WeakMap();
+    var map = new WeakMap();
 
-    var onResponseReceived = function (wrapper, ok) {
+    /**
+     * Finalizes websocket creation.
+     * Original websocket opens connection to specified url,
+     * but this wrapped will block it if the flag is false.
+     *
+     * @param wrapper
+     * @param blockConnection block connection flag
+     */
+    var initConnection = function (wrapper, blockConnection) {
 
-        var bag = toWrapped.get(wrapper);
-        if (!ok) {
+        var bag = map.get(wrapper);
+        if (blockConnection) {
             if (bag.properties.onerror) {
                 bag.properties.onerror(new window.ErrorEvent('error'));
             }
@@ -46,7 +54,7 @@ var overrideWebSocket = function () {
         try {
             wrapped = new Wrapped(bag.args.url, bag.args.protocols);
         } catch (ex) {
-            //Ignore ex
+            console.error(ex);
         }
 
         if (wrapped === null) {
@@ -61,19 +69,21 @@ var overrideWebSocket = function () {
             wrapped.addEventListener(l.ev, l.cb, l.fl);
         }
 
-        toWrapped.set(wrapper, wrapped);
+        map.set(wrapper, wrapped);
     };
 
-    var noopfn = function () {};
+    var emptyFunction = function () {};
 
     var fallthruGet = function (wrapper, prop, value) {
-        var wrapped = toWrapped.get(wrapper);
+        var wrapped = map.get(wrapper);
         if (!wrapped) {
             return value;
         }
+
         if (wrapped instanceof Wrapped) {
             return wrapped[prop];
         }
+
         return wrapped.properties.hasOwnProperty(prop) ?
             wrapped.properties[prop] :
             value;
@@ -83,10 +93,12 @@ var overrideWebSocket = function () {
         if (value instanceof Function) {
             value = value.bind(wrapper);
         }
-        var wrapped = toWrapped.get(wrapper);
+
+        var wrapped = map.get(wrapper);
         if (!wrapped) {
             return;
         }
+
         if (wrapped instanceof Wrapped) {
             wrapped[prop] = value;
         } else {
@@ -94,6 +106,13 @@ var overrideWebSocket = function () {
         }
     };
 
+    /**
+     * Fake websocket constructor
+     *
+     * @param url
+     * @param protocols
+     * @constructor
+     */
     var WebSocket = function (url, protocols) {
         'native';
         if (window.location.protocol === 'https:'
@@ -117,13 +136,13 @@ var overrideWebSocket = function () {
                 get: function () {
                     return fallthruGet(this, 'bufferedAmount', 0);
                 },
-                set: noopfn
+                set: emptyFunction
             },
             'extensions': {
                 get: function () {
                     return fallthruGet(this, 'extensions', '');
                 },
-                set: noopfn
+                set: emptyFunction
             },
             'onclose': {
                 get: function () {
@@ -161,50 +180,49 @@ var overrideWebSocket = function () {
                 get: function () {
                     return fallthruGet(this, 'protocol', '');
                 },
-                set: noopfn
+                set: emptyFunction
             },
             'readyState': {
                 get: function () {
                     return fallthruGet(this, 'readyState', 0);
                 },
-                set: noopfn
+                set: emptyFunction
             },
             'url': {
                 get: function () {
                     return fallthruGet(this, 'url', '');
                 },
-                set: noopfn
+                set: emptyFunction
             }
         });
-        toWrapped.set(this, {
+
+        map.set(this, {
             args: {url: url, protocols: protocols},
             listeners: [],
             properties: {}
         });
 
-        var that = this;
 
+        var that = this;
         function messageListener(event) {
             if (!(event.data.direction &&
-                event.data.direction == "to-page-script" &&
+                event.data.direction == "to-page-script@adguard" &&
                 event.data.elementUrl == url &&
                 event.data.documentUrl == document.URL)) {
                 return;
             }
 
-            onResponseReceived(that, !event.data.collapse)
+            initConnection(that, event.data.collapse);
         }
 
         window.addEventListener("message", messageListener, false);
 
-        var message = {
-            direction: 'from-page-script',
+        // Send a message to the background page to check if the request should be blocked
+        window.postMessage({
+            direction: 'from-page-script@adguard',
             elementUrl: url,
             documentUrl: document.URL
-        };
-
-        // Send a message to the background page to check if the request should be blocked
-        window.postMessage(message, "*");
+        }, "*");
 
     };
 
@@ -221,7 +239,7 @@ var overrideWebSocket = function () {
                 if (cb instanceof Function === false) {
                     return;
                 }
-                var wrapped = toWrapped.get(this);
+                var wrapped = map.get(this);
                 if (!wrapped) {
                     return;
                 }
@@ -238,7 +256,7 @@ var overrideWebSocket = function () {
             enumerable: true,
             value: function (code, reason) {
                 'native';
-                var wrapped = toWrapped.get(this);
+                var wrapped = map.get(this);
                 if (wrapped instanceof Wrapped) {
                     wrapped.close(code, reason);
                 }
@@ -255,7 +273,7 @@ var overrideWebSocket = function () {
             enumerable: true,
             value: function (data) {
                 'native';
-                var wrapped = toWrapped.get(this);
+                var wrapped = map.get(this);
                 if (wrapped instanceof Wrapped) {
                     wrapped.send(data);
                 }
@@ -280,7 +298,7 @@ var overrideWebSocket = function () {
 function pageMessageListener(event) {
     if (!(event.source == window &&
         event.data.direction &&
-        event.data.direction == "from-page-script" &&
+        event.data.direction == "from-page-script@adguard" &&
         event.data.elementUrl &&
         event.data.documentUrl)) {
         return;
@@ -300,7 +318,7 @@ function pageMessageListener(event) {
         }
 
         event.source.postMessage({
-            direction: 'to-page-script',
+            direction: 'to-page-script@adguard',
             elementUrl: event.data.elementUrl,
             documentUrl: event.data.documentUrl,
             collapse: response.collapse
