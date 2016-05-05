@@ -27,6 +27,9 @@
  */
 var overrideWebSocket = function () {
 
+    var postMessage = window.postMessage;
+    var addEventListener = window.addEventListener;
+
     'use strict';
     var Wrapped = window.WebSocket;
     var map = new WeakMap();
@@ -233,10 +236,10 @@ var overrideWebSocket = function () {
             initConnection(that, event.data.collapse);
         }
 
-        window.addEventListener("message", messageListener, false);
+        addEventListener.call(window, "message", messageListener, false);
 
         // Send a message to the background page to check if the request should be blocked
-        window.postMessage({
+        postMessage.call(window, {
             direction: 'from-page-script@adguard',
             elementUrl: url,
             documentUrl: document.URL
