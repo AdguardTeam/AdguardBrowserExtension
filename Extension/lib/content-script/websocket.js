@@ -233,7 +233,7 @@ var overrideWebSocket = function () {
                 return;
             }
 
-            initConnection(that, event.data.collapse);
+            initConnection(that, event.data.block);
         }
 
         addEventListener.call(window, "message", messageListener, false);
@@ -326,7 +326,7 @@ function pageMessageListener(event) {
     }
 
     var message = {
-        type: 'processShouldCollapse',
+        type: 'checkWebSocketRequest',
         elementUrl: event.data.elementUrl,
         documentUrl: event.data.documentUrl,
         requestType: "SUBDOCUMENT",
@@ -342,7 +342,7 @@ function pageMessageListener(event) {
             direction: 'to-page-script@adguard',
             elementUrl: event.data.elementUrl,
             documentUrl: event.data.documentUrl,
-            collapse: response.collapse
+            block: response.block
         }, event.origin);
     });
 }
