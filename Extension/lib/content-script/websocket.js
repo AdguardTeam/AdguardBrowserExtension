@@ -15,6 +15,13 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * The function overrides window.WebSocket with our wrapper,
+ * that will check url with filters through messaging with content script.
+ *
+ * This function will be inlined as page script.
+ * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/203
+ */
 var overrideWebSocket = function () {
 
     'use strict';
@@ -198,6 +205,7 @@ var overrideWebSocket = function () {
 
     };
 
+    // Safari doesn't have EventTarget
     var EventTarget = window.EventTarget || Element;
     WebSocket.prototype = Object.create(EventTarget.prototype, {
         CONNECTING: {value: 0},
@@ -261,7 +269,11 @@ var overrideWebSocket = function () {
     window.WebSocket = WebSocket;
 };
 
-
+/**
+ * Listener for websocket wrapper messages.
+ *
+ * @param event
+ */
 function pageMessageListener(event) {
     if (!(event.source == window &&
         event.data.direction &&

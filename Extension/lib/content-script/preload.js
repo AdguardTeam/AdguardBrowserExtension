@@ -211,7 +211,7 @@
             }
         }
 
-        // Override window.WebSocket
+        // Override window.WebSocket running the function from websocket.js
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/203
         scriptsToApply.unshift('(' + overrideWebSocket.toString() + ')();');
 
