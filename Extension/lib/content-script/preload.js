@@ -94,13 +94,14 @@
      * Overrides window.WebSocket running the function from websocket.js
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/203
      */
+    /*global initPageMessageListener, overrideWebSocket*/
     var initWebSocketWrapper = function () {
-        if (overrideWebSocket
-            && typeof overrideWebSocket == 'function') {
+        if (typeof overrideWebSocket == 'function') {
+            initPageMessageListener();
 
-            var content = "try {";
+            var content = "try {\n";
             content += '(' + overrideWebSocket.toString() + ')();';
-            content += "} catch (ex) { console.error('Error executing AG js: ' + ex); }";
+            content += "\n} catch (ex) { console.error('Error executing AG js: ' + ex); }";
 
             var script = document.createElement("script");
             script.setAttribute("type", "text/javascript");

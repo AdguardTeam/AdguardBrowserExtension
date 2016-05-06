@@ -270,7 +270,7 @@ UrlFilterRule.MASK_START_URL = "||";
 UrlFilterRule.MASK_PIPE = "|";
 UrlFilterRule.MASK_ANY_SYMBOL = "*";
 UrlFilterRule.MASK_SEPARATOR = "^";
-UrlFilterRule.REGEXP_START_URL = "^https?://([a-z0-9-_.]+\\.)?";
+UrlFilterRule.REGEXP_START_URL = "^(http|https|ws|wss)://([a-z0-9-_.]+\\.)?";
 UrlFilterRule.REGEXP_ANY_SYMBOL = ".*";
 UrlFilterRule.REGEXP_START_STRING = "^";
 UrlFilterRule.REGEXP_SEPARATOR = "([^ a-zA-Z0-9.%]|$)";
@@ -301,7 +301,7 @@ UrlFilterRule.contentTypes = {
 // https://code.google.com/p/chromium/issues/detail?id=410382
 if (Prefs.platform === 'chromium' || Prefs.platform == 'webkit') {
     UrlFilterRule.contentTypes['OBJECT-SUBREQUEST'] = UrlFilterRule.contentTypes.OBJECT;
-};
+}
 
 UrlFilterRule.ignoreOptions = {
     // Deprecated modifiers
