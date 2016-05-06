@@ -103,6 +103,18 @@ WebRequestService.prototype.shouldLoadAllSelectors = function (collapseAllElemen
     return !safariContentBlockerEnabled;
 };
 
+WebRequestService.prototype.checkWebSocketRequest = function (tab, requestUrl, referrerUrl, requestType) {
+
+    if (!tab) {
+        return false;
+    }
+
+    var requestRule = this.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
+    this.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
+
+    return this.isRequestBlockedByRule(requestRule);
+};
+
 WebRequestService.prototype.processShouldCollapse = function (tab, requestUrl, referrerUrl, requestType) {
 
     if (!tab) {

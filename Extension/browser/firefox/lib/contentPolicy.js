@@ -464,7 +464,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
         var requestUrl = contentLocation.asciiSpec;
         var requestType = WebRequestHelper.getRequestType(contentType, contentLocation);
         var result = this._shouldBlockRequest(tab, requestUrl, requestType, aContext);
-        
+
         Log.debug('shouldLoad: {0} {1}. Result: {2}', requestUrl, requestType, result.blocked);
         this._saveLastRequestProperties(requestUrl, requestType, result, aContext);
         return result.blocked ? WebRequestHelper.REJECT : WebRequestHelper.ACCEPT;
@@ -683,7 +683,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
             return result;
         }
 
-        if (!UrlUtils.isHttpRequest(requestUrl)) {
+        if (!UrlUtils.isHttpOrWsRequest(requestUrl)) {
             return result;
         }
 
@@ -691,6 +691,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
 
         result.rule = this.webRequestService.getRuleForRequest(tab, requestUrl, tabUrl, requestType);
         result.blocked = this.webRequestService.isRequestBlockedByRule(result.rule);
+
         if (result.blocked) {
             this._collapseElement(node, requestType);
             
