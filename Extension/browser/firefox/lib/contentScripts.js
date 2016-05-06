@@ -127,7 +127,6 @@ ContentScripts.prototype = {
 
         // Web pages content scripts (responsible for ad blocking)
         this.registerPageContentScript([
-            'content-script/websocket.js',
             'content-script/content-script.js',
             'content-script/preload.js'
         ], 'document_start', true);
