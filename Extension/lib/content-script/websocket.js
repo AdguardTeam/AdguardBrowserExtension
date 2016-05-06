@@ -50,8 +50,6 @@ var overrideWebSocket = function () { // jshint ignore:line
                 return;
             }
             
-            console.log('message received ' + JSON.stringify(event.data));
-        
             var requestData = requestsMap[event.data.requestId];
             if (requestData) {
                 var wrapper = requestData.wrapper;
@@ -86,8 +84,6 @@ var overrideWebSocket = function () { // jshint ignore:line
                 documentUrl: document.URL
             };
             
-            console.log('message sent ' + JSON.stringify(message));
-            
             // Send a message to the background page to check if the request should be blocked
             postMessage.call(window, message, "*");
         };
@@ -115,7 +111,6 @@ var overrideWebSocket = function () { // jshint ignore:line
          */
         var channelResponseReceived = function (wrapper, blockConnection) {
 
-            console.log('response received: ' + blockConnection);
             var bag = map.get(wrapper);
             if (blockConnection) {
                 if (bag.properties.onerror) {
@@ -154,7 +149,7 @@ var overrideWebSocket = function () { // jshint ignore:line
         var emptyFunction = function () {};
 
         /**
-         * Gets a value of the specified property from the wrapped websocket if it is already created.
+         * Gets value of the specified property from the wrapped websocket if it is already created.
          *
          * @param wrapper       Wrapper instance
          * @param prop          Property name
@@ -177,7 +172,7 @@ var overrideWebSocket = function () { // jshint ignore:line
         };
 
         /**
-         * Sets a value of the specified property.
+         * Sets value of the specified property.
          *
          * @param wrapper   Wrapper instance
          * @param prop      Property name
@@ -204,7 +199,7 @@ var overrideWebSocket = function () { // jshint ignore:line
          * Fake websocket constructor.
          * https://developer.mozilla.org/en-US/docs/Web/API/WebSocket
          * 
-         * Original websocket opens a connection to a specified url. This wrapper works in a 
+         * Original websocket opens connection to a specified url. This wrapper works in a 
          * different way, it first checks if this WS connection should be blocked or not.
          *
          * @param url       The URL to which to connect
