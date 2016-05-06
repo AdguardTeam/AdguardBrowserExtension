@@ -106,8 +106,8 @@ var overrideWebSocket = function () { // jshint ignore:line
          * Called when we got response from an extension.
          * Depending on the "blockConnection" parameter we either create a real WS or call onerror.
          *
-         * @param wrapper WebSocket wrapper object
-         * @param blockConnection true if connection should be blocked
+         * @param wrapper           WebSocket wrapper object
+         * @param blockConnection   True if connection should be blocked
          */
         var channelResponseReceived = function (wrapper, blockConnection) {
 
