@@ -566,9 +566,7 @@ var AdguardSelectorLib = (function (api, $) {
         if (selectionRenderImpl && typeof selectionRenderImpl === "object") {
             selectionRenderer = selectionRenderImpl;
         } else {
-            console.log(BorderSelectionRenderer);
             selectionRenderer = BorderSelectionRenderer;
-            console.log(selectionRenderer);
         }
 
         restrictedElements = ['html', 'body', 'head', 'base'].map(function (selector) {
