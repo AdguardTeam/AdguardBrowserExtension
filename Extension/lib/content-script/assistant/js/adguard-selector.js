@@ -49,14 +49,8 @@ var AdguardSelectorLib = (function (api, $) {
     var unbound = true;
     var onElementSelectedHandler = null;
 
-    //TODO: Change to touch
-    var isIOS = (navigator.platform === 'iPad' || navigator.platform === 'iPhone');
-
-    /**
-     * In some cases we need to ignore touch event
-     */
+    var isTouchEventsSupported = (('ontouchstart' in window) || (navigator.msMaxTouchPoints > 0));
     var ignoreTouchEvent = 0;
-    /*******************************************/
 
 
     // PRIVATE METHODS
@@ -371,7 +365,7 @@ var AdguardSelectorLib = (function (api, $) {
                 var parent = current.parentNode;
                 if (parent) {
                     parent.replaceChild(placeHolder, current);
-                    if (isIOS) {
+                    if (isTouchEventsSupported) {
                         $(placeHolder).on("gestureend", iosGestureEndHandler);
                         $(placeHolder).on("touchmove", iosTouchMoveHandler);
                         $(placeHolder).on("touchend", function (e) {
@@ -459,8 +453,9 @@ var AdguardSelectorLib = (function (api, $) {
         return false;
     };
 
-    /********** Touch events ***************/
+    /********** Touch event handlers ***************/
     var iosElementSelectHandler = function (e) {
+        e.stopImmediatePropagation();
 
         sgMouseoverHandler.call(this, e);
         sgMousedownHandler.call(this, e);
@@ -510,7 +505,7 @@ var AdguardSelectorLib = (function (api, $) {
 
         var sgIgnore = $("body *:not(." + IGNORED_CLASS + ")");
 
-        if (isIOS) {
+        if (isTouchEventsSupported) {
             sgIgnore.forEach(function (el) {
                 el.addEventListener("gestureend", iosGestureEndHandler);
                 el.addEventListener("touchmove", iosTouchMoveHandler);
@@ -531,7 +526,7 @@ var AdguardSelectorLib = (function (api, $) {
         removePlaceholders();
 
         var elements = $("body *");
-        if (isIOS) {
+        if (isTouchEventsSupported) {
             elements.forEach(function (el) {
                 el.removeEventListener("gestureend", iosGestureEndHandler);
                 el.removeEventListener("touchmove", iosTouchMoveHandler);
