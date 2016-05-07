@@ -22,15 +22,6 @@ var AdguardSelectorLib = (function (api, $) {
 
     // PRIVATE FIELDS
 
-    var BORDER_WIDTH = 5;
-    var BORDER_PADDING = 2;
-    var BORDER_CLASS = "sg_border";
-
-    var borderTop = null;
-    var borderLeft = null;
-    var borderRight = null;
-    var borderBottom = null;
-
     var PLACEHOLDER_PREFIX = 'adguard-placeholder';
     var placeholdedElements = null;
 
@@ -51,6 +42,8 @@ var AdguardSelectorLib = (function (api, $) {
 
     var isTouchEventsSupported = (('ontouchstart' in window) || (navigator.msMaxTouchPoints > 0));
     var ignoreTouchEvent = 0;
+
+    var selectionRenderer;
 
 
     // PRIVATE METHODS
@@ -131,37 +124,6 @@ var AdguardSelectorLib = (function (api, $) {
         }
     };
 
-    var removeBorderFromDom = function () {
-        if (borderTop && borderTop.get(0)) {
-            var parent = borderTop.get(0).parentNode;
-
-            if (parent) {
-                parent.removeChild(borderTop.get(0));
-                parent.removeChild(borderBottom.get(0));
-                parent.removeChild(borderLeft.get(0));
-                parent.removeChild(borderRight.get(0));
-            }
-        }
-
-        borderTop = borderBottom = borderRight = borderLeft = null;
-    };
-
-    var addBorderToDom = function () {
-        document.body.appendChild(borderTop.get(0));
-        document.body.appendChild(borderBottom.get(0));
-        document.body.appendChild(borderLeft.get(0));
-        document.body.appendChild(borderRight.get(0));
-    };
-
-    var showBorders = function () {
-        if (borderTop && borderBottom && borderLeft && borderRight) {
-            borderTop.show();
-            borderBottom.show();
-            borderLeft.show();
-            borderRight.show();
-        }
-    };
-
     var clearSelected = function () {
         selectedElements = [];
         rejectedElements = [];
@@ -202,13 +164,51 @@ var AdguardSelectorLib = (function (api, $) {
      * @param element
      * @private
      */
-    var selectionRenderer = {
+    var BorderSelectionRenderer = (function (api) {
+        var BORDER_WIDTH = 5;
+        var BORDER_PADDING = 2;
+        var BORDER_CLASS = "sg_border";
+
+        var borderTop = null;
+        var borderLeft = null;
+        var borderRight = null;
+        var borderBottom = null;
+
+        var showBorders = function () {
+            if (borderTop && borderBottom && borderLeft && borderRight) {
+                borderTop.show();
+                borderBottom.show();
+                borderLeft.show();
+                borderRight.show();
+            }
+        };
+
+        var addBorderToDom = function () {
+            document.body.appendChild(borderTop.get(0));
+            document.body.appendChild(borderBottom.get(0));
+            document.body.appendChild(borderLeft.get(0));
+            document.body.appendChild(borderRight.get(0));
+        };
+
+        var removeBorderFromDom = function () {
+            if (borderTop && borderTop.get(0)) {
+                var parent = borderTop.get(0).parentNode;
+
+                if (parent) {
+                    parent.removeChild(borderTop.get(0));
+                    parent.removeChild(borderBottom.get(0));
+                    parent.removeChild(borderLeft.get(0));
+                    parent.removeChild(borderRight.get(0));
+                }
+            }
+
+            borderTop = borderBottom = borderRight = borderLeft = null;
+        };
 
         /**
          * Preparing renderer.
          */
-        init: function () {
-
+        api.init = function () {
             if (!borderTop) {
                 var width = px(BORDER_WIDTH);
 
@@ -224,22 +224,22 @@ var AdguardSelectorLib = (function (api, $) {
 
                 addBorderToDom();
             }
-        },
+        };
 
         /**
          * Clearing DOM and so on.
          */
-        finalize: function () {
+        api.finalize = function () {
             removeBorderFromDom();
-        },
+        };
 
         /**
          * Adds borders to specified element
          *
          * @param element
          */
-        add: function (element) {
-            this.remove();
+        api.add = function (element) {
+            api.remove();
 
             if (!element) {
                 return;
@@ -269,20 +269,29 @@ var AdguardSelectorLib = (function (api, $) {
             borderRight.get(0).target_elem = borderLeft.get(0).target_elem = borderTop.get(0).target_elem = borderBottom.get(0).target_elem = element;
 
             showBorders();
-        },
+        };
 
         /**
          * Removes borders
          */
-        remove: function () {
+        api.remove = function () {
             if (borderTop && borderBottom && borderLeft && borderRight) {
                 borderTop.hide();
                 borderBottom.hide();
                 borderLeft.hide();
                 borderRight.hide();
             }
-        }
-    };
+        };
+
+        /**
+         * Border class
+         *
+         * @type {string}
+         */
+        api.BORDER_CLASS = BORDER_CLASS;
+
+        return api;
+    })(BorderSelectionRenderer || {});
 
     var linkHelper = document.createElement('a');
     var getHost = function (url) {
@@ -435,7 +444,7 @@ var AdguardSelectorLib = (function (api, $) {
         }
 
         var elem = e.target;
-        if ($(elem).hasClass(BORDER_CLASS)) {
+        if ($(elem).hasClass(selectionRenderer.BORDER_CLASS)) {
             //Clicked on one of our floating borders, target the element that we are bordering.
             elem = elem.target_elem || elem;
         }
@@ -503,17 +512,17 @@ var AdguardSelectorLib = (function (api, $) {
     var setupEventHandlers = function () {
         makeIFrameAndEmbededSelector();
 
-        var sgIgnore = $("body *:not(." + IGNORED_CLASS + ")");
+        var elements = $("body *:not(." + IGNORED_CLASS + ")");
 
         if (isTouchEventsSupported) {
-            sgIgnore.forEach(function (el) {
+            elements.forEach(function (el) {
                 el.addEventListener("gestureend", iosGestureEndHandler);
                 el.addEventListener("touchmove", iosTouchMoveHandler);
                 el.addEventListener("touchend", iosElementTouchendHandler);
                 el.addEventListener("touchstart", iosPreventEventHandler);
             });
         } else {
-            sgIgnore.forEach(function (el) {
+            elements.forEach(function (el) {
                 el.addEventListener("mouseover", sgMouseoverHandler);
                 el.addEventListener("mouseout", sgMouseoutHandler);
                 el.addEventListener("click", sgMousedownHandler, true);
@@ -556,6 +565,10 @@ var AdguardSelectorLib = (function (api, $) {
         onElementSelectedHandler = onElementSelected;
         if (selectionRenderImpl && typeof selectionRenderImpl === "object") {
             selectionRenderer = selectionRenderImpl;
+        } else {
+            console.log(BorderSelectionRenderer);
+            selectionRenderer = BorderSelectionRenderer;
+            console.log(selectionRenderer);
         }
 
         restrictedElements = ['html', 'body', 'head', 'base'].map(function (selector) {
