@@ -138,15 +138,14 @@ ContentScripts.prototype = {
 
         // Assistant
         this.registerPageContentScript([
-            'libs/jquery-1.8.3.min.js',
-            'libs/jquery-ui.min.js',
             'libs/diff_match_patch.js',
             'libs/dom.patched.js',
             'libs/balalaika.patched.js',
+            'libs/deferred.js',
             'content-script/i18n-helper.js',    // Localization placeholders
             'content-script/content-script.js', // Message passing
+            'content-script/assistant/js/slider-widget.js',
             'content-script/assistant/js/start-assistant.js',
-            'content-script/assistant/js/tools.js',
             'content-script/assistant/js/adguard-selector.js',
             'content-script/assistant/js/adguard-rules-constructor.js',
             'content-script/assistant/js/assistant.js'

@@ -259,7 +259,7 @@ var AdguardSelectorLib = (function (api, $) {
             borderTop.css('width', px(width + BORDER_PADDING * 2 + BORDER_WIDTH * 2)).
                 css('top', px(top - BORDER_WIDTH - BORDER_PADDING)).
                 css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
-            borderBottom.css('width', px(width + BORDER_PADDING * 2 + BORDER_WIDTH * 2 - 5)).
+            borderBottom.css('width', px(width + BORDER_PADDING * 2 + BORDER_WIDTH)).
                 css('top', px(top + height + BORDER_PADDING)).
                 css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
             borderLeft.css('height', px(height + BORDER_PADDING * 2)).
@@ -359,25 +359,27 @@ var AdguardSelectorLib = (function (api, $) {
             var current = elements[i];
             (function (current) {
                 var placeHolder = makePlaceholderImage(current);
-                placeHolder.id = PLACEHOLDER_PREFIX + i;
+                var id = PLACEHOLDER_PREFIX + i;
+
+                placeHolder.setAttribute("id", id);
 
                 var parent = current.parentNode;
                 if (parent) {
                     parent.replaceChild(placeHolder, current);
                     if (isIOS) {
-
                         $(placeHolder).on("gestureend", iosGestureEndHandler);
                         $(placeHolder).on("touchmove", iosTouchMoveHandler);
                         $(placeHolder).on("touchend", function (e) {
                             e.preventDefault();
+                            
                             if (needIgnoreTouchEvent()) {
                                 return true;
                             }
+                            
                             placeholderClick(current);
                         });
                     } else {
-
-                        $(placeHolder).on('click', function (e) {
+                        $('#' + id).on('click', function (e) {
                             e.preventDefault();
 
                             placeholderClick(current);
@@ -423,40 +425,16 @@ var AdguardSelectorLib = (function (api, $) {
         selectionRenderer.remove();
         return false;
     };
-
-    /**
-     * Block clicks for a moment by covering this element with a div.
-     *
-     * @param elem
-     * @returns {boolean}
-     * @private
-     */
-    var blockClicksOn = function (elem) {
-        var p = getOffsetExtended(elem);
-        var block = $('<div/>').css('position', 'absolute').css('z-index', '9999999').css('width', px(p.outerWidth)).
-            css('height', px(p.outerHeight)).css('top', px(p.top)).css('left', px(p.left)).
-            css('background-color', '');
-
-        var blockElement = block.get(0);
-        document.body.appendChild(blockElement);
-
-        setTimeout(function () {
-            if (blockElement) {
-                blockElement.parentNode.removeChild(blockElement);
-            }
-        }, 400);
-
-        return false;
-    };
-
+    
     var sgMousedownHandler = function (e) {
         e.preventDefault();
+        e.stopImmediatePropagation();
 
         if (unbound) {
             return true;
         }
 
-        var elem = this;
+        var elem = e.target;
         if ($(elem).hasClass(BORDER_CLASS)) {
             //Clicked on one of our floating borders, target the element that we are bordering.
             elem = elem.target_elem || elem;
@@ -466,15 +444,9 @@ var AdguardSelectorLib = (function (api, $) {
             return;
         }
 
-        // Don't allow selection of elements that have a selected child.
-        if ($('.' + SELECTED_CLASS, this).get(0)) {
-            blockClicksOn(elem);
-        }
-
         makePredictionPath(elem);
 
         selectionRenderer.remove();
-        blockClicksOn(elem);
 
         onElementSelectedHandler(elem);
 
@@ -535,15 +507,20 @@ var AdguardSelectorLib = (function (api, $) {
         var sgIgnore = $("body *:not(." + IGNORED_CLASS + ")");
 
         if (isIOS) {
-            sgIgnore.on("gestureend", iosGestureEndHandler);
-            sgIgnore.on("touchmove", iosTouchMoveHandler);
-            sgIgnore.on("touchend", iosElementTouchendHandler);
-            sgIgnore.on('touchstart', iosPreventEventHandler);
+            sgIgnore.forEach(function (el) {
+                el.addEventListener("gestureend", iosGestureEndHandler);
+                el.addEventListener("touchmove", iosTouchMoveHandler);
+                el.addEventListener("touchend", iosElementTouchendHandler);
+                el.addEventListener("touchstart", iosPreventEventHandler);
+            });
         } else {
-            sgIgnore.on("mouseover", sgMouseoverHandler);
-            sgIgnore.on("mouseout", sgMouseoutHandler);
-            sgIgnore.on("click", sgMousedownHandler);
+            sgIgnore.forEach(function (el) {
+                el.addEventListener("mouseover", sgMouseoverHandler);
+                el.addEventListener("mouseout", sgMouseoutHandler);
+                el.addEventListener("click", sgMousedownHandler, true);
+            });
         }
+        
     };
 
     var deleteEventHandlers = function () {
@@ -551,16 +528,25 @@ var AdguardSelectorLib = (function (api, $) {
 
         var elements = $("body *");
         if (isIOS) {
+            elements.forEach(function (el) {
+                el.removeEventListener("gestureend", iosGestureEndHandler);
+                el.removeEventListener("touchmove", iosTouchMoveHandler);
+                el.removeEventListener("touchend", iosElementTouchendHandler);
+                el.removeEventListener("touchstart", iosPreventEventHandler);
+            });
             elements.off("gestureend", iosGestureEndHandler);
             elements.off("touchmove", iosTouchMoveHandler);
             elements.off("touchend", iosElementTouchendHandler);
             elements.off('touchstart', iosPreventEventHandler);
         } else {
-            elements.off("mouseover", sgMouseoverHandler);
-            elements.off("mouseout", sgMouseoutHandler);
-            elements.off("click", sgMousedownHandler);
+            elements.forEach(function (el) {
+                el.removeEventListener("mouseover", sgMouseoverHandler);
+                el.removeEventListener("mouseout", sgMouseoutHandler);
+                el.removeEventListener("click", sgMousedownHandler, true);
+            });
         }
     };
+
 
     // PUBLIC API
 

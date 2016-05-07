@@ -512,6 +512,9 @@ PageController.prototype = {
             return;
         }
 
+        //Prevent translating on document loaded
+        el.removeAttr('i18n');
+
         var message = i18n.getMessage("options_antibanner_info", [info.rulesCount]);
         el.text(message);
         el.show();

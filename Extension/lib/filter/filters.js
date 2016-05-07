@@ -341,17 +341,19 @@ RequestFilter.prototype = {
      * Checks if there is a rule blocking this request
      *
      * @param requestUrl    Request URL
-     * @param referrer      Referrer
+     * @param refHost       Referrer host
      * @param requestType   Request content type (one of UrlFilterRule.contentTypes)
      * @param thirdParty    Is request third-party or not
+     * @param genericRulesAllowed    Is generic rules allowed
      * @returns Filter rule found or null
      * @private
      */
-    _checkUrlBlockingList: function (requestUrl, referrer, requestType, thirdParty) {
+    _checkUrlBlockingList: function (requestUrl, refHost, requestType, thirdParty, genericRulesAllowed) {
         if (this.urlBlockingFilter == null || StringUtils.isEmpty(requestUrl)) {
             return null;
         }
-        return this.urlBlockingFilter.isFiltered(requestUrl, referrer, requestType, thirdParty);
+
+        return this.urlBlockingFilter.isFiltered(requestUrl, refHost, requestType, thirdParty, !genericRulesAllowed);
     },
 
     /**
@@ -381,19 +383,14 @@ RequestFilter.prototype = {
             return referrerWhiteRule;
         }
 
-        var rule = this._checkUrlBlockingList(requestUrl, refHost, requestType, thirdParty);
+        var genericUrlBlockRule = this._checkWhiteList(referrer, refHost, "GENERICBLOCK", thirdParty);
+        var rule = this._checkUrlBlockingList(requestUrl, refHost, requestType, thirdParty, !genericUrlBlockRule);
         if (rule != null) {
-            if (rule.isGeneric()) {
-                var genericUrlBlockRule = this._checkWhiteList(referrer, refHost, "GENERICBLOCK", thirdParty);
-                if (genericUrlBlockRule) {
-                    return genericUrlBlockRule;
-                }
-            }
-
             Log.debug("Black list rule {0} found for url: {1}, referrer: {2}, requestType: {3}", rule.ruleText, requestUrl, refHost, requestType);
+            return rule;
         }
 
-        return rule;
+        return genericUrlBlockRule;
     },
 
     /**

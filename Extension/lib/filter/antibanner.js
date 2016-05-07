@@ -751,7 +751,7 @@ AntiBannerService.prototype = {
      * Checks filters updates.
      *
      * @param forceUpdate Normally we respect filter update period. But if this parameter is
-     *                    true - we ignore it and check all enabled filters updates.
+     *                    true - we ignore it and check updates for all filters.
      * @param successCallback Called if filters were updated successfully
      * @param errorCallback Called if something gone wrong
      */
@@ -770,7 +770,9 @@ AntiBannerService.prototype = {
         var filterIdsToUpdate = [];
         for (var i = 0; i < this.adguardFilters.length; i++) {
             var filter = this.adguardFilters[i];
-            if (filter.enabled && filter.filterId != AntiBannerFiltersId.USER_FILTER_ID && filter.filterId != AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+            if (filter.installed
+                && filter.filterId != AntiBannerFiltersId.USER_FILTER_ID
+                && filter.filterId != AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
                 // Check filters update period (or forceUpdate flag)
                 var needUpdate = forceUpdate || (!filter.lastCheckTime || (Date.now() - filter.lastCheckTime) >= this.UPDATE_FILTERS_PERIOD);
                 if (needUpdate) {
@@ -998,6 +1000,17 @@ AntiBannerService.prototype = {
             
             EventNotifier.notifyListeners(EventNotifierTypes.REQUEST_FILTER_UPDATED, this.getRequestFilterInfo());            
             Log.info("Finished request filter initialization in {0} ms. Rules count: {1}", (new Date().getTime() - start), requestFilter.rulesCount);
+
+            if (requestFilter.rulesCount == 0 && !this.reloadedRules) {
+                //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/205
+                Log.info("No rules have been found - checking filter updates");
+                this._reloadAntiBannerFilters();
+                this.reloadedRules = true;
+            } else if (requestFilter.rulesCount > 0 && this.reloadedRules) {
+                Log.info("Filters reloaded, deleting reloadRules flag");
+                delete this.reloadedRules;
+            }
+
         }.bind(this);
         
         /**

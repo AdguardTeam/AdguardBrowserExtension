@@ -167,6 +167,9 @@ ContentMessageHandler.prototype = {
                 }
                 var cssAndScripts = this.webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl);
                 return cssAndScripts || {};
+            case 'checkWebSocketRequest':
+                var block = this.webRequestService.checkWebSocketRequest(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
+                return {block: block, requestId: message.requestId};
             case 'processShouldCollapse':
                 
                 if (!Prefs.collapseByContentScript) {
@@ -326,13 +329,14 @@ ContentMessageHandler.prototype = {
             'assistant_slider_min',
             'assistant_slider_max',
             'assistant_extended_settings',
-            'assistant_rule_parameters',
             'assistant_apply_rule_to_all_sites',
             'assistant_block_by_reference',
             'assistant_block_similar',
             'assistant_block',
             'assistant_another_element',
             'assistant_preview',
+            'assistant_preview_header',
+            'assistant_preview_header_info',
             'assistant_preview_end',
             'assistant_preview_start'
         ];

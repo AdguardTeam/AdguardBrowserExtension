@@ -47,8 +47,8 @@
     /**
      * Initializing content script
      */
-    var init = function() {       
-        if (!(document instanceof HTMLDocument)) {
+    var init = function () {
+        if (!isHtml()) {
             return;
         }
         
@@ -74,22 +74,55 @@
         isFirefox = userAgent.indexOf('firefox') > -1;
         isOpera = userAgent.indexOf('opera') > -1 || userAgent.indexOf('opr') > -1;
 
+        initWebSocketWrapper();
         initCollapseEventListeners();
         tryLoadCssAndScripts();
     };
 
     /**
+     * Checks if it is html document
+     *
+     * @returns {boolean}
+     */
+    var isHtml = function () {
+        return (document instanceof HTMLDocument) ||
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/233
+            ((document instanceof XMLDocument) && (document.createElement('div') instanceof HTMLDivElement));
+    };
+
+    /**
+     * Overrides window.WebSocket running the function from websocket.js
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/203
+     */
+    /*global initPageMessageListener, overrideWebSocket*/
+    var initWebSocketWrapper = function () {
+        if (typeof overrideWebSocket == 'function') {
+            initPageMessageListener();
+
+            var content = "try {\n";
+            content += '(' + overrideWebSocket.toString() + ')();';
+            content += "\n} catch (ex) { console.error('Error executing AG js: ' + ex); }";
+
+            var script = document.createElement("script");
+            script.setAttribute("type", "text/javascript");
+            script.textContent = content;
+
+            (document.head || document.documentElement).appendChild(script);
+        }
+    };
+
+    /**
      * Loads CSS and JS injections
      */
-    var tryLoadCssAndScripts = function() {
+    var tryLoadCssAndScripts = function () {
         var message = {
             type: 'getSelectorsAndScripts',
-            documentUrl: window.location.href            
+            documentUrl: window.location.href
         };
-        
+
         /**
-         * Sending message to background page and passing a callback function  
-         */ 
+         * Sending message to background page and passing a callback function
+         */
         contentPage.sendMessage(message, processCssAndScriptsResponse);
     };
     

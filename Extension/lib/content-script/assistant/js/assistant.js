@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var Adguard = function () {
+var AdguardAssistant = function ($) {
 
 	var self = this;
 
@@ -23,6 +23,7 @@ var Adguard = function () {
 			return self.localization[id];
 		}
 	};
+
 	var settings = {
 		iframeId: 'adguard-assistant-dialog',
 		path: null,
@@ -42,10 +43,10 @@ var Adguard = function () {
 		minComplaintMessageLength: 8,
 		maxComplaintCommentLength: 500,
 		iframe: {//maximum values for all browsers was leaved for compatibility
-			baseWidth: 560,
-			extendDetailedSettingsHeight: 460,
-			detailedMenuHeight: 270,
-			selectorMenuHeight: 95,
+			baseWidth: 668,
+			extendDetailedSettingsHeight: 503,
+			detailedMenuHeight: 340,
+			selectorMenuHeight: 213,
 			topOffset: 25
 		}
 	};
@@ -59,6 +60,7 @@ var Adguard = function () {
 			}
 			return childArray;
 		},
+
 		getChildren: function (element) {
 			var childs = element.childNodes;
 			if (childs) {
@@ -74,6 +76,7 @@ var Adguard = function () {
 			}
 			return count == 1 ? child : null;
 		},
+
 		getParentsLevel: function (element) {
 			var parent = element;
 			var parentArr = [];
@@ -99,7 +102,7 @@ var Adguard = function () {
 		},
 
 		cropDomain: function (domain) {
-			return domain.replace("www.", "");
+			return domain.replace("www.", "").replace(/:\d+/, '');
 		}
 	};
 
@@ -114,6 +117,7 @@ var Adguard = function () {
 		if (!settings.urlInfo) {
 			settings.urlInfo = utils.getUrl(document.location);
 		}
+
 		return settings.urlInfo;
 	};
 
@@ -130,11 +134,16 @@ var Adguard = function () {
 
 		var iframeJ = findIframe();
 		var dragHandle = findInIframe('#drag-handle');
-		var $iframeDocument = $(iframe.get(0).contentDocument);
+		var $iframeDocument = $(iframe.contentDocument);
 
 		var offset = Object.create(null);
 
-		// Generalized function to get position of an event (like mousedown, mousemove, etc)
+		/**
+		 * Generalized function to get position of an event (like mousedown, mousemove, etc)
+		 *
+		 * @param e
+		 * @returns {{x: (Number|number), y: (Number|number)}}
+		 */
 		var getEventPosition = function (e) {
 			if (!e) {
 				e = window.event;
@@ -147,6 +156,7 @@ var Adguard = function () {
 
 		/**
 		 * Function that does actual "dragging"
+		 *
 		 * @param x
 		 * @param y
 		 */
@@ -161,13 +171,11 @@ var Adguard = function () {
 				newPositionY = 0;
 			}
 
-			iframeJ.css({
-				left: newPositionX + 'px',
-				top: newPositionY + 'px'
-			});
+			iframeJ.css('left', newPositionX + 'px');
+			iframeJ.css('top', newPositionY + 'px');
 		};
 
-		var cancelIfameSelection = function (e) {
+		var cancelIFrameSelection = function (e) {
 			e.preventDefault();
 			e.stopPropagation();
 		};
@@ -180,16 +188,19 @@ var Adguard = function () {
 		var onMouseDown = function (e) {
 
 			var eventPosition = getEventPosition(e);
-			offset.x = iframeJ.offset().left - $(window).scrollLeft() + dragHandle.position().left - eventPosition.x;
-			offset.y = iframeJ.offset().top - $(window).scrollTop() + dragHandle.position().top - eventPosition.y;
+			var dragHandleEl = dragHandle.get(0);
+			var rect = iframeJ.get(0).getBoundingClientRect();
+
+			offset.x = rect.left + dragHandleEl.offsetLeft - eventPosition.x;
+			offset.y = rect.top + dragHandleEl.offsetTop - eventPosition.y;
 
 			$iframeDocument.on('mousemove', onMouseMove);
-			$iframeDocument.on('selectstart', cancelIfameSelection);
+			$iframeDocument.on('selectstart', cancelIFrameSelection);
 		};
 
 		var onMouseUp = function () {
 			$iframeDocument.off('mousemove', onMouseMove);
-			$iframeDocument.off('selectstart', cancelIfameSelection);
+			$iframeDocument.off('selectstart', cancelIFrameSelection);
 		};
 
 		dragHandle.on('mousedown', onMouseDown);
@@ -213,24 +224,22 @@ var Adguard = function () {
 	var createIframe = function (width, height, dfd) {
 		var viewPort = getViewport();
 		var positions = getPositionsForIframe(constants.iframe.topOffset, viewPort, height, width);
-		var cssStyle = {
-			width: width,
-			height: height,
-			position: 'fixed',
-			left: positions.left,
-			top: positions.top
-		};
-		//for src
-		var iframe = $('<iframe />"').attr({
-			id: settings.iframeId,
-			'class': 'sg_ignore adg-view-important',
-			frameBorder: 0,
-			allowTransparency: 'true'
-		}).css(cssStyle);
+
+		var iframe = document.createElement('iframe');
+		iframe.setAttribute('id', settings.iframeId);
+		iframe.setAttribute('class', 'sg_ignore adg-view-important');
+		iframe.setAttribute('frameBorder', '0');
+		iframe.setAttribute('allowTransparency', 'true');
+
+		iframe.style.width = width + 'px';
+		iframe.style.height = height + 'px';
+		iframe.style.position = 'fixed';
+		iframe.style.left = positions.left + 'px';
+		iframe.style.top = positions.top + 'px';
 
 		// Wait for iframe load and then apply styles
-		iframe.on('load', loadDefaultScriptsAndStyles.bind(null, iframe, dfd));
-		iframe.appendTo('body');
+		$(iframe).on('load', loadDefaultScriptsAndStyles.bind(null, iframe, dfd));
+		document.body.appendChild(iframe);
 
 		return iframe;
 	};
@@ -239,7 +248,7 @@ var Adguard = function () {
 
 		// Chrome doesn't inject scripts in empty iframe
 		try {
-			var doc = iframe[0].contentDocument;
+			var doc = iframe.contentDocument;
 			doc.open();
 			doc.write("<html><head></head></html>");
 			doc.close();
@@ -276,16 +285,12 @@ var Adguard = function () {
 		});
 	};
 
-	var findIframe = function (iframeId) {
-		if (iframeId) {
-			return $('#' + iframeId);
-		} else {
-			return $('#' + settings.iframeId);
-		}
+	var findIframe = function () {
+		return $('#' + settings.iframeId);
 	};
 
 	var findInIframe = function (selector) {
-		return findIframe().contents().find(selector);
+		return $(findIframe().get(0).contentDocument.querySelectorAll(selector));
 	};
 
 	var runCallbacks = function (iframe, beforeUnhide, afterUnhide) {
@@ -316,52 +321,56 @@ var Adguard = function () {
 		};
 
 		var existIframe = findIframe();
-		if (existIframe.size() > 0) {
-			iframe = existIframe;
-			changeCurrentIframe(width, height, existIframe);
+		if (existIframe.length > 0) {
+			iframe = existIframe.get(0);
+			changeCurrentIframe(width, height, iframe);
 			appendContent();
 			return;
 		}
 
-		var dfd = $.Deferred();
+		var dfd = new Deferred();
+		dfd.done(appendContent);
 		var iframe = createIframe(width, height, dfd);
-		$.when(dfd).done(appendContent);
 	};
 
-	var changeCurrentIframe = function (width, height, existIframe) {
-		existIframe.css({width: width, height: height});
+	var changeCurrentIframe = function (width, height, iframe) {
+		iframe.style.width = width + 'px';
+		iframe.style.height = height + 'px';
 	};
 
 	var appendContentToIframe = function (iframe, content) {
-		iframe.contents().find('body').children().remove();
-		iframe.contents().find('body').append(content);
+		var body = iframe.contentDocument.body;
+		for (var i = 0; i < body.children.length; i++) {
+			body.removeChild(body.children[i]);
+		}
+
+		body.appendChild(content.get(0));
 		findInIframe('body').addClass('adg-hide');
 	};
 
 
 	var bindClicks = function (iframe, events) {
-		$.each(events, function (key, value) {
-			iframe.contents().find(key).click(value);
-		});
+		for (var event in events) {
+			$(iframe.contentDocument.querySelectorAll(event)).on('click', events[event]);
+		}
 	};
 
 	var onSelectElementClicked = function (e) {
 		e.preventDefault();
-		var loaded = showSelectorMenu();
-		loaded.done(function () {
+
+		var dfd = new Deferred();
+		dfd.done(function () {
 			localizeMenu();
 			removePreview();
 			startSelector();
 		});
-	};
 
-	var makeRadioButtonsAndCheckBoxes = function () {
-		findInIframe('.radiobox').radioButton();
-		findInIframe('.checkbox').checkbox();
+		showSelectorMenu(dfd);
 	};
 
 	var onCancelSelectModeClicked = function (e) {
 		e.preventDefault();
+
 		removePreview();
 		cancelSelectMode();
 		closeAssistant();
@@ -408,61 +417,98 @@ var Adguard = function () {
 	};
 
 	var setFilterRuleInputText = function (ruleText) {
-		findInIframe('#filter-rule').val(ruleText);
+		findInIframe('#filter-rule').get(0).value = ruleText;
 	};
 
 	var localizeMenu = function () {
-		$.each(findInIframe("[i18n]"), function () {
-			var message = getMessage($(this).attr("i18n"));
-			I18nHelper.translateElement(this, message);
-		});
+		var elements = findInIframe("[i18n]");
+		for (var i = 0; i < elements.length; i++) {
+			var message = getMessage(elements[i].getAttribute("i18n"));
+			I18nHelper.translateElement(elements[i], message);
+		}
+
+		//TODO: Remove after all translations update
+		findInIframe('#blockSimilar').hide();
+		findInIframe('#blockByUrl').hide();
+		findInIframe('#oneDomainRadio').hide();
 	};
 
 	var createAdguardDetailedMenu = function () {
-		return $('<div>', {class: 'adg-container'})
-			.append($('<div>', {id: 'drag-handle', class: 'adg-head'})
-				.append($('<div>', {class: 'adg-close'}))
-				.append($('<div>', {class: 'adg-head-h', i18n: 'assistant_block_element'}))
-				.append($('<div>', {class: 'adg-head-opt comment'})
-					.append($('<span>', {i18n: 'assistant_block_element_explain'}))))
-			.append($('<div>', {class: 'adg-content'})
-				.append($('<div>', {class: 'adg-slide-block'})
-					.append($('<div>', {class: 'adg-slide-text', i18n: 'assistant_slider_explain'}))
-					.append($('<div>', {id: 'slider', class: 'adg-slide'})
-						.append($('<div>', {class: 'adg-slide-clue-max', i18n: 'assistant_slider_min'}))
-						.append($('<div>', {class: 'adg-slide-clue-min', i18n: 'assistant_slider_max'})))))
-			.append($('<div>', {class: 'adg-more'})
-				.append($('<a>', {id: 'ExtendedSettingsText', i18n: 'assistant_extended_settings'})))
-			.append($('<div>', {id: 'adv-settings', class: 'adg-form-block', style: 'display: none;'})
-				.append($('<span>')
-					.append($('<strong>', {i18n: 'assistant_rule_parameters'})))
-				.append($('<p>', {id: 'one-domain-p'})
-					.append($('<label>', {class: 'checkbox-label', i18n: 'assistant_apply_rule_to_all_sites'})))
-				.append($('<p>', {id: 'block-by-url-p', style: 'display: none;'})
-					.append($('<label>', {class: 'checkbox-label', i18n: 'assistant_block_by_reference'})))
-				.append($('<p>', {id: 'block-similar-p', style: 'display: none;'})
-					.append($('<label>', {class: 'checkbox-label', i18n: 'assistant_block_similar'})))
-				.append($('<p>')
-					.append($('<input>', {id: 'filter-rule', type: 'type'}))))
-			.append($('<div>', {class: 'adg-foot clearfix2'})
-				.append($('<a>', {id: 'adg-accept', class: 'btn btn-blue', href: '#'}).append($('<span>', {i18n: 'assistant_block'})))
-				.append($('<a>', {id: 'adg-cancel', class: 'btn btn-gray f-right', href: '#'}).append($('<span>', {i18n: 'assistant_another_element'})))
-				.append($('<a>', {id: 'adg-preview', class: 'btn btn-gray f-right', href: '#'}).append($('<span>', {i18n: 'assistant_preview'}))));
+		return $('<div class="main">' +
+			'<div class="close adg-close"></div>' +
+			'<div class="head" id="drag-handle">' +
+			'	<div i18n="assistant_block_element" class="head_title" id="head_title"></div>' +
+			'	<div i18n="assistant_block_element_explain" class="head_text" id="head_text"></div>' +
+			'</div>' +
+			'<div class="content">' +
+			'	<div class="element-rule">' +
+			'		<div i18n="assistant_slider_explain" class="element-rule_text"></div>' +
+			'		<div class="element-rule_slider">' +
+			'			<div class="adg-slide" id="slider">' +
+			'				<div class="adg-slide-clue-max">MAX</div>' +
+			'				<div class="adg-slide-clue-min">MIN</div>' +
+			'			</div>' +
+			'		</div>' +
+			'		<div class="element-rule_more">' +
+			'			<span class="element-rule_expand-link" id="ExtendedSettingsText">' +
+			'				<span i18n="assistant_extended_settings" class="element-rule_expand-link_txt"></span>' +
+			'				<span class="element-rule_expand-link_arr"></span>' +
+			'			</span>' +
+			'		</div>' +
+			'		<div class="element-rule_form" id="adv-settings">' +
+			'			<div class="element-rule_form-cont">' +
+			'				<div class="element-rule_fieldset" id="one-domain-checkbox-block">' +
+			'					<input class="form-ui-control" id="one-domain-checkbox" type="checkbox"/>' +
+			'					<label for="one-domain-checkbox" class="form-ui">' +
+			'						<span i18n="assistant_apply_rule_to_all_sites" class="form-ui-txt"></span>' +
+			'					</label>' +
+			'				</div>' +
+			'				<div style="display: none;" class="element-rule_fieldset" id="block-by-url-checkbox-block">' +
+			'					<input class="form-ui-control" id="block-by-url-checkbox" type="checkbox"/>' +
+			'					<label for="block-by-url-checkbox" class="form-ui">' +
+			'						<span i18n="assistant_block_by_reference" class="form-ui-txt"></span>' +
+			'					</label>' +
+			'				</div>' +
+			'				<div style="display: none;" class="element-rule_fieldset" id="block-similar-checkbox-block">' +
+			'					<input class="form-ui-control" id="block-similar-checkbox" type="checkbox"/>' +
+			'					<label for="block-similar-checkbox" class="form-ui">' +
+			'						<span i18n="assistant_block_similar" class="form-ui-txt"></span>' +
+			'					</label>' +
+			'				</div>' +
+			'				<div class="element-rule_fieldset">' +
+			'					<input class="form-control" id="filter-rule" type="text"/>' +
+			'				</div>' +
+			'			</div>' +
+			'		</div>' +
+			'	</div>' +
+			'</div>' +
+			'<div class="foot">' +
+			'	<button i18n="assistant_another_element" type="button" class="btn btn-default" id="adg-cancel"></button>' +
+			'	<div class="foot_action">' +
+			'		<div class="foot_action_btn">' +
+			'			<button i18n="assistant_preview" type="button" class="btn btn-primary" id="adg-preview"></button>' +
+			'			<button i18n="assistant_block" type="button" class="btn btn-cancel" id="adg-accept"></button>' +
+			'		</div>' +
+			'	</div>' +
+			'</div>' +
+			'</div>');
+
 	};
 
 	var createAdguardSelectorMenu = function () {
-		return $('<div>', {class: 'adg-container adg-auto-width sg_ignore'})
-			.append($('<div>', {id: 'drag-handle', class: 'adg-head'})
-				.append($('<div>', {id: 'close-button', class: 'adg-close'}))
-				.append($('<div>', {class: 'adg-head-h', i18n: 'assistant_select_element'}))
-				.append($('<div>', {class: 'adg-head-opt comment'})
-					.append($('<span>', {i18n: 'assistant_select_element_ext'}))
-					.append($('<span>')
-						.append($('<a>', {id: 'cancel-select-mode', href: '#', i18n: 'assistant_select_element_cancel'})))));
+		return $('<div class="main sg_ignore">' +
+			'<div class="close adg-close" id="close-button"></div>' +
+			'<div class="head" id="drag-handle">' +
+			'	<div i18n="assistant_select_element" class="head_title"></div>' +
+			'	<div i18n="assistant_select_element_ext" class="head_text"></div>' +
+			'</div>' +
+			'<div class="foot">' +
+			'	<button i18n="assistant_select_element_cancel" type="button" class="btn btn-default" id="cancel-select-mode"></button>' +
+			'</div>' +
+			'</div>');
 	};
 
-	var showDetailedMenu = function () {
-		var d = $.Deferred();
+	var showDetailedMenu = function (dfd) {
 		var content = createAdguardDetailedMenu();
 		showDialog(content, constants.iframe.baseWidth, constants.iframe.detailedMenuHeight, function (iframe) {
 			bindClicks(iframe, {
@@ -474,33 +520,30 @@ var Adguard = function () {
 				'#adg-accept': onRuleAccept,
 				'#ExtendedSettingsText': onExtendDetailedSettings
 			});
-			d.resolve('');
+			dfd.resolve();
 		}, function () {
 			localizeMenu();
-			makeRadioButtonsAndCheckBoxes();
 		});
-		return d;
 	};
 
 	/**
 	 * Shows Adguard selector menu
 	 */
-	var showSelectorMenu = function () {
+	var showSelectorMenu = function (dfd) {
 		var content = createAdguardSelectorMenu();
-		var d = $.Deferred();
+
 		showDialog(content, constants.iframe.baseWidth, constants.iframe.selectorMenuHeight, function (iframe) {
 			bindClicks(iframe, {
 				'#cancel-select-mode': onCancelSelectModeClicked,
 				'.adg-close': onCancelSelectModeClicked
 			});
-			d.resolve('');
+			dfd.resolve();
 		}, null);
-		return d;
 	};
 
 	var showHidingRuleWindow = function (element, urlBlock, blockSimilar) {
-		var loaded = showDetailedMenu();
-		loaded.done(function () {
+		var dfd = new Deferred();
+		dfd.done(function () {
 			createSlider(element);
 
 			AdguardSelectorLib.selectElement(element);
@@ -509,55 +552,50 @@ var Adguard = function () {
 			setScopeOneDomainText();
 			handleShowBlockSettings(urlBlock, blockSimilar);
 		});
+
+		showDetailedMenu(dfd);
 	};
 
 	var resizeIframe = function (width, height) {
 		var iframe = findIframe().get(0);
+
 		if (height) {
 			iframe.style.height = height + "px";
 		}
+
 		if (width) {
 			iframe.style.width = width + "px";
 		}
+
 		checkPosition();
 	};
 
 	var checkPosition = function () {
+		var winHeight = window.innerHeight;
+		var bottom = document.body.scrollTop + winHeight;
 
-		var w = $(window);
-		var winHeight = w.height();
-		var bottom = w.scrollTop() + winHeight;
-
-		var iframe = findIframe();
-		var offset = iframe.offset();
-		var height = iframe.outerHeight();
-		if (offset.top + height > bottom) {
-			//replace
+		var iframe = findIframe().get(0);
+		var offsetTop = iframe.getBoundingClientRect().top + document.body.scrollTop;
+		var height = iframe.offsetHeight;
+		if (offsetTop + height > bottom) {
 			var top = winHeight - height - constants.iframe.topOffset;
 			if (top < 0) {
 				top = constants.iframe.topOffset;
 			}
-			iframe.css({
-				top: top
-			});
+			iframe.style.top = top + 'px';
 		}
 	};
 
-	var extendAdvSettings = function (width, height) {
-		resizeIframe(width, height);
-		findInIframe('#adv-settings').slideToggle(100);
-	};
-
 	var onExtendDetailedSettings = function () {
-		var hidden = findInIframe('#adv-settings').is(":hidden");
-		if (hidden)
-			extendAdvSettings(null, constants.iframe.extendDetailedSettingsHeight, null);
-		else {
-			var animationCallback = function () {
-				resizeIframe(null, constants.iframe.detailedMenuHeight);
-			};
-			findInIframe('#adv-settings').slideToggle({duration: 100, complete: animationCallback});
-
+		var hidden = !(findInIframe('#adv-settings').hasClass("open"));
+		if (hidden) {
+			resizeIframe(null, constants.iframe.extendDetailedSettingsHeight);
+			findInIframe('#adv-settings').addClass('open');
+			findInIframe('#ExtendedSettingsText').addClass('active');
+		} else {
+			resizeIframe(null, constants.iframe.detailedMenuHeight);
+			findInIframe('#adv-settings').removeClass('open');
+			findInIframe('#ExtendedSettingsText').removeClass('active');
 		}
 	};
 
@@ -566,108 +604,19 @@ var Adguard = function () {
 		findInIframe('#oneDomainText').text(path);
 	};
 
-	var renderSliderAndBindEvents = function (options) {
-
-		var $document = findIframe().contents();
-		var $slider = $("#slider", $document);
-
-		$slider.slider({
-			min: options.min,
-			max: options.max,
-			range: 'min',
-			value: options.value,
-			//Prevent the slider from doing anything from the start
-			start: function (event, ui) {
-				return false;
-			},
-			change: function (event, ui) {
-				refreshTicks(ui.value);
-				var delta = options.value - ui.value;
-				options.onSliderMove(delta);
-			}
-		});
-
-		$(document).mouseup(function () {
-			$('.slider,.ui-slider-handle', $document).unbind('mousemove');
-		});
-
-		//While the ui-slider-handle is being held down reference it parent.
-		$('.ui-slider-handle', $document).mousedown(function (e) {
-			e.preventDefault();
-			return $(this).parent().mousedown();
-		});
-
-		var $sliderOffsetLeft = $slider.offset().left;
-		var $sliderWidth = $slider.width();
-
-		var getSliderValue = function (pageX) {
-			return (options.max - options.min) / $sliderWidth * (pageX - $sliderOffsetLeft) + options.min;
-		};
-
-		//This will prevent the slider from moving if the mouse is taken out of the
-		//slider area before the mouse down has been released.
-		$slider.hover(function () {
-			$slider.bind('click', function (e) {
-				//calculate the correct position of the slider set the value
-				var value = getSliderValue(e.pageX);
-				$slider.slider('value', value);
-			});
-			$slider.mousedown(function () {
-				$(this).bind('mousemove', function (e) {
-					//calculate the correct position of the slider set the value
-					var value = getSliderValue(e.pageX);
-					$(this).slider('value', value);
-				});
-			}).mouseup(function () {
-				$(this).unbind('mousemove');
-			})
-		}, function () {
-			$('#slider', $document).unbind('mousemove');
-			$('#slider', $document).unbind('click');
-		});
-
-		//render slider items
-		var sliderItemsCount = options.max - 1;
-
-		//update slider items color
-		var refreshTicks = function (value) {
-			var ticks = findInIframe(".tick");
-			var i;
-			for (i = 0; i < ticks.length; i++) {
-				if (i + 1 < value) {
-					findInIframe(ticks[i]).css('background-color', '#86BFCE');
-				}
-				else {
-					findInIframe(ticks[i]).css('background-color', '#E6ECED');
-				}
-			}
-		};
-		//render slider items
-		var prepare = function (i) {
-			var tick = $('<div>', {class: 'tick ui-widget-content'}).appendTo($slider);
-			tick.css({
-				left: (100 / sliderItemsCount * i) + '%',
-				width: (100 / sliderItemsCount) + '%'
-			});
-		};
-		for (var i = 0; i < sliderItemsCount; i++) {
-			prepare(i);
-		}
-		refreshTicks(options.value);
-	};
-
 	var createSlider = function (element) {
 		var parents = utils.getParentsLevel(element);
-		var childs = utils.getAllChilds(element);
+		var children = utils.getAllChilds(element);
 		var value = Math.abs(parents.length + 1);
-		var max = parents.length + childs.length + 1;
+		var max = parents.length + children.length + 1;
 		var min = 1;
 		var options = {value: value, min: min, max: max};
 		if (min == max) {
 			//hide slider text
 			findInIframe('#slider').hide();
-			findInIframe('.adg-slide-text').text(getMessage("assistant_slider_if_hide"));
+			findInIframe('.element-rule_text').text(getMessage("assistant_slider_if_hide"));
 		}
+
 		options.onSliderMove = function (delta) {
 			var elem;
 			if (delta > 0) {
@@ -677,25 +626,34 @@ var Adguard = function () {
 				elem = element;
 			}
 			if (delta < 0) {
-				elem = childs[Math.abs(delta + 1)];
+				elem = children[Math.abs(delta + 1)];
 			}
 			onSliderMove(elem);
 		};
-		renderSliderAndBindEvents(options);
+
+		SliderWidget.init(findInIframe("#slider").get(0), {
+			min: options.min,
+			max: options.max,
+			value: options.value,
+			onValueChanged: function (value) {
+				var delta = options.value - value;
+				options.onSliderMove(delta);
+			}
+		});
 	};
 
 	var handleShowBlockSettings = function (showBlockByUrl, showBlockSimilar) {
 		if (showBlockByUrl) {
-			findInIframe('#block-by-url-p').show();
+			findInIframe('#block-by-url-checkbox-block').show();
 		} else {
-			findInIframe('#blockByUrl').attr('checked', false);
-			findInIframe('#block-by-url-p').hide();
+			findInIframe('#block-by-url-checkbox').get(0).checked = false;
+			findInIframe('#block-by-url-checkbox-block').hide();
 		}
 		if (showBlockSimilar) {
-			findInIframe('#block-similar-p').show();
+			findInIframe('#block-similar-checkbox-block').show();
 		} else {
-			findInIframe('#blockSimilar').attr('checked', false);
-			findInIframe('#block-similar-p').hide();
+			findInIframe('#block-similar-checkbox').get(0).checked = false;
+			findInIframe('#block-similar-checkbox-block').hide();
 		}
 	};
 
@@ -707,17 +665,13 @@ var Adguard = function () {
 
 		makeDefaultCheckboxesForDetailedMenu();
 		onScopeChange();
-		makeRadioButtonsAndCheckBoxes();
 		handleShowBlockSettings(haveUrlBlockParameter(element), haveClassAttribute(element));
 	};
 
 	var makeDefaultCheckboxesForDetailedMenu = function () {
-		findInIframe('#blockByUrl').attr('checked', false);
-		findInIframe('#blockSimilar').attr('checked', false);
-		findInIframe('#oneDomainRadio').attr('checked', false);
-		findInIframe('#block-by-url-p >div >span').removeClass('active');
-		findInIframe('#block-similar-p >div >span').removeClass('active');
-		findInIframe('#one-domain-p >div >span').removeClass('active');
+		findInIframe('#block-by-url-checkbox').get(0).checked = false;
+		findInIframe('#block-similar-checkbox').get(0).checked = false;
+		findInIframe('#one-domain-checkbox').get(0).checked = false;
 	};
 
 	var getUrlBlockAttribute = function (element) {
@@ -739,30 +693,31 @@ var Adguard = function () {
 		if (settings.lastPreview) {
 			// On finish preview and come back to selected
 			removePreview();
-			findInIframe('#adg-preview > span').text(getMessage("assistant_preview_start"));
+			findInIframe('#head_title').text(getMessage("assistant_block_element"));
+			findInIframe('#head_text').text(getMessage("assistant_block_element_explain"));
+			findInIframe('#adg-preview').text(getMessage("assistant_preview_start"));
 
 			AdguardSelectorLib.selectElement(settings.selectedElement);
 
-			findInIframe('#slider').show();
-			findInIframe('.adg-slide-text').show();
-			findInIframe('#ExtendedSettingsText').show();
+			findInIframe('.content').show();
 
 			return;
 		}
 
 		hideElement();
 
-		findInIframe('#adg-preview >span').text(getMessage("assistant_preview_end"));
-		findInIframe('#slider').hide();
-		findInIframe('.adg-slide-text').hide();
-		findInIframe('#ExtendedSettingsText').hide();
-		findInIframe('#adv-settings').hide();
+		findInIframe('#head_title').text(getMessage("assistant_preview_header"));
+		findInIframe('#head_text').text(getMessage("assistant_preview_header_info"));
+		findInIframe('#adg-preview').text(getMessage("assistant_preview_end"));
+		findInIframe('.content').hide();
 	};
 
 	var hideElement = function () {
 		AdguardSelectorLib.reset();
 
-		var selector = AdguardRulesConstructorLib.makeCssNthChildFilter(settings.selectedElement);
+		var isBlockSimilar = findInIframe("#block-similar-checkbox").get(0).checked;
+
+		var selector = AdguardRulesConstructorLib.constructCssSelector(settings.selectedElement, isBlockSimilar);
 		var style = document.createElement("style");
 		style.setAttribute("type", "text/css");
 		settings.lastPreview = style;
@@ -783,14 +738,15 @@ var Adguard = function () {
 		if (head) {
 			head.removeChild(settings.lastPreview);
 		}
+
 		settings.lastPreview = null;
 	};
 
 	var onScopeChange = function () {
 
-		var isBlockByUrl = findInIframe('#blockByUrl').is(':checked');
-		var isBlockSimilar = findInIframe('#blockSimilar').is(':checked');
-		var isBlockOneDomain = findInIframe("#oneDomainRadio").is(':checked');
+		var isBlockByUrl = findInIframe('#block-by-url-checkbox').get(0).checked;
+		var isBlockSimilar = findInIframe("#block-similar-checkbox").get(0).checked;
+		var isBlockOneDomain = findInIframe("#one-domain-checkbox").get(0).checked;
 
 		handleShowBlockSettings(haveUrlBlockParameter(settings.selectedElement) && !isBlockSimilar, haveClassAttribute(settings.selectedElement) && !isBlockByUrl);
 
@@ -801,8 +757,8 @@ var Adguard = function () {
 			isBlockOneDomain: isBlockOneDomain,
 			domain: getCroppedDomain()
 		};
-		var ruleText = AdguardRulesConstructorLib.constructRuleText(settings.selectedElement, options);
 
+		var ruleText = AdguardRulesConstructorLib.constructRuleText(settings.selectedElement, options);
 		setFilterRuleInputText(ruleText);
 	};
 
@@ -811,25 +767,28 @@ var Adguard = function () {
 		onRulePreview();
 		settings.lastPreview = null;
 
-		var ruleText = findInIframe('#filter-rule').val();
+		var ruleText = findInIframe('#filter-rule').get(0).value;
 		contentPage.sendMessage({type: 'addUserRule', ruleText: ruleText}, function () {
 			closeAssistant();
 		});
 	};
 
-	var windowZoomFix = function () {
-		$(window).resize(function () {
-			if (settings.selectedElement) {
+	var windowChangeFix = function () {
+		var reselectElement = function () {
+			if (settings.selectedElement && !settings.lastPreview) {
 				AdguardSelectorLib.selectElement(settings.selectedElement);
 			}
-		});
+		};
+
+		$(window).on('resize', reselectElement);
+		$(window).on('scroll', reselectElement);
 	};
-	windowZoomFix();
+	windowChangeFix();
 
 	this.init = function (options) {
 		self.localization = options.localization;
-		var loaded = showSelectorMenu();
-		loaded.done(function () {
+		var dfd = new Deferred();
+		dfd.done(function () {
 			localizeMenu();
 			removePreview();
 			startSelector();
@@ -838,6 +797,8 @@ var Adguard = function () {
 				$(options.selectedElement).click();
 			}
 		});
+
+		showSelectorMenu(dfd);
 	};
 
 	this.destroy = function () {
