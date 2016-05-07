@@ -1,10 +1,10 @@
 ! Title: Experimental filter
-! Version: 1.0.25.5
+! Version: 1.0.25.14
 ! Name: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: Experimental filter
 ! DescriptionEn: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! TimeUpdated: 2016-04-26T17:00:59.204+03:00
+! TimeUpdated: 2016-05-05T05:00:30.222+03:00
 ! Title: Adguard Experimental Filter
 !
 ! Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
@@ -217,6 +217,8 @@ antiblock.org#%#AG_onLoad(function() { AG_AntiAntiBlock(); });
 ! Remains of ads and dangerous rules
 !
 !--- START: Remains of ads ---
+imgbum.net##.t_bg > center
+vedtver.ru##.banner > a[rel="nofollow"] > img
 cwer.ws,cwer.ru###footer
 ~smi2.net##a[href^="http://smi2.net/"]
 l2topzone.com##.col-md-6 > .panel
@@ -279,6 +281,8 @@ armyrecognition.com##header#header > div[id^="position"]
 armyrecognition.com##section#content > div[id^="position"]
 armyrecognition.com##div[class="sidebar_module sidebar_module_"] > .sidebar_module_content > .custom > table[style="width: 314px; height: 1667px;"]
 !
+! stranded-deep.ru - удаление брендированного фона, отступа сверху
+stranded-deep.ru#$#body {background:none;padding: 0px 0;}
 ! ifresh.ws - уменьшение отступа сверху
 ifresh.ws##body > section[id="main-preview"][class="width hide320"]
 ifresh.ws#$##h-wrapper { min-height: 80px!important; }
@@ -483,6 +487,9 @@ imagebam.com###sponsor-modal
 !------------------ Anti-adblock messages --------------------------
 !---------- which does not affect the functioning of site ----------
 !-------------------------------------------------------------------
+||huawei.mobzon.ru/adbp/
+wotspeak.ru##.adb
+motherless.com###_mlabd
 extremetube.com##.attentionMsg
 sd-company.su###dom_adblock
 ||static.cdnslate.com/etc/designs/slate/js/plus-upsell-adblock.js
@@ -595,6 +602,8 @@ reactor.cc,joyreactor.cc#%#Object.defineProperty(window, 'CTRManager', { get: fu
 !-------------------------------------------------------------------
 !
 !----------- START: EU cookie notifications -----------
+arcor.de##.cookiepopup
+###usrConsent
 druckerchannel.de###DCINFO_COOKIE_AGB
 lastminuteticketshop.nl###cookie-dialog
 voedingscentrum.nl###cc_cookies
@@ -643,6 +652,7 @@ wykop.pl#$#.type-permanent+#nav { top: 0px!important; }
 !----------- END: EU cookie notifications -------------
 !
 !----------- START: Annoying popups -------------------
+fishki.net###chrome_popup
 ||cdn.onesignal.com^$domain=nv.ua
 booking.com###alertify-logs
 lifehacker.ru##.push-overlay
@@ -666,6 +676,8 @@ lifenews.ru##html > body > div.lifecorr-banner
 !
 !
 !----------- START: Annoying elements -----------------
+! arcor.de - survey
+arcor.de###fmsurvey
 ! pastelink.net - whitespace on the right side
 pastelink.net###display-sidebar
 ! Special projects links
@@ -748,8 +760,8 @@ habrahabr.ru##.company_widget > .announce
 !--- Google Chrome banner in IE ----------------
 google.ae,google.at,google.be,google.by,google.ca,google.ch,google.cl,google.cn,google.co.id,google.co.in,google.co.jp,google.co.th,google.co.uk,google.co.ve,google.co.za,google.com,google.com.ar,google.com.bd,google.com.br,google.com.co,google.com.eg,google.com.hk,google.com.mx,google.com.my,google.com.ng,google.com.pe,google.com.ph,google.com.pk,google.com.sa,google.com.sg,google.com.tr,google.com.tw,google.com.ua,google.com.vn,google.de,google.dk,google.ee,google.es,google.fr,google.gr,google.hu,google.ie,google.it,google.nl,google.no,google.pl,google.pt,google.ro,google.rs,google.ru,google.se,google.sk,google.tn##div[aria-label="promo"]
 !--- Google Chrome banner in non-IE browsers ---
-translate.google.ru,translate.google.com#$#.gb_1c#gba { height: 60px!important; }
-translate.google.ru,translate.google.com##div[class="gb_Rc gb_wc gb_g"][data-ved]
+translate.google.ru,translate.google.com##div[class="gb_Qc gb_wc gb_g"][data-ved]
+translate.google.ru,translate.google.com#$#.gb_0c#gba { height: 60px!important; }
 google.ae,google.at,google.be,google.by,google.ca,google.ch,google.cl,google.cn,google.co.id,google.co.in,google.co.jp,google.co.th,google.co.uk,google.co.ve,google.co.za,google.com,google.com.ar,google.com.bd,google.com.br,google.com.co,google.com.eg,google.com.hk,google.com.mx,google.com.my,google.com.ng,google.com.pe,google.com.ph,google.com.pk,google.com.sa,google.com.sg,google.com.tr,google.com.tw,google.com.ua,google.com.vn,google.de,google.dk,google.ee,google.es,google.fr,google.gr,google.hu,google.ie,google.it,google.nl,google.no,google.pl,google.pt,google.ro,google.rs,google.ru,google.se,google.sk,google.tn###prt div.pmoabs
 google.ae,google.at,google.be,google.by,google.ca,google.ch,google.cl,google.cn,google.co.id,google.co.in,google.co.jp,google.co.th,google.co.uk,google.co.ve,google.co.za,google.com,google.com.ar,google.com.au,google.com.bd,google.com.br,google.com.co,google.com.eg,google.com.hk,google.com.mx,google.com.my,google.com.ng,google.com.pe,google.com.ph,google.com.pk,google.com.sa,google.com.sg,google.com.tr,google.com.tw,google.com.ua,google.com.vn,google.de,google.dk,google.ee,google.es,google.fr,google.gr,google.hu,google.ie,google.it,google.nl,google.no,google.pl,google.pt,google.ro,google.rs,google.ru,google.se,google.sk,google.tn##.pdp-psyv
 google.ae,google.at,google.be,google.by,google.ca,google.ch,google.cl,google.cn,google.co.id,google.co.in,google.co.jp,google.co.th,google.co.uk,google.co.ve,google.co.za,google.com,google.com.ar,google.com.au,google.com.bd,google.com.br,google.com.co,google.com.eg,google.com.hk,google.com.mx,google.com.my,google.com.ng,google.com.pe,google.com.ph,google.com.pk,google.com.sa,google.com.sg,google.com.tr,google.com.tw,google.com.ua,google.com.vn,google.de,google.dk,google.ee,google.es,google.fr,google.gr,google.hu,google.ie,google.it,google.nl,google.no,google.pl,google.pt,google.ro,google.rs,google.ru,google.se,google.sk,google.tn##.pdp-psy.og-pdp
@@ -775,6 +787,8 @@ yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua##.head-stripe
 !---------------------------------
 !--- Mobile apps for the sites ---
 !---------------------------------
+mywot.com##.app-stripe
+rt.com###offers
 baidu.com###search-appPromote
 russian.rt.com##.app-panel
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by##.mobile-app-bar-view
@@ -814,6 +828,19 @@ ex.ua##.gsInformer
 !---------------- Low-attendance sites -----------------------------
 !------------- less then 30k visits/month --------------------------
 !-------------------------------------------------------------------
+kiryandrsoft.org###middle-top
+kiryandrsoft.org##noindex a > img
+||kiryandrsoft.org/templates/OrangeSoft/images/loveisland.jpg
+vasilkove.com.ua##.header-container > div > div.sam-container
+sfera.fm##.img_r
+sfera.fm##.img_r2
+||sfera.fm/js/site/bannerPlayer.js
+sfera.fm##.banner_aside
+sfera.fm##div[class="banner1 banner6"]
+sfera.fm##div[class="banner1 fixed_col4"]
+sfera.fm##span[class="span_2_of_2 banner-wrap"]
+zrivkoren.com##.reg-button
+||tatintermedia.ru/images/banners/
 novograd.com.ua###main_content_section > a > img
 novograd.com.ua##td[valign="top"]:not([width]) > a > img
 ||webvor.ru/images/skachat_file.png
@@ -1023,3 +1050,5 @@ revclouds.com#%#AG_onLoad(function() {document.getElementById("tick-dwn").click(
 ||damoh.rtl2.de^$replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\$1<\/VAST>/
 !
 homad-global-configs-eu-fra.schneevonmorgen.com.s3.amazonaws.com/www.spiegel.tv/config.json$replace=/"enabled": true\,/"enabled": false\,/i
+! https://forum.adguard.com/index.php?threads/10055/
+||ams.rmcnmv.naver.com/item/create/*/SMR?ams_ctgr=*&ams_chnl=*ams_videoId=$replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\$1<\/VAST>/

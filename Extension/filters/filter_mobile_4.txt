@@ -1,10 +1,10 @@
 ! Title: Social media filter
-! Version: 1.0.9.60
+! Version: 1.0.9.71
 ! Name: Social media filter
 ! Description: A filter for social media widgets ("Like" buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2016-04-27T21:06:44.598+03:00
+! TimeUpdated: 2016-05-06T20:41:05.829+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -143,7 +143,7 @@
 /heart_it_button.js
 /icons/share.jpg
 /images/social/*
-/images/vk.png$domain=~mos.ru
+/images/vk.png$domain=~monolife.ru|~mos.ru
 /img/facebook.gif
 /img/twitter.gif
 /jquery.shareaholic-publishers-sb.min.js
@@ -271,7 +271,7 @@ bitterwallet.com###module-widget-meta-4
 qrrro.com###netkevin-overlay
 qrrro.com###netkevin-popup
 kp.ru###ok-popup
-emlakkulisi.com,ifootball.pro,strana.in.ua,study.ru###overlay
+emlakkulisi.com,ifootball.pro,strana.in.ua,study.ru,wotspeak.ru###overlay
 takprosto.cc###parent-popup
 myserial.org###parent_popup
 engadget.com###pinned
@@ -292,6 +292,7 @@ downloadlinks.net,the-area51.com###share-post
 dailycaller.com###share-wrapper
 dailylocal.com###shareBarWrapper
 scroll.com.tr###shareButtons
+apkmirror.com###shareDropdown
 itbox.ua###share_data
 utsports.com###sharebar-wrapper
 javaworld.com###sharer .sosh
@@ -334,7 +335,6 @@ xlivetv.sx###vkjoin
 socportal.info###vspliv_w
 gotennis.ru###vv_moduleFacebook_overlay
 mafia-daily.net,mydivision.net###wbounce-modal
-lifenews.ru###widget-socials
 bugaga.ru###z_social
 bugaga.ru###z_socialBg
 telerik.com##.Blogs-Share
@@ -593,6 +593,7 @@ rambler.ru##.share__list
 cc.com##.share_btn
 cc.com##.share_cta
 myfolder.ru,rusfolder.com##.share_friends
+answers.com##.share_wrapper
 shopper.life##.sharefull
 ign.com##.sharer
 afisha.mail.ru##.shares > a.shares__item
@@ -759,6 +760,7 @@ zuketapaajabhisa.blogspot.com##body #fanback
 maydanozhaber.com##body > #kodac
 u-f.ru##body > div#pp
 u-f.ru##body > div#pp-bg
+factroom.ru##body > div[class^="facebook-"]
 teknokulis.com##body > div[id^="TB_"]
 sport.ua##body > div[id^="facebook"]
 yahoo.com##button[data-sharetype]
@@ -774,6 +776,7 @@ theguardian.com##div[class^="block-share"]
 cinema-hd.ru##div[class^="fancybox-wrap"]
 bolshoyvopros.ru##div[class^="likes"]
 travelask.ru##div[class^="post-shares"]
+webtekno.com##div[class^="share-counter"]
 mobiltelefon.ru##div[class^="social_like_btns"]
 yandex.ru##div[class^="ya-share"]
 msn.com##div[data-aop="sharingtoolbar_social"]
@@ -1062,7 +1065,6 @@ livejournal.com##.b-ljtimes-wrapper
 ##.bottom-share-buttons
 ##.box-social
 ##.box_btn_like
-~avito.ru,~sports.ru##.btn-social
 ##.buttons_share
 ##.c-social-likes
 ##.contentSocialBar
@@ -1171,6 +1173,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.share-btns
 ##.share-button
 ##.share-buttons
+##.share-buttons-multi
 ##.share-cont
 ##.share-counter
 ##.share-general
@@ -1309,6 +1312,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.socialNetworks
 ##.socialSharing
 ##.social__icon
+##.social__likes
 ##.social_bar
 ##.social_btn
 ##.social_btns
@@ -1409,6 +1413,7 @@ livejournal.com##.b-ljtimes-wrapper
 ~pinterest.com##a[href^="http://pinterest.com/pin/create/button/"]
 ~pinterest.com##a[href^="http://pinterest.com/pin/create/link/"]
 ##a[href^="http://plus.google.com/share"]
+~reddit.com##a[href^="http://reddit.com/submit?url="]
 ~weibo.com##a[href^="http://service.weibo.com/share/share.php"]
 ~yandex.ru##a[href^="http://share.yandex.ru/go.xml?service="]
 ~twitter.com##a[href^="http://twitter.com/?status="]
@@ -1444,9 +1449,11 @@ livejournal.com##.b-ljtimes-wrapper
 ~facebook.com##a[href^="https://www.facebook.com/sharer.php"]
 ~facebook.com##a[href^="https://www.facebook.com/sharer/sharer.php"]
 ##a[href^="https://www.linkedin.com/cws/share?url="]
+~linkedin.com##a[href^="https://www.linkedin.com/shareArticle"]
 ~livejournal.com##a[href^="https://www.livejournal.com/update.bml"]
 ~odnoklassniki.ru##a[href^="https://www.odnoklassniki.ru/dk?st.cmd=addShare"]
 ~stumbleupon.com##a[href^="https://www.stumbleupon.com/submit?url="]
+##a[href^="whatsapp://send"]
 ~whatsapp.com##a[href^="whatsapp://send?text="]
 ~facebook.com##a[name="fb_share"]
 ~facebook.com##a[onclick^="window.open ('http://www.facebook.com/sharer.php"]
@@ -1474,8 +1481,9 @@ bitiworld.com##a[title="share on twitter"]
 ~androeed.ru,~facebook.com##input.fb
 ~twitter.com##input.tweet
 ~vk.com,~vkontakte.ru##input.vk
+@@||yastatic.net/share/share.js$domain=master-of-orion.ru
 @@||platform.linkedin.com/in.js$domain=youngliving.com
-@@||yastatic.net/share2/share.js$domain=auto.ru
+@@||yastatic.net/share2/share.js$domain=auto.ru|ktk.kz
 skladchik.com#@#.shares
 @@||yandex.st/share/share.js$domain=foxtrot.com.ua
 @@||facebook.com/plugins/video.php

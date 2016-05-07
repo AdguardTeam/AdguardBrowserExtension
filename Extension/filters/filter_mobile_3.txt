@@ -1,10 +1,10 @@
 ! Title: Spyware filter
-! Version: 1.0.5.54
+! Version: 1.0.5.66
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet be tracked, use this filter.
 ! NameEn: Spyware filter
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2016-04-27T21:06:37.836+03:00
+! TimeUpdated: 2016-05-06T20:40:59.207+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -13,9 +13,7 @@
 ~realmadrid.com,~google.cn,~google.by,~google.be,~google.at,~google.ae,~google.ca,~google.ch,~google.cl,~google.cn,~google.co.id,~google.co.in,~google.co.jp,~google.co.th,~google.co.uk,~google.co.ve,~google.co.za,~google.com,~google.com.ar,~google.com.au,~google.com.bd,~google.com.br,~google.com.co,~google.com.eg,~google.com.hk,~google.com.mx,~google.com.my,~google.com.ng,~google.com.pe,~google.com.pe,~google.com.ph,~google.com.pk,~google.com.sa,~google.com.sg,~google.com.tr,~google.com.tw,~google.com.ua,~google.com.vn,~google.de,~google.dk,~google.es,~google.fr,~google.gr,~google.hu,~google.ie,~google.it,~google.nl,~google.no,~google.pl,~google.ru,~google.pt,~google.ro,~google.rs,~google.se,~google.sk,~google.tn,~google.ee,~maximonline.ru,~minecraft.net,~softkey.ru,~softkey.ua#%#var _gaq = []; var _gat = { _getTracker: function() { return { _initData: function(){}, _trackPageview: function(){}, _trackEvent: function(){}, _setAllowLinker: function() {}, _setCustomVar: function() {} } }, _createTracker: function() { return this._getTracker(); }, _anonymizeIp: function() {} };
 ~google.cn,~google.by,~google.be,~google.at,~google.ae,~google.ca,~google.ch,~google.cl,~google.cn,~google.co.id,~google.co.in,~google.co.jp,~google.co.th,~google.co.uk,~google.co.ve,~google.co.za,~google.com,~google.com.ar,~google.com.au,~google.com.bd,~google.com.br,~google.com.co,~google.com.eg,~google.com.hk,~google.com.mx,~google.com.my,~google.com.ng,~google.com.pe,~google.com.pe,~google.com.ph,~google.com.pk,~google.com.sa,~google.com.sg,~google.com.tr,~google.com.tw,~google.com.ua,~google.com.vn,~google.de,~google.dk,~google.es,~google.fr,~google.gr,~google.hu,~google.ie,~google.it,~google.nl,~google.no,~google.pl,~google.ru,~google.pt,~google.ro,~google.rs,~google.se,~google.sk,~google.tn,~google.ee#%#function urchinTracker() {};
 #%#var nol_t = function() { return { record: function() { return { post: function() {} } } } };
-juisy.in#%#var yaCounter24662438 = { reachGoal: function() {} };
 citypizza.ru#%#var yaCounter9890803 = { reachGoal: function() {} };
-webfile.ru#%#var yaCounter20889169 = { reachGoal: function() {} };
 aukro.ua#%#window.cm = { event: function() {}, call: function() {} };
 apteka.ru#%#window.yaCounter14913877={ reachGoal: function() {} };
 popmech.ru#%#AG_onLoad(function() { window.POPMECH.increaseCounters = function() {} });
@@ -25,6 +23,7 @@ echo.msk.ru$$script[tag-content="s=screen;"][max-length="200"]
 ###qoo-counter
 ###ramblerCounter
 ###top100counter
+##a[href^="http://click.hotlog.ru/"]
 ##a[href^="http://hitcounter.ru/top/stat.php"]
 ~yandex.by,~yandex.com,~yandex.kz,~yandex.ru,~yandex.ua##a[href^="http://metrika.yandex.ru/stat/"]
 ##a[href^="http://top.mail.ru/jump"]
@@ -33,9 +32,7 @@ echo.msk.ru$$script[tag-content="s=screen;"][max-length="200"]
 ##img[src*="counter.yadro.ru"]
 ~mozhor.ru,~onliner.by,~yandex.by,~yandex.com,~yandex.com.tr,~yandex.ru,~yandex.ua##img[width="88"][height="31"]
 //t100.ru^$third-party
-/wp-content/plugins/asmb-tracking/*
-/wp-slimstat/*
-://tru.am/$third-party
+://tru.am^$third-party
 @@||beacon.guim.co.uk/accept-beacon?
 http://r.i.ua/s?
 |http://r.i.ua^$third-party
@@ -1428,6 +1425,7 @@ http://r.i.ua/s?
 ||targetfuel.com^$third-party
 ||tcactivity.net^$third-party
 ||tcimg.com^$third-party
+||tds348bf.us^$third-party
 ||tealiumiq.com^$third-party
 ||ted.dailymail.co.uk^
 ||telize.com^$third-party
@@ -1722,6 +1720,8 @@ http://r.i.ua/s?
 ||zoomanalytics.co^$third-party
 ||zoosnet.net^$third-party
 ||zqtk.net^$third-party
+.com/a.gif?
+.com/i.gif?
 .gatracking.js
 .histats.*.js
 .hit.gemius.*.js
@@ -1822,6 +1822,8 @@ http://r.i.ua/s?
 /tracking/tracking.js
 /tracking/tracking_
 /trk.gif?
+/wp-content/plugins/asmb-tracking/*
+/wp-slimstat/*
 /xgemius.js
 /xtcore-*.js
 /xtcore.js
@@ -1841,7 +1843,9 @@ radioprofusion.com##.revolvermaps
 washingtonpost.com##.social-tools-wrapper-bottom
 medium.com##.voteWidget
 espreso.tv##.wrap-footer .counter
+pb.wtf##a[href="//www.liveinternet.ru/click"]
 hotstuff.com.ua,mobivid.net,theplanet.ws##a[href="http://mycounter.com.ua/"]
+infoorel.ru##a[href="http://www.infoorel.ru/stat/stat.php"]
 armyrecognition.com##a[href^="http://cqcounter.com/"]
 3dnews.ru##a[href^="http://metrika.yandex.ru/"]
 hotstuff.com.ua##a[href^="http://top.bigmir.net/report/"]
@@ -1900,6 +1904,7 @@ dreamprogs.net##td[width="88"][height="31"]
 ||horizon.mashable.com/*/track
 ||i.ag.ru/ag/i/counters_new_nr.png
 ||images.search.yahoo.com/viewer;_ylt=
+||infoorel.ru/count.php
 ||istatistik.milliyet.com.tr/CntRpt.aspx
 ||izlesene.com/js/site/tracker.js
 ||js.washingtonpost.com/*/init.track-header-*.js
@@ -1909,6 +1914,7 @@ dreamprogs.net##td[width="88"][height="31"]
 ||kinozal.co.ua/uploads/button/online.png?n=
 ||kitbit.net/kb.js
 ||linkedin.com/emimp/
+||load.sumome.com^$domain=onlinedizi.co
 ||login.yahoo.com/config/loga?pad=
 ||mail.ru/k?vk_id=$domain=vk.com
 ||mail.yahoo.com/neo/mbfb?bk=
@@ -1939,6 +1945,7 @@ dreamprogs.net##td[width="88"][height="31"]
 ||rel.msn.com^
 ||rem-track.bild.de^
 ||ria.ru/polling?ticket=
+||rs.mail.ru/*.gif?
 ||ruslab.net/a/p.js
 ||russianfood.com/js/informb_stat.core.js
 ||s-msn.com/primedns.gif?$domain=msn.com
@@ -1963,6 +1970,7 @@ dreamprogs.net##td[width="88"][height="31"]
 ||yahoo.com/neo/stat
 ||yahoo.com/neo/ygbeacon/
 ||yahoo.com/neo/ymstat
+||yahoo.com/pageview
 ||zive.cz/Client.Scripts/tracking.js
 ||do-not-tracker.org^$third-party
 ||eviltracker.net^$third-party
@@ -1971,6 +1979,9 @@ dreamprogs.net##td[width="88"][height="31"]
 @@||vidible.tv^*/ComScore.Viewability.js
 @@||pixel.facebook.com/ajax/gigaboxx/endpoint/UpdateLastSeenTime.php?$image
 @@||pixel.facebook.com/ajax/notifications/mark_read.php?*&alert_ids%$image
+@@||gaua.hit.gemius.pl/gplayer.js$domain=ovva.tv
+@@||app-ab13.marketo.com^$domain=forbes.com
+@@||livenation.122.2o7.net/b/ss/$domain=oss.ticketmaster.com
 @@||kiplinger.112.2o7.net^
 @@||equifaxps.122.2o7.net^
 @@||viu.com/ott/*/js/tracking/tracking.js$domain=viu.com
@@ -2011,10 +2022,9 @@ dreamprogs.net##td[width="88"][height="31"]
 @@||googletagmanager.com/gtm.js$domain=amd.com
 @@||stomp.com.sg/xtcore.js
 @@||cdn.cxense.com/cx.js$domain=stomp.com.sg
-@@||mc.yandex.ru/metrika/watch.js$domain=mgts.ru
+@@||ad.adriver.ru/cgi-bin/rle.cgi$domain=mgts.ru
 @@||google-analytics.com/analytics.js$domain=mgts.ru
 @@||google-analytics.com/plugins/ua/linkid.js$domain=mgts.ru
-@@||mc.yandex.ru/webvisor/$domain=mgts.ru
 @@||googletagmanager.com/gtm.js$domain=besplatnyeprogrammy.ru|softobase.com|freeversion.ru|softmen.ru|freeversions.ru|moiprogrammy.net
 @@||tags.bkrtx.com/js/bk-coretag.js$domain=mobile.pcmag.com
 @@||nexus.ensighten.com/alma/iltalehti/$domain=iltalehti.fi
@@ -2041,7 +2051,6 @@ dreamprogs.net##td[width="88"][height="31"]
 @@||gaua.hit.gemius.pl/gplayer.js$domain=tsn.ua
 @@||google-analytics.com/analytics.js$domain=sochiautodrom.ru
 @@||go.pardot.com^$domain=mindjet.com
-@@||mc.yandex.ru/metrika/watch.js$domain=ucweb.com
 @@||inspsearchapi.com^$domain=zoo.com|dogpile.com
 @@||partner.googleadservices.com/gpt/pubads_$domain=mlb.com
 @@||omtrdc.net^$domain=pcworld.com
@@ -2057,7 +2066,6 @@ dreamprogs.net##td[width="88"][height="31"]
 @@||disqus.com/api/3.0/posts/$document
 @@||top.list.ru/jump?from=$domain=pvo.guns.ru
 guzei.com#@#img[width="88"][height="31"]
-@@||mc.yandex.ru/metrika/watch.js$domain=3101010.ru
 crimea-kurort.com#@#img[width="88"][height="31"]
 @@||top.list.ru/counter?id=$domain=crimea-kurort.com
 @@||interia.hit.gemius.pl/hitredir/$domain=interia.pl
@@ -2078,8 +2086,6 @@ maskme.ru#@#img[width="88"][height="31"]
 @@||view.atdmt.com^$domain=starwoodhotels.com|windows.microsoft.com
 @@||google-analytics.com/analytics.js$domain=enter.ru
 @@||highscreen.ru/bitrix/templates/highscreen/js/counters.js
-@@||mc.yandex.ru/metrika$domain=highscreen.ru
-@@||mc.yandex.ru/metrika/watch_visor.js$domain=gq.ru
 @@||mc.yandex.ru^$domain=planeta.ru
 @@||webtrends.com/ots/$domain=moneysupermarket.com
 @@||google-analytics.com^$domain=daemon-tools.cc
