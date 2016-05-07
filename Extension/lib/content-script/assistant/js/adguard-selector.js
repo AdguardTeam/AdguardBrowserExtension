@@ -534,10 +534,6 @@ var AdguardSelectorLib = (function (api, $) {
                 el.removeEventListener("touchend", iosElementTouchendHandler);
                 el.removeEventListener("touchstart", iosPreventEventHandler);
             });
-            elements.off("gestureend", iosGestureEndHandler);
-            elements.off("touchmove", iosTouchMoveHandler);
-            elements.off("touchend", iosElementTouchendHandler);
-            elements.off('touchstart', iosPreventEventHandler);
         } else {
             elements.forEach(function (el) {
                 el.removeEventListener("mouseover", sgMouseoverHandler);
