@@ -49,12 +49,11 @@ var AdguardSelectorLib = (function (api, $) {
     var unbound = true;
     var onElementSelectedHandler = null;
 
-    /********** iOS modifications ***************/
-
+    //TODO: Change to touch
     var isIOS = (navigator.platform === 'iPad' || navigator.platform === 'iPhone');
 
     /**
-     We need use touch event model, because exists HITROZHOPYE web designers
+     * In some cases we need to ignore touch event
      */
     var ignoreTouchEvent = 0;
     /*******************************************/
@@ -125,7 +124,6 @@ var AdguardSelectorLib = (function (api, $) {
 
         return null;
     };
-
 
     var px = function (p) {
         return p + 'px';
@@ -213,7 +211,7 @@ var AdguardSelectorLib = (function (api, $) {
     var selectionRenderer = {
 
         /**
-         Preparing renderer.
+         * Preparing renderer.
          */
         init: function () {
 
@@ -235,13 +233,17 @@ var AdguardSelectorLib = (function (api, $) {
         },
 
         /**
-         Clearing DOM and so on.
+         * Clearing DOM and so on.
          */
         finalize: function () {
-
             removeBorderFromDom();
         },
 
+        /**
+         * Adds borders to specified element
+         *
+         * @param element
+         */
         add: function (element) {
             this.remove();
 
@@ -275,6 +277,9 @@ var AdguardSelectorLib = (function (api, $) {
             showBorders();
         },
 
+        /**
+         * Removes borders
+         */
         remove: function () {
             if (borderTop && borderBottom && borderLeft && borderRight) {
                 borderTop.hide();
@@ -371,11 +376,11 @@ var AdguardSelectorLib = (function (api, $) {
                         $(placeHolder).on("touchmove", iosTouchMoveHandler);
                         $(placeHolder).on("touchend", function (e) {
                             e.preventDefault();
-                            
+
                             if (needIgnoreTouchEvent()) {
                                 return true;
                             }
-                            
+
                             placeholderClick(current);
                         });
                     } else {
@@ -392,6 +397,7 @@ var AdguardSelectorLib = (function (api, $) {
         }
     };
 
+    /********** Events ***************/
     var sgMouseoverHandler = function (e) {
         e.stopPropagation();
 
@@ -425,7 +431,7 @@ var AdguardSelectorLib = (function (api, $) {
         selectionRenderer.remove();
         return false;
     };
-    
+
     var sgMousedownHandler = function (e) {
         e.preventDefault();
         e.stopImmediatePropagation();
@@ -453,7 +459,7 @@ var AdguardSelectorLib = (function (api, $) {
         return false;
     };
 
-    /********** iOS modifications ***************/
+    /********** Touch events ***************/
     var iosElementSelectHandler = function (e) {
 
         sgMouseoverHandler.call(this, e);
@@ -484,22 +490,20 @@ var AdguardSelectorLib = (function (api, $) {
 
     var iosPreventEventHandler = function (e) {
         e.stopPropagation();
-        // e.preventDefault();
 
         return false;
     };
 
-    var iosGestureEndHandler = function (e) {
+    var iosGestureEndHandler = function () {
         ignoreTouchEvent = 2;
         return true;
     };
 
-    var iosTouchMoveHandler = function (e) {
+    var iosTouchMoveHandler = function () {
         ignoreTouchEvent = 1;
         return true;
     };
 
-    /*******************************************/
 
     var setupEventHandlers = function () {
         makeIFrameAndEmbededSelector();
@@ -520,7 +524,7 @@ var AdguardSelectorLib = (function (api, $) {
                 el.addEventListener("click", sgMousedownHandler, true);
             });
         }
-        
+
     };
 
     var deleteEventHandlers = function () {
@@ -550,13 +554,13 @@ var AdguardSelectorLib = (function (api, $) {
      * Starts selector module.
      *
      * @param onElementSelected callback function
-     * @param selectionRenderFunc optional function contains selection presentation implementation
+     * @param selectionRenderImpl optional object contains selection presentation implementation
      */
-    api.init = function (onElementSelected, selectionRenderFunc) {
+    api.init = function (onElementSelected, selectionRenderImpl) {
 
         onElementSelectedHandler = onElementSelected;
-        if (selectionRenderFunc && typeof selectionRenderFunc === "object") {
-            selectionRenderer = selectionRenderFunc;
+        if (selectionRenderImpl && typeof selectionRenderImpl === "object") {
+            selectionRenderer = selectionRenderImpl;
         }
 
         restrictedElements = ['html', 'body', 'head', 'base'].map(function (selector) {
