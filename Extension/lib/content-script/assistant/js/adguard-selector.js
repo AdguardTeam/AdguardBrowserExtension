@@ -375,8 +375,8 @@ var AdguardSelectorLib = (function (api, $) {
                 if (parent) {
                     parent.replaceChild(placeHolder, current);
                     if (isTouchEventsSupported) {
-                        $(placeHolder).on("gestureend", iosGestureEndHandler);
-                        $(placeHolder).on("touchmove", iosTouchMoveHandler);
+                        $(placeHolder).on("gestureend", gestureEndHandler);
+                        $(placeHolder).on("touchmove", touchMoveHandler);
                         $(placeHolder).on("touchend", function (e) {
                             e.preventDefault();
 
@@ -463,7 +463,7 @@ var AdguardSelectorLib = (function (api, $) {
     };
 
     /********** Touch event handlers ***************/
-    var iosElementSelectHandler = function (e) {
+    var touchElementSelectHandler = function (e) {
         e.stopImmediatePropagation();
 
         sgMouseoverHandler.call(this, e);
@@ -481,29 +481,29 @@ var AdguardSelectorLib = (function (api, $) {
         return false;
     };
 
-    var iosElementTouchendHandler = function (e) {
+    var elementTouchendHandler = function (e) {
         e.stopPropagation();
 
         if (needIgnoreTouchEvent()) {
             return true;
         }
 
-        iosElementSelectHandler.call(this, e);
+        touchElementSelectHandler.call(this, e);
         return false;
     };
 
-    var iosPreventEventHandler = function (e) {
+    var emptyEventHandler = function (e) {
         e.stopPropagation();
 
         return false;
     };
 
-    var iosGestureEndHandler = function () {
+    var gestureEndHandler = function () {
         ignoreTouchEvent = 2;
         return true;
     };
 
-    var iosTouchMoveHandler = function () {
+    var touchMoveHandler = function () {
         ignoreTouchEvent = 1;
         return true;
     };
@@ -516,10 +516,10 @@ var AdguardSelectorLib = (function (api, $) {
 
         if (isTouchEventsSupported) {
             elements.forEach(function (el) {
-                el.addEventListener("gestureend", iosGestureEndHandler);
-                el.addEventListener("touchmove", iosTouchMoveHandler);
-                el.addEventListener("touchend", iosElementTouchendHandler);
-                el.addEventListener("touchstart", iosPreventEventHandler);
+                el.addEventListener("gestureend", gestureEndHandler);
+                el.addEventListener("touchmove", touchMoveHandler);
+                el.addEventListener("touchend", elementTouchendHandler);
+                el.addEventListener("touchstart", emptyEventHandler);
             });
         } else {
             elements.forEach(function (el) {
@@ -537,10 +537,10 @@ var AdguardSelectorLib = (function (api, $) {
         var elements = $("body *");
         if (isTouchEventsSupported) {
             elements.forEach(function (el) {
-                el.removeEventListener("gestureend", iosGestureEndHandler);
-                el.removeEventListener("touchmove", iosTouchMoveHandler);
-                el.removeEventListener("touchend", iosElementTouchendHandler);
-                el.removeEventListener("touchstart", iosPreventEventHandler);
+                el.removeEventListener("gestureend", gestureEndHandler);
+                el.removeEventListener("touchmove", touchMoveHandler);
+                el.removeEventListener("touchend", elementTouchendHandler);
+                el.removeEventListener("touchstart", emptyEventHandler);
             });
         } else {
             elements.forEach(function (el) {
