@@ -142,14 +142,15 @@ var AdguardSelectorLib = (function (api, $) {
      * @returns {{top: number, left: number, outerWidth: number, outerHeight: number}}
      */
     var getOffsetExtended = function (elem) {
-        var rect = elem.getBoundingClientRect();
+        var bodyRect = document.body.getBoundingClientRect();
+        var elemRect = elem.getBoundingClientRect();
 
-        var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        var rectTop = elemRect.top - bodyRect.top;
+        var rectLeft = elemRect.left - bodyRect.left;
 
         return {
-            top: rect.top + scrollTop,
-            left: rect.left + scrollLeft,
+            top: rectTop,
+            left: rectLeft,
             outerWidth: elem.offsetWidth,
             outerHeight: elem.offsetHeight
         };
