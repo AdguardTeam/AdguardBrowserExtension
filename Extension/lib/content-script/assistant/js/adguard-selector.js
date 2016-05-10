@@ -142,17 +142,11 @@ var AdguardSelectorLib = (function (api, $) {
      * @returns {{top: number, left: number, outerWidth: number, outerHeight: number}}
      */
     var getOffsetExtended = function (elem) {
+        var bodyRect = document.body.getBoundingClientRect();
         var elemRect = elem.getBoundingClientRect();
 
-        var rectTop = elemRect.top;
-        var rectLeft = elemRect.left;
-
-        if (navigator.userAgent.indexOf('Android') == -1) {
-            var bodyRect = document.body.getBoundingClientRect();
-
-            rectTop = rectTop - bodyRect.top;
-            rectLeft = rectLeft - bodyRect.left;
-        }
+        var rectTop = elemRect.top - bodyRect.top;
+        var rectLeft = elemRect.left - bodyRect.left;
 
         return {
             top: rectTop,
