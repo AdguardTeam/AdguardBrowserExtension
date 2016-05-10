@@ -144,8 +144,11 @@ var AdguardSelectorLib = (function (api, $) {
     var getOffsetExtended = function (elem) {
         var rect = elem.getBoundingClientRect();
 
-        var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        //var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+        //var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        var scrollLeft = window.pageXOffset || document.body.scrollLeft;
+        var scrollTop = window.pageYOffset || document.body.scrollTop;
 
         return {
             top: rect.top + scrollTop,
