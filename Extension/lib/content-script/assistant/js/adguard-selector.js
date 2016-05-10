@@ -464,6 +464,7 @@ var AdguardSelectorLib = (function (api, $) {
 
     /********** Touch event handlers ***************/
     var touchElementSelectHandler = function (e) {
+        e.preventDefault();
         e.stopImmediatePropagation();
 
         sgMouseoverHandler.call(this, e);
@@ -518,7 +519,7 @@ var AdguardSelectorLib = (function (api, $) {
             elements.forEach(function (el) {
                 el.addEventListener("gestureend", gestureEndHandler);
                 el.addEventListener("touchmove", touchMoveHandler);
-                el.addEventListener("touchend", elementTouchendHandler);
+                el.addEventListener("touchend", elementTouchendHandler, true);
                 el.addEventListener("touchstart", emptyEventHandler);
             });
         } else {
@@ -539,7 +540,7 @@ var AdguardSelectorLib = (function (api, $) {
             elements.forEach(function (el) {
                 el.removeEventListener("gestureend", gestureEndHandler);
                 el.removeEventListener("touchmove", touchMoveHandler);
-                el.removeEventListener("touchend", elementTouchendHandler);
+                el.removeEventListener("touchend", elementTouchendHandler, true);
                 el.removeEventListener("touchstart", emptyEventHandler);
             });
         } else {
