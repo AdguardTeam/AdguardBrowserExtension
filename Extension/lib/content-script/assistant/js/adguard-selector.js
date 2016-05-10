@@ -551,6 +551,8 @@ var AdguardSelectorLib = (function (api, $) {
         }
     };
 
+    //Define default implementation of selection renderer.
+    selectionRenderer = BorderSelectionRenderer;
 
     // PUBLIC API
 
@@ -565,8 +567,6 @@ var AdguardSelectorLib = (function (api, $) {
         onElementSelectedHandler = onElementSelected;
         if (selectionRenderImpl && typeof selectionRenderImpl === "object") {
             selectionRenderer = selectionRenderImpl;
-        } else {
-            selectionRenderer = BorderSelectionRenderer;
         }
 
         restrictedElements = ['html', 'body', 'head', 'base'].map(function (selector) {
