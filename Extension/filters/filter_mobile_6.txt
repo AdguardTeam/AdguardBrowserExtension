@@ -1,10 +1,10 @@
 ! Title: German filter
-! Version: 1.0.25.30
+! Version: 1.0.25.34
 ! Name: German filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: German filter
 ! DescriptionEn: Filter that enables removing of the ads from websites with German content.
-! TimeUpdated: 2016-05-06T21:07:06.263+03:00
+! TimeUpdated: 2016-05-11T14:20:47.349+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -118,6 +118,7 @@ pc-magazin.de$$div[class="teaser__promolabel"][parent-elements="aside"][parent-s
 giga.de$$span[class="adteaser"][parent-elements="article"][parent-search-level="4"]
 chip.de$$article[tag-content="Anzeige |"]
 ||static.p7s1.com/vendor/webtrekk
+simtimes.de##.banner-end-news
 druckerchannel.de###DCA_BOTTOM
 druckerchannel.de###DCGA_LEAD
 teltarif.de###LxShop
@@ -851,8 +852,7 @@ guterhut.de,zalando.de#@#iframe[id^="google_ads_iframe"]
 ||smoozed.rocks/landing/$popup,third-party
 ||teufelchens.xxx/trade_in/$popup,third-party
 &campaignid=*&zoneid=$domain=technic3d.com
-/http://cdn[0-9].spiegel.de/images/image-([0-9]{6})-(thumb|hpcolumnressort|panoV9free|breitwandaufmacher|hppano)-[a-z0-9]{4}-(?!\1)[0-9]{6}.jpg/$image,domain=spiegel.de
-/http://cdn[0-9].spiegel.de/images/image-([0-9]{6})-(thumb|hpcolumnressort|panoV9free|breitwandaufmacher|hppano)-[a-z0-9]{5}-(?!\1)[0-9]{6}.jpg/$image,domain=spiegel.de
+/http://cdn[0-9]\.spiegel\.de/images/image-([^-]+)-[^-]+-[^-]+-(?!\1)[^-]+\.jpg/$image,domain=spiegel.de
 /www/images/*$domain=technic3d.com
 |http://byte.to^$script
 |https://*.bs.to^$script,domain=~board.bs.to|bs.to
@@ -1008,7 +1008,7 @@ guterhut.de,zalando.de#@#iframe[id^="google_ads_iframe"]
 ||speedlounge.in^*/jspop.js
 ||spieletipps.de/js/stroeer_prod_dfp_recovery.js
 ||stadt-bremerhaven.de/grafiken/footer.gif
-||static-fb.com/main.js$domain=w.animes-stream24.net
+||static-fb.com^$domain=anime-stream24.com
 ||static-fra.de/rtlnow/css/ad.css
 ||static-fra.de/wetterv3/css/images/map/icons/knorr.png$domain=wetter.de
 ||stol.it/var/ezflow_site/storage/images/beilagen-archiv/
@@ -1754,6 +1754,7 @@ boote-forum.de,comunio.de,planetsnow.de,prosieben.at,prosieben.ch,prosieben.de,t
 plista.com##.plistaList > .plista_widget_belowArticle_item[data-type="pet"]
 ariva.de,boote-forum.de,comunio.de,fanfiktion.de,notebookchat.com,notebookcheck.com,planetsnow.de,prosieben.at,prosieben.ch,prosieben.de,tvspielfilm.de##.plistaList > .plista_widget_underArticle_item[data-type="pet"]
 plista.com##a[href^="http://click.plista.com/pets"]
+stol.it##div[id^="div-gpt-ad"]
 notebookcheck.com##div[id^="google_ads_iframe_"]
 1erforum.de,dasheimwerkerforum.de,modernboard.de,skodacommunity.de,vermieter-forum.com###Rectangle > [-abp-properties='cursor: pointer;']
 prosiebenmaxx.de###aside-zone > [-abp-properties='cursor: pointer; margin-bottom: 1.2em;']
@@ -2924,7 +2925,7 @@ kalender-365.de#@#.adsbygoogle
 @@||pagead2.googlesyndication.com/pagead/js/*/show_ads_impl.js$domain=motorsport-total.com|slideplayer.org
 @@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=iphone-tricks.de|java-forum.org|mufa.de|peugeot-metropolis.de|slideplayer.org|teamspeak-ts.com
 @@||pagead2.googlesyndication.com/pagead/show_ads.js$domain=brasilienfreunde.net|bullhost.de|green-24.de|java-forum.org|jetztspielen.de|lablue.at|lablue.ch|lablue.de|motorsport-total.com|mufa.de|rappers.in|rene-neuweiler.ch|risiko-gesundheit.de|smsgott.de|vol.at
-@@||partner.googleadservices.com/gpt/pubads_impl_$script,domain=wetteronline.de
+@@||partner.googleadservices.com/gpt/pubads_impl_$script,domain=stol.it|wetteronline.de
 @@||peugeot-metropolis.de^$elemhide
 @@||picload.org/ads-1.js
 @@||ping-timeout.de/banner/ads/adserver/click/ad.js

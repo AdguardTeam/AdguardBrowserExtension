@@ -1,10 +1,10 @@
 ! Title: Social media filter
-! Version: 1.0.9.71
+! Version: 1.0.9.75
 ! Name: Social media filter
 ! Description: A filter for social media widgets ("Like" buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2016-05-06T20:41:05.829+03:00
+! TimeUpdated: 2016-05-10T20:37:38.499+03:00
 ! Title: Adguard Social Media Filter
 !
 ! If you do not like numerous «Like» and «Tweet» buttons on all the popular websites on the Internet,
@@ -660,6 +660,8 @@ utro.ru##.repost-container
 reuters.com##.reuters-share
 glavpost.com##.right-slider-fb
 1tv.ru##.s-adds
+kbs.co.kr##.sec_share
+sbs.co.kr##.seda_share
 vse42.ru##.sendto.no-print
 ew.com##.service-links
 mestnye.ru##.service_links
@@ -919,6 +921,7 @@ neowin.net##li[id^="article-interact-"]
 sueddeutshe.de##li[onclick^="window.open('https://www.facebook.com/sharer/sharer.php"]
 plus-soft.ru##noindex > center
 progorod43.ru##noindex > div.Like
+techworld.com##section.helpIcons
 aif.ru##section[class="clearfix soc_wid"]
 glav.su##span.forumMessagesListMessageShareButton
 e1.ru##span.sharing-data-placeholder
@@ -1355,6 +1358,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.sharing-popup-social
 ##.sharing-tools
 ##.sharrre_widget
+##.sideSocial
 ##.sidebar-share
 ~skype.com##.skype-share
 ##.soc-button
@@ -1612,6 +1616,8 @@ bitiworld.com##a[title="share on twitter"]
 !
 ! Section fixing issues caused by social filter
 !
+! https://forum.adguard.com/index.php?threads/10185/
+@@||serial-online.com/wp-content/plugins/easy-vkontakte-connect/js/social-likes.min.js
 ! https://forum.adguard.com/index.php?threads/9875/
 @@||yastatic.net/share/share.js$domain=master-of-orion.ru
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2052

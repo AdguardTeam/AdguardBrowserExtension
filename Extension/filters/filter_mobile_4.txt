@@ -1,10 +1,10 @@
 ! Title: Social media filter
-! Version: 1.0.9.71
+! Version: 1.0.9.75
 ! Name: Social media filter
 ! Description: A filter for social media widgets ("Like" buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2016-05-06T20:41:05.829+03:00
+! TimeUpdated: 2016-05-10T20:37:38.499+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -558,6 +558,8 @@ utro.ru##.repost-container
 reuters.com##.reuters-share
 glavpost.com##.right-slider-fb
 1tv.ru##.s-adds
+kbs.co.kr##.sec_share
+sbs.co.kr##.seda_share
 vse42.ru##.sendto.no-print
 ew.com##.service-links
 mestnye.ru##.service_links
@@ -806,6 +808,7 @@ sueddeutsche.de##li[data-linktrack^="onclick.sharingbar"]
 sueddeutshe.de##li[onclick^="window.open('https://www.facebook.com/sharer/sharer.php"]
 plus-soft.ru##noindex > center
 progorod43.ru##noindex > div.Like
+techworld.com##section.helpIcons
 aif.ru##section[class="clearfix soc_wid"]
 seopult.tv$$script[tag-content="dialog("][max-length="300"]
 glav.su##span.forumMessagesListMessageShareButton
@@ -1230,6 +1233,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.sharing-popup-social
 ##.sharing-tools
 ##.sharrre_widget
+##.sideSocial
 ##.sidebar-share
 ~skype.com##.skype-share
 ##.soc-button
@@ -1481,6 +1485,7 @@ bitiworld.com##a[title="share on twitter"]
 ~androeed.ru,~facebook.com##input.fb
 ~twitter.com##input.tweet
 ~vk.com,~vkontakte.ru##input.vk
+@@||serial-online.com/wp-content/plugins/easy-vkontakte-connect/js/social-likes.min.js
 @@||yastatic.net/share/share.js$domain=master-of-orion.ru
 @@||platform.linkedin.com/in.js$domain=youngliving.com
 @@||yastatic.net/share2/share.js$domain=auto.ru|ktk.kz

@@ -1,10 +1,10 @@
 ! Title: Experimental filter
-! Version: 1.0.25.14
+! Version: 1.0.25.21
 ! Name: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: Experimental filter
 ! DescriptionEn: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! TimeUpdated: 2016-05-05T05:00:30.222+03:00
+! TimeUpdated: 2016-05-11T17:00:22.254+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -13,6 +13,21 @@
 antiblock.org#%#var AG_AntiAntiBlock = function() { var baseCreateElement = document.createElement; document.createElement = function(name) { if (name && name.match(/div|font|center/i)) { return null; } else { return baseCreateElement(name); } } };
 antiblock.org#%#AG_onLoad(function() { AG_AntiAntiBlock(); });
 @@||my10.imgsmail.ru/mail/$domain=mail.ru
+rksports.info###.col-lg-4 > div > div[class$="panel-heading"]
+simtimes.de##.banner-end-news
+zonasports.be##td[align$="left"][width="300"]
+zonasports.be##div[style$="position:relative"] > center > table
+zonasports.be##.jumbotron > tbody > tr > td > font
+zonasports.be##div[id^="MarketGid"]
+zonasports.be##div[style$="position:relative"] > table > tbody > tr > td
+rivx8.me.la##div[itemprop*="articleBody"] > span
+tpsoccer.net##div[itemprop*="articleBody"] > div > span
+tpsoccer.net###mainsidebararea
+tpsoccer.net###HTML3 > div > table
+sportlive.me###player > div > div[style$="text-align: center;"]
+deporte42.in##div[class^="extra"] > div > div > font
+deporte42.in##a[href^="http://www.ademails.com"]
+rgho.st##.panel-default
 imgbum.net##.t_bg > center
 vedtver.ru##.banner > a[rel="nofollow"] > img
 cwer.ws,cwer.ru###footer
@@ -22,7 +37,7 @@ sports.ru##.news-item__footer > h3
 ilf.at.ua###carousel-container
 ilf.at.ua##img[width="70"][height="40"]
 gamegpu.com##.tm-top-b
-~vestivrn.ru,~rus-linux.net,~sobytiya.info,~hcdinamo.by,~mixupload.com,~bloknot-krasnodar.ru,~bloknot-stavropol.ru,~edp.kiev.ua,~gamegpu.ru,~joomla.ru,~keddr.com,~allkey.org,~wowjp.net,~bucwar.ru,~fsm-portal.net,~crox.ws,~softek.ucoz.ru,~dfm.ru,~hitfm.ru,~montecarlo.ru,~maximum.ru,~rusradio.ru,~metallurg.ru,~onlinefilmu.ru,~forum.ixbt.com,~igromania.ru,~yarportal.ru,~maxthon.org.ru,~firstvds.ru,~smotretfilmy.ru,~speedy-warez.ru,~blogig.org,~respecta.net,~moviez.kz,~games-java.ru,~rulit.net,~art-on.ru,~kinoshka-new.ru,~forum.esetnod32.ru,~kahai.ru,~planetaua.net,~capa.me,~delo.ua,~uznayvse.ru,~gamai.ru,~bloknot-rostov.ru,~car72.ru,~gradmart.ru,~f1comp.ru,~bukvaved.biz##noindex a[rel="nofollow"]>img
+~kinogo.co,~anti-free.ru,~vestivrn.ru,~rus-linux.net,~sobytiya.info,~hcdinamo.by,~mixupload.com,~bloknot-krasnodar.ru,~bloknot-stavropol.ru,~edp.kiev.ua,~gamegpu.ru,~joomla.ru,~keddr.com,~allkey.org,~wowjp.net,~bucwar.ru,~fsm-portal.net,~crox.ws,~softek.ucoz.ru,~dfm.ru,~hitfm.ru,~montecarlo.ru,~maximum.ru,~rusradio.ru,~metallurg.ru,~onlinefilmu.ru,~forum.ixbt.com,~igromania.ru,~yarportal.ru,~maxthon.org.ru,~firstvds.ru,~smotretfilmy.ru,~speedy-warez.ru,~blogig.org,~respecta.net,~moviez.kz,~games-java.ru,~rulit.net,~art-on.ru,~kinoshka-new.ru,~forum.esetnod32.ru,~kahai.ru,~planetaua.net,~capa.me,~delo.ua,~uznayvse.ru,~gamai.ru,~bloknot-rostov.ru,~car72.ru,~gradmart.ru,~f1comp.ru,~bukvaved.biz##noindex a[rel="nofollow"]>img
 lostfilm.tv##.shadow:nth-child(2) + div + div
 sd-company.su#%#AG_onLoad(function() { $('div[class$="sdc-box-sdads"]').closest('div[class$="sdc-box-i"]').remove(); });
 4pda.ru###wrapper > div[class^="r"] > div[class^="r"] > div[id^="r"] a[title][href*="http://4pda.ru/2016/"][class*=" "]
@@ -54,6 +69,7 @@ semprot.com###yayaya_nav > div[style="margin-bottom:0.3em"]
 armyrecognition.com##header#header > div[id^="position"]
 armyrecognition.com##section#content > div[id^="position"]
 armyrecognition.com##div[class="sidebar_module sidebar_module_"] > .sidebar_module_content > .custom > table[style="width: 314px; height: 1667px;"]
+kino-serial.net#$#body > div[style^="height:300px;"] { height: 100px!important; }
 stranded-deep.ru#$#body {background:none;padding: 0px 0;}
 ifresh.ws##body > section[id="main-preview"][class="width hide320"]
 ifresh.ws#$##h-wrapper { min-height: 80px!important; }
@@ -178,6 +194,8 @@ overclockers.ru##div[style="border: 1px solid #aaa"]
 softportal.com##div[style="text-align:center; margin:1.5em auto; width:285px;"]
 ||safety-gate.me/images/comss-logo.png
 imagebam.com###sponsor-modal
+@@||imgonline.com.ua/advert.js
+24video.xxx##.banner-item-x2-nojs
 ||huawei.mobzon.ru/adbp/
 wotspeak.ru##.adb
 motherless.com###_mlabd
@@ -194,7 +212,7 @@ netzwerktotal.de##.hidden-phone > .hidden-phone
 ||rusopen.com/img/default/noblock.png
 ||itcats.ru/templates/new-ace/assets/js/adb.js
 elhow.ru##.b-info
-pb.wtf##body > .not
+@@/advert.js$domain=pb.wtf
 @@||media.trafficjunky.net/delivery/js/abp/js*.js
 diffnow.com###adblockBanner
 /plugins/ad-blocking-advisor/*$domain=oleglav.com
@@ -343,6 +361,7 @@ nitroflare.com##div[id^="superbox-"]
 lifenews.ru##html > body > div.lifecorr-banner
 0lik.ru###simplemodal-container
 0lik.ru###simplemodal-overlay
+||am.cdnmob.org/_/img/youtube-bg-filler.png
 arcor.de###fmsurvey
 pastelink.net###display-sidebar
 geektimes.ru,habrahabr.ru,megamozg.ru###TMpanel .container .bmenu > a[href^="http://bit.ly/"]
@@ -382,6 +401,7 @@ forumodua.com##.body_wrapper > div > table[width="100%"] > tbody > tr > td[valig
 santikov.net##a[href^="http://www.oplata.info/asp/pay_wm.asp"]
 vchaspik.ua##div[id="conteiner"][style="height: 410px;"]
 otzyv.ru##div[align="center"] > .aviasales
+vaughnlive.tv##.abvsDynamic
 dailytelegraph.com.au##.iseDiv
 habrahabr.ru##.company_widget > .announce
 google.ae,google.at,google.be,google.by,google.ca,google.ch,google.cl,google.cn,google.co.id,google.co.in,google.co.jp,google.co.th,google.co.uk,google.co.ve,google.co.za,google.com,google.com.ar,google.com.bd,google.com.br,google.com.co,google.com.eg,google.com.hk,google.com.mx,google.com.my,google.com.ng,google.com.pe,google.com.ph,google.com.pk,google.com.sa,google.com.sg,google.com.tr,google.com.tw,google.com.ua,google.com.vn,google.de,google.dk,google.ee,google.es,google.fr,google.gr,google.hu,google.ie,google.it,google.nl,google.no,google.pl,google.pt,google.ro,google.rs,google.ru,google.se,google.sk,google.tn##div[aria-label="promo"]
@@ -439,6 +459,28 @@ topnews.ru##.informer
 ||gismeteo.ua/static/css/informer$domain=ex.ua
 ||gismeteo.ua/ajax/getInformer/$domain=ex.ua
 ex.ua##.gsInformer
+zcdnz.blogspot.com###HTML4 > div > div
+zcdnz.blogspot.com##div[itemprop*="articleBody"] > div > span
+fulltvsports9.blogspot.de,fulltvsports9.blogspot.com,fulltvsports9.blogspot.com.au###HTML2
+fulltvsports9.blogspot.de,fulltvsports9.blogspot.com,fulltvsports9.blogspot.com.au###HTML1
+fulltvsports9.blogspot.de,fulltvsports9.blogspot.com,fulltvsports9.blogspot.com.au###sidebarright
+hostingsrv3ns2.hostingflame.org###der
+hostingsrv3ns2.hostingflame.org###player > div[align$="center"] > p
+hostingsrv3ns2.hostingflame.org###ad
+hostingsrv3ns2.hostingflame.org##table > tbody > tr > td > p
+rivx8.me.la###HTML2
+rivx8.me.la###HTML1
+elgoles2017.blogspot.de,elgoles2017.blogspot.com,elgoles2017.blogspot.com.au##div[itemprop*="articleBody"] > center > span
+elgoles2017.blogspot.de,elgoles2017.blogspot.com,elgoles2017.blogspot.com.au##div[itemprop*="articleBody"] > center > center
+fffpmx.blogspot.de,fffpmx.blogspot.com,fffpmx.blogspot.com.au###sidebar-right-1
+beinwatch.blogspot.de,beinwatch.blogspot.com,beinwatch.blogspot.com.au###HTML1
+beinwatch.blogspot.de,beinwatch.blogspot.com,beinwatch.blogspot.com.au###HTML8
+beinwatch.blogspot.de,beinwatch.blogspot.com,beinwatch.blogspot.com.au#%#document.cookie = "3CAA7=1";
+sportlive.site##div > div[style$="text-align: center;"] > span
+sportlive.site$$script[tag-content="document.onmousedown=disableclick;"]
+sportlive.site$$script[tag-content="detected that you have an ad blocker"]
+kinokladovka.com#$#.b-background { background: none!important; padding-top: 0px!important; }
+kinokladovka.com##.b-background__link
 kiryandrsoft.org###middle-top
 kiryandrsoft.org##noindex a > img
 ||kiryandrsoft.org/templates/OrangeSoft/images/loveisland.jpg

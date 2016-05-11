@@ -1,10 +1,10 @@
 ! Title: Experimental filter
-! Version: 1.0.25.14
+! Version: 1.0.25.21
 ! Name: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: Experimental filter
 ! DescriptionEn: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! TimeUpdated: 2016-05-05T05:00:30.222+03:00
+! TimeUpdated: 2016-05-11T17:00:22.254+03:00
 ! Title: Adguard Experimental Filter
 !
 ! Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
@@ -217,6 +217,21 @@ antiblock.org#%#AG_onLoad(function() { AG_AntiAntiBlock(); });
 ! Remains of ads and dangerous rules
 !
 !--- START: Remains of ads ---
+rksports.info###.col-lg-4 > div > div[class$="panel-heading"]
+simtimes.de##.banner-end-news
+zonasports.be##td[align$="left"][width="300"]
+zonasports.be##div[style$="position:relative"] > center > table
+zonasports.be##.jumbotron > tbody > tr > td > font
+zonasports.be##div[id^="MarketGid"]
+zonasports.be##div[style$="position:relative"] > table > tbody > tr > td
+rivx8.me.la##div[itemprop*="articleBody"] > span
+tpsoccer.net##div[itemprop*="articleBody"] > div > span
+tpsoccer.net###mainsidebararea
+tpsoccer.net###HTML3 > div > table
+sportlive.me###player > div > div[style$="text-align: center;"]
+deporte42.in##div[class^="extra"] > div > div > font
+deporte42.in##a[href^="http://www.ademails.com"]
+rgho.st##.panel-default
 imgbum.net##.t_bg > center
 vedtver.ru##.banner > a[rel="nofollow"] > img
 cwer.ws,cwer.ru###footer
@@ -229,7 +244,7 @@ gamegpu.com##.tm-top-b
 !--- END:   Remains of ads ---
 !
 ! Dangerous "nofollow" links blocking rule
-~vestivrn.ru,~rus-linux.net,~sobytiya.info,~hcdinamo.by,~mixupload.com,~bloknot-krasnodar.ru,~bloknot-stavropol.ru,~edp.kiev.ua,~gamegpu.ru,~joomla.ru,~keddr.com,~allkey.org,~wowjp.net,~bucwar.ru,~fsm-portal.net,~crox.ws,~softek.ucoz.ru,~dfm.ru,~hitfm.ru,~montecarlo.ru,~maximum.ru,~rusradio.ru,~metallurg.ru,~onlinefilmu.ru,~forum.ixbt.com,~igromania.ru,~yarportal.ru,~maxthon.org.ru,~firstvds.ru,~smotretfilmy.ru,~speedy-warez.ru,~blogig.org,~respecta.net,~moviez.kz,~games-java.ru,~rulit.net,~art-on.ru,~kinoshka-new.ru,~forum.esetnod32.ru,~kahai.ru,~planetaua.net,~capa.me,~delo.ua,~uznayvse.ru,~gamai.ru,~bloknot-rostov.ru,~car72.ru,~gradmart.ru,~f1comp.ru,~bukvaved.biz##noindex a[rel="nofollow"]>img
+~kinogo.co,~anti-free.ru,~vestivrn.ru,~rus-linux.net,~sobytiya.info,~hcdinamo.by,~mixupload.com,~bloknot-krasnodar.ru,~bloknot-stavropol.ru,~edp.kiev.ua,~gamegpu.ru,~joomla.ru,~keddr.com,~allkey.org,~wowjp.net,~bucwar.ru,~fsm-portal.net,~crox.ws,~softek.ucoz.ru,~dfm.ru,~hitfm.ru,~montecarlo.ru,~maximum.ru,~rusradio.ru,~metallurg.ru,~onlinefilmu.ru,~forum.ixbt.com,~igromania.ru,~yarportal.ru,~maxthon.org.ru,~firstvds.ru,~smotretfilmy.ru,~speedy-warez.ru,~blogig.org,~respecta.net,~moviez.kz,~games-java.ru,~rulit.net,~art-on.ru,~kinoshka-new.ru,~forum.esetnod32.ru,~kahai.ru,~planetaua.net,~capa.me,~delo.ua,~uznayvse.ru,~gamai.ru,~bloknot-rostov.ru,~car72.ru,~gradmart.ru,~f1comp.ru,~bukvaved.biz##noindex a[rel="nofollow"]>img
 !
 ! lostfilm.tv - скрываем остатки блока статистики
 lostfilm.tv##.shadow:nth-child(2) + div + div
@@ -281,6 +296,8 @@ armyrecognition.com##header#header > div[id^="position"]
 armyrecognition.com##section#content > div[id^="position"]
 armyrecognition.com##div[class="sidebar_module sidebar_module_"] > .sidebar_module_content > .custom > table[style="width: 314px; height: 1667px;"]
 !
+! kino-serial.net - уменьшение отступа сверху
+kino-serial.net#$#body > div[style^="height:300px;"] { height: 100px!important; }
 ! stranded-deep.ru - удаление брендированного фона, отступа сверху
 stranded-deep.ru#$#body {background:none;padding: 0px 0;}
 ! ifresh.ws - уменьшение отступа сверху
@@ -487,6 +504,8 @@ imagebam.com###sponsor-modal
 !------------------ Anti-adblock messages --------------------------
 !---------- which does not affect the functioning of site ----------
 !-------------------------------------------------------------------
+@@||imgonline.com.ua/advert.js
+24video.xxx##.banner-item-x2-nojs
 ||huawei.mobzon.ru/adbp/
 wotspeak.ru##.adb
 motherless.com###_mlabd
@@ -503,7 +522,7 @@ netzwerktotal.de##.hidden-phone > .hidden-phone
 ||rusopen.com/img/default/noblock.png
 ||itcats.ru/templates/new-ace/assets/js/adb.js
 elhow.ru##.b-info
-pb.wtf##body > .not
+@@/advert.js$domain=pb.wtf
 @@||media.trafficjunky.net/delivery/js/abp/js*.js
 diffnow.com###adblockBanner
 /plugins/ad-blocking-advisor/*$domain=oleglav.com
@@ -676,6 +695,8 @@ lifenews.ru##html > body > div.lifecorr-banner
 !
 !
 !----------- START: Annoying elements -----------------
+! mob.org.ru - youtube placeholder in the top of the site
+||am.cdnmob.org/_/img/youtube-bg-filler.png
 ! arcor.de - survey
 arcor.de###fmsurvey
 ! pastelink.net - whitespace on the right side
@@ -753,9 +774,11 @@ otzyv.ru##div[align="center"] > .aviasales
 !----------- End:   Annoying elements -----------------
 !
 !########### START: Self promotion ################
+!
+vaughnlive.tv##.abvsDynamic
 ! dailytelegraph.com.au - subscription overlay
 dailytelegraph.com.au##.iseDiv
-! habrahabr.ru - реклама хозяина блога
+! habrahabr.ru - реклама автора блога
 habrahabr.ru##.company_widget > .announce
 !--- Google Chrome banner in IE ----------------
 google.ae,google.at,google.be,google.by,google.ca,google.ch,google.cl,google.cn,google.co.id,google.co.in,google.co.jp,google.co.th,google.co.uk,google.co.ve,google.co.za,google.com,google.com.ar,google.com.bd,google.com.br,google.com.co,google.com.eg,google.com.hk,google.com.mx,google.com.my,google.com.ng,google.com.pe,google.com.ph,google.com.pk,google.com.sa,google.com.sg,google.com.tr,google.com.tw,google.com.ua,google.com.vn,google.de,google.dk,google.ee,google.es,google.fr,google.gr,google.hu,google.ie,google.it,google.nl,google.no,google.pl,google.pt,google.ro,google.rs,google.ru,google.se,google.sk,google.tn##div[aria-label="promo"]
@@ -828,6 +851,29 @@ ex.ua##.gsInformer
 !---------------- Low-attendance sites -----------------------------
 !------------- less then 30k visits/month --------------------------
 !-------------------------------------------------------------------
+zcdnz.blogspot.com###HTML4 > div > div
+zcdnz.blogspot.com##div[itemprop*="articleBody"] > div > span
+fulltvsports9.blogspot.de,fulltvsports9.blogspot.com,fulltvsports9.blogspot.com.au###HTML2
+fulltvsports9.blogspot.de,fulltvsports9.blogspot.com,fulltvsports9.blogspot.com.au###HTML1
+fulltvsports9.blogspot.de,fulltvsports9.blogspot.com,fulltvsports9.blogspot.com.au###sidebarright
+hostingsrv3ns2.hostingflame.org###der
+hostingsrv3ns2.hostingflame.org###player > div[align$="center"] > p
+hostingsrv3ns2.hostingflame.org###ad
+hostingsrv3ns2.hostingflame.org##table > tbody > tr > td > p
+rivx8.me.la###HTML2
+rivx8.me.la###HTML1
+elgoles2017.blogspot.de,elgoles2017.blogspot.com,elgoles2017.blogspot.com.au##div[itemprop*="articleBody"] > center > span
+elgoles2017.blogspot.de,elgoles2017.blogspot.com,elgoles2017.blogspot.com.au##div[itemprop*="articleBody"] > center > center
+fffpmx.blogspot.de,fffpmx.blogspot.com,fffpmx.blogspot.com.au###sidebar-right-1
+! https://forum.adguard.com/index.php?threads/10216/
+beinwatch.blogspot.de,beinwatch.blogspot.com,beinwatch.blogspot.com.au###HTML1
+beinwatch.blogspot.de,beinwatch.blogspot.com,beinwatch.blogspot.com.au###HTML8
+beinwatch.blogspot.de,beinwatch.blogspot.com,beinwatch.blogspot.com.au#%#document.cookie = "3CAA7=1";
+! https://forum.adguard.com/index.php?threads/10165/
+sportlive.site##div > div[style$="text-align: center;"] > span
+!
+kinokladovka.com#$#.b-background { background: none!important; padding-top: 0px!important; }
+kinokladovka.com##.b-background__link
 kiryandrsoft.org###middle-top
 kiryandrsoft.org##noindex a > img
 ||kiryandrsoft.org/templates/OrangeSoft/images/loveisland.jpg
@@ -1052,3 +1098,5 @@ revclouds.com#%#AG_onLoad(function() {document.getElementById("tick-dwn").click(
 homad-global-configs-eu-fra.schneevonmorgen.com.s3.amazonaws.com/www.spiegel.tv/config.json$replace=/"enabled": true\,/"enabled": false\,/i
 ! https://forum.adguard.com/index.php?threads/10055/
 ||ams.rmcnmv.naver.com/item/create/*/SMR?ams_ctgr=*&ams_chnl=*ams_videoId=$replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\$1<\/VAST>/
+! ivi.ru
+! ||api.ivi.ru/light/?r=$replace=/\"third_party_adv_xml_link\": .*?\,/"third_party_adv_xml_link": null\,/
