@@ -22,15 +22,6 @@ var AdguardSelectorLib = (function (api, $) {
 
     // PRIVATE FIELDS
 
-    var BORDER_WIDTH = 5;
-    var BORDER_PADDING = 2;
-    var BORDER_CLASS = "sg_border";
-
-    var borderTop = null;
-    var borderLeft = null;
-    var borderRight = null;
-    var borderBottom = null;
-
     var PLACEHOLDER_PREFIX = 'adguard-placeholder';
     var placeholdedElements = null;
 
@@ -48,6 +39,11 @@ var AdguardSelectorLib = (function (api, $) {
     var selectMode = 'exact';
     var unbound = true;
     var onElementSelectedHandler = null;
+
+    var isTouchEventsSupported = (('ontouchstart' in window) || (navigator.msMaxTouchPoints > 0));
+    var ignoreTouchEvent = 0;
+
+    var selectionRenderer;
 
 
     // PRIVATE METHODS
@@ -116,7 +112,6 @@ var AdguardSelectorLib = (function (api, $) {
         return null;
     };
 
-
     var px = function (p) {
         return p + 'px';
     };
@@ -129,46 +124,6 @@ var AdguardSelectorLib = (function (api, $) {
         }
     };
 
-    var removeBorderFromDom = function () {
-        if (borderTop && borderTop.get(0)) {
-            var parent = borderTop.get(0).parentNode;
-
-            if (parent) {
-                parent.removeChild(borderTop.get(0));
-                parent.removeChild(borderBottom.get(0));
-                parent.removeChild(borderLeft.get(0));
-                parent.removeChild(borderRight.get(0));
-            }
-        }
-
-        borderTop = borderBottom = borderRight = borderLeft = null;
-    };
-
-    var addBorderToDom = function () {
-        document.body.appendChild(borderTop.get(0));
-        document.body.appendChild(borderBottom.get(0));
-        document.body.appendChild(borderLeft.get(0));
-        document.body.appendChild(borderRight.get(0));
-    };
-
-    var showBorders = function () {
-        if (borderTop && borderBottom && borderLeft && borderRight) {
-            borderTop.show();
-            borderBottom.show();
-            borderLeft.show();
-            borderRight.show();
-        }
-    };
-
-    var removeBorders = function () {
-        if (borderTop && borderBottom && borderLeft && borderRight) {
-            borderTop.hide();
-            borderBottom.hide();
-            borderLeft.hide();
-            borderRight.hide();
-        }
-    };
-
     var clearSelected = function () {
         selectedElements = [];
         rejectedElements = [];
@@ -176,7 +131,7 @@ var AdguardSelectorLib = (function (api, $) {
         removeClassName(SELECTED_CLASS);
         removeClassName(REJECTED_CLASS);
 
-        removeBorders();
+        selectionRenderer.remove();
         removeClassName(SUGGESTED_CLASS);
     };
 
@@ -187,14 +142,15 @@ var AdguardSelectorLib = (function (api, $) {
      * @returns {{top: number, left: number, outerWidth: number, outerHeight: number}}
      */
     var getOffsetExtended = function (elem) {
-        var rect = elem.getBoundingClientRect();
+        var bodyRect = document.body.getBoundingClientRect();
+        var elemRect = elem.getBoundingClientRect();
 
-        var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        var rectTop = elemRect.top - bodyRect.top;
+        var rectLeft = elemRect.left - bodyRect.left;
 
         return {
-            top: rect.top + scrollTop,
-            left: rect.left + scrollLeft,
+            top: rectTop,
+            left: rectLeft,
             outerWidth: elem.offsetWidth,
             outerHeight: elem.offsetHeight
         };
@@ -209,40 +165,134 @@ var AdguardSelectorLib = (function (api, $) {
      * @param element
      * @private
      */
-    var selectionRenderer = function (element) {
-        removeBorders();
-        setupBorders();
+    var BorderSelectionRenderer = (function (api) {
+        var BORDER_WIDTH = 5;
+        var BORDER_PADDING = 2;
+        var BORDER_CLASS = "sg_border";
 
-        if (!element) {
-            return;
-        }
+        var borderTop = null;
+        var borderLeft = null;
+        var borderRight = null;
+        var borderBottom = null;
 
-        var p = getOffsetExtended(element);
+        var showBorders = function () {
+            if (borderTop && borderBottom && borderLeft && borderRight) {
+                borderTop.show();
+                borderBottom.show();
+                borderLeft.show();
+                borderRight.show();
+            }
+        };
 
-        var top = p.top;
-        var left = p.left;
-        var width = p.outerWidth;
-        var height = p.outerHeight;
+        var addBorderToDom = function () {
+            document.body.appendChild(borderTop.get(0));
+            document.body.appendChild(borderBottom.get(0));
+            document.body.appendChild(borderLeft.get(0));
+            document.body.appendChild(borderRight.get(0));
+        };
 
-        borderTop.css('width', px(width + BORDER_PADDING * 2 + BORDER_WIDTH * 2)).
-            css('top', px(top - BORDER_WIDTH - BORDER_PADDING)).
-            css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
-        borderBottom.css('width', px(width + BORDER_PADDING * 2 + BORDER_WIDTH)).
-            css('top', px(top + height + BORDER_PADDING)).
-            css('left', px(left - BORDER_PADDING - BORDER_WIDTH)).
-            css('box-sizing', 'unset');
-        borderLeft.css('height', px(height + BORDER_PADDING * 2)).
-            css('top', px(top - BORDER_PADDING)).
-            css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
-        borderRight.css('height', px(height + BORDER_PADDING * 2)).
-            css('top', px(top - BORDER_PADDING)).
-            css('left', px(left + width + BORDER_PADDING));
+        var removeBorderFromDom = function () {
+            if (borderTop && borderTop.get(0)) {
+                var parent = borderTop.get(0).parentNode;
 
-        borderBottom.get(0).textContent = getTagPath(element);
-        borderRight.get(0).target_elem = borderLeft.get(0).target_elem = borderTop.get(0).target_elem = borderBottom.get(0).target_elem = element;
+                if (parent) {
+                    parent.removeChild(borderTop.get(0));
+                    parent.removeChild(borderBottom.get(0));
+                    parent.removeChild(borderLeft.get(0));
+                    parent.removeChild(borderRight.get(0));
+                }
+            }
 
-        showBorders();
-    };
+            borderTop = borderBottom = borderRight = borderLeft = null;
+        };
+
+        /**
+         * Preparing renderer.
+         */
+        api.init = function () {
+            if (!borderTop) {
+                var width = px(BORDER_WIDTH);
+
+                borderTop = $('<div/>').addClass(BORDER_CLASS).css('height', width).hide()
+                    .on("click", sgMousedownHandler);
+                borderBottom = $('<div/>').addClass(BORDER_CLASS).addClass('sg_bottom_border')
+                    .css('height', px(BORDER_WIDTH + 6)).hide()
+                    .on("click", sgMousedownHandler);
+                borderLeft = $('<div/>').addClass(BORDER_CLASS).css('width', width).hide()
+                    .on("click", sgMousedownHandler);
+                borderRight = $('<div/>').addClass(BORDER_CLASS).css('width', width).hide()
+                    .on("click", sgMousedownHandler);
+
+                addBorderToDom();
+            }
+        };
+
+        /**
+         * Clearing DOM and so on.
+         */
+        api.finalize = function () {
+            removeBorderFromDom();
+        };
+
+        /**
+         * Adds borders to specified element
+         *
+         * @param element
+         */
+        api.add = function (element) {
+            api.remove();
+
+            if (!element) {
+                return;
+            }
+
+            var p = getOffsetExtended(element);
+
+            var top = p.top;
+            var left = p.left;
+            var width = p.outerWidth;
+            var height = p.outerHeight;
+
+            borderTop.css('width', px(width + BORDER_PADDING * 2 + BORDER_WIDTH * 2)).
+                css('top', px(top - BORDER_WIDTH - BORDER_PADDING)).
+                css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
+            borderBottom.css('width', px(width + BORDER_PADDING * 2 + BORDER_WIDTH)).
+                css('top', px(top + height + BORDER_PADDING)).
+                css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
+            borderLeft.css('height', px(height + BORDER_PADDING * 2)).
+                css('top', px(top - BORDER_PADDING)).
+                css('left', px(left - BORDER_PADDING - BORDER_WIDTH));
+            borderRight.css('height', px(height + BORDER_PADDING * 2)).
+                css('top', px(top - BORDER_PADDING)).
+                css('left', px(left + width + BORDER_PADDING));
+
+            borderBottom.get(0).textContent = getTagPath(element);
+            borderRight.get(0).target_elem = borderLeft.get(0).target_elem = borderTop.get(0).target_elem = borderBottom.get(0).target_elem = element;
+
+            showBorders();
+        };
+
+        /**
+         * Removes borders
+         */
+        api.remove = function () {
+            if (borderTop && borderBottom && borderLeft && borderRight) {
+                borderTop.hide();
+                borderBottom.hide();
+                borderLeft.hide();
+                borderRight.hide();
+            }
+        };
+
+        /**
+         * Border class
+         *
+         * @type {string}
+         */
+        api.BORDER_CLASS = BORDER_CLASS;
+
+        return api;
+    })(BorderSelectionRenderer || {});
 
     var linkHelper = document.createElement('a');
     var getHost = function (url) {
@@ -291,7 +341,10 @@ var AdguardSelectorLib = (function (api, $) {
 
             var placeHolder = $('#' + id).get(0);
             if (placeHolder) {
-                placeHolder.outerHTML = current.outerHTML;
+                var parent = placeHolder.parentNode;
+                if (parent) {
+                    parent.replaceChild(current, placeHolder);
+                }
             }
         }
 
@@ -299,35 +352,56 @@ var AdguardSelectorLib = (function (api, $) {
     };
 
     var placeholderClick = function (element) {
-        removeBorders();
+        selectionRenderer.remove();
         removePlaceholders();
 
         onElementSelectedHandler(element);
     };
 
     var makeIFrameAndEmbededSelector = function () {
-        placeholdedElements = $('iframe:not(.' + IGNORED_CLASS + '),embed,object').filter(function(elem) {
+        placeholdedElements = $('iframe:not(.' + IGNORED_CLASS + '),embed,object').filter(function (elem) {
             return elem.style["display"] != "none";
         });
 
         var elements = placeholdedElements;
         for (var i = 0; i < elements.length; i++) {
             var current = elements[i];
-            (function(current){
+            (function (current) {
                 var placeHolder = makePlaceholderImage(current);
                 var id = PLACEHOLDER_PREFIX + i;
 
                 placeHolder.setAttribute("id", id);
-                current.outerHTML = placeHolder.outerHTML;
-                $('#' + id).on('click', function (e) {
-                    e.preventDefault();
 
-                    placeholderClick(current);
-                });
+                var parent = current.parentNode;
+                if (parent) {
+                    parent.replaceChild(placeHolder, current);
+                    if (isTouchEventsSupported) {
+                        $(placeHolder).on("gestureend", gestureEndHandler);
+                        $(placeHolder).on("touchmove", touchMoveHandler);
+                        $(placeHolder).on("touchend", function (e) {
+                            e.preventDefault();
+
+                            if (needIgnoreTouchEvent()) {
+                                return true;
+                            }
+
+                            placeholderClick(current);
+                        });
+                    } else {
+                        $('#' + id).on('click', function (e) {
+                            e.preventDefault();
+
+                            placeholderClick(current);
+                        });
+                    }
+
+                }
+
             })(current);
         }
     };
 
+    /********** Events ***************/
     var sgMouseoverHandler = function (e) {
         e.stopPropagation();
 
@@ -341,9 +415,9 @@ var AdguardSelectorLib = (function (api, $) {
 
         var parent = firstSelectedOrSuggestedParent(this);
         if (parent != null && parent != this) {
-            selectionRenderer(parent, true);
+            selectionRenderer.add(parent);
         } else {
-            selectionRenderer(this);
+            selectionRenderer.add(this);
         }
 
         return false;
@@ -358,7 +432,7 @@ var AdguardSelectorLib = (function (api, $) {
             return false;
         }
 
-        removeBorders();
+        selectionRenderer.remove();
         return false;
     };
 
@@ -371,7 +445,7 @@ var AdguardSelectorLib = (function (api, $) {
         }
 
         var elem = e.target;
-        if ($(elem).hasClass(BORDER_CLASS)) {
+        if ($(elem).hasClass(selectionRenderer.BORDER_CLASS)) {
             //Clicked on one of our floating borders, target the element that we are bordering.
             elem = elem.target_elem || elem;
         }
@@ -381,54 +455,106 @@ var AdguardSelectorLib = (function (api, $) {
         }
 
         makePredictionPath(elem);
-        removeBorders();
+
+        selectionRenderer.remove();
 
         onElementSelectedHandler(elem);
 
         return false;
     };
 
+    /********** Touch event handlers ***************/
+    var touchElementSelectHandler = function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        sgMouseoverHandler.call(this, e);
+        sgMousedownHandler.call(this, e);
+    };
+
+    var needIgnoreTouchEvent = function () {
+
+        if (ignoreTouchEvent > 0) {
+
+            ignoreTouchEvent--;
+            return true;
+        }
+
+        return false;
+    };
+
+    var elementTouchendHandler = function (e) {
+        e.stopPropagation();
+
+        if (needIgnoreTouchEvent()) {
+            return true;
+        }
+
+        touchElementSelectHandler.call(this, e);
+        return false;
+    };
+
+    var emptyEventHandler = function (e) {
+        e.stopPropagation();
+
+        return false;
+    };
+
+    var gestureEndHandler = function () {
+        ignoreTouchEvent = 2;
+        return true;
+    };
+
+    var touchMoveHandler = function () {
+        ignoreTouchEvent = 1;
+        return true;
+    };
+
 
     var setupEventHandlers = function () {
         makeIFrameAndEmbededSelector();
 
-        var sgIgnore = $("body *:not(." + IGNORED_CLASS + ")");
-        sgIgnore.forEach(function (el) {
-            el.addEventListener("mouseover", sgMouseoverHandler);
-            el.addEventListener("mouseout", sgMouseoutHandler);
-            el.addEventListener("click", sgMousedownHandler, true);
-        });
+        var elements = $("body *:not(." + IGNORED_CLASS + ")");
+
+        if (isTouchEventsSupported) {
+            elements.forEach(function (el) {
+                el.addEventListener("gestureend", gestureEndHandler);
+                el.addEventListener("touchmove", touchMoveHandler);
+                el.addEventListener("touchend", elementTouchendHandler, true);
+                el.addEventListener("touchstart", emptyEventHandler);
+            });
+        } else {
+            elements.forEach(function (el) {
+                el.addEventListener("mouseover", sgMouseoverHandler);
+                el.addEventListener("mouseout", sgMouseoutHandler);
+                el.addEventListener("click", sgMousedownHandler, true);
+            });
+        }
+
     };
 
     var deleteEventHandlers = function () {
         removePlaceholders();
 
         var elements = $("body *");
-        elements.forEach(function (el) {
-            el.removeEventListener("mouseover", sgMouseoverHandler);
-            el.removeEventListener("mouseout", sgMouseoutHandler);
-            el.removeEventListener("click", sgMousedownHandler, true);
-        });
-    };
-
-    var setupBorders = function () {
-        if (!borderTop) {
-            var width = px(BORDER_WIDTH);
-
-            borderTop = $('<div/>').addClass(BORDER_CLASS).css('height', width).hide()
-                .on("click", sgMousedownHandler);
-            borderBottom = $('<div/>').addClass(BORDER_CLASS).addClass('sg_bottom_border')
-                .css('height', px(BORDER_WIDTH + 6)).hide()
-                .on("click", sgMousedownHandler);
-            borderLeft = $('<div/>').addClass(BORDER_CLASS).css('width', width).hide()
-                .on("click", sgMousedownHandler);
-            borderRight = $('<div/>').addClass(BORDER_CLASS).css('width', width).hide()
-                .on("click", sgMousedownHandler);
-
-            addBorderToDom();
+        if (isTouchEventsSupported) {
+            elements.forEach(function (el) {
+                el.removeEventListener("gestureend", gestureEndHandler);
+                el.removeEventListener("touchmove", touchMoveHandler);
+                el.removeEventListener("touchend", elementTouchendHandler, true);
+                el.removeEventListener("touchstart", emptyEventHandler);
+            });
+        } else {
+            elements.forEach(function (el) {
+                el.removeEventListener("mouseover", sgMouseoverHandler);
+                el.removeEventListener("mouseout", sgMouseoutHandler);
+                el.removeEventListener("click", sgMousedownHandler, true);
+            });
         }
     };
 
+    //Define default implementation of selection renderer.
+    selectionRenderer = BorderSelectionRenderer;
 
     // PUBLIC API
 
@@ -436,13 +562,13 @@ var AdguardSelectorLib = (function (api, $) {
      * Starts selector module.
      *
      * @param onElementSelected callback function
-     * @param selectionRenderFunc optional function contains selection presentation implementation
+     * @param selectionRenderImpl optional object contains selection presentation implementation
      */
-    api.init = function (onElementSelected, selectionRenderFunc) {
+    api.init = function (onElementSelected, selectionRenderImpl) {
 
         onElementSelectedHandler = onElementSelected;
-        if (selectionRenderFunc && typeof selectionRenderFunc === "function") {
-            selectionRenderer = selectionRenderFunc;
+        if (selectionRenderImpl && typeof selectionRenderImpl === "object") {
+            selectionRenderer = selectionRenderImpl;
         }
 
         restrictedElements = ['html', 'body', 'head', 'base'].map(function (selector) {
@@ -450,6 +576,7 @@ var AdguardSelectorLib = (function (api, $) {
         });
         predictionHelper = new DomPredictionHelper($, String);
 
+        selectionRenderer.init();
         setupEventHandlers();
         unbound = false;
     };
@@ -469,7 +596,7 @@ var AdguardSelectorLib = (function (api, $) {
     api.close = function () {
         unbound = true;
 
-        removeBorderFromDom();
+        selectionRenderer.finalize();
         deleteEventHandlers();
     };
 
@@ -480,10 +607,18 @@ var AdguardSelectorLib = (function (api, $) {
      * @param element
      */
     api.selectElement = function (element) {
-        selectionRenderer(element);
+        selectionRenderer.add(element);
 
         unbound = true;
         deleteEventHandlers();
+    };
+
+    /**
+     Returns css class name.
+     If this class assigns to HTML element, then Adguard Selector ignores it.
+     */
+    api.ignoreClassName = function () {
+        return IGNORED_CLASS;
     };
 
     return api;

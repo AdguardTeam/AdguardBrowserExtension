@@ -402,7 +402,7 @@ var AdguardAssistant = function ($) {
 	 */
 	var startSelector = function () {
 		// Initializing AdguardSelector with default configuration
-		AdguardSelectorLib.reset();
+		//AdguardSelectorLib.reset();
 		AdguardSelectorLib.init(onElementSelected);
 	};
 
