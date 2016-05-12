@@ -104,7 +104,7 @@ var AdguardRulesConstructorLib = (function (api) {
 
     var createSimilarRuleText = function (element) {
         var selector = createSimilarElementSelector(element);
-        return selector ? "##" + selector : "";
+        return selector ? "##" + selector.replace(', .', '.') : "";
     };
 
     var constructUrlBlockRuleText = function (element, urlBlockAttribute, oneDomain, domain) {
