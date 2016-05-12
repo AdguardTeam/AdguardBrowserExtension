@@ -4,8 +4,8 @@ function testPunycodeRule() {
     var rule = new UrlFilterRule(ruleText);
     assertNotNull(rule);
 
-    assertEquals("^https?://([a-z0-9-_.]+\\.)?xn--d1acpjx3f\\.xn--p1ai([^ a-zA-Z0-9.%]|$)", rule.getUrlRegExpSource());
-    assertEquals("/^https?:\\/\\/([a-z0-9-_.]+\\.)?xn--d1acpjx3f\\.xn--p1ai([^ a-zA-Z0-9.%]|$)/i", rule.getUrlRegExp().toString());
+    assertEquals("^(http|https|ws|wss)://([a-z0-9-_.]+\\.)?xn--d1acpjx3f\\.xn--p1ai([^ a-zA-Z0-9.%]|$)", rule.getUrlRegExpSource());
+    assertEquals("/^(http|https|ws|wss):\\/\\/([a-z0-9-_.]+\\.)?xn--d1acpjx3f\\.xn--p1ai([^ a-zA-Z0-9.%]|$)/i", rule.getUrlRegExp().toString());
     assertEquals("xn--80a1acny.xn--p1ai", rule.getPermittedDomains()[0]);
 }
 addTestCase(testPunycodeRule);
@@ -21,8 +21,8 @@ function testWhiteListRule() {
     assertFalse(rule.checkThirdParty);
 //        assertFalse(rule.blockpopup);
     assertTrue(rule.getPermittedDomains().indexOf("topzone.lt") >= 0);
-    assertEquals("^https?://([a-z0-9-_.]+\\.)?tradedoubler\\.com\\/anet\\?type\\(iframe\\)loc\\(", rule.getUrlRegExpSource());
-    assertEquals("/^https?:\\/\\/([a-z0-9-_.]+\\.)?tradedoubler\\.com\\/anet\\?type\\(iframe\\)loc\\(/i", rule.getUrlRegExp().toString());
+    assertEquals("^(http|https|ws|wss)://([a-z0-9-_.]+\\.)?tradedoubler\\.com\\/anet\\?type\\(iframe\\)loc\\(", rule.getUrlRegExpSource());
+    assertEquals("/^(http|https|ws|wss):\\/\\/([a-z0-9-_.]+\\.)?tradedoubler\\.com\\/anet\\?type\\(iframe\\)loc\\(/i", rule.getUrlRegExp().toString());
 }
 addTestCase(testWhiteListRule);
 
@@ -161,8 +161,8 @@ function testUrlBlockingRule() {
     assertEquals("test.ru/", rule.shortcut);
     assertEquals("google.com", rule.getPermittedDomains()[0]);
     assertEquals("nigma.ru", rule.getRestrictedDomains()[0]);
-    assertEquals("^https?://([a-z0-9-_.]+\\.)?test\\.ru\\/([^ a-zA-Z0-9.%]|$)", rule.getUrlRegExpSource());
-    assertEquals("/^https?:\\/\\/([a-z0-9-_.]+\\.)?test\\.ru\\/([^ a-zA-Z0-9.%]|$)/", rule.getUrlRegExp().toString());
+    assertEquals("^(http|https|ws|wss)://([a-z0-9-_.]+\\.)?test\\.ru\\/([^ a-zA-Z0-9.%]|$)", rule.getUrlRegExpSource());
+    assertEquals("/^(http|https|ws|wss):\\/\\/([a-z0-9-_.]+\\.)?test\\.ru\\/([^ a-zA-Z0-9.%]|$)/", rule.getUrlRegExp().toString());
 
     // Check rule work
     assertTrue(rule.isFiltered("http://test.ru/", true, RequestTypes.POPUP));
