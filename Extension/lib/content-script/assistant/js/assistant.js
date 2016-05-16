@@ -450,7 +450,7 @@ var AdguardAssistant = function ($) {
 			'			</div>' +
 			'		</div>' +
 			'		<div class="element-rule_more">' +
-			'			<span class="element-rule_expand-link" id="ExtendedSettingsText">' +
+			'			<span class="element-rule_expand-link" id="adg-show-adv-settings">' +
 			'				<span i18n="assistant_extended_settings" class="element-rule_expand-link_txt"></span>' +
 			'				<span class="element-rule_expand-link_arr"></span>' +
 			'			</span>' +
@@ -518,7 +518,7 @@ var AdguardAssistant = function ($) {
 				'#adg-cancel': onSelectElementClicked,
 				'#adg-preview': onRulePreview,
 				'#adg-accept': onRuleAccept,
-				'#ExtendedSettingsText': onExtendDetailedSettings
+				'#adg-show-adv-settings': onExtendDetailedSettings
 			});
 			dfd.resolve();
 		}, function () {
@@ -591,11 +591,11 @@ var AdguardAssistant = function ($) {
 		if (hidden) {
 			resizeIframe(null, constants.iframe.extendDetailedSettingsHeight);
 			findInIframe('#adv-settings').addClass('open');
-			findInIframe('#ExtendedSettingsText').addClass('active');
+			findInIframe('#adg-show-adv-settings').addClass('active');
 		} else {
 			resizeIframe(null, constants.iframe.detailedMenuHeight);
 			findInIframe('#adv-settings').removeClass('open');
-			findInIframe('#ExtendedSettingsText').removeClass('active');
+			findInIframe('#adg-show-adv-settings').removeClass('active');
 		}
 	};
 
