@@ -1,10 +1,10 @@
 ! Title: Experimental filter
-! Version: 1.0.25.21
+! Version: 1.0.25.30
 ! Name: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: Experimental filter
 ! DescriptionEn: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! TimeUpdated: 2016-05-11T17:00:22.254+03:00
+! TimeUpdated: 2016-05-16T21:00:32.928+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -13,6 +13,9 @@
 antiblock.org#%#var AG_AntiAntiBlock = function() { var baseCreateElement = document.createElement; document.createElement = function(name) { if (name && name.match(/div|font|center/i)) { return null; } else { return baseCreateElement(name); } } };
 antiblock.org#%#AG_onLoad(function() { AG_AntiAntiBlock(); });
 @@||my10.imgsmail.ru/mail/$domain=mail.ru
+mimikama.at##div[itemprop$="articleBody"] > hr
+mimikama.at##div[itemprop$="articleBody"] > div
+deskgram.com##.post-box.ad
 rksports.info###.col-lg-4 > div > div[class$="panel-heading"]
 simtimes.de##.banner-end-news
 zonasports.be##td[align$="left"][width="300"]
@@ -37,7 +40,7 @@ sports.ru##.news-item__footer > h3
 ilf.at.ua###carousel-container
 ilf.at.ua##img[width="70"][height="40"]
 gamegpu.com##.tm-top-b
-~kinogo.co,~anti-free.ru,~vestivrn.ru,~rus-linux.net,~sobytiya.info,~hcdinamo.by,~mixupload.com,~bloknot-krasnodar.ru,~bloknot-stavropol.ru,~edp.kiev.ua,~gamegpu.ru,~joomla.ru,~keddr.com,~allkey.org,~wowjp.net,~bucwar.ru,~fsm-portal.net,~crox.ws,~softek.ucoz.ru,~dfm.ru,~hitfm.ru,~montecarlo.ru,~maximum.ru,~rusradio.ru,~metallurg.ru,~onlinefilmu.ru,~forum.ixbt.com,~igromania.ru,~yarportal.ru,~maxthon.org.ru,~firstvds.ru,~smotretfilmy.ru,~speedy-warez.ru,~blogig.org,~respecta.net,~moviez.kz,~games-java.ru,~rulit.net,~art-on.ru,~kinoshka-new.ru,~forum.esetnod32.ru,~kahai.ru,~planetaua.net,~capa.me,~delo.ua,~uznayvse.ru,~gamai.ru,~bloknot-rostov.ru,~car72.ru,~gradmart.ru,~f1comp.ru,~bukvaved.biz##noindex a[rel="nofollow"]>img
+~golos-naroda.tv,~kinogo.co,~anti-free.ru,~vestivrn.ru,~rus-linux.net,~sobytiya.info,~hcdinamo.by,~mixupload.com,~bloknot-krasnodar.ru,~bloknot-stavropol.ru,~edp.kiev.ua,~gamegpu.ru,~joomla.ru,~keddr.com,~allkey.org,~wowjp.net,~bucwar.ru,~fsm-portal.net,~crox.ws,~softek.ucoz.ru,~dfm.ru,~hitfm.ru,~montecarlo.ru,~maximum.ru,~rusradio.ru,~metallurg.ru,~onlinefilmu.ru,~forum.ixbt.com,~igromania.ru,~yarportal.ru,~maxthon.org.ru,~firstvds.ru,~smotretfilmy.ru,~speedy-warez.ru,~blogig.org,~respecta.net,~moviez.kz,~games-java.ru,~rulit.net,~art-on.ru,~kinoshka-new.ru,~forum.esetnod32.ru,~kahai.ru,~planetaua.net,~capa.me,~delo.ua,~uznayvse.ru,~gamai.ru,~bloknot-rostov.ru,~car72.ru,~gradmart.ru,~f1comp.ru,~bukvaved.biz##noindex a[rel="nofollow"]>img
 lostfilm.tv##.shadow:nth-child(2) + div + div
 sd-company.su#%#AG_onLoad(function() { $('div[class$="sdc-box-sdads"]').closest('div[class$="sdc-box-i"]').remove(); });
 4pda.ru###wrapper > div[class^="r"] > div[class^="r"] > div[id^="r"] a[title][href*="http://4pda.ru/2016/"][class*=" "]
@@ -194,6 +197,10 @@ overclockers.ru##div[style="border: 1px solid #aaa"]
 softportal.com##div[style="text-align:center; margin:1.5em auto; width:285px;"]
 ||safety-gate.me/images/comss-logo.png
 imagebam.com###sponsor-modal
+spanishdict.com##.whitelist-state-show
+@@||seedoff.cc/jscript/
+@@||tvigle.ru/static/js/adriver.js
+@@||sportsport.ba/assets/js/ads.js
 @@||imgonline.com.ua/advert.js
 24video.xxx##.banner-item-x2-nojs
 ||huawei.mobzon.ru/adbp/
@@ -298,6 +305,8 @@ ivi.ru##.adblock-warning
 ivi.ru#$#.adblock-warning~.player-area { margin-top: 0px!important; }
 reactor.cc,joyreactor.cc$$script[tag-content="CTRManager.show"][max-length="300"]
 reactor.cc,joyreactor.cc#%#Object.defineProperty(window, 'CTRManager', { get: function() { return {}; } });
+tunngle.net###delirioBiscottoso
+purepc.pl##.cookiesinfo
 arcor.de##.cookiepopup
 ###usrConsent
 druckerchannel.de###DCINFO_COOKIE_AGB
@@ -344,6 +353,7 @@ delfi.lv##.cookie-widget
 kia.ru##.notif_cookie_panel
 wykop.pl##div[class$="cookie"]
 wykop.pl#$#.type-permanent+#nav { top: 0px!important; }
+slovoidilo.ua##.pp-reminder
 fishki.net###chrome_popup
 ||cdn.onesignal.com^$domain=nv.ua
 booking.com###alertify-logs
@@ -361,9 +371,12 @@ nitroflare.com##div[id^="superbox-"]
 lifenews.ru##html > body > div.lifecorr-banner
 0lik.ru###simplemodal-container
 0lik.ru###simplemodal-overlay
+mimimi.tv#%#AG_onLoad(function() { window.bizpanda = {}; });
 ||am.cdnmob.org/_/img/youtube-bg-filler.png
 arcor.de###fmsurvey
 pastelink.net###display-sidebar
+habrahabr.ru##div[class="js-ad_sticky is_visible"]
+habrahabr.ru##div[class="xyz_wrapper is_visible"]
 geektimes.ru,habrahabr.ru,megamozg.ru###TMpanel .container .bmenu > a[href^="http://bit.ly/"]
 geektimes.ru,habrahabr.ru,megamozg.ru##.bmenu_inner > span
 ||trimay.ru/?
@@ -401,6 +414,7 @@ forumodua.com##.body_wrapper > div > table[width="100%"] > tbody > tr > td[valig
 santikov.net##a[href^="http://www.oplata.info/asp/pay_wm.asp"]
 vchaspik.ua##div[id="conteiner"][style="height: 410px;"]
 otzyv.ru##div[align="center"] > .aviasales
+gamepedia.com###gp-pro-upsell
 vaughnlive.tv##.abvsDynamic
 dailytelegraph.com.au##.iseDiv
 habrahabr.ru##.company_widget > .announce
@@ -426,6 +440,7 @@ yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by##.stripe-universal-wrapper
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by##.universal-stripe-wrapper
 yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua#$#.head-stripe { height: 0px!important; }
 yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua##.head-stripe
+dailymail.co.uk###smartBanner
 mywot.com##.app-stripe
 rt.com###offers
 baidu.com###search-appPromote
@@ -459,6 +474,13 @@ topnews.ru##.informer
 ||gismeteo.ua/static/css/informer$domain=ex.ua
 ||gismeteo.ua/ajax/getInformer/$domain=ex.ua
 ex.ua##.gsInformer
+othereal.ru##.sideblock:last-child > .sideinner
+othereal.ru##.sideblock:nth-child(2) > .sideinner
+mp3minusi.ru##div.cfs > center > div[style^="padding-top: 50px; text-align: center; height: 250px;"]
+||othereal.ru/avto-kontrakt.jpg
+urano.ru##a[rel="external nofollow"] > img
+||banner-mix.ru/informer/
+banner-mix.ru##.sidebox-bd.clr > table a[rel="nofollow"]
 zcdnz.blogspot.com###HTML4 > div > div
 zcdnz.blogspot.com##div[itemprop*="articleBody"] > div > span
 fulltvsports9.blogspot.de,fulltvsports9.blogspot.com,fulltvsports9.blogspot.com.au###HTML2

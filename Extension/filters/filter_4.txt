@@ -1,10 +1,10 @@
 ! Title: Social media filter
-! Version: 1.0.9.75
+! Version: 1.0.9.86
 ! Name: Social media filter
 ! Description: A filter for social media widgets ("Like" buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2016-05-10T20:37:38.499+03:00
+! TimeUpdated: 2016-05-16T21:07:12.458+03:00
 ! Title: Adguard Social Media Filter
 !
 ! If you do not like numerous «Like» and «Tweet» buttons on all the popular websites on the Internet,
@@ -130,6 +130,7 @@
 ||twitter-badges.$third-party
 ||twitter.com/home?status=$third-party
 ||twitter.com/share$third-party
+||usocial.pro^$third-party
 ||vk.com/images/upload.gif$domain=~vk.com|~vkontakte.ru
 ||vk.com/js/api/share.js$third-party
 ||vk.com/share.php$third-party
@@ -227,6 +228,9 @@ lj_bookmarklet
 !-------JS----------
 !-------------------
 !
+! mimimi.tv - social locker
+mimimi.tv#%#AG_onLoad(function() { window.bizpanda = {}; });
+!
 ~yandex.ru,~wetter.com,~milli-firka.org,~assassinscreed.com,~surfingbird.ru,~samsung.com,~imgur.com,~rockstargames.com#%#var addthis = { init: function() {}, addEventListener: function() {}, button: function() {}, counter: function() {}, update: function() {}, toolbox: function() {}, layers: function() {} };
 hopesandfears.com#%#twttr={events: { bind: function() {} }};
 ! http://forum.adguard.com/showthread.php?3659
@@ -265,6 +269,9 @@ softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 !-------------------------------------------------------------------------------!
 !
 ! Contains rules for specific web sites
+!
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/2146
+||mimimi.tv/?*=*&_=
 !
 imageshack.us###Actions
 meduza.io###DailySubscriber
@@ -312,7 +319,7 @@ fulloyunindirsene.com###fadeinbox
 for-ua.com,idevice.ro,majorgeeks.com,ridus.ru,tweaktown.com###fanback
 mackolik.com###fancybox-close
 mackolik.com###fancybox-frame
-cinema-hd.ru###fancybox-overlay
+cinema-hd.ru,onlain-multiki.ru,tvfru.net###fancybox-overlay
 fishki.net###fb-scroll-popup
 therussiantimes.com###fb_widget
 huffingtonpost.com###float_tracker
@@ -358,7 +365,7 @@ techhive.com###primarySocialSharing
 huffingtonpost.co.uk###red_chick
 cafemom.com###return_container
 aliexpress.com###ru-sns
-xperia-droid.ru###sb_popup
+lenovo-smart.ru,xperia-droid.ru###sb_popup
 delfi.lv###sbookmarks-left
 regionews.sumy.ua###shadowblock
 geek.com,greasyfork.org,hackworthy.blogspot.de,wunderground.com###share
@@ -390,6 +397,7 @@ telegraf.com.ua###soc_popup
 liberallogic101.com###social-buttons
 ua1.com.ua###socialModal
 podrobnosti.ua###social_popup
+stadt-bremerhaven.de###socialbar-mobile
 bursadabugun.com###socialfollowbox
 regnum.ru###socialine
 015.by,032.ua,0332.ua,0342.ua,0352.ua,0362.ua,0372.ua,0412.ua,0432.ua,04565.com.ua,04578.in.ua,0462.ua,0472.ua,048.ua,04868.com.ua,0512.com.ua,0522.ua,0532.ua,05366.com.ua,0542.ua,0552.ua,056.ua,0564.ua,057.ua,061.ua,06153.com.ua,0623.com.ua,06239.com.ua,06242.com.ua,06252.com.ua,06254.in.ua,06255.com.ua,06257.in.ua,06274.com.ua,0629.com.ua,0642.ua,06432.in.ua,06434.com.ua,0652.ua,0654.com.ua,06562.com.ua,0692.ua,3462city.ru,44.ua,5692.com.ua,62.ua,6264.com.ua,8352city.ru,8422city.ru,86155city.ru,8634city.ru,city3012.ru,go31.ru,go812.ru,go862.ru,goroddomodedovo.ru,gorodpushkin.ru,kinokadr.ru,labaved.ru,prokolpino.ru,pronews48.ru###socialpopup
@@ -541,7 +549,8 @@ waronline.org##.facebookLike
 bandcamp.com##.facebookThis
 tvstar.ch##.facebook_like_pane
 adfreeapk.net,usolie.info##.fancybox-overlay
-adfreeapk.net##.fancybox-wrap
+adfreeapk.net,onlain-multiki.ru,tvfru.net##.fancybox-wrap
+thedodo.com##.fb-promo
 pravda.ru##.fb_iframe_widget
 apparat.cc##.fb_like_wrap
 sport.de##.fblikebox
@@ -582,8 +591,9 @@ ft.com##.insideArticleShare
 tpp-inform.ru##.invite
 rambler.ru##.j-social
 slashdot.org##.janrainSocialPlaceholder
-podrobnosti.ua,xperia-droid.ru##.jqmOverlay
+lenovo-smart.ru,podrobnosti.ua,xperia-droid.ru##.jqmOverlay
 surfingbird.ru##.js-follow-user
+medium.com##.js-followState
 gazeta.ru##.js-n-share
 metrolyrics.com##.js-sd-social
 about.com,metrolyrics.com,surfingbird.ru##.js-share
@@ -760,6 +770,7 @@ playground.ru##.social-plugins-widget
 klerk.ru##.social-popup
 klerk.ru##.social-popup-backdrop
 lifehacker.ru##.social-root
+sneakernews.com##.social-shares
 interia.pl##.social-socialButtons
 domik.ua##.social-subscribe-banner
 thestack.com##.social-warfare-container
@@ -805,6 +816,7 @@ amazon.com##.swf-sn-share-link
 ghacks.net##.synved-social-button
 rosregistr.ru,unlockpwd.com##.td-social-sharing
 getandroidstuff.com##.td-tags-and-social-wrapper-box
+s4galaxy.ru##.td_block_social_counter
 heise.de##.teaser_hbs
 bbc.com##.tempShareToolsHolder
 echo.msk.ru##.tooltipster-default
@@ -828,11 +840,13 @@ usatoday.com##.util-bar-btn-twitter
 windowsclan.com##.vce-share-bar
 wsj.com##.vcrSocial
 weather.com##.ve-player_share-links
+vice.com##.vertical-share-widget
 comediansincarsgettingcoffee.com##.video--share
 vid.me##.video_share
 povarenok.ru##.vkfb
 habrahabr.ru##.vkontakte
 blogs.wsj.com##.vltSocialLinks
+medium.com##.voteWidget
 rbc.ru##.win-subscribe-popup-box
 softonic.com##.wrapper-fixed-social-buttons
 /jquery.fancybox.pack.js$domain=ultraslan.com
@@ -878,6 +892,8 @@ u-f.ru##body > div#pp-bg
 factroom.ru##body > div[class^="facebook-"]
 teknokulis.com##body > div[id^="TB_"]
 sport.ua##body > div[id^="facebook"]
+medium.com##button[data-action-source="footer_recommend"]
+medium.com##button[data-action-source="footer_share"]
 yahoo.com##button[data-sharetype]
 adibudi.com##div.buttons
 elitedaily.com##div[class*="article-shar"]
@@ -1300,7 +1316,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.share-btn
 ##.share-btns
 ##.share-button
-##.share-buttons
+~thedodo.com##.share-buttons
 ##.share-buttons-multi
 ##.share-cont
 ##.share-counter
@@ -1616,6 +1632,10 @@ bitiworld.com##a[title="share on twitter"]
 !
 ! Section fixing issues caused by social filter
 !
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/2102
+@@||apis.google.com/js/platform.js$domain=sneakernews.com
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/2124
+@@||orlandoweekly.com/wp-content/plugins/wpsocialite/Socialite/socialite.min.js
 ! https://forum.adguard.com/index.php?threads/10185/
 @@||serial-online.com/wp-content/plugins/easy-vkontakte-connect/js/social-likes.min.js
 ! https://forum.adguard.com/index.php?threads/9875/

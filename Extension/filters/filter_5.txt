@@ -1,10 +1,10 @@
 ! Title: Experimental filter
-! Version: 1.0.25.21
+! Version: 1.0.25.30
 ! Name: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: Experimental filter
 ! DescriptionEn: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! TimeUpdated: 2016-05-11T17:00:22.254+03:00
+! TimeUpdated: 2016-05-16T21:00:32.928+03:00
 ! Title: Adguard Experimental Filter
 !
 ! Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
@@ -217,6 +217,9 @@ antiblock.org#%#AG_onLoad(function() { AG_AntiAntiBlock(); });
 ! Remains of ads and dangerous rules
 !
 !--- START: Remains of ads ---
+mimikama.at##div[itemprop$="articleBody"] > hr
+mimikama.at##div[itemprop$="articleBody"] > div
+deskgram.com##.post-box.ad
 rksports.info###.col-lg-4 > div > div[class$="panel-heading"]
 simtimes.de##.banner-end-news
 zonasports.be##td[align$="left"][width="300"]
@@ -244,7 +247,7 @@ gamegpu.com##.tm-top-b
 !--- END:   Remains of ads ---
 !
 ! Dangerous "nofollow" links blocking rule
-~kinogo.co,~anti-free.ru,~vestivrn.ru,~rus-linux.net,~sobytiya.info,~hcdinamo.by,~mixupload.com,~bloknot-krasnodar.ru,~bloknot-stavropol.ru,~edp.kiev.ua,~gamegpu.ru,~joomla.ru,~keddr.com,~allkey.org,~wowjp.net,~bucwar.ru,~fsm-portal.net,~crox.ws,~softek.ucoz.ru,~dfm.ru,~hitfm.ru,~montecarlo.ru,~maximum.ru,~rusradio.ru,~metallurg.ru,~onlinefilmu.ru,~forum.ixbt.com,~igromania.ru,~yarportal.ru,~maxthon.org.ru,~firstvds.ru,~smotretfilmy.ru,~speedy-warez.ru,~blogig.org,~respecta.net,~moviez.kz,~games-java.ru,~rulit.net,~art-on.ru,~kinoshka-new.ru,~forum.esetnod32.ru,~kahai.ru,~planetaua.net,~capa.me,~delo.ua,~uznayvse.ru,~gamai.ru,~bloknot-rostov.ru,~car72.ru,~gradmart.ru,~f1comp.ru,~bukvaved.biz##noindex a[rel="nofollow"]>img
+~golos-naroda.tv,~kinogo.co,~anti-free.ru,~vestivrn.ru,~rus-linux.net,~sobytiya.info,~hcdinamo.by,~mixupload.com,~bloknot-krasnodar.ru,~bloknot-stavropol.ru,~edp.kiev.ua,~gamegpu.ru,~joomla.ru,~keddr.com,~allkey.org,~wowjp.net,~bucwar.ru,~fsm-portal.net,~crox.ws,~softek.ucoz.ru,~dfm.ru,~hitfm.ru,~montecarlo.ru,~maximum.ru,~rusradio.ru,~metallurg.ru,~onlinefilmu.ru,~forum.ixbt.com,~igromania.ru,~yarportal.ru,~maxthon.org.ru,~firstvds.ru,~smotretfilmy.ru,~speedy-warez.ru,~blogig.org,~respecta.net,~moviez.kz,~games-java.ru,~rulit.net,~art-on.ru,~kinoshka-new.ru,~forum.esetnod32.ru,~kahai.ru,~planetaua.net,~capa.me,~delo.ua,~uznayvse.ru,~gamai.ru,~bloknot-rostov.ru,~car72.ru,~gradmart.ru,~f1comp.ru,~bukvaved.biz##noindex a[rel="nofollow"]>img
 !
 ! lostfilm.tv - скрываем остатки блока статистики
 lostfilm.tv##.shadow:nth-child(2) + div + div
@@ -504,6 +507,10 @@ imagebam.com###sponsor-modal
 !------------------ Anti-adblock messages --------------------------
 !---------- which does not affect the functioning of site ----------
 !-------------------------------------------------------------------
+spanishdict.com##.whitelist-state-show
+@@||seedoff.cc/jscript/
+@@||tvigle.ru/static/js/adriver.js
+@@||sportsport.ba/assets/js/ads.js
 @@||imgonline.com.ua/advert.js
 24video.xxx##.banner-item-x2-nojs
 ||huawei.mobzon.ru/adbp/
@@ -621,6 +628,8 @@ reactor.cc,joyreactor.cc#%#Object.defineProperty(window, 'CTRManager', { get: fu
 !-------------------------------------------------------------------
 !
 !----------- START: EU cookie notifications -----------
+tunngle.net###delirioBiscottoso
+purepc.pl##.cookiesinfo
 arcor.de##.cookiepopup
 ###usrConsent
 druckerchannel.de###DCINFO_COOKIE_AGB
@@ -671,6 +680,7 @@ wykop.pl#$#.type-permanent+#nav { top: 0px!important; }
 !----------- END: EU cookie notifications -------------
 !
 !----------- START: Annoying popups -------------------
+slovoidilo.ua##.pp-reminder
 fishki.net###chrome_popup
 ||cdn.onesignal.com^$domain=nv.ua
 booking.com###alertify-logs
@@ -695,12 +705,17 @@ lifenews.ru##html > body > div.lifecorr-banner
 !
 !
 !----------- START: Annoying elements -----------------
+! mimimi.tv - social locker
+mimimi.tv#%#AG_onLoad(function() { window.bizpanda = {}; });
 ! mob.org.ru - youtube placeholder in the top of the site
 ||am.cdnmob.org/_/img/youtube-bg-filler.png
 ! arcor.de - survey
 arcor.de###fmsurvey
 ! pastelink.net - whitespace on the right side
 pastelink.net###display-sidebar
+! habrahabr.ru - ads placeholders
+habrahabr.ru##div[class="js-ad_sticky is_visible"]
+habrahabr.ru##div[class="xyz_wrapper is_visible"]
 ! Special projects links
 geektimes.ru,habrahabr.ru,megamozg.ru###TMpanel .container .bmenu > a[href^="http://bit.ly/"]
 geektimes.ru,habrahabr.ru,megamozg.ru##.bmenu_inner > span
@@ -774,7 +789,7 @@ otzyv.ru##div[align="center"] > .aviasales
 !----------- End:   Annoying elements -----------------
 !
 !########### START: Self promotion ################
-!
+gamepedia.com###gp-pro-upsell
 vaughnlive.tv##.abvsDynamic
 ! dailytelegraph.com.au - subscription overlay
 dailytelegraph.com.au##.iseDiv
@@ -810,6 +825,7 @@ yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua##.head-stripe
 !---------------------------------
 !--- Mobile apps for the sites ---
 !---------------------------------
+dailymail.co.uk###smartBanner
 mywot.com##.app-stripe
 rt.com###offers
 baidu.com###search-appPromote
@@ -851,6 +867,13 @@ ex.ua##.gsInformer
 !---------------- Low-attendance sites -----------------------------
 !------------- less then 30k visits/month --------------------------
 !-------------------------------------------------------------------
+othereal.ru##.sideblock:last-child > .sideinner
+othereal.ru##.sideblock:nth-child(2) > .sideinner
+mp3minusi.ru##div.cfs > center > div[style^="padding-top: 50px; text-align: center; height: 250px;"]
+||othereal.ru/avto-kontrakt.jpg
+urano.ru##a[rel="external nofollow"] > img
+||banner-mix.ru/informer/
+banner-mix.ru##.sidebox-bd.clr > table a[rel="nofollow"]
 zcdnz.blogspot.com###HTML4 > div > div
 zcdnz.blogspot.com##div[itemprop*="articleBody"] > div > span
 fulltvsports9.blogspot.de,fulltvsports9.blogspot.com,fulltvsports9.blogspot.com.au###HTML2
