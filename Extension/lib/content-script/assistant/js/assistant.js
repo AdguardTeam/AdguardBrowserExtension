@@ -45,7 +45,7 @@ var AdguardAssistant = function ($) {
 		iframe: {//maximum values for all browsers was leaved for compatibility
 			baseWidth: 668,
 			extendDetailedSettingsHeight: 503,
-			detailedMenuHeight: 340,
+			detailedMenuHeight: 360,
 			selectorMenuHeight: 213,
 			topOffset: 25
 		}
