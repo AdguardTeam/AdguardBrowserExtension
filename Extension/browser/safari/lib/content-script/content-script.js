@@ -90,10 +90,24 @@
 				document.documentElement.removeChild(document.documentElement.appendChild(tmpJS));
 			};
 
-			var blockedUrlsCache = [];
+			var urlCache = {
+				createKey: function (url, type, frameId) {
+					return type + frameId + url;
+				},
+
+				add: function (url, type, frameId, value) {
+					this[this.createKey(url, type, frameId)] = value;
+				},
+
+				contains: function (url, type, frameId) {
+					return this[this.createKey(url, type, frameId)];
+				}
+			};
+
 			var canLoadRequest = function (url, type, frameId) {
-				if (blockedUrlsCache.indexOf(url) != -1) {
-					return false;
+				var cached = urlCache.contains(url, type, frameId);
+				if (cached === true || cached === false) {
+					return cached;
 				}
 
 				var canLoad = safari.self.tab.canLoad(event, {
@@ -105,9 +119,7 @@
                     }
                 });
 
-				if (!canLoad) {
-					blockedUrlsCache.push(url);
-				}
+				urlCache.add(url, type, frameId, canLoad);
 
                 return canLoad;
 			};
