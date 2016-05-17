@@ -90,15 +90,26 @@
 				document.documentElement.removeChild(document.documentElement.appendChild(tmpJS));
 			};
 
+			var blockedUrlsCache = [];
 			var canLoadRequest = function (url, type, frameId) {
-				return safari.self.tab.canLoad(event, {
+				if (blockedUrlsCache.indexOf(url) != -1) {
+					return false;
+				}
+
+				var canLoad = safari.self.tab.canLoad(event, {
 					type: "safariWebRequest", data: {
 						url: url,
 						type: type,
-						frameId: frameId,
-						requestFrameId: 0
-					}
-				});
+                        frameId: frameId,
+                        requestFrameId: 0
+                    }
+                });
+
+				if (!canLoad) {
+					blockedUrlsCache.push(url);
+				}
+
+                return canLoad;
 			};
 
 			var onBeforeLoad = function (event) {
