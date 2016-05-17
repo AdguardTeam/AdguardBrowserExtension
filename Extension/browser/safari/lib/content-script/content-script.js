@@ -90,15 +90,38 @@
 				document.documentElement.removeChild(document.documentElement.appendChild(tmpJS));
 			};
 
+			var canLoadCache = {
+				createKey: function (url, type, frameId) {
+					return type + frameId + url;
+				},
+
+				add: function (url, type, frameId, value) {
+					this[this.createKey(url, type, frameId)] = value;
+				},
+
+				get: function (url, type, frameId) {
+					return this[this.createKey(url, type, frameId)];
+				}
+			};
+
 			var canLoadRequest = function (url, type, frameId) {
-				return safari.self.tab.canLoad(event, {
+				var cached = canLoadCache.get(url, type, frameId);
+				if (cached === true || cached === false) {
+					return cached;
+				}
+
+				var canLoad = safari.self.tab.canLoad(event, {
 					type: "safariWebRequest", data: {
 						url: url,
 						type: type,
-						frameId: frameId,
-						requestFrameId: 0
-					}
-				});
+                        frameId: frameId,
+                        requestFrameId: 0
+                    }
+                });
+
+				canLoadCache.add(url, type, frameId, canLoad);
+
+                return canLoad;
 			};
 
 			var onBeforeLoad = function (event) {
