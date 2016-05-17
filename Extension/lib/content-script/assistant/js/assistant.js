@@ -52,7 +52,7 @@ var AdguardAssistant = function ($) {
 	};
 
 	var utils = {
-		getAllChilds: function (element) {
+		getAllChildren: function (element) {
 			var childArray = [];
 			var child = element;
 			while ((child = utils.getChildren(child))) {
@@ -62,14 +62,14 @@ var AdguardAssistant = function ($) {
 		},
 
 		getChildren: function (element) {
-			var childs = element.childNodes;
-			if (childs) {
+			var children = element.childNodes;
+			if (children) {
 				var count = 0;
 				var child;
 				var i;
-				for (i = 0; i < childs.length; i++) {
-					if (childs[i].nodeType == 1) {
-						child = childs[i];
+				for (i = 0; i < children.length; i++) {
+					if (children[i].nodeType == 1) {
+						child = children[i];
 						count++;
 					}
 				}
@@ -606,15 +606,21 @@ var AdguardAssistant = function ($) {
 
 	var createSlider = function (element) {
 		var parents = utils.getParentsLevel(element);
-		var children = utils.getAllChilds(element);
+		var children = utils.getAllChildren(element);
 		var value = Math.abs(parents.length + 1);
 		var max = parents.length + children.length + 1;
 		var min = 1;
 		var options = {value: value, min: min, max: max};
+
 		if (min == max) {
-			//hide slider text
+			//hide slider
 			findInIframe('#slider').hide();
-			findInIframe('.element-rule_text').text(getMessage("assistant_slider_if_hide"));
+
+			var el = findInIframe('.element-rule_text').get(0);
+			el.removeAttribute('i18n');
+			el.innerHTML = getMessage("assistant_slider_if_hide");
+
+			return;
 		}
 
 		options.onSliderMove = function (delta) {

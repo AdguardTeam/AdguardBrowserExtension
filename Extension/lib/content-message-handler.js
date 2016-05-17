@@ -326,6 +326,7 @@ ContentMessageHandler.prototype = {
             'assistant_block_element',
             'assistant_block_element_explain',
             'assistant_slider_explain',
+            'assistant_slider_if_hide',
             'assistant_slider_min',
             'assistant_slider_max',
             'assistant_extended_settings',
