@@ -1,15 +1,18 @@
 ! Title: Russian filter
-! Version: 1.0.33.98
+! Version: 1.0.33.99
 ! Name: Russian filter
 ! Description: Filter that enables removing of the ads from websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-05-17T00:00:13.247+03:00
+! TimeUpdated: 2016-05-17T17:06:50.135+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#window.AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+||wad.ojooo.com^$third-party
+||bombeers.ru^$third-party
+||kitchenfilm.ru^$third-party
 .adonweb.ru^$third-party
 .allalla.com^$third-party
 .ecommtools.com^$third-party
@@ -2836,7 +2839,6 @@ kinoplace.org#$#.top-menu-block {top: 180px!important;}
 kinoplace.org#$#.logo {top: 50px!important;}
 tree.tv#$#.wrapper { margin-top: 0px!important;}
 tree.tv#$#body { background: url('http://tree.tv/imgs/tree_bg.png') repeat !important;}
-tree.tv#$#.main_bg { background: transparent!important;}
 depo.ua#$#.container {margin-top: 0px!important;}
 kino-live.org#$#body {padding: 0px 0px 0px!important;}
 china-review.com.ua#$#body {margin-top: 0px!important;}
@@ -2923,7 +2925,7 @@ e1.ru#$#.brand-skin {padding-top: 0px!important;}
 news.sportbox.ru#$#body { background: #415b14 !important; }
 news.sportbox.ru#$#.sb_t_secs_main {margin-top: 0px!important; }
 poiskvps.ru#$#body a[href*="./adv.php?id="] > img { height: 0px!important; }
-kino-filmi.net,kino-serial.net,bobfilm1.net,kinokrad.net,libtor.net,hdrezka.me,kinogo.co$$script[tag-content="document.write("<sc"+"ript type='text/javascript' src='//"][max-length="120"]
+nice-film.ru,kino-filmi.net,kino-serial.net,bobfilm1.net,kinokrad.net,libtor.net,hdrezka.me,kinogo.co$$script[tag-content="document.write("<sc"+"ript type='text/javascript' src='//"][max-length="120"]
 ixbt.com$$style[tag-content="/* BRANDING */"][max-length="600"]
 fs.to$$div[class="b-"][tag-content="admixer_async"][max-length="1024"]
 fs.to$$div[class="b-"][tag-content="resizable-ads-area"][max-length="1500"]
@@ -3624,6 +3626,8 @@ yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua##div[class$="b-direct_message
 ||admulti.com/javascripts/rot.js
 ||gag.admulti.com/rotator
 ||info.zonasearch.com/ad/admulti*.json
+||tree.tv/imgs/tender.jpg
+||adocean.pl/ad.xml?id=*/key=ru.tsn.ua
 .backgames.net^$domain=backgames.net
 .creativportal.ru^$script
 .freezpic.ru^
