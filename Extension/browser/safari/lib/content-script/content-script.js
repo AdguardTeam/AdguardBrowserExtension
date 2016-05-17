@@ -90,7 +90,7 @@
 				document.documentElement.removeChild(document.documentElement.appendChild(tmpJS));
 			};
 
-			var urlCache = {
+			var canLoadCache = {
 				createKey: function (url, type, frameId) {
 					return type + frameId + url;
 				},
@@ -99,13 +99,13 @@
 					this[this.createKey(url, type, frameId)] = value;
 				},
 
-				contains: function (url, type, frameId) {
+				get: function (url, type, frameId) {
 					return this[this.createKey(url, type, frameId)];
 				}
 			};
 
 			var canLoadRequest = function (url, type, frameId) {
-				var cached = urlCache.contains(url, type, frameId);
+				var cached = canLoadCache.get(url, type, frameId);
 				if (cached === true || cached === false) {
 					return cached;
 				}
@@ -119,7 +119,7 @@
                     }
                 });
 
-				urlCache.add(url, type, frameId, canLoad);
+				canLoadCache.add(url, type, frameId, canLoad);
 
                 return canLoad;
 			};
