@@ -1,10 +1,10 @@
 ! Title: Experimental filter
-! Version: 1.0.25.30
+! Version: 1.0.25.31
 ! Name: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: Experimental filter
 ! DescriptionEn: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! TimeUpdated: 2016-05-16T21:00:32.928+03:00
+! TimeUpdated: 2016-05-17T01:00:24.895+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -13,6 +13,7 @@
 antiblock.org#%#var AG_AntiAntiBlock = function() { var baseCreateElement = document.createElement; document.createElement = function(name) { if (name && name.match(/div|font|center/i)) { return null; } else { return baseCreateElement(name); } } };
 antiblock.org#%#AG_onLoad(function() { AG_AntiAntiBlock(); });
 @@||my10.imgsmail.ru/mail/$domain=mail.ru
+cloud.mail.ru##div.content__along > div[id]:not([title]):not([class]):not([data-classes])
 mimikama.at##div[itemprop$="articleBody"] > hr
 mimikama.at##div[itemprop$="articleBody"] > div
 deskgram.com##.post-box.ad

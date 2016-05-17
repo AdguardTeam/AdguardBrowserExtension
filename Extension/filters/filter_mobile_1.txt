@@ -1,10 +1,10 @@
 ! Title: Russian filter
-! Version: 1.0.33.97
+! Version: 1.0.33.98
 ! Name: Russian filter
 ! Description: Filter that enables removing of the ads from websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-05-16T21:06:50.375+03:00
+! TimeUpdated: 2016-05-17T00:00:13.247+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -4015,8 +4015,10 @@ citystar.ru###not_small_banner
 citystar.ru/im/b/
 civic-club.ru##div[style="float:right"] > span.smallfont
 civic-club.ru##img[title="civic-tuning"]
-cloud.mail.ru##.content__left > div > div[style="font-size: 13px;"] > div[style*="font-size: 90%;"]
-cloud.mail.ru##div[class="public__content public__content_icon"] > div[id]:not([title]):not([class])
+needrom.com##a[href^="http://www.gearbest.com/"]
+||miui.su/wp-content/themes/best/images/banners/
+miui.su##.panel.panel-advertising
+cloud.mail.ru##.content__along > div > div[style="font-size: 13px;"] > div[style*="font-size: 90%;"]
 cloud.mail.ru##div[id^="rb_banner"]
 club-audi-q3.ru##a[href="http://www.service-akpp.ru/landing"]
 clubfabia.ru##.post.bg3 > .inner

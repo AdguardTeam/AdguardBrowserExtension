@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version="2.3.2"
+version="2.3.3"
 
 if [[ ! ("$#" == 1) ]] || [[ ! ($1 = dev) && ! ($1 = release) && ! ($1 = beta) ]] ; then
     echo "Pass a single argument as an environment value"
