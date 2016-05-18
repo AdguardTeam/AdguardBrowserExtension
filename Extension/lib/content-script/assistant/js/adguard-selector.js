@@ -20,7 +20,7 @@
  */
 var AdguardSelectorLib = (function (api, $) {
 
-    // PRIVATE FIELDS
+   // PRIVATE FIELDS
 
     var PLACEHOLDER_PREFIX = 'adguard-placeholder';
     var placeholdedElements = null;
@@ -314,7 +314,7 @@ var AdguardSelectorLib = (function (api, $) {
         placeHolder.style.bottom = style.bottom;
         placeHolder.style.left = style.left;
         placeHolder.style.right = style.right;
-        placeHolder.className += PLACEHOLDER_PREFIX;
+        placeHolder.className += PLACEHOLDER_PREFIX + " " + IGNORED_CLASS;
 
         var icon = document.createElement('div');
         icon.className += PLACEHOLDER_PREFIX + "-icon " + IGNORED_CLASS;
@@ -333,7 +333,6 @@ var AdguardSelectorLib = (function (api, $) {
         if (!placeholdedElements) {
             return;
         }
-
         var elements = placeholdedElements;
         for (var i = 0; i < elements.length; i++) {
             var current = elements[i];
@@ -358,9 +357,11 @@ var AdguardSelectorLib = (function (api, $) {
         onElementSelectedHandler(element);
     };
 
-    var makeIFrameAndEmbededSelector = function () {
+    var makeIFrameAndEmbeddedSelector = function () {
         placeholdedElements = $('iframe:not(.' + IGNORED_CLASS + '),embed,object').filter(function (elem) {
-            return elem.style["display"] != "none";
+            var isVisible = elem.style["display"] != "none";
+            var isHaveSize = elem.offsetWidth != 0 && elem.offsetHeight != 0;
+            return isVisible && isHaveSize;
         });
 
         var elements = placeholdedElements;
@@ -437,9 +438,9 @@ var AdguardSelectorLib = (function (api, $) {
     };
 
     var sgMousedownHandler = function (e) {
+        if ($(e.target).hasClass(IGNORED_CLASS)) return false;
         e.preventDefault();
         e.stopImmediatePropagation();
-
         if (unbound) {
             return true;
         }
@@ -512,8 +513,7 @@ var AdguardSelectorLib = (function (api, $) {
 
 
     var setupEventHandlers = function () {
-        makeIFrameAndEmbededSelector();
-
+        makeIFrameAndEmbeddedSelector();
         var elements = $("body *:not(." + IGNORED_CLASS + ")");
 
         if (isTouchEventsSupported) {
@@ -607,10 +607,10 @@ var AdguardSelectorLib = (function (api, $) {
      * @param element
      */
     api.selectElement = function (element) {
+        deleteEventHandlers();
         selectionRenderer.add(element);
 
         unbound = true;
-        deleteEventHandlers();
     };
 
     /**
