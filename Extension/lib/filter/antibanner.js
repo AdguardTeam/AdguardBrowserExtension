@@ -91,7 +91,7 @@ AntiBannerService.prototype = {
      */
     UPDATE_FILTERS_DELAY: 5 * 60 * 1000,
 
-    FILTERS_CHANGE_DEBOUCE_PERIOD: 1000,
+    FILTERS_CHANGE_DEBOUNCE_PERIOD: 1000,
     RELOAD_FILTERS_DEBOUNCE_PERIOD: 1000,
 
     /**
@@ -1307,7 +1307,7 @@ AntiBannerService.prototype = {
                     EventNotifier.notifyListeners(EventNotifierTypes.REQUEST_FILTER_UPDATED, this.getRequestFilterInfo());
                 }
 
-            }.bind(this), this.FILTERS_CHANGE_DEBOUCE_PERIOD);
+            }.bind(this), this.FILTERS_CHANGE_DEBOUNCE_PERIOD);
 
         }.bind(this);
 
@@ -1643,8 +1643,6 @@ AdguardFilterVersion.fromXml = function (el) {
         return null;
     }
 };
-
-AdguardFilterVersion.MIN_VERSION = "0.0.0.0";
 
 /**
  * Helper class for working with filters metadata storage (local storage)
