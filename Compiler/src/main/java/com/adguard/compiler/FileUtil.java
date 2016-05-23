@@ -47,6 +47,9 @@ public class FileUtil {
 			case CHROMIUM:
 				copyChromiumFiles(source, dest);
 				break;
+			case EDGE:
+				copyChromiumFiles(source, dest);
+				break;			
 			case SAFARI:
 				copySafariFiles(source, dest);
 				break;

@@ -10,6 +10,11 @@ public enum Browser {
 	 * Chrome-based (Chrome, Opera, YaBrowser)
 	 */
 	CHROMIUM("chrome"),
+	
+	/**
+	 * Microsoft edge
+	 */
+	EDGE("edge"),
 
 	/**
 	 * Safari

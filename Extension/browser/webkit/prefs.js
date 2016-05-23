@@ -17,15 +17,16 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global exports */
 /**
  * Extension global preferences.
  * (!) Firefox has it's own implementation
  */
 var Prefs = exports.Prefs = {
 
-	appId: ext.i18n.getMessage("@@extension_id"),
-	version: ext.app.getDetails().version,
-	locale: ext.i18n.getMessage("@@ui_locale"),
+	appId: ext.app.getId(),
+	version: ext.app.getVersion(),
+	locale: ext.app.getLocale(),
 	getLocalFilterPath: function (filterId) {
 		var url = "filters/filter_" + filterId + ".txt";
 		return ext.getURL(url);
@@ -56,7 +57,7 @@ var Prefs = exports.Prefs = {
 			if (browser == "Safari") {
 				var parseSafariVersion = function() {
 					var i = userAgent.indexOf("Version/");
-					if (i == 0) {
+					if (i === 0) {
                         return "";
                     }
 

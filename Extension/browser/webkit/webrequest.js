@@ -15,6 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global RequestTypes, framesMap, EventNotifier, EventNotifierTypes, UrlUtils, webRequestService */
+/* global ext, Prefs, adguardApplication, Utils, antiBannerService, UI, StringUtils, filterRulesHitCount */
+
 /**
  * Process request
  * @param requestDetails
@@ -41,11 +44,8 @@ function onBeforeRequest(requestDetails) {
     }
 
     var referrerUrl = framesMap.getFrameUrl(tab, requestDetails.requestFrameId);
-
     var requestRule = webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
-
     webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
-
     return !webRequestService.isRequestBlockedByRule(requestRule);
 }
 
@@ -130,9 +130,9 @@ ext.webRequest.onHeadersReceived.addListener(onHeadersReceived, ["<all_urls>"]);
 
 // AG for Windows and Mac checks either request signature or request Referer to authorize request.
 // Referer cannot be forged by the website so it's ok for add-on authorization.
-if (typeof chrome !== 'undefined') {
+if (Prefs.platform === 'chromium') {
 
-    chrome.webRequest.onBeforeSendHeaders.addListener(function callback(details) {
+    ext.webRequest.onBeforeSendHeaders.addListener(function callback(details) {
 
         var authHeaders = adguardApplication.getAuthorizationHeaders();
         var headers = details.requestHeaders;
@@ -155,7 +155,7 @@ function parseCssRuleFromUrl(requestUrl) {
     return {
         filterId: filterId,
         ruleText: ruleText
-    }
+    };
 }
 
 function onCssRuleHit(requestDetails) {
@@ -180,7 +180,7 @@ EventNotifier.addListener(function (event) {
         case EventNotifierTypes.UPDATE_FILTER_RULES:
         case EventNotifierTypes.ENABLE_FILTER:
         case EventNotifierTypes.DISABLE_FILTER:
-            if (handlerBehaviorTimeout != null) {
+            if (handlerBehaviorTimeout !== null) {
                 clearTimeout(handlerBehaviorTimeout);
             }
             handlerBehaviorTimeout = setTimeout(function () {

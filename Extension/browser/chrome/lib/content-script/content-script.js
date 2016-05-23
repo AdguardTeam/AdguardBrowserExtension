@@ -14,9 +14,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global SendMessageFunction, OnMessageEvent, chrome, browser */
 var contentPage = {
     sendMessage: SendMessageFunction,
     onMessage: new OnMessageEvent()
 };
 
-var i18n = chrome.i18n;
+var i18n = chrome.i18n || browser.i18n;
