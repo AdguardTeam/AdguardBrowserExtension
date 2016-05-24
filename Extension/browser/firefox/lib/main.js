@@ -62,11 +62,11 @@ exports.main = function (options, callbacks) {
     try {
 
         var {Log} = loadAdguardModule('./utils/log');
-        var {RulesStorage} = loadAdguardModule('./utils/rules-storage');
+        var {FS} = loadAdguardModule('./utils/file-storage');
         var {LS} = loadAdguardModule('./utils/local-storage');
         if (options.loadReason == 'install' || options.loadReason == 'downgrade') {
             LS.clean();
-            RulesStorage.removeAdguardDir();
+            FS.removeAdguardDir();
         }
 
         // In case of firefox browser we move application data from simple-storage to prefs.

@@ -17,6 +17,7 @@
  */
 var Log = require('../../lib/utils/log').Log;
 var RulesStorage = require('../../lib/utils/rules-storage').RulesStorage;
+var FS = require('../../lib/utils/file-storage').FS;
 var FilterRuleBuilder = require('../../lib/filter/rules/filter-rule-builder').FilterRuleBuilder;
 
 /**
@@ -63,54 +64,6 @@ var FilterStorage = exports.FilterStorage = {
 			}
 			callback(rules);
 		}.bind(this));
-	},
-
-	/**
-	 * Saves CSS stylesheet to file.
-	 *
-	 * This method is used in Firefox extension only.
-	 * If user has enabled "Send statistics for ad filters usage" option we change the way of applying CSS rules.
-	 * In this case we register browser-wide stylesheet using StyleService.registerSheet.
-	 * We should save it to file before registering the stylesheet.
-	 *
-	 * @param cssRules CSS file content
-	 * @param callback Called when operation is finished
-	 */
-	saveStyleSheetToDisk: function (cssRules, callback) {
-		if (this._cssSaving) {
-			return;
-		}
-		this._cssSaving = true;
-
-		var filePath = FilterStorage.CSS_FILE_PATH;
-
-		RulesStorage.write(filePath, cssRules, function (e) {
-			if (e && e.error) {
-				Log.error("Error write css styleSheet to file {0} cause: {1}", filePath, e);
-				return;
-			} else {
-				callback();
-			}
-			this._cssSaving = false;
-		}.bind(this));
-
-	},
-
-	/**
-	 * Gets CSS file URI
-	 *
-	 * This method is used in Firefox extension only.
-	 * If user has enabled "Send statistics for ad filters usage" option we change the way of applying CSS rules.
-	 * In this case we register browser-wide stylesheet using StyleService.registerSheet.
-	 * We should save it to file before registering the stylesheet.
-	 *
-	 * @returns CSS file URI
-	 */
-	getInjectCssFileURI: function () {
-		if (!this.injectCssUrl) {
-			this.injectCssUrl = RulesStorage.getFileInAdguardDirUri(this.CSS_FILE_PATH);
-		}
-		return this.injectCssUrl;
 	},
 
 	_getFilePath: function (filterId) {
