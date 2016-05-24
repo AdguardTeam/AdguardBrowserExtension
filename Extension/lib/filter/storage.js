@@ -16,7 +16,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 var Log = require('../../lib/utils/log').Log;
-var FS = require('../../lib/utils/file-storage').FS;
+var RulesStorage = require('../../lib/utils/rules-storage').RulesStorage;
 var FilterRuleBuilder = require('../../lib/filter/rules/filter-rule-builder').FilterRuleBuilder;
 
 /**
@@ -39,7 +39,7 @@ var FilterStorage = exports.FilterStorage = {
 	 */
 	saveFilterRules: function (filterId, filterRules, callback) {
 		var filePath = FilterStorage._getFilePath(filterId);
-		FS.writeToFile(filePath, filterRules, function (e) {
+		RulesStorage.write(filePath, filterRules, function (e) {
 			if (e) {
 				Log.error("Error write filters to file {0} cause: {1}", filePath, e);
 			}
@@ -57,7 +57,7 @@ var FilterStorage = exports.FilterStorage = {
 	 */
 	loadFilterRules: function (filterId, callback) {
 		var filePath = FilterStorage._getFilePath(filterId);
-		FS.readFromFile(filePath, function (e, rules) {
+		RulesStorage.read(filePath, function (e, rules) {
 			if (e) {
 				Log.error("Error while reading rules from file {0} cause: {1}", filePath, e);
 			}
@@ -84,7 +84,7 @@ var FilterStorage = exports.FilterStorage = {
 
 		var filePath = FilterStorage.CSS_FILE_PATH;
 
-		FS.writeToFile(filePath, cssRules, function (e) {
+		RulesStorage.write(filePath, cssRules, function (e) {
 			if (e && e.error) {
 				Log.error("Error write css styleSheet to file {0} cause: {1}", filePath, e);
 				return;
@@ -108,7 +108,7 @@ var FilterStorage = exports.FilterStorage = {
 	 */
 	getInjectCssFileURI: function () {
 		if (!this.injectCssUrl) {
-			this.injectCssUrl = FS.getFileInAdguardDirUri(this.CSS_FILE_PATH);
+			this.injectCssUrl = RulesStorage.getFileInAdguardDirUri(this.CSS_FILE_PATH);
 		}
 		return this.injectCssUrl;
 	},

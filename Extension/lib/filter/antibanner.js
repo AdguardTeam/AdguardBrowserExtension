@@ -658,7 +658,7 @@ AntiBannerService.prototype = {
     },
 
     /**
-     * Loads filter from FS (if in extension package) or from backend
+     * Loads filter from storage (if in extension package) or from backend
      *
      * @param filterId Filter identifier
      * @param callback Called when operation is finished
@@ -686,7 +686,7 @@ AntiBannerService.prototype = {
         }
 
         if (FilterUtils.isAdguardFilter(filter)) {
-            this._loadFilterFromFS(filterId, onFilterLoaded);
+            this._loadFilterFromRulesStorage(filterId, onFilterLoaded);
         } else {
             this._loadFilterFromBackend(filterId, onFilterLoaded);
         }
@@ -1288,14 +1288,14 @@ AntiBannerService.prototype = {
 
                 var dfds = [];
                 var filterFunction = function (el) {
-                    return SAVE_FILTER_RULES_TO_FS_EVENTS.indexOf(el.event) >= 0;
+                    return SAVE_FILTER_RULES_TO_STORAGE_EVENTS.indexOf(el.event) >= 0;
                 };
                 for (var filterId in eventsByFilter) {
-                    var needSaveRulesToFS = eventsByFilter[filterId].some(filterFunction);
-                    if (!needSaveRulesToFS) {
+                    var needSaveRulesToStorage = eventsByFilter[filterId].some(filterFunction);
+                    if (!needSaveRulesToStorage) {
                         continue;
                     }
-                    var dfd = this._processSaveFilterRulesToFSEvents(filterId, eventsByFilter[filterId]);
+                    var dfd = this._processSaveFilterRulesToStorageEvents(filterId, eventsByFilter[filterId]);
                     dfds.push(dfd);
                 }
 
@@ -1332,7 +1332,7 @@ AntiBannerService.prototype = {
      * @param events Events (what has changed?)
      * @private
      */
-    _processSaveFilterRulesToFSEvents: function (filterId, events) {
+    _processSaveFilterRulesToStorageEvents: function (filterId, events) {
 
         var dfd = new Promise();
 
@@ -1563,12 +1563,12 @@ AntiBannerService.prototype = {
     },
 
     /**
-     * Load filter rules from file system
+     * Load filter rules from rules storage
      * @param filterId
      * @param callback
      * @private
      */
-    _loadFilterFromFS: function (filterId, callback) {
+    _loadFilterFromRulesStorage: function (filterId, callback) {
 
         var filter = this._getFilterById(filterId);
 
@@ -1724,10 +1724,10 @@ var FilterLSUtils = exports.FilterLSUtils = {
 var UPDATE_REQUEST_FILTER_EVENTS = [EventNotifierTypes.UPDATE_FILTER_RULES, EventNotifierTypes.ENABLE_FILTER, EventNotifierTypes.DISABLE_FILTER];
 
 /**
- * List of events which cause saving filter rules to the file storage
+ * List of events which cause saving filter rules to the rules storage
  * @type {Array}
  */
-var SAVE_FILTER_RULES_TO_FS_EVENTS = [EventNotifierTypes.UPDATE_FILTER_RULES, EventNotifierTypes.ADD_RULE, EventNotifierTypes.ADD_RULES, EventNotifierTypes.REMOVE_RULE];
+var SAVE_FILTER_RULES_TO_STORAGE_EVENTS = [EventNotifierTypes.UPDATE_FILTER_RULES, EventNotifierTypes.ADD_RULE, EventNotifierTypes.ADD_RULES, EventNotifierTypes.REMOVE_RULE];
 
 // Events
 // TODO: move to UI.js.

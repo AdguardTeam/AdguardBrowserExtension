@@ -30,15 +30,16 @@ var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOServi
 var Log = require('../../lib/utils/log').Log;
 
 /**
- * File storage adapter
+ * Filter rules storage adapter.
+ * For FF we store rules in files
  */
-var FS = exports.FS = {
+var RulesStorage = exports.RulesStorage = {
 
     PROFILE_DIR: 'ProfD',
     ADGUARD_DIR: 'Adguard',
     LINE_BREAK: '\n',
 
-    readFromFile: function (filename, callback) {
+    read: function (filename, callback) {
 
         try {
             var filePath = FileUtils.getFile(this.PROFILE_DIR, [this.ADGUARD_DIR, filename]);
@@ -81,11 +82,11 @@ var FS = exports.FS = {
         }
     },
 
-    writeToFile: function (filename, data, callback) {
+    write: function (filename, data, callback) {
         try {
             this._createDir();
             var filePath = sdkFile.join(sdkPathFor(this.PROFILE_DIR), this.ADGUARD_DIR, filename);
-            var content = data.join(FS.LINE_BREAK);
+            var content = data.join(RulesStorage.LINE_BREAK);
 
             var textWriter = sdkFile.open(filePath, 'w');//utf-8 charset by default
             textWriter.writeAsync(content, function (error) {
@@ -179,7 +180,7 @@ var FS = exports.FS = {
         return ioService.newFileURI(styleFile).QueryInterface(Ci.nsIFileURL);
     },
 
-    removeFile: function (path, successCallback) {
+    remove: function (path, successCallback) {
         var file = FileUtils.getFile(this.PROFILE_DIR, [this.ADGUARD_DIR, path]);
         if (!file.exists() || file.fileSize === 0) {
             successCallback();

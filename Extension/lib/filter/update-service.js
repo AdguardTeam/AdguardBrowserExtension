@@ -24,7 +24,7 @@ var Utils = require('../../lib/utils/browser-utils').Utils;
 var LS = require('../../lib/utils/local-storage').LS;
 var Prefs = require('../../lib/prefs').Prefs;
 var AntiBannerFiltersId = require('../../lib/utils/common').AntiBannerFiltersId;
-var FS = require('../../lib/utils/file-storage').FS;
+var RulesStorage = require('../../lib/utils/rules-storage').RulesStorage;
 var FilterStorage = require('../../lib/filter/storage').FilterStorage;
 var CollectionUtils = require('../../lib/utils/common').CollectionUtils;
 var Promise = require('../../lib/utils/promises').Promise;
@@ -142,7 +142,7 @@ exports.ApplicationUpdateService = {
 					var removeCallback = function () {
                         // Ignore
 					};
-					FS.removeFile(FilterStorage.FILE_PATH, removeCallback, removeCallback);
+					RulesStorage.remove(FilterStorage.FILE_PATH, removeCallback, removeCallback);
 					updateDfd.resolve();
 				} else {
 					var filter = filters.shift();
