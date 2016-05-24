@@ -439,7 +439,7 @@ var browser = browser || chrome;
          * Extension version
          */
         getVersion: function() {
-            return browser.runtime.getManifest().getVersion;
+            return browser.runtime.getManifest().version;
         },
         
         /**

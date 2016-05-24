@@ -1,4 +1,3 @@
-/* global safari */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+/* global safari, I18NSupport, SendMessageFunction, OnMessageEvent */
 (function () {
 
 	var ContentScript = {
@@ -51,7 +50,7 @@
 					evt.initEvent("beforeload");
 					safari.self.tab.canLoad(evt, {type: type, data: data});
 				}
-			};
+			}
 
 			createMainFrameEvent("safariWebRequest");
 			createMainFrameEvent("safariHeadersRequest");
@@ -120,12 +119,10 @@
                 });
 
 				canLoadCache.add(url, type, frameId, canLoad);
-
                 return canLoad;
 			};
 
 			var onBeforeLoad = function (event) {
-
 				if (!onFirstLoadOccurred) {
 					onFirstLoad();
 				}
@@ -143,7 +140,10 @@
 						if (/(^|\s)stylesheet($|\s)/i.test(event.target.rel)) {
 							type = "stylesheet";
 							break;
+						} else {
+							type = "other";
 						}
+						break;
 					case "img":
 						type = "image";
 						break;
@@ -169,7 +169,6 @@
 				}
 
 				if (!canLoadRequest(url, type, frameId)) {
-
 					event.preventDefault();
 
 					if (type != "sub_frame") {

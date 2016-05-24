@@ -200,7 +200,7 @@ ServiceClient.prototype = {
 	},
 
 	/**
-	 * Loads filter rules from local file
+	 * Loads filter rules from a local file
 	 *
 	 * @param filterId          	Filter identifier
 	 * @param useOptimizedFilters 	Download optimized filters flag

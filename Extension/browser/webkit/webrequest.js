@@ -130,9 +130,10 @@ ext.webRequest.onHeadersReceived.addListener(onHeadersReceived, ["<all_urls>"]);
 
 // AG for Windows and Mac checks either request signature or request Referer to authorize request.
 // Referer cannot be forged by the website so it's ok for add-on authorization.
-if (Prefs.platform === 'chromium') {
+if (Prefs.platform === "chromium") {
 
-    ext.webRequest.onBeforeSendHeaders.addListener(function callback(details) {
+    /* global browser */
+    browser.webRequest.onBeforeSendHeaders.addListener(function callback(details) {
 
         var authHeaders = adguardApplication.getAuthorizationHeaders();
         var headers = details.requestHeaders;
