@@ -307,7 +307,7 @@ exports.ApplicationUpdateService = {
 			FileStorage.readFromFile(filePath, function (e, rules) {
 				if (e) {
 					Log.error("Error while reading rules from file {0} cause: {1}", filePath, e);
-					continue;
+					return;
 				}
 
 				var onTransferCompleted = function () {
