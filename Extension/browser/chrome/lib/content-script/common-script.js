@@ -1,5 +1,6 @@
 /* global BrowserTab */
 /* global chrome */
+/* global browser */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -21,21 +22,33 @@ var BaseEvent, OnMessageEvent, SendMessageFunction;
 (function () {
 
 	function detectExtensionOnMessage() {
-		if (chrome.runtime && chrome.runtime.onMessage) {
+		if (typeof browser != 'undefined' && browser.runtime && browser.runtime.onMessage) {
+			// Edge, Firefox WebExtensions
+			return browser.runtime.onMessage;
+		} if (chrome.runtime && chrome.runtime.onMessage) {
+			// Chromium
 			return chrome.runtime.onMessage;
 		} else if (chrome.extension.onMessage) {
-			return chrome.extension.onMessage
+			// Old Chromium
+			return chrome.extension.onMessage;
 		} else {
+			// Old Chromium
 			return chrome.extension.onRequest;
 		}
 	}
 
 	function detectExtensionSendMessage() {
-		if (chrome.runtime && chrome.runtime.sendMessage) {
+		if (typeof browser != 'undefined' && browser.runtime && browser.runtime.sendMessage) {
+			// Edge, Firefox WebExtensions
+			return browser.runtime.sendMessage;
+		} if (chrome.runtime && chrome.runtime.sendMessage) {
+			// Chromium
 			return chrome.runtime.sendMessage;
 		} else if (chrome.extension.sendMessage) {
+			// Old Chromium
 			return chrome.extension.sendMessage;
 		} else {
+			// Old Chromium
 			return chrome.extension.sendRequest;
 		}
 	}

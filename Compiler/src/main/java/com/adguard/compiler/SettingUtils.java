@@ -96,6 +96,7 @@ public class SettingUtils {
 
         switch (browser) {
             case CHROMIUM:
+            case EDGE:
                 File manifestFile = new File(dest, "manifest.json");
                 String content = FileUtils.readFileToString(manifestFile, "utf-8").trim();
                 if (updateUrl != null) {

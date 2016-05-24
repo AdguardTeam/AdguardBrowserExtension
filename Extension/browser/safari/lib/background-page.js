@@ -1,4 +1,3 @@
-/* global Log */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -15,6 +14,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* global safari, BaseEvent, OnMessageEvent, SafariBrowserTab, RequestTypes, I18NSupport, Utils */
 var BrowserTab, BrowserTabs;
 var ext;
 
@@ -309,12 +310,28 @@ var ext;
 	};
 
 	ext.i18n = new I18NSupport();
-
-	ext.app = {};
-	ext.app.getDetails = function () {
-		return {
-			version: safari.extension.bundleVersion
-		};
+	
+	ext.app = {
+        /**
+         * Extension ID
+         */
+        getId: function() {
+            return 'not supported by Safari';
+        },
+        
+        /**
+         * Extension version
+         */
+        getVersion: function() {
+            return safari.extension.bundleVersion;
+        },
+        
+        /**
+         * Extension UI locale
+         */
+        getLocale: function() {
+            return ext.i18n.getUILanguage();
+        }
 	};
 
 	ext.windows = {};
@@ -392,5 +409,5 @@ var ext;
 		create: function () {
             // Empty
 		}
-	}
+	};
 })();

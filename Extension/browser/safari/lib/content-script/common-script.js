@@ -164,7 +164,7 @@ var BaseEvent, OnMessageEvent, SendMessageFunction, I18NSupport;
 		getMessage: function (msgId, substitutions) {
 
 			if (msgId == "@@ui_locale") {
-				return this._uiLocale;
+				return this.getUILanguage();
 			}
 
 			if (!this._messages) {
@@ -180,6 +180,10 @@ var BaseEvent, OnMessageEvent, SendMessageFunction, I18NSupport;
 			}
 
 			return this._getI18nMessage(msgId, substitutions);
+		},
+		
+		getUILanguage: function() {
+			return this._uiLocale;
 		},
 
 		_getI18nMessage: function (msgId, substitutions) {

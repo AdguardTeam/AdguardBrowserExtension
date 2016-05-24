@@ -14,8 +14,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global chrome, BaseEvent, RequestTypes, Utils, OnMessageEvent, SendMessageFunction */
 var BrowserTab, BrowserTabs;
 var ext;
+var browser = browser || chrome;
 
 (function () {
 
@@ -27,7 +29,7 @@ var ext;
         __proto__: BaseEvent.prototype
     };
     var OnCreatedTabEvent = function () {
-        TabEvent.call(this, chrome.tabs.onCreated);
+        TabEvent.call(this, browser.tabs.onCreated);
     };
     OnCreatedTabEvent.prototype = {
 
@@ -41,7 +43,7 @@ var ext;
     };
 
     var OnLoadingTabEvent = function () {
-        TabEvent.call(this, chrome.tabs.onUpdated);
+        TabEvent.call(this, browser.tabs.onUpdated);
     };
     OnLoadingTabEvent.prototype = {
 
@@ -57,7 +59,7 @@ var ext;
     };
 
     var OnCompletedTabEvent = function () {
-        TabEvent.call(this, chrome.tabs.onUpdated);
+        TabEvent.call(this, browser.tabs.onUpdated);
     };
     OnCompletedTabEvent.prototype = {
 
@@ -73,7 +75,7 @@ var ext;
     };
 
     var OnUpdatedTabEvent = function () {
-        TabEvent.call(this, chrome.tabs.onUpdated);
+        TabEvent.call(this, browser.tabs.onUpdated);
     };
     OnUpdatedTabEvent.prototype = {
 
@@ -87,7 +89,7 @@ var ext;
     };
 
     var OnActivatedTabEvent = function () {
-        TabEvent.call(this, chrome.tabs.onActivated);
+        TabEvent.call(this, browser.tabs.onActivated);
     };
     OnActivatedTabEvent.prototype = {
 
@@ -95,7 +97,7 @@ var ext;
 
         specifyListener: function (listener) {
             return function (info) {
-                chrome.tabs.get(info.tabId, function (tab) {
+                browser.tabs.get(info.tabId, function (tab) {
                     if (checkLastError()) {
                         return;
                     }
@@ -108,7 +110,7 @@ var ext;
     };
 
     var OnRemovedTabEvent = function () {
-        TabEvent.call(this, chrome.tabs.onRemoved);
+        TabEvent.call(this, browser.tabs.onRemoved);
     };
     OnRemovedTabEvent.prototype = {
 
@@ -188,7 +190,7 @@ var ext;
         linkHelper.href = url;
         var path = linkHelper.pathname;
         var requestType = Utils.parseContentTypeFromUrlPath(path);
-        if (requestType == null) {
+        if (requestType === null) {
             // https://code.google.com/p/chromium/issues/detail?id=410382
             requestType = RequestTypes.OBJECT;
         }
@@ -196,7 +198,7 @@ var ext;
     }
 
     var OnBeforeRequestEvent = function () {
-        BaseEvent.call(this, chrome.webRequest.onBeforeRequest);
+        BaseEvent.call(this, browser.webRequest.onBeforeRequest);
     };
     OnBeforeRequestEvent.prototype = {
 
@@ -214,7 +216,7 @@ var ext;
 
                 var skip = listener(requestDetails);
                 return {
-                    cancel: skip == false
+                    cancel: skip === false
                 };
             };
         },
@@ -225,7 +227,7 @@ var ext;
     };
 
     var OnHeadersReceivedEvent = function () {
-        BaseEvent.call(this, chrome.webRequest.onHeadersReceived);
+        BaseEvent.call(this, browser.webRequest.onHeadersReceived);
     };
 
     OnHeadersReceivedEvent.prototype = {
@@ -251,7 +253,7 @@ var ext;
     };
 
     var OnBeforeSendHeadersEvent = function () {
-        BaseEvent.call(this, chrome.webRequest.onBeforeSendHeaders);
+        BaseEvent.call(this, browser.webRequest.onBeforeSendHeaders);
     };
 
     OnBeforeSendHeadersEvent.prototype = {
@@ -277,7 +279,7 @@ var ext;
     };
 
     var checkLastError = function () {
-        return chrome.runtime.lastError;
+        return browser.runtime.lastError;
     };
 
     BrowserTab = function (tab) {
@@ -290,26 +292,26 @@ var ext;
     };
     BrowserTab.prototype = {
         close: function () {
-            chrome.tabs.remove(this.id, checkLastError);
+            browser.tabs.remove(this.id, checkLastError);
         },
         activate: function () {
             //activate tab
-            chrome.tabs.update(this.id, {selected: true}, checkLastError);
+            browser.tabs.update(this.id, {selected: true}, checkLastError);
             //focus window
-            chrome.windows.update(this.windowId, {focused: true}, checkLastError);
+            browser.windows.update(this.windowId, {focused: true}, checkLastError);
         },
         sendMessage: function (message, responseCallback) {
-            (chrome.tabs.sendMessage || chrome.tabs.sendRequest)(this.id, message, responseCallback);
+            (browser.tabs.sendMessage || browser.tabs.sendRequest)(this.id, message, responseCallback);
         },
         reload: function (url) {
             if (url) {
-                chrome.tabs.update(this.id, {url: url}, checkLastError);
+                browser.tabs.update(this.id, {url: url}, checkLastError);
             } else {
-                chrome.tabs.reload(this.id, {}, checkLastError);
+                browser.tabs.reload(this.id, {}, checkLastError);
             }
         },
         executeScript: function (details, callback) {
-            chrome.tabs.executeScript(this.id, details, function () {
+            browser.tabs.executeScript(this.id, details, function () {
                 if (checkLastError()) {
                     return;
                 }
@@ -317,7 +319,7 @@ var ext;
             });
         },
         insertCSS: function (details, callback) {
-            chrome.tabs.insertCSS(this.id, details, function () {
+            browser.tabs.insertCSS(this.id, details, function () {
                 if (checkLastError()) {
                     return;
                 }
@@ -378,7 +380,7 @@ var ext;
     };
     BrowserWindow.prototype = {
         getAllTabs: function (callback) {
-            chrome.tabs.query({
+            browser.tabs.query({
                 windowId: this.id
             }, function (tabs) {
                 callback(tabs.map(function (tab) {
@@ -391,7 +393,7 @@ var ext;
                 windowId: this.id,
                 active: true
             };
-            chrome.tabs.query(queryInfo, function (tabs) {
+            browser.tabs.query(queryInfo, function (tabs) {
                 if (tabs && tabs.length > 0) {
                     callback(new BrowserTab(tabs[0]));
                 }
@@ -403,7 +405,7 @@ var ext;
                 url: url,
                 active: !background
             };
-            chrome.tabs.create(createProperties, function (tab) {
+            browser.tabs.create(createProperties, function (tab) {
                 if (callback) {
                     callback(new BrowserTab(tab));
                 }
@@ -413,24 +415,44 @@ var ext;
 
 
     ext = {};
-    ext.getURL = chrome.extension.getURL;
+    ext.getURL = browser.extension.getURL;
     ext.onMessage = new OnMessageEvent();
 
-    ext.i18n = chrome.i18n;
+    ext.i18n = browser.i18n;
 
     ext.backgroundPage = {};
     ext.backgroundPage.getWindow = function () {
-        return chrome.extension.getBackgroundPage();
+        return browser.extension.getBackgroundPage();
     };
     ext.backgroundPage.sendMessage = SendMessageFunction;
 
     ext.app = {
-        getDetails: chrome.app.getDetails
+        
+        /**
+         * Extension ID
+         */
+        getId: function() {
+            return browser.runtime.id;
+        },
+        
+        /**
+         * Extension version
+         */
+        getVersion: function() {
+            return browser.runtime.getManifest().version;
+        },
+        
+        /**
+         * Extension UI locale
+         */
+        getLocale: function() {
+            return browser.i18n.getUILanguage();
+        }
     };
 
     ext.windows = {
         getAll: function (callback) {
-            chrome.windows.getAll(function (windows) {
+            browser.windows.getAll(function (windows) {
                 callback(windows.map(function (win) {
                     return new BrowserWindow(win);
                 }));
@@ -438,7 +460,7 @@ var ext;
         },
         getLastFocused: function (callback) {
             //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/134
-            chrome.windows.getLastFocused(function (win) {
+            browser.windows.getLastFocused(function (win) {
                 callback(new BrowserWindow(win));
             });
         },
@@ -446,19 +468,19 @@ var ext;
             var isAppropriateWindow = function (wnd) {
                 return wnd.type == "normal" && (!wnd.incognito || !isExtensionTab);
             };
-            chrome.windows.getLastFocused(function (activeWnd) {
+            browser.windows.getLastFocused(function (activeWnd) {
                 //last focused window
                 if (isAppropriateWindow(activeWnd)) {
                     callback(new BrowserWindow(activeWnd));
                     return;
                 }
                 //try to find appropriate window
-                chrome.windows.getAll(function (windows) {
+                browser.windows.getAll(function (windows) {
                     for (var i = 0; i < windows.length; i++) {
                         var wnd = windows[i];
                         if (isAppropriateWindow(wnd)) {
                             (function (wnd) {
-                                chrome.windows.update(wnd.id, {focused: true}, function () {
+                                browser.windows.update(wnd.id, {focused: true}, function () {
                                     if (checkLastError()) {
                                         return;
                                     }
@@ -469,7 +491,7 @@ var ext;
                         }
                     }
                     //couldn't find window, create new
-                    chrome.windows.create({}, function (win) {
+                    browser.windows.create({}, function (win) {
                         callback(new BrowserWindow(win));
                     });
                 });
@@ -477,15 +499,15 @@ var ext;
         },
         onFocusChanged: {
             addListener: function (callback) {
-                chrome.windows.onFocusChanged.addListener(function (windowId) {
-                    if (windowId != chrome.windows.WINDOW_ID_NONE) {
+                browser.windows.onFocusChanged.addListener(function (windowId) {
+                    if (windowId != browser.windows.WINDOW_ID_NONE) {
                         callback();
                     }
                 });
             }
         },
         createPopup: function (url, callback) {
-            chrome.windows.create({
+            browser.windows.create({
                 url: url,
                 type: 'popup',
                 width: 1230,
@@ -506,7 +528,7 @@ var ext;
         onActivated: new OnActivatedTabEvent(),
         onRemoved: new OnRemovedTabEvent(),
         getLastFocused: function (callback) {
-            chrome.tabs.query({lastFocusedWindow: true, active: true}, function (tabs) {
+            browser.tabs.query({lastFocusedWindow: true, active: true}, function (tabs) {
                 if (callback && tabs && tabs.length > 0) {
                     callback(new BrowserTab(tabs[0]));
                 }
@@ -516,15 +538,15 @@ var ext;
 
     ext.webRequest = {
         onBeforeRequest: new OnBeforeRequestEvent(),
-        handlerBehaviorChanged: chrome.webRequest.handlerBehaviorChanged,
-        onCompleted: chrome.webRequest.onCompleted,
-        onErrorOccurred: chrome.webRequest.onErrorOccurred,
+        handlerBehaviorChanged: browser.webRequest.handlerBehaviorChanged,
+        onCompleted: browser.webRequest.onCompleted,
+        onErrorOccurred: browser.webRequest.onErrorOccurred,
         onHeadersReceived: new OnHeadersReceivedEvent(),
         onBeforeSendHeaders: new OnBeforeSendHeadersEvent()
     };
 
     ext.webNavigation = {
-        onCreatedNavigationTarget: chrome.webNavigation.onCreatedNavigationTarget
+        onCreatedNavigationTarget: browser.webNavigation.onCreatedNavigationTarget
     };
 
     //noinspection JSUnusedLocalSymbols
@@ -537,16 +559,16 @@ var ext;
                 if (checkLastError()) {
                     return;
                 }
-                chrome.tabs.get(tabId, function () {
+                browser.tabs.get(tabId, function () {
                     if (checkLastError()) {
                         return;
                     }
-                    chrome.browserAction.setBadgeText({tabId: tabId, text: badge});
+                    browser.browserAction.setBadgeText({tabId: tabId, text: badge});
                     if (checkLastError()) {
                         return;
                     }
                     if (badge) {
-                        chrome.browserAction.setBadgeBackgroundColor({tabId: tabId, color: badgeColor});
+                        browser.browserAction.setBadgeBackgroundColor({tabId: tabId, color: badgeColor});
                         checkLastError();
                     }
                     //title setup via manifest.json file
@@ -554,9 +576,9 @@ var ext;
                 });
             };
 
-            chrome.browserAction.setIcon({tabId: tabId, path: icon}, onIconReady);
+            browser.browserAction.setIcon({tabId: tabId, path: icon}, onIconReady);
         }
     };
 
-    ext.contextMenus = chrome.contextMenus;
+    ext.contextMenus = browser.contextMenus;
 })();

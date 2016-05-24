@@ -1,9 +1,3 @@
-/* global RequestTypes */
-/* global framesMap */
-/* global BrowserTab */
-/* global chrome */
-/* global webRequestService */
-/* global UrlUtils */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -20,9 +14,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* global browser, framesMap, BrowserTab, UrlUtils, RequestTypes, webRequestService */
 var tabsLoading = Object.create(null);
 
-chrome.webNavigation.onCreatedNavigationTarget.addListener(function (details) {
+browser.webNavigation.onCreatedNavigationTarget.addListener(function (details) {
 
     var sourceTab = new BrowserTab({id: details.sourceTabId});
 
@@ -44,7 +40,7 @@ chrome.webNavigation.onCreatedNavigationTarget.addListener(function (details) {
     checkPopupBlockedRule(details.tabId, details.url, referrerUrl, sourceTab);
 });
 
-chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 
     if (!(tabId in tabsLoading)) {
         return;
@@ -71,7 +67,7 @@ function checkPopupBlockedRule(tabId, requestUrl, referrerUrl, sourceTab) {
 
     if (webRequestService.isRequestBlockedByRule(requestRule)) {
         //remove popup tab
-        chrome.tabs.remove(tabId);
+        browser.tabs.remove(tabId);
         //append log event and fix log event type from POPUP to DOCUMENT
         webRequestService.postProcessRequest(sourceTab, requestUrl, referrerUrl, RequestTypes.DOCUMENT, requestRule);
     }
