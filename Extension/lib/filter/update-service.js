@@ -84,6 +84,9 @@ exports.ApplicationUpdateService = {
 		if (Utils.isGreaterVersion("2.1.2", runInfo.prevVersion) && Utils.isFirefoxBrowser()) {
 			methods.push(this._onUpdateFirefoxStorage);
 		}
+		if (Utils.isGreaterVersion("2.3.5", runInfo.prevVersion) && Utils.isChromium() && !Utils.isSafariBrowser()) {
+			methods.push(this._onUpdateChromiumStorage);
+		}
 
 		var dfd = this._executeMethods(methods);
 		dfd.then(callback);
@@ -282,6 +285,50 @@ exports.ApplicationUpdateService = {
 	},
 
 	/**
+	 * Update chromium file storage by switching to local storage
+	 *
+	 * Version 2.3.5
+	 * @returns {exports.Promise}
+	 * @private
+	 */
+	_onUpdateChromiumStorage: function () {
+		Log.info('Call update to version 2.3.5');
+
+		var dfd = new Promise();
+
+		var adguardFilters = JSON.parse(LS.getItem('adguard-filters')) || Object.create(null);
+
+		for (var filterId in adguardFilters) {
+			if (filterId == AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+				continue;
+			}
+
+			var filePath = FilterStorage._getFilePath(filterId);
+			FileStorage.readFromFile(filePath, function (e, rules) {
+				if (e) {
+					Log.error("Error while reading rules from file {0} cause: {1}", filePath, e);
+					continue;
+				}
+
+				var onTransferCompleted = function () {
+					Log.info("Rules have been transferred to local storage for filter {0}", filterId);
+
+					FileStorage.removeFile(filePath, function () {
+						Log.info("File removed for filter {0}", filterId);
+					}, function () {
+						Log.error("File remove error for filter {0}", filterId);
+					});
+				};
+
+				FilterStorage.saveFilterRules(filterId, rules, onTransferCompleted.bind(this));
+			}.bind(this));
+		}
+
+		dfd.resolve();
+		return dfd;
+	},
+
+	/**
 	 * Mark 'adguard-filters' as installed and loaded on extension version update
 	 * @private
 	 */
@@ -334,7 +381,7 @@ exports.ApplicationUpdateService = {
 
 /**
  * File storage adapter
- * @Deprecated Used now only to upgrade from versions older than v2.3
+ * @Deprecated Used now only to upgrade from versions older than v2.3.5
  */
 var FileStorage = exports.FileStorage = {
 
@@ -365,50 +412,6 @@ var FileStorage = exports.FileStorage = {
 				};
 
 				reader.readAsText(file);
-
-			}, callback);
-		};
-
-		this._getFile(path, true, successCallback, callback);
-	},
-
-	writeToFile: function (path, data, callback) {
-
-		var successCallback = function (fs, fileEntry) {
-
-			fileEntry.createWriter(function (fileWriter) {
-
-				var writeOperation = function (operation, nextOperation) {
-
-					fileWriter.onwriteend = function () {
-						if (fileWriter.error) {
-							callback(fileWriter.error);
-						} else {
-							nextOperation();
-						}
-					};
-
-					fileWriter.onerror = function (e) {
-						callback(e);
-					};
-
-					operation();
-				};
-
-				var nextOperation = function () {
-					var blob;
-					try {
-						blob = new Blob([data.join(FS.LINE_BREAK)], {type: "text/plain"});
-					} catch (ex) {
-						var builder = new (window.BlobBuilder || window.WebKitBlobBuilder)();
-						builder.append(data.join(FS.LINE_BREAK));
-						blob = builder.getBlob("text/plain");
-					}
-
-					writeOperation(fileWriter.write.bind(fileWriter, blob), callback);
-				};
-
-				writeOperation(fileWriter.truncate.bind(fileWriter, 0), nextOperation);
 
 			}, callback);
 		};

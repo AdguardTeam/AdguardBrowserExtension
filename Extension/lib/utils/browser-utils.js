@@ -100,6 +100,10 @@ var Utils = exports.Utils = {
         return Prefs.getBrowser() == "Chrome";
     },
 
+    isChromium: function () {
+        return Prefs.platform == 'chromium';
+    },
+
     isWindowsOs: function () {
         return this.navigator.userAgent.toLowerCase().indexOf("win") >= 0;
     },
@@ -118,7 +122,7 @@ var Utils = exports.Utils = {
     isShadowDomSupported: function() {
         
         // Shadow DOM is supported by all modern chromium browsers
-        return Prefs.platform == 'chromium';
+        return this.isChromium();
     },
     
     /**
