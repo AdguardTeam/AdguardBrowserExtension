@@ -297,8 +297,8 @@ var ext;
 				messageHandler = ext.webRequest.onHeadersReceived;
 				break;
             case "useContentBlockerAPI":
+				// checking useOldSafariAPI setting 
                 event.message = Utils.isContentBlockerEnabled();
-				Log.info('useContentBlockerAPI check ' + event.message);
                 return;
 		}
 		event.message = messageHandler.processMessage(event.message.data, event.target);

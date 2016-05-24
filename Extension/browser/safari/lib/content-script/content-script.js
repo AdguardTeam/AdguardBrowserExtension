@@ -212,6 +212,7 @@
             if (contentBlockerEnabled && safari.self && safari.self.tab && safari.self.tab.canLoad) {
                 try {
                     // Now check if content blocker API is not overriden in extension settings
+					// Checking useOldSafariAPI extension setting
                     var evt = document.createEvent("Event");
                     evt.initEvent("useContentBlockerAPI");
                     var useContentBlockerAPI = safari.self.tab.canLoad(evt, {type: "useContentBlockerAPI", data: {}});
