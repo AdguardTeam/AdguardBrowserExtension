@@ -51,7 +51,7 @@
 					evt.initEvent("beforeload");
 					safari.self.tab.canLoad(evt, {type: type, data: data});
 				}
-			};
+			}
 
 			createMainFrameEvent("safariWebRequest");
 			createMainFrameEvent("safariHeadersRequest");
@@ -213,9 +213,9 @@
                 try {
                     // Now check if content blocker API is not overriden in extension settings
                     var evt = document.createEvent("Event");
-                    evt.initEvent("useOldSafariAPI");
-                    var useOldSafariApi = safari.self.tab.canLoad(evt, {type: "useOldSafariAPI", data: {}});
-                    return contentBlockerEnabled && !useOldSafariApi;                    
+                    evt.initEvent("useContentBlockerAPI");
+                    var useContentBlockerAPI = safari.self.tab.canLoad(evt, {type: "useContentBlockerAPI", data: {}});
+                    return contentBlockerEnabled && useContentBlockerAPI;
                 } catch (ex) {
                     // Ignore
                 }

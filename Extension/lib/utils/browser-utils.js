@@ -135,7 +135,7 @@ var Utils = exports.Utils = {
             // Cast it to string as I don't understand why it's type randomly changes (in dev build it is string, in beta - boolean)
             this._useOldSafariAPI = (String(safari.extension.settings.getItem('useOldSafariAPI')) == 'true');
         }
-        
+
         return !this._useOldSafariAPI;
     },
 
