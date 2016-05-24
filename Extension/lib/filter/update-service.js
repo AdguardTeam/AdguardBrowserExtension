@@ -332,5 +332,108 @@ exports.ApplicationUpdateService = {
 	}
 };
 
+/**
+ * File storage adapter
+ * @Deprecated Used now only to upgrade from versions older than v2.3
+ */
+var FileStorage = exports.FileStorage = {
+
+	LINE_BREAK: '\n',
+
+	readFromFile: function (path, callback) {
+
+		var successCallback = function (fs, fileEntry) {
+
+			fileEntry.file(function (file) {
+
+				var reader = new FileReader();
+				reader.onloadend = function () {
+
+					if (reader.error) {
+						callback(reader.error);
+					} else {
+						var lines = [];
+						if (reader.result) {
+							lines = reader.result.split(/[\r\n]+/);
+						}
+						callback(null, lines);
+					}
+				};
+
+				reader.onerror = function (e) {
+					callback(e);
+				};
+
+				reader.readAsText(file);
+
+			}, callback);
+		};
+
+		this._getFile(path, true, successCallback, callback);
+	},
+
+	writeToFile: function (path, data, callback) {
+
+		var successCallback = function (fs, fileEntry) {
+
+			fileEntry.createWriter(function (fileWriter) {
+
+				var writeOperation = function (operation, nextOperation) {
+
+					fileWriter.onwriteend = function () {
+						if (fileWriter.error) {
+							callback(fileWriter.error);
+						} else {
+							nextOperation();
+						}
+					};
+
+					fileWriter.onerror = function (e) {
+						callback(e);
+					};
+
+					operation();
+				};
+
+				var nextOperation = function () {
+					var blob;
+					try {
+						blob = new Blob([data.join(FS.LINE_BREAK)], {type: "text/plain"});
+					} catch (ex) {
+						var builder = new (window.BlobBuilder || window.WebKitBlobBuilder)();
+						builder.append(data.join(FS.LINE_BREAK));
+						blob = builder.getBlob("text/plain");
+					}
+
+					writeOperation(fileWriter.write.bind(fileWriter, blob), callback);
+				};
+
+				writeOperation(fileWriter.truncate.bind(fileWriter, 0), nextOperation);
+
+			}, callback);
+		};
+
+		this._getFile(path, true, successCallback, callback);
+	},
+
+	_getFile: function (path, create, successCallback, errorCallback) {
+
+		path = path.replace(/^.*[\/\\]/, "");
+
+		var requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
+		requestFileSystem(window.PERSISTENT, 1024 * 1024 * 1024, function (fs) {
+			fs.root.getFile(path, {create: create}, function (fileEntry) {
+				successCallback(fs, fileEntry);
+			}, errorCallback);
+		}, errorCallback);
+	},
+
+	removeFile: function (path, successCallback, errorCallback) {
+		this._getFile(path, false, function (fs, fileEntry) {
+			fileEntry.remove(successCallback, errorCallback);
+		}, errorCallback);
+	}
+};
+
 
 

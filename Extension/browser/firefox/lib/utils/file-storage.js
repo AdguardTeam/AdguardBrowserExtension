@@ -77,7 +77,7 @@ var FS = exports.FS = {
                 NetUtil.asyncFetch(aSource, fetchCallback);                
             }
         } catch (ex) {
-            callback(ex);
+            callback(this._translateError(ex));
         }
     },
 
@@ -99,7 +99,7 @@ var FS = exports.FS = {
 
         } catch (ex) {
             Log.error("Error writing to file {0}, cause: {1}", filename, ex);
-            callback(ex);
+            callback(this._translateError(ex));
         }
     },
 
@@ -134,7 +134,7 @@ var FS = exports.FS = {
         sdkFile.mkpath(adguardDir);
     },
 
-    translateError: function (e) {
+    _translateError: function (e) {
         var msg = e.message || e.name;
         if (msg) {
             return msg;

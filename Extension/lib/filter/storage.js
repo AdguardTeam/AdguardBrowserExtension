@@ -41,7 +41,7 @@ var FilterStorage = exports.FilterStorage = {
 		var filePath = FilterStorage._getFilePath(filterId);
 		FS.writeToFile(filePath, filterRules, function (e) {
 			if (e) {
-				Log.error("Error write filters to file {0} cause: {1}", filePath, FS.translateError(e));
+				Log.error("Error write filters to file {0} cause: {1}", filePath, e);
 			}
 			if (callback) {
 				callback();
@@ -59,7 +59,7 @@ var FilterStorage = exports.FilterStorage = {
 		var filePath = FilterStorage._getFilePath(filterId);
 		FS.readFromFile(filePath, function (e, rules) {
 			if (e) {
-				Log.error("Error while reading rules from file {0} cause: {1}", filePath, FS.translateError(e));
+				Log.error("Error while reading rules from file {0} cause: {1}", filePath, e);
 			}
 			callback(rules);
 		}.bind(this));
@@ -86,7 +86,7 @@ var FilterStorage = exports.FilterStorage = {
 
 		FS.writeToFile(filePath, cssRules, function (e) {
 			if (e && e.error) {
-				Log.error("Error write css styleSheet to file {0} cause: {1}", filePath, FS.translateError(e.error));
+				Log.error("Error write css styleSheet to file {0} cause: {1}", filePath, e);
 				return;
 			} else {
 				callback();
@@ -111,24 +111,6 @@ var FilterStorage = exports.FilterStorage = {
 			this.injectCssUrl = FS.getFileInAdguardDirUri(this.CSS_FILE_PATH);
 		}
 		return this.injectCssUrl;
-	},
-
-	/**
-	 * This method is deprecated, used in previous version until to 1.0.1.0
-	 * TODO: Remove it
-	 *
-	 * @deprecated
-	 * @param successCallback
-	 */
-	loadFromDisk: function (successCallback) {
-		var filePath = FilterStorage.FILE_PATH;
-		var parser = new FilterParser();
-		FS.readFromFileWithListener(filePath, parser, function (e) {
-			if (e) {
-				Log.error("Error read filters from file {0} cause: {1}", filePath, FS.translateError(e));
-			}
-			successCallback(parser.antiBannerFilters || []);
-		}.bind(this));
 	},
 
 	_getFilePath: function (filterId) {
