@@ -30,7 +30,8 @@ var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOServi
 var Log = require('../../lib/utils/log').Log;
 
 /**
- * File storage adapter
+ * File storage adapter.
+ * For FF we store rules in files
  */
 var FS = exports.FS = {
 
@@ -64,20 +65,20 @@ var FS = exports.FS = {
                     callback(status);
                 }
             };
-            
+
             try {
                 NetUtil.asyncFetch(filePath, fetchCallback);
             } catch (ex) {
-                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/199                
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/199
                 var aSource = {
                     uri: filePath,
                     loadUsingSystemPrincipal: true
                 };
-                
-                NetUtil.asyncFetch(aSource, fetchCallback);                
+
+                NetUtil.asyncFetch(aSource, fetchCallback);
             }
         } catch (ex) {
-            callback(ex);
+            callback(this._translateError(ex));
         }
     },
 
@@ -99,7 +100,21 @@ var FS = exports.FS = {
 
         } catch (ex) {
             Log.error("Error writing to file {0}, cause: {1}", filename, ex);
-            callback(ex);
+            callback(this._translateError(ex));
+        }
+    },
+
+    removeFile: function (path, successCallback) {
+        var file = FileUtils.getFile(this.PROFILE_DIR, [this.ADGUARD_DIR, path]);
+        if (!file.exists() || file.fileSize === 0) {
+            successCallback();
+            return;
+        }
+        try {
+            file.remove();
+            successCallback();
+        } catch (ex) {
+            //ignore
         }
     },
 
@@ -125,6 +140,59 @@ var FS = exports.FS = {
         }
     },
 
+    /**
+     * Saves CSS stylesheet to file.
+     *
+     * This method is used in Firefox extension only.
+     * If user has enabled "Send statistics for ad filters usage" option we change the way of applying CSS rules.
+     * In this case we register browser-wide stylesheet using StyleService.registerSheet.
+     * We should save it to file before registering the stylesheet.
+     *
+     * @param cssRules CSS file content
+     * @param callback Called when operation is finished
+     */
+    saveStyleSheetToDisk: function (cssRules, callback) {
+        if (this._cssSaving) {
+            return;
+        }
+        this._cssSaving = true;
+
+        var filePath = FilterStorage.CSS_FILE_PATH;
+
+        FS.writeToFile(filePath, cssRules, function (e) {
+            if (e && e.error) {
+                Log.error("Error write css styleSheet to file {0} cause: {1}", filePath, e);
+                return;
+            } else {
+                callback();
+            }
+            this._cssSaving = false;
+        }.bind(this));
+
+    },
+
+    /**
+     * Gets CSS file URI
+     *
+     * This method is used in Firefox extension only.
+     * If user has enabled "Send statistics for ad filters usage" option we change the way of applying CSS rules.
+     * In this case we register browser-wide stylesheet using StyleService.registerSheet.
+     * We should save it to file before registering the stylesheet.
+     *
+     * @returns CSS file URI
+     */
+    getInjectCssFileURI: function () {
+        if (!this.injectCssUrl) {
+            this.injectCssUrl = this._getFileInAdguardDirUri(this.CSS_FILE_PATH);
+        }
+        return this.injectCssUrl;
+    },
+
+    _getFileInAdguardDirUri: function (filename) {
+        var styleFile = FileUtils.getFile(this.PROFILE_DIR, [this.ADGUARD_DIR, filename]);
+        return ioService.newFileURI(styleFile).QueryInterface(Ci.nsIFileURL);
+    },
+
     /* Create dir in profile folder */
     _createDir: function () {
         var adguardDir = sdkFile.join(sdkPathFor(this.PROFILE_DIR), this.ADGUARD_DIR);
@@ -134,7 +202,7 @@ var FS = exports.FS = {
         sdkFile.mkpath(adguardDir);
     },
 
-    translateError: function (e) {
+    _translateError: function (e) {
         var msg = e.message || e.name;
         if (msg) {
             return msg;
@@ -172,24 +240,5 @@ var FS = exports.FS = {
                 break;
         }
         return msg;
-    },
-
-    getFileInAdguardDirUri: function (filename) {
-        var styleFile = FileUtils.getFile(this.PROFILE_DIR, [this.ADGUARD_DIR, filename]);
-        return ioService.newFileURI(styleFile).QueryInterface(Ci.nsIFileURL);
-    },
-
-    removeFile: function (path, successCallback) {
-        var file = FileUtils.getFile(this.PROFILE_DIR, [this.ADGUARD_DIR, path]);
-        if (!file.exists() || file.fileSize === 0) {
-            successCallback();
-            return;
-        }
-        try {
-            file.remove();
-            successCallback();
-        } catch (ex) {
-            //ignore
-        }
     }
 };

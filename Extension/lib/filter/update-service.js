@@ -24,7 +24,7 @@ var Utils = require('../../lib/utils/browser-utils').Utils;
 var LS = require('../../lib/utils/local-storage').LS;
 var Prefs = require('../../lib/prefs').Prefs;
 var AntiBannerFiltersId = require('../../lib/utils/common').AntiBannerFiltersId;
-var FS = require('../../lib/utils/file-storage').FS;
+var RulesStorage = require('../../lib/utils/rules-storage').RulesStorage;
 var FilterStorage = require('../../lib/filter/storage').FilterStorage;
 var CollectionUtils = require('../../lib/utils/common').CollectionUtils;
 var Promise = require('../../lib/utils/promises').Promise;
@@ -84,6 +84,9 @@ exports.ApplicationUpdateService = {
 		if (Utils.isGreaterVersion("2.1.2", runInfo.prevVersion) && Utils.isFirefoxBrowser()) {
 			methods.push(this._onUpdateFirefoxStorage);
 		}
+		if (Utils.isGreaterVersion("2.3.5", runInfo.prevVersion) && Utils.isChromium() && !Utils.isSafariBrowser()) {
+			methods.push(this._onUpdateChromiumStorage);
+		}
 
 		var dfd = this._executeMethods(methods);
 		dfd.then(callback);
@@ -139,7 +142,7 @@ exports.ApplicationUpdateService = {
 					var removeCallback = function () {
                         // Ignore
 					};
-					FS.removeFile(FilterStorage.FILE_PATH, removeCallback, removeCallback);
+					RulesStorage.remove(FilterStorage.FILE_PATH, removeCallback, removeCallback);
 					updateDfd.resolve();
 				} else {
 					var filter = filters.shift();
@@ -282,6 +285,50 @@ exports.ApplicationUpdateService = {
 	},
 
 	/**
+	 * Update chromium file storage by switching to local storage
+	 *
+	 * Version 2.3.5
+	 * @returns {exports.Promise}
+	 * @private
+	 */
+	_onUpdateChromiumStorage: function () {
+		Log.info('Call update to version 2.3.5');
+
+		var dfd = new Promise();
+
+		var adguardFilters = JSON.parse(LS.getItem('adguard-filters')) || Object.create(null);
+
+		for (var filterId in adguardFilters) {
+			if (filterId == AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+				continue;
+			}
+
+			var filePath = FilterStorage._getFilePath(filterId);
+			FileStorage.readFromFile(filePath, function (e, rules) {
+				if (e) {
+					Log.error("Error while reading rules from file {0} cause: {1}", filePath, e);
+					return;
+				}
+
+				var onTransferCompleted = function () {
+					Log.info("Rules have been transferred to local storage for filter {0}", filterId);
+
+					FileStorage.removeFile(filePath, function () {
+						Log.info("File removed for filter {0}", filterId);
+					}, function () {
+						Log.error("File remove error for filter {0}", filterId);
+					});
+				};
+
+				FilterStorage.saveFilterRules(filterId, rules, onTransferCompleted.bind(this));
+			}.bind(this));
+		}
+
+		dfd.resolve();
+		return dfd;
+	},
+
+	/**
 	 * Mark 'adguard-filters' as installed and loaded on extension version update
 	 * @private
 	 */
@@ -329,6 +376,65 @@ exports.ApplicationUpdateService = {
 			};
 			FilterLSUtils.updateFilterVersionInfo(filter);
 		}
+	}
+};
+
+/**
+ * File storage adapter
+ * @Deprecated Used now only to upgrade from versions older than v2.3.5
+ */
+var FileStorage = exports.FileStorage = {
+
+	LINE_BREAK: '\n',
+
+	readFromFile: function (path, callback) {
+
+		var successCallback = function (fs, fileEntry) {
+
+			fileEntry.file(function (file) {
+
+				var reader = new FileReader();
+				reader.onloadend = function () {
+
+					if (reader.error) {
+						callback(reader.error);
+					} else {
+						var lines = [];
+						if (reader.result) {
+							lines = reader.result.split(/[\r\n]+/);
+						}
+						callback(null, lines);
+					}
+				};
+
+				reader.onerror = function (e) {
+					callback(e);
+				};
+
+				reader.readAsText(file);
+
+			}, callback);
+		};
+
+		this._getFile(path, true, successCallback, callback);
+	},
+
+	_getFile: function (path, create, successCallback, errorCallback) {
+
+		path = path.replace(/^.*[\/\\]/, "");
+
+		var requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
+		requestFileSystem(window.PERSISTENT, 1024 * 1024 * 1024, function (fs) {
+			fs.root.getFile(path, {create: create}, function (fileEntry) {
+				successCallback(fs, fileEntry);
+			}, errorCallback);
+		}, errorCallback);
+	},
+
+	removeFile: function (path, successCallback, errorCallback) {
+		this._getFile(path, false, function (fs, fileEntry) {
+			fileEntry.remove(successCallback, errorCallback);
+		}, errorCallback);
 	}
 };
 

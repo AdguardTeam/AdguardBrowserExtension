@@ -22,7 +22,7 @@ Cu.import("resource://gre/modules/FileUtils.jsm");
 var self = require('sdk/self');
 
 var {EventNotifier} = require('./utils/notifier');
-let {FilterStorage} = require('./filter/storage');
+let {FS} = require('./utils/file-storage');
 var {EventNotifierTypes} = require('./utils/common');
 var {ConcurrentUtils} = require('./utils/browser-utils');
 var {Log} = require('./utils/log');
@@ -78,7 +78,7 @@ var ElemHide = exports.ElemHide = {
         }.bind(this));
 
         if (this._isGlobalStyleSheetEnabled()) {
-            this._applyCssStyleSheet(FilterStorage.getInjectCssFileURI(), true);
+            this._applyCssStyleSheet(FS.getInjectCssFileURI(), true);
         }
     },
 
@@ -91,7 +91,7 @@ var ElemHide = exports.ElemHide = {
         if (this._isGlobalStyleSheetEnabled()) {
             this._saveStyleSheetToDisk();
         } else {
-            this._disableStyleSheet(FilterStorage.getInjectCssFileURI());
+            this._disableStyleSheet(FS.getInjectCssFileURI());
         }
     },
 
@@ -210,8 +210,8 @@ var ElemHide = exports.ElemHide = {
     _saveStyleSheetToDisk: function () {
         ConcurrentUtils.runAsync(function () {
             var content = this.antiBannerService.getRequestFilter().getCssForStyleSheet();
-            FilterStorage.saveStyleSheetToDisk(content, function () {
-                this._applyCssStyleSheet(FilterStorage.getInjectCssFileURI());
+            FS.saveStyleSheetToDisk(content, function () {
+                this._applyCssStyleSheet(FS.getInjectCssFileURI());
             }.bind(this));
         }, this);
     },
