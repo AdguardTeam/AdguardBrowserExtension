@@ -1,10 +1,10 @@
 ! Title: Social media filter
-! Version: 1.0.9.86
+! Version: 1.0.9.96
 ! Name: Social media filter
 ! Description: A filter for social media widgets ("Like" buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2016-05-16T21:07:12.458+03:00
+! TimeUpdated: 2016-05-24T21:07:11.527+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -35,6 +35,7 @@
 ||coverweb.org^$third-party
 ||designchemical.com/blog/wp-content/themes/dc2011/dcssb/css/social.css
 ||facebook.com/*/plugins/$domain=~facebook.com
+||facebook.com/*/plugins/page.php$third-party
 ||facebook.com/*/plugins/share_button.php$third-party
 ||facebook.com/connect/connect.php$third-party
 ||facebook.com/method/links.getStats$third-party
@@ -71,6 +72,7 @@
 ||odnoklassniki.ru/dk?st.cmd=WidgetGroup$third-party,domain=~mail.ru|~odnoklassniki.ru
 ||odnoklassniki.ru/dk?st.cmd=WidgetShare$third-party,domain=~mail.ru|~odnoklassniki.ru
 ||ok.ru/dk?st.cmd$third-party
+||pinterest.com/js/pinit_main.js$third-party
 ||pinterest.com/pin/create/button/?url=$third-party
 ||pinterest.com/pinit.html$third-party
 ||pinterest.com/v1/urls/count.json$third-party
@@ -128,8 +130,7 @@
 ||x.pluso.ru^$third-party
 ||xing-share.com^$third-party
 ||yandex.st/share/share.js$domain=~24auto.ru|~calculatewater.ru|~novoeradio.by|~pikucha.ru|~realty.dmir.ru|~yandex.com|~yandex.ru|~yandex.ua
-||yastatic.net/share/$third-party,domain=~avtodispetcher.ru|~debilizator.tv|~yandex.by|~yandex.kz|~yandex.ru|~yandex.ua
-||yastatic.net/share2/$third-party,domain=~alexey-osipov.ru|~yandex.by|~yandex.kz|~yandex.ru|~yandex.ua
+||yastatic.net/*/share.js$third-party,domain=~alexey-osipov.ru|~avtodispetcher.ru|~debilizator.tv|~yandex.by|~yandex.kz|~yandex.ru|~yandex.ua
 ||youtube.com/subscribe_widget$third-party
 /asd.share.buttons/*
 /copy_to_blog_button_
@@ -183,6 +184,7 @@
 /wp-content/plugins/easy-social-share-buttons
 /wp-content/plugins/facebook-page-promoter-lightbox/*
 /wp-content/plugins/flare/*
+/wp-content/plugins/mashsharer/*
 /wp-content/plugins/monarch/*$domain=~elegantthemes.com
 /wp-content/plugins/social-share-buttons-by-supsystic/*
 /wp-content/plugins/social-warfare/*
@@ -208,6 +210,12 @@ maskme.ru#$#img[width="88"][height="31"] {visibility: hidden!important;}
 gamesradar.com#$#.shareSocialArticle-wrap { visibility: hidden; }
 softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ||mimimi.tv/?*=*&_=
+krone.at##.c_social_media
+dailymail.co.uk###dms-txt
+dailymail.co.uk##.share-pictures-overlay
+dailymail.co.uk##.social-links
+trkterra.ru###vk_invite_wrapper
+kazanfirst.ru###fancybox-loading
 meduza.io###DailySubscriber
 washingtonpost.com###NN-module-rr
 tekdizifilmizle.com###SociaLKare
@@ -444,7 +452,7 @@ onlinedizi.co,xda-developers.com##.et_social_icons_container
 fiveironfrenzy.com##.et_social_popup
 businessinsider.com,digitaltrends.com,fullfilmizlesin.com,habrahabr.ru,kickstarter.com##.facebook
 sovsport.ru##.facebook-bn_site-overlay
-fontpark.net##.facebook-box
+fontpark.net,from-ua.com##.facebook-box
 formulalubvi.com##.facebook-popup
 travelask.ru##.facebook-toolbar
 waronline.org##.facebookLike
@@ -572,7 +580,7 @@ mestnye.ru##.service_links
 3dnews.ru,9gag.com,adindex.ru,androidcentral.com,askmen.com,bbc.com,cheatsheet.com,cloudflare.com,digitaltrends.com,disqus.com,filecore.co.nz,goqr.me,howstuffworks.com,ibtimes.co.uk,indiatimes.com,jamendo.com,overclockers.ua,playstation.com,rt.com,skidkaonline.ru,temp-mail.ru,truba.com,urbandictionary.com,versia.ru##.share
 gamespot.com##.share--column
 nashe.ru##.share-b
-m.huffpost.com##.share-bar
+huffingtonpost.com,m.huffpost.com##.share-bar
 kp.ru##.share-block
 screen.yahoo.com##.share-btn-container
 voicetv.co.th##.share-button-group
@@ -730,6 +738,7 @@ povarenok.ru##.vkfb
 habrahabr.ru##.vkontakte
 blogs.wsj.com##.vltSocialLinks
 medium.com##.voteWidget
+spotmebro.com##.widget_bimber_widget_facebook_page
 rbc.ru##.win-subscribe-popup-box
 softonic.com##.wrapper-fixed-social-buttons
 /jquery.fancybox.pack.js$domain=ultraslan.com
@@ -898,6 +907,7 @@ kinopoisk.ru##ul[class="addTo"]
 ||widget.breakingburner.com/js/jwidget.js$domain=novayagazeta.ru
 ||wow.ya.ru/ajax/share-counter.xml$third-party
 ||yandex.st/share/static/b-share-icon.png
+##.share-bar-desktop
 ###ShareModule
 ###SocialButtons
 ###SocialSharingBtns
@@ -934,6 +944,7 @@ kinopoisk.ru##ul[class="addTo"]
 ###gigya-sharebar
 ###gplusone
 ###header-social
+###inlineShare
 ###large_share_wrapper
 ###likeThisPost
 ###menu-share
@@ -1086,6 +1097,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.cross_socia
 ##.dcssb-float
 ##.essb_links
+##.essb_share
 ##.etsy-pin-it
 ##.etsy-tweet
 ##.facebook-like
@@ -1098,16 +1110,19 @@ livejournal.com##.b-ljtimes-wrapper
 ##.fb-like
 ##.fb-like-box
 ##.fb-like-button
+##.fb-page
 ##.fb-share-button
 ##.fb-share-container
 ##.fb_like_contain
 ##.fb_share
 ##.fblike
+##.fbx-social
 ##.field-name-horizontal-social-widgets
 ##.floatee-social-tail
 ##.followFacebook
 ##.followTwitter
 ##.followYoutube
+##.g1-sharebar
 ##.g_plus
 ##.gig-share-bar-container
 ##.goodshare
@@ -1132,7 +1147,6 @@ livejournal.com##.b-ljtimes-wrapper
 ##.icon-pinterest
 ##.icon-pinterest-share
 ##.icon-reddit
-~3dnews.ru,~iguides.ru,~t3n.de,~theverge##.icon-rss
 ##.icon-stumbleupon
 ~comediansincarsgettingcoffee.com,~forbes.com,~t3n.de##.icon-twitter
 ~dailymail.co.uk##.img-share
@@ -1152,6 +1166,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.lj-like
 ##.lj-like-item
 ##.mashsb-container
+##.mashsb-main
 ##.mod-follow
 ##.mod-stay-connected
 ##.mom-social-share
@@ -1529,6 +1544,7 @@ skladchik.com#@#.shares
 @@||veterok.tv/images/social/$domain=veterok.tv
 @@||vk.com/widget_comments.php
 @@||vk.com/widget_post.php
+@@||facebook.com/plugins/feedback.php
 @@||facebook.com/plugins/comments
 @@||facebook.com/plugins/livefeed.php$document
 @@||facebook.com/plugins/login_button.php$document
