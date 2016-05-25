@@ -296,33 +296,31 @@ exports.ApplicationUpdateService = {
 
 		var dfd = new Promise();
 
-		var adguardFilters = JSON.parse(LS.getItem('adguard-filters')) || Object.create(null);
+		var filterId = AntiBannerFiltersId.USER_FILTER_ID;
+		var filePath = FilterStorage._getFilePath(filterId);
 
-		for (var filterId in adguardFilters) {
-			if (filterId == AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
-				continue;
+		FileStorage.readFromFile(filePath, function (e, rules) {
+			if (e) {
+				Log.error("Error while reading rules from file {0} cause: {1}", filePath, e);
+				return;
 			}
 
-			var filePath = FilterStorage._getFilePath(filterId);
-			FileStorage.readFromFile(filePath, function (e, rules) {
-				if (e) {
-					Log.error("Error while reading rules from file {0} cause: {1}", filePath, e);
-					return;
-				}
+			var onTransferCompleted = function () {
+				Log.info("Rules have been transferred to local storage for filter {0}", filterId);
 
-				var onTransferCompleted = function () {
-					Log.info("Rules have been transferred to local storage for filter {0}", filterId);
+				FileStorage.removeFile(filePath, function () {
+					Log.info("File removed for filter {0}", filterId);
+				}, function () {
+					Log.error("File remove error for filter {0}", filterId);
+				});
+			};
 
-					FileStorage.removeFile(filePath, function () {
-						Log.info("File removed for filter {0}", filterId);
-					}, function () {
-						Log.error("File remove error for filter {0}", filterId);
-					});
-				};
+			if (rules) {
+				Log.info('Found rules:' + rules.length);
+			}
 
-				FilterStorage.saveFilterRules(filterId, rules, onTransferCompleted.bind(this));
-			}.bind(this));
-		}
+			FilterStorage.saveFilterRules(filterId, rules, onTransferCompleted.bind(this));
+		}.bind(this));
 
 		dfd.resolve();
 		return dfd;
