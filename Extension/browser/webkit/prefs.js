@@ -45,7 +45,7 @@ var Prefs = exports.Prefs = {
 			var userAgent = navigator.userAgent;
 			if (userAgent.toLowerCase().indexOf("yabrowser") >= 0) {
 				browser = "YaBrowser";
-			} else if (userAgent.toLowerCase().indexOf("edge" >= 0)) {
+			} else if (userAgent.toLowerCase().indexOf("edge") >= 0) {
 				browser = "Edge";
 			} else if (userAgent.toLowerCase().indexOf("opera") >= 0 || userAgent.toLowerCase().indexOf("opr") >= 0) {
 				browser = "Opera";
