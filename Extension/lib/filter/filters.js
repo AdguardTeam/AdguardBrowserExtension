@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global require, exports */
 
 /**
  * Initializing required libraries for this file.
@@ -72,7 +73,7 @@ RequestFilter.prototype = {
     /**
      * Cache capacity
      */
-    requestCacheMaxSize: 500,
+    requestCacheMaxSize: 5000,
 
     /**
      * Adds rules to the request filter
@@ -96,7 +97,7 @@ RequestFilter.prototype = {
      *                 one of these classes: UrlFilterRule, CssFilterRule, ScriptFilterRule
      */
     addRule: function (rule) {
-        if (rule == null || !rule.ruleText) {
+        if (rule === null || !rule.ruleText) {
             Log.error("FilterRule must not be null");
             return;
         }
@@ -122,7 +123,7 @@ RequestFilter.prototype = {
      * @param rule Rule to be removed
      */
     removeRule: function (rule) {
-        if (rule == null) {
+        if (rule === null) {
             Log.error("FilterRule must not be null");
             return;
         }
@@ -331,7 +332,7 @@ RequestFilter.prototype = {
      * @private
      */
     _checkWhiteList: function (requestUrl, refHost, requestType, thirdParty) {
-        if (this.urlWhiteFilter == null || StringUtils.isEmpty(requestUrl)) {
+        if (this.urlWhiteFilter === null || StringUtils.isEmpty(requestUrl)) {
             return null;
         }
         return this.urlWhiteFilter.isFiltered(requestUrl, refHost, requestType, thirdParty);
@@ -349,7 +350,7 @@ RequestFilter.prototype = {
      * @private
      */
     _checkUrlBlockingList: function (requestUrl, refHost, requestType, thirdParty, genericRulesAllowed) {
-        if (this.urlBlockingFilter == null || StringUtils.isEmpty(requestUrl)) {
+        if (this.urlBlockingFilter === null || StringUtils.isEmpty(requestUrl)) {
             return null;
         }
 
@@ -372,20 +373,20 @@ RequestFilter.prototype = {
         Log.debug("Filtering http request for url: {0}, referrer: {1}, requestType: {2}", requestUrl, refHost, requestType);
 
         var urlWhiteRule = this._checkWhiteList(requestUrl, refHost, requestType, thirdParty);
-        if (urlWhiteRule != null) {
+        if (urlWhiteRule !== null) {
             Log.debug("White list rule found {0} for url: {1} referrer: {2}, requestType: {3}", urlWhiteRule.ruleText, requestUrl, refHost, requestType);
             return urlWhiteRule;
         }
 
         var referrerWhiteRule = this._checkWhiteList(referrer, refHost, "URLBLOCK", thirdParty);
-        if (referrerWhiteRule != null) {
+        if (referrerWhiteRule !== null) {
             Log.debug("White list rule {0} found for referrer: {1}", referrerWhiteRule.ruleText, referrer);
             return referrerWhiteRule;
         }
 
         var genericUrlBlockRule = this._checkWhiteList(referrer, refHost, "GENERICBLOCK", thirdParty);
         var rule = this._checkUrlBlockingList(requestUrl, refHost, requestType, thirdParty, !genericUrlBlockRule);
-        if (rule != null) {
+        if (rule !== null) {
             Log.debug("Black list rule {0} found for url: {1}, referrer: {2}, requestType: {3}", rule.ruleText, requestUrl, refHost, requestType);
             return rule;
         }
@@ -432,7 +433,7 @@ RequestFilter.prototype = {
      * @private
      */
     _clearRequestCache: function () {
-        if (this.requestCacheSize == 0) {
+        if (this.requestCacheSize === 0) {
             return;
         }
 

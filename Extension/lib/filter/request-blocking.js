@@ -222,10 +222,9 @@ WebRequestService.prototype.postProcessRequest = function (tab, requestUrl, refe
 
     this.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
 
-    if (requestRule
-        && !FilterUtils.isUserFilterRule(requestRule)
-        && !FilterUtils.isWhiteListFilterRule(requestRule)
-        && !this.framesMap.isIncognitoTab(tab)) {
+    if (requestRule && !FilterUtils.isUserFilterRule(requestRule) && 
+        !FilterUtils.isWhiteListFilterRule(requestRule) && 
+        !this.framesMap.isIncognitoTab(tab)) {
 
         var domain = this.framesMap.getFrameDomain(tab);
         filterRulesHitCount.addRuleHit(domain, requestRule.ruleText, requestRule.filterId, requestUrl);
