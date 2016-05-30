@@ -153,6 +153,7 @@ ContentScripts.prototype = {
 
         // abp:subscribe
         var subscribeIncludeDomains = [
+            "easylist.github.io",
             "abpchina.org",
             "abpindo.blogspot.com",
             "abpvn.com",
