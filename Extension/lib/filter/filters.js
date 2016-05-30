@@ -73,7 +73,7 @@ RequestFilter.prototype = {
     /**
      * Cache capacity
      */
-    requestCacheMaxSize: 5000,
+    requestCacheMaxSize: 1000,
 
     /**
      * Adds rules to the request filter

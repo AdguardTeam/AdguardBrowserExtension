@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global ext, userSettings, Utils, UrlUtils, antiBannerService, adguardApplication, filteringLog */
+/* global framesMap, StringUtils, EventNotifier, EventNotifierTypes */
 var UI = {
 
 	ICON_BLUE: {
@@ -104,6 +106,9 @@ var UI = {
 		ext.browserAction.setBrowserAction(tab, icon, badge, "#555", this.browserActionTitle);
 	},
 
+	/**
+	 * Debounce updating tab icon state
+	 */
 	updateTabIconAsync: Utils.debounce(function (tab) {
 		UI.updateTabIcon(tab);
 	}, 250),
@@ -295,7 +300,7 @@ var UI = {
 					var tabId = tabInfo ? tabInfo.tabId : null;
 					UI.openFilteringLog(tabId);
 				}
-			})
+			});
 		});
 	},
 
@@ -314,7 +319,7 @@ var UI = {
 	reloadCurrentTab: function (url) {
 		this._getCurrentTab(function (tab) {
 			tab.reload(url);
-		})
+		});
 	},
 
 	customizeContextMenu: function (tab) {
@@ -510,18 +515,22 @@ var UI = {
 		});
 
 
-		//update icon on ads blocked
+		// Update icon on ads blocked
 		EventNotifier.addListener(function (event, rule, tab, blocked) {
 
 			if (event != EventNotifierTypes.ADS_BLOCKED || !tab) {
 				return;
 			}
 
-			var tabBlocked = framesMap.updateBlockedAdsCount(tab, blocked);
-			if (tabBlocked == null) {
-				return;
-			}
-			this.updateTabIconAsync(tab);
+			// Working with UI on a different thread
+			// https://github.com/AdguardTeam/AdguardBrowserExtension/issues/251 
+			setTimeout(function() {
+				var tabBlocked = framesMap.updateBlockedAdsCount(tab, blocked);
+				if (tabBlocked === null) {
+					return;
+				}
+				UI.updateTabIconAsync(tab);				
+			}, 1);
 
 		}.bind(this));
 
@@ -531,7 +540,7 @@ var UI = {
 				ext.windows.getLastFocused(function (win) {
 					win.getActiveTab(function (tab) {
 						UI.updateTabContextMenu(tab);
-					})
+					});
 				});
 			}
 		});
@@ -553,7 +562,7 @@ var UI = {
 			ext.windows.getLastFocused(function (win) {
 				win.getActiveTab(function (tab) {
 					UI.updateTabIconAndContextMenu(tab, true);
-				})
+				});
 			});
 		});
 	},
