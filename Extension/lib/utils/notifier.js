@@ -85,7 +85,9 @@ var EventNotifier = exports.EventNotifier = {
 	},
 	
 	/**
-	 * Asynchronously notifies all listeners about the events passed as arguments of this function
+	 * Asynchronously notifies all listeners about the events passed as arguments of this function.
+	 * Some events should be dispatched asynchronously, for instance this is very important for Safari:
+	 * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/251 
 	 */
 	notifyListenersAsync: function() {
 		var args = arguments;
