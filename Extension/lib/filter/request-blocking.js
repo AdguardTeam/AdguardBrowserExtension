@@ -217,7 +217,7 @@ WebRequestService.prototype.postProcessRequest = function (tab, requestUrl, refe
     }
 
     if (this.isRequestBlockedByRule(requestRule)) {
-        EventNotifier.notifyListeners(EventNotifierTypes.ADS_BLOCKED, requestRule, tab, 1);
+        EventNotifier.notifyListenersAsync(EventNotifierTypes.ADS_BLOCKED, requestRule, tab, 1);
     }
 
     this.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);

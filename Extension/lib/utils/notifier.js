@@ -28,9 +28,7 @@ var Log = require('../../lib/utils/log').Log;
 var EventNotifier = exports.EventNotifier = {
 
 	listenersMap: Object.create(null),
-
 	listenersEventsMap: Object.create(null),
-
 	listenerId: 0,
 
 	/**
@@ -84,5 +82,15 @@ var EventNotifier = exports.EventNotifier = {
 				Log.error("Error invokeing listener for {0} cause: {1}", arguments[0], ex);
 			}
 		}
+	},
+	
+	/**
+	 * Asynchronously notifies all listeners about the events passed as arguments of this function
+	 */
+	notifyListenersAsync: function() {
+		var args = arguments;
+		setTimeout(function() {
+			EventNotifier.notifyListeners.apply(EventNotifier, args);
+		}, 500);
 	}
 };

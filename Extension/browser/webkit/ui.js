@@ -522,19 +522,14 @@ var UI = {
 				return;
 			}
 
-			// Working with UI on a different thread
-			// https://github.com/AdguardTeam/AdguardBrowserExtension/issues/251 
-			setTimeout(function() {
-				var tabBlocked = framesMap.updateBlockedAdsCount(tab, blocked);
-				if (tabBlocked === null) {
-					return;
-				}
-				UI.updateTabIconAsync(tab);				
-			}, 1);
-
+			var tabBlocked = framesMap.updateBlockedAdsCount(tab, blocked);
+			if (tabBlocked === null) {
+				return;
+			}
+			UI.updateTabIconAsync(tab);
 		}.bind(this));
 
-		//update context menu on change user settings
+		// Update context menu on change user settings
 		EventNotifier.addListener(function (event, setting) {
 			if (event == EventNotifierTypes.CHANGE_USER_SETTINGS && setting == userSettings.settings.DISABLE_SHOW_CONTEXT_MENU) {
 				ext.windows.getLastFocused(function (win) {
