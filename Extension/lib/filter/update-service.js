@@ -134,7 +134,7 @@ exports.ApplicationUpdateService = {
 			var adguardFilters = Object.create(null);
 
 			var processNextFilter = function () {
-				if (filters.length == 0) {
+				if (filters.length === 0) {
 					//update adguard-filters in local storage for next update iteration
 					LS.setItem('adguard-filters', JSON.stringify(adguardFilters));
 
@@ -285,7 +285,7 @@ exports.ApplicationUpdateService = {
 	},
 
 	/**
-	 * Update chromium file storage by switching to local storage
+	 * Updates filters storage - move from files to the storage API.
 	 *
 	 * Version 2.3.5
 	 * @returns {exports.Promise}

@@ -15,39 +15,49 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global exports, LS */
+/* global exports, browser */
 /**
  * Filter rules storage adapter
  */
 var RulesStorage = exports.RulesStorage = {
 
-	LINE_BREAK: '\n',
-
 	read: function (path, callback) {
 		try {
-			var value = LS.getItem(path);
-			var lines = [];
-			if (value) {
-				lines = value.split(/[\r\n]+/);
-			}
-			callback(null, lines);
+            browser.storage.local.get(path, function(results) {
+                if (browser.runtime.lastError) {
+                    callback(browser.runtime.lastError);
+                } else {
+                    var lines = [];
+					
+					if (results && results[path] instanceof Array) {
+						lines = results[path];
+					}
+					
+                    callback(null, lines);
+                }
+            });
 		} catch (ex) {
 			callback(ex);
 		}
 	},
 
 	write: function (path, data, callback) {
-		var value = data.join(RulesStorage.LINE_BREAK);
+        var item = {};
+        item[path] = data;
 		try {
-			LS.setItem(path, value);
-			callback();
+            browser.storage.local.set(item, function() {
+                if (browser.runtime.lastError) {
+                    callback(browser.runtime.lastError);
+                } else {
+                    callback();
+                }
+            });
 		} catch (ex) {
 			callback(ex);
 		}
 	},
 
 	remove: function (path, successCallback) {
-		LS.removeItem(path);
-		successCallback();
+		browser.storage.local.remove(path, successCallback);
 	}
 };

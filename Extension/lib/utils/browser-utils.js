@@ -55,6 +55,9 @@ var Utils = exports.Utils = {
         return clientId;
     },
 
+    /**
+     * Checks if left version is greater than the right version
+     */
     isGreaterVersion: function (leftVersion, rightVersion) {
         var left = new Version(leftVersion);
         var right = new Version(rightVersion);
