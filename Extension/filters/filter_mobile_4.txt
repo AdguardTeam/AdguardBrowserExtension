@@ -1,10 +1,10 @@
 ! Title: Social media filter
-! Version: 1.0.9.96
+! Version: 1.0.10.4
 ! Name: Social media filter
-! Description: A filter for social media widgets ("Like" buttons and such).
+! Description: Filter for social media widgets (Like buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2016-05-24T21:07:11.527+03:00
+! TimeUpdated: 2016-05-29T01:58:43.817+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -127,6 +127,7 @@
 ||widgets.getpocket.com^$third-party
 ||widgets.twimg.com/$third-party
 ||woobox.com^$third-party
+||wykop.pl/dataprovider/diggerwidget/$third-party
 ||x.pluso.ru^$third-party
 ||xing-share.com^$third-party
 ||yandex.st/share/share.js$domain=~24auto.ru|~calculatewater.ru|~novoeradio.by|~pikucha.ru|~realty.dmir.ru|~yandex.com|~yandex.ru|~yandex.ua
@@ -210,12 +211,9 @@ maskme.ru#$#img[width="88"][height="31"] {visibility: hidden!important;}
 gamesradar.com#$#.shareSocialArticle-wrap { visibility: hidden; }
 softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ||mimimi.tv/?*=*&_=
-krone.at##.c_social_media
-dailymail.co.uk###dms-txt
-dailymail.co.uk##.share-pictures-overlay
-dailymail.co.uk##.social-links
-trkterra.ru###vk_invite_wrapper
-kazanfirst.ru###fancybox-loading
+sovsport.ru##.social-buttons_right-sticky
+f5haber.com###cdxhd_interstitial
+f5haber.com##.adSocial
 meduza.io###DailySubscriber
 washingtonpost.com###NN-module-rr
 tekdizifilmizle.com###SociaLKare
@@ -243,6 +241,7 @@ applopedi.com###colorbox
 thedroidguy.com###conversions-box
 aliexpress.com###divShareURL
 penzainform.ru###divSocial
+dailymail.co.uk###dms-txt
 softwares-serials.in###exepopup
 forumofficiel.com###fa_share
 amazon.com###facebook
@@ -256,6 +255,7 @@ fulloyunindirsene.com###fadeinbox
 for-ua.com,idevice.ro,majorgeeks.com,ridus.ru,tweaktown.com###fanback
 mackolik.com###fancybox-close
 mackolik.com###fancybox-frame
+kazanfirst.ru###fancybox-loading
 cinema-hd.ru,onlain-multiki.ru,tvfru.net###fancybox-overlay
 fishki.net###fb-scroll-popup
 therussiantimes.com###fb_widget
@@ -279,6 +279,8 @@ icaravan.com.ua###like_popup
 europe1.fr###main_partage_data span[class^="icon-"]
 emlakkulisi.com###modal
 bitterwallet.com###module-widget-meta-4
+nba.com###nbaArticleBottomShareWrapper
+nba.com###nbaArticleCopySocial
 qrrro.com###netkevin-overlay
 qrrro.com###netkevin-popup
 kp.ru###ok-popup
@@ -319,6 +321,7 @@ megogo.net###snashareLink
 ictv.ua###soc_main
 telegraf.com.ua###soc_popup
 liberallogic101.com###social-buttons
+benchmark.pl###socialEntryBar
 ua1.com.ua###socialModal
 podrobnosti.ua###social_popup
 stadt-bremerhaven.de###socialbar-mobile
@@ -342,6 +345,7 @@ spec-komp.com###vk_groups1
 igromania.ru###vk_groups2
 lyrsense.com###vk_groups_ls
 rsn.ru###vk_groups_new
+trkterra.ru###vk_invite_wrapper
 3dnews.ru###vk_right
 xlivetv.sx###vkjoin
 socportal.info###vspliv_w
@@ -425,6 +429,7 @@ sports.ru##.c-poll-share__social
 sports.ru##.c-poll-share__text
 cnn.com##.c_sharebtmcol1
 cnn.com##.c_sharelftcol
+krone.at##.c_social_media
 canon.ru##.cf-print-share
 clipfish.de##.cf-social-buttons
 cnn.com##.cnnm_sharebar
@@ -577,7 +582,7 @@ sbs.co.kr##.seda_share
 vse42.ru##.sendto.no-print
 ew.com##.service-links
 mestnye.ru##.service_links
-3dnews.ru,9gag.com,adindex.ru,androidcentral.com,askmen.com,bbc.com,cheatsheet.com,cloudflare.com,digitaltrends.com,disqus.com,filecore.co.nz,goqr.me,howstuffworks.com,ibtimes.co.uk,indiatimes.com,jamendo.com,overclockers.ua,playstation.com,rt.com,skidkaonline.ru,temp-mail.ru,truba.com,urbandictionary.com,versia.ru##.share
+3dnews.ru,9gag.com,adindex.ru,androidcentral.com,askmen.com,bbc.com,cheatsheet.com,cloudflare.com,digitaltrends.com,disqus.com,filecore.co.nz,filmix.net,goqr.me,howstuffworks.com,ibtimes.co.uk,indiatimes.com,jamendo.com,overclockers.ua,playstation.com,rt.com,skidkaonline.ru,temp-mail.ru,truba.com,urbandictionary.com,versia.ru##.share
 gamespot.com##.share--column
 nashe.ru##.share-b
 huffingtonpost.com,m.huffpost.com##.share-bar
@@ -593,6 +598,7 @@ economist.com##.share-inline-footer-reddit
 skidkaonline.ru##.share-item
 nytimes.com##.share-list-container
 css-tricks.com##.share-on-title
+dailymail.co.uk##.share-pictures-overlay
 sonymobile.com##.share-post
 wday.ru##.share-social
 creativemarket.com##.share-stuff
@@ -661,6 +667,7 @@ jpost.com##.social-icon-wrap
 sports.ru##.social-icons-big.likes
 acura.com##.social-icons:not(.last)
 skidkaonline.ru##.social-like
+dailymail.co.uk##.social-links
 sovsport.ru##.social-list
 idnes.cz##.social-list-bubble
 imhonet.ru##.social-net
@@ -808,6 +815,7 @@ gazeta.ua##div[id*="-socials-"]
 finam.ru##div[id*="socnet-btns"]
 aliexpress.com.ua##div[id^="fancybox-"]
 androidopentutorials.com##div[id^="google-badge-box"]
+nba.com##div[id^="nbaArticleSocialWrapper"]
 eonline.com##div[id^="video-social-shares"]
 eminem.pro,igromania.ru##div[id^="vk_groups"]
 files.fm##div[my_title^="Share the link"]
@@ -907,7 +915,7 @@ kinopoisk.ru##ul[class="addTo"]
 ||widget.breakingburner.com/js/jwidget.js$domain=novayagazeta.ru
 ||wow.ya.ru/ajax/share-counter.xml$third-party
 ||yandex.st/share/static/b-share-icon.png
-##.share-bar-desktop
+##.shared-item-icon
 ###ShareModule
 ###SocialButtons
 ###SocialSharingBtns
@@ -1197,6 +1205,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.rt_share
 ##.s-sharelist
 ##.serp-adv__banner
+##.share-bar-desktop
 ##.share-bottom
 ##.share-box
 ##.share-btn
@@ -1512,6 +1521,7 @@ bitiworld.com##a[title="share on twitter"]
 ~androeed.ru,~facebook.com##input.fb
 ~twitter.com##input.tweet
 ~vk.com,~vkontakte.ru##input.vk
+@@||kinogo720.net/engine/classes/min/index.php$domain=kinogo720.net
 @@||apis.google.com/js/platform.js$domain=sneakernews.com
 @@||orlandoweekly.com/wp-content/plugins/wpsocialite/Socialite/socialite.min.js
 @@||serial-online.com/wp-content/plugins/easy-vkontakte-connect/js/social-likes.min.js
