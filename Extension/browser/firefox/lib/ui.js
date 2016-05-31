@@ -321,7 +321,7 @@ var UI = exports.UI = {
     },
 
     showAlertMessagePopup: function (title, text) {
-        contentScripts.sendMessageToTab(this._getActiveTab(), {type: 'show-alert-popup', title: title, text: text});
+        contentScripts.sendMessageToTab(this.getActiveTab(), {type: 'show-alert-popup', title: title, text: text});
     },
 
     _initAbusePanel: function (SdkPanel) {
