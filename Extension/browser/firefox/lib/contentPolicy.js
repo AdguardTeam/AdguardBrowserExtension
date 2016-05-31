@@ -655,10 +655,19 @@ var WebRequestImpl = exports.WebRequestImpl = {
             return;
         }
 
+        var tabId;
+        try {
+            tabId = tabUtils.getTabId(xulTab);
+        } catch (ex) {
+            //Sometimes FF throws an exception here.
+            Log.debug('Error getting tabId for xulTab: {0}', ex);
+            return;
+        }
+
         /**
          * Override request referrer in integration mode
          */
-        var tab = {id: tabUtils.getTabId(xulTab)};
+        var tab = {id: tabId};
         if (this.adguardApplication.shouldOverrideReferrer(tab)) {
             // Retrieve main frame url
             var frameUrl = this.framesMap.getFrameUrl(tab, 0);
