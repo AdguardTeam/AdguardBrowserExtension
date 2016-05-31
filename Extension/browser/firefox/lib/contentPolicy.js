@@ -520,24 +520,28 @@ var WebRequestImpl = exports.WebRequestImpl = {
     /**
      * nsIObserver interface implementation.
      * Learn more here:
-     * * https://developer.mozilla.org/en-US/Add-ons/Overlay_Extensions/XUL_School/Intercepting_Page_Loads#HTTP_Observers
+     * https://developer.mozilla.org/en-US/Add-ons/Overlay_Extensions/XUL_School/Intercepting_Page_Loads#HTTP_Observers
      *
      * @param event - observe event
      */
     observe: function (event) {
+        try {
+            var type = event.type;
+            var subject = event.subject;
 
-        var type = event.type;
-        var subject = event.subject;
-
-        switch (type) {
-            case "http-on-examine-response":
-            case "http-on-examine-cached-response":
-            case "http-on-examine-merged-response":
-                this._httpOnExamineResponse(subject);
-                break;
-            case "http-on-opening-request":
-                this._httpOnOpeningRequest(subject);
-                break;
+            switch (type) {
+                case "http-on-examine-response":
+                case "http-on-examine-cached-response":
+                case "http-on-examine-merged-response":
+                    this._httpOnExamineResponse(subject);
+                    break;
+                case "http-on-opening-request":
+                    this._httpOnOpeningRequest(subject);
+                    break;
+            }
+        } catch (ex) {
+            // Don't throw exception further
+            Log.error('observe: Error while handling event: {0}', ex);
         }
     },
 
