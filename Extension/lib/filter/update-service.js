@@ -142,7 +142,7 @@ exports.ApplicationUpdateService = {
 					var removeCallback = function () {
                         // Ignore
 					};
-					RulesStorage.remove(FilterStorage.FILE_PATH, removeCallback, removeCallback);
+					RulesStorage.remove(FileStorage.FILE_PATH, removeCallback, removeCallback);
 					updateDfd.resolve();
 				} else {
 					var filter = filters.shift();
@@ -384,6 +384,7 @@ exports.ApplicationUpdateService = {
 var FileStorage = exports.FileStorage = {
 
 	LINE_BREAK: '\n',
+	FILE_PATH: "filters.ini",
 
 	readFromFile: function (path, callback) {
 

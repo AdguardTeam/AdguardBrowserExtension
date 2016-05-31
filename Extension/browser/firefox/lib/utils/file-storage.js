@@ -37,6 +37,7 @@ var FS = exports.FS = {
 
     PROFILE_DIR: 'ProfD',
     ADGUARD_DIR: 'Adguard',
+    CSS_FILE_PATH: 'elementsHide.css',
     LINE_BREAK: '\n',
 
     readFromFile: function (filename, callback) {
@@ -157,7 +158,7 @@ var FS = exports.FS = {
         }
         this._cssSaving = true;
 
-        var filePath = FilterStorage.CSS_FILE_PATH;
+        var filePath = this.CSS_FILE_PATH;
 
         FS.writeToFile(filePath, cssRules, function (e) {
             if (e && e.error) {

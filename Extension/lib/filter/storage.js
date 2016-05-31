@@ -25,9 +25,6 @@ var FilterRuleBuilder = require('../../lib/filter/rules/filter-rule-builder').Fi
  */
 var FilterStorage = exports.FilterStorage = {
 
-	FILE_PATH: "filters.ini",
-	CSS_FILE_PATH: 'elementsHide.css',
-
 	_loading: false,
 	_cssSaving: false,
 
