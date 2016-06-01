@@ -1,6 +1,4 @@
-/* global BrowserTab */
-/* global chrome */
-/* global browser */
+/* global BrowserTab, chrome, browser */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *

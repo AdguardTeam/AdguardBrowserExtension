@@ -14,24 +14,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global chrome, $, UI */
 (function () {
-	var backgroundPage = chrome.extension.getBackgroundPage();
+	var browser = window.browser || chrome;
+	var backgroundPage = browser.extension.getBackgroundPage();
 	window.ext = {
-		__proto__: backgroundPage.ext,
+		__proto__: backgroundPage.ext, // jshint ignore:line
 		closePopup: function () {
 			window.close();
 		},
 		resizePopup: function () {
-
 		}
 	};
 	window.BrowserTabs = backgroundPage.BrowserTabs;
-
-	window.i18n = chrome.i18n;
+	window.i18n = browser.i18n;
 
 	$(window).on('unload', function () {
 		if (window.tab) {
-			UI.updateTabIconAndContextMenu(tab, true);
+			UI.updateTabIconAndContextMenu(window.tab, true);
 		}
 	});
 })();

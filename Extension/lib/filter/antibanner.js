@@ -290,10 +290,9 @@ AntiBannerService.prototype = {
      * @returns boolean true if we should collapse elements with content script
      */
     shouldCollapseAllElements: function () {
-        // We assume that if content script is requesting CSS in first 3 seconds after request filter init,
+        // We assume that if content script is requesting CSS in first 5 seconds after request filter init,
         // then it is possible, that we've missed some elements and now we should collapse these elements        
-        return (this._requestFilterInitTime > 0) && 
-            (this._requestFilterInitTime + 3000 > new Date().getTime());
+        return (this._requestFilterInitTime > 0) && (this._requestFilterInitTime + 5000 > new Date().getTime());
     },
 
     /**
@@ -770,9 +769,9 @@ AntiBannerService.prototype = {
         var filterIdsToUpdate = [];
         for (var i = 0; i < this.adguardFilters.length; i++) {
             var filter = this.adguardFilters[i];
-            if (filter.installed
-                && filter.filterId != AntiBannerFiltersId.USER_FILTER_ID
-                && filter.filterId != AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+            if (filter.installed && 
+                filter.filterId != AntiBannerFiltersId.USER_FILTER_ID && 
+                filter.filterId != AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
                 // Check filters update period (or forceUpdate flag)
                 var needUpdate = forceUpdate || (!filter.lastCheckTime || (Date.now() - filter.lastCheckTime) >= this.UPDATE_FILTERS_PERIOD);
                 if (needUpdate) {

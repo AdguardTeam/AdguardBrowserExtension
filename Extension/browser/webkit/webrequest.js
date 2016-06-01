@@ -130,7 +130,9 @@ ext.webRequest.onHeadersReceived.addListener(onHeadersReceived, ["<all_urls>"]);
 
 // AG for Windows and Mac checks either request signature or request Referer to authorize request.
 // Referer cannot be forged by the website so it's ok for add-on authorization.
-if (Prefs.platform === "chromium") {
+
+// TODO[EDGE]: Fix for Edge
+if (Prefs.platform === "chromium" && Prefs.getBrowser() != "Edge") {
 
     /* global browser */
     browser.webRequest.onBeforeSendHeaders.addListener(function callback(details) {
@@ -144,33 +146,33 @@ if (Prefs.platform === "chromium") {
         return {requestHeaders: headers};
 
     }, {urls: [adguardApplication.getIntegrationBaseUrl() + "*"]}, ["requestHeaders", "blocking"]);
-}
-
-function parseCssRuleFromUrl(requestUrl) {
-    if (!requestUrl) {
-        return null;
-    }
-    var filterIdAndRuleText = decodeURIComponent(StringUtils.substringAfter(requestUrl, '#'));
-    var filterId = StringUtils.substringBefore(filterIdAndRuleText, ';');
-    var ruleText = StringUtils.substringAfter(filterIdAndRuleText, ';');
-    return {
-        filterId: filterId,
-        ruleText: ruleText
+    
+    var parseCssRuleFromUrl = function(requestUrl) {
+        if (!requestUrl) {
+            return null;
+        }
+        var filterIdAndRuleText = decodeURIComponent(StringUtils.substringAfter(requestUrl, '#'));
+        var filterId = StringUtils.substringBefore(filterIdAndRuleText, ';');
+        var ruleText = StringUtils.substringAfter(filterIdAndRuleText, ';');
+        return {
+            filterId: filterId,
+            ruleText: ruleText
+        };
     };
-}
 
-function onCssRuleHit(requestDetails) {
-    if (framesMap.isIncognitoTab(requestDetails.tab)) {
-        return;
-    }
-    var domain = framesMap.getFrameDomain(requestDetails.tab);
-    var rule = parseCssRuleFromUrl(requestDetails.requestUrl);
-    if (rule) {
-        filterRulesHitCount.addRuleHit(domain, rule.ruleText, rule.filterId);
-    }
-}
+    var onCssRuleHit = function(requestDetails) {
+        if (framesMap.isIncognitoTab(requestDetails.tab)) {
+            return;
+        }
+        var domain = framesMap.getFrameDomain(requestDetails.tab);
+        var rule = parseCssRuleFromUrl(requestDetails.requestUrl);
+        if (rule) {
+            filterRulesHitCount.addRuleHit(domain, rule.ruleText, rule.filterId);
+        }
+    };
 
-ext.webRequest.onBeforeRequest.addListener(onCssRuleHit, ["chrome-extension://*/elemhidehit.png"]);
+    ext.webRequest.onBeforeRequest.addListener(onCssRuleHit, ["chrome-extension://*/elemhidehit.png"]);
+}
 
 var handlerBehaviorTimeout = null;
 EventNotifier.addListener(function (event) {

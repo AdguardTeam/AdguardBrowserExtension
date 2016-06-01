@@ -16,7 +16,7 @@
  */
 
 /* global ext, userSettings, Utils, UrlUtils, antiBannerService, adguardApplication, filteringLog */
-/* global framesMap, StringUtils, EventNotifier, EventNotifierTypes */
+/* global framesMap, StringUtils, EventNotifier, EventNotifierTypes, Log */
 var UI = {
 
 	ICON_BLUE: {
@@ -64,46 +64,50 @@ var UI = {
 	 */
 	updateTabIcon: function (tab, options) {
 
-		var icon, badge;
+		try {
+			var icon, badge;
 
-		if (options) {
+			if (options) {
 
-			icon = options.icon;
-			badge = options.badge;
+				icon = options.icon;
+				badge = options.badge;
 
-		} else {
-
-			var blocked;
-			var disabled;
-
-			var tabInfo = framesMap.getFrameInfo(tab);
-			if (tabInfo.adguardDetected) {
-				disabled = tabInfo.documentWhiteListed;
-				blocked = "";
 			} else {
-				disabled = tabInfo.applicationFilteringDisabled;
-				disabled = disabled || tabInfo.urlFilteringDisabled;
-				disabled = disabled || tabInfo.documentWhiteListed;
 
-				if (!disabled && userSettings.showPageStatistic()) {
-					blocked = tabInfo.totalBlockedTab.toString();
+				var blocked;
+				var disabled;
+
+				var tabInfo = framesMap.getFrameInfo(tab);
+				if (tabInfo.adguardDetected) {
+					disabled = tabInfo.documentWhiteListed;
+					blocked = "";
 				} else {
-					blocked = "0";
+					disabled = tabInfo.applicationFilteringDisabled;
+					disabled = disabled || tabInfo.urlFilteringDisabled;
+					disabled = disabled || tabInfo.documentWhiteListed;
+
+					if (!disabled && userSettings.showPageStatistic()) {
+						blocked = tabInfo.totalBlockedTab.toString();
+					} else {
+						blocked = "0";
+					}
+				}
+
+				badge = this._getBlockedCountText(blocked);
+
+				if (disabled) {
+					icon = this.ICON_GRAY;
+				} else if (tabInfo.adguardDetected) {
+					icon = this.ICON_BLUE;
+				} else {
+					icon = this.ICON_GREEN;
 				}
 			}
-
-			badge = this._getBlockedCountText(blocked);
-
-			if (disabled) {
-				icon = this.ICON_GRAY;
-			} else if (tabInfo.adguardDetected) {
-				icon = this.ICON_BLUE;
-			} else {
-				icon = this.ICON_GREEN;
-			}
+		
+			ext.browserAction.setBrowserAction(tab, icon, badge, "#555", this.browserActionTitle);
+		} catch (ex) {
+			Log.error('Error while updating icon for tab {0}: {1}', tab.id, new Error(ex));
 		}
-
-		ext.browserAction.setBrowserAction(tab, icon, badge, "#555", this.browserActionTitle);
 	},
 
 	/**

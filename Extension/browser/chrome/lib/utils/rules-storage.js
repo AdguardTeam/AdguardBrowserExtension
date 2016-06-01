@@ -19,14 +19,26 @@
 /**
  * Filter rules storage adapter
  */
-var RulesStorage = exports.RulesStorage = {
-
-	read: function (path, callback) {
+var RulesStorage = exports.RulesStorage = (function() {
+	
+	/**
+	 * Checks runtime.lastError and calls "callback" if so.
+	 * 
+	 * @returns true if operation caused error
+	 */
+	var checkLastError = function(callback) {
+		if (browser.runtime.lastError) {
+			callback(browser.runtime.lastError);
+			return true;
+		}
+		
+		return false;
+	};
+	
+	var read = function (path, callback) {
 		try {
             browser.storage.local.get(path, function(results) {
-                if (browser.runtime.lastError) {
-                    callback(browser.runtime.lastError);
-                } else {
+                if (!checkLastError(callback)) {
                     var lines = [];
 					
 					if (results && results[path] instanceof Array) {
@@ -39,25 +51,29 @@ var RulesStorage = exports.RulesStorage = {
 		} catch (ex) {
 			callback(ex);
 		}
-	},
-
-	write: function (path, data, callback) {
+	};
+	
+	var write = function (path, data, callback) {
         var item = {};
         item[path] = data;
 		try {
             browser.storage.local.set(item, function() {
-                if (browser.runtime.lastError) {
-                    callback(browser.runtime.lastError);
-                } else {
+                if (!checkLastError(callback)) {
                     callback();
                 }
             });
 		} catch (ex) {
 			callback(ex);
 		}
-	},
-
-	remove: function (path, successCallback) {
+	};
+	
+	var remove = function (path, successCallback) {
 		browser.storage.local.remove(path, successCallback);
-	}
-};
+	};
+	
+	return {
+		read: read,
+		write: write,
+		remove: remove
+	};
+})();

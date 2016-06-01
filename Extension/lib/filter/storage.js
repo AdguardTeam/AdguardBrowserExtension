@@ -39,7 +39,7 @@ var FilterStorage = exports.FilterStorage = {
 		var filePath = FilterStorage._getFilePath(filterId);
 		RulesStorage.write(filePath, filterRules, function (e) {
 			if (e) {
-				Log.error("Error write filters to file {0} cause: {1}", filePath, e);
+				Log.error("Error writing filters to file {0}. Cause: {1}", filePath, e);
 			}
 			if (callback) {
 				callback();

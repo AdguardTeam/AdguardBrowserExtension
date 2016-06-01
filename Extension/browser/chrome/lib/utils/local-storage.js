@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+/* global exports, Log */
 /**
  * Local storage adapter
  */
@@ -30,7 +30,7 @@ var LS = exports.LS = {
 		try {
 			LS.storage.setItem(key, value);
 		} catch (ex) {
-			Log.error("Error save item cause: {0}", e);
+			Log.error("Error while saving item {0} to the localStorage: {1}", key, ex);
 		}
 	},
 

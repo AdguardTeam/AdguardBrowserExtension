@@ -576,6 +576,11 @@ var browser = browser || chrome;
                 });
             };
 
+            /**
+             * Workaround for MS Edge. 
+             * For some reason Edge changes the inner state of the "icon" object and adds a tabId property inside.
+             */
+            delete icon.tabId;
             browser.browserAction.setIcon({tabId: tabId, path: icon}, onIconReady);
         }
     };
