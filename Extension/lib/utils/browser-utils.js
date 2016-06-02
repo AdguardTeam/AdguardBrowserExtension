@@ -15,18 +15,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global require, exports, i18n */
 
 var Cu = require('chrome').Cu;
 var Cc = require('chrome').Cc;
 var Ci = require('chrome').Ci;
-var setTimeout = require('sdk/timers').setTimeout;
-var clearTimeout = require('sdk/timers').clearTimeout;
+var setTimeout = require('sdk/timers').setTimeout; // jshint ignore: line
+var clearTimeout = require('sdk/timers').clearTimeout; // jshint ignore: line
 Cu.import("resource://gre/modules/Services.jsm");
 
 var LS = require('../../lib/utils/local-storage').LS;
 var Prefs = require('../../lib/prefs').Prefs;
 var RequestTypes = require('../../lib/utils/common').RequestTypes;
-var Log = require('../../lib/utils/log').Log;
 
 var Utils = exports.Utils = {
 
@@ -89,10 +89,14 @@ var Utils = exports.Utils = {
     isSafariBrowser: function () {
         return Prefs.getBrowser() == "Safari";
     },
+    
+    isEdgeBrowser: function() {
+        return Prefs.getBrowser() == "Edge";
+    },
 
     isSafari9Plus: function () {
-        return Prefs.getBrowser() == "Safari"
-            && this.isGreaterOrEqualsVersion(Prefs.safariVersion, "9.0");
+        return Prefs.getBrowser() == "Safari" && 
+            this.isGreaterOrEqualsVersion(Prefs.safariVersion, "9.0");
     },
 
     isFirefoxBrowser: function () {
@@ -164,6 +168,8 @@ var Utils = exports.Utils = {
             urlBuilder.push("yabrowser");
         } else if (this.isSafariBrowser()) {
             urlBuilder.push("safari");
+        } else if (this.isEdgeBrowser()) {
+            urlBuilder.push("edge");
         } else {
             urlBuilder.push("chrome");
         }
@@ -188,7 +194,7 @@ var Utils = exports.Utils = {
         var title = i18n.getMessage("options_popup_update_title");
         var text = [];
         if (success) {
-            if (updatedFilters.length == 0) {
+            if (updatedFilters.length === 0) {
                 text.push(i18n.getMessage("options_popup_update_not_found"));
             } else {
                 updatedFilters.sort(function (a, b) {

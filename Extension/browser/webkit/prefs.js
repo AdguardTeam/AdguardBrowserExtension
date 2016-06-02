@@ -24,7 +24,6 @@
  */
 var Prefs = exports.Prefs = {
 
-	appId: ext.app.getId(),
 	version: ext.app.getVersion(),
 	locale: ext.app.getLocale(),
 	getLocalFilterPath: function (filterId) {
@@ -72,6 +71,11 @@ var Prefs = exports.Prefs = {
 		}
 		return Prefs.browser;
 	},
+	hitPrefix: (function() {
+		var appId = ext.app.getId();
+		var scheme = ext.app.getUrlScheme();
+		return scheme + '://' + appId;
+	})(),
     /**
      * Makes sense in case of FF add-on only
      */

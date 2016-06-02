@@ -130,9 +130,7 @@ ext.webRequest.onHeadersReceived.addListener(onHeadersReceived, ["<all_urls>"]);
 
 // AG for Windows and Mac checks either request signature or request Referer to authorize request.
 // Referer cannot be forged by the website so it's ok for add-on authorization.
-
-// TODO[EDGE]: Fix for Edge
-if (Prefs.platform === "chromium" && Prefs.getBrowser() != "Edge") {
+if (Prefs.platform === "chromium") {
 
     /* global browser */
     browser.webRequest.onBeforeSendHeaders.addListener(function callback(details) {
@@ -146,7 +144,10 @@ if (Prefs.platform === "chromium" && Prefs.getBrowser() != "Edge") {
         return {requestHeaders: headers};
 
     }, {urls: [adguardApplication.getIntegrationBaseUrl() + "*"]}, ["requestHeaders", "blocking"]);
-    
+}
+
+// TODO[Edge]: Add support for collecting hits statis. Currently we cannot add listener for ms-browser-extension:// urls.
+if (Prefs.platform === "chromium" && Prefs.getBrowser() !== "Edge") {
     var parseCssRuleFromUrl = function(requestUrl) {
         if (!requestUrl) {
             return null;
@@ -171,7 +172,8 @@ if (Prefs.platform === "chromium" && Prefs.getBrowser() != "Edge") {
         }
     };
 
-    ext.webRequest.onBeforeRequest.addListener(onCssRuleHit, ["chrome-extension://*/elemhidehit.png"]);
+    var hitPngUrl = ext.app.getUrlScheme() + "://*/elemhidehit.png";
+    ext.webRequest.onBeforeRequest.addListener(onCssRuleHit, [hitPngUrl]);
 }
 
 var handlerBehaviorTimeout = null;

@@ -49,7 +49,7 @@ var UserSettings = function () {
     for (var name in this.settings) { // jshint ignore: line
         this.defaultProperties[this.settings[name]] = false;
     }
-    this.defaultProperties[this.settings.DISABLE_SHOW_ADGUARD_PROMO_INFO] = !Utils.isWindowsOs() && !Utils.isMacOs();
+    this.defaultProperties[this.settings.DISABLE_SHOW_ADGUARD_PROMO_INFO] = (!Utils.isWindowsOs() && !Utils.isMacOs()) || Utils.isEdgeBrowser();
     this.defaultProperties[this.settings.DISABLE_SAFEBROWSING] = true;
     this.defaultProperties[this.settings.DISABLE_COLLECT_HITS] = true;
     this.defaultProperties[this.settings.DISABLE_SEND_SAFEBROWSING_STATS] = true;

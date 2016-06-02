@@ -105,5 +105,4 @@ var BaseEvent, OnMessageEvent, SendMessageFunction;
 	};
 
 	SendMessageFunction = detectExtensionSendMessage();
-
 })();

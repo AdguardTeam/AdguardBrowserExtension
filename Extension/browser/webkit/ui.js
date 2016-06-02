@@ -143,7 +143,7 @@ var UI = {
 		if (framesMap.isTabAdguardDetected(tab)) {
 			var domain = UrlUtils.getHost(tab.url);
 			adguardApplication.addRuleToApp("@@//" + domain + "^$document", function () {
-				this._reloadWithoutCache(tab);
+				tab.reload();
 			}.bind(this));
 		} else {
 			this.updateTabIconAndContextMenu(tab, true);
@@ -165,7 +165,7 @@ var UI = {
 			var rule = framesMap.getTabAdguardUserWhiteListRule(tab);
 			if (rule) {
 				adguardApplication.removeRuleFromApp(rule.ruleText, function () {
-					this._reloadWithoutCache(tab);
+					tab.reload();
 				}.bind(this));
 			}
 		} else {
@@ -580,11 +580,6 @@ var UI = {
 				callback(tab);
 			}
 		});
-	},
-
-	_reloadWithoutCache: function (tab) {
-		//reload page without cache via content script
-		tab.sendMessage({type: 'no-cache-reload'});
 	}
 };
 

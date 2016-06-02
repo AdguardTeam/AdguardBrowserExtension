@@ -172,8 +172,8 @@ RequestFilter.prototype = {
             // In this case style contains "background-image" to the unique URL.
             // Tracking requests to this URL shows us which rule has been used.
             // NOTE: For Firefox we use another way, look at "getCssForStyleSheet" method.
-            var appId = Prefs.appId;
-            return this.cssFilter.buildCssHits(domain, appId, genericHide);
+            var hitPrefix = Prefs.hitPrefix;
+            return this.cssFilter.buildCssHits(domain, hitPrefix, genericHide);
         } else {
             return this.cssFilter.buildCss(domain, genericHide);
         }

@@ -20,4 +20,10 @@ var contentPage = {
     onMessage: new OnMessageEvent()
 };
 
-var i18n = chrome.i18n || browser.i18n;
+var i18n;
+
+if (typeof chrome != "undefined" && chrome.i18n) {
+    i18n = chrome.i18n;
+} else {
+    i18n = browser.i18n;
+}

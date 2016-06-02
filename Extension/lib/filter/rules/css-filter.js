@@ -14,19 +14,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+/* global require, exports */
 /**
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
-var CollectionUtils = require('../../../lib/utils/common').CollectionUtils;
-var StringUtils = require('../../../lib/utils/common').StringUtils;
 var Prefs = require('../../../lib/prefs').Prefs;
 var FilterUtils = require('../../../lib/utils/common').FilterUtils;
 var FilterRule = require('../../../lib/filter/rules/base-filter-rule').FilterRule;
-var EventNotifier = require('../../../lib/utils/notifier').EventNotifier;
-var EventNotifierTypes = require('../../../lib/utils/common').EventNotifierTypes;
-var userSettings = require('../../../lib/utils/user-settings').userSettings;
 var Utils = require('../../../lib/utils/browser-utils').Utils;
 
 var isFirefox = (Prefs.platform == "firefox");
@@ -141,7 +136,7 @@ CssFilter.prototype = {
 		var domainRules = this._getDomainSensitiveRules(domainName);
 		if (genericHide) {
 			var nonGenericRules = [];
-			if (domainRules != null) {
+			if (domainRules !== null) {
 				nonGenericRules = domainRules.filter(function (rule) {
 					return !rule.isGeneric();
 				});
@@ -169,7 +164,7 @@ CssFilter.prototype = {
 		this._rebuildBinding();
 		var domainRules = this._getDomainSensitiveRules(domainName);
 		var injectDomainRules = [];
-		if (domainRules != null) {
+		if (domainRules !== null) {
 			injectDomainRules = domainRules.filter(function (rule) {
 				return rule.isInjectRule && (!genericHide || !rule.isGeneric());
 			});
@@ -196,27 +191,27 @@ CssFilter.prototype = {
 	 * In firefox we use another way (registering browser-wide stylesheet).
 	 *
 	 * @param domainName    Domain name
-	 * @param appId         Extension ID
-	 * @param genericHide    flag to hide common rules
+	 * @param hitPrefix     Prefix for background-image url
+	 * @param genericHide   Flag to hide common rules
 	 * @returns Stylesheet content
 	 */
-	buildCssHits: function (domainName, appId, genericHide) {
-		this._rebuildHits(appId);
+	buildCssHits: function (domainName, hitPrefix, genericHide) {
+		this._rebuildHits(hitPrefix);
 
 		var domainRules = this._getDomainSensitiveRules(domainName);
 		if (genericHide) {
 			var nonGenericRules = [];
-			if (domainRules != null) {
+			if (domainRules !== null) {
 				nonGenericRules = domainRules.filter(function (rule) {
 					return !rule.isGeneric();
 				});
 			}
 
-			return this._buildCssByRulesHits(nonGenericRules, appId);
+			return this._buildCssByRulesHits(nonGenericRules, hitPrefix);
 		}
 
-		var css = this._buildCssByRulesHits(domainRules, appId);
-		return this._getCommonCssHits(appId).concat(css);
+		var css = this._buildCssByRulesHits(domainRules, hitPrefix);
+		return this._getCommonCssHits(hitPrefix).concat(css);
 	},
 
 	/**
@@ -303,15 +298,15 @@ CssFilter.prototype = {
 	 * If user has enabled "Send statistics for ad filters usage" option we build CSS with enabled hits stats.
 	 * This method is used in Chrome (in Firefox we use another way - registering browser-wide stylesheet).
 	 *
-	 * @param appId Application ID
+	 * @param hitPrefix Prefix for background-image url
 	 * @private
 	 */
-	_rebuildHits: function (appId) {
+	_rebuildHits: function (hitPrefix) {
 		if (!this.dirty) {
 			return;
 		}
 		this._applyExceptionRules();
-		this.commonCssHits = this._buildCssByRulesHits(this.commonRules, appId);
+		this.commonCssHits = this._buildCssByRulesHits(this.commonRules, hitPrefix);
 		this.commonCss = null;
 		this.dirty = false;
 	},
@@ -377,7 +372,7 @@ CssFilter.prototype = {
 
 		var cssTemplate = "-moz-binding: url(\"about:" + this.interceptPrefix + "?%ID%#dummy\") !important;";
 		var result = [];
-		for (var domain in domainsAndRules) {
+		for (var domain in domainsAndRules) { // jshint ignore: line
 
 			var selectors = domainsAndRules[domain];
 
@@ -387,7 +382,7 @@ CssFilter.prototype = {
 				result.push('@-moz-document url-prefix("http://"),url-prefix("https://"){');
 			}
 
-			for (var selector in selectors) {
+			for (var selector in selectors) { // jshint ignore: line
 				result.push(selector.replace(/[^\x01-\x7F]/g, escapeChar) + "{" + cssTemplate.replace("%ID%", selectors[selector]) + "}");
 			}
 			result.push('}');
@@ -470,7 +465,7 @@ CssFilter.prototype = {
 	 * @private
 	 */
 	_getCommonCss: function () {
-		if (this.commonCss == null || this.commonCss.length == 0) {
+		if (this.commonCss === null || this.commonCss.length === 0) {
 			this.commonCss = this._buildCssByRules(this.commonRules);
 		}
 		return this.commonCss;
@@ -481,12 +476,12 @@ CssFilter.prototype = {
 	 * Lazy-initializes commonCssHits field if needed.
 	 *
 	 * @param appId Extension id
-	 * @returns CSS stylesheet content
+	 * @returns Prefix for background-image url
 	 * @private
 	 */
-	_getCommonCssHits: function (appId) {
-		if (this.commonCssHits == null || this.commonCssHits.length == 0) {
-			this.commonCssHits = this._buildCssByRulesHits(this.commonRules, appId);
+	_getCommonCssHits: function (hitPrefix) {
+		if (this.commonCssHits === null || this.commonCssHits.length === 0) {
+			this.commonCssHits = this._buildCssByRulesHits(this.commonRules, hitPrefix);
 		}
 		return this.commonCssHits;
 	},
@@ -541,7 +536,7 @@ CssFilter.prototype = {
 			return rules;
 		}
 
-		if (this.domainSensitiveRules != null) {
+		if (this.domainSensitiveRules !== null) {
 			for (var i = 0; i < this.domainSensitiveRules.length; i++) {
 				var rule = this.domainSensitiveRules[i];
 				if (rule.isPermitted(domainName)) {
@@ -577,7 +572,7 @@ CssFilter.prototype = {
 			} else {
 				elemHideSb.push(this._getRuleCssSelector(rule.cssSelector));
 				++selectorsCount;
-				if (selectorsCount % CSS_SELECTORS_PER_LINE == 0) {
+				if (selectorsCount % CSS_SELECTORS_PER_LINE === 0) {
 					elemHideSb.push(ELEMHIDE_CSS_STYLE);
 				} else {
 					elemHideSb.push(", ");
@@ -613,14 +608,14 @@ CssFilter.prototype = {
 	 * Tracking requests for background image allows us to track rule hits.
 	 *
 	 * @param rules     List of rules
-	 * @param appId     Extension ID
+	 * @param hitPrefix Prefix for background-image url
 	 * @returns List of CSS stylesheets
 	 * @private
 	 */
-	_buildCssByRulesHits: function (rules, appId) {
+	_buildCssByRulesHits: function (rules, hitPrefix) {
 
 		var ELEMHIDE_CSS_STYLE = " { display: none!important; }\r\n";
-		var ELEMHIDE_HIT_START = " { display: none!important; background-image: url('chrome-extension://" + appId + "/elemhidehit.png#";
+		var ELEMHIDE_HIT_START = " { display: none!important; background-image: url('" + hitPrefix + "/elemhidehit.png#";
 		var ELEMHIDE_HIT_SEP = encodeURIComponent(';');
 		var ELEMHIDE_HIT_END = "') !important;}\r\n";
 

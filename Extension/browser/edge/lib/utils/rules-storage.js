@@ -21,7 +21,9 @@
  * 
  * Edge storage has a weird 1MB limit per value. Also Edge does not support "unlimitedStorage" permission.
  * The weird thing is that local storage does not limited like that so we just use it instead.
- * TODO[Edge]: There is still possible to exceed local storage quota. Consider using http://pieroxy.net/blog/pages/lz-string/index.html
+ * 
+ * TODO[Edge]: There is still a possibility to exceed local storage quota. 
+ * Consider using http://pieroxy.net/blog/pages/lz-string/index.html
  */
 var RulesStorage = exports.RulesStorage = (function() {
     

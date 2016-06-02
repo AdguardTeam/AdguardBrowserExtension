@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global contentPage */
 var showAlertPopupMessage; // Global;
 if (window === window.top) {
 
 	(function () {
-
 		var MAIN_DIV_STYLE = "position: fixed !important;top: 10px !important;right: 0px !important;z-index: 9999999999 !important;" +
 			"width: 390px !important;padding: 30px 20px 30px 36px !important;border-right: 6px solid #409e56 !important;-webkit-border-radius: 9px 0 0 9px !important;border-radius: 9px 0 0 9px !important;" +
 			"background: rgba(0, 0, 0, 0.93) !important;color: #fff !important;text-align: left !important;";
@@ -101,13 +101,13 @@ if (window === window.top) {
 		contentPage.onMessage.addListener(function (message) {
 			if (message.type == 'show-alert-popup') {
 				showAlertPopup(message);
-			}
-			if (message.type == 'no-cache-reload') {
+			} else if (message.type == 'no-cache-reload') {
 				noCacheReload();
+			} else if (message.type == 'update-tab-url') {
+				window.location = message.url;
 			}
 		});
 
 		showAlertPopupMessage = showAlertPopup;
-
 	})();
 }
