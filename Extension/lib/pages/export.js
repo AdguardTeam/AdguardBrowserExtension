@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global $ */
+/* global $, contentPage */
 $(document).ready(function () {
 
     var callback = function (response) {
