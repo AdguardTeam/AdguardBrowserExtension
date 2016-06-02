@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+/* global i18n, $, contentPage */
 var PageController = function () {
 	this.requestWizard = new RequestWizard();
 };
@@ -226,7 +226,7 @@ PageController.prototype = {
 
 	onSelectedTabChange: function () {
 		var selectedItem = this.tabSelectorList.find('[data-tab-id="' + this.currentTabId + '"]');
-		if (selectedItem.length == 0) {
+		if (selectedItem.length === 0) {
 			selectedItem = this.tabSelectorList.find(':first');
 		}
 		var text = '';
@@ -295,7 +295,7 @@ PageController.prototype = {
 		$('[name="searchEventWhitelisted"]').on('change', function () {
 			self.searchWhitelisted = this.checked;
 			self._filterEvents();
-		})
+		});
 	},
 
 	_filterEvents: function () {
@@ -303,11 +303,11 @@ PageController.prototype = {
 		var rows = this.logTable.children();
 
 		//filters not set
-		if (!this.searchRequest
-			&& this.searchTypes.length == 0
-			&& !this.searchThirdParty
-			&& !this.searchBlocked
-			&& !this.searchWhitelisted) {
+		if (!this.searchRequest && 
+			this.searchTypes.length === 0 &&
+			!this.searchThirdParty &&
+			!this.searchBlocked && 
+			!this.searchWhitelisted) {
 
 			rows.removeClass('hidden');
 			return;
@@ -352,7 +352,7 @@ PageController.prototype = {
 	},
 
 	_renderEvents: function (events) {
-		if (!events || events.length == 0) {
+		if (!events || events.length === 0) {
 			this._onEmptyTable();
 			return;
 		}
@@ -401,7 +401,7 @@ PageController.prototype = {
 		var filterData = el.data();
 
 		var show = !this.searchRequest || StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest);
-		show &= this.searchTypes.length == 0 || this.searchTypes.indexOf(filterData.requestType) >= 0;
+		show &= this.searchTypes.length === 0 || this.searchTypes.indexOf(filterData.requestType) >= 0;
 
 		var checkboxes = !(this.searchWhitelisted || this.searchBlocked || this.searchThirdParty);
 		checkboxes |= this.searchWhitelisted && filterData.requestRule && filterData.requestRule.whiteListRule;

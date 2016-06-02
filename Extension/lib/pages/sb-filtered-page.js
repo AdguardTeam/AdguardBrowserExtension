@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global $, i18n, contentPage */
+
 function getQueryParameters(queryString) {
     var params = Object.create(null);
     var vars = queryString.split("&");
@@ -48,16 +50,16 @@ $(document).ready(function () {
     var goBackButton = $("#go-back-button");
 
     var params = getQueryParameters(document.location.search.substring(1));
-    var isMalware = params["malware"] || true;
+    var isMalware = params.malware || true;
     if (isMalware == "true") {
         hideElements("phishing");
     } else {
         hideElements("malware");
     }
 
-    var host = params["host"];
-    var url = params["url"];
-    var ref = params["ref"];
+    var host = params.host;
+    var url = params.url;
+    var ref = params.ref;
 
     if (host) {
         var decodeHost = decodeURIComponent(host);

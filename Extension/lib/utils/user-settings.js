@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+/* global require, exports */
 /**
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
@@ -46,10 +46,10 @@ var UserSettings = function () {
     };
 
     this.defaultProperties = Object.create(null);
-    for (var name in this.settings) {
+    for (var name in this.settings) { // jshint ignore: line
         this.defaultProperties[this.settings[name]] = false;
     }
-    this.defaultProperties[this.settings.DISABLE_SHOW_ADGUARD_PROMO_INFO] = !Utils.isWindowsOs() && !Utils.isMacOs();
+    this.defaultProperties[this.settings.DISABLE_SHOW_ADGUARD_PROMO_INFO] = (!Utils.isWindowsOs() && !Utils.isMacOs()) || Utils.isEdgeBrowser();
     this.defaultProperties[this.settings.DISABLE_SAFEBROWSING] = true;
     this.defaultProperties[this.settings.DISABLE_COLLECT_HITS] = true;
     this.defaultProperties[this.settings.DISABLE_SEND_SAFEBROWSING_STATS] = true;

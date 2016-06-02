@@ -14,13 +14,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global $ */
 $(document).ready(function () {
 
     var callback = function (response) {
 
         var rules = response.rules;
 
-        if (!rules || rules.length == 0) {
+        if (!rules || rules.length === 0) {
             return;
         }
 

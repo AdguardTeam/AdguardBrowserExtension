@@ -33,6 +33,7 @@ public class FileUtil {
 
 	private static final String WEBKIT_FOLDER = "browser/webkit";
 	private static final String CHROME_FOLDER = "browser/chrome";
+	private static final String EDGE_FOLDER = "browser/edge";
 	private static final String SAFARI_FOLDER = "browser/safari";
 	private static final String FIREFOX_FOLDER = "browser/firefox";
 	private static final String FIREFOX_LEGACY_FOLDER = "browser/firefox_legacy";
@@ -45,11 +46,12 @@ public class FileUtil {
 
 		switch (browser) {
 			case CHROMIUM:
-				copyChromiumFiles(source, dest);
+				copyChromiumFiles(source, dest, browser);
 				break;
 			case EDGE:
-				copyChromiumFiles(source, dest);
-				break;			
+				copyChromiumFiles(source, dest, browser);
+				copyEdgeFiles(source, dest);
+				break;
 			case SAFARI:
 				copySafariFiles(source, dest);
 				break;
@@ -97,18 +99,24 @@ public class FileUtil {
 		copyDirectory(sourceLib, destLib);
 	}
 
-	private static void copyChromiumFiles(File source, File dest) throws Exception {
+	private static void copyChromiumFiles(File source, File dest, Browser browser) throws Exception {
 
-		//copy base chrome/safari code
+		// copy base chrome/safari code
 		File chromeSafariBase = new File(source, WEBKIT_FOLDER);
 		copyDirectory(chromeSafariBase, dest);
 
-		//copy base chrome code
+		// copy base chrome code
 		File chromeBase = new File(source, CHROME_FOLDER);
 		copyDirectory(chromeBase, dest);
 
-		//copy common files
-		copyCommonFiles(source, dest, Browser.CHROMIUM);
+		// copy common files
+		copyCommonFiles(source, dest, browser);
+	}
+	
+	private static void copyEdgeFiles(File source, File dest) throws Exception {
+		// copy edge files
+		File edgeBase = new File(source, EDGE_FOLDER);
+		copyDirectory(edgeBase, dest);
 	}
 
 	private static void copySafariFiles(File source, File dest) throws Exception {

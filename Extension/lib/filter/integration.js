@@ -14,14 +14,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+/* global require, exports */
 /**
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
 var userSettings = require('../../lib/utils/user-settings').userSettings;
 var ServiceClient = require('../../lib/utils/service-client').ServiceClient;
-var FilterRule = require('../../lib/filter/rules/base-filter-rule').FilterRule;
 var FilterRuleBuilder = require('../../lib/filter/rules/filter-rule-builder').FilterRuleBuilder;
 var UrlFilterRule = require('../../lib/filter/rules/url-filter-rule').UrlFilterRule;
 var StringUtils = require('../../lib/utils/common').StringUtils;
@@ -149,7 +148,7 @@ AdguardApplication.prototype = {
 	 * @param url request URL
 	 */
 	isIntegrationRequest: function (url) {
-		return url && url.indexOf(this.serviceClient.adguardAppUrl) == 0;
+		return url && url.indexOf(this.serviceClient.adguardAppUrl) === 0;
 	},
 
 	/**

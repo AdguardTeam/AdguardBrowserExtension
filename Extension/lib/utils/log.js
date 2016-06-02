@@ -14,54 +14,78 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+/* global exports */
 /**
  * Simple logger with log levels
  */
-var Log = exports.Log = {
-
-	currentLevel: "INFO",
-
-	LogLevels: {
+var Log = exports.Log = (function() {
+	
+	// Redefine if you need it
+	var CURRENT_LEVEL = "INFO";
+	
+	var LEVELS = {
 		ERROR: 1,
 		WARN: 2,
 		INFO: 3,
 		DEBUG: 4
-	},
-
-	debug: function () {
-		Log._print("DEBUG", "log", arguments);
-	},
-
-	info: function () {
-		Log._print("INFO", "info", arguments);
-	},
-
-	warn: function(){
-		Log._print("WARN", "info", arguments);
-	},
-
-	error: function () {
-		Log._print("ERROR", "error", arguments);
-	},
-
-	_print: function (level, method, args) {
+	};
+	
+	/**
+	 * Pretty-print javascript error
+	 */
+	var errorToString = function(error) {
+		return error.toString() + "\nStack trace:\n" + error.stack;
+	};
+	
+	/**
+	 * Prints log message
+	 */
+	var print = function (level, method, args) {
 		//check log level
-		if (Log.LogLevels[Log.currentLevel] < Log.LogLevels[level]) {
+		if (LEVELS[CURRENT_LEVEL] < LEVELS[level]) {
 			return;
 		}
-		if (!args || args.length == 0 || !args[0]) {
+		if (!args || args.length === 0 || !args[0]) {
 			return;
 		}
 		var str = args[0] + "";
 		args = Array.prototype.slice.call(args, 1);
 		var formatted = str.replace(/{(\d+)}/g, function (match, number) {
-			return typeof  args[number] != "undefined" ? args[number] : match;
+			
+			if (typeof args[number] != "undefined") {
+				var value = args[number];
+				if (value instanceof Error) {
+					value = errorToString(value);
+				}
+				return value;
+			}
+			
+			return match;
 		});
-		if (Log.LogLevels[level] >= Log.LogLevels["INFO"]) {
-			var now = new Date();
-			formatted = now.toISOString() + ": " + formatted;
-		}
+
+		var now = new Date();
+		formatted = now.toISOString() + ": " + formatted;
 		console[method](formatted);
-	}
-};
+	};
+	
+	/**
+	 * Expose public API
+	 */
+	return {
+		debug: function () {
+			print("DEBUG", "log", arguments);
+		},
+
+		info: function () {
+			print("INFO", "info", arguments);
+		},
+
+		warn: function(){
+			print("WARN", "info", arguments);
+		},
+
+		error: function () {
+			print("ERROR", "error", arguments);
+		}
+	};
+})();

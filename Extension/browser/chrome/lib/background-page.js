@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global chrome, BaseEvent, RequestTypes, Utils, OnMessageEvent, SendMessageFunction */
+/* global chrome, Prefs, Log, BaseEvent, RequestTypes, Utils, OnMessageEvent, SendMessageFunction */
 var BrowserTab, BrowserTabs;
 var ext;
 var browser = browser || chrome;
@@ -279,7 +279,12 @@ var browser = browser || chrome;
     };
 
     var checkLastError = function () {
-        return browser.runtime.lastError;
+        var ex = browser.runtime.lastError;
+        if (ex) {
+            Log.error("Error while executing operation {0}", ex);
+        }
+        
+        return ex;
     };
 
     BrowserTab = function (tab) {
@@ -295,9 +300,10 @@ var browser = browser || chrome;
             browser.tabs.remove(this.id, checkLastError);
         },
         activate: function () {
-            //activate tab
-            browser.tabs.update(this.id, {selected: true}, checkLastError);
-            //focus window
+            // Activate tab
+            browser.tabs.update(this.id, {active: true}, checkLastError);
+            
+            // Focus window
             browser.windows.update(this.windowId, {focused: true}, checkLastError);
         },
         sendMessage: function (message, responseCallback) {
@@ -305,9 +311,35 @@ var browser = browser || chrome;
         },
         reload: function (url) {
             if (url) {
-                browser.tabs.update(this.id, {url: url}, checkLastError);
+		        if (Prefs.getBrowser() == "Edge") {
+                    /**
+                     * For security reasons, in Firefox and Edge, this may not be a privileged URL. 
+                     * So passing any of the following URLs will fail, with runtime.lastError being set to an error message:
+                     * chrome: URLs
+                     * javascript: URLs
+                     * data: URLs
+                     * privileged about: URLs (for example, about:config, about:addons, about:debugging). 
+                     * 
+                     * Non-privileged URLs (about:home, about:newtab, about:blank) are allowed.
+                     * 
+                     * So we use a content script instead.
+                     */
+                    this.sendMessage({
+                        type: 'update-tab-url',
+                        url: url
+                    });
+                } else {
+                    browser.tabs.update(this.id, {url: url}, checkLastError);
+                }
             } else {
-                browser.tabs.reload(this.id, {}, checkLastError);
+                if (browser.tabs.reload) {
+                    browser.tabs.reload(this.id, {
+                        bypassCache: true
+                    }, checkLastError);                    
+                } else {
+                    // Reload page without cache via content script
+		            this.sendMessage({type: 'no-cache-reload'});
+                }
             }
         },
         executeScript: function (details, callback) {
@@ -413,8 +445,13 @@ var browser = browser || chrome;
         }
     };
 
-
+    /**
+     * Common API for all platforms
+     */
     ext = {};
+    /**
+     * Gets URL of a file that belongs to our extension
+     */
     ext.getURL = browser.extension.getURL;
     ext.onMessage = new OnMessageEvent();
 
@@ -433,6 +470,16 @@ var browser = browser || chrome;
          */
         getId: function() {
             return browser.runtime.id;
+        },
+        
+        /**
+         * Gets extension scheme
+         * @returns "chrome-extension" for Chrome," ms-browser-extension" for Edge
+         */
+        getUrlScheme: function() {
+            var url = ext.getURL('test.html');
+            var index = url.indexOf('://');
+            return url.substring(0, index);
         },
         
         /**
@@ -576,6 +623,11 @@ var browser = browser || chrome;
                 });
             };
 
+            /**
+             * Workaround for MS Edge. 
+             * For some reason Edge changes the inner state of the "icon" object and adds a tabId property inside.
+             */
+            delete icon.tabId;
             browser.browserAction.setIcon({tabId: tabId, path: icon}, onIconReady);
         }
     };

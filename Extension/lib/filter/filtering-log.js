@@ -94,7 +94,9 @@ FilteringLog.prototype._updateTabInfo = function (tab) {
 
 FilteringLog.prototype.reloadTabById = function (tabId) {
 	var tabInfo = this.getTabInfoById(tabId);
-	tabInfo && tabInfo.tab.reload();
+	if (tabInfo) {
+		tabInfo.tab.reload();
+	}
 };
 
 FilteringLog.prototype.getTabInfoById = function (tabId) {

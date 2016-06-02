@@ -318,6 +318,13 @@ var ext;
         getId: function() {
             return 'not supported by Safari';
         },
+		
+		/**
+		 * Extension URL scheme
+		 */
+		getUrlScheme: function() {
+			return 'not supported by Safari';
+		},
         
         /**
          * Extension version

@@ -14,14 +14,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+/* global require, exports */
 var filterRulesHitCount = require('../../lib/filter/filters-hit').filterRulesHitCount;
-var UrlUtils = require('../../lib/utils/url').UrlUtils;
 var FilterUtils = require('../../lib/utils/common').FilterUtils;
 var EventNotifier = require('../../lib/utils/notifier').EventNotifier;
 var EventNotifierTypes = require('../../lib/utils/common').EventNotifierTypes;
 var ServiceClient = require('../../lib/utils/service-client').ServiceClient;
-var WorkaroundUtils = require('../../lib/utils/workaround').WorkaroundUtils;
 var Utils = require('../../lib/utils/browser-utils').Utils;
 var RequestTypes = require('../../lib/utils/common').RequestTypes;
 var userSettings = require('../../lib/utils/user-settings').userSettings;
@@ -179,7 +177,11 @@ WebRequestService.prototype.processRequestResponse = function (tab, requestUrl, 
 
     if (requestType == RequestTypes.DOCUMENT) {
         // Check headers to detect Adguard application
-        this.adguardApplication.checkHeaders(tab, responseHeaders, requestUrl);
+        
+        if (Prefs.getBrowser() != "Edge") {
+            // TODO[Edge]: Integration mode is not fully functional in Edge (cannot redefine Referer header yet)
+            this.adguardApplication.checkHeaders(tab, responseHeaders, requestUrl);
+        }
         // Clear previous events
         this.filteringLog.clearEventsForTab(tab);
     }

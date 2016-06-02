@@ -146,31 +146,35 @@ if (Prefs.platform === "chromium") {
     }, {urls: [adguardApplication.getIntegrationBaseUrl() + "*"]}, ["requestHeaders", "blocking"]);
 }
 
-function parseCssRuleFromUrl(requestUrl) {
-    if (!requestUrl) {
-        return null;
-    }
-    var filterIdAndRuleText = decodeURIComponent(StringUtils.substringAfter(requestUrl, '#'));
-    var filterId = StringUtils.substringBefore(filterIdAndRuleText, ';');
-    var ruleText = StringUtils.substringAfter(filterIdAndRuleText, ';');
-    return {
-        filterId: filterId,
-        ruleText: ruleText
+// TODO[Edge]: Add support for collecting hits statis. Currently we cannot add listener for ms-browser-extension:// urls.
+if (Prefs.platform === "chromium" && Prefs.getBrowser() !== "Edge") {
+    var parseCssRuleFromUrl = function(requestUrl) {
+        if (!requestUrl) {
+            return null;
+        }
+        var filterIdAndRuleText = decodeURIComponent(StringUtils.substringAfter(requestUrl, '#'));
+        var filterId = StringUtils.substringBefore(filterIdAndRuleText, ';');
+        var ruleText = StringUtils.substringAfter(filterIdAndRuleText, ';');
+        return {
+            filterId: filterId,
+            ruleText: ruleText
+        };
     };
-}
 
-function onCssRuleHit(requestDetails) {
-    if (framesMap.isIncognitoTab(requestDetails.tab)) {
-        return;
-    }
-    var domain = framesMap.getFrameDomain(requestDetails.tab);
-    var rule = parseCssRuleFromUrl(requestDetails.requestUrl);
-    if (rule) {
-        filterRulesHitCount.addRuleHit(domain, rule.ruleText, rule.filterId);
-    }
-}
+    var onCssRuleHit = function(requestDetails) {
+        if (framesMap.isIncognitoTab(requestDetails.tab)) {
+            return;
+        }
+        var domain = framesMap.getFrameDomain(requestDetails.tab);
+        var rule = parseCssRuleFromUrl(requestDetails.requestUrl);
+        if (rule) {
+            filterRulesHitCount.addRuleHit(domain, rule.ruleText, rule.filterId);
+        }
+    };
 
-ext.webRequest.onBeforeRequest.addListener(onCssRuleHit, ["chrome-extension://*/elemhidehit.png"]);
+    var hitPngUrl = ext.app.getUrlScheme() + "://*/elemhidehit.png";
+    ext.webRequest.onBeforeRequest.addListener(onCssRuleHit, [hitPngUrl]);
+}
 
 var handlerBehaviorTimeout = null;
 EventNotifier.addListener(function (event) {

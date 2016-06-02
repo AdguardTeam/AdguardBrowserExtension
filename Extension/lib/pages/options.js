@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global $, updateDisplayAdguardPromo, customizePopupFooter, contentPage, Log */
+/* global $, updateDisplayAdguardPromo, customizePopupFooter, contentPage, i18n, Log, moment */
 var PageController = function () {
 };
 
@@ -421,8 +421,8 @@ PageController.prototype = {
         reader.onload = function (e) {
             try {
                 this._importUserFilterRules(e.target.result);
-            } catch (e) {
-                Log.error("Error load user rules {0}", e);
+            } catch (ex) {
+                Log.error("Error while loading user rules {0}", ex);
             }
             fileInput.value = '';
         }.bind(this);
@@ -442,8 +442,8 @@ PageController.prototype = {
         reader.onload = function (e) {
             try {
                 this._importWhiteListFilterRules(e.target.result);
-            } catch (e) {
-                Log.error("Error load whitelist rules {0}", e);
+            } catch (ex) {
+                Log.error("Error while loading whitelist rules {0}", ex);
             }
             fileInput.value = '';
         }.bind(this);
@@ -516,7 +516,7 @@ PageController.prototype = {
         //Prevent translating on document loaded
         el.removeAttr('i18n');
 
-        var message = i18n.getMessage("options_antibanner_info", [info.rulesCount]);
+        var message = i18n.getMessage("options_antibanner_info", [String(info.rulesCount)]);
         el.text(message);
         el.show();
 
@@ -572,7 +572,7 @@ PageController.prototype = {
                 offset: 0,
                 limit: this.DEFAULT_LIMIT,
                 allLoaded: false
-            }
+            };
         }
         this._renderSearchFilters(this.wlFilterSearchInput, this.wlFilters, this.clearWlFilterButton, this.wlSearchResult, this._renderWhiteListFilter, 'getWhiteListDomains', loadNext);
     },
@@ -605,7 +605,7 @@ PageController.prototype = {
                 return;
             }
             if (value.indexOf('http://') < 0 && value.indexOf('https://') < 0) {
-                if (value.indexOf('//') == 0) {
+                if (value.indexOf('//') === 0) {
                     value = 'http:' + value;
                 } else {
                     value = 'http://' + value;
@@ -626,7 +626,7 @@ PageController.prototype = {
                 offset: 0,
                 limit: this.DEFAULT_LIMIT,
                 allLoaded: false
-            }
+            };
         }
         this._renderSearchFilters(this.userFilterSearchInput, this.userFilters, this.clearUserFilterButton, this.userSearchResult, this._renderUserFilter, 'getUserFilters', loadNext);
     },
@@ -794,7 +794,7 @@ PageController.prototype = {
     _renderAntiBannerFilters: function () {
         contentPage.sendMessage({type: 'getAntiBannerFiltersForOptionsPage'}, function (response) {
             var antiBannerFilters = response.filters;
-            if (antiBannerFilters.length == 0) {
+            if (antiBannerFilters.length === 0) {
                 this.antiBannerFiltersList.hide();
                 this.antiBannerFiltersListEmpty.show();
             } else {
@@ -905,7 +905,7 @@ PageController.prototype = {
 
     _checkOverlayHide: function (listEl, clearButton, searchMode) {
         var items = listEl.find(".spl-user-table-row");
-        if (items.length == 0) {
+        if (items.length === 0) {
             this._showOverlay(listEl, searchMode);
             if (!searchMode) {
                 clearButton.hide();
@@ -979,7 +979,7 @@ PageController.prototype = {
                     filtersInGroupElements.push(filterElement);
                 }
 
-                var groupElement = this._getGroupMetadataTemplate(group.groupId, group.groupName, i == 0 ? 'in' : '', filtersInGroupElements);
+                var groupElement = this._getGroupMetadataTemplate(group.groupId, group.groupName, i === 0 ? 'in' : '', filtersInGroupElements);
                 allGroupsElements.push(groupElement);
             }
 
@@ -987,7 +987,7 @@ PageController.prototype = {
             $groupsList.append(allGroupsElements);
 
             for (i = 0; i < allFilters.length; i++) {
-                filter = allFilters[i];
+                var filter = allFilters[i];
                 var checkbox = $groupsList.find('input[name="modalFilterId"][value="' + filter.filterId + '"]');
                 var installed = filter.filterId in installedFilters;
                 var enabled = filter.filterId in enabledFilters;
@@ -1058,7 +1058,7 @@ PageController.prototype = {
             }
         });
         var section = $('#group' + groupId).closest('.filter-panel').find('.spt-font-small');
-        if (enabledFilterNames.length == 0) {
+        if (enabledFilterNames.length === 0) {
             section.empty();
             section.hide();
         } else {
@@ -1156,7 +1156,10 @@ var EventNotifierTypes;
 var requestFilterInfo;
 var contentBlockerInfo;
 
-contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
+/**
+ * Initializes page
+ */
+var initPage = function(response) {
 
     userSettings = response.userSettings;
     enabledFilters = response.enabledFilters;
@@ -1235,7 +1238,6 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
         }
 
         var listenerId;
-
         contentPage.sendMessage({type: 'addEventListener', events: events}, function (response) {
             listenerId = response.listenerId;
         });
@@ -1253,8 +1255,10 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
             }
         };
 
-        //unload event
+        // unload event
         $(window).on('beforeunload', onUnload);
         $(window).on('unload', onUnload);
     });
-});
+};
+
+contentPage.sendMessage({type: 'initializeFrameScript'}, initPage);

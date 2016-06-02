@@ -41,4 +41,4 @@ i18n.localizeDocument = function () {
     });
 };
 
-document.addEventListener('DOMContentLoaded', i18n.localizeDocument);
+$(document).ready(i18n.localizeDocument);

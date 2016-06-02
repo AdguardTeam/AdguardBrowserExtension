@@ -80,7 +80,7 @@ var EventNotifier = exports.EventNotifier = {
 				var listener = this.listenersMap[listenerId];
 				listener.apply(listener, arguments);
 			} catch (ex) {
-				Log.error("Error invokeing listener for {0} cause: {1}", arguments[0], ex);
+				Log.error("Error invoking listener for {0} cause: {1}", arguments[0], ex);
 			}
 		}
 	},

@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* global $, ext, PopupController */
 var backgroundPage = ext.backgroundPage.getWindow();
 var antiBannerService = backgroundPage.antiBannerService;
 var UI = backgroundPage.UI;
@@ -21,9 +23,8 @@ var framesMap = backgroundPage.framesMap;
 var filteringLog = backgroundPage.filteringLog;
 var Prefs = backgroundPage.Prefs;
 var Utils = backgroundPage.Utils;
-var AntiBannerFiltersId = backgroundPage.AntiBannerFiltersId;
 
-//http://jira.performix.ru/browse/AG-3474
+// http://jira.performix.ru/browse/AG-3474
 var resizePopupWindowForMacOs = function ($) {
     if (Utils.isSafariBrowser() || Utils.isFirefoxBrowser() || !Utils.isMacOs()) {
         return;
