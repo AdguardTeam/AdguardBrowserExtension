@@ -17,7 +17,11 @@
 /* global chrome */
 (function () {
 
-    var updateSidebarPanelElements=function(){
+    /**
+     * This function gonna be executed in inspected page's context
+     * Selected element can be accessed through $0
+     */
+    var updateSidebarPanelElements = function () {
         console.log($0);
     };
 
@@ -29,7 +33,7 @@
                 //pass a function as a string that will be executed later on by chrome
                 //sidebar.setExpression("(" + page_getKnockoutInfo.toString() + ")("+shouldDoKOtoJS+")");
 
-                chrome.devtools.inspectedWindow.eval("("+updateSidebarPanelElements.toString()+ ")()");
+                chrome.devtools.inspectedWindow.eval("(" + updateSidebarPanelElements.toString() + ")()");
             }
 
             sidebar.setPage("pages/devtools-elements-sidebar.html");
