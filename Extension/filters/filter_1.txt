@@ -1,10 +1,10 @@
 ! Title: Russian filter
-! Version: 1.0.34.48
+! Version: 1.0.34.54
 ! Name: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-05-30T14:00:14.837+03:00
+! TimeUpdated: 2016-06-02T17:07:17.983+03:00
 ! Title: Adguard Russian Filter
 !
 ! Filter that enables removing of the ads from websites with Russian content.
@@ -29,6 +29,9 @@
 !
 ! Содержит доменные имена, использующиеся рекламными сетями.
 !
+||rekhatov.ru^$third-party
+||seedr.ru^$third-party
+||russervisbest.ru^$third-party
 ||legandruk.com^$third-party
 ||qanmw.space^$third-party
 ||polipol.pw^$third-party
@@ -3488,6 +3491,8 @@ http://v.*.com/x?$third-party
 !-------------------------------------------------------------------------------!
 ! Fuck fuckAdBlock
 lifenews78.ru,life.ru,звонки.онлайн,bitru.org,hdrezka.tv,stopgame.ru#%#(function(){var a={debug:{set:function(){return a}},on:function(b,c){b||setTimeout(function(){c()},1);return a},onDetected:function(b){return a.on(!0,b)},onNotDetected:function(b){return a.on(!1,b)},check:function(){}};Object.defineProperty(window,"fuckAdBlock",{get:function(){return a}})})();
+! https://forum.adguard.com/index.php?threads/10748/
+@@||rzn.info/viewfiles/last/share/scripts/source/advert.js
 ! https://forum.adguard.com/index.php?threads/10595/
 @@||rustreams.ru^$generichide
 ! https://forum.adguard.com/index.php?threads/10453/
@@ -4237,7 +4242,7 @@ satsis.ru##.adb
 ##.adsenseblock
 ~rinkworks.com##.adtable
 ~anzwers.com.au,~bipbip.co.il,~ksl.com,~quoka.de,~u-file.net##.adtext
-~kinoafisha.info,~mega.co.nz,~planeta-vesov.ru##.adv
+~kinoafisha.info,~mega.co.nz,~planeta-vesov.ru,~vesti.ru##.adv
 ##.adv-post
 ##.advBrand
 ##.adv_bl
@@ -6739,6 +6744,21 @@ yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua##div[class$="b-direct_message
 ||gag.admulti.com/rotator
 ||info.zonasearch.com/ad/admulti*.json
 !#################################################################
+wp-kama.ru##div[id^="yandex_ad_"]
+wp-kama.ru##.ban_wrap
+wp-kama.ru###ya_ads_after_content
+wp-kama.ru##.spads
+kirishi.ru##a[href^="http://www.kirishi.ru/?m=adv&"]
+footboom.com##.b-betting-block
+footboom.com##div[class$="b-test-bg-link"]
+footboom.com##div[class$="m-special"]
+||data.24video.net/din_
+||24video.xxx/php/code.js
+24video.xxx##div[class^="br-"]
+atn.ua##.region-kozyrek
+atn.ua###runningFeed
+rustelegraph.ru##div[class$="banner"]
+1tv.ru##.card.promo
 ||mig.com.ua/images/banners/
 gazetapik.ru###banner
 ||sur-navigator.srv43.ru^
@@ -8844,7 +8864,7 @@ riotpixels.com##.zzz1
 /js/*.js?$domain=24xxx.tv|5xxx.info|dizav.ru|mirorgazmov.com|pornline.org|pornopauza.com|pornosector.tv|pornovonline.net
 /js/*.js?r$third-party,domain=allfilmonline.ws|baskino.club|cinema-hd.ru|coldfilm.ru|ikinohd.net|itop-gear.ru|kino-dom.org|kino-live2.org|kinogo-hd.net|kinogo-net-2015.ru|kkkino.net|krutor.org|lostfilm-online.ru|mrutor.org|ostfilm.org|rufilm.tv|serialguru.ru|smotri-filmi.net|tfilm.me|torrent-baza.net|torrentum.ru|tushkan.tv|zagonka.ru|zerx.co
 /js/advertisement_$script,domain=pic4you.ru|pic5you.ru
-/js/sys.js$domain=hdrezka.me|kinogo.co
+/js/sys.js$domain=hdrezka.me|kinogo.co|24video.xxx
 /jsonp.php?b=$domain=megatrack.org|torrent-pirat.com
 /mailru_rebrand/bg_body.jpg
 /main_bnrs.js$domain=pg12.ru|pg13.ru|pg21.ru|prochepetsk.ru|progorod11.ru|progorod33.ru|progorod43.ru|progorod59.ru|progorod76.ru|progorodnn.ru|vpenze.ru
@@ -8852,7 +8872,7 @@ riotpixels.com##.zzz1
 /partners/*$third-party,domain=bestgamer.ru
 /pics/bn/*$domain=tavto.ru
 /preroll.js$domain=goha.ru
-/protJS/*$domain=appspot.com|armourbook.com|cristals.ga|dsvload.net|estasos.ru|freeimg.ru|game-rust.ru|hentaichan.me|img24.org|kiryandrsoft.org|loftlm.ru|makeserver.kz|moskva-tv.com|mskd-ru.net|nolamers.net|online-porno.club|payforpic.ru|piccash.net|pics2share.ru|picspeed.ru|picusha.net|pitsib.org|playlist24.ru|pornopda.net|pslan.com|socola.ru|stopsid.ru|svetmonet.ru|torrent-telik.com|torrentx.net|unionpeer.org|uralsoft.net|uzhgorod.name|xsheet.ru|yellosoft-club.ru
+/protJS/*$domain=imgclick.ru|appspot.com|armourbook.com|cristals.ga|dsvload.net|estasos.ru|freeimg.ru|game-rust.ru|hentaichan.me|img24.org|kiryandrsoft.org|loftlm.ru|makeserver.kz|moskva-tv.com|mskd-ru.net|nolamers.net|online-porno.club|payforpic.ru|piccash.net|pics2share.ru|picspeed.ru|picusha.net|pitsib.org|playlist24.ru|pornopda.net|pslan.com|socola.ru|stopsid.ru|svetmonet.ru|torrent-telik.com|torrentx.net|unionpeer.org|uralsoft.net|uzhgorod.name|xsheet.ru|yellosoft-club.ru
 /rose.ixbt.
 /show.php?id=$domain=baskino.club|bobfilm1.net|fastpic.ru|kino-dom.org|kino-live2.org|kino777.ru|kinobanda.net|kinogo.co|kinogo2.net|kinokong.net|libtor.net|mrutor.org|smotri-filmi.net|super-kino.org|tfilm.me|tushkan.tv
 /show.php?id=$third-party,domain=hd720.biz|kino-serial.net|kinogo-2016.net|kinogorod.net|kinokrad.net|nice-film.ru
@@ -12042,22 +12062,12 @@ http://*.space^$script,domain=free-torrent.org|free-torrents.org|jpgstore.ru|pic
 ! The content replacement rules
 !
 ! http://forum.adguard.com/showthread.php?10275
-||kinokrad.net/api/vast.php$replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\$1<\/VAST>/
 ! rutube.ru
-||solution.weborama.fr/fcgi-bin/dispatch.fcgi$replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\$1<\/VAST>/,domain=rutube.ru
-||ad.mail.ru/vast/*rutube.ru$replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\$1<\/VAST>/,domain=rutube.ru
 ! telezombi.ru - cut the text ad in the video player
-||clients.cdnet.tv/flashplayer/fileinstruction2.php$replace=/(<advert[\s\S]*?>)[\s\S]*<\/advert>/\$1<\/advert>/
 !
-!||a*.dot*.org/f*h.js$replace=/FJCaller/FJCaller2/
-||fsua.dotua.org/jsmin/*/common-player-iframe.min.js$replace=/prerollsEnabled:true\,/prerollsEnabled:false\,/i
-||a*.dot*.org/f*h.js$replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\$1<\/VAST>/
 ! ivi.ru
-! ||api.ivi.ru/light/?r=$replace=/\"third_party_adv_xml_link\": .*?\,/"third_party_adv_xml_link": null\,/
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2178
-||api.vk.com/api.php$replace=/(<ads[\s\S]*?>)[\s\S]*<\/ads>/\$1<\/ads>/
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2197
-||v.adfox.ru/*/getCode?pp=*&dl=http://tvc/pryamoy/efir/*$replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\$1<\/VAST>/
 !-------------------------------------------------------------------------------!
 !------------------ White list (exceptions list)  ------------------------------!
 !-------------------------------------------------------------------------------!
@@ -12068,6 +12078,8 @@ http://*.space^$script,domain=free-torrent.org|free-torrents.org|jpgstore.ru|pic
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1830
 @@||vetton.ru^$jsinject,elemhide
 !#################
+! yandex.ru - broken campaign editor
+@@||direct.yandex.ru$document,~third-party
 !!!
 ! http://forum.adguard.com/showthread.php?7065
 @@||video.videonow.ru^$domain=echo.msk.ru
