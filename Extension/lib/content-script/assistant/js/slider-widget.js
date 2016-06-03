@@ -44,9 +44,9 @@ var SliderWidget = (function (api, $) {
         var ticks = placeholder.querySelectorAll("." + TICK_CLASS);
         for (var i = 0; i < ticks.length; i++) {
             if (i + 1 < value) {
-                $(ticks[i]).css('background-color', TICK_LEFT_COLOR);
+                ticks[i].style.background = TICK_LEFT_COLOR;
             } else {
-                $(ticks[i]).css('background-color', TICK_RIGHT_COLOR);
+                ticks[i].style.background = TICK_RIGHT_COLOR;
             }
         }
     };
