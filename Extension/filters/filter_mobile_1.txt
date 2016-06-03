@@ -1,15 +1,17 @@
 ! Title: Russian filter
-! Version: 1.0.34.54
+! Version: 1.0.34.57
 ! Name: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-06-02T17:07:17.983+03:00
+! TimeUpdated: 2016-06-03T19:00:22.166+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#window.AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+||gj7.ru^$third-party
+||js.gdsln.ru^$third-party
 ||rekhatov.ru^$third-party
 ||seedr.ru^$third-party
 ||russervisbest.ru^$third-party
@@ -3001,6 +3003,7 @@ e1.ru#$#.brand-skin {padding-top: 0px!important;}
 news.sportbox.ru#$#body { background: #415b14 !important; }
 news.sportbox.ru#$#.sb_t_secs_main {margin-top: 0px!important; }
 poiskvps.ru#$#body a[href*="./adv.php?id="] > img { height: 0px!important; }
+freerutor.com$$style[tag-content="padding: 250px 0px 0px !important"][max-length="600"]
 hdrezka.me,kinogo720.net,kinogo.net,kinogo.co,kinogo-net-co.ru$$script[wildcard="*script_id*script.onerror*et_ws*"][max-length="850"]
 zodiac-game.info,only-tv.org,hdrezka.me,lostfilmonline.ru,nice-film.ru,kino-filmi.net,kino-serial.net,bobfilm1.net,kinokrad.net,libtor.net,hdrezka.me,kinogo.co,omaske.ru$$script[tag-content="document.write("<sc"+"ript type='text/javascript' src='//"][max-length="140"]
 ixbt.com$$style[tag-content="/* BRANDING */"][max-length="600"]
@@ -3676,6 +3679,15 @@ yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua##div[class$="b-direct_message
 ||admulti.com/javascripts/rot.js
 ||gag.admulti.com/rotator
 ||info.zonasearch.com/ad/admulti*.json
+avtoblog.ua##.bannerDev
+avtoblog.ua##.fixedBrand
+freerutor.com###brent
+aktualno.ru##.content_banner
+||aktualno.ru/upload/adv/
+mosmonitor.ru##noindex a > img
+mosmonitor.ru##div[id^="n4p_"]
+ohmypresent.ru##a[href^="http://cpaggetti.com/"]
+||static.eizvestia.com/wp-content/themes/eizvestia/js/u_$script
 wp-kama.ru##div[id^="yandex_ad_"]
 wp-kama.ru##.ban_wrap
 wp-kama.ru###ya_ads_after_content
@@ -4493,7 +4505,6 @@ pogoda.mail.ru##.forecast-branding-link
 finam.ru##.forecast-item.recomended
 ok.ru##.forthTopAdv
 unionpeer.org##.forumline.dl_list > tbody > tr:last-child
-freerutor.com##.fr_left a[rel="nofollow"] > img
 .freezpic.ru^
 pixelbrush.ru##.friends > a > img
 go.mail.ru##.fuab_right-text
@@ -5210,7 +5221,6 @@ jpegshare.net##a[href^="http://www.citilink.ru/?r="]
 pravda.ru##a[href^="http://www.fark.ru/"]
 fast-torrent.ru##a[href^="http://www.fast-torrent.ru/ad/redirect/"]
 needrom.com##a[href^="http://www.gearbest.com/"]
-baskino.club,freerutor.com##a[href^="http://www.marketgid.com/"]
 mk.ru##a[href^="http://www.ohotniki.ru"]
 playground.ru##a[href^="http://www.playground.ru/redirect/ad.adriver.ru"]
 sympaty.net##a[href^="http://www.sapura.ru/"]
@@ -5484,7 +5494,7 @@ mobiltelefon.ru##div[id^="lbanners"]
 meta.ua##div[id^="meta_teaser"]
 meteoprog.ua##div[id^="mp_banner"]
 hdclub.org,tracker.hdclub.com.ua##div[id^="myDiv"]
-all-ebooks.com,bigtorrent.org,bigtorrents.ru,dengi.ua,freshkino.com,korrespondent.net,mport.ua,nakanune.ru,petrogazeta.ru,therussiantimes.com,voffka.com##div[id^="n4p_"]
+mosmonitor.ru,all-ebooks.com,bigtorrent.org,bigtorrents.ru,dengi.ua,freshkino.com,korrespondent.net,mport.ua,nakanune.ru,petrogazeta.ru,therussiantimes.com,voffka.com##div[id^="n4p_"]
 ntv.ru##div[id^="nads_banner_"]
 ura.ru##div[id^="partner_news"]
 myshared.ru##div[id^="place_"][class^="undefined"][style]

@@ -1,10 +1,10 @@
 ! Title: Russian filter
-! Version: 1.0.34.54
+! Version: 1.0.34.57
 ! Name: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-06-02T17:07:17.983+03:00
+! TimeUpdated: 2016-06-03T19:00:22.166+03:00
 ! Title: Adguard Russian Filter
 !
 ! Filter that enables removing of the ads from websites with Russian content.
@@ -29,6 +29,8 @@
 !
 ! Содержит доменные имена, использующиеся рекламными сетями.
 !
+||gj7.ru^$third-party
+||js.gdsln.ru^$third-party
 ||rekhatov.ru^$third-party
 ||seedr.ru^$third-party
 ||russervisbest.ru^$third-party
@@ -5101,7 +5103,7 @@ poiskvps.ru#$#body a[href*="./adv.php?id="] > img { height: 0px!important; }
 !-----------------------
 !------- HTML ----------
 !-----------------------
-!
+! https://forum.adguard.com/index.php?threads/9483/
 ! https://forum.adguard.com/index.php?threads/10609/
 !
 ! http://forum.adguard.com/showthread.php?9236
@@ -6744,6 +6746,15 @@ yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua##div[class$="b-direct_message
 ||gag.admulti.com/rotator
 ||info.zonasearch.com/ad/admulti*.json
 !#################################################################
+avtoblog.ua##.bannerDev
+avtoblog.ua##.fixedBrand
+freerutor.com###brent
+aktualno.ru##.content_banner
+||aktualno.ru/upload/adv/
+mosmonitor.ru##noindex a > img
+mosmonitor.ru##div[id^="n4p_"]
+ohmypresent.ru##a[href^="http://cpaggetti.com/"]
+||static.eizvestia.com/wp-content/themes/eizvestia/js/u_$script
 wp-kama.ru##div[id^="yandex_ad_"]
 wp-kama.ru##.ban_wrap
 wp-kama.ru###ya_ads_after_content
@@ -8107,7 +8118,6 @@ ok.ru##.forthTopAdv
 forum.ngs.ru##.forum__header > table
 unionpeer.org##.forumline.dl_list > tbody > tr:last-child
 free-torrents.org##.forumline.dl_list ~ table[width="100%"] noindex > center
-freerutor.com##.fr_left a[rel="nofollow"] > img
 .freezpic.ru^
 pixelbrush.ru##.friends > a > img
 go.mail.ru##.fuab_right-text
@@ -9210,7 +9220,6 @@ jpegshare.net##a[href^="http://www.citilink.ru/?r="]
 pravda.ru##a[href^="http://www.fark.ru/"]
 fast-torrent.ru##a[href^="http://www.fast-torrent.ru/ad/redirect/"]
 needrom.com##a[href^="http://www.gearbest.com/"]
-baskino.club,freerutor.com##a[href^="http://www.marketgid.com/"]
 ngs22.ru##a[href^="http://www.marriott.com/"]
 mk.ru##a[href^="http://www.ohotniki.ru"]
 playground.ru##a[href^="http://www.playground.ru/redirect/ad.adriver.ru"]
@@ -9573,7 +9582,7 @@ mobiltelefon.ru##div[id^="lbanners"]
 meta.ua##div[id^="meta_teaser"]
 meteoprog.ua##div[id^="mp_banner"]
 hdclub.org,tracker.hdclub.com.ua##div[id^="myDiv"]
-all-ebooks.com,bigtorrent.org,bigtorrents.ru,dengi.ua,freshkino.com,korrespondent.net,mport.ua,nakanune.ru,petrogazeta.ru,therussiantimes.com,voffka.com##div[id^="n4p_"]
+mosmonitor.ru,all-ebooks.com,bigtorrent.org,bigtorrents.ru,dengi.ua,freshkino.com,korrespondent.net,mport.ua,nakanune.ru,petrogazeta.ru,therussiantimes.com,voffka.com##div[id^="n4p_"]
 ntv.ru##div[id^="nads_banner_"]
 ura.ru##div[id^="partner_news"]
 myshared.ru##div[id^="place_"][class^="undefined"][style]
