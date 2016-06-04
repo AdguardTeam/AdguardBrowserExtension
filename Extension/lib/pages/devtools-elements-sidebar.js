@@ -16,9 +16,21 @@
  */
 /* global chrome */
 
-//TODO: Try to move it to first cell
-chrome.devtools.panels.elements.createSidebarPane("Adguard",
-    function (sidebar) {
-        sidebar.setPage("pages/devtools-elements-sidebar.html");
-    }
-);
+var debug = function (message) {
+    document.write(message);
+};
+
+debug('Initializing panel..');
+
+chrome.devtools.panels.elements.onSelectionChanged.addListener(function() {
+    chrome.devtools.inspectedWindow.eval("$0", function (selectedElement) {
+        debug(selectedElement);
+
+        //TODO: Customize panel
+    });
+});
+
+// expecting request from panel here
+//chrome.extension.onMessage.addListener(function (msg, _, sendResponse) {
+//    console.log(msg, _, sendResponse);
+//});
