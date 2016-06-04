@@ -37,13 +37,27 @@ var initPanel = function () {
     //chrome.extension.onMessage.addListener(function (msg, _, sendResponse) {
     //    console.log(msg, _, sendResponse);
     //});
+
+    bindEvents();
+
+    debug('Initializing panel..finished');
 };
 
 var updatePanel = function (selectedElement) {
     debug('Updating panel..');
     debug('Selected element:' + selectedElement);
 
-    //TODO: Customize panel
+    //TODO: Customize panel elements
+    //TODO: Construct rule
+};
+
+var bindEvents = function () {
+    document.getElementById("preview-rule-button").addEventListener("click", function(e) {
+        e.preventDefault();
+
+        debug('Preview');
+        //TODO: Send rule to background page
+    });
 };
 
 document.addEventListener('DOMContentLoaded', function () {
