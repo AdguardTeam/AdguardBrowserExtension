@@ -17,20 +17,37 @@
 /* global chrome */
 
 var debug = function (message) {
-    document.write(message);
+    var div = document.getElementById("debugDiv");
+    if (div) {
+        div.innerHTML += message;
+        div.innerHTML += '<br/>';
+    }
 };
 
-debug('Initializing panel..');
+var initPanel = function () {
+    debug('Initializing panel..');
 
-chrome.devtools.panels.elements.onSelectionChanged.addListener(function() {
-    chrome.devtools.inspectedWindow.eval("$0", function (selectedElement) {
-        debug(selectedElement);
-
-        //TODO: Customize panel
+    chrome.devtools.panels.elements.onSelectionChanged.addListener(function() {
+        chrome.devtools.inspectedWindow.eval("$0", function(result) {
+            updatePanel(result);
+        });
     });
+
+    // expecting request from panel here
+    //chrome.extension.onMessage.addListener(function (msg, _, sendResponse) {
+    //    console.log(msg, _, sendResponse);
+    //});
+};
+
+var updatePanel = function (selectedElement) {
+    debug('Updating panel..');
+    debug('Selected element:' + selectedElement);
+
+    //TODO: Customize panel
+};
+
+document.addEventListener('DOMContentLoaded', function () {
+    initPanel();
 });
 
-// expecting request from panel here
-//chrome.extension.onMessage.addListener(function (msg, _, sendResponse) {
-//    console.log(msg, _, sendResponse);
-//});
+
