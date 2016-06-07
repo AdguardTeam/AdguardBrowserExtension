@@ -100,7 +100,8 @@
     };
 
     var updatePanelElements = function (element) {
-        //TODO: Set panel elements
+        //TODO: Setup checkboxes
+        //TODO: Setup attributes elements
     };
 
     var updateFilterRuleInput = function (element) {
@@ -109,6 +110,14 @@
             isBlockSimilar: false,
             isBlockOneDomain: true
         };
+
+        //var options = {
+        //    isBlockByUrl: isBlockByUrl,
+        //    urlMask: getUrlBlockAttribute(settings.selectedElement),
+        //    isBlockSimilar : isBlockSimilar,
+        //    isBlockOneDomain: isBlockOneDomain,
+        //    domain: getCroppedDomain()
+        //};
 
         var ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
         if (ruleText) {
