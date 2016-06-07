@@ -20,6 +20,8 @@
  */
 var AdguardRulesConstructorLib = (function (api) {
 
+    var URLBLOCK_ATTRIBUTES = ["src", "data"];
+
     var makeCssNthChildFilter = function (element) {
 
         var path = [];
@@ -124,6 +126,29 @@ var AdguardRulesConstructorLib = (function (api) {
         return blockUrlRuleText;
     };
 
+    var getUrlBlockAttribute = function (element) {
+        for (var i = 0; i < URLBLOCK_ATTRIBUTES.length; i++) {
+            var attr = URLBLOCK_ATTRIBUTES[i];
+            var value = element.getAttribute(attr);
+            if (value) {
+                return value;
+            }
+        }
+
+        return null;
+    };
+
+    var haveUrlBlockParameter = function (element) {
+        var value = getUrlBlockAttribute(element);
+        return value && value != '';
+    };
+
+    var haveClassAttribute = function (element) {
+        var className = element.className;
+        return className && className.trim() != '';
+    };
+
+
     /**
      * Utility method
      *
@@ -131,6 +156,22 @@ var AdguardRulesConstructorLib = (function (api) {
      * @returns {string}
      */
     api.makeCssNthChildFilter = makeCssNthChildFilter;
+
+    /**
+     * Returns detailed element info
+     *
+     * @param element
+     */
+    api.getElementInfo = function (element) {
+
+        return {
+            //classes: [ "class1", "class2" ],
+            //attributes: { title: "Tatata", "data-test-attribute": "value" }
+            urlBlockAttributeValue: getUrlBlockAttribute(element),
+            haveUrlBlockParameter: haveUrlBlockParameter(element),
+            haveClassAttribute: haveClassAttribute(element)
+        }
+    };
 
     /**
      * Constructs css selector for element
