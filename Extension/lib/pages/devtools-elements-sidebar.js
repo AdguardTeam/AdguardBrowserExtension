@@ -27,8 +27,6 @@
     };
 
     var initPanel = function () {
-        debug('Initializing panel..');
-
         chrome.devtools.panels.elements.onSelectionChanged.addListener(function () {
             getSelectedElement(function (result) {
                 updatePanel(result);
@@ -36,8 +34,6 @@
         });
 
         bindEvents();
-
-        debug('Initializing panel..finished');
     };
 
     var updatePanel = function (selectedElement) {
@@ -53,46 +49,19 @@
         document.getElementById("preview-rule-button").addEventListener("click", function (e) {
             e.preventDefault();
 
-            debug('Preview');
-
             getSelectedElement(function (selectedElement) {
-                var selector = AdguardRulesConstructorLib.constructCssSelector(selectedElement);
-                debug(selector);
-
-                //var style = document.createElement("style");
-                //style.setAttribute("type", "text/css");
-                //settings.lastPreview = style;
-                //
-                //var head = document.getElementsByTagName('head')[0];
-                //if (head) {
-                //    style.appendChild(document.createTextNode(selector + " {display: none !important;}"));
-                //    head.appendChild(style);
-                //}
+                previewElement(selectedElement);
             });
+
+            //TODO: Add an ability to remove preview
         });
 
         document.getElementById("add-rule-button").addEventListener("click", function (e) {
             e.preventDefault();
 
-            debug('Add rule clicked');
-
-            //if (settings.lastPreview == null) {
-            //    return;
-            //}
-            //
-            //var head = document.getElementsByTagName("head")[0];
-            //if (head) {
-            //    head.removeChild(settings.lastPreview);
-            //}
-            //
-            //settings.lastPreview = null;
-            //
-            var ruleText = document.getElementById("filter-rule-text").value;
-            debug(ruleText);
-            //TODO: Send rule to background page
-            //contentPage.sendMessage({type: 'addUserRule', ruleText: ruleText}, function () {
-            //    closeAssistant();
-            //});
+            getSelectedElement(function (selectedElement) {
+                addRuleForElement(selectedElement);
+            });
         });
     };
 
@@ -142,13 +111,76 @@
         };
 
         var ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-        debug(ruleText);
-        document.getElementById("filter-rule-text").value = ruleText;
+        if (ruleText) {
+            document.getElementById("filter-rule-text").value = ruleText;
+        } else {
+            debug('Error creating rule for:' + element);
+        }
     };
+
+    var previewElement = function (element) {
+        var selector = AdguardRulesConstructorLib.constructCssSelector(element);
+
+        var togglePreview = function (selector) {
+            var style = document.createElement("style");
+            style.setAttribute("type", "text/css");
+
+            var head = document.getElementsByTagName('head')[0];
+            if (head) {
+                style.appendChild(document.createTextNode(selector + " {display: none !important;}"));
+                head.appendChild(style);
+            }
+        };
+
+        chrome.devtools.inspectedWindow.eval("(" + togglePreview.toString() + ")('" + selector + "')", function (result, exceptionInfo) {
+            if (exceptionInfo) {
+                debug(exceptionInfo);
+            }
+        });
+    };
+
+    var addRuleForElement = function (element) {
+        //if (window.lastPreview) {
+        //    removePreview();
+        //}
+
+        var ruleText = document.getElementById("filter-rule-text").value;
+
+        var addRule = function (ruleText) {
+            contentPage.sendMessage({type: 'addUserRule', ruleText: ruleText});
+        };
+
+        chrome.devtools.inspectedWindow.eval("(" + addRule.toString() + ")('" + ruleText + "')", {
+            useContentScriptContext: true
+        }, function (result, exceptionInfo) {
+            if (exceptionInfo) {
+                debug(exceptionInfo);
+            }
+
+            previewElement(element);
+        });
+    };
+
+    var removePreview = function () {
+        //  var hidePreview = function () {
+        //  var head = document.getElementsByTagName("head")[0];
+        //  if (head) {
+        //        head.removeChild(window.lastPreview);
+        //  }
+        //};
+
+        //chrome.devtools.inspectedWindow.eval("(" + hidePreview.toString() + ")()", function (result, exceptionInfo) {
+        //    if (exceptionInfo) {
+        //        debug(exceptionInfo);
+        //    }
+        //});
+    };
+
 
     document.addEventListener('DOMContentLoaded', function () {
         initPanel();
     });
+
 })();
 
 
