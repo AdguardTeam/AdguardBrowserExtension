@@ -16,52 +16,139 @@
  */
 /* global chrome */
 
-var debug = function (message) {
-    var div = document.getElementById("debugDiv");
-    if (div) {
-        div.innerHTML += message;
-        div.innerHTML += '<br/>';
-    }
-};
+(function () {
+    var debug = function (message) {
+        console.log(message);
+        var div = document.getElementById("debugDiv");
+        if (div) {
+            div.innerHTML += message;
+            div.innerHTML += '<br/>';
+        }
+    };
 
-var initPanel = function () {
-    debug('Initializing panel..');
+    var initPanel = function () {
+        debug('Initializing panel..');
 
-    chrome.devtools.panels.elements.onSelectionChanged.addListener(function() {
-        chrome.devtools.inspectedWindow.eval("$0", function(result) {
-            updatePanel(result);
+        chrome.devtools.panels.elements.onSelectionChanged.addListener(function () {
+            getSelectedElement(function (result) {
+                updatePanel(result);
+            });
         });
+
+        bindEvents();
+
+        debug('Initializing panel..finished');
+    };
+
+    var updatePanel = function (selectedElement) {
+        debug('Updating panel..');
+        debug('Selected element:');
+        debug(selectedElement);
+
+        updatePanelElements(selectedElement);
+        updateFilterRuleInput(selectedElement);
+    };
+
+    var bindEvents = function () {
+        document.getElementById("preview-rule-button").addEventListener("click", function (e) {
+            e.preventDefault();
+
+            debug('Preview');
+
+            getSelectedElement(function (selectedElement) {
+                var selector = AdguardRulesConstructorLib.constructCssSelector(selectedElement);
+                debug(selector);
+
+                //var style = document.createElement("style");
+                //style.setAttribute("type", "text/css");
+                //settings.lastPreview = style;
+                //
+                //var head = document.getElementsByTagName('head')[0];
+                //if (head) {
+                //    style.appendChild(document.createTextNode(selector + " {display: none !important;}"));
+                //    head.appendChild(style);
+                //}
+            });
+        });
+
+        document.getElementById("add-rule-button").addEventListener("click", function (e) {
+            e.preventDefault();
+
+            debug('Add rule clicked');
+
+            //if (settings.lastPreview == null) {
+            //    return;
+            //}
+            //
+            //var head = document.getElementsByTagName("head")[0];
+            //if (head) {
+            //    head.removeChild(settings.lastPreview);
+            //}
+            //
+            //settings.lastPreview = null;
+            //
+            var ruleText = document.getElementById("filter-rule-text").value;
+            debug(ruleText);
+            //TODO: Send rule to background page
+            //contentPage.sendMessage({type: 'addUserRule', ruleText: ruleText}, function () {
+            //    closeAssistant();
+            //});
+        });
+    };
+
+    var getSelectedElement = function (callback) {
+        /**
+         * Only serializable data can be passed in callback function
+         */
+        var serializeElement = function (node) {
+            if (!node || !node.tagName) {
+                return '';
+            }
+
+            if (node.outerHTML) {
+                return node.outerHTML;
+            }
+
+            // polyfill:
+            var wrapper = document.createElement('div');
+            wrapper.appendChild(node.cloneNode(true));
+            return wrapper.innerHTML;
+        };
+
+        var deserializeElement = function (html) {
+            var wrapper = document.createElement('div');
+            wrapper.innerHTML = html;
+            return wrapper.firstChild;
+        };
+
+        chrome.devtools.inspectedWindow.eval("(" + serializeElement.toString() + ")($0)", function (result, exceptionInfo) {
+            if (exceptionInfo) {
+                debug(exceptionInfo);
+            }
+
+            callback(deserializeElement(result));
+        });
+    };
+
+    var updatePanelElements = function (element) {
+        //TODO: Set panel elements
+    };
+
+    var updateFilterRuleInput = function (element) {
+        var options = {
+            isBlockByUrl: false,
+            isBlockSimilar: false,
+            isBlockOneDomain: true
+        };
+
+        var ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
+        debug(ruleText);
+        document.getElementById("filter-rule-text").value = ruleText;
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+        initPanel();
     });
-
-    // expecting request from panel here
-    //chrome.extension.onMessage.addListener(function (msg, _, sendResponse) {
-    //    console.log(msg, _, sendResponse);
-    //});
-
-    bindEvents();
-
-    debug('Initializing panel..finished');
-};
-
-var updatePanel = function (selectedElement) {
-    debug('Updating panel..');
-    debug('Selected element:' + selectedElement);
-
-    //TODO: Customize panel elements
-    //TODO: Construct rule
-};
-
-var bindEvents = function () {
-    document.getElementById("preview-rule-button").addEventListener("click", function(e) {
-        e.preventDefault();
-
-        debug('Preview');
-        //TODO: Send rule to background page
-    });
-};
-
-document.addEventListener('DOMContentLoaded', function () {
-    initPanel();
-});
+})();
 
 
