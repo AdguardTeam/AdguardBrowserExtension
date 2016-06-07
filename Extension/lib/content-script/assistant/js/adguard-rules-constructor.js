@@ -148,6 +148,22 @@ var AdguardRulesConstructorLib = (function (api) {
         return className && className.trim() != '';
     };
 
+    var cropDomain = function (url) {
+        var domain = getUrl(url).host;
+        return domain.replace("www.", "").replace(/:\d+/, '');
+    };
+
+    var getUrl = function (url) {
+        var pattern = "^(([^:/\\?#]+):)?(//(([^:/\\?#]*)(?::([^/\\?#]*))?))?([^\\?#]*)(\\?([^#]*))?(#(.*))?$";
+        var rx = new RegExp(pattern);
+        var parts = rx.exec(url);
+
+        return {
+            host: parts[4] || "",
+            path: parts[7] || ""
+        };
+    };
+
 
     /**
      * Utility method
@@ -198,7 +214,7 @@ var AdguardRulesConstructorLib = (function (api) {
 		 *	urlBlockAttribute: url mask,
 		 *	isBlockSimilar : boolean,
 		 *	isBlockOneDomain: boolean,
-		 *	domain: domain string
+		 *	url: url
 		 * }
      *
      * @param element
@@ -206,8 +222,10 @@ var AdguardRulesConstructorLib = (function (api) {
      * @returns {*}
      */
     api.constructRuleText = function (element, options) {
+        var croppedDomain = cropDomain(options.url);
+
         if (options.isBlockByUrl) {
-            var blockUrlRuleText = constructUrlBlockRuleText(element, options.urlMask, options.isBlockOneDomain, options.domain);
+            var blockUrlRuleText = constructUrlBlockRuleText(element, options.urlMask, options.isBlockOneDomain, croppedDomain);
             if (blockUrlRuleText) {
                 return blockUrlRuleText;
             }
@@ -221,7 +239,7 @@ var AdguardRulesConstructorLib = (function (api) {
         }
 
         if (!options.isBlockOneDomain) {
-            result = options.domain + result;
+            result = croppedDomain + result;
         }
 
         return result;

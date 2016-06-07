@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script  type="text/javascript"  src="../lib/libs/balalaika.patched.js"></script>
     <script  type="text/javascript"  src="../lib/content-script/assistant/js/adguard-rules-constructor.js"></script>
     <script  type="text/javascript"  src="../lib/pages/devtools-elements-sidebar.js"></script>
 </head>
@@ -12,12 +13,18 @@
     <input type="button" id="preview-rule-button" value="Preview">
     <hr/>
     Rule properties
-    <input type="checkbox" id="block-by-url-checkbox">
-    Block element by url
-    <input type="checkbox" id="one-domain-checkbox">
-    Apply this rule to every web site
-    <input type="checkbox" id="block-similar-checkbox">
-    Block similar elements
+    <div>
+        <input type="checkbox" id="one-domain-checkbox">
+        Apply this rule to every web site
+    </div>
+    <div id="block-by-url-checkbox-block">
+        <input type="checkbox" id="block-by-url-checkbox">
+        Block element by url
+    </div>
+    <div id="block-similar-checkbox-block">
+        <input type="checkbox" id="block-similar-checkbox">
+        Block similar elements
+    </div>
     <hr/>
     Attributes
     <hr/>

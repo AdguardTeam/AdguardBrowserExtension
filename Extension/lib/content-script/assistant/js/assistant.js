@@ -26,21 +26,11 @@ var AdguardAssistant = function ($) {
 
 	var settings = {
 		iframeId: 'adguard-assistant-dialog',
-		path: null,
 		selectedElement: null,
-		lastPreview: null,
-		cssRuleIndex: null,
-		urlInfo: null,
-		croppedDomain: null
+		lastPreview: null
 	};
 
 	var constants = {
-		phishing: 'phishing',
-		wrongRender: 'wrongRender',
-		adMissing: 'adMissing',
-		another: 'another',
-		minComplaintMessageLength: 8,
-		maxComplaintCommentLength: 500,
 		iframe: {//maximum values for all browsers was leaved for compatibility
 			baseWidth: 668,
 			extendDetailedSettingsHeight: 503,
@@ -87,37 +77,7 @@ var AdguardAssistant = function ($) {
 
 		getNodeName: function (element) {
 			return element && element.nodeName ? element.nodeName.toUpperCase() : "";
-		},
-
-		getUrl: function (url) {
-			var pattern = "^(([^:/\\?#]+):)?(//(([^:/\\?#]*)(?::([^/\\?#]*))?))?([^\\?#]*)(\\?([^#]*))?(#(.*))?$";
-			var rx = new RegExp(pattern);
-			var parts = rx.exec(url);
-
-			return {
-				host: parts[4] || "",
-				path: parts[7] || ""
-			};
-		},
-
-		cropDomain: function (domain) {
-			return domain.replace("www.", "").replace(/:\d+/, '');
 		}
-	};
-
-	var getCroppedDomain = function () {
-		if (!settings.croppedDomain) {
-			settings.croppedDomain = utils.cropDomain(getUrlInfo().host);
-		}
-		return settings.croppedDomain;
-	};
-
-	var getUrlInfo = function () {
-		if (!settings.urlInfo) {
-			settings.urlInfo = utils.getUrl(document.location);
-		}
-
-		return settings.urlInfo;
 	};
 
 	var getMessage = function (msgId) {
@@ -536,7 +496,6 @@ var AdguardAssistant = function ($) {
 			AdguardSelectorLib.selectElement(element);
 
 			onScopeChange();
-			setScopeOneDomainText();
 			handleShowBlockSettings(urlBlock, blockSimilar);
 		});
 
@@ -584,11 +543,6 @@ var AdguardAssistant = function ($) {
 			findInIframe('#adv-settings').removeClass('open');
 			findInIframe('#adg-show-adv-settings').removeClass('active');
 		}
-	};
-
-	var setScopeOneDomainText = function () {
-		var path = getCroppedDomain();
-		findInIframe('#oneDomainText').text(path);
 	};
 
 	var createSlider = function (element) {
@@ -738,7 +692,7 @@ var AdguardAssistant = function ($) {
 			urlMask: settings.elementInfo.urlBlockAttributeValue,
 			isBlockSimilar : isBlockSimilar,
 			isBlockOneDomain: isBlockOneDomain,
-			domain: getCroppedDomain()
+			url: document.location
 		};
 
 		var ruleText = AdguardRulesConstructorLib.constructRuleText(settings.selectedElement, options);

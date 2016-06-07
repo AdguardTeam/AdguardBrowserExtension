@@ -16,7 +16,7 @@
  */
 /* global chrome */
 
-(function () {
+(function ($) {
     var debug = function (message) {
         console.log(message);
         var div = document.getElementById("debugDiv");
@@ -41,8 +41,10 @@
         debug('Selected element:');
         debug(selectedElement);
 
-        updatePanelElements(selectedElement);
-        updateFilterRuleInput(selectedElement);
+        var info = AdguardRulesConstructorLib.getElementInfo(selectedElement);
+
+        updatePanelElements(info);
+        updateFilterRuleInput(selectedElement, info);
     };
 
     var bindEvents = function () {
@@ -99,25 +101,50 @@
         });
     };
 
-    var updatePanelElements = function (element) {
-        //TODO: Setup checkboxes
+    var updatePanelElements = function (info) {
+        handleShowBlockSettings(info.haveUrlBlockParameter, info.haveClassAttribute);
+        setupAttributesInfo(info);
+    };
+
+    var handleShowBlockSettings = function (showBlockByUrl, showBlockSimilar) {
+        if (showBlockByUrl) {
+            $('#block-by-url-checkbox-block').show();
+        } else {
+            $('#block-by-url-checkbox').get(0).checked = false;
+            $('#block-by-url-checkbox-block').hide();
+        }
+        if (showBlockSimilar) {
+            $('#block-similar-checkbox-block').show();
+        } else {
+            $('#block-similar-checkbox').get(0).checked = false;
+            $('#block-similar-checkbox-block').hide();
+        }
+    };
+
+    var setupAttributesInfo = function (info) {
         //TODO: Setup attributes elements
     };
 
-    var updateFilterRuleInput = function (element) {
+    var getInspectedPageUrl = function () {
+        //TODO: Get inspected page url
+        return 'test.com';
+    };
+
+    var updateFilterRuleInput = function (element, info) {
+        var isBlockByUrl = $('#block-by-url-checkbox').get(0).checked;
+        var isBlockSimilar = $("#block-similar-checkbox").get(0).checked;
+        var isBlockOneDomain = $("#one-domain-checkbox").get(0).checked;
+        var url = getInspectedPageUrl();
+
         var options = {
-            isBlockByUrl: false,
-            isBlockSimilar: false,
-            isBlockOneDomain: true
+            isBlockByUrl: isBlockByUrl,
+            urlMask: info.urlBlockAttributeValue,
+            isBlockSimilar : isBlockSimilar,
+            isBlockOneDomain: isBlockOneDomain,
+            url: url
         };
 
-        //var options = {
-        //    isBlockByUrl: isBlockByUrl,
-        //    urlMask: getUrlBlockAttribute(settings.selectedElement),
-        //    isBlockSimilar : isBlockSimilar,
-        //    isBlockOneDomain: isBlockOneDomain,
-        //    domain: getCroppedDomain()
-        //};
+        debug(options);
 
         var ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
         if (ruleText) {
@@ -190,6 +217,6 @@
         initPanel();
     });
 
-})();
+})(balalaika);
 
 
