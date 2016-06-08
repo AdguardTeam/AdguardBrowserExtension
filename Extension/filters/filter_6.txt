@@ -1,10 +1,10 @@
 ! Title: German filter
-! Version: 1.0.25.64
+! Version: 1.0.25.67
 ! Name: German filter
 ! Description: EasyList Germany + Adguard German filter. Filter list that specifically removes adverts on German language websites.
 ! NameEn: German filter
 ! DescriptionEn: EasyList Germany + Adguard German filter. Filter list that specifically removes adverts on German language websites.
-! TimeUpdated: 2016-06-03T18:00:53.441+03:00
+! TimeUpdated: 2016-06-08T19:15:46.763+03:00
 ! Title: Adguard German Filter.
 !
 ! Filter that enables removing of the ads from websites with German content.
@@ -29,6 +29,7 @@
 !---------------------------------------------------------------------------!
 !-------------- Advertising networks ---------------------------------------!
 !---------------------------------------------------------------------------!
+@@||31231231.com^$empty
 ||adshot.de^$third-party
 ||car4you.ch/widgets/$third-party
 ||content.acc-hd.de^$third-party
@@ -204,6 +205,7 @@ freenet.de#$##frnMain { min-height: 0px!important; }
 !--------------------------------------!
 !------- Content filtering rules ------!
 !--------------------------------------!
+! https://github.com/AdguardTeam/AdguardFilters/issues/2193
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1758
 ! http://forum.adguard.com/showthread.php?8888
 ! http://forum.adguard.com/showthread.php?8887
@@ -223,6 +225,10 @@ freenet.de#$##frnMain { min-height: 0px!important; }
 ! http://forum.adguard.com/showthread.php?8979 (#17)
 ||static.p7s1.com/vendor/webtrekk
 !
+||tagesanzeiger.ch/teaser.php
+||tagesanzeiger.ch/sl/teaser/cached/front/ads
+tagesanzeiger.ch##.adsTitle
+tagesanzeiger.ch##.boxExclusiv.ad
 autobild.de###skyscraper
 druckerchannel.de###DCA_BOTTOM
 druckerchannel.de###DCGA_LEAD
@@ -4262,7 +4268,6 @@ guterhut.de,zalando.de#@#iframe[id^="google_ads_iframe"]
 ||wetter.net/images/karten-tickets.gif
 ||wetter.net/images/karten-tickets2.gif
 ||wetterauer-zeitung.de/cms_media/module_wb/
-||wetteronline.de^*/base64.
 ||wettforum.info/banner/
 ||wettforum.info/phpbb2/content_rot.php?
 ||wfcdn.de/5/surface-pro-3-$domain=winfuture.de

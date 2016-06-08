@@ -1,10 +1,10 @@
 ! Title: Social media filter
-! Version: 1.0.10.6
+! Version: 1.0.10.17
 ! Name: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2016-06-01T22:00:45.380+03:00
+! TimeUpdated: 2016-06-08T19:15:36.929+03:00
 ! Title: Adguard Social Media Filter
 !
 ! If you do not like numerous «Like» and «Tweet» buttons on all the popular websites on the Internet,
@@ -276,6 +276,16 @@ softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2146
 ||mimimi.tv/?*=*&_=
 !
+uol.com.br##div[data-share-buttons]
+avforums.com##.WidgetFramework_WidgetRenderer_ShareThisPage
+theinquirer.net##.tools-container
+dontimes.com.ua###vkpopup
+bryansknovosti.ru##div[class^="it-share-"]
+zagrandok.ru###share
+cbsnews.com##.sharebar_expanded
+investing.com##.newSocialButtons
+kinogb.net###rshare
+mynet.com##.share-global
 ria.ru##.soc-link
 sovsport.ru##.social-buttons_right-sticky
 f5haber.com###cdxhd_interstitial
@@ -1045,6 +1055,11 @@ komarovskiy.net##ul[class="social-bookmarks"]
 !
 ! Section contains list general hiding rules
 !
+@@||31231231.com^$empty
+##a[title="Share on Twitter"]
+##a[title="Share on Facebook"]
+##button[title="Share on Twitter"]
+##button[title="Share on Facebook"]
 ##.shared-item-icon
 ###ShareModule
 ###SocialButtons
@@ -1657,6 +1672,8 @@ bitiworld.com##a[title="share on twitter"]
 !
 ! Section fixing issues caused by social filter
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/2264
+@@||yandex.st/share/share.js$domain=vnukovo.ru
 ! https://forum.adguard.com/index.php?threads/10597/
 @@||kinogo720.net/engine/classes/min/index.php$domain=kinogo720.net
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2102

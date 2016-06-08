@@ -1,10 +1,10 @@
 ! Title: Spyware filter
-! Version: 1.0.6.7
+! Version: 1.0.6.19
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
 ! NameEn: Spyware filter
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2016-06-03T15:43:20.895+03:00
+! TimeUpdated: 2016-06-08T19:15:29.179+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -20,6 +20,7 @@ popmech.ru#%#AG_onLoad(function() { window.POPMECH.increaseCounters = function()
 citystar.ru$$script[tag-content="acn.rucounter.ru"][max-length="500"]
 echo.msk.ru$$script[tag-content="r=d.im.width"][max-length="200"]
 echo.msk.ru$$script[tag-content="s=screen;"][max-length="200"]
+@@||31231231.com^$empty
 ###qoo-counter
 ###ramblerCounter
 ###top100counter
@@ -33,6 +34,13 @@ echo.msk.ru$$script[tag-content="s=screen;"][max-length="200"]
 ##img[src*="counter.yadro.ru"]
 ##img[src^="http://c.bigmir.net/"]
 ~forum.ixbt.com,~mozhor.ru,~onliner.by,~wiktionary.org,~yandex.by,~yandex.com,~yandex.com.tr,~yandex.ru,~yandex.ua##img[width="88"][height="31"]
+||lb.secureweb24.net^
+||upalytics.com^$third-party
+||fairfaxmedia.sharedcount.com^$third-party
+||rva.outbrain.com^$third-party
+||vra.outbrain.com^$third-party
+||vrt.outbrain.com^$third-party
+||taboola.com^$third-party
 ||intarget.ru^$third-party
 ||voxmedia.com/beacon-min.js
 ||l.player.ooyala.com^
@@ -1109,7 +1117,7 @@ http://r.i.ua/s?
 ||onefeed.co.uk^$third-party
 ||onestat.com^$third-party
 ||ongsono.com^$third-party
-||online-metrix.net^$third-party
+||online-metrix.net^
 ||onlinewebstat.com^$third-party
 ||onlinewebstats.com^$third-party
 ||onthe.io^$third-party
@@ -1470,7 +1478,6 @@ http://r.i.ua/s?
 ||t.dailymail.co.uk^
 ||t.kck.st^
 ||t4ft.de^$third-party
-||taboola.com^*/log/
 ||tag.datariver.ru^$third-party
 ||tagcommander.com^$third-party
 ||tags.news.com.au^
@@ -1899,6 +1906,12 @@ _tracking.php?b=
 /xtcore.js
 /zanox.js
 ://top.*/count/cnt.php?
+||click.uol.com.br^
+||logger.rm.uol.com.br^
+||metrics.uol.com.br^
+||tracker.bt.uol.com.br^
+||youtube.com/gen_204
+businessinsider.com,businessinsider.co.uk##.rail-recommended
 ||fapdu.com/ajax/post/track/
 ||imdb.com/tr/?pt=
 ||media-imdb.com/twilight/?
@@ -2176,6 +2189,12 @@ dreamprogs.net##td[width="88"][height="31"]
 ||do-not-tracker.org^$third-party
 ||eviltracker.net^$third-party
 ||trackersimulator.org^$third-party
+@@||googletagmanager.com/gtm.js$domain=mediamarkt.de
+@@||google-analytics.com/analytics.js$domain=mediamarkt.de
+@@||google-analytics.com/plugins/ua/ec.js$domain=mediamarkt.de
+@@||cdn.taboola.com/libtrc/cbsinteractive-cnet/loader.js$domain=cnet.com
+@@||tags.tiqcdn.com/utag/cbsi/cnetglobalsite/prod/utag.js$domain=cnet.com
+@@||tags.tiqcdn.com/utag/cbsi/cbsnewssite/prod/utag.js$domain=cbsnews.com
 @@||vidible.tv^*/ComScore.StreamSense.js
 @@||vidible.tv^*/ComScore.Viewability.js
 @@||pixel.facebook.com/ajax/gigaboxx/endpoint/UpdateLastSeenTime.php?$image
