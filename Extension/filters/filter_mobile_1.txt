@@ -1,16 +1,15 @@
 ! Title: Russian filter
-! Version: 1.0.34.85
+! Version: 1.0.34.86
 ! Name: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-06-08T19:15:09.625+03:00
+! TimeUpdated: 2016-06-08T19:49:49.901+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#window.AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
-@@||31231231.com^$empty
 ||ilysa.ru^$third-party
 ||ictowaz.ru$third-party
 ||ilysa.ru^$third-party
@@ -2674,13 +2673,9 @@ trackitonline.ru#$##google250 { height: 1px!important; padding: 1px; }
 ##noindex > nofollow > table[onmouseout^="this.bgColor"]
 ##object#banner-1
 ##td[id^="advtd"]
-yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by#%#AG_onLoad(function(){ window.AG_removeElementBySelector('div[class*="_pos_"][style*="display:block!important;visibility:visible!important;"]'); });
-seasonvar.ru#%#AG_onLoad(function() { window.AG_removeElementBySelector('div[style^="width: 227px;"]'); });
-freerutor.com#%#Object.defineProperty(window, 'waitForSocketConnection', { get: function() { return function waitForSocketConnection(){} } });
-the-cinema.ru,newsru.com,seasonwar.ru#%#window.WebSocket = undefined;
 newsru.com###stakan > div[style^="width: 298px;"]
 baskino.club##div[id][style="height: auto; overflow: visible; display: block !important; visibility: visible !important;"] > div
-yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by#%#AG_onLoad(function(){function __adgObserver(){var observer=new MutationObserver(function(mutations){mutations.forEach(function(mutation){__adgRemoveDirect()})});observer.observe(document.body,{childList:true,characterData:true,subtree:true})}var __adgRemoveDirect=function(){try{__adgRemoveDirectNews();__adgRemoveDirectMail();__adgRemoveDirectPogoda();if(typeof __adgEnabled!="undefined"&&!__adgEnabled)return;else __adgRemoveContext()}catch(ex){}};var __adgRemoveContext=function(){AG_each(".serp-list > .serp-item .label", function(node){if(node.innerText=="\u0420\u0435\u043a\u043b\u0430\u043c\u0430")AG_removeParent(node,function(parent){return parent.className&&(parent.className.indexOf("serp-item")>=0&&parent.getAttribute("data-cid")||parent.className&&parent.className.indexOf("serp-adv__block")>=0)})})};var __adgRemoveDirectMail=function(){AG_each(".js-folders__nesting",function(node){AG_each('a[class="b-folders__folder__link"][href*="direct.yandex.ru"]',function(node){AG_removeParent(node,function(parent){return parent.className&& parent.className.indexOf("b-folders__nesting")>=0})})})};var __adgRemoveDirectNews=function(){AG_each('a[href^="http://news-clck.yandex."]',function(node){AG_removeParent(node,function(parent){return parent.className&&parent.className.indexOf("story")>=0})})};var __adgRemoveDirectPogoda=function(){AG_each('a[href^="https://an.yandex.ru/count/"]',function(node){AG_removeParent(node,function(parent){return parent.className&&parent.className.indexOf("adbca_js_inited")>=0})})};__adgRemoveDirect();__adgObserver()});
+yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by#%#AG_onLoad(function() { function __adgObserver() { var observer = new MutationObserver(function(mutations) { mutations.forEach(function(mutation) { __adgRemoveDirect() }) }); observer.observe(document.body, { childList: true, characterData: true, subtree: true }) } var __adgRemoveDirect = function() { try { __adgRemoveDirectNews(); __adgRemoveDirectMail(); __adgRemoveDirectPogoda(); if (typeof __adgEnabled != "undefined" && !__adgEnabled) return; else __adgRemoveContext() } catch (ex) {} }; var __adgRemoveContext = function() { AG_each(".serp-list > .serp-item .label", function(node) { if (node.innerText == "\u0420\u0435\u043a\u043b\u0430\u043c\u0430") AG_removeParent(node, function(parent) { return parent.className && (parent.className.indexOf("serp-item") >= 0 && parent.getAttribute("data-cid") || parent.className && parent.className.indexOf("serp-adv__block") >= 0) }) }) }; var __adgRemoveDirectMail = function() { AG_each(".js-folders__nesting", function(node) { AG_each('a[class="b-folders__folder__link"][href*="direct.yandex.ru"]', function(node) { AG_removeParent(node, function(parent) { return parent.className && parent.className.indexOf("b-folders__nesting") >= 0 }) }) }) }; var __adgRemoveDirectNews = function() { AG_each('a[href^="http://news-clck.yandex."]', function(node) { AG_removeParent(node, function(parent) { return parent.className && parent.className.indexOf("story") >= 0 }) }) }; var __adgRemoveDirectPogoda = function() { window.AG_removeElementBySelector('div[class*="_pos_"][style*="display:block!important;visibility:visible!important;"]'); }; __adgRemoveDirect(); __adgObserver(); });
 ~ntv.ru,~rg.ru#%#var AdFox_getCodeScript = function() {};
 zr.ru,aftershock.su,fileplaneta.com,aif.ru,meteocenter.net,newsland.com,newsland.ru,glav.su,eg.ru,kg-portal.ru,sovsport.md,newsland.com,newsland.ru,glav.su,eg.ru,kp.ru,kg-portal.ru,select.by,sovsport.md,sovsport.ru,playground.ru,kinonews.ru,gismeteo.ua,gismeteo.by,soccer.ru,mobile-review.com,ria.ru,thg.ru,mk.ru,oszone.net,dirty.ru,hotline.ua,topnews.ru,povarenok.ru,readmanga.me,sobesednik.ru#%#AG_onLoad(function() { window.AG_removeElementBySelector('iframe[id^="ar_"]'); });
 irr.ru#%#AG_onLoad(function() { window.AG_removeElementBySelector('iframe[id^="bw_"]'); });
