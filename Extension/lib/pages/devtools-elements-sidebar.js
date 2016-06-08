@@ -27,6 +27,10 @@
     };
 
     var initPanel = function () {
+        $('#block-by-url-checkbox').get(0).checked = false;
+        $('#block-similar-checkbox').get(0).checked = false;
+        $('#one-domain-checkbox').get(0).checked = false;
+
         chrome.devtools.panels.elements.onSelectionChanged.addListener(function () {
             getSelectedElement(function (result) {
                 updatePanel(result);
@@ -44,7 +48,9 @@
         var info = AdguardRulesConstructorLib.getElementInfo(selectedElement);
 
         updatePanelElements(info);
-        updateFilterRuleInput(selectedElement, info);
+        getInspectedPageUrl(function(res) {
+            updateFilterRuleInput(selectedElement, info, res);
+        });
     };
 
     var bindEvents = function () {
@@ -125,16 +131,20 @@
         //TODO: Setup attributes elements
     };
 
-    var getInspectedPageUrl = function () {
-        //TODO: Get inspected page url
-        return 'test.com';
+    var getInspectedPageUrl = function (callback) {
+        chrome.devtools.inspectedWindow.eval("document.location && document.location.href", function (result, exceptionInfo) {
+            if (exceptionInfo) {
+                debug(exceptionInfo);
+            }
+
+            callback(result);
+        });
     };
 
-    var updateFilterRuleInput = function (element, info) {
+    var updateFilterRuleInput = function (element, info, url) {
         var isBlockByUrl = $('#block-by-url-checkbox').get(0).checked;
         var isBlockSimilar = $("#block-similar-checkbox").get(0).checked;
         var isBlockOneDomain = $("#one-domain-checkbox").get(0).checked;
-        var url = getInspectedPageUrl();
 
         var options = {
             isBlockByUrl: isBlockByUrl,
