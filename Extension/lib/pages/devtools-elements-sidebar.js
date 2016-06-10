@@ -128,7 +128,17 @@
     };
 
     var setupAttributesInfo = function (info) {
-        //TODO: Setup attributes elements
+        var placeholder = document.getElementById("attributes-block");
+        while (placeholder.firstChild) {
+            placeholder.removeChild(placeholder.firstChild);
+        }
+
+        for (var i = 0; i < info.attributes.length; i++) {
+            var attribute = info.attributes[i];
+            placeholder.appendChild(document.createTextNode(attribute.name + ' = ' + attribute.value));
+            placeholder.appendChild(document.createElement('br'));
+        }
+
     };
 
     var getInspectedPageUrl = function (callback) {
@@ -153,8 +163,6 @@
             isBlockOneDomain: isBlockOneDomain,
             url: url
         };
-
-        debug(options);
 
         var ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
         if (ruleText) {

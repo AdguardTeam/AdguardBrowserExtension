@@ -181,8 +181,8 @@ var AdguardRulesConstructorLib = (function (api) {
     api.getElementInfo = function (element) {
 
         return {
-            //classes: [ "class1", "class2" ],
-            //attributes: { title: "Tatata", "data-test-attribute": "value" }
+            classes: element.classList,
+            attributes: element.attributes,
             urlBlockAttributeValue: getUrlBlockAttribute(element),
             haveUrlBlockParameter: haveUrlBlockParameter(element),
             haveClassAttribute: haveClassAttribute(element)
