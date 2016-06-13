@@ -54,14 +54,25 @@
     };
 
     var bindEvents = function () {
-        document.getElementById("preview-rule-button").addEventListener("click", function (e) {
+        var previewRuleButton = document.getElementById("preview-rule-button");
+        previewRuleButton.addEventListener("click", function (e) {
             e.preventDefault();
 
             getSelectedElement(function (selectedElement) {
-                previewElement(selectedElement);
-            });
+                if (window.adguardDevToolsPreview) {
+                    // Remove preview
+                    togglePreview();
+                    previewRuleButton.value = 'Preview';
 
-            //TODO: Add an ability to remove preview
+                    delete window.adguardDevToolsPreview;
+                    return;
+                }
+
+                togglePreview(selectedElement);
+                previewRuleButton.value = 'Cancel preview';
+
+                window.adguardDevToolsPreview = selectedElement;
+            });
         });
 
         document.getElementById("add-rule-button").addEventListener("click", function (e) {
@@ -172,21 +183,28 @@
         }
     };
 
-    var previewElement = function (element) {
-        var selector = AdguardRulesConstructorLib.constructCssSelector(element);
+    var togglePreview = function (element) {
 
-        var togglePreview = function (selector) {
-            var style = document.createElement("style");
-            style.setAttribute("type", "text/css");
+        var togglePreviewStyle = function (selector) {
+            var PREVIEW_STYLE_ID = "adguard-preview-style";
 
             var head = document.getElementsByTagName('head')[0];
             if (head) {
-                style.appendChild(document.createTextNode(selector + " {display: none !important;}"));
-                head.appendChild(style);
+                if (selector && selector != 'null') {
+                    var style = document.createElement("style");
+                    style.setAttribute("type", "text/css");
+                    style.setAttribute("id", PREVIEW_STYLE_ID);
+                    style.appendChild(document.createTextNode(selector + " {display: none !important;}"));
+
+                    head.appendChild(style);
+                } else {
+                    head.removeChild(document.getElementById(PREVIEW_STYLE_ID));
+                }
             }
         };
 
-        chrome.devtools.inspectedWindow.eval("(" + togglePreview.toString() + ")('" + selector + "')", function (result, exceptionInfo) {
+        var selector = element ? AdguardRulesConstructorLib.constructCssSelector(element) : null;
+        chrome.devtools.inspectedWindow.eval("(" + togglePreviewStyle.toString() + ")('" + selector + "')", function (result, exceptionInfo) {
             if (exceptionInfo) {
                 debug(exceptionInfo);
             }
@@ -194,9 +212,10 @@
     };
 
     var addRuleForElement = function (element) {
-        //if (window.lastPreview) {
-        //    removePreview();
-        //}
+        if (window.adguardDevToolsPreview) {
+            // Remove preview
+            togglePreview();
+        }
 
         var ruleText = document.getElementById("filter-rule-text").value;
 
@@ -211,25 +230,9 @@
                 debug(exceptionInfo);
             }
 
-            previewElement(element);
+            togglePreview(element);
         });
     };
-
-    var removePreview = function () {
-        //  var hidePreview = function () {
-        //  var head = document.getElementsByTagName("head")[0];
-        //  if (head) {
-        //        head.removeChild(window.lastPreview);
-        //  }
-        //};
-
-        //chrome.devtools.inspectedWindow.eval("(" + hidePreview.toString() + ")()", function (result, exceptionInfo) {
-        //    if (exceptionInfo) {
-        //        debug(exceptionInfo);
-        //    }
-        //});
-    };
-
 
     document.addEventListener('DOMContentLoaded', function () {
         initPanel();
