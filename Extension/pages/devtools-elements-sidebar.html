@@ -16,6 +16,14 @@
         .styles-section .style-properties .enabled-button {
             visibility: visible !important;
         }
+        .action-button {
+            margin-top: 4px;
+            margin-bottom: 4px;
+            margin-left: 4px;
+        }
+        .rule-input {
+            padding: 4px;
+        }
     </style>
 </head>
 <body class="undocked platform-mac inactive">
@@ -23,12 +31,11 @@
         <div class="widget vbox">
             <div class="widget vbox style-panes-wrapper">
                 <div class="sidebar-pane monospace">
-                    <input type="text" id="filter-rule-text" placeholder="Rule text"/>
+                    <input type="text" id="filter-rule-text" placeholder="Rule text" class="rule-input"/>
                     <div>
-                        <input type="button" id="add-rule-button" value="Add rule" />
-                        <input type="button" id="preview-rule-button" value="Preview" />
+                        <input type="button" id="add-rule-button" value="Add rule" class="action-button" />
+                        <input type="button" id="preview-rule-button" value="Preview" class="action-button" />
                     </div>
-                    <br/>
                 </div>
                 <div class="sidebar-separator monospace">Rule properties</div>
                 <div class="sidebar-pane">
@@ -42,7 +49,7 @@
                                 <input class="enabled-button" type="checkbox" id="block-by-url-checkbox">
                                 <span class="webkit-css-property">Block element by url</span>
                             </li>
-                            <li class="parent"  id="block-similar-checkbox-block">
+                            <li class="parent" id="block-similar-checkbox-block">
                                 <input class="enabled-button" type="checkbox" id="block-similar-checkbox">
                                 <span class="webkit-css-property">Block similar elements</span>
                             </li>
