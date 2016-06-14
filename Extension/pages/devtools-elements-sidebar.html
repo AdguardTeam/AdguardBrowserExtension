@@ -5,30 +5,53 @@
     <script  type="text/javascript"  src="../lib/libs/balalaika.patched.js"></script>
     <script  type="text/javascript"  src="../lib/content-script/assistant/js/adguard-rules-constructor.js"></script>
     <script  type="text/javascript"  src="../lib/pages/devtools-elements-sidebar.js"></script>
+
+    <link rel="stylesheet" href="skin/devtools/inspectorCommon.css"/>
+    <link rel="stylesheet" href="skin/devtools/inspectorStyle.css"/>
+    <link rel="stylesheet" href="skin/devtools/inspectorSyntaxHighlight.css"/>
+    <link rel="stylesheet" href="skin/devtools/sidebarPane.css"/>
+    <link rel="stylesheet" href="skin/devtools/elementsPanel.css"/>
 </head>
-<body>
-    <input type="text" id="filter-rule-text" />
-    <br/>
-    <input type="button" id="add-rule-button" value="Add rule">
-    <input type="button" id="preview-rule-button" value="Preview">
-    <hr/>
-    Rule properties
-    <div>
-        <input type="checkbox" id="one-domain-checkbox">
-        Apply this rule to every web site
+<body class="undocked platform-mac inactive">
+    <div class="sidebar-pane composite fill metrics-and-styles">
+        <div class="widget vbox">
+            <div class="widget vbox style-panes-wrapper">
+                <div class="sidebar-pane monospace">
+                    <input type="text" id="filter-rule-text" placeholder="Rule text"/>
+                    <div>
+                        <input type="button" id="add-rule-button" value="Add rule" />
+                        <input type="button" id="preview-rule-button" value="Preview" />
+                    </div>
+                    <br/>
+                </div>
+                <div class="sidebar-separator monospace">Rule properties</div>
+                <div class="sidebar-pane">
+                    <div class="styles-section matched-styles monospace">
+                        <ol class="style-properties monospace">
+                            <li class="parent">
+                                <input class="enabled-button" type="checkbox" id="one-domain-checkbox">
+                                <span class="webkit-css-property">Apply this rule to every web site</span>
+                            </li>
+                            <li class="parent" id="block-by-url-checkbox-block">
+                                <input class="enabled-button" type="checkbox" id="block-by-url-checkbox">
+                                <span class="webkit-css-property">Block element by url</span>
+                            </li>
+                            <li class="parent"  id="block-similar-checkbox-block">
+                                <input class="enabled-button" type="checkbox" id="block-similar-checkbox">
+                                <span class="webkit-css-property">Block similar elements</span>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="sidebar-separator monospace">Attributes</div>
+                <div class="sidebar-pane monospace">
+                    <div class="styles-section matched-styles monospace">
+                        <ol class="style-properties monospace" id="attributes-block"></ol>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div id="block-by-url-checkbox-block">
-        <input type="checkbox" id="block-by-url-checkbox">
-        Block element by url
-    </div>
-    <div id="block-similar-checkbox-block">
-        <input type="checkbox" id="block-similar-checkbox">
-        Block similar elements
-    </div>
-    <hr/>
-    Attributes
-    <div id="attributes-block"></div>
-    <hr/>
-    <div id="debugDiv"></div>
+
 </body>
 </html>

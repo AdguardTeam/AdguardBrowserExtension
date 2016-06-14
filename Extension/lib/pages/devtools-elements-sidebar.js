@@ -19,11 +19,6 @@
 (function ($) {
     var debug = function (message) {
         console.log(message);
-        var div = document.getElementById("debugDiv");
-        if (div) {
-            div.innerHTML += message;
-            div.innerHTML += '<br/>';
-        }
     };
 
     var initPanel = function () {
@@ -146,8 +141,13 @@
 
         for (var i = 0; i < info.attributes.length; i++) {
             var attribute = info.attributes[i];
-            placeholder.appendChild(document.createTextNode(attribute.name + ' = ' + attribute.value));
-            placeholder.appendChild(document.createElement('br'));
+            var el = $(
+                '<li class="parent">'
+                    + '<input class="enabled-button" type="checkbox">'
+                    + '<span class="webkit-css-property">' + attribute.name + '</span>: '
+                    + '<span class="value">' + attribute.value + '</span>'
+                + '</li>');
+            placeholder.appendChild(el.get(0));
         }
 
     };
