@@ -77,6 +77,12 @@
                 addRuleForElement(selectedElement);
             });
         });
+
+        $('.update-rule-block').on('click', function (e) {
+            getSelectedElement(function (result) {
+                updatePanel(result);
+            });
+        });
     };
 
     var getSelectedElement = function (callback) {
