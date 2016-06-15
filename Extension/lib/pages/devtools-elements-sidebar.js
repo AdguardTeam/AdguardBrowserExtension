@@ -159,7 +159,7 @@
             var attribute = info.attributes[i];
             var el = $(
                 '<li class="parent">'
-                    + '<input class="enabled-button" type="checkbox">'
+                    + '<input class="enabled-button attribute-check-box" type="checkbox" id="' + 'attribute-check-box-' + attribute.name + '">'
                     + '<span class="webkit-css-property">' + attribute.name + '</span>: '
                     + '<span class="value">' + attribute.value + '</span>'
                 + '</li>');
@@ -183,7 +183,19 @@
         var isBlockSimilar = $("#block-similar-checkbox").get(0).checked;
         var isBlockOneDomain = $("#one-domain-checkbox").get(0).checked;
 
-        //TODO: parse attributes to add smth like ###element[title="Share on Twitter"]
+        var attributesSelector = '';
+        $('.attribute-check-box').forEach(function(el) {
+            if (el && el.checked) {
+
+                var attrName = el.id.substring('attribute-check-box-'.length);
+                if (info.attributes) {
+                    var attr = info.attributes[attrName];
+                    if (attr) {
+                        attributesSelector += '[' + attr.name + '="' + attr.value + '"]';
+                    }
+                }
+            }
+        });
 
         var options = {
             isBlockByUrl: isBlockByUrl,
@@ -191,7 +203,7 @@
             isBlockSimilar : isBlockSimilar,
             isBlockOneDomain: isBlockOneDomain,
             url: url,
-            attributes: ''
+            attributes: attributesSelector
         };
 
         var ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);

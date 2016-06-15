@@ -214,7 +214,8 @@ var AdguardRulesConstructorLib = (function (api) {
 		 *	urlBlockAttribute: url mask,
 		 *	isBlockSimilar : boolean,
 		 *	isBlockOneDomain: boolean,
-		 *	url: url
+		 *	url: url,
+		 *  attributes: attributesSelectorText
 		 * }
      *
      * @param element
