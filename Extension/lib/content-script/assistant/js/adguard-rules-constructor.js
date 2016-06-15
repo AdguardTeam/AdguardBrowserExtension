@@ -242,6 +242,10 @@ var AdguardRulesConstructorLib = (function (api) {
             result = croppedDomain + result;
         }
 
+        if (!options.isBlockByUrl && options.attributes) {
+            result = result + options.attributes;
+        }
+
         return result;
     };
 

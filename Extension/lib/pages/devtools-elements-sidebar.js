@@ -183,12 +183,15 @@
         var isBlockSimilar = $("#block-similar-checkbox").get(0).checked;
         var isBlockOneDomain = $("#one-domain-checkbox").get(0).checked;
 
+        //TODO: parse attributes to add smth like ###element[title="Share on Twitter"]
+
         var options = {
             isBlockByUrl: isBlockByUrl,
             urlMask: info.urlBlockAttributeValue,
             isBlockSimilar : isBlockSimilar,
             isBlockOneDomain: isBlockOneDomain,
-            url: url
+            url: url,
+            attributes: ''
         };
 
         var ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
