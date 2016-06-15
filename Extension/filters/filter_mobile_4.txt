@@ -1,10 +1,10 @@
 ! Title: Social media filter
-! Version: 1.0.10.18
+! Version: 1.0.10.24
 ! Name: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2016-06-08T19:50:18.855+03:00
+! TimeUpdated: 2016-06-15T16:00:44.256+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -211,20 +211,7 @@ maskme.ru#$#img[width="88"][height="31"] {visibility: hidden!important;}
 gamesradar.com#$#.shareSocialArticle-wrap { visibility: hidden; }
 softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ||mimimi.tv/?*=*&_=
-uol.com.br##div[data-share-buttons]
-avforums.com##.WidgetFramework_WidgetRenderer_ShareThisPage
-theinquirer.net##.tools-container
-dontimes.com.ua###vkpopup
-bryansknovosti.ru##div[class^="it-share-"]
-zagrandok.ru###share
-cbsnews.com##.sharebar_expanded
-investing.com##.newSocialButtons
-kinogb.net###rshare
-mynet.com##.share-global
-ria.ru##.soc-link
-sovsport.ru##.social-buttons_right-sticky
-f5haber.com###cdxhd_interstitial
-f5haber.com##.adSocial
+prokazan.ru###vk_groupsVK
 meduza.io###DailySubscriber
 washingtonpost.com###NN-module-rr
 tekdizifilmizle.com###SociaLKare
@@ -246,9 +233,10 @@ relax.ru###bottomSocialSharePlugins
 softonic.com###box-social-buttons
 tomshardware.co.uk###btnShare
 fishki.net###cboxBottom
-applopedi.com###cboxOverlay
+applopedi.com,donday.ru###cboxOverlay
+f5haber.com###cdxhd_interstitial
 gazetevahdet.com,ozgurkocaeli.com.tr,sariyermanset.com,wanhaber.com,yenicaggazetesi.com.tr###cm-social-overlay
-applopedi.com###colorbox
+applopedi.com,donday.ru###colorbox
 thedroidguy.com###conversions-box
 aliexpress.com###divShareURL
 penzainform.ru###divSocial
@@ -305,11 +293,12 @@ mega-u.ru,pinu.com.ua###popup-message-window
 ruscur.ru,utro.ru###popup_box
 vokrug.tv###portamento_container
 techhive.com###primarySocialSharing
+kinogb.net###rshare
 aliexpress.com###ru-sns
 lenovo-smart.ru,xperia-droid.ru###sb_popup
 delfi.lv###sbookmarks-left
 regionews.sumy.ua###shadowblock
-geek.com,greasyfork.org,hackworthy.blogspot.de,wunderground.com###share
+geek.com,greasyfork.org,hackworthy.blogspot.de,wunderground.com,zagrandok.ru###share
 rantlifestyle.com###share-below-desktop
 wired.com###share-card
 downloadlinks.net,the-area51.com###share-post
@@ -337,6 +326,7 @@ ua1.com.ua###socialModal
 podrobnosti.ua###social_popup
 stadt-bremerhaven.de###socialbar-mobile
 bursadabugun.com###socialfollowbox
+photosight.ru###socialgroups-info-vk
 regnum.ru###socialine
 015.by,032.ua,0332.ua,0342.ua,0352.ua,0362.ua,0372.ua,0412.ua,0432.ua,04565.com.ua,04578.in.ua,0462.ua,0472.ua,048.ua,04868.com.ua,0512.com.ua,0522.ua,0532.ua,05366.com.ua,0542.ua,0552.ua,056.ua,0564.ua,057.ua,061.ua,06153.com.ua,0623.com.ua,06239.com.ua,06242.com.ua,06252.com.ua,06254.in.ua,06255.com.ua,06257.in.ua,06274.com.ua,0629.com.ua,0642.ua,06432.in.ua,06434.com.ua,0652.ua,0654.com.ua,06562.com.ua,0692.ua,3462city.ru,44.ua,5692.com.ua,62.ua,6264.com.ua,8352city.ru,8422city.ru,86155city.ru,8634city.ru,city3012.ru,go31.ru,go812.ru,go862.ru,goroddomodedovo.ru,gorodpushkin.ru,kinokadr.ru,labaved.ru,prokolpino.ru,pronews48.ru###socialpopup
 kinokadr.ru###socialpopup2
@@ -359,6 +349,7 @@ rsn.ru###vk_groups_new
 trkterra.ru###vk_invite_wrapper
 3dnews.ru###vk_right
 xlivetv.sx###vkjoin
+dontimes.com.ua###vkpopup
 socportal.info###vspliv_w
 gotennis.ru###vv_moduleFacebook_overlay
 mafia-daily.net,mydivision.net###wbounce-modal
@@ -376,9 +367,11 @@ meduza.io##.MaterialTopBar-vkButton
 meduza.io##.NewsMaterial-sidebar
 pcadvisor.co.uk##.OUTBRAIN
 sitepoint.com##.Sharer
+avforums.com##.WidgetFramework_WidgetRenderer_ShareThisPage
 nydailynews.com##.a-share
 straitstimes.com##.a2a-buttons
 otvet.mail.ru##.action--share
+f5haber.com##.adSocial
 yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua##.addition__share
 bad-good.ru##.addtoany
 kp.ru##.all_partners
@@ -490,6 +483,7 @@ ginva.com##.flare-vertical
 androidopentutorials.com##.flare.countloaded
 huffingtonpost.com##.floating-share-component__list
 flickr.com##.fluid-share-cameraroll-view
+bigbangnews.com##.follow-fb-fixed
 thenextweb.com##.footer-quote-share
 woman.ru##.forum-share
 glav.su##.forumMessagesListMessageShareSwitch
@@ -550,6 +544,7 @@ moskva.fm##.msk-well-social
 mafia-daily.net,mydivision.net##.naked-social-share
 disk.yandex.com.tr,disk.yandex.ru,disk.yandex.ua##.nb-share
 filehorse.com##.networking
+investing.com##.newSocialButtons
 sporx.com##.news-share
 kg-portal.ru,kino-govno.com##.news_shares
 ngs.ru,ngs55.ru##.ngs-share-button
@@ -603,11 +598,13 @@ voicetv.co.th##.share-button-group
 dailymail.co.uk##.share-count
 gamespot.com##.share-dropdown
 kaldata.com##.share-flat
+mynet.com##.share-global
 openload.co##.share-icons
 the-village.ru##.share-images
 economist.com##.share-inline-footer-reddit
 skidkaonline.ru##.share-item
 nytimes.com##.share-list-container
+bigbangnews.com##.share-me
 css-tricks.com##.share-on-title
 dailymail.co.uk##.share-pictures-overlay
 sonymobile.com##.share-post
@@ -627,6 +624,7 @@ cc.com##.share_btn
 cc.com##.share_cta
 myfolder.ru,rusfolder.com##.share_friends
 answers.com##.share_wrapper
+cbsnews.com##.sharebar_expanded
 shopper.life##.sharefull
 ign.com##.sharer
 afisha.mail.ru##.shares > a.shares__item
@@ -656,6 +654,7 @@ anekdotikov.net,ex-news.net,utro.ru##.soc
 magazilla.ru##.soc-buttons-good
 primechaniya.ru##.soc-close
 primechaniya.ru##.soc-container
+ria.ru##.soc-link
 championat.com##.soc-menu
 politeka.net##.soc-share
 focus.de##.socBmXing
@@ -671,6 +670,7 @@ sobesednik.ru##.social-block-tabs-wrapper
 wday.ru##.social-blocks
 portableapps.com##.social-bottons
 66.ru##.social-button:not(.social-button_blablanator)
+sovsport.ru##.social-buttons_right-sticky
 forbes.com##.social-expand-control
 depo.ua##.social-groups
 asiaone.com##.social-icon-bar
@@ -733,6 +733,7 @@ getandroidstuff.com##.td-tags-and-social-wrapper-box
 s4galaxy.ru##.td_block_social_counter
 heise.de##.teaser_hbs
 bbc.com##.tempShareToolsHolder
+theinquirer.net##.tools-container
 echo.msk.ru##.tooltipster-default
 motor.ru##.topic-social__caption
 motor.ru##.topic-social__list
@@ -815,12 +816,15 @@ yahoo.com##div[class^="article-aft-share-buttons-"]
 focus.ua##div[class^="at-share"]
 theguardian.com##div[class^="block-share"]
 cinema-hd.ru##div[class^="fancybox-wrap"]
+bryansknovosti.ru##div[class^="it-share-"]
 bolshoyvopros.ru##div[class^="likes"]
 travelask.ru##div[class^="post-shares"]
 webtekno.com##div[class^="share-counter"]
+mumbrella.com.au##div[class^="social "]
 mobiltelefon.ru##div[class^="social_like_btns"]
 yandex.ru##div[class^="ya-share"]
 msn.com##div[data-aop="sharingtoolbar_social"]
+uol.com.br##div[data-share-buttons]
 pcgamesn.com##div[data-share-url]
 gazeta.ua##div[id*="-socials-"]
 finam.ru##div[id*="socnet-btns"]
@@ -926,11 +930,6 @@ kinopoisk.ru##ul[class="addTo"]
 ||widget.breakingburner.com/js/jwidget.js$domain=novayagazeta.ru
 ||wow.ya.ru/ajax/share-counter.xml$third-party
 ||yandex.st/share/static/b-share-icon.png
-##a[title="Share on Twitter"]
-##a[title="Share on Facebook"]
-##button[title="Share on Twitter"]
-##button[title="Share on Facebook"]
-##.shared-item-icon
 ###ShareModule
 ###SocialButtons
 ###SocialSharingBtns
@@ -1269,6 +1268,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.shareaholic-canvas
 ##.sharebar
 ~kp.ru##.sharebox
+##.shared-item-icon
 ##.sharedaddy
 ##.sharedefault
 ##.shareholder
@@ -1521,9 +1521,13 @@ livejournal.com##.b-ljtimes-wrapper
 ~twitter.com##a[onclick^="window.open('https://twitter.com/share"]
 ~facebook.com##a[onclick^="window.open('https://www.facebook.com/sharer.php"]
 ##a[onlick*="https://www.facebook.com/sharer/"]
+##a[title="Share on Facebook"]
+##a[title="Share on Twitter"]
 bitiworld.com##a[title="share on twitter"]
 ~twitter.com##body .twitter-share-button
 ~pinterest.com##body div a[class*="pin_it_button"]
+##button[title="Share on Facebook"]
+##button[title="Share on Twitter"]
 ##div[class^="juiz_sps_"]
 ##div[class^="widget-social"]
 ##div[id^="___plus_"]

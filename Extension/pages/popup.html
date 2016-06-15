@@ -28,12 +28,7 @@
         <script type="text/javascript" src="pages/popup.js"></script>
     </#if>
 </head>
-<#if browser.name() == "EDGE">
-<body>
-<#else>
 <body style="overflow: hidden;">
-</#if>
-
 <div class="widjet-popup"></div>
 
 <div class="modal-feedback hidden">
@@ -139,15 +134,19 @@
         <div class="os-popup-other-os-block">
             <span i18n="popup_adguard_other_os"></span>
         </div>
+        <#if browser.name() != "SAFARI">        
         <a href="https://adguard.com/adguard-windows/overview.html?utm_source=extension&aid=18081" i18n-title="popup_adguard_windows" class="popup-footer-link openLink">
             <i class="os-popup-icon-windows"></i>
         </a>
+        </#if>
         <a href="https://adguard.com/adguard-mac/overview.html?utm_source=extension&aid=18081" i18n-title="popup_adguard_mac" class="popup-footer-link openLink">
             <i class="os-popup-icon-mac"></i>
         </a>
+        <#if browser.name() != "SAFARI">
         <a href="https://adguard.com/adguard-android/overview.html?utm_source=extension&aid=18081" i18n-title="popup_adguard_android" class="popup-footer-link openLink">
             <i class="os-popup-icon-android"></i>
         </a>
+        </#if>
         <a href="https://adguard.com/ios" i18n-title="popup_adguard_ios" class="popup-footer-link openLink">
             <i class="os-popup-icon-ios"></i>
         </a>
