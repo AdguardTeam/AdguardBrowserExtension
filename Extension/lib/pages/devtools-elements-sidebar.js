@@ -17,14 +17,10 @@
 /* global chrome */
 
 (function ($) {
-    var debug = function (message) {
-        console.log(message);
-    };
-
     var initPanel = function () {
         initElements();
 
-        chrome.devtools.panels.elements.onSelectionChanged.addListener(function () {
+        chrome.devtools && chrome.devtools.panels.elements.onSelectionChanged.addListener(function () {
             getSelectedElement(function (result) {
                 if (!result) {
                     return;
@@ -90,7 +86,7 @@
             }
         });
 
-        $('.update-rule-block').on('click', function (e) {
+        $('.update-rule-block').on('click', function () {
             updateRule();
         });
     };
@@ -120,11 +116,7 @@
             return wrapper.firstChild;
         };
 
-        chrome.devtools.inspectedWindow.eval("(" + serializeElement.toString() + ")($0)", function (result, exceptionInfo) {
-            if (exceptionInfo) {
-                debug(exceptionInfo);
-            }
-
+        chrome.devtools.inspectedWindow.eval("(" + serializeElement.toString() + ")($0)", function (result) {
             callback(deserializeElement(result));
         });
     };
@@ -169,11 +161,7 @@
     };
 
     var getInspectedPageUrl = function (callback) {
-        chrome.devtools.inspectedWindow.eval("document.location && document.location.href", function (result, exceptionInfo) {
-            if (exceptionInfo) {
-                debug(exceptionInfo);
-            }
-
+        chrome.devtools.inspectedWindow.eval("document.location && document.location.href", function (result) {
             callback(result);
         });
     };
@@ -209,8 +197,6 @@
         var ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
         if (ruleText) {
             document.getElementById("filter-rule-text").value = ruleText;
-        } else {
-            debug('Error creating rule for:' + element);
         }
     };
 
@@ -235,11 +221,7 @@
         };
 
         var selector = element ? AdguardRulesConstructorLib.constructCssSelector(element) : null;
-        chrome.devtools.inspectedWindow.eval("(" + togglePreviewStyle.toString() + ")('" + selector + "')", function (result, exceptionInfo) {
-            if (exceptionInfo) {
-                debug(exceptionInfo);
-            }
-        });
+        chrome.devtools.inspectedWindow.eval("(" + togglePreviewStyle.toString() + ")('" + selector + "')");
     };
 
     var addRuleForElement = function (element) {
@@ -256,11 +238,7 @@
 
         chrome.devtools.inspectedWindow.eval("(" + addRule.toString() + ")('" + ruleText + "')", {
             useContentScriptContext: true
-        }, function (result, exceptionInfo) {
-            if (exceptionInfo) {
-                debug(exceptionInfo);
-            }
-
+        }, function () {
             togglePreview(element);
 
             delete window.selectedElement;
