@@ -22,29 +22,41 @@
     };
 
     var initPanel = function () {
-        $('#block-by-url-checkbox').get(0).checked = false;
-        $('#block-similar-checkbox').get(0).checked = false;
-        $('#one-domain-checkbox').get(0).checked = false;
+        initElements();
 
         chrome.devtools.panels.elements.onSelectionChanged.addListener(function () {
             getSelectedElement(function (result) {
-                updatePanel(result);
+                if (!result) {
+                    return;
+                }
+
+                window.selectedElement = result;
+                window.selectedElementInfo = AdguardRulesConstructorLib.getElementInfo(result);
+
+                updateRule();
+                updatePanelElements();
             });
         });
 
         bindEvents();
     };
 
-    var updatePanel = function (selectedElement) {
-        debug('Updating panel..');
-        debug('Selected element:');
-        debug(selectedElement);
+    var initElements = function () {
+        $('#block-by-url-checkbox').get(0).checked = false;
+        $('#block-similar-checkbox').get(0).checked = false;
+        $('#one-domain-checkbox').get(0).checked = false;
 
-        var info = AdguardRulesConstructorLib.getElementInfo(selectedElement);
+        $("#filter-rule-text").get(0).value = '';
 
-        updatePanelElements(info);
+        var placeholder = document.getElementById("attributes-block");
+        while (placeholder.firstChild) {
+            placeholder.removeChild(placeholder.firstChild);
+        }
+    };
+
+    var updateRule = function () {
         getInspectedPageUrl(function(res) {
-            updateFilterRuleInput(selectedElement, info, res);
+            updateFilterRuleInput(window.selectedElement, window.selectedElementInfo, res);
         });
     };
 
@@ -53,7 +65,7 @@
         previewRuleButton.addEventListener("click", function (e) {
             e.preventDefault();
 
-            getSelectedElement(function (selectedElement) {
+            if (window.selectedElement) {
                 if (window.adguardDevToolsPreview) {
                     // Remove preview
                     togglePreview();
@@ -63,25 +75,23 @@
                     return;
                 }
 
-                togglePreview(selectedElement);
+                togglePreview(window.selectedElement);
                 previewRuleButton.value = 'Cancel preview';
 
                 window.adguardDevToolsPreview = selectedElement;
-            });
+            }
         });
 
         document.getElementById("add-rule-button").addEventListener("click", function (e) {
             e.preventDefault();
 
-            getSelectedElement(function (selectedElement) {
-                addRuleForElement(selectedElement);
-            });
+            if (window.selectedElement) {
+                addRuleForElement(window.selectedElement);
+            }
         });
 
         $('.update-rule-block').on('click', function (e) {
-            getSelectedElement(function (result) {
-                updatePanel(result);
-            });
+            updateRule();
         });
     };
 
@@ -119,9 +129,9 @@
         });
     };
 
-    var updatePanelElements = function (info) {
-        handleShowBlockSettings(info.haveUrlBlockParameter, info.haveClassAttribute);
-        setupAttributesInfo(info);
+    var updatePanelElements = function () {
+        handleShowBlockSettings(window.selectedElementInfo.haveUrlBlockParameter, window.selectedElementInfo.haveClassAttribute);
+        setupAttributesInfo(window.selectedElementInfo);
     };
 
     var handleShowBlockSettings = function (showBlockByUrl, showBlockSimilar) {
@@ -237,6 +247,11 @@
             }
 
             togglePreview(element);
+
+            delete window.selectedElement;
+            delete window.selectedElementInfo;
+
+            initElements();
         });
     };
 
