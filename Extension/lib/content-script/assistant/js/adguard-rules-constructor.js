@@ -126,12 +126,17 @@ var AdguardRulesConstructorLib = (function (api) {
         return blockUrlRuleText;
     };
 
+    var linkHelper = document.createElement('a');
+
     var getUrlBlockAttribute = function (element) {
         for (var i = 0; i < URLBLOCK_ATTRIBUTES.length; i++) {
             var attr = URLBLOCK_ATTRIBUTES[i];
             var value = element.getAttribute(attr);
             if (value) {
-                return value;
+                linkHelper.href = value;
+                if (linkHelper.hostname) {
+                    return value;
+                }
             }
         }
 
