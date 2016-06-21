@@ -16,8 +16,10 @@
  */
 /* global chrome */
 
+var browser = browser || chrome;
+
 //TODO: Try to move it to first cell
-chrome.devtools.panels.elements.createSidebarPane("Adguard",
+browser.devtools.panels.elements.createSidebarPane("Adguard",
     function (sidebar) {
         sidebar.setHeight("400px");
         sidebar.setPage("pages/devtools-elements-sidebar.html");

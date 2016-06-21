@@ -16,11 +16,13 @@
  */
 /* global chrome */
 
+var browser = browser || chrome;
+
 (function ($) {
     var initPanel = function () {
         initElements();
 
-        chrome.devtools && chrome.devtools.panels.elements.onSelectionChanged.addListener(function () {
+        browser.devtools && browser.devtools.panels.elements.onSelectionChanged.addListener(function () {
             getSelectedElement(function (result) {
                 if (!result) {
                     return;
@@ -116,7 +118,7 @@
             return wrapper.firstChild;
         };
 
-        chrome.devtools.inspectedWindow.eval("(" + serializeElement.toString() + ")($0)", function (result) {
+        browser.devtools.inspectedWindow.eval("(" + serializeElement.toString() + ")($0)", function (result) {
             callback(deserializeElement(result));
         });
     };
@@ -161,7 +163,7 @@
     };
 
     var getInspectedPageUrl = function (callback) {
-        chrome.devtools.inspectedWindow.eval("document.location && document.location.href", function (result) {
+        browser.devtools.inspectedWindow.eval("document.location && document.location.href", function (result) {
             callback(result);
         });
     };
@@ -221,7 +223,7 @@
         };
 
         var selector = element ? AdguardRulesConstructorLib.constructCssSelector(element) : null;
-        chrome.devtools.inspectedWindow.eval("(" + togglePreviewStyle.toString() + ")('" + selector + "')");
+        browser.devtools.inspectedWindow.eval("(" + togglePreviewStyle.toString() + ")('" + selector + "')");
     };
 
     var addRuleForElement = function (element) {
@@ -236,7 +238,7 @@
             contentPage.sendMessage({type: 'addUserRule', ruleText: ruleText});
         };
 
-        chrome.devtools.inspectedWindow.eval("(" + addRule.toString() + ")('" + ruleText + "')", {
+        browser.devtools.inspectedWindow.eval("(" + addRule.toString() + ")('" + ruleText + "')", {
             useContentScriptContext: true
         }, function () {
             togglePreview(element);
