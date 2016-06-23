@@ -16,7 +16,7 @@
  */
 /* global chrome */
 
-var browser = browser || chrome;
+var browser = window.browser || chrome;
 
 //TODO: Try to move it to first cell
 browser.devtools.panels.elements.createSidebarPane("Adguard",

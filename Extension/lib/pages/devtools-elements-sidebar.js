@@ -16,7 +16,7 @@
  */
 /* global chrome */
 
-var browser = browser || chrome;
+var browser = window.browser || chrome;
 
 (function ($) {
     var initPanel = function () {
