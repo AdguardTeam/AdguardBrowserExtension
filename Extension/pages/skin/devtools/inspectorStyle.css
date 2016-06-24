@@ -204,26 +204,6 @@ ol.outline-disclosure:focus li.selected * {
 }
 
 .outline-disclosure li::before {
-    -webkit-user-select: none;
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
-    -webkit-mask-size: 352px 168px;
-    content: "aa";
-    color: transparent;
-    text-shadow: none;
-    margin-right: -2px;
-}
-
-.outline-disclosure li:not(.parent)::before {
-    background-color: transparent;
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.5) {
-    .outline-disclosure li::before {
-        -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
-    }
-} /* media */
-
-.outline-disclosure li::before {
     -webkit-mask-position: -4px -96px;
     background-color: rgb(110, 110, 110);
 }
@@ -327,25 +307,6 @@ ol.outline-disclosure:focus li.selected * {
 .sidebar-tree.some-expandable > .sidebar-tree-item:not(.parent) .icon {
     margin-left: 16px;
 }
-
-.sidebar-tree-item .disclosure-button {
-    float: left;
-    width: 10px;
-    height: 10px;
-    border: 0;
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
-    -webkit-mask-size: 352px 168px;
-    -webkit-appearance: none;
-    background-color: rgba(0, 0, 0, 0.75);
-    position: relative;
-    top: 10px;
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.5) {
-    .sidebar-tree-item .disclosure-button {
-        -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
-    }
-} /* media */
 
 .sidebar-tree-item .disclosure-button {
     -webkit-mask-position: -4px -96px;
