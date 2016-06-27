@@ -43,7 +43,6 @@ var browser = window.browser || chrome;
         $('#block-by-url-checkbox').get(0).checked = false;
         $('#block-similar-checkbox').get(0).checked = false;
         $('#one-domain-checkbox').get(0).checked = false;
-        $('#include-css-path-checkbox').get(0).checked = false;
 
         $("#filter-rule-text").get(0).value = '';
 
@@ -173,7 +172,6 @@ var browser = window.browser || chrome;
         var isBlockByUrl = $('#block-by-url-checkbox').get(0).checked;
         var isBlockSimilar = $("#block-similar-checkbox").get(0).checked;
         var isBlockOneDomain = $("#one-domain-checkbox").get(0).checked;
-        var includeCssPath = $("#include-css-path-checkbox").get(0).checked;
 
         var attributesSelector = '';
         $('.attribute-check-box').forEach(function(el) {
@@ -198,22 +196,14 @@ var browser = window.browser || chrome;
             attributes: attributesSelector
         };
 
-        if (includeCssPath) {
-            // Need to evaluate rule construction on page context to avoid serializing html nodes
-            var func = 'AdguardRulesConstructorLib.constructRuleText($0, ' + JSON.stringify(options) + ');';
-            browser.devtools.inspectedWindow.eval(func, {
-                useContentScriptContext: true
-            }, function (result) {
-                if (result) {
-                    document.getElementById("filter-rule-text").value = result;
-                }
-            });
-        } else {
-            var ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-            if (ruleText) {
-                document.getElementById("filter-rule-text").value = ruleText;
+        var func = 'AdguardRulesConstructorLib.constructRuleText($0, ' + JSON.stringify(options) + ');';
+        browser.devtools.inspectedWindow.eval(func, {
+            useContentScriptContext: true
+        }, function (result) {
+            if (result) {
+                document.getElementById("filter-rule-text").value = result;
             }
-        }
+        });
     };
 
     var togglePreview = function (element) {
