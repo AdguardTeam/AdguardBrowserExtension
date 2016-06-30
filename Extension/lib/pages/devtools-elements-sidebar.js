@@ -208,12 +208,14 @@ var browser = window.browser || chrome;
 
     var togglePreview = function (element) {
 
-        var togglePreviewStyle = function (selector) {
+        var togglePreviewStyle = function (hide, isBlockSimilar) {
             var PREVIEW_STYLE_ID = "adguard-preview-style";
 
             var head = document.getElementsByTagName('head')[0];
             if (head) {
-                if (selector && selector != 'null') {
+                if (hide && hide == 'true') {
+                    var selector = AdguardRulesConstructorLib.constructCssSelector($0, isBlockSimilar == 'true');
+
                     var style = document.createElement("style");
                     style.setAttribute("type", "text/css");
                     style.setAttribute("id", PREVIEW_STYLE_ID);
@@ -226,8 +228,9 @@ var browser = window.browser || chrome;
             }
         };
 
-        var selector = element ? AdguardRulesConstructorLib.constructCssSelector(element) : null;
-        browser.devtools.inspectedWindow.eval("(" + togglePreviewStyle.toString() + ")('" + selector + "')");
+        var isBlockSimilar = $("#block-similar-checkbox").get(0).checked;
+        var hide = element ? true : false;
+        browser.devtools.inspectedWindow.eval("(" + togglePreviewStyle.toString() + ")('" + hide + "', '" + isBlockSimilar + "')", { useContentScriptContext: true });
     };
 
     var addRuleForElement = function (element) {
