@@ -90,6 +90,7 @@ var browser = window.browser || chrome;
 
         $('.update-rule-block').on('click', function () {
             updateRule();
+            //TODO: disable checkboxes if block-by-url checked
         });
     };
 
@@ -193,14 +194,19 @@ var browser = window.browser || chrome;
         var isBlockOneDomain = $("#one-domain-checkbox").get(0).checked;
 
         var attributesSelector = '';
-        $('.attribute-check-box').forEach(function(el) {
+        $('.attribute-check-box').forEach(function (el) {
             if (el && el.checked) {
-
                 var attrName = el.id.substring('attribute-check-box-'.length);
-                if (info.attributes) {
-                    var attr = info.attributes[attrName];
-                    if (attr) {
-                        attributesSelector += '[' + attr.name + '="' + attr.value + '"]';
+                if (attrName == 'name') {
+                    //TODO: handle name checkbox
+                } else if (attrName == 'class') {
+                    //TODO: handle class checkboxes
+                } else {
+                    if (info.attributes) {
+                        var attr = info.attributes[attrName];
+                        if (attr) {
+                            attributesSelector += '[' + attr.name + '="' + attr.value + '"]';
+                        }
                     }
                 }
             }
