@@ -42,7 +42,7 @@ var browser = window.browser || chrome;
     var initElements = function () {
         $('#block-by-url-checkbox').get(0).checked = false;
         $('#block-similar-checkbox').get(0).checked = false;
-        $('#one-domain-checkbox').get(0).checked = false;
+        $('#one-domain-checkbox').get(0).checked = true;
 
         $("#filter-rule-text").get(0).value = '';
 
@@ -149,15 +149,34 @@ var browser = window.browser || chrome;
             placeholder.removeChild(placeholder.firstChild);
         }
 
-        for (var i = 0; i < info.attributes.length; i++) {
-            var attribute = info.attributes[i];
+        var createAttributeElement = function(attributeName, attributeValue, defaultChecked) {
+            var checked = '';
+            if (defaultChecked) {
+                checked = '" checked="true"';
+            }
+
             var el = $(
                 '<li class="parent">'
-                    + '<input class="enabled-button attribute-check-box" type="checkbox" id="' + 'attribute-check-box-' + attribute.name + '">'
-                    + '<span class="webkit-css-property">' + attribute.name + '</span>: '
-                    + '<span class="value">' + attribute.value + '</span>'
+                + '<input class="enabled-button attribute-check-box" type="checkbox" id="' + 'attribute-check-box-' + attributeName + checked + '">'
+                + '<span class="webkit-css-property">' + attributeName + '</span>: '
+                + '<span class="value">' + attributeValue + '</span>'
                 + '</li>');
-            placeholder.appendChild(el.get(0));
+            return el.get(0);
+        };
+
+        placeholder.appendChild(createAttributeElement('name', info.tagName, true));
+
+        for (var i = 0; i < info.attributes.length; i++) {
+            var attribute = info.attributes[i];
+
+            if ((attribute.name == 'class') && (attribute.value)) {
+                var split = attribute.value.split(' ');
+                for (var j = 0; j < split.length; j++) {
+                    placeholder.appendChild(createAttributeElement(attribute.name, split[j], true));
+                }
+            } else {
+                placeholder.appendChild(createAttributeElement(attribute.name, attribute.value, attribute.name == 'id'));
+            }
         }
 
     };
@@ -190,8 +209,8 @@ var browser = window.browser || chrome;
         var options = {
             isBlockByUrl: isBlockByUrl,
             urlMask: info.urlBlockAttributeValue,
-            isBlockSimilar : isBlockSimilar,
-            isBlockOneDomain: isBlockOneDomain,
+            isBlockSimilar : !isBlockSimilar,
+            isBlockOneDomain: !isBlockOneDomain,
             url: url,
             attributes: attributesSelector
         };

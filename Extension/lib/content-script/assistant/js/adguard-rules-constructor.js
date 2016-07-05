@@ -186,6 +186,7 @@ var AdguardRulesConstructorLib = (function (api) {
     api.getElementInfo = function (element) {
 
         return {
+            tagName: element.tagName,
             classes: element.classList,
             attributes: element.attributes,
             urlBlockAttributeValue: getUrlBlockAttribute(element),
