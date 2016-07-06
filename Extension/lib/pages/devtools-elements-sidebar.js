@@ -32,7 +32,8 @@ var browser = window.browser || chrome;
                 window.selectedElementInfo = AdguardRulesConstructorLib.getElementInfo(result);
 
                 updateRule();
-                updatePanelElements();
+                handleShowBlockSettings(window.selectedElementInfo.haveUrlBlockParameter, window.selectedElementInfo.haveClassAttribute);
+                setupAttributesInfo(window.selectedElementInfo);
             });
         });
 
@@ -89,8 +90,8 @@ var browser = window.browser || chrome;
         });
 
         $('.update-rule-block').on('click', function () {
+            updatePanelElements();
             updateRule();
-            //TODO: disable checkboxes if block-by-url checked
         });
     };
 
@@ -125,8 +126,14 @@ var browser = window.browser || chrome;
     };
 
     var updatePanelElements = function () {
-        handleShowBlockSettings(window.selectedElementInfo.haveUrlBlockParameter, window.selectedElementInfo.haveClassAttribute);
-        setupAttributesInfo(window.selectedElementInfo);
+        var checkboxes = $('#one-domain-checkbox, #block-similar-checkbox, .attribute-check-box');
+
+        //All checkboxes should be disabled if block by url is checked
+        if ($('#block-by-url-checkbox').get(0).checked == true) {
+            checkboxes.attr("disabled", "disabled");
+        } else {
+            checkboxes.removeAttr("disabled");
+        }
     };
 
     var handleShowBlockSettings = function (showBlockByUrl, showBlockSimilar) {
@@ -165,7 +172,7 @@ var browser = window.browser || chrome;
             return el.get(0);
         };
 
-        placeholder.appendChild(createAttributeElement('name', info.tagName, true));
+        placeholder.appendChild(createAttributeElement('tag', info.tagName, true));
 
         for (var i = 0; i < info.attributes.length; i++) {
             var attribute = info.attributes[i];
@@ -197,8 +204,8 @@ var browser = window.browser || chrome;
         $('.attribute-check-box').forEach(function (el) {
             if (el && el.checked) {
                 var attrName = el.id.substring('attribute-check-box-'.length);
-                if (attrName == 'name') {
-                    //TODO: handle name checkbox
+                if (attrName == 'tag') {
+                    //TODO: handle tag name checkbox
                 } else if (attrName == 'class') {
                     //TODO: handle class checkboxes
                 } else {

@@ -148,6 +148,13 @@ balalaika.fn.attr = function (k, v) {
     return this;
 };
 
+balalaika.fn.removeAttr = function (k) {
+    this.forEach(function (item) {
+        item.removeAttribute(k);
+    });
+    return this;
+};
+
 balalaika.fn.trigger = function (eventName, options) {
     this.forEach(function (item) {
         if (window.CustomEvent) {
