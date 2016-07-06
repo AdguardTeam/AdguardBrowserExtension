@@ -163,11 +163,12 @@ var browser = window.browser || chrome;
                 checked = '" checked="true"';
             }
 
+            //TODO: xss
             var el = $(
                 '<li class="parent">'
                 + '<input class="enabled-button attribute-check-box" type="checkbox" id="' + 'attribute-check-box-' + attributeName + checked + '">'
                 + '<span class="webkit-css-property">' + attributeName + '</span>: '
-                + '<span class="value">' + attributeValue + '</span>'
+                + '<span class="value attribute-check-box-value">' + attributeValue + '</span>'
                 + '</li>');
             return el.get(0);
         };
@@ -200,19 +201,24 @@ var browser = window.browser || chrome;
         var isBlockSimilar = $("#block-similar-checkbox").get(0).checked;
         var isBlockOneDomain = $("#one-domain-checkbox").get(0).checked;
 
+        var includeTagName = true;
+        var selectedClasses = [];
         var attributesSelector = '';
         $('.attribute-check-box').forEach(function (el) {
-            if (el && el.checked) {
+            if (el) {
                 var attrName = el.id.substring('attribute-check-box-'.length);
                 if (attrName == 'tag') {
-                    //TODO: handle tag name checkbox
-                } else if (attrName == 'class') {
-                    //TODO: handle class checkboxes
+                    includeTagName = el.checked;
                 } else {
-                    if (info.attributes) {
+                    if (el.checked && info.attributes) {
                         var attr = info.attributes[attrName];
                         if (attr) {
-                            attributesSelector += '[' + attr.name + '="' + attr.value + '"]';
+                            if (attrName == 'class') {
+                                var className = el.parentNode.querySelector('.attribute-check-box-value').innerText;
+                                selectedClasses.push('.' + className);
+                            } else {
+                                attributesSelector += '[' + attr.name + '="' + attr.value + '"]';
+                            }
                         }
                     }
                 }
@@ -225,7 +231,9 @@ var browser = window.browser || chrome;
             isBlockSimilar : !isBlockSimilar,
             isBlockOneDomain: !isBlockOneDomain,
             url: url,
-            attributes: attributesSelector
+            attributes: attributesSelector,
+            excludeTagName: !includeTagName,
+            classesSelector: selectedClasses.join('')
         };
 
         var func = 'AdguardRulesConstructorLib.constructRuleText($0, ' + JSON.stringify(options) + ');';

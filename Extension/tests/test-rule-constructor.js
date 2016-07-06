@@ -5,6 +5,7 @@
 
 function testConstructor() {
     var element = document.getElementById('test-div');
+    var elementHref = document.getElementsByClassName('a-test-class')[0];
 
     var options = {
         isBlockByUrl: false,
@@ -12,7 +13,9 @@ function testConstructor() {
         isBlockSimilar : false,
         isBlockOneDomain: false,
         url: 'http://example.org/test-page.html?param=p1',
-        attributes: ''
+        attributes: '',
+        excludeTagName: false,
+        classesSelector: ''
     };
 
     var ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
@@ -26,13 +29,18 @@ function testConstructor() {
     options.isBlockSimilar = true;
     options.isBlockOneDomain = false;
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-    assertEquals(ruleText, 'example.org##.test-class');
+    assertEquals(ruleText, 'example.org##.test-class.test-class-two');
 
     options.isBlockByUrl = false;
     options.isBlockSimilar = true;
     options.isBlockOneDomain = true;
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-    assertEquals(ruleText, '##.test-class');
+    assertEquals(ruleText, '##.test-class.test-class-two');
+
+    options.classesSelector = '.test-class-two';
+    ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
+    assertEquals(ruleText, '##.test-class-two');
+    options.classesSelector = '';
 
     options.isBlockByUrl = false;
     options.isBlockSimilar = false;
@@ -46,5 +54,21 @@ function testConstructor() {
     options.attributes = '[title="Share on Twitter"][attribute="aValue"]';
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
     assertEquals(ruleText, '###test-div[title="Share on Twitter"][attribute="aValue"]');
+
+    options.isBlockByUrl = false;
+    options.isBlockSimilar = false;
+    options.isBlockOneDomain = true;
+    options.attributes = '';
+    options.excludeTagName = false;
+    ruleText = AdguardRulesConstructorLib.constructRuleText(elementHref, options);
+    assertEquals(ruleText, '###test-div > A.a-test-class.a-test-class-two.a-test-class-three');
+
+    options.excludeTagName = true;
+    ruleText = AdguardRulesConstructorLib.constructRuleText(elementHref, options);
+    assertEquals(ruleText, '###test-div > .a-test-class.a-test-class-two.a-test-class-three');
+
+    options.classesSelector = '.a-test-class-two.a-test-class-three';
+    ruleText = AdguardRulesConstructorLib.constructRuleText(elementHref, options);
+    assertEquals(ruleText, '###test-div > .a-test-class-two.a-test-class-three');
 }
 addTestCase(testConstructor);

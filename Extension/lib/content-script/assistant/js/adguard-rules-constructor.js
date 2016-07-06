@@ -22,7 +22,7 @@ var AdguardRulesConstructorLib = (function (api) {
 
     var URLBLOCK_ATTRIBUTES = ["src", "data"];
 
-    var makeCssNthChildFilter = function (element) {
+    var makeCssNthChildFilter = function (element, classesSelector, excludeTagName) {
 
         var path = [];
         var el = element;
@@ -74,7 +74,15 @@ var AdguardRulesConstructorLib = (function (api) {
                 } else {
                     className = '';
                 }
-                path.unshift(el.tagName + className + ch);
+
+                if (el == element) {
+                    var p = excludeTagName ? '' : el.tagName;
+                    p += classesSelector ? classesSelector : className;
+                    p += ch;
+                    path.unshift(p);
+                } else {
+                    path.unshift(el.tagName + className + ch);
+                }
 
                 el = el.parentNode;
             }
@@ -82,12 +90,12 @@ var AdguardRulesConstructorLib = (function (api) {
         return path.join(" > ");
     };
 
-    var createRuleText = function (element) {
+    var createRuleText = function (element, classesSelector, excludeTagName) {
         if (!element) {
             return;
         }
 
-        var selector = makeCssNthChildFilter(element);
+        var selector = makeCssNthChildFilter(element, classesSelector, excludeTagName);
         return selector ? "##" + selector : "";
     };
 
@@ -104,8 +112,12 @@ var AdguardRulesConstructorLib = (function (api) {
         return '.' + className.trim().replace(/\s+/g, ', .');
     };
 
-    var createSimilarRuleText = function (element) {
-        var selector = createSimilarElementSelector(element);
+    var createSimilarRuleText = function (element, classesSelector) {
+        var selector = classesSelector;
+        if (!selector) {
+            selector = createSimilarElementSelector(element, classesSelector);
+        }
+
         return selector ? "##" + selector.replace(', .', '.') : "";
     };
 
@@ -240,9 +252,9 @@ var AdguardRulesConstructorLib = (function (api) {
 
         var result;
         if (options.isBlockSimilar) {
-            result = createSimilarRuleText(element);
+            result = createSimilarRuleText(element, options.classesSelector);
         } else {
-            result = createRuleText(element);
+            result = createRuleText(element, options.classesSelector, options.excludeTagName);
         }
 
         if (!options.isBlockOneDomain) {
