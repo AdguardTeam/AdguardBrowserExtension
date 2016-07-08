@@ -112,13 +112,13 @@ var AdguardRulesConstructorLib = (function (api) {
         return '.' + className.trim().replace(/\s+/g, ', .');
     };
 
-    var createSimilarRuleText = function (element, classesSelector) {
+    var createSimilarRuleText = function (element, classesSelector, includeTagName) {
         var selector = classesSelector;
         if (!selector) {
             selector = createSimilarElementSelector(element, classesSelector);
         }
 
-        return selector ? "##" + selector.replace(', .', '.') : "";
+        return selector ? "##" + (includeTagName ? element.tagName : '') + selector.replace(', .', '.') : "";
     };
 
     var constructUrlBlockRuleText = function (element, urlBlockAttribute, oneDomain, domain) {
@@ -256,7 +256,7 @@ var AdguardRulesConstructorLib = (function (api) {
 
         var result;
         if (options.isBlockSimilar) {
-            result = createSimilarRuleText(element, options.classesSelector);
+            result = createSimilarRuleText(element, options.classesSelector, options.excludeTagName == false);
         } else {
             result = createRuleText(element, options.classesSelector, options.excludeTagName);
         }

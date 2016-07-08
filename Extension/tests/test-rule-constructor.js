@@ -15,7 +15,6 @@ function testConstructor() {
         isBlockOneDomain: false,
         url: 'http://example.org/test-page.html?param=p1',
         attributes: '',
-        excludeTagName: false,
         classesSelector: ''
     };
 
@@ -32,9 +31,14 @@ function testConstructor() {
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
     assertEquals(ruleText, 'example.org##.test-class.test-class-two');
 
+    options.excludeTagName = false;
+    ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
+    assertEquals(ruleText, 'example.org##DIV.test-class.test-class-two');
+
     options.isBlockByUrl = false;
     options.isBlockSimilar = true;
     options.isBlockOneDomain = true;
+    options.excludeTagName = true;
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
     assertEquals(ruleText, '##.test-class.test-class-two');
 
