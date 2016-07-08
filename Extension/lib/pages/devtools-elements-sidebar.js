@@ -145,8 +145,9 @@ var browser = window.browser || chrome;
         }
         if (showBlockSimilar) {
             $('#block-similar-checkbox-block').show();
-        } else {
             $('#block-similar-checkbox').get(0).checked = false;
+        } else {
+            $('#block-similar-checkbox').get(0).checked = true;
             $('#block-similar-checkbox-block').hide();
         }
     };

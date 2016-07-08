@@ -4,6 +4,7 @@
 /* global assertTrue */
 
 function testConstructor() {
+
     var element = document.getElementById('test-div');
     var elementHref = document.getElementsByClassName('a-test-class')[0];
 
@@ -61,14 +62,34 @@ function testConstructor() {
     options.attributes = '';
     options.excludeTagName = false;
     ruleText = AdguardRulesConstructorLib.constructRuleText(elementHref, options);
-    assertEquals(ruleText, '###test-div > A.a-test-class.a-test-class-two.a-test-class-three');
+    assertEquals(ruleText, '###test-div > A.a-test-class.a-test-class-two.a-test-class-three:first-child');
 
     options.excludeTagName = true;
     ruleText = AdguardRulesConstructorLib.constructRuleText(elementHref, options);
-    assertEquals(ruleText, '###test-div > .a-test-class.a-test-class-two.a-test-class-three');
+    assertEquals(ruleText, '###test-div > .a-test-class.a-test-class-two.a-test-class-three:first-child');
 
     options.classesSelector = '.a-test-class-two.a-test-class-three';
     ruleText = AdguardRulesConstructorLib.constructRuleText(elementHref, options);
-    assertEquals(ruleText, '###test-div > .a-test-class-two.a-test-class-three');
+    assertEquals(ruleText, '###test-div > .a-test-class-two.a-test-class-three:first-child');
 }
 addTestCase(testConstructor);
+
+function testContructor2() {
+
+    var elementHref = document.getElementsByTagName('h2')[0];
+
+    var options = {
+        isBlockByUrl: false,
+        urlMask: null,
+        isBlockSimilar: false,
+        isBlockOneDomain: false,
+        url: 'https://lenta.ru/',
+        attributes: '',
+        excludeTagName: false,
+        classesSelector: ''
+    };
+
+    var ruleText = AdguardRulesConstructorLib.constructRuleText(elementHref, options);
+    assertEquals(ruleText, 'lenta.ru###test-div > H2:last-child');
+}
+addTestCase(testContructor2);
