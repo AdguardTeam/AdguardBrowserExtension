@@ -119,10 +119,30 @@ var browser = window.browser || chrome;
         };
 
         var deserializeElement = function (html) {
-            var wrapper = document.createElement('body');
-            wrapper.innerHTML = html;
+            var wrapper = document.createElement('div');
 
-            return html && (html.startsWith('<body') || html.startsWith('<BODY')) ? wrapper : wrapper.firstChild;
+            if (html) {
+                if (html.startsWith('<body') || html.startsWith('<BODY')) {
+                    wrapper = document.createElement('body');
+                    wrapper.innerHTML = html;
+                    return wrapper;
+                }
+
+                if (html.startsWith('<html') || html.startsWith('<HTML')) {
+                    wrapper = document.createElement('html');
+                    wrapper.innerHTML = html;
+                    return wrapper;
+                }
+
+                if (html.startsWith('<head') || html.startsWith('<HEAD')) {
+                    wrapper = document.createElement('head');
+                    wrapper.innerHTML = html;
+                    return wrapper;
+                }
+            }
+
+            wrapper.innerHTML = html;
+            return wrapper.firstChild;
         };
 
         browser.devtools.inspectedWindow.eval("(" + serializeElement.toString() + ")($0)", function (result) {
