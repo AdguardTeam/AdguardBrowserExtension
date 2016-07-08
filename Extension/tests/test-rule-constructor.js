@@ -14,8 +14,7 @@ function testConstructor() {
         isBlockSimilar : false,
         isBlockOneDomain: false,
         url: 'http://example.org/test-page.html?param=p1',
-        attributes: '',
-        classesSelector: ''
+        attributes: ''
     };
 
     var ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
@@ -31,6 +30,11 @@ function testConstructor() {
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
     assertEquals(ruleText, 'example.org##.test-class.test-class-two');
 
+    options.classesSelector = '';
+    ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
+    assertEquals(ruleText, 'example.org');
+
+    options.classesSelector = null;
     options.excludeTagName = false;
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
     assertEquals(ruleText, 'example.org##DIV.test-class.test-class-two');
@@ -45,7 +49,7 @@ function testConstructor() {
     options.classesSelector = '.test-class-two';
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
     assertEquals(ruleText, '##.test-class-two');
-    options.classesSelector = '';
+    options.classesSelector = null;
 
     options.isBlockByUrl = false;
     options.isBlockSimilar = false;

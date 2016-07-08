@@ -77,7 +77,7 @@ var AdguardRulesConstructorLib = (function (api) {
 
                 if (el == element) {
                     var p = excludeTagName ? '' : el.tagName;
-                    p += classesSelector ? classesSelector : className;
+                    p += (!classesSelector && classesSelector != '') ? className : classesSelector;
                     p += ch;
                     path.unshift(p);
                 } else {
@@ -99,7 +99,7 @@ var AdguardRulesConstructorLib = (function (api) {
         return selector ? "##" + selector : "";
     };
 
-    var createSimilarElementSelector = function (element) {
+    var createSimilarElementSelector = function (element, classesSelector) {
         if (!element) {
             return "";
         }
@@ -114,11 +114,19 @@ var AdguardRulesConstructorLib = (function (api) {
 
     var createSimilarRuleText = function (element, classesSelector, includeTagName) {
         var selector = classesSelector;
-        if (!selector) {
-            selector = createSimilarElementSelector(element, classesSelector);
+        if (!selector && selector != '') {
+            selector = createSimilarElementSelector(element);
         }
 
-        return selector ? "##" + (includeTagName ? element.tagName : '') + selector.replace(', .', '.') : "";
+        if (selector) {
+            selector = selector.replace(', .', '.');
+        }
+
+        if (includeTagName) {
+            selector = element.tagName + selector;
+        }
+
+        return selector ? "##" + selector : "";
     };
 
     var constructUrlBlockRuleText = function (element, urlBlockAttribute, oneDomain, domain) {
