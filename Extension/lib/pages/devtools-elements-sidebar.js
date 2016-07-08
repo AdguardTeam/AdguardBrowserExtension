@@ -21,8 +21,9 @@ var browser = window.browser || chrome;
 (function ($) {
     var initPanel = function () {
         initElements();
+        bindEvents();
 
-        browser.devtools && browser.devtools.panels.elements.onSelectionChanged.addListener(function () {
+        var onElementSelected = function () {
             getSelectedElement(function (result) {
                 if (!result) {
                     return;
@@ -35,9 +36,11 @@ var browser = window.browser || chrome;
                 handleShowBlockSettings(window.selectedElementInfo.haveUrlBlockParameter, window.selectedElementInfo.haveClassAttribute);
                 setupAttributesInfo(window.selectedElementInfo);
             });
-        });
+        };
 
-        bindEvents();
+        browser.devtools && browser.devtools.panels.elements.onSelectionChanged.addListener(onElementSelected);
+
+        onElementSelected();
     };
 
     var initElements = function () {
@@ -100,6 +103,7 @@ var browser = window.browser || chrome;
          * Only serializable data can be passed in callback function
          */
         var serializeElement = function (node) {
+            console.log(node);
             if (!node || !node.tagName) {
                 return '';
             }
@@ -115,9 +119,10 @@ var browser = window.browser || chrome;
         };
 
         var deserializeElement = function (html) {
-            var wrapper = document.createElement('div');
+            var wrapper = document.createElement('body');
             wrapper.innerHTML = html;
-            return wrapper.firstChild;
+
+            return html && (html.startsWith('<body') || html.startsWith('<BODY')) ? wrapper : wrapper.firstChild;
         };
 
         browser.devtools.inspectedWindow.eval("(" + serializeElement.toString() + ")($0)", function (result) {
