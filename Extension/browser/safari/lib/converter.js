@@ -18,7 +18,7 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.7';
+var CONVERTER_VERSION = '1.3.8';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var URL_FILTER_ANY_URL = ".*";
@@ -775,6 +775,8 @@ exports.SafariContentBlockerConverter = {
         converted = converted.concat(contentBlocker.urlBlocking);
         converted = converted.concat(contentBlocker.other);
 
+        var convertedLength = converted.length;
+        
         if (limit && limit > 0 && converted.length > limit) {
             var message = '' + limit + ' limit is achieved. Next rules will be ignored.';
             contentBlocker.errors.push(message);
@@ -787,6 +789,7 @@ exports.SafariContentBlockerConverter = {
         Log.info('Content blocker length: ' + converted.length);
 
         var result = {
+            totalConvertedCount: convertedLength,
             convertedCount: converted.length,
             errorsCount: contentBlocker.errors.length,
             overLimit: overLimit,
