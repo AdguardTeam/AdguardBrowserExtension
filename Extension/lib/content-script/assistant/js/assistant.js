@@ -26,22 +26,11 @@ var AdguardAssistant = function ($) {
 
 	var settings = {
 		iframeId: 'adguard-assistant-dialog',
-		path: null,
 		selectedElement: null,
-		lastPreview: null,
-		cssRuleIndex: null,
-		urlBlockAttributes: ["src", "data"],
-		urlInfo: null,
-		croppedDomain: null
+		lastPreview: null
 	};
 
 	var constants = {
-		phishing: 'phishing',
-		wrongRender: 'wrongRender',
-		adMissing: 'adMissing',
-		another: 'another',
-		minComplaintMessageLength: 8,
-		maxComplaintCommentLength: 500,
 		iframe: {//maximum values for all browsers was leaved for compatibility
 			baseWidth: 668,
 			extendDetailedSettingsHeight: 503,
@@ -88,37 +77,7 @@ var AdguardAssistant = function ($) {
 
 		getNodeName: function (element) {
 			return element && element.nodeName ? element.nodeName.toUpperCase() : "";
-		},
-
-		getUrl: function (url) {
-			var pattern = "^(([^:/\\?#]+):)?(//(([^:/\\?#]*)(?::([^/\\?#]*))?))?([^\\?#]*)(\\?([^#]*))?(#(.*))?$";
-			var rx = new RegExp(pattern);
-			var parts = rx.exec(url);
-
-			return {
-				host: parts[4] || "",
-				path: parts[7] || ""
-			};
-		},
-
-		cropDomain: function (domain) {
-			return domain.replace("www.", "").replace(/:\d+/, '');
 		}
-	};
-
-	var getCroppedDomain = function () {
-		if (!settings.croppedDomain) {
-			settings.croppedDomain = utils.cropDomain(getUrlInfo().host);
-		}
-		return settings.croppedDomain;
-	};
-
-	var getUrlInfo = function () {
-		if (!settings.urlInfo) {
-			settings.urlInfo = utils.getUrl(document.location);
-		}
-
-		return settings.urlInfo;
 	};
 
 	var getMessage = function (msgId) {
@@ -385,11 +344,9 @@ var AdguardAssistant = function ($) {
 
 	var onElementSelected = function (element) {
 		settings.selectedElement = element;
+		settings.elementInfo = AdguardRulesConstructorLib.getElementInfo(element);
 
-		var urlBlock = haveUrlBlockParameter(element);
-		var blockSimilar = haveClassAttribute(element);
-
-		showHidingRuleWindow(element, urlBlock, blockSimilar);
+		showHidingRuleWindow(element, settings.elementInfo.haveUrlBlockParameter, settings.elementInfo.haveClassAttribute);
 	};
 
 	var closeAssistant = function () {
@@ -404,16 +361,6 @@ var AdguardAssistant = function ($) {
 		// Initializing AdguardSelector with default configuration
 		//AdguardSelectorLib.reset();
 		AdguardSelectorLib.init(onElementSelected);
-	};
-
-	var haveUrlBlockParameter = function (element) {
-		var value = getUrlBlockAttribute(element);
-		return value && value != '';
-	};
-
-	var haveClassAttribute = function (element) {
-		var className = element.className;
-		return className && className.trim() != '';
 	};
 
 	var setFilterRuleInputText = function (ruleText) {
@@ -549,7 +496,6 @@ var AdguardAssistant = function ($) {
 			AdguardSelectorLib.selectElement(element);
 
 			onScopeChange();
-			setScopeOneDomainText();
 			handleShowBlockSettings(urlBlock, blockSimilar);
 		});
 
@@ -597,11 +543,6 @@ var AdguardAssistant = function ($) {
 			findInIframe('#adv-settings').removeClass('open');
 			findInIframe('#adg-show-adv-settings').removeClass('active');
 		}
-	};
-
-	var setScopeOneDomainText = function () {
-		var path = getCroppedDomain();
-		findInIframe('#oneDomainText').text(path);
 	};
 
 	var createSlider = function (element) {
@@ -667,28 +608,18 @@ var AdguardAssistant = function ($) {
 		removePreview();
 
 		settings.selectedElement = element;
+		settings.elementInfo = AdguardRulesConstructorLib.getElementInfo(element);
 		AdguardSelectorLib.selectElement(element);
 
 		makeDefaultCheckboxesForDetailedMenu();
 		onScopeChange();
-		handleShowBlockSettings(haveUrlBlockParameter(element), haveClassAttribute(element));
+		handleShowBlockSettings(settings.elementInfo.haveUrlBlockParameter, settings.elementInfo.haveClassAttribute);
 	};
 
 	var makeDefaultCheckboxesForDetailedMenu = function () {
 		findInIframe('#block-by-url-checkbox').get(0).checked = false;
 		findInIframe('#block-similar-checkbox').get(0).checked = false;
 		findInIframe('#one-domain-checkbox').get(0).checked = false;
-	};
-
-	var getUrlBlockAttribute = function (element) {
-		for (var i = 0; i < settings.urlBlockAttributes.length; i++) {
-			var attr = settings.urlBlockAttributes[i];
-			var value = element.getAttribute(attr);
-			if (value) {
-				return value;
-			}
-		}
-		return null;
 	};
 
 	var onRulePreview = function (e) {
@@ -754,14 +685,14 @@ var AdguardAssistant = function ($) {
 		var isBlockSimilar = findInIframe("#block-similar-checkbox").get(0).checked;
 		var isBlockOneDomain = findInIframe("#one-domain-checkbox").get(0).checked;
 
-		handleShowBlockSettings(haveUrlBlockParameter(settings.selectedElement) && !isBlockSimilar, haveClassAttribute(settings.selectedElement) && !isBlockByUrl);
+		handleShowBlockSettings(settings.elementInfo.haveUrlBlockParameter && !isBlockSimilar, settings.elementInfo.haveClassAttribute && !isBlockByUrl);
 
 		var options = {
 			isBlockByUrl: isBlockByUrl,
-			urlMask: getUrlBlockAttribute(settings.selectedElement),
+			urlMask: settings.elementInfo.urlBlockAttributeValue,
 			isBlockSimilar : isBlockSimilar,
 			isBlockOneDomain: isBlockOneDomain,
-			domain: getCroppedDomain()
+			url: document.location
 		};
 
 		var ruleText = AdguardRulesConstructorLib.constructRuleText(settings.selectedElement, options);

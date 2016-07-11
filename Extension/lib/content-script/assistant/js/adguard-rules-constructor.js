@@ -20,8 +20,9 @@
  */
 var AdguardRulesConstructorLib = (function (api) {
 
-    var makeCssNthChildFilter = function (element) {
+    var URLBLOCK_ATTRIBUTES = ["src", "data"];
 
+    var makeCssNthChildFilter = function (element, classesSelector, excludeTagName) {
         var path = [];
         var el = element;
         while (el.parentNode) {
@@ -30,12 +31,20 @@ var AdguardRulesConstructorLib = (function (api) {
                 break;
             }
             if (el.id) {
+                var s = '';
+                if (el == element) {
+                    s += excludeTagName == false ? el.tagName.toLowerCase() : '';
+                    s += (!classesSelector && classesSelector != '') ? '' : classesSelector;
+                }
+
                 var id = el.id.split(':').join('\\:');//case of colon in id. Need to escape
                 if (el.id.indexOf('.') > -1) {
-                    path.unshift('[id="' + id + '"]');
+                    s += '[id="' + id + '"]';
                 } else {
-                    path.unshift('#' + id);
+                    s += '#' + id;
                 }
+
+                path.unshift(s);
                 break;
             } else {
                 var c = 1;
@@ -72,7 +81,15 @@ var AdguardRulesConstructorLib = (function (api) {
                 } else {
                     className = '';
                 }
-                path.unshift(el.tagName + className + ch);
+
+                if (el == element) {
+                    var p = excludeTagName ? '' : el.tagName.toLowerCase();
+                    p += (!classesSelector && classesSelector != '') ? className : classesSelector;
+                    p += ch;
+                    path.unshift(p);
+                } else {
+                    path.unshift(el.tagName.toLowerCase() + className + ch);
+                }
 
                 el = el.parentNode;
             }
@@ -80,12 +97,12 @@ var AdguardRulesConstructorLib = (function (api) {
         return path.join(" > ");
     };
 
-    var createRuleText = function (element) {
+    var createRuleText = function (element, classesSelector, excludeTagName) {
         if (!element) {
             return;
         }
 
-        var selector = makeCssNthChildFilter(element);
+        var selector = makeCssNthChildFilter(element, classesSelector, excludeTagName);
         return selector ? "##" + selector : "";
     };
 
@@ -102,9 +119,21 @@ var AdguardRulesConstructorLib = (function (api) {
         return '.' + className.trim().replace(/\s+/g, ', .');
     };
 
-    var createSimilarRuleText = function (element) {
-        var selector = createSimilarElementSelector(element);
-        return selector ? "##" + selector.replace(', .', '.') : "";
+    var createSimilarRuleText = function (element, classesSelector, includeTagName) {
+        var selector = classesSelector;
+        if (!selector && selector != '') {
+            selector = createSimilarElementSelector(element);
+        }
+
+        if (selector) {
+            selector = selector.replace(', .', '.');
+        }
+
+        if (includeTagName) {
+            selector = element.tagName.toLowerCase() + selector;
+        }
+
+        return selector ? "##" + selector : "";
     };
 
     var constructUrlBlockRuleText = function (element, urlBlockAttribute, oneDomain, domain) {
@@ -124,6 +153,54 @@ var AdguardRulesConstructorLib = (function (api) {
         return blockUrlRuleText;
     };
 
+    var linkHelper = document.createElement('a');
+
+    var getUrlBlockAttribute = function (element) {
+        if (!element || !element.getAttribute) {
+            return null;
+        }
+
+        for (var i = 0; i < URLBLOCK_ATTRIBUTES.length; i++) {
+            var attr = URLBLOCK_ATTRIBUTES[i];
+            var value = element.getAttribute(attr);
+            if (value) {
+                linkHelper.href = value;
+                if (linkHelper.hostname) {
+                    return value;
+                }
+            }
+        }
+
+        return null;
+    };
+
+    var haveUrlBlockParameter = function (element) {
+        var value = getUrlBlockAttribute(element);
+        return value && value != '';
+    };
+
+    var haveClassAttribute = function (element) {
+        var className = element.className;
+        return className && className.trim() != '';
+    };
+
+    var cropDomain = function (url) {
+        var domain = getUrl(url).host;
+        return domain.replace("www.", "").replace(/:\d+/, '');
+    };
+
+    var getUrl = function (url) {
+        var pattern = "^(([^:/\\?#]+):)?(//(([^:/\\?#]*)(?::([^/\\?#]*))?))?([^\\?#]*)(\\?([^#]*))?(#(.*))?$";
+        var rx = new RegExp(pattern);
+        var parts = rx.exec(url);
+
+        return {
+            host: parts[4] || "",
+            path: parts[7] || ""
+        };
+    };
+
+
     /**
      * Utility method
      *
@@ -131,6 +208,23 @@ var AdguardRulesConstructorLib = (function (api) {
      * @returns {string}
      */
     api.makeCssNthChildFilter = makeCssNthChildFilter;
+
+    /**
+     * Returns detailed element info
+     *
+     * @param element
+     */
+    api.getElementInfo = function (element) {
+
+        return {
+            tagName: element.tagName,
+            classes: element.classList,
+            attributes: element.attributes ? element.attributes : [],
+            urlBlockAttributeValue: getUrlBlockAttribute(element),
+            haveUrlBlockParameter: haveUrlBlockParameter(element),
+            haveClassAttribute: haveClassAttribute(element)
+        }
+    };
 
     /**
      * Constructs css selector for element
@@ -157,7 +251,8 @@ var AdguardRulesConstructorLib = (function (api) {
 		 *	urlBlockAttribute: url mask,
 		 *	isBlockSimilar : boolean,
 		 *	isBlockOneDomain: boolean,
-		 *	domain: domain string
+		 *	url: url,
+		 *  attributes: attributesSelectorText
 		 * }
      *
      * @param element
@@ -165,8 +260,10 @@ var AdguardRulesConstructorLib = (function (api) {
      * @returns {*}
      */
     api.constructRuleText = function (element, options) {
+        var croppedDomain = cropDomain(options.url);
+
         if (options.isBlockByUrl) {
-            var blockUrlRuleText = constructUrlBlockRuleText(element, options.urlMask, options.isBlockOneDomain, options.domain);
+            var blockUrlRuleText = constructUrlBlockRuleText(element, options.urlMask, options.isBlockOneDomain, croppedDomain);
             if (blockUrlRuleText) {
                 return blockUrlRuleText;
             }
@@ -174,13 +271,17 @@ var AdguardRulesConstructorLib = (function (api) {
 
         var result;
         if (options.isBlockSimilar) {
-            result = createSimilarRuleText(element);
+            result = createSimilarRuleText(element, options.classesSelector, options.excludeTagName == false);
         } else {
-            result = createRuleText(element);
+            result = createRuleText(element, options.classesSelector, options.excludeTagName);
         }
 
         if (!options.isBlockOneDomain) {
-            result = options.domain + result;
+            result = croppedDomain + result;
+        }
+
+        if (!options.isBlockByUrl && options.attributes) {
+            result = result + options.attributes;
         }
 
         return result;
