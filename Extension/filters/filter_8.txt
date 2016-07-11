@@ -1,10 +1,10 @@
 ! Title: Dutch filter
-! Version: 1.0.8.75
+! Version: 1.0.8.84
 ! Name: Dutch filter
 ! Description: EasyList Dutch + Adguard Dutch filter. Filter list that specifically removes adverts on Dutch language websites.
 ! NameEn: Dutch filter
 ! DescriptionEn: EasyList Dutch + Adguard Dutch filter. Filter list that specifically removes adverts on Dutch language websites.
-! TimeUpdated: 2016-05-23T21:15:35.249+03:00
+! TimeUpdated: 2016-07-08T23:29:30.087+03:00
 ! Title: Adguard Dutch Filter.
 !
 ! Filter that enables removing of the ads from websites with Dutch content.
@@ -31,11 +31,31 @@
 iculture.nl##.site-header__compare
 !
 !---------- Anti-adblock ----------!
+! https://forum.adguard.com/index.php?threads/11357/
+@@||static.buienradar.nl/resources/js/advertisement.js
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2160
 biernet.nl#@#.afs_ads
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1465
 @@||telegraaf.tcdn.nl/javascript/showads*.js
 !----------------------------------!
+! https://github.com/AdguardTeam/AdguardFilters/issues/2514
+vlinderscrime.nl##a[href="http://mariska-o.nl/"]
+||diomerc.com/baner/
+||vlinderscrime.nl/wp-content/uploads/*/*banner*.
+! https://forum.adguard.com/index.php?threads/11453/
+fok.nl###mainContent > div.ad
+! https://forum.adguard.com/index.php?threads/11304/
+iphoned.nl,androidplanet.nl###featured-header
+iphoned.nl,androidplanet.nl##.widget.widget_static_device_widget
+iphoned.nl,androidplanet.nl##.advert-sidebar
+! https://forum.adguard.com/index.php?threads/11206/
+nu.nl##.block.advertoriallist
+nu.nl##.section-mediapartner-external.source-normal
+! https://forum.adguard.com/index.php?threads/11188/
+||m.telegraaf.nl/static/lib/bva-widget.html?without-raid
+! https://forum.adguard.com/index.php?threads/11174/
+tvgids.nl##.interstitial_banner
+tvgids.nl###ligatus_under_content
 !
 ||d33t3vvu2t2yu5.cloudfront.net^$domain=nl.express.live
 ||totaaltv.nl/upload/Banner-sep-astrasat.gif

@@ -1,10 +1,10 @@
 ! Title: Spyware filter
-! Version: 1.0.6.34
+! Version: 1.0.6.61
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
 ! NameEn: Spyware filter
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2016-06-15T20:00:37.452+03:00
+! TimeUpdated: 2016-07-08T23:28:58.292+03:00
 ! Title: Adguard Spyware Filter
 !
 ! The most comprehensive list of various online counters and web analytics tools.
@@ -74,7 +74,6 @@ popmech.ru#%#AG_onLoad(function() { window.POPMECH.increaseCounters = function()
 !-------------- Tracking servers list  -----------------------------------------!
 !-------------------------------------------------------------------------------!
 !
-||funn.graphiq.com^
 //t100.ru^$third-party
 ://tru.am^$third-party
 http://r.i.ua/s?
@@ -241,6 +240,7 @@ http://r.i.ua/s?
 ||analysistools.net^$third-party
 ||analytics-egain.com^$third-party
 ||analytics-engine.net^$third-party
+||analytics.anvato.net^$third-party
 ||analytics.artirix.com^$third-party
 ||analytics.aweber.com^$third-party
 ||analytics.edgekey.net^$third-party
@@ -1031,11 +1031,13 @@ http://r.i.ua/s?
 ||fremaks.net^$third-party
 ||freshcounter.com^$third-party
 ||freshplum.com^$third-party
+||frog.wix.com^$third-party
 ||front.sspicy.ru/collect?$third-party
 ||frosmo.com^$third-party
 ||fruitflan.com^$third-party
 ||fshka.com^$third-party
 ||fun-hits.com^$third-party
+||funn.graphiq.com^
 ||funneld.com^$third-party
 ||funstage.com^$third-party
 ||fusestats.com^$third-party
@@ -1578,6 +1580,7 @@ http://r.i.ua/s?
 ||mpstat.us^$third-party
 ||mpwe.net^$third-party
 ||mr-rank.de^$third-party
+||msg.71.am^$third-party
 ||msgapp.com^$third-party
 ||msgtag.com^$third-party
 ||mstop.ru/$third-party
@@ -2789,7 +2792,6 @@ http://r.i.ua/s?
 !-------------- General (unsorted) url blocking --------------------------------!
 !-------------------------------------------------------------------------------!
 !
-.providesupport.com/cmd/*?ps_t=
 .com/a.gif?
 .com/c.gif?
 .com/i.gif?
@@ -2803,7 +2805,9 @@ http://r.i.ua/s?
 .microsoft.*/broker.js$domain=~technet.microsoft.com
 .microsoft.com/trans_pixel.
 .microsoft.com/wupixel/
+.providesupport.com/cmd/*?ps_t=
 .tns-counter.ru/v13a
+/analysis-logger/*
 /atrk.gif?
 /atrk.js
 /cb-pixel.gif?
@@ -2816,6 +2820,8 @@ http://r.i.ua/s?
 /cdn-cgi/pe/bag2?*scorecardresearch.com
 /click_metrics-jquery.js
 /counters.js$domain=~planeta.ru
+/cp2.gif?
+/dynaTraceMonitor?
 /gemius.js
 /i.gif?pageEvent=
 /images/top100.gif
@@ -2904,13 +2910,13 @@ http://r.i.ua/s?
 /xtcore-*.js
 /xtcore.js
 /zanox.js
+/zz.gif?url=
 ://top.*/count/cnt.php?
 _tracking.php?b=
 !-------------------------------------------------------------------------------!
 !-------------- Specific web sites ---------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
-||metrics.apple.com/b/ss/$image
 .arcor.de/pixel/
 .arnostat.nl/click.
 3dnews.ru##a[href^="http://metrika.yandex.ru/"]
@@ -2939,6 +2945,7 @@ radioprofusion.com##.revolvermaps
 radioprofusion.com##footer > div.counter
 seclub.org##a[href^="http://waplog.net/"]
 sinoptik.ua###bigmirTop
+vc.ru###surfingbird-block
 versii.com##img[style="width: 88px; height: 31px; border: 0"]
 washingtonpost.com##.social-tools-wrapper-bottom
 ||2gis.ru/assets/apitracker-*.
@@ -2948,11 +2955,15 @@ washingtonpost.com##.social-tools-wrapper-bottom
 ||ab-in-den-urlaub.de/nocacheTracking.php
 ||ab-in-den-urlaub.de/resources/cjs/tracking
 ||ab-in-den-urlaub.de/TrackingPixel_
+||ab-in-den-urlaub.de/usertracking
+||accounts.ad.nl/gscounters.sendReport
 ||adobe.com/*/pdc_s_code.js
 ||adobe.com/*/s_code*.js
 ||aimp.ru/data/counter.html
 ||akamai.net/*/chartbeat.js
-||amazon.com/ap/uedata?
+||amazon.com*/recordevent.html?
+||amazon.com*/ReportEvent?
+||amazon.com/*/uedata?
 ||amazon.com/empty.gif?
 ||analytics-static.unister-gmbh.de^
 ||analytics.unister-gmbh.de^
@@ -2973,7 +2984,10 @@ washingtonpost.com##.social-tools-wrapper-bottom
 ||backup-bar-navig.yandex.ru/u
 ||bar-navig.yandex.ru/u
 ||bild.de/code/webtrekk-core*.bild.js
+||bild.rtrp13n.de/tracking/
 ||bing.com/action/
+||bing.com/c.gif?
+||bing.com/fd/ls/
 ||bitrix.info/ba.js
 ||biweed.com/templates/ipboard/images/counter*.gif
 ||bomp.odmedia.net^$domain=fcb.tv
@@ -2994,6 +3008,7 @@ washingtonpost.com##.social-tools-wrapper-bottom
 ||cmexota.ru/templates/default/images/livinternet.png
 ||collector.githubapp.com^
 ||computerbase.de/api/stats?
+||counter.yadro.ru/hit?r
 ||countess.twitch.tv^
 ||dailymotion.com/gravity/report
 ||dailymotion.com/logger/*?session_id=
@@ -3007,6 +3022,7 @@ washingtonpost.com##.social-tools-wrapper-bottom
 ||dropbox.com/web_timing_log
 ||dws.reporting.dnitv.com/dni_reporting.js
 ||ebaystatic.com^*/tracking_
+||evcdn.com/store/plugins/tracker-ev-sdk.js
 ||events.redditmedia.com^
 ||expedia.com/api/datacapture/track
 ||expedia.com/cl/data/typeahead_client_metrics.json
@@ -3042,6 +3058,7 @@ washingtonpost.com##.social-tools-wrapper-bottom
 ||heise.de/video/video_gesehen.html?mmbid=
 ||heizoel24.de/Scripts/g_tracking.js
 ||hi-fi.ru/i/js/counter.js
+||hm.com/global/session-tracking
 ||horizon.businessinsider.com/*/track
 ||horizon.mashable.com/*/track
 ||hotel.idealo.de/report
@@ -3090,12 +3107,14 @@ washingtonpost.com##.social-tools-wrapper-bottom
 ||media-imdb.com/twilight/?
 ||megashara.org/uploads/button/online.png
 ||metrics.amd.com/b/ss/
+||metrics.apple.com/b/ss/$image
 ||metrics.aviasales.ru^
 ||metrics.uol.com.br^
 ||mm.welt.de^
 ||montblanc.lenta.ru^
 ||montblanc.rambler.ru^
 ||ms.computerbild.de/?event=
+||msg.video.qiyi.com^$image
 ||msn.com/ro.aspx?
 ||msn.com/script/tracking*.js
 ||msn.com/tracker/
@@ -3141,6 +3160,7 @@ washingtonpost.com##.social-tools-wrapper-bottom
 ||ranking.fc2.com/analyze.js
 ||ranking.fc2.com/count?
 ||reanimator.net/informer-images/
+||reformal.ru/log.php
 ||reise.com/js/webtrekk
 ||rel.msn.com^
 ||rem-track.bild.de^
@@ -3166,6 +3186,7 @@ washingtonpost.com##.social-tools-wrapper-bottom
 ||srv.onedio.com/geo/code
 ||stat.sports.ru^
 ||static-maxdome.de/*/tracking
+||static.iqiyi.com/js/pingback/
 ||static.krone.at/wcm/donau/extern/anti_adblocker/check.js
 ||statistic.gamona.de^
 ||stats.computecmedia.de^
@@ -3176,6 +3197,7 @@ washingtonpost.com##.social-tools-wrapper-bottom
 ||tagx.nytimes.com^
 ||tk.ilius.net/tr.gif?
 ||top-fwz1.mail.ru/tracker?js=
+||track.ad.nl^
 ||tracker.bt.uol.com.br^
 ||tracking.autoscout24.com^
 ||travel-assets.com^*/experimentrecorder
@@ -3199,6 +3221,7 @@ washingtonpost.com##.social-tools-wrapper-bottom
 ||videos.giga.de/*/tracking
 ||wdr.de/*/tracker/
 ||web-t.9gag.com^
+||webmetrics.nintendo-europe.com^
 ||webstat.freaks4u.com^
 ||widgets.pinterest.com/*/urls/count.json
 ||winfuture.de/?*/videos-json.php&f=track_event
@@ -3230,6 +3253,29 @@ washingtonpost.com##.social-tools-wrapper-bottom
 !-------------- Whitelist ------------------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/2513
+@@||google-analytics.com/analytics.js$domain=mediamarkt.nl
+@@||googletagmanager.com/gtm.js$domain=mediamarkt.nl
+@@||google-analytics.com/plugins/ua/ec.js$domain=mediamarkt.nl
+! https://github.com/AdguardTeam/AdguardFilters/issues/2484
+@@||partner.googleadservices.com/gpt/pubads_impl_$domain=ukr.net
+! https://forum.adguard.com/index.php?threads/11632/
+@@||cdn.retailrocket.ru^$domain=azerty.nl
+! Fixing endless loding, caused by blocking of optimizely.com
+@@||cdn.optimizely.com/js/*.js$domain=compassion.com|creditsesame.com|forbes.com|freeshipping.com|heroku.com|hotukdeals.com|imageshack.com|lifelock.com|malwarebytes.org|policymic.com|ricardo.ch|spotify.com|techrepublic.com|zdnet.com|olx.ua
+! http://forum.adguard.com/showthread.php?5974
+@@||mc.yandex.ru/metrika/watch.js$domain=101.ru
+! smartresponder.ru broken registration form
+@@||mc.yandex.ru/metrika/watch.js$domain=smartresponder.ru
+! https://github.com/AdguardTeam/AdguardFilters/issues/2460
+@@||static.webclicks24.com/js/common.js$domain=4porn.com
+@@||cdn.webclicks24.com^$domain=4porn.com,image
+! https://forum.adguard.com/index.php?threads/11245/
+@@||apple.com/metrics/ac-analytics/*/scripts/$domain=apple.com
+! https://forum.adguard.com/index.php?threads/11193/
+@@||tags.tiqcdn.com/utag/cbsi/zdnetglobalsite/prod/utag.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/1355
+@@||mc.yandex.ru/webwisor/$domain=metrika.yandex.ru|metrika.yandex.ua
 ! http://www.apple.com/ru/mac-pro/
 @@||images.apple.com/metrics/scripts/s_code_h.js$domain=apple.com
 ! https://forum.adguard.com/index.php?threads/10808/
@@ -3516,7 +3562,6 @@ mozilla-russia.org#@#img[width="88"][height="31"]
 @@||cbsimg.net/js/cbsi/dw.js$domain=cbssports.com
 @@||cbsistatic.com/fly/bundles/flyjs/js/managers/clicktale-1.0.js$domain=cbsnews.com
 @@||ccom-cdn.com/assets/img/clear.gif?ccom_md5=$domain=credit.com
-@@||cdn.optimizely.com/js/*.js$domain=heroku.com|hotukdeals.com|imageshack.com|policymic.com|techrepublic.com
 @@||chanel.com/js/chanel-tracking.js$script
 @@||chartbeat.com/*/chartbeat/$~third-party
 @@||chartbeat.com/js/chartbeat.js$domain=salon.com
