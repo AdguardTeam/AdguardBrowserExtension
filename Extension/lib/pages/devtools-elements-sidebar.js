@@ -192,7 +192,7 @@ var browser = window.browser || chrome;
                 '<li class="parent">'
                 + '<input class="enabled-button attribute-check-box" type="checkbox" id="' + 'attribute-check-box-' + attributeName + checked + '">'
                 + '<span class="webkit-css-property">' + attributeName + '</span>: '
-                + '<span class="value attribute-check-box-value">' + encodeURI(attributeValue) + '</span>'
+                + '<span class="value attribute-check-box-value">' + attributeValue + '</span>'
                 + '</li>');
             return el.get(0);
         };
@@ -239,7 +239,7 @@ var browser = window.browser || chrome;
                         if (attr) {
                             if (attrName == 'class') {
                                 var className = el.parentNode.querySelector('.attribute-check-box-value').innerText;
-                                selectedClasses.push('.' + decodeURI(className));
+                                selectedClasses.push('.' + className);
                             } else {
                                 attributesSelector += '[' + attr.name + '="' + attr.value + '"]';
                             }
