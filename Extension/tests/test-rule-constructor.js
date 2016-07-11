@@ -37,7 +37,7 @@ function testConstructor() {
     options.classesSelector = null;
     options.excludeTagName = false;
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-    assertEquals(ruleText, 'example.org##DIV.test-class.test-class-two');
+    assertEquals(ruleText, 'example.org##div.test-class.test-class-two');
 
     options.isBlockByUrl = false;
     options.isBlockSimilar = true;
@@ -70,7 +70,7 @@ function testConstructor() {
     options.attributes = '';
     options.excludeTagName = false;
     ruleText = AdguardRulesConstructorLib.constructRuleText(elementHref, options);
-    assertEquals(ruleText, '###test-div > A.a-test-class.a-test-class-two.a-test-class-three:first-child');
+    assertEquals(ruleText, '###test-div > a.a-test-class.a-test-class-two.a-test-class-three:first-child');
 
     options.excludeTagName = true;
     ruleText = AdguardRulesConstructorLib.constructRuleText(elementHref, options);
@@ -98,6 +98,6 @@ function testContructor2() {
     };
 
     var ruleText = AdguardRulesConstructorLib.constructRuleText(elementHref, options);
-    assertEquals(ruleText, 'lenta.ru###test-div > H2:last-child');
+    assertEquals(ruleText, 'lenta.ru###test-div > h2:last-child');
 }
 addTestCase(testContructor2);

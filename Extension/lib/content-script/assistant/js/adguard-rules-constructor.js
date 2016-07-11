@@ -76,12 +76,12 @@ var AdguardRulesConstructorLib = (function (api) {
                 }
 
                 if (el == element) {
-                    var p = excludeTagName ? '' : el.tagName;
+                    var p = excludeTagName ? '' : el.tagName.toLowerCase();
                     p += (!classesSelector && classesSelector != '') ? className : classesSelector;
                     p += ch;
                     path.unshift(p);
                 } else {
-                    path.unshift(el.tagName + className + ch);
+                    path.unshift(el.tagName.toLowerCase() + className + ch);
                 }
 
                 el = el.parentNode;
@@ -123,7 +123,7 @@ var AdguardRulesConstructorLib = (function (api) {
         }
 
         if (includeTagName) {
-            selector = element.tagName + selector;
+            selector = element.tagName.toLowerCase() + selector;
         }
 
         return selector ? "##" + selector : "";

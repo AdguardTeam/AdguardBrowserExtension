@@ -103,7 +103,6 @@ var browser = window.browser || chrome;
          * Only serializable data can be passed in callback function
          */
         var serializeElement = function (node) {
-            console.log(node);
             if (!node || !node.tagName) {
                 return '';
             }
@@ -198,7 +197,7 @@ var browser = window.browser || chrome;
             return el.get(0);
         };
 
-        placeholder.appendChild(createAttributeElement('tag', info.tagName, true));
+        placeholder.appendChild(createAttributeElement('tag', info.tagName.toLowerCase(), true));
 
         for (var i = 0; i < info.attributes.length; i++) {
             var attribute = info.attributes[i];
