@@ -1,16 +1,26 @@
 ! Title: Safari filter
-! Version: 1.0.0.55
-! Name: Safari Filter
-! Description: Special filter for Safari 9+. We need a separate filter for Safari because it does not fully support rules syntax.
+! Version: 1.0.0.80
+! Name: Safari filter
+! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! NameEn: Safari filter
-! DescriptionEn: Special filter for Mobile Safari. We need a separate filter for Safari because it does not fully support rules syntax.
-! TimeUpdated: 2016-05-24T21:08:03.855+03:00
+! DescriptionEn: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
+! TimeUpdated: 2016-07-09T00:01:44.433+03:00
+||adrunnr.com^$popup
+||large-format.net^$popup
+||november-lax.com^$popup
 ||media.innity.net^$third-party
+@@||computerworlduk.com^$generichide
+@@||securepubads.g.doubleclick.net/gampad/ads$domain=computerworlduk.com
+@@||z.moatads.com/idg235774026756/moatad.js$domain=computerworlduk.com
+computerworlduk.com#@#.jsAdContainer > #dynamicAd1
+computerworlduk.com#@#aside > div > .mpuHolder
+@@||gofobo.com^$generichide
+@@||yuncomics.com^$generichide
 @@||supercineonline.tv^$generichide
 @@||vidoser.org^$elemhide
 @@||echoes.gr^$elemhide
 @@||echoes.gr/*/adsManager
-@@/advert.js$domain=pb.wtf
+@@/advertise.js$domain=pb.wtf
 @@||jagledam.com^$generichide
 @@||jagledam.co^$generichide
 @@||wpmienphi.com^$generichide
@@ -31,13 +41,15 @@ ad4msan.com#@##iframeTopAd
 ad4msan.com#@##multi_ad
 ad4msan.com#@##ads
 ad4msan.com#@##adsense
-@@||smartadserver.com/diff/*/partners/$domain=bild.de
+@@||sascdn.com/diff/*/pages/bild.js$domain=bild.de
 @@||smartadserver.com/diff/*/smartad.js$domain=bild.de
-@@||sascdn.com^$domain=bild.de,script
+@@||smartadserver.com/diff/*/divscripte/$script,domain=bild.de
+@@||smartadserver.com/diff/*/partners/$script,domain=bild.de
 @@||forbes.com^$generichide
 @@||tpc.googlesyndication.com/safeframe/1-0-2/html/container.html$domain=forbes.com
 @@||securepubads.g.doubleclick.net^$domain=forbes.com
 @@||forbesbidder.servedbyopenx.com^$domain=forbes.com
+||v.fwmrm.net^$third-party
 ||tapcreatives.net^$third-party
 ||cnbole.net^$third-party
 ||jisucn.com^$third-party
@@ -60,6 +72,7 @@ http://*.*.space/v/$third-party
 ##.ads-ad
 etfdailynews.com##div[style="width:300px;border:1px solid black"]
 @@||cinemablend.com/timthumb.php?src=/images/facebook/
+telegraaf.nl##.section-ad
 konachan.net##iframe[src^="https://tbib.org/"]
 apfelpage.de##.a4promo_ad
 konachan.net##iframe[src^="https://tbib.org/"]
@@ -80,20 +93,20 @@ wi-fi.ru,vmet.ro#video-b
 ||vmet.ro^$third-party
 ||wi-fi.ru/ad_video/
 ||wi-fi.ru^$script,third-party
-||ac.tvas-c.pw^$popup,domain=thevideo.me
-||letitrun.htmlhubing.xyz^$popup,domain=thevideo.me
-||overhaps.com^$popup,domain=thevideo.me
-||static.htmlhubing.xyz^$popup,domain=thevideo.me
-||static.servingit.co^$popup,domain=thevideo.me
-||tc.tvas-c.pw^$popup,domain=thevideo.me
-||tradeadexchange.com^$popup,domain=thevideo.me
-||venturead.com^$popup,domain=thevideo.me
-||wwp.tvas-c.pw^$popup,domain=thevideo.me
 brb.to,cxz.to,fs.to##a[data-proxied^="//core.adproxy2.com/click?"]
 brb.to,cxz.to,fs.to##div[class*="universal_ads"]
 ||gamer.ru/alarmalarm/js/
 ||sports.ru/desktop/special/$subdocument,domain=sports.ru
 m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
+@@||bing.com/fd/ls/GLinkPing.aspx?
+@@||static.opensubtitles.org/libs/js/subbrowse.js
+@@||watch.opensubtitles.org/signup?ad_domain=
+@@||hlok.qertewrt.com/offer?prod=
+@@||netflix.com/*/Login
+@@||click.uol.com.br^$domain=uol.com.br
+@@||reklama5.mk^$domain=reklama5.mk
+@@||tube.buzzoola.com$domain=anidub.com
+@@||list-manage.com/track/click$document
 @@/crossdomain.xml$domain=phonearena.com
 @@||static1-azcdn.newser.com/javascript/
 @@||static2-azcdn.newser.com/javascript/

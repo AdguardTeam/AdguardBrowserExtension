@@ -1,10 +1,10 @@
 ! Title: Safari filter
-! Version: 1.0.0.55
-! Name: Safari Filter
-! Description: Special filter for Safari 9+. We need a separate filter for Safari because it does not fully support rules syntax.
+! Version: 1.0.0.80
+! Name: Safari filter
+! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! NameEn: Safari filter
-! DescriptionEn: Special filter for Mobile Safari. We need a separate filter for Safari because it does not fully support rules syntax.
-! TimeUpdated: 2016-05-24T21:08:03.855+03:00
+! DescriptionEn: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
+! TimeUpdated: 2016-07-09T00:01:44.433+03:00
 ! Title: Adguard Safari Filter
 !
 ! Special filter for Safari. We need a separate filter for Safari because it does not fully support rules syntax.
@@ -18,6 +18,10 @@
 !
 ! Section contains list of advertising networks
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/2406
+||adrunnr.com^$popup
+||large-format.net^$popup
+||november-lax.com^$popup
 ! Temporary, look here for details: https://github.com/AdguardTeam/ExperimentalFilter/issues/1192
 ||media.innity.net^$third-party
 !---------------------------------------------------------------------------!
@@ -26,6 +30,16 @@
 !
 ! These rules are against anti-adblock scripts
 !
+! https://forum.adguard.com/index.php?threads/11626/
+@@||computerworlduk.com^$generichide
+@@||securepubads.g.doubleclick.net/gampad/ads$domain=computerworlduk.com
+@@||z.moatads.com/idg235774026756/moatad.js$domain=computerworlduk.com
+computerworlduk.com#@#.jsAdContainer > #dynamicAd1
+computerworlduk.com#@#aside > div > .mpuHolder
+! https://github.com/AdguardTeam/AdguardFilters/issues/2453
+@@||gofobo.com^$generichide
+! https://forum.adguard.com/index.php?threads/11295/
+@@||yuncomics.com^$generichide
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2099
 @@||supercineonline.tv^$generichide
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1971
@@ -34,7 +48,7 @@
 @@||echoes.gr^$elemhide
 @@||echoes.gr/*/adsManager
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1938
-@@/advert.js$domain=pb.wtf
+@@/advertise.js$domain=pb.wtf
 ! http://forum.adguard.com/showthread.php?10520
 @@||jagledam.com^$generichide
 @@||jagledam.co^$generichide
@@ -65,9 +79,12 @@ ad4msan.com#@##multi_ad
 ad4msan.com#@##ads
 ad4msan.com#@##adsense
 ! bild.de @@||bild.de^$elemhide
-@@||smartadserver.com/diff/*/partners/$domain=bild.de
+@@||sascdn.com/diff/*/pages/bild.js$domain=bild.de
 @@||smartadserver.com/diff/*/smartad.js$domain=bild.de
-@@||sascdn.com^$domain=bild.de,script
+@@||smartadserver.com/diff/*/divscripte/$script,domain=bild.de
+@@||smartadserver.com/diff/*/partners/$script,domain=bild.de
+!@@||sascdn.com^$domain=bild.de,script
+!
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1353
 !@@||forbes.com^$elemhide
 !@@http://$domain=forbes.com
@@ -83,6 +100,8 @@ ad4msan.com#@##adsense
 ! Section contains rules, which absent in Safari filters
 !
 !----- Advertising networks ------------
+! https://github.com/AdguardTeam/AdguardFilters/issues/2515
+||v.fwmrm.net^$third-party
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2064
 ||tapcreatives.net^$third-party
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1960 [Easylist China]
@@ -125,6 +144,8 @@ http://*.*.space/v/$third-party
 etfdailynews.com##div[style="width:300px;border:1px solid black"]
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2195
 @@||cinemablend.com/timthumb.php?src=/images/facebook/
+! https://github.com/AdguardTeam/AdguardFilters/issues/2362
+telegraaf.nl##.section-ad
 !---------------------------------------------------------------------------!
 !-------------- Rules, which absent in mobile filters ----------------------!
 !---------------------------------------------------------------------------!
@@ -156,16 +177,6 @@ wi-fi.ru,vmet.ro#video-b
 ||vmet.ro^$third-party
 ||wi-fi.ru/ad_video/
 ||wi-fi.ru^$script,third-party
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/955 [popups]
-||ac.tvas-c.pw^$popup,domain=thevideo.me
-||letitrun.htmlhubing.xyz^$popup,domain=thevideo.me
-||overhaps.com^$popup,domain=thevideo.me
-||static.htmlhubing.xyz^$popup,domain=thevideo.me
-||static.servingit.co^$popup,domain=thevideo.me
-||tc.tvas-c.pw^$popup,domain=thevideo.me
-||tradeadexchange.com^$popup,domain=thevideo.me
-||venturead.com^$popup,domain=thevideo.me
-||wwp.tvas-c.pw^$popup,domain=thevideo.me
 ! brb.to,cxz.to,fs.to
 brb.to,cxz.to,fs.to##a[data-proxied^="//core.adproxy2.com/click?"]
 brb.to,cxz.to,fs.to##div[class*="universal_ads"]
@@ -180,8 +191,24 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 !------ White list. Fixing filtration errors (false-positive) --------------!
 !---------------------------------------------------------------------------!
 !
-! White list. Fixing filtration errors (false-positive)
+! White list. Fixing content blocking API issues.
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/2477
+@@||bing.com/fd/ls/GLinkPing.aspx?
+! https://forum.adguard.com/index.php?threads/9166/
+@@||static.opensubtitles.org/libs/js/subbrowse.js
+@@||watch.opensubtitles.org/signup?ad_domain=
+@@||hlok.qertewrt.com/offer?prod=
+! https://github.com/AdguardTeam/AdguardFilters/issues/2363
+@@||netflix.com/*/Login
+! https://github.com/AdguardTeam/AdguardFilters/issues/2352
+@@||click.uol.com.br^$domain=uol.com.br
+! https://github.com/AdguardTeam/AdguardFilters/issues/2329
+@@||reklama5.mk^$domain=reklama5.mk
+! https://github.com/AdguardTeam/AdguardFilters/issues/2246
+@@||tube.buzzoola.com$domain=anidub.com
+! https://github.com/AdguardTeam/AdguardBrowserExtension/issues/262
+@@||list-manage.com/track/click$document
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2108
 @@/crossdomain.xml$domain=phonearena.com
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2024
