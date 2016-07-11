@@ -43,26 +43,6 @@ function testConstructorAssistant() {
 }
 addTestCase(testConstructorAssistant);
 
-function testConstructorSpecialElements() {
-
-    var elementHref = document.getElementsByTagName('h2')[0];
-
-    var options = {
-        isBlockByUrl: false,
-        urlMask: null,
-        isBlockSimilar: false,
-        isBlockOneDomain: false,
-        url: 'https://lenta.ru/',
-        attributes: '',
-        excludeTagName: false,
-        classesSelector: ''
-    };
-
-    var ruleText = AdguardRulesConstructorLib.constructRuleText(elementHref, options);
-    assertEquals(ruleText, 'lenta.ru###test-div > h2:last-child');
-}
-addTestCase(testConstructorSpecialElements);
-
 function testConstructorDevTools() {
     var element = document.getElementById('test-div');
     var elementHref = document.getElementsByClassName('a-test-class')[0];
@@ -125,3 +105,58 @@ function testConstructorDevTools() {
     assertEquals(ruleText, '###test-div > .a-test-class-two.a-test-class-three:first-child');
 }
 addTestCase(testConstructorDevTools);
+
+function testConstructorSpecialElements() {
+
+    var elementHref = document.getElementsByTagName('h2')[0];
+    var options = {
+        isBlockByUrl: false,
+        urlMask: null,
+        isBlockSimilar: false,
+        isBlockOneDomain: false,
+        url: 'https://lenta.ru/',
+        attributes: '',
+        excludeTagName: false,
+        classesSelector: ''
+    };
+
+    var ruleText = AdguardRulesConstructorLib.constructRuleText(elementHref, options);
+    assertEquals(ruleText, 'lenta.ru###test-div > h2:last-child');
+
+    var elementDivId = document.getElementById('test-id-div');
+    options = {
+        isBlockByUrl: false,
+        urlMask: null,
+        isBlockSimilar: false,
+        isBlockOneDomain: false,
+        url: 'https://lenta.ru/',
+        attributes: '',
+        excludeTagName: true,
+        classesSelector: ''
+    };
+
+    ruleText = AdguardRulesConstructorLib.constructRuleText(elementDivId, options);
+    assertEquals(ruleText, 'lenta.ru###test-id-div');
+
+    options.excludeTagName = false;
+    ruleText = AdguardRulesConstructorLib.constructRuleText(elementDivId, options);
+    assertEquals(ruleText, 'lenta.ru##div#test-id-div');
+
+    options.attributes = '[title="Share on Twitter"]';
+    ruleText = AdguardRulesConstructorLib.constructRuleText(elementDivId, options);
+    assertEquals(ruleText, 'lenta.ru##div#test-id-div[title="Share on Twitter"]');
+
+    options.attributes = '[id="test-id-div"][title="Share on Twitter"]';
+    ruleText = AdguardRulesConstructorLib.constructRuleText(elementDivId, options);
+    assertEquals(ruleText, 'lenta.ru##div#test-id-div[id="test-id-div"][title="Share on Twitter"]');
+
+    options.attributes = '[id="test-id-div"]';
+    ruleText = AdguardRulesConstructorLib.constructRuleText(elementDivId, options);
+    assertEquals(ruleText, 'lenta.ru##div#test-id-div[id="test-id-div"]');
+
+    options.classesSelector = '.test-class-two';
+    delete options.attributes;
+    ruleText = AdguardRulesConstructorLib.constructRuleText(elementDivId, options);
+    assertEquals(ruleText, 'lenta.ru##div.test-class-two#test-id-div');
+}
+addTestCase(testConstructorSpecialElements);

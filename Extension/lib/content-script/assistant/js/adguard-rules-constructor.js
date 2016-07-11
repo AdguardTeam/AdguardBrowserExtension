@@ -23,7 +23,6 @@ var AdguardRulesConstructorLib = (function (api) {
     var URLBLOCK_ATTRIBUTES = ["src", "data"];
 
     var makeCssNthChildFilter = function (element, classesSelector, excludeTagName) {
-
         var path = [];
         var el = element;
         while (el.parentNode) {
@@ -32,12 +31,20 @@ var AdguardRulesConstructorLib = (function (api) {
                 break;
             }
             if (el.id) {
+                var s = '';
+                if (el == element) {
+                    s += excludeTagName == false ? el.tagName.toLowerCase() : '';
+                    s += (!classesSelector && classesSelector != '') ? '' : classesSelector;
+                }
+
                 var id = el.id.split(':').join('\\:');//case of colon in id. Need to escape
                 if (el.id.indexOf('.') > -1) {
-                    path.unshift('[id="' + id + '"]');
+                    s += '[id="' + id + '"]';
                 } else {
-                    path.unshift('#' + id);
+                    s += '#' + id;
                 }
+
+                path.unshift(s);
                 break;
             } else {
                 var c = 1;
@@ -99,7 +106,7 @@ var AdguardRulesConstructorLib = (function (api) {
         return selector ? "##" + selector : "";
     };
 
-    var createSimilarElementSelector = function (element, classesSelector) {
+    var createSimilarElementSelector = function (element) {
         if (!element) {
             return "";
         }
