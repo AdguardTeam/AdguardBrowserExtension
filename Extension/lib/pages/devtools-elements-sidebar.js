@@ -38,7 +38,13 @@ var browser = window.browser || chrome;
             });
         };
 
+        var onPageChanged = function (url) {
+            document.getElementById("preview-rule-button").value = 'Preview';
+            delete window.adguardDevToolsPreview;
+        };
+
         browser.devtools && browser.devtools.panels.elements.onSelectionChanged.addListener(onElementSelected);
+        browser.devtools && browser.devtools.network.onNavigated.addListener(onPageChanged);
 
         onElementSelected();
     };
