@@ -48,6 +48,8 @@
      * Initializing content script
      */
     var init = function () {
+        initWebSocketWrapper();
+
         if (!isHtml()) {
             return;
         }
@@ -74,7 +76,6 @@
         isFirefox = userAgent.indexOf('firefox') > -1;
         isOpera = userAgent.indexOf('opera') > -1 || userAgent.indexOf('opr') > -1;
 
-        initWebSocketWrapper();
         initCollapseEventListeners();
         tryLoadCssAndScripts();
     };
@@ -96,6 +97,12 @@
      */
     /*global initPageMessageListener, overrideWebSocket*/
     var initWebSocketWrapper = function () {
+        // Only for dynamically created frames and http/https documents.
+        if (!isHtml()
+            && window.location.href !== "about:blank") {
+            return;
+        }
+
         if (typeof overrideWebSocket == 'function') {
             initPageMessageListener();
 
