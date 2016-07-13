@@ -299,7 +299,7 @@ UrlFilterRule.contentTypes = {
     JSINJECT: 1 << 22,      //Does not inject javascript rules to page
     POPUP: 1 << 23,         //check block popups
     GENERICHIDE: 1 << 24,   //CssFilter generic rules cannot be applied to page
-    GENERICBLOCK: 1 << 25,  //UrlFilter generic rules cannot be applied to page,
+    GENERICBLOCK: 1 << 25,  //UrlFilter generic rules cannot be applied to page
     STEALTH: 1 << 26        //turn off stealth mode for page
 };
 
