@@ -42,7 +42,15 @@ var UserSettings = function () {
         DISABLE_COLLECT_HITS: 'hits-count-disabled',
         DISABLE_SHOW_CONTEXT_MENU: 'context-menu-disabled',
         USE_OPTIMIZED_FILTERS: 'use-optimized-filters',
-        DEFAULT_WHITE_LIST_MODE: 'default-whitelist-mode'
+        DEFAULT_WHITE_LIST_MODE: 'default-whitelist-mode',
+        HIDE_REFERRER: 'hideReferrer',
+        HIDE_SEARCH_QUERIES: 'hideSearchQueries',
+        BLOCK_THIRD_PARTY_COOKIES: 'blockThirdPartyCookies',
+        BLOCK_THIRD_PARTY_CACHE: 'blockThirdPartyCache',
+        SEND_DO_NOT_TRACK: 'sendDoNotTrack',
+        HIDE_USER_AGENT: 'hideUserAgent',
+        HIDE_IP_ADDRESS: 'hideIpAddress',
+        BLOCK_CHROME_CLIENT_DATA: 'blockChromeClientData'
     };
 
     this.defaultProperties = Object.create(null);
@@ -55,6 +63,12 @@ var UserSettings = function () {
     this.defaultProperties[this.settings.DISABLE_SEND_SAFEBROWSING_STATS] = true;
     this.defaultProperties[this.settings.DEFAULT_WHITE_LIST_MODE] = true;
     this.defaultProperties[this.settings.USE_OPTIMIZED_FILTERS] = Utils.isContentBlockerEnabled();
+
+    this.defaultProperties[this.settings.HIDE_SEARCH_QUERIES] = true;
+    this.defaultProperties[this.settings.BLOCK_THIRD_PARTY_COOKIES] = true;
+    this.defaultProperties[this.settings.BLOCK_THIRD_PARTY_CACHE] = true;
+    this.defaultProperties[this.settings.SEND_DO_NOT_TRACK] = true;
+    this.defaultProperties[this.settings.BLOCK_CHROME_CLIENT_DATA] = true;
 
     this.properties = Object.create(null);
 };

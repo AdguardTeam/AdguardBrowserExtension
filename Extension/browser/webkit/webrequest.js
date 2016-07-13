@@ -59,6 +59,13 @@ function onBeforeRequest(requestDetails) {
  */
 function onBeforeSendHeaders(requestDetails) {
 
+    //var requestDetails = this._getRequestDetails(details);
+    //if (!requestDetails) {
+    //    return;
+    //}
+    //
+    //return stealthService.processRequestHeaders(requestDetails);
+
     var tab = requestDetails.tab;
     var headers = requestDetails.requestHeaders;
 
@@ -81,6 +88,13 @@ function onBeforeSendHeaders(requestDetails) {
 }
 
 function onHeadersReceived(requestDetails) {
+
+    //var requestDetails = this._getRequestDetails(details);
+    //if (!requestDetails) {
+    //    return;
+    //}
+    //
+    //return stealthService.processResponseHeaders(requestDetails);
 
     var tab = requestDetails.tab;
     var requestUrl = requestDetails.requestUrl;

@@ -85,6 +85,44 @@
             <span class="spl-user-add-spn editAntiBannerFilters" i18n="options_edit_antibanner_filters"></span>
         </a>
 
+        <#if browser.name() == "CHROMIUM" || browser.name() == "FIREFOX" || browser.name() == "FIREFOX_LEGACY">
+            <div id="stealth" class="settings-page-title" i18n="options_stealth"></div>
+            <div class="settings-page-table">
+                <div class="s-page-table-row cf">
+                    <div class="sp-table-row-label" i18n="options_settings_block_cookies"></div>
+                    <input type="checkbox" class="sp-table-row-input" id="blockThirdPartyCookiesCheckbox"/>
+                </div>
+                <div class="s-page-table-row cf">
+                    <div class="sp-table-row-label" i18n="options_settings_disable_cache"></div>
+                    <input type="checkbox" class="sp-table-row-input" id="blockThirdPartyCacheCheckbox"/>
+                </div>
+                <div class="s-page-table-row cf">
+                    <div class="sp-table-row-label" i18n="options_settings_hide_search_queries"></div>
+                    <input type="checkbox" class="sp-table-row-input" id="hideSearchQueriesCheckbox"/>
+                </div>
+                <div class="s-page-table-row cf">
+                    <div class="sp-table-row-label" i18n="options_settings_send_dnt_header"></div>
+                    <input type="checkbox" class="sp-table-row-input" id="sendDoNotTrackCheckbox"/>
+                </div>
+                <div class="s-page-table-row cf">
+                    <div class="sp-table-row-label" i18n="options_settings_remove_x_client_data"></div>
+                    <input type="checkbox" class="sp-table-row-input" id="blockChromeClientDataCheckbox"/>
+                </div>
+                <div class="s-page-table-row cf">
+                    <div class="sp-table-row-label" i18n="options_settings_hide_referrer"></div>
+                    <input type="checkbox" class="sp-table-row-input" id="hideReferrerCheckbox"/>
+                </div>
+                <div class="s-page-table-row cf">
+                    <div class="sp-table-row-label" i18n="options_settings_hide_user_agent"></div>
+                    <input type="checkbox" class="sp-table-row-input" id="hideUserAgentCheckbox"/>
+                </div>
+                <div class="s-page-table-row cf">
+                    <div class="sp-table-row-label" i18n="options_settings_hide_ip_address"></div>
+                    <input type="checkbox" class="sp-table-row-input" id="hideIpAddressCheckbox"/>
+                </div>
+            </div>
+        </#if>
+
         <div id="safebrowsing" class="settings-page-title" i18n="options_safebrowsing"></div>
         <div class="settings-page-table">
             <div class="s-page-table-row cf">

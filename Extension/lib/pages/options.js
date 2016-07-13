@@ -71,6 +71,17 @@ PageController.prototype = {
         this.allowAcceptableAdsCheckbox = $("#allowAcceptableAds");
         this.updateAntiBannerFiltersButton = $("#updateAntiBannerFilters");
         this.autodetectFiltersCheckbox = $("#autodetectFiltersCheckbox");
+
+        this.blockThirdPartyCookiesCheckbox = $("#blockThirdPartyCookiesCheckbox");
+        this.blockThirdPartyCacheCheckbox = $("#blockThirdPartyCacheCheckbox");
+        this.hideSearchQueriesCheckbox = $("#hideSearchQueriesCheckbox");
+        this.sendDoNotTrackCheckbox = $("#sendDoNotTrackCheckbox");
+        //TODO: Show only for chrome
+        this.blockChromeClientDataCheckbox = $("#blockChromeClientDataCheckbox");
+        this.hideReferrerCheckbox = $("#hideReferrerCheckbox");
+        this.hideUserAgentCheckbox = $("#hideUserAgentCheckbox");
+        this.hideIpAddressCheckbox = $("#hideIpAddressCheckbox");
+
         this.importUserFilterInput = $("#importUserFilterInput");
         this.clearUserFilterButton = $("#clearUserFilter");
         this.importWlFilterInput = $("#importWhiteListFilterInput");
@@ -90,24 +101,33 @@ PageController.prototype = {
         this.tooManySubscriptionsEl = $('#tooManySubscriptions');
         this.tooManyRulesEl = $('#tooManyRules');
 
-        this.safebrowsingEnabledCheckbox.on('change', this.safebrowsingEnabledChange);
-        this.sendSafebrowsingStatsCheckbox.on('change', this.sendSafebrowsingStatsChange);
-        this.showPageStatisticCheckbox.on('change', this.showPageStatisticsChange);
-        this.autodetectFiltersCheckbox.on('change', this.autodetectFiltersChange);
+        this.safebrowsingEnabledCheckbox.on('change', {setting: userSettings.names.DISABLE_SAFEBROWSING, inverted:true}, this.changeUserSetting);
+        this.sendSafebrowsingStatsCheckbox.on('change', {setting: userSettings.names.DISABLE_SEND_SAFEBROWSING_STATS, inverted:true}, this.changeUserSetting);
+        this.showPageStatisticCheckbox.on('change',  {setting: userSettings.names.DISABLE_SHOW_PAGE_STATS, inverted:true}, this.changeUserSetting);
+        this.autodetectFiltersCheckbox.on('change', {setting: userSettings.names.DISABLE_DETECT_FILTERS, inverted:true}, this.changeUserSetting);
         this.allowAcceptableAdsCheckbox.on('change', this.allowAcceptableAdsChange);
         this.updateAntiBannerFiltersButton.on('click', this.updateAntiBannerFilters.bind(this));
         this.showInfoAboutAdguardFullVersionCheckbox.on('change', this.updateShowInfoAboutAdguardFullVersion);
-        this.enableHitsCountCheckbox.on('change', this.changeEnableHitsCount);
-        this.enableShowContextMenuCheckbox.on('change', this.changeEnableShowContextMenu);
-        this.useOptimizedFiltersCheckbox.on('change', this.changeUseOptimizedFilters);
+        this.enableHitsCountCheckbox.on('change', {setting: userSettings.names.DISABLE_COLLECT_HITS, inverted:true}, this.changeUserSetting);
+        this.enableShowContextMenuCheckbox.on('change', {setting: userSettings.names.DISABLE_SHOW_CONTEXT_MENU, inverted:true}, this.changeUserSetting);
+        this.useOptimizedFiltersCheckbox.on('change', {setting: userSettings.names.USE_OPTIMIZED_FILTERS}, this.changeUserSetting);
         this.changeDefaultWhiteListModeCheckbox.on('change', this.changeDefaultWhiteListMode.bind(this));
+
+        this.blockThirdPartyCookiesCheckbox.on('change', {setting: userSettings.names.BLOCK_THIRD_PARTY_COOKIES}, this.changeUserSetting);
+        this.blockThirdPartyCacheCheckbox.on('change', {setting: userSettings.names.BLOCK_THIRD_PARTY_CACHE}, this.changeUserSetting);
+        this.hideSearchQueriesCheckbox.on('change', {setting: userSettings.names.HIDE_SEARCH_QUERIES}, this.changeUserSetting);
+        this.sendDoNotTrackCheckbox.on('change', {setting: userSettings.names.SEND_DO_NOT_TRACK}, this.changeUserSetting);
+        this.blockChromeClientDataCheckbox.on('change', {setting: userSettings.names.BLOCK_CHROME_CLIENT_DATA}, this.changeUserSetting);
+        this.hideReferrerCheckbox.on('change', {setting: userSettings.names.HIDE_REFERRER}, this.changeUserSetting);
+        this.hideUserAgentCheckbox.on('change', {setting: userSettings.names.HIDE_USER_AGENT}, this.changeUserSetting);
+        this.hideIpAddressCheckbox.on('change', {setting: userSettings.names.HIDE_IP_ADDRESS}, this.changeUserSetting);
         $("#resetStats").on('click', this.onResetStatsClicked.bind(this));
 
         $('.settings-page').on('click', '.editAntiBannerFilters', this._openSubscriptionModal.bind(this));
 
         var listSettings = $(".settings-page-lists");
         listSettings.on('click', '.addWhiteListFilter', this.onAddWhiteListFilterClicked.bind(this));
-        listSettings.on('click', '.addUserFilter', this.onAddUserFilterClicked.bind(this));
+        listSettings.on('blockThirdPartyCacheCheckbox', '.addUserFilter', this.onAddUserFilterClicked.bind(this));
         listSettings.on('click', '#importUserFilter', this.onImportUserFilterClicked.bind(this));
         listSettings.on('change', '#importUserFilterInput', this.onImportUserFilterInputChange.bind(this));
         listSettings.on('click', '#exportUserFilter', this.onExportUserFilterClicked.bind(this));
@@ -216,29 +236,19 @@ PageController.prototype = {
 
     _render: function () {
 
-        var safebrowsingEnabled = !userSettings.values[userSettings.names.DISABLE_SAFEBROWSING];
-        var sendSafebrowsingStats = !userSettings.values[userSettings.names.DISABLE_SEND_SAFEBROWSING_STATS];
-        var showPageStats = !userSettings.values[userSettings.names.DISABLE_SHOW_PAGE_STATS];
-        var autodetectFilters = !userSettings.values[userSettings.names.DISABLE_DETECT_FILTERS];
-        var showAdguardPromo = !userSettings.values[userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO];
-        var collectHitsCount = !userSettings.values[userSettings.names.DISABLE_COLLECT_HITS];
-        var showContextMenu = !userSettings.values[userSettings.names.DISABLE_SHOW_CONTEXT_MENU];
-        var useOptimizedFilters = userSettings.values[userSettings.names.USE_OPTIMIZED_FILTERS];
-        var defaultWhitelistMode = userSettings.values[userSettings.names.DEFAULT_WHITE_LIST_MODE];
-        var acceptableAdsEnabled = AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID in enabledFilters;
-
         this._renderAntiBannerFilters();
         this._renderUserFilters();
         this._renderWhiteListFilters();
-        this._renderSafebrowsingSection(safebrowsingEnabled, sendSafebrowsingStats);
-        this._renderShowPageStatistics(showPageStats, environmentOptions.Prefs.mobile);
-        this._renderAllowAcceptableAds(acceptableAdsEnabled);
-        this._renderAutodetectFilters(autodetectFilters);
-        this._renderShowInfoAboutAdguardFullVersion(showAdguardPromo);
-        this._renderCollectHitsCount(collectHitsCount);
-        this._renderShowContextMenu(showContextMenu);
-        this._renderUseOptimizedFilters(useOptimizedFilters);
-        this._renderDefaultWhiteListMode(defaultWhitelistMode);
+        this._renderStealthModeSection();
+        this._renderSafebrowsingSection();
+        this._renderShowPageStatistics();
+        this._renderAllowAcceptableAds();
+        this._renderAutodetectFilters();
+        this._renderShowInfoAboutAdguardFullVersion();
+        this._renderCollectHitsCount();
+        this._renderShowContextMenu();
+        this._renderUseOptimizedFilters();
+        this._renderDefaultWhiteListMode();
 
         var rulesInfo = environmentOptions.isContentBlockerEnabled ? contentBlockerInfo : requestFilterInfo;
         this.renderFilterRulesInfo(rulesInfo);
@@ -291,38 +301,6 @@ PageController.prototype = {
         loader.removeClass("hidden");
     },
 
-    safebrowsingEnabledChange: function () {
-        contentPage.sendMessage({
-            type: 'changeUserSetting',
-            key: userSettings.names.DISABLE_SAFEBROWSING,
-            value: !this.checked
-        });
-    },
-
-    sendSafebrowsingStatsChange: function () {
-        contentPage.sendMessage({
-            type: 'changeUserSetting',
-            key: userSettings.names.DISABLE_SEND_SAFEBROWSING_STATS,
-            value: !this.checked
-        });
-    },
-
-    showPageStatisticsChange: function () {
-        contentPage.sendMessage({
-            type: 'changeUserSetting',
-            key: userSettings.names.DISABLE_SHOW_PAGE_STATS,
-            value: !this.checked
-        });
-    },
-
-    autodetectFiltersChange: function () {
-        contentPage.sendMessage({
-            type: 'changeUserSetting',
-            key: userSettings.names.DISABLE_DETECT_FILTERS,
-            value: !this.checked
-        });
-    },
-
     allowAcceptableAdsChange: function () {
         if (this.checked) {
             contentPage.sendMessage({
@@ -339,8 +317,7 @@ PageController.prototype = {
 
     updateAntiBannerFilters: function (e) {
         e.preventDefault();
-        contentPage.sendMessage({type: 'checkAntiBannerFiltersUpdate'}, function () {
-        });
+        contentPage.sendMessage({type: 'checkAntiBannerFiltersUpdate'}, function () {});
     },
 
     updateShowInfoAboutAdguardFullVersion: function (e) {
@@ -355,30 +332,19 @@ PageController.prototype = {
         updateDisplayAdguardPromo(showPromo);
     },
 
-    changeEnableHitsCount: function (e) {
+    changeUserSetting: function (e) {
         e.preventDefault();
-        contentPage.sendMessage({
-            type: 'changeUserSetting',
-            key: userSettings.names.DISABLE_COLLECT_HITS,
-            value: !this.checked
-        });
-    },
 
-    changeEnableShowContextMenu: function (e) {
-        e.preventDefault();
-        contentPage.sendMessage({
-            type: 'changeUserSetting',
-            key: userSettings.names.DISABLE_SHOW_CONTEXT_MENU,
-            value: !this.checked
-        });
-    },
+        var key = e.data ? e.data.setting : null;
+        var value = this.checked;
+        if (e.data && e.data.inverted ) {
+            value = !this.checked;
+        }
 
-    changeUseOptimizedFilters: function (e) {
-        e.preventDefault();
         contentPage.sendMessage({
             type: 'changeUserSetting',
-            key: userSettings.names.USE_OPTIMIZED_FILTERS,
-            value: this.checked
+            key: key,
+            value: value
         });
     },
 
@@ -854,12 +820,29 @@ PageController.prototype = {
         }
     },
 
-    _renderSafebrowsingSection: function (safebrowsingEnabled, sendSafebrowsingStats) {
+    _renderStealthModeSection: function () {
+        this.blockThirdPartyCookiesCheckbox.updateCheckbox(userSettings.values[userSettings.names.BLOCK_THIRD_PARTY_COOKIES]);
+        this.blockThirdPartyCacheCheckbox.updateCheckbox(userSettings.values[userSettings.names.BLOCK_THIRD_PARTY_CACHE]);
+        this.hideSearchQueriesCheckbox.updateCheckbox(userSettings.values[userSettings.names.HIDE_SEARCH_QUERIES]);
+        this.sendDoNotTrackCheckbox.updateCheckbox(userSettings.values[userSettings.names.SEND_DO_NOT_TRACK]);
+        this.blockChromeClientDataCheckbox.updateCheckbox(userSettings.values[userSettings.names.BLOCK_CHROME_CLIENT_DATA]);
+        this.hideReferrerCheckbox.updateCheckbox(userSettings.values[userSettings.names.HIDE_REFERRER]);
+        this.hideUserAgentCheckbox.updateCheckbox(userSettings.values[userSettings.names.HIDE_USER_AGENT]);
+        this.hideIpAddressCheckbox.updateCheckbox(userSettings.values[userSettings.names.HIDE_IP_ADDRESS]);
+    },
+
+    _renderSafebrowsingSection: function () {
+        var safebrowsingEnabled = !userSettings.values[userSettings.names.DISABLE_SAFEBROWSING];
+        var sendSafebrowsingStats = !userSettings.values[userSettings.names.DISABLE_SEND_SAFEBROWSING_STATS];
+
         this.safebrowsingEnabledCheckbox.updateCheckbox(safebrowsingEnabled);
         this.sendSafebrowsingStatsCheckbox.updateCheckbox(sendSafebrowsingStats);
     },
 
-    _renderShowPageStatistics: function (showPageStatistic, isAndroid) {
+    _renderShowPageStatistics: function () {
+        var showPageStatistic = !userSettings.values[userSettings.names.DISABLE_SHOW_PAGE_STATS];
+        var isAndroid = environmentOptions.Prefs.mobile;
+
         if (isAndroid) {
             this.showPageStatisticCheckbox.parent().hide();
             return;
@@ -867,32 +850,39 @@ PageController.prototype = {
         this.showPageStatisticCheckbox.updateCheckbox(showPageStatistic);
     },
 
-    _renderAutodetectFilters: function (autodectedFilters) {
-        this.autodetectFiltersCheckbox.updateCheckbox(autodectedFilters);
+    _renderAutodetectFilters: function () {
+        var autodetectFilters = !userSettings.values[userSettings.names.DISABLE_DETECT_FILTERS];
+        this.autodetectFiltersCheckbox.updateCheckbox(autodetectFilters);
     },
 
-    _renderAllowAcceptableAds: function (allowAcceptableAds) {
-        this.allowAcceptableAdsCheckbox.updateCheckbox(allowAcceptableAds);
+    _renderAllowAcceptableAds: function () {
+        var acceptableAdsEnabled = AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID in enabledFilters;
+        this.allowAcceptableAdsCheckbox.updateCheckbox(acceptableAdsEnabled);
     },
 
-    _renderShowInfoAboutAdguardFullVersion: function (show) {
-        this.showInfoAboutAdguardFullVersionCheckbox.updateCheckbox(show);
+    _renderShowInfoAboutAdguardFullVersion: function () {
+        var showAdguardPromo = !userSettings.values[userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO];
+        this.showInfoAboutAdguardFullVersionCheckbox.updateCheckbox(showAdguardPromo);
     },
 
-    _renderCollectHitsCount: function (show) {
-        this.enableHitsCountCheckbox.updateCheckbox(show);
+    _renderCollectHitsCount: function () {
+        var collectHitsCount = !userSettings.values[userSettings.names.DISABLE_COLLECT_HITS];
+        this.enableHitsCountCheckbox.updateCheckbox(collectHitsCount);
     },
 
-    _renderShowContextMenu: function (show) {
-        this.enableShowContextMenuCheckbox.updateCheckbox(show);
+    _renderShowContextMenu: function () {
+        var showContextMenu = !userSettings.values[userSettings.names.DISABLE_SHOW_CONTEXT_MENU];
+        this.enableShowContextMenuCheckbox.updateCheckbox(showContextMenu);
     },
 
-    _renderUseOptimizedFilters: function (show) {
-        this.useOptimizedFiltersCheckbox.updateCheckbox(show);
+    _renderUseOptimizedFilters: function () {
+        var useOptimizedFilters = userSettings.values[userSettings.names.USE_OPTIMIZED_FILTERS];
+        this.useOptimizedFiltersCheckbox.updateCheckbox(useOptimizedFilters);
     },
 
-    _renderDefaultWhiteListMode: function (defaultWhiteListMode) {
-        this.changeDefaultWhiteListModeCheckbox.updateCheckbox(!defaultWhiteListMode);
+    _renderDefaultWhiteListMode: function () {
+        var defaultWhitelistMode = userSettings.values[userSettings.names.DEFAULT_WHITE_LIST_MODE];
+        this.changeDefaultWhiteListModeCheckbox.updateCheckbox(!defaultWhitelistMode);
     },
 
     _renderWhiteListOverlay: function () {
