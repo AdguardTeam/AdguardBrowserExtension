@@ -233,6 +233,9 @@ UrlFilterRule.prototype._loadOptions = function (options) {
             case UrlFilterRule.POPUP_OPTION:
                 permittedContentType |= UrlFilterRule.contentTypes.POPUP;
                 break;
+            case UrlFilterRule.STEALTH_OPTION:
+                permittedContentType |= UrlFilterRule.contentTypes.STEALTH;
+                break;
             default:
                 optionName = optionName.toUpperCase();
                 if (optionName in UrlFilterRule.contentTypes) {
@@ -266,6 +269,7 @@ UrlFilterRule.URLBLOCK_OPTION = "urlblock";
 UrlFilterRule.GENERICBLOCK_OPTION = "genericblock";
 UrlFilterRule.JSINJECT_OPTION = "jsinject";
 UrlFilterRule.POPUP_OPTION = "popup";
+UrlFilterRule.STEALTH_OPTION = "stealth";
 UrlFilterRule.MASK_START_URL = "||";
 UrlFilterRule.MASK_PIPE = "|";
 UrlFilterRule.MASK_ANY_SYMBOL = "*";
@@ -290,12 +294,13 @@ UrlFilterRule.contentTypes = {
     MEDIA: 1 << 8,
     FONT: 1 << 9,
 
-    ELEMHIDE: 1 << 20,  //CssFilter cannot be applied to page
-    URLBLOCK: 1 << 21,  //This attribute is only for exception rules. If true - do not use urlblocking rules for urls where referrer satisfies this rule.
-    JSINJECT: 1 << 22,  //Does not inject javascript rules to page
-    POPUP: 1 << 23,      //check block popups
-    GENERICHIDE: 1 << 24, //CssFilter generic rules cannot be applied to page
-    GENERICBLOCK: 1 << 25 //UrlFilter generic rules cannot be applied to page
+    ELEMHIDE: 1 << 20,      //CssFilter cannot be applied to page
+    URLBLOCK: 1 << 21,      //This attribute is only for exception rules. If true - do not use urlblocking rules for urls where referrer satisfies this rule.
+    JSINJECT: 1 << 22,      //Does not inject javascript rules to page
+    POPUP: 1 << 23,         //check block popups
+    GENERICHIDE: 1 << 24,   //CssFilter generic rules cannot be applied to page
+    GENERICBLOCK: 1 << 25,  //UrlFilter generic rules cannot be applied to page,
+    STEALTH: 1 << 26        //turn off stealth mode for page
 };
 
 // https://code.google.com/p/chromium/issues/detail?id=410382
