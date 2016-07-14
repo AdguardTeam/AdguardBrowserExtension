@@ -1,10 +1,10 @@
 ! Title: Social media filter
-! Version: 1.0.10.79
+! Version: 1.0.10.86
 ! Name: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2016-07-10T00:00:37.414+03:00
+! TimeUpdated: 2016-07-14T17:06:49.553+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -212,6 +212,18 @@ maskme.ru#$#img[width="88"][height="31"] {visibility: hidden!important;}
 gamesradar.com#$#.shareSocialArticle-wrap { visibility: hidden; }
 softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ||mimimi.tv/?*=*&_=
+gledanjefilmova.net##div[id^="spu-"]
+nhk.or.jp###js-social-btns
+hitc.com##.shares
+mp3indirco.com##a[title$="Facebook'da Paylaş"]
+heymp3indir.com##a[title$="Facebook'da Paylaş"]
+||sol-online.ru/art/
+sol-online.ru##.banner
+sol-online.ru###top1 noindex
+webwereld.nl###social-buttons-wrapper
+tv3play.se##.social-links
+canal3.md##.the_champ_sharing_container
+fullhdfilmadresi.com##.plink
 ndtv.com##div[class^="st_sharebar"]
 intoday.in##.fixedsocial
 mensxp.com##.long-form-social
@@ -1537,8 +1549,13 @@ livejournal.com##.b-ljtimes-wrapper
 ~vk.com,~vkontakte.ru##a[href^="http://vkontakte.ru/share.php"]
 ~yandex.by,~yandex.com,~yandex.kz,~yandex.ru,~yandex.ua##a[href^="http://wow.ya.ru/posts_share_link.xml"]
 ~digg.com##a[href^="http://www.digg.com/submit?"]
-~facebook.com##a[href^="http://www.facebook.com/share.php?u="]
+~twitter.com##a[href^="http://www.twitter.com/home?"]
+~friendfeed.com##a[href^="http://www.friendfeed.com/share?"]
+~facebook.com##a[href^="http://www.facebook.com/share.php?"]
+~google.com##a[href^="https://www.google.com/bookmarks/mark?"]
+~google.com##a[href^="http://www.google.com/bookmarks/mark?"]
 ~facebook.com##a[href^="http://www.facebook.com/sharer.php?"]
+~myspace.com##a[href^="http://www.myspace.com/Modules/PostTo/Pages/?u="]
 ~facebook.com##a[href^="http://www.facebook.com/sharer/sharer.php"]
 ~linkedin.com##a[href^="http://www.linkedin.com/shareArticle?"]
 ~livejournal.com##a[href^="http://www.livejournal.com/update.bml"]
@@ -1597,6 +1614,7 @@ bitiworld.com##a[title="share on twitter"]
 ~androeed.ru,~facebook.com##input.fb
 ~twitter.com##input.tweet
 ~vk.com,~vkontakte.ru##input.vk
+@@||sol-online.ru/art/sol-board
 @@||animalreader.ru/wp-content/plugins/easy-vkontakte-connect/js/social-likes.min.js
 @@||make-3d.ru/wp-content/plugins/easy-vkontakte-connect/js/social-likes.min.js
 @@||yastatic.net/share2/share.js$domain=biglion.ru

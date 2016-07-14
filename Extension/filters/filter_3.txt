@@ -1,10 +1,10 @@
 ! Title: Spyware filter
-! Version: 1.0.6.61
+! Version: 1.0.6.65
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
 ! NameEn: Spyware filter
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2016-07-08T23:28:58.292+03:00
+! TimeUpdated: 2016-07-14T16:09:23.195+03:00
 ! Title: Adguard Spyware Filter
 !
 ! The most comprehensive list of various online counters and web analytics tools.
@@ -2484,7 +2484,7 @@ http://r.i.ua/s?
 ||trendcounter.com^$third-party
 ||trendcounter.de^$third-party
 ||trendemon.com^$third-party
-||tribdss.com^$third-party
+||tribdss.com/meter/$third-party
 ||triggeredmessaging.com^$third-party
 ||triggertag.gorillanation.com^$third-party
 ||triggit.com^$third-party
@@ -2917,6 +2917,9 @@ _tracking.php?b=
 !-------------- Specific web sites ---------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+||mtcs.nhk.or.jp/b/ss/$image
+||weg.de/etc/designs/comvel/clientlibs/tracking
+||comvel.media/etc/designs/comvel/clientlibs/tracking
 .arcor.de/pixel/
 .arnostat.nl/click.
 3dnews.ru##a[href^="http://metrika.yandex.ru/"]
@@ -3253,6 +3256,10 @@ washingtonpost.com##.social-tools-wrapper-bottom
 !-------------- Whitelist ------------------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+! https://forum.adguard.com/index.php?threads/11731/
+@@||google-analytics.com/analytics.js^$domain=tv3play.se
+! https://github.com/AdguardTeam/AdguardFilters/issues/2545
+@@||emerald.omeda.com/npdn/custsrv_login.do
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2513
 @@||google-analytics.com/analytics.js$domain=mediamarkt.nl
 @@||googletagmanager.com/gtm.js$domain=mediamarkt.nl
@@ -3331,8 +3338,6 @@ washingtonpost.com##.social-tools-wrapper-bottom
 @@||google-analytics.com/analytics.js$domain=mixcloud.com
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1673
 @@||googletagmanager.com/gtm.js$domain=vogue.it
-! http://forum.adguard.com/showthread.php?9337
-@@||tribdss.com^$domain=latimes.com
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1639
 @@||googletagmanager.com/gtm.js$domain=unbiased.co.uk
 !

@@ -1,10 +1,10 @@
 ! Title: Dutch filter
-! Version: 1.0.8.84
+! Version: 1.0.8.86
 ! Name: Dutch filter
 ! Description: EasyList Dutch + Adguard Dutch filter. Filter list that specifically removes adverts on Dutch language websites.
 ! NameEn: Dutch filter
 ! DescriptionEn: EasyList Dutch + Adguard Dutch filter. Filter list that specifically removes adverts on Dutch language websites.
-! TimeUpdated: 2016-07-08T23:29:30.087+03:00
+! TimeUpdated: 2016-07-13T18:01:13.025+03:00
 ! Title: Adguard Dutch Filter.
 !
 ! Filter that enables removing of the ads from websites with Dutch content.
@@ -15,9 +15,9 @@
 ! Homepage: http://adguard.com/filters.html#dutch
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
 !
-!------------------------------------------------------------------------------------!
-!------------------ General JS API --------------------------------------------------!
-!------------------------------------------------------------------------------------!
+!---------------------------------------------------------------------------!
+!------------------ General JS API -----------------------------------------!
+!---------------------------------------------------------------------------!
 ! JS API START
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -25,55 +25,7 @@
 #%#window.AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
 ! JS API FINISH
-!------------------------------------------------------------------------------------!
-!
-||pcnltelecom.tdsapi.com/portal/iframe.js
-iculture.nl##.site-header__compare
-!
-!---------- Anti-adblock ----------!
-! https://forum.adguard.com/index.php?threads/11357/
-@@||static.buienradar.nl/resources/js/advertisement.js
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/2160
-biernet.nl#@#.afs_ads
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/1465
-@@||telegraaf.tcdn.nl/javascript/showads*.js
-!----------------------------------!
-! https://github.com/AdguardTeam/AdguardFilters/issues/2514
-vlinderscrime.nl##a[href="http://mariska-o.nl/"]
-||diomerc.com/baner/
-||vlinderscrime.nl/wp-content/uploads/*/*banner*.
-! https://forum.adguard.com/index.php?threads/11453/
-fok.nl###mainContent > div.ad
-! https://forum.adguard.com/index.php?threads/11304/
-iphoned.nl,androidplanet.nl###featured-header
-iphoned.nl,androidplanet.nl##.widget.widget_static_device_widget
-iphoned.nl,androidplanet.nl##.advert-sidebar
-! https://forum.adguard.com/index.php?threads/11206/
-nu.nl##.block.advertoriallist
-nu.nl##.section-mediapartner-external.source-normal
-! https://forum.adguard.com/index.php?threads/11188/
-||m.telegraaf.nl/static/lib/bva-widget.html?without-raid
-! https://forum.adguard.com/index.php?threads/11174/
-tvgids.nl##.interstitial_banner
-tvgids.nl###ligatus_under_content
-!
-||d33t3vvu2t2yu5.cloudfront.net^$domain=nl.express.live
-||totaaltv.nl/upload/Banner-sep-astrasat.gif
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/809
-||servedby.rtbiddingplatform.com^$domain=media.zie.nl
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/169
-||bs.serving-sys.com/BurstingPipe/adServer.bs$domain=kijk.nl
-||serving-sys.com/*.mp4^$domain=kijk.nl
-||cdn.sbsnet.nl/creatives/assets/*.mp4$domain=kijk.nl
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/534
-@@||cdn-static.liverail.com/swf/$domain=dumpert.nl
-@@||cdn-static.liverail.com/crossdomain.xml$domain=dumpert.nl
-!
-marktplaats.nl###banner-aanbieding
-marktplaats.nl###banner-marketing
-! http://forum.adguard.com/showthread.php?4571
-@@||publiekeomroep.nl^$stylesheet,script,domain=cinema.nl
-!
+!---------------------------------------------------------------------------!
 -reclameplaatjes/
 .be/ads/
 /adbron.
@@ -1353,3 +1305,95 @@ amonis.be#@#.text-ad
 kamernet.nl#@#.topAdd
 voetbalnieuws.be#@#a[href^="http://adserving.unibet.com/"]
 tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
+!---------------------------------------------------------------------------!
+!-------------- Advertising networks ---------------------------------------!
+!---------------------------------------------------------------------------!
+!
+! Section contains list of advertising networks
+!
+!---------------------------------------------------------------------------!
+!-------------- Anti-adblock rules -----------------------------------------!
+!---------------------------------------------------------------------------!
+!
+! These rules are against anti-adblock scripts
+!
+! ! Prevent AdFender detection
+@@/ad_bomb/*$image,domain=computerworld.nl|webwereld.nl
+! https://forum.adguard.com/index.php?threads/11357/
+@@||static.buienradar.nl/resources/js/advertisement.js
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/2160
+biernet.nl#@#.afs_ads
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1465
+@@||telegraaf.tcdn.nl/javascript/showads*.js
+!---------------------------------------------------------------------------!
+!-------------- General element hiding rules -------------------------------!
+!---------------------------------------------------------------------------!
+!
+! Section contains list general hiding rules
+!
+!---------------------------------------------------------------------------!
+!-------------- General javascript, CSS and HTML extensions ----------------!
+!---------------------------------------------------------------------------!
+!--------------------------------------!
+!------- JS rules ---------------------!
+!--------------------------------------!
+!
+!--------------------------------------!
+!------- CSS fixes --------------------!
+!--------------------------------------!
+!
+!--------------------------------------!
+!------- Content filtering rules ------!
+!--------------------------------------!
+!
+!---------------------------------------------------------------------------!
+!-------------- General URL blocking rules ---------------------------------!
+!---------------------------------------------------------------------------!
+!
+! Banner names
+!
+!-------------------------------------------------------------------------------!
+!------------------ Content replacement rules ----------------------------------!
+!-------------------------------------------------------------------------------!
+!
+! The content replacement rules
+!
+!---------------------------------------------------------------------------!
+!-------------- Rules for specific websites --------------------------------!
+!---------------------------------------------------------------------------!
+!--------------------------------------------------------!
+!-------------------- Specific rules --------------------!
+!--------------------------------------------------------!
+fok.nl###mainContent > div.ad
+iphoned.nl,androidplanet.nl###featured-header
+iphoned.nl,androidplanet.nl##.advert-sidebar
+iphoned.nl,androidplanet.nl##.widget.widget_static_device_widget
+nu.nl##.block.advertoriallist
+nu.nl##.section-mediapartner-external.source-normal
+tvgids.nl###ligatus_under_content
+tvgids.nl##.interstitial_banner
+vlinderscrime.nl##a[href="http://mariska-o.nl/"]
+||bs.serving-sys.com/BurstingPipe/adServer.bs$domain=kijk.nl
+||cdn.sbsnet.nl/creatives/assets/*.mp4$domain=kijk.nl
+||d33t3vvu2t2yu5.cloudfront.net^$domain=nl.express.live
+||diomerc.com/baner/
+||m.telegraaf.nl/static/lib/bva-widget.html?without-raid
+||servedby.rtbiddingplatform.com^$domain=media.zie.nl
+||serving-sys.com/*.mp4^$domain=kijk.nl
+||totaaltv.nl/upload/Banner-sep-astrasat.gif
+||vlinderscrime.nl/wp-content/uploads/*/*banner*.
+||pcnltelecom.tdsapi.com/portal/iframe.js
+iculture.nl##.site-header__compare
+marktplaats.nl###banner-aanbieding
+marktplaats.nl###banner-marketing
+!---------------------------------------------------------------------------!
+!------ White list. Fixing filtration errors (false-positive) --------------!
+!---------------------------------------------------------------------------!
+!
+! White list. Fixing filtration errors (false-positive)
+!
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/534
+@@||cdn-static.liverail.com/swf/$domain=dumpert.nl
+@@||cdn-static.liverail.com/crossdomain.xml$domain=dumpert.nl
+! http://forum.adguard.com/showthread.php?4571
+@@||publiekeomroep.nl^$stylesheet,script,domain=cinema.nl

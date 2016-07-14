@@ -1,43 +1,15 @@
 ! Title: Dutch filter
-! Version: 1.0.8.84
+! Version: 1.0.8.86
 ! Name: Dutch filter
 ! Description: EasyList Dutch + Adguard Dutch filter. Filter list that specifically removes adverts on Dutch language websites.
 ! NameEn: Dutch filter
 ! DescriptionEn: EasyList Dutch + Adguard Dutch filter. Filter list that specifically removes adverts on Dutch language websites.
-! TimeUpdated: 2016-07-08T23:29:30.087+03:00
+! TimeUpdated: 2016-07-13T18:01:13.025+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#window.AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
-||pcnltelecom.tdsapi.com/portal/iframe.js
-iculture.nl##.site-header__compare
-@@||static.buienradar.nl/resources/js/advertisement.js
-biernet.nl#@#.afs_ads
-@@||telegraaf.tcdn.nl/javascript/showads*.js
-vlinderscrime.nl##a[href="http://mariska-o.nl/"]
-||diomerc.com/baner/
-||vlinderscrime.nl/wp-content/uploads/*/*banner*.
-fok.nl###mainContent > div.ad
-iphoned.nl,androidplanet.nl###featured-header
-iphoned.nl,androidplanet.nl##.widget.widget_static_device_widget
-iphoned.nl,androidplanet.nl##.advert-sidebar
-nu.nl##.block.advertoriallist
-nu.nl##.section-mediapartner-external.source-normal
-||m.telegraaf.nl/static/lib/bva-widget.html?without-raid
-tvgids.nl##.interstitial_banner
-tvgids.nl###ligatus_under_content
-||d33t3vvu2t2yu5.cloudfront.net^$domain=nl.express.live
-||totaaltv.nl/upload/Banner-sep-astrasat.gif
-||servedby.rtbiddingplatform.com^$domain=media.zie.nl
-||bs.serving-sys.com/BurstingPipe/adServer.bs$domain=kijk.nl
-||serving-sys.com/*.mp4^$domain=kijk.nl
-||cdn.sbsnet.nl/creatives/assets/*.mp4$domain=kijk.nl
-@@||cdn-static.liverail.com/swf/$domain=dumpert.nl
-@@||cdn-static.liverail.com/crossdomain.xml$domain=dumpert.nl
-marktplaats.nl###banner-aanbieding
-marktplaats.nl###banner-marketing
-@@||publiekeomroep.nl^$stylesheet,script,domain=cinema.nl
 .be/ads/
 /adverteerders/*
 /advertentie-banner-
@@ -623,3 +595,32 @@ amonis.be#@#.text-ad
 kamernet.nl#@#.topAdd
 voetbalnieuws.be#@#a[href^="http://adserving.unibet.com/"]
 tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
+@@/ad_bomb/*$image,domain=computerworld.nl|webwereld.nl
+@@||static.buienradar.nl/resources/js/advertisement.js
+biernet.nl#@#.afs_ads
+@@||telegraaf.tcdn.nl/javascript/showads*.js
+fok.nl###mainContent > div.ad
+iphoned.nl,androidplanet.nl###featured-header
+iphoned.nl,androidplanet.nl##.advert-sidebar
+iphoned.nl,androidplanet.nl##.widget.widget_static_device_widget
+nu.nl##.block.advertoriallist
+nu.nl##.section-mediapartner-external.source-normal
+tvgids.nl###ligatus_under_content
+tvgids.nl##.interstitial_banner
+vlinderscrime.nl##a[href="http://mariska-o.nl/"]
+||bs.serving-sys.com/BurstingPipe/adServer.bs$domain=kijk.nl
+||cdn.sbsnet.nl/creatives/assets/*.mp4$domain=kijk.nl
+||d33t3vvu2t2yu5.cloudfront.net^$domain=nl.express.live
+||diomerc.com/baner/
+||m.telegraaf.nl/static/lib/bva-widget.html?without-raid
+||servedby.rtbiddingplatform.com^$domain=media.zie.nl
+||serving-sys.com/*.mp4^$domain=kijk.nl
+||totaaltv.nl/upload/Banner-sep-astrasat.gif
+||vlinderscrime.nl/wp-content/uploads/*/*banner*.
+||pcnltelecom.tdsapi.com/portal/iframe.js
+iculture.nl##.site-header__compare
+marktplaats.nl###banner-aanbieding
+marktplaats.nl###banner-marketing
+@@||cdn-static.liverail.com/swf/$domain=dumpert.nl
+@@||cdn-static.liverail.com/crossdomain.xml$domain=dumpert.nl
+@@||publiekeomroep.nl^$stylesheet,script,domain=cinema.nl
