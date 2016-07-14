@@ -76,8 +76,10 @@ PageController.prototype = {
         this.blockThirdPartyCacheCheckbox = $("#blockThirdPartyCacheCheckbox");
         this.hideSearchQueriesCheckbox = $("#hideSearchQueriesCheckbox");
         this.sendDoNotTrackCheckbox = $("#sendDoNotTrackCheckbox");
-        //TODO: Show only for chrome
         this.blockChromeClientDataCheckbox = $("#blockChromeClientDataCheckbox");
+        if (!environmentOptions.isChromeBrowser) {
+            this.blockChromeClientDataCheckbox.closest('.s-page-table-row').hide();
+        }
         this.hideReferrerCheckbox = $("#hideReferrerCheckbox");
         this.hideUserAgentCheckbox = $("#hideUserAgentCheckbox");
         this.hideIpAddressCheckbox = $("#hideIpAddressCheckbox");
