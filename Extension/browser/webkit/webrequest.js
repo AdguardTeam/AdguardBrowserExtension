@@ -49,15 +49,69 @@ function onBeforeRequest(requestDetails) {
     return !webRequestService.isRequestBlockedByRule(requestRule);
 }
 
+function getRequestDetails (details) {
+
+    if (details.tabId === -1) {
+        return null;
+    }
+
+    var tab = ({id: details.tabId});
+
+    //https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
+    var requestDetails = {
+        requestUrl: details.url,    //request url
+        tab: tab                    //request tab
+    };
+
+    var frameId = 0;        //id of this frame (only for main_frame and sub_frame types)
+    var requestFrameId = 0; //id of frame where request is executed
+    var requestType;        //request type
+
+    switch (details.type) {
+        case "main_frame":
+            frameId = 0;
+            requestType = "DOCUMENT";
+            break;
+        case "sub_frame":
+            frameId = details.frameId;
+            requestFrameId = details.parentFrameId; //for sub_frame use parentFrameId as id of frame that wraps this frame
+            requestType = "SUBDOCUMENT";
+            break;
+        default:
+            requestFrameId = details.frameId;
+            requestType = details.type.toUpperCase();
+            break;
+    }
+
+    //relate request to main_frame
+    if (requestFrameId === -1) {
+        requestFrameId = 0;
+    }
+
+    requestDetails.frameId = frameId;
+    requestDetails.requestFrameId = requestFrameId;
+    requestDetails.requestType = requestType;
+
+    if (details.requestHeaders) {
+        requestDetails.requestHeaders = details.requestHeaders;
+    }
+
+    if (details.responseHeaders) {
+        requestDetails.responseHeaders = details.responseHeaders;
+    }
+
+    return requestDetails;
+}
+
 /**
  * Called before request is sent to the remote endpoint.
  * This method is used to modify request in case of working in integration mode
  * and also to record referrer header in frame data.
  *
- * @param requestDetails Request details
+ * @param details Request details
  * @returns {*} headers to send
  */
-function onBeforeSendHeaders(requestDetails) {
+function onBeforeSendHeaders(details) {
 
     //var requestDetails = this._getRequestDetails(details);
     //if (!requestDetails) {
@@ -66,8 +120,8 @@ function onBeforeSendHeaders(requestDetails) {
     //
     //return stealthService.processRequestHeaders(requestDetails);
 
-    var tab = requestDetails.tab;
-    var headers = requestDetails.requestHeaders;
+    var tab = details.tab;
+    var headers = details.requestHeaders;
 
     if (adguardApplication.shouldOverrideReferrer(tab)) {
         // Retrieve main frame url
@@ -76,7 +130,7 @@ function onBeforeSendHeaders(requestDetails) {
         return {requestHeaders: headers};
     }
 
-    if (requestDetails.requestType === 'DOCUMENT') {
+    if (details.requestType === 'DOCUMENT') {
         // Save ref header
         var refHeader = Utils.findHeaderByName(headers, 'Referer');
         if (refHeader) {
@@ -87,21 +141,14 @@ function onBeforeSendHeaders(requestDetails) {
     return {};
 }
 
-function onHeadersReceived(requestDetails) {
+function onHeadersReceived(details) {
 
-    //var requestDetails = this._getRequestDetails(details);
-    //if (!requestDetails) {
-    //    return;
-    //}
-    //
-    //return stealthService.processResponseHeaders(requestDetails);
-
-    var tab = requestDetails.tab;
-    var requestUrl = requestDetails.requestUrl;
-    var responseHeaders = requestDetails.responseHeaders;
-    var requestType = requestDetails.requestType;
+    var tab = details.tab;
+    var requestUrl = details.requestUrl;
+    var responseHeaders = details.responseHeaders;
+    var requestType = details.requestType;
     //retrieve referrer
-    var referrerUrl = framesMap.getFrameUrl(tab, requestDetails.requestFrameId);
+    var referrerUrl = framesMap.getFrameUrl(tab, details.requestFrameId);
 
     webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
 
@@ -109,6 +156,13 @@ function onHeadersReceived(requestDetails) {
         //safebrowsing check
         filterSafebrowsing(tab, requestUrl);
     }
+
+    //var requestDetails = getRequestDetails(details);
+    //if (!requestDetails) {
+    //    return;
+    //}
+    //
+    //return stealthService.processResponseHeaders(requestDetails);
 }
 
 function filterSafebrowsing(tab, mainFrameUrl) {
