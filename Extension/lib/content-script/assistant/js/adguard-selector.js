@@ -41,6 +41,16 @@ var AdguardSelectorLib = (function (api, $) {
     var onElementSelectedHandler = null;
 
     var isTouchEventsSupported = (('ontouchstart' in window) || (navigator.msMaxTouchPoints > 0));
+
+    console.log('isTouchEventsSupported: ' + isTouchEventsSupported);
+    console.log("'ontouchstart' in window: " + ('ontouchstart' in window));
+    console.log("'ontouchend' in document: " + ('ontouchend' in document));
+    console.log("'ontouchstart' in document.documentElement: " + ('ontouchstart' in document.documentElement));
+    console.log('navigator.msMaxTouchPoints > 0: ' + (navigator.msMaxTouchPoints > 0));
+    console.log('window.ontouchstart: ' + window.ontouchstart);
+
+    isTouchEventsSupported = false;
+
     var ignoreTouchEvent = 0;
 
     var selectionRenderer;
