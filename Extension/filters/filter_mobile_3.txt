@@ -1,10 +1,10 @@
 ! Title: Spyware filter
-! Version: 1.0.6.65
+! Version: 1.0.6.67
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
 ! NameEn: Spyware filter
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2016-07-14T16:09:23.195+03:00
+! TimeUpdated: 2016-07-15T01:06:55.653+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -33,6 +33,9 @@ echo.msk.ru$$script[tag-content="s=screen;"][max-length="200"]
 ##img[src*="counter.yadro.ru"]
 ##img[src^="http://c.bigmir.net/"]
 ~forum.ixbt.com,~mozhor.ru,~onliner.by,~wiktionary.org,~yandex.by,~yandex.com,~yandex.com.tr,~yandex.ru,~yandex.ua##img[width="88"][height="31"]
+|x.ligatus.com^$third-party
+||spoods.rce.veeseo.com^$third-party
+||tracking.rce.veeseo.com^$third-party
 //t100.ru^$third-party
 ://tru.am^$third-party
 http://r.i.ua/s?
@@ -1912,6 +1915,12 @@ http://r.i.ua/s?
 /zz.gif?url=
 ://top.*/count/cnt.php?
 _tracking.php?b=
+||veeseo.com^*/view/$image
+||veeseo.com^*/url.gif?
+||trk.helios.ligatus.com/imp?z=$image
+||tamindir.com/cdn-cgi/pe/bag2?r[]=
+||cbslocal.com^*/cbs1x1.gif?
+||viafoura.com/*/ingest?t=
 ||mtcs.nhk.or.jp/b/ss/$image
 ||weg.de/etc/designs/comvel/clientlibs/tracking
 ||comvel.media/etc/designs/comvel/clientlibs/tracking

@@ -1,10 +1,10 @@
 ! Title: English filter
-! Version: 1.0.89.10
+! Version: 1.0.89.13
 ! Name: English filter
 ! Description: EasyList + Adguard English filter. Filter list that specifically removes adverts on English language websites.
 ! NameEn: English filter
 ! DescriptionEn: EasyList + Adguard English filter. Filter list that specifically removes adverts on English language websites.
-! TimeUpdated: 2016-07-14T18:03:53.931+03:00
+! TimeUpdated: 2016-07-15T01:06:48.508+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -302,7 +302,8 @@
 ||zemanta.com^$third-party
 ||zeti.com^$third-party
 mokeedev.com,yuncomics.com,shencomics.com,persnacons.tistory.com,safebit.co.in#%#(function(){var a={debug:{set:function(){return a}},on:function(b,c){b||setTimeout(function(){c()},1);return a},onDetected:function(b){return a.on(!0,b)},onNotDetected:function(b){return a.on(!1,b)},check:function(){}};Object.defineProperty(window,"fuckAdBlock",{get:function(){return a}})})();
-gofobo.com,androidsage.com,supercineonline.tv,apkmos.com,userscdn.com,vidoser.org,blockadblock.com,uplod.it,uplod.it,dasolo.org,sharejunction.com#%#(function() { var _setTimeout = window.setTimeout, regex = /bab_elementid/; window.setTimeout = function(a, b) { if ( typeof a !== 'string' || !regex.test(a) ) { _setTimeout(a, b); } }; })();
+gofobo.com,androidsage.com,supercineonline.tv,apkmos.com,userscdn.com,vidoser.org,uplod.it,uplod.it,dasolo.org,sharejunction.com#%#(function() { var _setTimeout = window.setTimeout, regex = /bab_elementid/; window.setTimeout = function(a, b) { if ( typeof a !== 'string' || !regex.test(a) ) { _setTimeout(a, b); } }; })();
+blockadblock.com#%#(function() { var _eval = window.eval; window.eval = function(a) { if ( a.toString().indexOf('babasbmsgx') === -1 ) { _eval(a); return; } }; })();
 hulkpop.com#%#(function() { var _setTimeout = window.setTimeout, regex = /bab/; window.setTimeout = function(a, b) { if ( typeof a !== 'string' || !regex.test(a) ) { _setTimeout(a, b); } }; })();
 mma-core.com#%#var _st = window.setTimeout; window.setTimeout = function(a, b) { if(!/displayAdBlockedVideo/.test(a)){ _st(a,b);}};
 @@||gledanjefilmova.net^$generichide
@@ -2043,6 +2044,8 @@ lyngsat-logo.com,lyngsat.com##td[width="160"][height="600"]
 ||youjizz.com/js/YJ-ab/_yjserve.js
 ||zkake.exashare.com^
 @@||ovh.es^$content
+@@||amazon-adsystem.com/aax2/amzn_ads.js^$domain=kino.de
+@@||amazon-adsystem.com/e/dtb/bid^$domain=kino.de
 @@||yastatic.net/awaps-ad-sdk-js$domain=kinopoisk.ru,script
 @@||ncbi.nlm.nih.gov^$jsinject
 @@||adv.calciomercato.com/api/ads/banners|
@@ -12382,6 +12385,7 @@ _980x100.
 ###tgAD_imu_2
 ###tgAD_imu_3
 ###tgAD_imu_4
+###tgt1-Col2-1-ComboAd-Proxy
 ###the-last-ad-standing
 ###theAd
 ###theadsADT3
@@ -16580,6 +16584,7 @@ _980x100.
 ##.advertisement300x250
 ##.advertisement468
 ##.advertisementBackground
+##.advertisementBanner
 ##.advertisementBannerVertical
 ##.advertisementBar
 ##.advertisementBlock
@@ -26355,6 +26360,7 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad"]
 ||asd.projectfreetv.so^
 ||astronomynow.com/wp-content/promos/
 ||attorrents.com/static/images/download3.png
+||atwonline.com^*/Airbus120x50_
 ||audioz.download^*/partners/
 ||autorrents.com/static/images/download2.png
 ||autosport.com/img/promo/
@@ -27198,6 +27204,8 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad"]
 |https://$script,third-party,xmlhttprequest,domain=streamplay.to
 @@||addthisedge.com/live/$script,domain=jpost.com
 @@||admin.brightcove.com^$script,domain=jpost.com
+@@||api.5min.com/search/*/videos.json?$xmlhttprequest,domain=jpost.com
+@@||api.vidible.tv/search/*/videos.json?$xmlhttprequest,domain=jpost.com
 @@||apis.google.com^$script,domain=jpost.com
 @@||app-cdn.spot.im^$script,third-party,domain=jpost.com
 @@||connect.facebook.net^$script,domain=jpost.com
@@ -27222,7 +27230,9 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad"]
 @@||players.brightcove.net^$domain=jpost.com
 @@||s7.addthis.com^$script,domain=jpost.com
 @@||spot.im/launcher/bundle.js$domain=jpost.com
+@@||wibbitz.com/jpost/embed.js$script,domain=jpost.com
 @@||widgets.outbrain.com/outbrain.js$domain=jpost.com
+@@||widgets.rumble.me/aol/$script,domain=jpost.com
 @@||windows.net/event-collector/messages?$xmlhttprequest,domain=jpost.com
 @@||zdwidget3-bs.sphereup.com^$script,domain=jpost.com
 |http://$script,third-party,xmlhttprequest,domain=jpost.com
@@ -27908,6 +27918,7 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad"]
 ||russiansexytube.com/js/spc_banners_init.js
 ||russiansexytube.com/js/video_popup.js
 ||s.xvideos.com^$subdocument
+||s3.amazonaws.com^$domain=gaybeeg.info
 ||sensualgirls.org/banner/
 ||sex.com/images/*/banner_
 ||sex3.com/if/
@@ -30212,6 +30223,7 @@ inamsoftwares.com##img[src^="http://my.60ads.com/"]
 firstonetv.com##img[src^="images/bitgold_"]
 wfc.tv##img[style="max-width: 240px;max-height: 400px;"]
 iconizer.net##img[style="width: 160px; height:600px"]
+atwonline.com##img[style="width: 274px; height: 50px;"]
 flafnr.com,galaxyfm.co.ug,gizmochina.com##img[style="width: 300px; height: 250px;"]
 check-host.net##img[style="width: 640px"]
 galaxyfm.co.ug##img[style="width: auto; height: 90px;"]
@@ -32539,6 +32551,7 @@ www.google.com#@##videoads
 @@||sharesix.com^$popup,domain=putlocker.is
 @@||streamin.to^$popup,domain=putlocker.is
 @@||thefile.me^$popup,domain=putlocker.is
+@@||vk.com/ads?$popup,domain=vk.com
 @@||youtube.com/ads/preferences/$popup
 @@/cdn-cgi/pe/bag2?r[]=*ads.exoclick.com$xmlhttprequest,domain=hd-porn.me
 @@/cdn-cgi/pe/bag2?r[]=*juicyads.com$xmlhttprequest,domain=glamourbabe.eu
