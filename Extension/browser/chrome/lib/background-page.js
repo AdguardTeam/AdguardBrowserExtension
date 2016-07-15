@@ -603,9 +603,6 @@ var browser = browser || chrome;
             var tabId = tab.id;
 
             var onIconReady = function () {
-                if (checkLastError()) {
-                    return;
-                }
                 browser.tabs.get(tabId, function () {
                     if (checkLastError()) {
                         return;
