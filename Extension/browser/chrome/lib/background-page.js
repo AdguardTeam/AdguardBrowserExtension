@@ -601,6 +601,9 @@ var browser = browser || chrome;
         setBrowserAction: function (tab, icon, badge, badgeColor, title) {
 
             var tabId = tab.id;
+            if (!tabId) {
+                return;
+            }
 
             var onIconReady = function () {
                 browser.tabs.get(tabId, function () {
