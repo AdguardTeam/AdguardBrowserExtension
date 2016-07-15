@@ -48,6 +48,7 @@ var Log = exports.Log = (function() {
 		if (!args || args.length === 0 || !args[0]) {
 			return;
 		}
+
 		var str = args[0] + "";
 		args = Array.prototype.slice.call(args, 1);
 		var formatted = str.replace(/{(\d+)}/g, function (match, number) {
@@ -56,6 +57,8 @@ var Log = exports.Log = (function() {
 				var value = args[number];
 				if (value instanceof Error) {
 					value = errorToString(value);
+				} else if (value && value.message) {
+					value = value.message;
 				}
 				return value;
 			}

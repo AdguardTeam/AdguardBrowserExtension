@@ -281,7 +281,7 @@ var browser = browser || chrome;
     var checkLastError = function () {
         var ex = browser.runtime.lastError;
         if (ex) {
-            Log.error("Error while executing operation {0}", ex);
+            Log.error("Error while executing operation: {0}", ex);
         }
         
         return ex;
