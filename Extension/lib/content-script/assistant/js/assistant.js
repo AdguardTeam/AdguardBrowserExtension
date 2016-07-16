@@ -654,6 +654,7 @@ var AdguardAssistant = function ($) {
 
 		var isBlockSimilar = findInIframe("#block-similar-checkbox").get(0).checked;
 
+		//TODO: Construct selector with constructRuleCssSelector
 		var selector = AdguardRulesConstructorLib.constructCssSelector(settings.selectedElement, isBlockSimilar);
 		var style = document.createElement("style");
 		style.setAttribute("type", "text/css");

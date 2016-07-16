@@ -284,6 +284,7 @@ var browser = window.browser || chrome;
             var head = document.getElementsByTagName('head')[0];
             if (head) {
                 if (hide && hide == 'true') {
+                    //TODO: Construct selector with constructRuleCssSelector
                     var selector = AdguardRulesConstructorLib.constructCssSelector($0, isBlockSimilar == 'true');
 
                     var style = document.createElement("style");
