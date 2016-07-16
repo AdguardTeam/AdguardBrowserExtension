@@ -38,7 +38,7 @@ var browser = window.browser || chrome;
             });
         };
 
-        var onPageChanged = function (url) {
+        var onPageChanged = function () {
             document.getElementById("preview-rule-button").value = 'Preview';
             delete window.adguardDevToolsPreview;
         };
@@ -76,17 +76,19 @@ var browser = window.browser || chrome;
             if (window.selectedElement) {
                 if (window.adguardDevToolsPreview) {
                     // Remove preview
-                    togglePreview();
+                    cancelPreview();
                     previewRuleButton.value = 'Preview';
 
                     delete window.adguardDevToolsPreview;
                     return;
                 }
 
-                togglePreview(window.selectedElement);
+                var ruleText = document.getElementById("filter-rule-text").value;
+                applyPreview(ruleText);
+
                 previewRuleButton.value = 'Cancel preview';
 
-                window.adguardDevToolsPreview = selectedElement;
+                window.adguardDevToolsPreview = window.selectedElement;
             }
         });
 
@@ -276,16 +278,26 @@ var browser = window.browser || chrome;
         });
     };
 
-    var togglePreview = function (element) {
+    var applyPreview = function (ruleText) {
+        togglePreview(ruleText);
+    };
 
-        var togglePreviewStyle = function (hide, isBlockSimilar) {
+    var cancelPreview = function () {
+        togglePreview();
+    };
+
+    var togglePreview = function (ruleText) {
+
+        var togglePreviewStyle = function (ruleText) {
             var PREVIEW_STYLE_ID = "adguard-preview-style";
 
             var head = document.getElementsByTagName('head')[0];
             if (head) {
-                if (hide && hide == 'true') {
-                    //TODO: Construct selector with constructRuleCssSelector
-                    var selector = AdguardRulesConstructorLib.constructCssSelector($0, isBlockSimilar == 'true');
+                if (ruleText && ruleText != 'undefined') {
+                    var selector = AdguardRulesConstructorLib.constructRuleCssSelector(ruleText);
+                    if (!selector) {
+                        return;
+                    }
 
                     var style = document.createElement("style");
                     style.setAttribute("type", "text/css");
@@ -293,21 +305,21 @@ var browser = window.browser || chrome;
                     style.appendChild(document.createTextNode(selector + " {display: none !important;}"));
 
                     head.appendChild(style);
+
+                    //TODO: $('[src="' + url + '"]:visible').addClass('adguard-preview-hidden').hide()
                 } else {
                     head.removeChild(document.getElementById(PREVIEW_STYLE_ID));
                 }
             }
         };
 
-        var isBlockSimilar = $("#block-similar-checkbox").get(0).checked;
-        var hide = element ? true : false;
-        browser.devtools.inspectedWindow.eval("(" + togglePreviewStyle.toString() + ")('" + hide + "', '" + isBlockSimilar + "')", { useContentScriptContext: true });
+        browser.devtools.inspectedWindow.eval("(" + togglePreviewStyle.toString() + ")('" + ruleText + "')", { useContentScriptContext: true });
     };
 
-    var addRuleForElement = function (element) {
+    var addRuleForElement = function () {
         if (window.adguardDevToolsPreview) {
             // Remove preview
-            togglePreview();
+            cancelPreview();
         }
 
         var ruleText = document.getElementById("filter-rule-text").value;
@@ -319,7 +331,7 @@ var browser = window.browser || chrome;
         browser.devtools.inspectedWindow.eval("(" + addRule.toString() + ")('" + ruleText + "')", {
             useContentScriptContext: true
         }, function () {
-            togglePreview(element);
+            applyPreview(ruleText);
 
             delete window.selectedElement;
             delete window.selectedElementInfo;
