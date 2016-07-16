@@ -163,7 +163,7 @@ addTestCase(testConstructorSpecialElements);
 
 function testConstructRuleStyle() {
     var selector;
-    selector = AdguardRulesConstructorLib.constructRuleCssSelector('lenta.ru##div.test-class-two#test-id-div');
+    selector = AdguardRulesConstructorLib.constructRuleCssSelector('lenta.ru##div.test-class-two#test-id-div$domain=example.org');
     assertEquals('div.test-class-two#test-id-div', selector);
 
     selector = AdguardRulesConstructorLib.constructRuleCssSelector('lenta.ru###test-div > h2:last-child');
@@ -172,10 +172,13 @@ function testConstructRuleStyle() {
     selector = AdguardRulesConstructorLib.constructRuleCssSelector('##div#test-id-div[id="test-id-div"][title="Share on Twitter"]');
     assertEquals('div#test-id-div[id="test-id-div"][title="Share on Twitter"]', selector);
 
-    selector = AdguardRulesConstructorLib.constructRuleCssSelector('lenta.ru');
-    assertEquals('body', selector);
-
     selector = AdguardRulesConstructorLib.constructRuleCssSelector('test.com/page$domain=example.org');
-    assertEquals('[src="test.com/page$domain=example.org"]', selector);
+    assertEquals('[src="test.com/page"]', selector);
+
+    selector = AdguardRulesConstructorLib.constructRuleCssSelector('||rutorads.com^$popup');
+    assertEquals('[src="rutorads.com"]', selector);
+
+    selector = AdguardRulesConstructorLib.constructRuleCssSelector("#%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };");
+    assertTrue(selector == null);
 }
 addTestCase(testConstructRuleStyle);
