@@ -244,6 +244,17 @@ var AdguardRulesConstructorLib = (function (api) {
     };
 
     /**
+     * Constructs css selector for specified rule
+     *
+     * @param ruleText rule text
+     * @returns {string} css style selector
+     */
+    api.constructRuleCssSelector = function (ruleText) {
+        //TODO: Implement constructRuleCssSelector
+        return '';
+    };
+
+    /**
      * Constructs adguard rule text from element node and specified options
      *
      * var options = {

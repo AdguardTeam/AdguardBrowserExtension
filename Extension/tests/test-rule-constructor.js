@@ -160,3 +160,22 @@ function testConstructorSpecialElements() {
     assertEquals(ruleText, 'lenta.ru##div.test-class-two#test-id-div');
 }
 addTestCase(testConstructorSpecialElements);
+
+function testConstructRuleStyle() {
+    var selector;
+    selector = AdguardRulesConstructorLib.constructRuleCssSelector('lenta.ru##div.test-class-two#test-id-div');
+    assertEquals('div.test-class-two#test-id-div', selector);
+
+    selector = AdguardRulesConstructorLib.constructRuleCssSelector('lenta.ru###test-div > h2:last-child');
+    assertEquals('#test-div > h2:last-child', selector);
+
+    selector = AdguardRulesConstructorLib.constructRuleCssSelector('##div#test-id-div[id="test-id-div"][title="Share on Twitter"]');
+    assertEquals('div#test-id-div[id="test-id-div"][title="Share on Twitter"]', selector);
+
+    selector = AdguardRulesConstructorLib.constructRuleCssSelector('lenta.ru');
+    assertEquals('body', selector);
+
+    selector = AdguardRulesConstructorLib.constructRuleCssSelector('test.com/page$domain=example.org');
+    assertEquals('[src="test.com/page$domain=example.org"]', selector);
+}
+addTestCase(testConstructRuleStyle);
