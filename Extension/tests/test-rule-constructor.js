@@ -173,10 +173,10 @@ function testConstructRuleStyle() {
     assertEquals('div#test-id-div[id="test-id-div"][title="Share on Twitter"]', selector);
 
     selector = AdguardRulesConstructorLib.constructRuleCssSelector('test.com/page$domain=example.org');
-    assertEquals('[src="test.com/page"]', selector);
+    assertEquals('[src*="test.com/page"]', selector);
 
     selector = AdguardRulesConstructorLib.constructRuleCssSelector('||rutorads.com^$popup');
-    assertEquals('[src="rutorads.com"]', selector);
+    assertEquals('[src*="rutorads.com"]', selector);
 
     selector = AdguardRulesConstructorLib.constructRuleCssSelector("#%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };");
     assertTrue(selector == null);

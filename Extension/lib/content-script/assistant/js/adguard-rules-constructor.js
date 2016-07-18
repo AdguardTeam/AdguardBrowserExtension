@@ -276,7 +276,7 @@ var AdguardRulesConstructorLib = (function (api) {
         s = s.replace(/[\|]|[\^]/g, '');
 
         if (isValidUrl(s)) {
-            return '[src="' + s + '"]';
+            return '[src*="' + s + '"]';
         }
 
         return null;
