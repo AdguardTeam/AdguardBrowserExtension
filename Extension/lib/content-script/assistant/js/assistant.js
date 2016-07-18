@@ -652,9 +652,12 @@ var AdguardAssistant = function ($) {
 	var hideElement = function () {
 		AdguardSelectorLib.reset();
 
-		var isBlockSimilar = findInIframe("#block-similar-checkbox").get(0).checked;
+		var ruleText = findInIframe('#filter-rule').get(0).value;
+		var selector = AdguardRulesConstructorLib.constructRuleCssSelector(ruleText);
+		if (!selector) {
+			return;
+		}
 
-		var selector = AdguardRulesConstructorLib.constructCssSelector(settings.selectedElement, isBlockSimilar);
 		var style = document.createElement("style");
 		style.setAttribute("type", "text/css");
 		settings.lastPreview = style;
