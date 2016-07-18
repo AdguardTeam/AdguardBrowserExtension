@@ -20,7 +20,7 @@ var PageController = function () {
 
 PageController.prototype = {
 
-    DEFAULT_LIMIT: 20,
+    DEFAULT_LIMIT: 200,
 
     omitRenderEventsCount: 0,
 
