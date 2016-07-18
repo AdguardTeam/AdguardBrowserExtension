@@ -667,8 +667,6 @@ var AdguardAssistant = function ($) {
 			style.appendChild(document.createTextNode(selector + " {display: none !important;}"));
 			head.appendChild(style);
 		}
-
-		//TODO: $('[src="' + url + '"]:visible').addClass('adguard-preview-hidden').hide()
 	};
 
 	var removePreview = function () {

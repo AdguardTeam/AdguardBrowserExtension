@@ -305,8 +305,6 @@ var browser = window.browser || chrome;
                     style.appendChild(document.createTextNode(selector + " {display: none !important;}"));
 
                     head.appendChild(style);
-
-                    //TODO: $('[src="' + url + '"]:visible').addClass('adguard-preview-hidden').hide()
                 } else {
                     head.removeChild(document.getElementById(PREVIEW_STYLE_ID));
                 }
