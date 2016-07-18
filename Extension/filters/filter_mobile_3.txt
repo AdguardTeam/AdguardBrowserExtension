@@ -1,10 +1,10 @@
 ! Title: Spyware filter
-! Version: 1.0.6.67
+! Version: 1.0.6.71
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
 ! NameEn: Spyware filter
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2016-07-15T01:06:55.653+03:00
+! TimeUpdated: 2016-07-18T01:06:34.533+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -33,6 +33,11 @@ echo.msk.ru$$script[tag-content="s=screen;"][max-length="200"]
 ##img[src*="counter.yadro.ru"]
 ##img[src^="http://c.bigmir.net/"]
 ~forum.ixbt.com,~mozhor.ru,~onliner.by,~wiktionary.org,~yandex.by,~yandex.com,~yandex.com.tr,~yandex.ru,~yandex.ua##img[width="88"][height="31"]
+||wpdigital.net/metrics/
+||targeting.wpdigital.net^
+||cloudtracer101.com^$third-party
+||marketingautomation.services^$third-party
+||40nuggets.com^$third-party
 |x.ligatus.com^$third-party
 ||spoods.rce.veeseo.com^$third-party
 ||tracking.rce.veeseo.com^$third-party
@@ -1794,6 +1799,7 @@ http://r.i.ua/s?
 ||zoomanalytics.co^$third-party
 ||zoosnet.net^$third-party
 ||zqtk.net^$third-party
+/Track/Capture.aspx?
 .com/a.gif?
 .com/c.gif?
 .com/i.gif?
@@ -1915,6 +1921,8 @@ http://r.i.ua/s?
 /zz.gif?url=
 ://top.*/count/cnt.php?
 _tracking.php?b=
+lurkmo.re,lurkmore.ru,lurkmore.to###p-counters
+||logdev.openload.co^
 ||veeseo.com^*/view/$image
 ||veeseo.com^*/url.gif?
 ||trk.helios.ligatus.com/imp?z=$image
@@ -2252,6 +2260,9 @@ washingtonpost.com##.social-tools-wrapper-bottom
 ||do-not-tracker.org^$third-party
 ||eviltracker.net^$third-party
 ||trackersimulator.org^$third-party
+@@||appapi.inspsearchapi.com^$domain=search.pch.com
+@@||csr.inspsearchapi.com/lib/infospace.search.js$domain=search.pch.com
+@@||tags.tiqcdn.com/utag/pch/pchsearch/prod/utag.js$domain=search.pch.com
 @@||google-analytics.com/analytics.js^$domain=tv3play.se
 @@||emerald.omeda.com/npdn/custsrv_login.do
 @@||google-analytics.com/analytics.js$domain=mediamarkt.nl

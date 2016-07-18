@@ -1,10 +1,10 @@
 ! Title: German filter
-! Version: 1.0.26.32
+! Version: 1.0.26.35
 ! Name: German filter
 ! Description: EasyList Germany + Adguard German filter. Filter list that specifically removes adverts on German language websites.
 ! NameEn: German filter
 ! DescriptionEn: EasyList Germany + Adguard German filter. Filter list that specifically removes adverts on German language websites.
-! TimeUpdated: 2016-07-15T11:00:45.791+03:00
+! TimeUpdated: 2016-07-17T19:00:43.036+03:00
 ! Title: Adguard German Filter.
 !
 ! Filter that enables removing of the ads from websites with German content.
@@ -165,6 +165,9 @@ teleboy.ch#@#.adWrapper
 !--------------------------------------!
 !------- JS rules ---------------------!
 !--------------------------------------!
+! https://forum.adguard.com/index.php?threads/11961/
+spiegel.de#%#function replaceTextContent(elem) { $(elem).contents().filter(function () { return this.nodeType === 3; }).replaceWith(function () { var obfuscatedText = this.data; var deobfuscatedText = ""; for (var i = 0; i < obfuscatedText.length; i++) { var charValue = obfuscatedText.charCodeAt(i); if (charValue == 177) { deobfuscatedText += '&'; } else if (charValue == 178) { deobfuscatedText += '!'; } else if (charValue == 180) { deobfuscatedText += ';'; } else if (charValue == 181) { deobfuscatedText += '='; } else if (charValue == 32) { deobfuscatedText += ' '; } else if (charValue > 33) { deobfuscatedText += String.fromCharCode(charValue - 1); } } return deobfuscatedText; }).end().filter(function () { return this.nodeType === 1 && !$(this).hasClass("text-link-int") && !$(this).hasClass("text-link-ext") && !$(this).hasClass("lp-text-link-int") && !$(this).hasClass("lp-text-link-ext") && !$(this).hasClass("spCelink"); }).each(function () { replaceTextContent(this); }); };
+spiegel.de#%#AG_onLoad(function() { $('p.obfuscated').each(function (index, elem) { replaceTextContent(elem); $(elem).removeClass("obfuscated").addClass("deobfuscated"); }); $('div.obfuscated-content').each(function (index, elem) { $(elem).removeClass("obfuscated-content").addClass("deobfuscated-content"); }); });
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1788
 myvideo.de,prosieben.de,prosiebenmaxx.de,sat1.de,kabeleins.de,sat1gold.de,sixx.de#%#Object.defineProperty(window, 'SIMAD', { get: function() { return function() { }; } });
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1411
@@ -230,6 +233,9 @@ freenet.de#$##frnMain { min-height: 0px!important; }
 ! http://forum.adguard.com/showthread.php?8979 (#17)
 ||static.p7s1.com/vendor/webtrekk
 !
+||focus.de/fol/multimedia/finanzende/*sidebar
+winfuture.de##div[class$="p_widget nointelliTXT"]
+winfuture.de##.success_box
 t-online.de##form[action="http://im.banner.t-online.de/"]
 gamona.de##.topdeals
 druckerchannel.de###DCA_BOTTOM
@@ -5026,6 +5032,7 @@ finanzen.net###header + * + * + * + * + * + * + * + * + * + * + * + * + * + * + 
 finanzen.net###header + * + * + * + * + * + * + * + * + * + * + * + * + a > img
 finanzen.net###header + * + * + * + * + * + * + * + * + * + * + * + a > img
 finanzen.net###header + * + * + * + * + * + * + * + * + a > img
+pcwelt.de###header + * + * + * + * + * + * + div > a > img
 finanzen.net###header + * + * + * + * + * + a > img
 pcwelt.de###header + * + * + * + * + div > a > img
 tvtoday.de###header + * + * + * + * + div > span > img
@@ -5426,6 +5433,7 @@ arabische-küche.de###sidebar > #text-12
 namibia-hunter.at###sidebar > #text-8.widget-3
 arabische-küche.de###sidebar > #text-9
 omfg.to###sidebar > .ad
+focus.de###sidebar > .block.grid_4 + * + * div + * + * > img
 pcwelt.de###sidebar > .box + * > div > a > img
 pcwelt.de###sidebar > :first-child > div > a > img
 pcwelt.de###sidebar > [id] > a[id] > img
@@ -5441,6 +5449,7 @@ tgs-pforzheim.de###sidebar > ul > #aioslideshow-widget-2
 mamamiez.de###sidebar > ul > #text-7
 pcwelt.de###sidebar div + div > a > img
 autozeitung.de###sidebar div[id] > img[src^="/imags/"]
+pcwelt.de###sidebar span + div > a > img
 infosperber.ch###sidebar-inner-content > .bildbox
 infosperber.ch###sidebar-inner-content > .expertenjobs
 mikrocontroller.net###sidebar-right > div[style]:last-child > div[id]:last-child > div[style]
@@ -8270,6 +8279,7 @@ finanzen.net##.adWrapper + * + span + [-abp-properties='display: block;']
 pcwelt.de##.article + * > [-abp-properties='color*; text-decoration*;'] > img
 pcwelt.de##.article + div > a > img
 shz.de##.article > [-abp-properties='margin-left: 24px;']
+spiegel.de##.article-section > [-abp-properties='float: left; margin-right: 2px;']
 spiegel.de##.article-section > [-abp-properties='margin-right: 11px;']
 spiegel.de##.article-section > [-abp-properties='margin-right: 12px;']
 spiegel.de##.article-section > [-abp-properties='margin-right: 13px;']
@@ -8428,6 +8438,7 @@ pcgames.de##[-abp-properties='background-color*; bottom*; cursor: pointer; left*
 wetter.com##[-abp-properties='bottom*; left: 108px; position: relative;']
 gamestar.de##[-abp-properties='bottom: 10px; position: relative;'] > img
 spiegel.de##[-abp-properties='bottom: 16px;'] > img
+spiegel.de##[-abp-properties='bottom: 17px;'] > img
 spiegel.de##[-abp-properties='bottom: 18px;']
 gamesaktuell.de##[-abp-properties='bottom: 24px; margin-left: 5px;']
 wetter.com##[-abp-properties='bottom: 270px; left: 770px; position: absolute;']
@@ -8700,6 +8711,7 @@ focus.de##[-abp-properties='left: 260px;']
 focus.de##[-abp-properties='left: 261px;']
 finanzen.net##[-abp-properties='left: 26px;'] > img
 wetteronline.de##[-abp-properties='left: 27*px;']
+finanzen.net##[-abp-properties='left: 27px;'] > img
 cavallo.de##[-abp-properties='left: 28*px; position: relative;']
 elektrobike-online.com,finanzen.net,klettern-magazin.de,klettern.de,mountainbike-magazin.de,outdoor-magazin.com,outdoorchannel.de,roadbike.de##[-abp-properties='left: 28*px;']
 finanzen.net,planetsnow.de##[-abp-properties='left: 289px;']
@@ -8758,6 +8770,7 @@ lustich.de##[-abp-properties='left: 50%; margin-left: 355px; position: absolute;
 the-voice-of-germany.de##[-abp-properties='left: 50px; position: relative;'] > img
 finanzen.net,nnn.de,prignitzer.de,svz.de,the-voice-of-germany.de##[-abp-properties='left: 50px;']
 finanzen.net##[-abp-properties='left: 55*px;']
+finanzen.net##[-abp-properties='left: 56*px;']
 shz.de##[-abp-properties='left: 58px;']
 shz.de##[-abp-properties='left: 59px;']
 tvdigital.de##[-abp-properties='left: 5px; position: relative; top: 1px;']
@@ -8810,6 +8823,7 @@ comunio.de##[-abp-properties='left: 840px; position: absolute; top: 100px;']
 comunio.de##[-abp-properties='left: 841px; position: absolute; top: 100px; z-index: 1000;']
 abendzeitung-muenchen.de,ran.de##[-abp-properties='left: 85*px;']
 tvdigital.de##[-abp-properties='left: 859px;']
+focus.de##[-abp-properties='left: 85px; margin-left: 3px;']
 boerse-online.de,finanzen.net##[-abp-properties='left: 85px;']
 abendzeitung-muenchen.de##[-abp-properties='left: 86*px;']
 focus.de##[-abp-properties='left: 86px;']
@@ -9067,6 +9081,7 @@ hoerzu.de##[-abp-properties='margin-left: 37px;']
 focus.de##[-abp-properties='margin-left: 38*px;']
 focus.de##[-abp-properties='margin-left: 39*px;']
 wetter.com##[-abp-properties='margin-left: 400px; padding-left: 16px;']
+focus.de##[-abp-properties='margin-left: 400px;']
 pcwelt.de##[-abp-properties='margin-left: 40px;']
 echo-online.de,gelnhaeuser-tageblatt.de,giessener-anzeiger.de,kreis-anzeiger.de,lauterbacher-anzeiger.de,oberhessische-zeitung.de,usinger-anzeiger.de##[-abp-properties='margin-left: 40px;'] > img
 wetter.com##[-abp-properties='margin-left: 413px; padding-left: 2px;']
@@ -9096,6 +9111,7 @@ finanzen.net##[-abp-properties='margin-left: 53*px;']
 finanzen.net##[-abp-properties='margin-left: 54*px;']
 finanzen.net##[-abp-properties='margin-left: 541px;']
 finanzen.net##[-abp-properties='margin-left: 55*px;']
+finanzen.net##[-abp-properties='margin-left: 56*px;']
 finanzen.net##[-abp-properties='margin-left: 56px;']
 finanzen.net##[-abp-properties='margin-left: 58px;']
 prosiebenmaxx.de##[-abp-properties='margin-left: 6.1em;']
@@ -9125,6 +9141,7 @@ focus.de##[-abp-properties='margin-left: 83px; top: 110px;']
 focus.de##[-abp-properties='margin-left: 83px;']
 finanzen.net##[-abp-properties='margin-left: 84*px;']
 finanzen.net##[-abp-properties='margin-left: 85*px;']
+pcwelt.de##[-abp-properties='margin-left: 88*px;']
 pcwelt.de##[-abp-properties='margin-left: 8px;'] > img
 pcwelt.de##[-abp-properties='margin-left: 90*px;']
 pcwelt.de##[-abp-properties='margin-left: 93*px;']

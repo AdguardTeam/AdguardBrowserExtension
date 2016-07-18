@@ -1,10 +1,10 @@
 ! Title: Social media filter
-! Version: 1.0.10.89
+! Version: 1.0.10.95
 ! Name: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2016-07-15T14:00:38.394+03:00
+! TimeUpdated: 2016-07-18T19:01:07.165+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -212,6 +212,11 @@ maskme.ru#$#img[width="88"][height="31"] {visibility: hidden!important;}
 gamesradar.com#$#.shareSocialArticle-wrap { visibility: hidden; }
 softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ||mimimi.tv/?*=*&_=
+dailymail.co.uk##.social > ul > li:not([class="comments-count"])
+emgn.com##.rrssb-holder
+||akgazete.com.tr/assets/frontend/js/jquery-confirm.min.js
+omgubuntu.co.uk##div[class^="mfp-"]
+stern.de##.m-sharing-toolbar-vertical
 gledanjefilmova.net##div[id^="spu-"]
 nhk.or.jp###js-social-btns
 hitc.com##.shares
@@ -1616,6 +1621,7 @@ bitiworld.com##a[title="share on twitter"]
 ~androeed.ru,~facebook.com##input.fb
 ~twitter.com##input.tweet
 ~vk.com,~vkontakte.ru##input.vk
+@@||vk.com/js/api/share.js$domain=bobfilm1.net|bobfilm.net
 @@||sol-online.ru/art/sol-board
 @@||animalreader.ru/wp-content/plugins/easy-vkontakte-connect/js/social-likes.min.js
 @@||make-3d.ru/wp-content/plugins/easy-vkontakte-connect/js/social-likes.min.js

@@ -1,15 +1,21 @@
 ! Title: Russian filter
-! Version: 1.0.36.49
+! Version: 1.0.36.61
 ! Name: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-07-15T14:00:14.044+03:00
+! TimeUpdated: 2016-07-18T19:00:42.664+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#window.AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+||err.cloudbit.rocks^$third-party
+||soccer.ru/sites/all/modules/baner/baner.js
+||emu.ilovemp3.top^$third-party
+||sawayn.link^$third-party
+||get-ads.ru^$third-party
+||avacd.us^$third-party
 ||rutorads.com^$popup
 ||videopotok.pro^$third-party
 ||perfecttds.net^$third-party
@@ -3815,6 +3821,14 @@ yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua##div[class$="b-direct_message
 ||info.zonasearch.com/ad/admulti*.json
 rustorka.com##a[href^="/"]
 rustorka.com###sidebar1-wrap > div[id] > p > a
+weekend.rambler.ru##div[id^="ban_240x400"]
+miui.su##.banners_right
+||s5o.ru/source/_desktop/assets/redken.gif
+lurkmo.re,lurkmore.ru,lurkmore.to##div[id^="banner-"]
+||storage.mds.yandex.net/get-video-an/*mp3?$domain=radio.yandex.ru
+||storage.googleapis.com/html5banners/$domain=tapochek.net
+||tizam.ru/jss/*.js
+||softportal.com/js/magnific-popup.min.js
 comss.ru###carousel1
 ||ad.demotivation.me^
 music.yandex.ru,music.yandex.ua##.smalladv
@@ -4018,8 +4032,6 @@ yap.ru,yaplakal.com,yaplakal.ru###clk-lt
 yap.ru,yaplakal.com,yaplakal.ru###clk-rt
 buzzle.biz,turbobitit.org,vidhost12.org###close_button
 gorod.dp.ua###closeany
-lurkmo.re,lurkmore.ru,lurkmore.to###column-one > iframe
-lurkmo.re,lurkmore.ru,lurkmore.to###column-one > p
 online-journal.net###container > div#right > div.right_bloc:nth-child(3)
 windata.ru###content > a[rel="nofollow"][title="windata.ru рекомендует"]
 ikinokz.net###content > center
@@ -5717,7 +5729,7 @@ pr-cy.ru##div[id^="ad-box"]
 dota2.ru##div[id^="ad-gg-"]
 content.directadvert.ru##div[id^="adPlace"]
 brb.to,cxz.to,fs.to##div[id^="admixer_async_"]
-nn.ru##div[id^="adriver_banner_"]
+iguides.ru,nn.ru##div[id^="adriver_banner_"]
 ua-football.com##div[id^="ads-"]
 sinoptik.com.ru,sinoptik.ua##div[id^="adsLeftZone"]
 brb.to,cxz.to,fs.to##div[id^="adsProxy"]
@@ -7447,6 +7459,7 @@ http://*.space^$script,domain=free-torrent.org|free-torrents.org|jpgstore.ru|pic
 /w.php?id=$third-party,domain=kinogo2.net
 ://n.*.ru/a*?Id=$script,domain=goroskop.ru
 @@||vetton.ru^$jsinject,elemhide
+@@||admin*.planeta.ru^$document
 @@||x5.ru/assets/Branding/
 @@||x5.ru/_layouts/15/X5.PublicSite/Branding/
 @@||myplaycity.ru/*_300x250.jpg

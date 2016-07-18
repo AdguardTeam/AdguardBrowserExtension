@@ -1,10 +1,10 @@
 ! Title: Safari filter
-! Version: 1.0.0.82
+! Version: 1.0.0.84
 ! Name: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! NameEn: Safari filter
 ! DescriptionEn: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
-! TimeUpdated: 2016-07-14T13:07:45.367+03:00
+! TimeUpdated: 2016-07-17T22:01:37.019+03:00
 ! Title: Adguard Safari Filter
 !
 ! Special filter for Safari. We need a separate filter for Safari because it does not fully support rules syntax.
@@ -129,6 +129,8 @@ http://*.*.space/v/$third-party
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/923
 @@||moonwalk.cc/*/iframe$elemhide
 !----- General element hiding rules ----
+! https://github.com/AdguardTeam/AdguardFilters/issues/2556
+##iframe[width="728"][height="90"]
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2114 [ENG]
 ##a[href*="/adrotate-out.php?"]
 !
@@ -150,6 +152,8 @@ telegraaf.nl##.section-ad
 !
 ! Section contains rules for specific websites
 !
+! https://forum.adguard.com/index.php?threads/11655/
+wantdl.com##img[src*="referral_banners/"]
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1921
 konachan.net##iframe[src^="https://tbib.org/"]
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1920

@@ -1,10 +1,10 @@
 ! Title: Social media filter
-! Version: 1.0.10.89
+! Version: 1.0.10.95
 ! Name: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2016-07-15T14:00:38.394+03:00
+! TimeUpdated: 2016-07-18T19:01:07.165+03:00
 ! Title: Adguard Social Media Filter
 !
 ! If you do not like numerous «Like» and «Tweet» buttons on all the popular websites on the Internet,
@@ -278,6 +278,11 @@ softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2146
 ||mimimi.tv/?*=*&_=
 !
+dailymail.co.uk##.social > ul > li:not([class="comments-count"])
+emgn.com##.rrssb-holder
+||akgazete.com.tr/assets/frontend/js/jquery-confirm.min.js
+omgubuntu.co.uk##div[class^="mfp-"]
+stern.de##.m-sharing-toolbar-vertical
 gledanjefilmova.net##div[id^="spu-"]
 nhk.or.jp###js-social-btns
 hitc.com##.shares
@@ -1752,6 +1757,8 @@ bitiworld.com##a[title="share on twitter"]
 !
 ! Section fixing issues caused by social filter
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/2566
+@@||vk.com/js/api/share.js$domain=bobfilm1.net|bobfilm.net
 ! https://forum.adguard.com/index.php?threads/11743/
 @@||sol-online.ru/art/sol-board
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2524

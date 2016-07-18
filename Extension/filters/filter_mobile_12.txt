@@ -1,10 +1,10 @@
 ! Title: Safari filter
-! Version: 1.0.0.82
+! Version: 1.0.0.84
 ! Name: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! NameEn: Safari filter
 ! DescriptionEn: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
-! TimeUpdated: 2016-07-14T13:07:45.367+03:00
+! TimeUpdated: 2016-07-17T22:01:37.019+03:00
 ||adrunnr.com^$popup
 ||large-format.net^$popup
 ||november-lax.com^$popup
@@ -66,12 +66,14 @@ http://*.*.space/v/$third-party
 ||securewebboard.com^$third-party
 ||skycdnhost.com^$third-party
 @@||moonwalk.cc/*/iframe$elemhide
+##iframe[width="728"][height="90"]
 ##a[href*="/adrotate-out.php?"]
 ##.banner-top
 ##.ads-ad
 etfdailynews.com##div[style="width:300px;border:1px solid black"]
 @@||cinemablend.com/timthumb.php?src=/images/facebook/
 telegraaf.nl##.section-ad
+wantdl.com##img[src*="referral_banners/"]
 konachan.net##iframe[src^="https://tbib.org/"]
 apfelpage.de##.a4promo_ad
 konachan.net##iframe[src^="https://tbib.org/"]
