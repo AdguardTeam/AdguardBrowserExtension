@@ -40,7 +40,8 @@ var AdguardSelectorLib = (function (api, $) {
     var unbound = true;
     var onElementSelectedHandler = null;
 
-    var isTouchEventsSupported = (('ontouchstart' in window) || (navigator.msMaxTouchPoints > 0));
+    var isTouchEventsSupported = (navigator.platform === 'iPad' || navigator.platform === 'iPhone' || navigator.platform === 'Android');
+
     var ignoreTouchEvent = 0;
 
     var selectionRenderer;
