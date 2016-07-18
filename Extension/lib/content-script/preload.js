@@ -97,6 +97,17 @@
      */
     /*global initPageMessageListener, overrideWebSocket*/
     var initWebSocketWrapper = function () {
+        // WebSockets are broken in old versions of chrome
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/273
+        var userAgent = navigator.userAgent.toLowerCase();
+        var cIndex = userAgent.indexOf('chrome/');
+        if (cIndex > 0) {
+            var version = userAgent.substring(cIndex + 7);
+            if (Number.parseInt(version.substring(0, version.indexOf('.'))) < 47) {
+                return;
+            }
+        }
+
         // Only for dynamically created frames and http/https documents.
         if (!isHtml()
             && window.location.href !== "about:blank") {
