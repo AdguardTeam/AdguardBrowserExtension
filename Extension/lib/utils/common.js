@@ -108,7 +108,7 @@ var StringUtils = exports.StringUtils = {
      * @return int Index of the element found or null
      */
     indexOfAny: function (str, start, chars) {
-        if (str == null || str.length <= start) {
+        if (typeof str === 'string' && str.length <= start) {
             return -1;
         }
 
