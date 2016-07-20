@@ -600,6 +600,10 @@ var browser = browser || chrome;
     ext.browserAction = {
         setBrowserAction: function (tab, icon, badge, badgeColor, title) {
 
+            if (!tab.url) {
+                return;
+            }
+
             var tabId = tab.id;
 
             var onIconReady = function () {
