@@ -97,6 +97,29 @@ var StringUtils = exports.StringUtils = {
             buf.push(array[i]);
         }
         return buf.join(separator);
+    },
+
+    /**
+     * Look for any symbol from "chars" array starting at "start" index
+     *
+     * @param str   String to search
+     * @param start Start index (inclusive)
+     * @param chars Chars to search for
+     * @return int Index of the element found or null
+     */
+    indexOfAny: function (str, start, chars) {
+        if (str == null || str.length <= start) {
+            return -1;
+        }
+
+        for (var i = start; i < str.length; i++) {
+            var c = str.charAt(i);
+            if (chars.indexOf(c) > -1) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 };
 
