@@ -205,6 +205,32 @@ function testRegexpRules() {
 addTestCase(testRegexpRules);
 
 /**
+ * Tests css pseudo class rules
+ */
+function testCssPseudoClassRules() {
+    //:style should be ignored
+    var result = SafariContentBlockerConverter.convertArray([ 'yandex.ru##body:style(background:inherit;)', 'yandex.ru#@#body:style(background:inherit;)' ]);
+    assertEquals(0, result.convertedCount);
+    assertEquals(2, result.errorsCount);
+
+    //Invalid pseudo class
+    result = SafariContentBlockerConverter.convertArray(['yandex.ru##test:has(.whatisthis)']);
+    assertEquals(0, result.convertedCount);
+    assertEquals(1, result.errorsCount);
+
+    //Valid selectors
+    result = SafariContentBlockerConverter.convertArray([
+        'w3schools.com###main > table.w3-table-all.notranslate:first-child > tbody > tr:nth-child(17) > td.notranslate:nth-child(2)',
+        'w3schools.com###:root div.ads',
+        "w3schools.com###body div[attr='test']:first-child  div",
+        'w3schools.com##.todaystripe::after'
+    ]);
+    assertEquals(4, result.convertedCount);
+    assertEquals(0, result.errorsCount);
+}
+addTestCase(testCssPseudoClassRules);
+
+/**
  * Checks regexp performance
  */
 function testRegexpPerformance() {
@@ -219,7 +245,7 @@ function testRegexpPerformance() {
     _testCompare(regExp1, regExp2, count);
     _testCompare(regExp1, regExp3, count);
     _testCompare(regExp1, regExp4, count);
-};
+}
 
 function _testCompare(regExp1, regExp2, count) {
     var startTime1 = new Date().getTime();

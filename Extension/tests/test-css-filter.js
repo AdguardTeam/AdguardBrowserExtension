@@ -4,6 +4,7 @@
 /* global CssFilterRule */
 /* global assertEquals */
 /* global assertTrue */
+
 function testCssFilterRule() {
 
 	var ruleText = "~gamespot.com,~mint.com,~slidetoplay.com,~smh.com.au,~zattoo.com##.sponsored";
@@ -20,6 +21,9 @@ function testCssFilterRule() {
 	assertEquals(".sponsored", rule.cssSelector);
 }
 
+addTestCase(testCssFilterRule);
+
+
 function testCssFilterWhiteListRule() {
 	var ruleText = "gamespot.com,mint.com#@#.sponsored";
 	var rule = new CssFilterRule(ruleText);
@@ -31,6 +35,9 @@ function testCssFilterWhiteListRule() {
 	assertTrue(rule.getPermittedDomains().indexOf("mint.com") >= 0);
 	assertEquals(".sponsored", rule.cssSelector);
 }
+
+addTestCase(testCssFilterWhiteListRule);
+
 
 function testCssExceptionRules() {
 
@@ -57,6 +64,9 @@ function testCssExceptionRules() {
 	assertTrue(css.length > 0);
 	assertEquals(css[0], commonCss[0]);
 }
+
+addTestCase(testCssExceptionRules);
+
 
 function testCssGenericHideExceptionRules() {
 
@@ -128,7 +138,107 @@ function testCssGenericHideExceptionRules() {
 	assertEquals(otherCss.length, 2);
 }
 
-addTestCase(testCssFilterRule);
-addTestCase(testCssFilterWhiteListRule);
-addTestCase(testCssExceptionRules);
 addTestCase(testCssGenericHideExceptionRules);
+
+
+function testUblockCssInjectionSyntaxSupport() {
+	var ruleText = "yandex.ru##body:style(background:inherit;)";
+	var cssFilterRule = new CssFilterRule(ruleText);
+	assertEquals(ruleText, cssFilterRule.ruleText);
+	assertTrue(cssFilterRule.isInjectRule);
+	assertFalse(cssFilterRule.whiteListRule);
+	assertEquals("body { background:inherit; }", cssFilterRule.cssSelector);
+
+	ruleText = "yandex.ru#@#body:style(background:inherit;)";
+	cssFilterRule = new CssFilterRule(ruleText);
+	assertEquals(ruleText, cssFilterRule.ruleText);
+	assertTrue(cssFilterRule.isInjectRule);
+	assertTrue(cssFilterRule.whiteListRule);
+	assertEquals("body { background:inherit; }", cssFilterRule.cssSelector);
+}
+
+addTestCase(testUblockCssInjectionSyntaxSupport);
+
+
+function testInvalidStyleSyntax() {
+	try {
+		var ruleText = "yandex.ru##body:style()";
+		new CssFilterRule(ruleText);
+		throw new Error("Rule should not be parsed successfully");
+	} catch (ex) {
+		assertEquals(ex.message, 'Empty :style pseudo class: body:style()');
+	}
+}
+
+addTestCase(testInvalidStyleSyntax);
+
+
+function testValidPseudoClass() {
+	var selector = "#main > table.w3-table-all.notranslate:first-child > tbody > tr:nth-child(17) > td.notranslate:nth-child(2)";
+	var ruleText = "w3schools.com##" + selector;
+	var cssFilterRule = new CssFilterRule(ruleText);
+	assertNotNull(cssFilterRule);
+	assertFalse(cssFilterRule.isInjectRule);
+	assertFalse(cssFilterRule.whiteListRule);
+	assertEquals(selector, cssFilterRule.cssSelector);
+
+	selector = "#:root div.ads";
+	ruleText = "w3schools.com##" + selector;
+	cssFilterRule = new CssFilterRule(ruleText);
+	assertNotNull(cssFilterRule);
+	assertFalse(cssFilterRule.isInjectRule);
+	assertFalse(cssFilterRule.whiteListRule);
+	assertEquals(selector, cssFilterRule.cssSelector);
+
+	selector = "#body div[attr='test']:first-child  div";
+	ruleText = "w3schools.com##" + selector;
+	cssFilterRule = new CssFilterRule(ruleText);
+	assertNotNull(cssFilterRule);
+	assertFalse(cssFilterRule.isInjectRule);
+	assertFalse(cssFilterRule.whiteListRule);
+	assertEquals(selector, cssFilterRule.cssSelector);
+
+	selector = ".todaystripe::after";
+	ruleText = "w3schools.com##" + selector;
+	cssFilterRule = new CssFilterRule(ruleText);
+	assertNotNull(cssFilterRule);
+	assertFalse(cssFilterRule.isInjectRule);
+	assertFalse(cssFilterRule.whiteListRule);
+	assertEquals(selector, cssFilterRule.cssSelector);
+}
+
+addTestCase(testValidPseudoClass);
+
+
+function testFilterRuleWithColon() {
+	var selector = "a[href^=\"https://w3schools.com\"]";
+	var ruleText = "w3schools.com##" + selector;
+	var cssFilterRule = new CssFilterRule(ruleText);
+	assertNotNull(cssFilterRule);
+	assertFalse(cssFilterRule.isInjectRule);
+	assertFalse(cssFilterRule.whiteListRule);
+	assertEquals(selector, cssFilterRule.cssSelector);
+
+	selector = "#Meebo\\:AdElement\\.Root";
+	ruleText = "w3schools.com##" + selector;
+	cssFilterRule = new CssFilterRule(ruleText);
+	assertNotNull(cssFilterRule);
+	assertFalse(cssFilterRule.isInjectRule);
+	assertFalse(cssFilterRule.whiteListRule);
+	assertEquals(selector, cssFilterRule.cssSelector);
+}
+
+addTestCase(testFilterRuleWithColon);
+
+
+function testInvalidPseudoClass() {
+	try {
+		var ruleText = "yandex.ru##test:has(.whatisthis)";
+		new CssFilterRule(ruleText);
+		throw new Error("Rule should not be parsed successfully");
+	} catch (ex) {
+		assertEquals(ex.message, 'Unknown pseudo class: test:has(.whatisthis)');
+	}
+}
+
+addTestCase(testInvalidPseudoClass);
