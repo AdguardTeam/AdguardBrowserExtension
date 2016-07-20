@@ -160,85 +160,85 @@ function testUblockCssInjectionSyntaxSupport() {
 addTestCase(testUblockCssInjectionSyntaxSupport);
 
 
-//function testInvalidStyleSyntax() {
-//	try {
-//		String ruleText = "yandex.ru##body:style()";
-//		new CssFilterRule(ruleText);
-//		throw new Exception("Rule should not be parsed successfully");
-//	} catch (IllegalArgumentException ex) {
-//		ex.printStackTrace();
-//	}
-//}
-//
-//addTestCase(testInvalidStyleSyntax);
-//
-//
-//function testValidPseudoClass() {
-//	String selector = "#main > table.w3-table-all.notranslate:first-child > tbody > tr:nth-child(17) > td.notranslate:nth-child(2)";
-//	String ruleText = "w3schools.com##" + selector;
-//	CssFilterRule cssFilterRule = new CssFilterRule(ruleText);
-//	assertNotNull(cssFilterRule);
-//	assertFalse(cssFilterRule.isStyleInject());
-//	assertFalse(cssFilterRule.isWhiteListRule());
-//	assertEquals(selector, cssFilterRule.getCssContent());
-//
-//	selector = "#:root div.ads";
-//	ruleText = "w3schools.com##" + selector;
-//	cssFilterRule = new CssFilterRule(ruleText);
-//	assertNotNull(cssFilterRule);
-//	assertFalse(cssFilterRule.isStyleInject());
-//	assertFalse(cssFilterRule.isWhiteListRule());
-//	assertEquals(selector, cssFilterRule.getCssContent());
-//
-//	selector = "#body div[attr='test']:first-child  div";
-//	ruleText = "w3schools.com##" + selector;
-//	cssFilterRule = new CssFilterRule(ruleText);
-//	assertNotNull(cssFilterRule);
-//	assertFalse(cssFilterRule.isStyleInject());
-//	assertFalse(cssFilterRule.isWhiteListRule());
-//	assertEquals(selector, cssFilterRule.getCssContent());
-//
-//	selector = ".todaystripe::after";
-//	ruleText = "w3schools.com##" + selector;
-//	cssFilterRule = new CssFilterRule(ruleText);
-//	assertNotNull(cssFilterRule);
-//	assertFalse(cssFilterRule.isStyleInject());
-//	assertFalse(cssFilterRule.isWhiteListRule());
-//	assertEquals(selector, cssFilterRule.getCssContent());
-//}
-//
-//addTestCase(testValidPseudoClass);
-//
-//
-//function testFilterRuleWithColon() {
-//	String selector = "a[href^=\"https://w3schools.com\"]";
-//	String ruleText = "w3schools.com##" + selector;
-//	CssFilterRule cssFilterRule = new CssFilterRule(ruleText);
-//	assertNotNull(cssFilterRule);
-//	assertFalse(cssFilterRule.isStyleInject());
-//	assertFalse(cssFilterRule.isWhiteListRule());
-//	assertEquals(selector, cssFilterRule.getCssContent());
-//
-//	selector = "#Meebo\\:AdElement\\.Root";
-//	ruleText = "w3schools.com##" + selector;
-//	cssFilterRule = new CssFilterRule(ruleText);
-//	assertNotNull(cssFilterRule);
-//	assertFalse(cssFilterRule.isStyleInject());
-//	assertFalse(cssFilterRule.isWhiteListRule());
-//	assertEquals(selector, cssFilterRule.getCssContent());
-//}
-//
-//addTestCase(testFilterRuleWithColon);
-//
-//
-//function testInvalidPseudoClass() {
-//	try {
-//		String ruleText = "yandex.ru##test:has(.whatisthis)";
-//		new CssFilterRule(ruleText);
-//		throw new Exception("Rule should not be parsed successfully");
-//	} catch (IllegalArgumentException ex) {
-//		ex.printStackTrace();
-//	}
-//}
-//
-//addTestCase(testInvalidPseudoClass);
+function testInvalidStyleSyntax() {
+	try {
+		var ruleText = "yandex.ru##body:style()";
+		new CssFilterRule(ruleText);
+		throw new Error("Rule should not be parsed successfully");
+	} catch (ex) {
+		assertEquals(ex.message, 'Empty :style pseudo class: body:style()');
+	}
+}
+
+addTestCase(testInvalidStyleSyntax);
+
+
+function testValidPseudoClass() {
+	var selector = "#main > table.w3-table-all.notranslate:first-child > tbody > tr:nth-child(17) > td.notranslate:nth-child(2)";
+	var ruleText = "w3schools.com##" + selector;
+	var cssFilterRule = new CssFilterRule(ruleText);
+	assertNotNull(cssFilterRule);
+	assertFalse(cssFilterRule.isInjectRule);
+	assertFalse(cssFilterRule.whiteListRule);
+	assertEquals(selector, cssFilterRule.cssSelector);
+
+	selector = "#:root div.ads";
+	ruleText = "w3schools.com##" + selector;
+	cssFilterRule = new CssFilterRule(ruleText);
+	assertNotNull(cssFilterRule);
+	assertFalse(cssFilterRule.isInjectRule);
+	assertFalse(cssFilterRule.whiteListRule);
+	assertEquals(selector, cssFilterRule.cssSelector);
+
+	selector = "#body div[attr='test']:first-child  div";
+	ruleText = "w3schools.com##" + selector;
+	cssFilterRule = new CssFilterRule(ruleText);
+	assertNotNull(cssFilterRule);
+	assertFalse(cssFilterRule.isInjectRule);
+	assertFalse(cssFilterRule.whiteListRule);
+	assertEquals(selector, cssFilterRule.cssSelector);
+
+	selector = ".todaystripe::after";
+	ruleText = "w3schools.com##" + selector;
+	cssFilterRule = new CssFilterRule(ruleText);
+	assertNotNull(cssFilterRule);
+	assertFalse(cssFilterRule.isInjectRule);
+	assertFalse(cssFilterRule.whiteListRule);
+	assertEquals(selector, cssFilterRule.cssSelector);
+}
+
+addTestCase(testValidPseudoClass);
+
+
+function testFilterRuleWithColon() {
+	var selector = "a[href^=\"https://w3schools.com\"]";
+	var ruleText = "w3schools.com##" + selector;
+	var cssFilterRule = new CssFilterRule(ruleText);
+	assertNotNull(cssFilterRule);
+	assertFalse(cssFilterRule.isInjectRule);
+	assertFalse(cssFilterRule.whiteListRule);
+	assertEquals(selector, cssFilterRule.cssSelector);
+
+	selector = "#Meebo\\:AdElement\\.Root";
+	ruleText = "w3schools.com##" + selector;
+	cssFilterRule = new CssFilterRule(ruleText);
+	assertNotNull(cssFilterRule);
+	assertFalse(cssFilterRule.isInjectRule);
+	assertFalse(cssFilterRule.whiteListRule);
+	assertEquals(selector, cssFilterRule.cssSelector);
+}
+
+addTestCase(testFilterRuleWithColon);
+
+
+function testInvalidPseudoClass() {
+	try {
+		var ruleText = "yandex.ru##test:has(.whatisthis)";
+		new CssFilterRule(ruleText);
+		throw new Error("Rule should not be parsed successfully");
+	} catch (ex) {
+		assertEquals(ex.message, 'Unknown pseudo class: test:has(.whatisthis)');
+	}
+}
+
+addTestCase(testInvalidPseudoClass);
