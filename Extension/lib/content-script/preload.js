@@ -43,6 +43,7 @@
     var isFirefox = false;
     var isOpera = false;
     var shadowRoot = null;
+    var loadTruncatedCss = false;
     
     /**
      * Initializing content script
@@ -53,17 +54,7 @@
         if (!isHtml()) {
             return;
         }
-        
-        if (window !== window.top) {
-            // Do not inject CSS into small frames
-            var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-            var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-            if ((height * width) < 100000) {
-                // ~240*400 px
-                return;
-            }
-        }
-        
+
         // We use shadow DOM when it's available to minimize our impact on web page DOM tree.
         // According to ABP issue #452, creating a shadow root breaks running CSS transitions.
         // Because of this, we create shadow root right after content script is initialized.
@@ -75,6 +66,15 @@
         var userAgent = navigator.userAgent.toLowerCase();
         isFirefox = userAgent.indexOf('firefox') > -1;
         isOpera = userAgent.indexOf('opera') > -1 || userAgent.indexOf('opr') > -1;
+
+        if (window !== window.top) {
+            var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+            var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+            // Load only small set of css for small frames.
+            // We hide all generic css rules in this case.
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/223
+            loadTruncatedCss = (height * width) < 100000;
+        }
 
         initCollapseEventListeners();
         tryLoadCssAndScripts();
@@ -135,7 +135,8 @@
     var tryLoadCssAndScripts = function () {
         var message = {
             type: 'getSelectorsAndScripts',
-            documentUrl: window.location.href
+            documentUrl: window.location.href,
+            loadTruncatedCss: loadTruncatedCss
         };
 
         /**

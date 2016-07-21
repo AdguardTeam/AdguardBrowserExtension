@@ -165,7 +165,7 @@ ContentMessageHandler.prototype = {
                 if (WorkaroundUtils.isFacebookIframe(message.documentUrl)) {
                     return {};
                 }
-                var cssAndScripts = this.webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl);
+                var cssAndScripts = this.webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl, message.loadTruncatedCss);
                 return cssAndScripts || {};
             case 'checkWebSocketRequest':
                 var block = this.webRequestService.checkWebSocketRequest(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
