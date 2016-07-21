@@ -53,11 +53,11 @@
         if (!isHtml()) {
             return;
         }
-        
+
         if (window !== window.top) {
             // Do not inject CSS into small frames
-            var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-            var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+            var width = Math.max(document.documentElement.clientWidth, window.outerWidth || 0);
+            var height = Math.max(document.documentElement.clientHeight, window.outerHeight || 0);
             if ((height * width) < 100000) {
                 // ~240*400 px
                 return;
