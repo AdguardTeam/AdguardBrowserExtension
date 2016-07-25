@@ -17,7 +17,8 @@
 /* global contentPage */
 (function() {
     var AG_HIDDEN_ATTRIBUTE = "adg-hidden";
-    
+    var AG_FRAMES_STYLE = "adguard-frames-style";
+
     var requestTypeMap = {
         "img": "IMAGE",
         "input": "IMAGE",
@@ -78,6 +79,8 @@
 
         initCollapseEventListeners();
         tryLoadCssAndScripts();
+
+        addIframeHidingStyle();
     };
 
     /**
@@ -126,6 +129,26 @@
             script.textContent = content;
 
             (document.head || document.documentElement).appendChild(script);
+        }
+    };
+
+    /**
+     * To prevent iframes flickering we add a temporarly display-none style for all iframes
+     *
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/301
+     */
+    var addIframeHidingStyle = function () {
+        var styleFrame = document.createElement("style");
+        styleFrame.id = AG_FRAMES_STYLE;
+        styleFrame.setAttribute("type", "text/css");
+        styleFrame.textContent = 'iframe { display: none !important; }';
+        (document.head || document.documentElement).appendChild(styleFrame);
+    };
+
+    var removeIframeHidingStyle = function () {
+        var framesStyle = document.getElementById(AG_FRAMES_STYLE);
+        if (framesStyle) {
+            framesStyle.parentNode.removeChild(framesStyle);
         }
     };
 
@@ -308,9 +331,8 @@
             tagName: tagName
         };
 
-        if ((eventType == "error") || (tagName == "iframe")) {
-            // Hide elements which are likely to be blocked right now.
-            // Please not, that "iframe" cannot raise "error" event so we always hide it.
+        if (eventType == "error") {
+            // Hide elements with "error" type right now
             // We will roll it back if element should not be collapsed
             collapseElement(element, tagName);
         }
@@ -333,6 +355,9 @@
      * @param response Response got from the background page
      */
     var onProcessShouldCollapseResponse = function(response) {
+
+        // TODO: find an over place for this
+        removeIframeHidingStyle();
 
         if (!response) {
             return;
