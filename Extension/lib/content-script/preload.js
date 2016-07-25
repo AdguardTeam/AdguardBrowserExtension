@@ -354,9 +354,10 @@
      * 
      * @param response Response got from the background page
      */
-    var onProcessShouldCollapseResponse = function(response) {
+    var onProcessShouldCollapseResponse = function (response) {
 
-        // TODO: find an over place for this
+        // Removing added iframes-hiding style
+        // We do it here, cause otherwise it's not working properly
         removeIframeHidingStyle();
 
         if (!response) {
