@@ -17,7 +17,8 @@
 /* global contentPage */
 (function() {
     var AG_HIDDEN_ATTRIBUTE = "adg-hidden";
-    
+    var AG_FRAMES_STYLE = "adguard-frames-style";
+
     var requestTypeMap = {
         "img": "IMAGE",
         "input": "IMAGE",
@@ -78,6 +79,8 @@
 
         initCollapseEventListeners();
         tryLoadCssAndScripts();
+
+        addIframeHidingStyle();
     };
 
     /**
@@ -126,6 +129,26 @@
             script.textContent = content;
 
             (document.head || document.documentElement).appendChild(script);
+        }
+    };
+
+    /**
+     * To prevent iframes flickering we add a temporarly display-none style for all iframes
+     *
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/301
+     */
+    var addIframeHidingStyle = function () {
+        var styleFrame = document.createElement("style");
+        styleFrame.id = AG_FRAMES_STYLE;
+        styleFrame.setAttribute("type", "text/css");
+        styleFrame.textContent = 'iframe[src^="http"] { display: none !important; }';
+        (document.head || document.documentElement).appendChild(styleFrame);
+    };
+
+    var removeIframeHidingStyle = function () {
+        var framesStyle = document.getElementById(AG_FRAMES_STYLE);
+        if (framesStyle) {
+            framesStyle.parentNode.removeChild(framesStyle);
         }
     };
 
@@ -332,7 +355,11 @@
      * 
      * @param response Response got from the background page
      */
-    var onProcessShouldCollapseResponse = function(response) {
+    var onProcessShouldCollapseResponse = function (response) {
+
+        // Removing added iframes-hiding style
+        // We do it here, cause otherwise it's not working properly
+        removeIframeHidingStyle();
 
         if (!response) {
             return;
