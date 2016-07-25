@@ -32,17 +32,16 @@
 		safari.self.hide();
 	}, true);
 
-	window.ext = {
-		__proto__: backgroundPage.ext,
-		closePopup: function () {
-			controller.resizePopupWindow();
-			safari.self.hide();
-		},
-		resizePopup: function (width, height) {
-			safari.self.width = width;
-			safari.self.height = height;
-		}
+	window.ext = Object.create(backgroundPage.ext);
+	window.ext.closePopup =  function () {
+		controller.resizePopupWindow();
+		safari.self.hide();
 	};
+	window.ext.resizePopup =  function (width, height) {
+		safari.self.width = width;
+		safari.self.height = height;
+	};
+
 	window.BrowserTabs = backgroundPage.BrowserTabs;
 
 	window.i18n = new backgroundPage.I18NSupport();

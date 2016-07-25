@@ -25,33 +25,28 @@ var ext;
 	var SafariTabEvent = function () {
 		BaseEvent.apply(this, arguments);
 	};
-	SafariTabEvent.prototype = {
 
-		__proto__: BaseEvent.prototype,
-
-		specifyListener: function (listener) {
-			return function (event) {
-				if (event.target instanceof SafariBrowserTab) {
-					listener(new BrowserTab(event.target));
-				}
-			};
-		}
+	Object.setPrototypeOf(SafariTabEvent.prototype, BaseEvent.prototype);
+	SafariTabEvent.prototype.specifyListener = function (listener) {
+		return function (event) {
+			if (event.target instanceof SafariBrowserTab) {
+				listener(new BrowserTab(event.target));
+			}
+		};
 	};
+
 
 	var OnLoadingTabEvent = function (target) {
 		BaseEvent.call(this, target, "message", false);
 	};
-	OnLoadingTabEvent.prototype = {
 
-		__proto__: BaseEvent.prototype,
-
-		specifyListener: function (listener) {
-			return function (event) {
-				if (event.name == "loading" && event.message == event.target.url) {
-					listener(new BrowserTab(event.target));
-				}
-			};
-		}
+	Object.setPrototypeOf(OnLoadingTabEvent.prototype, BaseEvent.prototype);
+	OnLoadingTabEvent.prototype.specifyListener = function (listener) {
+		return function (event) {
+			if (event.name == "loading" && event.message == event.target.url) {
+				listener(new BrowserTab(event.target));
+			}
+		};
 	};
 
 	// Browser Tab implementation
