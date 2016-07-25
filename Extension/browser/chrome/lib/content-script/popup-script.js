@@ -16,22 +16,21 @@
  */
 /* global chrome, $, UI */
 (function () {
-	var browser = window.browser || chrome;
-	var backgroundPage = browser.extension.getBackgroundPage();
-	window.ext = {
-		__proto__: backgroundPage.ext, // jshint ignore:line
-		closePopup: function () {
-			window.close();
-		},
-		resizePopup: function () {
-		}
-	};
-	window.BrowserTabs = backgroundPage.BrowserTabs;
-	window.i18n = browser.i18n;
+    var browser = window.browser || chrome;
+    var backgroundPage = browser.extension.getBackgroundPage();
+    window.ext = Object.create(backgroundPage.ext);
+    window.ext.closePopup =  function () {
+        window.close();
+    };
+    window.ext.resizePopup =  function () {
+    };
 
-	$(window).on('unload', function () {
-		if (window.tab) {
-			UI.updateTabIconAndContextMenu(window.tab, true);
-		}
-	});
+    window.BrowserTabs = backgroundPage.BrowserTabs;
+    window.i18n = browser.i18n;
+
+    $(window).on('unload', function () {
+        if (window.tab) {
+            UI.updateTabIconAndContextMenu(window.tab, true);
+        }
+    });
 })();
