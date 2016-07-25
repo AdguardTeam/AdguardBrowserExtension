@@ -308,8 +308,15 @@
             tagName: tagName
         };
 
-        if (eventType == "error") {
-            // Hide elements with "error" type right now
+        //if (eventType == "error") {
+        //    // Hide elements with "error" type right now
+        //    // We will roll it back if element should not be collapsed
+        //    collapseElement(element, tagName);
+        //}
+
+        if ((eventType == "error") || (tagName == "iframe")) {
+            // Hide elements which are likely to be blocked right now.
+            // Please not, that "iframe" cannot raise "error" event so we always hide it.
             // We will roll it back if element should not be collapsed
             collapseElement(element, tagName);
         }
