@@ -35,11 +35,12 @@ var WebRequestService = exports.WebRequestService = function (framesMap, antiBan
 /**
  * Prepares CSS and JS which should be injected to the page.
  *
- * @param tab           Tab
- * @param documentUrl   Document URL
+ * @param tab               Tab
+ * @param documentUrl       Document URL
+ * @param genericHide       flag to hide common rules
  * @returns {*} null or object the following properties: "selectors", "scripts", "collapseAllElements"
  */
-WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, documentUrl) {
+WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, documentUrl, genericHide) {
 
     var result = {};
 
@@ -64,7 +65,7 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
         useShadowDom: Utils.isShadowDomSupported()
     };
 
-    var genericHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "GENERICHIDE");
+    var genericHideRule = genericHide || this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "GENERICHIDE");
     var elemHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "ELEMHIDE");
     if (!elemHideRule) {
         if (this.shouldLoadAllSelectors(result.collapseAllElements)) {
