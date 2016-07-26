@@ -67,7 +67,7 @@ var BaseEvent, OnMessageEvent, SendMessageFunction, I18NSupport;
 		BaseEvent.call(this, target, "message", false);
 	};
 
-	Object.setPrototypeOf(OnMessageEvent.prototype, BaseEvent.prototype);
+	LanguageUtils.inherit(OnMessageEvent, BaseEvent);
 	OnMessageEvent.prototype.specifyListener = function (listener) {
 		return function (event) {
 

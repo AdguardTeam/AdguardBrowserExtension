@@ -24,15 +24,14 @@ var browser = browser || chrome;
     var TabEvent = function () {
         BaseEvent.apply(this, arguments);
     };
-
-    Object.setPrototypeOf(TabEvent.prototype, BaseEvent.prototype);
+    LanguageUtils.inherit(TabEvent, BaseEvent);
 
 
     var OnCreatedTabEvent = function () {
         TabEvent.call(this, browser.tabs.onCreated);
     };
 
-    Object.setPrototypeOf(OnCreatedTabEvent.prototype, TabEvent.prototype);
+    LanguageUtils.inherit(OnCreatedTabEvent, TabEvent);
     OnCreatedTabEvent.prototype.specifyListener = function (listener) {
         return function (tab) {
             listener(new BrowserTab(tab));
@@ -44,7 +43,7 @@ var browser = browser || chrome;
         TabEvent.call(this, browser.tabs.onUpdated);
     };
 
-    Object.setPrototypeOf(OnLoadingTabEvent.prototype, TabEvent.prototype);
+    LanguageUtils.inherit(OnLoadingTabEvent, TabEvent);
     OnLoadingTabEvent.prototype.specifyListener = function (listener) {
         return function (id, info, tab) {
             if (info.status == "loading") {
@@ -58,7 +57,7 @@ var browser = browser || chrome;
         TabEvent.call(this, browser.tabs.onUpdated);
     };
 
-    Object.setPrototypeOf(OnCompletedTabEvent.prototype, TabEvent.prototype);
+    LanguageUtils.inherit(OnCompletedTabEvent, TabEvent);
     OnCompletedTabEvent.prototype.specifyListener = function (listener) {
         return function (id, info, tab) {
             if (info.status == "complete") {
@@ -72,7 +71,7 @@ var browser = browser || chrome;
         TabEvent.call(this, browser.tabs.onUpdated);
     };
 
-    Object.setPrototypeOf(OnUpdatedTabEvent.prototype, TabEvent.prototype);
+    LanguageUtils.inherit(OnUpdatedTabEvent, TabEvent);
     OnUpdatedTabEvent.prototype.specifyListener = function (listener) {
         return function (id, info, tab) {
             listener(new BrowserTab(tab));
@@ -84,7 +83,7 @@ var browser = browser || chrome;
         TabEvent.call(this, browser.tabs.onActivated);
     };
 
-    Object.setPrototypeOf(OnActivatedTabEvent.prototype, TabEvent.prototype);
+    LanguageUtils.inherit(OnActivatedTabEvent, TabEvent);
     OnActivatedTabEvent.prototype.specifyListener = function (listener) {
         return function (info) {
             browser.tabs.get(info.tabId, function (tab) {
@@ -102,7 +101,7 @@ var browser = browser || chrome;
     var OnRemovedTabEvent = function () {
         TabEvent.call(this, browser.tabs.onRemoved);
     };
-    Object.setPrototypeOf(OnRemovedTabEvent.prototype, TabEvent.prototype);
+    LanguageUtils.inherit(OnRemovedTabEvent, TabEvent);
     OnRemovedTabEvent.prototype.specifyListener = function (listener) {
         return function (id) {
             listener(new BrowserTab({id: id}));
@@ -189,7 +188,7 @@ var browser = browser || chrome;
         BaseEvent.call(this, browser.webRequest.onBeforeRequest);
     };
 
-    Object.setPrototypeOf(OnBeforeRequestEvent.prototype, BaseEvent.prototype);
+    LanguageUtils.inherit(OnBeforeRequestEvent, BaseEvent);
     OnBeforeRequestEvent.prototype.specifyListener = function (listener) {
 
         return function (details) {
@@ -215,7 +214,7 @@ var browser = browser || chrome;
         BaseEvent.call(this, browser.webRequest.onHeadersReceived);
     };
 
-    Object.setPrototypeOf(OnHeadersReceivedEvent.prototype, BaseEvent.prototype);
+    LanguageUtils.inherit(OnHeadersReceivedEvent, BaseEvent);
     OnHeadersReceivedEvent.prototype.specifyListener = function (listener) {
 
         return function (details) {
@@ -237,7 +236,7 @@ var browser = browser || chrome;
         BaseEvent.call(this, browser.webRequest.onBeforeSendHeaders);
     };
 
-    Object.setPrototypeOf(OnBeforeSendHeadersEvent.prototype, BaseEvent.prototype);
+    LanguageUtils.inherit(OnBeforeSendHeadersEvent, BaseEvent);
     OnBeforeSendHeadersEvent.prototype.specifyListener = function (listener) {
 
         return function (details) {

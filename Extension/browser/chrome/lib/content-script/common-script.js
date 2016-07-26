@@ -90,7 +90,7 @@ var BaseEvent, OnMessageEvent, SendMessageFunction;
 		BaseEvent.call(this, detectExtensionOnMessage());
 	};
 
-	Object.setPrototypeOf(OnMessageEvent.prototype, BaseEvent.prototype);
+    LanguageUtils.inherit(OnMessageEvent, BaseEvent);
 	OnMessageEvent.prototype.specifyListener = function (listener) {
         return function (message, sender, sendResponse) {
             if ("BrowserTab" in window && sender.tab && sender.tab.id >= 0) {

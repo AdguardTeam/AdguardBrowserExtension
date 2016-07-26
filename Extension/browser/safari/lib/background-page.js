@@ -26,7 +26,7 @@ var ext;
 		BaseEvent.apply(this, arguments);
 	};
 
-	Object.setPrototypeOf(SafariTabEvent.prototype, BaseEvent.prototype);
+	LanguageUtils.inherit(SafariTabEvent, BaseEvent);
 	SafariTabEvent.prototype.specifyListener = function (listener) {
 		return function (event) {
 			if (event.target instanceof SafariBrowserTab) {
@@ -40,7 +40,7 @@ var ext;
 		BaseEvent.call(this, target, "message", false);
 	};
 
-	Object.setPrototypeOf(OnLoadingTabEvent.prototype, BaseEvent.prototype);
+	LanguageUtils.inherit(OnLoadingTabEvent, BaseEvent);
 	OnLoadingTabEvent.prototype.specifyListener = function (listener) {
 		return function (event) {
 			if (event.name == "loading" && event.message == event.target.url) {
