@@ -141,7 +141,7 @@
         var styleFrame = document.createElement("style");
         styleFrame.id = AG_FRAMES_STYLE;
         styleFrame.setAttribute("type", "text/css");
-        styleFrame.textContent = 'iframe { display: none !important; }';
+        styleFrame.textContent = 'iframe[src] { display: none !important; }';
         (document.head || document.documentElement).appendChild(styleFrame);
     };
 
