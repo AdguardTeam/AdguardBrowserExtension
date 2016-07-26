@@ -90,18 +90,14 @@ var BaseEvent, OnMessageEvent, SendMessageFunction;
 		BaseEvent.call(this, detectExtensionOnMessage());
 	};
 
-	OnMessageEvent.prototype = {
-
-		__proto__: BaseEvent.prototype,
-
-		specifyListener: function (listener) {
-			return function (message, sender, sendResponse) {
-				if ("BrowserTab" in window && sender.tab && sender.tab.id >= 0) {
-					sender.tab = new BrowserTab(sender.tab);
-				}
-				return listener(message, sender, sendResponse);
-			};
-		}
+    LanguageUtils.inherit(OnMessageEvent, BaseEvent);
+	OnMessageEvent.prototype.specifyListener = function (listener) {
+        return function (message, sender, sendResponse) {
+            if ("BrowserTab" in window && sender.tab && sender.tab.id >= 0) {
+                sender.tab = new BrowserTab(sender.tab);
+            }
+            return listener(message, sender, sendResponse);
+        };
 	};
 
 	SendMessageFunction = detectExtensionSendMessage();

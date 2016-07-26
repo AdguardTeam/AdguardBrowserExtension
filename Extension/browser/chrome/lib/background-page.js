@@ -24,104 +24,90 @@ var browser = browser || chrome;
     var TabEvent = function () {
         BaseEvent.apply(this, arguments);
     };
+    LanguageUtils.inherit(TabEvent, BaseEvent);
 
-    TabEvent.prototype = {
-        __proto__: BaseEvent.prototype
-    };
+
     var OnCreatedTabEvent = function () {
         TabEvent.call(this, browser.tabs.onCreated);
     };
-    OnCreatedTabEvent.prototype = {
 
-        __proto__: TabEvent.prototype,
-
-        specifyListener: function (listener) {
-            return function (tab) {
-                listener(new BrowserTab(tab));
-            };
-        }
+    LanguageUtils.inherit(OnCreatedTabEvent, TabEvent);
+    OnCreatedTabEvent.prototype.specifyListener = function (listener) {
+        return function (tab) {
+            listener(new BrowserTab(tab));
+        };
     };
+
 
     var OnLoadingTabEvent = function () {
         TabEvent.call(this, browser.tabs.onUpdated);
     };
-    OnLoadingTabEvent.prototype = {
 
-        __proto__: TabEvent.prototype,
-
-        specifyListener: function (listener) {
-            return function (id, info, tab) {
-                if (info.status == "loading") {
-                    listener(new BrowserTab(tab));
-                }
-            };
-        }
+    LanguageUtils.inherit(OnLoadingTabEvent, TabEvent);
+    OnLoadingTabEvent.prototype.specifyListener = function (listener) {
+        return function (id, info, tab) {
+            if (info.status == "loading") {
+                listener(new BrowserTab(tab));
+            }
+        };
     };
+
 
     var OnCompletedTabEvent = function () {
         TabEvent.call(this, browser.tabs.onUpdated);
     };
-    OnCompletedTabEvent.prototype = {
 
-        __proto__: TabEvent.prototype,
-
-        specifyListener: function (listener) {
-            return function (id, info, tab) {
-                if (info.status == "complete") {
-                    listener(new BrowserTab(tab));
-                }
-            };
-        }
+    LanguageUtils.inherit(OnCompletedTabEvent, TabEvent);
+    OnCompletedTabEvent.prototype.specifyListener = function (listener) {
+        return function (id, info, tab) {
+            if (info.status == "complete") {
+                listener(new BrowserTab(tab));
+            }
+        };
     };
+
 
     var OnUpdatedTabEvent = function () {
         TabEvent.call(this, browser.tabs.onUpdated);
     };
-    OnUpdatedTabEvent.prototype = {
 
-        __proto__: TabEvent.prototype,
-
-        specifyListener: function (listener) {
-            return function (id, info, tab) {
-                listener(new BrowserTab(tab));
-            };
-        }
+    LanguageUtils.inherit(OnUpdatedTabEvent, TabEvent);
+    OnUpdatedTabEvent.prototype.specifyListener = function (listener) {
+        return function (id, info, tab) {
+            listener(new BrowserTab(tab));
+        };
     };
+
 
     var OnActivatedTabEvent = function () {
         TabEvent.call(this, browser.tabs.onActivated);
     };
-    OnActivatedTabEvent.prototype = {
 
-        __proto__: TabEvent.prototype,
-
-        specifyListener: function (listener) {
-            return function (info) {
-                browser.tabs.get(info.tabId, function (tab) {
-                    if (checkLastError()) {
-                        return;
-                    }
-                    if (tab) {
-                        listener(new BrowserTab(tab));
-                    }
-                });
-            };
-        }
+    LanguageUtils.inherit(OnActivatedTabEvent, TabEvent);
+    OnActivatedTabEvent.prototype.specifyListener = function (listener) {
+        return function (info) {
+            browser.tabs.get(info.tabId, function (tab) {
+                if (checkLastError()) {
+                    return;
+                }
+                if (tab) {
+                    listener(new BrowserTab(tab));
+                }
+            });
+        };
     };
+
 
     var OnRemovedTabEvent = function () {
         TabEvent.call(this, browser.tabs.onRemoved);
     };
-    OnRemovedTabEvent.prototype = {
-
-        __proto__: TabEvent.prototype,
-
-        specifyListener: function (listener) {
-            return function (id) {
-                listener(new BrowserTab({id: id}));
-            };
-        }
+    LanguageUtils.inherit(OnRemovedTabEvent, TabEvent);
+    OnRemovedTabEvent.prototype.specifyListener = function (listener) {
+        return function (id) {
+            listener(new BrowserTab({id: id}));
+        };
     };
+
 
     function getRequestDetails(details) {
 
@@ -197,93 +183,83 @@ var browser = browser || chrome;
         return requestType;
     }
 
+
     var OnBeforeRequestEvent = function () {
         BaseEvent.call(this, browser.webRequest.onBeforeRequest);
     };
-    OnBeforeRequestEvent.prototype = {
 
-        __proto__: BaseEvent.prototype,
+    LanguageUtils.inherit(OnBeforeRequestEvent, BaseEvent);
+    OnBeforeRequestEvent.prototype.specifyListener = function (listener) {
 
-        specifyListener: function (listener) {
+        return function (details) {
 
-            return function (details) {
+            if (details.tabId == -1) {
+                return {};
+            }
 
-                if (details.tabId == -1) {
-                    return {};
-                }
+            var requestDetails = getRequestDetails(details);
 
-                var requestDetails = getRequestDetails(details);
-
-                var skip = listener(requestDetails);
-                return {
-                    cancel: skip === false
-                };
+            var skip = listener(requestDetails);
+            return {
+                cancel: skip === false
             };
-        },
-
-        getOptExtraInfoSpec: function (urls) {
-            return [urls ? {urls: urls} : {}, ["blocking"]];
-        }
+        };
     };
+    OnBeforeRequestEvent.prototype.getOptExtraInfoSpec = function (urls) {
+        return [urls ? {urls: urls} : {}, ["blocking"]];
+    };
+
 
     var OnHeadersReceivedEvent = function () {
         BaseEvent.call(this, browser.webRequest.onHeadersReceived);
     };
 
-    OnHeadersReceivedEvent.prototype = {
+    LanguageUtils.inherit(OnHeadersReceivedEvent, BaseEvent);
+    OnHeadersReceivedEvent.prototype.specifyListener = function (listener) {
 
-        __proto__: BaseEvent.prototype,
+        return function (details) {
 
-        specifyListener: function (listener) {
+            if (details.tabId == -1) {
+                return;
+            }
 
-            return function (details) {
-
-                if (details.tabId == -1) {
-                    return;
-                }
-
-                var requestDetails = getRequestDetails(details);
-                listener(requestDetails);
-            };
-        },
-
-        getOptExtraInfoSpec: function (urls) {
-            return [urls ? {urls: urls} : {}, ["responseHeaders"]];
-        }
+            var requestDetails = getRequestDetails(details);
+            listener(requestDetails);
+        };
     };
+    OnHeadersReceivedEvent.prototype.getOptExtraInfoSpec = function (urls) {
+        return [urls ? {urls: urls} : {}, ["responseHeaders"]];
+    };
+
 
     var OnBeforeSendHeadersEvent = function () {
         BaseEvent.call(this, browser.webRequest.onBeforeSendHeaders);
     };
 
-    OnBeforeSendHeadersEvent.prototype = {
+    LanguageUtils.inherit(OnBeforeSendHeadersEvent, BaseEvent);
+    OnBeforeSendHeadersEvent.prototype.specifyListener = function (listener) {
 
-        __proto__: BaseEvent.prototype,
+        return function (details) {
 
-        specifyListener: function (listener) {
+            if (details.tabId == -1) {
+                return;
+            }
 
-            return function (details) {
-
-                if (details.tabId == -1) {
-                    return;
-                }
-
-                var requestDetails = getRequestDetails(details);
-                return listener(requestDetails);
-            };
-        },
-
-        getOptExtraInfoSpec: function (urls) {
-            return [urls ? {urls: urls} : {}, ["requestHeaders", "blocking"]];
-        }
+            var requestDetails = getRequestDetails(details);
+            return listener(requestDetails);
+        };
     };
+    OnBeforeSendHeadersEvent.prototype.getOptExtraInfoSpec = function (urls) {
+        return [urls ? {urls: urls} : {}, ["requestHeaders", "blocking"]];
+    };
+
 
     var checkLastError = function () {
         var ex = browser.runtime.lastError;
         if (ex) {
             Log.error("Error while executing operation: {0}", ex);
         }
-        
+
         return ex;
     };
 
@@ -302,7 +278,7 @@ var browser = browser || chrome;
         activate: function () {
             // Activate tab
             browser.tabs.update(this.id, {active: true}, checkLastError);
-            
+
             // Focus window
             browser.windows.update(this.windowId, {focused: true}, checkLastError);
         },
@@ -311,17 +287,17 @@ var browser = browser || chrome;
         },
         reload: function (url) {
             if (url) {
-		        if (Prefs.getBrowser() == "Edge") {
+                if (Prefs.getBrowser() == "Edge") {
                     /**
-                     * For security reasons, in Firefox and Edge, this may not be a privileged URL. 
+                     * For security reasons, in Firefox and Edge, this may not be a privileged URL.
                      * So passing any of the following URLs will fail, with runtime.lastError being set to an error message:
                      * chrome: URLs
                      * javascript: URLs
                      * data: URLs
-                     * privileged about: URLs (for example, about:config, about:addons, about:debugging). 
-                     * 
+                     * privileged about: URLs (for example, about:config, about:addons, about:debugging).
+                     *
                      * Non-privileged URLs (about:home, about:newtab, about:blank) are allowed.
-                     * 
+                     *
                      * So we use a content script instead.
                      */
                     this.sendMessage({
@@ -335,10 +311,10 @@ var browser = browser || chrome;
                 if (browser.tabs.reload) {
                     browser.tabs.reload(this.id, {
                         bypassCache: true
-                    }, checkLastError);                    
+                    }, checkLastError);
                 } else {
                     // Reload page without cache via content script
-		            this.sendMessage({type: 'no-cache-reload'});
+                    this.sendMessage({type: 'no-cache-reload'});
                 }
             }
         },
@@ -464,35 +440,35 @@ var browser = browser || chrome;
     ext.backgroundPage.sendMessage = SendMessageFunction;
 
     ext.app = {
-        
+
         /**
          * Extension ID
          */
-        getId: function() {
+        getId: function () {
             return browser.runtime.id;
         },
-        
+
         /**
          * Gets extension scheme
          * @returns "chrome-extension" for Chrome," ms-browser-extension" for Edge
          */
-        getUrlScheme: function() {
+        getUrlScheme: function () {
             var url = ext.getURL('test.html');
             var index = url.indexOf('://');
             return url.substring(0, index);
         },
-        
+
         /**
          * Extension version
          */
-        getVersion: function() {
+        getVersion: function () {
             return browser.runtime.getManifest().version;
         },
-        
+
         /**
          * Extension UI locale
          */
-        getLocale: function() {
+        getLocale: function () {
             return browser.i18n.getUILanguage();
         }
     };
@@ -625,7 +601,7 @@ var browser = browser || chrome;
             };
 
             /**
-             * Workaround for MS Edge. 
+             * Workaround for MS Edge.
              * For some reason Edge changes the inner state of the "icon" object and adds a tabId property inside.
              */
             delete icon.tabId;

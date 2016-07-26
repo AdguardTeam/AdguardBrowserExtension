@@ -14,23 +14,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global chrome, $, UI */
-(function () {
-    var browser = window.browser || chrome;
-    var backgroundPage = browser.extension.getBackgroundPage();
-    window.ext = Object.create(backgroundPage.ext);
-    window.ext.closePopup =  function () {
-        window.close();
-    };
-    window.ext.resizePopup =  function () {
-    };
 
-    window.BrowserTabs = backgroundPage.BrowserTabs;
-    window.i18n = browser.i18n;
+/**
+ * Javascript language utils
+ *
+ * @type {{inherit: Function}}
+ */
+var LanguageUtils = {
+    inherit: function (childClass, parentClass) {
+        var f = function () {
+        }; // defining temp empty function
+        f.prototype = parentClass.prototype;
+        f.prototype.constructor = f;
 
-    $(window).on('unload', function () {
-        if (window.tab) {
-            UI.updateTabIconAndContextMenu(window.tab, true);
-        }
-    });
-})();
+        childClass.prototype = new f;
+
+        childClass.prototype.constructor = childClass; // restoring proper constructor for child class
+        parentClass.prototype.constructor = parentClass; // restoring proper constructor for parent class
+    }
+};

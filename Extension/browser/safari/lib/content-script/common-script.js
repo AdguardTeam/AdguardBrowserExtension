@@ -66,36 +66,32 @@ var BaseEvent, OnMessageEvent, SendMessageFunction, I18NSupport;
 	OnMessageEvent = function (target) {
 		BaseEvent.call(this, target, "message", false);
 	};
-	OnMessageEvent.prototype = {
 
-		__proto__: BaseEvent.prototype,
+	LanguageUtils.inherit(OnMessageEvent, BaseEvent);
+	OnMessageEvent.prototype.specifyListener = function (listener) {
+		return function (event) {
 
-		specifyListener: function (listener) {
+			if (event.name.indexOf("request-") != 0) {
+				return;
+			}
 
-			return function (event) {
+			var sender = {};
+			var dispatcher;
 
-				if (event.name.indexOf("request-") != 0) {
-					return;
-				}
+			if ("BrowserTab" in window && "SafariBrowserTab" in window &&
+					event.target instanceof SafariBrowserTab) {
 
-				var sender = {};
-				var dispatcher;
+				dispatcher = event.target.page;
+				sender.tab = new BrowserTab(event.target);
+			} else {
+				dispatcher = event.target.tab;
+				sender.tab = null;
+			}
 
-				if ("BrowserTab" in window && "SafariBrowserTab" in window && 
-                        event.target instanceof SafariBrowserTab) {
-
-					dispatcher = event.target.page;
-					sender.tab = new BrowserTab(event.target);
-				} else {
-					dispatcher = event.target.tab;
-					sender.tab = null;
-				}
-
-				listener(event.message, sender, function (message) {
-					dispatcher.dispatchMessage("response-" + event.name.substr(8), message);
-				});
-			};
-		}
+			listener(event.message, sender, function (message) {
+				dispatcher.dispatchMessage("response-" + event.name.substr(8), message);
+			});
+		};
 	};
 
 
