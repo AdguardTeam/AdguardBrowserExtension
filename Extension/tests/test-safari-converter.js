@@ -203,6 +203,8 @@ function testGenerichideRules() {
     var convertedRule = converted[0];
     assertEquals("ignore-previous-rules", convertedRule.action.type);
     assertEquals('^https?://([^/]*\\.)?hulu\\.com\\/page', convertedRule.trigger["url-filter"]);
+    assertEquals(1, convertedRule.trigger["resource-type"].length);
+    assertEquals("document", convertedRule.trigger["resource-type"][0]);
 }
 addTestCase(testGenerichideRules);
 
