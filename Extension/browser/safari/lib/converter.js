@@ -18,7 +18,7 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.8';
+var CONVERTER_VERSION = '1.3.9';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var URL_FILTER_ANY_URL = ".*";
@@ -460,19 +460,18 @@ exports.SafariContentBlockerConverter = {
             throw new Error('Invalid argument rule');
         }
 
+        var result;
         if (rule instanceof CssFilterRule) {
-            return this.AGRuleConverter.convertCssFilterRule(rule);
+            result = this.AGRuleConverter.convertCssFilterRule(rule);
+        } else if (rule instanceof ScriptFilterRule) {
+            result = this.AGRuleConverter.convertScriptRule(rule);
+        } else if (rule instanceof UrlFilterRule) {
+            result = this.AGRuleConverter.convertUrlFilterRule(rule);
+        } else {
+            throw new Error('Rule is not supported: ' + rule);
         }
 
-        if (rule instanceof ScriptFilterRule) {
-            return this.AGRuleConverter.convertScriptRule(rule);
-        }
-
-        if (rule instanceof UrlFilterRule) {
-            return this.AGRuleConverter.convertUrlFilterRule(rule);
-        }
-
-        throw new Error('Rule is not supported: ' + rule);
+        return result;
     },
 
     /**
@@ -582,7 +581,7 @@ exports.SafariContentBlockerConverter = {
             }
 
             ruleRestrictedDomains.push(domain);
-        }
+        };
 
         var rulesMap = this._arrayToMap(cssBlocking, 'action', 'selector');
         var exceptionRulesMap = this._arrayToMap(cssExceptions, 'action', 'selector');
@@ -693,8 +692,10 @@ exports.SafariContentBlockerConverter = {
         Log.info('Converting ' + rules.length + ' rules. Optimize=' + optimize);
 
         var contentBlocker = {
-            // Elemhide rules (##)
+            // Elemhide rules (##) - generic rules
             cssBlockingWide: [],
+            // Generic hide exceptions
+            cssBlockingWideExceptions: [],
             // Elemhide rules (##) with domain restrictions
             cssBlockingDomainSensitive: [],
             // Elemhide exceptions ($elemhide)
@@ -715,10 +716,13 @@ exports.SafariContentBlockerConverter = {
 
         for (var i = 0, len = rules.length; i < len; i++) {
             var item;
+            var ruleText;
             if (rules[i] != null && rules[i].ruleText) {
-                item = this.convertAGRule(rules[i], contentBlocker.errors)
+                item = this.convertAGRule(rules[i], contentBlocker.errors);
+                ruleText = rules[i].ruleText;
             } else {
                 item = this.convertLine(rules[i], contentBlocker.errors);
+                ruleText = rules[i];
             }
 
             if (item != null && item != '') {
@@ -734,10 +738,13 @@ exports.SafariContentBlockerConverter = {
                     && (item.action.selector && item.action.selector != '')) {
                     // #@# rules
                     cssExceptions.push(item);
-                } else if (item.action.type == 'ignore-previous-rules' &&
-                        (item.trigger["resource-type"] &&
-                        item.trigger["resource-type"].length > 0 &&
-                        item.trigger["resource-type"][0] == 'document')) {
+                } else if (item.action.type == 'ignore-previous-rules'
+                    && (ruleText && ruleText.indexOf('generichide') > 0)) {
+                    contentBlocker.cssBlockingWideExceptions.push(item);
+                } else if (item.action.type == 'ignore-previous-rules'
+                    && (item.trigger["resource-type"]
+                        && item.trigger["resource-type"].length > 0
+                        && item.trigger["resource-type"][0] == 'document')) {
                     // elemhide rules
                     contentBlocker.cssElemhide.push(item);
                 } else {
@@ -758,6 +765,7 @@ exports.SafariContentBlockerConverter = {
         var message = 'Rules converted: ' + convertedCount + ' (' + contentBlocker.errors.length + ' errors)';
         message += '\nBasic rules: ' + contentBlocker.urlBlocking.length;
         message += '\nElemhide rules (wide): ' + contentBlocker.cssBlockingWide.length;
+        message += '\nExceptions Elemhide (wide): ' + contentBlocker.cssBlockingWideExceptions.length;
         message += '\nElemhide rules (domain-sensitive): ' + contentBlocker.cssBlockingDomainSensitive.length;
         message += '\nExceptions (elemhide): ' + contentBlocker.cssElemhide.length;
         message += '\nExceptions (other): ' + contentBlocker.other.length;
@@ -770,6 +778,7 @@ exports.SafariContentBlockerConverter = {
         var overLimit = false;
         var converted = [];
         converted = converted.concat(contentBlocker.cssBlockingWide);
+        converted = converted.concat(contentBlocker.cssBlockingWideExceptions);
         converted = converted.concat(contentBlocker.cssBlockingDomainSensitive);
         converted = converted.concat(contentBlocker.cssElemhide);
         converted = converted.concat(contentBlocker.urlBlocking);
