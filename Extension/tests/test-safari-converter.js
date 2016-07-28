@@ -189,6 +189,26 @@ function testInvertedWhitelist() {
 addTestCase(testInvertedWhitelist);
 
 /**
+ * Tests rule for inverted whitelist
+ */
+function testGenerichideRules() {
+    var ruleText = '@@||hulu.com/page$generichide';
+
+    var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    assertEquals(1, result.convertedCount);
+    assertEquals(0, result.errorsCount);
+    var converted = JSON.parse(result.converted);
+    assertEquals(1, converted.length);
+
+    var convertedRule = converted[0];
+    assertEquals("ignore-previous-rules", convertedRule.action.type);
+    assertEquals('^https?://([^/]*\\.)?hulu\\.com\\/page', convertedRule.trigger["url-filter"]);
+    assertEquals(1, convertedRule.trigger["resource-type"].length);
+    assertEquals("document", convertedRule.trigger["resource-type"][0]);
+}
+addTestCase(testGenerichideRules);
+
+/**
  * Tests some regexp rules
  */
 function testRegexpRules() {
