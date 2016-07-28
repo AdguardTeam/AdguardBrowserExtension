@@ -149,6 +149,38 @@ var overrideWebSocket = function () { // jshint ignore:line
         var emptyFunction = function () {};
 
         /**
+         * Wraps callback function into our own function wrapper.
+         * We have two purposes: bind it to the wrapper object and replace event.target property.
+         * Learn more here: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/307
+         */
+        var wrapCallback = function(callback, wrapper) {
+            var wrappedCallback = function() {
+                var wrapped = map.get(wrapper);
+                var e = arguments[0];
+                if (wrapped && e instanceof Event && e.target === wrapped) {
+                    // We should change Event.target to Wrapper
+                    var wrappedEvent = Object.create(e, {
+                        target: { value: wrapper },
+                        currentTarget: { value: wrapper },
+                        srcElement: { value: wrapper },
+                        // Override WS event properties as well as otherwise there will be an illegal invocation error
+                        // MessageEvent
+                        data: { value: e.data },
+                        origin: { value: e.origin },
+                        ports: { value: e.ports },
+                        // CloseEvent
+                        code: { value: e.code },
+                        reason: { value: e.reason },
+                        wasClean: { value: e.wasClean }
+                    });
+                    arguments[0] = wrappedEvent;
+                }
+                callback.apply(wrapper, arguments);
+            };
+            return wrappedCallback;
+        };
+
+        /**
          * Gets value of the specified property from the wrapped websocket if it is already created.
          *
          * @param wrapper       Wrapper instance
@@ -180,7 +212,7 @@ var overrideWebSocket = function () { // jshint ignore:line
          */
         var setWrappedProperty = function (wrapper, prop, value) {
             if (value instanceof Function) {
-                value = value.bind(wrapper);
+                value = wrapCallback(value, wrapper);
             }
 
             var wrapped = map.get(wrapper);
@@ -326,7 +358,7 @@ var overrideWebSocket = function () { // jshint ignore:line
                     if (!wrapped) {
                         return;
                     }
-                    var cbb = cb.bind(this);
+                    var cbb = wrapCallback(cb, this);
                     if (wrapped instanceof Wrapped) {
                         wrapped.addEventListener(ev, cbb, fl);
                     } else {
