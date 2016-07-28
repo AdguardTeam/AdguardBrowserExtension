@@ -1,14 +1,23 @@
 ! Title: Safari filter
-! Version: 1.0.0.84
+! Version: 1.0.0.95
 ! Name: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! NameEn: Safari filter
 ! DescriptionEn: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
-! TimeUpdated: 2016-07-17T22:01:37.019+03:00
+! TimeUpdated: 2016-07-27T23:02:06.791+03:00
 ||adrunnr.com^$popup
 ||large-format.net^$popup
 ||november-lax.com^$popup
 ||media.innity.net^$third-party
+@@||fullstuff.co^$generichide
+@@||macbed.com^$generichide
+@@||bnonews.com^$generichide
+@@||animmex.net^$generichide
+@@|http://$domain=bild.de,script,third-party
+@@||bild.de^$generichide
+@@||static.opensubtitles.org/libs/js/ad_
+@@||pagead2.googlesyndication.com/pagead/show_ads.js$domain=opensubtitles.org
+@@||ads2.opensubtitles.org/*www/delivery/afr.php?
 @@||computerworlduk.com^$generichide
 @@||securepubads.g.doubleclick.net/gampad/ads$domain=computerworlduk.com
 @@||z.moatads.com/idg235774026756/moatad.js$domain=computerworlduk.com
@@ -66,13 +75,19 @@ http://*.*.space/v/$third-party
 ||securewebboard.com^$third-party
 ||skycdnhost.com^$third-party
 @@||moonwalk.cc/*/iframe$elemhide
-##iframe[width="728"][height="90"]
 ##a[href*="/adrotate-out.php?"]
 ##.banner-top
 ##.ads-ad
 etfdailynews.com##div[style="width:300px;border:1px solid black"]
 @@||cinemablend.com/timthumb.php?src=/images/facebook/
 telegraaf.nl##.section-ad
+macbed.com##.adsbygoogle
+bnonews.com##.adsbygoogle
+bnonews.com##.advertisement
+bnonews.com##div[id^="div-gpt-ad"]
+opensubtitles.org###scrubbuad
+opensubtitles.org###search_results > tbody > tr[style^="height:115px;text-align:center;margin:0px;padding:0px;"]
+opensubtitles.org##div[id$="-placeholder"]
 wantdl.com##img[src*="referral_banners/"]
 konachan.net##iframe[src^="https://tbib.org/"]
 apfelpage.de##.a4promo_ad
@@ -99,6 +114,8 @@ brb.to,cxz.to,fs.to##div[class*="universal_ads"]
 ||gamer.ru/alarmalarm/js/
 ||sports.ru/desktop/special/$subdocument,domain=sports.ru
 m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
+||mc.yandex.ru/watch/*$domain=internethaber.com
+||mc.yandex.ru/metrika/watch.js$domain=internethaber.com
 @@||m.thepiratebay.org/search.php?
 @@||bing.com/fd/ls/GLinkPing.aspx?
 @@||static.opensubtitles.org/libs/js/subbrowse.js

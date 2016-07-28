@@ -1,10 +1,10 @@
 ! Title: Japanese filter
-! Version: 1.0.92.97
+! Version: 1.0.92.99
 ! Name: Japanese filter
 ! Description: Adguard Japanese filter. Filter that enables blocking of ads on websites in Japanese.
 ! NameEn: Japanese filter
 ! DescriptionEn: Adguard Japanese filter. Filter that enables blocking of ads on websites in Japanese.
-! TimeUpdated: 2016-05-24T21:07:29.708+03:00
+! TimeUpdated: 2016-07-27T23:01:16.324+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -305,6 +305,7 @@ asylum.jp,japanese.engadget.com##.shopping2
 4gamer.net##.sidetop_extra_H320
 yomiuri.co.jp##.t-shopping
 bikebros.co.jp##.w240
+namakeru.com##[href^="http://linkage-m.net/system/link.php"]
 livedoor.jp##a[href="http://blog.livedoor.com/smartphone/dqnplus/"]
 infoseek.co.jp##a[href^="http://c.p-advg.com/"]
 ameblo.jp##a[href^="http://ck.jp.ap.valuecommerce.com/"]

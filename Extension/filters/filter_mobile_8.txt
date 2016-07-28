@@ -1,10 +1,10 @@
 ! Title: Dutch filter
-! Version: 1.0.8.87
+! Version: 1.0.8.88
 ! Name: Dutch filter
 ! Description: EasyList Dutch + Adguard Dutch filter. Filter list that specifically removes adverts on Dutch language websites.
 ! NameEn: Dutch filter
 ! DescriptionEn: EasyList Dutch + Adguard Dutch filter. Filter list that specifically removes adverts on Dutch language websites.
-! TimeUpdated: 2016-07-15T21:07:14.370+03:00
+! TimeUpdated: 2016-07-27T23:01:27.311+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -599,27 +599,27 @@ tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
 @@||static.buienradar.nl/resources/js/advertisement.js
 biernet.nl#@#.afs_ads
 @@||telegraaf.tcdn.nl/javascript/showads*.js
-fok.nl###mainContent > div.ad
-iphoned.nl,androidplanet.nl###featured-header
-iphoned.nl,androidplanet.nl##.advert-sidebar
-iphoned.nl,androidplanet.nl##.widget.widget_static_device_widget
-nu.nl##.block.advertoriallist
+marktplaats.nl###banner-aanbieding
+marktplaats.nl###banner-marketing
+androidplanet.nl,iphoned.nl###featured-header
 tvgids.nl###ligatus_under_content
+fok.nl###mainContent > div.ad
+androidplanet.nl,iphoned.nl##.advert-sidebar
+nu.nl##.block.advertoriallist
 tvgids.nl##.interstitial_banner
+iculture.nl##.site-header__compare
+androidplanet.nl,iphoned.nl##.widget.widget_static_device_widget
 vlinderscrime.nl##a[href="http://mariska-o.nl/"]
 ||bs.serving-sys.com/BurstingPipe/adServer.bs$domain=kijk.nl
 ||cdn.sbsnet.nl/creatives/assets/*.mp4$domain=kijk.nl
 ||d33t3vvu2t2yu5.cloudfront.net^$domain=nl.express.live
 ||diomerc.com/baner/
 ||m.telegraaf.nl/static/lib/bva-widget.html?without-raid
+||pcnltelecom.tdsapi.com/portal/iframe.js
 ||servedby.rtbiddingplatform.com^$domain=media.zie.nl
 ||serving-sys.com/*.mp4^$domain=kijk.nl
 ||totaaltv.nl/upload/Banner-sep-astrasat.gif
 ||vlinderscrime.nl/wp-content/uploads/*/*banner*.
-||pcnltelecom.tdsapi.com/portal/iframe.js
-iculture.nl##.site-header__compare
-marktplaats.nl###banner-aanbieding
-marktplaats.nl###banner-marketing
 @@||cdn-static.liverail.com/swf/$domain=dumpert.nl
 @@||cdn-static.liverail.com/crossdomain.xml$domain=dumpert.nl
 @@||publiekeomroep.nl^$stylesheet,script,domain=cinema.nl

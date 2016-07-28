@@ -1,10 +1,10 @@
 ! Title: Safari filter
-! Version: 1.0.0.84
+! Version: 1.0.0.95
 ! Name: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! NameEn: Safari filter
 ! DescriptionEn: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
-! TimeUpdated: 2016-07-17T22:01:37.019+03:00
+! TimeUpdated: 2016-07-27T23:02:06.791+03:00
 ! Title: Adguard Safari Filter
 !
 ! Special filter for Safari. We need a separate filter for Safari because it does not fully support rules syntax.
@@ -30,6 +30,22 @@
 !
 ! These rules are against anti-adblock scripts
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/2675
+@@||fullstuff.co^$generichide
+! https://github.com/AdguardTeam/AdguardFilters/issues/2663
+@@||macbed.com^$generichide
+! https://github.com/AdguardTeam/AdguardFilters/issues/2669
+@@||bnonews.com^$generichide
+! https://forum.adguard.com/index.php?threads/12053/
+@@||animmex.net^$generichide
+! https://github.com/AdguardTeam/AdguardFilters/issues/2604
+@@|http://$domain=bild.de,script,third-party
+@@||bild.de^$generichide
+! https://github.com/AdguardTeam/AdguardFilters/issues/2574
+! opensubtitles.org - anti-adblock ads
+@@||static.opensubtitles.org/libs/js/ad_
+@@||pagead2.googlesyndication.com/pagead/show_ads.js$domain=opensubtitles.org
+@@||ads2.opensubtitles.org/*www/delivery/afr.php?
 ! https://forum.adguard.com/index.php?threads/11626/
 @@||computerworlduk.com^$generichide
 @@||securepubads.g.doubleclick.net/gampad/ads$domain=computerworlduk.com
@@ -129,8 +145,7 @@ http://*.*.space/v/$third-party
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/923
 @@||moonwalk.cc/*/iframe$elemhide
 !----- General element hiding rules ----
-! https://github.com/AdguardTeam/AdguardFilters/issues/2556
-##iframe[width="728"][height="90"]
+!
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2114 [ENG]
 ##a[href*="/adrotate-out.php?"]
 !
@@ -152,6 +167,16 @@ telegraaf.nl##.section-ad
 !
 ! Section contains rules for specific websites
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/2663
+macbed.com##.adsbygoogle
+! https://github.com/AdguardTeam/AdguardFilters/issues/2669
+bnonews.com##.adsbygoogle
+bnonews.com##.advertisement
+bnonews.com##div[id^="div-gpt-ad"]
+! https://github.com/AdguardTeam/AdguardFilters/issues/2574
+opensubtitles.org###scrubbuad
+opensubtitles.org###search_results > tbody > tr[style^="height:115px;text-align:center;margin:0px;padding:0px;"]
+opensubtitles.org##div[id$="-placeholder"]
 ! https://forum.adguard.com/index.php?threads/11655/
 wantdl.com##img[src*="referral_banners/"]
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1921
@@ -195,6 +220,9 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 !
 ! White list. Fixing content blocking API issues.
 !
+! https://forum.adguard.com/index.php?threads/12058/
+||mc.yandex.ru/watch/*$domain=internethaber.com
+||mc.yandex.ru/metrika/watch.js$domain=internethaber.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2556
 @@||m.thepiratebay.org/search.php?
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2477

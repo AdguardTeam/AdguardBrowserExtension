@@ -1,10 +1,10 @@
 ! Title: Experimental filter
-! Version: 1.0.26.13
+! Version: 1.0.26.20
 ! Name: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: Experimental filter
 ! DescriptionEn: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! TimeUpdated: 2016-07-17T17:00:22.473+03:00
+! TimeUpdated: 2016-07-28T01:30:20.726+03:00
 ! Title: Adguard Experimental Filter
 !
 ! Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
@@ -86,6 +86,8 @@
 ! This section contain any type of rule grouped by domain.
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/2626
+neowin.net##article[class^="classes "]:not([itemscope])
 !
 ! Whitelist
 ! http://adguard.com/filterrules.html#exclusionRules
@@ -176,21 +178,6 @@ forum.chatovod.com##iframe[src^="/widgets/?lang="]
 ! Rules which are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
 !
-! https://github.com/AdguardTeam/AdguardFilters/issues/2487
-rusnewstoday24.ru##.td-main-sidebar
-! https://forum.adguard.com/index.php?threads/10688/
-www.tut.by##.l-main > div#resource_block
-!--- Ads like posts ---
-erofishki.net,fishki.net#%#AG_onLoad(function() { $('img[data-subscribe*="_543769"]').closest('div[id^="post-"]').remove(); });
-pikabu.ru#%#AG_onLoad(function() { $('a[href="http://pikabu.ru/html.php?id=ad"]').closest('table[class*="inner_wrap_visible"]').remove(); });
-pikabu.ru#%#AG_onLoad(function() { $('a[href="http://pikabu.ru/profile/ads"]').closest('table[id^="inner_wrap_"]').remove(); });
-yap.ru,yaplakal.com#%#AG_onLoad(function() { $('a[href^="/click/?http"]').closest('td[class="postcolor news-content"]').remove(); });
-!
-! https://forum.adguard.com/index.php?threads/10833/
-searchengines.guru##.smallfont td > div[align="right"]
-searchengines.guru##.smallfont td > div[style="white-space: nowrap;text-align: right"]
-searchengines.guru##table[id^="header"] div[style="display: block;"]
-!
 !
 ! Whitelist
 ! http://adguard.com/filterrules.html#exclusionRules
@@ -214,16 +201,6 @@ antiblock.org#%#AG_onLoad(function() { AG_AntiAntiBlock(); });
 ! косяк в фильтре RU AdList: Counters
 @@||my10.imgsmail.ru/mail/$domain=mail.ru
 !
-! https://forum.adguard.com/index.php?threads/resolved-gamona-de.3539/
-gamona.de##ul[class$="list_base cols col2 image_base icon"]
-! http://forum.adguard.com/showthread.php?6186
-pcgames.de#%#AG_onLoad(function() { $('a[title*="[Anzeige]"]').closest('div[class^="item noImg"]').remove(); });
-! http://forum.adguard.com/showthread.php?6796
-buffed.de#%#AG_onLoad(function() { $('a[href*="-Anzeige-"]').closest('div[class*="item noImg"]').remove(); });
-buffed.de#%#AG_onLoad(function() { $('a[href*="/E-Commerce"]').closest('div[class*="item noImg"]').remove(); });
-forum.gamezone.de#%#AG_onLoad(function() { $('dl[class*="userinfo_extra"]').closest('li[id*="post_rec"]').remove(); });
-! https://forum.adguard.com/index.php?threads/11935/
-focus.de#%#AG_onLoad(function() { $('div[class^="surftippTitle"]').closest('div[class$="block grid_4 "]').remove(); });
 !-------------------------------------------------------------------!
 !------- Experimental rules for Mobile ads filter-------------------!
 !-------------------------------------------------------------------!
@@ -232,7 +209,7 @@ focus.de#%#AG_onLoad(function() { $('div[class^="surftippTitle"]').closest('div[
 ! Used to show ads in mobile apps and websites
 !
 !-------------------------------------------------------------------!
-!---------------------- Annoyances ---------------------------------!
+!---------------------- Dangerous rules ----------------------------!
 !-------------------------------------------------------------------!
 !#######################################################
 !######### The list of dangerous rules #################
@@ -247,3 +224,36 @@ focus.de#%#AG_onLoad(function() { $('div[class^="surftippTitle"]').closest('div[
 ! fake browser update
 ~junodownload.com#%#document.onmouseout = null; window.onbeforeunload = null; window.blur = null;
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/2487
+rusnewstoday24.ru##.td-main-sidebar
+! https://forum.adguard.com/index.php?threads/10688/
+www.tut.by##.l-main > div#resource_block
+!--- Ads like posts ---
+erofishki.net,fishki.net#%#AG_onLoad(function() { $('img[data-subscribe*="_543769"]').closest('div[id^="post-"]').remove(); });
+pikabu.ru#%#AG_onLoad(function() { $('a[href="http://pikabu.ru/html.php?id=ad"]').closest('table[class*="inner_wrap_visible"]').remove(); });
+pikabu.ru#%#AG_onLoad(function() { $('a[href="http://pikabu.ru/profile/ads"]').closest('table[id^="inner_wrap_"]').remove(); });
+yap.ru,yaplakal.com#%#AG_onLoad(function() { $('a[href^="/click/?http"]').closest('td[class="postcolor news-content"]').remove(); });
+!
+! https://forum.adguard.com/index.php?threads/10833/
+searchengines.guru##.smallfont td > div[align="right"]
+searchengines.guru##.smallfont td > div[style="white-space: nowrap;text-align: right"]
+searchengines.guru##table[id^="header"] div[style="display: block;"]
+!
+! https://forum.adguard.com/index.php?threads/https-tosunkaya-com.11681/
+tosunkaya.com###text-html-widget-5
+! https://forum.adguard.com/index.php?threads/resolved-gamona-de.3539/
+gamona.de##ul[class$="list_base cols col2 image_base icon"]
+! http://forum.adguard.com/showthread.php?6186
+pcgames.de#%#AG_onLoad(function() { $('a[title*="[Anzeige]"]').closest('div[class^="item noImg"]').remove(); });
+! http://forum.adguard.com/showthread.php?6796
+buffed.de#%#AG_onLoad(function() { $('a[href*="-Anzeige-"]').closest('div[class*="item noImg"]').remove(); });
+buffed.de#%#AG_onLoad(function() { $('a[href*="/E-Commerce"]').closest('div[class*="item noImg"]').remove(); });
+forum.gamezone.de#%#AG_onLoad(function() { $('dl[class*="userinfo_extra"]').closest('li[id*="post_rec"]').remove(); });
+! https://forum.adguard.com/index.php?threads/11935/
+focus.de#%#AG_onLoad(function() { $('div[class^="surftippTitle"]').closest('div[class$="block grid_4 "]').remove(); });
+! https://forum.adguard.com/index.php?threads/12079/
+multiup.org##div[class^="span"] > div[class="well"][style^="height"]
+! rustorka.com
+rustorka.com##:not(div):not(a):not(form):not(body):not(tbody):not(table):not(b):not(tr):not(td):not(img):not(span):not(html):not(title):not(input):not(select):not(option):not(th):not(i):not(h3):not(br):not(li):not(ul):not(p):not(hr):not(iframe):not(thead):not(h4):not(em):not(h6):not(wbr):not(center):not(fieldset):not(legend):not(label) > a
+! https://github.com/AdguardTeam/AdguardForAndroid/issues/718
+pocketnow.com##div+center > small
