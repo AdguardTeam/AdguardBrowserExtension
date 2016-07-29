@@ -1,10 +1,10 @@
 ! Title: Experimental filter
-! Version: 1.0.26.20
+! Version: 1.0.26.21
 ! Name: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: Experimental filter
 ! DescriptionEn: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! TimeUpdated: 2016-07-28T01:30:20.726+03:00
+! TimeUpdated: 2016-07-28T21:30:27.885+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -36,5 +36,4 @@ buffed.de#%#AG_onLoad(function() { $('a[href*="/E-Commerce"]').closest('div[clas
 forum.gamezone.de#%#AG_onLoad(function() { $('dl[class*="userinfo_extra"]').closest('li[id*="post_rec"]').remove(); });
 focus.de#%#AG_onLoad(function() { $('div[class^="surftippTitle"]').closest('div[class$="block grid_4 "]').remove(); });
 multiup.org##div[class^="span"] > div[class="well"][style^="height"]
-rustorka.com##:not(div):not(a):not(form):not(body):not(tbody):not(table):not(b):not(tr):not(td):not(img):not(span):not(html):not(title):not(input):not(select):not(option):not(th):not(i):not(h3):not(br):not(li):not(ul):not(p):not(hr):not(iframe):not(thead):not(h4):not(em):not(h6):not(wbr):not(center):not(fieldset):not(legend):not(label) > a
 pocketnow.com##div+center > small

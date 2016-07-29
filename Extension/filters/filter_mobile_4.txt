@@ -1,10 +1,10 @@
 ! Title: Social media filter
-! Version: 1.0.11.16
+! Version: 1.0.11.22
 ! Name: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2016-07-28T02:01:06.626+03:00
+! TimeUpdated: 2016-07-29T14:11:45.195+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -215,6 +215,20 @@ maskme.ru#$#img[width="88"][height="31"] {visibility: hidden!important;}
 gamesradar.com#$#.shareSocialArticle-wrap { visibility: hidden; }
 softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ||mimimi.tv/?*=*&_=
+sabah.com.tr##.share
+sabah.com.tr##.shareList
+sportsfan.com.au##.article__socialButtons
+nationalreview.com##a[onclick^="sharer"][href="javascript:void(0);"]
+nationalreview.com###full-story-share
+sabah.com.tr##ul.shr
+gazetevatan.com##a[href^="javascript:postTo"] > img
+takvim.com.tr##.mediaShareGroup > li >a[onclick^="window.open"]
+amkspor.sozcu.com.tr##.in_social
+haber7.com##.social
+ligtv.com.tr##.share
+atv.com.tr##.site-social
+amasyagazetesi.com###share
+tarsushaber.com##.detail_share_buttons
 meduza.io###DailySubscriber
 washingtonpost.com###NN-module-rr
 ng72.ru###VKGroupInvite
