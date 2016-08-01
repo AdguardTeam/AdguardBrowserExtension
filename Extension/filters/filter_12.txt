@@ -1,10 +1,10 @@
 ! Title: Safari filter
-! Version: 1.0.0.95
+! Version: 1.0.0.97
 ! Name: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! NameEn: Safari filter
 ! DescriptionEn: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
-! TimeUpdated: 2016-07-27T23:02:06.791+03:00
+! TimeUpdated: 2016-08-01T16:08:05.532+03:00
 ! Title: Adguard Safari Filter
 !
 ! Special filter for Safari. We need a separate filter for Safari because it does not fully support rules syntax.
@@ -167,6 +167,8 @@ telegraaf.nl##.section-ad
 !
 ! Section contains rules for specific websites
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/2730
+kino-serial.net##div[style^="background-image: url(data:image/jpeg;base64"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2663
 macbed.com##.adsbygoogle
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2669
@@ -220,6 +222,8 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 !
 ! White list. Fixing content blocking API issues.
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/2707
+@@/google-adwords$domain=t3n.de,~third-party
 ! https://forum.adguard.com/index.php?threads/12058/
 ||mc.yandex.ru/watch/*$domain=internethaber.com
 ||mc.yandex.ru/metrika/watch.js$domain=internethaber.com

@@ -1,10 +1,10 @@
 ! Title: Russian filter
-! Version: 1.0.37.19
+! Version: 1.0.37.25
 ! Name: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-07-28T21:00:15.769+03:00
+! TimeUpdated: 2016-08-01T15:16:52.418+03:00
 ! Title: Adguard Russian Filter
 !
 ! Filter that enables removing of the ads from websites with Russian content.
@@ -29,6 +29,9 @@
 !
 ! Содержит доменные имена, использующиеся рекламными сетями.
 !
+||ofenop.ru^
+||vqfqo.us^
+||abrolog.ru^
 .adonweb.ru^$third-party
 .adv-modulation.info^
 .adv-multithreading.info^$third-party
@@ -3595,6 +3598,11 @@ http://v.*.com/v/$third-party
 http://v.*.com/v?$third-party
 http://v.*.com/vv?$third-party
 http://v.*.com/x?$third-party
+!
+! Section contains the list of advertising networks, which are hosted on non advertising sites as subdomains
+!
+||statistic.imgpay.ru^
+||stats.imgpay.ru^
 !-------------------------------------------------------------------------------!
 !------------------ Common anti-adblock ----------------------------------------!
 !-------------------------------------------------------------------------------!
@@ -3607,7 +3615,11 @@ lifenews78.ru,life.ru,звонки.онлайн,bitru.org,hdrezka.tv,stopgame.ru
 ! 7-link.ru ad block checker
 @@||7-link.ru/advert.js
 @@||7-link.ru/popads.js
+@@||7-link.ru/popunder.js
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/2716
+@@||imgpay.ru/advertisement.js.php
+@@||imgpay.ru/ads.png
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2622
 @@||payeerotron.ru/js/advert.js
 ! https://forum.adguard.com/index.php?threads/11748/
@@ -3853,8 +3865,6 @@ sharasoft.com##.noadblock
 @@||chingachgook.net/wp-content/themes/*/advert.js
 !
 theplace.ru#%#AG_onLoad(function() { $("ins.adsbygoogle").html("anti-antiadblock"); });
-! http://forum.adguard.com/showthread.php?6829
-@@||imgpay.ru^$elemhide
 ! uakino.net - anti-adblock message
 @@||uakino.net/templates/uakino/images/banner.gif
 uakino.net#@#img[width="88"][height="31"]
@@ -4697,6 +4707,8 @@ s4galaxy.ru,3dnews.ru,lenovo-smart.ru#%#Object.defineProperty(window, 'SocialMar
 ! Block web-sockets in old versions of Chtome (older then 47)
 nnm-club.me,nnm-club.ws,nnmclub.to,onlainfilm.ucoz.ua,rutor.is,baskino.club,rutor.info,nnm.me,korzik.net,seasonvar.ru,rsload.net,nnm-club.me,nnmclub.to,rustorka.com,auto.mail.ru,horo.mail.ru,realty.mail.ru,health.mail.ru,afisha.mail.ru,cloud.mail.ru,otvet.mail.ru,pogoda.mail.ru,sport.mail.ru,tv.mail.ru,torg.mail.ru,cars.mail.ru,hi-tech.mail.ru#%#window.WebSocket = undefined;
 !
+! rustorka.com - clickunder
+rustorka.com#%#AG_onLoad(function() { window.utg_click = 1; });
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2607
 tapochek.net#%#document.cookie = "super_popunder = 1";
 ! https://github.com/AdguardTeam/AdguardBrowserExtension/issues/279
@@ -4882,7 +4894,7 @@ hdkinoteatr.com#%#Object.defineProperty(window, 'iframe_adv_enabled', { get: fun
 ! baibako.tv - удаление отступа сверху
 baibako.tv#$#.topserial { height: 50px!important; }
 ! https://forum.adguard.com/index.php?threads/11436/
-pb.wtf,piratbit.org#$#div[class][style="width: 24%;"] { position: absolute!important; top: -2000px!important; }
+pb.wtf,piratbit.org,piratbit.ru#$#div[class][style="width: 24.1%;"] { position: absolute!important; left: -2000px!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2479
 swefilm.tv#$#a[href^="data:text/html;base64"] { position: absolute!important; top: -2000px!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2541
@@ -6957,9 +6969,15 @@ rustorka.com##a[href^="/"]
 rustorka.com##div:not([id]):not([class]) > :not(div) > span > a
 rustorka.com##:not(div):not(a):not(form):not(body):not(tbody):not(table):not(b):not(tr):not(td):not(img):not(span):not(html):not(title):not(input):not(select):not(option):not(th):not(i):not(h3):not(br):not(li):not(ul):not(p):not(hr):not(iframe):not(thead):not(h4):not(em):not(h6):not(wbr):not(center):not(fieldset):not(legend):not(label) > a
 !
+||mega-pics-money.ru/MegapicsmMoneyclick.js
+rbc.ru##.g-banner-hide-by-exclusive
+rbc.ru##div[class^="js-checkad"]
+sport.mail.ru##.js-slot-parallax-container
+||rustorka.com/fgfgf.php$popup
+||alicdn.com^$domain=fishki.net
 news.mail.ru##.rb-million
-pogoda.yandex.ru##.content__top > div[class^="navigation-city "] > div:not([class="navigation-city__controls"])
-pogoda.yandex.ru##.info__ratatue > div.info__more.info__map
+pogoda.yandex.ru,pogoda.yandex.by,pogoda.yandex.ua,pogoda.yandex.kz##.content__top > div[class^="navigation-city "] > div:not([class="navigation-city__controls"])
+pogoda.yandex.ru,pogoda.yandex.by,pogoda.yandex.ua,pogoda.yandex.kz##.info__ratatue > div.info__more.info__map
 ||metalinfo.ru/user/usruploads/images/banners/
 metalinfo.ru##.bannerimage
 metalinfo.ru##.bannerflash
@@ -9146,12 +9164,12 @@ riotpixels.com##.zzz1
 /jsonp.php?b=$domain=megatrack.info|megatrack.org|memesmix.net|torrent-pirat.com
 /mailru_rebrand/bg_body.jpg
 /main_bnrs.js$domain=pg12.ru|pg13.ru|pg21.ru|prochepetsk.ru|progorod11.ru|progorod33.ru|progorod43.ru|progorod59.ru|progorod76.ru|progorodnn.ru|vpenze.ru
-/mimic/v1/ws/*$domain=mail.ru
+/mimic/v1/ws$domain=mail.ru
 /news.js$third-party,domain=goldenshara.org|imperiyanews.ru|kordonivkakino.net|online-pornuha.com|pornokontakt.com|publicagent.ru|rsload.net|yahooeu.ru|легион.net
 /partners/*$third-party,domain=bestgamer.ru
 /pics/bn/*$domain=tavto.ru
 /preroll.js$domain=goha.ru
-/protJS/*$domain=appspot.com|armourbook.com|cristals.ga|dsvload.net|estasos.ru|foto-click.net|freeimg.ru|game-rust.ru|hentaichan.me|img24.org|imgchilibum.ru|imgclick.ru|kinoshek.net|kiryandrsoft.org|loftlm.ru|makeserver.kz|mapakids.net|moskva-tv.com|mskd-ru.net|myru.tv|nod32-key2016.ru|nolamers.net|online-porno.club|payforpic.ru|pic4share.ru|piccash.net|pics2share.ru|picspeed.ru|picusha.net|pitsib.org|playlist24.ru|pornoisland.org|pornopda.net|pslan.com|publicagent.ru|socola.ru|stopsid.ru|svetmonet.ru|torrent-telik.com|torrents-pornoclub.org|torrentx.net|unionpeer.org|uralsoft.net|uzhgorod.name|xsheet.ru|yellosoft-club.ru
+/protJS/*$domain=appspot.com|armourbook.com|cristals.ga|dsvload.net|estasos.ru|foto-click.net|freeimg.ru|game-rust.ru|hentaichan.me|img24.org|imgchilibum.ru|imgclick.ru|kinoshek.net|kiryandrsoft.org|loftlm.ru|makeserver.kz|mapakids.net|moskva-tv.com|mskd-ru.net|myru.tv|nod32-key2016.ru|nolamers.net|online-porno.club|payforpic.ru|pic4share.ru|piccash.net|pics2share.ru|picspeed.ru|picusha.net|pitsib.org|playlist24.ru|pornoisland.org|pornopda.net|pslan.com|publicagent.ru|socola.ru|stopsid.ru|svetmonet.ru|torrent-telik.com|torrents-pornoclub.org|torrentx.net|unionpeer.org|uralsoft.net|uzhgorod.name|xsheet.ru|yellosoft-club.ru|mega-pics-money.ru
 /rose.ixbt.
 /show.php?id=$domain=baskino.club|bobfilm1.net|fastpic.ru|kino-dom.org|kino-live2.org|kino777.ru|kinobanda.net|kinogo.co|kinogo2.net|kinokong.net|libtor.net|mrutor.org|smotri-filmi.net|super-kino.org|tfilm.me|tushkan.tv
 /show.php?id=$third-party,domain=hd720.biz|kino-serial.net|kinogo-2016.net|kinogorod.net|kinokrad.net|nice-film.ru
@@ -12524,6 +12542,7 @@ xn--90aiguyb.com/files.php?
 .space^$script,third-party,domain=2ndlperm.ru|4army.com.ua|adritano.ru|adultmult.tv|aerostatstudio.ru|akademsavina.ru|allhentai.ru|anime-share.ru|artyushenkooleg.ru|babi.su|barfik.com|bubluoteka.org|detectivebooks.ru|dokymentalka.ru|easyerotica.ru|faint.ru|fotolaski.ru|free-torrent.org|free-torrents.org|game-torrent.info|gidonline.club|gigporno-video.com|greenrpg.ru|hd720.biz|hdkinohit.net|hdkinomax.com|hdrezka.me|hentaichan.me|hentaiz.org|hotfiesta.com|hp-fanfic.ru|i-r-p.ru|joyreactor.cc|jpgstore.ru|kino-serial.net|kinorun.com|krifi.ru|lurtik.info|mediafast.ru|megaserial.net|mevideo.xyz|moj-zvetnik.ru|moy.su|mp3.cc|mp4-ukr.net|murometc.ru|naturismv.com|nod-key.ru|overallnews.ru|patlah.ru|pics-money.ru|pics2share.ru|polnometrazhnoe-porno.video|porno-comics.ru|porno-comix.com|porno720p.tv|pornopic.net|pornreactor.cc|potaskuha.net|prikolin.ru|rapidzona.tv|reactor.cc|rolebb.ru|rolevaya.com|rolevaya.info|rolevaya.net|rolevaya.ru|rsload.net|rustorka.com|serializm.com|serialrussian.ru|sftnews.ru|smotret-fizruk-online.su|soloman.ru|sosista.com|sovietcinema.ru|sprintnews.ru|srubirubli.ru|svetmonet.ru|swfgame.ru|televeezr.ru|ukrtvory.ru|uni0n.ru|unionpron.org|usyn.ru|uztor.ru|videozvip.ru|world-porno.net|xhamster-pic.com|yahooeu.ru|zoozel.net
 .xyz^$script,third-party,domain=2012gps.ru|alexnest.ru|all-tv.org|comicsgo.net|dfiles.ru|divx-kino.ru|euro-football.ru|fast-torrent.ru|fototopless.ru|gubkabob.net|hentaichan.me|j4f.tobase.ru|joyreactor.cc|kinobos.ru|kinonow.org|liveresult.ru|mybb.ru|naruto-base.tv|nasmnogo.net|onlain-full-hd.com|pics-money.ru|picusha.net|poimel.org|pornokinozal.net|reactor.cc|small-games.info|smotret-fizruk-online.su|soccer0001.com|soft-portal.club|soloman.ru|tfilm.me|topbb.ru|torrent-pirat.com|vam.in.ua|videoshara.net|webtalk.ru|x-filmec.ru|yahooeu.ru|yaporn.tv
 ://v.*.tv^$domain=onporn.tv
+://v.*.com/vv/$domain=mega-pics-money.ru
 ?*&bid=$script,third-party,domain=free-torrent.org|free-torrents.org|pics-money.ru
 http://*.*.pw/*.js$script,domain=wigeo.ru
 http://*.space^$script,domain=free-torrent.org|free-torrents.org|jpgstore.ru|pic4cash.ru|pics-money.ru|pics2pay.ru|picspay.ru
