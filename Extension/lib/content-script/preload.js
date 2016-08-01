@@ -228,6 +228,8 @@
      */
     var applySelectors = function (selectors, useShadowDom) {
         if (!selectors || selectors.length == 0) {
+            // Should remove iframe style
+            removeIframeHidingStyle();
             return;
         }
 
