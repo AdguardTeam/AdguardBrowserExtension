@@ -77,10 +77,10 @@
             loadTruncatedCss = (height * width) < 100000;
         }
 
+        addIframeHidingStyle();
+
         initCollapseEventListeners();
         tryLoadCssAndScripts();
-
-        addIframeHidingStyle();
     };
 
     /**
