@@ -50,7 +50,8 @@ public class PackageUtils {
 		return destCrxFile;
 	}
 
-	public static File createXpi(String makeXpiSh, File file, String xpiName) throws Exception {
+	public static File createXpi(String makeXpiSh, File file) throws Exception {
+		String xpiName = "adguard-adblocker";
 		execute(makeXpiSh, file.getAbsolutePath(), xpiName);
 		File xpiFile = new File(file, xpiName + ".xpi");
 		File destXpiFile = new File(file.getParentFile(), file.getName() + ".xpi");

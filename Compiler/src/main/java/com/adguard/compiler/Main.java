@@ -107,11 +107,10 @@ public class Main {
                 packedFile = PackageUtils.createCrx(CRX_MAKE_PATH, buildResult, CHROME_CERT_FILE);
                 FileUtils.deleteQuietly(buildResult);
             } else if (PACK_METHOD_XPI_JPM.equals(packMethod)) {
-                String jpmXpiName = extensionId + "-" + version;
-                packedFile = PackageUtils.createXpi(XPI_MAKE_PATH, buildResult, jpmXpiName);
+                packedFile = PackageUtils.createXpi(XPI_MAKE_PATH, buildResult);
                 FileUtils.deleteQuietly(buildResult);
             } else if (PACK_METHOD_XPI_CFX.equals(packMethod)) {
-                packedFile = PackageUtils.createXpi(XPI_CFX_MAKE_PATH, buildResult, "adguard-adblocker");
+                packedFile = PackageUtils.createXpi(XPI_CFX_MAKE_PATH, buildResult);
                 FileUtils.deleteQuietly(buildResult);
             }
         }
