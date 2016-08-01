@@ -174,6 +174,11 @@
      * @param response Response from the background page
      */
     var processCssAndScriptsResponse = function(response) {
+        if (!response || !response.selectors || response.selectors.length == 0) {
+            // Remove iframe style as page seems to be in the exceptions.
+            removeIframeHidingStyle();
+        }
+
         if (!response || response.requestFilterReady === false) {
             /**
              * This flag (requestFilterReady) means that we should wait for a while, because the 
@@ -228,8 +233,6 @@
      */
     var applySelectors = function (selectors, useShadowDom) {
         if (!selectors || selectors.length == 0) {
-            // Should remove iframe style
-            removeIframeHidingStyle();
             return;
         }
 
