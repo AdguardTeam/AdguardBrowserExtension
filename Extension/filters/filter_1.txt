@@ -1,10 +1,10 @@
 ! Title: Russian filter
-! Version: 1.0.37.25
+! Version: 1.0.37.28
 ! Name: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-08-01T15:16:52.418+03:00
+! TimeUpdated: 2016-08-02T00:00:28.666+03:00
 ! Title: Adguard Russian Filter
 !
 ! Filter that enables removing of the ads from websites with Russian content.
@@ -3603,6 +3603,7 @@ http://v.*.com/x?$third-party
 !
 ||statistic.imgpay.ru^
 ||stats.imgpay.ru^
+||action.evrikak.ru^
 !-------------------------------------------------------------------------------!
 !------------------ Common anti-adblock ----------------------------------------!
 !-------------------------------------------------------------------------------!
@@ -3617,6 +3618,8 @@ lifenews78.ru,life.ru,звонки.онлайн,bitru.org,hdrezka.tv,stopgame.ru
 @@||7-link.ru/popads.js
 @@||7-link.ru/popunder.js
 !
+! https://forum.adguard.com/index.php?threads/12262/
+@@||yallaneliera.com/video/*$elemhide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2716
 @@||imgpay.ru/advertisement.js.php
 @@||imgpay.ru/ads.png
@@ -4867,6 +4870,7 @@ porncomics.ru#%#Object.defineProperty(window, 'VisitWeb', { get: function() { re
 ! trashbox.mobi - disable clickunder
 trashbox.mobi#%#Object.defineProperty(window, 'd_offer', { get: function() { return {}; } });
 ! Skip timer in some players
+yallaneliera.com#%#Object.defineProperty(window, 'iframe_adv_enabled', { get: function() { return false; } });
 pandastream.cc#%#Object.defineProperty(window, 'iframe_adv_enabled', { get: function() { return false; } });
 cdnapponline.com#%#Object.defineProperty(window, 'iframe_adv_enabled', { get: function() { return false; } });
 cdn.ex-fs.net#%#Object.defineProperty(window, 'iframe_adv_enabled', { get: function() { return false; } });
@@ -4891,6 +4895,8 @@ hdkinoteatr.com#%#Object.defineProperty(window, 'iframe_adv_enabled', { get: fun
 !-----------------------
 !------- CSS -----------
 !-----------------------
+! focus.ua - исправление отступа от баннера
+focus.ua#$#body.branding-margin .top-menu.shadow { margin-top: -1px!important; }
 ! baibako.tv - удаление отступа сверху
 baibako.tv#$#.topserial { height: 50px!important; }
 ! https://forum.adguard.com/index.php?threads/11436/
@@ -6969,6 +6975,17 @@ rustorka.com##a[href^="/"]
 rustorka.com##div:not([id]):not([class]) > :not(div) > span > a
 rustorka.com##:not(div):not(a):not(form):not(body):not(tbody):not(table):not(b):not(tr):not(td):not(img):not(span):not(html):not(title):not(input):not(select):not(option):not(th):not(i):not(h3):not(br):not(li):not(ul):not(p):not(hr):not(iframe):not(thead):not(h4):not(em):not(h6):not(wbr):not(center):not(fieldset):not(legend):not(label) > a
 !
+sports.ru##a[href*="http://lawsonscup.com/?utm_source="] > img
+sports.ru##div[data-rotation-id="trends-bets"]
+||static.gazeta.ua/img/original/branding/
+evrikak.ru##div.ad.clearfix
+mk.ru##.rambler_news
+||efir24.tv/baners/commertial/
+||efir24.tv/baners/kino/
+focus.ua##.branding-top
+focus.ua##div[id^="LentaInform"]
+||apteka24.com.ua/*/tizer/
+3652.ru##.banner_box
 ||mega-pics-money.ru/MegapicsmMoneyclick.js
 rbc.ru##.g-banner-hide-by-exclusive
 rbc.ru##div[class^="js-checkad"]
@@ -12132,7 +12149,7 @@ xn--90aiguyb.com/files.php?
 ||static.rutracker.org/00
 ||static.rutracker.org/images/bn-stub-
 ||static.therussiantimes.com/clck/tiz*.
-||static.videonow.ru/contentroll/vn_browser_container.js$domain=medialeaks.ru|rusnovosti.ru|sports.ru
+||static.videonow.ru/contentroll/vn_browser_container.js$domain=medialeaks.ru|rusnovosti.ru|sports.ru|tvzvezda.ru
 ||static.videonow.ru/crossdomain.xml$domain=echo.msk.ru
 ||static.videonow.ru^$domain=russian.rt.com
 ||static.wi-fi.ru/brandings/rb/

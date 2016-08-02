@@ -1,10 +1,10 @@
 ! Title: Spyware filter
-! Version: 1.0.6.95
+! Version: 1.0.7
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
 ! NameEn: Spyware filter
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2016-07-30T15:00:54.907+03:00
+! TimeUpdated: 2016-08-02T13:08:02.553+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -34,6 +34,11 @@ echo.msk.ru$$script[tag-content="s=screen;"][max-length="200"]
 ##img[src*="counter.yadro.ru"]
 ##img[src^="http://c.bigmir.net/"]
 ~forum.ixbt.com,~mozhor.ru,~onliner.by,~wiktionary.org,~yandex.by,~yandex.com,~yandex.com.tr,~yandex.ru,~yandex.ua##img[width="88"][height="31"]
+||a3.ogt.jp^$third-party
+||cc.zeit.de^
+||a.hstrck.com^
+||cquotient.com^$third-party
+||actonsoftware.com^$third-party
 ||analytics.fairfax.com.au^$third-party
 ||lynn.zgsemi.cn^$third-party
 ||inaudium.com^$third-party
@@ -1836,6 +1841,8 @@ http://r.i.ua/s?
 ||zoomanalytics.co^$third-party
 ||zoosnet.net^$third-party
 ||zqtk.net^$third-party
+||analytics-static.ugc.bazaarvoice.com^
+||tracking.tchibo.de^
 .com/a.gif?
 .com/c.gif?
 .com/i.gif?
@@ -1959,6 +1966,13 @@ http://r.i.ua/s?
 /zz.gif?url=
 ://top.*/count/cnt.php?
 _tracking.php?b=
+||s3.amazonaws.com/ki.js/*.js$domain=holidaycheck.de
+||reisen.tchibo.de/webtrekk
+||scripts.zeit.de/static/js/webtrekk
+||spox.com/pub/js/track.js
+||karstadt.de/on/demandware.store/*/__Analytics-Tracking?
+||demandware.edgesuite.net/*/dwanalytics.js
+||amazon.com^*/impress.html
 ||dable.io/logs
 ||faz.net^*/smarttag.js
 ||pcwelt.de/js/amazon_tracking.js

@@ -1,14 +1,15 @@
 ! Title: Safari filter
-! Version: 1.0.0.97
+! Version: 1.0.1
 ! Name: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! NameEn: Safari filter
 ! DescriptionEn: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
-! TimeUpdated: 2016-08-01T16:08:05.532+03:00
+! TimeUpdated: 2016-08-02T00:02:17.890+03:00
 ||adrunnr.com^$popup
 ||large-format.net^$popup
 ||november-lax.com^$popup
 ||media.innity.net^$third-party
+@@||androidsage.com^$generichide
 @@||fullstuff.co^$generichide
 @@||macbed.com^$generichide
 @@||bnonews.com^$generichide
@@ -81,7 +82,8 @@ http://*.*.space/v/$third-party
 etfdailynews.com##div[style="width:300px;border:1px solid black"]
 @@||cinemablend.com/timthumb.php?src=/images/facebook/
 telegraaf.nl##.section-ad
-kino-serial.net##div[style^="background-image: url(data:image/jpeg;base64"]
+free-torrents.org,free-torrent.org##body > :not(div)
+kino-serial.net,on-movie.net##body > div[class^="skin-block_"][style^="background-image: url(data:image/jpeg;base64"]
 macbed.com##.adsbygoogle
 bnonews.com##.adsbygoogle
 bnonews.com##.advertisement

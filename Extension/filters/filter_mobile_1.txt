@@ -1,10 +1,10 @@
 ! Title: Russian filter
-! Version: 1.0.37.25
+! Version: 1.0.37.28
 ! Name: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-08-01T15:16:52.418+03:00
+! TimeUpdated: 2016-08-02T00:00:28.666+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -1943,12 +1943,14 @@ http://v.*.com/vv?$third-party
 http://v.*.com/x?$third-party
 ||statistic.imgpay.ru^
 ||stats.imgpay.ru^
+||action.evrikak.ru^
 lifenews78.ru,life.ru,звонки.онлайн,bitru.org,hdrezka.tv,stopgame.ru#%#(function(){var a={debug:{set:function(){return a}},on:function(b,c){b||setTimeout(function(){c()},1);return a},onDetected:function(b){return a.on(!0,b)},onNotDetected:function(b){return a.on(!1,b)},check:function(){}};Object.defineProperty(window,"fuckAdBlock",{get:function(){return a}})})();
 @@||ad.admitad.com/3rd-party/advert.js
 @@||ad.admitad.com/3rd-party/*/cookie/?f=CookieChecker.remoteTest
 @@||7-link.ru/advert.js
 @@||7-link.ru/popads.js
 @@||7-link.ru/popunder.js
+@@||yallaneliera.com/video/*$elemhide
 @@||imgpay.ru/advertisement.js.php
 @@||imgpay.ru/ads.png
 @@||payeerotron.ru/js/advert.js
@@ -2900,6 +2902,7 @@ auto.ru#%#AG_onLoad(function() { $('a[href*="an.yandex.ru/count/"]').closest('di
 pics5share.ru,pics6share.ru,reactor.cc,joyreactor.cc,pics2pay.ru,jpgstore.ru,pics-money.ru,picspay.ru,free-torrents.org,free-torrent.org#%#Object.defineProperty(window, 'visitweb_script', { get: function() { return document.createElement('div'); } });
 porncomics.ru#%#Object.defineProperty(window, 'VisitWeb', { get: function() { return document.createElement('div'); } });
 trashbox.mobi#%#Object.defineProperty(window, 'd_offer', { get: function() { return {}; } });
+yallaneliera.com#%#Object.defineProperty(window, 'iframe_adv_enabled', { get: function() { return false; } });
 pandastream.cc#%#Object.defineProperty(window, 'iframe_adv_enabled', { get: function() { return false; } });
 cdnapponline.com#%#Object.defineProperty(window, 'iframe_adv_enabled', { get: function() { return false; } });
 cdn.ex-fs.net#%#Object.defineProperty(window, 'iframe_adv_enabled', { get: function() { return false; } });
@@ -2921,6 +2924,7 @@ apollocdn.cc#%#Object.defineProperty(window, 'iframe_adv_enabled', { get: functi
 zlovemother.com#%#Object.defineProperty(window, 'iframe_adv_enabled', { get: function() { return false; } });
 cdn2hd.xyz#%#Object.defineProperty(window, 'iframe_adv_enabled', { get: function() { return false; } });
 hdkinoteatr.com#%#Object.defineProperty(window, 'iframe_adv_enabled', { get: function() { return false; } });
+focus.ua#$#body.branding-margin .top-menu.shadow { margin-top: -1px!important; }
 baibako.tv#$#.topserial { height: 50px!important; }
 pb.wtf,piratbit.org,piratbit.ru#$#div[class][style="width: 24.1%;"] { position: absolute!important; left: -2000px!important; }
 swefilm.tv#$#a[href^="data:text/html;base64"] { position: absolute!important; top: -2000px!important; }
@@ -3864,6 +3868,17 @@ yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua##div[class$="b-direct_message
 rustorka.com##a[href^="/"]
 rustorka.com##div:not([id]):not([class]) > :not(div) > span > a
 rustorka.com##:not(div):not(a):not(form):not(body):not(tbody):not(table):not(b):not(tr):not(td):not(img):not(span):not(html):not(title):not(input):not(select):not(option):not(th):not(i):not(h3):not(br):not(li):not(ul):not(p):not(hr):not(iframe):not(thead):not(h4):not(em):not(h6):not(wbr):not(center):not(fieldset):not(legend):not(label) > a
+sports.ru##a[href*="http://lawsonscup.com/?utm_source="] > img
+sports.ru##div[data-rotation-id="trends-bets"]
+||static.gazeta.ua/img/original/branding/
+evrikak.ru##div.ad.clearfix
+mk.ru##.rambler_news
+||efir24.tv/baners/commertial/
+||efir24.tv/baners/kino/
+focus.ua##.branding-top
+focus.ua##div[id^="LentaInform"]
+||apteka24.com.ua/*/tizer/
+3652.ru##.banner_box
 ||mega-pics-money.ru/MegapicsmMoneyclick.js
 rbc.ru##.g-banner-hide-by-exclusive
 rbc.ru##div[class^="js-checkad"]
@@ -7268,7 +7283,7 @@ wss://e.mail.ru/api/v1/messages/message?ajax_call=
 ||static.riotpixels.com/ogolop/
 ||static.rutracker.org/images/bn-stub-
 ||static.therussiantimes.com/clck/tiz*.
-||static.videonow.ru/contentroll/vn_browser_container.js$domain=medialeaks.ru|rusnovosti.ru|sports.ru
+||static.videonow.ru/contentroll/vn_browser_container.js$domain=medialeaks.ru|rusnovosti.ru|sports.ru|tvzvezda.ru
 ||static.videonow.ru/crossdomain.xml$domain=echo.msk.ru
 ||static.videonow.ru^$domain=russian.rt.com
 ||static.wi-fi.ru/brandings/rb/
