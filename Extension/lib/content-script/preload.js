@@ -17,7 +17,6 @@
 /* global contentPage */
 (function() {
     var AG_HIDDEN_ATTRIBUTE = "adg-hidden";
-    var AG_FRAMES_STYLE = "adguard-frames-style";
 
     var requestTypeMap = {
         "img": "IMAGE",
@@ -133,16 +132,59 @@
     };
 
     /**
-     * To prevent iframes flickering we add a temporarly display-none style for all iframes
+     * The main purpose of this function is to prevent blocked iframes "flickering".
+     * So, we do two things:
+     * 1. Add a temporary display:none style for all frames (which is removed on DOMContentLoaded event)
+     * 2. Use a MutationObserver to react on dynamically added iframe
      *
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/301
      */
     var addIframeHidingStyle = function () {
         var styleFrame = document.createElement("style");
-        styleFrame.id = AG_FRAMES_STYLE;
+        styleFrame.id = "adguard-frames-style";
         styleFrame.setAttribute("type", "text/css");
         styleFrame.textContent = 'iframe[src] { display: none !important; }';
         (document.head || document.documentElement).appendChild(styleFrame);
+
+        // TODO: Add comments
+        var handleIframeSrcChanged = function(mutations) {
+            for (var i = 0; i < mutations.length; i++) {
+                var iframe = mutations[i].target;
+                if (iframe) {
+                    checkShouldCollapseElement(iframe);
+                }
+            }
+        };
+        var iframeObserver = new MutationObserver(handleIframeSrcChanged);
+        var iframeObserverOptions = {
+            attributes: true,
+            attributeFilter: [ 'src' ]
+        };
+
+        /**
+         * TODO: Add comments
+         */
+        var handleDomChanged = function(mutations) {
+            var iframes = [];
+            for (var i = 0; i < mutations.length; i++) {
+                var mutation = mutations[i];
+                var addedNodes = mutation.addedNodes;
+                for (var j = 0; j < addedNodes.length; j++) {
+                    var node = addedNodes[j];
+                    if (node.localName === "iframe") {
+                        iframes.push(node);
+                    }
+                }
+            }
+
+            if (iframes.length > 0) {
+                for (var i = 0; i < iframes.length; i++) {
+                    var iframe = iframes[i];
+                    checkShouldCollapseElement(iframe);
+                    iframeObserver.observe(iframe, iframeObserverOptions);
+                }
+            }
+        };
 
         document.addEventListener('DOMContentLoaded', function() {
             var iframes = document.getElementsByTagName('iframe');
@@ -150,15 +192,19 @@
                 checkShouldCollapseElement(iframes[i]);
             }
 
-            removeIframeHidingStyle();
-        });
-    };
+            if (styleFrame.parentNode) {
+                styleFrame.parentNode.removeChild(styleFrame);
+            }
 
-    var removeIframeHidingStyle = function () {
-        var framesStyle = document.getElementById(AG_FRAMES_STYLE);
-        if (framesStyle) {
-            framesStyle.parentNode.removeChild(framesStyle);
-        }
+            if (document.body) {
+                // Handle dynamically added frames
+                var domObserver = new MutationObserver(handleDomChanged);
+                domObserver.observe(document.body, {
+                    childList: true,
+                    subtree: true
+                });
+            }
+        });
     };
 
     /**
@@ -183,11 +229,6 @@
      * @param response Response from the background page
      */
     var processCssAndScriptsResponse = function(response) {
-        if (!response || !response.selectors || response.selectors.length == 0) {
-            // Remove iframe style as page seems to be in the exceptions.
-            removeIframeHidingStyle();
-        }
-
         if (!response || response.requestFilterReady === false) {
             /**
              * This flag (requestFilterReady) means that we should wait for a while, because the 
@@ -356,6 +397,7 @@
             tagName: tagName
         };
 
+        // Collapse element temporary
         collapseElement(element, tagName);
 
         // Send a message to the background page to check if the element really should be collapsed
