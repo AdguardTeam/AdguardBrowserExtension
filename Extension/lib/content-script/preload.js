@@ -146,7 +146,11 @@
         styleFrame.textContent = 'iframe[src] { display: none !important; }';
         (document.head || document.documentElement).appendChild(styleFrame);
 
-        // TODO: Add comments
+        /**
+         * For iframes with changed source we check if it should be collapsed
+         *
+         * @param mutations
+         */
         var handleIframeSrcChanged = function(mutations) {
             for (var i = 0; i < mutations.length; i++) {
                 var iframe = mutations[i].target;
@@ -155,6 +159,7 @@
                 }
             }
         };
+
         var iframeObserver = new MutationObserver(handleIframeSrcChanged);
         var iframeObserverOptions = {
             attributes: true,
@@ -162,7 +167,9 @@
         };
 
         /**
-         * TODO: Add comments
+         * Dynamically added frames handler
+         *
+         * @param mutations
          */
         var handleDomChanged = function(mutations) {
             var iframes = [];
