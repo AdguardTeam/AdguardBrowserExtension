@@ -26,7 +26,13 @@ const {Cc, Ci, Cr, Cu} = chrome;
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 
-var console = Cu.import('resource://gre/modules/Console.jsm', {}).console;
+var console = null;
+// PaleMoon doesn't support new devtools path
+try {
+    console = Cu.import('resource://gre/modules/Console.jsm', {}).console;
+} catch (ex) {
+    console = Cu.import('resource://gre/modules/devtools/Console.jsm', {}).console;
+}
 
 var sdkModules = {
     'chrome': chrome,
