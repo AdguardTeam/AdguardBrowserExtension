@@ -364,7 +364,7 @@
 
         // Removing added iframes-hiding style
         // We do it here, cause otherwise it's not working properly
-        removeIframeHidingStyle();
+        setTimeout(removeIframeHidingStyle, 500);
 
         if (!response) {
             return;
