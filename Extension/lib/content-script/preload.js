@@ -143,6 +143,15 @@
         styleFrame.setAttribute("type", "text/css");
         styleFrame.textContent = 'iframe[src] { display: none !important; }';
         (document.head || document.documentElement).appendChild(styleFrame);
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var iframes = document.getElementsByTagName('iframe');
+            for (var i = 0; i < iframes.length; i++) {
+                checkShouldCollapseElement(iframes[i]);
+            }
+
+            removeIframeHidingStyle();
+        });
     };
 
     var removeIframeHidingStyle = function () {
@@ -310,18 +319,28 @@
      * @param event Load or error event
      */
     var checkShouldCollapse = function(event) {
-
         var element = event.target;
         var eventType = event.type;
         var tagName = element.tagName.toLowerCase();
 
-        var requestType = requestTypeMap[tagName];
-        if (!requestType) {
+        var expectedEventType = (tagName == "iframe" || tagName == "frame") ? "load" : "error";
+        if (eventType != expectedEventType) {
             return;
         }
 
-        var expectedEventType = (tagName == "iframe" || tagName == "frame") ? "load" : "error";
-        if (eventType != expectedEventType) {
+        checkShouldCollapseElement(element);
+    };
+
+    /**
+     * Checks if element is blocked by AG and should be hidden
+     *
+     * @param element
+     */
+    var checkShouldCollapseElement = function (element) {
+        var tagName = element.tagName.toLowerCase();
+
+        var requestType = requestTypeMap[tagName];
+        if (!requestType) {
             return;
         }
 
@@ -337,12 +356,8 @@
             tagName: tagName
         };
 
-        if (eventType == "error") {
-            // Hide elements with "error" type right now
-            // We will roll it back if element should not be collapsed
-            collapseElement(element, tagName);
-        }
-        
+        collapseElement(element, tagName);
+
         // Send a message to the background page to check if the element really should be collapsed
         var message = {
             type: 'processShouldCollapse',
@@ -361,10 +376,6 @@
      * @param response Response got from the background page
      */
     var onProcessShouldCollapseResponse = function (response) {
-
-        // Removing added iframes-hiding style
-        // We do it here, cause otherwise it's not working properly
-        setTimeout(removeIframeHidingStyle, 500);
 
         if (!response) {
             return;
