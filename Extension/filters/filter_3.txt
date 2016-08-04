@@ -1,10 +1,10 @@
 ! Title: Spyware filter
-! Version: 1.0.6.99
+! Version: 1.0.7.7
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
 ! NameEn: Spyware filter
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2016-08-02T00:00:55.496+03:00
+! TimeUpdated: 2016-08-03T23:00:40.778+03:00
 ! Title: Adguard Spyware Filter
 !
 ! The most comprehensive list of various online counters and web analytics tools.
@@ -16,11 +16,18 @@
 !-------------------------------------------------------------------------------!
 !------------------ General JS API ---------------------------------------------!
 !-------------------------------------------------------------------------------!
-! JS API START
+! JS API START (Old version, until FF and Opera add-ons are updated, remove after v2.4 release)
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#window.AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
+#%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+! JS API FINISH
+! JS API START (New version)
+#%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
+#%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
+#%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
+#%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
 ! JS API FINISH
 !-------------------------------------------------------------------------------!
@@ -74,6 +81,12 @@ popmech.ru#%#AG_onLoad(function() { window.POPMECH.increaseCounters = function()
 !-------------- Tracking servers list  -----------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+||in.treasuredata.com^$third-party
+||aamsitecertifier.com^$third-party
+||tracker.neon-images.com^
+||web-analytics.engagio.com^$third-party
+||oktopost.com^$third-party
+||a3.ogt.jp^$third-party
 ||cc.zeit.de^
 ||a.hstrck.com^
 ||cquotient.com^$third-party
@@ -2839,6 +2852,13 @@ http://r.i.ua/s?
 !
 ! Section contains the list of tracking servers, which are hosted on useful sites as subdomains
 !
+||smetrics.uhc.com^
+||wtsdc.uhc.com^$image
+||analytics.go.com^
+||metrics.toysrus.com^
+||analytics.tout.com^
+||beacon.livefyre.com^
+||geobeacon.ign.com^
 ||analytics-static.ugc.bazaarvoice.com^
 ||tracking.tchibo.de^
 !-------------------------------------------------------------------------------!
@@ -2972,6 +2992,18 @@ _tracking.php?b=
 !-------------- Specific web sites ---------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+||go.com/b/ss/
+||forecast.io/js/app/analytics.js
+||tout.com/tracker.js
+||synapsys.us^*/tracker.js
+||citizensvoice.com/logger/p.gif
+||livefyre.com/libs/tracker/
+||livefyre.com/tracking/
+||livefyre.com^*/tracker.js
+||livefyre.com^*/tracking/
+||img.litix.io/a.gif
+||tagesschau.de/resources/framework/js/tracking.js
+/smarttag.js$domain=zdf.de|zdfneo.de|zdfkultur.de|zdfinfo.de|heute.de|zdfsport.de|heute.de|faz.net
 ||s3.amazonaws.com/ki.js/*.js$domain=holidaycheck.de
 ||reisen.tchibo.de/webtrekk
 ||scripts.zeit.de/static/js/webtrekk
@@ -2980,7 +3012,6 @@ _tracking.php?b=
 ||demandware.edgesuite.net/*/dwanalytics.js
 ||amazon.com^*/impress.html
 ||dable.io/logs
-||faz.net^*/smarttag.js
 ||pcwelt.de/js/amazon_tracking.js
 .arcor.de/pixel/
 .arnostat.nl/click.
@@ -3336,6 +3367,11 @@ washingtonpost.com##.social-tools-wrapper-bottom
 !-------------- Whitelist ------------------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+! https://forum.adguard.com/index.php?threads/12362/
+@@||dpm.demdex.net/id/$script$domain=member.uhcmedicaresolutions.com
+@@||cdn.tt.omtrdc.net/cdn/target.js$domain=member.uhcmedicaresolutions.com
+! https://forum.adguard.com/index.php?threads/12378/
+@@||cdn.mxpnl.com/libs/mixpanel*.min.js$domain=grammarly.com
 ! https://forum.adguard.com/index.php?threads/12119/
 @@||googletagmanager.com/gtm.js$domain=society6.com
 @@||google-analytics.com/analytics.js$domain=society6.com

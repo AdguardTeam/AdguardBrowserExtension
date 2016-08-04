@@ -1,15 +1,24 @@
 ! Title: Russian filter
-! Version: 1.0.37.28
+! Version: 1.0.37.38
 ! Name: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-08-02T00:00:28.666+03:00
+! TimeUpdated: 2016-08-03T23:00:21.974+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#window.AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+#%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
+#%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
+#%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
+#%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
+#%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+||nhqqv.space^$third-party
+||actionads.ru^$third-party
+||useorthe.com^$third-party
+||videosmor.com^$third-party
 ||ofenop.ru^
 ||vqfqo.us^
 ||abrolog.ru^
@@ -1950,6 +1959,8 @@ lifenews78.ru,life.ru,звонки.онлайн,bitru.org,hdrezka.tv,stopgame.ru
 @@||7-link.ru/advert.js
 @@||7-link.ru/popads.js
 @@||7-link.ru/popunder.js
+@@||losslessbest.com^$generichide
+all-episodes.net#@##ad3
 @@||yallaneliera.com/video/*$elemhide
 @@||imgpay.ru/advertisement.js.php
 @@||imgpay.ru/ads.png
@@ -2802,29 +2813,29 @@ trackitonline.ru#$##google250 { height: 1px!important; padding: 1px; }
 ##noindex > nofollow > table[onmouseout^="this.bgColor"]
 ##object#banner-1
 ##td[id^="advtd"]
-yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by#%#AG_onLoad(function() { function __adgObserver() { var observer = new MutationObserver(function(mutations) { mutations.forEach(function(mutation) { __adgRemoveDirect() }) }); observer.observe(document.body, { childList: true, characterData: true, subtree: true }) } var __adgRemoveDirect = function() { try { __adgRemoveDirectNews(); __adgRemoveDirectMail(); __adgRemoveDirectPogoda(); if (typeof __adgEnabled != "undefined" && !__adgEnabled) return; else __adgRemoveContext() } catch (ex) {} }; var __adgRemoveContext = function() { AG_each(".serp-list > .serp-item .label", function(node) { if (node.innerText == "\u0420\u0435\u043a\u043b\u0430\u043c\u0430") AG_removeParent(node, function(parent) { return parent.className && (parent.className.indexOf("serp-item") >= 0 && parent.getAttribute("data-cid") || parent.className && parent.className.indexOf("serp-adv__block") >= 0) }) }) }; var __adgRemoveDirectMail = function() { AG_each(".js-folders__nesting", function(node) { AG_each('a[class="b-folders__folder__link"][href*="direct.yandex.ru"]', function(node) { AG_removeParent(node, function(parent) { return parent.className && parent.className.indexOf("b-folders__nesting") >= 0 }) }) }) }; var __adgRemoveDirectNews = function() { AG_each('a[href^="http://news-clck.yandex."]', function(node) { AG_removeParent(node, function(parent) { return parent.className && parent.className.indexOf("story") >= 0 }) }) }; var __adgRemoveDirectPogoda = function() { window.AG_removeElementBySelector('div[class*="_pos_"][style*="display:block!important;visibility:visible!important;"]'); }; __adgRemoveDirect(); __adgObserver(); });
+yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by#%#AG_onLoad(function() { function __adgObserver() { var observer = new MutationObserver(function(mutations) { mutations.forEach(function(mutation) { __adgRemoveDirect() }) }); observer.observe(document.body, { childList: true, characterData: true, subtree: true }) } var __adgRemoveDirect = function() { try { __adgRemoveDirectNews(); __adgRemoveDirectMail(); __adgRemoveDirectPogoda(); if (typeof __adgEnabled != "undefined" && !__adgEnabled) return; else __adgRemoveContext() } catch (ex) {} }; var __adgRemoveContext = function() { AG_each(".serp-list > .serp-item .label", function(node) { if (node.innerText == "\u0420\u0435\u043a\u043b\u0430\u043c\u0430") AG_removeParent(node, function(parent) { return parent.className && (parent.className.indexOf("serp-item") >= 0 && parent.getAttribute("data-cid") || parent.className && parent.className.indexOf("serp-adv__block") >= 0) }) }) }; var __adgRemoveDirectMail = function() { AG_each(".js-folders__nesting", function(node) { AG_each('a[class="b-folders__folder__link"][href*="direct.yandex.ru"]', function(node) { AG_removeParent(node, function(parent) { return parent.className && parent.className.indexOf("b-folders__nesting") >= 0 }) }) }) }; var __adgRemoveDirectNews = function() { AG_each('a[href^="http://news-clck.yandex."]', function(node) { AG_removeParent(node, function(parent) { return parent.className && parent.className.indexOf("story") >= 0 }) }) }; var __adgRemoveDirectPogoda = function() { AG_removeElementBySelector('div[class*="_pos_"][style*="display:block!important;visibility:visible!important;"]'); }; __adgRemoveDirect(); __adgObserver(); });
 ~ntv.ru,~rg.ru#%#var AdFox_getCodeScript = function() {};
-zr.ru,aftershock.su,fileplaneta.com,aif.ru,meteocenter.net,newsland.com,newsland.ru,glav.su,eg.ru,kg-portal.ru,sovsport.md,newsland.com,newsland.ru,glav.su,eg.ru,kp.ru,kg-portal.ru,select.by,sovsport.md,sovsport.ru,playground.ru,kinonews.ru,gismeteo.ua,gismeteo.by,soccer.ru,mobile-review.com,ria.ru,thg.ru,mk.ru,oszone.net,dirty.ru,hotline.ua,topnews.ru,povarenok.ru,readmanga.me,sobesednik.ru#%#AG_onLoad(function() { window.AG_removeElementBySelector('iframe[id^="ar_"]'); });
-irr.ru#%#AG_onLoad(function() { window.AG_removeElementBySelector('iframe[id^="bw_"]'); });
-onedivision.ru,nakanune.tv,rusvesna.su,deita.ru,biysk24.ru,baskino.com,gai.ru,topnews.ru,russianfood.com,altapress.ru#%#AG_onLoad(function() { window.AG_removeElementBySelector('iframe[id^="k_c"]'); });
-cnews.ru,odnako.org,kasparov.ru,wonderzine.com,glav.su,rbc.ru,soccer.ru,aftershock.su,kp.ru,rbcdaily.ru,sobesednik.ru#%#AG_onLoad(function() { window.AG_removeElementBySelector('iframe[id^="ml_"]'); });
-sports.ru,vesti.ru,colta.ru,kp.ru#%#AG_onLoad(function() { window.AG_removeElementBySelector('iframe[id^="AdFox_iframe_"]'); });
-kinoprofi.net,rutracker.org,new-rutor.org,myfolder.ru,rusfolder.com,myzuka.org#%#AG_onLoad(function() { window.AG_removeElementBySelector('iframe[id^="_ads_"]'); });
-rg.ru,meduza.io#%#AG_onLoad(function() { setTimeout(function() { window.AG_removeElementBySelector('iframe[id^="AdFox_iframe_"]'); },1000); });
-tbs-play.com#%#AG_onLoad(function() { window.AG_removeElementBySelector('ins[id^="aswift_"]'); });
-rustorka.com#%#AG_onLoad(function() { window.AG_removeElementBySelector('iframe[src*="bubblesmedia.ru"]'); });
-kttc.ru,semestr.ru#%#AG_onLoad(function() { setTimeout(function() { window.AG_removeElementBySelector('ins[id^="aswift_"]'); }, 6000); });
-#%#AG_onLoad(function() { window.AG_each('iframe[id^="AdFox_iframe_"]', function(el) { if (el && el.parentNode) { el.parentNode.removeChild(el); } }); });
+zr.ru,aftershock.su,fileplaneta.com,aif.ru,meteocenter.net,newsland.com,newsland.ru,glav.su,eg.ru,kg-portal.ru,sovsport.md,newsland.com,newsland.ru,glav.su,eg.ru,kp.ru,kg-portal.ru,select.by,sovsport.md,sovsport.ru,playground.ru,kinonews.ru,gismeteo.ua,gismeteo.by,soccer.ru,mobile-review.com,ria.ru,thg.ru,mk.ru,oszone.net,dirty.ru,hotline.ua,topnews.ru,povarenok.ru,readmanga.me,sobesednik.ru#%#AG_onLoad(function() { AG_removeElementBySelector('iframe[id^="ar_"]'); });
+irr.ru#%#AG_onLoad(function() { AG_removeElementBySelector('iframe[id^="bw_"]'); });
+onedivision.ru,nakanune.tv,rusvesna.su,deita.ru,biysk24.ru,baskino.com,gai.ru,topnews.ru,russianfood.com,altapress.ru#%#AG_onLoad(function() { AG_removeElementBySelector('iframe[id^="k_c"]'); });
+cnews.ru,odnako.org,kasparov.ru,wonderzine.com,glav.su,rbc.ru,soccer.ru,aftershock.su,kp.ru,rbcdaily.ru,sobesednik.ru#%#AG_onLoad(function() { AG_removeElementBySelector('iframe[id^="ml_"]'); });
+sports.ru,vesti.ru,colta.ru,kp.ru#%#AG_onLoad(function() { AG_removeElementBySelector('iframe[id^="AdFox_iframe_"]'); });
+kinoprofi.net,rutracker.org,new-rutor.org,myfolder.ru,rusfolder.com,myzuka.org#%#AG_onLoad(function() { AG_removeElementBySelector('iframe[id^="_ads_"]'); });
+rg.ru,meduza.io#%#AG_onLoad(function() { setTimeout(function() { AG_removeElementBySelector('iframe[id^="AdFox_iframe_"]'); },1000); });
+tbs-play.com#%#AG_onLoad(function() { AG_removeElementBySelector('ins[id^="aswift_"]'); });
+rustorka.com#%#AG_onLoad(function() { AG_removeElementBySelector('iframe[src*="bubblesmedia.ru"]'); });
+kttc.ru,semestr.ru#%#AG_onLoad(function() { setTimeout(function() { AG_removeElementBySelector('ins[id^="aswift_"]'); }, 6000); });
+#%#AG_onLoad(function() { AG_each('iframe[id^="AdFox_iframe_"]', function(el) { if (el && el.parentNode) { el.parentNode.removeChild(el); } }); });
 #%#try { Object.defineProperty(window, 'noAdsAtAll', { get: function() { return true; } }); } catch (ex) {}
 s4galaxy.ru,3dnews.ru,lenovo-smart.ru#%#Object.defineProperty(window, 'SocialMartDocumentHelper', { get: function() { return function SocialMartDocumentHelper(){} } });
 nnm-club.me,nnm-club.ws,nnmclub.to,onlainfilm.ucoz.ua,rutor.is,baskino.club,rutor.info,nnm.me,korzik.net,seasonvar.ru,rsload.net,nnm-club.me,nnmclub.to,rustorka.com,auto.mail.ru,horo.mail.ru,realty.mail.ru,health.mail.ru,afisha.mail.ru,cloud.mail.ru,otvet.mail.ru,pogoda.mail.ru,sport.mail.ru,tv.mail.ru,torg.mail.ru,cars.mail.ru,hi-tech.mail.ru#%#window.WebSocket = undefined;
 rustorka.com#%#AG_onLoad(function() { window.utg_click = 1; });
 tapochek.net#%#document.cookie = "super_popunder = 1";
 e.mail.ru#%#(function() { var d = document.documentElement; var appendChild = d.appendChild; d.appendChild = function(n) { appendChild.apply(d, arguments); if (n.contentWindow) { n.contentWindow.WebSocket = undefined; } } })();
-fs.to#%#AG_onLoad(function() { setTimeout(function() { window.AG_removeElementBySelector('div[id][style="display: table-cell;"] > div[class$="-universalsmall"]'); $(document).ajaxComplete(function(){ window.AG_removeElementBySelector('div[id][style="display: table-cell;"] > div[class$="-universalsmall"]'); }) }, 2500); });
-fs.to#%#AG_onLoad(function() { window.AG_removeElementBySelector('div.l-tab-item-content.m-themed > div[class^="b-"]:not([class="b-tab-item__description"]):not([class="b-tab-item__edit-material"]):not([class="b-scroll-to"]):not([class="b-actions-panel b-clear"]):not([class="b-clear"])'); });
-fs.to#%#AG_onLoad(function(){$(document).ajaxComplete(function(){ window.AG_removeElementBySelector('div[class="b-iframe-player-wrap"] ~ div'); })})
-fs.to#%#AG_onLoad(function() { window.AG_removeElementBySelector('div[id][class][style="width: 100%; height: 100%;"]'); });
+fs.to#%#AG_onLoad(function() { setTimeout(function() { AG_removeElementBySelector('div[id][style="display: table-cell;"] > div[class$="-universalsmall"]'); $(document).ajaxComplete(function(){ AG_removeElementBySelector('div[id][style="display: table-cell;"] > div[class$="-universalsmall"]'); }) }, 2500); });
+fs.to#%#AG_onLoad(function() { AG_removeElementBySelector('div.l-tab-item-content.m-themed > div[class^="b-"]:not([class="b-tab-item__description"]):not([class="b-tab-item__edit-material"]):not([class="b-scroll-to"]):not([class="b-actions-panel b-clear"]):not([class="b-clear"])'); });
+fs.to#%#AG_onLoad(function(){$(document).ajaxComplete(function(){ AG_removeElementBySelector('div[class="b-iframe-player-wrap"] ~ div'); })})
+fs.to#%#AG_onLoad(function() { AG_removeElementBySelector('div[id][class][style="width: 100%; height: 100%;"]'); });
 imgchilibum.ru#%#window.open = function() {};
 zhizninauka.info#%#Object.defineProperty(window, 'clickunderRun', { get: function() { return {}; } });
 pikabu.ru#%#AG_onLoad(function(){$(document).ajaxComplete(function(){$('.story__sponsor,.story__gag-nice').closest('.story').remove()})})
@@ -2878,7 +2889,7 @@ metrprice.ru#%#AG_onLoad(function() { $('div.special-offers').closest('.h-layout
 strana.in.ua#%#AG_onLoad(function() { window.GetCookie = function() { return 'haha'; }; });
 root-nation.com#%#AG_onLoad(function() { document.body.className = document.body.className.replace("td-boxed-layout","."); });
 luxtorrents.com#%#window.open = function() {};
-msinsider.ru#%#AG_onLoad(function() { window.AG_removeElementBySelector('span[class="intexta"]'); });
+msinsider.ru#%#AG_onLoad(function() { AG_removeElementBySelector('span[class="intexta"]'); });
 fs.to,brb.to,cxz.to#%#Object.defineProperty(window, 'FS_ADMIXER_PARAMS', { get: function() { return {}; } });
 fs.to,brb.to,cxz.to#%#window._mgq = { push: function() { throw new 'net::ERR_BLOCKED_BY_CLIENT'; } };
 fs.to,brb.to,cxz.to#%#Object.defineProperty(Object.prototype, 'prerollsEnabled', { get: function() { return false; } });
@@ -2924,6 +2935,7 @@ apollocdn.cc#%#Object.defineProperty(window, 'iframe_adv_enabled', { get: functi
 zlovemother.com#%#Object.defineProperty(window, 'iframe_adv_enabled', { get: function() { return false; } });
 cdn2hd.xyz#%#Object.defineProperty(window, 'iframe_adv_enabled', { get: function() { return false; } });
 hdkinoteatr.com#%#Object.defineProperty(window, 'iframe_adv_enabled', { get: function() { return false; } });
+all-episodes.net#$#div#ad3 { height: 201px!important; position: absolute!important; left: -2000px!important; }
 focus.ua#$#body.branding-margin .top-menu.shadow { margin-top: -1px!important; }
 baibako.tv#$#.topserial { height: 50px!important; }
 pb.wtf,piratbit.org,piratbit.ru#$#div[class][style="width: 24.1%;"] { position: absolute!important; left: -2000px!important; }
@@ -3862,12 +3874,25 @@ yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua##div[class$="b-direct_message
 ||admulti.com/javascripts/rot.js
 ||gag.admulti.com/rotator
 ||info.zonasearch.com/ad/admulti*.json
+rustorka.com##div:not([class]):not([id]):not([style]) a[href^="./"]:not([class="small"])
+rustorka.com##span:not([class]):not([id]):not([style]) a[href^="./"]:not([class="small"])
 /http://rustorka.com/forum/[a-z]+.js/$domain=rustorka.com
 /http:\/\/rustorka.com\/[a-z0-9]+\.(jpg|gif)/$image,domain=rustorka.com
 /http:\/\/rustorka.com\/[a-z]+\.js/$domain=rustorka.com
 rustorka.com##a[href^="/"]
 rustorka.com##div:not([id]):not([class]) > :not(div) > span > a
-rustorka.com##:not(div):not(a):not(form):not(body):not(tbody):not(table):not(b):not(tr):not(td):not(img):not(span):not(html):not(title):not(input):not(select):not(option):not(th):not(i):not(h3):not(br):not(li):not(ul):not(p):not(hr):not(iframe):not(thead):not(h4):not(em):not(h6):not(wbr):not(center):not(fieldset):not(legend):not(label) > a
+chameleon.fm##.pageskin_container
+maintracker.org###adriver-240x120
+maintracker.org###bn-bot-wrap
+maintracker.org##a[class^="brand-link"]
+maintracker.org##div[class^="bn-idx"]
+maintracker.org##div[id^="topic-bn-"]
+spbdnevnik.ru##.partners-teaser
+spbdnevnik.ru##div[class^="adv-bnr"]
+||star-naked.com/gor-banner.js
+||all-episodes.net/silverlight/foot_script.js
+all-episodes.net##body > noindex a[rel="nofollow"]
+||all-episodes.net/bdinrending/
 sports.ru##a[href*="http://lawsonscup.com/?utm_source="] > img
 sports.ru##div[data-rotation-id="trends-bets"]
 ||static.gazeta.ua/img/original/branding/
@@ -5823,7 +5848,7 @@ mobiltelefon.ru##div[id^="lbanners"]
 meta.ua##div[id^="meta_teaser"]
 meteoprog.ua##div[id^="mp_banner"]
 hdclub.org,tracker.hdclub.com.ua##div[id^="myDiv"]
-newc.info,all-ebooks.com,bigtorrent.org,bigtorrents.ru,dengi.ua,fost.ws,freshkino.com,korrespondent.net,mosmonitor.ru,mport.ua,nakanune.ru,petrogazeta.ru,therussiantimes.com,voffka.com##div[id^="n4p_"]
+spbdnevnik.ru,newc.info,all-ebooks.com,bigtorrent.org,bigtorrents.ru,dengi.ua,fost.ws,freshkino.com,korrespondent.net,mosmonitor.ru,mport.ua,nakanune.ru,petrogazeta.ru,therussiantimes.com,voffka.com##div[id^="n4p_"]
 ntv.ru##div[id^="nads_banner_"]
 ura.ru##div[id^="partner_news"]
 myshared.ru##div[id^="place_"][class^="undefined"][style]
@@ -7552,6 +7577,8 @@ http://*.space^$script,domain=free-torrent.org|free-torrents.org|jpgstore.ru|pic
 /w.php?id=$third-party,domain=kinogo2.net
 ://n.*.ru/a*?Id=$script,domain=goroskop.ru
 @@||vetton.ru^$jsinject,elemhide
+@@||peers.tv/jwplayer/ariver/plugin.swf$domain=peers.tv
+katana96.ru#@#.header-banner
 @@||ads.adfox.ru/*/prepareCode?$domain=specials.the-village.ru
 kma.biz#@#.adv
 @@||ms-devices.com/wp-content/plugins/bwp-minify/min/?f=
@@ -7735,7 +7762,6 @@ forum.na-svyazi.ru#@##HeroAd
 @@||api.adverigo.com/*.json
 @@||api.adverigo.com/banner.gif
 @@||s.adverigo.com/production/main.js
-@@||mvideo.ru^$document
 lenta.ru#@#iframe[width="600"][height="90"]
 @@||cdn.pladform.ru/img/$domain=radikal.ru
 @@||out.pladform.ru/player$domain=radikal.ru

@@ -1,10 +1,10 @@
 ! Title: Social media filter
-! Version: 1.0.11.25
+! Version: 1.0.11.31
 ! Name: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2016-08-01T14:09:14.104+03:00
+! TimeUpdated: 2016-08-03T22:00:48.248+03:00
 ! Title: Adguard Social Media Filter
 !
 ! If you do not like numerous «Like» and «Tweet» buttons on all the popular websites on the Internet,
@@ -16,15 +16,22 @@
 !-------------------------------------------------------------------------------!
 !------------------ General JS API ---------------------------------------------!
 !-------------------------------------------------------------------------------!
-! JS API START
+! JS API START (Old version, until FF and Opera add-ons are updated, remove after v2.4 release)
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#window.AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
 ! JS API FINISH
+! JS API START (New version)
+#%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
+#%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
+#%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
+#%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
+#%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+! JS API FINISH
 !-------------------------------------------------------------------------------!
-!-------------- Common social trackers  ----------------------------------------!
+!-------------- Common social trackers -----------------------------------------!
 !-------------------------------------------------------------------------------!
 !
 ! This section contains rules for common trackers/buttons
@@ -156,7 +163,7 @@
 ||yastatic.net/*/share.js$third-party,domain=~alexey-osipov.ru|~avtodispetcher.ru|~debilizator.tv|~yandex.by|~yandex.kz|~yandex.ru|~yandex.ua
 ||youtube.com/subscribe_widget$third-party
 !-------------------------------------------------------------------------------!
-!-------------- Unsorted urls  -------------------------------------------------!
+!-------------- Unsorted urls --------------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
 ! Contains usorted urls
@@ -274,7 +281,7 @@ softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 !-------------------
 !-------------------------------------------------------------------------------!
 !-------------------------------------------------------------------------------!
-!-------------- Specific web sites  --------------------------------------------!
+!-------------- Specific web sites ---------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
 ! Contains rules for specific web sites
@@ -282,7 +289,16 @@ softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2146
 ||mimimi.tv/?*=*&_=
 !
-cluber.com.ua##.popup-bg
+filmizlef.com,fullhd720pizle.com,sinemadafilmizlee.com###share-cerceve
+dailysabah.com##.shB > a[onclick*="Share"]
+dailysabah.com##.share
+slideshare.net##.social-share-container
+grammarly.com##.share-more-wrap
+babble.com##.bb-sb-items
+winfuture.de##.socialshare
+||cdn.hackintosh.zone^*/pandalocker.
+bbc.com##.twite__share-button
+firstpost.com##.social_sharing_panel
 technet.microsoft.com##.STMain
 sabah.com.tr##.share
 sabah.com.tr##.shareList
@@ -1157,11 +1173,12 @@ komarovskiy.net##ul[class="social-bookmarks"]
 ||wow.ya.ru/ajax/share-counter.xml$third-party
 ||yandex.st/share/static/b-share-icon.png
 !-------------------------------------------------------------------------------!
-!-------------- General hiding rules--------------------------------------------!
+!-------------- General hiding rules -------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
 ! Section contains list general hiding rules
 !
+##.share-facebook
 ###ShareModule
 ###SociaLKare
 ###SocialButtons
@@ -1469,7 +1486,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.share-icons-wrap
 ~imgur.com,~thegameawards.com##.share-links
 ~disqus.com##.share-menu
-~youtube.com##.share-panel
+~youtube.com,~grammarly.com##.share-panel
 ##.share-pictures-overlay
 ##.share-proposal
 ##.share-regular
@@ -1788,11 +1805,23 @@ bitiworld.com##a[title="share on twitter"]
 ~twitter.com##input.tweet
 ~vk.com,~vkontakte.ru##input.vk
 !-------------------------------------------------------------------------------!
+!-------------- Rules for removing full screen popups --------------------------!
+!-------------------------------------------------------------------------------!
+!#######################################################
+!######### Rules for blocking social popups ############
+!#######################################################
+teleprogramma.pro##.facebook-bn_site-overlay
+||ufatime.ru/st/libs/magnific/jquery.magnific-popup.min.js
+tsargrad.tv##.popUp-wrapper
+cluber.com.ua##.popup-bg
+!-------------------------------------------------------------------------------!
 !-------------- Whitelist  -----------------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
 ! Section fixing issues caused by social filter
 !
+! https://forum.adguard.com/index.php?threads/12378/
+@@||api.facebook.com/method/links.getStats$domain=grammarly.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2701
 belgafiles.com,dakine.com,linkedin.com,way2sms.com#@#.share-box
 ! https://forum.adguard.com/index.php?threads/12114/
