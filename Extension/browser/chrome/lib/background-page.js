@@ -582,30 +582,22 @@ var browser = browser || chrome;
 
             var tabId = tab.id;
 
-            var onIconReady = function () {
-                browser.tabs.get(tabId, function () {
-                    if (checkLastError()) {
-                        return;
-                    }
-                    browser.browserAction.setBadgeText({tabId: tabId, text: badge});
-                    if (checkLastError()) {
-                        return;
-                    }
-                    if (badge) {
-                        browser.browserAction.setBadgeBackgroundColor({tabId: tabId, color: badgeColor});
-                        checkLastError();
-                    }
-                    //title setup via manifest.json file
-                    //chrome.browserAction.setTitle({tabId: tabId, title: title});
-                });
-            };
-
             /**
              * Workaround for MS Edge.
              * For some reason Edge changes the inner state of the "icon" object and adds a tabId property inside.
              */
             delete icon.tabId;
-            browser.browserAction.setIcon({tabId: tabId, path: icon}, onIconReady);
+
+            browser.browserAction.setIcon({tabId: tabId, path: icon});
+
+            if (checkLastError()) {
+                return;
+            }
+
+            browser.browserAction.setBadgeText({tabId: tabId, text: badge});
+            if (badge) {
+                browser.browserAction.setBadgeBackgroundColor({tabId: tabId, color: badgeColor});
+            }
         }
     };
 
