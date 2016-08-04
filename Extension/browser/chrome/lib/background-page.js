@@ -575,12 +575,24 @@ var browser = browser || chrome;
     //noinspection JSUnusedLocalSymbols
     ext.browserAction = {
         setBrowserAction: function (tab, icon, badge, badgeColor, title) {
-
-            if (!tab.url) {
-                return;
-            }
-
             var tabId = tab.id;
+
+            var onIconReady = function () {
+                if (browser.runtime.lastError) {
+                    return;
+                }
+                browser.browserAction.setBadgeText({tabId: tabId, text: badge});
+
+                if (browser.runtime.lastError) {
+                    return;
+                }
+                if (badge) {
+                    browser.browserAction.setBadgeBackgroundColor({tabId: tabId, color: badgeColor});
+                }
+
+                //title setup via manifest.json file
+                //chrome.browserAction.setTitle({tabId: tabId, title: title});
+            };
 
             /**
              * Workaround for MS Edge.
@@ -588,16 +600,11 @@ var browser = browser || chrome;
              */
             delete icon.tabId;
 
-            browser.browserAction.setIcon({tabId: tabId, path: icon});
-
-            if (checkLastError()) {
+            if (browser.runtime.lastError) {
                 return;
             }
 
-            browser.browserAction.setBadgeText({tabId: tabId, text: badge});
-            if (badge) {
-                browser.browserAction.setBadgeBackgroundColor({tabId: tabId, color: badgeColor});
-            }
+            browser.browserAction.setIcon({tabId: tabId, path: icon}, onIconReady);
         }
     };
 
