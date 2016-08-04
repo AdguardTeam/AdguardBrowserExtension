@@ -1,10 +1,10 @@
 ! Title: Russian filter
-! Version: 1.0.37.39
+! Version: 1.0.37.43
 ! Name: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-08-04T15:07:34.906+03:00
+! TimeUpdated: 2016-08-04T19:00:24.349+03:00
 ! Title: Adguard Russian Filter
 !
 ! Filter that enables removing of the ads from websites with Russian content.
@@ -36,6 +36,10 @@
 !
 ! Содержит доменные имена, использующиеся рекламными сетями.
 !
+||xxuhter.ru^$third-party
+||ahial.top^
+||ywadk.top^$third-party
+||hakiloporet.com^$third-party
 ||gocdn.ru^$third-party
 ||nhqqv.space^$third-party
 ||actionads.ru^$third-party
@@ -3613,6 +3617,7 @@ http://v.*.com/x?$third-party
 !
 ! Section contains the list of advertising networks, which are hosted on non advertising sites as subdomains
 !
+||d899.webazilla.com^$third-party
 ||statistic.imgpay.ru^
 ||stats.imgpay.ru^
 ||action.evrikak.ru^
@@ -3625,11 +3630,11 @@ lifenews78.ru,life.ru,звонки.онлайн,bitru.org,hdrezka.tv,stopgame.ru
 ! admitad ad block checker
 @@||ad.admitad.com/3rd-party/advert.js
 @@||ad.admitad.com/3rd-party/*/cookie/?f=CookieChecker.remoteTest
-! 7-link.ru ad block checker
-@@||7-link.ru/advert.js
-@@||7-link.ru/popads.js
-@@||7-link.ru/popunder.js
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/2749
+@@||sdelatvideo.ru/resources/jsc/ads.js
+! https://forum.adguard.com/index.php?threads/11759/
+@@||7-link.ru/2/poprotator.js
 ! https://forum.adguard.com/index.php?threads/12366/
 @@||losslessbest.com^$generichide
 ! https://forum.adguard.com/index.php?threads/12296/
@@ -4724,7 +4729,7 @@ kttc.ru,semestr.ru#%#AG_onLoad(function() { setTimeout(function() { AG_removeEle
 s4galaxy.ru,3dnews.ru,lenovo-smart.ru#%#Object.defineProperty(window, 'SocialMartDocumentHelper', { get: function() { return function SocialMartDocumentHelper(){} } });
 !
 ! Block web-sockets in old versions of Chtome (older then 47)
-nnm-club.me,nnm-club.ws,nnmclub.to,onlainfilm.ucoz.ua,rutor.is,baskino.club,rutor.info,nnm.me,korzik.net,seasonvar.ru,rsload.net,nnm-club.me,nnmclub.to,rustorka.com,auto.mail.ru,horo.mail.ru,realty.mail.ru,health.mail.ru,afisha.mail.ru,cloud.mail.ru,otvet.mail.ru,pogoda.mail.ru,sport.mail.ru,tv.mail.ru,torg.mail.ru,cars.mail.ru,hi-tech.mail.ru#%#window.WebSocket = undefined;
+pise4ka.net,nnm-club.me,nnm-club.ws,nnmclub.to,onlainfilm.ucoz.ua,rutor.is,baskino.club,rutor.info,nnm.me,korzik.net,seasonvar.ru,rsload.net,nnm-club.me,nnmclub.to,rustorka.com,auto.mail.ru,horo.mail.ru,realty.mail.ru,health.mail.ru,afisha.mail.ru,cloud.mail.ru,otvet.mail.ru,pogoda.mail.ru,sport.mail.ru,tv.mail.ru,torg.mail.ru,cars.mail.ru,hi-tech.mail.ru#%#window.WebSocket = undefined;
 !
 ! rustorka.com - clickunder
 rustorka.com#%#AG_onLoad(function() { window.utg_click = 1; });
@@ -4749,7 +4754,7 @@ vipfiles.nu#%#AG_onLoad(function() { window.doPopunder = true; });
 pro-tv.net#%#AG_onLoad(function() { $('#adFrame').remove(); $('#adTimerBlock').remove(); $.VideoAD.embedPlayer(); });
 ! https://forum.adguard.com/index.php?threads/9663/
 ! dfiles.ru - mobile redirect
-dfiles.ru#%#document.cookie = 'guest_skip_weboffer=1;path=/;'
+dfiles.ru#%#document.cookie = "guest_skip_weboffer=1;path=/;"
 ! https://forum.adguard.com/index.php?threads/9918/
 ! fastpic.ru - удаление ненужной кликабельности, исправление курсора
 fastpic.ru#%#AG_onLoad(function() { $('#picContainer').unbind('click'); $('html').unbind('click').removeAttr("style").css("cursor","default"); $('body').unbind('click').removeAttr("style").css("cursor","default"); });
@@ -6995,6 +7000,9 @@ rustorka.com##a[href^="/"]
 rustorka.com##div:not([id]):not([class]) > :not(div) > span > a
 !rustorka.com##:not(div):not(a):not(form):not(body):not(tbody):not(table):not(b):not(tr):not(td):not(img):not(span):not(html):not(title):not(input):not(select):not(option):not(th):not(i):not(h3):not(br):not(li):not(ul):not(p):not(hr):not(iframe):not(thead):not(h4):not(em):not(h6):not(wbr):not(center):not(fieldset):not(legend):not(label) > a
 !
+||erkiss.tv/js/vxml.php
+||pise4ka.net/in.html
+zaycev.fm##div[class^="google-"]
 vmgu.ru##td[width="26%"] td#articles_w
 ||vmgu.ru/banners/
 chameleon.fm##.pageskin_container
@@ -12625,6 +12633,10 @@ http://*.space^$script,domain=free-torrent.org|free-torrents.org|jpgstore.ru|pic
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1830
 @@||vetton.ru^$jsinject,elemhide
 !#################
+! https://forum.adguard.com/index.php?threads/12381/
+@@||plektan.com^$xmlhttprequest
+! https://github.com/AdguardTeam/AdguardFilters/issues/2750
+kcdod.khb.ru#@##banners_left
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2738
 @@||peers.tv/jwplayer/ariver/plugin.swf$domain=peers.tv
 ! https://forum.adguard.com/index.php?threads/12374/
