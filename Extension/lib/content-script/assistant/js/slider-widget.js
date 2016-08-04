@@ -55,7 +55,7 @@ var SliderWidget = (function (api, $) {
         $(placeholder).addClass(PLACEHOLDER_CLASS);
 
         var handle = document.createElement('a');
-        handle.setAttribute('href', '#');
+        handle.setAttribute('href', 'javascript:void(0);');
         handle.setAttribute('class', HANDLE_FULL_CLASS);
         placeholder.appendChild(handle);
 
