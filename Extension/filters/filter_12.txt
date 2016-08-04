@@ -1,10 +1,10 @@
 ! Title: Safari filter
-! Version: 1.0.1.2
+! Version: 1.0.1.3
 ! Name: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! NameEn: Safari filter
 ! DescriptionEn: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
-! TimeUpdated: 2016-08-02T21:02:09.282+03:00
+! TimeUpdated: 2016-08-04T16:01:54.730+03:00
 ! Title: Adguard Safari Filter
 !
 ! Special filter for Safari. We need a separate filter for Safari because it does not fully support rules syntax.
@@ -42,9 +42,6 @@
 @@||bnonews.com^$generichide
 ! https://forum.adguard.com/index.php?threads/12053/
 @@||animmex.net^$generichide
-! https://github.com/AdguardTeam/AdguardFilters/issues/2604
-@@|http://$domain=bild.de,script,third-party
-@@||bild.de^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2574
 ! opensubtitles.org - anti-adblock ads
 @@||static.opensubtitles.org/libs/js/ad_
@@ -96,13 +93,6 @@ ad4msan.com#@##iframeTopAd
 ad4msan.com#@##multi_ad
 ad4msan.com#@##ads
 ad4msan.com#@##adsense
-! bild.de @@||bild.de^$elemhide
-@@||sascdn.com/diff/*/pages/bild.js$domain=bild.de
-@@||smartadserver.com/diff/*/smartad.js$domain=bild.de
-@@||smartadserver.com/diff/*/divscripte/$script,domain=bild.de
-@@||smartadserver.com/diff/*/partners/$script,domain=bild.de
-!@@||sascdn.com^$domain=bild.de,script
-!
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1353
 !@@||forbes.com^$elemhide
 !@@http://$domain=forbes.com

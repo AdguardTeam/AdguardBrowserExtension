@@ -1,10 +1,10 @@
 ! Title: Russian filter
-! Version: 1.0.37.38
+! Version: 1.0.37.40
 ! Name: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-08-03T23:00:21.974+03:00
+! TimeUpdated: 2016-08-04T16:00:30.167+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -15,6 +15,7 @@
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+||gocdn.ru^$third-party
 ||nhqqv.space^$third-party
 ||actionads.ru^$third-party
 ||useorthe.com^$third-party
@@ -1956,9 +1957,7 @@ http://v.*.com/x?$third-party
 lifenews78.ru,life.ru,звонки.онлайн,bitru.org,hdrezka.tv,stopgame.ru#%#(function(){var a={debug:{set:function(){return a}},on:function(b,c){b||setTimeout(function(){c()},1);return a},onDetected:function(b){return a.on(!0,b)},onNotDetected:function(b){return a.on(!1,b)},check:function(){}};Object.defineProperty(window,"fuckAdBlock",{get:function(){return a}})})();
 @@||ad.admitad.com/3rd-party/advert.js
 @@||ad.admitad.com/3rd-party/*/cookie/?f=CookieChecker.remoteTest
-@@||7-link.ru/advert.js
-@@||7-link.ru/popads.js
-@@||7-link.ru/popunder.js
+@@||7-link.ru/2/poprotator.js
 @@||losslessbest.com^$generichide
 all-episodes.net#@##ad3
 @@||yallaneliera.com/video/*$elemhide
@@ -3881,6 +3880,9 @@ rustorka.com##span:not([class]):not([id]):not([style]) a[href^="./"]:not([class=
 /http:\/\/rustorka.com\/[a-z]+\.js/$domain=rustorka.com
 rustorka.com##a[href^="/"]
 rustorka.com##div:not([id]):not([class]) > :not(div) > span > a
+zaycev.fm##div[class^="google-"]
+vmgu.ru##td[width="26%"] td#articles_w
+||vmgu.ru/banners/
 chameleon.fm##.pageskin_container
 maintracker.org###adriver-240x120
 maintracker.org###bn-bot-wrap
