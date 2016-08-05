@@ -191,7 +191,10 @@
             }
         };
 
-        document.addEventListener('DOMContentLoaded', function() {
+        /**
+         * Removes iframes hide style and initiates should-collapse check for iframes
+         */
+        var onDocumentReady = function() {
             var iframes = document.getElementsByTagName('iframe');
             for (var i = 0; i < iframes.length; i++) {
                 checkShouldCollapseElement(iframes[i]);
@@ -209,7 +212,14 @@
                     subtree: true
                 });
             }
-        });
+        };
+
+        //Document can already be loaded
+        if (['interactive', 'complete'].indexOf(document.readyState) >= 0) {
+            onDocumentReady();
+        } else {
+            document.addEventListener('DOMContentLoaded', onDocumentReady);
+        }
     };
 
     /**
