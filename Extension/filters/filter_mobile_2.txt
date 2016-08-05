@@ -1,10 +1,10 @@
 ! Title: English filter
-! Version: 1.0.90.73
+! Version: 1.0.90.78
 ! Name: English filter
 ! Description: EasyList + Adguard English filter. Filter list that specifically removes adverts on English language websites.
 ! NameEn: English filter
 ! DescriptionEn: EasyList + Adguard English filter. Filter list that specifically removes adverts on English language websites.
-! TimeUpdated: 2016-08-04T17:00:39.297+03:00
+! TimeUpdated: 2016-08-05T15:54:14.332+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -1445,6 +1445,9 @@ http://www.ads.$third-party
 ||cdn.drnxs.com/js/gp.min.js
 forum.xda-developers.com###posts > .postbit-wrapper.xda-box
 google.ae,google.at,google.be,google.by,google.ca,google.ch,google.cl,google.cn,google.co.id,google.co.in,google.co.jp,google.co.th,google.co.uk,google.co.ve,google.co.za,google.com,google.com.ar,google.com.au,google.com.bd,google.com.br,google.com.co,google.com.eg,google.com.hk,google.com.mx,google.com.my,google.com.ng,google.com.pe,google.com.ph,google.com.pk,google.com.sa,google.com.sg,google.com.tr,google.com.tw,google.com.ua,google.com.vn,google.de,google.dk,google.ee,google.es,google.fr,google.gr,google.hu,google.ie,google.it,google.nl,google.no,google.pl,google.pt,google.ro,google.rs,google.ru,google.se,google.sk,google.tn###taw #tvcap ._hsi.mnr-c
+||cdn.adfoc.us/sound/niftyplayer.swf
+download3k.com##div[id^="dl_google_"]
+download3k.com##a[href^="http://link.tweakbit.com/"]
 wizhdsports.to###floatLayer1
 newshub.co.nz##.vjs-onceux-ad-container
 ||unicornmedia.com^*&bc_apla=0*&basemediaitemguid$domain=newshub.co.nz
@@ -15208,6 +15211,7 @@ _980x100.
 ##.ad_skyscpr
 ##.ad_skyscraper
 ##.ad_skyscrapper
+##.ad_slider_out
 ##.ad_slot
 ##.ad_slot_right
 ##.ad_slug
@@ -20746,6 +20750,8 @@ _980x100.
 ##.seoTopAds
 ##.sepContentAd
 ##.series-ad
+##.serp-adv-item
+##.serp-adv__head
 ##.serp_sponsored
 ##.servedAdlabel
 ##.servsponserLinks
@@ -22418,6 +22424,7 @@ _980x100.
 ##a[href^="http://www.liversely.net/"]
 ##a[href^="http://www.menaon.com/installs/"]
 ##a[href^="http://www.mobileandinternetadvertising.com/"]
+##a[href^="http://www.moneyducks.com/"]
 ##a[href^="http://www.my-dirty-hobby.com/?sub="]
 ##a[href^="http://www.myfreepaysite.com/sfw.php?aid"]
 ##a[href^="http://www.myfreepaysite.com/sfw_int.php?aid"]
@@ -25332,6 +25339,7 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad"]
 ||down1oads.com^$popup,third-party
 ||download-performance.com^$popup,third-party
 ||downloadboutique.com^$popup,third-party
+||dradvice.in^$popup,third-party
 ||durokuro.com^$popup,third-party
 ||epicgameads.com^$popup,third-party
 ||eroanalysis.com^$popup,third-party
@@ -27523,7 +27531,9 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad"]
 |http://$script,third-party,xmlhttprequest,domain=itechpost.com
 |https://$script,third-party,xmlhttprequest,domain=itechpost.com
 @@||ajax.googleapis.com^$script,domain=geekzone.co.nz
-@@||disqus.com^$script,third-party,domain=geekzone.co.nz
+@@||apis.google.com^$script,domain=geekzone.co.nz
+@@||disqus.com^$script,domain=geekzone.co.nz
+@@||disquscdn.com^$script,domain=geekzone.co.nz
 @@||maps.googleapis.com^$script,domain=geekzone.co.nz
 @@||platform.twitter.com^$script,domain=geekzone.co.nz
 @@||tinymce.com^$script,domain=geekzone.co.nz

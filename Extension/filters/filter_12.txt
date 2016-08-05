@@ -1,10 +1,10 @@
 ! Title: Safari filter
-! Version: 1.0.1.3
+! Version: 1.0.1.5
 ! Name: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! NameEn: Safari filter
 ! DescriptionEn: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
-! TimeUpdated: 2016-08-04T16:01:54.730+03:00
+! TimeUpdated: 2016-08-05T15:55:28.514+03:00
 ! Title: Adguard Safari Filter
 !
 ! Special filter for Safari. We need a separate filter for Safari because it does not fully support rules syntax.
@@ -163,6 +163,12 @@ telegraaf.nl##.section-ad
 !
 ! TEMPORARY: free-torrents.org - until web-sockets are not blocked by content-blocker
 free-torrents.org,free-torrent.org##body > :not(div)
+! https://github.com/AdguardTeam/AdguardFilters/issues/2744
+||st.kp.yandex.net/images/bnnr/$domain=kinopoisk.ru
+kinopoisk.ru###brandingFlash
+kinopoisk.ru##.direct-kp-customize
+! https://github.com/AdguardTeam/AdguardFilters/issues/2642
+baskino.club###b-mtbbar__container
 ! https://forum.adguard.com/index.php?threads/12268/
 go4up.com##a[style="display:inline!important"] > img
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2730
@@ -220,6 +226,10 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 !
 ! White list. Fixing content blocking API issues.
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/2751
+@@||analytics.edgesuite.net^$domain=foxnews.com
+@@||global.fncstatic.com/static/v/all/js/ads.js$domain=foxnews.com
+@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=foxnews.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2707
 @@/google-adwords$domain=t3n.de,~third-party
 ! https://forum.adguard.com/index.php?threads/12058/

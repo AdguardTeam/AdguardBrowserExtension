@@ -1,10 +1,10 @@
 ! Title: Safari filter
-! Version: 1.0.1.3
+! Version: 1.0.1.5
 ! Name: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! NameEn: Safari filter
 ! DescriptionEn: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
-! TimeUpdated: 2016-08-04T16:01:54.730+03:00
+! TimeUpdated: 2016-08-05T15:55:28.514+03:00
 ||adrunnr.com^$popup
 ||large-format.net^$popup
 ||november-lax.com^$popup
@@ -78,6 +78,10 @@ etfdailynews.com##div[style="width:300px;border:1px solid black"]
 @@||cinemablend.com/timthumb.php?src=/images/facebook/
 telegraaf.nl##.section-ad
 free-torrents.org,free-torrent.org##body > :not(div)
+||st.kp.yandex.net/images/bnnr/$domain=kinopoisk.ru
+kinopoisk.ru###brandingFlash
+kinopoisk.ru##.direct-kp-customize
+baskino.club###b-mtbbar__container
 go4up.com##a[style="display:inline!important"] > img
 kino-serial.net,on-movie.net##body > div[class^="skin-block_"][style^="background-image: url(data:image/jpeg;base64"]
 macbed.com##.adsbygoogle
@@ -113,6 +117,9 @@ brb.to,cxz.to,fs.to##div[class*="universal_ads"]
 ||gamer.ru/alarmalarm/js/
 ||sports.ru/desktop/special/$subdocument,domain=sports.ru
 m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
+@@||analytics.edgesuite.net^$domain=foxnews.com
+@@||global.fncstatic.com/static/v/all/js/ads.js$domain=foxnews.com
+@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=foxnews.com
 @@/google-adwords$domain=t3n.de,~third-party
 ||mc.yandex.ru/watch/*$domain=internethaber.com
 ||mc.yandex.ru/metrika/watch.js$domain=internethaber.com

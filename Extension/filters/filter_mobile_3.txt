@@ -1,10 +1,10 @@
 ! Title: Spyware filter
-! Version: 1.0.7.9
+! Version: 1.0.7.11
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
 ! NameEn: Spyware filter
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2016-08-04T16:00:49.156+03:00
+! TimeUpdated: 2016-08-04T23:00:42.625+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -39,6 +39,10 @@ echo.msk.ru$$script[tag-content="s=screen;"][max-length="200"]
 ##img[src*="counter.yadro.ru"]
 ##img[src^="http://c.bigmir.net/"]
 ~forum.ixbt.com,~mozhor.ru,~onliner.by,~wiktionary.org,~yandex.by,~yandex.com,~yandex.com.tr,~yandex.ru,~yandex.ua##img[width="88"][height="31"]
+||veeseo.com^$third-party
+||rmtag.com^$third-party
+||sf14g.com^$third-party
+||tl813.com^$third-party
 ||d3c3cq33003psk.cloudfront.net^
 ||dtxtngytz5im1.cloudfront.net^
 ||grmtech.net^$third-party
@@ -59,9 +63,6 @@ echo.msk.ru$$script[tag-content="s=screen;"][max-length="200"]
 ||sharp.ondu.ru^$third-party
 //t100.ru^$third-party
 ://tru.am^$third-party
-http://r.i.ua/s?
-|http://r.i.ua^$third-party
-|x.ligatus.com^$third-party
 ||1-cl0ud.com^$third-party
 ||100im.info^$third-party
 ||123compteur.com^$third-party
@@ -1854,6 +1855,9 @@ http://r.i.ua/s?
 ||zoomanalytics.co^$third-party
 ||zoosnet.net^$third-party
 ||zqtk.net^$third-party
+|http://r.i.ua^
+||x.ligatus.com^$third-party
+||ct.pinterest.com^
 ||smetrics.uhc.com^
 ||wtsdc.uhc.com^$image
 ||analytics.go.com^
@@ -1986,6 +1990,7 @@ http://r.i.ua/s?
 /zz.gif?url=
 ://top.*/count/cnt.php?
 _tracking.php?b=
+||store.nike.com/cms/analytics-store-desktop.js
 ||go.com/b/ss/
 ||forecast.io/js/app/analytics.js
 ||tout.com/tracker.js

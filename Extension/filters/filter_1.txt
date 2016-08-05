@@ -1,10 +1,10 @@
 ! Title: Russian filter
-! Version: 1.0.37.43
+! Version: 1.0.37.48
 ! Name: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-08-04T19:00:24.349+03:00
+! TimeUpdated: 2016-08-05T15:54:03.900+03:00
 ! Title: Adguard Russian Filter
 !
 ! Filter that enables removing of the ads from websites with Russian content.
@@ -36,6 +36,11 @@
 !
 ! Содержит доменные имена, использующиеся рекламными сетями.
 !
+||yourfoxes.ru^$third-party
+||linkmyc.com^$popup
+||toftforcal.com^$third-party
+||nenrk.us^$third-party
+||uaadi.com^$third-party
 ||xxuhter.ru^$third-party
 ||ahial.top^
 ||ywadk.top^$third-party
@@ -3634,7 +3639,7 @@ lifenews78.ru,life.ru,звонки.онлайн,bitru.org,hdrezka.tv,stopgame.ru
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2749
 @@||sdelatvideo.ru/resources/jsc/ads.js
 ! https://forum.adguard.com/index.php?threads/11759/
-@@||7-link.ru/2/poprotator.js
+@@||7-link.ru/*.js
 ! https://forum.adguard.com/index.php?threads/12366/
 @@||losslessbest.com^$generichide
 ! https://forum.adguard.com/index.php?threads/12296/
@@ -4707,6 +4712,11 @@ satsis.ru##.adb
 !
 ! Yandex - директ в поисковой выдаче отключается __adgEnabled
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by#%#AG_onLoad(function() { function __adgObserver() { var observer = new MutationObserver(function(mutations) { mutations.forEach(function(mutation) { __adgRemoveDirect() }) }); observer.observe(document.body, { childList: true, characterData: true, subtree: true }) } var __adgRemoveDirect = function() { try { __adgRemoveDirectNews(); __adgRemoveDirectMail(); __adgRemoveDirectPogoda(); if (typeof __adgEnabled != "undefined" && !__adgEnabled) return; else __adgRemoveContext() } catch (ex) {} }; var __adgRemoveContext = function() { AG_each(".serp-list > .serp-item .label", function(node) { if (node.innerText == "\u0420\u0435\u043a\u043b\u0430\u043c\u0430") AG_removeParent(node, function(parent) { return parent.className && (parent.className.indexOf("serp-item") >= 0 && parent.getAttribute("data-cid") || parent.className && parent.className.indexOf("serp-adv__block") >= 0) }) }) }; var __adgRemoveDirectMail = function() { AG_each(".js-folders__nesting", function(node) { AG_each('a[class="b-folders__folder__link"][href*="direct.yandex.ru"]', function(node) { AG_removeParent(node, function(parent) { return parent.className && parent.className.indexOf("b-folders__nesting") >= 0 }) }) }) }; var __adgRemoveDirectNews = function() { AG_each('a[href^="http://news-clck.yandex."]', function(node) { AG_removeParent(node, function(parent) { return parent.className && parent.className.indexOf("story") >= 0 }) }) }; var __adgRemoveDirectPogoda = function() { AG_removeElementBySelector('div[class*="_pos_"][style*="display:block!important;visibility:visible!important;"]'); }; __adgRemoveDirect(); __adgObserver(); });
+!***
+!*** новое правило для директа ***
+!***
+yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by#%#AG_onLoad(function() { function adgObserver() { var observer = new MutationObserver(function(mutations) { adgRemoveDirect();}); observer.observe(document.body, { childList: true, characterData: true, subtree: true }) } var adgRemoveDirect = function() { try { adgRemoveDirectNews(); adgRemoveDirectMail(); adgRemoveDirectPogoda(); if (typeof __adgEnabled != "undefined" && !__adgEnabled) { return; } else {adgRemoveContext(); } } catch (ex) {} }; var adgRemoveContext = function() { AG_each(".serp-list > .serp-item .label", function(node) { if (node.innerText == "\u0420\u0435\u043a\u043b\u0430\u043c\u0430") AG_removeParent(node, function(parent) { return parent.className && (parent.className.indexOf("serp-item") >= 0 && parent.getAttribute("data-cid") || parent.className && parent.className.indexOf("serp-adv__block") >= 0) }) }) }; var adgRemoveDirectMail = function() { AG_each(".js-folders__nesting", function(node) { AG_each('a[class="b-folders__folder__link"][href*="direct.yandex.ru"]', function(node) { AG_removeParent(node, function(parent) { return parent.className && parent.className.indexOf("b-folders__nesting") >= 0 }) }) }) }; var adgRemoveDirectNews = function() { AG_each('a[href^="http://news-clck.yandex."]', function(node) { AG_removeParent(node, function(parent) { return parent.className && parent.className.indexOf("story") >= 0 }) }) }; var adgRemoveDirectPogoda = function() { AG_each('a[href^="/pogoda/counters/"]', function(node) { AG_removeParent(node, function(parent) { return parent.className && (parent.className.indexOf("info__map") >= 0 || parent.className && parent.className.indexOf("navigation-city ") >= 0) }) }) }; adgRemoveDirect(); adgObserver(); });
+!
 !
 !--- [START] Fixing AdFox constant page load ---
 ! Мимикрируем под adfox, иначе страница вечно грузится (livejournal, sports.ru)
@@ -4754,7 +4764,7 @@ vipfiles.nu#%#AG_onLoad(function() { window.doPopunder = true; });
 pro-tv.net#%#AG_onLoad(function() { $('#adFrame').remove(); $('#adTimerBlock').remove(); $.VideoAD.embedPlayer(); });
 ! https://forum.adguard.com/index.php?threads/9663/
 ! dfiles.ru - mobile redirect
-dfiles.ru#%#document.cookie = "guest_skip_weboffer=1;path=/;"
+dfiles.ru#%#AG_onLoad(function() { $.cookie("guest_skip_weboffer", 1); });
 ! https://forum.adguard.com/index.php?threads/9918/
 ! fastpic.ru - удаление ненужной кликабельности, исправление курсора
 fastpic.ru#%#AG_onLoad(function() { $('#picContainer').unbind('click'); $('html').unbind('click').removeAttr("style").css("cursor","default"); $('body').unbind('click').removeAttr("style").css("cursor","default"); });
@@ -4885,7 +4895,7 @@ kinokopilka.tv#%#window.open = function() {};
 auto.ru#%#AG_onLoad(function() { $('a[href*="an.yandex.ru/count/"]').closest('div.sales-list-item').remove(); });
 ! VisitWeb
 pics5share.ru,pics6share.ru,reactor.cc,joyreactor.cc,pics2pay.ru,jpgstore.ru,pics-money.ru,picspay.ru,free-torrents.org,free-torrent.org#%#Object.defineProperty(window, 'visitweb_script', { get: function() { return document.createElement('div'); } });
-porncomics.ru#%#Object.defineProperty(window, 'VisitWeb', { get: function() { return document.createElement('div'); } });
+russiansuka.ru,rumanda.com,porncomics.ru#%#Object.defineProperty(window, 'VisitWeb', { get: function() { return document.createElement('div'); } });
 ! Disabling the timer before play
 ! http://forum.adguard.com/showthread.php?8732
 ! trashbox.mobi - disable clickunder
@@ -6980,6 +6990,8 @@ beta.yandex.by,yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua##.content__rig
 mail.yandex.ru##.mail-Layout-Aside-Inner > div[class^="ns-view-left-box"][data-key="box=left-box"] > div[class*="mail-NestedList mail-FolderList js-folders"]
 !
 yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua##div[class$="b-direct_message-w-bg"]
+! Яндекс Погода
+yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by##.navigation-city.navigation-city_meteum:not([data-bem]):not([class*="navigation-city_js_inited"])
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1289
 ||web-client.livetex.ru/css/blank.css
 ! online.anidub.com - for the main player (referrer is not equal to anidub.com)
@@ -7000,6 +7012,11 @@ rustorka.com##a[href^="/"]
 rustorka.com##div:not([id]):not([class]) > :not(div) > span > a
 !rustorka.com##:not(div):not(a):not(form):not(body):not(tbody):not(table):not(b):not(tr):not(td):not(img):not(span):not(html):not(title):not(input):not(select):not(option):not(th):not(i):not(h3):not(br):not(li):not(ul):not(p):not(hr):not(iframe):not(thead):not(h4):not(em):not(h6):not(wbr):not(center):not(fieldset):not(legend):not(label) > a
 !
+hronika.info##div[id^="gnezdo_ru"]
+hronika.info##div[id^="bn_"]
+hronika.info##div[id^="n4p_"]
+hronika.info##div[id^="LentaInform"]
+||24video.xxx/myc/
 ||erkiss.tv/js/vxml.php
 ||pise4ka.net/in.html
 zaycev.fm##div[class^="google-"]
@@ -9224,7 +9241,7 @@ riotpixels.com##.zzz1
 /mailru_rebrand/bg_body.jpg
 /main_bnrs.js$domain=pg12.ru|pg13.ru|pg21.ru|prochepetsk.ru|progorod11.ru|progorod33.ru|progorod43.ru|progorod59.ru|progorod76.ru|progorodnn.ru|vpenze.ru
 /mimic/v1/ws$domain=mail.ru
-/news.js$third-party,domain=goldenshara.org|imperiyanews.ru|kordonivkakino.net|online-pornuha.com|pornokontakt.com|publicagent.ru|rsload.net|yahooeu.ru|легион.net
+/news.js$third-party,domain=goldenshara.org|imperiyanews.ru|kordonivkakino.net|online-pornuha.com|pornokontakt.com|publicagent.ru|rsload.net|yahooeu.ru|легион.net|dochkinrot.com
 /partners/*$third-party,domain=bestgamer.ru
 /pics/bn/*$domain=tavto.ru
 /preroll.js$domain=goha.ru
@@ -12601,6 +12618,7 @@ xn--90aiguyb.com/files.php?
 .space^$script,third-party,domain=2ndlperm.ru|4army.com.ua|adritano.ru|adultmult.tv|aerostatstudio.ru|akademsavina.ru|allhentai.ru|anime-share.ru|artyushenkooleg.ru|babi.su|barfik.com|bubluoteka.org|detectivebooks.ru|dokymentalka.ru|easyerotica.ru|faint.ru|fotolaski.ru|free-torrent.org|free-torrents.org|game-torrent.info|gidonline.club|gigporno-video.com|greenrpg.ru|hd720.biz|hdkinohit.net|hdkinomax.com|hdrezka.me|hentaichan.me|hentaiz.org|hotfiesta.com|hp-fanfic.ru|i-r-p.ru|joyreactor.cc|jpgstore.ru|kino-serial.net|kinorun.com|krifi.ru|lurtik.info|mediafast.ru|megaserial.net|mevideo.xyz|moj-zvetnik.ru|moy.su|mp3.cc|mp4-ukr.net|murometc.ru|naturismv.com|nod-key.ru|overallnews.ru|patlah.ru|pics-money.ru|pics2share.ru|polnometrazhnoe-porno.video|porno-comics.ru|porno-comix.com|porno720p.tv|pornopic.net|pornreactor.cc|potaskuha.net|prikolin.ru|rapidzona.tv|reactor.cc|rolebb.ru|rolevaya.com|rolevaya.info|rolevaya.net|rolevaya.ru|rsload.net|rustorka.com|serializm.com|serialrussian.ru|sftnews.ru|smotret-fizruk-online.su|soloman.ru|sosista.com|sovietcinema.ru|sprintnews.ru|srubirubli.ru|svetmonet.ru|swfgame.ru|televeezr.ru|ukrtvory.ru|uni0n.ru|unionpron.org|usyn.ru|uztor.ru|videozvip.ru|world-porno.net|xhamster-pic.com|yahooeu.ru|zoozel.net
 .xyz^$script,third-party,domain=2012gps.ru|alexnest.ru|all-tv.org|comicsgo.net|dfiles.ru|divx-kino.ru|euro-football.ru|fast-torrent.ru|fototopless.ru|gubkabob.net|hentaichan.me|j4f.tobase.ru|joyreactor.cc|kinobos.ru|kinonow.org|liveresult.ru|mybb.ru|naruto-base.tv|nasmnogo.net|onlain-full-hd.com|pics-money.ru|picusha.net|poimel.org|pornokinozal.net|reactor.cc|small-games.info|smotret-fizruk-online.su|soccer0001.com|soft-portal.club|soloman.ru|tfilm.me|topbb.ru|torrent-pirat.com|vam.in.ua|videoshara.net|webtalk.ru|x-filmec.ru|yahooeu.ru|yaporn.tv
 ://v.*.tv^$domain=onporn.tv
+://v.*.com/vv/*&$script,third-party,domain=rumanda.com
 ://v.*.com/vv/$domain=mega-pics-money.ru
 ?*&bid=$script,third-party,domain=free-torrent.org|free-torrents.org|pics-money.ru
 http://*.*.pw/*.js$script,domain=wigeo.ru
@@ -12640,7 +12658,7 @@ kcdod.khb.ru#@##banners_left
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2738
 @@||peers.tv/jwplayer/ariver/plugin.swf$domain=peers.tv
 ! https://forum.adguard.com/index.php?threads/12374/
-katana96.ru#@#.header-banner
+katana96.ru,katana59.ru,robinroll.ru#@#.header-banner
 ! specials.the-village.ru - broken Yandex project
 ! http://specials.the-village.ru/widgets/yandex_mobile_app/
 @@||ads.adfox.ru/*/prepareCode?$domain=specials.the-village.ru
