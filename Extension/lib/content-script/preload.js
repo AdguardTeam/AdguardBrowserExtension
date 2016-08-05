@@ -76,8 +76,6 @@
             loadTruncatedCss = (height * width) < 100000;
         }
 
-        addIframeHidingStyle();
-
         initCollapseEventListeners();
         tryLoadCssAndScripts();
     };
@@ -245,6 +243,8 @@
             setTimeout(function () {
                 tryLoadCssAndScripts();
             }, 100);
+
+            return;
         } else if (response.collapseAllElements) {
             
             /**
@@ -260,6 +260,8 @@
             applySelectors(response.selectors, response.useShadowDom);
             applyScripts(response.scripts);
         }
+
+        addIframeHidingStyle();
     };
     
     /**
