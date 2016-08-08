@@ -1,10 +1,10 @@
 ! Title: Russian filter
-! Version: 1.0.37.48
+! Version: 1.0.37.60
 ! Name: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-08-05T15:54:03.900+03:00
+! TimeUpdated: 2016-08-08T21:00:26.003+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -15,6 +15,10 @@
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+||adssyscom.com^$third-party
+||dskrt.net^$third-party
+||teamrtb.net^$third-party
+||ropsinde.com^$third-party
 ||yourfoxes.ru^$third-party
 ||linkmyc.com^$popup
 ||toftforcal.com^$third-party
@@ -1960,6 +1964,7 @@ http://v.*.com/v/$third-party
 http://v.*.com/v?$third-party
 http://v.*.com/vv?$third-party
 http://v.*.com/x?$third-party
+||mega.megatorrents.org.ua^
 ||d899.webazilla.com^$third-party
 ||statistic.imgpay.ru^
 ||stats.imgpay.ru^
@@ -1967,6 +1972,13 @@ http://v.*.com/x?$third-party
 lifenews78.ru,life.ru,звонки.онлайн,bitru.org,hdrezka.tv,stopgame.ru#%#(function(){var a={debug:{set:function(){return a}},on:function(b,c){b||setTimeout(function(){c()},1);return a},onDetected:function(b){return a.on(!0,b)},onNotDetected:function(b){return a.on(!1,b)},check:function(){}};Object.defineProperty(window,"fuckAdBlock",{get:function(){return a}})})();
 @@||ad.admitad.com/3rd-party/advert.js
 @@||ad.admitad.com/3rd-party/*/cookie/?f=CookieChecker.remoteTest
+@@||happy-hack.ru/*rotat*.js
+happy-hack.ru#$##blockblockX1 {visibility:invisible!important;display:none!important;}
+happy-hack.ru#$##blockblockX1 td {visibility:invisible!important;display:none!important;}
+happy-hack.ru#$##blockblockX1 td p {visibility:invisible!important;display:none!important;}
+happy-hack.ru#$##blockblockY1 {visibility:visible!important;display:block!important;}
+@@||pubads.g.doubleclick.net/gampad/ad?iu=*/Pixel$domain=sports.ru
+@@||pagead2.googlesyndication.com/pagead/imgad$domain=sports.ru
 @@||sdelatvideo.ru/resources/jsc/ads.js
 @@||7-link.ru/*.js
 @@||losslessbest.com^$generichide
@@ -2840,7 +2852,7 @@ kttc.ru,semestr.ru#%#AG_onLoad(function() { setTimeout(function() { AG_removeEle
 #%#try { Object.defineProperty(window, 'noAdsAtAll', { get: function() { return true; } }); } catch (ex) {}
 s4galaxy.ru,3dnews.ru,lenovo-smart.ru#%#Object.defineProperty(window, 'SocialMartDocumentHelper', { get: function() { return function SocialMartDocumentHelper(){} } });
 pise4ka.net,nnm-club.me,nnm-club.ws,nnmclub.to,onlainfilm.ucoz.ua,rutor.is,baskino.club,rutor.info,nnm.me,korzik.net,seasonvar.ru,rsload.net,nnm-club.me,nnmclub.to,rustorka.com,auto.mail.ru,horo.mail.ru,realty.mail.ru,health.mail.ru,afisha.mail.ru,cloud.mail.ru,otvet.mail.ru,pogoda.mail.ru,sport.mail.ru,tv.mail.ru,torg.mail.ru,cars.mail.ru,hi-tech.mail.ru#%#window.WebSocket = undefined;
-rustorka.com#%#AG_onLoad(function() { window.utg_click = 1; });
+rustorka.com#%#Object.defineProperty(window, 'start_utg', { get: function() { return; } });
 tapochek.net#%#document.cookie = "super_popunder = 1";
 e.mail.ru#%#(function() { var d = document.documentElement; var appendChild = d.appendChild; d.appendChild = function(n) { appendChild.apply(d, arguments); if (n.contentWindow) { n.contentWindow.WebSocket = undefined; } } })();
 fs.to#%#AG_onLoad(function() { setTimeout(function() { AG_removeElementBySelector('div[id][style="display: table-cell;"] > div[class$="-universalsmall"]'); $(document).ajaxComplete(function(){ AG_removeElementBySelector('div[id][style="display: table-cell;"] > div[class$="-universalsmall"]'); }) }, 2500); });
@@ -2949,7 +2961,7 @@ hdkinoteatr.com#%#Object.defineProperty(window, 'iframe_adv_enabled', { get: fun
 all-episodes.net#$#div#ad3 { height: 201px!important; position: absolute!important; left: -2000px!important; }
 focus.ua#$#body.branding-margin .top-menu.shadow { margin-top: -1px!important; }
 baibako.tv#$#.topserial { height: 50px!important; }
-pb.wtf,piratbit.org,piratbit.ru#$#div[class][style="width: 24.1%;"] { position: absolute!important; left: -2000px!important; }
+pb.wtf,piratbit.org,piratbit.ru#$#div[class][style^="width: 24"][style$="%;"] { position: absolute!important; left: -2000px!important; }
 swefilm.tv#$#a[href^="data:text/html;base64"] { position: absolute!important; top: -2000px!important; }
 livelib.ru#$#.header > div[class$="underact-context"] { position: absolute!important; top: -2000px!important; }
 bigmir.net#$##container_main { background: none!important; padding-top: 20px!important; }
@@ -3886,6 +3898,7 @@ yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by##.navigation-city.navigation-
 ||admulti.com/javascripts/rot.js
 ||gag.admulti.com/rotator
 ||info.zonasearch.com/ad/admulti*.json
+||rustorka.com/forum/misc/js/maen.js
 rustorka.com##div:not([class]):not([id]):not([style]) a[href^="./"]:not([class="small"])
 rustorka.com##span:not([class]):not([id]):not([style]) a[href^="./"]:not([class="small"])
 /http://rustorka.com/forum/[a-z]+.js/$domain=rustorka.com
@@ -3893,6 +3906,12 @@ rustorka.com##span:not([class]):not([id]):not([style]) a[href^="./"]:not([class=
 /http:\/\/rustorka.com\/[a-z]+\.js/$domain=rustorka.com
 rustorka.com##a[href^="/"]
 rustorka.com##div:not([id]):not([class]) > :not(div) > span > a
+||comon.ru/data/js/
+pb.wtf,piratbit.org,piratbit.ru##div[class][style^="width: 24"][style$="%;"]
+probirka.org###adfox-wrapper
+pise4ka.net##.adv-wrapper
+||megatorrents.org.ua/c/*.js
+russiansuka.ru##.wrap-thumbs-inner > div[class="rec-center"][style]
 hronika.info##div[id^="gnezdo_ru"]
 hronika.info##div[id^="bn_"]
 hronika.info##div[id^="n4p_"]
@@ -3933,8 +3952,6 @@ sport.mail.ru##.js-slot-parallax-container
 ||rustorka.com/fgfgf.php$popup
 ||alicdn.com^$domain=fishki.net
 news.mail.ru##.rb-million
-pogoda.yandex.ru,pogoda.yandex.by,pogoda.yandex.ua,pogoda.yandex.kz##.content__top > div[class^="navigation-city "] > div:not([class="navigation-city__controls"])
-pogoda.yandex.ru,pogoda.yandex.by,pogoda.yandex.ua,pogoda.yandex.kz##.info__ratatue > div.info__more.info__map
 ||metalinfo.ru/user/usruploads/images/banners/
 metalinfo.ru##.bannerimage
 metalinfo.ru##.bannerflash
@@ -4837,7 +4854,6 @@ iccup.com##.imageBgLeft
 iccup.com##.imageBgRight
 mamcompany.ru##.img_ban
 hh.ru##.index-banner
-pogoda.yandex.ru##.info.info_pos_2 > div[class^="info__more info__map "]:not([class="info__map"]):not(.info__more_neighbor_abs)
 softodrom.ru##.info_row > .nobottom
 sinoptik.com.ru,sinoptik.ua##.informerTop
 kinoafisha.info##.inside-banner
@@ -5381,7 +5397,7 @@ infowoman.com.ua,ladymir.com.ua##a[href*="cpl2.ru/"]
 pozdrav.ru##a[href*="footbolka.ru"]
 minfin.com.ua##a[href*="holder.com.ua/"]
 stranamam.ru##a[href*="http://beta.mediafort.ru/textclick.php?id="]
-cwer.ru##a[href*="http://torr.mediaget.com/"]
+cwer.ru,cwer.ws##a[href*="http://torr.mediaget.com/"]
 myzuka.ru,riper.am##a[href*="https://joycasino.com/"]
 infowoman.com.ua,ladymir.com.ua##a[href*="kma1.biz/"]
 dota2.ru##a[href*="team-empire.org/playlikeapro/"]
@@ -5704,7 +5720,6 @@ proxfree.com##div[class$="Ads"]
 moeobrazovanie.ru##div[class$="Bn"]
 fraza.ua,omskinform.ru##div[class$="_banner"]
 auto.ru##div[class$="_layout_horizontal"][style*="display: block"] > *
-pogoda.yandex.ru##div[class$="adbca_js_inited"]
 bigmir.net##div[class$="b-branding_static"]
 rambler.ru##div[class$="b-guides__item_banner><div class="]
 footboom.com##div[class$="b-test-bg-link"]
@@ -5779,7 +5794,6 @@ softconvert.ru##div[class^="cc_mod_"]
 tribuna.com##div[class^="clever-"]
 ixbt.com##div[class^="clickable_zone"]
 ircity.ru##div[class^="cr_advert"]
-pogoda.yandex.ru##div[class^="current-weather navigation-city "] > div[class*="__"]
 animevost.org##div[class^="headbg"] > a[target="_blank"]
 afisha.mail.ru##div[class^="incut rb_"]
 domik.ua##div[class^="link_brand"]
@@ -7600,6 +7614,11 @@ http://*.space^$script,domain=free-torrent.org|free-torrents.org|jpgstore.ru|pic
 /w.php?id=$third-party,domain=kinogo2.net
 ://n.*.ru/a*?Id=$script,domain=goroskop.ru
 @@||vetton.ru^$jsinject,elemhide
+@@||tube.buzzoola.com/new/build/buzzlibrary.js$domain=anidub-online.ru
+@@||tube.buzzoola.com^$domain=player.adcdn.tv
+@@||exchange.buzzoola.com/video_event/$xmlhttprequest,domain=player.adcdn.tv
+@@||exchange.buzzoola.com/adn/$xmlhttprequest,domain=player.adcdn.tv
+@@||devlogmill.buzzoola.com/api/$xmlhttprequest,domain=player.adcdn.tv
 @@||plektan.com^$xmlhttprequest
 kcdod.khb.ru#@##banners_left
 @@||peers.tv/jwplayer/ariver/plugin.swf$domain=peers.tv
@@ -7608,7 +7627,7 @@ katana96.ru,katana59.ru,robinroll.ru#@#.header-banner
 kma.biz#@#.adv
 @@||ms-devices.com/wp-content/plugins/bwp-minify/min/?f=
 @@||radio-archive.ru/js/banners.js
-@@||rustorka.com/forum/misc/js/*.js
+@@||rustorka.com/forum/misc/js/jquery
 @@||admin*.planeta.ru^$document
 @@||x5.ru/assets/Branding/
 @@||x5.ru/_layouts/15/X5.PublicSite/Branding/
@@ -7915,7 +7934,6 @@ gulli.ru#@#img[width="240"][height="400"]
 @@||carambatv.ru/player/$elemhide
 beon.ru#@#.leftbanner
 @@||nnpcto.ru/banners/
-@@||yastatic.net/weather-frontend^$domain=pogoda.yandex.ru
 @@||ads.adfox.ru^$domain=life.ru
 @@||solution.weborama.fr^$domain=life.ru
 @@||videoprobki.ua/themes/videoprobki/ext_baners/*.flv

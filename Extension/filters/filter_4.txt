@@ -1,10 +1,10 @@
 ! Title: Social media filter
-! Version: 1.0.11.37
+! Version: 1.0.11.44
 ! Name: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2016-08-04T22:00:43.338+03:00
+! TimeUpdated: 2016-08-08T21:00:52.814+03:00
 ! Title: Adguard Social Media Filter
 !
 ! If you do not like numerous «Like» and «Tweet» buttons on all the popular websites on the Internet,
@@ -289,6 +289,18 @@ softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2146
 ||mimimi.tv/?*=*&_=
 !
+forbes.ru##.socnet_shares_cont
+forbes.com##div[article-sharing]
+forbes.ru##.socnet_left_float
+hollywood.com##.social-box
+hollywood.com##.facebook-btn
+hollywood.com##.twitter-btn
+hollywood.com##.FB-follow
+unian.info##.article-selection-shares
+ahaber.com.tr##a[onclick="SocialMediaShare(this)"]
+cumhuriyet.com.tr##.instela-share-button
+||cumhuriyet.com.tr/image/share_facebook.gif
+acunn.com##a[class$="ShareLink"]
 ||s.hurriyet.com.tr/static/scripts/socialApi/scripts/sosyal.widget
 hurriyet.com.tr##.nShare
 hurriyet.com.tr##.cropy-crop-share-button-wrapper
@@ -300,7 +312,7 @@ diyadinnet.com##.sharer
 ademocut.com##.paylas
 ||kaufland.de/Global/Script/facebook_toolbox.js
 kaufland.de###contentfb
-filmizlef.com,fullhd720pizle.com,sinemadafilmizlee.com###share-cerceve
+filmizlef.com,fullhd720pizle.com###share-cerceve
 dailysabah.com##.shB > a[onclick*="Share"]
 dailysabah.com##.share
 slideshare.net##.social-share-container
@@ -1189,6 +1201,8 @@ komarovskiy.net##ul[class="social-bookmarks"]
 !
 ! Section contains list general hiding rules
 !
+##[id^="gigya_inline_share_"]
+##div[id^="gigya_share_button"]
 ##.share-facebook
 ###ShareModule
 ###SociaLKare
@@ -1589,7 +1603,6 @@ livejournal.com##.b-ljtimes-wrapper
 ##.social-likes_single-w
 ##.social-line
 ~4pda.ru,~asos.com,~playground.ru##.social-link
-~doorinworld.ru,~sports.ru,~trumpfans.com##.social-links
 ##.social-links-tooltip
 ##.social-love
 ~macrumors.com##.social-media
@@ -1818,9 +1831,10 @@ bitiworld.com##a[title="share on twitter"]
 !-------------------------------------------------------------------------------!
 !-------------- Rules for removing full screen popups --------------------------!
 !-------------------------------------------------------------------------------!
-!#######################################################
-!######### Rules for blocking social popups ############
-!#######################################################
+!
+! Rules for blocking social popups
+!
+uptostream.com###fanback
 teleprogramma.pro##.facebook-bn_site-overlay
 ||ufatime.ru/st/libs/magnific/jquery.magnific-popup.min.js
 tsargrad.tv##.popUp-wrapper
@@ -1831,6 +1845,8 @@ cluber.com.ua##.popup-bg
 !
 ! Section fixing issues caused by social filter
 !
+! https://forum.adguard.com/index.php?threads/12429/
+@@||yastatic.net/share2/share.js$domain=foxtrot.com.ua
 ! https://forum.adguard.com/index.php?threads/12378/
 @@||api.facebook.com/method/links.getStats$domain=grammarly.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2701

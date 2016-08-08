@@ -1,10 +1,10 @@
 ! Title: Russian filter
-! Version: 1.0.37.48
+! Version: 1.0.37.60
 ! Name: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-08-05T15:54:03.900+03:00
+! TimeUpdated: 2016-08-08T21:00:26.003+03:00
 ! Title: Adguard Russian Filter
 !
 ! Filter that enables removing of the ads from websites with Russian content.
@@ -36,6 +36,10 @@
 !
 ! Содержит доменные имена, использующиеся рекламными сетями.
 !
+||adssyscom.com^$third-party
+||dskrt.net^$third-party
+||teamrtb.net^$third-party
+||ropsinde.com^$third-party
 ||yourfoxes.ru^$third-party
 ||linkmyc.com^$popup
 ||toftforcal.com^$third-party
@@ -3622,6 +3626,7 @@ http://v.*.com/x?$third-party
 !
 ! Section contains the list of advertising networks, which are hosted on non advertising sites as subdomains
 !
+||mega.megatorrents.org.ua^
 ||d899.webazilla.com^$third-party
 ||statistic.imgpay.ru^
 ||stats.imgpay.ru^
@@ -3636,6 +3641,15 @@ lifenews78.ru,life.ru,звонки.онлайн,bitru.org,hdrezka.tv,stopgame.ru
 @@||ad.admitad.com/3rd-party/advert.js
 @@||ad.admitad.com/3rd-party/*/cookie/?f=CookieChecker.remoteTest
 !
+! https://forum.adguard.com/index.php?threads/11759/
+@@||happy-hack.ru/*rotat*.js
+happy-hack.ru#$##blockblockX1 {visibility:invisible!important;display:none!important;}
+happy-hack.ru#$##blockblockX1 td {visibility:invisible!important;display:none!important;}
+happy-hack.ru#$##blockblockX1 td p {visibility:invisible!important;display:none!important;}
+happy-hack.ru#$##blockblockY1 {visibility:visible!important;display:block!important;}
+! sports.ru
+@@||pubads.g.doubleclick.net/gampad/ad?iu=*/Pixel$domain=sports.ru
+@@||pagead2.googlesyndication.com/pagead/imgad$domain=sports.ru
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2749
 @@||sdelatvideo.ru/resources/jsc/ads.js
 ! https://forum.adguard.com/index.php?threads/11759/
@@ -4741,8 +4755,9 @@ s4galaxy.ru,3dnews.ru,lenovo-smart.ru#%#Object.defineProperty(window, 'SocialMar
 ! Block web-sockets in old versions of Chtome (older then 47)
 pise4ka.net,nnm-club.me,nnm-club.ws,nnmclub.to,onlainfilm.ucoz.ua,rutor.is,baskino.club,rutor.info,nnm.me,korzik.net,seasonvar.ru,rsload.net,nnm-club.me,nnmclub.to,rustorka.com,auto.mail.ru,horo.mail.ru,realty.mail.ru,health.mail.ru,afisha.mail.ru,cloud.mail.ru,otvet.mail.ru,pogoda.mail.ru,sport.mail.ru,tv.mail.ru,torg.mail.ru,cars.mail.ru,hi-tech.mail.ru#%#window.WebSocket = undefined;
 !
+!
 ! rustorka.com - clickunder
-rustorka.com#%#AG_onLoad(function() { window.utg_click = 1; });
+rustorka.com#%#Object.defineProperty(window, 'start_utg', { get: function() { return; } });
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2607
 tapochek.net#%#document.cookie = "super_popunder = 1";
 ! https://github.com/AdguardTeam/AdguardBrowserExtension/issues/279
@@ -4933,7 +4948,7 @@ focus.ua#$#body.branding-margin .top-menu.shadow { margin-top: -1px!important; }
 ! baibako.tv - удаление отступа сверху
 baibako.tv#$#.topserial { height: 50px!important; }
 ! https://forum.adguard.com/index.php?threads/11436/
-pb.wtf,piratbit.org,piratbit.ru#$#div[class][style="width: 24.1%;"] { position: absolute!important; left: -2000px!important; }
+pb.wtf,piratbit.org,piratbit.ru#$#div[class][style^="width: 24"][style$="%;"] { position: absolute!important; left: -2000px!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2479
 swefilm.tv#$#a[href^="data:text/html;base64"] { position: absolute!important; top: -2000px!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2541
@@ -7003,6 +7018,7 @@ yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by##.navigation-city.navigation-
 ||info.zonasearch.com/ad/admulti*.json
 !#################################################################
 !
+||rustorka.com/forum/misc/js/maen.js
 rustorka.com##div:not([class]):not([id]):not([style]) a[href^="./"]:not([class="small"])
 rustorka.com##span:not([class]):not([id]):not([style]) a[href^="./"]:not([class="small"])
 /http://rustorka.com/forum/[a-z]+.js/$domain=rustorka.com
@@ -7012,6 +7028,12 @@ rustorka.com##a[href^="/"]
 rustorka.com##div:not([id]):not([class]) > :not(div) > span > a
 !rustorka.com##:not(div):not(a):not(form):not(body):not(tbody):not(table):not(b):not(tr):not(td):not(img):not(span):not(html):not(title):not(input):not(select):not(option):not(th):not(i):not(h3):not(br):not(li):not(ul):not(p):not(hr):not(iframe):not(thead):not(h4):not(em):not(h6):not(wbr):not(center):not(fieldset):not(legend):not(label) > a
 !
+||comon.ru/data/js/
+pb.wtf,piratbit.org,piratbit.ru##div[class][style^="width: 24"][style$="%;"]
+probirka.org###adfox-wrapper
+pise4ka.net##.adv-wrapper
+||megatorrents.org.ua/c/*.js
+russiansuka.ru##.wrap-thumbs-inner > div[class="rec-center"][style]
 hronika.info##div[id^="gnezdo_ru"]
 hronika.info##div[id^="bn_"]
 hronika.info##div[id^="n4p_"]
@@ -7052,8 +7074,6 @@ sport.mail.ru##.js-slot-parallax-container
 ||rustorka.com/fgfgf.php$popup
 ||alicdn.com^$domain=fishki.net
 news.mail.ru##.rb-million
-pogoda.yandex.ru,pogoda.yandex.by,pogoda.yandex.ua,pogoda.yandex.kz##.content__top > div[class^="navigation-city "] > div:not([class="navigation-city__controls"])
-pogoda.yandex.ru,pogoda.yandex.by,pogoda.yandex.ua,pogoda.yandex.kz##.info__ratatue > div.info__more.info__map
 ||metalinfo.ru/user/usruploads/images/banners/
 metalinfo.ru##.bannerimage
 metalinfo.ru##.bannerflash
@@ -8540,7 +8560,6 @@ mamcompany.ru##.img_ban
 101.ru##.ind-adv-carousel
 hh.ru##.index-banner
 letitbit.net##.info-pnl
-pogoda.yandex.ru##.info.info_pos_2 > div[class^="info__more info__map "]:not([class="info__map"]):not(.info__more_neighbor_abs)
 softodrom.ru##.info_row > .nobottom
 freakenergy.ru##.inform_wd
 sinoptik.com.ru,sinoptik.ua##.informerTop
@@ -9365,7 +9384,7 @@ minfin.com.ua##a[href*="holder.com.ua/"]
 stranamam.ru##a[href*="http://beta.mediafort.ru/textclick.php?id="]
 sp.ngs.ru##a[href*="http://reklama.ngs.ru"]
 hdkinoklub.ru##a[href*="http://slotobar.com/ru/?partner="]
-cwer.ru##a[href*="http://torr.mediaget.com/"]
+cwer.ru,cwer.ws##a[href*="http://torr.mediaget.com/"]
 stranamam.ru##a[href*="http://www.stranamam.ru/sp/cycloferon/?fxn="]
 myzuka.ru,riper.am##a[href*="https://joycasino.com/"]
 pirat.ca##a[href*="joycasino.com/"]
@@ -9796,7 +9815,6 @@ proxfree.com##div[class$="Ads"]
 moeobrazovanie.ru##div[class$="Bn"]
 fraza.ua,omskinform.ru##div[class$="_banner"]
 auto.ru##div[class$="_layout_horizontal"][style*="display: block"] > *
-pogoda.yandex.ru##div[class$="adbca_js_inited"]
 bigmir.net##div[class$="b-branding_static"]
 rambler.ru##div[class$="b-guides__item_banner><div class="]
 footboom.com##div[class$="b-test-bg-link"]
@@ -9902,7 +9920,6 @@ softconvert.ru##div[class^="cc_mod_"]
 tribuna.com##div[class^="clever-"]
 ixbt.com##div[class^="clickable_zone"]
 ircity.ru##div[class^="cr_advert"]
-pogoda.yandex.ru##div[class^="current-weather navigation-city "] > div[class*="__"]
 animevost.org##div[class^="headbg"] > a[target="_blank"]
 afisha.mail.ru##div[class^="incut rb_"]
 otvet.mail.ru##div[class^="inf_auto_for"]
@@ -12651,6 +12668,12 @@ http://*.space^$script,domain=free-torrent.org|free-torrents.org|jpgstore.ru|pic
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1830
 @@||vetton.ru^$jsinject,elemhide
 !#################
+! https://github.com/AdguardTeam/AdguardFilters/issues/2353
+@@||tube.buzzoola.com/new/build/buzzlibrary.js$domain=anidub-online.ru
+@@||tube.buzzoola.com^$domain=player.adcdn.tv
+@@||exchange.buzzoola.com/video_event/$xmlhttprequest,domain=player.adcdn.tv
+@@||exchange.buzzoola.com/adn/$xmlhttprequest,domain=player.adcdn.tv
+@@||devlogmill.buzzoola.com/api/$xmlhttprequest,domain=player.adcdn.tv
 ! https://forum.adguard.com/index.php?threads/12381/
 @@||plektan.com^$xmlhttprequest
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2750
@@ -12669,7 +12692,7 @@ kma.biz#@#.adv
 ! https://forum.adguard.com/index.php?threads/12027/
 @@||radio-archive.ru/js/banners.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2305
-@@||rustorka.com/forum/misc/js/*.js
+@@||rustorka.com/forum/misc/js/jquery
 ! planeta.ru - admin panel
 @@||admin*.planeta.ru^$document
 ! https://forum.adguard.com/index.php?threads/11850/
@@ -13257,8 +13280,6 @@ beon.ru#@#.leftbanner
 @@||newayseurasia.com/assets/images/banners/
 @@||nikken.ru/images/banners/
 @@||nnpcto.ru/banners/
-! http://forum.adguard.com/showthread.php?4430 [/informer*.js$third-part]
-@@||yastatic.net/weather-frontend^$domain=pogoda.yandex.ru
 ! http://forum.adguard.com/showthread.php?2228-Adguard-%D0%90%D0%BD%D1%82%D0%B8%D0%B1%D0%B0%D0%BD%D0%BD%D0%B5%D1%80&p=47161#post47161
 @@||ads.adfox.ru^$domain=life.ru
 @@||solution.weborama.fr^$domain=life.ru

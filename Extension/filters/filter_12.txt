@@ -1,10 +1,10 @@
 ! Title: Safari filter
-! Version: 1.0.1.5
+! Version: 1.0.1.8
 ! Name: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! NameEn: Safari filter
 ! DescriptionEn: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
-! TimeUpdated: 2016-08-05T15:55:28.514+03:00
+! TimeUpdated: 2016-08-08T18:01:43.833+03:00
 ! Title: Adguard Safari Filter
 !
 ! Special filter for Safari. We need a separate filter for Safari because it does not fully support rules syntax.
@@ -108,6 +108,8 @@ ad4msan.com#@##adsense
 ! Section contains rules, which absent in Safari filters
 !
 !----- Advertising networks ------------
+! https://github.com/AdguardTeam/AdguardFilters/issues/2766
+||adition.com^$third-party
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2515
 ||v.fwmrm.net^$third-party
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2064
@@ -163,6 +165,12 @@ telegraaf.nl##.section-ad
 !
 ! TEMPORARY: free-torrents.org - until web-sockets are not blocked by content-blocker
 free-torrents.org,free-torrent.org##body > :not(div)
+! https://github.com/AdguardTeam/AdguardFilters/issues/2766
+quoka.de###div-gpt-ad-banner
+! https://forum.adguard.com/index.php?threads/11186/
+uptobox.com##.ad-square
+! https://forum.adguard.com/index.php?threads/11186/
+uptobox.com##.ad-square
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2744
 ||st.kp.yandex.net/images/bnnr/$domain=kinopoisk.ru
 kinopoisk.ru###brandingFlash
@@ -226,6 +234,9 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 !
 ! White list. Fixing content blocking API issues.
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/2112
+@@||googleadservices.com/pagead/aclk?*&adurl=
+@@||xg4ken.com/trk/*&adgroupid=
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2751
 @@||analytics.edgesuite.net^$domain=foxnews.com
 @@||global.fncstatic.com/static/v/all/js/ads.js$domain=foxnews.com
