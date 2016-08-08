@@ -271,7 +271,9 @@
             applyScripts(response.scripts);
         }
 
-        addIframeHidingStyle();
+        if (response && response.selectors && response.selectors.length > 0) {
+            addIframeHidingStyle();
+        }
     };
     
     /**
