@@ -18,7 +18,7 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.9';
+var CONVERTER_VERSION = '1.3.10';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var URL_FILTER_ANY_URL = ".*";
@@ -352,6 +352,34 @@ exports.SafariContentBlockerConverter = {
             }
         },
 
+        _validateRegExp: function (regExp) {
+            // Safari doesn't support {digit} in regular expressions
+            if (regExp.match(/\{\d*.\}/g)) {
+                throw new Error("Safari doesn't support '{digit}' in regular expressions");
+            }
+
+            // Safari doesn't support | in regular expressions
+            if (regExp.match(/[^\\]+\|+\S*/g)) {
+                throw new Error("Safari doesn't support '|' in regular expressions");
+            }
+
+            // Safari doesn't support non-ASCII characters in regular expressions
+            if (regExp.match(/[^\x00-\x7F]/g)) {
+                throw new Error("Safari doesn't support non-ASCII characters in regular expressions");
+            }
+
+            // Safari doesn't support negative lookahead (?!...) in regular expressions
+            if (regExp.match(/\(\?!.*\)/g)) {
+                throw new Error("Safari doesn't support negative lookahead in regular expressions");
+            }
+
+
+            // Safari doesn't support metacharacters in regular expressions
+            if (regExp.match(/[^\\]\\[bBdDfnrsStvwW]/g)) {
+                throw new Error("Safari doesn't support metacharacters in regular expressions");
+            }
+        },
+
         convertUrlFilterRule: function (rule) {
 
             var urlFilter = this._createUrlFilterString(rule);
@@ -360,25 +388,7 @@ exports.SafariContentBlockerConverter = {
             urlFilter = StringUtils.replaceAll(urlFilter, UrlFilterRule.REGEXP_START_URL, URL_FILTER_REGEXP_START_URL);
             urlFilter = StringUtils.replaceAll(urlFilter, UrlFilterRule.REGEXP_SEPARATOR, URL_FILTER_REGEXP_SEPARATOR);
 
-            // Safari doesn't support {digit} in regular expressions
-            if (urlFilter.match(/\{\d*.\}/g)) {
-                throw new Error("Safari doesn't support '{digit}' in regular expressions");
-            }
-
-            // Safari doesn't support | in regular expressions
-            if (urlFilter.match(/[^\\]+\|+\S*/g)) {
-                throw new Error("Safari doesn't support '|' in regular expressions");
-            }
-
-            // Safari doesn't support non-ASCII characters in regular expressions
-            if (urlFilter.match(/[^\x00-\x7F]/g)) {
-                throw new Error("Safari doesn't support non-ASCII characters in regular expressions");
-            }
-
-            // Safari doesn't support negative lookahead (?!...) in regular expressions
-            if (urlFilter.match(/\(\?!.*\)/g)) {
-                throw new Error("Safari doesn't support negative lookahead in regular expressions");
-            }
+            this._validateRegExp(urlFilter);
 
             var result = {
                 trigger: {
