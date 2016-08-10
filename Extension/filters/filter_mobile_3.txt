@@ -1,10 +1,10 @@
 ! Title: Spyware filter
-! Version: 1.0.7.18
+! Version: 1.0.7.20
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
 ! NameEn: Spyware filter
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2016-08-08T19:00:39.924+03:00
+! TimeUpdated: 2016-08-10T13:00:37.683+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -1855,6 +1855,8 @@ echo.msk.ru$$script[tag-content="s=screen;"][max-length="200"]
 ||zoomanalytics.co^$third-party
 ||zoosnet.net^$third-party
 ||zqtk.net^$third-party
+||hi.hellobar.com^
+||ping.hellobar.com^
 |http://r.i.ua^
 ||x.ligatus.com^$third-party
 ||ct.pinterest.com^
@@ -1990,6 +1992,7 @@ echo.msk.ru$$script[tag-content="s=screen;"][max-length="200"]
 /zz.gif?url=
 ://top.*/count/cnt.php?
 _tracking.php?b=
+||hellobar.com/ping?
 ||ebaystatic.com/js/v/in/roverlv.js
 ||ebayrtm.com/rtm?RtmGetCapJs
 ||mail.ru/grstat?
@@ -2361,6 +2364,7 @@ washingtonpost.com##.social-tools-wrapper-bottom
 ||do-not-tracker.org^$third-party
 ||eviltracker.net^$third-party
 ||trackersimulator.org^$third-party
+@@||dispatcher.oewabox.at^$domain=krone.at
 @@||wix-dashboard.visitor-analytics.net/backoffice/restricted-demo$domain=wix.com
 @@||nmac.to/cdn-cgi/pe/bag2?r[]=*google-analytics.com
 @@||nmac.to/cdn-cgi/pe/bag2?r[]=*histats.com

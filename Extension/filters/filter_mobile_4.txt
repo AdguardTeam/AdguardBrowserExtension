@@ -1,10 +1,10 @@
 ! Title: Social media filter
-! Version: 1.0.11.44
+! Version: 1.0.11.50
 ! Name: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2016-08-08T21:00:52.814+03:00
+! TimeUpdated: 2016-08-10T14:00:57.511+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -220,9 +220,26 @@ maskme.ru#$#img[width="88"][height="31"] {visibility: hidden!important;}
 gamesradar.com#$#.shareSocialArticle-wrap { visibility: hidden; }
 softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ||mimimi.tv/?*=*&_=
+medyatava.net##.share_icons
+theverge.com##.feature-photos-share-tool
+gizmodo.com.au##.share-buttons
+webrazzi.com##.sharrre
+izlesene.com##.share
+izlesene.com##.share_vid
+webtekno.com##.share-container
+alkislarlayasiyorum.com##.socialBtn
+macadogru.com.tr##.d-share
+ofpof.com##.sosyal-sabitle
+ofpof.com###facebook_begen
+karar.com##a[class^="social"]
+dunyavegercekler.com##.social-wrapper > :not([class="font-size"])
+dunyavegercekler.com##.right-social-wrapper
+egehaber.com##.jssocials-shares
+auto.ru##.catalog-generation__share
 forbes.ru##.socnet_shares_cont
 forbes.com##div[article-sharing]
 forbes.ru##.socnet_left_float
+steambuy.com##.vk-group
 hollywood.com##.social-box
 hollywood.com##.facebook-btn
 hollywood.com##.twitter-btn
@@ -1068,6 +1085,7 @@ kinopoisk.ru##ul[class="addTo"]
 ||widget.breakingburner.com/js/jwidget.js$domain=novayagazeta.ru
 ||wow.ya.ru/ajax/share-counter.xml$third-party
 ||yandex.st/share/static/b-share-icon.png
+##.share-list
 ##[id^="gigya_inline_share_"]
 ##div[id^="gigya_share_button"]
 ##.share-facebook
@@ -1695,6 +1713,7 @@ bitiworld.com##a[title="share on twitter"]
 ~androeed.ru,~facebook.com##input.fb
 ~twitter.com##input.tweet
 ~vk.com,~vkontakte.ru##input.vk
+/wp-content/plugins/facebook-fanbox-popup/*
 uptostream.com###fanback
 teleprogramma.pro##.facebook-bn_site-overlay
 ||ufatime.ru/st/libs/magnific/jquery.magnific-popup.min.js

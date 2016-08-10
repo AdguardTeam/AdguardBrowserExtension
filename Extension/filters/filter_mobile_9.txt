@@ -1,10 +1,10 @@
 ! Title: Spanish/Portuguese filter
-! Version: 1.0.86.29
+! Version: 1.0.86.30
 ! Name: Spanish/Portuguese filter
 ! Description: Adguard Spanish/Portuguese filter. Filter list that specifically removes adverts on Spanish and Portuguese language websites.
 ! NameEn: Spanish/Portuguese filter
 ! DescriptionEn: Adguard Spanish/Portuguese filter. Filter list that specifically removes adverts on Spanish and Portuguese language websites.
-! TimeUpdated: 2016-08-03T18:47:52.716+03:00
+! TimeUpdated: 2016-08-09T18:02:21.611+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -101,6 +101,7 @@
 ||xclk-integracion.com^$third-party
 ||yestorrents.org^$third-party
 ||zebestof.com^$third-party
+@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=vmf.edge-apps.net
 tustoons.blogspot.com.es#@#.afs_ads
 peru21.pe#@#.adstop
 @@||static.folha.uol.com.br/paywall/*/publicidade.ads.js

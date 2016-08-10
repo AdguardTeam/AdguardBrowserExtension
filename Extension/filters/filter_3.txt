@@ -1,10 +1,10 @@
 ! Title: Spyware filter
-! Version: 1.0.7.18
+! Version: 1.0.7.20
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
 ! NameEn: Spyware filter
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2016-08-08T19:00:39.924+03:00
+! TimeUpdated: 2016-08-10T13:00:37.683+03:00
 ! Title: Adguard Spyware Filter
 !
 ! The most comprehensive list of various online counters and web analytics tools.
@@ -2856,6 +2856,8 @@ popmech.ru#%#AG_onLoad(function() { window.POPMECH.increaseCounters = function()
 !
 ! Section contains the list of tracking servers, which are hosted on useful sites as subdomains
 !
+||hi.hellobar.com^
+||ping.hellobar.com^
 |http://r.i.ua^
 ||x.ligatus.com^$third-party
 ||ct.pinterest.com^
@@ -2999,6 +3001,7 @@ _tracking.php?b=
 !-------------- Specific web sites ---------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+||hellobar.com/ping?
 ||ebaystatic.com/js/v/in/roverlv.js
 ||ebayrtm.com/rtm?RtmGetCapJs
 ||mail.ru/grstat?
@@ -3378,6 +3381,8 @@ washingtonpost.com##.social-tools-wrapper-bottom
 !-------------- Whitelist ------------------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/2774
+@@||dispatcher.oewabox.at^$domain=krone.at
 ! https://forum.adguard.com/index.php?threads/12365/
 @@||wix-dashboard.visitor-analytics.net/backoffice/restricted-demo$domain=wix.com
 ! https://forum.adguard.com/index.php?threads/12020/

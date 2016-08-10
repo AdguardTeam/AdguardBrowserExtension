@@ -1,10 +1,10 @@
 ! Title: Social media filter
-! Version: 1.0.11.44
+! Version: 1.0.11.50
 ! Name: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2016-08-08T21:00:52.814+03:00
+! TimeUpdated: 2016-08-10T14:00:57.511+03:00
 ! Title: Adguard Social Media Filter
 !
 ! If you do not like numerous «Like» and «Tweet» buttons on all the popular websites on the Internet,
@@ -289,9 +289,26 @@ softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2146
 ||mimimi.tv/?*=*&_=
 !
+medyatava.net##.share_icons
+theverge.com##.feature-photos-share-tool
+gizmodo.com.au##.share-buttons
+webrazzi.com##.sharrre
+izlesene.com##.share
+izlesene.com##.share_vid
+webtekno.com##.share-container
+alkislarlayasiyorum.com##.socialBtn
+macadogru.com.tr##.d-share
+ofpof.com##.sosyal-sabitle
+ofpof.com###facebook_begen
+karar.com##a[class^="social"]
+dunyavegercekler.com##.social-wrapper > :not([class="font-size"])
+dunyavegercekler.com##.right-social-wrapper
+egehaber.com##.jssocials-shares
+auto.ru##.catalog-generation__share
 forbes.ru##.socnet_shares_cont
 forbes.com##div[article-sharing]
 forbes.ru##.socnet_left_float
+steambuy.com##.vk-group
 hollywood.com##.social-box
 hollywood.com##.facebook-btn
 hollywood.com##.twitter-btn
@@ -1201,6 +1218,7 @@ komarovskiy.net##ul[class="social-bookmarks"]
 !
 ! Section contains list general hiding rules
 !
+##.share-list
 ##[id^="gigya_inline_share_"]
 ##div[id^="gigya_share_button"]
 ##.share-facebook
@@ -1833,6 +1851,8 @@ bitiworld.com##a[title="share on twitter"]
 !-------------------------------------------------------------------------------!
 !
 ! Rules for blocking social popups
+!
+/wp-content/plugins/facebook-fanbox-popup/*
 !
 uptostream.com###fanback
 teleprogramma.pro##.facebook-bn_site-overlay

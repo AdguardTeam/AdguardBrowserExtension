@@ -1,10 +1,10 @@
 ! Title: Russian filter
-! Version: 1.0.37.60
+! Version: 1.0.37.66
 ! Name: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 ! NameEn: Russian filter
 ! DescriptionEn: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-08-08T21:00:26.003+03:00
+! TimeUpdated: 2016-08-09T21:00:28.709+03:00
 ! Title: Adguard Russian Filter
 !
 ! Filter that enables removing of the ads from websites with Russian content.
@@ -36,6 +36,14 @@
 !
 ! Содержит доменные имена, использующиеся рекламными сетями.
 !
+||wlbann.com^$third-party
+||rofhathe.com^$third-party
+||nrzcj.top^$third-party
+||wecai.us^$third-party
+||uwuyn.us^$third-party
+||slejv.space^$third-party
+||svotu.top^$third-party
+||oupox.club^$third-party
 ||adssyscom.com^$third-party
 ||dskrt.net^$third-party
 ||teamrtb.net^$third-party
@@ -5393,6 +5401,8 @@ http://*.*.space/s/*.js$third-party
 http://*.space/js/*.js?$third-party
 ! Sample: http://manystars.ru/
 .pw/jsonp.php?b=
+.us/jsonp.php?b=
+.club/jsonp.php?b=
 .space/jsonp.php?b=
 .xyz/jsonp.php?b=
 /?bn=*&ad=
@@ -7019,15 +7029,23 @@ yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by##.navigation-city.navigation-
 !#################################################################
 !
 ||rustorka.com/forum/misc/js/maen.js
+rustorka.com##a[href^="./"] > div
+rustorka.com##a[href^="./"] > p
+/http:\/\/rustorka.com\/[a-z]+\.js/$domain=rustorka.com
 rustorka.com##div:not([class]):not([id]):not([style]) a[href^="./"]:not([class="small"])
 rustorka.com##span:not([class]):not([id]):not([style]) a[href^="./"]:not([class="small"])
-/http://rustorka.com/forum/[a-z]+.js/$domain=rustorka.com
 /http:\/\/rustorka.com\/[a-z0-9]+\.(jpg|gif)/$image,domain=rustorka.com
-/http:\/\/rustorka.com\/[a-z]+\.js/$domain=rustorka.com
-rustorka.com##a[href^="/"]
-rustorka.com##div:not([id]):not([class]) > :not(div) > span > a
 !rustorka.com##:not(div):not(a):not(form):not(body):not(tbody):not(table):not(b):not(tr):not(td):not(img):not(span):not(html):not(title):not(input):not(select):not(option):not(th):not(i):not(h3):not(br):not(li):not(ul):not(p):not(hr):not(iframe):not(thead):not(h4):not(em):not(h6):not(wbr):not(center):not(fieldset):not(legend):not(label) > a
 !
+sports.ru##iframe[src^="http:///www1.wlbann.com/"]
+sports.ru##.mainPart > [class^="bets"]
+auto.ru##div[class][style="display: block !important"] > div[class$="__item_no-photo"]
+auto.ru##div[style="display: block !important"] > div[class$="stat_js_inited"]
+auto.ru##div[class$=" sidebar__block"][style="display: block !important"] > div[class]
+||nude-moon.com/news.js
+||s3.amazonaws.com/js-cache/$domain=nude-moon.com
+||p.nude-moon.com^
+||comicsgo.net/rec/
 ||comon.ru/data/js/
 pb.wtf,piratbit.org,piratbit.ru##div[class][style^="width: 24"][style$="%;"]
 probirka.org###adfox-wrapper
@@ -9264,7 +9282,7 @@ riotpixels.com##.zzz1
 /partners/*$third-party,domain=bestgamer.ru
 /pics/bn/*$domain=tavto.ru
 /preroll.js$domain=goha.ru
-/protJS/*$domain=appspot.com|armourbook.com|cristals.ga|dsvload.net|estasos.ru|foto-click.net|freeimg.ru|game-rust.ru|hentaichan.me|img24.org|imgchilibum.ru|imgclick.ru|kinoshek.net|kiryandrsoft.org|loftlm.ru|makeserver.kz|mapakids.net|moskva-tv.com|mskd-ru.net|myru.tv|nod32-key2016.ru|nolamers.net|online-porno.club|payforpic.ru|pic4share.ru|piccash.net|pics2share.ru|picspeed.ru|picusha.net|pitsib.org|playlist24.ru|pornoisland.org|pornopda.net|pslan.com|publicagent.ru|socola.ru|stopsid.ru|svetmonet.ru|torrent-telik.com|torrents-pornoclub.org|torrentx.net|unionpeer.org|uralsoft.net|uzhgorod.name|xsheet.ru|yellosoft-club.ru|mega-pics-money.ru
+/protJS/*$domain=appspot.com|armourbook.com|cristals.ga|dsvload.net|estasos.ru|foto-click.net|freeimg.ru|game-rust.ru|hentaichan.me|img24.org|imgchilibum.ru|imgclick.ru|kinoshek.net|kiryandrsoft.org|loftlm.ru|makeserver.kz|mapakids.net|moskva-tv.com|mskd-ru.net|myru.tv|nod32-key2016.ru|nolamers.net|online-porno.club|payforpic.ru|pic4share.ru|piccash.net|pics2share.ru|picspeed.ru|picusha.net|pitsib.org|playlist24.ru|pornoisland.org|pornopda.net|pslan.com|publicagent.ru|socola.ru|stopsid.ru|svetmonet.ru|torrent-telik.com|torrents-pornoclub.org|torrentx.net|unionpeer.org|uralsoft.net|uzhgorod.name|xsheet.ru|yellosoft-club.ru|mega-pics-money.ru|nude-moon.com
 /rose.ixbt.
 /show.php?id=$domain=baskino.club|bobfilm1.net|fastpic.ru|kino-dom.org|kino-live2.org|kino777.ru|kinobanda.net|kinogo.co|kinogo2.net|kinokong.net|libtor.net|mrutor.org|smotri-filmi.net|super-kino.org|tfilm.me|tushkan.tv
 /show.php?id=$third-party,domain=hd720.biz|kino-serial.net|kinogo-2016.net|kinogorod.net|kinokrad.net|nice-film.ru
