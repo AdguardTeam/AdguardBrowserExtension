@@ -16,7 +16,13 @@ var assertEmpty = function (value) {
 	}
 };
 
-var assertEquals = function (actual, expected) {
+var assertNull = function(value) {
+	if (value !== null) {
+		throw new Error(value + ' is not null');
+	}
+};
+
+var assertEquals = function (expected, actual) {
 	if (actual !== expected) {
 		throw new Error(actual + ' !== ' + expected);
 	}
@@ -41,6 +47,8 @@ var addTestCase = function (test) {
 };
 
 var runTests = function () {
+	var failed = [];
+	var passed = [];
 	for (var i = 0; i < tests.length; i++) {
 		var testName = _getTestName(i);
 
@@ -49,12 +57,24 @@ var runTests = function () {
 			_logDebug(testName + ': Start');
 			tests[i]();
 			_logDebug(testName + ': Finish. Elapsed: ' + (new Date().getTime() - startTime) + 'ms');
+			passed.push(testName);
 		} catch (ex) {
 			_logDebug(testName + ': Error. Elapsed: ' + (new Date().getTime() - startTime) + 'ms');
 			console.error(ex);
+			failed.push(testName);
 		}
 	}
-	console.info('Tests passed: ' + tests.length);
+	console.info('Tests passed: ' + passed);
+	console.info('Tests failed: ' + failed);
+	var html = '<h2>Result</h2><p>Passed: ' + passed.length + '<br/>Failed: ' + failed.length + '</p>';
+	if (failed.length) {
+		html += '<h3>Failed tests</h3><p>';
+		for (var i = 0; i < failed.length; i++) {
+			html += failed[i] + '<br/>';
+		}
+		html += '</p>';
+	}
+	document.body.innerHTML = html;
 };
 
 var _logDebug = function(message) {

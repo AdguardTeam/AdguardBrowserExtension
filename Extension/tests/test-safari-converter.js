@@ -225,10 +225,10 @@ function testRegexpRules() {
 
     ruleText = "@@/:\/\/.*[.]wp[.]pl\/[a-z0-9_]{30,50}[.][a-z]{2,5}[/:&?]?/";
     result = SafariContentBlockerConverter.convertArray([ ruleText ]);
-    assertEquals(1, result.convertedCount);
-    assertEquals(0, result.errorsCount);
+    assertEquals(0, result.convertedCount);
+    assertEquals(1, result.errorsCount);
 
-    ruleText = "@@/:\/\/.*[.]wp[.]pl\/[a-z0-9_]{30,50}[.][a-z]{2,6}\\b/";
+    ruleText = "@@/:\/\/.*[.]wp[.]pl\/[a-z0-9_]+[.][a-z]+\\b/";
     result = SafariContentBlockerConverter.convertArray([ ruleText ]);
     assertEquals(0, result.convertedCount);
     assertEquals(1, result.errorsCount);

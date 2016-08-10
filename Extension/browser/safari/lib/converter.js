@@ -18,7 +18,7 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.10';
+var CONVERTER_VERSION = '1.3.11';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var URL_FILTER_ANY_URL = ".*";
@@ -354,7 +354,7 @@ exports.SafariContentBlockerConverter = {
 
         _validateRegExp: function (regExp) {
             // Safari doesn't support {digit} in regular expressions
-            if (regExp.match(/\{\d*.\}/g)) {
+            if (regExp.match(/\{[0-9,]+\}/g)) {
                 throw new Error("Safari doesn't support '{digit}' in regular expressions");
             }
 
