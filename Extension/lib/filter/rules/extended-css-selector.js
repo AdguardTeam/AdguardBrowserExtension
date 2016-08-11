@@ -17,8 +17,6 @@
 
 /**
  * Extended selector class
- *
- * TODO: Create tests
  */
 var ExtendedSelector = (function () {
 
@@ -58,12 +56,12 @@ var ExtendedSelector = (function () {
                 return null;
             }
 
-            var extClassBlock = selector.substring(nameStartIndex, nameEndIndex);
+            var extClassBlock = selector.substring(nameStartIndex, nameEndIndex + 1);
 
             var value = null;
             var valueIndex = extClassBlock.indexOf('=');
             if (valueIndex > 0) {
-                value = extClassBlock.substring(valueIndex + 1, extClassBlock.length - 1);
+                value = extClassBlock.substring(valueIndex + 2, extClassBlock.length - 2);
             }
 
             return {
@@ -102,13 +100,11 @@ var ExtendedSelector = (function () {
         return false;
     };
 
-
-    return function (selectorText) {
-
+    var queryAll = function (selectorText) {
         var extendedClasses = extractExtendedPseudoClasses(selectorText);
         var commonSelector = extractCommonSelector(selectorText, extendedClasses);
 
-        var queryAll = function () {
+        var query = function () {
             var result = [];
             var elements = document.querySelectorAll(commonSelector);
             var iElements = elements.length;
@@ -121,6 +117,12 @@ var ExtendedSelector = (function () {
             return result;
         };
 
-        return queryAll();
+        return query();
+    };
+
+    return {
+        queryAll: queryAll,
+        extractCommonSelector: extractCommonSelector,
+        extractExtendedPseudoClasses: extractExtendedPseudoClasses
     }
 })();
