@@ -85,7 +85,19 @@ var ExtendedSelector = (function () {
     };
 
     var checkExtendedClasses = function (element, extendedClasses) {
-        // TODO: Implement
+        for (var i = 0; i < extendedClasses.length; i++) {
+            var extClass = extendedClasses[i];
+
+            if (extClass.extClass == EXTENDED_PSEUDO_CLASS_HAS) {
+                if (element.querySelector(extClass.value)) {
+                    return true;
+                }
+            } else if (extClass.extClass == EXTENDED_PSEUDO_CLASS_CONTAINS) {
+                if (element.innerHTML.indexOf(extClass.value) >= 0) {
+                    return true;
+                }
+            }
+        }
     };
 
 
