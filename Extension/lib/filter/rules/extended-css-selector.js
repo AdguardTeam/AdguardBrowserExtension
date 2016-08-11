@@ -98,6 +98,8 @@ var ExtendedSelector = (function () {
                 }
             }
         }
+
+        return false;
     };
 
 
