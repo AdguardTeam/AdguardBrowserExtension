@@ -31,7 +31,7 @@ var ExtendedSelector = (function () {
         for (var i = 0; i < extendedClasses.length; i++) {
             var extClass = extendedClasses[i];
             if (result.indexOf(extClass.extClassBlock) >= 0) {
-                result.replace(extClass.extClassBlock, '');
+                result = result.replace(extClass.extClassBlock, '');
             }
         }
 
@@ -100,7 +100,16 @@ var ExtendedSelector = (function () {
         return false;
     };
 
-    var queryAll = function (selectorText) {
+    var selector = function (selectorText) {
+        var parser = new CssSelectorParser();
+        parser.registerSelectorPseudos(EXTENDED_PSEUDO_CLASS_HAS, EXTENDED_PSEUDO_CLASS_CONTAINS);
+        parser.registerNestingOperators('>', '+', '~');
+        parser.registerAttrEqualityMods('^', '$', '*', '~');
+        parser.enableSubstitutes();
+
+        var p = parser.parse(selectorText);
+        //console.warn(p);
+
         var extendedClasses = extractExtendedPseudoClasses(selectorText);
         var commonSelector = extractCommonSelector(selectorText, extendedClasses);
 
@@ -108,21 +117,21 @@ var ExtendedSelector = (function () {
             var result = [];
             var elements = document.querySelectorAll(commonSelector);
             var iElements = elements.length;
-            while (--iElements) {
+            while (iElements > 0 && --iElements) {
                 var element = elements[iElements];
-                if (checkExtendedClasses(element, extendedClasses)) {
+                if (element && checkExtendedClasses(element, extendedClasses)) {
                     result.push(element);
                 }
             }
             return result;
         };
 
-        return query();
+        return {
+            queryAll: query,
+            extendedPseudoClasses: extendedClasses,
+            commonSelector: commonSelector
+        }
     };
 
-    return {
-        queryAll: queryAll,
-        extractCommonSelector: extractCommonSelector,
-        extractExtendedPseudoClasses: extractExtendedPseudoClasses
-    }
+    return selector;
 })();

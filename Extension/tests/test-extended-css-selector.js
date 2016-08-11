@@ -6,29 +6,39 @@
 /* global assertTrue */
 /* global ExtendedSelector */
 
-function testExtendedSelector() {
+function testExtendedPseudoClasses() {
 
-    var extendedPseudoClasses = ExtendedSelector.extractExtendedPseudoClasses('div');
+    var extendedPseudoClasses = ExtendedSelector('div').extendedPseudoClasses;
     assertNotNull(extendedPseudoClasses);
     assertEquals(0, extendedPseudoClasses.length);
 
-    extendedPseudoClasses = ExtendedSelector.extractExtendedPseudoClasses('div[-ext-wrong-class]');
+    extendedPseudoClasses = ExtendedSelector('div[-ext-wrong-class]').extendedPseudoClasses;
     assertNotNull(extendedPseudoClasses);
     assertEquals(0, extendedPseudoClasses.length);
 
-    extendedPseudoClasses = ExtendedSelector.extractExtendedPseudoClasses('div[-ext-has="> div"]');
+    extendedPseudoClasses = ExtendedSelector('div[-ext-has="> div"]').extendedPseudoClasses;
     assertNotNull(extendedPseudoClasses);
     assertEquals(1, extendedPseudoClasses.length);
     assertEquals('-ext-has', extendedPseudoClasses[0].extClass);
     assertEquals('> div', extendedPseudoClasses[0].value);
 
-    extendedPseudoClasses = ExtendedSelector.extractExtendedPseudoClasses('[-ext-has="> div"]');
+    extendedPseudoClasses = ExtendedSelector('[-ext-has="> div"]').extendedPseudoClasses;
     assertNotNull(extendedPseudoClasses);
     assertEquals(1, extendedPseudoClasses.length);
 
-    extendedPseudoClasses = ExtendedSelector.extractExtendedPseudoClasses('div[-ext-has="> div"][-ext-contains="advert"]');
+    extendedPseudoClasses = ExtendedSelector('div[-ext-has="> div"][-ext-contains="advert"]').extendedPseudoClasses;
     assertNotNull(extendedPseudoClasses);
     assertEquals(2, extendedPseudoClasses.length);
+}
+
+addTestCase(testExtendedPseudoClasses);
+
+function testExtendedSelector() {
+    var extendedSelector = ExtendedSelector('div[-ext-contains="test"]');
+    assertEquals('div', extendedSelector.commonSelector);
+
+    var elements = extendedSelector.queryAll();
+    //console.warn(elements);
 }
 
 addTestCase(testExtendedSelector);
