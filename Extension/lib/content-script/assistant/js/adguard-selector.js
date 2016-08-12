@@ -486,6 +486,9 @@ var AdguardSelectorLib = (function (api, $) {
     };
 
     var elementTouchendHandler = function (e) {
+
+        if ($(e.target).hasClass(IGNORED_CLASS)) return false;
+
         e.stopPropagation();
 
         if (needIgnoreTouchEvent()) {
