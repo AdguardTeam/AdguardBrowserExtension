@@ -101,14 +101,19 @@ var ExtendedSelector = (function () {
     };
 
     var selector = function (selectorText) {
+        var s = selectorText.replace(/\[-ext-([a-z-_]+)=(["'])((?:(?=(\\?))\4.)*?)\2\]/g, ':$1($3)');
+
         var parser = new CssSelectorParser();
-        parser.registerSelectorPseudos(EXTENDED_PSEUDO_CLASS_HAS, EXTENDED_PSEUDO_CLASS_CONTAINS);
+        parser.registerSelectorPseudos('has', 'contains');
         parser.registerNestingOperators('>', '+', '~');
         parser.registerAttrEqualityMods('^', '$', '*', '~');
         parser.enableSubstitutes();
 
-        var p = parser.parse(selectorText);
-        //console.warn(p);
+        var parsed = parser.parse(s);
+        console.warn(parsed);
+
+
+
 
         var extendedClasses = extractExtendedPseudoClasses(selectorText);
         var commonSelector = extractCommonSelector(selectorText, extendedClasses);
