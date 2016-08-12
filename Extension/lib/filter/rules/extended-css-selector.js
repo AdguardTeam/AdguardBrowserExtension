@@ -24,7 +24,6 @@ var ExtendedSelector = (function () {
     var EXTENDED_PSEUDO_CLASS_CONTAINS = '-ext-contains';
     var EXTENDED_PSEUDO_CLASSES = [EXTENDED_PSEUDO_CLASS_HAS, EXTENDED_PSEUDO_CLASS_CONTAINS];
 
-
     var extractCommonSelector = function (selector, extendedClasses) {
         var result = selector;
 
@@ -112,76 +111,50 @@ var ExtendedSelector = (function () {
         var parsed = parser.parse(s);
         console.warn(parsed);
 
-        //if (parsed.type == 'ruleSet') {
-        //    var rule = parsed.rule;
-        //    console.log(rule);
-        //}
+        //var extendedClasses = extractExtendedPseudoClasses(selectorText);
+        //var commonSelector = extractCommonSelector(selectorText, extendedClasses);
 
-        var extendedClasses = extractExtendedPseudoClasses(selectorText);
-        var commonSelector = extractCommonSelector(selectorText, extendedClasses);
+        var filter = function(elements, parsedSelector) {
+            console.log('Filtering for selector:');
+            console.log(parsedSelector);
+            console.log(elements.length);
 
-        var query = function () {
-            //var elements = document.querySelectorAll("*");
+            var result = [];
 
-            var filter = function(elements, parsedSelector) {
-                console.log('Filtering for selector:');
-                console.log(parsedSelector);
-                console.log(elements.length);
+            if (parsedSelector.type == 'ruleSet') {
+                var rule = parsed.rule;
 
-                var result = [];
+                result = result.concat(filter(elements, rule))
+            } else if (parsedSelector.type == 'rule') {
+                var r = [];
+                for (var i = 0; i < elements.length; i++) {
+                    console.log(elements);
 
-                if (parsedSelector.type == 'ruleSet') {
-                    var rule = parsed.rule;
-
-                    result = result.concat(filter(elements, rule))
-                } else if (parsedSelector.type == 'rule') {
-                    var r = [];
-                    for (var i = 0; i < elements.length; i++) {
-                        console.log(elements);
-
-                        if (!parsedSelector.tagName
-                            || (elements[i].tagName && (elements[i].tagName.toLowerCase() == parsedSelector.tagName.toLowerCase()))) {
-                            r.push(elements[i]);
-                        }
-
-                        //TODO: Add other qualifiers
+                    if (!parsedSelector.tagName
+                        || (elements[i].tagName && (elements[i].tagName.toLowerCase() == parsedSelector.tagName.toLowerCase()))) {
+                        r.push(elements[i]);
                     }
 
-                    if (parsedSelector.rule) {
-                        var children = [];
-                        for (var j = 0; j < r.length; j++) {
-                            for (var k = 0; k < r[j].children.length; k++) {
-                                children.push(r[j].children[k]);
-                            }
-                        }
-                        result = result.concat(filter(children, parsedSelector.rule));
-                    } else {
-                        result = result.concat(r);
-                    }
+                    //TODO: Add other qualifiers
                 }
 
-                return result;
-            };
+                if (parsedSelector.rule) {
+                    var children = [];
+                    for (var j = 0; j < r.length; j++) {
+                        for (var k = 0; k < r[j].children.length; k++) {
+                            children.push(r[j].children[k]);
+                        }
+                    }
+                    result = result.concat(filter(children, parsedSelector.rule));
+                } else {
+                    result = result.concat(r);
+                }
+            }
 
-            return filter(document.querySelectorAll("*"), parsed);
-
-            //var result = [];
-            //var elements = document.querySelectorAll(commonSelector);
-            //var iElements = elements.length;
-            //while (iElements > 0 && --iElements) {
-            //    var element = elements[iElements];
-            //    if (element && checkExtendedClasses(element, extendedClasses)) {
-            //        result.push(element);
-            //    }
-            //}
-            //return result;
+            return result;
         };
 
-        return {
-            queryAll: query,
-            extendedPseudoClasses: extendedClasses,
-            commonSelector: commonSelector
-        }
+        return filter(document.querySelectorAll("*"), parsed);
     };
 
     return selector;

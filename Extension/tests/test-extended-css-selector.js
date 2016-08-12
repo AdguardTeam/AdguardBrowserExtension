@@ -34,10 +34,7 @@
 //addTestCase(testExtendedPseudoClasses);
 
 function testExtendedSelector() {
-    var extendedSelector = ExtendedSelector('div a[-ext-contains="test"]');
-    //assertEquals('div a', extendedSelector.commonSelector);
-
-    var elements = extendedSelector.queryAll();
+    var elements = ExtendedSelector('div a[-ext-contains="test"]');
     console.warn(elements);
 
     //div[-adg-contains="advert"][-ext-has="h1.title"][attr="value"]
