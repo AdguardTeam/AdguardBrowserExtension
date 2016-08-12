@@ -20,83 +20,56 @@
  */
 var ExtendedSelector = (function () {
 
-    var EXTENDED_PSEUDO_CLASS_HAS = '-ext-has';
-    var EXTENDED_PSEUDO_CLASS_CONTAINS = '-ext-contains';
-    var EXTENDED_PSEUDO_CLASSES = [EXTENDED_PSEUDO_CLASS_HAS, EXTENDED_PSEUDO_CLASS_CONTAINS];
-
-    var extractCommonSelector = function (selector, extendedClasses) {
-        var result = selector;
-
-        for (var i = 0; i < extendedClasses.length; i++) {
-            var extClass = extendedClasses[i];
-            if (result.indexOf(extClass.extClassBlock) >= 0) {
-                result = result.replace(extClass.extClassBlock, '');
+    var checkElementHasClasses = function (element, classNames) {
+        for (var i = 0; i < classNames.length; i++) {
+            if (!element.classList.contains(classNames[i])) {
+                return false;
             }
         }
 
-        return result;
+        return true;
     };
 
-    var extractExtendedPseudoClasses = function (selector) {
-        var extractClass = function (selector, extClass) {
-            var nameStartIndex = selector.indexOf('[' + extClass);
-            if (nameStartIndex < 0) {
-                return null;
-            }
+    var checkElementPseudos = function (element, pseudos) {
+        for (var i = 0; i < pseudos.length; i++) {
+            var pseudo = pseudos[i];
 
-            if (nameStartIndex > 0 && selector.charAt(nameStartIndex - 1) == '\\') {
-                // Escaped squareBracket character
-                return null;
-            }
-
-            var nameEndIndex = selector.indexOf(']', nameStartIndex);
-            if (nameEndIndex < 0) {
-                // Incorrect selector
-                return null;
-            }
-
-            var extClassBlock = selector.substring(nameStartIndex, nameEndIndex + 1);
-
-            var value = null;
-            var valueIndex = extClassBlock.indexOf('=');
-            if (valueIndex > 0) {
-                value = extClassBlock.substring(valueIndex + 2, extClassBlock.length - 2);
-            }
-
-            return {
-                extClass: extClass,
-                value: value,
-                extClassBlock: extClassBlock
-            };
-        };
-
-        var result = [];
-        for (var i = 0; i < EXTENDED_PSEUDO_CLASSES.length; i++) {
-            var r = extractClass(selector, EXTENDED_PSEUDO_CLASSES[i]);
-            if (r) {
-                result.push(r);
-            }
-        }
-
-        return result;
-    };
-
-    var checkExtendedClasses = function (element, extendedClasses) {
-        for (var i = 0; i < extendedClasses.length; i++) {
-            var extClass = extendedClasses[i];
-
-            if (extClass.extClass == EXTENDED_PSEUDO_CLASS_HAS) {
-                if (element.querySelector(extClass.value)) {
-                    return true;
+            if (pseudo.name == 'has') {
+                if (!element.querySelector(pseudo.value)) {
+                    return false;
                 }
-            } else if (extClass.extClass == EXTENDED_PSEUDO_CLASS_CONTAINS) {
-                if (element.innerHTML.indexOf(extClass.value) >= 0) {
-                    return true;
+            } else if (pseudo.name == 'contains') {
+                if (element.innerHTML.indexOf(pseudo.value) < 0) {
+                    return false;
                 }
             }
         }
 
-        return false;
+        return true;
+    };
+
+    var checkElement = function (element, selector) {
+        if (selector.tagName
+            && (!element.tagName || (element.tagName.toLowerCase() != selector.tagName.toLowerCase()))) {
+            return false;
+        }
+
+        if (selector.classNames && selector.classNames.length > 0
+            && !checkElementHasClasses(element, selector.classNames)) {
+            return false;
+        }
+
+        if (selector.id
+            && element.id != selector.id) {
+            return false;
+        }
+
+        //if (selector.pseudos && selector.pseudos.length > 0
+        //    && !checkElementPseudos(element, selector.pseudos)) {
+        //    return false;
+        //}
+
+        return true;
     };
 
     var selector = function (selectorText) {
@@ -111,10 +84,7 @@ var ExtendedSelector = (function () {
         var parsed = parser.parse(s);
         console.warn(parsed);
 
-        //var extendedClasses = extractExtendedPseudoClasses(selectorText);
-        //var commonSelector = extractCommonSelector(selectorText, extendedClasses);
-
-        var filter = function(elements, parsedSelector) {
+        var filter = function (elements, parsedSelector) {
             console.log('Filtering for selector:');
             console.log(parsedSelector);
             console.log(elements.length);
@@ -130,12 +100,9 @@ var ExtendedSelector = (function () {
                 for (var i = 0; i < elements.length; i++) {
                     console.log(elements);
 
-                    if (!parsedSelector.tagName
-                        || (elements[i].tagName && (elements[i].tagName.toLowerCase() == parsedSelector.tagName.toLowerCase()))) {
+                    if (checkElement(elements[i], parsedSelector)) {
                         r.push(elements[i]);
                     }
-
-                    //TODO: Add other qualifiers
                 }
 
                 if (parsedSelector.rule) {
