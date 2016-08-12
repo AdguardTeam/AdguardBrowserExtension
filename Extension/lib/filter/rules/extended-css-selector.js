@@ -112,23 +112,69 @@ var ExtendedSelector = (function () {
         var parsed = parser.parse(s);
         console.warn(parsed);
 
-
-
+        //if (parsed.type == 'ruleSet') {
+        //    var rule = parsed.rule;
+        //    console.log(rule);
+        //}
 
         var extendedClasses = extractExtendedPseudoClasses(selectorText);
         var commonSelector = extractCommonSelector(selectorText, extendedClasses);
 
         var query = function () {
-            var result = [];
-            var elements = document.querySelectorAll(commonSelector);
-            var iElements = elements.length;
-            while (iElements > 0 && --iElements) {
-                var element = elements[iElements];
-                if (element && checkExtendedClasses(element, extendedClasses)) {
-                    result.push(element);
+            //var elements = document.querySelectorAll("*");
+
+            var filter = function(elements, parsedSelector) {
+                console.log('Filtering for selector:');
+                console.log(parsedSelector);
+                console.log(elements.length);
+
+                var result = [];
+
+                if (parsedSelector.type == 'ruleSet') {
+                    var rule = parsed.rule;
+
+                    result = result.concat(filter(elements, rule))
+                } else if (parsedSelector.type == 'rule') {
+                    var r = [];
+                    for (var i = 0; i < elements.length; i++) {
+                        console.log(elements);
+
+                        if (!parsedSelector.tagName
+                            || (elements[i].tagName && (elements[i].tagName.toLowerCase() == parsedSelector.tagName.toLowerCase()))) {
+                            r.push(elements[i]);
+                        }
+
+                        //TODO: Add other qualifiers
+                    }
+
+                    if (parsedSelector.rule) {
+                        var children = [];
+                        for (var j = 0; j < r.length; j++) {
+                            for (var k = 0; k < r[j].children.length; k++) {
+                                children.push(r[j].children[k]);
+                            }
+                        }
+                        result = result.concat(filter(children, parsedSelector.rule));
+                    } else {
+                        result = result.concat(r);
+                    }
                 }
-            }
-            return result;
+
+                return result;
+            };
+
+            return filter(document.querySelectorAll("*"), parsed);
+
+            //var result = [];
+            //var elements = document.querySelectorAll(commonSelector);
+            //var iElements = elements.length;
+            //while (iElements > 0 && --iElements) {
+            //    var element = elements[iElements];
+            //    if (element && checkExtendedClasses(element, extendedClasses)) {
+            //        result.push(element);
+            //    }
+            //}
+            //return result;
         };
 
         return {

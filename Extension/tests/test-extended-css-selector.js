@@ -34,11 +34,15 @@
 //addTestCase(testExtendedPseudoClasses);
 
 function testExtendedSelector() {
-    var extendedSelector = ExtendedSelector('div[-ext-has="div"][-ext-contains=\'test\']');
-    assertEquals('div', extendedSelector.commonSelector);
+    var extendedSelector = ExtendedSelector('div a[-ext-contains="test"]');
+    //assertEquals('div a', extendedSelector.commonSelector);
 
     var elements = extendedSelector.queryAll();
-    //console.warn(elements);
+    console.warn(elements);
+
+    //div[-adg-contains="advert"][-ext-has="h1.title"][attr="value"]
+    //[-ext-has="div.advert"]
+    //#banner [-ext-has=".advert"] > span[-ext-contains="test"]
 }
 
 addTestCase(testExtendedSelector);
