@@ -18,7 +18,7 @@ function testExtendedSelector() {
     elements = ExtendedSelector('div#test-div[-ext-has="test"]');
     console.warn(elements);
 
-    elements = ExtendedSelector('div[-adg-contains="advert"][-ext-has="h1.title"][attr="value"]');
+    elements = ExtendedSelector('div[-ext-contains="advert"][-ext-has="h1.title"][attr="value"]');
     console.warn(elements);
 
     elements = ExtendedSelector('[-ext-has="div.advert"]');
