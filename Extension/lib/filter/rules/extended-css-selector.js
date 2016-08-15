@@ -35,11 +35,11 @@ var ExtendedSelector = (function () {
             var pseudo = pseudos[i];
 
             if (pseudo.name == 'has') {
-                if (!element.querySelector(pseudo.value)) {
-                    return false;
+                if (pseudo.valueType == 'selector') {
+                    return filter(element.querySelectorAll("*"), pseudo.value).length > 0;
                 }
             } else if (pseudo.name == 'contains') {
-                if (element.innerHTML.indexOf(pseudo.value) < 0) {
+                if (!element.innerHTML || element.innerHTML.indexOf(pseudo.value.rule.tagName) < 0) {
                     return false;
                 }
             }
@@ -64,12 +64,47 @@ var ExtendedSelector = (function () {
             return false;
         }
 
-        //if (selector.pseudos && selector.pseudos.length > 0
-        //    && !checkElementPseudos(element, selector.pseudos)) {
-        //    return false;
-        //}
+        if (selector.pseudos && selector.pseudos.length > 0
+            && !checkElementPseudos(element, selector.pseudos)) {
+            return false;
+        }
 
         return true;
+    };
+
+    var filter = function (elements, parsedSelector) {
+        console.log('Filtering for selector:');
+        console.log(parsedSelector);
+        console.log(elements.length);
+
+        var result = [];
+
+        if (parsedSelector.type == 'ruleSet') {
+            var rule = parsedSelector.rule;
+
+            result = result.concat(filter(elements, rule))
+        } else if (parsedSelector.type == 'rule') {
+            var r = [];
+            for (var i = 0; i < elements.length; i++) {
+                if (checkElement(elements[i], parsedSelector)) {
+                    r.push(elements[i]);
+                }
+            }
+
+            if (parsedSelector.rule) {
+                var children = [];
+                for (var j = 0; j < r.length; j++) {
+                    for (var k = 0; k < r[j].children.length; k++) {
+                        children.push(r[j].children[k]);
+                    }
+                }
+                result = result.concat(filter(children, parsedSelector.rule));
+            } else {
+                result = result.concat(r);
+            }
+        }
+
+        return result;
     };
 
     var selector = function (selectorText) {
@@ -82,44 +117,6 @@ var ExtendedSelector = (function () {
         parser.enableSubstitutes();
 
         var parsed = parser.parse(s);
-        console.warn(parsed);
-
-        var filter = function (elements, parsedSelector) {
-            console.log('Filtering for selector:');
-            console.log(parsedSelector);
-            console.log(elements.length);
-
-            var result = [];
-
-            if (parsedSelector.type == 'ruleSet') {
-                var rule = parsed.rule;
-
-                result = result.concat(filter(elements, rule))
-            } else if (parsedSelector.type == 'rule') {
-                var r = [];
-                for (var i = 0; i < elements.length; i++) {
-                    console.log(elements);
-
-                    if (checkElement(elements[i], parsedSelector)) {
-                        r.push(elements[i]);
-                    }
-                }
-
-                if (parsedSelector.rule) {
-                    var children = [];
-                    for (var j = 0; j < r.length; j++) {
-                        for (var k = 0; k < r[j].children.length; k++) {
-                            children.push(r[j].children[k]);
-                        }
-                    }
-                    result = result.concat(filter(children, parsedSelector.rule));
-                } else {
-                    result = result.concat(r);
-                }
-            }
-
-            return result;
-        };
 
         return filter(document.querySelectorAll("*"), parsed);
     };
