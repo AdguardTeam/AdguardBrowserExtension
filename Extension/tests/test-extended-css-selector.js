@@ -1,7 +1,5 @@
 /* global addTestCase */
 /* global assertFalse */
-/* global CssFilter */
-/* global CssFilterRule */
 /* global assertEquals */
 /* global assertTrue */
 /* global ExtendedSelector */
@@ -14,23 +12,52 @@ function testExtendedSelector() {
     assertEquals(1, elements.length);
     assertTrue(selector.matches(elements[0]));
 
-    elements = new ExtendedSelector('div.test[-ext-has="test"]').querySelectorAll();
-    console.warn(elements);
+    selector = new ExtendedSelector('div.test-class[-ext-has="time.g-time"]');
+    elements = selector.querySelectorAll();
+    assertEquals(1, elements.length);
+    assertTrue(selector.matches(elements[0]));
 
-    elements = new ExtendedSelector('div#test-div[-ext-has="test"]').querySelectorAll();
-    console.warn(elements);
-
-    elements = new ExtendedSelector('div[-ext-contains="advert"][-ext-has="h1.title"][attr="value"]').querySelectorAll();
-    console.warn(elements);
+    selector = new ExtendedSelector('div#test-div[-ext-has="test"]');
+    elements = selector.querySelectorAll();
+    assertEquals(0, elements.length);
 
     elements = new ExtendedSelector('[-ext-has="div.advert"]').querySelectorAll();
-    console.warn(elements);
+    assertEquals(0, elements.length);
 
-    elements = new ExtendedSelector('[-ext-has="div.test-class-two"]').querySelectorAll();
-    console.warn(elements);
+    selector = new ExtendedSelector('[-ext-has="div.test-class-two"]');
+    elements = selector.querySelectorAll();
+    assertEquals(5, elements.length);
+    for (var i = 0; i < elements.length; i++) {
+        assertTrue(selector.matches(elements[i]));
+    }
 
-    elements = new ExtendedSelector('#banner [-ext-has=".advert"] > span[-ext-contains="test"]').querySelectorAll();
-    console.warn(elements);
+    selector = new ExtendedSelector('div[-ext-contains="test"][-ext-has="div.test-class-two"]');
+    elements = selector.querySelectorAll();
+    assertEquals(3, elements.length);
+    for (var i = 0; i < elements.length; i++) {
+        assertTrue(selector.matches(elements[i]));
+    }
+
+    selector = new ExtendedSelector('div[-ext-contains="test"][-ext-has="div.test-class-two"][i18n]');
+    elements = selector.querySelectorAll();
+    assertEquals(1, elements.length);
+    for (var i = 0; i < elements.length; i++) {
+        assertTrue(selector.matches(elements[i]));
+    }
+
+    selector = new ExtendedSelector('div[-ext-has="div.test-class-two"]');
+    elements = selector.querySelectorAll();
+    assertEquals(3, elements.length);
+    for (var i = 0; i < elements.length; i++) {
+        assertTrue(selector.matches(elements[i]));
+    }
+
+    selector = new ExtendedSelector('div[-ext-has="div.test-class-two"] > .test-class[-ext-contains="test"]');
+    elements = selector.querySelectorAll();
+    assertEquals(1, elements.length);
+    for (var i = 0; i < elements.length; i++) {
+        assertTrue(selector.matches(elements[i]));
+    }
 }
 
 addTestCase(testExtendedSelector);
