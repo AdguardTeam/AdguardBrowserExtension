@@ -9,25 +9,27 @@
 function testExtendedSelector() {
     var elements;
 
-    elements = ExtendedSelector('div a[-ext-contains="test"]');
+    var selector = new ExtendedSelector('div a[-ext-contains="test"]');
+    elements = selector.querySelectorAll();
+    assertEquals(1, elements.length);
+    assertTrue(selector.matches(elements[0]));
+
+    elements = new ExtendedSelector('div.test[-ext-has="test"]').querySelectorAll();
     console.warn(elements);
 
-    elements = ExtendedSelector('div.test[-ext-has="test"]');
+    elements = new ExtendedSelector('div#test-div[-ext-has="test"]').querySelectorAll();
     console.warn(elements);
 
-    elements = ExtendedSelector('div#test-div[-ext-has="test"]');
+    elements = new ExtendedSelector('div[-ext-contains="advert"][-ext-has="h1.title"][attr="value"]').querySelectorAll();
     console.warn(elements);
 
-    elements = ExtendedSelector('div[-ext-contains="advert"][-ext-has="h1.title"][attr="value"]');
+    elements = new ExtendedSelector('[-ext-has="div.advert"]').querySelectorAll();
     console.warn(elements);
 
-    elements = ExtendedSelector('[-ext-has="div.advert"]');
+    elements = new ExtendedSelector('[-ext-has="div.test-class-two"]').querySelectorAll();
     console.warn(elements);
 
-    elements = ExtendedSelector('[-ext-has="div.test-class-two"]');
-    console.warn(elements);
-
-    elements = ExtendedSelector('#banner [-ext-has=".advert"] > span[-ext-contains="test"]');
+    elements = new ExtendedSelector('#banner [-ext-has=".advert"] > span[-ext-contains="test"]').querySelectorAll();
     console.warn(elements);
 }
 

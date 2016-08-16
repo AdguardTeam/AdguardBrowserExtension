@@ -8,7 +8,7 @@ var assertNotNull = function (value) {
 
 var assertNotEmpty = function(value) {
 	assertNotNull(value);
-}
+};
 
 var assertEmpty = function (value) {
 	if (value) {

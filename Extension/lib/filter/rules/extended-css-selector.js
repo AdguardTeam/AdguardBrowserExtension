@@ -16,15 +16,64 @@
  */
 
 /**
- * Extended selector class
+ * Extended selector class.
+ * The purpose of this class is to add support for extended pseudo-classes:
+ * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/321
+ * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/322
+ * <br/>
+ * Please note, that instead of using the pseudo-classes we use a bit different syntax.
+ * This saves us from backward compatibility issues.
+ * <br/>
+ * Extended selection capabilities:<br/>
+ * [-ext-has="selector"] - the same as :has() pseudo class from CSS4 specification
+ * [-ext-contains="string"] - allows to select elements containing specified string
  */
 var ExtendedSelector = (function () {
 
-    var selector = function (selectorText) {
-        var s = selectorText.replace(/\[-ext-([a-z-_]+)=(["'])((?:(?=(\\?))\4.)*?)\2\]/g, ':$1($3)');
-
-        return Sizzle(s);
+    /**
+     * Prepares specified selector and compiles it with the Sizzle engine.
+     * Preparation means transforming [-ext-*=""] attributes to pseudo classes.
+     * 
+     * @param selectorText Selector text
+     */
+    var prepareSelector = function(selectorText) {
+        try {
+            // Prepare selector to be compiled with Sizzle
+            // Which means transform [-ext-*=""] attributes to pseudo classes
+            var str = selectorText.replace(/\[-ext-([a-z-_]+)=(["'])((?:(?=(\\?))\4.)*?)\2\]/g, ':$1($3)');
+            
+            // Compiles and validates selector
+            // Compilation in Sizzle means that selector will be saved to an inner cache and then reused
+            Sizzle.compile(str);
+            return str;
+        } catch (ex) {
+            if (typeof console !== 'undefined' && console.error) {
+                console.error('Extended selector is invalid: ' + selectorText);
+            }
+            return null;
+        }
     };
 
-    return selector;
+    // Constructor
+    return function(selectorText) {
+        var compiledSelector = prepareSelector(selectorText);
+
+        // EXPOSE
+        this.compiledSelector = compiledSelector;
+        this.selectorText = selectorText;
+
+        /**
+         * Selects all DOM nodes matching this selector.
+         */
+        this.querySelectorAll = function() {
+            return Sizzle(compiledSelector);
+        };
+
+        /**
+         * Checks if the specified element matches this selector
+         */
+        this.matches = function(element) {
+            return Sizzle.matchesSelector(element, compiledSelector);
+        };
+    };
 })();
