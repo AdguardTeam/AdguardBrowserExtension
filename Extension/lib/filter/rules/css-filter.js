@@ -62,6 +62,9 @@ CssFilter.prototype = {
 	 * @param rule Rule to add
 	 */
 	addRule: function (rule) {
+		// TODO: Add "extended css" support here.
+		// TODO: Don't forget that extended css rules can be also whitelist (#@#)
+
 		if (rule.whiteListRule) {
 			this.exceptionRules.push(rule);
 		} else if (rule.isDomainSensitive()) {
@@ -129,6 +132,9 @@ CssFilter.prototype = {
 	 * @param domainName    Domain name
 	 * @param genericHide    flag to hide common rules
 	 * @returns Stylesheet content
+	 * 
+	 * // TODO: It should now return list of objects
+	 * [ { type: "css", text: "blahblah" }, { type: "extended-css", text: "blahblaha" } ]
 	 */
 	buildCss: function (domainName, genericHide) {
 		this._rebuild();
@@ -159,6 +165,10 @@ CssFilter.prototype = {
 	 * @param domainName Domain name
 	 * @param genericHide flag to hide common rules
 	 * @returns Stylesheet content
+	 * 
+	 * // TODO: Rename
+	 * // TODO: It should now return list of objects
+	 * [ { type: "css", text: "blahblah" }, { type: "extended-css", text: "blahblaha" } ]
 	 */
 	buildInjectCss: function (domainName, genericHide) {
 		this._rebuildBinding();
