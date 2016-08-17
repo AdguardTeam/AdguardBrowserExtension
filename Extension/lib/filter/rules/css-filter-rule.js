@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+/* global require, exports */
 /**
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
@@ -41,7 +41,7 @@ var CssFilterRule = exports.CssFilterRule = (function () {
         ":focus", ":hover", ":in-range", ":invalid", ":lang", ":last-child", ":last-of-type",
         ":link", ":not", ":nth-child", ":nth-last-child", ":nth-last-of-type", ":nth-of-type",
         ":only-child", ":only-of-type", ":optional", ":out-of-range", ":read-only",
-        ":read-write", ":required", ":root", ":target", ":valid", ":visited"];
+        ":read-write", ":required", ":root", ":target", ":valid", ":visited", ":has", ":contains"];
 
     /**
      * The problem with it is that ":has" and ":contains" pseudo classes are not a valid pseudo classes,
@@ -49,7 +49,7 @@ var CssFilterRule = exports.CssFilterRule = (function () {
      *
      * @type {string[]}
      */
-    var EXTENDED_PSEUDOS_CLASSES = ["-ext-has", "-ext-contains"];
+    var EXTENDED_CSS_MARKERS = ["[-ext-has=", "[-ext-contains=", ":has(", ":contains("];
 
     /**
      * Tries to convert CSS injections rules from uBlock syntax to our own
@@ -150,19 +150,18 @@ var CssFilterRule = exports.CssFilterRule = (function () {
 
         if (!isInjectRule) {
             var pseudoClass = parsePseudoClass(cssContent);
-            if (pseudoClass != null && ":style" == pseudoClass.name) {
+            if (pseudoClass !== null && ":style" == pseudoClass.name) {
                 isInjectRule = true;
                 cssContent = convertCssInjectionRule(pseudoClass, cssContent);
-            } else if (pseudoClass != null) {
-                isExtendedCss = true;
+            } else if (pseudoClass !== null) {
                 if (SUPPORTED_PSEUDO_CLASSES.indexOf(pseudoClass.name) < 0) {
                     throw new Error("Unknown pseudo class: " + cssContent);
                 }
             }
         }
 
-        for (var i = 0; i < EXTENDED_PSEUDOS_CLASSES.length; i++) {
-            if (cssContent.indexOf(EXTENDED_PSEUDOS_CLASSES[i]) >= 0) {
+        for (var i = 0; i < EXTENDED_CSS_MARKERS.length; i++) {
+            if (cssContent.indexOf(EXTENDED_CSS_MARKERS[i]) >= 0) {
                 isExtendedCss = true;
             }
         }

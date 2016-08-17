@@ -129,8 +129,8 @@ var safariCorrectRules = [
         "image"
       ],
       "if-domain": [
-        "*catalogfavoritesvip.com",
-        "*freeshipping.com"
+        "*freeshipping.com",
+        "*catalogfavoritesvip.com"
       ]
     },
     "action": {

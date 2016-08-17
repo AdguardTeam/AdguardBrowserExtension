@@ -182,8 +182,8 @@ function testInvertedWhitelist() {
     var convertedRule = converted[0];
     assertEquals(".*", convertedRule.trigger["url-filter"]);
     assertEquals(2, convertedRule.trigger["unless-domain"].length);
-    assertEquals("*whitelisted.domain.com", convertedRule.trigger["unless-domain"][0]);
-    assertEquals("*whitelisted.domain2.com", convertedRule.trigger["unless-domain"][1]);
+    assertEquals("*whitelisted.domain2.com", convertedRule.trigger["unless-domain"][0]);
+    assertEquals("*whitelisted.domain.com", convertedRule.trigger["unless-domain"][1]);
     assertEquals("ignore-previous-rules", convertedRule.action.type);
 }
 addTestCase(testInvertedWhitelist);
@@ -239,17 +239,17 @@ addTestCase(testRegexpRules);
  * Tests css pseudo class rules
  */
 function testCssPseudoClassRules() {
-    //:style should be ignored
+    // :style should be ignored
     var result = SafariContentBlockerConverter.convertArray([ 'yandex.ru##body:style(background:inherit;)', 'yandex.ru#@#body:style(background:inherit;)' ]);
     assertEquals(0, result.convertedCount);
     assertEquals(2, result.errorsCount);
 
-    //Invalid pseudo class
+    // Invalid pseudo class
     result = SafariContentBlockerConverter.convertArray(['yandex.ru##test:has(.whatisthis)']);
     assertEquals(0, result.convertedCount);
     assertEquals(1, result.errorsCount);
 
-    //Valid selectors
+    // Valid selectors
     result = SafariContentBlockerConverter.convertArray([
         'w3schools.com###main > table.w3-table-all.notranslate:first-child > tbody > tr:nth-child(17) > td.notranslate:nth-child(2)',
         'w3schools.com###:root div.ads',

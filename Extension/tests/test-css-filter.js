@@ -41,6 +41,14 @@ function testCssFilterRuleExtendedCss() {
 	assertFalse(rule.whiteListRule);
 	assertTrue(rule.extendedCss);
 	assertEquals(".sponsored[-ext-has=test]", rule.cssSelector);
+
+	ruleText = "~gamespot.com,~mint.com,~slidetoplay.com,~smh.com.au,~zattoo.com##.sponsored:has(test)";
+	rule = new CssFilterRule(ruleText);
+
+	assertTrue(rule.getRestrictedDomains().length > 0);
+	assertFalse(rule.whiteListRule);
+	assertTrue(rule.extendedCss);
+	assertEquals(".sponsored:has(test)", rule.cssSelector);
 }
 
 addTestCase(testCssFilterRuleExtendedCss);
@@ -255,11 +263,11 @@ addTestCase(testFilterRuleWithColon);
 
 function testInvalidPseudoClass() {
 	try {
-		var ruleText = "yandex.ru##test:has(.whatisthis)";
+		var ruleText = "yandex.ru##test:matches(.whatisthis)";
 		new CssFilterRule(ruleText);
 		throw new Error("Rule should not be parsed successfully");
 	} catch (ex) {
-		assertEquals(ex.message, 'Unknown pseudo class: test:has(.whatisthis)');
+		assertEquals(ex.message, 'Unknown pseudo class: test:matches(.whatisthis)');
 	}
 }
 
