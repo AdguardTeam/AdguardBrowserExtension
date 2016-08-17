@@ -12,6 +12,7 @@ function testCssFilterRule() {
 
 	assertTrue(rule.getRestrictedDomains().length > 0);
 	assertFalse(rule.whiteListRule);
+	assertFalse(rule.extendedCss);
 	assertEquals(5, rule.getRestrictedDomains().length);
 	assertTrue(rule.getRestrictedDomains().indexOf("gamespot.com") >= 0);
 	assertTrue(rule.getRestrictedDomains().indexOf("mint.com") >= 0);
@@ -22,6 +23,27 @@ function testCssFilterRule() {
 }
 
 addTestCase(testCssFilterRule);
+
+function testCssFilterRuleExtendedCss() {
+
+	var ruleText = "~gamespot.com,~mint.com,~slidetoplay.com,~smh.com.au,~zattoo.com##.sponsored[-ext-contains=test]";
+	var rule = new CssFilterRule(ruleText);
+
+	assertTrue(rule.getRestrictedDomains().length > 0);
+	assertFalse(rule.whiteListRule);
+	assertTrue(rule.extendedCss);
+	assertEquals(".sponsored[-ext-contains=test]", rule.cssSelector);
+
+	ruleText = "~gamespot.com,~mint.com,~slidetoplay.com,~smh.com.au,~zattoo.com##.sponsored[-ext-has=test]";
+	rule = new CssFilterRule(ruleText);
+
+	assertTrue(rule.getRestrictedDomains().length > 0);
+	assertFalse(rule.whiteListRule);
+	assertTrue(rule.extendedCss);
+	assertEquals(".sponsored[-ext-has=test]", rule.cssSelector);
+}
+
+addTestCase(testCssFilterRuleExtendedCss);
 
 
 function testCssFilterWhiteListRule() {

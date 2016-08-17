@@ -44,6 +44,14 @@ var CssFilterRule = exports.CssFilterRule = (function () {
         ":read-write", ":required", ":root", ":target", ":valid", ":visited"];
 
     /**
+     * The problem with it is that ":has" and ":contains" pseudo classes are not a valid pseudo classes,
+     * hence using it may break old versions of AG.
+     *
+     * @type {string[]}
+     */
+    var EXTENDED_PSEUDOS_CLASSES = ["-ext-has", "-ext-contains"];
+
+    /**
      * Tries to convert CSS injections rules from uBlock syntax to our own
      * https://github.com/AdguardTeam/AdguardForAndroid/issues/701
      *
@@ -137,6 +145,7 @@ var CssFilterRule = exports.CssFilterRule = (function () {
             this.loadDomains(domains);
         }
 
+        var isExtendedCss = false;
         var cssContent = rule.substring(indexOfMask + mask.length);
 
         if (!isInjectRule) {
@@ -144,13 +153,23 @@ var CssFilterRule = exports.CssFilterRule = (function () {
             if (pseudoClass != null && ":style" == pseudoClass.name) {
                 isInjectRule = true;
                 cssContent = convertCssInjectionRule(pseudoClass, cssContent);
-            } else if (pseudoClass != null && SUPPORTED_PSEUDO_CLASSES.indexOf(pseudoClass.name) < 0) {
-                throw new Error("Unknown pseudo class: " + cssContent);
+            } else if (pseudoClass != null) {
+                isExtendedCss = true;
+                if (SUPPORTED_PSEUDO_CLASSES.indexOf(pseudoClass.name) < 0) {
+                    throw new Error("Unknown pseudo class: " + cssContent);
+                }
+            }
+        }
+
+        for (var i = 0; i < EXTENDED_PSEUDOS_CLASSES.length; i++) {
+            if (cssContent.indexOf(EXTENDED_PSEUDOS_CLASSES[i]) >= 0) {
+                isExtendedCss = true;
             }
         }
 
         this.isInjectRule = isInjectRule;
         this.cssSelector = cssContent;
+        this.extendedCss = isExtendedCss;
     };
 
     return constructor;
