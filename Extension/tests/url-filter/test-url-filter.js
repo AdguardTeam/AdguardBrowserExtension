@@ -128,3 +128,122 @@ QUnit.test("Generic domain specific", function(assert) {
     filtered = filter.isFiltered("http://cdn.innity.net/admanager.js", "sharejunction.com", RequestTypes.SCRIPT, true, true);
     assert.ok(filtered !== null);
 });
+
+QUnit.test("Url blocking rule without domain", function(assert) {
+    var ruleText = "-460x68.";
+    var rule = new UrlFilterRule(ruleText);
+
+    assert.ok(rule);
+    assert.notOk(rule.matchCase);
+    assert.notOk(rule.isThirdParty);
+    assert.notOk(rule.checkThirdParty);
+});
+
+QUnit.test("Url blocking rule", function(assert) {
+    var ruleText = "||test.ru/^$domain=~nigma.ru|google.com,third-party,match-case,popup";
+    var rule = new UrlFilterRule(ruleText);
+
+    // Check rule properties
+    assert.ok(rule.matchCase);
+    assert.ok(rule.isThirdParty);
+    assert.ok(rule.checkThirdParty);
+    assert.equal("test.ru/", rule.shortcut);
+    assert.equal("google.com", rule.getPermittedDomains()[0]);
+    assert.equal("nigma.ru", rule.getRestrictedDomains()[0]);
+    assert.equal("^(http|https|ws|wss)://([a-z0-9-_.]+\\.)?test\\.ru\\/([^ a-zA-Z0-9.%]|$)", rule.getUrlRegExpSource());
+    assert.equal("/^(http|https|ws|wss):\\/\\/([a-z0-9-_.]+\\.)?test\\.ru\\/([^ a-zA-Z0-9.%]|$)/", rule.getUrlRegExp().toString());
+
+    // Check rule work
+    assert.ok(rule.isFiltered("http://test.ru/", true, RequestTypes.POPUP));
+    assert.notOk(rule.isFiltered("http://test.ru/", true, RequestTypes.DOCUMENT));
+    assert.notOk(rule.isFiltered("http://test.ru/", true, RequestTypes.SUBDOCUMENT));
+    assert.notOk(rule.isFiltered("http://TEst.ru/", false, RequestTypes.SUBDOCUMENT));
+    assert.notOk(rule.isFiltered("http://test.ru", true, RequestTypes.SUBDOCUMENT));
+    assert.ok(rule.isPermitted("google.com"));
+    assert.ok(rule.isPermitted("www.google.com"));
+    assert.notOk(rule.isPermitted("nigma.ru"));
+    assert.notOk(rule.isPermitted("www.nigma.ru"));
+});
+
+QUnit.test("Content-specific URL blocking", function(assert) {
+
+    var mask = "||test.ru/$script";
+    var rule = new UrlFilterRule(mask);
+    assert.ok(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.SCRIPT));
+    assert.notOk(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.XMLHTTPREQUEST));
+    assert.notOk(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.SUBDOCUMENT));
+    assert.notOk(rule.isFiltered("http://test.ru/image.png", false, RequestTypes.IMAGE));
+    mask = "||test.ru/$~script";
+    rule = new UrlFilterRule(mask);
+    assert.notOk(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.SCRIPT));
+    assert.ok(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.XMLHTTPREQUEST));
+    assert.ok(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.SUBDOCUMENT));
+    assert.ok(rule.isFiltered("http://test.ru/image.png", false, RequestTypes.IMAGE));
+    mask = "||test.ru/$script,image";
+    rule = new UrlFilterRule(mask);
+    assert.ok(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.SCRIPT));
+    assert.notOk(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.SUBDOCUMENT));
+    assert.notOk(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.XMLHTTPREQUEST));
+    assert.ok(rule.isFiltered("http://test.ru/image.png", false, RequestTypes.IMAGE));
+    mask = "||test.ru/$~script,~image";
+    rule = new UrlFilterRule(mask);
+    assert.notOk(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.SCRIPT));
+    assert.ok(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.XMLHTTPREQUEST));
+    assert.ok(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.SUBDOCUMENT));
+    assert.notOk(rule.isFiltered("http://test.ru/image.png", false, RequestTypes.IMAGE));
+    mask = "||test.ru/$~script,image";
+    rule = new UrlFilterRule(mask);
+    assert.notOk(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.SCRIPT));
+    assert.notOk(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.XMLHTTPREQUEST));
+    assert.notOk(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.SUBDOCUMENT));
+    assert.ok(rule.isFiltered("http://test.ru/image.png", false, RequestTypes.IMAGE));
+    assert.notOk(rule.isFiltered("http://test.ru/image.png", false, RequestTypes.XMLHTTPREQUEST));
+    mask = "||test.ru/$script,image,xmlhttprequest";
+    rule = new UrlFilterRule(mask);
+    assert.ok(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.SCRIPT));
+    assert.notOk(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.SUBDOCUMENT));
+    assert.ok(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.XMLHTTPREQUEST));
+    assert.ok(rule.isFiltered("http://test.ru/image.png", false, RequestTypes.IMAGE));
+});
+
+QUnit.test("UrlFilter class tests", function(assert) {
+    var rule = new UrlFilterRule("||test.ru/^$domain=~nigma.ru|google.com,third-party,match-case");
+    var rule1 = new UrlFilterRule("|http://www.google.com/ad/*");
+    var rule2 = new UrlFilterRule("/partner.$domain=~8088.ru|~partner.microsoft.com|~r01.ru|~yandex.ru");
+
+    var filter = new UrlFilter([rule, rule1, rule2]);
+
+    assert.notOk(filter.isFiltered("http://test.ru/", "test.test.ru", RequestTypes.SUBDOCUMENT, false) != null);
+    assert.ok(filter.isFiltered("http://test.ru/", "www.google.com", RequestTypes.SUBDOCUMENT, true) != null);
+    assert.ok(filter.isFiltered("http://www.google.com/ad/advertisment", "test.ru", RequestTypes.SUBDOCUMENT, true) != null);
+    assert.notOk(filter.isFiltered("http://test.ru/", "www.nigma.ru", RequestTypes.SUBDOCUMENT, true) != null);
+    assert.ok(filter.isFiltered("http://partner.nekki.ru/banner.php?no_cache=41122&rotation_id=7", "rutracker.org", RequestTypes.SUBDOCUMENT, true) != null);
+    assert.notOk(filter.isFiltered("http://partner.yandex.ru", "yandex.ru", RequestTypes.SUBDOCUMENT, false) != null);
+});
+
+QUnit.test("Regexp characters escaping", function(assert) {
+    var rule = new UrlFilterRule("imgur.com#@%#var addthis = { init: function() {}, addEventListener: function() {}, button: function() {}, counter: function() {} }");
+    assert.ok(rule);
+});
+
+QUnit.test("Regexp rule", function(assert) {
+    var mask = "/news/\\d+/$domain=~nigma.ru|lenta.ru";
+    var rule = new UrlFilterRule(mask);
+    assert.ok(rule.isPermitted("lenta.ru"));
+    assert.ok(rule.isFiltered("http://lenta.ru/news/2014/12/12/eurodollar/", false, RequestTypes.SUBDOCUMENT));
+    assert.notOk(rule.isPermitted("adguard.com"));
+    assert.notOk(rule.isPermitted("nigma.ru"));
+    assert.notOk(rule.isFiltered("http://lenta.ru/news/a2014/12/12/eurodollar/", false, RequestTypes.SUBDOCUMENT));
+    assert.notOk(rule.isFiltered("http://lenta.ru/news2014/12/12/eurodollar/", false, RequestTypes.SUBDOCUMENT));
+});
+
+QUnit.test("Complex regexp rule", function(assert) {
+    var mask = "/^https?\\:\\/\\/(?!(connect\\.facebook\\.net|ajax\\.cloudflare\\.com|www\\.google-analytics\\.com|ajax\\.googleapis\\.com|fbstatic-a\\.akamaihd\\.net|stats\\.g\\.doubleclick\\.net|api-secure\\.solvemedia\\.com|api\\.solvemedia\\.com|sb\\.scorecardresearch\\.com|www\\.google\\.com)\\/)/$script,third-party,xmlhttprequest,domain=mediafire.com";
+    var rule = new UrlFilterRule(mask);
+    assert.ok(rule.isFiltered("http://traratatata.com/blahblah.js", true, RequestTypes.SCRIPT));
+    assert.notOk(rule.isFiltered("http://traratatata.com/blahblah.html", true, RequestTypes.SUBDOCUMENT));
+    assert.ok(rule.isFiltered("http://traratatata.com/blahblah.html", true, RequestTypes.XMLHTTPREQUEST));
+    assert.notOk(rule.isFiltered("http://connect.facebook.net/blahblah.js", true, RequestTypes.SCRIPT));
+    assert.notOk(rule.isFiltered("https://ajax.cloudflare.com/blahblah.js", true, RequestTypes.SCRIPT));
+    assert.notOk(rule.isFiltered("https://www.google-analytics.com/blahblah.js", true, RequestTypes.SCRIPT));
+});
