@@ -48,3 +48,6 @@ node-qunit-phantomjs sb-filter/test-sb-filter.html
 
 echo "Url filter tests"
 node-qunit-phantomjs url-filter/test-url-filter.html
+
+echo "Css filter tests"
+node-qunit-phantomjs css-filter/test-css-filter.html
