@@ -263,11 +263,13 @@
              * ad/tracking requests because extension is not yet initialized when 
              * these requests are executed. At least we could hide these elements.
              */
-            applySelectors(response.selectors, response.useShadowDom);
+            applySelectors(response.selectors.css, response.useShadowDom);
+            applyExtendedCss(response.selectors.extendedCss);
             applyScripts(response.scripts);
             initBatchCollapse();
         } else {
-            applySelectors(response.selectors, response.useShadowDom);
+            applySelectors(response.selectors.css, response.useShadowDom);
+            applyExtendedCss(response.selectors.extendedCss);
             applyScripts(response.scripts);
         }
 
@@ -318,6 +320,19 @@
                 (document.head || document.documentElement).appendChild(styleEl);                
             }
         }
+    };
+
+    /**
+     * Applies Extended Css stylesheet
+     *
+     * @param extendedCss ExtendedCss stylesheet
+     */
+    var applyExtendedCss = function (extendedCss) {
+        if (!extendedCss) {
+            return;
+        }
+
+        new ExtendedCss(extendedCss).apply();
     };
     
     /**

@@ -131,28 +131,19 @@ CssFilter.prototype = {
 	 *
 	 * @param domainName    Domain name
 	 * @param genericHide    flag to hide common rules
-	 * @returns Stylesheet content
-	 * 
-	 * // TODO: It should now return list of objects
-	 * [ { type: "css", text: "blahblah" }, { type: "extended-css", text: "blahblaha" } ]
+	 * @returns {{css: (*|*[]), extendedCss: (*|*[])}}
 	 */
 	buildCss: function (domainName, genericHide) {
 		this._rebuild();
 
-		var domainRules = this._getDomainSensitiveRules(domainName);
-		if (genericHide) {
-			var nonGenericRules = [];
-			if (domainRules !== null) {
-				nonGenericRules = domainRules.filter(function (rule) {
-					return !rule.isGeneric();
-				});
-			}
+		var rules = this._filterRules(domainName, genericHide);
 
-			return this._buildCssByRules(nonGenericRules);
+		var stylesheets = this._createCssStylesheets(rules);
+		if (genericHide) {
+			stylesheets.css = this._getCommonCss().concat(stylesheets.css)
 		}
 
-		var css = this._buildCssByRules(domainRules);
-		return this._getCommonCss().concat(css);
+		return stylesheets;
 	},
 
 	/**
@@ -164,15 +155,11 @@ CssFilter.prototype = {
 	 *
 	 * @param domainName Domain name
 	 * @param genericHide flag to hide common rules
-	 * @returns Stylesheet content
-	 * 
-	 * // TODO: Rename
-	 * // TODO: It should now return list of objects
-	 * [ { type: "css", text: "blahblah" }, { type: "extended-css", text: "blahblaha" } ]
+	 * @returns {{css: (*|*[]), extendedCss: (*|*[])}}
 	 */
 	buildInjectCss: function (domainName, genericHide) {
 		this._rebuildBinding();
-		var domainRules = this._getDomainSensitiveRules(domainName);
+		var domainRules = this._filterDomainSensitiveRules(domainName);
 		var injectDomainRules = [];
 		if (domainRules !== null) {
 			injectDomainRules = domainRules.filter(function (rule) {
@@ -180,15 +167,19 @@ CssFilter.prototype = {
 			});
 		}
 
+		var result;
+
 		if (genericHide) {
-			return this._buildCssByRules(injectDomainRules);
+			result = injectDomainRules;
+		} else {
+			var commonInjectedRules = this.commonRules.filter(function (rule) {
+				return rule.isInjectRule;
+			});
+
+			result = injectDomainRules.concat(commonInjectedRules);
 		}
 
-		var commonInjectedRules = this.commonRules.filter(function (rule) {
-			return rule.isInjectRule;
-		});
-
-		return this._buildCssByRules(injectDomainRules.concat(commonInjectedRules));
+		return this._createCssStylesheets(result);
 	},
 
 	/**
@@ -203,12 +194,32 @@ CssFilter.prototype = {
 	 * @param domainName    Domain name
 	 * @param hitPrefix     Prefix for background-image url
 	 * @param genericHide   Flag to hide common rules
-	 * @returns Stylesheet content
+	 * @returns {{css: (*|*[]), extendedCss: (*|*[])}}
 	 */
 	buildCssHits: function (domainName, hitPrefix, genericHide) {
 		this._rebuildHits(hitPrefix);
 
-		var domainRules = this._getDomainSensitiveRules(domainName);
+		var rules = this._filterRules(domainName, genericHide);
+
+		var stylesheets = this._createCssStylesheetsHits(rules, hitPrefix);
+		if (genericHide) {
+			stylesheets.css = this._getCommonCssHits(hitPrefix).concat(stylesheets.css)
+		}
+
+		return stylesheets;
+	},
+
+	/**
+	 * Filters rules with specified parameters
+	 *
+	 * @param domainName
+	 * @param genericHide
+	 * @returns {*}
+	 * @private
+	 */
+	_filterRules: function (domainName, genericHide) {
+		var result;
+		var domainRules = this._filterDomainSensitiveRules(domainName);
 		if (genericHide) {
 			var nonGenericRules = [];
 			if (domainRules !== null) {
@@ -217,11 +228,57 @@ CssFilter.prototype = {
 				});
 			}
 
-			return this._buildCssByRulesHits(nonGenericRules, hitPrefix);
+			result = nonGenericRules;
+		} else {
+			result = domainRules;
 		}
 
-		var css = this._buildCssByRulesHits(domainRules, hitPrefix);
-		return this._getCommonCssHits(hitPrefix).concat(css);
+		return result;
+	},
+
+	/**
+	 * Creates separated stylesheet for css and extended css rules.
+	 *
+	 * @param rules
+	 * @returns {{css: (*|*[]), extendedCss: (*|*[])}}
+	 * @private
+	 */
+	_createCssStylesheets: function (rules) {
+		var extendedCssRules = rules.filter(function (rule) {
+			return rule.extendedCss;
+		});
+
+		var cssRules = rules.filter(function (rule) {
+			return !rule.extendedCss;
+		});
+
+		return {
+			css: this._buildCssByRules(cssRules),
+			extendedCss: this._buildCssByRules(extendedCssRules)
+		};
+	},
+
+	/**
+	 * Creates separated stylesheet for css and extended css rules.
+	 *
+	 * @param rules
+	 * @param hitPrefix
+	 * @returns {{css: (*|List), extendedCss: (*|List)}}
+	 * @private
+	 */
+	_createCssStylesheetsHits: function (rules, hitPrefix) {
+		var extendedCssRules = rules.filter(function (rule) {
+			return rule.extendedCss;
+		});
+
+		var cssRules = rules.filter(function (rule) {
+			return !rule.extendedCss;
+		});
+
+		return {
+			css: this._buildCssByRulesHits(cssRules, hitPrefix),
+			extendedCss: this._buildCssByRulesHits(extendedCssRules, hitPrefix)
+		};
 	},
 
 	/**
@@ -535,22 +592,20 @@ CssFilter.prototype = {
 	/**
 	 * Gets list of domain-sensitive rules for the specified domain name.
 	 *
-	 * @param domainName    Domain name
-	 * @returns List of rules which can be applied to this domain
+	 * @param domainName Domain name
+	 * @returns {Array} List of rules which could be applied to this domain
 	 * @private
 	 */
-	_getDomainSensitiveRules: function (domainName) {
+	_filterDomainSensitiveRules: function (domainName) {
 		var rules = [];
 
-		if (!domainName) {
-			return rules;
-		}
-
-		if (this.domainSensitiveRules !== null) {
-			for (var i = 0; i < this.domainSensitiveRules.length; i++) {
-				var rule = this.domainSensitiveRules[i];
-				if (rule.isPermitted(domainName)) {
-					rules.push(rule);
+		if (domainName) {
+			if (this.domainSensitiveRules !== null) {
+				for (var i = 0; i < this.domainSensitiveRules.length; i++) {
+					var rule = this.domainSensitiveRules[i];
+					if (rule.isPermitted(domainName)) {
+						rules.push(rule);
+					}
 				}
 			}
 		}
