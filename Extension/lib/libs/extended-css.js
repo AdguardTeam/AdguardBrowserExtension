@@ -1,4 +1,4 @@
-/*! extended-css - v1.0.0 - 2016-08-17
+/*! extended-css - v1.0.0 - 2016-08-18
 * https://github.com/AdguardTeam/ExtendedCss
 * Copyright (c) 2016 ; Licensed Apache License 2.0 */
 var ExtendedCss = (function(window) {
@@ -221,10 +221,10 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
     var domObserver;
 
     /**
-     * Parses specified styleSheet in a number of rule objects
-     *
-     * @param styleSheet String with the stylesheet
-     */ 
+     * Parses specified styleSheet in a number of rule objects
+     *
+     * @param styleSheet String with the stylesheet
+     */ 
     var parse = function (styleSheet) {
 
         var result = [];
@@ -359,6 +359,12 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
     var apply = function () {
         applyRules(rules);
         observe();
+
+        if (document.readyState !== "complete") {
+            document.addEventListener("DOMContentLoaded", function() {
+                applyRules(rules);
+            });
+        }
     };
 
     /**
@@ -392,7 +398,7 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
  */
 
 /**
- * PATCH: Do not expose Sizzle to the global scope
+ * PATCHED: Do not expose Sizzle to the global scope
  */
 
 /**
