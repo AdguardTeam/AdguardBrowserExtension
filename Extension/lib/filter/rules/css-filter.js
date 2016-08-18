@@ -139,7 +139,7 @@ CssFilter.prototype = {
 		var rules = this._filterRules(domainName, genericHide);
 
 		var stylesheets = this._createCssStylesheets(rules);
-		if (genericHide) {
+		if (!genericHide) {
 			stylesheets.css = this._getCommonCss().concat(stylesheets.css)
 		}
 
@@ -202,7 +202,7 @@ CssFilter.prototype = {
 		var rules = this._filterRules(domainName, genericHide);
 
 		var stylesheets = this._createCssStylesheetsHits(rules, hitPrefix);
-		if (genericHide) {
+		if (!genericHide) {
 			stylesheets.css = this._getCommonCssHits(hitPrefix).concat(stylesheets.css)
 		}
 
