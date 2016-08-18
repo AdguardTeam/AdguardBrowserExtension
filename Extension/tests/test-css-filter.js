@@ -272,3 +272,11 @@ function testInvalidPseudoClass() {
 }
 
 addTestCase(testInvalidPseudoClass);
+
+//TODO: Add tests
+//Test for $generichide and buildInjectCss method
+//Test for $generichide and buildCssHits method
+//Test for $generichide and extended CSS
+//Test of applying #@# exception to the extended CSS rule
+//Test of applying #@$# exception to the extended CSS rule
+//Test of proper creating extended CSS by `buildInjectCss`, `buildCss`, `buildCssHits`

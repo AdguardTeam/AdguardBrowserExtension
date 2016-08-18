@@ -62,8 +62,7 @@ CssFilter.prototype = {
 	 * @param rule Rule to add
 	 */
 	addRule: function (rule) {
-		// TODO: Add "extended css" support here.
-		// TODO: Don't forget that extended css rules can be also whitelist (#@#)
+		// TODO: Check that extended css rules can be also whitelist (#@#)
 
 		if (rule.whiteListRule) {
 			this.exceptionRules.push(rule);

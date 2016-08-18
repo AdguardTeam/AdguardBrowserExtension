@@ -160,6 +160,7 @@ var CssFilterRule = exports.CssFilterRule = (function () {
             }
         }
 
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/321
         for (var i = 0; i < EXTENDED_CSS_MARKERS.length; i++) {
             if (cssContent.indexOf(EXTENDED_CSS_MARKERS[i]) >= 0) {
                 isExtendedCss = true;
