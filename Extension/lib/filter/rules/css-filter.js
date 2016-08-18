@@ -632,9 +632,9 @@ CssFilter.prototype = {
 			var rule = rules[i];
 
 			if (rule.isInjectRule) {
-				cssSb.push(this._getRuleCssSelector(rule.cssSelector));
+				cssSb.push(this._getRuleCssSelector(rule));
 			} else {
-				elemHideSb.push(this._getRuleCssSelector(rule.cssSelector));
+				elemHideSb.push(this._getRuleCssSelector(rule));
 				++selectorsCount;
 				if (selectorsCount % CSS_SELECTORS_PER_LINE === 0) {
 					elemHideSb.push(ELEMHIDE_CSS_STYLE);
@@ -690,9 +690,9 @@ CssFilter.prototype = {
 			var rule = rules[i];
 
 			if (rule.isInjectRule) {
-				cssSb.push(this._getRuleCssSelector(rule.cssSelector));
+				cssSb.push(this._getRuleCssSelector(rule));
 			} else {
-				elemHideSb.push(this._getRuleCssSelector(rule.cssSelector));
+				elemHideSb.push(this._getRuleCssSelector(rule));
 				if (FilterUtils.isUserFilterRule(rule)) {
 					elemHideSb.push(ELEMHIDE_CSS_STYLE);
 				} else {
@@ -720,8 +720,12 @@ CssFilter.prototype = {
 		return styles;
 	},
 
-	_getRuleCssSelector: function (cssSelector) {
-		return isShadowDomSupported ? "::content " + cssSelector : cssSelector;
+	_getRuleCssSelector: function(rule) {
+		if (!isShadowDomSupported || rule.extendedCss) {
+			return rule.cssSelector;
+		} else {
+			return "::content " + rule.cssSelector;
+		}
 	},
 
 	_getDomainsSource: function (rule) {
