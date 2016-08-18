@@ -120,6 +120,9 @@ var CssFilterRule = exports.CssFilterRule = (function () {
         };
     };
 
+    /**
+     * CssFilterRule constructor
+     */
     var constructor = function (rule, filterId) {
 
         FilterRule.call(this, rule, filterId);
@@ -149,6 +152,10 @@ var CssFilterRule = exports.CssFilterRule = (function () {
         var cssContent = rule.substring(indexOfMask + mask.length);
 
         if (!isInjectRule) {
+            // We need this for two things:
+            // 1. Convert uBlock-style CSS injection rules
+            // 2. Validate pseudo-classes
+            // https://github.com/AdguardTeam/AdguardForAndroid/issues/701
             var pseudoClass = parsePseudoClass(cssContent);
             if (pseudoClass !== null && ":style" == pseudoClass.name) {
                 isInjectRule = true;
@@ -160,7 +167,8 @@ var CssFilterRule = exports.CssFilterRule = (function () {
             }
         }
 
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/321
+        // Extended CSS selectors support
+        // https://github.com/AdguardTeam/ExtendedCss
         for (var i = 0; i < EXTENDED_CSS_MARKERS.length; i++) {
             if (cssContent.indexOf(EXTENDED_CSS_MARKERS[i]) >= 0) {
                 isExtendedCss = true;

@@ -52,7 +52,7 @@ QUnit.test("Css Filter WhiteList Rule", function (assert) {
     assert.equal(".sponsored", rule.cssSelector);
 });
 
-QUnit.test("CssExceptionRules", function (assert) {
+QUnit.test("Css Exception Rules", function (assert) {
     var rule = new CssFilterRule("##.sponsored");
     var rule1 = new CssFilterRule("adguard.com#@#.sponsored");
     var filter = new CssFilter([rule]);
@@ -77,7 +77,7 @@ QUnit.test("CssExceptionRules", function (assert) {
     assert.equal(css[0], commonCss[0]);
 });
 
-QUnit.test("CssGenericHideExceptionRules", function (assert) {
+QUnit.test("Css GenericHide Exception Rules", function (assert) {
     var genericOne = new CssFilterRule("##.generic-one");
     var genericTwo = new CssFilterRule("~google.com,~yahoo.com###generic");
     var nonGeneric = new CssFilterRule("adguard.com##.non-generic");
@@ -146,7 +146,7 @@ QUnit.test("CssGenericHideExceptionRules", function (assert) {
     assert.equal(otherCss.length, 2);
 });
 
-QUnit.test("UblockCssInjectionSyntaxSupport", function (assert) {
+QUnit.test("Ublock Css Injection Syntax Support", function (assert) {
     var ruleText = "yandex.ru##body:style(background:inherit;)";
     var cssFilterRule = new CssFilterRule(ruleText);
     assert.equal(ruleText, cssFilterRule.ruleText);
@@ -162,7 +162,7 @@ QUnit.test("UblockCssInjectionSyntaxSupport", function (assert) {
     assert.equal("body { background:inherit; }", cssFilterRule.cssSelector);
 });
 
-QUnit.test("InvalidStyleSyntax", function (assert) {
+QUnit.test("Invalid Style Syntax", function (assert) {
     try {
         var ruleText = "yandex.ru##body:style()";
         new CssFilterRule(ruleText);
@@ -172,7 +172,7 @@ QUnit.test("InvalidStyleSyntax", function (assert) {
     }
 });
 
-QUnit.test("ValidPseudoClass", function (assert) {
+QUnit.test("Valid Pseudo Class", function (assert) {
     var selector = "#main > table.w3-table-all.notranslate:first-child > tbody > tr:nth-child(17) > td.notranslate:nth-child(2)";
     var ruleText = "w3schools.com##" + selector;
     var cssFilterRule = new CssFilterRule(ruleText);
@@ -206,7 +206,7 @@ QUnit.test("ValidPseudoClass", function (assert) {
     assert.equal(selector, cssFilterRule.cssSelector);
 });
 
-QUnit.test("FilterRuleWithColon", function (assert) {
+QUnit.test("Filter Rule With Colon", function (assert) {
     var selector = "a[href^=\"https://w3schools.com\"]";
     var ruleText = "w3schools.com##" + selector;
     var cssFilterRule = new CssFilterRule(ruleText);
@@ -224,7 +224,7 @@ QUnit.test("FilterRuleWithColon", function (assert) {
     assert.equal(selector, cssFilterRule.cssSelector);
 });
 
-QUnit.test("InvalidPseudoClass", function (assert) {
+QUnit.test("Invalid Pseudo Class", function (assert) {
     try {
         var ruleText = "yandex.ru##test:matches(.whatisthis)";
         new CssFilterRule(ruleText);
@@ -234,7 +234,7 @@ QUnit.test("InvalidPseudoClass", function (assert) {
     }
 });
 
-QUnit.test("ExtendedCssBuild", function (assert) {
+QUnit.test("Extended Css Build", function (assert) {
     var rule = new CssFilterRule("adguard.com##.sponsored");
     var genericRule = new CssFilterRule("##.banner");
     var extendedCssRule = new CssFilterRule("adguard.com##.sponsored[-ext-contains=test]");
@@ -257,10 +257,9 @@ QUnit.test("ExtendedCssBuild", function (assert) {
     assert.equal(commonCss.length, 1);
     assert.equal(css.length, 1);
     assert.equal(extendedCss.length, 1);
-
 });
 
-QUnit.test("ExtendedCssBuildCssHits", function (assert) {
+QUnit.test("Extended Css Build CssHits", function (assert) {
     var rule = new CssFilterRule("adguard.com##.sponsored");
     var genericRule = new CssFilterRule("##.banner");
     var extendedCssRule = new CssFilterRule("adguard.com##.sponsored[-ext-contains=test]");
@@ -286,7 +285,7 @@ QUnit.test("ExtendedCssBuildCssHits", function (assert) {
 
 });
 
-QUnit.test("ExtendedCssBuildInjectCss", function (assert) {
+QUnit.test("Extended Css Build Inject Css", function (assert) {
     var rule = new CssFilterRule("adguard.com##.sponsored");
     var genericRule = new CssFilterRule("##.banner");
     var extendedCssRule = new CssFilterRule("adguard.com##.sponsored[-ext-contains=test]");
