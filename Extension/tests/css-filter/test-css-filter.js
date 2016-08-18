@@ -258,6 +258,15 @@ QUnit.test("ExtendedCssBuild", function (assert) {
     assert.equal(css.length, 1);
     assert.equal(extendedCss.length, 1);
 
+});
+
+QUnit.test("ExtendedCssBuildCssHits", function (assert) {
+    var rule = new CssFilterRule("adguard.com##.sponsored");
+    var genericRule = new CssFilterRule("##.banner");
+    var extendedCssRule = new CssFilterRule("adguard.com##.sponsored[-ext-contains=test]");
+    var filter = new CssFilter([rule, genericRule, extendedCssRule]);
+
+    var selectors, css, extendedCss, commonCss;
 
     selectors = filter.buildCssHits("adguard.com");
     css = selectors.css;
@@ -275,6 +284,15 @@ QUnit.test("ExtendedCssBuild", function (assert) {
     assert.equal(css.length, 1);
     assert.equal(extendedCss.length, 1);
 
+});
+
+QUnit.test("ExtendedCssBuildInjectCss", function (assert) {
+    var rule = new CssFilterRule("adguard.com##.sponsored");
+    var genericRule = new CssFilterRule("##.banner");
+    var extendedCssRule = new CssFilterRule("adguard.com##.sponsored[-ext-contains=test]");
+    var filter = new CssFilter([rule, genericRule, extendedCssRule]);
+
+    var selectors, css, extendedCss, commonCss;
 
     var injectRule = new CssFilterRule('adguard.com##body:style(background:inherit;)');
     assert.ok(injectRule.isInjectRule);
