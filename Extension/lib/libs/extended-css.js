@@ -1,4 +1,4 @@
-/*! extended-css - v1.0.0 - 2016-08-18
+/*! extended-css - v1.0.2 - 2016-08-19
 * https://github.com/AdguardTeam/ExtendedCss
 * Copyright (c) 2016 ; Licensed Apache License 2.0 */
 var ExtendedCss = (function(window) {
@@ -243,37 +243,85 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
     };
 
     /**
+     * Checks if specified element is already in the affectedElements collection
+     * 
+     * @param element
+     */
+    var checkElementIsAffected = function(element) {
+        var iAffectedElements = affectedElements.length;
+        while (iAffectedElements--) {
+            if (affectedElements[iAffectedElements].element === element) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    /**
      * Applies filtering rules
      *
      * @param rules Rules to apply
      */
     var applyRules = function (rules) {
-        for (var i = 0; i < rules.length; i++) {
-            var rule = rules[i];
 
-            var selector = rule.selector;
-            var elements = selector.querySelectorAll();
+        var elementsIndex = [];
+        var iRules = rules.length;
+        while (iRules--) {
+            var rule = rules[iRules];
+            var elements = applyRule(rule);
+            elementsIndex = elementsIndex.concat(elements);
+        }
 
-            var iElements = elements.length;
-            while (iElements--) {
-                var el = elements[iElements];
-                var originalStyle = el.style.cssText;
-                applyStyle(el, rule.style);
-
-                affectedElements.push({
-                    element: el,
-                    rule: rule,
-                    originalStyle: originalStyle
-                });
+        // Now revert styles for elements which are no more affected
+        var iAffectedElements = affectedElements.length;
+        while (iAffectedElements--) {
+            var obj = affectedElements[iAffectedElements];
+            if (elementsIndex.indexOf(obj.element) === -1) {
+                // Time to revert style
+                revertStyle(obj);
+                affectedElements.splice(iAffectedElements, 1);                
             }
         }
     };
 
     /**
+     * Applies specified rule and returns list of elements affected
+     * 
+     * @param rule Rule to apply
+     * @returns List of elements affected by this rule
+     */
+    var applyRule = function(rule) {
+        var selector = rule.selector;
+        var elements = selector.querySelectorAll();
+
+        var iElements = elements.length;
+        while (iElements--) {
+            var element = elements[iElements];
+            if (checkElementIsAffected(element)) {
+                // We have already applied style to this element
+                // Let's re-apply style to it
+                applyStyle(element, rule.style);
+            } else {
+                // Applying style first time
+                var originalStyle = element.style.cssText;
+                applyStyle(element, rule.style);
+
+                affectedElements.push({
+                    element: element,
+                    rule: rule,
+                    originalStyle: originalStyle
+                });
+            }
+        }
+
+        return elements;
+    };
+
+    /**
      * Applies style to an element
      * 
-     * @element DOM node
-     * @style   Plain JS object with styles
+     * @param element DOM node
+     * @param style   Plain JS object with styles
      */
     var applyStyle = function(element, style) {
         
@@ -292,24 +340,6 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
      */
     var revertStyle = function(affectedElement) {
         affectedElement.element.style.cssText = affectedElement.originalStyle;
-    };
-
-    /**
-     * Checks that affected elements are still matching our selectors
-     */
-    var checkAffectedElements = function () {
-        var iElements = affectedElements.length;
-        while (iElements--) {
-            var obj = affectedElements[iElements];
-            var matchedSelector = obj.rule.selector;
-            if (matchedSelector.matches(obj.element)) {
-                // We're good, re-apply that style
-                applyStyle(obj.element, obj.rule.style);
-            } else {
-                revertStyle(obj);
-                affectedElements.slice(iElements, 1);
-            }
-        }
     };
 
     /**
@@ -350,7 +380,6 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
 
         domChanged = false;
         applyRules(rules);
-        checkAffectedElements();
     };
 
     /**
@@ -385,6 +414,9 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
     // EXPOSE
     this.dispose = dispose;
     this.apply = apply;
+    this.getAffectedElements = function() {
+        return affectedElements;
+    };
 };
 /*!
  * Sizzle CSS Selector Engine v2.3.4-pre
