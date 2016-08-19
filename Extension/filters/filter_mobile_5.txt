@@ -1,10 +1,10 @@
 ! Title: Experimental filter
-! Version: 1.0.26.23
+! Version: 1.0.26.24
 ! Name: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! NameEn: Experimental filter
 ! DescriptionEn: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! TimeUpdated: 2016-08-05T17:30:26.920+03:00
+! TimeUpdated: 2016-08-15T21:30:28.569+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -26,8 +26,6 @@ antiblock.org#%#AG_onLoad(function() { AG_AntiAntiBlock(); });
 rusnewstoday24.ru##.td-main-sidebar
 www.tut.by##.l-main > div#resource_block
 erofishki.net,fishki.net#%#AG_onLoad(function() { $('img[data-subscribe*="_543769"]').closest('div[id^="post-"]').remove(); });
-pikabu.ru#%#AG_onLoad(function() { $('a[href="http://pikabu.ru/html.php?id=ad"]').closest('table[class*="inner_wrap_visible"]').remove(); });
-pikabu.ru#%#AG_onLoad(function() { $('a[href="http://pikabu.ru/profile/ads"]').closest('table[id^="inner_wrap_"]').remove(); });
 yap.ru,yaplakal.com#%#AG_onLoad(function() { $('a[href^="/click/?http"]').closest('td[class="postcolor news-content"]').remove(); });
 yap.ru,yaplakal.com$$a[href="/click/?http"][parent-elements="td"][parent-search-level="3"]
 searchengines.guru##.smallfont td > div[align="right"]

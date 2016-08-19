@@ -1,10 +1,10 @@
 ! Title: Safari filter
-! Version: 1.0.1.10
+! Version: 1.0.1.20
 ! Name: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! NameEn: Safari filter
 ! DescriptionEn: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
-! TimeUpdated: 2016-08-09T22:01:38.171+03:00
+! TimeUpdated: 2016-08-19T14:01:53.842+03:00
 ! Title: Adguard Safari Filter
 !
 ! Special filter for Safari. We need a separate filter for Safari because it does not fully support rules syntax.
@@ -32,6 +32,22 @@
 !
 ! These rules are against anti-adblock scripts
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/2834
+@@||uploaded.net^$generichide
+! https://forum.adguard.com/index.php?threads/12790/
+@@||d-h.st^$generichide
+! https://forum.adguard.com/index.php?threads/12756/
+@@||v3.co.uk^$generichide
+@@||securepubads.g.doubleclick.net/gampad/ads$domain=v3.co.uk
+! https://forum.adguard.com/index.php?threads/12421/
+@@||sadeempc.com^$generichide
+! https://github.com/AdguardTeam/ExperimentalFilter/issues/1309
+@@||bild.de^$elemhide
+@@||smartadserver.com/diff/*/partners/$domain=bild.de
+@@||smartadserver.com/diff/*/smartad.js$domain=bild.de
+@@||sascdn.com^$domain=bild.de,script
+! https://github.com/AdguardTeam/AdguardFilters/issues/2787
+@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=vmf.edge-apps.net|americatv.com.ar
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2777
 @@||today.it^$generichide
 ! https://forum.adguard.com/index.php?threads/12344/
@@ -168,7 +184,9 @@ telegraaf.nl##.section-ad
 ! Section contains rules for specific websites
 !
 ! TEMPORARY: free-torrents.org - until web-sockets are not blocked by content-blocker
-free-torrents.org,free-torrent.org##body > :not(div)
+onlyf.ws,free-torrent.org,free-torrents.org##body > :not(div)
+! https://github.com/AdguardTeam/AdguardForiOS/issues/128
+@@/:\/\/.*[.]wp[.]pl\/[a-z0-9_]+[.][a-z]+[/:&?]?/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2766
 quoka.de###div-gpt-ad-banner
 ! https://forum.adguard.com/index.php?threads/11186/
@@ -176,13 +194,14 @@ uptobox.com##.ad-square
 ! https://forum.adguard.com/index.php?threads/11186/
 uptobox.com##.ad-square
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2744
-||st.kp.yandex.net/images/bnnr/$domain=kinopoisk.ru
 kinopoisk.ru###brandingFlash
 kinopoisk.ru##.direct-kp-customize
+||st.kp.yandex.net/images/bnnr/$domain=kinopoisk.ru
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2642
 baskino.club###b-mtbbar__container
 ! https://forum.adguard.com/index.php?threads/12268/
 go4up.com##a[style="display:inline!important"] > img
+go4up.com##a[target$="_blank"] > img
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2730
 kino-serial.net,on-movie.net##body > div[class^="skin-block_"][style^="background-image: url(data:image/jpeg;base64"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2663
@@ -238,6 +257,8 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 !
 ! White list. Fixing content blocking API issues.
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/2811
+@@||cdnssl.mediafire.com/js/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2112
 @@||googleadservices.com/pagead/aclk?*&adurl=
 @@||xg4ken.com/trk/*&adgroupid=
