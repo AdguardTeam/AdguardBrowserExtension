@@ -37,6 +37,7 @@ var CssFilter = exports.CssFilter = function (rules) {
 	this.commonCssHits = null;
 	this.commonRules = [];
 	this.domainSensitiveRules = [];
+	this.extendedCssRules = [];
 	this.exceptionRules = [];
 	this.dirty = false;
 	this.interceptPrefix = 'adg-intercept';
@@ -66,6 +67,8 @@ CssFilter.prototype = {
 
 		if (rule.whiteListRule) {
 			this.exceptionRules.push(rule);
+		} else if (rule.extendedCss) {
+			this.extendedCssRules.push(rule);
 		} else if (rule.isDomainSensitive()) {
 			this.domainSensitiveRules.push(rule);
 		} else {
@@ -88,6 +91,9 @@ CssFilter.prototype = {
 		this.exceptionRules = this.exceptionRules.filter(function (r) {
 			return r.ruleText != ruleText;
 		});
+		this.extendedCssRules = this.extendedCssRules.filter(function (r) {
+			return r.ruleText != ruleText;
+		});
 		this.domainSensitiveRules = this.domainSensitiveRules.filter(function (r) {
 			return r.ruleText != ruleText;
 		});
@@ -108,6 +114,7 @@ CssFilter.prototype = {
 		this.commonRules = [];
 		this.domainSensitiveRules = [];
 		this.exceptionRules = [];
+		this.extendedCssRules = [];
 		this.commonCss = null;
 		this.ruleByKeyMap = Object.create(null);
 		this.keyByRuleMap = Object.create(null);
@@ -119,7 +126,10 @@ CssFilter.prototype = {
 	 */
 	getRules: function () {
 		var result = [];
-		return result.concat(this.commonRules).concat(this.domainSensitiveRules).concat(this.exceptionRules);
+		return result.concat(this.commonRules).
+			concat(this.domainSensitiveRules).
+			concat(this.exceptionRules).
+			concat(this.extendedCssRules);
 	},
 
 
@@ -418,7 +428,7 @@ CssFilter.prototype = {
 			}
 		}.bind(this);
 
-		//skip inject rules
+		//skip inject and extended rules
 		var commonRules = this.commonRules.filter(function (rule) {
 			return !rule.isInjectRule;
 		});
@@ -470,6 +480,16 @@ CssFilter.prototype = {
 
 		for (i = 0; i < this.domainSensitiveRules.length; i++) {
 			rule = this.domainSensitiveRules[i];
+			exceptionRules = exceptionRulesMap[rule.cssSelector];
+			if (exceptionRules) {
+				for (j = 0; j < exceptionRules.length; j++) {
+					this._applyExceptionRule(rule, exceptionRules[j]);
+				}
+			}
+		}
+
+		for (i = 0; i < this.extendedCssRules.length; i++) {
+			rule = this.extendedCssRules[i];
 			exceptionRules = exceptionRulesMap[rule.cssSelector];
 			if (exceptionRules) {
 				for (j = 0; j < exceptionRules.length; j++) {
@@ -577,6 +597,13 @@ CssFilter.prototype = {
 			}
 		}
 
+		for (i = 0; i < this.extendedCssRules.length; i++) {
+			rule = this.extendedCssRules[i];
+			if (rule.cssSelector == exceptionRule.cssSelector) {
+				rule.removeRestrictedDomains(exceptionRule.getPermittedDomains());
+			}
+		}
+
 		this.commonRules = this.commonRules.concat(newCommonRules);
 
 		// Remove new common rules from  domain sensitive rules
@@ -595,11 +622,23 @@ CssFilter.prototype = {
 	 */
 	_filterDomainSensitiveRules: function (domainName) {
 		var rules = [];
+		var rule;
 
 		if (domainName) {
 			if (this.domainSensitiveRules !== null) {
-				for (var i = 0; i < this.domainSensitiveRules.length; i++) {
-					var rule = this.domainSensitiveRules[i];
+				var iDomainSensitive = this.domainSensitiveRules.length;
+				while (iDomainSensitive--) {
+					rule = this.domainSensitiveRules[iDomainSensitive];
+					if (rule.isPermitted(domainName)) {
+						rules.push(rule);
+					}
+				}
+			}
+
+			if (this.extendedCssRules !== null) {
+				var iExtendedCss = this.extendedCssRules.length;
+				while (iExtendedCss--) {
+					rule = this.extendedCssRules[iExtendedCss];
 					if (rule.isPermitted(domainName)) {
 						rules.push(rule);
 					}
