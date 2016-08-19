@@ -59,7 +59,10 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
     }
     
     result = {
-        selectors: null,
+        selectors: {
+            css: null,
+            extendedCss: null
+        },
         scripts: null,
         collapseAllElements: this.antiBannerService.shouldCollapseAllElements(),
         useShadowDom: Utils.isShadowDomSupported()

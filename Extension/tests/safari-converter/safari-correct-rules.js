@@ -129,8 +129,8 @@ var safariCorrectRules = [
         "image"
       ],
       "if-domain": [
-        "*catalogfavoritesvip.com",
-        "*freeshipping.com"
+        "*freeshipping.com",
+        "*catalogfavoritesvip.com"
       ]
     },
     "action": {
@@ -260,4 +260,110 @@ var safariCorrectRules = [
       "type": "ignore-previous-rules"
     }
   }
-]
+];
+
+function _checkResult(json, errors) {
+    var expectedErrorsCount = 4;
+    var expectedCssTrunkatedCount = 4;
+
+    if (json === null) {
+        errors.push('Convertation failed!');
+        return;
+    }
+
+    var expectedLength = (rules.length - expectedErrorsCount - expectedCssTrunkatedCount);
+    if (json.convertedCount != expectedLength) {
+        var message = 'Not all the rules converted \n';
+        message += 'result:' + json.length;
+        message += ' expected:' + expectedLength;
+        errors.push(message);
+    }
+
+    if (json.errorsCount != expectedErrorsCount) {
+        errors.push('Errors count is wrong');
+    }
+
+    if (json.overLimit !== false) {
+        errors.push('Overlimit flag is wrong');
+    }
+
+    var convertedString = json.converted;
+    if (convertedString === null || convertedString == '') {
+        errors.push('Converted block is wrong');
+    }
+
+    var converted = JSON.parse(convertedString);
+    Log.debug(converted);
+    if (converted.length != rules.length - expectedErrorsCount - expectedCssTrunkatedCount) {
+        errors.push('Not all the rules presented in json');
+    }
+
+    function createErrorMessage(expected, current, valueName) {
+        return 'Wrong ' + valueName + ' value for expected: ' + JSON.stringify(expected, null, '\t') + '\n'
+            + 'actual:' + JSON.stringify(current, null, '\t') + '\n';
+    }
+
+    function checkRule(current, expected) {
+        if (current.trigger['url-filter'] != expected.trigger['url-filter']) {
+            errors.push(createErrorMessage(expected, current, 'trigger url-filter'));
+        }
+
+        if (expected.trigger['load-type']) {
+            if (!current.trigger['load-type']
+                || current.trigger['load-type'].toString() != expected.trigger['load-type'].toString()) {
+                errors.push(createErrorMessage(expected, current, 'trigger load-type'));
+            }
+        }
+
+        if (expected.trigger['if-domain']) {
+            if (!current.trigger['if-domain']
+                || current.trigger['if-domain'].toString() != expected.trigger['if-domain'].toString()) {
+                errors.push(createErrorMessage(expected, current, 'trigger if-domain'));
+            }
+        }
+
+        if (expected.trigger['unless-domain']) {
+            if (!current.trigger['unless-domain']
+                || current.trigger['unless-domain'].toString() != expected.trigger['unless-domain'].toString()) {
+                errors.push(createErrorMessage(expected, current, 'trigger unless-domain'));
+            }
+        }
+
+        if (expected.trigger['resource-type']) {
+            if (!current.trigger['resource-type']
+                || current.trigger['resource-type'].toString() != expected.trigger['resource-type'].toString()) {
+                errors.push(createErrorMessage(expected, current, 'trigger resource-type'));
+            }
+        } else {
+            if (current.trigger['resource-type']) {
+                errors.push(createErrorMessage(expected, current, 'trigger resource-type'));
+            }
+        }
+
+        if (expected.action['type']) {
+            if (!current.action['type']
+                || current.action['type'].toString() != expected.action['type'].toString()) {
+                errors.push(createErrorMessage(expected, current, 'action type'));
+            }
+        }
+
+        if (expected.action['selector']) {
+            if (!current.action['selector']
+                || current.action['selector'].toString() != expected.action['selector'].toString()) {
+                errors.push(createErrorMessage(expected, current, 'action selector'));
+            }
+        }
+    }
+
+    // From test_safari_correct.js
+    var correct = safariCorrectRules;
+
+    converted.forEach(function (current, i) {
+        var expected = correct[i];
+
+        //Log.debug(current);
+        //Log.debug(expected);
+
+        checkRule(current, expected);
+    });
+}

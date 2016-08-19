@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global contentPage */
+/* global contentPage, ExtendedCss, HTMLDocument, XMLDocument */
 (function() {
     var AG_HIDDEN_ATTRIBUTE = "adg-hidden";
 
@@ -109,8 +109,8 @@
         }
 
         // Only for dynamically created frames and http/https documents.
-        if (!isHtml()
-            && window.location.href !== "about:blank") {
+        if (!isHtml() && 
+            window.location.href !== "about:blank") {
             return;
         }
 
@@ -183,10 +183,11 @@
             }
 
             if (iframes.length > 0) {
-                for (var i = 0; i < iframes.length; i++) {
-                    var iframe = iframes[i];
+                var iIframes = iframes.length;
+                while (iIframes--) {
+                    var iframe = iframes[iIframes];
                     checkShouldCollapseElement(iframe);
-                    iframeObserver.observe(iframe, iframeObserverOptions);
+                    iframeObserver.observe(iframe, iframeObserverOptions);                    
                 }
             }
         };
@@ -263,11 +264,13 @@
              * ad/tracking requests because extension is not yet initialized when 
              * these requests are executed. At least we could hide these elements.
              */
-            applySelectors(response.selectors, response.useShadowDom);
+            applySelectors(response.selectors.css, response.useShadowDom);
+            applyExtendedCss(response.selectors.extendedCss);
             applyScripts(response.scripts);
             initBatchCollapse();
         } else {
-            applySelectors(response.selectors, response.useShadowDom);
+            applySelectors(response.selectors.css, response.useShadowDom);
+            applyExtendedCss(response.selectors.extendedCss);
             applyScripts(response.scripts);
         }
 
@@ -303,7 +306,7 @@
      * @param useShadowDom  If true - add styles to shadow DOM instead of normal DOM. 
      */
     var applySelectors = function (selectors, useShadowDom) {
-        if (!selectors || selectors.length == 0) {
+        if (!selectors || selectors.length === 0) {
             return;
         }
 
@@ -319,6 +322,20 @@
             }
         }
     };
+
+    /**
+     * Applies Extended Css stylesheet
+     *
+     * @param extendedCss ExtendedCss stylesheet
+     */
+    var applyExtendedCss = function (extendedCss) {
+        if (!extendedCss) {
+            return;
+        }
+
+        // https://github.com/AdguardTeam/ExtendedCss
+        new ExtendedCss(extendedCss).apply();
+    };
     
     /**
      * Applies JS injections.
@@ -326,7 +343,7 @@
      * @param scripts Array with JS scripts and scriptSource ('remote' or 'local')
      */
     var applyScripts = function(scripts) {
-        if (!scripts || scripts.length == 0) {
+        if (!scripts || scripts.length === 0) {
             return;
         }
 
@@ -407,7 +424,7 @@
         }
 
         var elementUrl = element.src || element.data;
-        if (!elementUrl || elementUrl.indexOf('http') != 0) {
+        if (!elementUrl || elementUrl.indexOf('http') !== 0) {
             return;
         }
 
@@ -485,7 +502,7 @@
         var requests = [];
 
         // Collect collapse requests
-        for (var tagName in requestTypeMap) {
+        for (var tagName in requestTypeMap) { // jshint ignore:line
             var requestType = requestTypeMap[tagName];
 
             var elements = document.getElementsByTagName(tagName);
@@ -493,7 +510,7 @@
 
                 var element = elements[j];
                 var elementUrl = element.src || element.data;
-                if (!elementUrl || elementUrl.indexOf('http') != 0) {
+                if (!elementUrl || elementUrl.indexOf('http') !== 0) {
                     continue;
                 }
 
@@ -598,9 +615,9 @@
      * Called when document become visible.
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/159
      */
-    var onVisibilityChange = function(event) {
+    var onVisibilityChange = function() {
 
-        if (document.hidden == false) {
+        if (document.hidden === false) {
             document.removeEventListener("visibilitychange", onVisibilityChange);
             init();
         }

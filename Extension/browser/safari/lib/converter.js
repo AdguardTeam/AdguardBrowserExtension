@@ -14,11 +14,11 @@
 * You should have received a copy of the GNU Lesser General Public License
 * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+/* global require, exports */
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.11';
+var CONVERTER_VERSION = '1.3.12';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var URL_FILTER_ANY_URL = ".*";
@@ -27,7 +27,7 @@ var URL_FILTER_REGEXP_START_URL = "^https?://([^/]*\\.)?";
 // Simplified separator (to fix an issue with $ restriction - it can be only in the end of regexp)
 var URL_FILTER_REGEXP_SEPARATOR = "[/:&?]?";
 
-var FilterRule = require('filter/rules/base-filter-rule').FilterRule;
+var FilterRule = require('filter/rules/base-filter-rule').FilterRule; // jshint ignore:line
 var FilterRuleBuilder = require('filter/rules/filter-rule-builder').FilterRuleBuilder;
 var CssFilterRule = require('filter/rules/css-filter-rule').CssFilterRule;
 var UrlFilterRule = require('filter/rules/url-filter-rule').UrlFilterRule;
@@ -41,14 +41,18 @@ exports.SafariContentBlockerConverter = {
     AGRuleConverter: {
 
         _parseDomains: function (rule, included, excluded) {
+            var domain, domains, iDomains;
+
             if (rule.permittedDomain) {
-                var domain = UrlUtils.toPunyCode(rule.permittedDomain.toLowerCase());
+                domain = UrlUtils.toPunyCode(rule.permittedDomain.toLowerCase());
                 included.push(domain);
             } else if (rule.permittedDomains) {
-                var domains = rule.permittedDomains;
-                for (var i in domains) {
-                    if (domains[i] != "") {
-                        var domain = domains[i];
+                domains = rule.permittedDomains;
+                iDomains = domains.length;
+
+                while (iDomains--) {
+                    if (domains[iDomains] !== "") {
+                        domain = domains[iDomains];
                         domain = UrlUtils.toPunyCode(domain.toLowerCase());
                         included.push(domain);
                     }
@@ -56,12 +60,13 @@ exports.SafariContentBlockerConverter = {
             }
 
             if (rule.restrictedDomain) {
-                var domain = UrlUtils.toPunyCode(rule.restrictedDomain.toLowerCase());
+                domain = UrlUtils.toPunyCode(rule.restrictedDomain.toLowerCase());
                 excluded.push(domain);
             } else if (rule.restrictedDomains) {
-                var domains = rule.restrictedDomains;
-                for (var i in domains) {
-                    var domain = domains[i];
+                domains = rule.restrictedDomains;
+                iDomains = domains.length;
+                while (iDomains--) {
+                    domain = domains[iDomains];
                     if (domain) {
                         domain = UrlUtils.toPunyCode(domain.toLowerCase());
                         excluded.push(domain);
@@ -81,7 +86,7 @@ exports.SafariContentBlockerConverter = {
         },
 
         _addMatchCase: function (trigger, rule) {
-            if (rule.matchCase != null && rule.matchCase) {
+            if (rule.matchCase !== null && rule.matchCase) {
                 trigger["url-filter-is-case-sensitive"] = true;
             }
         },
@@ -113,8 +118,8 @@ exports.SafariContentBlockerConverter = {
         },
 
         _hasContentType: function(rule, contentType) {
-            return (rule.permittedContentType & contentType) &&
-                !(rule.restrictedContentType & contentType);
+            return (rule.permittedContentType & contentType) && // jshint ignore:line
+                !(rule.restrictedContentType & contentType); // jshint ignore:line
         },
 
         _isContentType: function(rule, contentType) {
@@ -125,7 +130,7 @@ exports.SafariContentBlockerConverter = {
             var types = [];
 
             if (this._isContentType(rule, UrlFilterRule.contentTypes.ALL) &&
-                rule.restrictedContentType == 0) {
+                rule.restrictedContentType === 0) {
                 // Safari does not support all other default content types, like subdocument etc.
                 // So we can use default safari content types instead.
                 return;
@@ -251,9 +256,13 @@ exports.SafariContentBlockerConverter = {
 
         convertCssFilterRule: function (rule) {
 
-            if (rule.isInjectRule && rule.isInjectRule == true) {
+            if (rule.isInjectRule && rule.isInjectRule === true) {
                 // There is no way to convert these rules to safari format
-                throw new Error("Css-injection rule " + rule.ruleText + " cannot be converted");
+                throw new Error("CSS-injection rule " + rule.ruleText + " cannot be converted");
+            }
+
+            if (rule.extendedCss) {
+                throw new Error("Extended CSS rule " + rule.ruleText + " cannot be converted");
             }
 
             var result = {
@@ -302,8 +311,8 @@ exports.SafariContentBlockerConverter = {
             }
 
             function isUrlBlockRule(r) {
-                return self._isContentType(r, UrlFilterRule.contentTypes.URLBLOCK)
-                    || self._isContentType(r, UrlFilterRule.contentTypes.GENERICBLOCK);
+                return self._isContentType(r, UrlFilterRule.contentTypes.URLBLOCK) ||
+                    self._isContentType(r, UrlFilterRule.contentTypes.GENERICBLOCK);
             }
 
             if (rule.whiteListRule && rule.whiteListRule === true) {
@@ -318,19 +327,17 @@ exports.SafariContentBlockerConverter = {
                     
                     var parseDomainResult = this._parseRuleDomain(rule.urlRuleText);                    
 
-                    if (parseDomainResult != null
-                        && parseDomainResult.path != null
-                        && parseDomainResult.path != "^"
-                        && parseDomainResult.path != "/") {
-                        //http://jira.performix.ru/browse/AG-8664
+                    if (parseDomainResult !== null && 
+                        parseDomainResult.path !== null &&
+                        parseDomainResult.path != "^" &&
+                        parseDomainResult.path != "/") {
+                        // http://jira.performix.ru/browse/AG-8664
                         Log.debug('Whitelist special warning for rule: ' + rule.ruleText);
 
                         return;
-                        //throw new Error("Whitelist special exception for $document rules");
                     }
 
-                    if (parseDomainResult == null || parseDomainResult.domain == null) {
-                        //throw new Error("Error parsing domain from rule");
+                    if (parseDomainResult === null || parseDomainResult.domain === null) {
                         Log.debug('Error parse domain from rule: ' + rule.ruleText);
                         return;
                     }
@@ -346,7 +353,8 @@ exports.SafariContentBlockerConverter = {
                     result.trigger["url-filter"] = URL_FILTER_ANY_URL;
                     delete result.trigger["resource-type"];
 
-                } else if (this._hasContentType(rule, UrlFilterRule.contentTypes.ELEMHIDE | UrlFilterRule.contentTypes.GENERICHIDE)) {
+                } else if (this._hasContentType(rule, UrlFilterRule.contentTypes.ELEMHIDE | // jshint ignore:line 
+                        UrlFilterRule.contentTypes.GENERICHIDE)) {  // jshint ignore:line
                     result.trigger["resource-type"] = ['document'];
                 }
             }
@@ -433,14 +441,14 @@ exports.SafariContentBlockerConverter = {
      */
     convertLine: function (ruleText, errors) {
         try {
-            if (ruleText == null || ruleText == ''
-                || ruleText.indexOf('!') == 0 || ruleText.indexOf(' ') == 0
-                || ruleText.indexOf(' - ') > 0) {
+            if (ruleText === null || ruleText === '' || 
+                ruleText.indexOf('!') === 0 || ruleText.indexOf(' ') === 0 ||
+                ruleText.indexOf(' - ') > 0) {
                 return null;
             }
 
             var agRule = FilterRuleBuilder.createRule(ruleText);
-            if (agRule == null) {
+            if (agRule === null) {
                 throw new Error('Cannot create rule from: ' + ruleText);
             }
 
@@ -448,7 +456,7 @@ exports.SafariContentBlockerConverter = {
 
         } catch (ex) {
             var message = 'Error converting rule from: ' + ruleText + ' cause:\n' + ex;
-            message = ruleText + '\r\n' + message + '\r\n'
+            message = ruleText + '\r\n' + message + '\r\n';
             Log.debug(message);
 
             if (errors) {
@@ -466,7 +474,7 @@ exports.SafariContentBlockerConverter = {
      * @returns {*}
      */
     _convertAGRule: function (rule) {
-        if (rule == null) {
+        if (rule === null) {
             throw new Error('Invalid argument rule');
         }
 
@@ -496,7 +504,7 @@ exports.SafariContentBlockerConverter = {
             return this._convertAGRule(rule);
         } catch (ex) {
             var message = 'Error converting rule from: ' + rule + ' cause:\n' + ex;
-            message = (rule.ruleText ? rule.ruleText : rule) + '\r\n' + message + '\r\n'
+            message = (rule.ruleText ? rule.ruleText : rule) + '\r\n' + message + '\r\n';
             Log.debug(message);
 
             if (errors) {
@@ -544,7 +552,7 @@ exports.SafariContentBlockerConverter = {
             for (var i = 0; i < array.length; i++) {
                 array[i] = "*" + array[i];
             }
-        }
+        };
 
         rules.forEach(function (rule) {
             if (rule.trigger) {
@@ -599,32 +607,33 @@ exports.SafariContentBlockerConverter = {
         var exceptionsAppliedCount = 0;
         var exceptionsErrorsCount = 0;
 
-        for (var selector in exceptionRulesMap) {
-            var selectorRules = rulesMap[selector];
-            var selectorExceptions = exceptionRulesMap[selector];
+        var selectorRules, selectorExceptions;
+        var iterator = function (exc) {
+            selectorRules.forEach(function (rule) {
+                var exceptionDomains = exc.trigger['if-domain'];
+                if (exceptionDomains && exceptionDomains.length > 0) {
+                    exceptionDomains.forEach(function (domain) {
+                        pushExceptionDomain(domain, rule);
+                    });
+                }
+            });
+
+            exceptionsAppliedCount++;
+        };
+
+        for (var selector in exceptionRulesMap) { // jshint ignore:line
+            selectorRules = rulesMap[selector];
+            selectorExceptions = exceptionRulesMap[selector];
 
             if (selectorRules && selectorExceptions) {
-
-                selectorExceptions.forEach(function (exc) {
-
-                    selectorRules.forEach(function (rule) {
-                        var exceptionDomains = exc.trigger['if-domain'];
-                        if (exceptionDomains && exceptionDomains.length > 0) {
-                            exceptionDomains.forEach(function (domain) {
-                                pushExceptionDomain(domain, rule);
-                            });
-                        }
-                    });
-
-                    exceptionsAppliedCount++;
-                });
+                selectorExceptions.forEach(iterator);
             }
         }
 
         var result = [];
         cssBlocking.forEach(function (r) {
-            if (r.trigger["if-domain"] && (r.trigger["if-domain"].length > 0)
-                && r.trigger["unless-domain"] && (r.trigger["unless-domain"].length > 0)) {
+            if (r.trigger["if-domain"] && (r.trigger["if-domain"].length > 0) && 
+                r.trigger["unless-domain"] && (r.trigger["unless-domain"].length > 0)) {
                 Log.debug('Safari does not support permitted and restricted domains in one rule');
                 Log.debug(JSON.stringify(r));
                 exceptionsErrorsCount++;
@@ -727,7 +736,7 @@ exports.SafariContentBlockerConverter = {
         for (var i = 0, len = rules.length; i < len; i++) {
             var item;
             var ruleText;
-            if (rules[i] != null && rules[i].ruleText) {
+            if (rules[i] !== null && rules[i].ruleText) {
                 item = this.convertAGRule(rules[i], contentBlocker.errors);
                 ruleText = rules[i].ruleText;
             } else {
@@ -735,8 +744,8 @@ exports.SafariContentBlockerConverter = {
                 ruleText = rules[i];
             }
 
-            if (item != null && item != '') {
-                if (item.action == null || item.action == '') {
+            if (item !== null && item !== '') {
+                if (item.action === null || item.action === '') {
                     continue;
                 }
 
@@ -744,17 +753,17 @@ exports.SafariContentBlockerConverter = {
                     contentBlocker.urlBlocking.push(item);
                 } else if (item.action.type == 'css-display-none') {
                     cssBlocking.push(item);
-                } else if (item.action.type == 'ignore-previous-rules'
-                    && (item.action.selector && item.action.selector != '')) {
+                } else if (item.action.type == 'ignore-previous-rules' && 
+                    (item.action.selector && item.action.selector !== '')) {
                     // #@# rules
                     cssExceptions.push(item);
-                } else if (item.action.type == 'ignore-previous-rules'
-                    && (ruleText && ruleText.indexOf('generichide') > 0)) {
+                } else if (item.action.type == 'ignore-previous-rules' && 
+                    (ruleText && ruleText.indexOf('generichide') > 0)) {
                     contentBlocker.cssBlockingWideExceptions.push(item);
-                } else if (item.action.type == 'ignore-previous-rules'
-                    && (item.trigger["resource-type"]
-                        && item.trigger["resource-type"].length > 0
-                        && item.trigger["resource-type"][0] == 'document')) {
+                } else if (item.action.type == 'ignore-previous-rules' && 
+                        (item.trigger["resource-type"] && 
+                        item.trigger["resource-type"].length > 0 &&
+                        item.trigger["resource-type"][0] == 'document')) {
                     // elemhide rules
                     contentBlocker.cssElemhide.push(item);
                 } else {
@@ -828,12 +837,12 @@ exports.SafariContentBlockerConverter = {
     convertArray: function (rules, limit, optimize) {
         this._addVersionMessage();
 
-        if (rules == null) {
+        if (rules === null) {
             Log.error('Invalid argument rules');
             return null;
         }
 
-        if (rules.length == 0) {
+        if (rules.length === 0) {
             Log.info('No rules presented for convertation');
             return null;
         }

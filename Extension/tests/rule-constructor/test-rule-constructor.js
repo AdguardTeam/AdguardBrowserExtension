@@ -1,10 +1,4 @@
-/* global addTestCase */
-/* global assertFalse */
-/* global assertEquals */
-/* global assertTrue */
-
-function testConstructorAssistant() {
-
+QUnit.test("Rules Constructor for Assistant", function(assert) {
     var element = document.getElementById('test-div');
     var elementHref = document.getElementsByClassName('a-test-class')[0];
 
@@ -17,33 +11,32 @@ function testConstructorAssistant() {
     };
 
     var ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-    assertEquals(ruleText, 'example.org###test-div');
+    assert.equal(ruleText, 'example.org###test-div');
 
     options.isBlockByUrl = true;
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-    assertEquals(ruleText, 'test.com/page$domain=example.org');
+    assert.equal(ruleText, 'test.com/page$domain=example.org');
 
     options.isBlockByUrl = false;
     options.isBlockSimilar = true;
     options.isBlockOneDomain = false;
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-    assertEquals(ruleText, 'example.org##.test-class.test-class-two');
+    assert.equal(ruleText, 'example.org##.test-class.test-class-two');
 
     options.isBlockByUrl = false;
     options.isBlockSimilar = false;
     options.isBlockOneDomain = true;
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-    assertEquals(ruleText, '###test-div');
+    assert.equal(ruleText, '###test-div');
 
     options.isBlockByUrl = false;
     options.isBlockSimilar = false;
     options.isBlockOneDomain = true;
     ruleText = AdguardRulesConstructorLib.constructRuleText(elementHref, options);
-    assertEquals(ruleText, '###test-div > a.a-test-class.a-test-class-two.a-test-class-three:first-child');
-}
-addTestCase(testConstructorAssistant);
+    assert.equal(ruleText, '###test-div > a.a-test-class.a-test-class-two.a-test-class-three:first-child');
+});
 
-function testConstructorDevTools() {
+QUnit.test("Rules Constructor for DevTools", function(assert) {
     var element = document.getElementById('test-div');
     var elementHref = document.getElementsByClassName('a-test-class')[0];
 
@@ -57,28 +50,28 @@ function testConstructorDevTools() {
     };
 
     var ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-    assertEquals(ruleText, 'example.org###test-div');
+    assert.equal(ruleText, 'example.org###test-div');
 
     options.isBlockSimilar = true;
     options.classesSelector = '';
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-    assertEquals(ruleText, 'example.org');
+    assert.equal(ruleText, 'example.org');
 
     options.classesSelector = null;
     options.excludeTagName = false;
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-    assertEquals(ruleText, 'example.org##div.test-class.test-class-two');
+    assert.equal(ruleText, 'example.org##div.test-class.test-class-two');
 
     options.isBlockByUrl = false;
     options.isBlockSimilar = true;
     options.isBlockOneDomain = true;
     options.excludeTagName = true;
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-    assertEquals(ruleText, '##.test-class.test-class-two');
+    assert.equal(ruleText, '##.test-class.test-class-two');
 
     options.classesSelector = '.test-class-two';
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-    assertEquals(ruleText, '##.test-class-two');
+    assert.equal(ruleText, '##.test-class-two');
     options.classesSelector = null;
 
     options.isBlockByUrl = false;
@@ -86,7 +79,7 @@ function testConstructorDevTools() {
     options.isBlockOneDomain = true;
     options.attributes = '[title="Share on Twitter"][attribute="aValue"]';
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-    assertEquals(ruleText, '###test-div[title="Share on Twitter"][attribute="aValue"]');
+    assert.equal(ruleText, '###test-div[title="Share on Twitter"][attribute="aValue"]');
 
     options.isBlockByUrl = false;
     options.isBlockSimilar = false;
@@ -94,21 +87,19 @@ function testConstructorDevTools() {
     options.attributes = '';
     options.excludeTagName = false;
     ruleText = AdguardRulesConstructorLib.constructRuleText(elementHref, options);
-    assertEquals(ruleText, '###test-div > a.a-test-class.a-test-class-two.a-test-class-three:first-child');
+    assert.equal(ruleText, '###test-div > a.a-test-class.a-test-class-two.a-test-class-three:first-child');
 
     options.excludeTagName = true;
     ruleText = AdguardRulesConstructorLib.constructRuleText(elementHref, options);
-    assertEquals(ruleText, '###test-div > .a-test-class.a-test-class-two.a-test-class-three:first-child');
+    assert.equal(ruleText, '###test-div > .a-test-class.a-test-class-two.a-test-class-three:first-child');
 
     options.classesSelector = '.a-test-class-two.a-test-class-three';
     ruleText = AdguardRulesConstructorLib.constructRuleText(elementHref, options);
-    assertEquals(ruleText, '###test-div > .a-test-class-two.a-test-class-three:first-child');
-}
-addTestCase(testConstructorDevTools);
+    assert.equal(ruleText, '###test-div > .a-test-class-two.a-test-class-three:first-child');
+});
 
-function testConstructorSpecialElements() {
-
-    var elementHref = document.getElementsByTagName('h2')[0];
+QUnit.test("Rules Constructor for special elements", function(assert) {
+    var elementHref = document.querySelector("#test-div h2"); 
     var options = {
         isBlockByUrl: false,
         urlMask: null,
@@ -121,7 +112,7 @@ function testConstructorSpecialElements() {
     };
 
     var ruleText = AdguardRulesConstructorLib.constructRuleText(elementHref, options);
-    assertEquals(ruleText, 'lenta.ru###test-div > h2:last-child');
+    assert.equal(ruleText, 'lenta.ru###test-div > h2:last-child');
 
     var elementDivId = document.getElementById('test-id-div');
     options = {
@@ -136,49 +127,47 @@ function testConstructorSpecialElements() {
     };
 
     ruleText = AdguardRulesConstructorLib.constructRuleText(elementDivId, options);
-    assertEquals(ruleText, 'lenta.ru###test-id-div');
+    assert.equal(ruleText, 'lenta.ru###test-id-div');
 
     options.excludeTagName = false;
     ruleText = AdguardRulesConstructorLib.constructRuleText(elementDivId, options);
-    assertEquals(ruleText, 'lenta.ru##div#test-id-div');
+    assert.equal(ruleText, 'lenta.ru##div#test-id-div');
 
     options.attributes = '[title="Share on Twitter"]';
     ruleText = AdguardRulesConstructorLib.constructRuleText(elementDivId, options);
-    assertEquals(ruleText, 'lenta.ru##div#test-id-div[title="Share on Twitter"]');
+    assert.equal(ruleText, 'lenta.ru##div#test-id-div[title="Share on Twitter"]');
 
     options.attributes = '[id="test-id-div"][title="Share on Twitter"]';
     ruleText = AdguardRulesConstructorLib.constructRuleText(elementDivId, options);
-    assertEquals(ruleText, 'lenta.ru##div#test-id-div[id="test-id-div"][title="Share on Twitter"]');
+    assert.equal(ruleText, 'lenta.ru##div#test-id-div[id="test-id-div"][title="Share on Twitter"]');
 
     options.attributes = '[id="test-id-div"]';
     ruleText = AdguardRulesConstructorLib.constructRuleText(elementDivId, options);
-    assertEquals(ruleText, 'lenta.ru##div#test-id-div[id="test-id-div"]');
+    assert.equal(ruleText, 'lenta.ru##div#test-id-div[id="test-id-div"]');
 
     options.classesSelector = '.test-class-two';
     delete options.attributes;
     ruleText = AdguardRulesConstructorLib.constructRuleText(elementDivId, options);
-    assertEquals(ruleText, 'lenta.ru##div.test-class-two#test-id-div');
-}
-addTestCase(testConstructorSpecialElements);
+    assert.equal(ruleText, 'lenta.ru##div.test-class-two#test-id-div');
+});
 
-function testConstructRuleStyle() {
+QUnit.test("Rules Constructor for CSS selector", function(assert) {
     var selector;
     selector = AdguardRulesConstructorLib.constructRuleCssSelector('lenta.ru##div.test-class-two#test-id-div$domain=example.org');
-    assertEquals('div.test-class-two#test-id-div', selector);
+    assert.equal('div.test-class-two#test-id-div', selector);
 
     selector = AdguardRulesConstructorLib.constructRuleCssSelector('lenta.ru###test-div > h2:last-child');
-    assertEquals('#test-div > h2:last-child', selector);
+    assert.equal('#test-div > h2:last-child', selector);
 
     selector = AdguardRulesConstructorLib.constructRuleCssSelector('##div#test-id-div[id="test-id-div"][title="Share on Twitter"]');
-    assertEquals('div#test-id-div[id="test-id-div"][title="Share on Twitter"]', selector);
+    assert.equal('div#test-id-div[id="test-id-div"][title="Share on Twitter"]', selector);
 
     selector = AdguardRulesConstructorLib.constructRuleCssSelector('test.com/page$domain=example.org');
-    assertNull(selector);
+    assert.equal(selector);
 
     selector = AdguardRulesConstructorLib.constructRuleCssSelector('||rutorads.com^$popup');
-    assertNull(selector);
+    assert.equal(selector);
 
     selector = AdguardRulesConstructorLib.constructRuleCssSelector("#%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };");
-    assertNull(selector);
-}
-addTestCase(testConstructRuleStyle);
+    assert.equal(selector);
+});

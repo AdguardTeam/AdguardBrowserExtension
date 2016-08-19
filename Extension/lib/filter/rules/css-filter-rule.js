@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+/* global require, exports */
 /**
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
@@ -41,7 +41,15 @@ var CssFilterRule = exports.CssFilterRule = (function () {
         ":focus", ":hover", ":in-range", ":invalid", ":lang", ":last-child", ":last-of-type",
         ":link", ":not", ":nth-child", ":nth-last-child", ":nth-last-of-type", ":nth-of-type",
         ":only-child", ":only-of-type", ":optional", ":out-of-range", ":read-only",
-        ":read-write", ":required", ":root", ":target", ":valid", ":visited"];
+        ":read-write", ":required", ":root", ":target", ":valid", ":visited", ":has", ":contains"];
+
+    /**
+     * The problem with it is that ":has" and ":contains" pseudo classes are not a valid pseudo classes,
+     * hence using it may break old versions of AG.
+     *
+     * @type {string[]}
+     */
+    var EXTENDED_CSS_MARKERS = ["[-ext-has=", "[-ext-contains=", ":has(", ":contains("];
 
     /**
      * Tries to convert CSS injections rules from uBlock syntax to our own
@@ -112,6 +120,9 @@ var CssFilterRule = exports.CssFilterRule = (function () {
         };
     };
 
+    /**
+     * CssFilterRule constructor
+     */
     var constructor = function (rule, filterId) {
 
         FilterRule.call(this, rule, filterId);
@@ -137,20 +148,36 @@ var CssFilterRule = exports.CssFilterRule = (function () {
             this.loadDomains(domains);
         }
 
+        var isExtendedCss = false;
         var cssContent = rule.substring(indexOfMask + mask.length);
 
         if (!isInjectRule) {
+            // We need this for two things:
+            // 1. Convert uBlock-style CSS injection rules
+            // 2. Validate pseudo-classes
+            // https://github.com/AdguardTeam/AdguardForAndroid/issues/701
             var pseudoClass = parsePseudoClass(cssContent);
-            if (pseudoClass != null && ":style" == pseudoClass.name) {
+            if (pseudoClass !== null && ":style" == pseudoClass.name) {
                 isInjectRule = true;
                 cssContent = convertCssInjectionRule(pseudoClass, cssContent);
-            } else if (pseudoClass != null && SUPPORTED_PSEUDO_CLASSES.indexOf(pseudoClass.name) < 0) {
-                throw new Error("Unknown pseudo class: " + cssContent);
+            } else if (pseudoClass !== null) {
+                if (SUPPORTED_PSEUDO_CLASSES.indexOf(pseudoClass.name) < 0) {
+                    throw new Error("Unknown pseudo class: " + cssContent);
+                }
+            }
+        }
+
+        // Extended CSS selectors support
+        // https://github.com/AdguardTeam/ExtendedCss
+        for (var i = 0; i < EXTENDED_CSS_MARKERS.length; i++) {
+            if (cssContent.indexOf(EXTENDED_CSS_MARKERS[i]) >= 0) {
+                isExtendedCss = true;
             }
         }
 
         this.isInjectRule = isInjectRule;
         this.cssSelector = cssContent;
+        this.extendedCss = isExtendedCss;
     };
 
     return constructor;
