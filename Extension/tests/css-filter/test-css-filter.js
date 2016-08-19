@@ -259,6 +259,31 @@ QUnit.test("Extended Css Build", function (assert) {
     assert.equal(extendedCss.length, 1);
 });
 
+QUnit.test("Extended Css Build Common Extended", function (assert) {
+    var rule = new CssFilterRule("adguard.com##.sponsored");
+    var genericRule = new CssFilterRule("##.banner");
+    var extendedCssRule = new CssFilterRule("##.sponsored[-ext-contains=test]");
+    var filter = new CssFilter([rule, genericRule, extendedCssRule]);
+
+    var selectors, css, extendedCss, commonCss;
+
+    selectors = filter.buildCss("adguard.com");
+    css = selectors.css;
+    extendedCss = selectors.extendedCss;
+    commonCss = filter.buildCss(null).css;
+    assert.equal(commonCss.length, 1);
+    assert.equal(css.length, 2);
+    assert.equal(extendedCss.length, 1);
+
+    selectors = filter.buildCss("adguard.com", true);
+    css = selectors.css;
+    extendedCss = selectors.extendedCss;
+    commonCss = filter.buildCss(null).css;
+    assert.equal(commonCss.length, 1);
+    assert.equal(css.length, 1);
+    assert.equal(extendedCss.length, 0);
+});
+
 QUnit.test("Extended Css Build CssHits", function (assert) {
     var rule = new CssFilterRule("adguard.com##.sponsored");
     var genericRule = new CssFilterRule("##.banner");
