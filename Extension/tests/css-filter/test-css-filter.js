@@ -353,3 +353,33 @@ QUnit.test("Extended Css Build Inject Css", function (assert) {
     assert.equal(css.length, 1);
     assert.equal(extendedCss.length, 1);
 });
+
+QUnit.test("Extended Css Selector Inject Rule", function (assert) {
+    var rule = new CssFilterRule("adguard.com##.bannerSponsor");
+    var genericRule = new CssFilterRule("##.banner");
+    var extendedCssRule = new CssFilterRule("adguard.com##.sponsored[-ext-contains=test]");
+    var filter = new CssFilter([rule, genericRule, extendedCssRule]);
+
+    var selectors, css, extendedCss, commonCss;
+
+    var injectRule = new CssFilterRule('adguard.com#$#.first-item h2:has(time) { font-size: 128px; })');
+    assert.ok(injectRule.isInjectRule);
+    assert.ok(injectRule.extendedCss);
+    filter.addRule(injectRule);
+
+    selectors = filter.buildInjectCss("adguard.com");
+    css = selectors.css;
+    extendedCss = selectors.extendedCss;
+    commonCss = filter.buildCss(null).css;
+    assert.equal(commonCss.length, 1);
+    assert.equal(css.length, 0);
+    assert.equal(extendedCss.length, 2);
+
+    selectors = filter.buildInjectCss("adguard.com", true);
+    css = selectors.css;
+    extendedCss = selectors.extendedCss;
+    commonCss = filter.buildCss(null).css;
+    assert.equal(commonCss.length, 1);
+    assert.equal(css.length, 0);
+    assert.equal(extendedCss.length, 2);
+});
