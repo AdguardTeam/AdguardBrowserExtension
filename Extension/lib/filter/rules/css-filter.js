@@ -139,7 +139,7 @@ CssFilter.prototype = {
 
 		var stylesheets = this._createCssStylesheets(rules);
 		if (!genericHide) {
-			stylesheets.css = this._getCommonCss().concat(stylesheets.css)
+			stylesheets.css = this._getCommonCss().concat(stylesheets.css);
 		}
 
 		return stylesheets;
@@ -202,7 +202,7 @@ CssFilter.prototype = {
 
 		var stylesheets = this._createCssStylesheetsHits(rules, hitPrefix);
 		if (!genericHide) {
-			stylesheets.css = this._getCommonCssHits(hitPrefix).concat(stylesheets.css)
+			stylesheets.css = this._getCommonCssHits(hitPrefix).concat(stylesheets.css);
 		}
 
 		return stylesheets;
