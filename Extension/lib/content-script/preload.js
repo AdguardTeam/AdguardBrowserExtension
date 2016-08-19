@@ -329,7 +329,7 @@
      * @param extendedCss ExtendedCss stylesheet
      */
     var applyExtendedCss = function (extendedCss) {
-        if (!extendedCss) {
+        if (!extendedCss || !extendedCss.length) {
             return;
         }
 
