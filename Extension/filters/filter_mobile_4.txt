@@ -1,10 +1,10 @@
 ! Title: Social media filter
-! Version: 1.0.11.80
+! Version: 1.0.11.81
 ! Name: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
 ! NameEn: Social media filter
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2016-08-19T15:00:59.349+03:00
+! TimeUpdated: 2016-08-19T19:00:56.799+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -220,6 +220,7 @@ maskme.ru#$#img[width="88"][height="31"] {visibility: hidden!important;}
 gamesradar.com#$#.shareSocialArticle-wrap { visibility: hidden; }
 softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ||mimimi.tv/?*=*&_=
+giveaway-club.com##a[href^="https://www.facebook.com/share.php"]
 vivaldi.net##.bt-social-share
 yeniasir.com.tr##.socialWrap
 habergazetesi.com.tr##a[onclick^="payla("]
@@ -1780,6 +1781,8 @@ teleprogramma.pro##.facebook-bn_site-overlay
 tsargrad.tv##.popUp-wrapper
 cluber.com.ua##.popup-bg
 ||ufatime.ru/st/libs/magnific/jquery.magnific-popup.min.js
+giveaway-club.com###fancybox-overlay
+giveaway-club.com###fancybox-wrap
 @@||sputniknews.com/min/js/plugins/social-likes.min.js
 @@||yastatic.net/share2/share.js$domain=foxtrot.com.ua
 @@||api.facebook.com/method/links.getStats$domain=grammarly.com
