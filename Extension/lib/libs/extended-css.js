@@ -1,4 +1,4 @@
-/*! extended-css - v1.0.2 - 2016-08-19
+/*! extended-css - v1.0.3 - 2016-08-19
 * https://github.com/AdguardTeam/ExtendedCss
 * Copyright (c) 2016 ; Licensed Apache License 2.0 */
 var ExtendedCss = (function(window) {
@@ -221,10 +221,10 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
     var domObserver;
 
     /**
-     * Parses specified styleSheet in a number of rule objects
-     *
-     * @param styleSheet String with the stylesheet
-     */ 
+     * Parses specified styleSheet in a number of rule objects
+     *
+     * @param styleSheet String with the stylesheet
+     */ 
     var parse = function (styleSheet) {
 
         var result = [];
@@ -326,7 +326,9 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
     var applyStyle = function(element, style) {
         
         for (var prop in style) {
-            if (element.style.hasOwnProperty(prop)) {
+            // Apply this style only to existing properties
+            // We can't use hasOwnProperty here (does not work in FF)
+            if (typeof element.style[prop] !== "undefined") {
                 var value = style[prop];
                 // First we should remove !important attribute (or it won't be applied')
                 value = value.split("!")[0].trim();
