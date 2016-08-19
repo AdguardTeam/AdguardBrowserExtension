@@ -146,8 +146,6 @@ CssFilter.prototype = {
 	},
 
 	/**
-	 * Firefox only.
-	 *
 	 * Builds CSS to be injected to the page.
 	 * This method builds CSS for CSS injection rules:
 	 * http://adguard.com/en/filterrules.html#cssInjection
@@ -162,7 +160,7 @@ CssFilter.prototype = {
 		var injectDomainRules = [];
 		if (domainRules !== null) {
 			injectDomainRules = domainRules.filter(function (rule) {
-				return rule.isInjectRule && (!genericHide || !rule.isGeneric());
+				return (rule.isInjectRule || rule.extendedCss) && (!genericHide || !rule.isGeneric());
 			});
 		}
 

@@ -304,7 +304,7 @@ QUnit.test("Extended Css Build Inject Css", function (assert) {
     commonCss = filter.buildCss(null).css;
     assert.equal(commonCss.length, 1);
     assert.equal(css.length, 1);
-    assert.equal(extendedCss.length, 0);
+    assert.equal(extendedCss.length, 1);
 
     selectors = filter.buildInjectCss("adguard.com", true);
     css = selectors.css;
@@ -312,7 +312,7 @@ QUnit.test("Extended Css Build Inject Css", function (assert) {
     commonCss = filter.buildCss(null).css;
     assert.equal(commonCss.length, 1);
     assert.equal(css.length, 1);
-    assert.equal(extendedCss.length, 0);
+    assert.equal(extendedCss.length, 1);
 
     var exceptionInjectRule = new CssFilterRule('adguard.com#@$#.sponsored { display: none!important;}');
     assert.ok(exceptionInjectRule.isInjectRule);
@@ -326,5 +326,5 @@ QUnit.test("Extended Css Build Inject Css", function (assert) {
     commonCss = filter.buildCss(null).css;
     assert.equal(commonCss.length, 1);
     assert.equal(css.length, 1);
-    assert.equal(extendedCss.length, 0);
+    assert.equal(extendedCss.length, 1);
 });
