@@ -264,13 +264,11 @@
              * ad/tracking requests because extension is not yet initialized when 
              * these requests are executed. At least we could hide these elements.
              */
-            applySelectors(response.selectors.css, response.useShadowDom);
-            applyExtendedCss(response.selectors.extendedCss);
+            applySelectors(response.selectors, response.useShadowDom);
             applyScripts(response.scripts);
             initBatchCollapse();
         } else {
-            applySelectors(response.selectors.css, response.useShadowDom);
-            applyExtendedCss(response.selectors.extendedCss);
+            applySelectors(response.selectors, response.useShadowDom);
             applyScripts(response.scripts);
         }
 
@@ -300,20 +298,34 @@
     };
     
     /**
-     * Applies CSS selectors
+     * Applies CSS and extended CSS stylesheets
      * 
-     * @param selectors     Array with CSS stylesheets.
+     * @param selectors     Object with the stylesheets got from the background page.
      * @param useShadowDom  If true - add styles to shadow DOM instead of normal DOM. 
      */
     var applySelectors = function (selectors, useShadowDom) {
-        if (!selectors || selectors.length === 0) {
+        if (!selectors) {
             return;
         }
 
-        for (var i = 0; i < selectors.length; i++) {
+        applyCss(selectors.css, useShadowDom);
+        applyExtendedCss(selectors.extendedCss);
+    };
+
+    /**
+     * Applies CSS stylesheets
+     * 
+     * @param css Array with CSS stylesheets
+     */
+    var applyCss = function (css, useShadowDom) {
+        if (!css || css.length === 0) {
+            return;
+        }
+
+        for (var i = 0; i < css.length; i++) {
             var styleEl = document.createElement("style");
             styleEl.setAttribute("type", "text/css");
-            setStyleContent(styleEl, selectors[i], useShadowDom);
+            setStyleContent(styleEl, css[i], useShadowDom);
 
             if (useShadowDom && shadowRoot) {
                 shadowRoot.appendChild(styleEl);
@@ -326,7 +338,7 @@
     /**
      * Applies Extended Css stylesheet
      *
-     * @param extendedCss ExtendedCss stylesheet
+     * @param extendedCss Array with ExtendedCss stylesheets
      */
     var applyExtendedCss = function (extendedCss) {
         if (!extendedCss || !extendedCss.length) {
