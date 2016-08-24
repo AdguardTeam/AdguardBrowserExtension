@@ -89,7 +89,7 @@ var SimpleRegex = exports.SimpleRegex = (function() {
     /**
      * Creates regex
      */
-    var createRegex = function(str) {
+    var createRegexText = function(str) {
         var regex = escapeRegExp(str);
 
         if (startsWith(regex, regexConfiguration.maskStartUrl)) {
@@ -124,7 +124,7 @@ var SimpleRegex = exports.SimpleRegex = (function() {
     // EXPOSE
     return {
         // Function for creating regex
-        createRegex: createRegex,
+        createRegexText: createRegexText,
         
         // Configuration used for the transformation
         regexConfiguration: regexConfiguration

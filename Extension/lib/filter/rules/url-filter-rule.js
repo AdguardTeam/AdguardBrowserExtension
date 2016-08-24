@@ -78,7 +78,7 @@ UrlFilterRule.prototype.getUrlRegExpSource = function () {
         //parse rule text
         var parseResult = parseRuleText(this.ruleText);
         // Creating regex source
-        this.urlRegExpSource = SimpleRegex.createRegex(parseResult.urlRuleText);
+        this.urlRegExpSource = SimpleRegex.createRegexText(parseResult.urlRuleText);
     }
     return this.urlRegExpSource;
 };
