@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+/* global require,exports */
 /**
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
@@ -24,6 +24,7 @@ var StringUtils = require('../../../lib/utils/common').StringUtils;
 var FilterRule = require('../../../lib/filter/rules/base-filter-rule').FilterRule;
 var Log = require('../../../lib/utils/log').Log;
 var UrlUtils = require('../../../lib/utils/url').UrlUtils;
+var SimpleRegex = require('../../../lib/filter/rules/simple-regex').SimpleRegex;
 
 /**
  * Rule for blocking requests to URLs.
@@ -77,7 +78,7 @@ UrlFilterRule.prototype.getUrlRegExpSource = function () {
         //parse rule text
         var parseResult = parseRuleText(this.ruleText);
         // Creating regex source
-        this.urlRegExpSource = createRegexFromUrlRuleText(parseResult.urlRuleText);
+        this.urlRegExpSource = SimpleRegex.createRegex(parseResult.urlRuleText);
     }
     return this.urlRegExpSource;
 };
@@ -266,15 +267,6 @@ UrlFilterRule.URLBLOCK_OPTION = "urlblock";
 UrlFilterRule.GENERICBLOCK_OPTION = "genericblock";
 UrlFilterRule.JSINJECT_OPTION = "jsinject";
 UrlFilterRule.POPUP_OPTION = "popup";
-UrlFilterRule.MASK_START_URL = "||";
-UrlFilterRule.MASK_PIPE = "|";
-UrlFilterRule.MASK_ANY_SYMBOL = "*";
-UrlFilterRule.MASK_SEPARATOR = "^";
-UrlFilterRule.REGEXP_START_URL = "^(http|https|ws|wss)://([a-z0-9-_.]+\\.)?";
-UrlFilterRule.REGEXP_ANY_SYMBOL = ".*";
-UrlFilterRule.REGEXP_START_STRING = "^";
-UrlFilterRule.REGEXP_SEPARATOR = "([^ a-zA-Z0-9.%]|$)";
-UrlFilterRule.REGEXP_END_STRING = "$";
 UrlFilterRule.MASK_REGEX_RULE = "/";
 
 UrlFilterRule.contentTypes = {
@@ -453,74 +445,5 @@ function parseRuleText(ruleText) {
         urlRuleText: urlRuleText,
         options: options,
         whiteListRule: whiteListRule
-    }
-}
-
-/**
- * Creates regexp from url rule text
- * @param urlRuleText  Url rule text
- * @private
- */
-function createRegexFromUrlRuleText(urlRuleText) {
-
-    var regex = escapeRegExp(urlRuleText);
-
-    if (StringUtils.startWith(regex, UrlFilterRule.MASK_START_URL)) {
-        regex = regex.substring(0, UrlFilterRule.MASK_START_URL.length)
-            + StringUtils.replaceAll(regex.substring(UrlFilterRule.MASK_START_URL.length, regex.length - 1), "\|", "\\|")
-                //+ regex.substring(UrlFilterRule.MASK_START_URL.length, regex.length - 1).replace(/\|/, "\\|")
-            + regex.substring(regex.length - 1);
-    } else if (StringUtils.startWith(regex, UrlFilterRule.MASK_PIPE)){
-        regex = regex.substring(0, UrlFilterRule.MASK_PIPE.length)
-            + StringUtils.replaceAll(regex.substring(UrlFilterRule.MASK_PIPE.length, regex.length - 1), "\|", "\\|")
-            + regex.substring(regex.length - 1);
-    } else {
-        regex = StringUtils.replaceAll(regex.substring(0, regex.length - 1), "\|", "\\|")
-            + regex.substring(regex.length - 1);
-    }
-
-    // Replacing special url masks
-    regex = StringUtils.replaceAll(regex, UrlFilterRule.MASK_ANY_SYMBOL, UrlFilterRule.REGEXP_ANY_SYMBOL);
-    regex = StringUtils.replaceAll(regex, UrlFilterRule.MASK_SEPARATOR, UrlFilterRule.REGEXP_SEPARATOR);
-
-    if (StringUtils.startWith(regex, UrlFilterRule.MASK_START_URL)) {
-        regex = UrlFilterRule.REGEXP_START_URL + regex.substring(UrlFilterRule.MASK_START_URL.length);
-    } else if (StringUtils.startWith(regex, UrlFilterRule.MASK_PIPE)) {
-        regex = UrlFilterRule.REGEXP_START_STRING + regex.substring(UrlFilterRule.MASK_PIPE.length);
-    }
-    if (StringUtils.endWith(regex, UrlFilterRule.MASK_PIPE)) {
-        regex = regex.substring(0, regex.length - 1) + UrlFilterRule.REGEXP_END_STRING;
-    }
-
-    return regex;
-}
-
-var escapeRegExp;
-
-(function () {
-
-    // https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/regexp
-    // should be escaped . * + ? ^ $ { } ( ) | [ ] / \
-    // except of * | ^
-
-    var specials = [
-        '.',
-        '+',
-        '?',
-        '$',
-        '{',
-        '}',
-        '(',
-        ')',
-        '[',
-        ']',
-        '\\',
-        '/'
-    ];
-
-    var regex = new RegExp('[' + specials.join('\\') + ']', 'g');
-
-    escapeRegExp = function (str) {
-        return str.replace(regex, "\\$&");
     };
-}());
+}

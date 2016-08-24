@@ -18,7 +18,7 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.12';
+var CONVERTER_VERSION = '1.3.13';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var URL_FILTER_ANY_URL = ".*";
@@ -27,6 +27,7 @@ var URL_FILTER_REGEXP_START_URL = "^https?://([^/]*\\.)?";
 // Simplified separator (to fix an issue with $ restriction - it can be only in the end of regexp)
 var URL_FILTER_REGEXP_SEPARATOR = "[/:&?]?";
 
+var SimpleRegex = require('filter/rules/simple-regex').SimpleRegex;
 var FilterRule = require('filter/rules/base-filter-rule').FilterRule; // jshint ignore:line
 var FilterRuleBuilder = require('filter/rules/filter-rule-builder').FilterRuleBuilder;
 var CssFilterRule = require('filter/rules/css-filter-rule').CssFilterRule;
@@ -393,8 +394,8 @@ exports.SafariContentBlockerConverter = {
             var urlFilter = this._createUrlFilterString(rule);
 
             // Redefine some of regular expressions
-            urlFilter = StringUtils.replaceAll(urlFilter, UrlFilterRule.REGEXP_START_URL, URL_FILTER_REGEXP_START_URL);
-            urlFilter = StringUtils.replaceAll(urlFilter, UrlFilterRule.REGEXP_SEPARATOR, URL_FILTER_REGEXP_SEPARATOR);
+            urlFilter = StringUtils.replaceAll(urlFilter, SimpleRegex.regexConfiguration.regexStartUrl, URL_FILTER_REGEXP_START_URL);
+            urlFilter = StringUtils.replaceAll(urlFilter, SimpleRegex.regexConfiguration.regexSeparator, URL_FILTER_REGEXP_SEPARATOR);
 
             this._validateRegExp(urlFilter);
 
