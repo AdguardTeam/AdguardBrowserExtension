@@ -149,7 +149,7 @@ UrlFilterRule.prototype.isFiltered = function (requestUrl, thirdParty, requestCo
         }
     }
 
-    if (this.shortcut != null && !StringUtils.containsIgnoreCase(requestUrl, this.shortcut)) {
+    if (this.shortcut !== null && !StringUtils.containsIgnoreCase(requestUrl, this.shortcut)) {
         return false;
     }
 
@@ -158,7 +158,7 @@ UrlFilterRule.prototype.isFiltered = function (requestUrl, thirdParty, requestCo
         //not in permitted list - skip this rule
         return false;
     }
-    if (this.restrictedContentType != 0 && (this.restrictedContentType & requestTypeMask) == requestTypeMask) {
+    if (this.restrictedContentType !== 0 && (this.restrictedContentType & requestTypeMask) == requestTypeMask) {
         //in restricted list - skip this rule
         return false;
     }
