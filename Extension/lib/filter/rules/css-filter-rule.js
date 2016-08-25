@@ -41,7 +41,8 @@ var CssFilterRule = exports.CssFilterRule = (function () {
         ":focus", ":hover", ":in-range", ":invalid", ":lang", ":last-child", ":last-of-type",
         ":link", ":not", ":nth-child", ":nth-last-child", ":nth-last-of-type", ":nth-of-type",
         ":only-child", ":only-of-type", ":optional", ":out-of-range", ":read-only",
-        ":read-write", ":required", ":root", ":target", ":valid", ":visited", ":has", ":contains"];
+        ":read-write", ":required", ":root", ":target", ":valid", ":visited", ":has", ":contains",
+        ":matches-css", ":matches-css-before", ":matches-css-after"];
 
     /**
      * The problem with it is that ":has" and ":contains" pseudo classes are not a valid pseudo classes,
@@ -49,7 +50,9 @@ var CssFilterRule = exports.CssFilterRule = (function () {
      *
      * @type {string[]}
      */
-    var EXTENDED_CSS_MARKERS = ["[-ext-has=", "[-ext-contains=", ":has(", ":contains("];
+    var EXTENDED_CSS_MARKERS = ["[-ext-has=", "[-ext-contains=", "[-ext-matches-css=", 
+        "[-ext-matches-css-before=", "[-ext-matches-css-after=", ":has(", ":contains(", 
+        ":matches-css(", ":matches-css-before(", ":matches-css-after("];
 
     /**
      * Tries to convert CSS injections rules from uBlock syntax to our own

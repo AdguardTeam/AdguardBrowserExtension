@@ -1,4 +1,4 @@
-/*! extended-css - v1.0.3 - 2016-08-19
+/*! extended-css - v1.0.4 - 2016-08-25
 * https://github.com/AdguardTeam/ExtendedCss
 * Copyright (c) 2016 ; Licensed Apache License 2.0 */
 var ExtendedCss = (function(window) {
@@ -10,7 +10,7 @@ var ExtendedCss = (function(window) {
  * <b>Example:</b>
  * <pre>
  *      var cssText = '.wrapper, .container { background:url('about:blank'); display: none!important; }';
- *      var cssObject = CssParser.parse(cssText);
+ *      var cssObject = CssParser.parseCss(cssText);
  * </pre>
  * <b>Result:</b>
  * <pre>
@@ -41,7 +41,7 @@ var CssParser = (function() { // jshint ignore:line
      * </pre>
      * 
      */
-    var styleTextToObject = function(styleText) {
+    var parseStyle = function(styleText) {
         var result = Object.create(null);
 
         // Splits style by the ';' character
@@ -76,15 +76,17 @@ var CssParser = (function() { // jshint ignore:line
 
             obj.selectors = match[1].trim();
             var styleText = match[2].trim();
-            obj.style = styleTextToObject(styleText);
+            obj.style = parseStyle(styleText);
             result.push(obj);
         }
 
         return result;        
     };
 
+    // EXPOSE
     return {
-        parse: parseCss
+        parseCss: parseCss,
+        parseStyle: parseStyle
     };
 })();
 /**
@@ -143,7 +145,7 @@ var DomObserver = (function() { // jshint ignore:line
         };
     };
 })();
-/* global Sizzle, console */
+/* global Sizzle, console, StylePropertyMatcher */
 
 /**
  * Extended selector class.
@@ -157,8 +159,28 @@ var DomObserver = (function() { // jshint ignore:line
  * Extended selection capabilities:<br/>
  * [-ext-has="selector"] - the same as :has() pseudo class from CSS4 specification
  * [-ext-contains="string"] - allows to select elements containing specified string
+ * [-ext-matches-css="|background-image: url(data:*)"]
  */
 var ExtendedSelector = (function () { // jshint ignore:line
+
+    // Add :matches-css-*() support
+    StylePropertyMatcher.extendSizzle(Sizzle);    
+
+    /**
+     * Complex replacement function. 
+     * Unescapes quote characters inside of an extended selector.
+     * 
+     * @param match     Whole matched string
+     * @param name      Group 1
+     * @param quoteChar Group 2
+     * @param value     Group 3
+     */
+    var evaluateMatch = function(match, name, quoteChar, value) { 
+        // Unescape quotes
+        var re = new RegExp("([^\\\\]|^)\\\\" + quoteChar, "g");
+        value = value.replace(re, "$1" + quoteChar);
+        return ":" + name + "(" + value + ")";
+    };
 
     /**
      * Prepares specified selector and compiles it with the Sizzle engine.
@@ -170,7 +192,8 @@ var ExtendedSelector = (function () { // jshint ignore:line
         try {
             // Prepare selector to be compiled with Sizzle
             // Which means transform [-ext-*=""] attributes to pseudo classes
-            var str = selectorText.replace(/\[-ext-([a-z-_]+)=(["'])((?:(?=(\\?))\4.)*?)\2\]/g, ':$1($3)');
+            var re = /\[-ext-([a-z-_]+)=(["'])((?:(?=(\\?))\4.)*?)\2\]/g;
+            var str = selectorText.replace(re, evaluateMatch);
             
             // Compiles and validates selector
             // Compilation in Sizzle means that selector will be saved to an inner cache and then reused
@@ -207,7 +230,7 @@ var ExtendedSelector = (function () { // jshint ignore:line
         };
     };
 })();
-/* global CssParser, DomObserver, ExtendedSelector */
+/* global CssParser, DomObserver, ExtendedSelector, Utils */
 
 /**
  * Extended css class
@@ -228,7 +251,7 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
     var parse = function (styleSheet) {
 
         var result = [];
-        var cssRules = CssParser.parse(styleSheet);
+        var cssRules = CssParser.parseCss(styleSheet);
         var iCssRules = cssRules.length;
         while (iCssRules--) {
             var cssRule = cssRules[iCssRules];
@@ -258,30 +281,36 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
     };
 
     /**
-     * Applies filtering rules
-     *
-     * @param rules Rules to apply
+     * Applies style to an element
+     * 
+     * @param element DOM node
+     * @param style   Plain JS object with styles
      */
-    var applyRules = function (rules) {
+    var applyStyle = function(element, style) {
+        
+        for (var prop in style) {
+            
+            // Old browsers require property names to be in lowerCamelCase:
+            // https://github.com/AdguardTeam/ExtendedCss/issues/5
+            var propertyName = Utils.lowerCamelCase(prop);
+            
+            // Apply this style only to existing properties
+            // We can't use hasOwnProperty here (does not work in FF)
+            if (typeof element.style[propertyName] !== "undefined") {
+                var value = style[prop];
 
-        var elementsIndex = [];
-        var iRules = rules.length;
-        while (iRules--) {
-            var rule = rules[iRules];
-            var elements = applyRule(rule);
-            elementsIndex = elementsIndex.concat(elements);
-        }
-
-        // Now revert styles for elements which are no more affected
-        var iAffectedElements = affectedElements.length;
-        while (iAffectedElements--) {
-            var obj = affectedElements[iAffectedElements];
-            if (elementsIndex.indexOf(obj.element) === -1) {
-                // Time to revert style
-                revertStyle(obj);
-                affectedElements.splice(iAffectedElements, 1);                
+                // First we should remove !important attribute (or it won't be applied')
+                value = value.split("!")[0].trim();
+                element.style[propertyName] = value;
             }
         }
+    };
+
+    /**
+     * Reverts style for the affected object
+     */
+    var revertStyle = function(affectedElement) {
+        affectedElement.element.style.cssText = affectedElement.originalStyle;
     };
 
     /**
@@ -318,30 +347,56 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
     };
 
     /**
-     * Applies style to an element
-     * 
-     * @param element DOM node
-     * @param style   Plain JS object with styles
+     * Applies filtering rules
+     *
+     * @param rules Rules to apply
      */
-    var applyStyle = function(element, style) {
-        
-        for (var prop in style) {
-            // Apply this style only to existing properties
-            // We can't use hasOwnProperty here (does not work in FF)
-            if (typeof element.style[prop] !== "undefined") {
-                var value = style[prop];
-                // First we should remove !important attribute (or it won't be applied')
-                value = value.split("!")[0].trim();
-                element.style[prop] = value;
+    var applyRules = function (rules) {
+
+        var elementsIndex = [];
+        var iRules = rules.length;
+        while (iRules--) {
+            var rule = rules[iRules];
+            var elements = applyRule(rule);
+            elementsIndex = elementsIndex.concat(elements);
+        }
+
+        // Now revert styles for elements which are no more affected
+        var iAffectedElements = affectedElements.length;
+        while (iAffectedElements--) {
+            var obj = affectedElements[iAffectedElements];
+            if (elementsIndex.indexOf(obj.element) === -1) {
+                // Time to revert style
+                revertStyle(obj);
+                affectedElements.splice(iAffectedElements, 1);                
             }
         }
     };
 
+    var domChanged = false;
+    
     /**
-     * Reverts style for the affected object
+     * Called on any DOM change, we should examine extended CSS again.
      */
-    var revertStyle = function(affectedElement) {
-        affectedElement.element.style.cssText = affectedElement.originalStyle;
+    var handleDomChange = function() {
+        if (!domChanged) {
+            return;
+        }
+
+        domChanged = false;
+        applyRules(rules);
+    };
+
+    /**
+     * Throttles handleDomChange function
+     */
+    var handleDomChangeAsync = function() {
+        
+        if (domChanged) {
+            return;
+        }
+        domChanged = true;
+        setTimeout(handleDomChange, 10);
     };
 
     /**
@@ -356,32 +411,6 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
         // Handle dynamically added elements
         domObserver = new DomObserver(handleDomChangeAsync);
         domObserver.observe();
-    };
-
-    var domChanged = false;
-    
-    /**
-     * Throttles handleDomChange function
-     */
-    var handleDomChangeAsync = function() {
-        
-        if (domChanged) {
-            return;
-        }
-        domChanged = true;
-        setTimeout(handleDomChange, 10);
-    };
-
-    /**
-     * Called on any DOM change, we should examine extended CSS again.
-     */
-    var handleDomChange = function() {
-        if (!domChanged) {
-            return;
-        }
-
-        domChanged = false;
-        applyRules(rules);
     };
 
     /**
@@ -420,6 +449,119 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
         return affectedElements;
     };
 };
+/**
+ * Helper class for creating regular expression from a simple wildcard-syntax used in basic filters
+ */
+var SimpleRegex = (function() { // jshint ignore:line
+
+    // Constants
+    var regexConfiguration = {
+        maskStartUrl: "||",
+        maskPipe: "|",
+        maskSeparator: "^",
+        maskAnySymbol: "*",
+
+        regexAnySymbol: ".*",
+        regexSeparator: "([^ a-zA-Z0-9.%]|$)",
+        regexStartUrl: "^(http|https|ws|wss)://([a-z0-9-_.]+\\.)?",
+        regexStartString: "^",
+        regexEndString: "$"
+    };
+
+    // https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/regexp
+    // should be escaped . * + ? ^ $ { } ( ) | [ ] / \
+    // except of * | ^
+    var specials = [
+        '.', '+', '?', '$', '{', '}', '(', ')', '[', ']', '\\', '/'
+    ];
+    var specialsRegex = new RegExp('[' + specials.join('\\') + ']', 'g');
+
+    /**
+     * Escapes regular expression string
+     */
+    var escapeRegExp = function (str) {
+        return str.replace(specialsRegex, "\\$&");
+    };
+
+    /**
+     * Checks if string "str" starts with the specified "prefix"
+     */
+    var startsWith = function (str, prefix) {
+        return str && str.indexOf(prefix) === 0;
+    };
+
+    /**
+     * Checks if string "str" ends with the specified "postfix" 
+     */
+    var endsWith = function (str, postfix) {
+        if (!str || !postfix) {
+            return false;
+        }
+        
+        if (str.endsWith) {
+            return str.endsWith(postfix);
+        }
+        var t = String(postfix);
+        var index = str.lastIndexOf(t);
+        return index >= 0 && index === str.length - t.length;
+    };  
+
+    /**
+     * Replaces all occurencies of a string "find" with "replace" str;
+     */
+    var replaceAll = function (str, find, replace) {
+        if (!str) {
+            return str;
+        }
+        return str.split(find).join(replace);
+    };
+
+  
+
+    /**
+     * Creates regex
+     */
+    var createRegexText = function(str) {
+        var regex = escapeRegExp(str);
+
+        if (startsWith(regex, regexConfiguration.maskStartUrl)) {
+            regex = regex.substring(0, regexConfiguration.maskStartUrl.length) + 
+                replaceAll(regex.substring(regexConfiguration.maskStartUrl.length, regex.length - 1), "\|", "\\|") +
+                regex.substring(regex.length - 1);
+        } else if (startsWith(regex, regexConfiguration.maskPipe)){
+            regex = regex.substring(0, regexConfiguration.maskPipe.length) +
+                replaceAll(regex.substring(regexConfiguration.maskPipe.length, regex.length - 1), "\|", "\\|") +
+                regex.substring(regex.length - 1);
+        } else {
+            regex = replaceAll(regex.substring(0, regex.length - 1), "\|", "\\|") + 
+                regex.substring(regex.length - 1);
+        }
+
+        // Replacing special url masks
+        regex = replaceAll(regex, regexConfiguration.maskAnySymbol, regexConfiguration.regexAnySymbol);
+        regex = replaceAll(regex, regexConfiguration.maskSeparator, regexConfiguration.regexSeparator);
+
+        if (startsWith(regex, regexConfiguration.maskStartUrl)) {
+            regex = regexConfiguration.regexStartUrl + regex.substring(regexConfiguration.maskStartUrl.length);
+        } else if (startsWith(regex, regexConfiguration.maskPipe)) {
+            regex = regexConfiguration.regexStartString + regex.substring(regexConfiguration.maskPipe.length);
+        }
+        if (endsWith(regex, regexConfiguration.maskPipe)) {
+            regex = regex.substring(0, regex.length - 1) + regexConfiguration.regexEndString;
+        }
+
+        return regex;        
+    };
+
+    // EXPOSE
+    return {
+        // Function for creating regex
+        createRegexText: createRegexText,
+        
+        // Configuration used for the transformation
+        regexConfiguration: regexConfiguration
+    };
+})();
 /*!
  * Sizzle CSS Selector Engine v2.3.4-pre
  * https://sizzlejs.com/
@@ -2684,6 +2826,210 @@ return Sizzle;
 
 })( window );
 
+/* global SimpleRegex, Utils, console */
+/**
+ * Class that extends Sizzle and adds support for "matches-css" pseudo element.
+ */
+var StylePropertyMatcher = (function (window, document) { // jshint ignore:line
+
+    var isWebKit = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
+               navigator.userAgent && !navigator.userAgent.match('CriOS') && 
+               window.getMatchedCSSRules;
+
+    /**
+     * There is a known issue in Safari browser:
+     * getComputedStyle(el, ":before") is empty if element is not visible.
+     * 
+     * To circumvent this issue we use getMatchedCSSRules instead.
+     */
+    var getPseudoElementComputedStyle = function(element, pseudoElement) {
+        var styles = [];
+        var cssRules = window.getMatchedCSSRules(element, pseudoElement) || [];
+
+        var iCssRules = cssRules.length;
+        while (iCssRules--) {
+            var style = cssRules[iCssRules].style;
+            var iStyle = style.length;
+            while (iStyle--) {
+                var name = style[iStyle];
+                styles[name] = style.getPropertyValue(name);
+                styles.push(name);
+            }
+        }
+
+        styles.sort();
+        styles.getPropertyValue = function(name) {
+            return styles[name];
+        };
+        return styles;
+    };
+
+    /**
+     * Unquotes specified value
+     */
+    var removeDoubleQuotes = function(value) {
+        if (typeof value === "string" && value.length > 1 && value[0] === '"' && value[value.length - 1] === '"') {
+            // Remove double-quotes
+            value = value.substring(1, value.length - 1);
+        }
+        return value;
+    };
+
+    /**
+     * Unlike Safari, Chrome and FF doublequotes url() property value.
+     * I suppose it would be better to leave it unquoted.
+     */
+    var removeUrlQuotes = function(value) {
+        if (typeof value !== "string" || value.indexOf("url(\"") < 0) {
+            return value;
+        }
+
+        var re = /url\(\"(.*?)\"\)/g;
+        return value.replace(re, "url($1)");
+    };
+
+    /**
+     * Cross-browser getComputedStyle function.
+     * 
+     * Known WebKit issue: 
+     * getComputedStyle(el, ":before").content returns empty string if element is not visible. 
+     */
+    var getComputedStyle = function (element, pseudoElement) {
+        var style;
+
+        if (isWebKit && pseudoElement) {
+            style = getPseudoElementComputedStyle(element, pseudoElement);
+        } else {
+            style = window.getComputedStyle(element, pseudoElement);
+        }
+        
+        return style;
+    };
+
+    /**
+     * Gets CSS property value
+     * 
+     * @param element       DOM node
+     * @param pseudoElement Optional pseudoElement name
+     * @param propertyName  CSS property name
+     */
+    var getComputedStylePropertyValue = function (element, pseudoElement, propertyName) {
+        var style = getComputedStyle(element, pseudoElement);
+        if (!style) {
+            return null;
+        }
+
+        var value = style[propertyName];
+        value = removeUrlQuotes(value);
+        if (propertyName === "content") {
+            // FF doublequotes content property value
+            value = removeDoubleQuotes(value);
+        }
+
+        return value;
+    };
+
+    /**
+     * Class that matches element style against the specified expression
+     */
+    var Matcher = function (propertyFilter, pseudoElement) {
+
+        var propertyName;
+        var regex;
+
+        try {
+            var parts = propertyFilter.split(":", 2);
+            // Convert to camelCase for older browsers support
+            propertyName = Utils.lowerCamelCase(parts[0].trim());
+            var regexText = SimpleRegex.createRegexText(parts[1].trim());
+            regex = new RegExp(regexText, "i");
+        } catch (ex) {
+            if (typeof console !== 'undefined' && console.error) {
+                console.error('StylePropertyMatcher: invalid match string ' + propertyFilter);
+            }
+        }
+
+        /**
+         * Function to check if element CSS property matches filter pattern
+         * 
+         * @element Element to check
+         */
+        var matches = function (element) {
+            if (!regex || !propertyName) {
+                return false;
+            }
+
+            var value = getComputedStylePropertyValue(element, pseudoElement, propertyName);
+            return value && regex.test(value);
+        };
+
+        this.matches = matches;
+    };
+
+    /**
+     * Creates a new pseudo-class and registers it in Sizzle
+     */
+    var extendSizzle = function (sizzle) {
+        // First of all we should prepare Sizzle engine
+        sizzle.selectors.pseudos["matches-css"] = sizzle.selectors.createPseudo(function (propertyFilter) {
+            var matcher = new Matcher(propertyFilter);
+            return function (element) {
+                return matcher.matches(element);
+            };
+        });
+        sizzle.selectors.pseudos["matches-css-before"] = sizzle.selectors.createPseudo(function (propertyFilter) {
+            var matcher = new Matcher(propertyFilter, ":before");
+            return function (element) {
+                return matcher.matches(element);
+            };
+        });
+        sizzle.selectors.pseudos["matches-css-after"] = sizzle.selectors.createPseudo(function (propertyFilter) {
+            var matcher = new Matcher(propertyFilter, ":after");
+            return function (element) {
+                return matcher.matches(element);
+            };
+        });
+    };
+
+    // EXPOSE
+    return {
+        extendSizzle: extendSizzle
+    };
+})(window, document);
+/**
+ * Helper functions
+ */
+var Utils = (function () { // jshint ignore:line
+
+    /**
+     * Converts dash-formatted styles to camelCase.
+     * We need to do it to support old browsers like Palemoon:
+     * https://github.com/AdguardTeam/ExtendedCss/issues/5
+     *
+     * @param text Text to convert
+     * @returns {*}
+     */
+    var lowerCamelCase = function (text) {
+        var parts = text.split('-');
+        if (parts.length === 1) {
+            return text;
+        }
+
+        for (var i = 0; i < parts.length; i++) {
+            var part = parts[i];
+            parts[i] = part.charAt(0).toUpperCase() + part.slice(1);
+        }
+
+        var result = parts.join('');
+        result = result.charAt(0).toLowerCase() + result.slice(1);
+        return result;
+    };
+
+    // EXPOSE
+    return {
+        lowerCamelCase: lowerCamelCase
+    };
+})();
 // EXPOSE
 return ExtendedCss;
 })(window);
