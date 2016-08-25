@@ -588,6 +588,10 @@
         var elementStyle = element.style;
         var elCssValue = elementStyle.getPropertyValue(cssProperty);
         var elCssPriority = elementStyle.getPropertyPriority(cssProperty);
+
+        // <input type="image"> elements try to load their image again
+        // when the "display" CSS property is set. So we have to check
+        // that it isn't already collapsed to avoid an infinite recursion.
         if (elCssValue != cssValue || elCssPriority != cssPriority) {
 
             elementStyle.setProperty(cssProperty, cssValue, cssPriority);
