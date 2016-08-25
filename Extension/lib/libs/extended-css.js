@@ -1,4 +1,4 @@
-/*! extended-css - v1.0.4 - 2016-08-25
+/*! extended-css - v1.0.5 - 2016-08-25
 * https://github.com/AdguardTeam/ExtendedCss
 * Copyright (c) 2016 ; Licensed Apache License 2.0 */
 var ExtendedCss = (function(window) {
@@ -2522,7 +2522,7 @@ return Sizzle;
 
 })( window );
 
-/* global SimpleRegex, Utils, console */
+/* global SimpleRegex, console */
 /**
  * Class that extends Sizzle and adds support for "matches-css" pseudo element.
  */
@@ -2615,7 +2615,7 @@ var StylePropertyMatcher = (function (window, document) { // jshint ignore:line
             return null;
         }
 
-        var value = style[propertyName];
+        var value = style.getPropertyValue(propertyName);
         value = removeUrlQuotes(value);
         if (propertyName === "content") {
             // FF doublequotes content property value
@@ -2635,8 +2635,7 @@ var StylePropertyMatcher = (function (window, document) { // jshint ignore:line
 
         try {
             var parts = propertyFilter.split(":", 2);
-            // Convert to camelCase for older browsers support
-            propertyName = Utils.lowerCamelCase(parts[0].trim());
+            propertyName = parts[0].trim();
             var regexText = SimpleRegex.createRegexText(parts[1].trim());
             regex = new RegExp(regexText, "i");
         } catch (ex) {
@@ -2692,40 +2691,6 @@ var StylePropertyMatcher = (function (window, document) { // jshint ignore:line
         extendSizzle: extendSizzle
     };
 })(window, document);
-/**
- * Helper functions
- */
-var Utils = (function () { // jshint ignore:line
-
-    /**
-     * Converts dash-formatted styles to camelCase.
-     * We need to do it to support old browsers like Palemoon:
-     * https://github.com/AdguardTeam/ExtendedCss/issues/5
-     *
-     * @param text Text to convert
-     * @returns {*}
-     */
-    var lowerCamelCase = function (text) {
-        var parts = text.split('-');
-        if (parts.length === 1) {
-            return text;
-        }
-
-        for (var i = 0; i < parts.length; i++) {
-            var part = parts[i];
-            parts[i] = part.charAt(0).toUpperCase() + part.slice(1);
-        }
-
-        var result = parts.join('');
-        result = result.charAt(0).toLowerCase() + result.slice(1);
-        return result;
-    };
-
-    // EXPOSE
-    return {
-        lowerCamelCase: lowerCamelCase
-    };
-})();
 /* global Sizzle, console, StylePropertyMatcher */
 
 /**
@@ -2828,7 +2793,7 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
      * Parses specified styleSheet in a number of rule objects
      *
      * @param styleSheet String with the stylesheet
-     */ 
+     */
     var parse = function (styleSheet) {
 
         var result = [];
@@ -2851,7 +2816,7 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
      * 
      * @param element
      */
-    var checkElementIsAffected = function(element) {
+    var checkElementIsAffected = function (element) {
         var iAffectedElements = affectedElements.length;
         while (iAffectedElements--) {
             if (affectedElements[iAffectedElements].element === element) {
@@ -2867,27 +2832,26 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
      * @param element DOM node
      * @param style   Plain JS object with styles
      */
-    var applyStyle = function(element, style) {
-        var currentStyle = CssParser.parseStyle(element.style.cssText);
+    var applyStyle = function (element, style) {
 
-        var prop;        
-        var cssText = "";
-        for (prop in style) {
-            currentStyle[prop] = style[prop];
+        for (var prop in style) {
+
+            // Apply this style only to existing properties
+            // We can't use hasOwnProperty here (does not work in FF)
+            if (typeof element.style.getPropertyValue(prop) !== "undefined") {
+                var value = style[prop];
+
+                // First we should remove !important attribute (or it won't be applied')
+                value = value.split("!")[0].trim();
+                element.style.setProperty(prop, value, "important");
+            }
         }
-        for (prop in currentStyle) {
-            cssText += prop;
-            cssText += ": ";
-            cssText += currentStyle[prop];
-            cssText += "; ";
-        }        
-        element.style.cssText = cssText;
     };
 
     /**
      * Reverts style for the affected object
      */
-    var revertStyle = function(affectedElement) {
+    var revertStyle = function (affectedElement) {
         affectedElement.element.style.cssText = affectedElement.originalStyle;
     };
 
@@ -2897,7 +2861,7 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
      * @param rule Rule to apply
      * @returns List of elements affected by this rule
      */
-    var applyRule = function(rule) {
+    var applyRule = function (rule) {
         var selector = rule.selector;
         var elements = selector.querySelectorAll();
 
@@ -2946,17 +2910,17 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
             if (elementsIndex.indexOf(obj.element) === -1) {
                 // Time to revert style
                 revertStyle(obj);
-                affectedElements.splice(iAffectedElements, 1);                
+                affectedElements.splice(iAffectedElements, 1);
             }
         }
     };
 
     var domChanged = false;
-    
+
     /**
      * Called on any DOM change, we should examine extended CSS again.
      */
-    var handleDomChange = function() {
+    var handleDomChange = function () {
         if (!domChanged) {
             return;
         }
@@ -2968,8 +2932,8 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
     /**
      * Throttles handleDomChange function
      */
-    var handleDomChangeAsync = function() {
-        
+    var handleDomChangeAsync = function () {
+
         if (domChanged) {
             return;
         }
@@ -2999,7 +2963,7 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
         observe();
 
         if (document.readyState !== "complete") {
-            document.addEventListener("DOMContentLoaded", function() {
+            document.addEventListener("DOMContentLoaded", function () {
                 applyRules(rules);
             });
         }
@@ -3023,7 +2987,7 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
     // EXPOSE
     this.dispose = dispose;
     this.apply = apply;
-    this.getAffectedElements = function() {
+    this.getAffectedElements = function () {
         return affectedElements;
     };
 };
