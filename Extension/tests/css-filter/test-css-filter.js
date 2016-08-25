@@ -204,6 +204,46 @@ QUnit.test("Valid Pseudo Class", function (assert) {
     assert.notOk(cssFilterRule.isInjectRule);
     assert.notOk(cssFilterRule.whiteListRule);
     assert.equal(selector, cssFilterRule.cssSelector);
+
+    selector = ".todaystripe:matches-css(display: block)";
+    ruleText = "w3schools.com##" + selector;
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.ok(cssFilterRule != null);
+    assert.notOk(cssFilterRule.isInjectRule);
+    assert.notOk(cssFilterRule.whiteListRule);
+    assert.equal(selector, cssFilterRule.cssSelector);
+
+    selector = ".todaystripe:matches-css-before(display: block)";
+    ruleText = "w3schools.com##" + selector;
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.ok(cssFilterRule != null);
+    assert.notOk(cssFilterRule.isInjectRule);
+    assert.notOk(cssFilterRule.whiteListRule);
+    assert.equal(selector, cssFilterRule.cssSelector);
+
+    selector = ".todaystripe:matches-css-after(display: block)";
+    ruleText = "w3schools.com##" + selector;
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.ok(cssFilterRule != null);
+    assert.notOk(cssFilterRule.isInjectRule);
+    assert.notOk(cssFilterRule.whiteListRule);
+    assert.equal(selector, cssFilterRule.cssSelector);
+
+    selector = ".todaystripe:has(.banner)";
+    ruleText = "w3schools.com##" + selector;
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.ok(cssFilterRule != null);
+    assert.notOk(cssFilterRule.isInjectRule);
+    assert.notOk(cssFilterRule.whiteListRule);
+    assert.equal(selector, cssFilterRule.cssSelector);
+
+    selector = ".todaystripe:contains(test)";
+    ruleText = "w3schools.com##" + selector;
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.ok(cssFilterRule != null);
+    assert.notOk(cssFilterRule.isInjectRule);
+    assert.notOk(cssFilterRule.whiteListRule);
+    assert.equal(selector, cssFilterRule.cssSelector);
 });
 
 QUnit.test("Filter Rule With Colon", function (assert) {
@@ -232,6 +272,105 @@ QUnit.test("Invalid Pseudo Class", function (assert) {
     } catch (ex) {
         assert.equal(ex.message, 'Unknown pseudo class: test:matches(.whatisthis)');
     }
+});
+
+QUnit.test("Extended Css Rules", function(assert) {
+    var selector, ruleText, cssFilterRule;
+
+    // :contains
+    selector = ".todaystripe:contains(test)";
+    ruleText = "w3schools.com##" + selector;
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.ok(cssFilterRule);
+    assert.ok(cssFilterRule.extendedCss);
+    assert.notOk(cssFilterRule.isInjectRule);
+    assert.notOk(cssFilterRule.whiteListRule);
+    assert.equal(selector, cssFilterRule.cssSelector);
+
+    selector = ".todaystripe[-ext-contains=\"test\"]";
+    ruleText = "w3schools.com##" + selector;
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.ok(cssFilterRule);
+    assert.ok(cssFilterRule.extendedCss);
+    assert.notOk(cssFilterRule.isInjectRule);
+    assert.notOk(cssFilterRule.whiteListRule);
+    assert.equal(selector, cssFilterRule.cssSelector);    
+
+    // :has
+    selector = ".todaystripe:has(.banner)";
+    ruleText = "w3schools.com##" + selector;
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.ok(cssFilterRule);
+    assert.ok(cssFilterRule.extendedCss);
+    assert.notOk(cssFilterRule.isInjectRule);
+    assert.notOk(cssFilterRule.whiteListRule);
+    assert.equal(selector, cssFilterRule.cssSelector);
+
+    selector = ".todaystripe[-ext-has=\".banner\"]";
+    ruleText = "w3schools.com##" + selector;
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.ok(cssFilterRule);
+    assert.ok(cssFilterRule.extendedCss);
+    assert.notOk(cssFilterRule.isInjectRule);
+    assert.notOk(cssFilterRule.whiteListRule);
+    assert.equal(selector, cssFilterRule.cssSelector);
+
+    // :matches-css
+    selector = ".todaystripe:matches-css(display: block)";
+    ruleText = "w3schools.com##" + selector;
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.ok(cssFilterRule);
+    assert.ok(cssFilterRule.extendedCss);
+    assert.notOk(cssFilterRule.isInjectRule);
+    assert.notOk(cssFilterRule.whiteListRule);
+    assert.equal(selector, cssFilterRule.cssSelector);
+
+    selector = ".todaystripe[-ext-matches-css=\"display: block\"]";
+    ruleText = "w3schools.com##" + selector;
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.ok(cssFilterRule);
+    assert.ok(cssFilterRule.extendedCss);
+    assert.notOk(cssFilterRule.isInjectRule);
+    assert.notOk(cssFilterRule.whiteListRule);
+    assert.equal(selector, cssFilterRule.cssSelector);
+
+    // :matches-css-before
+    selector = ".todaystripe:matches-css-before(display: block)";
+    ruleText = "w3schools.com##" + selector;
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.ok(cssFilterRule);
+    assert.ok(cssFilterRule.extendedCss);
+    assert.notOk(cssFilterRule.isInjectRule);
+    assert.notOk(cssFilterRule.whiteListRule);
+    assert.equal(selector, cssFilterRule.cssSelector);
+
+    selector = ".todaystripe[-ext-matches-css-before=\"display: block\"]";
+    ruleText = "w3schools.com##" + selector;
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.ok(cssFilterRule);
+    assert.ok(cssFilterRule.extendedCss);
+    assert.notOk(cssFilterRule.isInjectRule);
+    assert.notOk(cssFilterRule.whiteListRule);
+    assert.equal(selector, cssFilterRule.cssSelector);
+
+    // :matches-css-after
+    selector = ".todaystripe:matches-css-after(display: block)";
+    ruleText = "w3schools.com##" + selector;
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.ok(cssFilterRule);
+    assert.ok(cssFilterRule.extendedCss);
+    assert.notOk(cssFilterRule.isInjectRule);
+    assert.notOk(cssFilterRule.whiteListRule);
+    assert.equal(selector, cssFilterRule.cssSelector);
+
+    selector = ".todaystripe[-ext-matches-css-after=\"display: block\"]";
+    ruleText = "w3schools.com##" + selector;
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.ok(cssFilterRule);
+    assert.ok(cssFilterRule.extendedCss);
+    assert.notOk(cssFilterRule.isInjectRule);
+    assert.notOk(cssFilterRule.whiteListRule);
+    assert.equal(selector, cssFilterRule.cssSelector);
 });
 
 QUnit.test("Extended Css Build", function (assert) {

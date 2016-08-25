@@ -673,7 +673,7 @@ CssFilter.prototype = {
 			} else {
 				elemHideSb.push(this._getRuleCssSelector(rule));
 				++selectorsCount;
-				if (selectorsCount % CSS_SELECTORS_PER_LINE === 0) {
+				if (selectorsCount % CSS_SELECTORS_PER_LINE === 0 || rule.extendedCss) {
 					elemHideSb.push(ELEMHIDE_CSS_STYLE);
 				} else {
 					elemHideSb.push(", ");
