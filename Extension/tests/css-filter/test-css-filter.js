@@ -522,3 +522,11 @@ QUnit.test("Extended Css Selector Inject Rule", function (assert) {
     assert.equal(css.length, 0);
     assert.equal(extendedCss.length, 2);
 });
+
+QUnit.test("Css Filter WWW Test", function (assert) {
+    var ruleText = "www.google.com##body";
+    var rule = new CssFilterRule(ruleText);
+
+    assert.ok(rule != null);
+    assert.equal(rule.permittedDomain, 'google.com');
+});
