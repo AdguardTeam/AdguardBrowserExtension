@@ -68,7 +68,7 @@ FilterRule.prototype = {
 						if (permittedDomains == null) {
 							permittedDomains = [];
 						}
-						permittedDomains.push(domainName);
+						permittedDomains.push(UrlUtils.getCroppedDomainName(domainName));
 					}
 				}
 			}

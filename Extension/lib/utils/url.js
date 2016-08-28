@@ -122,6 +122,10 @@ var UrlUtils = exports.UrlUtils = {
 
 	getDomainName: function (url) {
 		var host = UrlUtils.getHost(url);
+		return this.getCroppedDomainName(host);
+	},
+
+	getCroppedDomainName: function (host) {
 		return StringUtils.startWith(host, "www.") ? host.substring(4) : host;
 	},
 
