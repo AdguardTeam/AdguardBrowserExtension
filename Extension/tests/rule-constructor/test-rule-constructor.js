@@ -7,7 +7,7 @@ QUnit.test("Rules Constructor for Assistant", function(assert) {
         urlMask: 'test.com/page',
         isBlockSimilar : false,
         isBlockOneDomain: false,
-        url: 'http://example.org/test-page.html?param=p1',
+        url: 'http://example.org/test-page.html?param=p1'
     };
 
     var ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
@@ -46,7 +46,8 @@ QUnit.test("Rules Constructor for DevTools", function(assert) {
         isBlockSimilar : false,
         isBlockOneDomain: false,
         url: 'http://example.org/test-page.html?param=p1',
-        attributes: ''
+        attributes: '',
+        excludeId: false
     };
 
     var ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
@@ -98,6 +99,45 @@ QUnit.test("Rules Constructor for DevTools", function(assert) {
     assert.equal(ruleText, '###test-div > .a-test-class-two.a-test-class-three:first-child');
 });
 
+QUnit.test("Rules Constructor DevTools Id Elements Special Cases", function(assert) {
+    var element = document.getElementById('test-div');
+    var elementHref = document.getElementsByClassName('a-test-class')[0];
+
+    var options = {
+        isBlockByUrl: false,
+        urlMask: 'test.com/page',
+        isBlockSimilar: false,
+        isBlockOneDomain: false,
+        url: 'http://example.org/test-page.html?param=p1',
+        attributes: '',
+        excludeId: false
+    };
+
+    var ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
+    assert.equal(ruleText, 'example.org###test-div');
+
+    //Id attribute is checked
+    options.attributes = '[title="Share on Twitter"]';
+    options.excludeId = false;
+    ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
+    assert.equal(ruleText, 'example.org###test-div[title="Share on Twitter"]');
+
+    //Element has id but it's not checked
+    options.attributes = '[title="Share on Twitter"]';
+    options.excludeId = true;
+    ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
+    assert.equal(ruleText, 'example.org##[title="Share on Twitter"]');
+
+    //Element doesn't have id - option should not have any effect
+    options.excludeId = false;
+    ruleText = AdguardRulesConstructorLib.constructRuleText(elementHref, options);
+    assert.equal(ruleText, 'example.org###test-div > a.a-test-class.a-test-class-two.a-test-class-three:first-child[title=\"Share on Twitter\"]');
+
+    options.excludeId = true;
+    ruleText = AdguardRulesConstructorLib.constructRuleText(elementHref, options);
+    assert.equal(ruleText, 'example.org###test-div > a.a-test-class.a-test-class-two.a-test-class-three:first-child[title=\"Share on Twitter\"]');
+});
+
 QUnit.test("Rules Constructor for special elements", function(assert) {
     var elementHref = document.querySelector("#test-div h2"); 
     var options = {
@@ -123,7 +163,8 @@ QUnit.test("Rules Constructor for special elements", function(assert) {
         url: 'https://lenta.ru/',
         attributes: '',
         excludeTagName: true,
-        classesSelector: ''
+        classesSelector: '',
+        excludeId: false
     };
 
     ruleText = AdguardRulesConstructorLib.constructRuleText(elementDivId, options);
@@ -137,13 +178,9 @@ QUnit.test("Rules Constructor for special elements", function(assert) {
     ruleText = AdguardRulesConstructorLib.constructRuleText(elementDivId, options);
     assert.equal(ruleText, 'lenta.ru##div#test-id-div[title="Share on Twitter"]');
 
-    options.attributes = '[id="test-id-div"][title="Share on Twitter"]';
+    options.attributes = '[someAttr="some-attr-value"][title="Share on Twitter"]';
     ruleText = AdguardRulesConstructorLib.constructRuleText(elementDivId, options);
-    assert.equal(ruleText, 'lenta.ru##div#test-id-div[id="test-id-div"][title="Share on Twitter"]');
-
-    options.attributes = '[id="test-id-div"]';
-    ruleText = AdguardRulesConstructorLib.constructRuleText(elementDivId, options);
-    assert.equal(ruleText, 'lenta.ru##div#test-id-div[id="test-id-div"]');
+    assert.equal(ruleText, 'lenta.ru##div#test-id-div[someAttr="some-attr-value"][title="Share on Twitter"]');
 
     options.classesSelector = '.test-class-two';
     delete options.attributes;
@@ -159,8 +196,8 @@ QUnit.test("Rules Constructor for CSS selector", function(assert) {
     selector = AdguardRulesConstructorLib.constructRuleCssSelector('lenta.ru###test-div > h2:last-child');
     assert.equal('#test-div > h2:last-child', selector);
 
-    selector = AdguardRulesConstructorLib.constructRuleCssSelector('##div#test-id-div[id="test-id-div"][title="Share on Twitter"]');
-    assert.equal('div#test-id-div[id="test-id-div"][title="Share on Twitter"]', selector);
+    selector = AdguardRulesConstructorLib.constructRuleCssSelector('##div#test-id-div[title="Share on Twitter"]');
+    assert.equal('div#test-id-div[title="Share on Twitter"]', selector);
 
     selector = AdguardRulesConstructorLib.constructRuleCssSelector('test.com/page$domain=example.org');
     assert.equal(selector, "[src*=\"test.com/page\"]");

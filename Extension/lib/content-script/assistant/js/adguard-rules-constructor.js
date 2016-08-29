@@ -28,7 +28,7 @@ var AdguardRulesConstructorLib = (function (api) {
     var linkHelper = document.createElement('a');
 
 
-    var makeCssNthChildFilter = function (element, classesSelector, excludeTagName) {
+    var makeCssNthChildFilter = function (element, classesSelector, excludeTagName, excludeId) {
         var path = [];
         var el = element;
         while (el.parentNode) {
@@ -43,11 +43,13 @@ var AdguardRulesConstructorLib = (function (api) {
                     s += (!classesSelector && classesSelector != '') ? '' : classesSelector;
                 }
 
-                var id = el.id.split(':').join('\\:');//case of colon in id. Need to escape
-                if (el.id.indexOf('.') > -1) {
-                    s += '[id="' + id + '"]';
-                } else {
-                    s += '#' + id;
+                if (el != element || !excludeId) {
+                    var id = el.id.split(':').join('\\:');//case of colon in id. Need to escape
+                    if (el.id.indexOf('.') > -1) {
+                        s += '[id="' + id + '"]';
+                    } else {
+                        s += '#' + id;
+                    }
                 }
 
                 path.unshift(s);
@@ -103,12 +105,12 @@ var AdguardRulesConstructorLib = (function (api) {
         return path.join(" > ");
     };
 
-    var createRuleText = function (element, classesSelector, excludeTagName) {
+    var createRuleText = function (element, classesSelector, excludeTagName, excludeId) {
         if (!element) {
             return;
         }
 
-        var selector = makeCssNthChildFilter(element, classesSelector, excludeTagName);
+        var selector = makeCssNthChildFilter(element, classesSelector, excludeTagName, excludeId);
         return selector ? CSS_RULE_MARK + selector : "";
     };
 
@@ -312,15 +314,15 @@ var AdguardRulesConstructorLib = (function (api) {
         if (options.isBlockSimilar) {
             result = createSimilarRuleText(element, options.classesSelector, options.excludeTagName == false);
         } else {
-            result = createRuleText(element, options.classesSelector, options.excludeTagName);
+            result = createRuleText(element, options.classesSelector, options.excludeTagName, options.excludeId);
+        }
+
+        if (!options.isBlockByUrl && options.attributes) {
+            result = (result ? result : CSS_RULE_MARK + result) + options.attributes;
         }
 
         if (!options.isBlockOneDomain) {
             result = croppedDomain + result;
-        }
-
-        if (!options.isBlockByUrl && options.attributes) {
-            result = result + options.attributes;
         }
 
         return result;
