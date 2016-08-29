@@ -163,10 +163,10 @@ QUnit.test("Rules Constructor for CSS selector", function(assert) {
     assert.equal('div#test-id-div[id="test-id-div"][title="Share on Twitter"]', selector);
 
     selector = AdguardRulesConstructorLib.constructRuleCssSelector('test.com/page$domain=example.org');
-    assert.equal(selector);
+    assert.equal(selector, "[src*=\"test.com/page\"]");
 
     selector = AdguardRulesConstructorLib.constructRuleCssSelector('||rutorads.com^$popup');
-    assert.equal(selector);
+    assert.equal(selector, "[src*=\"rutorads.com\"]");
 
     selector = AdguardRulesConstructorLib.constructRuleCssSelector("#%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };");
     assert.equal(selector);
