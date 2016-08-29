@@ -234,6 +234,7 @@ var browser = window.browser || chrome;
         var isBlockOneDomain = $("#one-domain-checkbox").get(0).checked;
 
         var includeTagName = true;
+        var includeElementId = true;
         var selectedClasses = [];
         var attributesSelector = '';
         $('.attribute-check-box').forEach(function (el) {
@@ -241,6 +242,8 @@ var browser = window.browser || chrome;
                 var attrName = el.id.substring('attribute-check-box-'.length);
                 if (attrName == 'tag') {
                     includeTagName = el.checked;
+                } else if (attrName == 'id') {
+                    includeElementId = el.checked;
                 } else {
                     if (el.checked && info.attributes) {
                         var attr = info.attributes[attrName];
@@ -265,6 +268,7 @@ var browser = window.browser || chrome;
             url: url,
             attributes: attributesSelector,
             excludeTagName: !includeTagName,
+            excludeId: !includeElementId,
             classesSelector: selectedClasses.join('')
         };
 
