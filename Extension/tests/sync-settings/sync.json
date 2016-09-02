@@ -1,0 +1,113 @@
+{
+  "timestamp":"1472817032841",
+  "filters": {
+    "use-mobile-filters":false,
+    "enabled-filters": [
+      {
+        "id": 1
+      }, {
+        "id": 2
+      },
+      {
+        "url":"http://filter-url"
+      }
+    ]
+  },
+  "user-filter": {
+    "rules": [
+      "||test1.org/$script",
+      "||test2.org/$script"
+    ]
+  },
+  "whitelist": {
+    "inverted": false,
+    "rules": [
+      "whitelist-rule"
+    ]
+  },
+  "general-settings": {
+    "allow-acceptable-ads": true,
+    "show-blocked-ads-count": true,
+    "autodetect-filters": true,
+    "safebrowsing-help": false,
+    "app-language": "en-Gb",
+    "os-autostart": true,
+    "autoupdate-filters": true,
+    "update-only-over-wi-fi": true,
+    "block-ads-all-apps": true,
+    "log-level": "default",
+    "update-channel": "release"
+  },
+  "firewall-setting": {
+    "enable-firewall": true,
+    "default-app-settings": {
+      "enable-filtering": true,
+      "enable-https-filtering": true,
+      "allow-mobile-data":true,
+      "allow-wi-fi-data":true,
+      "allow-mobile-with-screen-off":true,
+      "allow-wi-fi-with-screen-off":true,
+      "show-firewall-notifications":true
+    },
+    "apps-settings":[
+      {
+        "app-id": "test-app-identifier",
+        "settings": {
+          "enable-filtering": true,
+          "enable-https-filtering": true,
+          "allow-mobile-data":true,
+          "allow-wi-fi-data":true,
+          "allow-mobile-with-screen-off":true,
+          "allow-wi-fi-with-screen-off":true,
+          "show-firewall-notifications":true
+        }
+      }
+    ]
+  },
+  "android-specific-settings": {
+    "notification-icon-type": "default",
+    "https-settings": {
+      "enable-https-filtering": true,
+      "https-filtering-mode": "blacklist",
+      "https-blacklist": [
+        "blacklist-domain-one"
+      ],
+      "https-whitelist": [
+        "whitelist-domain-one"
+      ]
+    },
+    "filtering-method": "quality",
+    "filtering-mode": "vpn",
+    "proxy-mode": "manual",
+    "proxy-port": "8080",
+    "outbound-proxy-settings": "settings-text",
+    "advanced-settings": {
+      "pref.proxy.block.ipv6": "",
+      "pref.splash.enabled": "",
+      "pref.vpn.disable.pause": "",
+      "pref.vpn.dns": [],
+      "pref.vpn.ipv4.force.complex": "",
+      "pref.vpn.ipv4.force.default": "",
+      "pref.vpn.ipv4.routes.excluded": "",
+      "pref.vpn.ipv6.bypass": "",
+      "pref.vpn.ipv6.disable": "",
+      "pref.vpn.ipv6.force": "",
+      "pref.vpn.tun.mtu": ""
+    }
+  },
+  "ios-specific-settings": {
+    "use-simplified-filters": true,
+    "dns-server-type": "standard"
+  },
+  "osx-specific-settings": {
+    "use-adguard-assistant": true,
+    "use-adguard-popup-blocker": true,
+    "use-wot-extension": true,
+    "https-filtering": true,
+    "ssl-exceptions": [],
+    "automatically-filter-applications": true,
+    "filtering-apps": [],
+    "use-adguard-as-http-proxy": false,
+    "proxy-port": "8080"
+  }
+}
