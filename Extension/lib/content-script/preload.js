@@ -272,7 +272,7 @@
             applyScripts(response.scripts);
         }
 
-        if (response && response.selectors && response.selectors.length > 0) {
+        if (response && response.selectors && response.selectors.css && response.selectors.css.length > 0) {
             addIframeHidingStyle();
         }
     };
