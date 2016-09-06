@@ -98,8 +98,11 @@ var CssFilterRule = exports.CssFilterRule = (function () {
             return null;
         }
 
-        var squareBracketIndex = selector.indexOf('[');
-        if (squareBracketIndex >= 0 && nameStartIndex > squareBracketIndex) {
+        var squareBracketStartIndex = selector.indexOf('[');
+        var squareBracketEndIndex = selector.indexOf(']');
+        if (squareBracketStartIndex >= 0
+            && nameStartIndex > squareBracketStartIndex
+            && nameStartIndex < squareBracketEndIndex) {
             // Means that colon character is somewhere inside attribute selector
             // Something like a[src^="http://domain.com"]
             return null;

@@ -149,17 +149,31 @@ QUnit.test("Css GenericHide Exception Rules", function (assert) {
 QUnit.test("Ublock Css Injection Syntax Support", function (assert) {
     var ruleText = "yandex.ru##body:style(background:inherit;)";
     var cssFilterRule = new CssFilterRule(ruleText);
-    assert.equal(ruleText, cssFilterRule.ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
     assert.ok(cssFilterRule.isInjectRule);
     assert.notOk(cssFilterRule.whiteListRule);
-    assert.equal("body { background:inherit; }", cssFilterRule.cssSelector);
+    assert.equal(cssFilterRule.cssSelector, "body { background:inherit; }");
 
     ruleText = "yandex.ru#@#body:style(background:inherit;)";
     cssFilterRule = new CssFilterRule(ruleText);
-    assert.equal(ruleText, cssFilterRule.ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
     assert.ok(cssFilterRule.isInjectRule);
     assert.ok(cssFilterRule.whiteListRule);
-    assert.equal("body { background:inherit; }", cssFilterRule.cssSelector);
+    assert.equal(cssFilterRule.cssSelector, "body { background:inherit; }");
+
+    ruleText = "yandex.ru##a[src^=\"http://domain.com\"]";
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.notOk(cssFilterRule.isInjectRule);
+    assert.notOk(cssFilterRule.whiteListRule);
+    assert.equal(cssFilterRule.cssSelector, "a[src^=\"http://domain.com\"]");
+
+    ruleText = "yandex.ru##[role='main']:style(display: none;)";
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.ok(cssFilterRule.isInjectRule);
+    assert.notOk(cssFilterRule.whiteListRule);
+    assert.equal(cssFilterRule.cssSelector, "[role='main'] { display: none; }");
 });
 
 QUnit.test("Invalid Style Syntax", function (assert) {
