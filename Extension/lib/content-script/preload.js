@@ -580,7 +580,7 @@
         var cssValue = "none";
         var cssPriority = "important";
 
-        if (tagName == "frame") {
+        if (tagName == "frame" || tagName == "iframe") {
             cssProperty = "visibility";
             cssValue = "hidden";
         }
