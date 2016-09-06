@@ -593,9 +593,10 @@
         // when the "display" CSS property is set. So we have to check
         // that it isn't already collapsed to avoid an infinite recursion.
         if (elCssValue != cssValue || elCssPriority != cssPriority) {
-
             elementStyle.setProperty(cssProperty, cssValue, cssPriority);
+        }
 
+        if (!element.hasAttribute(AG_HIDDEN_ATTRIBUTE)) {
             var originalCss = cssProperty + ';' + (elCssValue ? elCssValue : '') + ';' + (elCssPriority ? elCssPriority : '');
             element.setAttribute(AG_HIDDEN_ATTRIBUTE, originalCss);
         }
@@ -610,17 +611,29 @@
 
         if (element.hasAttribute(AG_HIDDEN_ATTRIBUTE)) {
 
+            var cssCollapsedValue = "none";
+            var cssCollapsedPriority = "important";
+
             var originalCssParts = element.getAttribute(AG_HIDDEN_ATTRIBUTE).split(';');
 
             var cssProperty = originalCssParts[0];
-            var elCssValue = originalCssParts[1];
-            var elCssPriority = originalCssParts[2];
+            var cssValue = originalCssParts[1];
+            var cssPriority = originalCssParts[2];
 
-            if (elCssValue) {
-                // Revert to original style
-                element.style.setProperty(cssProperty, elCssValue, elCssPriority);
-            } else {
-                element.style.removeProperty(cssProperty);
+            var elementStyle = element.style;
+            var elCssValue = elementStyle.getPropertyValue(cssProperty);
+            var elCssPriority = elementStyle.getPropertyPriority(cssProperty);
+
+            // In case of element style could be changed after temporary collapse
+            // we will not revert it original style.
+            if (elCssValue == cssCollapsedValue &&
+                elCssPriority == cssCollapsedPriority) {
+                if (cssValue) {
+                    // Revert to original style
+                    element.style.setProperty(cssProperty, cssValue, cssPriority);
+                } else {
+                    element.style.removeProperty(cssProperty);
+                }
             }
 
             element.removeAttribute(AG_HIDDEN_ATTRIBUTE);
