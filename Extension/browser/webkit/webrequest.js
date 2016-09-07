@@ -80,6 +80,103 @@ function onBeforeSendHeaders(requestDetails) {
     return {};
 }
 
+function headerIndexFromName(headerName, headers) {
+    var i = headers.length;
+    while (i--) {
+        if (headers[i].name.toLowerCase() === headerName) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+function foilWithCSP(headers, blockWebSockets) {
+    var i = headerIndexFromName('content-security-policy', headers),
+        before = i === -1 ? '' : headers[i].value.trim(),
+        after = before;
+
+    if (blockWebSockets) {
+        after = foilWithCSPDirective(
+            after,
+            /connect-src[^;]*;?\s*/,
+            'connect-src http:',
+            /wss?:[^\s]*\s*/g
+        );
+    }
+
+    /*
+     https://bugs.chromium.org/p/chromium/issues/detail?id=513860
+     Bad Chromium bug: web pages can work around CSP directives by
+     creating data:- or blob:-based URI. So if we must restrict using CSP,
+     we have no choice but to also prevent the creation of nested browsing
+     contexts based on data:- or blob:-based URIs.
+     */
+    if (Prefs.platform === "chromium" && blockWebSockets) {
+        // https://w3c.github.io/webappsec-csp/#directive-frame-src
+        after = foilWithCSPDirective(
+            after,
+            /frame-src[^;]*;?\s*/,
+            'frame-src http:',
+            /data:[^\s]*\s*|blob:[^\s]*\s*/g
+        );
+    }
+
+    var changed = after !== before;
+    if (changed) {
+        if (i !== -1) {
+            headers.splice(i, 1);
+        }
+        headers.push({name: 'Content-Security-Policy', value: after});
+    }
+
+    return changed;
+}
+
+// https://w3c.github.io/webappsec-csp/#directives-reporting
+var reReportDirective = /report-(?:to|uri)[^;]*;?\s*/;
+var reEmptyDirective = /^([a-z-]+)\s*;/;
+
+function foilWithCSPDirective(csp, toExtract, toAdd, toRemove) {
+    // Set
+    if (csp === '') {
+        return toAdd;
+    }
+
+    var matches = toExtract.exec(csp);
+
+    // Add
+    if (matches === null) {
+        if (csp.slice(-1) !== ';') {
+            csp += ';';
+        }
+        csp += ' ' + toAdd;
+        return csp.replace(reReportDirective, '');
+    }
+
+    var directive = matches[0];
+
+    // No change
+    if (toRemove.test(directive) === false) {
+        return csp;
+    }
+
+    // Remove
+    csp = csp.replace(toExtract, '').trim();
+    if (csp.slice(-1) !== ';') {
+        csp += ';';
+    }
+    directive = directive.replace(toRemove, '').trim();
+
+    // Check for empty directive after removal
+    matches = reEmptyDirective.exec(directive);
+    if (matches) {
+        directive = matches[1] + " 'none';";
+    }
+
+    csp += ' ' + directive;
+    return csp.replace(reReportDirective, '');
+}
+
 function onHeadersReceived(requestDetails) {
 
     var tab = requestDetails.tab;
@@ -94,6 +191,20 @@ function onHeadersReceived(requestDetails) {
     if (requestType == RequestTypes.DOCUMENT) {
         //safebrowsing check
         filterSafebrowsing(tab, requestUrl);
+
+        /*
+         Websocket check
+         https://github.com/AdguardTeam/AdguardBrowserExtension/issues/344
+
+         WS connections are detected as "other"  by ABP
+         EasyList already contains some rules for WS connections with $other modifier
+         */
+        var rule = webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, RequestTypes.OTHER);
+        console.log(requestUrl);
+        console.log(rule);
+        if (webRequestService.isRequestBlockedByRule(rule)) {
+            foilWithCSP(responseHeaders, undefined, true);
+        }
     }
 }
 
