@@ -81,6 +81,20 @@ var CssFilterRule = exports.CssFilterRule = (function () {
         return selector + " { " + style + " }";
     };
 
+    var isIndexBracketed  = function (selector, nameStartIndex) {
+        var squareBracketStartIndex = selector.indexOf('[');
+        var squareBracketEndIndex = selector.indexOf(']', nameStartIndex);
+        if (squareBracketStartIndex >= 0
+            && nameStartIndex > squareBracketStartIndex
+            && nameStartIndex < squareBracketEndIndex) {
+            // Means that colon character is somewhere inside attribute selector
+            // Something like a[src^="http://domain.com"] or a[class][src^="http://domain.com"]
+            return true;
+        }
+
+        return false;
+    };
+
     /**
      * Parses first pseudo class from the specified CSS selector
      *
@@ -98,13 +112,7 @@ var CssFilterRule = exports.CssFilterRule = (function () {
             return null;
         }
 
-        var squareBracketStartIndex = selector.indexOf('[');
-        var squareBracketEndIndex = selector.indexOf(']');
-        if (squareBracketStartIndex >= 0
-            && nameStartIndex > squareBracketStartIndex
-            && nameStartIndex < squareBracketEndIndex) {
-            // Means that colon character is somewhere inside attribute selector
-            // Something like a[src^="http://domain.com"]
+        if (isIndexBracketed(selector, nameStartIndex)) {
             return null;
         }
 
