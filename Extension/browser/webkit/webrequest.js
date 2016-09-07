@@ -203,7 +203,7 @@ function onHeadersReceived(requestDetails) {
         console.log(requestUrl);
         console.log(rule);
         if (webRequestService.isRequestBlockedByRule(rule)) {
-            foilWithCSP(responseHeaders, undefined, true);
+            foilWithCSP(responseHeaders, true);
         }
     }
 }
