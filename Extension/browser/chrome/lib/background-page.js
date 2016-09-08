@@ -224,11 +224,11 @@ var browser = browser || chrome;
             }
 
             var requestDetails = getRequestDetails(details);
-            listener(requestDetails);
+            return listener(requestDetails);
         };
     };
     OnHeadersReceivedEvent.prototype.getOptExtraInfoSpec = function (urls) {
-        return [urls ? {urls: urls} : {}, ["responseHeaders"]];
+        return [urls ? {urls: urls} : {}, ["responseHeaders", "blocking"]];
     };
 
 

@@ -127,7 +127,6 @@ function foilWithCSP(headers, blockWebSockets) {
             headers.splice(i, 1);
         }
         headers.push({name: 'Content-Security-Policy', value: after});
-        console.log(after);
     }
 
     return changed;
@@ -174,10 +173,6 @@ var foilWithCSPDirective = function (csp, toExtract, toAdd, toRemove) {
         directive = matches[1] + " 'none';";
     }
 
-    // Add
-    // TODO: Temp
-    directive = directive.replace("frame-src 'self'", toAdd);
-
     csp += ' ' + directive;
     return csp.replace(reReportDirective, '');
 };
@@ -205,11 +200,9 @@ function onHeadersReceived(requestDetails) {
          EasyList already contains some rules for WS connections with $other modifier
          */
         var rule = webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, RequestTypes.OTHER);
-        //console.log(requestUrl);
-        //console.log(rule);
         if (webRequestService.isRequestBlockedByRule(rule)) {
             if (foilWithCSP(responseHeaders, true)) {
-                return { 'responseHeaders': responseHeaders };
+                return { responseHeaders: responseHeaders };
             }
         }
     }
