@@ -127,7 +127,7 @@ function foilWithCSP(headers, blockWebSockets) {
             headers.splice(i, 1);
         }
         headers.push({name: 'Content-Security-Policy', value: after});
-        //console.log(after);
+        console.log(after);
     }
 
     return changed;
@@ -174,6 +174,10 @@ var foilWithCSPDirective = function (csp, toExtract, toAdd, toRemove) {
         directive = matches[1] + " 'none';";
     }
 
+    // Add
+    // TODO: Temp
+    directive = directive.replace("frame-src 'self'", toAdd);
+
     csp += ' ' + directive;
     return csp.replace(reReportDirective, '');
 };
@@ -204,7 +208,9 @@ function onHeadersReceived(requestDetails) {
         //console.log(requestUrl);
         //console.log(rule);
         if (webRequestService.isRequestBlockedByRule(rule)) {
-            foilWithCSP(responseHeaders, true);
+            if (foilWithCSP(responseHeaders, true)) {
+                return { 'responseHeaders': responseHeaders };
+            }
         }
     }
 }
