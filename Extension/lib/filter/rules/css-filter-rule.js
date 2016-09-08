@@ -81,20 +81,6 @@ var CssFilterRule = exports.CssFilterRule = (function () {
         return selector + " { " + style + " }";
     };
 
-    var isIndexBracketed  = function (selector, nameStartIndex) {
-        var squareBracketStartIndex = selector.indexOf('[');
-        var squareBracketEndIndex = selector.indexOf(']', nameStartIndex);
-        if (squareBracketStartIndex >= 0
-            && nameStartIndex > squareBracketStartIndex
-            && nameStartIndex < squareBracketEndIndex) {
-            // Means that colon character is somewhere inside attribute selector
-            // Something like a[src^="http://domain.com"] or a[class][src^="http://domain.com"]
-            return true;
-        }
-
-        return false;
-    };
-
     /**
      * Parses first pseudo class from the specified CSS selector
      *
@@ -102,18 +88,43 @@ var CssFilterRule = exports.CssFilterRule = (function () {
      * @returns {*} first PseudoClass found or null
      */
     var parsePseudoClass = function (selector) {
-        var nameStartIndex = selector.indexOf(':');
-        if (nameStartIndex < 0) {
-            return null;
-        }
+        var beginIndex = 0;
+        var nameStartIndex = -1;
+        var squareBracketIndex = 0;
 
-        if (nameStartIndex > 0 && selector.charAt(nameStartIndex - 1) == '\\') {
-            // Escaped colon character
-            return null;
-        }
+        while (squareBracketIndex >= 0) {
+            nameStartIndex = selector.indexOf(':', beginIndex);
+            if (nameStartIndex < 0) {
+                return null;
+            }
 
-        if (isIndexBracketed(selector, nameStartIndex)) {
-            return null;
+            if (nameStartIndex > 0 && selector.charAt(nameStartIndex - 1) == '\\') {
+                // Escaped colon character
+                return null;
+            }
+
+            squareBracketIndex = selector.indexOf("[", beginIndex);
+            while (squareBracketIndex >= 0) {
+                if (nameStartIndex > squareBracketIndex) {
+                    var squareEndBracketIndex = selector.indexOf("]", squareBracketIndex + 1);
+                    beginIndex = squareEndBracketIndex + 1;
+                    if (nameStartIndex < squareEndBracketIndex) {
+                        // Means that colon character is somewhere inside attribute selector
+                        // Something like a[src^="http://domain.com"]
+                        break;
+                    }
+
+                    if (squareEndBracketIndex > 0) {
+                        squareBracketIndex = selector.indexOf("[", beginIndex);
+                    } else {
+                        // bad rule, example: a[src="http:
+                        return null;
+                    }
+                } else {
+                    squareBracketIndex = -1;
+                    break;
+                }
+            }
         }
 
         var nameEndIndex = StringUtils.indexOfAny(selector, nameStartIndex + 1, [' ', '\t', '>', '(', '[', '.', '#', ':']);

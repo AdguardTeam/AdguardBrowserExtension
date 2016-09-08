@@ -174,6 +174,11 @@ QUnit.test("Ublock Css Injection Syntax Support", function (assert) {
     assert.ok(cssFilterRule.isInjectRule);
     assert.notOk(cssFilterRule.whiteListRule);
     assert.equal(cssFilterRule.cssSelector, "[role='main'] { display: none; }");
+
+    ruleText = 'example.com##a[target="_blank"][href^="http://api.taboola.com/"]:style(display: none;)';
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.equal(cssFilterRule.cssSelector, 'a[target="_blank"][href^="http://api.taboola.com/"] { display: none; }');
 });
 
 QUnit.test("Some Complex Selector Rules", function (assert) {
