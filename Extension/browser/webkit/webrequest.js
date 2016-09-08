@@ -127,6 +127,7 @@ function foilWithCSP(headers, blockWebSockets) {
             headers.splice(i, 1);
         }
         headers.push({name: 'Content-Security-Policy', value: after});
+        //console.log(after);
     }
 
     return changed;
@@ -136,7 +137,7 @@ function foilWithCSP(headers, blockWebSockets) {
 var reReportDirective = /report-(?:to|uri)[^;]*;?\s*/;
 var reEmptyDirective = /^([a-z-]+)\s*;/;
 
-function foilWithCSPDirective(csp, toExtract, toAdd, toRemove) {
+var foilWithCSPDirective = function (csp, toExtract, toAdd, toRemove) {
     // Set
     if (csp === '') {
         return toAdd;
@@ -175,7 +176,7 @@ function foilWithCSPDirective(csp, toExtract, toAdd, toRemove) {
 
     csp += ' ' + directive;
     return csp.replace(reReportDirective, '');
-}
+};
 
 function onHeadersReceived(requestDetails) {
 
@@ -200,8 +201,8 @@ function onHeadersReceived(requestDetails) {
          EasyList already contains some rules for WS connections with $other modifier
          */
         var rule = webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, RequestTypes.OTHER);
-        console.log(requestUrl);
-        console.log(rule);
+        //console.log(requestUrl);
+        //console.log(rule);
         if (webRequestService.isRequestBlockedByRule(rule)) {
             foilWithCSP(responseHeaders, true);
         }
@@ -259,7 +260,7 @@ if (Prefs.platform === "chromium") {
 
 // TODO[Edge]: Add support for collecting hits statis. Currently we cannot add listener for ms-browser-extension:// urls.
 if (Prefs.platform === "chromium" && Prefs.getBrowser() !== "Edge") {
-    var parseCssRuleFromUrl = function(requestUrl) {
+    var parseCssRuleFromUrl = function (requestUrl) {
         if (!requestUrl) {
             return null;
         }
@@ -272,7 +273,7 @@ if (Prefs.platform === "chromium" && Prefs.getBrowser() !== "Edge") {
         };
     };
 
-    var onCssRuleHit = function(requestDetails) {
+    var onCssRuleHit = function (requestDetails) {
         if (framesMap.isIncognitoTab(requestDetails.tab)) {
             return;
         }
