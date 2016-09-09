@@ -52,6 +52,7 @@ var CspUtils = exports.CspUtils = (function () {
          creating data:- or blob:-based URI. So if we must restrict using CSP,
          we have no choice but to also prevent the creation of nested browsing
          contexts based on data:- or blob:-based URIs.
+         https://github.com/AdguardTeam/AdguardBrowserExtension/issues/344
          */
         if (Prefs.platform === "chromium" && blockWebSockets) {
             // https://w3c.github.io/webappsec-csp/#directive-frame-src
