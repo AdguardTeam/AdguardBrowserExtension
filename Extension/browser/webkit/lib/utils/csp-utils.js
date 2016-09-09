@@ -74,13 +74,13 @@ var CspUtils = exports.CspUtils = (function () {
         return changed;
     };
 
-    var writeCSPDirective = function (csp, toExtract, toAdd, toRemove) {
+    var writeCSPDirective = function (csp, template, toAdd, toRemove) {
         // Set
         if (csp === '') {
             return toAdd;
         }
 
-        var matches = toExtract.exec(csp);
+        var matches = template.exec(csp);
 
         // Add
         if (matches === null) {
@@ -99,7 +99,7 @@ var CspUtils = exports.CspUtils = (function () {
         }
 
         // Remove
-        csp = csp.replace(toExtract, '').trim();
+        csp = csp.replace(template, '').trim();
         if (csp.slice(-1) !== ';') {
             csp += ';';
         }
