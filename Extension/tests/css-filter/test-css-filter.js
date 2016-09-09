@@ -445,21 +445,28 @@ QUnit.test("Extended Css Build CssHits", function (assert) {
 
     var selectors, css, extendedCss, commonCss;
 
-    selectors = filter.buildCssHits("adguard.com");
+    selectors = filter.buildCssHits("adguard.com", 'hit-prefix');
     css = selectors.css;
     extendedCss = selectors.extendedCss;
-    commonCss = filter.buildCss(null).css;
+    commonCss = filter.buildCssHits(null).css;
     assert.equal(commonCss.length, 1);
+    assert.equal(commonCss[0].trim(), ".banner { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3B%23%23.banner') !important;}");
     assert.equal(css.length, 2);
+    assert.equal(css[0].trim(), ".banner { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3B%23%23.banner') !important;}");
+    assert.equal(css[1].trim(), ".sponsored { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3Badguard.com%23%23.sponsored') !important;}");
     assert.equal(extendedCss.length, 1);
+    assert.equal(extendedCss[0].trim(), ".sponsored[-ext-contains=test] { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3Badguard.com%23%23.sponsored%5B-ext-contains%3Dtest%5D') !important;}");
 
-    selectors = filter.buildCssHits("adguard.com", '', true);
+    selectors = filter.buildCssHits("adguard.com", 'hit-prefix', true);
     css = selectors.css;
     extendedCss = selectors.extendedCss;
-    commonCss = filter.buildCss(null).css;
+    commonCss = filter.buildCssHits(null).css;
     assert.equal(commonCss.length, 1);
+    assert.equal(commonCss[0].trim(), ".banner { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3B%23%23.banner') !important;}");
     assert.equal(css.length, 1);
+    assert.equal(css[0].trim(), ".sponsored { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3Badguard.com%23%23.sponsored') !important;}");
     assert.equal(extendedCss.length, 1);
+    assert.equal(extendedCss[0].trim(), ".sponsored[-ext-contains=test] { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3Badguard.com%23%23.sponsored%5B-ext-contains%3Dtest%5D') !important;}");
 
 });
 
