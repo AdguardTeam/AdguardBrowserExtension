@@ -105,8 +105,8 @@ function onHeadersReceived(requestDetails) {
         filterSafebrowsing(tab, requestUrl);
 
         /*
-         Websocket check,
-         ff 'ws://' request is blocked for not existing domain - it's blocked for all domains.
+         Websocket check.
+         If 'ws://' request is blocked for not existing domain - it's blocked for all domains.
          Then we gonna limit frame sources to http to block src:'data/text' etc.
          More details in the issue:
          https://github.com/AdguardTeam/AdguardBrowserExtension/issues/344

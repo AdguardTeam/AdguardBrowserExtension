@@ -28,23 +28,20 @@ var CspUtils = exports.CspUtils = (function () {
 
     /**
      * Fills csp header with websocket blocking directives.
-     *
-     * @param headers headers collection
-     * @param blockWebSockets block websocket flag
+     * Checks connect-src and frame-src directives. Removes 'wss:' and 'data:' from it.
+     * @param headers headers collection block websocket flag
      */
-    var writeCspHeader = function (headers, blockWebSockets) {
+    var blockWebSockets = function (headers) {
         var i = headerIndexFromName('content-security-policy', headers),
             before = i === -1 ? '' : headers[i].value.trim(),
             after = before;
 
-        if (blockWebSockets) {
-            after = writeCSPDirective(
-                after,
-                /connect-src[^;]*;?\s*/,
-                'connect-src http:',
-                /wss?:[^\s]*\s*/g
-            );
-        }
+        after = writeCSPDirective(
+            after,
+            /connect-src[^;]*;?\s*/,
+            'connect-src http:',
+            /wss?:[^\s]*\s*/g
+        );
 
         /*
          https://bugs.chromium.org/p/chromium/issues/detail?id=513860
@@ -54,15 +51,13 @@ var CspUtils = exports.CspUtils = (function () {
          contexts based on data:- or blob:-based URIs.
          https://github.com/AdguardTeam/AdguardBrowserExtension/issues/344
          */
-        if (Prefs.platform === "chromium" && blockWebSockets) {
-            // https://w3c.github.io/webappsec-csp/#directive-frame-src
-            after = writeCSPDirective(
-                after,
-                /frame-src[^;]*;?\s*/,
-                'frame-src http:',
-                /data:[^\s]*\s*|blob:[^\s]*\s*/g
-            );
-        }
+        // https://w3c.github.io/webappsec-csp/#directive-frame-src
+        after = writeCSPDirective(
+            after,
+            /frame-src[^;]*;?\s*/,
+            'frame-src http:',
+            /data:[^\s]*\s*|blob:[^\s]*\s*/g
+        );
 
         var changed = after !== before;
         if (changed) {
@@ -127,6 +122,6 @@ var CspUtils = exports.CspUtils = (function () {
     };
 
     return {
-        writeCspHeader: writeCspHeader
+        blockWebSockets: blockWebSockets
     };
 })();
