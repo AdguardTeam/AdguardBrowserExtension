@@ -163,7 +163,6 @@ var initPageMessageListener = function() { // jshint ignore:line
             type: 'checkWebSocketRequest',
             elementUrl: event.data.elementUrl,
             documentUrl: event.data.documentUrl,
-            requestType: "OTHER",
             requestId: event.data.requestId
         };
 
