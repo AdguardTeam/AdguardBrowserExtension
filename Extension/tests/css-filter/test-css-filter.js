@@ -174,6 +174,48 @@ QUnit.test("Ublock Css Injection Syntax Support", function (assert) {
     assert.ok(cssFilterRule.isInjectRule);
     assert.notOk(cssFilterRule.whiteListRule);
     assert.equal(cssFilterRule.cssSelector, "[role='main'] { display: none; }");
+
+    ruleText = 'example.com##a[target="_blank"][href^="http://api.taboola.com/"]:style(display: none;)';
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.equal(cssFilterRule.cssSelector, 'a[target="_blank"][href^="http://api.taboola.com/"] { display: none; }');
+});
+
+QUnit.test("Some Complex Selector Rules", function (assert) {
+    var ruleText = 'example.com##td[valign="top"] > .mainmenu[style="padding:10px 0 0 0 !important;"]';
+    var cssFilterRule = new CssFilterRule(ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.equal(cssFilterRule.cssSelector, 'td[valign="top"] > .mainmenu[style="padding:10px 0 0 0 !important;"]');
+
+    ruleText = 'example.com##a[target="_blank"][href^="http://api.taboola.com/"]';
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.equal(cssFilterRule.cssSelector, 'a[target="_blank"][href^="http://api.taboola.com/"]');
+
+    ruleText = 'example.com###mz[width="100%"][valign="top"][style="padding:20px 30px 30px 30px;"] + td[width="150"][valign="top"][style="padding:6px 10px 0px 0px;"]:last-child';
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.equal(cssFilterRule.cssSelector, '#mz[width="100%"][valign="top"][style="padding:20px 30px 30px 30px;"] + td[width="150"][valign="top"][style="padding:6px 10px 0px 0px;"]:last-child');
+
+    ruleText = 'example.com###st-flash > div[class] > [style^="width:"]';
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.equal(cssFilterRule.cssSelector, '#st-flash > div[class] > [style^="width:"]');
+
+    ruleText = 'example.com##.stream-item[data-item-type="tweet"][data-item-id*=":"]';
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.equal(cssFilterRule.cssSelector, '.stream-item[data-item-type="tweet"][data-item-id*=":"]');
+
+    ruleText = 'example.com##[class][style*="data:image"]';
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.equal(cssFilterRule.cssSelector, '[class][style*="data:image"]');
+
+    ruleText = 'example.com##[onclick] > a[href^="javascript:"]';
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.equal(cssFilterRule.cssSelector, '[onclick] > a[href^="javascript:"]');
 });
 
 QUnit.test("Invalid Style Syntax", function (assert) {
