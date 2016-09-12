@@ -95,320 +95,49 @@ var overrideWebSocket = function () { // jshint ignore:line
 
     /**
      * WebSocket wrapper implementation.
-     * https://github.com/gorhill/chromium-websocket-wrapper
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/349
+     *
+     * Based on:
+     * https://github.com/adblockplus/adblockpluschrome/commit/457a336ee55a433217c3ffe5d363e5c6980f26f4
      */
     (function(channel) {
-        'use strict';
-        var Wrapped = window.WebSocket;
-        var map = new WeakMap();
+        // As far as possible we must track everything we use that could be
+        // sabotaged by the website later in order to circumvent us.
+        var RealWebSocket = WebSocket;
+        var closeWebSocket = Function.prototype.call.bind(RealWebSocket.prototype.close);
 
-        /**
-         * Called when we got response from an extension.
-         * Depending on the "blockConnection" parameter we either create a real WS or call onerror.
-         *
-         * @param wrapper           WebSocket wrapper object
-         * @param blockConnection   True if connection should be blocked
-         */
-        var channelResponseReceived = function (wrapper, blockConnection) {
-
-            var bag = map.get(wrapper);
-            if (blockConnection) {
-                if (bag.properties.onerror) {
-                    bag.properties.onerror(new window.ErrorEvent('error'));
-                }
-                bag.properties.readyState = WebSocket.CLOSED;
-                return;
-            }
-
-            var wrapped = null;
-            try {
-                wrapped = new Wrapped(bag.args.url, bag.args.protocols);
-            } catch (ex) {
-                console.error(ex);
-            }
-
-            if (wrapped === null) {
-                return;
-            }
-
-            for (var p in bag.properties) { // jshint ignore:line
-                wrapped[p] = bag.properties[p];
-            }
-
-            for (var i = 0, l; i < bag.listeners.length; i++) {
-                l = bag.listeners[i];
-                wrapped.addEventListener(l.ev, l.cb, l.fl);
-            }
-
-            map.set(wrapper, wrapped);
-        };
-
-        /**
-         * Dummy function
-         */
-        var emptyFunction = function () {};
-
-        /**
-         * Wraps callback function into our own function wrapper.
-         * We have two purposes: bind it to the wrapper object and replace event.target property.
-         * Learn more here: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/307
-         */
-        var wrapCallback = function(callback, wrapper) {
-            var wrappedCallback = function() {
-                var wrapped = map.get(wrapper);
-                var e = arguments[0];
-                if (wrapped && e instanceof Event && e.target === wrapped) {
-                    // We should change Event.target to Wrapper
-                    var wrappedEvent = Object.create(e, {
-                        target: { value: wrapper },
-                        currentTarget: { value: wrapper },
-                        srcElement: { value: wrapper },
-                        // Override WS event properties as well as otherwise there will be an illegal invocation error
-                        // MessageEvent
-                        data: { value: e.data },
-                        origin: { value: e.origin },
-                        ports: { value: e.ports },
-                        // CloseEvent
-                        code: { value: e.code },
-                        reason: { value: e.reason },
-                        wasClean: { value: e.wasClean }
-                    });
-                    arguments[0] = wrappedEvent;
-                }
-                callback.apply(wrapper, arguments);
-            };
-            return wrappedCallback;
-        };
-
-        /**
-         * Gets value of the specified property from the wrapped websocket if it is already created.
-         *
-         * @param wrapper       Wrapper instance
-         * @param prop          Property name
-         * @param defaultValue  Default value to be returned if real WS does not yet exist
-         * @returns {*}
-         */
-        var getWrappedProperty = function (wrapper, prop, defaultValue) {
-            var wrapped = map.get(wrapper);
-            if (!wrapped) {
-                return defaultValue;
-            }
-
-            if (wrapped instanceof Wrapped) {
-                return wrapped[prop];
-            }
-
-            return wrapped.properties.hasOwnProperty(prop) ?
-                wrapped.properties[prop] :
-                defaultValue;
-        };
-
-        /**
-         * Sets value of the specified property.
-         *
-         * @param wrapper   Wrapper instance
-         * @param prop      Property name
-         * @param value     Value to set
-         */
-        var setWrappedProperty = function (wrapper, prop, value) {
-            if (value instanceof Function) {
-                value = wrapCallback(value, wrapper);
-            }
-
-            var wrapped = map.get(wrapper);
-            if (!wrapped) {
-                return;
-            }
-
-            if (wrapped instanceof Wrapped) {
-                wrapped[prop] = value;
-            } else {
-                wrapped.properties[prop] = value;
-            }
-        };
-
-        /**
-         * Fake websocket constructor.
-         * https://developer.mozilla.org/en-US/docs/Web/API/WebSocket
-         * 
-         * Original websocket opens connection to a specified url. This wrapper works in a 
-         * different way, it first checks if this WS connection should be blocked or not.
-         *
-         * @param url       The URL to which to connect
-         * @param protocols Either a single protocol string or an array of protocol strings
-         * @constructor
-         */
-        var WebSocket = function (url, protocols) {
-            'native';
-            if (window.location.protocol === 'https:' &&
-                    url.lastIndexOf('ws:', 0) === 0) {
-                // Just in case, plain text WS cannot be used on HTTPS webpages.
-                // So we just trigger an exception.                     
-                var ws = new Wrapped(url, protocols);
-                if (ws) {
-                    ws.close();
-                }
-            }
-
-            Object.defineProperties(this, {
-                'binaryType': {
-                    get: function () {
-                        return getWrappedProperty(this, 'binaryType', 'blob');
-                    },
-                    set: function (value) {
-                        setWrappedProperty(this, 'binaryType', value);
-                    }
-                },
-                'bufferedAmount': {
-                    get: function () {
-                        return getWrappedProperty(this, 'bufferedAmount', 0);
-                    },
-                    set: emptyFunction
-                },
-                'extensions': {
-                    get: function () {
-                        return getWrappedProperty(this, 'extensions', '');
-                    },
-                    set: emptyFunction
-                },
-                'onclose': {
-                    get: function () {
-                        return getWrappedProperty(this, 'onclose', null);
-                    },
-                    set: function (value) {
-                        setWrappedProperty(this, 'onclose', value);
-                    }
-                },
-                'onerror': {
-                    get: function () {
-                        return getWrappedProperty(this, 'onerror', null);
-                    },
-                    set: function (value) {
-                        setWrappedProperty(this, 'onerror', value);
-                    }
-                },
-                'onmessage': {
-                    get: function () {
-                        return getWrappedProperty(this, 'onmessage', null);
-                    },
-                    set: function (value) {
-                        setWrappedProperty(this, 'onmessage', value);
-                    }
-                },
-                'onopen': {
-                    get: function () {
-                        return getWrappedProperty(this, 'onopen', null);
-                    },
-                    set: function (value) {
-                        setWrappedProperty(this, 'onopen', value);
-                    }
-                },
-                'protocol': {
-                    get: function () {
-                        return getWrappedProperty(this, 'protocol', '');
-                    },
-                    set: emptyFunction
-                },
-                'readyState': {
-                    get: function () {
-                        return getWrappedProperty(this, 'readyState', 0);
-                    },
-                    set: emptyFunction
-                },
-                'url': {
-                    get: function () {
-                        return getWrappedProperty(this, 'url', '');
-                    },
-                    set: emptyFunction
-                }
-            });
-
-            /**
-             * Store this wrapper into a map along with a properties bag object.
-             * Until we figure out what to do with this WS, we will 
-             * save all properties and listeners into that bag.
-             */
-            map.set(this, {
-                args: {
-                    url: url, 
-                    protocols: protocols
-                },
-                listeners: [],
-                properties: {}
-            });
-
+        function checkRequest(url, callback) {
             // This is the key point: checking if this WS should be blocked or not
-            channel.sendMessage(url, this, channelResponseReceived);
-        };
+            channel.sendMessage(url, this, function (wrapper, blockConnection) {
+                callback(blockConnection);
+            });
+        }
 
-        // Safari doesn't have EventTarget
-        var EventTarget = window.EventTarget || Element;
-        WebSocket.prototype = Object.create(EventTarget.prototype, {
-            CONNECTING: {value: 0},
-            OPEN: {value: 1},
-            CLOSING: {value: 2},
-            CLOSED: {value: 3},
-            addEventListener: {
-                enumerable: true,
-                value: function (ev, cb, fl) {
-                    if (cb instanceof Function === false) {
-                        return;
-                    }
-                    var wrapped = map.get(this);
-                    if (!wrapped) {
-                        return;
-                    }
-                    var cbb = wrapCallback(cb, this);
-                    if (wrapped instanceof Wrapped) {
-                        wrapped.addEventListener(ev, cbb, fl);
-                    } else {
-                        wrapped.listeners.push({ev: ev, cb: cbb, fl: fl});
-                    }
-                },
-                writable: true
-            },
-            close: {
-                enumerable: true,
-                value: function (code, reason) {
-                    'native';
-                    var wrapped = map.get(this);
-                    if (wrapped instanceof Wrapped) {
-                        wrapped.close(code, reason);
-                    }
-                },
-                writable: true
-            },
-            removeEventListener: {
-                enumerable: true,
-                value: function (ev, cb, fl) {
-                    // TODO: Implement
-                },
-                writable: true
-            },
-            send: {
-                enumerable: true,
-                value: function (data) {
-                    'native';
-                    var wrapped = map.get(this);
-                    if (wrapped instanceof Wrapped) {
-                        wrapped.send(data);
-                    }
-                },
-                writable: true
-            }
+        WebSocket = function WrappedWebSocket(url, protocols) {
+            // Throw correct exceptions if the constructor is used improperly.
+            if (!(this instanceof WrappedWebSocket)) return RealWebSocket();
+            if (arguments.length < 1) return new RealWebSocket();
+
+            var websocket = new RealWebSocket(url, protocols);
+
+            checkRequest(websocket.url, function(blocked) {
+                if (blocked)
+                    closeWebSocket(websocket);
+            });
+
+            return websocket;
+        }.bind();
+
+        Object.defineProperties(WebSocket, {
+            CONNECTING: {value: RealWebSocket.CONNECTING, enumerable: true},
+            OPEN: {value: RealWebSocket.OPEN, enumerable: true},
+            CLOSING: {value: RealWebSocket.CLOSING, enumerable: true},
+            CLOSED: {value: RealWebSocket.CLOSED, enumerable: true},
+            prototype: {value: RealWebSocket.prototype}
         });
 
-        WebSocket.CONNECTING = 0;
-        WebSocket.OPEN = 1;
-        WebSocket.CLOSING = 2;
-        WebSocket.CLOSED = 3;
-        window.WebSocket = WebSocket;
-        
-        var me = document.currentScript;
-        if ( me && me.parentNode !== null ) {
-            me.parentNode.removeChild(me);
-        }
-    })(messageChannel);
+        RealWebSocket.prototype.constructor = WebSocket;
+    })(messageChannel)
 };
 
 /**
