@@ -117,7 +117,7 @@ function onHeadersReceived(requestDetails) {
         var websocketCheckUrl = "ws://adguardwebsocket.check/";
         var rule = webRequestService.getRuleForRequest(tab, websocketCheckUrl, referrerUrl, RequestTypes.OTHER);
         if (webRequestService.isRequestBlockedByRule(rule)) {
-            if (CspUtils.writeCspHeader(responseHeaders, true)) {
+            if (CspUtils.blockWebSockets(responseHeaders)) {
                 return { responseHeaders: responseHeaders };
             }
         }
