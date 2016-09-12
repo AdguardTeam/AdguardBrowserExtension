@@ -95,6 +95,9 @@ var overrideWebSocket = function () { // jshint ignore:line
 
     /**
      * WebSocket wrapper implementation.
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/349
+     *
+     * Based on:
      * https://github.com/adblockplus/adblockpluschrome/commit/457a336ee55a433217c3ffe5d363e5c6980f26f4
      */
     (function(channel) {
