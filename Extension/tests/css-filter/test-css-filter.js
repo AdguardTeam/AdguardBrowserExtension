@@ -150,9 +150,6 @@ QUnit.test("Css GenericHide Exception Rules in Firefox Global Stylesheet", funct
     var genericOne = new CssFilterRule("##.generic-one");
     var genericTwo = new CssFilterRule("~google.com,~yahoo.com###generic");
     var nonGeneric = new CssFilterRule("adguard.com##.non-generic");
-    var exceptionRule = new CssFilterRule("adguard.com#@#.generic-one");
-    var genericHideRule = new CssFilterRule("@@||adguard.com^$generichide");
-    var elemHideRule = new CssFilterRule("@@||adguard.com^$elemhide");
 
     var filter = new CssFilter([genericOne]);
 
@@ -183,10 +180,6 @@ QUnit.test("Css GenericHide Exception Rules in Firefox Global Stylesheet", funct
     assert.equal(css[4], '@-moz-document domain("adguard.com"){');
     assert.ok(css.indexOf('.non-generic{-moz-binding: url("about:adg-intercept?undefined#dummy") !important;}') > 0);
     assert.equal(css[6], '}');
-
-    filter.addRule(exceptionRule);
-    css = filter.buildCssForStyleSheet();
-    console.log(css);
 });
 
 QUnit.test("Ublock Css Injection Syntax Support", function (assert) {
