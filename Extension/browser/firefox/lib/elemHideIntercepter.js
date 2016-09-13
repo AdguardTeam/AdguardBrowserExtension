@@ -53,7 +53,7 @@ var InterceptHandler = exports.InterceptHandler =
 		this.antiBannerService = antiBannerService;
 
 		var registrar = components.manager.QueryInterface(Ci.nsIComponentRegistrar);
-		registrar.registerFactory(this.classID, this.classDescription, "@mozilla.org/network/protocol/https;1?what=" + this.aboutPrefix, this);
+		registrar.registerFactory(this.classID, this.classDescription, "@mozilla.org/network/protocol/about;1?what=" + this.aboutPrefix, this);
 
 		unload.when(function () {
 			var registrar = components.manager.QueryInterface(Ci.nsIComponentRegistrar);
