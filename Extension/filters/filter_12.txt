@@ -1,10 +1,10 @@
 ! Title: Safari filter
-! Version: 1.0.1.20
+! Version: 1.0.1.26
 ! Name: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! NameEn: Safari filter
 ! DescriptionEn: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
-! TimeUpdated: 2016-08-19T14:01:53.842+03:00
+! TimeUpdated: 2016-09-11T16:01:48.061+03:00
 ! Title: Adguard Safari Filter
 !
 ! Special filter for Safari. We need a separate filter for Safari because it does not fully support rules syntax.
@@ -32,6 +32,10 @@
 !
 ! These rules are against anti-adblock scripts
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/2962
+@@||mackungfu.org^$generichide
+! https://github.com/AdguardTeam/AdguardFilters/issues/2883
+@@||animetake.tv^$elemhide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2834
 @@||uploaded.net^$generichide
 ! https://forum.adguard.com/index.php?threads/12790/
@@ -122,6 +126,12 @@ ad4msan.com#@##adsense
 @@||securepubads.g.doubleclick.net^$domain=forbes.com
 @@||forbesbidder.servedbyopenx.com^$domain=forbes.com
 !---------------------------------------------------------------------------!
+!-------------- Extended CSS rules -----------------------------------------!
+!---------------------------------------------------------------------------!
+!
+! Extended CSS rules
+!
+!---------------------------------------------------------------------------!
 !-------------- Rules for specific websites --------------------------------!
 !---------------------------------------------------------------------------!
 !
@@ -184,7 +194,9 @@ telegraaf.nl##.section-ad
 ! Section contains rules for specific websites
 !
 ! TEMPORARY: free-torrents.org - until web-sockets are not blocked by content-blocker
-onlyf.ws,free-torrent.org,free-torrents.org##body > :not(div)
+free-torrent.org,free-torrents.org,onlyf.ws##body > :not(div)
+! https://forum.adguard.com/index.php?threads/13017/
+torrentdownloads.me##a[href^="http://www.friendlyquacks.com/"]
 ! https://github.com/AdguardTeam/AdguardForiOS/issues/128
 @@/:\/\/.*[.]wp[.]pl\/[a-z0-9_]+[.][a-z]+[/:&?]?/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2766
@@ -257,6 +269,14 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 !
 ! White list. Fixing content blocking API issues.
 !
+! https://forum.adguard.com/index.php?threads/13434/
+@@||top-shop.ru^$domain=top-shop.ru
+! https://github.com/AdguardTeam/AdguardFilters/issues/2889
+@@||feedburner.com/~r/
+! https://github.com/AdguardTeam/AdguardFilters/issues/2887
+@@||static-*.xvideos.com/*/js/
+! https://github.com/AdguardTeam/AdguardFilters/issues/2876
+@@||society6.com^$domain=society6.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2811
 @@||cdnssl.mediafire.com/js/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2112
@@ -299,8 +319,6 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 @@||buffer.com^$elemhide
 ! fedex.com - fixing tracking (caused by EasyPrivacy)
 @@||fedex.com/Tracking?
-! nfl.com - video is broken
-@@||imasdk.googleapis.com/js/core/bridge*.html
 ! citilink.ru - unblock self-promo
 @@||banners.*.citilink.ru/banner_promo_$domain=citilink.ru
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1085
@@ -321,12 +339,11 @@ cari.com.my###cvidloader
 ! espn - fixing video
 @@||adm.fwmrm.net/p/release/latest-JS/adm/prd/AdManager.js$domain=espn.go.com
 @@||v.fwmrm.net/ad/*?prof=$domain=espn.go.com
-@@||go.com/b/ss/wdgespcom,wdgespvideo,wdgespge/$domain=espn.go.com
+@@||go.com/b/ss/$domain=espn.go.com
 @@||once.unicornmedia.com/now/*/content.once?$domain=espn.go.com
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1071
 ! nfl.com - fixing video
 @@||googletagservices.com/tag/js/gpt.js$domain=nfl.com
-@@||imasdk.googleapis.com/js/core/bridge*.html$domain=nfl.com
 ! https://github.com/AdguardTeam/AdguardBrowserExtension/issues/182
 ! fixing acceptable ads on Google search
 @@||googleadservices.com/pagead/aclk?
@@ -363,3 +380,29 @@ youtube.com#%#(function () {try {var youtubeAdRegExp = /^((.*_)?(ad|ads|afv|adse
 ! We should re-evaluate this rules after next Safari release, I suspect it is Safari's bug
 @@||ad.doubleclick.net/*/pfadx/$domain=m.youtube.com
 ! End: fixing Youtube video player delays.
+!---------------------------------------------------------------------------!
+!--------------------------- List-KR unbreak -------------------------------!
+!------ Filter that fixes filtration errors in an alternative way due ------!
+!------ to limitations of adblockers other than Adguard --------------------!
+!------ or those using Webkit content blocker API. -------------------------!
+!---------------------------------------------------------------------------!
+! Title: List-KR unbreak
+!
+! Filter that fixes filtration errors in an alternative way
+! due to limitations of adblockers other than Adguard
+! or those using Webkit content blocker API.
+!
+! Homepage: https://List-KR.github.io
+! License: https://creativecommons.org/licenses/by-sa/4.0/deed.hi
+!
+! ---------------------------------------------------------------
+! Url exception rules
+@@||adverweb.cjenm.com/vod.mezzo/$domain=m.tving.com
+@@||com/js/ads.js^$domain=anigod.com|gryfindor.com|netmics.com
+@@||tvcast.naver.com/resources/*/clickcr_*.js^
+@@||wcs.naver.net/wcslog.js^
+@@||web.n2s.co.kr/js/_n2s_ygosu_$domain=ygosu.com
+! Element hiding exception rules
+@@||anigod.com^$generichide
+@@||gryfindor.com^$generichide
+@@||netmics.com^$generichide
