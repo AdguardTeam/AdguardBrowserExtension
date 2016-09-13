@@ -105,15 +105,14 @@ WebRequestService.prototype.shouldLoadAllSelectors = function (collapseAllElemen
     return !safariContentBlockerEnabled;
 };
 
-WebRequestService.prototype.checkWebSocketRequest = function (tab, requestUrl, referrerUrl, filteringLogUrl) {
+WebRequestService.prototype.checkWebSocketRequest = function (tab, requestUrl, referrerUrl) {
 
     if (!tab) {
         return false;
     }
 
     var requestRule = this.getRuleForRequest(tab, requestUrl, referrerUrl, RequestTypes.OTHER);
-    var logUrl = filteringLogUrl ? filteringLogUrl : requestUrl;
-    this.filteringLog.addEvent(tab, logUrl, referrerUrl, RequestTypes.OTHER, requestRule);
+    this.filteringLog.addEvent(tab, requestUrl, referrerUrl, RequestTypes.OTHER, requestRule);
 
     return this.isRequestBlockedByRule(requestRule);
 };

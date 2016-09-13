@@ -115,7 +115,7 @@ function onHeadersReceived(requestDetails) {
          EasyList already contains some rules for WS connections with $other modifier
          */
         var websocketCheckUrl = "ws://adguardwebsocket.check/";
-        if (webRequestService.checkWebSocketRequest(tab, websocketCheckUrl, referrerUrl, requestUrl)) {
+        if (webRequestService.checkWebSocketRequest(tab, websocketCheckUrl, referrerUrl)) {
             if (CspUtils.blockWebSockets(responseHeaders)) {
                 return { responseHeaders: responseHeaders };
             }
