@@ -140,7 +140,8 @@ HidingChannel.prototype = {
     },
 
 	/**
-	 * Handles
+	 * Important note:
+	 * If 'Send Filters Statistics' is enabled, here and only here exception rules are applied.
 	 *
 	 * @returns {*|{}}
 	 */
