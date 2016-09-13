@@ -139,18 +139,39 @@ HidingChannel.prototype = {
         this.asyncOpen(listener, null);
     },
 
+	/**
+	 * Important note:
+	 * If 'Send Filters Statistics' is enabled, here and only here exception rules are applied.
+	 *
+	 * @returns {*|{}}
+	 */
 	open: function () {
+		var data = this.notHideData;
 		try {
 			var tabId = WebRequestHelper.getTabIdForChannel(this);
 			var tab = {id: tabId};
 
-			if (tabId
-				&& !this._isTabWhiteListed(tab)
-				&& !this._isElemHideWhiteListed(tab)) {
+			if (!tabId
+				|| this._isTabWhiteListed(tab)
+				|| this._isElemHideWhiteListed(tab)) {
+				// Return dummy binding if there is an exception rule for this URL
+				data = this.notHideData;
+			} else {
+				// Return empty binding.
+				// The element will be collapsed because of empty binding (it does not contain dummy element which is requested by the URL)
+				data = this.hideData;
 
 				var rule = this._getRuleByText(this.URI.path);
 				if (rule) {
 					var domain = this.framesMap.getFrameDomain(tab);
+					if (!rule.isPermitted(domain)) {
+						data = this.notHideData;
+					}
+
+					// Rules without domain should be ignored if there is a $generichide rule applied
+					if (this._isGenericHideWhiteListed(tab) && rule.isGeneric()) {
+						data = this.notHideData;
+					}
 
 					// Track filter rule usage if user has enabled "collect ad filters usage stats"
 					if (filterRulesHitCount.collectStatsEnabled) {
@@ -161,7 +182,10 @@ HidingChannel.prototype = {
 				}
 			}
 		} finally {
-			throw Cr.NS_ERROR_NOT_IMPLEMENTED;
+			// Write response data to the stream
+			var stream = Cc["@mozilla.org/io/string-input-stream;1"].createInstance(Ci.nsIStringInputStream);
+			stream.setData(data, data.length);
+			return stream;
 		}
 	},
 
@@ -209,4 +233,4 @@ HidingChannel.prototype = {
 	},
 
 	QueryInterface: XPCOMUtils.generateQI([Ci.nsIChannel, Ci.nsIRequest])
-}
+};

@@ -407,6 +407,9 @@ CssFilter.prototype = {
 	 * Firefox only.
 	 *
 	 * Builds CSS stylesheet to be registered browser-wide.
+	 * Browser-wide stylesheet contains all element-hiding rules except "extended CSS" rules.
+	 *
+	 * NOTE: elemHideIntercepter.js decides what to do with the element matching selectors from this stylesheet. For instance, elemHideIntercepter checks rule domain permissions.
 	 *
 	 * @returns Stylesheet content
 	 * @private
@@ -483,6 +486,7 @@ CssFilter.prototype = {
 			exceptionRules = exceptionRulesMap[rule.cssSelector];
 			if (exceptionRules) {
 				for (j = 0; j < exceptionRules.length; j++) {
+
 					this._applyExceptionRule(rule, exceptionRules[j]);
 				}
 			}
