@@ -407,6 +407,8 @@ CssFilter.prototype = {
 	 * Firefox only.
 	 *
 	 * Builds CSS stylesheet to be registered browser-wide.
+	 * This stylesheet contains all rules, but ignoring exceptions. Exception rules gonna be applied
+	 * in elemHideIntercepter.js intercepting current request from -moz-binding through HidingChannel.
 	 *
 	 * @returns Stylesheet content
 	 * @private

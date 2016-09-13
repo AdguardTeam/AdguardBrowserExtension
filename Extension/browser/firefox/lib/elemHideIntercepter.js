@@ -209,4 +209,4 @@ HidingChannel.prototype = {
 	},
 
 	QueryInterface: XPCOMUtils.generateQI([Ci.nsIChannel, Ci.nsIRequest])
-}
+};
