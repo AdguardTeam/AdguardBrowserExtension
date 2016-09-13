@@ -439,6 +439,7 @@ CssFilter.prototype = {
 		var domainsAndRules = Object.create(null);
 		groupingDomainsAndSelectors(commonRules, domainsAndRules);
 		groupingDomainsAndSelectors(domainSensitiveRules, domainsAndRules);
+		console.log(domainsAndRules);
 
 		function escapeChar(match) {
 			return "\\" + match.charCodeAt(0).toString(16) + " ";
@@ -483,6 +484,7 @@ CssFilter.prototype = {
 			exceptionRules = exceptionRulesMap[rule.cssSelector];
 			if (exceptionRules) {
 				for (j = 0; j < exceptionRules.length; j++) {
+
 					this._applyExceptionRule(rule, exceptionRules[j]);
 				}
 			}
@@ -505,6 +507,8 @@ CssFilter.prototype = {
 			exceptionRules = exceptionRulesMap[rule.cssSelector];
 			if (exceptionRules) {
 				for (j = 0; j < exceptionRules.length; j++) {
+					console.log('Applying exception from common rules');
+					console.log(exceptionRules[j]);
 					this._applyExceptionRule(rule, exceptionRules[j]);
 				}
 				if (rule.isDomainSensitive()) {
