@@ -1,10 +1,9 @@
 ! Title: Russian filter
-! Version: 1.0.39.18
+! Version: 1.0.39.20
 ! Name: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
-! NameEn: Russian filter
 ! DescriptionEn: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-09-13T16:00:17.483+03:00
+! TimeUpdated: 2016-09-13T19:00:28.616+03:00
 ! Title: Adguard Russian Filter
 !
 ! Filter that enables removing of the ads from websites with Russian content.
@@ -36,6 +35,7 @@
 !
 ! Содержит доменные имена, использующиеся рекламными сетями.
 !
+||pelicanprogram.com^$third-party
 ||smonstr.ru^$third-party
 ||azmdy.com^$third-party
 ||daopz.top^$third-party
@@ -3617,6 +3617,9 @@ lifenews78.ru,life.ru,звонки.онлайн,bitru.org,hdrezka.tv,stopgame.ru
 @@||ad.admitad.com/3rd-party/advert.js
 @@||ad.admitad.com/3rd-party/*/cookie/?f=CookieChecker.remoteTest
 !
+! https://forum.adguard.com/index.php?threads/13733/
+mediapure.ru##.showSweetAlert
+||mediapure.ru/wp-content/plugins/simple-adblock-notice/
 ! https://forum.adguard.com/index.php?threads/13207/
 @@||cdnapponline.com/*/iframe$elemhide
 ! https://forum.adguard.com/index.php?threads/13617/
@@ -3630,11 +3633,7 @@ qq-new.ru##.xenOverlay
 @@||mail.yandex.kz^$genericblock
 @@||mail.yandex.by^$genericblock
 ! https://forum.adguard.com/index.php?threads/13352/
-happy-hack.ru#$##blockblockP8 {visibility:invisible!important;display:none!important;}
-happy-hack.ru#$##blockblockP8 td {visibility:invisible!important;display:none!important;}
-happy-hack.ru#$##blockblockP8 td p {visibility:invisible!important;display:none!important;}
-happy-hack.ru#$##blockblockL9 {visibility:visible!important;display:block!important;}
-@@/clickunder.js$domain=happy-hack.ru
+@@/1/*.js$domain=happy-hack.ru
 ! https://forum.adguard.com/index.php?threads/12959/
 @@||220vk.com/files/advert.js
 ! https://forum.adguard.com/index.php?threads/10398/
@@ -4987,6 +4986,8 @@ cdn2hd.xyz#%#Object.defineProperty(window, 'iframe_adv_enabled', { get: function
 !-----------------------
 !------- CSS -----------
 !-----------------------
+! radikal.ru - удаление отступа сверху
+radikal.ru#$#.render_body_main { padding-top: 10px!important; }
 ! komandirovka.ru - удаление отступа сверху
 komandirovka.ru#$#.header_wrap { top: 0px!important; }
 ! budport.com.ua - удаление брендированного фона
@@ -7064,7 +7065,7 @@ ucoz.ru/informer/
 radikal.ru##.render_body_main > :not(div):first-child
 filmix.net#$#div[id^="MarketGidComposite"] { position: absolute!important; left: -2000px!important; }
 tfilm.club,nnm-club.me,nnmclub.to##body > :not(div):first-child
-hdrezka.me##body > div[class][style*="data:image/jpeg;base64"] { position: absolute!important; left: -2000px!important; }
+hdrezka.me##body > div[id][class][style*="data:image/jpeg;base64"] { visibility: hidden!important; }
 24video.xxx##body > div[class][style^="background-image: url(data:image/jpeg;base64"]
 tapochek.net#$##page_header > table > tbody > tr > td[align="center"][width="100%"] > div[onmouseup] { left: -2000px!important; }
 !----------------

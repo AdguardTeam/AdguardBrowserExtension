@@ -1,10 +1,9 @@
 ! Title: English filter
-! Version: 1.0.94.26
+! Version: 1.0.94.33
 ! Name: English filter
 ! Description: EasyList + Adguard English filter. Filter list that specifically removes adverts on English language websites.
-! NameEn: English filter
 ! DescriptionEn: EasyList + Adguard English filter. Filter list that specifically removes adverts on English language websites.
-! TimeUpdated: 2016-09-13T16:00:31.998+03:00
+! TimeUpdated: 2016-09-14T00:00:42.648+03:00
 ! Title: Adguard English Filter.
 !
 ! Filter that enables removing of the ads from websites with English content.
@@ -38,7 +37,6 @@
 ! Section contains list of advertising networks
 !
 ||ylx-4.com^$third-party
-||ieh1ook.bid^$third-party
 ||prxii.tk^$third-party
 ||ws-gateway.com^
 ||sourcengo.com^$third-party
@@ -445,6 +443,8 @@ hulkpop.com,mackungfu.org#%#(function() { var _setTimeout = window.setTimeout, r
 blockadblock.com#%#(function() { var sto = window.setTimeout, re = /\.bab_elementid.$/; window.setTimeout = function(a, b) { if ( typeof a !== 'string' || !re.test(a) ) { return sto(a, b); } }.bind(window); var realEval = window.eval; window.eval = function(a) { if ( a.toString().search(/blockadblock|babasbmsgx|getItem\('babn'\)/) === -1 ) { realEval(a); return; } var el = document.body; if ( el ) { el.style.removeProperty('visibility'); } el = document.getElementById('babasbmsgx'); if ( el ) { el.style.setProperty('visibility', 'collapse'); } }.bind(window); })();
 blockadblock.com###babasbmsgx
 !
+! https://forum.adguard.com/index.php?threads/13754/
+@@||multiup.org/pop.js
 ! https://forum.adguard.com/index.php?threads/8255/
 @@||78cc571ae97.net/popunder2.js
 @@||78cc571ae97.net/googlead.js
@@ -580,9 +580,10 @@ debridnet.com#$#.myTestAd2 { height: 130px!important; position: absolute!importa
 ! https://forum.adguard.com/index.php?threads/11799/
 premium-place.com##div[class*="ui-widget"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2414
+@@||static.adf.ly/static/image/$domain=adf.ly
+@@||adf.ly/1market.php$domain=adf.ly
 adf.ly#@##bottom
 adf.ly#@#iframe
-@@||adf.ly^$content
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2638
 @@||hindustantimes.com/res/js/*ads*
 ! https://forum.adguard.com/index.php?threads/11780/
@@ -2074,8 +2075,13 @@ nhaccuatui.com##div[class^="adv_"]
 !-------------------
 ! adf.ly && lienscash.com && adfoc.us && bc.vc && sh.st bypasser [Userscript]
 ! https://greasyfork.org/ru/scripts/2669-adf-ly-lienscash-com-adfoc-us-bc-vc-sh-st-bypasser
-q.gs,j.gs,adf.ly,sh.st#%#!function(){var loc=document.location.href,interval,secinterval,bypassers={adfly:function(){var e=/var zzz = ['"]([^'"]+)['"]/,t=/\/locked(?:\/|\?url=)([a-zA-Z0-9\-_]+)/,r=/\d+\/(http.+?)$/i,n=/\d+\/([a-zA-Z\-]+\.[a-zA-Z\-]+.*)/i,a=/blocked\.php(?:\?t=1)?$/;if(loc.match(t)){clearInterval(interval);var o=t.exec(loc)[1];document.title="** Waiting .. **",secinterval=setInterval(function(){"none"!=document.getElementById("continue").style.display&&bypassers.doRedirect("http://adf.ly/"+o)},1e3)}else if(loc.match(r))clearInterval(interval),bypassers.doRedirect(r.exec(loc)[1]);else if(loc.match(n))clearInterval(interval),bypassers.doRedirect("http://"+n.exec(loc)[1]);else if(document.head.innerHTML.match(e))document.title="** adfly bypasser: Bypassing the link... **",clearInterval(interval),bypassers._inject(function(){var e={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",encode:function(t){var r,n,a,o,i,c,s,d="",l=0;for(t=e._utf8_encode(t);l<t.length;)r=t.charCodeAt(l++),n=t.charCodeAt(l++),a=t.charCodeAt(l++),o=r>>2,i=(3&r)<<4|n>>4,c=(15&n)<<2|a>>6,s=63&a,isNaN(n)?c=s=64:isNaN(a)&&(s=64),d=d+this._keyStr.charAt(o)+this._keyStr.charAt(i)+this._keyStr.charAt(c)+this._keyStr.charAt(s);return d},decode:function(t){var r,n,a,o,i,c,s,d="",l=0;for(t=t.replace(/[^A-Za-z0-9\+\/\=]/g,"");l<t.length;)o=this._keyStr.indexOf(t.charAt(l++)),i=this._keyStr.indexOf(t.charAt(l++)),c=this._keyStr.indexOf(t.charAt(l++)),s=this._keyStr.indexOf(t.charAt(l++)),r=o<<2|i>>4,n=(15&i)<<4|c>>2,a=(3&c)<<6|s,d+=String.fromCharCode(r),64!=c&&(d+=String.fromCharCode(n)),64!=s&&(d+=String.fromCharCode(a));return d=e._utf8_decode(d)},_utf8_encode:function(e){e=e.replace(/\r\n/g,"\n");for(var t="",r=0;r<e.length;r++){var n=e.charCodeAt(r);128>n?t+=String.fromCharCode(n):n>127&&2048>n?(t+=String.fromCharCode(n>>6|192),t+=String.fromCharCode(63&n|128)):(t+=String.fromCharCode(n>>12|224),t+=String.fromCharCode(n>>6&63|128),t+=String.fromCharCode(63&n|128))}return t},_utf8_decode:function(e){for(var t="",r=0,n=c1=c2=0;r<e.length;)n=e.charCodeAt(r),128>n?(t+=String.fromCharCode(n),r++):n>191&&224>n?(c2=e.charCodeAt(r+1),t+=String.fromCharCode((31&n)<<6|63&c2),r+=2):(c2=e.charCodeAt(r+1),c3=e.charCodeAt(r+2),t+=String.fromCharCode((15&n)<<12|(63&c2)<<6|63&c3),r+=3);return t}};window.onbeforeunload=null;var t=ysmm,r=t.indexOf("?"),n=t.indexOf("!HiTommy");if(-1!=n&&(t=t.substr(0,n)),-1!=r&&(t=t.substr(0,r)),"true"==easyUrl)document.head.innerHTML="<title>** Redirect in progress</title>",document.body.innerHTML="Ignorando este link (redirecionando para "+t+"), aguarde...",window.location=t;else{for(var a="",o="",i=0;i<t.length;i++)i%2==0?a+=t.charAt(i):o=t.charAt(i)+o;var c=a+o;c=e.decode(c),c=c.substring(c.length-(c.length-2)),document.head.innerHTML="<title>** Redirect in progress</title>",document.body.innerHTML="Ignorando este link (redirecionando para "+c+"), aguarde...",window.location=c}});else if(loc.match(a)){clearInterval(interval);var i="** ERROR: adf.ly detected our bypassing attempt.\n";i+="Please report the problem on the following url: http://userscripts.org/scripts/discuss/122331 and INCLUDE the adfly link.\n",i+="Thanks, Robertof (the script author - and note that I'm NOT an Arabian guy or something)",alert(i)}else clearInterval(interval),alert("Something went wrong! Please report the problem on the following url: http://userscripts.org/scripts/discuss/122331 and INCLUDE the adfly link!")},lienscash:function(){var e=/<a href="([^"]+)">skip/;document.body.innerHTML.match(e)&&(clearInterval(interval),bypassers.doRedirect(e.exec(document.body.innerHTML)[1]))},adfocus:function(){var e=/var click_url = ["']([^"']+)["']/;document.body.innerHTML.match(e)&&bypassers.doRedirect(e.exec(document.body.innerHTML.replace(/\/\/var\sclick_url\s=.+/,""))[1])},shst:function(){var e=/<a class="skip-btn" href="([^"]+)" id="skip_button">/;document.body.innerHTML.match(e)&&(clearInterval(interval),bypassers.doRedirect(e.exec(document.body.innerHTML)[1]))},bcvc:function(){bypassers._inject(function(){var ajaxrx=/\{(opt:'make.+)/;if(document.body.innerHTML.match(ajaxrx)){var p=ajaxrx.exec(document.body.innerHTML)[1];p=p.substr(0,p.length-1);var _a=eval("({"+p+")");document.head.innerHTML="<title>** Bypassing, please wait..</title>",document.body.innerHTML="Eu vou ignorar este site ruim, por favor, aguarde alguns segundos...<br /><strong style='font-size:18px;' id='sReplace'>0</strong>";var gayCallback=function(myself,retShit,count){document.getElementById("sReplace").innerHTML="Try #"+count+": "+(1==count?"a few more..":2==count?"just a few tries left..":3==count?"so close..":4==count?"almost done..":5==count?"GOTCHA! (probably)":count>5?"wait, what?":"a moment.."),$.post("http://bc.vc/fly/ajax.fly2.php",retShit,function(res){var jsono=eval("("+res+")");return jsono.message?(document.head.innerHTML="<title>** Redirect in progress **</title>",document.body.innerHTML="Ignorando este link (redirecionando para "+jsono.message.url+"), aguarde...",void(window.location=jsono.message.url)):void setTimeout(function(){myself(myself,retShit,++count)},1e3)})};gayCallback(gayCallback,_a,0)}})},doRedirect:function(e){document.head.innerHTML="<title>** Redirect in progress **</title>",document.body.innerHTML="Ignorando este link (redirecionando para "+e+"), agurade...",window.location=e},_inject:function(e){var t=document.createElement("script");t.appendChild(document.createTextNode("("+e+")();")),(document.body||document.head||document.documentElement).appendChild(t)}};-1!==loc.indexOf("adf.ly")||-1!==loc.indexOf("q.gs")||-1!==loc.indexOf("9.bb")||-1!==loc.indexOf("u.bb")||-1!==loc.indexOf("j.gs")?interval=setInterval(bypassers.adfly,1e3):-1!==loc.indexOf("lienscash.com")?interval=setInterval(bypassers.lienscash,1e3):-1!==loc.indexOf("bc.vc")?bypassers.bcvc():-1!==loc.indexOf("sh.st")?bypassers.shst():bypassers.adfocus()}();
+q.gs,j.gs,adf.ly,sh.st#%#!function() { var loc = document.location.href, interval, secinterval, bypassers = {adfly: function() {var e = /var zzz = ['"]([^'"]+)['"]/,t = /\/locked(?:\/|\?url=)([a-zA-Z0-9\-_]+)/,r = /\d+\/(http.+?)$/i,n = /\d+\/([a-zA-Z\-]+\.[a-zA-Z\-]+.*)/i,a = /blocked\.php(?:\?t=1)?$/;if (loc.match(t)) {clearInterval(interval);var o = t.exec(loc)[1];document.title = "** Waiting .. **", secinterval = setInterval(function() {"none" != document.getElementById("continue").style.display && bypassers.doRedirect("http://adf.ly/" + o)}, 1e3)} else if (loc.match(r)) clearInterval(interval), bypassers.doRedirect(r.exec(loc)[1]);else if (loc.match(n)) clearInterval(interval), bypassers.doRedirect("http://" + n.exec(loc)[1]);else if (document.head.innerHTML.match(e)) document.title = "** adfly bypasser: Bypassing the link... **", clearInterval(interval), bypassers._inject(function() {var e = {_keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",encode: function(t) {var r, n, a, o, i, c, s, d = "",l = 0;for (t = e._utf8_encode(t); l < t.length;) r = t.charCodeAt(l++), n = t.charCodeAt(l++), a = t.charCodeAt(l++), o = r >> 2, i = (3 & r) << 4 | n >> 4, c = (15 & n) << 2 | a >> 6, s = 63 & a, isNaN(n) ? c = s = 64 : isNaN(a) && (s = 64), d = d + this._keyStr.charAt(o) + this._keyStr.charAt(i) + this._keyStr.charAt(c) + this._keyStr.charAt(s);return d},decode: function(t) {var r, n, a, o, i, c, s, d = "",l = 0;for (t = t.replace(/[^A-Za-z0-9\+\/\=]/g, ""); l < t.length;) o = this._keyStr.indexOf(t.charAt(l++)), i = this._keyStr.indexOf(t.charAt(l++)), c = this._keyStr.indexOf(t.charAt(l++)), s = this._keyStr.indexOf(t.charAt(l++)), r = o << 2 | i >> 4, n = (15 & i) << 4 | c >> 2, a = (3 & c) << 6 | s, d += String.fromCharCode(r), 64 != c && (d += String.fromCharCode(n)), 64 != s && (d += String.fromCharCode(a));return d = e._utf8_decode(d)},_utf8_encode: function(e) {e = e.replace(/\r\n/g, "\n");for (var t = "", r = 0; r < e.length; r++) {var n = e.charCodeAt(r);128 > n ? t += String.fromCharCode(n) : n > 127 && 2048 > n ? (t += String.fromCharCode(n >> 6 | 192), t += String.fromCharCode(63 & n | 128)) : (t += String.fromCharCode(n >> 12 | 224), t += String.fromCharCode(n >> 6 & 63 | 128), t += String.fromCharCode(63 & n | 128))}return t},_utf8_decode: function(e) {for (var t = "", r = 0, n = c1 = c2 = 0; r < e.length;) n = e.charCodeAt(r), 128 > n ? (t += String.fromCharCode(n), r++) : n > 191 && 224 > n ? (c2 = e.charCodeAt(r + 1), t += String.fromCharCode((31 & n) << 6 | 63 & c2), r += 2) : (c2 = e.charCodeAt(r + 1), c3 = e.charCodeAt(r + 2), t += String.fromCharCode((15 & n) << 12 | (63 & c2) << 6 | 63 & c3), r += 3);return t}};window.onbeforeunload = null;var t = ysmm,r = t.indexOf("?"),n = t.indexOf("!HiTommy");if (-1 != n && (t = t.substr(0, n)), -1 != r && (t = t.substr(0, r)), "true" == easyUrl) document.head.innerHTML = "<title>** Redirect in progress</title>", document.body.innerHTML = "Ignorando este link (redirecionando para " + t + "), aguarde...", window.location = t;else {for (var a = "", o = "", i = 0; i < t.length; i++) i % 2 == 0 ? a += t.charAt(i) : o = t.charAt(i) + o;var c = a + o;c = e.decode(c), c = c.substring(c.length - (c.length - 2)), document.head.innerHTML = "<title>** Redirect in progress</title>", document.body.innerHTML = "Ignorando este link (redirecionando para " + c + "), aguarde...", window.location = c}});else if (loc.match(a)) {clearInterval(interval);var i = "** ERROR: adf.ly detected our bypassing attempt.\n";i += "Please report the problem on the following url: http://userscripts.org/scripts/discuss/122331 and INCLUDE the adfly link.\n", i += "Thanks, Robertof (the script author - and note that I'm NOT an Arabian guy or something)", alert(i)} else clearInterval(interval)},lienscash: function() {var e = /<a href="([^"]+)">skip/;document.body.innerHTML.match(e) && (clearInterval(interval), bypassers.doRedirect(e.exec(document.body.innerHTML)[1]))},adfocus: function() {var e = /var click_url = ["']([^"']+)["']/;document.body.innerHTML.match(e) && bypassers.doRedirect(e.exec(document.body.innerHTML.replace(/\/\/var\sclick_url\s=.+/, ""))[1])},shst: function() {var e = /<a class="skip-btn" href="([^"]+)" id="skip_button">/;document.body.innerHTML.match(e) && (clearInterval(interval), bypassers.doRedirect(e.exec(document.body.innerHTML)[1]))},bcvc: function() {bypassers._inject(function() {var ajaxrx = /\{(opt:'make.+)/;if (document.body.innerHTML.match(ajaxrx)) {var p = ajaxrx.exec(document.body.innerHTML)[1];p = p.substr(0, p.length - 1);var _a = eval("({" + p + ")");document.head.innerHTML = "<title>** Bypassing, please wait..</title>", document.body.innerHTML = "Eu vou ignorar este site ruim, por favor, aguarde alguns segundos...<br /><strong style='font-size:18px;' id='sReplace'>0</strong>";var gayCallback = function(myself, retShit, count) {document.getElementById("sReplace").innerHTML = "Try #" + count + ": " + (1 == count ? "a few more.." : 2 == count ? "just a few tries left.." : 3 == count ? "so close.." : 4 == count ? "almost done.." : 5 == count ? "GOTCHA! (probably)" : count > 5 ? "wait, what?" : "a moment.."), $.post("http://bc.vc/fly/ajax.fly2.php", retShit, function(res) {var jsono = eval("(" + res + ")");return jsono.message ? (document.head.innerHTML = "<title>** Redirect in progress **</title>", document.body.innerHTML = "Ignorando este link (redirecionando para " + jsono.message.url + "), aguarde...", void(window.location = jsono.message.url)) : void setTimeout(function() {myself(myself, retShit, ++count)}, 1e3)})};gayCallback(gayCallback, _a, 0)}})},doRedirect: function(e) {document.head.innerHTML = "<title>** Redirect in progress **</title>", document.body.innerHTML = "Ignorando este link (redirecionando para " + e + "), agurade...", window.location = e},_inject: function(e) {var t = document.createElement("script");t.appendChild(document.createTextNode("(" + e + ")();")), (document.body || document.head || document.documentElement).appendChild(t)}}; - 1 !== loc.indexOf("adf.ly") || -1 !== loc.indexOf("q.gs") || -1 !== loc.indexOf("9.bb") || -1 !== loc.indexOf("u.bb") || -1 !== loc.indexOf("j.gs") ? interval = setInterval(bypassers.adfly, 1e3) : -1 !== loc.indexOf("lienscash.com") ? interval = setInterval(bypassers.lienscash, 1e3) : -1 !== loc.indexOf("bc.vc") ? bypassers.bcvc() : -1 !== loc.indexOf("sh.st") ? bypassers.shst() : bypassers.adfocus() }();
 !
+! https://forum.adguard.com/index.php?threads/13636/
+bigfile.to#%#window.btoa = function() {};
+bigfile.to#%#Object.defineProperty( window, 'popupDownloadBtn', { get: function() { return; } });
+! https://forum.adguard.com/index.php?threads/13055/
+jkmk.net#%#Object.defineProperty(window, 'PopAds', { get: function() { return {}; } });
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2927
 linkshrink.net#%#Object.defineProperties(window, { "_impspcabe_alpha": { value: false, writable: false }, "_impspcabe_beta": { value: false, writable: false } });
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2952
@@ -2249,7 +2255,7 @@ armorgames.com,onrpg.com,mmohuts.com,newgrounds.com#%#Object.defineProperty(wind
 spectrum.ieee.org#%#Object.defineProperty(window, 'splashpage', { get: function() { return {}; } });
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1570
 ! turbobit.net - block clickunder
-turbobit.net#%#document.cookie = "bjsp_first = 1";
+turbobit.net#%#Object.defineProperty(window, 'BetterJsPop', { get: function() { return {}; } });
 turbobit.net#%#function setCookie(c_name,exdays) { var exdate=new Date(); exdate.setDate(exdate.getDate() + exdays); var c_value=escape(exdate) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString()); document.cookie = c_name+"="+c_value+"; path=/"; };
 turbobit.net#%#AG_onLoad(function() { setCookie('turbobit1', 86400000); });
 turbobit.net#%#AG_onLoad(function() { setCookie('turbobit2', 86400000); });
@@ -2421,6 +2427,8 @@ neowin.net#$#div[class^="banner-"] { height: 0px!important; min-height:0px!impor
 !-------------------
 !-------HTML--------
 !-------------------
+! https://forum.adguard.com/index.php?threads/13636/
+! https://forum.adguard.com/index.php?threads/13055/
 ! https://forum.adguard.com/index.php?threads/11841/
 ! http://forum.adguard.com/showthread.php?9459
 ! chia-anime.tv - ad in embedded(no Adguard injections)
@@ -2495,7 +2503,6 @@ html.net##div[data-type="ad"]
 ||isohunt.to/files/ih.js
 allmyvideos.net###OnPlayerClose
 lazarangelov.academy###inside-banner
-||image4.putlocker.is/show.js
 ||swefilm.tv/partner/
 swefilm.tv##body > a > div#takeover[style]
 ||player.kmpmedia.net/kmp_plus/platform/view/main
@@ -3525,6 +3532,9 @@ www.xvideos.com/|$~object-subrequest,xmlhttprequest
 ! White list. Fixing filtration errors (false-positive)
 !
 !############### TEMPORARY ###############
+! https://forum.adguard.com/index.php?threads/13525/
+! Reported: https://forums.lanik.us/viewtopic.php?f=64&t=32822
+@@||googletagservices.com/tag/js/gpt.js$domain=posta.com.tr
 ! https://forum.adguard.com/index.php?threads/13436/
 ! Reported: https://forums.lanik.us/viewtopic.php?f=62&t=27952&p=102277
 8muses.com#@#[style*="data:image/gif;base64"]
@@ -23596,6 +23606,9 @@ data:text/html;base64$popup
 ##.advertising_block
 ##.advertising_bottom_box
 ##.advertising_box_bg
+##.advertising_hibu_lef
+##.advertising_hibu_mid
+##.advertising_hibu_rig
 ##.advertising_images
 ##.advertising_widget
 ##.advertisingarea
@@ -29283,6 +29296,7 @@ data:text/html;base64$popup
 ##a[href^="http://z1.zedo.com/"]
 ##a[href^="http://zevera.com/afi.html"]
 ##a[href^="https://ad.doubleclick.net/"]
+##a[href^="https://adhealers.com/"]
 ##a[href^="https://affiliates.bet-at-home.com/processing/"]
 ##a[href^="https://atomidownload.com/"]
 ##a[href^="https://bs.serving-sys.com"]
@@ -32991,6 +33005,7 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad"]
 ||primaryads.com^$third-party
 ||pritesol.com^$third-party
 ||prizel.com^$third-party
+||prm-native.com^$third-party
 ||pro-advert.de^$third-party
 ||pro-advertising.com^$third-party
 ||pro-market.net^$third-party
@@ -35023,6 +35038,7 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad"]
 ||adultadvertising.net^$third-party
 ||adultcamchatfree.com^$third-party
 ||adultcamfree.com^$third-party
+||adultcamliveweb.com^$third-party
 ||adultcommercial.net^$third-party
 ||adultdatingtraffic.com^$third-party
 ||adultforce.com^$third-party
@@ -35787,6 +35803,7 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad"]
 ||xoliter.com^$third-party
 ||xpollo.com^$third-party
 ||xpop.co^$third-party
+||xsrs.com^$third-party
 ||xxltr.com^$third-party
 ||xxxadv.com^$third-party
 ||xxxallaccesspass.com^$third-party
@@ -35819,6 +35836,7 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad"]
 ||zog.link^$third-party
 ||reporo.net^$third-party
 ||00zasdf.pw$other
+||abbp1.space.^
 ||poolnoodle.tech.^
 ||33traffic.com^$popup
 ||3file.info^$popup,third-party
@@ -38408,6 +38426,7 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad"]
 /3market.php?$domain=adf.ly|j.gs|q.gs|u.bb
 /?placement=$script,domain=sockshare.com
 /af.php?$subdocument
+/apu.php$domain=kat.al
 /assets/_takeover/*$domain=deadspin.com|gawker.com|gizmodo.com|io9.com|jalopnik.com|jezebel.com|kotaku.com|lifehacker.com
 /asynch/null/*$script,third-party,domain=streamcloud.eu
 /btcclicksskyscraper.png$domain=best-bitcoin-faucet.eu|best-free-faucet.eu|bitcoin-best-faucet.eu|bitcoin-cloud.eu|bitcoin-faucet.eu|bitcoin-free-faucet.eu|free-bitcoin-faucet.eu|get-bitcoins-free.eu|get-free-bitcoin.eu|win-free-bitcoins.eu
@@ -40787,6 +40806,7 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad"]
 ||newvision.co.ug/rightsidepopup/
 ||nextag.com^*/NextagSponsoredProducts.jsp?
 ||nextbigwhat.com/wp-content/uploads/*ccavenue
+||nextgen-auto.com/images/banners/
 ||nextstl.com/images/banners/
 ||nfl.com/assets/images/hp-poweredby-
 ||nfl.com^*/page-background-image.jpg
@@ -42828,6 +42848,7 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad"]
 @@||rivcash.com/webmaster/banners/$subdocument,domain=wstream.video
 |http://$script,third-party,xmlhttprequest,domain=wstream.video
 |https://$script,third-party,xmlhttprequest,domain=wstream.video
+@@||ajax.googleapis.com^$script,domain=gorillavid.in
 |http://$script,third-party,xmlhttprequest,domain=gorillavid.in
 |https://$popup,third-party,domain=gorillavid.in
 |https://$script,third-party,xmlhttprequest,domain=gorillavid.in
@@ -57562,8 +57583,7 @@ youporn.com##[-abp-properties='position: relative;']
 @@||cdn.complexmedianetwork.com/cdn/agenda.complex.com/js/writecapture.js
 @@||cdn.cpmstar.com/cached/js/$script,domain=xfire.com
 @@||cdn.cpmstar.com/cached/swf/preplay.swf$object,domain=xfire.com
-@@||cdn.engine.*^guid^$script,third-party,domain=primewire.ag|primewire.in|streamcloud.eu
-@@||cdn.engine.trklnks.com^$script,domain=streamcloud.eu
+@@||cdn.engine.*^guid^$script,third-party,domain=primewire.ag|primewire.in
 @@||cdn.inskinmedia.com/*inskinfiles/flvs/$object-subrequest,domain=tvcatchup.com
 @@||cdn.inskinmedia.com/isfe/4.1/swf/unitcontainer2.swf$domain=tvcatchup.com
 @@||cdn.inskinmedia.com^*/brightcove3.js$domain=virginmedia.com
@@ -57808,7 +57828,6 @@ youporn.com##[-abp-properties='position: relative;']
 @@||eplayerhtml5.performgroup.com/js/tsEplayerHtml5/js/Eplayer/js/modules/bannerview/bannerview.main.js?
 @@||equippers.com/abm.aspx?$script
 @@||equippers.com/absolutebm.aspx?$script
-@@||ero-advertising.com/adspace/$script,domain=streamcloud.eu
 @@||espn.co.uk/ads/gamemodule_v0.2.swf$object
 @@||espn.go.com^*/espn360/banner?$subdocument
 @@||espncdn.com/combiner/*/admgr.$script,domain=espn.go.com
@@ -58214,7 +58233,6 @@ youporn.com##[-abp-properties='position: relative;']
 @@||memecdn.com/advertising_$image,domain=memecenter.com
 @@||meritline.com/banners/$image,~third-party
 @@||merkatia.com/adimages/$image
-@@||meta.streamcloud.eu/serve.php?adzone=$script,domain=streamcloud.eu
 @@||metacafe.com/banner.php?
 @@||metalmusicradio.com^*/banner.php
 @@||meviodisplayads.com/adholder.php$domain=mevio.com
@@ -58613,6 +58631,7 @@ youporn.com##[-abp-properties='position: relative;']
 @@||smdg.ca/ads/banner/pen.png$domain=globalnews.ca
 @@||smileonthetiles2.co.uk/openx/www/$image,script,subdocument,domain=smileonthetiles.com|smileonthetiles2.co.uk
 @@||smmirror.com^*/getads.php
+@@||snug-harbor.org/wp-content/uploads/*/Delta_FULL-PAGE-AD.jpg$domain=snug-harbor.org
 @@||socialblogsitewebdesign.com^*/advertising_conversion_images/
 @@||softwarepromotions.com/adwords/$~third-party
 @@||softwarepromotions.com/images/google-adwords-professional.gif
@@ -58661,7 +58680,6 @@ youporn.com##[-abp-properties='position: relative;']
 @@||stclassifieds.sg/images/ads/$~third-party
 @@||stclassifieds.sg/postad/
 @@||stickam.com/css/ver1/asset/sharelayout2col_ad300x250.css
-@@||streamcloud.eu^$generichide
 @@||streaming.gmgradio.com/adverts/*.mp3$object-subrequest
 @@||streamlive.to/ads/$object,script
 @@||style.com/flashxml/*.doubleclick$object
@@ -58680,7 +58698,6 @@ youporn.com##[-abp-properties='position: relative;']
 @@||svcs.ebay.com/services/search/FindingService/*affiliate.tracking$domain=bkshopper.com|geo-ship.com|testfreaks.co.uk|watchmydeals.com
 @@||swordfox.co.nz^*/advertising/$~third-party
 @@||syn.5min.com/handlers/SenseHandler.ashx?*&adUnit=$script
-@@||syndication.exoclick.com/splash.php?$script,domain=streamcloud.eu
 @@||syndication.streamads.yahoo.com/na_stream_brewer/brew/*?cid=*&url=*&pvid=*&callback=$script,domain=yimg.com
 @@||syracuse.com/static/common/js/ads/ads.js
 @@||tacdn.com^*_popunder_$script,stylesheet
@@ -59992,7 +60009,6 @@ youporn.com##[-abp-properties='position: relative;']
 @@||stickgames.com^*/ads.js
 @@||stream2watch.me^$generichide
 @@||stream4free.eu^$generichide
-@@||streamcloud.eu^$xmlhttprequest
 @@||streamin.to/adblock/advert.js
 @@||streaming-hub.com^$generichide
 @@||streamlive.to/js/ads.js
@@ -60780,7 +60796,7 @@ www.google.com#@##videoads
 @@||disqus.com/embed.js$domain=pornhub.com|redtube.com|redtube.com.br|tube8.com|tube8.es|tube8.fr|youporn.com|youporngay.com
 @@||disquscdn.com/count.js$domain=pornhub.com|redtube.com|redtube.com.br|tube8.com|tube8.es|tube8.fr|youporn.com|youporngay.com
 @@||embed.redtube.com/video/$xmlhttprequest,domain=redtube.com
-@@||embed.youporn.phncdn.com^$media,other,domain=youporn.com
+@@||embed.youporn.phncdn.com^$media,other,domain=youporn.com|youporngay.com
 @@||extremetube.phncdn.com^$image,object-subrequest,domain=pornhub.com|redtube.com|redtube.com.br|tube8.com|tube8.es|tube8.fr|youporn.com|youporngay.com
 @@||feedback.pornhub.com^$xmlhttprequest,domain=feedback.pornhub.com
 @@||google.com/recaptcha/$image
@@ -61058,7 +61074,7 @@ www.google.com#@##videoads
 @@||pornhubcommunity.com/cdn_files/images/$image
 @@||pornhublive.com/blacklabel/bl.client.min.js|$script
 @@||public.tube8.phncdn.com^$media,other,domain=tube8.com
-@@||public.youporn.phncdn.com^$media,object-subrequest,other,domain=youporn.com
+@@||public.youporn.phncdn.com^$media,object-subrequest,other,domain=youporn.com|youporngay.com
 @@||redtube.com.br/_Incapsula_Resource?$image,subdocument,xmlhttprequest
 @@||redtube.com.br/images/$image,domain=redtube.com.br
 @@||redtube.com/_Incapsula_Resource?$image,subdocument,xmlhttprequest
@@ -61101,8 +61117,7 @@ www.google.com#@##videoads
 @@||redtube.com/videodetails/$xmlhttprequest
 @@||redtube.com/watched/$xmlhttprequest
 @@||redtube.com^*/media/videos/$image
-@@||redtubefiles.com/videos/$media,other,domain=redtube.com
-@@||redtubefiles.com^$image,object-subrequest,domain=pornhub.com|redtube.com|redtube.com.br|tube8.com|tube8.es|tube8.fr|youporn.com|youporngay.com
+@@||redtubefiles.com^$image,media,object-subrequest,other,domain=pornhub.com|redtube.com|redtube.com.br|tube8.com|tube8.es|tube8.fr|youporn.com|youporngay.com
 @@||rncdn3.com/videos/$media,object-subrequest,other,domain=pornhub.com
 @@||rncdn3.com^$media,object-subrequest,other,domain=youporn.com
 @@||s7.addthis.com^$script,domain=pornhub.com|redtube.com|redtube.com.br|tube8.com|tube8.es|tube8.fr|youporn.com|youporngay.com
