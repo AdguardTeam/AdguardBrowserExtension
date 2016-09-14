@@ -137,7 +137,12 @@ var overrideWebSocket = function () { // jshint ignore:line
         });
 
         RealWebSocket.prototype.constructor = WebSocket;
-    })(messageChannel)
+
+        var me = document.currentScript;		
+        if ( me && me.parentNode !== null ) {		
+            me.parentNode.removeChild(me);		
+        }
+    })(messageChannel);
 };
 
 /**
