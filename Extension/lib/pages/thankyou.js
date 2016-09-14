@@ -90,9 +90,9 @@ PageController.prototype = {
     
     allowAcceptableAdsChange: function() {
 		if (this.checked) {
-			contentPage.sendMessage({type: 'addAndEnableFilter', filterId: AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID});
+			contentPage.sendMessage({type: 'addAndEnableFilter', filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID});
 		} else {
-			contentPage.sendMessage({type: 'removeAntiBannerFilter', filterId: AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID});
+			contentPage.sendMessage({type: 'removeAntiBannerFilter', filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID});
 		}
     },
 
@@ -103,7 +103,7 @@ PageController.prototype = {
 		var collectHitsCount = !userSettings.values[userSettings.names.DISABLE_COLLECT_HITS];
 		var trackingFilterEnabled = AntiBannerFiltersId.TRACKING_FILTER_ID in enabledFilters;
 		var socialFilterEnabled = AntiBannerFiltersId.SOCIAL_FILTER_ID in enabledFilters;
-        var allowAcceptableAdsEnabled = AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID in enabledFilters;
+        var allowAcceptableAdsEnabled = AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID in enabledFilters;
 
 		this._renderSafebrowsingSection(safebrowsingEnabled, sendSafebrowsingStats, collectHitsCount);
 		this._renderFilter(this.trackingFilterEnabledCheckbox, trackingFilterEnabled);

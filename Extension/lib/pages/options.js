@@ -225,7 +225,7 @@ PageController.prototype = {
         var showContextMenu = !userSettings.values[userSettings.names.DISABLE_SHOW_CONTEXT_MENU];
         var useOptimizedFilters = userSettings.values[userSettings.names.USE_OPTIMIZED_FILTERS];
         var defaultWhitelistMode = userSettings.values[userSettings.names.DEFAULT_WHITE_LIST_MODE];
-        var acceptableAdsEnabled = AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID in enabledFilters;
+        var acceptableAdsEnabled = AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID in enabledFilters;
 
         this._renderAntiBannerFilters();
         this._renderUserFilters();
@@ -281,7 +281,7 @@ PageController.prototype = {
 
     _showFilterLoader: function (antiBannerFilter) {
         var el = $("input[name='filterId'][value='" + antiBannerFilter.filterId + "']").closest(".s-page-table-row");
-        var acceptableAdsFilter = antiBannerFilter.filterId == AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID; // Don't render for acceptable ads filter
+        var acceptableAdsFilter = antiBannerFilter.filterId == AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID; // Don't render for acceptable ads filter
         if (el.length === 0 && !acceptableAdsFilter) {
             el = this._renderAntiBannerFilter(antiBannerFilter);
             this.antiBannerFiltersList.append(el);
@@ -327,12 +327,12 @@ PageController.prototype = {
         if (this.checked) {
             contentPage.sendMessage({
                 type: 'enableAntiBannerFilter',
-                filterId: AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID
+                filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID
             });
         } else {
             contentPage.sendMessage({
                 type: 'disableAntiBannerFilter',
-                filterId: AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID
+                filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID
             });
         }
     },

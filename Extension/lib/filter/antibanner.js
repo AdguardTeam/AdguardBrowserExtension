@@ -203,7 +203,7 @@ AntiBannerService.prototype = {
     initializeFiltersOnInstall: function (callback) {
 
         // These filters are enabled by default
-        var filterIds = [AntiBannerFiltersId.ENGLISH_FILTER_ID, AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID];
+        var filterIds = [AntiBannerFiltersId.ENGLISH_FILTER_ID, AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID];
 
         // Get language-specific filters by user locale
         var localeFilterIds = this.localeDetectorService.getFilterIdsForLanguage(Prefs.locale);
@@ -493,7 +493,7 @@ AntiBannerService.prototype = {
             return f.installed && 
                 f.filterId != AntiBannerFiltersId.USER_FILTER_ID &&
                 f.filterId != AntiBannerFiltersId.WHITE_LIST_FILTER_ID &&
-                f.filterId != AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID;
+                f.filterId != AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID;
         });
     },
 
@@ -531,7 +531,7 @@ AntiBannerService.prototype = {
     getFiltersMetadataForGroup: function (groupId) {
         return this.subscriptionService.getFilters().filter(function (f) {
             return f.groupId == groupId &&
-                f.filterId != AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID;
+                f.filterId != AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID;
         });
     },
 
@@ -575,7 +575,7 @@ AntiBannerService.prototype = {
             var filterId = this.adguardFilters[i].filterId;
 
             // Skip acceptable ads filter
-            if (filterId == AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID) {
+            if (filterId == AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID) {
                 continue;
             }
 
@@ -720,7 +720,7 @@ AntiBannerService.prototype = {
      * @returns {*} true if useful ads filter is enabled
      */
     isAllowedAcceptableAds: function () {
-        return this._getFilterById(AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID).enabled;
+        return this._getFilterById(AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID).enabled;
     },
 
     /**
@@ -796,7 +796,7 @@ AntiBannerService.prototype = {
                     var filters = [];
                     for (var i = 0; i < filterIds.length; i++) {
                         var filterId = filterIds[i];
-                        if (filterId != AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID) {
+                        if (filterId != AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID) {
                             filters.push(this._getFilterById(filterId));
                         }
                     }

@@ -348,7 +348,7 @@ exports.ApplicationUpdateService = {
 				filter.installed = true;
 				filter.enabled = true;
 			}
-			if (filterId == AntiBannerFiltersId.ACCEPTABLE_ADS_FILTER_ID) {
+			if (filterId == AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID) {
 				filter.installed = true;
 			}
 			FilterLSUtils.updateFilterStateInfo(filter);
