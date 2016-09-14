@@ -170,7 +170,6 @@
          * Adds "selectorText { display:none!important; }" style 
          */
         var hideBySelector = function(selectorText, cssText) {
-            console.log('hide: ' + selectorText);
             var styleElement = document.getElementById(collapserStyleId);
             if (!styleElement) {
                 styleElement = document.createElement("style");
@@ -186,7 +185,6 @@
          * Unhides elements which were previously hidden by the specified selector
          */
         var unhideBySelector = function(selectorText) {
-            console.log('unhide: ' + selectorText);
             var styleElement = document.getElementById(collapserStyleId);
             if (!styleElement || !styleElement.sheet) {
                 return;
@@ -200,13 +198,11 @@
             }
 
             if (styleElement.sheet.cssRules.length === 0) {
-                console.log('schedule removal');
                 // Schedule empty stylesheet removal
                 setTimeout(function() {
                     // Double check stylesheet size
                     if (styleElement.parentNode && styleElement.sheet && styleElement.sheet.cssRules.length === 0) {
                         styleElement.parentNode.removeChild(styleElement);
-                        console.log('removed');
                     }
                 }, 100);
             }
