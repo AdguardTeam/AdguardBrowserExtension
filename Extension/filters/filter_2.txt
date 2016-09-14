@@ -1,9 +1,9 @@
 ! Title: English filter
-! Version: 1.0.94.33
+! Version: 1.0.94.37
 ! Name: English filter
 ! Description: EasyList + Adguard English filter. Filter list that specifically removes adverts on English language websites.
 ! DescriptionEn: EasyList + Adguard English filter. Filter list that specifically removes adverts on English language websites.
-! TimeUpdated: 2016-09-14T00:00:42.648+03:00
+! TimeUpdated: 2016-09-14T17:46:52.669+03:00
 ! Title: Adguard English Filter.
 !
 ! Filter that enables removing of the ads from websites with English content.
@@ -443,6 +443,8 @@ hulkpop.com,mackungfu.org#%#(function() { var _setTimeout = window.setTimeout, r
 blockadblock.com#%#(function() { var sto = window.setTimeout, re = /\.bab_elementid.$/; window.setTimeout = function(a, b) { if ( typeof a !== 'string' || !re.test(a) ) { return sto(a, b); } }.bind(window); var realEval = window.eval; window.eval = function(a) { if ( a.toString().search(/blockadblock|babasbmsgx|getItem\('babn'\)/) === -1 ) { realEval(a); return; } var el = document.body; if ( el ) { el.style.removeProperty('visibility'); } el = document.getElementById('babasbmsgx'); if ( el ) { el.style.setProperty('visibility', 'collapse'); } }.bind(window); })();
 blockadblock.com###babasbmsgx
 !
+! https://forum.adguard.com/index.php?threads/13775/
+@@||livemint.com/_js/*ads
 ! https://forum.adguard.com/index.php?threads/13754/
 @@||multiup.org/pop.js
 ! https://forum.adguard.com/index.php?threads/8255/
@@ -2111,6 +2113,8 @@ vipleague.co,zoomtv.me,vipbox.nu#%#Object.defineProperty(window, '_pao', { get: 
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2918
 redtube.com#%#if (typeof localStorage != 'undefined' && localStorage.setItem) { localStorage.setItem('InfNumFastPops', 'undefined__1'); }
 redtube.com#%#if (typeof localStorage != 'undefined' && localStorage.setItem) { localStorage.setItem('InfNumFastPopsExpire', new Date(new Date().setYear(2020))); }
+redtube.com#%#if (typeof localStorage != 'undefined' && localStorage.setItem) { localStorage.setItem('pop_under_already_shown', 'true'); }
+redtube.com#%#if (typeof localStorage != 'undefined' && localStorage.setItem) { localStorage.setItem('pop_under_initial_date', new Date(new Date().setYear(2020))); }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2887
 xvideos.com#%#Object.defineProperty(window, 'openpop', { get: function() { return; } });
 ! https://forum.adguard.com/index.php?threads/12855/
@@ -3519,8 +3523,7 @@ www.xvideos.com/|$~object-subrequest,xmlhttprequest
 ||wrestling-online.com/News/wp-content/uploads/bg*.jpg
 ||xhcdn.com/js/p.js
 ||youjizz.com/js/YJ-ab/_yjserve.js
-||yts.ag/images/vpnanim
-||yts.ag/js/bgb.js
+yts.ag##a[href="/buy-vpn"]
 ||zbar.zynga.com/zbar-new/banner.php
 ||zevera.com/*.swf$third-party
 ||zkake.exashare.com^
@@ -3532,9 +3535,6 @@ www.xvideos.com/|$~object-subrequest,xmlhttprequest
 ! White list. Fixing filtration errors (false-positive)
 !
 !############### TEMPORARY ###############
-! https://forum.adguard.com/index.php?threads/13525/
-! Reported: https://forums.lanik.us/viewtopic.php?f=64&t=32822
-@@||googletagservices.com/tag/js/gpt.js$domain=posta.com.tr
 ! https://forum.adguard.com/index.php?threads/13436/
 ! Reported: https://forums.lanik.us/viewtopic.php?f=62&t=27952&p=102277
 8muses.com#@#[style*="data:image/gif;base64"]
@@ -28537,6 +28537,7 @@ data:text/html;base64$popup
 ##.topstoriesad
 ##.toptenAdBoxA
 ##.tourFeatureAd
+##.tout-ad-embed
 ##.tower-ad
 ##.tower-ad-abs
 ##.tower-ads-container
@@ -37207,6 +37208,7 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad"]
 ||pjatr.com/i/$third-party
 ||pjtra.com/b/$third-party
 ||pjtra.com/i/$third-party
+||platform.tout.com^$third-party
 ||play-asia.com/paos-$third-party
 ||play-asia.com^$image,third-party
 ||playata.myvideo.de^$subdocument,third-party
@@ -57036,7 +57038,6 @@ hardporn8.com##style + div[style^="visibility: visible;"]
 pornleech.com##style + div[style^="z-index: "]
 picfoco.com##table[border="0"][width="728"]
 xcritic.com##table[cellpadding="10"][width="600"]
-motherless.com##table[cellspacing="0"][cellpadding="0"]
 xnxx.com##table[cellspacing="3"][width="930"]
 xnxx.com,xvideos.com##table[height="244"][width="930"]
 homemademoviez.com##table[height="450"][width="600"]
@@ -60374,7 +60375,7 @@ youporn.com##[-abp-properties='position: relative;']
 @@||openimage.interpark.com/_nip_ui/category_shopping/shopping_morningcoffee/leftbanner/null.jpg
 @@||openx.zomoto.nl/live/www/delivery/fl.js
 @@||openx.zomoto.nl/live/www/delivery/spcjs.php?id=
-@@||partner.googleadservices.com/gpt/pubads_impl_$script,domain=concursovirtual.com.br|forum.kooora.com|lavozdegalicia.es
+@@||partner.googleadservices.com/gpt/pubads_impl_$script,domain=concursovirtual.com.br|forum.kooora.com|lavozdegalicia.es|posta.com.tr
 @@||partners.10bet.com/processing/impressions.asp?$image,domain=betyper.com
 @@||peoplegreece.com/assets/js/adtech_res.js
 @@||player.terra.com^*&adunit=$script

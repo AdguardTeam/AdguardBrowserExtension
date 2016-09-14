@@ -1,9 +1,9 @@
 ! Title: Social media filter
-! Version: 1.0.12.55
+! Version: 1.0.12.57
 ! Name: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2016-09-14T00:01:02.808+03:00
+! TimeUpdated: 2016-09-14T17:47:12.164+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -227,6 +227,7 @@ maskme.ru#$#img[width="88"][height="31"] {visibility: hidden!important;}
 gamesradar.com#$#.shareSocialArticle-wrap { visibility: hidden; }
 softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ||mimimi.tv/?*=*&_=
+akalitefilmizle.net##.share
 news.online.ua##.share
 news.online.ua##.o-btn--share
 posta.com.tr##.share
@@ -1292,6 +1293,8 @@ komarovskiy.net##ul[class="social-bookmarks"]
 ||widget.breakingburner.com/js/jwidget.js$domain=novayagazeta.ru
 ||wow.ya.ru/ajax/share-counter.xml$third-party
 ||yandex.st/share/static/b-share-icon.png
+##.share-icons-box
+##.share-icons-sticky-box
 ##.crafty-social-buttons
 ##.fb_widget
 ~linkedin.com##a[href^="http://linkedin.com/shareArticle?"]
@@ -1993,6 +1996,8 @@ gordonua.com#$#body.modal-open { overflow: visible!important; }
 newkaliningrad.ru#$#body > noindex { display: none!important; }
 newkaliningrad.ru#$#.modal-backdrop { display: none!important; }
 newkaliningrad.ru#$#body { overflow: visible!important; }
+gagadget.com#$#body.social-open { overflow: visible!important; }
+gagadget.com#$#.js-social-fader { display: none!important; }
 @@||facebook.com/*/plugins/$domain=dlh.net
 dlh.net#@#.fb-like
 @@||sputniknews.com/min/js/plugins/social-likes.min.js
