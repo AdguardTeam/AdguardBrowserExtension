@@ -240,6 +240,7 @@
                 // Use specific style for frames due to these issues:
                 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/346
                 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/355
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/347
                 hideBySelector(selectorText, "visibility: hidden!important; height: 0px!important;");
             } else {
                 hideBySelector(selectorText);
