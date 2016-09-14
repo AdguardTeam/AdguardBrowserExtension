@@ -580,7 +580,7 @@
         var cssValue = "none";
         var cssPriority = "important";
 
-        if (tagName == "frame" || tagName == "iframe") {
+        if (tagName == "frame") {
             cssProperty = "visibility";
             cssValue = "hidden";
         }
@@ -607,12 +607,17 @@
      *
      * @param element Element to show
      */
-    var toggleElement = function(element) {
+    var toggleElement = function(element) {        
 
         if (element.hasAttribute(AG_HIDDEN_ATTRIBUTE)) {
 
             var cssCollapsedValue = "none";
             var cssCollapsedPriority = "important";
+
+            var tagName = element.tagName.toLowerCase();
+            if (tagName == "frame") {
+                cssCollapsedValue = "hidden";
+            }
 
             var originalCssParts = element.getAttribute(AG_HIDDEN_ATTRIBUTE).split(';');
 
