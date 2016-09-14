@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global RequestTypes, framesMap, EventNotifier, EventNotifierTypes, UrlUtils, webRequestService */
+/* global RequestTypes, framesMap, EventNotifier, EventNotifierTypes, UrlUtils, webRequestService, CspUtils */
 /* global ext, Prefs, adguardApplication, Utils, antiBannerService, UI, StringUtils, filterRulesHitCount */
 
 /**
