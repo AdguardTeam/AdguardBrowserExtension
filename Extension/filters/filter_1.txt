@@ -1,9 +1,9 @@
 ! Title: Russian filter
-! Version: 1.0.39.22
+! Version: 1.0.39.27
 ! Name: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 ! DescriptionEn: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-09-14T19:00:21.131+03:00
+! TimeUpdated: 2016-09-15T16:52:05.249+03:00
 ! Title: Adguard Russian Filter
 !
 ! Filter that enables removing of the ads from websites with Russian content.
@@ -35,6 +35,7 @@
 !
 ! Содержит доменные имена, использующиеся рекламными сетями.
 !
+||universalsrc.com^$third-party
 ||gogo4girlz.com^$third-party
 ||rxtbb.top^$third-party
 ||gvahh.top^$third-party
@@ -788,7 +789,6 @@ thr.ru##.top_branding
 ||clickov.com^$third-party
 ||clickprofi.com^$third-party
 ||clicks.moy.su^
-||clicks.runews.radeant.com$third-party
 ||clickscapture.com^$third-party
 ||clicktizer.ru^$third-party
 ||clicktrafic.ru$third-party
@@ -3599,6 +3599,7 @@ http://v.*.com/x?$third-party
 !
 ! Section contains the list of advertising networks, which are hosted on non advertising sites as subdomains
 !
+||ad.gameagregator.com^
 ||ivi.ru/player/?videoid=&enableseries=1&autostart=1$third-party
 ws*://video.docfilms.info^
 .forpicfree.ru^$script
@@ -4100,6 +4101,8 @@ yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by#$#.info__map[-ext-has='div[cl
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by#$#.navigation-city_js_inited[-ext-has='a[onmousedown*="clck.yandex."]'] { position: absolute!important; left: -2000px!important; }
 !---------------------------------
 !
+pikabu.ru##div.story[-ext-has=".story__pin"]
+!
 4pda.ru##aside[id] > div[class][-ext-has='h2:contains(AppPromo)']
 4pda.ru##aside[id] > div[class][-ext-has='div.sidebar_border_content>iframe[style$="width: 240px; height: 400px;"]']
 4pda.ru##aside[id] > div[class][-ext-has='div.sidebar_border_content>iframe[style$="width:240px;height:400px;"]']
@@ -4108,6 +4111,8 @@ yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by#$#.navigation-city_js_inited[
 kerch.fm##li.slick-slide[-ext-contains="На правах рекламы"]
 ! fs.to (for extension)
 fs.to##.l-content-inner.m-item > div[class][-ext-matches-css="width: 300px"][-ext-matches-css="float: right"][-ext-matches-css="position: relative"]
+!
+x.epidemz.com##div[class="shortstory"][-ext-has='a[href^="http://xfapa.com/"]']
 !-------------------------------------------------------------------------------!
 !------------------ General hiding rules----------------------------------------!
 !-------------------------------------------------------------------------------!
@@ -5014,7 +5019,7 @@ drive.ru##.branding { padding-top: 0px!important; }
 220vk.com#$##header_top_big { margin-top: 0px!important; }
 ! Яндекс Карты
 ! https://forum.adguard.com/index.php?threads/12782/
-yandex.ru#$#.sidebar-panel-view .home-panel-content-view__body > div > div[style*="display:block"] { position: absolute; top: -2000px; }
+yandex.ru,yandex.ua,yandex.by#$#.sidebar-panel-view .home-panel-content-view__body > div > div[style*="display:block"] { position: absolute; top: -2000px; }
 yandex.ru#$#a[href="https://direct.yandex.ru/?partner"] { pointer-events: none!important; cursor: default; position: absolute!important; top: -2000px!important; }
 ! realmadrid.ru - удаление отступа сверху
 realmadrid.ru#$##brand_wrapper { padding-top: 0px!important; }
@@ -7069,7 +7074,8 @@ trackeroc.ru##body > :not(div):first-child +:not(div)
 radikal.ru##.render_body_main > :not(div):first-child
 filmix.net#$#div[id^="MarketGidComposite"] { position: absolute!important; left: -2000px!important; }
 tfilm.club,nnm-club.me,nnmclub.to,trackeroc.ru##body > :not(div):first-child
-hdrezka.me##body > div[id][class][style*="data:image/jpeg;base64"] { visibility: hidden!important; }
+hdrezka.me##body > div[id][class][style*="data:image/jpeg;base64"] { visibility: hidden!important; zoom: 0.1%!important; }
+hdrezka.me##body > div[id][class][style*="data:image/jpeg;base64"] > a { width: 0px!important; }
 24video.xxx##body > div[class][style^="background-image: url(data:image/jpeg;base64"]
 tapochek.net#$##page_header > table > tbody > tr > td[align="center"][width="100%"] > div[onmouseup] { left: -2000px!important; }
 !----------------
@@ -7117,6 +7123,11 @@ rustorka.com##[gandon]
 rustorka.com#%#Object.defineProperty(window, 'papa', { get: function() { return; } }); Object.defineProperty(window, 'ny_tu_i_hyi', { get: function() { return {}; } });
 !rustorka.com##:not(div):not(a):not(form):not(body):not(tbody):not(table):not(b):not(tr):not(td):not(img):not(span):not(html):not(title):not(input):not(select):not(option):not(th):not(i):not(h3):not(br):not(li):not(ul):not(p):not(hr):not(iframe):not(thead):not(h4):not(em):not(h6):not(wbr):not(center):not(fieldset):not(legend):not(label) > a
 !
+auto.mail.ru##.mailru-visibility-check
+||radikal.ru/Content/neptun/
+x.epidemz.com##.left_block_mini > a[target^="_blank"]:not([href*="epidemz.com"])
+haqqin.az##.topbanners
+softportal.com###tdLeftBannerContainer
 xmovix.tv##a[href^="http://runetki.com/"]
 xmovix.tv##a[href^="http://www.intimshop.ru/"]
 joyreactor.cc,reactor.cc##iframe[style*="height: 600px;"]

@@ -1,9 +1,9 @@
 ! Title: Social media filter
-! Version: 1.0.12.57
+! Version: 1.0.12.63
 ! Name: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2016-09-14T17:47:12.164+03:00
+! TimeUpdated: 2016-09-15T16:00:57.115+03:00
 ! Title: Adguard Social Media Filter
 !
 ! If you do not like numerous «Like» and «Tweet» buttons on all the popular websites on the Internet,
@@ -237,6 +237,7 @@ lj_bookmarklet
 !
 ! Extended CSS rules
 !
+vol.az##.bolmeici > div[class$="tab-menu"][-ext-has='a[href^="#"]:contains(Одноклассники & VK like)']
 golem.de##li[class="text1"][-ext-has='div[class$="social-bar social-sidebar"]']
 gencfb.org##div[class="right_block"][-ext-has='div[class$="socialRightBlock"]']
 hurriyetoto.com###urunSag_menu li[-ext-has='ul[id$="ilaniPaylas"]']
@@ -297,6 +298,10 @@ softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2146
 ||mimimi.tv/?*=*&_=
 !
+koddostu.com##.koddostu-com-paylas
+big.az##.fbsmallshare
+wccftech.com##.meta-share
+spot.im##.message-share
 akalitefilmizle.net##.share
 news.online.ua##.share
 news.online.ua##.o-btn--share
@@ -668,7 +673,6 @@ zeroturnaround.com##.contact-us-floating
 anti-malware.ru##.content > div#slidebox
 webtekno.com##.content-header__container__right__social__share
 hurriyet.com.tr##.cropy-crop-share-button-wrapper
-winphonehub.org##.csbwfs-social-widget
 netzwelt.de##.ctcr div[class="sb tco fi"][data-service] > div[class]
 bournemouthecho.co.uk##.custom-sharing
 genius.com##.custom_share
@@ -1124,7 +1128,6 @@ blogs.wsj.com##.vltSocialLinks
 vocativ.com##.voc-article-share-btn
 vocativ.com##.voc-article-share-wrapper
 medium.com##.voteWidget
-torrent-kutusu.blogspot.com##.w2bslikebox
 spotmebro.com##.widget_bimber_widget_facebook_page
 rbc.ru##.win-subscribe-popup-box
 cmacapps.com##.wpex-social-share-wrap
@@ -1366,6 +1369,12 @@ komarovskiy.net##ul[class="social-bookmarks"]
 !
 ! Section contains list general hiding rules
 !
+##.csbwfs-social-widget
+##.w2bslikebox
+~technorati.com##a[href^="http://technorati.com/faves?add="]
+~delicious.com##a[href^="http://delicious.com/post"]
+~delicious.com##a[href^="http://delicious.com/save"]
+~stumbleupon.com##a[href^="http://www.stumbleupon.com/submit?url"]
 ##.share-icons-box
 ##.share-icons-sticky-box
 ##.crafty-social-buttons
@@ -2081,6 +2090,9 @@ newkaliningrad.ru#$#body { overflow: visible!important; }
 !
 gagadget.com#$#body.social-open { overflow: visible!important; }
 gagadget.com#$#.js-social-fader { display: none!important; }
+!
+okino.ua#$#body { overflow: visible!important; }
+okino.ua#$#.fader-social { display: none!important; }
 !-------------------------------------------------------------------------------!
 !-------------- Whitelist  -----------------------------------------------------!
 !-------------------------------------------------------------------------------!
