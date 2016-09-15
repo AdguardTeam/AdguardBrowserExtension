@@ -1,9 +1,9 @@
 ! Title: Russian filter
-! Version: 1.0.39.27
+! Version: 1.0.39.30
 ! Name: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 ! DescriptionEn: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-09-15T16:52:05.249+03:00
+! TimeUpdated: 2016-09-15T20:00:31.524+03:00
 ! Title: Adguard Russian Filter
 !
 ! Filter that enables removing of the ads from websites with Russian content.
@@ -35,6 +35,7 @@
 !
 ! Содержит доменные имена, использующиеся рекламными сетями.
 !
+||ladyzxxyz.com^$third-party
 ||universalsrc.com^$third-party
 ||gogo4girlz.com^$third-party
 ||rxtbb.top^$third-party
@@ -3599,6 +3600,7 @@ http://v.*.com/x?$third-party
 !
 ! Section contains the list of advertising networks, which are hosted on non advertising sites as subdomains
 !
+||server.zombie-tv.org^
 ||ad.gameagregator.com^
 ||ivi.ru/player/?videoid=&enableseries=1&autostart=1$third-party
 ws*://video.docfilms.info^
@@ -4009,9 +4011,6 @@ lostfilmonline.tv#%#function setTimeout() {};
 @@||moonwalk.cc/serial/*/iframe$elemhide
 ! dedushka.org - remove anti-adblock message
 dedushka.org##.dsa-please
-! chatovod.ru anti-adblock
-!chatovod.ru,spiritix.eu,chat.muz-tv.ru,чатволчат.рф,подростковыйчат.рф,детскийчат.рф,чатволчат.рф,чаткроватка.рф,чатобщения.рф#%#AG_onLoad(function() { $('.chatAds').remove(); });
-!chatovod.ru,spiritix.eu,chat.muz-tv.ru,чатволчат.рф,подростковыйчат.рф,детскийчат.рф,чатволчат.рф,чаткроватка.рф,чатобщения.рф#%#AG_onLoad(function() { var original = $.fn.html; $.fn.html = function(html) { if (this.is && this.is('body')) return; return original.apply(this, arguments); }; });
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/558
 @@||only-paper.ru/advertisement.js
 kinomoov.net#@#img[width="88"][height="31"]
@@ -4963,7 +4962,7 @@ kinokopilka.tv#%#window.open = function() {};
 ! http://forum.adguard.com/showthread.php?6121
 auto.ru#%#AG_onLoad(function() { $('a[href*="an.yandex.ru/count/"]').closest('div.sales-list-item').remove(); });
 ! VisitWeb
-pics5share.ru,pics6share.ru,reactor.cc,joyreactor.cc,pics2pay.ru,jpgstore.ru,pics-money.ru,picspay.ru,free-torrents.org,free-torrent.org#%#Object.defineProperty(window, 'visitweb_script', { get: function() { return document.createElement('div'); } });
+pics5share.ru,pics6share.ru,reactor.cc,joyreactor.cc,pics2pay.ru,jpgstore.ru,pics-money.ru,picspay.ru#%#Object.defineProperty(window, 'visitweb_script', { get: function() { return document.createElement('div'); } });
 rumanda.com,porncomics.ru#%#Object.defineProperty(window, 'VisitWeb', { get: function() { return document.createElement('div'); } });
 ! Disabling the timer before play
 ! http://forum.adguard.com/showthread.php?8732
@@ -5246,8 +5245,6 @@ sports.ru#$##branding-layout { padding-top: 0px!important; }
 sports.ru#$#.pageLayout {top: 0px!important;}
 sports.ru#$#.branding_dfp #branding-layout { padding-top: 0px!important; }
 sports.ru#$#body[class] > div#branding-layout {background: url(http://s5o.ru/common/css/i/gray-background.png)!important; repeat!important;}
-! chatovod.ru - на главной
-chatovod.ru#$#object[width="240"][height="400"] {height: 0px!important;}
 ! kinobar.kz - удаление отступа сверху
 kinobar.kz#$#body {padding-top: 0px!important}
 ! yadi.sk - удаление брендированного фона
@@ -7073,7 +7070,7 @@ ucoz.ru/informer/
 trackeroc.ru##body > :not(div):first-child +:not(div)
 radikal.ru##.render_body_main > :not(div):first-child
 filmix.net#$#div[id^="MarketGidComposite"] { position: absolute!important; left: -2000px!important; }
-tfilm.club,nnm-club.me,nnmclub.to,trackeroc.ru##body > :not(div):first-child
+tfilm.club,nnm-club.me,nnmclub.to,trackeroc.ru,fastpic.ru##body > :not(div):first-child
 hdrezka.me##body > div[id][class][style*="data:image/jpeg;base64"] { visibility: hidden!important; zoom: 0.1%!important; }
 hdrezka.me##body > div[id][class][style*="data:image/jpeg;base64"] > a { width: 0px!important; }
 24video.xxx##body > div[class][style^="background-image: url(data:image/jpeg;base64"]
@@ -7123,6 +7120,9 @@ rustorka.com##[gandon]
 rustorka.com#%#Object.defineProperty(window, 'papa', { get: function() { return; } }); Object.defineProperty(window, 'ny_tu_i_hyi', { get: function() { return {}; } });
 !rustorka.com##:not(div):not(a):not(form):not(body):not(tbody):not(table):not(b):not(tr):not(td):not(img):not(span):not(html):not(title):not(input):not(select):not(option):not(th):not(i):not(h3):not(br):not(li):not(ul):not(p):not(hr):not(iframe):not(thead):not(h4):not(em):not(h6):not(wbr):not(center):not(fieldset):not(legend):not(label) > a
 !
+100filmov.net##.block-inner > noindex
+||xrutor.org/indiana-jones.js
+xrutor.org###rmbn240
 auto.mail.ru##.mailru-visibility-check
 ||radikal.ru/Content/neptun/
 x.epidemz.com##.left_block_mini > a[target^="_blank"]:not([href*="epidemz.com"])
@@ -8480,7 +8480,6 @@ usolie.info##.center_bnn
 nakanune.ru##.center_wrapper_block > noindex
 picage.ru##.centerdiv
 check-host.net##.chadcont
-chatovod.ru##.chatlist tr[class="bold"] a[class="obl"][rel="nofollow"]
 fast-torrent.ru##.chedot
 nuipogoda.ru##.city-adsense
 gamesefir.ru##.city100x90

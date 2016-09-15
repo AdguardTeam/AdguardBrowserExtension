@@ -1,9 +1,9 @@
 ! Title: Russian filter
-! Version: 1.0.39.27
+! Version: 1.0.39.30
 ! Name: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 ! DescriptionEn: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
-! TimeUpdated: 2016-09-15T16:52:05.249+03:00
+! TimeUpdated: 2016-09-15T20:00:31.524+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -14,6 +14,7 @@
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+||ladyzxxyz.com^$third-party
 ||universalsrc.com^$third-party
 ||gogo4girlz.com^$third-party
 ||rxtbb.top^$third-party
@@ -1389,6 +1390,7 @@ http://*.*.space/vv$third-party
 http://*.space/*&bid=$third-party
 http://v.*.com/v/$third-party
 http://v.*.com/vv?$third-party
+||server.zombie-tv.org^
 ||ad.gameagregator.com^
 ws*://video.docfilms.info^
 .forpicfree.ru^$script
@@ -2015,7 +2017,7 @@ rusfolder.com,rusfolder.net,rusfolder.ru#%#AG_onLoad(function() { window.openCbn
 letitbit.net#%#window.open = function() {};
 kinokopilka.tv#%#window.open = function() {};
 auto.ru#%#AG_onLoad(function() { $('a[href*="an.yandex.ru/count/"]').closest('div.sales-list-item').remove(); });
-pics5share.ru,pics6share.ru,reactor.cc,joyreactor.cc,pics2pay.ru,jpgstore.ru,pics-money.ru,picspay.ru,free-torrents.org,free-torrent.org#%#Object.defineProperty(window, 'visitweb_script', { get: function() { return document.createElement('div'); } });
+pics5share.ru,pics6share.ru,reactor.cc,joyreactor.cc,pics2pay.ru,jpgstore.ru,pics-money.ru,picspay.ru#%#Object.defineProperty(window, 'visitweb_script', { get: function() { return document.createElement('div'); } });
 rumanda.com,porncomics.ru#%#Object.defineProperty(window, 'VisitWeb', { get: function() { return document.createElement('div'); } });
 trashbox.mobi#%#Object.defineProperty(window, 'd_offer', { get: function() { return {}; } });
 37.220.36.15,yallaneliera.com,cdnapponline.com,hdkinoteatr.com,pandastream.cc,moonwalk.cc#%#Object.defineProperty(window, 'adv_enabled', { get: function() { return false; } });
@@ -2178,7 +2180,6 @@ sports.ru#$##branding-layout { padding-top: 0px!important; }
 sports.ru#$#.pageLayout {top: 0px!important;}
 sports.ru#$#.branding_dfp #branding-layout { padding-top: 0px!important; }
 sports.ru#$#body[class] > div#branding-layout {background: url(http://s5o.ru/common/css/i/gray-background.png)!important; repeat!important;}
-chatovod.ru#$#object[width="240"][height="400"] {height: 0px!important;}
 kinobar.kz#$#body {padding-top: 0px!important}
 yadi.sk#$#a[href^="https://awaps.yandex.ru/"] {background: none!important;}
 firepic.org#$#body {background-image: none!important; padding-top: 0px!important;}
@@ -2295,7 +2296,7 @@ all-episodes.com#$#div[id="ad2"] { height: 30px; }
 e1.ru#$#.brand-skin {padding-top: 0px!important;}
 news.sportbox.ru#$#.sb_t_secs_main {margin-top: 0px!important; }
 poiskvps.ru#$#body a[href*="./adv.php?id="] > img { height: 0px!important; }
-docfilms.info$$script[tag-content="var et_ws"][max-length="800"]
+xrutor.org,docfilms.info$$script[tag-content="var et_ws"][max-length="800"]
 free-torrent.org,free-torrents.org$$script[tag-content="new WebSocket"][max-length="1400"]
 pikabu.ru$$div[id="branding_ad_comment"]
 pikabu.ru$$div[id="branding_ad_footer"]
@@ -2965,7 +2966,7 @@ ucoz.ru/informer/
 trackeroc.ru##body > :not(div):first-child +:not(div)
 radikal.ru##.render_body_main > :not(div):first-child
 filmix.net#$#div[id^="MarketGidComposite"] { position: absolute!important; left: -2000px!important; }
-tfilm.club,nnm-club.me,nnmclub.to,trackeroc.ru##body > :not(div):first-child
+tfilm.club,nnm-club.me,nnmclub.to,trackeroc.ru,fastpic.ru##body > :not(div):first-child
 hdrezka.me##body > div[id][class][style*="data:image/jpeg;base64"] { visibility: hidden!important; zoom: 0.1%!important; }
 hdrezka.me##body > div[id][class][style*="data:image/jpeg;base64"] > a { width: 0px!important; }
 24video.xxx##body > div[class][style^="background-image: url(data:image/jpeg;base64"]
@@ -2990,6 +2991,9 @@ news.yandex.by,news.yandex.kz,news.yandex.ru,news.yandex.ua##div[class$="right"]
 rustorka.com##a[href$=".php"]:not([class]) > :not(img)
 rustorka.com##[gandon]
 rustorka.com#%#Object.defineProperty(window, 'papa', { get: function() { return; } }); Object.defineProperty(window, 'ny_tu_i_hyi', { get: function() { return {}; } });
+100filmov.net##.block-inner > noindex
+||xrutor.org/indiana-jones.js
+xrutor.org###rmbn240
 auto.mail.ru##.mailru-visibility-check
 ||radikal.ru/Content/neptun/
 x.epidemz.com##.left_block_mini > a[target^="_blank"]:not([href*="epidemz.com"])

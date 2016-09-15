@@ -1,9 +1,9 @@
 ! Title: English filter
-! Version: 1.0.94.47
+! Version: 1.0.94.48
 ! Name: English filter
 ! Description: EasyList + Adguard English filter. Filter list that specifically removes adverts on English language websites.
 ! DescriptionEn: EasyList + Adguard English filter. Filter list that specifically removes adverts on English language websites.
-! TimeUpdated: 2016-09-15T16:52:18.358+03:00
+! TimeUpdated: 2016-09-15T19:00:37.652+03:00
 ! Title: Adguard English Filter.
 !
 ! Filter that enables removing of the ads from websites with English content.
@@ -443,6 +443,8 @@ hulkpop.com,mackungfu.org#%#(function() { var _setTimeout = window.setTimeout, r
 blockadblock.com#%#(function() { var sto = window.setTimeout, re = /\.bab_elementid.$/; window.setTimeout = function(a, b) { if ( typeof a !== 'string' || !re.test(a) ) { return sto(a, b); } }.bind(window); var realEval = window.eval; window.eval = function(a) { if ( a.toString().search(/blockadblock|babasbmsgx|getItem\('babn'\)/) === -1 ) { realEval(a); return; } var el = document.body; if ( el ) { el.style.removeProperty('visibility'); } el = document.getElementById('babasbmsgx'); if ( el ) { el.style.setProperty('visibility', 'collapse'); } }.bind(window); })();
 blockadblock.com###babasbmsgx
 !
+! https://github.com/AdguardTeam/AdguardForWindows/issues/1291
+@@||cypt.ga^$generichide
 ! https://forum.adguard.com/index.php?threads/13810/
 ||connect.cointent.com^$domain=allaboutjazz.com
 ! https://forum.adguard.com/index.php?threads/13801/
@@ -2510,6 +2512,7 @@ http://www.ads.$third-party
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/997
 google.ae,google.at,google.be,google.by,google.ca,google.ch,google.cl,google.cn,google.co.id,google.co.in,google.co.jp,google.co.th,google.co.uk,google.co.ve,google.co.za,google.com,google.com.ar,google.com.au,google.com.bd,google.com.br,google.com.co,google.com.eg,google.com.hk,google.com.mx,google.com.my,google.com.ng,google.com.pe,google.com.ph,google.com.pk,google.com.sa,google.com.sg,google.com.tr,google.com.tw,google.com.ua,google.com.vn,google.de,google.dk,google.ee,google.es,google.fr,google.gr,google.hu,google.ie,google.it,google.nl,google.no,google.pl,google.pt,google.ro,google.rs,google.ru,google.se,google.sk,google.tn###taw #tvcap ._hsi.mnr-c
 !
+cypt.ga##.adsbygoogle
 ||4fcams.com/affiliates$domain=4fuckr.com
 4fuckr.com###top > b > :not([href*="4fuckr.com"]):not([href^="/"])
 4fuckr.com###top > a:not([href*="4fuckr.com"]):not([href^="/"])
