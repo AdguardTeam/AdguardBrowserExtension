@@ -178,7 +178,8 @@
                 (document.head || document.documentElement).appendChild(styleElement);
             }
 
-            styleElement.sheet.addRule(selectorText, cssText || "display: none!important");
+            var rule = selectorText + '{' + (cssText || "display: none!important") + '}';
+            styleElement.sheet.insertRule(rule, styleElement.sheet.cssRules.length);
         };
 
         /**
