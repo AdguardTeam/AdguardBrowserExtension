@@ -113,6 +113,8 @@
             return;
         }
 
+        // This is chrome-specific feature for blocking WebSocket connections
+        // overrideWebSocket function is not defined in case of other browsers
         if (typeof overrideWebSocket == 'function') {
             initPageMessageListener();
 
