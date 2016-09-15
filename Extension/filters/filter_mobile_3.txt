@@ -1,9 +1,9 @@
 ! Title: Spyware filter
-! Version: 1.0.7.63
+! Version: 1.0.7.67
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2016-09-13T22:00:46.755+03:00
+! TimeUpdated: 2016-09-15T16:00:48.232+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -39,6 +39,9 @@ echo.msk.ru$$script[tag-content="s=screen;"][max-length="200"]
 ##img[src*="counter.yadro.ru"]
 ##img[src^="http://c.bigmir.net/"]
 ~forum.ixbt.com,~mozhor.ru,~onliner.by,~wiktionary.org,~yandex.by,~yandex.com,~yandex.com.tr,~yandex.ru,~yandex.ua##img[width="88"][height="31"]
+||mytop.az^$third-party
+||toplog.az^$third-party
+||ilk10.az^$third-party
 ||bnc.lt^$third-party
 //t100.ru^$third-party
 ://tru.am^$third-party
@@ -2990,6 +2993,8 @@ echo.msk.ru$$script[tag-content="s=screen;"][max-length="200"]
 ://b.*/vanity/?
 ://top.*/count/cnt.php?
 _tracking.php?b=
+efirde.az##.counts
+legend.az##.counts
 ||api.branch.io/v1/has-app/*?browser_fingerprint_id=
 ||app.link/_r?sdk=*&callback=branch_callback
 ||zapkolik.com/xml/count.php
@@ -3403,6 +3408,8 @@ washingtonpost.com##.social-tools-wrapper-bottom
 ||do-not-tracker.org^$third-party
 ||eviltracker.net^$third-party
 ||trackersimulator.org^$third-party
+@@||spot.im/api/tracker/spot/$domain=russian.rt.com
+@@||track.atom-data.io/report$domain=russian.rt.com
 @@||googletagmanager.com/gtm.js$domain=tehnosila.ru
 @@||partner.googleadservices.com/gpt/pubads_impl_$domain=posta.com.tr
 @@||google-analytics.com/ga.js$domain=kaspersky.pl
