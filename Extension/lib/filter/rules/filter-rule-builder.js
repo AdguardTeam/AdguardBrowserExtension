@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global exports, require */
 var StringUtils = require('../../../lib/utils/common').StringUtils;
 var FilterRule = require('../../../lib/filter/rules/base-filter-rule').FilterRule;
 var CssFilterRule = require('../../../lib/filter/rules/css-filter-rule').CssFilterRule;
@@ -21,7 +22,7 @@ var UrlFilterRule = require('../../../lib/filter/rules/url-filter-rule').UrlFilt
 var ScriptFilterRule = require('../../../lib/filter/rules/script-filter-rule').ScriptFilterRule;
 var Log = require('../../../lib/utils/log').Log;
 
-var FilterRuleBuilder = exports.FilterRuleBuilder = {
+var FilterRuleBuilder = exports.FilterRuleBuilder = { // jshint ignore:line
     
     /**
      * Method that parses rule text and creates object of a suitable class.

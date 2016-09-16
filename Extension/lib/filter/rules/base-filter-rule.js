@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global require, exports */
+
 /**
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
@@ -128,7 +130,6 @@ FilterRule.prototype = {
 	 */
 	isDomainSensitive: function () {
 		return this.hasRestrictedDomains() || this.hasPermittedDomains();
-
 	},
 
 	/**
@@ -191,6 +192,15 @@ FilterRule.prototype = {
 	 */
 	addRestrictedDomains: function (domains) {
 		if (domains) {
+			if (this.hasPermittedDomains()) {
+				var self = this;
+				// If a rule already has permitted domains, we should check that
+				// these restricted domains make any sense
+				domains = domains.filter(function(domainName) {
+					return self.isPermitted(domainName);
+				});
+			}
+
 			var restrictedDomains = this.getRestrictedDomains();
 			restrictedDomains = CollectionUtils.removeDuplicates((restrictedDomains || []).concat(domains));
 			this.setRestrictedDomains(restrictedDomains);
