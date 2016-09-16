@@ -18,7 +18,7 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.13';
+var CONVERTER_VERSION = '1.3.14';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var URL_FILTER_ANY_URL = ".*";
@@ -503,9 +503,10 @@ exports.SafariContentBlockerConverter = {
     convertAGRule: function (rule, errors) {
         try {
             return this._convertAGRule(rule);
-        } catch (ex) {
-            var message = 'Error converting rule from: ' + rule + ' cause:\n' + ex;
-            message = (rule.ruleText ? rule.ruleText : rule) + '\r\n' + message + '\r\n';
+        } catch (ex) {          
+            var message = 'Error converting rule from: ' + 
+                (rule.ruleText ? rule.ruleText : rule) + 
+                ' cause:\n' + ex + '\r\n';
             Log.debug(message);
 
             if (errors) {
