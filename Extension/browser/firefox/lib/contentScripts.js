@@ -61,7 +61,7 @@ ContentScripts.prototype = {
 
         // Filter-download.html
         this.registerChromeContentScript('filter-download.html', [
-            'libs/jquery-1.8.3.min.js',
+            'libs/jquery-2.2.4.min.js',
             'libs/nprogress.patched.js',
             'content-script/content-script.js',
             'content-script/i18n-helper.js',
@@ -72,7 +72,7 @@ ContentScripts.prototype = {
 
         // Thankyou.html
         this.registerChromeContentScript('thankyou.html', [
-            'libs/jquery-1.8.3.min.js',
+            'libs/jquery-2.2.4.min.js',
             'content-script/content-script.js',
             'content-script/content-utils.js',
             'content-script/i18n-helper.js',
@@ -83,7 +83,7 @@ ContentScripts.prototype = {
 
         // Options.html
         this.registerChromeContentScript('options.html', [
-            'libs/jquery-1.8.3.min.js',
+            'libs/jquery-2.2.4.min.js',
             'libs/bootstrap.min.js',
             'libs/jquery.mousewheel.min.js',
             'libs/jquery.jscrollpane.min.js',
@@ -98,7 +98,7 @@ ContentScripts.prototype = {
 
         // Log.html
         this.registerChromeContentScript('log.html', [
-            'libs/jquery-1.8.3.min.js',
+            'libs/jquery-2.2.4.min.js',
             'libs/bootstrap.min.js',
             'libs/moment-with-locales.min.js',
             'content-script/content-script.js',
@@ -111,14 +111,14 @@ ContentScripts.prototype = {
 
         // Export.html
         this.registerChromeContentScript('export.html', [
-            'libs/jquery-1.8.3.min.js',
+            'libs/jquery-2.2.4.min.js',
             'content-script/content-script.js',
             'pages/export.js'
         ]);
 
         // Sb.html
         this.registerChromeContentScript('sb.html', [
-            'libs/jquery-1.8.3.min.js',
+            'libs/jquery-2.2.4.min.js',
             'content-script/content-script.js',
             'content-script/i18n-helper.js',
             'pages/i18n.js',
