@@ -73,7 +73,7 @@ var PopupButton = exports.PopupButton = {
         var panel = this.SdkPanel({
             contentURL: self.data.url('content/popup.html'),
             contentScriptFile: [
-                self.data.url('content/libs/jquery-1.8.3.min.js'),
+                self.data.url('content/libs/jquery-2.2.4.min.js'),
                 self.data.url('content/content-script/content-script.js'),
                 self.data.url('content/content-script/i18n-helper.js'),
                 self.data.url('content/pages/i18n.js'),
