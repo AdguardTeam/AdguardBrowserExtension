@@ -453,7 +453,9 @@ var WebRequestImpl = exports.WebRequestImpl = {
      */
     shouldLoad: function (contentType, contentLocation, requestOrigin, aContext, mimeTypeGuess, extra, aRequestPrincipal) {
 
-        if (!aContext) {
+        if (!aContext && contentType !== WebRequestHelper.contentTypes.TYPE_WEBSOCKET) {
+            // Context could be empty in case of WebSocket requests:
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/334
             return WebRequestHelper.ACCEPT;
         }
 
@@ -707,11 +709,12 @@ var WebRequestImpl = exports.WebRequestImpl = {
         result.rule = this.webRequestService.getRuleForRequest(tab, requestUrl, tabUrl, requestType);
         result.blocked = this.webRequestService.isRequestBlockedByRule(result.rule);
 
-        if (result.blocked) {
+        if (result.blocked || requestType === RequestTypes.WEBSOCKET) {
             this._collapseElement(node, requestType);
             
             // Usually we call this method in _httpOnExamineResponse callback
             // But it won't be called if request is blocked here
+            // Also it won't be called for WEBSOCKET requests
             this.webRequestService.postProcessRequest(tab, requestUrl, tabUrl, requestType, result.rule);            
         }
 
