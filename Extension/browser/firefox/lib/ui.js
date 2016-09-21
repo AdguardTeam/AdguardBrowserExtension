@@ -66,7 +66,6 @@ var UI = exports.UI = {
         for (var i = 0; i < allTabs.length; i++) {
             var tab = allTabs[i];
             this.framesMap.recordFrame(tab, 0, tab.url, RequestTypes.DOCUMENT);
-            this.framesMap.checkTabIncognitoMode(tab);
             this._updatePopupButtonState(tab);
         }
 

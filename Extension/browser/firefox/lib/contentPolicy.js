@@ -808,8 +808,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
             return;
         }
 
-        var frameData = this.framesMap.getMainFrame(tab);
-        var referrerUrl = Utils.getSafebrowsingBackUrl(frameData);
+        var referrerUrl = Utils.getSafebrowsingBackUrl(tab);
         var incognitoTab = this.framesMap.isIncognitoTab(tab);
 
         this.antiBannerService.getRequestFilter().checkSafebrowsingFilter(requestUrl, referrerUrl, function (safebrowsingUrl) {

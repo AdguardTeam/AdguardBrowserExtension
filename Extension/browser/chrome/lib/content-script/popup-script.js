@@ -16,16 +16,19 @@
  */
 /* global chrome, $, UI */
 (function () {
+
+    'use strict';
+
     var browser = window.browser || chrome;
     var backgroundPage = browser.extension.getBackgroundPage();
     window.ext = Object.create(backgroundPage.ext);
+    window.adguard = Object.create(backgroundPage.adguard);
     window.ext.closePopup =  function () {
         window.close();
     };
     window.ext.resizePopup =  function () {
     };
 
-    window.BrowserTabs = backgroundPage.BrowserTabs;
     window.i18n = browser.i18n;
 
     $(window).on('unload', function () {

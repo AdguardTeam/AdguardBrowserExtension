@@ -42,82 +42,79 @@ var tab;
 //make global for other popup scripts;
 $(document).ready(function () {
 
-    ext.windows.getLastFocused(function (win) {
+    adguard.tabs.getActive(function (t) {
 
-        win.getActiveTab(function (t) {
+        tab = t;
 
-            tab = t;
+        var tabInfo = framesMap.getFrameInfo(tab);
+        var filteringInfo = filteringLog.getTabInfo(tab);
 
-            var tabInfo = framesMap.getFrameInfo(tab);
-            var filteringInfo = filteringLog.getTabInfo(tab);
+        controller = new PopupController({
+            platform: Prefs.platform,
+            abusePanelSupported: Prefs.platform != 'firefox' || UI.abusePanelSupported,
+            showStatsSupported: !Utils.isContentBlockerEnabled()
+        });
 
-            controller = new PopupController({
-                platform: Prefs.platform,
-                abusePanelSupported: Prefs.platform != 'firefox' || UI.abusePanelSupported,
-                showStatsSupported: !Utils.isContentBlockerEnabled()
-            });
+        //override
+        controller.afterRender = function () {
+            //add some delay for show popup size properly
+            setTimeout(function () {
+                controller.resizePopupWindow();
+            }, 10);
+            resizePopupWindowForMacOs($);
+        };
+        controller.resizePopup = function (width, height) {
+            ext.resizePopup(width, height);
+        };
+        //popup checkbox actions
+        controller.addWhiteListDomain = function () {
+            UI.whiteListTab(tab);
+            if (tabInfo.adguardDetected) {
+                ext.closePopup();
+            }
+        };
+        controller.removeWhiteListDomain = function () {
+            UI.unWhiteListTab(tab);
+            if (tabInfo.adguardDetected) {
+                ext.closePopup();
+            }
+        };
+        controller.changeApplicationFilteringDisabled = function (disabled) {
+            UI.changeApplicationFilteringDisabled(disabled);
+        };
+        //popup menu actions
+        controller.openSiteReportTab = function (url) {
+            UI.openSiteReportTab(url);
+            ext.closePopup();
+        };
+        controller.openSettingsTab = function () {
+            UI.openSettingsTab();
+            ext.closePopup();
+        };
+        controller.openAssistantInTab = function () {
+            UI.openAssistant();
+            ext.closePopup();
+        };
+        controller.openLink = function (url) {
+            UI.openTab(url);
+            ext.closePopup();
+        };
+        controller.openAbusePanel = function () {
+            UI.openAbusePanel();
+            ext.closePopup();
+        };
+        controller.openFilteringLog = function (tabId) {
+            UI.openFilteringLog(tabId);
+            ext.closePopup();
+        };
+        controller.resetBlockedAdsCount = function () {
+            framesMap.resetBlockedAdsCount();
+        };
+        controller.sendFeedback = function (url, topic, comment) {
+            antiBannerService.sendFeedback(url, topic, comment);
+        };
 
-            //override
-            controller.afterRender = function () {
-                //add some delay for show popup size properly
-                setTimeout(function () {
-                    controller.resizePopupWindow();
-                }, 10);
-                resizePopupWindowForMacOs($);
-            };
-            controller.resizePopup = function (width, height) {
-                ext.resizePopup(width, height);
-            };
-            //popup checkbox actions
-            controller.addWhiteListDomain = function () {
-                UI.whiteListTab(tab);
-                if (tabInfo.adguardDetected) {
-                    ext.closePopup();
-                }
-            };
-            controller.removeWhiteListDomain = function () {
-                UI.unWhiteListTab(tab);
-                if (tabInfo.adguardDetected) {
-                    ext.closePopup();
-                }
-            };
-            controller.changeApplicationFilteringDisabled = function (disabled) {
-                UI.changeApplicationFilteringDisabled(disabled);
-            };
-            //popup menu actions
-            controller.openSiteReportTab = function (url) {
-                UI.openSiteReportTab(url);
-                ext.closePopup();
-            };
-            controller.openSettingsTab = function () {
-                UI.openSettingsTab();
-                ext.closePopup();
-            };
-            controller.openAssistantInTab = function () {
-                UI.openAssistant();
-                ext.closePopup();
-            };
-            controller.openLink = function (url) {
-                UI.openTab(url);
-                ext.closePopup();
-            };
-            controller.openAbusePanel = function () {
-                UI.openAbusePanel();
-                ext.closePopup();
-            };
-            controller.openFilteringLog = function (tabId) {
-                UI.openFilteringLog(tabId);
-                ext.closePopup();
-            };
-            controller.resetBlockedAdsCount = function () {
-                framesMap.resetBlockedAdsCount();
-            };
-            controller.sendFeedback = function (url, topic, comment) {
-                antiBannerService.sendFeedback(url, topic, comment);
-            };
-
-            //render popup
-            controller.render(tabInfo, filteringInfo);
-        })
+        //render popup
+        controller.render(tabInfo, filteringInfo);
     });
 });

@@ -14,7 +14,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* global $, adguard, safari, controller, UI */
+
 (function () {
+
+	'use strict';
 
 	var backgroundPage = safari.extension.globalPage.contentWindow;
 
@@ -42,9 +47,9 @@
 		safari.self.height = height;
 	};
 
-	window.BrowserTabs = backgroundPage.BrowserTabs;
+	window.adguard = backgroundPage.adguard;
 
-	window.i18n = new backgroundPage.I18NSupport();
+	window.i18n = adguard.i18n;
 
 	$(window).on('blur', function () {
 		if (window.tab) {

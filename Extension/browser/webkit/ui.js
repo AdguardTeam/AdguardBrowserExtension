@@ -16,7 +16,7 @@
  */
 
 /* global ext, userSettings, Utils, UrlUtils, antiBannerService, adguardApplication, filteringLog */
-/* global framesMap, StringUtils, EventNotifier, EventNotifierTypes, Log */
+/* global adguard, framesMap, StringUtils, EventNotifier, EventNotifierTypes, Log */
 var UI = {
 
 	ICON_BLUE: {
@@ -48,7 +48,7 @@ var UI = {
 	 *
 	 * @param blocked Blocked requests count
 	 */
-	_getBlockedCountText: function(blocked) {
+	_getBlockedCountText: function (blocked) {
 		var blockedText = blocked == "0" ? "" : blocked;
 		if (blocked - 0 > 999) {
 			blockedText = '\u221E';
@@ -103,10 +103,10 @@ var UI = {
 					icon = this.ICON_GREEN;
 				}
 			}
-		
+
 			ext.browserAction.setBrowserAction(tab, icon, badge, "#555", this.browserActionTitle);
 		} catch (ex) {
-			Log.error('Error while updating icon for tab {0}: {1}', tab.id, new Error(ex));
+			Log.error('Error while updating icon for tab {0}: {1}', tab.tabId, new Error(ex));
 		}
 	},
 
@@ -130,7 +130,7 @@ var UI = {
 
 	changeApplicationFilteringDisabled: function (disabled) {
 		antiBannerService.changeApplicationFilteringDisabled(disabled);
-		this._getCurrentTab(function (tab) {
+		adguard.tabs.getActive(function (tab) {
 			this.updateTabIconAndContextMenu(tab, true);
 		}.bind(this));
 	},
@@ -143,15 +143,15 @@ var UI = {
 		if (framesMap.isTabAdguardDetected(tab)) {
 			var domain = UrlUtils.getHost(tab.url);
 			adguardApplication.addRuleToApp("@@//" + domain + "^$document", function () {
-				tab.reload();
-			}.bind(this));
+				adguard.tabs.reload(tab.tabId);
+			});
 		} else {
 			this.updateTabIconAndContextMenu(tab, true);
 		}
 	},
 
 	whiteListCurrentTab: function () {
-		this._getCurrentTab(function (tab) {
+		adguard.tabs.getActive(function (tab) {
 			this.whiteListTab(tab);
 		}.bind(this));
 	},
@@ -165,8 +165,8 @@ var UI = {
 			var rule = framesMap.getTabAdguardUserWhiteListRule(tab);
 			if (rule) {
 				adguardApplication.removeRuleFromApp(rule.ruleText, function () {
-					tab.reload();
-				}.bind(this));
+					adguard.tabs.reload(tab.tabId);
+				});
 			}
 		} else {
 			this.updateTabIconAndContextMenu(tab, true);
@@ -174,35 +174,33 @@ var UI = {
 	},
 
 	unWhiteListCurrentTab: function () {
-		this._getCurrentTab(function (tab) {
+		adguard.tabs.getActive(function (tab) {
 			this.unWhiteListTab(tab);
 		}.bind(this));
 	},
 
-	openTab: function (url, options) {
+	openTab: function (url, options, callback) {
 
-		var inBackground, activateSameTab, onOpen, tabType;
+		var inBackground, activateSameTab, type;
 		if (options) {
 			inBackground = options.inBackground;
 			activateSameTab = options.activateSameTab;
-			onOpen = options.onOpen;
-			tabType = options.tabType;
+			type = options.type;
 		}
 
 		var onTabFound = function (tab) {
-			if (tab.url != url) {
-				tab.reload(url);
+			if (tab.url !== url) {
+				adguard.tabs.reload(tab.tabId, url);
 			}
 			if (!inBackground) {
-				tab.activate();
+				adguard.tabs.activate(tab.tabId);
 			}
-			if (onOpen) {
-				onOpen(tab);
+			if (callback) {
+				callback(tab);
 			}
 		};
 
 		url = (StringUtils.contains(url, "://") ? url : ext.getURL(url));
-		var isExtensionTab = !UrlUtils.isHttpRequest(url);
 		UI.getAllOpenedTabs(function (tabs) {
 			//try to find between opened tabs
 			if (activateSameTab) {
@@ -214,14 +212,13 @@ var UI = {
 					}
 				}
 			}
-			if (tabType == "popup" && !Utils.isSafariBrowser()) {
-				ext.windows.createPopup(url, onOpen);
-			} else {
-				//create new tab in last focused or new window
-				ext.windows.getOrCreate(function (win) {
-					win.openTab(url, inBackground, onOpen);
-				}, isExtensionTab);
-			}
+
+			// Create new tab in last focused or new window
+			adguard.tabs.create({
+				url: url,
+				type: type || 'normal',
+				active: !inBackground
+			}, callback);
 		});
 	},
 
@@ -249,24 +246,18 @@ var UI = {
 		var filtersDownloadUrl = ext.getURL("pages/filter-download.html");
 		var thankyouUrl = ext.getURL("pages/thankyou.html");
 
-		ext.windows.getLastFocused(function (win) {
-
-			win.getAllTabs(function (tabs) {
-
-				for (var i = 0; i < tabs.length; i++) {
-					var tab = tabs[i];
-					if (tab.url == filtersDownloadUrl || tab.url == thankyouUrl) {
-						if (tab.active) {
-							tab.activate();
-						}
-						if (tab.url != thankyouUrl) {
-							tab.reload(thankyouUrl);
-						}
-						return;
+		adguard.tabs.getAll(function (tabs) {
+			for (var i = 0; i < tabs.length; i++) {
+				var tab = tabs[i];
+				if (tab.url === filtersDownloadUrl || tab.url === thankyouUrl) {
+					adguard.tabs.activate(tab.tabId);
+					if (tab.url !== thankyouUrl) {
+						adguard.tabs.reload(tab.tabId, thankyouUrl);
 					}
+					return;
 				}
-				win.openTab(thankyouUrl);
-			});
+			}
+			adguard.tabs.create({url: thankyouUrl});
 		});
 	},
 
@@ -276,41 +267,33 @@ var UI = {
 	},
 
 	showAlertMessagePopup: function (title, text, showForAdguardTab) {
-		ext.windows.getLastFocused(function (win) {
-			win.getActiveTab(function (tab) {
-				if (tab) {
-					if (!showForAdguardTab && framesMap.isTabAdguardDetected(tab)) {
-						return;
-					}
-					tab.sendMessage({
-						type: 'show-alert-popup',
-						title: title,
-						text: text
-					});
-				}
+		adguard.tabs.getActive(function (tab) {
+			if (!showForAdguardTab && framesMap.isTabAdguardDetected(tab)) {
+				return;
+			}
+			adguard.tabs.sendMessage(tab.tabId, {
+				type: 'show-alert-popup',
+				title: title,
+				text: text
 			});
 		});
 	},
 
 	openFilteringLog: function (tabId) {
-		UI.openTab("pages/log.html" + (tabId ? "?tabId=" + tabId : ""), {activateSameTab: true, tabType: "popup"});
+		UI.openTab("pages/log.html" + (tabId ? "?tabId=" + tabId : ""), {activateSameTab: true, type: "popup"});
 	},
 
 	openCurrentTabFilteringLog: function () {
-		ext.windows.getLastFocused(function (win) {
-			win.getActiveTab(function (tab) {
-				if (tab) {
-					var tabInfo = filteringLog.getTabInfo(tab);
-					var tabId = tabInfo ? tabInfo.tabId : null;
-					UI.openFilteringLog(tabId);
-				}
-			});
+		adguard.tabs.getActive(function (tab) {
+			var tabInfo = filteringLog.getTabInfo(tab);
+			var tabId = tabInfo ? tabInfo.tabId : null;
+			UI.openFilteringLog(tabId);
 		});
 	},
 
 	openAssistant: function (selectElement) {
-		this._getCurrentTab(function (tab) {
-			tab.sendMessage({type: 'initAssistant', options: {selectElement: selectElement}});
+		adguard.tabs.getActive(function (tab) {
+			adguard.tabs.sendMessage(tab.tabId, {type: 'initAssistant', options: {selectElement: selectElement}});
 		});
 	},
 
@@ -321,8 +304,8 @@ var UI = {
 	},
 
 	reloadCurrentTab: function (url) {
-		this._getCurrentTab(function (tab) {
-			tab.reload(url);
+		adguard.tabs.getActive(function (tab) {
+			adguard.tabs.reload(tab.tabId, url);
 		});
 	},
 
@@ -471,34 +454,7 @@ var UI = {
 	},
 
 	getAllOpenedTabs: function (callback) {
-
-		var openedWindows = [];
-		var openedTabs = [];
-
-		var getWindowTabs = function (wnd) {
-			var dfd = new Promise();
-			wnd.getAllTabs(function (tabs) {
-				openedTabs = openedTabs.concat(tabs);
-				dfd.resolve();
-			});
-			return dfd;
-		};
-
-		var wndDfd = new Promise();
-		ext.windows.getAll(function (windows) {
-			openedWindows = openedTabs.concat(windows);
-			wndDfd.resolve();
-		});
-
-		wndDfd.then(function () {
-			var dfds = [];
-			for (var i = 0; i < openedWindows.length; i++) {
-				dfds.push(getWindowTabs(openedWindows[i]));
-			}
-			Promise.all(dfds).then(function () {
-				callback(openedTabs);
-			});
-		});
+		adguard.tabs.getAll(callback);
 	},
 
 	bindEvents: function () {
@@ -506,7 +462,7 @@ var UI = {
 		//update icon on event received
 		EventNotifier.addListener(function (event, tab, reset) {
 
-			if (event != EventNotifierTypes.UPDATE_TAB_BUTTON_STATE || !tab) {
+			if (event !== EventNotifierTypes.UPDATE_TAB_BUTTON_STATE || !tab) {
 				return;
 			}
 
@@ -522,7 +478,7 @@ var UI = {
 		// Update icon on ads blocked
 		EventNotifier.addListener(function (event, rule, tab, blocked) {
 
-			if (event != EventNotifierTypes.ADS_BLOCKED || !tab) {
+			if (event !== EventNotifierTypes.ADS_BLOCKED || !tab) {
 				return;
 			}
 
@@ -535,34 +491,20 @@ var UI = {
 
 		// Update context menu on change user settings
 		EventNotifier.addListener(function (event, setting) {
-			if (event == EventNotifierTypes.CHANGE_USER_SETTINGS && setting == userSettings.settings.DISABLE_SHOW_CONTEXT_MENU) {
-				ext.windows.getLastFocused(function (win) {
-					win.getActiveTab(function (tab) {
-						UI.updateTabContextMenu(tab);
-					});
+			if (event === EventNotifierTypes.CHANGE_USER_SETTINGS && setting === userSettings.settings.DISABLE_SHOW_CONTEXT_MENU) {
+				adguard.tabs.getActive(function (tab) {
+					UI.updateTabContextMenu(tab);
 				});
 			}
 		});
 
-		//update tab icon while loading
-		ext.tabs.onLoading.addListener(function (tab) {
+		// Update tab icon while loading
+		adguard.tabs.onUpdated.addListener(function (tab) {
 			UI.updateTabIconAndContextMenu(tab);
 		});
-		//update tab icon on completed
-		ext.tabs.onCompleted.addListener(function (tab) {
-			UI.updateTabIconAndContextMenu(tab);
-		});
-		//update tab icon on active tab change
-		ext.tabs.onActivated.addListener(function (tab) {
+		// Update tab icon on active tab change
+		adguard.tabs.onActivated.addListener(function (tab) {
 			UI.updateTabIconAndContextMenu(tab, true);
-		});
-		//update tab icon on window focus change
-		ext.windows.onFocusChanged.addListener(function () {
-			ext.windows.getLastFocused(function (win) {
-				win.getActiveTab(function (tab) {
-					UI.updateTabIconAndContextMenu(tab, true);
-				});
-			});
 		});
 	},
 
@@ -571,14 +513,6 @@ var UI = {
 			EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTERS_SHOW_POPUP, true, updatedFilters);
 		}, function () {
 			EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTERS_SHOW_POPUP, false);
-		});
-	},
-
-	_getCurrentTab: function (callback) {
-		ext.tabs.getLastFocused(function (tab) {
-			if (tab && callback) {
-				callback(tab);
-			}
 		});
 	}
 };

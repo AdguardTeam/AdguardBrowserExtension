@@ -34,15 +34,11 @@ antiBannerService.init({
 });
 filterRulesHitCount.setAntiBannerService(antiBannerService);
 
-var framesMap = new FramesMap(antiBannerService, BrowserTabs);
-//cleanup stored frames
-ext.tabs.onRemoved.addListener(function (tab) {
-    framesMap.removeFrame(tab);
-});
+var framesMap = new FramesMap(antiBannerService);
 
 var adguardApplication = new AdguardApplication(framesMap);
 
-var filteringLog = new FilteringLog(BrowserTabs, framesMap, UI);
+var filteringLog = new FilteringLog(framesMap, UI);
 
 var webRequestService = new WebRequestService(framesMap, antiBannerService, filteringLog, adguardApplication);
 
@@ -50,9 +46,9 @@ var webRequestService = new WebRequestService(framesMap, antiBannerService, filt
 var contentMessageHandler = new ContentMessageHandler();
 contentMessageHandler.init(antiBannerService, webRequestService, framesMap, adguardApplication, filteringLog, UI);
 contentMessageHandler.setSendMessageToSender(function (sender, message) {
-    sender.tab.sendMessage(message);
+    adguard.tabs.sendMessage(sender.tab.tabId, message);
 });
-ext.onMessage.addListener(function (message, sender, sendResponse) {
+adguard.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     var response = contentMessageHandler.handleMessage(message, sender, sendResponse);
     var async = response === true;
     if (!async) {
@@ -63,30 +59,30 @@ ext.onMessage.addListener(function (message, sender, sendResponse) {
 });
 
 //record opened tabs
-UI.getAllOpenedTabs(function (tabs) {
+adguard.tabs.getAll(function (tabs) {
     for (var i = 0; i < tabs.length; i++) {
         var tab = tabs[i];
         framesMap.recordFrame(tab, 0, tab.url, RequestTypes.DOCUMENT);
-        framesMap.checkTabIncognitoMode(tab);
         UI.updateTabIconAndContextMenu(tab);
     }
 });
 UI.bindEvents();
 
 //locale detect
-ext.tabs.onCompleted.addListener(function (tab) {
-    antiBannerService.checkTabLanguage(tab.id, tab.url);
+adguard.tabs.onUpdated.addListener(function (tab) {
+    if (tab.status === 'complete') {
+        antiBannerService.checkTabLanguage(tab.tabId, tab.url);
+    }
 });
 
 //init filtering log
 filteringLog.synchronizeOpenTabs();
-ext.tabs.onCreated.addListener(function (tab) {
+adguard.tabs.onCreated.addListener(function (tab) {
     filteringLog.addTab(tab);
-    framesMap.checkTabIncognitoMode(tab);
 });
-ext.tabs.onUpdated.addListener(function (tab) {
+adguard.tabs.onUpdated.addListener(function (tab) {
     filteringLog.updateTab(tab);
 });
-ext.tabs.onRemoved.addListener(function (tab) {
+adguard.tabs.onRemoved.addListener(function (tab) {
     filteringLog.removeTab(tab);
 });

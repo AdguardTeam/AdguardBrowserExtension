@@ -15,28 +15,33 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var StringUtils = require('../../lib/utils/common').StringUtils;
 var LogEvents = require('../../lib/utils/common').LogEvents;
 var UrlUtils = require('../../lib/utils/url').UrlUtils;
 var EventNotifier = require('../../lib/utils/notifier').EventNotifier;
-var AntiBannerFiltersId = require('../../lib/utils/common').AntiBannerFiltersId;
 
-var FilteringLog = exports.FilteringLog = function (BrowserTabsClass, framesMap, UI) {
-	this.tabsInfo = new BrowserTabsClass();
+var FilteringLog = exports.FilteringLog = function (framesMap, UI) {
+	this.tabsInfo = Object.create(null);
 	this.framesMap = framesMap;
 	this.UI = UI;
-	this.lastTabId = 1;
 	this.openedFilteringLogsPage = 0;
 };
 
 FilteringLog.REQUESTS_SIZE_PER_TAB = 1000;
 
+FilteringLog.prototype.tabsInfoCollection = function () {
+	var result = [];
+	for (var tabId in this.tabsInfo) {
+		result.push(this.tabsInfo[tabId]);
+	}
+	return result;
+};
+
 FilteringLog.prototype.synchronizeOpenTabs = function (callback) {
 	var openTabsCallback = function (tabs) {
-		var tabsToRemove = this.tabsInfo.collection().slice(0);
+		var tabsToRemove = this.tabsInfoCollection();
 		for (var i = 0; i < tabs.length; i++) {
 			var openTab = tabs[i];
-			var tabInfo = this.tabsInfo.get(openTab);
+			var tabInfo = this.tabsInfo[openTab.tabId];
 			if (!tabInfo) {
 				//add tab
 				this.addTab(openTab);
@@ -67,11 +72,11 @@ FilteringLog.prototype.addTab = function (tab) {
 };
 
 FilteringLog.prototype.removeTab = function (tab) {
-	var tabInfo = this.tabsInfo.get(tab);
+	var tabInfo = this.tabsInfo[tab.tabId];
 	if (tabInfo) {
 		EventNotifier.notifyListeners(LogEvents.TAB_CLOSE, this.serializeTabInfo(tabInfo));
 	}
-	this.tabsInfo.remove(tab);
+	delete this.tabsInfo[tab.tabId];
 };
 
 FilteringLog.prototype.updateTab = function (tab) {
@@ -82,31 +87,23 @@ FilteringLog.prototype.updateTab = function (tab) {
 };
 
 FilteringLog.prototype._updateTabInfo = function (tab) {
-	var tabInfo = this.tabsInfo.get(tab) || Object.create(null);
-	if (!tabInfo.tabId) {
-		tabInfo.tabId = this.lastTabId++;
-	}
+	var tabInfo = this.tabsInfo[tab.tabId] || Object.create(null);
+	tabInfo.tabId = tab.tabId;
 	tabInfo.tab = tab;
 	tabInfo.isHttp = UrlUtils.isHttpRequest(tab.url);
-	this.tabsInfo.set(tab, tabInfo);
+	this.tabsInfo[tab.tabId] =  tabInfo;
 	return tabInfo;
 };
 
 FilteringLog.prototype.reloadTabById = function (tabId) {
-	var tabInfo = this.getTabInfoById(tabId);
+	var tabInfo = this.tabsInfo[tabId];
 	if (tabInfo) {
-		tabInfo.tab.reload();
+		adguard.tabs.reload(tabInfo.tabId);
 	}
 };
 
 FilteringLog.prototype.getTabInfoById = function (tabId) {
-	var tabsInfo = this.tabsInfo.collection();
-	for (var i = 0; i < tabsInfo.length; i++) {
-		if (tabsInfo[i].tabId == tabId) {
-			return tabsInfo[i];
-		}
-	}
-	return null;
+	return this.tabsInfo[tabId];
 };
 
 FilteringLog.prototype.getTabFrameInfoById = function (tabId) {
@@ -115,12 +112,12 @@ FilteringLog.prototype.getTabFrameInfoById = function (tabId) {
 };
 
 FilteringLog.prototype.getTabInfo = function (tab) {
-	var tabInfo = this.tabsInfo.get(tab);
+	var tabInfo = this.tabsInfo[tab.tabId];
 	return this.serializeTabInfo(tabInfo);
 };
 
 FilteringLog.prototype.clearEventsForTab = function (tab) {
-	var tabInfo = this.tabsInfo.get(tab);
+	var tabInfo = this.tabsInfo[tab.tabId];
 	if (!tabInfo) {
 		return;
 	}
@@ -131,11 +128,11 @@ FilteringLog.prototype.clearEventsForTab = function (tab) {
 
 FilteringLog.prototype.addEvent = function (tab, requestUrl, frameUrl, requestType, requestRule) {
 
-	if (this.openedFilteringLogsPage == 0) {
+	if (this.openedFilteringLogsPage === 0) {
 		return;
 	}
 
-	var tabInfo = this.tabsInfo.get(tab);
+	var tabInfo = this.tabsInfo[tab.tabId];
 	if (!tabInfo) {
 		return;
 	}
@@ -186,9 +183,9 @@ FilteringLog.prototype.onOpenFilteringLogPage = function () {
 
 FilteringLog.prototype.onCloseFilteringLogPage = function () {
 	this.openedFilteringLogsPage = Math.max(this.openedFilteringLogsPage - 1, 0);
-	if (this.openedFilteringLogsPage == 0) {
+	if (this.openedFilteringLogsPage === 0) {
 		//clear events
-		var tabsInfo = this.tabsInfo.collection();
+		var tabsInfo = this.tabsInfoCollection();
 		for (var i = 0; i < tabsInfo.length; i++) {
 			delete tabsInfo[i].filteringEvents;
 		}

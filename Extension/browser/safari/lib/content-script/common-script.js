@@ -1,5 +1,5 @@
-/* global SafariBrowserTab */
-/* global BrowserTab */
+/* global safari */
+
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -16,13 +16,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var BaseEvent, OnMessageEvent, SendMessageFunction, I18NSupport;
+var adguard = {};
 
 (function () {
 
+	'use strict';
+
 	// Safari variable may be undefined in a frame
 	(function () {
-		if (typeof safari === "undefined" && typeof chrome === "undefined") {
+		if (typeof safari === 'undefined') {
 			var w = window;
 			while (w.safari === undefined && w !== window.top) {
 				w = w.parent;
@@ -31,160 +33,115 @@ var BaseEvent, OnMessageEvent, SendMessageFunction, I18NSupport;
 		}
 	})();
 
-	// Event implementation
-	BaseEvent = function (target, eventName, capture) {
+	// Message passing implementation
+	adguard.runtimeImpl = (function () {
 
-		this.eventListeners = [];
-		this.specialEventListeners = [];
+		var sendMessageNextRequestId = 1;
 
-		this.eventTarget = target;
-		this.eventName = eventName;
-		this.eventCapture = capture;
-	};
-	BaseEvent.prototype = {
+		var sendMessage = function (dispatcher, eventTarget, message, responseCallback) {
 
-		addListener: function (listener) {
+			var requestId = sendMessageNextRequestId++;
 
-			var specialListener = this.specifyListener(listener);
-			this.eventListeners.push(listener);
-			this.specialEventListeners.push(specialListener);
-
-			this.eventTarget.addEventListener(this.eventName, specialListener, this.eventCapture);
-		},
-
-		removeListener: function (listener) {
-			var index = this.eventListeners.indexOf(listener);
-			if (index >= 0) {
-				this.eventTarget.removeEventListener(this.eventName, this.specialEventListeners[index], this.eventCapture);
-				this.eventListeners.splice(index, 1);
-				this.specialEventListeners.splice(index, 1);
-			}
-		}
-	};
-
-	// OnMessage event implementation
-	OnMessageEvent = function (target) {
-		BaseEvent.call(this, target, "message", false);
-	};
-
-	LanguageUtils.inherit(OnMessageEvent, BaseEvent);
-	OnMessageEvent.prototype.specifyListener = function (listener) {
-		return function (event) {
-
-			if (event.name.indexOf("request-") != 0) {
-				return;
+			if (typeof responseCallback === 'function') {
+				var responseListener = function (event) {
+					if (event.name === "response-" + requestId) {
+						eventTarget.removeEventListener('message', responseListener, false);
+						responseCallback(event.message);
+					}
+				};
+				eventTarget.addEventListener('message', responseListener, false);
 			}
 
-			var sender = {};
-			var dispatcher;
-
-			if ("BrowserTab" in window && "SafariBrowserTab" in window &&
-					event.target instanceof SafariBrowserTab) {
-
-				dispatcher = event.target.page;
-				sender.tab = new BrowserTab(event.target);
-			} else {
-				dispatcher = event.target.tab;
-				sender.tab = null;
-			}
-
-			listener(event.message, sender, function (message) {
-				dispatcher.dispatchMessage("response-" + event.name.substr(8), message);
-			});
+			dispatcher.dispatchMessage('request-' + requestId, message);
 		};
-	};
 
+		var onMessage = {
 
-	// Messaging implementation
-	var nextRequestNumber = 0;
+			addListener: function (eventTarget, callback) {
 
-	SendMessageFunction = function (message, responseCallback) {
-		var requestId = ++nextRequestNumber;
-		if (responseCallback) {
-			var eventTarget = this._eventTarget;
-			var responseListener = function (event) {
-				if (event.name == "response-" + requestId) {
-					eventTarget.removeEventListener("message", responseListener, false);
-					responseCallback(event.message);
-				}
-			};
-			eventTarget.addEventListener("message", responseListener, false);
-		}
-		this._messageDispatcher.dispatchMessage("request-" + requestId, message);
-	};
+				eventTarget.addEventListener('message', function (event) {
+
+					if (event.name.indexOf('request-') !== 0) {
+						return;
+					}
+
+					callback(event);
+
+				}, false);
+			}
+		};
+
+		return {
+			sendMessage: sendMessage,
+			onMessage: onMessage
+		};
+
+	})();
 
 	// I18n implementation
-	var I18n = function () {
-		this._uiLocale = this._getLocale();
-		this._messages = null;
-		this._defaultMessages = null;
-	};
+	adguard.i18n = (function () {
 
-	I18n.prototype = {
+		var defaultLocale = 'en';
+		var supportedLocales = ['ru', 'en', 'tr', 'uk', 'de', 'pl', 'pt_BR', 'pt_PT', 'ko', 'zh_CN', 'sr', 'fr', 'sk', 'hy', 'es', 'es_419', 'it', 'id'];
 
-		defaultLocale: 'en',
+		var _messages = null;
+		var _defaultMessages = null;
 
-		supportedLocales: ['ru', 'en', 'tr', 'uk', 'de', 'pl', 'pt_BR', 'pt_PT', 'ko', 'zh_CN', 'sr', 'fr', 'sk', 'hy', 'es', 'es_419', 'it', 'id'],
-
-		_getLocale: function () {
+		var _uiLocale = (function () {
 			var prefix = navigator.language;
 			var parts = prefix.replace('-', '_').split('_');
 			var locale = parts[0].toLowerCase();
 			if (parts[1]) {
 				locale += '_' + parts[1].toUpperCase();
 			}
-			if (this.supportedLocales.indexOf(locale) < 0) {
+			if (supportedLocales.indexOf(locale) < 0) {
 				locale = parts[0];
 			}
-			if (this.supportedLocales.indexOf(locale) < 0) {
-				locale = "en";
+			if (supportedLocales.indexOf(locale) < 0) {
+				locale = defaultLocale;
 			}
 			return locale;
-		},
+		})();
 
-		_getMessages: function (locale) {
+		function getMessages(locale) {
 			var xhr = new XMLHttpRequest();
-			xhr.open("GET", this._getMessageFile(locale), false);
+			xhr.open("GET", safari.extension.baseURI + "_locales/" + locale + "/messages.json", false);
 			try {
 				xhr.send();
 			} catch (e) {
 				return Object.create(null);
 			}
 			return JSON.parse(xhr.responseText);
-		},
+		}
 
-		_getMessageFile: function (locale) {
-			return safari.extension.baseURI + "_locales/" + locale + "/messages.json";
-		},
+		var getMessage = function (msgId, substitutions) {
 
-		getMessage: function (msgId, substitutions) {
-
-			if (msgId == "@@ui_locale") {
-				return this.getUILanguage();
+			if (msgId === "@@ui_locale") {
+				return getUILanguage();
 			}
 
-			if (!this._messages) {
-				this._messages = this._getMessages(this._uiLocale);
-				if (this._uiLocale == this.defaultLocale) {
-					this._defaultMessages = this._messages;
+			if (!_messages) {
+				_messages = getMessages(_uiLocale);
+				if (_uiLocale === defaultLocale) {
+					_defaultMessages = _messages;
 				}
 			}
 
 			// Load messages for default locale
-			if (!this._defaultMessages) {
-				this._defaultMessages = this._getMessages(this.defaultLocale);
+			if (!_defaultMessages) {
+				_defaultMessages = getMessages(defaultLocale);
 			}
 
-			return this._getI18nMessage(msgId, substitutions);
-		},
-		
-		getUILanguage: function() {
-			return this._uiLocale;
-		},
+			return _getI18nMessage(msgId, substitutions);
+		};
 
-		_getI18nMessage: function (msgId, substitutions) {
+		var getUILanguage = function () {
+			return _uiLocale;
+		};
 
-			var msg = this._messages[msgId] || this._defaultMessages[msgId];
+		function _getI18nMessage(msgId, substitutions) {
+
+			var msg = _messages[msgId] || _defaultMessages[msgId];
 			if (!msg) {
 				return "";
 			}
@@ -196,12 +153,15 @@ var BaseEvent, OnMessageEvent, SendMessageFunction, I18NSupport;
 
 			if (substitutions && substitutions.length > 0) {
 				msgstr = msgstr.replace(/\$(\d+)/g, function (match, number) {
-					return typeof substitutions[number - 1] != "undefined" ? substitutions[number - 1] : match;
+					return typeof substitutions[number - 1] !== 'undefined' ? substitutions[number - 1] : match;
 				});
 			}
 			return msgstr;
 		}
-	};
 
-	I18NSupport = I18n;
+		return {
+			getUILanguage: getUILanguage,
+			getMessage: getMessage
+		};
+	})();
 })();

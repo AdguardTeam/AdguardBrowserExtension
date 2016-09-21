@@ -16,12 +16,12 @@
  */
 if (window.top === window && document.documentElement instanceof HTMLElement) {
 
-    var adguard;
+    var adguardAssistant;
 
     //save right-clicked element for assistant
     var clickedEl = null;
     document.addEventListener('mousedown', function (event) {
-        if (event.button == 2) {
+        if (event.button === 2) {
             clickedEl = event.target;
         }
     });
@@ -29,10 +29,10 @@ if (window.top === window && document.documentElement instanceof HTMLElement) {
     contentPage.onMessage.addListener(function (message) {
         switch (message.type) {
             case 'initAssistant':
-                if (adguard) {
-                    adguard.destroy();
+                if (adguardAssistant) {
+                    adguardAssistant.destroy();
                 } else {
-                    adguard = new AdguardAssistant(balalaika);
+                    adguardAssistant = new AdguardAssistant(balalaika);
                 }
                 var selectedElement;
                 var options = message.options;
@@ -41,12 +41,12 @@ if (window.top === window && document.documentElement instanceof HTMLElement) {
                 } else if (clickedEl && options.selectElement) {
                     selectedElement = clickedEl;
                 }
-                adguard.init({selectedElement: selectedElement});
+                adguardAssistant.init({selectedElement: selectedElement});
                 break;
             case 'destroyAssistant':
-                if (adguard) {
-                    adguard.destroy();
-                    adguard = null;
+                if (adguardAssistant) {
+                    adguardAssistant.destroy();
+                    adguardAssistant = null;
                 }
                 break;
         }
