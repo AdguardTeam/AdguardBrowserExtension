@@ -15,7 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var {Cc, Ci, Cu, Cm, Cr, components} = require('chrome');
+
+/* global require, exports */
+var {Cc, Ci, Cu, Cm, Cr, components} = require('chrome'); // jshint ignore:line
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
@@ -31,8 +33,6 @@ var {EventNotifier} = require('./utils/notifier');
 var {EventNotifierTypes,RequestTypes} = require('./utils/common');
 var {UrlUtils} = require('./utils/url');
 var {Utils} = require('./utils/browser-utils');
-var {WebRequestService} = require('./filter/request-blocking');
-var {WorkaroundUtils} = require('./utils/workaround');
 
 /**
  * Helper object to work with web requests.
@@ -91,6 +91,8 @@ var WebRequestHelper = exports.WebRequestHelper = {
                 return RequestTypes.FONT;
             case t.TYPE_MEDIA:
                 return RequestTypes.MEDIA;
+            case t.TYPE_WEBSOCKET:
+                return RequestTypes.WEBSOCKET;
             default:
                 return Utils.parseContentTypeFromUrlPath(URI.path) || RequestTypes.OTHER;
         }

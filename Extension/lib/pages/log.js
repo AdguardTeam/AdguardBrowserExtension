@@ -302,7 +302,7 @@ PageController.prototype = {
 
 		var rows = this.logTable.children();
 
-		//filters not set
+		// Filters not set
 		if (!this.searchRequest && 
 			this.searchTypes.length === 0 &&
 			!this.searchThirdParty &&
@@ -400,7 +400,7 @@ PageController.prototype = {
 
 		var filterData = el.data();
 
-		var show = !this.searchRequest || StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest);
+		var show = !this.searchRequest || StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest); 
 		show &= this.searchTypes.length === 0 || this.searchTypes.indexOf(filterData.requestType) >= 0;
 
 		var checkboxes = !(this.searchWhitelisted || this.searchBlocked || this.searchThirdParty);
@@ -466,7 +466,7 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 	template.find('[attr-text="requestUrl"]').text(filteringEvent.requestUrl);
 	template.find('[attr-text="requestType"]').text(RequestWizard.getRequestType(filteringEvent.requestType));
 	template.find('[attr-text="frameDomain"]').text(RequestWizard.getSource(filteringEvent.frameDomain));
-	if (!filteringEvent.frameDomain || filteringEvent.frameDomain == null) {
+	if (!filteringEvent.frameDomain || filteringEvent.frameDomain === null) {
 		template.find('[attr-text="frameDomain"]').closest('.adg-modal-window-locking-info-left-row').hide();
 	}
 
@@ -496,7 +496,7 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 				imagePreview.attr('src', filteringEvent.requestUrl);
 				imagePreview.parent().show();
 			}
-		}
+		};
 	}
 
 	//bind events
@@ -732,6 +732,8 @@ RequestWizard.getRequestType = function (requestType) {
 			return 'Media';
 		case 'FONT':
 			return 'Font';
+		case 'WEBSOCKET':
+			return 'WebSocket';
 		case 'OTHER':
 			return 'Other';
 	}
