@@ -96,6 +96,18 @@
      */
     /*global initPageMessageListener, overrideWebSocket*/
     var initWebSocketWrapper = function () {
+        // This is chrome-specific feature for blocking WebSocket connections
+        // overrideWebSocket function is not defined in case of other browsers
+        if (typeof overrideWebSocket !== 'function') {
+            return;
+        }
+
+        // Only for dynamically created frames and http/https documents.
+        if (!isHtml() && 
+            window.location.href !== "about:blank") {
+            return;
+        }
+
         // WebSockets are broken in old versions of chrome
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/273
         var userAgent = navigator.userAgent.toLowerCase();
@@ -106,28 +118,24 @@
                 return;
             }
         }
-
-        // Only for dynamically created frames and http/https documents.
-        if (!isHtml() && 
-            window.location.href !== "about:blank") {
+        
+        if (userAgent.indexOf('firefox') >= 0) {
+            // Explicit check, we must not go further in case of Firefox
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/379
             return;
         }
 
-        // This is chrome-specific feature for blocking WebSocket connections
-        // overrideWebSocket function is not defined in case of other browsers
-        if (typeof overrideWebSocket == 'function') {
-            initPageMessageListener();
+        initPageMessageListener();
 
-            var content = "try {\n";
-            content += '(' + overrideWebSocket.toString() + ')();';
-            content += "\n} catch (ex) { console.error('Error executing AG js: ' + ex); }";
+        var content = "try {\n";
+        content += '(' + overrideWebSocket.toString() + ')();';
+        content += "\n} catch (ex) { console.error('Error executing AG js: ' + ex); }";
 
-            var script = document.createElement("script");
-            script.setAttribute("type", "text/javascript");
-            script.textContent = content;
+        var script = document.createElement("script");
+        script.setAttribute("type", "text/javascript");
+        script.textContent = content;
 
-            (document.head || document.documentElement).appendChild(script);
-        }
+        (document.head || document.documentElement).appendChild(script);
     };
 
     /**
