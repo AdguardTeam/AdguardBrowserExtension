@@ -103,6 +103,43 @@ QUnit.test("Convert first-party rule", function(assert) {
     assert.equal("ignore-previous-rules", convertedRule.action.type);
 });
 
+QUnit.test("Convert websocket rule", function(assert) {
+    var ruleText = "||test.com^$websocket";
+    var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    assert.equal(1, result.convertedCount);
+    assert.equal(0, result.errorsCount);
+
+    var converted = JSON.parse(result.converted);
+    assert.equal(1, converted.length);
+
+    var convertedRule = converted[0];
+    assert.equal(URL_FILTER_REGEXP_START_URL + "test\\.com[/:&?]?", convertedRule.trigger["url-filter"]);
+    assert.notOk(convertedRule.trigger["if-domain"]);
+    assert.notOk(convertedRule.trigger["unless-domain"]);
+    assert.notOk(convertedRule.trigger["load-type"]);
+    assert.ok(convertedRule.trigger["resource-type"]);
+    assert.equal("raw", convertedRule.trigger["resource-type"][0]);
+});
+
+QUnit.test("Convert ~script rule", function(assert) {
+    var ruleText = "||test.com^$~script,third-party";
+    var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    assert.equal(1, result.convertedCount);
+    assert.equal(0, result.errorsCount);
+
+    var converted = JSON.parse(result.converted);
+    assert.equal(1, converted.length);
+
+    var convertedRule = converted[0];
+    assert.equal(URL_FILTER_REGEXP_START_URL + "test\\.com[/:&?]?", convertedRule.trigger["url-filter"]);
+    assert.notOk(convertedRule.trigger["if-domain"]);
+    assert.notOk(convertedRule.trigger["unless-domain"]);
+    assert.ok(convertedRule.trigger["load-type"]);
+    assert.ok(convertedRule.trigger["resource-type"]);
+    assert.equal(-1, convertedRule.trigger["resource-type"].indexOf("script"));
+    assert.equal("third-party", convertedRule.trigger["load-type"][0]);
+});
+
 QUnit.test("Convert subdocument first-party rule", function(assert) {
     var ruleText = "||youporn.com^$subdocument,~third-party";
     var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
@@ -130,7 +167,7 @@ QUnit.test("Convert subdocument third-party rule", function(assert) {
     assert.equal("block", convertedRule.action.type);
 });
 
-QUnit.test("Convert convert rule with empty regexp", function(assert) {
+QUnit.test("Convert rule with empty regexp", function(assert) {
     var ruleText = "@@$image,domain=moonwalk.cc";
     var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
     assert.equal(1, result.convertedCount);
