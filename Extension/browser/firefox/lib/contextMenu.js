@@ -15,7 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 var self = require('sdk/self');
-var tabs = require('sdk/tabs');
 var userSettings = require('./utils/user-settings').userSettings;
 var EventNotifier = require('./utils/notifier').EventNotifier;
 var EventNotifierTypes = require('./utils/common').EventNotifierTypes;

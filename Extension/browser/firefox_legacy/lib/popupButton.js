@@ -23,7 +23,6 @@ var versionChecker = Cc["@mozilla.org/xpcom/version-comparator;1"].getService(Ci
 
 var self = require('sdk/self');
 var system = require('sdk/system');
-var tabs = require('sdk/tabs');
 var unload = require('sdk/system/unload');
 
 var {UiUtils, WindowObserver} = require('./uiUtils');
