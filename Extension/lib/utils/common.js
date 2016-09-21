@@ -19,9 +19,9 @@
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
-var Log = require('../../lib/utils/log').Log;
+var Log = require('../../lib/utils/log').Log; // jshint ignore:line
 
-var StringUtils = exports.StringUtils = {
+var StringUtils = exports.StringUtils = { // jshint ignore:line
 
     isEmpty: function (str) {
         return !str || str.trim().length === 0;
@@ -178,7 +178,7 @@ var CollectionUtils = exports.CollectionUtils = {
     }
 };
 
-var EventNotifierTypes = exports.EventNotifierTypes = {
+var EventNotifierTypes = exports.EventNotifierTypes = { // jshint ignore:line
     ADD_RULE: "event.add.rule",
     ADD_RULES: "event.add.rules",
     REMOVE_RULE: "event.remove.rule",
@@ -208,7 +208,7 @@ var EventNotifierTypes = exports.EventNotifierTypes = {
 /**
  * Request types enumeration
  */
-var RequestTypes = exports.RequestTypes = {
+var RequestTypes = exports.RequestTypes = { // jshint ignore:line
 
     /**
      * Document that is loaded for a top-level frame
@@ -228,12 +228,13 @@ var RequestTypes = exports.RequestTypes = {
     OBJECT_SUBREQUEST: "OBJECT-SUBREQUEST",
     MEDIA: "MEDIA",
     FONT: "FONT",
+    WEBSOCKET: "WEBSOCKET",
+    OTHER: "OTHER",
 
     /**
      * Synthetic request type for requests detected as pop-ups
      */
     POPUP: "POPUP",
-    OTHER: "OTHER",
 
     /**
      * Checks if loaded element could be visible to user
@@ -249,7 +250,7 @@ var RequestTypes = exports.RequestTypes = {
     }
 };
 
-var AntiBannerFiltersId = exports.AntiBannerFiltersId = {
+var AntiBannerFiltersId = exports.AntiBannerFiltersId = { // jshint ignore:line
     USER_FILTER_ID: 0,
     ENGLISH_FILTER_ID: 2,
     TRACKING_FILTER_ID: 3,
@@ -263,7 +264,7 @@ var AntiBannerFiltersId = exports.AntiBannerFiltersId = {
     FANBOY_ENHANCED: 215
 };
 
-var LogEvents = exports.LogEvents = {
+var LogEvents = exports.LogEvents = { // jshint ignore:line
     TAB_ADDED: 'log.tab.added',
     TAB_CLOSE: 'log.tab.close',
     TAB_UPDATE: 'log.tab.update',
@@ -271,7 +272,7 @@ var LogEvents = exports.LogEvents = {
     EVENT_ADDED: 'log.event.added'
 };
 
-var FilterUtils = exports.FilterUtils = {
+var FilterUtils = exports.FilterUtils = { // jshint ignore:line
 
     isUserFilter: function (filter) {
         return filter.filterId == AntiBannerFiltersId.USER_FILTER_ID;
@@ -295,7 +296,7 @@ var FilterUtils = exports.FilterUtils = {
     }
 };
 
-var StopWatch = exports.StopWatch = function (name) {
+var StopWatch = exports.StopWatch = function (name) { // jshint ignore:line
     this.name = name;
 };
 
