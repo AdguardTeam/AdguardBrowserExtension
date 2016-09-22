@@ -1,9 +1,9 @@
 ! Title: Social media filter
-! Version: 1.0.12.67
+! Version: 1.0.12.82
 ! Name: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2016-09-16T17:00:48.604+03:00
+! TimeUpdated: 2016-09-21T23:00:46.058+03:00
 ! Title: Adguard Social Media Filter
 !
 ! If you do not like numerous «Like» and «Tweet» buttons on all the popular websites on the Internet,
@@ -237,6 +237,8 @@ lj_bookmarklet
 !
 ! Extended CSS rules
 !
+bookdl.org##div[style*="width: 320px; height: 235px;"][-ext-has='div.fb-like-box']
+bookdl.org##div[style$="width:320px;height:235px;"][-ext-has='div.fb-like-box']
 vol.az##.bolmeici > div[class$="tab-menu"][-ext-has='a[href^="#"]:contains(Одноклассники & VK like)']
 golem.de##li[class="text1"][-ext-has='div[class$="social-bar social-sidebar"]']
 gencfb.org##div[class="right_block"][-ext-has='div[class$="socialRightBlock"]']
@@ -298,6 +300,20 @@ softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2146
 ||mimimi.tv/?*=*&_=
 !
+cracked.com##.facebookWrapperModule
+mylifetime.com##.share-this
+motor.ru##.share_btn
+haberkita.com##.n-d-soc-share
+dizifilmdunyasi.org##.sosyal
+dizifilmdunyasi.org##.w2bslikebox
+dizifilmdunyasi.org###sag-facebook
+yeknot.com##.entry-share
+720pizle.com##.film-icerik-paylas
+filmizle.film,durdurfilmizle.com##.sosyal
+buzzspor.com##.share_social
+thechive.com##div[data-sumome-share]
+thenextweb.com##.post-share
+switftkey.com##.share
 azdirbeni.net##.dp-share
 esekadam.com##.sosyal_buton
 sempatiklopedi.com##.sosyal_buton
@@ -1378,6 +1394,9 @@ komarovskiy.net##ul[class="social-bookmarks"]
 !
 ! Section contains list general hiding rules
 !
+##.social-share-facebook
+##.social-share-twitter
+##.social-share-google
 ##.vce-share-bar
 ##.et_social_networks
 ##.et_social_facebook
@@ -1428,7 +1447,7 @@ komarovskiy.net##ul[class="social-bookmarks"]
 ###facebook_soc_button
 ###facebooktrend
 ###fb-friends-recent-activity
-~facebook.com,~filmixru.ru,~giftube.com,~junodownload.com,~king.com,~myshared.ru,~thefurnish.ru###fb-root
+~petsplace.nl,~facebook.com,~filmixru.ru,~giftube.com,~junodownload.com,~king.com,~myshared.ru,~thefurnish.ru###fb-root
 ###fbLikeButton
 ~facebook.com###fb_groups
 ###fb_iframe_widget
@@ -1486,7 +1505,7 @@ komarovskiy.net##ul[class="social-bookmarks"]
 ###sharethis-wrapper
 ###sharingfooter
 ###smthemes_share
-~cackle.me,~csmir.kz,~salesdoubler.com.ua###social
+~cackle.me,~csmir.kz,~salesdoubler.com.ua,~tigernet.com###social
 ###social-actions
 ###social-bar-fixed
 ###social-bottom-article
@@ -2072,6 +2091,10 @@ livejournal.com##.b-ljtimes-wrapper
 !
 /wp-content/plugins/facebook-fanbox-popup/*
 !
+ilife99.com##.spu-bg
+ilife99.com##.spu-box
+donanimhaber.com###pnlNoSmTakip
+filmkomedi.com##.dialog-social
 sport.ua##.subscribe-popup
 tehnot.com##.spu-box
 bilecikhaber.com.tr###cm-social-overlay
@@ -2116,6 +2139,8 @@ okino.ua#$#.fader-social { display: none!important; }
 !
 ! Section fixing issues caused by social filter
 !
+! https://forum.adguard.com/index.php?threads/14087/
+@@||kino24x7.com/engine/classes/min/index.php?*/social-likes.min.js
 ! https://forum.adguard.com/index.php?threads/13009/
 @@||facebook.com/*/plugins/$domain=dlh.net
 dlh.net#@#.fb-like
