@@ -308,11 +308,11 @@ var loadAdguardModule = function (modulePath) {
         url = url.replace("data/../lib/" + scriptPath, 'lib/' + scriptPath);
 
         var scope = scopes[moduleName] = {
-            require: function (module) {
-                if (module in sdkModules) {
-                    return sdkModules[module];
+            require: function (moduleItem) {
+                if (moduleItem in sdkModules) {
+                    return sdkModules[moduleItem];
                 }
-                return loadAdguardModule(module);
+                return loadAdguardModule(moduleItem);
             },
             i18n: i18n,
             console: console,
@@ -322,7 +322,7 @@ var loadAdguardModule = function (modulePath) {
         Services.scriptloader.loadSubScript(url, scope);
         return scope.exports;
     } catch (ex) {
-        Cu.reportError('Error while loading module: ' + module);
+        Cu.reportError('Error while loading module: ' + moduleName);
         Cu.reportError(ex);
         throw ex;
     }

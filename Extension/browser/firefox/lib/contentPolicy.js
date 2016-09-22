@@ -33,6 +33,8 @@ var {EventNotifier} = require('./utils/notifier');
 var {EventNotifierTypes,RequestTypes} = require('./utils/common');
 var {UrlUtils} = require('./utils/url');
 var {Utils} = require('./utils/browser-utils');
+var {WebRequestService} = require('./filter/request-blocking'); // jshint ignore:line
+var {WorkaroundUtils} = require('./utils/workaround'); // jshint ignore:line
 
 /**
  * Helper object to work with web requests.
