@@ -15,60 +15,70 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global browser, framesMap, BrowserTab, UrlUtils, RequestTypes, webRequestService */
-var tabsLoading = Object.create(null);
+/* global ext, adguard, framesMap, UrlUtils, RequestTypes, webRequestService */
 
-browser.webNavigation.onCreatedNavigationTarget.addListener(function (details) {
+(function () {
 
-    var sourceTab = new BrowserTab({id: details.sourceTabId});
+	'use strict';
 
-    //don't process this request
-    if (framesMap.isTabAdguardDetected(sourceTab)) {
-        return;
-    }
+	var tabsLoading = Object.create(null);
 
-    var referrerUrl = framesMap.getFrameUrl(sourceTab, 0);
-    if (!UrlUtils.isHttpRequest(referrerUrl)) {
-        return;
-    }
+	function checkPopupBlockedRule(tabId, requestUrl, referrerUrl, sourceTab) {
 
-    tabsLoading[details.tabId] = {
-        referrerUrl: referrerUrl,
-        sourceTab: sourceTab
-    };
+		//is not http request or url of tab isn't ready
+		if (!UrlUtils.isHttpRequest(requestUrl)) {
+			return;
+		}
 
-    checkPopupBlockedRule(details.tabId, details.url, referrerUrl, sourceTab);
-});
+		delete tabsLoading[tabId];
 
-browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+		var requestRule = webRequestService.getRuleForRequest(sourceTab, requestUrl, referrerUrl, RequestTypes.POPUP);
 
-    if (!(tabId in tabsLoading)) {
-        return;
-    }
+		if (webRequestService.isRequestBlockedByRule(requestRule)) {
+			//remove popup tab
+			adguard.tabs.remove(tabId);
+			//append log event and fix log event type from POPUP to DOCUMENT
+			webRequestService.postProcessRequest(sourceTab, requestUrl, referrerUrl, RequestTypes.DOCUMENT, requestRule);
+		}
+	}
 
-    if ("url" in changeInfo) {
-        var tabInfo = tabsLoading[tabId];
-        if (tabInfo) {
-            checkPopupBlockedRule(tabId, tab.url, tabInfo.referrerUrl, tabInfo.sourceTab);
-        }
-    }
-});
+	ext.webNavigation.onCreatedNavigationTarget.addListener(function (details) {
 
-function checkPopupBlockedRule(tabId, requestUrl, referrerUrl, sourceTab) {
+		var sourceTab = {tabId: details.sourceTabId};
 
-    //is not http request or url of tab isn't ready
-    if (!UrlUtils.isHttpRequest(requestUrl)) {
-        return;
-    }
+		// Don't process this request
+		if (framesMap.isTabAdguardDetected(sourceTab)) {
+			return;
+		}
 
-    delete tabsLoading[tabId];
+		var referrerUrl = framesMap.getFrameUrl(sourceTab, 0);
+		if (!UrlUtils.isHttpRequest(referrerUrl)) {
+			return;
+		}
 
-    var requestRule = webRequestService.getRuleForRequest(sourceTab, requestUrl, referrerUrl, RequestTypes.POPUP);
+		var tabId = details.tabId;
+		tabsLoading[tabId] = {
+			referrerUrl: referrerUrl,
+			sourceTab: sourceTab
+		};
 
-    if (webRequestService.isRequestBlockedByRule(requestRule)) {
-        //remove popup tab
-        browser.tabs.remove(tabId);
-        //append log event and fix log event type from POPUP to DOCUMENT
-        webRequestService.postProcessRequest(sourceTab, requestUrl, referrerUrl, RequestTypes.DOCUMENT, requestRule);
-    }
-}
+		checkPopupBlockedRule(tabId, details.url, referrerUrl, sourceTab);
+	});
+
+	adguard.tabs.onUpdated.addListener(function (tab) {
+
+		var tabId = tab.tabId;
+
+		if (!(tabId in tabsLoading)) {
+			return;
+		}
+
+		if (tab.url) {
+			var tabInfo = tabsLoading[tabId];
+			if (tabInfo) {
+				checkPopupBlockedRule(tabId, tab.url, tabInfo.referrerUrl, tabInfo.sourceTab);
+			}
+		}
+	});
+
+})();

@@ -23,14 +23,16 @@ var Utils = require('utils/browser-utils').Utils;
 
 (function () {
 
+    'use strict';
+
     if (Utils.isContentBlockerEnabled()) {
 
         // Subscribe to events which lead to content blocker update
         EventNotifier.addListener(function (event, params) {
 
-            if (event == EventNotifierTypes.REQUEST_FILTER_UPDATED || 
-                event == EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES || 
-                (event == EventNotifierTypes.CHANGE_USER_SETTINGS && params == userSettings.settings.DISABLE_FILTERING)) {
+            if (event === EventNotifierTypes.REQUEST_FILTER_UPDATED ||
+                event === EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES ||
+                (event === EventNotifierTypes.CHANGE_USER_SETTINGS && params === userSettings.settings.DISABLE_FILTERING)) {
 
                 SafariContentBlocker.updateContentBlocker();
             }

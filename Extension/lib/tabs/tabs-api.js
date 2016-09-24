@@ -1,233 +1,306 @@
-var adguard = {};
+/* global adguard, UrlUtils */
+/**
+ * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
+ *
+ * Adguard Browser Extension is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Adguard Browser Extension is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-adguard.tabsImpl = (function () {
+adguard.tabsImpl = adguard.tabsImpl || (function () {
 
-    'use strict';
+		'use strict';
 
-    function noOpFunc() {
-        throw new Error('Not implemented');
-    }
+		function noOpFunc() {
+			throw new Error('Not implemented');
+		}
 
-    return {
+		return {
 
-        onCreated: noOpFunc,
-        onRemoved: noOpFunc,
-        onUpdated: noOpFunc,
-        onActivated: noOpFunc,
+			onCreated: noOpFunc,	// callback(tab)
+			onRemoved: noOpFunc,	// callback(tabId)
+			onUpdated: noOpFunc,	// callback(tab)
+			onActivated: noOpFunc, 	// callback(tabId)
 
-        create: noOpFunc,
-        remove: noOpFunc,
-        activate: noOpFunc,
-        reload: noOpFunc,
-        sendMessage: noOpFunc,
-        getAll: noOpFunc
-    };
+			create: noOpFunc,		// callback(tab)
+			remove: noOpFunc,		// callback(tabId)
+			activate: noOpFunc,		// callback(tabId)
+			reload: noOpFunc,
+			sendMessage: noOpFunc,
+			getAll: noOpFunc,		// callback(tabs)
+			getActive: noOpFunc		// callback(tabId)
+		};
 
-})();
+	})();
 
 adguard.tabs = (function (tabsImpl) {
 
-    'use strict';
+	'use strict';
 
-    var AdguardTab = {
-        tabId: 1,
-        url: 'url',
-        title: 'Title',
-        active: false,
-        incognito: false,
-        status: null,   // 'loading' or 'complete'
-        frames: null,   // Collection of frames inside tab
-        metadata: null  // Contains info about integration, white list rule is applied to tab.
-    };
+	var AdguardTab = {
+		tabId: 1,
+		url: 'url',
+		title: 'Title',
+		incognito: false,
+		status: null,   // 'loading' or 'complete'
+		frames: null,   // Collection of frames inside tab
+		metadata: null  // Contains info about integration, white list rule is applied to tab.
+	};
 
-    var AdguardTabFrame = {
-        frameId: 1,
-        url: 'url',
-        domainName: 'domainName'
-    };
+	var AdguardTabFrame = {
+		frameId: 1,
+		url: 'url',
+		domainName: 'domainName'
+	};
 
-    var tabs = Object.create(null);
+	function noOpFunc() {
+	}
 
-    // --------- Events ---------
+	var tabs = Object.create(null);
 
-    var eventListeners = Object.create(null);
+	// --------- Events ---------
 
-    function callEventListeners(eventName, arg) {
-        var listeners = eventListeners[eventName];
-        if (listeners) {
-            for (var i = 0; i < listeners.length; i++) {
-                listeners[i](arg);
-            }
-        }
-    }
+	var eventListeners = Object.create(null);
 
-    function addEventListener(eventName, callback) {
-        var listeners = eventListeners[eventName];
-        if (listeners === undefined) {
-            eventListeners[eventName] = listeners = [];
-        }
-        listeners.push(callback);
-    }
+	function callEventListeners(eventName, arg) {
+		var listeners = eventListeners[eventName];
+		if (listeners) {
+			for (var i = 0; i < listeners.length; i++) {
+				listeners[i](arg);
+			}
+		}
+	}
 
-    // Synchronize opened tabs
-    tabsImpl.getAll(function (aTabs) {
-        for (var i = 0; i < aTabs.length; i++) {
-            var aTab = aTabs[i];
-            tabs[aTab.tabId] = aTab;
-        }
-    });
+	function addEventListener(eventName, callback) {
+		var listeners = eventListeners[eventName];
+		if (listeners === undefined) {
+			eventListeners[eventName] = listeners = [];
+		}
+		listeners.push(callback);
+	}
 
-    tabsImpl.onCreated(function (tab) {
-        tabs[tab.tabId] = tab;
-        callEventListeners('create', tab);
-    });
+	// Synchronize opened tabs
+	tabsImpl.getAll(function (aTabs) {
+		for (var i = 0; i < aTabs.length; i++) {
+			var aTab = aTabs[i];
+			tabs[aTab.tabId] = aTab;
+		}
+	});
 
-    tabsImpl.onRemoved(function (tabId) {
-        var tab = tabs[tabId];
-        callEventListeners('remove', tab);
-        delete tabs[tabId];
-    });
+	tabsImpl.onCreated(function (aTab) {
+		tabs[aTab.tabId] = aTab;
+		callEventListeners('create', aTab);
+	});
 
-    tabsImpl.onUpdated(function (tab) {
-        var aTab = tabs[tab.tabId];
-        if (aTab) {
-            aTab.url = tab.url;
-            aTab.title = tab.title;
-            aTab.status = tab.status;
-            callEventListeners('update', aTab);
-        }
-    });
+	tabsImpl.onRemoved(function (tabId) {
+		var tab = tabs[tabId];
+		if (tab) {
+			callEventListeners('remove', tab);
+			delete tabs[tabId];
+		}
+	});
 
-    tabsImpl.onActivated(function (tabId) {
-        var tab = tabs[tabId];
-        callEventListeners('activate', tab);
-    });
+	tabsImpl.onUpdated(function (aTab) {
+		var tab = tabs[aTab.tabId];
+		if (tab) {
+			tab.url = aTab.url;
+			tab.title = aTab.title;
+			tab.status = aTab.status;
+			callEventListeners('update', tab);
+		}
+	});
 
-    // Fired when a tab is created. Note that the tab's URL may not be set at the time this event fired, but you can listen to onUpdated events to be notified when a URL is set.
-    var onCreated = {
-        addListener: function (callback) {
-            addEventListener('create', callback);
-        }
-    };
+	tabsImpl.onActivated(function (tabId) {
+		var tab = tabs[tabId];
+		if (tab) {
+			callEventListeners('activate', tab);
+		}
+	});
 
-    // Fired when a tab is closed.
-    var onRemoved = {
-        addListener: function (callback) {
-            addEventListener('remove', callback);
-        }
-    };
+	// Fired when a tab is created. Note that the tab's URL may not be set at the time this event fired, but you can listen to onUpdated events to be notified when a URL is set.
+	var onCreated = {
+		addListener: function (callback) {
+			addEventListener('create', callback);
+		}
+	};
 
-    // Fired when a tab is updated.
-    var onUpdated = {
-        addListener: function (callback) {
-            addEventListener('update', callback);
-        }
-    };
+	// Fired when a tab is closed.
+	var onRemoved = {
+		addListener: function (callback) {
+			addEventListener('remove', callback);
+		}
+	};
 
-    // Fires when the active tab in a window changes.
-    var onActivated = {
-        addListener: function (callback) {
-            addEventListener('activate', callback);
-        }
-    };
+	// Fired when a tab is updated.
+	var onUpdated = {
+		addListener: function (callback) {
+			addEventListener('update', callback);
+		}
+	};
 
-    // --------- Actions ---------
+	// Fires when the active tab in a window changes.
+	var onActivated = {
+		addListener: function (callback) {
+			addEventListener('activate', callback);
+		}
+	};
 
-    // Creates a new tab.
-    var create = function (details, callback) {
-        tabsImpl.create(details, callback);
-    };
+	// --------- Actions ---------
 
-    // Closes tab.
-    var remove = function (tabId, callback) {
-        tabsImpl.remove(tabId, callback);
-    };
+	// Creates a new tab.
+	var create = function (details, callback) {
+		tabsImpl.create(details, callback || noOpFunc);
+	};
 
-    // Activates tab (Also makes tab's window in focus).
-    var activate = function (tabId, callback) {
-        tabsImpl.activate(tabId, callback);
-    };
+	// Closes tab.
+	var remove = function (tabId, callback) {
+		tabsImpl.remove(tabId, callback || noOpFunc);
+	};
 
-    // Reloads tab.
-    var reload = function (tabId, url) {
-        tabsImpl.reload(tabId, url);
-    };
+	// Activates tab (Also makes tab's window in focus).
+	var activate = function (tabId, callback) {
+		tabsImpl.activate(tabId, callback || noOpFunc);
+	};
 
-    // Sends message to tab
-    var sendMessage = function (tabId, message, responseCallback) {
-        tabsImpl.sendMessage(tabId, message, responseCallback);
-    };
+	// Reloads tab.
+	var reload = function (tabId, url) {
+		tabsImpl.reload(tabId, url);
+	};
 
-    // Gets all opened tabs
-    var getAll = function (callback) {
-        tabsImpl.getAll(function (aTabs) {
-            var result = [];
-            for (var i = 0; i < aTabs.length; i++) {
-                var aTab = aTabs[i];
-                var tab = tabs[aTab.tabId];
-                if (tab === undefined) {
-                    // Synchronize state
-                    tabs[aTab.tabId] = tab = aTab;
-                }
-                result.push(tab);
-            }
-            callback(result);
-        });
-    };
+	// Sends message to tab
+	var sendMessage = function (tabId, message, responseCallback) {
+		tabsImpl.sendMessage(tabId, message, responseCallback);
+	};
 
-    // Records tab's frame
-    var recordTabFrame = function (tabId, frameId, frameUrl, requestType) {
-        //TODO: implement
-    };
+	// Gets all opened tabs
+	var getAll = function (callback) {
+		tabsImpl.getAll(function (aTabs) {
+			var result = [];
+			for (var i = 0; i < aTabs.length; i++) {
+				var aTab = aTabs[i];
+				var tab = tabs[aTab.tabId];
+				if (!tab) {
+					// Synchronize state
+					tabs[aTab.tabId] = tab = aTab;
+				}
+				result.push(tab);
+			}
+			callback(result);
+		});
+	};
 
-    // Gets tab's frame by id
-    var getTabFrameUrl = function (tabId, frameId) {
-        //TODO: implement
-    };
+	// Gets active tab
+	var getActive = function (callback) {
+		tabsImpl.getActive(function (tabId) {
+			var tab = tabs[tabId];
+			if (tab) {
+				callback(tab);
+			}
+		});
+	};
 
-    // Update tab metadata
-    var updateTabMetadata = function (tabId, key, value) {
-        var tab = tabs[tabId];
-        if (tab) {
-            if (tab.metadata === null) {
-                tab.metadata = Object.create(null);
-            }
-            tab.metadata[key] = value;
-        }
-    };
+	var isIncoginito = function (tabId) {
+		var tab = tabs[tabId];
+		return tab && tab.incognito === true;
+	};
 
-    // Gets tab metadata
-    var getTabMetadata = function (tabId, key) {
-        var tab = tabs[tabId];
-        if (tab && tab.metadata !== null) {
-            return tab.metadata[key];
-        }
-        return null;
-    };
+	// Records tab's frame
+	var recordTabFrame = function (tabId, frameId, url) {
+		var tab = tabs[tabId];
+		if (tab) {
+			if (!tab.frames) {
+				tab.frames = Object.create(null);
+			}
+			tab.frames[frameId] = {
+				url: url,
+				domainName: UrlUtils.getDomainName(url)
+			};
+		}
+	};
 
-    return {
+	var clearTabFrames = function (tabId) {
+		var tab = tabs[tabId];
+		if (tab) {
+			tab.frames = null;
+		}
+	};
 
-        // Events
-        onCreated: onCreated,
-        onRemoved: onRemoved,
-        onUpdated: onUpdated,
-        onActivated: onActivated,
+	// Gets tab's frame by id
+	var getTabFrame = function (tabId, frameId) {
+		var tab = tabs[tabId];
+		if (tab && tab.frames) {
+			return tab.frames[frameId || 0];
+		}
+		return null;
+	};
 
-        // Actions
-        create: create,
-        remove: remove,
-        activate: activate,
-        reload: reload,
-        sendMessage: sendMessage,
-        getAll: getAll,
+	// Update tab metadata
+	var updateTabMetadata = function (tabId, values) {
+		var tab = tabs[tabId];
+		if (tab) {
+			if (!tab.metadata) {
+				tab.metadata = Object.create(null);
+			}
+			for (var key in values) {
+				if (values.hasOwnProperty && values.hasOwnProperty(key)) {
+					tab.metadata[key] = values[key];
+				}
+			}
+		}
+	};
 
-        // Frames
-        recordTabFrame: recordTabFrame,
-        getTabFrameUrl: getTabFrameUrl,
-        
-        // Other
-        updateTabMetadata: updateTabMetadata,
-        getTabMetadata: getTabMetadata
-    };
+	// Gets tab metadata
+	var getTabMetadata = function (tabId, key) {
+		var tab = tabs[tabId];
+		if (tab && tab.metadata) {
+			return tab.metadata[key];
+		}
+		return null;
+	};
+
+	var clearTabMetadata = function (tabId) {
+		var tab = tabs[tabId];
+		if (tab) {
+			tab.metadata = null;
+		}
+	};
+
+	return {
+
+		// Events
+		onCreated: onCreated,
+		onRemoved: onRemoved,
+		onUpdated: onUpdated,
+		onActivated: onActivated,
+
+		// Actions
+		create: create,
+		remove: remove,
+		activate: activate,
+		reload: reload,
+		sendMessage: sendMessage,
+		getAll: getAll,
+		getActive: getActive,
+		isIncognito: isIncoginito,
+
+		// Frames
+		recordTabFrame: recordTabFrame,
+		clearTabFrames: clearTabFrames,
+		getTabFrame: getTabFrame,
+
+		// Other
+		updateTabMetadata: updateTabMetadata,
+		getTabMetadata: getTabMetadata,
+		clearTabMetadata: clearTabMetadata
+	};
 
 })(adguard.tabsImpl);

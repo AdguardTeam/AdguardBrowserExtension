@@ -137,14 +137,14 @@ var Utils = exports.Utils = {
      */
     isContentBlockerEnabled: function () {
         
-        if (typeof safari == 'undefined' || !this.isSafari9Plus()) {
+        if (typeof safari === 'undefined' || !this.isSafari9Plus()) {
             return false;
         }
         
-        if (typeof this._useOldSafariAPI == 'undefined') {
+        if (typeof this._useOldSafariAPI === 'undefined') {
             // Seems that getItem returns a string
             // Cast it to string as I don't understand why it's type randomly changes (in dev build it is string, in beta - boolean)
-            this._useOldSafariAPI = (String(safari.extension.settings.getItem('useOldSafariAPI')) == 'true');
+            this._useOldSafariAPI = (String(safari.extension.settings.getItem('useOldSafariAPI')) === 'true');
         }
 
         return !this._useOldSafariAPI;
@@ -262,17 +262,15 @@ var Utils = exports.Utils = {
         return headers;
     },
 
-    getSafebrowsingBackUrl: function (frameData) {
-        if (frameData) {
-            //https://code.google.com/p/chromium/issues/detail?id=11854
-            var previousUrl = frameData.previousUrl;
-            if (previousUrl && previousUrl.indexOf('http') === 0) {
-                return previousUrl;
-            }
-            var referrerUrl = frameData.referrerUrl;
-            if (referrerUrl && referrerUrl.indexOf('http') === 0) {
-                return referrerUrl;
-            }
+    getSafebrowsingBackUrl: function (tab) {
+        //https://code.google.com/p/chromium/issues/detail?id=11854
+        var previousUrl = adguard.tabs.getTabMetadata(tab.tabId, 'previousUrl');
+        if (previousUrl && previousUrl.indexOf('http') === 0) {
+            return previousUrl;
+        }
+        var referrerUrl = adguard.tabs.getTabMetadata(tab.tabId, 'referrerUrl');
+        if (referrerUrl && referrerUrl.indexOf('http') === 0) {
+            return referrerUrl;
         }
         if (this.isFirefoxBrowser()) {
             return 'about:newtab';

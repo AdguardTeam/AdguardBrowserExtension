@@ -194,19 +194,31 @@ HidingChannel.prototype = {
 	},
 
 	_isElemHideWhiteListed: function (tab) {
-		var frameData = this.framesMap.getMainFrame(tab);
-		if (!("elemHideWhiteListRule" in frameData)) {
-			frameData.elemHideWhiteListRule = this.antiBannerService.getRequestFilter().findWhiteListRule(frameData.url, frameData.url, "ELEMHIDE");
+		var elemHideWhiteListRule = adguard.tabs.getTabMetadata(tab.tabId, 'elemHideWhiteListRule');
+		if (elemHideWhiteListRule || elemHideWhiteListRule === false) {
+			return elemHideWhiteListRule;
 		}
-		return frameData.elemHideWhiteListRule;
+		var frame = adguard.tabs.getTabFrame(tab.tabId);
+		if (frame) {
+			elemHideWhiteListRule = this.antiBannerService.getRequestFilter().findWhiteListRule(frame.url, frame.url, "ELEMHIDE");
+			adguard.tabs.updateTabMetadata(tab.tabId, {
+				elemHideWhiteListRule: elemHideWhiteListRule || false
+			});
+		}
 	},
 
 	_isGenericHideWhiteListed: function (tab) {
-		var frameData = this.framesMap.getMainFrame(tab);
-		if (!("genericHideWhiteListRule" in frameData)) {
-			frameData.genericHideWhiteListRule = this.antiBannerService.getRequestFilter().findWhiteListRule(frameData.url, frameData.url, "GENERICHIDE");
+		var genericHideWhiteListRule = adguard.tabs.getTabMetadata(tab.tabId, 'genericHideWhiteListRule');
+		if (genericHideWhiteListRule || genericHideWhiteListRule === false) {
+			return genericHideWhiteListRule;
 		}
-		return frameData.genericHideWhiteListRule;
+		var frame = adguard.tabs.getTabFrame(tab.tabId);
+		if (frame) {
+			genericHideWhiteListRule = this.antiBannerService.getRequestFilter().findWhiteListRule(frame.url, frame.url, "GENERICHIDE");
+			adguard.tabs.updateTabMetadata(tab.tabId, {
+				genericHideWhiteListRule: genericHideWhiteListRule || false
+			});
+		}
 	},
 
 	_getRuleByText: function (path) {

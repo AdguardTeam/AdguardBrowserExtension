@@ -142,7 +142,7 @@ exports.main = function (options, callbacks) {
         Log.info('Starting adguard addon...');
 
         var antiBannerService = new AntiBannerService();
-        var framesMap = new FramesMap(antiBannerService, TabsMap);
+        var framesMap = new FramesMap(antiBannerService);
         var adguardApplication = new AdguardApplication(framesMap);
         var filteringLog = new FilteringLog(TabsMap, framesMap, UI);
         var webRequestService = new WebRequestService(framesMap, antiBannerService, filteringLog, adguardApplication);
@@ -218,11 +218,6 @@ exports.main = function (options, callbacks) {
         throw  ex;
     }
 
-    // Cleanup stored frames
-    tabs.on('close', function (tab) {
-        framesMap.removeFrame(tab);
-    });
-
     // Language detect on tab ready event
     tabs.on('ready', function (tab) {
         antiBannerService.checkTabLanguage(tab.id, tab.url);
@@ -232,7 +227,6 @@ exports.main = function (options, callbacks) {
     filteringLog.synchronizeOpenTabs();
     tabs.on('open', function (tab) {
         filteringLog.addTab(tab);
-        framesMap.checkTabIncognitoMode(tab);
     });
     tabs.on('close', function (tab) {
         filteringLog.removeTab(tab);

@@ -14,25 +14,56 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global safari, I18NSupport, SendMessageFunction, OnMessageEvent */
+/* global adguard, safari */
 (function () {
+
+	'use strict';
+
+	adguard.runtime = (function () {
+
+		var sendMessage = function (message, responseCallback) {
+			adguard.runtimeImpl.sendMessage(safari.self.tab, safari.self, message, responseCallback);
+		};
+
+		var onMessage = {
+
+			addListener: function (callback) {
+
+				adguard.runtimeImpl.onMessage.addListener(safari.self, function (event) {
+
+					var dispatcher = event.target.tab;
+					var sender = {};
+
+					callback(event.message, sender, function (message) {
+						dispatcher.dispatchMessage("response-" + event.name.substr(8), message);
+					});
+				});
+			}
+		};
+
+		return {
+			sendMessage: sendMessage,
+			onMessage: onMessage
+		};
+
+	})();
 
 	var ContentScript = {
 
-		init: function() {
+		init: function () {
 			this.contentBlockerEnabled = this._isContentBlockerEnabled();
 
-			if (window === window.top){
+			if (window === window.top) {
 				this._dispatchLoading();
 				this._sendMainFrameLoadedEvent(this.contentBlockerEnabled);
 			}
 
-			if(!this.contentBlockerEnabled){
+			if (!this.contentBlockerEnabled) {
 				this._addOnbeforeLoadEventListener();
 			}
 		},
 
-		_sendMainFrameLoadedEvent: function(contentBlockerEnabled){
+		_sendMainFrameLoadedEvent: function (contentBlockerEnabled) {
 			function createMainFrameEvent(type) {
 				var data = {
 					url: document.location.href,
@@ -56,7 +87,7 @@
 			createMainFrameEvent("safariHeadersRequest");
 		},
 
-		_addOnbeforeLoadEventListener: function() {
+		_addOnbeforeLoadEventListener: function () {
 			var contentScriptId = Date.now() + Math.random().toString(10).slice(2);
 			var absoluteUrlHelper = document.createElement("a");
 			var onFirstLoadOccurred = false;
@@ -113,13 +144,13 @@
 					type: "safariWebRequest", data: {
 						url: url,
 						type: type,
-                        frameId: frameId,
-                        requestFrameId: 0
-                    }
-                });
+						frameId: frameId,
+						requestFrameId: 0
+					}
+				});
 
 				canLoadCache.add(url, type, frameId, canLoad);
-                return canLoad;
+				return canLoad;
 			};
 
 			var onBeforeLoad = function (event) {
@@ -164,14 +195,14 @@
 				}
 
 				var frameId;
-				if (type == "sub_frame") {
+				if (type === "sub_frame") {
 					frameId = Math.random();
 				}
 
 				if (!canLoadRequest(url, type, frameId)) {
 					event.preventDefault();
 
-					if (type != "sub_frame") {
+					if (type !== "sub_frame") {
 						setTimeout(function () {
 							var evt = document.createEvent("Event");
 							evt.initEvent("error");
@@ -197,43 +228,43 @@
 			document.addEventListener("DOMContentLoaded", onFirstLoad, true);
 		},
 
-		_dispatchLoading: function() {
+		_dispatchLoading: function () {
 			safari.self.tab.dispatchMessage("loading", document.location.href);
 		},
 
-        /**
-         * By default we use new Content Blocker API for Safari 9+.
-         */
-		_isContentBlockerEnabled: function() {
-            
-            var contentBlockerEnabled = this.isSafari9OrNewer();
-            
-            if (contentBlockerEnabled && safari.self && safari.self.tab && safari.self.tab.canLoad) {
-                try {
-                    // Now check if content blocker API is not overriden in extension settings
+		/**
+		 * By default we use new Content Blocker API for Safari 9+.
+		 */
+		_isContentBlockerEnabled: function () {
+
+			var contentBlockerEnabled = this.isSafari9OrNewer();
+
+			if (contentBlockerEnabled && safari.self && safari.self.tab && safari.self.tab.canLoad) {
+				try {
+					// Now check if content blocker API is not overriden in extension settings
 					// Checking useOldSafariAPI extension setting
-                    var evt = document.createEvent("Event");
-                    evt.initEvent("useContentBlockerAPI");
-                    var useContentBlockerAPI = safari.self.tab.canLoad(evt, {type: "useContentBlockerAPI", data: {}});
-                    return contentBlockerEnabled && useContentBlockerAPI;
-                } catch (ex) {
-                    // Ignore
-                }
-            }
-            
-            return contentBlockerEnabled;
+					var evt = document.createEvent("Event");
+					evt.initEvent("useContentBlockerAPI");
+					var useContentBlockerAPI = safari.self.tab.canLoad(evt, {type: "useContentBlockerAPI", data: {}});
+					return contentBlockerEnabled && useContentBlockerAPI;
+				} catch (ex) {
+					// Ignore
+				}
+			}
+
+			return contentBlockerEnabled;
 		},
-        
-        /**
-         * Checks Safari version
-         */
-        isSafari9OrNewer: function() {
+
+		/**
+		 * Checks Safari version
+		 */
+		isSafari9OrNewer: function () {
 			var parseSafariVersion = function () {
 				var userAgent = navigator.userAgent;
 				var i = userAgent.indexOf("Version/");
-				if (i == 0) {
-                    return "";
-                }
+				if (i === 0) {
+					return "";
+				}
 
 				var end = userAgent.indexOf(" ", i);
 				return userAgent.substring(i + 8, end > 0 ? end : userAgent.length);
@@ -275,19 +306,17 @@
 			};
 
 			var version = parseSafariVersion();
-			return isGreaterOrEqualsVersion(version, "9.0");            
-        }
+			return isGreaterOrEqualsVersion(version, "9.0");
+		}
 	};
-    
-    ContentScript.init();
+
+	ContentScript.init();
 })();
 
 // Content script API implementation
 var contentPage = {
-	_eventTarget: safari.self,
-	_messageDispatcher: safari.self.tab,
-	sendMessage: SendMessageFunction,
-	onMessage: new OnMessageEvent(safari.self)
+	sendMessage: adguard.runtime.sendMessage,
+	onMessage: adguard.runtime.onMessage
 };
 
-var i18n = new I18NSupport();
+var i18n = adguard.i18n;

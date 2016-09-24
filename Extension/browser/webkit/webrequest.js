@@ -30,12 +30,12 @@ function onBeforeRequest(requestDetails) {
     var requestUrl = requestDetails.requestUrl;
     var requestType = requestDetails.requestType;
 
-    if (requestType == RequestTypes.DOCUMENT || requestType == RequestTypes.SUBDOCUMENT) {
+    if (requestType === RequestTypes.DOCUMENT || requestType === RequestTypes.SUBDOCUMENT) {
         framesMap.recordFrame(tab, requestDetails.frameId, requestUrl, requestType);
     }
 
-    if (requestType == RequestTypes.DOCUMENT) {
-        //reset tab button state
+    if (requestType === RequestTypes.DOCUMENT) {
+        // Reset tab button state
         EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_TAB_BUTTON_STATE, tab, true);
         return true;
     }
@@ -135,21 +135,18 @@ function filterSafebrowsing(tab, mainFrameUrl) {
         return;
     }
 
-    var frameData = framesMap.getMainFrame(tab);
-    var referrerUrl = Utils.getSafebrowsingBackUrl(frameData);
+    var referrerUrl = Utils.getSafebrowsingBackUrl(tab);
     var incognitoTab = framesMap.isIncognitoTab(tab);
 
     antiBannerService.getRequestFilter().checkSafebrowsingFilter(mainFrameUrl, referrerUrl, function (safebrowsingUrl) {
         // Chrome doesn't allow open extension url in incognito mode
         // So close current tab and open new
         if (incognitoTab && !Utils.isSafariBrowser()) {
-            UI.openTab(safebrowsingUrl, {
-                onOpen: function () {
-                    tab.close();
-                }
+            UI.openTab(safebrowsingUrl, {}, function () {
+                adguard.tabs.remove(tab.tabId);
             });
         } else {
-            tab.reload(safebrowsingUrl);
+            adguard.tabs.reload(tab.tabId, safebrowsingUrl);
         }
     }, incognitoTab);
 }

@@ -19,7 +19,6 @@
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
-var Log = require('../../lib/utils/log').Log;
 
 var StringUtils = exports.StringUtils = {
 
