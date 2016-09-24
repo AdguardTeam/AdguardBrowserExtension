@@ -17,12 +17,12 @@
 
 /* global adguard */
 
+var {Cc, Ci, Cu} = require('chrome');
+var Services = Cu.import("resource://gre/modules/Services.jsm").Services;
+
 adguard.tabsImpl = (function () {
 
     'use strict';
-
-    const {Cc, Ci} = require('chrome');
-    var Services = Cu.import("resource://gre/modules/Services.jsm");
 
     //TODO: Detect fennec
     var isFennec = false;
