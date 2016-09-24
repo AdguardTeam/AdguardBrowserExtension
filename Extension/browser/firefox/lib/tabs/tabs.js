@@ -305,12 +305,42 @@ adguard.tabsImpl = (function () {
         callback(tabBrowser.selectedTab.tabId);
     }
 
+    // Events
+
+    function onCreated(callback) {
+        var container = getTabBrowser(window).tabContainer;
+        container.addEventListener("TabOpen", function(event) {
+            callback(toTabFromFirefoxTab(event.target));
+        }, false);
+    }
+
+    function onRemoved(callback) {
+        var container = getTabBrowser(window).tabContainer;
+        container.addEventListener("TabClose", function(event) {
+            callback(toTabFromFirefoxTab(event.target).tabId);
+        }, false);
+    }
+
+    function onUpdated(callback) {
+        var container = getTabBrowser(window).tabContainer;
+        container.addEventListener("TabMove", function(event) {
+            callback(toTabFromFirefoxTab(event.target));
+        }, false);
+    }
+
+    function onActivated(callback) {
+        var container = getTabBrowser(window).tabContainer;
+        container.addEventListener("TabSelect", function(event) {
+            callback(toTabFromFirefoxTab(event.target).tabId);
+        }, false);
+    }
+
     return {
 
-        onCreated: noOpFunc,
-        onRemoved: noOpFunc,
-        onUpdated: noOpFunc,
-        onActivated: noOpFunc,
+        onCreated: onCreated,
+        onRemoved: onRemoved,
+        onUpdated: onUpdated,
+        onActivated: onActivated,
 
         create: create,
         remove: remove,
