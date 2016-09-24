@@ -33,6 +33,18 @@ adguard.tabsImpl = (function () {
         throw new Error('Not implemented');
     }
 
+    function toTabFromFirefoxTab(firefoxTab) {
+        //TODO: Fix
+
+        return {
+            tabId: firefoxTab.id,
+            url: firefoxTab.url,
+            title: firefoxTab.title,
+            incognito: firefoxTab.incognito,
+            status: firefoxTab.status
+        };
+    }
+
     function getWindows() {
         var winumerator = Services.wm.getEnumerator('navigator:browser');
         var windows = [];
@@ -167,68 +179,42 @@ adguard.tabsImpl = (function () {
      *
      * @param details
      * url: 'URL', // the address that will be opened
-     * index: -1, // undefined: end of the list, -1: following tab, or after index
      * active: false, // opens the tab in background - true and undefined: foreground
-     * select: true // if a tab is already opened with that url, then select it instead of opening a new one
+     * @param callback
      */
-    function create(details) {
+    function create(details, callback) {
         if (!details.url) {
             return null;
-        }
-
-        var win, tab, tabBrowser;
-
-        if (details.select) {
-            var URI = Services.io.newURI(details.url, null, null);
-
-            var tabs = getAll();
-            for (var i = 0; i < tabs.length; i++) {
-                tab = tabs[i];
-                var browser = getBrowserForTab(tab);
-
-                // Or simply .equals if we care about the fragment
-                if (URI.equalsExceptRef(browser.currentURI) === false) {
-                    continue;
-                }
-
-                activate(tab);
-                return;
-            }
         }
 
         if (details.active === undefined) {
             details.active = true;
         }
 
-        win = Services.wm.getMostRecentWindow('navigator:browser');
-        tabBrowser = getTabBrowser(win);
+        var win = Services.wm.getMostRecentWindow('navigator:browser');
+        var tabBrowser = getTabBrowser(win);
 
+        var tab;
         if (isFennec) {
-            tabBrowser.addTab(details.url, {selected: details.active !== false});
-            // Note that it's impossible to move tabs on Fennec, so don't bother
-            return;
+            tab = tabBrowser.addTab(details.url, {selected: details.active !== false});
+        } else {
+            tab = tabBrowser.loadOneTab(details.url, {inBackground: !details.active});
         }
 
-        if (details.index === -1) {
-            details.index = tabBrowser.browsers.indexOf(tabBrowser.selectedBrowser) + 1;
-        }
-
-        tab = tabBrowser.loadOneTab(details.url, {inBackground: !details.active});
-
-        if (details.index !== undefined) {
-            tabBrowser.moveTabTo(tab, details.index);
-        }
+        callback(toTabFromFirefoxTab(tab));
     }
 
     /**
      * Removes tab with specified tabId
      *
      * @param tabId
+     * @param callback
      */
-    function remove(tabId) {
+    function remove(tabId, callback) {
         var tab = tabFromTabId(tabId);
         if (tab) {
             removeTab(tab, getTabBrowser(getOwnerWindow(tab)));
+            callback(tabId);
         }
     }
 
@@ -236,8 +222,9 @@ adguard.tabsImpl = (function () {
      * Activates specified tab
      *
      * @param tab
+     * @param callback
      */
-    function activate(tab) {
+    function activate(tab, callback) {
         tab = typeof tab === 'object' ? tab : getTab(tab);
 
         if (!tab) {
@@ -251,23 +238,30 @@ adguard.tabsImpl = (function () {
         } else {
             tabBrowser.selectedTab = tab;
         }
+
+        callback(tabId);
     }
 
     /**
      * Reloads tab with tabId
      *
      * @param tabId
+     * @param url
      */
-    function reload(tabId) {
+    function reload(tabId, url) {
         var tab = getTab(tabId);
-
-        if ( !tab ) {
+        if (!tab) {
             return;
         }
 
-        getBrowserForTab(tab).webNavigation.reload(
-            Ci.nsIWebNavigation.LOAD_FLAGS_BYPASS_CACHE
-        );
+        var browserForTab = getBrowserForTab(tab);
+        if (url) {
+            browserForTab.webNavigation.loadURI(url, Ci.nsIWebNavigation.LOAD_FLAGS_NONE);
+        } else {
+            browserForTab.webNavigation.reload(
+                Ci.nsIWebNavigation.LOAD_FLAGS_BYPASS_CACHE
+            );
+        }
     }
 
     function sendMessage() {
@@ -277,18 +271,15 @@ adguard.tabsImpl = (function () {
     /**
      * Gets an array of all tabs
      *
-     * @param window
+     * @param callback
      * @returns {Array}
      */
-    function getAll(window) {
+    function getAll(callback) {
         var tabs = [];
 
         var windows = getWindows();
         for (var i = 0; i < windows.length; i++) {
             var win = windows[i];
-            if (window && window !== win) {
-                continue;
-            }
 
             var tabBrowser = getTabBrowser(win);
             if (tabBrowser === null) {
@@ -297,11 +288,21 @@ adguard.tabsImpl = (function () {
 
             var tabBrowserTabs = tabBrowser.tabs;
             for (var j = 0; j < tabBrowserTabs.length; j++) {
-                tabs.push(tabBrowserTabs[j]);
+                tabs.push(toTabFromFirefoxTab(tabBrowserTabs[j]));
             }
         }
 
-        return tabs;
+        callback(tabs);
+    }
+
+    /**
+     * @param callback
+     */
+    function getActive(callback) {
+        var win = Services.wm.getMostRecentWindow('navigator:browser');
+        var tabBrowser = getTabBrowser(win);
+
+        callback(tabBrowser.selectedTab.tabId);
     }
 
     return {
@@ -316,7 +317,8 @@ adguard.tabsImpl = (function () {
         activate: activate,
         reload: reload,
         sendMessage: sendMessage,
-        getAll: getAll
+        getAll: getAll,
+        getActive: getActive
     };
 
 })();
