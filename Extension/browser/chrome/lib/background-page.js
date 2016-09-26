@@ -28,12 +28,14 @@ var browser = browser || chrome;
 
 		var onMessage = {
 			addListener: function (callback) {
+				// https://developer.chrome.com/extensions/runtime#event-onMessage
 				adguard.runtimeImpl.onMessage.addListener(function (message, sender, sendResponse) {
 					var senderOverride = Object.create(null);
 					if (sender.tab) {
 						senderOverride.tab = adguard.tabsImpl.fromChromeTab(sender.tab);
 					}
-					callback(message, senderOverride, sendResponse);
+					// Don't forget return callback result for asynchronous message passing
+					return callback(message, senderOverride, sendResponse);
 				});
 			}
 		};
