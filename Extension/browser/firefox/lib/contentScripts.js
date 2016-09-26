@@ -128,6 +128,7 @@ ContentScripts.prototype = {
         // Web pages content scripts (responsible for ad blocking)
         this.registerPageContentScript([
             'libs/extended-css.js',
+            'libs/element-collapser.js',
             'content-script/content-script.js',
             'content-script/preload.js'
         ], 'document_start', true);
