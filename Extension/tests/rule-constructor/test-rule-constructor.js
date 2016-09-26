@@ -225,5 +225,20 @@ QUnit.test("SVG Elements", function(assert) {
     };
 
     var ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-    assert.equal(ruleText, 'lenta.ru###test-id-div > svg.b-header-main__logo-icon:last-child > use');
+    assert.equal(ruleText, 'lenta.ru###test-id-div > svg.b-header-main__logo-icon:nth-child(2) > use');
+
+    element = document.querySelector(".test-div-dot-class");
+    options = {
+        isBlockByUrl: false,
+        urlMask: null,
+        isBlockSimilar: false,
+        isBlockOneDomain: false,
+        url: 'https://lenta.ru/',
+        attributes: '',
+        excludeTagName: false,
+        classesSelector: ''
+    };
+
+    ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
+    assert.equal(ruleText, 'lenta.ru###test-id-div > div[class="good-class bad.class"]:last-child > div');
 });

@@ -95,14 +95,29 @@ var AdguardRulesConstructorLib = (function (api) {
     };
 
     var getElementClassName = function (element) {
-        var className = '';
+        var wrap = false;
+
+        var classes = [];
         var classList = element.classList;
         if (classList && classList.length > 0) {
             for (var i =0; i < classList.length; i++) {
                 var c = classList.item(i);
                 if (c) {
-                    className += '.' + c;
+                    classes.push(c);
+
+                    if (c.indexOf('.') > 0) {
+                        wrap = true;
+                    }
                 }
+            }
+        }
+
+        var className = '';
+        if (classes.length > 0) {
+            if (wrap) {
+                className = '[class="' + classes.join(' ') + '"]';
+            } else {
+                className = '.' + classes.join('.');
             }
         }
 
