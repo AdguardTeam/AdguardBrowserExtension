@@ -78,18 +78,7 @@ var AdguardRulesConstructorLib = (function (api) {
                     ch = ":nth-child(" + c + ")";
                 }
 
-                var className = el.className;
-                if (className) {
-                    if (className.indexOf('.') > 0) {
-                        className = '[class="' + className + '"]';
-                    } else {
-                        className = className.trim().replace(/\s+(?= )/g, ''); //delete more than one space between classes;
-                        className = '.' + className.replace(/\s/g, ".");
-                    }
-                } else {
-                    className = '';
-                }
-
+                var className = getElementClassName(el);
                 if (el == element) {
                     var p = excludeTagName ? '' : el.tagName.toLowerCase();
                     p += (!classesSelector && classesSelector != '') ? className : classesSelector;
@@ -103,6 +92,21 @@ var AdguardRulesConstructorLib = (function (api) {
             }
         }
         return path.join(" > ");
+    };
+
+    var getElementClassName = function (element) {
+        var className = '';
+        var classList = element.classList;
+        if (classList && classList.length > 0) {
+            for (var i =0; i < classList.length; i++) {
+                var c = classList.item(i);
+                if (c) {
+                    className += '.' + c;
+                }
+            }
+        }
+
+        return className;
     };
 
     var createRuleText = function (element, classesSelector, excludeTagName, excludeId) {
@@ -119,12 +123,12 @@ var AdguardRulesConstructorLib = (function (api) {
             return "";
         }
 
-        var className = element.className;
+        var className = getElementClassName(element);
         if (!className) {
             return "";
         }
 
-        return '.' + className.trim().replace(/\s+/g, ', .');
+        return className;
     };
 
     var createSimilarRuleText = function (element, classesSelector, includeTagName) {
@@ -183,8 +187,7 @@ var AdguardRulesConstructorLib = (function (api) {
     };
 
     var haveClassAttribute = function (element) {
-        var className = element.className;
-        return className && className.trim() != '';
+        return element.classList && element.classList.length > 0;
     };
 
     var cropDomain = function (url) {

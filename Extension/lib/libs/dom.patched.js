@@ -3,7 +3,8 @@
 
 /**
  * Patched to exclude jquery usages.
- *
+ * Patched to change className to classList to support svg elements.
+ * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/386
  */
 
 function DomPredictionHelper() {
@@ -57,12 +58,10 @@ DomPredictionHelper.prototype.pathOf = function (elem) {
             var escaped = e.id && self.escapeCssNames(new String(e.id));
             if (escaped && escaped.length > 0) path += '#' + escaped;
 
-            if (e.className) {
-                var split = e.className.split(/ /);
-
-                for (var j = 0; j < split.length; j++) {
-                    var escaped = self.escapeCssNames(split[j]);
-                    if (split[j] && escaped.length > 0) {
+            if (e.classList) {
+                for (var j = 0; j < e.classList.length; j++) {
+                    var escaped = self.escapeCssNames(e.classList[j]);
+                    if (e.classList[j] && escaped.length > 0) {
                         path += '.' + escaped;
                     }
                 }

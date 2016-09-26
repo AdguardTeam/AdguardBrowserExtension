@@ -208,3 +208,22 @@ QUnit.test("Rules Constructor for CSS selector", function(assert) {
     selector = AdguardRulesConstructorLib.constructRuleCssSelector("#%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };");
     assert.equal(selector);
 });
+
+QUnit.test("SVG Elements", function(assert) {
+    var element = document.querySelector(".b-header-main__logo-icon use");
+    assert.ok(element != null);
+
+    var options = {
+        isBlockByUrl: false,
+        urlMask: null,
+        isBlockSimilar: false,
+        isBlockOneDomain: false,
+        url: 'https://lenta.ru/',
+        attributes: '',
+        excludeTagName: false,
+        classesSelector: ''
+    };
+
+    var ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
+    assert.equal(ruleText, 'lenta.ru###test-id-div > svg.b-header-main__logo-icon:last-child > use');
+});
