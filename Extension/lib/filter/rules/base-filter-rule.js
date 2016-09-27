@@ -106,8 +106,10 @@ FilterRule.prototype = {
 		}
 		if (permittedDomains.length > 1) {
 			this.permittedDomains = permittedDomains;
+			delete this.permittedDomain;
 		} else {
 			this.permittedDomain = permittedDomains[0];
+			delete this.permittedDomains;
 		}
 	},
 
@@ -119,8 +121,10 @@ FilterRule.prototype = {
 		}
 		if (restrictedDomains.length > 1) {
 			this.restrictedDomains = restrictedDomains;
+			delete this.restrictedDomain;
 		} else {
 			this.restrictedDomain = restrictedDomains[0];
+			delete this.restrictedDomains;
 		}
 	},
 
