@@ -21,7 +21,7 @@ QUnit.test("Rules Constructor for Assistant", function(assert) {
     options.isBlockSimilar = true;
     options.isBlockOneDomain = false;
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-    assert.equal(ruleText, 'example.org##.test-class.test-class-two');
+    assert.equal(ruleText, 'example.org##.test-class,.test-class-two');
 
     options.isBlockByUrl = false;
     options.isBlockSimilar = false;
@@ -61,14 +61,14 @@ QUnit.test("Rules Constructor for DevTools", function(assert) {
     options.classesSelector = null;
     options.excludeTagName = false;
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-    assert.equal(ruleText, 'example.org##div.test-class.test-class-two');
+    assert.equal(ruleText, 'example.org##div.test-class,.test-class-two');
 
     options.isBlockByUrl = false;
     options.isBlockSimilar = true;
     options.isBlockOneDomain = true;
     options.excludeTagName = true;
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-    assert.equal(ruleText, '##.test-class.test-class-two');
+    assert.equal(ruleText, '##.test-class,.test-class-two');
 
     options.classesSelector = '.test-class-two';
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
@@ -226,9 +226,11 @@ QUnit.test("SVG Elements", function(assert) {
 
     var ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
     assert.equal(ruleText, 'lenta.ru###test-id-div > svg.b-header-main__logo-icon:nth-child(2) > use');
+});
 
-    element = document.querySelector(".test-div-dot-class");
-    options = {
+QUnit.test("Dot Classes", function(assert) {
+    var element = document.querySelector(".test-div-dot-class");
+    var options = {
         isBlockByUrl: false,
         urlMask: null,
         isBlockSimilar: false,
@@ -239,6 +241,15 @@ QUnit.test("SVG Elements", function(assert) {
         classesSelector: ''
     };
 
-    ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
+    var ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
     assert.equal(ruleText, 'lenta.ru###test-id-div > div[class="good-class bad.class"]:last-child > div');
+
+
+    element = document.querySelector(".good-class");
+
+    var selector = AdguardRulesConstructorLib.constructCssSelector(element, false);
+    assert.equal(selector, '#test-id-div > div[class=\"good-class bad.class\"]:last-child');
+
+    selector = AdguardRulesConstructorLib.constructCssSelector(element, true);
+    assert.equal(selector, '.good-class,[class="bad.class"]');
 });

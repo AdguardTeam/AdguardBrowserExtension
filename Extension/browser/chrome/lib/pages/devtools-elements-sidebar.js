@@ -250,7 +250,13 @@ var browser = window.browser || chrome;
                         if (attr) {
                             if (attrName == 'class') {
                                 var className = el.parentNode.querySelector('.attribute-check-box-value').innerText;
-                                selectedClasses.push('.' + className);
+                                if (className.indexOf('.') < 0) {
+                                    className = '.' + className;
+                                } else {
+                                    className = '[class="' + className + '"]';
+                                }
+
+                                selectedClasses.push(className);
                             } else {
                                 attributesSelector += '[' + attr.name + '="' + attr.value + '"]';
                             }
