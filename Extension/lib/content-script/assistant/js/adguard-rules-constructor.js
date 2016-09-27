@@ -118,25 +118,6 @@ var AdguardRulesConstructorLib = (function (api) {
         return className;
     };
 
-    var getElementClassListSelector = function (element) {
-        var classes = [];
-        var classList = element.classList;
-        if (classList && classList.length > 0) {
-            for (var i =0; i < classList.length; i++) {
-                var c = classList.item(i);
-                if (c) {
-                    if (c.indexOf('.') < 0) {
-                        classes.push('.' + c);
-                    } else {
-                        classes.push('[class="' + c + '"]');
-                    }
-                }
-            }
-        }
-
-        return classes.join(',');
-    };
-
     var createRuleText = function (element, classesSelector, excludeTagName, excludeId) {
         if (!element) {
             return;
@@ -151,7 +132,7 @@ var AdguardRulesConstructorLib = (function (api) {
             return "";
         }
 
-        var selector = getElementClassListSelector(element);
+        var selector = getElementClassName(element);
         if (!selector) {
             return "";
         }

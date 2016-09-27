@@ -21,7 +21,7 @@ QUnit.test("Rules Constructor for Assistant", function(assert) {
     options.isBlockSimilar = true;
     options.isBlockOneDomain = false;
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-    assert.equal(ruleText, 'example.org##.test-class,.test-class-two');
+    assert.equal(ruleText, 'example.org##.test-class.test-class-two');
 
     options.isBlockByUrl = false;
     options.isBlockSimilar = false;
@@ -61,14 +61,14 @@ QUnit.test("Rules Constructor for DevTools", function(assert) {
     options.classesSelector = null;
     options.excludeTagName = false;
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-    assert.equal(ruleText, 'example.org##div.test-class,.test-class-two');
+    assert.equal(ruleText, 'example.org##div.test-class.test-class-two');
 
     options.isBlockByUrl = false;
     options.isBlockSimilar = true;
     options.isBlockOneDomain = true;
     options.excludeTagName = true;
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-    assert.equal(ruleText, '##.test-class,.test-class-two');
+    assert.equal(ruleText, '##.test-class.test-class-two');
 
     options.classesSelector = '.test-class-two';
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
@@ -251,5 +251,5 @@ QUnit.test("Dot Classes", function(assert) {
     assert.equal(selector, '#test-id-div > div[class=\"good-class  bad.class\"]:last-child');
 
     selector = AdguardRulesConstructorLib.constructCssSelector(element, true);
-    assert.equal(selector, '.good-class,[class="bad.class"]');
+    assert.equal(selector, '[class=\"good-class  bad.class\"]');
 });
