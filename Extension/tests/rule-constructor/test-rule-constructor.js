@@ -242,13 +242,13 @@ QUnit.test("Dot Classes", function(assert) {
     };
 
     var ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-    assert.equal(ruleText, 'lenta.ru###test-id-div > div[class="good-class bad.class"]:last-child > div');
+    assert.equal(ruleText, 'lenta.ru###test-id-div > div[class="good-class  bad.class"]:last-child > div');
 
 
     element = document.querySelector(".good-class");
 
     var selector = AdguardRulesConstructorLib.constructCssSelector(element, false);
-    assert.equal(selector, '#test-id-div > div[class=\"good-class bad.class\"]:last-child');
+    assert.equal(selector, '#test-id-div > div[class=\"good-class  bad.class\"]:last-child');
 
     selector = AdguardRulesConstructorLib.constructCssSelector(element, true);
     assert.equal(selector, '.good-class,[class="bad.class"]');

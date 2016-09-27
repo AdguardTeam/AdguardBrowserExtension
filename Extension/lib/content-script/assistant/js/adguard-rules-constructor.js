@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global SVGAnimatedString */
+
 /**
  * Adguard rules constructor library
  */
@@ -95,30 +97,22 @@ var AdguardRulesConstructorLib = (function (api) {
     };
 
     var getElementClassName = function (element) {
-        var wrap = false;
+        var className = element.className;
 
-        var classes = [];
-        var classList = element.classList;
-        if (classList && classList.length > 0) {
-            for (var i =0; i < classList.length; i++) {
-                var c = classList.item(i);
-                if (c) {
-                    classes.push(c);
-
-                    if (c.indexOf('.') > 0) {
-                        wrap = true;
-                    }
-                }
-            }
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/386
+        if (element.className instanceof SVGAnimatedString) {
+            className = className.baseVal;
         }
 
-        var className = '';
-        if (classes.length > 0) {
-            if (wrap) {
-                className = '[class="' + classes.join(' ') + '"]';
+        if (className) {
+            if (className.indexOf('.') > 0) {
+                className = '[class="' + className + '"]';
             } else {
-                className = '.' + classes.join('.');
+                className = className.trim().replace(/\s+(?= )/g, ''); //delete more than one space between classes;
+                className = '.' + className.replace(/\s/g, ".");
             }
+        } else {
+            className = '';
         }
 
         return className;
