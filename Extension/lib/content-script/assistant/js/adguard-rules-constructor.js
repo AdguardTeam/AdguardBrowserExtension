@@ -105,12 +105,8 @@ var AdguardRulesConstructorLib = (function (api) {
         }
 
         if (className) {
-            if (className.indexOf('.') > 0) {
-                className = '[class="' + className + '"]';
-            } else {
-                className = className.trim().replace(/\s+(?= )/g, ''); //delete more than one space between classes;
-                className = '.' + className.replace(/\s/g, ".");
-            }
+            className = className.trim().replace(/\./g, '\\.').replace(/\s+(?= )/g, ''); //delete more than one space between classes;
+            className = '.' + className.replace(/\s/g, ".");
         } else {
             className = '';
         }
