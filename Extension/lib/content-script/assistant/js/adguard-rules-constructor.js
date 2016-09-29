@@ -96,7 +96,11 @@ var AdguardRulesConstructorLib = (function (api) {
         return path.join(" > ");
     };
 
-    var getElementClassName = function (element) {
+    var getElementClassName = function (element, separator) {
+        if (!separator) {
+            separator = '.';
+        }
+
         var className = element.className;
 
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/386
@@ -106,7 +110,7 @@ var AdguardRulesConstructorLib = (function (api) {
 
         if (className) {
             className = className.trim().replace(/\./g, '\\.').replace(/\s+(?= )/g, ''); //delete more than one space between classes;
-            className = '.' + className.replace(/\s/g, ".");
+            className = '.' + className.replace(/\s/g, separator);
         } else {
             className = '';
         }
@@ -128,7 +132,7 @@ var AdguardRulesConstructorLib = (function (api) {
             return "";
         }
 
-        var selector = getElementClassName(element);
+        var selector = getElementClassName(element, ', .');
         if (!selector) {
             return "";
         }

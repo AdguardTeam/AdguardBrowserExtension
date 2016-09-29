@@ -251,5 +251,5 @@ QUnit.test("Dot Classes", function(assert) {
     assert.equal(selector, '#test-id-div > div.good-class.bad\\.class:last-child');
 
     selector = AdguardRulesConstructorLib.constructCssSelector(element, true);
-    assert.equal(selector, '.good-class.bad\\.class');
+    assert.equal(selector, '.good-class, .bad\\.class');
 });
