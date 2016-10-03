@@ -114,9 +114,11 @@ function onHeadersReceived(requestDetails) {
          WS connections are detected as "other"  by ABP
          EasyList already contains some rules for WS connections with $other modifier
          */
+        var chromeVersion = Prefs.chromeVersion;
+        var blockConnectSrc = chromeVersion && chromeVersion.substring(0, chromeVersion.indexOf('.')) > 51;
         var websocketCheckUrl = "ws://adguardwebsocket.check/";
         if (webRequestService.checkWebSocketRequest(tab, websocketCheckUrl, referrerUrl)) {
-            if (CspUtils.blockWebSockets(responseHeaders)) {
+            if (CspUtils.blockWebSockets(responseHeaders, !blockConnectSrc)) {
                 return { responseHeaders: responseHeaders };
             }
         }

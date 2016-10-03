@@ -67,6 +67,18 @@ var Prefs = exports.Prefs = {
 				};
 
 				Prefs.safariVersion = parseSafariVersion();
+			} else if (browser == "Chrome") {
+				var parseChromeVersion = function() {
+					var i = userAgent.indexOf("Chrome/");
+					if (i === 0) {
+						return "";
+					}
+
+					var end = userAgent.indexOf(" ", i);
+					return userAgent.substring(i + 7, end > 0 ? end : userAgent.length);
+				};
+
+				Prefs.chromeVersion = parseChromeVersion();
 			}
 		}
 		return Prefs.browser;
