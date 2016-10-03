@@ -36,13 +36,6 @@ var CspUtils = exports.CspUtils = (function () {
             before = i === -1 ? '' : headers[i].value.trim(),
             after = before;
 
-        after = writeCSPDirective(
-            after,
-            /connect-src[^;]*;?\s*/,
-            'connect-src http:',
-            /wss?:[^\s]*\s*/g
-        );
-
         /*
          https://bugs.chromium.org/p/chromium/issues/detail?id=513860
          Bad Chromium bug: web pages can work around CSP directives by
