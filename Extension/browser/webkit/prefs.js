@@ -59,11 +59,10 @@ var Prefs = exports.Prefs = {
 				var parseSafariVersion = function() {
 					var i = userAgent.indexOf("Version/");
 					if (i < 0) {
-                        return "";
+                        return null;
                     }
 
-					var end = userAgent.indexOf(" ", i);
-                    return userAgent.substring(i + 8, end > 0 ? end : userAgent.length);
+					return parseInt(userAgent.substring(i + 8));
 				};
 
 				Prefs.safariVersion = parseSafariVersion();
@@ -71,11 +70,10 @@ var Prefs = exports.Prefs = {
 				var parseChromeVersion = function() {
 					var i = userAgent.indexOf("Chrome/");
 					if (i < 0) {
-						return "";
+						return null;
 					}
 
-					var end = userAgent.indexOf(" ", i);
-					return userAgent.substring(i + 7, end > 0 ? end : userAgent.length);
+					return parseInt(userAgent.substring(i + 7));
 				};
 
 				Prefs.chromeVersion = parseChromeVersion();
