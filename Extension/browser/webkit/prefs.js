@@ -58,7 +58,7 @@ var Prefs = exports.Prefs = {
 			if (browser == "Safari") {
 				var parseSafariVersion = function() {
 					var i = userAgent.indexOf("Version/");
-					if (i === 0) {
+					if (i < 0) {
                         return "";
                     }
 
@@ -70,7 +70,7 @@ var Prefs = exports.Prefs = {
 			} else if (browser == "Chrome") {
 				var parseChromeVersion = function() {
 					var i = userAgent.indexOf("Chrome/");
-					if (i === 0) {
+					if (i < 0) {
 						return "";
 					}
 
