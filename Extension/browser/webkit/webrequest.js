@@ -119,8 +119,7 @@ function onHeadersReceived(requestDetails) {
 
             //We don't change connect-src directives for older chromes
             //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/385
-            var chromeVersion = Prefs.chromeVersion;
-            var blockConnectSrc = chromeVersion && chromeVersion.substring(0, chromeVersion.indexOf('.')) > 51;
+            var blockConnectSrc = parseInt(Prefs.chromeVersion) > 51;
 
             if (CspUtils.blockWebSockets(responseHeaders, !blockConnectSrc)) {
                 return { responseHeaders: responseHeaders };
