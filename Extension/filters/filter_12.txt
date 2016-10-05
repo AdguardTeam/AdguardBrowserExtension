@@ -1,9 +1,9 @@
 ! Title: Safari filter
-! Version: 1.0.1.33
+! Version: 1.0.1.44
 ! Name: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! DescriptionEn: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
-! TimeUpdated: 2016-09-21T01:02:05.027+03:00
+! TimeUpdated: 2016-10-04T19:01:51.124+03:00
 ! Title: Adguard Safari Filter
 !
 ! Special filter for Safari. We need a separate filter for Safari because it does not fully support rules syntax.
@@ -31,6 +31,10 @@
 !
 ! These rules are against anti-adblock scripts
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/3109
+@@||mackie100projects.altervista.org^$generichide
+! https://forum.adguard.com/index.php?threads/13867/
+@@||pagead2.googlesyndication.com/pagead/js/lidar.js$domain=freewarefiles.com
 ! https://forum.adguard.com/index.php?threads/13921/
 @@||cdn.popcash.net/pop.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3018
@@ -200,6 +204,12 @@ telegraaf.nl##.section-ad
 !
 ! TEMPORARY: free-torrents.org - until web-sockets are not blocked by content-blocker
 free-torrent.org,free-torrents.org,onlyf.ws##body > :not(div)
+!
+! https://github.com/AdguardTeam/AdguardFilters/issues/3090
+golem.de###screen > div[id][data-google-query-id]
+!
+sports.ru###top-banner-place
+sports.ru##.columns-layout__right > a[style^="display: inline-block !important;"] > img
 ! https://forum.adguard.com/index.php?threads/13017/
 torrentdownloads.me##a[href^="http://www.friendlyquacks.com/"]
 ! https://github.com/AdguardTeam/AdguardForiOS/issues/128
@@ -274,6 +284,10 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 !
 ! White list. Fixing content blocking API issues.
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/3074
+@@||ebay.co.uk/itm/like/*&adgroupid=$domain=ebay.com|ebay.co.uk
+@@||rover.ebay.com/rover/$domain=ebay.com|ebay.co.uk
+@@||rover.ebay.co.uk/rover/$domain=ebay.com|ebay.co.uk
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3033
 @@||images.primewire.ag^
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2988
@@ -372,7 +386,7 @@ cari.com.my###cvidloader
 @@||yandex.by/clck/jsredir?$domain=yandex.by
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/910
 ! Fixing m.market.yandex.ru
-@@||mc.yandex.ru/metrika/watch.js$domain=m.market.yandex.ru
+@@||mc.yandex.ru/metrika/watch.js$domain=m.market.yandex.ru|m.market.yandex.ua|m.market.yandex.by|m.market.yandex.kz
 ! anistar.ru - the main player was hidden by generic hiding rules
 anistar.ru#@##advblock
 anistar.ru#@#.b-banner
@@ -408,11 +422,12 @@ youtube.com#%#(function () {try {var youtubeAdRegExp = /^((.*_)?(ad|ads|afv|adse
 ! Url exception rules
 @@||adverweb.cjenm.com/vod.mezzo/$domain=m.tving.com
 @@||cc.naver.com/cc^$image
-@@||com/js/ads.js^$domain=anigod.com|gryfindor.com|netmics.com
+@@||com/js/ads.js^$domain=anigod.com|gryfindor.com|kflix.tv|netmics.com
 !@@||tvcast.naver.com/resources/*/clickcr_*.js^ - until Adguard browser extensions suppport $empty modifier
 @@||wcs.naver.net/wcslog.js^
 @@||web.n2s.co.kr/js/_n2s_ygosu_$domain=ygosu.com
 ! Element hiding exception rules
 @@||anigod.com^$generichide
 @@||gryfindor.com^$generichide
+@@||kflix.tv^$generichide
 @@||netmics.com^$generichide

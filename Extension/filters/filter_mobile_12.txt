@@ -1,14 +1,16 @@
 ! Title: Safari filter
-! Version: 1.0.1.33
+! Version: 1.0.1.44
 ! Name: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! DescriptionEn: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
-! TimeUpdated: 2016-09-21T01:02:05.027+03:00
+! TimeUpdated: 2016-10-04T19:01:51.124+03:00
 ||wrmcfyzl.com^
 ||adrunnr.com^$popup
 ||large-format.net^$popup
 ||november-lax.com^$popup
 ||media.innity.net^$third-party
+@@||mackie100projects.altervista.org^$generichide
+@@||pagead2.googlesyndication.com/pagead/js/lidar.js$domain=freewarefiles.com
 @@||cdn.popcash.net/pop.js
 @@||usapoliticstoday.com^$generichide
 @@||ran.de^$generichide
@@ -95,6 +97,9 @@ etfdailynews.com##div[style="width:300px;border:1px solid black"]
 @@||cinemablend.com/timthumb.php?src=/images/facebook/
 telegraaf.nl##.section-ad
 free-torrent.org,free-torrents.org,onlyf.ws##body > :not(div)
+golem.de###screen > div[id][data-google-query-id]
+sports.ru###top-banner-place
+sports.ru##.columns-layout__right > a[style^="display: inline-block !important;"] > img
 torrentdownloads.me##a[href^="http://www.friendlyquacks.com/"]
 @@/:\/\/.*[.]wp[.]pl\/[a-z0-9_]+[.][a-z]+[/:&?]?/
 quoka.de###div-gpt-ad-banner
@@ -140,6 +145,9 @@ brb.to,cxz.to,fs.to##div[class*="universal_ads"]
 ||gamer.ru/alarmalarm/js/
 ||sports.ru/desktop/special/$subdocument,domain=sports.ru
 m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
+@@||ebay.co.uk/itm/like/*&adgroupid=$domain=ebay.com|ebay.co.uk
+@@||rover.ebay.com/rover/$domain=ebay.com|ebay.co.uk
+@@||rover.ebay.co.uk/rover/$domain=ebay.com|ebay.co.uk
 @@||images.primewire.ag^
 @@||awaps.yandex.net^$domain=awaps.yandex.net
 @@||top-shop.ru^$domain=top-shop.ru
@@ -192,7 +200,7 @@ cari.com.my###cvidloader
 @@||yandex.ru/clck/jsredir?$domain=yandex.ru
 @@||yandex.ua/clck/jsredir?$domain=yandex.ua
 @@||yandex.by/clck/jsredir?$domain=yandex.by
-@@||mc.yandex.ru/metrika/watch.js$domain=m.market.yandex.ru
+@@||mc.yandex.ru/metrika/watch.js$domain=m.market.yandex.ru|m.market.yandex.ua|m.market.yandex.by|m.market.yandex.kz
 anistar.ru#@##advblock
 anistar.ru#@#.b-banner
 anistar.ru#@#.bc-adv
@@ -204,9 +212,10 @@ youtube.com#%#(function () {try {var youtubeAdRegExp = /^((.*_)?(ad|ads|afv|adse
 @@||ad.doubleclick.net/*/pfadx/$domain=m.youtube.com
 @@||adverweb.cjenm.com/vod.mezzo/$domain=m.tving.com
 @@||cc.naver.com/cc^$image
-@@||com/js/ads.js^$domain=anigod.com|gryfindor.com|netmics.com
+@@||com/js/ads.js^$domain=anigod.com|gryfindor.com|kflix.tv|netmics.com
 @@||wcs.naver.net/wcslog.js^
 @@||web.n2s.co.kr/js/_n2s_ygosu_$domain=ygosu.com
 @@||anigod.com^$generichide
 @@||gryfindor.com^$generichide
+@@||kflix.tv^$generichide
 @@||netmics.com^$generichide

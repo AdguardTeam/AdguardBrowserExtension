@@ -1,9 +1,9 @@
 ! Title: Spyware filter
-! Version: 1.0.7.74
+! Version: 1.0.7.93
 ! Name: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
 ! DescriptionEn: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! TimeUpdated: 2016-09-21T17:00:50.019+03:00
+! TimeUpdated: 2016-10-05T15:00:49.632+03:00
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
 #%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -39,6 +39,11 @@ echo.msk.ru$$script[tag-content="s=screen;"][max-length="200"]
 ##img[src*="counter.yadro.ru"]
 ##img[src^="http://c.bigmir.net/"]
 ~forum.ixbt.com,~mozhor.ru,~onliner.by,~wiktionary.org,~yandex.by,~yandex.com,~yandex.com.tr,~yandex.ru,~yandex.ua##img[width="88"][height="31"]
+||admitad.com^$third-party
+||stat.clickfrog.ru^$third-party
+||ichnaea.netflix.com^$third-party
+||b2c.com^$third-party
+||count-cnt.ru^$third-party
 ||hitstatus.com^$third-party
 ||eum-appdynamics.com^$third-party
 ||bid.run^$third-party
@@ -1228,7 +1233,7 @@ echo.msk.ru$$script[tag-content="s=screen;"][max-length="200"]
 ||imrtrack.com^$third-party
 ||imrworldwide.com^$third-party
 ||imtop.ru/*/count$third-party
-||in.treasuredata.com^$third-party
+||treasuredata.com^$third-party
 ||inaudium.com^$third-party
 ||inboxtag.com^$third-party
 ||incentivesnetwork.net^$third-party
@@ -2822,6 +2827,14 @@ echo.msk.ru$$script[tag-content="s=screen;"][max-length="200"]
 ||zowary.com^$third-party
 ||zqtk.net^$third-party
 ||zroitracker.com^$third-party
+||images.dmca.com^$third-party,~image
+||analytics.vesti-ukr.com^
+||collector.githubapp.com^
+||events-endpoint-*.amazonaws.com^
+||logs.thebloggernetwork.com^
+||l.sharethis.com^
+||track.dictionary.com^
+||analytics.twitter.com^$domain=~analytics.twitter.com
 ||track.dictionary.com^
 ||recs.atgsvcs.com^$third-party
 ||events.apester.com^$third-party
@@ -2854,6 +2867,9 @@ echo.msk.ru$$script[tag-content="s=screen;"][max-length="200"]
 ||tracking.tchibo.de^
 ||wtsdc.uhc.com^$image
 ||x.ligatus.com^$third-party
+/?&pid=*&subid=$image
+/tracking/csp?
+/stat.gif?
 /brightcove/tracking/*
 /adrum_
 .com/a.gif?
@@ -3002,6 +3018,15 @@ echo.msk.ru$$script[tag-content="s=screen;"][max-length="200"]
 ://b.*/vanity/?
 ://top.*/count/cnt.php?
 _tracking.php?b=
+||google-analytics.com^*/__utm.gif
+||widgeo.net/tracking.php?
+||widgeo.net/hitparade.php
+||widgeo.net/geocompteur/
+||widgeo.net/compteur.php?
+||uservoice.com^*/track.js
+||dyn.tnaflix.com/ajax/ga.php
+||3dnews.ru/track?
+||netflix.com^*/homepagePing?
 ||ibeat.indiatimes.com/js/pgtrackingV5.js
 ||news.goha.ru/li.js
 ||appdynamics.com/geo/$third-party
@@ -3422,6 +3447,10 @@ washingtonpost.com##.social-tools-wrapper-bottom
 ||do-not-tracker.org^$third-party
 ||eviltracker.net^$third-party
 ||trackersimulator.org^$third-party
+@@||metrics.us.playstation.com/b/ss/
+@@||metrics.bitdefender.com/b/ss/*$domain=bitdefender.com
+@@||in.treasuredata.com/js/v*/event/fluentd_website/anchor_clicks_$domain=docs.fluentd.org
+@@||som.aeroplan.com/b/ss/
 @@||spot.im/api/tracker/spot/$domain=russian.rt.com
 @@||track.atom-data.io/report$domain=russian.rt.com
 @@||googletagmanager.com/gtm.js$domain=tehnosila.ru

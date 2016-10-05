@@ -1,9 +1,9 @@
 ! Title: Social media filter
-! Version: 1.0.12.82
+! Version: 1.0.13.28
 ! Name: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
 ! DescriptionEn: Filter for social media widgets (Like buttons and such).
-! TimeUpdated: 2016-09-21T23:00:46.058+03:00
+! TimeUpdated: 2016-10-05T13:00:48.424+03:00
 ! Title: Adguard Social Media Filter
 !
 ! If you do not like numerous «Like» and «Tweet» buttons on all the popular websites on the Internet,
@@ -167,6 +167,7 @@
 !
 ! Contains usorted urls
 !
+/webrazzi_share_popup.js
 /asd.share.buttons/*
 /copy_to_blog_button_
 /copy_to_blog_icon_diary.gif
@@ -180,7 +181,7 @@
 /heart_it_button.js
 /icons/share.jpg
 /images/social/*
-/images/vk.png$domain=~monolife.ru|~mos.ru
+/images/vk.png$domain=~monolife.ru|~mos.ru|~cheater-top.ru
 /img/facebook.gif
 /img/twitter.gif
 /jquery.shareaholic-publishers-sb.min.js
@@ -237,12 +238,20 @@ lj_bookmarklet
 !
 ! Extended CSS rules
 !
+webteizle.org##.widget-wrapper > .widget-wrapper[-ext-has='div[id$="woca-social-widget"]']
+filmozel.com##.widget-wrapper[-ext-has='div[id$="woca-social-widget"]']
+filmozel.com##.widget-wrapper[-ext-has="div.fb-like-box"]
+filmsarayi.net##.sidebarborder[-ext-has='div[class$="facebookbox"]']
+fullhdfilmadresi.com##.leftC > .filmborder[-ext-has='div[class$="plink"]']
 bookdl.org##div[style*="width: 320px; height: 235px;"][-ext-has='div.fb-like-box']
 bookdl.org##div[style$="width:320px;height:235px;"][-ext-has='div.fb-like-box']
 vol.az##.bolmeici > div[class$="tab-menu"][-ext-has='a[href^="#"]:contains(Одноклассники & VK like)']
 golem.de##li[class="text1"][-ext-has='div[class$="social-bar social-sidebar"]']
 gencfb.org##div[class="right_block"][-ext-has='div[class$="socialRightBlock"]']
 hurriyetoto.com###urunSag_menu li[-ext-has='ul[id$="ilaniPaylas"]']
+! Popups
+buzzhand.com#$#.mash-lightbox[-ext-has="div"] { display: none!important; }
+buzzhand.com#$#body[-ext-has="div"] { overflow: visible!important; }
 !-------------------------------------------------------------------------------!
 !-------------- General javascript, CSS and HTML extensions --------------------!
 !-------------------------------------------------------------------------------!
@@ -300,6 +309,60 @@ softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2146
 ||mimimi.tv/?*=*&_=
 !
+nitecore-ua.com##.pop-up-wrap
+minecrafthousedesign.com##.et_social_inline
+techrepublic.com##a[data-location^="topsharebar"]
+techrepublic.com###share-bar li.dropdown
+techrepublic.com##a[data-location^="bottomsharebar"]
+superjob.ru##.VacancyView_share
+turkiyehabermerkezi.com##.fa-facebook
+turkiyehabermerkezi.com##.fa-twitter
+turkiyehabermerkezi.com##.fa-google-plus
+turkiyehabermerkezi.com##.fa-linkedin
+turkiyehabermerkezi.com##.alt-sosyal
+batpic.com##.panel-share-networks *
+turkiyegazetesi.com.tr##.fa-google-plus
+turkiyegazetesi.com.tr##.fa-facebook
+storm.mg##.vex
+dikgazete.com##iframe[src^="http://is1.sitekodlari.com/"]
+sz-online.de##.szoSocialMediaShare
+ekippolishaber.com##img[alt="facebook-paylas"]
+vizyondafilm.info##.sociaPayLasim
+medyatrendleri.com##.social
+express.de##.dm_article_share
+yachtturkiye.com##.social
+kadinextra.com##.sosyal_buton
+uzmantv.com##.uplayer-social-button-container
+tarzgo.com##.theblogwidgets
+tarzgo.com##.social
+m5bilisim.com##.sol-icerik-girinti > a[href^="javascript:void(0)"]
+firmasec.com##.ssharec
+firmasec.com##.sshare > a[title$="paylaş"]
+evrensel.net##.author-socials
+emlakpencerem.com##a[onclick^="ShareOn"]
+aspor.com.tr##.sharer
+aspor.com.tr##a[onclick="SocialMediaShare(this)"]
+sonmansethaber.com##.video_share_item
+izleneo.net##.face_paylas
+kinomax.ru##.soc
+havadiskibris.com##.mom-share-post
+mediacatonline.com##.socialBuzzLine
+familyhandyman.com##.socialshare
+islahhaber.net##.sosyal
+dizibilgi.net##.sosyal_buton
+pornoworlds.org,izingla.com##.dp-share
+pornoizliyon.com##.dp-share
+wwwpornoizle.net##.dp-share
+qadinlar.biz##.fbsira
+tunefind.com##button[class^="ShareQuestion__container"]
+sokol.ua##.pp-social-block
+rtl.de##.rtli-master-social-share
+medialnk.com###sidebarShare
+teknokulis.com##.share
+javajunkies.org##.dp-share
+filmozel.com###woca-social-widget
+fullhdfilmadresi.com##.f-takip
+fullhdfilmadresi.com##.sosyal_medya
 cracked.com##.facebookWrapperModule
 mylifetime.com##.share-this
 motor.ru##.share_btn
@@ -509,9 +572,7 @@ amasyagazetesi.com,dunyabulteni.net,geek.com,greasyfork.org,gunebakis.com.tr,hac
 rantlifestyle.com###share-above-desktop
 rantlifestyle.com###share-below-desktop
 wired.com###share-card
-filmizlef.com,fullhd720pizle.com###share-cerceve
 rantlifestyle.com###share-in-content
-downloadlinks.net,teknolojipaylasim.com,the-area51.com,torrent-kutusu.blogspot.com###share-post
 dailycaller.com###share-wrapper
 dailylocal.com###shareBarWrapper
 scroll.com.tr###shareButtons
@@ -1394,6 +1455,28 @@ komarovskiy.net##ul[class="social-bookmarks"]
 !
 ! Section contains list general hiding rules
 !
+##.the_champ_sharing_container
+##.fb-share
+###share-buttons
+~twitter.com##a[onclick^="window.open('https://twitter.com/intent/tweet"]
+##.btn-pinterest
+~twitter.com##a[href^="http://www.twitter.com/share"]
+##.share-gplus
+~mediafire.com##.share-twitter
+##.google-share
+##.mvp_facebook_widget
+##.SocialButtons
+##.Socialbuttons
+~mousehuntgame.com##.socialButtons
+~clientsfromhell.net##.socialbuttons
+##.jssocials-shares
+##.share-link
+##.page-share
+##.page-share-button
+###share-post
+##.sideBarShare
+##.share_block
+###share-cerceve
 ##.social-share-facebook
 ##.social-share-twitter
 ##.social-share-google
@@ -1754,7 +1837,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.share-proposal
 ##.share-regular
 ##.share-sm-icons
-##.share-text
+~bild.de##.share-text
 ##.share-tools
 ##.share-wrap
 ##.share3
@@ -1782,7 +1865,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.share_tools
 ##.shareaholic-canvas
 ##.sharebar
-~kp.ru##.sharebox
+~nim.ru,~kp.ru##.sharebox
 ##.shared-item-icon
 ##.sharedaddy
 ##.sharedefault
@@ -2016,7 +2099,7 @@ livejournal.com##.b-ljtimes-wrapper
 ~facebook.com##a[href^="http://www.facebook.com/sharer/sharer.php"]
 ~friendfeed.com##a[href^="http://www.friendfeed.com/share?"]
 ~google.com##a[href^="http://www.google.com/bookmarks/mark?"]
-~linkedin.com##a[href^="http://www.linkedin.com/shareArticle?"]
+~linkedin.com##a[href^="http://www.linkedin.com/shareArticle"]
 ~livejournal.com##a[href^="http://www.livejournal.com/update.bml"]
 ~mixx.com##a[href^="http://www.mixx.com/submit?"]
 ~myspace.com##a[href^="http://www.myspace.com/Modules/PostTo/Pages/?u="]
@@ -2091,6 +2174,15 @@ livejournal.com##.b-ljtimes-wrapper
 !
 /wp-content/plugins/facebook-fanbox-popup/*
 !
+coco01.net###fbCover
+palo.com.tr###like-popup
+lubernet.ru###popup-block
+lubernet.ru###overlay
+mynizhyn.com##.close-soc-popup
+mynizhyn.com##.popup
+wallpapershome.ru###welcome
+facebook.com###headerArea > div > div[class="_5hn6"][style]
+||iz.com.ua/arcticmodal/jquery.arcticmodal.js
 ilife99.com##.spu-bg
 ilife99.com##.spu-box
 donanimhaber.com###pnlNoSmTakip
@@ -2119,6 +2211,7 @@ instinctcoder.com##div[id^="ppsPopup"]
 afyonhaber.com,tamindir.com##div[id^="simplemodal-"]
 ||sud.ua/js/jquery.arcticmodal*.min.js
 ||ufatime.ru/st/libs/magnific/jquery.magnific-popup.min.js
+medialnk.com#%#Object.defineProperty(window, 'Lightbox', { get: function() { return {}; } });
 !
 gordonua.com#$##socialModal { display: none!important; }
 gordonua.com#$#.modal-backdrop { display: none!important; }
@@ -2133,12 +2226,21 @@ gagadget.com#$#.js-social-fader { display: none!important; }
 !
 okino.ua#$#body { overflow: visible!important; }
 okino.ua#$#.fader-social { display: none!important; }
+!
+thegreatdaily.com#$#body { overflow: visible!important; }
+thegreatdaily.com#$##fbModel { display: none!important; }
+thegreatdaily.com#$#.modal-backdrop { display: none!important; }
 !-------------------------------------------------------------------------------!
 !-------------- Whitelist  -----------------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
 ! Section fixing issues caused by social filter
 !
+! https://forum.adguard.com/index.php?threads/14463/
+@@||smofast.com/theme/default/images/social/
+! forum.adguard.com/showthread.php?4819
+@@||sdelanounas.ru/app/themes/sdelanounas/images/social/android.png
+@@||sdelanounas.ru/app/themes/sdelanounas/images/social/apple.png
 ! https://forum.adguard.com/index.php?threads/14087/
 @@||kino24x7.com/engine/classes/min/index.php?*/social-likes.min.js
 ! https://forum.adguard.com/index.php?threads/13009/
