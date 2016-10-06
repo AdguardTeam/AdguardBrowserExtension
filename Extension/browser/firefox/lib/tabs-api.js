@@ -16,31 +16,31 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-adguard.tabsImpl = adguard.tabsImpl || (function () {
-
-		'use strict';
-
-		function noOpFunc() {
-			throw new Error('Not implemented');
-		}
-
-		return {
-
-			onCreated: noOpFunc,	// callback(tab)
-			onRemoved: noOpFunc,	// callback(tabId)
-			onUpdated: noOpFunc,	// callback(tab)
-			onActivated: noOpFunc, 	// callback(tabId)
-
-			create: noOpFunc,		// callback(tab)
-			remove: noOpFunc,		// callback(tabId)
-			activate: noOpFunc,		// callback(tabId)
-			reload: noOpFunc,
-			sendMessage: noOpFunc,
-			getAll: noOpFunc,		// callback(tabs)
-			getActive: noOpFunc		// callback(tabId)
-		};
-
-	})();
+//adguard.tabsImpl = exports.Tabs = adguard.tabsImpl || (function () {
+//
+//		'use strict';
+//
+//		function noOpFunc() {
+//			throw new Error('Not implemented');
+//		}
+//
+//		return {
+//
+//			onCreated: noOpFunc,	// callback(tab)
+//			onRemoved: noOpFunc,	// callback(tabId)
+//			onUpdated: noOpFunc,	// callback(tab)
+//			onActivated: noOpFunc, 	// callback(tabId)
+//
+//			create: noOpFunc,		// callback(tab)
+//			remove: noOpFunc,		// callback(tabId)
+//			activate: noOpFunc,		// callback(tabId)
+//			reload: noOpFunc,
+//			sendMessage: noOpFunc,
+//			getAll: noOpFunc,		// callback(tabs)
+//			getActive: noOpFunc		// callback(tabId)
+//		};
+//
+//	})();
 
 adguard.tabs = exports.TabsApi = (function (tabsImpl) {
 

@@ -20,7 +20,7 @@
 var {Cc, Ci, Cu} = require('chrome');
 var Services = Cu.import("resource://gre/modules/Services.jsm").Services;
 
-adguard.tabsImpl = (function () {
+adguard.tabsImpl = exports.Tabs = (function () {
 
     'use strict';
 
@@ -35,6 +35,7 @@ adguard.tabsImpl = (function () {
 
     function toTabFromFirefoxTab(firefoxTab) {
         //TODO: Fix
+        console.log(firefoxTab);
 
         return {
             tabId: firefoxTab.id,
