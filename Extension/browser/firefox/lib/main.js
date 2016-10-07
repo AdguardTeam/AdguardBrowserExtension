@@ -34,6 +34,8 @@ try {
     console = Cu.import('resource://gre/modules/devtools/Console.jsm', {}).console;
 }
 
+var adguard = adguard || {};
+
 var sdkModules = {
     'chrome': chrome,
     'sdk/timers': require('sdk/timers'),
@@ -110,6 +112,8 @@ exports.main = function (options, callbacks) {
         var {AntiBannerFiltersId} = loadAdguardModule('./utils/common');
         var {Utils} = loadAdguardModule('./utils/browser-utils');
         var {TabsMap} = loadAdguardModule('./tabsMap');
+        var {Tabs} = loadAdguardModule('./tabs');
+        var {TabsApi} = loadAdguardModule('./tabs-api');
         var {FramesMap} = loadAdguardModule('./utils/frames');
         var {AdguardApplication} = loadAdguardModule('./filter/integration');
         var {filterRulesHitCount} = loadAdguardModule('./filter/filters-hit');
@@ -300,6 +304,7 @@ var loadAdguardModule = function (modulePath) {
         var scriptPath = modulePath + ".js";
         var url = self.data.url('../lib/' + scriptPath);
         url = url.replace("data/../lib/" + scriptPath, 'lib/' + scriptPath);
+        console.log(url);
 
         var scope = scopes[moduleName] = {
             require: function (module) {
