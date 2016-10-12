@@ -19,6 +19,7 @@
 
 var {Cc, Ci, Cu} = require('chrome');
 var Services = Cu.import("resource://gre/modules/Services.jsm").Services;
+var contentScripts = require('./contentScripts').contentScripts;
 
 adguard.tabsImpl = exports.Tabs = (function () {
 
@@ -265,8 +266,14 @@ adguard.tabsImpl = exports.Tabs = (function () {
         }
     }
 
-    function sendMessage() {
-        //TODO: Implement
+    /**
+     * Sends message to specified tab
+     *
+     * @param tab       Message receiver (SDK tab)
+     * @param message   Message to send
+     */
+    function sendMessage(tab, message) {
+        contentScripts.sendMessageToTab(tab, message);
     }
 
     /**
