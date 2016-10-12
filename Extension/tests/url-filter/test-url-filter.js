@@ -254,3 +254,32 @@ QUnit.test("Complex regexp rule", function(assert) {
     assert.notOk(rule.isFiltered("https://ajax.cloudflare.com/blahblah.js", true, RequestTypes.SCRIPT));
     assert.notOk(rule.isFiltered("https://www.google-analytics.com/blahblah.js", true, RequestTypes.SCRIPT));
 });
+
+QUnit.test("Important modifier rules", function(assert) {
+    var rule = new UrlFilterRule("||example.com^$important");
+    assert.ok(rule.isImportant);
+
+    rule = new UrlFilterRule("||example.com^$\~important");
+    assert.notOk(rule.isImportant);
+
+    rule = new UrlFilterRule("||example.com^");
+    assert.notOk(rule.isImportant);
+});
+
+QUnit.test("Important modifier rules priority", function(assert) {
+    var importantRule = new UrlFilterRule("http://$important,domain=test.com");
+    var basicRule = new UrlFilterRule("||example.com^");
+
+    assert.ok(importantRule.isFiltered("http://example.com", true, RequestTypes.SUBDOCUMENT));
+    assert.ok(importantRule.isPermitted("test.com"));
+    assert.ok(basicRule.isFiltered("http://example.com", true, RequestTypes.SUBDOCUMENT));
+    assert.ok(basicRule.isPermitted("http://example.com"));
+
+    var urlFilter = new UrlFilter();
+    urlFilter.addRule(basicRule);
+    urlFilter.addRule(importantRule);
+
+    var result = urlFilter.isFiltered("http://example.com", "test.com", RequestTypes.SUBDOCUMENT, true);
+    assert.ok(result != null);
+    assert.equal(result.ruleText, importantRule.ruleText);
+});

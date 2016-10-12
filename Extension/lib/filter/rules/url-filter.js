@@ -31,7 +31,8 @@ var UrlUtils = require('../../../lib/utils/url').UrlUtils;
  */
 var UrlFilter = exports.UrlFilter = function (rules) {
 
-	this.lookupTable = new ShortcutsLookupTable();
+	this.basicRulesTable = new ShortcutsLookupTable();
+	this.importantRulesTable = new ShortcutsLookupTable();
 	this.rulesWithoutShortcuts = [];
 
 	if (rules) {
@@ -52,8 +53,10 @@ UrlFilter.prototype = {
 
 		if (StringUtils.isEmpty(rule.shortcut) || rule.shortcut.length < ShortcutsLookupTable.SHORTCUT_LENGTH) {
 			this.rulesWithoutShortcuts.push(rule);
+		} else if (rule.isImportant) {
+			this.importantRulesTable.addRule(rule);
 		} else {
-			this.lookupTable.addRule(rule);
+			this.basicRulesTable.addRule(rule);
 		}
 	},
 
@@ -66,8 +69,10 @@ UrlFilter.prototype = {
 
 		if (StringUtils.isEmpty(rule.shortcut) || rule.shortcut.length < ShortcutsLookupTable.SHORTCUT_LENGTH) {
 			CollectionUtils.removeRule(this.rulesWithoutShortcuts, rule);
+		} else if (rule.isImportant) {
+			this.importantRulesTable.removeRule(rule);
 		} else {
-			this.lookupTable.removeRule(rule);
+			this.basicRulesTable.removeRule(rule);
 		}
 	},
 
@@ -76,7 +81,8 @@ UrlFilter.prototype = {
 	 */
 	clearRules: function () {
 		this.rulesWithoutShortcuts = [];
-		this.lookupTable.clearRules();
+		this.basicRulesTable.clearRules();
+		this.importantRulesTable.clearRules();
 	},
 
 	/**
@@ -92,21 +98,33 @@ UrlFilter.prototype = {
 	isFiltered: function (url, refHost, requestType, thirdParty, skipGenericRules) {
 		var rule;
 
-		var rules = this.lookupTable.lookupRules(url.toLowerCase());
-		// Check against rules with shortcuts
-		if (rules && rules.length > 0) {
-			rule = this._isFiltered(url, refHost, rules, requestType, thirdParty, !skipGenericRules);
-			if (rule != null) {
-				return rule;
+		var findRule = (function (rules) {
+			if (rules && rules.length > 0) {
+				rule = this._isFiltered(url, refHost, rules, requestType, thirdParty, !skipGenericRules);
+				if (rule != null) {
+					return rule;
+				}
 			}
+		}).bind(this);
+
+		// First looking for the rule marked with $important modifier
+		var importantRules = this.importantRulesTable.lookupRules(url.toLowerCase());
+		rule = findRule(importantRules);
+		if (rule != null) {
+			return rule;
+		}
+
+		// Check against rules with shortcuts
+		var basicRules = this.basicRulesTable.lookupRules(url.toLowerCase());
+		rule = findRule(basicRules);
+		if (rule != null) {
+			return rule;
 		}
 
 		// Check against rules without shortcuts
-		if (this.rulesWithoutShortcuts != null && this.rulesWithoutShortcuts.length > 0) {
-			rule = this._isFiltered(url, refHost, this.rulesWithoutShortcuts, requestType, thirdParty, !skipGenericRules);
-			if (rule != null) {
-				return rule;
-			}
+		rule = findRule(this.rulesWithoutShortcuts);
+		if (rule != null) {
+			return rule;
 		}
 
 		return null;
@@ -116,7 +134,8 @@ UrlFilter.prototype = {
 	 * Returns the array of loaded rules
 	 */
 	getRules: function () {
-		var rules = this.lookupTable.getRules();
+		var rules = this.basicRulesTable.getRules();
+		rules = rules.concat(this.importantRulesTable.getRules());
 		return rules.concat(this.rulesWithoutShortcuts);
 	},
 

@@ -213,6 +213,12 @@ UrlFilterRule.prototype._loadOptions = function (options) {
                 //If true - regex is matching case
                 this.matchCase = true;
                 break;
+            case UrlFilterRule.IMPORTANT_OPTION:
+                this.isImportant = true;
+                break;
+            case UrlFilterRule.NOT_MARK + UrlFilterRule.IMPORTANT_OPTION:
+                this.isImportant = false;
+                break;
             case UrlFilterRule.ELEMHIDE_OPTION:
                 permittedContentType |= UrlFilterRule.contentTypes.ELEMHIDE;
                 break;
@@ -267,6 +273,7 @@ UrlFilterRule.URLBLOCK_OPTION = "urlblock";
 UrlFilterRule.GENERICBLOCK_OPTION = "genericblock";
 UrlFilterRule.JSINJECT_OPTION = "jsinject";
 UrlFilterRule.POPUP_OPTION = "popup";
+UrlFilterRule.IMPORTANT_OPTION = "important";
 UrlFilterRule.MASK_REGEX_RULE = "/";
 
 UrlFilterRule.contentTypes = {
@@ -283,12 +290,13 @@ UrlFilterRule.contentTypes = {
     FONT: 1 << 9,
     WEBSOCKET: 1 << 10,
 
-    ELEMHIDE: 1 << 20,  //CssFilter cannot be applied to page
-    URLBLOCK: 1 << 21,  //This attribute is only for exception rules. If true - do not use urlblocking rules for urls where referrer satisfies this rule.
-    JSINJECT: 1 << 22,  //Does not inject javascript rules to page
-    POPUP: 1 << 23,      //check block popups
-    GENERICHIDE: 1 << 24, //CssFilter generic rules cannot be applied to page
-    GENERICBLOCK: 1 << 25 //UrlFilter generic rules cannot be applied to page
+    ELEMHIDE: 1 << 20,      //CssFilter cannot be applied to page
+    URLBLOCK: 1 << 21,      //This attribute is only for exception rules. If true - do not use urlblocking rules for urls where referrer satisfies this rule.
+    JSINJECT: 1 << 22,      //Does not inject javascript rules to page
+    POPUP: 1 << 23,         //check block popups
+    GENERICHIDE: 1 << 24,   //CssFilter generic rules cannot be applied to page
+    GENERICBLOCK: 1 << 25,  //UrlFilter generic rules cannot be applied to page
+    IMPORTANT: 1 << 26      //Important rules cannot be applied to page
 };
 
 // https://code.google.com/p/chromium/issues/detail?id=410382
