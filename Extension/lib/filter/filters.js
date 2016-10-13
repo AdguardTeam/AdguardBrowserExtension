@@ -370,7 +370,6 @@ RequestFilter.prototype = {
      */
     _innerFilterHttpRequest: function (requestUrl, referrer, refHost, requestType, thirdParty) {
 
-        //TODO: Rewrite all this stuff
         Log.debug("Filtering http request for url: {0}, referrer: {1}, requestType: {2}", requestUrl, refHost, requestType);
 
         // STEP 1: Looking for exception rule, which could be applied to the current request
@@ -382,11 +381,11 @@ RequestFilter.prototype = {
 
         // Searching white list for a rule for Referrer and checking it's UrlBlock attribute
         // If UrlBlock is set - than we should not use UrlBlockingFilter against this request.
-        var referrerWhiteListRule = this._checkWhiteList(referrer, refHost, "URLBLOCK", thirdParty);
+        var referrerWhiteListRule = this._checkWhiteList(referrer, refHost, requestType, thirdParty);
 
         // Now check if ref rule has $genericblock or $urlblock modifier
         var genericRulesAllowed = referrerWhiteListRule == null || !referrerWhiteListRule.isGeneric();
-        var urlRulesAllowed = referrerWhiteListRule == null;
+        var urlRulesAllowed = referrerWhiteListRule == null || !referrerWhiteListRule.isUrlBlock;
 
         // STEP 3: Looking for blocking rule, which could be applied to the current request
 

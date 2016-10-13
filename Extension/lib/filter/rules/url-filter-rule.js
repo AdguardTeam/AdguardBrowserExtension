@@ -230,6 +230,7 @@ UrlFilterRule.prototype._loadOptions = function (options) {
                 break;
             case UrlFilterRule.URLBLOCK_OPTION:
                 permittedContentType |= UrlFilterRule.contentTypes.URLBLOCK;
+                this.isUrlBlock = true;
                 break;
             case UrlFilterRule.GENERICBLOCK_OPTION:
                 permittedContentType |= UrlFilterRule.contentTypes.GENERICBLOCK;

@@ -43,7 +43,30 @@ QUnit.test("Important modifier rules", function(assert) {
 
     requestFilter.addRule(documentRule);
     result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT);
-    //TODO: ??
+    //TODO: Fix
     assert.ok(result != null);
-    console.log(result);
+    assert.equal(result.ruleText, documentRule.ruleText);
+});
+
+QUnit.test("Request filter performance", function(assert) {
+
+    //TODO: Load txt
+    var requestFilter = new RequestFilter();
+    var rules = testFilterRules.split("\n");
+    for (var i = 0; i < rules.length; i++) {
+        requestFilter.addRule(rules[i]);
+    }
+
+    var url = "https://thisistesturl.com/asdasdasd_adsajdasda_asdasdjashdkasdasdasdasd_adsajdasda_asdasdjashdkasd";
+
+    var count = 50;
+    var startTime = new Date().getTime();
+    for (var k = 0; k < count; k++) {
+        requestFilter.findRuleForRequest(url, null, RequestTypes.SUBDOCUMENT);
+    }
+
+    var elapsed = new Date().getTime() - startTime;
+    assert.ok(elapsed > 0);
+    console.log("Total: " + elapsed / 1000000 + " ms");
+    console.log("Average: " + elapsed / 1000 / count + " ms");
 });
