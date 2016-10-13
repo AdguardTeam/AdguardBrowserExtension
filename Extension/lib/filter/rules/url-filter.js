@@ -107,6 +107,7 @@ UrlFilter.prototype = {
 			}
 		}).bind(this);
 
+		//TODO: Performance
 		// First looking for the rule marked with $important modifier
 		var importantRules = this.importantRulesTable.lookupRules(url.toLowerCase());
 		rule = findRule(importantRules);

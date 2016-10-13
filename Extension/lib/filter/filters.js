@@ -370,28 +370,53 @@ RequestFilter.prototype = {
      */
     _innerFilterHttpRequest: function (requestUrl, referrer, refHost, requestType, thirdParty) {
 
+        //TODO: Rewrite all this stuff
         Log.debug("Filtering http request for url: {0}, referrer: {1}, requestType: {2}", requestUrl, refHost, requestType);
 
-        var urlWhiteRule = this._checkWhiteList(requestUrl, refHost, requestType, thirdParty);
-        if (urlWhiteRule !== null) {
-            Log.debug("White list rule found {0} for url: {1} referrer: {2}, requestType: {3}", urlWhiteRule.ruleText, requestUrl, refHost, requestType);
-            return urlWhiteRule;
+        // STEP 1: Looking for exception rule, which could be applied to the current request
+
+        // Checks white list for a rule for this RequestUrl. If something is found - returning it.
+        var urlWhiteListRule = this._checkWhiteList(requestUrl, refHost, requestType, thirdParty);
+
+        // STEP 2: Looking for exception rule, which could be applied to the whole document, request was originated from
+
+        // Searching white list for a rule for Referrer and checking it's UrlBlock attribute
+        // If UrlBlock is set - than we should not use UrlBlockingFilter against this request.
+        var referrerWhiteListRule = this._checkWhiteList(referrer, refHost, "URLBLOCK", thirdParty);
+
+        // Now check if ref rule has $genericblock or $urlblock modifier
+        var genericRulesAllowed = referrerWhiteListRule == null || !referrerWhiteListRule.isGeneric();
+        var urlRulesAllowed = referrerWhiteListRule == null;
+
+        // STEP 3: Looking for blocking rule, which could be applied to the current request
+
+        // Look for blocking rules
+        var blockingRule = this._checkUrlBlockingList(requestUrl, refHost, requestType, thirdParty, genericRulesAllowed);
+
+        // STEP 4: Analyze results, first - basic exception rule
+
+        if (urlWhiteListRule != null &&
+                // Please note, that if blocking rule has $important modifier, it could
+                // overcome existing exception rule
+            (urlWhiteListRule.isImportant || blockingRule == null || !blockingRule.isImportant)) {
+            Log.debug("White list rule found {0} for url: {1} referrer: {2}, requestType: {3}", urlWhiteListRule.ruleText, requestUrl, refHost, requestType);
+            return urlWhiteListRule;
         }
 
-        var referrerWhiteRule = this._checkWhiteList(referrer, refHost, "URLBLOCK", thirdParty);
-        if (referrerWhiteRule !== null) {
-            Log.debug("White list rule {0} found for referrer: {1}", referrerWhiteRule.ruleText, referrer);
-            return referrerWhiteRule;
+        if (!genericRulesAllowed || !urlRulesAllowed) {
+            Log.debug("White list rule {0} found for referrer: {1}", referrerWhiteListRule.ruleText, referrer);
         }
 
-        var genericUrlBlockRule = this._checkWhiteList(referrer, refHost, "GENERICBLOCK", thirdParty);
-        var rule = this._checkUrlBlockingList(requestUrl, refHost, requestType, thirdParty, !genericUrlBlockRule);
-        if (rule !== null) {
-            Log.debug("Black list rule {0} found for url: {1}, referrer: {2}, requestType: {3}", rule.ruleText, requestUrl, refHost, requestType);
-            return rule;
+        if (!urlRulesAllowed) {
+            // URL whitelisted
+            return referrerWhiteListRule;
         }
 
-        return genericUrlBlockRule;
+        if (blockingRule != null) {
+            Log.debug("Black list rule {0} found for url: {1}, referrer: {2}, requestType: {3}", blockingRule.ruleText, requestUrl, refHost, requestType);
+        }
+
+        return blockingRule;
     },
 
     /**
