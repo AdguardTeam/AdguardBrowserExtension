@@ -50,23 +50,52 @@ QUnit.test("Important modifier rules", function(assert) {
 
 QUnit.test("Request filter performance", function(assert) {
 
-    //TODO: Load txt
-    var requestFilter = new RequestFilter();
-    var rules = testFilterRules.split("\n");
-    for (var i = 0; i < rules.length; i++) {
-        requestFilter.addRule(rules[i]);
-    }
+    var done = assert.async();
 
-    var url = "https://thisistesturl.com/asdasdasd_adsajdasda_asdasdjashdkasdasdasdasd_adsajdasda_asdasdjashdkasd";
+    var readFromFile = function (path, successCallback) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", path, false);
+        xhr.send(null);
+        successCallback(xhr.responseText);
+    };
 
-    var count = 50;
-    var startTime = new Date().getTime();
-    for (var k = 0; k < count; k++) {
-        requestFilter.findRuleForRequest(url, null, RequestTypes.SUBDOCUMENT);
-    }
+    var onFileLoaded = function (text) {
+        assert.ok(text != null);
 
-    var elapsed = new Date().getTime() - startTime;
-    assert.ok(elapsed > 0);
-    console.log("Total: " + elapsed / 1000000 + " ms");
-    console.log("Average: " + elapsed / 1000 / count + " ms");
+        var requestFilter = new RequestFilter();
+        var rules = text.split("\n");
+        assert.ok(rules.length > 0);
+        for (var i = 0; i < rules.length; i++) {
+            try {
+                var rule = FilterRuleBuilder.createRule(rules[i], AntiBannerFiltersId.USER_FILTER_ID);
+                requestFilter.addRule(rule);
+            } catch (ex) {
+                //Ignore
+            }
+        }
+
+        var rulesInFilter = requestFilter.getRules().length;
+        assert.ok(rulesInFilter > 0);
+        console.log('Rules in filter: ' + rulesInFilter);
+
+        var url = "https://thisistesturl.com/asdasdasd_adsajdasda_asdasdjashdkasdasdasdasd_adsajdasda_asdasdjashdkasd";
+
+        var count = 5000;
+        var startTime = new Date().getTime();
+        for (var k = 0; k < count; k++) {
+            requestFilter.findRuleForRequest(url, null, RequestTypes.SUBDOCUMENT);
+        }
+
+        var elapsed = new Date().getTime() - startTime;
+        assert.ok(elapsed > 0);
+        console.log("Total: " + elapsed / 1000000 + " ms");
+        console.log("Average: " + elapsed / 1000 / count + " µs");
+
+        //Total: 0.000006 ms
+        //Average: 0.0000012 ms
+
+        done();
+    };
+
+    readFromFile('test_filter.txt', onFileLoaded);
 });
