@@ -54,7 +54,7 @@ var UrlFilterRule = exports.UrlFilterRule = function (rule, filterId) {
     }
 
     var urlRuleText = parseResult.urlRuleText;
-    this.urlRuleText= urlRuleText;
+    this.urlRuleText = urlRuleText;
 
     var isRegexRule = StringUtils.startWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) && StringUtils.endWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE);
     if (isRegexRule) {
@@ -64,6 +64,11 @@ var UrlFilterRule = exports.UrlFilterRule = function (rule, filterId) {
         if (!regexp) {
             throw 'Illegal regexp rule';
         }
+
+        //if (UrlFilterRule.REGEXP_ANY_SYMBOL == regexp && !this.hasPermittedDomains()) {
+        //    // Rule matches everything and does not have any domain restriction
+        //    throw ("Too wide basic rule: " + this.urlRuleText);
+        //}
     } else {
         // Searching for shortcut
         this.shortcut = findShortcut(urlRuleText);
@@ -85,6 +90,11 @@ UrlFilterRule.prototype.getUrlRegExpSource = function () {
 
 // Lazy regexp creation
 UrlFilterRule.prototype.getUrlRegExp = function () {
+
+    //if (!this.urlRegExpSource || UrlFilterRule.MASK_ANY_SYMBOL == this.urlRegExpSource) {
+    //    // Match any symbol
+    //    this.urlRegExp = new RegExp(UrlFilterRule.REGEXP_ANY_SYMBOL);
+    //}
 
     //check already compiled but not successful
     if (this.wrongUrlRegExp) {
@@ -276,6 +286,8 @@ UrlFilterRule.JSINJECT_OPTION = "jsinject";
 UrlFilterRule.POPUP_OPTION = "popup";
 UrlFilterRule.IMPORTANT_OPTION = "important";
 UrlFilterRule.MASK_REGEX_RULE = "/";
+UrlFilterRule.MASK_ANY_SYMBOL = "*";
+UrlFilterRule.REGEXP_ANY_SYMBOL = ".*";
 
 UrlFilterRule.contentTypes = {
 

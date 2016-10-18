@@ -19,9 +19,8 @@
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
-var ShortcutsLookupTable = require('../../../lib/filter/rules/shortcuts-lookup-table').ShortcutsLookupTable;
+var UrlFilterRuleLookupTable = require('../../../lib/filter/rules/url-filter-lookup-table').UrlFilterRuleLookupTable;
 var StringUtils = require('../../../lib/utils/common').StringUtils;
-var CollectionUtils = require('../../../lib/utils/common').CollectionUtils;
 var UrlUtils = require('../../../lib/utils/url').UrlUtils;
 
 /**
@@ -31,9 +30,8 @@ var UrlUtils = require('../../../lib/utils/url').UrlUtils;
  */
 var UrlFilter = exports.UrlFilter = function (rules) {
 
-	this.basicRulesTable = new ShortcutsLookupTable();
-	this.importantRulesTable = new ShortcutsLookupTable();
-	this.rulesWithoutShortcuts = [];
+	this.basicRulesTable = new UrlFilterRuleLookupTable();
+	this.importantRulesTable = new UrlFilterRuleLookupTable();
 
 	if (rules) {
 		for (var i = 0; i < rules.length; i++) {
@@ -51,9 +49,7 @@ UrlFilter.prototype = {
 	 */
 	addRule: function (rule) {
 
-		if (StringUtils.isEmpty(rule.shortcut) || rule.shortcut.length < ShortcutsLookupTable.SHORTCUT_LENGTH) {
-			this.rulesWithoutShortcuts.push(rule);
-		} else if (rule.isImportant) {
+		if (rule.isImportant) {
 			this.importantRulesTable.addRule(rule);
 		} else {
 			this.basicRulesTable.addRule(rule);
@@ -67,9 +63,7 @@ UrlFilter.prototype = {
 	 */
 	removeRule: function (rule) {
 
-		if (StringUtils.isEmpty(rule.shortcut) || rule.shortcut.length < ShortcutsLookupTable.SHORTCUT_LENGTH) {
-			CollectionUtils.removeRule(this.rulesWithoutShortcuts, rule);
-		} else if (rule.isImportant) {
+		if (rule.isImportant) {
 			this.importantRulesTable.removeRule(rule);
 		} else {
 			this.basicRulesTable.removeRule(rule);
@@ -80,7 +74,6 @@ UrlFilter.prototype = {
 	 * Removes all rules from UrlFilter
 	 */
 	clearRules: function () {
-		this.rulesWithoutShortcuts = [];
 		this.basicRulesTable.clearRules();
 		this.importantRulesTable.clearRules();
 	},
@@ -96,39 +89,13 @@ UrlFilter.prototype = {
 	 * @return matching rule or null if no match found
 	 */
 	isFiltered: function (url, refHost, requestType, thirdParty, skipGenericRules) {
-		var rule;
-
-		var findRule = (function (rules) {
-			if (rules && rules.length > 0) {
-				rule = this._isFiltered(url, refHost, rules, requestType, thirdParty, !skipGenericRules);
-				if (rule != null) {
-					return rule;
-				}
-			}
-		}).bind(this);
-
-		//TODO: Performance
 		// First looking for the rule marked with $important modifier
-		var importantRules = this.importantRulesTable.lookupRules(url.toLowerCase());
-		rule = findRule(importantRules);
-		if (rule != null) {
-			return rule;
-		}
+		var rule = this.importantRulesTable.findRule(url, refHost, thirdParty, requestType, !skipGenericRules);
 
-		// Check against rules with shortcuts
-		var basicRules = this.basicRulesTable.lookupRules(url.toLowerCase());
-		rule = findRule(basicRules);
-		if (rule != null) {
-			return rule;
+		if (rule == null) {
+			rule = this.basicRulesTable.findRule(url, refHost, thirdParty, requestType, !skipGenericRules);
 		}
-
-		// Check against rules without shortcuts
-		rule = findRule(this.rulesWithoutShortcuts);
-		if (rule != null) {
-			return rule;
-		}
-
-		return null;
+		return rule;
 	},
 
 	/**
@@ -136,21 +103,6 @@ UrlFilter.prototype = {
 	 */
 	getRules: function () {
 		var rules = this.basicRulesTable.getRules();
-		rules = rules.concat(this.importantRulesTable.getRules());
-		return rules.concat(this.rulesWithoutShortcuts);
-	},
-
-	_isFiltered: function (url, refHost, rules, requestType, thirdParty, genericRulesAllowed) {
-
-		for (var i = 0; i < rules.length; i++) {
-			var rule = rules[i];
-			if (rule.isPermitted(refHost) && rule.isFiltered(url, thirdParty, requestType)) {
-				if (genericRulesAllowed || !rule.isGeneric()) {
-					return rule;
-				}
-			}
-		}
-
-		return null;
+		return rules.concat(this.importantRulesTable.getRules());
 	}
 };

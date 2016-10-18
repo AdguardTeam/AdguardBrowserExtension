@@ -255,6 +255,18 @@ QUnit.test("Complex regexp rule", function(assert) {
     assert.notOk(rule.isFiltered("https://www.google-analytics.com/blahblah.js", true, RequestTypes.SCRIPT));
 });
 
+QUnit.test("Test UrlFilterRule Matching Everything", function(assert) {
+    var rule = new UrlFilterRule("*$domain=example.org");
+    assert.ok(rule.isFiltered("http://test.com", true, RequestTypes.SUBDOCUMENT));
+
+    rule = new UrlFilterRule("$domain=example.org");
+    assert.ok(rule.isFiltered("http://test.com", true, RequestTypes.SUBDOCUMENT));
+
+    rule = new UrlFilterRule("*$websocket");
+    // Rule is too wide, it will be considered invalid
+    assert.notOk(rule.isFiltered("http://test.com", true, RequestTypes.SUBDOCUMENT));
+});
+
 QUnit.test("Important modifier rules", function(assert) {
     var rule = new UrlFilterRule("||example.com^$important");
     assert.ok(rule.isImportant);
