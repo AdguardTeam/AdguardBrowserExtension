@@ -124,23 +124,29 @@ UrlFilterRuleLookupTable.prototype = {
     _findRule: function (url, referrerHost, rules, thirdParty, contentTypes, genericRulesAllowed) {
         var urlLowerCase = url.toLowerCase();
 
-        if (contentTypes & RequestTypes.DOCUMENT) {
-            // First look for document-level rules
-            for (var i = 0; i < rules.length; i++) {
-                var rule = rules[i];
-                if ((rule.permittedContentType & RequestTypes.DOCUMENT) &&
-                    this.isFiltered(rule, referrerHost, url, urlLowerCase, genericRulesAllowed, thirdParty, contentTypes)) {
-                    return rule;
-                }
-            }
-        }
+        //if (contentTypes == RequestTypes.DOCUMENT) {
+        //    // First look for document-level rules
+        //    for (var i = 0; i < rules.length; i++) {
+        //        var rule = rules[i];
+        //        var requestTypeMask = UrlFilterRule.contentTypes[RequestTypes.DOCUMENT];
+        //        if ((rule.permittedContentType & requestTypeMask)
+        //            && this.isFiltered(rule, referrerHost, url, urlLowerCase, genericRulesAllowed, thirdParty, contentTypes)) {
+        //            return rule;
+        //        }
+        //    }
+        //}
 
         for (var j = 0; j < rules.length; j++) {
             var rule = rules[j];
-            if (!(rule.permittedContentType & RequestTypes.DOCUMENT)
-                && this.isFiltered(rule, referrerHost, url, urlLowerCase, genericRulesAllowed, thirdParty, contentTypes)) {
+            if (this.isFiltered(rule, referrerHost, url, urlLowerCase, genericRulesAllowed, thirdParty, contentTypes)) {
                 return rule;
             }
+
+            //var requestTypeMask = UrlFilterRule.contentTypes[RequestTypes.DOCUMENT];
+            //if (!(rule.permittedContentType & requestTypeMask)
+            //    && this.isFiltered(rule, referrerHost, url, urlLowerCase, genericRulesAllowed, thirdParty, contentTypes)) {
+            //    return rule;
+            //}
         }
 
         return null;
@@ -160,8 +166,7 @@ UrlFilterRuleLookupTable.prototype = {
      */
     isFiltered: function (rule, referrerHost, url, urlLowerCase, genericRulesAllowed, thirdParty, contentTypes) {
 
-        return ((rule.shortcut == null || StringUtils.containsIgnoreCase(urlLowerCase, rule.shortcut))
-        && rule.isPermitted(referrerHost)
+        return (rule.isPermitted(referrerHost)
         && (genericRulesAllowed || !rule.isGeneric())
         && rule.isFiltered(url, thirdParty, contentTypes));
     }

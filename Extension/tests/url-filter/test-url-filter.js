@@ -94,12 +94,12 @@ QUnit.test("Generic domain specific", function(assert) {
     assert.notOk(rule.isGeneric());
 
     var filter = new UrlFilter([rule]);
-    assert.ok(filter.isFiltered("http://cdn.innity.net/admanager.js","sharejunction.com", RequestTypes.SCRIPT, true) != null);
+    assert.ok(filter.isFiltered("http://cdn.innity.net/admanager.js","http://sharejunction.com", RequestTypes.SCRIPT, true) != null);
 
     //var genericBlockRuleText = "@@||sharejunction.com^$genericblock,generichide";
     //var genericBlockRule = new UrlFilterRule(genericBlockRuleText);
 
-    var filtered = filter.isFiltered("http://cdn.innity.net/admanager.js", "sharejunction.com", RequestTypes.SCRIPT, true, true);
+    var filtered = filter.isFiltered("http://cdn.innity.net/admanager.js", "http://sharejunction.com", RequestTypes.SCRIPT, true, true);
     assert.ok(filtered != null);
     assert.notOk(filtered.whiteListRule);
 
@@ -114,18 +114,18 @@ QUnit.test("Generic domain specific", function(assert) {
 
     //Should be blocked by generic
     filter = new UrlFilter([genericRule]);
-    filtered = filter.isFiltered("http://cdn.innity.net/admanager.js", "sharejunction.com", RequestTypes.SCRIPT, true);
+    filtered = filter.isFiltered("http://cdn.innity.net/admanager.js", "http://sharejunction.com", RequestTypes.SCRIPT, true);
     assert.ok(filtered !== null);
 
     //Should be whitelisted by generic block
-    filtered = filter.isFiltered("http://cdn.innity.net/admanager.js", "sharejunction.com", RequestTypes.SCRIPT, true, true);
+    filtered = filter.isFiltered("http://cdn.innity.net/admanager.js", "http://sharejunction.com", RequestTypes.SCRIPT, true, true);
     assert.notOk(filtered !== null);
 
 
     //2 rules together
     //Should be blocked by domain specific
     filter = new UrlFilter([rule, genericRule]);
-    filtered = filter.isFiltered("http://cdn.innity.net/admanager.js", "sharejunction.com", RequestTypes.SCRIPT, true, true);
+    filtered = filter.isFiltered("http://cdn.innity.net/admanager.js", "http://sharejunction.com", RequestTypes.SCRIPT, true, true);
     assert.ok(filtered !== null);
 });
 
@@ -220,12 +220,12 @@ QUnit.test("UrlFilter class tests", function(assert) {
 
     var filter = new UrlFilter([rule, rule1, rule2]);
 
-    assert.notOk(filter.isFiltered("http://test.ru/", "test.test.ru", RequestTypes.SUBDOCUMENT, false) != null);
-    assert.ok(filter.isFiltered("http://test.ru/", "www.google.com", RequestTypes.SCRIPT, true) != null);
-    assert.ok(filter.isFiltered("http://www.google.com/ad/advertisment", "test.ru", RequestTypes.SUBDOCUMENT, true) != null);
-    assert.notOk(filter.isFiltered("http://test.ru/", "www.nigma.ru", RequestTypes.SUBDOCUMENT, true) != null);
-    assert.ok(filter.isFiltered("http://partner.nekki.ru/banner.php?no_cache=41122&rotation_id=7", "rutracker.org", RequestTypes.SUBDOCUMENT, true) != null);
-    assert.notOk(filter.isFiltered("http://partner.yandex.ru", "yandex.ru", RequestTypes.SUBDOCUMENT, false) != null);
+    assert.notOk(filter.isFiltered("http://test.ru/", "http://test.test.ru", RequestTypes.SUBDOCUMENT, false) != null);
+    assert.ok(filter.isFiltered("http://test.ru/", "http://www.google.com", RequestTypes.SCRIPT, true) != null);
+    assert.ok(filter.isFiltered("http://www.google.com/ad/advertisment", "http://test.ru", RequestTypes.SUBDOCUMENT, true) != null);
+    assert.notOk(filter.isFiltered("http://test.ru/", "http://www.nigma.ru", RequestTypes.SUBDOCUMENT, true) != null);
+    assert.ok(filter.isFiltered("http://partner.nekki.ru/banner.php?no_cache=41122&rotation_id=7", "http://rutracker.org", RequestTypes.SUBDOCUMENT, true) != null);
+    assert.notOk(filter.isFiltered("http://partner.yandex.ru", "http://yandex.ru", RequestTypes.SUBDOCUMENT, false) != null);
 });
 
 QUnit.test("Regexp characters escaping", function(assert) {
