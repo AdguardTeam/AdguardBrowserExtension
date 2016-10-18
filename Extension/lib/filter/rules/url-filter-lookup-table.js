@@ -124,6 +124,8 @@ UrlFilterRuleLookupTable.prototype = {
     _findRule: function (url, referrerHost, rules, thirdParty, contentTypes, genericRulesAllowed) {
         var urlLowerCase = url.toLowerCase();
 
+        console.log(contentTypes);
+
         //TODO: Fix document level first
         //if (contentTypes == RequestTypes.DOCUMENT) {
         //    // First look for document-level rules

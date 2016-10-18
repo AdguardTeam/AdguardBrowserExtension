@@ -102,9 +102,6 @@ UrlFilterRule.prototype.getUrlRegExp = function () {
     if (!this.urlRegExp) {
         var urlRegExpSource = this.getUrlRegExpSource();
         try {
-            console.log(this.ruleText);
-            console.log(urlRegExpSource);
-
             if (!urlRegExpSource || UrlFilterRule.MASK_ANY_SYMBOL == urlRegExpSource) {
                 // Match any symbol
                 this.urlRegExp = new RegExp(UrlFilterRule.REGEXP_ANY_SYMBOL);
