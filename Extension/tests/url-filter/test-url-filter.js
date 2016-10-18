@@ -291,7 +291,7 @@ QUnit.test("Important modifier rules priority", function(assert) {
     urlFilter.addRule(basicRule);
     urlFilter.addRule(importantRule);
 
-    var result = urlFilter.isFiltered("http://example.com", "test.com", RequestTypes.SUBDOCUMENT, true);
+    var result = urlFilter.isFiltered("http://example.com", "http://test.com", RequestTypes.SUBDOCUMENT, true);
     assert.ok(result != null);
     assert.equal(result.ruleText, importantRule.ruleText);
 });

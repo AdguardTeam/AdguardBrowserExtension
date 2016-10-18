@@ -56,7 +56,11 @@ var UrlFilterRule = exports.UrlFilterRule = function (rule, filterId) {
     var urlRuleText = parseResult.urlRuleText;
     this.urlRuleText = urlRuleText;
 
-    var isRegexRule = StringUtils.startWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) && StringUtils.endWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE);
+    var isRegexRule = StringUtils.startWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE)
+        && StringUtils.endWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE)
+        || urlRuleText == ''
+        || urlRuleText == UrlFilterRule.MASK_ANY_SYMBOL;
+
     if (isRegexRule) {
         this.urlRegExpSource = urlRuleText.substring(UrlFilterRule.MASK_REGEX_RULE.length, urlRuleText.length - UrlFilterRule.MASK_REGEX_RULE.length);
         // Pre compile regex rules
@@ -65,10 +69,10 @@ var UrlFilterRule = exports.UrlFilterRule = function (rule, filterId) {
             throw 'Illegal regexp rule';
         }
 
-        //if (UrlFilterRule.REGEXP_ANY_SYMBOL == regexp && !this.hasPermittedDomains()) {
-        //    // Rule matches everything and does not have any domain restriction
-        //    throw ("Too wide basic rule: " + this.urlRuleText);
-        //}
+        if (UrlFilterRule.REGEXP_ANY_SYMBOL == regexp && !this.hasPermittedDomains()) {
+            // Rule matches everything and does not have any domain restriction
+            throw ("Too wide basic rule: " + this.urlRuleText);
+        }
     } else {
         // Searching for shortcut
         this.shortcut = findShortcut(urlRuleText);
@@ -90,12 +94,6 @@ UrlFilterRule.prototype.getUrlRegExpSource = function () {
 
 // Lazy regexp creation
 UrlFilterRule.prototype.getUrlRegExp = function () {
-
-    //if (!this.urlRegExpSource || UrlFilterRule.MASK_ANY_SYMBOL == this.urlRegExpSource) {
-    //    // Match any symbol
-    //    this.urlRegExp = new RegExp(UrlFilterRule.REGEXP_ANY_SYMBOL);
-    //}
-
     //check already compiled but not successful
     if (this.wrongUrlRegExp) {
         return null;
@@ -104,7 +102,16 @@ UrlFilterRule.prototype.getUrlRegExp = function () {
     if (!this.urlRegExp) {
         var urlRegExpSource = this.getUrlRegExpSource();
         try {
-            this.urlRegExp = new RegExp(urlRegExpSource, this.matchCase ? "" : "i");
+            console.log(this.ruleText);
+            console.log(urlRegExpSource);
+
+            if (!urlRegExpSource || UrlFilterRule.MASK_ANY_SYMBOL == urlRegExpSource) {
+                // Match any symbol
+                this.urlRegExp = new RegExp(UrlFilterRule.REGEXP_ANY_SYMBOL);
+            } else {
+                this.urlRegExp = new RegExp(urlRegExpSource, this.matchCase ? "" : "i");
+            }
+
             delete this.urlRegExpSource;
         } catch (ex) {
             //malformed regexp
@@ -113,6 +120,7 @@ UrlFilterRule.prototype.getUrlRegExp = function () {
             return null;
         }
     }
+
     return this.urlRegExp;
 };
 
