@@ -19,6 +19,7 @@ var ShortcutsLookupTable = require('../../../lib/filter/rules/shortcuts-lookup-t
 var DomainsLookupTable = require('../../../lib/filter/rules/domains-lookup-table').DomainsLookupTable;
 var CollectionUtils = require('../../../lib/utils/common').CollectionUtils;
 var UrlUtils = require('../../../lib/utils/url').UrlUtils;
+var RequestTypes = require('../../lib/utils/common').RequestTypes;
 
 /**
  * Special lookup table
@@ -123,11 +124,11 @@ UrlFilterRuleLookupTable.prototype = {
     _findRule: function (url, referrerHost, rules, thirdParty, contentTypes, genericRulesAllowed) {
         var urlLowerCase = url.toLowerCase();
 
-        if (contentTypes & UrlFilterRule.contentTypes.DOCUMENT) {
+        if (contentTypes & RequestTypes.DOCUMENT) {
             // First look for document-level rules
             for (var i = 0; i < rules.length; i++) {
                 var rule = rules[i];
-                if ((rule.permittedContentType & UrlFilterRule.contentTypes.DOCUMENT) &&
+                if ((rule.permittedContentType & RequestTypes.DOCUMENT) &&
                     this.isFiltered(rule, referrerHost, url, urlLowerCase, genericRulesAllowed, thirdParty, contentTypes)) {
                     return rule;
                 }
@@ -136,7 +137,7 @@ UrlFilterRuleLookupTable.prototype = {
 
         for (var j = 0; j < rules.length; j++) {
             var rule = rules[j];
-            if (!(rule.permittedContentType & UrlFilterRule.contentTypes.DOCUMENT)
+            if (!(rule.permittedContentType & RequestTypes.DOCUMENT)
                 && this.isFiltered(rule, referrerHost, url, urlLowerCase, genericRulesAllowed, thirdParty, contentTypes)) {
                 return rule;
             }
