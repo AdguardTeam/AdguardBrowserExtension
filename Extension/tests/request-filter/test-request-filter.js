@@ -74,10 +74,6 @@ QUnit.test("Request filter performance", function(assert) {
             }
         }
 
-        var rulesInFilter = requestFilter.getRules().length;
-        assert.ok(rulesInFilter > 0);
-        console.log('Rules in filter: ' + rulesInFilter);
-
         var url = "https://thisistesturl.com/asdasdasd_adsajdasda_asdasdjashdkasdasdasdasd_adsajdasda_asdasdjashdkasd";
 
         var count = 5000;

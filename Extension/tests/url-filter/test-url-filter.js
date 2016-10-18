@@ -221,7 +221,7 @@ QUnit.test("UrlFilter class tests", function(assert) {
     var filter = new UrlFilter([rule, rule1, rule2]);
 
     assert.notOk(filter.isFiltered("http://test.ru/", "test.test.ru", RequestTypes.SUBDOCUMENT, false) != null);
-    assert.ok(filter.isFiltered("http://test.ru/", "www.google.com", RequestTypes.SUBDOCUMENT, true) != null);
+    assert.ok(filter.isFiltered("http://test.ru/", "www.google.com", RequestTypes.SCRIPT, true) != null);
     assert.ok(filter.isFiltered("http://www.google.com/ad/advertisment", "test.ru", RequestTypes.SUBDOCUMENT, true) != null);
     assert.notOk(filter.isFiltered("http://test.ru/", "www.nigma.ru", RequestTypes.SUBDOCUMENT, true) != null);
     assert.ok(filter.isFiltered("http://partner.nekki.ru/banner.php?no_cache=41122&rotation_id=7", "rutracker.org", RequestTypes.SUBDOCUMENT, true) != null);
