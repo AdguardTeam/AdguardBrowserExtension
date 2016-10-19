@@ -381,7 +381,7 @@ RequestFilter.prototype = {
 
         // Searching white list for a rule for Referrer and checking it's UrlBlock attribute
         // If UrlBlock is set - than we should not use UrlBlockingFilter against this request.
-        var referrerWhiteListRule = this._checkWhiteList(referrer, referrer, requestType, thirdParty);
+        var referrerWhiteListRule = this._checkWhiteList(referrer, referrer, "DOCUMENT", thirdParty);
 
         // Now check if ref rule has $genericblock or $urlblock modifier
         var genericRulesAllowed = referrerWhiteListRule == null || !referrerWhiteListRule.isGeneric();

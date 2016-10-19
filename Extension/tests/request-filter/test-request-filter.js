@@ -26,31 +26,29 @@ QUnit.test("Important modifier rules", function(assert) {
     assert.ok(rule.isFiltered(url, true, RequestTypes.IMAGE));
     assert.ok(whitelist.isFiltered(url, true, RequestTypes.IMAGE));
     assert.ok(important.isFiltered(url, true, RequestTypes.IMAGE));
-    //TODO: Should be true
-    assert.ok(documentRule.isFiltered(referrer, true, RequestTypes.IMAGE));
+    assert.ok(documentRule.isFiltered(referrer, true, RequestTypes.DOCUMENT));
 
     var result;
 
     requestFilter.addRule(rule);
     result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT);
-    //assert.ok(result != null);
-    //assert.equal(result.ruleText, rule.ruleText);
+    assert.ok(result != null);
+    assert.equal(result.ruleText, rule.ruleText);
 
     requestFilter.addRule(whitelist);
     result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT);
-    //assert.ok(result != null);
-    //assert.equal(result.ruleText, whitelist.ruleText);
+    assert.ok(result != null);
+    assert.equal(result.ruleText, whitelist.ruleText);
 
     requestFilter.addRule(important);
     result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT);
-    //assert.ok(result != null);
-    //assert.equal(result.ruleText, important.ruleText);
+    assert.ok(result != null);
+    assert.equal(result.ruleText, important.ruleText);
 
     requestFilter.addRule(documentRule);
     result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT);
-    //TODO: Fix
     assert.ok(result != null);
-    assert.equal(result.ruleText, documentRule.ruleText);
+    assert.equal(result.ruleText, whitelist.ruleText);
 });
 
 QUnit.test("Request filter performance", function(assert) {
