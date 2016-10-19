@@ -129,7 +129,7 @@ UrlFilterRuleLookupTable.prototype = {
             for (var i = 0; i < rules.length; i++) {
                 var rule = rules[i];
                 if (((UrlFilterRule.contentTypes.DOCUMENT_LEVEL & rule.permittedContentType) > 0)
-                        && this.isFiltered(rule, referrerHost, url, urlLowerCase, genericRulesAllowed, thirdParty, contentTypes)) {
+                        && this.isFiltered(rule, referrerHost, url, urlLowerCase, genericRulesAllowed, thirdParty, "DOCUMENT_LEVEL")) {
                     return rule;
                 }
             }

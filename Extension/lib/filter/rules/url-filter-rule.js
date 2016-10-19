@@ -196,7 +196,7 @@ UrlFilterRule.prototype.checkContentType = function (contentType) {
  * @param contentType Request content type mask (UrlFilterRule.contentTypes)
  */
 UrlFilterRule.prototype.checkContentTypeMask = function (contentTypeMask) {
-    if ((this.permittedContentType & contentTypeMask) != contentTypeMask) {
+    if ((this.permittedContentType & contentTypeMask) == 0) {
         //not in permitted list - skip this rule
         return false;
     }

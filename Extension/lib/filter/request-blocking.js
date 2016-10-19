@@ -70,15 +70,15 @@ WebRequestService.prototype = (function () {
             useShadowDom: Utils.isShadowDomSupported()
         };
 
-        //TODO: Instead of selecting whitelist rule - take it from tab framesMap
-
-        var genericHideRule = genericHide || this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "GENERICHIDE");
-        var elemHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "ELEMHIDE");
-        if (!elemHideRule) {
-            if (shouldLoadAllSelectors(result.collapseAllElements)) {
-                result.selectors = this.antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl, genericHideRule);
-            } else {
-                result.selectors = this.antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideRule);
+        var whitelistRule = this.framesMap.getFrameWhiteListRule(tab);
+        if (genericHide || (whitelistRule && whitelistRule.checkContentType("GENERICHIDE"))) {
+            var elemHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "ELEMHIDE");
+            if (!elemHideRule) {
+                if (shouldLoadAllSelectors(result.collapseAllElements)) {
+                    result.selectors = this.antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl, genericHideRule);
+                } else {
+                    result.selectors = this.antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideRule);
+                }
             }
         }
 
@@ -185,8 +185,7 @@ WebRequestService.prototype = (function () {
             return whitelistRule;
         }
 
-        //TODO: Pass the rule to this method:
-        return this.antiBannerService.getRequestFilter().findRuleForRequest(requestUrl, referrerUrl, requestType);
+        return this.antiBannerService.getRequestFilter().findRuleForRequest(requestUrl, referrerUrl, requestType, whitelistRule);
     };
 
     /**

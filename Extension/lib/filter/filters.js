@@ -255,12 +255,13 @@ RequestFilter.prototype = {
     /**
      * Searches for the filter rule for the specified request.
      *
-     * @param requestUrl    Request URL
-     * @param referrer      Referrer
-     * @param requestType   Request content type (one of UrlFilterRule.contentTypes)
+     * @param requestUrl            Request URL
+     * @param referrer              Referrer
+     * @param requestType           Request content type (one of UrlFilterRule.contentTypes)
+     * @param documentWhitelistRule Document-level whitelist rule
      * @returns Rule found or null
      */
-    findRuleForRequest: function (requestUrl, referrer, requestType) {
+    findRuleForRequest: function (requestUrl, referrer, requestType, documentWhitelistRule) {
 
         var refHost = UrlUtils.getHost(referrer);
         var thirdParty = UrlUtils.isThirdPartyRequest(requestUrl, referrer);
@@ -272,7 +273,7 @@ RequestFilter.prototype = {
             return cacheItem[0];
         }
 
-        var rule = this._innerFilterHttpRequest(requestUrl, referrer, refHost, requestType, thirdParty);
+        var rule = this._innerFilterHttpRequest(requestUrl, referrer, refHost, requestType, thirdParty, documentWhitelistRule);
 
         this._saveResultToCache(requestUrl, rule, refHost, requestType);
         return rule;
@@ -365,15 +366,17 @@ RequestFilter.prototype = {
      * @param refHost       Referrer host
      * @param requestType   Request content type (one of UrlFilterRule.contentTypes)
      * @param thirdParty    Is request third-party or not
+     * @param documentWhitelistRule Document-level whitelist rule
      * @returns Filter rule found or null
      * @private
      */
-    _innerFilterHttpRequest: function (requestUrl, referrer, refHost, requestType, thirdParty) {
+    _innerFilterHttpRequest: function (requestUrl, referrer, refHost, requestType, thirdParty, documentWhitelistRule) {
 
         Log.debug("Filtering http request for url: {0}, referrer: {1}, requestType: {2}", requestUrl, refHost, requestType);
 
         // STEP 1: Looking for exception rule, which could be applied to the current request
 
+        //TODO: Use documentWhitelistRule
         // Checks white list for a rule for this RequestUrl. If something is found - returning it.
         var urlWhiteListRule = this._checkWhiteList(requestUrl, refHost, requestType, thirdParty);
 
