@@ -12,6 +12,49 @@ QUnit.test("General", function(assert) {
     assert.equal(result.ruleText, rule.ruleText);
 });
 
+QUnit.test("Whitelist rules selecting", function(assert) {
+    var url = "https://test.com/";
+    var referrer = "http://example.org";
+
+    var rule = new UrlFilterRule("||test.com^");
+    var whitelist = new UrlFilterRule("@@||test.com^");
+    var documentRule = new UrlFilterRule("@@||test.com^$document");
+    var genericHideRule = new UrlFilterRule("@@||test.com^$generichide");
+
+    var requestFilter = new RequestFilter();
+    requestFilter.addRule(rule);
+
+    var result;
+    result= requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT);
+    assert.ok(result != null);
+    assert.equal(result.ruleText, rule.ruleText);
+
+    requestFilter.addRule(whitelist);
+    result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT);
+    assert.ok(result != null);
+    assert.equal(result.ruleText, whitelist.ruleText);
+
+    result = requestFilter.findWhiteListRule(url, referrer, RequestTypes.SUBDOCUMENT);
+    assert.ok(result != null);
+    assert.equal(result.ruleText, whitelist.ruleText);
+
+    requestFilter.addRule(documentRule);
+    result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT);
+    assert.ok(result != null);
+    assert.equal(result.ruleText, whitelist.ruleText);
+
+    result = requestFilter.findWhiteListRule(url, referrer, RequestTypes.DOCUMENT);
+    assert.ok(result != null);
+    assert.equal(result.ruleText, documentRule.ruleText);
+
+    //TODO: Fix
+    requestFilter.removeRule(documentRule);
+    requestFilter.addRule(genericHideRule);
+    result = requestFilter.findWhiteListRule(url, referrer, RequestTypes.DOCUMENT);
+    assert.ok(result != null);
+    assert.equal(result.ruleText, genericHideRule.ruleText);
+});
+
 QUnit.test("Important modifier rules", function(assert) {
     var url = "https://test.com/";
     var referrer = "http://example.org";

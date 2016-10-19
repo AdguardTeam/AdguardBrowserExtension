@@ -70,6 +70,8 @@ WebRequestService.prototype = (function () {
             useShadowDom: Utils.isShadowDomSupported()
         };
 
+        //TODO: Instead of selecting whitelist rule - take it from tab framesMap
+
         var genericHideRule = genericHide || this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "GENERICHIDE");
         var elemHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "ELEMHIDE");
         if (!elemHideRule) {
@@ -179,9 +181,11 @@ WebRequestService.prototype = (function () {
         var whitelistRule = this.framesMap.getFrameWhiteListRule(tab);
         if (whitelistRule && whitelistRule.checkContentType("DOCUMENT")) {
             // Frame is whitelisted by $document rule
+            // We do nothing more in this case - return the rule.
             return whitelistRule;
         }
 
+        //TODO: Pass the rule to this method:
         return this.antiBannerService.getRequestFilter().findRuleForRequest(requestUrl, referrerUrl, requestType);
     };
 

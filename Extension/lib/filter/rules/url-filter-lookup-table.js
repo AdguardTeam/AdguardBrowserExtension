@@ -124,22 +124,14 @@ UrlFilterRuleLookupTable.prototype = {
     _findRule: function (url, referrerHost, rules, thirdParty, contentTypes, genericRulesAllowed) {
         var urlLowerCase = url.toLowerCase();
 
-        //TODO: Fix document level first
-        //if (UrlFilterRule.contentTypes[contentTypes] & UrlFilterRule.contentTypes[RequestTypes.DOCUMENT]) {
-        //
-        //}
-
-        // First look for document-level rules
-        for (var i = 0; i < rules.length; i++) {
-            var rule = rules[i];
-            //console.log('Filtering');
-            //console.log(rule);
-            //console.log(rule.permittedContentType & UrlFilterRule.contentTypes[RequestTypes.DOCUMENT]);
-            //console.log(this.isFiltered(rule, referrerHost, url, urlLowerCase, genericRulesAllowed, thirdParty, contentTypes));
-
-            if ((rule.permittedContentType & UrlFilterRule.contentTypes[RequestTypes.DOCUMENT])
-                && this.isFiltered(rule, referrerHost, url, urlLowerCase, genericRulesAllowed, thirdParty, contentTypes)) {
-                return rule;
+        if (UrlFilterRule.contentTypes[contentTypes] == UrlFilterRule.contentTypes.DOCUMENT) {
+            // Looking for document level rules
+            for (var i = 0; i < rules.length; i++) {
+                var rule = rules[i];
+                if (((UrlFilterRule.contentTypes.DOCUMENT_LEVEL & rule.permittedContentType) > 0)
+                        && this.isFiltered(rule, referrerHost, url, urlLowerCase, genericRulesAllowed, thirdParty, contentTypes)) {
+                    return rule;
+                }
             }
         }
 
@@ -148,12 +140,6 @@ UrlFilterRuleLookupTable.prototype = {
             if (this.isFiltered(rule, referrerHost, url, urlLowerCase, genericRulesAllowed, thirdParty, contentTypes)) {
                 return rule;
             }
-
-            //var requestTypeMask = UrlFilterRule.contentTypes[RequestTypes.DOCUMENT];
-            //if (!(rule.permittedContentType & requestTypeMask)
-            //    && this.isFiltered(rule, referrerHost, url, urlLowerCase, genericRulesAllowed, thirdParty, contentTypes)) {
-            //    return rule;
-            //}
         }
 
         return null;

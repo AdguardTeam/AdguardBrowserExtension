@@ -246,7 +246,7 @@ RequestFilter.prototype = {
             return cacheItem[0];
         }
 
-        var rule = this._checkWhiteList(requestUrl, refHost, requestType, thirdParty);
+        var rule = this._checkWhiteList(requestUrl, referrer, requestType, thirdParty);
 
         this._saveResultToCache(requestUrl, rule, refHost, requestType);
         return rule;

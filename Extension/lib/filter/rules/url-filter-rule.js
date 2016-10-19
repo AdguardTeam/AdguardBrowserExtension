@@ -187,6 +187,15 @@ UrlFilterRule.prototype.isFiltered = function (requestUrl, thirdParty, requestCo
  */
 UrlFilterRule.prototype.checkContentType = function (contentType) {
     var contentTypeMask = UrlFilterRule.contentTypes[contentType];
+    return this.checkContentTypeMask(contentTypeMask);
+};
+
+/**
+ * Checks if specified content type is suitable.
+ *
+ * @param contentType Request content type mask (UrlFilterRule.contentTypes)
+ */
+UrlFilterRule.prototype.checkContentTypeMask = function (contentTypeMask) {
     if ((this.permittedContentType & contentTypeMask) != contentTypeMask) {
         //not in permitted list - skip this rule
         return false;
@@ -351,6 +360,7 @@ UrlFilterRule.ignoreOptions = {
 };
 
 UrlFilterRule.contentTypes.DOCUMENT = UrlFilterRule.contentTypes.ELEMHIDE | UrlFilterRule.contentTypes.URLBLOCK | UrlFilterRule.contentTypes.JSINJECT;
+UrlFilterRule.contentTypes.DOCUMENT_LEVEL = UrlFilterRule.contentTypes.DOCUMENT | UrlFilterRule.contentTypes.GENERICHIDE | UrlFilterRule.contentTypes.GENERICBLOCK;
 
 UrlFilterRule.contentTypes.ALL = 0;
 UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.OTHER;
