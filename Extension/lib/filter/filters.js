@@ -325,17 +325,17 @@ RequestFilter.prototype = {
      * Checks if exception rule is present for the URL/Referrer pair
      *
      * @param requestUrl    Request URL
-     * @param refHost       Referrer host
+     * @param referrer      Referrer
      * @param requestType   Request content type (one of UrlFilterRule.contentTypes)
      * @param thirdParty    Is request third-party or not
      * @returns Filter rule found or null
      * @private
      */
-    _checkWhiteList: function (requestUrl, refHost, requestType, thirdParty) {
+    _checkWhiteList: function (requestUrl, referrer, requestType, thirdParty) {
         if (this.urlWhiteFilter === null || StringUtils.isEmpty(requestUrl)) {
             return null;
         }
-        return this.urlWhiteFilter.isFiltered(requestUrl, refHost, requestType, thirdParty);
+        return this.urlWhiteFilter.isFiltered(requestUrl, referrer, requestType, thirdParty);
     },
 
     /**
@@ -381,7 +381,7 @@ RequestFilter.prototype = {
 
         // Searching white list for a rule for Referrer and checking it's UrlBlock attribute
         // If UrlBlock is set - than we should not use UrlBlockingFilter against this request.
-        var referrerWhiteListRule = this._checkWhiteList(referrer, refHost, requestType, thirdParty);
+        var referrerWhiteListRule = this._checkWhiteList(referrer, referrer, requestType, thirdParty);
 
         // Now check if ref rule has $genericblock or $urlblock modifier
         var genericRulesAllowed = referrerWhiteListRule == null || !referrerWhiteListRule.isGeneric();
@@ -395,8 +395,8 @@ RequestFilter.prototype = {
         // STEP 4: Analyze results, first - basic exception rule
 
         if (urlWhiteListRule != null &&
-                // Please note, that if blocking rule has $important modifier, it could
-                // overcome existing exception rule
+            // Please note, that if blocking rule has $important modifier, it could
+            // overcome existing exception rule
             (urlWhiteListRule.isImportant || blockingRule == null || !blockingRule.isImportant)) {
             Log.debug("White list rule found {0} for url: {1} referrer: {2}, requestType: {3}", urlWhiteListRule.ruleText, requestUrl, refHost, requestType);
             return urlWhiteListRule;

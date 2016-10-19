@@ -124,20 +124,24 @@ UrlFilterRuleLookupTable.prototype = {
     _findRule: function (url, referrerHost, rules, thirdParty, contentTypes, genericRulesAllowed) {
         var urlLowerCase = url.toLowerCase();
 
-        console.log(contentTypes);
-
         //TODO: Fix document level first
-        //if (contentTypes == RequestTypes.DOCUMENT) {
-        //    // First look for document-level rules
-        //    for (var i = 0; i < rules.length; i++) {
-        //        var rule = rules[i];
-        //        var requestTypeMask = UrlFilterRule.contentTypes[RequestTypes.DOCUMENT];
-        //        if ((rule.permittedContentType & requestTypeMask)
-        //            && this.isFiltered(rule, referrerHost, url, urlLowerCase, genericRulesAllowed, thirdParty, contentTypes)) {
-        //            return rule;
-        //        }
-        //    }
+        //if (UrlFilterRule.contentTypes[contentTypes] & UrlFilterRule.contentTypes[RequestTypes.DOCUMENT]) {
+        //
         //}
+
+        // First look for document-level rules
+        for (var i = 0; i < rules.length; i++) {
+            var rule = rules[i];
+            //console.log('Filtering');
+            //console.log(rule);
+            //console.log(rule.permittedContentType & UrlFilterRule.contentTypes[RequestTypes.DOCUMENT]);
+            //console.log(this.isFiltered(rule, referrerHost, url, urlLowerCase, genericRulesAllowed, thirdParty, contentTypes));
+
+            if ((rule.permittedContentType & UrlFilterRule.contentTypes[RequestTypes.DOCUMENT])
+                && this.isFiltered(rule, referrerHost, url, urlLowerCase, genericRulesAllowed, thirdParty, contentTypes)) {
+                return rule;
+            }
+        }
 
         for (var j = 0; j < rules.length; j++) {
             var rule = rules[j];

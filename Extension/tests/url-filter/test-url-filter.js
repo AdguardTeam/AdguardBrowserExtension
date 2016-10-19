@@ -282,9 +282,9 @@ QUnit.test("Important modifier rules priority", function(assert) {
     var importantRule = new UrlFilterRule("http://$important,domain=test.com");
     var basicRule = new UrlFilterRule("||example.com^");
 
-    assert.ok(importantRule.isFiltered("http://example.com", true, RequestTypes.SUBDOCUMENT));
+    assert.ok(importantRule.isFiltered("http://example.com", true, RequestTypes.IMAGE));
     assert.ok(importantRule.isPermitted("test.com"));
-    assert.ok(basicRule.isFiltered("http://example.com", true, RequestTypes.SUBDOCUMENT));
+    assert.ok(basicRule.isFiltered("http://example.com", true, RequestTypes.IMAGE));
     assert.ok(basicRule.isPermitted("http://example.com"));
 
     var urlFilter = new UrlFilter();
