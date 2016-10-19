@@ -240,6 +240,7 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
         var frameData = this.getMainFrame(tab);
         if (frameData) {
             var url = frameData.url;
+            //TODO: Should load also elemhide and generichides
             var frameWhiteListRule = antiBannerService.getRequestFilter().findWhiteListRule(url, url, RequestTypes.DOCUMENT);
             if (!frameWhiteListRule) {
                 frameWhiteListRule = whiteListService.findWhiteListRule(url);

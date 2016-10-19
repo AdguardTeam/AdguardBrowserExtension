@@ -168,13 +168,7 @@ UrlFilterRule.prototype.isFiltered = function (requestUrl, thirdParty, requestCo
         return false;
     }
 
-    var requestTypeMask = UrlFilterRule.contentTypes[requestContentType];
-    if ((this.permittedContentType & requestTypeMask) != requestTypeMask) {
-        //not in permitted list - skip this rule
-        return false;
-    }
-    if (this.restrictedContentType !== 0 && (this.restrictedContentType & requestTypeMask) == requestTypeMask) {
-        //in restricted list - skip this rule
+    if (!this.checkContentType(requestContentType)) {
         return false;
     }
 
@@ -184,6 +178,26 @@ UrlFilterRule.prototype.isFiltered = function (requestUrl, thirdParty, requestCo
         return false;
     }
     return regexp.test(requestUrl);
+};
+
+/**
+ * Checks if specified content type is suitable.
+ *
+ * @param contentType Request content type (UrlFilterRule.contentTypes)
+ */
+UrlFilterRule.prototype.checkContentType = function (contentType) {
+    var contentTypeMask = UrlFilterRule.contentTypes[contentType];
+    if ((this.permittedContentType & contentTypeMask) != contentTypeMask) {
+        //not in permitted list - skip this rule
+        return false;
+    }
+
+    if (this.restrictedContentType !== 0 && (this.restrictedContentType & contentTypeMask) == contentTypeMask) {
+        //in restricted list - skip this rule
+        return false;
+    }
+
+    return true;
 };
 
 /**

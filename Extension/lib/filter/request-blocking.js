@@ -176,15 +176,13 @@ WebRequestService.prototype = (function () {
             return null;
         }
 
-        var requestRule = null;
-
-        if (this.framesMap.isTabWhiteListed(tab)) {
-            requestRule = this.framesMap.getFrameWhiteListRule(tab);
-        } else {
-            requestRule = this.antiBannerService.getRequestFilter().findRuleForRequest(requestUrl, referrerUrl, requestType);
+        var whitelistRule = this.framesMap.getFrameWhiteListRule(tab);
+        if (whitelistRule && whitelistRule.checkContentType("DOCUMENT")) {
+            // Frame is whitelisted by $document rule
+            return whitelistRule;
         }
 
-        return requestRule;
+        return this.antiBannerService.getRequestFilter().findRuleForRequest(requestUrl, referrerUrl, requestType);
     };
 
     /**
