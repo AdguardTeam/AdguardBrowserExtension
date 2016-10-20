@@ -47,7 +47,6 @@ QUnit.test("Whitelist rules selecting", function(assert) {
     assert.ok(result != null);
     assert.equal(result.ruleText, documentRule.ruleText);
 
-    //TODO: Fix
     requestFilter.removeRule(documentRule);
     requestFilter.addRule(genericHideRule);
     result = requestFilter.findWhiteListRule(url, referrer, RequestTypes.DOCUMENT);
