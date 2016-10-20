@@ -30,7 +30,7 @@ QUnit.test("Whitelist rules selecting", function(assert) {
     assert.equal(result.ruleText, rule.ruleText);
 
     requestFilter.addRule(whitelist);
-    result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT);
+    result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT, whitelist);
     assert.ok(result != null);
     assert.equal(result.ruleText, whitelist.ruleText);
 
@@ -39,7 +39,7 @@ QUnit.test("Whitelist rules selecting", function(assert) {
     assert.equal(result.ruleText, whitelist.ruleText);
 
     requestFilter.addRule(documentRule);
-    result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT);
+    result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT, whitelist);
     assert.ok(result != null);
     assert.equal(result.ruleText, whitelist.ruleText);
 
@@ -79,7 +79,7 @@ QUnit.test("Important modifier rules", function(assert) {
     assert.equal(result.ruleText, rule.ruleText);
 
     requestFilter.addRule(whitelist);
-    result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT);
+    result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT, whitelist);
     assert.ok(result != null);
     assert.equal(result.ruleText, whitelist.ruleText);
 
@@ -89,9 +89,9 @@ QUnit.test("Important modifier rules", function(assert) {
     assert.equal(result.ruleText, important.ruleText);
 
     requestFilter.addRule(documentRule);
-    result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT);
+    result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT, documentRule);
     assert.ok(result != null);
-    assert.equal(result.ruleText, whitelist.ruleText);
+    assert.equal(result.ruleText, documentRule.ruleText);
 });
 
 QUnit.test("Request filter performance", function(assert) {

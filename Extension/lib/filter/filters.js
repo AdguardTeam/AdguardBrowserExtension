@@ -370,17 +370,11 @@ RequestFilter.prototype = {
      * @returns Filter rule found or null
      * @private
      */
-    _innerFilterHttpRequest: function (requestUrl, referrer, refHost, requestType, thirdParty, documentWhitelistRule) {
+    _innerFilterHttpRequest: function (requestUrl, referrer, refHost, requestType, thirdParty, urlWhiteListRule) {
 
         Log.debug("Filtering http request for url: {0}, referrer: {1}, requestType: {2}", requestUrl, refHost, requestType);
 
-        // STEP 1: Looking for exception rule, which could be applied to the current request
-
-        //TODO: Use documentWhitelistRule
-        // Checks white list for a rule for this RequestUrl. If something is found - returning it.
-        var urlWhiteListRule = this._checkWhiteList(requestUrl, refHost, requestType, thirdParty);
-
-        // STEP 2: Looking for exception rule, which could be applied to the whole document, request was originated from
+        // STEP 1: Looking for exception rule, which could be applied to the whole document, request was originated from
 
         // Searching white list for a rule for Referrer and checking it's UrlBlock attribute
         // If UrlBlock is set - than we should not use UrlBlockingFilter against this request.
@@ -390,12 +384,12 @@ RequestFilter.prototype = {
         var genericRulesAllowed = referrerWhiteListRule == null || !referrerWhiteListRule.isGeneric();
         var urlRulesAllowed = referrerWhiteListRule == null || !referrerWhiteListRule.isUrlBlock;
 
-        // STEP 3: Looking for blocking rule, which could be applied to the current request
+        // STEP 2: Looking for blocking rule, which could be applied to the current request
 
         // Look for blocking rules
         var blockingRule = this._checkUrlBlockingList(requestUrl, refHost, requestType, thirdParty, genericRulesAllowed);
 
-        // STEP 4: Analyze results, first - basic exception rule
+        // STEP 3: Analyze results, first - basic exception rule
 
         if (urlWhiteListRule != null &&
             // Please note, that if blocking rule has $important modifier, it could
