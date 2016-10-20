@@ -68,18 +68,17 @@ UrlFilterRuleLookupTable.prototype = {
      * Returns filtering rule if request is filtered or NULL if nothing found
      *
      * @param url                 Url to check
-     * @param referrer            Request referrer
+     * @param referrerHost        Request referrer host
      * @param thirdParty          Is request third-party or not
      * @param contentTypes        Request content types mask
      * @param genericRulesAllowed If true - generic rules are allowed
      * @return First matching rule or null if no match found
      */
-    findRule: function (url, referrer, thirdParty, contentTypes, genericRulesAllowed) {
+    findRule: function (url, referrerHost, thirdParty, contentTypes, genericRulesAllowed) {
         if (!url) {
             return null;
         }
 
-        var referrerHost = UrlUtils.getHost(referrer);
         var urlLowerCase = url.toLowerCase();
         var rules = this.shortcutsLookupTable.lookupRules(urlLowerCase);
 
@@ -128,8 +127,8 @@ UrlFilterRuleLookupTable.prototype = {
             // Looking for document level rules
             for (var i = 0; i < rules.length; i++) {
                 var rule = rules[i];
-                if (((UrlFilterRule.contentTypes.DOCUMENT_LEVEL & rule.permittedContentType) > 0)
-                        && this.isFiltered(rule, referrerHost, url, urlLowerCase, genericRulesAllowed, thirdParty, "DOCUMENT_LEVEL")) {
+                if (((UrlFilterRule.contentTypes.DOCUMENT_LEVEL_EXCEPTIONS & rule.permittedContentType) > 0)
+                        && this.isFiltered(rule, referrerHost, url, urlLowerCase, genericRulesAllowed, thirdParty, "DOCUMENT_LEVEL_EXCEPTIONS")) {
                     return rule;
                 }
             }

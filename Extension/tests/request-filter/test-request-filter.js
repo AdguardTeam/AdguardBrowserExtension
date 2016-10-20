@@ -90,7 +90,7 @@ QUnit.test("Important modifier rules", function(assert) {
     requestFilter.addRule(documentRule);
     result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT, documentRule);
     assert.ok(result != null);
-    assert.equal(result.ruleText, documentRule.ruleText);
+    assert.equal(result.ruleText, whitelist.ruleText);
 });
 
 QUnit.test("Request filter performance", function(assert) {

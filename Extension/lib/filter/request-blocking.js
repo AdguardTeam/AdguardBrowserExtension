@@ -71,19 +71,20 @@ WebRequestService.prototype = (function () {
         };
 
         var whitelistRule = this.framesMap.getFrameWhiteListRule(tab);
-        if (genericHide || (whitelistRule && whitelistRule.checkContentType("GENERICHIDE"))) {
+        var genericHideFlag = (whitelistRule && whitelistRule.checkContentType("GENERICHIDE"));
+        if (genericHide || genericHideFlag) {
             var elemHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "ELEMHIDE");
             if (!elemHideRule) {
                 if (shouldLoadAllSelectors(result.collapseAllElements)) {
-                    result.selectors = this.antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl, genericHideRule);
+                    result.selectors = this.antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl, genericHideFlag);
                 } else {
-                    result.selectors = this.antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideRule);
+                    result.selectors = this.antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideFlag);
                 }
             }
         }
 
-        var jsInjectRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "JSINJECT");
-        if (!jsInjectRule) {
+        var jsInjectFlag = (whitelistRule && whitelistRule.checkContentType("JSINJECT"));
+        if (!jsInjectFlag) {
             result.scripts = this.antiBannerService.getRequestFilter().getScriptsForUrl(documentUrl);
         }
 
