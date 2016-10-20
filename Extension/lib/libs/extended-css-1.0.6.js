@@ -1,4 +1,4 @@
-/*! extended-css - v1.0.5 - 2016-08-25
+/*! extended-css - v1.0.6 - 2016-10-19
 * https://github.com/AdguardTeam/ExtendedCss
 * Copyright (c) 2016 ; Licensed Apache License 2.0 */
 var ExtendedCss = (function(window) {
@@ -101,31 +101,99 @@ var DomObserver = (function() { // jshint ignore:line
 
     var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
     var eventListenerSupported = window.addEventListener;
+    var domMutationObserver;
 
-    return function(callback) {
+    /**
+     * Sets up a MutationObserver which protects attributes from changes
+     * 
+     * @param node          DOM node
+     * @param attributeName Name of the attribute you want to have protected
+     * @returns Mutation observer used to protect attribute or null if there's nothing to protect
+     */
+    var protectAttribute = function(node, attributeName) {
 
-        var mutationObserver;
+        if (!MutationObserver) {
+            return null;
+        }
 
-        var observeDom = function(callback) {
-            if (!document.body) {
+        /**
+         * Restores previous attribute value
+         */
+        var protectionFunction = function(mutations, observer) {
+            if (!mutations.length) {
                 return;
             }
 
-            if (MutationObserver) {
-                mutationObserver = new MutationObserver(function(mutations) {
-                    if (mutations && mutations.length) {
-                        callback();
-                    }
-                });
-                mutationObserver.observe(document.body, { childList:true, subtree:true });
-            } else if (eventListenerSupported) {
-                document.addEventListener('DOMNodeInserted', callback, false);
-                document.addEventListener('DOMNodeRemoved', callback, false);
+            var target = mutations[0].target;
+            observer.disconnect();
+            var iMutations = mutations.length;
+            while (iMutations--) {
+                var mutation = mutations[iMutations];
+                if (mutation.attributeName === attributeName) {
+                    target.setAttribute(mutation.attributeName, mutation.oldValue);
+                }
             }
+
+            observer.observe(target, {
+                attributes: true, 
+                attributeOldValue: true,
+                attributeFilter: [ attributeName ]
+            });
         };
+
+        var protectionObserver = new MutationObserver(protectionFunction);
+        protectionObserver.observe(node, {
+            attributes: true, 
+            attributeOldValue: true,
+            attributeFilter: [ attributeName ]
+        });
         
-        // EXPOSE
-        this.observe = function() {
+        return protectionObserver;
+    };
+
+    /**
+     * Observes changes to DOM nodes
+     * 
+     * @param callback Callback method to be called when anything has changed
+     */
+    var observeDom = function(callback) {
+        if (!document.body) {
+            // Do nothing if there is no body
+            return;
+        }
+
+        if (MutationObserver) {
+            domMutationObserver = new MutationObserver(function(mutations) {
+                if (mutations && mutations.length) {
+                    callback();
+                }
+            });
+            domMutationObserver.observe(document.body, { 
+                childList: true,
+                subtree: true,
+                attributes: false
+            });
+        } else if (eventListenerSupported) {
+            document.addEventListener('DOMNodeInserted', callback, false);
+            document.addEventListener('DOMNodeRemoved', callback, false);
+        }
+    };
+
+    /**
+     * Disconnects DOM observer
+     */
+    var disconnectDom = function(callback) {
+        if (domMutationObserver) {
+            domMutationObserver.disconnect();
+        } else if (eventListenerSupported) {
+            document.removeEventListener('DOMNodeInserted', callback, false);
+            document.removeEventListener('DOMNodeRemoved', callback, false);
+        }
+    };
+
+    // EXPOSE
+    return {
+        observeDom: function(callback) {
             if (!document.body) {
                 document.addEventListener('DOMContentLoaded', function() {
                     observeDom(callback);
@@ -133,16 +201,9 @@ var DomObserver = (function() { // jshint ignore:line
             } else {
                 observeDom(callback);
             }
-        };
-
-        this.dispose = function() {
-            if (mutationObserver) {
-                mutationObserver.disconnect();
-            } else if (eventListenerSupported) {
-                document.removeEventListener('DOMNodeInserted', callback, false);
-                document.removeEventListener('DOMNodeRemoved', callback, false);
-            }
-        };
+        },
+        disconnectDom: disconnectDom,
+        protectAttribute: protectAttribute 
     };
 })();
 /**
@@ -270,7 +331,21 @@ var SimpleRegex = (function() { // jshint ignore:line
  */
 
 /**
- * PATCHED: Do not expose Sizzle to the global scope
+ * PATCHED: 
+ * 
+ * Patch #1:
+ * Do not expose Sizzle to the global scope
+ * 
+ * Patch #2:
+ * Added Sizzle.compile call to :has pseudo definition:
+ * 		"has": markFunction(function( selector ) {
+ *			if (typeof selector === "string") {
+ *				Sizzle.compile(selector);
+ *			}
+ *			return function( elem ) {
+ *				return Sizzle( selector, elem ).length > 0;
+ *			};
+ *		}),
  */
 
 /**
@@ -1718,6 +1793,9 @@ Expr = Sizzle.selectors = {
 		}),
 
 		"has": markFunction(function( selector ) {
+			if (typeof selector === "string") {
+				Sizzle.compile(selector);
+			}
 			return function( elem ) {
 				return Sizzle( selector, elem ).length > 0;
 			};
@@ -2709,8 +2787,10 @@ var StylePropertyMatcher = (function (window, document) { // jshint ignore:line
  */
 var ExtendedSelector = (function () { // jshint ignore:line
 
+    var PSEUDO_EXTENSIONS_MARKERS = [ ":has", ":contains", ":matches-css" ];
+
     // Add :matches-css-*() support
-    StylePropertyMatcher.extendSizzle(Sizzle);    
+    StylePropertyMatcher.extendSizzle(Sizzle);
 
     /**
      * Complex replacement function. 
@@ -2721,11 +2801,155 @@ var ExtendedSelector = (function () { // jshint ignore:line
      * @param quoteChar Group 2
      * @param value     Group 3
      */
-    var evaluateMatch = function(match, name, quoteChar, value) { 
+    var evaluateMatch = function (match, name, quoteChar, value) {
         // Unescape quotes
         var re = new RegExp("([^\\\\]|^)\\\\" + quoteChar, "g");
         value = value.replace(re, "$1" + quoteChar);
         return ":" + name + "(" + value + ")";
+    };
+
+    /**
+     * Checks if specified token is simple and can be used by document.querySelectorAll. 
+     */
+    var isSimpleToken = function (token) {
+
+        if (token.type === "ID" ||
+            token.type === "CLASS" ||
+            token.type === "ATTR" ||
+            token.type === "TAG" ||
+            token.type === "CHILD") {
+            // known simple tokens
+            return true;
+        }
+
+        if (token.type === "PSEUDO") {
+            // check if value contains any of extended pseudo classes
+            var i = PSEUDO_EXTENSIONS_MARKERS.length;
+            while (i--) {
+                if (token.value.indexOf(PSEUDO_EXTENSIONS_MARKERS[i]) >= 0) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // all others aren't simple
+        return false;
+    };
+
+    /**
+     * Checks if specified token is parenthesis relation
+     */
+    var isRelationToken = function(token) {
+        return token.type === " " || token.type === ">";
+    };
+
+    /**
+     * Joins tokens values
+     */
+    var joinTokens = function(selector, relationToken, tokens) {
+        selector = selector || "";
+        if (relationToken) {
+            selector += relationToken.value;
+        }
+
+        for (var i = 0; i < tokens.length; i++) {
+            selector += tokens[i].value;
+        }
+        return selector;
+    };
+
+    /**
+     * Parses selector into two parts:
+     * 1. Simple selector, which can be used by document.querySelectorAll.
+     * 2. Complex selector, which can be used by Sizzle only.
+     * 
+     * @returns object with three fields: simple, complex and relation (and also "selectorText" with source selector)
+     */
+    var tokenizeSelector = function (selectorText) {
+
+        var tokens = Sizzle.tokenize(selectorText);
+        if (tokens.length !== 1) {
+            // Do not optimize complex selectors
+            return {
+                simple: null,
+                relation: null,
+                complex: selectorText,
+                selectorText: selectorText
+            };
+        }
+
+        tokens = tokens[0];
+        var simple = "";
+        var complex = "";
+        
+        // Simple tokens (can be used by document.querySelectorAll)
+        var simpleTokens = [];
+        // Complex tokens (cannot be used at all)
+        var complexTokens = [];
+        var relationToken = null;
+        
+        for (var i = 0; i < tokens.length; i++) {
+            var token = tokens[i];
+
+            if (complexTokens.length > 0 || (!isSimpleToken(token) && !isRelationToken(token))) {
+                // If we meet complex token, all subsequent tokens are considered complex
+                // All previously found simple tokens are also considered complex
+                if (simpleTokens.length > 0) {
+                    complexTokens = complexTokens.concat(simpleTokens);
+                    simpleTokens = [];
+                }
+
+                complexTokens.push(token);
+            } else if (isRelationToken(token)) {
+                // Parenthesis relation token
+                simple = joinTokens(simple, relationToken, simpleTokens);
+                simpleTokens = [];
+
+                // Save relation token (it could be used further)
+                relationToken = token;
+            } else {
+                // Save to simple tokens collection
+                simpleTokens.push(token);                
+            }
+        }
+
+        // Finalize building simple and complex selectors
+        if (simpleTokens.length > 0) {
+            simple = joinTokens(simple, relationToken, simpleTokens);
+            relationToken = null;
+        }
+        complex = joinTokens(complex, null, complexTokens);
+
+        if (!simple) {
+            // Nothing to optimize
+            return {
+                simple: null,
+                relation: null,
+                complex: selectorText,
+                selectorText: selectorText
+            };
+        }
+
+        // Validate simple token
+        try {
+            document.querySelector(simple);
+        } catch (ex) {
+            // Simple token appears to be invalid
+            return {
+                simple: null,
+                relation: null,
+                complex: selectorText,
+                selectorText: selectorText
+            };
+        }
+
+        return {
+            simple: simple,
+            relation: (relationToken === null ? null : relationToken.type),
+            complex: (complex === "" ? null : complex),
+            selectorText: selectorText
+        };
     };
 
     /**
@@ -2734,17 +2958,22 @@ var ExtendedSelector = (function () { // jshint ignore:line
      * 
      * @param selectorText Selector text
      */
-    var prepareSelector = function(selectorText) {
+    var prepareSelector = function (selectorText) {
         try {
             // Prepare selector to be compiled with Sizzle
             // Which means transform [-ext-*=""] attributes to pseudo classes
             var re = /\[-ext-([a-z-_]+)=(["'])((?:(?=(\\?))\4.)*?)\2\]/g;
             var str = selectorText.replace(re, evaluateMatch);
-            
+
+            var compiledSelector = tokenizeSelector(str);
+
             // Compiles and validates selector
-            // Compilation in Sizzle means that selector will be saved to an inner cache and then reused
-            Sizzle.compile(str);
-            return str;
+            // Compilation in Sizzle means that selector will be saved to the inner cache and then reused
+            Sizzle.compile(selectorText);
+            if (compiledSelector.complex) {
+                Sizzle.compile(compiledSelector.complex);
+            }
+            return compiledSelector;
         } catch (ex) {
             if (typeof console !== 'undefined' && console.error) {
                 console.error('Extended selector is invalid: ' + selectorText);
@@ -2753,26 +2982,76 @@ var ExtendedSelector = (function () { // jshint ignore:line
         }
     };
 
+    /**
+     * Does the complex search (first executes document.querySelectorAll, then Sizzle)
+     * 
+     * @param compiledSelector Compiled selector (simple, complex and relation)
+     */
+    var complexSearch = function(compiledSelector) {
+        var resultNodes = [];
+
+        // First we use simple selector to narrow our search
+        var simpleNodes = document.querySelectorAll(compiledSelector.simple);
+        if (!simpleNodes || !simpleNodes.length) {
+            return resultNodes;
+        }
+
+        var iSimpleNodes = simpleNodes.length;
+        while (iSimpleNodes--) {
+            var node = simpleNodes[iSimpleNodes];
+            var childNodes = Sizzle(compiledSelector.complex, node); // jshint ignore:line
+            if (compiledSelector.relation === ">") {
+                // Filter direct children
+                var iChildNodes = childNodes.length;
+                while (iChildNodes--) {
+                    var childNode = childNodes[iChildNodes];
+                    if (childNode.parentNode === node) {
+                        resultNodes.push(childNode);
+                    }
+                }
+            } else {
+                resultNodes = resultNodes.concat(childNodes);
+            }
+        }
+
+        return Sizzle.uniqueSort(resultNodes);
+    };
+
     // Constructor
-    return function(selectorText) {
+    return function (selectorText) {
         var compiledSelector = prepareSelector(selectorText);
 
         // EXPOSE
         this.compiledSelector = compiledSelector;
-        this.selectorText = selectorText;
+        this.selectorText = (compiledSelector == null ? null : compiledSelector.selectorText);
 
         /**
          * Selects all DOM nodes matching this selector.
          */
-        this.querySelectorAll = function() {
-            return Sizzle(compiledSelector); // jshint ignore:line
+        this.querySelectorAll = function () {
+            if (compiledSelector === null) {
+                // Invalid selector, always return empty array
+                return [];
+            }
+
+            if (!compiledSelector.simple) {
+                // No simple selector applied
+                return Sizzle(compiledSelector.complex); // jshint ignore:line
+            }
+
+            if (!compiledSelector.complex) {
+                // There is no complex selector, so we could simply return it immediately
+                return document.querySelectorAll(compiledSelector.simple);
+            }
+
+            return complexSearch(compiledSelector);
         };
 
         /**
          * Checks if the specified element matches this selector
          */
-        this.matches = function(element) {
-            return Sizzle.matchesSelector(element, compiledSelector);
+        this.matches = function (element) {
+            return Sizzle.matchesSelector(element, compiledSelector.selectorText);
         };
     };
 })();
@@ -2787,7 +3066,20 @@ var ExtendedSelector = (function () { // jshint ignore:line
 var ExtendedCss = function (styleSheet) { // jshint ignore:line
     var rules = [];
     var affectedElements = [];
-    var domObserver;
+    var domObserved;
+
+    /**
+     * Removes specified suffix from the string
+     */
+    var removeSuffix = function(str, suffix) {
+
+        var index = str.indexOf(suffix, str.length - suffix.length);
+        if (index >= 0) {
+            return str.substring(0, index);
+        }
+
+        return str;
+    };
 
     /**
      * Parses specified styleSheet in a number of rule objects
@@ -2812,47 +3104,65 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
     };
 
     /**
-     * Checks if specified element is already in the affectedElements collection
+     * Finds affectedElement object for the specified DOM node
      * 
-     * @param element
+     * @param node  DOM node
+     * @returns     affectedElement found or null
      */
-    var checkElementIsAffected = function (element) {
+    var findAffectedElement = function (node) {
         var iAffectedElements = affectedElements.length;
         while (iAffectedElements--) {
-            if (affectedElements[iAffectedElements].element === element) {
-                return true;
+            var affectedElement = affectedElements[iAffectedElements];
+            if (affectedElement.node === node) {
+                return affectedElement;
             }
         }
-        return false;
+        return null;
     };
 
     /**
-     * Applies style to an element
+     * Applies style to the specified DOM node
      * 
-     * @param element DOM node
-     * @param style   Plain JS object with styles
+     * @param affectedElement    Object containing DOM node and rule to be applied
      */
-    var applyStyle = function (element, style) {
+    var applyStyle = function (affectedElement) {
+
+        if (affectedElement.protectionObserver) {
+            // Style is already applied and protected by the observer
+            return;
+        }
+
+        // DOM node
+        var node = affectedElement.node;
+        // Plain JS object with styles
+        var style = affectedElement.rule.style;
 
         for (var prop in style) {
 
             // Apply this style only to existing properties
             // We can't use hasOwnProperty here (does not work in FF)
-            if (typeof element.style.getPropertyValue(prop) !== "undefined") {
+            if (typeof node.style.getPropertyValue(prop) !== "undefined") {
                 var value = style[prop];
 
                 // First we should remove !important attribute (or it won't be applied')
-                value = value.split("!")[0].trim();
-                element.style.setProperty(prop, value, "important");
+                value = removeSuffix(value.trim(), "!important").trim();
+                node.style.setProperty(prop, value, "important");
             }
         }
+
+        // Protect "style" attribute from changes
+        affectedElement.protectionObserver = DomObserver.protectAttribute(node, 'style');
     };
 
     /**
      * Reverts style for the affected object
      */
     var revertStyle = function (affectedElement) {
-        affectedElement.element.style.cssText = affectedElement.originalStyle;
+        if (affectedElement.protectionObserver) {
+            affectedElement.protectionObserver.disconnect();
+        }
+
+        affectedElement.node.style.cssText = affectedElement.originalStyle;
     };
 
     /**
@@ -2863,29 +3173,37 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
      */
     var applyRule = function (rule) {
         var selector = rule.selector;
-        var elements = selector.querySelectorAll();
+        var nodes = selector.querySelectorAll();
 
-        var iElements = elements.length;
-        while (iElements--) {
-            var element = elements[iElements];
-            if (checkElementIsAffected(element)) {
-                // We have already applied style to this element
+        var iNodes = nodes.length;
+        while (iNodes--) {
+            var node = nodes[iNodes];
+            var affectedElement = findAffectedElement(node); 
+
+            if (affectedElement) {
+                // We have already applied style to this node
                 // Let's re-apply style to it
-                applyStyle(element, rule.style);
+                applyStyle(affectedElement);
             } else {
                 // Applying style first time
-                var originalStyle = element.style.cssText;
-                applyStyle(element, rule.style);
-
-                affectedElements.push({
-                    element: element,
+                var originalStyle = node.style.cssText;
+                affectedElement = {
+                    // affected DOM node
+                    node: node,
+                    // rule to be applied
                     rule: rule,
-                    originalStyle: originalStyle
-                });
+                    // original node style
+                    originalStyle: originalStyle,
+                    // style attribute observer
+                    protectionObserver: null
+                };
+
+                applyStyle(affectedElement);
+                affectedElements.push(affectedElement);
             }
         }
 
-        return elements;
+        return nodes;
     };
 
     /**
@@ -2899,15 +3217,15 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
         var iRules = rules.length;
         while (iRules--) {
             var rule = rules[iRules];
-            var elements = applyRule(rule);
-            elementsIndex = elementsIndex.concat(elements);
+            var nodes = applyRule(rule);
+            elementsIndex = elementsIndex.concat(nodes);
         }
 
         // Now revert styles for elements which are no more affected
         var iAffectedElements = affectedElements.length;
         while (iAffectedElements--) {
             var obj = affectedElements[iAffectedElements];
-            if (elementsIndex.indexOf(obj.element) === -1) {
+            if (elementsIndex.indexOf(obj.node) === -1) {
                 // Time to revert style
                 revertStyle(obj);
                 affectedElements.splice(iAffectedElements, 1);
@@ -2916,6 +3234,7 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
     };
 
     var domChanged = false;
+    var lastTimeDomChanged = 0;
 
     /**
      * Called on any DOM change, we should examine extended CSS again.
@@ -2927,32 +3246,55 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
 
         domChanged = false;
         applyRules(rules);
+        lastTimeDomChanged = new Date().getTime();
     };
 
     /**
-     * Throttles handleDomChange function
+     * Schedules handleDomChange using requestAnimationFrame
      */
-    var handleDomChangeAsync = function () {
+    var handleDomChangeAsync = function() {
+        if (window.requestAnimationFrame) {
+            window.requestAnimationFrame(handleDomChange);
+        } else {
+            handleDomChange();
+        }
+    };
+
+    /**
+     * Throttles handleDomChange function.
+     */
+    var handleDomChangeThrottle = function () {
 
         if (domChanged) {
             return;
         }
         domChanged = true;
-        setTimeout(handleDomChange, 10);
+        
+        // Checking time since last time rules were applied.
+        // We shouldn't allow it to trigger applying extended CSS rules too often.
+        var timeSinceLastDomChange = new Date().getTime() - lastTimeDomChanged;
+        var timeToNextDomChange = 50 - timeSinceLastDomChange;
+        if (timeToNextDomChange > 0) {
+            setTimeout(function() {
+                handleDomChangeAsync();
+            }, timeToNextDomChange);
+        } else {
+            handleDomChangeAsync();
+        }
     };
 
     /**
      * Observe changes
      */
     var observe = function () {
-        if (domObserver) {
+        if (domObserved) {
             // Observer is already here
             return;
         }
 
         // Handle dynamically added elements
-        domObserver = new DomObserver(handleDomChangeAsync);
-        domObserver.observe();
+        domObserved = true;
+        DomObserver.observeDom(handleDomChangeThrottle);
     };
 
     /**
@@ -2973,7 +3315,10 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
      * Disposes ExtendedCss and removes our styles from matched elements
      */
     var dispose = function () {
-        domObserver.dispose();
+        if (domObserved) {
+            DomObserver.disconnectDom(handleDomChangeThrottle);
+            domObserved = false;
+        }
         var iElements = affectedElements.length;
         while (iElements--) {
             var obj = affectedElements[iElements];
