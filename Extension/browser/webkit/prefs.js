@@ -34,8 +34,8 @@ var Prefs = exports.Prefs = {
 		var url = "filters/filter_mobile_" + filterId + ".txt";
 		return ext.getURL(url);
 	},
-	localGroupsMetadataPath: ext.getURL('filters/groups.xml'),
-	localFiltersMetadataPath: ext.getURL('filters/filters.xml'),
+	localFiltersMetadataPath: ext.getURL('filters/filters.json'),
+	localFiltersMetadataI18nPath: ext.getURL('filters/filters_i18n.json'),
 	safebrowsingPagePath: ext.getURL("pages/sb.html"),
 	platform: (typeof safari == 'undefined' ? "chromium" : "webkit"),
 	getBrowser: function () {
