@@ -42,8 +42,8 @@ var Prefs = exports.Prefs = {
 		var url = "filters/filter_mobile_" + filterId + ".txt";
 		return self.data.url(url);
 	},
-	localGroupsMetadataPath: self.data.url('filters/groups.xml'),
-	localFiltersMetadataPath: self.data.url('filters/filters.xml'),
+	localFiltersMetadataPath: self.data.url('filters/filters.json'),
+	localFiltersMetadataI18nPath: self.data.url('filters/filters_i18n.json'),
 	safebrowsingPagePath: 'sb.html',
 	platform: "firefox",
 	mobile: platform.indexOf('android') > -1,

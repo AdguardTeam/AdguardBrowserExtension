@@ -1,16 +1,16 @@
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
- * <p/>
+ * <p>
  * Adguard Browser Extension is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * <p/>
+ * <p>
  * Adguard Browser Extension is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * <p/>
+ * <p>
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -90,11 +90,11 @@ public class Main {
         File dest = new File(destPath, buildName);
 
         if (updateFilters) {
-            FilterUtils.updateGroupsAndFiltersMetadata(source);
-            FilterUtils.updateLocalFilters(source, new File(source, "filters"));
+            FilterUtils.updateGroupsAndFiltersMetadata(source, browser);
+            FilterUtils.updateLocalFilters(source, browser);
         }
 
-        Set<String> scriptRules = FilterUtils.getScriptRules(source);
+        Set<String> scriptRules = FilterUtils.getScriptRules(source, browser);
 
         File buildResult = createBuild(source, dest, scriptRules, extensionId, updateUrl, browser, version, branch);
 

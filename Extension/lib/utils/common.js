@@ -35,7 +35,7 @@ var StringUtils = exports.StringUtils = { // jshint ignore:line
         if (!str || !postfix) {
             return false;
         }
-        
+
         if (str.endsWith) {
             return str.endsWith(postfix);
         }
@@ -175,6 +175,28 @@ var CollectionUtils = exports.CollectionUtils = {
             text.push(collection[i].ruleText);
         }
         return text;
+    },
+
+    /**
+     * Find element in array by property
+     * @param array
+     * @param property
+     * @param value
+     * @returns {*}
+     */
+    find: function (array, property, value) {
+        if (typeof array.find === 'function') {
+            return array.find(function (a) {
+                return a[property] === value;
+            });
+        }
+        for (var i = 0; i < array.length; i++) {
+            var elem = array[i];
+            if (elem[property] === value) {
+                return elem;
+            }
+        }
+        return null;
     }
 };
 
