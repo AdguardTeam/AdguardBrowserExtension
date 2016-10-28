@@ -1628,19 +1628,14 @@ var AdguardFilterVersion = exports.AdguardFilterVersion = function (timeUpdated,
 /**
  * Filter version metadata parser
  *
- * @param el Xml element
+ * @param filter Object
  * @returns {*}
  */
-AdguardFilterVersion.fromXml = function (el) {
-    try {
-        var timeUpdated = new Date(el.getAttribute("time-updated")).getTime();
-        var version = el.getAttribute("version");
-        var filterId = el.getAttribute("filter-id");
-        return new AdguardFilterVersion(timeUpdated, version, filterId);
-    } catch (ex) {
-        Log.error("Error construct filter version from xml: {0}", el);
-        return null;
-    }
+AdguardFilterVersion.fromJSON = function (filter) {
+    var timeUpdated = new Date(filter.timeUpdated).getTime();
+    var version = filter.version;
+    var filterId = filter.filterId - 0;
+    return new AdguardFilterVersion(timeUpdated, version, filterId);
 };
 
 /**
