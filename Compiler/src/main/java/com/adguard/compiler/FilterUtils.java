@@ -26,7 +26,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,7 +40,7 @@ public class FilterUtils {
 
     private static Logger log = Logger.getLogger(FilterUtils.class);
 
-    private static final List<Integer> DEFAULT_FILTER_IDS = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+    private static final int LAST_ADGUARD_FILTER_ID = 14; // If this value is changed, will not forget to change LAST_ADGUARD_FILTER_ID in lib/utils/common.js#AntiBannerFiltersId
 
     /**
      * String is formatted by browser group. See {@link Browser#getBrowserGroup()}
@@ -65,7 +68,7 @@ public class FilterUtils {
 
         List<File> filesToCopy = new ArrayList<File>();
         try {
-            for (int filterId : DEFAULT_FILTER_IDS) {
+            for (int filterId = 1; filterId <= LAST_ADGUARD_FILTER_ID; filterId++) {
 
                 File filterFile = downloadFilterFile(dest, filterId, getFilterDownloadUrl(browser, filterId, false), "filter_" + filterId + ".txt");
                 filesToCopy.add(filterFile);
@@ -119,7 +122,7 @@ public class FilterUtils {
         Set<String> scriptRules = new HashSet<String>();
 
         File filtersDir = FileUtil.getFiltersDir(source, browser);
-        for (int filterId : DEFAULT_FILTER_IDS) {
+        for (int filterId = 1; filterId <= LAST_ADGUARD_FILTER_ID; filterId++) {
             File filterFile = new File(filtersDir, "filter_" + filterId + ".txt");
             List<String> lines = FileUtils.readLines(filterFile, "utf-8");
             for (String line : lines) {

@@ -283,7 +283,8 @@ var AntiBannerFiltersId = exports.AntiBannerFiltersId = { // jshint ignore:line
     EASY_PRIVACY: 118,
     FANBOY_ANNOYANCES: 122,
     FANBOY_SOCIAL: 123,
-    FANBOY_ENHANCED: 215
+    FANBOY_ENHANCED: 215,
+    LAST_ADGUARD_FILTER_ID: 14
 };
 
 var LogEvents = exports.LogEvents = { // jshint ignore:line
@@ -305,8 +306,7 @@ var FilterUtils = exports.FilterUtils = { // jshint ignore:line
     },
 
     isAdguardFilter: function (filter) {
-        return filter.filterId <= AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID ||
-            filter.filterId == AntiBannerFiltersId.SAFARI_FILTER;
+        return filter.filterId <= AntiBannerFiltersId.LAST_ADGUARD_FILTER_ID;
     },
 
     isUserFilterRule: function (rule) {
