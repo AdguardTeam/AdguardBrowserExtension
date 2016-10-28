@@ -1,6 +1,6 @@
-! Checksum: +c8Pl5cNSdyecP5Vjt8b8w
-! Version: 1.0.8.52
-! TimeUpdated: 2016-10-26T14:22:42.225+04:00
+! Checksum: QwvmYcrGqu/GpQM/e/ccag
+! Version: 1.0.8.57
+! TimeUpdated: 2016-10-27T18:00:34.922+04:00
 ! Title: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
 ! Title: Adguard Spyware Filter
@@ -84,6 +84,8 @@ popmech.ru#%#AG_onLoad(function() { window.POPMECH.increaseCounters = function()
 !-------------- Tracking servers list  -----------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+||decenthat.com^$third-party
+||analytics.nextopia.net^
 ||sv.ltzvs.ru^
 ||count.channeladvisor.com^$third-party
 ||metrics.pacsun.com^$third-party
@@ -1563,7 +1565,10 @@ popmech.ru#%#AG_onLoad(function() { window.POPMECH.increaseCounters = function()
 ||invoc.us^$third-party
 ||invoca.net^$third-party
 ||invoca.solutions^$third-party
-||ioam.de/tx.io?$third-party
+||ioam.de/?
+||ioam.de/aid.io?
+||ioam.de/tx.io?
+||mqs.ioam.de^
 ||iol.io^$third-party
 ||ip-adress.com^$third-party
 ||ip-api.com^$third-party
@@ -2490,7 +2495,6 @@ popmech.ru#%#AG_onLoad(function() { window.POPMECH.increaseCounters = function()
 ||scoutanalytics.net^$third-party
 ||scrippscontroller.com^$third-party
 ||script.ag^$third-party
-||script.ioam.de/iam.js$third-party
 ||script.opentracker.net$third-party
 ||scriptil.com^$third-party
 ||scripts21.com^$third-party
@@ -3580,6 +3584,8 @@ _tracking.php?b=
 !-------------- Specific web sites ---------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+||ssl-images-amazon.com^*/ClientSideMetricsAUIJavascript*.js
+||images-amazon.com^*/ClientSideMetricsAUIJavascript*.js
 ||player-feedback-mds.glomex.com/pf/?clientName=
 ||tunein.com/*/report?
 ||tunein.com/*/log/?
@@ -3694,6 +3700,7 @@ dreamprogs.net##td[width="88"][height="31"]
 ||api.radio.de/*event=
 ||api.vicomi.com/api/*/analytics/
 ||app.link/_r?sdk=*&callback=branch_callback
+||eum-appdynamics.com^$third-party
 ||appdynamics.com/geo/$third-party
 ||apple.com/metrics/
 ||arcpublishing.com^$domain=washingtonpost.com
@@ -4059,6 +4066,8 @@ dreamprogs.net##td[width="88"][height="31"]
 !-------------- Whitelist ------------------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/3277
+@@||cdn.mxpnl.com/libs/mixpanel-*.min.js$domain=order.suddenlink.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3232
 @@||metrics.corus.ca/b/ss/corus-tv-globalnews/
 ! https://forum.adguard.com/index.php?threads/14645/
@@ -4223,8 +4232,6 @@ epicwow.com#@#img[width="88"][height="31"]
 @@||zdbb.net/r/?*&mailing
 ! https://www.tinkoff.ru/cardtocard/
 @@||tinkoffcreditsystems.d3.sc.omtrdc.net/b/ss/$domain=tinkoff.ru
-! http://forum.adguard.com/showthread.php?8784
-@@||script.ioam.de/iam.js$domain=snacktv.de|hoerzu.de|n-tv.de
 ! iguides.ru - fixing loading when scrolled to the end of the page
 @@||mc.yandex.ru/metrika/watch.js$domain=iguides.ru
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1289

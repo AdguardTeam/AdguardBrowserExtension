@@ -1,6 +1,6 @@
-! Checksum: PUlwGO1GRgNZubUOO//eUg
-! Version: 1.0.5.42
-! TimeUpdated: 2016-10-26T14:23:42.743+04:00
+! Checksum: Ls40hfVpRuCAaDfSUybW2g
+! Version: 1.0.5.45
+! TimeUpdated: 2016-10-27T00:01:50.899+04:00
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
 ! Title: Adguard Mobile Ads Filter
@@ -664,6 +664,10 @@
 !
 ! These rules are against anti-adblock scripts
 !
+! https://forum.adguard.com/index.php?threads/15379/
+@@||static.expressbpd.com/rsjs/ads.js
+! https://forum.adguard.com/index.php?threads/15378/
+@@||ads.dainikbhaskar.com/AdTech/ads/ads.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3174
 @@||amazon-adsystem.com$domain=overclockers.ru
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3067
@@ -906,6 +910,7 @@ m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"
 ! https://forum.adguard.com/index.php?threads/10464/
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
 !
+livestrong.com##section[class*="js-mobile_adsense"]
 nordbayern.de##div[id*="-mobile-ad-"]
 nasimke.ru##.data-ad-client
 lenfilm.tv###adv_kod_frame
@@ -1184,6 +1189,7 @@ login.wi-fi.ru#%#window.isPremium = true;
 !
 ! Section contains rules for mobile analytics and spyware
 !
+||lepodownload.mediatek.com^$empty
 ||amp-error-reporting.appspot.com^$empty
 ||stats.popcap.com^$empty
 ||alog.umeng.com^$empty
