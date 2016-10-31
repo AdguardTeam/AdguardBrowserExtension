@@ -256,26 +256,26 @@ RequestFilter.prototype = {
      * Searches for the filter rule for the specified request.
      *
      * @param requestUrl            Request URL
-     * @param referrer              Referrer
+     * @param documentUrl           Document URL
      * @param requestType           Request content type (one of UrlFilterRule.contentTypes)
      * @param documentWhitelistRule (optional) Document-level whitelist rule
      * @returns Rule found or null
      */
-    findRuleForRequest: function (requestUrl, referrer, requestType, documentWhitelistRule) {
+    findRuleForRequest: function (requestUrl, documentUrl, requestType, documentWhitelistRule) {
 
-        var refHost = UrlUtils.getHost(referrer);
-        var thirdParty = UrlUtils.isThirdPartyRequest(requestUrl, referrer);
+        var documentHost = UrlUtils.getHost(documentUrl);
+        var thirdParty = UrlUtils.isThirdPartyRequest(requestUrl, documentUrl);
 
-        var cacheItem = this._searchRequestCache(requestUrl, refHost, requestType);
+        var cacheItem = this._searchRequestCache(requestUrl, documentHost, requestType);
 
         if (cacheItem) {
             // Element with zero index is a filter rule found last time
             return cacheItem[0];
         }
 
-        var rule = this._findRuleForRequest(requestUrl, referrer, refHost, requestType, thirdParty, documentWhitelistRule);
+        var rule = this._findRuleForRequest(requestUrl, documentHost, requestType, thirdParty, documentWhitelistRule);
 
-        this._saveResultToCache(requestUrl, rule, refHost, requestType);
+        this._saveResultToCache(requestUrl, rule, documentHost, requestType);
         return rule;
     },
 
@@ -326,17 +326,17 @@ RequestFilter.prototype = {
      * Checks if exception rule is present for the URL/Referrer pair
      *
      * @param requestUrl    Request URL
-     * @param referrerHost  Referrer host
+     * @param documentHost  Document URL host
      * @param requestType   Request content type (one of UrlFilterRule.contentTypes)
      * @param thirdParty    Is request third-party or not
      * @returns Filter rule found or null
      * @private
      */
-    _checkWhiteList: function (requestUrl, referrerHost, requestType, thirdParty) {
+    _checkWhiteList: function (requestUrl, documentHost, requestType, thirdParty) {
         if (this.urlWhiteFilter === null || StringUtils.isEmpty(requestUrl)) {
             return null;
         }
-        return this.urlWhiteFilter.isFiltered(requestUrl, referrerHost, requestType, thirdParty);
+        return this.urlWhiteFilter.isFiltered(requestUrl, documentHost, requestType, thirdParty);
     },
 
     /**
@@ -362,22 +362,21 @@ RequestFilter.prototype = {
      * Searches the rule for request.
      *
      * @param requestUrl    Request URL
-     * @param referrer      Referrer
-     * @param refHost       Referrer host
+     * @param documentHost  Document host
      * @param requestType   Request content type (one of UrlFilterRule.contentTypes)
      * @param thirdParty    Is request third-party or not
-     * @param urlWhiteListRule (optional) Document-level whitelist rule
+     * @param documentWhiteListRule (optional) Document-level whitelist rule
      * @returns Filter rule found or null
      * @private
      */
-    _findRuleForRequest: function (requestUrl, referrer, refHost, requestType, thirdParty, documentWhiteListRule) {
+    _findRuleForRequest: function (requestUrl, documentHost, requestType, thirdParty, documentWhiteListRule) {
 
-        Log.debug("Filtering http request for url: {0}, referrer: {1}, requestType: {2}", requestUrl, refHost, requestType);
+        Log.debug("Filtering http request for url: {0}, document: {1}, requestType: {2}", requestUrl, documentHost, requestType);
 
         // STEP 1: Looking for exception rule, which could be applied to the current request
 
         // Checks white list for a rule for this RequestUrl. If something is found - returning it.
-        var urlWhiteListRule = this._checkWhiteList(requestUrl, refHost, requestType, thirdParty);
+        var urlWhiteListRule = this._checkWhiteList(requestUrl, documentHost, requestType, thirdParty);
 
         // If UrlBlock is set - than we should not use UrlBlockingFilter against this request.
         // Now check if document rule has $genericblock or $urlblock modifier
@@ -387,7 +386,7 @@ RequestFilter.prototype = {
         // STEP 2: Looking for blocking rule, which could be applied to the current request
 
         // Look for blocking rules
-        var blockingRule = this._checkUrlBlockingList(requestUrl, refHost, requestType, thirdParty, genericRulesAllowed);
+        var blockingRule = this._checkUrlBlockingList(requestUrl, documentHost, requestType, thirdParty, genericRulesAllowed);
 
         // STEP 3: Analyze results, first - basic exception rule
 
@@ -395,12 +394,12 @@ RequestFilter.prototype = {
             // Please note, that if blocking rule has $important modifier, it could
             // overcome existing exception rule
             (urlWhiteListRule.isImportant || blockingRule == null || !blockingRule.isImportant)) {
-            Log.debug("White list rule found {0} for url: {1} referrer: {2}, requestType: {3}", urlWhiteListRule.ruleText, requestUrl, refHost, requestType);
+            Log.debug("White list rule found {0} for url: {1} document: {2}, requestType: {3}", urlWhiteListRule.ruleText, requestUrl, documentHost, requestType);
             return urlWhiteListRule;
         }
 
         if (!genericRulesAllowed || !urlRulesAllowed) {
-            Log.debug("White list rule {0} found for referrer: {1}", documentWhiteListRule.ruleText, referrer);
+            Log.debug("White list rule {0} found for document: {1}", documentWhiteListRule.ruleText, documentHost);
         }
 
         if (!urlRulesAllowed) {
@@ -409,7 +408,7 @@ RequestFilter.prototype = {
         }
 
         if (blockingRule != null) {
-            Log.debug("Black list rule {0} found for url: {1}, referrer: {2}, requestType: {3}", blockingRule.ruleText, requestUrl, refHost, requestType);
+            Log.debug("Black list rule {0} found for url: {1}, document: {2}, requestType: {3}", blockingRule.ruleText, requestUrl, documentHost, requestType);
         }
 
         return blockingRule;

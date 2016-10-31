@@ -68,13 +68,13 @@ UrlFilterRuleLookupTable.prototype = {
      * Returns filtering rule if request is filtered or NULL if nothing found
      *
      * @param url                 Url to check
-     * @param referrerHost        Request referrer host
+     * @param documentHost        Request document host
      * @param thirdParty          Is request third-party or not
      * @param contentTypes        Request content types mask
      * @param genericRulesAllowed If true - generic rules are allowed
      * @return First matching rule or null if no match found
      */
-    findRule: function (url, referrerHost, thirdParty, contentTypes, genericRulesAllowed) {
+    findRule: function (url, documentHost, thirdParty, contentTypes, genericRulesAllowed) {
         if (!url) {
             return null;
         }
@@ -84,15 +84,15 @@ UrlFilterRuleLookupTable.prototype = {
 
         // Check against rules with shortcuts
         if (rules != null && rules.length > 0) {
-            var rule = this._findRule(url, referrerHost, rules, thirdParty, contentTypes, genericRulesAllowed);
+            var rule = this._findRule(url, documentHost, rules, thirdParty, contentTypes, genericRulesAllowed);
             if (rule != null) {
                 return rule;
             }
         }
 
-        rules = this.domainsLookupTable.lookupRules(referrerHost);
+        rules = this.domainsLookupTable.lookupRules(documentHost);
         if (rules != null) {
-            var rule = this._findRule(url, referrerHost, rules, thirdParty, contentTypes, genericRulesAllowed);
+            var rule = this._findRule(url, documentHost, rules, thirdParty, contentTypes, genericRulesAllowed);
             if (rule != null) {
                 return rule;
             }
@@ -100,7 +100,7 @@ UrlFilterRuleLookupTable.prototype = {
 
         // Check against rules without shortcuts
         if (this.rulesWithoutShortcuts.length > 0) {
-            var rule = this._findRule(url, referrerHost, this.rulesWithoutShortcuts, thirdParty, contentTypes, genericRulesAllowed);
+            var rule = this._findRule(url, documentHost, this.rulesWithoutShortcuts, thirdParty, contentTypes, genericRulesAllowed);
             if (rule != null) {
                 return rule;
             }

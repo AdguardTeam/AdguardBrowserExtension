@@ -73,8 +73,8 @@ WebRequestService.prototype = (function () {
         var whitelistRule = this.framesMap.getFrameWhiteListRule(tab);
         var genericHideFlag = (whitelistRule && whitelistRule.checkContentType("GENERICHIDE"));
         if (genericHide || genericHideFlag) {
-            var elemHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "ELEMHIDE");
-            if (!elemHideRule) {
+            var elemHideFlag = (whitelistRule && whitelistRule.checkContentType("ELEMHIDE"));
+            if (!elemHideFlag) {
                 if (shouldLoadAllSelectors(result.collapseAllElements)) {
                     result.selectors = this.antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl, genericHideFlag);
                 } else {
