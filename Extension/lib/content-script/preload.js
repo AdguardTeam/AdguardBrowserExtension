@@ -278,7 +278,7 @@
             initBatchCollapse();
         } else {
             applySelectors(response.selectors, response.useShadowDom);
-            applyScripts(response.scripts);
+            applyScripts(response.scripts, response.applyAllScripts);
         }
 
         if (response && response.selectors && response.selectors.css && response.selectors.css.length > 0) {
@@ -361,9 +361,10 @@
     /**
      * Applies JS injections.
      *
-     * @param scripts Array with JS scripts and scriptSource ('remote' or 'local')
+     * @param scripts           Array with JS scripts and scriptSource ('remote' or 'local')
+     * @param applyAllScripts   Flag to apply all loaded scripts
      */
-    var applyScripts = function(scripts) {
+    var applyScripts = function(scripts, applyAllScripts) {
         if (!scripts || scripts.length === 0) {
             return;
         }
@@ -372,20 +373,17 @@
 
         for (var i = 0; i < scripts.length; i++) {
             var scriptRule = scripts[i];
-            switch (scriptRule.scriptSource) {
-                case 'local':
+            if (applyAllScripts || scriptRule.scriptSource === "local") {
+                scriptsToApply.push(scriptRule.rule);
+            } else {
+                /**
+                 * Note (!) (Firefox, Opera):
+                 * In case of Firefox and Opera add-ons, JS filtering rules are hardcoded into add-on code.
+                 * Look at WorkaroundUtils.getScriptSource to learn more.
+                 */
+                if (!isFirefox && !isOpera) {
                     scriptsToApply.push(scriptRule.rule);
-                    break;
-                case 'remote':
-                    /**
-                     * Note (!) (Firefox, Opera):
-                     * In case of Firefox and Opera add-ons, JS filtering rules are hardcoded into add-on code.
-                     * Look at WorkaroundUtils.getScriptSource to learn more.
-                     */
-                    if (!isFirefox && !isOpera) {
-                        scriptsToApply.push(scriptRule.rule);
-                    }
-                    break;
+                }
             }
         }
 

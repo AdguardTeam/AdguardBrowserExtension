@@ -65,7 +65,8 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
         },
         scripts: null,
         collapseAllElements: this.antiBannerService.shouldCollapseAllElements(),
-        useShadowDom: Utils.isShadowDomSupported()
+        useShadowDom: Utils.isShadowDomSupported(),
+        applyAllScripts: Prefs.isRemoteScriptRulesSupported
     };
 
     var genericHideRule = genericHide || this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "GENERICHIDE");
