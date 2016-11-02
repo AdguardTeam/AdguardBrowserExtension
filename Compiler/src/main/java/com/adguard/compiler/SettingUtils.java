@@ -166,6 +166,31 @@ public class SettingUtils {
         }
     }
 
+    /**
+     * By the rules of AMO and addons.opera.com we cannot use remote scripts,
+     * but for beta and dev Firefox version we gonna support it.
+     *
+     * Look DEFAULT_SCRIPT_RULES and https://github.com/AdguardTeam/AdguardBrowserExtension/issues/388.
+     *
+     * In this temp solution we simply edit preload js code to allow all rules in FF
+     *
+     * @param dest source path
+     * @param branch branch name (release/beta/dev)
+     */
+    public static void updatePreloadRemoteScriptRules(File dest, String branch) throws IOException {
+        if ("beta".equals(branch)
+                || "dev".equals(branch)
+                || "legacy".equals(branch)
+                || "dev-legacy".equals(branch)) {
+
+            File file = new File(dest, "data/content/content-script/preload.js");
+            String content = FileUtils.readFileToString(file, "utf-8").trim();
+            content = StringUtils.replace(content, "if (!isFirefox && !isOpera) {", "if (!isOpera) {");
+            FileUtils.writeStringToFile(file, content, "utf-8");
+        }
+    }
+
+
     public static String getScriptRulesText(Set<String> scriptRules) {
         StringBuilder sb = new StringBuilder();
         if (scriptRules != null) {
