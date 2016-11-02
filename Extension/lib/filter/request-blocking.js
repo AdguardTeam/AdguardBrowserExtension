@@ -180,7 +180,7 @@ WebRequestService.prototype = (function () {
         }
 
         var whitelistRule = this.framesMap.getFrameWhiteListRule(tab);
-        if (whitelistRule && whitelistRule.checkContentType("DOCUMENT")) {
+        if (whitelistRule && whitelistRule.checkContentTypeIncluded("DOCUMENT")) {
             // Frame is whitelisted by $document rule
             // We do nothing more in this case - return the rule.
             return whitelistRule;
@@ -226,7 +226,7 @@ WebRequestService.prototype = (function () {
             //do nothing
         } else if (requestType == RequestTypes.DOCUMENT) {
             requestRule = this.framesMap.getFrameWhiteListRule(tab);
-            if (requestRule && requestRule.checkContentType("DOCUMENT")) {
+            if (requestRule && requestRule.checkContentTypeIncluded("DOCUMENT")) {
                 var domain = this.framesMap.getFrameDomain(tab);
                 if (!this.framesMap.isIncognitoTab(tab)) {
                     //add page view to stats
