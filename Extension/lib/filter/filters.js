@@ -380,8 +380,8 @@ RequestFilter.prototype = {
 
         // If UrlBlock is set - than we should not use UrlBlockingFilter against this request.
         // Now check if document rule has $genericblock or $urlblock modifier
-        var genericRulesAllowed = documentWhiteListRule == null || !documentWhiteListRule.isGeneric();
-        var urlRulesAllowed = documentWhiteListRule == null || !documentWhiteListRule.isUrlBlock;
+        var genericRulesAllowed = documentWhiteListRule == null || !documentWhiteListRule.checkContentType("GENERICBLOCK");
+        var urlRulesAllowed = documentWhiteListRule == null || !documentWhiteListRule.checkContentType("URLBLOCK");
 
         // STEP 2: Looking for blocking rule, which could be applied to the current request
 
