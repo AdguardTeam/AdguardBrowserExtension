@@ -295,3 +295,32 @@ QUnit.test("Important modifier rules priority", function(assert) {
     assert.ok(result != null);
     assert.equal(result.ruleText, importantRule.ruleText);
 });
+
+QUnit.test("Rule content types", function(assert) {
+    var basicRule = new UrlFilterRule("||example.com^");
+    assert.notOk(basicRule.checkContentType("DOCUMENT"));
+    assert.notOk(basicRule.checkContentTypeIncluded("DOCUMENT"));
+
+    assert.ok(basicRule.checkContentType("IMAGE"));
+    assert.ok(basicRule.checkContentTypeIncluded("IMAGE"));
+
+    var documentRule = new UrlFilterRule("||example.com^$document");
+    assert.ok(documentRule.checkContentType("DOCUMENT"));
+    assert.ok(documentRule.checkContentTypeIncluded("DOCUMENT"));
+
+    assert.ok(documentRule.checkContentType("ELEMHIDE"));
+    assert.ok(documentRule.checkContentTypeIncluded("ELEMHIDE"));
+
+    assert.notOk(documentRule.checkContentType("IMAGE"));
+    assert.notOk(documentRule.checkContentTypeIncluded("IMAGE"));
+
+    var elemhideRule = new UrlFilterRule("||example.com^$elemhide");
+    assert.ok(elemhideRule.checkContentType("DOCUMENT"));
+    assert.notOk(elemhideRule.checkContentTypeIncluded("DOCUMENT"));
+
+    assert.ok(elemhideRule.checkContentType("ELEMHIDE"));
+    assert.ok(elemhideRule.checkContentTypeIncluded("ELEMHIDE"));
+
+    assert.notOk(elemhideRule.checkContentType("IMAGE"));
+    assert.notOk(elemhideRule.checkContentTypeIncluded("IMAGE"));
+});

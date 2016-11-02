@@ -143,7 +143,7 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
      */
     this.isTabWhiteListed = function (tab) {
         var frameData = this.getMainFrame(tab);
-        return frameData && frameData.frameWhiteListRule && frameData.frameWhiteListRule.checkContentType("DOCUMENT");
+        return frameData && frameData.frameWhiteListRule && frameData.frameWhiteListRule.checkContentTypeIncluded("DOCUMENT");
     };
 
     /**

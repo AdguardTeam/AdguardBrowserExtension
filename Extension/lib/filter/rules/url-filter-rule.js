@@ -181,7 +181,7 @@ UrlFilterRule.prototype.isFiltered = function (requestUrl, thirdParty, requestCo
 };
 
 /**
- * Checks if specified content type is suitable.
+ * Checks if specified content type has intersection with rule's content types.
  *
  * @param contentType Request content type (UrlFilterRule.contentTypes)
  */
@@ -198,6 +198,25 @@ UrlFilterRule.prototype.checkContentType = function (contentType) {
     }
 
     return true;
+};
+
+/**
+ * Checks if specified content type is included in the rule content type.
+ *
+ * @param contentType Request content type (UrlFilterRule.contentTypes)
+ */
+UrlFilterRule.prototype.checkContentTypeIncluded = function (contentType) {
+    var contentTypeMask = UrlFilterRule.contentTypes[contentType];
+    if ((this.permittedContentType & contentTypeMask) == contentTypeMask) {
+        if (this.restrictedContentType !== 0 && (this.restrictedContentType & contentTypeMask) == contentTypeMask) {
+            //in restricted list - skip this rule
+            return false;
+        }
+
+        return true;
+    }
+
+    return false;
 };
 
 /**
