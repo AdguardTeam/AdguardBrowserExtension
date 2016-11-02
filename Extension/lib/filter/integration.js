@@ -302,7 +302,11 @@ AdguardApplication.prototype = {
 		}
 
 		var rule = this._createRuleFromHeader(header);
-		if (rule && rule.whiteListRule && rule instanceof UrlFilterRule && rule.isFiltered(tabUrl, false, RequestTypes.DOCUMENT)) {
+		if (rule && rule.whiteListRule
+			&& rule instanceof UrlFilterRule
+			&& rule.isFiltered(tabUrl, false, RequestTypes.DOCUMENT)
+			&& rules.checkContentTypeIncluded("DOCUMENT")) {
+
 			ruleInfo.headerRule = rule;
 			ruleInfo.documentWhiteListed = true;
 			ruleInfo.userWhiteListed = rule.filterId == 0;
