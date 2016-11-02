@@ -196,6 +196,9 @@ public class SettingUtils {
      * @return flag
      */
     private static boolean isRemoteScriptRulesSupported(String branch) {
-        return "beta".equals(branch) || "dev".equals(branch);
+        return "beta".equals(branch)
+                || "dev".equals(branch)
+                || "legacy".equals(branch)
+                || "dev-legacy".equals(branch);
     }
 }
