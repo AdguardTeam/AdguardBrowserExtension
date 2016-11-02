@@ -72,18 +72,16 @@ WebRequestService.prototype = (function () {
 
         var whitelistRule = this.framesMap.getFrameWhiteListRule(tab);
         var genericHideFlag = genericHide || (whitelistRule && whitelistRule.checkContentType("GENERICHIDE"));
-        if (genericHideFlag) {
-            var elemHideFlag = (whitelistRule && whitelistRule.checkContentType("ELEMHIDE"));
-            if (!elemHideFlag) {
-                if (shouldLoadAllSelectors(result.collapseAllElements)) {
-                    result.selectors = this.antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl, genericHideFlag);
-                } else {
-                    result.selectors = this.antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideFlag);
-                }
+        var elemHideFlag = whitelistRule && whitelistRule.checkContentType("ELEMHIDE");
+        if (!elemHideFlag) {
+            if (shouldLoadAllSelectors(result.collapseAllElements)) {
+                result.selectors = this.antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl, genericHideFlag);
+            } else {
+                result.selectors = this.antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideFlag);
             }
         }
 
-        var jsInjectFlag = (whitelistRule && whitelistRule.checkContentType("JSINJECT"));
+        var jsInjectFlag = whitelistRule && whitelistRule.checkContentType("JSINJECT");
         if (!jsInjectFlag) {
             result.scripts = this.antiBannerService.getRequestFilter().getScriptsForUrl(documentUrl);
         }
