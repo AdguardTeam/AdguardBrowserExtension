@@ -224,14 +224,12 @@ WebRequestService.prototype = (function () {
             //do nothing
         } else if (requestType == RequestTypes.DOCUMENT) {
             requestRule = this.framesMap.getFrameWhiteListRule(tab);
-            if (requestRule && requestRule.checkContentType("DOCUMENT")) {
-                var domain = this.framesMap.getFrameDomain(tab);
-                if (!this.framesMap.isIncognitoTab(tab)) {
-                    //add page view to stats
-                    filterRulesHitCount.addDomainView(domain);
-                }
-                appendLogEvent = true;
+            var domain = this.framesMap.getFrameDomain(tab);
+            if (!this.framesMap.isIncognitoTab(tab)) {
+                //add page view to stats
+                filterRulesHitCount.addDomainView(domain);
             }
+            appendLogEvent = true;
         }
 
         // add event to filtering log
