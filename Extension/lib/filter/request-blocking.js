@@ -71,8 +71,8 @@ WebRequestService.prototype = (function () {
         };
 
         var whitelistRule = this.framesMap.getFrameWhiteListRule(tab);
-        var genericHideFlag = (whitelistRule && whitelistRule.checkContentType("GENERICHIDE"));
-        if (genericHide || genericHideFlag) {
+        var genericHideFlag = genericHide || (whitelistRule && whitelistRule.checkContentType("GENERICHIDE"));
+        if (genericHideFlag) {
             var elemHideFlag = (whitelistRule && whitelistRule.checkContentType("ELEMHIDE"));
             if (!elemHideFlag) {
                 if (shouldLoadAllSelectors(result.collapseAllElements)) {
@@ -226,12 +226,14 @@ WebRequestService.prototype = (function () {
             //do nothing
         } else if (requestType == RequestTypes.DOCUMENT) {
             requestRule = this.framesMap.getFrameWhiteListRule(tab);
-            var domain = this.framesMap.getFrameDomain(tab);
-            if (!this.framesMap.isIncognitoTab(tab)) {
-                //add page view to stats
-                filterRulesHitCount.addDomainView(domain);
+            if (requestRule && requestRule.checkContentType("DOCUMENT")) {
+                var domain = this.framesMap.getFrameDomain(tab);
+                if (!this.framesMap.isIncognitoTab(tab)) {
+                    //add page view to stats
+                    filterRulesHitCount.addDomainView(domain);
+                }
+                appendLogEvent = true;
             }
-            appendLogEvent = true;
         }
 
         // add event to filtering log
