@@ -151,8 +151,7 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
      * @returns true if Tab have white list rule and white list isn't invert
      */
     this.isTabWhiteListedForSafebrowsing = function (tab) {
-        var frameData = this.getMainFrame(tab);
-        return frameData && frameData.frameWhiteListRule && whiteListService.isDefaultMode();
+        return this.isTabWhiteListed(tab) && whiteListService.isDefaultMode();
     };
 
     /**
@@ -305,20 +304,19 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
 
                 applicationFilteringDisabled = frameData && frameData.applicationFilteringDisabled;
 
-                var rule = frameData ? frameData.frameWhiteListRule : null;
-                documentWhiteListed = rule != null;
+                documentWhiteListed = this.isTabWhiteListed(tab);
                 if (documentWhiteListed) {
-                    userWhiteListed = FilterUtils.isWhiteListFilterRule(rule) || FilterUtils.isUserFilterRule(rule);
-                }
-                //mean site in exception
-                canAddRemoveRule = !(documentWhiteListed && !userWhiteListed);
+                    var rule = this.getFrameWhiteListRule(tab);
 
-                if (rule) {
+                    userWhiteListed = FilterUtils.isWhiteListFilterRule(rule) || FilterUtils.isUserFilterRule(rule);
+
                     frameRule = {
                         filterId: rule.filterId,
                         ruleText: rule.ruleText
                     };
                 }
+                //mean site in exception
+                canAddRemoveRule = !(documentWhiteListed && !userWhiteListed);
             }
         }
 
