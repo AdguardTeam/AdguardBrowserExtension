@@ -102,7 +102,7 @@ else
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox legacy
-    options="--version=$version --branch=$branch-Legacy --dest=$destPath --name=firefox-legacy --browser=firefox_legacy --extensionId=adguardadblockerlegacydev@adguard.com"
+    options="--version=$version --branch=$branch-legacy --dest=$destPath --name=firefox-legacy --browser=firefox_legacy --extensionId=adguardadblockerlegacydev@adguard.com"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #safari

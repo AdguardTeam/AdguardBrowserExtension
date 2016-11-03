@@ -219,6 +219,11 @@ public class Main {
         if (browser == Browser.FIREFOX || browser == Browser.FIREFOX_LEGACY) {
             LocaleUtils.writeLocalesToFirefoxInstallRdf(dest, extensionNamePostfix);
             LocaleUtils.writeLocalesToChromeManifest(dest);
+
+            //TODO: This is the temp fix to avoid long time AMO review
+            //Should be removed after merge with
+            //https://github.com/AdguardTeam/AdguardBrowserExtension/pull/421
+            SettingUtils.updatePreloadRemoteScriptRules(dest, branch);
         }
 
         if (browser == Browser.FIREFOX_LEGACY) {
