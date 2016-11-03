@@ -177,15 +177,26 @@ public class SettingUtils {
      * @param dest source path
      * @param branch branch name (release/beta/dev)
      */
-    public static void updatePreloadRemoteScriptRules(File dest, String branch) throws IOException {
+    public static void updatePreloadRemoteScriptRules(File dest, String branch) throws Exception {
         if ("beta".equals(branch)
                 || "dev".equals(branch)
                 || "legacy".equals(branch)
                 || "dev-legacy".equals(branch)) {
 
+            String replaceClauseTemplate = "if (!isFirefox && !isOpera) {";
+
             File file = new File(dest, "data/content/content-script/preload.js");
             String content = FileUtils.readFileToString(file, "utf-8").trim();
-            content = StringUtils.replace(content, "if (!isFirefox && !isOpera) {", "if (!isOpera) {");
+
+            if (StringUtils.indexOf(content, replaceClauseTemplate) < 0) {
+                throw new Exception("Invalid code working with FF remote rules");
+            }
+
+            content = StringUtils.replaceOnce(content, replaceClauseTemplate, "if (!isOpera) {");
+            if (StringUtils.indexOf(content, replaceClauseTemplate) > 0) {
+                throw new Exception("Invalid code working with FF remote rules");
+            }
+
             FileUtils.writeStringToFile(file, content, "utf-8");
         }
     }
