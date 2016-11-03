@@ -30,21 +30,11 @@ var CspUtils = exports.CspUtils = (function () {
      * Fills csp header with websocket blocking directives.
      * Checks connect-src and frame-src directives. Removes 'wss:' and 'data:' from it.
      * @param headers headers collection block websocket flag
-     * @param bypassConnectSrc flag no to add connect-src directives.
      */
-    var blockWebSockets = function (headers, bypassConnectSrc) {
+    var blockWebSockets = function (headers) {
         var i = headerIndexFromName('content-security-policy', headers),
             before = i === -1 ? '' : headers[i].value.trim(),
             after = before;
-
-        if (!bypassConnectSrc) {
-            after = writeCSPDirective(
-                after,
-                /connect-src[^;]*;?\s*/,
-                'connect-src http:',
-                /wss?:[^\s]*\s*/g
-            );
-        }
 
         /*
          https://bugs.chromium.org/p/chromium/issues/detail?id=513860
