@@ -305,7 +305,7 @@ AdguardApplication.prototype = {
 		if (rule && rule.whiteListRule
 			&& rule instanceof UrlFilterRule
 			&& rule.isFiltered(tabUrl, false, RequestTypes.DOCUMENT)
-			&& rules.checkContentTypeIncluded("DOCUMENT")) {
+			&& rule.checkContentTypeIncluded("DOCUMENT")) {
 
 			ruleInfo.headerRule = rule;
 			ruleInfo.documentWhiteListed = true;
