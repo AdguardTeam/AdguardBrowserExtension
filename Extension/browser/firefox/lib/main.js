@@ -17,7 +17,6 @@
  */
 var chrome = require('chrome');
 var self = require('sdk/self');
-var tabs = require('sdk/tabs');
 var simplePrefs = require('sdk/simple-prefs');
 var simpleStorage = require('sdk/simple-storage');
 var unload = require('sdk/system/unload');
@@ -39,8 +38,6 @@ var adguard = adguard || {};
 var sdkModules = {
     'chrome': chrome,
     'sdk/timers': require('sdk/timers'),
-    'sdk/tabs': tabs,
-    'sdk/tabs/utils': require('sdk/tabs/utils'),
     'sdk/system': require('sdk/system'),
     'sdk/simple-prefs': simplePrefs,
     'sdk/simple-storage': simpleStorage,
@@ -49,10 +46,7 @@ var sdkModules = {
     'sdk/system/events': require('sdk/system/events'),
     'sdk/core/promise': require('sdk/core/promise'),
     'sdk/io/file': require('sdk/io/file'),
-    'sdk/windows': require('sdk/windows'),
-    'sdk/private-browsing': require('sdk/private-browsing'),
-    'sdk/view/core': require('sdk/view/core'),
-    'sdk/window/utils': require('sdk/window/utils')
+    'sdk/private-browsing': require('sdk/private-browsing')
 };
 
 exports.onUnload = function (reason) {
@@ -108,12 +102,12 @@ exports.main = function (options, callbacks) {
             Log.info('Module sdk/ui/button/toggle is not supported');
         }
 
+        loadAdguardModule('./api/tabs');
+        loadAdguardModule('./tabs/tabs-api');
+
         var {Prefs} = loadAdguardModule('./prefs');
         var {AntiBannerFiltersId} = loadAdguardModule('./utils/common');
         var {Utils} = loadAdguardModule('./utils/browser-utils');
-        var {TabsMap} = loadAdguardModule('./tabsMap');
-        var {Tabs} = loadAdguardModule('./tabs');
-        var {TabsApi} = loadAdguardModule('./tabs-api');
         var {FramesMap} = loadAdguardModule('./utils/frames');
         var {AdguardApplication} = loadAdguardModule('./filter/integration');
         var {filterRulesHitCount} = loadAdguardModule('./filter/filters-hit');
@@ -131,7 +125,6 @@ exports.main = function (options, callbacks) {
         // It does nothing in case of "jpm"-packed add-on
         require('./prefs');
         require('./elemHide');
-        require('./tabsMap');
         require('./contentPolicy');
         require('./elemHideIntercepter');
         require('./content-message-handler');
@@ -148,7 +141,7 @@ exports.main = function (options, callbacks) {
         var antiBannerService = new AntiBannerService();
         var framesMap = new FramesMap(antiBannerService);
         var adguardApplication = new AdguardApplication(framesMap);
-        var filteringLog = new FilteringLog(TabsMap, framesMap, UI);
+        var filteringLog = new FilteringLog(framesMap, UI);
         var webRequestService = new WebRequestService(framesMap, antiBannerService, filteringLog, adguardApplication);
 
         WebRequestImpl.init(antiBannerService, adguardApplication, ElemHide, framesMap, filteringLog, webRequestService);
@@ -168,7 +161,7 @@ exports.main = function (options, callbacks) {
         UI.init(antiBannerService, framesMap, filteringLog, adguardApplication, SdkPanel, SdkContextMenu, SdkButton);
 
         var AdguardModules = {
-
+            adguard: adguard,
             antiBannerService: antiBannerService,
             framesMap: framesMap,
             filteringLog: filteringLog,
@@ -176,9 +169,7 @@ exports.main = function (options, callbacks) {
             UI: UI,
             i18n: i18n,
             Utils: Utils,
-            AntiBannerFiltersId: AntiBannerFiltersId,
-            //for popup script
-            tabs: tabs
+            AntiBannerFiltersId: AntiBannerFiltersId
         };
 
         /**
@@ -191,7 +182,7 @@ exports.main = function (options, callbacks) {
             LOAD_MODULE_TOPIC: "adguard-load-module",
 
             observe: function (subject, topic, data) {
-                if (topic == RequireObserver.LOAD_MODULE_TOPIC) {
+                if (topic === RequireObserver.LOAD_MODULE_TOPIC) {
                     var service = AdguardModules[data];
                     if (!service) {
                         throw 'Module "' + data + '" is undefined';
@@ -223,25 +214,27 @@ exports.main = function (options, callbacks) {
     }
 
     // Language detect on tab ready event
-    tabs.on('ready', function (tab) {
-        antiBannerService.checkTabLanguage(tab.id, tab.url);
+    adguard.tabs.onUpdated.addListener(function (tab) {
+        if (tab.status === 'complete') {
+            antiBannerService.checkTabLanguage(tab.tabId, tab.url);
+        }
     });
 
     // Initialize filtering log
     filteringLog.synchronizeOpenTabs();
-    tabs.on('open', function (tab) {
+    adguard.tabs.onCreated.addListener(function (tab) {
         filteringLog.addTab(tab);
     });
-    tabs.on('close', function (tab) {
+    adguard.tabs.onRemoved.addListener(function (tab) {
         filteringLog.removeTab(tab);
     });
-    tabs.on('ready', function (tab) {
+    adguard.tabs.onUpdated.addListener(function (tab) {
         filteringLog.updateTab(tab);
     });
 };
 
 var i18n = (function () {
-    
+
     // Randomize URI to work around bug 719376
     var stringBundle = Services.strings.createBundle('chrome://adguard/locale/messages.properties?' + Math.random());
 
@@ -260,7 +253,7 @@ var i18n = (function () {
     return {
         getMessage: function (key, args) {
             try {
-                return getText(stringBundle.GetStringFromName(key), args);                
+                return getText(stringBundle.GetStringFromName(key), args);
             } catch (ex) {
                 // Key not found, simply return it as a translation
                 return key;
@@ -275,7 +268,7 @@ var i18n = (function () {
  * We use "loadSubScript" function instead of "require" because of strange behavior of the modules loaded by "require" method.
  * It seems that "require"-loaded modules work really slow comparing to loaded with "loadSubScript".
  *
- * @param module Path to module. 
+ * @param module Path to module.
  */
 var loadAdguardModule = function (modulePath) {
 
@@ -315,7 +308,8 @@ var loadAdguardModule = function (modulePath) {
             },
             i18n: i18n,
             console: console,
-            exports: Object.create(Object.prototype)
+            exports: Object.create(Object.prototype),
+            adguard: adguard // Make adguard global
         };
 
         Services.scriptloader.loadSubScript(url, scope);

@@ -22,7 +22,6 @@ Cu.import("resource://gre/modules/Services.jsm");
 
 var categoryManager = Cc["@mozilla.org/categorymanager;1"].getService(Ci.nsICategoryManager);
 
-var tabUtils = require('sdk/tabs/utils');
 var unload = require('sdk/system/unload');
 var events = require('sdk/system/events');
 
@@ -31,8 +30,6 @@ var {EventNotifier} = require('./utils/notifier');
 var {EventNotifierTypes,RequestTypes} = require('./utils/common');
 var {UrlUtils} = require('./utils/url');
 var {Utils} = require('./utils/browser-utils');
-var {WebRequestService} = require('./filter/request-blocking');
-var {WorkaroundUtils} = require('./utils/workaround');
 
 /**
  * Helper object to work with web requests.
@@ -122,7 +119,7 @@ var WebRequestHelper = exports.WebRequestHelper = {
 
         // If it is the main frame
         if (context._contentWindow instanceof Ci.nsIDOMWindow) {
-            return tabUtils.getTabForContentWindow(context._contentWindow.top);
+            return adguard.tabsImpl.getTabForContentWindow(context._contentWindow.top);
         }
 
         if (!(context instanceof Ci.nsIDOMWindow)) {
@@ -145,52 +142,38 @@ var WebRequestHelper = exports.WebRequestHelper = {
             if ("" + context === "[object ChromeWindow]") {
                 return null;
             }
-            return tabUtils.getTabForContentWindow(context.top);
+            return adguard.tabsImpl.getTabForContentWindow(context.top);
         }
         return null;
     },
 
-    /**
-     * Gets tab for specified channel
-     *
-     * @param channel Channel
-     * @returns XUL tab
-     */
-    getTabForChannel: function (channel) {
+    getTabIdForChannel: function (channel) {
+
         var contextData = this.getChannelContextData(channel);
+
         if (contextData && contextData.tab) {
-            return contextData.tab;
+            return adguard.tabsImpl.getTabIdForTab(contextData.tab);
         }
+
         if (contextData && contextData.browser) {
             var browser = contextData.browser;
-            
-            var xulTab = tabUtils.getTabForBrowser(browser);
-            
+            var xulTab = adguard.tabsImpl.getTabForBrowser(browser);
+
             // getTabForBrowser() returns null for FF 38 ESR
             if (!xulTab) {
                 // TODO: temporary fix
                 // If browser.docShell returns null then browser.contentWindow throws exception: this.docShell is null
                 if (browser.docShell && browser.contentWindow) {
-                    xulTab = tabUtils.getTabForContentWindow(browser.contentWindow);                    
+                    xulTab = adguard.tabsImpl.getTabForContentWindow(browser.contentWindow);
+                    if (!xulTab) {
+                        return null;
+                    }
                 }
             }
 
-            return xulTab;
+            return adguard.tabsImpl.getTabIdForTab(xulTab);
         }
         return null;
-    },
-
-    /**
-     * Gets tab id for channel
-     * @param channel Channel
-     * @returns XUL tab
-     */
-    getTabIdForChannel: function (channel) {
-        var xulTab = this.getTabForChannel(channel);
-        if (!xulTab) {
-            return null;
-        }
-        return tabUtils.getTabId(xulTab);
     },
 
     /**
@@ -328,7 +311,7 @@ var WebRequestHelper = exports.WebRequestHelper = {
      * We get these
      *
      * @param request nsIHttpChannel
-     * @param requestProperties Contains 
+     * @param requestProperties Contains
      */
     attachRequestProperties: function (request, requestProperties) {
         if (request instanceof Ci.nsIWritablePropertyBag) {
@@ -460,7 +443,9 @@ var WebRequestImpl = exports.WebRequestImpl = {
             return WebRequestHelper.ACCEPT;
         }
 
-        var tab = {id: tabUtils.getTabId(xulTab)};
+        var tabId = adguard.tabsImpl.getTabIdForTab(xulTab);
+        var tab = {tabId: tabId};
+
         var requestUrl = contentLocation.asciiSpec;
         var requestType = WebRequestHelper.getRequestType(contentType, contentLocation);
         var result = this._shouldBlockRequest(tab, requestUrl, requestType, aContext);
@@ -496,14 +481,14 @@ var WebRequestImpl = exports.WebRequestImpl = {
                 return;
             }
 
-            var xulTab = WebRequestHelper.getTabForChannel(newChannel);
-            if (!xulTab) {
+            var tabId = WebRequestHelper.getTabIdForChannel(newChannel);
+            if (!tabId) {
                 return;
             }
 
-            var tab = {id: tabUtils.getTabId(xulTab)};
+            var tab = {tabId: tabId};
             var requestUrl = newChannel.URI.asciiSpec;
-            var shouldBlockResult = this._shouldBlockRequest(tab, requestUrl, requestProperties.requestType, null); 
+            var shouldBlockResult = this._shouldBlockRequest(tab, requestUrl, requestProperties.requestType, null);
 
             Log.debug('asyncOnChannelRedirect: {0} {1}. Blocked={2}', requestUrl, requestProperties.requestType, shouldBlockResult.blocked);
             if (shouldBlockResult.blocked) {
@@ -557,12 +542,12 @@ var WebRequestImpl = exports.WebRequestImpl = {
             return;
         }
 
-        var xulTab = WebRequestHelper.getTabForChannel(subject);
-        if (!xulTab) {
+        var tabId = WebRequestHelper.getTabIdForChannel(subject);
+        if (!tabId) {
             return;
         }
-        
-        var tab = {id: tabUtils.getTabId(xulTab)};
+
+        var tab = {tabId: tabId};
         var requestUrl = subject.URI.asciiSpec;
         var responseHeaders = WebRequestHelper.getResponseHeaders(subject);
 
@@ -587,7 +572,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
         // Retrieve referrer URL
         var referrerUrl = this.framesMap.getFrameUrl(tab, 0);
 
-        if (!!requestProperties) {  
+        if (!!requestProperties) {
             // Calling postProcessRequest only for requests which were previously processed by "shouldLoad"
             var filteringRule = requestProperties.shouldLoadResult.rule;
             this.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, filteringRule);
@@ -607,7 +592,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
 
         if (isMainFrame) {
             // Do safebrowsing check
-            this._filterSafebrowsing(requestUrl, tab, xulTab);
+            this._filterSafebrowsing(requestUrl, tab);
         }
     },
 
@@ -632,15 +617,22 @@ var WebRequestImpl = exports.WebRequestImpl = {
             return;
         }
 
-        var xulTab = WebRequestHelper.getTabForChannel(subject);
-        if (!xulTab) {
+        var tabId;
+        try {
+            tabId = WebRequestHelper.getTabIdForChannel(subject);
+        } catch (ex) {
+            //Sometimes FF throws an exception here.
+            Log.debug('Error getting tabId for xulTab: {0}', ex);
+            return;
+        }
+        if (!tabId) {
             return;
         }
 
         var openerTab;
-        if (this.lastRequestProperties && subject.URI.asciiSpec == this.lastRequestProperties.requestUrl) {
+        if (this.lastRequestProperties && subject.URI.asciiSpec === this.lastRequestProperties.requestUrl) {
             /**
-             * Stores requestProperties, it is then used in asyncOnChannelRedirect 
+             * Stores requestProperties, it is then used in asyncOnChannelRedirect
              * and httpOnExamineResponse callback methods
              */
             WebRequestHelper.attachRequestProperties(subject, this.lastRequestProperties);
@@ -651,23 +643,14 @@ var WebRequestImpl = exports.WebRequestImpl = {
         // Check for opener
         if (openerTab && this._checkPopupRule(subject.URI.asciiSpec, openerTab)) {
             subject.cancel(Cr.NS_BINDING_ABORTED);
-            tabUtils.closeTab(xulTab);
-            return;
-        }
-
-        var tabId;
-        try {
-            tabId = tabUtils.getTabId(xulTab);
-        } catch (ex) {
-            //Sometimes FF throws an exception here.
-            Log.debug('Error getting tabId for xulTab: {0}', ex);
+            adguard.tabs.remove(tabId);
             return;
         }
 
         /**
          * Override request referrer in integration mode
          */
-        var tab = {id: tabId};
+        var tab = {tabId: tabId};
         if (this.adguardApplication.shouldOverrideReferrer(tab)) {
             // Retrieve main frame url
             var frameUrl = this.framesMap.getFrameUrl(tab, 0);
@@ -707,34 +690,34 @@ var WebRequestImpl = exports.WebRequestImpl = {
 
         if (result.blocked) {
             this._collapseElement(node, requestType);
-            
+
             // Usually we call this method in _httpOnExamineResponse callback
             // But it won't be called if request is blocked here
-            this.webRequestService.postProcessRequest(tab, requestUrl, tabUrl, requestType, result.rule);            
+            this.webRequestService.postProcessRequest(tab, requestUrl, tabUrl, requestType, result.rule);
         }
 
         return result;
     },
-    
+
     /**
      * Save request properties to be reused further in http-on-opening-request method.
      * This is ugly, but I have not found a better solution to pass requestType and shouldLoadResult
      * NOTE: Hi, AMO reviewer! Maybe you know a better solution?:)
-     * 
+     *
      * @param requestUrl        Request URL
      * @param requestType       Request content type
      * @param shouldLoadResult  Result of the "shouldLoad" call
      * @param aContext          aContext from the "shouldLoad"" call
      */
-    _saveLastRequestProperties: function(requestUrl, requestType, shouldLoadResult, aContext) {
+    _saveLastRequestProperties: function (requestUrl, requestType, shouldLoadResult, aContext) {
         this.lastRequestProperties = {
-            requestUrl: requestUrl, 
+            requestUrl: requestUrl,
             requestType: requestType,
             shouldLoadResult: shouldLoadResult
         };
-        
+
         // Also check if window has an "opener" and save it to request properties
-        if (requestType != RequestTypes.DOCUMENT) {
+        if (requestType !== RequestTypes.DOCUMENT) {
             return;
         }
 
@@ -742,7 +725,8 @@ var WebRequestImpl = exports.WebRequestImpl = {
         if (window.top === window && window.opener && window.opener !== window) {
             var openerXulTab = WebRequestHelper.getTabForContext(window.opener);
             if (openerXulTab) {
-                this.lastRequestProperties.openerTab = {id: tabUtils.getTabId(openerXulTab)};
+                var tabId = adguard.tabsImpl.getTabIdForTab(openerXulTab);
+                this.lastRequestProperties.openerTab = {tabId: tabId};
             }
         }
     },
@@ -791,10 +775,9 @@ var WebRequestImpl = exports.WebRequestImpl = {
      *
      * @param requestUrl    Request URL
      * @param tab           Tab
-     * @param xulTab        XUL tab
      * @private
      */
-    _filterSafebrowsing: function (requestUrl, tab, xulTab) {
+    _filterSafebrowsing: function (requestUrl, tab) {
 
         //TODO: check for not http
         if (this.framesMap.isTabAdguardDetected(tab) ||
@@ -804,7 +787,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
         }
 
         // Firefox review doesn't allow to send information about visited HTTPS URLs to remote servers
-        if (requestUrl && requestUrl.indexOf("https://") == 0) {
+        if (requestUrl && requestUrl.indexOf("https://") === 0) {
             return;
         }
 
@@ -812,7 +795,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
         var incognitoTab = this.framesMap.isIncognitoTab(tab);
 
         this.antiBannerService.getRequestFilter().checkSafebrowsingFilter(requestUrl, referrerUrl, function (safebrowsingUrl) {
-            tabUtils.setTabURL(xulTab, "chrome://adguard/content/" + safebrowsingUrl);
+            adguard.tabs.reload(tab.tabId, "chrome://adguard/content/" + safebrowsingUrl);
         }, incognitoTab);
     },
 

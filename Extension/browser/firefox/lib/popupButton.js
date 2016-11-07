@@ -22,7 +22,6 @@ Cu.import("resource://gre/modules/Services.jsm");
 var self = require('sdk/self');
 
 var WorkaroundUtils = require('./utils/workaround').WorkaroundUtils;
-var UiUtils = require('./uiUtils').UiUtils;
 var styleService = require('./styleSheetService');
 var contentScripts = require('./contentScripts').contentScripts;
 
@@ -98,10 +97,16 @@ var PopupButton = exports.PopupButton = {
             icon: this.ICON_GRAY,
             onChange: function (state) {
                 if (state.checked) {
-                    var tabInfo = this.UI.getCurrentTabInfo();
-                    var filteringInfo = this.UI.getCurrentTabFilteringInfo();
-                    contentScripts.sendMessageToWorker(panel, {type: 'initPanelPopup', tabInfo: tabInfo, filteringInfo: filteringInfo});
-                    panel.show({position: button});
+                    adguard.tabs.getActive(function (tab) {
+                        var tabInfo = this.UI.getTabInfo(tab);
+                        var filteringInfo = this.UI.getTabFilteringInfo(tab);
+                        contentScripts.sendMessageToWorker(panel, {
+                            type: 'initPanelPopup',
+                            tabInfo: tabInfo,
+                            filteringInfo: filteringInfo
+                        });
+                        panel.show({position: button});
+                    }.bind(this));
                 }
             }.bind(this)
         });
@@ -113,15 +118,19 @@ var PopupButton = exports.PopupButton = {
             switch (message.type) {
                 case 'addWhiteListDomain':
                     UI.whiteListCurrentTab();
-                    if (UI.isCurrentTabAdguardDetected()) {
-                        panel.hide();
-                    }
+                    UI.isCurrentTabAdguardDetected(function (detected) {
+                        if (detected) {
+                            panel.hide();
+                        }
+                    });
                     break;
                 case 'removeWhiteListDomain':
                     UI.unWhiteListCurrentTab();
-                    if (UI.isCurrentTabAdguardDetected()) {
-                        panel.hide();
-                    }
+                    UI.isCurrentTabAdguardDetected(function (detected) {
+                        if (detected) {
+                            panel.hide();
+                        }
+                    });
                     break;
                 case 'changeApplicationFilteringDisabled':
                     UI.changeApplicationFilteringDisabled(message.disabled);
@@ -218,7 +227,7 @@ var PopupButton = exports.PopupButton = {
     },
 
     _getToolbarButtonEl: function () {
-        var win = UiUtils.getMostRecentWindow();
+        var win = adguard.winWatcher.getCurrentBrowserWindow();
         if (!win) {
             return null;
         }
@@ -243,7 +252,7 @@ var PopupButton = exports.PopupButton = {
             return this.popupButtonClasses;
         }
 
-        var window = UiUtils.getMostRecentWindow();
+        var window = adguard.winWatcher.getCurrentBrowserWindow();
         if (!window) {
             return;
         }
@@ -266,7 +275,7 @@ var PopupButton = exports.PopupButton = {
     },
 
     _findToolbarButtonElBySdkId: function (buttonSdkId) {
-        var win = UiUtils.getMostRecentWindow();
+        var win = adguard.winWatcher.getCurrentBrowserWindow();
         var buttons = win.document.querySelectorAll("toolbarbutton");
         for (var i = 0; i < buttons.length; i++) {
             var button = buttons[i];

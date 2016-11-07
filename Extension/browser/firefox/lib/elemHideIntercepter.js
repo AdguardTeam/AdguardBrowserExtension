@@ -149,7 +149,7 @@ HidingChannel.prototype = {
 		var data = this.notHideData;
 		try {
 			var tabId = WebRequestHelper.getTabIdForChannel(this);
-			var tab = {id: tabId};
+			var tab = {tabId: tabId};
 
 			if (!tabId
 				|| this._isTabWhiteListed(tab)

@@ -27,14 +27,15 @@ var ext = (function () {
             return;
         }
 
-        Components.utils.import("resource://gre/modules/Services.jsm");
+        Components.utils.import('resource://gre/modules/Services.jsm');
         var result = Object.create(Object.prototype);
         result.wrappedJSObject = result;
-        Services.obs.notifyObservers(result, "adguard-load-module", module);
+        Services.obs.notifyObservers(result, 'adguard-load-module', module);
         return result.exports;
     }
 
     window.i18n = loadAdguardModule('i18n');
+    window.adguard = loadAdguardModule('adguard');
 
     return {
 
@@ -67,19 +68,7 @@ var ext = (function () {
 
         resizePopup: function (width, height) {
             ext.backgroundPage.getWindow().UI.resizePopup(width, height);
-        },
-
-        windows: {
-
-            getLastFocused: function (callback) {
-                var win = {
-                    getActiveTab: function (callback) {
-                        callback(ext.backgroundPage.getWindow().UI.getActiveTab());
-                    }
-                };
-                callback(win);
-            }
         }
-    }
+    };
 
 })();

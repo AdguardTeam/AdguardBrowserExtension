@@ -25,7 +25,7 @@ var self = require('sdk/self');
 var system = require('sdk/system');
 var unload = require('sdk/system/unload');
 
-var {UiUtils, WindowObserver} = require('./uiUtils');
+var {WindowObserver} = require('./uiUtils');
 var WorkaroundUtils = require('./utils/workaround').WorkaroundUtils;
 
 function findEl(id, element) {
@@ -39,7 +39,7 @@ function findEl(id, element) {
 }
 
 function getElInCurrentWindow(id) {
-	var win = UiUtils.getMostRecentWindow();
+	var win = adguard.winWatcher.getCurrentBrowserWindow();
 	return win && win.document.getElementById(id);
 }
 
@@ -90,7 +90,7 @@ var PopupButton = exports.PopupButton = {
 			this.CustomizableUI = require('./customizableUI').CustomizableUI;
 		}
 
-		var window = UiUtils.getMostRecentWindow();
+		var window = adguard.winWatcher.getCurrentBrowserWindow();
 		var version = "";
 		if (versionChecker.compare(system.version, "29.0") < 0) {
 			version = "version-28";
@@ -139,7 +139,7 @@ var PopupButton = exports.PopupButton = {
 
 	applyToWindow: function (window) {
 		var isCustomizeToolbarWindow = window.document.documentElement.id == "CustomizeToolbarWindow";
-		if (!isCustomizeToolbarWindow && !UiUtils.isBrowserWindow(window)) {
+		if (!isCustomizeToolbarWindow) {
 			return;
 		}
 
@@ -154,7 +154,7 @@ var PopupButton = exports.PopupButton = {
 
 	removeFromWindow: function (window) {
 		var isCustomizeToolbarWindow = window.document.documentElement.id == "CustomizeToolbarWindow";
-		if (!isCustomizeToolbarWindow && !UiUtils.isBrowserWindow(window)) {
+		if (!isCustomizeToolbarWindow) {
 			return;
 		}
 

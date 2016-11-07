@@ -19,43 +19,9 @@ var {Cu, Cc, Ci} = require('chrome');
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 
-var winMediator = Cc['@mozilla.org/appshell/window-mediator;1'].getService(Ci.nsIWindowMediator);
-
 var unload = require('sdk/system/unload');
 var Prefs = require('./prefs').Prefs;
 var Mobile = Prefs.mobile;
-
-/**
- * Helper methods for work with windows
- */
-var UiUtils = exports.UiUtils = {
-
-	getMostRecentWindow: function () {
-		return winMediator.getMostRecentWindow("navigator:browser");
-	},
-
-	getBrowserWindows: function () {
-
-		var result = [];
-
-		var enumerator = Services.wm.getZOrderDOMWindowEnumerator(null, true);
-		if (!enumerator.hasMoreElements()) {
-			enumerator = Services.wm.getEnumerator(null);
-		}
-		while (enumerator.hasMoreElements()) {
-			var window = enumerator.getNext().QueryInterface(Ci.nsIDOMWindow);
-			if (UiUtils.isBrowserWindow(window)) {
-				result.push(window);
-			}
-		}
-
-		return result;
-	},
-
-	isBrowserWindow: function (window) {
-		return window.document.documentElement.getAttribute('windowtype') == 'navigator:browser';
-	}
-};
 
 exports.WindowObserver = WindowObserver;
 

@@ -420,14 +420,17 @@
     var initFrameScript = function () {
 
         // Note that we request for nsISyncMessageSender implementation as now we use sendSyncMessage method
-        var cpmm = Cc["@mozilla.org/childprocessmessagemanager;1"].getService(Ci.nsISyncMessageSender);        
+        var cpmm = Cc["@mozilla.org/childprocessmessagemanager;1"].getService(Ci.nsISyncMessageSender);
+        var response;
         if (typeof cpmm.sendRpcMessage === 'function') {
-            registeredScripts = cpmm.sendRpcMessage('Adguard:get-content-scripts')[0];
-            i18nMessages = cpmm.sendRpcMessage('Adguard:get-i18n-messages')[0];
+            response = cpmm.sendRpcMessage('Adguard:initialize-frame-script');
+            registeredScripts = response[0].scripts;
+            i18nMessages = response[0].i18nMessages;
         } else {
             // Compatibility with older FF versions and PaleMoon
-            registeredScripts = cpmm.sendSyncMessage('Adguard:get-content-scripts')[0];
-            i18nMessages = cpmm.sendSyncMessage('Adguard:get-i18n-messages')[0];
+            response = cpmm.sendSyncMessage('Adguard:initialize-frame-script');
+            registeredScripts = response[0].scripts;
+            i18nMessages = response[0].i18nMessages;
         }        
         context.addEventListener('DOMWindowCreated', onWindowCreated);
 

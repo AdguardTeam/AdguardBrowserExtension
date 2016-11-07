@@ -22,7 +22,7 @@
 
 
 var ConcurrentUtils = require('./utils/browser-utils').ConcurrentUtils;
-var {UiUtils, WindowObserver} = require('./uiUtils');
+var {WindowObserver} = require('./uiUtils');
 
 var widgets = Object.create(null);
 
@@ -209,7 +209,7 @@ var CustomizableUI = exports.CustomizableUI = {
 
 		widgets[widget.id] = widget;
 
-		var windows = UiUtils.getBrowserWindows();
+		var windows = adguard.winWatcher.getWindows();
 		for (var i = 0; i < windows.length; i++) {
 			var window = windows[i];
 			var toolbox = getToolbox(window, widget);
@@ -233,11 +233,6 @@ var CustomizableUI = exports.CustomizableUI = {
 		this.windowObserver = new WindowObserver({
 
 			applyToWindow: function (window) {
-
-				if (!UiUtils.isBrowserWindow(window)) {
-					return;
-				}
-
 				for (var id in widgets) {
 					var widget = widgets[id];
 					var toolbox = getToolbox(window, widget);
@@ -249,11 +244,6 @@ var CustomizableUI = exports.CustomizableUI = {
 			},
 
 			removeFromWindow: function (window) {
-
-				if (!UiUtils.isBrowserWindow(window)) {
-					return;
-				}
-
 				for (var id in widgets) {
 					var widget = widgets[id];
 					var toolbox = getToolbox(window, widget);

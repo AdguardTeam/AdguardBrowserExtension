@@ -15,21 +15,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var {Cc,Ci} = require('chrome');
-var tabUtils = require('sdk/tabs/utils');
-var {viewFor} = require('sdk/view/core');
-var winUtils = require('sdk/window/utils');
 
-var {Log} = require('./utils/log');
+/* global adguard */
+
+var {Cc,Ci} = require('chrome'); // jshint ignore:line
+var Log = require('./utils/log').Log;
+var unload = require('sdk/system/unload');
 
 var ContentScripts = function () {
 };
 
 /**
  * Object that implements our frame scripts logic.
- * 
+ *
  * Basically, we register one frame script which manages other scripts (so named content scripts).
- * Content scripts are executed inside the sandbox with "loadSubScript" calls. 
+ * Content scripts are executed inside the sandbox with "loadSubScript" calls.
  */
 ContentScripts.prototype = {
 
@@ -45,7 +45,7 @@ ContentScripts.prototype = {
      * Array or registered content scripts
      */
     scripts: [],
-    
+
     /**
      * In order to translate UI we inject i18n messages to the page using a content script.
      */
@@ -197,21 +197,21 @@ ContentScripts.prototype = {
 
     /**
      * Sends message to the specified content script.
-     * 
+     *
      * @param worker    Either Event.target got from the frame script or SDK worker
      * @param message   Message to send
      */
-    sendMessageToWorker: function(worker, message) {
+    sendMessageToWorker: function (worker, message) {
         if ('port' in worker) {
             worker.port.emit(this.BACKGROUND_TO_CONTENT_CHANNEL, message);
         } else {
             worker.messageManager.sendAsyncMessage('Adguard:on-message-channel', message);
         }
     },
-    
+
     /**
      * This method is used for attaching event listener to SDK panel
-     * 
+     *
      * @param worker    SDK panel
      * @param callback  Event handler
      */
@@ -222,29 +222,6 @@ ContentScripts.prototype = {
         worker.port.on(this.CONTENT_TO_BACKGROUND_CHANNEL, function (message) {
             callback(message);
         });
-    },
-
-    /**
-     * Sends message to specified tab
-     * 
-     * @param tab       Message receiver (SDK tab)
-     * @param message   Message to send
-     */
-    sendMessageToTab: function (tab, message) {
-        
-        // Converting SDK tab to xul tab
-        var lowLevelTab;
-        if (typeof viewFor !== 'undefined') {
-            lowLevelTab = viewFor(tab);
-        } else {
-            // Legacy support for PaleMoon and old Firefox versions.
-            var browserWindow = winUtils.getMostRecentBrowserWindow();
-            lowLevelTab = tabUtils.getTabForContentWindow(browserWindow.content);
-        }
-        
-        // Now get the xul browser object
-        var browser = tabUtils.getBrowserForTab(lowLevelTab);
-        browser.messageManager.sendAsyncMessage('Adguard:on-message-channel', message);
     },
 
     /**
@@ -296,29 +273,35 @@ ContentScripts.prototype = {
      * Initializes our frame script and sets up a listener object.
      */
     _loadFrameScript: function () {
-        
+
+        var initializeFrameScript = function () {
+            return {
+                scripts: this.scripts,
+                i18nMessages: this.i18nMessages
+            };
+        }.bind(this);
+
         /**
          * For some unknown reason we can't use global message messenger for handling synchronous messages from a frame script.
-         * On the other hand, parent process manager allows us to receive syncrhonous messages and send immediate response.
-         */ 
+         * On the other hand, parent process manager allows us to receive synchronous messages and send immediate response.
+         */
         var ppmm = Cc["@mozilla.org/parentprocessmessagemanager;1"].getService(Ci.nsIMessageListenerManager);
-        ppmm.addMessageListener('Adguard:get-content-scripts', function () {
-            return this.scripts;
-        }.bind(this));
-        ppmm.addMessageListener('Adguard:get-i18n-messages', function () {
-            return this.i18nMessages;
-        }.bind(this));
-        
+        ppmm.addMessageListener('Adguard:initialize-frame-script', initializeFrameScript);
+
+        unload.when(function () {
+            ppmm.removeMessageListener('Adguard:initialize-frame-script', initializeFrameScript);
+        });
+
         /**
          * nsIMessageListener implementation
          */
         var listener = (function (contentMessageHandler) {
 
             function getTabFromTarget(target) {
-                var tab = tabUtils.getTabForBrowser(target);
+                var tab = adguard.tabsImpl.getTabForBrowser(target);
                 if (!tab) {
                     // Legacy browsers support. For PaleMoon and old Firefox getTabForBrowser returns null
-                    tab = tabUtils.getTabForContentWindow(target.contentWindow);
+                    tab = adguard.tabsImpl.getTabForContentWindow(target.contentWindow);
                 }
                 return tab;
             }
@@ -331,11 +314,11 @@ ContentScripts.prototype = {
                     result: result
                 };
             }
-            
+
             /**
              * Receives a message from the frame script
              * https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIMessageListener#receiveMessage()
-             * 
+             *
              * @message Message object
              */
             var receiveMessage = function (message) {
@@ -344,16 +327,17 @@ ContentScripts.prototype = {
                     Log.debug('Unable to retrieve tab from {0}', message.target);
                     return;
                 }
-                
+
                 // Get the message manager of the sender frame script
                 var messageManager = message.target
                     .QueryInterface(Ci.nsIFrameLoaderOwner)
                     .frameLoader
                     .messageManager;
-                    
+
                 // Message sender identification
+                var tabId = adguard.tabsImpl.getTabIdForTab(tab);
                 var sender = {
-                    tab: {id: tabUtils.getTabId(tab)},
+                    tab: {tabId: tabId},
                     messageManager: messageManager
                 };
 
@@ -392,13 +376,19 @@ ContentScripts.prototype = {
             };
         })(this.contentMessageHandler);
 
+        var frameScriptUrl = this._contentUrl('content-script/frame-script.js');
         // Using global MM to register our frame script browser-wide
         var messageManager = Cc["@mozilla.org/globalmessagemanager;1"].getService(Ci.nsIMessageListenerManager);
         messageManager.addMessageListener('Adguard:send-message-channel', listener);
-        messageManager.loadFrameScript(this._contentUrl('content-script/frame-script.js'), true);
+        messageManager.loadFrameScript(frameScriptUrl, true);
+
+        unload.when(function () {
+            messageManager.removeDelayedFrameScript(frameScriptUrl);
+            messageManager.removeMessageListener('Adguard:send-message-channel', listener);
+        });
     },
 
-    
+
     _contentUrl: function (resource) {
         return 'chrome://adguard/content/' + resource;
     },

@@ -1,4 +1,4 @@
-/* global adguard, UrlUtils */
+/* global adguard, require, console */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+var UrlUtils = require('../../lib/utils/url').UrlUtils;
 
 adguard.tabsImpl = adguard.tabsImpl || (function () {
 
@@ -42,7 +44,7 @@ adguard.tabsImpl = adguard.tabsImpl || (function () {
 
 	})();
 
-adguard.tabs = exports.TabsApi = (function (tabsImpl) {
+adguard.tabs = (function (tabsImpl) {
 
 	'use strict';
 

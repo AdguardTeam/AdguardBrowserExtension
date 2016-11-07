@@ -21,171 +21,176 @@ Cu.import("resource://gre/modules/Services.jsm");
 
 var self = require('sdk/self');
 var system = require('sdk/system');
-var tabs = require('sdk/tabs');
 var events = require('sdk/system/events');
 var unload = require('sdk/system/unload');
 
-var {UiUtils, WindowObserver} = require('./uiUtils');
+var {WindowObserver} = require('./uiUtils');
 
 /**
  * Object that manages mobile menu rendering.
  */
 var MobileMenu = exports.MobileMenu = {
 
-	nativeMenuIds: Object.create(null),
+    nativeMenuIds: Object.create(null),
 
-	init: function (UI) {
+    init: function (UI) {
 
-		this.UI = UI;
+        this.UI = UI;
 
-		this.windowObserver = new WindowObserver(this);
+        this.windowObserver = new WindowObserver(this);
 
-		var observeListener = this.observe.bind(this);
+        var observeListener = this.observe.bind(this);
 
-		events.on('after-viewport-change', observeListener, true);
+        events.on('after-viewport-change', observeListener, true);
 
-		unload.when(function () {
-			events.off('after-viewport-change', observeListener);
-		}.bind(this));
-	},
+        unload.when(function () {
+            events.off('after-viewport-change', observeListener);
+        }.bind(this));
+    },
 
-	/**
-	 * 'after-viewport-change' event observer
-	 * @param event
-	 */
-	observe: function (event) {
-		if (event.type == 'after-viewport-change') {
-			this.handleNativeMenuState();
-		}
-	},
+    /**
+     * 'after-viewport-change' event observer
+     * @param event
+     */
+    observe: function (event) {
+        if (event.type == 'after-viewport-change') {
+            this.handleNativeMenuState();
+        }
+    },
 
-	createSubMenus: function (window, menuId) {
+    createSubMenus: function (window, menuId) {
 
-		var toggleWhiteListItem = this.createSubMenu(window, menuId, function () {
+        var toggleWhiteListItem = this.createSubMenu(window, menuId, function () {
 
-			var tabInfo = this.UI.getCurrentTabInfo();
-			if (tabInfo.userWhiteListed) {
-				UI.unWhiteListCurrentTab();
-			} else {
-				UI.whiteListCurrentTab();
-			}
+            this.UI.getCurrentTabInfo(function (tabInfo) {
+                if (tabInfo.userWhiteListed) {
+                    UI.unWhiteListCurrentTab();
+                } else {
+                    UI.whiteListCurrentTab();
+                }
+                var window = adguard.winWatcher.getCurrentBrowserWindow();
+                window.NativeWindow.menu.update(toggleWhiteListItem, {checked: tabInfo.userWhiteListed});
+            });
 
-			var window = UiUtils.getMostRecentWindow();
-			window.NativeWindow.menu.update(toggleWhiteListItem, {checked: tabInfo.userWhiteListed});
-		}.bind(this), i18n.getMessage("popup_site_filtering_state"), true);
+        }.bind(this), i18n.getMessage("popup_site_filtering_state"), true);
 
-		var toggleFilteringEnabledItem = this.createSubMenu(window, menuId, function () {
+        var toggleFilteringEnabledItem = this.createSubMenu(window, menuId, function () {
 
-			var tabInfo = this.UI.getCurrentTabInfo();
-			this.UI.changeApplicationFilteringDisabled(!tabInfo.applicationFilteringDisabled);
+            this.UI.getCurrentTabInfo(function (tabInfo) {
+                this.UI.changeApplicationFilteringDisabled(!tabInfo.applicationFilteringDisabled);
 
-			var window = UiUtils.getMostRecentWindow();
-			window.NativeWindow.menu.update(toggleFilteringEnabledItem, {checked: tabInfo.applicationFilteringDisabled});
-		}.bind(this), i18n.getMessage('popup_site_protection_disabled_android'), true);
+                var window = adguard.winWatcher.getCurrentBrowserWindow();
+                window.NativeWindow.menu.update(toggleFilteringEnabledItem, {checked: tabInfo.applicationFilteringDisabled});
+            }.bind(this));
 
-		var siteExceptionItem = this.createSubMenu(window, menuId, null, i18n.getMessage('popup_in_white_list_android'), false, false);
+        }.bind(this), i18n.getMessage('popup_site_protection_disabled_android'), true);
 
-		var blockAdsItem = this.createSubMenu(window, menuId, function () {
-			this.UI.openAssistant();
-		}.bind(this), i18n.getMessage("popup_block_site_ads_android"));
+        var siteExceptionItem = this.createSubMenu(window, menuId, null, i18n.getMessage('popup_in_white_list_android'), false, false);
 
-		var reportSiteItem = this.createSubMenu(window, menuId, function () {
-			var tab = tabs.activeTab;
-			this.UI.openSiteReportTab(tab.url);
-		}.bind(this), i18n.getMessage("popup_security_report_android"));
+        var blockAdsItem = this.createSubMenu(window, menuId, function () {
+            this.UI.openAssistant();
+        }.bind(this), i18n.getMessage("popup_block_site_ads_android"));
 
-		var filteringLogItem = this.createSubMenu(window, menuId, function () {
-			this.UI.openCurrentTabFilteringLog();
-		}.bind(this), i18n.getMessage('popup_open_log_android'));
+        var reportSiteItem = this.createSubMenu(window, menuId, function () {
+            adguard.tabs.getActive(function (tab) {
+                this.UI.openSiteReportTab(tab.url);
+            }.bind(this));
+        }.bind(this), i18n.getMessage("popup_security_report_android"));
 
-		//show settings menu ever
-		this.createSubMenu(window, menuId, function () {
-			this.UI.openSettingsTab();
-		}.bind(this), i18n.getMessage("popup_open_settings"));
+        var filteringLogItem = this.createSubMenu(window, menuId, function () {
+            this.UI.openCurrentTabFilteringLog();
+        }.bind(this), i18n.getMessage('popup_open_log_android'));
 
-		this.nativeMenuIds[window] = {
-			main: menuId,
-			//settingsSubMenu enabled all time
-			items: {
-				toggleWhiteListItem: toggleWhiteListItem,
-				toggleFilteringEnabledItem: toggleFilteringEnabledItem,
-				siteExceptionItem: siteExceptionItem,
-				reportSiteItem: reportSiteItem,
-				blockAdsItem: blockAdsItem,
-				filteringLogItem: filteringLogItem
-			}
-		};
-	},
+        //show settings menu ever
+        this.createSubMenu(window, menuId, function () {
+            this.UI.openSettingsTab();
+        }.bind(this), i18n.getMessage("popup_open_settings"));
 
-	createSubMenu: function (window, parentId, onClick, name, checkable, visible) {
-		if (typeof (checkable) == 'undefined') {
-			checkable = false;
-		}
-		return window.NativeWindow.menu.add({
-			name: name,
-			icon: null,
-			parent: parentId,
-			callback: onClick,
-			checkable: checkable,
-			visible: visible
-		});
-	},
+        this.nativeMenuIds[window] = {
+            main: menuId,
+            //settingsSubMenu enabled all time
+            items: {
+                toggleWhiteListItem: toggleWhiteListItem,
+                toggleFilteringEnabledItem: toggleFilteringEnabledItem,
+                siteExceptionItem: siteExceptionItem,
+                reportSiteItem: reportSiteItem,
+                blockAdsItem: blockAdsItem,
+                filteringLogItem: filteringLogItem
+            }
+        };
+    },
 
-	handleNativeMenuState: function () {
-		try {
+    createSubMenu: function (window, parentId, onClick, name, checkable, visible) {
+        if (typeof (checkable) == 'undefined') {
+            checkable = false;
+        }
+        return window.NativeWindow.menu.add({
+            name: name,
+            icon: null,
+            parent: parentId,
+            callback: onClick,
+            checkable: checkable,
+            visible: visible
+        });
+    },
 
-			var tabInfo = this.UI.getCurrentTabInfo(true);
+    handleNativeMenuState: function () {
+        this.UI.getCurrentTabInfo(function (tabInfo) {
+            try {
+                var window = adguard.winWatcher.getCurrentBrowserWindow();
+                var menuItems = this.nativeMenuIds[window].items;
+                var nativeMenu = window.NativeWindow.menu;
 
-			var window = UiUtils.getMostRecentWindow();
-			var menuItems = this.nativeMenuIds[window].items;
-			var nativeMenu = window.NativeWindow.menu;
+                for (var item in menuItems) {
+                    nativeMenu.update(menuItems[item], {visible: false});
+                }
 
-			for (var item in menuItems) {
-				nativeMenu.update(menuItems[item], {visible: false})
-			}
+                if (tabInfo.applicationFilteringDisabled) {
+                    nativeMenu.update(menuItems.toggleFilteringEnabledItem, {visible: true, checked: true});
+                } else if (tabInfo.urlFilteringDisabled) {
+                    //do nothing, already not visible
+                } else {
+                    nativeMenu.update(menuItems.toggleFilteringEnabledItem, {visible: true, checked: false});
+                    if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
+                        nativeMenu.update(menuItems.siteExceptionItem, {visible: true});
+                    } else if (tabInfo.canAddRemoveRule) {
+                        nativeMenu.update(menuItems.toggleWhiteListItem, {
+                            visible: true,
+                            checked: !tabInfo.userWhiteListed
+                        });
+                    }
+                    if (!tabInfo.documentWhiteListed) {
+                        nativeMenu.update(menuItems.blockAdsItem, {visible: true});
+                    }
+                    nativeMenu.update(menuItems.filteringLogItem, {visible: true});
+                    nativeMenu.update(menuItems.reportSiteItem, {visible: true});
+                }
+            } catch (ex) {
+                Cu.reportError(ex);
+            }
+        }, true);
+    },
 
-			if (tabInfo.applicationFilteringDisabled) {
-				nativeMenu.update(menuItems.toggleFilteringEnabledItem, {visible: true, checked: true});
-			} else if (tabInfo.urlFilteringDisabled) {
-				//do nothing, already not visible
-			} else {
-				nativeMenu.update(menuItems.toggleFilteringEnabledItem, {visible: true, checked: false});
-				if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
-					nativeMenu.update(menuItems.siteExceptionItem, {visible: true});
-				} else if (tabInfo.canAddRemoveRule) {
-					nativeMenu.update(menuItems.toggleWhiteListItem, {visible: true, checked: !tabInfo.userWhiteListed});
-				}
-				if (!tabInfo.documentWhiteListed) {
-					nativeMenu.update(menuItems.blockAdsItem, {visible: true});
-				}
-				nativeMenu.update(menuItems.filteringLogItem, {visible: true});
-				nativeMenu.update(menuItems.reportSiteItem, {visible: true});
-			}
-		} catch (ex) {
-			Cu.reportError(ex);
-		}
-	},
+    /**
+     * WindowObserver method implementation
+     * @param window
+     */
+    applyToWindow: function (window) {
+        var menuID = window.NativeWindow.menu.add({
+            name: "Adguard",
+            icon: null
+        });
+        MobileMenu.createSubMenus(window, menuID);
+    },
 
-	/**
-	 * WindowObserver method implementation
-	 * @param window
-	 */
-	applyToWindow: function (window) {
-		var menuID = window.NativeWindow.menu.add({
-			name: "Adguard",
-			icon: null
-		});
-		MobileMenu.createSubMenus(window, menuID);
-	},
-
-	/**
-	 * WindowObserver method implementation
-	 * @param window
-	 */
-	removeFromWindow: function (window) {
-		if (window in MobileMenu.nativeMenuIds) {
-			var menuId = MobileMenu.nativeMenuIds[window].main;
-			window.NativeWindow.menu.remove(menuId);
-		}
-	}
+    /**
+     * WindowObserver method implementation
+     * @param window
+     */
+    removeFromWindow: function (window) {
+        if (window in MobileMenu.nativeMenuIds) {
+            var menuId = MobileMenu.nativeMenuIds[window].main;
+            window.NativeWindow.menu.remove(menuId);
+        }
+    }
 };
