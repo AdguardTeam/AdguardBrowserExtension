@@ -338,7 +338,9 @@ function getAsciiDomainRule(ruleText) {
         }
 
         var domain = parseRuleDomain(ruleText, true);
-        if (!domain) return "";
+        if (!domain) {
+            return "";
+        }
 
         //In case of one domain
         return StringUtils.replaceAll(ruleText, domain, UrlUtils.toPunyCode(domain));
@@ -379,7 +381,8 @@ function parseRuleDomain(ruleText, parseOptions) {
             }
 
             if (startIndex == -1) {
-                return "";
+                //Domain is not found in rule options, so we continue a normal way
+                startIndex = 0;
             }
         }
 

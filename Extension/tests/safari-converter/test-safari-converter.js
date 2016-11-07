@@ -216,6 +216,20 @@ QUnit.test("Generichide rules", function(assert) {
     assert.equal("document", convertedRule.trigger["resource-type"][0]);
 });
 
+QUnit.test("Convert cyrillic rules", function(assert) {
+    var ruleText = 'меил.рф';
+    var ruleTextMarkedDomain = '||меил.рф';
+
+    var result = SafariContentBlockerConverter.convertArray([ ruleText, ruleTextMarkedDomain ]);
+    assert.equal(2, result.convertedCount);
+    assert.equal(0, result.errorsCount);
+    var converted = JSON.parse(result.converted);
+    assert.equal(2, converted.length);
+
+    assert.ok(converted[0].trigger["url-filter"] != ".*");
+    assert.ok(converted[1].trigger["url-filter"] != ".*");
+});
+
 QUnit.test("Convert regexp rules", function(assert) {
     var ruleText = "/^https?://(?!static\.)([^.]+\.)+?fastpic\.ru[:/]/$script,domain=fastpic.ru";
     var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
