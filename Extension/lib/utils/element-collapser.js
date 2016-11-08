@@ -49,7 +49,7 @@ var ElementCollapser = (function() {
             }
             el = el.parentNode;
         }
-        stack.splice(0, 1); // removes the html element
+
         return stack.join(' > ');
     };
 
