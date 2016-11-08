@@ -15,6 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* global require */
+
 var chrome = require('chrome');
 var self = require('sdk/self');
 var simplePrefs = require('sdk/simple-prefs');
@@ -66,7 +69,7 @@ exports.main = function (options, callbacks) {
         var {Log} = loadAdguardModule('./utils/log');
         var {FS} = loadAdguardModule('./utils/file-storage');
         var {LS} = loadAdguardModule('./utils/local-storage');
-        if (options.loadReason == 'install' || options.loadReason == 'downgrade') {
+        if (options.loadReason === 'install' || options.loadReason === 'downgrade') {
             LS.clean();
             FS.removeAdguardDir();
         }
@@ -102,6 +105,7 @@ exports.main = function (options, callbacks) {
             Log.info('Module sdk/ui/button/toggle is not supported');
         }
 
+        loadAdguardModule('./utils/common');
         loadAdguardModule('./api/tabs');
         loadAdguardModule('./tabs/tabs-api');
 
@@ -124,6 +128,8 @@ exports.main = function (options, callbacks) {
         // These require-calls are needed for proper build by cfx.
         // It does nothing in case of "jpm"-packed add-on
         require('./prefs');
+        require('./api/tabs');
+        require('./tabs/tabs-api');
         require('./elemHide');
         require('./contentPolicy');
         require('./elemHideIntercepter');
@@ -135,6 +141,7 @@ exports.main = function (options, callbacks) {
         require('./utils/user-settings');
         require('./filter/integration');
         require('./filter/filtering-log');
+        require('./filter/request-blocking');
 
         Log.info('Starting adguard addon...');
 

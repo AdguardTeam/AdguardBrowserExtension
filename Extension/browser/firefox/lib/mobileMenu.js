@@ -14,6 +14,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* global exports, require, adguard */
+
 var {Cu, Cc, Ci} = require('chrome');
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
@@ -23,8 +26,6 @@ var self = require('sdk/self');
 var system = require('sdk/system');
 var events = require('sdk/system/events');
 var unload = require('sdk/system/unload');
-
-var {WindowObserver} = require('./uiUtils');
 
 /**
  * Object that manages mobile menu rendering.
@@ -37,7 +38,15 @@ var MobileMenu = exports.MobileMenu = {
 
         this.UI = UI;
 
-        this.windowObserver = new WindowObserver(this);
+        adguard.windows.onUpdated.addListener(function (win, domWin, type) {
+            if (type === 'ChromeWindowLoad') {
+                this.applyToWindow(domWin);
+            }
+        }.bind(this));
+
+        adguard.windows.onRemoved.addListener(function (win, domWin) {
+            this.removeFromWindow(domWin);
+        }.bind(this));
 
         var observeListener = this.observe.bind(this);
 
@@ -172,7 +181,6 @@ var MobileMenu = exports.MobileMenu = {
     },
 
     /**
-     * WindowObserver method implementation
      * @param window
      */
     applyToWindow: function (window) {
@@ -184,7 +192,6 @@ var MobileMenu = exports.MobileMenu = {
     },
 
     /**
-     * WindowObserver method implementation
      * @param window
      */
     removeFromWindow: function (window) {

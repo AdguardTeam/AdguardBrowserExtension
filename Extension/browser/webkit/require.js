@@ -79,6 +79,3 @@ exports['sdk/core/promise'] = {
 
 exports.setTimeout = setTimeout;
 exports.clearTimeout = clearTimeout;
-
-// Global i18n
-var i18n = ext.i18n;

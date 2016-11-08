@@ -167,7 +167,7 @@ var ext;
 				messageHandler = ext.webRequest.onHeadersReceived;
 				break;
 			case "useContentBlockerAPI":
-				// checking useOldSafariAPI setting 
+				// checking useOldSafariAPI setting
 				event.message = Utils.isContentBlockerEnabled();
 				return;
 		}
@@ -178,7 +178,7 @@ var ext;
 		return safari.extension.baseURI + path;
 	};
 
-	ext.i18n = adguard.i18n;
+	window.i18n = ext.i18n = adguard.i18n;
 
 	ext.app = {
 		/**

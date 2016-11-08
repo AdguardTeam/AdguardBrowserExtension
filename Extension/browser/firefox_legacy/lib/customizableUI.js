@@ -15,14 +15,14 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global require, exports, adguard */
+
 /**
  * Adapter for old versions of Firefox.
  * The same way ABP does it.
  */
 
-
 var ConcurrentUtils = require('./utils/browser-utils').ConcurrentUtils;
-var {WindowObserver} = require('./uiUtils');
 
 var widgets = Object.create(null);
 
@@ -48,7 +48,7 @@ function getToolbox(window, widget) {
 function getToolbar(element) {
 
 	for (var parent = element.parentNode; parent; parent = parent.parentNode) {
-		if (parent.localName == "toolbar") {
+		if (parent.localName === "toolbar") {
 			return parent;
 		}
 	}
@@ -85,7 +85,7 @@ function restoreWidget(toolbox, widget) {
 		var toolbars = toolbox.externalToolbars.slice();
 		for (var i = 0; i < toolbox.children.length; i++) {
 			var child = toolbox.children[i];
-			if (child.localName == "toolbar") {
+			if (child.localName === "toolbar") {
 				toolbars.push(child);
 			}
 		}
@@ -96,7 +96,7 @@ function restoreWidget(toolbox, widget) {
 
 			var currentSet = toolbar.getAttribute("currentset");
 			if (!currentSet) {
-				continue
+				continue;
 			}
 
 			var items = currentSet.split(",");
@@ -130,7 +130,7 @@ function showWidget(toolbox, widget, position) {
 		}
 	}
 
-	if (visible == "visible" && !parent) {
+	if (visible === "visible" && !parent) {
 		var window = toolbox.ownerDocument.defaultView;
 		parent = window.document.getElementById(widget.defaultArea);
 	}
@@ -184,8 +184,8 @@ function saveState(toolbox, widget) {
 	var node = toolbox.ownerDocument.getElementById(widget.id);
 
 	var position = toolbox.getAttribute(widget.positionAttribute) || "hidden,,";
-	if (node && node.parentNode.localName != "toolbarpalette") {
-		if (typeof widget.onAdded == "function") {
+	if (node && node.parentNode.localName !== "toolbarpalette") {
+		if (typeof widget.onAdded === "function") {
 			widget.onAdded(node);
 		}
 
@@ -209,49 +209,45 @@ var CustomizableUI = exports.CustomizableUI = {
 
 		widgets[widget.id] = widget;
 
-		var windows = adguard.winWatcher.getWindows();
-		for (var i = 0; i < windows.length; i++) {
-			var window = windows[i];
-			var toolbox = getToolbox(window, widget);
-			if (toolbox) {
-				toolbox.addEventListener("aftercustomization", afterToolbarCustomization, false);
-				restoreWidget(toolbox, widget);
+		adguard.windows.getAll(function (wins, nativeWins) {
+			for (var i = 0; i < nativeWins.length; i++) {
+				var domWin = nativeWins[i];
+				var toolbox = getToolbox(domWin, widget);
+				if (toolbox) {
+					toolbox.addEventListener("aftercustomization", afterToolbarCustomization, false);
+					restoreWidget(toolbox, widget);
+				}
 			}
-		}
+		});
 	},
 
 	destroyWidget: function () {
-		//already cleanup in WindowObserver
+		// already cleaned up
 	},
 
 	_initWindowObserver: function () {
 
-		if (this.windowObserver) {
-			return;
-		}
-
-		this.windowObserver = new WindowObserver({
-
-			applyToWindow: function (window) {
+		adguard.windows.onUpdated.addListener(function (win, domWin, type) {
+			if (type === 'ChromeWindowLoad') {
 				for (var id in widgets) {
 					var widget = widgets[id];
-					var toolbox = getToolbox(window, widget);
+					var toolbox = getToolbox(domWin, widget);
 					if (toolbox) {
 						toolbox.addEventListener("aftercustomization", afterToolbarCustomization, false);
 						ConcurrentUtils.runAsync(restoreWidget.bind(null, toolbox, widget));
 					}
 				}
-			},
+			}
+		});
 
-			removeFromWindow: function (window) {
-				for (var id in widgets) {
-					var widget = widgets[id];
-					var toolbox = getToolbox(window, widget);
-					if (toolbox) {
-						toolbox.removeEventListener("aftercustomization", afterToolbarCustomization, false);
-					}
-					removeWidget(window, widget);
+		adguard.windows.onRemoved.addListener(function (win, domWin) {
+			for (var id in widgets) {
+				var widget = widgets[id];
+				var toolbox = getToolbox(domWin, widget);
+				if (toolbox) {
+					toolbox.removeEventListener("aftercustomization", afterToolbarCustomization, false);
 				}
+				removeWidget(domWin, widget);
 			}
 		});
 	}

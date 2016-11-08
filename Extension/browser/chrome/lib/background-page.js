@@ -183,7 +183,7 @@ var browser = browser || chrome;
 	 */
 	ext.getURL = browser.extension.getURL;
 
-	ext.i18n = browser.i18n;
+	window.i18n = ext.i18n = browser.i18n;
 
 	ext.backgroundPage = {};
 	ext.backgroundPage.getWindow = function () {

@@ -165,9 +165,9 @@ var WebRequestHelper = exports.WebRequestHelper = {
                 // If browser.docShell returns null then browser.contentWindow throws exception: this.docShell is null
                 if (browser.docShell && browser.contentWindow) {
                     xulTab = adguard.tabsImpl.getTabForContentWindow(browser.contentWindow);
-                    if (!xulTab) {
-                        return null;
-                    }
+                }
+                if (!xulTab) {
+                    return null;
                 }
             }
 

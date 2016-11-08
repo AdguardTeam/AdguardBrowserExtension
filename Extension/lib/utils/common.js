@@ -20,6 +20,8 @@
  * require method is overridden in Chrome extension (port/require.js).
  */
 
+/* global exports */
+
 var StringUtils = exports.StringUtils = {
 
     isEmpty: function (str) {
@@ -34,7 +36,7 @@ var StringUtils = exports.StringUtils = {
         if (!str || !postfix) {
             return false;
         }
-        
+
         if (str.endsWith) {
             return str.endsWith(postfix);
         }
@@ -313,3 +315,45 @@ StopWatch.prototype = {
         console.log(this.name + "[elapsed: " + elapsed + " ms]");
     }
 };
+
+var EventChannels = exports.EventChannels = (function () {
+
+    'use strict';
+
+    var EventChannel = function () {
+
+        var listeners = [];
+
+        var addListener = function (callback) {
+            listeners.push(callback);
+        };
+
+        var removeListener = function (callback) {
+            var index = listeners.indexOf(callback);
+            if (index >= 0) {
+                listeners.splice(index, 1);
+            }
+        };
+
+        var notify = function () {
+            for (var i = 0; i < listeners.length; i++) {
+                var listener = listeners[i];
+                listener.apply(listener, arguments);
+            }
+        };
+
+        return {
+            addListener: addListener,
+            removeListener: removeListener,
+            notify: notify
+        };
+    };
+
+    var newChannel = function () {
+        return new EventChannel();
+    };
+
+    return {
+        newChannel: newChannel
+    };
+})();

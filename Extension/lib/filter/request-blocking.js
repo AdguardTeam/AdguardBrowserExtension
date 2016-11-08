@@ -15,6 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 /* global require, exports */
+
 var filterRulesHitCount = require('../../lib/filter/filters-hit').filterRulesHitCount;
 var FilterUtils = require('../../lib/utils/common').FilterUtils;
 var EventNotifier = require('../../lib/utils/notifier').EventNotifier;
@@ -179,10 +180,10 @@ WebRequestService.prototype.getRuleForRequest = function (tab, requestUrl, refer
  */
 WebRequestService.prototype.processRequestResponse = function (tab, requestUrl, referrerUrl, requestType, responseHeaders) {
 
-    if (requestType == RequestTypes.DOCUMENT) {
+    if (requestType === RequestTypes.DOCUMENT) {
         // Check headers to detect Adguard application
         
-        if (Prefs.getBrowser() != "Edge") {
+        if (Prefs.getBrowser() !== "Edge") {
             // TODO[Edge]: Integration mode is not fully functional in Edge (cannot redefine Referer header yet)
             this.adguardApplication.checkHeaders(tab, responseHeaders, requestUrl);
         }
@@ -199,7 +200,7 @@ WebRequestService.prototype.processRequestResponse = function (tab, requestUrl, 
         appendLogEvent = !ServiceClient.isAdguardAppRequest(requestUrl);
     } else if (this.framesMap.isTabProtectionDisabled(tab)) {
         //do nothing
-    } else if (requestType == RequestTypes.DOCUMENT) {
+    } else if (requestType === RequestTypes.DOCUMENT) {
         requestRule = this.framesMap.getFrameWhiteListRule(tab);
         var domain = this.framesMap.getFrameDomain(tab);
         if (!this.framesMap.isIncognitoTab(tab)) {
