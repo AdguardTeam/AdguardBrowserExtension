@@ -116,9 +116,8 @@ function onHeadersReceived(requestDetails) {
          */
         var websocketCheckUrl = "ws://adguardwebsocket.check/";
         if (webRequestService.checkWebSocketRequest(tab, websocketCheckUrl, referrerUrl)) {
-            if (CspUtils.blockWebSockets(responseHeaders)) {
-                return { responseHeaders: responseHeaders };
-            }
+            responseHeaders.push({name: 'Content-Security-Policy', value: 'frame-src http: https:; child-src http: https:'});
+            return { responseHeaders: responseHeaders };
         }
     }
 }
