@@ -16,20 +16,11 @@
  */
 
 /**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-var ShortcutsLookupTable = require('../../../lib/filter/rules/shortcuts-lookup-table').ShortcutsLookupTable;
-var StringUtils = require('../../../lib/utils/common').StringUtils;
-var CollectionUtils = require('../../../lib/utils/common').CollectionUtils;
-var UrlUtils = require('../../../lib/utils/url').UrlUtils;
-
-/**
  * Filter for Url filter rules.
  * Read here for details:
  * http://adguard.com/en/filterrules.html#baseRules
  */
-var UrlFilter = exports.UrlFilter = function (rules) {
+var UrlFilter = function (rules) {
 
 	this.lookupTable = new ShortcutsLookupTable();
 	this.rulesWithoutShortcuts = [];

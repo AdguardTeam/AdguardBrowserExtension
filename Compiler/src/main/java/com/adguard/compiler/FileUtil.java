@@ -1,16 +1,16 @@
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
- * <p/>
+ * <p>
  * Adguard Browser Extension is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * <p/>
+ * <p>
  * Adguard Browser Extension is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * <p/>
+ * <p>
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -112,7 +112,7 @@ public class FileUtil {
 		// copy common files
 		copyCommonFiles(source, dest, browser);
 	}
-	
+
 	private static void copyEdgeFiles(File source, File dest) throws Exception {
 		// copy edge files
 		File edgeBase = new File(source, EDGE_FOLDER);
@@ -140,38 +140,46 @@ public class FileUtil {
 
 		copyCommonFiles(source, dest, browser);
 
-		//move processed html pages to data/content folder
+		File sourceDataDir = new File(dest, "data");
+		File sourceContentDir = new File(sourceDataDir, "content");
+
+		//move processed html pages to root folder
 		File sourcePagesDir = new File(dest, "pages");
-		File destPagesDir = new File(dest, "data/content");
+		File destPagesDir = new File(dest, "./");
 		copyDirectory(sourcePagesDir, destPagesDir);
 		FileUtils.deleteQuietly(sourcePagesDir);
 
 		//Fix fonts file
-		File fontsFile = new File(destPagesDir, "/skin/fonts.css");
-		File firefoxFontsFile = new File(destPagesDir, "/skin/fonts_firefox.css");
-		File fontsDir = new File(destPagesDir, "/skin/fonts");
+		File fontsFile = new File(sourceContentDir, "/skin/fonts.css");
+		File firefoxFontsFile = new File(sourceContentDir, "/skin/fonts_firefox.css");
+		File fontsDir = new File(sourceContentDir, "/skin/fonts");
 		FileUtils.deleteQuietly(fontsFile);
 		FileUtils.moveFile(firefoxFontsFile, fontsFile);
 		FileUtils.deleteQuietly(fontsDir);
 
-		//move js pages files to data/content/pages folder
+		//move js pages files to /pages folder
 		File sourceJsPagesDir = new File(dest, "lib/pages");
-		File destJsPagesDir = new File(dest, "data/content/pages");
+		File destJsPagesDir = new File(dest, "/pages");
 		FileUtils.moveDirectory(sourceJsPagesDir, destJsPagesDir);
 
-		//move lib/content-script folder to data/content/content-script folder
+		//move lib/content-script folder to /content-script folder
 		File sourceContentScript = new File(dest, "lib/content-script");
-		File destContentScript = new File(dest, "data/content/content-script");
+		File destContentScript = new File(dest, "/content-script");
 		copyDirectory(sourceContentScript, destContentScript);
 		FileUtils.deleteQuietly(sourceContentScript);
 
-		//move third-party js files to data/content folder
+		//move data/content/content-script folder to /content-script folder
+		File sourceFirefoxContentScript = new File(sourceContentDir, "content-script");
+		File destFirefoxContentScript = new File(dest, "/content-script");
+		copyDirectory(sourceFirefoxContentScript, destFirefoxContentScript);
+
+		//move third-party js files to /libs folder
 		File sourceLibsDir = new File(dest, "lib/libs");
-		File destLibsDir = new File(dest, "data/content/libs");
+		File destLibsDir = new File(dest, "/libs");
 		FileUtils.moveDirectory(sourceLibsDir, destLibsDir);
 		//TODO: optimize
 		//Remove deferred.min.js file, cause use only in chrome and safari extension
-		FileUtils.deleteQuietly(new File(destLibsDir, "deferred.min.js"));
+//		FileUtils.deleteQuietly(new File(destLibsDir, "deferred.min.js"));
 
 		//convert chrome style locales to firefox style
 		File sourceLocalesDir = new File(dest, "_locales");
@@ -180,10 +188,7 @@ public class FileUtil {
 		//rename folder
 		FileUtils.moveDirectory(sourceLocalesDir, destLocalesDir);
 
-		//move filters folder to data folder
-		File sourceFiltersDire = new File(dest, "filters");
-		File destFiltersDir = new File(dest, "data/filters");
-		FileUtils.moveDirectory(sourceFiltersDire, destFiltersDir);
+		FileUtils.deleteDirectory(sourceDataDir);
 	}
 
 	private static void copyFirefoxLegacyFiles(File source, File dest) throws Exception {

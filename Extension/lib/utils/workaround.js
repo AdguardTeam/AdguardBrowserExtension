@@ -16,16 +16,9 @@
  */
 
 /**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-var Log = require('../../lib/utils/log').Log;
-var UrlUtils = require('../../lib/utils/url').UrlUtils;
-
-/**
  * We collect here all workarounds and ugly hacks:)
  */
-var WorkaroundUtils = exports.WorkaroundUtils = {
+var WorkaroundUtils = {
 
 	/**
 	 * Converts blocked counter to the badge text.
@@ -33,7 +26,7 @@ var WorkaroundUtils = exports.WorkaroundUtils = {
 	 *
 	 * @param blocked Blocked requests count
 	 */
-	getBlockedCountText: function(blocked) {
+	getBlockedCountText: function (blocked) {
 		var blockedText = blocked == "0" ? "" : blocked;
 		if (blocked - 0 > 99) {
 			blockedText = '\u221E';

@@ -14,21 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var {Cc, Ci, Cu} = require('chrome');
-
-Cu.import("resource://gre/modules/Services.jsm");
-Cu.import("resource://gre/modules/FileUtils.jsm");
-
-var self = require('sdk/self');
-
-var {EventNotifier} = require('./utils/notifier');
-let {FS} = require('./utils/file-storage');
-var {EventNotifierTypes} = require('./utils/common');
-var {ConcurrentUtils} = require('./utils/browser-utils');
-var {Log} = require('./utils/log');
-var {userSettings} = require('./utils/user-settings');
-var Prefs = require('./prefs').Prefs;
-var styleService = require('./styleSheetService');
+/* global Ci, Services */
 
 /**
  * This object manages CSS and JS rules.
@@ -37,7 +23,7 @@ var styleService = require('./styleSheetService');
  * 1. Registering browser-wide stylesheet
  * 2. Injecting CSS/JS with content-script/preload.js script
  */
-var ElemHide = exports.ElemHide = {
+var ElemHide = {
 
     collapsedClass: null,
     collapseStyle: null,
@@ -46,11 +32,7 @@ var ElemHide = exports.ElemHide = {
     /**
      * Init ElemHide object
      */
-    init: function (framesMap, antiBannerService, webRequestService) {
-
-        this.framesMap = framesMap;
-        this.antiBannerService = antiBannerService;
-        this.webRequestService = webRequestService;
+    init: function () {
 
         this._registerCollapsedStyle();
         this._registerSelectorStyle();
@@ -65,12 +47,12 @@ var ElemHide = exports.ElemHide = {
                     this._saveStyleSheetToDisk();
                     break;
                 case EventNotifierTypes.CHANGE_USER_SETTINGS:
-                    if (settings == userSettings.settings.DISABLE_COLLECT_HITS) {
+                    if (settings === userSettings.settings.DISABLE_COLLECT_HITS) {
                         this.changeElemhideMethod(settings);
                     }
                     break;
                 case EventNotifierTypes.CHANGE_PREFS:
-                    if (settings == 'use_global_style_sheet') {
+                    if (settings === 'use_global_style_sheet') {
                         this.changeElemhideMethod(settings);
                     }
                     break;
@@ -102,7 +84,9 @@ var ElemHide = exports.ElemHide = {
      * @private
      */
     _disableStyleSheet: function (uri) {
-        styleService.unloadUserSheetByUri(uri);
+        if (styleService.sheetRegistered(uri)) {
+            styleService.unloadUserSheetByUri(uri);
+        }
     },
 
     /**
@@ -189,7 +173,7 @@ var ElemHide = exports.ElemHide = {
         }
         this.collapseStyle = Services.io.newURI("data:text/css," + encodeURIComponent("." + this.collapsedClass + "{-moz-binding: url(chrome://global/content/bindings/general.xml#dummy) !important;}"), null, null);
         this._applyCssStyleSheet(this.collapseStyle);
-        Log.info("Collapse style registered successfully");
+        Log.info("Adguard addon: Collapse style registered successfully");
     },
 
     /**
@@ -197,9 +181,9 @@ var ElemHide = exports.ElemHide = {
      * @private
      */
     _registerSelectorStyle: function () {
-        this.selectorStyle = Services.io.newURI("data:text/css," + encodeURIComponent(self.data.load('content/content-script/assistant/css/selector.css')), null, null);
+        this.selectorStyle = Services.io.newURI("data:text/css," + encodeURIComponent(adguard.extension.load('content/content-script/assistant/css/selector.css')), null, null);
         this._applyCssStyleSheet(this.selectorStyle);
-        Log.info("Selector style registered successfully");
+        Log.info("Adguard addon: Selector style registered successfully");
     },
 
     /**
@@ -209,7 +193,7 @@ var ElemHide = exports.ElemHide = {
      */
     _saveStyleSheetToDisk: function () {
         ConcurrentUtils.runAsync(function () {
-            var content = this.antiBannerService.getRequestFilter().getCssForStyleSheet();
+            var content = antiBannerService.getRequestFilter().getCssForStyleSheet();
             FS.saveStyleSheetToDisk(content, function () {
                 this._applyCssStyleSheet(FS.getInjectCssFileURI());
             }.bind(this));
@@ -229,7 +213,7 @@ var ElemHide = exports.ElemHide = {
                     if (uri.file) {
                         var exists = uri.file.exists();
                         if (!exists) {
-                            Log.info('Css stylesheet cannot apply file: ' + uri.path + ' because file does not exist');
+                            Log.info('Adguard addon: Css stylesheet cannot apply file: ' + uri.path + ' because file does not exist');
                             return;
                         }
                     }
@@ -240,7 +224,7 @@ var ElemHide = exports.ElemHide = {
                 }
                 //load new stylesheet
                 styleService.loadUserSheetByUri(uri);
-                Log.debug('styles hiding elements are successfully registered.')
+                Log.debug('styles hiding elements are successfully registered.');
             }
         } catch (ex) {
             Log.error('Error while register stylesheet ' + uri + ':' + ex);

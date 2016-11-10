@@ -15,30 +15,20 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-var Cc = require('chrome').Cc;
-var Ci = require('chrome').Ci;
-var XMLHttpRequestConstructor = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"];
+/* global Cc, Ci */
 
-var Log = require('../../lib/utils/log').Log;
-var Utils = require('../../lib/utils/browser-utils').Utils;
-var FilterRule = require('../../lib/filter/rules/base-filter-rule').FilterRule;
-var FilterRuleBuilder = require('../../lib/filter/rules/filter-rule-builder').FilterRuleBuilder;
-var Prefs = require('../../lib/prefs').Prefs;
+var XMLHttpRequestConstructor = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"];
 
 /**
  * Class for working with our backend server.
  * All requests sent by this class are covered in the privacy policy:
  * http://adguard.com/en/privacy.html#browsers
  */
-var ServiceClient = exports.ServiceClient = function () {
+var ServiceClient = function () {
 
 	// Base url of our backend server
 	this.backendUrl = "https://chrome.adtidy.org";
-    this.apiKey = "4DDBE80A3DA94D819A00523252FB6380";
+	this.apiKey = "4DDBE80A3DA94D819A00523252FB6380";
 
 	// URL for downloading AG filters
 	this.getFilterRulesUrl = this.backendUrl + "/getfilter.html";
@@ -46,47 +36,47 @@ var ServiceClient = exports.ServiceClient = function () {
 	// URL for downloading optimized AG filters
 	this.getOptimizedFilterRulesUrl = this.backendUrl + "/getoptimizedfilter.html";
 
-    // URL for checking filter updates
+	// URL for checking filter updates
 	this.checkFilterVersionsUrl = this.backendUrl + "/checkfilterversions.html";
 
-    // URL for user complaints on missed ads or malware/phishing websites
+	// URL for user complaints on missed ads or malware/phishing websites
 	this.reportUrl = this.backendUrl + "/url-report.html";
 
-    // URL for detecting user's country code (to auto-enable proper language-specific filter)
+	// URL for detecting user's country code (to auto-enable proper language-specific filter)
 	this.getCountryUrl = this.backendUrl + "/getcountry.html?";
 
-    // URL for tracking Adguard installation
+	// URL for tracking Adguard installation
 	this.trackInstallUrl = this.backendUrl + "/install.html?";
 
-    /**
-     * URL for collecting filter rules statistics.
-     * We do not collect it by default, unless user is willing to help.
-     *
-     * Filter rules stats are covered in our privacy policy and on also here:
-     * http://adguard.com/en/filter-rules-statistics.html
-     */
+	/**
+	 * URL for collecting filter rules statistics.
+	 * We do not collect it by default, unless user is willing to help.
+	 *
+	 * Filter rules stats are covered in our privacy policy and on also here:
+	 * http://adguard.com/en/filter-rules-statistics.html
+	 */
 	this.ruleStatsUrl = this.backendUrl + "/rulestats.html";
 
-    /**
-     * Browsing Security lookups. In case of Firefox lookups are disabled for HTTPS urls.
-     */
+	/**
+	 * Browsing Security lookups. In case of Firefox lookups are disabled for HTTPS urls.
+	 */
 	this.safebrowsingLookupUrl = "https://sb.adtidy.org/safebrowsing-lookup-hash.html";
 
-    /**
-     * URL for collecting Browsing Security stats.
-     * We do not collect it by default, unless user is willing to help.
-     * For now - blocked urls are reported only.
-     */
+	/**
+	 * URL for collecting Browsing Security stats.
+	 * We do not collect it by default, unless user is willing to help.
+	 * For now - blocked urls are reported only.
+	 */
 	this.safebrowsingStatsUrl = "https://sb.adtidy.org/sb-report.html";
 
-    // This url is used in integration mode. Adguard for Windows/Mac/Android intercepts requests to injections.adguard.com host.
-    // It is not used for remote requests, requests are intercepted by the desktop version of Adguard.
-    this.injectionsUrl = "http://injections.adguard.com";
+	// This url is used in integration mode. Adguard for Windows/Mac/Android intercepts requests to injections.adguard.com host.
+	// It is not used for remote requests, requests are intercepted by the desktop version of Adguard.
+	this.injectionsUrl = "http://injections.adguard.com";
 
-    // URLs used when add-on works in integration mode.
+	// URLs used when add-on works in integration mode.
 	// @deprecated
-    this.adguardAppUrlOld = this.injectionsUrl + "/adguard-ajax-crossdomain-hack/api?";
-    this.adguardAppUrl = this.injectionsUrl + "/adguard-ajax-api/api?";
+	this.adguardAppUrlOld = this.injectionsUrl + "/adguard-ajax-crossdomain-hack/api?";
+	this.adguardAppUrl = this.injectionsUrl + "/adguard-ajax-api/api?";
 
 	this.loadingSubscriptions = Object.create(null);
 };
@@ -109,8 +99,6 @@ ServiceClient.prototype = {
 			return;
 		}
 
-		var AdguardFilterVersion = require('../../lib/filter/antibanner').AdguardFilterVersion;
-
 		var success = function (response) {
 			var xml = response.responseXML;
 			if (xml && xml.getElementsByTagName) {
@@ -120,7 +108,7 @@ ServiceClient.prototype = {
 				var childNodes = filterVersionsList.childNodes;
 				for (var i = 0; i < childNodes.length; i++) {
 					var filterVersionXml = childNodes[i];
-					if (filterVersionXml.tagName == "filter-version") {
+					if (filterVersionXml.tagName === "filter-version") {
 						filterVersions.push(AdguardFilterVersion.fromXml(filterVersionXml));
 					}
 				}
@@ -141,14 +129,12 @@ ServiceClient.prototype = {
 	/**
 	 * Downloads filter rules by filter ID
 	 *
-	 * @param filterId          	Filter identifier
-	 * @param useOptimizedFilters 	Download optimized filters flag
-	 * @param successCallback   	Called on success
-	 * @param errorCallback     	Called on error
+	 * @param filterId            Filter identifier
+	 * @param useOptimizedFilters    Download optimized filters flag
+	 * @param successCallback    Called on success
+	 * @param errorCallback        Called on error
 	 */
 	loadFilterRules: function (filterId, useOptimizedFilters, successCallback, errorCallback) {
-
-		var AdguardFilterVersion = require('../../lib/filter/antibanner').AdguardFilterVersion;
 
 		var success = function (response) {
 
@@ -202,14 +188,12 @@ ServiceClient.prototype = {
 	/**
 	 * Loads filter rules from a local file
 	 *
-	 * @param filterId          	Filter identifier
-	 * @param useOptimizedFilters 	Download optimized filters flag
-	 * @param successCallback   	Called on success
-	 * @param errorCallback     	Called on error
+	 * @param filterId            Filter identifier
+	 * @param useOptimizedFilters    Download optimized filters flag
+	 * @param successCallback    Called on success
+	 * @param errorCallback        Called on error
 	 */
 	loadLocalFilter: function (filterId, useOptimizedFilters, successCallback, errorCallback) {
-
-		var AdguardFilterVersion = require('../../lib/filter/antibanner').AdguardFilterVersion;
 
 		var success = function (response) {
 			var responseText = response.responseText;
@@ -241,53 +225,53 @@ ServiceClient.prototype = {
 		this._executeRequestAsync(url, "text/plain", success, errorCallback);
 	},
 
-    /**
-     * Downloads filter rules frm url
-     *
-     * @param url               Subscription url
-     * @param successCallback   Called on success
-     * @param errorCallback     Called on error
-     */
-    loadFilterRulesBySubscriptionUrl: function (url, successCallback, errorCallback) {
+	/**
+	 * Downloads filter rules frm url
+	 *
+	 * @param url               Subscription url
+	 * @param successCallback   Called on success
+	 * @param errorCallback     Called on error
+	 */
+	loadFilterRulesBySubscriptionUrl: function (url, successCallback, errorCallback) {
 
-	    if (url in this.loadingSubscriptions) {
-		    return;
-	    }
-	    this.loadingSubscriptions[url] = true;
+		if (url in this.loadingSubscriptions) {
+			return;
+		}
+		this.loadingSubscriptions[url] = true;
 
-	    var self = this;
+		var self = this;
 
-        var success = function (response) {
+		var success = function (response) {
 
-	        delete self.loadingSubscriptions[url];
+			delete self.loadingSubscriptions[url];
 
-	        if (response.status !== 200) {
-		        errorCallback(response, "wrong status code: " + response.status);
-		        return;
-	        }
+			if (response.status !== 200) {
+				errorCallback(response, "wrong status code: " + response.status);
+				return;
+			}
 
-	        var responseText = (response.responseText || '').trim();
-	        if (responseText.length === 0) {
-		        errorCallback(response, "filter rules missing");
-		        return;
-	        }
+			var responseText = (response.responseText || '').trim();
+			if (responseText.length === 0) {
+				errorCallback(response, "filter rules missing");
+				return;
+			}
 
-	        var lines = responseText.split(/[\r\n]+/);
-	        if (lines[0].indexOf('[') === 0) {
-		        //[Adblock Plus 2.0]
-		        lines.shift();
-	        }
+			var lines = responseText.split(/[\r\n]+/);
+			if (lines[0].indexOf('[') === 0) {
+				//[Adblock Plus 2.0]
+				lines.shift();
+			}
 
-            successCallback(lines);
-        };
+			successCallback(lines);
+		};
 
-	    var error = function (request, cause) {
-		    delete self.loadingSubscriptions[url];
-		    errorCallback(request, cause);
-	    };
+		var error = function (request, cause) {
+			delete self.loadingSubscriptions[url];
+			errorCallback(request, cause);
+		};
 
-        this._executeRequestAsync(url, "text/plain", success, error);
-    },
+		this._executeRequestAsync(url, "text/plain", success, error);
+	},
 
 	/**
 	 * Loads filter groups metadata
@@ -296,8 +280,6 @@ ServiceClient.prototype = {
 	 * @param errorCallback     Called on error
 	 */
 	loadLocalGroupsMetadata: function (successCallback, errorCallback) {
-
-		var SubscriptionGroup = require('../../lib/filter/subscription').SubscriptionGroup;
 
 		var success = function (response) {
 			var xml = response.responseXML;
@@ -325,8 +307,6 @@ ServiceClient.prototype = {
 	 * @param errorCallback     Called on error
 	 */
 	loadLocalFiltersMetadata: function (successCallback, errorCallback) {
-
-		var SubscriptionFilter = require('../../lib/filter/subscription').SubscriptionFilter;
 
 		var success = function (response) {
 			var xml = response.responseXML;
@@ -454,8 +434,8 @@ ServiceClient.prototype = {
 	/**
 	 * Sends filter hits stats to backend server.
 	 * This method is used if user has enabled "Send statistics for ad filters usage".
-     * More information about ad filters usage stats:
-     * http://adguard.com/en/filter-rules-statistics.html
+	 * More information about ad filters usage stats:
+	 * http://adguard.com/en/filter-rules-statistics.html
 	 *
 	 * @param stats             Stats
 	 * @param enabledFilters    List of enabled filters
@@ -544,4 +524,3 @@ ServiceClient.prototype = {
 ServiceClient.isAdguardAppRequest = function (requestUrl) {
 	return requestUrl && (requestUrl.indexOf('/adguard-ajax-crossdomain-hack/') > 0 || requestUrl.indexOf('/adguard-ajax-api/') > 0);
 };
-

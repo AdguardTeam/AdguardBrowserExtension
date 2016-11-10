@@ -15,10 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global safari, adguard, SafariBrowserTab, RequestTypes, Utils */
-var ext;
+/* global safari, SafariBrowserTab, RequestTypes, Utils */
 
-(function () {
+(function (global) {
 
 	'use strict';
 
@@ -83,7 +82,8 @@ var ext;
 	}
 
 	// Extension API for background page
-	ext = {};
+	var ext = global.ext = {};
+
 	ext.webRequest = {
 
 		onBeforeRequest: {
@@ -259,4 +259,4 @@ var ext;
 		}
 	};
 
-})();
+})(window);

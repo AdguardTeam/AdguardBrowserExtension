@@ -14,68 +14,31 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var exports = {};
+(function (global) {
 
-/**
- * requires wrapper.
- *
- * Used in Chrome extension.
- * In Firefox extension we use native "require" method.
- */
-function require(module) {
-	if (module in exports) {
-		return exports[module];
-	}
-	return exports
-}
+	'use strict';
 
-exports.Cc = {
-	"@mozilla.org/network/protocol;1?name=http": {
-		getService: function (iface) {
-			if (iface == exports.Ci.nsIHttpProtocolHandler) return navigator;
+	global.Cc = {
+		"@mozilla.org/network/protocol;1?name=http": {
+			getService: function (iface) {
+				if (iface === global.Ci.nsIHttpProtocolHandler) {
+					return navigator;
+				}
+			}
+		},
+		"@mozilla.org/xmlextras/xmlhttprequest;1": {
+			createInstance: function (iface) {
+				if (iface === global.Ci.nsIXMLHttpRequest) {
+					return new XMLHttpRequest();
+				}
+			}
 		}
-	},
-	"@mozilla.org/xmlextras/domparser;1": {
-		createInstance: function (iface) {
-			if (iface == exports.Ci.nsIDOMParser) return {};
-		}
-	},
-	"@mozilla.org/xmlextras/xmlhttprequest;1": {
-		createInstance: function (iface) {
-			if (iface == exports.Ci.nsIXMLHttpRequest) return new XMLHttpRequest();
-		}
-	}
-};
+	};
 
-exports.Ci = {
-	nsIHttpProtocolHandler: 'nsIHttpProtocolHandler',
-	nsIDOMParser: 'nsIDOMParser',
-	nsIXMLHttpRequest: 'nsIXMLHttpRequest'
-};
+	global.Ci = {
+		nsIHttpProtocolHandler: 'nsIHttpProtocolHandler',
+		nsIDOMParser: 'nsIDOMParser',
+		nsIXMLHttpRequest: 'nsIXMLHttpRequest'
+	};
 
-exports.Cu = {
-
-    modules: {
-        'resource://gre/modules/devtools/Console.jsm': {console: console}
-    },
-
-    import: function (module) {
-        return this.modules[module];
-    }
-};
-
-exports.punycode = window.punycode;
-
-exports['sdk/core/promise'] = {
-
-	defer: function () {
-		return new Deferred();
-	},
-
-	all: function (arr) {
-		return Deferred.when.apply(Deferred, arr);
-	}
-};
-
-exports.setTimeout = setTimeout;
-exports.clearTimeout = clearTimeout;
+})(window);

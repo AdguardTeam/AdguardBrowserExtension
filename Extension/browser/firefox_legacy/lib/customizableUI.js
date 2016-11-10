@@ -15,242 +15,242 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global require, exports, adguard */
-
 /**
  * Adapter for old versions of Firefox.
  * The same way ABP does it.
  */
 
-var ConcurrentUtils = require('./utils/browser-utils').ConcurrentUtils;
+(function (global) {
 
-var widgets = Object.create(null);
+    'use strict';
 
-function getToolbox(window, widget) {
+    var widgets = Object.create(null);
 
-	if (!("defaultArea" in widget) || !widget.defaultArea) {
-		return null;
-	}
+    function getToolbox(window, widget) {
 
-	var toolbar = window.document.getElementById(widget.defaultArea);
-	if (!toolbar) {
-		return null;
-	}
+        if (!("defaultArea" in widget) || !widget.defaultArea) {
+            return null;
+        }
 
-	var toolbox = toolbar.toolbox;
-	if (toolbox && ("palette" in toolbox) && toolbox.palette) {
-		return toolbox;
-	}
+        var toolbar = window.document.getElementById(widget.defaultArea);
+        if (!toolbar) {
+            return null;
+        }
 
-	return null;
-}
+        var toolbox = toolbar.toolbox;
+        if (toolbox && ("palette" in toolbox) && toolbox.palette) {
+            return toolbox;
+        }
 
-function getToolbar(element) {
+        return null;
+    }
 
-	for (var parent = element.parentNode; parent; parent = parent.parentNode) {
-		if (parent.localName === "toolbar") {
-			return parent;
-		}
-	}
+    function getToolbar(element) {
 
-	return null;
-}
+        for (var parent = element.parentNode; parent; parent = parent.parentNode) {
+            if (parent.localName === "toolbar") {
+                return parent;
+            }
+        }
 
-function getPaletteItem(toolbox, id) {
+        return null;
+    }
 
-	var childs = toolbox.palette.children;
-	for (var i = 0; i < childs.length; i++) {
-		var child = childs[i];
-		if (child.id == id) {
-			return child;
-		}
-	}
+    function getPaletteItem(toolbox, id) {
 
-	return null;
-}
+        var childs = toolbox.palette.children;
+        for (var i = 0; i < childs.length; i++) {
+            var child = childs[i];
+            if (child.id == id) {
+                return child;
+            }
+        }
 
-function restoreWidget(toolbox, widget) {
+        return null;
+    }
 
-	var node = widget.onBuild(toolbox.ownerDocument);
+    function restoreWidget(toolbox, widget) {
 
-	toolbox.palette.insertBefore(node, toolbox.palette.firstChild);
+        var node = widget.onBuild(toolbox.ownerDocument);
 
-	var position = toolbox.getAttribute(widget.positionAttribute);
-	if (!/^\S*,\S*,\S*$/.test(position)) {
-		position = null;
-	}
+        toolbox.palette.insertBefore(node, toolbox.palette.firstChild);
 
-	if (position == null) {
+        var position = toolbox.getAttribute(widget.positionAttribute);
+        if (!/^\S*,\S*,\S*$/.test(position)) {
+            position = null;
+        }
 
-		var toolbars = toolbox.externalToolbars.slice();
-		for (var i = 0; i < toolbox.children.length; i++) {
-			var child = toolbox.children[i];
-			if (child.localName === "toolbar") {
-				toolbars.push(child);
-			}
-		}
+        if (position == null) {
 
-		for (var j = 0; j < toolbars.length; j++) {
+            var toolbars = toolbox.externalToolbars.slice();
+            for (var i = 0; i < toolbox.children.length; i++) {
+                var child = toolbox.children[i];
+                if (child.localName === "toolbar") {
+                    toolbars.push(child);
+                }
+            }
 
-			var toolbar = toolbars[j];
+            for (var j = 0; j < toolbars.length; j++) {
 
-			var currentSet = toolbar.getAttribute("currentset");
-			if (!currentSet) {
-				continue;
-			}
+                var toolbar = toolbars[j];
 
-			var items = currentSet.split(",");
-			var index = items.indexOf(widget.id);
-			if (index >= 0) {
-				var before = (index + 1 < items.length ? items[index + 1] : "");
-				position = "visible," + toolbar.id + "," + before;
-				toolbox.setAttribute(widget.positionAttribute, position);
-				toolbox.ownerDocument.persist(toolbox.id, widget.positionAttribute);
-				break;
-			}
-		}
-	}
+                var currentSet = toolbar.getAttribute("currentset");
+                if (!currentSet) {
+                    continue;
+                }
 
-	showWidget(toolbox, widget, position);
-}
+                var items = currentSet.split(",");
+                var index = items.indexOf(widget.id);
+                if (index >= 0) {
+                    var before = (index + 1 < items.length ? items[index + 1] : "");
+                    position = "visible," + toolbar.id + "," + before;
+                    toolbox.setAttribute(widget.positionAttribute, position);
+                    toolbox.ownerDocument.persist(toolbox.id, widget.positionAttribute);
+                    break;
+                }
+            }
+        }
 
-function showWidget(toolbox, widget, position) {
+        showWidget(toolbox, widget, position);
+    }
 
-	var visible = "visible", parent = null, before = null;
-	if (position) {
-		[visible, parent, before] = position.split(",", 3);
-		parent = toolbox.ownerDocument.getElementById(parent);
-		if (before == "") {
-			before = null;
-		} else {
-			before = toolbox.ownerDocument.getElementById(before);
-		}
-		if (before && before.parentNode != parent) {
-			before = null;
-		}
-	}
+    function showWidget(toolbox, widget, position) {
 
-	if (visible === "visible" && !parent) {
-		var window = toolbox.ownerDocument.defaultView;
-		parent = window.document.getElementById(widget.defaultArea);
-	}
+        var visible = "visible", parent = null, before = null;
+        if (position) {
+            [visible, parent, before] = position.split(",", 3);
+            parent = toolbox.ownerDocument.getElementById(parent);
+            if (before == "") {
+                before = null;
+            } else {
+                before = toolbox.ownerDocument.getElementById(before);
+            }
+            if (before && before.parentNode != parent) {
+                before = null;
+            }
+        }
 
-	if (parent && parent.localName != "toolbar") {
-		parent = null;
-	}
+        if (visible === "visible" && !parent) {
+            var window = toolbox.ownerDocument.defaultView;
+            parent = window.document.getElementById(widget.defaultArea);
+        }
 
-	if (visible != "visible") {
-		var node = toolbox.ownerDocument.getElementById(widget.id);
-		if (node) {
-			toolbox.palette.appendChild(node);
-		}
-	} else if (parent) {
-		var items = parent.currentSet.split(",");
-		var index = (before ? items.indexOf(before.id) : -1);
-		if (index < 0) {
-			before = null;
-		}
-		parent.insertItem(widget.id, before, null, false);
-	}
+        if (parent && parent.localName != "toolbar") {
+            parent = null;
+        }
 
-	saveState(toolbox, widget);
-}
+        if (visible != "visible") {
+            var node = toolbox.ownerDocument.getElementById(widget.id);
+            if (node) {
+                toolbox.palette.appendChild(node);
+            }
+        } else if (parent) {
+            var items = parent.currentSet.split(",");
+            var index = (before ? items.indexOf(before.id) : -1);
+            if (index < 0) {
+                before = null;
+            }
+            parent.insertItem(widget.id, before, null, false);
+        }
 
-function removeWidget(window, widget) {
-	var element = window.document.getElementById(widget.id);
-	if (element) {
-		element.parentNode.removeChild(element);
-	}
+        saveState(toolbox, widget);
+    }
 
-	var toolbox = getToolbox(window, widget);
-	if (toolbox) {
-		var paletteItem = getPaletteItem(toolbox, widget.id);
-		if (paletteItem) {
-			paletteItem.parentNode.removeChild(paletteItem);
-		}
-	}
-}
+    function removeWidget(window, widget) {
+        var element = window.document.getElementById(widget.id);
+        if (element) {
+            element.parentNode.removeChild(element);
+        }
 
-function afterToolbarCustomization(event) {
-	var toolbox = event.currentTarget;
-	for (var key in widgets) {
-		var widget = widgets[key];
-		saveState(toolbox, widget);
-	}
-}
+        var toolbox = getToolbox(window, widget);
+        if (toolbox) {
+            var paletteItem = getPaletteItem(toolbox, widget.id);
+            if (paletteItem) {
+                paletteItem.parentNode.removeChild(paletteItem);
+            }
+        }
+    }
 
-function saveState(toolbox, widget) {
+    function afterToolbarCustomization(event) {
+        var toolbox = event.currentTarget;
+        for (var key in widgets) {
+            var widget = widgets[key];
+            saveState(toolbox, widget);
+        }
+    }
 
-	var node = toolbox.ownerDocument.getElementById(widget.id);
+    function saveState(toolbox, widget) {
 
-	var position = toolbox.getAttribute(widget.positionAttribute) || "hidden,,";
-	if (node && node.parentNode.localName !== "toolbarpalette") {
-		if (typeof widget.onAdded === "function") {
-			widget.onAdded(node);
-		}
+        var node = toolbox.ownerDocument.getElementById(widget.id);
 
-		var toolbar = getToolbar(node);
-		position = "visible," + toolbar.id + "," + (node.nextSibling ? node.nextSibling.id : "");
-	} else {
-		position = position.replace(/^visible,/, "hidden,");
-	}
+        var position = toolbox.getAttribute(widget.positionAttribute) || "hidden,,";
+        if (node && node.parentNode.localName !== "toolbarpalette") {
+            if (typeof widget.onAdded === "function") {
+                widget.onAdded(node);
+            }
 
-	toolbox.setAttribute(widget.positionAttribute, position);
-	toolbox.ownerDocument.persist(toolbox.id, widget.positionAttribute);
-}
+            var toolbar = getToolbar(node);
+            position = "visible," + toolbar.id + "," + (node.nextSibling ? node.nextSibling.id : "");
+        } else {
+            position = position.replace(/^visible,/, "hidden,");
+        }
 
-var CustomizableUI = exports.CustomizableUI = {
+        toolbox.setAttribute(widget.positionAttribute, position);
+        toolbox.ownerDocument.persist(toolbox.id, widget.positionAttribute);
+    }
 
-	AREA_NAVBAR: "nav-bar",
+    global.CustomizableUI = {
 
-	createWidget: function (widget) {
+        AREA_NAVBAR: "nav-bar",
 
-		this._initWindowObserver();
+        createWidget: function (widget) {
 
-		widgets[widget.id] = widget;
+            this._initWindowObserver();
 
-		adguard.windows.getAll(function (wins, nativeWins) {
-			for (var i = 0; i < nativeWins.length; i++) {
-				var domWin = nativeWins[i];
-				var toolbox = getToolbox(domWin, widget);
-				if (toolbox) {
-					toolbox.addEventListener("aftercustomization", afterToolbarCustomization, false);
-					restoreWidget(toolbox, widget);
-				}
-			}
-		});
-	},
+            widgets[widget.id] = widget;
 
-	destroyWidget: function () {
-		// already cleaned up
-	},
+            adguard.windows.getAll(function (wins, nativeWins) {
+                for (var i = 0; i < nativeWins.length; i++) {
+                    var domWin = nativeWins[i];
+                    var toolbox = getToolbox(domWin, widget);
+                    if (toolbox) {
+                        toolbox.addEventListener("aftercustomization", afterToolbarCustomization, false);
+                        restoreWidget(toolbox, widget);
+                    }
+                }
+            });
+        },
 
-	_initWindowObserver: function () {
+        destroyWidget: function () {
+            // already cleaned up
+        },
 
-		adguard.windows.onUpdated.addListener(function (win, domWin, type) {
-			if (type === 'ChromeWindowLoad') {
-				for (var id in widgets) {
-					var widget = widgets[id];
-					var toolbox = getToolbox(domWin, widget);
-					if (toolbox) {
-						toolbox.addEventListener("aftercustomization", afterToolbarCustomization, false);
-						ConcurrentUtils.runAsync(restoreWidget.bind(null, toolbox, widget));
-					}
-				}
-			}
-		});
+        _initWindowObserver: function () {
 
-		adguard.windows.onRemoved.addListener(function (win, domWin) {
-			for (var id in widgets) {
-				var widget = widgets[id];
-				var toolbox = getToolbox(domWin, widget);
-				if (toolbox) {
-					toolbox.removeEventListener("aftercustomization", afterToolbarCustomization, false);
-				}
-				removeWidget(domWin, widget);
-			}
-		});
-	}
-};
+            adguard.windows.onUpdated.addListener(function (win, domWin, type) {
+                if (type === 'ChromeWindowLoad') {
+                    for (var id in widgets) {
+                        var widget = widgets[id];
+                        var toolbox = getToolbox(domWin, widget);
+                        if (toolbox) {
+                            toolbox.addEventListener("aftercustomization", afterToolbarCustomization, false);
+                            ConcurrentUtils.runAsync(restoreWidget.bind(null, toolbox, widget));
+                        }
+                    }
+                }
+            });
 
+            adguard.windows.onRemoved.addListener(function (win, domWin) {
+                for (var id in widgets) {
+                    var widget = widgets[id];
+                    var toolbox = getToolbox(domWin, widget);
+                    if (toolbox) {
+                        toolbox.removeEventListener("aftercustomization", afterToolbarCustomization, false);
+                    }
+                    removeWidget(domWin, widget);
+                }
+            });
+        }
+    };
 
+})(window);

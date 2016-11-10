@@ -14,23 +14,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global require, exports */
 
-var filterRulesHitCount = require('../../lib/filter/filters-hit').filterRulesHitCount;
-var FilterUtils = require('../../lib/utils/common').FilterUtils;
-var EventNotifier = require('../../lib/utils/notifier').EventNotifier;
-var EventNotifierTypes = require('../../lib/utils/common').EventNotifierTypes;
-var ServiceClient = require('../../lib/utils/service-client').ServiceClient;
-var Utils = require('../../lib/utils/browser-utils').Utils;
-var RequestTypes = require('../../lib/utils/common').RequestTypes;
-var userSettings = require('../../lib/utils/user-settings').userSettings;
-var Prefs = require('../../lib/prefs').Prefs;
-
-var WebRequestService = exports.WebRequestService = function (framesMap, antiBannerService, filteringLog, adguardApplication) {
-    this.framesMap = framesMap;
-    this.antiBannerService = antiBannerService;
-    this.filteringLog = filteringLog;
-    this.adguardApplication = adguardApplication;
+var WebRequestService = function () {
 };
 
 /**
@@ -49,41 +34,41 @@ WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, docum
         return result;
     }
 
-    if (!this.antiBannerService.isRequestFilterReady()) {
+    if (!antiBannerService.isRequestFilterReady()) {
         return {
             requestFilterReady: false
         };
     }
 
-    if (this.framesMap.isTabAdguardDetected(tab) || this.framesMap.isTabProtectionDisabled(tab) || this.framesMap.isTabWhiteListed(tab)) {
+    if (framesMap.isTabAdguardDetected(tab) || framesMap.isTabProtectionDisabled(tab) || framesMap.isTabWhiteListed(tab)) {
         return result;
     }
-    
+
     result = {
         selectors: {
             css: null,
             extendedCss: null
         },
         scripts: null,
-        collapseAllElements: this.antiBannerService.shouldCollapseAllElements(),
+        collapseAllElements: antiBannerService.shouldCollapseAllElements(),
         useShadowDom: Utils.isShadowDomSupported()
     };
 
-    var genericHideRule = genericHide || this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "GENERICHIDE");
-    var elemHideRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "ELEMHIDE");
+    var genericHideRule = genericHide || antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "GENERICHIDE");
+    var elemHideRule = antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "ELEMHIDE");
     if (!elemHideRule) {
         if (this.shouldLoadAllSelectors(result.collapseAllElements)) {
-            result.selectors = this.antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl, genericHideRule);
+            result.selectors = antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl, genericHideRule);
         } else {
-            result.selectors = this.antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideRule);
+            result.selectors = antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideRule);
         }
     }
 
-    var jsInjectRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "JSINJECT");
+    var jsInjectRule = antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "JSINJECT");
     if (!jsInjectRule) {
-        result.scripts = this.antiBannerService.getRequestFilter().getScriptsForUrl(documentUrl);
+        result.scripts = antiBannerService.getRequestFilter().getScriptsForUrl(documentUrl);
     }
-    
+
     return result;
 };
 
@@ -91,7 +76,7 @@ WebRequestService.prototype.shouldLoadAllSelectors = function (collapseAllElemen
     if ((Utils.isFirefoxBrowser() && userSettings.collectHitsCount()) || Prefs.useGlobalStyleSheet) {
         // We don't need all CSS selectors in case of FF using global stylesheet
         // as in this case we register browser wide stylesheet which will be
-        // applied even if page was already loaded 
+        // applied even if page was already loaded
         return false;
     }
 
@@ -113,7 +98,7 @@ WebRequestService.prototype.checkWebSocketRequest = function (tab, requestUrl, r
     }
 
     var requestRule = this.getRuleForRequest(tab, requestUrl, referrerUrl, RequestTypes.OTHER);
-    this.filteringLog.addEvent(tab, requestUrl, referrerUrl, RequestTypes.OTHER, requestRule);
+    filteringLog.addEvent(tab, requestUrl, referrerUrl, RequestTypes.OTHER, requestRule);
 
     return this.isRequestBlockedByRule(requestRule);
 };
@@ -149,17 +134,17 @@ WebRequestService.prototype.isRequestBlockedByRule = function (requestRule) {
 
 WebRequestService.prototype.getRuleForRequest = function (tab, requestUrl, referrerUrl, requestType) {
 
-    if (this.framesMap.isTabAdguardDetected(tab) || this.framesMap.isTabProtectionDisabled(tab)) {
+    if (framesMap.isTabAdguardDetected(tab) || framesMap.isTabProtectionDisabled(tab)) {
         //don't process request
         return null;
     }
 
     var requestRule = null;
 
-    if (this.framesMap.isTabWhiteListed(tab)) {
-        requestRule = this.framesMap.getFrameWhiteListRule(tab);
+    if (framesMap.isTabWhiteListed(tab)) {
+        requestRule = framesMap.getFrameWhiteListRule(tab);
     } else {
-        requestRule = this.antiBannerService.getRequestFilter().findRuleForRequest(requestUrl, referrerUrl, requestType);
+        requestRule = antiBannerService.getRequestFilter().findRuleForRequest(requestUrl, referrerUrl, requestType);
     }
 
     return requestRule;
@@ -182,28 +167,28 @@ WebRequestService.prototype.processRequestResponse = function (tab, requestUrl, 
 
     if (requestType === RequestTypes.DOCUMENT) {
         // Check headers to detect Adguard application
-        
+
         if (Prefs.getBrowser() !== "Edge") {
             // TODO[Edge]: Integration mode is not fully functional in Edge (cannot redefine Referer header yet)
-            this.adguardApplication.checkHeaders(tab, responseHeaders, requestUrl);
+            adguardApplication.checkHeaders(tab, responseHeaders, requestUrl);
         }
         // Clear previous events
-        this.filteringLog.clearEventsForTab(tab);
+        filteringLog.clearEventsForTab(tab);
     }
 
     var requestRule = null;
     var appendLogEvent = false;
 
-    if (this.framesMap.isTabAdguardDetected(tab)) {
+    if (framesMap.isTabAdguardDetected(tab)) {
         //parse rule applied to request from response headers
-        requestRule = this.adguardApplication.parseAdguardRuleFromHeaders(responseHeaders);
+        requestRule = adguardApplication.parseAdguardRuleFromHeaders(responseHeaders);
         appendLogEvent = !ServiceClient.isAdguardAppRequest(requestUrl);
-    } else if (this.framesMap.isTabProtectionDisabled(tab)) {
+    } else if (framesMap.isTabProtectionDisabled(tab)) { // jshint ignore:line
         //do nothing
     } else if (requestType === RequestTypes.DOCUMENT) {
-        requestRule = this.framesMap.getFrameWhiteListRule(tab);
-        var domain = this.framesMap.getFrameDomain(tab);
-        if (!this.framesMap.isIncognitoTab(tab)) {
+        requestRule = framesMap.getFrameWhiteListRule(tab);
+        var domain = framesMap.getFrameDomain(tab);
+        if (!framesMap.isIncognitoTab(tab)) {
             //add page view to stats
             filterRulesHitCount.addDomainView(domain);
         }
@@ -212,13 +197,13 @@ WebRequestService.prototype.processRequestResponse = function (tab, requestUrl, 
 
     // add event to filtering log
     if (appendLogEvent) {
-        this.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
+        filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
     }
 };
 
 WebRequestService.prototype.postProcessRequest = function (tab, requestUrl, referrerUrl, requestType, requestRule) {
 
-    if (this.framesMap.isTabAdguardDetected(tab)) {
+    if (framesMap.isTabAdguardDetected(tab)) {
         //do nothing, log event will be added on response
         return;
     }
@@ -227,13 +212,15 @@ WebRequestService.prototype.postProcessRequest = function (tab, requestUrl, refe
         EventNotifier.notifyListenersAsync(EventNotifierTypes.ADS_BLOCKED, requestRule, tab, 1);
     }
 
-    this.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
+    filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
 
-    if (requestRule && !FilterUtils.isUserFilterRule(requestRule) && 
-        !FilterUtils.isWhiteListFilterRule(requestRule) && 
-        !this.framesMap.isIncognitoTab(tab)) {
+    if (requestRule && !FilterUtils.isUserFilterRule(requestRule) &&
+        !FilterUtils.isWhiteListFilterRule(requestRule) &&
+        !framesMap.isIncognitoTab(tab)) {
 
-        var domain = this.framesMap.getFrameDomain(tab);
+        var domain = framesMap.getFrameDomain(tab);
         filterRulesHitCount.addRuleHit(domain, requestRule.ruleText, requestRule.filterId, requestUrl);
     }
 };
+
+var webRequestService = new WebRequestService();

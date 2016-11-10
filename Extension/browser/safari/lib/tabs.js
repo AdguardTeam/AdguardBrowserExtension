@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global safari, SafariBrowserWindow, SafariBrowserTab, adguard, EventChannels */
+/* global safari, SafariBrowserWindow, SafariBrowserTab, EventChannels */
 
 adguard.windowsImpl = (function () {
 
@@ -56,6 +56,7 @@ adguard.windowsImpl = (function () {
 
     var onCreatedChannel = EventChannels.newChannel();
     var onRemovedChannel = EventChannels.newChannel();
+    var onUpdatedChannel = EventChannels.newChannel();
 
     safari.application.addEventListener('open', function (event) {
         var safariWindow = event.target;
@@ -108,6 +109,7 @@ adguard.windowsImpl = (function () {
 
         onCreated: onCreatedChannel,
         onRemoved: onRemovedChannel,
+        onUpdated: onUpdatedChannel,
 
         create: create,
         getAll: getAll,

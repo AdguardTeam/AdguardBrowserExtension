@@ -14,7 +14,7 @@
 * You should have received a copy of the GNU Lesser General Public License
 * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
 */
-/* global require, exports */
+
 /**
  * Safari content blocking format rules converter.
  */
@@ -27,17 +27,7 @@ var URL_FILTER_REGEXP_START_URL = "^https?://([^/]*\\.)?";
 // Simplified separator (to fix an issue with $ restriction - it can be only in the end of regexp)
 var URL_FILTER_REGEXP_SEPARATOR = "[/:&?]?";
 
-var SimpleRegex = require('filter/rules/simple-regex').SimpleRegex;
-var FilterRule = require('filter/rules/base-filter-rule').FilterRule; // jshint ignore:line
-var FilterRuleBuilder = require('filter/rules/filter-rule-builder').FilterRuleBuilder;
-var CssFilterRule = require('filter/rules/css-filter-rule').CssFilterRule;
-var UrlFilterRule = require('filter/rules/url-filter-rule').UrlFilterRule;
-var ScriptFilterRule = require('filter/rules/script-filter-rule').ScriptFilterRule;
-var StringUtils = require('utils/common').StringUtils;
-var Log = require('utils/log').Log;
-var UrlUtils = require('utils/url').UrlUtils;
-
-exports.SafariContentBlockerConverter = {
+var SafariContentBlockerConverter = {
 
     AGRuleConverter: {
 

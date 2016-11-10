@@ -15,20 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global require, exports, adguard */
-
-var {Cu, Cc, Ci} = require('chrome');
-
-Cu.import("resource://gre/modules/XPCOMUtils.jsm");
-Cu.import("resource://gre/modules/Services.jsm");
+/* global Cu, Ci, Cc */
 
 var versionChecker = Cc["@mozilla.org/xpcom/version-comparator;1"].getService(Ci.nsIVersionComparator);
-
-var self = require('sdk/self');
-var system = require('sdk/system');
-var unload = require('sdk/system/unload');
-
-var WorkaroundUtils = require('./utils/workaround').WorkaroundUtils;
 
 function findEl(id, element) {
 	for (var i = 0; i < element.children.length; i++) {
@@ -48,7 +37,7 @@ function getElInCurrentWindow(id) {
 /**
  * Object that manages toolbar button rendering.
  */
-var PopupButton = exports.PopupButton = {
+var PopupButton = {
 
 	nodesToRemove: [],
 
@@ -99,18 +88,18 @@ var PopupButton = exports.PopupButton = {
 			this.CustomizableUI = Cu.import("resource:///modules/CustomizableUI.jsm").CustomizableUI;
 		} catch (e) {
 			// No built-in CustomizableUI API, use our own implementation.
-			this.CustomizableUI = require('./customizableUI').CustomizableUI;
+			this.CustomizableUI = window.CustomizableUI;
 		}
 
 		var window = adguard.winWatcher.getCurrentBrowserWindow();
 		var version = "";
-		if (versionChecker.compare(system.version, "29.0") < 0) {
+		if (versionChecker.compare(adguard.runtime.getVersion(), "29.0") < 0) {
 			version = "version-28";
 		}
 		var platform = "";
-		if (window.navigator.platform.indexOf("Mac") == 0) {
+		if (window.navigator.platform.indexOf("Mac") === 0) {
 			platform = "mac";
-		} else if (window.navigator.platform.indexOf("Linux") == 0) {
+		} else if (window.navigator.platform.indexOf("Linux") === 0) {
 			platform = "linux";
 		}
 

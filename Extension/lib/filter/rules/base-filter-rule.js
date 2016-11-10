@@ -15,21 +15,10 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global require, exports */
-
-/**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-var StringUtils = require('../../../lib/utils/common').StringUtils;
-var CollectionUtils = require('../../../lib/utils/common').CollectionUtils;
-var UrlUtils = require('../../../lib/utils/url').UrlUtils;
-var Log = require('../../../lib/utils/log').Log;
-
 /**
  * Base class for all filter rules
  */
-var FilterRule = exports.FilterRule = function (text, filterId) {
+var FilterRule = function (text, filterId) {
 	this.ruleText = text;
 	this.filterId = filterId;
 };

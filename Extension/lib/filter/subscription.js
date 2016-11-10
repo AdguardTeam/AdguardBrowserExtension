@@ -15,16 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-var LS = require('../../lib/utils/local-storage').LS;
-var Log = require('../../lib/utils/log').Log;
-var Prefs = require('../../lib/prefs').Prefs;
-var ServiceClient = require('../../lib/utils/service-client').ServiceClient;
-var Promise = require('../../lib/utils/promises').Promise;
-
 var Locale = Prefs.locale.substring(0, 2).toLowerCase();
 
 /**
@@ -32,7 +22,7 @@ var Locale = Prefs.locale.substring(0, 2).toLowerCase();
  * For now we just store filters metadata in an XML file within the extension.
  * In future we'll add an opportunity to update metadata along with filter rules update.
  */
-var SubscriptionService = exports.SubscriptionService = function () {
+var SubscriptionService = function () {
 
 	this.serviceClient = new ServiceClient();
 	this.groups = [];
@@ -102,7 +92,7 @@ SubscriptionService.prototype = {
 	}
 };
 
-var SubscriptionGroup = exports.SubscriptionGroup = function (groupId, groupName, displayNumber) {
+var SubscriptionGroup = function (groupId, groupName, displayNumber) {
 	this.groupId = groupId;
 	this.groupName = groupName;
 	this.displayNumber = displayNumber;
@@ -142,7 +132,7 @@ SubscriptionGroup.fromXml = function (group) {
  * Filter metadata
  * @type {Function}
  */
-var SubscriptionFilter = exports.SubscriptionFilter = function (filterId, groupId, name, description, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl) {
+var SubscriptionFilter = function (filterId, groupId, name, description, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl) {
 
 	this.filterId = filterId;
 	this.groupId = groupId;

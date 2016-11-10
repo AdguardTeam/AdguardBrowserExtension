@@ -15,21 +15,10 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global adguard, require, exports */
-
-var PageStatistic = require('../../lib/utils/page-stats').PageStatistic;
-var FilterUtils = require('../../lib/utils/common').FilterUtils;
-var RequestTypes = require('../../lib/utils/common').RequestTypes;
-var UrlUtils = require('../../lib/utils/url').UrlUtils;
-
-var whiteListService = require('../../lib/filter/whitelist').whiteListService;
-var AntiBannerFiltersId = require('../../lib/utils/common').AntiBannerFiltersId;
-
-//noinspection JSUnusedLocalSymbols
 /**
  * Map that contains info about every browser tab.
  */
-var FramesMap = exports.FramesMap = function (antiBannerService) {
+var framesMap = (function () {
 
 	'use strict';
 
@@ -359,4 +348,4 @@ var FramesMap = exports.FramesMap = function (antiBannerService) {
 		resetBlockedAdsCount: resetBlockedAdsCount,
 		isIncognitoTab: isIncognitoTab
 	};
-};
+})();

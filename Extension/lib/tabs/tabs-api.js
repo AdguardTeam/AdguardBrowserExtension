@@ -1,4 +1,3 @@
-/* global adguard, require, console */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -16,18 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var UrlUtils = require('../../lib/utils/url').UrlUtils;
-var EventChannels = require('../../lib/utils/common').EventChannels;
-
-(function () {
+(function (adguard) {
 
     'use strict';
-
-    try {
-
-    if (typeof adguard === 'undefined') {
-        return;
-    }
 
     adguard.windowsImpl = adguard.windowsImpl || (function () {
 
@@ -400,8 +390,4 @@ var EventChannels = require('../../lib/utils/common').EventChannels;
 
     })(adguard.tabsImpl);
 
-    }catch(ex){
-        console.error(ex);
-    }
-
-})();
+})(adguard);

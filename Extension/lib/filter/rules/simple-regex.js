@@ -15,12 +15,10 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global exports */
-
 /**
  * Helper class for creating regular expression from a simple wildcard-syntax used in basic filters
  */
-var SimpleRegex = exports.SimpleRegex = (function() {
+var SimpleRegex = (function() {
 
     // Constants
     var regexConfiguration = {

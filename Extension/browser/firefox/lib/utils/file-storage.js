@@ -1,4 +1,3 @@
-/* global require, exports */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -15,25 +14,84 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var {components, Cu, Ci, Cc} = require('chrome');
-var sdkPathFor = require('sdk/system').pathFor;
-var sdkFile = require('sdk/io/file');
 
-var {NetUtil} = Cu.import("resource://gre/modules/NetUtil.jsm", null);
-var {FileUtils} = Cu.import("resource://gre/modules/FileUtils.jsm", null);
+/* global Cc, Ci, components */
 
-var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"].createInstance(Ci.nsIScriptableUnicodeConverter);
-converter.charset = "UTF-8";
+var FsUtils = (function () {
 
-var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
+    'use strict';
 
-var Log = require('../../lib/utils/log').Log;
+    var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"].createInstance(Ci.nsIScriptableUnicodeConverter);
+    converter.charset = "UTF-8";
+
+    var OPEN_FLAGS = {
+        RDONLY: parseInt("0x01"),
+        WRONLY: parseInt("0x02"),
+        CREATE_FILE: parseInt("0x08"),
+        APPEND: parseInt("0x10"),
+        TRUNCATE: parseInt("0x20"),
+        EXCL: parseInt("0x80")
+    };
+
+    var readAsync = function (file, callback) {
+
+        var fetchCallback = function (inputStream, status) {
+            if (components.isSuccessCode(status)) {
+                try {
+                    var data = NetUtil.readInputStreamToString(inputStream, inputStream.available());
+                    data = converter.ConvertToUnicode(data);
+                    callback(null, data);
+                } catch (ex) {
+                    callback(ex);
+                }
+            } else {
+                callback(status);
+            }
+        };
+
+        try {
+            NetUtil.asyncFetch(file, fetchCallback);
+        } catch (ex) {
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/199
+            var aSource = {
+                uri: file,
+                loadUsingSystemPrincipal: true
+            };
+
+            NetUtil.asyncFetch(aSource, fetchCallback);
+        }
+    };
+
+    var writeAsync = function (file, content, callback) {
+
+        var stream = Cc['@mozilla.org/network/file-output-stream;1'].createInstance(Ci.nsIFileOutputStream);
+        var openFlags = OPEN_FLAGS.WRONLY | OPEN_FLAGS.CREATE_FILE | OPEN_FLAGS.TRUNCATE; // jshint ignore:line
+        var permFlags = parseInt("0644", 8); // u+rw go+r
+        stream.init(file, openFlags, permFlags, 0);
+
+        var istream = converter.convertToInputStream(content);
+
+        NetUtil.asyncCopy(istream, stream, function (status) {
+            if (components.isSuccessCode(status)) {
+                callback(null);
+            } else {
+                callback(status);
+            }
+        });
+    };
+
+    return {
+        writeAsync: writeAsync,
+        readAsync: readAsync
+    };
+
+})();
 
 /**
  * File storage adapter.
  * For FF we store rules in files
  */
-var FS = exports.FS = {
+var FS = {
 
     PROFILE_DIR: 'ProfD',
     ADGUARD_DIR: 'Adguard',
@@ -43,64 +101,50 @@ var FS = exports.FS = {
     readFromFile: function (filename, callback) {
 
         try {
-            var filePath = FileUtils.getFile(this.PROFILE_DIR, [this.ADGUARD_DIR, filename]);
-            if (!filePath.exists() || filePath.fileSize === 0) {
+            var file = FileUtils.getFile(this.PROFILE_DIR, [this.ADGUARD_DIR, filename]);
+            if (!file.exists() || file.fileSize === 0) {
                 callback(null, []);
                 return;
             }
-            var fetchCallback = function (inputStream, status) {
-                if (components.isSuccessCode(status)) {
-                    try {
-                        var data = NetUtil.readInputStreamToString(inputStream, inputStream.available());
-                        data = converter.ConvertToUnicode(data);
-                        var lines = data.split(/[\r\n]+/);
-                        if (!data) {
-                            callback(null, []);
-                            return;
-                        }
-                        callback(null, lines);
-                    } catch (ex) {
-                        callback(ex);
-                    }
+
+            FsUtils.readAsync(file, function (error, data) {
+                if (error) {
+                    Log.error("Error read file {0}, cause: {1}", filename, error);
+                    callback(error);
                 } else {
-                    callback(status);
+                    if (!data) {
+                        callback(null, []);
+                    } else {
+                        var lines = data.split(/[\r\n]+/);
+                        callback(null, lines);
+                    }
                 }
-            };
+            });
 
-            try {
-                NetUtil.asyncFetch(filePath, fetchCallback);
-            } catch (ex) {
-                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/199
-                var aSource = {
-                    uri: filePath,
-                    loadUsingSystemPrincipal: true
-                };
-
-                NetUtil.asyncFetch(aSource, fetchCallback);
-            }
         } catch (ex) {
+            Log.error("Error read file {0}, cause: {1}", filename, ex);
             callback(this._translateError(ex));
         }
     },
 
     writeToFile: function (filename, data, callback) {
+
         try {
-            this._createDir();
-            var filePath = sdkFile.join(sdkPathFor(this.PROFILE_DIR), this.ADGUARD_DIR, filename);
+
             var content = data.join(FS.LINE_BREAK);
 
-            var textWriter = sdkFile.open(filePath, 'w');//utf-8 charset by default
-            textWriter.writeAsync(content, function (error) {
+            this._createDir();
+            var file = FileUtils.getFile(this.PROFILE_DIR, [this.ADGUARD_DIR, filename]);
+
+            FsUtils.writeAsync(file, content, function (error) {
                 if (error) {
-                    Log.error("Error read file {0}, cause: {1}", filename, error);
-                    callback(error);
-                } else {
-                    callback(null);
+                    Log.error("Error write to file {0}, cause: {1}", filename, error);
                 }
+                callback(error);
             });
 
         } catch (ex) {
-            Log.error("Error writing to file {0}, cause: {1}", filename, ex);
+            Log.error("Error write to file {0}, cause: {1}", filename, ex);
             callback(this._translateError(ex));
         }
     },
@@ -116,28 +160,6 @@ var FS = exports.FS = {
             successCallback();
         } catch (ex) {
             //ignore
-        }
-    },
-
-    /**
-     * Remove adguard directory on extension uninstall
-     * https://bugzilla.mozilla.org/show_bug.cgi?id=627432
-     */
-    removeAdguardDir: function () {
-        try {
-            var adguardDir = sdkFile.join(sdkPathFor(this.PROFILE_DIR), this.ADGUARD_DIR);
-            if (sdkFile.exists(adguardDir)) {
-                Log.info('Removing profile directory {0}', adguardDir);
-                var files = sdkFile.list(adguardDir);
-                for (var i = 0; i < files.length; i++) {
-                    var filePath = sdkFile.join(sdkPathFor(this.PROFILE_DIR), this.ADGUARD_DIR, files[i]);
-                    sdkFile.remove(filePath);
-                }
-                sdkFile.rmdir(adguardDir);
-            }
-        } catch (ex) {
-            //ignore
-            Log.error('Error remove profile directory, cause {0}', ex);
         }
     },
 
@@ -169,7 +191,6 @@ var FS = exports.FS = {
             }
             this._cssSaving = false;
         }.bind(this));
-
     },
 
     /**
@@ -191,16 +212,16 @@ var FS = exports.FS = {
 
     _getFileInAdguardDirUri: function (filename) {
         var styleFile = FileUtils.getFile(this.PROFILE_DIR, [this.ADGUARD_DIR, filename]);
+        var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
         return ioService.newFileURI(styleFile).QueryInterface(Ci.nsIFileURL);
     },
 
     /* Create dir in profile folder */
     _createDir: function () {
-        var adguardDir = sdkFile.join(sdkPathFor(this.PROFILE_DIR), this.ADGUARD_DIR);
-        if (sdkFile.exists(adguardDir)) {
-            return;
+        var adguardDir = FileUtils.getDir(this.PROFILE_DIR, [this.ADGUARD_DIR]);
+        if (!adguardDir.exists()) {
+            adguardDir.create(Ci.nsIFile.DIRECTORY_TYPE, parseInt("0755", 8)); // u+rwx go+rx
         }
-        sdkFile.mkpath(adguardDir);
     },
 
     _translateError: function (e) {
@@ -243,3 +264,4 @@ var FS = exports.FS = {
         return msg;
     }
 };
+

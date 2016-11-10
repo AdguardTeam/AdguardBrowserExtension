@@ -22,8 +22,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var antiBannerService = new AntiBannerService();
-
 antiBannerService.init({
 
     runCallback: function (runInfo) {
@@ -32,19 +30,8 @@ antiBannerService.init({
         }
     }
 });
-filterRulesHitCount.setAntiBannerService(antiBannerService);
-
-var framesMap = new FramesMap(antiBannerService);
-
-var adguardApplication = new AdguardApplication(framesMap);
-
-var filteringLog = new FilteringLog(framesMap, UI);
-
-var webRequestService = new WebRequestService(framesMap, antiBannerService, filteringLog, adguardApplication);
 
 // Content-Message listener
-var contentMessageHandler = new ContentMessageHandler();
-contentMessageHandler.init(antiBannerService, webRequestService, framesMap, adguardApplication, filteringLog, UI);
 contentMessageHandler.setSendMessageToSender(function (sender, message) {
     adguard.tabs.sendMessage(sender.tab.tabId, message);
 });

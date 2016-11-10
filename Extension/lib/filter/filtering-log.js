@@ -15,14 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var LogEvents = require('../../lib/utils/common').LogEvents;
-var UrlUtils = require('../../lib/utils/url').UrlUtils;
-var EventNotifier = require('../../lib/utils/notifier').EventNotifier;
-
-var FilteringLog = exports.FilteringLog = function (framesMap, UI) {
+var FilteringLog = function () {
 	this.tabsInfo = Object.create(null);
-	this.framesMap = framesMap;
-	this.UI = UI;
 	this.openedFilteringLogsPage = 0;
 };
 
@@ -61,7 +55,7 @@ FilteringLog.prototype.synchronizeOpenTabs = function (callback) {
 			callback();
 		}
 	}.bind(this);
-	this.UI.getAllOpenedTabs(openTabsCallback);
+	UI.getAllOpenedTabs(openTabsCallback);
 };
 
 FilteringLog.prototype.addTab = function (tab) {
@@ -91,7 +85,7 @@ FilteringLog.prototype._updateTabInfo = function (tab) {
 	tabInfo.tabId = tab.tabId;
 	tabInfo.tab = tab;
 	tabInfo.isHttp = UrlUtils.isHttpRequest(tab.url);
-	this.tabsInfo[tab.tabId] =  tabInfo;
+	this.tabsInfo[tab.tabId] = tabInfo;
 	return tabInfo;
 };
 
@@ -108,7 +102,7 @@ FilteringLog.prototype.getTabInfoById = function (tabId) {
 
 FilteringLog.prototype.getTabFrameInfoById = function (tabId) {
 	var tabInfo = this.getTabInfoById(tabId);
-	return tabInfo ? this.framesMap.getFrameInfo(tabInfo.tab) : null;
+	return tabInfo ? framesMap.getFrameInfo(tabInfo.tab) : null;
 };
 
 FilteringLog.prototype.getTabInfo = function (tab) {
@@ -205,3 +199,5 @@ FilteringLog.prototype.serializeTabInfo = function (tabInfo) {
 		}
 	};
 };
+
+var filteringLog = new FilteringLog();

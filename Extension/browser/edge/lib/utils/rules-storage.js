@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global exports, LS */
+/* global LS */
 
 /**
  * Filter rules storage adapter.
@@ -25,7 +25,7 @@
  * TODO[Edge]: There is still a possibility to exceed local storage quota. 
  * Consider using http://pieroxy.net/blog/pages/lz-string/index.html
  */
-var RulesStorage = exports.RulesStorage = (function() {
+var RulesStorage = (function() {
     
     var read = function (path, callback) {
 		try {

@@ -16,16 +16,10 @@
  */
 
 /**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-var CollectionUtils = require('../../../lib/utils/common').CollectionUtils;
-
-/**
  * Filter that manages JS injection rules.
  * Read here for details: http://adguard.com/en/filterrules.html#javascriptInjection
  */
-var ScriptFilter = exports.ScriptFilter = function (rules) {
+var ScriptFilter = function (rules) {
 
 	this.scriptRules = [];
 	this.exceptionsRules = [];

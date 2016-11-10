@@ -15,11 +15,11 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global exports, browser */
+/* global browser */
 /**
  * Filter rules storage adapter
  */
-var RulesStorage = exports.RulesStorage = (function() {
+var RulesStorage = (function() {
 	
 	/**
 	 * Checks runtime.lastError and calls "callback" if so.

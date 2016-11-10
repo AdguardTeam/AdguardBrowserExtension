@@ -15,12 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global antiBannerService, require, userSettings */
-var SafariContentBlocker = require('content-blocker').SafariContentBlocker;
-var EventNotifier = require('utils/notifier').EventNotifier;
-var EventNotifierTypes = require('utils/common').EventNotifierTypes;
-var Utils = require('utils/browser-utils').Utils;
-
+/* global antiBannerService, userSettings */
 (function () {
 
     'use strict';

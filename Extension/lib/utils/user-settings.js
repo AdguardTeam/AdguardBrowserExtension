@@ -14,16 +14,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global require, exports */
-/**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-var Utils = require('../../lib/utils/browser-utils').Utils;
-var LS = require('../../lib/utils/local-storage').LS;
-var Log = require('../../lib/utils/log').Log;
-var EventNotifier = require('../../lib/utils/notifier').EventNotifier;
-var EventNotifierTypes = require('../../lib/utils/common').EventNotifierTypes;
 
 /**
  * Object that manages user settings.
@@ -67,7 +57,7 @@ UserSettings.prototype.getProperty = function (propertyName) {
 
     var propertyValue = null;
 
-    if (propertyName in LS.storage) {
+    if (LS.has(propertyName)) {
         try {
             propertyValue = JSON.parse(LS.getItem(propertyName));
         } catch (ex) {
@@ -167,7 +157,7 @@ UserSettings.prototype.getAllSettings = function () {
 
     var result = {
         names: Object.create(null),
-        values: Object.create(null),
+        values: Object.create(null)
     };
 
     for (var key in this.settings) {
@@ -181,4 +171,4 @@ UserSettings.prototype.getAllSettings = function () {
     return result;
 };
 
-var userSettings = exports.userSettings = new UserSettings();
+var userSettings = new UserSettings();

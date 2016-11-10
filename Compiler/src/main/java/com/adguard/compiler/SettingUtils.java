@@ -60,7 +60,7 @@ public class SettingUtils {
             " * 3. We allow only custom rules got from the User filter (which user creates manually)\r\n" +
             " *    or from this DEFAULT_SCRIPT_RULES object\r\n" +
             " */\r\n" +
-            "var DEFAULT_SCRIPT_RULES = exports.DEFAULT_SCRIPT_RULES = Object.create(null);\r\n%s";
+            "var DEFAULT_SCRIPT_RULES = Object.create(null);\r\n%s";
 
     private final static String MESSAGE_IDS_FILE_TEMPLATE = "/**\r\n" +
             " * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).\r\n" +
@@ -79,7 +79,7 @@ public class SettingUtils {
             " * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.\r\n" +
             " */\r\n" +
             "\r\n" +
-            "var I18N_MESSAGES = exports.I18N_MESSAGES = [%s];\r\n";
+            "var I18N_MESSAGES = [%s];\r\n";
 
     public static void writeLocalScriptRulesToFile(File dest, Set<String> scriptRules) throws IOException {
         String scriptRulesText = getScriptRulesText(scriptRules);

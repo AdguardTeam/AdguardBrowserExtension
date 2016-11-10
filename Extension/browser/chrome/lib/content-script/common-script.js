@@ -17,49 +17,53 @@
 
 /* global chrome, browser */
 
-var adguard = {};
+(function (global) {
 
-adguard.runtimeImpl = (function () {
+    'use strict';
 
-	'use strict';
+    var adguard = global.adguard = {};
 
-	var onMessage = (function () {
-		if (typeof browser !== 'undefined' && browser.runtime && browser.runtime.onMessage) {
-			// Edge, Firefox WebExtensions
-			return browser.runtime.onMessage;
-		}
-		if (chrome.runtime && chrome.runtime.onMessage) {
-			// Chromium
-			return chrome.runtime.onMessage;
-		} else if (chrome.extension.onMessage) {
-			// Old Chromium
-			return chrome.extension.onMessage;
-		} else {
-			// Old Chromium
-			return chrome.extension.onRequest;
-		}
-	})();
+    adguard.runtimeImpl = (function () {
 
-	var sendMessage = (function () {
-		if (typeof browser !== 'undefined' && browser.runtime && browser.runtime.sendMessage) {
-			// Edge, Firefox WebExtensions
-			return browser.runtime.sendMessage;
-		}
-		if (chrome.runtime && chrome.runtime.sendMessage) {
-			// Chromium
-			return chrome.runtime.sendMessage;
-		} else if (chrome.extension.sendMessage) {
-			// Old Chromium
-			return chrome.extension.sendMessage;
-		} else {
-			// Old Chromium
-			return chrome.extension.sendRequest;
-		}
-	})();
+        var onMessage = (function () {
+            if (typeof browser !== 'undefined' && browser.runtime && browser.runtime.onMessage) {
+                // Edge, Firefox WebExtensions
+                return browser.runtime.onMessage;
+            }
+            if (chrome.runtime && chrome.runtime.onMessage) {
+                // Chromium
+                return chrome.runtime.onMessage;
+            } else if (chrome.extension.onMessage) {
+                // Old Chromium
+                return chrome.extension.onMessage;
+            } else {
+                // Old Chromium
+                return chrome.extension.onRequest;
+            }
+        })();
 
-	return {
-		onMessage: onMessage,
-		sendMessage: sendMessage
-	};
+        var sendMessage = (function () {
+            if (typeof browser !== 'undefined' && browser.runtime && browser.runtime.sendMessage) {
+                // Edge, Firefox WebExtensions
+                return browser.runtime.sendMessage;
+            }
+            if (chrome.runtime && chrome.runtime.sendMessage) {
+                // Chromium
+                return chrome.runtime.sendMessage;
+            } else if (chrome.extension.sendMessage) {
+                // Old Chromium
+                return chrome.extension.sendMessage;
+            } else {
+                // Old Chromium
+                return chrome.extension.sendRequest;
+            }
+        })();
 
-})();
+        return {
+            onMessage: onMessage,
+            sendMessage: sendMessage
+        };
+
+    })();
+
+})(window);

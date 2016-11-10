@@ -14,15 +14,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global require, exports */
-/**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-var Prefs = require('../../../lib/prefs').Prefs;
-var FilterUtils = require('../../../lib/utils/common').FilterUtils;
-var FilterRule = require('../../../lib/filter/rules/base-filter-rule').FilterRule;
-var Utils = require('../../../lib/utils/browser-utils').Utils;
 
 var isFirefox = (Prefs.platform == "firefox");
 var isShadowDomSupported = Utils.isShadowDomSupported();
@@ -32,7 +23,7 @@ var isShadowDomSupported = Utils.isShadowDomSupported();
  * ABP element hiding rules: http://adguard.com/en/filterrules.html#hideRules
  * CSS injection rules: http://adguard.com/en/filterrules.html#cssInjection
  */
-var CssFilter = exports.CssFilter = function (rules) {
+var CssFilter = function (rules) {
 	this.commonCss = null;
 	this.commonCssHits = null;
 	this.commonRules = [];

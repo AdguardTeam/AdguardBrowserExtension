@@ -14,37 +14,27 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var {Cu, Cc, Ci} = require('chrome');
-
-Cu.import("resource://gre/modules/XPCOMUtils.jsm");
-Cu.import("resource://gre/modules/Services.jsm");
-
-var self = require('sdk/self');
-
-var WorkaroundUtils = require('./utils/workaround').WorkaroundUtils;
-var styleService = require('./styleSheetService');
-var contentScripts = require('./contentScripts').contentScripts;
 
 /**
  * Object that manages toolbar button rendering.
  */
-var PopupButton = exports.PopupButton = {
+var PopupButton = {
 
     TOOLBAR_BUTTON_ID: 'adguard-toggle-button',
     TOOLBAR_BUTTON_CLASS: 'adguard-button-woGqijnGG4UnPRJdhIaw',
     _sdkButtonId: null,
 
     ICON_GRAY: {
-        '16': self.data.url('content/skin/firefox-gray-16.png'),
-        '32': self.data.url('content/skin/firefox-gray-32.png')
+        '16': adguard.extension.url('content/skin/firefox-gray-16.png'),
+        '32': adguard.extension.url('content/skin/firefox-gray-32.png')
     },
     ICON_BLUE: {
-        '16': self.data.url('content/skin/firefox-blue-16.png'),
-        '32': self.data.url('content/skin/firefox-blue-32.png')
+        '16': adguard.extension.url('content/skin/firefox-blue-16.png'),
+        '32': adguard.extension.url('content/skin/firefox-blue-32.png')
     },
     ICON_GREEN: {
-        '16': self.data.url('content/skin/firefox-16.png'),
-        '32': self.data.url('content/skin/firefox-32.png')
+        '16': adguard.extension.url('content/skin/firefox-16.png'),
+        '32': adguard.extension.url('content/skin/firefox-32.png')
     },
 
     init: function (UI, SdkPanel, SdkButton) {
@@ -69,15 +59,15 @@ var PopupButton = exports.PopupButton = {
     initToolbarButtonAndPanel: function () {
 
         var panel = this.SdkPanel({
-            contentURL: self.data.url('content/popup.html'),
+            contentURL: adguard.extension.url('content/popup.html'),
             contentScriptFile: [
-                self.data.url('content/libs/jquery-1.8.3.min.js'),
-                self.data.url('content/content-script/content-script.js'),
-                self.data.url('content/content-script/i18n-helper.js'),
-                self.data.url('content/pages/i18n.js'),
-                self.data.url('content/pages/popup-controller.js'),
-                self.data.url('content/pages/script.js'),
-                self.data.url('content/content-script/panel-popup.js')
+                adguard.extension.url('content/libs/jquery-1.8.3.min.js'),
+                adguard.extension.url('content/content-script/content-script.js'),
+                adguard.extension.url('content/content-script/i18n-helper.js'),
+                adguard.extension.url('content/pages/i18n.js'),
+                adguard.extension.url('content/pages/popup-controller.js'),
+                adguard.extension.url('content/pages/script.js'),
+                adguard.extension.url('content/content-script/panel-popup.js')
             ],
             contentScriptOptions: contentScripts.getContentScriptOptions(),
             contentScriptWhen: 'ready',
@@ -171,7 +161,7 @@ var PopupButton = exports.PopupButton = {
         });
 
         //register sheet for badge
-        styleService.loadUserSheet(self.data.url('content/skin/badge.css'));
+        styleService.loadUserSheet(adguard.extension.url('content/skin/badge.css'));
     },
 
     /**
@@ -260,9 +250,9 @@ var PopupButton = exports.PopupButton = {
         this.popupButtonClasses = [];
 
         var platform = "";
-        if (window.navigator.platform.indexOf("Mac") == 0) {
+        if (window.navigator.platform.indexOf("Mac") === 0) {
             platform = "mac";
-        } else if (window.navigator.platform.indexOf("Linux") == 0) {
+        } else if (window.navigator.platform.indexOf("Linux") === 0) {
             platform = "linux";
         }
 

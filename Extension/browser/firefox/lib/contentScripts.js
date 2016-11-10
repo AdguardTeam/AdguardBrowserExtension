@@ -1,4 +1,4 @@
-/* global require, Services, exports, adguard */
+/* global Cc, Ci, Services */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -15,10 +15,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-var {Cc,Ci} = require('chrome'); // jshint ignore:line
-var Log = require('./utils/log').Log;
-var unload = require('sdk/system/unload');
 
 var ContentScripts = function () {
 };
@@ -52,9 +48,7 @@ ContentScripts.prototype = {
     /**
      * Initializes ContentScripts object
      */
-    init: function (contentMessageHandler) {
-
-        this.contentMessageHandler = contentMessageHandler;
+    init: function () {
         this.i18nMessages = this._geti18nMessages();
 
         // Filter-download.html
@@ -372,7 +366,7 @@ ContentScripts.prototype = {
             return {
                 receiveMessage: receiveMessage
             };
-        })(this.contentMessageHandler);
+        })(contentMessageHandler);
 
         var frameScriptUrl = this._contentUrl('content-script/frame-script.js');
         // Using global MM to register our frame script browser-wide
@@ -412,4 +406,4 @@ ContentScripts.prototype = {
     }
 };
 
-exports.contentScripts = new ContentScripts();
+var contentScripts = new ContentScripts();

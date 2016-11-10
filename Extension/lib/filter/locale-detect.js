@@ -16,22 +16,11 @@
  */
 
 /**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-var Utils = require('../../lib/utils/browser-utils').Utils;
-var Prefs = require('../../lib/prefs').Prefs;
-var UrlUtils = require('../../lib/utils/url').UrlUtils;
-var userSettings = require('../../lib/utils/user-settings').userSettings;
-var EventNotifier = require('../../lib/utils/notifier').EventNotifier;
-var EventNotifierTypes = require('../../lib/utils/common').EventNotifierTypes;
-
-/**
  * Initialize LocaleDetectService.
  *
  * This service is used to auto-enable language-specific filters.
  */
-var LocaleDetectService = exports.LocaleDetectService = function (detectCallback) {
+var LocaleDetectService = function (detectCallback) {
 
     this.detectCallback = detectCallback;
     this.browsingLanguages = [];

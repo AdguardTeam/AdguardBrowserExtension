@@ -16,16 +16,9 @@
  */
 
 /**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-var LS = require('../../lib/utils/local-storage').LS;
-var Log = require('../../lib/utils/log').Log;
-
-/**
  * Global stats
  */
-var PageStatistic = exports.PageStatistic = function () {
+var PageStatistic = function () {
 
 	var pageStatisticProperty = "page-statistic";
 

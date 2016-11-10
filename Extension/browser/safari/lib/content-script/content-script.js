@@ -15,86 +15,87 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 /* global adguard, safari */
-(function () {
 
-	'use strict';
+(function (global, adguard) {
 
-	adguard.runtime = (function () {
+    'use strict';
 
-		var sendMessage = function (message, responseCallback) {
-			adguard.runtimeImpl.sendMessage(safari.self.tab, safari.self, message, responseCallback);
-		};
+    adguard.runtime = (function () {
 
-		var onMessage = {
+        var sendMessage = function (message, responseCallback) {
+            adguard.runtimeImpl.sendMessage(safari.self.tab, safari.self, message, responseCallback);
+        };
 
-			addListener: function (callback) {
+        var onMessage = {
 
-				adguard.runtimeImpl.onMessage.addListener(safari.self, function (event) {
+            addListener: function (callback) {
 
-					var dispatcher = event.target.tab;
-					var sender = {};
+                adguard.runtimeImpl.onMessage.addListener(safari.self, function (event) {
 
-					callback(event.message, sender, function (message) {
-						dispatcher.dispatchMessage("response-" + event.name.substr(8), message);
-					});
-				});
-			}
-		};
+                    var dispatcher = event.target.tab;
+                    var sender = {};
 
-		return {
-			sendMessage: sendMessage,
-			onMessage: onMessage
-		};
+                    callback(event.message, sender, function (message) {
+                        dispatcher.dispatchMessage("response-" + event.name.substr(8), message);
+                    });
+                });
+            }
+        };
 
-	})();
+        return {
+            sendMessage: sendMessage,
+            onMessage: onMessage
+        };
 
-	var ContentScript = {
+    })();
 
-		init: function () {
-			this.contentBlockerEnabled = this._isContentBlockerEnabled();
+    var ContentScript = {
 
-			if (window === window.top) {
-				this._dispatchLoading();
-				this._sendMainFrameLoadedEvent(this.contentBlockerEnabled);
-			}
+        init: function () {
+            this.contentBlockerEnabled = this._isContentBlockerEnabled();
 
-			if (!this.contentBlockerEnabled) {
-				this._addOnbeforeLoadEventListener();
-			}
-		},
+            if (window === window.top) {
+                this._dispatchLoading();
+                this._sendMainFrameLoadedEvent(this.contentBlockerEnabled);
+            }
 
-		_sendMainFrameLoadedEvent: function (contentBlockerEnabled) {
-			function createMainFrameEvent(type) {
-				var data = {
-					url: document.location.href,
-					type: "main_frame",
-					frameId: 0
-				};
+            if (!this.contentBlockerEnabled) {
+                this._addOnbeforeLoadEventListener();
+            }
+        },
 
-				if (contentBlockerEnabled) {
-					safari.self.tab.dispatchMessage('canLoad', {
-						type: type,
-						data: data
-					});
-				} else {
-					var evt = document.createEvent("Event");
-					evt.initEvent("beforeload");
-					safari.self.tab.canLoad(evt, {type: type, data: data});
-				}
-			}
+        _sendMainFrameLoadedEvent: function (contentBlockerEnabled) {
+            function createMainFrameEvent(type) {
+                var data = {
+                    url: document.location.href,
+                    type: "main_frame",
+                    frameId: 0
+                };
 
-			createMainFrameEvent("safariWebRequest");
-			createMainFrameEvent("safariHeadersRequest");
-		},
+                if (contentBlockerEnabled) {
+                    safari.self.tab.dispatchMessage('canLoad', {
+                        type: type,
+                        data: data
+                    });
+                } else {
+                    var evt = document.createEvent("Event");
+                    evt.initEvent("beforeload");
+                    safari.self.tab.canLoad(evt, {type: type, data: data});
+                }
+            }
 
-		_addOnbeforeLoadEventListener: function () {
-			var contentScriptId = Date.now() + Math.random().toString(10).slice(2);
-			var absoluteUrlHelper = document.createElement("a");
-			var onFirstLoadOccurred = false;
+            createMainFrameEvent("safariWebRequest");
+            createMainFrameEvent("safariHeadersRequest");
+        },
 
-			var execTmpScript = function () {
-				var tmpJS = document.createElement("script");
-				tmpJS.textContent = '(function () {\
+        _addOnbeforeLoadEventListener: function () {
+            var contentScriptId = Date.now() + Math.random().toString(10).slice(2);
+            var absoluteUrlHelper = document.createElement("a");
+            var onFirstLoadOccurred = false;
+
+            var execTmpScript = function () {
+                var tmpJS = document.createElement("script");
+                tmpJS.textContent = '(function () {\
 									var block = function (url, type) {\
 										var event = new CustomEvent("' + contentScriptId + '", {\
 											detail: {\
@@ -117,206 +118,205 @@
 										}\
 									}\
 								})();';
-				document.documentElement.removeChild(document.documentElement.appendChild(tmpJS));
-			};
+                document.documentElement.removeChild(document.documentElement.appendChild(tmpJS));
+            };
 
-			var canLoadCache = {
-				createKey: function (url, type, frameId) {
-					return type + frameId + url;
-				},
+            var canLoadCache = {
+                createKey: function (url, type, frameId) {
+                    return type + frameId + url;
+                },
 
-				add: function (url, type, frameId, value) {
-					this[this.createKey(url, type, frameId)] = value;
-				},
+                add: function (url, type, frameId, value) {
+                    this[this.createKey(url, type, frameId)] = value;
+                },
 
-				get: function (url, type, frameId) {
-					return this[this.createKey(url, type, frameId)];
-				}
-			};
+                get: function (url, type, frameId) {
+                    return this[this.createKey(url, type, frameId)];
+                }
+            };
 
-			var canLoadRequest = function (url, type, frameId) {
-				var cached = canLoadCache.get(url, type, frameId);
-				if (cached === true || cached === false) {
-					return cached;
-				}
+            var canLoadRequest = function (url, type, frameId) {
+                var cached = canLoadCache.get(url, type, frameId);
+                if (cached === true || cached === false) {
+                    return cached;
+                }
 
-				var canLoad = safari.self.tab.canLoad(event, {
-					type: "safariWebRequest", data: {
-						url: url,
-						type: type,
-						frameId: frameId,
-						requestFrameId: 0
-					}
-				});
+                var canLoad = safari.self.tab.canLoad(event, {
+                    type: "safariWebRequest", data: {
+                        url: url,
+                        type: type,
+                        frameId: frameId,
+                        requestFrameId: 0
+                    }
+                });
 
-				canLoadCache.add(url, type, frameId, canLoad);
-				return canLoad;
-			};
+                canLoadCache.add(url, type, frameId, canLoad);
+                return canLoad;
+            };
 
-			var onBeforeLoad = function (event) {
-				if (!onFirstLoadOccurred) {
-					onFirstLoad();
-				}
+            var onBeforeLoad = function (event) {
+                if (!onFirstLoadOccurred) {
+                    onFirstLoad();
+                }
 
-				absoluteUrlHelper.href = event.url;
-				var url = absoluteUrlHelper.href;
+                absoluteUrlHelper.href = event.url;
+                var url = absoluteUrlHelper.href;
 
-				if (!/^https?:/.test(url)) {
-					return;
-				}
+                if (!/^https?:/.test(url)) {
+                    return;
+                }
 
-				var type;
-				switch (event.target.localName) {
-					case "link":
-						if (/(^|\s)stylesheet($|\s)/i.test(event.target.rel)) {
-							type = "stylesheet";
-							break;
-						} else {
-							type = "other";
-						}
-						break;
-					case "img":
-						type = "image";
-						break;
-					case "frame":
-					case "iframe":
-						type = "sub_frame";
-						break;
-					case "object":
-					case "embed":
-						type = "object";
-						break;
-					case "script":
-						type = "script";
-						break;
-					default:
-						type = "other";
-						break;
-				}
+                var type;
+                switch (event.target.localName) {
+                    case "link":
+                        if (/(^|\s)stylesheet($|\s)/i.test(event.target.rel)) {
+                            type = "stylesheet";
+                            break;
+                        } else {
+                            type = "other";
+                        }
+                        break;
+                    case "img":
+                        type = "image";
+                        break;
+                    case "frame":
+                    case "iframe":
+                        type = "sub_frame";
+                        break;
+                    case "object":
+                    case "embed":
+                        type = "object";
+                        break;
+                    case "script":
+                        type = "script";
+                        break;
+                    default:
+                        type = "other";
+                        break;
+                }
 
-				var frameId;
-				if (type === "sub_frame") {
-					frameId = Math.random();
-				}
+                var frameId;
+                if (type === "sub_frame") {
+                    frameId = Math.random();
+                }
 
-				if (!canLoadRequest(url, type, frameId)) {
-					event.preventDefault();
+                if (!canLoadRequest(url, type, frameId)) {
+                    event.preventDefault();
 
-					if (type !== "sub_frame") {
-						setTimeout(function () {
-							var evt = document.createEvent("Event");
-							evt.initEvent("error");
-							event.target.dispatchEvent(evt);
-						}, 0);
-					}
-				}
+                    if (type !== "sub_frame") {
+                        setTimeout(function () {
+                            var evt = document.createEvent("Event");
+                            evt.initEvent("error");
+                            event.target.dispatchEvent(evt);
+                        }, 0);
+                    }
+                }
 
-			};
-			document.addEventListener("beforeload", onBeforeLoad, true);
+            };
+            document.addEventListener("beforeload", onBeforeLoad, true);
 
-			var onFirstLoad = function () {
-				document.removeEventListener("DOMContentLoaded", onFirstLoad, true);
-				onFirstLoadOccurred = true;
-				document.addEventListener(contentScriptId, function (e) {
-					absoluteUrlHelper.href = e.detail.url;
-					if (!canLoadRequest(absoluteUrlHelper.href, e.detail.type)) {
-						e.detail.url = false;
-					}
-				});
-				execTmpScript();
-			};
-			document.addEventListener("DOMContentLoaded", onFirstLoad, true);
-		},
+            var onFirstLoad = function () {
+                document.removeEventListener("DOMContentLoaded", onFirstLoad, true);
+                onFirstLoadOccurred = true;
+                document.addEventListener(contentScriptId, function (e) {
+                    absoluteUrlHelper.href = e.detail.url;
+                    if (!canLoadRequest(absoluteUrlHelper.href, e.detail.type)) {
+                        e.detail.url = false;
+                    }
+                });
+                execTmpScript();
+            };
+            document.addEventListener("DOMContentLoaded", onFirstLoad, true);
+        },
 
-		_dispatchLoading: function () {
-			safari.self.tab.dispatchMessage("loading", document.location.href);
-		},
+        _dispatchLoading: function () {
+            safari.self.tab.dispatchMessage("loading", document.location.href);
+        },
 
-		/**
-		 * By default we use new Content Blocker API for Safari 9+.
-		 */
-		_isContentBlockerEnabled: function () {
+        /**
+         * By default we use new Content Blocker API for Safari 9+.
+         */
+        _isContentBlockerEnabled: function () {
 
-			var contentBlockerEnabled = this.isSafari9OrNewer();
+            var contentBlockerEnabled = this.isSafari9OrNewer();
 
-			if (contentBlockerEnabled && safari.self && safari.self.tab && safari.self.tab.canLoad) {
-				try {
-					// Now check if content blocker API is not overriden in extension settings
-					// Checking useOldSafariAPI extension setting
-					var evt = document.createEvent("Event");
-					evt.initEvent("useContentBlockerAPI");
-					var useContentBlockerAPI = safari.self.tab.canLoad(evt, {type: "useContentBlockerAPI", data: {}});
-					return contentBlockerEnabled && useContentBlockerAPI;
-				} catch (ex) {
-					// Ignore
-				}
-			}
+            if (contentBlockerEnabled && safari.self && safari.self.tab && safari.self.tab.canLoad) {
+                try {
+                    // Now check if content blocker API is not overriden in extension settings
+                    // Checking useOldSafariAPI extension setting
+                    var evt = document.createEvent("Event");
+                    evt.initEvent("useContentBlockerAPI");
+                    var useContentBlockerAPI = safari.self.tab.canLoad(evt, {type: "useContentBlockerAPI", data: {}});
+                    return contentBlockerEnabled && useContentBlockerAPI;
+                } catch (ex) {
+                    // Ignore
+                }
+            }
 
-			return contentBlockerEnabled;
-		},
+            return contentBlockerEnabled;
+        },
 
-		/**
-		 * Checks Safari version
-		 */
-		isSafari9OrNewer: function () {
-			var parseSafariVersion = function () {
-				var userAgent = navigator.userAgent;
-				var i = userAgent.indexOf("Version/");
-				if (i === 0) {
-					return "";
-				}
+        /**
+         * Checks Safari version
+         */
+        isSafari9OrNewer: function () {
+            var parseSafariVersion = function () {
+                var userAgent = navigator.userAgent;
+                var i = userAgent.indexOf("Version/");
+                if (i === 0) {
+                    return "";
+                }
 
-				var end = userAgent.indexOf(" ", i);
-				return userAgent.substring(i + 8, end > 0 ? end : userAgent.length);
-			};
+                var end = userAgent.indexOf(" ", i);
+                return userAgent.substring(i + 8, end > 0 ? end : userAgent.length);
+            };
 
-			var isGreaterOrEqualsVersion = function (leftVersion, rightVersion) {
-				var Version = function (version) {
+            var isGreaterOrEqualsVersion = function (leftVersion, rightVersion) {
+                var Version = function (version) {
 
-					this.version = Object.create(null);
+                    this.version = Object.create(null);
 
-					var parts = (version || "").split(".");
+                    var parts = (version || "").split(".");
 
-					function parseVersionPart(part) {
-						if (isNaN(part)) {
-							return 0;
-						}
-						return Math.max(part - 0, 0);
-					}
+                    function parseVersionPart(part) {
+                        if (isNaN(part)) {
+                            return 0;
+                        }
+                        return Math.max(part - 0, 0);
+                    }
 
-					for (var i = 3; i >= 0; i--) {
-						this.version[i] = parseVersionPart(parts[i]);
-					}
-				};
+                    for (var i = 3; i >= 0; i--) {
+                        this.version[i] = parseVersionPart(parts[i]);
+                    }
+                };
 
-				Version.prototype.compare = function (o) {
-					for (var i = 0; i < 4; i++) {
-						if (this.version[i] > o.version[i]) {
-							return 1;
-						} else if (this.version[i] < o.version[i]) {
-							return -1;
-						}
-					}
-					return 0;
-				};
+                Version.prototype.compare = function (o) {
+                    for (var i = 0; i < 4; i++) {
+                        if (this.version[i] > o.version[i]) {
+                            return 1;
+                        } else if (this.version[i] < o.version[i]) {
+                            return -1;
+                        }
+                    }
+                    return 0;
+                };
 
-				var left = new Version(leftVersion);
-				var right = new Version(rightVersion);
-				return left.compare(right) >= 0;
-			};
+                var left = new Version(leftVersion);
+                var right = new Version(rightVersion);
+                return left.compare(right) >= 0;
+            };
 
-			var version = parseSafariVersion();
-			return isGreaterOrEqualsVersion(version, "9.0");
-		}
-	};
+            var version = parseSafariVersion();
+            return isGreaterOrEqualsVersion(version, "9.0");
+        }
+    };
 
-	ContentScript.init();
-})();
+    ContentScript.init();
 
-// Content script API implementation
-var contentPage = {
-	sendMessage: adguard.runtime.sendMessage,
-	onMessage: adguard.runtime.onMessage
-};
+    // Content script API implementation
+    global.contentPage = {
+        sendMessage: adguard.runtime.sendMessage,
+        onMessage: adguard.runtime.onMessage
+    };
 
-var i18n = adguard.i18n;
+})(window, adguard);

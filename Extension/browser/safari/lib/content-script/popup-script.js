@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global $, adguard, safari, controller, UI */
+/* global $, safari, controller, UI */
 
 (function () {
 

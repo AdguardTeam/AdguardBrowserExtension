@@ -15,14 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-
-/* global exports */
-
-var StringUtils = exports.StringUtils = {
+var StringUtils = {
 
     isEmpty: function (str) {
         return !str || str.trim().length === 0;
@@ -124,7 +117,7 @@ var StringUtils = exports.StringUtils = {
     }
 };
 
-var CollectionUtils = exports.CollectionUtils = {
+var CollectionUtils = {
 
     remove: function (collection, element) {
         if (!element || !collection) {
@@ -152,7 +145,7 @@ var CollectionUtils = exports.CollectionUtils = {
             return;
         }
         for (var i = collection.length - 1; i >= 0; i--) {
-            if (rule.ruleText == collection[i].ruleText) {
+            if (rule.ruleText === collection[i].ruleText) {
                 collection.splice(i, 1);
             }
         }
@@ -179,7 +172,7 @@ var CollectionUtils = exports.CollectionUtils = {
     }
 };
 
-var EventNotifierTypes = exports.EventNotifierTypes = {
+var EventNotifierTypes = {
     ADD_RULE: "event.add.rule",
     ADD_RULES: "event.add.rules",
     REMOVE_RULE: "event.remove.rule",
@@ -209,7 +202,7 @@ var EventNotifierTypes = exports.EventNotifierTypes = {
 /**
  * Request types enumeration
  */
-var RequestTypes = exports.RequestTypes = {
+var RequestTypes = {
 
     /**
      * Document that is loaded for a top-level frame
@@ -243,14 +236,14 @@ var RequestTypes = exports.RequestTypes = {
      * @returns {boolean} true if request is for some visual element
      */
     isVisual: function (requestType) {
-        return requestType == this.DOCUMENT ||
-            requestType == this.SUBDOCUMENT ||
-            requestType == this.OBJECT ||
-            requestType == this.IMAGE;
+        return requestType === this.DOCUMENT ||
+            requestType === this.SUBDOCUMENT ||
+            requestType === this.OBJECT ||
+            requestType === this.IMAGE;
     }
 };
 
-var AntiBannerFiltersId = exports.AntiBannerFiltersId = {
+var AntiBannerFiltersId = {
     USER_FILTER_ID: 0,
     ENGLISH_FILTER_ID: 2,
     TRACKING_FILTER_ID: 3,
@@ -264,7 +257,7 @@ var AntiBannerFiltersId = exports.AntiBannerFiltersId = {
     FANBOY_ENHANCED: 215
 };
 
-var LogEvents = exports.LogEvents = {
+var LogEvents = {
     TAB_ADDED: 'log.tab.added',
     TAB_CLOSE: 'log.tab.close',
     TAB_UPDATE: 'log.tab.update',
@@ -272,7 +265,7 @@ var LogEvents = exports.LogEvents = {
     EVENT_ADDED: 'log.event.added'
 };
 
-var FilterUtils = exports.FilterUtils = {
+var FilterUtils = {
 
     isUserFilter: function (filter) {
         return filter.filterId == AntiBannerFiltersId.USER_FILTER_ID;
@@ -296,7 +289,7 @@ var FilterUtils = exports.FilterUtils = {
     }
 };
 
-var StopWatch = exports.StopWatch = function (name) {
+var StopWatch = function (name) {
     this.name = name;
 };
 
@@ -316,7 +309,7 @@ StopWatch.prototype = {
     }
 };
 
-var EventChannels = exports.EventChannels = (function () {
+var EventChannels = (function () {
 
     'use strict';
 
@@ -349,11 +342,60 @@ var EventChannels = exports.EventChannels = (function () {
         };
     };
 
+    var namedChannels = Object.create(null);
+
     var newChannel = function () {
         return new EventChannel();
     };
 
+    var newNamedChannel = function (name) {
+        var channel = newChannel();
+        namedChannels[name] = channel;
+        return channel;
+    };
+
+    var getNamedChannel = function (name) {
+        return namedChannels[name];
+    };
+
     return {
-        newChannel: newChannel
+        newChannel: newChannel,
+        newNamedChannel: newNamedChannel,
+        getNamedChannel: getNamedChannel
     };
 })();
+
+(function (global) {
+
+    'use strict';
+
+    global.unload = (function () {
+
+        var unloadChannel = EventChannels.newChannel();
+
+        var when = function (callback) {
+            if (typeof callback !== 'function') {
+                return;
+            }
+            unloadChannel.addListener(function () {
+                try {
+                    callback();
+                } catch (ex) {
+                    console.error('Error while invoke unload method');
+                    console.error(ex);
+                }
+            });
+        };
+
+        var fireUnload = function (reason) {
+            console.info('Unload is fired: ' + reason);
+            unloadChannel.notify(reason);
+        };
+
+        return {
+            when: when,
+            fireUnload: fireUnload
+        };
+    })();
+
+})(window);

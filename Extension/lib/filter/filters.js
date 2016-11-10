@@ -14,31 +14,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global require, exports */
-
-/**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-var UrlFilter = require('../../lib/filter/rules/url-filter').UrlFilter;
-var CssFilter = require('../../lib/filter/rules/css-filter').CssFilter;
-var CssFilterRule = require('../../lib/filter/rules/css-filter-rule').CssFilterRule;
-var ScriptFilter = require('../../lib/filter/rules/script-filter').ScriptFilter;
-var ScriptFilterRule = require('../../lib/filter/rules/script-filter-rule').ScriptFilterRule;
-var UrlFilterRule = require('../../lib/filter/rules/url-filter-rule').UrlFilterRule;
-var SafebrowsingFilter = require('../../lib/filter/safebrowsing-filter').SafebrowsingFilter;
-var Log = require('../../lib/utils/log').Log;
-var UrlUtils = require('../../lib/utils/url').UrlUtils;
-var StringUtils = require('../../lib/utils/common').StringUtils;
-var Prefs = require('../../lib/prefs').Prefs;
-var userSettings = require('../../lib/utils/user-settings').userSettings;
 
 /**
  * Request filter is main class which applies filter rules.
  *
  * @type {Function}
  */
-var RequestFilter = exports.RequestFilter = function () {
+var RequestFilter = function () {
 
     // Filter that applies URL blocking rules
     // Basic rules: http://adguard.com/en/filterrules.html#baseRules

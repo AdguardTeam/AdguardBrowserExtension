@@ -14,22 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global adguard, require */
-
-var self = require('sdk/self');
-var unload = require('sdk/system/unload');
-
-var Prefs = require('./prefs').Prefs;
-var ContextMenu = require('./contextMenu').ContextMenu;
-var PopupButton = require('./popupButton').PopupButton;
-var MobileMenu = require('./mobileMenu').MobileMenu;
-var UrlUtils = require('./utils/url').UrlUtils;
-var Utils = require('./utils/browser-utils').Utils;
-var EventNotifier = require('./utils/notifier').EventNotifier;
-var EventNotifierTypes = require('./utils/common').EventNotifierTypes;
-var RequestTypes = require('./utils/common').RequestTypes;
-var userSettings = require('./utils/user-settings').userSettings;
-var contentScripts = require('./contentScripts').contentScripts;
+/* global i18n */
 
 /**
  * UI entry point.
@@ -37,14 +22,9 @@ var contentScripts = require('./contentScripts').contentScripts;
  * Inits toolbar button and context menu.
  * Contains methods managing browser tabs (open/close tabs).
  */
-var UI = exports.UI = {
+var UI = {
 
-    init: function (antiBannerService, framesMap, filteringLog, adguardApplication, SdkPanel, SdkContextMenu, SdkButton) {
-
-        this.antiBannerService = antiBannerService;
-        this.framesMap = framesMap;
-        this.filteringLog = filteringLog;
-        this.adguardApplication = adguardApplication;
+    init: function (SdkPanel, SdkContextMenu, SdkButton) {
 
         this._initContextMenu(SdkContextMenu);
         this._initAbusePanel(SdkPanel);
@@ -60,7 +40,7 @@ var UI = exports.UI = {
         adguard.tabs.getAll(function (tabs) {
             for (var i = 0; i < tabs.length; i++) {
                 var tab = tabs[i];
-                this.framesMap.recordFrame(tab, 0, tab.url, RequestTypes.DOCUMENT);
+                framesMap.recordFrame(tab, 0, tab.url, RequestTypes.DOCUMENT);
                 this._updatePopupButtonState(tab);
             }
         }.bind(this));
@@ -70,7 +50,7 @@ var UI = exports.UI = {
     },
 
     resetBlockedAdsCount: function () {
-        this.framesMap.resetBlockedAdsCount();
+        framesMap.resetBlockedAdsCount();
     },
 
     openTab: function (url, options, callback) {
@@ -139,7 +119,7 @@ var UI = exports.UI = {
 
     openCurrentTabFilteringLog: function () {
         adguard.tabs.getActive(function (tab) {
-            var tabInfo = this.filteringLog.getTabInfo(tab);
+            var tabInfo = filteringLog.getTabInfo(tab);
             var tabId = tabInfo ? tabInfo.tabId : null;
             this.openFilteringLog(tabId);
         }.bind(this));
@@ -216,7 +196,7 @@ var UI = exports.UI = {
 
     getAssistantCssOptions: function () {
         return {
-            cssLink: self.data.url("content/content-script/assistant/css/assistant.css")
+            cssLink: adguard.extension.url("content/content-script/assistant/css/assistant.css")
         };
     },
 
@@ -236,12 +216,12 @@ var UI = exports.UI = {
 
     whiteListTab: function (tab) {
 
-        var tabInfo = this.framesMap.getFrameInfo(tab);
-        this.antiBannerService.whiteListFrame(tabInfo);
+        var tabInfo = framesMap.getFrameInfo(tab);
+        antiBannerService.whiteListFrame(tabInfo);
 
-        if (this.framesMap.isTabAdguardDetected(tab)) {
+        if (framesMap.isTabAdguardDetected(tab)) {
             var domain = UrlUtils.getHost(tab.url);
-            this.adguardApplication.addRuleToApp("@@//" + domain + "^$document", function () {
+            adguardApplication.addRuleToApp("@@//" + domain + "^$document", function () {
                 this._reloadWithoutCache(tab);
             }.bind(this));
         } else {
@@ -257,13 +237,13 @@ var UI = exports.UI = {
 
     unWhiteListTab: function (tab) {
 
-        var tabInfo = this.framesMap.getFrameInfo(tab);
-        this.antiBannerService.unWhiteListFrame(tabInfo);
+        var tabInfo = framesMap.getFrameInfo(tab);
+        antiBannerService.unWhiteListFrame(tabInfo);
 
-        if (this.framesMap.isTabAdguardDetected(tab)) {
-            var rule = this.framesMap.getTabAdguardUserWhiteListRule(tab);
+        if (framesMap.isTabAdguardDetected(tab)) {
+            var rule = framesMap.getTabAdguardUserWhiteListRule(tab);
             if (rule) {
-                this.adguardApplication.removeRuleFromApp(rule.ruleText, function () {
+                adguardApplication.removeRuleFromApp(rule.ruleText, function () {
                     this._reloadWithoutCache(tab);
                 }.bind(this));
             }
@@ -279,38 +259,38 @@ var UI = exports.UI = {
     },
 
     changeApplicationFilteringDisabled: function (disabled) {
-        this.antiBannerService.changeApplicationFilteringDisabled(disabled);
+        antiBannerService.changeApplicationFilteringDisabled(disabled);
         this.updateCurrentTabButtonState();
     },
 
     getCurrentTabInfo: function (callback, reloadFrameData) {
         adguard.tabs.getActive(function (tab) {
             if (reloadFrameData) {
-                this.framesMap.reloadFrameData(tab);
+                framesMap.reloadFrameData(tab);
             }
-            callback(this.framesMap.getFrameInfo(tab));
+            callback(framesMap.getFrameInfo(tab));
         }.bind(this));
     },
 
     getTabInfo: function (tab, reloadFrameData) {
         if (reloadFrameData) {
-            this.framesMap.reloadFrameData(tab);
+            framesMap.reloadFrameData(tab);
         }
-        return this.framesMap.getFrameInfo(tab);
+        return framesMap.getFrameInfo(tab);
     },
 
     getTabFilteringInfo: function (tab) {
-        return this.filteringLog.getTabInfo(tab);
+        return filteringLog.getTabInfo(tab);
     },
 
     isCurrentTabAdguardDetected: function (callback) {
         adguard.tabs.getActive(function (tab) {
-            callback(this.framesMap.isTabAdguardDetected(tab));
+            callback(framesMap.isTabAdguardDetected(tab));
         }.bind(this));
     },
 
     checkAntiBannerFiltersUpdate: function () {
-        this.antiBannerService.checkAntiBannerFiltersUpdate(true, function (updatedFilters) {
+        antiBannerService.checkAntiBannerFiltersUpdate(true, function (updatedFilters) {
             EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTERS_SHOW_POPUP, true, updatedFilters);
         }, function () {
             EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTERS_SHOW_POPUP, false);
@@ -328,21 +308,21 @@ var UI = exports.UI = {
     },
 
     _initAbusePanel: function (SdkPanel) {
-        this.abusePanelSupported = SdkPanel != null && typeof SdkPanel == 'function';
+        this.abusePanelSupported = SdkPanel && typeof SdkPanel === 'function';
         if (!this.abusePanelSupported) {
             return;
         }
-        this.abusePanel = SdkPanel({
+        this.abusePanel = SdkPanel({ // jshint ignore:line
             width: 552,
             height: 345,
-            contentURL: self.data.url('content/content-script/abuse.html'),
+            contentURL: adguard.extension.url('content/content-script/abuse.html'),
             contentScriptOptions: contentScripts.getContentScriptOptions(),
             contentScriptFile: [
-                self.data.url('content/libs/jquery-1.8.3.min.js'),
-                self.data.url('content/content-script/content-script.js'),
-                self.data.url('content/content-script/i18n-helper.js'),
-                self.data.url('content/pages/i18n.js'),
-                self.data.url('content/content-script/abuse.js')
+                adguard.extension.url('content/libs/jquery-1.8.3.min.js'),
+                adguard.extension.url('content/content-script/content-script.js'),
+                adguard.extension.url('content/content-script/i18n-helper.js'),
+                adguard.extension.url('content/pages/i18n.js'),
+                adguard.extension.url('content/content-script/abuse.js')
             ]
         });
 
@@ -351,10 +331,8 @@ var UI = exports.UI = {
                 case 'sendFeedback':
                     adguard.tabs.getActive(function (tab) {
                         var url = tab.url;
-                        this.antiBannerService.sendFeedback(url, message.topic, message.comment);
+                        antiBannerService.sendFeedback(url, message.topic, message.comment);
                     }.bind(this));
-                    //var url = sdkTabs.activeTab.url;
-                    //this.antiBannerService.sendFeedback(url, message.topic, message.comment);
                     break;
                 case 'closeAbusePanel':
                     this.abusePanel.hide();
@@ -364,7 +342,7 @@ var UI = exports.UI = {
     },
 
     _initContextMenu: function (SdkContextMenu) {
-        if (SdkContextMenu != null) {
+        if (SdkContextMenu) {
             ContextMenu.init(this, SdkContextMenu);
         }
     },
@@ -374,8 +352,6 @@ var UI = exports.UI = {
     },
 
     _initEventListener: function () {
-
-        var framesMap = this.framesMap;
 
         EventNotifier.addListener(function (event, tab, reset) {
 
@@ -404,7 +380,7 @@ var UI = exports.UI = {
 
             var blockedAds = framesMap.updateBlockedAdsCount(tab, blocked);
 
-            if (blockedAds == null || Prefs.mobile || !userSettings.showPageStatistic()) {
+            if (blockedAds === null || Prefs.mobile || !userSettings.showPageStatistic()) {
                 return;
             }
 
@@ -415,17 +391,6 @@ var UI = exports.UI = {
         var updateTabIcon = function (tab) {
             this._updatePopupButtonState(tab, true);
         }.bind(this);
-
-        ////tab events
-        //tabs.on('activate', updateActiveTabIcon);
-        //tabs.on('pageshow', updateActiveTabIcon);
-        //tabs.on('load', updateActiveTabIcon);
-        //tabs.on('ready', updateActiveTabIcon);
-        ////on focus change
-        //sdkWindows.on('activate', function () {
-        //    var activeTab = this.getActiveTab();
-        //    this._updatePopupButtonState(activeTab, true);
-        //}.bind(this));
 
         adguard.tabs.onUpdated.addListener(updateTabIcon);
         adguard.tabs.onActivated.addListener(updateTabIcon);
@@ -448,12 +413,12 @@ var UI = exports.UI = {
         }
 
         if (reloadFrameData) {
-            this.framesMap.reloadFrameData(tab);
+            framesMap.reloadFrameData(tab);
         }
 
         var disabled, blocked;
 
-        var tabInfo = this.framesMap.getFrameInfo(tab);
+        var tabInfo = framesMap.getFrameInfo(tab);
 
         if (tabInfo.adguardDetected) {
             blocked = "";

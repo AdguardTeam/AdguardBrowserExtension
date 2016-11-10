@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global exports */
+
 /**
  * Simple logger with log levels
  */
-var Log = exports.Log = (function() {
+var Log = (function() {
 	
 	// Redefine if you need it
 	var CURRENT_LEVEL = "INFO";

@@ -16,19 +16,12 @@
  */
 
 /**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-var Log = require('../../lib/utils/log').Log;
-var LS = require('../../lib/utils/local-storage').LS;
-
-/**
  * Cache with maxCacheSize stored in local storage.
  *
  * @param lsProperty    Name of the local storage property.
  * @param size          Max cache size
  */
-var LocalStorageCache = exports.LocalStorageCache = function (lsProperty, size) {
+var LocalStorageCache = function (lsProperty, size) {
 	this.lsProperty = lsProperty;
 	this.maxCacheSize = size || this.CACHE_SIZE;
 	this.load();
@@ -85,7 +78,7 @@ LocalStorageCache.prototype = {
 		};
 		this.cacheSize++;
 
-		if (this.cacheSize % 20 == 0) {
+		if (this.cacheSize % 20 === 0) {
 			this._saveCache(cache);
 		}
 	},

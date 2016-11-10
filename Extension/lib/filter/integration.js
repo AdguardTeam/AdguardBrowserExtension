@@ -14,25 +14,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global require, exports */
-/**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-var userSettings = require('../../lib/utils/user-settings').userSettings;
-var ServiceClient = require('../../lib/utils/service-client').ServiceClient;
-var FilterRuleBuilder = require('../../lib/filter/rules/filter-rule-builder').FilterRuleBuilder;
-var UrlFilterRule = require('../../lib/filter/rules/url-filter-rule').UrlFilterRule;
-var StringUtils = require('../../lib/utils/common').StringUtils;
-var RequestTypes = require('../../lib/utils/common').RequestTypes;
 
 /**
  * AdguardApplication is used for integration of Adguard extension and Adguard for Windows/Mac/Android versions.
  */
-var AdguardApplication = exports.AdguardApplication = function (framesMap) {
+var AdguardApplication = function () {
 	this.serviceClient = new ServiceClient();
 	this.integrationMode = this.INTEGRATION_MODE_FULL;
-	this.framesMap = framesMap;
 };
 
 AdguardApplication.prototype = {
@@ -140,7 +128,7 @@ AdguardApplication.prototype = {
 	 * @param tab Tab
 	 */
 	shouldOverrideReferrer: function (tab) {
-		return this.framesMap.isTabAdguardWhiteListed(tab);
+		return framesMap.isTabAdguardWhiteListed(tab);
 	},
 
 	/**
@@ -218,7 +206,7 @@ AdguardApplication.prototype = {
 
 		if (!adguardAppHeaderValue) {
 			// No X-Adguard-Filtered header, disable integration mode for this tab
-			this.framesMap.recordAdguardIntegrationForTab(tab, false, false, false, null, null, false);
+			framesMap.recordAdguardIntegrationForTab(tab, false, false, false, null, null, false);
 			return;
 		}
 
@@ -229,7 +217,7 @@ AdguardApplication.prototype = {
 		this.adguardAppVersion = appInfo.adguardAppVersion;
 		this.integrationMode = appInfo.integrationMode;
 
-		var fullIntegrationMode = this.integrationMode == this.INTEGRATION_MODE_FULL;
+		var fullIntegrationMode = this.integrationMode === this.INTEGRATION_MODE_FULL;
 
 		// Check for white list rule in frame
 		var ruleInfo = Object.create(null);
@@ -239,7 +227,7 @@ AdguardApplication.prototype = {
 
 		// Save integration info to framesMap
 		var adguardRemoveRuleNotSupported = !fullIntegrationMode;
-		this.framesMap.recordAdguardIntegrationForTab(tab, true, ruleInfo.documentWhiteListed, ruleInfo.userWhiteListed, ruleInfo.headerRule, appInfo.adguardProductName, adguardRemoveRuleNotSupported);
+		framesMap.recordAdguardIntegrationForTab(tab, true, ruleInfo.documentWhiteListed, ruleInfo.userWhiteListed, ruleInfo.headerRule, appInfo.adguardProductName, adguardRemoveRuleNotSupported);
 
 		userSettings.changeShowInfoAboutAdguardFullVersion(false);
 	},
@@ -273,7 +261,7 @@ AdguardApplication.prototype = {
 			if (/Adguard\s+(\d\.\d)/.test(header)) {
 				result.adguardAppVersion = RegExp.$1;
 			}
-			if (this.adguardAppVersion == "5.8") {
+			if (this.adguardAppVersion === "5.8") {
 				result.integrationMode = this.INTEGRATION_MODE_OLD;
 			} else {
 				result.integrationMode = this.INTEGRATION_MODE_DEFAULT;
@@ -328,3 +316,5 @@ AdguardApplication.prototype = {
 		return FilterRuleBuilder.createRule(headerInfo.rule, headerInfo.filterId - 0);
 	}
 };
+
+var adguardApplication = new AdguardApplication();

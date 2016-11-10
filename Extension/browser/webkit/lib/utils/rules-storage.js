@@ -15,11 +15,11 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global exports, LS */
+/* global LS */
 /**
  * Filter rules storage adapter
  */
-var RulesStorage = exports.RulesStorage = (function() {
+var RulesStorage = (function() {
     
     var read = function (path, callback) {
 		try {

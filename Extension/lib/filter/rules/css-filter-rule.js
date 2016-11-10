@@ -14,13 +14,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global require, exports */
-/**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-var StringUtils = require('../../../lib/utils/common').StringUtils;
-var FilterRule = require('../../../lib/filter/rules/base-filter-rule').FilterRule;
 
 /**
  * CSS rule.
@@ -29,7 +22,7 @@ var FilterRule = require('../../../lib/filter/rules/base-filter-rule').FilterRul
  * http://adguard.com/en/filterrules.html#hideRules
  * http://adguard.com/en/filterrules.html#cssInjection
  */
-var CssFilterRule = exports.CssFilterRule = (function () {
+var CssFilterRule = (function () {
     /**
      * The problem with pseudo-classes is that any unknown pseudo-class makes browser ignore the whole CSS rule,
      * which contains a lot more selectors. So, if CSS selector contains a pseudo-class, we should try to validate it.

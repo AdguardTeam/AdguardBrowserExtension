@@ -1,4 +1,4 @@
-/* global chrome, adguard, Log, Prefs, EventChannels */
+/* global chrome Log, Prefs, EventChannels */
 
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -32,6 +32,7 @@ adguard.windowsImpl = (function () {
 
     var onCreatedChannel = EventChannels.newChannel();
     var onRemovedChannel = EventChannels.newChannel();
+    var onUpdatedChannel = EventChannels.newChannel();
 
     // https://developer.chrome.com/extensions/windows#event-onCreated
     browser.windows.onCreated.addListener(function (chromeWin) {
@@ -73,6 +74,7 @@ adguard.windowsImpl = (function () {
 
         onCreated: onCreatedChannel,
         onRemoved: onRemovedChannel,
+        onUpdated: onUpdatedChannel,
 
         create: create,
         getAll: getAll,

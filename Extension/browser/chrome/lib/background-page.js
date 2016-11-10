@@ -15,14 +15,13 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global chrome, adguard, Prefs, Log, RequestTypes, Utils */
+/* global chrome, RequestTypes, Utils */
 
-var ext;
-var browser = browser || chrome;
-
-(function () {
+(function (global) {
 
 	'use strict';
+
+	var browser = global.browser = browser || chrome;
 
 	adguard.runtime = (function () {
 
@@ -177,13 +176,13 @@ var browser = browser || chrome;
 	/**
 	 * Common API for all platforms
 	 */
-	ext = {};
+	var ext = global.ext = {};
 	/**
 	 * Gets URL of a file that belongs to our extension
 	 */
 	ext.getURL = browser.extension.getURL;
 
-	window.i18n = ext.i18n = browser.i18n;
+	global.i18n = ext.i18n = browser.i18n;
 
 	ext.backgroundPage = {};
 	ext.backgroundPage.getWindow = function () {
@@ -256,7 +255,7 @@ var browser = browser || chrome;
 		onCreatedNavigationTarget: onCreatedNavigationTarget
 	};
 
-	//noinspection JSUnusedLocalSymbols
+	//noinspection JSUnusedLocalSymbols,JSHint
 	ext.browserAction = {
 		setBrowserAction: function (tab, icon, badge, badgeColor, title) {
 
@@ -295,4 +294,4 @@ var browser = browser || chrome;
 
 	ext.contextMenus = browser.contextMenus;
 
-})();
+})(window);

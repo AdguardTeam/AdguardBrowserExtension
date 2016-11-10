@@ -15,22 +15,12 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global exports, require, adguard */
-
-var {Cu, Cc, Ci} = require('chrome');
-
-Cu.import("resource://gre/modules/XPCOMUtils.jsm");
-Cu.import("resource://gre/modules/Services.jsm");
-
-var self = require('sdk/self');
-var system = require('sdk/system');
-var events = require('sdk/system/events');
-var unload = require('sdk/system/unload');
+/* global Cu, Services, i18n */
 
 /**
  * Object that manages mobile menu rendering.
  */
-var MobileMenu = exports.MobileMenu = {
+var MobileMenu = {
 
     nativeMenuIds: Object.create(null),
 
@@ -48,21 +38,26 @@ var MobileMenu = exports.MobileMenu = {
             this.removeFromWindow(domWin);
         }.bind(this));
 
-        var observeListener = this.observe.bind(this);
+        this.observe = this.observe.bind(this);
 
-        events.on('after-viewport-change', observeListener, true);
+        Services.obs.addObserver(this, 'after-viewport-change', true);
 
         unload.when(function () {
-            events.off('after-viewport-change', observeListener);
+            this.unregister();
         }.bind(this));
+    },
+
+    unregister: function () {
+        Services.obs.removeObserver(this, 'after-viewport-change');
     },
 
     /**
      * 'after-viewport-change' event observer
-     * @param event
+     * @param subject Object
+     * @param type Event type
      */
-    observe: function (event) {
-        if (event.type == 'after-viewport-change') {
+    observe: function (subject, type) {
+        if (type === 'after-viewport-change') {
             this.handleNativeMenuState();
         }
     },
@@ -73,13 +68,13 @@ var MobileMenu = exports.MobileMenu = {
 
             this.UI.getCurrentTabInfo(function (tabInfo) {
                 if (tabInfo.userWhiteListed) {
-                    UI.unWhiteListCurrentTab();
+                    this.UI.unWhiteListCurrentTab();
                 } else {
-                    UI.whiteListCurrentTab();
+                    this.UI.whiteListCurrentTab();
                 }
                 var window = adguard.winWatcher.getCurrentBrowserWindow();
                 window.NativeWindow.menu.update(toggleWhiteListItem, {checked: tabInfo.userWhiteListed});
-            });
+            }.bind(this));
 
         }.bind(this), i18n.getMessage("popup_site_filtering_state"), true);
 
@@ -130,7 +125,7 @@ var MobileMenu = exports.MobileMenu = {
     },
 
     createSubMenu: function (window, parentId, onClick, name, checkable, visible) {
-        if (typeof (checkable) == 'undefined') {
+        if (typeof (checkable) === 'undefined') {
             checkable = false;
         }
         return window.NativeWindow.menu.add({
@@ -156,7 +151,7 @@ var MobileMenu = exports.MobileMenu = {
 
                 if (tabInfo.applicationFilteringDisabled) {
                     nativeMenu.update(menuItems.toggleFilteringEnabledItem, {visible: true, checked: true});
-                } else if (tabInfo.urlFilteringDisabled) {
+                } else if (tabInfo.urlFilteringDisabled) { // jshint ignore:line
                     //do nothing, already not visible
                 } else {
                     nativeMenu.update(menuItems.toggleFilteringEnabledItem, {visible: true, checked: false});

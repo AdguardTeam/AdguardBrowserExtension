@@ -15,41 +15,59 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var defer = require('sdk/core/promise').defer;
-var deferAll = require('sdk/core/promise').all;
+/* global Deferred */
 
 /**
  * Promise wrapper
  * @type {Promise}
  */
-var Promise = exports.Promise = function () {
+(function (global) {
 
-	var deferred = defer();
-	var promise;
-	if (typeof deferred.promise == 'function') {
-		promise = deferred.promise();
-	} else {
-		promise = deferred.promise;
-	}
-	this.promise = promise;
+    'use strict';
 
-	this.resolve = function () {
-		deferred.resolve();
-	};
+    var defer = Deferred;
+    var deferAll = function (arr) {
+        return Deferred.when.apply(Deferred, arr);
+    };
 
-	this.reject = function () {
-		deferred.reject();
-	};
+    var Promise = function () {
 
-	this.then = function (onSuccess, onReject) {
-		promise.then(onSuccess, onReject);
-	};
-};
+        var deferred = defer();
+        var promise;
+        if (typeof deferred.promise === 'function') {
+            promise = deferred.promise();
+        } else {
+            promise = deferred.promise;
+        }
 
-Promise.all = function (promises) {
-	var defers = [];
-	for (var i = 0; i < promises.length; i++) {
-		defers.push(promises[i].promise);
-	}
-	return deferAll(defers);
-};
+        var resolve = function () {
+            deferred.resolve();
+        };
+
+        var reject = function () {
+            deferred.reject();
+        };
+
+        var then = function (onSuccess, onReject) {
+            promise.then(onSuccess, onReject);
+        };
+
+        return {
+            promise: promise,
+            resolve: resolve,
+            reject: reject,
+            then: then
+        };
+    };
+
+    Promise.all = function (promises) {
+        var defers = [];
+        for (var i = 0; i < promises.length; i++) {
+            defers.push(promises[i].promise);
+        }
+        return deferAll(defers);
+    };
+
+    global.Promise = Promise;
+
+})(window);

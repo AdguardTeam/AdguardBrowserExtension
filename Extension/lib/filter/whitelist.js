@@ -15,19 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var Utils = require('../../lib/utils/browser-utils').Utils;
-var StringUtils = require('../../lib/utils/common').StringUtils;
-var UrlUtils = require('../../lib/utils/url').UrlUtils;
-var CollectionUtils = require('../../lib/utils/common').CollectionUtils;
-var AntiBannerFiltersId = require('../../lib/utils/common').AntiBannerFiltersId;
-var RequestTypes = require('../../lib/utils/common').RequestTypes;
-var LS = require('../../lib/utils/local-storage').LS;
-var userSettings = require('../../lib/utils/user-settings').userSettings;
-
-var FilterRule = require('../../lib/filter/rules/base-filter-rule').FilterRule;
-var FilterRuleBuilder = require('../../lib/filter/rules/filter-rule-builder').FilterRuleBuilder;
-var UrlFilter = require('../../lib/filter/rules/url-filter').UrlFilter;
-
 var allowAllWhiteListRule = {
     whiteListRule: true,
     filterId: AntiBannerFiltersId.WHITE_LIST_FILTER_ID
@@ -247,4 +234,4 @@ WhiteListService.prototype = {
     }
 };
 
-exports.whiteListService = new WhiteListService();
+var whiteListService = new WhiteListService();

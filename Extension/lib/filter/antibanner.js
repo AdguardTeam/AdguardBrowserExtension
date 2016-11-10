@@ -1,4 +1,3 @@
-/* global require, exports */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -17,38 +16,9 @@
  */
 
 /**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-var setTimeout = require('sdk/timers').setTimeout;
-var clearTimeout = require('sdk/timers').clearTimeout;
-
-var Promise = require('../../lib/utils/promises').Promise;
-var ServiceClient = require('../../lib/utils/service-client').ServiceClient;
-var RequestFilter = require('../../lib/filter/filters').RequestFilter;
-var LocaleDetectService = require('../../lib/filter/locale-detect').LocaleDetectService;
-var Log = require('../../lib/utils/log').Log;
-var AntiBannerFiltersId = require('../../lib/utils/common').AntiBannerFiltersId;
-var StringUtils = require('../../lib/utils/common').StringUtils;
-var FilterUtils = require('../../lib/utils/common').FilterUtils;
-var EventNotifierTypes = require('../../lib/utils/common').EventNotifierTypes;
-var Utils = require('../../lib/utils/browser-utils').Utils;
-var CollectionUtils = require('../../lib/utils/common').CollectionUtils;
-var FilterStorage = require('../../lib/filter/storage').FilterStorage;
-var userSettings = require('../../lib/utils/user-settings').userSettings;
-var EventNotifier = require('../../lib/utils/notifier').EventNotifier;
-var FilterRuleBuilder = require('../../lib/filter/rules/filter-rule-builder').FilterRuleBuilder;
-var LS = require('../../lib/utils/local-storage').LS;
-var Prefs = require('../../lib/prefs').Prefs;
-var SubscriptionService = require('../../lib/filter/subscription').SubscriptionService;
-var ApplicationUpdateService = require('../../lib/filter/update-service').ApplicationUpdateService;
-var whiteListService = require('../../lib/filter/whitelist').whiteListService;
-var UI = require('../../lib/ui').UI;
-
-/**
  * Creating service that manages our filter rules.
  */
-var AntiBannerService = exports.AntiBannerService = function () {
+var AntiBannerService = function () {
     // List of filters
     this.adguardFilters = [];
 
@@ -112,7 +82,7 @@ AntiBannerService.prototype = {
 
         /**
          * Init extension common info.
-         * @type {{isFirstRun: boolean, isUpdate: (boolean|*), currentVersion: (exports.Prefs.version|*), prevVersion: *}}
+         * @type {{isFirstRun: boolean, isUpdate: (boolean|*), currentVersion: (Prefs.version|*), prevVersion: *}}
          */
         var runInfo = ApplicationUpdateService.getRunInfo();
 
@@ -974,7 +944,7 @@ AntiBannerService.prototype = {
         // We are doing this for FF as everything in FF is done on the UI thread
         // Request filter creation is rather slow operation so we should
         // use setTimeout calls to give UI thread some time.
-        var async = Prefs.speedupStartup();
+        var async = Prefs.speedupStartup() || false;
         var asyncStep = 1000;
         Log.info('Starting request filter initialization. Async={0}', async);
         
@@ -1387,8 +1357,8 @@ AntiBannerService.prototype = {
                 onUsedOptimizedFiltersChange();
                 return;
             }
-            if (event == EventNotifierTypes.CHANGE_USER_SETTINGS && setting == userSettings.settings.DISABLE_COLLECT_HITS ||
-                event == EventNotifierTypes.CHANGE_PREFS && setting == 'use_global_style_sheet') {
+            if (event == EventNotifierTypes.CHANGE_USER_SETTINGS && setting === userSettings.settings.DISABLE_COLLECT_HITS ||
+                event == EventNotifierTypes.CHANGE_PREFS && setting === 'use_global_style_sheet') {
                 this.getRequestFilter().cssFilter.dirty = true;
             }
         }.bind(this));
@@ -1599,6 +1569,8 @@ AntiBannerService.prototype = {
     }
 };
 
+var antiBannerService = new AntiBannerService();
+
 /**
  * Represents filter metadata
  *
@@ -1619,7 +1591,7 @@ var AdguardFilter = function (filterId) {
  * Represents filter version metadata
  * @type {Function}
  */
-var AdguardFilterVersion = exports.AdguardFilterVersion = function (timeUpdated, version, filterId) {
+var AdguardFilterVersion = function (timeUpdated, version, filterId) {
     this.timeUpdated = timeUpdated;
     this.version = version;
     this.filterId = filterId;
@@ -1646,7 +1618,7 @@ AdguardFilterVersion.fromXml = function (el) {
 /**
  * Helper class for working with filters metadata storage (local storage)
  */
-var FilterLSUtils = exports.FilterLSUtils = {
+var FilterLSUtils = {
 
     FILTERS_STATE_PROP: 'filters-state',
     FILTERS_VERSION_PROP: 'filters-version',

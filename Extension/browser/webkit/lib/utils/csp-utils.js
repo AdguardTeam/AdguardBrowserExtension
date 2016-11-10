@@ -15,12 +15,10 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global exports */
-
 /**
  * CSP header utils
  */
-var CspUtils = exports.CspUtils = (function () {
+var CspUtils = (function () {
 
     // https://w3c.github.io/webappsec-csp/#directives-reporting
     var reReportDirective = /report-(?:to|uri)[^;]*;?\s*/;

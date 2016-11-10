@@ -1,4 +1,3 @@
-/* global safari */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -15,20 +14,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global require, exports, i18n */
+/* global Cc, Ci, i18n, safari, LS, Prefs, RequestTypes */
 
-var Cu = require('chrome').Cu;
-var Cc = require('chrome').Cc;
-var Ci = require('chrome').Ci;
-var setTimeout = require('sdk/timers').setTimeout; // jshint ignore: line
-var clearTimeout = require('sdk/timers').clearTimeout; // jshint ignore: line
-Cu.import("resource://gre/modules/Services.jsm");
-
-var LS = require('../../lib/utils/local-storage').LS;
-var Prefs = require('../../lib/prefs').Prefs;
-var RequestTypes = require('../../lib/utils/common').RequestTypes;
-
-var Utils = exports.Utils = {
+var Utils = {
 
     navigator: Cc["@mozilla.org/network/protocol;1?name=http"].getService(Ci.nsIHttpProtocolHandler),
 
@@ -79,36 +67,36 @@ var Utils = exports.Utils = {
     },
 
     isYaBrowser: function () {
-        return Prefs.getBrowser() == "YaBrowser";
+        return Prefs.getBrowser() === "YaBrowser";
     },
 
     isOperaBrowser: function () {
-        return Prefs.getBrowser() == "Opera";
+        return Prefs.getBrowser() === "Opera";
     },
 
     isSafariBrowser: function () {
-        return Prefs.getBrowser() == "Safari";
+        return Prefs.getBrowser() === "Safari";
     },
-    
-    isEdgeBrowser: function() {
-        return Prefs.getBrowser() == "Edge";
+
+    isEdgeBrowser: function () {
+        return Prefs.getBrowser() === "Edge";
     },
 
     isSafari9Plus: function () {
-        return Prefs.getBrowser() == "Safari" && 
+        return Prefs.getBrowser() === "Safari" &&
             this.isGreaterOrEqualsVersion(Prefs.safariVersion, "9.0");
     },
 
     isFirefoxBrowser: function () {
-        return Prefs.getBrowser() == "Firefox" || Prefs.getBrowser() == "Android";
+        return Prefs.getBrowser() === "Firefox" || Prefs.getBrowser() === "Android";
     },
 
     isChromeBrowser: function () {
-        return Prefs.getBrowser() == "Chrome";
+        return Prefs.getBrowser() === "Chrome";
     },
 
     isChromium: function () {
-        return Prefs.platform == 'chromium';
+        return Prefs.platform === 'chromium';
     },
 
     isWindowsOs: function () {
@@ -118,29 +106,29 @@ var Utils = exports.Utils = {
     isMacOs: function () {
         return this.navigator.platform.toUpperCase().indexOf('MAC') >= 0;
     },
-    
+
     /**
      * Returns true if Shadow DOM is supported.
      * http://caniuse.com/#feat=shadowdom
-     * 
+     *
      * In this case we transform CSS selectors and inject CSS to shadow DOM.
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/44
      */
-    isShadowDomSupported: function() {
-        
+    isShadowDomSupported: function () {
+
         // Shadow DOM is supported by all modern chromium browsers
         return this.isChromium();
     },
-    
+
     /**
      * Returns true if Safari content blocker API is supported
      */
     isContentBlockerEnabled: function () {
-        
+
         if (typeof safari === 'undefined' || !this.isSafari9Plus()) {
             return false;
         }
-        
+
         if (typeof this._useOldSafariAPI === 'undefined') {
             // Seems that getItem returns a string
             // Cast it to string as I don't understand why it's type randomly changes (in dev build it is string, in beta - boolean)
@@ -153,7 +141,7 @@ var Utils = exports.Utils = {
     getExtensionStoreLink: function () {
         var urlBuilder = ["http://adguard.com/"];
 
-        if (Prefs.locale == "ru") {
+        if (Prefs.locale === "ru") {
             urlBuilder.push("ru");
         } else {
             urlBuilder.push("en");
@@ -323,7 +311,7 @@ var Utils = exports.Utils = {
     }
 };
 
-var Version = exports.Version = function (version) {
+var Version = function (version) {
 
     this.version = Object.create(null);
 
@@ -352,7 +340,7 @@ Version.prototype.compare = function (o) {
     return 0;
 };
 
-var ConcurrentUtils = exports.ConcurrentUtils = {
+var ConcurrentUtils = {
 
     runAsync: function (callback, context) {
         var params = Array.prototype.slice.call(arguments, 2);

@@ -1,4 +1,3 @@
-/* global XPCOMUtils */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -15,26 +14,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var {Cc, Ci, Cu, Cm, Cr, components} = require('chrome');
-
-Cu.import("resource://gre/modules/XPCOMUtils.jsm");
-Cu.import("resource://gre/modules/Services.jsm");
+/* global XPCOMUtils, Services, Cc, Ci, Cr, components */
 
 var categoryManager = Cc["@mozilla.org/categorymanager;1"].getService(Ci.nsICategoryManager);
-
-var unload = require('sdk/system/unload');
-var events = require('sdk/system/events');
-
-var {Log} = require('./utils/log');
-var {EventNotifier} = require('./utils/notifier');
-var {EventNotifierTypes,RequestTypes} = require('./utils/common');
-var {UrlUtils} = require('./utils/url');
-var {Utils} = require('./utils/browser-utils');
 
 /**
  * Helper object to work with web requests.
  */
-var WebRequestHelper = exports.WebRequestHelper = {
+var WebRequestHelper = {
 
     ACCEPT: Ci.nsIContentPolicy.ACCEPT,
     REJECT: Ci.nsIContentPolicy.REJECT_REQUEST,
@@ -182,7 +169,7 @@ var WebRequestHelper = exports.WebRequestHelper = {
      * @private
      */
     _getLoadContext: function (channel) {
-        let loadContext;
+        var loadContext;
         try {
             loadContext = channel.notificationCallbacks.getInterface(Ci.nsILoadContext);
         } catch (e) {
@@ -215,9 +202,9 @@ var WebRequestHelper = exports.WebRequestHelper = {
      * @returns {*}
      */
     getChannelContextData: function (channel) {
-        let topFrameElement, associatedWindow;
-        let spec = channel.URI.spec;
-        let loadContext = this._getLoadContext(channel);
+        var topFrameElement, associatedWindow;
+        var spec = channel.URI.spec;
+        var loadContext = this._getLoadContext(channel);
 
         if (loadContext) {
             topFrameElement = loadContext.topFrameElement;
@@ -347,70 +334,52 @@ var WebRequestHelper = exports.WebRequestHelper = {
  * It also subscribes to the following events:
  * http-on-examine-response, http-on-examine-cached-response, http-on-examine-merged-response, http-on-opening-request
  */
-var WebRequestImpl = exports.WebRequestImpl = {
+var WebRequestImpl = {
 
     classDescription: "Adguard content policy",
     classID: components.ID("f5d18a88-c4b8-40ed-85cc-6cb3fd02268e"),
     contractID: "@adguard.com/adg/policy;1",
     xpcom_categories: ["content-policy", "net-channel-event-sinks"],
 
-    antiBannerService: null,
-    adguardApplication: null,
-    ElemHide: null,
-    framesMap: null,
-    filteringLog: null,
-    webRequestService: null,
-
     /**
      * Initialize WebRequest filtering, register is as events listener
-     *
-     * @param antiBannerService     AntiBannerService object (implements the filtering)
-     * @param adguardApplication    AdguardApplication (used for integration with Adguard for Windows/Mac/Android)
-     * @param ElemHide              ElemHide object (used to apply CSS rules)
-     * @param framesMap             Map with frames data
-     * @param filteringLog          Service for log requests
-     * @param webRequestService     Request Blocking service
      */
-    init: function (antiBannerService, adguardApplication, ElemHide, framesMap, filteringLog, webRequestService) {
+    init: function () {
 
-        Log.info('Initializing webRequest...');
+        Log.info('Adguard addon: Initializing webRequest...');
 
-        this.antiBannerService = antiBannerService;
-        this.adguardApplication = adguardApplication;
-        this.ElemHide = ElemHide;
-        this.framesMap = framesMap;
-        this.filteringLog = filteringLog;
-        this.webRequestService = webRequestService;
-
-        let registrar = components.manager.QueryInterface(Ci.nsIComponentRegistrar);
+        var registrar = components.manager.QueryInterface(Ci.nsIComponentRegistrar);
         registrar.registerFactory(this.classID, this.classDescription, this.contractID, this);
-        for (let i = 0; i < this.xpcom_categories.length; i++) {
-            let category = this.xpcom_categories[i];
+        for (var i = 0; i < this.xpcom_categories.length; i++) {
+            var category = this.xpcom_categories[i];
             categoryManager.addCategoryEntry(category, this.contractID, this.contractID, false, true);
         }
 
-        var observeListener = this.observe.bind(this);
+        this.observe = this.observe.bind(this);
 
-        events.on("http-on-examine-response", observeListener, true);
-        events.on("http-on-examine-cached-response", observeListener, true);
-        events.on("http-on-examine-merged-response", observeListener, true);
-        events.on("http-on-opening-request", observeListener, true);
+        Services.obs.addObserver(this, "http-on-examine-response", true);
+        Services.obs.addObserver(this, "http-on-examine-cached-response", true);
+        Services.obs.addObserver(this, "http-on-examine-merged-response", true);
+        Services.obs.addObserver(this, "http-on-opening-request", true);
 
         unload.when(function () {
-
-            events.off("http-on-examine-response", observeListener);
-            events.off("http-on-examine-cached-response", observeListener);
-            events.off("http-on-examine-merged-response", observeListener);
-            events.off("http-on-opening-request", observeListener);
-
-            var registrar = components.manager.QueryInterface(Ci.nsIComponentRegistrar);
-            for (let i = 0; i < WebRequestImpl.xpcom_categories.length; i++) {
-                let category = WebRequestImpl.xpcom_categories[i];
-                categoryManager.deleteCategoryEntry(category, this.contractID, false);
-            }
-            registrar.unregisterFactory(WebRequestImpl.classID, this);
-
+            this.unregister();
         }.bind(this));
+    },
+
+    unregister: function () {
+
+        Services.obs.removeObserver(this, "http-on-examine-response");
+        Services.obs.removeObserver(this, "http-on-examine-cached-response");
+        Services.obs.removeObserver(this, "http-on-examine-merged-response");
+        Services.obs.removeObserver(this, "http-on-opening-request");
+
+        var registrar = components.manager.QueryInterface(Ci.nsIComponentRegistrar);
+        for (var i = 0; i < WebRequestImpl.xpcom_categories.length; i++) {
+            var category = WebRequestImpl.xpcom_categories[i];
+            categoryManager.deleteCategoryEntry(category, this.contractID, false);
+        }
+        registrar.unregisterFactory(WebRequestImpl.classID, this);
     },
 
     /**
@@ -507,21 +476,19 @@ var WebRequestImpl = exports.WebRequestImpl = {
      * Learn more here:
      * https://developer.mozilla.org/en-US/Add-ons/Overlay_Extensions/XUL_School/Intercepting_Page_Loads#HTTP_Observers
      *
-     * @param event - observe event
+     * @param channel - http channel
+     * @param type - event type
      */
-    observe: function (event) {
+    observe: function (channel, type) {
         try {
-            var type = event.type;
-            var subject = event.subject;
-
             switch (type) {
                 case "http-on-examine-response":
                 case "http-on-examine-cached-response":
                 case "http-on-examine-merged-response":
-                    this._httpOnExamineResponse(subject);
+                    this._httpOnExamineResponse(channel);
                     break;
                 case "http-on-opening-request":
-                    this._httpOnOpeningRequest(subject);
+                    this._httpOnOpeningRequest(channel);
                     break;
             }
         } catch (ex) {
@@ -566,18 +533,18 @@ var WebRequestImpl = exports.WebRequestImpl = {
         // We record frame data here because shouldLoad is not always called (shouldLoad issue)
         if (isMainFrame) {
             //record frame
-            this.framesMap.recordFrame(tab, 0, requestUrl, requestType);
+            framesMap.recordFrame(tab, 0, requestUrl, requestType);
         }
 
         // Retrieve referrer URL
-        var referrerUrl = this.framesMap.getFrameUrl(tab, 0);
+        var referrerUrl = framesMap.getFrameUrl(tab, 0);
 
         if (!!requestProperties) {
             // Calling postProcessRequest only for requests which were previously processed by "shouldLoad"
             var filteringRule = requestProperties.shouldLoadResult.rule;
-            this.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, filteringRule);
+            webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, filteringRule);
         }
-        this.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
+        webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
 
         if (isMainFrame) {
             //update tab button state
@@ -586,7 +553,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
             var headers = WebRequestHelper.getRequestHeaders(subject);
             var refHeader = Utils.findHeaderByName(headers, 'Referer');
             if (refHeader) {
-                this.framesMap.recordFrameReferrerHeader(tab, refHeader.value);
+                framesMap.recordFrameReferrerHeader(tab, refHeader.value);
             }
         }
 
@@ -609,8 +576,8 @@ var WebRequestImpl = exports.WebRequestImpl = {
         }
 
         // Set authorization headers for requests to desktop AG
-        if (this.adguardApplication.isIntegrationRequest(subject.URI.asciiSpec)) {
-            var authHeaders = this.adguardApplication.getAuthorizationHeaders();
+        if (adguardApplication.isIntegrationRequest(subject.URI.asciiSpec)) {
+            var authHeaders = adguardApplication.getAuthorizationHeaders();
             for (var i = 0; i < authHeaders.length; i++) {
                 subject.setRequestHeader(authHeaders[i].headerName, authHeaders[i].headerValue, false);
             }
@@ -651,9 +618,9 @@ var WebRequestImpl = exports.WebRequestImpl = {
          * Override request referrer in integration mode
          */
         var tab = {tabId: tabId};
-        if (this.adguardApplication.shouldOverrideReferrer(tab)) {
+        if (adguardApplication.shouldOverrideReferrer(tab)) {
             // Retrieve main frame url
-            var frameUrl = this.framesMap.getFrameUrl(tab, 0);
+            var frameUrl = framesMap.getFrameUrl(tab, 0);
             subject.setRequestHeader('Referer', frameUrl, false);
         }
     },
@@ -683,17 +650,17 @@ var WebRequestImpl = exports.WebRequestImpl = {
             return result;
         }
 
-        var tabUrl = this.framesMap.getFrameUrl(tab, 0);
+        var tabUrl = framesMap.getFrameUrl(tab, 0);
 
-        result.rule = this.webRequestService.getRuleForRequest(tab, requestUrl, tabUrl, requestType);
-        result.blocked = this.webRequestService.isRequestBlockedByRule(result.rule);
+        result.rule = webRequestService.getRuleForRequest(tab, requestUrl, tabUrl, requestType);
+        result.blocked = webRequestService.isRequestBlockedByRule(result.rule);
 
         if (result.blocked) {
             this._collapseElement(node, requestType);
 
             // Usually we call this method in _httpOnExamineResponse callback
             // But it won't be called if request is blocked here
-            this.webRequestService.postProcessRequest(tab, requestUrl, tabUrl, requestType, result.rule);
+            webRequestService.postProcessRequest(tab, requestUrl, tabUrl, requestType, result.rule);
         }
 
         return result;
@@ -744,13 +711,13 @@ var WebRequestImpl = exports.WebRequestImpl = {
             return false;
         }
 
-        var tabUrl = this.framesMap.getFrameUrl(sourceTab, 0);
+        var tabUrl = framesMap.getFrameUrl(sourceTab, 0);
 
-        var requestRule = this.webRequestService.getRuleForRequest(sourceTab, requestUrl, tabUrl, RequestTypes.POPUP);
-        var requestBlocked = this.webRequestService.isRequestBlockedByRule(requestRule);
+        var requestRule = webRequestService.getRuleForRequest(sourceTab, requestUrl, tabUrl, RequestTypes.POPUP);
+        var requestBlocked = webRequestService.isRequestBlockedByRule(requestRule);
         if (requestBlocked) {
             //add log event and fix log event type from POPUP to DOCUMENT
-            this.webRequestService.postProcessRequest(sourceTab, requestUrl, tabUrl, RequestTypes.DOCUMENT, requestRule);
+            webRequestService.postProcessRequest(sourceTab, requestUrl, tabUrl, RequestTypes.DOCUMENT, requestRule);
         }
 
         return requestBlocked;
@@ -780,9 +747,9 @@ var WebRequestImpl = exports.WebRequestImpl = {
     _filterSafebrowsing: function (requestUrl, tab) {
 
         //TODO: check for not http
-        if (this.framesMap.isTabAdguardDetected(tab) ||
-            this.framesMap.isTabProtectionDisabled(tab) ||
-            this.framesMap.isTabWhiteListedForSafebrowsing(tab)) {
+        if (framesMap.isTabAdguardDetected(tab) ||
+            framesMap.isTabProtectionDisabled(tab) ||
+            framesMap.isTabWhiteListedForSafebrowsing(tab)) {
             return;
         }
 
@@ -792,9 +759,9 @@ var WebRequestImpl = exports.WebRequestImpl = {
         }
 
         var referrerUrl = Utils.getSafebrowsingBackUrl(tab);
-        var incognitoTab = this.framesMap.isIncognitoTab(tab);
+        var incognitoTab = framesMap.isIncognitoTab(tab);
 
-        this.antiBannerService.getRequestFilter().checkSafebrowsingFilter(requestUrl, referrerUrl, function (safebrowsingUrl) {
+        antiBannerService.getRequestFilter().checkSafebrowsingFilter(requestUrl, referrerUrl, function (safebrowsingUrl) {
             adguard.tabs.reload(tab.tabId, "chrome://adguard/content/" + safebrowsingUrl);
         }, incognitoTab);
     },
@@ -808,7 +775,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
      */
     _collapseElement: function (node, requestType) {
         if (node && node.ownerDocument && RequestTypes.isVisual(requestType)) {
-            this.ElemHide.collapseNode(node);
+            ElemHide.collapseNode(node);
         }
     },
 

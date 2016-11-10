@@ -1,4 +1,4 @@
-/* global XPCOMUtils */
+/* global XPCOMUtils, Cc, Ci, Cr, components */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -15,21 +15,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-const {Cu, Ci, Cr, Cc, components} = require('chrome');
-
-Cu.import("resource://gre/modules/XPCOMUtils.jsm");
-Cu.import("resource://gre/modules/Services.jsm");
 
 var PrincipalService = Cc["@mozilla.org/systemprincipal;1"].getService(Ci.nsIPrincipal);
-
-var unload = require('sdk/system/unload');
-
-var filterRulesHitCount = require('./filter/filters-hit').filterRulesHitCount;
-
-var ConcurrentUtils = require('./utils/browser-utils').ConcurrentUtils;
-var Log = require('./utils/log').Log;
-var FilterUtils = require('./utils/common').FilterUtils;
-var WebRequestHelper = require('./contentPolicy').WebRequestHelper;
 
 /**
  * Handler that intercepts requests to about:adg-intercept.
@@ -38,19 +25,16 @@ var WebRequestHelper = require('./contentPolicy').WebRequestHelper;
  * So this class intercepts requests to this about:adg-intercept and it replaces a channel with out implementation.
  * Inspired by ABP element hiding logic.
  */
-var InterceptHandler = exports.InterceptHandler =
-{
+var InterceptHandler = {
+
 	classID: components.ID("{ca11cf5f-2b74-4959-b8c5-9202dd859963}"),
 	classDescription: "Element hiding protocol handler",
 	aboutPrefix: "adg-intercept",
-	framesMap: null,
 
 	/**
 	 * Registers handler
 	 */
-	init: function (framesMap, antiBannerService) {
-		this.framesMap = framesMap;
-		this.antiBannerService = antiBannerService;
+	init: function () {
 
 		var registrar = components.manager.QueryInterface(Ci.nsIComponentRegistrar);
 		registrar.registerFactory(this.classID, this.classDescription, "@mozilla.org/network/protocol/about;1?what=" + this.aboutPrefix, this);
@@ -68,24 +52,22 @@ var InterceptHandler = exports.InterceptHandler =
 	createInstance: function (outer, iid) {
 		if (outer != null) {
 			throw Cr.NS_ERROR_NO_AGGREGATION;
-        }
+		}
 
 		return this.QueryInterface(iid);
 	},
 
-    newChannel: function (uri, loadInfo) {
-        return new HidingChannel(uri, loadInfo, this.framesMap, this.antiBannerService);
-    },
+	newChannel: function (uri, loadInfo) {
+		return new HidingChannel(uri, loadInfo);
+	},
 
 	QueryInterface: XPCOMUtils.generateQI([Ci.nsIFactory, Ci.nsIAboutModule])
 };
 
 
-function HidingChannel(uri, loadInfo, framesMap, antiBannerService) {
-    this.URI = this.originalURI = uri;
-    this.loadInfo = loadInfo;
-    this.framesMap = framesMap;
-    this.antiBannerService = antiBannerService;
+function HidingChannel(uri, loadInfo) {
+	this.URI = this.originalURI = uri;
+	this.loadInfo = loadInfo;
 }
 
 /**
@@ -95,8 +77,6 @@ function HidingChannel(uri, loadInfo, framesMap, antiBannerService) {
 HidingChannel.prototype = {
 
 	URI: null,
-	framesMap: null,
-	antiBannerService: null,
 	originalURI: null,
 	contentCharset: "utf-8",
 	contentLength: 0,
@@ -132,12 +112,12 @@ HidingChannel.prototype = {
 		}, this);
 	},
 
-    asyncOpen2: function (listener) {
-        if (this.loadInfo && !this.loadInfo.triggeringPrincipal.equals(PrincipalService)) {
-            throw Cr.NS_ERROR_FAILURE;
-        }
-        this.asyncOpen(listener, null);
-    },
+	asyncOpen2: function (listener) {
+		if (this.loadInfo && !this.loadInfo.triggeringPrincipal.equals(PrincipalService)) {
+			throw Cr.NS_ERROR_FAILURE;
+		}
+		this.asyncOpen(listener, null);
+	},
 
 	/**
 	 * Important note:
@@ -151,9 +131,9 @@ HidingChannel.prototype = {
 			var tabId = WebRequestHelper.getTabIdForChannel(this);
 			var tab = {tabId: tabId};
 
-			if (!tabId
-				|| this._isTabWhiteListed(tab)
-				|| this._isElemHideWhiteListed(tab)) {
+			if (!tabId ||
+				this._isTabWhiteListed(tab) ||
+				this._isElemHideWhiteListed(tab)) {
 				// Return dummy binding if there is an exception rule for this URL
 				data = this.notHideData;
 			} else {
@@ -163,7 +143,7 @@ HidingChannel.prototype = {
 
 				var rule = this._getRuleByText(this.URI.path);
 				if (rule) {
-					var domain = this.framesMap.getFrameDomain(tab);
+					var domain = framesMap.getFrameDomain(tab);
 					if (!rule.isPermitted(domain)) {
 						data = this.notHideData;
 					}
@@ -175,7 +155,7 @@ HidingChannel.prototype = {
 
 					// Track filter rule usage if user has enabled "collect ad filters usage stats"
 					if (filterRulesHitCount.collectStatsEnabled) {
-						if (!FilterUtils.isUserFilterRule(rule) && !this.framesMap.isIncognitoTab(tab)) {
+						if (!FilterUtils.isUserFilterRule(rule) && !framesMap.isIncognitoTab(tab)) {
 							filterRulesHitCount.addRuleHit(domain, rule.ruleText, rule.filterId);
 						}
 					}
@@ -190,7 +170,7 @@ HidingChannel.prototype = {
 	},
 
 	_isTabWhiteListed: function (tab) {
-		return (this.framesMap.isTabAdguardDetected(tab) || this.framesMap.isTabProtectionDisabled(tab) || this.framesMap.isTabWhiteListed(tab));
+		return (framesMap.isTabAdguardDetected(tab) || framesMap.isTabProtectionDisabled(tab) || framesMap.isTabWhiteListed(tab));
 	},
 
 	_isElemHideWhiteListed: function (tab) {
@@ -200,7 +180,7 @@ HidingChannel.prototype = {
 		}
 		var frame = adguard.tabs.getTabFrame(tab.tabId);
 		if (frame) {
-			elemHideWhiteListRule = this.antiBannerService.getRequestFilter().findWhiteListRule(frame.url, frame.url, "ELEMHIDE");
+			elemHideWhiteListRule = antiBannerService.getRequestFilter().findWhiteListRule(frame.url, frame.url, "ELEMHIDE");
 			adguard.tabs.updateTabMetadata(tab.tabId, {
 				elemHideWhiteListRule: elemHideWhiteListRule || false
 			});
@@ -214,7 +194,7 @@ HidingChannel.prototype = {
 		}
 		var frame = adguard.tabs.getTabFrame(tab.tabId);
 		if (frame) {
-			genericHideWhiteListRule = this.antiBannerService.getRequestFilter().findWhiteListRule(frame.url, frame.url, "GENERICHIDE");
+			genericHideWhiteListRule = antiBannerService.getRequestFilter().findWhiteListRule(frame.url, frame.url, "GENERICHIDE");
 			adguard.tabs.updateTabMetadata(tab.tabId, {
 				genericHideWhiteListRule: genericHideWhiteListRule || false
 			});
@@ -225,7 +205,7 @@ HidingChannel.prototype = {
 		var index = path.lastIndexOf('?');
 		if (index > 0) {
 			var key = path.substring(index + 1);
-			var rule = this.antiBannerService.getRequestFilter().cssFilter.getRuleForKey(key);
+			var rule = antiBannerService.getRequestFilter().cssFilter.getRuleForKey(key);
 			return rule ? rule : null;
 		}
 		return null;

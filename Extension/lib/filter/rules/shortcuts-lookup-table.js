@@ -16,17 +16,9 @@
  */
 
 /**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-var StringUtils = require('../../../lib/utils/common').StringUtils;
-var CollectionUtils = require('../../../lib/utils/common').CollectionUtils;
-var Utils = require('../../../lib/utils/browser-utils').Utils;
-
-/**
  * Special hash table that greatly increases speed of searching url filter rule by its shortcut
  */
-var ShortcutsLookupTable = exports.ShortcutsLookupTable = function (rules) {
+var ShortcutsLookupTable = function (rules) {
 
     this.lookupTable = Object.create(null);
 

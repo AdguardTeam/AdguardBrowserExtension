@@ -1,4 +1,4 @@
-/* global require, exports */
+
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -17,16 +17,9 @@
  */
 
 /**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-var Log = require('../../lib/utils/log').Log;
-var setTimeout = require('sdk/timers').setTimeout;
-
-/**
  * Simple mediator
  */
-var EventNotifier = exports.EventNotifier = {
+var EventNotifier = {
 
 	listenersMap: Object.create(null),
 	listenersEventsMap: Object.create(null),
@@ -84,15 +77,15 @@ var EventNotifier = exports.EventNotifier = {
 			}
 		}
 	},
-	
+
 	/**
 	 * Asynchronously notifies all listeners about the events passed as arguments of this function.
 	 * Some events should be dispatched asynchronously, for instance this is very important for Safari:
-	 * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/251 
+	 * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/251
 	 */
-	notifyListenersAsync: function() {
+	notifyListenersAsync: function () {
 		var args = arguments;
-		setTimeout(function() {
+		setTimeout(function () {
 			EventNotifier.notifyListeners.apply(EventNotifier, args);
 		}, 500);
 	}

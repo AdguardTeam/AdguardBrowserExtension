@@ -16,16 +16,9 @@
  */
 
 /**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-var StringUtils = require('../../lib/utils/common').StringUtils;
-var punycode = require('../../lib/utils/punycode').punycode;
-
-/**
  * Helper methods to work with URLs
  */
-var UrlUtils = exports.UrlUtils = {
+var UrlUtils = {
 
 	isHttpRequest: function (url) {
 		return url && url.indexOf('http') == 0;

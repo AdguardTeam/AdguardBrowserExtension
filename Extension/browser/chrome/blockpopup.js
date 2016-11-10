@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global ext, adguard, framesMap, UrlUtils, RequestTypes, webRequestService */
+/* global ext, framesMap, UrlUtils, RequestTypes, webRequestService */
 
 (function () {
 

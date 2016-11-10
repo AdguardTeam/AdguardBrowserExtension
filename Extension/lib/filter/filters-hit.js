@@ -16,20 +16,6 @@
  */
 
 /**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-var setTimeout = require('sdk/timers').setTimeout;
-var clearTimeout = require('sdk/timers').clearTimeout;
-var ServiceClient = require('../../lib/utils/service-client').ServiceClient;
-var LS = require('../../lib/utils/local-storage').LS;
-var userSettings = require('../../lib/utils/user-settings').userSettings;
-var EventNotifier = require('../../lib/utils/notifier').EventNotifier;
-var EventNotifierTypes = require('../../lib/utils/common').EventNotifierTypes;
-var Log = require('../../lib/utils/log').Log;
-var UrlUtils = require('../../lib/utils/url').UrlUtils;
-
-/**
  * This object is used to store and track ad filters usage stats.
  * It is used if user has enabled "Send statistics for ad filters usage" option.
  * More info about ad filters stats: http://adguard.com/en/filter-rules-statistics.html
@@ -54,10 +40,6 @@ FilterRulesHitCount.prototype = {
     MAX_PAGE_VIEWS_COUNT: 20,
     HITS_COUNT_PROP: 'filters-hit-count',
     HITS_PROP: 'h',
-
-    setAntiBannerService: function (antiBannerService) {
-        this.antiBannerService = antiBannerService;
-    },
 
     addDomainView: function (domain) {
 
@@ -176,13 +158,10 @@ FilterRulesHitCount.prototype = {
         if (!this.collectStatsEnabled) {
             return;
         }
-        var enabledFilters = [];
-        if (this.antiBannerService) {
-            enabledFilters = this.antiBannerService.getEnabledAntiBannerFilters();
-        }
+        var enabledFilters = antiBannerService.getEnabledAntiBannerFilters();
         this.serviceClient.sendHitStats(JSON.stringify(this.stats), enabledFilters);
         this.cleanup();
     }
 };
 
-var filterRulesHitCount = exports.filterRulesHitCount = new FilterRulesHitCount();
+var filterRulesHitCount = new FilterRulesHitCount();

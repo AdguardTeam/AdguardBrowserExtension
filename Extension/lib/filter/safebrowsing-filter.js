@@ -16,24 +16,11 @@
  */
 
 /**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-var ServiceClient = require('../../lib/utils/service-client').ServiceClient;
-var LocalStorageCache = require('../../lib/utils/cache').LocalStorageCache;
-var UrlUtils = require('../../lib/utils/url').UrlUtils;
-var Log = require('../../lib/utils/log').Log;
-var LS = require('../../lib/utils/local-storage').LS;
-var Prefs = require('../../lib/prefs').Prefs;
-var StringUtils = require('../../lib/utils/common').StringUtils;
-var SHA256 = require('../../lib/utils/sha256.patched').SHA256;
-
-/**
  * Initializing SafebrowsingFilter.
  *
  * http://adguard.com/en/how-malware-blocked.html#extension
  */
-var SafebrowsingFilter = exports.SafebrowsingFilter = function () {
+var SafebrowsingFilter = function () {
 
     this.serviceClient = new ServiceClient();
     this.safebrowsingCache = new LocalStorageCache("sb-cache");
