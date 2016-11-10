@@ -226,8 +226,8 @@ QUnit.test("Convert cyrillic rules", function(assert) {
     var converted = JSON.parse(result.converted);
     assert.equal(2, converted.length);
 
-    assert.ok(converted[0].trigger["url-filter"] != ".*");
-    assert.ok(converted[1].trigger["url-filter"] != ".*");
+    assert.equal(converted[0].trigger["url-filter"], "xn--e1agjb\\.xn--p1ai");
+    assert.equal(converted[1].trigger["url-filter"], "^https?://([^/]*\\.)?xn--e1agjb\\.xn--p1ai");
 });
 
 QUnit.test("Convert regexp rules", function(assert) {
