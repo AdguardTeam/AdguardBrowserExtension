@@ -116,13 +116,8 @@ function onHeadersReceived(requestDetails) {
          */
         var websocketCheckUrl = "ws://adguardwebsocket.check/";
         if (webRequestService.checkWebSocketRequest(tab, websocketCheckUrl, referrerUrl)) {
-
-            //We don't change connect-src directives for older chromes
-            //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/385
-            var blockConnectSrc = Prefs.chromeVersion > 51;
-            if (CspUtils.blockWebSockets(responseHeaders, !blockConnectSrc)) {
-                return { responseHeaders: responseHeaders };
-            }
+            responseHeaders.push({name: 'Content-Security-Policy', value: 'frame-src http: https:; child-src http: https:'});
+            return { responseHeaders: responseHeaders };
         }
     }
 }
