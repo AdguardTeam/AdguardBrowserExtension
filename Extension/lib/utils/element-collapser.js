@@ -41,7 +41,7 @@ var ElementCollapser = (function() {
                     sibCount++;
                 }
             }
-            var nodeName = el.nodeName.toLowerCase();
+            var nodeName = el.nodeName.toLowerCase().replace(/:/g, '\\:');
             if (sibCount > 1) {
                 stack.unshift(nodeName + ':nth-of-type(' + (sibIndex + 1) + ')');
             } else {
