@@ -41,7 +41,9 @@ var ElementCollapser = (function() {
                     sibCount++;
                 }
             }
-            var nodeName = el.nodeName.toLowerCase().replace(/:/g, '\\:');
+
+            //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/373
+            var nodeName = el.nodeName.toLowerCase().replace(/[^a-zA-Z0-9]/g, '\\$&');
             if (sibCount > 1) {
                 stack.unshift(nodeName + ':nth-of-type(' + (sibIndex + 1) + ')');
             } else {
