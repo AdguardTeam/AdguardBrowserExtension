@@ -32,43 +32,6 @@ var contentPage = (function (api) {
             }
             return sendMessageToChrome(message, wrapper);
         };
-    } else {
-        
-        // TODO: Remove this when we finally drop addon SDK
-        sendMessage = (function () {
-
-            var CONTENT_TO_BACKGROUND_CHANNEL = 'content-background-channel';
-
-            var listenerRegistered = false;
-            var callbacks = Object.create(null);
-            var callbackId = 0;
-
-            var onResponseReceived = function (response) {
-                if ('callbackId' in response) {
-                    var callbackId = response.callbackId;
-                    var callback = callbacks[callbackId];
-                    callback(response);
-                    delete callbacks[callbackId];
-                }
-            };
-
-            return function (message, callback) {
-
-                if (callback) {
-                    var messageCallbackId = (callbackId += 1);
-                    message.callbackId = messageCallbackId;
-                    callbacks[messageCallbackId] = callback;
-                }
-
-                if (!listenerRegistered) {
-                    listenerRegistered = true;
-                    self.port.on(CONTENT_TO_BACKGROUND_CHANNEL, onResponseReceived);
-                }
-
-                self.port.emit(CONTENT_TO_BACKGROUND_CHANNEL, message);
-            };
-
-        })();
     }
 
     var addMessageListener;
@@ -79,29 +42,6 @@ var contentPage = (function (api) {
             };
             return addChromeMessageListener(window, wrapper);
         };
-    } else {
-        // TODO: Remove, deprecated
-        addMessageListener = (function () {
-
-            var BACKGROUND_TO_CONTENT_CHANNEL = 'background-content-channel';
-
-            var listeners = null;
-
-            var onMessageReceived = function (message) {
-                for (var i = 0; i < listeners.length; i++) {
-                    var listener = listeners[i];
-                    listener(message);
-                }
-            };
-
-            return function (listener) {
-                if (!listeners) {
-                    listeners = [];
-                    self.port.on(BACKGROUND_TO_CONTENT_CHANNEL, onMessageReceived);
-                }
-                listeners.push(listener);
-            };
-        })();
     }
 
     /**

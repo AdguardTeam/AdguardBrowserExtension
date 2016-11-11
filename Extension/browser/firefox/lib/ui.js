@@ -24,25 +24,21 @@
  */
 var UI = {
 
-    init: function (SdkPanel, SdkContextMenu, SdkButton) {
+    init: function () {
 
-        this._initContextMenu(SdkContextMenu);
-        this._initAbusePanel(SdkPanel);
+        this._initContextMenu(null);
         this._initEventListener();
 
         if (Prefs.mobile) {
             MobileMenu.init(this);
         } else {
-            PopupButton.init(this, SdkPanel, SdkButton);
+            PopupButton.init();
         }
 
         // Record frame and update popup button if needed
-        adguard.tabs.getAll(function (tabs) {
-            for (var i = 0; i < tabs.length; i++) {
-                var tab = tabs[i];
-                framesMap.recordFrame(tab, 0, tab.url, RequestTypes.DOCUMENT);
-                this._updatePopupButtonState(tab);
-            }
+        adguard.tabs.forEach(function (tab) {
+            framesMap.recordFrame(tab, 0, tab.url, RequestTypes.DOCUMENT);
+            this._updatePopupButtonState(tab);
         }.bind(this));
 
         //close all page on unload
@@ -105,11 +101,6 @@ var UI = {
         }
     },
 
-    openAbusePanel: function () {
-        contentScripts.sendMessageToWorker(this.abusePanel, {type: 'initAbusePanel'});
-        this.abusePanel.show();
-    },
-
     openFilteringLog: function (tabId) {
         UI.openTab(UI._getURL("log.html") + (tabId ? "?tabId=" + tabId : ""), {
             activateSameTab: true,
@@ -144,6 +135,7 @@ var UI = {
                 var tab = tabs[i];
                 var url = tab.url;
                 if (url === filtersDownloadUrl || url === thankyouUrl) {
+                    adguard.tabs.activate(tab.tabId);
                     if (url !== thankyouUrl) {
                         adguard.tabs.reload(tab.tabId, thankyouUrl);
                     }
@@ -161,12 +153,9 @@ var UI = {
     },
 
     closeAllPages: function () {
-        adguard.tabs.getAll(function (tabs) {
-            for (var i = 0; i < tabs.length; i++) {
-                var tab = tabs[i];
-                if (tab.url.indexOf(UI._getURL('')) >= 0) {
-                    adguard.tabs.remove(tab.tabId);
-                }
+        adguard.tabs.forEach(function (tab) {
+            if (tab.url.indexOf(UI._getURL('')) >= 0) {
+                adguard.tabs.remove(tab.tabId);
             }
         });
     },
@@ -188,10 +177,6 @@ var UI = {
                 options: {cssSelector: assistantOptions ? assistantOptions.cssSelector : null}
             });
         });
-        //contentScripts.sendMessageToTab(tabs.activeTab, {
-        //    type: 'initAssistant',
-        //    options: {cssSelector: assistantOptions ? assistantOptions.cssSelector : null}
-        //});
     },
 
     getAssistantCssOptions: function () {
@@ -223,6 +208,7 @@ var UI = {
             var domain = UrlUtils.getHost(tab.url);
             adguardApplication.addRuleToApp("@@//" + domain + "^$document", function () {
                 this._reloadWithoutCache(tab);
+                this.closePopup();
             }.bind(this));
         } else {
             this.updateCurrentTabButtonState();
@@ -245,6 +231,7 @@ var UI = {
             if (rule) {
                 adguardApplication.removeRuleFromApp(rule.ruleText, function () {
                     this._reloadWithoutCache(tab);
+                    this.closePopup();
                 }.bind(this));
             }
         } else {
@@ -283,12 +270,6 @@ var UI = {
         return filteringLog.getTabInfo(tab);
     },
 
-    isCurrentTabAdguardDetected: function (callback) {
-        adguard.tabs.getActive(function (tab) {
-            callback(framesMap.isTabAdguardDetected(tab));
-        }.bind(this));
-    },
-
     checkAntiBannerFiltersUpdate: function () {
         antiBannerService.checkAntiBannerFiltersUpdate(true, function (updatedFilters) {
             EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTERS_SHOW_POPUP, true, updatedFilters);
@@ -305,40 +286,6 @@ var UI = {
         adguard.tabs.getActive(function (tab) {
             adguard.tabs.sendMessage(tab.tabId, {type: 'show-alert-popup', title: title, text: text});
         });
-    },
-
-    _initAbusePanel: function (SdkPanel) {
-        this.abusePanelSupported = SdkPanel && typeof SdkPanel === 'function';
-        if (!this.abusePanelSupported) {
-            return;
-        }
-        this.abusePanel = SdkPanel({ // jshint ignore:line
-            width: 552,
-            height: 345,
-            contentURL: adguard.extension.url('content/content-script/abuse.html'),
-            contentScriptOptions: contentScripts.getContentScriptOptions(),
-            contentScriptFile: [
-                adguard.extension.url('content/libs/jquery-1.8.3.min.js'),
-                adguard.extension.url('content/content-script/content-script.js'),
-                adguard.extension.url('content/content-script/i18n-helper.js'),
-                adguard.extension.url('content/pages/i18n.js'),
-                adguard.extension.url('content/content-script/abuse.js')
-            ]
-        });
-
-        contentScripts.addContentScriptMessageListener(this.abusePanel, function (message) {
-            switch (message.type) {
-                case 'sendFeedback':
-                    adguard.tabs.getActive(function (tab) {
-                        var url = tab.url;
-                        antiBannerService.sendFeedback(url, message.topic, message.comment);
-                    }.bind(this));
-                    break;
-                case 'closeAbusePanel':
-                    this.abusePanel.hide();
-                    break;
-            }
-        }.bind(this));
     },
 
     _initContextMenu: function (SdkContextMenu) {

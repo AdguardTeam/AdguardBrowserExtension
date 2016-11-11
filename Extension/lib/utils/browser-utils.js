@@ -347,5 +347,31 @@ var ConcurrentUtils = {
         setTimeout(function () {
             callback.apply(context, params);
         }, 0);
+    },
+
+    retryUntil: function (predicate, main, details) {
+
+        if (typeof details !== 'object') {
+            details = {};
+        }
+
+        var now = 0;
+        var next = details.next || 200;
+        var until = details.until || 2000;
+
+        var check = function () {
+            if (predicate() === true || now >= until) {
+                main();
+                return;
+            }
+            now += next;
+            setTimeout(check, next);
+        };
+
+        if ('sync' in details && details.sync === true) {
+            check();
+        } else {
+            setTimeout(check, 1);
+        }
     }
 };

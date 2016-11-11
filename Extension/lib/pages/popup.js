@@ -51,7 +51,6 @@ $(document).ready(function () {
 
         controller = new PopupController({
             platform: Prefs.platform,
-            abusePanelSupported: Prefs.platform != 'firefox' || UI.abusePanelSupported,
             showStatsSupported: !Utils.isContentBlockerEnabled()
         });
 
@@ -97,10 +96,6 @@ $(document).ready(function () {
         };
         controller.openLink = function (url) {
             UI.openTab(url);
-            ext.closePopup();
-        };
-        controller.openAbusePanel = function () {
-            UI.openAbusePanel();
             ext.closePopup();
         };
         controller.openFilteringLog = function (tabId) {

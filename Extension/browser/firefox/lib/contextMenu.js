@@ -66,9 +66,6 @@ var ContextMenu = {
                     case 'context_block_site_image':
                         UI.openAssistant(message.data.contextDetails);
                         break;
-                    case 'context_abuse_site':
-                        UI.openAbusePanel();
-                        break;
                     case 'context_update_antibanner_filters':
                         UI.checkAntiBannerFiltersUpdate();
                         break;
@@ -166,8 +163,6 @@ var ContextMenu = {
         if (tabInfo.applicationFilteringDisabled) {
             this.menu.addItem(this._createItem('context_site_protection_disabled'));
             this.menu.addItem(this._createSeparator());
-            this.menu.addItem(this._createItem('context_abuse_site'));
-            this.menu.addItem(this._createSeparator());
             this._createSettingsMenu();
             this.menu.addItem(this._createItem('context_enable_protection'));
         } else if (tabInfo.urlFilteringDisabled) {
@@ -209,7 +204,6 @@ var ContextMenu = {
                 }
             }
             this.menu.addItem(this._createItem('context_open_log'));
-            this.menu.addItem(this._createItem('context_abuse_site'));
             this.menu.addItem(this._createItem('context_security_report'));
             if (!tabInfo.adguardDetected) {
                 this.menu.addItem(this._createSeparator());

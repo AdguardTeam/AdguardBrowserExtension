@@ -34,7 +34,7 @@ public class Main {
     private static final String CRX_MAKE_PATH = "../scripts/chrome/crxmake.sh";
     private static final String ZIP_MAKE_PATH = "../scripts/chrome/zipmake.sh";
     private static final String XPI_MAKE_PATH = "../scripts/firefox/xpimake.sh";
-    private static final String XPI_CFX_MAKE_PATH = "../scripts/firefox_legacy/xpimake.sh";
+    private static final String XPI_CFX_MAKE_PATH = "../scripts/firefox/xpimake.sh";
     private static final File CHROME_CERT_FILE = new File("../../extensions/AdguardBrowserExtension/certificate.pem");
 
     private static final String PACK_METHOD_ZIP = "zip";

@@ -113,6 +113,22 @@
             });
         };
 
+        var forEach = function (callback) {
+
+            windowsImpl.getAll(function (aWindowsMetadata) {
+                for (var i = 0; i < aWindowsMetadata.length; i++) {
+                    var aMetadata = aWindowsMetadata[i];
+                    var windowId = aMetadata[0].windowId;
+                    var metadata = windowsMetadata[windowId];
+                    if (!metadata) {
+                        windowsMetadata[windowId] = metadata = aMetadata;
+                    }
+                    callback(metadata[0], metadata[1]);
+                }
+            });
+
+        };
+
         var getLastFocused = function (callback) {
 
             windowsImpl.getLastFocused(function (windowId) {
@@ -131,6 +147,7 @@
 
             create: create,
             getAll: getAll,
+            forEach: forEach,
             getLastFocused: getLastFocused
         };
 
@@ -283,6 +300,20 @@
             });
         };
 
+        var forEach = function (callback) {
+            tabsImpl.getAll(function (aTabs) {
+                for (var i = 0; i < aTabs.length; i++) {
+                    var aTab = aTabs[i];
+                    var tab = tabs[aTab.tabId];
+                    if (!tab) {
+                        // Synchronize state
+                        tabs[aTab.tabId] = tab = aTab;
+                    }
+                    callback(tab);
+                }
+            });
+        };
+
         // Gets active tab
         var getActive = function (callback) {
             tabsImpl.getActive(function (tabId) {
@@ -374,6 +405,7 @@
             reload: reload,
             sendMessage: sendMessage,
             getAll: getAll,
+            forEach: forEach,
             getActive: getActive,
             isIncognito: isIncognito,
 

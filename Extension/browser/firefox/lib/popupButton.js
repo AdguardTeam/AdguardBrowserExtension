@@ -1,278 +1,503 @@
-/**
- * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
- *
- * Adguard Browser Extension is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Adguard Browser Extension is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
- */
+/* global Cu, Cc, Ci, Services, unload, ConcurrentUtils, WorkaroundUtils */
 
-/**
- * Object that manages toolbar button rendering.
- */
-var PopupButton = {
+var toolbarButtonWidget = (function () {
 
-    TOOLBAR_BUTTON_ID: 'adguard-toggle-button',
-    TOOLBAR_BUTTON_CLASS: 'adguard-button-woGqijnGG4UnPRJdhIaw',
-    _sdkButtonId: null,
+    var widget = {
+        id: 'adguard-button',
+        type: 'view',
+        viewId: 'adguard-panel',
+        label: 'Adguard',
+        tooltiptext: 'Adguard'
+    };
 
-    ICON_GRAY: {
-        '16': adguard.extension.url('content/skin/firefox-gray-16.png'),
-        '32': adguard.extension.url('content/skin/firefox-gray-32.png')
-    },
-    ICON_BLUE: {
-        '16': adguard.extension.url('content/skin/firefox-blue-16.png'),
-        '32': adguard.extension.url('content/skin/firefox-blue-32.png')
-    },
-    ICON_GREEN: {
-        '16': adguard.extension.url('content/skin/firefox-16.png'),
-        '32': adguard.extension.url('content/skin/firefox-32.png')
-    },
+    // Only useful for views; a function that will be invoked when a user shows your view. (source: CustomizableUI.jsm)
+    widget.onViewShowing = function (event) {
+        var iframe = event.target.firstChild;
+        iframe.setAttribute('src', adguard.extension.url('content/popup.html'));
+    };
 
-    init: function (UI, SdkPanel, SdkButton) {
+    // Only useful for views; a function that will be invoked when a user hides your view. (source: CustomizableUI.jsm)
+    widget.onViewHiding = function (event) {
+        var panel = event.target;
+        var iframe = panel.firstChild;
+        panel.parentNode.style.maxWidth = '';
+        iframe.setAttribute('src', 'about:blank');
+    };
 
-        this.UI = UI;
-        this.SdkPanel = SdkPanel;
-        this.SdkButton = SdkButton;
-
-        //sdk panel doesn't loaded
-        if (!this.SdkPanel) {
+    // Custom function. Updates button icon
+    widget.updateIconState = function (win, options) {
+        var button = win.document.getElementById(this.id);
+        if (!button) {
             return;
         }
-
-        //sdk button doesn't loaded
-        if (!this.SdkButton) {
-            return;
-        }
-
-        this.initToolbarButtonAndPanel();
-    },
-
-    initToolbarButtonAndPanel: function () {
-
-        var panel = this.SdkPanel({
-            contentURL: adguard.extension.url('content/popup.html'),
-            contentScriptFile: [
-                adguard.extension.url('content/libs/jquery-1.8.3.min.js'),
-                adguard.extension.url('content/content-script/content-script.js'),
-                adguard.extension.url('content/content-script/i18n-helper.js'),
-                adguard.extension.url('content/pages/i18n.js'),
-                adguard.extension.url('content/pages/popup-controller.js'),
-                adguard.extension.url('content/pages/script.js'),
-                adguard.extension.url('content/content-script/panel-popup.js')
-            ],
-            contentScriptOptions: contentScripts.getContentScriptOptions(),
-            contentScriptWhen: 'ready',
-            onHide: function () {
-                this.UI.updateCurrentTabButtonState();
-                button.state('window', {checked: false});
-            }.bind(this),
-            onShow: function () {
-                // Force resize panel popup
-                contentScripts.sendMessageToWorker(panel, {type: 'resizePanelPopup'});
-            }
-        });
-
-        var button = this.SdkButton({
-            id: this.TOOLBAR_BUTTON_ID,
-            label: 'Adguard',
-            icon: this.ICON_GRAY,
-            onChange: function (state) {
-                if (state.checked) {
-                    adguard.tabs.getActive(function (tab) {
-                        var tabInfo = this.UI.getTabInfo(tab);
-                        var filteringInfo = this.UI.getTabFilteringInfo(tab);
-                        contentScripts.sendMessageToWorker(panel, {
-                            type: 'initPanelPopup',
-                            tabInfo: tabInfo,
-                            filteringInfo: filteringInfo
-                        });
-                        panel.show({position: button});
-                    }.bind(this));
-                }
-            }.bind(this)
-        });
-        this.toolbarButton = button;
-
-        var UI = this.UI;
-
-        contentScripts.addContentScriptMessageListener(panel, function (message) {
-            switch (message.type) {
-                case 'addWhiteListDomain':
-                    UI.whiteListCurrentTab();
-                    UI.isCurrentTabAdguardDetected(function (detected) {
-                        if (detected) {
-                            panel.hide();
-                        }
-                    });
-                    break;
-                case 'removeWhiteListDomain':
-                    UI.unWhiteListCurrentTab();
-                    UI.isCurrentTabAdguardDetected(function (detected) {
-                        if (detected) {
-                            panel.hide();
-                        }
-                    });
-                    break;
-                case 'changeApplicationFilteringDisabled':
-                    UI.changeApplicationFilteringDisabled(message.disabled);
-                    break;
-                case 'openSiteReportTab':
-                    UI.openSiteReportTab(message.url);
-                    panel.hide();
-                    break;
-                case 'openSettingsTab':
-                    UI.openSettingsTab();
-                    panel.hide();
-                    break;
-                case 'openAssistant':
-                    UI.openAssistant();
-                    panel.hide();
-                    break;
-                case 'openTab':
-                    UI.openTab(message.url);
-                    panel.hide();
-                    break;
-                case 'openAbusePanel':
-                    UI.openAbusePanel();
-                    panel.hide();
-                    break;
-                case 'openFilteringLog' :
-                    //cause filtering log open in new window, we need hide panel before for properly set checked state
-                    panel.hide();
-                    UI.openFilteringLog(message.tabId);
-                    break;
-                case 'resetBlockedAdsCount':
-                    UI.resetBlockedAdsCount();
-                    panel.hide();
-                    break;
-                case 'resizePanelPopup':
-                    panel.resize(message.width, message.height);
-                    break;
-            }
-        });
-
-        //register sheet for badge
-        styleService.loadUserSheet(adguard.extension.url('content/skin/badge.css'));
-    },
-
-    /**
-     * Update button badge text
-     * @param blocked - count of blocked ads
-     */
-    updateBadgeText: function (blocked) {
-        var toolbarButton = this._getToolbarButtonEl();
-        if (!toolbarButton) {
-            return;
-        }
-        this._customizeToolbarButton(toolbarButton);
-        var blockedText = WorkaroundUtils.getBlockedCountText(blocked);
-        toolbarButton.setAttribute('countBlocked', blockedText);
-    },
-
-    /**
-     * Update button icon
-     * @param options - icon display options
-     */
-    updateIconState: function (options) {
-        if (!this.toolbarButton) {
-            return;
-        }
-        var icon;
         if (options.disabled) {
-            icon = this.ICON_GRAY;
+            button.classList.remove('enabled');
+            button.classList.remove('adguardDetected');
         } else if (options.adguardDetected) {
-            icon = this.ICON_BLUE;
+            button.classList.remove('enabled');
+            button.classList.add('adguardDetected');
         } else {
-            icon = this.ICON_GREEN;
+            button.classList.add('enabled');
+            button.classList.remove('adguardDetected');
         }
-        this.toolbarButton.icon = icon;
-    },
+    };
 
-    /**
-     * Add some css classes to button element
-     * @private
-     */
-    _customizeToolbarButton: function (buttonEl) {
+    // Custom function. Updates button badge text
+    widget.updateBadgeText = function (win, badge) {
+        var button = win.document.getElementById(this.id);
+        if (!button) {
+            return;
+        }
+        button.setAttribute('badge', badge || '');
+    };
 
-        if (buttonEl.classList.contains(this.TOOLBAR_BUTTON_CLASS)) {
+    // Custom function. Resizes panel and iframe
+    widget.resizePopup = function (win, width, height) {
+
+        var panel = win.document.getElementById(this.viewId);
+        if (!panel) {
+            return;
+        }
+        var iframe = panel.firstChild;
+        if (!iframe) {
             return;
         }
 
-        var classes = this._getPopupButtonClasses();
-        if (!classes) {
-            return;
-        }
-        for (var i = 0; i < classes.length; i++) {
-            buttonEl.classList.add(classes[i]);
-        }
-    },
+        panel.parentNode.style.maxWidth = 'none';
 
-    _getToolbarButtonEl: function () {
-        var win = adguard.winWatcher.getCurrentBrowserWindow();
-        if (!win) {
-            return null;
+        iframe.style.width = width + 'px';
+        iframe.style.height = height + 'px';
+
+        panel.style.width = (width + panel.boxObject.width - panel.clientWidth) + 'px';
+        panel.style.height = (height + panel.boxObject.height - panel.clientHeight) + 'px';
+    };
+
+    // Custom function. Closes popup
+    widget.closePopup = function (win) {
+        var panel = win.document.getElementById(this.viewId);
+        if (panel) {
+            panel.hidePopup();
         }
-        if (this._sdkButtonId) {
-            return win && win.document.getElementById(this._sdkButtonId);
-        } else {
-            var sdkButton = this._findToolbarButtonElBySdkId(this.TOOLBAR_BUTTON_ID);
-            if (sdkButton) {
-                this._sdkButtonId = sdkButton.id;
+    };
+
+    // Custom function. Append iframe to panel
+    widget.populatePanel = function (doc, panel) {
+
+        panel.setAttribute('id', this.viewId);
+
+        var iframe = doc.createElement('iframe');
+        iframe.setAttribute('type', 'content');
+
+        panel.appendChild(iframe);
+
+        var onPopupReady = function () {
+
+            var win = this.contentWindow;
+
+            if (!win || win.location.host !== location.host) {
+                return;
             }
-            return sdkButton;
-        }
-    },
 
-    /**
-     * Returns collection of classes for popup button
-     * @private
-     */
-    _getPopupButtonClasses: function () {
-
-        if (this.popupButtonClasses) {
-            return this.popupButtonClasses;
-        }
-
-        var window = adguard.winWatcher.getCurrentBrowserWindow();
-        if (!window) {
-            return;
-        }
-
-        this.popupButtonClasses = [];
-
-        var platform = "";
-        if (window.navigator.platform.indexOf("Mac") === 0) {
-            platform = "mac";
-        } else if (window.navigator.platform.indexOf("Linux") === 0) {
-            platform = "linux";
-        }
-
-        this.popupButtonClasses.push(this.TOOLBAR_BUTTON_CLASS);
-        if (platform) {
-            this.popupButtonClasses.push(platform);
-        }
-
-        return this.popupButtonClasses;
-    },
-
-    _findToolbarButtonElBySdkId: function (buttonSdkId) {
-        var win = adguard.winWatcher.getCurrentBrowserWindow();
-        var buttons = win.document.querySelectorAll("toolbarbutton");
-        for (var i = 0; i < buttons.length; i++) {
-            var button = buttons[i];
-            if (button.id && button.id.indexOf(buttonSdkId) >= 0) {
-                return button;
+            if (typeof widget.onBeforePopupReady === 'function') {
+                widget.onBeforePopupReady.call(this);
             }
-        }
-        return null;
+        };
+
+        iframe.addEventListener('load', onPopupReady, true);
+    };
+
+    return widget;
+
+})();
+
+/**
+ * Legacy toolbar button (CustomizableUI.jsm isn't present)
+ */
+(function (widget) {
+
+    var CustomizableUI = null;
+    try {
+        CustomizableUI = Cu.import('resource:///modules/CustomizableUI.jsm', null).CustomizableUI;
+    } catch (ex) {
     }
-};
+    if (CustomizableUI !== null) {
+        return;
+    }
+
+    Log.info('Adguard addon: Initializing legacy toolbar button');
+
+    function forEach(items, callback) {
+        for (var i = 0; i < items.length; i++) {
+            if (callback(items[i]) === false) {
+                break;
+            }
+        }
+    }
+
+    function findToolbox(document) {
+        return document.getElementById('navigator-toolbox'); // || document.getElementById('mail-toolbox');
+    }
+
+    var createToolbarButton = function (window) {
+
+        var document = window.document;
+
+        var button = document.createElement('toolbarbutton');
+        button.setAttribute('id', widget.id);
+        // type = panel would be more accurate, but doesn't look as good
+        button.setAttribute('type', 'menu');
+        button.setAttribute('removable', 'true');
+        button.setAttribute('class', 'toolbarbutton-1 chromeclass-toolbar-additional legacy-badge');
+        button.setAttribute('label', widget.label);
+        button.setAttribute('tooltiptext', widget.label);
+
+        var panel = document.createElement('panel');
+        widget.populatePanel(document, panel);
+        panel.addEventListener('popupshowing', widget.onViewShowing);
+        panel.addEventListener('popuphiding', widget.onViewHiding);
+        button.appendChild(panel);
+
+        return button;
+    };
+
+    var styleSheetService = Cc['@mozilla.org/content/style-sheet-service;1'].getService(Ci.nsIStyleSheetService);
+
+    var styleSheetUri = null;
+
+    function canAddToolbarButton(window) {
+        var document = window.document;
+        if (!document || document.readyState !== 'complete' || document.getElementById('nav-bar') === null) {
+            return false;
+        }
+        var toolbox = findToolbox(document);
+        return toolbox !== null && !!toolbox.palette;
+    }
+
+    function addToolbarButtonAndRegisterStyle(window) {
+
+        if (styleSheetUri === null) {
+
+            styleSheetUri = Services.io.newURI(adguard.extension.url('content/skin/badge.css'), null, null);
+
+            // Register global so it works in all windows, including palette
+            if (!styleSheetService.sheetRegistered(styleSheetUri, styleSheetService.AUTHOR_SHEET)) {
+                styleSheetService.loadAndRegisterSheet(styleSheetUri, styleSheetService.AUTHOR_SHEET);
+            }
+        }
+
+        var document = window.document;
+        if (document.getElementById(widget.id) !== null) {
+            return;
+        }
+
+        var toolbox = findToolbox(document);
+        if (!toolbox) {
+            return;
+        }
+
+        var toolbarButton = createToolbarButton(window);
+
+        // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XUL/toolbarpalette
+        var palette = toolbox.palette;
+        if (palette && palette.querySelector('#' + widget.id) === null) {
+            palette.appendChild(toolbarButton);
+        }
+
+        // Pale Moon: `toolbox.externalToolbars` can be undefined in Pale Moon
+        var toolbars = toolbox.externalToolbars ? toolbox.externalToolbars.slice() : [];
+        forEach(toolbox.children, function (child) {
+            if (child.localName === 'toolbar') {
+                toolbars.push(child);
+            }
+        });
+
+        forEach(toolbars, function (toolbar) {
+            var currentsetString = toolbar.getAttribute('currentset');
+            if (!currentsetString) {
+                return;
+            }
+            var currentset = currentsetString.split(/\s*,\s*/);
+            var index = currentset.indexOf(widget.id);
+            if (index === -1) {
+                return;
+            }
+            // toolbar.insertItem is undefined in Pale Moon
+            if (typeof toolbar.insertItem !== 'function') {
+                return;
+            }
+            var before = null;
+            for (var i = index + 1; i < currentset.length; i++) {
+                before = toolbar.querySelector('[id="' + currentset[i] + '"]');
+                if (before !== null) {
+                    break;
+                }
+            }
+            // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XUL/Method/insertItem
+            toolbar.insertItem(widget.id, before);
+            return false;
+        });
+
+        // We are done if our toolbar button is already installed in one of the toolbar.
+        if (palette !== null && toolbarButton.parentElement !== palette) {
+            return;
+        }
+
+        // Try to locate button
+        var navbar = document.getElementById('nav-bar');
+        if (navbar !== null) {
+            // Find a child customizable palette, if any.
+            navbar = navbar.querySelector('.customization-target') || navbar;
+            navbar.appendChild(toolbarButton);
+            navbar.setAttribute('currentset', navbar.currentSet);
+            document.persist(navbar.id, 'currentset');
+        }
+    }
+
+    var shutdown = function () {
+
+        adguard.windows.forEach(function (win, domWin) {
+            var button = domWin.document.getElementById(widget.id);
+            if (button && button.parentNode) {
+                button.parentNode.removeChild(button);
+            }
+        });
+
+        if (styleSheetUri !== null) {
+            if (styleSheetService.sheetRegistered(styleSheetUri, styleSheetService.AUTHOR_SHEET)) {
+                styleSheetService.unregisterSheet(styleSheetUri, styleSheetService.AUTHOR_SHEET);
+            }
+            styleSheetUri = null;
+        }
+    };
+
+    function attachToNewWindow(win) {
+        ConcurrentUtils.retryUntil(
+            canAddToolbarButton.bind(null, win),
+            addToolbarButtonAndRegisterStyle.bind(null, win)
+        );
+    }
+
+    widget.init = function () {
+        adguard.windows.forEach(function (win, domWin) {
+            attachToNewWindow(domWin);
+        });
+        adguard.windows.onUpdated.addListener(function (win, domWin, event) {
+            if (event === 'ChromeWindowLoad') {
+                attachToNewWindow(domWin);
+            }
+        });
+        unload.when(shutdown);
+    };
+
+})(toolbarButtonWidget);
+
+/**
+ * Default toolbar button (CustomizableUI.jsm is present)
+ */
+(function (widget) {
+
+    var CustomizableUI = null;
+    try {
+        CustomizableUI = Cu.import('resource:///modules/CustomizableUI.jsm', null).CustomizableUI;
+    } catch (ex) {
+    }
+    if (CustomizableUI === null) {
+        return;
+    }
+
+    Log.info('Adguard addon: Initializing default toolbar button');
+
+    var badgeClassName = 'badged-button'; // default class for badge
+    if (Services.vc.compare(Services.appinfo.platformVersion, '36.0') < 0) {
+        badgeClassName = 'legacy-badge'; // legacy class for badge
+    }
+
+    widget.CustomizableUI = CustomizableUI;
+    // https://developer.mozilla.org/en-US/docs/Mozilla/JavaScript_code_modules/CustomizableUI.jsm#Areas
+    widget.defaultArea = CustomizableUI.AREA_NAVBAR;
+
+    var Listeners = {};
+
+    var badgeStyle = [
+        'background-color: #555;',
+        'border-radius: 2px;',
+        'color: #FFFFFF;',
+        'font-size: 8px;',
+        'line-height: 12px;',
+        'text-align: center;',
+        'min-width: 12px;',
+        'background: -moz-linear-gradient(top, #555 0%, #000000 100%);'
+    ].join('');
+
+    var updateBadgeStyle = function () {
+        adguard.windows.forEach(function (win, domWin) {
+            var button = domWin.document.getElementById(widget.id);
+            if (!button) {
+                return;
+            }
+            var badge = button.ownerDocument.getAnonymousElementByAttribute(
+                button,
+                'class',
+                'toolbarbutton-badge'
+            );
+            if (!badge) {
+                return;
+            }
+            badge.style.cssText = badgeStyle;
+        });
+    };
+
+    var updateBadge = function () {
+
+        var widgetId = widget.id;
+        var buttonInPanel = CustomizableUI.getWidget(widgetId).areaType === CustomizableUI.TYPE_MENU_PANEL;
+
+        adguard.windows.forEach(function (win, domWin) {
+            var button = domWin.document.getElementById(widgetId);
+            if (!button) {
+                return;
+            }
+            if (buttonInPanel) {
+                button.classList.remove(badgeClassName);
+                return;
+            }
+            button.classList.add(badgeClassName);
+        });
+
+        if (buttonInPanel) {
+            return;
+        }
+
+        // Anonymous elements need some time to be reachable
+        setTimeout(updateBadgeStyle, 250);
+
+    }.bind(Listeners);
+
+    // https://developer.mozilla.org/en-US/docs/Mozilla/JavaScript_code_modules/CustomizableUI.jsm#Listeners
+    Listeners.onCustomizeEnd = updateBadge;
+    Listeners.onWidgetAdded = updateBadge;
+    Listeners.onWidgetUnderflow = updateBadge;
+
+    var styleURI = null;
+
+    // https://developer.mozilla.org/en-US/docs/Mozilla/JavaScript_code_modules/CustomizableUI.jsm/API-provided_widgets#Event_handlers
+    widget.onBeforeCreated = function (doc) {
+
+        var panel = doc.createElement('panelview');
+
+        this.populatePanel(doc, panel);
+
+        doc.getElementById('PanelUI-multiView').appendChild(panel);
+
+        doc.defaultView.QueryInterface(Ci.nsIInterfaceRequestor)
+            .getInterface(Ci.nsIDOMWindowUtils)
+            .loadSheet(styleURI, 1);
+    };
+
+    // https://developer.mozilla.org/en-US/docs/Mozilla/JavaScript_code_modules/CustomizableUI.jsm/API-provided_widgets#Event_handlers
+    widget.onCreated = function (button) {
+        button.setAttribute('badge', '');
+        setTimeout(updateBadge, 250);
+    };
+
+    widget.onBeforePopupReady = function () {
+        try {
+            // Add `portrait` class if width is constrained.
+            this.contentDocument.body.classList.toggle('portrait', CustomizableUI.getWidget(widget.id).areaType === CustomizableUI.TYPE_MENU_PANEL);
+        } catch (ex) {
+        }
+    };
+
+    widget.closePopup = function (win) {
+        var panel = win.document.getElementById(widget.viewId);
+        if (panel) {
+            CustomizableUI.hidePanelForNode(panel);
+        }
+    };
+
+    widget.init = function () {
+
+        CustomizableUI.addListener(Listeners);
+
+        styleURI = Services.io.newURI(
+            'data:text/css,' + encodeURIComponent(adguard.extension.load('content/skin/badge.css')),
+            null,
+            null
+        );
+
+        CustomizableUI.createWidget(this);
+
+        unload.when(shutdown);
+    };
+
+    function shutdown() {
+
+        adguard.windows.forEach(function (win, domWin) {
+            var panel = domWin.document.getElementById(widget.viewId);
+            if (panel && panel.parentNode) {
+                panel.parentNode.removeChild(panel);
+            }
+            domWin.QueryInterface(Ci.nsIInterfaceRequestor)
+                .getInterface(Ci.nsIDOMWindowUtils)
+                .removeSheet(styleURI, 1);
+        });
+
+        CustomizableUI.removeListener(Listeners);
+        CustomizableUI.destroyWidget(widget.id);
+    }
+
+})(toolbarButtonWidget);
+
+var PopupButton = (function (widget) {
+
+    var init = function () {
+        if (typeof widget.init === 'function') {
+            widget.init();
+        }
+    };
+
+    var resizePopup = function (width, height) {
+        if (typeof widget.resizePopup === 'function') {
+            var win = adguard.winWatcher.getCurrentBrowserWindow();
+            if (win) {
+                widget.resizePopup(win, width, height);
+            }
+        }
+    };
+
+    var closePopup = function () {
+        if (typeof widget.closePopup === 'function') {
+            var win = adguard.winWatcher.getCurrentBrowserWindow();
+            if (win) {
+                widget.closePopup(win);
+            }
+        }
+    };
+
+    var updateBadgeText = function (blocked) {
+        if (typeof widget.updateBadgeText === 'function') {
+            var win = adguard.winWatcher.getCurrentBrowserWindow();
+            if (win) {
+                widget.updateBadgeText(win, WorkaroundUtils.getBlockedCountText(blocked));
+            }
+        }
+    };
+
+    var updateIconState = function (options) {
+        if (typeof widget.updateIconState === 'function') {
+            var win = adguard.winWatcher.getCurrentBrowserWindow();
+            if (win) {
+                widget.updateIconState(win, options);
+            }
+        }
+    };
+
+    return {
+        init: init,
+        resizePopup: resizePopup,
+        closePopup: closePopup,
+        updateBadgeText: updateBadgeText,
+        updateIconState: updateIconState
+    };
+
+})(toolbarButtonWidget);

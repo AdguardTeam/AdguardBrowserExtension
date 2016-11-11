@@ -335,10 +335,18 @@ var EventChannels = (function () {
             }
         };
 
+        var notifyInReverseOrder = function () {
+            for (var i = listeners.length - 1; i >= 0; i--) {
+                var listener = listeners[i];
+                listener.apply(listener, arguments);
+            }
+        };
+
         return {
             addListener: addListener,
             removeListener: removeListener,
-            notify: notify
+            notify: notify,
+            notifyInReverseOrder: notifyInReverseOrder
         };
     };
 
@@ -389,7 +397,7 @@ var EventChannels = (function () {
 
         var fireUnload = function (reason) {
             console.info('Unload is fired: ' + reason);
-            unloadChannel.notify(reason);
+            unloadChannel.notifyInReverseOrder(reason);
         };
 
         return {

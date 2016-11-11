@@ -15,8 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 var controller = new PopupController({
-    platform: 'firefox',
-    abusePanelSupported: true
+    platform: 'firefox'
 });
 
 //override
@@ -29,10 +28,10 @@ controller.resizePopup = function (width, height) {
 };
 //popup checkbox actions
 controller.addWhiteListDomain = function (url) {
-    contentPage.sendMessage({type: 'addWhiteListDomain', url: url});
+    contentPage.sendMessage({type: 'addWhiteListDomainPopup', url: url});
 };
 controller.removeWhiteListDomain = function (url) {
-    contentPage.sendMessage({type: 'removeWhiteListDomain', url: url});
+    contentPage.sendMessage({type: 'removeWhiteListDomainPopup', url: url});
 };
 controller.changeApplicationFilteringDisabled = function (disabled) {
     contentPage.sendMessage({type: 'changeApplicationFilteringDisabled', disabled: disabled});
@@ -50,9 +49,6 @@ controller.openAssistantInTab = function () {
 controller.openLink = function (url) {
     contentPage.sendMessage({type: 'openTab', url: url});
 };
-controller.openAbusePanel = function () {
-    contentPage.sendMessage({type: 'openAbusePanel'});
-};
 controller.openFilteringLog = function (tabId) {
     contentPage.sendMessage({type: 'openFilteringLog', tabId: tabId});
 };
@@ -60,12 +56,12 @@ controller.resetBlockedAdsCount = function () {
     contentPage.sendMessage({type: 'resetBlockedAdsCount'});
 };
 
-contentPage.onMessage.addListener(function (message) {
-    if (message.type === 'initPanelPopup') {
-        //render popup
+controller.sendFeedback = function (url, topic, comment) {
+    contentPage.sendMessage({type: 'sendFeedback', url: url, topic: topic, comment: comment});
+};
+
+document.addEventListener('DOMContentLoaded', function () {
+    contentPage.sendMessage({type: 'popupReady'}, function (message) {
         controller.render(message.tabInfo, message.filteringInfo);
-    }
-    if (message.type === 'resizePanelPopup') {
-        controller.resizePopupWindow();
-    }
-});
+    });
+}, true);

@@ -108,6 +108,17 @@ ContentScripts.prototype = {
             'pages/export.js'
         ]);
 
+        // Popup.html
+        this.registerChromeContentScript('popup.html', [
+            '/libs/jquery-1.8.3.min.js',
+            '/content-script/content-script.js',
+            '/content-script/i18n-helper.js',
+            '/pages/i18n.js',
+            '/pages/popup-controller.js',
+            '/pages/script.js',
+            '/content-script/panel-popup.js'
+        ]);
+
         // Sb.html
         this.registerChromeContentScript('sb.html', [
             'libs/jquery-1.8.3.min.js',
@@ -190,39 +201,11 @@ ContentScripts.prototype = {
     /**
      * Sends message to the specified content script.
      *
-     * @param worker    Either Event.target got from the frame script or SDK worker
+     * @param worker    Either Event.target got from the frame script
      * @param message   Message to send
      */
     sendMessageToWorker: function (worker, message) {
-        if ('port' in worker) {
-            worker.port.emit(this.BACKGROUND_TO_CONTENT_CHANNEL, message);
-        } else {
-            worker.messageManager.sendAsyncMessage('Adguard:on-message-channel', message);
-        }
-    },
-
-    /**
-     * This method is used for attaching event listener to SDK panel
-     *
-     * @param worker    SDK panel
-     * @param callback  Event handler
-     */
-    addContentScriptMessageListener: function (worker, callback) {
-        if (!('port' in worker)) {
-            throw 'Unable to add port listener to ' + worker;
-        }
-        worker.port.on(this.CONTENT_TO_BACKGROUND_CHANNEL, function (message) {
-            callback(message);
-        });
-    },
-
-    /**
-     * Content script options (used for SdkPanel initialization)
-     */
-    getContentScriptOptions: function () {
-        return {
-            i18nMessages: this.i18nMessages
-        };
+        worker.messageManager.sendAsyncMessage('Adguard:on-message-channel', message);
     },
 
     /**
@@ -314,20 +297,26 @@ ContentScripts.prototype = {
              * @message Message object
              */
             var receiveMessage = function (message) {
-                var tab = getTabFromTarget(message.target);
-                if (!tab) {
-                    Log.debug('Unable to retrieve tab from {0}', message.target);
-                    return;
+
+                var messageManager;
+                try {
+                    // Get the message manager of the sender frame script
+                    messageManager = message.target
+                        .QueryInterface(Ci.nsIFrameLoaderOwner)
+                        .frameLoader
+                        .messageManager;
+                } catch (ex) {
                 }
 
-                // Get the message manager of the sender frame script
-                var messageManager = message.target
-                    .QueryInterface(Ci.nsIFrameLoaderOwner)
-                    .frameLoader
-                    .messageManager;
+                if (!messageManager) {
+                    // Message came from a popup, and its message manager is not usable.
+                    messageManager = adguard.winWatcher.getOwnerWindow(message.target).messageManager;
+                }
+
+                var tab = getTabFromTarget(message.target);
+                var tabId = tab ? adguard.tabsImpl.getTabIdForTab(tab) : -1;
 
                 // Message sender identification
-                var tabId = adguard.tabsImpl.getTabIdForTab(tab);
                 var sender = {
                     tab: {tabId: tabId},
                     messageManager: messageManager

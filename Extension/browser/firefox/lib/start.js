@@ -18,29 +18,6 @@
 
 (function () {
 
-    var SdkPanel = null;
-    // PaleMoon (25) and fennec doesn't support sdk/panel
-    try {
-        //SdkPanel = require('sdk/panel').Panel;
-    } catch (ex) {
-        Log.info("Module sdk/panel is not supported");
-    }
-
-    var SdkContextMenu = null;
-    try {
-        //SdkContextMenu = require('sdk/context-menu');
-    } catch (ex) {
-        Log.info("Module sdk/context-menu is not supported");
-    }
-
-    //load module 'sdk/ui/button/toggle'. This module supported from 29 version
-    var SdkButton = null;
-    try {
-        //SdkButton = require('sdk/ui/button/toggle').ToggleButton;
-    } catch (ex) {
-        Log.info('Module sdk/ui/button/toggle is not supported');
-    }
-
     Log.info('Adguard addon: Starting... Browser: {0}. Platform: {1}. Version: {2}. Id: {3}',
         adguard.runtime.getVersion(), adguard.runtime.getPlatform(),
         adguard.extension.getVersion(), adguard.extension.getId()
@@ -57,48 +34,7 @@
     contentScripts.init();
 
     // Initialize overlay toolbar button
-    UI.init(SdkPanel, SdkContextMenu, SdkButton);
-
-    var AdguardModules = {
-        adguard: adguard,
-        antiBannerService: antiBannerService,
-        framesMap: framesMap,
-        filteringLog: filteringLog,
-        Prefs: Prefs,
-        UI: UI,
-        i18n: i18n,
-        Utils: Utils,
-        AntiBannerFiltersId: AntiBannerFiltersId
-    };
-
-    /**
-     * Observer for loaded adguard modules.
-     * This observer is used for scripts on "chrome" pages to get access to Adguard modules.
-     * Look at require method in modules.js file.
-     */
-    var RequireObserver = {
-
-        LOAD_MODULE_TOPIC: "adguard-load-module",
-
-        observe: function (subject, topic, data) {
-            if (topic === RequireObserver.LOAD_MODULE_TOPIC) {
-                var service = AdguardModules[data];
-                if (!service) {
-                    throw 'Module "' + data + '" is undefined';
-                }
-                subject.wrappedJSObject.exports = service;
-            }
-        },
-
-        QueryInterface: XPCOMUtils.generateQI([Ci.nsISupportsWeakReference, Ci.nsIObserver])
-    };
-
-    Services.obs.addObserver(RequireObserver, RequireObserver.LOAD_MODULE_TOPIC, true);
-
-    // Remove observer on unload
-    unload.when(function () {
-        Services.obs.removeObserver(RequireObserver, RequireObserver.LOAD_MODULE_TOPIC);
-    });
+    UI.init();
 
     var antiBannerCallback = function (runInfo) {
         if (runInfo.isFirstRun) {

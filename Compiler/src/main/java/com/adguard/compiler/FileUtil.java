@@ -168,18 +168,13 @@ public class FileUtil {
 		copyDirectory(sourceContentScript, destContentScript);
 		FileUtils.deleteQuietly(sourceContentScript);
 
-		//move data/content/content-script folder to /content-script folder
-		File sourceFirefoxContentScript = new File(sourceContentDir, "content-script");
-		File destFirefoxContentScript = new File(dest, "/content-script");
-		copyDirectory(sourceFirefoxContentScript, destFirefoxContentScript);
+		// Copy file from /content folder to root
+		copyDirectory(sourceContentDir, dest);
 
 		//move third-party js files to /libs folder
 		File sourceLibsDir = new File(dest, "lib/libs");
 		File destLibsDir = new File(dest, "/libs");
 		FileUtils.moveDirectory(sourceLibsDir, destLibsDir);
-		//TODO: optimize
-		//Remove deferred.min.js file, cause use only in chrome and safari extension
-//		FileUtils.deleteQuietly(new File(destLibsDir, "deferred.min.js"));
 
 		//convert chrome style locales to firefox style
 		File sourceLocalesDir = new File(dest, "_locales");

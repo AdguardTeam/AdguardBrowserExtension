@@ -39,24 +39,25 @@
 
     function getTabForBrowser(browser) {
 
-        var windows = adguard.winWatcher.getWindows();
-
-        for (var i = 0; i < windows.length; i++) {
-            // this function may be called when not using fennec
-            var window = windows[i];
-            if (!window.BrowserApp) {
-                continue;
-            }
-
-            var tabs = window.BrowserApp.tabs;
-            for (var j = 0; j < tabs.length; j++) {
-                var tab = tabs[i];
-                if (tab.browser === browser) {
-                    return tab;
-                }
-            }
+        var win = getOwnerWindow(browser);
+        if (!win) {
+            return null;
         }
-        return null;
+
+        var tabBrowser = getTabBrowserForWin(win);
+        if (!tabBrowser) {
+            return null;
+        }
+
+        var index = tabBrowser.browsers.indexOf(browser);
+        if (index < 0) {
+            return null;
+        }
+
+        if (!tabBrowser.tabs || index >= tabBrowser.tabs.length) {
+            return null;
+        }
+        return tabBrowser.tabs[index];
     }
 
     function getTabBrowserForTab(xulTab) {
@@ -135,32 +136,6 @@
         return docElement.getAttribute('windowtype') === 'navigator:browser' || docElement.getAttribute('id') === 'main-window' ? 'normal' : 'other';
     }
 
-    function retryUntil(predicate, main, details) {
-
-        if (typeof details !== 'object') {
-            details = {};
-        }
-
-        var now = 0;
-        var next = details.next || 200;
-        var until = details.until || 2000;
-
-        var check = function () {
-            if (predicate() === true || now >= until) {
-                main();
-                return;
-            }
-            now += next;
-            setTimeout(check, next);
-        };
-
-        if ('sync' in details && details.sync === true) {
-            check();
-        } else {
-            setTimeout(check, 1);
-        }
-    }
-
     adguard.winWatcher = adguard.windowsImpl = (function () {
 
         var windowsIdMap = new Map();
@@ -206,7 +181,7 @@
                 onCreatedChannel.notify(toWindowFromChromeWindow(windowId, domWin), domWin);
 
                 // TabBrowserReady event
-                retryUntil(
+                ConcurrentUtils.retryUntil(
                     isTabBrowserInitialized.bind(null, domWin),
                     function () {
                         onUpdatedChannel.notify(toWindowFromChromeWindow(windowId, domWin), domWin, 'TabBrowserReady');
@@ -344,7 +319,7 @@
         };
 
         var getLastFocused = function (callback) {
-            var win = getCurrentWindow();
+            var win = getCurrentBrowserWindow();
             if (!win) {
                 return;
             }
@@ -365,12 +340,8 @@
             return result;
         };
 
-        var getCurrentWindow = function () {
-            return toBrowserWindow(Services.wm.getMostRecentWindow(null));
-        };
-
         var getCurrentBrowserWindow = function () {
-            return toBrowserWindow(Services.wm.getMostRecentWindow('navigator:browser'));
+            return toBrowserWindow(Services.wm.getMostRecentWindow(null));
         };
 
         return {
@@ -383,8 +354,8 @@
             getLastFocused: getLastFocused,
 
             getWindows: getWindows,
-            getCurrentWindow: getCurrentWindow,
-            getCurrentBrowserWindow: getCurrentBrowserWindow
+            getCurrentBrowserWindow: getCurrentBrowserWindow,
+            getOwnerWindow: getOwnerWindow
         };
     })();
 
@@ -508,29 +479,25 @@
         }
 
         // Initialize with currently opened windows
-        adguard.windowsImpl.getAll(function (aWindowsMetadata) {
-            for (var i = 0; i < aWindowsMetadata.length; i++) {
-                var metadata = aWindowsMetadata[i];
-                onTabBrowserInitialized(metadata[1]);
-            }
-        });
+        var windows = adguard.winWatcher.getWindows();
+        for (var i = 0; i < windows.length; i++) {
+            onTabBrowserInitialized(windows[i]);
+        }
 
-        adguard.windowsImpl.onUpdated.addListener(function (win, domWin, type) {
+        adguard.winWatcher.onUpdated.addListener(function (win, domWin, type) {
             if (type === 'TabBrowserReady') {
                 onTabBrowserInitialized(domWin);
             }
         });
-        adguard.windowsImpl.onRemoved.addListener(function (win, domWin) {
+        adguard.winWatcher.onRemoved.addListener(function (win, domWin) {
             detachFromTabBrowser(domWin);
         });
 
         unload.when(function () {
-            adguard.windowsImpl.getAll(function (aWindowsMetadata) {
-                for (var i = 0; i < aWindowsMetadata.length; i++) {
-                    var metadata = aWindowsMetadata[i];
-                    detachFromTabBrowser(metadata[1]);
-                }
-            });
+            var windows = adguard.winWatcher.getWindows();
+            for (var i = 0; i < windows.length; i++) {
+                detachFromTabBrowser(windows[i]);
+            }
         });
 
         function isPrivate(xulTab) {
@@ -589,7 +556,7 @@
             var active = details.active === true;
             var inNewWindow = details.inNewWindow === true;
 
-            var win = adguard.winWatcher.getCurrentWindow();
+            var win = adguard.winWatcher.getCurrentBrowserWindow();
             if (!win) {
                 return;
             }
@@ -764,7 +731,7 @@
          */
         var getActive = function (callback) {
 
-            var win = adguard.winWatcher.getCurrentWindow();
+            var win = adguard.winWatcher.getCurrentBrowserWindow();
             if (!win) {
                 return;
             }

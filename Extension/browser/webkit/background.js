@@ -46,12 +46,9 @@ adguard.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 });
 
 //record opened tabs
-adguard.tabs.getAll(function (tabs) {
-    for (var i = 0; i < tabs.length; i++) {
-        var tab = tabs[i];
-        framesMap.recordFrame(tab, 0, tab.url, RequestTypes.DOCUMENT);
-        UI.updateTabIconAndContextMenu(tab);
-    }
+adguard.tabs.forEach(function (tab) {
+    framesMap.recordFrame(tab, 0, tab.url, RequestTypes.DOCUMENT);
+    UI.updateTabIconAndContextMenu(tab);
 });
 UI.bindEvents();
 

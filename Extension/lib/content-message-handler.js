@@ -127,7 +127,8 @@ ContentMessageHandler.prototype = {
                 UI.openExtensionStore();
                 break;
             case 'openFilteringLog':
-                UI.openFilteringLog();
+                UI.closePopup();
+                UI.openFilteringLog(message.tabId);
                 break;
             case 'openExportRulesTab':
                 UI.openExportRulesTab(message.whitelist);
@@ -138,9 +139,11 @@ ContentMessageHandler.prototype = {
                 break;
             case 'openTab':
                 UI.openTab(message.url, message.options);
+                UI.closePopup();
                 break;
             case 'resetBlockedAdsCount':
                 framesMap.resetBlockedAdsCount();
+                UI.closePopup();
                 break;
             case 'getSelectorsAndScripts':
                 if (WorkaroundUtils.isFacebookIframe(message.documentUrl)) {
@@ -213,6 +216,44 @@ ContentMessageHandler.prototype = {
                     });
                 });
                 return true; // Async
+            // Popup methods
+            case 'popupReady':
+                adguard.tabs.getActive(function (tab) {
+                    var tabInfo = UI.getTabInfo(tab);
+                    var filteringInfo = UI.getTabFilteringInfo(tab);
+                    callback({
+                        tabInfo: tabInfo,
+                        filteringInfo: filteringInfo
+                    });
+                });
+                return true; // Async
+            case 'addWhiteListDomainPopup':
+                UI.whiteListCurrentTab();
+                break;
+            case 'removeWhiteListDomainPopup':
+                UI.unWhiteListCurrentTab();
+                break;
+            case 'changeApplicationFilteringDisabled':
+                UI.changeApplicationFilteringDisabled(message.disabled);
+                break;
+            case 'openSiteReportTab':
+                UI.openSiteReportTab(message.url);
+                UI.closePopup();
+                break;
+            case 'openSettingsTab':
+                UI.openSettingsTab();
+                UI.closePopup();
+                break;
+            case 'openAssistant':
+                UI.openAssistant();
+                UI.closePopup();
+                break;
+            case 'resizePanelPopup':
+                UI.resizePopup(message.width, message.height);
+                break;
+            case 'sendFeedback':
+                antiBannerService.sendFeedback(message.url, message.topic, message.comment);
+                break;
             default :
                 throw 'Unknown message: ' + message;
         }

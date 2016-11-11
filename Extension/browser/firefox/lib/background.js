@@ -217,6 +217,44 @@
 
     })();
 
+    //(function (global) {
+    //
+    //    var lastTimerId = 1;
+    //    var timers = Object.create(null);
+    //
+    //    var TYPE_ONE_SHOT = Ci.nsITimer.TYPE_ONE_SHOT;
+    //
+    //    function setTimer(type, callback, delay) {
+    //        var id = ++lastTimerId;
+    //        var timer = timers[id] = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+    //        timer.initWithCallback({
+    //            notify: function () {
+    //                try {
+    //                    if (type === TYPE_ONE_SHOT) {
+    //                        delete timers[id];
+    //                    }
+    //                    callback.apply(null);
+    //                } catch (error) {
+    //                    console.exception(error);
+    //                }
+    //            }
+    //        }, Math.max(delay || 4), type);
+    //        return id;
+    //    }
+    //
+    //    function unsetTimer(id) {
+    //        var timer = timers[id];
+    //        delete timers[id];
+    //        if (timer) {
+    //            timer.cancel();
+    //        }
+    //    }
+    //
+    //    global.setTimeout = setTimer.bind(null, TYPE_ONE_SHOT);
+    //    global.clearTimeout = unsetTimer.bind(null);
+    //
+    //})(global);
+
     global.i18n = (function () {
 
         // Randomize URI to work around bug 719376

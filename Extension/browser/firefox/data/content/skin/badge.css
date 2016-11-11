@@ -15,38 +15,56 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-.adguard-button-woGqijnGG4UnPRJdhIaw[cui-areatype="menu-panel"]:after {
-    display: none !important;
+#adguard-button {
+    list-style-image: url('chrome://adguard/content/skin/firefox-gray-32.png');
 }
 
-toolbarpaletteitem[place="palette"] > .adguard-button-woGqijnGG4UnPRJdhIaw:after {
-    display: none !important;
+#adguard-button.enabled {
+    list-style-image: url('chrome://adguard/content/skin/firefox-32.png');
 }
 
-/* Mac customization */
-.adguard-button-woGqijnGG4UnPRJdhIaw.mac:after {
-    margin: -11px -16px -11px 0 !important;
+#adguard-button.adguardDetected {
+    list-style-image: url('chrome://adguard/content/skin/firefox-blue-32.png');
 }
 
-/*Linux customization*/
-.adguard-button-woGqijnGG4UnPRJdhIaw.linux:after {
-    margin: 6px 0 0 -10px !important;
+toolbar[iconsize="small"] #adguard-button {
+    list-style-image: url('chrome://adguard/content/skin/firefox-gray-16.png');
 }
 
-.adguard-button-woGqijnGG4UnPRJdhIaw:after {
-    display: block;
-    background-color: #555;
+toolbar[iconsize="small"] #adguard-button.enabled {
+    list-style-image: url('chrome://adguard/content/skin/firefox-16.png');
+}
+
+toolbar[iconsize="small"] #adguard-button.adguardDetected {
+    list-style-image: url('chrome://adguard/content/skin/firefox-blue-16.png');
+}
+
+#adguard-panel, #adguard-panel > iframe {
+    overflow: hidden !important;
+}
+
+/*Prevent from showing arrow*/
+#adguard-button .toolbarbutton-menu-dropmarker {
+    display: none;
+    -moz-box-orient: horizontal;
+}
+
+#adguard-button.legacy-badge[badge]::before {
+    background: #555;
+    color: #fff;
+    content: attr(badge);
+    font: bold 10px sans-serif;
+    margin-top: -2px;
+    padding: 0 2px;
+    position: fixed;
     border-radius: 2px;
-    color: #FFFFFF;
     font-size: 8px;
     line-height: 12px;
     text-align: center;
-    padding: 0 2px;
     width: 12px;
     background: -moz-linear-gradient(top, #555 0%, #000000 100%);
-    position: relative;
-    content: attr(countBlocked);
+}
 
-    /* Default - win style */
-    margin: 5px 0 0 -12px;
+#adguard-button.legacy-badge[badge=""]::before {
+    padding: 0;
 }
