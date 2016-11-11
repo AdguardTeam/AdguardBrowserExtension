@@ -171,11 +171,29 @@ var ElementCollapser = (function() {
     var collapseElement = function(element) {
 
         var tagName = element.tagName.toLowerCase();
+        var source = element.getAttribute('src');
+        if (source) {
+            //To not to keep track of changing src for elements, we gonna collapse it if special selector
+            //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/408
+            var srcSelector = tagName + '[src="'+ source + '"]';
+            if (tagName === "frame" || tagName === "iframe") {
+                // Use specific style for frames due to these issues:
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/346
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/355
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/347
+                hideBySelector(srcSelector, "visibility: hidden!important; height: 0px!important;");
+            } else {
+                hideBySelector(srcSelector);
+            }
+
+            return;
+        }
+
         var cssProperty = "display";
         var cssValue = "none";
         var cssPriority = "important";
 
-        if (tagName == "frame") {
+        if (tagName == "frame"  || tagName === "iframe") {
             cssProperty = "visibility";
             cssValue = "hidden";
         }
