@@ -72,8 +72,9 @@ var MobileMenu = {
                 } else {
                     this.UI.whiteListCurrentTab();
                 }
-                var window = adguard.winWatcher.getCurrentBrowserWindow();
-                window.NativeWindow.menu.update(toggleWhiteListItem, {checked: tabInfo.userWhiteListed});
+                adguard.windows.getLastFocused(function (winId, domWin) {
+                    domWin.NativeWindow.menu.update(toggleWhiteListItem, {checked: tabInfo.userWhiteListed});
+                });
             }.bind(this));
 
         }.bind(this), i18n.getMessage("popup_site_filtering_state"), true);
@@ -83,8 +84,9 @@ var MobileMenu = {
             this.UI.getCurrentTabInfo(function (tabInfo) {
                 this.UI.changeApplicationFilteringDisabled(!tabInfo.applicationFilteringDisabled);
 
-                var window = adguard.winWatcher.getCurrentBrowserWindow();
-                window.NativeWindow.menu.update(toggleFilteringEnabledItem, {checked: tabInfo.applicationFilteringDisabled});
+                adguard.windows.getLastFocused(function (winId, domWin) {
+                    domWin.NativeWindow.menu.update(toggleFilteringEnabledItem, {checked: tabInfo.applicationFilteringDisabled});
+                });
             }.bind(this));
 
         }.bind(this), i18n.getMessage('popup_site_protection_disabled_android'), true);
@@ -141,34 +143,36 @@ var MobileMenu = {
     handleNativeMenuState: function () {
         this.UI.getCurrentTabInfo(function (tabInfo) {
             try {
-                var window = adguard.winWatcher.getCurrentBrowserWindow();
-                var menuItems = this.nativeMenuIds[window].items;
-                var nativeMenu = window.NativeWindow.menu;
+                adguard.windows.getLastFocused(function (winId, domWin) {
 
-                for (var item in menuItems) {
-                    nativeMenu.update(menuItems[item], {visible: false});
-                }
+                    var menuItems = this.nativeMenuIds[domWin].items;
+                    var nativeMenu = domWin.NativeWindow.menu;
 
-                if (tabInfo.applicationFilteringDisabled) {
-                    nativeMenu.update(menuItems.toggleFilteringEnabledItem, {visible: true, checked: true});
-                } else if (tabInfo.urlFilteringDisabled) { // jshint ignore:line
-                    //do nothing, already not visible
-                } else {
-                    nativeMenu.update(menuItems.toggleFilteringEnabledItem, {visible: true, checked: false});
-                    if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
-                        nativeMenu.update(menuItems.siteExceptionItem, {visible: true});
-                    } else if (tabInfo.canAddRemoveRule) {
-                        nativeMenu.update(menuItems.toggleWhiteListItem, {
-                            visible: true,
-                            checked: !tabInfo.userWhiteListed
-                        });
+                    for (var item in menuItems) {
+                        nativeMenu.update(menuItems[item], {visible: false});
                     }
-                    if (!tabInfo.documentWhiteListed) {
-                        nativeMenu.update(menuItems.blockAdsItem, {visible: true});
+
+                    if (tabInfo.applicationFilteringDisabled) {
+                        nativeMenu.update(menuItems.toggleFilteringEnabledItem, {visible: true, checked: true});
+                    } else if (tabInfo.urlFilteringDisabled) { // jshint ignore:line
+                        //do nothing, already not visible
+                    } else {
+                        nativeMenu.update(menuItems.toggleFilteringEnabledItem, {visible: true, checked: false});
+                        if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
+                            nativeMenu.update(menuItems.siteExceptionItem, {visible: true});
+                        } else if (tabInfo.canAddRemoveRule) {
+                            nativeMenu.update(menuItems.toggleWhiteListItem, {
+                                visible: true,
+                                checked: !tabInfo.userWhiteListed
+                            });
+                        }
+                        if (!tabInfo.documentWhiteListed) {
+                            nativeMenu.update(menuItems.blockAdsItem, {visible: true});
+                        }
+                        nativeMenu.update(menuItems.filteringLogItem, {visible: true});
+                        nativeMenu.update(menuItems.reportSiteItem, {visible: true});
                     }
-                    nativeMenu.update(menuItems.filteringLogItem, {visible: true});
-                    nativeMenu.update(menuItems.reportSiteItem, {visible: true});
-                }
+                }.bind(this));
             } catch (ex) {
                 Cu.reportError(ex);
             }

@@ -32,8 +32,8 @@ var Prefs = {
 		var url = "content/filters/filter_mobile_" + filterId + ".txt";
 		return adguard.extension.url(url);
 	},
-	localGroupsMetadataPath: adguard.extension.url('content/filters/groups.xml'),
-	localFiltersMetadataPath: adguard.extension.url('content/filters/filters.xml'),
+	localFiltersMetadataPath: adguard.extension.url('content/filters/filters.json'),
+	localFiltersMetadataI18nPath: adguard.extension.url('content/filters/filters_i18n.json'),
 	safebrowsingPagePath: 'sb.html',
 	platform: "firefox",
 	mobile: adguard.runtime.getPlatform().indexOf('android') > -1,

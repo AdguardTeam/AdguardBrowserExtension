@@ -179,12 +179,14 @@ QUnit.test("Content-specific URL blocking", function(assert) {
     assert.ok(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.XMLHTTPREQUEST));
     assert.ok(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.SUBDOCUMENT));
     assert.ok(rule.isFiltered("http://test.ru/image.png", false, RequestTypes.IMAGE));
+    assert.ok(rule.isFiltered("ws://test.ru/?ololo=ololo", false, RequestTypes.WEBSOCKET));
     mask = "||test.ru/$script,image";
     rule = new UrlFilterRule(mask);
     assert.ok(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.SCRIPT));
+    assert.ok(rule.isFiltered("http://test.ru/image.png", false, RequestTypes.IMAGE));    
     assert.notOk(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.SUBDOCUMENT));
     assert.notOk(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.XMLHTTPREQUEST));
-    assert.ok(rule.isFiltered("http://test.ru/image.png", false, RequestTypes.IMAGE));
+    assert.notOk(rule.isFiltered("wss://test.ru/?ololo=ololo", false, RequestTypes.WEBSOCKET));
     mask = "||test.ru/$~script,~image";
     rule = new UrlFilterRule(mask);
     assert.notOk(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.SCRIPT));
@@ -204,6 +206,11 @@ QUnit.test("Content-specific URL blocking", function(assert) {
     assert.notOk(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.SUBDOCUMENT));
     assert.ok(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.XMLHTTPREQUEST));
     assert.ok(rule.isFiltered("http://test.ru/image.png", false, RequestTypes.IMAGE));
+    mask = "||test.ru/$websocket";
+    rule = new UrlFilterRule(mask);
+    assert.ok(rule.isFiltered("ws://test.ru/?ololo=ololo", false, RequestTypes.WEBSOCKET));
+    assert.notOk(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.SUBDOCUMENT));
+    assert.notOk(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.OTHER));
 });
 
 QUnit.test("UrlFilter class tests", function(assert) {

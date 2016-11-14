@@ -130,7 +130,6 @@
         };
 
         var getLastFocused = function (callback) {
-
             windowsImpl.getLastFocused(function (windowId) {
                 var metadata = windowsMetadata[windowId];
                 if (metadata) {

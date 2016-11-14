@@ -169,6 +169,28 @@ var CollectionUtils = {
             text.push(collection[i].ruleText);
         }
         return text;
+    },
+
+    /**
+     * Find element in array by property
+     * @param array
+     * @param property
+     * @param value
+     * @returns {*}
+     */
+    find: function (array, property, value) {
+        if (typeof array.find === 'function') {
+            return array.find(function (a) {
+                return a[property] === value;
+            });
+        }
+        for (var i = 0; i < array.length; i++) {
+            var elem = array[i];
+            if (elem[property] === value) {
+                return elem;
+            }
+        }
+        return null;
     }
 };
 
@@ -222,12 +244,13 @@ var RequestTypes = {
     OBJECT_SUBREQUEST: "OBJECT-SUBREQUEST",
     MEDIA: "MEDIA",
     FONT: "FONT",
+    WEBSOCKET: "WEBSOCKET",
+    OTHER: "OTHER",
 
     /**
      * Synthetic request type for requests detected as pop-ups
      */
     POPUP: "POPUP",
-    OTHER: "OTHER",
 
     /**
      * Checks if loaded element could be visible to user
@@ -254,7 +277,8 @@ var AntiBannerFiltersId = {
     EASY_PRIVACY: 118,
     FANBOY_ANNOYANCES: 122,
     FANBOY_SOCIAL: 123,
-    FANBOY_ENHANCED: 215
+    FANBOY_ENHANCED: 215,
+    LAST_ADGUARD_FILTER_ID: 14
 };
 
 var LogEvents = {
@@ -276,8 +300,7 @@ var FilterUtils = {
     },
 
     isAdguardFilter: function (filter) {
-        return filter.filterId <= AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID ||
-            filter.filterId == AntiBannerFiltersId.SAFARI_FILTER;
+        return filter.filterId <= AntiBannerFiltersId.LAST_ADGUARD_FILTER_ID;
     },
 
     isUserFilterRule: function (rule) {

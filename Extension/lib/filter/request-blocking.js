@@ -97,8 +97,8 @@ WebRequestService.prototype.checkWebSocketRequest = function (tab, requestUrl, r
         return false;
     }
 
-    var requestRule = this.getRuleForRequest(tab, requestUrl, referrerUrl, RequestTypes.OTHER);
-    filteringLog.addEvent(tab, requestUrl, referrerUrl, RequestTypes.OTHER, requestRule);
+    var requestRule = this.getRuleForRequest(tab, requestUrl, referrerUrl, RequestTypes.WEBSOCKET);
+    filteringLog.addEvent(tab, requestUrl, referrerUrl, RequestTypes.WEBSOCKET, requestRule);
 
     return this.isRequestBlockedByRule(requestRule);
 };

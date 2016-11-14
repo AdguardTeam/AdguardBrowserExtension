@@ -27,17 +27,18 @@ var XMLHttpRequestConstructor = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"];
 var ServiceClient = function () {
 
 	// Base url of our backend server
+	this.filtersUrl = this._detectFiltersUrl();
 	this.backendUrl = "https://chrome.adtidy.org";
 	this.apiKey = "4DDBE80A3DA94D819A00523252FB6380";
 
 	// URL for downloading AG filters
-	this.getFilterRulesUrl = this.backendUrl + "/getfilter.html";
+	this.getFilterRulesUrl = this.filtersUrl + "/filters/{filter_id}.txt";
 
 	// URL for downloading optimized AG filters
-	this.getOptimizedFilterRulesUrl = this.backendUrl + "/getoptimizedfilter.html";
+	this.getOptimizedFilterRulesUrl = this.filtersUrl + "/filters/{filter_id}_optimized.txt";
 
 	// URL for checking filter updates
-	this.checkFilterVersionsUrl = this.backendUrl + "/checkfilterversions.html";
+	this.filtersMetadataUrl = this.filtersUrl + "/filters.json";
 
 	// URL for user complaints on missed ads or malware/phishing websites
 	this.reportUrl = this.backendUrl + "/url-report.html";
@@ -100,30 +101,28 @@ ServiceClient.prototype = {
 		}
 
 		var success = function (response) {
-			var xml = response.responseXML;
-			if (xml && xml.getElementsByTagName) {
-				var filterVersionsList = xml.getElementsByTagName("filter-version-list")[0];
-				filterVersionsList = filterVersionsList.getElementsByTagName("versions")[0];
+			if (response && response.responseText) {
+				var metadata = this._parseJson(response.responseText);
+				if (!metadata) {
+					errorCallback(response, "invalid response");
+					return;
+				}
 				var filterVersions = [];
-				var childNodes = filterVersionsList.childNodes;
-				for (var i = 0; i < childNodes.length; i++) {
-					var filterVersionXml = childNodes[i];
-					if (filterVersionXml.tagName === "filter-version") {
-						filterVersions.push(AdguardFilterVersion.fromXml(filterVersionXml));
+				for (var i = 0; i < filterIds.length; i++) {
+					var filter = CollectionUtils.find(metadata.filters, 'filterId', filterIds[i]);
+					if (filter) {
+						filterVersions.push(AdguardFilterVersion.fromJSON(filter));
 					}
 				}
 				successCallback(filterVersions);
 			} else {
 				errorCallback(response, "empty response");
 			}
-		};
-		var url = this.checkFilterVersionsUrl;
-		for (var i = 0; i < filterIds.length; i++) {
-			url += (i === 0 ? "?filterid=" : "&filterid=") + filterIds[i];
-		}
-		url += this.APP_PARAM;
+		}.bind(this);
+
+		var url = this.filtersMetadataUrl + '?' + this.APP_PARAM;
 		url = this._addKeyParameter(url);
-		this._executeRequestAsync(url, "application/xml", success, errorCallback);
+		this._executeRequestAsync(url, "application/json", success, errorCallback);
 	},
 
 	/**
@@ -136,53 +135,22 @@ ServiceClient.prototype = {
 	 */
 	loadFilterRules: function (filterId, useOptimizedFilters, successCallback, errorCallback) {
 
-		var success = function (response) {
-
-			var responseText = response.responseText;
-			if (!responseText) {
-				errorCallback(response, "filter rules missing");
-				return;
-			}
-			var lines = responseText.split(/[\r\n]+/);
-
-			var version = null;
-			var timeUpdated = null;
-			for (var i = 0; i < 7; i++) {
-				var line = lines[i];
-				if (/!\s+Version:\s+([0-9.]+)/.test(line)) {
-					version = version || RegExp.$1;
-				} else if (/!\s+TimeUpdated:\s+(.+)$/.test(line)) {
-					timeUpdated = timeUpdated || new Date(RegExp.$1);
-				}
-			}
-			if (!version || !timeUpdated) {
-				errorCallback(response, "wrong filter metadata");
-				return;
-			}
-			var rules = [];
-			for (i = 0; i < lines.length; i++) {
-				var rule = FilterRuleBuilder.createRule(lines[i], filterId);
-				if (rule !== null) {
-					rules.push(rule);
-				}
-			}
-			var filterVersion = new AdguardFilterVersion(timeUpdated.getTime(), version, filterId);
-			successCallback(filterVersion, rules);
-		};
-		var url = this._getFilterRulesUrl(useOptimizedFilters) + "?filterid=" + filterId;
-		url += this.APP_PARAM;
+		var url = this._getFilterRulesUrl(filterId, useOptimizedFilters) + '?' + this.APP_PARAM;
 		url = this._addKeyParameter(url);
-		this._executeRequestAsync(url, "text/plain", success, errorCallback);
+
+		this._loadFilterRules(filterId, url, successCallback, errorCallback);
 	},
 
 	/**
-	 * URL for downloading AG filters
+	 * URL for downloading AG filter
 	 *
+	 * @param filterId Filter identifier
 	 * @param useOptimizedFilters
 	 * @private
 	 */
-	_getFilterRulesUrl: function (useOptimizedFilters) {
-		return useOptimizedFilters ? this.getOptimizedFilterRulesUrl : this.getFilterRulesUrl;
+	_getFilterRulesUrl: function (filterId, useOptimizedFilters) {
+		var url = useOptimizedFilters ? this.getOptimizedFilterRulesUrl : this.getFilterRulesUrl;
+		return StringUtils.replaceAll(url, '{filter_id}', filterId);
 	},
 
 	/**
@@ -195,34 +163,12 @@ ServiceClient.prototype = {
 	 */
 	loadLocalFilter: function (filterId, useOptimizedFilters, successCallback, errorCallback) {
 
-		var success = function (response) {
-			var responseText = response.responseText;
-			var lines = responseText.split(/[\r\n]+/);
-			var rules = [];
-			var version = null;
-			var timeUpdated = null;
-			for (var i = 0; i < lines.length; i++) {
-				var line = lines[i];
-				if (/!\s+Version:\s+([0-9.]+)/.test(line)) {
-					version = version || RegExp.$1;
-				} else if (/!\s+TimeUpdated:\s+(.+)$/.test(line)) {
-					timeUpdated = timeUpdated || new Date(RegExp.$1);
-				}
-				var rule = FilterRuleBuilder.createRule(line, filterId);
-				if (rule !== null) {
-					rules.push(rule);
-				}
-			}
-			var filterVersion = new AdguardFilterVersion(timeUpdated.getTime(), version, filterId);
-			successCallback(filterVersion, rules);
-		};
-
 		var url = Prefs.getLocalFilterPath(filterId);
 		if (useOptimizedFilters) {
 			url = Prefs.getLocalMobileFilterPath(filterId);
 		}
 
-		this._executeRequestAsync(url, "text/plain", success, errorCallback);
+		this._loadFilterRules(filterId, url, successCallback, errorCallback);
 	},
 
 	/**
@@ -279,25 +225,23 @@ ServiceClient.prototype = {
 	 * @param successCallback   Called on success
 	 * @param errorCallback     Called on error
 	 */
-	loadLocalGroupsMetadata: function (successCallback, errorCallback) {
+	loadLocalFiltersMetadata: function (successCallback, errorCallback) {
 
 		var success = function (response) {
-			var xml = response.responseXML;
-			if (xml && xml.getElementsByTagName) {
-				var groups = [];
-				var groupsElements = xml.getElementsByTagName('group');
-				for (var i = 0; i < groupsElements.length; i++) {
-					var group = SubscriptionGroup.fromXml(groupsElements[i]);
-					groups.push(group);
+			if (response && response.responseText) {
+				var metadata = this._parseJson(response.responseText);
+				if (!metadata) {
+					errorCallback(response, 'invalid response');
+					return;
 				}
-				successCallback(groups);
+				successCallback(metadata);
 			} else {
 				errorCallback(response, 'empty response');
 			}
-		};
+		}.bind(this);
 
-		var url = Prefs.localGroupsMetadataPath;
-		this._executeRequestAsync(url, 'text/xml', success, errorCallback);
+		var url = Prefs.localFiltersMetadataPath;
+		this._executeRequestAsync(url, 'application/json', success, errorCallback);
 	},
 
 	/**
@@ -306,25 +250,23 @@ ServiceClient.prototype = {
 	 * @param successCallback   Called on success
 	 * @param errorCallback     Called on error
 	 */
-	loadLocalFiltersMetadata: function (successCallback, errorCallback) {
+	loadLocalFiltersI18Metadata: function (successCallback, errorCallback) {
 
 		var success = function (response) {
-			var xml = response.responseXML;
-			if (xml && xml.getElementsByTagName) {
-				var filters = [];
-				var filtersElements = xml.getElementsByTagName('filter');
-				for (var i = 0; i < filtersElements.length; i++) {
-					var filter = SubscriptionFilter.fromXml(filtersElements[i]);
-					filters.push(filter);
+			if (response && response.responseText) {
+				var metadata = this._parseJson(response.responseText);
+				if (!metadata) {
+					errorCallback(response, 'invalid response');
+					return;
 				}
-				successCallback(filters);
+				successCallback(metadata);
 			} else {
 				errorCallback(response, 'empty response');
 			}
-		};
+		}.bind(this);
 
-		var url = Prefs.localFiltersMetadataPath;
-		this._executeRequestAsync(url, 'text/xml', success, errorCallback);
+		var url = Prefs.localFiltersMetadataI18nPath;
+		this._executeRequestAsync(url, 'application/json', success, errorCallback);
 	},
 
 	/**
@@ -482,6 +424,97 @@ ServiceClient.prototype = {
 		}
 	},
 
+	/**
+	 * Load filter rules.
+	 * Parse header and rules.
+	 * Response format:
+	 * HEADER
+	 * rule1
+	 * rule2
+	 * ...
+	 * ruleN
+	 *
+	 * @param filterId Filter identifier
+	 * @param url Url for loading rules
+	 * @param successCallback Success callback (version, rules)
+	 * @param errorCallback Error callback (response, errorText)
+	 * @private
+	 */
+	_loadFilterRules: function (filterId, url, successCallback, errorCallback) {
+
+		var success = function (response) {
+
+			var responseText = response.responseText;
+			if (!responseText) {
+				errorCallback(response, "filter rules missing");
+				return;
+			}
+
+			var lines = responseText.split(/[\r\n]+/);
+
+			var metadata = this._getFilterMetadata(lines);
+			if (!metadata) {
+				errorCallback(response, "wrong filter metadata");
+				return;
+			}
+
+			var rules = [];
+			for (var i = 0; i < lines.length; i++) {
+				var rule = FilterRuleBuilder.createRule(lines[i], filterId);
+				if (rule !== null) {
+					rules.push(rule);
+				}
+			}
+
+			var filterVersion = new AdguardFilterVersion(metadata.timeUpdated.getTime(), metadata.version, filterId);
+
+			successCallback(filterVersion, rules);
+
+		}.bind(this);
+
+		this._executeRequestAsync(url, "text/plain", success, errorCallback);
+	},
+
+	/**
+	 * Retrieve filter metadata from first lines in response
+	 * @param lines
+	 * @returns {*}
+	 * @private
+	 */
+	_getFilterMetadata: function (lines) {
+
+		var version = null;
+		var timeUpdated = null;
+		for (var i = 0; i < 7; i++) {
+
+			var line = lines[i];
+
+			var match;
+			if (version === null) {
+				match = line.match(/!\s+Version:\s+([0-9.]+)/);
+				if (match) {
+					version = match[1];
+					continue;
+				}
+			}
+			if (timeUpdated === null) {
+				match = line.match(/!\s+TimeUpdated:\s+(.+)$/);
+				if (match) {
+					timeUpdated = new Date(match[1]);
+				}
+			}
+		}
+
+		if (!version || !timeUpdated) {
+			return null;
+		}
+
+		return {
+			version: version,
+			timeUpdated: timeUpdated
+		};
+	},
+
 	_executeRequestAsync: function (url, contentType, successCallback, errorCallback) {
 
 		var request = XMLHttpRequestConstructor.createInstance(Ci.nsIXMLHttpRequest);
@@ -512,8 +545,37 @@ ServiceClient.prototype = {
 		}
 	},
 
+	/**
+	 * Detects url that uses for filters upload
+	 * @returns {*}
+	 * @private
+	 */
+	_detectFiltersUrl: function () {
+		if (Utils.isSafariBrowser()) {
+			return 'https://filters.adtidy.org/extension/safari';
+		} else if (Utils.isFirefoxBrowser()) {
+			return 'https://filters.adtidy.org/extension/firefox';
+		} else {
+			return 'https://filters.adtidy.org/extension/chromium';
+		}
+	},
+
 	_addKeyParameter: function (url) {
 		return url + "&key=" + this.apiKey;
+	},
+
+	/**
+	 * Safe json parsing
+	 * @param text
+	 * @private
+	 */
+	_parseJson: function (text) {
+		try {
+			return JSON.parse(text);
+		} catch (ex) {
+			Log.error('Error parse json {0}', ex);
+			return null;
+		}
 	}
 };
 

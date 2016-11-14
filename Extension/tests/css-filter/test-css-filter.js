@@ -629,3 +629,15 @@ QUnit.test("Css Filter WWW Test", function (assert) {
     assert.ok(rule != null);
     assert.equal(rule.permittedDomain, 'google.com');
 });
+
+QUnit.test("Permitted/Restricted domains Test", function (assert) {
+    var ruleText = "##body";
+    var rule = new CssFilterRule(ruleText);
+
+    rule.setRestrictedDomains(['lenta.ru']);
+    rule.setRestrictedDomains(['lenta.ru', 'google.com']);
+
+    assert.ok(rule != null);
+    assert.equal(rule.getRestrictedDomains()[0], 'lenta.ru');
+    assert.equal(rule.getRestrictedDomains()[1], 'google.com');
+});

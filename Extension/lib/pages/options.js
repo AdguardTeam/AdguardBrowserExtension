@@ -207,7 +207,7 @@ PageController.prototype = {
                 lastId = id;
                 // Set/remove active class
                 menuItems.removeClass("active");
-                menuItems.filter("[href=#" + id + "]").addClass("active");
+                menuItems.filter("[href='#" + id + "']").addClass("active");
             }
         };
         $(window).on('scroll', onscroll);

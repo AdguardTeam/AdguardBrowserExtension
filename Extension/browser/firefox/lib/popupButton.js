@@ -319,14 +319,8 @@ var toolbarButtonWidget = (function () {
     var Listeners = {};
 
     var badgeStyle = [
-        'background-color: #555;',
-        'border-radius: 2px;',
-        'color: #FFFFFF;',
-        'font-size: 8px;',
-        'line-height: 12px;',
-        'text-align: center;',
-        'min-width: 12px;',
-        'background: -moz-linear-gradient(top, #555 0%, #000000 100%);'
+        'color: #fff;',
+        'background-color: #555;'
     ].join('');
 
     var updateBadgeStyle = function () {
@@ -458,37 +452,33 @@ var PopupButton = (function (widget) {
 
     var resizePopup = function (width, height) {
         if (typeof widget.resizePopup === 'function') {
-            var win = adguard.winWatcher.getCurrentBrowserWindow();
-            if (win) {
-                widget.resizePopup(win, width, height);
-            }
+            adguard.windows.getLastFocused(function (winId, domWin) {
+                widget.resizePopup(domWin, width, height);
+            });
         }
     };
 
     var closePopup = function () {
         if (typeof widget.closePopup === 'function') {
-            var win = adguard.winWatcher.getCurrentBrowserWindow();
-            if (win) {
-                widget.closePopup(win);
-            }
+            adguard.windows.getLastFocused(function (winId, domWin) {
+                widget.closePopup(domWin);
+            });
         }
     };
 
     var updateBadgeText = function (blocked) {
         if (typeof widget.updateBadgeText === 'function') {
-            var win = adguard.winWatcher.getCurrentBrowserWindow();
-            if (win) {
-                widget.updateBadgeText(win, WorkaroundUtils.getBlockedCountText(blocked));
-            }
+            adguard.windows.getLastFocused(function (winId, domWin) {
+                widget.updateBadgeText(domWin, WorkaroundUtils.getBlockedCountText(blocked));
+            });
         }
     };
 
     var updateIconState = function (options) {
         if (typeof widget.updateIconState === 'function') {
-            var win = adguard.winWatcher.getCurrentBrowserWindow();
-            if (win) {
-                widget.updateIconState(win, options);
-            }
+            adguard.windows.getLastFocused(function (winId, domWin) {
+                widget.updateIconState(domWin, options);
+            });
         }
     };
 

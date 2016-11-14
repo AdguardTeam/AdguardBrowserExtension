@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Cu, Ci, Services, XPCOMUtils, WeakMap, Map, console, adguard */
+/* global Services, Ci, XPCOMUtils, Map, adguard, EventChannels, ConcurrentUtils, unload */
 
 (function () {
 
@@ -23,117 +23,227 @@
 
     var isFennec = false;
 
-    // TabBrowser: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XUL/tabbrowser
-    // Browser: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XUL/browser
-    // Tab: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XUL/tab
+    var BROWSER = 'navigator:browser';
 
-    function getOwnerWindow(xulTab) {
+    function isBrowser(window) {
+        try {
+            return window.document.documentElement.getAttribute("windowtype") === BROWSER;
+        } catch (e) {
+        }
+        return false;
+    }
 
-        if (xulTab.ownerDocument) {
-            return xulTab.ownerDocument.defaultView;
+    var getCurrentBrowserWindow = function () {
+        return Services.wm.getMostRecentWindow(BROWSER);
+    };
+
+    function activateTab(tab, window) {
+        var gBrowser = getTabBrowserForTab(tab);
+        // normal case
+        if (gBrowser) {
+            gBrowser.selectedTab = tab;
+        } else if (window && window.BrowserApp) { // fennec ?
+            window.BrowserApp.selectTab(tab);
+        }
+        return null;
+    }
+
+
+    function getTabBrowser(window) {
+        return window.BrowserApp || window.gBrowser;
+    }
+
+    function getTabContainer(window) {
+        return getTabBrowser(window).tabContainer;
+    }
+
+    /**
+     * Returns the tabs for the `window` if given, or the tabs
+     * across all the browser's windows otherwise.
+     */
+    function getTabs(window) {
+
+        var tabs = [], i;
+
+        if (arguments.length === 0) {
+            var windows = adguard.winWatcher.getWindows();
+            for (i = 0; i < windows.length; i++) {
+                var win = windows[i];
+                if (isBrowser(win)) {
+                    tabs = tabs.concat(getTabs(win));
+                }
+            }
+            return tabs;
         }
 
-        // TODO: fennec case
+        // fennec
+        if (window.BrowserApp) {
+            return window.BrowserApp.tabs;
+        }
+
+        // firefox - default
+        var children = getTabContainer(window).children;
+        for (i = 0; i < children.length; i++) {
+            var child = children[i];
+            if (!child.closing) {
+                tabs.push(child);
+            }
+        }
+        return tabs;
+    }
+
+    function getActiveTab(window) {
+        if (window.BrowserApp) {// fennec?
+            return window.BrowserApp.selectedTab;
+        }
+        if (window.gBrowser) {
+            return window.gBrowser.selectedTab;
+        }
         return null;
+    }
+
+    function getOwnerWindow(tab) {
+        // normal case
+        if (tab.ownerDocument) {
+            return tab.ownerDocument.defaultView;
+        }
+
+        // try fennec case
+        return getWindowHoldingTab(tab);
+    }
+
+    // fennec
+    function getWindowHoldingTab(rawTab) {
+        var windows = adguard.winWatcher.getWindows();
+        for (var i = 0; i < windows.length; i++) {
+            var win = windows[i];
+            // this function may be called when not using fennec,
+            // but BrowserApp is only defined on Fennec
+            if (!win.BrowserApp) {
+                continue;
+            }
+            var tabs = win.BrowserApp.tabs;
+            for (var j = 0; j < tabs.length; j++) {
+                if (tabs[i] == rawTab) {
+                    return win;
+                }
+            }
+        }
+        return null;
+    }
+
+    function closeTab(tab) {
+        var gBrowser = getTabBrowserForTab(tab);
+        // normal case?
+        if (gBrowser) {
+            if (gBrowser.tabs && gBrowser.tabs.length === 1) {
+                getOwnerWindow(tab).close();
+                return;
+            }
+            // Bug 699450: the tab may already have been detached
+            if (!tab.parentNode) {
+                return;
+            }
+            return gBrowser.removeTab(tab);
+        }
+
+        var window = getWindowHoldingTab(tab);
+        // fennec?
+        if (window && window.BrowserApp) {
+            // Bug 699450: the tab may already have been detached
+            if (!tab.browser) {
+                return;
+            }
+            return window.BrowserApp.closeTab(tab);
+        }
+        return null;
+    }
+
+    function getURI(tab) {
+        if (tab.browser) { // fennec
+            return tab.browser.currentURI.spec;
+        }
+        return tab.linkedBrowser.currentURI.spec;
+    }
+
+    function getTabTitle(tab) {
+        return getBrowserForTab(tab).contentTitle || tab.label || "";
+    }
+
+    function getTabBrowserForTab(tab) {
+        var outerWin = getOwnerWindow(tab);
+        if (outerWin) {
+            return getOwnerWindow(tab).gBrowser;
+        }
+        return null;
+    }
+
+
+    function getBrowserForTab(tab) {
+        if (tab.browser) { // fennec
+            return tab.browser;
+        }
+        return tab.linkedBrowser;
+    }
+
+
+    function getTabId(tab) {
+        if (tab.browser) { // fennec
+            return tab.id;
+        }
+        return String.split(tab.linkedPanel, 'panel').pop();
+    }
+
+    function getTabContentWindow(tab) {
+        return getBrowserForTab(tab).contentWindow;
+    }
+
+    // gets the tab containing the provided window
+    function getTabForContentWindow(window) {
+        var tabs = getTabs();
+        for (var i = 0; i < tabs.length; i++) {
+            var tab = tabs[i];
+            if (getTabContentWindow(tab) === window.top) {
+                return tab;
+            }
+        }
     }
 
     function getTabForBrowser(browser) {
 
-        var win = getOwnerWindow(browser);
-        if (!win) {
-            return null;
-        }
-
-        var tabBrowser = getTabBrowserForWin(win);
-        if (!tabBrowser) {
-            return null;
-        }
-
-        var index = tabBrowser.browsers.indexOf(browser);
-        if (index < 0) {
-            return null;
-        }
-
-        if (!tabBrowser.tabs || index >= tabBrowser.tabs.length) {
-            return null;
-        }
-        return tabBrowser.tabs[index];
-    }
-
-    function getTabBrowserForTab(xulTab) {
-        var win = getOwnerWindow(xulTab);
-        if (!win) {
-            return null;
-        }
-        return getTabBrowserForWin(win);
-    }
-
-    function getTabBrowserForWin(win) {
-        if (isFennec) {
-            return win.BrowserApp;
-        }
-        return win.gBrowser;
-    }
-
-    function getBrowserForTab(xulTab) {
-        if (isFennec) {
-            return xulTab.browser;
-        }
-        return xulTab.linkedBrowser;
-    }
-
-    function getTabForContentWindow(win) {
-
-        // <xul:iframe/> or <html:iframe/>. But in our case, it should be xul:browser.
-        var browser;
-        try {
-            browser = win.QueryInterface(Ci.nsIInterfaceRequestor)
-                .getInterface(Ci.nsIWebNavigation)
-                .QueryInterface(Ci.nsIDocShell)
-                .chromeEventHandler;
-        } catch (e) {
-            // Bug 699450: The tab may already have been detached so that `window` is
-            // in a almost destroyed state and can't be queryinterfaced anymore.
-        }
-
-        // Is null for toplevel documents
-        if (!browser) {
-            return null;
-        }
-
-        // Retrieve the owner window, should be browser.xul one
-        var chromeWindow = browser.ownerDocument.defaultView;
-
-        // Ensure that it is top-level browser window.
-        // We need extra checks because of Mac hidden window that has a broken
-        // `gBrowser` global attribute.
-        if ('gBrowser' in chromeWindow && chromeWindow.gBrowser &&
-            'browsers' in chromeWindow.gBrowser) {
-            // Looks like we are on Firefox Desktop
-            // Then search for the position in tabbrowser in order to get the tab object
-            var browsers = chromeWindow.gBrowser.browsers;
-            var i = browsers.indexOf(browser);
-            if (i !== -1) {
-                return chromeWindow.gBrowser.tabs[i];
+        var windows = adguard.winWatcher.getWindows();
+        for (var i = 0; i < windows.length; i++) {
+            var win = windows[i];
+            // this function may be called when not using fennec
+            if (!win.BrowserApp) {
+                continue;
             }
+            var tabs = win.BrowserApp.tabs;
+            for (var j = 0; j < tabs.length; j++) {
+                var tab = tabs[j];
+                if (tab.browser === browser) {
+                    return tab;
+                }
+            }
+        }
+
+        var tabbrowser = browser.getTabBrowser && browser.getTabBrowser();
+        if (!tabbrowser) {
             return null;
-        } else if ('BrowserApp' in chromeWindow) {
-            //TODO: fennec
         }
 
-        return null;
-    }
-
-    function toBrowserWindow(win) {
-        return getWindowType(win) === 'normal' ? win : null;
-    }
-
-    function getWindowType(win) {
-        var docElement = win && win.document && win.document.documentElement;
-        if (!docElement) {
-            return 'other';
+        var index;
+        if (isFennec) {
+            // Fennec
+            // https://developer.mozilla.org/en-US/Add-ons/Firefox_for_Android/API/BrowserApp
+            index = tabbrowser.tabs.indexOf(tabbrowser.getTabForBrowser(browser));
+        } else {
+            index = tabbrowser.browsers.indexOf(browser);
         }
-        return docElement.getAttribute('windowtype') === 'navigator:browser' || docElement.getAttribute('id') === 'main-window' ? 'normal' : 'other';
+        if (!tabbrowser.tabs || index < 0 || index >= tabbrowser.tabs.length) {
+            return null;
+        }
+        return tabbrowser.tabs[index];
     }
 
     adguard.winWatcher = adguard.windowsImpl = (function () {
@@ -148,7 +258,7 @@
         function toWindowFromChromeWindow(windowId, win) {
             return {
                 windowId: windowId,
-                type: getWindowType(win)
+                type: isBrowser(win) ? 'normal' : 'other'
             };
         }
 
@@ -162,12 +272,12 @@
                 }
 
                 // the tab browser isn't immediately available
-                var tabBrowser = getTabBrowserForWin(win);
+                var tabBrowser = getTabBrowser(win);
                 if (!tabBrowser) {
                     return false;
                 }
 
-                return toBrowserWindow(win) !== null;
+                return isBrowser(win);
             }
 
             function addWindow(domWin) {
@@ -218,6 +328,7 @@
 
             // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIWindowMediator
             // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIWindowWatcher
+            //noinspection JSUnusedGlobalSymbols
             var windowEventsListeners = {
 
                 onOpenWindow: function (aWindow) {
@@ -306,7 +417,7 @@
             });
         })();
 
-        var create = function (createData, callback) {
+        var create = function (createData, callback) { // jshint ignore:line
             //TODO: implement
         };
 
@@ -340,10 +451,6 @@
             return result;
         };
 
-        var getCurrentBrowserWindow = function () {
-            return toBrowserWindow(Services.wm.getMostRecentWindow(null));
-        };
-
         return {
             onCreated: onCreatedChannel,
             onRemoved: onRemovedChannel,
@@ -373,9 +480,7 @@
             var tabId = getTabId(xulTab);
             tabsLookup[tabId] = xulTab;
 
-            var browser = getBrowserForTab(xulTab);
-
-            onCreatedChannel.notify(toTabFromXulTab(xulTab, browser));
+            onCreatedChannel.notify(toTabFromXulTab(xulTab));
         }
 
         function removeTab(xulTab) {
@@ -421,7 +526,7 @@
                                 return;
                             }
                             browser = getBrowserForTab(xulTab);
-                            onUpdatedChannel.notify(toTabFromXulTab(xulTab, browser, 'complete'));
+                            onUpdatedChannel.notify(toTabFromXulTab(xulTab, 'complete'));
                         }
                     }
                     break;
@@ -430,7 +535,7 @@
 
         function onTabBrowserInitialized(win) {
 
-            var tabBrowser = getTabBrowserForWin(win);
+            var tabBrowser = getTabBrowser(win);
             if (!tabBrowser) {
                 return;
             }
@@ -450,14 +555,15 @@
             win.addEventListener('DOMTitleChanged', onTabEvent, false);
             win.addEventListener('pageshow', onTabEvent, false);
 
-            for (var i = 0; i < tabBrowser.tabs.length; i++) {
-                addTab(tabBrowser.tabs[i]);
+            var tabs = getTabs(win);
+            for (var i = 0; i < tabs.length; i++) {
+                addTab(tabs[i]);
             }
         }
 
         function detachFromTabBrowser(win) {
 
-            var tabBrowser = getTabBrowserForWin(win);
+            var tabBrowser = getTabBrowser(win);
             if (!tabBrowser) {
                 return;
             }
@@ -527,21 +633,14 @@
             return false;
         }
 
-        function toTabFromXulTab(xulTab, browser, status) {
+        function toTabFromXulTab(xulTab, status) {
             return {
                 tabId: getTabId(xulTab),
-                url: browser.currentURI.asciiSpec,
-                title: browser.contentTitle,
+                url: getURI(xulTab),
+                title: getTabTitle(xulTab),
                 status: status || 'loading',
                 incognito: isPrivate(xulTab)
             };
-        }
-
-        function getTabId(xulTab) {
-            if (isFennec) {
-                return xulTab.id;
-            }
-            return String.split(xulTab.linkedPanel, 'panel').pop();
         }
 
         function getTabById(tabId) {
@@ -556,11 +655,11 @@
             var active = details.active === true;
             var inNewWindow = details.inNewWindow === true;
 
-            var win = adguard.winWatcher.getCurrentBrowserWindow();
+            var win = getCurrentBrowserWindow();
             if (!win) {
                 return;
             }
-            var tabBrowser = getTabBrowserForWin(win);
+            var tabBrowser = getTabBrowser(win);
             if (!tabBrowser) {
                 return;
             }
@@ -581,7 +680,11 @@
                 return;
             }
 
-            tabBrowser.loadOneTab(url, {inBackground: !active});
+            var xulTab = tabBrowser.addTab(url);
+            if (active) {
+                activateTab(xulTab);
+            }
+
             callback();
         };
 
@@ -597,25 +700,7 @@
             if (!xulTab) {
                 return;
             }
-
-            var tabBrowser = getTabBrowserForTab(xulTab);
-            if (!tabBrowser) {
-                return;
-            }
-
-            if (isFennec) {
-                tabBrowser.closeTab(xulTab);
-            } else {
-                if (tabBrowser.tabs.length === 1) {
-                    getOwnerWindow(xulTab).close();
-                } else {
-                    // Bug 699450: the tab may already have been detached
-                    if (!xulTab.parentNode) {
-                        return;
-                    }
-                    tabBrowser.removeTab(xulTab);
-                }
-            }
+            closeTab(xulTab);
 
             callback(tabId);
         };
@@ -634,18 +719,12 @@
             }
 
             var win = getOwnerWindow(xulTab);
-            var tabBrowser = getTabBrowserForTab(xulTab);
-            if (!tabBrowser) {
+            if (!win) {
                 return;
             }
 
             win.focus();
-
-            if (isFennec) {
-                tabBrowser.selectTab(xulTab);
-            } else {
-                tabBrowser.selectedTab = xulTab;
-            }
+            activateTab(xulTab, win);
 
             callback(tabId);
         };
@@ -669,8 +748,7 @@
             }
 
             if (url) {
-                // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XUL/Method/loadURIWithFlags
-                browser.loadURIWithFlags(url, Ci.nsIWebNavigation.LOAD_FLAGS_NONE);
+                browser.loadURI(String(url));
             } else {
                 // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XUL/Method/reloadWithFlags
                 browser.reloadWithFlags(Ci.nsIWebNavigation.LOAD_FLAGS_BYPASS_CACHE);
@@ -702,26 +780,11 @@
          * @returns {Array}
          */
         var getAll = function (callback) {
-
             var tabs = [];
-
-            var windows = adguard.winWatcher.getWindows();
-            for (var i = 0; i < windows.length; i++) {
-
-                var win = windows[i];
-
-                var tabBrowser = getTabBrowserForWin(win);
-                if (!tabBrowser) {
-                    continue;
-                }
-
-                for (var j = 0; j < tabBrowser.tabs.length; j++) {
-                    var xulTab = tabBrowser.tabs[j];
-                    var browser = getBrowserForTab(xulTab);
-                    tabs.push(toTabFromXulTab(xulTab, browser));
-                }
+            var xulTabs = getTabs();
+            for (var i = 0; i < xulTabs.length; i++) {
+                tabs.push(toTabFromXulTab(xulTabs[i]));
             }
-
             callback(tabs);
         };
 
@@ -730,23 +793,15 @@
          * @param callback
          */
         var getActive = function (callback) {
-
-            var win = adguard.winWatcher.getCurrentBrowserWindow();
+            var win = getCurrentBrowserWindow();
             if (!win) {
                 return;
             }
-            var tabBrowser = getTabBrowserForWin(win);
-            if (!tabBrowser) {
-                return;
-            }
-
-            var xulTab = tabBrowser.selectedTab;
+            var xulTab = getActiveTab(win);
             if (!xulTab) {
                 return;
             }
-
             callback(getTabId(xulTab));
-
         };
 
         return {

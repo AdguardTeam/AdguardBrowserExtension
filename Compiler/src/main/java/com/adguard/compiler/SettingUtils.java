@@ -22,11 +22,8 @@ import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Helper method for customizing manifest files and extension local script rules
@@ -147,24 +144,60 @@ public class SettingUtils {
      * By default we use "require" to be used in jpm-packed extension.
      * But in case of Legacy build we will pack it with cfx, so path should be different.
      */
-    public static void updateRequirePathForCfx(File dest) throws IOException {
+//    public static void updateRequirePathForCfx(File dest) throws IOException {
+//
+//        Collection<File> files = FileUtils.listFiles(dest, new String[]{"js"}, true);
+//
+//        for (File file : files) {
+//            // JPM does not allow to use absolute path
+//            // So now we have rewritten everything to relative
+//            // Example: utils/log --> ../../lib/utils/log
+//
+//            String content = FileUtils.readFileToString(file, "utf-8");
+//            Matcher matcher = Pattern.compile("require\\(('|\")(..\\/)*lib\\/(.*)('|\")\\)").matcher(content);
+//            String newContent = matcher.replaceAll("require('$3')");
+//
+//            if (!content.equals(newContent)) {
+//                FileUtils.writeStringToFile(file, newContent, "utf-8");
+//            }
+//        }
+//    }
 
-        Collection<File> files = FileUtils.listFiles(dest, new String[]{"js"}, true);
+    /**
+     * By the rules of AMO and addons.opera.com we cannot use remote scripts,
+     * but for beta and dev Firefox version we gonna support it.
+     *
+     * Look DEFAULT_SCRIPT_RULES and https://github.com/AdguardTeam/AdguardBrowserExtension/issues/388.
+     *
+     * In this temp solution we simply edit preload js code to allow all rules in FF
+     *
+     * @param dest source path
+     * @param branch branch name (release/beta/dev)
+     */
+    public static void updatePreloadRemoteScriptRules(File dest, String branch) throws Exception {
+        if ("beta".equals(branch)
+                || "dev".equals(branch)
+                || "legacy".equals(branch)
+                || "dev-legacy".equals(branch)) {
 
-        for (File file : files) {
-            // JPM does not allow to use absolute path
-            // So now we have rewritten everything to relative
-            // Example: utils/log --> ../../lib/utils/log
+            String replaceClauseTemplate = "if (!isFirefox && !isOpera) {";
 
-            String content = FileUtils.readFileToString(file, "utf-8");
-            Matcher matcher = Pattern.compile("require\\(('|\")(..\\/)*lib\\/(.*)('|\")\\)").matcher(content);
-            String newContent = matcher.replaceAll("require('$3')");
+            File file = new File(dest, "content-script/preload.js");
+            String content = FileUtils.readFileToString(file, "utf-8").trim();
 
-            if (!content.equals(newContent)) {
-                FileUtils.writeStringToFile(file, newContent, "utf-8");
+            if (StringUtils.indexOf(content, replaceClauseTemplate) < 0) {
+                throw new Exception("Invalid code working with FF remote rules");
             }
+
+            content = StringUtils.replaceOnce(content, replaceClauseTemplate, "if (!isOpera) {");
+            if (StringUtils.indexOf(content, replaceClauseTemplate) > 0) {
+                throw new Exception("Invalid code working with FF remote rules");
+            }
+
+            FileUtils.writeStringToFile(file, content, "utf-8");
         }
     }
+
 
     public static String getScriptRulesText(Set<String> scriptRules) {
         StringBuilder sb = new StringBuilder();

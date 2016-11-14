@@ -18,7 +18,7 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.14';
+var CONVERTER_VERSION = '1.3.16';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var URL_FILTER_ANY_URL = ".*";
@@ -139,14 +139,15 @@ var SafariContentBlockerConverter = {
                 types.push("media");                
             }
             if (this._hasContentType(rule, UrlFilterRule.contentTypes.XMLHTTPREQUEST) ||
-                this._hasContentType(rule, UrlFilterRule.contentTypes.OTHER)) {
-                types.push("raw");                    
+                this._hasContentType(rule, UrlFilterRule.contentTypes.OTHER) ||
+                this._hasContentType(rule, UrlFilterRule.contentTypes.WEBSOCKET)) {
+                types.push("raw");
             }
             if (this._hasContentType(rule, UrlFilterRule.contentTypes.FONT)) {
                 types.push("font");                
             }
             if (this._hasContentType(rule, UrlFilterRule.contentTypes.SUBDOCUMENT)) {
-                types.push("document");                
+                types.push("document");
             }
             if (this._hasContentType(rule, UrlFilterRule.contentTypes.POPUP)) {
                 // Ignore other in case of $popup modifier

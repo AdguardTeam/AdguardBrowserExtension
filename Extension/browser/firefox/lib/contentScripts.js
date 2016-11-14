@@ -53,7 +53,7 @@ ContentScripts.prototype = {
 
         // Filter-download.html
         this.registerChromeContentScript('filter-download.html', [
-            'libs/jquery-1.8.3.min.js',
+            'libs/jquery-2.2.4.min.js',
             'libs/nprogress.patched.js',
             'content-script/content-script.js',
             'content-script/i18n-helper.js',
@@ -64,7 +64,7 @@ ContentScripts.prototype = {
 
         // Thankyou.html
         this.registerChromeContentScript('thankyou.html', [
-            'libs/jquery-1.8.3.min.js',
+            'libs/jquery-2.2.4.min.js',
             'content-script/content-script.js',
             'content-script/content-utils.js',
             'content-script/i18n-helper.js',
@@ -75,7 +75,7 @@ ContentScripts.prototype = {
 
         // Options.html
         this.registerChromeContentScript('options.html', [
-            'libs/jquery-1.8.3.min.js',
+            'libs/jquery-2.2.4.min.js',
             'libs/bootstrap.min.js',
             'libs/jquery.mousewheel.min.js',
             'libs/jquery.jscrollpane.min.js',
@@ -90,7 +90,7 @@ ContentScripts.prototype = {
 
         // Log.html
         this.registerChromeContentScript('log.html', [
-            'libs/jquery-1.8.3.min.js',
+            'libs/jquery-2.2.4.min.js',
             'libs/bootstrap.min.js',
             'libs/moment-with-locales.min.js',
             'content-script/content-script.js',
@@ -103,14 +103,14 @@ ContentScripts.prototype = {
 
         // Export.html
         this.registerChromeContentScript('export.html', [
-            'libs/jquery-1.8.3.min.js',
+            'libs/jquery-2.2.4.min.js',
             'content-script/content-script.js',
             'pages/export.js'
         ]);
 
         // Popup.html
         this.registerChromeContentScript('popup.html', [
-            '/libs/jquery-1.8.3.min.js',
+            '/libs/jquery-2.2.4.min.js',
             '/content-script/content-script.js',
             '/content-script/i18n-helper.js',
             '/pages/i18n.js',
@@ -121,7 +121,7 @@ ContentScripts.prototype = {
 
         // Sb.html
         this.registerChromeContentScript('sb.html', [
-            'libs/jquery-1.8.3.min.js',
+            'libs/jquery-2.2.4.min.js',
             'content-script/content-script.js',
             'content-script/i18n-helper.js',
             'pages/i18n.js',
@@ -130,7 +130,8 @@ ContentScripts.prototype = {
 
         // Web pages content scripts (responsible for ad blocking)
         this.registerPageContentScript([
-            'libs/extended-css.js',
+            'libs/extended-css-1.0.6.js',
+            'lib/utils/element-collapser.js',
             'content-script/content-script.js',
             'content-script/preload.js'
         ], 'document_start', true);
@@ -369,9 +370,8 @@ ContentScripts.prototype = {
         });
     },
 
-
     _contentUrl: function (resource) {
-        return 'chrome://adguard/content/' + resource;
+        return adguard.extension.url('content/' + resource);
     },
 
     /**

@@ -270,6 +270,7 @@ UrlFilterRule.contentTypes = {
     'OBJECT-SUBREQUEST': 1 << 7,
     MEDIA: 1 << 8,
     FONT: 1 << 9,
+    WEBSOCKET: 1 << 10,
 
     ELEMHIDE: 1 << 20,  //CssFilter cannot be applied to page
     URLBLOCK: 1 << 21,  //This attribute is only for exception rules. If true - do not use urlblocking rules for urls where referrer satisfies this rule.
@@ -311,6 +312,7 @@ UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.XMLHTTPREQUEST;
 UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes['OBJECT-SUBREQUEST'];
 UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.MEDIA;
 UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.FONT;
+UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.WEBSOCKET;
 
 /**
  * Searches for domain name in rule text and transforms it to punycode if needed.
@@ -325,7 +327,9 @@ function getAsciiDomainRule(ruleText) {
         }
 
         var domain = parseRuleDomain(ruleText, true);
-        if (!domain) return "";
+        if (!domain) {
+            return "";
+        }
 
         //In case of one domain
         return StringUtils.replaceAll(ruleText, domain, UrlUtils.toPunyCode(domain));
@@ -366,7 +370,8 @@ function parseRuleDomain(ruleText, parseOptions) {
             }
 
             if (startIndex == -1) {
-                return "";
+                //Domain is not found in rule options, so we continue a normal way
+                startIndex = 0;
             }
         }
 
