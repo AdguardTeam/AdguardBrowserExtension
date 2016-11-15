@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global CSS */
+
 /**
  * Object that collapses or hides DOM elements and able to roll it back.
  */
@@ -56,19 +58,61 @@ var ElementCollapser = (function() {
     };
 
     /**
-     * Adds "selectorText { display:none!important; }" style
+     * Applies CSS stylesheets
+     *
+     * @param rule css rule
+     * @param shadowRoot
      */
-    var hideBySelector = function(selectorText, cssText) {
+    var applyCss = function (rule, shadowRoot) {
         var styleElement = document.getElementById(collapserStyleId);
         if (!styleElement) {
             styleElement = document.createElement("style");
             styleElement.id = collapserStyleId;
             styleElement.setAttribute("type", "text/css");
-            (document.head || document.documentElement).appendChild(styleElement);
+
+            if (shadowRoot) {
+                styleElement.textContent = '::content ';
+                shadowRoot.appendChild(styleElement);
+            } else {
+                (document.head || document.documentElement).appendChild(styleElement);
+            }
         }
 
-        var rule = selectorText + '{' + (cssText || "display: none!important") + '}';
+        if (shadowRoot) {
+            rule = '::content ' + rule;
+        }
+
         styleElement.sheet.insertRule(rule, styleElement.sheet.cssRules.length);
+    };
+
+    /**
+     * Adds "selectorText { display:none!important; }" style
+     *
+     * @param selectorText
+     * @param cssText optional
+     * @param shadowRoot optional
+     */
+    var hideBySelector = function(selectorText, cssText, shadowRoot) {
+        var rule = selectorText + '{' + (cssText || "display: none!important") + '}';
+
+        applyCss(rule, shadowRoot);
+    };
+
+    /**
+     * Adds "selectorText { display:none!important; }" style
+     *
+     * @param shadowRoot optional
+     */
+    var hideBySelectorAndTagName = function(selectorText, tagName, shadowRoot) {
+        if (tagName === "frame" || tagName === "iframe") {
+            // Use specific style for frames due to these issues:
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/346
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/355
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/347
+            hideBySelector(selectorText, "visibility: hidden!important; height: 0px!important;", shadowRoot);
+        } else {
+            hideBySelector(selectorText, null, shadowRoot);
+        }
     };
 
     /**
@@ -115,8 +159,10 @@ var ElementCollapser = (function() {
 
     /**
      * Hides specified element
+     *
+     * @param shadowRoot optional
      */
-    var hideElement = function(element) {
+    var hideElement = function(element, shadowRoot) {
         var selectorText = getDomPath(element);
         // First check if we have hidden it already
         var hiddenElement = findHiddenElement(element);
@@ -126,15 +172,7 @@ var ElementCollapser = (function() {
         }
 
         var tagName = element.tagName.toLowerCase();
-        if (tagName === "frame" || tagName === "iframe") {
-            // Use specific style for frames due to these issues:
-            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/346
-            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/355
-            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/347
-            hideBySelector(selectorText, "visibility: hidden!important; height: 0px!important;");
-        } else {
-            hideBySelector(selectorText);
-        }
+        hideBySelectorAndTagName(selectorText, tagName, shadowRoot);
 
         if (hiddenElement) {
             // Remove redundant selector and save the new one
@@ -164,13 +202,31 @@ var ElementCollapser = (function() {
     };
 
     /**
+     * Creates selector for specified tagName and src attribute
+     */
+    var createSelectorForSrcAttr = function(srcAttrValue, tagName) {
+        return tagName + '[src="'+ CSS.escape(srcAttrValue) + '"]';
+    };
+
+    /**
      * Collapses specified element.
      *
      * @param element Element to collapse
+     * @param shadowRoot optional
      */
-    var collapseElement = function(element) {
+    var collapseElement = function(element, shadowRoot) {
 
         var tagName = element.tagName.toLowerCase();
+        var source = element.getAttribute('src');
+        if (source) {
+            //To not to keep track of changing src for elements, we gonna collapse it if special selector
+            //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/408
+            var srcSelector = createSelectorForSrcAttr(source, tagName);
+            hideBySelectorAndTagName(srcSelector, tagName, shadowRoot);
+
+            return;
+        }
+
         var cssProperty = "display";
         var cssValue = "none";
         var cssPriority = "important";
@@ -197,6 +253,7 @@ var ElementCollapser = (function() {
          * Collapses specified element using inline style
          *
          * @param element Element to collapse
+         * @param shadowRoot optional
          */
         collapseElement: collapseElement,
 
@@ -204,6 +261,7 @@ var ElementCollapser = (function() {
          * Hides specified element
          *
          * @param element Element to hide
+         * @param shadowRoot optional
          */
         hideElement: hideElement,
 
@@ -219,6 +277,7 @@ var ElementCollapser = (function() {
          *
          * @param selectorText CSS selector
          * @param cssText (optional) Overrides style used for hiding
+         * @param shadowRoot optional
          */
         hideBySelector: hideBySelector,
 

@@ -153,7 +153,7 @@
         }
 
         var iframeHidingSelector = "iframe[src]";
-        ElementCollapser.hideBySelector(iframeHidingSelector);
+        ElementCollapser.hideBySelector(iframeHidingSelector, null, shadowRoot);
 
         /**
          * For iframes with changed source we check if it should be collapsed
@@ -457,7 +457,7 @@
         };
 
         // Hide element temporary
-        ElementCollapser.hideElement(element);
+        ElementCollapser.hideElement(element, shadowRoot);
 
         // Send a message to the background page to check if the element really should be collapsed
         var message = {
@@ -491,7 +491,7 @@
 
         if (response.collapse === true) {
             var element = collapseRequest.element;
-            ElementCollapser.collapseElement(element);
+            ElementCollapser.collapseElement(element, shadowRoot);
         }
 
         // In any case we should remove hiding style
