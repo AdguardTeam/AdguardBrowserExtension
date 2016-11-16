@@ -82,7 +82,7 @@ var ElementCollapser = (function() {
             }
         }
 
-        styleElement.sheet.insertRule(prepareSelector(rule, shadowRoot), styleElement.sheet.cssRules.length);
+        styleElement.sheet.insertRule(prepareSelector(rule, !!shadowRoot), styleElement.sheet.cssRules.length);
     };
 
     /**
@@ -126,7 +126,7 @@ var ElementCollapser = (function() {
         var iLength = styleElement.sheet.cssRules.length;
         while (iLength--) {
             var cssRule = styleElement.sheet.cssRules[iLength];
-            if (cssRule.selectorText == prepareSelector(selectorText, shadowRoot)) {
+            if (cssRule.selectorText == prepareSelector(selectorText, !!shadowRoot)) {
                 styleElement.sheet.deleteRule(iLength);
             }
         }
