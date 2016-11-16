@@ -82,11 +82,7 @@ var ElementCollapser = (function() {
             }
         }
 
-        if (shadowRoot) {
-            rule = '::content ' + rule;
-        }
-
-        styleElement.sheet.insertRule(rule, styleElement.sheet.cssRules.length);
+        styleElement.sheet.insertRule(prepareSelector(rule, shadowRoot), styleElement.sheet.cssRules.length);
     };
 
     /**
@@ -130,7 +126,7 @@ var ElementCollapser = (function() {
         var iLength = styleElement.sheet.cssRules.length;
         while (iLength--) {
             var cssRule = styleElement.sheet.cssRules[iLength];
-            if (cssRule.selectorText == (shadowRoot ? '::content ' + selectorText : selectorText)) {
+            if (cssRule.selectorText == prepareSelector(selectorText, shadowRoot)) {
                 styleElement.sheet.deleteRule(iLength);
             }
         }
@@ -212,6 +208,12 @@ var ElementCollapser = (function() {
         return tagName + '[src="'+ CSS.escape(srcAttrValue) + '"]';
     };
 
+    /**
+     * Finds style containing dom element
+     *
+     * @param shadowRoot
+     * @returns {Element} or null
+     */
     var getStyleElement = function(shadowRoot) {
         if (shadowRoot) {
             var el = shadowRoot.querySelector('#' + collapserStyleId);
@@ -221,6 +223,17 @@ var ElementCollapser = (function() {
         }
 
         return document.getElementById(collapserStyleId);
+    };
+
+    /**
+     * Prepares selector or rule text
+     *
+     * @param selector
+     * @param useShadowDom
+     * @returns {*}
+     */
+    var prepareSelector = function (selector, useShadowDom) {
+        return useShadowDom ? '::content ' + selector : selector;
     };
 
     /**
@@ -234,7 +247,7 @@ var ElementCollapser = (function() {
         var tagName = element.tagName.toLowerCase();
         var source = element.getAttribute('src');
         if (source) {
-            //To not to keep track of changing src for elements, we gonna collapse it if special selector
+            //To not to keep track of changing src for elements, we are going to collapse it with a CSS rule
             //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/408
             var srcSelector = createSelectorForSrcAttr(source, tagName);
             hideBySelectorAndTagName(srcSelector, tagName, shadowRoot);
