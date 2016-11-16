@@ -92,7 +92,7 @@ public class SettingUtils {
         FileUtils.writeStringToFile(getMessageIdsFile(dest), i18nMessages, "utf-8");
     }
 
-    public static void updateManifestFile(File dest, Browser browser, String version, String extensionId, String updateUrl, String extensionNamePostfix) throws IOException {
+    public static void updateManifestFile(File dest, Browser browser, String version, String extensionId, String updateUrl, String extensionNamePostfix, String branch) throws IOException {
 
         switch (browser) {
             case CHROMIUM:
@@ -138,6 +138,7 @@ public class SettingUtils {
                 contentPackageJson = StringUtils.replace(contentPackageJson, "${version}", version);
                 contentPackageJson = StringUtils.replace(contentPackageJson, "${extensionId}", extensionId);
                 contentPackageJson = StringUtils.replace(contentPackageJson, "${extensionNamePostfix}", extensionNamePostfix);
+                contentPackageJson = StringUtils.replace(contentPackageJson, "${remoteScriptRulesSupported}", isRemoteScriptRulesSupported(branch) ? "true" : "false");
                 FileUtils.writeStringToFile(packageJson, contentPackageJson, "utf-8");
                 break;
         }
@@ -219,5 +220,21 @@ public class SettingUtils {
 
     private static File getMessageIdsFile(File sourcePath) {
         return new File(sourcePath, "lib/utils/i18n-messages.js");
+    }
+
+    /**
+     * By the rules of AMO and addons.opera.com we cannot use remote scripts,
+     * but for beta and dev Firefox version we gonna support it.
+     *
+     * Look DEFAULT_SCRIPT_RULES and https://github.com/AdguardTeam/AdguardBrowserExtension/issues/388.
+     *
+     * @param branch branch name (release/beta/dev)
+     * @return flag
+     */
+    private static boolean isRemoteScriptRulesSupported(String branch) {
+        return "beta".equals(branch)
+                || "dev".equals(branch)
+                || "legacy".equals(branch)
+                || "dev-legacy".equals(branch);
     }
 }

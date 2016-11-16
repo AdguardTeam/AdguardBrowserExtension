@@ -210,7 +210,7 @@ public class Main {
             extensionNamePostfix = " (" + StringUtils.capitalize(branch) + ")";
         }
 
-        SettingUtils.updateManifestFile(dest, browser, version, extensionId, updateUrl, extensionNamePostfix);
+        SettingUtils.updateManifestFile(dest, browser, version, extensionId, updateUrl, extensionNamePostfix, branch);
 
         if (browser == Browser.CHROMIUM) {
             LocaleUtils.updateExtensionNameForChromeLocales(dest, extensionNamePostfix);

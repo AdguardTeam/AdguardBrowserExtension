@@ -63,7 +63,8 @@ var Prefs = exports.Prefs = {
 		return simplePrefs.prefs['speedup_startup'];
 	},
     collapseByContentScript: simplePrefs.prefs['collapse_by_content_script'],
-    useGlobalStyleSheet: simplePrefs.prefs['use_global_style_sheet']
+    useGlobalStyleSheet: simplePrefs.prefs['use_global_style_sheet'],
+	isRemoteScriptRulesSupported: simplePrefs.prefs['remote_script_rules_supported']
 };
 
 var onPreferenceChanged = function(prefName) {
