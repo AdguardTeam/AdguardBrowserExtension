@@ -57,9 +57,12 @@
         // We use shadow DOM when it's available to minimize our impact on web page DOM tree.
         // According to ABP issue #452, creating a shadow root breaks running CSS transitions.
         // Because of this, we create shadow root right after content script is initialized.
-        if ("createShadowRoot" in document.documentElement && shadowDomExceptions.indexOf(document.domain) == -1) {
-            shadowRoot = document.documentElement.createShadowRoot();
-            shadowRoot.appendChild(document.createElement("shadow"));
+        var shadowRoot = document.documentElement.shadowRoot;
+        if (!shadowRoot) {
+            if ("createShadowRoot" in document.documentElement && shadowDomExceptions.indexOf(document.domain) == -1) {
+                shadowRoot = document.documentElement.createShadowRoot();
+                shadowRoot.appendChild(document.createElement("shadow"));
+            }
         }
 
         var userAgent = navigator.userAgent.toLowerCase();

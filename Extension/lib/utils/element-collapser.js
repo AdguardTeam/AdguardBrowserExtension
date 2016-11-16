@@ -54,6 +54,11 @@ var ElementCollapser = (function() {
             el = el.parentNode;
         }
 
+        //Remove heading html
+        if (stack.length > 0 && stack[0] == 'html') {
+            stack.splice(0, 1);
+        }
+
         return stack.join(' > ');
     };
 
@@ -64,14 +69,13 @@ var ElementCollapser = (function() {
      * @param shadowRoot
      */
     var applyCss = function (rule, shadowRoot) {
-        var styleElement = document.getElementById(collapserStyleId);
+        var styleElement = getStyleElement(shadowRoot);
         if (!styleElement) {
             styleElement = document.createElement("style");
             styleElement.id = collapserStyleId;
             styleElement.setAttribute("type", "text/css");
 
             if (shadowRoot) {
-                styleElement.textContent = '::content ';
                 shadowRoot.appendChild(styleElement);
             } else {
                 (document.head || document.documentElement).appendChild(styleElement);
@@ -93,7 +97,7 @@ var ElementCollapser = (function() {
      * @param shadowRoot optional
      */
     var hideBySelector = function(selectorText, cssText, shadowRoot) {
-        var rule = selectorText + '{' + (cssText || "display: none!important") + '}';
+        var rule = selectorText + '{' + (cssText || "display: none!important;") + '}';
 
         applyCss(rule, shadowRoot);
     };
@@ -118,15 +122,15 @@ var ElementCollapser = (function() {
     /**
      * Unhides elements which were previously hidden by the specified selector
      */
-    var unhideBySelector = function(selectorText) {
-        var styleElement = document.getElementById(collapserStyleId);
+    var unhideBySelector = function(selectorText, shadowRoot) {
+        var styleElement = getStyleElement(shadowRoot);
         if (!styleElement || !styleElement.sheet) {
             return;
         }
         var iLength = styleElement.sheet.cssRules.length;
         while (iLength--) {
             var cssRule = styleElement.sheet.cssRules[iLength];
-            if (cssRule.selectorText == selectorText) {
+            if (cssRule.selectorText == (shadowRoot ? '::content ' + selectorText : selectorText)) {
                 styleElement.sheet.deleteRule(iLength);
             }
         }
@@ -176,7 +180,7 @@ var ElementCollapser = (function() {
 
         if (hiddenElement) {
             // Remove redundant selector and save the new one
-            unhideBySelector(hiddenElement.selectorText);
+            unhideBySelector(hiddenElement.selectorText, shadowRoot);
             hiddenElement.selectorText = selectorText;
         } else {
             hiddenElement = {
@@ -190,12 +194,12 @@ var ElementCollapser = (function() {
     /**
      * Unhides specified element
      */
-    var unhideElement = function(element) {
+    var unhideElement = function(element, shadowRoot) {
         var iLength = hiddenElements.length;
         while (iLength--) {
             var hiddenElement = hiddenElements[iLength];
             if (hiddenElement.node === element) {
-                unhideBySelector(hiddenElement.selectorText);
+                unhideBySelector(hiddenElement.selectorText, shadowRoot);
                 hiddenElements.splice(iLength, 1);
             }
         }
@@ -206,6 +210,17 @@ var ElementCollapser = (function() {
      */
     var createSelectorForSrcAttr = function(srcAttrValue, tagName) {
         return tagName + '[src="'+ CSS.escape(srcAttrValue) + '"]';
+    };
+
+    var getStyleElement = function(shadowRoot) {
+        if (shadowRoot) {
+            var el = shadowRoot.querySelector('#' + collapserStyleId);
+            if (el) {
+                return el;
+            }
+        }
+
+        return document.getElementById(collapserStyleId);
     };
 
     /**
@@ -253,7 +268,7 @@ var ElementCollapser = (function() {
          * Collapses specified element using inline style
          *
          * @param element Element to collapse
-         * @param shadowRoot optional
+         * @param shadowRoot optional shadow root element
          */
         collapseElement: collapseElement,
 
@@ -261,7 +276,7 @@ var ElementCollapser = (function() {
          * Hides specified element
          *
          * @param element Element to hide
-         * @param shadowRoot optional
+         * @param shadowRoot optional shadow root element
          */
         hideElement: hideElement,
 
@@ -269,6 +284,7 @@ var ElementCollapser = (function() {
          * Removes the style used to hide the specified element
          *
          * @param element Element to unhide
+         * @param shadowRoot optional shadow root element
          */
         unhideElement: unhideElement,
 
@@ -277,7 +293,7 @@ var ElementCollapser = (function() {
          *
          * @param selectorText CSS selector
          * @param cssText (optional) Overrides style used for hiding
-         * @param shadowRoot optional
+         * @param shadowRoot optional shadow root element
          */
         hideBySelector: hideBySelector,
 
@@ -285,6 +301,7 @@ var ElementCollapser = (function() {
          * Unhides elements which were previously hidden by the specified selector
          *
          * @param selectorText CSS selector
+         * @param shadowRoot optional shadow root element
          */
         unhideBySelector: unhideBySelector
     };
