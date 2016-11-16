@@ -57,9 +57,13 @@
         // We use shadow DOM when it's available to minimize our impact on web page DOM tree.
         // According to ABP issue #452, creating a shadow root breaks running CSS transitions.
         // Because of this, we create shadow root right after content script is initialized.
-        if ("createShadowRoot" in document.documentElement && shadowDomExceptions.indexOf(document.domain) == -1) {
-            shadowRoot = document.documentElement.createShadowRoot();
-            shadowRoot.appendChild(document.createElement("shadow"));
+        // First check if it's available already, chrome shows warning message in case of we try to create an additional root.
+        shadowRoot = document.documentElement.shadowRoot;
+        if (!shadowRoot) {
+            if ("createShadowRoot" in document.documentElement && shadowDomExceptions.indexOf(document.domain) == -1) {
+                shadowRoot = document.documentElement.createShadowRoot();
+                shadowRoot.appendChild(document.createElement("shadow"));
+            }
         }
 
         var userAgent = navigator.userAgent.toLowerCase();
@@ -153,7 +157,7 @@
         }
 
         var iframeHidingSelector = "iframe[src]";
-        ElementCollapser.hideBySelector(iframeHidingSelector);
+        ElementCollapser.hideBySelector(iframeHidingSelector, null, shadowRoot);
 
         /**
          * For iframes with changed source we check if it should be collapsed
@@ -457,7 +461,7 @@
         };
 
         // Hide element temporary
-        ElementCollapser.hideElement(element);
+        ElementCollapser.hideElement(element, shadowRoot);
 
         // Send a message to the background page to check if the element really should be collapsed
         var message = {
@@ -491,7 +495,7 @@
 
         if (response.collapse === true) {
             var element = collapseRequest.element;
-            ElementCollapser.collapseElement(element);
+            ElementCollapser.collapseElement(element, shadowRoot);
         }
 
         // In any case we should remove hiding style
