@@ -465,6 +465,11 @@ var WebRequestImpl = exports.WebRequestImpl = {
             }
         }
 
+        if (!tab && contentType !== WebRequestHelper.contentTypes.TYPE_WEBSOCKET) {
+            // We handle null-tab requests only of websocket type
+            return WebRequestHelper.ACCEPT;
+        }
+
         var result = this._shouldBlockRequest(tab, requestUrl, requestType, aContext);
 
         Log.debug('shouldLoad: {0} {1}. Result: {2}', requestUrl, requestType, result.blocked);
