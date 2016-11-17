@@ -454,9 +454,6 @@ var WebRequestImpl = exports.WebRequestImpl = {
      * @returns ACCEPT or REJECT_*
      */
     shouldLoad: function (contentType, contentLocation, requestOrigin, aContext, mimeTypeGuess, extra, aRequestPrincipal) {
-        var requestUrl = contentLocation.asciiSpec;
-        var requestType = WebRequestHelper.getRequestType(contentType, contentLocation);
-
         var tab;
         if (aContext) {
             var xulTab = WebRequestHelper.getTabForContext(aContext);
@@ -477,6 +474,9 @@ var WebRequestImpl = exports.WebRequestImpl = {
         } else {
             tabUrl = this.framesMap.getFrameUrl(tab, 0);
         }
+
+        var requestUrl = contentLocation.asciiSpec;
+        var requestType = WebRequestHelper.getRequestType(contentType, contentLocation);
 
         var result = this._shouldBlockRequest(tab, requestUrl, tabUrl, requestType, aContext);
 
@@ -720,13 +720,13 @@ var WebRequestImpl = exports.WebRequestImpl = {
         result.rule = this.webRequestService.getRuleForRequest(tab, requestUrl, tabUrl, requestType);
         result.blocked = this.webRequestService.isRequestBlockedByRule(result.rule);
 
-        if (result.blocked && requestType !== RequestTypes.WEBSOCKET) {
+        if (result.blocked || requestType === RequestTypes.WEBSOCKET) {
             this._collapseElement(node, requestType);
-            
+
             // Usually we call this method in _httpOnExamineResponse callback
             // But it won't be called if request is blocked here
             // Also it won't be called for WEBSOCKET requests
-            this.webRequestService.postProcessRequest(tab, requestUrl, tabUrl, requestType, result.rule);            
+            this.webRequestService.postProcessRequest(tab, requestUrl, tabUrl, requestType, result.rule);
         }
 
         return result;
