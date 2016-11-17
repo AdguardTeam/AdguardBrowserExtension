@@ -470,7 +470,15 @@ var WebRequestImpl = exports.WebRequestImpl = {
             return WebRequestHelper.ACCEPT;
         }
 
-        var result = this._shouldBlockRequest(tab, requestUrl, requestType, aContext);
+        var tabUrl;
+        if (!tab && requestOrigin) {
+            //In case of websocket requests tab could be empty
+            tabUrl = requestOrigin.asciiSpec;
+        } else {
+            tabUrl = this.framesMap.getFrameUrl(tab, 0);
+        }
+
+        var result = this._shouldBlockRequest(tab, requestUrl, tabUrl, requestType, aContext);
 
         Log.debug('shouldLoad: {0} {1}. Result: {2}', requestUrl, requestType, result.blocked);
         this._saveLastRequestProperties(requestUrl, requestType, result, aContext);
@@ -510,7 +518,8 @@ var WebRequestImpl = exports.WebRequestImpl = {
 
             var tab = {id: tabUtils.getTabId(xulTab)};
             var requestUrl = newChannel.URI.asciiSpec;
-            var shouldBlockResult = this._shouldBlockRequest(tab, requestUrl, requestProperties.requestType, null); 
+            var tabUrl = this.framesMap.getFrameUrl(tab, 0);
+            var shouldBlockResult = this._shouldBlockRequest(tab, requestUrl, tabUrl, requestProperties.requestType, null);
 
             Log.debug('asyncOnChannelRedirect: {0} {1}. Blocked={2}', requestUrl, requestProperties.requestType, shouldBlockResult.blocked);
             if (shouldBlockResult.blocked) {
@@ -685,14 +694,15 @@ var WebRequestImpl = exports.WebRequestImpl = {
     /**
      * Checks if request should be blocked
      *
-     * @param tab Browser tab
-     * @param requestUrl Request url
-     * @param requestType Request type
-     * @param node DOM node
+     * @param tab           Browser tab or null
+     * @param requestUrl    Request url
+     * @param tabUrl        Tab url
+     * @param requestType   Request type
+     * @param node          DOM node or null
      * @returns {*} object with two properties: "blocked" and "rule"
      * @private
      */
-    _shouldBlockRequest: function (tab, requestUrl, requestType, node) {
+    _shouldBlockRequest: function (tab, requestUrl, tabUrl, requestType, node) {
 
         var result = {
             blocked: false,
@@ -707,12 +717,10 @@ var WebRequestImpl = exports.WebRequestImpl = {
             return result;
         }
 
-        var tabUrl = this.framesMap.getFrameUrl(tab, 0);
-
         result.rule = this.webRequestService.getRuleForRequest(tab, requestUrl, tabUrl, requestType);
         result.blocked = this.webRequestService.isRequestBlockedByRule(result.rule);
 
-        if (result.blocked || requestType === RequestTypes.WEBSOCKET) {
+        if (result.blocked && requestType !== RequestTypes.WEBSOCKET) {
             this._collapseElement(node, requestType);
             
             // Usually we call this method in _httpOnExamineResponse callback
