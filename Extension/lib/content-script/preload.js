@@ -341,6 +341,9 @@
             } else {
                 (document.head || document.documentElement).appendChild(styleEl);                
             }
+
+            protectStyleElementFromRemoval(styleEl, useShadowDom);
+            protectStyleElementContent(styleEl);
         }
     };
 
@@ -356,6 +359,95 @@
 
         // https://github.com/AdguardTeam/ExtendedCss
         new ExtendedCss(extendedCss.join("\n")).apply();
+    };
+
+    /**
+     * Protects specified style element from changes to the current document
+     * Add a mutation observer, which is adds our rules again if it was removed
+     *
+     * @param protectStyleEl protected style element
+     */
+    var protectStyleElementContent = function (protectStyleEl) {
+        var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+        if (!MutationObserver)
+            return;
+
+        /* observer, which observe protectStyleEl inner changes, without deleting styleEl */
+        var innerObserver = new MutationObserver(function (mutations) {
+
+            for (var i = 0; i < mutations.length; i++) {
+
+                var m = mutations[i];
+                if (protectStyleEl.hasAttribute("mod") && protectStyleEl.getAttribute("mod") == "inner") {
+                    protectStyleEl.removeAttribute("mod");
+                    break;
+                }
+
+                protectStyleEl.setAttribute("mod", "inner");
+                var isProtectStyleElModified = false;
+
+                /* further, there are two mutually exclusive situations: either there were changes the text of protectStyleEl,
+                 either there was removes a whole child "text" element of protectStyleEl
+                 we'll process both of them */
+
+                if (m.removedNodes.length > 0) {
+                    for (var j = 0; j < m.removedNodes.length; j++) {
+                        isProtectStyleElModified = true;
+                        protectStyleEl.appendChild(m.removedNodes[j]);
+                    }
+                } else {
+                    if (m.oldValue) {
+                        isProtectStyleElModified = true;
+                        protectStyleEl.textContent = m.oldValue;
+                    }
+                }
+
+                if (!isProtectStyleElModified) {
+                    protectStyleEl.removeAttribute("mod");
+                }
+            }
+
+        });
+
+        innerObserver.observe(protectStyleEl, {
+                'childList': true,
+                'characterData': true,
+                'subtree': true,
+                'characterDataOldValue': true
+            });
+    };
+
+    /**
+     * Protects style element from removing.
+     *
+     * @param protectStyleEl protected style element
+     * @param useShadowDom shadowDOM flag
+     */
+    var protectStyleElementFromRemoval = function (protectStyleEl, useShadowDom) {
+        var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+        if (!MutationObserver)
+            return;
+
+        /* observer, which observe deleting protectStyleEl */
+        var outerObserver = new MutationObserver(function (mutations) {
+            for (var i = 0; i < mutations.length; i++) {
+
+                var m = mutations[i];
+                var removedNodeIndex = [].indexOf.call(mutations[i].removedNodes, protectStyleEl);
+                if (removedNodeIndex != -1) {
+                    var removedStyleEl = m.removedNodes[removedNodeIndex];
+
+                    outerObserver.disconnect();
+
+                    applyCss([removedStyleEl.textContent], useShadowDom);
+
+                    break;
+                }
+            }
+
+        });
+
+        outerObserver.observe(protectStyleEl.parentNode, {'childList': true, 'characterData': true});
     };
     
     /**
