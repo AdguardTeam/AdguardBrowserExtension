@@ -454,21 +454,17 @@ var WebRequestImpl = exports.WebRequestImpl = {
      * @returns ACCEPT or REJECT_*
      */
     shouldLoad: function (contentType, contentLocation, requestOrigin, aContext, mimeTypeGuess, extra, aRequestPrincipal) {
-
-        if (!aContext && contentType !== WebRequestHelper.contentTypes.TYPE_WEBSOCKET) {
-            // Context could be empty in case of WebSocket requests:
-            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/334
-            return WebRequestHelper.ACCEPT;
-        }
-
-        var xulTab = WebRequestHelper.getTabForContext(aContext);
-        if (!xulTab) {
-            return WebRequestHelper.ACCEPT;
-        }
-
-        var tab = {id: tabUtils.getTabId(xulTab)};
         var requestUrl = contentLocation.asciiSpec;
         var requestType = WebRequestHelper.getRequestType(contentType, contentLocation);
+
+        var tab;
+        if (aContext) {
+            var xulTab = WebRequestHelper.getTabForContext(aContext);
+            if (xulTab) {
+                tab = {id: tabUtils.getTabId(xulTab)};
+            }
+        }
+
         var result = this._shouldBlockRequest(tab, requestUrl, requestType, aContext);
 
         Log.debug('shouldLoad: {0} {1}. Result: {2}', requestUrl, requestType, result.blocked);
