@@ -254,3 +254,15 @@ QUnit.test("Complex regexp rule", function(assert) {
     assert.notOk(rule.isFiltered("https://ajax.cloudflare.com/blahblah.js", true, RequestTypes.SCRIPT));
     assert.notOk(rule.isFiltered("https://www.google-analytics.com/blahblah.js", true, RequestTypes.SCRIPT));
 });
+
+QUnit.test("Regexp rules shortcuts", function(assert) {
+    assert.equal(new UrlFilterRule('/quang%20cao/').shortcut, 'quang%20cao');
+    assert.equal(new UrlFilterRule('/YanAds/').shortcut, 'YanAds');
+    assert.equal(new UrlFilterRule('/^http://m\.autohome\.com\.cn\/[a-z0-9]{32}\//$domain=m.autohome.com.cn').shortcut, 'autohome');
+    assert.equal(new UrlFilterRule('/cdsbData_gal/bannerFile/$image,domain=mybogo.net|zipbogo.net	').shortcut, 'cdsbData_gal/bannerFile');
+    assert.equal(new UrlFilterRule('/http:\/\/rustorka.com\/[a-z]+\.js/$domain=rustorka.com').shortcut, 'http://rustorka');
+    assert.equal(new UrlFilterRule('/^http://www\.iqiyi\.com\/common\/flashplayer\/[0-9]{8}/[0-9a-z]{32}.swf/$domain=iqiyi.com').shortcut, 'com/common/flashplayer');
+    assert.equal(new UrlFilterRule('/ulightbox/$domain=hdkinomax.com|tvfru.net').shortcut, 'ulightbox');
+    assert.equal(new UrlFilterRule('/\.sharesix\.com/.*[a-zA-Z0-9]{4}/$script').shortcut, 'sharesix');
+    assert.equal(new UrlFilterRule('/serial_adv_files/$image,domain=xn--80aacbuczbw9a6a.xn--p1ai|куражбамбей.рф').shortcut, 'serial_adv_files');
+});
