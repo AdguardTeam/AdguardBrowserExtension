@@ -55,7 +55,7 @@ FilteringLog.prototype.synchronizeOpenTabs = function (callback) {
 			callback();
 		}
 	}.bind(this);
-	UI.getAllOpenedTabs(openTabsCallback);
+	adguard.tabs.getAll(openTabsCallback);
 };
 
 FilteringLog.prototype.addTab = function (tab) {

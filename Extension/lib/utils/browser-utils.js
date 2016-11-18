@@ -179,22 +179,22 @@ var Utils = {
     },
 
     getFiltersUpdateResultMessage: function (success, updatedFilters) {
-        var title = i18n.getMessage("options_popup_update_title");
+        var title = adguard.i18n.getMessage("options_popup_update_title");
         var text = [];
         if (success) {
             if (updatedFilters.length === 0) {
-                text.push(i18n.getMessage("options_popup_update_not_found"));
+                text.push(adguard.i18n.getMessage("options_popup_update_not_found"));
             } else {
                 updatedFilters.sort(function (a, b) {
                     return a.displayNumber - b.displayNumber;
                 });
                 for (var i = 0; i < updatedFilters.length; i++) {
                     var filter = updatedFilters[i];
-                    text.push(i18n.getMessage("options_popup_update_updated", [filter.name, filter.version]).replace("$1", filter.name).replace("$2", filter.version));
+                    text.push(adguard.i18n.getMessage("options_popup_update_updated", [filter.name, filter.version]).replace("$1", filter.name).replace("$2", filter.version));
                 }
             }
         } else {
-            text.push(i18n.getMessage("options_popup_update_error"));
+            text.push(adguard.i18n.getMessage("options_popup_update_error"));
         }
 
         return {
@@ -204,14 +204,14 @@ var Utils = {
     },
 
     getFiltersEnabledResultMessage: function (enabledFilters) {
-        var title = i18n.getMessage("alert_popup_filter_enabled_title");
+        var title = adguard.i18n.getMessage("alert_popup_filter_enabled_title");
         var text = [];
         enabledFilters.sort(function (a, b) {
             return a.displayNumber - b.displayNumber;
         });
         for (var i = 0; i < enabledFilters.length; i++) {
             var filter = enabledFilters[i];
-            text.push(i18n.getMessage("alert_popup_filter_enabled_text", [filter.name]).replace("$1", filter.name));
+            text.push(adguard.i18n.getMessage("alert_popup_filter_enabled_text", [filter.name]).replace("$1", filter.name));
         }
         return {
             title: title,
@@ -338,40 +338,4 @@ Version.prototype.compare = function (o) {
         }
     }
     return 0;
-};
-
-var ConcurrentUtils = {
-
-    runAsync: function (callback, context) {
-        var params = Array.prototype.slice.call(arguments, 2);
-        setTimeout(function () {
-            callback.apply(context, params);
-        }, 0);
-    },
-
-    retryUntil: function (predicate, main, details) {
-
-        if (typeof details !== 'object') {
-            details = {};
-        }
-
-        var now = 0;
-        var next = details.next || 200;
-        var until = details.until || 2000;
-
-        var check = function () {
-            if (predicate() === true || now >= until) {
-                main();
-                return;
-            }
-            now += next;
-            setTimeout(check, next);
-        };
-
-        if ('sync' in details && details.sync === true) {
-            check();
-        } else {
-            setTimeout(check, 1);
-        }
-    }
 };

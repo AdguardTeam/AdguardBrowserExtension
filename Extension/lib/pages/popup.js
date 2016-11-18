@@ -15,10 +15,11 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global $, ext, PopupController */
-var backgroundPage = ext.backgroundPage.getWindow();
+/* global $, PopupController */
+var backgroundPage = adguard.backgroundPage.getWindow();
 var antiBannerService = backgroundPage.antiBannerService;
 var UI = backgroundPage.UI;
+var uiService = backgroundPage.uiService;
 var framesMap = backgroundPage.framesMap;
 var filteringLog = backgroundPage.filteringLog;
 var Prefs = backgroundPage.Prefs;
@@ -63,44 +64,44 @@ $(document).ready(function () {
             resizePopupWindowForMacOs($);
         };
         controller.resizePopup = function (width, height) {
-            ext.resizePopup(width, height);
+            adguard.resizePopup(width, height);
         };
         //popup checkbox actions
         controller.addWhiteListDomain = function () {
-            UI.whiteListTab(tab);
+            uiService.whiteListTab(tab);
             if (tabInfo.adguardDetected) {
-                ext.closePopup();
+                adguard.closePopup();
             }
         };
         controller.removeWhiteListDomain = function () {
-            UI.unWhiteListTab(tab);
+            uiService.unWhiteListTab(tab);
             if (tabInfo.adguardDetected) {
-                ext.closePopup();
+                adguard.closePopup();
             }
         };
         controller.changeApplicationFilteringDisabled = function (disabled) {
-            UI.changeApplicationFilteringDisabled(disabled);
+            uiService.changeApplicationFilteringDisabled(disabled);
         };
         //popup menu actions
         controller.openSiteReportTab = function (url) {
-            UI.openSiteReportTab(url);
-            ext.closePopup();
+            uiService.openSiteReportTab(url);
+            adguard.closePopup();
         };
         controller.openSettingsTab = function () {
-            UI.openSettingsTab();
-            ext.closePopup();
+            uiService.openSettingsTab();
+            adguard.closePopup();
         };
         controller.openAssistantInTab = function () {
-            UI.openAssistant();
-            ext.closePopup();
+            uiService.openAssistant();
+            adguard.closePopup();
         };
         controller.openLink = function (url) {
             UI.openTab(url);
-            ext.closePopup();
+            adguard.closePopup();
         };
         controller.openFilteringLog = function (tabId) {
-            UI.openFilteringLog(tabId);
-            ext.closePopup();
+            uiService.openFilteringLog(tabId);
+            adguard.closePopup();
         };
         controller.resetBlockedAdsCount = function () {
             framesMap.resetBlockedAdsCount();

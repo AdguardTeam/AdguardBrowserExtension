@@ -1,4 +1,4 @@
-/* global Cc, Ci, Services */
+/* global Cu, Cc, Ci, I18nUtils, Log, unload, ElemHide */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -52,108 +52,108 @@ ContentScripts.prototype = {
         this.i18nMessages = this._geti18nMessages();
 
         // Filter-download.html
-        this.registerChromeContentScript('filter-download.html', [
-            'libs/jquery-2.2.4.min.js',
-            'libs/nprogress.patched.js',
-            'content-script/content-script.js',
-            'content-script/i18n-helper.js',
-            'pages/i18n.js',
-            'pages/script.js',
-            'pages/filter-download.js'
+        this.registerChromeContentScript('pages/filter-download.html', [
+            'lib/libs/jquery-2.2.4.min.js',
+            'lib/libs/nprogress.patched.js',
+            'lib/content-script/content-script.js',
+            'lib/content-script/i18n-helper.js',
+            'lib/pages/i18n.js',
+            'lib/pages/script.js',
+            'lib/pages/filter-download.js'
         ]);
 
         // Thankyou.html
-        this.registerChromeContentScript('thankyou.html', [
-            'libs/jquery-2.2.4.min.js',
-            'content-script/content-script.js',
-            'content-script/content-utils.js',
-            'content-script/i18n-helper.js',
-            'pages/i18n.js',
-            'pages/script.js',
-            'pages/thankyou.js'
+        this.registerChromeContentScript('pages/thankyou.html', [
+            'lib/libs/jquery-2.2.4.min.js',
+            'lib/content-script/content-script.js',
+            'lib/content-script/content-utils.js',
+            'lib/content-script/i18n-helper.js',
+            'lib/pages/i18n.js',
+            'lib/pages/script.js',
+            'lib/pages/thankyou.js'
         ]);
 
         // Options.html
-        this.registerChromeContentScript('options.html', [
-            'libs/jquery-2.2.4.min.js',
-            'libs/bootstrap.min.js',
-            'libs/jquery.mousewheel.min.js',
-            'libs/jquery.jscrollpane.min.js',
-            'libs/moment-with-locales.min.js',
-            'content-script/content-script.js',
-            'content-script/content-utils.js',
-            'content-script/i18n-helper.js',
-            'pages/i18n.js',
-            'pages/script.js',
-            'pages/options.js'
+        this.registerChromeContentScript('pages/options.html', [
+            'lib/libs/jquery-2.2.4.min.js',
+            'lib/libs/bootstrap.min.js',
+            'lib/libs/jquery.mousewheel.min.js',
+            'lib/libs/jquery.jscrollpane.min.js',
+            'lib/libs/moment-with-locales.min.js',
+            'lib/content-script/content-script.js',
+            'lib/content-script/content-utils.js',
+            'lib/content-script/i18n-helper.js',
+            'lib/pages/i18n.js',
+            'lib/pages/script.js',
+            'lib/pages/options.js'
         ]);
 
         // Log.html
-        this.registerChromeContentScript('log.html', [
-            'libs/jquery-2.2.4.min.js',
-            'libs/bootstrap.min.js',
-            'libs/moment-with-locales.min.js',
-            'content-script/content-script.js',
-            'content-script/content-utils.js',
-            'content-script/i18n-helper.js',
-            'pages/i18n.js',
-            'pages/script.js',
-            'pages/log.js'
+        this.registerChromeContentScript('pages/log.html', [
+            'lib/libs/jquery-2.2.4.min.js',
+            'lib/libs/bootstrap.min.js',
+            'lib/libs/moment-with-locales.min.js',
+            'lib/content-script/content-script.js',
+            'lib/content-script/content-utils.js',
+            'lib/content-script/i18n-helper.js',
+            'lib/pages/i18n.js',
+            'lib/pages/script.js',
+            'lib/pages/log.js'
         ]);
 
         // Export.html
-        this.registerChromeContentScript('export.html', [
-            'libs/jquery-2.2.4.min.js',
-            'content-script/content-script.js',
-            'pages/export.js'
+        this.registerChromeContentScript('pages/export.html', [
+            'lib/libs/jquery-2.2.4.min.js',
+            'lib/content-script/content-script.js',
+            'lib/pages/export.js'
         ]);
 
         // Popup.html
-        this.registerChromeContentScript('popup.html', [
-            '/libs/jquery-2.2.4.min.js',
-            '/content-script/content-script.js',
-            '/content-script/i18n-helper.js',
-            '/pages/i18n.js',
-            '/pages/popup-controller.js',
-            '/pages/script.js',
-            '/content-script/panel-popup.js'
+        this.registerChromeContentScript('pages/popup.html', [
+            'lib/libs/jquery-2.2.4.min.js',
+            'lib/content-script/content-script.js',
+            'lib/content-script/i18n-helper.js',
+            'lib/pages/i18n.js',
+            'lib/pages/popup-controller.js',
+            'lib/pages/script.js',
+            'lib/content-script/panel-popup.js'
         ]);
 
         // Sb.html
-        this.registerChromeContentScript('sb.html', [
-            'libs/jquery-2.2.4.min.js',
-            'content-script/content-script.js',
-            'content-script/i18n-helper.js',
-            'pages/i18n.js',
-            'pages/sb-filtered-page.js'
+        this.registerChromeContentScript('pages/sb.html', [
+            'lib/libs/jquery-2.2.4.min.js',
+            'lib/content-script/content-script.js',
+            'lib/content-script/i18n-helper.js',
+            'lib/pages/i18n.js',
+            'lib/pages/sb-filtered-page.js'
         ]);
 
         // Web pages content scripts (responsible for ad blocking)
         this.registerPageContentScript([
-            'libs/extended-css-1.0.6.js',
+            'lib/libs/extended-css-1.0.6.js',
             'lib/utils/element-collapser.js',
-            'content-script/content-script.js',
-            'content-script/preload.js'
+            'lib/content-script/content-script.js',
+            'lib/content-script/preload.js'
         ], 'document_start', true);
 
         this.registerPageContentScript([
-            'content-script/content-script.js', // Message passing
-            'content-script/content-utils.js'   // Show alert popup and reload without cache functionality
+            'lib/content-script/content-script.js', // Message passing
+            'lib/content-script/content-utils.js'   // Show alert popup and reload without cache functionality
         ], 'document_start', false);
 
         // Assistant
         this.registerPageContentScript([
-            'libs/diff_match_patch.js',
-            'libs/dom.patched.js',
-            'libs/balalaika.patched.js',
-            'libs/deferred.js',
-            'content-script/i18n-helper.js',    // Localization placeholders
-            'content-script/content-script.js', // Message passing
-            'content-script/assistant/js/slider-widget.js',
-            'content-script/assistant/js/start-assistant.js',
-            'content-script/assistant/js/adguard-selector.js',
-            'content-script/assistant/js/adguard-rules-constructor.js',
-            'content-script/assistant/js/assistant.js'
+            'lib/libs/diff_match_patch.js',
+            'lib/libs/dom.patched.js',
+            'lib/libs/balalaika.patched.js',
+            'lib/libs/deferred.js',
+            'lib/content-script/i18n-helper.js',    // Localization placeholders
+            'lib/content-script/content-script.js', // Message passing
+            'lib/content-script/assistant/js/slider-widget.js',
+            'lib/content-script/assistant/js/start-assistant.js',
+            'lib/content-script/assistant/js/adguard-selector.js',
+            'lib/content-script/assistant/js/adguard-rules-constructor.js',
+            'lib/content-script/assistant/js/assistant.js'
         ], 'document_end', false);
 
         // abp:subscribe
@@ -191,22 +191,12 @@ ContentScripts.prototype = {
         ];
 
         this.registerPageContentScript([
-            'content-script/content-script.js', // message-passing
-            'content-script/content-utils.js',  // showAlertPopup function
-            'content-script/subscribe.js'
+            'lib/content-script/content-script.js', // message-passing
+            'lib/content-script/content-utils.js',  // showAlertPopup function
+            'lib/content-script/subscribe.js'
         ], 'document_end', false, subscribeIncludeDomains);
 
         this._loadFrameScript();
-    },
-
-    /**
-     * Sends message to the specified content script.
-     *
-     * @param worker    Either Event.target got from the frame script
-     * @param message   Message to send
-     */
-    sendMessageToWorker: function (worker, message) {
-        worker.messageManager.sendAsyncMessage('Adguard:on-message-channel', message);
     },
 
     /**
@@ -215,12 +205,12 @@ ContentScripts.prototype = {
     registerChromeContentScript: function (url, paths, when) {
         var files = [];
         for (var i = 0; i < paths.length; i++) {
-            files.push(this._contentUrl(paths[i]));
+            files.push(adguard.getURL(paths[i]));
         }
 
         this.scripts.push({
             schemes: ['chrome:'],
-            url: this._contentUrl(url),
+            url: adguard.getURL(url),
             files: files,
             allFrames: false,
             runAt: when || 'document_start'
@@ -233,7 +223,7 @@ ContentScripts.prototype = {
     registerPageContentScript: function (paths, when, allFrames, domains) {
         var files = [];
         for (var i = 0; i < paths.length; i++) {
-            files.push(this._contentUrl(paths[i]));
+            files.push(adguard.getURL(paths[i]));
         }
 
         this.scripts.push({
@@ -250,149 +240,149 @@ ContentScripts.prototype = {
      */
     _loadFrameScript: function () {
 
-        var initializeFrameScript = function () {
-            return {
-                scripts: this.scripts,
-                i18nMessages: this.i18nMessages
-            };
-        }.bind(this);
+        var initializeFrameScriptListenerName = 'Adguard:initialize-frame-script';
+        var shouldLoadListenerMessageName = 'Adguard:should-load';
+        var tabUpdatedListenerMessageName = 'Adguard:tab-updated';
+        var navigationTargetCreatedListenerMessageName = 'Adguard:navigation-target-created';
+        var elemHideInterceptorListenerMessageName = 'Adguard:elemhide-interceptor';
+
+        var initializeFrameScriptListener = this.createInitializeFrameScriptListener();
+        var shouldLoadListener = this.createShouldLoadListener();
+        var tabUpdatedListener = this.createTabUpdatedListener();
+        var navigationTargetCreatedListener = this.createNavigationTargetCreatedAsyncListener();
+        var elemHideInterceptorListener = this.createElemHideInterceptorListener();
 
         /**
          * For some unknown reason we can't use global message messenger for handling synchronous messages from a frame script.
          * On the other hand, parent process manager allows us to receive synchronous messages and send immediate response.
          */
-        var ppmm = Cc["@mozilla.org/parentprocessmessagemanager;1"].getService(Ci.nsIMessageListenerManager);
-        ppmm.addMessageListener('Adguard:initialize-frame-script', initializeFrameScript);
+        var parentMessageManager = Cc["@mozilla.org/parentprocessmessagemanager;1"].getService(Ci.nsIMessageListenerManager);
 
-        unload.when(function () {
-            ppmm.removeMessageListener('Adguard:initialize-frame-script', initializeFrameScript);
-        });
+        parentMessageManager.addMessageListener(initializeFrameScriptListenerName, initializeFrameScriptListener);
 
-        /**
-         * nsIMessageListener implementation
-         */
-        var listener = (function (contentMessageHandler) {
+        var frameScriptUrl = adguard.getURL('lib/frameScript.js');
 
-            function getTabFromTarget(target) {
-                var tab = adguard.tabsImpl.getTabForBrowser(target);
-                if (!tab) {
-                    // Legacy browsers support. For PaleMoon and old Firefox getTabForBrowser returns null
-                    tab = adguard.tabsImpl.getTabForContentWindow(target.contentWindow);
-                }
-                return tab;
-            }
-
-            function wrapResponseResult(result, message) {
-                // Passing callbackId to response
-                return {
-                    type: message.data.type,
-                    callbackId: message.data.callbackId,
-                    result: result
-                };
-            }
-
-            /**
-             * Receives a message from the frame script
-             * https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIMessageListener#receiveMessage()
-             *
-             * @message Message object
-             */
-            var receiveMessage = function (message) {
-
-                var messageManager;
-                try {
-                    // Get the message manager of the sender frame script
-                    messageManager = message.target
-                        .QueryInterface(Ci.nsIFrameLoaderOwner)
-                        .frameLoader
-                        .messageManager;
-                } catch (ex) {
-                }
-
-                if (!messageManager) {
-                    // Message came from a popup, and its message manager is not usable.
-                    messageManager = adguard.winWatcher.getOwnerWindow(message.target).messageManager;
-                }
-
-                var tab = getTabFromTarget(message.target);
-                var tabId = tab ? adguard.tabsImpl.getTabIdForTab(tab) : -1;
-
-                // Message sender identification
-                var sender = {
-                    tab: {tabId: tabId},
-                    messageManager: messageManager
-                };
-
-                var sendResponse = null;
-                if ('callbackId' in message.data) {
-                    sendResponse = function (result) {
-                        messageManager.sendAsyncMessage('Adguard:send-message-channel', wrapResponseResult(result, message));
-                    };
-                } else {
-                    // Caller does not expect to get a response
-                    sendResponse = function () {
-                        // Empty
-                    };
-                }
-
-                var result = contentMessageHandler.handleMessage(message.data, sender, sendResponse);
-                var async = result === true;
-
-                if (async) {
-                    // If async is true sendResponse will be invoked later
-                    return;
-                }
-
-                if (message.sync) {
-                    // Message was sent with a "sendSyncMessage" call
-                    // Returning response immediately
-                    return wrapResponseResult(result, message);
-                } else {
-                    sendResponse(result);
-                }
-            };
-
-            // Expose listener interface
-            return {
-                receiveMessage: receiveMessage
-            };
-        })(contentMessageHandler);
-
-        var frameScriptUrl = this._contentUrl('content-script/frame-script.js');
         // Using global MM to register our frame script browser-wide
-        var messageManager = Cc["@mozilla.org/globalmessagemanager;1"].getService(Ci.nsIMessageListenerManager);
-        messageManager.addMessageListener('Adguard:send-message-channel', listener);
-        messageManager.loadFrameScript(frameScriptUrl, true);
+        var globalMessageManager = Cc["@mozilla.org/globalmessagemanager;1"].getService(Ci.nsIMessageListenerManager);
+
+        // Register special handlers
+        globalMessageManager.addMessageListener(shouldLoadListenerMessageName, shouldLoadListener);
+        globalMessageManager.addMessageListener(tabUpdatedListenerMessageName, tabUpdatedListener);
+        globalMessageManager.addMessageListener(navigationTargetCreatedListenerMessageName, navigationTargetCreatedListener);
+        globalMessageManager.addMessageListener(elemHideInterceptorListenerMessageName, elemHideInterceptorListener);
+
+        globalMessageManager.loadFrameScript(frameScriptUrl, true);
 
         unload.when(function () {
-            messageManager.removeDelayedFrameScript(frameScriptUrl);
-            messageManager.removeMessageListener('Adguard:send-message-channel', listener);
+
+            parentMessageManager.removeMessageListener(initializeFrameScriptListenerName, initializeFrameScriptListener);
+
+            globalMessageManager.removeMessageListener(shouldLoadListenerMessageName, shouldLoadListener);
+            globalMessageManager.removeMessageListener(tabUpdatedListenerMessageName, tabUpdatedListener);
+            globalMessageManager.removeMessageListener(navigationTargetCreatedListenerMessageName, navigationTargetCreatedListener);
+            globalMessageManager.removeMessageListener(elemHideInterceptorListenerMessageName, elemHideInterceptorListener);
+
+            globalMessageManager.removeDelayedFrameScript(frameScriptUrl);
+
+            // Cleanup services in frameModule
+            var frameModuleURL = adguard.getURL('lib/frameModule.js');
+            var frameModule = {};
+            try {
+                Cu.import(frameModuleURL, frameModule);
+                frameModule.contentPolicyService.unregister();
+                frameModule.interceptHandler.unregister();
+                Cu.unload(frameModuleURL);
+            } catch (ex) {
+                Log.error('Error while unregister contentPolicyService and interceptHandler: {0}', ex);
+            }
         });
     },
 
-    _contentUrl: function (resource) {
-        return adguard.extension.url('content/' + resource);
+    createInitializeFrameScriptListener: function () {
+        return function () {
+            return {
+                scripts: this.scripts,
+                i18nMessages: this.i18nMessages
+            };
+        }.bind(this);
+    },
+
+    createShouldLoadListener: function () {
+        return function (e) {
+
+            var browser = e.target;
+            var details = e.data;
+
+            var tab = adguard.tabsImpl.getTabForBrowser(browser);
+            if (!tab) {
+                return;
+            }
+
+            adguard.webRequest.saveRequestDetails(adguard.tabsImpl.getTabIdForTab(tab), details);
+        };
+    },
+
+    createTabUpdatedListener: function () {
+        return function (e) {
+
+            var browser = e.target;
+            var details = e.data;
+
+            var tab = adguard.tabsImpl.getTabForBrowser(browser);
+            if (!tab) {
+                return;
+            }
+            adguard.tabsImpl.onTabUpdated(tab, {
+                url: details.url,
+                title: details.title,
+                status: details.status
+            });
+        };
+    },
+
+    createNavigationTargetCreatedAsyncListener: function () {
+
+        return function (e) {
+
+            var browser = e.target;
+            var details = e.data;
+
+            var tab = adguard.tabsImpl.getTabForBrowser(browser);
+            if (!tab) {
+                return;
+            }
+
+            var tabId = adguard.tabsImpl.getTabIdForTab(tab);
+
+            setTimeout(adguard.webNavigation.onPopupCreated.bind(null, tabId, details.targetUrl, details.sourceUrl), 1);
+        };
+    },
+
+    createElemHideInterceptorListener: function () {
+
+        return function (e) {
+
+            var browser = e.target;
+            var details = e.data;
+
+            var tab = adguard.tabsImpl.getTabForBrowser(browser);
+
+            var collapse = false;
+            if (tab) {
+                var tabId = adguard.tabsImpl.getTabIdForTab(tab);
+                collapse = ElemHide.shouldCollapseElement(tabId, details.path);
+            }
+            return {collapse: collapse};
+        };
     },
 
     /**
      * Load translation bundle into a javascript object
      */
     _geti18nMessages: function () {
-        // Randomize URI to work around bug 719376
-        var stringBundle = Services.strings.createBundle('chrome://adguard/locale/messages.properties?' + Math.random());
-
-        // MDN says getSimpleEnumeration returns nsIPropertyElement // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIStringBundle#getSimpleEnumeration%28%29
-        var props = stringBundle.getSimpleEnumeration();
-
-        var messages = Object.create(null);
-        while (props.hasMoreElements()) {
-            var prop = props.getNext();
-            var propEl = prop.QueryInterface(Ci.nsIPropertyElement);
-            var key = propEl.key;
-            messages[key] = propEl.value;
-        }
-        return messages;
+        return I18nUtils.getMessagesMap();
     }
 };
 
 var contentScripts = new ContentScripts();
+contentScripts.init();

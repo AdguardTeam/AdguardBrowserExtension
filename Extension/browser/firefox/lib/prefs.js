@@ -21,49 +21,63 @@
  * Global preferences for Firefox extension
  */
 var Prefs = {
-	appId: adguard.extension.getId(),
-	version: adguard.extension.getVersion(),
-	locale: Cc["@mozilla.org/chrome/chrome-registry;1"].getService(Ci.nsIXULChromeRegistry).getSelectedLocale('global'),
-	getLocalFilterPath: function (filterId) {
-		var url = "content/filters/filter_" + filterId + ".txt";
-		return adguard.extension.url(url);
-	},
-	getLocalMobileFilterPath: function (filterId) {
-		var url = "content/filters/filter_mobile_" + filterId + ".txt";
-		return adguard.extension.url(url);
-	},
-	localFiltersMetadataPath: adguard.extension.url('content/filters/filters.json'),
-	localFiltersMetadataI18nPath: adguard.extension.url('content/filters/filters_i18n.json'),
-	safebrowsingPagePath: 'sb.html',
-	platform: "firefox",
-	mobile: adguard.runtime.getPlatform().indexOf('android') > -1,
-	getBrowser: function () {
-		if (!Prefs.browser) {
-			var browser;
-			if (Prefs.mobile) {
-				browser = "Android";
-			} else {
-				browser = "Firefox";
-			}
-			Prefs.browser = browser;
-		}
-		return Prefs.browser;
-	},
-	speedupStartup: function () {
-		return SimplePrefs.get('speedup_startup');
-	},
-	collapseByContentScript: SimplePrefs.get('collapse_by_content_script'),
-	useGlobalStyleSheet: SimplePrefs.get('use_global_style_sheet')
+    appId: adguard.app.getId(),
+    version: adguard.app.getVersion(),
+    locale: adguard.app.getLocale(),
+    getLocalFilterPath: function (filterId) {
+        var url = "filters/filter_" + filterId + ".txt";
+        return adguard.getURL(url);
+    },
+    getLocalMobileFilterPath: function (filterId) {
+        var url = "filters/filter_mobile_" + filterId + ".txt";
+        return adguard.getURL(url);
+    },
+    localFiltersMetadataPath: adguard.getURL('filters/filters.json'),
+    localFiltersMetadataI18nPath: adguard.getURL('filters/filters_i18n.json'),
+    platform: "firefox",
+    mobile: adguard.runtime.getPlatform().indexOf('android') > -1,
+    getBrowser: function () {
+        if (!Prefs.browser) {
+            var browser;
+            if (Prefs.mobile) {
+                browser = "Android";
+            } else {
+                browser = "Firefox";
+            }
+            Prefs.browser = browser;
+        }
+        return Prefs.browser;
+    },
+    speedupStartup: function () {
+        return SimplePrefs.get('speedup_startup');
+    },
+    collapseByContentScript: true, // SimplePrefs.get('collapse_by_content_script'),
+    useGlobalStyleSheet: SimplePrefs.get('use_global_style_sheet'),
+
+    ICONS: {
+        ICON_BLUE: {
+            '16': adguard.getURL('skin/firefox-blue-16.png'),
+            '32': adguard.getURL('skin/firefox-blue-32.png')
+        },
+        ICON_GREEN: {
+            '16': adguard.getURL('skin/firefox-16.png'),
+            '32': adguard.getURL('skin/firefox-32.png')
+        },
+        ICON_GRAY: {
+            '16': adguard.getURL('skin/firefox-gray-16.png'),
+            '32': adguard.getURL('skin/firefox-gray-32.png')
+        }
+    }
 };
 
 var onPreferenceChanged = function (prefName) {
-	Prefs.collapseByContentScript = SimplePrefs.get('collapse_by_content_script');
-	Prefs.useGlobalStyleSheet = SimplePrefs.get('use_global_style_sheet');
-	EventNotifier.notifyListeners(EventNotifierTypes.CHANGE_PREFS, prefName);
+    Prefs.collapseByContentScript = SimplePrefs.get('collapse_by_content_script');
+    Prefs.useGlobalStyleSheet = SimplePrefs.get('use_global_style_sheet');
+    EventNotifier.notifyListeners(EventNotifierTypes.CHANGE_PREFS, prefName);
 };
 SimplePrefs.addListener('collapse_by_content_script', onPreferenceChanged);
 SimplePrefs.addListener('use_global_style_sheet', onPreferenceChanged);
 unload.when(function () {
-	SimplePrefs.removeListener('collapse_by_content_script', onPreferenceChanged);
-	SimplePrefs.removeListener('use_global_style_sheet', onPreferenceChanged);
+    SimplePrefs.removeListener('collapse_by_content_script', onPreferenceChanged);
+    SimplePrefs.removeListener('use_global_style_sheet', onPreferenceChanged);
 });

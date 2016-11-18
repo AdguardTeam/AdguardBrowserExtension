@@ -1,4 +1,6 @@
-/* global i18n */
+/* global Prefs, Utils, AntiBannerFiltersId, EventNotifierTypes, LogEvents, uiService, antiBannerService, WorkaroundUtils,
+ framesMap, adguardApplication, filteringLog, webRequestService, EventNotifier, userSettings */
+
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -22,19 +24,6 @@ var ContentMessageHandler = function () {
 ContentMessageHandler.prototype = {
 
     eventListeners: Object.create(null),
-
-    /**
-     * Function that allows to send a message back to sender (either content script or SDK worker).
-     * This function implementation is specific to browser.
-     */
-    sendMessageToSender: null,
-
-    /**
-     * Sets sendMessageToSender function implementation
-     */
-    setSendMessageToSender: function (sendMessageToSender) {
-        this.sendMessageToSender = sendMessageToSender;
-    },
 
     handleMessage: function (message, sender, callback) {
         switch (message.type) {
@@ -83,7 +72,7 @@ ContentMessageHandler.prototype = {
                 var userFilters = antiBannerService.getUserFilters(message.offset, message.limit, message.text);
                 return {rules: userFilters};
             case 'checkAntiBannerFiltersUpdate':
-                UI.checkAntiBannerFiltersUpdate();
+                uiService.checkAntiBannerFiltersUpdate();
                 break;
             case 'getAntiBannerFiltersForOptionsPage':
                 var renderedFilters = antiBannerService.getAntiBannerFiltersForOptionsPage();
@@ -121,29 +110,29 @@ ContentMessageHandler.prototype = {
             case 'getFiltersMetadata':
                 return this._processGetFiltersMetadata();
             case 'openThankYouPage':
-                UI.openThankYouPage();
+                uiService.openThankYouPage();
                 break;
             case 'openExtensionStore':
-                UI.openExtensionStore();
+                uiService.openExtensionStore();
                 break;
             case 'openFilteringLog':
-                UI.closePopup();
-                UI.openFilteringLog(message.tabId);
+                adguard.browserAction.close();
+                uiService.openFilteringLog(message.tabId);
                 break;
             case 'openExportRulesTab':
-                UI.openExportRulesTab(message.whitelist);
+                uiService.openExportRulesTab(message.whitelist);
                 break;
             case 'openSafebrowsingTrusted':
                 antiBannerService.getRequestFilter().addToSafebrowsingTrusted(message.url);
-                UI.reloadCurrentTab(message.url);
+                uiService.reloadCurrentTab(message.url);
                 break;
             case 'openTab':
-                UI.openTab(message.url, message.options);
-                UI.closePopup();
+                uiService.openTab(message.url, message.options);
+                adguard.browserAction.close();
                 break;
             case 'resetBlockedAdsCount':
                 framesMap.resetBlockedAdsCount();
-                UI.closePopup();
+                adguard.browserAction.close();
                 break;
             case 'getSelectorsAndScripts':
                 if (WorkaroundUtils.isFacebookIframe(message.documentUrl)) {
@@ -202,25 +191,25 @@ ContentMessageHandler.prototype = {
                 var confirmText;
                 if (filterMetadata) {
                     //ok, filter found
-                    confirmText = i18n.getMessage('abp_subscribe_confirm_enable', [filterMetadata.name]);
+                    confirmText = adguard.i18n.getMessage('abp_subscribe_confirm_enable', [filterMetadata.name]);
                 } else {
                     //filter not found
-                    confirmText = i18n.getMessage('abp_subscribe_confirm_import', [message.title]);
+                    confirmText = adguard.i18n.getMessage('abp_subscribe_confirm_import', [message.title]);
                 }
                 return {confirmText: confirmText};
             case 'enableSubscription':
                 antiBannerService.processAbpSubscriptionUrl(message.url, function (rulesAddedCount) {
                     callback({
-                        title: i18n.getMessage('abp_subscribe_confirm_import_finished_title'),
-                        text: i18n.getMessage('abp_subscribe_confirm_import_finished_text', [rulesAddedCount])
+                        title: adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_title'),
+                        text: adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_text', [rulesAddedCount])
                     });
                 });
                 return true; // Async
             // Popup methods
             case 'popupReady':
                 adguard.tabs.getActive(function (tab) {
-                    var tabInfo = UI.getTabInfo(tab);
-                    var filteringInfo = UI.getTabFilteringInfo(tab);
+                    var tabInfo = framesMap.getFrameInfo(tab);
+                    var filteringInfo = filteringLog.getTabInfo(tab);
                     callback({
                         tabInfo: tabInfo,
                         filteringInfo: filteringInfo
@@ -228,28 +217,28 @@ ContentMessageHandler.prototype = {
                 });
                 return true; // Async
             case 'addWhiteListDomainPopup':
-                UI.whiteListCurrentTab();
+                uiService.whiteListCurrentTab();
                 break;
             case 'removeWhiteListDomainPopup':
-                UI.unWhiteListCurrentTab();
+                uiService.unWhiteListCurrentTab();
                 break;
             case 'changeApplicationFilteringDisabled':
-                UI.changeApplicationFilteringDisabled(message.disabled);
+                uiService.changeApplicationFilteringDisabled(message.disabled);
                 break;
             case 'openSiteReportTab':
-                UI.openSiteReportTab(message.url);
-                UI.closePopup();
+                uiService.openSiteReportTab(message.url);
+                adguard.browserAction.close();
                 break;
             case 'openSettingsTab':
-                UI.openSettingsTab();
-                UI.closePopup();
+                uiService.openSettingsTab();
+                adguard.browserAction.close();
                 break;
             case 'openAssistant':
-                UI.openAssistant();
-                UI.closePopup();
+                uiService.openAssistant();
+                adguard.browserAction.close();
                 break;
             case 'resizePanelPopup':
-                UI.resizePopup(message.width, message.height);
+                adguard.browserAction.resize(message.width, message.height);
                 break;
             case 'sendFeedback':
                 antiBannerService.sendFeedback(message.url, message.topic, message.comment);
@@ -301,7 +290,7 @@ ContentMessageHandler.prototype = {
         var listenerId = EventNotifier.addSpecifiedListener(message.events, function () {
             var sender = self.eventListeners[listenerId];
             if (sender) {
-                self.sendMessageToSender(sender, {
+                adguard.tabs.sendMessage(sender.tab.tabId, {
                     type: 'notifyListeners',
                     args: Array.prototype.slice.call(arguments)
                 });
@@ -340,7 +329,9 @@ ContentMessageHandler.prototype = {
     },
 
     _processLoadAssistant: function () {
-        var options = UI.getAssistantCssOptions();
+        var options = {
+            cssLink: adguard.getURL('lib/content-script/assistant/css/assistant.css')
+        };
         var ids = [
             'assistant_select_element',
             'assistant_select_element_ext',
@@ -372,11 +363,11 @@ ContentMessageHandler.prototype = {
         for (var id in ids) {
             if (ids.hasOwnProperty(id)) {
                 var current = ids[id];
-                result[current] = i18n.getMessage(current);
+                result[current] = adguard.i18n.getMessage(current);
             }
         }
         return result;
     }
 };
 
-var contentMessageHandler = new ContentMessageHandler();
+var contentMessageHandler = new ContentMessageHandler(); // jshint ignore:line

@@ -28,13 +28,13 @@ var MobileMenu = {
 
         this.UI = UI;
 
-        adguard.windows.onUpdated.addListener(function (win, domWin, type) {
-            if (type === 'ChromeWindowLoad') {
+        adguard.windowsImpl.onUpdated.addListener(function (adgWin, domWin, event) {
+            if (event === 'ChromeWindowLoad') {
                 this.applyToWindow(domWin);
             }
         }.bind(this));
 
-        adguard.windows.onRemoved.addListener(function (win, domWin) {
+        adguard.windowsImpl.onRemoved.addListener(function (windowId, domWin) {
             this.removeFromWindow(domWin);
         }.bind(this));
 
@@ -66,51 +66,53 @@ var MobileMenu = {
 
         var toggleWhiteListItem = this.createSubMenu(window, menuId, function () {
 
-            this.UI.getCurrentTabInfo(function (tabInfo) {
+            adguard.tabs.getActive(function (tab) {
+                var tabInfo = framesMap.getFrameInfo(tab);
                 if (tabInfo.userWhiteListed) {
-                    this.UI.unWhiteListCurrentTab();
+                    uiService.unWhiteListCurrentTab();
                 } else {
-                    this.UI.whiteListCurrentTab();
+                    uiService.whiteListCurrentTab();
                 }
-                adguard.windows.getLastFocused(function (winId, domWin) {
+                adguard.windowsImpl.getLastFocused(function (winId, domWin) {
                     domWin.NativeWindow.menu.update(toggleWhiteListItem, {checked: tabInfo.userWhiteListed});
                 });
             }.bind(this));
 
-        }.bind(this), i18n.getMessage("popup_site_filtering_state"), true);
+        }.bind(this), adguard.i18n.getMessage("popup_site_filtering_state"), true);
 
         var toggleFilteringEnabledItem = this.createSubMenu(window, menuId, function () {
 
-            this.UI.getCurrentTabInfo(function (tabInfo) {
-                this.UI.changeApplicationFilteringDisabled(!tabInfo.applicationFilteringDisabled);
+            adguard.tabs.getActive(function (tab) {
+                var tabInfo = framesMap.getFrameInfo(tab);
+                uiService.changeApplicationFilteringDisabled(!tabInfo.applicationFilteringDisabled);
 
-                adguard.windows.getLastFocused(function (winId, domWin) {
+                adguard.windowsImpl.getLastFocused(function (winId, domWin) {
                     domWin.NativeWindow.menu.update(toggleFilteringEnabledItem, {checked: tabInfo.applicationFilteringDisabled});
                 });
             }.bind(this));
 
-        }.bind(this), i18n.getMessage('popup_site_protection_disabled_android'), true);
+        }.bind(this), adguard.i18n.getMessage('popup_site_protection_disabled_android'), true);
 
-        var siteExceptionItem = this.createSubMenu(window, menuId, null, i18n.getMessage('popup_in_white_list_android'), false, false);
+        var siteExceptionItem = this.createSubMenu(window, menuId, null, adguard.i18n.getMessage('popup_in_white_list_android'), false, false);
 
         var blockAdsItem = this.createSubMenu(window, menuId, function () {
-            this.UI.openAssistant();
-        }.bind(this), i18n.getMessage("popup_block_site_ads_android"));
+            uiService.openAssistant();
+        }.bind(this), adguard.i18n.getMessage("popup_block_site_ads_android"));
 
         var reportSiteItem = this.createSubMenu(window, menuId, function () {
             adguard.tabs.getActive(function (tab) {
-                this.UI.openSiteReportTab(tab.url);
-            }.bind(this));
-        }.bind(this), i18n.getMessage("popup_security_report_android"));
+                uiService.openSiteReportTab(tab.url);
+            });
+        }.bind(this), adguard.i18n.getMessage("popup_security_report_android"));
 
         var filteringLogItem = this.createSubMenu(window, menuId, function () {
-            this.UI.openCurrentTabFilteringLog();
-        }.bind(this), i18n.getMessage('popup_open_log_android'));
+            uiService.openCurrentTabFilteringLog();
+        }.bind(this), adguard.i18n.getMessage('popup_open_log_android'));
 
         //show settings menu ever
         this.createSubMenu(window, menuId, function () {
-            this.UI.openSettingsTab();
-        }.bind(this), i18n.getMessage("popup_open_settings"));
+            uiService.openSettingsTab();
+        }, adguard.i18n.getMessage("popup_open_settings"));
 
         this.nativeMenuIds[window] = {
             main: menuId,
@@ -141,9 +143,10 @@ var MobileMenu = {
     },
 
     handleNativeMenuState: function () {
-        this.UI.getCurrentTabInfo(function (tabInfo) {
+        adguard.tabs.getActive(function (tab) {
+            var tabInfo = framesMap.getFrameInfo(tab);
             try {
-                adguard.windows.getLastFocused(function (winId, domWin) {
+                adguard.windowsImpl.getLastFocused(function (winId, domWin) {
 
                     var menuItems = this.nativeMenuIds[domWin].items;
                     var nativeMenu = domWin.NativeWindow.menu;

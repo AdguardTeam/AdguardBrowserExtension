@@ -2,7 +2,7 @@
 <html>
 <head>
 
-    <script type="text/javascript" src="libs/deferred.min.js"></script>
+    <script type="text/javascript" src="lib/libs/deferred.min.js"></script>
     <script type="text/javascript" src="lib/utils/sha256.patched.js"></script>
     <script type="text/javascript" src="lib/utils/promises.js"></script>
     <script type="text/javascript" src="lib/utils/punycode.js"></script>
@@ -11,7 +11,13 @@
     <script type="text/javascript" src="lib/utils/log.js"></script>
     <script type="text/javascript" src="lib/utils/url.js"></script>
 
-    <script type="text/javascript" src="lib/background.js"></script>
+    <script type="text/javascript" src="lib/api/common-api.js"></script>
+    <script type="text/javascript" src="lib/api/tabs.js"></script>
+    <script type="text/javascript" src="lib/api/webrequest-api.js"></script>
+    <script type="text/javascript" src="lib/api/browser-action-api.js"></script>
+    <script type="text/javascript" src="lib/api/context-menu-api.js"></script>
+    <script type="text/javascript" src="lib/api/messaging-api.js"></script>
+
     <script type="text/javascript" src="lib/prefs.js"></script>
 
     <script type="text/javascript" src="lib/utils/local-storage.js"></script>
@@ -25,9 +31,7 @@
     <script type="text/javascript" src="lib/utils/user-settings.js"></script>
     <script type="text/javascript" src="lib/utils/notifier.js"></script>
     <script type="text/javascript" src="lib/utils/page-stats.js"></script>
-    <script type="text/javascript" src="lib/utils/csp-utils.js"></script>
 
-    <script type="text/javascript" src="lib/tabs.js"></script>
     <script type="text/javascript" src="lib/tabs/tabs-api.js"></script>
     <script type="text/javascript" src="lib/utils/frames.js"></script>
 
@@ -56,20 +60,16 @@
     <script type="text/javascript" src="lib/filter/request-blocking.js"></script>
 
     <script type="text/javascript" src="lib/content-message-handler.js"></script>
+    <script type="text/javascript" src="lib/contentScripts.js"></script>
 
     <script type="text/javascript" src="lib/styleSheetService.js"></script>
-    <script type="text/javascript" src="lib/contextMenu.js"></script>
-    <script type="text/javascript" src="lib/contentScripts.js"></script>
-    <script type="text/javascript" src="lib/popupButton.js"></script>
     <script type="text/javascript" src="lib/mobileMenu.js"></script>
     <script type="text/javascript" src="lib/elemHide.js"></script>
-    <script type="text/javascript" src="lib/elemHideIntercepter.js"></script>
-    <script type="text/javascript" src="lib/contentPolicy.js"></script>
-    <script type="text/javascript" src="lib/ui.js"></script>
 
+    <script type="text/javascript" src="lib/ui-service.js"></script>
     <script type="text/javascript" src="lib/start.js"></script>
-    <!--<script type="text/javascript" src="lib/background.js"></script>-->
-    <!--<script type="text/javascript" src="lib/webrequest.js"></script>-->
-    <!--<script type="text/javascript" src="lib/blockpopup.js"></script>-->
+    <script type="text/javascript" src="lib/webrequest.js"></script>
+    <script type="text/javascript" src="lib/blockpopup.js"></script>
+
 </head>
 </html>

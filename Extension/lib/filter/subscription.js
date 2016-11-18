@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var Locale = Prefs.locale.substring(0, 2).toLowerCase();
-
 /**
  * Service that loads and parses filters metadata from backend server.
  * For now we just store filters metadata in an XML file within the extension.
@@ -120,8 +118,8 @@ SubscriptionService.prototype = {
 	_applyGroupLocalization: function (group, i18nMetadata) {
 		var groupId = group.groupId;
 		var localizations = i18nMetadata[groupId];
-		if (localizations && Locale in localizations) {
-			var localization = localizations[Locale];
+		if (localizations && Prefs.locale in localizations) {
+			var localization = localizations[Prefs.locale];
 			group.groupName = localization.name;
 		}
 	},
@@ -129,8 +127,8 @@ SubscriptionService.prototype = {
 	_applyFilterLocalization: function (filter, i18nMetadata) {
 		var filterId = filter.filterId;
 		var localizations = i18nMetadata[filterId];
-		if (localizations && Locale in localizations) {
-			var localization = localizations[Locale];
+		if (localizations && Prefs.locale in localizations) {
+			var localization = localizations[Prefs.locale];
 			filter.name = localization.name;
 			filter.description = localization.description;
 		}

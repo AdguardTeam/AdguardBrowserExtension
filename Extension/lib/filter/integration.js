@@ -251,9 +251,9 @@ AdguardApplication.prototype = {
 			// header is either Adguard for Mac or Adguard for Windows
 			// depending on it we use localized product name
 			if (StringUtils.containsIgnoreCase(adguardProductName, "mac")) {
-				result.adguardProductName = i18n.getMessage("adguard_product_mac");
+				result.adguardProductName = adguard.i18n.getMessage("adguard_product_mac");
 			} else {
-				result.adguardProductName = i18n.getMessage("adguard_product_windows");
+				result.adguardProductName = adguard.i18n.getMessage("adguard_product_windows");
 			}
 			result.adguardAppVersion = RegExp.$2;
 			result.integrationMode = this.INTEGRATION_MODE_FULL;

@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Components */
+/* global Components, EventChannels, unload */
 
 (function (global) {
 
@@ -32,6 +32,13 @@
     var NetUtil = global.NetUtil = Cu.import("resource://gre/modules/NetUtil.jsm").NetUtil;
     global.XPCOMUtils = Cu.import("resource://gre/modules/XPCOMUtils.jsm").XPCOMUtils;
     global.FileUtils = Cu.import("resource://gre/modules/FileUtils.jsm").FileUtils;
+
+    // Load custom module
+    var I18nUtils = global.I18nUtils = Cu.import('chrome://adguard/content/lib/utilsModule.js', {}).I18nUtils;
+    // Don't forget unload! https://developer.mozilla.org/en-US/docs/Extensions/Common_causes_of_memory_leaks_in_extensions
+    unload.when(function () {
+        Cu.unload('chrome://adguard/content/lib/utilsModule.js');
+    });
 
     function getQueryVariable(variable) {
         var query = window.location.search.substring(1);
@@ -55,46 +62,53 @@
 
     var adguard = global.adguard = {};
 
-    adguard.extension = (function () {
+    adguard.getURL = function (path) {
+        return 'chrome://adguard/content/' + path.replace(/^\.\//, '');
+    };
 
-        function readURISync(uri) {
+    adguard.loadURL = function (path) {
 
-            var charset = 'UTF-8';
+        var uri = adguard.getURL(path);
 
-            var channel = NetUtil.newChannel(uri, charset, null);
-            var stream = channel.open();
+        var charset = 'UTF-8';
 
-            var count = stream.available();
-            var data = NetUtil.readInputStreamToString(stream, count, {charset: charset});
+        var channel = NetUtil.newChannel(uri, charset, null);
+        var stream = channel.open();
 
-            stream.close();
+        var count = stream.available();
+        var data = NetUtil.readInputStreamToString(stream, count, {charset: charset});
 
-            return data;
-        }
+        stream.close();
 
-        var uri = function (path) {
-            return path.contains(":") ? path : 'chrome://adguard/' + path.replace(/^\.\//, "");
-        };
+        return data;
+    };
+
+    adguard.app = (function () {
+
+        var locale = Cc["@mozilla.org/chrome/chrome-registry;1"].getService(Ci.nsIXULChromeRegistry).getSelectedLocale('global').substring(0, 2).toLowerCase();
 
         var getId = function () {
             return id;
+        };
+
+        var getUrlScheme = function () {
+            return 'chrome';
         };
 
         var getVersion = function () {
             return version;
         };
 
-        var load = function (path) {
-            return readURISync(uri(path));
+        var getLocale = function () {
+            return locale;
         };
 
         return {
             getId: getId,
+            getUrlScheme: getUrlScheme,
             getVersion: getVersion,
-            load: load,
-            url: uri
+            getLocale: getLocale
         };
-
     })();
 
     adguard.runtime = (function () {
@@ -217,70 +231,9 @@
 
     })();
 
-    //(function (global) {
-    //
-    //    var lastTimerId = 1;
-    //    var timers = Object.create(null);
-    //
-    //    var TYPE_ONE_SHOT = Ci.nsITimer.TYPE_ONE_SHOT;
-    //
-    //    function setTimer(type, callback, delay) {
-    //        var id = ++lastTimerId;
-    //        var timer = timers[id] = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
-    //        timer.initWithCallback({
-    //            notify: function () {
-    //                try {
-    //                    if (type === TYPE_ONE_SHOT) {
-    //                        delete timers[id];
-    //                    }
-    //                    callback.apply(null);
-    //                } catch (error) {
-    //                    console.exception(error);
-    //                }
-    //            }
-    //        }, Math.max(delay || 4), type);
-    //        return id;
-    //    }
-    //
-    //    function unsetTimer(id) {
-    //        var timer = timers[id];
-    //        delete timers[id];
-    //        if (timer) {
-    //            timer.cancel();
-    //        }
-    //    }
-    //
-    //    global.setTimeout = setTimer.bind(null, TYPE_ONE_SHOT);
-    //    global.clearTimeout = unsetTimer.bind(null);
-    //
-    //})(global);
-
-    global.i18n = (function () {
-
-        // Randomize URI to work around bug 719376
-        var stringBundle = Services.strings.createBundle('chrome://adguard/locale/messages.properties?' + Math.random());
-
-        function getText(text, args) {
-            if (!text) {
-                return "";
-            }
-            if (args && args.length > 0) {
-                text = text.replace(/\$(\d+)/g, function (match, number) {
-                    return typeof args[number - 1] !== "undefined" ? args[number - 1] : match;
-                });
-            }
-            return text;
-        }
-
+    adguard.i18n = (function () {
         return {
-            getMessage: function (key, args) {
-                try {
-                    return getText(stringBundle.GetStringFromName(key), args);
-                } catch (ex) {
-                    // Key not found, simply return it as a translation
-                    return key;
-                }
-            }
+            getMessage: I18nUtils.getMessage
         };
     })();
 

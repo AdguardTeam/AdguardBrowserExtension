@@ -17,7 +17,7 @@
 
 /* global safari, SafariBrowserTab, RequestTypes, Utils */
 
-(function (global) {
+(function () {
 
 	'use strict';
 
@@ -41,9 +41,15 @@
 						var dispatcher = safariTab.page;
 						var sender = {tab: adguard.tabsImpl.fromSafariTab(safariTab)};
 
-						callback(event.message, sender, function (message) {
+						var sendResponse = function (message) {
 							dispatcher.dispatchMessage("response-" + event.name.substr(8), message);
-						});
+                        };
+                        var response = callback(event.message, sender, sendResponse);
+						var async = response === true;
+						// If async sendResponse will be invoked later
+						if (!async) {
+							sendResponse(response);
+						}
 					}
 				});
 			}
@@ -82,9 +88,7 @@
 	}
 
 	// Extension API for background page
-	var ext = global.ext = {};
-
-	ext.webRequest = {
+	adguard.webRequest = {
 
 		onBeforeRequest: {
 
@@ -161,10 +165,10 @@
 		var messageHandler;
 		switch (event.message.type) {
 			case "safariWebRequest":
-				messageHandler = ext.webRequest.onBeforeRequest;
+				messageHandler = adguard.webRequest.onBeforeRequest;
 				break;
 			case "safariHeadersRequest":
-				messageHandler = ext.webRequest.onHeadersReceived;
+				messageHandler = adguard.webRequest.onHeadersReceived;
 				break;
 			case "useContentBlockerAPI":
 				// checking useOldSafariAPI setting
@@ -174,13 +178,11 @@
 		event.message = messageHandler.processMessage(event.message.data, event.target);
 	}, true);
 
-	ext.getURL = function (path) {
+	adguard.getURL = function (path) {
 		return safari.extension.baseURI + path;
 	};
 
-	window.i18n = ext.i18n = adguard.i18n;
-
-	ext.app = {
+	adguard.app = {
 		/**
 		 * Extension ID
 		 */
@@ -206,23 +208,23 @@
 		 * Extension UI locale
 		 */
 		getLocale: function () {
-			return ext.i18n.getUILanguage();
+			return adguard.i18n.getUILanguage();
 		}
 	};
 
-	ext.backgroundPage = {
+	adguard.backgroundPage = {
 		getWindow: function () {
 			return safari.extension.globalPage.contentWindow;
 		}
 	};
 
-	ext.webNavigation = {
+	adguard.webNavigation = {
 		onCreatedNavigationTarget: emptyListener
 	};
 
 
 	/* Browser actions */
-	ext.browserAction = (function () {
+	adguard.browserAction = (function () {
 
 		function setBrowserAction(safariTab, name, value) {
 			var activeTab = safari.application.activeBrowserWindow.activeTab;
@@ -245,12 +247,15 @@
 					//set badge
 					setBrowserAction(safariTab, "badge", badge);
 				}
+			},
+			setPopup: function () {
+				// Do nothing. Popup is already installed in manifest file
 			}
 		};
 
 	})();
 
-	ext.contextMenus = {
+	adguard.contextMenus = {
 		removeAll: function () {
 			// Empty
 		},

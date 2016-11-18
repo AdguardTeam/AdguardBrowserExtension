@@ -79,7 +79,7 @@
     })();
 
     // I18n implementation
-    global.i18n = adguard.i18n = (function () {
+    adguard.i18n = (function () {
 
         var defaultLocale = 'en';
         var supportedLocales = ['ru', 'en', 'tr', 'uk', 'de', 'pl', 'pt_BR', 'pt_PT', 'ko', 'zh_CN', 'sr', 'fr', 'sk', 'hy', 'es', 'es_419', 'it', 'id'];

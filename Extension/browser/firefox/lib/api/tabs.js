@@ -33,9 +33,9 @@
         return false;
     }
 
-    var getCurrentBrowserWindow = function () {
+    function getCurrentBrowserWindow() {
         return Services.wm.getMostRecentWindow(BROWSER);
-    };
+    }
 
     function activateTab(tab, window) {
         var gBrowser = getTabBrowserForTab(tab);
@@ -54,7 +54,20 @@
     }
 
     function getTabContainer(window) {
-        return getTabBrowser(window).tabContainer;
+        var gBrowser = getTabBrowser(window);
+        return gBrowser ? gBrowser.tabContainer : null;
+    }
+
+    function getAllBrowsers() {
+        var tabs = getTabs();
+        var browsers = [];
+        for (var i = 0; i < tabs.length; i++) {
+            var browser = getBrowserForTab(tabs[i]);
+            if (browser) {
+                browsers.push(browser);
+            }
+        }
+        return browsers;
     }
 
     /**
@@ -66,7 +79,7 @@
         var tabs = [], i;
 
         if (arguments.length === 0) {
-            var windows = adguard.winWatcher.getWindows();
+            var windows = adguard.windowsImpl.getWindows();
             for (i = 0; i < windows.length; i++) {
                 var win = windows[i];
                 if (isBrowser(win)) {
@@ -82,11 +95,14 @@
         }
 
         // firefox - default
-        var children = getTabContainer(window).children;
-        for (i = 0; i < children.length; i++) {
-            var child = children[i];
-            if (!child.closing) {
-                tabs.push(child);
+        var tabContainer = getTabContainer(window);
+        if (tabContainer) {
+            var children = tabContainer.children;
+            for (i = 0; i < children.length; i++) {
+                var child = children[i];
+                if (!child.closing) {
+                    tabs.push(child);
+                }
             }
         }
         return tabs;
@@ -114,7 +130,7 @@
 
     // fennec
     function getWindowHoldingTab(rawTab) {
-        var windows = adguard.winWatcher.getWindows();
+        var windows = adguard.windowsImpl.getWindows();
         for (var i = 0; i < windows.length; i++) {
             var win = windows[i];
             // this function may be called when not using fennec,
@@ -161,9 +177,9 @@
 
     function getURI(tab) {
         if (tab.browser) { // fennec
-            return tab.browser.currentURI.spec;
+            return tab.browser.currentURI.asciiSpec;
         }
-        return tab.linkedBrowser.currentURI.spec;
+        return tab.linkedBrowser.currentURI.asciiSpec;
     }
 
     function getTabTitle(tab) {
@@ -211,18 +227,20 @@
 
     function getTabForBrowser(browser) {
 
-        var windows = adguard.winWatcher.getWindows();
-        for (var i = 0; i < windows.length; i++) {
-            var win = windows[i];
-            // this function may be called when not using fennec
-            if (!win.BrowserApp) {
-                continue;
-            }
-            var tabs = win.BrowserApp.tabs;
-            for (var j = 0; j < tabs.length; j++) {
-                var tab = tabs[j];
-                if (tab.browser === browser) {
-                    return tab;
+        if (isFennec) {
+            var windows = adguard.windowsImpl.getWindows();
+            for (var i = 0; i < windows.length; i++) {
+                var win = windows[i];
+                // this function may be called when not using fennec
+                if (!win.BrowserApp) {
+                    continue;
+                }
+                var tabs = win.BrowserApp.tabs;
+                for (var j = 0; j < tabs.length; j++) {
+                    var tab = tabs[j];
+                    if (tab.browser === browser) {
+                        return tab;
+                    }
                 }
             }
         }
@@ -246,7 +264,7 @@
         return tabbrowser.tabs[index];
     }
 
-    adguard.winWatcher = adguard.windowsImpl = (function () {
+    adguard.windowsImpl = (function () {
 
         var windowsIdMap = new Map();
         var nextWindowId = 1;
@@ -421,14 +439,6 @@
             //TODO: implement
         };
 
-        var getAll = function (callback) {
-            var metadata = [];
-            windowsIdMap.forEach(function (windowId, win) {
-                metadata.push([toWindowFromChromeWindow(windowId, win), win]);
-            });
-            callback(metadata);
-        };
-
         var getLastFocused = function (callback) {
             var win = getCurrentBrowserWindow();
             if (!win) {
@@ -451,17 +461,23 @@
             return result;
         };
 
+        var forEachNative = function (callback) {
+            windowsIdMap.forEach(function (windowId, win) {
+                callback(win, toWindowFromChromeWindow(windowId, win));
+            });
+        };
+
         return {
-            onCreated: onCreatedChannel,
-            onRemoved: onRemovedChannel,
-            onUpdated: onUpdatedChannel,
+
+            onCreated: onCreatedChannel, // callback (adguardWin, nativeWin)
+            onRemoved: onRemovedChannel, // callback (windowId, nativeWin)
+            onUpdated: onUpdatedChannel, // callback (adguardWin, nativeWin, type)
 
             create: create,
-            getAll: getAll,
-            getLastFocused: getLastFocused,
+            getLastFocused: getLastFocused, // callback (windowId, nativeWin)
+            forEachNative: forEachNative,   // callback (nativeWin, adguardWin)
 
             getWindows: getWindows,
-            getCurrentBrowserWindow: getCurrentBrowserWindow,
             getOwnerWindow: getOwnerWindow
         };
     })();
@@ -494,7 +510,7 @@
         // https://developer.mozilla.org/ru/docs/Web/Events
         function onTabEvent(event) {
 
-            var tabId, xulTab, browser;
+            var tabId, xulTab;
 
             switch (event.type) {
                 case 'TabShow':
@@ -514,22 +530,6 @@
                 case 'activate': // window event
                     getActive(onActivatedChannel.notify);
                     break;
-                case 'DOMContentLoaded':
-                case 'DOMTitleChanged':
-                case 'load':
-                case 'pageshow':
-                    if (event.target instanceof Ci.nsIDOMHTMLDocument) {
-                        var win = event.target.defaultView;
-                        if (win === win.top) {
-                            xulTab = getTabForContentWindow(win);
-                            if (!xulTab) {
-                                return;
-                            }
-                            browser = getBrowserForTab(xulTab);
-                            onUpdatedChannel.notify(toTabFromXulTab(xulTab, 'complete'));
-                        }
-                    }
-                    break;
             }
         }
 
@@ -548,12 +548,7 @@
                 tabContainer.addEventListener('TabSelect', onTabEvent, false);
             }
 
-            tabBrowser.addEventListener('load', onTabEvent, true);
-
             win.addEventListener('activate', onTabEvent, false);
-            win.addEventListener('DOMContentLoaded', onTabEvent, false);
-            win.addEventListener('DOMTitleChanged', onTabEvent, false);
-            win.addEventListener('pageshow', onTabEvent, false);
 
             var tabs = getTabs(win);
             for (var i = 0; i < tabs.length; i++) {
@@ -576,34 +571,23 @@
                 tabContainer.removeEventListener('TabSelect', onTabEvent, false);
             }
 
-            tabBrowser.removeEventListener('load', onTabEvent, true);
-
             win.removeEventListener('activate', onTabEvent, false);
-            win.removeEventListener('DOMContentLoaded', onTabEvent, false);
-            win.removeEventListener('DOMTitleChanged', onTabEvent, false);
-            win.removeEventListener('pageshow', onTabEvent, false);
         }
 
         // Initialize with currently opened windows
-        var windows = adguard.winWatcher.getWindows();
-        for (var i = 0; i < windows.length; i++) {
-            onTabBrowserInitialized(windows[i]);
-        }
+        adguard.windowsImpl.forEachNative(onTabBrowserInitialized);
 
-        adguard.winWatcher.onUpdated.addListener(function (win, domWin, type) {
-            if (type === 'TabBrowserReady') {
+        adguard.windowsImpl.onUpdated.addListener(function (adgWin, domWin, event) {
+            if (event === 'TabBrowserReady') {
                 onTabBrowserInitialized(domWin);
             }
         });
-        adguard.winWatcher.onRemoved.addListener(function (win, domWin) {
+        adguard.windowsImpl.onRemoved.addListener(function (windowId, domWin) {
             detachFromTabBrowser(domWin);
         });
 
         unload.when(function () {
-            var windows = adguard.winWatcher.getWindows();
-            for (var i = 0; i < windows.length; i++) {
-                detachFromTabBrowser(windows[i]);
-            }
+            adguard.windowsImpl.forEachNative(detachFromTabBrowser);
         });
 
         function isPrivate(xulTab) {
@@ -646,6 +630,15 @@
         function getTabById(tabId) {
             return tabsLookup[tabId];
         }
+
+        var onTabUpdated = function (xulTab, changeInfo) {
+            onUpdatedChannel.notify({
+                tabId: getTabId(xulTab),
+                url: changeInfo.url || getURI(xulTab),
+                title: changeInfo.title || getTabTitle(xulTab),
+                status: changeInfo.status || 'loading'
+            });
+        };
 
         // API functions
 
@@ -821,7 +814,9 @@
 
             getTabIdForTab: getTabId,
             getTabForBrowser: getTabForBrowser,
-            getTabForContentWindow: getTabForContentWindow
+            getTabForContentWindow: getTabForContentWindow,
+            onTabUpdated: onTabUpdated,
+            browsers: getAllBrowsers
         };
 
     })();

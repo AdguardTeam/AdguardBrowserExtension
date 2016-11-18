@@ -1,4 +1,3 @@
-/* global Components, XPCOMUtils */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -16,28 +15,33 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Components */
+
 /**
  * Adguard's frame script.
- * 
+ *
  * This script implements our "content scripts" logic.
  * 1. Injects content scripts to common web pages and to our add-on pages.
  * 2. Manages communication between "chrome" process and content scripts.
- * 
+ *
  * Note that frame script is not the same as a content script in Chromium.
  * Frame script works in context of a browser tab, not a "document" or "window".
- * 
+ *
  * https://developer.mozilla.org/ru/Firefox/Multiprocess_Firefox/Technical_overview#Frame_scripts
  * https://developer.mozilla.org/ru/Firefox/Multiprocess_Firefox/Limitations_of_frame_scripts
  */
+
 (function (context) {
+
     'use strict';
 
     /**
      * This script is registered by "loadFrameScript" everywhere.
      * It decides whether we should load our content scripts to the loaded DOMWindow.
      */
-    var {classes: Cc, interfaces: Ci, utils: Cu} = Components;
-    var Services = Cu.import("resource://gre/modules/Services.jsm", {}).Services;
+    var {classes: Cc, interfaces: Ci, utils: Cu} = Components; // jshint ignore:line
+    var Services = Cu.import("resource://gre/modules/Services.jsm").Services;
+    var XPCOMUtils = Cu.import('resource://gre/modules/XPCOMUtils.jsm').XPCOMUtils;
 
     // Used for sandbox creation
     var nextSandboxId = 0;
@@ -65,10 +69,10 @@
         context.addMessageListener('Adguard:on-message-channel', onMessageFromChrome);
 
         return {
-            
+
             /**
              * Adds event listener. This function is exposed to a content script.
-             * 
+             *
              * @param win       DOM window
              * @param listener  Listener for events sent from the chrome process
              */
@@ -80,10 +84,10 @@
                 }
                 winListeners.push(listener);
             },
-            
+
             /**
              * Called on window unload
-             * 
+             *
              * @param win DOM window
              */
             onWindowUnload: function (win) {
@@ -91,7 +95,7 @@
                     listeners.delete(win);
                 }
             },
-            
+
             /**
              * Called on frame script unload
              */
@@ -103,7 +107,7 @@
     })();
 
     /**
-     * Object that manages communication FROM a content script TO the chrome process.  
+     * Object that manages communication FROM a content script TO the chrome process.
      */
     var contentScriptMessageListener = (function () {
 
@@ -142,13 +146,13 @@
 
         /**
          * Sends a message to the chrome process
-         * 
+         *
          * @param message   Message to send
          * @param callback  (optional) Method to be called when response is received
          */
         function sendMessage(message, callback) {
             bindResponseCallback(message, callback);
-            
+
             // For debug purposes (we now use synchronous messages only)
             if (message.async === true) {
                 context.sendAsyncMessage(MSG_CHANNEL, message);
@@ -163,19 +167,19 @@
         }
 
         return {
-            
+
             /**
              * This function will be exposed to a content script
              */
             sendMessage: sendMessage,
-            
+
             /**
              * Called on specific window unload
              */
             onWindowUnload: function () {
                 // Do nothing
             },
-            
+
             /**
              * Called on frame script unload
              */
@@ -188,7 +192,7 @@
 
     /**
      * Injects content scripts to the specified window
-     * 
+     *
      * @param runAt     When to run the specified script. Can be document_start or document_end.
      * @param win       DOM window
      */
@@ -284,7 +288,7 @@
 
     /**
      * Runs the content script inside the specified sandbox
-     * 
+     *
      * @param script    Content script object (contains a list of different scripts)
      * @param sandbox   Sandbox for an actual window
      */
@@ -307,11 +311,13 @@
         // Remove event listeners
         win.removeEventListener('DOMContentLoaded', onDocumentEnd, true);
         injectScripts('document_end', win);
+
+        tabsObserver.onBrowserLoad();
     };
 
     /**
      * Called on "document-element-inserted" event."
-     * 
+     *
      * @param win DOM window
      */
     var onDocumentStart = function (win) {
@@ -323,10 +329,10 @@
 
     /**
      * Object that wraps nsiObserver and handles observer notifications.
-     * 
+     *
      * We use it for handling "document-element-inserted" event:
      * https://developer.mozilla.org/en/docs/Observer_Notifications
-     * 
+     *
      * We can't simply use DOMWindowCreated event as all content scripts need a "document" to be executed.
      */
     var documentObserver = (function () {
@@ -364,14 +370,14 @@
         return {
             /**
              * Called when new document element was just created
-             * 
+             *
              * @param topWindow Top window object
              * @param callback  Method called when document element was just created
              */
             onNewDocument: function (topWindow, callback) {
                 callbacks.set(topWindow, callback);
             },
-            
+
             /**
              * Called on frame script unload
              */
@@ -386,7 +392,7 @@
      * Called on DOMWindowCreated event.
      */
     var onWindowCreated = function () {
-        
+
         // Registering a callback when DOM window was just created.
         documentObserver.onNewDocument(context.content, onDocumentStart);
     };
@@ -412,7 +418,39 @@
         documentObserver.unload();
         chromeMessageListener.unload();
         contentScriptMessageListener.unload();
+        tabsObserver.unregister();
     };
+
+    // Tab Location change listener
+    var tabsObserver = (function (context) {
+
+        function onTabUpdated(details) {
+            context.sendAsyncMessage('Adguard:tab-updated', details);
+        }
+
+        function onBrowserTitleChanged(e) {
+            onTabUpdated({title: e.target.title});
+        }
+
+        var register = function () {
+            context.addEventListener('DOMTitleChanged', onBrowserTitleChanged);
+        };
+
+        var unregister = function () {
+            context.removeEventListener('DOMTitleChanged', onBrowserTitleChanged);
+        };
+
+        var onBrowserLoad = function () {
+            onTabUpdated({status: 'complete'});
+        };
+
+        return {
+            register: register,
+            unregister: unregister,
+            onBrowserLoad: onBrowserLoad
+        };
+
+    })(context);
 
     /**
      * Entry point
@@ -431,12 +469,49 @@
             response = cpmm.sendSyncMessage('Adguard:initialize-frame-script');
             registeredScripts = response[0].scripts;
             i18nMessages = response[0].i18nMessages;
-        }        
+        }
         context.addEventListener('DOMWindowCreated', onWindowCreated);
 
         // Prepare to clean up on frame script unload
         context.addEventListener('unload', onUnload);
+
+        tabsObserver.register();
     };
 
     initFrameScript();
+
+    (function (context) {
+
+        // https://developer.mozilla.org/en-US/Firefox/Multiprocess_Firefox/Frame_script_environment
+
+        if (!context.docShell) {
+            return;
+        }
+
+        var webProgress = context.docShell
+            .QueryInterface(Ci.nsIInterfaceRequestor)
+            .getInterface(Ci.nsIWebProgress);
+
+        if (!webProgress) {
+            return;
+        }
+
+        // Fix?
+        var domWindow = webProgress.DOMWindow;
+        if (domWindow !== domWindow.top) {
+            return;
+        }
+
+        // Load frameModule and register contentPolicyService
+        // Code in frameModule is loaded only once.
+        // TODO: Look for https://developer.mozilla.org/en-US/Firefox/Multiprocess_Firefox/Message_Manager/Process_scripts in future
+        var LocationChangeListener = Cu.import('chrome://adguard/content/lib/frameModule.js').LocationChangeListener;
+
+        context.locationChangeListener = new LocationChangeListener(
+            context.docShell,
+            webProgress
+        );
+
+    })(context);
+
 })(this);

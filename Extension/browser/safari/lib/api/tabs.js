@@ -85,16 +85,13 @@ adguard.windowsImpl = (function () {
         callback(toWindowFromSafariWindow(windowId), safariWindow);
     };
 
-    var getAll = function (callback) {
-        var metadata = [];
+    var forEachNative = function (callback) {
         var safariWindows = safari.application.browserWindows;
         for (var i = 0; i < safariWindows.length; i++) {
             var safariWindow = safariWindows[i];
             var windowId = getOrCreateWindowId(safariWindow);
-            metadata.push([toWindowFromSafariWindow(windowId), safariWindow]);
+            callback(safariWindow, toWindowFromSafariWindow(windowId));
         }
-
-        callback(metadata);
     };
 
     var getLastFocused = function (callback) {
@@ -107,13 +104,14 @@ adguard.windowsImpl = (function () {
 
     return {
 
-        onCreated: onCreatedChannel,
-        onRemoved: onRemovedChannel,
-        onUpdated: onUpdatedChannel,
+        onCreated: onCreatedChannel, // callback (adguardWin, nativeWin)
+        onRemoved: onRemovedChannel, // callback (windowId)
+        onUpdated: onUpdatedChannel, // empty
 
         create: create,
-        getAll: getAll,
-        getLastFocused: getLastFocused
+        getLastFocused: getLastFocused,
+
+        forEachNative: forEachNative
     };
 
 })();

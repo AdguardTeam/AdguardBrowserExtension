@@ -51,15 +51,13 @@ adguard.windowsImpl = (function () {
         });
     };
 
-    var getAll = function (callback) {
+    var forEachNative = function (callback) {
         // https://developer.chrome.com/extensions/windows#method-getAll
         browser.windows.getAll(function (chromeWins) {
-            var metadata = [];
             for (var i = 0; i < chromeWins.length; i++) {
                 var chromeWin = chromeWins[i];
-                metadata.push([toWindowFromChromeWindow(chromeWin), chromeWin]);
+                callback(chromeWin, toWindowFromChromeWindow(chromeWin));
             }
-            callback(metadata);
         });
     };
 
@@ -72,13 +70,14 @@ adguard.windowsImpl = (function () {
 
     return {
 
-        onCreated: onCreatedChannel,
-        onRemoved: onRemovedChannel,
-        onUpdated: onUpdatedChannel,
+        onCreated: onCreatedChannel, // callback (adguardWin, nativeWin)
+        onRemoved: onRemovedChannel, // callback (windowId)
+        onUpdated: onUpdatedChannel, // empty
 
         create: create,
-        getAll: getAll,
-        getLastFocused: getLastFocused
+        getLastFocused: getLastFocused,
+
+        forEachNative: forEachNative
     };
 
 })();

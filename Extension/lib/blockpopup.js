@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global ext, framesMap, UrlUtils, RequestTypes, webRequestService */
+/* global framesMap, UrlUtils, RequestTypes, webRequestService */
 
 (function () {
 
@@ -42,7 +42,7 @@
 		}
 	}
 
-	ext.webNavigation.onCreatedNavigationTarget.addListener(function (details) {
+	adguard.webNavigation.onCreatedNavigationTarget.addListener(function (details) {
 
 		var sourceTab = {tabId: details.sourceTabId};
 

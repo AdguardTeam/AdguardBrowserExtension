@@ -36,9 +36,7 @@ if (window.top === window && document.documentElement instanceof HTMLElement) {
                 }
                 var selectedElement;
                 var options = message.options;
-                if (options.cssSelector) {
-                    selectedElement = document.querySelector(options.cssSelector);
-                } else if (clickedEl && options.selectElement) {
+                if (clickedEl && options.selectElement) {
                     selectedElement = clickedEl;
                 }
                 adguardAssistant.init({selectedElement: selectedElement});

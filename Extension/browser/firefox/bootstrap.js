@@ -23,13 +23,12 @@ function startup(data, reason) {
         return;
     }
 
-    var id = data.id;
-    var version = data.version;
-
-    // Already started?
     if (bgProcess !== null) {
         return;
     }
+
+    var id = data.id;
+    var version = data.version;
 
     var appShell = Cc['@mozilla.org/appshell/appShellService;1'].getService(Ci.nsIAppShellService);
 
@@ -58,37 +57,34 @@ function startup(data, reason) {
         return;
     }
 
-    var timer = Cc['@mozilla.org/timer;1'].createInstance(Ci.nsITimer);
-    var observer = {
-        observe: function () {
-            timer.cancel();
-            if (checkDocumentReady()) {
-                timer = null;
-            } else {
-                setTimeoutCheckDocumentReady();
-            }
-        }
-    };
+    var Timers = Cu.import('chrome://adguard/content/lib/utilsModule.js', {}).Timers;
 
     var timeout = 5;
     var triesCount = 0;
     var triesMax = 100000;
 
     var setTimeoutCheckDocumentReady = function () {
+
+        if (checkDocumentReady()) {
+            Timers.clearTimeout(timerId);
+            return;
+        }
+
         triesCount++;
         if (triesCount >= triesMax) {
-            timer = null;
+            Timers.clearTimeout(timerId);
             console.error('Adguard addon: Could not initialize document');
             return;
         }
-        timer.init(observer, timeout, timer.TYPE_ONE_SHOT);
+
         timeout *= 2;
-        if (timeout > 503) {
-            timeout = 503;
+        if (timeout > 500) {
+            timeout = 500;
         }
+        timerId = Timers.setTimeout(setTimeoutCheckDocumentReady, timeout);
     };
 
-    setTimeoutCheckDocumentReady();
+    var timerId = Timers.setTimeout(setTimeoutCheckDocumentReady, timeout);
 }
 
 // https://developer.mozilla.org/en-US/Add-ons/Bootstrapped_extensions#shutdown
@@ -104,6 +100,8 @@ function shutdown(data, reason) {
         bgProcess.parentNode.removeChild(bgProcess);
         bgProcess = null;
     }
+
+    Cu.unload('chrome://adguard/content/lib/utilsModule.js');
 }
 
 // https://developer.mozilla.org/en-US/Add-ons/Bootstrapped_extensions#install
@@ -143,7 +141,7 @@ function uninstall(data, reason) {
  */
 function cleanPrefs(id) {
     var branch = 'extensions.' + id + '.';
-    var Services = Components.utils.import('resource://gre/modules/Services.jsm', null).Services;
+    var Services = Components.utils.import('resource://gre/modules/Services.jsm').Services;
     Services.prefs.getBranch(branch).deleteBranch('');
     console.log('Adguard addon preferences in branch ' + branch + ' were removed.');
 }

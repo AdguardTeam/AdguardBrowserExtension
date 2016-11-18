@@ -139,7 +139,7 @@ SafebrowsingFilter.prototype = {
     getErrorPageURL: function (requestUrl, referrerUrl, sbList) {
         var listName = sbList || "malware";
         var isMalware = StringUtils.contains(listName, "malware");
-        var url = Prefs.safebrowsingPagePath;
+        var url = 'pages/sb.html';
         url += "?malware=" + isMalware;
         url += "&host=" + encodeURIComponent(UrlUtils.getHost(requestUrl));
         url += "&url=" + encodeURIComponent(requestUrl);

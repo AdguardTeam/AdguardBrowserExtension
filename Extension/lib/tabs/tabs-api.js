@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global EventChannels */
+
 (function (adguard) {
 
     'use strict';
@@ -32,19 +34,19 @@
 
             return {
 
-                onCreated: emptyListener,
-                onRemoved: emptyListener,
-                onUpdated: emptyListener,
+                onCreated: emptyListener, // callback (adguardWin, nativeWin)
+                onRemoved: emptyListener, // callback (windowId, nativeWin)
+                onUpdated: emptyListener, // callback (adguardWin, nativeWin, type) (Defined only for Firefox)
 
                 create: noOpFunc,
-                getAll: noOpFunc,
-                getLastFocused: noOpFunc
+                getLastFocused: noOpFunc, // callback (windowId, nativeWin)
+                forEachNative: noOpFunc // callback (nativeWin, adguardWin)
             };
         });
 
     adguard.windows = (function (windowsImpl) {
 
-        var AdguardWin = {
+        var AdguardWin = { // jshint ignore:line
             windowId: 1,
             type: 'normal' // 'popup'
         };
@@ -52,38 +54,25 @@
         function noOpFunc() {
         }
 
-        var windowsMetadata = Object.create(null); // windowId => [AdguardWin, NativeWin]
+        var adguardWindows = Object.create(null); // windowId => AdguardWin
 
-        windowsImpl.getAll(function (aWindowsMetadata) {
-            for (var i = 0; i < aWindowsMetadata.length; i++) {
-                var metadata = aWindowsMetadata[i];
-                windowsMetadata[metadata[0].windowId] = metadata;
-            }
+        windowsImpl.forEachNative(function (nativeWin, adguardWin) {
+            adguardWindows[adguardWin.windowId] = adguardWin;
         });
 
         var onCreatedChannel = EventChannels.newChannel();
         var onRemovedChannel = EventChannels.newChannel();
-        var onUpdatedChannel = EventChannels.newChannel();
 
-        windowsImpl.onCreated.addListener(function (win, nativeWin) {
-            windowsMetadata[win.windowId] = [win, nativeWin];
-            onCreatedChannel.notify(win, nativeWin);
-        });
-
-        windowsImpl.onUpdated.addListener(function (win, nativeWin, eventType) {
-            var metadata = windowsMetadata[win.windowId];
-            if (metadata) {
-                metadata[0].type = win.type;
-                metadata[1] = nativeWin;
-                onUpdatedChannel.notify(metadata[0], metadata[1], eventType);
-            }
+        windowsImpl.onCreated.addListener(function (adguardWin) {
+            adguardWindows[adguardWin.windowId] = adguardWin;
+            onCreatedChannel.notify(adguardWin);
         });
 
         windowsImpl.onRemoved.addListener(function (windowId) {
-            var metadata = windowsMetadata[windowId];
-            if (metadata) {
-                onRemovedChannel.notify(metadata[0], metadata[1]);
-                delete windowsMetadata[windowId];
+            var adguardWin = adguardWindows[windowId];
+            if (adguardWin) {
+                onRemovedChannel.notify(adguardWin);
+                delete adguardWindows[windowId];
             }
         });
 
@@ -91,63 +80,22 @@
             windowsImpl.create(createData, callback || noOpFunc);
         };
 
-        var getAll = function (callback) {
-
-            windowsImpl.getAll(function (aWindowsMetadata) {
-
-                var wins = [];
-                var nativeWins = [];
-
-                for (var i = 0; i < aWindowsMetadata.length; i++) {
-                    var aMetadata = aWindowsMetadata[i];
-                    var windowId = aMetadata[0].windowId;
-                    var metadata = windowsMetadata[windowId];
-                    if (!metadata) {
-                        windowsMetadata[windowId] = metadata = aMetadata;
-                    }
-                    wins.push(metadata[0]);
-                    nativeWins.push(metadata[1]);
-                }
-
-                callback(wins, nativeWins);
-            });
-        };
-
-        var forEach = function (callback) {
-
-            windowsImpl.getAll(function (aWindowsMetadata) {
-                for (var i = 0; i < aWindowsMetadata.length; i++) {
-                    var aMetadata = aWindowsMetadata[i];
-                    var windowId = aMetadata[0].windowId;
-                    var metadata = windowsMetadata[windowId];
-                    if (!metadata) {
-                        windowsMetadata[windowId] = metadata = aMetadata;
-                    }
-                    callback(metadata[0], metadata[1]);
-                }
-            });
-
-        };
-
         var getLastFocused = function (callback) {
             windowsImpl.getLastFocused(function (windowId) {
-                var metadata = windowsMetadata[windowId];
+                var metadata = adguardWindows[windowId];
                 if (metadata) {
-                    callback(metadata[0], metadata[1]);
+                    callback(metadata[0]);
                 }
             });
         };
 
         return {
 
-            onCreated: onCreatedChannel,
-            onRemoved: onRemovedChannel,
-            onUpdated: onUpdatedChannel,
+            onCreated: onCreatedChannel,    // callback(adguardWin)
+            onRemoved: onRemovedChannel,    // callback(adguardWin)
 
             create: create,
-            getAll: getAll,
-            forEach: forEach,
-            getLastFocused: getLastFocused
+            getLastFocused: getLastFocused // callback (adguardWin)
         };
 
     })(adguard.windowsImpl);
@@ -183,7 +131,7 @@
 
     adguard.tabs = (function (tabsImpl) {
 
-        var AdguardTab = {
+        var AdguardTab = { // jshint ignore:line
             tabId: 1,
             url: 'url',
             title: 'Title',
@@ -193,7 +141,7 @@
             metadata: null  // Contains info about integration, white list rule is applied to tab.
         };
 
-        var AdguardTabFrame = {
+        var AdguardTabFrame = { // jshint ignore:line
             frameId: 1,
             url: 'url',
             domainName: 'domainName'
@@ -329,7 +277,7 @@
         };
 
         // Records tab's frame
-        var recordTabFrame = function (tabId, frameId, url) {
+        var recordTabFrame = function (tabId, frameId, url, domainName) {
             var tab = tabs[tabId];
             if (tab) {
                 if (!tab.frames) {
@@ -337,7 +285,7 @@
                 }
                 tab.frames[frameId] = {
                     url: url,
-                    domainName: UrlUtils.getDomainName(url)
+                    domainName: domainName
                 };
             }
         };

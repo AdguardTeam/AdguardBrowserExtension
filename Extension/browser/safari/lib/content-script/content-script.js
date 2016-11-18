@@ -319,4 +319,7 @@
         onMessage: adguard.runtime.onMessage
     };
 
+    // Make i18n global
+    global.i18n = adguard.i18n;
+
 })(window, adguard);

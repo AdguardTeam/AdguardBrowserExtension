@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global Ci, Services */
+/* global Ci, Services, Log, ConcurrentUtils, FS, Prefs, styleService, EventNotifier, EventNotifierTypes, userSettings, framesMap, filterRulesHitCount, antiBannerService, FilterUtils */
 
 /**
  * This object manages CSS and JS rules.
@@ -27,7 +27,6 @@ var ElemHide = {
 
     collapsedClass: null,
     collapseStyle: null,
-    nodesToCollapse: null,
 
     /**
      * Init ElemHide object
@@ -96,69 +95,84 @@ var ElemHide = {
         return userSettings.collectHitsCount() || Prefs.useGlobalStyleSheet;
     },
 
-    /**
-     * Collapses specified node.
-     * This method is used from contentPolicy.js
-     *
-     * @param node Node
-     */
-    collapseNode: function (node) {
-        if (Prefs.collapseByContentScript) {
-            return;
+    shouldCollapseElement: function (tabId, cssPath) {
+
+        if (!tabId) {
+            return false;
         }
 
-        if (this.nodesToCollapse) {
-            this.nodesToCollapse.push(node);
-        } else {
-            this.nodesToCollapse = [node];
-            ConcurrentUtils.runAsync(this._hideNodes, this);
-        }
-    },
+        var tab = {tabId: tabId};
 
-    /**
-     * Hides nodes from "nodesToCollapse" field
-     *
-     *
-     * @private
-     */
-    _hideNodes: function () {
+        if (framesMap.isTabAdguardDetected(tab) ||
+            framesMap.isTabProtectionDisabled(tab) ||
+            framesMap.isTabWhiteListed(tab)) {
 
-        var nodes = this.nodesToCollapse;
-        this.nodesToCollapse = null;
-
-        if (!nodes) {
-            return;
+            return false;
         }
 
-        for (var i = 0; i < nodes.length; i++) {
-            var node = nodes[i];
-            var parentNode = node.parentNode;
-            if (parentNode && parentNode instanceof Ci.nsIDOMHTMLFrameSetElement) {
-                // It's not that simple to collapse frame node without breaking page layout
-                // We should also change the parent node.
-                var hasCols = (parentNode.cols && parentNode.cols.indexOf(",") > 0);
-                var hasRows = (parentNode.rows && parentNode.rows.indexOf(",") > 0);
-                if ((hasCols || hasRows) && !(hasCols && hasRows)) {
-                    var index = -1;
-                    for (var frame = node; frame; frame = frame.previousSibling) {
-                        if (frame instanceof Ci.nsIDOMHTMLFrameElement ||
-                            frame instanceof Ci.nsIDOMHTMLFrameSetElement) {
-                            index++;
-                        }
-                    }
+        if (this._isElemHideWhiteListed(tab)) {
+            return false;
+        }
 
-                    var property = (hasCols ? "cols" : "rows");
-                    var weights = parentNode[property].split(",");
-                    weights[index] = "0";
-                    parentNode[property] = weights.join(",");
-                }
-            } else {
-                // Add "collapsedClass" to node's class list
-                if (node.classList) {
-                    node.classList.add(this.collapsedClass);
+        var rule = this._getRuleByText(cssPath);
+        if (rule) {
+            var domain = framesMap.getFrameDomain(tab);
+            if (!rule.isPermitted(domain)) {
+                return false;
+            }
+
+            // Rules without domain should be ignored if there is a $generichide rule applied
+            if (this._isGenericHideWhiteListed(tab) && rule.isGeneric()) {
+                return false;
+            }
+
+            // Track filter rule usage if user has enabled "collect ad filters usage stats"
+            if (filterRulesHitCount.collectStatsEnabled) {
+                if (!FilterUtils.isUserFilterRule(rule) && !framesMap.isIncognitoTab(tab)) {
+                    filterRulesHitCount.addRuleHit(domain, rule.ruleText, rule.filterId);
                 }
             }
         }
+
+        return true;
+    },
+
+    _isElemHideWhiteListed: function (tab) {
+        var elemHideWhiteListRule = adguard.tabs.getTabMetadata(tab.tabId, 'elemHideWhiteListRule');
+        if (elemHideWhiteListRule || elemHideWhiteListRule === false) {
+            return elemHideWhiteListRule;
+        }
+        var frame = adguard.tabs.getTabFrame(tab.tabId);
+        if (frame) {
+            elemHideWhiteListRule = antiBannerService.getRequestFilter().findWhiteListRule(frame.url, frame.url, "ELEMHIDE");
+            adguard.tabs.updateTabMetadata(tab.tabId, {
+                elemHideWhiteListRule: elemHideWhiteListRule || false
+            });
+        }
+    },
+
+    _isGenericHideWhiteListed: function (tab) {
+        var genericHideWhiteListRule = adguard.tabs.getTabMetadata(tab.tabId, 'genericHideWhiteListRule');
+        if (genericHideWhiteListRule || genericHideWhiteListRule === false) {
+            return genericHideWhiteListRule;
+        }
+        var frame = adguard.tabs.getTabFrame(tab.tabId);
+        if (frame) {
+            genericHideWhiteListRule = antiBannerService.getRequestFilter().findWhiteListRule(frame.url, frame.url, "GENERICHIDE");
+            adguard.tabs.updateTabMetadata(tab.tabId, {
+                genericHideWhiteListRule: genericHideWhiteListRule || false
+            });
+        }
+    },
+
+    _getRuleByText: function (path) {
+        var index = path.lastIndexOf('?');
+        if (index > 0) {
+            var key = path.substring(index + 1);
+            var rule = antiBannerService.getRequestFilter().cssFilter.getRuleForKey(key);
+            return rule ? rule : null;
+        }
+        return null;
     },
 
     /**
@@ -181,7 +195,7 @@ var ElemHide = {
      * @private
      */
     _registerSelectorStyle: function () {
-        this.selectorStyle = Services.io.newURI("data:text/css," + encodeURIComponent(adguard.extension.load('content/content-script/assistant/css/selector.css')), null, null);
+        this.selectorStyle = Services.io.newURI("data:text/css," + encodeURIComponent(adguard.loadURL('lib/content-script/assistant/css/selector.css')), null, null);
         this._applyCssStyleSheet(this.selectorStyle);
         Log.info("Adguard addon: Selector style registered successfully");
     },
@@ -231,3 +245,5 @@ var ElemHide = {
         }
     }
 };
+
+ElemHide.init();

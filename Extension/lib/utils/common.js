@@ -332,36 +332,97 @@ StopWatch.prototype = {
     }
 };
 
+var ConcurrentUtils = {
+
+    runAsync: function (callback, context) {
+        var params = Array.prototype.slice.call(arguments, 2);
+        setTimeout(function () {
+            callback.apply(context, params);
+        }, 0);
+    },
+
+    retryUntil: function (predicate, main, details) {
+
+        if (typeof details !== 'object') {
+            details = {};
+        }
+
+        var now = 0;
+        var next = details.next || 200;
+        var until = details.until || 2000;
+
+        var check = function () {
+            if (predicate() === true || now >= until) {
+                main();
+                return;
+            }
+            now += next;
+            setTimeout(check, next);
+        };
+
+        setTimeout(check, 1);
+    }
+};
+
 var EventChannels = (function () {
 
     'use strict';
 
     var EventChannel = function () {
 
-        var listeners = [];
+        var listeners = null;
+        var listenerCallback = null;
 
         var addListener = function (callback) {
-            listeners.push(callback);
+            if (typeof callback !== 'function') {
+                throw new Error('Illegal callback');
+            }
+            if (listeners !== null) {
+                listeners.push(callback);
+                return;
+            }
+            if (listenerCallback !== null) {
+                listeners = [];
+                listeners.push(listenerCallback);
+                listeners.push(callback);
+                listenerCallback = null;
+            } else {
+                listenerCallback = callback;
+            }
         };
 
         var removeListener = function (callback) {
-            var index = listeners.indexOf(callback);
-            if (index >= 0) {
-                listeners.splice(index, 1);
+            if (listenerCallback !== null) {
+                listenerCallback = null;
+            } else {
+                var index = listeners.indexOf(callback);
+                if (index >= 0) {
+                    listeners.splice(index, 1);
+                }
             }
         };
 
         var notify = function () {
-            for (var i = 0; i < listeners.length; i++) {
-                var listener = listeners[i];
-                listener.apply(listener, arguments);
+            if (listenerCallback !== null) {
+                return listenerCallback.apply(listenerCallback, arguments);
+            }
+            if (listeners !== null) {
+                for (var i = 0; i < listeners.length; i++) {
+                    var listener = listeners[i];
+                    listener.apply(listener, arguments);
+                }
             }
         };
 
         var notifyInReverseOrder = function () {
-            for (var i = listeners.length - 1; i >= 0; i--) {
-                var listener = listeners[i];
-                listener.apply(listener, arguments);
+            if (listenerCallback !== null) {
+                return listenerCallback.apply(listenerCallback, arguments);
+            }
+            if (listeners !== null) {
+                for (var i = listeners.length - 1; i >= 0; i--) {
+                    var listener = listeners[i];
+                    listener.apply(listener, arguments);
+                }
             }
         };
 

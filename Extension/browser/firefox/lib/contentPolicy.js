@@ -767,7 +767,7 @@ var WebRequestImpl = {
         var incognitoTab = framesMap.isIncognitoTab(tab);
 
         antiBannerService.getRequestFilter().checkSafebrowsingFilter(requestUrl, referrerUrl, function (safebrowsingUrl) {
-            adguard.tabs.reload(tab.tabId, "chrome://adguard/content/" + safebrowsingUrl);
+            adguard.tabs.reload(tab.tabId, safebrowsingUrl);
         }, incognitoTab);
     },
 
@@ -780,7 +780,7 @@ var WebRequestImpl = {
      */
     _collapseElement: function (node, requestType) {
         if (node && node.ownerDocument && RequestTypes.isVisual(requestType)) {
-            ElemHide.collapseNode(node);
+            //ElemHide.collapseNode(node);
         }
     },
 

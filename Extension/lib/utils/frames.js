@@ -50,7 +50,7 @@ var framesMap = (function () {
 			}
 		}
 
-		adguard.tabs.recordTabFrame(tab.tabId, frameId, url);
+		adguard.tabs.recordTabFrame(tab.tabId, frameId, url, UrlUtils.getDomainName(url));
 
 		if (type === RequestTypes.DOCUMENT) {
 			adguard.tabs.updateTabMetadata(tab.tabId, {previousUrl: previousUrl});

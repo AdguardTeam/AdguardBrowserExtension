@@ -1,4 +1,3 @@
-/* global Services */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -16,37 +15,29 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global RequestTypes, uiService, antiBannerService, framesMap, filteringLog */
+
 (function () {
 
-    Log.info('Adguard addon: Starting... Browser: {0}. Platform: {1}. Version: {2}. Id: {3}',
-        adguard.runtime.getVersion(), adguard.runtime.getPlatform(),
-        adguard.extension.getVersion(), adguard.extension.getId()
-    );
+    Log.info('Starting adguard... Version: {0}. Id: {1}', adguard.app.getVersion(), adguard.app.getId());
 
-    WebRequestImpl.init();
-    ElemHide.init();
-    InterceptHandler.init();
-
-    // Initialize content-message handler
-    contentMessageHandler.setSendMessageToSender(function (worker, message) {
-        contentScripts.sendMessageToWorker(worker, message);
-    });
-    contentScripts.init();
-
-    // Initialize overlay toolbar button
-    UI.init();
-
-    var antiBannerCallback = function (runInfo) {
-        if (runInfo.isFirstRun) {
-            // Show filters download page on first run of addon
-            UI.openFiltersDownloadPage();
-        }
-    };
-    antiBannerService.init({
-        runCallback: antiBannerCallback
+    // Content-Message listener
+    adguard.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+        return contentMessageHandler.handleMessage(message, sender, sendResponse);
     });
 
-    // Language detect on tab ready event
+    // Initialize popup button
+    adguard.browserAction.setPopup({
+        popup: adguard.getURL('pages/popup.html')
+    });
+
+    // Record opened tabs
+    adguard.tabs.forEach(function (tab) {
+        framesMap.recordFrame(tab, 0, tab.url, RequestTypes.DOCUMENT);
+        uiService.updateTabIconAndContextMenu(tab);
+    });
+
+    // Locale detect
     adguard.tabs.onUpdated.addListener(function (tab) {
         if (tab.status === 'complete') {
             antiBannerService.checkTabLanguage(tab.tabId, tab.url);
@@ -58,11 +49,21 @@
     adguard.tabs.onCreated.addListener(function (tab) {
         filteringLog.addTab(tab);
     });
+    adguard.tabs.onUpdated.addListener(function (tab) {
+        filteringLog.updateTab(tab);
+    });
     adguard.tabs.onRemoved.addListener(function (tab) {
         filteringLog.removeTab(tab);
     });
-    adguard.tabs.onUpdated.addListener(function (tab) {
-        filteringLog.updateTab(tab);
+
+    // Initialize antibanner service
+    antiBannerService.init({
+
+        runCallback: function (runInfo) {
+            if (runInfo.isFirstRun) {
+                uiService.openFiltersDownloadPage();
+            }
+        }
     });
 
 })();

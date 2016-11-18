@@ -151,41 +151,13 @@ public class FileUtil {
 
 		copyCommonFiles(source, dest, browser);
 
-		File sourceDataDir = new File(dest, "data");
-		File sourceContentDir = new File(sourceDataDir, "content");
-
-		//move processed html pages to root folder
-		File sourcePagesDir = new File(dest, "pages");
-		File destPagesDir = new File(dest, "./");
-		copyDirectory(sourcePagesDir, destPagesDir);
-		FileUtils.deleteQuietly(sourcePagesDir);
-
 		//Fix fonts file
-		File fontsFile = new File(sourceContentDir, "/skin/fonts.css");
-		File firefoxFontsFile = new File(sourceContentDir, "/skin/fonts_firefox.css");
-		File fontsDir = new File(sourceContentDir, "/skin/fonts");
+		File fontsFile = new File(dest, "skin/fonts.css");
+		File firefoxFontsFile = new File(dest, "skin/fonts_firefox.css");
+		File fontsDir = new File(dest, "skin/fonts");
 		FileUtils.deleteQuietly(fontsFile);
 		FileUtils.moveFile(firefoxFontsFile, fontsFile);
 		FileUtils.deleteQuietly(fontsDir);
-
-		//move js pages files to /pages folder
-		File sourceJsPagesDir = new File(dest, "lib/pages");
-		File destJsPagesDir = new File(dest, "/pages");
-		FileUtils.moveDirectory(sourceJsPagesDir, destJsPagesDir);
-
-		//move lib/content-script folder to /content-script folder
-		File sourceContentScript = new File(dest, "lib/content-script");
-		File destContentScript = new File(dest, "/content-script");
-		copyDirectory(sourceContentScript, destContentScript);
-		FileUtils.deleteQuietly(sourceContentScript);
-
-		// Copy file from /content folder to root
-		copyDirectory(sourceContentDir, dest);
-
-		//move third-party js files to /libs folder
-		File sourceLibsDir = new File(dest, "lib/libs");
-		File destLibsDir = new File(dest, "/libs");
-		FileUtils.moveDirectory(sourceLibsDir, destLibsDir);
 
 		//convert chrome style locales to firefox style
 		File sourceLocalesDir = new File(dest, "_locales");
@@ -193,8 +165,6 @@ public class FileUtil {
 		LocaleUtils.convertFromChromeToFirefoxLocales(sourceLocalesDir);
 		//rename folder
 		FileUtils.moveDirectory(sourceLocalesDir, destLocalesDir);
-
-		FileUtils.deleteDirectory(sourceDataDir);
 	}
 
 	private static void copyFirefoxLegacyFiles(File source, File dest) throws Exception {

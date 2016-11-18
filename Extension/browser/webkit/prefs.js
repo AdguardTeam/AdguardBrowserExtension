@@ -1,5 +1,5 @@
 /* global safari */
-/* global ext */
+/* global adguard */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -23,74 +23,73 @@
  */
 var Prefs = {
 
-	version: ext.app.getVersion(),
-	locale: ext.app.getLocale(),
-	getLocalFilterPath: function (filterId) {
-		var url = "filters/filter_" + filterId + ".txt";
-		return ext.getURL(url);
-	},
-	getLocalMobileFilterPath: function (filterId) {
-		var url = "filters/filter_mobile_" + filterId + ".txt";
-		return ext.getURL(url);
-	},
-	localFiltersMetadataPath: ext.getURL('filters/filters.json'),
-	localFiltersMetadataI18nPath: ext.getURL('filters/filters_i18n.json'),
-	safebrowsingPagePath: ext.getURL("pages/sb.html"),
-	platform: (typeof safari === 'undefined' ? "chromium" : "webkit"),
-	getBrowser: function () {
-		if (!Prefs.browser) {
-			var browser;
-			var userAgent = navigator.userAgent;
-			if (userAgent.toLowerCase().indexOf("yabrowser") >= 0) {
-				browser = "YaBrowser";
-			} else if (userAgent.toLowerCase().indexOf("edge") >= 0) {
-				browser = "Edge";
-			} else if (userAgent.toLowerCase().indexOf("opera") >= 0 || userAgent.toLowerCase().indexOf("opr") >= 0) {
-				browser = "Opera";
-			} else if (userAgent.indexOf("Safari") >= 0 && userAgent.indexOf('Chrome') < 0) {
-				browser = "Safari";
-			} else {
-				browser = "Chrome";
-			}
-			Prefs.browser = browser;
+    version: adguard.app.getVersion(),
+    locale: adguard.app.getLocale(),
+    getLocalFilterPath: function (filterId) {
+        var url = "filters/filter_" + filterId + ".txt";
+        return adguard.getURL(url);
+    },
+    getLocalMobileFilterPath: function (filterId) {
+        var url = "filters/filter_mobile_" + filterId + ".txt";
+        return adguard.getURL(url);
+    },
+    localFiltersMetadataPath: adguard.getURL('filters/filters.json'),
+    localFiltersMetadataI18nPath: adguard.getURL('filters/filters_i18n.json'),
+    platform: (typeof safari === 'undefined' ? "chromium" : "webkit"),
+    getBrowser: function () {
+        if (!Prefs.browser) {
+            var browser;
+            var userAgent = navigator.userAgent;
+            if (userAgent.toLowerCase().indexOf("yabrowser") >= 0) {
+                browser = "YaBrowser";
+            } else if (userAgent.toLowerCase().indexOf("edge") >= 0) {
+                browser = "Edge";
+            } else if (userAgent.toLowerCase().indexOf("opera") >= 0 || userAgent.toLowerCase().indexOf("opr") >= 0) {
+                browser = "Opera";
+            } else if (userAgent.indexOf("Safari") >= 0 && userAgent.indexOf('Chrome') < 0) {
+                browser = "Safari";
+            } else {
+                browser = "Chrome";
+            }
+            Prefs.browser = browser;
 
-			if (browser === "Safari") {
-				var parseSafariVersion = function() {
-					var i = userAgent.indexOf("Version/");
-					if (i < 0) {
+            if (browser === "Safari") {
+                var parseSafariVersion = function () {
+                    var i = userAgent.indexOf("Version/");
+                    if (i < 0) {
                         return null;
                     }
 
-					return parseInt(userAgent.substring(i + 8));
-				};
+                    return parseInt(userAgent.substring(i + 8));
+                };
 
-				Prefs.safariVersion = parseSafariVersion();
-			} else if (browser == "Chrome") {
-				var parseChromeVersion = function() {
-					var i = userAgent.indexOf("Chrome/");
-					if (i < 0) {
-						return null;
-					}
+                Prefs.safariVersion = parseSafariVersion();
+            } else if (browser == "Chrome") {
+                var parseChromeVersion = function () {
+                    var i = userAgent.indexOf("Chrome/");
+                    if (i < 0) {
+                        return null;
+                    }
 
-					return parseInt(userAgent.substring(i + 7));
-				};
+                    return parseInt(userAgent.substring(i + 7));
+                };
 
-				Prefs.chromeVersion = parseChromeVersion();
-			}
-		}
-		return Prefs.browser;
-	},
-	hitPrefix: (function() {
-		var appId = ext.app.getId();
-		var scheme = ext.app.getUrlScheme();
-		return scheme + '://' + appId;
-	})(),
+                Prefs.chromeVersion = parseChromeVersion();
+            }
+        }
+        return Prefs.browser;
+    },
+    hitPrefix: (function () {
+        var appId = adguard.app.getId();
+        var scheme = adguard.app.getUrlScheme();
+        return scheme + '://' + appId;
+    })(),
     /**
      * Makes sense in case of FF add-on only
      */
-	speedupStartup: function () {
-		return false;
-	},
+    speedupStartup: function () {
+        return false;
+    },
     /**
      * Makes sense in case of FF add-on only
      */
@@ -98,5 +97,20 @@ var Prefs = {
     /**
      * Makes sense in case of FF add-on only
      */
-    useGlobalStyleSheet: false
+    useGlobalStyleSheet: false,
+
+    ICONS: {
+        ICON_BLUE: {
+            '19': adguard.getURL('icons/blue-19.png'),
+            '38': adguard.getURL('icons/blue-38.png')
+        },
+        ICON_GREEN: {
+            '19': adguard.getURL('icons/green-19.png'),
+            '38': adguard.getURL('icons/green-38.png')
+        },
+        ICON_GRAY: {
+            '19': adguard.getURL('icons/gray-19.png'),
+            '38': adguard.getURL('icons/gray-38.png')
+        }
+    }
 };

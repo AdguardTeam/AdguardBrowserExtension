@@ -16,7 +16,7 @@
  */
 
 /* global RequestTypes, framesMap, EventNotifier, EventNotifierTypes, UrlUtils, webRequestService */
-/* global ext, Prefs, adguardApplication, Utils, antiBannerService, UI, StringUtils, filterRulesHitCount */
+/* global Prefs, adguardApplication, Utils, antiBannerService, UI, StringUtils, filterRulesHitCount */
 
 /**
  * Process request
@@ -67,7 +67,13 @@ function onBeforeSendHeaders(requestDetails) {
         // Retrieve main frame url
         var mainFrameUrl = framesMap.getFrameUrl(tab, 0);
         headers = Utils.setHeaderValue(headers, 'Referer', mainFrameUrl);
-        return {requestHeaders: headers};
+        return {
+            requestHeaders: headers,
+            modifiedHeaders: [{
+                name: 'Referer',
+                value: mainFrameUrl
+            }]
+        };
     }
 
     if (requestDetails.requestType === 'DOCUMENT') {
@@ -116,8 +122,15 @@ function onHeadersReceived(requestDetails) {
          */
         var websocketCheckUrl = "ws://adguardwebsocket.check/";
         if (webRequestService.checkWebSocketRequest(tab, websocketCheckUrl, referrerUrl)) {
-            responseHeaders.push({name: 'Content-Security-Policy', value: 'frame-src http: https:; child-src http: https:'});
-            return { responseHeaders: responseHeaders };
+            var cspHeader = {
+                name: 'Content-Security-Policy',
+                value: 'frame-src http: https:; child-src http: https:'
+            };
+            responseHeaders.push(cspHeader);
+            return {
+                responseHeaders: responseHeaders,
+                modifiedHeaders: [cspHeader]
+            };
         }
     }
 }
@@ -140,8 +153,8 @@ function filterSafebrowsing(tab, mainFrameUrl) {
     antiBannerService.getRequestFilter().checkSafebrowsingFilter(mainFrameUrl, referrerUrl, function (safebrowsingUrl) {
         // Chrome doesn't allow open extension url in incognito mode
         // So close current tab and open new
-        if (incognitoTab && !Utils.isSafariBrowser()) {
-            UI.openTab(safebrowsingUrl, {}, function () {
+        if (incognitoTab && Utils.isChromium()) {
+            uiService.openTab(safebrowsingUrl, {}, function () {
                 adguard.tabs.remove(tab.tabId);
             });
         } else {
@@ -153,9 +166,9 @@ function filterSafebrowsing(tab, mainFrameUrl) {
 /**
  * Add listeners described above.
  */
-ext.webRequest.onBeforeRequest.addListener(onBeforeRequest, ["<all_urls>"]);
-ext.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, ["<all_urls>"]);
-ext.webRequest.onHeadersReceived.addListener(onHeadersReceived, ["<all_urls>"]);
+adguard.webRequest.onBeforeRequest.addListener(onBeforeRequest, ["<all_urls>"]);
+adguard.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, ["<all_urls>"]);
+adguard.webRequest.onHeadersReceived.addListener(onHeadersReceived, ["<all_urls>"]);
 
 
 // AG for Windows and Mac checks either request signature or request Referer to authorize request.
@@ -202,8 +215,8 @@ if (Prefs.platform === "chromium" && Prefs.getBrowser() !== "Edge") {
         }
     };
 
-    var hitPngUrl = ext.app.getUrlScheme() + "://*/elemhidehit.png";
-    ext.webRequest.onBeforeRequest.addListener(onCssRuleHit, [hitPngUrl]);
+    var hitPngUrl = adguard.app.getUrlScheme() + "://*/elemhidehit.png";
+    adguard.webRequest.onBeforeRequest.addListener(onCssRuleHit, [hitPngUrl]);
 }
 
 var handlerBehaviorTimeout = null;
@@ -220,7 +233,7 @@ EventNotifier.addListener(function (event) {
             }
             handlerBehaviorTimeout = setTimeout(function () {
                 handlerBehaviorTimeout = null;
-                ext.webRequest.handlerBehaviorChanged();
+                adguard.webRequest.handlerBehaviorChanged();
             }, 3000);
     }
 });
