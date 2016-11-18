@@ -18,7 +18,6 @@
 /* global $, PopupController */
 var backgroundPage = adguard.backgroundPage.getWindow();
 var antiBannerService = backgroundPage.antiBannerService;
-var UI = backgroundPage.UI;
 var uiService = backgroundPage.uiService;
 var framesMap = backgroundPage.framesMap;
 var filteringLog = backgroundPage.filteringLog;
@@ -96,7 +95,7 @@ $(document).ready(function () {
             adguard.closePopup();
         };
         controller.openLink = function (url) {
-            UI.openTab(url);
+            uiService.openTab(url);
             adguard.closePopup();
         };
         controller.openFilteringLog = function (tabId) {

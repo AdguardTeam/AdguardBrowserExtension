@@ -24,9 +24,7 @@ var MobileMenu = {
 
     nativeMenuIds: Object.create(null),
 
-    init: function (UI) {
-
-        this.UI = UI;
+    init: function () {
 
         adguard.windowsImpl.onUpdated.addListener(function (adgWin, domWin, event) {
             if (event === 'ChromeWindowLoad') {
@@ -190,15 +188,15 @@ var MobileMenu = {
             name: "Adguard",
             icon: null
         });
-        MobileMenu.createSubMenus(window, menuID);
+        this.createSubMenus(window, menuID);
     },
 
     /**
      * @param window
      */
     removeFromWindow: function (window) {
-        if (window in MobileMenu.nativeMenuIds) {
-            var menuId = MobileMenu.nativeMenuIds[window].main;
+        if (window in this.nativeMenuIds) {
+            var menuId = this.nativeMenuIds[window].main;
             window.NativeWindow.menu.remove(menuId);
         }
     }

@@ -51,7 +51,6 @@ var Prefs = {
     speedupStartup: function () {
         return SimplePrefs.get('speedup_startup');
     },
-    collapseByContentScript: true, // SimplePrefs.get('collapse_by_content_script'),
     useGlobalStyleSheet: SimplePrefs.get('use_global_style_sheet'),
 
     ICONS: {
@@ -71,13 +70,10 @@ var Prefs = {
 };
 
 var onPreferenceChanged = function (prefName) {
-    Prefs.collapseByContentScript = SimplePrefs.get('collapse_by_content_script');
     Prefs.useGlobalStyleSheet = SimplePrefs.get('use_global_style_sheet');
     EventNotifier.notifyListeners(EventNotifierTypes.CHANGE_PREFS, prefName);
 };
-SimplePrefs.addListener('collapse_by_content_script', onPreferenceChanged);
 SimplePrefs.addListener('use_global_style_sheet', onPreferenceChanged);
 unload.when(function () {
-    SimplePrefs.removeListener('collapse_by_content_script', onPreferenceChanged);
     SimplePrefs.removeListener('use_global_style_sheet', onPreferenceChanged);
 });
