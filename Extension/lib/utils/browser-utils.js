@@ -18,7 +18,7 @@
 
 var Utils = {
 
-    navigator: Cc["@mozilla.org/network/protocol;1?name=http"].getService(Ci.nsIHttpProtocolHandler),
+    navigator: window.navigator,
 
     objectContentTypes: '.jar.swf.',
     mediaContentTypes: '.mp4.flv.avi.m3u.webm.mpeg.3gp.3gpp.3g2.3gpp2.ogg.mov.qt.',

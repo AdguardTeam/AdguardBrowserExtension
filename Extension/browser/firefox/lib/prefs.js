@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Cc, Ci */
-
 /**
  * Global preferences for Firefox extension
  */

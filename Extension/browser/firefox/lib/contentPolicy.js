@@ -404,24 +404,31 @@ var WebRequestImpl = {
      * @returns ACCEPT or REJECT_*
      */
     shouldLoad: function (contentType, contentLocation, requestOrigin, aContext, mimeTypeGuess, extra, aRequestPrincipal) {
+        var tab;
+        if (aContext) {
+            var xulTab = WebRequestHelper.getTabForContext(aContext);
+            if (xulTab) {
+                tab = {id: tabUtils.getTabId(xulTab)};
+            }
+        }
 
-        if (!aContext && contentType !== WebRequestHelper.contentTypes.TYPE_WEBSOCKET) {
-            // Context could be empty in case of WebSocket requests:
-            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/334
+        if (!tab && contentType !== WebRequestHelper.contentTypes.TYPE_WEBSOCKET) {
+            // We handle null-tab requests only of websocket type
             return WebRequestHelper.ACCEPT;
         }
 
-        var xulTab = WebRequestHelper.getTabForContext(aContext);
-        if (!xulTab) {
-            return WebRequestHelper.ACCEPT;
+        var tabUrl;
+        if (!tab && requestOrigin) {
+            //In case of websocket requests tab could be empty
+            tabUrl = requestOrigin.asciiSpec;
+        } else {
+            tabUrl = this.framesMap.getFrameUrl(tab, 0);
         }
-
-        var tabId = adguard.tabsImpl.getTabIdForTab(xulTab);
-        var tab = {tabId: tabId};
 
         var requestUrl = contentLocation.asciiSpec;
         var requestType = WebRequestHelper.getRequestType(contentType, contentLocation);
-        var result = this._shouldBlockRequest(tab, requestUrl, requestType, aContext);
+
+        var result = this._shouldBlockRequest(tab, requestUrl, tabUrl, requestType, aContext);
 
         Log.debug('shouldLoad: {0} {1}. Result: {2}', requestUrl, requestType, result.blocked);
         this._saveLastRequestProperties(requestUrl, requestType, result, aContext);
@@ -461,7 +468,8 @@ var WebRequestImpl = {
 
             var tab = {tabId: tabId};
             var requestUrl = newChannel.URI.asciiSpec;
-            var shouldBlockResult = this._shouldBlockRequest(tab, requestUrl, requestProperties.requestType, null);
+            var tabUrl = this.framesMap.getFrameUrl(tab, 0);
+            var shouldBlockResult = this._shouldBlockRequest(tab, requestUrl, tabUrl, requestProperties.requestType, null);
 
             Log.debug('asyncOnChannelRedirect: {0} {1}. Blocked={2}', requestUrl, requestProperties.requestType, shouldBlockResult.blocked);
             if (shouldBlockResult.blocked) {
@@ -632,14 +640,15 @@ var WebRequestImpl = {
     /**
      * Checks if request should be blocked
      *
-     * @param tab Browser tab
-     * @param requestUrl Request url
-     * @param requestType Request type
-     * @param node DOM node
+     * @param tab           Browser tab or null
+     * @param requestUrl    Request url
+     * @param tabUrl        Tab url
+     * @param requestType   Request type
+     * @param node          DOM node or null
      * @returns {*} object with two properties: "blocked" and "rule"
      * @private
      */
-    _shouldBlockRequest: function (tab, requestUrl, requestType, node) {
+    _shouldBlockRequest: function (tab, requestUrl, tabUrl, requestType, node) {
 
         var result = {
             blocked: false,
@@ -653,8 +662,6 @@ var WebRequestImpl = {
         if (!UrlUtils.isHttpOrWsRequest(requestUrl)) {
             return result;
         }
-
-        var tabUrl = framesMap.getFrameUrl(tab, 0);
 
         result.rule = webRequestService.getRuleForRequest(tab, requestUrl, tabUrl, requestType);
         result.blocked = webRequestService.isRequestBlockedByRule(result.rule);

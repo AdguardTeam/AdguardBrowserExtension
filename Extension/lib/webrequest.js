@@ -45,6 +45,10 @@ function onBeforeRequest(requestDetails) {
     }
 
     var referrerUrl = framesMap.getFrameUrl(tab, requestDetails.requestFrameId);
+    if (!referrerUrl) {
+        // Assign to main frame
+        referrerUrl = framesMap.getFrameUrl(tab, 0);
+    }
     var requestRule = webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
     webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
     return !webRequestService.isRequestBlockedByRule(requestRule);
@@ -101,8 +105,11 @@ function onHeadersReceived(requestDetails) {
     var requestUrl = requestDetails.requestUrl;
     var responseHeaders = requestDetails.responseHeaders;
     var requestType = requestDetails.requestType;
-    //retrieve referrer
+    // Retrieve referrer
     var referrerUrl = framesMap.getFrameUrl(tab, requestDetails.requestFrameId);
+    if (!referrerUrl) {
+        referrerUrl = framesMap.getFrameUrl(tab, 0);
+    }
 
     webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
 

@@ -108,6 +108,17 @@
             return loadContext;
         }
 
+        function getWindowForChannel(channel) {
+            var loadContext = getChannelLoadContext(channel);
+            try {
+                if (loadContext) {
+                    return loadContext.associatedWindow;
+                }
+            } catch (ex) {
+            }
+            return null;
+        }
+
         /**
          * Gets XUL browser for given nsIChannel.
          *
@@ -586,21 +597,22 @@
 
                 var details = this.getDetailsFromChannel(channel);
 
-                // Get content type
-                var isDocument = (channel.loadFlags & channel.LOAD_DOCUMENT_URI); // jshint ignore:line
-                var type = !!details ? details.type : null;
-
-                if (!type && isDocument) {
-                    type = ContentTypes.TYPE_DOCUMENT;
-                } else if (!type) {
-                    type = ContentTypes.TYPE_OTHER;
+                var type;
+                if (!details) {
+                    if (channel.loadFlags & channel.LOAD_DOCUMENT_URI) { // jshint ignore:line
+                        var win = getWindowForChannel(channel);
+                        if (win && win === win.parent) {
+                            type = ContentTypes.TYPE_DOCUMENT;
+                        }
+                    }
+                } else {
+                    type = details.type;
                 }
 
                 var request;
 
                 // Call onBeforeRequest for main frame again
                 if (type === ContentTypes.TYPE_DOCUMENT) {
-
                     if (!details) {
                         details = {
                             frameId: 0,

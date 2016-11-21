@@ -15,10 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Cc, Ci */
-
-var XMLHttpRequestConstructor = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"];
-
 /**
  * Class for working with our backend server.
  * All requests sent by this class are covered in the privacy policy:
@@ -310,7 +306,7 @@ ServiceClient.prototype = {
 		}
 		params = this._addKeyParameter(params);
 
-		var request = XMLHttpRequestConstructor.createInstance(Ci.nsIXMLHttpRequest);
+		var request = new XMLHttpRequest();
 		request.open('POST', this.reportUrl);
 		request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 		request.send(params);
@@ -395,7 +391,7 @@ ServiceClient.prototype = {
 		}
 		params = this._addKeyParameter(params);
 
-		var request = XMLHttpRequestConstructor.createInstance(Ci.nsIXMLHttpRequest);
+		var request = new XMLHttpRequest();
 		request.open('POST', this.ruleStatsUrl);
 		request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 		request.send(params);
@@ -517,7 +513,7 @@ ServiceClient.prototype = {
 
 	_executeRequestAsync: function (url, contentType, successCallback, errorCallback) {
 
-		var request = XMLHttpRequestConstructor.createInstance(Ci.nsIXMLHttpRequest);
+		var request = new XMLHttpRequest();
 		try {
 			request.open('GET', url);
 			request.setRequestHeader('Content-type', contentType);
@@ -551,10 +547,10 @@ ServiceClient.prototype = {
 	 * @private
 	 */
 	_detectFiltersUrl: function () {
-		if (Utils.isSafariBrowser()) {
-			return 'https://filters.adtidy.org/extension/safari';
-		} else if (Utils.isFirefoxBrowser()) {
+		if (Prefs.platform === 'firefox') {
 			return 'https://filters.adtidy.org/extension/firefox';
+		} else if (Prefs.platform === 'webkit') {
+			return 'https://filters.adtidy.org/extension/safari';
 		} else {
 			return 'https://filters.adtidy.org/extension/chromium';
 		}

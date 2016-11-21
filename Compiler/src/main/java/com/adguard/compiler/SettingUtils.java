@@ -198,7 +198,6 @@ public class SettingUtils {
         }
     }
 
-
     public static String getScriptRulesText(Set<String> scriptRules) {
         StringBuilder sb = new StringBuilder();
         if (scriptRules != null) {

@@ -237,26 +237,27 @@ RequestFilter.prototype = {
     /**
      * Searches for the filter rule for the specified request.
      *
-     * @param requestUrl    Request URL
-     * @param referrer      Referrer
-     * @param requestType   Request content type (one of UrlFilterRule.contentTypes)
+     * @param requestUrl            Request URL
+     * @param documentUrl           Document URL
+     * @param requestType           Request content type (one of UrlFilterRule.contentTypes)
+     * @param documentWhitelistRule (optional) Document-level whitelist rule
      * @returns Rule found or null
      */
-    findRuleForRequest: function (requestUrl, referrer, requestType) {
+    findRuleForRequest: function (requestUrl, documentUrl, requestType, documentWhitelistRule) {
 
-        var refHost = UrlUtils.getHost(referrer);
-        var thirdParty = UrlUtils.isThirdPartyRequest(requestUrl, referrer);
+        var documentHost = UrlUtils.getHost(documentUrl);
+        var thirdParty = UrlUtils.isThirdPartyRequest(requestUrl, documentUrl);
 
-        var cacheItem = this._searchRequestCache(requestUrl, refHost, requestType);
+        var cacheItem = this._searchRequestCache(requestUrl, documentHost, requestType);
 
         if (cacheItem) {
             // Element with zero index is a filter rule found last time
             return cacheItem[0];
         }
 
-        var rule = this._innerFilterHttpRequest(requestUrl, referrer, refHost, requestType, thirdParty);
+        var rule = this._findRuleForRequest(requestUrl, documentHost, requestType, thirdParty, documentWhitelistRule);
 
-        this._saveResultToCache(requestUrl, rule, refHost, requestType);
+        this._saveResultToCache(requestUrl, rule, documentHost, requestType);
         return rule;
     },
 
@@ -307,17 +308,17 @@ RequestFilter.prototype = {
      * Checks if exception rule is present for the URL/Referrer pair
      *
      * @param requestUrl    Request URL
-     * @param refHost       Referrer host
+     * @param documentHost  Document URL host
      * @param requestType   Request content type (one of UrlFilterRule.contentTypes)
      * @param thirdParty    Is request third-party or not
      * @returns Filter rule found or null
      * @private
      */
-    _checkWhiteList: function (requestUrl, refHost, requestType, thirdParty) {
+    _checkWhiteList: function (requestUrl, documentHost, requestType, thirdParty) {
         if (this.urlWhiteFilter === null || StringUtils.isEmpty(requestUrl)) {
             return null;
         }
-        return this.urlWhiteFilter.isFiltered(requestUrl, refHost, requestType, thirdParty);
+        return this.urlWhiteFilter.isFiltered(requestUrl, documentHost, requestType, thirdParty);
     },
 
     /**
@@ -340,40 +341,59 @@ RequestFilter.prototype = {
     },
 
     /**
-     * Filters HTTP request.
+     * Searches the rule for request.
      *
      * @param requestUrl    Request URL
-     * @param referrer      Referrer
-     * @param refHost       Referrer host
+     * @param documentHost  Document host
      * @param requestType   Request content type (one of UrlFilterRule.contentTypes)
      * @param thirdParty    Is request third-party or not
+     * @param documentWhiteListRule (optional) Document-level whitelist rule
      * @returns Filter rule found or null
      * @private
      */
-    _innerFilterHttpRequest: function (requestUrl, referrer, refHost, requestType, thirdParty) {
+    _findRuleForRequest: function (requestUrl, documentHost, requestType, thirdParty, documentWhiteListRule) {
 
-        Log.debug("Filtering http request for url: {0}, referrer: {1}, requestType: {2}", requestUrl, refHost, requestType);
+        Log.debug("Filtering http request for url: {0}, document: {1}, requestType: {2}", requestUrl, documentHost, requestType);
 
-        var urlWhiteRule = this._checkWhiteList(requestUrl, refHost, requestType, thirdParty);
-        if (urlWhiteRule !== null) {
-            Log.debug("White list rule found {0} for url: {1} referrer: {2}, requestType: {3}", urlWhiteRule.ruleText, requestUrl, refHost, requestType);
-            return urlWhiteRule;
+        // STEP 1: Looking for exception rule, which could be applied to the current request
+
+        // Checks white list for a rule for this RequestUrl. If something is found - returning it.
+        var urlWhiteListRule = this._checkWhiteList(requestUrl, documentHost, requestType, thirdParty);
+
+        // If UrlBlock is set - than we should not use UrlBlockingFilter against this request.
+        // Now check if document rule has $genericblock or $urlblock modifier
+        var genericRulesAllowed = documentWhiteListRule == null || !documentWhiteListRule.checkContentType("GENERICBLOCK");
+        var urlRulesAllowed = documentWhiteListRule == null || !documentWhiteListRule.checkContentType("URLBLOCK");
+
+        // STEP 2: Looking for blocking rule, which could be applied to the current request
+
+        // Look for blocking rules
+        var blockingRule = this._checkUrlBlockingList(requestUrl, documentHost, requestType, thirdParty, genericRulesAllowed);
+
+        // STEP 3: Analyze results, first - basic exception rule
+
+        if (urlWhiteListRule != null &&
+            // Please note, that if blocking rule has $important modifier, it could
+            // overcome existing exception rule
+            (urlWhiteListRule.isImportant || blockingRule == null || !blockingRule.isImportant)) {
+            Log.debug("White list rule found {0} for url: {1} document: {2}, requestType: {3}", urlWhiteListRule.ruleText, requestUrl, documentHost, requestType);
+            return urlWhiteListRule;
         }
 
-        var referrerWhiteRule = this._checkWhiteList(referrer, refHost, "URLBLOCK", thirdParty);
-        if (referrerWhiteRule !== null) {
-            Log.debug("White list rule {0} found for referrer: {1}", referrerWhiteRule.ruleText, referrer);
-            return referrerWhiteRule;
+        if (!genericRulesAllowed || !urlRulesAllowed) {
+            Log.debug("White list rule {0} found for document: {1}", documentWhiteListRule.ruleText, documentHost);
         }
 
-        var genericUrlBlockRule = this._checkWhiteList(referrer, refHost, "GENERICBLOCK", thirdParty);
-        var rule = this._checkUrlBlockingList(requestUrl, refHost, requestType, thirdParty, !genericUrlBlockRule);
-        if (rule !== null) {
-            Log.debug("Black list rule {0} found for url: {1}, referrer: {2}, requestType: {3}", rule.ruleText, requestUrl, refHost, requestType);
-            return rule;
+        if (!urlRulesAllowed) {
+            // URL whitelisted
+            return documentWhiteListRule;
         }
 
-        return genericUrlBlockRule;
+        if (blockingRule != null) {
+            Log.debug("Black list rule {0} found for url: {1}, document: {2}, requestType: {3}", blockingRule.ruleText, requestUrl, documentHost, requestType);
+        }
+
+        return blockingRule;
     },
 
     /**

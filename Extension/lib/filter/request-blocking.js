@@ -15,212 +15,272 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var WebRequestService = function () {
-};
+/* global Prefs, framesMap, antiBannerService, filteringLog, adguardApplication, filterRulesHitCount, userSettings,
+ ServiceClient, RequestTypes, EventNotifier, EventNotifierTypes, FilterUtils, Utils */
 
-/**
- * Prepares CSS and JS which should be injected to the page.
- *
- * @param tab               Tab
- * @param documentUrl       Document URL
- * @param genericHide       flag to hide common rules
- * @returns {*} null or object the following properties: "selectors", "scripts", "collapseAllElements"
- */
-WebRequestService.prototype.processGetSelectorsAndScripts = function (tab, documentUrl, genericHide) {
+var webRequestService = (function () { // jshint ignore:line
 
-    var result = {};
+    /**
+     * Prepares CSS and JS which should be injected to the page.
+     *
+     * @param tab           Tab
+     * @param documentUrl   Document URL
+     * @param genericHide   flag to hide common rules
+     * @returns {*}         null or object the following properties: "selectors", "scripts", "collapseAllElements"
+     */
+    var processGetSelectorsAndScripts = function (tab, documentUrl, genericHide) {
 
-    if (!tab) {
-        return result;
-    }
+        var result = {};
 
-    if (!antiBannerService.isRequestFilterReady()) {
-        return {
-            requestFilterReady: false
+        if (!tab) {
+            return result;
+        }
+
+        if (!antiBannerService.isRequestFilterReady()) {
+            return {
+                requestFilterReady: false
+            };
+        }
+
+        if (framesMap.isTabAdguardDetected(tab) || framesMap.isTabProtectionDisabled(tab) || framesMap.isTabWhiteListed(tab)) {
+            return result;
+        }
+
+        result = {
+            selectors: {
+                css: null,
+                extendedCss: null
+            },
+            scripts: null,
+            collapseAllElements: antiBannerService.shouldCollapseAllElements(),
+            useShadowDom: Utils.isShadowDomSupported()
         };
-    }
 
-    if (framesMap.isTabAdguardDetected(tab) || framesMap.isTabProtectionDisabled(tab) || framesMap.isTabWhiteListed(tab)) {
+        var whitelistRule = framesMap.getFrameWhiteListRule(tab);
+        var genericHideFlag = genericHide || (whitelistRule && whitelistRule.checkContentType("GENERICHIDE"));
+        var elemHideFlag = whitelistRule && whitelistRule.checkContentType("ELEMHIDE");
+        if (!elemHideFlag) {
+            if (shouldLoadAllSelectors(result.collapseAllElements)) {
+                result.selectors = antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl, genericHideFlag);
+            } else {
+                result.selectors = antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideFlag);
+            }
+        }
+
+        var jsInjectFlag = whitelistRule && whitelistRule.checkContentType("JSINJECT");
+        if (!jsInjectFlag) {
+            result.scripts = antiBannerService.getRequestFilter().getScriptsForUrl(documentUrl);
+        }
+
         return result;
-    }
-
-    result = {
-        selectors: {
-            css: null,
-            extendedCss: null
-        },
-        scripts: null,
-        collapseAllElements: antiBannerService.shouldCollapseAllElements(),
-        useShadowDom: Utils.isShadowDomSupported()
     };
 
-    var genericHideRule = genericHide || antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "GENERICHIDE");
-    var elemHideRule = antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "ELEMHIDE");
-    if (!elemHideRule) {
-        if (this.shouldLoadAllSelectors(result.collapseAllElements)) {
-            result.selectors = antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl, genericHideRule);
-        } else {
-            result.selectors = antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideRule);
+    /**
+     * Checks if websocket request is blocked
+     *
+     * @param tab           Tab
+     * @param requestUrl    request url
+     * @param referrerUrl   referrer url
+     * @returns {boolean}   true if request is blocked
+     */
+    var checkWebSocketRequest = function (tab, requestUrl, referrerUrl) {
+
+        if (!tab) {
+            return false;
         }
-    }
 
-    var jsInjectRule = antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, documentUrl, "JSINJECT");
-    if (!jsInjectRule) {
-        result.scripts = antiBannerService.getRequestFilter().getScriptsForUrl(documentUrl);
-    }
+        var requestRule = getRuleForRequest(tab, requestUrl, referrerUrl, RequestTypes.WEBSOCKET);
+        filteringLog.addEvent(tab, requestUrl, referrerUrl, RequestTypes.WEBSOCKET, requestRule);
 
-    return result;
-};
+        return isRequestBlockedByRule(requestRule);
+    };
 
-WebRequestService.prototype.shouldLoadAllSelectors = function (collapseAllElements) {
-    if ((Utils.isFirefoxBrowser() && userSettings.collectHitsCount()) || Prefs.useGlobalStyleSheet) {
-        // We don't need all CSS selectors in case of FF using global stylesheet
-        // as in this case we register browser wide stylesheet which will be
-        // applied even if page was already loaded
-        return false;
-    }
+    /**
+     * Checks if request is blocked
+     *
+     * @param tab           Tab
+     * @param requestUrl    request url
+     * @param referrerUrl   referrer url
+     * @param requestType   one of RequestType
+     * @returns {boolean}   true if request is blocked
+     */
+    var processShouldCollapse = function (tab, requestUrl, referrerUrl, requestType) {
 
-    var safariContentBlockerEnabled = Utils.isContentBlockerEnabled();
-    if (safariContentBlockerEnabled && collapseAllElements) {
-        // For Safari 9+ we will load all selectors when browser is just started
-        // as at that moment content blocker may not been initialized
-        return true;
-    }
+        if (!tab) {
+            return false;
+        }
 
-    // In other cases we should load all selectors every time
-    return !safariContentBlockerEnabled;
-};
+        var requestRule = getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
+        return isRequestBlockedByRule(requestRule);
+    };
 
-WebRequestService.prototype.checkWebSocketRequest = function (tab, requestUrl, referrerUrl) {
+    /**
+     * Checks if requests are blocked
+     *
+     * @param tab               Tab
+     * @param referrerUrl       referrer url
+     * @param collapseRequests  requests array
+     * @returns {*}             requests array
+     */
+    var processShouldCollapseMany = function (tab, referrerUrl, collapseRequests) {
 
-    if (!tab) {
-        return false;
-    }
+        if (!tab) {
+            return collapseRequests;
+        }
 
-    var requestRule = this.getRuleForRequest(tab, requestUrl, referrerUrl, RequestTypes.WEBSOCKET);
-    filteringLog.addEvent(tab, requestUrl, referrerUrl, RequestTypes.WEBSOCKET, requestRule);
+        for (var i = 0; i < collapseRequests.length; i++) {
+            var request = collapseRequests[i];
+            var requestRule = getRuleForRequest(tab, request.elementUrl, referrerUrl, request.requestType);
+            request.collapse = isRequestBlockedByRule(requestRule);
+        }
 
-    return this.isRequestBlockedByRule(requestRule);
-};
-
-WebRequestService.prototype.processShouldCollapse = function (tab, requestUrl, referrerUrl, requestType) {
-
-    if (!tab) {
-        return false;
-    }
-
-    var requestRule = this.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
-    return this.isRequestBlockedByRule(requestRule);
-};
-
-WebRequestService.prototype.processShouldCollapseMany = function (tab, referrerUrl, collapseRequests) {
-
-    if (!tab) {
         return collapseRequests;
-    }
+    };
 
-    for (var i = 0; i < collapseRequests.length; i++) {
-        var request = collapseRequests[i];
-        var requestRule = this.getRuleForRequest(tab, request.elementUrl, referrerUrl, request.requestType);
-        request.collapse = this.isRequestBlockedByRule(requestRule);
-    }
+    /**
+     * Checks if request is blocked by rule
+     *
+     * @param requestRule
+     * @returns {*|boolean}
+     */
+    var isRequestBlockedByRule = function (requestRule) {
+        return requestRule && !requestRule.whiteListRule;
+    };
 
-    return collapseRequests;
-};
+    /**
+     * Finds rule for request
+     *
+     * @param tab           Tab
+     * @param requestUrl    request url
+     * @param referrerUrl   referrer url
+     * @param requestType   one of RequestType
+     * @returns {*}         rule or null
+     */
+    var getRuleForRequest = function (tab, requestUrl, referrerUrl, requestType) {
 
-WebRequestService.prototype.isRequestBlockedByRule = function (requestRule) {
-    return requestRule && !requestRule.whiteListRule;
-};
-
-WebRequestService.prototype.getRuleForRequest = function (tab, requestUrl, referrerUrl, requestType) {
-
-    if (framesMap.isTabAdguardDetected(tab) || framesMap.isTabProtectionDisabled(tab)) {
-        //don't process request
-        return null;
-    }
-
-    var requestRule = null;
-
-    if (framesMap.isTabWhiteListed(tab)) {
-        requestRule = framesMap.getFrameWhiteListRule(tab);
-    } else {
-        requestRule = antiBannerService.getRequestFilter().findRuleForRequest(requestUrl, referrerUrl, requestType);
-    }
-
-    return requestRule;
-};
-
-/**
- * Processes HTTP response.
- * It could do the following:
- * 1. Detect desktop AG and switch to integration mode
- * 2. Add event to filtering log (for DOCUMENT requests)
- * 3. Record page stats (if it's enabled)
- *
- * @param tab Tab object
- * @param requestUrl Request URL
- * @param referrerUrl Referrer URL
- * @param requestType Request type
- * @param responseHeaders Response headers
- */
-WebRequestService.prototype.processRequestResponse = function (tab, requestUrl, referrerUrl, requestType, responseHeaders) {
-
-    if (requestType === RequestTypes.DOCUMENT) {
-        // Check headers to detect Adguard application
-
-        if (Prefs.getBrowser() !== "Edge") {
-            // TODO[Edge]: Integration mode is not fully functional in Edge (cannot redefine Referer header yet)
-            adguardApplication.checkHeaders(tab, responseHeaders, requestUrl);
+        if (framesMap.isTabAdguardDetected(tab) || framesMap.isTabProtectionDisabled(tab)) {
+            //don't process request
+            return null;
         }
-        // Clear previous events
-        filteringLog.clearEventsForTab(tab);
-    }
 
-    var requestRule = null;
-    var appendLogEvent = false;
-
-    if (framesMap.isTabAdguardDetected(tab)) {
-        //parse rule applied to request from response headers
-        requestRule = adguardApplication.parseAdguardRuleFromHeaders(responseHeaders);
-        appendLogEvent = !ServiceClient.isAdguardAppRequest(requestUrl);
-    } else if (framesMap.isTabProtectionDisabled(tab)) { // jshint ignore:line
-        //do nothing
-    } else if (requestType === RequestTypes.DOCUMENT) {
-        requestRule = framesMap.getFrameWhiteListRule(tab);
-        var domain = framesMap.getFrameDomain(tab);
-        if (!framesMap.isIncognitoTab(tab)) {
-            //add page view to stats
-            filterRulesHitCount.addDomainView(domain);
+        var whitelistRule = framesMap.getFrameWhiteListRule(tab);
+        if (whitelistRule && whitelistRule.checkContentTypeIncluded("DOCUMENT")) {
+            // Frame is whitelisted by $document rule
+            // We do nothing more in this case - return the rule.
+            return whitelistRule;
         }
-        appendLogEvent = true;
-    }
 
-    // add event to filtering log
-    if (appendLogEvent) {
+        return antiBannerService.getRequestFilter().findRuleForRequest(requestUrl, referrerUrl, requestType, whitelistRule);
+    };
+
+    /**
+     * Processes HTTP response.
+     * It could do the following:
+     * 1. Detect desktop AG and switch to integration mode
+     * 2. Add event to filtering log (for DOCUMENT requests)
+     * 3. Record page stats (if it's enabled)
+     *
+     * @param tab Tab object
+     * @param requestUrl Request URL
+     * @param referrerUrl Referrer URL
+     * @param requestType Request type
+     * @param responseHeaders Response headers
+     */
+    var processRequestResponse = function (tab, requestUrl, referrerUrl, requestType, responseHeaders) {
+
+        if (requestType == RequestTypes.DOCUMENT) {
+            // Check headers to detect Adguard application
+
+            if (Prefs.getBrowser() != "Edge") {
+                // TODO[Edge]: Integration mode is not fully functional in Edge (cannot redefine Referer header yet)
+                adguardApplication.checkHeaders(tab, responseHeaders, requestUrl);
+            }
+            // Clear previous events
+            filteringLog.clearEventsForTab(tab);
+        }
+
+        var requestRule = null;
+        var appendLogEvent = false;
+
+        if (framesMap.isTabAdguardDetected(tab)) {
+            //parse rule applied to request from response headers
+            requestRule = adguardApplication.parseAdguardRuleFromHeaders(responseHeaders);
+            appendLogEvent = !ServiceClient.isAdguardAppRequest(requestUrl);
+        } else if (framesMap.isTabProtectionDisabled(tab)) { // jshint ignore:line
+            //do nothing
+        } else if (requestType == RequestTypes.DOCUMENT) {
+            requestRule = framesMap.getFrameWhiteListRule(tab);
+            var domain = framesMap.getFrameDomain(tab);
+            if (!framesMap.isIncognitoTab(tab)) {
+                //add page view to stats
+                filterRulesHitCount.addDomainView(domain);
+            }
+            appendLogEvent = true;
+        }
+
+        // add event to filtering log
+        if (appendLogEvent) {
+            filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
+        }
+    };
+
+    /**
+     * Request post processing, firing events, add log records etc.
+     *
+     * @param tab           Tab
+     * @param requestUrl    request url
+     * @param referrerUrl   referrer url
+     * @param requestType   one of RequestType
+     * @param requestRule   rule
+     */
+    var postProcessRequest = function (tab, requestUrl, referrerUrl, requestType, requestRule) {
+
+        if (framesMap.isTabAdguardDetected(tab)) {
+            //do nothing, log event will be added on response
+            return;
+        }
+
+        if (isRequestBlockedByRule(requestRule)) {
+            EventNotifier.notifyListenersAsync(EventNotifierTypes.ADS_BLOCKED, requestRule, tab, 1);
+        }
+
         filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
-    }
-};
 
-WebRequestService.prototype.postProcessRequest = function (tab, requestUrl, referrerUrl, requestType, requestRule) {
+        if (requestRule && !FilterUtils.isUserFilterRule(requestRule) && !FilterUtils.isWhiteListFilterRule(requestRule) && !framesMap.isIncognitoTab(tab)) {
 
-    if (framesMap.isTabAdguardDetected(tab)) {
-        //do nothing, log event will be added on response
-        return;
-    }
+            var domain = framesMap.getFrameDomain(tab);
+            filterRulesHitCount.addRuleHit(domain, requestRule.ruleText, requestRule.filterId, requestUrl);
+        }
+    };
 
-    if (this.isRequestBlockedByRule(requestRule)) {
-        EventNotifier.notifyListenersAsync(EventNotifierTypes.ADS_BLOCKED, requestRule, tab, 1);
-    }
+    var shouldLoadAllSelectors = function (collapseAllElements) {
+        if ((Utils.isFirefoxBrowser() && userSettings.collectHitsCount()) || Prefs.useGlobalStyleSheet) {
+            // We don't need all CSS selectors in case of FF using global stylesheet
+            // as in this case we register browser wide stylesheet which will be
+            // applied even if page was already loaded
+            return false;
+        }
 
-    filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
+        var safariContentBlockerEnabled = Utils.isContentBlockerEnabled();
+        if (safariContentBlockerEnabled && collapseAllElements) {
+            // For Safari 9+ we will load all selectors when browser is just started
+            // as at that moment content blocker may not been initialized
+            return true;
+        }
 
-    if (requestRule && !FilterUtils.isUserFilterRule(requestRule) &&
-        !FilterUtils.isWhiteListFilterRule(requestRule) &&
-        !framesMap.isIncognitoTab(tab)) {
+        // In other cases we should load all selectors every time
+        return !safariContentBlockerEnabled;
+    };
 
-        var domain = framesMap.getFrameDomain(tab);
-        filterRulesHitCount.addRuleHit(domain, requestRule.ruleText, requestRule.filterId, requestUrl);
-    }
-};
-
-var webRequestService = new WebRequestService();
+    // EXPOSE
+    return {
+        processGetSelectorsAndScripts: processGetSelectorsAndScripts,
+        checkWebSocketRequest: checkWebSocketRequest,
+        processShouldCollapse: processShouldCollapse,
+        processShouldCollapseMany: processShouldCollapseMany,
+        isRequestBlockedByRule: isRequestBlockedByRule,
+        getRuleForRequest: getRuleForRequest,
+        processRequestResponse: processRequestResponse,
+        postProcessRequest: postProcessRequest
+    };
+})();

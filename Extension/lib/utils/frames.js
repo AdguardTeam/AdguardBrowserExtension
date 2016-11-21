@@ -86,7 +86,8 @@ var framesMap = (function () {
 	 * @returns true if Tab have white list rule
 	 */
 	var isTabWhiteListed = function (tab) {
-		return adguard.tabs.getTabMetadata(tab.tabId, 'frameWhiteListRule');
+		var frameWhiteListRule = adguard.tabs.getTabMetadata(tab.tabId, 'frameWhiteListRule');
+		return frameWhiteListRule && frameWhiteListRule.checkContentTypeIncluded("DOCUMENT");
 	};
 
 	/**
@@ -94,8 +95,7 @@ var framesMap = (function () {
 	 * @returns true if Tab have white list rule and white list isn't invert
 	 */
 	var isTabWhiteListedForSafebrowsing = function (tab) {
-		var frameWhiteListRule = adguard.tabs.getTabMetadata(tab.tabId, 'frameWhiteListRule');
-		return frameWhiteListRule && whiteListService.isDefaultMode();
+		return isTabWhiteListed(tab) && whiteListService.isDefaultMode();
 	};
 
 	/**
@@ -252,20 +252,17 @@ var framesMap = (function () {
 
 				applicationFilteringDisabled = adguard.tabs.getTabMetadata(tabId, 'applicationFilteringDisabled');
 
-				var rule = adguard.tabs.getTabMetadata(tabId, 'frameWhiteListRule');
-				documentWhiteListed = !!rule;
+				documentWhiteListed = isTabWhiteListed(tab);
 				if (documentWhiteListed) {
+					var rule = getFrameWhiteListRule(tab);
 					userWhiteListed = FilterUtils.isWhiteListFilterRule(rule) || FilterUtils.isUserFilterRule(rule);
-				}
-				// It means site in exception
-				canAddRemoveRule = !(documentWhiteListed && !userWhiteListed);
-
-				if (rule) {
 					frameRule = {
 						filterId: rule.filterId,
 						ruleText: rule.ruleText
 					};
 				}
+				// It means site in exception
+				canAddRemoveRule = !(documentWhiteListed && !userWhiteListed);
 			}
 		}
 
