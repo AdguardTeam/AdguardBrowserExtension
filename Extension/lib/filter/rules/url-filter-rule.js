@@ -495,7 +495,12 @@ function findShortcut(urlmask) {
 function extractRegexpShortcut(ruleText) {
 
     // Get the regexp text
-    var reText = ruleText.match(/\/(.*)\/(\$.*)?/)[1];
+    var match = ruleText.match(/\/(.*)\/(\$.*)?/);
+    if (!match || match.length < 2) {
+        return null;
+    }
+
+    var reText = match[1];
 
     var specialCharacter = "...";
 
