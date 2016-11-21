@@ -73,6 +73,9 @@ var UrlFilterRule = exports.UrlFilterRule = function (rule, filterId) {
             // Rule matches everything and does not have any domain restriction
             throw ("Too wide basic rule: " + this.urlRuleText);
         }
+
+        // Extract shortcut from regexp rule
+        this.shortcut = extractRegexpShortcut(urlRuleText);
     } else {
         // Searching for shortcut
         this.shortcut = findShortcut(urlRuleText);
@@ -462,10 +465,15 @@ function parseRuleDomain(ruleText, parseOptions) {
     }
 }
 
-// Searches for the shortcut of this url mask.
-// Shortcut is the longest part of the mask without special characters:
-// *,^,|. If not found anything with the length greater or equal to 8 characters -
-// shortcut is not used.
+/**
+ * Searches for the shortcut of this url mask.
+ * Shortcut is the longest part of the mask without special characters:
+ * *,^,|. If not found anything with the length greater or equal to 8 characters -
+ * shortcut is not used.
+ *
+ * @param urlmask
+ * @returns {string}
+ */
 function findShortcut(urlmask) {
     var longest = "";
     var parts = urlmask.split(/[*^|]/);
@@ -476,6 +484,49 @@ function findShortcut(urlmask) {
         }
     }
     return longest.toLowerCase();
+}
+
+/**
+ * Extracts a shortcut from a regexp rule.
+ *
+ * @param ruleText
+ * @returns {*}
+ */
+function extractRegexpShortcut(ruleText) {
+
+    // Get the regexp text
+    var reText = ruleText.match(/\/(.*)\/(\$.*)?/)[1];
+
+    var specialCharacter = "...";
+
+    if (reText.indexOf('(?') >= 0 || reText.indexOf('(!?') >= 0) {
+        // Do not mess with complex expressions which use lookahead
+        return null;
+    }
+
+    // (Dirty) prepend specialCharacter for the following replace calls to work properly
+    reText = specialCharacter + reText;
+
+    // Strip all types of brackets
+    reText = reText.replace(/[^\\]\(.*[^\\]\)/, specialCharacter);
+    reText = reText.replace(/[^\\]\[.*[^\\]\]/, specialCharacter);
+    reText = reText.replace(/[^\\]\{.*[^\\]\}/, specialCharacter);
+
+    // Strip some special characters
+    reText = reText.replace(/[^\\]\\[a-zA-Z]/, specialCharacter);
+
+    // Split by special characters
+    var parts = reText.split(/[\\^$*+?.()|[\]{}]/);
+    var token = "";
+    var iParts = parts.length;
+    while (iParts--) {
+        var part = parts[iParts];
+        if (part.length > token.length) {
+            token = part;
+        }
+    }
+
+    return token;
 }
 
 /**
