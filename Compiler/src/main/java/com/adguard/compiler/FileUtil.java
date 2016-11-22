@@ -180,6 +180,11 @@ public class FileUtil {
 		File sourceLibsDir = new File(dest, "lib/libs");
 		File destLibsDir = new File(dest, "data/content/libs");
 		FileUtils.moveDirectory(sourceLibsDir, destLibsDir);
+		//move element-collapser lib
+		File sourceCollapserFile = new File(dest, "lib/utils/element-collapser.js");
+		File destCollapserFile = new File(destLibsDir, "element-collapser.js");
+		FileUtils.copyFile(sourceCollapserFile, destCollapserFile);
+
 		//TODO: optimize
 		//Remove deferred.min.js file, cause use only in chrome and safari extension
 		FileUtils.deleteQuietly(new File(destLibsDir, "deferred.min.js"));
