@@ -1,6 +1,6 @@
-! Checksum: eQ0xlbX8KoOhtDoWhU5YjA
-! Version: 1.0.9.3
-! TimeUpdated: 2016-10-21T18:01:22.889+04:00
+! Checksum: V+eiZ3xrrlVtePLD+l0W5w
+! Version: 1.0.9.8
+! TimeUpdated: 2016-11-22T04:01:21.040+04:00
 ! Title: Dutch filter
 ! Description: EasyList Dutch + Adguard Dutch filter. Filter list that specifically removes adverts on Dutch language websites.
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
@@ -1297,7 +1297,13 @@ tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
 @@||static.buienradar.nl/resources/js/advertisement.js
 biernet.nl#@#.afs_ads
 @@||telegraaf.tcdn.nl/javascript/showads*.js
+klusidee.nl##tr.table-row[-ext-has=".td-ad"]
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -2000px!important; }
+funx.nl##.leaderboard-container
+funx.nl##.sidebar_item--ad
+klusidee.nl##td > .hide-mobile[style*="728px; height:"]
+klusidee.nl##.show-mobile[style="width:300px; height:600px; margin: 0 auto;"]
+klusidee.nl##td.td-ad
 ondertitel.com##.leaderbord-container
 marktplaats.nl###banner-aanbieding
 marktplaats.nl###banner-bottom
@@ -1326,6 +1332,7 @@ vlinderscrime.nl##a[href="http://mariska-o.nl/"]
 ||serving-sys.com/*.mp4^$domain=kijk.nl
 ||totaaltv.nl/upload/Banner-sep-astrasat.gif
 ||vlinderscrime.nl/wp-content/uploads/*/*banner*.
+klusidee.nl#@#.header-ad
 @@||media.boomads.com/images^$domain=telegraaf.nl
 @@||cdn-static.liverail.com/swf/$domain=dumpert.nl
 @@||cdn-static.liverail.com/crossdomain.xml$domain=dumpert.nl

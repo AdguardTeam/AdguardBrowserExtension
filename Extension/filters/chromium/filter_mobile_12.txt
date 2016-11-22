@@ -1,6 +1,6 @@
-! Checksum: Wa30N4vTMqBV2xuOK6HKZA
-! Version: 1.0.1.56
-! TimeUpdated: 2016-10-26T18:01:42.616+04:00
+! Checksum: YwzqKIbSbnJ06UHuPn7VUA
+! Version: 1.0.1.70
+! TimeUpdated: 2016-11-21T16:24:06.065+04:00
 ! Title: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ||wrmcfyzl.com^
@@ -8,12 +8,15 @@
 ||large-format.net^$popup
 ||november-lax.com^$popup
 ||media.innity.net^$third-party
+@@||lesechos.com/*/dfp.js^
 @@||lesinrocks.com^$generichide
-@@||ad8k.com/ads/ad_forum_$domain=pipec.ru|xyya.net|pandamovie.net
+@@/ads/ad$domain=pipec.ru|xyya.net|pandamovie.net|streamgaroo.com|vidzi.tv|befuck.com
+@@||adstreet.tech/*ad$domain=befuck.com
+@@||vidzi.tv^$generichide
+@@||befuck.com^$generichide
 @@||pipec.ru^$generichide
 @@||pandamovie.net^$generichide
 @@||xyya.net^$generichide
-@@||forums.overclockers.ru/*ad*.js
 @@||mackie100projects.altervista.org^$generichide
 @@||pagead2.googlesyndication.com/pagead/js/lidar.js$domain=freewarefiles.com
 @@||cdn.popcash.net/pop.js
@@ -101,9 +104,11 @@ http://*.*.space/v/$third-party
 etfdailynews.com##div[style="width:300px;border:1px solid black"]
 @@||cinemablend.com/timthumb.php?src=/images/facebook/
 telegraaf.nl##.section-ad
+filmix.net##noindex > div[style$="!important;"]
+filmix.net##div[id*="Composite"]
 free-torrent.org,free-torrents.org,onlyf.ws##body > :not(div)
-baskino.club##body > div[id][class][style^="background-image: url(data:image/jpeg;base64"]
-hdrezka.me##body > div[id][class][style^="background-image: url(data:image/jpeg;base64"]
+yourcinema.tv,kinogo-online.net,ovgorskiy.ru,24video.cc,torrent-games.net,nowa.cc,my-tfile.org,stereotraker.ru,kinogo-net-co.ru,kino-v-online.tv,hd720.biz,all-tv.org,n-torrents.ru,kinogo-co-2016.ru,allhit.tv,trackerock.ru,yummyanime.com,rsload.net,krutor.org,rutor.info,kinogo.club,24video.xxx,24videos.me,ahs-online.net,amovies.biz,audioboo.ru,baskino.club,bigcinema.to,bigtorrent.org,bobfilm1.net,cloud.mail.ru,comedy-portal.net,cwer.ws,dnevniki-vampira.net,dochronika.ru,doramatv.ru,fanserials.tv,fast-bit.org,fast-torrent.ru,fastpic.ru,fasttorrent.ru,filin.tv,filmix-online.net,filmix.net,filmogo.co,filmtor.net,findanime.ru,firebit.net,fizrukoff.net,free-torrent.org,free-torrent.pw,free-torrents.org,free-torrents.pw,freehd.com.ua,game-torrent.info,games-reviews.net,hdclub.org,hdkinomax.com,hdkinoshka.com,hdkinoteatr.com,hdrezka.me,hronika.info,igra-prestoloff.cx,ikinohd.com,kino-dom.org,kino-hd.in,kino-hd720.net,kino-live.red,kino-live2.org,kino-nada.net,kino-nada.ru,kinoclips.net,kinogb.net,kinogo-hd.net,kinogo-net-2016.ru,kinogo.club,kinogo.eu,kinoklad.net,kinokong.net,kinokrad.co,kinoprosmotr.net,kinosvit.tv,kinozadrot.net,kinozz.net,klipzona.co,linecinema.org,livetv-torrent.com,lostfilm-online.ru,lostfilmonline.ru,megaserial.net,megogo-hd.net,multiki-online24.ru,nice-film.ru,nnm-club.me,nnm-club.to,nnmclub.to,nod32eset.ru,onelike.tv,onlainfilm.ucoz.ua,online-freebee.net,online-life.cc,only-tv.org,ostfilm.tv,pleer.ws,radikal.ru,rufilmtv.org,rumedia.ws,rustorka.com,seasonvar.ru,serialguru.ru,serialytut.tv,sezon-hd.ru,show-online.tv,tapochek.net,tfile-music.org,tfile.co,tfilm.club,tivix.net,torrent-soft.net,torrent-windows.net,tracker.hdclub.com.ua,trackeroc.ru,tracktor.tv,trialeset.ru,turkcinema.tv,tushkan.tv,tv-torrent.org,tvbook.tv,tvfru.net,uniongang.net,unionpeer.org,wikianime.ru,x-true.info,zagonka.ru,zfilm-hd.net,baskino.club,hdrezka.me,all-episodes.net##body > div[id][class][style*="data:image/jpeg;base64"]
+vidzi.tv##.player-ads
 golem.de###screen > div[id][data-google-query-id]
 sports.ru###top-banner-place
 sports.ru##.columns-layout__right > a[style^="display: inline-block !important;"] > img
@@ -150,6 +155,14 @@ brb.to,cxz.to,fs.to##div[class*="universal_ads"]
 ||gamer.ru/alarmalarm/js/
 ||sports.ru/desktop/special/$subdocument,domain=sports.ru
 m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
+@@||static.the-watch-series.to/public/js/
+postnl.com#@#.cookiewall
+postnl.com#@#.cookie_wrapper
+postnl.com#@##cookiebar-container
+@@||finn.no/user/ads.html
+ultrafilmizle.com#@##psreklam
+rt.com#@##offers
+@@||ssl.google-analytics.com/ga.js$domain=google.com|google.ad|google.ae|google.com.af|google.com.ag|google.com.ai|google.al|google.am|google.co.ao|google.com.ar|google.as|google.at|google.com.au|google.az|google.ba|google.com.bd|google.be|google.bf|google.bg|google.com.bh|google.bi|google.bj|google.com.bn|google.com.bo|google.com.br|google.bs|google.bt|google.co.bw|google.by|google.com.bz|google.ca|google.cd|google.cf|google.cg|google.ch|google.ci|google.co.ck|google.cl|google.cm|google.cn|google.com.co|google.co.cr|google.com.cu|google.cv|google.com.cy|google.cz|google.de|google.dj|google.dk|google.dm|google.com.do|google.dz|google.com.ec|google.ee|google.com.eg|google.es|google.com.et|google.fi|google.com.fj|google.fm|google.fr|google.ga|google.ge|google.gg|google.com.gh|google.com.gi|google.gl|google.gm|google.gp|google.gr|google.com.gt|google.gy|google.com.hk|google.hn|google.hr|google.ht|google.hu|google.co.id|google.ie|google.co.il|google.im|google.co.in|google.iq|google.is|google.it|google.je|google.com.jm|google.jo|google.co.jp|google.co.ke|google.com.kh|google.ki|google.kg|google.co.kr|google.com.kw|google.kz|google.la|google.com.lb|google.li|google.lk|google.co.ls|google.lt|google.lu|google.lv|google.com.ly|google.co.ma|google.md|google.me|google.mg|google.mk|google.ml|google.com.mm|google.mn|google.ms|google.com.mt|google.mu|google.mv|google.mw|google.com.mx|google.com.my|google.co.mz|google.com.na|google.com.nf|google.com.ng|google.com.ni|google.ne|google.nl|google.no|google.com.np|google.nr|google.nu|google.co.nz|google.com.om|google.com.pa|google.com.pe|google.com.pg|google.com.ph|google.com.pk|google.pl|google.pn|google.com.pr|google.ps|google.pt|google.com.py|google.com.qa|google.ro|google.ru|google.rw|google.com.sa|google.com.sb|google.sc|google.se|google.com.sg|google.sh|google.si|google.sk|google.com.sl|google.sn|google.so|google.sm|google.sr|google.st|google.com.sv|google.td|google.tg|google.co.th|google.com.tj|google.tk|google.tl|google.tm|google.tn|google.to|google.com.tr|google.tt|google.com.tw|google.co.tz|google.com.ua|google.co.ug|google.co.uk|google.com.uy|google.co.uz|google.com.vc|google.co.ve|google.vg|google.co.vi|google.com.vn|google.vu|google.ws|google.rs|google.co.za|google.co.zm|google.co.zw|google.cat
 @@//*.xvideos.com^$domain=xvideos.com
 @@||ebay.co.uk/itm/like/*&adgroupid=$domain=ebay.com|ebay.co.uk
 @@||rover.ebay.com/rover/$domain=ebay.com|ebay.co.uk

@@ -1,6 +1,6 @@
-! Checksum: B9nZ5nQ9Iw51UmMtaV22pw
-! Version: 1.0.9.3
-! TimeUpdated: 2016-10-21T18:01:22.889+04:00
+! Checksum: wDGjU+cXuYAiSUrJcRCQpg
+! Version: 1.0.9.8
+! TimeUpdated: 2016-11-22T04:01:21.040+04:00
 ! Title: Dutch filter
 ! Description: EasyList Dutch + Adguard Dutch filter. Filter list that specifically removes adverts on Dutch language websites.
 ! Title: Adguard Dutch Filter.
@@ -1337,6 +1337,7 @@ biernet.nl#@#.afs_ads
 !
 ! Extended CSS rules
 !
+klusidee.nl##tr.table-row[-ext-has=".td-ad"]
 !---------------------------------------------------------------------------!
 !-------------- General element hiding rules -------------------------------!
 !---------------------------------------------------------------------------!
@@ -1377,6 +1378,11 @@ omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -2
 !--------------------------------------------------------!
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
+funx.nl##.leaderboard-container
+funx.nl##.sidebar_item--ad
+klusidee.nl##td > .hide-mobile[style*="728px; height:"]
+klusidee.nl##.show-mobile[style="width:300px; height:600px; margin: 0 auto;"]
+klusidee.nl##td.td-ad
 ondertitel.com##.leaderbord-container
 marktplaats.nl###banner-aanbieding
 marktplaats.nl###banner-bottom
@@ -1411,6 +1417,8 @@ vlinderscrime.nl##a[href="http://mariska-o.nl/"]
 !
 ! White list. Fixing filtration errors (false-positive)
 !
+! https://forum.adguard.com/index.php?threads/resolved-klusidee-nl.15961/
+klusidee.nl#@#.header-ad
 ! https://forum.adguard.com/index.php?threads/12438/
 @@||media.boomads.com/images^$domain=telegraaf.nl
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/534

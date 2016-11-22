@@ -1,6 +1,6 @@
-! Checksum: cR3XxzrdGICQPMm4mS3+uA
-! Version: 1.0.86.44
-! TimeUpdated: 2016-10-19T00:01:25.734+04:00
+! Checksum: AoPYZOdL103YFU5VXhrzkg
+! Version: 1.0.86.46
+! TimeUpdated: 2016-11-01T23:01:29.902+04:00
 ! Title: Spanish/Portuguese filter
 ! Description: Adguard Spanish/Portuguese filter. Filter list that specifically removes adverts on Spanish and Portuguese language websites.
 ! Title: Adguard Spanish/Portuguese Filter.
@@ -173,6 +173,8 @@
 !
 ! These rules are against anti-adblock scripts
 !
+! https://forum.adguard.com/index.php?threads/11826/
+@@||cdn.komoona.com/scripts/kmn_sa.js$domain=mangahost.net
 ! https://forum.adguard.com/index.php?threads/14959/
 forum.outerspace.com.br#@#.adsbygoogle
 ! https://forum.adguard.com/index.php?threads/14945/
@@ -217,6 +219,7 @@ jokerfansub.com#@##adsense
 !
 ! Extended CSS rules
 !
+mangahost.net##.sidebar > section.clearfix[-ext-has='div.ads']
 !---------------------------------------------------------------------------!
 !-------------- General element hiding rules -------------------------------!
 !---------------------------------------------------------------------------!
@@ -428,6 +431,7 @@ http://adw.
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
 !
+mangahost.net##.ads
 elcorreo.com##div[id^="ads_"]
 telecinco.es##.ad-top
 ig.com.br###BF6F388D-5A38-457D-991A-A827E8F29D58
@@ -1452,6 +1456,8 @@ uol.com.br##ul.produtos
 !
 ! White list. Fixing filtration errors (false-positive)
 !
+! https://forum.adguard.com/index.php?threads/15571/
+@@||mymrt.com.my/cms/upload_files/banner/banner_$domain=mymrt.com.my,image
 ! http://forum.adguard.com/showthread.php?6421
 @@||zerozero.pt^$elemhide
 ! http://forum.adguard.com/showthread.php?6420
