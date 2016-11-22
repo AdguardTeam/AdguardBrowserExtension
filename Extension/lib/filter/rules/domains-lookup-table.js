@@ -123,7 +123,7 @@ DomainsLookupTable.prototype = {
                     // Lazy initialization of the resulting list
                     urlFilterRules = [];
                 }
-                urlFilterRules.push(rules);
+                urlFilterRules.concat(rules);
             }
         }
 

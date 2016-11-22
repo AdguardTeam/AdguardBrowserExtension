@@ -30,7 +30,10 @@ var UrlFilter = require('../../lib/filter/rules/url-filter').UrlFilter;
 
 var allowAllWhiteListRule = {
     whiteListRule: true,
-    filterId: AntiBannerFiltersId.WHITE_LIST_FILTER_ID
+    filterId: AntiBannerFiltersId.WHITE_LIST_FILTER_ID,
+    checkContentTypeIncluded: function () {
+        return true;
+    }
 };
 
 var WhiteListService = function () {
