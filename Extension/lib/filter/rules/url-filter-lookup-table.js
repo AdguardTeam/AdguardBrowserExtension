@@ -19,7 +19,8 @@ var ShortcutsLookupTable = require('../../../lib/filter/rules/shortcuts-lookup-t
 var DomainsLookupTable = require('../../../lib/filter/rules/domains-lookup-table').DomainsLookupTable;
 var CollectionUtils = require('../../../lib/utils/common').CollectionUtils;
 var UrlUtils = require('../../../lib/utils/url').UrlUtils;
-var RequestTypes = require('../../lib/utils/common').RequestTypes;
+var RequestTypes = require('../../../lib/utils/common').RequestTypes;
+var UrlFilterRule = require('../../../lib/filter/rules/url-filter-rule').UrlFilterRule;
 
 /**
  * Special lookup table
