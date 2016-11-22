@@ -216,7 +216,7 @@
                 checkShouldCollapseElement(iframes[i]);
             }
 
-            ElementCollapser.unhideBySelector(iframeHidingSelector);
+            ElementCollapser.unhideBySelector(iframeHidingSelector, shadowRoot);
 
             if (document.body) {
                 // Handle dynamically added frames
@@ -591,7 +591,7 @@
         }
 
         // In any case we should remove hiding style
-        ElementCollapser.unhideElement(collapseRequest.element);
+        ElementCollapser.unhideElement(collapseRequest.element, shadowRoot);
     };
     
     /**
