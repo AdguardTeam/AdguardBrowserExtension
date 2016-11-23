@@ -124,7 +124,7 @@ DomainsLookupTable.prototype = {
                     // Lazy initialization of the resulting list
                     urlFilterRules = [];
                 }
-                urlFilterRules.concat(rules);
+                urlFilterRules = urlFilterRules.concat(rules);
             }
         }
 
