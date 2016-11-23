@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global Cc, Ci, i18n, safari, LS, Prefs, RequestTypes */
+/* global safari, Prefs, RequestTypes */
 
 var Utils = {
 
@@ -27,7 +27,7 @@ var Utils = {
 
     getClientId: function () {
 
-        var clientId = LS.getItem("client-id");
+        var clientId = adguard.localStorage.getItem("client-id");
         if (!clientId) {
             var result = [];
             var suffix = (Date.now()) % 1e8;
@@ -37,7 +37,7 @@ var Utils = {
                 result.push(symbol);
             }
             clientId = result.join('') + suffix;
-            LS.setItem("client-id", clientId);
+            adguard.localStorage.setItem("client-id", clientId);
         }
 
         return clientId;
@@ -59,11 +59,11 @@ var Utils = {
     },
 
     getAppVersion: function () {
-        return LS.getItem("app-version");
+        return adguard.localStorage.getItem("app-version");
     },
 
     setAppVersion: function (version) {
-        LS.setItem("app-version", version);
+        adguard.localStorage.setItem("app-version", version);
     },
 
     isYaBrowser: function () {

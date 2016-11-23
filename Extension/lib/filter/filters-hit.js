@@ -109,7 +109,7 @@ FilterRulesHitCount.prototype = {
 
     cleanup: function () {
         this.stats = Object.create(null);
-        LS.removeItem(this.HITS_COUNT_PROP);
+        adguard.localStorage.removeItem(this.HITS_COUNT_PROP);
     },
 
     _init: function () {
@@ -117,7 +117,7 @@ FilterRulesHitCount.prototype = {
     },
 
     _getHitCountStats: function () {
-        var json = LS.getItem(this.HITS_COUNT_PROP);
+        var json = adguard.localStorage.getItem(this.HITS_COUNT_PROP);
         var stats = Object.create(null);
         try {
             if (json) {
@@ -135,7 +135,7 @@ FilterRulesHitCount.prototype = {
         }
         this.timeoutId = setTimeout(function () {
             try {
-                LS.setItem(this.HITS_COUNT_PROP, JSON.stringify(stats));
+                adguard.localStorage.setItem(this.HITS_COUNT_PROP, JSON.stringify(stats));
             } catch (ex) {
                 Log.error("Error save hit count statistic to storage, cause {0}", ex);
             }

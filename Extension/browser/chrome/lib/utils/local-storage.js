@@ -16,29 +16,31 @@
  */
 
 /**
- * Local storage adapter
+ * Local storage implementation for chromium-based browsers
  */
-var LS = {
+adguard.localStorageImpl = (function () {
 
-	storage: localStorage,
+    var getItem = function (key) {
+        return localStorage.getItem(key);
+    };
 
-	getItem: function (key) {
-		return this.storage.getItem(key);
-	},
+    var setItem = function (key, value) {
+        localStorage.setItem(key, value);
+    };
 
-	setItem: function (key, value) {
-		try {
-			this.storage.setItem(key, value);
-		} catch (ex) {
-			Log.error("Error while saving item {0} to the localStorage: {1}", key, ex);
-		}
-	},
+    var removeItem = function (key) {
+        localStorage.removeItem(key);
+    };
 
-	removeItem: function (key) {
-		this.storage.removeItem(key);
-	},
+    var hasItem = function (key) {
+        return key in localStorage;
+    };
 
-	has: function (key) {
-		return key in this.storage;
-	}
-};
+    return {
+        getItem: getItem,
+        setItem: setItem,
+        removeItem: removeItem,
+        hasItem: hasItem
+    };
+
+})();

@@ -1108,7 +1108,7 @@ AntiBannerService.prototype = {
         var loadFilterRulesFromStorage = function (filterId, rulesFilterMap) {
             var dfd = new Promise();
 
-            FilterStorage.loadFilterRules(filterId, function (rulesText) {
+            adguard.rulesStorage.read(filterId, function (rulesText) {
                 if (rulesText) {
                     rulesFilterMap[filterId] = rulesText;
                 }
@@ -1150,7 +1150,7 @@ AntiBannerService.prototype = {
         var dfd = new Promise();
 
         var filterId = AntiBannerFiltersId.USER_FILTER_ID;
-        FilterStorage.loadFilterRules(filterId, function (rulesText) {
+        adguard.rulesStorage.read(filterId, function (rulesText) {
 
             this.userRules = rulesText || [];
 
@@ -1286,7 +1286,7 @@ AntiBannerService.prototype = {
 
         var dfd = new Promise();
 
-        FilterStorage.loadFilterRules(filterId, function (loadedRulesText) {
+        adguard.rulesStorage.read(filterId, function (loadedRulesText) {
 
             for (var i = 0; i < events.length; i++) {
 
@@ -1317,7 +1317,7 @@ AntiBannerService.prototype = {
             }
 
             Log.debug("Save {0} rules to filter {1}", loadedRulesText.length, filterId);
-            FilterStorage.saveFilterRules(filterId, loadedRulesText, dfd.resolve);
+            adguard.rulesStorage.write(filterId, loadedRulesText, dfd.resolve);
 
         }.bind(this));
 
@@ -1611,7 +1611,7 @@ var FilterLSUtils = {
     getFiltersVersionInfo: function () {
         var filters = Object.create(null);
         try {
-            var json = LS.getItem(FilterLSUtils.FILTERS_VERSION_PROP);
+            var json = adguard.localStorage.getItem(FilterLSUtils.FILTERS_VERSION_PROP);
             if (json) {
                 filters = JSON.parse(json);
             }
@@ -1628,7 +1628,7 @@ var FilterLSUtils = {
     getFiltersStateInfo: function () {
         var filters = Object.create(null);
         try {
-            var json = LS.getItem(FilterLSUtils.FILTERS_STATE_PROP);
+            var json = adguard.localStorage.getItem(FilterLSUtils.FILTERS_STATE_PROP);
             if (json) {
                 filters = JSON.parse(json);
             }
@@ -1650,7 +1650,7 @@ var FilterLSUtils = {
             lastCheckTime: filter.lastCheckTime,
             lastUpdateTime: filter.lastUpdateTime
         };
-        LS.setItem(FilterLSUtils.FILTERS_VERSION_PROP, JSON.stringify(filters));
+        adguard.localStorage.setItem(FilterLSUtils.FILTERS_VERSION_PROP, JSON.stringify(filters));
     },
 
     /**
@@ -1665,7 +1665,7 @@ var FilterLSUtils = {
             enabled: filter.enabled,
             installed: filter.installed
         };
-        LS.setItem(FilterLSUtils.FILTERS_STATE_PROP, JSON.stringify(filters));
+        adguard.localStorage.setItem(FilterLSUtils.FILTERS_STATE_PROP, JSON.stringify(filters));
     }
 };
 

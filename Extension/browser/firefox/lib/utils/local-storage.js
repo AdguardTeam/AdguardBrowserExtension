@@ -15,32 +15,34 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global SimplePrefs */
+
 /**
- * Local storage adapter
+ * Local storage implementation for firefox
  */
-var LS = {
+adguard.localStorageImpl = (function () {
 
-    getItem: function (key) {
+    var getItem = function (key) {
         return SimplePrefs.get(key);
-    },
+    };
 
-    setItem: function (key, value) {
-        try {
-            SimplePrefs.set(key, value);
-        } catch (ex) {
-            Log.error("Error save item cause: {0}", ex);
-        }
-    },
+    var setItem = function (key, value) {
+        SimplePrefs.set(key, value);
+    };
 
-    removeItem: function (key) {
+    var removeItem = function (key) {
         SimplePrefs.remove(key);
-    },
+    };
 
-    clean: function () {
-        SimplePrefs.clear();
-    },
-
-    has: function (key) {
+    var hasItem = function (key) {
         return SimplePrefs.has(key);
-    }
-};
+    };
+
+    return {
+        getItem: getItem,
+        setItem: setItem,
+        removeItem: removeItem,
+        hasItem: hasItem
+    };
+
+})();

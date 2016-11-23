@@ -15,30 +15,34 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global safari */
+
 /**
- * Local storage adapter
+ * Local storage implementation for safari
  */
-var LS = {
+adguard.localStorageImpl = (function () {
 
-	storage: safari.extension.settings,
+    var getItem = function (key) {
+        return safari.extension.settings.getItem(key);
+    };
 
-	getItem: function (key) {
-		return this.storage.getItem(key);
-	},
+    var setItem = function (key, value) {
+        safari.extension.settings.setItem(key, value);
+    };
 
-	setItem: function (key, value) {
-		try {
-			this.storage.setItem(key, value);
-		} catch (ex) {
-			Log.error("Error save item cause: {0}", e);
-		}
-	},
+    var removeItem = function (key) {
+        safari.extension.settings.removeItem(key);
+    };
 
-	removeItem: function (key) {
-		this.storage.removeItem(key);
-	},
+    var hasItem = function (key) {
+        return key in safari.extension.settings;
+    };
 
-	has: function (key) {
-		return key in this.storage;
-	}
-};
+    return {
+        getItem: getItem,
+        setItem: setItem,
+        removeItem: removeItem,
+        hasItem: hasItem
+    };
+
+})();

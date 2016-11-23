@@ -74,7 +74,7 @@ SafebrowsingFilter.prototype = {
 
         // check safebrowsing is active
         var now = Date.now();
-        var suspendedFrom = LS.getItem(this.suspendedFromProperty) - 0;
+        var suspendedFrom = adguard.localStorage.getItem(this.suspendedFromProperty) - 0;
         if (suspendedFrom && (now - suspendedFrom) < this.SUSPEND_TTL) {
             return;
         }
@@ -201,7 +201,7 @@ SafebrowsingFilter.prototype = {
      * @private
      */
     _resumeSafebrowsing: function () {
-        LS.removeItem(this.suspendedFromProperty);
+        adguard.localStorage.removeItem(this.suspendedFromProperty);
     },
 
     /**
@@ -209,7 +209,7 @@ SafebrowsingFilter.prototype = {
      * @private
      */
     _suspendSafebrowsing: function () {
-        LS.setItem(this.suspendedFromProperty, Date.now());
+        adguard.localStorage.setItem(this.suspendedFromProperty, Date.now());
     },
 
     /**

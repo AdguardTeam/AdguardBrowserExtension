@@ -86,21 +86,21 @@ LocalStorageCache.prototype = {
 	_getCache: function () {
 		var cache = Object.create(null);
 		try {
-			var json = LS.getItem(this.lsProperty);
+			var json = adguard.localStorage.getItem(this.lsProperty);
 			if (json) {
 				cache = JSON.parse(json);
 			}
 		} catch (ex) {
 			//ignore
 			Log.error("Error read from {0} cache, cause: {1}", this.lsProperty, ex);
-			LS.removeItem(this.lsProperty);
+			adguard.localStorage.removeItem(this.lsProperty);
 		}
 		return cache;
 	},
 
 	_saveCache: function (cache) {
 		try {
-			LS.setItem(this.lsProperty, JSON.stringify(cache));
+			adguard.localStorage.setItem(this.lsProperty, JSON.stringify(cache));
 		} catch (ex) {
 			Log.error("Error save to {0} cache, cause: {1}", this.lsProperty, ex);
 		}

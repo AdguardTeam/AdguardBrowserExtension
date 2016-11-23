@@ -213,14 +213,14 @@ WhiteListService.prototype = {
     },
 
     _saveToLS: function () {
-        LS.setItem(this.WHITE_LIST_DOMAINS_LS_PROP, JSON.stringify(this.whiteListDomains));
-        LS.setItem(this.BLOCK_LIST_DOMAINS_LS_PROP, JSON.stringify(this.blockListDomains));
+        adguard.localStorage.setItem(this.WHITE_LIST_DOMAINS_LS_PROP, JSON.stringify(this.whiteListDomains));
+        adguard.localStorage.setItem(this.BLOCK_LIST_DOMAINS_LS_PROP, JSON.stringify(this.blockListDomains));
     },
 
     _getDomainsFromLS: function (prop) {
         var domains = [];
         try {
-            var json = LS.getItem(prop);
+            var json = adguard.localStorage.getItem(prop);
             if (json) {
                 domains = JSON.parse(json);
             }

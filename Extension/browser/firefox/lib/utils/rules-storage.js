@@ -15,21 +15,30 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global FS */
+
 /**
- * Filter rules storage adapter.
+ * Filter rules storage implementation.
  * For FF we store rules in files
  */
-var RulesStorage = {
+adguard.rulesStorageImpl = (function () {
 
-    read: function (filename, callback) {
+    var read = function (filename, callback) {
         FS.readFromFile(filename, callback);
-    },
+    };
 
-    write: function (filename, data, callback) {
+    var write = function (filename, data, callback) {
         FS.writeToFile(filename, data, callback);
-    },
+    };
 
-    remove: function (path, successCallback) {
+    var remove = function (path, successCallback) {
         FS.removeFile(path, successCallback);
-    }
-};
+    };
+
+    return {
+        write: write,
+        read: read,
+        remove: remove
+    };
+
+})();
