@@ -24,20 +24,20 @@ var RequestFilter = function () {
 
     // Filter that applies URL blocking rules
     // Basic rules: http://adguard.com/en/filterrules.html#baseRules
-    this.urlBlockingFilter = new UrlFilter();
+    this.urlBlockingFilter = new adguard.rules.UrlFilter();
 
     // Filter that applies whitelist rules
     // Exception rules: http://adguard.com/en/filterrules.html#exclusionRules
-    this.urlWhiteFilter = new UrlFilter();
+    this.urlWhiteFilter = new adguard.rules.UrlFilter();
 
     // Filter that applies CSS rules
     // ABP element hiding rules: http://adguard.com/en/filterrules.html#hideRules
     // CSS injection rules http://adguard.com/en/filterrules.html#cssInjection
-    this.cssFilter = new CssFilter();
+    this.cssFilter = new adguard.rules.CssFilter();
 
     // Filter that applies JS rules
     // JS injection rules: http://adguard.com/en/filterrules.html#javascriptInjection
-    this.scriptFilter = new ScriptFilter();
+    this.scriptFilter = new adguard.rules.ScriptFilter();
 
     // Safebrowsing filter: http://adguard.com/en/how-malware-blocked.html#extension
     this.safebrowsingFilter = new SafebrowsingFilter();
@@ -83,15 +83,15 @@ RequestFilter.prototype = {
             Log.error("FilterRule must not be null");
             return;
         }
-        if (rule instanceof UrlFilterRule) {
+        if (rule instanceof adguard.rules.UrlFilterRule) {
             if (rule.whiteListRule) {
                 this.urlWhiteFilter.addRule(rule);
             } else {
                 this.urlBlockingFilter.addRule(rule);
             }
-        } else if (rule instanceof CssFilterRule) {
+        } else if (rule instanceof adguard.rules.CssFilterRule) {
             this.cssFilter.addRule(rule);
-        } else if (rule instanceof ScriptFilterRule) {
+        } else if (rule instanceof adguard.rules.ScriptFilterRule) {
             this.scriptFilter.addRule(rule);
         }
         this.rulesCount++;
@@ -109,15 +109,15 @@ RequestFilter.prototype = {
             Log.error("FilterRule must not be null");
             return;
         }
-        if (rule instanceof UrlFilterRule) {
+        if (rule instanceof adguard.rules.UrlFilterRule) {
             if (rule.whiteListRule) {
                 this.urlWhiteFilter.removeRule(rule);
             } else {
                 this.urlBlockingFilter.removeRule(rule);
             }
-        } else if (rule instanceof CssFilterRule) {
+        } else if (rule instanceof adguard.rules.CssFilterRule) {
             this.cssFilter.removeRule(rule);
-        } else if (rule instanceof ScriptFilterRule) {
+        } else if (rule instanceof adguard.rules.ScriptFilterRule) {
             this.scriptFilter.removeRule(rule);
         }
         this.rulesCount--;

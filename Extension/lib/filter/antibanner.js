@@ -310,7 +310,7 @@ AntiBannerService.prototype = {
      * @returns Rule created
      */
     addUserFilterRule: function (ruleText) {
-        var rule = FilterRuleBuilder.createRule(ruleText, AntiBannerFiltersId.USER_FILTER_ID);
+        var rule = adguard.rules.builder.createRule(ruleText, AntiBannerFiltersId.USER_FILTER_ID);
         if (rule !== null) {
             this._addRuleToFilter(AntiBannerFiltersId.USER_FILTER_ID, rule);
             this.userRules.push(rule.ruleText);
@@ -326,7 +326,7 @@ AntiBannerService.prototype = {
     addUserFilterRules: function (rulesToAdd) {
         var rules = [];
         for (var i = 0; i < rulesToAdd.length; i++) {
-            var rule = FilterRuleBuilder.createRule(rulesToAdd[i], AntiBannerFiltersId.USER_FILTER_ID);
+            var rule = adguard.rules.builder.createRule(rulesToAdd[i], AntiBannerFiltersId.USER_FILTER_ID);
             if (rule !== null) {
                 rules.push(rule);
                 this.userRules.push(rule.ruleText);
@@ -343,7 +343,7 @@ AntiBannerService.prototype = {
      * @param ruleText Rule text
      */
     removeUserFilter: function (ruleText) {
-        var rule = FilterRuleBuilder.createRule(ruleText, AntiBannerFiltersId.USER_FILTER_ID);
+        var rule = adguard.rules.builder.createRule(ruleText, AntiBannerFiltersId.USER_FILTER_ID);
         if (rule !== null) {
             var filter = this._getFilterById(AntiBannerFiltersId.USER_FILTER_ID);
             this.requestFilter.removeRule(rule);
@@ -983,7 +983,7 @@ AntiBannerService.prototype = {
                     continue;
                 }
                 uniqueRules[ruleText] = true;
-                var rule = FilterRuleBuilder.createRule(ruleText, filterId);
+                var rule = adguard.rules.builder.createRule(ruleText, filterId);
 
                 if (rule !== null) {
                     requestFilter.addRule(rule);

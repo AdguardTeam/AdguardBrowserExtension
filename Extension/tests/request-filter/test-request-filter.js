@@ -2,7 +2,7 @@ QUnit.test("General", function(assert) {
     var url = "https://test.com/";
     var referrer = "example.org";
 
-    var rule = new UrlFilterRule("||test.com^");
+    var rule = new adguard.rules.UrlFilterRule("||test.com^");
 
     var requestFilter = new RequestFilter();
     requestFilter.addRule(rule);
@@ -16,10 +16,10 @@ QUnit.test("Whitelist rules selecting", function(assert) {
     var url = "https://test.com/";
     var referrer = "http://example.org";
 
-    var rule = new UrlFilterRule("||test.com^");
-    var whitelist = new UrlFilterRule("@@||test.com^");
-    var documentRule = new UrlFilterRule("@@||test.com^$document");
-    var genericHideRule = new UrlFilterRule("@@||test.com^$generichide");
+    var rule = new adguard.rules.UrlFilterRule("||test.com^");
+    var whitelist = new adguard.rules.UrlFilterRule("@@||test.com^");
+    var documentRule = new adguard.rules.UrlFilterRule("@@||test.com^$document");
+    var genericHideRule = new adguard.rules.UrlFilterRule("@@||test.com^$generichide");
 
     var requestFilter = new RequestFilter();
     requestFilter.addRule(rule);
@@ -60,10 +60,10 @@ QUnit.test("Important modifier rules", function(assert) {
 
     var requestFilter = new RequestFilter();
 
-    var rule = new UrlFilterRule("||test.com^");
-    var whitelist = new UrlFilterRule("@@||test.com^");
-    var important = new UrlFilterRule("||test.com^$important");
-    var documentRule = new UrlFilterRule("@@||example.org^$document");
+    var rule = new adguard.rules.UrlFilterRule("||test.com^");
+    var whitelist = new adguard.rules.UrlFilterRule("@@||test.com^");
+    var important = new adguard.rules.UrlFilterRule("||test.com^$important");
+    var documentRule = new adguard.rules.UrlFilterRule("@@||example.org^$document");
 
     assert.ok(rule.isFiltered(url, true, RequestTypes.IMAGE));
     assert.ok(whitelist.isFiltered(url, true, RequestTypes.IMAGE));
@@ -112,7 +112,7 @@ QUnit.test("Request filter performance", function(assert) {
         assert.ok(rules.length > 0);
         for (var i = 0; i < rules.length; i++) {
             try {
-                var rule = FilterRuleBuilder.createRule(rules[i], AntiBannerFiltersId.USER_FILTER_ID);
+                var rule = adguard.rules.builder.createRule(rules[i], AntiBannerFiltersId.USER_FILTER_ID);
                 requestFilter.addRule(rule);
             } catch (ex) {
                 //Ignore

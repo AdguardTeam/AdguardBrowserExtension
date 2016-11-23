@@ -143,7 +143,7 @@ FilterParser.prototype = {
 						break;
 					case FilterParser.Sections.RULES_START:
 						if (line && this.currentRules) {
-							var rule = FilterRuleBuilder.createRule(line, this.currentFilter.filterId - 0);
+							var rule = adguard.rules.builder.createRule(line, this.currentFilter.filterId - 0);
 							if (rule !== null) {
 								this.currentRules.push(rule);
 							}

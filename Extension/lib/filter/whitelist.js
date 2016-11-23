@@ -15,14 +15,14 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var allowAllWhiteListRule = new UrlFilterRule('@@whitelist-all$document', AntiBannerFiltersId.WHITE_LIST_FILTER_ID);
+var allowAllWhiteListRule = new adguard.rules.UrlFilterRule('@@whitelist-all$document', AntiBannerFiltersId.WHITE_LIST_FILTER_ID);
 
 var WhiteListService = function () {
 
     this.defaultWhiteListMode = adguard.settings.isDefaultWhiteListMode();
 
-    this.whiteListFilter = new UrlFilter();
-    this.blockListFilter = new UrlFilter();
+    this.whiteListFilter = new adguard.rules.UrlFilter();
+    this.blockListFilter = new adguard.rules.UrlFilter();
 
     this.whiteListDomains = [];
     this.blockListDomains = [];
@@ -160,10 +160,10 @@ WhiteListService.prototype = {
     clearWhiteList: function () {
         if (this.defaultWhiteListMode) {
             this.whiteListDomains = [];
-            this.whiteListFilter = new UrlFilter();
+            this.whiteListFilter = new adguard.rules.UrlFilter();
         } else {
             this.blockListDomains = [];
-            this.blockListFilter = new UrlFilter();
+            this.blockListFilter = new adguard.rules.UrlFilter();
         }
         this._saveToLS();
     },
@@ -187,7 +187,7 @@ WhiteListService.prototype = {
         if (StringUtils.isEmpty(domain)) {
             return null;
         }
-        return FilterRuleBuilder.createRule("@@//" + domain + "$document", AntiBannerFiltersId.WHITE_LIST_FILTER_ID);
+        return adguard.rules.builder.createRule("@@//" + domain + "$document", AntiBannerFiltersId.WHITE_LIST_FILTER_ID);
     },
 
     _addToArray: function (domain) {

@@ -120,6 +120,8 @@ var SafariContentBlockerConverter = {
         _addResourceType: function (rule, result) {
             var types = [];
 
+            var UrlFilterRule = adguard.rules.UrlFilterRule;
+
             if (this._isContentType(rule, UrlFilterRule.contentTypes.ALL) &&
                 rule.restrictedContentType === 0) {
                 // Safari does not support all other default content types, like subdocument etc.
@@ -299,12 +301,12 @@ var SafariContentBlockerConverter = {
         _checkWhiteListExceptions: function (rule, result) {
             var self = this;
             function isDocumentRule(r) {
-                return self._isContentType(r, UrlFilterRule.contentTypes.DOCUMENT);
+                return self._isContentType(r, adguard.rules.UrlFilterRule.contentTypes.DOCUMENT);
             }
 
             function isUrlBlockRule(r) {
-                return self._isContentType(r, UrlFilterRule.contentTypes.URLBLOCK) ||
-                    self._isContentType(r, UrlFilterRule.contentTypes.GENERICBLOCK);
+                return self._isContentType(r, adguard.rules.UrlFilterRule.contentTypes.URLBLOCK) ||
+                    self._isContentType(r, adguard.rules.UrlFilterRule.contentTypes.GENERICBLOCK);
             }
 
             if (rule.whiteListRule && rule.whiteListRule === true) {
@@ -345,8 +347,8 @@ var SafariContentBlockerConverter = {
                     result.trigger["url-filter"] = URL_FILTER_ANY_URL;
                     delete result.trigger["resource-type"];
 
-                } else if (this._hasContentType(rule, UrlFilterRule.contentTypes.ELEMHIDE | // jshint ignore:line 
-                        UrlFilterRule.contentTypes.GENERICHIDE)) {  // jshint ignore:line
+                } else if (this._hasContentType(rule, adguard.rules.UrlFilterRule.contentTypes.ELEMHIDE | // jshint ignore:line
+                        adguard.rules.UrlFilterRule.contentTypes.GENERICHIDE)) {  // jshint ignore:line
                     result.trigger["resource-type"] = ['document'];
                 }
             }
@@ -385,8 +387,8 @@ var SafariContentBlockerConverter = {
             var urlFilter = this._createUrlFilterString(rule);
 
             // Redefine some of regular expressions
-            urlFilter = StringUtils.replaceAll(urlFilter, SimpleRegex.regexConfiguration.regexStartUrl, URL_FILTER_REGEXP_START_URL);
-            urlFilter = StringUtils.replaceAll(urlFilter, SimpleRegex.regexConfiguration.regexSeparator, URL_FILTER_REGEXP_SEPARATOR);
+            urlFilter = StringUtils.replaceAll(urlFilter, adguard.rules.SimpleRegex.regexConfiguration.regexStartUrl, URL_FILTER_REGEXP_START_URL);
+            urlFilter = StringUtils.replaceAll(urlFilter, adguard.rules.SimpleRegex.regexConfiguration.regexSeparator, URL_FILTER_REGEXP_SEPARATOR);
 
             this._validateRegExp(urlFilter);
 
@@ -439,7 +441,7 @@ var SafariContentBlockerConverter = {
                 return null;
             }
 
-            var agRule = FilterRuleBuilder.createRule(ruleText);
+            var agRule = adguard.rules.builder.createRule(ruleText);
             if (agRule === null) {
                 throw new Error('Cannot create rule from: ' + ruleText);
             }
@@ -471,11 +473,11 @@ var SafariContentBlockerConverter = {
         }
 
         var result;
-        if (rule instanceof CssFilterRule) {
+        if (rule instanceof adguard.rules.CssFilterRule) {
             result = this.AGRuleConverter.convertCssFilterRule(rule);
-        } else if (rule instanceof ScriptFilterRule) {
+        } else if (rule instanceof adguard.rules.ScriptFilterRule) {
             result = this.AGRuleConverter.convertScriptRule(rule);
-        } else if (rule instanceof UrlFilterRule) {
+        } else if (rule instanceof adguard.rules.UrlFilterRule) {
             result = this.AGRuleConverter.convertUrlFilterRule(rule);
         } else {
             throw new Error('Rule is not supported: ' + rule);

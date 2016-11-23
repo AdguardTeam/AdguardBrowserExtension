@@ -15,133 +15,145 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Special lookup table, which improves basic rules search speed by domain.
- */
-var DomainsLookupTable = function (rules) {
+/* global CollectionUtils, Utils */
 
-    this.lookupTable = Object.create(null);
+(function (api) {
 
-    if (rules) {
-        for (var i = 0; i < rules.length; i++) {
-            this.addRule(rules[i]);
-        }
-    }
-};
-
-DomainsLookupTable.prototype = {
+    'use strict';
 
     /**
-     * Adds specified rule to the lookup table (if it is possible).
-     * If rule has no domain restriction, this method returns false.
-     *
-     * @param rule Url filter rule
-     * @return boolean true if rule was added. Otherwise - false.
+     * Special lookup table, which improves basic rules search speed by domain.
      */
-    addRule: function (rule) {
-        var permittedDomains = rule.getPermittedDomains();
-        if (!permittedDomains || permittedDomains.length < 1) {
-            // No permitted domains, we can't do anything
-            return false;
-        }
+    var DomainsLookupTable = function (rules) {
 
-        for (var i = 0; i < permittedDomains.length; i++) {
-            var domainName = permittedDomains[i];
-            var rules = this.lookupTable[domainName];
-            if (rules == null) {
-                rules = [];
-                this.lookupTable[domainName] = rules;
-            }
-
-            rules.push(rule);
-        }
-
-        return true;
-    },
-
-    /**
-     * Removes specified rule from the lookup table
-     *
-     * @param rule Rule to remove
-     */
-    removeRule: function (rule) {
-        var permittedDomains = rule.getPermittedDomains();
-        if (!permittedDomains || permittedDomains.length < 1) {
-            // No permitted domains, we can't do anything
-            return;
-        }
-
-        for (var i = 0; i < permittedDomains.length; i++) {
-            var domainName = permittedDomains[i];
-            var rules = this.lookupTable[domainName];
-            if (rules) {
-                CollectionUtils.removeRule(rules, rule);
-                if (rules.length == 0) {
-                    delete this.lookupTable[domainName];
-                }
-            }
-        }
-    },
-
-    /**
-     * Clears lookup table
-     */
-    clearRules: function () {
         this.lookupTable = Object.create(null);
-    },
 
-    /**
-     * Searches for filter rules restricted to the specified domain
-     *
-     * @param domainName Domain name
-     * @return List of filter rules or null if nothing found
-     */
-    lookupRules: function (domainName) {
-        if (domainName == null) {
-            return null;
-        }
-
-        var parts = domainName.split('.');
-        if (parts == null || parts.length == 0) {
-            return null;
-        }
-
-        // Resulting list
-        var urlFilterRules = null;
-
-        // Iterate over all sub-domains
-        var host = parts[parts.length - 1];
-        for (var i = parts.length - 2; i >= 0; i--) {
-            host = parts[i] + "." + host;
-            var rules = this.lookupTable[host];
-            if (rules && rules.length > 0) {
-                if (urlFilterRules == null) {
-                    // Lazy initialization of the resulting list
-                    urlFilterRules = [];
-                }
-                urlFilterRules = urlFilterRules.concat(rules);
+        if (rules) {
+            for (var i = 0; i < rules.length; i++) {
+                this.addRule(rules[i]);
             }
         }
+    };
 
-        return urlFilterRules;
-    },
+    DomainsLookupTable.prototype = {
 
-    /**
-     * @returns {Array} rules in lookup table
-     */
-    getRules: function () {
-        var result = [];
-        for (var r in this.lookupTable) {
-            var value = this.lookupTable[r];
-            if (value) {
-                if (Utils.isArray(value)) {
-                    result = result.concat(value);
-                } else {
-                    result.push(value);
+        /**
+         * Adds specified rule to the lookup table (if it is possible).
+         * If rule has no domain restriction, this method returns false.
+         *
+         * @param rule Url filter rule
+         * @return boolean true if rule was added. Otherwise - false.
+         */
+        addRule: function (rule) {
+            var permittedDomains = rule.getPermittedDomains();
+            if (!permittedDomains || permittedDomains.length === 0) {
+                // No permitted domains, we can't do anything
+                return false;
+            }
+
+            for (var i = 0; i < permittedDomains.length; i++) {
+                var domainName = permittedDomains[i];
+                var rules = this.lookupTable[domainName];
+                if (!rules) {
+                    rules = [];
+                    this.lookupTable[domainName] = rules;
+                }
+
+                rules.push(rule);
+            }
+
+            return true;
+        },
+
+        /**
+         * Removes specified rule from the lookup table
+         *
+         * @param rule Rule to remove
+         */
+        removeRule: function (rule) {
+            var permittedDomains = rule.getPermittedDomains();
+            if (!permittedDomains || permittedDomains.length === 0) {
+                // No permitted domains, we can't do anything
+                return;
+            }
+
+            for (var i = 0; i < permittedDomains.length; i++) {
+                var domainName = permittedDomains[i];
+                var rules = this.lookupTable[domainName];
+                if (rules) {
+                    CollectionUtils.removeRule(rules, rule);
+                    if (rules.length === 0) {
+                        delete this.lookupTable[domainName];
+                    }
                 }
             }
-        }
+        },
 
-        return result;
-    }
-};
+        /**
+         * Clears lookup table
+         */
+        clearRules: function () {
+            this.lookupTable = Object.create(null);
+        },
+
+        /**
+         * Searches for filter rules restricted to the specified domain
+         *
+         * @param domainName Domain name
+         * @return List of filter rules or null if nothing found
+         */
+        lookupRules: function (domainName) {
+
+            if (!domainName) {
+                return null;
+            }
+
+            var parts = domainName.split('.');
+            if (parts.length === 0) {
+                return null;
+            }
+
+            // Resulting list
+            var urlFilterRules = null;
+
+            // Iterate over all sub-domains
+            var host = parts[parts.length - 1];
+            for (var i = parts.length - 2; i >= 0; i--) {
+                host = parts[i] + "." + host;
+                var rules = this.lookupTable[host];
+                if (rules && rules.length > 0) {
+                    if (urlFilterRules === null) {
+                        // Lazy initialization of the resulting list
+                        urlFilterRules = [];
+                    }
+                    urlFilterRules = urlFilterRules.concat(rules);
+                }
+            }
+
+            return urlFilterRules;
+        },
+
+        /**
+         * @returns {Array} rules in lookup table
+         */
+        getRules: function () {
+            var result = [];
+            for (var r in this.lookupTable) { // jshint ignore:line
+                var value = this.lookupTable[r];
+                if (value) {
+                    if (Utils.isArray(value)) {
+                        result = result.concat(value);
+                    } else {
+                        result.push(value);
+                    }
+                }
+            }
+
+            return result;
+        }
+    };
+
+    api.DomainsLookupTable = DomainsLookupTable;
+
+})(adguard.rules);
+

@@ -15,140 +15,150 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Filter that manages JS injection rules.
- * Read here for details: http://adguard.com/en/filterrules.html#javascriptInjection
- */
-var ScriptFilter = function (rules) {
+/* global CollectionUtils */
 
-	this.scriptRules = [];
-	this.exceptionsRules = [];
+(function (api) {
 
-	if (rules) {
-		for (var i = 0; i < rules.length; i++) {
-			this.addRule(rules[i]);
-		}
-	}
-};
+    'use strict';
 
-ScriptFilter.prototype = {
+    /**
+     * Filter that manages JS injection rules.
+     * Read here for details: http://adguard.com/en/filterrules.html#javascriptInjection
+     */
+    var ScriptFilter = function (rules) {
 
-	/**
-	 * Adds JS injection rule
-	 *
-	 * @param rule Rule object
-	 */
-	addRule: function (rule) {
-		if (rule.whiteListRule) {
-			this.exceptionsRules.push(rule);
-			this._applyExceptionRuleToFilter(rule);
-			return;
-		}
+        this.scriptRules = [];
+        this.exceptionsRules = [];
 
-		this._applyExceptionRulesToRule(rule);
-		this.scriptRules.push(rule);
-	},
+        if (rules) {
+            for (var i = 0; i < rules.length; i++) {
+                this.addRule(rules[i]);
+            }
+        }
+    };
 
-	/**
-	 * Removes JS injection rule
-	 *
-	 * @param rule Rule object
-	 */
-	removeRule: function (rule) {
-		CollectionUtils.removeRule(this.scriptRules, rule);
-		CollectionUtils.removeRule(this.exceptionsRules, rule);
-		this._rollbackExceptionRule(rule);
-	},
+    ScriptFilter.prototype = {
 
-	/**
-	 * Removes all rules from this filter
-	 */
-	clearRules: function () {
-		this.scriptRules = [];
-		this.exceptionsRules = [];
-	},
+        /**
+         * Adds JS injection rule
+         *
+         * @param rule Rule object
+         */
+        addRule: function (rule) {
+            if (rule.whiteListRule) {
+                this.exceptionsRules.push(rule);
+                this._applyExceptionRuleToFilter(rule);
+                return;
+            }
 
-	/**
-	 * Returns the array of loaded rules
-	 */
-	getRules: function () {
-		var result = [];
-		return result.concat(this.scriptRules).concat(this.exceptionsRules);
-	},
+            this._applyExceptionRulesToRule(rule);
+            this.scriptRules.push(rule);
+        },
 
-	/**
-	 * Builds script for the specified domain to be injected
-	 *
-	 * @param domainName Domain name
-	 * @returns List of scripts to be applied and scriptSource
-	 */
-	buildScript: function (domainName) {
-		var scripts = [];
-		for (var i = 0; i < this.scriptRules.length; i++) {
-			var rule = this.scriptRules[i];
-			if (rule.isPermitted(domainName)) {
-				scripts.push({
-					scriptSource: rule.scriptSource,
-					rule: rule.script
-				});
-			}
-		}
-		return scripts;
-	},
+        /**
+         * Removes JS injection rule
+         *
+         * @param rule Rule object
+         */
+        removeRule: function (rule) {
+            CollectionUtils.removeRule(this.scriptRules, rule);
+            CollectionUtils.removeRule(this.exceptionsRules, rule);
+            this._rollbackExceptionRule(rule);
+        },
 
-	/**
-	 * Rolls back exception rule:
-	 * http://adguard.com/en/filterrules.html#javascriptInjectionExceptions
-	 *
-	 * @param exceptionRule Exception rule
-	 * @private
-	 */
-	_rollbackExceptionRule: function (exceptionRule) {
+        /**
+         * Removes all rules from this filter
+         */
+        clearRules: function () {
+            this.scriptRules = [];
+            this.exceptionsRules = [];
+        },
 
-		if (!exceptionRule.whiteListRule) {
-			return;
-		}
+        /**
+         * Returns the array of loaded rules
+         */
+        getRules: function () {
+            var result = [];
+            return result.concat(this.scriptRules).concat(this.exceptionsRules);
+        },
 
-		for (var i = 0; i < this.scriptRules.length; i++) {
-			var scriptRule = this.scriptRules[i];
-			if (scriptRule.script == exceptionRule.script) {
-				scriptRule.removeRestrictedDomains(exceptionRule.getPermittedDomains());
-			}
-		}
-	},
+        /**
+         * Builds script for the specified domain to be injected
+         *
+         * @param domainName Domain name
+         * @returns List of scripts to be applied and scriptSource
+         */
+        buildScript: function (domainName) {
+            var scripts = [];
+            for (var i = 0; i < this.scriptRules.length; i++) {
+                var rule = this.scriptRules[i];
+                if (rule.isPermitted(domainName)) {
+                    scripts.push({
+                        scriptSource: rule.scriptSource,
+                        rule: rule.script
+                    });
+                }
+            }
+            return scripts;
+        },
 
-	/**
-	 * Applies exception rule:
-	 * http://adguard.com/en/filterrules.html#javascriptInjectionExceptions
-	 *
-	 * @param exceptionRule Exception rule
-	 * @private
-	 */
-	_applyExceptionRuleToFilter: function (exceptionRule) {
-		for (var i = 0; i < this.scriptRules.length; i++) {
-			this._removeExceptionDomains(this.scriptRules[i], exceptionRule);
-		}
-	},
+        /**
+         * Rolls back exception rule:
+         * http://adguard.com/en/filterrules.html#javascriptInjectionExceptions
+         *
+         * @param exceptionRule Exception rule
+         * @private
+         */
+        _rollbackExceptionRule: function (exceptionRule) {
 
-	/**
-	 * Applies exception rules:
-	 * http://adguard.com/en/filterrules.html#javascriptInjectionExceptions
-	 *
-	 * @param scriptRule JS injection rule
-	 * @private
-	 */
-	_applyExceptionRulesToRule: function (scriptRule) {
-		for (var i = 0; i < this.exceptionsRules.length; i++) {
-			this._removeExceptionDomains(scriptRule, this.exceptionsRules[i]);
-		}
-	},
+            if (!exceptionRule.whiteListRule) {
+                return;
+            }
 
-	_removeExceptionDomains: function (scriptRule, exceptionRule) {
+            for (var i = 0; i < this.scriptRules.length; i++) {
+                var scriptRule = this.scriptRules[i];
+                if (scriptRule.script == exceptionRule.script) {
+                    scriptRule.removeRestrictedDomains(exceptionRule.getPermittedDomains());
+                }
+            }
+        },
 
-		if (scriptRule.script != exceptionRule.script) {
-			return;
-		}
+        /**
+         * Applies exception rule:
+         * http://adguard.com/en/filterrules.html#javascriptInjectionExceptions
+         *
+         * @param exceptionRule Exception rule
+         * @private
+         */
+        _applyExceptionRuleToFilter: function (exceptionRule) {
+            for (var i = 0; i < this.scriptRules.length; i++) {
+                this._removeExceptionDomains(this.scriptRules[i], exceptionRule);
+            }
+        },
 
-		scriptRule.addRestrictedDomains(exceptionRule.getPermittedDomains());
-	}
-};
+        /**
+         * Applies exception rules:
+         * http://adguard.com/en/filterrules.html#javascriptInjectionExceptions
+         *
+         * @param scriptRule JS injection rule
+         * @private
+         */
+        _applyExceptionRulesToRule: function (scriptRule) {
+            for (var i = 0; i < this.exceptionsRules.length; i++) {
+                this._removeExceptionDomains(scriptRule, this.exceptionsRules[i]);
+            }
+        },
+
+        _removeExceptionDomains: function (scriptRule, exceptionRule) {
+
+            if (scriptRule.script != exceptionRule.script) {
+                return;
+            }
+
+            scriptRule.addRestrictedDomains(exceptionRule.getPermittedDomains());
+        }
+    };
+
+    api.ScriptFilter = ScriptFilter;
+
+})(adguard.rules);

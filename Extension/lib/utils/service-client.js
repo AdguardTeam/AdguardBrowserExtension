@@ -456,7 +456,7 @@ ServiceClient.prototype = {
 
 			var rules = [];
 			for (var i = 0; i < lines.length; i++) {
-				var rule = FilterRuleBuilder.createRule(lines[i], filterId);
+				var rule = adguard.rules.builder.createRule(lines[i], filterId);
 				if (rule !== null) {
 					rules.push(rule);
 				}

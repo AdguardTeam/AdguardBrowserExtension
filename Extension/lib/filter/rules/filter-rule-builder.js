@@ -15,8 +15,12 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var FilterRuleBuilder = { // jshint ignore:line
-    
+/* global StringUtils, Log */
+
+(function (api) {
+
+    'use strict';
+
     /**
      * Method that parses rule text and creates object of a suitable class.
      *
@@ -24,7 +28,7 @@ var FilterRuleBuilder = { // jshint ignore:line
      * @param filterId Filter identifier
      * @returns Filter rule object. Either UrlFilterRule or CssFilterRule or ScriptFilterRule.
      */
-    createRule: function (ruleText, filterId) {
+    var createRule = function (ruleText, filterId) {
 
         ruleText = ruleText ? ruleText.trim() : null;
         if (!ruleText) {
@@ -32,29 +36,34 @@ var FilterRuleBuilder = { // jshint ignore:line
         }
         var rule = null;
         try {
-            if (StringUtils.startWith(ruleText, FilterRule.COMMENT) ||
-                StringUtils.contains(ruleText, FilterRule.OLD_INJECT_RULES) ||
-                StringUtils.contains(ruleText, FilterRule.MASK_CONTENT_RULE) ||
-                StringUtils.contains(ruleText, FilterRule.MASK_JS_RULE)) {
+            if (StringUtils.startWith(ruleText, api.FilterRule.COMMENT) ||
+                StringUtils.contains(ruleText, api.FilterRule.OLD_INJECT_RULES) ||
+                StringUtils.contains(ruleText, api.FilterRule.MASK_CONTENT_RULE) ||
+                StringUtils.contains(ruleText, api.FilterRule.MASK_JS_RULE)) {
                 // Empty or comment, ignore
                 // Content rules are not supported
                 return null;
             }
 
-            if (StringUtils.startWith(ruleText, FilterRule.MASK_WHITE_LIST)) {
-                rule = new UrlFilterRule(ruleText, filterId);
-            } else if (StringUtils.contains(ruleText, FilterRule.MASK_CSS_RULE) || StringUtils.contains(ruleText, FilterRule.MASK_CSS_EXCEPTION_RULE)) {
-                rule = new CssFilterRule(ruleText, filterId);
-            } else if (StringUtils.contains(ruleText, FilterRule.MASK_CSS_INJECT_RULE) || StringUtils.contains(ruleText, FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE)) {
-                rule = new CssFilterRule(ruleText, filterId);
-            } else if (StringUtils.contains(ruleText, FilterRule.MASK_SCRIPT_RULE) || StringUtils.contains(ruleText, FilterRule.MASK_SCRIPT_EXCEPTION_RULE)) {
-                rule = new ScriptFilterRule(ruleText, filterId);
+            if (StringUtils.startWith(ruleText, api.FilterRule.MASK_WHITE_LIST)) {
+                rule = new api.UrlFilterRule(ruleText, filterId);
+            } else if (StringUtils.contains(ruleText, api.FilterRule.MASK_CSS_RULE) || StringUtils.contains(ruleText, api.FilterRule.MASK_CSS_EXCEPTION_RULE)) {
+                rule = new api.CssFilterRule(ruleText, filterId);
+            } else if (StringUtils.contains(ruleText, api.FilterRule.MASK_CSS_INJECT_RULE) || StringUtils.contains(ruleText, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE)) {
+                rule = new api.CssFilterRule(ruleText, filterId);
+            } else if (StringUtils.contains(ruleText, api.FilterRule.MASK_SCRIPT_RULE) || StringUtils.contains(ruleText, api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE)) {
+                rule = new api.ScriptFilterRule(ruleText, filterId);
             } else {
-                rule = new UrlFilterRule(ruleText, filterId);
+                rule = new api.UrlFilterRule(ruleText, filterId);
             }
         } catch (ex) {
             Log.warn("Cannot create rule from filter {0}: {1}, cause {2}", filterId, ruleText, ex);
         }
         return rule;
-    }
-};
+    };
+
+    api.builder = {
+        createRule: createRule
+    };
+
+})(adguard.rules);
