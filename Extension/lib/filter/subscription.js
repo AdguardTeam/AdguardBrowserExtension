@@ -21,8 +21,6 @@
  * In future we'll add an opportunity to update metadata along with filter rules update.
  */
 var SubscriptionService = function () {
-
-	this.serviceClient = new ServiceClient();
 	this.groups = [];
 	this.filters = [];
 };
@@ -75,7 +73,7 @@ SubscriptionService.prototype = {
 
 	_loadMetadata: function (successCallback, errorCallback) {
 
-		this.serviceClient.loadLocalFiltersMetadata(function (metadata) {
+		adguard.backend.loadLocalFiltersMetadata(function (metadata) {
 
 			this.groups = [];
 			this.filters = [];
@@ -96,7 +94,7 @@ SubscriptionService.prototype = {
 
 	_loadMetadataI18n: function (successCallback, errorCallback) {
 
-		this.serviceClient.loadLocalFiltersI18Metadata(function (i18nMetadata) {
+		adguard.backend.loadLocalFiltersI18Metadata(function (i18nMetadata) {
 
 			var groupsI18n = i18nMetadata.groups;
 			var filtersI18n = i18nMetadata.filters;

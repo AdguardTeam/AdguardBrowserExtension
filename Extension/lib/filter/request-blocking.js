@@ -16,7 +16,7 @@
  */
 
 /* global Prefs, framesMap, antiBannerService, filteringLog, adguardApplication, filterRulesHitCount,
- ServiceClient, RequestTypes, EventNotifier, EventNotifierTypes, FilterUtils, Utils */
+ RequestTypes, EventNotifier, EventNotifierTypes, FilterUtils, Utils */
 
 var webRequestService = (function () { // jshint ignore:line
 
@@ -205,7 +205,7 @@ var webRequestService = (function () { // jshint ignore:line
         if (framesMap.isTabAdguardDetected(tab)) {
             //parse rule applied to request from response headers
             requestRule = adguardApplication.parseAdguardRuleFromHeaders(responseHeaders);
-            appendLogEvent = !ServiceClient.isAdguardAppRequest(requestUrl);
+            appendLogEvent = !adguard.backend.isAdguardAppRequest(requestUrl);
         } else if (framesMap.isTabProtectionDisabled(tab)) { // jshint ignore:line
             //do nothing
         } else if (requestType == RequestTypes.DOCUMENT) {

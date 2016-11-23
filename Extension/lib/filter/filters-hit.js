@@ -23,8 +23,6 @@
  * @constructor
  */
 var FilterRulesHitCount = function () {
-
-    this.serviceClient = new ServiceClient();
     this._init();
 };
 
@@ -152,7 +150,7 @@ FilterRulesHitCount.prototype = {
             return;
         }
         var enabledFilters = antiBannerService.getEnabledAntiBannerFilters();
-        this.serviceClient.sendHitStats(JSON.stringify(this.stats), enabledFilters);
+        adguard.backend.sendHitStats(JSON.stringify(this.stats), enabledFilters);
         this.cleanup();
     }
 };

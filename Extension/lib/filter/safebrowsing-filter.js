@@ -22,7 +22,6 @@
  */
 var SafebrowsingFilter = function () {
 
-    this.serviceClient = new ServiceClient();
     this.safebrowsingCache = new LocalStorageCache("sb-cache");
 
     this.suspendedFromProperty = "safebrowsing-suspended-from";
@@ -112,7 +111,7 @@ SafebrowsingFilter.prototype = {
             shortHashes.push(hashes[i].substring(0, 8));
         }
 
-        this.serviceClient.lookupSafebrowsing(shortHashes, successCallback, errorCallback);
+        adguard.backend.lookupSafebrowsing(shortHashes, successCallback, errorCallback);
     },
 
     /**
@@ -145,14 +144,6 @@ SafebrowsingFilter.prototype = {
         url += "&url=" + encodeURIComponent(requestUrl);
         url += "&ref=" + encodeURIComponent(referrerUrl);
         return url;
-    },
-
-    /**
-     * Track safebrowsing stats
-     * @param requestUrl
-     */
-    trackSafebrowsingStats: function (requestUrl) {
-        this.serviceClient.trackSafebrowsingStats(requestUrl);
     },
 
     /**

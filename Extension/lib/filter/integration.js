@@ -19,7 +19,6 @@
  * AdguardApplication is used for integration of Adguard extension and Adguard for Windows/Mac/Android versions.
  */
 var AdguardApplication = function () {
-    this.serviceClient = new ServiceClient();
     this.integrationMode = this.INTEGRATION_MODE_FULL;
 };
 
@@ -102,10 +101,10 @@ AdguardApplication.prototype = {
     addRuleToApp: function (ruleText, callback) {
         switch (this.integrationMode) {
             case this.INTEGRATION_MODE_OLD:
-                this.serviceClient.adguardAppAddRuleOld(ruleText, callback, callback);
+                adguard.backend.adguardAppAddRuleOld(ruleText, callback, callback);
                 break;
             default:
-                this.serviceClient.adguardAppAddRule(ruleText, callback, callback);
+                adguard.backend.adguardAppAddRule(ruleText, callback, callback);
                 break;
         }
     },
@@ -117,7 +116,7 @@ AdguardApplication.prototype = {
      * @param callback  Finish callback
      */
     removeRuleFromApp: function (ruleText, callback) {
-        this.serviceClient.adguardAppRemoveRule(ruleText, callback, callback);
+        adguard.backend.adguardAppRemoveRule(ruleText, callback, callback);
     },
 
     /**
@@ -136,14 +135,14 @@ AdguardApplication.prototype = {
      * @param url request URL
      */
     isIntegrationRequest: function (url) {
-        return url && url.indexOf(this.serviceClient.adguardAppUrl) === 0;
+        return url && url.indexOf(adguard.backend.adguardAppUrl) === 0;
     },
 
     /**
      * Gets base url for requests to desktop AG
      */
     getIntegrationBaseUrl: function () {
-        return this.serviceClient.adguardAppUrl;
+        return adguard.backend.adguardAppUrl;
     },
 
     /**
@@ -153,25 +152,8 @@ AdguardApplication.prototype = {
     getAuthorizationHeaders: function () {
         return [{
             headerName: 'Referer',
-            headerValue: this.serviceClient.injectionsUrl
+            headerValue: adguard.backend.injectionsUrl
         }];
-    },
-
-    checkIntegrationModeOn: function () {
-        this.serviceClient._executeRequestAsync(this.serviceClient.injectionsUrl, 'text/plain', function (request) {
-            if (request) {
-                var header = request.getResponseHeader(this.ADGUARD_APP_HEADER);
-                if (header) {
-                    var appInfo = this._parseAppHeader(header);
-                    this.adguardProductName = appInfo.adguardProductName;
-                    this.adguardAppVersion = appInfo.adguardAppVersion;
-                    this.integrationMode = appInfo.integrationMode;
-                    this.adguardIntegrationDetected = true;
-                } else {
-                    this.adguardIntegrationDetected = false;
-                }
-            }
-        }.bind(this));
     },
 
     /**

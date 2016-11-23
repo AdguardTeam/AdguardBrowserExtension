@@ -22,9 +22,6 @@ var AntiBannerService = function () {
     // List of filters
     this.adguardFilters = [];
 
-    // This object is used to communicate with out backend servers (mostly to get filter updates)
-    this.serviceClient = new ServiceClient();
-
     // Request filter contains all filter rules
     // This class does the actual filtering (checking URLs, constructing CSS/JS to inject, etc)
     this.requestFilter = new RequestFilter();
@@ -106,7 +103,7 @@ AntiBannerService.prototype = {
              * The only thing which is not deleted is the aggregated info: installs count and active users count.
              */
             if (runInfo.isFirstRun) {
-                this.serviceClient.trackInstall(this.isAllowedAcceptableAds());
+                adguard.backend.trackInstall(this.isAllowedAcceptableAds());
             }
         }.bind(this);
 
@@ -190,7 +187,7 @@ AntiBannerService.prototype = {
         }.bind(this);
 
         // Detect user country
-        this.serviceClient.getCountry(onCountryDetected);
+        adguard.backend.getCountry(onCountryDetected);
     },
 
     /**
@@ -682,7 +679,7 @@ AntiBannerService.prototype = {
      * @param comment Message text
      */
     sendFeedback: function (url, messageType, comment) {
-        this.serviceClient.sendUrlReport(url, messageType, comment);
+        adguard.backend.sendUrlReport(url, messageType, comment);
     },
 
     /**
@@ -809,7 +806,7 @@ AntiBannerService.prototype = {
             var errorCallback = function (request, cause) {
                 Log.error("Error download subscription by url {0}, cause: {1} {2}", subscriptionUrl, request.statusText, cause || "");
             };
-            this.serviceClient.loadFilterRulesBySubscriptionUrl(subscriptionUrl, successCallback, errorCallback);
+            adguard.backend.loadFilterRulesBySubscriptionUrl(subscriptionUrl, successCallback, errorCallback);
         }
     },
 
@@ -1487,7 +1484,7 @@ AntiBannerService.prototype = {
             callback(false);
         };
 
-        this.serviceClient.loadFilterRules(filter.filterId, adguard.settings.isUseOptimizedFiltersEnabled(), successCallback, errorCallback);
+        adguard.backend.loadRemoteFilterRules(filter.filterId, adguard.settings.isUseOptimizedFiltersEnabled(), successCallback, errorCallback);
     },
 
     /**
@@ -1514,7 +1511,7 @@ AntiBannerService.prototype = {
             callback(false);
         };
 
-        this.serviceClient.checkFilterVersions(filterIds, loadSuccess, loadError);
+        adguard.backend.checkFilterVersions(filterIds, loadSuccess, loadError);
     },
 
     /**
@@ -1551,7 +1548,7 @@ AntiBannerService.prototype = {
             callback(false);
         };
 
-        this.serviceClient.loadLocalFilter(filter.filterId, adguard.settings.isUseOptimizedFiltersEnabled(), successCallback, errorCallback);
+        adguard.backend.loadLocalFilterRules(filter.filterId, adguard.settings.isUseOptimizedFiltersEnabled(), successCallback, errorCallback);
     }
 };
 

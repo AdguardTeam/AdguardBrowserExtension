@@ -295,7 +295,7 @@ RequestFilter.prototype = {
             }
             Log.debug("Following safebrowsing filter has been fired: {0}", sbList);
             if (!incognitoTab && adguard.settings.getSafebrowsingInfo().sendStats) {
-                this.safebrowsingFilter.trackSafebrowsingStats(requestUrl);
+                adguard.backend.trackSafebrowsingStats(requestUrl);
             }
             safebrowsingCallback(this.safebrowsingFilter.getErrorPageURL(requestUrl, referrerUrl, sbList));
 
