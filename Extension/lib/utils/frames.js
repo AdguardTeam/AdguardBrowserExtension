@@ -23,11 +23,6 @@ var framesMap = (function () {
 	'use strict';
 
 	/**
-	 * Interface to work with browser tabs
-	 */
-	var pageStatistic = new PageStatistic();
-
-	/**
 	 * Adds frame to map. This method is called on first document request.
 	 * If this is a main frame - saves this info in frame data.
 	 *
@@ -267,7 +262,7 @@ var framesMap = (function () {
 		}
 
 		var totalBlockedTab = adguard.tabs.getTabMetadata(tabId, 'blocked') || 0;
-		var totalBlocked = pageStatistic.getTotalBlocked();
+		var totalBlocked = adguard.pageStats.getTotalBlocked();
 
 		return {
 
@@ -298,7 +293,7 @@ var framesMap = (function () {
 	 */
 	var updateBlockedAdsCount = function (tab, blocked) {
 
-		pageStatistic.updateTotalBlocked(blocked);
+		adguard.pageStats.updateTotalBlocked(blocked);
 
 		blocked = (adguard.tabs.getTabMetadata(tab.tabId, 'blocked') || 0) + blocked;
 		adguard.tabs.updateTabMetadata(tab.tabId, {blocked: blocked});
@@ -314,7 +309,7 @@ var framesMap = (function () {
 		if (tab) {
 			adguard.tabs.updateTabMetadata(tab.tabId, {blocked: 0});
 		} else {
-			pageStatistic.resetStats();
+			adguard.pageStats.resetStats();
 		}
 	};
 

@@ -15,39 +15,14 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Log */
+
 /**
  * Global stats
  */
-var PageStatistic = function () {
+adguard.pageStats = (function () {
 
     var pageStatisticProperty = "page-statistic";
-
-    /**
-     * Total count of blocked requests
-     *
-     * @returns Count of blocked requests
-     */
-    this.getTotalBlocked = function () {
-        return this._getPageStatistic().totalBlocked || 0;
-    };
-
-    /**
-     * Updates total count of blocked requests
-     *
-     * @param blocked Count of blocked requests
-     */
-    this.updateTotalBlocked = function (blocked) {
-        var stats = this._getPageStatistic();
-        stats.totalBlocked = (stats.totalBlocked || 0) + blocked;
-        adguard.localStorage.setItem(pageStatisticProperty, JSON.stringify(stats));
-    };
-
-    /**
-     * Resets tab stats
-     */
-    this.resetStats = function () {
-        adguard.localStorage.setItem(pageStatisticProperty, JSON.stringify(Object.create(null)));
-    };
 
     /**
      * Getter for total page stats (gets it from local storage)
@@ -55,10 +30,10 @@ var PageStatistic = function () {
      * @returns {*}
      * @private
      */
-    this._getPageStatistic = function () {
-        var json = adguard.localStorage.getItem(pageStatisticProperty);
-        var stats = Object.create(null);
+    function getPageStatistic() {
+        var stats;
         try {
+            var json = adguard.localStorage.getItem(pageStatisticProperty);
             if (json) {
                 stats = JSON.parse(json);
             }
@@ -66,5 +41,43 @@ var PageStatistic = function () {
             Log.error('Error retrieve page statistic from storage, cause {0}', ex);
         }
         return stats;
+    }
+
+    /**
+     * Total count of blocked requests
+     *
+     * @returns Count of blocked requests
+     */
+    var getTotalBlocked = function () {
+        var stats = getPageStatistic();
+        if (!stats) {
+            return 0;
+        }
+        return stats.totalBlocked || 0;
     };
-};
+
+    /**
+     * Updates total count of blocked requests
+     *
+     * @param blocked Count of blocked requests
+     */
+    var updateTotalBlocked = function (blocked) {
+        var stats = getPageStatistic() || Object.create(null);
+        stats.totalBlocked = (stats.totalBlocked || 0) + blocked;
+        adguard.localStorage.setItem(pageStatisticProperty, JSON.stringify(stats));
+    };
+
+    /**
+     * Resets tab stats
+     */
+    var resetStats = function () {
+        adguard.localStorage.setItem(pageStatisticProperty, JSON.stringify(Object.create(null)));
+    };
+
+    return {
+        resetStats: resetStats,
+        updateTotalBlocked: updateTotalBlocked,
+        getTotalBlocked: getTotalBlocked
+    };
+
+})();
