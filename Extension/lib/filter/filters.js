@@ -39,9 +39,6 @@ var RequestFilter = function () {
     // JS injection rules: http://adguard.com/en/filterrules.html#javascriptInjection
     this.scriptFilter = new adguard.rules.ScriptFilter();
 
-    // Safebrowsing filter: http://adguard.com/en/how-malware-blocked.html#extension
-    this.safebrowsingFilter = new SafebrowsingFilter();
-
     // Rules count (includes all types of rules)
     this.rulesCount = 0;
 
@@ -262,15 +259,6 @@ RequestFilter.prototype = {
     },
 
     /**
-     * Adds URL to trusted sites (this URL will be ignored by safebrowsing filter)
-     *
-     * @param url Url to add
-     */
-    addToSafebrowsingTrusted: function (url) {
-        this.safebrowsingFilter.addToSafebrowsingTrusted(url);
-    },
-
-    /**
      * Checks URL with safebrowsing filter.
      * http://adguard.com/en/how-malware-blocked.html#extension
      *
@@ -297,11 +285,11 @@ RequestFilter.prototype = {
             if (!incognitoTab && adguard.settings.getSafebrowsingInfo().sendStats) {
                 adguard.backend.trackSafebrowsingStats(requestUrl);
             }
-            safebrowsingCallback(this.safebrowsingFilter.getErrorPageURL(requestUrl, referrerUrl, sbList));
+            safebrowsingCallback(adguard.safebrowsing.getErrorPageURL(requestUrl, referrerUrl, sbList));
 
-        }.bind(this);
+        };
 
-        this.safebrowsingFilter.lookupUrlWithCallback(requestUrl, callback);
+        adguard.safebrowsing.lookupUrlWithCallback(requestUrl, callback);
     },
 
     /**
@@ -373,8 +361,8 @@ RequestFilter.prototype = {
         // STEP 3: Analyze results, first - basic exception rule
 
         if (urlWhiteListRule != null &&
-            // Please note, that if blocking rule has $important modifier, it could
-            // overcome existing exception rule
+                // Please note, that if blocking rule has $important modifier, it could
+                // overcome existing exception rule
             (urlWhiteListRule.isImportant || blockingRule == null || !blockingRule.isImportant)) {
             Log.debug("White list rule found {0} for url: {1} document: {2}, requestType: {3}", urlWhiteListRule.ruleText, requestUrl, documentHost, requestType);
             return urlWhiteListRule;

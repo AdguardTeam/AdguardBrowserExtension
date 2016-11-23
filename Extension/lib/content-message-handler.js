@@ -123,7 +123,7 @@ ContentMessageHandler.prototype = {
                 adguard.ui.openExportRulesTab(message.whitelist);
                 break;
             case 'openSafebrowsingTrusted':
-                antiBannerService.getRequestFilter().addToSafebrowsingTrusted(message.url);
+                adguard.safebrowsing.addToSafebrowsingTrusted(message.url);
                 adguard.tabs.getActive(function (tab) {
                     adguard.tabs.reload(tab.tabId, message.url);
                 });
