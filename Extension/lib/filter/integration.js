@@ -229,7 +229,7 @@ AdguardApplication.prototype = {
 		var adguardRemoveRuleNotSupported = !fullIntegrationMode;
 		framesMap.recordAdguardIntegrationForTab(tab, true, ruleInfo.documentWhiteListed, ruleInfo.userWhiteListed, ruleInfo.headerRule, appInfo.adguardProductName, adguardRemoveRuleNotSupported);
 
-		userSettings.changeShowInfoAboutAdguardFullVersion(false);
+		adguard.settings.changeShowInfoAboutAdguardFullVersion(false);
 	},
 
 	/**

@@ -19,7 +19,7 @@ var allowAllWhiteListRule = new UrlFilterRule('@@whitelist-all$document', AntiBa
 
 var WhiteListService = function () {
 
-    this.defaultWhiteListMode = userSettings.isDefaultWhiteListMode();
+    this.defaultWhiteListMode = adguard.settings.isDefaultWhiteListMode();
 
     this.whiteListFilter = new UrlFilter();
     this.blockListFilter = new UrlFilter();
@@ -81,7 +81,7 @@ WhiteListService.prototype = {
 
     changeDefaultWhiteListMode: function (defaultWhiteListMode) {
         this.defaultWhiteListMode = defaultWhiteListMode;
-        userSettings.changeDefaultWhiteListMode(defaultWhiteListMode);
+        adguard.settings.changeDefaultWhiteListMode(defaultWhiteListMode);
     },
 
     getWhiteList: function () {

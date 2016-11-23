@@ -24,13 +24,6 @@ var LocaleDetectService = function (detectCallback) {
 
     this.detectCallback = detectCallback;
     this.browsingLanguages = [];
-    this.detectFiltersEnabled = userSettings.isAutodetectFilters();
-
-    EventNotifier.addListener(function (event, setting) {
-        if (event == EventNotifierTypes.CHANGE_USER_SETTINGS && setting == userSettings.settings.DISABLE_DETECT_FILTERS) {
-            this.detectFiltersEnabled = userSettings.isAutodetectFilters();
-        }
-    }.bind(this));
 };
 
 LocaleDetectService.prototype = {
@@ -139,7 +132,7 @@ LocaleDetectService.prototype = {
      * @param url    Page URL
      */
     detectTabLanguage: function (tabId, url) {
-        if (!this.detectFiltersEnabled) {
+        if (!adguard.settings.isAutodetectFilters()) {
             return;
         }
 

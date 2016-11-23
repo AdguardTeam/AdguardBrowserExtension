@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Log, UrlUtils, Utils, WorkaroundUtils, StringUtils, Prefs, unload, antiBannerService, framesMap, adguardApplication, filteringLog, EventNotifier, EventNotifierTypes, userSettings */
+/* global Log, UrlUtils, Utils, WorkaroundUtils, StringUtils, Prefs, unload, antiBannerService, framesMap, adguardApplication, filteringLog, EventNotifier, EventNotifierTypes */
 
 var uiService = (function () { // jshint ignore:line
 
@@ -52,7 +52,7 @@ var uiService = (function () { // jshint ignore:line
                     disabled = disabled || tabInfo.urlFilteringDisabled;
                     disabled = disabled || tabInfo.documentWhiteListed;
 
-                    if (!disabled && userSettings.showPageStatistic()) {
+                    if (!disabled && adguard.settings.showPageStatistic()) {
                         blocked = tabInfo.totalBlockedTab.toString();
                     } else {
                         blocked = "0";
@@ -230,7 +230,7 @@ var uiService = (function () { // jshint ignore:line
      */
     function updateTabContextMenu(tab) {
         adguard.contextMenus.removeAll();
-        if (userSettings.showContextMenu()) {
+        if (adguard.settings.showContextMenu()) {
             customizeContextMenu(tab);
         }
     }
@@ -380,7 +380,7 @@ var uiService = (function () { // jshint ignore:line
     };
 
     var changeApplicationFilteringDisabled = function (disabled) {
-        antiBannerService.changeApplicationFilteringDisabled(disabled);
+        adguard.settings.changeFilteringDisabled(disabled);
         adguard.tabs.getActive(function (tab) {
             updateTabIconAndContextMenu(tab, true);
         });
@@ -477,8 +477,8 @@ var uiService = (function () { // jshint ignore:line
     });
 
     // Update context menu on change user settings
-    EventNotifier.addListener(function (event, setting) {
-        if (event === EventNotifierTypes.CHANGE_USER_SETTINGS && setting === userSettings.settings.DISABLE_SHOW_CONTEXT_MENU) {
+    adguard.settings.onUpdated.addListener(function (setting) {
+        if (setting === adguard.settings.DISABLE_SHOW_CONTEXT_MENU) {
             adguard.tabs.getActive(function (tab) {
                 updateTabContextMenu(tab);
             });

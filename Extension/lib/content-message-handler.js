@@ -1,5 +1,5 @@
 /* global Prefs, Utils, AntiBannerFiltersId, EventNotifierTypes, LogEvents, uiService, antiBannerService, WorkaroundUtils,
- framesMap, adguardApplication, filteringLog, webRequestService, EventNotifier, userSettings */
+ framesMap, adguardApplication, filteringLog, webRequestService, EventNotifier */
 
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -46,7 +46,7 @@ ContentMessageHandler.prototype = {
             case 'initializeFrameScript':
                 return this._processInitializeFrameScriptRequest();
             case 'changeUserSetting':
-                userSettings.setProperty(message.key, message.value);
+                adguard.settings.setProperty(message.key, message.value);
                 break;
             case 'initializeFiltersOnInstall':
                 antiBannerService.initializeFiltersOnInstall(function (enabledFilterIds) {
@@ -257,7 +257,7 @@ ContentMessageHandler.prototype = {
         }
 
         return {
-            userSettings: userSettings.getAllSettings(),
+            userSettings: adguard.settings.getAllSettings(),
             enabledFilters: enabledFilters,
             filtersMetadata: antiBannerService.getFiltersMetadata(),
             requestFilterInfo: antiBannerService.getRequestFilterInfo(),

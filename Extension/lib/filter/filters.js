@@ -149,7 +149,7 @@ RequestFilter.prototype = {
      */
     getSelectorsForUrl: function (url, genericHide) {
         var domain = UrlUtils.getDomainName(url);
-        if (userSettings.collectHitsCount()) {
+        if (adguard.settings.collectHitsCount()) {
             // If user has enabled "Send statistics for ad filters usage" option we build CSS with enabled hits stats.
             // In this case style contains "background-image" to the unique URL.
             // Tracking requests to this URL shows us which rule has been used.
@@ -281,7 +281,7 @@ RequestFilter.prototype = {
      */
     checkSafebrowsingFilter: function (requestUrl, referrerUrl, safebrowsingCallback, incognitoTab) {
 
-        if (!userSettings.getSafebrowsingInfo().enabled) {
+        if (!adguard.settings.getSafebrowsingInfo().enabled) {
             return;
         }
 
@@ -294,7 +294,7 @@ RequestFilter.prototype = {
                 return;
             }
             Log.debug("Following safebrowsing filter has been fired: {0}", sbList);
-            if (!incognitoTab && userSettings.getSafebrowsingInfo().sendStats) {
+            if (!incognitoTab && adguard.settings.getSafebrowsingInfo().sendStats) {
                 this.safebrowsingFilter.trackSafebrowsingStats(requestUrl);
             }
             safebrowsingCallback(this.safebrowsingFilter.getErrorPageURL(requestUrl, referrerUrl, sbList));

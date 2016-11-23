@@ -187,7 +187,7 @@ var framesMap = (function () {
 			}
 			adguard.tabs.updateTabMetadata(tab.tabId, {
 				frameWhiteListRule: frameWhiteListRule,
-				applicationFilteringDisabled: antiBannerService.isApplicationFilteringDisabled()
+				applicationFilteringDisabled: adguard.settings.isFilteringDisabled()
 			});
 		}
 	};

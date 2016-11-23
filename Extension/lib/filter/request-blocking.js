@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Prefs, framesMap, antiBannerService, filteringLog, adguardApplication, filterRulesHitCount, userSettings,
+/* global Prefs, framesMap, antiBannerService, filteringLog, adguardApplication, filterRulesHitCount,
  ServiceClient, RequestTypes, EventNotifier, EventNotifierTypes, FilterUtils, Utils */
 
 var webRequestService = (function () { // jshint ignore:line
@@ -254,7 +254,7 @@ var webRequestService = (function () { // jshint ignore:line
     };
 
     var shouldLoadAllSelectors = function (collapseAllElements) {
-        if ((Utils.isFirefoxBrowser() && userSettings.collectHitsCount()) || Prefs.useGlobalStyleSheet) {
+        if ((Utils.isFirefoxBrowser() && adguard.settings.collectHitsCount()) || Prefs.useGlobalStyleSheet) {
             // We don't need all CSS selectors in case of FF using global stylesheet
             // as in this case we register browser wide stylesheet which will be
             // applied even if page was already loaded

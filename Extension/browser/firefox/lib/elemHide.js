@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global Ci, Services, Log, ConcurrentUtils, FS, Prefs, styleService, EventNotifier, EventNotifierTypes, userSettings, framesMap, filterRulesHitCount, antiBannerService, FilterUtils */
+/* global Ci, Services, Log, ConcurrentUtils, FS, Prefs, styleService, EventNotifier, EventNotifierTypes, framesMap, filterRulesHitCount, antiBannerService, FilterUtils */
 
 /**
  * This object manages CSS and JS rules.
@@ -45,16 +45,17 @@ var ElemHide = {
                     }
                     this._saveStyleSheetToDisk();
                     break;
-                case EventNotifierTypes.CHANGE_USER_SETTINGS:
-                    if (settings === userSettings.settings.DISABLE_COLLECT_HITS) {
-                        this.changeElemhideMethod(settings);
-                    }
-                    break;
                 case EventNotifierTypes.CHANGE_PREFS:
                     if (settings === 'use_global_style_sheet') {
                         this.changeElemhideMethod(settings);
                     }
                     break;
+            }
+        }.bind(this));
+
+        adguard.settings.onUpdated.addListener(function (setting) {
+            if (setting === adguard.settings.DISABLE_COLLECT_HITS) {
+                this.changeElemhideMethod();
             }
         }.bind(this));
 
@@ -92,7 +93,7 @@ var ElemHide = {
      * Returns true if we should register global style sheet
      */
     _isGlobalStyleSheetEnabled: function () {
-        return userSettings.collectHitsCount() || Prefs.useGlobalStyleSheet;
+        return adguard.settings.collectHitsCount() || Prefs.useGlobalStyleSheet;
     },
 
     shouldCollapseElement: function (tabId, cssPath) {
@@ -127,7 +128,7 @@ var ElemHide = {
             }
 
             // Track filter rule usage if user has enabled "collect ad filters usage stats"
-            if (filterRulesHitCount.collectStatsEnabled) {
+            if (adguard.settings.collectHitsCount()) {
                 if (!FilterUtils.isUserFilterRule(rule) && !framesMap.isIncognitoTab(tab)) {
                     filterRulesHitCount.addRuleHit(domain, rule.ruleText, rule.filterId);
                 }

@@ -26,13 +26,6 @@ var FilterRulesHitCount = function () {
 
     this.serviceClient = new ServiceClient();
     this._init();
-
-    this.collectStatsEnabled = userSettings.collectHitsCount();
-    EventNotifier.addListener(function (event, setting) {
-        if (event == EventNotifierTypes.CHANGE_USER_SETTINGS && setting == userSettings.settings.DISABLE_COLLECT_HITS) {
-            this.collectStatsEnabled = userSettings.collectHitsCount();
-        }
-    }.bind(this));
 };
 
 FilterRulesHitCount.prototype = {
@@ -43,7 +36,7 @@ FilterRulesHitCount.prototype = {
 
     addDomainView: function (domain) {
 
-        if (!this.collectStatsEnabled) {
+        if (!adguard.settings.collectHitsCount()) {
             return;
         }
         if (!domain) {
@@ -68,7 +61,7 @@ FilterRulesHitCount.prototype = {
 
     addRuleHit: function (domain, ruleText, filterId, requestUrl) {
 
-        if (!this.collectStatsEnabled) {
+        if (!adguard.settings.collectHitsCount()) {
             return;
         }
 
@@ -155,7 +148,7 @@ FilterRulesHitCount.prototype = {
         if (overallViews < this.MAX_PAGE_VIEWS_COUNT) {
             return;
         }
-        if (!this.collectStatsEnabled) {
+        if (!adguard.settings.collectHitsCount()) {
             return;
         }
         var enabledFilters = antiBannerService.getEnabledAntiBannerFilters();

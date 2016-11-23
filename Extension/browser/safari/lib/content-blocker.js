@@ -73,7 +73,7 @@ var SafariContentBlocker = {
      */
     _loadAndConvertRules: Utils.debounce(function (rulesLimit, callback) {
 
-        if (userSettings.isFilteringDisabled()) {
+        if (adguard.settings.isFilteringDisabled()) {
             Log.info('Disabling content blocker.');
             callback(null);
             return;
@@ -83,7 +83,7 @@ var SafariContentBlocker = {
 
         var rules = antiBannerService.getRequestFilter().getRules();
 
-        if (userSettings.isDefaultWhiteListMode()) {
+        if (adguard.settings.isDefaultWhiteListMode()) {
             rules = rules.concat(whiteListService.getRules());
         } else {
             var invertedWhitelistRule = this._constructInvertedWhitelistRule();

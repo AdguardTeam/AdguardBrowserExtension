@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global antiBannerService, userSettings */
+/* global antiBannerService */
 (function () {
 
     'use strict';
@@ -23,12 +23,17 @@
     if (Utils.isContentBlockerEnabled()) {
 
         // Subscribe to events which lead to content blocker update
-        EventNotifier.addListener(function (event, params) {
+        EventNotifier.addListener(function (event) {
 
             if (event === EventNotifierTypes.REQUEST_FILTER_UPDATED ||
-                event === EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES ||
-                (event === EventNotifierTypes.CHANGE_USER_SETTINGS && params === userSettings.settings.DISABLE_FILTERING)) {
+                event === EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES) {
 
+                SafariContentBlocker.updateContentBlocker();
+            }
+        });
+
+        adguard.settings.onUpdated.addListener(function (setting) {
+            if (setting === adguard.settings.DISABLE_FILTERING) {
                 SafariContentBlocker.updateContentBlocker();
             }
         });
