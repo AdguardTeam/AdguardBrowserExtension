@@ -23,6 +23,8 @@
  */
 adguard.settings = (function () {
 
+    'use strict';
+
     var settings = {
         DISABLE_DETECT_FILTERS: 'detect-filters-disabled',
         DISABLE_SHOW_PAGE_STATS: 'disable-show-page-statistic',

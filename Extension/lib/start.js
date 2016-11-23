@@ -37,13 +37,6 @@
         adguard.ui.updateTabIconAndContextMenu(tab);
     });
 
-    // Locale detect
-    adguard.tabs.onUpdated.addListener(function (tab) {
-        if (tab.status === 'complete') {
-            antiBannerService.checkTabLanguage(tab.tabId, tab.url);
-        }
-    });
-
     // Initialize filtering log
     filteringLog.synchronizeOpenTabs();
     adguard.tabs.onCreated.addListener(function (tab) {

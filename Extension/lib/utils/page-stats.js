@@ -22,6 +22,8 @@
  */
 adguard.pageStats = (function () {
 
+    'use strict';
+
     var pageStatisticProperty = "page-statistic";
 
     /**

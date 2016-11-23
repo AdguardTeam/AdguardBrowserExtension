@@ -15,25 +15,23 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global chrome, EventChannels, UrlUtils, Utils */
+
 /**
  * Initialize LocaleDetectService.
  *
  * This service is used to auto-enable language-specific filters.
  */
-var LocaleDetectService = function (detectCallback) {
+adguard.localeDetectService = (function () {
 
-    this.detectCallback = detectCallback;
-    this.browsingLanguages = [];
-};
+    var browsingLanguages = [];
 
-LocaleDetectService.prototype = {
+    var SUCCESS_HIT_COUNT = 3;
+    var MAX_HISTORY_LENGTH = 10;
 
-    SUCCESS_HIT_COUNT: 3,
-    MAX_HISTORY_LENGTH: 10,
+    var filtersLanguages = null;
 
-    filtersLanguages: null,
-
-    domainToLanguges: {
+    var domainToLanguagesMap = {
         // Russian
         'ru': 'ru',
         'ua': 'ru',
@@ -94,44 +92,50 @@ LocaleDetectService.prototype = {
         'cn': 'zh',
         // Indonesian
         'id': 'id'
-    },
+    };
+
+    var onDetectedChannel = EventChannels.newChannel();
 
     /**
-     * Sets current filter-language mapping
+     * Stores language in the special array containing languages of the last visited pages.
+     * If user has visited enough pages with a specified language we call special callback
+     * to auto-enable filter for this language
      *
-     * @param filtersLanguages Map containing pairs of filterId and list of supported languages
+     * @param language Page language
+     * @private
      */
-    setFiltersLanguages: function (filtersLanguages) {
-        this.filtersLanguages = filtersLanguages;
-    },
+    function detectLanguage(language) {
 
-    /**
-     * Gets list of filters for the specified languages
-     *
-     * @param lang Language to check
-     * @returns List of filters identifiers
-     */
-    getFilterIdsForLanguage: function (lang) {
-        if (!lang || !this.filtersLanguages) {
-            return [];
+        if (!language || language == "und") {
+            return;
         }
-        lang = lang.substring(0, 2).toLowerCase();
-        var filterIds = [];
-        for (var filterId in this.filtersLanguages) {
-            var languages = this.filtersLanguages[filterId];
-            if (languages.indexOf(lang) >= 0) {
-                filterIds.push(filterId);
-            }
+
+        language = language.trim().toLowerCase();
+
+        browsingLanguages.push({
+            language: language,
+            time: Date.now()
+        });
+        if (browsingLanguages.length > MAX_HISTORY_LENGTH) {
+            browsingLanguages.shift();
         }
-        return filterIds;
-    },
+
+        var history = browsingLanguages.filter(function (h) {
+            return h.language == language;
+        });
+
+        if (history.length >= SUCCESS_HIT_COUNT) {
+            var filterIds = getFilterIdsForLanguage(language);
+            onDetectedChannel.notify(filterIds);
+        }
+    }
 
     /**
      * Detects language for the specified page
      * @param tabId  Tab identifier
      * @param url    Page URL
      */
-    detectTabLanguage: function (tabId, url) {
+    function detectTabLanguage(tabId, url) {
         if (!adguard.settings.isAutodetectFilters()) {
             return;
         }
@@ -149,7 +153,7 @@ LocaleDetectService.prototype = {
                     if (chrome.runtime.lastError) {
                         return;
                     }
-                    this._detectLanguage(language);
+                    detectLanguage(language);
                 }.bind(this));
                 return;
             }
@@ -160,42 +164,52 @@ LocaleDetectService.prototype = {
         if (host) {
             var parts = host ? host.split('.') : [];
             var tld = parts[parts.length - 1];
-            var lang = this.domainToLanguges[tld];
-            this._detectLanguage(lang);
-        }
-    },
-
-    /**
-     * Stores language in the special array containing languages of the last visited pages.
-     * If user has visited enough pages with a specified language we call special callback
-     * to auto-enable filter for this language
-     *
-     * @param language Page language
-     * @private
-     */
-    _detectLanguage: function (language) {
-
-        if (!language || language == "und") {
-            return;
-        }
-
-        language = language.trim().toLowerCase();
-
-        this.browsingLanguages.push({
-            language: language,
-            time: Date.now()
-        });
-        if (this.browsingLanguages.length > this.MAX_HISTORY_LENGTH) {
-            this.browsingLanguages.shift();
-        }
-
-        var history = this.browsingLanguages.filter(function (h) {
-            return h.language == language;
-        });
-
-        if (history.length >= this.SUCCESS_HIT_COUNT) {
-            var filterIds = this.getFilterIdsForLanguage(language);
-            this.detectCallback(filterIds);
+            var lang = domainToLanguagesMap[tld];
+            detectLanguage(lang);
         }
     }
-};
+
+    /**
+     * Sets current filter-language mapping
+     *
+     * @param languages Map containing pairs of filterId and list of supported languages
+     */
+    var setFiltersLanguages = function (languages) {
+        filtersLanguages = languages;
+    };
+
+    /**
+     * Gets list of filters for the specified languages
+     *
+     * @param lang Language to check
+     * @returns List of filters identifiers
+     */
+    var getFilterIdsForLanguage = function (lang) {
+        if (!lang || !filtersLanguages) {
+            return [];
+        }
+        lang = lang.substring(0, 2).toLowerCase();
+        var filterIds = [];
+        for (var filterId in filtersLanguages) { // jshint ignore:line
+            var languages = filtersLanguages[filterId];
+            if (languages.indexOf(lang) >= 0) {
+                filterIds.push(filterId);
+            }
+        }
+        return filterIds;
+    };
+
+    // Locale detect
+    adguard.tabs.onUpdated.addListener(function (tab) {
+        if (tab.status === 'complete') {
+            detectTabLanguage(tab.tabId, tab.url);
+        }
+    });
+
+    return {
+        setFiltersLanguages: setFiltersLanguages,
+        getFilterIdsForLanguage: getFilterIdsForLanguage,
+        onDetected: onDetectedChannel
+    };
+
+})();

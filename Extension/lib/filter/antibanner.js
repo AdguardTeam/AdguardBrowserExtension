@@ -26,9 +26,9 @@ var AntiBannerService = function () {
     // This class does the actual filtering (checking URLs, constructing CSS/JS to inject, etc)
     this.requestFilter = new RequestFilter();
 
-    // Initialize service that detects webpage locale
+    // Add listener to service that detects webpage locale
     // Depending on the locale we can enable language-specific filter
-    this.localeDetectorService = new LocaleDetectService(this._onFilterDetectedByLocale.bind(this));
+    adguard.localeDetectService.onDetected.addListener(this._onFilterDetectedByLocale.bind(this));
 
     // Initialize service that manages filters subscriptions
     this.subscriptionService = new SubscriptionService();
@@ -133,7 +133,7 @@ AntiBannerService.prototype = {
             // Filters list got from the server may contain language mapping.
             // For instance "Dutch filter" linked to "nl" language code.
             // These mappings are then used by LocaleDetectorService to auto-enable language-specific filter.
-            this.localeDetectorService.setFiltersLanguages(this.subscriptionService.getFiltersLanguages());
+            adguard.localeDetectService.setFiltersLanguages(this.subscriptionService.getFiltersLanguages());
 
             // Subscribe to events which lead to update filters (e.g. switсh to optimized and back to default)
             this._subscribeToFiltersChangeEvents();
@@ -170,7 +170,7 @@ AntiBannerService.prototype = {
         var filterIds = [AntiBannerFiltersId.ENGLISH_FILTER_ID, AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID];
 
         // Get language-specific filters by user locale
-        var localeFilterIds = this.localeDetectorService.getFilterIdsForLanguage(Prefs.locale);
+        var localeFilterIds = adguard.localeDetectService.getFilterIdsForLanguage(Prefs.locale);
         filterIds = filterIds.concat(localeFilterIds);
 
         // Add safari filter for safari browser
@@ -181,7 +181,7 @@ AntiBannerService.prototype = {
         // This callback is used to activate language-specific filter after user's country is detected
         // Country detection is done on the server side.
         var onCountryDetected = function (countryCode) {
-            var countryFilterIds = this.localeDetectorService.getFilterIdsForLanguage(countryCode);
+            var countryFilterIds = adguard.localeDetectService.getFilterIdsForLanguage(countryCode);
             filterIds = filterIds.concat(countryFilterIds);
             this._addAndEnableFilters(filterIds, callback);
         }.bind(this);
@@ -257,17 +257,6 @@ AntiBannerService.prototype = {
         // We assume that if content script is requesting CSS in first 5 seconds after request filter init,
         // then it is possible, that we've missed some elements and now we should collapse these elements        
         return (this._requestFilterInitTime > 0) && (this._requestFilterInitTime + 5000 > new Date().getTime());
-    },
-
-    /**
-     * Method is used to detect language of the page opened in the browser tab.
-     * LocaleDetectorService then checks if we need to auto-enable language specific filter.
-     *
-     * @param tabId Tab ID
-     * @param url Webpage URL
-     */
-    checkTabLanguage: function (tabId, url) {
-        this.localeDetectorService.detectTabLanguage(tabId, url);
     },
 
     /**
