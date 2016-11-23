@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global RequestTypes, uiService, antiBannerService, framesMap, filteringLog */
+/* global RequestTypes, antiBannerService, framesMap, filteringLog */
 
 (function () {
 
@@ -34,7 +34,7 @@
     // Record opened tabs
     adguard.tabs.forEach(function (tab) {
         framesMap.recordFrame(tab, 0, tab.url, RequestTypes.DOCUMENT);
-        uiService.updateTabIconAndContextMenu(tab);
+        adguard.ui.updateTabIconAndContextMenu(tab);
     });
 
     // Locale detect
@@ -61,7 +61,7 @@
 
         runCallback: function (runInfo) {
             if (runInfo.isFirstRun) {
-                uiService.openFiltersDownloadPage();
+                adguard.ui.openFiltersDownloadPage();
             }
         }
     });

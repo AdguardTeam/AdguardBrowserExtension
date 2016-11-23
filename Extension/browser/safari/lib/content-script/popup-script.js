@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global $, safari, controller, uiService */
+/* global $, safari, controller */
 
 (function () {
 
@@ -50,7 +50,7 @@
 
 	$(window).on('blur', function () {
 		if (window.tab) {
-			uiService.updateTabIconAndContextMenu(window.tab, true);
+			adguard.ui.updateTabIconAndContextMenu(window.tab, true);
 		}
 	});
 })();

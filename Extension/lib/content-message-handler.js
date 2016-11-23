@@ -1,4 +1,4 @@
-/* global Prefs, Utils, AntiBannerFiltersId, EventNotifierTypes, LogEvents, uiService, antiBannerService, WorkaroundUtils,
+/* global Prefs, Utils, AntiBannerFiltersId, EventNotifierTypes, LogEvents, antiBannerService, WorkaroundUtils,
  framesMap, adguardApplication, filteringLog, webRequestService, EventNotifier */
 
 /**
@@ -72,7 +72,7 @@ ContentMessageHandler.prototype = {
                 var userFilters = antiBannerService.getUserFilters(message.offset, message.limit, message.text);
                 return {rules: userFilters};
             case 'checkAntiBannerFiltersUpdate':
-                uiService.checkAntiBannerFiltersUpdate();
+                adguard.ui.checkAntiBannerFiltersUpdate();
                 break;
             case 'getAntiBannerFiltersForOptionsPage':
                 var renderedFilters = antiBannerService.getAntiBannerFiltersForOptionsPage();
@@ -110,24 +110,26 @@ ContentMessageHandler.prototype = {
             case 'getFiltersMetadata':
                 return this._processGetFiltersMetadata();
             case 'openThankYouPage':
-                uiService.openThankYouPage();
+                adguard.ui.openThankYouPage();
                 break;
             case 'openExtensionStore':
-                uiService.openExtensionStore();
+                adguard.ui.openExtensionStore();
                 break;
             case 'openFilteringLog':
                 adguard.browserAction.close();
-                uiService.openFilteringLog(message.tabId);
+                adguard.ui.openFilteringLog(message.tabId);
                 break;
             case 'openExportRulesTab':
-                uiService.openExportRulesTab(message.whitelist);
+                adguard.ui.openExportRulesTab(message.whitelist);
                 break;
             case 'openSafebrowsingTrusted':
                 antiBannerService.getRequestFilter().addToSafebrowsingTrusted(message.url);
-                uiService.reloadCurrentTab(message.url);
+                adguard.tabs.getActive(function (tab) {
+                    adguard.tabs.reload(tab.tabId, message.url);
+                });
                 break;
             case 'openTab':
-                uiService.openTab(message.url, message.options);
+                adguard.ui.openTab(message.url, message.options);
                 adguard.browserAction.close();
                 break;
             case 'resetBlockedAdsCount':
@@ -211,24 +213,28 @@ ContentMessageHandler.prototype = {
                 });
                 return true; // Async
             case 'addWhiteListDomainPopup':
-                uiService.whiteListCurrentTab();
+                adguard.tabs.getActive(function (tab) {
+                    adguard.ui.whiteListTab(tab);
+                });
                 break;
             case 'removeWhiteListDomainPopup':
-                uiService.unWhiteListCurrentTab();
+                adguard.tabs.getActive(function (tab) {
+                    adguard.ui.unWhiteListTab(tab);
+                });
                 break;
             case 'changeApplicationFilteringDisabled':
-                uiService.changeApplicationFilteringDisabled(message.disabled);
+                adguard.ui.changeApplicationFilteringDisabled(message.disabled);
                 break;
             case 'openSiteReportTab':
-                uiService.openSiteReportTab(message.url);
+                adguard.ui.openSiteReportTab(message.url);
                 adguard.browserAction.close();
                 break;
             case 'openSettingsTab':
-                uiService.openSettingsTab();
+                adguard.ui.openSettingsTab();
                 adguard.browserAction.close();
                 break;
             case 'openAssistant':
-                uiService.openAssistant();
+                adguard.ui.openAssistant();
                 adguard.browserAction.close();
                 break;
             case 'resizePanelPopup':

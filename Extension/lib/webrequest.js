@@ -161,7 +161,7 @@ function filterSafebrowsing(tab, mainFrameUrl) {
         // Chrome doesn't allow open extension url in incognito mode
         // So close current tab and open new
         if (incognitoTab && Utils.isChromium()) {
-            uiService.openTab(safebrowsingUrl, {}, function () {
+            adguard.ui.openTab(safebrowsingUrl, {}, function () {
                 adguard.tabs.remove(tab.tabId);
             });
         } else {

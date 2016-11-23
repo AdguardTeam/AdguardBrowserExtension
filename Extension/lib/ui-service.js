@@ -17,7 +17,7 @@
 
 /* global Log, UrlUtils, Utils, WorkaroundUtils, StringUtils, Prefs, unload, antiBannerService, framesMap, adguardApplication, filteringLog, EventNotifier, EventNotifierTypes */
 
-var uiService = (function () { // jshint ignore:line
+adguard.ui = (function () { // jshint ignore:line
 
     var browserActionTitle = adguard.i18n.getMessage('name');
 
@@ -93,10 +93,10 @@ var uiService = (function () { // jshint ignore:line
                 openSiteReportTab(tab.url);
             },
             'context_site_filtering_on': function () {
-                unWhiteListCurrentTab();
+                adguard.tabs.getActive(unWhiteListTab);
             },
             'context_site_filtering_off': function () {
-                whiteListCurrentTab();
+                adguard.tabs.getActive(whiteListTab);
             },
             'context_enable_protection': function () {
                 changeApplicationFilteringDisabled(false);
@@ -347,10 +347,6 @@ var uiService = (function () { // jshint ignore:line
         }
     };
 
-    var whiteListCurrentTab = function () {
-        adguard.tabs.getActive(whiteListTab);
-    };
-
     var unWhiteListTab = function (tab) {
 
         var tabInfo = framesMap.getFrameInfo(tab);
@@ -367,16 +363,6 @@ var uiService = (function () { // jshint ignore:line
         } else {
             updateTabIconAndContextMenu(tab, true);
         }
-    };
-
-    var unWhiteListCurrentTab = function () {
-        adguard.tabs.getActive(unWhiteListTab);
-    };
-
-    var reloadCurrentTab = function (url) {
-        adguard.tabs.getActive(function (tab) {
-            adguard.tabs.reload(tab.tabId, url);
-        });
     };
 
     var changeApplicationFilteringDisabled = function (disabled) {
@@ -527,10 +513,7 @@ var uiService = (function () { // jshint ignore:line
         updateTabIconAndContextMenu: updateTabIconAndContextMenu,
 
         whiteListTab: whiteListTab,
-        whiteListCurrentTab: whiteListCurrentTab,
         unWhiteListTab: unWhiteListTab,
-        unWhiteListCurrentTab: unWhiteListCurrentTab,
-        reloadCurrentTab: reloadCurrentTab,
 
         changeApplicationFilteringDisabled: changeApplicationFilteringDisabled,
         checkAntiBannerFiltersUpdate: checkAntiBannerFiltersUpdate,

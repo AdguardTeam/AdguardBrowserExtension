@@ -67,9 +67,9 @@ var MobileMenu = {
             adguard.tabs.getActive(function (tab) {
                 var tabInfo = framesMap.getFrameInfo(tab);
                 if (tabInfo.userWhiteListed) {
-                    uiService.unWhiteListCurrentTab();
+                    adguard.ui.unWhiteListTab(tab);
                 } else {
-                    uiService.whiteListCurrentTab();
+                    adguard.ui.whiteListTab(tab);
                 }
                 adguard.windowsImpl.getLastFocused(function (winId, domWin) {
                     domWin.NativeWindow.menu.update(toggleWhiteListItem, {checked: tabInfo.userWhiteListed});
@@ -82,7 +82,7 @@ var MobileMenu = {
 
             adguard.tabs.getActive(function (tab) {
                 var tabInfo = framesMap.getFrameInfo(tab);
-                uiService.changeApplicationFilteringDisabled(!tabInfo.applicationFilteringDisabled);
+                adguard.ui.changeApplicationFilteringDisabled(!tabInfo.applicationFilteringDisabled);
 
                 adguard.windowsImpl.getLastFocused(function (winId, domWin) {
                     domWin.NativeWindow.menu.update(toggleFilteringEnabledItem, {checked: tabInfo.applicationFilteringDisabled});
@@ -94,22 +94,22 @@ var MobileMenu = {
         var siteExceptionItem = this.createSubMenu(window, menuId, null, adguard.i18n.getMessage('popup_in_white_list_android'), false, false);
 
         var blockAdsItem = this.createSubMenu(window, menuId, function () {
-            uiService.openAssistant();
+            adguard.ui.openAssistant();
         }.bind(this), adguard.i18n.getMessage("popup_block_site_ads_android"));
 
         var reportSiteItem = this.createSubMenu(window, menuId, function () {
             adguard.tabs.getActive(function (tab) {
-                uiService.openSiteReportTab(tab.url);
+                adguard.ui.openSiteReportTab(tab.url);
             });
         }.bind(this), adguard.i18n.getMessage("popup_security_report_android"));
 
         var filteringLogItem = this.createSubMenu(window, menuId, function () {
-            uiService.openCurrentTabFilteringLog();
+            adguard.ui.openCurrentTabFilteringLog();
         }.bind(this), adguard.i18n.getMessage('popup_open_log_android'));
 
         //show settings menu ever
         this.createSubMenu(window, menuId, function () {
-            uiService.openSettingsTab();
+            adguard.ui.openSettingsTab();
         }, adguard.i18n.getMessage("popup_open_settings"));
 
         this.nativeMenuIds[window] = {

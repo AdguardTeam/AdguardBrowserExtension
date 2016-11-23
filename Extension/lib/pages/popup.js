@@ -18,7 +18,6 @@
 /* global $, PopupController */
 var backgroundPage = adguard.backgroundPage.getWindow();
 var antiBannerService = backgroundPage.antiBannerService;
-var uiService = backgroundPage.uiService;
 var framesMap = backgroundPage.framesMap;
 var filteringLog = backgroundPage.filteringLog;
 var Prefs = backgroundPage.Prefs;
@@ -67,39 +66,39 @@ $(document).ready(function () {
         };
         //popup checkbox actions
         controller.addWhiteListDomain = function () {
-            uiService.whiteListTab(tab);
+            adguard.ui.whiteListTab(tab);
             if (tabInfo.adguardDetected) {
                 adguard.closePopup();
             }
         };
         controller.removeWhiteListDomain = function () {
-            uiService.unWhiteListTab(tab);
+            adguard.ui.unWhiteListTab(tab);
             if (tabInfo.adguardDetected) {
                 adguard.closePopup();
             }
         };
         controller.changeApplicationFilteringDisabled = function (disabled) {
-            uiService.changeApplicationFilteringDisabled(disabled);
+            adguard.ui.changeApplicationFilteringDisabled(disabled);
         };
         //popup menu actions
         controller.openSiteReportTab = function (url) {
-            uiService.openSiteReportTab(url);
+            adguard.ui.openSiteReportTab(url);
             adguard.closePopup();
         };
         controller.openSettingsTab = function () {
-            uiService.openSettingsTab();
+            adguard.ui.openSettingsTab();
             adguard.closePopup();
         };
         controller.openAssistantInTab = function () {
-            uiService.openAssistant();
+            adguard.ui.openAssistant();
             adguard.closePopup();
         };
         controller.openLink = function (url) {
-            uiService.openTab(url);
+            adguard.ui.openTab(url);
             adguard.closePopup();
         };
         controller.openFilteringLog = function (tabId) {
-            uiService.openFilteringLog(tabId);
+            adguard.ui.openFilteringLog(tabId);
             adguard.closePopup();
         };
         controller.resetBlockedAdsCount = function () {
