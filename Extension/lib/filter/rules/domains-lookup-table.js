@@ -124,5 +124,24 @@ DomainsLookupTable.prototype = {
         }
 
         return urlFilterRules;
+    },
+
+    /**
+     * @returns {Array} rules in lookup table
+     */
+    getRules: function () {
+        var result = [];
+        for (var r in this.lookupTable) {
+            var value = this.lookupTable[r];
+            if (value) {
+                if (Utils.isArray(value)) {
+                    result = result.concat(value);
+                } else {
+                    result.push(value);
+                }
+            }
+        }
+
+        return result;
     }
 };

@@ -1,6 +1,6 @@
-! Checksum: TssYbNPonxJ68ib3PSf0bA
-! Version: 1.0.5.71
-! TimeUpdated: 2016-11-13T18:01:33.667+04:00
+! Checksum: pkz/qhGGPJWrctN4M2gz7g
+! Version: 1.0.5.88
+! TimeUpdated: 2016-11-21T22:01:31.570+04:00
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
 ! Title: Adguard Mobile Ads Filter
@@ -33,6 +33,13 @@
 !
 ! Section contains list of advertising networks
 !
+||mediate-ios-*.hyprmx.com^
+||marketplace-ios-*.hyprmx.com^
+||live.hyprmx.com^
+||cdn.ads.fotoable.net^
+||bannerwall.herewetest.com^
+||bannerwall.s3.appcnt.com^
+||bttn.io^
 ||api.adflake.com/custom^
 ||adflake.com/banner/
 ||api.kiip.me^
@@ -712,8 +719,6 @@
 @@||static.expressbpd.com/rsjs/ads.js
 ! https://forum.adguard.com/index.php?threads/15378/
 @@||ads.dainikbhaskar.com/AdTech/ads/ads.js
-! https://github.com/AdguardTeam/AdguardFilters/issues/3174
-@@||amazon-adsystem.com$domain=overclockers.ru
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3067
 @@||javadecompilers.com^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3067
@@ -791,7 +796,7 @@ m.reddit.com##article[class="Post size-compact"][-ext-has=".PostHeader__sponsore
 !-------------------
 !### TEMPORARY ###
 ! WebSockets are not blocked
-free-rutor.org,lenfilm.tv,krutor.org,fast-bit.org,tor-ru.net,hd-bit.org,radikal.ru,hdkinomax.com,kino-serial.net,on-movie.net,fastpic.ru,rutor.is,baskino.club,rutor.info,nnm.me,korzik.net,seasonvar.ru,rsload.net,nnm-club.me,nnmclub.to,rustorka.com,auto.mail.ru,horo.mail.ru,realty.mail.ru,health.mail.ru,afisha.mail.ru,cloud.mail.ru,otvet.mail.ru,pogoda.mail.ru,sport.mail.ru,tv.mail.ru,torg.mail.ru,cars.mail.ru,hi-tech.mail.ru,rustorka.com,top-tor.org,super-tor.net,filmix.net#%#window.WebSocket = undefined;
+free-rutor.org,lenfilm.tv,krutor.org,fast-bit.org,tor-ru.net,hd-bit.org,radikal.ru,hdkinomax.com,kino-serial.net,on-movie.net,fastpic.ru,rutor.is,baskino.club,rutor.info,nnm.me,korzik.net,seasonvar.ru,rsload.net,nnm-club.me,nnmclub.to,rustorka.com,auto.mail.ru,horo.mail.ru,realty.mail.ru,health.mail.ru,afisha.mail.ru,cloud.mail.ru,otvet.mail.ru,pogoda.mail.ru,sport.mail.ru,tv.mail.ru,torg.mail.ru,cars.mail.ru,hi-tech.mail.ru,rustorka.com,top-tor.org,super-tor.net,filmix.net,free-ru.org#%#window.WebSocket = undefined;
 ! https://forum.adguard.com/index.php?threads/12443/
 pornhub.com#%#AG_onLoad(function() { if (typeof redirect !== 'function') return; var str = redirect.toString(); var m = str.match(/\'(\/view.*)\'/); if (m.length != 2) return; var link = m[1]; window.location.href = m[1]; });
 !#################
@@ -827,6 +832,12 @@ deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important
 !##### TEMPORARY #####
 !
 !#####################
+! https://github.com/AdguardTeam/AdguardFilters/issues/3492
+@@||b.marfeel.com/statics/marfeel/gardac.js$domain=applesencia.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/3465
+@@||rutube.ru/play/embed/*?advertiser_id=
+! https://github.com/AdguardTeam/AdguardFilters/issues/3451
+@@||forums.windowscentral.com^$script,~third-party
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3310
 @@||android-api-de.gumtree.com/api/users/*/ads.json
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3348
@@ -964,6 +975,12 @@ m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"
 ! https://forum.adguard.com/index.php?threads/10464/
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
 !
+||go.*.com/apu.php$empty,domain=123movies.to|movies.is
+forums.windowscentral.com##.homeforums > div[align="center"][style="padding:15px"]
+forums.windowscentral.com##.adunit
+||m.wxrw123.com/style/js/feimobile.js
+||oss-cn-shanghai.aliyuncs.com/feimobileA.js
+||m.wxrw123.com/style/js/tongji.js
 ndtv.com###header_ad
 m.qidian.com##.fixBox > div.popup_box_bg
 m.qidian.com##.fixBox > div.fixbg
@@ -1110,11 +1127,6 @@ login.wi-fi.ru#%#window.isPremium = true;
 !
 ! FOCUS Online
 @@||imasdk.googleapis.com^$app=de.cellular.focus
-! YouTube app - ads in search results
-||googleapis.com/youtubei/v1/next?$protobuf=55514441
-||googleapis.com/youtubei/v1/next?$protobuf=55514441,important
-||googleapis.com/youtubei/v1/search?$protobuf=73920376
-||googleapis.com/youtubei/v1/search?$protobuf=73920376,important
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3131
 @@||ads.cricbuzz.com/adserver/units/mobile/set_ads_values.php
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2697
@@ -1125,6 +1137,9 @@ login.wi-fi.ru#%#window.isPremium = true;
 ||graph.facebook.com^$app=com.mobilefootie.wc2010
 ||graph.facebook.com^$app=com.mobilesrepublic.appy
 ||graph.facebook.com^$app=fr.meteo
+!
+! com.anoshenko.android.solitaires
+||alxanosoft.com/rk/
 !
 ! sport1.mobile.android.apps
 ||assets.sport1.de/imagix/filter2/jpeg/_set=dyn_size_no_crop/imagix/
@@ -1183,12 +1198,14 @@ login.wi-fi.ru#%#window.isPremium = true;
 ! Start: YT app
 ! https://github.com/AdguardTeam/AdguardForAndroid/issues/573
 ! https://github.com/AdguardTeam/AdguardForAndroid/issues/621
-||googleapis.com/youtubei/v1/browse?$protobuf=62887855|49413586|51621377
-||googleapis.com/youtubei/v1/next?$protobuf=62960614|65002523|105649908|82182324|99845384
 ||googleapis.com/youtubei/v1/player$protobuf=48841103|63112829|23|25
-||googleapis.com/youtubei/v1/browse?$protobuf=62887855|49413586|51621377,important
-||googleapis.com/youtubei/v1/next?$protobuf=62960614|65002523|105649908|82182324|99845384,important
 ||googleapis.com/youtubei/v1/player$protobuf=48841103|63112829|23|25,important
+||googleapis.com/youtubei/v1/browse?$protobuf=62887855|49413586|51621377
+||googleapis.com/youtubei/v1/browse?$protobuf=62887855|49413586|51621377,important
+||googleapis.com/youtubei/v1/next?$protobuf=55514441|62960614|65002523|105649908|82182324|99845384
+||googleapis.com/youtubei/v1/next?$protobuf=55514441|62960614|65002523|105649908|82182324|99845384,important
+||googleapis.com/youtubei/v1/search?$protobuf=73920376
+||googleapis.com/youtubei/v1/search?$protobuf=73920376,important
 ! End: YT app
 ! https://forum.adguard.com/index.php?threads/10132/
 ||api.live.daum.net/*/ad/
@@ -1251,12 +1268,20 @@ login.wi-fi.ru#%#window.isPremium = true;
 ||spotify.com/ads/
 ||trackersimulator.org^
 ! AMC app
+! https://github.com/AdguardTeam/AdguardForAndroid/issues/908#issuecomment-261964845
+|http*$app=com.adups.fota.sysoper|com.adups.fota
 !---------------------------------------------------------------------------!
 !-------------- Rules for mobile analytics ---------------------------------!
 !---------------------------------------------------------------------------!
 !
 ! Section contains rules for mobile analytics and spyware
 !
+||rlog.9gag.com^
+||rlog-api.under9.co^
+||track.pingstart.com^
+||abcd.mdc.akamaized.net/materials/index/?country=
+||geoip.fotoable.net^
+||regist.fotoable.net/regist/
 ||ups.ksmobile.net^
 ||andmlb.kshwtj.com^
 ||cb.ksmobile.com^
@@ -1410,6 +1435,7 @@ iapp-cp.nuggad.net^
 !--- Russian filter ---
 !
 !--- English filter ---
-!
+! https://github.com/AdguardTeam/AdguardFilters/issues/3498
+@@||appex-rf.msn.com/*.js?adtype=
 !--- German filter ----
 !

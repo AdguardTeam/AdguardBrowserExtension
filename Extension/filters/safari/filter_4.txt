@@ -1,6 +1,6 @@
-! Checksum: lrCQwQwf2DDilgcCdOPCKA
-! Version: 1.0.14.45
-! TimeUpdated: 2016-11-13T19:00:42.017+04:00
+! Checksum: 7zflTERMiIeJ2qiKwGTcWQ
+! Version: 1.0.14.72
+! TimeUpdated: 2016-11-22T00:00:56.244+04:00
 ! Title: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
 ! Title: Adguard Social Media Filter
@@ -167,6 +167,7 @@
 !
 ! Contains usorted urls
 !
+/wp-content/plugins/social-count-plus/*
 /plugins/wp-share-to-xing/*
 /wp-content/plugins/indeed-social-media/*
 /asd.share.buttons/*
@@ -182,7 +183,7 @@
 /heart_it_button.js
 /icons/share.jpg
 /images/social/*
-/images/vk.png$domain=~cheater-top.ru|~monolife.ru|~mos.ru
+/images/vk.png$domain=~cheater-top.ru|~monolife.ru|~mos.ru|~epicwow.com
 /img/facebook.gif
 /img/twitter.gif
 /jquery.shareaholic-publishers-sb.min.js
@@ -240,6 +241,7 @@ lj_bookmarklet
 !
 ! Extended CSS rules
 !
+onedio.com##.main > .entry.html[-ext-has="h2:contains(YouTube Kanalımıza Abone)"]
 applopedi.com##.sag > .single-block[-ext-has=".addthis_toolbox"]
 f3torrent.net##.f3wrapper-right > div[style][-ext-has='div.feedburner']
 androidcanavari.net##aside.sidebar div.widget.widget_text[-ext-has=".fb-page"]
@@ -328,6 +330,47 @@ softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2146
 ||mimimi.tv/?*=*&_=
 !
+handelsblatt.com##div[class^="vhb-share-social"]
+intoday.in##.likedisdiv
+cocomy.net##.post-bottom
+theatlantic.com##.social-kit__item
+theatlantic.com##.share-wrapper
+sport-express.ru##.socshare
+kbb.com##.social
+123movies.is##.social-home
+epicbundle.com##.fb_iframe_widget
+bonusmieter.de###mo_globba > div[-ext-has='div#fb-root']
+forum.memurlar.net##.Social
+cumhuriyet.com.tr###hdrFBLike
+teknolib.com##.single-social-wrap
+vizefinalsorupaylasimi.com##.entry-social
+meraklimedya.net##.SosyalPaylas > :not(div)
+loopit.in###floatingSocialShare
+chip.com.tr##.postbit-social
+yenisondakika.com###page_right > div[class="right_block"] > div.title.grey
+yeniturkhaber.com##.socialButtonv1
+yeniturkhaber.com##.share-buttons-2
+yeniturkhaber.com##.SocialTools li:not([class="resizer"])
+orlandosentinel.com##span[data-role="sc_share"]
+pravda.com.ua##.post__social-container
+keys4free.com##.widget_apsc_widget
+tv8.com.tr##.detail-page-share
+markt.merkur.de###markt_expose_socialButtons
+3dnews.ru##.content-block-data > center > div.newybtn
+foobar2000.org##.padding > table[style="margin-left:auto;margin-right:auto;width:auto;font-size:75%"] + h2
+fotomac.com.tr##.shareGroup
+otomobil.com.tr##.momizat-facebook
+otomobil.com.tr##.momizat-social_counter
+otomobil.com.tr##a[href="https://www.facebook.com/otomobilyayincilik"]
+toolslib.net##.socials-share
+kutahyaekspres.com##.facebook-widget
+gercektaraf.com##.socialRightBlock
+gercektaraf.com##form + .right_block > div[class="title grey"]
+||webspor2.com/social.html
+ubuntumaniac.com###fanback
+ubuntumaniac.com###PlusFollowers1
+filmizlef.net##.widget.border5a > .widget.border5a:first-child
+m.news.de##.social
 ehftv.com##.player-social
 gadgets.ndtv.com###innersharelink
 asn24.ru###asd_share_buttons
@@ -1330,7 +1373,6 @@ slashdot.org##a[data-provider="twitter"]
 auto.vesti.ru##a[href*="liveinternet.ru/journal_post.php?"]
 therussiantimes.com##a[href="#fb_widget"]
 lostfilm.tv##a[href^="//twitter.com/home?status"]
-ccm.net##a[href^="https://twitter.com/intent/tweet/"]
 giveaway-club.com##a[href^="https://www.facebook.com/share.php"]
 medimagazin.com.tr##a[href^="javascript:medipop"]
 tweak.dk##a[href^="javascript:newwindow"] > img
@@ -1543,6 +1585,15 @@ lcpdfr.com##ul[data-controller$="sharelink"]
 !
 ! Section contains list general hiding rules
 !
+##.btn_fb
+##.like-fb
+##a[href^="https://twitter.com/intent/tweet/?"]
+##.fa-pinterest-p
+###share-facebook
+###share_facebook
+###share_twitter
+##.social-count-plus
+##.social-icons-widget
 ##.flare-follow
 ##.share-on-twitter
 ##.share-on-facebook
@@ -1832,10 +1883,10 @@ livejournal.com##.b-ljtimes-wrapper
 ##.help-social-buttons
 ##.i_v_fb_like
 ##.icon-digg
-~ain.ua,~comediansincarsgettingcoffee.com,~forbes.com,~hubs.ua,~iguides.ru,~logaster.com,~t3n.de,~theverge##.icon-facebook
+~ain.ua,~comediansincarsgettingcoffee.com,~forbes.com,~hubs.ua,~iguides.ru,~logaster.com,~t3n.de,~theverge,~minfin.com.ua##.icon-facebook
 ~slashdot.org##.icon-facebook-squared
 ~t3n.de##.icon-google-plus
-~ain.ua,~iguides.ru,~logaster.com##.icon-gplus
+~ain.ua,~iguides.ru,~logaster.com,~minfin.com.ua##.icon-gplus
 ~webref.ru##.icon-linkedin
 ##.icon-pinterest
 ##.icon-pinterest-share
@@ -2026,7 +2077,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.social-likes
 ##.social-likes_single-w
 ##.social-line
-~4pda.ru,~asos.com,~playground.ru,~spot.im##.social-link
+~filestream.me,~4pda.ru,~asos.com,~playground.ru,~spot.im##.social-link
 ##.social-links-tooltip
 ##.social-love
 ~macrumors.com##.social-media
@@ -2190,7 +2241,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##a[href^="http://m.facebook.com/sharer.php"]
 ~pinterest.com##a[href^="http://pinterest.com/pin/create/button/"]
 ~pinterest.com##a[href^="http://pinterest.com/pin/create/link/"]
-##a[href^="http://plus.google.com/share"]
+~plus.google.com##a[href^="http://plus.google.com/share"]
 ~reddit.com##a[href^="http://reddit.com/submit?url="]
 ~weibo.com##a[href^="http://service.weibo.com/share/share.php"]
 ~yandex.ru##a[href^="http://share.yandex.ru/go.xml?service="]
@@ -2288,6 +2339,8 @@ livejournal.com##.b-ljtimes-wrapper
 ||mailget.net^$third-party
 /wp-content/plugins/facebook-fanbox-popup/*
 !
+meraklimedya.net###mjpopup
+||turkusozu.com/js/fancybox/
 doramy.moy.su##.fancybox-desktop
 doramy.moy.su###fancybox-overlay
 altinelbiseliadam.com##.spu-box
@@ -2374,6 +2427,13 @@ dooralei.ru#$#div[id^="mt_popup"] { display: none!important; }
 hi-fi.ru#$#.arcticmodal-overlay { display: none!important; }
 hi-fi.ru#$#.arcticmodal-container { display: none!important; }
 hi-fi.ru#$#body { overflow: auto!important; }
+!
+twgreatdaily.com#$#div[aria-labelledby="mySmallModalLabel"] { display: none!important; }
+twgreatdaily.com#$#.modal-backdrop.fade { display: none!important; }
+twgreatdaily.com#$#.body.modal-open { overflow: visible!important; }
+!
+sport-express.ru#$#body.popup { overflow: visible!important; }
+sport-express.ru#$#.show-popup{ display: none!important; }
 !-------------------------------------------------------------------------------!
 !-------------- Whitelist  -----------------------------------------------------!
 !-------------------------------------------------------------------------------!

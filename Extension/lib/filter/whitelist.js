@@ -15,10 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var allowAllWhiteListRule = {
-    whiteListRule: true,
-    filterId: AntiBannerFiltersId.WHITE_LIST_FILTER_ID
-};
+var allowAllWhiteListRule = new UrlFilterRule('@@whitelist-all$document', AntiBannerFiltersId.WHITE_LIST_FILTER_ID);
 
 var WhiteListService = function () {
 

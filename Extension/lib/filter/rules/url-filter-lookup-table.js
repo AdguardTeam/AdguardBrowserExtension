@@ -58,6 +58,16 @@ UrlFilterRuleLookupTable.prototype = {
         this.rulesWithoutShortcuts = [];
     },
 
+    getRules: function () {
+        var rules = [];
+
+        rules = rules.concat(this.rulesWithoutShortcuts);
+        rules = rules.concat(this.shortcutsLookupTable.getRules());
+        rules = rules.concat(this.domainsLookupTable.getRules());
+
+        return rules;
+    },
+
     /**
      * Returns filtering rule if request is filtered or NULL if nothing found
      *
