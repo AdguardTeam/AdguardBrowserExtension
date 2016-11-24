@@ -1,5 +1,5 @@
 /* global XPCOMUtils, Services, Cc, Ci, Cr, Cm, components */
-/* global Map, unload, RequestTypes, Log, Utils, EventChannels, adguardApplication */
+/* global Map, unload, RequestTypes, Log, Utils, EventChannels */
 
 (function () {
 
@@ -644,8 +644,8 @@
 
                 // TODO: can we move it to webrequest.js?
                 // Set authorization headers for requests to desktop AG
-                if (adguardApplication.isIntegrationRequest(request.requestUrl)) {
-                    var authHeaders = adguardApplication.getAuthorizationHeaders();
+                if (adguard.integration.isIntegrationRequest(request.requestUrl)) {
+                    var authHeaders = adguard.integration.getAuthorizationHeaders();
                     for (var i = 0; i < authHeaders.length; i++) {
                         channel.setRequestHeader(authHeaders[i].headerName, authHeaders[i].headerValue, false);
                     }

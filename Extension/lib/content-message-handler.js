@@ -1,5 +1,5 @@
 /* global Prefs, Utils, AntiBannerFiltersId, EventNotifierTypes, LogEvents, antiBannerService, WorkaroundUtils,
- framesMap, adguardApplication, filteringLog, webRequestService, EventNotifier */
+ framesMap, filteringLog, webRequestService, EventNotifier */
 
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -31,10 +31,10 @@ ContentMessageHandler.prototype = {
                 antiBannerService.unWhiteListFrame(message.frameInfo);
                 break;
             case 'addRuleToApp':
-                adguardApplication.addRuleToApp(message.ruleText);
+                adguard.integration.addRuleToApp(message.ruleText);
                 break;
             case 'removeRuleFromApp':
-                adguardApplication.removeRuleFromApp(message.ruleText);
+                adguard.integration.removeRuleFromApp(message.ruleText);
                 break;
             case 'addEventListener':
                 return this._processAddEventListener(message, sender);
@@ -153,7 +153,7 @@ ContentMessageHandler.prototype = {
             case 'addUserRule':
                 antiBannerService.addUserFilterRule(message.ruleText);
                 if (framesMap.isTabAdguardDetected(sender.tab)) {
-                    adguardApplication.addRuleToApp(message.ruleText);
+                    adguard.integration.addRuleToApp(message.ruleText);
                 }
                 break;
             case 'onOpenFilteringLogPage':

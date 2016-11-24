@@ -588,8 +588,8 @@ var WebRequestImpl = {
         }
 
         // Set authorization headers for requests to desktop AG
-        if (adguardApplication.isIntegrationRequest(subject.URI.asciiSpec)) {
-            var authHeaders = adguardApplication.getAuthorizationHeaders();
+        if (adguard.integration.isIntegrationRequest(subject.URI.asciiSpec)) {
+            var authHeaders = adguard.integration.getAuthorizationHeaders();
             for (var i = 0; i < authHeaders.length; i++) {
                 subject.setRequestHeader(authHeaders[i].headerName, authHeaders[i].headerValue, false);
             }
@@ -630,7 +630,7 @@ var WebRequestImpl = {
          * Override request referrer in integration mode
          */
         var tab = {tabId: tabId};
-        if (adguardApplication.shouldOverrideReferrer(tab)) {
+        if (adguard.integration.shouldOverrideReferrer(tab)) {
             // Retrieve main frame url
             var frameUrl = framesMap.getFrameUrl(tab, 0);
             subject.setRequestHeader('Referer', frameUrl, false);

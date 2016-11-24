@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Prefs, framesMap, antiBannerService, filteringLog, adguardApplication, filterRulesHitCount,
+/* global Prefs, framesMap, antiBannerService, filteringLog, filterRulesHitCount,
  RequestTypes, EventNotifier, EventNotifierTypes, FilterUtils, Utils */
 
 var webRequestService = (function () { // jshint ignore:line
@@ -193,7 +193,7 @@ var webRequestService = (function () { // jshint ignore:line
 
             if (Prefs.getBrowser() != "Edge") {
                 // TODO[Edge]: Integration mode is not fully functional in Edge (cannot redefine Referer header yet)
-                adguardApplication.checkHeaders(tab, responseHeaders, requestUrl);
+                adguard.integration.checkHeaders(tab, responseHeaders, requestUrl);
             }
             // Clear previous events
             filteringLog.clearEventsForTab(tab);
@@ -204,7 +204,7 @@ var webRequestService = (function () { // jshint ignore:line
 
         if (framesMap.isTabAdguardDetected(tab)) {
             //parse rule applied to request from response headers
-            requestRule = adguardApplication.parseAdguardRuleFromHeaders(responseHeaders);
+            requestRule = adguard.integration.parseAdguardRuleFromHeaders(responseHeaders);
             appendLogEvent = !adguard.backend.isAdguardAppRequest(requestUrl);
         } else if (framesMap.isTabProtectionDisabled(tab)) { // jshint ignore:line
             //do nothing

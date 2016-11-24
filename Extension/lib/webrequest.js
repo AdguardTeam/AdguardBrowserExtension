@@ -16,7 +16,7 @@
  */
 
 /* global RequestTypes, framesMap, EventNotifier, EventNotifierTypes, UrlUtils, webRequestService */
-/* global Prefs, adguardApplication, Utils, antiBannerService, UI, StringUtils, filterRulesHitCount */
+/* global Prefs, Utils, antiBannerService, StringUtils, filterRulesHitCount */
 
 /**
  * Process request
@@ -67,7 +67,7 @@ function onBeforeSendHeaders(requestDetails) {
     var tab = requestDetails.tab;
     var headers = requestDetails.requestHeaders;
 
-    if (adguardApplication.shouldOverrideReferrer(tab)) {
+    if (adguard.integration.shouldOverrideReferrer(tab)) {
         // Retrieve main frame url
         var mainFrameUrl = framesMap.getFrameUrl(tab, 0);
         headers = Utils.setHeaderValue(headers, 'Referer', mainFrameUrl);
@@ -185,7 +185,7 @@ if (Prefs.platform === "chromium") {
     /* global browser */
     browser.webRequest.onBeforeSendHeaders.addListener(function callback(details) {
 
-        var authHeaders = adguardApplication.getAuthorizationHeaders();
+        var authHeaders = adguard.integration.getAuthorizationHeaders();
         var headers = details.requestHeaders;
         for (var i = 0; i < authHeaders.length; i++) {
             headers = Utils.setHeaderValue(details.requestHeaders, authHeaders[i].headerName, authHeaders[i].headerValue);
@@ -193,7 +193,7 @@ if (Prefs.platform === "chromium") {
 
         return {requestHeaders: headers};
 
-    }, {urls: [adguardApplication.getIntegrationBaseUrl() + "*"]}, ["requestHeaders", "blocking"]);
+    }, {urls: [adguard.integration.getIntegrationBaseUrl() + "*"]}, ["requestHeaders", "blocking"]);
 }
 
 // TODO[Edge]: Add support for collecting hits statis. Currently we cannot add listener for ms-browser-extension:// urls.

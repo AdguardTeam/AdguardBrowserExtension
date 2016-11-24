@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Log, UrlUtils, Utils, WorkaroundUtils, StringUtils, Prefs, unload, antiBannerService, framesMap, adguardApplication, filteringLog, EventNotifier, EventNotifierTypes */
+/* global Log, UrlUtils, Utils, WorkaroundUtils, StringUtils, Prefs, unload, antiBannerService, framesMap, filteringLog, EventNotifier, EventNotifierTypes */
 
 adguard.ui = (function () { // jshint ignore:line
 
@@ -338,7 +338,7 @@ adguard.ui = (function () { // jshint ignore:line
 
         if (framesMap.isTabAdguardDetected(tab)) {
             var domain = UrlUtils.getHost(tab.url);
-            adguardApplication.addRuleToApp("@@//" + domain + "^$document", function () {
+            adguard.integration.addRuleToApp("@@//" + domain + "^$document", function () {
                 adguard.tabs.sendMessage(tab.tabId, {type: 'no-cache-reload'});
                 adguard.browserAction.close();
             });
@@ -355,7 +355,7 @@ adguard.ui = (function () { // jshint ignore:line
         if (framesMap.isTabAdguardDetected(tab)) {
             var rule = framesMap.getTabAdguardUserWhiteListRule(tab);
             if (rule) {
-                adguardApplication.removeRuleFromApp(rule.ruleText, function () {
+                adguard.integration.removeRuleFromApp(rule.ruleText, function () {
                     adguard.tabs.sendMessage(tab.tabId, {type: 'no-cache-reload'});
                     adguard.browserAction.close();
                 });
