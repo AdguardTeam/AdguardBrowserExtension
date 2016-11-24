@@ -62,6 +62,6 @@ controller.sendFeedback = function (url, topic, comment) {
 
 document.addEventListener('DOMContentLoaded', function () {
     contentPage.sendMessage({type: 'popupReady'}, function (message) {
-        controller.render(message.tabInfo, message.filteringInfo);
+        controller.render(message.frameInfo);
     });
 }, true);

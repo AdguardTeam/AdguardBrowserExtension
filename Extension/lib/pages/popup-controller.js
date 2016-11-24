@@ -32,15 +32,13 @@ PopupController.prototype = {
     /**
      * Renders popup using specified model object
      * @param tabInfo
-     * @param filteringInfo
      */
-    render: function (tabInfo, filteringInfo) {
+    render: function (tabInfo) {
 
         this.tabInfo = tabInfo;
-        this.filteringInfo = filteringInfo;
 
         //render
-        this._renderPopup(tabInfo, filteringInfo);
+        this._renderPopup(tabInfo);
 
         // Bind actions
         this._bindActions();
@@ -270,12 +268,7 @@ PopupController.prototype = {
         });
         parent.on('click', '.openFilteringLog', function (e) {
             e.preventDefault();
-            var tabId;
-            var filteringInfo = self.filteringInfo;
-            if (filteringInfo && filteringInfo.isHttp) {
-                tabId = filteringInfo.tabId;
-            }
-            self.openFilteringLog(tabId);
+            self.openFilteringLog();
         });
         parent.on('click', '.resetStats', function (e) {
             e.preventDefault();
@@ -312,13 +305,12 @@ PopupController.prototype = {
             e.preventDefault();
 
             var tabInfo = self.tabInfo;
-            var filteringInfo = self.filteringInfo;
 
             var disabled = !tabInfo.applicationFilteringDisabled;
             self.changeApplicationFilteringDisabled(disabled);
 
             tabInfo.applicationFilteringDisabled = disabled;
-            self._renderPopup(tabInfo, filteringInfo);
+            self._renderPopup(tabInfo);
             self.resizePopupWindow();
         });
     },

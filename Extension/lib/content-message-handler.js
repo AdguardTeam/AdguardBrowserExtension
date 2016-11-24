@@ -1,5 +1,5 @@
 /* global Prefs, Utils, AntiBannerFiltersId, EventNotifierTypes, LogEvents, antiBannerService, WorkaroundUtils,
- framesMap, filteringLog, webRequestService, EventNotifier */
+ framesMap, webRequestService, EventNotifier */
 
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -308,25 +308,25 @@
                 }
                 break;
             case 'onOpenFilteringLogPage':
-                filteringLog.onOpenFilteringLogPage();
+                adguard.filteringLog.onOpenFilteringLogPage();
                 break;
             case 'onCloseFilteringLogPage':
-                filteringLog.onCloseFilteringLogPage();
+                adguard.filteringLog.onCloseFilteringLogPage();
                 break;
             case 'reloadTabById':
-                filteringLog.reloadTabById(message.tabId);
+                adguard.tabs.reload(message.tabId);
                 break;
             case 'clearEventsByTabId':
-                filteringLog.clearEventsByTabId(message.tabId);
+                adguard.filteringLog.clearEventsByTabId(message.tabId);
                 break;
             case 'getTabFrameInfoById':
-                var frameInfo = filteringLog.getTabFrameInfoById(message.tabId);
+                var frameInfo = framesMap.getFrameInfo({tabId: message.tabId});
                 return {frameInfo: frameInfo};
-            case 'getTabInfoById':
-                var tabInfo = filteringLog.getTabInfoById(message.tabId);
-                return {tabInfo: filteringLog.serializeTabInfo(tabInfo)};
+            case 'getFilteringInfoByTabId':
+                var filteringInfo = adguard.filteringLog.getFilteringInfoByTabId(message.tabId);
+                return {filteringInfo: filteringInfo};
             case 'synchronizeOpenTabs':
-                filteringLog.synchronizeOpenTabs(function () {
+                adguard.filteringLog.synchronizeOpenTabs(function () {
                     callback({});
                 });
                 return true; // Async
@@ -352,12 +352,8 @@
             // Popup methods
             case 'popupReady':
                 adguard.tabs.getActive(function (tab) {
-                    var tabInfo = framesMap.getFrameInfo(tab);
-                    var filteringInfo = filteringLog.getTabInfo(tab);
-                    callback({
-                        tabInfo: tabInfo,
-                        filteringInfo: filteringInfo
-                    });
+                    var frameInfo = framesMap.getFrameInfo(tab);
+                    callback({frameInfo: frameInfo});
                 });
                 return true; // Async
             case 'addWhiteListDomainPopup':

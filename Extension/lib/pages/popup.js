@@ -19,7 +19,6 @@
 var backgroundPage = adguard.backgroundPage.getWindow();
 var antiBannerService = backgroundPage.antiBannerService;
 var framesMap = backgroundPage.framesMap;
-var filteringLog = backgroundPage.filteringLog;
 var Prefs = backgroundPage.Prefs;
 var Utils = backgroundPage.Utils;
 
@@ -46,7 +45,6 @@ $(document).ready(function () {
         tab = t;
 
         var tabInfo = framesMap.getFrameInfo(tab);
-        var filteringInfo = filteringLog.getTabInfo(tab);
 
         controller = new PopupController({
             platform: Prefs.platform,
@@ -109,6 +107,6 @@ $(document).ready(function () {
         };
 
         //render popup
-        controller.render(tabInfo, filteringInfo);
+        controller.render(tabInfo);
     });
 });

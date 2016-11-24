@@ -15,189 +15,210 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var FilteringLog = function () {
-	this.tabsInfo = Object.create(null);
-	this.openedFilteringLogsPage = 0;
-};
+/* global UrlUtils, EventNotifier, LogEvents */
 
-FilteringLog.REQUESTS_SIZE_PER_TAB = 1000;
+/**
+ * Object for log http requests
+ */
+adguard.filteringLog = (function () {
 
-FilteringLog.prototype.tabsInfoCollection = function () {
-	var result = [];
-	for (var tabId in this.tabsInfo) {
-		result.push(this.tabsInfo[tabId]);
+	'use strict';
+
+	var REQUESTS_SIZE_PER_TAB = 1000;
+
+	var tabsInfoMap = Object.create(null);
+	var openedFilteringLogsPage = 0;
+
+	/**
+	 * Updates tab info (title and url)
+	 * @param tab
+	 */
+	function updateTabInfo(tab) {
+		var tabInfo = tabsInfoMap[tab.tabId] || Object.create(null);
+		tabInfo.tabId = tab.tabId;
+		tabInfo.title = tab.title;
+		tabInfo.isHttp = UrlUtils.isHttpRequest(tab.url);
+		tabsInfoMap[tab.tabId] = tabInfo;
+		return tabInfo;
 	}
-	return result;
-};
 
-FilteringLog.prototype.synchronizeOpenTabs = function (callback) {
-	var openTabsCallback = function (tabs) {
-		var tabsToRemove = this.tabsInfoCollection();
-		for (var i = 0; i < tabs.length; i++) {
-			var openTab = tabs[i];
-			var tabInfo = this.tabsInfo[openTab.tabId];
-			if (!tabInfo) {
-				//add tab
-				this.addTab(openTab);
-			} else {
-				//update tab
-				this.updateTab(openTab);
-			}
-			var index = tabsToRemove.indexOf(tabInfo);
-			if (index >= 0) {
-				tabsToRemove.splice(index, 1);
-			}
+	/**
+	 * Adds tab
+	 * @param tab
+	 */
+	function addTab(tab) {
+		var tabInfo = updateTabInfo(tab);
+		if (tabInfo) {
+			EventNotifier.notifyListeners(LogEvents.TAB_ADDED, tabInfo);
 		}
-		for (var j = 0; j < tabsToRemove.length; j++) {
-			this.removeTab(tabsToRemove[j].tab);
+	}
+
+	/**
+	 * Removes tab
+	 * @param tabId
+	 */
+	function removeTabById(tabId) {
+		var tabInfo = tabsInfoMap[tabId];
+		if (tabInfo) {
+			EventNotifier.notifyListeners(LogEvents.TAB_CLOSE, tabInfo);
 		}
-		if (callback) {
-			callback();
+		delete tabsInfoMap[tabId];
+	}
+
+	/**
+	 * Updates tab
+	 * @param tab
+	 */
+	function updateTab(tab) {
+		var tabInfo = updateTabInfo(tab);
+		if (tabInfo) {
+			EventNotifier.notifyListeners(LogEvents.TAB_UPDATE, tabInfo);
 		}
-	}.bind(this);
-	adguard.tabs.getAll(openTabsCallback);
-};
-
-FilteringLog.prototype.addTab = function (tab) {
-	var tabInfo = this._updateTabInfo(tab);
-	if (tabInfo) {
-		EventNotifier.notifyListeners(LogEvents.TAB_ADDED, this.serializeTabInfo(tabInfo));
-	}
-};
-
-FilteringLog.prototype.removeTab = function (tab) {
-	var tabInfo = this.tabsInfo[tab.tabId];
-	if (tabInfo) {
-		EventNotifier.notifyListeners(LogEvents.TAB_CLOSE, this.serializeTabInfo(tabInfo));
-	}
-	delete this.tabsInfo[tab.tabId];
-};
-
-FilteringLog.prototype.updateTab = function (tab) {
-	var tabInfo = this._updateTabInfo(tab);
-	if (tabInfo) {
-		EventNotifier.notifyListeners(LogEvents.TAB_UPDATE, this.serializeTabInfo(tabInfo));
-	}
-};
-
-FilteringLog.prototype._updateTabInfo = function (tab) {
-	var tabInfo = this.tabsInfo[tab.tabId] || Object.create(null);
-	tabInfo.tabId = tab.tabId;
-	tabInfo.tab = tab;
-	tabInfo.isHttp = UrlUtils.isHttpRequest(tab.url);
-	this.tabsInfo[tab.tabId] = tabInfo;
-	return tabInfo;
-};
-
-FilteringLog.prototype.reloadTabById = function (tabId) {
-	var tabInfo = this.tabsInfo[tabId];
-	if (tabInfo) {
-		adguard.tabs.reload(tabInfo.tabId);
-	}
-};
-
-FilteringLog.prototype.getTabInfoById = function (tabId) {
-	return this.tabsInfo[tabId];
-};
-
-FilteringLog.prototype.getTabFrameInfoById = function (tabId) {
-	var tabInfo = this.getTabInfoById(tabId);
-	return tabInfo ? framesMap.getFrameInfo(tabInfo.tab) : null;
-};
-
-FilteringLog.prototype.getTabInfo = function (tab) {
-	var tabInfo = this.tabsInfo[tab.tabId];
-	return this.serializeTabInfo(tabInfo);
-};
-
-FilteringLog.prototype.clearEventsForTab = function (tab) {
-	var tabInfo = this.tabsInfo[tab.tabId];
-	if (!tabInfo) {
-		return;
-	}
-	//remove previous events
-	delete tabInfo.filteringEvents;
-	EventNotifier.notifyListeners(LogEvents.TAB_RESET, this.serializeTabInfo(tabInfo));
-};
-
-FilteringLog.prototype.addEvent = function (tab, requestUrl, frameUrl, requestType, requestRule) {
-
-	if (this.openedFilteringLogsPage === 0) {
-		return;
 	}
 
-	var tabInfo = this.tabsInfo[tab.tabId];
-	if (!tabInfo) {
-		return;
-	}
-
-	if (!tabInfo.filteringEvents) {
-		tabInfo.filteringEvents = [];
-	}
-
-	var requestDomain = UrlUtils.getDomainName(requestUrl);
-	var frameDomain = UrlUtils.getDomainName(frameUrl);
-
-	var filteringEvent = {
-		requestUrl: requestUrl,
-		requestDomain: requestDomain,
-		frameUrl: frameUrl,
-		frameDomain: frameDomain,
-		requestType: requestType,
-		requestThirdParty: UrlUtils.isThirdPartyRequest(requestUrl, frameUrl),
-		requestRule: requestRule
+	/**
+	 * Get filtering info for tab
+	 * @param tabId
+	 */
+	var getFilteringInfoByTabId = function (tabId) {
+		return tabsInfoMap[tabId];
 	};
-	if (requestRule) {
-		filteringEvent.requestRule = Object.create(null);
-		filteringEvent.requestRule.filterId = requestRule.filterId;
-		filteringEvent.requestRule.ruleText = requestRule.ruleText;
-		filteringEvent.requestRule.whiteListRule = requestRule.whiteListRule;
-	}
-	tabInfo.filteringEvents.push(filteringEvent);
 
-	if (tabInfo.filteringEvents.length > FilteringLog.REQUESTS_SIZE_PER_TAB) {
-		//don't remove first item, cause it's request to main frame
-		tabInfo.filteringEvents.splice(1, 1);
-	}
+	/**
+	 * Add request to log
+	 * @param tab
+	 * @param requestUrl
+	 * @param frameUrl
+	 * @param requestType
+	 * @param requestRule
+	 */
+	var addEvent = function (tab, requestUrl, frameUrl, requestType, requestRule) {
 
-	EventNotifier.notifyListeners(LogEvents.EVENT_ADDED, this.serializeTabInfo(tabInfo), filteringEvent);
-};
-
-FilteringLog.prototype.clearEventsByTabId = function (tabId) {
-	var tabInfo = this.getTabInfoById(tabId);
-	if (tabInfo) {
-		delete tabInfo.filteringEvents;
-		EventNotifier.notifyListeners(LogEvents.TAB_RESET, this.serializeTabInfo(tabInfo));
-	}
-};
-
-FilteringLog.prototype.onOpenFilteringLogPage = function () {
-	this.openedFilteringLogsPage++;
-};
-
-FilteringLog.prototype.onCloseFilteringLogPage = function () {
-	this.openedFilteringLogsPage = Math.max(this.openedFilteringLogsPage - 1, 0);
-	if (this.openedFilteringLogsPage === 0) {
-		//clear events
-		var tabsInfo = this.tabsInfoCollection();
-		for (var i = 0; i < tabsInfo.length; i++) {
-			delete tabsInfo[i].filteringEvents;
+		if (openedFilteringLogsPage === 0) {
+			return;
 		}
-	}
-};
 
-FilteringLog.prototype.serializeTabInfo = function (tabInfo) {
-	if (!tabInfo) {
-		return null;
-	}
+		var tabInfo = tabsInfoMap[tab.tabId];
+		if (!tabInfo) {
+			return;
+		}
+
+		if (!tabInfo.filteringEvents) {
+			tabInfo.filteringEvents = [];
+		}
+
+		var requestDomain = UrlUtils.getDomainName(requestUrl);
+		var frameDomain = UrlUtils.getDomainName(frameUrl);
+
+		var filteringEvent = {
+			requestUrl: requestUrl,
+			requestDomain: requestDomain,
+			frameUrl: frameUrl,
+			frameDomain: frameDomain,
+			requestType: requestType,
+			requestThirdParty: UrlUtils.isThirdPartyRequest(requestUrl, frameUrl),
+			requestRule: requestRule
+		};
+		if (requestRule) {
+			filteringEvent.requestRule = Object.create(null);
+			filteringEvent.requestRule.filterId = requestRule.filterId;
+			filteringEvent.requestRule.ruleText = requestRule.ruleText;
+			filteringEvent.requestRule.whiteListRule = requestRule.whiteListRule;
+		}
+		tabInfo.filteringEvents.push(filteringEvent);
+
+		if (tabInfo.filteringEvents.length > REQUESTS_SIZE_PER_TAB) {
+			//don't remove first item, cause it's request to main frame
+			tabInfo.filteringEvents.splice(1, 1);
+		}
+
+		EventNotifier.notifyListeners(LogEvents.EVENT_ADDED, tabInfo, filteringEvent);
+	};
+
+	/**
+	 * Remove log requests for tab
+	 * @param tabId
+	 */
+	var clearEventsByTabId = function (tabId) {
+		var tabInfo = tabsInfoMap[tabId];
+		if (tabInfo) {
+			delete tabInfo.filteringEvents;
+			EventNotifier.notifyListeners(LogEvents.TAB_RESET, tabInfo);
+		}
+	};
+
+	/**
+	 * Synchronize currently opened tabs with out state
+	 * @param callback
+	 */
+	var synchronizeOpenTabs = function (callback) {
+		adguard.tabs.getAll(function (tabs) {
+			var tabIdsToRemove = Object.keys(tabsInfoMap);
+			for (var i = 0; i < tabs.length; i++) {
+				var openTab = tabs[i];
+				var tabInfo = tabsInfoMap[openTab.tabId];
+				if (!tabInfo) {
+					//add tab
+					addTab(openTab);
+				} else {
+					//update tab
+					updateTab(openTab);
+				}
+				var index = tabIdsToRemove.indexOf(String(openTab.tabId));
+				if (index >= 0) {
+					tabIdsToRemove.splice(index, 1);
+				}
+			}
+			for (var j = 0; j < tabIdsToRemove.length; j++) {
+				removeTabById(tabIdsToRemove[j]);
+			}
+			if (typeof callback === 'function') {
+				callback();
+			}
+		});
+	};
+
+	/**
+	 * We collect filtering events if opened at least one page of log
+	 */
+	var onOpenFilteringLogPage = function () {
+		openedFilteringLogsPage++;
+	};
+
+	/**
+	 * Cleanup when last page of log closes
+	 */
+	var onCloseFilteringLogPage = function () {
+		openedFilteringLogsPage = Math.max(openedFilteringLogsPage - 1, 0);
+		if (openedFilteringLogsPage === 0) {
+			// Clear events
+			for (var tabId in tabsInfoMap) { // jshint ignore:line
+				var tabInfo = tabsInfoMap[tabId];
+				delete tabInfo.filteringEvents;
+			}
+		}
+	};
+
+	// Initialize filtering log
+	synchronizeOpenTabs();
+
+	// Bind to tab events
+	adguard.tabs.onCreated.addListener(addTab);
+	adguard.tabs.onUpdated.addListener(updateTab);
+	adguard.tabs.onRemoved.addListener(function (tab) {
+		removeTabById(tab.tabId);
+	});
+
 	return {
-		tabId: tabInfo.tabId,
-		isHttp: tabInfo.isHttp,
-		filteringEvents: tabInfo.filteringEvents,
-		tab: {
-			title: tabInfo.tab.title
-		}
-	};
-};
 
-var filteringLog = new FilteringLog();
+		synchronizeOpenTabs: synchronizeOpenTabs,
+
+		getFilteringInfoByTabId: getFilteringInfoByTabId,
+		addEvent: addEvent,
+		clearEventsByTabId: clearEventsByTabId,
+
+		onOpenFilteringLogPage: onOpenFilteringLogPage,
+		onCloseFilteringLogPage: onCloseFilteringLogPage
+	};
+
+})();

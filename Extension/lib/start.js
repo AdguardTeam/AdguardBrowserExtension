@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global RequestTypes, antiBannerService, framesMap, filteringLog */
+/* global RequestTypes, antiBannerService, framesMap */
 
 (function () {
 
@@ -33,16 +33,6 @@
     });
 
     // Initialize filtering log
-    filteringLog.synchronizeOpenTabs();
-    adguard.tabs.onCreated.addListener(function (tab) {
-        filteringLog.addTab(tab);
-    });
-    adguard.tabs.onUpdated.addListener(function (tab) {
-        filteringLog.updateTab(tab);
-    });
-    adguard.tabs.onRemoved.addListener(function (tab) {
-        filteringLog.removeTab(tab);
-    });
 
     // Initialize antibanner service
     antiBannerService.init({

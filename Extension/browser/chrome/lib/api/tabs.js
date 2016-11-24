@@ -88,6 +88,14 @@ adguard.tabsImpl = (function () {
 
     var browser = browser || chrome;
 
+    /**
+     * tabId parameter must be integer
+     * @param tabId
+     */
+    function tabIdToInt(tabId) {
+        return parseInt(tabId);
+    }
+
     function checkLastError() {
         var ex = browser.runtime.lastError;
         if (ex) {
@@ -202,7 +210,7 @@ adguard.tabsImpl = (function () {
 
     var remove = function (tabId, callback) {
         // https://developer.chrome.com/extensions/tabs#method-remove
-        browser.tabs.remove(tabId, function () {
+        browser.tabs.remove(tabIdToInt(tabId), function () {
             if (checkLastError()) {
                 return;
             }
@@ -211,7 +219,7 @@ adguard.tabsImpl = (function () {
     };
 
     var activate = function (tabId, callback) {
-        browser.tabs.update(tabId, {active: true}, function (tab) {
+        browser.tabs.update(tabIdToInt(tabId), {active: true}, function (tab) {
             if (checkLastError()) {
                 return;
             }
@@ -242,12 +250,12 @@ adguard.tabsImpl = (function () {
                  */
                 sendMessage(tabId, {type: 'update-tab-url', url: url});
             } else {
-                browser.tabs.update(tabId, {url: url}, checkLastError);
+                browser.tabs.update(tabIdToInt(tabId), {url: url}, checkLastError);
             }
         } else {
             // https://developer.chrome.com/extensions/tabs#method-reload
             if (browser.tabs.reload) {
-                browser.tabs.reload(tabId, {bypassCache: true}, checkLastError);
+                browser.tabs.reload(tabIdToInt(tabId), {bypassCache: true}, checkLastError);
             } else {
                 // Reload page without cache via content script
                 sendMessage(tabId, {type: 'no-cache-reload'});
@@ -257,7 +265,7 @@ adguard.tabsImpl = (function () {
 
     var sendMessage = function (tabId, message, responseCallback) {
         // https://developer.chrome.com/extensions/tabs#method-sendMessage
-        (browser.tabs.sendMessage || browser.tabs.sendRequest)(tabId, message, responseCallback);
+        (browser.tabs.sendMessage || browser.tabs.sendRequest)(tabIdToInt(tabId), message, responseCallback);
     };
 
     var getAll = function (callback) {

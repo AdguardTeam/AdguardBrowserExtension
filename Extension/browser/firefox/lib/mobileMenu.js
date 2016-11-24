@@ -104,7 +104,7 @@ var MobileMenu = {
         }.bind(this), adguard.i18n.getMessage("popup_security_report_android"));
 
         var filteringLogItem = this.createSubMenu(window, menuId, function () {
-            adguard.ui.openCurrentTabFilteringLog();
+            adguard.ui.openFilteringLog();
         }.bind(this), adguard.i18n.getMessage('popup_open_log_android'));
 
         //show settings menu ever

@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Log, UrlUtils, Utils, WorkaroundUtils, StringUtils, Prefs, unload, antiBannerService, framesMap, filteringLog, EventNotifier, EventNotifierTypes */
+/* global Log, UrlUtils, Utils, WorkaroundUtils, StringUtils, Prefs, unload, antiBannerService, framesMap, EventNotifier, EventNotifierTypes */
 
 adguard.ui = (function () { // jshint ignore:line
 
@@ -123,7 +123,7 @@ adguard.ui = (function () { // jshint ignore:line
                 openSettingsTab('miscellaneous-settings');
             },
             'context_open_log': function () {
-                openCurrentTabFilteringLog();
+                openFilteringLog();
             },
             'context_update_antibanner_filters': checkAntiBannerFiltersUpdate
         };
@@ -133,7 +133,6 @@ adguard.ui = (function () { // jshint ignore:line
                 contexts: ["all"],
                 title: adguard.i18n.getMessage(title)
             };
-            var callbackTitle;
             if (options) {
                 if (options.id) {
                     createProperties.id = options.id;
@@ -150,9 +149,8 @@ adguard.ui = (function () { // jshint ignore:line
                 if (options.contexts) {
                     createProperties.contexts = options.contexts;
                 }
-                callbackTitle = options.callbackTitle;
             }
-            var callback = callbackMappings[callbackTitle || title];
+            var callback = callbackMappings[title];
             if (callback) {
                 createProperties.onclick = callback;
             }
@@ -288,17 +286,19 @@ adguard.ui = (function () { // jshint ignore:line
     };
 
     var openFilteringLog = function (tabId) {
-        openTab(getPageUrl('log.html') + (tabId ? "?tabId=" + tabId : ""), {
+        if (!tabId) {
+            adguard.tabs.getActive(function (tab) {
+                var tabId = tab.tabId;
+                openTab(getPageUrl('log.html') + (tabId ? "#" + tabId : ""), {
+                    activateSameTab: true,
+                    type: "popup"
+                });
+            });
+            return;
+        }
+        openTab(getPageUrl('log.html') + (tabId ? "#" + tabId : ""), {
             activateSameTab: true,
             type: "popup"
-        });
-    };
-
-    var openCurrentTabFilteringLog = function () {
-        adguard.tabs.getActive(function (tab) {
-            var tabInfo = filteringLog.getTabInfo(tab);
-            var tabId = tabInfo ? tabInfo.tabId : null;
-            openFilteringLog(tabId);
         });
     };
 
@@ -505,7 +505,6 @@ adguard.ui = (function () { // jshint ignore:line
         openSettingsTab: openSettingsTab,
         openSiteReportTab: openSiteReportTab,
         openFilteringLog: openFilteringLog,
-        openCurrentTabFilteringLog: openCurrentTabFilteringLog,
         openThankYouPage: openThankYouPage,
         openExtensionStore: openExtensionStore,
         openFiltersDownloadPage: openFiltersDownloadPage,

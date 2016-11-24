@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Prefs, framesMap, antiBannerService, filteringLog,
+/* global Prefs, framesMap, antiBannerService,
  RequestTypes, EventNotifier, EventNotifierTypes, FilterUtils, Utils */
 
 var webRequestService = (function () { // jshint ignore:line
@@ -90,7 +90,7 @@ var webRequestService = (function () { // jshint ignore:line
         }
 
         var requestRule = getRuleForRequest(tab, requestUrl, referrerUrl, RequestTypes.WEBSOCKET);
-        filteringLog.addEvent(tab, requestUrl, referrerUrl, RequestTypes.WEBSOCKET, requestRule);
+        adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, RequestTypes.WEBSOCKET, requestRule);
 
         return isRequestBlockedByRule(requestRule);
     };
@@ -196,7 +196,7 @@ var webRequestService = (function () { // jshint ignore:line
                 adguard.integration.checkHeaders(tab, responseHeaders, requestUrl);
             }
             // Clear previous events
-            filteringLog.clearEventsForTab(tab);
+            adguard.filteringLog.clearEventsByTabId(tab.tabId);
         }
 
         var requestRule = null;
@@ -220,7 +220,7 @@ var webRequestService = (function () { // jshint ignore:line
 
         // add event to filtering log
         if (appendLogEvent) {
-            filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
+            adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
         }
     };
 
@@ -244,7 +244,7 @@ var webRequestService = (function () { // jshint ignore:line
             EventNotifier.notifyListenersAsync(EventNotifierTypes.ADS_BLOCKED, requestRule, tab, 1);
         }
 
-        filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
+        adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
 
         if (requestRule && !FilterUtils.isUserFilterRule(requestRule) && !FilterUtils.isWhiteListFilterRule(requestRule) && !framesMap.isIncognitoTab(tab)) {
 
