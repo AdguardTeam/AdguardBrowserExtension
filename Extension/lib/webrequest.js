@@ -18,229 +18,233 @@
 /* global RequestTypes, framesMap, EventNotifier, EventNotifierTypes, UrlUtils, webRequestService */
 /* global Prefs, Utils, antiBannerService, StringUtils, filterRulesHitCount */
 
-/**
- * Process request
- *
- * @param requestDetails
- * @returns {boolean} False if request must be blocked
- */
-function onBeforeRequest(requestDetails) {
+(function () {
 
-    var tab = requestDetails.tab;
-    var requestUrl = requestDetails.requestUrl;
-    var requestType = requestDetails.requestType;
+    /**
+     * Process request
+     *
+     * @param requestDetails
+     * @returns {boolean} False if request must be blocked
+     */
+    function onBeforeRequest(requestDetails) {
 
-    if (requestType === RequestTypes.DOCUMENT || requestType === RequestTypes.SUBDOCUMENT) {
-        framesMap.recordFrame(tab, requestDetails.frameId, requestUrl, requestType);
-    }
+        var tab = requestDetails.tab;
+        var requestUrl = requestDetails.requestUrl;
+        var requestType = requestDetails.requestType;
 
-    if (requestType === RequestTypes.DOCUMENT) {
-        // Reset tab button state
-        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_TAB_BUTTON_STATE, tab, true);
-        return true;
-    }
-
-    if (!UrlUtils.isHttpRequest(requestUrl)) {
-        return true;
-    }
-
-    var referrerUrl = framesMap.getFrameUrl(tab, requestDetails.requestFrameId);
-    if (!referrerUrl) {
-        // Assign to main frame
-        referrerUrl = framesMap.getFrameUrl(tab, 0);
-    }
-    var requestRule = webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
-    webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
-    return !webRequestService.isRequestBlockedByRule(requestRule);
-}
-
-/**
- * Called before request is sent to the remote endpoint.
- * This method is used to modify request in case of working in integration mode
- * and also to record referrer header in frame data.
- *
- * @param requestDetails Request details
- * @returns {*} headers to send
- */
-function onBeforeSendHeaders(requestDetails) {
-
-    var tab = requestDetails.tab;
-    var headers = requestDetails.requestHeaders;
-
-    if (adguard.integration.shouldOverrideReferrer(tab)) {
-        // Retrieve main frame url
-        var mainFrameUrl = framesMap.getFrameUrl(tab, 0);
-        headers = Utils.setHeaderValue(headers, 'Referer', mainFrameUrl);
-        return {
-            requestHeaders: headers,
-            modifiedHeaders: [{
-                name: 'Referer',
-                value: mainFrameUrl
-            }]
-        };
-    }
-
-    if (requestDetails.requestType === 'DOCUMENT') {
-        // Save ref header
-        var refHeader = Utils.findHeaderByName(headers, 'Referer');
-        if (refHeader) {
-            framesMap.recordFrameReferrerHeader(tab, refHeader.value);
+        if (requestType === RequestTypes.DOCUMENT || requestType === RequestTypes.SUBDOCUMENT) {
+            framesMap.recordFrame(tab, requestDetails.frameId, requestUrl, requestType);
         }
+
+        if (requestType === RequestTypes.DOCUMENT) {
+            // Reset tab button state
+            EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_TAB_BUTTON_STATE, tab, true);
+            return true;
+        }
+
+        if (!UrlUtils.isHttpRequest(requestUrl)) {
+            return true;
+        }
+
+        var referrerUrl = framesMap.getFrameUrl(tab, requestDetails.requestFrameId);
+        if (!referrerUrl) {
+            // Assign to main frame
+            referrerUrl = framesMap.getFrameUrl(tab, 0);
+        }
+        var requestRule = webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
+        webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
+        return !webRequestService.isRequestBlockedByRule(requestRule);
     }
 
-    return {};
-}
+    /**
+     * Called before request is sent to the remote endpoint.
+     * This method is used to modify request in case of working in integration mode
+     * and also to record referrer header in frame data.
+     *
+     * @param requestDetails Request details
+     * @returns {*} headers to send
+     */
+    function onBeforeSendHeaders(requestDetails) {
 
-/**
- * On headers received callback function.
- * We do check request for safebrowsing
- * and check if websocket connections should be blocked.
- *
- * @param requestDetails Request details
- * @returns {{responseHeaders: *}} Headers to send
- */
-function onHeadersReceived(requestDetails) {
+        var tab = requestDetails.tab;
+        var headers = requestDetails.requestHeaders;
 
-    var tab = requestDetails.tab;
-    var requestUrl = requestDetails.requestUrl;
-    var responseHeaders = requestDetails.responseHeaders;
-    var requestType = requestDetails.requestType;
-    // Retrieve referrer
-    var referrerUrl = framesMap.getFrameUrl(tab, requestDetails.requestFrameId);
-    if (!referrerUrl) {
-        referrerUrl = framesMap.getFrameUrl(tab, 0);
-    }
-
-    webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
-
-    if (requestType == RequestTypes.DOCUMENT) {
-        // Safebrowsing check
-        filterSafebrowsing(tab, requestUrl);
-
-        /*
-         Websocket check.
-         If 'ws://' request is blocked for not existing domain - it's blocked for all domains.
-         Then we gonna limit frame sources to http to block src:'data/text' etc.
-         More details in the issue:
-         https://github.com/AdguardTeam/AdguardBrowserExtension/issues/344
-
-         WS connections are detected as "other"  by ABP
-         EasyList already contains some rules for WS connections with $other modifier
-         */
-        var websocketCheckUrl = "ws://adguardwebsocket.check/";
-        if (webRequestService.checkWebSocketRequest(tab, websocketCheckUrl, referrerUrl)) {
-            var cspHeader = {
-                name: 'Content-Security-Policy',
-                value: 'frame-src http: https:; child-src http: https:'
-            };
-            responseHeaders.push(cspHeader);
+        if (adguard.integration.shouldOverrideReferrer(tab)) {
+            // Retrieve main frame url
+            var mainFrameUrl = framesMap.getFrameUrl(tab, 0);
+            headers = Utils.setHeaderValue(headers, 'Referer', mainFrameUrl);
             return {
-                responseHeaders: responseHeaders,
-                modifiedHeaders: [cspHeader]
+                requestHeaders: headers,
+                modifiedHeaders: [{
+                    name: 'Referer',
+                    value: mainFrameUrl
+                }]
             };
         }
-    }
-}
 
-/**
- * Safebrowsing check
- *
- * @param tab
- * @param mainFrameUrl
- */
-function filterSafebrowsing(tab, mainFrameUrl) {
+        if (requestDetails.requestType === 'DOCUMENT') {
+            // Save ref header
+            var refHeader = Utils.findHeaderByName(headers, 'Referer');
+            if (refHeader) {
+                framesMap.recordFrameReferrerHeader(tab, refHeader.value);
+            }
+        }
 
-    if (framesMap.isTabAdguardDetected(tab) || framesMap.isTabProtectionDisabled(tab) || framesMap.isTabWhiteListedForSafebrowsing(tab)) {
-        return;
+        return {};
     }
 
-    var referrerUrl = Utils.getSafebrowsingBackUrl(tab);
-    var incognitoTab = framesMap.isIncognitoTab(tab);
+    /**
+     * On headers received callback function.
+     * We do check request for safebrowsing
+     * and check if websocket connections should be blocked.
+     *
+     * @param requestDetails Request details
+     * @returns {{responseHeaders: *}} Headers to send
+     */
+    function onHeadersReceived(requestDetails) {
 
-    antiBannerService.getRequestFilter().checkSafebrowsingFilter(mainFrameUrl, referrerUrl, function (safebrowsingUrl) {
-        // Chrome doesn't allow open extension url in incognito mode
-        // So close current tab and open new
-        if (incognitoTab && Utils.isChromium()) {
-            adguard.ui.openTab(safebrowsingUrl, {}, function () {
-                adguard.tabs.remove(tab.tabId);
-            });
-        } else {
-            adguard.tabs.reload(tab.tabId, safebrowsingUrl);
-        }
-    }, incognitoTab);
-}
-
-/**
- * Add listeners described above.
- */
-adguard.webRequest.onBeforeRequest.addListener(onBeforeRequest, ["<all_urls>"]);
-adguard.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, ["<all_urls>"]);
-adguard.webRequest.onHeadersReceived.addListener(onHeadersReceived, ["<all_urls>"]);
-
-
-// AG for Windows and Mac checks either request signature or request Referer to authorize request.
-// Referer cannot be forged by the website so it's ok for add-on authorization.
-if (Prefs.platform === "chromium") {
-
-    /* global browser */
-    browser.webRequest.onBeforeSendHeaders.addListener(function callback(details) {
-
-        var authHeaders = adguard.integration.getAuthorizationHeaders();
-        var headers = details.requestHeaders;
-        for (var i = 0; i < authHeaders.length; i++) {
-            headers = Utils.setHeaderValue(details.requestHeaders, authHeaders[i].headerName, authHeaders[i].headerValue);
+        var tab = requestDetails.tab;
+        var requestUrl = requestDetails.requestUrl;
+        var responseHeaders = requestDetails.responseHeaders;
+        var requestType = requestDetails.requestType;
+        // Retrieve referrer
+        var referrerUrl = framesMap.getFrameUrl(tab, requestDetails.requestFrameId);
+        if (!referrerUrl) {
+            referrerUrl = framesMap.getFrameUrl(tab, 0);
         }
 
-        return {requestHeaders: headers};
+        webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
 
-    }, {urls: [adguard.integration.getIntegrationBaseUrl() + "*"]}, ["requestHeaders", "blocking"]);
-}
+        if (requestType == RequestTypes.DOCUMENT) {
+            // Safebrowsing check
+            filterSafebrowsing(tab, requestUrl);
 
-// TODO[Edge]: Add support for collecting hits statis. Currently we cannot add listener for ms-browser-extension:// urls.
-if (Prefs.platform === "chromium" && Prefs.getBrowser() !== "Edge") {
-    var parseCssRuleFromUrl = function (requestUrl) {
-        if (!requestUrl) {
-            return null;
+            /*
+             Websocket check.
+             If 'ws://' request is blocked for not existing domain - it's blocked for all domains.
+             Then we gonna limit frame sources to http to block src:'data/text' etc.
+             More details in the issue:
+             https://github.com/AdguardTeam/AdguardBrowserExtension/issues/344
+
+             WS connections are detected as "other"  by ABP
+             EasyList already contains some rules for WS connections with $other modifier
+             */
+            var websocketCheckUrl = "ws://adguardwebsocket.check/";
+            if (webRequestService.checkWebSocketRequest(tab, websocketCheckUrl, referrerUrl)) {
+                var cspHeader = {
+                    name: 'Content-Security-Policy',
+                    value: 'frame-src http: https:; child-src http: https:'
+                };
+                responseHeaders.push(cspHeader);
+                return {
+                    responseHeaders: responseHeaders,
+                    modifiedHeaders: [cspHeader]
+                };
+            }
         }
-        var filterIdAndRuleText = decodeURIComponent(StringUtils.substringAfter(requestUrl, '#'));
-        var filterId = StringUtils.substringBefore(filterIdAndRuleText, ';');
-        var ruleText = StringUtils.substringAfter(filterIdAndRuleText, ';');
-        return {
-            filterId: filterId,
-            ruleText: ruleText
-        };
-    };
+    }
 
-    var onCssRuleHit = function (requestDetails) {
-        if (framesMap.isIncognitoTab(requestDetails.tab)) {
+    /**
+     * Safebrowsing check
+     *
+     * @param tab
+     * @param mainFrameUrl
+     */
+    function filterSafebrowsing(tab, mainFrameUrl) {
+
+        if (framesMap.isTabAdguardDetected(tab) || framesMap.isTabProtectionDisabled(tab) || framesMap.isTabWhiteListedForSafebrowsing(tab)) {
             return;
         }
-        var domain = framesMap.getFrameDomain(requestDetails.tab);
-        var rule = parseCssRuleFromUrl(requestDetails.requestUrl);
-        if (rule) {
-            filterRulesHitCount.addRuleHit(domain, rule.ruleText, rule.filterId);
-        }
-    };
 
-    var hitPngUrl = adguard.app.getUrlScheme() + "://*/elemhidehit.png";
-    adguard.webRequest.onBeforeRequest.addListener(onCssRuleHit, [hitPngUrl]);
-}
+        var referrerUrl = Utils.getSafebrowsingBackUrl(tab);
+        var incognitoTab = framesMap.isIncognitoTab(tab);
 
-var handlerBehaviorTimeout = null;
-EventNotifier.addListener(function (event) {
-    switch (event) {
-        case EventNotifierTypes.ADD_RULE:
-        case EventNotifierTypes.ADD_RULES:
-        case EventNotifierTypes.REMOVE_RULE:
-        case EventNotifierTypes.UPDATE_FILTER_RULES:
-        case EventNotifierTypes.ENABLE_FILTER:
-        case EventNotifierTypes.DISABLE_FILTER:
-            if (handlerBehaviorTimeout !== null) {
-                clearTimeout(handlerBehaviorTimeout);
+        antiBannerService.getRequestFilter().checkSafebrowsingFilter(mainFrameUrl, referrerUrl, function (safebrowsingUrl) {
+            // Chrome doesn't allow open extension url in incognito mode
+            // So close current tab and open new
+            if (incognitoTab && Utils.isChromium()) {
+                adguard.ui.openTab(safebrowsingUrl, {}, function () {
+                    adguard.tabs.remove(tab.tabId);
+                });
+            } else {
+                adguard.tabs.reload(tab.tabId, safebrowsingUrl);
             }
-            handlerBehaviorTimeout = setTimeout(function () {
-                handlerBehaviorTimeout = null;
-                adguard.webRequest.handlerBehaviorChanged();
-            }, 3000);
+        }, incognitoTab);
     }
-});
+
+    /**
+     * Add listeners described above.
+     */
+    adguard.webRequest.onBeforeRequest.addListener(onBeforeRequest, ["<all_urls>"]);
+    adguard.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, ["<all_urls>"]);
+    adguard.webRequest.onHeadersReceived.addListener(onHeadersReceived, ["<all_urls>"]);
+
+
+    // AG for Windows and Mac checks either request signature or request Referer to authorize request.
+    // Referer cannot be forged by the website so it's ok for add-on authorization.
+    if (Prefs.platform === "chromium") {
+
+        /* global browser */
+        browser.webRequest.onBeforeSendHeaders.addListener(function callback(details) {
+
+            var authHeaders = adguard.integration.getAuthorizationHeaders();
+            var headers = details.requestHeaders;
+            for (var i = 0; i < authHeaders.length; i++) {
+                headers = Utils.setHeaderValue(details.requestHeaders, authHeaders[i].headerName, authHeaders[i].headerValue);
+            }
+
+            return {requestHeaders: headers};
+
+        }, {urls: [adguard.integration.getIntegrationBaseUrl() + "*"]}, ["requestHeaders", "blocking"]);
+    }
+
+    // TODO[Edge]: Add support for collecting hits stats. Currently we cannot add listener for ms-browser-extension:// urls.
+    if (Prefs.platform === "chromium" && Prefs.getBrowser() !== "Edge") {
+        var parseCssRuleFromUrl = function (requestUrl) {
+            if (!requestUrl) {
+                return null;
+            }
+            var filterIdAndRuleText = decodeURIComponent(StringUtils.substringAfter(requestUrl, '#'));
+            var filterId = StringUtils.substringBefore(filterIdAndRuleText, ';');
+            var ruleText = StringUtils.substringAfter(filterIdAndRuleText, ';');
+            return {
+                filterId: filterId,
+                ruleText: ruleText
+            };
+        };
+
+        var onCssRuleHit = function (requestDetails) {
+            if (framesMap.isIncognitoTab(requestDetails.tab)) {
+                return;
+            }
+            var domain = framesMap.getFrameDomain(requestDetails.tab);
+            var rule = parseCssRuleFromUrl(requestDetails.requestUrl);
+            if (rule) {
+                filterRulesHitCount.addRuleHit(domain, rule.ruleText, rule.filterId);
+            }
+        };
+
+        var hitPngUrl = adguard.app.getUrlScheme() + "://*/elemhidehit.png";
+        adguard.webRequest.onBeforeRequest.addListener(onCssRuleHit, [hitPngUrl]);
+    }
+
+    var handlerBehaviorTimeout = null;
+    EventNotifier.addListener(function (event) {
+        switch (event) {
+            case EventNotifierTypes.ADD_RULE:
+            case EventNotifierTypes.ADD_RULES:
+            case EventNotifierTypes.REMOVE_RULE:
+            case EventNotifierTypes.UPDATE_FILTER_RULES:
+            case EventNotifierTypes.ENABLE_FILTER:
+            case EventNotifierTypes.DISABLE_FILTER:
+                if (handlerBehaviorTimeout !== null) {
+                    clearTimeout(handlerBehaviorTimeout);
+                }
+                handlerBehaviorTimeout = setTimeout(function () {
+                    handlerBehaviorTimeout = null;
+                    adguard.webRequest.handlerBehaviorChanged();
+                }, 3000);
+        }
+    });
+
+})();

@@ -21,11 +21,6 @@
 
     Log.info('Starting adguard... Version: {0}. Id: {1}', adguard.app.getVersion(), adguard.app.getId());
 
-    // Content-Message listener
-    adguard.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-        return contentMessageHandler.handleMessage(message, sender, sendResponse);
-    });
-
     // Initialize popup button
     adguard.browserAction.setPopup({
         popup: adguard.getURL('pages/popup.html')

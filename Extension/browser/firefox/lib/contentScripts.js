@@ -31,11 +31,6 @@ ContentScripts.prototype = {
     BACKGROUND_TO_CONTENT_CHANNEL: 'background-content-channel',
 
     /**
-     * Object that is response for Chrome<->Content communication from the "Chrome" side.
-     */
-    contentMessageHandler: null,
-
-    /**
      * Array or registered content scripts
      */
     scripts: [],
