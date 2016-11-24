@@ -30,9 +30,6 @@ var AntiBannerService = function () {
     // Depending on the locale we can enable language-specific filter
     adguard.localeDetectService.onDetected.addListener(this._onFilterDetectedByLocale.bind(this));
 
-    // Initialize service that manages filters subscriptions
-    this.subscriptionService = new SubscriptionService();
-
     // Custom user rules
     this.userRules = [];
 
@@ -131,7 +128,7 @@ AntiBannerService.prototype = {
             // Filters list got from the server may contain language mapping.
             // For instance "Dutch filter" linked to "nl" language code.
             // These mappings are then used by LocaleDetectorService to auto-enable language-specific filter.
-            adguard.localeDetectService.setFiltersLanguages(this.subscriptionService.getFiltersLanguages());
+            adguard.localeDetectService.setFiltersLanguages(adguard.subscriptions.getFiltersLanguages());
 
             // Subscribe to events which lead to update filters (e.g. switсh to optimized and back to default)
             this._subscribeToFiltersChangeEvents();
@@ -155,7 +152,7 @@ AntiBannerService.prototype = {
         }.bind(this);
 
         // Load subscription from the storage
-        this.subscriptionService.init(onSubscriptionLoaded);
+        adguard.subscriptions.init(onSubscriptionLoaded);
     },
 
     /**
@@ -440,7 +437,7 @@ AntiBannerService.prototype = {
      * @returns {*} List of groups
      */
     getGroupsMetadata: function () {
-        return this.subscriptionService.getGroups();
+        return adguard.subscriptions.getGroups();
     },
 
     /**
@@ -449,7 +446,7 @@ AntiBannerService.prototype = {
      * @returns {*|Array} List of filters
      */
     getFiltersMetadataForGroup: function (groupId) {
-        return this.subscriptionService.getFilters().filter(function (f) {
+        return adguard.subscriptions.getFilters().filter(function (f) {
             return f.groupId == groupId &&
                 f.filterId != AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID;
         });
@@ -461,7 +458,7 @@ AntiBannerService.prototype = {
      * @returns {*}
      */
     getFilterMetadata: function (filterId) {
-        return this.subscriptionService.getFilters().filter(function (f) {
+        return adguard.subscriptions.getFilters().filter(function (f) {
             return f.filterId == filterId;
         })[0];
     },
@@ -471,7 +468,7 @@ AntiBannerService.prototype = {
      * @returns {*}
      */
     getFiltersMetadata: function () {
-        return this.subscriptionService.getFilters();
+        return adguard.subscriptions.getFilters();
     },
 
     /**
@@ -480,7 +477,7 @@ AntiBannerService.prototype = {
      * @returns {*|T}
      */
     findFilterMetadataBySubscriptionUrl: function (subscriptionUrl) {
-        return this.subscriptionService.getFilters().filter(function (f) {
+        return adguard.subscriptions.getFilters().filter(function (f) {
             return f.subscriptionUrl === subscriptionUrl;
         })[0];
     },
@@ -808,7 +805,7 @@ AntiBannerService.prototype = {
         }
 
         var filters = [];
-        var filtersMetadata = this.subscriptionService.getFilters();
+        var filtersMetadata = adguard.subscriptions.getFilters();
         for (var i = 0; i < filtersMetadata.length; i++) {
             var filterMetadata = filtersMetadata[i];
             filters.push(createFilter(filterMetadata.filterId, filterMetadata.name, filterMetadata.description, filterMetadata.displayNumber));

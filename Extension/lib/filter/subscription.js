@@ -15,181 +15,218 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Prefs, Log */
+
 /**
  * Service that loads and parses filters metadata from backend server.
  * For now we just store filters metadata in an XML file within the extension.
  * In future we'll add an opportunity to update metadata along with filter rules update.
  */
-var SubscriptionService = function () {
-	this.groups = [];
-	this.filters = [];
-};
+adguard.subscriptions = (function () {
 
-SubscriptionService.prototype = {
+    'use strict';
 
-	/**
-	 * Initialize subscription service, loading local filters metadata
-	 *
-	 * @param callback Called on operation success
-	 */
-	init: function (callback) {
+    var groups = [];
+    var filters = [];
 
-		var errorCallback = function (request, cause) {
-			Log.error('Error loading metadata, cause: {0} {1}', request.statusText, cause);
-		};
+    /**
+     * Group metadata
+     */
+    var SubscriptionGroup = function (groupId, groupName, displayNumber) {
+        this.groupId = groupId;
+        this.groupName = groupName;
+        this.displayNumber = displayNumber;
+    };
 
-		this._loadMetadata(function () {
-			this._loadMetadataI18n(callback, errorCallback);
-		}.bind(this), errorCallback);
-	},
+    /**
+     * Filter metadata
+     */
+    var SubscriptionFilter = function (filterId, groupId, name, description, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl) {
 
-	/**
-	 * @returns Filters metadata
-	 */
-	getFilters: function () {
-		return this.filters;
-	},
+        this.filterId = filterId;
+        this.groupId = groupId;
+        this.name = name;
+        this.description = description;
+        this.homepage = homepage;
+        this.version = version;
+        this.timeUpdated = timeUpdated;
+        this.displayNumber = displayNumber;
+        this.languages = languages;
+        this.expires = expires;
+        this.subscriptionUrl = subscriptionUrl;
+    };
 
-	/**
-	 * @returns Groups metadata
-	 */
-	getGroups: function () {
-		return this.groups;
-	},
+    /**
+     * Create group from object
+     * @param group Object
+     * @returns {SubscriptionGroup}
+     */
+    function createSubscriptionGroupFromJSON(group) {
 
-	/**
-	 * @returns Filters languages metadata
-	 */
-	getFiltersLanguages: function () {
-		var filtersLanguages = Object.create(null);
-		for (var i = 0; i < this.filters.length; i++) {
-			var languages = this.filters[i].languages;
-			if (languages && languages.length > 0) {
-				filtersLanguages[this.filters[i].filterId] = languages;
-			}
-		}
-		return filtersLanguages;
-	},
+        var groupId = group.groupId - 0;
+        var defaultGroupName = group.groupName;
+        var displayNumber = group.displayNumber - 0;
 
-	_loadMetadata: function (successCallback, errorCallback) {
+        return new SubscriptionGroup(groupId, defaultGroupName, displayNumber);
+    }
 
-		adguard.backend.loadLocalFiltersMetadata(function (metadata) {
+    /**
+     * Create filter from object
+     * @param filter Object
+     */
+    function createSubscriptionFilterFromJSON(filter) {
 
-			this.groups = [];
-			this.filters = [];
+        var filterId = filter.filterId - 0;
+        var groupId = filter.groupId - 0;
+        var defaultName = filter.name;
+        var defaultDescription = filter.description;
+        var homepage = filter.homepage;
+        var version = filter.version;
+        var timeUpdated = new Date(filter.timeUpdated).getTime();
+        var expires = filter.expires - 0;
+        var subscriptionUrl = filter.subscriptionUrl;
+        var languages = filter.languages;
+        var displayNumber = filter.displayNumber - 0;
 
-			for (var i = 0; i < metadata.groups.length; i++) {
-				this.groups.push(SubscriptionGroup.fromJSON(metadata.groups[i]));
-			}
+        return new SubscriptionFilter(filterId, groupId, defaultName, defaultDescription, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl);
+    }
 
-			for (var j = 0; j < metadata.filters.length; j++) {
-				this.filters.push(SubscriptionFilter.fromJSON(metadata.filters[j]));
-			}
+    /**
+     * Load groups and filters metadata
+     *
+     * @param successCallback
+     * @param errorCallback
+     * @private
+     */
+    function loadMetadata(successCallback, errorCallback) {
 
-			Log.info('Filters metadata loaded');
-			successCallback();
+        adguard.backend.loadLocalFiltersMetadata(function (metadata) {
 
-		}.bind(this), errorCallback);
-	},
+            groups = [];
+            filters = [];
 
-	_loadMetadataI18n: function (successCallback, errorCallback) {
+            for (var i = 0; i < metadata.groups.length; i++) {
+                groups.push(createSubscriptionGroupFromJSON(metadata.groups[i]));
+            }
 
-		adguard.backend.loadLocalFiltersI18Metadata(function (i18nMetadata) {
+            for (var j = 0; j < metadata.filters.length; j++) {
+                filters.push(createSubscriptionFilterFromJSON(metadata.filters[j]));
+            }
 
-			var groupsI18n = i18nMetadata.groups;
-			var filtersI18n = i18nMetadata.filters;
+            Log.info('Filters metadata loaded');
+            successCallback();
 
-			for (var i = 0; i < this.groups.length; i++) {
-				this._applyGroupLocalization(this.groups[i], groupsI18n);
-			}
+        }, errorCallback);
+    }
 
-			for (var j = 0; j < this.filters.length; j++) {
-				this._applyFilterLocalization(this.filters[j], filtersI18n);
-			}
+    /**
+     * Loads groups and filters localizations
+     * @param successCallback
+     * @param errorCallback
+     */
+    function loadMetadataI18n(successCallback, errorCallback) {
 
-			Log.info('Filters i18n metadata loaded');
-			successCallback();
+        adguard.backend.loadLocalFiltersI18Metadata(function (i18nMetadata) {
 
-		}.bind(this), errorCallback);
-	},
+            var groupsI18n = i18nMetadata.groups;
+            var filtersI18n = i18nMetadata.filters;
 
-	_applyGroupLocalization: function (group, i18nMetadata) {
-		var groupId = group.groupId;
-		var localizations = i18nMetadata[groupId];
-		if (localizations && Prefs.locale in localizations) {
-			var localization = localizations[Prefs.locale];
-			group.groupName = localization.name;
-		}
-	},
+            for (var i = 0; i < groups.length; i++) {
+                applyGroupLocalization(groups[i], groupsI18n);
+            }
 
-	_applyFilterLocalization: function (filter, i18nMetadata) {
-		var filterId = filter.filterId;
-		var localizations = i18nMetadata[filterId];
-		if (localizations && Prefs.locale in localizations) {
-			var localization = localizations[Prefs.locale];
-			filter.name = localization.name;
-			filter.description = localization.description;
-		}
-	}
-};
+            for (var j = 0; j < filters.length; j++) {
+                applyFilterLocalization(filters[j], filtersI18n);
+            }
 
-var SubscriptionGroup = function (groupId, groupName, displayNumber) {
-	this.groupId = groupId;
-	this.groupName = groupName;
-	this.displayNumber = displayNumber;
-};
+            Log.info('Filters i18n metadata loaded');
+            successCallback();
 
-/**
- * Create group from object
- * @param group Object
- * @returns {SubscriptionGroup}
- */
-SubscriptionGroup.fromJSON = function (group) {
+        }, errorCallback);
+    }
 
-	var groupId = group.groupId - 0;
-	var defaultGroupName = group.groupName;
-	var displayNumber = group.displayNumber - 0;
+    /**
+     * Localize group
+     * @param group
+     * @param i18nMetadata
+     * @private
+     */
+    function applyGroupLocalization(group, i18nMetadata) {
+        var groupId = group.groupId;
+        var localizations = i18nMetadata[groupId];
+        if (localizations && Prefs.locale in localizations) {
+            var localization = localizations[Prefs.locale];
+            group.groupName = localization.name;
+        }
+    }
 
-	return new SubscriptionGroup(groupId, defaultGroupName, displayNumber);
-};
+    /**
+     * Localize filter
+     * @param filter
+     * @param i18nMetadata
+     * @private
+     */
+    function applyFilterLocalization(filter, i18nMetadata) {
+        var filterId = filter.filterId;
+        var localizations = i18nMetadata[filterId];
+        if (localizations && Prefs.locale in localizations) {
+            var localization = localizations[Prefs.locale];
+            filter.name = localization.name;
+            filter.description = localization.description;
+        }
+    }
 
-/**
- * Filter metadata
- * @type {Function}
- */
-var SubscriptionFilter = function (filterId, groupId, name, description, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl) {
+    /**
+     * Initialize subscription service, loading local filters metadata
+     *
+     * @param callback Called on operation success
+     */
+    var init = function (callback) {
 
-	this.filterId = filterId;
-	this.groupId = groupId;
-	this.name = name;
-	this.description = description;
-	this.homepage = homepage;
-	this.version = version;
-	this.timeUpdated = timeUpdated;
-	this.displayNumber = displayNumber;
-	this.languages = languages;
-	this.expires = expires;
-	this.subscriptionUrl = subscriptionUrl;
-};
+        var errorCallback = function (request, cause) {
+            Log.error('Error loading metadata, cause: {0} {1}', request.statusText, cause);
+        };
 
-/**
- * Create filter from object
- * @param filter Object
- * @returns {SubscriptionFilter}
- */
-SubscriptionFilter.fromJSON = function (filter) {
+        loadMetadata(function () {
+            loadMetadataI18n(callback, errorCallback);
+        }, errorCallback);
+    };
 
-	var filterId = filter.filterId - 0;
-	var groupId = filter.groupId - 0;
-	var defaultName = filter.name;
-	var defaultDescription = filter.description;
-	var homepage = filter.homepage;
-	var version = filter.version;
-	var timeUpdated = new Date(filter.timeUpdated).getTime();
-	var expires = filter.expires - 0;
-	var subscriptionUrl = filter.subscriptionUrl;
-	var languages = filter.languages;
-	var displayNumber = filter.displayNumber - 0;
+    /**
+     * @returns Array of Filters metadata
+     */
+    var getFilters = function () {
+        return filters;
+    };
 
-	return new SubscriptionFilter(filterId, groupId, defaultName, defaultDescription, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl);
-};
+    /**
+     * @returns Array of Groups metadata
+     */
+    var getGroups = function () {
+        return groups;
+    };
+
+    /**
+     * @returns Filters languages metadata
+     */
+    var getFiltersLanguages = function () {
+        var filtersLanguages = Object.create(null);
+        for (var i = 0; i < filters.length; i++) {
+            var languages = filters[i].languages;
+            if (languages && languages.length > 0) {
+                filtersLanguages[filters[i].filterId] = languages;
+            }
+        }
+        return filtersLanguages;
+    };
+
+
+    return {
+        init: init,
+        getFiltersLanguages: getFiltersLanguages,
+        getGroups: getGroups,
+        getFilters: getFilters
+    };
+
+})();
+
