@@ -90,7 +90,7 @@ var framesMap = (function () {
 	 * @returns true if Tab have white list rule and white list isn't invert
 	 */
 	var isTabWhiteListedForSafebrowsing = function (tab) {
-		return isTabWhiteListed(tab) && whiteListService.isDefaultMode();
+		return isTabWhiteListed(tab) && adguard.whitelist.isDefaultMode();
 	};
 
 	/**
@@ -178,7 +178,7 @@ var framesMap = (function () {
 			var url = frame.url;
 			var frameWhiteListRule = antiBannerService.getRequestFilter().findWhiteListRule(url, url, RequestTypes.DOCUMENT);
 			if (!frameWhiteListRule) {
-				frameWhiteListRule = whiteListService.findWhiteListRule(url);
+				frameWhiteListRule = adguard.whitelist.findWhiteListRule(url);
 			}
 			adguard.tabs.updateTabMetadata(tab.tabId, {
 				frameWhiteListRule: frameWhiteListRule,

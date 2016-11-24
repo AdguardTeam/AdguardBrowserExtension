@@ -581,12 +581,12 @@ PageController.prototype = {
         var saveCallback = function (item) {
             if (item.isNew) {
                 this.omitRenderEventsCount = 1;
-                contentPage.sendMessage({type: 'addWhiteListDomain', text: item.text});
+                contentPage.sendMessage({type: 'addWhiteListDomains', domains: [item.text]});
             } else {
                 //start edit rule
                 this.omitRenderEventsCount = 2;
                 contentPage.sendMessage({type: 'removeWhiteListDomain', text: item.prevText}, function () {
-                    contentPage.sendMessage({type: 'addWhiteListDomain', text: item.text});
+                    contentPage.sendMessage({type: 'addWhiteListDomains', domains: [item.text]});
                 });
             }
             return item.text;

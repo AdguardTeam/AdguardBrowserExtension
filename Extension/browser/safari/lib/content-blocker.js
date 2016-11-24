@@ -84,7 +84,7 @@ var SafariContentBlocker = {
         var rules = antiBannerService.getRequestFilter().getRules();
 
         if (adguard.settings.isDefaultWhiteListMode()) {
-            rules = rules.concat(whiteListService.getRules());
+            rules = rules.concat(adguard.whitelist.getRules());
         } else {
             var invertedWhitelistRule = this._constructInvertedWhitelistRule();
             if (invertedWhitelistRule) {
@@ -112,7 +112,7 @@ var SafariContentBlocker = {
     },
 
     _constructInvertedWhitelistRule: function () {
-        var domains = whiteListService.getWhiteList();
+        var domains = adguard.whitelist.getWhiteListDomains();
         var invertedWhitelistRule = '@@||*$document';
         if (domains && domains.length > 0) {
             invertedWhitelistRule += ",domain=";
@@ -125,6 +125,6 @@ var SafariContentBlocker = {
             }
         }
 
-            return invertedWhitelistRule;
+        return invertedWhitelistRule;
     }
 };

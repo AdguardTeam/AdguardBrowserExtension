@@ -78,19 +78,19 @@ ContentMessageHandler.prototype = {
                 var renderedFilters = antiBannerService.getAntiBannerFiltersForOptionsPage();
                 return {filters: renderedFilters};
             case 'changeDefaultWhiteListMode':
-                antiBannerService.changeDefaultWhiteListMode(message.enabled);
+                adguard.whitelist.changeDefaultWhiteListMode(message.enabled);
                 break;
             case 'clearUserFilter':
                 antiBannerService.clearUserFilter();
                 break;
             case 'clearWhiteListFilter':
-                antiBannerService.clearWhiteListFilter();
+                adguard.whitelist.clearWhiteList();
                 break;
-            case 'addWhiteListDomain':
-                antiBannerService.addWhiteListDomain(message.text);
+            case 'addWhiteListDomains':
+                adguard.whitelist.addToWhiteListArray(message.domains);
                 break;
             case 'removeWhiteListDomain':
-                antiBannerService.removeWhiteListDomain(message.text);
+                adguard.whitelist.removeFromWhiteList(message.text);
                 break;
             case 'addUserFilterRule':
                 antiBannerService.addUserFilterRule(message.text);
@@ -100,9 +100,6 @@ ContentMessageHandler.prototype = {
                 break;
             case 'addUserFilterRules':
                 antiBannerService.addUserFilterRules(message.rules);
-                break;
-            case 'addWhiteListDomains':
-                antiBannerService.addWhiteListDomains(message.domains);
                 break;
             case 'onFiltersSubscriptionChange':
                 antiBannerService.onFiltersSubscriptionChange(message.filterIds);

@@ -113,8 +113,6 @@ AntiBannerService.prototype = {
          */
         var initRequestFilter = function () {
             context._loadFiltersVersionAndStateInfo();
-            // init white list filter
-            whiteListService.initWhiteListFilters();
             context._createRequestFilter(function () {
                 this._addFiltersChangeEventListener();
                 onServiceInitialized(runInfo);
@@ -348,7 +346,7 @@ AntiBannerService.prototype = {
      * @returns {Array} Domains found
      */
     getWhiteListDomains: function (offset, limit, text) {
-        var domains = whiteListService.getWhiteList();
+        var domains = adguard.whitelist.getWhiteListDomains();
         var result = [];
         for (var i = 0; i < domains.length; i++) {
             var domain = domains[i];
@@ -359,64 +357,14 @@ AntiBannerService.prototype = {
         return limit ? result.slice(offset, offset + limit) : result;
     },
 
-    whiteListFrame: function (frameInfo) {
-        whiteListService.whiteListUrl(frameInfo.url);
-        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES);
-    },
-
     unWhiteListFrame: function (frameInfo) {
         if (frameInfo.frameRule) {
             if (frameInfo.frameRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
-                whiteListService.unWhiteListUrl(frameInfo.url);
-                EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES);
+                adguard.whitelist.unWhiteListUrl(frameInfo.url);
             } else {
                 this.removeUserFilter(frameInfo.frameRule.ruleText);
             }
         }
-    },
-
-    /**
-     * Adds domain to whitelist
-     *
-     * @param domain Domain name
-     * @returns {*}
-     */
-    addWhiteListDomain: function (domain) {
-        whiteListService.addToWhiteList(domain);
-        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES);
-    },
-
-    /**
-     * Adds list of domains to the whitelist.
-     *
-     * @param domains List of domains to add
-     */
-    addWhiteListDomains: function (domains) {
-        whiteListService.addToWhiteListArray(domains);
-        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES);
-    },
-
-    /**
-     * Removes domain from the whitelist
-     *
-     * @param domain   Domain to remove
-     */
-    removeWhiteListDomain: function (domain) {
-        whiteListService.removeFromWhiteList(domain);
-        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES);
-    },
-
-    /**
-     * Removes all domains from the whitelist
-     */
-    clearWhiteListFilter: function () {
-        whiteListService.clearWhiteList();
-        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES);
-    },
-
-    changeDefaultWhiteListMode: function (enabled) {
-        whiteListService.changeDefaultWhiteListMode(enabled);
-        EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES);
     },
 
     /**

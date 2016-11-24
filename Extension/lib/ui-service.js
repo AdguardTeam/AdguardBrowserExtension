@@ -334,7 +334,7 @@ adguard.ui = (function () { // jshint ignore:line
     var whiteListTab = function (tab) {
 
         var tabInfo = framesMap.getFrameInfo(tab);
-        antiBannerService.whiteListFrame(tabInfo);
+        adguard.whitelist.whiteListUrl(tabInfo.url);
 
         if (framesMap.isTabAdguardDetected(tab)) {
             var domain = UrlUtils.getHost(tab.url);
