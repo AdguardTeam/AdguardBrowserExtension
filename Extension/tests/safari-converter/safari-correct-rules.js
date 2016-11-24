@@ -11,6 +11,22 @@ var safariCorrectRules = [
       "selector": ".banner"
     }
   },
+    {
+        "trigger": {
+            "url-filter": ".*",
+            "resource-type": [
+                "document"
+            ],
+            "unless-domain": [
+                "*lenta1.ru",
+                "*lenta2.ru"
+            ]
+        },
+        "action": {
+            "type": "css-display-none",
+            "selector": "#social"
+        }
+    },
   {
     "trigger": {
       "url-filter": ".*",
@@ -24,22 +40,6 @@ var safariCorrectRules = [
     "action": {
       "type": "css-display-none",
       "selector": "#calendar_widget"
-    }
-  },
-  {
-    "trigger": {
-      "url-filter": ".*",
-      "resource-type": [
-        "document"
-      ],
-      "unless-domain": [
-        "*lenta1.ru",
-        "*lenta2.ru"
-      ]
-    },
-    "action": {
-      "type": "css-display-none",
-      "selector": "#social"
     }
   },
   {

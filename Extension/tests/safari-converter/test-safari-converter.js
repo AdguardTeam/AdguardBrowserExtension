@@ -216,6 +216,21 @@ QUnit.test("Generichide rules", function(assert) {
     assert.equal("document", convertedRule.trigger["resource-type"][0]);
 });
 
+QUnit.test("Generic domain sensitive rules", function(assert) {
+    var ruleText = '~google.com##banner';
+
+    var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    assert.equal(1, result.convertedCount);
+    assert.equal(0, result.errorsCount);
+    var converted = JSON.parse(result.converted);
+    assert.equal(1, converted.length);
+
+    var convertedRule = converted[0];
+    assert.equal(convertedRule.action.type, "css-display-none");
+    assert.equal(convertedRule.trigger["unless-domain"], '*google.com');
+    assert.equal(convertedRule.trigger["url-filter"], '.*');
+});
+
 QUnit.test("Convert cyrillic rules", function(assert) {
     var ruleText = 'меил.рф';
     var ruleTextMarkedDomain = '||меил.рф';
