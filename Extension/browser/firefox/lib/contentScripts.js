@@ -19,6 +19,7 @@ var {Cc,Ci} = require('chrome');
 var tabUtils = require('sdk/tabs/utils');
 var {viewFor} = require('sdk/view/core');
 var winUtils = require('sdk/window/utils');
+var unload = require('sdk/system/unload');
 
 var {Log} = require('./utils/log');
 
@@ -396,7 +397,14 @@ ContentScripts.prototype = {
         // Using global MM to register our frame script browser-wide
         var messageManager = Cc["@mozilla.org/globalmessagemanager;1"].getService(Ci.nsIMessageListenerManager);
         messageManager.addMessageListener('Adguard:send-message-channel', listener);
-        messageManager.loadFrameScript(this._contentUrl('content-script/frame-script.js'), true);
+        var frameScriptUrl = this._contentUrl('content-script/frame-script.js');
+        messageManager.removeDelayedFrameScript(frameScriptUrl);
+        messageManager.loadFrameScript(frameScriptUrl, true);
+
+        // Remove frame script on unload
+        unload.when(function () {
+            messageManager.removeDelayedFrameScript(frameScriptUrl);
+        });
     },
 
     
