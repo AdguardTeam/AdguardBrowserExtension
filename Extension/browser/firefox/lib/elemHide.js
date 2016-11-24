@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global Ci, Services, Log, ConcurrentUtils, FS, Prefs, styleService, EventNotifier, EventNotifierTypes, framesMap, filterRulesHitCount, antiBannerService, FilterUtils */
+/* global Ci, Services, Log, ConcurrentUtils, FS, Prefs, styleService, EventNotifier, EventNotifierTypes, framesMap, antiBannerService, FilterUtils */
 
 /**
  * This object manages CSS and JS rules.
@@ -130,7 +130,7 @@ var ElemHide = {
             // Track filter rule usage if user has enabled "collect ad filters usage stats"
             if (adguard.settings.collectHitsCount()) {
                 if (!FilterUtils.isUserFilterRule(rule) && !framesMap.isIncognitoTab(tab)) {
-                    filterRulesHitCount.addRuleHit(domain, rule.ruleText, rule.filterId);
+                    adguard.hitStats.addRuleHit(domain, rule.ruleText, rule.filterId);
                 }
             }
         }

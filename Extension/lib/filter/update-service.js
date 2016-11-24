@@ -235,7 +235,7 @@ var ApplicationUpdateService = {
      */
     _onUpdateRuleHitStats: function () {
 
-        filterRulesHitCount.cleanup();
+        adguard.hitStats.cleanup();
 
         var dfd = new Promise();
         dfd.resolve();

@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Log, UrlUtils, antiBannerService */
+
 /**
  * This object is used to store and track ad filters usage stats.
  * It is used if user has enabled "Send statistics for ad filters usage" option.
@@ -22,17 +24,78 @@
  *
  * @constructor
  */
-var FilterRulesHitCount = function () {
-    this._init();
-};
+adguard.hitStats = (function () {
 
-FilterRulesHitCount.prototype = {
+    'use strict';
 
-    MAX_PAGE_VIEWS_COUNT: 20,
-    HITS_COUNT_PROP: 'filters-hit-count',
-    HITS_PROP: 'h',
+    var MAX_PAGE_VIEWS_COUNT = 20;
+    var HITS_COUNT_PROP = 'filters-hit-count';
+    var HITS_PROP = 'h';
 
-    addDomainView: function (domain) {
+    var throttleTimeoutId;
+
+    /**
+     * Object for aggregation hit stats
+     */
+    var hitStats;
+
+    /**
+     * Reads hit stats from local storage
+     * @returns {null}
+     */
+    function getHitCountStats() {
+        var json = adguard.localStorage.getItem(HITS_COUNT_PROP);
+        var stats = Object.create(null);
+        try {
+            if (json) {
+                stats = JSON.parse(json);
+            }
+        } catch (ex) {
+            Log.error("Error retrieve hit count statistic, cause {0}", ex);
+        }
+        return stats;
+    }
+
+    /**
+     * Sends hit stats to backend server
+     */
+    function sendStats() {
+        var overallViews = hitStats.views || 0;
+        if (overallViews < MAX_PAGE_VIEWS_COUNT) {
+            return;
+        }
+        if (!adguard.settings.collectHitsCount()) {
+            return;
+        }
+        var enabledFilters = antiBannerService.getEnabledAntiBannerFilters();
+        adguard.backend.sendHitStats(JSON.stringify(hitStats), enabledFilters);
+        cleanup();
+    }
+
+    /**
+     * Save hit stats to local storage and invoke sendStats
+     * Throttled with 2 seconds delay
+     * @param stats
+     */
+    function saveHitsCountStats(stats) {
+        if (throttleTimeoutId) {
+            clearTimeout(throttleTimeoutId);
+        }
+        throttleTimeoutId = setTimeout(function () {
+            try {
+                adguard.localStorage.setItem(HITS_COUNT_PROP, JSON.stringify(stats));
+            } catch (ex) {
+                Log.error("Error save hit count statistic to storage, cause {0}", ex);
+            }
+            sendStats();
+        }, 2000);
+    }
+
+    /**
+     * Add 1 domain view to stats
+     * @param domain
+     */
+    var addDomainView = function (domain) {
 
         if (!adguard.settings.collectHitsCount()) {
             return;
@@ -41,9 +104,9 @@ FilterRulesHitCount.prototype = {
             return;
         }
 
-        var domains = this.stats.domains;
+        var domains = hitStats.domains;
         if (!domains) {
-            this.stats.domains = domains = Object.create(null);
+            hitStats.domains = domains = Object.create(null);
         }
 
         var domainInfo = domains[domain];
@@ -52,12 +115,19 @@ FilterRulesHitCount.prototype = {
             domainInfo.views = 0;
         }
         domainInfo.views++;
-        this.stats.views = (this.stats.views || 0) + 1;
+        hitStats.views = (hitStats.views || 0) + 1;
 
-        this._saveHitsCountStats(this.stats);
-    },
+        saveHitsCountStats(hitStats);
+    };
 
-    addRuleHit: function (domain, ruleText, filterId, requestUrl) {
+    /**
+     * Add 1 rule hit to stats
+     * @param domain Domain of site where rule was applied
+     * @param ruleText
+     * @param filterId
+     * @param requestUrl Url to which rule was applied
+     */
+    var addRuleHit = function (domain, ruleText, filterId, requestUrl) {
 
         if (!adguard.settings.collectHitsCount()) {
             return;
@@ -67,7 +137,7 @@ FilterRulesHitCount.prototype = {
             return;
         }
 
-        var domainInfo = this.stats.domains ? this.stats.domains[domain] : null;
+        var domainInfo = hitStats.domains ? hitStats.domains[domain] : null;
         if (!domainInfo) {
             return;
         }
@@ -98,61 +168,28 @@ FilterRulesHitCount.prototype = {
             ruleInfo[requestDomain] = domainHits + 1;
         } else {
             // Css hits
-            var hits = ruleInfo[this.HITS_PROP] || 0;
-            ruleInfo[this.HITS_PROP] = hits + 1;
+            var hits = ruleInfo[HITS_PROP] || 0;
+            ruleInfo[HITS_PROP] = hits + 1;
         }
 
-        this._saveHitsCountStats(this.stats);
-    },
+        saveHitsCountStats(hitStats);
+    };
 
-    cleanup: function () {
-        this.stats = Object.create(null);
-        adguard.localStorage.removeItem(this.HITS_COUNT_PROP);
-    },
-
-    _init: function () {
-        this.stats = this._getHitCountStats();
-    },
-
-    _getHitCountStats: function () {
-        var json = adguard.localStorage.getItem(this.HITS_COUNT_PROP);
-        var stats = Object.create(null);
-        try {
-            if (json) {
-                stats = JSON.parse(json);
-            }
-        } catch (ex) {
-            Log.error("Error retrieve hit count statistic, cause {0}", ex);
-        }
-        return stats;
-    },
-
-    _saveHitsCountStats: function (stats) {
-        if (this.timeoutId) {
-            clearTimeout(this.timeoutId);
-        }
-        this.timeoutId = setTimeout(function () {
-            try {
-                adguard.localStorage.setItem(this.HITS_COUNT_PROP, JSON.stringify(stats));
-            } catch (ex) {
-                Log.error("Error save hit count statistic to storage, cause {0}", ex);
-            }
-            this._sendStats();
-        }.bind(this), 2000);
-    },
-
-    _sendStats: function () {
-        var overallViews = this.stats.views || 0;
-        if (overallViews < this.MAX_PAGE_VIEWS_COUNT) {
-            return;
-        }
-        if (!adguard.settings.collectHitsCount()) {
-            return;
-        }
-        var enabledFilters = antiBannerService.getEnabledAntiBannerFilters();
-        adguard.backend.sendHitStats(JSON.stringify(this.stats), enabledFilters);
-        this.cleanup();
+    /**
+     * Cleanup stats
+     */
+    function cleanup() {
+        hitStats = Object.create(null);
+        adguard.localStorage.removeItem(HITS_COUNT_PROP);
     }
-};
 
-var filterRulesHitCount = new FilterRulesHitCount();
+    // Read stats from local storage
+    hitStats = getHitCountStats();
+
+    return {
+        addRuleHit: addRuleHit,
+        addDomainView: addDomainView,
+        cleanup: cleanup
+    };
+
+})();

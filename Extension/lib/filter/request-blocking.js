@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Prefs, framesMap, antiBannerService, filteringLog, filterRulesHitCount,
+/* global Prefs, framesMap, antiBannerService, filteringLog,
  RequestTypes, EventNotifier, EventNotifierTypes, FilterUtils, Utils */
 
 var webRequestService = (function () { // jshint ignore:line
@@ -213,7 +213,7 @@ var webRequestService = (function () { // jshint ignore:line
             var domain = framesMap.getFrameDomain(tab);
             if (!framesMap.isIncognitoTab(tab)) {
                 //add page view to stats
-                filterRulesHitCount.addDomainView(domain);
+                adguard.hitStats.addDomainView(domain);
             }
             appendLogEvent = true;
         }
@@ -249,7 +249,7 @@ var webRequestService = (function () { // jshint ignore:line
         if (requestRule && !FilterUtils.isUserFilterRule(requestRule) && !FilterUtils.isWhiteListFilterRule(requestRule) && !framesMap.isIncognitoTab(tab)) {
 
             var domain = framesMap.getFrameDomain(tab);
-            filterRulesHitCount.addRuleHit(domain, requestRule.ruleText, requestRule.filterId, requestUrl);
+            adguard.hitStats.addRuleHit(domain, requestRule.ruleText, requestRule.filterId, requestUrl);
         }
     };
 

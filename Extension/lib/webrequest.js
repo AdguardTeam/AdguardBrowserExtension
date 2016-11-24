@@ -16,7 +16,7 @@
  */
 
 /* global RequestTypes, framesMap, EventNotifier, EventNotifierTypes, UrlUtils, webRequestService */
-/* global Prefs, Utils, antiBannerService, StringUtils, filterRulesHitCount */
+/* global Prefs, Utils, antiBannerService, StringUtils */
 
 (function () {
 
@@ -220,7 +220,7 @@
             var domain = framesMap.getFrameDomain(requestDetails.tab);
             var rule = parseCssRuleFromUrl(requestDetails.requestUrl);
             if (rule) {
-                filterRulesHitCount.addRuleHit(domain, rule.ruleText, rule.filterId);
+                adguard.hitStats.addRuleHit(domain, rule.ruleText, rule.filterId);
             }
         };
 
