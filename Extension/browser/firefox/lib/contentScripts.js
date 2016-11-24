@@ -401,7 +401,7 @@ ContentScripts.prototype = {
         messageManager.removeDelayedFrameScript(frameScriptUrl);
         messageManager.loadFrameScript(frameScriptUrl, true);
 
-        // Remove observer on unload
+        // Remove frame script on unload
         unload.when(function () {
             messageManager.removeDelayedFrameScript(frameScriptUrl);
         });
