@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global RequestTypes, framesMap, EventNotifier, EventNotifierTypes, UrlUtils, webRequestService */
+/* global RequestTypes, framesMap, EventNotifier, EventNotifierTypes, UrlUtils */
 /* global Prefs, Utils, antiBannerService, StringUtils */
 
 (function () {
@@ -51,9 +51,9 @@
             // Assign to main frame
             referrerUrl = framesMap.getFrameUrl(tab, 0);
         }
-        var requestRule = webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
-        webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
-        return !webRequestService.isRequestBlockedByRule(requestRule);
+        var requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
+        adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
+        return !adguard.webRequestService.isRequestBlockedByRule(requestRule);
     }
 
     /**
@@ -113,7 +113,7 @@
             referrerUrl = framesMap.getFrameUrl(tab, 0);
         }
 
-        webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
+        adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
 
         if (requestType == RequestTypes.DOCUMENT) {
             // Safebrowsing check
@@ -130,7 +130,7 @@
              EasyList already contains some rules for WS connections with $other modifier
              */
             var websocketCheckUrl = "ws://adguardwebsocket.check/";
-            if (webRequestService.checkWebSocketRequest(tab, websocketCheckUrl, referrerUrl)) {
+            if (adguard.webRequestService.checkWebSocketRequest(tab, websocketCheckUrl, referrerUrl)) {
                 var cspHeader = {
                     name: 'Content-Security-Policy',
                     value: 'frame-src http: https:; child-src http: https:'

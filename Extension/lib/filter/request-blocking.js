@@ -18,7 +18,7 @@
 /* global Prefs, framesMap, antiBannerService,
  RequestTypes, EventNotifier, EventNotifierTypes, FilterUtils, Utils */
 
-var webRequestService = (function () { // jshint ignore:line
+adguard.webRequestService = (function () {
 
     /**
      * Prepares CSS and JS which should be injected to the page.

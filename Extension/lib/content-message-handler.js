@@ -1,5 +1,5 @@
 /* global Prefs, Utils, AntiBannerFiltersId, EventNotifierTypes, LogEvents, antiBannerService, WorkaroundUtils,
- framesMap, webRequestService, EventNotifier */
+ framesMap, EventNotifier */
 
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -288,16 +288,16 @@
                 if (WorkaroundUtils.isFacebookIframe(message.documentUrl)) {
                     return {};
                 }
-                var cssAndScripts = webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl, message.loadTruncatedCss);
+                var cssAndScripts = adguard.webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl, message.loadTruncatedCss);
                 return cssAndScripts || {};
             case 'checkWebSocketRequest':
-                var block = webRequestService.checkWebSocketRequest(sender.tab, message.elementUrl, message.documentUrl);
+                var block = adguard.webRequestService.checkWebSocketRequest(sender.tab, message.elementUrl, message.documentUrl);
                 return {block: block, requestId: message.requestId};
             case 'processShouldCollapse':
-                var collapse = webRequestService.processShouldCollapse(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
+                var collapse = adguard.webRequestService.processShouldCollapse(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
                 return {collapse: collapse, requestId: message.requestId};
             case 'processShouldCollapseMany':
-                var requests = webRequestService.processShouldCollapseMany(sender.tab, message.documentUrl, message.requests);
+                var requests = adguard.webRequestService.processShouldCollapseMany(sender.tab, message.documentUrl, message.requests);
                 return {requests: requests};
             case 'loadAssistant':
                 return processLoadAssistant();

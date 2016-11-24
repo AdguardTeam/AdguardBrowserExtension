@@ -554,9 +554,9 @@ var WebRequestImpl = {
         if (!!requestProperties) {
             // Calling postProcessRequest only for requests which were previously processed by "shouldLoad"
             var filteringRule = requestProperties.shouldLoadResult.rule;
-            webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, filteringRule);
+            adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, filteringRule);
         }
-        webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
+        adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
 
         if (isMainFrame) {
             //update tab button state
@@ -663,8 +663,8 @@ var WebRequestImpl = {
             return result;
         }
 
-        result.rule = webRequestService.getRuleForRequest(tab, requestUrl, tabUrl, requestType);
-        result.blocked = webRequestService.isRequestBlockedByRule(result.rule);
+        result.rule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, tabUrl, requestType);
+        result.blocked = adguard.webRequestService.isRequestBlockedByRule(result.rule);
 
         if (result.blocked || requestType === RequestTypes.WEBSOCKET) {
             this._collapseElement(node, requestType);
@@ -672,7 +672,7 @@ var WebRequestImpl = {
             // Usually we call this method in _httpOnExamineResponse callback
             // But it won't be called if request is blocked here
             // Also it won't be called for WEBSOCKET requests
-            webRequestService.postProcessRequest(tab, requestUrl, tabUrl, requestType, result.rule);
+            adguard.webRequestService.postProcessRequest(tab, requestUrl, tabUrl, requestType, result.rule);
         }
 
         return result;
@@ -725,11 +725,11 @@ var WebRequestImpl = {
 
         var tabUrl = framesMap.getFrameUrl(sourceTab, 0);
 
-        var requestRule = webRequestService.getRuleForRequest(sourceTab, requestUrl, tabUrl, RequestTypes.POPUP);
-        var requestBlocked = webRequestService.isRequestBlockedByRule(requestRule);
+        var requestRule = adguard.webRequestService.getRuleForRequest(sourceTab, requestUrl, tabUrl, RequestTypes.POPUP);
+        var requestBlocked = adguard.webRequestService.isRequestBlockedByRule(requestRule);
         if (requestBlocked) {
             //add log event and fix log event type from POPUP to DOCUMENT
-            webRequestService.postProcessRequest(sourceTab, requestUrl, tabUrl, RequestTypes.DOCUMENT, requestRule);
+            adguard.webRequestService.postProcessRequest(sourceTab, requestUrl, tabUrl, RequestTypes.DOCUMENT, requestRule);
         }
 
         return requestBlocked;
