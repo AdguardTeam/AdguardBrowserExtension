@@ -4,7 +4,7 @@ QUnit.test("General", function(assert) {
 
     var rule = new adguard.rules.UrlFilterRule("||test.com^");
 
-    var requestFilter = new RequestFilter();
+    var requestFilter = new adguard.RequestFilter();
     requestFilter.addRule(rule);
 
     var result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT);
@@ -21,7 +21,7 @@ QUnit.test("Whitelist rules selecting", function(assert) {
     var documentRule = new adguard.rules.UrlFilterRule("@@||test.com^$document");
     var genericHideRule = new adguard.rules.UrlFilterRule("@@||test.com^$generichide");
 
-    var requestFilter = new RequestFilter();
+    var requestFilter = new adguard.RequestFilter();
     requestFilter.addRule(rule);
 
     var result;
@@ -58,7 +58,7 @@ QUnit.test("Important modifier rules", function(assert) {
     var url = "https://test.com/";
     var referrer = "http://example.org";
 
-    var requestFilter = new RequestFilter();
+    var requestFilter = new adguard.RequestFilter();
 
     var rule = new adguard.rules.UrlFilterRule("||test.com^");
     var whitelist = new adguard.rules.UrlFilterRule("@@||test.com^");
@@ -107,7 +107,7 @@ QUnit.test("Request filter performance", function(assert) {
     var onFileLoaded = function (text) {
         assert.ok(text != null);
 
-        var requestFilter = new RequestFilter();
+        var requestFilter = new adguard.RequestFilter();
         var rules = text.split("\n");
         assert.ok(rules.length > 0);
         for (var i = 0; i < rules.length; i++) {

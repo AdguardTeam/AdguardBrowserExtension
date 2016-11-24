@@ -159,7 +159,7 @@
         var referrerUrl = Utils.getSafebrowsingBackUrl(tab);
         var incognitoTab = framesMap.isIncognitoTab(tab);
 
-        antiBannerService.getRequestFilter().checkSafebrowsingFilter(mainFrameUrl, referrerUrl, function (safebrowsingUrl) {
+        antiBannerService.checkSafebrowsingFilter(mainFrameUrl, referrerUrl, function (safebrowsingUrl) {
             // Chrome doesn't allow open extension url in incognito mode
             // So close current tab and open new
             if (incognitoTab && Utils.isChromium()) {

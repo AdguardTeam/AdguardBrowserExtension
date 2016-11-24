@@ -24,7 +24,7 @@ var AntiBannerService = function () {
 
     // Request filter contains all filter rules
     // This class does the actual filtering (checking URLs, constructing CSS/JS to inject, etc)
-    this.requestFilter = new RequestFilter();
+    this.requestFilter = new adguard.RequestFilter();
 
     // Add listener to service that detects webpage locale
     // Depending on the locale we can enable language-specific filter
@@ -365,6 +365,41 @@ AntiBannerService.prototype = {
                 this.removeUserFilter(frameInfo.frameRule.ruleText);
             }
         }
+    },
+
+    /**
+     * TODO: move to adguard.safebrowsing
+     * Checks URL with safebrowsing filter.
+     * http://adguard.com/en/how-malware-blocked.html#extension
+     *
+     * @param requestUrl Request URL
+     * @param referrerUrl Referrer URL
+     * @param safebrowsingCallback Called when check has been finished
+     * @param incognitoTab Tab incognito mode
+     */
+    checkSafebrowsingFilter: function (requestUrl, referrerUrl, safebrowsingCallback, incognitoTab) {
+
+        if (!adguard.settings.getSafebrowsingInfo().enabled) {
+            return;
+        }
+
+        Log.debug("Checking safebrowsing filter for {0}", requestUrl);
+
+        var callback = function (sbList) {
+
+            if (!sbList) {
+                Log.debug("No safebrowsing rule found");
+                return;
+            }
+            Log.debug("Following safebrowsing filter has been fired: {0}", sbList);
+            if (!incognitoTab && adguard.settings.getSafebrowsingInfo().sendStats) {
+                adguard.backend.trackSafebrowsingStats(requestUrl);
+            }
+            safebrowsingCallback(adguard.safebrowsing.getErrorPageURL(requestUrl, referrerUrl, sbList));
+
+        };
+
+        adguard.safebrowsing.lookupUrlWithCallback(requestUrl, callback);
     },
 
     /**
@@ -864,7 +899,7 @@ AntiBannerService.prototype = {
         Log.info('Starting request filter initialization. Async={0}', async);
 
         // Empty request filter
-        var requestFilter = new RequestFilter();
+        var requestFilter = new adguard.RequestFilter();
 
         // Supplement object to make sure that we use only unique filter rules
         var uniqueRules = Object.create(null);

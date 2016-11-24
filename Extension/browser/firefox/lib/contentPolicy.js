@@ -773,7 +773,7 @@ var WebRequestImpl = {
         var referrerUrl = Utils.getSafebrowsingBackUrl(tab);
         var incognitoTab = framesMap.isIncognitoTab(tab);
 
-        antiBannerService.getRequestFilter().checkSafebrowsingFilter(requestUrl, referrerUrl, function (safebrowsingUrl) {
+        antiBannerService.checkSafebrowsingFilter(requestUrl, referrerUrl, function (safebrowsingUrl) {
             adguard.tabs.reload(tab.tabId, safebrowsingUrl);
         }, incognitoTab);
     },
