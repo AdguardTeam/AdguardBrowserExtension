@@ -103,21 +103,27 @@ function onHeadersReceived(requestDetails) {
     if (requestType == RequestTypes.DOCUMENT) {
         // Safebrowsing check
         filterSafebrowsing(tab, requestUrl);
+    }
 
+    if (requestType == RequestTypes.DOCUMENT || requestType == RequestTypes.SUBDOCUMENT) {
         /*
          Websocket check.
          If 'ws://' request is blocked for not existing domain - it's blocked for all domains.
          Then we gonna limit frame sources to http to block src:'data/text' etc.
-         More details in the issue:
+         More details in these issues:
          https://github.com/AdguardTeam/AdguardBrowserExtension/issues/344
+         https://github.com/AdguardTeam/AdguardBrowserExtension/issues/440
 
          WS connections are detected as "other"  by ABP
          EasyList already contains some rules for WS connections with $other modifier
          */
-        var websocketCheckUrl = "ws://adguardwebsocket.check/";
+        var websocketCheckUrl = "ws://adguardwebsocket.check/" + UrlUtils.getDomainName(referrerUrl);
         if (webRequestService.checkWebSocketRequest(tab, websocketCheckUrl, referrerUrl)) {
-            responseHeaders.push({name: 'Content-Security-Policy', value: 'frame-src http: https:; child-src http: https:'});
-            return { responseHeaders: responseHeaders };
+            responseHeaders.push({
+                name: 'Content-Security-Policy',
+                value: 'connect-src http: https:; frame-src http: https:; child-src http: https:'
+            });
+            return {responseHeaders: responseHeaders};
         }
     }
 }
