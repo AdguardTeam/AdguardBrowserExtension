@@ -18,7 +18,7 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.17';
+var CONVERTER_VERSION = '1.3.18';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var URL_FILTER_ANY_URL = ".*";
@@ -660,7 +660,7 @@ exports.SafariContentBlockerConverter = {
 
         var cssBlockingWide = [];
         var cssBlockingDomainSensitive = [];
-        var cssBlockingGenericDomainSensitive = [];
+        var cssBlockingGenericHideExceptions = [];
 
         var wideSelectors = [];
         var addWideRule = function() {
@@ -688,7 +688,7 @@ exports.SafariContentBlockerConverter = {
             if (rule.trigger['if-domain']) {
                 cssBlockingDomainSensitive.push(rule);
             } else if (rule.trigger['unless-domain']) {
-                cssBlockingGenericDomainSensitive.push(rule);
+                cssBlockingGenericHideExceptions.push(rule);
             } else {
                 wideSelectors.push(rule.action.selector);
                 if (wideSelectors.length >= MAX_SELECTORS_PER_WIDE_RULE) {
@@ -699,11 +699,13 @@ exports.SafariContentBlockerConverter = {
         }
         addWideRule();
 
-        Log.info('Compacted result: wide=' + cssBlockingWide.length + ' domainSensitive=' + cssBlockingDomainSensitive.length);
+        Log.info('Compacted result: wide=' + cssBlockingWide.length
+            + ' domainSensitive=' + cssBlockingDomainSensitive.length
+            + ' domainSensitiveExceptions=' + cssBlockingGenericHideExceptions.length);
         return {
             cssBlockingWide: cssBlockingWide,
             cssBlockingDomainSensitive: cssBlockingDomainSensitive,
-            cssBlockingGenericDomainSensitive: cssBlockingGenericDomainSensitive
+            cssBlockingGenericHideExceptions: cssBlockingGenericHideExceptions
         };
     },
 
@@ -721,7 +723,7 @@ exports.SafariContentBlockerConverter = {
             // Elemhide rules (##) - wide generic rules
             cssBlockingWide: [],
             // Elemhide rules (##) - generic domain sensitive
-            cssBlockingGenericDomainSensitive: [],
+            cssBlockingGenericHideExceptions: [],
             // Generic hide exceptions
             cssBlockingWideExceptions: [],
             // Elemhide rules (##) with domain restrictions
@@ -787,14 +789,14 @@ exports.SafariContentBlockerConverter = {
         if (!optimize) {
             contentBlocker.cssBlockingWide = cssCompact.cssBlockingWide;
         }
-        contentBlocker.cssBlockingGenericDomainSensitive = cssCompact.cssBlockingGenericDomainSensitive;
+        contentBlocker.cssBlockingGenericHideExceptions = cssCompact.cssBlockingGenericHideExceptions;
         contentBlocker.cssBlockingDomainSensitive = cssCompact.cssBlockingDomainSensitive;
 
         var convertedCount = rules.length - contentBlocker.errors.length;
         var message = 'Rules converted: ' + convertedCount + ' (' + contentBlocker.errors.length + ' errors)';
         message += '\nBasic rules: ' + contentBlocker.urlBlocking.length;
         message += '\nElemhide rules (wide): ' + contentBlocker.cssBlockingWide.length;
-        message += '\nElemhide rules (generic domain sensitive): ' + contentBlocker.cssBlockingGenericDomainSensitive.length;
+        message += '\nElemhide rules (generic domain sensitive): ' + contentBlocker.cssBlockingGenericHideExceptions.length;
         message += '\nExceptions Elemhide (wide): ' + contentBlocker.cssBlockingWideExceptions.length;
         message += '\nElemhide rules (domain-sensitive): ' + contentBlocker.cssBlockingDomainSensitive.length;
         message += '\nExceptions (elemhide): ' + contentBlocker.cssElemhide.length;
@@ -808,7 +810,7 @@ exports.SafariContentBlockerConverter = {
         var overLimit = false;
         var converted = [];
         converted = converted.concat(contentBlocker.cssBlockingWide);
-        converted = converted.concat(contentBlocker.cssBlockingGenericDomainSensitive);
+        converted = converted.concat(contentBlocker.cssBlockingGenericHideExceptions);
         converted = converted.concat(contentBlocker.cssBlockingWideExceptions);
         converted = converted.concat(contentBlocker.cssBlockingDomainSensitive);
         converted = converted.concat(contentBlocker.cssElemhide);
