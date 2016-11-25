@@ -18,7 +18,7 @@
 /**
  * Map that contains info about every browser tab.
  */
-var framesMap = (function () {
+adguard.frames = (function (adguard) {
 
 	'use strict';
 
@@ -45,7 +45,7 @@ var framesMap = (function () {
 			}
 		}
 
-		adguard.tabs.recordTabFrame(tab.tabId, frameId, url, UrlUtils.getDomainName(url));
+		adguard.tabs.recordTabFrame(tab.tabId, frameId, url, adguard.utils.url.getDomainName(url));
 
 		if (type === RequestTypes.DOCUMENT) {
 			adguard.tabs.updateTabMetadata(tab.tabId, {previousUrl: previousUrl});
@@ -214,7 +214,7 @@ var framesMap = (function () {
 			url = frame.url;
 		}
 
-		var urlFilteringDisabled = !UrlUtils.isHttpRequest(url);
+		var urlFilteringDisabled = !adguard.utils.url.isHttpRequest(url);
 		var applicationFilteringDisabled;
 		var documentWhiteListed = false;
 		var userWhiteListed = false;
@@ -238,7 +238,7 @@ var framesMap = (function () {
 				var adguardWhiteListRule = adguard.tabs.getTabMetadata(tabId, 'adguardWhiteListRule');
 				if (adguardWhiteListRule) {
 					frameRule = {
-						filterId: AntiBannerFiltersId.WHITE_LIST_FILTER_ID,
+						filterId: adguard.utils.filters.WHITE_LIST_FILTER_ID,
 						ruleText: adguardWhiteListRule.ruleText
 					};
 				}
@@ -250,7 +250,7 @@ var framesMap = (function () {
 				documentWhiteListed = isTabWhiteListed(tab);
 				if (documentWhiteListed) {
 					var rule = getFrameWhiteListRule(tab);
-					userWhiteListed = FilterUtils.isWhiteListFilterRule(rule) || FilterUtils.isUserFilterRule(rule);
+					userWhiteListed = adguard.utils.filters.isWhiteListFilterRule(rule) || adguard.utils.filters.isUserFilterRule(rule);
 					frameRule = {
 						filterId: rule.filterId,
 						ruleText: rule.ruleText
@@ -340,4 +340,5 @@ var framesMap = (function () {
 		resetBlockedAdsCount: resetBlockedAdsCount,
 		isIncognitoTab: isIncognitoTab
 	};
-})();
+
+})(adguard);

@@ -1,4 +1,4 @@
-/* global Cu, Cc, Ci, Services, unload, ConcurrentUtils, WorkaroundUtils */
+/* global Cu, Cc, Ci, Services */
 
 (function () {
 
@@ -282,7 +282,7 @@
         };
 
         function insertToolbarButtonToWindow(win) {
-            ConcurrentUtils.retryUntil(
+            adguard.utils.concurrent.retryUntil(
                 canCreateToolbarButton.bind(null, win),
                 createToolbarButtonAndRegisterStyle.bind(null, win)
             );
@@ -295,7 +295,7 @@
                     insertToolbarButtonToWindow(domWin);
                 }
             });
-            unload.when(shutdown);
+            adguard.unload.when(shutdown);
         };
 
     })(toolbarButtonWidget);
@@ -430,7 +430,7 @@
 
             CustomizableUI.createWidget(this);
 
-            unload.when(shutdown);
+            adguard.unload.when(shutdown);
         };
 
         function shutdown() {

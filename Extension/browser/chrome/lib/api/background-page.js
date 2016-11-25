@@ -15,13 +15,13 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global chrome, RequestTypes, Utils */
+/* global chrome, RequestTypes */
 
-(function (global) {
+(function (adguard) {
 
     'use strict';
 
-    var browser = global.browser = browser || chrome;
+    var browser = browser || chrome;
 
     adguard.runtime = (function () {
 
@@ -62,7 +62,7 @@
     function parseRequestTypeFromUrl(url) {
         linkHelper.href = url;
         var path = linkHelper.pathname;
-        var requestType = Utils.parseContentTypeFromUrlPath(path);
+        var requestType = adguard.utils.browser.parseContentTypeFromUrlPath(path);
         if (requestType === null) {
             // https://code.google.com/p/chromium/issues/detail?id=410382
             requestType = RequestTypes.OBJECT;
@@ -309,4 +309,4 @@
 
     adguard.contextMenus = browser.contextMenus;
 
-})(window);
+})(adguard);

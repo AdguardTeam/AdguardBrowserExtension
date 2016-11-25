@@ -20,7 +20,7 @@
 /**
  * Global stats
  */
-adguard.pageStats = (function () {
+adguard.pageStats = (function (adguard) {
 
     'use strict';
 
@@ -82,4 +82,4 @@ adguard.pageStats = (function () {
         getTotalBlocked: getTotalBlocked
     };
 
-})();
+})(adguard);

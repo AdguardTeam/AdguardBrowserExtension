@@ -1,6 +1,6 @@
 QUnit.test("Calculate hash", function (assert) {
 
-    var host = UrlUtils.getHost("http://test.yandex.ru/someurl.html");
+    var host = adguard.utils.url.getHost("http://test.yandex.ru/someurl.html");
     var hosts = adguard.safebrowsing.extractHosts(host);
 
     assert.equal("test.yandex.ru", hosts[0]);
@@ -14,7 +14,7 @@ QUnit.test("Calculate hash", function (assert) {
 
 QUnit.test("Process response", function (assert) {
 
-    var host = UrlUtils.getHost("http://theballoonboss.com");
+    var host = adguard.utils.url.getHost("http://theballoonboss.com");
     var hosts = adguard.safebrowsing.extractHosts(host);
     var hashes = adguard.safebrowsing.createHashesMap(hosts);
 

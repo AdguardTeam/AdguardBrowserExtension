@@ -15,9 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global CollectionUtils */
-
-(function (api) {
+(function (adguard, api) {
 
     'use strict';
 
@@ -106,7 +104,7 @@
         removeRule: function (rule) {
             this.shortcutsLookupTable.removeRule(rule);
             this.domainsLookupTable.removeRule(rule);
-            CollectionUtils.removeRule(this.rulesWithoutShortcuts, rule);
+            adguard.utils.collections.removeRule(this.rulesWithoutShortcuts, rule);
         },
 
         /**
@@ -179,5 +177,5 @@
 
     api.UrlFilterRuleLookupTable = UrlFilterRuleLookupTable;
 
-})(adguard.rules);
+})(adguard, adguard.rules);
 

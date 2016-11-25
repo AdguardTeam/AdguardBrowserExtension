@@ -24,7 +24,7 @@
  * TODO[Edge]: There is still a possibility to exceed local storage quota.
  * Consider using http://pieroxy.net/blog/pages/lz-string/index.html
  */
-adguard.rulesStorageImpl = (function () {
+adguard.rulesStorageImpl = (function (adguard) {
 
     var read = function (path, callback) {
         try {
@@ -60,4 +60,4 @@ adguard.rulesStorageImpl = (function () {
         remove: remove
     };
 
-})();
+})(adguard);

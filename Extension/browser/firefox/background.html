@@ -2,40 +2,47 @@
 <html>
 <head>
 
+    <!--Third party libraries-->
     <script type="text/javascript" src="lib/libs/deferred.min.js"></script>
     <script type="text/javascript" src="lib/utils/sha256.patched.js"></script>
     <script type="text/javascript" src="lib/utils/promises.js"></script>
     <script type="text/javascript" src="lib/utils/punycode.js"></script>
-    <script type="text/javascript" src="lib/utils/language.js"></script>
+
+    <!--Adguard Global and preferences-->
+    <script type="text/javascript" src="lib/adguard.js"></script>
+    <script type="text/javascript" src="prefs.js"></script>
+
+    <!--Utils libraries-->
     <script type="text/javascript" src="lib/utils/common.js"></script>
     <script type="text/javascript" src="lib/utils/log.js"></script>
     <script type="text/javascript" src="lib/utils/url.js"></script>
+    <script type="text/javascript" src="lib/utils/notifier.js"></script>
+    <script type="text/javascript" src="lib/utils/workaround.js"></script>
+    <script type="text/javascript" src="lib/utils/browser-utils.js"></script>
+    <script type="text/javascript" src="lib/utils/service-client.js"></script>
+    <script type="text/javascript" src="lib/utils/page-stats.js"></script>
+    <script type="text/javascript" src="lib/utils/user-settings.js"></script>
+    <script type="text/javascript" src="lib/utils/frames.js"></script>
 
+    <!--Local storage and rules storage libraries-->
+    <script type="text/javascript" src="lib/utils/local-storage.js"></script>
+    <script type="text/javascript" src="lib/utils/rules-storage.js"></script>
+    <script type="text/javascript" src="lib/storage.js"></script>
+
+    <!--Firefox api adapter libraries-->
     <script type="text/javascript" src="lib/api/common-api.js"></script>
+    <script type="text/javascript" src="lib/api/messaging-api.js"></script>
+    <script type="text/javascript" src="lib/api/file-storage.js"></script>
     <script type="text/javascript" src="lib/api/tabs.js"></script>
     <script type="text/javascript" src="lib/api/webrequest-api.js"></script>
     <script type="text/javascript" src="lib/api/browser-action-api.js"></script>
     <script type="text/javascript" src="lib/api/context-menu-api.js"></script>
-    <script type="text/javascript" src="lib/api/messaging-api.js"></script>
 
-    <script type="text/javascript" src="lib/prefs.js"></script>
-
-    <script type="text/javascript" src="lib/utils/local-storage.js"></script>
-    <script type="text/javascript" src="lib/utils/file-storage.js"></script>
-    <script type="text/javascript" src="lib/utils/rules-storage.js"></script>
-    <script type="text/javascript" src="lib/storage.js"></script>
-
-    <script type="text/javascript" src="lib/utils/local-script-rules.js"></script>
-    <script type="text/javascript" src="lib/utils/workaround.js"></script>
-    <script type="text/javascript" src="lib/utils/browser-utils.js"></script>
-    <script type="text/javascript" src="lib/utils/service-client.js"></script>
-    <script type="text/javascript" src="lib/utils/user-settings.js"></script>
-    <script type="text/javascript" src="lib/utils/notifier.js"></script>
-    <script type="text/javascript" src="lib/utils/page-stats.js"></script>
-
+    <!--Tabs api library-->
     <script type="text/javascript" src="lib/tabs/tabs-api.js"></script>
-    <script type="text/javascript" src="lib/utils/frames.js"></script>
 
+    <!--Rules and filters libraries-->
+    <script type="text/javascript" src="lib/utils/local-script-rules.js"></script>    <!--TODO: move to other folder-->
     <script type="text/javascript" src="lib/filter/rules/rules.js"></script>
     <script type="text/javascript" src="lib/filter/rules/shortcuts-lookup-table.js"></script>
     <script type="text/javascript" src="lib/filter/rules/domains-lookup-table.js"></script>
@@ -65,7 +72,6 @@
     <script type="text/javascript" src="lib/content-message-handler.js"></script>
     <script type="text/javascript" src="lib/contentScripts.js"></script>
 
-    <script type="text/javascript" src="lib/styleSheetService.js"></script>
     <script type="text/javascript" src="lib/mobileMenu.js"></script>
     <script type="text/javascript" src="lib/elemHide.js"></script>
 

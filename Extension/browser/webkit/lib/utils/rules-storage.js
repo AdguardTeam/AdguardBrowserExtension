@@ -18,7 +18,7 @@
 /**
  * Filter rules storage implementation
  */
-adguard.rulesStorageImpl = (function () {
+adguard.rulesStorageImpl = (function (adguard) {
 
     var read = function (path, callback) {
         try {
@@ -54,4 +54,4 @@ adguard.rulesStorageImpl = (function () {
         remove: remove
     };
 
-})();
+})(adguard);

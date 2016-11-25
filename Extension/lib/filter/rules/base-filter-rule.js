@@ -15,9 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global CollectionUtils, StringUtils, UrlUtils, Log */
+/* global Log */
 
-(function (api) {
+(function (adguard, api) {
 
     'use strict';
 
@@ -40,7 +40,7 @@
          */
         loadDomains: function (domains) {
 
-            if (StringUtils.isEmpty(domains)) {
+            if (adguard.utils.strings.isEmpty(domains)) {
                 return;
             }
 
@@ -51,21 +51,21 @@
             try {
                 for (var i = 0; i < parts.length; i++) {
                     var domain = parts[i], domainName;
-                    if (StringUtils.startWith(domain, "~")) {
-                        domainName = UrlUtils.toPunyCode(domain.substring(1).trim());
-                        if (!StringUtils.isEmpty(domainName)) {
+                    if (adguard.utils.strings.startWith(domain, "~")) {
+                        domainName = adguard.utils.url.toPunyCode(domain.substring(1).trim());
+                        if (!adguard.utils.strings.isEmpty(domainName)) {
                             if (restrictedDomains === null) {
                                 restrictedDomains = [];
                             }
                             restrictedDomains.push(domainName);
                         }
                     } else {
-                        domainName = UrlUtils.toPunyCode(domain.trim());
-                        if (!StringUtils.isEmpty(domainName)) {
+                        domainName = adguard.utils.url.toPunyCode(domain.trim());
+                        if (!adguard.utils.strings.isEmpty(domainName)) {
                             if (permittedDomains === null) {
                                 permittedDomains = [];
                             }
-                            permittedDomains.push(UrlUtils.getCroppedDomainName(domainName));
+                            permittedDomains.push(adguard.utils.url.getCroppedDomainName(domainName));
                         }
                     }
                 }
@@ -165,20 +165,20 @@
                 return false;
             }
 
-            if (this.restrictedDomain && UrlUtils.isDomainOrSubDomain(domainName, this.restrictedDomain)) {
+            if (this.restrictedDomain && adguard.utils.url.isDomainOrSubDomain(domainName, this.restrictedDomain)) {
                 return false;
             }
 
-            if (this.restrictedDomains && UrlUtils.isDomainOrSubDomainOfAny(domainName, this.restrictedDomains)) {
+            if (this.restrictedDomains && adguard.utils.url.isDomainOrSubDomainOfAny(domainName, this.restrictedDomains)) {
                 return false;
             }
 
             if (this.hasPermittedDomains()) {
-                if (this.permittedDomain && UrlUtils.isDomainOrSubDomain(domainName, this.permittedDomain)) {
+                if (this.permittedDomain && adguard.utils.url.isDomainOrSubDomain(domainName, this.permittedDomain)) {
                     return true;
                 }
 
-                return UrlUtils.isDomainOrSubDomainOfAny(domainName, this.permittedDomains);
+                return adguard.utils.url.isDomainOrSubDomainOfAny(domainName, this.permittedDomains);
             }
 
             return true;
@@ -201,7 +201,7 @@
                 }
 
                 var restrictedDomains = this.getRestrictedDomains();
-                restrictedDomains = CollectionUtils.removeDuplicates((restrictedDomains || []).concat(domains));
+                restrictedDomains = adguard.utils.collections.removeDuplicates((restrictedDomains || []).concat(domains));
                 this.setRestrictedDomains(restrictedDomains);
             }
         },
@@ -215,7 +215,7 @@
             if (domains) {
                 var restrictedDomains = this.getRestrictedDomains();
                 for (var i = 0; i < domains.length; i++) {
-                    CollectionUtils.remove(restrictedDomains, domains[i]);
+                    adguard.utils.collections.remove(restrictedDomains, domains[i]);
                 }
                 this.setRestrictedDomains(restrictedDomains);
             }
@@ -253,4 +253,4 @@
 
     api.FilterRule = FilterRule;
 
-})(adguard.rules);
+})(adguard, adguard.rules);

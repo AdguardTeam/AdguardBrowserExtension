@@ -1,5 +1,4 @@
-/* global Prefs, Utils, AntiBannerFiltersId, EventNotifierTypes, LogEvents, antiBannerService, WorkaroundUtils,
- framesMap, EventNotifier */
+/* global antiBannerService, WorkaroundUtils */
 
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -21,7 +20,7 @@
 /**
  *  Initialize Content => BackgroundPage messaging
  */
-(function () {
+(function (adguard) {
 
     'use strict';
 
@@ -36,7 +35,7 @@
      * @param sender
      */
     function processAddEventListener(message, sender) {
-        var listenerId = EventNotifier.addSpecifiedListener(message.events, function () {
+        var listenerId = adguard.listeners.addSpecifiedListener(message.events, function () {
             var sender = eventListeners[listenerId];
             if (sender) {
                 adguard.tabs.sendMessage(sender.tab.tabId, {
@@ -56,6 +55,8 @@
 
         var enabledFilters = Object.create(null);
 
+        var AntiBannerFiltersId = adguard.utils.filters.ids;
+
         for (var key in AntiBannerFiltersId) {
             if (AntiBannerFiltersId.hasOwnProperty(key)) {
                 var filterId = AntiBannerFiltersId[key];
@@ -73,18 +74,17 @@
             requestFilterInfo: antiBannerService.getRequestFilterInfo(),
             contentBlockerInfo: antiBannerService.getContentBlockerInfo(),
             environmentOptions: {
-                isMacOs: Utils.isMacOs(),
-                isSafariBrowser: Utils.isSafariBrowser(),
-                isContentBlockerEnabled: Utils.isContentBlockerEnabled(),
+                isMacOs: adguard.utils.browser.isMacOs(),
+                isSafariBrowser: adguard.utils.browser.isSafariBrowser(),
+                isContentBlockerEnabled: adguard.utils.browser.isContentBlockerEnabled(),
                 Prefs: {
-                    locale: Prefs.locale,
-                    mobile: Prefs.mobile
+                    locale: adguard.app.getLocale(),
+                    mobile: adguard.prefs.mobile || false
                 }
             },
             constants: {
-                AntiBannerFiltersId: AntiBannerFiltersId,
-                EventNotifierTypes: EventNotifierTypes,
-                LogEvents: LogEvents
+                AntiBannerFiltersId: adguard.utils.filters.ids,
+                EventNotifierTypes: adguard.listeners.events
             }
         };
     }
@@ -191,7 +191,7 @@
                 return processAddEventListener(message, sender);
             case 'removeListener':
                 var listenerId = message.listenerId;
-                EventNotifier.removeListener(listenerId);
+                adguard.listeners.removeListener(listenerId);
                 delete eventListeners[listenerId];
                 break;
             case 'initializeFrameScript':
@@ -281,7 +281,7 @@
                 adguard.browserAction.close();
                 break;
             case 'resetBlockedAdsCount':
-                framesMap.resetBlockedAdsCount();
+                adguard.frames.resetBlockedAdsCount();
                 adguard.browserAction.close();
                 break;
             case 'getSelectorsAndScripts':
@@ -303,7 +303,7 @@
                 return processLoadAssistant();
             case 'addUserRule':
                 antiBannerService.addUserFilterRule(message.ruleText);
-                if (framesMap.isTabAdguardDetected(sender.tab)) {
+                if (adguard.frames.isTabAdguardDetected(sender.tab)) {
                     adguard.integration.addRuleToApp(message.ruleText);
                 }
                 break;
@@ -320,7 +320,7 @@
                 adguard.filteringLog.clearEventsByTabId(message.tabId);
                 break;
             case 'getTabFrameInfoById':
-                var frameInfo = framesMap.getFrameInfo({tabId: message.tabId});
+                var frameInfo = adguard.frames.getFrameInfo({tabId: message.tabId});
                 return {frameInfo: frameInfo};
             case 'getFilteringInfoByTabId':
                 var filteringInfo = adguard.filteringLog.getFilteringInfoByTabId(message.tabId);
@@ -352,7 +352,7 @@
             // Popup methods
             case 'popupReady':
                 adguard.tabs.getActive(function (tab) {
-                    var frameInfo = framesMap.getFrameInfo(tab);
+                    var frameInfo = adguard.frames.getFrameInfo(tab);
                     callback({frameInfo: frameInfo});
                 });
                 return true; // Async
@@ -395,5 +395,5 @@
     // Add event listener from content-script messages
     adguard.runtime.onMessage.addListener(handleMessage);
 
-})();
+})(adguard);
 

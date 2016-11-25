@@ -15,13 +15,41 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Log, UrlUtils, Utils, WorkaroundUtils, StringUtils, Prefs, unload, antiBannerService, framesMap, EventNotifier, EventNotifierTypes */
+/* global Log, WorkaroundUtils, antiBannerService */
 
-adguard.ui = (function () { // jshint ignore:line
+adguard.ui = (function (adguard) { // jshint ignore:line
 
     var browserActionTitle = adguard.i18n.getMessage('name');
 
     var nextMenuId = 0;
+
+    var extensionStoreLink = (function () {
+
+        var urlBuilder = ["http://adguard.com/"];
+
+        if (adguard.app.getLocale() === "ru") {
+            urlBuilder.push("ru");
+        } else {
+            urlBuilder.push("en");
+        }
+        urlBuilder.push("/extension-page.html?browser=");
+
+        if (adguard.utils.browser.isOperaBrowser()) {
+            urlBuilder.push("opera");
+        } else if (adguard.utils.browser.isFirefoxBrowser()) {
+            urlBuilder.push("firefox");
+        } else if (adguard.utils.browser.isYaBrowser()) {
+            urlBuilder.push("yabrowser");
+        } else if (adguard.utils.browser.isSafariBrowser()) {
+            urlBuilder.push("safari");
+        } else if (adguard.utils.browser.isEdgeBrowser()) {
+            urlBuilder.push("edge");
+        } else {
+            urlBuilder.push("chrome");
+        }
+
+        return urlBuilder.join("");
+    })();
 
     /**
      * Update icon for tab
@@ -43,7 +71,7 @@ adguard.ui = (function () { // jshint ignore:line
                 var blocked;
                 var disabled;
 
-                var tabInfo = framesMap.getFrameInfo(tab);
+                var tabInfo = adguard.frames.getFrameInfo(tab);
                 if (tabInfo.adguardDetected) {
                     disabled = tabInfo.documentWhiteListed;
                     blocked = "";
@@ -62,11 +90,11 @@ adguard.ui = (function () { // jshint ignore:line
                 badge = WorkaroundUtils.getBlockedCountText(blocked);
 
                 if (disabled) {
-                    icon = Prefs.ICONS.ICON_GRAY;
+                    icon = adguard.prefs.ICONS.ICON_GRAY;
                 } else if (tabInfo.adguardDetected) {
-                    icon = Prefs.ICONS.ICON_BLUE;
+                    icon = adguard.prefs.ICONS.ICON_BLUE;
                 } else {
-                    icon = Prefs.ICONS.ICON_GREEN;
+                    icon = adguard.prefs.ICONS.ICON_GREEN;
                 }
             }
 
@@ -76,7 +104,7 @@ adguard.ui = (function () { // jshint ignore:line
         }
     }
 
-    var updateTabIconAsync = Utils.debounce(function (tab) {
+    var updateTabIconAsync = adguard.utils.concurrent.debounce(function (tab) {
         updateTabIcon(tab);
     }, 250);
 
@@ -175,7 +203,7 @@ adguard.ui = (function () { // jshint ignore:line
             addMenu('context_miscellaneous_settings', {parentId: menuId});
         }
 
-        var tabInfo = framesMap.getFrameInfo(tab);
+        var tabInfo = adguard.frames.getFrameInfo(tab);
 
         if (tabInfo.applicationFilteringDisabled) {
             addMenu('context_site_protection_disabled');
@@ -247,7 +275,7 @@ adguard.ui = (function () { // jshint ignore:line
 
     function showAlertMessagePopup(title, text, showForAdguardTab) {
         adguard.tabs.getActive(function (tab) {
-            if (!showForAdguardTab && framesMap.isTabAdguardDetected(tab)) {
+            if (!showForAdguardTab && adguard.frames.isTabAdguardDetected(tab)) {
                 return;
             }
             adguard.tabs.sendMessage(tab.tabId, {
@@ -262,9 +290,50 @@ adguard.ui = (function () { // jshint ignore:line
         });
     }
 
+    function getFiltersUpdateResultMessage(success, updatedFilters) {
+        var title = adguard.i18n.getMessage("options_popup_update_title");
+        var text = [];
+        if (success) {
+            if (updatedFilters.length === 0) {
+                text.push(adguard.i18n.getMessage("options_popup_update_not_found"));
+            } else {
+                updatedFilters.sort(function (a, b) {
+                    return a.displayNumber - b.displayNumber;
+                });
+                for (var i = 0; i < updatedFilters.length; i++) {
+                    var filter = updatedFilters[i];
+                    text.push(adguard.i18n.getMessage("options_popup_update_updated", [filter.name, filter.version]).replace("$1", filter.name).replace("$2", filter.version));
+                }
+            }
+        } else {
+            text.push(adguard.i18n.getMessage("options_popup_update_error"));
+        }
+
+        return {
+            title: title,
+            text: text
+        };
+    }
+
+    function getFiltersEnabledResultMessage(enabledFilters) {
+        var title = adguard.i18n.getMessage("alert_popup_filter_enabled_title");
+        var text = [];
+        enabledFilters.sort(function (a, b) {
+            return a.displayNumber - b.displayNumber;
+        });
+        for (var i = 0; i < enabledFilters.length; i++) {
+            var filter = enabledFilters[i];
+            text.push(adguard.i18n.getMessage("alert_popup_filter_enabled_text", [filter.name]).replace("$1", filter.name));
+        }
+        return {
+            title: title,
+            text: text
+        };
+    }
+
     var updateTabIconAndContextMenu = function (tab, reloadFrameData) {
         if (reloadFrameData) {
-            framesMap.reloadFrameData(tab);
+            adguard.frames.reloadFrameData(tab);
         }
         updateTabIcon(tab);
         updateTabContextMenu(tab);
@@ -279,7 +348,7 @@ adguard.ui = (function () { // jshint ignore:line
     };
 
     var openSiteReportTab = function (url) {
-        var domain = UrlUtils.toPunyCode(UrlUtils.getDomainName(url));
+        var domain = adguard.utils.url.toPunyCode(adguard.utils.url.getDomainName(url));
         if (domain) {
             openTab("https://adguard.com/site.html?domain=" + encodeURIComponent(domain) + "&utm_source=extension&aid=16593");
         }
@@ -323,21 +392,20 @@ adguard.ui = (function () { // jshint ignore:line
     };
 
     var openExtensionStore = function () {
-        var url = Utils.getExtensionStoreLink();
-        openTab(url);
+        openTab(extensionStoreLink);
     };
 
     var openFiltersDownloadPage = function () {
-        openTab(getPageUrl('filter-download.html'), {inBackground: Utils.isYaBrowser()});
+        openTab(getPageUrl('filter-download.html'), {inBackground: adguard.utils.browser.isYaBrowser()});
     };
 
     var whiteListTab = function (tab) {
 
-        var tabInfo = framesMap.getFrameInfo(tab);
+        var tabInfo = adguard.frames.getFrameInfo(tab);
         adguard.whitelist.whiteListUrl(tabInfo.url);
 
-        if (framesMap.isTabAdguardDetected(tab)) {
-            var domain = UrlUtils.getHost(tab.url);
+        if (adguard.frames.isTabAdguardDetected(tab)) {
+            var domain = adguard.utils.url.getHost(tab.url);
             adguard.integration.addRuleToApp("@@//" + domain + "^$document", function () {
                 adguard.tabs.sendMessage(tab.tabId, {type: 'no-cache-reload'});
                 adguard.browserAction.close();
@@ -349,11 +417,11 @@ adguard.ui = (function () { // jshint ignore:line
 
     var unWhiteListTab = function (tab) {
 
-        var tabInfo = framesMap.getFrameInfo(tab);
+        var tabInfo = adguard.frames.getFrameInfo(tab);
         antiBannerService.unWhiteListFrame(tabInfo);
 
-        if (framesMap.isTabAdguardDetected(tab)) {
-            var rule = framesMap.getTabAdguardUserWhiteListRule(tab);
+        if (adguard.frames.isTabAdguardDetected(tab)) {
+            var rule = adguard.frames.getTabAdguardUserWhiteListRule(tab);
             if (rule) {
                 adguard.integration.removeRuleFromApp(rule.ruleText, function () {
                     adguard.tabs.sendMessage(tab.tabId, {type: 'no-cache-reload'});
@@ -374,9 +442,9 @@ adguard.ui = (function () { // jshint ignore:line
 
     var checkAntiBannerFiltersUpdate = function () {
         antiBannerService.checkAntiBannerFiltersUpdate(true, function (updatedFilters) {
-            EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTERS_SHOW_POPUP, true, updatedFilters);
+            adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTERS_SHOW_POPUP, true, updatedFilters);
         }, function () {
-            EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_FILTERS_SHOW_POPUP, false);
+            adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTERS_SHOW_POPUP, false);
         });
     };
 
@@ -411,13 +479,13 @@ adguard.ui = (function () { // jshint ignore:line
             }
         }
 
-        url = StringUtils.contains(url, "://") ? url : adguard.getURL(url);
+        url = adguard.utils.strings.contains(url, "://") ? url : adguard.getURL(url);
         adguard.tabs.getAll(function (tabs) {
             //try to find between opened tabs
             if (activateSameTab) {
                 for (var i = 0; i < tabs.length; i++) {
                     var tab = tabs[i];
-                    if (UrlUtils.urlEquals(tab.url, url)) {
+                    if (adguard.utils.url.urlEquals(tab.url, url)) {
                         onTabFound(tab);
                         return;
                     }
@@ -434,28 +502,28 @@ adguard.ui = (function () { // jshint ignore:line
     };
 
     //update icon on event received
-    EventNotifier.addListener(function (event, tab, reset) {
+    adguard.listeners.addListener(function (event, tab, reset) {
 
-        if (event !== EventNotifierTypes.UPDATE_TAB_BUTTON_STATE || !tab) {
+        if (event !== adguard.listeners.UPDATE_TAB_BUTTON_STATE || !tab) {
             return;
         }
 
         var options;
         if (reset) {
-            options = {icon: Prefs.ICONS.ICON_GRAY, badge: ''};
+            options = {icon: adguard.prefs.ICONS.ICON_GRAY, badge: ''};
         }
 
         updateTabIcon(tab, options);
     });
 
     // Update icon on ads blocked
-    EventNotifier.addListener(function (event, rule, tab, blocked) {
+    adguard.listeners.addListener(function (event, rule, tab, blocked) {
 
-        if (event !== EventNotifierTypes.ADS_BLOCKED || !tab) {
+        if (event !== adguard.listeners.ADS_BLOCKED || !tab) {
             return;
         }
 
-        var tabBlocked = framesMap.updateBlockedAdsCount(tab, blocked);
+        var tabBlocked = adguard.frames.updateBlockedAdsCount(tab, blocked);
         if (tabBlocked === null) {
             return;
         }
@@ -481,24 +549,24 @@ adguard.ui = (function () { // jshint ignore:line
     });
 
     //on filter auto-enabled event
-    EventNotifier.addListener(function (event, enabledFilters) {
-        if (event === EventNotifierTypes.ENABLE_FILTER_SHOW_POPUP) {
-            var result = Utils.getFiltersEnabledResultMessage(enabledFilters);
+    adguard.listeners.addListener(function (event, enabledFilters) {
+        if (event === adguard.listeners.ENABLE_FILTER_SHOW_POPUP) {
+            var result = getFiltersEnabledResultMessage(enabledFilters);
             showAlertMessagePopup(result.title, result.text);
         }
     });
 
     //on filters updated event
-    EventNotifier.addListener(function (event, success, updatedFilters) {
-        if (event === EventNotifierTypes.UPDATE_FILTERS_SHOW_POPUP) {
-            var result = Utils.getFiltersUpdateResultMessage(success, updatedFilters);
+    adguard.listeners.addListener(function (event, success, updatedFilters) {
+        if (event === adguard.listeners.UPDATE_FILTERS_SHOW_POPUP) {
+            var result = getFiltersUpdateResultMessage(success, updatedFilters);
             showAlertMessagePopup(result.title, result.text);
         }
     });
 
 
     //close all page on unload
-    unload.when(closeAllPages);
+    adguard.unload.when(closeAllPages);
 
     return {
         openExportRulesTab: openExportRulesTab,
@@ -520,4 +588,4 @@ adguard.ui = (function () { // jshint ignore:line
         openTab: openTab
     };
 
-})();
+})(adguard);

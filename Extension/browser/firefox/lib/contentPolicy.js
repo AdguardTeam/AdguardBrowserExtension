@@ -78,7 +78,7 @@ var WebRequestHelper = {
             case t.TYPE_WEBSOCKET:
                 return RequestTypes.WEBSOCKET;
             default:
-                return Utils.parseContentTypeFromUrlPath(URI.path) || RequestTypes.OTHER;
+                return adguard.utils.browser.parseContentTypeFromUrlPath(URI.path) || RequestTypes.OTHER;
         }
     },
 
@@ -364,7 +364,7 @@ var WebRequestImpl = {
         Services.obs.addObserver(this, "http-on-examine-merged-response", true);
         Services.obs.addObserver(this, "http-on-opening-request", true);
 
-        unload.when(function () {
+        adguard.unload.when(function () {
             this.unregister();
         }.bind(this));
     },
@@ -422,7 +422,7 @@ var WebRequestImpl = {
             //In case of websocket requests tab could be empty
             tabUrl = requestOrigin.asciiSpec;
         } else {
-            tabUrl = this.framesMap.getFrameUrl(tab, 0);
+            tabUrl = adguard.frames.getFrameUrl(tab, 0);
         }
 
         var requestUrl = contentLocation.asciiSpec;
@@ -468,7 +468,7 @@ var WebRequestImpl = {
 
             var tab = {tabId: tabId};
             var requestUrl = newChannel.URI.asciiSpec;
-            var tabUrl = this.framesMap.getFrameUrl(tab, 0);
+            var tabUrl = adguard.frames.getFrameUrl(tab, 0);
             var shouldBlockResult = this._shouldBlockRequest(tab, requestUrl, tabUrl, requestProperties.requestType, null);
 
             Log.debug('asyncOnChannelRedirect: {0} {1}. Blocked={2}', requestUrl, requestProperties.requestType, shouldBlockResult.blocked);
@@ -545,11 +545,11 @@ var WebRequestImpl = {
         // We record frame data here because shouldLoad is not always called (shouldLoad issue)
         if (isMainFrame) {
             //record frame
-            framesMap.recordFrame(tab, 0, requestUrl, requestType);
+            adguard.frames.recordFrame(tab, 0, requestUrl, requestType);
         }
 
         // Retrieve referrer URL
-        var referrerUrl = framesMap.getFrameUrl(tab, 0);
+        var referrerUrl = adguard.frames.getFrameUrl(tab, 0);
 
         if (!!requestProperties) {
             // Calling postProcessRequest only for requests which were previously processed by "shouldLoad"
@@ -560,12 +560,12 @@ var WebRequestImpl = {
 
         if (isMainFrame) {
             //update tab button state
-            EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_TAB_BUTTON_STATE, tab, false);
+            adguard.listeners.notifyListeners(adguard.listeners.UPDATE_TAB_BUTTON_STATE, tab, false);
             //save ref header
             var headers = WebRequestHelper.getRequestHeaders(subject);
-            var refHeader = Utils.findHeaderByName(headers, 'Referer');
+            var refHeader = adguard.utils.browser.findHeaderByName(headers, 'Referer');
             if (refHeader) {
-                framesMap.recordFrameReferrerHeader(tab, refHeader.value);
+                adguard.frames.recordFrameReferrerHeader(tab, refHeader.value);
             }
         }
 
@@ -632,7 +632,7 @@ var WebRequestImpl = {
         var tab = {tabId: tabId};
         if (adguard.integration.shouldOverrideReferrer(tab)) {
             // Retrieve main frame url
-            var frameUrl = framesMap.getFrameUrl(tab, 0);
+            var frameUrl = adguard.frames.getFrameUrl(tab, 0);
             subject.setRequestHeader('Referer', frameUrl, false);
         }
     },
@@ -659,7 +659,7 @@ var WebRequestImpl = {
             return result;
         }
 
-        if (!UrlUtils.isHttpOrWsRequest(requestUrl)) {
+        if (!adguard.utils.url.isHttpOrWsRequest(requestUrl)) {
             return result;
         }
 
@@ -719,11 +719,11 @@ var WebRequestImpl = {
      */
     _checkPopupRule: function (requestUrl, sourceTab) {
 
-        if (!UrlUtils.isHttpRequest(requestUrl)) {
+        if (!adguard.utils.url.isHttpRequest(requestUrl)) {
             return false;
         }
 
-        var tabUrl = framesMap.getFrameUrl(sourceTab, 0);
+        var tabUrl = adguard.frames.getFrameUrl(sourceTab, 0);
 
         var requestRule = adguard.webRequestService.getRuleForRequest(sourceTab, requestUrl, tabUrl, RequestTypes.POPUP);
         var requestBlocked = adguard.webRequestService.isRequestBlockedByRule(requestRule);
@@ -759,9 +759,9 @@ var WebRequestImpl = {
     _filterSafebrowsing: function (requestUrl, tab) {
 
         //TODO: check for not http
-        if (framesMap.isTabAdguardDetected(tab) ||
-            framesMap.isTabProtectionDisabled(tab) ||
-            framesMap.isTabWhiteListedForSafebrowsing(tab)) {
+        if (adguard.frames.isTabAdguardDetected(tab) ||
+            adguard.frames.isTabProtectionDisabled(tab) ||
+            adguard.frames.isTabWhiteListedForSafebrowsing(tab)) {
             return;
         }
 
@@ -770,8 +770,8 @@ var WebRequestImpl = {
             return;
         }
 
-        var referrerUrl = Utils.getSafebrowsingBackUrl(tab);
-        var incognitoTab = framesMap.isIncognitoTab(tab);
+        var referrerUrl = adguard.utils.browser.getSafebrowsingBackUrl(tab);
+        var incognitoTab = adguard.frames.isIncognitoTab(tab);
 
         antiBannerService.checkSafebrowsingFilter(requestUrl, referrerUrl, function (safebrowsingUrl) {
             adguard.tabs.reload(tab.tabId, safebrowsingUrl);
@@ -787,7 +787,7 @@ var WebRequestImpl = {
      */
     _collapseElement: function (node, requestType) {
         if (node && node.ownerDocument && RequestTypes.isVisual(requestType)) {
-            //ElemHide.collapseNode(node);
+            //adguard.ElemHide.collapseNode(node);
         }
     },
 

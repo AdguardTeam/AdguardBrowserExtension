@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Cu, Services, i18n */
+/* global Cu, Services */
 
 /**
  * Object that manages mobile menu rendering.
@@ -40,7 +40,7 @@ var MobileMenu = {
 
         Services.obs.addObserver(this, 'after-viewport-change', true);
 
-        unload.when(function () {
+        adguard.unload.when(function () {
             this.unregister();
         }.bind(this));
     },
@@ -65,7 +65,7 @@ var MobileMenu = {
         var toggleWhiteListItem = this.createSubMenu(window, menuId, function () {
 
             adguard.tabs.getActive(function (tab) {
-                var tabInfo = framesMap.getFrameInfo(tab);
+                var tabInfo = adguard.frames.getFrameInfo(tab);
                 if (tabInfo.userWhiteListed) {
                     adguard.ui.unWhiteListTab(tab);
                 } else {
@@ -81,7 +81,7 @@ var MobileMenu = {
         var toggleFilteringEnabledItem = this.createSubMenu(window, menuId, function () {
 
             adguard.tabs.getActive(function (tab) {
-                var tabInfo = framesMap.getFrameInfo(tab);
+                var tabInfo = adguard.frames.getFrameInfo(tab);
                 adguard.ui.changeApplicationFilteringDisabled(!tabInfo.applicationFilteringDisabled);
 
                 adguard.windowsImpl.getLastFocused(function (winId, domWin) {
@@ -142,7 +142,7 @@ var MobileMenu = {
 
     handleNativeMenuState: function () {
         adguard.tabs.getActive(function (tab) {
-            var tabInfo = framesMap.getFrameInfo(tab);
+            var tabInfo = adguard.frames.getFrameInfo(tab);
             try {
                 adguard.windowsImpl.getLastFocused(function (winId, domWin) {
 

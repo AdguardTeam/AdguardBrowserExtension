@@ -15,9 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Services, Ci, XPCOMUtils, Map, adguard, EventChannels, ConcurrentUtils, unload */
+/* global Services, Ci, XPCOMUtils, Map, adguard */
 
-(function () {
+(function (adguard) {
 
     'use strict';
 
@@ -264,14 +264,14 @@
         return tabbrowser.tabs[index];
     }
 
-    adguard.windowsImpl = (function () {
+    adguard.windowsImpl = (function (adguard) {
 
         var windowsIdMap = new Map();
         var nextWindowId = 1;
 
-        var onCreatedChannel = EventChannels.newChannel();
-        var onRemovedChannel = EventChannels.newChannel();
-        var onUpdatedChannel = EventChannels.newChannel();
+        var onCreatedChannel = adguard.utils.channels.newChannel();
+        var onRemovedChannel = adguard.utils.channels.newChannel();
+        var onUpdatedChannel = adguard.utils.channels.newChannel();
 
         function toWindowFromChromeWindow(windowId, win) {
             return {
@@ -309,7 +309,7 @@
                 onCreatedChannel.notify(toWindowFromChromeWindow(windowId, domWin), domWin);
 
                 // TabBrowserReady event
-                ConcurrentUtils.retryUntil(
+                adguard.utils.concurrent.retryUntil(
                     isTabBrowserInitialized.bind(null, domWin),
                     function () {
                         onUpdatedChannel.notify(toWindowFromChromeWindow(windowId, domWin), domWin, 'TabBrowserReady');
@@ -427,7 +427,7 @@
             Services.ww.registerNotification(windowEventsListeners);
             Services.obs.addObserver(windowEventsListeners, 'chrome-document-global-created', true);
 
-            unload.when(function () {
+            adguard.unload.when(function () {
                 Services.wm.removeListener(windowEventsListeners);
                 Services.ww.unregisterNotification(windowEventsListeners);
                 Services.obs.removeObserver(windowEventsListeners, 'chrome-document-global-created');
@@ -480,16 +480,16 @@
             getWindows: getWindows,
             getOwnerWindow: getOwnerWindow
         };
-    })();
+    })(adguard);
 
-    adguard.tabsImpl = (function () {
+    adguard.tabsImpl = (function (adguard) {
 
         var tabsLookup = Object.create(null);
 
-        var onCreatedChannel = EventChannels.newChannel();
-        var onRemovedChannel = EventChannels.newChannel();
-        var onActivatedChannel = EventChannels.newChannel();
-        var onUpdatedChannel = EventChannels.newChannel();
+        var onCreatedChannel = adguard.utils.channels.newChannel();
+        var onRemovedChannel = adguard.utils.channels.newChannel();
+        var onActivatedChannel = adguard.utils.channels.newChannel();
+        var onUpdatedChannel = adguard.utils.channels.newChannel();
 
         function addTab(xulTab) {
 
@@ -586,7 +586,7 @@
             detachFromTabBrowser(domWin);
         });
 
-        unload.when(function () {
+        adguard.unload.when(function () {
             adguard.windowsImpl.forEachNative(detachFromTabBrowser);
         });
 
@@ -819,6 +819,6 @@
             browsers: getAllBrowsers
         };
 
-    })();
+    })(adguard);
 
-})();
+})(adguard);

@@ -15,9 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Prefs, Utils, Log, StringUtils, CollectionUtils, AdguardFilterVersion */
+/* global Log, AdguardFilterVersion */
 
-adguard.backend = (function () {
+adguard.backend = (function (adguard) {
 
     'use strict';
 
@@ -27,69 +27,112 @@ adguard.backend = (function () {
      * http://adguard.com/en/privacy.html#browsers
      */
 
-    var APP_PARAM = '&app=ag&v=' + Prefs.version;
+    /**
+     * Settings
+     */
+    var settings = {
 
-    // Base url of our backend server
-    var filtersUrl = (function () {
-        if (Prefs.platform === 'firefox') {
-            return 'https://filters.adtidy.org/extension/firefox';
-        } else if (Prefs.platform === 'webkit') {
-            return 'https://filters.adtidy.org/extension/safari';
-        } else {
-            return 'https://filters.adtidy.org/extension/chromium';
+        // Base url of our backend server
+        get backendUrl() {
+            return "https://chrome.adtidy.org";
+        },
+
+        get apiKey() {
+            return "4DDBE80A3DA94D819A00523252FB6380";
+        },
+
+        // Url for load filters metadata and rules
+        get filtersUrl() {
+            return adguard.lazyGet(this, 'filtersUrl', function () {
+                if (adguard.utils.browser.isFirefoxBrowser()) {
+                    return 'https://filters.adtidy.org/extension/firefox';
+                } else if (adguard.utils.browser.isSafariBrowser()) {
+                    return 'https://filters.adtidy.org/extension/safari';
+                } else {
+                    return 'https://filters.adtidy.org/extension/chromium';
+                }
+            });
+        },
+
+        // URL for downloading AG filters
+        get getFilterRulesUrl() {
+            return this.filtersUrl + "/filters/{filter_id}.txt";
+        },
+
+        // URL for downloading optimized AG filters
+        get getOptimizedFilterRulesUrl() {
+            return this.filtersUrl + "/filters/{filter_id}_optimized.txt";
+        },
+
+        // URL for checking filter updates
+        get filtersMetadataUrl() {
+            return this.filtersUrl + "/filters.json";
+        },
+
+        // URL for user complaints on missed ads or malware/phishing websites
+        get reportUrl() {
+            return this.backendUrl + "/url-report.html";
+        },
+
+        // URL for detecting user's country code (to auto-enable proper language-specific filter)
+        get getCountryUrl() {
+            return this.backendUrl + "/getcountry.html?";
+        },
+
+        // URL for tracking Adguard installation
+        get trackInstallUrl() {
+            return this.backendUrl + "/install.html?";
+        },
+
+        /**
+         * URL for collecting filter rules statistics.
+         * We do not collect it by default, unless user is willing to help.
+         *
+         * Filter rules stats are covered in our privacy policy and on also here:
+         * http://adguard.com/en/filter-rules-statistics.html
+         */
+        get ruleStatsUrl() {
+            return this.backendUrl + "/rulestats.html";
+        },
+
+        /**
+         * Browsing Security lookups. In case of Firefox lookups are disabled for HTTPS urls.
+         */
+        get safebrowsingLookupUrl() {
+            return "https://sb.adtidy.org/safebrowsing-lookup-hash.html";
+        },
+
+        /**
+         * URL for collecting Browsing Security stats.
+         * We do not collect it by default, unless user is willing to help.
+         * For now - blocked urls are reported only.
+         */
+        get safebrowsingStatsUrl() {
+            return "https://sb.adtidy.org/sb-report.html";
+        },
+
+        // This url is used in integration mode. Adguard for Windows/Mac/Android intercepts requests to injections.adguard.com host.
+        // It is not used for remote requests, requests are intercepted by the desktop version of Adguard.
+        get injectionsUrl() {
+            return "http://injections.adguard.com";
+        },
+
+        // URLs used when add-on works in integration mode.
+        // @deprecated
+        get adguardAppUrlOld() {
+            return this.injectionsUrl + "/adguard-ajax-crossdomain-hack/api?";
+        },
+        get adguardAppUrl() {
+            return this.injectionsUrl + "/adguard-ajax-api/api?";
+        },
+
+        /**
+         * Appends to some requests for analytics
+         */
+        get appInfoParam() {
+            return '&app=ag&v=' + adguard.app.getVersion();
         }
-    })();
-
-    var backendUrl = "https://chrome.adtidy.org";
-    var apiKey = "4DDBE80A3DA94D819A00523252FB6380";
-
-    // URL for downloading AG filters
-    var getFilterRulesUrl = filtersUrl + "/filters/{filter_id}.txt";
-
-    // URL for downloading optimized AG filters
-    var getOptimizedFilterRulesUrl = filtersUrl + "/filters/{filter_id}_optimized.txt";
-
-    // URL for checking filter updates
-    var filtersMetadataUrl = filtersUrl + "/filters.json";
-
-    // URL for user complaints on missed ads or malware/phishing websites
-    var reportUrl = backendUrl + "/url-report.html";
-
-    // URL for detecting user's country code (to auto-enable proper language-specific filter)
-    var getCountryUrl = backendUrl + "/getcountry.html?";
-
-    // URL for tracking Adguard installation
-    var trackInstallUrl = backendUrl + "/install.html?";
-
-    /**
-     * URL for collecting filter rules statistics.
-     * We do not collect it by default, unless user is willing to help.
-     *
-     * Filter rules stats are covered in our privacy policy and on also here:
-     * http://adguard.com/en/filter-rules-statistics.html
-     */
-    var ruleStatsUrl = backendUrl + "/rulestats.html";
-
-    /**
-     * Browsing Security lookups. In case of Firefox lookups are disabled for HTTPS urls.
-     */
-    var safebrowsingLookupUrl = "https://sb.adtidy.org/safebrowsing-lookup-hash.html";
-
-    /**
-     * URL for collecting Browsing Security stats.
-     * We do not collect it by default, unless user is willing to help.
-     * For now - blocked urls are reported only.
-     */
-    var safebrowsingStatsUrl = "https://sb.adtidy.org/sb-report.html";
-
-    // This url is used in integration mode. Adguard for Windows/Mac/Android intercepts requests to injections.adguard.com host.
-    // It is not used for remote requests, requests are intercepted by the desktop version of Adguard.
-    var injectionsUrl = "http://injections.adguard.com";
-
-    // URLs used when add-on works in integration mode.
-    // @deprecated
-    var adguardAppUrlOld = injectionsUrl + "/adguard-ajax-crossdomain-hack/api?";
-    var adguardAppUrl = injectionsUrl + "/adguard-ajax-api/api?";
+    };
 
     /**
      * Loading subscriptions map
@@ -103,9 +146,9 @@ adguard.backend = (function () {
      */
     function trackInfo(trackUrl, isAllowedAcceptableAds) {
         try {
-            var clientId = encodeURIComponent(Utils.getClientId());
-            var locale = encodeURIComponent(Prefs.locale);
-            var version = encodeURIComponent(Prefs.version);
+            var clientId = encodeURIComponent(adguard.utils.browser.getClientId());
+            var locale = encodeURIComponent(adguard.app.getLocale());
+            var version = encodeURIComponent(adguard.app.getVersion());
             var whiteListEnabled = encodeURIComponent(isAllowedAcceptableAds);
 
             var params = [];
@@ -260,15 +303,15 @@ adguard.backend = (function () {
      * @private
      */
     function getUrlForDownloadFilterRules(filterId, useOptimizedFilters) {
-        var url = useOptimizedFilters ? getOptimizedFilterRulesUrl : getFilterRulesUrl;
-        return StringUtils.replaceAll(url, '{filter_id}', filterId);
+        var url = useOptimizedFilters ? settings.getOptimizedFilterRulesUrl : settings.getFilterRulesUrl;
+        return adguard.utils.strings.replaceAll(url, '{filter_id}', filterId);
     }
 
     /**
      * Appends request key to url
      */
     function addKeyParameter(url) {
-        return url + "&key=" + apiKey;
+        return url + "&key=" + settings.apiKey;
     }
 
     /**
@@ -308,7 +351,7 @@ adguard.backend = (function () {
                 }
                 var filterVersions = [];
                 for (var i = 0; i < filterIds.length; i++) {
-                    var filter = CollectionUtils.find(metadata.filters, 'filterId', filterIds[i]);
+                    var filter = adguard.utils.collections.find(metadata.filters, 'filterId', filterIds[i]);
                     if (filter) {
                         filterVersions.push(AdguardFilterVersion.fromJSON(filter));
                     }
@@ -319,7 +362,7 @@ adguard.backend = (function () {
             }
         };
 
-        var url = filtersMetadataUrl + '?' + APP_PARAM;
+        var url = settings.filtersMetadataUrl + '?' + settings.appInfoParam;
         url = addKeyParameter(url);
         executeRequestAsync(url, "application/json", success, errorCallback);
     };
@@ -334,7 +377,7 @@ adguard.backend = (function () {
      */
     var loadRemoteFilterRules = function (filterId, useOptimizedFilters, successCallback, errorCallback) {
 
-        var url = getUrlForDownloadFilterRules(filterId, useOptimizedFilters) + '?' + APP_PARAM;
+        var url = getUrlForDownloadFilterRules(filterId, useOptimizedFilters) + '?' + settings.appInfoParam;
         url = addKeyParameter(url);
 
         doLoadFilterRules(filterId, url, successCallback, errorCallback);
@@ -350,9 +393,9 @@ adguard.backend = (function () {
      */
     var loadLocalFilterRules = function (filterId, useOptimizedFilters, successCallback, errorCallback) {
 
-        var url = Prefs.getLocalFilterPath(filterId);
+        var url = adguard.getURL("filters/filter_" + filterId + ".txt");
         if (useOptimizedFilters) {
-            url = Prefs.getLocalMobileFilterPath(filterId);
+            url = adguard.getURL("filters/filter_mobile_" + filterId + ".txt");
         }
 
         doLoadFilterRules(filterId, url, successCallback, errorCallback);
@@ -425,7 +468,7 @@ adguard.backend = (function () {
             }
         };
 
-        var url = Prefs.localFiltersMetadataPath;
+        var url = adguard.getURL('filters/filters.json');
         executeRequestAsync(url, 'application/json', success, errorCallback);
     };
 
@@ -450,7 +493,7 @@ adguard.backend = (function () {
             }
         };
 
-        var url = Prefs.localFiltersMetadataI18nPath;
+        var url = adguard.getURL('filters/filters_i18n.json');
         executeRequestAsync(url, 'application/json', success, errorCallback);
     };
 
@@ -462,7 +505,7 @@ adguard.backend = (function () {
      * @param errorCallback         Called on error
      */
     var lookupSafebrowsing = function (hashes, successCallback, errorCallback) {
-        var url = safebrowsingLookupUrl + "?prefixes=" + encodeURIComponent(hashes.join('/'));
+        var url = settings.safebrowsingLookupUrl + "?prefixes=" + encodeURIComponent(hashes.join('/'));
         executeRequestAsync(url, "application/json", successCallback, errorCallback);
     };
 
@@ -472,8 +515,8 @@ adguard.backend = (function () {
      * @param url - filtered url by safebrowsing
      */
     var trackSafebrowsingStats = function (url) {
-        var trackUrl = safebrowsingStatsUrl + "?url=" + encodeURIComponent(url);
-        trackUrl += "&locale=" + Prefs.locale;
+        var trackUrl = settings.safebrowsingStatsUrl + "?url=" + encodeURIComponent(url);
+        trackUrl += "&locale=" + adguard.app.getLocale();
         trackUrl += "&referrer=";
         trackUrl += "&r=" + Math.random();
         executeRequestAsync(trackUrl, "text/plain");
@@ -496,7 +539,7 @@ adguard.backend = (function () {
         params = addKeyParameter(params);
 
         var request = new XMLHttpRequest();
-        request.open('POST', reportUrl);
+        request.open('POST', settings.reportUrl);
         request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         request.send(params);
     };
@@ -507,7 +550,7 @@ adguard.backend = (function () {
      * @param successCallback   Called on success
      */
     var getCountry = function (successCallback) {
-        var url = addKeyParameter(getCountryUrl);
+        var url = addKeyParameter(settings.getCountryUrl);
         executeRequestAsync(url, "text/plain", function (response) {
             successCallback(response.responseText);
         }, function () {
@@ -521,7 +564,7 @@ adguard.backend = (function () {
      * @param isAllowedAcceptableAds true if "show useful ads" is enabled
      */
     var trackInstall = function (isAllowedAcceptableAds) {
-        trackInfo(trackInstallUrl, isAllowedAcceptableAds);
+        trackInfo(settings.trackInstallUrl, isAllowedAcceptableAds);
     };
 
     /**
@@ -532,7 +575,7 @@ adguard.backend = (function () {
      * @param errorCallback     Called on error
      */
     var adguardAppAddRule = function (ruleText, successCallback, errorCallback) {
-        executeRequestAsync(adguardAppUrl + "type=add&rule=" + encodeURIComponent(ruleText), "text/plain", successCallback, errorCallback);
+        executeRequestAsync(settings.adguardAppUrl + "type=add&rule=" + encodeURIComponent(ruleText), "text/plain", successCallback, errorCallback);
     };
 
     /**
@@ -543,7 +586,7 @@ adguard.backend = (function () {
      * @param errorCallback
      */
     var adguardAppRemoveRule = function (ruleText, successCallback, errorCallback) {
-        executeRequestAsync(adguardAppUrl + "type=remove&rule=" + encodeURIComponent(ruleText), "text/plain", successCallback, errorCallback);
+        executeRequestAsync(settings.adguardAppUrl + "type=remove&rule=" + encodeURIComponent(ruleText), "text/plain", successCallback, errorCallback);
     };
 
     /**
@@ -555,7 +598,7 @@ adguard.backend = (function () {
      * @deprecated
      */
     var adguardAppAddRuleOld = function (ruleText, successCallback, errorCallback) {
-        executeRequestAsync(adguardAppUrlOld + "type=add&rule=" + encodeURIComponent(ruleText), "text/plain", successCallback, errorCallback);
+        executeRequestAsync(settings.adguardAppUrlOld + "type=add&rule=" + encodeURIComponent(ruleText), "text/plain", successCallback, errorCallback);
     };
 
     /**
@@ -570,8 +613,8 @@ adguard.backend = (function () {
     var sendHitStats = function (stats, enabledFilters) {
 
         var params = "stats=" + encodeURIComponent(stats);
-        params += "&v=" + encodeURIComponent(Prefs.version);
-        params += "&b=" + encodeURIComponent(Prefs.getBrowser());
+        params += "&v=" + encodeURIComponent(adguard.app.getVersion());
+        params += "&b=" + encodeURIComponent(adguard.prefs.browser);
         if (enabledFilters) {
             for (var i = 0; i < enabledFilters.length; i++) {
                 var filter = enabledFilters[i];
@@ -581,7 +624,7 @@ adguard.backend = (function () {
         params = addKeyParameter(params);
 
         var request = new XMLHttpRequest();
-        request.open('POST', ruleStatsUrl);
+        request.open('POST', settings.ruleStatsUrl);
         request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         request.send(params);
     };
@@ -596,8 +639,8 @@ adguard.backend = (function () {
 
     return {
 
-        adguardAppUrl: adguardAppUrl,
-        injectionsUrl: injectionsUrl,
+        adguardAppUrl: settings.adguardAppUrl,
+        injectionsUrl: settings.injectionsUrl,
 
         checkFilterVersions: checkFilterVersions,
         loadRemoteFilterRules: loadRemoteFilterRules,
@@ -623,4 +666,4 @@ adguard.backend = (function () {
         isAdguardAppRequest: isAdguardAppRequest
     };
 
-})();
+})(adguard);

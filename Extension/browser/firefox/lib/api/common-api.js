@@ -15,9 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Components, EventChannels, unload */
+/* global Components*/
 
-(function (global) {
+(function (global, adguard) {
 
     'use strict';
 
@@ -36,7 +36,7 @@
     // Load custom module
     var I18nUtils = global.I18nUtils = Cu.import('chrome://adguard/content/lib/utilsModule.js', {}).I18nUtils;
     // Don't forget unload! https://developer.mozilla.org/en-US/docs/Extensions/Common_causes_of_memory_leaks_in_extensions
-    unload.when(function () {
+    adguard.unload.when(function () {
         Cu.unload('chrome://adguard/content/lib/utilsModule.js');
     });
 
@@ -59,8 +59,6 @@
 
     var id = options.id;
     var version = options.version;
-
-    var adguard = global.adguard = {};
 
     adguard.getURL = function (path) {
         return 'chrome://adguard/content/' + path.replace(/^\.\//, '');
@@ -136,7 +134,7 @@
 
     })();
 
-    global.SimplePrefs = (function () {
+    adguard.SimplePrefs = (function () {
 
         var branch = Services.prefs.getBranch('extensions.' + id + '.sdk.');
 
@@ -197,36 +195,22 @@
         var myObserver = {
             observe: function (subject, topic, data) {
                 if (topic === 'nsPref:changed') {
-                    var channel = EventChannels.getNamedChannel(data);
-                    if (channel) {
-                        channel.notify(data);
-                    }
+                    adguard.listeners.notifyListeners(adguard.listeners.CHANGE_PREFS, data);
                 }
             }
         };
 
-        var addListener = function (name, callback) {
-            branch.addObserver(name, myObserver, false);
-            var channel = EventChannels.newNamedChannel(name);
-            channel.addListener(callback);
-        };
-
-        var removeListener = function (name, callback) {
-            branch.removeObserver(name, myObserver);
-            var channel = EventChannels.getNamedChannel(name);
-            if (channel) {
-                channel.removeListener(callback);
-            }
-        };
+        branch.addObserver('', myObserver, false);
+        adguard.unload.when(function () {
+            branch.removeObserver('', myObserver);
+        });
 
         return {
             get: get,
             set: set,
             has: has,
             remove: remove,
-            clear: clear,
-            addListener: addListener,
-            removeListener: removeListener
+            clear: clear
         };
 
     })();
@@ -238,7 +222,7 @@
     })();
 
     global.addEventListener('unload', function () {
-        unload.fireUnload('Shutdown');
+        adguard.unload.fireUnload('Shutdown');
     });
 
-})(window);
+})(window, adguard);

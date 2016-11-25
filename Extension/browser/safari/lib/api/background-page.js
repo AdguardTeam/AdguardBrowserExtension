@@ -15,9 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global safari, SafariBrowserTab, RequestTypes, Utils */
+/* global safari, SafariBrowserTab, RequestTypes */
 
-(function () {
+(function (adguard) {
 
 	'use strict';
 
@@ -27,7 +27,7 @@
 		}
 	};
 
-	adguard.runtime = (function () {
+	adguard.runtime = (function (adguard) {
 
 		var onMessage = {
 
@@ -59,7 +59,7 @@
 			onMessage: onMessage
 		};
 
-	})();
+	})(adguard);
 
 	// Web Request Blocking implementation
 	function getRequestDetails(message, safariTab) {
@@ -172,7 +172,7 @@
 				break;
 			case "useContentBlockerAPI":
 				// checking useOldSafariAPI setting
-				event.message = Utils.isContentBlockerEnabled();
+				event.message = adguard.utils.browser.isContentBlockerEnabled();
 				return;
 		}
 		event.message = messageHandler.processMessage(event.message.data, event.target);
@@ -224,7 +224,7 @@
 
 
 	/* Browser actions */
-	adguard.browserAction = (function () {
+	adguard.browserAction = (function (adguard) {
 
 		function setBrowserAction(safariTab, name, value) {
 			var activeTab = safari.application.activeBrowserWindow.activeTab;
@@ -253,7 +253,7 @@
 			}
 		};
 
-	})();
+	})(adguard);
 
 	adguard.contextMenus = {
 		removeAll: function () {
@@ -264,4 +264,4 @@
 		}
 	};
 
-})(window);
+})(adguard);

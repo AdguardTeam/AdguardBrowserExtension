@@ -16,20 +16,9 @@
  */
 
 /**
- * Javascript language utils
- *
- * @type {{inherit: Function}}
+ * Global object for content scripts
+ * @type {{}}
  */
-var LanguageUtils = {
-    inherit: function (childClass, parentClass) {
-        var f = function () {
-        }; // defining temp empty function
-        f.prototype = parentClass.prototype;
-        f.prototype.constructor = f;
-
-        childClass.prototype = new f;
-
-        childClass.prototype.constructor = childClass; // restoring proper constructor for child class
-        parentClass.prototype.constructor = parentClass; // restoring proper constructor for parent class
-    }
-};
+var adguardContent = (function () { // jshint ignore:line
+    return {};
+})();

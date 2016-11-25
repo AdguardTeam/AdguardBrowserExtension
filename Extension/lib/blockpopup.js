@@ -15,9 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global framesMap, UrlUtils, RequestTypes */
+/* global RequestTypes */
 
-(function () {
+(function (adguard) {
 
 	'use strict';
 
@@ -26,7 +26,7 @@
 	function checkPopupBlockedRule(tabId, requestUrl, referrerUrl, sourceTab) {
 
 		//is not http request or url of tab isn't ready
-		if (!UrlUtils.isHttpRequest(requestUrl)) {
+		if (!adguard.utils.url.isHttpRequest(requestUrl)) {
 			return;
 		}
 
@@ -47,12 +47,12 @@
 		var sourceTab = {tabId: details.sourceTabId};
 
 		// Don't process this request
-		if (framesMap.isTabAdguardDetected(sourceTab)) {
+		if (adguard.frames.isTabAdguardDetected(sourceTab)) {
 			return;
 		}
 
-		var referrerUrl = framesMap.getFrameUrl(sourceTab, 0);
-		if (!UrlUtils.isHttpRequest(referrerUrl)) {
+		var referrerUrl = adguard.frames.getFrameUrl(sourceTab, 0);
+		if (!adguard.utils.url.isHttpRequest(referrerUrl)) {
 			return;
 		}
 
@@ -81,4 +81,4 @@
 		}
 	});
 
-})();
+})(adguard);

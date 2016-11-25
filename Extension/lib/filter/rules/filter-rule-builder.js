@@ -15,9 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global StringUtils, Log */
+/* global  Log */
 
-(function (api) {
+(function (adguard, api) {
 
     'use strict';
 
@@ -36,6 +36,9 @@
         }
         var rule = null;
         try {
+
+            var StringUtils = adguard.utils.strings;
+
             if (StringUtils.startWith(ruleText, api.FilterRule.COMMENT) ||
                 StringUtils.contains(ruleText, api.FilterRule.OLD_INJECT_RULES) ||
                 StringUtils.contains(ruleText, api.FilterRule.MASK_CONTENT_RULE) ||
@@ -66,4 +69,4 @@
         createRule: createRule
     };
 
-})(adguard.rules);
+})(adguard, adguard.rules);

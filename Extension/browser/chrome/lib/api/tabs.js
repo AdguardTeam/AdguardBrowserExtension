@@ -1,5 +1,3 @@
-/* global chrome Log, Prefs, EventChannels */
-
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -17,7 +15,13 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-adguard.windowsImpl = (function () {
+/* global chrome, Log */
+
+/**
+ * Chromium windows implementation
+ * @type {{onCreated, onRemoved, onUpdated, create, getLastFocused, forEachNative}}
+ */
+adguard.windowsImpl = (function (adguard) {
 
     'use strict';
 
@@ -30,9 +34,9 @@ adguard.windowsImpl = (function () {
         };
     }
 
-    var onCreatedChannel = EventChannels.newChannel();
-    var onRemovedChannel = EventChannels.newChannel();
-    var onUpdatedChannel = EventChannels.newChannel();
+    var onCreatedChannel = adguard.utils.channels.newChannel();
+    var onRemovedChannel = adguard.utils.channels.newChannel();
+    var onUpdatedChannel = adguard.utils.channels.newChannel();
 
     // https://developer.chrome.com/extensions/windows#event-onCreated
     browser.windows.onCreated.addListener(function (chromeWin) {
@@ -80,9 +84,13 @@ adguard.windowsImpl = (function () {
         forEachNative: forEachNative
     };
 
-})();
+})(adguard);
 
-adguard.tabsImpl = (function () {
+/**
+ * Chromium tabs implementation
+ * @type {{onCreated, onRemoved, onUpdated, onActivated, create, remove, activate, reload, sendMessage, getAll, getActive, fromChromeTab}}
+ */
+adguard.tabsImpl = (function (adguard) {
 
     'use strict';
 
@@ -116,25 +124,25 @@ adguard.tabsImpl = (function () {
     }
 
     // https://developer.chrome.com/extensions/tabs#event-onCreated
-    var onCreatedChannel = EventChannels.newChannel();
+    var onCreatedChannel = adguard.utils.channels.newChannel();
     browser.tabs.onCreated.addListener(function (chromeTab) {
         onCreatedChannel.notify(toTabFromChromeTab(chromeTab));
     });
 
     // https://developer.chrome.com/extensions/tabs#event-onCreated
-    var onRemovedChannel = EventChannels.newChannel();
+    var onRemovedChannel = adguard.utils.channels.newChannel();
     browser.tabs.onRemoved.addListener(function (tabId) {
         onRemovedChannel.notify(tabId);
     });
 
-    var onUpdatedChannel = EventChannels.newChannel();
+    var onUpdatedChannel = adguard.utils.channels.newChannel();
     // https://developer.chrome.com/extensions/tabs#event-onUpdated
     browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
         onUpdatedChannel.notify(toTabFromChromeTab(tab));
     });
 
     // https://developer.chrome.com/extensions/tabs#event-onActivated
-    var onActivatedChannel = EventChannels.newChannel();
+    var onActivatedChannel = adguard.utils.channels.newChannel();
     browser.tabs.onActivated.addListener(function (activeInfo) {
         onActivatedChannel.notify(activeInfo.tabId);
     });
@@ -235,7 +243,7 @@ adguard.tabsImpl = (function () {
 
     var reload = function (tabId, url) {
         if (url) {
-            if (Prefs.getBrowser() === "Edge") {
+            if (adguard.utils.browser.isEdgeBrowser()) {
                 /**
                  * For security reasons, in Firefox and Edge, this may not be a privileged URL.
                  * So passing any of the following URLs will fail, with runtime.lastError being set to an error message:
@@ -306,4 +314,4 @@ adguard.tabsImpl = (function () {
         fromChromeTab: toTabFromChromeTab
     };
 
-})();
+})(adguard);

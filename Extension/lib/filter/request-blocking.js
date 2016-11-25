@@ -15,10 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Prefs, framesMap, antiBannerService,
- RequestTypes, EventNotifier, EventNotifierTypes, FilterUtils, Utils */
+/* global antiBannerService, RequestTypes */
 
-adguard.webRequestService = (function () {
+adguard.webRequestService = (function (adguard) {
 
     /**
      * Prepares CSS and JS which should be injected to the page.
@@ -42,7 +41,7 @@ adguard.webRequestService = (function () {
             };
         }
 
-        if (framesMap.isTabAdguardDetected(tab) || framesMap.isTabProtectionDisabled(tab) || framesMap.isTabWhiteListed(tab)) {
+        if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab) || adguard.frames.isTabWhiteListed(tab)) {
             return result;
         }
 
@@ -53,10 +52,10 @@ adguard.webRequestService = (function () {
             },
             scripts: null,
             collapseAllElements: antiBannerService.shouldCollapseAllElements(),
-            useShadowDom: Utils.isShadowDomSupported()
+            useShadowDom: adguard.utils.browser.isShadowDomSupported()
         };
 
-        var whitelistRule = framesMap.getFrameWhiteListRule(tab);
+        var whitelistRule = adguard.frames.getFrameWhiteListRule(tab);
         var genericHideFlag = genericHide || (whitelistRule && whitelistRule.checkContentType("GENERICHIDE"));
         var elemHideFlag = whitelistRule && whitelistRule.checkContentType("ELEMHIDE");
         if (!elemHideFlag) {
@@ -158,12 +157,12 @@ adguard.webRequestService = (function () {
      */
     var getRuleForRequest = function (tab, requestUrl, referrerUrl, requestType) {
 
-        if (framesMap.isTabAdguardDetected(tab) || framesMap.isTabProtectionDisabled(tab)) {
+        if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab)) {
             //don't process request
             return null;
         }
 
-        var whitelistRule = framesMap.getFrameWhiteListRule(tab);
+        var whitelistRule = adguard.frames.getFrameWhiteListRule(tab);
         if (whitelistRule && whitelistRule.checkContentTypeIncluded("DOCUMENT")) {
             // Frame is whitelisted by $document rule
             // We do nothing more in this case - return the rule.
@@ -191,7 +190,7 @@ adguard.webRequestService = (function () {
         if (requestType == RequestTypes.DOCUMENT) {
             // Check headers to detect Adguard application
 
-            if (Prefs.getBrowser() != "Edge") {
+            if (!adguard.utils.browser.isEdgeBrowser()) {
                 // TODO[Edge]: Integration mode is not fully functional in Edge (cannot redefine Referer header yet)
                 adguard.integration.checkHeaders(tab, responseHeaders, requestUrl);
             }
@@ -202,16 +201,16 @@ adguard.webRequestService = (function () {
         var requestRule = null;
         var appendLogEvent = false;
 
-        if (framesMap.isTabAdguardDetected(tab)) {
+        if (adguard.frames.isTabAdguardDetected(tab)) {
             //parse rule applied to request from response headers
             requestRule = adguard.integration.parseAdguardRuleFromHeaders(responseHeaders);
             appendLogEvent = !adguard.backend.isAdguardAppRequest(requestUrl);
-        } else if (framesMap.isTabProtectionDisabled(tab)) { // jshint ignore:line
+        } else if (adguard.frames.isTabProtectionDisabled(tab)) { // jshint ignore:line
             //do nothing
         } else if (requestType == RequestTypes.DOCUMENT) {
-            requestRule = framesMap.getFrameWhiteListRule(tab);
-            var domain = framesMap.getFrameDomain(tab);
-            if (!framesMap.isIncognitoTab(tab)) {
+            requestRule = adguard.frames.getFrameWhiteListRule(tab);
+            var domain = adguard.frames.getFrameDomain(tab);
+            if (!adguard.frames.isIncognitoTab(tab)) {
                 //add page view to stats
                 adguard.hitStats.addDomainView(domain);
             }
@@ -235,33 +234,36 @@ adguard.webRequestService = (function () {
      */
     var postProcessRequest = function (tab, requestUrl, referrerUrl, requestType, requestRule) {
 
-        if (framesMap.isTabAdguardDetected(tab)) {
+        if (adguard.frames.isTabAdguardDetected(tab)) {
             //do nothing, log event will be added on response
             return;
         }
 
         if (isRequestBlockedByRule(requestRule)) {
-            EventNotifier.notifyListenersAsync(EventNotifierTypes.ADS_BLOCKED, requestRule, tab, 1);
+            adguard.listeners.notifyListenersAsync(adguard.listeners.ADS_BLOCKED, requestRule, tab, 1);
         }
 
         adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
 
-        if (requestRule && !FilterUtils.isUserFilterRule(requestRule) && !FilterUtils.isWhiteListFilterRule(requestRule) && !framesMap.isIncognitoTab(tab)) {
+        if (requestRule &&
+            !adguard.utils.filters.isUserFilterRule(requestRule) &&
+            !adguard.utils.filters.isWhiteListFilterRule(requestRule) &&
+            !adguard.frames.isIncognitoTab(tab)) {
 
-            var domain = framesMap.getFrameDomain(tab);
+            var domain = adguard.frames.getFrameDomain(tab);
             adguard.hitStats.addRuleHit(domain, requestRule.ruleText, requestRule.filterId, requestUrl);
         }
     };
 
     var shouldLoadAllSelectors = function (collapseAllElements) {
-        if ((Utils.isFirefoxBrowser() && adguard.settings.collectHitsCount()) || Prefs.useGlobalStyleSheet) {
+        if ((adguard.utils.browser.isFirefoxBrowser() && adguard.settings.collectHitsCount()) || adguard.prefs.useGlobalStyleSheet) {
             // We don't need all CSS selectors in case of FF using global stylesheet
             // as in this case we register browser wide stylesheet which will be
             // applied even if page was already loaded
             return false;
         }
 
-        var safariContentBlockerEnabled = Utils.isContentBlockerEnabled();
+        var safariContentBlockerEnabled = adguard.utils.browser.isContentBlockerEnabled();
         if (safariContentBlockerEnabled && collapseAllElements) {
             // For Safari 9+ we will load all selectors when browser is just started
             // as at that moment content blocker may not been initialized
@@ -283,4 +285,5 @@ adguard.webRequestService = (function () {
         processRequestResponse: processRequestResponse,
         postProcessRequest: postProcessRequest
     };
-})();
+
+})(adguard);

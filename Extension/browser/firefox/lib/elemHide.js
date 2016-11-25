@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global Ci, Services, Log, ConcurrentUtils, FS, Prefs, styleService, EventNotifier, EventNotifierTypes, framesMap, antiBannerService, FilterUtils */
+/* global Cc, Ci, Services, Log, antiBannerService */
 
 /**
  * This object manages CSS and JS rules.
@@ -23,228 +23,253 @@
  * 1. Registering browser-wide stylesheet
  * 2. Injecting CSS/JS with content-script/preload.js script
  */
-var ElemHide = {
+adguard.ElemHide = (function (adguard) {
 
-    collapsedClass: null,
-    collapseStyle: null,
+    var styleService = (function () {
 
-    /**
-     * Init ElemHide object
-     */
-    init: function () {
+        var styleSheetService = Cc['@mozilla.org/content/style-sheet-service;1'].getService(Ci.nsIStyleSheetService);
 
-        this._registerCollapsedStyle();
-        this._registerSelectorStyle();
+        function sheetRegistered(uri) {
+            return styleSheetService.sheetRegistered(uri, styleSheetService.USER_SHEET);
+        }
 
-        EventNotifier.addListener(function (event, settings) {
-            switch (event) {
-                case EventNotifierTypes.REQUEST_FILTER_UPDATED:
-                    if (!this._isGlobalStyleSheetEnabled()) {
-                        // Do nothing if global stylesheet is disabled
-                        return;
-                    }
-                    this._saveStyleSheetToDisk();
-                    break;
-                case EventNotifierTypes.CHANGE_PREFS:
-                    if (settings === 'use_global_style_sheet') {
-                        this.changeElemhideMethod(settings);
-                    }
-                    break;
+        var loadUserSheetByUri = function loadUserSheetByUri(uri) {
+            if (sheetRegistered(uri)) {
+                return;
             }
-        }.bind(this));
+            styleSheetService.loadAndRegisterSheet(uri, styleSheetService.USER_SHEET);
+            adguard.unload.when(unloadUserSheetByUri.bind(null, uri));
+        };
 
-        adguard.settings.onUpdated.addListener(function (setting) {
-            if (setting === adguard.settings.DISABLE_COLLECT_HITS) {
-                this.changeElemhideMethod();
+        /**
+         * Unregister our stylesheet by it's uri
+         * @param uri
+         */
+        var unloadUserSheetByUri = function unloadUserSheetByUri(uri) {
+            if (sheetRegistered(uri)) {
+                styleSheetService.unregisterSheet(uri, styleSheetService.USER_SHEET);
             }
-        }.bind(this));
+        };
 
-        if (this._isGlobalStyleSheetEnabled()) {
-            this._applyCssStyleSheet(FS.getInjectCssFileURI(), true);
-        }
-    },
+        return {
+            loadUserSheetByUri: loadUserSheetByUri,
+            unloadUserSheetByUri: unloadUserSheetByUri
+        };
 
-    /**
-     * Called if user settings or prefs have been changed.
-     * In this case we check "Send statistics for ad filters usage" option value or "use_global_style_sheet" preference.
-     * If this flag has been changed - switching CSS injection method.
-     */
-    changeElemhideMethod: function () {
-        if (this._isGlobalStyleSheetEnabled()) {
-            this._saveStyleSheetToDisk();
-        } else {
-            this._disableStyleSheet(FS.getInjectCssFileURI());
-        }
-    },
+    })();
 
-    /**
-     * Unregister our stylesheet by it's uri
-     *
-     * @param uri Stylesheet URI
-     * @private
-     */
-    _disableStyleSheet: function (uri) {
-        if (styleService.sheetRegistered(uri)) {
-            styleService.unloadUserSheetByUri(uri);
-        }
-    },
+    var ElemHide = {
 
-    /**
-     * Returns true if we should register global style sheet
-     */
-    _isGlobalStyleSheetEnabled: function () {
-        return adguard.settings.collectHitsCount() || Prefs.useGlobalStyleSheet;
-    },
+        collapsedClass: null,
+        collapseStyle: null,
 
-    shouldCollapseElement: function (tabId, cssPath) {
+        /**
+         * Init ElemHide object
+         */
+        init: function () {
 
-        if (!tabId) {
-            return false;
-        }
+            this._registerCollapsedStyle();
+            this._registerSelectorStyle();
 
-        var tab = {tabId: tabId};
-
-        if (framesMap.isTabAdguardDetected(tab) ||
-            framesMap.isTabProtectionDisabled(tab) ||
-            framesMap.isTabWhiteListed(tab)) {
-
-            return false;
-        }
-
-        if (this._isElemHideWhiteListed(tab)) {
-            return false;
-        }
-
-        var rule = this._getRuleByText(cssPath);
-        if (rule) {
-            var domain = framesMap.getFrameDomain(tab);
-            if (!rule.isPermitted(domain)) {
-                return false;
-            }
-
-            // Rules without domain should be ignored if there is a $generichide rule applied
-            if (this._isGenericHideWhiteListed(tab) && rule.isGeneric()) {
-                return false;
-            }
-
-            // Track filter rule usage if user has enabled "collect ad filters usage stats"
-            if (adguard.settings.collectHitsCount()) {
-                if (!FilterUtils.isUserFilterRule(rule) && !framesMap.isIncognitoTab(tab)) {
-                    adguard.hitStats.addRuleHit(domain, rule.ruleText, rule.filterId);
-                }
-            }
-        }
-
-        return true;
-    },
-
-    _isElemHideWhiteListed: function (tab) {
-        var elemHideWhiteListRule = adguard.tabs.getTabMetadata(tab.tabId, 'elemHideWhiteListRule');
-        if (elemHideWhiteListRule || elemHideWhiteListRule === false) {
-            return elemHideWhiteListRule;
-        }
-        var frame = adguard.tabs.getTabFrame(tab.tabId);
-        if (frame) {
-            elemHideWhiteListRule = antiBannerService.getRequestFilter().findWhiteListRule(frame.url, frame.url, "ELEMHIDE");
-            adguard.tabs.updateTabMetadata(tab.tabId, {
-                elemHideWhiteListRule: elemHideWhiteListRule || false
-            });
-        }
-    },
-
-    _isGenericHideWhiteListed: function (tab) {
-        var genericHideWhiteListRule = adguard.tabs.getTabMetadata(tab.tabId, 'genericHideWhiteListRule');
-        if (genericHideWhiteListRule || genericHideWhiteListRule === false) {
-            return genericHideWhiteListRule;
-        }
-        var frame = adguard.tabs.getTabFrame(tab.tabId);
-        if (frame) {
-            genericHideWhiteListRule = antiBannerService.getRequestFilter().findWhiteListRule(frame.url, frame.url, "GENERICHIDE");
-            adguard.tabs.updateTabMetadata(tab.tabId, {
-                genericHideWhiteListRule: genericHideWhiteListRule || false
-            });
-        }
-    },
-
-    _getRuleByText: function (path) {
-        var index = path.lastIndexOf('?');
-        if (index > 0) {
-            var key = path.substring(index + 1);
-            var rule = antiBannerService.getRequestFilter().cssFilter.getRuleForKey(key);
-            return rule ? rule : null;
-        }
-        return null;
-    },
-
-    /**
-     * Registers style for collapsing page node.
-     * @private
-     */
-    _registerCollapsedStyle: function () {
-        var offset = "a".charCodeAt(0);
-        this.collapsedClass = "";
-        for (var i = 0; i < 20; i++) {
-            this.collapsedClass += String.fromCharCode(offset + Math.random() * 26);
-        }
-        this.collapseStyle = Services.io.newURI("data:text/css," + encodeURIComponent("." + this.collapsedClass + "{-moz-binding: url(chrome://global/content/bindings/general.xml#dummy) !important;}"), null, null);
-        this._applyCssStyleSheet(this.collapseStyle);
-        Log.info("Adguard addon: Collapse style registered successfully");
-    },
-
-    /**
-     * Registers "assistant" module style.
-     * @private
-     */
-    _registerSelectorStyle: function () {
-        this.selectorStyle = Services.io.newURI("data:text/css," + encodeURIComponent(adguard.loadURL('lib/content-script/assistant/css/selector.css')), null, null);
-        this._applyCssStyleSheet(this.selectorStyle);
-        Log.info("Adguard addon: Selector style registered successfully");
-    },
-
-    /**
-     * Saves CSS content built by CssFilter to file.
-     * This file is then registered as browser-wide stylesheet.
-     * @private
-     */
-    _saveStyleSheetToDisk: function () {
-        ConcurrentUtils.runAsync(function () {
-            var content = antiBannerService.getRequestFilter().getCssForStyleSheet();
-            FS.saveStyleSheetToDisk(content, function () {
-                this._applyCssStyleSheet(FS.getInjectCssFileURI());
-            }.bind(this));
-        }, this);
-    },
-
-    /**
-     * Registers specified stylesheet
-     * @param uri                   Stylesheet URI
-     * @param needCheckFileExist    If true - check if file exists
-     * @private
-     */
-    _applyCssStyleSheet: function (uri, needCheckFileExist) {
-        try {
-            if (uri) {
-                if (needCheckFileExist) {
-                    if (uri.file) {
-                        var exists = uri.file.exists();
-                        if (!exists) {
-                            Log.info('Adguard addon: Css stylesheet cannot apply file: ' + uri.path + ' because file does not exist');
+            adguard.listeners.addListener(function (event, settings) {
+                switch (event) {
+                    case adguard.listeners.REQUEST_FILTER_UPDATED:
+                        if (!this._isGlobalStyleSheetEnabled()) {
+                            // Do nothing if global stylesheet is disabled
                             return;
                         }
+                        this._saveStyleSheetToDisk();
+                        break;
+                    case adguard.listeners.CHANGE_PREFS:
+                        if (settings === 'use_global_style_sheet') {
+                            this.changeElemhideMethod(settings);
+                        }
+                        break;
+                }
+            }.bind(this));
+
+            adguard.settings.onUpdated.addListener(function (setting) {
+                if (setting === adguard.settings.DISABLE_COLLECT_HITS) {
+                    this.changeElemhideMethod();
+                }
+            }.bind(this));
+
+            if (this._isGlobalStyleSheetEnabled()) {
+                this._applyCssStyleSheet(adguard.fileStorage.injectCssFileURI, true);
+            }
+        },
+
+        /**
+         * Called if user settings or prefs have been changed.
+         * In this case we check "Send statistics for ad filters usage" option value or "use_global_style_sheet" preference.
+         * If this flag has been changed - switching CSS injection method.
+         */
+        changeElemhideMethod: function () {
+            if (this._isGlobalStyleSheetEnabled()) {
+                this._saveStyleSheetToDisk();
+            } else {
+                styleService.unloadUserSheetByUri(adguard.fileStorage.injectCssFileURI);
+            }
+        },
+
+        /**
+         * Returns true if we should register global style sheet
+         */
+        _isGlobalStyleSheetEnabled: function () {
+            return adguard.settings.collectHitsCount() || adguard.prefs.useGlobalStyleSheet;
+        },
+
+        shouldCollapseElement: function (tabId, cssPath) {
+
+            if (!tabId) {
+                return false;
+            }
+
+            var tab = {tabId: tabId};
+
+            if (adguard.frames.isTabAdguardDetected(tab) ||
+                adguard.frames.isTabProtectionDisabled(tab) ||
+                adguard.frames.isTabWhiteListed(tab)) {
+
+                return false;
+            }
+
+            if (this._isElemHideWhiteListed(tab)) {
+                return false;
+            }
+
+            var rule = this._getRuleByText(cssPath);
+            if (rule) {
+                var domain = adguard.frames.getFrameDomain(tab);
+                if (!rule.isPermitted(domain)) {
+                    return false;
+                }
+
+                // Rules without domain should be ignored if there is a $generichide rule applied
+                if (this._isGenericHideWhiteListed(tab) && rule.isGeneric()) {
+                    return false;
+                }
+
+                // Track filter rule usage if user has enabled "collect ad filters usage stats"
+                if (adguard.settings.collectHitsCount()) {
+                    if (!adguard.utils.filters.isUserFilterRule(rule) && !adguard.frames.isIncognitoTab(tab)) {
+                        adguard.hitStats.addRuleHit(domain, rule.ruleText, rule.filterId);
                     }
                 }
-                //disable previous registered sheet
-                if (styleService.sheetRegistered(uri)) {
-                    styleService.unloadUserSheetByUri(uri);
-                }
-                //load new stylesheet
-                styleService.loadUserSheetByUri(uri);
-                Log.debug('styles hiding elements are successfully registered.');
             }
-        } catch (ex) {
-            Log.error('Error while register stylesheet ' + uri + ':' + ex);
-        }
-    }
-};
 
-ElemHide.init();
+            return true;
+        },
+
+        _isElemHideWhiteListed: function (tab) {
+            var elemHideWhiteListRule = adguard.tabs.getTabMetadata(tab.tabId, 'elemHideWhiteListRule');
+            if (elemHideWhiteListRule || elemHideWhiteListRule === false) {
+                return elemHideWhiteListRule;
+            }
+            var frame = adguard.tabs.getTabFrame(tab.tabId);
+            if (frame) {
+                elemHideWhiteListRule = antiBannerService.getRequestFilter().findWhiteListRule(frame.url, frame.url, "ELEMHIDE");
+                adguard.tabs.updateTabMetadata(tab.tabId, {
+                    elemHideWhiteListRule: elemHideWhiteListRule || false
+                });
+            }
+        },
+
+        _isGenericHideWhiteListed: function (tab) {
+            var genericHideWhiteListRule = adguard.tabs.getTabMetadata(tab.tabId, 'genericHideWhiteListRule');
+            if (genericHideWhiteListRule || genericHideWhiteListRule === false) {
+                return genericHideWhiteListRule;
+            }
+            var frame = adguard.tabs.getTabFrame(tab.tabId);
+            if (frame) {
+                genericHideWhiteListRule = antiBannerService.getRequestFilter().findWhiteListRule(frame.url, frame.url, "GENERICHIDE");
+                adguard.tabs.updateTabMetadata(tab.tabId, {
+                    genericHideWhiteListRule: genericHideWhiteListRule || false
+                });
+            }
+        },
+
+        _getRuleByText: function (path) {
+            var index = path.lastIndexOf('?');
+            if (index > 0) {
+                var key = path.substring(index + 1);
+                var rule = antiBannerService.getRequestFilter().cssFilter.getRuleForKey(key);
+                return rule ? rule : null;
+            }
+            return null;
+        },
+
+        /**
+         * Registers style for collapsing page node.
+         * @private
+         */
+        _registerCollapsedStyle: function () {
+            var offset = "a".charCodeAt(0);
+            this.collapsedClass = "";
+            for (var i = 0; i < 20; i++) {
+                this.collapsedClass += String.fromCharCode(offset + Math.random() * 26);
+            }
+            this.collapseStyle = Services.io.newURI("data:text/css," + encodeURIComponent("." + this.collapsedClass + "{-moz-binding: url(chrome://global/content/bindings/general.xml#dummy) !important;}"), null, null);
+            this._applyCssStyleSheet(this.collapseStyle);
+            Log.info("Adguard addon: Collapse style registered successfully");
+        },
+
+        /**
+         * Registers "assistant" module style.
+         * @private
+         */
+        _registerSelectorStyle: function () {
+            this.selectorStyle = Services.io.newURI("data:text/css," + encodeURIComponent(adguard.loadURL('lib/content-script/assistant/css/selector.css')), null, null);
+            this._applyCssStyleSheet(this.selectorStyle);
+            Log.info("Adguard addon: Selector style registered successfully");
+        },
+
+        /**
+         * Saves CSS content built by CssFilter to file.
+         * This file is then registered as browser-wide stylesheet.
+         * @private
+         */
+        _saveStyleSheetToDisk: function () {
+            adguard.utils.concurrent.runAsync(function () {
+                var content = antiBannerService.getRequestFilter().getCssForStyleSheet();
+                adguard.fileStorage.saveStyleSheetToDisk(content, function () {
+                    this._applyCssStyleSheet(adguard.fileStorage.injectCssFileURI);
+                }.bind(this));
+            }, this);
+        },
+
+        /**
+         * Registers specified stylesheet
+         * @param uri                   Stylesheet URI
+         * @param needCheckFileExist    If true - check if file exists
+         * @private
+         */
+        _applyCssStyleSheet: function (uri, needCheckFileExist) {
+            try {
+                if (uri) {
+                    if (needCheckFileExist) {
+                        if (uri.file) {
+                            var exists = uri.file.exists();
+                            if (!exists) {
+                                Log.info('Adguard addon: Css stylesheet cannot apply file: ' + uri.path + ' because file does not exist');
+                                return;
+                            }
+                        }
+                    }
+                    //disable previous registered sheet
+                    styleService.unloadUserSheetByUri(uri);
+                    //load new stylesheet
+                    styleService.loadUserSheetByUri(uri);
+                    Log.debug('styles hiding elements are successfully registered.');
+                }
+            } catch (ex) {
+                Log.error('Error while register stylesheet ' + uri + ':' + ex);
+            }
+        }
+    };
+
+    ElemHide.init();
+
+    return ElemHide;
+
+})(adguard);

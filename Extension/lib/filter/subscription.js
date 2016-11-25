@@ -15,14 +15,14 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Prefs, Log */
+/* global Log */
 
 /**
  * Service that loads and parses filters metadata from backend server.
  * For now we just store filters metadata in an XML file within the extension.
  * In future we'll add an opportunity to update metadata along with filter rules update.
  */
-adguard.subscriptions = (function () {
+adguard.subscriptions = (function (adguard) {
 
     'use strict';
 
@@ -154,8 +154,9 @@ adguard.subscriptions = (function () {
     function applyGroupLocalization(group, i18nMetadata) {
         var groupId = group.groupId;
         var localizations = i18nMetadata[groupId];
-        if (localizations && Prefs.locale in localizations) {
-            var localization = localizations[Prefs.locale];
+        var locale = adguard.app.getLocale();
+        if (localizations && locale in localizations) {
+            var localization = localizations[locale];
             group.groupName = localization.name;
         }
     }
@@ -169,8 +170,9 @@ adguard.subscriptions = (function () {
     function applyFilterLocalization(filter, i18nMetadata) {
         var filterId = filter.filterId;
         var localizations = i18nMetadata[filterId];
-        if (localizations && Prefs.locale in localizations) {
-            var localization = localizations[Prefs.locale];
+        var locale = adguard.app.getLocale();
+        if (localizations && locale in localizations) {
+            var localization = localizations[locale];
             filter.name = localization.name;
             filter.description = localization.description;
         }
@@ -228,5 +230,5 @@ adguard.subscriptions = (function () {
         getFilters: getFilters
     };
 
-})();
+})(adguard);
 

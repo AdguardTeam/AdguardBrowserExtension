@@ -15,9 +15,13 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Cc, Ci, components */
+/* global Cc, Ci, components, FileUtils, NetUtil, Log */
 
-var FsUtils = (function () {
+/**
+ * File storage adapter.
+ * For FF we store rules in files
+ */
+adguard.fileStorage = (function (adguard) {
 
     'use strict';
 
@@ -33,7 +37,7 @@ var FsUtils = (function () {
         EXCL: parseInt("0x80")
     };
 
-    var readAsync = function (file, callback) {
+    function readAsync(file, callback) {
 
         var fetchCallback = function (inputStream, status) {
             if (components.isSuccessCode(status)) {
@@ -60,9 +64,9 @@ var FsUtils = (function () {
 
             NetUtil.asyncFetch(aSource, fetchCallback);
         }
-    };
+    }
 
-    var writeAsync = function (file, content, callback) {
+    function writeAsync(file, content, callback) {
 
         var stream = Cc['@mozilla.org/network/file-output-stream;1'].createInstance(Ci.nsIFileOutputStream);
         var openFlags = OPEN_FLAGS.WRONLY | OPEN_FLAGS.CREATE_FILE | OPEN_FLAGS.TRUNCATE; // jshint ignore:line
@@ -78,153 +82,30 @@ var FsUtils = (function () {
                 callback(status);
             }
         });
-    };
+    }
 
-    return {
-        writeAsync: writeAsync,
-        readAsync: readAsync
-    };
+    var PROFILE_DIR = 'ProfD';
+    var ADGUARD_DIR = 'Adguard';
+    var CSS_FILE_PATH = 'elementsHide.css';
+    var LINE_BREAK = '\n';
 
-})();
+    var isSavingCssStyleSheetNow = false;
 
-/**
- * File storage adapter.
- * For FF we store rules in files
- */
-var FS = {
-
-    PROFILE_DIR: 'ProfD',
-    ADGUARD_DIR: 'Adguard',
-    CSS_FILE_PATH: 'elementsHide.css',
-    LINE_BREAK: '\n',
-
-    readFromFile: function (filename, callback) {
-
-        try {
-            var file = FileUtils.getFile(this.PROFILE_DIR, [this.ADGUARD_DIR, filename]);
-            if (!file.exists() || file.fileSize === 0) {
-                callback(null, []);
-                return;
-            }
-
-            FsUtils.readAsync(file, function (error, data) {
-                if (error) {
-                    Log.error("Error read file {0}, cause: {1}", filename, error);
-                    callback(error);
-                } else {
-                    if (!data) {
-                        callback(null, []);
-                    } else {
-                        var lines = data.split(/[\r\n]+/);
-                        callback(null, lines);
-                    }
-                }
-            });
-
-        } catch (ex) {
-            Log.error("Error read file {0}, cause: {1}", filename, ex);
-            callback(this._translateError(ex));
-        }
-    },
-
-    writeToFile: function (filename, data, callback) {
-
-        try {
-
-            var content = data.join(FS.LINE_BREAK);
-
-            this._createDir();
-            var file = FileUtils.getFile(this.PROFILE_DIR, [this.ADGUARD_DIR, filename]);
-
-            FsUtils.writeAsync(file, content, function (error) {
-                if (error) {
-                    Log.error("Error write to file {0}, cause: {1}", filename, error);
-                }
-                callback(error);
-            });
-
-        } catch (ex) {
-            Log.error("Error write to file {0}, cause: {1}", filename, ex);
-            callback(this._translateError(ex));
-        }
-    },
-
-    removeFile: function (path, successCallback) {
-        var file = FileUtils.getFile(this.PROFILE_DIR, [this.ADGUARD_DIR, path]);
-        if (!file.exists() || file.fileSize === 0) {
-            successCallback();
-            return;
-        }
-        try {
-            file.remove();
-            successCallback();
-        } catch (ex) {
-            //ignore
-        }
-    },
-
-    /**
-     * Saves CSS stylesheet to file.
-     *
-     * This method is used in Firefox extension only.
-     * If user has enabled "Send statistics for ad filters usage" option we change the way of applying CSS rules.
-     * In this case we register browser-wide stylesheet using StyleService.registerSheet.
-     * We should save it to file before registering the stylesheet.
-     *
-     * @param cssRules CSS file content
-     * @param callback Called when operation is finished
-     */
-    saveStyleSheetToDisk: function (cssRules, callback) {
-        if (this._cssSaving) {
-            return;
-        }
-        this._cssSaving = true;
-
-        var filePath = this.CSS_FILE_PATH;
-
-        FS.writeToFile(filePath, cssRules, function (e) {
-            if (e && e.error) {
-                Log.error("Error write css styleSheet to file {0} cause: {1}", filePath, e);
-                return;
-            } else {
-                callback();
-            }
-            this._cssSaving = false;
-        }.bind(this));
-    },
-
-    /**
-     * Gets CSS file URI
-     *
-     * This method is used in Firefox extension only.
-     * If user has enabled "Send statistics for ad filters usage" option we change the way of applying CSS rules.
-     * In this case we register browser-wide stylesheet using StyleService.registerSheet.
-     * We should save it to file before registering the stylesheet.
-     *
-     * @returns CSS file URI
-     */
-    getInjectCssFileURI: function () {
-        if (!this.injectCssUrl) {
-            this.injectCssUrl = this._getFileInAdguardDirUri(this.CSS_FILE_PATH);
-        }
-        return this.injectCssUrl;
-    },
-
-    _getFileInAdguardDirUri: function (filename) {
-        var styleFile = FileUtils.getFile(this.PROFILE_DIR, [this.ADGUARD_DIR, filename]);
+    function getFileInAdguardDirUri(filename) {
+        var styleFile = FileUtils.getFile(PROFILE_DIR, [ADGUARD_DIR, filename]);
         var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
         return ioService.newFileURI(styleFile).QueryInterface(Ci.nsIFileURL);
-    },
+    }
 
     /* Create dir in profile folder */
-    _createDir: function () {
-        var adguardDir = FileUtils.getDir(this.PROFILE_DIR, [this.ADGUARD_DIR]);
+    function createAdguardDir() {
+        var adguardDir = FileUtils.getDir(PROFILE_DIR, [ADGUARD_DIR]);
         if (!adguardDir.exists()) {
             adguardDir.create(Ci.nsIFile.DIRECTORY_TYPE, parseInt("0755", 8)); // u+rwx go+rx
         }
-    },
+    }
 
-    _translateError: function (e) {
+    function translateError(e) {
         var msg = e.message || e.name;
         if (msg) {
             return msg;
@@ -263,5 +144,125 @@ var FS = {
         }
         return msg;
     }
-};
+
+    var readFromFile = function (filename, callback) {
+
+        try {
+            var file = FileUtils.getFile(PROFILE_DIR, [ADGUARD_DIR, filename]);
+            if (!file.exists() || file.fileSize === 0) {
+                callback(null, []);
+                return;
+            }
+
+            readAsync(file, function (error, data) {
+                if (error) {
+                    Log.error("Error read file {0}, cause: {1}", filename, error);
+                    callback(error);
+                } else {
+                    if (!data) {
+                        callback(null, []);
+                    } else {
+                        var lines = data.split(/[\r\n]+/);
+                        callback(null, lines);
+                    }
+                }
+            });
+
+        } catch (ex) {
+            Log.error("Error read file {0}, cause: {1}", filename, ex);
+            callback(translateError(ex));
+        }
+    };
+
+    var writeToFile = function (filename, data, callback) {
+
+        try {
+
+            var content = data.join(LINE_BREAK);
+
+            createAdguardDir();
+            var file = FileUtils.getFile(PROFILE_DIR, [ADGUARD_DIR, filename]);
+
+            writeAsync(file, content, function (error) {
+                if (error) {
+                    Log.error("Error write to file {0}, cause: {1}", filename, error);
+                }
+                callback(error);
+            });
+
+        } catch (ex) {
+            Log.error("Error write to file {0}, cause: {1}", filename, ex);
+            callback(translateError(ex));
+        }
+    };
+
+    var removeFile = function (path, successCallback) {
+        var file = FileUtils.getFile(PROFILE_DIR, [ADGUARD_DIR, path]);
+        if (!file.exists() || file.fileSize === 0) {
+            successCallback();
+            return;
+        }
+        try {
+            file.remove();
+            successCallback();
+        } catch (ex) {
+            //ignore
+        }
+    };
+
+    /**
+     * Saves CSS stylesheet to file.
+     *
+     * This method is used in Firefox extension only.
+     * If user has enabled "Send statistics for ad filters usage" option we change the way of applying CSS rules.
+     * In this case we register browser-wide stylesheet using StyleService.registerSheet.
+     * We should save it to file before registering the stylesheet.
+     *
+     * @param cssRules CSS file content
+     * @param callback Called when operation is finished
+     */
+    var saveStyleSheetToDisk = function (cssRules, callback) {
+
+        if (isSavingCssStyleSheetNow) {
+            return;
+        }
+        isSavingCssStyleSheetNow = true;
+
+        var filePath = CSS_FILE_PATH;
+
+        writeToFile(filePath, cssRules, function (e) {
+            if (e && e.error) {
+                Log.error("Error write css styleSheet to file {0} cause: {1}", filePath, e);
+                return;
+            } else {
+                callback();
+            }
+            isSavingCssStyleSheetNow = false;
+        });
+    };
+
+    return {
+        /**
+         * Gets CSS file URI
+         *
+         * This method is used in Firefox extension only.
+         * If user has enabled "Send statistics for ad filters usage" option we change the way of applying CSS rules.
+         * In this case we register browser-wide stylesheet using StyleService.registerSheet.
+         * We should save it to file before registering the stylesheet.
+         *
+         * @returns CSS file URI
+         */
+        get injectCssFileURI() {
+            return adguard.lazyGet(this, 'injectCssFileURI', function () {
+                return getFileInAdguardDirUri(CSS_FILE_PATH);
+            });
+        },
+        saveStyleSheetToDisk: saveStyleSheetToDisk,
+        readFromFile: readFromFile,
+        writeToFile: writeToFile,
+        removeFile: removeFile
+    };
+
+})(adguard);
+
 

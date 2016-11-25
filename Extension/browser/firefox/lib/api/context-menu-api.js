@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global ConcurrentUtils */
-
 (function () {
 
     // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XUL/PopupGuide/Extensions#Modifying_the_context_menu
@@ -95,7 +93,7 @@
                     mainMenu.setAttribute(MENU_ITEM_ATTR, MENU_ITEM_MENU);
                     mainMenu.setAttribute('label', 'Adguard');
                     mainMenu.setAttribute('class', 'addon-context-menu-item addon-context-menu-item-toplevel menu-iconic');
-                    mainMenu.setAttribute('image', Prefs.ICONS.ICON_GREEN['16']);
+                    mainMenu.setAttribute('image', adguard.prefs.ICONS.ICON_GREEN['16']);
                     contextMenu.appendChild(mainMenu);
                 }
 
@@ -218,7 +216,7 @@
             }
 
             function insertContextMenuToWindow(win) {
-                ConcurrentUtils.retryUntil(
+                adguard.utils.concurrent.retryUntil(
                     canCreateContextMenu.bind(null, win),
                     createContextMenu.bind(null, win)
                 );

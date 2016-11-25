@@ -1,16 +1,19 @@
 /* global XPCOMUtils, Services, Cc, Ci, Cr, Cm, components */
-/* global Map, unload, RequestTypes, Log, Utils, EventChannels */
+/* global Map, RequestTypes, Log */
 
-(function () {
+/**
+ * Web requests implementation
+ */
+(function (adguard) {
 
-    adguard.webRequest = (function () {
+    adguard.webRequest = (function (adguard) {
 
         function noOpFunc() {
         }
 
-        var onBeforeRequestChannel = EventChannels.newChannel();
-        var onBeforeSendHeadersChannel = EventChannels.newChannel();
-        var onHeadersReceivedChannel = EventChannels.newChannel();
+        var onBeforeRequestChannel = adguard.utils.channels.newChannel();
+        var onBeforeSendHeadersChannel = adguard.utils.channels.newChannel();
+        var onHeadersReceivedChannel = adguard.utils.channels.newChannel();
 
         // https://developer.mozilla.org/ja/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIContentPolicy#Constants
         var ContentTypes = {
@@ -63,7 +66,7 @@
                 case ContentTypes.TYPE_WEBSOCKET:
                     return RequestTypes.WEBSOCKET;
                 default:
-                    return Utils.parseContentTypeFromUrlPath(uriPath) || RequestTypes.OTHER;
+                    return adguard.utils.browser.parseContentTypeFromUrlPath(uriPath) || RequestTypes.OTHER;
             }
         }
 
@@ -392,7 +395,7 @@
                     true
                 );
 
-                unload.when(this.unregister.bind(this));
+                adguard.unload.when(this.unregister.bind(this));
             },
 
             unregister: function () {
@@ -700,11 +703,11 @@
             handlerBehaviorChanged: noOpFunc
         };
 
-    })();
+    })(adguard);
 
-    adguard.webNavigation = (function () {
+    adguard.webNavigation = (function (adguard) {
 
-        var onCreatedNavigationTargetChannel = EventChannels.newChannel();
+        var onCreatedNavigationTargetChannel = adguard.utils.channels.newChannel();
 
         var onPopupCreated = function (tabId, targetUrl, sourceUrl) {
 
@@ -746,6 +749,6 @@
             onCreatedNavigationTarget: onCreatedNavigationTargetChannel
         };
 
-    })();
+    })(adguard);
 
-})(window);
+})(adguard);

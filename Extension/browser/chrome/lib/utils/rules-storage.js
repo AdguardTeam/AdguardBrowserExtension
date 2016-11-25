@@ -15,12 +15,14 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global browser */
+/* global chrome */
 
 /**
  * Filter rules storage implementation
  */
 adguard.rulesStorageImpl = (function () {
+
+    var browser = browser || chrome;
 
     /**
      * Checks runtime.lastError and calls "callback" if so.

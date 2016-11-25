@@ -15,13 +15,13 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global EventChannels, Utils, Log */
+/* global Log */
 
 /**
  * Object that manages user settings.
  * @constructor
  */
-adguard.settings = (function () {
+adguard.settings = (function (adguard) {
 
     'use strict';
 
@@ -38,9 +38,32 @@ adguard.settings = (function () {
         DEFAULT_WHITE_LIST_MODE: 'default-whitelist-mode'
     };
 
-    var defaultProperties = Object.create(null);
     var properties = Object.create(null);
-    var propertyUpdateChannel = EventChannels.newChannel();
+    var propertyUpdateChannel = adguard.utils.channels.newChannel();
+
+    /**
+     * Lazy default properties
+     */
+    var defaultProperties = {
+        get defaults() {
+            return adguard.lazyGet(this, 'defaults', function () {
+                // Initialize default properties
+                var defaults = Object.create(null);
+                for (var name in settings) {
+                    if (settings.hasOwnProperty(name)) {
+                        defaults[settings[name]] = false;
+                    }
+                }
+                defaults[settings.DISABLE_SHOW_ADGUARD_PROMO_INFO] = (!adguard.utils.browser.isWindowsOs() && !adguard.utils.browser.isMacOs()) || adguard.utils.browser.isEdgeBrowser();
+                defaults[settings.DISABLE_SAFEBROWSING] = true;
+                defaults[settings.DISABLE_COLLECT_HITS] = true;
+                defaults[settings.DISABLE_SEND_SAFEBROWSING_STATS] = true;
+                defaults[settings.DEFAULT_WHITE_LIST_MODE] = true;
+                defaults[settings.USE_OPTIMIZED_FILTERS] = adguard.utils.browser.isContentBlockerEnabled();
+                return defaults;
+            });
+        }
+    };
 
     var getProperty = function (propertyName) {
 
@@ -56,8 +79,8 @@ adguard.settings = (function () {
             } catch (ex) {
                 Log.error('Error get property {0}, cause: {1}', propertyName, ex);
             }
-        } else if (propertyName in defaultProperties) {
-            propertyValue = defaultProperties[propertyName];
+        } else if (propertyName in defaultProperties.defaults) {
+            propertyValue = defaultProperties.defaults[propertyName];
         }
 
         properties[propertyName] = propertyValue;
@@ -169,36 +192,9 @@ adguard.settings = (function () {
         setProperty(settings.DEFAULT_WHITE_LIST_MODE, enabled);
     };
 
-    (function initialize() {
-
-        var name;
-
-        // Initialize properties
-        for (name in settings) {
-            if (settings.hasOwnProperty(name)) {
-                defaultProperties[settings[name]] = false;
-            }
-        }
-
-        defaultProperties[settings.DISABLE_SHOW_ADGUARD_PROMO_INFO] = (!Utils.isWindowsOs() && !Utils.isMacOs()) || Utils.isEdgeBrowser();
-        defaultProperties[settings.DISABLE_SAFEBROWSING] = true;
-        defaultProperties[settings.DISABLE_COLLECT_HITS] = true;
-        defaultProperties[settings.DISABLE_SEND_SAFEBROWSING_STATS] = true;
-        defaultProperties[settings.DEFAULT_WHITE_LIST_MODE] = true;
-        defaultProperties[settings.USE_OPTIMIZED_FILTERS] = Utils.isContentBlockerEnabled();
-
-        // Cache properties
-        for (name in settings) {
-            if (settings.hasOwnProperty(name)) {
-                getProperty(settings[name]); // jshint ignore:line
-            }
-        }
-
-    })();
-
     var api = {};
 
-    // Close settings to api
+    // Expose settings to api
     for (var key in settings) {
         if (settings.hasOwnProperty(key)) {
             api[key] = settings[key];
@@ -232,4 +228,4 @@ adguard.settings = (function () {
 
     return api;
 
-})();
+})(adguard);

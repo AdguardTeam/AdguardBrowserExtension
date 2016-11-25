@@ -1,4 +1,4 @@
-/* global Cu, Cc, Ci, I18nUtils, Log, unload, ElemHide */
+/* global Cu, Cc, Ci, I18nUtils, Log */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -268,7 +268,7 @@ ContentScripts.prototype = {
 
         globalMessageManager.loadFrameScript(frameScriptUrl, true);
 
-        unload.when(function () {
+        adguard.unload.when(function () {
 
             parentMessageManager.removeMessageListener(initializeFrameScriptListenerName, initializeFrameScriptListener);
 
@@ -365,7 +365,7 @@ ContentScripts.prototype = {
             var collapse = false;
             if (tab) {
                 var tabId = adguard.tabsImpl.getTabIdForTab(tab);
-                collapse = ElemHide.shouldCollapseElement(tabId, details.path);
+                collapse = adguard.ElemHide.shouldCollapseElement(tabId, details.path);
             }
             return {collapse: collapse};
         };

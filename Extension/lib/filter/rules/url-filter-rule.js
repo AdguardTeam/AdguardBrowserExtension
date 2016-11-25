@@ -15,9 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global StringUtils, UrlUtils, Log, Prefs */
+/* global Log */
 
-(function (api) {
+(function (adguard, api) {
 
     'use strict';
 
@@ -39,7 +39,7 @@
             }
 
             //In case of one domain
-            return StringUtils.replaceAll(ruleText, domain, UrlUtils.toPunyCode(domain));
+            return adguard.utils.strings.replaceAll(ruleText, domain, adguard.utils.url.toPunyCode(domain));
         } catch (ex) {
             Log.error("Error getAsciiDomainRule from {0}, cause {1}", ruleText, ex);
             return "";
@@ -62,7 +62,7 @@
 
             for (i = 0; i < startsWith.length; i++) {
                 var start = startsWith[i];
-                if (StringUtils.startWith(ruleText, start)) {
+                if (adguard.utils.strings.startWith(ruleText, start)) {
                     startIndex = start.length;
                     break;
                 }
@@ -180,7 +180,7 @@
         var whiteListRule = null;
         var options = null;
 
-        if (StringUtils.startWith(urlRuleText, api.FilterRule.MASK_WHITE_LIST)) {
+        if (adguard.utils.strings.startWith(urlRuleText, api.FilterRule.MASK_WHITE_LIST)) {
             urlRuleText = urlRuleText.substring(api.FilterRule.MASK_WHITE_LIST.length);
             whiteListRule = true;
         }
@@ -232,8 +232,8 @@
         var urlRuleText = parseResult.urlRuleText;
         this.urlRuleText = urlRuleText;
 
-        var isRegexRule = StringUtils.startWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) &&
-            StringUtils.endWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) ||
+        var isRegexRule = adguard.utils.strings.startWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) &&
+            adguard.utils.strings.endWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) ||
             urlRuleText === '' ||
             urlRuleText == UrlFilterRule.MASK_ANY_SYMBOL;
 
@@ -310,7 +310,7 @@
      */
     UrlFilterRule.prototype.isPermitted = function (domainName) {
 
-        if (StringUtils.isEmpty(domainName)) {
+        if (adguard.utils.strings.isEmpty(domainName)) {
             var hasPermittedDomains = this.hasPermittedDomains();
 
             // For white list rules to fire when request has no referrer
@@ -343,7 +343,7 @@
             }
         }
 
-        if (this.shortcut !== null && !StringUtils.containsIgnoreCase(requestUrl, this.shortcut)) {
+        if (this.shortcut !== null && !adguard.utils.strings.containsIgnoreCase(requestUrl, this.shortcut)) {
             return false;
         }
 
@@ -529,7 +529,9 @@
     };
 
     // https://code.google.com/p/chromium/issues/detail?id=410382
-    if (Prefs.platform === 'chromium' || Prefs.platform == 'webkit') {
+    if (adguard.prefs.platform === 'chromium' ||
+        adguard.prefs.platform == 'webkit') {
+
         UrlFilterRule.contentTypes['OBJECT-SUBREQUEST'] = UrlFilterRule.contentTypes.OBJECT;
     }
 
@@ -567,4 +569,4 @@
 
     api.UrlFilterRule = UrlFilterRule;
 
-})(adguard.rules);
+})(adguard, adguard.rules);

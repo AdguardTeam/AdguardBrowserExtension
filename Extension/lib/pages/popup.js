@@ -18,13 +18,10 @@
 /* global $, PopupController */
 var backgroundPage = adguard.backgroundPage.getWindow();
 var antiBannerService = backgroundPage.antiBannerService;
-var framesMap = backgroundPage.framesMap;
-var Prefs = backgroundPage.Prefs;
-var Utils = backgroundPage.Utils;
 
 // http://jira.performix.ru/browse/AG-3474
 var resizePopupWindowForMacOs = function ($) {
-    if (Utils.isSafariBrowser() || Utils.isFirefoxBrowser() || !Utils.isMacOs()) {
+    if (adguard.utils.browser.isSafariBrowser() || adguard.utils.browser.isFirefoxBrowser() || !adguard.utils.browser.isMacOs()) {
         return;
     }
     setTimeout(function () {
@@ -44,11 +41,11 @@ $(document).ready(function () {
 
         tab = t;
 
-        var tabInfo = framesMap.getFrameInfo(tab);
+        var tabInfo = adguard.frames.getFrameInfo(tab);
 
         controller = new PopupController({
-            platform: Prefs.platform,
-            showStatsSupported: !Utils.isContentBlockerEnabled()
+            platform: adguard.prefs.platform,
+            showStatsSupported: !adguard.utils.browser.isContentBlockerEnabled()
         });
 
         //override
@@ -100,7 +97,7 @@ $(document).ready(function () {
             adguard.closePopup();
         };
         controller.resetBlockedAdsCount = function () {
-            framesMap.resetBlockedAdsCount();
+            adguard.frames.resetBlockedAdsCount();
         };
         controller.sendFeedback = function (url, topic, comment) {
             antiBannerService.sendFeedback(url, topic, comment);

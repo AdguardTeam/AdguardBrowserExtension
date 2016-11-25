@@ -15,12 +15,12 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global StringUtils, framesMap, RequestTypes, AntiBannerFiltersId */
+/* global RequestTypes */
 
 /**
  * adguard.integration is used for integration of Adguard extension and Adguard for Windows/Mac/Android versions.
  */
-adguard.integration = (function () {
+adguard.integration = (function (adguard) {
 
     'use strict';
 
@@ -79,7 +79,7 @@ adguard.integration = (function () {
             var productName = RegExp.$1;
             // header is either Adguard for Mac or Adguard for Windows
             // depending on it we use localized product name
-            if (StringUtils.containsIgnoreCase(productName, "mac")) {
+            if (adguard.utils.strings.containsIgnoreCase(productName, "mac")) {
                 result.adguardProductName = adguard.i18n.getMessage("adguard_product_mac");
             } else {
                 result.adguardProductName = adguard.i18n.getMessage("adguard_product_windows");
@@ -142,7 +142,7 @@ adguard.integration = (function () {
 
             ruleInfo.headerRule = rule;
             ruleInfo.documentWhiteListed = true;
-            ruleInfo.userWhiteListed = rule.filterId === AntiBannerFiltersId.USER_FILTER_ID;
+            ruleInfo.userWhiteListed = rule.filterId === adguard.utils.filters.USER_FILTER_ID;
         }
 
         return ruleInfo;
@@ -180,7 +180,7 @@ adguard.integration = (function () {
 
         if (!adguardAppHeaderValue) {
             // No X-Adguard-Filtered header, disable integration mode for this tab
-            framesMap.recordAdguardIntegrationForTab(tab, false, false, false, null, null, false);
+            adguard.frames.recordAdguardIntegrationForTab(tab, false, false, false, null, null, false);
             return;
         }
 
@@ -201,7 +201,7 @@ adguard.integration = (function () {
 
         // Save integration info to framesMap
         var adguardRemoveRuleNotSupported = !isFullIntegrationMode;
-        framesMap.recordAdguardIntegrationForTab(tab, true, ruleInfo.documentWhiteListed, ruleInfo.userWhiteListed, ruleInfo.headerRule, appInfo.adguardProductName, adguardRemoveRuleNotSupported);
+        adguard.frames.recordAdguardIntegrationForTab(tab, true, ruleInfo.documentWhiteListed, ruleInfo.userWhiteListed, ruleInfo.headerRule, appInfo.adguardProductName, adguardRemoveRuleNotSupported);
 
         adguard.settings.changeShowInfoAboutAdguardFullVersion(false);
     };
@@ -257,7 +257,7 @@ adguard.integration = (function () {
      * @param tab Tab
      */
     var shouldOverrideReferrer = function (tab) {
-        return framesMap.isTabAdguardWhiteListed(tab);
+        return adguard.frames.isTabAdguardWhiteListed(tab);
     };
 
     /**
@@ -300,4 +300,4 @@ adguard.integration = (function () {
         getIntegrationBaseUrl: getIntegrationBaseUrl
     };
 
-})();
+})(adguard);

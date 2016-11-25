@@ -17,11 +17,9 @@
 
 /* global chrome, browser */
 
-(function (global) {
+(function (adguard) {
 
     'use strict';
-
-    var adguard = global.adguard = {};
 
     adguard.runtimeImpl = (function () {
 
@@ -66,4 +64,4 @@
 
     })();
 
-})(window);
+})(typeof adguard !== 'undefined' ? adguard : adguardContent);

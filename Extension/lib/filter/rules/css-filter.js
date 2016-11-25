@@ -15,14 +15,12 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Prefs, Utils, FilterUtils */
-
-(function (api) {
+(function (adguard, api) {
 
     'use strict';
 
-    var isFirefox = (Prefs.platform == "firefox");
-    var isShadowDomSupported = Utils.isShadowDomSupported();
+    var isFirefox = adguard.utils.browser.isFirefoxBrowser();
+    var isShadowDomSupported = adguard.utils.browser.isShadowDomSupported();
 
     /**
      * This class manages CSS rules and builds styles to inject to pages.
@@ -30,6 +28,7 @@
      * CSS injection rules: http://adguard.com/en/filterrules.html#cssInjection
      */
     var CssFilter = function (rules) {
+
         this.commonCss = null;
         this.commonCssHits = null;
         this.commonRules = [];
@@ -728,7 +727,7 @@
                     cssSb.push(this._getRuleCssSelector(rule));
                 } else {
                     elemHideSb.push(this._getRuleCssSelector(rule));
-                    if (FilterUtils.isUserFilterRule(rule)) {
+                    if (adguard.utils.filters.isUserFilterRule(rule)) {
                         elemHideSb.push(ELEMHIDE_CSS_STYLE);
                     } else {
                         elemHideSb.push(ELEMHIDE_HIT_START);
@@ -793,5 +792,5 @@
 
     api.CssFilter = CssFilter;
 
-})(adguard.rules);
+})(adguard, adguard.rules);
 

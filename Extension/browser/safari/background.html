@@ -2,36 +2,43 @@
 <html>
 <head>
 
+    <!--Third party libraries-->
     <script type="text/javascript" src="lib/libs/deferred.min.js"></script>
     <script type="text/javascript" src="lib/utils/sha256.patched.js"></script>
     <script type="text/javascript" src="lib/utils/promises.js"></script>
     <script type="text/javascript" src="lib/utils/punycode.js"></script>
-    <script type="text/javascript" src="lib/utils/language.js"></script>
+
+    <!--Adguard Global and preferences-->
+    <script type="text/javascript" src="lib/adguard.js"></script>
+    <script type="text/javascript" src="prefs.js"></script>
+
+    <!--Utils libraries-->
     <script type="text/javascript" src="lib/utils/common.js"></script>
     <script type="text/javascript" src="lib/utils/log.js"></script>
     <script type="text/javascript" src="lib/utils/url.js"></script>
+    <script type="text/javascript" src="lib/utils/notifier.js"></script>
+    <script type="text/javascript" src="lib/utils/workaround.js"></script>
+    <script type="text/javascript" src="lib/utils/browser-utils.js"></script>
+    <script type="text/javascript" src="lib/utils/service-client.js"></script>
+    <script type="text/javascript" src="lib/utils/page-stats.js"></script>
+    <script type="text/javascript" src="lib/utils/user-settings.js"></script>
+    <script type="text/javascript" src="lib/utils/frames.js"></script>
 
-    <script type="text/javascript" src="lib/content-script/common-script.js"></script>
-    <script type="text/javascript" src="lib/api/background-page.js"></script>
-    <script type="text/javascript" src="lib/api/tabs.js"></script>
-
-    <script type="text/javascript" src="prefs.js"></script>
-
+    <!--Local storage and rules storage libraries-->
     <script type="text/javascript" src="lib/utils/local-storage.js"></script>
     <script type="text/javascript" src="lib/utils/rules-storage.js"></script>
     <script type="text/javascript" src="lib/storage.js"></script>
 
-    <script type="text/javascript" src="lib/utils/local-script-rules.js"></script>
-    <script type="text/javascript" src="lib/utils/workaround.js"></script>
-    <script type="text/javascript" src="lib/utils/browser-utils.js"></script>
-    <script type="text/javascript" src="lib/utils/service-client.js"></script>
-    <script type="text/javascript" src="lib/utils/user-settings.js"></script>
-    <script type="text/javascript" src="lib/utils/notifier.js"></script>
-    <script type="text/javascript" src="lib/utils/page-stats.js"></script>
+    <!--Safari api adapter libraries-->
+    <script type="text/javascript" src="lib/content-script/common-script.js"></script>
+    <script type="text/javascript" src="lib/api/background-page.js"></script>
 
+    <!--Tabs api library-->
+    <script type="text/javascript" src="lib/api/tabs.js"></script>
     <script type="text/javascript" src="lib/tabs/tabs-api.js"></script>
-    <script type="text/javascript" src="lib/utils/frames.js"></script>
 
+    <!--Rules and filters libraries-->
+    <script type="text/javascript" src="lib/utils/local-script-rules.js"></script>    <!--TODO: move to other folder-->
     <script type="text/javascript" src="lib/filter/rules/rules.js"></script>
     <script type="text/javascript" src="lib/filter/rules/shortcuts-lookup-table.js"></script>
     <script type="text/javascript" src="lib/filter/rules/domains-lookup-table.js"></script>

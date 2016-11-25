@@ -15,9 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global StringUtils, AntiBannerFiltersId, DEFAULT_SCRIPT_RULES */
+/* global DEFAULT_SCRIPT_RULES */
 
-(function (api) {
+(function (adguard, api) {
 
     'use strict';
 
@@ -30,7 +30,7 @@
         api.FilterRule.call(this, rule, filterId);
 
         this.script = null;
-        this.whiteListRule = StringUtils.contains(rule, api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE);
+        this.whiteListRule = adguard.utils.strings.contains(rule, api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE);
         var mask = this.whiteListRule ? api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE : api.FilterRule.MASK_SCRIPT_RULE;
 
         var indexOfMask = rule.indexOf(mask);
@@ -52,7 +52,7 @@
          * 3. In case of Firefox and Opera we apply only 'local' JS rules and ignore all marked as 'remote'
          */
         function getScriptSource(filterId, ruleText) {
-            return (filterId == AntiBannerFiltersId.USER_FILTER_ID || ruleText in DEFAULT_SCRIPT_RULES) ? 'local' : 'remote';
+            return (filterId == adguard.utils.filters.USER_FILTER_ID || ruleText in DEFAULT_SCRIPT_RULES) ? 'local' : 'remote';
         }
 
         this.scriptSource = getScriptSource(filterId, rule);
@@ -62,5 +62,5 @@
 
     api.ScriptFilterRule = ScriptFilterRule;
 
-})(adguard.rules);
+})(adguard, adguard.rules);
 

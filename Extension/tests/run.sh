@@ -51,3 +51,6 @@ node-qunit-phantomjs url-filter/test-url-filter.html
 
 echo "Css filter tests"
 node-qunit-phantomjs css-filter/test-css-filter.html
+
+echo "Request filter tests"
+node-qunit-phantomjs request-filter/test-request-filter.html

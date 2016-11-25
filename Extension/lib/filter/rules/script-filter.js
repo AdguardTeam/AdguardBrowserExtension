@@ -15,9 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global CollectionUtils */
-
-(function (api) {
+(function (adguard, api) {
 
     'use strict';
 
@@ -61,8 +59,8 @@
          * @param rule Rule object
          */
         removeRule: function (rule) {
-            CollectionUtils.removeRule(this.scriptRules, rule);
-            CollectionUtils.removeRule(this.exceptionsRules, rule);
+            adguard.utils.collections.removeRule(this.scriptRules, rule);
+            adguard.utils.collections.removeRule(this.exceptionsRules, rule);
             this._rollbackExceptionRule(rule);
         },
 
@@ -161,4 +159,4 @@
 
     api.ScriptFilter = ScriptFilter;
 
-})(adguard.rules);
+})(adguard, adguard.rules);

@@ -20,35 +20,6 @@
 
     'use strict';
 
-    adguard.runtime = (function () {
-
-        var sendMessage = function (message, responseCallback) {
-            adguard.runtimeImpl.sendMessage(safari.self.tab, safari.self, message, responseCallback);
-        };
-
-        var onMessage = {
-
-            addListener: function (callback) {
-
-                adguard.runtimeImpl.onMessage.addListener(safari.self, function (event) {
-
-                    var dispatcher = event.target.tab;
-                    var sender = {};
-
-                    callback(event.message, sender, function (message) {
-                        dispatcher.dispatchMessage("response-" + event.name.substr(8), message);
-                    });
-                });
-            }
-        };
-
-        return {
-            sendMessage: sendMessage,
-            onMessage: onMessage
-        };
-
-    })();
-
     var ContentScript = {
 
         init: function () {
@@ -314,12 +285,35 @@
     ContentScript.init();
 
     // Content script API implementation
-    global.contentPage = {
-        sendMessage: adguard.runtime.sendMessage,
-        onMessage: adguard.runtime.onMessage
-    };
+    global.contentPage = (function () {
+
+        var sendMessage = function (message, responseCallback) {
+            adguard.runtimeImpl.sendMessage(safari.self.tab, safari.self, message, responseCallback);
+        };
+
+        var onMessage = {
+
+            addListener: function (callback) {
+
+                adguard.runtimeImpl.onMessage.addListener(safari.self, function (event) {
+
+                    var dispatcher = event.target.tab;
+                    var sender = {};
+
+                    callback(event.message, sender, function (message) {
+                        dispatcher.dispatchMessage("response-" + event.name.substr(8), message);
+                    });
+                });
+            }
+        };
+
+        return {
+            sendMessage: sendMessage,
+            onMessage: onMessage
+        };
+    })();
 
     // Make i18n global
     global.i18n = adguard.i18n;
 
-})(window, adguard);
+})(window, adguardContent);

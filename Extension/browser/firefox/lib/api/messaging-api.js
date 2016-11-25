@@ -15,13 +15,13 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Cc, Ci, EventChannels, unload, Log */
+/* global Cc, Ci, Log */
 
-adguard.runtime = (function (api) {
+adguard.runtime = (function (adguard, api) {
 
     'use strict';
 
-    var onMessageChannel = EventChannels.newChannel();
+    var onMessageChannel = adguard.utils.channels.newChannel();
 
     var MSG_CHANNEL = 'Adguard:send-message-channel';
 
@@ -120,7 +120,7 @@ adguard.runtime = (function (api) {
     var globalMessageManager = Cc["@mozilla.org/globalmessagemanager;1"].getService(Ci.nsIMessageListenerManager);
     globalMessageManager.addMessageListener(MSG_CHANNEL, adguardMessageChannelListener);
 
-    unload.when(function () {
+    adguard.unload.when(function () {
         globalMessageManager.removeMessageListener(MSG_CHANNEL, adguardMessageChannelListener);
     });
 
@@ -128,4 +128,4 @@ adguard.runtime = (function (api) {
 
     return api;
 
-})(adguard.runtime || {});
+})(adguard, adguard.runtime || {});

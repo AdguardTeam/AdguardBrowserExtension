@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global UrlUtils, Log, StringUtils, SHA256 */
+/* global Log, SHA256 */
 
 /**
  * Initializing SafebrowsingFilter.
@@ -23,7 +23,7 @@
  * http://adguard.com/en/how-malware-blocked.html#extension
  */
 
-adguard.safebrowsing = (function () {
+adguard.safebrowsing = (function (adguard) {
 
     /**
      * Cache with maxCacheSize stored in local storage.
@@ -134,7 +134,14 @@ adguard.safebrowsing = (function () {
         };
     };
 
-    var safebrowsingCache = new LocalStorageCache("sb-cache");
+    // Lazy initialized safebrowsing cache
+    var safebrowsingCache = {
+        get cache() {
+            return adguard.lazyGet(this, 'cache', function () {
+                return new LocalStorageCache("sb-cache");
+            });
+        }
+    };
 
     var suspendedFromProperty = "safebrowsing-suspended-from";
 
@@ -222,7 +229,7 @@ adguard.safebrowsing = (function () {
      */
     function checkHostsInSbCache(hosts) {
         for (var i = 0; i < hosts.length; i++) {
-            var sbList = safebrowsingCache.getValue(hosts[i]);
+            var sbList = safebrowsingCache.cache.getValue(hosts[i]);
             if (sbList) {
                 return sbList;
             }
@@ -241,7 +248,7 @@ adguard.safebrowsing = (function () {
     function extractHosts(host) {
 
         var hosts = [];
-        if (UrlUtils.isIpv4(host) || UrlUtils.isIpv6(host)) {
+        if (adguard.utils.url.isIpv4(host) || adguard.utils.url.isIpv6(host)) {
             hosts.push(host);
             return hosts;
         }
@@ -251,7 +258,7 @@ adguard.safebrowsing = (function () {
             hosts.push(host);
         } else {
             for (var i = 0; i <= parts.length - 2; i++) {
-                hosts.push(StringUtils.join(parts, ".", i, parts.length));
+                hosts.push(adguard.utils.strings.join(parts, ".", i, parts.length));
             }
         }
 
@@ -287,7 +294,7 @@ adguard.safebrowsing = (function () {
      */
     var lookupUrlWithCallback = function (requestUrl, lookupUrlCallback) {
 
-        var host = UrlUtils.getHost(requestUrl);
+        var host = adguard.utils.url.getHost(requestUrl);
         if (!host) {
             return;
         }
@@ -327,7 +334,7 @@ adguard.safebrowsing = (function () {
                 sbList = processSbResponse(response.responseText, hashesMap) || SB_WHITE_LIST;
             }
 
-            safebrowsingCache.saveValue(host, sbList, Date.now() + SB_TTL);
+            safebrowsingCache.cache.saveValue(host, sbList, Date.now() + SB_TTL);
 
             lookupUrlCallback(createResponse(sbList));
 
@@ -354,11 +361,11 @@ adguard.safebrowsing = (function () {
      * @param url URL
      */
     var addToSafebrowsingTrusted = function (url) {
-        var host = UrlUtils.getHost(url);
+        var host = adguard.utils.url.getHost(url);
         if (!host) {
             return;
         }
-        safebrowsingCache.saveValue(host, SB_WHITE_LIST, Date.now() + TRUSTED_TTL);
+        safebrowsingCache.cache.saveValue(host, SB_WHITE_LIST, Date.now() + TRUSTED_TTL);
     };
 
     /**
@@ -371,10 +378,10 @@ adguard.safebrowsing = (function () {
      */
     var getErrorPageURL = function (requestUrl, referrerUrl, sbList) {
         var listName = sbList || "malware";
-        var isMalware = StringUtils.contains(listName, "malware");
+        var isMalware = adguard.utils.strings.contains(listName, "malware");
         var url = 'pages/sb.html';
         url += "?malware=" + isMalware;
-        url += "&host=" + encodeURIComponent(UrlUtils.getHost(requestUrl));
+        url += "&host=" + encodeURIComponent(adguard.utils.url.getHost(requestUrl));
         url += "&url=" + encodeURIComponent(requestUrl);
         url += "&ref=" + encodeURIComponent(referrerUrl);
         return url;
@@ -391,4 +398,4 @@ adguard.safebrowsing = (function () {
         processSbResponse: processSbResponse
     };
 
-})();
+})(adguard);

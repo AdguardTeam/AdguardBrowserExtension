@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Log, UrlUtils, antiBannerService */
+/* global Log, antiBannerService */
 
 /**
  * This object is used to store and track ad filters usage stats.
@@ -24,7 +24,7 @@
  *
  * @constructor
  */
-adguard.hitStats = (function () {
+adguard.hitStats = (function (adguard) {
 
     'use strict';
 
@@ -35,9 +35,13 @@ adguard.hitStats = (function () {
     var throttleTimeoutId;
 
     /**
-     * Object for aggregation hit stats
+     * Object for aggregation hit stats (Lazy initialized)
      */
-    var hitStats;
+    var hitStatsHolder = {
+        get hitStats() {
+            return adguard.lazyGet(this, 'hitStats', getHitCountStats);
+        }
+    };
 
     /**
      * Reads hit stats from local storage
@@ -60,7 +64,7 @@ adguard.hitStats = (function () {
      * Sends hit stats to backend server
      */
     function sendStats() {
-        var overallViews = hitStats.views || 0;
+        var overallViews = hitStatsHolder.hitStats.views || 0;
         if (overallViews < MAX_PAGE_VIEWS_COUNT) {
             return;
         }
@@ -68,7 +72,7 @@ adguard.hitStats = (function () {
             return;
         }
         var enabledFilters = antiBannerService.getEnabledAntiBannerFilters();
-        adguard.backend.sendHitStats(JSON.stringify(hitStats), enabledFilters);
+        adguard.backend.sendHitStats(JSON.stringify(hitStatsHolder.hitStats), enabledFilters);
         cleanup();
     }
 
@@ -104,9 +108,9 @@ adguard.hitStats = (function () {
             return;
         }
 
-        var domains = hitStats.domains;
+        var domains = hitStatsHolder.hitStats.domains;
         if (!domains) {
-            hitStats.domains = domains = Object.create(null);
+            hitStatsHolder.hitStats.domains = domains = Object.create(null);
         }
 
         var domainInfo = domains[domain];
@@ -115,9 +119,9 @@ adguard.hitStats = (function () {
             domainInfo.views = 0;
         }
         domainInfo.views++;
-        hitStats.views = (hitStats.views || 0) + 1;
+        hitStatsHolder.hitStats.views = (hitStatsHolder.hitStats.views || 0) + 1;
 
-        saveHitsCountStats(hitStats);
+        saveHitsCountStats(hitStatsHolder.hitStats);
     };
 
     /**
@@ -137,7 +141,7 @@ adguard.hitStats = (function () {
             return;
         }
 
-        var domainInfo = hitStats.domains ? hitStats.domains[domain] : null;
+        var domainInfo = hitStatsHolder.hitStats.domains ? hitStatsHolder.hitStats.domains[domain] : null;
         if (!domainInfo) {
             return;
         }
@@ -162,7 +166,7 @@ adguard.hitStats = (function () {
         }
 
         if (requestUrl) {
-            var requestDomain = UrlUtils.getDomainName(requestUrl);
+            var requestDomain = adguard.utils.url.getDomainName(requestUrl);
             // Domain hits
             var domainHits = ruleInfo[requestDomain] || 0;
             ruleInfo[requestDomain] = domainHits + 1;
@@ -172,19 +176,16 @@ adguard.hitStats = (function () {
             ruleInfo[HITS_PROP] = hits + 1;
         }
 
-        saveHitsCountStats(hitStats);
+        saveHitsCountStats(hitStatsHolder.hitStats);
     };
 
     /**
      * Cleanup stats
      */
     function cleanup() {
-        hitStats = Object.create(null);
+        adguard.lazyGetClear(hitStatsHolder, 'hitStats');
         adguard.localStorage.removeItem(HITS_COUNT_PROP);
     }
-
-    // Read stats from local storage
-    hitStats = getHitCountStats();
 
     return {
         addRuleHit: addRuleHit,
@@ -192,4 +193,4 @@ adguard.hitStats = (function () {
         cleanup: cleanup
     };
 
-})();
+})(adguard);

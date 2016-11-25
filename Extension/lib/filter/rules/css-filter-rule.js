@@ -15,9 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global StringUtils */
-
-(function (api) {
+(function (adguard, api) {
 
     'use strict';
 
@@ -73,7 +71,7 @@
 
             var style = cssContent.substring(styleStart, styleEnd);
 
-            if (StringUtils.isEmpty(selector) || StringUtils.isEmpty(style)) {
+            if (adguard.utils.strings.isEmpty(selector) || adguard.utils.strings.isEmpty(style)) {
                 throw new Error("Wrong :style pseudo-element syntax: " + cssContent);
             }
 
@@ -126,7 +124,7 @@
                 }
             }
 
-            var nameEndIndex = StringUtils.indexOfAny(selector, nameStartIndex + 1, [' ', '\t', '>', '(', '[', '.', '#', ':']);
+            var nameEndIndex = adguard.utils.strings.indexOfAny(selector, nameStartIndex + 1, [' ', '\t', '>', '(', '[', '.', '#', ':']);
             if (nameEndIndex < 0) {
                 nameEndIndex = selector.length;
             }
@@ -151,17 +149,17 @@
 
             api.FilterRule.call(this, rule, filterId);
 
-            var isInjectRule = StringUtils.contains(rule, api.FilterRule.MASK_CSS_INJECT_RULE) || StringUtils.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE);
+            var isInjectRule = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_INJECT_RULE) || adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE);
             if (isInjectRule) {
                 this.isInjectRule = isInjectRule;
             }
 
             var mask;
             if (isInjectRule) {
-                this.whiteListRule = StringUtils.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE);
+                this.whiteListRule = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE);
                 mask = this.whiteListRule ? api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE : api.FilterRule.MASK_CSS_INJECT_RULE;
             } else {
-                this.whiteListRule = StringUtils.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_RULE);
+                this.whiteListRule = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_RULE);
                 mask = this.whiteListRule ? api.FilterRule.MASK_CSS_EXCEPTION_RULE : api.FilterRule.MASK_CSS_RULE;
             }
 
@@ -211,4 +209,4 @@
 
     api.CssFilterRule = CssFilterRule;
 
-})(adguard.rules);
+})(adguard, adguard.rules);

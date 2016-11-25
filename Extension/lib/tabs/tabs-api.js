@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global EventChannels */
-
 (function (adguard) {
 
     'use strict';
@@ -60,8 +58,8 @@
             adguardWindows[adguardWin.windowId] = adguardWin;
         });
 
-        var onCreatedChannel = EventChannels.newChannel();
-        var onRemovedChannel = EventChannels.newChannel();
+        var onCreatedChannel = adguard.utils.channels.newChannel();
+        var onRemovedChannel = adguard.utils.channels.newChannel();
 
         windowsImpl.onCreated.addListener(function (adguardWin) {
             adguardWindows[adguardWin.windowId] = adguardWin;
@@ -192,16 +190,16 @@
 
         // Fired when a tab is created. Note that the tab's URL may not be set at the time this event fired, but you can listen to onUpdated events to be notified when a URL is set.
 
-        var onCreatedChannel = EventChannels.newChannel();
+        var onCreatedChannel = adguard.utils.channels.newChannel();
 
         // Fired when a tab is closed.
-        var onRemovedChannel = EventChannels.newChannel();
+        var onRemovedChannel = adguard.utils.channels.newChannel();
 
         // Fired when a tab is updated.
-        var onUpdatedChannel = EventChannels.newChannel();
+        var onUpdatedChannel = adguard.utils.channels.newChannel();
 
         // Fires when the active tab in a window changes.
-        var onActivatedChannel = EventChannels.newChannel();
+        var onActivatedChannel = adguard.utils.channels.newChannel();
 
         // --------- Actions ---------
 

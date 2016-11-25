@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-(function (global) {
+(function (adguard) {
 
     'use strict';
 
@@ -30,8 +30,6 @@
             window.safari = w.safari;
         }
     })();
-
-    var adguard = global.adguard = {};
 
     // Message passing implementation
     adguard.runtimeImpl = (function () {
@@ -165,4 +163,4 @@
         };
     })();
 
-})(window);
+})(typeof adguard !== 'undefined' ? adguard : adguardContent);

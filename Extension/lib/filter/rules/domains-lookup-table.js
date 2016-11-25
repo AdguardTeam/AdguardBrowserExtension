@@ -15,9 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global CollectionUtils, Utils */
-
-(function (api) {
+(function (adguard, api) {
 
     'use strict';
 
@@ -81,7 +79,7 @@
                 var domainName = permittedDomains[i];
                 var rules = this.lookupTable[domainName];
                 if (rules) {
-                    CollectionUtils.removeRule(rules, rule);
+                    adguard.utils.collections.removeRule(rules, rule);
                     if (rules.length === 0) {
                         delete this.lookupTable[domainName];
                     }
@@ -141,7 +139,7 @@
             for (var r in this.lookupTable) { // jshint ignore:line
                 var value = this.lookupTable[r];
                 if (value) {
-                    if (Utils.isArray(value)) {
+                    if (adguard.utils.collections.isArray(value)) {
                         result = result.concat(value);
                     } else {
                         result.push(value);
@@ -155,5 +153,5 @@
 
     api.DomainsLookupTable = DomainsLookupTable;
 
-})(adguard.rules);
+})(adguard, adguard.rules);
 

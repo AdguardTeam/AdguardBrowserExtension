@@ -27,9 +27,9 @@ var ApplicationUpdateService = {
      */
     getRunInfo: function () {
 
-        var currentVersion = Prefs.version;
-        var prevVersion = Utils.getAppVersion();
-        Utils.setAppVersion(currentVersion);
+        var currentVersion = adguard.app.getVersion();
+        var prevVersion = adguard.utils.browser.getAppVersion();
+        adguard.utils.browser.setAppVersion(currentVersion);
 
         var isFirstRun = currentVersion !== prevVersion && !prevVersion;
         var isUpdate = currentVersion !== prevVersion && prevVersion;
@@ -50,25 +50,25 @@ var ApplicationUpdateService = {
     onUpdate: function (runInfo, callback) {
 
         var methods = [];
-        if (Utils.isGreaterVersion("1.0.1.0", runInfo.prevVersion)) {
+        if (adguard.utils.browser.isGreaterVersion("1.0.1.0", runInfo.prevVersion)) {
             methods.push(this._onUpdateToSaveFilterRulesToDifferentFiles);
         }
-        if (Utils.isGreaterVersion("1.0.3.0", runInfo.prevVersion)) {
+        if (adguard.utils.browser.isGreaterVersion("1.0.3.0", runInfo.prevVersion)) {
             methods.push(this._onUpdateToMultiplySubscriptions);
         }
-        if (Utils.isGreaterVersion("2.0.0", runInfo.prevVersion)) {
+        if (adguard.utils.browser.isGreaterVersion("2.0.0", runInfo.prevVersion)) {
             methods.push(this._onUpdateRemoveIpResolver);
         }
-        if (Utils.isGreaterVersion("2.0.9", runInfo.prevVersion)) {
+        if (adguard.utils.browser.isGreaterVersion("2.0.9", runInfo.prevVersion)) {
             methods.push(this._onUpdateWhiteListService);
         }
-        if (Utils.isGreaterVersion("2.0.10", runInfo.prevVersion)) {
+        if (adguard.utils.browser.isGreaterVersion("2.0.10", runInfo.prevVersion)) {
             methods.push(this._onUpdateRuleHitStats);
         }
-        if (Utils.isGreaterVersion("2.1.2", runInfo.prevVersion) && Utils.isFirefoxBrowser()) {
+        if (adguard.utils.browser.isGreaterVersion("2.1.2", runInfo.prevVersion) && adguard.utils.browser.isFirefoxBrowser()) {
             methods.push(this._onUpdateFirefoxStorage);
         }
-        if (Utils.isGreaterVersion("2.3.5", runInfo.prevVersion) && Utils.isChromium() && !Utils.isSafariBrowser()) {
+        if (adguard.utils.browser.isGreaterVersion("2.3.5", runInfo.prevVersion) && adguard.utils.browser.isChromium() && !adguard.utils.browser.isSafariBrowser()) {
             methods.push(this._onUpdateChromiumStorage);
         }
 
@@ -137,7 +137,7 @@ var ApplicationUpdateService = {
                         disabled: filter.disabled
                     };
                     var dfd = new Promise();
-                    var rulesText = CollectionUtils.getRulesText(filter.filterRules);
+                    var rulesText = adguard.utils.collections.getRulesText(filter.filterRules);
                     adguard.rulesStorage.write(filter.filterId, rulesText, dfd.resolve);
                     dfd.then(processNextFilter);
                 }
@@ -199,7 +199,7 @@ var ApplicationUpdateService = {
 
         var dfd = new Promise();
 
-        var filterId = AntiBannerFiltersId.WHITE_LIST_FILTER_ID;
+        var filterId = adguard.utils.filters.WHITE_LIST_FILTER_ID;
 
         adguard.rulesStorage.read(filterId, function (rulesText) {
 
@@ -282,7 +282,7 @@ var ApplicationUpdateService = {
 
         var dfd = new Promise();
 
-        var filterId = AntiBannerFiltersId.USER_FILTER_ID;
+        var filterId = adguard.utils.filters.USER_FILTER_ID;
         var filePath = "filterrules_" + filterId + ".txt";
 
         FileStorage.readFromFile(filePath, function (e, rules) {
@@ -322,7 +322,7 @@ var ApplicationUpdateService = {
 
         for (var filterId in adguardFilters) {
             var filterInfo = adguardFilters[filterId];
-            if (filterId == AntiBannerFiltersId.USER_FILTER_ID || filterId == AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+            if (filterId == adguard.utils.filters.USER_FILTER_ID || filterId == adguard.utils.filters.WHITE_LIST_FILTER_ID) {
                 continue;
             }
             var filter = {
@@ -333,7 +333,7 @@ var ApplicationUpdateService = {
                 filter.installed = true;
                 filter.enabled = true;
             }
-            if (filterId == AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID) {
+            if (filterId == adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID) {
                 filter.installed = true;
             }
             FilterLSUtils.updateFilterStateInfo(filter);

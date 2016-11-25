@@ -366,7 +366,7 @@ QUnit.test("Invalid Pseudo Class", function (assert) {
     }
 });
 
-QUnit.test("Extended Css Rules", function(assert) {
+QUnit.test("Extended Css Rules", function (assert) {
     var selector, ruleText, cssFilterRule;
 
     // :contains
@@ -386,7 +386,7 @@ QUnit.test("Extended Css Rules", function(assert) {
     assert.ok(cssFilterRule.extendedCss);
     assert.notOk(cssFilterRule.isInjectRule);
     assert.notOk(cssFilterRule.whiteListRule);
-    assert.equal(selector, cssFilterRule.cssSelector);    
+    assert.equal(selector, cssFilterRule.cssSelector);
 
     // :has
     selector = ".todaystripe:has(.banner)";
@@ -516,6 +516,9 @@ QUnit.test("Extended Css Build Common Extended", function (assert) {
 });
 
 QUnit.test("Extended Css Build CssHits", function (assert) {
+
+    var shadowDomPrefix = adguard.utils.browser.isShadowDomSupported() ? "::content " : "";
+
     var rule = new adguard.rules.CssFilterRule("adguard.com##.sponsored");
     var genericRule = new adguard.rules.CssFilterRule("##.banner");
     var extendedCssRule = new adguard.rules.CssFilterRule("adguard.com##.sponsored[-ext-contains=test]");
@@ -528,10 +531,10 @@ QUnit.test("Extended Css Build CssHits", function (assert) {
     extendedCss = selectors.extendedCss;
     commonCss = filter.buildCssHits(null).css;
     assert.equal(commonCss.length, 1);
-    assert.equal(commonCss[0].trim(), ".banner { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3B%23%23.banner') !important;}");
+    assert.equal(commonCss[0].trim(), shadowDomPrefix + ".banner { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3B%23%23.banner') !important;}");
     assert.equal(css.length, 2);
-    assert.equal(css[0].trim(), ".banner { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3B%23%23.banner') !important;}");
-    assert.equal(css[1].trim(), ".sponsored { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3Badguard.com%23%23.sponsored') !important;}");
+    assert.equal(css[0].trim(), shadowDomPrefix + ".banner { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3B%23%23.banner') !important;}");
+    assert.equal(css[1].trim(), shadowDomPrefix + ".sponsored { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3Badguard.com%23%23.sponsored') !important;}");
     assert.equal(extendedCss.length, 1);
     assert.equal(extendedCss[0].trim(), ".sponsored[-ext-contains=test] { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3Badguard.com%23%23.sponsored%5B-ext-contains%3Dtest%5D') !important;}");
 
@@ -540,9 +543,9 @@ QUnit.test("Extended Css Build CssHits", function (assert) {
     extendedCss = selectors.extendedCss;
     commonCss = filter.buildCssHits(null).css;
     assert.equal(commonCss.length, 1);
-    assert.equal(commonCss[0].trim(), ".banner { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3B%23%23.banner') !important;}");
+    assert.equal(commonCss[0].trim(), shadowDomPrefix + ".banner { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3B%23%23.banner') !important;}");
     assert.equal(css.length, 1);
-    assert.equal(css[0].trim(), ".sponsored { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3Badguard.com%23%23.sponsored') !important;}");
+    assert.equal(css[0].trim(), shadowDomPrefix + ".sponsored { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3Badguard.com%23%23.sponsored') !important;}");
     assert.equal(extendedCss.length, 1);
     assert.equal(extendedCss[0].trim(), ".sponsored[-ext-contains=test] { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3Badguard.com%23%23.sponsored%5B-ext-contains%3Dtest%5D') !important;}");
 

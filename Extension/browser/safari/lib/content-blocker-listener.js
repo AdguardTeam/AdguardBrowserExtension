@@ -16,34 +16,34 @@
  */
 
 /* global antiBannerService */
-(function () {
+(function (adguard) {
 
     'use strict';
 
-    if (Utils.isContentBlockerEnabled()) {
+    if (adguard.utils.browser.isContentBlockerEnabled()) {
 
         // Subscribe to events which lead to content blocker update
-        EventNotifier.addListener(function (event) {
+        adguard.listeners.addListener(function (event) {
 
-            if (event === EventNotifierTypes.REQUEST_FILTER_UPDATED ||
-                event === EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES) {
+            if (event === adguard.listeners.REQUEST_FILTER_UPDATED ||
+                event === adguard.listeners.UPDATE_WHITELIST_FILTER_RULES) {
 
-                SafariContentBlocker.updateContentBlocker();
+                adguard.SafariContentBlocker.updateContentBlocker();
             }
         });
 
         adguard.settings.onUpdated.addListener(function (setting) {
             if (setting === adguard.settings.DISABLE_FILTERING) {
-                SafariContentBlocker.updateContentBlocker();
+                adguard.SafariContentBlocker.updateContentBlocker();
             }
         });
 
         // When content blocker is updated we need to save finally converted rules count and over limit flag
-        EventNotifier.addListener(function (event, info) {
-            if (event === EventNotifierTypes.CONTENT_BLOCKER_UPDATED) {
+        adguard.listeners.addListener(function (event, info) {
+            if (event === adguard.listeners.CONTENT_BLOCKER_UPDATED) {
                 antiBannerService.updateContentBlockerInfo(info);
             }
         });
     }
 
-})();
+})(adguard);

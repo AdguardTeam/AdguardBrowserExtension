@@ -15,14 +15,14 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global chrome, EventChannels, UrlUtils, Utils */
+/* global chrome */
 
 /**
  * Initialize LocaleDetectService.
  *
  * This service is used to auto-enable language-specific filters.
  */
-adguard.localeDetectService = (function () {
+adguard.localeDetectService = (function (adguard) {
 
     var browsingLanguages = [];
 
@@ -94,7 +94,7 @@ adguard.localeDetectService = (function () {
         'id': 'id'
     };
 
-    var onDetectedChannel = EventChannels.newChannel();
+    var onDetectedChannel = adguard.utils.channels.newChannel();
 
     /**
      * Stores language in the special array containing languages of the last visited pages.
@@ -141,14 +141,14 @@ adguard.localeDetectService = (function () {
         }
 
         // Check language only for http://... tabs
-        if (!UrlUtils.isHttpRequest(url)) {
+        if (!adguard.utils.url.isHttpRequest(url)) {
             return;
         }
 
         if (tabId && typeof chrome != 'undefined' && chrome.tabs && chrome.tabs.detectLanguage) {
             // Using Chrome language detection if possible
             //detectLanguage working only in chrome browser (Opera and YaBrowser not fire callback method)
-            if (Utils.isChromeBrowser()) {
+            if (adguard.utils.browser.isChromeBrowser()) {
                 chrome.tabs.detectLanguage(tabId, function (language) {
                     if (chrome.runtime.lastError) {
                         return;
@@ -160,7 +160,7 @@ adguard.localeDetectService = (function () {
         }
 
         // Detecting language by top-level domain if Chrome language detection is unavailable
-        var host = UrlUtils.getHost(url);
+        var host = adguard.utils.url.getHost(url);
         if (host) {
             var parts = host ? host.split('.') : [];
             var tld = parts[parts.length - 1];
@@ -212,4 +212,4 @@ adguard.localeDetectService = (function () {
         onDetected: onDetectedChannel
     };
 
-})();
+})(adguard);

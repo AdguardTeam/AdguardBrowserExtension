@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global RequestTypes, antiBannerService, framesMap */
+/* global RequestTypes, antiBannerService */
 
 (function () {
 
@@ -28,7 +28,7 @@
 
     // Record opened tabs
     adguard.tabs.forEach(function (tab) {
-        framesMap.recordFrame(tab, 0, tab.url, RequestTypes.DOCUMENT);
+        adguard.frames.recordFrame(tab, 0, tab.url, RequestTypes.DOCUMENT);
         adguard.ui.updateTabIconAndContextMenu(tab);
     });
 

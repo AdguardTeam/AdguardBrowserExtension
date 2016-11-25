@@ -15,9 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global safari, SafariBrowserWindow, SafariBrowserTab, EventChannels */
+/* global safari, SafariBrowserWindow, SafariBrowserTab */
 
-adguard.windowsImpl = (function () {
+adguard.windowsImpl = (function (adguard) {
 
     'use strict';
 
@@ -54,9 +54,9 @@ adguard.windowsImpl = (function () {
         };
     }
 
-    var onCreatedChannel = EventChannels.newChannel();
-    var onRemovedChannel = EventChannels.newChannel();
-    var onUpdatedChannel = EventChannels.newChannel();
+    var onCreatedChannel = adguard.utils.channels.newChannel();
+    var onRemovedChannel = adguard.utils.channels.newChannel();
+    var onUpdatedChannel = adguard.utils.channels.newChannel();
 
     safari.application.addEventListener('open', function (event) {
         var safariWindow = event.target;
@@ -114,9 +114,9 @@ adguard.windowsImpl = (function () {
         forEachNative: forEachNative
     };
 
-})();
+})(adguard);
 
-adguard.tabsImpl = (function () {
+adguard.tabsImpl = (function (adguard) {
 
     'use strict';
 
@@ -168,7 +168,7 @@ adguard.tabsImpl = (function () {
         };
     }
 
-    var onCreatedChannel = EventChannels.newChannel();
+    var onCreatedChannel = adguard.utils.channels.newChannel();
     safari.application.addEventListener('open', function (event) {
 
         var safariTab = event.target;
@@ -181,7 +181,7 @@ adguard.tabsImpl = (function () {
 
     }, true);
 
-    var onRemovedChannel = EventChannels.newChannel();
+    var onRemovedChannel = adguard.utils.channels.newChannel();
     safari.application.addEventListener('close', function (event) {
 
         var safariTab = event.target;
@@ -200,7 +200,7 @@ adguard.tabsImpl = (function () {
 
     }, true);
 
-    var onUpdatedChannel = EventChannels.newChannel();
+    var onUpdatedChannel = adguard.utils.channels.newChannel();
     safari.application.addEventListener('navigate', function (event) {
 
         var safariTab = event.target;
@@ -230,7 +230,7 @@ adguard.tabsImpl = (function () {
 
     }, true);
 
-    var onActivatedChannel = EventChannels.newChannel();
+    var onActivatedChannel = adguard.utils.channels.newChannel();
     safari.application.addEventListener('activate', function (event) {
 
         var target = event.target;
@@ -358,4 +358,4 @@ adguard.tabsImpl = (function () {
         fromSafariTab: fromSafariTab,
         toSafariTab: toSafariTab
     };
-})();
+})(adguard);

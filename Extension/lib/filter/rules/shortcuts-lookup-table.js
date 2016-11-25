@@ -15,9 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Utils, StringUtils, CollectionUtils */
-
-(function (api) {
+(function (adguard, api) {
 
     'use strict';
 
@@ -31,7 +29,7 @@
      * @param rule
      */
     function getRuleShortcut(rule) {
-        if (StringUtils.isEmpty(rule.shortcut) || rule.shortcut.length < SHORTCUT_LENGTH) {
+        if (adguard.utils.strings.isEmpty(rule.shortcut) || rule.shortcut.length < SHORTCUT_LENGTH) {
             return null;
         }
         return rule.shortcut.substring(rule.shortcut.length - SHORTCUT_LENGTH);
@@ -75,7 +73,7 @@
                 this.lookupTable[shortcut] = rule;
             } else {
                 var obj = this.lookupTable[shortcut];
-                if (Utils.isArray(obj)) {
+                if (adguard.utils.collections.isArray(obj)) {
                     // That is popular shortcut, more than one rule
                     obj.push(rule);
                 } else {
@@ -102,8 +100,8 @@
 
             if (shortcut in this.lookupTable) {
                 var obj = this.lookupTable[shortcut];
-                if (Utils.isArray(obj)) {
-                    CollectionUtils.removeRule(obj, rule);
+                if (adguard.utils.collections.isArray(obj)) {
+                    adguard.utils.collections.removeRule(obj, rule);
                     if (obj.length === 0) {
                         delete this.lookupTable[shortcut];
                     }
@@ -133,7 +131,7 @@
                 var hash = url.substring(i, i + SHORTCUT_LENGTH);
                 var value = this.lookupTable[hash];
                 if (value) {
-                    if (Utils.isArray(value)) {
+                    if (adguard.utils.collections.isArray(value)) {
                         result = result.concat(value);
                     } else {
                         result.push(value);
@@ -151,7 +149,7 @@
             for (var r in this.lookupTable) { // jshint ignore:line
                 var value = this.lookupTable[r];
                 if (value) {
-                    if (Utils.isArray(value)) {
+                    if (adguard.utils.collections.isArray(value)) {
                         result = result.concat(value);
                     } else {
                         result.push(value);
@@ -165,5 +163,5 @@
 
     api.ShortcutsLookupTable = ShortcutsLookupTable;
 
-})(adguard.rules);
+})(adguard, adguard.rules);
 

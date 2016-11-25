@@ -112,7 +112,7 @@ QUnit.test("Request filter performance", function(assert) {
         assert.ok(rules.length > 0);
         for (var i = 0; i < rules.length; i++) {
             try {
-                var rule = adguard.rules.builder.createRule(rules[i], AntiBannerFiltersId.USER_FILTER_ID);
+                var rule = adguard.rules.builder.createRule(rules[i], adguard.utils.filters.USER_FILTER_ID);
                 requestFilter.addRule(rule);
             } catch (ex) {
                 //Ignore

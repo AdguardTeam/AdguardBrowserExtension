@@ -15,8 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global RequestTypes, framesMap, EventNotifier, EventNotifierTypes, UrlUtils */
-/* global Prefs, Utils, antiBannerService, StringUtils */
+/* global RequestTypes */
+/* global antiBannerService */
 
 (function () {
 
@@ -33,23 +33,23 @@
         var requestType = requestDetails.requestType;
 
         if (requestType === RequestTypes.DOCUMENT || requestType === RequestTypes.SUBDOCUMENT) {
-            framesMap.recordFrame(tab, requestDetails.frameId, requestUrl, requestType);
+            adguard.frames.recordFrame(tab, requestDetails.frameId, requestUrl, requestType);
         }
 
         if (requestType === RequestTypes.DOCUMENT) {
             // Reset tab button state
-            EventNotifier.notifyListeners(EventNotifierTypes.UPDATE_TAB_BUTTON_STATE, tab, true);
+            adguard.listeners.notifyListeners(adguard.listeners.UPDATE_TAB_BUTTON_STATE, tab, true);
             return true;
         }
 
-        if (!UrlUtils.isHttpRequest(requestUrl)) {
+        if (!adguard.utils.url.isHttpRequest(requestUrl)) {
             return true;
         }
 
-        var referrerUrl = framesMap.getFrameUrl(tab, requestDetails.requestFrameId);
+        var referrerUrl = adguard.frames.getFrameUrl(tab, requestDetails.requestFrameId);
         if (!referrerUrl) {
             // Assign to main frame
-            referrerUrl = framesMap.getFrameUrl(tab, 0);
+            referrerUrl = adguard.frames.getFrameUrl(tab, 0);
         }
         var requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
         adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
@@ -71,8 +71,8 @@
 
         if (adguard.integration.shouldOverrideReferrer(tab)) {
             // Retrieve main frame url
-            var mainFrameUrl = framesMap.getFrameUrl(tab, 0);
-            headers = Utils.setHeaderValue(headers, 'Referer', mainFrameUrl);
+            var mainFrameUrl = adguard.frames.getFrameUrl(tab, 0);
+            headers = adguard.utils.browser.setHeaderValue(headers, 'Referer', mainFrameUrl);
             return {
                 requestHeaders: headers,
                 modifiedHeaders: [{
@@ -84,9 +84,9 @@
 
         if (requestDetails.requestType === 'DOCUMENT') {
             // Save ref header
-            var refHeader = Utils.findHeaderByName(headers, 'Referer');
+            var refHeader = adguard.utils.browser.findHeaderByName(headers, 'Referer');
             if (refHeader) {
-                framesMap.recordFrameReferrerHeader(tab, refHeader.value);
+                adguard.frames.recordFrameReferrerHeader(tab, refHeader.value);
             }
         }
 
@@ -108,9 +108,9 @@
         var responseHeaders = requestDetails.responseHeaders;
         var requestType = requestDetails.requestType;
         // Retrieve referrer
-        var referrerUrl = framesMap.getFrameUrl(tab, requestDetails.requestFrameId);
+        var referrerUrl = adguard.frames.getFrameUrl(tab, requestDetails.requestFrameId);
         if (!referrerUrl) {
-            referrerUrl = framesMap.getFrameUrl(tab, 0);
+            referrerUrl = adguard.frames.getFrameUrl(tab, 0);
         }
 
         adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
@@ -152,17 +152,17 @@
      */
     function filterSafebrowsing(tab, mainFrameUrl) {
 
-        if (framesMap.isTabAdguardDetected(tab) || framesMap.isTabProtectionDisabled(tab) || framesMap.isTabWhiteListedForSafebrowsing(tab)) {
+        if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab) || adguard.frames.isTabWhiteListedForSafebrowsing(tab)) {
             return;
         }
 
-        var referrerUrl = Utils.getSafebrowsingBackUrl(tab);
-        var incognitoTab = framesMap.isIncognitoTab(tab);
+        var referrerUrl = adguard.utils.browser.getSafebrowsingBackUrl(tab);
+        var incognitoTab = adguard.frames.isIncognitoTab(tab);
 
         antiBannerService.checkSafebrowsingFilter(mainFrameUrl, referrerUrl, function (safebrowsingUrl) {
             // Chrome doesn't allow open extension url in incognito mode
             // So close current tab and open new
-            if (incognitoTab && Utils.isChromium()) {
+            if (incognitoTab && adguard.utils.browser.isChromium()) {
                 adguard.ui.openTab(safebrowsingUrl, {}, function () {
                     adguard.tabs.remove(tab.tabId);
                 });
@@ -182,15 +182,15 @@
 
     // AG for Windows and Mac checks either request signature or request Referer to authorize request.
     // Referer cannot be forged by the website so it's ok for add-on authorization.
-    if (Prefs.platform === "chromium") {
+    if (adguard.utils.browser.isChromium()) {
 
-        /* global browser */
-        browser.webRequest.onBeforeSendHeaders.addListener(function callback(details) {
+        /* global chrome */
+        chrome.webRequest.onBeforeSendHeaders.addListener(function callback(details) {
 
             var authHeaders = adguard.integration.getAuthorizationHeaders();
             var headers = details.requestHeaders;
             for (var i = 0; i < authHeaders.length; i++) {
-                headers = Utils.setHeaderValue(details.requestHeaders, authHeaders[i].headerName, authHeaders[i].headerValue);
+                headers = adguard.utils.browser.setHeaderValue(details.requestHeaders, authHeaders[i].headerName, authHeaders[i].headerValue);
             }
 
             return {requestHeaders: headers};
@@ -199,14 +199,14 @@
     }
 
     // TODO[Edge]: Add support for collecting hits stats. Currently we cannot add listener for ms-browser-extension:// urls.
-    if (Prefs.platform === "chromium" && Prefs.getBrowser() !== "Edge") {
+    if (adguard.utils.browser.isChromium() && !adguard.utils.browser.isEdgeBrowser()) {
         var parseCssRuleFromUrl = function (requestUrl) {
             if (!requestUrl) {
                 return null;
             }
-            var filterIdAndRuleText = decodeURIComponent(StringUtils.substringAfter(requestUrl, '#'));
-            var filterId = StringUtils.substringBefore(filterIdAndRuleText, ';');
-            var ruleText = StringUtils.substringAfter(filterIdAndRuleText, ';');
+            var filterIdAndRuleText = decodeURIComponent(adguard.utils.strings.substringAfter(requestUrl, '#'));
+            var filterId = adguard.utils.strings.substringBefore(filterIdAndRuleText, ';');
+            var ruleText = adguard.utils.strings.substringAfter(filterIdAndRuleText, ';');
             return {
                 filterId: filterId,
                 ruleText: ruleText
@@ -214,10 +214,10 @@
         };
 
         var onCssRuleHit = function (requestDetails) {
-            if (framesMap.isIncognitoTab(requestDetails.tab)) {
+            if (adguard.frames.isIncognitoTab(requestDetails.tab)) {
                 return;
             }
-            var domain = framesMap.getFrameDomain(requestDetails.tab);
+            var domain = adguard.frames.getFrameDomain(requestDetails.tab);
             var rule = parseCssRuleFromUrl(requestDetails.requestUrl);
             if (rule) {
                 adguard.hitStats.addRuleHit(domain, rule.ruleText, rule.filterId);
@@ -229,14 +229,14 @@
     }
 
     var handlerBehaviorTimeout = null;
-    EventNotifier.addListener(function (event) {
+    adguard.listeners.addListener(function (event) {
         switch (event) {
-            case EventNotifierTypes.ADD_RULE:
-            case EventNotifierTypes.ADD_RULES:
-            case EventNotifierTypes.REMOVE_RULE:
-            case EventNotifierTypes.UPDATE_FILTER_RULES:
-            case EventNotifierTypes.ENABLE_FILTER:
-            case EventNotifierTypes.DISABLE_FILTER:
+            case adguard.listeners.ADD_RULE:
+            case adguard.listeners.ADD_RULES:
+            case adguard.listeners.REMOVE_RULE:
+            case adguard.listeners.UPDATE_FILTER_RULES:
+            case adguard.listeners.ENABLE_FILTER:
+            case adguard.listeners.DISABLE_FILTER:
                 if (handlerBehaviorTimeout !== null) {
                     clearTimeout(handlerBehaviorTimeout);
                 }

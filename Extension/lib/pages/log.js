@@ -54,20 +54,6 @@ var StringUtils = {
 
 var UrlUtils = {
 
-	getParamValue: function (url, paramName) {
-		var query = StringUtils.substringAfter(url, '?');
-		if (query) {
-			var params = query.split('&');
-			for (var i = 0; i < params.length; i++) {
-				var paramAndValue = params[i].split('=');
-				if (paramAndValue[0] == paramName) {
-					return paramAndValue[1];
-				}
-			}
-		}
-		return null;
-	},
-
 	getDomainName: function (url) {
 		if (!this.linkHelper) {
 			this.linkHelper = document.createElement('a');
@@ -118,8 +104,7 @@ PageController.prototype = {
 		// bind on change of selected tab
 		this.tabSelectorList.on('click', 'div', function (e) {
 			var el = $(e.currentTarget);
-			this.currentTabId = el.attr('data-tab-id');
-			this.onSelectedTabChange();
+			document.location.hash = '#' + el.attr('data-tab-id');
 		}.bind(this));
 
 		// bind location hash change
@@ -774,23 +759,19 @@ RequestWizard.getSource = function (frameDomain) {
 };
 
 var userSettings;
-var enabledFilters;
 var environmentOptions;
 var AntiBannerFiltersId;
 var EventNotifierTypes;
-var LogEvents;
 var filtersMetadata;
 
 contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
 
 	userSettings = response.userSettings;
-	enabledFilters = response.enabledFilters;
 	filtersMetadata = response.filtersMetadata;
 	environmentOptions = response.environmentOptions;
 
 	AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
 	EventNotifierTypes = response.constants.EventNotifierTypes;
-	LogEvents = response.constants.LogEvents;
 
 	$(document).ready(function () {
 
@@ -798,30 +779,30 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
 
 		function onEvent(event, tabInfo, filteringEvent) {
 			switch (event) {
-				case LogEvents.TAB_ADDED:
+				case EventNotifierTypes.TAB_ADDED:
 					pageController.onTabAdded(tabInfo);
 					break;
-				case LogEvents.TAB_UPDATE:
+				case EventNotifierTypes.TAB_UPDATE:
 					pageController.onTabUpdated(tabInfo);
 					break;
-				case LogEvents.TAB_CLOSE:
+				case EventNotifierTypes.TAB_CLOSE:
 					pageController.onTabClose(tabInfo);
 					break;
-				case LogEvents.TAB_RESET:
+				case EventNotifierTypes.TAB_RESET:
 					pageController.onTabReset(tabInfo);
 					break;
-				case LogEvents.EVENT_ADDED:
+				case EventNotifierTypes.LOG_EVENT_ADDED :
 					pageController.onEventAdded(tabInfo, filteringEvent);
 					break;
 			}
 		}
 
 		var events = [
-			LogEvents.TAB_ADDED,
-			LogEvents.TAB_UPDATE,
-			LogEvents.TAB_CLOSE,
-			LogEvents.TAB_RESET,
-			LogEvents.EVENT_ADDED
+			EventNotifierTypes.TAB_ADDED,
+			EventNotifierTypes.TAB_UPDATE,
+			EventNotifierTypes.TAB_CLOSE,
+			EventNotifierTypes.TAB_RESET,
+			EventNotifierTypes.LOG_EVENT_ADDED
 		];
 
 		//set log is open

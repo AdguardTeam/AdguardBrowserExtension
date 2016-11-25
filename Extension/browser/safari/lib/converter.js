@@ -35,7 +35,7 @@ var SafariContentBlockerConverter = {
             var domain, domains, iDomains;
 
             if (rule.permittedDomain) {
-                domain = UrlUtils.toPunyCode(rule.permittedDomain.toLowerCase());
+                domain = adguard.utils.url.toPunyCode(rule.permittedDomain.toLowerCase());
                 included.push(domain);
             } else if (rule.permittedDomains) {
                 domains = rule.permittedDomains;
@@ -44,14 +44,14 @@ var SafariContentBlockerConverter = {
                 while (iDomains--) {
                     if (domains[iDomains] !== "") {
                         domain = domains[iDomains];
-                        domain = UrlUtils.toPunyCode(domain.toLowerCase());
+                        domain = adguard.utils.url.toPunyCode(domain.toLowerCase());
                         included.push(domain);
                     }
                 }
             }
 
             if (rule.restrictedDomain) {
-                domain = UrlUtils.toPunyCode(rule.restrictedDomain.toLowerCase());
+                domain = adguard.utils.url.toPunyCode(rule.restrictedDomain.toLowerCase());
                 excluded.push(domain);
             } else if (rule.restrictedDomains) {
                 domains = rule.restrictedDomains;
@@ -59,7 +59,7 @@ var SafariContentBlockerConverter = {
                 while (iDomains--) {
                     domain = domains[iDomains];
                     if (domain) {
-                        domain = UrlUtils.toPunyCode(domain.toLowerCase());
+                        domain = adguard.utils.url.toPunyCode(domain.toLowerCase());
                         excluded.push(domain);
                     }
                 }
@@ -202,7 +202,7 @@ var SafariContentBlockerConverter = {
 
                 for (i = 0; i < startsWith.length; i++) {
                     var start = startsWith[i];
-                    if (StringUtils.startWith(ruleText, start)) {
+                    if (adguard.utils.strings.startWith(ruleText, start)) {
                         startIndex = start.length;
                         break;
                     }
@@ -238,7 +238,7 @@ var SafariContentBlockerConverter = {
                 }
 
                 return {
-                    domain: UrlUtils.toPunyCode(domain),
+                    domain: adguard.utils.url.toPunyCode(domain),
                     path: path
                 };
 
@@ -387,8 +387,8 @@ var SafariContentBlockerConverter = {
             var urlFilter = this._createUrlFilterString(rule);
 
             // Redefine some of regular expressions
-            urlFilter = StringUtils.replaceAll(urlFilter, adguard.rules.SimpleRegex.regexConfiguration.regexStartUrl, URL_FILTER_REGEXP_START_URL);
-            urlFilter = StringUtils.replaceAll(urlFilter, adguard.rules.SimpleRegex.regexConfiguration.regexSeparator, URL_FILTER_REGEXP_SEPARATOR);
+            urlFilter = adguard.utils.strings.replaceAll(urlFilter, adguard.rules.SimpleRegex.regexConfiguration.regexStartUrl, URL_FILTER_REGEXP_START_URL);
+            urlFilter = adguard.utils.strings.replaceAll(urlFilter, adguard.rules.SimpleRegex.regexConfiguration.regexSeparator, URL_FILTER_REGEXP_SEPARATOR);
 
             this._validateRegExp(urlFilter);
 

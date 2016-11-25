@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Log, UrlUtils, StringUtils, Prefs */
+/* global Log */
 
 (function (adguard) {
 
@@ -151,13 +151,13 @@
          * @returns CSS ready to be injected
          */
         getSelectorsForUrl: function (url, genericHide) {
-            var domain = UrlUtils.getDomainName(url);
+            var domain = adguard.utils.url.getDomainName(url);
             if (adguard.settings.collectHitsCount()) {
                 // If user has enabled "Send statistics for ad filters usage" option we build CSS with enabled hits stats.
                 // In this case style contains "background-image" to the unique URL.
                 // Tracking requests to this URL shows us which rule has been used.
                 // NOTE: For Firefox we use another way, look at "getCssForStyleSheet" method.
-                var hitPrefix = Prefs.hitPrefix;
+                var hitPrefix = adguard.prefs.hitPrefix;
                 return this.cssFilter.buildCssHits(domain, hitPrefix, genericHide);
             } else {
                 return this.cssFilter.buildCss(domain, genericHide);
@@ -174,7 +174,7 @@
          * @returns CSS ready to be injected.
          */
         getInjectedSelectorsForUrl: function (url, genericHide) {
-            var domain = UrlUtils.getDomainName(url);
+            var domain = adguard.utils.url.getDomainName(url);
             return this.cssFilter.buildInjectCss(domain, genericHide);
         },
 
@@ -197,7 +197,7 @@
          * @returns Javascript
          */
         getScriptsForUrl: function (url) {
-            var domain = UrlUtils.toPunyCode(UrlUtils.getDomainName(url));
+            var domain = adguard.utils.url.toPunyCode(adguard.utils.url.getDomainName(url));
             return this.scriptFilter.buildScript(domain);
         },
 
@@ -221,8 +221,8 @@
          */
         findWhiteListRule: function (requestUrl, referrer, requestType) {
 
-            var refHost = UrlUtils.getHost(referrer);
-            var thirdParty = UrlUtils.isThirdPartyRequest(requestUrl, referrer);
+            var refHost = adguard.utils.url.getHost(referrer);
+            var thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrer);
 
             var cacheItem = this._searchRequestCache(requestUrl, refHost, requestType);
 
@@ -248,8 +248,8 @@
          */
         findRuleForRequest: function (requestUrl, documentUrl, requestType, documentWhitelistRule) {
 
-            var documentHost = UrlUtils.getHost(documentUrl);
-            var thirdParty = UrlUtils.isThirdPartyRequest(requestUrl, documentUrl);
+            var documentHost = adguard.utils.url.getHost(documentUrl);
+            var thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
 
             var cacheItem = this._searchRequestCache(requestUrl, documentHost, requestType);
 
@@ -275,7 +275,7 @@
          * @private
          */
         _checkWhiteList: function (requestUrl, documentHost, requestType, thirdParty) {
-            if (this.urlWhiteFilter === null || StringUtils.isEmpty(requestUrl)) {
+            if (this.urlWhiteFilter === null || adguard.utils.strings.isEmpty(requestUrl)) {
                 return null;
             }
             return this.urlWhiteFilter.isFiltered(requestUrl, documentHost, requestType, thirdParty);
@@ -293,7 +293,7 @@
          * @private
          */
         _checkUrlBlockingList: function (requestUrl, refHost, requestType, thirdParty, genericRulesAllowed) {
-            if (this.urlBlockingFilter === null || StringUtils.isEmpty(requestUrl)) {
+            if (this.urlBlockingFilter === null || adguard.utils.strings.isEmpty(requestUrl)) {
                 return null;
             }
 
