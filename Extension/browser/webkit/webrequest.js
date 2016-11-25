@@ -103,7 +103,9 @@ function onHeadersReceived(requestDetails) {
     if (requestType == RequestTypes.DOCUMENT) {
         // Safebrowsing check
         filterSafebrowsing(tab, requestUrl);
+    }
 
+    if (requestType == RequestTypes.DOCUMENT || requestType == RequestTypes.SUBDOCUMENT) {
         /*
          Websocket check.
          If 'ws://' request is blocked for not existing domain - it's blocked for all domains.
@@ -116,8 +118,9 @@ function onHeadersReceived(requestDetails) {
          */
         var websocketCheckUrl = "ws://adguardwebsocket.check/";
         if (webRequestService.checkWebSocketRequest(tab, websocketCheckUrl, referrerUrl)) {
-            responseHeaders.push({name: 'Content-Security-Policy', value: 'frame-src http: https:; child-src http: https:'});
-            return { responseHeaders: responseHeaders };
+            if (CspUtils.blockWebSockets(responseHeaders)) {
+                return {responseHeaders: responseHeaders};
+            }
         }
     }
 }
