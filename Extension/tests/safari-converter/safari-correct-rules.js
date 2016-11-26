@@ -1,10 +1,7 @@
 var safariCorrectRules = [
   {
     "trigger": {
-      "url-filter": ".*",
-      "resource-type": [
-        "document"
-      ]
+      "url-filter": ".*"
     },
     "action": {
       "type": "css-display-none",
@@ -14,9 +11,6 @@ var safariCorrectRules = [
     {
         "trigger": {
             "url-filter": ".*",
-            "resource-type": [
-                "document"
-            ],
             "unless-domain": [
                 "*lenta1.ru",
                 "*lenta2.ru"
@@ -30,9 +24,6 @@ var safariCorrectRules = [
   {
     "trigger": {
       "url-filter": ".*",
-      "resource-type": [
-        "document"
-      ],
       "if-domain": [
         "*popsugar.com"
       ]

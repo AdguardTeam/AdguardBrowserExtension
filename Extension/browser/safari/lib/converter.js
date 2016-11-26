@@ -18,7 +18,7 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.19';
+var CONVERTER_VERSION = '1.3.20';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var URL_FILTER_ANY_URL = ".*";
@@ -269,8 +269,9 @@ exports.SafariContentBlockerConverter = {
 
             var result = {
                 trigger: {
-                    "url-filter": URL_FILTER_ANY_URL,
-                    "resource-type": [ "document" ]
+                    "url-filter": URL_FILTER_ANY_URL
+                    // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/153#issuecomment-263067779
+                    //,"resource-type": [ "document" ]
                 },
                 action: {
                     type: "css-display-none",
@@ -671,8 +672,9 @@ exports.SafariContentBlockerConverter = {
 
             var rule = {
                 trigger: {
-                    "url-filter": URL_FILTER_ANY_URL,
-                    "resource-type": [ "document" ]
+                    "url-filter": URL_FILTER_ANY_URL
+                    // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/153#issuecomment-263067779
+                    //,"resource-type": [ "document" ]
                 },
                 action: {
                     type: "css-display-none",
