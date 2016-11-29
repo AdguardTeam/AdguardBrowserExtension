@@ -55,7 +55,8 @@ var ElementCollapser = (function() {
         }
 
         //Remove heading html
-        if (stack.length > 0 && stack[0] == 'html') {
+        //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/400
+        if (stack.length > 1 && stack[0] == 'html' && stack[1] == 'body') {
             stack.splice(0, 1);
         }
 
