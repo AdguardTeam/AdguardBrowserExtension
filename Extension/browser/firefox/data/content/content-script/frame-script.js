@@ -279,6 +279,14 @@
             return i18nMessages[messageId];
         };
 
+        // destroy sandbox when window unloaded
+        win.addEventListener('unload', function () {
+            if (sandbox) {
+                Cu.nukeSandbox(sandbox);
+                sandbox = null;
+            }
+        }, true);
+
         return sandbox;
     };
 
