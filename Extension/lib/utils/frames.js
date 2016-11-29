@@ -239,9 +239,9 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
         var frameData = this.getMainFrame(tab);
         if (frameData) {
             var url = frameData.url;
-            var frameWhiteListRule = antiBannerService.getRequestFilter().findWhiteListRule(url, url, RequestTypes.DOCUMENT);
+            var frameWhiteListRule = whiteListService.findWhiteListRule(url);
             if (!frameWhiteListRule) {
-                frameWhiteListRule = whiteListService.findWhiteListRule(url);
+                frameWhiteListRule = antiBannerService.getRequestFilter().findWhiteListRule(url, url, RequestTypes.DOCUMENT);
             }
             frameData.frameWhiteListRule = frameWhiteListRule;
             frameData.applicationFilteringDisabled = antiBannerService.isApplicationFilteringDisabled();
