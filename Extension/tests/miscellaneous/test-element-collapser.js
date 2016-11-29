@@ -107,6 +107,36 @@ QUnit.test("Test Collapse by src with shadowDOM", function(assert) {
     assert.equal(style.display, 'none');
 });
 
+QUnit.test("Test Collapser with special characters in dom path", function(assert) {
+    cleanUp();
+
+    var shadowRoot = createShadowRoot();
+    if (!shadowRoot) {
+        //can't run this test without shadowDOM support
+        return;
+    }
+
+    var element = document.getElementById('test-div-in-http');
+    var style = window.getComputedStyle(element);
+    assert.equal(style.display, 'block');
+
+    ElementCollapser.hideBySelector('#test-div-in-http', null, shadowRoot);
+    style = window.getComputedStyle(element);
+    assert.equal(style.display, 'none');
+
+    ElementCollapser.unhideBySelector('#test-div-in-http', shadowRoot);
+    style = window.getComputedStyle(element);
+    assert.equal(style.display, 'block');
+
+    ElementCollapser.hideElement(element, shadowRoot);
+    style = window.getComputedStyle(element);
+    assert.equal(style.display, 'none');
+
+    ElementCollapser.unhideElement(element, shadowRoot);
+    style = window.getComputedStyle(element);
+    assert.equal(style.display, 'block');
+});
+
 var cleanUp = function () {
     var el = document.getElementById('adguard-collapse-styles');
     if (el) {
