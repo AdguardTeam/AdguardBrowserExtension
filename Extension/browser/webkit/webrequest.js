@@ -47,7 +47,7 @@ function onBeforeRequest(requestDetails) {
     var referrerUrl = framesMap.getFrameUrl(tab, requestDetails.requestFrameId);
     if (!referrerUrl) {
         // Assign to main frame
-        referrerUrl = framesMap.getFrameUrl(tab, 0);
+        referrerUrl = framesMap.getMainFrameUrl(tab);
     }
     var requestRule = webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
     webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
@@ -69,7 +69,7 @@ function onBeforeSendHeaders(requestDetails) {
 
     if (adguardApplication.shouldOverrideReferrer(tab)) {
         // Retrieve main frame url
-        var mainFrameUrl = framesMap.getFrameUrl(tab, 0);
+        var mainFrameUrl = framesMap.getMainFrameUrl(tab);
         headers = Utils.setHeaderValue(headers, 'Referer', mainFrameUrl);
         return {requestHeaders: headers};
     }

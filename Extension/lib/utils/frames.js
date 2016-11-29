@@ -127,6 +127,16 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
     };
 
     /**
+     * Gets main frame URL
+     *
+     * @param tab       Tab
+     * @returns Frame URL
+     */
+    this.getMainFrameUrl = function (tab) {
+        return this.getFrameUrl(tab, 0);
+    };
+
+    /**
      * Gets frame Domain
      *
      * @param tab       Tab

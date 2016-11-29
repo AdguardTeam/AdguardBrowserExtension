@@ -468,10 +468,10 @@ var WebRequestImpl = exports.WebRequestImpl = {
         }
 
         var referrer;
-        if (requestOrigin) {
+        if (requestOrigin && requestOrigin.asciiSpec) {
             referrer = requestOrigin.asciiSpec;
         } else {
-            referrer = this.framesMap.getFrameUrl(tab, 0);
+            referrer = this.framesMap.getMainFrameUrl(tab);
         }
 
         var requestUrl = contentLocation.asciiSpec;
@@ -517,7 +517,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
 
             var tab = {id: tabUtils.getTabId(xulTab)};
             var requestUrl = newChannel.URI.asciiSpec;
-            var tabUrl = this.framesMap.getFrameUrl(tab, 0);
+            var tabUrl = this.framesMap.getMainFrameUrl(tab);
             var shouldBlockResult = this._shouldBlockRequest(tab, requestUrl, tabUrl, requestProperties.requestType, null);
 
             Log.debug('asyncOnChannelRedirect: {0} {1}. Blocked={2}', requestUrl, requestProperties.requestType, shouldBlockResult.blocked);
@@ -600,7 +600,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
         }
 
         // Retrieve referrer URL
-        var referrerUrl = this.framesMap.getFrameUrl(tab, 0);
+        var referrerUrl = this.framesMap.getMainFrameUrl(tab);
 
         if (!!requestProperties) {  
             // Calling postProcessRequest only for requests which were previously processed by "shouldLoad"
@@ -685,7 +685,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
         var tab = {id: tabId};
         if (this.adguardApplication.shouldOverrideReferrer(tab)) {
             // Retrieve main frame url
-            var frameUrl = this.framesMap.getFrameUrl(tab, 0);
+            var frameUrl = this.framesMap.getMainFrameUrl(tab);
             subject.setRequestHeader('Referer', frameUrl, false);
         }
     },
@@ -775,7 +775,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
             return false;
         }
 
-        var tabUrl = this.framesMap.getFrameUrl(sourceTab, 0);
+        var tabUrl = this.framesMap.getMainFrameUrl(sourceTab);
 
         var requestRule = this.webRequestService.getRuleForRequest(sourceTab, requestUrl, tabUrl, RequestTypes.POPUP);
         var requestBlocked = this.webRequestService.isRequestBlockedByRule(requestRule);
