@@ -467,18 +467,17 @@ var WebRequestImpl = exports.WebRequestImpl = {
             return WebRequestHelper.ACCEPT;
         }
 
-        var tabUrl;
-        if (!tab && requestOrigin) {
-            //In case of websocket requests tab could be empty
-            tabUrl = requestOrigin.asciiSpec;
+        var referrer;
+        if (requestOrigin) {
+            referrer = requestOrigin.asciiSpec;
         } else {
-            tabUrl = this.framesMap.getFrameUrl(tab, 0);
+            referrer = this.framesMap.getFrameUrl(tab, 0);
         }
 
         var requestUrl = contentLocation.asciiSpec;
         var requestType = WebRequestHelper.getRequestType(contentType, contentLocation);
 
-        var result = this._shouldBlockRequest(tab, requestUrl, tabUrl, requestType, aContext);
+        var result = this._shouldBlockRequest(tab, requestUrl, referrer, requestType, aContext);
 
         Log.debug('shouldLoad: {0} {1}. Result: {2}', requestUrl, requestType, result.blocked);
         this._saveLastRequestProperties(requestUrl, requestType, result, aContext);

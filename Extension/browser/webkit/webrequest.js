@@ -45,6 +45,10 @@ function onBeforeRequest(requestDetails) {
     }
 
     var referrerUrl = framesMap.getFrameUrl(tab, requestDetails.requestFrameId);
+    if (!referrerUrl) {
+        // Assign to main frame
+        referrerUrl = framesMap.getFrameUrl(tab, 0);
+    }
     var requestRule = webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
     webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
     return !webRequestService.isRequestBlockedByRule(requestRule);
