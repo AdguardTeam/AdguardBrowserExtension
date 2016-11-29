@@ -18,64 +18,82 @@
 /**
  * Creating service that manages our filter rules.
  */
-var AntiBannerService = function () {
+adguard.AntiBannerService = (function (adguard) {
+
+    /**
+     * Represents filter metadata
+     *
+     * @param filterId Filter identifier
+     * @constructor
+     */
+    var AdguardFilter = function (filterId) {
+        this.filterId = filterId;
+        this.name = null;
+        this.description = null;
+        this.version = null;
+        this.lastUpdateTime = null;
+        this.lastCheckTime = null;
+        this.enabled = false;
+    };
+
     // List of filters
-    this.adguardFilters = [];
+    var adguardFilters = [];
 
     // Request filter contains all filter rules
     // This class does the actual filtering (checking URLs, constructing CSS/JS to inject, etc)
-    this.requestFilter = new adguard.RequestFilter();
-
-    // Add listener to service that detects webpage locale
-    // Depending on the locale we can enable language-specific filter
-    adguard.localeDetectService.onDetected.addListener(this._onFilterDetectedByLocale.bind(this));
-
-    // Custom user rules
-    this.userRules = [];
+    var requestFilter = new adguard.RequestFilter();
 
     // Service is not initialized yet
-    this._requestFilterInitTime = 0;
-};
-
-/**
- * Define AntiBannerService init methods
- */
-AntiBannerService.prototype = {
+    var requestFilterInitTime = 0;
 
     /**
      * Period for filters update check -- 48 hours
      */
-    UPDATE_FILTERS_PERIOD: 48 * 60 * 60 * 1000,
+    var UPDATE_FILTERS_PERIOD = 48 * 60 * 60 * 1000;
 
     /**
      * Delay before doing first filters update check -- 5 minutes
      */
-    UPDATE_FILTERS_DELAY: 5 * 60 * 1000,
+    var UPDATE_FILTERS_DELAY = 5 * 60 * 1000;
 
-    FILTERS_CHANGE_DEBOUNCE_PERIOD: 1000,
-    RELOAD_FILTERS_DEBOUNCE_PERIOD: 1000,
+    var FILTERS_CHANGE_DEBOUNCE_PERIOD = 1000;
+    var RELOAD_FILTERS_DEBOUNCE_PERIOD = 1000;
+
+    /**
+     * List of events which cause RequestFilter re-creation
+     * @type {Array}
+     */
+    var UPDATE_REQUEST_FILTER_EVENTS = [adguard.listeners.UPDATE_FILTER_RULES, adguard.listeners.FILTER_ENABLE_DISABLE];
+
+    var isUpdateRequestFilterEvent = function (el) {
+        return UPDATE_REQUEST_FILTER_EVENTS.indexOf(el.event) >= 0;
+    };
+
+    /**
+     * List of events which cause saving filter rules to the rules storage
+     * @type {Array}
+     */
+    var SAVE_FILTER_RULES_TO_STORAGE_EVENTS = [adguard.listeners.UPDATE_FILTER_RULES, adguard.listeners.ADD_RULES, adguard.listeners.REMOVE_RULE];
+
+    var isSaveRulesToStorageEvent = function (el) {
+        return SAVE_FILTER_RULES_TO_STORAGE_EVENTS.indexOf(el.event) >= 0;
+    };
 
     /**
      * Persist state of content blocker
      */
-    contentBlockerInfo: {
+    var contentBlockerInfo = {
         rulesCount: 0,
         rulesOverLimit: false
-    },
+    };
+
+    var reloadedRules = false;
 
     /**
      * AntiBannerService constructor
      * @param options Constructor options
      */
-    init: function (options) {
-
-        var context = this;
-
-        /**
-         * Init extension common info.
-         * @type {{isFirstRun: boolean, isUpdate: (boolean|*), currentVersion: (Prefs.version|*), prevVersion: *}}
-         */
-        var runInfo = ApplicationUpdateService.getRunInfo();
+    var init = function (options) {
 
         /**
          * We need this wrapper for one and only purpose: to track install/update on the first run.
@@ -83,9 +101,9 @@ AntiBannerService.prototype = {
          */
         var onServiceInitialized = function (runInfo) {
 
-            if (this._requestFilterInitTime === 0) {
+            if (requestFilterInitTime === 0) {
                 // Setting the time of request filter very first initialization
-                this._requestFilterInitTime = new Date().getTime();
+                requestFilterInitTime = new Date().getTime();
             }
 
             if (options.runCallback) {
@@ -100,29 +118,29 @@ AntiBannerService.prototype = {
              * The only thing which is not deleted is the aggregated info: installs count and active users count.
              */
             if (runInfo.isFirstRun) {
-                adguard.backend.trackInstall(this.isAllowedAcceptableAds());
+                adguard.backend.trackInstall();
             }
-        }.bind(this);
+        };
 
         /**
          * This method is called when filter subscriptions have been loaded from remote server.
          * It is used to recreate RequestFilter object.
          */
-        var initRequestFilter = function () {
-            context._loadFiltersVersionAndStateInfo();
-            context._createRequestFilter(function () {
-                this._addFiltersChangeEventListener();
+        var initRequestFilter = function (runInfo) {
+            loadFiltersVersionAndStateInfo();
+            createRequestFilter(function () {
+                addFiltersChangeEventListener();
                 onServiceInitialized(runInfo);
-            }.bind(this));
-        }.bind(this);
+            });
+        };
 
         /**
          * Callback for subscriptions loaded event
          */
-        var onSubscriptionLoaded = function () {
+        var onSubscriptionLoaded = function (runInfo) {
 
             // Initialize filters list
-            this.adguardFilters = context._getAllAdguardFilters();
+            adguardFilters = getAllAdguardFilters();
 
             // Set filters languages for locale detector.
             // Filters list got from the server may contain language mapping.
@@ -131,447 +149,42 @@ AntiBannerService.prototype = {
             adguard.localeDetectService.setFiltersLanguages(adguard.subscriptions.getFiltersLanguages());
 
             // Subscribe to events which lead to update filters (e.g. switсh to optimized and back to default)
-            this._subscribeToFiltersChangeEvents();
+            subscribeToFiltersChangeEvents();
 
             if (runInfo.isFirstRun) {
                 // Add event listener for filters change
-                context._addFiltersChangeEventListener();
+                addFiltersChangeEventListener();
                 // Run callback
                 onServiceInitialized(runInfo);
             } else if (runInfo.isUpdate) {
                 // Updating storage schema on extension update (if needed)
-                ApplicationUpdateService.onUpdate(runInfo, initRequestFilter);
+                adguard.applicationUpdateService.onUpdate(runInfo, initRequestFilter.bind(null, runInfo));
             } else {
                 // Init RequestFilter object
-                initRequestFilter();
+                initRequestFilter(runInfo);
             }
 
             // Schedule filters update job
-            context._scheduleFiltersUpdate();
+            scheduleFiltersUpdate();
+        };
 
-        }.bind(this);
+        /**
+         * Init extension common info.
+         */
+        adguard.applicationUpdateService.getRunInfo(function (runInfo) {
+            // Load subscription from the storage
+            adguard.subscriptions.init(onSubscriptionLoaded.bind(null, runInfo));
+        });
+    };
 
-        // Load subscription from the storage
-        adguard.subscriptions.init(onSubscriptionLoaded);
-    },
-
-    /**
-     * Enable filters on extension install, select default filters and filters by locale and country
-     * @param callback
-     */
-    initializeFiltersOnInstall: function (callback) {
-
-        // These filters are enabled by default
-        var filterIds = [adguard.utils.filters.ENGLISH_FILTER_ID, adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID];
-
-        // Get language-specific filters by user locale
-        var localeFilterIds = adguard.localeDetectService.getFilterIdsForLanguage(adguard.app.getLocale());
-        filterIds = filterIds.concat(localeFilterIds);
-
-        // Add safari filter for safari browser
-        if (adguard.utils.browser.isSafariBrowser()) {
-            filterIds.push(adguard.utils.filters.SAFARI_FILTER);
-        }
-
-        // This callback is used to activate language-specific filter after user's country is detected
-        // Country detection is done on the server side.
-        var onCountryDetected = function (countryCode) {
-            var countryFilterIds = adguard.localeDetectService.getFilterIdsForLanguage(countryCode);
-            filterIds = filterIds.concat(countryFilterIds);
-            this._addAndEnableFilters(filterIds, callback);
-        }.bind(this);
-
-        // Detect user country
-        adguard.backend.getCountry(onCountryDetected);
-    },
-
-    /**
-     * Successively add filters from filterIds and then enable successfully added filters
-     * @param filterIds Filter identifiers
-     * @param callback We pass list of enabled filter identifiers to the callback
-     * @private
-     */
-    _addAndEnableFilters: function (filterIds, callback) {
-
-        callback = callback || function () {
-                // Empty callback
-            };
-
-        var enabledFilterIds = [];
-
-        if (!filterIds || filterIds.length === 0) {
-            callback(enabledFilterIds);
-            return;
-        }
-
-
-        var loadNextFilter = function () {
-            if (filterIds.length === 0) {
-                callback(enabledFilterIds);
-            } else {
-                var filterId = filterIds.shift();
-                this.addAntiBannerFilter(filterId, function (success) {
-                    if (success) {
-                        var changed = this.enableAntiBannerFilter(filterId);
-                        if (changed) {
-                            enabledFilterIds.push(filterId);
-                        }
-                    }
-                    loadNextFilter();
-                }.bind(this));
-            }
-        }.bind(this);
-
-        loadNextFilter();
-    },
 
     /**
      * Getter for request filter
      */
-    getRequestFilter: function () {
-        return this.requestFilter;
-    },
+    var getRequestFilter = function () {
+        return requestFilter;
+    };
 
-    /**
-     * @returns boolean true when request filter was initialized first time
-     */
-    isRequestFilterReady: function () {
-        return this._requestFilterInitTime > 0;
-    },
-
-    /**
-     * When browser just started we need some time on request filter initialization.
-     * This could be a problem in case when browser has a homepage and it is just started.
-     * In this case request filter is not yet initalized so we don't block requests and inject css.
-     * To fix this, content script will repeat requests for selectors until request filter is ready
-     * and it will also collapse all elements which should have been blocked.
-     *
-     * @returns boolean true if we should collapse elements with content script
-     */
-    shouldCollapseAllElements: function () {
-        // We assume that if content script is requesting CSS in first 5 seconds after request filter init,
-        // then it is possible, that we've missed some elements and now we should collapse these elements        
-        return (this._requestFilterInitTime > 0) && (this._requestFilterInitTime + 5000 > new Date().getTime());
-    },
-
-    /**
-     * Searching for user's custom filter rules.
-     *
-     * @param offset Offset
-     * @param limit Limit
-     * @param text Search string
-     * @returns {Array} List of filter rules found
-     */
-    getUserFilters: function (offset, limit, text) {
-        var rules = this.userRules;
-        var result = [];
-        for (var i = 0; i < rules.length; i++) {
-            var ruleText = rules[i];
-            if (!text || adguard.utils.strings.containsIgnoreCase(ruleText, text)) {
-                result.push(ruleText);
-            }
-        }
-        return limit ? result.slice(offset, offset + limit) : result;
-    },
-
-    /**
-     * Removes all user's custom rules
-     */
-    clearUserFilter: function () {
-        this.userRules = [];
-        var filter = this._getFilterById(adguard.utils.filters.USER_FILTER_ID);
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, filter, []);
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_USER_FILTER_RULES, this.getRequestFilterInfo());
-    },
-
-    /**
-     * Adds new rule to the user filter
-     *
-     * @param ruleText Rule text
-     * @returns Rule created
-     */
-    addUserFilterRule: function (ruleText) {
-        var rule = adguard.rules.builder.createRule(ruleText, adguard.utils.filters.USER_FILTER_ID);
-        if (rule !== null) {
-            this._addRuleToFilter(adguard.utils.filters.USER_FILTER_ID, rule);
-            this.userRules.push(rule.ruleText);
-        }
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_USER_FILTER_RULES, this.getRequestFilterInfo());
-    },
-
-    /**
-     * Adds list of rules to the user filter
-     *
-     * @param rulesToAdd List of rules to add
-     */
-    addUserFilterRules: function (rulesToAdd) {
-        var rules = [];
-        for (var i = 0; i < rulesToAdd.length; i++) {
-            var rule = adguard.rules.builder.createRule(rulesToAdd[i], adguard.utils.filters.USER_FILTER_ID);
-            if (rule !== null) {
-                rules.push(rule);
-                this.userRules.push(rule.ruleText);
-            }
-        }
-        this._addRulesToFilter(adguard.utils.filters.USER_FILTER_ID, rules);
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_USER_FILTER_RULES, this.getRequestFilterInfo());
-        return rules;
-    },
-
-    /**
-     * Removes user's custom rule
-     *
-     * @param ruleText Rule text
-     */
-    removeUserFilter: function (ruleText) {
-        var rule = adguard.rules.builder.createRule(ruleText, adguard.utils.filters.USER_FILTER_ID);
-        if (rule !== null) {
-            var filter = this._getFilterById(adguard.utils.filters.USER_FILTER_ID);
-            this.requestFilter.removeRule(rule);
-            adguard.listeners.notifyListeners(adguard.listeners.REMOVE_RULE, filter, [rule]);
-        }
-        adguard.utils.collections.removeAll(this.userRules, ruleText);
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_USER_FILTER_RULES, this.getRequestFilterInfo());
-    },
-
-    /**
-     * Searches for whitelisted domains.
-     *
-     * @param offset Offset
-     * @param limit Limit
-     * @param text Search string
-     * @returns {Array} Domains found
-     */
-    getWhiteListDomains: function (offset, limit, text) {
-        var domains = adguard.whitelist.getWhiteListDomains();
-        var result = [];
-        for (var i = 0; i < domains.length; i++) {
-            var domain = domains[i];
-            if (!text || adguard.utils.strings.containsIgnoreCase(domain, text)) {
-                result.push(domain);
-            }
-        }
-        return limit ? result.slice(offset, offset + limit) : result;
-    },
-
-    unWhiteListFrame: function (frameInfo) {
-        if (frameInfo.frameRule) {
-            if (frameInfo.frameRule.filterId === adguard.utils.filters.WHITE_LIST_FILTER_ID) {
-                adguard.whitelist.unWhiteListUrl(frameInfo.url);
-            } else {
-                this.removeUserFilter(frameInfo.frameRule.ruleText);
-            }
-        }
-    },
-
-    /**
-     * TODO: move to adguard.safebrowsing
-     * Checks URL with safebrowsing filter.
-     * http://adguard.com/en/how-malware-blocked.html#extension
-     *
-     * @param requestUrl Request URL
-     * @param referrerUrl Referrer URL
-     * @param safebrowsingCallback Called when check has been finished
-     * @param incognitoTab Tab incognito mode
-     */
-    checkSafebrowsingFilter: function (requestUrl, referrerUrl, safebrowsingCallback, incognitoTab) {
-
-        if (!adguard.settings.getSafebrowsingInfo().enabled) {
-            return;
-        }
-
-        Log.debug("Checking safebrowsing filter for {0}", requestUrl);
-
-        var callback = function (sbList) {
-
-            if (!sbList) {
-                Log.debug("No safebrowsing rule found");
-                return;
-            }
-            Log.debug("Following safebrowsing filter has been fired: {0}", sbList);
-            if (!incognitoTab && adguard.settings.getSafebrowsingInfo().sendStats) {
-                adguard.backend.trackSafebrowsingStats(requestUrl);
-            }
-            safebrowsingCallback(adguard.safebrowsing.getErrorPageURL(requestUrl, referrerUrl, sbList));
-
-        };
-
-        adguard.safebrowsing.lookupUrlWithCallback(requestUrl, callback);
-    },
-
-    /**
-     * Returns collection of filters for settings page.
-     * Private filters (user filter, whitelist filter, useful ads filter) are excluded.
-     *
-     * @returns {Array} List of filters
-     */
-    getAntiBannerFiltersForOptionsPage: function () {
-        return this.adguardFilters.filter(function (f) {
-            return f.installed &&
-                f.filterId != adguard.utils.filters.USER_FILTER_ID &&
-                f.filterId != adguard.utils.filters.WHITE_LIST_FILTER_ID &&
-                f.filterId != adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID;
-        });
-    },
-
-    /**
-     * List of enabled filters.
-     * User filter and whitelist filter are always enabled so they are excluded.
-     *
-     * @returns {Array} List of enabled filters
-     */
-    getEnabledAntiBannerFilters: function () {
-        return this.adguardFilters.filter(function (f) {
-            return f.installed && f.enabled &&
-                f.filterId != adguard.utils.filters.USER_FILTER_ID &&
-                f.filterId != adguard.utils.filters.WHITE_LIST_FILTER_ID;
-        });
-    },
-
-    /**
-     * List of filter groups.
-     * This information is used on UI side only.
-     *
-     * At the moment we have three groups: Adguard Filters, EasyList, Other.
-     *
-     * @returns {*} List of groups
-     */
-    getGroupsMetadata: function () {
-        return adguard.subscriptions.getGroups();
-    },
-
-    /**
-     * Returns collection of filters for selected group to display for user
-     * @param groupId Group identifier
-     * @returns {*|Array} List of filters
-     */
-    getFiltersMetadataForGroup: function (groupId) {
-        return adguard.subscriptions.getFilters().filter(function (f) {
-            return f.groupId == groupId &&
-                f.filterId != adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID;
-        });
-    },
-
-    /**
-     * Returns filter metadata
-     * @param filterId Filter identifier
-     * @returns {*}
-     */
-    getFilterMetadata: function (filterId) {
-        return adguard.subscriptions.getFilters().filter(function (f) {
-            return f.filterId == filterId;
-        })[0];
-    },
-
-    /**
-     * Returns all filters metadata
-     * @returns {*}
-     */
-    getFiltersMetadata: function () {
-        return adguard.subscriptions.getFilters();
-    },
-
-    /**
-     * Returns filter metadata by subscription url
-     * @param subscriptionUrl - subscription url
-     * @returns {*|T}
-     */
-    findFilterMetadataBySubscriptionUrl: function (subscriptionUrl) {
-        return adguard.subscriptions.getFilters().filter(function (f) {
-            return f.subscriptionUrl === subscriptionUrl;
-        })[0];
-    },
-
-    /**
-     * This method is called from UI when user changes list of active filters
-     * @param filterIds List of active filters identifiers
-     */
-    onFiltersSubscriptionChange: function (filterIds) {
-
-        for (var i = 0; i < this.adguardFilters.length; i++) {
-            var filterId = this.adguardFilters[i].filterId;
-
-            // Skip acceptable ads filter
-            if (filterId == adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID) {
-                continue;
-            }
-
-            // Remove filter if it is not present in the new list
-            if (filterIds.indexOf(filterId) < 0) {
-                this.removeAntiBannerFilter(filterId);
-            }
-        }
-
-        // Add and enable filter
-        this._addAndEnableFilters(filterIds);
-    },
-
-    /**
-     * Checks if specified filter is enabled
-     *
-     * @param filterId Filter identifier
-     * @returns {*} true if enabled
-     */
-    isAntiBannerFilterEnabled: function (filterId) {
-        return this._getFilterById(filterId).enabled;
-    },
-
-    /**
-     * Checks if specified filter is installed (downloaded)
-     *
-     * @param filterId Filter id
-     * @returns {*} true if installed
-     */
-    isAntiBannerFilterInstalled: function (filterId) {
-        return this._getFilterById(filterId).installed;
-    },
-
-    /**
-     * Disables filter by id
-     *
-     * @param filterId Filter identifier
-     * @returns {boolean} true if filter was disabled successfully
-     */
-    disableAntiBannerFilter: function (filterId) {
-
-        var filter = this._getFilterById(filterId);
-        if (!filter.enabled || !filter.installed) {
-            return false;
-        }
-
-        filter.enabled = false;
-        FilterLSUtils.updateFilterStateInfo(filter);
-        adguard.listeners.notifyListeners(adguard.listeners.DISABLE_FILTER, filter);
-        return true;
-    },
-
-    /**
-     * Add and enable filter by ID
-     *
-     * @param filterId Filter identifier
-     */
-    addAndEnableFilter: function (filterId) {
-        this._addAndEnableFilters([filterId]);
-    },
-
-    /**
-     * Enable filter
-     *
-     * @param filterId Filter identifier
-     * @returns {boolean} true if filter was enabled successfully
-     */
-    enableAntiBannerFilter: function (filterId) {
-
-        var filter = this._getFilterById(filterId);
-        if (filter.enabled || !filter.installed) {
-            return false;
-        }
-
-        filter.enabled = true;
-        FilterLSUtils.updateFilterStateInfo(filter);
-        adguard.listeners.notifyListeners(adguard.listeners.ENABLE_FILTER, filter);
-        return true;
-    },
 
     /**
      * Loads filter from storage (if in extension package) or from backend
@@ -579,9 +192,9 @@ AntiBannerService.prototype = {
      * @param filterId Filter identifier
      * @param callback Called when operation is finished
      */
-    addAntiBannerFilter: function (filterId, callback) {
+    var addAntiBannerFilter = function (filterId, callback) {
 
-        var filter = this._getFilterById(filterId);
+        var filter = getFilterById(filterId);
         if (filter.installed) {
             callback(true);
             return;
@@ -590,8 +203,7 @@ AntiBannerService.prototype = {
         var onFilterLoaded = function (success) {
             if (success) {
                 filter.installed = true;
-                FilterLSUtils.updateFilterStateInfo(filter);
-                adguard.listeners.notifyListeners(adguard.listeners.ADD_FILTER, filter);
+                adguard.listeners.notifyListeners(adguard.listeners.FILTER_ADD_REMOVE, filter);
             }
             callback(success);
         };
@@ -602,54 +214,11 @@ AntiBannerService.prototype = {
         }
 
         if (adguard.utils.filters.isAdguardFilter(filter)) {
-            this._loadFilterFromRulesStorage(filterId, onFilterLoaded);
+            loadFilterFromRulesStorage(filterId, onFilterLoaded);
         } else {
-            this._loadFilterFromBackend(filterId, onFilterLoaded);
+            loadFilterFromBackend(filterId, onFilterLoaded);
         }
-    },
-
-    /**
-     * Removes filter
-     *
-     * @param filterId Filter identifier
-     * @returns {boolean} true if filter was removed successfully
-     */
-    removeAntiBannerFilter: function (filterId) {
-
-        var filter = this._getFilterById(filterId);
-        if (!filter.installed) {
-            return false;
-        }
-
-        Log.debug("Remove filter {0}", filter.filterId);
-
-        filter.enabled = false;
-        filter.installed = false;
-        FilterLSUtils.updateFilterStateInfo(filter);
-        adguard.listeners.notifyListeners(adguard.listeners.DISABLE_FILTER, filter);
-        adguard.listeners.notifyListeners(adguard.listeners.REMOVE_FILTER, filter);
-        return true;
-    },
-
-    /**
-     * Checks if userful ads filter is enabled or not
-     *
-     * @returns {*} true if useful ads filter is enabled
-     */
-    isAllowedAcceptableAds: function () {
-        return this._getFilterById(adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID).enabled;
-    },
-
-    /**
-     * Sends user feedback
-     *
-     * @param url URL
-     * @param messageType Message type
-     * @param comment Message text
-     */
-    sendFeedback: function (url, messageType, comment) {
-        adguard.backend.sendUrlReport(url, messageType, comment);
-    },
+    };
 
     /**
      * Reloads filters from backend
@@ -658,10 +227,10 @@ AntiBannerService.prototype = {
      * @param errorCallback
      * @private
      */
-    _reloadAntiBannerFilters: function (successCallback, errorCallback) {
-        this._resetFiltersVersion();
-        this.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback);
-    },
+    function reloadAntiBannerFilters(successCallback, errorCallback) {
+        resetFiltersVersion();
+        checkAntiBannerFiltersUpdate(true, successCallback, errorCallback);
+    }
 
     /**
      * Checks filters updates.
@@ -671,7 +240,7 @@ AntiBannerService.prototype = {
      * @param successCallback Called if filters were updated successfully
      * @param errorCallback Called if something gone wrong
      */
-    checkAntiBannerFiltersUpdate: function (forceUpdate, successCallback, errorCallback) {
+    var checkAntiBannerFiltersUpdate = function (forceUpdate, successCallback, errorCallback) {
 
         successCallback = successCallback || function () {
                 // Empty callback
@@ -680,17 +249,17 @@ AntiBannerService.prototype = {
                 // Empty callback
             };
 
-        Log.info("Start checking filters updates");
+        adguard.console.info("Start checking filters updates");
 
         // Select filters for update
         var filterIdsToUpdate = [];
-        for (var i = 0; i < this.adguardFilters.length; i++) {
-            var filter = this.adguardFilters[i];
+        for (var i = 0; i < adguardFilters.length; i++) {
+            var filter = adguardFilters[i];
             if (filter.installed &&
                 filter.filterId != adguard.utils.filters.USER_FILTER_ID &&
                 filter.filterId != adguard.utils.filters.WHITE_LIST_FILTER_ID) {
                 // Check filters update period (or forceUpdate flag)
-                var needUpdate = forceUpdate || (!filter.lastCheckTime || (Date.now() - filter.lastCheckTime) >= this.UPDATE_FILTERS_PERIOD);
+                var needUpdate = forceUpdate || (!filter.lastCheckTime || (Date.now() - filter.lastCheckTime) >= UPDATE_FILTERS_PERIOD);
                 if (needUpdate) {
                     filterIdsToUpdate.push(filter.filterId);
                 }
@@ -704,25 +273,25 @@ AntiBannerService.prototype = {
             }
         }
 
-        Log.info("Checking updates for {0} filters", filterIdsToUpdate.length);
+        adguard.console.info("Checking updates for {0} filters", filterIdsToUpdate.length);
 
         // Load filters with changed version
-        var loadFiltersFromBackend = function (filterIdsToUpdate) {
-            this._loadFiltersFromBackend(filterIdsToUpdate, function (sucess, filterIds) {
+        var loadFiltersFromBackendCallback = function (filterIdsToUpdate) {
+            loadFiltersFromBackend(filterIdsToUpdate, function (sucess, filterIds) {
                 if (sucess) {
                     var filters = [];
                     for (var i = 0; i < filterIds.length; i++) {
                         var filterId = filterIds[i];
                         if (filterId != adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID) {
-                            filters.push(this._getFilterById(filterId));
+                            filters.push(getFilterById(filterId));
                         }
                     }
                     successCallback(filters);
                 } else {
                     errorCallback();
                 }
-            }.bind(this));
-        }.bind(this);
+            });
+        };
 
         // Method is called after we have got server response
         // Now we check filters version and update filter if needed
@@ -731,70 +300,37 @@ AntiBannerService.prototype = {
                 filterIdsToUpdate = [];
                 for (var i = 0; i < filterVersions.length; i++) {
                     var filterVersion = filterVersions[i];
-                    var filter = this._getFilterById(filterVersion.filterId);
+                    var filter = getFilterById(filterVersion.filterId);
                     if (filterVersion.version !== null && adguard.utils.browser.isGreaterVersion(filterVersion.version, filter.version)) {
-                        Log.info("Updating filter {0} to version {1}", filter.filterId, filterVersion.version);
+                        adguard.console.info("Updating filter {0} to version {1}", filter.filterId, filterVersion.version);
                         filterIdsToUpdate.push(filter.filterId);
                     }
                 }
-                loadFiltersFromBackend(filterIdsToUpdate);
+                loadFiltersFromBackendCallback(filterIdsToUpdate);
             } else {
                 errorCallback();
             }
-        }.bind(this);
+        };
 
         // Retrieve current versions for update
-        this._loadFiltersVersionsFromBackend(filterIdsToUpdate, onLoadVersions);
-    },
-
-    /**
-     * @returns Extension version
-     */
-    getAppVersion: function () {
-        return adguard.utils.browser.getAppVersion();
-    },
-
-    /**
-     * Load rules to user filter by subscription url
-     * @param subscriptionUrl
-     * @param loadCallback
-     */
-    processAbpSubscriptionUrl: function (subscriptionUrl, loadCallback) {
-
-        var filterMetadata = this.findFilterMetadataBySubscriptionUrl(subscriptionUrl);
-
-        if (filterMetadata) {
-            var filter = this._getFilterById(filterMetadata.filterId);
-            this.addAndEnableFilter(filter.filterId);
-        } else {
-            //load filter
-            var successCallback = function (rulesText) {
-                var rules = this.addUserFilterRules(rulesText);
-                loadCallback(rules.length);
-            }.bind(this);
-            var errorCallback = function (request, cause) {
-                Log.error("Error download subscription by url {0}, cause: {1} {2}", subscriptionUrl, request.statusText, cause || "");
-            };
-            adguard.backend.loadFilterRulesBySubscriptionUrl(subscriptionUrl, successCallback, errorCallback);
-        }
-    },
+        loadFiltersVersionsFromBackend(filterIdsToUpdate, onLoadVersions);
+    };
 
     /**
      * Resets all filters versions
      */
-    _resetFiltersVersion: function () {
+    function resetFiltersVersion() {
         var RESET_VERSION = "0.0.0.0";
-
-        for (var i = 0; i < this.adguardFilters.length; i++) {
-            this.adguardFilters[i].version = RESET_VERSION;
+        for (var i = 0; i < adguardFilters.length; i++) {
+            adguardFilters[i].version = RESET_VERSION;
         }
-    },
+    }
 
     /**
      * Returns all filters with their metadata
      * @private
      */
-    _getAllAdguardFilters: function () {
+    function getAllAdguardFilters() {
 
         function createFilter(filterId, title, description, displayNumber) {
             var filter = new AdguardFilter(filterId);
@@ -819,7 +355,7 @@ AntiBannerService.prototype = {
         });
 
         return filters;
-    },
+    }
 
     /**
      * Updates filters version and state info.
@@ -827,15 +363,15 @@ AntiBannerService.prototype = {
      *
      * @private
      */
-    _loadFiltersVersionAndStateInfo: function () {
+    function loadFiltersVersionAndStateInfo() {
 
         // Define it here: for jshint to cool down
         var filter = null;
 
         // Load filters metadata from the storage
-        var filtersVersionInfo = FilterLSUtils.getFiltersVersionInfo();
-        for (var i = 0; i < this.adguardFilters.length; i++) {
-            filter = this.adguardFilters[i];
+        var filtersVersionInfo = adguard.filtersState.getFiltersVersion();
+        for (var i = 0; i < adguardFilters.length; i++) {
+            filter = adguardFilters[i];
             var versionInfo = filtersVersionInfo[filter.filterId];
             if (versionInfo) {
                 filter.version = versionInfo.version;
@@ -845,9 +381,9 @@ AntiBannerService.prototype = {
         }
 
         // Load filters state from the storage
-        var filtersStateInfo = FilterLSUtils.getFiltersStateInfo();
-        for (i = 0; i < this.adguardFilters.length; i++) {
-            filter = this.adguardFilters[i];
+        var filtersStateInfo = adguard.filtersState.getFiltersState();
+        for (i = 0; i < adguardFilters.length; i++) {
+            filter = adguardFilters[i];
             var stateInfo = filtersStateInfo[filter.filterId];
             if (stateInfo) {
                 filter.enabled = stateInfo.enabled;
@@ -855,35 +391,15 @@ AntiBannerService.prototype = {
                 filter.loaded = stateInfo.loaded;
             }
         }
-    },
-
-    /**
-     * Called when LocaleDetectorService has detected language-specific filters we can enable.
-     *
-     * @param filterIds List of detected language-specific filters identifiers
-     * @private
-     */
-    _onFilterDetectedByLocale: function (filterIds) {
-        if (!filterIds) {
-            return;
-        }
-        this._addAndEnableFilters(filterIds, function (enabledFilterIds) {
-            var enabledFilters = [];
-            for (var i = 0; i < enabledFilterIds.length; i++) {
-                enabledFilters.push(this._getFilterById(enabledFilterIds[i]));
-            }
-            if (enabledFilters.length > 0) {
-                adguard.listeners.notifyListeners(adguard.listeners.ENABLE_FILTER_SHOW_POPUP, enabledFilters);
-            }
-        }.bind(this));
-    },
+    }
 
     /**
      * Called when filters were loaded from the storage
      *
+     * @param rulesFilterMap Map for populating rules (filterId -> rules collection)
      * @param callback Called when request filter is initialized
      */
-    _onFiltersLoadedFromStorage: function (rulesFilterMap, callback) {
+    function onFiltersLoadedFromStorage(rulesFilterMap, callback) {
 
         var start = new Date().getTime();
 
@@ -893,10 +409,10 @@ AntiBannerService.prototype = {
         // use setTimeout calls to give UI thread some time.
         var async = adguard.prefs.speedupStartup() || false;
         var asyncStep = 1000;
-        Log.info('Starting request filter initialization. Async={0}', async);
+        adguard.console.info('Starting request filter initialization. Async={0}', async);
 
         // Empty request filter
-        var requestFilter = new adguard.RequestFilter();
+        var newRequestFilter = new adguard.RequestFilter();
 
         // Supplement object to make sure that we use only unique filter rules
         var uniqueRules = Object.create(null);
@@ -908,26 +424,26 @@ AntiBannerService.prototype = {
         var requestFilterInitialized = function () {
 
             // Request filter is ready
-            this.requestFilter = requestFilter;
+            requestFilter = newRequestFilter;
 
             if (callback && typeof callback === "function") {
                 callback();
             }
 
-            adguard.listeners.notifyListeners(adguard.listeners.REQUEST_FILTER_UPDATED, this.getRequestFilterInfo());
-            Log.info("Finished request filter initialization in {0} ms. Rules count: {1}", (new Date().getTime() - start), requestFilter.rulesCount);
+            adguard.listeners.notifyListeners(adguard.listeners.REQUEST_FILTER_UPDATED, getRequestFilterInfo());
+            adguard.console.info("Finished request filter initialization in {0} ms. Rules count: {1}", (new Date().getTime() - start), newRequestFilter.rulesCount);
 
-            if (requestFilter.rulesCount == 0 && !this.reloadedRules) {
+            if (newRequestFilter.rulesCount === 0 && !reloadedRules) {
                 //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/205
-                Log.info("No rules have been found - checking filter updates");
-                this._reloadAntiBannerFilters();
-                this.reloadedRules = true;
-            } else if (requestFilter.rulesCount > 0 && this.reloadedRules) {
-                Log.info("Filters reloaded, deleting reloadRules flag");
-                delete this.reloadedRules;
+                adguard.console.info("No rules have been found - checking filter updates");
+                reloadAntiBannerFilters();
+                reloadedRules = true;
+            } else if (newRequestFilter.rulesCount > 0 && reloadedRules) {
+                adguard.console.info("Filters reloaded, deleting reloadRules flag");
+                reloadedRules = false;
             }
 
-        }.bind(this);
+        };
 
         /**
          * Supplement function for adding rules to the request filter
@@ -952,7 +468,7 @@ AntiBannerService.prototype = {
                 var rule = adguard.rules.builder.createRule(ruleText, filterId);
 
                 if (rule !== null) {
-                    requestFilter.addRule(rule);
+                    newRequestFilter.addRule(rule);
                 }
             }
         };
@@ -962,7 +478,7 @@ AntiBannerService.prototype = {
          */
         var addRulesAsync = function (filterId, rulesTexts, startIdx, stopIdx, prevDfd) {
 
-            var dfd = new Promise();
+            var dfd = new adguard.utils.Promise();
 
             prevDfd.then(function () {
                 setTimeout(function () {
@@ -979,12 +495,12 @@ AntiBannerService.prototype = {
          */
         var fillRequestFilterAsync = function () {
             // Async loading starts when we resolve this promise
-            var rootDfd = new Promise();
+            var rootDfd = new adguard.utils.Promise();
             var prevDfd = null;
             var dfds = [];
 
             // Go through all filters in the map
-            for (var filterId in rulesFilterMap) {
+            for (var filterId in rulesFilterMap) { // jshint ignore:line
                 // To number
                 filterId = filterId - 0;
                 if (filterId != adguard.utils.filters.USER_FILTER_ID) {
@@ -1002,7 +518,7 @@ AntiBannerService.prototype = {
             var userRules = rulesFilterMap[adguard.utils.filters.USER_FILTER_ID];
             addRulesAsync(adguard.utils.filters.USER_FILTER_ID, userRules, 0, userRules.length, prevDfd || rootDfd);
 
-            Promise.all(dfds).then(function () {
+            adguard.utils.Promise.all(dfds).then(function () {
                 requestFilterInitialized();
             });
 
@@ -1016,7 +532,7 @@ AntiBannerService.prototype = {
         var fillRequestFilterSync = function () {
 
             // Go through all filters in the map
-            for (var filterId in rulesFilterMap) {
+            for (var filterId in rulesFilterMap) { // jshint ignore:line
 
                 // To number
                 filterId = filterId - 0;
@@ -1038,7 +554,7 @@ AntiBannerService.prototype = {
         } else {
             fillRequestFilterSync();
         }
-    },
+    }
 
     /**
      * Create new request filter and add distinct rules from the storage.
@@ -1046,10 +562,10 @@ AntiBannerService.prototype = {
      * @param callback Called after request filter has been created
      * @private
      */
-    _createRequestFilter: function (callback) {
+    function createRequestFilter(callback) {
 
         var start = new Date().getTime();
-        Log.info('Starting loading filter rules from the storage');
+        adguard.console.info('Starting loading filter rules from the storage');
 
         // Prepare map for filter rules
         // Map key is filter ID
@@ -1060,9 +576,9 @@ AntiBannerService.prototype = {
          * STEP 2: Called when all filter rules have been loaded from storage
          */
         var loadAllFilterRulesDone = function () {
-            Log.info('Finished loading filter rules from the storage in {0} ms', (new Date().getTime() - start));
-            this._onFiltersLoadedFromStorage(rulesFilterMap, callback);
-        }.bind(this);
+            adguard.console.info('Finished loading filter rules from the storage in {0} ms', (new Date().getTime() - start));
+            onFiltersLoadedFromStorage(rulesFilterMap, callback);
+        };
 
         /**
          * Loads filter rules from storage
@@ -1072,7 +588,7 @@ AntiBannerService.prototype = {
          * @returns {*} Deferred object
          */
         var loadFilterRulesFromStorage = function (filterId, rulesFilterMap) {
-            var dfd = new Promise();
+            var dfd = new adguard.utils.Promise();
 
             adguard.rulesStorage.read(filterId, function (rulesText) {
                 if (rulesText) {
@@ -1089,20 +605,20 @@ AntiBannerService.prototype = {
          */
         var loadFilterRules = function () {
             var dfds = [];
-            for (var i = 0; i < this.adguardFilters.length; i++) {
-                var filter = this.adguardFilters[i];
+            for (var i = 0; i < adguardFilters.length; i++) {
+                var filter = adguardFilters[i];
                 if (filter.enabled) {
                     dfds.push(loadFilterRulesFromStorage(filter.filterId, rulesFilterMap));
                 }
             }
-            dfds.push(this._loadUserRulesToRequestFilter(rulesFilterMap));
+            dfds.push(loadUserRulesToRequestFilter(rulesFilterMap));
 
             // Load all filters and then recreate request filter
-            Promise.all(dfds).then(loadAllFilterRulesDone);
-        }.bind(this);
+            adguard.utils.Promise.all(dfds).then(loadAllFilterRulesDone);
+        };
 
         loadFilterRules();
-    },
+    }
 
     /**
      * Adds user rules (got from the storage) to request filter
@@ -1111,14 +627,14 @@ AntiBannerService.prototype = {
      * @returns {*} Deferred object
      * @private
      */
-    _loadUserRulesToRequestFilter: function (rulesFilterMap) {
+    function loadUserRulesToRequestFilter(rulesFilterMap) {
 
-        var dfd = new Promise();
+        var dfd = new adguard.utils.Promise();
 
         var filterId = adguard.utils.filters.USER_FILTER_ID;
         adguard.rulesStorage.read(filterId, function (rulesText) {
 
-            this.userRules = rulesText || [];
+            adguard.userrules.setRules(rulesText || []);
 
             if (!rulesText) {
                 dfd.resolve();
@@ -1127,40 +643,40 @@ AntiBannerService.prototype = {
 
             rulesFilterMap[filterId] = rulesText;
             dfd.resolve();
-        }.bind(this));
+        });
 
         return dfd;
-    },
+    }
 
     /**
-     * @returns Request Filter info
+     * Request Filter info
      */
-    getRequestFilterInfo: function () {
+    var getRequestFilterInfo = function () {
         var rulesCount = 0;
-        if (this.requestFilter) {
-            rulesCount = this.requestFilter.rulesCount;
+        if (requestFilter) {
+            rulesCount = requestFilter.rulesCount;
         }
         return {
             rulesCount: rulesCount
         };
-    },
+    };
 
     /**
      * Update content blocker info
      * We save state of content blocker for properly show in options page (converted rules count and over limit flag)
      * @param info Content blocker info
      */
-    updateContentBlockerInfo: function (info) {
-        this.contentBlockerInfo.rulesCount = info.rulesCount;
-        this.contentBlockerInfo.rulesOverLimit = info.rulesOverLimit;
-    },
+    var updateContentBlockerInfo = function (info) {
+        contentBlockerInfo.rulesCount = info.rulesCount;
+        contentBlockerInfo.rulesOverLimit = info.rulesOverLimit;
+    };
 
     /**
-     * @returns Content Blocker info
+     * Content Blocker info
      */
-    getContentBlockerInfo: function () {
-        return this.contentBlockerInfo;
-    },
+    var getContentBlockerInfo = function () {
+        return contentBlockerInfo;
+    };
 
     /**
      * Adds event listener for filters changes.
@@ -1169,7 +685,7 @@ AntiBannerService.prototype = {
      *
      * @private
      */
-    _addFiltersChangeEventListener: function () {
+    function addFiltersChangeEventListener() {
 
         var filterEventsHistory = [];
         var onFilterChangeTimeout = null;
@@ -1188,9 +704,7 @@ AntiBannerService.prototype = {
                 filterEventsHistory = [];
                 onFilterChangeTimeout = null;
 
-                var needCreateRequestFilter = filterEvents.some(function (el) {
-                    return UPDATE_REQUEST_FILTER_EVENTS.indexOf(el.event) >= 0;
-                });
+                var needCreateRequestFilter = filterEvents.some(isUpdateRequestFilterEvent);
 
                 // Split by filterId
                 var eventsByFilter = Object.create(null);
@@ -1203,43 +717,38 @@ AntiBannerService.prototype = {
                 }
 
                 var dfds = [];
-                var filterFunction = function (el) {
-                    return SAVE_FILTER_RULES_TO_STORAGE_EVENTS.indexOf(el.event) >= 0;
-                };
-                for (var filterId in eventsByFilter) {
-                    var needSaveRulesToStorage = eventsByFilter[filterId].some(filterFunction);
+                for (var filterId in eventsByFilter) { // jshint ignore:line
+                    var needSaveRulesToStorage = eventsByFilter[filterId].some(isSaveRulesToStorageEvent);
                     if (!needSaveRulesToStorage) {
                         continue;
                     }
-                    var dfd = this._processSaveFilterRulesToStorageEvents(filterId, eventsByFilter[filterId]);
+                    var dfd = processSaveFilterRulesToStorageEvents(filterId, eventsByFilter[filterId]);
                     dfds.push(dfd);
                 }
 
                 if (needCreateRequestFilter) {
                     // Rules will be added to request filter lazy, listeners will be notified about REQUEST_FILTER_UPDATED later
-                    Promise.all(dfds).then(this._createRequestFilter.bind(this));
+                    adguard.utils.Promise.all(dfds).then(createRequestFilter);
                 } else {
                     // Rules are already in request filter, notify listeners
-                    adguard.listeners.notifyListeners(adguard.listeners.REQUEST_FILTER_UPDATED, this.getRequestFilterInfo());
+                    adguard.listeners.notifyListeners(adguard.listeners.REQUEST_FILTER_UPDATED, getRequestFilterInfo());
                 }
 
-            }.bind(this), this.FILTERS_CHANGE_DEBOUNCE_PERIOD);
+            }, FILTERS_CHANGE_DEBOUNCE_PERIOD);
 
-        }.bind(this);
+        };
 
         adguard.listeners.addListener(function (event, filter, rules) {
             switch (event) {
-                case adguard.listeners.ADD_RULE:
                 case adguard.listeners.ADD_RULES:
                 case adguard.listeners.REMOVE_RULE:
                 case adguard.listeners.UPDATE_FILTER_RULES:
-                case adguard.listeners.ENABLE_FILTER:
-                case adguard.listeners.DISABLE_FILTER:
+                case adguard.listeners.FILTER_ENABLE_DISABLE:
                     processFilterEvent(event, filter, rules);
                     break;
             }
         });
-    },
+    }
 
     /**
      * Saves updated filter rules to the storage.
@@ -1248,9 +757,9 @@ AntiBannerService.prototype = {
      * @param events Events (what has changed?)
      * @private
      */
-    _processSaveFilterRulesToStorageEvents: function (filterId, events) {
+    function processSaveFilterRulesToStorageEvents(filterId, events) {
 
-        var dfd = new Promise();
+        var dfd = new adguard.utils.Promise();
 
         adguard.rulesStorage.read(filterId, function (loadedRulesText) {
 
@@ -1265,39 +774,38 @@ AntiBannerService.prototype = {
                 var eventRules = event.rules;
 
                 switch (eventType) {
-                    case adguard.listeners.ADD_RULE:
                     case adguard.listeners.ADD_RULES:
                         loadedRulesText = loadedRulesText.concat(adguard.utils.collections.getRulesText(eventRules));
-                        Log.debug("Add {0} rules to filter {1}", eventRules.length, filterId);
+                        adguard.console.debug("Add {0} rules to filter {1}", eventRules.length, filterId);
                         break;
                     case adguard.listeners.REMOVE_RULE:
                         var actionRule = eventRules[0];
                         adguard.utils.collections.removeAll(loadedRulesText, actionRule.ruleText);
-                        Log.debug("Remove {0} rule from filter {1}", actionRule.ruleText, filterId);
+                        adguard.console.debug("Remove {0} rule from filter {1}", actionRule.ruleText, filterId);
                         break;
                     case adguard.listeners.UPDATE_FILTER_RULES:
                         loadedRulesText = adguard.utils.collections.getRulesText(eventRules);
-                        Log.debug("Update filter {0} rules count to {1}", filterId, eventRules.length);
+                        adguard.console.debug("Update filter {0} rules count to {1}", filterId, eventRules.length);
                         break;
                 }
             }
 
-            Log.debug("Save {0} rules to filter {1}", loadedRulesText.length, filterId);
+            adguard.console.debug("Save {0} rules to filter {1}", loadedRulesText.length, filterId);
             adguard.rulesStorage.write(filterId, loadedRulesText, dfd.resolve);
 
-        }.bind(this));
+        });
 
         return dfd;
-    },
+    }
 
     /**
      * Subscribe to events which lead to filters update.
      * @private
      */
-    _subscribeToFiltersChangeEvents: function () {
+    function subscribeToFiltersChangeEvents() {
 
         // on USE_OPTIMIZED_FILTERS setting change we need to reload filters
-        var onUsedOptimizedFiltersChange = adguard.utils.concurrent.debounce(this._reloadAntiBannerFilters.bind(this), this.RELOAD_FILTERS_DEBOUNCE_PERIOD);
+        var onUsedOptimizedFiltersChange = adguard.utils.concurrent.debounce(reloadAntiBannerFilters, RELOAD_FILTERS_DEBOUNCE_PERIOD);
 
         adguard.settings.onUpdated.addListener(function (setting) {
             if (setting === adguard.settings.USE_OPTIMIZED_FILTERS) {
@@ -1305,42 +813,41 @@ AntiBannerService.prototype = {
                 return;
             }
             if (setting === adguard.settings.DISABLE_COLLECT_HITS) {
-                this.getRequestFilter().cssFilter.dirty = true;
+                getRequestFilter().cssFilter.dirty = true;
             }
-        }.bind(this));
+        });
 
         adguard.listeners.addListener(function (event, setting) {
             if (event == adguard.listeners.CHANGE_PREFS && setting === 'use_global_style_sheet') {
-                this.getRequestFilter().cssFilter.dirty = true;
+                getRequestFilter().cssFilter.dirty = true;
             }
-        }.bind(this));
-    },
+        });
+    }
 
     /**
      * Schedules filters update job
      * @isFirstRun
      * @private
      */
-    _scheduleFiltersUpdate: function () {
-        var updateFunc = this.checkAntiBannerFiltersUpdate.bind(this);
+    function scheduleFiltersUpdate() {
 
         // First run delay
-        setTimeout(updateFunc, this.UPDATE_FILTERS_DELAY);
+        setTimeout(checkAntiBannerFiltersUpdate, UPDATE_FILTERS_DELAY);
 
         // Scheduling job
         var scheduleUpdate = function () {
             setTimeout(function () {
                 try {
-                    updateFunc();
+                    checkAntiBannerFiltersUpdate();
                 } catch (ex) {
-                    Log.error("Error update filters, cause {0}", ex);
+                    adguard.console.error("Error update filters, cause {0}", ex);
                 }
                 scheduleUpdate();
-            }, this.UPDATE_FILTERS_PERIOD);
-        }.bind(this);
+            }, UPDATE_FILTERS_PERIOD);
+        };
 
         scheduleUpdate();
-    },
+    }
 
     /**
      * Gets filter by ID.
@@ -1350,41 +857,15 @@ AntiBannerService.prototype = {
      * @returns {*} Filter got from "adguardFilters" property.
      * @private
      */
-    _getFilterById: function (filterId) {
-        for (var i = 0; i < this.adguardFilters.length; i++) {
-            var adguardFilter = this.adguardFilters[i];
+    function getFilterById(filterId) {
+        for (var i = 0; i < adguardFilters.length; i++) {
+            var adguardFilter = adguardFilters[i];
             if (adguardFilter.filterId == filterId) {
                 return adguardFilter;
             }
         }
         throw 'Filter with id ' + filterId + ' not found';
-    },
-
-    /**
-     * Adds rule to filter
-     *
-     * @param filterId Filter ID
-     * @param rule     Rule object
-     * @private
-     */
-    _addRuleToFilter: function (filterId, rule) {
-        var filter = this._getFilterById(filterId);
-        this.requestFilter.addRule(rule);
-        adguard.listeners.notifyListeners(adguard.listeners.ADD_RULE, filter, [rule]);
-    },
-
-    /**
-     * Add rules list to filter
-     *
-     * @param filterId Filter identifier
-     * @param rules Rules list
-     * @private
-     */
-    _addRulesToFilter: function (filterId, rules) {
-        var filter = this._getFilterById(filterId);
-        this.requestFilter.addRules(rules);
-        adguard.listeners.notifyListeners(adguard.listeners.ADD_RULES, filter, rules);
-    },
+    }
 
     /**
      * Loads filters (ony-by-one) from the remote server
@@ -1393,7 +874,7 @@ AntiBannerService.prototype = {
      * @param callback Called when filters have been loaded
      * @private
      */
-    _loadFiltersFromBackend: function (filterIds, callback) {
+    function loadFiltersFromBackend(filterIds, callback) {
 
         var loadedFilters = [];
 
@@ -1402,7 +883,7 @@ AntiBannerService.prototype = {
                 callback(true, loadedFilters);
             } else {
                 var filterId = filterIds.shift();
-                this._loadFilterFromBackend(filterId, function (success) {
+                loadFilterFromBackend(filterId, function (success) {
                     if (!success) {
                         callback(false);
                         return;
@@ -1411,10 +892,10 @@ AntiBannerService.prototype = {
                     loadNextFilter();
                 });
             }
-        }.bind(this);
+        };
 
         loadNextFilter();
-    },
+    }
 
     /**
      * Loads filter rules from remote server
@@ -1423,38 +904,35 @@ AntiBannerService.prototype = {
      * @param callback Called when filter rules have been loaded
      * @private
      */
-    _loadFilterFromBackend: function (filterId, callback) {
+    function loadFilterFromBackend(filterId, callback) {
 
-        var filter = this._getFilterById(filterId);
+        var filter = getFilterById(filterId);
 
         filter._isDownloading = true;
         adguard.listeners.notifyListeners(adguard.listeners.START_DOWNLOAD_FILTER, filter);
 
         var successCallback = function (filterVersion, filterRules) {
-            Log.info("Retrieved response from server for filter {0}, rules count: {1}", filter.filterId, filterRules.length);
+            adguard.console.info("Retrieved response from server for filter {0}, rules count: {1}", filter.filterId, filterRules.length);
             delete filter._isDownloading;
             filter.version = filterVersion.version;
             filter.lastUpdateTime = filterVersion.timeUpdated;
             filter.lastCheckTime = Date.now();
             filter.loaded = true;
-            //persist to LS
-            FilterLSUtils.updateFilterStateInfo(filter);
-            FilterLSUtils.updateFilterVersionInfo(filter);
             //notify listeners
             adguard.listeners.notifyListeners(adguard.listeners.SUCCESS_DOWNLOAD_FILTER, filter);
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, filter, filterRules);
             callback(true);
-        }.bind(this);
+        };
 
         var errorCallback = function (request, cause) {
-            Log.error("Error retrieved response from server for filter {0}, cause: {1} {2}", filter.filterId, request.statusText, cause || "");
+            adguard.console.error("Error retrieved response from server for filter {0}, cause: {1} {2}", filter.filterId, request.statusText, cause || "");
             delete filter._isDownloading;
             adguard.listeners.notifyListeners(adguard.listeners.ERROR_DOWNLOAD_FILTER, filter);
             callback(false);
         };
 
         adguard.backend.loadRemoteFilterRules(filter.filterId, adguard.settings.isUseOptimizedFiltersEnabled(), successCallback, errorCallback);
-    },
+    }
 
     /**
      * Loads filter versions from remote server
@@ -1463,7 +941,7 @@ AntiBannerService.prototype = {
      * @param callback Callback (called when load is finished)
      * @private
      */
-    _loadFiltersVersionsFromBackend: function (filterIds, callback) {
+    function loadFiltersVersionsFromBackend(filterIds, callback) {
 
         if (filterIds.length === 0) {
             callback(true, []);
@@ -1471,17 +949,17 @@ AntiBannerService.prototype = {
         }
 
         var loadSuccess = function (filtersVersions) {
-            Log.debug("Retrieved response from server for {0} filters, result: {1} versions", filterIds.length, filtersVersions.length);
+            adguard.console.debug("Retrieved response from server for {0} filters, result: {1} versions", filterIds.length, filtersVersions.length);
             callback(true, filtersVersions);
         };
 
         var loadError = function (request, cause) {
-            Log.error("Error retrieved response from server for filters {0}, cause: {1} {2}", filterIds, request.statusText, cause || "");
+            adguard.console.error("Error retrieved response from server for filters {0}, cause: {1} {2}", filterIds, request.statusText, cause || "");
             callback(false);
         };
 
         adguard.backend.checkFilterVersions(filterIds, loadSuccess, loadError);
-    },
+    }
 
     /**
      * Load filter rules from rules storage
@@ -1489,27 +967,24 @@ AntiBannerService.prototype = {
      * @param callback
      * @private
      */
-    _loadFilterFromRulesStorage: function (filterId, callback) {
+    function loadFilterFromRulesStorage(filterId, callback) {
 
-        var filter = this._getFilterById(filterId);
+        var filter = getFilterById(filterId);
 
         filter._isDownloading = true;
         adguard.listeners.notifyListeners(adguard.listeners.START_DOWNLOAD_FILTER, filter);
 
         var successCallback = function (filterVersion, filterRules) {
-            Log.info("Load local filter {0}, rules count: {1}", filter.filterId, filterRules.length);
+            adguard.console.info("Load local filter {0}, rules count: {1}", filter.filterId, filterRules.length);
             delete filter._isDownloading;
             filter.version = filterVersion.version;
             filter.lastUpdateTime = filterVersion.timeUpdated;
             filter.loaded = true;
-            //persist to LS
-            FilterLSUtils.updateFilterStateInfo(filter);
-            FilterLSUtils.updateFilterVersionInfo(filter);
             //notify listeners
             adguard.listeners.notifyListeners(adguard.listeners.SUCCESS_DOWNLOAD_FILTER, filter);
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, filter, filterRules);
             callback(true);
-        }.bind(this);
+        };
 
         var errorCallback = function () {
             delete filter._isDownloading;
@@ -1519,130 +994,604 @@ AntiBannerService.prototype = {
 
         adguard.backend.loadLocalFilterRules(filter.filterId, adguard.settings.isUseOptimizedFiltersEnabled(), successCallback, errorCallback);
     }
-};
 
-var antiBannerService = new AntiBannerService();
+    /**
+     * Get filter by id
+     * @param filterId
+     * @returns {*}
+     */
+    var getAntiBannerFilterById = function (filterId) {
+        return getFilterById(filterId);
+    };
+
+    /**
+     * Get antibanner filters (includes states and versions)
+     * @returns {Array}
+     */
+    var getAntiBannerFilters = function () {
+        return adguardFilters;
+    };
+
+    /**
+     * Get request filter initialization time
+     * @returns {number}
+     */
+    var getRequestFilterInitTime = function () {
+        return requestFilterInitTime;
+    };
+
+    /**
+     * Add rules to filter
+     * @param filterId
+     * @param rulesText
+     * @returns {Array}
+     */
+    var addFilterRules = function (filterId, rulesText) {
+        var rules = [];
+        for (var i = 0; i < rulesText.length; i++) {
+            var rule = adguard.rules.builder.createRule(rulesText[i], filterId);
+            if (rule !== null) {
+                rules.push(rule);
+            }
+        }
+        var filter = getFilterById(filterId);
+        requestFilter.addRules(rules);
+        adguard.listeners.notifyListeners(adguard.listeners.ADD_RULES, filter, rules);
+        if (filterId === adguard.utils.filters.USER_FILTER_ID) {
+            adguard.listeners.notifyListeners(adguard.listeners.UPDATE_USER_FILTER_RULES, getRequestFilterInfo());
+        }
+        return rules;
+    };
+
+    /**
+     * Remove rule from filter
+     * @param filterId
+     * @param ruleText
+     */
+    var removeFilterRule = function (filterId, ruleText) {
+        var rule = adguard.rules.builder.createRule(ruleText, filterId);
+        if (rule !== null) {
+            var filter = getFilterById(filterId);
+            requestFilter.removeRule(rule);
+            adguard.listeners.notifyListeners(adguard.listeners.REMOVE_RULE, filter, [rule]);
+        }
+        if (filterId === adguard.utils.filters.USER_FILTER_ID) {
+            adguard.listeners.notifyListeners(adguard.listeners.UPDATE_USER_FILTER_RULES, getRequestFilterInfo());
+        }
+    };
+
+    /**
+     * Clear filter rules
+     * @param filterId
+     */
+    var clearFilterRules = function (filterId) {
+        var filter = getFilterById(filterId);
+        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, filter, []);
+        if (filterId === adguard.utils.filters.USER_FILTER_ID) {
+            adguard.listeners.notifyListeners(adguard.listeners.UPDATE_USER_FILTER_RULES, getRequestFilterInfo());
+        }
+    };
+
+    return {
+
+        init: init,
+
+        getAntiBannerFilterById: getAntiBannerFilterById,
+        getAntiBannerFilters: getAntiBannerFilters,
+        addAntiBannerFilter: addAntiBannerFilter,
+
+        getRequestFilter: getRequestFilter,
+        getRequestFilterInitTime: getRequestFilterInitTime,
+
+        addFilterRules: addFilterRules,
+        removeFilterRule: removeFilterRule,
+        clearFilterRules: clearFilterRules,
+
+        getRequestFilterInfo: getRequestFilterInfo,
+        updateContentBlockerInfo: updateContentBlockerInfo,
+        getContentBlockerInfo: getContentBlockerInfo,
+
+        checkAntiBannerFiltersUpdate: checkAntiBannerFiltersUpdate
+    };
+
+})(adguard);
 
 /**
- * Represents filter metadata
  *
- * @param filterId Filter identifier
- * @constructor
+ * Api for filtering and elements hiding.
  */
-var AdguardFilter = function (filterId) {
-    this.filterId = filterId;
-    this.name = null;
-    this.description = null;
-    this.version = null;
-    this.lastUpdateTime = null;
-    this.lastCheckTime = null;
-    this.enabled = false;
-};
+adguard.requestFilter = (function (adguard) {
 
-/**
- * Represents filter version metadata
- * @type {Function}
- */
-var AdguardFilterVersion = function (timeUpdated, version, filterId) {
-    this.timeUpdated = timeUpdated;
-    this.version = version;
-    this.filterId = filterId;
-};
+    'use strict';
 
-/**
- * Filter version metadata parser
- *
- * @param filter Object
- * @returns {*}
- */
-AdguardFilterVersion.fromJSON = function (filter) {
-    var timeUpdated = new Date(filter.timeUpdated).getTime();
-    var version = filter.version;
-    var filterId = filter.filterId - 0;
-    return new AdguardFilterVersion(timeUpdated, version, filterId);
-};
+    var AntiBannerService = adguard.AntiBannerService;
+
+    function getRequestFilter() {
+        return AntiBannerService.getRequestFilter();
+    }
+
+    /**
+     * @returns boolean true when request filter was initialized first time
+     */
+    var isReady = function () {
+        return AntiBannerService.getRequestFilterInitTime() > 0;
+    };
+
+    /**
+     * When browser just started we need some time on request filter initialization.
+     * This could be a problem in case when browser has a homepage and it is just started.
+     * In this case request filter is not yet initalized so we don't block requests and inject css.
+     * To fix this, content script will repeat requests for selectors until request filter is ready
+     * and it will also collapse all elements which should have been blocked.
+     *
+     * @returns boolean true if we should collapse elements with content script
+     */
+    var shouldCollapseAllElements = function () {
+        // We assume that if content script is requesting CSS in first 5 seconds after request filter init,
+        // then it is possible, that we've missed some elements and now we should collapse these elements
+        var requestFilterInitTime = AntiBannerService.getRequestFilterInitTime();
+        return (requestFilterInitTime > 0) && (requestFilterInitTime + 5000 > new Date().getTime());
+    };
+
+    var getRules = function () {
+        return getRequestFilter().getRules();
+    };
+    var findRuleForRequest = function (requestUrl, documentUrl, requestType, documentWhitelistRule) {
+        return getRequestFilter().findRuleForRequest(requestUrl, documentUrl, requestType, documentWhitelistRule);
+    };
+    var findWhiteListRule = function (requestUrl, referrer, requestType) {
+        return getRequestFilter().findWhiteListRule(requestUrl, referrer, requestType);
+    };
+
+    var getCssForStyleSheet = function () {
+        return getRequestFilter().getCssForStyleSheet();
+    };
+    var getSelectorsForUrl = function (documentUrl, genericHideFlag) {
+        return getRequestFilter().getSelectorsForUrl(documentUrl, genericHideFlag);
+    };
+    var getInjectedSelectorsForUrl = function (documentUrl, genericHideFlag) {
+        return getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideFlag);
+    };
+    var getScriptsForUrl = function (documentUrl) {
+        return getRequestFilter().getScriptsForUrl(documentUrl);
+    };
+    var findCssRuleByKey = function (key) {
+        return getRequestFilter().cssFilter.getRuleForKey(key);
+    };
+
+    var getRequestFilterInfo = function () {
+        return AntiBannerService.getRequestFilterInfo();
+    };
+    var updateContentBlockerInfo = function (info) {
+        return AntiBannerService.updateContentBlockerInfo(info);
+    };
+    var getContentBlockerInfo = function () {
+        return AntiBannerService.getContentBlockerInfo();
+    };
+
+    return {
+
+        isReady: isReady,
+        shouldCollapseAllElements: shouldCollapseAllElements,
+
+        getRules: getRules,
+        findRuleForRequest: findRuleForRequest,
+        findWhiteListRule: findWhiteListRule,
+
+        getCssForStyleSheet: getCssForStyleSheet,
+        getSelectorsForUrl: getSelectorsForUrl,
+        getInjectedSelectorsForUrl: getInjectedSelectorsForUrl,
+        getScriptsForUrl: getScriptsForUrl,
+        findCssRuleByKey: findCssRuleByKey,
+
+        getRequestFilterInfo: getRequestFilterInfo,
+        updateContentBlockerInfo: updateContentBlockerInfo,
+        getContentBlockerInfo: getContentBlockerInfo
+    };
+
+})(adguard);
 
 /**
  * Helper class for working with filters metadata storage (local storage)
  */
-var FilterLSUtils = {
+adguard.filtersState = (function (adguard) {
 
-    FILTERS_STATE_PROP: 'filters-state',
-    FILTERS_VERSION_PROP: 'filters-version',
+    var FILTERS_STATE_PROP = 'filters-state';
+    var FILTERS_VERSION_PROP = 'filters-version';
 
     /**
      * Gets filter version from the local storage
      * @returns {*}
      */
-    getFiltersVersionInfo: function () {
+    var getFiltersVersion = function () {
         var filters = Object.create(null);
         try {
-            var json = adguard.localStorage.getItem(FilterLSUtils.FILTERS_VERSION_PROP);
+            var json = adguard.localStorage.getItem(FILTERS_VERSION_PROP);
             if (json) {
                 filters = JSON.parse(json);
             }
         } catch (ex) {
-            Log.error("Error retrieve filters version info, cause {0}", ex);
+            adguard.console.error("Error retrieve filters version info, cause {0}", ex);
         }
         return filters;
-    },
+    };
 
     /**
      * Gets filters state from the local storage
      * @returns {*}
      */
-    getFiltersStateInfo: function () {
+    var getFiltersState = function () {
         var filters = Object.create(null);
         try {
-            var json = adguard.localStorage.getItem(FilterLSUtils.FILTERS_STATE_PROP);
+            var json = adguard.localStorage.getItem(FILTERS_STATE_PROP);
             if (json) {
                 filters = JSON.parse(json);
             }
         } catch (ex) {
-            Log.error("Error retrieve filters state info, cause {0}", ex);
+            adguard.console.error("Error retrieve filters state info, cause {0}", ex);
         }
         return filters;
-    },
+    };
 
     /**
      * Updates filter version in the local storage
      *
      * @param filter Filter version metadata
      */
-    updateFilterVersionInfo: function (filter) {
-        var filters = FilterLSUtils.getFiltersVersionInfo();
+    var updateFilterVersion = function (filter) {
+        var filters = getFiltersVersion();
         filters[filter.filterId] = {
             version: filter.version,
             lastCheckTime: filter.lastCheckTime,
             lastUpdateTime: filter.lastUpdateTime
         };
-        adguard.localStorage.setItem(FilterLSUtils.FILTERS_VERSION_PROP, JSON.stringify(filters));
-    },
+        adguard.localStorage.setItem(FILTERS_VERSION_PROP, JSON.stringify(filters));
+    };
 
     /**
      * Updates filter state in the local storage
      *
      * @param filter Filter state object
      */
-    updateFilterStateInfo: function (filter) {
-        var filters = FilterLSUtils.getFiltersStateInfo();
+    var updateFilterState = function (filter) {
+        var filters = getFiltersState();
         filters[filter.filterId] = {
             loaded: filter.loaded,
             enabled: filter.enabled,
             installed: filter.installed
         };
-        adguard.localStorage.setItem(FilterLSUtils.FILTERS_STATE_PROP, JSON.stringify(filters));
+        adguard.localStorage.setItem(FILTERS_STATE_PROP, JSON.stringify(filters));
+    };
+
+    // Add event listener to persist filter metadata to local storage
+    adguard.listeners.addListener(function (event, filter) {
+        switch (event) {
+            case adguard.listeners.SUCCESS_DOWNLOAD_FILTER:
+                updateFilterState(filter);
+                updateFilterVersion(filter);
+                break;
+            case adguard.listeners.FILTER_ADD_REMOVE:
+            case adguard.listeners.FILTER_ENABLE_DISABLE:
+                updateFilterState(filter);
+                break;
+        }
+    });
+
+    return {
+        getFiltersVersion: getFiltersVersion,
+        getFiltersState: getFiltersState,
+        // These methods are used only for migrate from old versions
+        updateFilterVersion: updateFilterVersion,
+        updateFilterState: updateFilterState
+    };
+
+})(adguard);
+
+/**
+ * Class for manage filters state (enable, disable, add, remove, check updates)
+ * Also includes method for initializing
+ */
+adguard.filters = (function (adguard) {
+
+    'use strict';
+
+    var AntiBannerService = adguard.AntiBannerService;
+
+    /**
+     * Called when LocaleDetectorService has detected language-specific filters we can enable.
+     *
+     * @param filterIds List of detected language-specific filters identifiers
+     * @private
+     */
+    function onFilterDetectedByLocale(filterIds) {
+        if (!filterIds) {
+            return;
+        }
+        addAndEnableFilters(filterIds, function (enabledFilterIds) {
+            var enabledFilters = [];
+            for (var i = 0; i < enabledFilterIds.length; i++) {
+                enabledFilters.push(AntiBannerService.getAntiBannerFilterById(enabledFilterIds[i]));
+            }
+            if (enabledFilters.length > 0) {
+                adguard.listeners.notifyListeners(adguard.listeners.ENABLE_FILTER_SHOW_POPUP, enabledFilters);
+            }
+        });
     }
-};
 
-/**
- * List of events which cause RequestFilter re-creation
- * @type {Array}
- */
-var UPDATE_REQUEST_FILTER_EVENTS = [adguard.listeners.UPDATE_FILTER_RULES, adguard.listeners.ENABLE_FILTER, adguard.listeners.DISABLE_FILTER];
+    /**
+     * Entry point for loading AntiBannerService
+     * Handles application startup
+     * @param options
+     */
+    var init = function (options) {
+        return AntiBannerService.init(options);
+    };
 
-/**
- * List of events which cause saving filter rules to the rules storage
- * @type {Array}
- */
-var SAVE_FILTER_RULES_TO_STORAGE_EVENTS = [adguard.listeners.UPDATE_FILTER_RULES, adguard.listeners.ADD_RULE, adguard.listeners.ADD_RULES, adguard.listeners.REMOVE_RULE];
+    /**
+     * Enable filters on extension install, select default filters and filters by locale and country
+     * @param callback
+     */
+    var initializeFiltersOnInstall = function (callback) {
+
+        // These filters are enabled by default
+        var filterIds = [adguard.utils.filters.ENGLISH_FILTER_ID, adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID];
+
+        // Get language-specific filters by user locale
+        var localeFilterIds = adguard.localeDetectService.getFilterIdsForLanguage(adguard.app.getLocale());
+        filterIds = filterIds.concat(localeFilterIds);
+
+        // Add safari filter for safari browser
+        if (adguard.utils.browser.isSafariBrowser()) {
+            filterIds.push(adguard.utils.filters.SAFARI_FILTER);
+        }
+
+        // This callback is used to activate language-specific filter after user's country is detected
+        // Country detection is done on the server side.
+        var onCountryDetected = function (countryCode) {
+            var countryFilterIds = adguard.localeDetectService.getFilterIdsForLanguage(countryCode);
+            filterIds = filterIds.concat(countryFilterIds);
+            addAndEnableFilters(filterIds, callback);
+        };
+
+        // Detect user country
+        adguard.backend.getCountry(onCountryDetected);
+    };
+
+    /**
+     * List of enabled filters.
+     * User filter and whitelist filter are always enabled so they are excluded.
+     *
+     * @returns {Array} List of enabled filters
+     */
+    var getEnabledFilters = function () {
+        return AntiBannerService.getAntiBannerFilters().filter(function (f) {
+            return f.installed && f.enabled &&
+                f.filterId != adguard.utils.filters.USER_FILTER_ID &&
+                f.filterId != adguard.utils.filters.WHITE_LIST_FILTER_ID;
+        });
+    };
+
+    /**
+     * Returns collection of filters for settings page.
+     * Private filters (user filter, whitelist filter, useful ads filter) are excluded.
+     *
+     * @returns {Array} List of filters
+     */
+    var getFiltersForOptionsPage = function () {
+        return AntiBannerService.getAntiBannerFilters().filter(function (f) {
+            return f.installed &&
+                f.filterId != adguard.utils.filters.USER_FILTER_ID &&
+                f.filterId != adguard.utils.filters.WHITE_LIST_FILTER_ID &&
+                f.filterId != adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID;
+        });
+    };
+
+    /**
+     * Checks if specified filter is enabled
+     *
+     * @param filterId Filter identifier
+     * @returns {*} true if enabled
+     */
+    var isFilterEnabled = function (filterId) {
+        return AntiBannerService.getAntiBannerFilterById(filterId).enabled;
+    };
+
+    /**
+     * Checks if specified filter is installed (downloaded)
+     *
+     * @param filterId Filter id
+     * @returns {*} true if installed
+     */
+    var isFilterInstalled = function (filterId) {
+        return AntiBannerService.getAntiBannerFilterById(filterId).installed;
+    };
+
+    var checkFiltersUpdates = function (successCallback, errorCallback) {
+        return AntiBannerService.checkAntiBannerFiltersUpdate(true, successCallback, errorCallback);
+    };
+
+    /**
+     * Enable filter
+     *
+     * @param filterId Filter identifier
+     * @returns {boolean} true if filter was enabled successfully
+     */
+    var enableFilter = function (filterId) {
+
+        var filter = AntiBannerService.getAntiBannerFilterById(filterId);
+        if (filter.enabled || !filter.installed) {
+            return false;
+        }
+
+        filter.enabled = true;
+        adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
+        return true;
+    };
+
+    /**
+     * Successively add filters from filterIds and then enable successfully added filters
+     * @param filterIds Filter identifiers
+     * @param callback We pass list of enabled filter identifiers to the callback
+     */
+    var addAndEnableFilters = function (filterIds, callback) {
+
+        callback = callback || function () {
+                // Empty callback
+            };
+
+        var enabledFilterIds = [];
+
+        if (!filterIds || filterIds.length === 0) {
+            callback(enabledFilterIds);
+            return;
+        }
+
+
+        var loadNextFilter = function () {
+            if (filterIds.length === 0) {
+                callback(enabledFilterIds);
+            } else {
+                var filterId = filterIds.shift();
+                AntiBannerService.addAntiBannerFilter(filterId, function (success) {
+                    if (success) {
+                        var changed = enableFilter(filterId);
+                        if (changed) {
+                            enabledFilterIds.push(filterId);
+                        }
+                    }
+                    loadNextFilter();
+                });
+            }
+        };
+
+        loadNextFilter();
+    };
+
+    /**
+     * Disables filter by id
+     *
+     * @param filterId Filter identifier
+     * @returns {boolean} true if filter was disabled successfully
+     */
+    var disableFilter = function (filterId) {
+
+        var filter = AntiBannerService.getAntiBannerFilterById(filterId);
+        if (!filter.enabled || !filter.installed) {
+            return false;
+        }
+
+        filter.enabled = false;
+        adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
+        return true;
+    };
+
+    /**
+     * Removes filter
+     *
+     * @param filterId Filter identifier
+     * @returns {boolean} true if filter was removed successfully
+     */
+    var removeFilter = function (filterId) {
+
+        var filter = AntiBannerService.getAntiBannerFilterById(filterId);
+        if (!filter.installed) {
+            return false;
+        }
+
+        adguard.console.debug("Remove filter {0}", filter.filterId);
+
+        filter.enabled = false;
+        filter.installed = false;
+        adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
+        adguard.listeners.notifyListeners(adguard.listeners.FILTER_ADD_REMOVE, filter);
+        return true;
+    };
+
+    /**
+     * This method is called from UI when user changes list of active filters
+     * @param filterIds List of active filters identifiers
+     */
+    var onFiltersListChange = function (filterIds) {
+
+        var filters = AntiBannerService.getAntiBannerFilters();
+        for (var i = 0; i < filters.length; i++) {
+            var filterId = filters[i].filterId;
+            // Skip acceptable ads filter
+            if (filterId == adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID) {
+                continue;
+            }
+            // Remove filter if it is not present in the new list
+            if (filterIds.indexOf(filterId) < 0) {
+                removeFilter(filterId);
+            }
+        }
+
+        // Add and enable filters
+        addAndEnableFilters(filterIds);
+    };
+
+    /**
+     * Returns filter metadata by subscription url
+     * @param subscriptionUrl - subscription url
+     * @returns {*|T}
+     */
+    var findFilterMetadataBySubscriptionUrl = function (subscriptionUrl) {
+        return adguard.subscriptions.getFilters().filter(function (f) {
+            return f.subscriptionUrl === subscriptionUrl;
+        })[0];
+    };
+
+    /**
+     * Load rules to user filter by subscription url
+     * @param subscriptionUrl
+     * @param loadCallback
+     */
+    var processAbpSubscriptionUrl = function (subscriptionUrl, loadCallback) {
+
+        var filterMetadata = findFilterMetadataBySubscriptionUrl(subscriptionUrl);
+
+        if (filterMetadata) {
+
+            var filter = AntiBannerService.getAntiBannerFilterById(filterMetadata.filterId);
+            addAndEnableFilters([filter.filterId]);
+
+        } else {
+
+            // Load filter rules
+            adguard.backend.loadFilterRulesBySubscriptionUrl(subscriptionUrl, function (rulesText) {
+                var rules = adguard.userrules.addRules(rulesText);
+                loadCallback(rules.length);
+            }, function (request, cause) {
+                adguard.console.error("Error download subscription by url {0}, cause: {1} {2}", subscriptionUrl, request.statusText, cause || "");
+            });
+        }
+    };
+
+    // Add listener to service that detects webpage locale
+    // Depending on the locale we can enable language-specific filter
+    adguard.localeDetectService.onDetected.addListener(onFilterDetectedByLocale);
+
+    return {
+
+        init: init,
+        initializeFiltersOnInstall: initializeFiltersOnInstall,
+
+        getEnabledFilters: getEnabledFilters,
+        getFiltersForOptionsPage: getFiltersForOptionsPage,
+
+        isFilterEnabled: isFilterEnabled,
+        isFilterInstalled: isFilterInstalled,
+
+        checkFiltersUpdates: checkFiltersUpdates,
+
+        enableFilter: enableFilter,
+        addAndEnableFilters: addAndEnableFilters,
+        disableFilter: disableFilter,
+        removeFilter: removeFilter,
+        onFiltersListChange: onFiltersListChange,
+
+        findFilterMetadataBySubscriptionUrl: findFilterMetadataBySubscriptionUrl,
+        processAbpSubscriptionUrl: processAbpSubscriptionUrl
+    };
+
+})(adguard);

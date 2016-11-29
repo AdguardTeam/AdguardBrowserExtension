@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Log */
-
 /**
  * localStorage interface. Implementation depends on browser
  */
@@ -37,7 +35,7 @@ adguard.localStorageImpl = adguard.localStorageImpl || (function () {
 /**
  * This class manages local storage
  */
-adguard.localStorage = (function (impl) {
+adguard.localStorage = (function (adguard, impl) {
 
     var getItem = function (key) {
         return impl.getItem(key);
@@ -47,7 +45,7 @@ adguard.localStorage = (function (impl) {
         try {
             impl.setItem(key, value);
         } catch (ex) {
-            Log.error("Error while saving item {0} to the localStorage: {1}", key, ex);
+            adguard.console.error("Error while saving item {0} to the localStorage: {1}", key, ex);
         }
     };
 
@@ -66,7 +64,7 @@ adguard.localStorage = (function (impl) {
         hasItem: hasItem
     };
 
-})(adguard.localStorageImpl);
+})(adguard, adguard.localStorageImpl);
 
 /**
  * Rules storage interface. Implementation depends on browser
@@ -87,7 +85,7 @@ adguard.rulesStorageImpl = adguard.rulesStorageImpl || (function () {
 /**
  * This class manages storage for filters.
  */
-adguard.rulesStorage = (function (impl) {
+adguard.rulesStorage = (function (adguard, impl) {
 
     function getFilePath(filterId) {
         return "filterrules_" + filterId + ".txt";
@@ -103,7 +101,7 @@ adguard.rulesStorage = (function (impl) {
         var filePath = getFilePath(filterId);
         impl.read(filePath, function (e, rules) {
             if (e) {
-                Log.error("Error while reading rules from file {0} cause: {1}", filePath, e);
+                adguard.console.error("Error while reading rules from file {0} cause: {1}", filePath, e);
             }
             callback(rules);
         });
@@ -120,7 +118,7 @@ adguard.rulesStorage = (function (impl) {
         var filePath = getFilePath(filterId);
         impl.write(filePath, filterRules, function (e) {
             if (e) {
-                Log.error("Error writing filters to file {0}. Cause: {1}", filePath, e);
+                adguard.console.error("Error writing filters to file {0}. Cause: {1}", filePath, e);
             }
             callback();
         });
@@ -131,4 +129,4 @@ adguard.rulesStorage = (function (impl) {
         write: write
     };
 
-})(adguard.rulesStorageImpl);
+})(adguard, adguard.rulesStorageImpl);

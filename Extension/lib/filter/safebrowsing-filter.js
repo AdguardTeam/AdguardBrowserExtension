@@ -15,15 +15,13 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Log, SHA256 */
-
 /**
  * Initializing SafebrowsingFilter.
  *
  * http://adguard.com/en/how-malware-blocked.html#extension
  */
 
-adguard.safebrowsing = (function (adguard) {
+adguard.safebrowsing = (function (adguard, global) {
 
     /**
      * Cache with maxCacheSize stored in local storage.
@@ -50,7 +48,7 @@ adguard.safebrowsing = (function (adguard) {
                 }
             } catch (ex) {
                 //ignore
-                Log.error("Error read from {0} cache, cause: {1}", lsProperty, ex);
+                adguard.console.error("Error read from {0} cache, cause: {1}", lsProperty, ex);
                 adguard.localStorage.removeItem(lsProperty);
             }
             return data;
@@ -60,7 +58,7 @@ adguard.safebrowsing = (function (adguard) {
             try {
                 adguard.localStorage.setItem(lsProperty, JSON.stringify(cache));
             } catch (ex) {
-                Log.error("Error save to {0} cache, cause: {1}", lsProperty, ex);
+                adguard.console.error("Error save to {0} cache, cause: {1}", lsProperty, ex);
             }
         }
 
@@ -137,7 +135,7 @@ adguard.safebrowsing = (function (adguard) {
     // Lazy initialized safebrowsing cache
     var safebrowsingCache = {
         get cache() {
-            return adguard.lazyGet(this, 'cache', function () {
+            return adguard.lazyGet(safebrowsingCache, 'cache', function () {
                 return new LocalStorageCache("sb-cache");
             });
         }
@@ -189,7 +187,7 @@ adguard.safebrowsing = (function (adguard) {
 
             return null;
         } catch (ex) {
-            Log.error("Error parse safebrowsing response, cause {0}", ex);
+            adguard.console.error("Error parse safebrowsing response, cause {0}", ex);
         }
         return null;
     }
@@ -279,12 +277,46 @@ adguard.safebrowsing = (function (adguard) {
 
         for (var i = 0; i < hosts.length; i++) {
             var host = hosts[i];
-            var hash = SHA256.hash(host + '/');
+            var hash = global.SHA256.hash(host + '/');
             result[hash.toUpperCase()] = host;
         }
 
         return result;
     }
+
+    /**
+     * Checks URL with safebrowsing filter.
+     * http://adguard.com/en/how-malware-blocked.html#extension
+     *
+     * @param requestUrl Request URL
+     * @param referrerUrl Referrer URL
+     * @param safebrowsingCallback Called when check has been finished
+     * @param incognitoTab Tab incognito mode
+     */
+    var checkSafebrowsingFilter = function (requestUrl, referrerUrl, safebrowsingCallback, incognitoTab) {
+
+        if (!adguard.settings.getSafebrowsingInfo().enabled) {
+            return;
+        }
+
+        adguard.console.debug("Checking safebrowsing filter for {0}", requestUrl);
+
+        var callback = function (sbList) {
+
+            if (!sbList) {
+                adguard.console.debug("No safebrowsing rule found");
+                return;
+            }
+            adguard.console.debug("Following safebrowsing filter has been fired: {0}", sbList);
+            if (!incognitoTab && adguard.settings.getSafebrowsingInfo().sendStats) {
+                adguard.backend.trackSafebrowsingStats(requestUrl);
+            }
+            safebrowsingCallback(getErrorPageURL(requestUrl, referrerUrl, sbList));
+
+        };
+
+        lookupUrlWithCallback(requestUrl, callback);
+    };
 
     /**
      * Performs lookup to safebrowsing service
@@ -323,7 +355,7 @@ adguard.safebrowsing = (function (adguard) {
         var successCallback = function (response) {
             if (response.status >= 500) {
                 // Error on server side, suspend request
-                Log.error("Error response status {0} received from safebrowsing lookup server.", response.status);
+                adguard.console.error("Error response status {0} received from safebrowsing lookup server.", response.status);
                 suspendSafebrowsing();
                 return;
             }
@@ -341,7 +373,7 @@ adguard.safebrowsing = (function (adguard) {
         };
 
         var errorCallback = function () {
-            Log.error("Error response from safebrowsing lookup server for {0}", host);
+            adguard.console.error("Error response from safebrowsing lookup server for {0}", host);
             suspendSafebrowsing();
         };
 
@@ -389,6 +421,7 @@ adguard.safebrowsing = (function (adguard) {
 
     return {
 
+        checkSafebrowsingFilter: checkSafebrowsingFilter,
         lookupUrlWithCallback: lookupUrlWithCallback,
         addToSafebrowsingTrusted: addToSafebrowsingTrusted,
         getErrorPageURL: getErrorPageURL,
@@ -398,4 +431,4 @@ adguard.safebrowsing = (function (adguard) {
         processSbResponse: processSbResponse
     };
 
-})(adguard);
+})(adguard, window);

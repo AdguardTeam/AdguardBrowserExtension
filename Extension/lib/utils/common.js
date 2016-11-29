@@ -18,48 +18,44 @@
 /**
  * Request types enumeration
  */
-var RequestTypes = {
+adguard.RequestTypes = (function () {
 
-    /**
-     * Document that is loaded for a top-level frame
-     */
-    DOCUMENT: "DOCUMENT",
+    'use strict';
 
-    /**
-     * Document that is loaded for an embedded frame (iframe)
-     */
-    SUBDOCUMENT: "SUBDOCUMENT",
+    return {
 
-    SCRIPT: "SCRIPT",
-    STYLESHEET: "STYLESHEET",
-    OBJECT: "OBJECT",
-    IMAGE: "IMAGE",
-    XMLHTTPREQUEST: "XMLHTTPREQUEST",
-    OBJECT_SUBREQUEST: "OBJECT-SUBREQUEST",
-    MEDIA: "MEDIA",
-    FONT: "FONT",
-    WEBSOCKET: "WEBSOCKET",
-    OTHER: "OTHER",
+        /**
+         * Document that is loaded for a top-level frame
+         */
+        DOCUMENT: "DOCUMENT",
 
-    /**
-     * Synthetic request type for requests detected as pop-ups
-     */
-    POPUP: "POPUP",
+        /**
+         * Document that is loaded for an embedded frame (iframe)
+         */
+        SUBDOCUMENT: "SUBDOCUMENT",
 
-    /**
-     * Checks if loaded element could be visible to user
-     *
-     * @param requestType Request type
-     * @returns {boolean} true if request is for some visual element
-     */
-    isVisual: function (requestType) {
-        return requestType === this.DOCUMENT ||
-            requestType === this.SUBDOCUMENT ||
-            requestType === this.OBJECT ||
-            requestType === this.IMAGE;
-    }
-};
+        SCRIPT: "SCRIPT",
+        STYLESHEET: "STYLESHEET",
+        OBJECT: "OBJECT",
+        IMAGE: "IMAGE",
+        XMLHTTPREQUEST: "XMLHTTPREQUEST",
+        OBJECT_SUBREQUEST: "OBJECT-SUBREQUEST",
+        MEDIA: "MEDIA",
+        FONT: "FONT",
+        WEBSOCKET: "WEBSOCKET",
+        OTHER: "OTHER",
 
+        /**
+         * Synthetic request type for requests detected as pop-ups
+         */
+        POPUP: "POPUP"
+    };
+
+})();
+
+/**
+ * Utilities namespace
+ */
 adguard.utils = (function () {
 
     return {
@@ -68,7 +64,9 @@ adguard.utils = (function () {
         concurrent: null, // ConcurrentUtils,
         channels: null, // EventChannels
         filters: null, // FilterUtils,
-        StopWatch: null
+        workaround: null, // WorkaroundUtils
+        StopWatch: null,
+        Promise: null // Deferred
     };
 
 })();
@@ -510,6 +508,101 @@ adguard.utils = (function () {
     })();
 
     api.channels = EventChannels;
+
+})(adguard.utils);
+
+/**
+ * Promises wrapper
+ */
+(function (api, global) {
+
+    'use strict';
+
+    var defer = global.Deferred;
+    var deferAll = function (arr) {
+        return global.Deferred.when.apply(global.Deferred, arr);
+    };
+
+    var Promise = function () {
+
+        var deferred = defer();
+        var promise;
+        if (typeof deferred.promise === 'function') {
+            promise = deferred.promise();
+        } else {
+            promise = deferred.promise;
+        }
+
+        var resolve = function (arg) {
+            deferred.resolve(arg);
+        };
+
+        var reject = function () {
+            deferred.reject();
+        };
+
+        var then = function (onSuccess, onReject) {
+            promise.then(onSuccess, onReject);
+        };
+
+        return {
+            promise: promise,
+            resolve: resolve,
+            reject: reject,
+            then: then
+        };
+    };
+
+    Promise.all = function (promises) {
+        var defers = [];
+        for (var i = 0; i < promises.length; i++) {
+            defers.push(promises[i].promise);
+        }
+        return deferAll(defers);
+    };
+
+    api.Promise = Promise;
+
+})(adguard.utils, window);
+
+/**
+ * We collect here all workarounds and ugly hacks:)
+ */
+(function (api) {
+
+    //noinspection UnnecessaryLocalVariableJS
+    var WorkaroundUtils = {
+
+        /**
+         * Converts blocked counter to the badge text.
+         * Workaround for FF - make 99 max.
+         *
+         * @param blocked Blocked requests count
+         */
+        getBlockedCountText: function (blocked) {
+            var blockedText = blocked == "0" ? "" : blocked;
+            if (blocked - 0 > 99) {
+                blockedText = '\u221E';
+            }
+
+            return blockedText;
+        },
+
+        /**
+         * Checks if it is facebook like button iframe
+         * TODO: Ugly, remove this
+         *
+         * @param url URL
+         * @returns true if it is
+         */
+        isFacebookIframe: function (url) {
+            // facebook iframe workaround
+            // do not inject anything to facebook frames
+            return url.indexOf('www.facebook.com/plugins/like.php') > -1;
+        }
+    };
+
+    api.workaround = WorkaroundUtils;
 
 })(adguard.utils);
 

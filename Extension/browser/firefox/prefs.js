@@ -26,13 +26,13 @@ adguard.prefs = (function (adguard) {
         platform: "firefox",
 
         get mobile() {
-            return adguard.lazyGet(this, 'mobile', function () {
+            return adguard.lazyGet(Prefs, 'mobile', function () {
                 return adguard.runtime.getPlatform().indexOf('android') > -1;
             });
         },
 
         get browser() {
-            return adguard.lazyGet(this, 'browser', function () {
+            return adguard.lazyGet(Prefs, 'browser', function () {
                 var browser;
                 if (this.mobile) {
                     browser = "Android";
@@ -52,7 +52,7 @@ adguard.prefs = (function (adguard) {
         },
 
         get ICONS() {
-            return adguard.lazyGet(this, 'ICONS', function () {
+            return adguard.lazyGet(Prefs, 'ICONS', function () {
                 return {
                     ICON_BLUE: {
                         '16': adguard.getURL('skin/firefox-blue-16.png'),

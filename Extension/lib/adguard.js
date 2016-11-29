@@ -26,7 +26,7 @@ var adguard = (function () { // jshint ignore:line
      * var Object = {
      *
      *      get someProperty(){
-     *          return adguard.lazyGet(this, 'someProperty', function() {
+     *          return adguard.lazyGet(Object, 'someProperty', function() {
      *              return calculateSomeProperty();
      *          });
      *      }

@@ -16,8 +16,6 @@
  */
 
 /* global $, PopupController */
-var backgroundPage = adguard.backgroundPage.getWindow();
-var antiBannerService = backgroundPage.antiBannerService;
 
 // http://jira.performix.ru/browse/AG-3474
 var resizePopupWindowForMacOs = function ($) {
@@ -100,7 +98,7 @@ $(document).ready(function () {
             adguard.frames.resetBlockedAdsCount();
         };
         controller.sendFeedback = function (url, topic, comment) {
-            antiBannerService.sendFeedback(url, topic, comment);
+            adguard.backend.sendUrlReport(url, topic, comment);
         };
 
         //render popup

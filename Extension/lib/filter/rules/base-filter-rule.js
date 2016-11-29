@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Log */
-
 (function (adguard, api) {
 
     'use strict';
@@ -70,7 +68,7 @@
                     }
                 }
             } catch (ex) {
-                Log.error("Error load domains from {0}, cause {1}", domains, ex);
+                adguard.console.error("Error load domains from {0}, cause {1}", domains, ex);
             }
 
             this.setPermittedDomains(permittedDomains);

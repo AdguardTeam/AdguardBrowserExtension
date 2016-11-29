@@ -1,5 +1,3 @@
-/* global safari */
-/* global adguard */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -17,18 +15,20 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global safari */
+
 /**
  * Extension global preferences.
  * (!) Firefox has it's own implementation
  */
 adguard.prefs = (function (adguard) {
 
-    return {
+    var Prefs = {
 
         platform: typeof safari === 'undefined' ? "chromium" : "webkit",
 
         get browser() {
-            return adguard.lazyGet(this, 'browser', function () {
+            return adguard.lazyGet(Prefs, 'browser', function () {
                 var browser;
                 var userAgent = navigator.userAgent;
                 if (userAgent.toLowerCase().indexOf("yabrowser") >= 0) {
@@ -47,7 +47,7 @@ adguard.prefs = (function (adguard) {
         },
 
         get safariVersion() {
-            return adguard.lazyGet(this, 'safariVersion', function () {
+            return adguard.lazyGet(Prefs, 'safariVersion', function () {
                 if (this.browser === 'Safari') {
                     var i = navigator.userAgent.indexOf("Version/");
                     if (i < 0) {
@@ -60,7 +60,7 @@ adguard.prefs = (function (adguard) {
         },
 
         get chromeVersion() {
-            return adguard.lazyGet(this, 'chromeVersion', function () {
+            return adguard.lazyGet(Prefs, 'chromeVersion', function () {
                 if (this.browser == "Chrome") {
                     var i = navigator.userAgent.indexOf("Chrome/");
                     if (i < 0) {
@@ -72,7 +72,7 @@ adguard.prefs = (function (adguard) {
         },
 
         get hitPrefix() {
-            return adguard.lazyGet(this, 'hitPrefix', function () {
+            return adguard.lazyGet(Prefs, 'hitPrefix', function () {
                 var appId = adguard.app.getId();
                 var scheme = adguard.app.getUrlScheme();
                 return scheme + '://' + appId;
@@ -91,7 +91,7 @@ adguard.prefs = (function (adguard) {
         useGlobalStyleSheet: false,
 
         get ICONS() {
-            return adguard.lazyGet(this, 'ICONS', function () {
+            return adguard.lazyGet(Prefs, 'ICONS', function () {
                 return {
                     ICON_BLUE: {
                         '19': adguard.getURL('icons/blue-19.png'),
@@ -109,5 +109,7 @@ adguard.prefs = (function (adguard) {
             });
         }
     };
+
+    return Prefs;
 
 })(adguard);

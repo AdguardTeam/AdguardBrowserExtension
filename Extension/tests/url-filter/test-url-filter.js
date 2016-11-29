@@ -84,6 +84,9 @@ QUnit.test("Generic rule", function(assert) {
 });
 
 QUnit.test("Generic domain specific", function(assert) {
+
+    var RequestTypes = adguard.RequestTypes;
+
     //Domain specific rule
     var ruleText = "||cdn.innity.net^$domain=sharejunction.com";
     var rule = new adguard.rules.UrlFilterRule(ruleText);
@@ -140,6 +143,9 @@ QUnit.test("Url blocking rule without domain", function(assert) {
 });
 
 QUnit.test("Url blocking rule", function(assert) {
+
+    var RequestTypes = adguard.RequestTypes;
+
     var ruleText = "||test.ru/^$domain=~nigma.ru|google.com,third-party,match-case,popup";
     var rule = new adguard.rules.UrlFilterRule(ruleText);
 
@@ -167,6 +173,8 @@ QUnit.test("Url blocking rule", function(assert) {
 
 QUnit.test("Content-specific URL blocking", function(assert) {
 
+    var RequestTypes = adguard.RequestTypes;
+
     var mask = "||test.ru/$script";
     var rule = new adguard.rules.UrlFilterRule(mask);
     assert.ok(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.SCRIPT));
@@ -183,7 +191,7 @@ QUnit.test("Content-specific URL blocking", function(assert) {
     mask = "||test.ru/$script,image";
     rule = new adguard.rules.UrlFilterRule(mask);
     assert.ok(rule.isFiltered("http://test.ru/script.js?ololo=ololo", false, RequestTypes.SCRIPT));
-    assert.ok(rule.isFiltered("http://test.ru/image.png", false, RequestTypes.IMAGE));    
+    assert.ok(rule.isFiltered("http://test.ru/image.png", false, RequestTypes.IMAGE));
     assert.notOk(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.SUBDOCUMENT));
     assert.notOk(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.XMLHTTPREQUEST));
     assert.notOk(rule.isFiltered("wss://test.ru/?ololo=ololo", false, RequestTypes.WEBSOCKET));
@@ -214,6 +222,9 @@ QUnit.test("Content-specific URL blocking", function(assert) {
 });
 
 QUnit.test("UrlFilter class tests", function(assert) {
+
+    var RequestTypes = adguard.RequestTypes;
+
     var rule = new adguard.rules.UrlFilterRule("||test.ru/^$domain=~nigma.ru|google.com,third-party,match-case");
     var rule1 = new adguard.rules.UrlFilterRule("|http://www.google.com/ad/*");
     var rule2 = new adguard.rules.UrlFilterRule("/partner.$domain=~8088.ru|~partner.microsoft.com|~r01.ru|~yandex.ru");
@@ -234,6 +245,9 @@ QUnit.test("Regexp characters escaping", function(assert) {
 });
 
 QUnit.test("Regexp rule", function(assert) {
+
+    var RequestTypes = adguard.RequestTypes;
+
     var mask = "/news/\\d+/$domain=~nigma.ru|lenta.ru";
     var rule = new adguard.rules.UrlFilterRule(mask);
     assert.ok(rule.isPermitted("lenta.ru"));
@@ -245,6 +259,9 @@ QUnit.test("Regexp rule", function(assert) {
 });
 
 QUnit.test("Complex regexp rule", function(assert) {
+
+    var RequestTypes = adguard.RequestTypes;
+
     var mask = "/^https?\\:\\/\\/(?!(connect\\.facebook\\.net|ajax\\.cloudflare\\.com|www\\.google-analytics\\.com|ajax\\.googleapis\\.com|fbstatic-a\\.akamaihd\\.net|stats\\.g\\.doubleclick\\.net|api-secure\\.solvemedia\\.com|api\\.solvemedia\\.com|sb\\.scorecardresearch\\.com|www\\.google\\.com)\\/)/$script,third-party,xmlhttprequest,domain=mediafire.com";
     var rule = new adguard.rules.UrlFilterRule(mask);
     assert.ok(rule.isFiltered("http://traratatata.com/blahblah.js", true, RequestTypes.SCRIPT));
@@ -256,6 +273,9 @@ QUnit.test("Complex regexp rule", function(assert) {
 });
 
 QUnit.test("Test UrlFilterRule Matching Everything", function(assert) {
+
+    var RequestTypes = adguard.RequestTypes;
+
     var rule = new adguard.rules.UrlFilterRule("*$domain=example.org");
     assert.ok(rule.isFiltered("http://test.com", true, RequestTypes.SUBDOCUMENT));
 
@@ -282,16 +302,16 @@ QUnit.test("Important modifier rules priority", function(assert) {
     var importantRule = new adguard.rules.UrlFilterRule("http://$important,domain=test.com");
     var basicRule = new adguard.rules.UrlFilterRule("||example.com^");
 
-    assert.ok(importantRule.isFiltered("http://example.com", true, RequestTypes.IMAGE));
+    assert.ok(importantRule.isFiltered("http://example.com", true, adguard.RequestTypes.IMAGE));
     assert.ok(importantRule.isPermitted("test.com"));
-    assert.ok(basicRule.isFiltered("http://example.com", true, RequestTypes.IMAGE));
+    assert.ok(basicRule.isFiltered("http://example.com", true, adguard.RequestTypes.IMAGE));
     assert.ok(basicRule.isPermitted("http://example.com"));
 
     var urlFilter = new adguard.rules.UrlFilter();
     urlFilter.addRule(basicRule);
     urlFilter.addRule(importantRule);
 
-    var result = urlFilter.isFiltered("http://example.com", "test.com", RequestTypes.SUBDOCUMENT, true);
+    var result = urlFilter.isFiltered("http://example.com", "test.com", adguard.RequestTypes.SUBDOCUMENT, true);
     assert.ok(result != null);
     assert.equal(result.ruleText, importantRule.ruleText);
 });

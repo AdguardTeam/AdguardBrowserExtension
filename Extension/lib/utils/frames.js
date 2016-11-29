@@ -16,7 +16,7 @@
  */
 
 /**
- * Map that contains info about every browser tab.
+ * Object that contains info about every browser tab.
  */
 adguard.frames = (function (adguard) {
 
@@ -37,7 +37,7 @@ adguard.frames = (function (adguard) {
 		var frame = adguard.tabs.getTabFrame(tab.tabId, frameId);
 
 		var previousUrl = '';
-		if (type === RequestTypes.DOCUMENT) {
+		if (type === adguard.RequestTypes.DOCUMENT) {
 			adguard.tabs.clearTabFrames(tab.tabId);
 			adguard.tabs.clearTabMetadata(tab.tabId);
 			if (frame) {
@@ -47,7 +47,7 @@ adguard.frames = (function (adguard) {
 
 		adguard.tabs.recordTabFrame(tab.tabId, frameId, url, adguard.utils.url.getDomainName(url));
 
-		if (type === RequestTypes.DOCUMENT) {
+		if (type === adguard.RequestTypes.DOCUMENT) {
 			adguard.tabs.updateTabMetadata(tab.tabId, {previousUrl: previousUrl});
 			reloadFrameData(tab);
 		}
@@ -176,7 +176,7 @@ adguard.frames = (function (adguard) {
 		var frame = adguard.tabs.getTabFrame(tab.tabId, 0);
 		if (frame) {
 			var url = frame.url;
-			var frameWhiteListRule = antiBannerService.getRequestFilter().findWhiteListRule(url, url, RequestTypes.DOCUMENT);
+			var frameWhiteListRule = adguard.requestFilter.findWhiteListRule(url, url, adguard.RequestTypes.DOCUMENT);
 			if (!frameWhiteListRule) {
 				frameWhiteListRule = adguard.whitelist.findWhiteListRule(url);
 			}

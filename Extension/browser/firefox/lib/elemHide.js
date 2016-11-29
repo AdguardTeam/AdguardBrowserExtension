@@ -14,7 +14,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global Cc, Ci, Services, Log, antiBannerService */
+
+/* global Cc, Ci, Services */
 
 /**
  * This object manages CSS and JS rules.
@@ -168,7 +169,7 @@ adguard.ElemHide = (function (adguard) {
             }
             var frame = adguard.tabs.getTabFrame(tab.tabId);
             if (frame) {
-                elemHideWhiteListRule = antiBannerService.getRequestFilter().findWhiteListRule(frame.url, frame.url, "ELEMHIDE");
+                elemHideWhiteListRule = adguard.requestFilter.findWhiteListRule(frame.url, frame.url, "ELEMHIDE");
                 adguard.tabs.updateTabMetadata(tab.tabId, {
                     elemHideWhiteListRule: elemHideWhiteListRule || false
                 });
@@ -182,7 +183,7 @@ adguard.ElemHide = (function (adguard) {
             }
             var frame = adguard.tabs.getTabFrame(tab.tabId);
             if (frame) {
-                genericHideWhiteListRule = antiBannerService.getRequestFilter().findWhiteListRule(frame.url, frame.url, "GENERICHIDE");
+                genericHideWhiteListRule = adguard.requestFilter.findWhiteListRule(frame.url, frame.url, "GENERICHIDE");
                 adguard.tabs.updateTabMetadata(tab.tabId, {
                     genericHideWhiteListRule: genericHideWhiteListRule || false
                 });
@@ -193,7 +194,7 @@ adguard.ElemHide = (function (adguard) {
             var index = path.lastIndexOf('?');
             if (index > 0) {
                 var key = path.substring(index + 1);
-                var rule = antiBannerService.getRequestFilter().cssFilter.getRuleForKey(key);
+                var rule = adguard.requestFilter.findCssRuleByKey(key);
                 return rule ? rule : null;
             }
             return null;
@@ -211,7 +212,7 @@ adguard.ElemHide = (function (adguard) {
             }
             this.collapseStyle = Services.io.newURI("data:text/css," + encodeURIComponent("." + this.collapsedClass + "{-moz-binding: url(chrome://global/content/bindings/general.xml#dummy) !important;}"), null, null);
             this._applyCssStyleSheet(this.collapseStyle);
-            Log.info("Adguard addon: Collapse style registered successfully");
+            adguard.console.info("Adguard addon: Collapse style registered successfully");
         },
 
         /**
@@ -221,7 +222,7 @@ adguard.ElemHide = (function (adguard) {
         _registerSelectorStyle: function () {
             this.selectorStyle = Services.io.newURI("data:text/css," + encodeURIComponent(adguard.loadURL('lib/content-script/assistant/css/selector.css')), null, null);
             this._applyCssStyleSheet(this.selectorStyle);
-            Log.info("Adguard addon: Selector style registered successfully");
+            adguard.console.info("Adguard addon: Selector style registered successfully");
         },
 
         /**
@@ -231,7 +232,7 @@ adguard.ElemHide = (function (adguard) {
          */
         _saveStyleSheetToDisk: function () {
             adguard.utils.concurrent.runAsync(function () {
-                var content = antiBannerService.getRequestFilter().getCssForStyleSheet();
+                var content = adguard.requestFilter.getCssForStyleSheet();
                 adguard.fileStorage.saveStyleSheetToDisk(content, function () {
                     this._applyCssStyleSheet(adguard.fileStorage.injectCssFileURI);
                 }.bind(this));
@@ -251,7 +252,7 @@ adguard.ElemHide = (function (adguard) {
                         if (uri.file) {
                             var exists = uri.file.exists();
                             if (!exists) {
-                                Log.info('Adguard addon: Css stylesheet cannot apply file: ' + uri.path + ' because file does not exist');
+                                adguard.console.info('Adguard addon: Css stylesheet cannot apply file: ' + uri.path + ' because file does not exist');
                                 return;
                             }
                         }
@@ -260,10 +261,10 @@ adguard.ElemHide = (function (adguard) {
                     styleService.unloadUserSheetByUri(uri);
                     //load new stylesheet
                     styleService.loadUserSheetByUri(uri);
-                    Log.debug('styles hiding elements are successfully registered.');
+                    adguard.console.debug('styles hiding elements are successfully registered.');
                 }
             } catch (ex) {
-                Log.error('Error while register stylesheet ' + uri + ':' + ex);
+                adguard.console.error('Error while register stylesheet ' + uri + ':' + ex);
             }
         }
     };

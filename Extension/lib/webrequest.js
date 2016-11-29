@@ -15,9 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global RequestTypes */
-/* global antiBannerService */
-
 (function () {
 
     /**
@@ -32,11 +29,11 @@
         var requestUrl = requestDetails.requestUrl;
         var requestType = requestDetails.requestType;
 
-        if (requestType === RequestTypes.DOCUMENT || requestType === RequestTypes.SUBDOCUMENT) {
+        if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
             adguard.frames.recordFrame(tab, requestDetails.frameId, requestUrl, requestType);
         }
 
-        if (requestType === RequestTypes.DOCUMENT) {
+        if (requestType === adguard.RequestTypes.DOCUMENT) {
             // Reset tab button state
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_TAB_BUTTON_STATE, tab, true);
             return true;
@@ -115,7 +112,7 @@
 
         adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
 
-        if (requestType == RequestTypes.DOCUMENT) {
+        if (requestType == adguard.RequestTypes.DOCUMENT) {
             // Safebrowsing check
             filterSafebrowsing(tab, requestUrl);
 
@@ -159,7 +156,7 @@
         var referrerUrl = adguard.utils.browser.getSafebrowsingBackUrl(tab);
         var incognitoTab = adguard.frames.isIncognitoTab(tab);
 
-        antiBannerService.checkSafebrowsingFilter(mainFrameUrl, referrerUrl, function (safebrowsingUrl) {
+        adguard.safebrowsing.checkSafebrowsingFilter(mainFrameUrl, referrerUrl, function (safebrowsingUrl) {
             // Chrome doesn't allow open extension url in incognito mode
             // So close current tab and open new
             if (incognitoTab && adguard.utils.browser.isChromium()) {
@@ -231,12 +228,10 @@
     var handlerBehaviorTimeout = null;
     adguard.listeners.addListener(function (event) {
         switch (event) {
-            case adguard.listeners.ADD_RULE:
             case adguard.listeners.ADD_RULES:
             case adguard.listeners.REMOVE_RULE:
             case adguard.listeners.UPDATE_FILTER_RULES:
-            case adguard.listeners.ENABLE_FILTER:
-            case adguard.listeners.DISABLE_FILTER:
+            case adguard.listeners.FILTER_ENABLE_DISABLE:
                 if (handlerBehaviorTimeout !== null) {
                     clearTimeout(handlerBehaviorTimeout);
                 }

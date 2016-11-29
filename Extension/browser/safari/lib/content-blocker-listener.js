@@ -15,7 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global antiBannerService */
 (function (adguard) {
 
     'use strict';
@@ -41,7 +40,7 @@
         // When content blocker is updated we need to save finally converted rules count and over limit flag
         adguard.listeners.addListener(function (event, info) {
             if (event === adguard.listeners.CONTENT_BLOCKER_UPDATED) {
-                antiBannerService.updateContentBlockerInfo(info);
+                adguard.requestFilter.updateContentBlockerInfo(info);
             }
         });
     }

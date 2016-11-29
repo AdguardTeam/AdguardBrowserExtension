@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Log, antiBannerService */
-
 /**
  * This object is used to store and track ad filters usage stats.
  * It is used if user has enabled "Send statistics for ad filters usage" option.
@@ -39,7 +37,7 @@ adguard.hitStats = (function (adguard) {
      */
     var hitStatsHolder = {
         get hitStats() {
-            return adguard.lazyGet(this, 'hitStats', getHitCountStats);
+            return adguard.lazyGet(hitStatsHolder, 'hitStats', getHitCountStats);
         }
     };
 
@@ -55,7 +53,7 @@ adguard.hitStats = (function (adguard) {
                 stats = JSON.parse(json);
             }
         } catch (ex) {
-            Log.error("Error retrieve hit count statistic, cause {0}", ex);
+            adguard.console.error("Error retrieve hit count statistic, cause {0}", ex);
         }
         return stats;
     }
@@ -71,7 +69,7 @@ adguard.hitStats = (function (adguard) {
         if (!adguard.settings.collectHitsCount()) {
             return;
         }
-        var enabledFilters = antiBannerService.getEnabledAntiBannerFilters();
+        var enabledFilters = adguard.filters.getEnabledFilters();
         adguard.backend.sendHitStats(JSON.stringify(hitStatsHolder.hitStats), enabledFilters);
         cleanup();
     }
@@ -89,7 +87,7 @@ adguard.hitStats = (function (adguard) {
             try {
                 adguard.localStorage.setItem(HITS_COUNT_PROP, JSON.stringify(stats));
             } catch (ex) {
-                Log.error("Error save hit count statistic to storage, cause {0}", ex);
+                adguard.console.error("Error save hit count statistic to storage, cause {0}", ex);
             }
             sendStats();
         }, 2000);
@@ -183,8 +181,8 @@ adguard.hitStats = (function (adguard) {
      * Cleanup stats
      */
     function cleanup() {
-        adguard.lazyGetClear(hitStatsHolder, 'hitStats');
         adguard.localStorage.removeItem(HITS_COUNT_PROP);
+        adguard.lazyGetClear(hitStatsHolder, 'hitStats');
     }
 
     return {

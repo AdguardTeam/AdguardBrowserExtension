@@ -476,7 +476,7 @@
                     /**
                      * Note (!) (Firefox, Opera):
                      * In case of Firefox and Opera add-ons, JS filtering rules are hardcoded into add-on code.
-                     * Look at WorkaroundUtils.getScriptSource to learn more.
+                     * Look at ScriptFilterRule.getScriptSource to learn more.
                      */
                     if (!isFirefox && !isOpera) {
                         scriptsToApply.push(scriptRule.rule);

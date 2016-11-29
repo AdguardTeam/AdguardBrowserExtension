@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Components*/
+/* global Components */
 
 (function (global, adguard) {
 
@@ -34,10 +34,11 @@
     global.FileUtils = Cu.import("resource://gre/modules/FileUtils.jsm").FileUtils;
 
     // Load custom module
-    var I18nUtils = global.I18nUtils = Cu.import('chrome://adguard/content/lib/utilsModule.js', {}).I18nUtils;
+    var utilsModuleUrl = 'chrome://adguard/content/lib/utilsModule.js';
+    var I18nUtils = Cu.import(utilsModuleUrl, {}).I18nUtils;
     // Don't forget unload! https://developer.mozilla.org/en-US/docs/Extensions/Common_causes_of_memory_leaks_in_extensions
     adguard.unload.when(function () {
-        Cu.unload('chrome://adguard/content/lib/utilsModule.js');
+        Cu.unload(utilsModuleUrl);
     });
 
     function getQueryVariable(variable) {
@@ -217,7 +218,8 @@
 
     adguard.i18n = (function () {
         return {
-            getMessage: I18nUtils.getMessage
+            getMessage: I18nUtils.getMessage,
+            getMessagesMap: I18nUtils.getMessagesMap
         };
     })();
 

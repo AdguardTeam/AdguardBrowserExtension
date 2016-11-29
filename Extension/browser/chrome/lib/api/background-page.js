@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global chrome, RequestTypes */
+/* global chrome */
 
 (function (adguard) {
 
@@ -65,7 +65,7 @@
         var requestType = adguard.utils.browser.parseContentTypeFromUrlPath(path);
         if (requestType === null) {
             // https://code.google.com/p/chromium/issues/detail?id=410382
-            requestType = RequestTypes.OBJECT;
+            requestType = adguard.RequestTypes.OBJECT;
         }
         return requestType;
     }
@@ -87,12 +87,12 @@
         switch (details.type) {
             case "main_frame":
                 frameId = 0;
-                requestType = RequestTypes.DOCUMENT;
+                requestType = adguard.RequestTypes.DOCUMENT;
                 break;
             case "sub_frame":
                 frameId = details.frameId;
                 requestFrameId = details.parentFrameId; //for sub_frame use parentFrameId as id of frame that wraps this frame
-                requestType = RequestTypes.SUBDOCUMENT;
+                requestType = adguard.RequestTypes.SUBDOCUMENT;
                 break;
             default:
                 requestFrameId = details.frameId;
@@ -105,7 +105,7 @@
             requestFrameId = 0;
         }
 
-        if (requestType === RequestTypes.OTHER) {
+        if (requestType === adguard.RequestTypes.OTHER) {
             requestType = parseRequestTypeFromUrl(details.url);
         }
 

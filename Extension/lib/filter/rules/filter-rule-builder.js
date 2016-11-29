@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global  Log */
-
 (function (adguard, api) {
 
     'use strict';
@@ -60,7 +58,7 @@
                 rule = new api.UrlFilterRule(ruleText, filterId);
             }
         } catch (ex) {
-            Log.warn("Cannot create rule from filter {0}: {1}, cause {2}", filterId, ruleText, ex);
+            adguard.console.warn("Cannot create rule from filter {0}: {1}, cause {2}", filterId, ruleText, ex);
         }
         return rule;
     };

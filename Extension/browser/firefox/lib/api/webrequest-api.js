@@ -1,5 +1,6 @@
 /* global XPCOMUtils, Services, Cc, Ci, Cr, Cm, components */
-/* global Map, RequestTypes, Log */
+
+/* global Map */
 
 /**
  * Web requests implementation
@@ -42,6 +43,7 @@
          * @param uriPath       Request URI path
          */
         function getRequestType(contentType, uriPath) {
+            var RequestTypes = adguard.RequestTypes;
             switch (contentType) {
                 case ContentTypes.TYPE_DOCUMENT:
                     return RequestTypes.DOCUMENT;
@@ -103,7 +105,7 @@
                 } catch (e) {
                     // Lots of requests have no notificationCallbacks, mostly background
                     // ones like OCSP checks or smart browsing fetches.
-                    Log.debug("_getLoadContext: no loadContext for " + channel.URI.spec);
+                    adguard.console.debug("_getLoadContext: no loadContext for " + channel.URI.spec);
                     return null;
                 }
             }
@@ -193,7 +195,7 @@
                             contentWindow: contentWindow
                         };
                     } else {
-                        Log.debug("getChannelContextData: aTab was null for " + spec);
+                        adguard.console.debug("getChannelContextData: aTab was null for " + spec);
                         return null;
                     }
                 } else if (aDOMWindow.BrowserApp) {
@@ -214,15 +216,15 @@
                             contentWindow: contentWindow
                         };
                     } else {
-                        Log.error("getChannelContextData: mTab was null for " + spec);
+                        adguard.console.error("getChannelContextData: mTab was null for " + spec);
                         return null;
                     }
                 } else {
-                    Log.error("getChannelContextData: No gBrowser and no BrowserApp for " + spec);
+                    adguard.console.error("getChannelContextData: No gBrowser and no BrowserApp for " + spec);
                     return null;
                 }
             } else {
-                Log.debug("getChannelContextData: No loadContext for " + spec);
+                adguard.console.debug("getChannelContextData: No loadContext for " + spec);
                 return null;
             }
         }
@@ -364,7 +366,7 @@
              */
             init: function () {
 
-                Log.info('Adguard addon: Initializing webRequest...');
+                adguard.console.info('Adguard addon: Initializing webRequest...');
 
                 this.observe = this.observe.bind(this);
 
@@ -377,7 +379,7 @@
                     try {
                         this.componentRegistrar.unregisterFactory(this.classID, Cm.getClassObject(this.classID, Ci.nsIFactory));
                     } catch (ex) {
-                        Log.error('Unable to unregister instance {0}, cause: {1}', this.classID, ex);
+                        adguard.console.error('Unable to unregister instance {0}, cause: {1}', this.classID, ex);
                     }
                 }
 
@@ -447,7 +449,7 @@
                     }
                 } catch (ex) {
                     // Don't throw exception further
-                    Log.error('asyncOnChannelRedirect: Error while processing redirect from {0} to {1}: {2}', oldChannel.URI.spec, newChannel.URI.spec, ex);
+                    adguard.console.error('asyncOnChannelRedirect: Error while processing redirect from {0} to {1}: {2}', oldChannel.URI.spec, newChannel.URI.spec, ex);
                 } finally {
                     callback.onRedirectVerifyCallback(Cr.NS_OK);
                 }
@@ -478,7 +480,7 @@
                     }
                 } catch (ex) {
                     // Don't throw exception further
-                    Log.error('observe: Error while handling event: {0}', ex);
+                    adguard.console.error('observe: Error while handling event: {0}', ex);
                 }
             },
 

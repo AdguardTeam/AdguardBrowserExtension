@@ -27,5 +27,6 @@ $(document).ready(function () {
             }
         }, 1000);
     };
+    // TODO: move to background page
     contentPage.sendMessage({type: 'initializeFiltersOnInstall'}, onLoaded);
 });

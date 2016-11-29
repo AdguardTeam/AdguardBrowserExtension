@@ -54,6 +54,8 @@ var WebRequestHelper = {
     getRequestType: function (contentType, URI) {
 
         var t = WebRequestHelper.contentTypes;
+        var RequestTypes = adguard.RequestTypes;
+
         switch (contentType) {
             case t.TYPE_DOCUMENT:
                 return RequestTypes.DOCUMENT;
@@ -183,7 +185,7 @@ var WebRequestHelper = {
             } catch (e) {
                 // Lots of requests have no notificationCallbacks, mostly background
                 // ones like OCSP checks or smart browsing fetches.
-                Log.debug("_getLoadContext: no loadContext for " + channel.URI.spec);
+                adguard.console.debug("_getLoadContext: no loadContext for " + channel.URI.spec);
                 return null;
             }
         }
@@ -261,7 +263,7 @@ var WebRequestHelper = {
                         contentWindow: contentWindow
                     };
                 } else {
-                    Log.debug("getChannelContextData: aTab was null for " + spec);
+                    adguard.console.debug("getChannelContextData: aTab was null for " + spec);
                     return null;
                 }
             } else if (aDOMWindow.BrowserApp) {
@@ -282,15 +284,15 @@ var WebRequestHelper = {
                         contentWindow: contentWindow
                     };
                 } else {
-                    Log.error("getChannelContextData: mTab was null for " + spec);
+                    adguard.console.error("getChannelContextData: mTab was null for " + spec);
                     return null;
                 }
             } else {
-                Log.error("getChannelContextData: No gBrowser and no BrowserApp for " + spec);
+                adguard.console.error("getChannelContextData: No gBrowser and no BrowserApp for " + spec);
                 return null;
             }
         } else {
-            Log.debug("getChannelContextData: No loadContext for " + spec);
+            adguard.console.debug("getChannelContextData: No loadContext for " + spec);
             return null;
         }
     },
@@ -348,7 +350,7 @@ var WebRequestImpl = {
      */
     init: function () {
 
-        Log.info('Adguard addon: Initializing webRequest...');
+        adguard.console.info('Adguard addon: Initializing webRequest...');
 
         var registrar = components.manager.QueryInterface(Ci.nsIComponentRegistrar);
         registrar.registerFactory(this.classID, this.classDescription, this.contractID, this);
@@ -430,7 +432,7 @@ var WebRequestImpl = {
 
         var result = this._shouldBlockRequest(tab, requestUrl, tabUrl, requestType, aContext);
 
-        Log.debug('shouldLoad: {0} {1}. Result: {2}', requestUrl, requestType, result.blocked);
+        adguard.console.debug('shouldLoad: {0} {1}. Result: {2}', requestUrl, requestType, result.blocked);
         this._saveLastRequestProperties(requestUrl, requestType, result, aContext);
         return result.blocked ? WebRequestHelper.REJECT : WebRequestHelper.ACCEPT;
     },
@@ -471,13 +473,13 @@ var WebRequestImpl = {
             var tabUrl = adguard.frames.getFrameUrl(tab, 0);
             var shouldBlockResult = this._shouldBlockRequest(tab, requestUrl, tabUrl, requestProperties.requestType, null);
 
-            Log.debug('asyncOnChannelRedirect: {0} {1}. Blocked={2}', requestUrl, requestProperties.requestType, shouldBlockResult.blocked);
+            adguard.console.debug('asyncOnChannelRedirect: {0} {1}. Blocked={2}', requestUrl, requestProperties.requestType, shouldBlockResult.blocked);
             if (shouldBlockResult.blocked) {
                 result = Cr.NS_BINDING_ABORTED;
             }
         } catch (ex) {
             // Don't throw exception further
-            Log.error('asyncOnChannelRedirect: Error while processing redirect: {0}', ex);
+            adguard.console.error('asyncOnChannelRedirect: Error while processing redirect: {0}', ex);
         } finally {
             callback.onRedirectVerifyCallback(result);
         }
@@ -505,7 +507,7 @@ var WebRequestImpl = {
             }
         } catch (ex) {
             // Don't throw exception further
-            Log.error('observe: Error while handling event: {0}', ex);
+            adguard.console.error('observe: Error while handling event: {0}', ex);
         }
     },
 
@@ -536,11 +538,11 @@ var WebRequestImpl = {
         var requestType = !!requestProperties ? requestProperties.requestType : null;
 
         if (!requestType && isDocument) {
-            requestType = RequestTypes.DOCUMENT;
+            requestType = adguard.RequestTypes.DOCUMENT;
         } else if (!requestType) {
-            requestType = RequestTypes.OTHER;
+            requestType = adguard.RequestTypes.OTHER;
         }
-        var isMainFrame = (requestType == RequestTypes.DOCUMENT);
+        var isMainFrame = (requestType == adguard.RequestTypes.DOCUMENT);
 
         // We record frame data here because shouldLoad is not always called (shouldLoad issue)
         if (isMainFrame) {
@@ -601,7 +603,7 @@ var WebRequestImpl = {
             tabId = WebRequestHelper.getTabIdForChannel(subject);
         } catch (ex) {
             //Sometimes FF throws an exception here.
-            Log.debug('Error getting tabId for xulTab: {0}', ex);
+            adguard.console.debug('Error getting tabId for xulTab: {0}', ex);
             return;
         }
         if (!tabId) {
@@ -655,7 +657,7 @@ var WebRequestImpl = {
             rule: null
         };
 
-        if (requestType === RequestTypes.DOCUMENT) {
+        if (requestType === adguard.RequestTypes.DOCUMENT) {
             return result;
         }
 
@@ -666,7 +668,7 @@ var WebRequestImpl = {
         result.rule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, tabUrl, requestType);
         result.blocked = adguard.webRequestService.isRequestBlockedByRule(result.rule);
 
-        if (result.blocked || requestType === RequestTypes.WEBSOCKET) {
+        if (result.blocked || requestType === adguard.RequestTypes.WEBSOCKET) {
             this._collapseElement(node, requestType);
 
             // Usually we call this method in _httpOnExamineResponse callback
@@ -696,7 +698,7 @@ var WebRequestImpl = {
         };
 
         // Also check if window has an "opener" and save it to request properties
-        if (requestType !== RequestTypes.DOCUMENT) {
+        if (requestType !== adguard.RequestTypes.DOCUMENT) {
             return;
         }
 
@@ -725,11 +727,11 @@ var WebRequestImpl = {
 
         var tabUrl = adguard.frames.getFrameUrl(sourceTab, 0);
 
-        var requestRule = adguard.webRequestService.getRuleForRequest(sourceTab, requestUrl, tabUrl, RequestTypes.POPUP);
+        var requestRule = adguard.webRequestService.getRuleForRequest(sourceTab, requestUrl, tabUrl, adguard.RequestTypes.POPUP);
         var requestBlocked = adguard.webRequestService.isRequestBlockedByRule(requestRule);
         if (requestBlocked) {
             //add log event and fix log event type from POPUP to DOCUMENT
-            adguard.webRequestService.postProcessRequest(sourceTab, requestUrl, tabUrl, RequestTypes.DOCUMENT, requestRule);
+            adguard.webRequestService.postProcessRequest(sourceTab, requestUrl, tabUrl, adguard.RequestTypes.DOCUMENT, requestRule);
         }
 
         return requestBlocked;
@@ -773,7 +775,7 @@ var WebRequestImpl = {
         var referrerUrl = adguard.utils.browser.getSafebrowsingBackUrl(tab);
         var incognitoTab = adguard.frames.isIncognitoTab(tab);
 
-        antiBannerService.checkSafebrowsingFilter(requestUrl, referrerUrl, function (safebrowsingUrl) {
+        adguard.safebrowsing.checkSafebrowsingFilter(requestUrl, referrerUrl, function (safebrowsingUrl) {
             adguard.tabs.reload(tab.tabId, safebrowsingUrl);
         }, incognitoTab);
     },
@@ -786,9 +788,9 @@ var WebRequestImpl = {
      * @private
      */
     _collapseElement: function (node, requestType) {
-        if (node && node.ownerDocument && RequestTypes.isVisual(requestType)) {
-            //adguard.ElemHide.collapseNode(node);
-        }
+        //if (node && node.ownerDocument && adguard.RequestTypes.isVisual(requestType)) {
+        //adguard.ElemHide.collapseNode(node);
+        //}
     },
 
     QueryInterface: XPCOMUtils.generateQI([Ci.nsIContentPolicy, Ci.nsIObserver, Ci.nsIChannelEventSink, Ci.nsIFactory, Ci.nsISupportsWeakReference])

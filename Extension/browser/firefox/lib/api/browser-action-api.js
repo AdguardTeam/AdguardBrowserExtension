@@ -135,7 +135,7 @@
             return;
         }
 
-        Log.info('Adguard addon: Initializing legacy toolbar button');
+        adguard.console.info('Adguard addon: Initializing legacy toolbar button');
 
         function forEach(items, callback) {
             for (var i = 0; i < items.length; i++) {
@@ -314,7 +314,7 @@
             return;
         }
 
-        Log.info('Adguard addon: Initializing default toolbar button');
+        adguard.console.info('Adguard addon: Initializing default toolbar button');
 
         var badgeClassName = 'badged-button'; // default class for badge
         if (Services.vc.compare(Services.appinfo.platformVersion, '36.0') < 0) {

@@ -15,11 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global RequestTypes, antiBannerService */
-
 (function () {
 
-    Log.info('Starting adguard... Version: {0}. Id: {1}', adguard.app.getVersion(), adguard.app.getId());
+    adguard.console.info('Starting adguard... Version: {0}. Id: {1}', adguard.app.getVersion(), adguard.app.getId());
 
     // Initialize popup button
     adguard.browserAction.setPopup({
@@ -28,14 +26,14 @@
 
     // Record opened tabs
     adguard.tabs.forEach(function (tab) {
-        adguard.frames.recordFrame(tab, 0, tab.url, RequestTypes.DOCUMENT);
+        adguard.frames.recordFrame(tab, 0, tab.url, adguard.RequestTypes.DOCUMENT);
         adguard.ui.updateTabIconAndContextMenu(tab);
     });
 
     // Initialize filtering log
 
     // Initialize antibanner service
-    antiBannerService.init({
+    adguard.filters.init({
 
         runCallback: function (runInfo) {
             if (runInfo.isFirstRun) {

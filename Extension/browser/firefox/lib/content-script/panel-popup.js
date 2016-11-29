@@ -61,7 +61,7 @@ controller.sendFeedback = function (url, topic, comment) {
 };
 
 document.addEventListener('DOMContentLoaded', function () {
-    contentPage.sendMessage({type: 'popupReady'}, function (message) {
+    contentPage.sendMessage({type: 'getTabFrameInfoById'}, function (message) {
         controller.render(message.frameInfo);
     });
 }, true);

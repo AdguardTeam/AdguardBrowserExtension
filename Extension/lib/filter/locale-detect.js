@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global chrome */
-
 /**
  * Initialize LocaleDetectService.
  *
@@ -145,6 +143,7 @@ adguard.localeDetectService = (function (adguard) {
             return;
         }
 
+        /* global chrome */
         if (tabId && typeof chrome != 'undefined' && chrome.tabs && chrome.tabs.detectLanguage) {
             // Using Chrome language detection if possible
             //detectLanguage working only in chrome browser (Opera and YaBrowser not fire callback method)

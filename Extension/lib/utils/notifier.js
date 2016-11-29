@@ -15,25 +15,18 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Log */
-
 /**
  * Simple mediator
  */
 adguard.listeners = (function () {
 
     var EventNotifierTypesMap = {
-        ADD_RULE: "event.add.rule",
         ADD_RULES: "event.add.rules",
         REMOVE_RULE: "event.remove.rule",
         UPDATE_FILTER_RULES: "event.update.filter.rules",
-        DISABLE_FILTER: "event.disable.filter",
-        ENABLE_FILTER: "event.enable.filter",
-        ADD_FILTER: "event.add.filter",
-        REMOVE_FILTER: "event.remove.filter",
+        FILTER_ENABLE_DISABLE: "event.filter.enable.disable", // Enabled or disabled
+        FILTER_ADD_REMOVE: "event.filter.add.remove", // Added or removed
         ADS_BLOCKED: "event.ads.blocked",
-        ENABLE_FILTERING: "event.enable.filtering",
-        DISABLE_FILTERING: "event.disable.filtering",
         START_DOWNLOAD_FILTER: "event.start.download.filter",
         SUCCESS_DOWNLOAD_FILTER: "event.success.download.filter",
         ERROR_DOWNLOAD_FILTER: "event.error.download.filter",
@@ -120,7 +113,7 @@ adguard.listeners = (function () {
                     var listener = this.listenersMap[listenerId];
                     listener.apply(listener, arguments);
                 } catch (ex) {
-                    Log.error("Error invoking listener for {0} cause: {1}", event, ex);
+                    adguard.console.error("Error invoking listener for {0} cause: {1}", event, ex);
                 }
             }
         },

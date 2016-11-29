@@ -1,4 +1,3 @@
-/* global Cu, Cc, Ci, I18nUtils, Log */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -16,8 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var ContentScripts = function () {
-};
+/* global Cu, Cc, Ci */
 
 /**
  * Object that implements our frame scripts logic.
@@ -25,29 +23,30 @@ var ContentScripts = function () {
  * Basically, we register one frame script which manages other scripts (so named content scripts).
  * Content scripts are executed inside the sandbox with "loadSubScript" calls.
  */
-ContentScripts.prototype = {
-
-    CONTENT_TO_BACKGROUND_CHANNEL: 'content-background-channel',
-    BACKGROUND_TO_CONTENT_CHANNEL: 'background-content-channel',
+(function (adguard) {
 
     /**
      * Array or registered content scripts
      */
-    scripts: [],
+    var scripts = [];
 
     /**
      * In order to translate UI we inject i18n messages to the page using a content script.
      */
-    i18nMessages: Object.create(null),
+    var i18nMessages = Object.create(null);
 
     /**
      * Initializes ContentScripts object
      */
-    init: function () {
-        this.i18nMessages = this._geti18nMessages();
+    function init() {
+
+        /**
+         * Load translation bundle into a javascript object
+         */
+        i18nMessages = adguard.i18n.getMessagesMap();
 
         // Filter-download.html
-        this.registerChromeContentScript('pages/filter-download.html', [
+        registerChromeContentScript('pages/filter-download.html', [
             'lib/libs/jquery-2.2.4.min.js',
             'lib/libs/nprogress.patched.js',
             'lib/content-script/content-script.js',
@@ -58,7 +57,7 @@ ContentScripts.prototype = {
         ]);
 
         // Thankyou.html
-        this.registerChromeContentScript('pages/thankyou.html', [
+        registerChromeContentScript('pages/thankyou.html', [
             'lib/libs/jquery-2.2.4.min.js',
             'lib/content-script/content-script.js',
             'lib/content-script/content-utils.js',
@@ -69,7 +68,7 @@ ContentScripts.prototype = {
         ]);
 
         // Options.html
-        this.registerChromeContentScript('pages/options.html', [
+        registerChromeContentScript('pages/options.html', [
             'lib/libs/jquery-2.2.4.min.js',
             'lib/libs/bootstrap.min.js',
             'lib/libs/jquery.mousewheel.min.js',
@@ -84,7 +83,7 @@ ContentScripts.prototype = {
         ]);
 
         // Log.html
-        this.registerChromeContentScript('pages/log.html', [
+        registerChromeContentScript('pages/log.html', [
             'lib/libs/jquery-2.2.4.min.js',
             'lib/libs/bootstrap.min.js',
             'lib/libs/moment-with-locales.min.js',
@@ -97,14 +96,14 @@ ContentScripts.prototype = {
         ]);
 
         // Export.html
-        this.registerChromeContentScript('pages/export.html', [
+        registerChromeContentScript('pages/export.html', [
             'lib/libs/jquery-2.2.4.min.js',
             'lib/content-script/content-script.js',
             'lib/pages/export.js'
         ]);
 
         // Popup.html
-        this.registerChromeContentScript('pages/popup.html', [
+        registerChromeContentScript('pages/popup.html', [
             'lib/libs/jquery-2.2.4.min.js',
             'lib/content-script/content-script.js',
             'lib/content-script/i18n-helper.js',
@@ -115,7 +114,7 @@ ContentScripts.prototype = {
         ]);
 
         // Sb.html
-        this.registerChromeContentScript('pages/sb.html', [
+        registerChromeContentScript('pages/sb.html', [
             'lib/libs/jquery-2.2.4.min.js',
             'lib/content-script/content-script.js',
             'lib/content-script/i18n-helper.js',
@@ -124,20 +123,20 @@ ContentScripts.prototype = {
         ]);
 
         // Web pages content scripts (responsible for ad blocking)
-        this.registerPageContentScript([
+        registerPageContentScript([
             'lib/libs/extended-css-1.0.6.js',
             'lib/utils/element-collapser.js',
             'lib/content-script/content-script.js',
             'lib/content-script/preload.js'
         ], 'document_start', true);
 
-        this.registerPageContentScript([
+        registerPageContentScript([
             'lib/content-script/content-script.js', // Message passing
             'lib/content-script/content-utils.js'   // Show alert popup and reload without cache functionality
         ], 'document_start', false);
 
         // Assistant
-        this.registerPageContentScript([
+        registerPageContentScript([
             'lib/libs/diff_match_patch.js',
             'lib/libs/dom.patched.js',
             'lib/libs/balalaika.patched.js',
@@ -185,55 +184,55 @@ ContentScripts.prototype = {
             "zoso.ro"
         ];
 
-        this.registerPageContentScript([
+        registerPageContentScript([
             'lib/content-script/content-script.js', // message-passing
             'lib/content-script/content-utils.js',  // showAlertPopup function
             'lib/content-script/subscribe.js'
         ], 'document_end', false, subscribeIncludeDomains);
 
-        this._loadFrameScript();
-    },
+        loadFrameScript();
+    }
 
     /**
      * Registers a content script for "chrome://" pages of our add-on.
      */
-    registerChromeContentScript: function (url, paths, when) {
+    function registerChromeContentScript(url, paths, when) {
         var files = [];
         for (var i = 0; i < paths.length; i++) {
             files.push(adguard.getURL(paths[i]));
         }
 
-        this.scripts.push({
+        scripts.push({
             schemes: ['chrome:'],
             url: adguard.getURL(url),
             files: files,
             allFrames: false,
             runAt: when || 'document_start'
         });
-    },
+    }
 
     /**
      * Registers a content script for http(s) pages
      */
-    registerPageContentScript: function (paths, when, allFrames, domains) {
+    function registerPageContentScript(paths, when, allFrames, domains) {
         var files = [];
         for (var i = 0; i < paths.length; i++) {
             files.push(adguard.getURL(paths[i]));
         }
 
-        this.scripts.push({
+        scripts.push({
             schemes: ['http:', 'https:'],
             files: files,
             allFrames: allFrames,
             runAt: when || 'document_start',
             domains: domains || []
         });
-    },
+    }
 
     /**
      * Initializes our frame script and sets up a listener object.
      */
-    _loadFrameScript: function () {
+    function loadFrameScript() {
 
         var initializeFrameScriptListenerName = 'Adguard:initialize-frame-script';
         var shouldLoadListenerMessageName = 'Adguard:should-load';
@@ -241,11 +240,11 @@ ContentScripts.prototype = {
         var navigationTargetCreatedListenerMessageName = 'Adguard:navigation-target-created';
         var elemHideInterceptorListenerMessageName = 'Adguard:elemhide-interceptor';
 
-        var initializeFrameScriptListener = this.createInitializeFrameScriptListener();
-        var shouldLoadListener = this.createShouldLoadListener();
-        var tabUpdatedListener = this.createTabUpdatedListener();
-        var navigationTargetCreatedListener = this.createNavigationTargetCreatedAsyncListener();
-        var elemHideInterceptorListener = this.createElemHideInterceptorListener();
+        var initializeFrameScriptListener = createInitializeFrameScriptListener();
+        var shouldLoadListener = createShouldLoadListener();
+        var tabUpdatedListener = createTabUpdatedListener();
+        var navigationTargetCreatedListener = createNavigationTargetCreatedAsyncListener();
+        var elemHideInterceptorListener = createElemHideInterceptorListener();
 
         /**
          * For some unknown reason we can't use global message messenger for handling synchronous messages from a frame script.
@@ -288,21 +287,29 @@ ContentScripts.prototype = {
                 frameModule.interceptHandler.unregister();
                 Cu.unload(frameModuleURL);
             } catch (ex) {
-                Log.error('Error while unregister contentPolicyService and interceptHandler: {0}', ex);
+                adguard.console.error('Error while unregister contentPolicyService and interceptHandler: {0}', ex);
             }
         });
-    },
+    }
 
-    createInitializeFrameScriptListener: function () {
+    /**
+     * Frame script initialization listener
+     * @returns {Function}
+     */
+    function createInitializeFrameScriptListener() {
         return function () {
             return {
-                scripts: this.scripts,
-                i18nMessages: this.i18nMessages
+                scripts: scripts,
+                i18nMessages: i18nMessages
             };
-        }.bind(this);
-    },
+        };
+    }
 
-    createShouldLoadListener: function () {
+    /**
+     * Process shouldLoad message from frame-script
+     * @returns {Function}
+     */
+    function createShouldLoadListener() {
         return function (e) {
 
             var browser = e.target;
@@ -315,9 +322,13 @@ ContentScripts.prototype = {
 
             adguard.webRequest.saveRequestDetails(adguard.tabsImpl.getTabIdForTab(tab), details);
         };
-    },
+    }
 
-    createTabUpdatedListener: function () {
+    /**
+     * Tab update listener
+     * @returns {Function}
+     */
+    function createTabUpdatedListener() {
         return function (e) {
 
             var browser = e.target;
@@ -333,9 +344,13 @@ ContentScripts.prototype = {
                 status: details.status
             });
         };
-    },
+    }
 
-    createNavigationTargetCreatedAsyncListener: function () {
+    /**
+     * Navigation target created listener
+     * @returns {Function}
+     */
+    function createNavigationTargetCreatedAsyncListener() {
 
         return function (e) {
 
@@ -351,9 +366,13 @@ ContentScripts.prototype = {
 
             setTimeout(adguard.webNavigation.onPopupCreated.bind(null, tabId, details.targetUrl, details.sourceUrl), 1);
         };
-    },
+    }
 
-    createElemHideInterceptorListener: function () {
+    /**
+     * Elemhide listener. Firefox about: protocol.
+     * @returns {Function}
+     */
+    function createElemHideInterceptorListener() {
 
         return function (e) {
 
@@ -369,15 +388,8 @@ ContentScripts.prototype = {
             }
             return {collapse: collapse};
         };
-    },
-
-    /**
-     * Load translation bundle into a javascript object
-     */
-    _geti18nMessages: function () {
-        return I18nUtils.getMessagesMap();
     }
-};
 
-var contentScripts = new ContentScripts();
-contentScripts.init();
+    init();
+
+})(adguard);

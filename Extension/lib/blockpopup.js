@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global RequestTypes */
-
 (function (adguard) {
 
 	'use strict';
@@ -32,13 +30,13 @@
 
 		delete tabsLoading[tabId];
 
-		var requestRule = adguard.webRequestService.getRuleForRequest(sourceTab, requestUrl, referrerUrl, RequestTypes.POPUP);
+		var requestRule = adguard.webRequestService.getRuleForRequest(sourceTab, requestUrl, referrerUrl, adguard.RequestTypes.POPUP);
 
 		if (adguard.webRequestService.isRequestBlockedByRule(requestRule)) {
 			//remove popup tab
 			adguard.tabs.remove(tabId);
 			//append log event and fix log event type from POPUP to DOCUMENT
-			adguard.webRequestService.postProcessRequest(sourceTab, requestUrl, referrerUrl, RequestTypes.DOCUMENT, requestRule);
+			adguard.webRequestService.postProcessRequest(sourceTab, requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT, requestRule);
 		}
 	}
 

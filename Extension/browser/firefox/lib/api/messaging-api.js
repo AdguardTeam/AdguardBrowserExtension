@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Cc, Ci, Log */
+/* global Cc, Ci */
 
 adguard.runtime = (function (adguard, api) {
 
@@ -69,7 +69,7 @@ adguard.runtime = (function (adguard, api) {
             }
 
             if (!messageManager) {
-                Log.error('Unable to retrieve messageManager for {0}', message.target);
+                adguard.console.error('Unable to retrieve messageManager for {0}', message.target);
                 return;
             }
 

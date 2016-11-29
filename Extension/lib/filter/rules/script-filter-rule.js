@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global DEFAULT_SCRIPT_RULES */
-
 (function (adguard, api) {
 
     'use strict';
@@ -52,7 +50,7 @@
          * 3. In case of Firefox and Opera we apply only 'local' JS rules and ignore all marked as 'remote'
          */
         function getScriptSource(filterId, ruleText) {
-            return (filterId == adguard.utils.filters.USER_FILTER_ID || ruleText in DEFAULT_SCRIPT_RULES) ? 'local' : 'remote';
+            return (filterId == adguard.utils.filters.USER_FILTER_ID || ruleText in api.DEFAULT_SCRIPT_RULES) ? 'local' : 'remote';
         }
 
         this.scriptSource = getScriptSource(filterId, rule);

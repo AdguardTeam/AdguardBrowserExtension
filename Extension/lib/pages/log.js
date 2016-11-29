@@ -532,11 +532,10 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 
 	removeUserFilterRuleButton.on('click', function (e) {
 		e.preventDefault();
-		contentPage.sendMessage({type: 'removeUserFilter', text: requestRule.ruleText});
+		contentPage.sendMessage({type: 'removeUserRule', ruleText: requestRule.ruleText, adguardDetected: frameInfo.adguardDetected});
 		if (frameInfo.adguardDetected) {
 			// In integration mode rule may be present in whitelist filter
 			contentPage.sendMessage({type: 'unWhiteListFrame', frameInfo: frameInfo});
-			contentPage.sendMessage({type: 'removeRuleFromApp', ruleText: requestRule.ruleText});
 		}
 		this.closeModal();
 	}.bind(this));
@@ -647,12 +646,9 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 		if (!ruleText) {
 			return;
 		}
-		//add rule to user filter
-		contentPage.sendMessage({type: 'addUserFilterRule', text: ruleText});
-		if (frameInfo.adguardDetected) {
-			contentPage.sendMessage({type: 'addRuleToApp', ruleText: ruleText});
-		}
-		//close modal
+		// Add rule to user filter
+		contentPage.sendMessage({type: 'addUserRule', ruleText: ruleText, adguardDetected: frameInfo.adguardDetected});
+		// Close modal
 		this.closeModal();
 	}.bind(this));
 

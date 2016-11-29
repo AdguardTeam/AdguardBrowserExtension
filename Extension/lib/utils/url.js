@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-(function (api) {
+(function (api, global) {
 
     /**
      * Helper methods to work with URLs
@@ -38,7 +38,7 @@
             if (/^[\x00-\x7F]+$/.test(domain)) {
                 return domain;
             }
-            return punycode.toASCII(domain);
+            return global.punycode.toASCII(domain);
         },
 
         urlToPunyCode: function (url) {
@@ -6266,6 +6266,6 @@
 
     api.url = UrlUtils;
 
-})(adguard.utils);
+})(adguard.utils, window);
 
 

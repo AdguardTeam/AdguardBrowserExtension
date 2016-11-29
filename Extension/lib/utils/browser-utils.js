@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global safari, RequestTypes */
+/* global safari */
 
 (function (adguard, api) {
 
@@ -99,6 +99,9 @@
             return left.compare(right) >= 0;
         },
 
+        /**
+         * @returns Extension version
+         */
         getAppVersion: function () {
             return adguard.localStorage.getItem("app-version");
         },
@@ -232,7 +235,7 @@
         /**
          * Parse content type from path
          * @param path Path
-         * @returns {*} content type (RequestTypes.*) or null
+         * @returns {*} content type (adguard.RequestTypes.*) or null
          */
         parseContentTypeFromUrlPath: function (path) {
 
@@ -246,16 +249,16 @@
 
             ext = ext.slice(pos) + '.';
             if (objectContentTypes.indexOf(ext) !== -1) {
-                return RequestTypes.OBJECT;
+                return adguard.RequestTypes.OBJECT;
             }
             if (mediaContentTypes.indexOf(ext) !== -1) {
-                return RequestTypes.MEDIA;
+                return adguard.RequestTypes.MEDIA;
             }
             if (fontContentTypes.indexOf(ext) !== -1) {
-                return RequestTypes.FONT;
+                return adguard.RequestTypes.FONT;
             }
             if (imageContentTypes.indexOf(ext) !== -1) {
-                return RequestTypes.IMAGE;
+                return adguard.RequestTypes.IMAGE;
             }
 
             return null;

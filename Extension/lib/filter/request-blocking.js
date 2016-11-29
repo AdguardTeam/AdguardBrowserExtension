@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global antiBannerService, RequestTypes */
-
 adguard.webRequestService = (function (adguard) {
 
     /**
@@ -35,7 +33,7 @@ adguard.webRequestService = (function (adguard) {
             return result;
         }
 
-        if (!antiBannerService.isRequestFilterReady()) {
+        if (!adguard.requestFilter.isReady()) {
             return {
                 requestFilterReady: false
             };
@@ -51,7 +49,7 @@ adguard.webRequestService = (function (adguard) {
                 extendedCss: null
             },
             scripts: null,
-            collapseAllElements: antiBannerService.shouldCollapseAllElements(),
+            collapseAllElements: adguard.requestFilter.shouldCollapseAllElements(),
             useShadowDom: adguard.utils.browser.isShadowDomSupported()
         };
 
@@ -60,15 +58,15 @@ adguard.webRequestService = (function (adguard) {
         var elemHideFlag = whitelistRule && whitelistRule.checkContentType("ELEMHIDE");
         if (!elemHideFlag) {
             if (shouldLoadAllSelectors(result.collapseAllElements)) {
-                result.selectors = antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl, genericHideFlag);
+                result.selectors = adguard.requestFilter.getSelectorsForUrl(documentUrl, genericHideFlag);
             } else {
-                result.selectors = antiBannerService.getRequestFilter().getInjectedSelectorsForUrl(documentUrl, genericHideFlag);
+                result.selectors = adguard.requestFilter.getInjectedSelectorsForUrl(documentUrl, genericHideFlag);
             }
         }
 
         var jsInjectFlag = whitelistRule && whitelistRule.checkContentType("JSINJECT");
         if (!jsInjectFlag) {
-            result.scripts = antiBannerService.getRequestFilter().getScriptsForUrl(documentUrl);
+            result.scripts = adguard.requestFilter.getScriptsForUrl(documentUrl);
         }
 
         return result;
@@ -88,8 +86,8 @@ adguard.webRequestService = (function (adguard) {
             return false;
         }
 
-        var requestRule = getRuleForRequest(tab, requestUrl, referrerUrl, RequestTypes.WEBSOCKET);
-        adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, RequestTypes.WEBSOCKET, requestRule);
+        var requestRule = getRuleForRequest(tab, requestUrl, referrerUrl, adguard.RequestTypes.WEBSOCKET);
+        adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, adguard.RequestTypes.WEBSOCKET, requestRule);
 
         return isRequestBlockedByRule(requestRule);
     };
@@ -169,7 +167,7 @@ adguard.webRequestService = (function (adguard) {
             return whitelistRule;
         }
 
-        return antiBannerService.getRequestFilter().findRuleForRequest(requestUrl, referrerUrl, requestType, whitelistRule);
+        return adguard.requestFilter.findRuleForRequest(requestUrl, referrerUrl, requestType, whitelistRule);
     };
 
     /**
@@ -187,7 +185,7 @@ adguard.webRequestService = (function (adguard) {
      */
     var processRequestResponse = function (tab, requestUrl, referrerUrl, requestType, responseHeaders) {
 
-        if (requestType == RequestTypes.DOCUMENT) {
+        if (requestType == adguard.RequestTypes.DOCUMENT) {
             // Check headers to detect Adguard application
 
             if (!adguard.utils.browser.isEdgeBrowser()) {
@@ -207,7 +205,7 @@ adguard.webRequestService = (function (adguard) {
             appendLogEvent = !adguard.backend.isAdguardAppRequest(requestUrl);
         } else if (adguard.frames.isTabProtectionDisabled(tab)) { // jshint ignore:line
             //do nothing
-        } else if (requestType == RequestTypes.DOCUMENT) {
+        } else if (requestType == adguard.RequestTypes.DOCUMENT) {
             requestRule = adguard.frames.getFrameWhiteListRule(tab);
             var domain = adguard.frames.getFrameDomain(tab);
             if (!adguard.frames.isIncognitoTab(tab)) {

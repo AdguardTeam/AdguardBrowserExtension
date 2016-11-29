@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global safari, SafariBrowserTab, RequestTypes */
+/* global safari, SafariBrowserTab */
 
 (function (adguard) {
 
@@ -67,10 +67,10 @@
 		var requestType;
 		switch (message.type) {
 			case "main_frame":
-				requestType = RequestTypes.DOCUMENT;
+				requestType = adguard.RequestTypes.DOCUMENT;
 				break;
 			case "sub_frame":
-				requestType = RequestTypes.SUBDOCUMENT;
+				requestType = adguard.RequestTypes.SUBDOCUMENT;
 				break;
 			default :
 				requestType = message.type.toUpperCase();

@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global RequestTypes */
-
 /**
  * adguard.integration is used for integration of Adguard extension and Adguard for Windows/Mac/Android versions.
  */
@@ -137,7 +135,7 @@ adguard.integration = (function (adguard) {
         var rule = createRuleFromHeader(header);
         if (rule && rule.whiteListRule &&
             rule instanceof adguard.rules.UrlFilterRule &&
-            rule.isFiltered(tabUrl, false, RequestTypes.DOCUMENT) &&
+            rule.isFiltered(tabUrl, false, adguard.RequestTypes.DOCUMENT) &&
             rule.checkContentTypeIncluded("DOCUMENT")) {
 
             ruleInfo.headerRule = rule;

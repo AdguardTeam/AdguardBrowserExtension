@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Log */
-
 (function (adguard) {
 
     'use strict';
@@ -83,7 +81,7 @@
          */
         addRule: function (rule) {
             if (rule === null || !rule.ruleText) {
-                Log.error("FilterRule must not be null");
+                adguard.console.error("FilterRule must not be null");
                 return;
             }
             if (rule instanceof adguard.rules.UrlFilterRule) {
@@ -109,7 +107,7 @@
          */
         removeRule: function (rule) {
             if (rule === null) {
-                Log.error("FilterRule must not be null");
+                adguard.console.error("FilterRule must not be null");
                 return;
             }
             if (rule instanceof adguard.rules.UrlFilterRule) {
@@ -313,7 +311,7 @@
          */
         _findRuleForRequest: function (requestUrl, documentHost, requestType, thirdParty, documentWhiteListRule) {
 
-            Log.debug("Filtering http request for url: {0}, document: {1}, requestType: {2}", requestUrl, documentHost, requestType);
+            adguard.console.debug("Filtering http request for url: {0}, document: {1}, requestType: {2}", requestUrl, documentHost, requestType);
 
             // STEP 1: Looking for exception rule, which could be applied to the current request
 
@@ -336,12 +334,12 @@
                     // Please note, that if blocking rule has $important modifier, it could
                     // overcome existing exception rule
                 (urlWhiteListRule.isImportant || !blockingRule || !blockingRule.isImportant)) {
-                Log.debug("White list rule found {0} for url: {1} document: {2}, requestType: {3}", urlWhiteListRule.ruleText, requestUrl, documentHost, requestType);
+                adguard.console.debug("White list rule found {0} for url: {1} document: {2}, requestType: {3}", urlWhiteListRule.ruleText, requestUrl, documentHost, requestType);
                 return urlWhiteListRule;
             }
 
             if (!genericRulesAllowed || !urlRulesAllowed) {
-                Log.debug("White list rule {0} found for document: {1}", documentWhiteListRule.ruleText, documentHost);
+                adguard.console.debug("White list rule {0} found for document: {1}", documentWhiteListRule.ruleText, documentHost);
             }
 
             if (!urlRulesAllowed) {
@@ -350,7 +348,7 @@
             }
 
             if (blockingRule) {
-                Log.debug("Black list rule {0} found for url: {1}, document: {2}, requestType: {3}", blockingRule.ruleText, requestUrl, documentHost, requestType);
+                adguard.console.debug("Black list rule {0} found for url: {1}, document: {2}, requestType: {3}", blockingRule.ruleText, requestUrl, documentHost, requestType);
             }
 
             return blockingRule;

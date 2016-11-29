@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Log, WorkaroundUtils, antiBannerService */
-
 adguard.ui = (function (adguard) { // jshint ignore:line
 
     var browserActionTitle = adguard.i18n.getMessage('name');
@@ -87,7 +85,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                     }
                 }
 
-                badge = WorkaroundUtils.getBlockedCountText(blocked);
+                badge = adguard.utils.workaround.getBlockedCountText(blocked);
 
                 if (disabled) {
                     icon = adguard.prefs.ICONS.ICON_GRAY;
@@ -100,7 +98,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
             adguard.browserAction.setBrowserAction(tab, icon, badge, "#555", browserActionTitle);
         } catch (ex) {
-            Log.error('Error while updating icon for tab {0}: {1}', tab.tabId, new Error(ex));
+            adguard.console.error('Error while updating icon for tab {0}: {1}', tab.tabId, new Error(ex));
         }
     }
 
@@ -153,7 +151,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             'context_open_log': function () {
                 openFilteringLog();
             },
-            'context_update_antibanner_filters': checkAntiBannerFiltersUpdate
+            'context_update_antibanner_filters': checkFiltersUpdates
         };
 
         function addMenu(title, options) {
@@ -418,7 +416,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     var unWhiteListTab = function (tab) {
 
         var tabInfo = adguard.frames.getFrameInfo(tab);
-        antiBannerService.unWhiteListFrame(tabInfo);
+        adguard.userrules.unWhiteListFrame(tabInfo);
 
         if (adguard.frames.isTabAdguardDetected(tab)) {
             var rule = adguard.frames.getTabAdguardUserWhiteListRule(tab);
@@ -440,8 +438,8 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         });
     };
 
-    var checkAntiBannerFiltersUpdate = function () {
-        antiBannerService.checkAntiBannerFiltersUpdate(true, function (updatedFilters) {
+    var checkFiltersUpdates = function () {
+        adguard.filters.checkFiltersUpdates(function (updatedFilters) {
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTERS_SHOW_POPUP, true, updatedFilters);
         }, function () {
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTERS_SHOW_POPUP, false);
@@ -583,7 +581,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         unWhiteListTab: unWhiteListTab,
 
         changeApplicationFilteringDisabled: changeApplicationFilteringDisabled,
-        checkAntiBannerFiltersUpdate: checkAntiBannerFiltersUpdate,
+        checkFiltersUpdates: checkFiltersUpdates,
         openAssistant: openAssistant,
         openTab: openTab
     };

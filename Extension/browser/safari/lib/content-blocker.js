@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global safari, antiBannerService, Log */
+/* global safari */
 
 /**
  * Safari Content Blocker helper
@@ -81,14 +81,14 @@ adguard.SafariContentBlocker = (function (adguard) {
         _loadAndConvertRules: adguard.utils.concurrent.debounce(function (rulesLimit, callback) {
 
             if (adguard.settings.isFilteringDisabled()) {
-                Log.info('Disabling content blocker.');
+                adguard.console.info('Disabling content blocker.');
                 callback(null);
                 return;
             }
 
-            Log.info('Starting loading content blocker.');
+            adguard.console.info('Starting loading content blocker.');
 
-            var rules = antiBannerService.getRequestFilter().getRules();
+            var rules = adguard.requestFilter.getRules();
 
             if (adguard.settings.isDefaultWhiteListMode()) {
                 rules = rules.concat(adguard.whitelist.getRules());
@@ -110,11 +110,11 @@ adguard.SafariContentBlocker = (function (adguard) {
 
         _setSafariContentBlocker: function (json) {
             try {
-                Log.info('Setting content blocker. Length=' + json.length);
+                adguard.console.info('Setting content blocker. Length=' + json.length);
                 safari.extension.setContentBlocker(json);
-                Log.info('Content blocker has been set.');
+                adguard.console.info('Content blocker has been set.');
             } catch (ex) {
-                Log.error('Error while setting content blocker: ' + ex);
+                adguard.console.error('Error while setting content blocker: ' + ex);
             }
         },
 

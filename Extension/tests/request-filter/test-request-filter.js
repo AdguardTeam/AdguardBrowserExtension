@@ -7,12 +7,15 @@ QUnit.test("General", function(assert) {
     var requestFilter = new adguard.RequestFilter();
     requestFilter.addRule(rule);
 
-    var result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT);
+    var result = requestFilter.findRuleForRequest(url, referrer, adguard.RequestTypes.SUBDOCUMENT);
     assert.ok(result != null);
     assert.equal(result.ruleText, rule.ruleText);
 });
 
 QUnit.test("Whitelist rules selecting", function(assert) {
+
+    var RequestTypes = adguard.RequestTypes;
+
     var url = "https://test.com/";
     var referrer = "http://example.org";
 
@@ -55,6 +58,9 @@ QUnit.test("Whitelist rules selecting", function(assert) {
 });
 
 QUnit.test("Important modifier rules", function(assert) {
+
+    var RequestTypes = adguard.RequestTypes;
+
     var url = "https://test.com/";
     var referrer = "http://example.org";
 
@@ -90,7 +96,7 @@ QUnit.test("Important modifier rules", function(assert) {
     requestFilter.addRule(documentRule);
     result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT, documentRule);
     assert.ok(result != null);
-    assert.equal(result.ruleText, whitelist.ruleText);
+    assert.equal(result.ruleText, documentRule.ruleText);
 });
 
 QUnit.test("Request filter performance", function(assert) {
@@ -111,11 +117,9 @@ QUnit.test("Request filter performance", function(assert) {
         var rules = text.split("\n");
         assert.ok(rules.length > 0);
         for (var i = 0; i < rules.length; i++) {
-            try {
-                var rule = adguard.rules.builder.createRule(rules[i], adguard.utils.filters.USER_FILTER_ID);
+            var rule = adguard.rules.builder.createRule(rules[i], adguard.utils.filters.USER_FILTER_ID);
+            if (rule) {
                 requestFilter.addRule(rule);
-            } catch (ex) {
-                //Ignore
             }
         }
 
@@ -124,7 +128,7 @@ QUnit.test("Request filter performance", function(assert) {
         var count = 5000;
         var startTime = new Date().getTime();
         for (var k = 0; k < count; k++) {
-            requestFilter.findRuleForRequest(url, null, RequestTypes.SUBDOCUMENT);
+            requestFilter.findRuleForRequest(url, null, adguard.RequestTypes.SUBDOCUMENT);
         }
 
         var elapsed = new Date().getTime() - startTime;

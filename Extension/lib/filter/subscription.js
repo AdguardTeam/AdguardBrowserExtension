@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Log */
-
 /**
  * Service that loads and parses filters metadata from backend server.
  * For now we just store filters metadata in an XML file within the extension.
@@ -113,7 +111,7 @@ adguard.subscriptions = (function (adguard) {
                 filters.push(createSubscriptionFilterFromJSON(metadata.filters[j]));
             }
 
-            Log.info('Filters metadata loaded');
+            adguard.console.info('Filters metadata loaded');
             successCallback();
 
         }, errorCallback);
@@ -139,7 +137,7 @@ adguard.subscriptions = (function (adguard) {
                 applyFilterLocalization(filters[j], filtersI18n);
             }
 
-            Log.info('Filters i18n metadata loaded');
+            adguard.console.info('Filters i18n metadata loaded');
             successCallback();
 
         }, errorCallback);
@@ -186,7 +184,7 @@ adguard.subscriptions = (function (adguard) {
     var init = function (callback) {
 
         var errorCallback = function (request, cause) {
-            Log.error('Error loading metadata, cause: {0} {1}', request.statusText, cause);
+            adguard.console.error('Error loading metadata, cause: {0} {1}', request.statusText, cause);
         };
 
         loadMetadata(function () {

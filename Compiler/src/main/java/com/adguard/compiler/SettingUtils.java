@@ -57,7 +57,7 @@ public class SettingUtils {
             " * 3. We allow only custom rules got from the User filter (which user creates manually)\r\n" +
             " *    or from this DEFAULT_SCRIPT_RULES object\r\n" +
             " */\r\n" +
-            "var DEFAULT_SCRIPT_RULES = Object.create(null);\r\n%s";
+            "adguard.rules.DEFAULT_SCRIPT_RULES = Object.create(null);\r\n%s";
 
     private final static String MESSAGE_IDS_FILE_TEMPLATE = "/**\r\n" +
             " * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).\r\n" +
@@ -203,14 +203,14 @@ public class SettingUtils {
         if (scriptRules != null) {
             for (String scriptRule : scriptRules) {
                 String ruleText = StringEscapeUtils.escapeJavaScript(scriptRule);
-                sb.append("DEFAULT_SCRIPT_RULES[\"").append(ruleText).append("\"] = true;\r\n");
+                sb.append("adguard.rules.DEFAULT_SCRIPT_RULES[\"").append(ruleText).append("\"] = true;\r\n");
             }
         }
         return sb.toString();
     }
 
     private static File getLocalScriptRulesFile(File sourcePath) {
-        return new File(sourcePath, "lib/utils/local-script-rules.js");
+        return new File(sourcePath, "lib/filter/rules/local-script-rules.js");
     }
 
     private static File getMessageIdsFile(File sourcePath) {

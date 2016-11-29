@@ -15,13 +15,13 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Cc, Ci, components, FileUtils, NetUtil, Log */
+/* global Cc, Ci, components, FileUtils, NetUtil */
 
 /**
- * File storage adapter.
- * For FF we store rules in files
+ * File storage implementation for firefox
+ * @type {{readAsync, writeAsync}}
  */
-adguard.fileStorage = (function (adguard) {
+adguard.fileStorageImpl = (function () {
 
     'use strict';
 
@@ -37,7 +37,13 @@ adguard.fileStorage = (function (adguard) {
         EXCL: parseInt("0x80")
     };
 
-    function readAsync(file, callback) {
+    /**
+     * Async read file.
+     * https://developer.mozilla.org/en-US/Add-ons/Code_snippets/File_I_O#Reading_from_a_file
+     * @param file
+     * @param callback
+     */
+    var readAsync = function (file, callback) {
 
         var fetchCallback = function (inputStream, status) {
             if (components.isSuccessCode(status)) {
@@ -64,9 +70,16 @@ adguard.fileStorage = (function (adguard) {
 
             NetUtil.asyncFetch(aSource, fetchCallback);
         }
-    }
+    };
 
-    function writeAsync(file, content, callback) {
+    /**
+     * Async write file
+     * https://developer.mozilla.org/en-US/Add-ons/Code_snippets/File_I_O#Writing_to_a_file
+     * @param file
+     * @param content
+     * @param callback
+     */
+    var writeAsync = function (file, content, callback) {
 
         var stream = Cc['@mozilla.org/network/file-output-stream;1'].createInstance(Ci.nsIFileOutputStream);
         var openFlags = OPEN_FLAGS.WRONLY | OPEN_FLAGS.CREATE_FILE | OPEN_FLAGS.TRUNCATE; // jshint ignore:line
@@ -82,7 +95,22 @@ adguard.fileStorage = (function (adguard) {
                 callback(status);
             }
         });
-    }
+    };
+
+    return {
+        readAsync: readAsync,
+        writeAsync: writeAsync
+    };
+
+})();
+
+/**
+ * File storage adapter.
+ * For FF we store rules in files
+ */
+adguard.fileStorage = (function (adguard) {
+
+    'use strict';
 
     var PROFILE_DIR = 'ProfD';
     var ADGUARD_DIR = 'Adguard';
@@ -154,9 +182,9 @@ adguard.fileStorage = (function (adguard) {
                 return;
             }
 
-            readAsync(file, function (error, data) {
+            adguard.fileStorageImpl.readAsync(file, function (error, data) {
                 if (error) {
-                    Log.error("Error read file {0}, cause: {1}", filename, error);
+                    adguard.console.error("Adguard addon: Error read file {0}, cause: {1}", filename, error);
                     callback(error);
                 } else {
                     if (!data) {
@@ -169,7 +197,7 @@ adguard.fileStorage = (function (adguard) {
             });
 
         } catch (ex) {
-            Log.error("Error read file {0}, cause: {1}", filename, ex);
+            adguard.console.error("Adguard addon: Error read file {0}, cause: {1}", filename, ex);
             callback(translateError(ex));
         }
     };
@@ -183,15 +211,15 @@ adguard.fileStorage = (function (adguard) {
             createAdguardDir();
             var file = FileUtils.getFile(PROFILE_DIR, [ADGUARD_DIR, filename]);
 
-            writeAsync(file, content, function (error) {
+            adguard.fileStorageImpl.writeAsync(file, content, function (error) {
                 if (error) {
-                    Log.error("Error write to file {0}, cause: {1}", filename, error);
+                    adguard.console.error("Adguard addon: Error write to file {0}, cause: {1}", filename, error);
                 }
                 callback(error);
             });
 
         } catch (ex) {
-            Log.error("Error write to file {0}, cause: {1}", filename, ex);
+            adguard.console.error("Adguard addon: Error write to file {0}, cause: {1}", filename, ex);
             callback(translateError(ex));
         }
     };
@@ -203,10 +231,12 @@ adguard.fileStorage = (function (adguard) {
             return;
         }
         try {
-            file.remove();
+            // Weird bug. See for details: http://forums.mozillazine.org/viewtopic.php?f=19&t=1783085
+            file.remove(0);
             successCallback();
         } catch (ex) {
             //ignore
+            adguard.console.error('Adguard addon: Cannot remove file {0}: {1}', path, ex);
         }
     };
 
@@ -232,7 +262,7 @@ adguard.fileStorage = (function (adguard) {
 
         writeToFile(filePath, cssRules, function (e) {
             if (e && e.error) {
-                Log.error("Error write css styleSheet to file {0} cause: {1}", filePath, e);
+                adguard.console.error("Adguard addon: Error write css styleSheet to file {0} cause: {1}", filePath, e);
                 return;
             } else {
                 callback();
@@ -253,9 +283,7 @@ adguard.fileStorage = (function (adguard) {
          * @returns CSS file URI
          */
         get injectCssFileURI() {
-            return adguard.lazyGet(this, 'injectCssFileURI', function () {
-                return getFileInAdguardDirUri(CSS_FILE_PATH);
-            });
+            return getFileInAdguardDirUri(CSS_FILE_PATH);
         },
         saveStyleSheetToDisk: saveStyleSheetToDisk,
         readFromFile: readFromFile,

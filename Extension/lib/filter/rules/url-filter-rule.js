@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Log */
-
 (function (adguard, api) {
 
     'use strict';
@@ -41,7 +39,7 @@
             //In case of one domain
             return adguard.utils.strings.replaceAll(ruleText, domain, adguard.utils.url.toPunyCode(domain));
         } catch (ex) {
-            Log.error("Error getAsciiDomainRule from {0}, cause {1}", ruleText, ex);
+            adguard.console.error("Error getAsciiDomainRule from {0}, cause {1}", ruleText, ex);
             return "";
         }
     }
@@ -94,7 +92,7 @@
 
             return symbolIndex == -1 ? ruleText.substring(startIndex) : ruleText.substring(startIndex, symbolIndex);
         } catch (ex) {
-            Log.error("Error parsing domain from {0}, cause {1}", ruleText, ex);
+            adguard.console.error("Error parsing domain from {0}, cause {1}", ruleText, ex);
             return null;
         }
     }
@@ -291,7 +289,7 @@
                 delete this.urlRegExpSource;
             } catch (ex) {
                 //malformed regexp
-                Log.error('Error create regexp from {0}', urlRegExpSource);
+                adguard.console.error('Error create regexp from {0}', urlRegExpSource);
                 this.wrongUrlRegExp = true;
                 return null;
             }

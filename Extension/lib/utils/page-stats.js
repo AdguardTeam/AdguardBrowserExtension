@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Log */
-
 /**
  * Global stats
  */
@@ -26,24 +24,42 @@ adguard.pageStats = (function (adguard) {
 
     var pageStatisticProperty = "page-statistic";
 
-    /**
-     * Getter for total page stats (gets it from local storage)
-     *
-     * @returns {*}
-     * @private
-     */
-    function getPageStatistic() {
-        var stats;
-        try {
-            var json = adguard.localStorage.getItem(pageStatisticProperty);
-            if (json) {
-                stats = JSON.parse(json);
+    var pageStatsHolder = {
+        /**
+         * Getter for total page stats (gets it from local storage)
+         *
+         * @returns {*}
+         * @private
+         */
+        get stats() {
+            return adguard.lazyGet(pageStatsHolder, 'stats', function () {
+                var stats;
+                try {
+                    var json = adguard.localStorage.getItem(pageStatisticProperty);
+                    if (json) {
+                        stats = JSON.parse(json);
+                    }
+                } catch (ex) {
+                    adguard.console.error('Error retrieve page statistic from storage, cause {0}', ex);
+                }
+                return stats || Object.create(null);
+            });
+        },
+
+        save: function () {
+            if (this.saveTimeoutId) {
+                clearTimeout(this.saveTimeoutId);
             }
-        } catch (ex) {
-            Log.error('Error retrieve page statistic from storage, cause {0}', ex);
+            this.saveTimeoutId = setTimeout(function () {
+                adguard.localStorage.setItem(pageStatisticProperty, JSON.stringify(this.stats));
+            }.bind(this), 1000);
+        },
+
+        clear: function () {
+            adguard.localStorage.removeItem(pageStatisticProperty);
+            adguard.lazyGetClear(pageStatsHolder, 'stats');
         }
-        return stats;
-    }
+    };
 
     /**
      * Total count of blocked requests
@@ -51,7 +67,7 @@ adguard.pageStats = (function (adguard) {
      * @returns Count of blocked requests
      */
     var getTotalBlocked = function () {
-        var stats = getPageStatistic();
+        var stats = pageStatsHolder.stats;
         if (!stats) {
             return 0;
         }
@@ -64,16 +80,16 @@ adguard.pageStats = (function (adguard) {
      * @param blocked Count of blocked requests
      */
     var updateTotalBlocked = function (blocked) {
-        var stats = getPageStatistic() || Object.create(null);
+        var stats = pageStatsHolder.stats;
         stats.totalBlocked = (stats.totalBlocked || 0) + blocked;
-        adguard.localStorage.setItem(pageStatisticProperty, JSON.stringify(stats));
+        pageStatsHolder.save();
     };
 
     /**
      * Resets tab stats
      */
     var resetStats = function () {
-        adguard.localStorage.setItem(pageStatisticProperty, JSON.stringify(Object.create(null)));
+        pageStatsHolder.clear();
     };
 
     return {

@@ -243,7 +243,7 @@ var SafariContentBlockerConverter = {
                 };
 
             } catch (ex) {
-                Log.error("Error parsing domain from {0}, cause {1}", ruleText, ex);
+                adguard.console.error("Error parsing domain from {0}, cause {1}", ruleText, ex);
                 return null;
             }
         },
@@ -326,13 +326,13 @@ var SafariContentBlockerConverter = {
                         parseDomainResult.path != "^" &&
                         parseDomainResult.path != "/") {
                         // http://jira.performix.ru/browse/AG-8664
-                        Log.debug('Whitelist special warning for rule: ' + rule.ruleText);
+                        adguard.console.debug('Whitelist special warning for rule: ' + rule.ruleText);
 
                         return;
                     }
 
                     if (parseDomainResult === null || parseDomainResult.domain === null) {
-                        Log.debug('Error parse domain from rule: ' + rule.ruleText);
+                        adguard.console.debug('Error parse domain from rule: ' + rule.ruleText);
                         return;
                     }
 
@@ -423,7 +423,7 @@ var SafariContentBlockerConverter = {
      * @private
      */
     _addVersionMessage: function () {
-        Log.info('Safari Content Blocker Converter v' + CONVERTER_VERSION);
+        adguard.console.info('Safari Content Blocker Converter v' + CONVERTER_VERSION);
     },
 
     /**
@@ -451,7 +451,7 @@ var SafariContentBlockerConverter = {
         } catch (ex) {
             var message = 'Error converting rule from: ' + ruleText + ' cause:\n' + ex;
             message = ruleText + '\r\n' + message + '\r\n';
-            Log.debug(message);
+            adguard.console.debug(message);
 
             if (errors) {
                 errors.push(message);
@@ -500,7 +500,7 @@ var SafariContentBlockerConverter = {
             var message = 'Error converting rule from: ' + 
                 (rule.ruleText ? rule.ruleText : rule) + 
                 ' cause:\n' + ex + '\r\n';
-            Log.debug(message);
+            adguard.console.debug(message);
 
             if (errors) {
                 errors.push(message);
@@ -566,7 +566,7 @@ var SafariContentBlockerConverter = {
      * @private
      */
     _applyCssExceptions: function (cssBlocking, cssExceptions) {
-        Log.info('Applying ' + cssExceptions.length + ' css exceptions');
+        adguard.console.info('Applying ' + cssExceptions.length + ' css exceptions');
 
         /**
          * Adds exception domain to the specified rule.
@@ -629,16 +629,16 @@ var SafariContentBlockerConverter = {
         cssBlocking.forEach(function (r) {
             if (r.trigger["if-domain"] && (r.trigger["if-domain"].length > 0) && 
                 r.trigger["unless-domain"] && (r.trigger["unless-domain"].length > 0)) {
-                Log.debug('Safari does not support permitted and restricted domains in one rule');
-                Log.debug(JSON.stringify(r));
+                adguard.console.debug('Safari does not support permitted and restricted domains in one rule');
+                adguard.console.debug(JSON.stringify(r));
                 exceptionsErrorsCount++;
             } else {
                 result.push(r);
             }
         });
 
-        Log.info('Css exceptions applied: ' + exceptionsAppliedCount);
-        Log.info('Css exceptions errors: ' + exceptionsErrorsCount);
+        adguard.console.info('Css exceptions applied: ' + exceptionsAppliedCount);
+        adguard.console.info('Css exceptions errors: ' + exceptionsErrorsCount);
         return result;
     },
 
@@ -648,7 +648,7 @@ var SafariContentBlockerConverter = {
      * @return an object with two properties: cssBlockingWide and cssBlockingDomainSensitive
      */
     _compactCssRules: function(cssBlocking) {
-        Log.info('Trying to compact ' + cssBlocking.length + ' elemhide rules');
+        adguard.console.info('Trying to compact ' + cssBlocking.length + ' elemhide rules');
 
         var cssBlockingWide = [];
         var cssBlockingDomainSensitive = [];
@@ -688,7 +688,7 @@ var SafariContentBlockerConverter = {
         }
         addWideRule();
 
-        Log.info('Compacted result: wide=' + cssBlockingWide.length + ' domainSensitive=' + cssBlockingDomainSensitive.length);
+        adguard.console.info('Compacted result: wide=' + cssBlockingWide.length + ' domainSensitive=' + cssBlockingDomainSensitive.length);
         return {
             cssBlockingWide: cssBlockingWide,
             cssBlockingDomainSensitive: cssBlockingDomainSensitive
@@ -703,7 +703,7 @@ var SafariContentBlockerConverter = {
      * @return content blocker object with converted rules grouped by type
      */
     _convertLines: function (rules, optimize) {
-        Log.info('Converting ' + rules.length + ' rules. Optimize=' + optimize);
+        adguard.console.info('Converting ' + rules.length + ' rules. Optimize=' + optimize);
 
         var contentBlocker = {
             // Elemhide rules (##) - generic rules
@@ -783,7 +783,7 @@ var SafariContentBlockerConverter = {
         message += '\nElemhide rules (domain-sensitive): ' + contentBlocker.cssBlockingDomainSensitive.length;
         message += '\nExceptions (elemhide): ' + contentBlocker.cssElemhide.length;
         message += '\nExceptions (other): ' + contentBlocker.other.length;
-        Log.info(message);
+        adguard.console.info(message);
 
         return contentBlocker;
     },
@@ -803,13 +803,13 @@ var SafariContentBlockerConverter = {
         if (limit && limit > 0 && converted.length > limit) {
             var message = '' + limit + ' limit is achieved. Next rules will be ignored.';
             contentBlocker.errors.push(message);
-            Log.error(message);
+            adguard.console.error(message);
             overLimit = true;
             converted = converted.slice(0, limit);
         }
 
         this._applyDomainWildcards(converted);
-        Log.info('Content blocker length: ' + converted.length);
+        adguard.console.info('Content blocker length: ' + converted.length);
 
         var result = {
             totalConvertedCount: convertedLength,
@@ -833,12 +833,12 @@ var SafariContentBlockerConverter = {
         this._addVersionMessage();
 
         if (rules === null) {
-            Log.error('Invalid argument rules');
+            adguard.console.error('Invalid argument rules');
             return null;
         }
 
         if (rules.length === 0) {
-            Log.info('No rules presented for convertation');
+            adguard.console.info('No rules presented for convertation');
             return null;
         }
 

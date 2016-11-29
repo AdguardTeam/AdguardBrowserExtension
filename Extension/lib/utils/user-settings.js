@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Log */
-
 /**
  * Object that manages user settings.
  * @constructor
@@ -77,7 +75,7 @@ adguard.settings = (function (adguard) {
             try {
                 propertyValue = JSON.parse(adguard.localStorage.getItem(propertyName));
             } catch (ex) {
-                Log.error('Error get property {0}, cause: {1}', propertyName, ex);
+                adguard.console.error('Error get property {0}, cause: {1}', propertyName, ex);
             }
         } else if (propertyName in defaultProperties.defaults) {
             propertyValue = defaultProperties.defaults[propertyName];

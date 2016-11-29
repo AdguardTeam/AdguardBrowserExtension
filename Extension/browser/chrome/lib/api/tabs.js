@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global chrome, Log */
+/* global chrome */
 
 /**
  * Chromium windows implementation
@@ -107,7 +107,7 @@ adguard.tabsImpl = (function (adguard) {
     function checkLastError() {
         var ex = browser.runtime.lastError;
         if (ex) {
-            Log.error("Error while executing operation: {0}", ex);
+            adguard.console.error("Error while executing operation: {0}", ex);
         }
         return ex;
     }

@@ -15,11 +15,32 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Log, AdguardFilterVersion */
-
 adguard.backend = (function (adguard) {
 
     'use strict';
+
+    /**
+     * Represents filter version metadata
+     * @type {Function}
+     */
+    var AdguardFilterVersion = function (timeUpdated, version, filterId) {
+        this.timeUpdated = timeUpdated;
+        this.version = version;
+        this.filterId = filterId;
+    };
+
+    /**
+     * Filter version metadata parser
+     *
+     * @param filter Object
+     * @returns {*}
+     */
+    AdguardFilterVersion.fromJSON = function (filter) {
+        var timeUpdated = new Date(filter.timeUpdated).getTime();
+        var version = filter.version;
+        var filterId = filter.filterId - 0;
+        return new AdguardFilterVersion(timeUpdated, version, filterId);
+    };
 
     /**
      * Class for working with our backend server.
@@ -163,7 +184,7 @@ adguard.backend = (function (adguard) {
             executeRequestAsync(url, "text/plain");
 
         } catch (ex) {
-            Log.error('Error track {0}, cause: {1}', trackUrl, ex);
+            adguard.console.error('Error track {0}, cause: {1}', trackUrl, ex);
         }
     }
 
@@ -323,7 +344,7 @@ adguard.backend = (function (adguard) {
         try {
             return JSON.parse(text);
         } catch (ex) {
-            Log.error('Error parse json {0}', ex);
+            adguard.console.error('Error parse json {0}', ex);
             return null;
         }
     }
@@ -560,10 +581,9 @@ adguard.backend = (function (adguard) {
 
     /**
      * Tracks extension install
-     *
-     * @param isAllowedAcceptableAds true if "show useful ads" is enabled
      */
-    var trackInstall = function (isAllowedAcceptableAds) {
+    var trackInstall = function () {
+        var isAllowedAcceptableAds = adguard.filters.isFilterEnabled(adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID);
         trackInfo(settings.trackInstallUrl, isAllowedAcceptableAds);
     };
 
