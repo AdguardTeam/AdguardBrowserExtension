@@ -436,9 +436,9 @@
         if (win && win.document && win.document.readyState === 'complete') {
             injectScripts('document_start', win);
             injectScripts('document_end', win);
-        } else {
-            context.addEventListener('DOMWindowCreated', onWindowCreated);
         }
+
+        context.addEventListener('DOMWindowCreated', onWindowCreated);
 
         // Prepare to clean up on frame script unload
         context.addEventListener('unload', onUnload);
