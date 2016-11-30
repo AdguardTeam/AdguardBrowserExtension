@@ -87,7 +87,17 @@
             }
 
             function populate(doc, contextMenu) {
+
                 var mainMenu = getMenuItems(contextMenu, MENU_ITEM_MENU)[0];
+
+                // Remove menu if empty
+                if (contextMenuProperties.length === 0) {
+                    if (mainMenu) {
+                        mainMenu.parentNode.removeChild(mainMenu);
+                    }
+                    return;
+                }
+
                 if (!mainMenu) {
                     mainMenu = doc.createElement('menu');
                     mainMenu.setAttribute(MENU_ITEM_ATTR, MENU_ITEM_MENU);
