@@ -71,6 +71,11 @@ WebRequestService.prototype = (function () {
         };
 
         var whitelistRule = this.framesMap.getFrameWhiteListRule(tab);
+        if (!whitelistRule) {
+            //Check whitelist for current frame
+            var mainFrameUrl = this.framesMap.getMainFrameUrl(tab);
+            whitelistRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, mainFrameUrl, RequestTypes.DOCUMENT);
+        }
         var genericHideFlag = genericHide || (whitelistRule && whitelistRule.checkContentType("GENERICHIDE"));
         var elemHideFlag = whitelistRule && whitelistRule.checkContentType("ELEMHIDE");
         if (!elemHideFlag) {
@@ -179,9 +184,12 @@ WebRequestService.prototype = (function () {
 
         var whitelistRule = this.framesMap.getFrameWhiteListRule(tab);
         if (whitelistRule && whitelistRule.checkContentTypeIncluded("DOCUMENT")) {
-            // Frame is whitelisted by $document rule
+            // Frame is whitelisted by main frame's $document rule
             // We do nothing more in this case - return the rule.
             return whitelistRule;
+        } else if (!whitelistRule) {
+            // If whitelist rule is not found for main frame, we check it for referrer
+            whitelistRule = this.antiBannerService.getRequestFilter().findWhiteListRule(requestUrl, referrerUrl, RequestTypes.DOCUMENT);
         }
 
         return this.antiBannerService.getRequestFilter().findRuleForRequest(requestUrl, referrerUrl, requestType, whitelistRule);
