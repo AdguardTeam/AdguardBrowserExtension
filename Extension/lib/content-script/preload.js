@@ -79,6 +79,7 @@
             loadTruncatedCss = (height * width) < 100000;
         }
 
+        console.log('Init preload: '  + document.location.href);
         initCollapseEventListeners();
         tryLoadCssAndScripts();
     };
@@ -250,6 +251,7 @@
          * Sending message to background page and passing a callback function
          */
         contentPage.sendMessage(message, processCssAndScriptsResponse);
+        console.log('message send: '  + document.location.href);
     };
     
     /**
@@ -264,13 +266,15 @@
              * request filter is not ready yet. This is possible only on browser startup. 
              * In this case we'll delay injections until extension is fully initialized.
              */
+            console.log('Request filter not ready: ' + document.location.href);
             setTimeout(function () {
                 tryLoadCssAndScripts();
             }, 100);
 
             return;
         } else if (response.collapseAllElements) {
-            
+            console.log('Request filter is ready with collapseAllElements: '  + document.location.href);
+            console.log('selectors:' + (response.selectors.css ? response.selectors.css.length : "0") + ": "  + document.location.href);
             /**
              * This flag (collapseAllElements) means that we should check all page elements 
              * and collapse them if needed. Why? On browser startup we can't block some 
@@ -280,9 +284,13 @@
             applySelectors(response.selectors, response.useShadowDom);
             applyScripts(response.scripts);
             initBatchCollapse();
+            console.log('Selectors and scripts applied  with collapseAllElements');
         } else {
+            console.log('Request filter is ready: ' + document.location.href);
+            console.log('selectors:' + (response.selectors.css ? response.selectors.css.length : "0")+ ": "  + document.location.href);
             applySelectors(response.selectors, response.useShadowDom);
             applyScripts(response.scripts);
+            console.log('Selectors and scripts applied: '  + document.location.href);
         }
 
         if (response && response.selectors && response.selectors.css && response.selectors.css.length > 0) {
@@ -585,6 +593,8 @@
         }
         delete collapseRequests[response.requestId];
 
+        console.log('onProcessShouldCollapseResponse #' + response.requestId + ': '  + document.location.href);
+
         if (response.collapse === true) {
             var element = collapseRequest.element;
             ElementCollapser.collapseElement(element, shadowRoot);
@@ -614,6 +624,7 @@
      * Collects all elements from the page and checks if we should hide them.
      */
     var checkBatchShouldCollapse = function() {
+        console.log('checkBatchShouldCollapse: '  + document.location.href);
         var requests = [];
 
         // Collect collapse requests
@@ -692,5 +703,6 @@
     }
     
     // Start the content script
+    console.log('Start the content script');
     init();
 })();

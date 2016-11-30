@@ -20,6 +20,7 @@ var tabUtils = require('sdk/tabs/utils');
 var {viewFor} = require('sdk/view/core');
 var winUtils = require('sdk/window/utils');
 var unload = require('sdk/system/unload');
+var setTimeout = require('sdk/timers').setTimeout;
 
 var {Log} = require('./utils/log');
 
@@ -194,7 +195,12 @@ ContentScripts.prototype = {
             'content-script/subscribe.js'
         ], 'document_end', false, subscribeIncludeDomains);
 
-        this._loadFrameScript();
+        //this._loadFrameScript();
+
+        var initScript = function () {
+            this._loadFrameScript();
+        };
+        setTimeout(initScript.bind(this), 5000);
     },
 
     /**
@@ -298,7 +304,7 @@ ContentScripts.prototype = {
      * Initializes our frame script and sets up a listener object.
      */
     _loadFrameScript: function () {
-        
+        console.log('_loadFrameScript');
         /**
          * For some unknown reason we can't use global message messenger for handling synchronous messages from a frame script.
          * On the other hand, parent process manager allows us to receive syncrhonous messages and send immediate response.
@@ -400,6 +406,8 @@ ContentScripts.prototype = {
         var frameScriptUrl = this._contentUrl('content-script/frame-script.js');
         messageManager.removeDelayedFrameScript(frameScriptUrl);
         messageManager.loadFrameScript(frameScriptUrl, true);
+
+        console.log(frameScriptUrl);
 
         // Remove frame script on unload
         unload.when(function () {

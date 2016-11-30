@@ -194,7 +194,9 @@
      */
     var injectScripts = function (runAt, win) {
 
+
         var location = win.document.location;
+        console.log('' + location + 'injectScripts: ' + runAt);
         if (!location) {
             return;
         }
@@ -240,6 +242,8 @@
             var script = scripts[i];
             runScriptInSandbox(script, sandbox);
         }
+
+        console.log('Finished' + location + 'injectScripts: ' + runAt);
     };
 
     /**
@@ -301,7 +305,7 @@
      * When it happens we inject "document-end" content scripts.
      */
     var onDocumentEnd = function (event) {
-
+        console.log('onDocumentEnd');
         var win = event.target.defaultView;
 
         // Remove event listeners
@@ -315,6 +319,7 @@
      * @param win DOM window
      */
     var onDocumentStart = function (win) {
+        console.log('onDocumentStart ' + win.document.location);
         win.addEventListener('DOMContentLoaded', onDocumentEnd, true);
         win.addEventListener('unload', onWindowUnload, true);
 
@@ -332,7 +337,9 @@
     var documentObserver = (function () {
 
         var OBS_TOPIC = 'document-element-inserted';
+        var OBS_TOPIC_ACTIVE = 'user-interaction-active';
         var callbacks = new WeakMap();
+        var callbacks_active = new WeakMap();
 
         /**
          * nsiObserver implementation: https://developer.mozilla.org/ru/docs/nsIObserver
@@ -354,6 +361,19 @@
                             frameCallback(win);
                         }
                         break;
+                    case OBS_TOPIC_ACTIVE:
+                        var win = subject;
+                        var doc = win.document
+                        if (!doc || !win) {
+                            return;
+                        }
+                        var topWin = win.top;
+
+                        var frameCallback = callbacks_active.get(topWin);
+                        if (frameCallback) {
+                            frameCallback(win);
+                        }
+                        break;
                 }
             },
             QueryInterface: XPCOMUtils.generateQI([Ci.nsIObserver, Ci.nsISupportsWeakReference])
@@ -371,12 +391,17 @@
             onNewDocument: function (topWindow, callback) {
                 callbacks.set(topWindow, callback);
             },
+
+            onDocumentInteracted: function (topWindow, callback) {
+                callbacks_active.set(topWindow, callback);
+            },
             
             /**
              * Called on frame script unload
              */
             unload: function () {
                 Services.obs.removeObserver(contentObserver, OBS_TOPIC);
+                Services.obs.removeObserver(contentObserver, OBS_TOPIC_ACTIVE);
             }
         };
 
@@ -386,6 +411,7 @@
      * Called on DOMWindowCreated event.
      */
     var onWindowCreated = function () {
+        console.log('onWindowCreated');
         
         // Registering a callback when DOM window was just created.
         documentObserver.onNewDocument(context.content, onDocumentStart);
@@ -428,11 +454,24 @@
             // Compatibility with older FF versions and PaleMoon
             registeredScripts = cpmm.sendSyncMessage('Adguard:get-content-scripts')[0];
             i18nMessages = cpmm.sendSyncMessage('Adguard:get-i18n-messages')[0];
-        }        
-        context.addEventListener('DOMWindowCreated', onWindowCreated);
+        }
+        console.log('binding events');
+
+        // If document is ready already
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/446
+        var win = context.content;
+        if (win && win.document && win.document.readyState === 'complete') {
+            console.log('document is ready already');
+            injectScripts('document_start', win);
+            injectScripts('document_end', win);
+        } else {
+            context.addEventListener('DOMWindowCreated', onWindowCreated);
+        }
 
         // Prepare to clean up on frame script unload
         context.addEventListener('unload', onUnload);
+
+        console.log('binding events ok');
     };
 
     initFrameScript();
