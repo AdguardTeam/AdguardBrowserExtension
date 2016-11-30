@@ -1,6 +1,6 @@
-! Checksum: vXLbh6/jgasgKh228ON+wA
-! Version: 1.0.14.72
-! TimeUpdated: 2016-11-22T00:00:56.244+04:00
+! Checksum: K7unWuCSO23DVqx1Y2x8sg
+! Version: 1.0.15.1
+! TimeUpdated: 2016-11-30T00:09:11.816+04:00
 ! Title: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
@@ -140,6 +140,7 @@
 ||yandex.st/share/share.js$domain=~24auto.ru|~calculatewater.ru|~novoeradio.by|~pikucha.ru|~realty.dmir.ru|~transport.mos.ru|~yandex.com|~yandex.ru|~yandex.ua
 ||yastatic.net/*/share.js$third-party,domain=~alexey-osipov.ru|~avtodispetcher.ru|~debilizator.tv|~yandex.by|~yandex.kz|~yandex.ru|~yandex.ua|~fanserials.tv
 ||youtube.com/subscribe_widget$third-party
+/wp-content/plugins/2-click-socialmedia-buttons/*
 /wp-content/plugins/social-count-plus/*
 /plugins/wp-share-to-xing/*
 /wp-content/plugins/indeed-social-media/*
@@ -208,6 +209,8 @@ _social-button-
 _social-buttons-
 images/livejournal
 lj_bookmarklet
+sporhd.com,karadenizmanset.com,saraykoy.com.tr,cayyolu.com.tr,bugununhaberi.com###page_right div.right_block[-ext-has="div.title.grey:contains(Sosyal Medya)"]
+vioyun.com###sidebar > .widget_text[-ext-has="span:contains(Facebook)"]
 onedio.com##.main > .entry.html[-ext-has="h2:contains(YouTube Kanalımıza Abone)"]
 applopedi.com##.sag > .single-block[-ext-has=".addthis_toolbox"]
 f3torrent.net##.f3wrapper-right > div[style][-ext-has='div.feedburner']
@@ -247,6 +250,7 @@ nv.ua#%#document.cookie = "smodal=1";
 wowjp.net#%#AG_onLoad(function() {if (document.cookie.indexOf("viewedOuibounceModal") == -1) { document.cookie = "viewedOuibounceModal=true"; } });
 depo.ua#%#document.cookie = "scps=1";
 takprosto.cc#%#document.cookie = "popup_displayed=true";
+workingkeys.org#$#.onp-sl-content { display: block!important; }
 milligazete.com.tr#$#.addthis_sharing_toolbox { margin-top: 0px!important; }
 schwaebische.de#$##button_bar > div[data-original-title*="teilen"] { position: absolute!important; left: -2000px!important; }
 omgubuntu.co.uk#$#div[class^="mfp-"] { display: none!important; }
@@ -258,6 +262,45 @@ maskme.ru#$#img[width="88"][height="31"] {visibility: hidden!important;}
 gamesradar.com#$#.shareSocialArticle-wrap { visibility: hidden; }
 softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ||mimimi.tv/?*=*&_=
+warezturkey.org##.theblogwidgets
+fullonlinefilmizle2.net##.begeni-social
+bl.uk###twitterwrapper
+bnkomi.ru###vk_groups3
+||ddizi1.com/images/twitter.png
+chip.de##.LikeButton
+basakgazetesi.com##.block-fan
+||karabuknethaber.com/img/sosyalmedya/
+||workingkeys.org/wp-content/plugins/social-locker/
+workingkeys.org##.onp-sl-outer-wrap
+macizler.trgool.com##.paylas
+trendblog.net###googleplus_widget
+arabadergisi.com##.widget_fans_widget
+mavikocaeli.com.tr##.hbr-shr
+anadolugazetesi.net##.sosyal > a[onclick][href]
+bolgegazetesi.com##.buyukpaylas
+haberekspres.com.tr##.panel-sosyal
+yozgatgazetesi.com###sayfadetaylar > font[face="Times"]
+yozgatgazetesi.com###sayfadetaylar > a[href="#"][onclick] > img
+sporhd.com,karadenizmanset.com,saraykoy.com.tr,cayyolu.com.tr,bugununhaberi.com##.socialRightBlock
+thoughtcatalog.com##.global_sharing_controls
+teknopc.net###fanback
+kidstaff.com.ua##.social_but
+javhdonline.com##.dp-share
+hdkinoklub.com##.social-note
+hdkinoklub.com##.social_share_table
+thenational.ae##.nationalsocialshare a[onclick^="popUpWindow"]
+mhmtyc.com##.widget_sponsor_150 + .widget_sponsor_300:nth-child(4)
+oyunindir.club##.widget_likebox
+cheattr.com##.widget-area > #text-13:first-child
+calisir.net##.yanmenu > .face_h2
+segmentnext.com##.share
+chip.de###like-btn
+fetishshrine.com##.spot-bottom
+webtekno.com##.qa-sss-buttons
+penti.com##.share
+teknopc.net###HTML7
+androidkolik.com##.widget_easy_facebook_page_plugin
+yenifullprogramlarindir.com###social-2
 handelsblatt.com##div[class^="vhb-share-social"]
 intoday.in##.likedisdiv
 cocomy.net##.post-bottom
@@ -295,7 +338,6 @@ kutahyaekspres.com##.facebook-widget
 gercektaraf.com##.socialRightBlock
 gercektaraf.com##form + .right_block > div[class="title grey"]
 ||webspor2.com/social.html
-ubuntumaniac.com###fanback
 ubuntumaniac.com###PlusFollowers1
 filmizlef.net##.widget.border5a > .widget.border5a:first-child
 m.news.de##.social
@@ -382,7 +424,6 @@ computerera.co.in##ism_wrap
 turksinemasi.com##div[class$="bslkzmn2 h300"]
 ||turksinemasi.com/wp-content/themes/ts/images/paylas-*.jpg
 ln-online.de###articlesocial
-fox.com.tr##.vjs-social-share
 canlitv.mobi##.sosyalmedyaaraclari
 canlitvizle.io##.io-sosyal
 canlitvlive.co##.sharelink
@@ -397,7 +438,6 @@ tv360.com.tr###sharingbar
 ~ok.ru##a[href^="//www.odnoklassniki.ru/dk?st.cmd=addShare"]
 digiday.com##.article-sharing
 dom.lenta.ru##.b-topic__socials
-cosmopolitanturkiye.com##.sosyal
 elle.com.tr,milliyetemlak.com##.facebook
 elle.com.tr,milliyetemlak.com##.twitter
 otohaber.com.tr##.pinterest
@@ -471,7 +511,6 @@ softwares-serials.in###facebook_right
 sadeemapk.com,vioyun.com###facebookpopup-fanback
 fulldiziizleyelimm.com###faceuyari
 fulloyunindirsene.com###fadeinbox
-for-ua.com,idevice.ro,majorgeeks.com,ridus.ru,tweaktown.com,uptobox.com###fanback
 mackolik.com###fancybox-close
 mackolik.com###fancybox-frame
 kazanfirst.ru###fancybox-loading
@@ -606,7 +645,6 @@ eksisozluk.com###vertical-share-wrapper
 travelask.ru###vk-popup
 newsvo.ru###vk_group_layer
 spec-komp.com###vk_groups1
-igromania.ru###vk_groups2
 prokazan.ru###vk_groupsVK
 lyrsense.com###vk_groups_ls
 rsn.ru###vk_groups_new
@@ -951,7 +989,7 @@ habertempo.net##.page-social
 watchfree.to##.page_content > div.backdrop
 watchfree.to##.page_content > div.modal
 batpic.com##.panel-share-networks *
-ademocut.com,akdenizhaber.com.tr,donanimhaber.com,kimdirkim.com##.paylas
+ademocut.com,akdenizhaber.com.tr,calisir.net,donanimhaber.com,kimdirkim.com##.paylas
 otohaber.com.tr,teknokulis.com##.paylasM
 haberler.com##.paylassag
 lvz.de##.pda-topmenusocial
@@ -1188,7 +1226,7 @@ forbes.ru##.socnet_left_float
 forbes.ru##.socnet_shares_cont
 m5bilisim.com##.sol-icerik-girinti > a[href^="javascript:void(0)"]
 genius.com##.song_header-share_buttons
-dizifilmdunyasi.org,durdurfilmizle.com,filmbizdeizlenir.com,filmizle.film,hdfilmdeposu.net,islahhaber.net##.sosyal
+pkn918.com,oyungezginler.org,cosmopolitanturkiye.com,dizifilmdunyasi.org,durdurfilmizle.com,filmbizdeizlenir.com,filmizle.film,hdfilmdeposu.net,islahhaber.net##.sosyal
 bedavafilmizleyin.org##.sosyal-aglar
 yookartik.com##.sosyal-paylas
 filmiizle.gen.tr##.sosyal-paylasim > a[title]
@@ -1329,7 +1367,6 @@ softbuild.ru##a[onclick^="window.open('http://www.livejournal.com/update.bml"]
 dizimuzikleri.co,heymp3indir.com,mp3indirco.com##a[title$="Facebook'da Paylaş"]
 konhaber.com##a[title$="Paylaş"]
 ozgurgorgulu.com##a[title^="Share on"]
-zuketapaajabhisa.blogspot.com##body #fanback
 maydanozhaber.com##body > #kodac
 somut.net##body > div#boxes
 ozgurgorgulu.com##body > div#popup
@@ -1507,6 +1544,17 @@ lcpdfr.com##ul[data-controller$="sharelink"]
 ||widget.breakingburner.com/js/jwidget.js$domain=novayagazeta.ru
 ||wow.ya.ru/ajax/share-counter.xml$third-party
 ||yandex.st/share/static/b-share-icon.png
+###social_share
+~pinterest.com##a[href^="http://pinterest.com/pin/create/bookmarklet/"]
+##.bts_social
+##.addthis_button_reddit
+###vk_groups2
+##.list_share
+~facebook.com##a[href^="http://facebook.com/share.php?"]
+##.vjs-social-share
+###crestashareicon
+###crestashareiconincontent
+##.cresta-share-icon
 ##.btn_fb
 ##.like-fb
 ##a[href^="https://twitter.com/intent/tweet/?"]
@@ -2254,6 +2302,11 @@ livejournal.com##.b-ljtimes-wrapper
 ~vk.com,~vkontakte.ru##input.vk
 ||mailget.net^$third-party
 /wp-content/plugins/facebook-fanbox-popup/*
+/wp-content/plugins/easy-facebook-likebox/*
+hyser.com.ua##.modal-facebook-like
+konyahaber.com###cm-social-overlay
+tecadmin.net###spu-bg
+tecadmin.net###spu-main
 meraklimedya.net###mjpopup
 ||turkusozu.com/js/fancybox/
 doramy.moy.su##.fancybox-desktop
@@ -2340,6 +2393,7 @@ twgreatdaily.com#$#.modal-backdrop.fade { display: none!important; }
 twgreatdaily.com#$#.body.modal-open { overflow: visible!important; }
 sport-express.ru#$#body.popup { overflow: visible!important; }
 sport-express.ru#$#.show-popup{ display: none!important; }
+zenmate.com#@#.social-networks
 @@||kinokrik.net/engine/classes/min/index.php
 @@||apis.google.com/js/plusone.js$domain=watch.nba.com
 @@||smofast.com/theme/default/images/social/

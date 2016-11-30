@@ -1,6 +1,6 @@
-! Checksum: NYeo1/5nlhM9Qy8t5BdlGw
-! Version: 1.0.1.70
-! TimeUpdated: 2016-11-21T16:24:06.065+04:00
+! Checksum: GEP5eoOjWnpQjNEl4NSt2g
+! Version: 1.0.1.78
+! TimeUpdated: 2016-11-28T18:01:54.031+04:00
 ! Title: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! Title: Adguard Safari Filter
@@ -37,6 +37,9 @@
 ! impspcabe clickunder
 @@/ads/ad$domain=pipec.ru|xyya.net|pandamovie.net|streamgaroo.com|vidzi.tv|befuck.com
 @@||adstreet.tech/*ad$domain=befuck.com
+@@.adcenter.$domain=mcfucker.com|losmovies.club|rapidvideo.com
+@@||mcfucker.com$generichide
+@@||losmovies.club^$generichide
 @@||vidzi.tv^$generichide
 @@||befuck.com^$generichide
 @@||pipec.ru^$generichide
@@ -297,7 +300,20 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 !
 ! White list. Fixing content blocking API issues.
 !
-!
+!https://forum.adguard.com/index.php?threads/accountkiller-com.16162/
+@@||google-analytics.com/analytics.js^$domain=accountkiller.com
+! https://forum.adguard.com/index.php?threads/pornve-com-nsfw.16118/
+@@||prscripts.com/pub.js$domain=pornve.com
+! https://forum.adguard.com/index.php?threads/resolved-afkortingen-nu.16065/#post-114528
+afkortingen.nu#@##cookie_popup_container
+afkortingen.nu#@##cookie_popup
+! https://github.com/AdguardTeam/AdguardFilters/issues/3529
+@@||espncdn.com/*/*.css
+! https://github.com/AdguardTeam/AdguardFilters/issues/3531
+@@||disquscdn.com^$script,domain=wccftech.com
+@@||disqus.com^$script,domain=wccftech.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/3514
+@@||androidinsider.ru/reklama/$~urlblock,~elemhide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3443
 @@||static.the-watch-series.to/public/js/
 ! unblock cookie notices
