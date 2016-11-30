@@ -436,7 +436,16 @@
             // Compatibility with older FF versions and PaleMoon
             registeredScripts = cpmm.sendSyncMessage('Adguard:get-content-scripts')[0];
             i18nMessages = cpmm.sendSyncMessage('Adguard:get-i18n-messages')[0];
-        }        
+        }
+
+        // If document is ready already
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/446
+        var win = context.content;
+        if (win && win.document && win.document.readyState === 'complete') {
+            injectScripts('document_start', win);
+            injectScripts('document_end', win);
+        }
+
         context.addEventListener('DOMWindowCreated', onWindowCreated);
 
         // Prepare to clean up on frame script unload
