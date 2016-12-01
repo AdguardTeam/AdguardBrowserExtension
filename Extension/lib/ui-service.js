@@ -562,6 +562,12 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         }
     });
 
+    // Update ui on application initialization
+    adguard.listeners.addListener(function (event) {
+        if (event === adguard.listeners.APPLICATION_INITIALIZED) {
+            adguard.tabs.forEach(updateTabIconAndContextMenu);
+        }
+    });
 
     //close all page on unload
     adguard.unload.when(closeAllPages);

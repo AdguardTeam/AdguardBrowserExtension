@@ -321,6 +321,15 @@ adguard.frames = (function (adguard) {
 		return adguard.tabs.isIncognito(tab.tabId);
 	};
 
+	// Records frames on application initialization
+	adguard.listeners.addListener(function (event) {
+		if (event === adguard.listeners.APPLICATION_INITIALIZED) {
+			adguard.tabs.forEach(function (tab) {
+				recordFrame(tab, 0, tab.url, adguard.RequestTypes.DOCUMENT);
+			});
+		}
+	});
+
 	return {
 		recordFrame: recordFrame,
 		getFrameUrl: getFrameUrl,

@@ -15,7 +15,9 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-(function () {
+(function (adguard) {
+
+    'use strict';
 
     /**
      * Process request
@@ -66,20 +68,22 @@
         var tab = requestDetails.tab;
         var headers = requestDetails.requestHeaders;
 
-        if (adguard.integration.shouldOverrideReferrer(tab)) {
-            // Retrieve main frame url
-            var mainFrameUrl = adguard.frames.getFrameUrl(tab, 0);
-            headers = adguard.utils.browser.setHeaderValue(headers, 'Referer', mainFrameUrl);
-            return {
-                requestHeaders: headers,
-                modifiedHeaders: [{
-                    name: 'Referer',
-                    value: mainFrameUrl
-                }]
-            };
+        if (adguard.isModuleSupported('integration')) {
+            if (adguard.integration.shouldOverrideReferrer(tab)) {
+                // Retrieve main frame url
+                var mainFrameUrl = adguard.frames.getFrameUrl(tab, 0);
+                headers = adguard.utils.browser.setHeaderValue(headers, 'Referer', mainFrameUrl);
+                return {
+                    requestHeaders: headers,
+                    modifiedHeaders: [{
+                        name: 'Referer',
+                        value: mainFrameUrl
+                    }]
+                };
+            }
         }
 
-        if (requestDetails.requestType === 'DOCUMENT') {
+        if (requestDetails.requestType === adguard.RequestTypes.DOCUMENT) {
             // Save ref header
             var refHeader = adguard.utils.browser.findHeaderByName(headers, 'Referer');
             if (refHeader) {
@@ -113,8 +117,11 @@
         adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
 
         if (requestType == adguard.RequestTypes.DOCUMENT) {
+
             // Safebrowsing check
-            filterSafebrowsing(tab, requestUrl);
+            if (adguard.isModuleSupported('safebrowsing')) {
+                filterSafebrowsing(tab, requestUrl);
+            }
 
             /*
              Websocket check.
@@ -179,7 +186,7 @@
 
     // AG for Windows and Mac checks either request signature or request Referer to authorize request.
     // Referer cannot be forged by the website so it's ok for add-on authorization.
-    if (adguard.utils.browser.isChromium()) {
+    if (adguard.isModuleSupported('integration') && adguard.utils.browser.isChromium()) {
 
         /* global chrome */
         chrome.webRequest.onBeforeSendHeaders.addListener(function callback(details) {
@@ -195,34 +202,37 @@
         }, {urls: [adguard.integration.getIntegrationBaseUrl() + "*"]}, ["requestHeaders", "blocking"]);
     }
 
-    // TODO[Edge]: Add support for collecting hits stats. Currently we cannot add listener for ms-browser-extension:// urls.
-    if (adguard.utils.browser.isChromium() && !adguard.utils.browser.isEdgeBrowser()) {
-        var parseCssRuleFromUrl = function (requestUrl) {
-            if (!requestUrl) {
-                return null;
-            }
-            var filterIdAndRuleText = decodeURIComponent(adguard.utils.strings.substringAfter(requestUrl, '#'));
-            var filterId = adguard.utils.strings.substringBefore(filterIdAndRuleText, ';');
-            var ruleText = adguard.utils.strings.substringAfter(filterIdAndRuleText, ';');
-            return {
-                filterId: filterId,
-                ruleText: ruleText
+    if (adguard.isModuleSupported('hitStats')) {
+
+        // TODO[Edge]: Add support for collecting hits stats. Currently we cannot add listener for ms-browser-extension:// urls.
+        if (adguard.utils.browser.isChromium() && !adguard.utils.browser.isEdgeBrowser()) {
+            var parseCssRuleFromUrl = function (requestUrl) {
+                if (!requestUrl) {
+                    return null;
+                }
+                var filterIdAndRuleText = decodeURIComponent(adguard.utils.strings.substringAfter(requestUrl, '#'));
+                var filterId = adguard.utils.strings.substringBefore(filterIdAndRuleText, ';');
+                var ruleText = adguard.utils.strings.substringAfter(filterIdAndRuleText, ';');
+                return {
+                    filterId: filterId,
+                    ruleText: ruleText
+                };
             };
-        };
 
-        var onCssRuleHit = function (requestDetails) {
-            if (adguard.frames.isIncognitoTab(requestDetails.tab)) {
-                return;
-            }
-            var domain = adguard.frames.getFrameDomain(requestDetails.tab);
-            var rule = parseCssRuleFromUrl(requestDetails.requestUrl);
-            if (rule) {
-                adguard.hitStats.addRuleHit(domain, rule.ruleText, rule.filterId);
-            }
-        };
+            var onCssRuleHit = function (requestDetails) {
+                if (adguard.frames.isIncognitoTab(requestDetails.tab)) {
+                    return;
+                }
+                var domain = adguard.frames.getFrameDomain(requestDetails.tab);
+                var rule = parseCssRuleFromUrl(requestDetails.requestUrl);
+                if (rule) {
+                    adguard.hitStats.addRuleHit(domain, rule.ruleText, rule.filterId);
+                }
+            };
 
-        var hitPngUrl = adguard.app.getUrlScheme() + "://*/elemhidehit.png";
-        adguard.webRequest.onBeforeRequest.addListener(onCssRuleHit, [hitPngUrl]);
+            var hitPngUrl = adguard.app.getUrlScheme() + "://*/elemhidehit.png";
+            adguard.webRequest.onBeforeRequest.addListener(onCssRuleHit, [hitPngUrl]);
+        }
     }
 
     var handlerBehaviorTimeout = null;
@@ -242,4 +252,4 @@
         }
     });
 
-})();
+})(adguard);

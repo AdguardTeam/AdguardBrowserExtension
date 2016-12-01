@@ -56,9 +56,19 @@ var adguard = (function () { // jshint ignore:line
         delete object['_' + prop];
     };
 
+    /**
+     * Checks module is in adguard namespace
+     * @param module
+     * @returns {boolean}
+     */
+    var isModuleSupported = function (module) {
+        return module in adguard;
+    };
+
     return {
         lazyGet: lazyGet,
-        lazyGetClear: lazyGetClear
+        lazyGetClear: lazyGetClear,
+        isModuleSupported: isModuleSupported
     };
 
 })();

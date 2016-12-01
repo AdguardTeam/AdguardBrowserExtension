@@ -243,11 +243,8 @@
             case 'changeUserSetting':
                 adguard.settings.setProperty(message.key, message.value);
                 break;
-            case 'initializeFiltersOnInstall':
-                adguard.filters.initializeFiltersOnInstall(function (enabledFilterIds) {
-                    callback({enabledFilterIds: enabledFilterIds});
-                });
-                return true; // Async
+            case 'checkRequestFilterReady':
+                return {ready: adguard.requestFilter.isReady()};
             case 'addAndEnableFilter':
                 adguard.filters.addAndEnableFilters([message.filterId]);
                 break;

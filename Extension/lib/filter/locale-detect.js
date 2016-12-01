@@ -20,14 +20,12 @@
  *
  * This service is used to auto-enable language-specific filters.
  */
-adguard.localeDetectService = (function (adguard) {
+(function (adguard) {
 
     var browsingLanguages = [];
 
     var SUCCESS_HIT_COUNT = 3;
     var MAX_HISTORY_LENGTH = 10;
-
-    var filtersLanguages = null;
 
     var domainToLanguagesMap = {
         // Russian
@@ -92,7 +90,22 @@ adguard.localeDetectService = (function (adguard) {
         'id': 'id'
     };
 
-    var onDetectedChannel = adguard.utils.channels.newChannel();
+    /**
+     * Called when LocaleDetectorService has detected language-specific filters we can enable.
+     *
+     * @param filterIds List of detected language-specific filters identifiers
+     * @private
+     */
+    function onFilterDetectedByLocale(filterIds) {
+        if (!filterIds) {
+            return;
+        }
+        adguard.filters.addAndEnableFilters(filterIds, function (enabledFilters) {
+            if (enabledFilters.length > 0) {
+                adguard.listeners.notifyListeners(adguard.listeners.ENABLE_FILTER_SHOW_POPUP, enabledFilters);
+            }
+        });
+    }
 
     /**
      * Stores language in the special array containing languages of the last visited pages.
@@ -123,8 +136,8 @@ adguard.localeDetectService = (function (adguard) {
         });
 
         if (history.length >= SUCCESS_HIT_COUNT) {
-            var filterIds = getFilterIdsForLanguage(language);
-            onDetectedChannel.notify(filterIds);
+            var filterIds = adguard.subscriptions.getFilterIdsForLanguage(language);
+            onFilterDetectedByLocale(filterIds);
         }
     }
 
@@ -168,47 +181,11 @@ adguard.localeDetectService = (function (adguard) {
         }
     }
 
-    /**
-     * Sets current filter-language mapping
-     *
-     * @param languages Map containing pairs of filterId and list of supported languages
-     */
-    var setFiltersLanguages = function (languages) {
-        filtersLanguages = languages;
-    };
-
-    /**
-     * Gets list of filters for the specified languages
-     *
-     * @param lang Language to check
-     * @returns List of filters identifiers
-     */
-    var getFilterIdsForLanguage = function (lang) {
-        if (!lang || !filtersLanguages) {
-            return [];
-        }
-        lang = lang.substring(0, 2).toLowerCase();
-        var filterIds = [];
-        for (var filterId in filtersLanguages) { // jshint ignore:line
-            var languages = filtersLanguages[filterId];
-            if (languages.indexOf(lang) >= 0) {
-                filterIds.push(filterId);
-            }
-        }
-        return filterIds;
-    };
-
     // Locale detect
     adguard.tabs.onUpdated.addListener(function (tab) {
         if (tab.status === 'complete') {
             detectTabLanguage(tab.tabId, tab.url);
         }
     });
-
-    return {
-        setFiltersLanguages: setFiltersLanguages,
-        getFilterIdsForLanguage: getFilterIdsForLanguage,
-        onDetected: onDetectedChannel
-    };
 
 })(adguard);

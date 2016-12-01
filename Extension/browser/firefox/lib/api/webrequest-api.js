@@ -649,7 +649,7 @@
 
                 // TODO: can we move it to webrequest.js?
                 // Set authorization headers for requests to desktop AG
-                if (adguard.integration.isIntegrationRequest(request.requestUrl)) {
+                if (adguard.isModuleSupported('integration') && adguard.integration.isIntegrationRequest(request.requestUrl)) {
                     var authHeaders = adguard.integration.getAuthorizationHeaders();
                     for (var i = 0; i < authHeaders.length; i++) {
                         channel.setRequestHeader(authHeaders[i].headerName, authHeaders[i].headerValue, false);

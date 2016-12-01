@@ -24,21 +24,33 @@
         popup: adguard.getURL('pages/popup.html')
     });
 
-    // Record opened tabs
-    adguard.tabs.forEach(function (tab) {
-        adguard.frames.recordFrame(tab, 0, tab.url, adguard.RequestTypes.DOCUMENT);
-        adguard.ui.updateTabIconAndContextMenu(tab);
-    });
+    /**
+     * Start application
+     */
+    adguard.filters.start({
 
-    // Initialize filtering log
+        onInstall: function (callback) {
 
-    // Initialize antibanner service
-    adguard.filters.init({
+            // Process installation
 
-        runCallback: function (runInfo) {
-            if (runInfo.isFirstRun) {
-                adguard.ui.openFiltersDownloadPage();
-            }
+            /**
+             * Show UI installation page
+             */
+            adguard.ui.openFiltersDownloadPage();
+
+            /**
+             * Tracking extension install or update according to http://adguard.com/en/privacy.html#browsers
+             * We do this with a single purpose: to know the number of unique installations of our extension.
+             * This information is stored for 24 hours and then it is deleted.
+             *
+             * The only thing which is not deleted is the aggregated info: installs count and active users count.
+             */
+            adguard.backend.trackInstall();
+
+            // Retrieve filters and install them
+            adguard.filters.offerFilters(function (filterIds) {
+                adguard.filters.addAndEnableFilters(filterIds, callback);
+            });
         }
     });
 

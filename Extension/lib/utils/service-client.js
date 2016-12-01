@@ -583,8 +583,8 @@ adguard.backend = (function (adguard) {
      * Tracks extension install
      */
     var trackInstall = function () {
-        var isAllowedAcceptableAds = adguard.filters.isFilterEnabled(adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID);
-        trackInfo(settings.trackInstallUrl, isAllowedAcceptableAds);
+        // SEARCH_AND_SELF_PROMO_FILTER_ID is enabled by default
+        trackInfo(settings.trackInstallUrl, true);
     };
 
     /**

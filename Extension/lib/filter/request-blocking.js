@@ -17,6 +17,8 @@
 
 adguard.webRequestService = (function (adguard) {
 
+    'use strict';
+
     /**
      * Prepares CSS and JS which should be injected to the page.
      *
@@ -87,7 +89,10 @@ adguard.webRequestService = (function (adguard) {
         }
 
         var requestRule = getRuleForRequest(tab, requestUrl, referrerUrl, adguard.RequestTypes.WEBSOCKET);
-        adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, adguard.RequestTypes.WEBSOCKET, requestRule);
+
+        if (adguard.isModuleSupported('filteringLog')) {
+            adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, adguard.RequestTypes.WEBSOCKET, requestRule);
+        }
 
         return isRequestBlockedByRule(requestRule);
     };
@@ -188,18 +193,20 @@ adguard.webRequestService = (function (adguard) {
         if (requestType == adguard.RequestTypes.DOCUMENT) {
             // Check headers to detect Adguard application
 
-            if (!adguard.utils.browser.isEdgeBrowser()) {
+            if (adguard.isModuleSupported('integration') && !adguard.utils.browser.isEdgeBrowser()) {
                 // TODO[Edge]: Integration mode is not fully functional in Edge (cannot redefine Referer header yet)
                 adguard.integration.checkHeaders(tab, responseHeaders, requestUrl);
             }
-            // Clear previous events
-            adguard.filteringLog.clearEventsByTabId(tab.tabId);
+            if (adguard.isModuleSupported('filteringLog')) {
+                // Clear previous events
+                adguard.filteringLog.clearEventsByTabId(tab.tabId);
+            }
         }
 
         var requestRule = null;
         var appendLogEvent = false;
 
-        if (adguard.frames.isTabAdguardDetected(tab)) {
+        if (adguard.isModuleSupported('integration') && adguard.frames.isTabAdguardDetected(tab)) {
             //parse rule applied to request from response headers
             requestRule = adguard.integration.parseAdguardRuleFromHeaders(responseHeaders);
             appendLogEvent = !adguard.backend.isAdguardAppRequest(requestUrl);
@@ -208,7 +215,7 @@ adguard.webRequestService = (function (adguard) {
         } else if (requestType == adguard.RequestTypes.DOCUMENT) {
             requestRule = adguard.frames.getFrameWhiteListRule(tab);
             var domain = adguard.frames.getFrameDomain(tab);
-            if (!adguard.frames.isIncognitoTab(tab)) {
+            if (adguard.isModuleSupported('hitStats') && !adguard.frames.isIncognitoTab(tab)) {
                 //add page view to stats
                 adguard.hitStats.addDomainView(domain);
             }
@@ -216,7 +223,7 @@ adguard.webRequestService = (function (adguard) {
         }
 
         // add event to filtering log
-        if (appendLogEvent) {
+        if (adguard.isModuleSupported('filteringLog') && appendLogEvent) {
             adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
         }
     };
@@ -241,12 +248,12 @@ adguard.webRequestService = (function (adguard) {
             adguard.listeners.notifyListenersAsync(adguard.listeners.ADS_BLOCKED, requestRule, tab, 1);
         }
 
-        adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
+        if (adguard.isModuleSupported('filteringLog')) {
+            adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
+        }
 
-        if (requestRule &&
-            !adguard.utils.filters.isUserFilterRule(requestRule) &&
-            !adguard.utils.filters.isWhiteListFilterRule(requestRule) &&
-            !adguard.frames.isIncognitoTab(tab)) {
+        if (adguard.isModuleSupported('hitStats') &&
+            requestRule && !adguard.utils.filters.isUserFilterRule(requestRule) && !adguard.utils.filters.isWhiteListFilterRule(requestRule) && !adguard.frames.isIncognitoTab(tab)) {
 
             var domain = adguard.frames.getFrameDomain(tab);
             adguard.hitStats.addRuleHit(domain, requestRule.ruleText, requestRule.filterId, requestUrl);

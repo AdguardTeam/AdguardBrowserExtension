@@ -26,6 +26,8 @@
  */
 adguard.ElemHide = (function (adguard) {
 
+    'use strict';
+
     var styleService = (function () {
 
         var styleSheetService = Cc['@mozilla.org/content/style-sheet-service;1'].getService(Ci.nsIStyleSheetService);
@@ -152,10 +154,12 @@ adguard.ElemHide = (function (adguard) {
                 }
 
                 // Track filter rule usage if user has enabled "collect ad filters usage stats"
-                if (adguard.settings.collectHitsCount()) {
-                    if (!adguard.utils.filters.isUserFilterRule(rule) && !adguard.frames.isIncognitoTab(tab)) {
-                        adguard.hitStats.addRuleHit(domain, rule.ruleText, rule.filterId);
-                    }
+                if (adguard.isModuleSupported('hitStats') &&
+                    adguard.settings.collectHitsCount() &&
+                    !adguard.utils.filters.isUserFilterRule(rule) && !adguard.utils.filters.isWhiteListFilterRule(rule) &&
+                    !adguard.frames.isIncognitoTab(tab)) {
+
+                    adguard.hitStats.addRuleHit(domain, rule.ruleText, rule.filterId);
                 }
             }
 

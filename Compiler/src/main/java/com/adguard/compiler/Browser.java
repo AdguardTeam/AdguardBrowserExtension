@@ -10,7 +10,7 @@ public enum Browser {
 	 * Chrome-based (Chrome, Opera, YaBrowser)
 	 */
 	CHROMIUM("chrome"),
-	
+
 	/**
 	 * Microsoft edge
 	 */
@@ -29,7 +29,12 @@ public enum Browser {
 	/**
 	 * Legacy firefox (older than v30)
 	 */
-	FIREFOX_LEGACY("firefox_legacy");
+	FIREFOX_LEGACY("firefox_legacy"),
+
+	/**
+	 * Chromimum extension with simple api
+	 */
+	CHROMIUM_SIMPLE("chrome-simple");
 
 	private String name;
 
@@ -49,8 +54,9 @@ public enum Browser {
 	/**
 	 * Divides browsers into groups.
 	 * These groups are used for further work with filters
+	 *
 	 * @return group name
-     */
+	 */
 	public String getBrowserGroup() {
 		switch (this) {
 			case SAFARI:
@@ -60,6 +66,7 @@ public enum Browser {
 				return "firefox";
 			case CHROMIUM:
 			case EDGE:
+			case CHROMIUM_SIMPLE:
 			default:
 				return "chromium";
 		}

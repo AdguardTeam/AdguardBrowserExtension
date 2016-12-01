@@ -27,7 +27,7 @@ adguard.userrules = (function (adguard) {
      * @returns {*}
      */
     function getAntiBannerService() {
-        return adguard.AntiBannerService;
+        return adguard.antiBannerService;
     }
 
     /**

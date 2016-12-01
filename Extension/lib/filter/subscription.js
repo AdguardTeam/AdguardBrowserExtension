@@ -207,23 +207,30 @@ adguard.subscriptions = (function (adguard) {
     };
 
     /**
-     * @returns Filters languages metadata
+     * Gets list of filters for the specified languages
+     *
+     * @param lang Language to check
+     * @returns List of filters identifiers
      */
-    var getFiltersLanguages = function () {
-        var filtersLanguages = Object.create(null);
+    var getFilterIdsForLanguage = function (lang) {
+        if (!lang) {
+            return [];
+        }
+        lang = lang.substring(0, 2).toLowerCase();
+        var filterIds = [];
         for (var i = 0; i < filters.length; i++) {
-            var languages = filters[i].languages;
-            if (languages && languages.length > 0) {
-                filtersLanguages[filters[i].filterId] = languages;
+            var filter = filters[i];
+            var languages = filter.languages;
+            if (languages && languages.indexOf(lang) >= 0) {
+                filterIds.push(filter.filterId);
             }
         }
-        return filtersLanguages;
+        return filterIds;
     };
-
 
     return {
         init: init,
-        getFiltersLanguages: getFiltersLanguages,
+        getFilterIdsForLanguage: getFilterIdsForLanguage,
         getGroups: getGroups,
         getFilters: getFilters
     };
