@@ -1,4 +1,6 @@
 QUnit.test("Test Element Collapser", function(assert) {
+    cleanUp();
+
     assert.ok(ElementCollapser != null);
 
     var element = document.getElementById('test-div');
@@ -30,7 +32,38 @@ QUnit.test("Test Element Collapser", function(assert) {
     assert.equal(element.style.cssText, 'display: none !important;');
 });
 
+QUnit.test("Test Empty Styles Element", function(assert) {
+    cleanUp();
+
+    var done = assert.async();
+
+    var collapseStylesElement = document.getElementById('adguard-collapse-styles');
+    assert.notOk(collapseStylesElement);
+
+    var element = document.getElementById('test-div');
+
+    ElementCollapser.hideElement(element);
+    var style = window.getComputedStyle(element);
+    assert.equal(style.display, 'none');
+
+    collapseStylesElement = document.getElementById('adguard-collapse-styles');
+    assert.ok(collapseStylesElement);
+
+    ElementCollapser.unhideElement(element);
+    style = window.getComputedStyle(element);
+    assert.equal(style.display, 'block');
+
+    setTimeout(function() {
+        collapseStylesElement = document.getElementById('adguard-collapse-styles');
+        assert.notOk(collapseStylesElement);
+
+        done();
+    }, 1000);
+});
+
 QUnit.test("Test Collapse by src", function(assert) {
+    cleanUp();
+
     var element = document.getElementById('test-image');
 
     var style = window.getComputedStyle(element);
@@ -107,6 +140,41 @@ QUnit.test("Test Collapse by src with shadowDOM", function(assert) {
     assert.equal(style.display, 'none');
 });
 
+QUnit.test("Test Empty Styles Element with ShadowDOM ", function(assert) {
+    cleanUp();
+
+    var shadowRoot = createShadowRoot();
+    if (!shadowRoot) {
+        //can't run this test without shadowDOM support
+        return;
+    }
+
+    var collapseStylesElement = shadowRoot.querySelector('#adguard-collapse-styles');
+    assert.notOk(collapseStylesElement);
+
+    var element = document.getElementById('test-div');
+
+    ElementCollapser.hideElement(element, shadowRoot);
+    var style = window.getComputedStyle(element);
+    assert.equal(style.display, 'none');
+
+    collapseStylesElement = shadowRoot.querySelector('#adguard-collapse-styles');
+    assert.ok(collapseStylesElement);
+
+    ElementCollapser.unhideElement(element, shadowRoot);
+    style = window.getComputedStyle(element);
+    assert.equal(style.display, 'block');
+
+    //var done = assert.async();
+
+    //setTimeout(function() {
+    //    collapseStylesElement = shadowRoot.querySelector('#adguard-collapse-styles');
+    //    assert.notOk(collapseStylesElement);
+    //
+    //    done();
+    //}, 1000);
+});
+
 QUnit.test("Test Collapser with special characters in dom path", function(assert) {
     cleanUp();
 
@@ -141,6 +209,14 @@ var cleanUp = function () {
     var el = document.getElementById('adguard-collapse-styles');
     if (el) {
         el.parentNode.removeChild(el);
+    }
+
+    var shadowRoot = createShadowRoot();
+    if (shadowRoot) {
+        var collapseStylesElement = shadowRoot.querySelector('#adguard-collapse-styles');
+        if (collapseStylesElement) {
+            shadowRoot.removeChild(collapseStylesElement);
+        }
     }
 };
 

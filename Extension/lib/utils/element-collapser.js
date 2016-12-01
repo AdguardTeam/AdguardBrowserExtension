@@ -149,7 +149,7 @@ var ElementCollapser = (function() {
                 if (styleElement.parentNode && styleElement.sheet && styleElement.sheet.cssRules.length === 0) {
                     styleElement.parentNode.removeChild(styleElement);
                 }
-            }, 100);
+            }, 500);
         }
     };
 
