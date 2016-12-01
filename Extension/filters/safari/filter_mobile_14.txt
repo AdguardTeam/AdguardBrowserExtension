@@ -1,6 +1,6 @@
-! Checksum: YV3kxEkv1yXzL/dgiXSmgw
-! Version: 1.0.7.26
-! TimeUpdated: 2016-11-30T20:02:06.786+04:00
+! Checksum: FOXQnWuNZxOa8b1Rk4Xm5A
+! Version: 1.0.7.30
+! TimeUpdated: 2016-12-01T15:02:13.574+04:00
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on webpages including cookie notices third-party widgets and in-page popups.
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
@@ -124,6 +124,9 @@ torrentleech.org##a[href="/user/donate"]
 otzyv.ru##div[align="center"] > .aviasales
 vchaspik.ua##div[id="conteiner"][style="height: 410px;"]
 ##.hs-sosyal
+||i.hizliresim.com/4r4kBG.gif
+erzurumgazetesi.com.tr##div[style="width:300px; margin-bottom:20px;"] > a[class^="social_"]
+statista.com##.socialMediaBox
 gazete32.com.tr###sidebar_twitter_reklam_alan
 duzceninsesi.com.tr###social_med
 trthaber.com##.timelinesoc
@@ -2260,6 +2263,7 @@ vi.nl#%#AG_onLoad(function() { if(window.location.href.indexOf("cookies") != -1)
 ziekenhuis.nl#%#AG_onLoad(function() { setTimeout(function() {var check = document.getElementsByClassName('cookiewall')[0]; if (check){document.cookie = "acceptcookies=true"; location.reload();}; }, 300); });
 thenewdaily.com.au#%#document.cookie = "tnd_subscribe_shown=true";
 ad.nl#%#AG_onLoad(function() { if (document.cookie.indexOf('nl_cookiewall_version') ==-1) { document.cookie = "nl_cookiewall_version=1"; location.reload(); } });
+@@||deepviz.com/js/jquery.cookieBar.js
 emedicinehealth.com#@#.cookie-consent
 @@||sephora.fr/eStore-webMaster/js/common/acceptCookies.js
 @@||tdn.r42tag.com/lib/*.js$domain=ns.nl
@@ -2483,6 +2487,8 @@ belfeed.ru##div[class$="banner"]
 sportlive.site##div > div[style$="text-align: center;"] > span
 panzehir.net###sidebar > center > a[target$="_blank"]
 panzehir.net###sidebar > center > b
+shiftdelete.net##.e_magazine_mobile
+||malatyahaber.com/wp-content/uploads/2016/05/SA.gif
 cloud.mail.ru###leftcol > div.download
 lezzet.com.tr##.footer-mobil-uygulama-box
 ||ntv.com.tr/Content/img/promote.jpg
@@ -2564,6 +2570,9 @@ rozetka.com.ua#%#AG_onLoad(function(){ var e = document.querySelector('a.popup-c
 /wp-content/plugins/arscode-ninja-popups/*
 /wp-content/plugins/facebook-fanbox-popup/*
 ||optnmnstr.com^$third-party
+worldsoffood.de##div[id^="fblike"]
+promipool.de###pp_fb_popup_wrapper
+zamunda-torrent.net##.koddostufacee
 m.tmz.com###newsletter-signup
 thehackernews.com###ouibounce-modal
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by,yandex.com.tr##.distr-popup_js_inited
@@ -3165,6 +3174,7 @@ drive2.ru###side-dv-pinned
 drive2.ru##.c-block > div[class^="c-dv-"]
 xtreme.ws##aside[role="complementary"] > div.counter1
 ubuntumaniac.com##div[class="widget HTML"][id^="HTML"][-ext-has='a[class="quickedit"]']
+avtomobil.az##.sidebar-right > .side-viewed
 karabuknethaber.com##div > div[class="widget"]:nth-child(-n+3)
 blog.chromium.org##.post-footer > div.cmt_iframe_holder
 yeniakit.com.tr###haber >div[style$="border-radius:6px;margin-bottom:10px;padding:5px 10px;"]

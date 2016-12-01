@@ -1,6 +1,6 @@
-! Checksum: lBqFL7QTVHeI+c32yqzpTA
-! Version: 1.0.7.26
-! TimeUpdated: 2016-11-30T20:02:06.786+04:00
+! Checksum: KBoYyZ6Ty/TWqo1/k2AW2w
+! Version: 1.0.7.30
+! TimeUpdated: 2016-12-01T15:02:13.574+04:00
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on webpages including cookie notices third-party widgets and in-page popups.
 ! Title: Adguard Annoyances Filter
@@ -240,6 +240,9 @@ vchaspik.ua##div[id="conteiner"][style="height: 410px;"]
 !
 ##.hs-sosyal
 !
+||i.hizliresim.com/4r4kBG.gif
+erzurumgazetesi.com.tr##div[style="width:300px; margin-bottom:20px;"] > a[class^="social_"]
+statista.com##.socialMediaBox
 gazete32.com.tr###sidebar_twitter_reklam_alan
 duzceninsesi.com.tr###social_med
 trthaber.com##.timelinesoc
@@ -2418,6 +2421,8 @@ ad.nl#%#AG_onLoad(function() { if (document.cookie.indexOf('nl_cookiewall_versio
 !#######################################################
 !######### White list. Fixing filtering errors #########
 !#######################################################
+! https://github.com/AdguardTeam/AdguardFilters/issues/3563
+@@||deepviz.com/js/jquery.cookieBar.js
 ! https://forum.adguard.com/index.php?threads/emedicinehealth-com.15924/
 emedicinehealth.com#@#.cookie-consent
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3427
@@ -2719,6 +2724,8 @@ panzehir.net###sidebar > center > b
 !#######################################################
 !######### Banners of mobile apps for the sites ########
 !#######################################################
+shiftdelete.net##.e_magazine_mobile
+||malatyahaber.com/wp-content/uploads/2016/05/SA.gif
 cloud.mail.ru###leftcol > div.download
 lezzet.com.tr##.footer-mobil-uygulama-box
 ||ntv.com.tr/Content/img/promote.jpg
@@ -2813,6 +2820,9 @@ rozetka.com.ua#%#AG_onLoad(function(){ var e = document.querySelector('a.popup-c
 !
 ! Specific sites
 !
+worldsoffood.de##div[id^="fblike"]
+promipool.de###pp_fb_popup_wrapper
+zamunda-torrent.net##.koddostufacee
 m.tmz.com###newsletter-signup
 thehackernews.com###ouibounce-modal
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by,yandex.com.tr##.distr-popup_js_inited
@@ -3533,6 +3543,7 @@ ubuntumaniac.com##div[class="widget HTML"][id^="HTML"][-ext-has='a[class="quicke
 !
 !######### Remains of social widgets #########
 !
+avtomobil.az##.sidebar-right > .side-viewed
 karabuknethaber.com##div > div[class="widget"]:nth-child(-n+3)
 blog.chromium.org##.post-footer > div.cmt_iframe_holder
 yeniakit.com.tr###haber >div[style$="border-radius:6px;margin-bottom:10px;padding:5px 10px;"]
