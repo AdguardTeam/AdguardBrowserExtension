@@ -447,7 +447,7 @@
         };
 
         var win = context.content;
-        if (win && win.document && win.document.readyState === 'complete') {
+        if (win && win.document) {
             inject(win);
         }
 
