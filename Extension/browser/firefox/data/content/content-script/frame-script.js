@@ -323,10 +323,15 @@
      * @param win DOM window
      */
     var onDocumentStart = function (win) {
-        win.addEventListener('DOMContentLoaded', onDocumentEnd, true);
-        win.addEventListener('unload', onWindowUnload, true);
-
         injectScripts('document_start', win);
+
+        if (win.document.readyState === 'loading') {
+            win.addEventListener('DOMContentLoaded', onDocumentEnd, true);
+        } else {
+            onDocumentEnd({target: win.document});
+        }
+
+        win.addEventListener('unload', onWindowUnload, true);
     };
 
     /**
@@ -440,10 +445,18 @@
 
         // If document is ready already
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/446
+        var inject = function (win) {
+            if (win && win.document) {
+                onDocumentStart(win);
+                for (var i = 0; i < win.frames.length; i++) {
+                    inject(win.frames[i]);
+                }
+            }
+        };
+
         var win = context.content;
-        if (win && win.document && win.document.readyState === 'complete') {
-            injectScripts('document_start', win);
-            injectScripts('document_end', win);
+        if (win && win.document) {
+            inject(win);
         }
 
         context.addEventListener('DOMWindowCreated', onWindowCreated);
