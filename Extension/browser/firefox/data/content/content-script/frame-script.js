@@ -320,7 +320,7 @@
         if (win.document.readyState === 'loading') {
             win.addEventListener('DOMContentLoaded', onDocumentEnd, true);
         } else {
-            injectScripts('document_end', win);
+            onDocumentEnd({target: win.document});
         }
 
         win.addEventListener('unload', onWindowUnload, true);
