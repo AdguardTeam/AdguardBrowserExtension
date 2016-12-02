@@ -21,7 +21,7 @@
 
     'use strict';
 
-    var isFennec = false;
+    var isFennec = Services.appinfo.ID === '{aa3c5121-dab2-40e2-81ca-7ea25febc110}';
 
     var BROWSER = 'navigator:browser';
 
@@ -140,7 +140,7 @@
             }
             var tabs = win.BrowserApp.tabs;
             for (var j = 0; j < tabs.length; j++) {
-                if (tabs[i] == rawTab) {
+                if (tabs[j] === rawTab) {
                     return win;
                 }
             }
@@ -186,6 +186,37 @@
         return getBrowserForTab(tab).contentTitle || tab.label || "";
     }
 
+    var toTabFromTarget = (function () {
+        if (isFennec) {
+            return function (target) {
+                if (!target) {
+                    return null;
+                }
+                if (target.browser) {     // target is a tab
+                    return target;
+                }
+                var browser = target.localName === 'browser' ? target : null;
+                if (browser) {
+                    return getTabForBrowser(browser);
+                }
+                return null;
+            };
+        }
+        return function (target) {
+            if (!target) {
+                return null;
+            }
+            if (target.linkedPanel) {     // target is a tab
+                return target;
+            }
+            var browser = target.localName === 'browser' ? target : null;
+            if (browser) {
+                return getTabForBrowser(browser);
+            }
+            return null;
+        };
+    })();
+
     function getTabBrowserForTab(tab) {
         var outerWin = getOwnerWindow(tab);
         if (outerWin) {
@@ -194,9 +225,8 @@
         return null;
     }
 
-
     function getBrowserForTab(tab) {
-        if (tab.browser) { // fennec
+        if (isFennec) { // fennec
             return tab.browser;
         }
         return tab.linkedBrowser;
@@ -204,7 +234,13 @@
 
 
     function getTabId(tab) {
-        if (tab.browser) { // fennec
+        if (isFennec) { // fennec
+            if (!tab) {
+                throw new Error('Tab is empty');
+            }
+            if (tab.id === undefined || tab.id === null) {
+                throw new Error('Tab.id is empty');
+            }
             return tab.id;
         }
         return String.split(tab.linkedPanel, 'panel').pop();
@@ -510,22 +546,26 @@
         // https://developer.mozilla.org/ru/docs/Web/Events
         function onTabEvent(event) {
 
-            var tabId, xulTab;
+            var xulTab = toTabFromTarget(event.target);
 
             switch (event.type) {
                 case 'TabShow':
                 case 'TabOpen':
-                    xulTab = event.target;
-                    addTab(xulTab);
+                    if (xulTab) {
+                        addTab(xulTab);
+                    }
                     break;
                 case 'TabClose':
                     // Remove Tab
-                    xulTab = event.target;
-                    removeTab(xulTab);
+                    if (xulTab) {
+                        removeTab(xulTab);
+                    }
                     break;
                 case 'TabSelect':
-                    tabId = getTabId(event.target);
-                    onActivatedChannel.notify(tabId);
+                    if (xulTab) {
+                        var tabId = getTabId(xulTab);
+                        onActivatedChannel.notify(tabId);
+                    }
                     break;
                 case 'activate': // window event
                     getActive(onActivatedChannel.notify);

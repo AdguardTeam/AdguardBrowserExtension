@@ -25,6 +25,9 @@ adguard.prefs = (function (adguard) {
 
     var Prefs = {
 
+        // Defined in Firefox preferences
+        mobile: false,
+
         platform: typeof safari === 'undefined' ? "chromium" : "webkit",
 
         get browser() {

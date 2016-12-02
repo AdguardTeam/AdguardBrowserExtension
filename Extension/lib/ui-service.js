@@ -19,6 +19,59 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
     var browserActionTitle = adguard.i18n.getMessage('name');
 
+    var contextMenuCallbackMappings = {
+        'context_block_site_ads': function () {
+            openAssistant();
+        },
+        'context_block_site_element': function () {
+            openAssistant({selectElement: true});
+        },
+        'context_security_report': function () {
+            adguard.tabs.getActive(function (tab) {
+                openSiteReportTab(tab.url);
+            });
+        },
+        'context_site_filtering_on': function () {
+            adguard.tabs.getActive(unWhiteListTab);
+        },
+        'context_site_filtering_off': function () {
+            adguard.tabs.getActive(whiteListTab);
+        },
+        'context_enable_protection': function () {
+            changeApplicationFilteringDisabled(false);
+        },
+        'context_disable_protection': function () {
+            changeApplicationFilteringDisabled(true);
+        },
+        'context_open_settings': function () {
+            openSettingsTab();
+        },
+        'context_general_settings': function () {
+            openSettingsTab('general-settings');
+        },
+        'context_antibanner': function () {
+            openSettingsTab('antibanner');
+        },
+        'context_safebrowsing': function () {
+            openSettingsTab('safebrowsing');
+        },
+        'context_whitelist': function () {
+            openSettingsTab('whitelist');
+        },
+        'context_userfilter': function () {
+            openSettingsTab('userfilter');
+        },
+        'context_miscellaneous_settings': function () {
+            openSettingsTab('miscellaneous-settings');
+        },
+        'context_open_log': function () {
+            openFilteringLog();
+        },
+        'context_update_antibanner_filters': function () {
+            checkFiltersUpdates();
+        }
+    };
+
     var nextMenuId = 0;
 
     var extensionStoreLink = (function () {
@@ -106,82 +159,52 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         updateTabIcon(tab);
     }, 250);
 
-    function customizeContextMenu(tab) {
-
-        var callbackMappings = {
-            'context_block_site_ads': function () {
-                openAssistant();
-            },
-            'context_block_site_element': function () {
-                openAssistant({selectElement: true});
-            },
-            'context_security_report': function () {
-                openSiteReportTab(tab.url);
-            },
-            'context_site_filtering_on': function () {
-                adguard.tabs.getActive(unWhiteListTab);
-            },
-            'context_site_filtering_off': function () {
-                adguard.tabs.getActive(whiteListTab);
-            },
-            'context_enable_protection': function () {
-                changeApplicationFilteringDisabled(false);
-            },
-            'context_disable_protection': function () {
-                changeApplicationFilteringDisabled(true);
-            },
-            'context_general_settings': function () {
-                openSettingsTab('general-settings');
-            },
-            'context_antibanner': function () {
-                openSettingsTab('antibanner');
-            },
-            'context_safebrowsing': function () {
-                openSettingsTab('safebrowsing');
-            },
-            'context_whitelist': function () {
-                openSettingsTab('whitelist');
-            },
-            'context_userfilter': function () {
-                openSettingsTab('userfilter');
-            },
-            'context_miscellaneous_settings': function () {
-                openSettingsTab('miscellaneous-settings');
-            },
-            'context_open_log': function () {
-                openFilteringLog();
-            },
-            'context_update_antibanner_filters': checkFiltersUpdates
+    /**
+     * Creates context menu item
+     * @param title Title id
+     * @param options Create options
+     */
+    function addMenu(title, options) {
+        var createProperties = {
+            contexts: ["all"],
+            title: adguard.i18n.getMessage(title)
         };
-
-        function addMenu(title, options) {
-            var createProperties = {
-                contexts: ["all"],
-                title: adguard.i18n.getMessage(title)
-            };
-            if (options) {
-                if (options.id) {
-                    createProperties.id = options.id;
-                }
-                if (options.parentId) {
-                    createProperties.parentId = options.parentId;
-                }
-                if (options.disabled) {
-                    createProperties.enabled = false;
-                }
-                if (options.messageArgs) {
-                    createProperties.title = adguard.i18n.getMessage(title, options.messageArgs);
-                }
-                if (options.contexts) {
-                    createProperties.contexts = options.contexts;
-                }
+        if (options) {
+            if (options.id) {
+                createProperties.id = options.id;
             }
-            var callback = callbackMappings[title];
-            if (callback) {
-                createProperties.onclick = callback;
+            if (options.parentId) {
+                createProperties.parentId = options.parentId;
             }
-            adguard.contextMenus.create(createProperties);
+            if (options.disabled) {
+                createProperties.enabled = false;
+            }
+            if (options.messageArgs) {
+                createProperties.title = adguard.i18n.getMessage(title, options.messageArgs);
+            }
+            if (options.contexts) {
+                createProperties.contexts = options.contexts;
+            }
+            if ('checkable' in options) {
+                createProperties.checkable = options.checkable;
+            }
+            if ('checked' in options) {
+                createProperties.checked = options.checked;
+            }
         }
+        var callback;
+        if (options && options.action) {
+            callback = contextMenuCallbackMappings[options.action];
+        } else {
+            callback = contextMenuCallbackMappings[title];
+        }
+        if (typeof callback === 'function') {
+            createProperties.onclick = callback;
+        }
+        adguard.contextMenus.create(createProperties);
+    }
+
+    function customizeContextMenu(tab) {
 
         function addSeparator() {
             adguard.contextMenus.create({
@@ -248,6 +271,55 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         }
     }
 
+    function customizeMobileContextMenu(tab) {
+
+        var tabInfo = adguard.frames.getFrameInfo(tab);
+
+        if (tabInfo.applicationFilteringDisabled) {
+            addMenu('popup_site_protection_disabled_android', {
+                action: 'context_enable_protection',
+                checked: true,
+                checkable: true
+            });
+            addMenu('popup_open_settings', {action: 'context_open_settings'});
+        } else if (tabInfo.urlFilteringDisabled) {
+            addMenu('context_site_filtering_disabled');
+            addMenu('popup_open_settings', {action: 'context_open_settings'});
+            addMenu('context_update_antibanner_filters');
+        } else {
+            addMenu('popup_site_protection_disabled_android', {
+                action: 'context_disable_protection',
+                checked: false,
+                checkable: true
+            });
+            if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
+                addMenu('popup_in_white_list_android');
+            } else if (tabInfo.canAddRemoveRule) {
+                if (tabInfo.documentWhiteListed) {
+                    addMenu('popup_site_filtering_state', {
+                        action: 'context_site_filtering_on',
+                        checkable: true,
+                        checked: false
+                    });
+                } else {
+                    addMenu('popup_site_filtering_state', {
+                        action: 'context_site_filtering_off',
+                        checkable: true,
+                        checked: true
+                    });
+                }
+            }
+
+            if (!tabInfo.documentWhiteListed) {
+                addMenu('popup_block_site_ads_android', {action: 'context_block_site_ads'});
+            }
+            addMenu('popup_open_log_android', {action: 'context_open_log'});
+            addMenu('popup_security_report_android', {action: 'context_security_report'});
+            addMenu('popup_open_settings', {action: 'context_open_settings'});
+            addMenu('context_update_antibanner_filters');
+        }
+    }
+
     /**
      * Update context menu for tab
      * @param tab Tab
@@ -255,7 +327,15 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     function updateTabContextMenu(tab) {
         adguard.contextMenus.removeAll();
         if (adguard.settings.showContextMenu()) {
-            customizeContextMenu(tab);
+            if (adguard.prefs.mobile) {
+                customizeMobileContextMenu(tab);
+            } else {
+                customizeContextMenu(tab);
+            }
+            if (typeof adguard.contextMenus.render === 'function') {
+                // In some case we need to manually render context menu
+                adguard.contextMenus.render();
+            }
         }
     }
 
