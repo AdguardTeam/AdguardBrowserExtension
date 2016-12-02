@@ -1,8 +1,14 @@
 /* global Cu, Cc, Ci, Services */
 
-(function () {
+(function (adguard) {
 
-    var toolbarButtonWidget = (function () {
+    'use strict';
+
+    var toolbarButtonWidget = (function (adguard) {
+
+        if (adguard.prefs.mobile) {
+            return;
+        }
 
         var widget = {
             id: 'adguard-button',
@@ -119,12 +125,16 @@
 
         return widget;
 
-    })();
+    })(adguard);
 
     /**
      * Legacy toolbar button (CustomizableUI.jsm isn't present)
      */
-    (function (widget) {
+    (function (adguard, widget) {
+
+        if (adguard.prefs.mobile) {
+            return;
+        }
 
         var CustomizableUI = null;
         try {
@@ -298,12 +308,16 @@
             adguard.unload.when(shutdown);
         };
 
-    })(toolbarButtonWidget);
+    })(adguard, toolbarButtonWidget);
 
     /**
      * Default toolbar button (CustomizableUI.jsm is present)
      */
-    (function (widget) {
+    (function (adguard, widget) {
+
+        if (adguard.prefs.mobile) {
+            return;
+        }
 
         var CustomizableUI = null;
         try {
@@ -449,11 +463,15 @@
             CustomizableUI.destroyWidget(widget.id);
         }
 
-    })(toolbarButtonWidget);
+    })(adguard, toolbarButtonWidget);
 
     adguard.browserAction = (function (widget) {
 
         var setBrowserAction = function (tab, icon, badge, badgeColor, title) {
+
+            if (adguard.prefs.mobile) {
+                return;
+            }
 
             adguard.tabsImpl.getActive(function (tabId) {
 
@@ -462,7 +480,7 @@
                 }
 
                 adguard.windowsImpl.getLastFocused(function (winId, domWin) {
-                    if (typeof widget.updateBadgeText === 'function') {
+                    if (widget && typeof widget.updateBadgeText === 'function') {
                         widget.updateBadgeText(domWin, badge);
                     }
                     if (typeof widget.updateIconState === 'function') {
@@ -473,14 +491,16 @@
         };
 
         var setPopup = function (options) {
-            widget.popup = options.popup;
-            if (typeof widget.init === 'function') {
-                widget.init();
+            if (widget) {
+                widget.popup = options.popup;
+                if (typeof widget.init === 'function') {
+                    widget.init();
+                }
             }
         };
 
         var resize = function (width, height) {
-            if (typeof widget.resizePopup === 'function') {
+            if (widget && typeof widget.resizePopup === 'function') {
                 adguard.windowsImpl.getLastFocused(function (winId, domWin) {
                     widget.resizePopup(domWin, width, height);
                 });
@@ -488,7 +508,7 @@
         };
 
         var close = function () {
-            if (typeof widget.closePopup === 'function') {
+            if (widget && typeof widget.closePopup === 'function') {
                 adguard.windowsImpl.getLastFocused(function (winId, domWin) {
                     widget.closePopup(domWin);
                 });
@@ -504,5 +524,5 @@
 
     })(toolbarButtonWidget);
 
-})();
+})(adguard);
 
