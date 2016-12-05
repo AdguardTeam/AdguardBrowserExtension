@@ -543,6 +543,7 @@
         var elementUrl = element.src || element.data;
         if (!elementUrl || elementUrl.indexOf('http') !== 0
             || elementUrl === element.baseURI) {
+            // Some sources could not be set already, lazy loaded images or smth.
             return;
         }
 
