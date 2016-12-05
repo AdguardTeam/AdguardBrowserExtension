@@ -254,7 +254,7 @@
 
         parentMessageManager.addMessageListener(initializeFrameScriptListenerName, initializeFrameScriptListener);
 
-        var frameScriptUrl = adguard.getURL('lib/frameScript.js');
+        var frameScriptUrl = adguard.getURL('lib/frame-script.js');
 
         // Using global MM to register our frame script browser-wide
         var globalMessageManager = Cc["@mozilla.org/globalmessagemanager;1"].getService(Ci.nsIMessageListenerManager);
