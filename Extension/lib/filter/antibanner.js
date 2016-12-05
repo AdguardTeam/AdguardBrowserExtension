@@ -684,12 +684,12 @@ AntiBannerService.prototype = {
             return;
         }
 
-        var filterVersion = this.getFilterMetadata(filterId);
+        var filterMetadata = this.getFilterMetadata(filterId);
 
         if (FilterUtils.isAdguardFilter(filter)) {
-            this._loadFilterFromRulesStorage(filterVersion, onFilterLoaded);
+            this._loadFilterFromRulesStorage(filterMetadata, onFilterLoaded);
         } else {
-            this._loadFilterFromBackend(filterVersion, onFilterLoaded);
+            this._loadFilterFromBackend(filterMetadata, onFilterLoaded);
         }
     },
 
@@ -792,8 +792,8 @@ AntiBannerService.prototype = {
         Log.info("Checking updates for {0} filters", filterIdsToUpdate.length);
 
         // Load filters with changed version
-        var loadFiltersFromBackend = function (filterVersionsToUpdate) {
-            this._loadFiltersFromBackend(filterVersionsToUpdate, function (success, filterIds) {
+        var loadFiltersFromBackend = function (filterMetadataList) {
+            this._loadFiltersFromBackend(filterMetadataList, function (success, filterIds) {
                 if (success) {
                     var filters = [];
                     for (var i = 0; i < filterIds.length; i++) {
@@ -811,25 +811,26 @@ AntiBannerService.prototype = {
 
         // Method is called after we have got server response
         // Now we check filters version and update filter if needed
-        var onLoadVersions = function (sucess, filterVersions) {
-            if (sucess) {
-                var filterVersionsToUpdate = [];
-                for (var i = 0; i < filterVersions.length; i++) {
-                    var filterVersion = filterVersions[i];
-                    var filter = this._getFilterById(filterVersion.filterId);
-                    if (filterVersion.version !== null && Utils.isGreaterVersion(filterVersion.version, filter.version)) {
-                        Log.info("Updating filter {0} to version {1}", filter.filterId, filterVersion.version);
-                        filterVersionsToUpdate.push(filterVersion);
+        var onLoadMetadataList = function (success, filterMetadataList) {
+            if (success) {
+                // Collection of filters metadata to update.
+                var filtersMetadataListToUpdate = [];
+                for (var i = 0; i < filterMetadataList.length; i++) {
+                    var filterMetadata = filterMetadataList[i];
+                    var filter = this._getFilterById(filterMetadata.filterId);
+                    if (filterMetadata.version !== null && Utils.isGreaterVersion(filterMetadata.version, filter.version)) {
+                        Log.info("Updating filter {0} to version {1}", filter.filterId, filterMetadata.version);
+                        filtersMetadataListToUpdate.push(filterMetadata);
                     }
                 }
-                loadFiltersFromBackend(filterVersionsToUpdate);
+                loadFiltersFromBackend(filtersMetadataListToUpdate);
             } else {
                 errorCallback();
             }
         }.bind(this);
 
         // Retrieve current versions for update
-        this._loadFiltersVersionsFromBackend(filterIdsToUpdate, onLoadVersions);
+        this._loadFiltersMetadataFromBackend(filterIdsToUpdate, onLoadMetadataList);
     },
 
     /**
@@ -1469,25 +1470,25 @@ AntiBannerService.prototype = {
     /**
      * Loads filters (ony-by-one) from the remote server
      *
-     * @param filterVersions List of filter versions to load
+     * @param filterMetadataList List of filter metadata to load
      * @param callback Called when filters have been loaded
      * @private
      */
-    _loadFiltersFromBackend: function (filterVersions, callback) {
+    _loadFiltersFromBackend: function (filterMetadataList, callback) {
 
         var loadedFilters = [];
 
         var loadNextFilter = function () {
-            if (filterVersions.length === 0) {
+            if (filterMetadataList.length === 0) {
                 callback(true, loadedFilters);
             } else {
-                var filterVersion = filterVersions.shift();
-                this._loadFilterFromBackend(filterVersion, function (success) {
+                var filterMetadata = filterMetadataList.shift();
+                this._loadFilterFromBackend(filterMetadata, function (success) {
                     if (!success) {
                         callback(false);
                         return;
                     }
-                    loadedFilters.push(filterVersion.filterId);
+                    loadedFilters.push(filterMetadata.filterId);
                     loadNextFilter();
                 });
             }
@@ -1499,13 +1500,13 @@ AntiBannerService.prototype = {
     /**
      * Loads filter rules from remote server
      *
-     * @param filterVersion Filter identifier
+     * @param filterMetadata Filter metadata
      * @param callback Called when filter rules have been loaded
      * @private
      */
-    _loadFilterFromBackend: function (filterVersion, callback) {
+    _loadFilterFromBackend: function (filterMetadata, callback) {
 
-        var filter = this._getFilterById(filterVersion.filterId);
+        var filter = this._getFilterById(filterMetadata.filterId);
 
         filter._isDownloading = true;
         EventNotifier.notifyListeners(EventNotifierTypes.START_DOWNLOAD_FILTER, filter);
@@ -1513,8 +1514,8 @@ AntiBannerService.prototype = {
         var successCallback = function (filterRules) {
             Log.info("Retrieved response from server for filter {0}, rules count: {1}", filter.filterId, filterRules.length);
             delete filter._isDownloading;
-            filter.version = filterVersion.version;
-            filter.lastUpdateTime = filterVersion.timeUpdated;
+            filter.version = filterMetadata.version;
+            filter.lastUpdateTime = filterMetadata.timeUpdated;
             filter.lastCheckTime = Date.now();
             filter.loaded = true;
             //persist to LS
@@ -1543,16 +1544,16 @@ AntiBannerService.prototype = {
      * @param callback Callback (called when load is finished)
      * @private
      */
-    _loadFiltersVersionsFromBackend: function (filterIds, callback) {
+    _loadFiltersMetadataFromBackend: function (filterIds, callback) {
 
         if (filterIds.length === 0) {
             callback(true, []);
             return;
         }
 
-        var loadSuccess = function (filtersVersions) {
-            Log.debug("Retrieved response from server for {0} filters, result: {1} versions", filterIds.length, filtersVersions.length);
-            callback(true, filtersVersions);
+        var loadSuccess = function (filterMetadataList) {
+            Log.debug("Retrieved response from server for {0} filters, result: {1} metadata", filterIds.length, filterMetadataList.length);
+            callback(true, filterMetadataList);
         };
 
         var loadError = function (request, cause) {
@@ -1560,18 +1561,18 @@ AntiBannerService.prototype = {
             callback(false);
         };
 
-        this.serviceClient.checkFilterVersions(filterIds, loadSuccess, loadError);
+        this.serviceClient.loadFiltersMetadata(filterIds, loadSuccess, loadError);
     },
 
     /**
      * Load filter rules from rules storage
-     * @param filterVersion
+     * @param filterMetadata
      * @param callback
      * @private
      */
-    _loadFilterFromRulesStorage: function (filterVersion, callback) {
+    _loadFilterFromRulesStorage: function (filterMetadata, callback) {
 
-        var filter = this._getFilterById(filterVersion.filterId);
+        var filter = this._getFilterById(filterMetadata.filterId);
 
         filter._isDownloading = true;
         EventNotifier.notifyListeners(EventNotifierTypes.START_DOWNLOAD_FILTER, filter);
@@ -1579,8 +1580,8 @@ AntiBannerService.prototype = {
         var successCallback = function (filterRules) {
             Log.info("Load local filter {0}, rules count: {1}", filter.filterId, filterRules.length);
             delete filter._isDownloading;
-            filter.version = filterVersion.version;
-            filter.lastUpdateTime = filterVersion.timeUpdated;
+            filter.version = filterMetadata.version;
+            filter.lastUpdateTime = filterMetadata.timeUpdated;
             filter.loaded = true;
             //persist to LS
             FilterLSUtils.updateFilterStateInfo(filter);
@@ -1615,29 +1616,6 @@ var AdguardFilter = function (filterId) {
     this.lastUpdateTime = null;
     this.lastCheckTime = null;
     this.enabled = false;
-};
-
-/**
- * Represents filter version metadata
- * @type {Function}
- */
-var AdguardFilterVersion = exports.AdguardFilterVersion = function (timeUpdated, version, filterId) {
-    this.timeUpdated = timeUpdated;
-    this.version = version;
-    this.filterId = filterId;
-};
-
-/**
- * Filter version metadata parser
- *
- * @param filter Object
- * @returns {*}
- */
-AdguardFilterVersion.fromJSON = function (filter) {
-    var timeUpdated = new Date(filter.timeUpdated).getTime();
-    var version = filter.version;
-    var filterId = filter.filterId - 0;
-    return new AdguardFilterVersion(timeUpdated, version, filterId);
 };
 
 /**

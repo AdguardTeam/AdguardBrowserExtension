@@ -100,20 +100,20 @@ ServiceClient.prototype = {
 	APP_PARAM: '&app=ag&v=' + Prefs.version,
 
 	/**
-	 * Checks versions of the specified filters
+	 * Load metadata of the specified filters
 	 *
 	 * @param filterIds         Filters identifiers
 	 * @param successCallback   Called on success
 	 * @param errorCallback     Called on error
 	 */
-	checkFilterVersions: function (filterIds, successCallback, errorCallback) {
+	loadFiltersMetadata: function (filterIds, successCallback, errorCallback) {
 
 		if (!filterIds || filterIds.length === 0) {
 			successCallback([]);
 			return;
 		}
 
-		var AdguardFilterVersion = require('../../lib/filter/antibanner').AdguardFilterVersion;
+		var SubscriptionFilter = require('../../lib/filter/subscription').SubscriptionFilter;
 
 		var success = function (response) {
 			if (response && response.responseText) {
@@ -122,14 +122,14 @@ ServiceClient.prototype = {
 					errorCallback(response, "invalid response");
 					return;
 				}
-				var filterVersions = [];
+				var filterMetadataList = [];
 				for (var i = 0; i < filterIds.length; i++) {
 					var filter = CollectionUtils.find(metadata.filters, 'filterId', filterIds[i]);
 					if (filter) {
-						filterVersions.push(AdguardFilterVersion.fromJSON(filter));
+						filterMetadataList.push(SubscriptionFilter.fromJSON(filter));
 					}
 				}
-				successCallback(filterVersions);
+				successCallback(filterMetadataList);
 			} else {
 				errorCallback(response, "empty response");
 			}
