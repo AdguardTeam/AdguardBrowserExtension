@@ -541,7 +541,8 @@
         }
 
         var elementUrl = element.src || element.data;
-        if (!elementUrl || elementUrl.indexOf('http') !== 0) {
+        if (!elementUrl || elementUrl.indexOf('http') !== 0
+            || elementUrl === element.baseURI) {
             return;
         }
 
@@ -553,7 +554,10 @@
         };
 
         // Hide element temporary
-        ElementCollapser.hideElement(element, shadowRoot);
+        // We skip big frames here
+        if (!(element.clientWidth * element.clientHeight > 400 * 300)) {
+            ElementCollapser.hideElement(element, shadowRoot);
+        }
 
         // Send a message to the background page to check if the element really should be collapsed
         var message = {
