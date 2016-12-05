@@ -121,8 +121,9 @@ function onHeadersReceived(requestDetails) {
          WS connections are detected as "other"  by ABP
          EasyList already contains some rules for WS connections with $other modifier
          */
-        var websocketCheckUrl = "ws://adguardwebsocket.check/" + UrlUtils.getDomainName(referrerUrl);
-        if (webRequestService.checkWebSocketRequest(tab, websocketCheckUrl, referrerUrl)) {
+        var frameUrl = framesMap.getFrameUrl(tab, requestDetails.frameId);
+        var websocketCheckUrl = "ws://adguardwebsocket.check/" + UrlUtils.getDomainName(frameUrl);
+        if (webRequestService.checkWebSocketRequest(tab, websocketCheckUrl, frameUrl)) {
             responseHeaders.push({
                 name: 'Content-Security-Policy',
                 value: 'connect-src http: https:; frame-src http: https:; child-src http: https:'
