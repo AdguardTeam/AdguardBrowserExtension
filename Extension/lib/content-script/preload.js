@@ -543,7 +543,8 @@
         var elementUrl = element.src || element.data;
         if (!elementUrl || elementUrl.indexOf('http') !== 0
             || elementUrl === element.baseURI) {
-            // Some sources could not be set already, lazy loaded images or smth.
+            // Some sources could not be set yet, lazy loaded images or smth.
+            // In some cases like on gog.com, collapsing these elements could break the page script loading their sources
             return;
         }
 
