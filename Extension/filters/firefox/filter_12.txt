@@ -1,6 +1,6 @@
-! Checksum: NYeo1/5nlhM9Qy8t5BdlGw
-! Version: 1.0.1.70
-! TimeUpdated: 2016-11-21T16:24:06.065+04:00
+! Checksum: tn3jLaAC35afYaIYH2S1NQ
+! Version: 1.0.1.80
+! TimeUpdated: 2016-12-02T19:01:55.955+04:00
 ! Title: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! Title: Adguard Safari Filter
@@ -37,6 +37,9 @@
 ! impspcabe clickunder
 @@/ads/ad$domain=pipec.ru|xyya.net|pandamovie.net|streamgaroo.com|vidzi.tv|befuck.com
 @@||adstreet.tech/*ad$domain=befuck.com
+@@.adcenter.$domain=mcfucker.com|losmovies.club|rapidvideo.com
+@@||mcfucker.com$generichide
+@@||losmovies.club^$generichide
 @@||vidzi.tv^$generichide
 @@||befuck.com^$generichide
 @@||pipec.ru^$generichide
@@ -214,6 +217,9 @@ telegraaf.nl##.section-ad
 ! Section contains rules for specific websites
 !
 ! TEMPORARY: until web-sockets are not blocked by content-blocker
+hdrezka.me##div[class="skin-block"][style^="width: 100%; height: 100%;"]
+hdrezka.me##div[style="padding: 0px; margin: 0px;"] td[width="33%"]
+hdrezka.me##iframe[src*="rootmedia.ws"]
 filmix.net##noindex > div[style$="!important;"]
 filmix.net##div[id*="Composite"]
 free-torrent.org,free-torrents.org,onlyf.ws##body > :not(div)
@@ -297,7 +303,22 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 !
 ! White list. Fixing content blocking API issues.
 !
-!
+! https://github.com/AdguardTeam/AdguardFilters/issues/3559
+@@|http://*$domain=fmovies.to,~third-party
+!https://forum.adguard.com/index.php?threads/accountkiller-com.16162/
+@@||google-analytics.com/analytics.js^$domain=accountkiller.com
+! https://forum.adguard.com/index.php?threads/pornve-com-nsfw.16118/
+@@||prscripts.com/pub.js$domain=pornve.com
+! https://forum.adguard.com/index.php?threads/resolved-afkortingen-nu.16065/#post-114528
+afkortingen.nu#@##cookie_popup_container
+afkortingen.nu#@##cookie_popup
+! https://github.com/AdguardTeam/AdguardFilters/issues/3529
+@@||espncdn.com/*/*.css
+! https://github.com/AdguardTeam/AdguardFilters/issues/3531
+@@||disquscdn.com^$script,domain=wccftech.com
+@@||disqus.com^$script,domain=wccftech.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/3514
+@@||androidinsider.ru/reklama/$~urlblock,~elemhide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3443
 @@||static.the-watch-series.to/public/js/
 ! unblock cookie notices

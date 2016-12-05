@@ -219,10 +219,15 @@ adguard.antiBannerService = (function (adguard) {
             return;
         }
 
+        /**
+         * TODO: when we want to load filter from backend, we should retrieve metadata from backend too, but not from local file.
+         */
+        var filterMetadata = adguard.subscriptions.getFilterMetadata(filterId);
+
         if (adguard.utils.filters.isAdguardFilter(filter)) {
-            loadFilterFromLocalFile(filterId, onFilterLoaded);
+            loadFilterFromLocalFile(filterMetadata, onFilterLoaded);
         } else {
-            loadFilterFromBackend(filterId, onFilterLoaded);
+            loadFilterFromBackend(filterMetadata, onFilterLoaded);
         }
     };
 
@@ -236,6 +241,28 @@ adguard.antiBannerService = (function (adguard) {
     function reloadAntiBannerFilters(successCallback, errorCallback) {
         resetFiltersVersion();
         checkAntiBannerFiltersUpdate(true, successCallback, errorCallback);
+    }
+
+    /**
+     * Select filters for update. It depends on the time of last update.
+     * @param forceUpdate Force update flag.
+     * @returns {Array}
+     */
+    function selectFilterIdsToUpdate(forceUpdate) {
+        var filterIds = [];
+        for (var i = 0; i < adguardFilters.length; i++) {
+            var filter = adguardFilters[i];
+            if (filter.installed &&
+                filter.filterId != adguard.utils.filters.USER_FILTER_ID &&
+                filter.filterId != adguard.utils.filters.WHITE_LIST_FILTER_ID) {
+                // Check filters update period (or forceUpdate flag)
+                var needUpdate = forceUpdate || (!filter.lastCheckTime || (Date.now() - filter.lastCheckTime) >= UPDATE_FILTERS_PERIOD);
+                if (needUpdate) {
+                    filterIds.push(filter.filterId);
+                }
+            }
+        }
+        return filterIds;
     }
 
     /**
@@ -263,19 +290,7 @@ adguard.antiBannerService = (function (adguard) {
         adguard.console.info("Start checking filters updates");
 
         // Select filters for update
-        var filterIdsToUpdate = [];
-        for (var i = 0; i < adguardFilters.length; i++) {
-            var filter = adguardFilters[i];
-            if (filter.installed &&
-                filter.filterId != adguard.utils.filters.USER_FILTER_ID &&
-                filter.filterId != adguard.utils.filters.WHITE_LIST_FILTER_ID) {
-                // Check filters update period (or forceUpdate flag)
-                var needUpdate = forceUpdate || (!filter.lastCheckTime || (Date.now() - filter.lastCheckTime) >= UPDATE_FILTERS_PERIOD);
-                if (needUpdate) {
-                    filterIdsToUpdate.push(filter.filterId);
-                }
-            }
-        }
+        var filterIdsToUpdate = selectFilterIdsToUpdate(forceUpdate);
 
         if (filterIdsToUpdate.length === 0) {
             if (successCallback) {
@@ -287,9 +302,9 @@ adguard.antiBannerService = (function (adguard) {
         adguard.console.info("Checking updates for {0} filters", filterIdsToUpdate.length);
 
         // Load filters with changed version
-        var loadFiltersFromBackendCallback = function (filterIdsToUpdate) {
-            loadFiltersFromBackend(filterIdsToUpdate, function (sucess, filterIds) {
-                if (sucess) {
+        var loadFiltersFromBackendCallback = function (filterMetadataList) {
+            loadFiltersFromBackend(filterMetadataList, function (success, filterIds) {
+                if (success) {
                     var filters = [];
                     for (var i = 0; i < filterIds.length; i++) {
                         var filterId = filterIds[i];
@@ -306,25 +321,25 @@ adguard.antiBannerService = (function (adguard) {
 
         // Method is called after we have got server response
         // Now we check filters version and update filter if needed
-        var onLoadVersions = function (sucess, filterVersions) {
+        var onLoadFilterMetadataList = function (sucess, filterMetadataList) {
             if (sucess) {
-                filterIdsToUpdate = [];
-                for (var i = 0; i < filterVersions.length; i++) {
-                    var filterVersion = filterVersions[i];
-                    var filter = getFilterById(filterVersion.filterId);
-                    if (filterVersion.version !== null && adguard.utils.browser.isGreaterVersion(filterVersion.version, filter.version)) {
-                        adguard.console.info("Updating filter {0} to version {1}", filter.filterId, filterVersion.version);
-                        filterIdsToUpdate.push(filter.filterId);
+                var filterMetadataListToUpdate = [];
+                for (var i = 0; i < filterMetadataList.length; i++) {
+                    var filterMetadata = filterMetadataList[i];
+                    var filter = getFilterById(filterMetadata.filterId);
+                    if (filterMetadata.version !== null && adguard.utils.browser.isGreaterVersion(filterMetadata.version, filter.version)) {
+                        adguard.console.info("Updating filter {0} to version {1}", filter.filterId, filterMetadata.version);
+                        filterMetadataListToUpdate.push(filterMetadata);
                     }
                 }
-                loadFiltersFromBackendCallback(filterIdsToUpdate);
+                loadFiltersFromBackendCallback(filterMetadataListToUpdate);
             } else {
                 errorCallback();
             }
         };
 
-        // Retrieve current versions for update
-        loadFiltersVersionsFromBackend(filterIdsToUpdate, onLoadVersions);
+        // Retrieve current filters metadata for update
+        loadFiltersMetadataFromBackend(filterIdsToUpdate, onLoadFilterMetadataList);
     };
 
     /**
@@ -930,25 +945,25 @@ adguard.antiBannerService = (function (adguard) {
     /**
      * Loads filters (ony-by-one) from the remote server
      *
-     * @param filterIds List of filter identifiers to load
+     * @param filterMetadataList List of filter metadata to load
      * @param callback Called when filters have been loaded
      * @private
      */
-    function loadFiltersFromBackend(filterIds, callback) {
+    function loadFiltersFromBackend(filterMetadataList, callback) {
 
         var loadedFilters = [];
 
         var loadNextFilter = function () {
-            if (filterIds.length === 0) {
+            if (filterMetadataList.length === 0) {
                 callback(true, loadedFilters);
             } else {
-                var filterId = filterIds.shift();
-                loadFilterFromBackend(filterId, function (success) {
+                var filterMetadata = filterMetadataList.shift();
+                loadFilterFromBackend(filterMetadata, function (success) {
                     if (!success) {
                         callback(false);
                         return;
                     }
-                    loadedFilters.push(filterId);
+                    loadedFilters.push(filterMetadata.filterId);
                     loadNextFilter();
                 });
             }
@@ -960,22 +975,22 @@ adguard.antiBannerService = (function (adguard) {
     /**
      * Loads filter rules from remote server
      *
-     * @param filterId Filter identifier
+     * @param filterMetadata Filter metadata
      * @param callback Called when filter rules have been loaded
      * @private
      */
-    function loadFilterFromBackend(filterId, callback) {
+    function loadFilterFromBackend(filterMetadata, callback) {
 
-        var filter = getFilterById(filterId);
+        var filter = getFilterById(filterMetadata.filterId);
 
         filter._isDownloading = true;
         adguard.listeners.notifyListeners(adguard.listeners.START_DOWNLOAD_FILTER, filter);
 
-        var successCallback = function (filterVersion, filterRules) {
+        var successCallback = function (filterRules) {
             adguard.console.info("Retrieved response from server for filter {0}, rules count: {1}", filter.filterId, filterRules.length);
             delete filter._isDownloading;
-            filter.version = filterVersion.version;
-            filter.lastUpdateTime = filterVersion.timeUpdated;
+            filter.version = filterMetadata.version;
+            filter.lastUpdateTime = filterMetadata.timeUpdated;
             filter.lastCheckTime = Date.now();
             filter.loaded = true;
             //notify listeners
@@ -1001,16 +1016,16 @@ adguard.antiBannerService = (function (adguard) {
      * @param callback Callback (called when load is finished)
      * @private
      */
-    function loadFiltersVersionsFromBackend(filterIds, callback) {
+    function loadFiltersMetadataFromBackend(filterIds, callback) {
 
         if (filterIds.length === 0) {
             callback(true, []);
             return;
         }
 
-        var loadSuccess = function (filtersVersions) {
-            adguard.console.debug("Retrieved response from server for {0} filters, result: {1} versions", filterIds.length, filtersVersions.length);
-            callback(true, filtersVersions);
+        var loadSuccess = function (filterMetadataList) {
+            adguard.console.debug("Retrieved response from server for {0} filters, result: {1} metadata", filterIds.length, filterMetadataList.length);
+            callback(true, filterMetadataList);
         };
 
         var loadError = function (request, cause) {
@@ -1018,27 +1033,27 @@ adguard.antiBannerService = (function (adguard) {
             callback(false);
         };
 
-        adguard.backend.checkFilterVersions(filterIds, loadSuccess, loadError);
+        adguard.backend.loadFiltersMetadata(filterIds, loadSuccess, loadError);
     }
 
     /**
      * Load filter rules from local file
-     * @param filterId
+     * @param filterMetadata
      * @param callback
      * @private
      */
-    function loadFilterFromLocalFile(filterId, callback) {
+    function loadFilterFromLocalFile(filterMetadata, callback) {
 
-        var filter = getFilterById(filterId);
+        var filter = getFilterById(filterMetadata.filterId);
 
         filter._isDownloading = true;
         adguard.listeners.notifyListeners(adguard.listeners.START_DOWNLOAD_FILTER, filter);
 
-        var successCallback = function (filterVersion, filterRules) {
+        var successCallback = function (filterRules) {
             adguard.console.info("Load local filter {0}, rules count: {1}", filter.filterId, filterRules.length);
             delete filter._isDownloading;
-            filter.version = filterVersion.version;
-            filter.lastUpdateTime = filterVersion.timeUpdated;
+            filter.version = filterMetadata.version;
+            filter.lastUpdateTime = filterMetadata.timeUpdated;
             filter.loaded = true;
             //notify listeners
             adguard.listeners.notifyListeners(adguard.listeners.SUCCESS_DOWNLOAD_FILTER, filter);

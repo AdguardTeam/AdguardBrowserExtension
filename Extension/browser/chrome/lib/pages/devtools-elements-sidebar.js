@@ -33,7 +33,8 @@ var browser = window.browser || chrome;
                 window.selectedElementInfo = AdguardRulesConstructorLib.getElementInfo(result);
 
                 updateRule();
-                handleShowBlockSettings(window.selectedElementInfo.haveUrlBlockParameter, window.selectedElementInfo.haveClassAttribute);
+                handleShowBlockSettings(window.selectedElementInfo.haveUrlBlockParameter,
+                    window.selectedElementInfo.haveClassAttribute && !window.selectedElementInfo.haveIdAttribute);
                 setupAttributesInfo(window.selectedElementInfo);
             });
         };

@@ -66,6 +66,16 @@ adguard.frames = (function (adguard) {
 	};
 
 	/**
+	 * Gets main frame URL
+	 *
+	 * @param tab	Tab
+	 * @returns Frame URL
+	 */
+	var getMainFrameUrl = function(tab){
+		return getFrameUrl(tab, 0);
+	};
+
+	/**
 	 * Gets frame Domain
 	 *
 	 * @param tab       Tab
@@ -176,9 +186,9 @@ adguard.frames = (function (adguard) {
 		var frame = adguard.tabs.getTabFrame(tab.tabId, 0);
 		if (frame) {
 			var url = frame.url;
-			var frameWhiteListRule = adguard.requestFilter.findWhiteListRule(url, url, adguard.RequestTypes.DOCUMENT);
+			var frameWhiteListRule = adguard.whitelist.findWhiteListRule(url);
 			if (!frameWhiteListRule) {
-				frameWhiteListRule = adguard.whitelist.findWhiteListRule(url);
+				frameWhiteListRule = adguard.requestFilter.findWhiteListRule(url, url, adguard.RequestTypes.DOCUMENT);
 			}
 			adguard.tabs.updateTabMetadata(tab.tabId, {
 				frameWhiteListRule: frameWhiteListRule,
@@ -333,6 +343,7 @@ adguard.frames = (function (adguard) {
 	return {
 		recordFrame: recordFrame,
 		getFrameUrl: getFrameUrl,
+		getMainFrameUrl: getMainFrameUrl,
 		getFrameDomain: getFrameDomain,
 		isTabWhiteListed: isTabWhiteListed,
 		isTabWhiteListedForSafebrowsing: isTabWhiteListedForSafebrowsing,

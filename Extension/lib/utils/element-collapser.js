@@ -30,6 +30,7 @@ var ElementCollapser = (function() {
      */
     var getDomPath = function (el) {
         var stack = [];
+        var stackEscaped = [];
         while (el.parentNode !== null) {
             var sibCount = 0;
             var sibIndex = 0;
@@ -45,25 +46,35 @@ var ElementCollapser = (function() {
             }
 
             //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/373
-            var nodeName = el.nodeName.toLowerCase().replace(/[^a-zA-Z0-9]/g, '\\$&');
+            var nodeName = el.nodeName.toLowerCase();
+            var nodeNameEscaped = nodeName.replace(/[^a-zA-Z0-9]/g, '\\$&');
             if (sibCount > 1) {
                 stack.unshift(nodeName + ':nth-of-type(' + (sibIndex + 1) + ')');
+                stackEscaped.unshift(nodeNameEscaped + ':nth-of-type(' + (sibIndex + 1) + ')');
             } else {
                 stack.unshift(nodeName);
+                stackEscaped.unshift(nodeNameEscaped);
             }
             el = el.parentNode;
         }
 
         //Remove heading html
-        if (stack.length > 0 && stack[0] == 'html') {
+        //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/400
+        if (stack.length > 1 && stack[0] == 'html' && stack[1] == 'body') {
             stack.splice(0, 1);
+            stackEscaped.splice(0, 1);
         }
 
-        return stack.join(' > ');
+        return {
+            selectorText: stack.join(' > '),
+            selectorTextEscaped: stackEscaped.join(' > ')
+        };
     };
 
     /**
      * Applies CSS stylesheets
+     * Special characters should be escaped in selector text
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/373
      *
      * @param rule css rule
      * @param shadowRoot
@@ -138,7 +149,7 @@ var ElementCollapser = (function() {
                 if (styleElement.parentNode && styleElement.sheet && styleElement.sheet.cssRules.length === 0) {
                     styleElement.parentNode.removeChild(styleElement);
                 }
-            }, 100);
+            }, 500);
         }
     };
 
@@ -163,7 +174,9 @@ var ElementCollapser = (function() {
      * @param shadowRoot optional
      */
     var hideElement = function(element, shadowRoot) {
-        var selectorText = getDomPath(element);
+        var domPath = getDomPath(element);
+        var selectorText = domPath.selectorText;
+        var selectorTextEscaped = domPath.selectorTextEscaped;
         // First check if we have hidden it already
         var hiddenElement = findHiddenElement(element);
         if (hiddenElement && hiddenElement.selectorText === selectorText) {
@@ -172,7 +185,7 @@ var ElementCollapser = (function() {
         }
 
         var tagName = element.tagName.toLowerCase();
-        hideBySelectorAndTagName(selectorText, tagName, shadowRoot);
+        hideBySelectorAndTagName(selectorTextEscaped, tagName, shadowRoot);
 
         if (hiddenElement) {
             // Remove redundant selector and save the new one

@@ -1,22 +1,29 @@
 var safariCorrectRules = [
   {
     "trigger": {
-      "url-filter": ".*",
-      "resource-type": [
-        "document"
-      ]
+      "url-filter": ".*"
     },
     "action": {
       "type": "css-display-none",
       "selector": ".banner"
     }
   },
+    {
+        "trigger": {
+            "url-filter": ".*",
+            "unless-domain": [
+                "*lenta1.ru",
+                "*lenta2.ru"
+            ]
+        },
+        "action": {
+            "type": "css-display-none",
+            "selector": "#social"
+        }
+    },
   {
     "trigger": {
       "url-filter": ".*",
-      "resource-type": [
-        "document"
-      ],
       "if-domain": [
         "*popsugar.com"
       ]
@@ -24,22 +31,6 @@ var safariCorrectRules = [
     "action": {
       "type": "css-display-none",
       "selector": "#calendar_widget"
-    }
-  },
-  {
-    "trigger": {
-      "url-filter": ".*",
-      "resource-type": [
-        "document"
-      ],
-      "unless-domain": [
-        "*lenta1.ru",
-        "*lenta2.ru"
-      ]
-    },
-    "action": {
-      "type": "css-display-none",
-      "selector": "#social"
     }
   },
   {

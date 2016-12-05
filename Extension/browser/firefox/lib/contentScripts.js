@@ -265,6 +265,9 @@
         globalMessageManager.addMessageListener(navigationTargetCreatedListenerMessageName, navigationTargetCreatedListener);
         globalMessageManager.addMessageListener(elemHideInterceptorListenerMessageName, elemHideInterceptorListener);
 
+        // Cleanup didn't work correctly in previous version. Remove frame-script before loading a new one.
+        globalMessageManager.removeDelayedFrameScript(frameScriptUrl);
+
         globalMessageManager.loadFrameScript(frameScriptUrl, true);
 
         adguard.unload.when(function () {

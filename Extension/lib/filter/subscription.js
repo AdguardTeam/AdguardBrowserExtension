@@ -72,7 +72,7 @@ adguard.subscriptions = (function (adguard) {
      * Create filter from object
      * @param filter Object
      */
-    function createSubscriptionFilterFromJSON(filter) {
+    var createSubscriptionFilterFromJSON = function (filter) {
 
         var filterId = filter.filterId - 0;
         var groupId = filter.groupId - 0;
@@ -87,7 +87,7 @@ adguard.subscriptions = (function (adguard) {
         var displayNumber = filter.displayNumber - 0;
 
         return new SubscriptionFilter(filterId, groupId, defaultName, defaultDescription, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl);
-    }
+    };
 
     /**
      * Load groups and filters metadata
@@ -200,6 +200,15 @@ adguard.subscriptions = (function (adguard) {
     };
 
     /**
+     * Gets filter metadata by filter identifier
+     */
+    var getFilterMetadata = function (filterId) {
+        return filters.filter(function (f) {
+            return f.filterId == filterId;
+        })[0];
+    };
+
+    /**
      * @returns Array of Groups metadata
      */
     var getGroups = function () {
@@ -232,7 +241,9 @@ adguard.subscriptions = (function (adguard) {
         init: init,
         getFilterIdsForLanguage: getFilterIdsForLanguage,
         getGroups: getGroups,
-        getFilters: getFilters
+        getFilters: getFilters,
+        getFilterMetadata: getFilterMetadata,
+        createSubscriptionFilterFromJSON: createSubscriptionFilterFromJSON
     };
 
 })(adguard);

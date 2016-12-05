@@ -283,6 +283,14 @@
             return i18nMessages[messageId];
         };
 
+        // destroy sandbox when window unloaded
+        win.addEventListener('unload', function () {
+            if (sandbox) {
+                Cu.nukeSandbox(sandbox);
+                sandbox = null;
+            }
+        }, true);
+
         return sandbox;
     };
 
@@ -321,10 +329,15 @@
      * @param win DOM window
      */
     var onDocumentStart = function (win) {
-        win.addEventListener('DOMContentLoaded', onDocumentEnd, true);
-        win.addEventListener('unload', onWindowUnload, true);
-
         injectScripts('document_start', win);
+
+        if (win.document.readyState === 'loading') {
+            win.addEventListener('DOMContentLoaded', onDocumentEnd, true);
+        } else {
+            onDocumentEnd({target: win.document});
+        }
+
+        win.addEventListener('unload', onWindowUnload, true);
     };
 
     /**
@@ -470,6 +483,23 @@
             registeredScripts = response[0].scripts;
             i18nMessages = response[0].i18nMessages;
         }
+
+        // If document is ready already
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/446
+        var inject = function (win) {
+            if (win && win.document) {
+                onDocumentStart(win);
+                for (var i = 0; i < win.frames.length; i++) {
+                    inject(win.frames[i]);
+                }
+            }
+        };
+
+        var win = context.content;
+        if (win && win.document) {
+            inject(win);
+        }
+
         context.addEventListener('DOMWindowCreated', onWindowCreated);
 
         // Prepare to clean up on frame script unload

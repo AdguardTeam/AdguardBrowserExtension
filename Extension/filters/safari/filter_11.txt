@@ -1,6 +1,6 @@
-! Checksum: pkz/qhGGPJWrctN4M2gz7g
-! Version: 1.0.5.88
-! TimeUpdated: 2016-11-21T22:01:31.570+04:00
+! Checksum: EcjQeQjhMk1SGxxJ3zSFuw
+! Version: 1.0.6.10
+! TimeUpdated: 2016-12-05T16:01:47.150+04:00
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
 ! Title: Adguard Mobile Ads Filter
@@ -33,6 +33,12 @@
 !
 ! Section contains list of advertising networks
 !
+||adv.mxmcdn.net^
+||api.adflake.com^
+||dante2007.com^
+||iad.appboy.com^
+||banners.etermax.com^
+||mob.huimee.net^$third-party
 ||mediate-ios-*.hyprmx.com^
 ||marketplace-ios-*.hyprmx.com^
 ||live.hyprmx.com^
@@ -705,6 +711,7 @@
 ||graph.facebook.com/network_ads
 ! ||graph.facebook.com/network_ads_common/
 !----- For HTTPS websites when HTTPS filtering is disabled ------
+||rg.yottos.com^
 ||smilered.com^
 ||jfduv7.com^
 ||retarget.ssl-services.com^
@@ -715,6 +722,13 @@
 !
 ! These rules are against anti-adblock scripts
 !
+!--- Temporary
+! https://github.com/AdguardTeam/AdguardForiOS/issues/255
+@@||m.beautypageants.in^$elemhide
+!
+!
+! https://forum.adguard.com/index.php?threads/16365/
+@@||m.beautypageants.in^$generichide
 ! https://forum.adguard.com/index.php?threads/15379/
 @@||static.expressbpd.com/rsjs/ads.js
 ! https://forum.adguard.com/index.php?threads/15378/
@@ -727,8 +741,6 @@ delfi.ee#%#Object.defineProperty(window, 'adblock_detect_run', { get: function()
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3025
 m.ndtv.com#@#.ad300
 m.ndtv.com#%#Object.defineProperty(window, 'canRunAdsN', { get: function() { return false; } });
-! https://github.com/AdguardTeam/AdguardFilters/issues/2778
-@@||m.beautypageants.in^$generichide
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1309
 @@||bild.de^$elemhide
 @@||smartadserver.com/diff/*/partners/$domain=bild.de
@@ -832,6 +844,10 @@ deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important
 !##### TEMPORARY #####
 !
 !#####################
+!
+@@||engine.widespace.com/map/provisioning?appId=com.sofoot$app=com.sofoot
+! https://github.com/AdguardTeam/AdguardForAndroid/issues/925
+@@||config2.mparticle.com^$app=via.rider
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3492
 @@||b.marfeel.com/statics/marfeel/gardac.js$domain=applesencia.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3465
@@ -975,6 +991,12 @@ m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"
 ! https://forum.adguard.com/index.php?threads/10464/
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
 !
+pornhub.com##.adContainer
+||addown.pipaw.com/phone/
+m.dm5.com##div[class^="adform"]
+9to5mac.com##.leaderboard
+9to5mac.com##.adsense
+9to5mac.com##div[id^="div-gpt-ad"]
 ||go.*.com/apu.php$empty,domain=123movies.to|movies.is
 forums.windowscentral.com##.homeforums > div[align="center"][style="padding:15px"]
 forums.windowscentral.com##.adunit
@@ -1132,6 +1154,9 @@ login.wi-fi.ru#%#window.isPremium = true;
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2697
 @@||connect.tapjoy.com/connect$app=com.lucasarts.starts_goo
 ! Blocking of Facebook ads
+||graph.facebook.com^$app=com.devexpert.weather
+||graph.facebook.com^$app=com.musixmatch.android.lyrify
+||graph.facebook.com^$app=com.sonyericsson.trackid
 ||graph.facebook.com^$app=com.ketchapp.donttouchthespikes
 ||graph.facebook.com^$app=com.laurencedawson.reddit_sync
 ||graph.facebook.com^$app=com.mobilefootie.wc2010
@@ -1268,14 +1293,24 @@ login.wi-fi.ru#%#window.isPremium = true;
 ||spotify.com/ads/
 ||trackersimulator.org^
 ! AMC app
-! https://github.com/AdguardTeam/AdguardForAndroid/issues/908#issuecomment-261964845
-|http*$app=com.adups.fota.sysoper|com.adups.fota
 !---------------------------------------------------------------------------!
 !-------------- Rules for mobile analytics ---------------------------------!
 !---------------------------------------------------------------------------!
 !
 ! Section contains rules for mobile analytics and spyware
 !
+||metrics.bestbuy.com^
+||analytics-server.gimbal.com^
+||carfax.sc.omtrdc.net^
+||beacon.carfax.com^
+||invenio_tracking_*.sgnapps.com^
+||metrics.macys.net^
+||dsg.sc.omtrdc.net^
+||sypi.gpshopper.com^
+||collector.brandify.com^
+||lhzbdvm.com^
+||prugskh.net^
+||prugskh.com^
 ||rlog.9gag.com^
 ||rlog-api.under9.co^
 ||track.pingstart.com^
@@ -1402,7 +1437,9 @@ iapp-cp.nuggad.net^
 ||stat.duokanbox.com^
 ||statistics.videofarm.daum.net^
 ||stats.unity3d.com^
+||tapjoy.net^
 ||tapjoy.com^
+||4seeresults.com^
 ||taurus.iad.appboy.com^
 ||tns.simba.taobao.com^
 ||tracker-api.my.com^
@@ -1433,8 +1470,11 @@ iapp-cp.nuggad.net^
 ! Section contains rules, which absent in mobile version of filters
 !
 !--- Russian filter ---
-!
+! https://github.com/AdguardTeam/AdguardFilters/issues/3340
+||wsp.marketgid.com^
 !--- English filter ---
+! https://forum.adguard.com/index.php?threads/15923/
+###ad_foot
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3498
 @@||appex-rf.msn.com/*.js?adtype=
 !--- German filter ----

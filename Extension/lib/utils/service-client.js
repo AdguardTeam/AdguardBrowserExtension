@@ -20,29 +20,6 @@ adguard.backend = (function (adguard) {
     'use strict';
 
     /**
-     * Represents filter version metadata
-     * @type {Function}
-     */
-    var AdguardFilterVersion = function (timeUpdated, version, filterId) {
-        this.timeUpdated = timeUpdated;
-        this.version = version;
-        this.filterId = filterId;
-    };
-
-    /**
-     * Filter version metadata parser
-     *
-     * @param filter Object
-     * @returns {*}
-     */
-    AdguardFilterVersion.fromJSON = function (filter) {
-        var timeUpdated = new Date(filter.timeUpdated).getTime();
-        var version = filter.version;
-        var filterId = filter.filterId - 0;
-        return new AdguardFilterVersion(timeUpdated, version, filterId);
-    };
-
-    /**
      * Class for working with our backend server.
      * All requests sent by this class are covered in the privacy policy:
      * http://adguard.com/en/privacy.html#browsers
@@ -189,46 +166,6 @@ adguard.backend = (function (adguard) {
     }
 
     /**
-     * Retrieve filter metadata from first lines in response
-     * @param lines
-     * @returns {*}
-     * @private
-     */
-    function parseFilterMetadataFromRulesHeader(lines) {
-
-        var version = null;
-        var timeUpdated = null;
-        for (var i = 0; i < 7; i++) {
-
-            var line = lines[i];
-
-            var match;
-            if (version === null) {
-                match = line.match(/!\s+Version:\s+([0-9.]+)/);
-                if (match) {
-                    version = match[1];
-                    continue;
-                }
-            }
-            if (timeUpdated === null) {
-                match = line.match(/!\s+TimeUpdated:\s+(.+)$/);
-                if (match) {
-                    timeUpdated = new Date(match[1]);
-                }
-            }
-        }
-
-        if (!version || !timeUpdated) {
-            return null;
-        }
-
-        return {
-            version: version,
-            timeUpdated: timeUpdated
-        };
-    }
-
-    /**
      * Load filter rules.
      * Parse header and rules.
      * Response format:
@@ -256,12 +193,6 @@ adguard.backend = (function (adguard) {
 
             var lines = responseText.split(/[\r\n]+/);
 
-            var metadata = parseFilterMetadataFromRulesHeader(lines);
-            if (!metadata) {
-                errorCallback(response, "wrong filter metadata");
-                return;
-            }
-
             var rules = [];
             for (var i = 0; i < lines.length; i++) {
                 var rule = adguard.rules.builder.createRule(lines[i], filterId);
@@ -270,9 +201,7 @@ adguard.backend = (function (adguard) {
                 }
             }
 
-            var filterVersion = new AdguardFilterVersion(metadata.timeUpdated.getTime(), metadata.version, filterId);
-
-            successCallback(filterVersion, rules);
+            successCallback(rules);
 
         };
 
@@ -350,13 +279,13 @@ adguard.backend = (function (adguard) {
     }
 
     /**
-     * Checks versions of the specified filters
+     * Load metadata of the specified filters
      *
      * @param filterIds         Filters identifiers
      * @param successCallback   Called on success
      * @param errorCallback     Called on error
      */
-    var checkFilterVersions = function (filterIds, successCallback, errorCallback) {
+    var loadFiltersMetadata = function (filterIds, successCallback, errorCallback) {
 
         if (!filterIds || filterIds.length === 0) {
             successCallback([]);
@@ -370,14 +299,14 @@ adguard.backend = (function (adguard) {
                     errorCallback(response, "invalid response");
                     return;
                 }
-                var filterVersions = [];
+                var filterMetadataList = [];
                 for (var i = 0; i < filterIds.length; i++) {
                     var filter = adguard.utils.collections.find(metadata.filters, 'filterId', filterIds[i]);
                     if (filter) {
-                        filterVersions.push(AdguardFilterVersion.fromJSON(filter));
+                        filterMetadataList.push(adguard.subscriptions.createSubscriptionFilterFromJSON(filter));
                     }
                 }
-                successCallback(filterVersions);
+                successCallback(filterMetadataList);
             } else {
                 errorCallback(response, "empty response");
             }
@@ -662,7 +591,7 @@ adguard.backend = (function (adguard) {
         adguardAppUrl: settings.adguardAppUrl,
         injectionsUrl: settings.injectionsUrl,
 
-        checkFilterVersions: checkFilterVersions,
+        loadFiltersMetadata: loadFiltersMetadata,
         loadRemoteFilterRules: loadRemoteFilterRules,
         loadLocalFilterRules: loadLocalFilterRules,
 
