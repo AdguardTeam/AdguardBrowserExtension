@@ -146,42 +146,6 @@ QUnit.test("Css GenericHide Exception Rules", function (assert) {
     assert.equal(otherCss.length, 2);
 });
 
-QUnit.test("Css GenericHide Exception Rules in Firefox Global Stylesheet", function (assert) {
-    var genericOne = new adguard.rules.CssFilterRule("##.generic-one");
-    var genericTwo = new adguard.rules.CssFilterRule("~google.com,~yahoo.com###generic");
-    var nonGeneric = new adguard.rules.CssFilterRule("adguard.com##.non-generic");
-
-    var filter = new adguard.rules.CssFilter([genericOne]);
-
-    var css = filter.buildCssForStyleSheet();
-    assert.ok(css != null);
-    assert.equal(css.length, 3);
-    assert.equal(css[0], '@-moz-document url-prefix("http://"),url-prefix("https://"){');
-    assert.equal(css[1], '.generic-one{-moz-binding: url("about:adg-intercept?undefined#dummy") !important;}');
-    assert.equal(css[2], '}');
-
-    filter.addRule(genericTwo);
-    css = filter.buildCssForStyleSheet();
-    assert.ok(css != null);
-    assert.equal(css.length, 4);
-    assert.equal(css[0], '@-moz-document url-prefix("http://"),url-prefix("https://"){');
-    assert.ok(css.indexOf('.generic-one{-moz-binding: url("about:adg-intercept?undefined#dummy") !important;}') > 0);
-    assert.ok(css.indexOf('#generic{-moz-binding: url("about:adg-intercept?undefined#dummy") !important;}') > 0);
-    assert.equal(css[3], '}');
-
-    filter.addRule(nonGeneric);
-    css = filter.buildCssForStyleSheet();
-    assert.ok(css != null);
-    assert.equal(css.length, 7);
-    assert.equal(css[0], '@-moz-document url-prefix("http://"),url-prefix("https://"){');
-    assert.ok(css.indexOf('#generic{-moz-binding: url("about:adg-intercept?undefined#dummy") !important;}') > 0);
-    assert.ok(css.indexOf('.generic-one{-moz-binding: url("about:adg-intercept?undefined#dummy") !important;}') > 0);
-    assert.equal(css[3], '}');
-    assert.equal(css[4], '@-moz-document domain("adguard.com"){');
-    assert.ok(css.indexOf('.non-generic{-moz-binding: url("about:adg-intercept?undefined#dummy") !important;}') > 0);
-    assert.equal(css[6], '}');
-});
-
 QUnit.test("Ublock Css Injection Syntax Support", function (assert) {
     var ruleText = "yandex.ru##body:style(background:inherit;)";
     var cssFilterRule = new adguard.rules.CssFilterRule(ruleText);
@@ -519,35 +483,35 @@ QUnit.test("Extended Css Build CssHits", function (assert) {
 
     var shadowDomPrefix = adguard.utils.browser.isShadowDomSupported() ? "::content " : "";
 
-    var rule = new adguard.rules.CssFilterRule("adguard.com##.sponsored");
-    var genericRule = new adguard.rules.CssFilterRule("##.banner");
-    var extendedCssRule = new adguard.rules.CssFilterRule("adguard.com##.sponsored[-ext-contains=test]");
+    var rule = new adguard.rules.CssFilterRule("adguard.com##.sponsored", 1);
+    var genericRule = new adguard.rules.CssFilterRule("##.banner", 2);
+    var extendedCssRule = new adguard.rules.CssFilterRule("adguard.com##.sponsored[-ext-contains=test]", 1);
     var filter = new adguard.rules.CssFilter([rule, genericRule, extendedCssRule]);
 
     var selectors, css, extendedCss, commonCss;
 
-    selectors = filter.buildCssHits("adguard.com", 'hit-prefix');
+    selectors = filter.buildCssHits("adguard.com");
     css = selectors.css;
     extendedCss = selectors.extendedCss;
     commonCss = filter.buildCssHits(null).css;
     assert.equal(commonCss.length, 1);
-    assert.equal(commonCss[0].trim(), shadowDomPrefix + ".banner { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3B%23%23.banner') !important;}");
+    assert.equal(commonCss[0].trim(), shadowDomPrefix + ".banner { display: none!important; content: 'adguard2%3B%23%23.banner' !important;}");
     assert.equal(css.length, 2);
-    assert.equal(css[0].trim(), shadowDomPrefix + ".banner { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3B%23%23.banner') !important;}");
-    assert.equal(css[1].trim(), shadowDomPrefix + ".sponsored { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3Badguard.com%23%23.sponsored') !important;}");
+    assert.equal(css[0].trim(), shadowDomPrefix + ".banner { display: none!important; content: 'adguard2%3B%23%23.banner' !important;}");
+    assert.equal(css[1].trim(), shadowDomPrefix + ".sponsored { display: none!important; content: 'adguard1%3Badguard.com%23%23.sponsored' !important;}");
     assert.equal(extendedCss.length, 1);
-    assert.equal(extendedCss[0].trim(), ".sponsored[-ext-contains=test] { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3Badguard.com%23%23.sponsored%5B-ext-contains%3Dtest%5D') !important;}");
+    assert.equal(extendedCss[0].trim(), ".sponsored[-ext-contains=test] { display: none!important; content: 'adguard1%3Badguard.com%23%23.sponsored%5B-ext-contains%3Dtest%5D' !important;}");
 
-    selectors = filter.buildCssHits("adguard.com", 'hit-prefix', true);
+    selectors = filter.buildCssHits("adguard.com", true);
     css = selectors.css;
     extendedCss = selectors.extendedCss;
     commonCss = filter.buildCssHits(null).css;
     assert.equal(commonCss.length, 1);
-    assert.equal(commonCss[0].trim(), shadowDomPrefix + ".banner { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3B%23%23.banner') !important;}");
+    assert.equal(commonCss[0].trim(), shadowDomPrefix + ".banner { display: none!important; content: 'adguard2%3B%23%23.banner' !important;}");
     assert.equal(css.length, 1);
-    assert.equal(css[0].trim(), shadowDomPrefix + ".sponsored { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3Badguard.com%23%23.sponsored') !important;}");
+    assert.equal(css[0].trim(), shadowDomPrefix + ".sponsored { display: none!important; content: 'adguard1%3Badguard.com%23%23.sponsored' !important;}");
     assert.equal(extendedCss.length, 1);
-    assert.equal(extendedCss[0].trim(), ".sponsored[-ext-contains=test] { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3Badguard.com%23%23.sponsored%5B-ext-contains%3Dtest%5D') !important;}");
+    assert.equal(extendedCss[0].trim(), ".sponsored[-ext-contains=test] { display: none!important; content: 'adguard1%3Badguard.com%23%23.sponsored%5B-ext-contains%3Dtest%5D' !important;}");
 
 });
 

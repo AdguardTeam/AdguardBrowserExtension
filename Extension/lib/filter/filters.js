@@ -152,11 +152,10 @@
             var domain = adguard.utils.url.getDomainName(url);
             if (adguard.settings.collectHitsCount()) {
                 // If user has enabled "Send statistics for ad filters usage" option we build CSS with enabled hits stats.
-                // In this case style contains "background-image" to the unique URL.
-                // Tracking requests to this URL shows us which rule has been used.
-                // NOTE: For Firefox we use another way, look at "getCssForStyleSheet" method.
-                var hitPrefix = adguard.prefs.hitPrefix;
-                return this.cssFilter.buildCssHits(domain, hitPrefix, genericHide);
+                // In this case style contains "content" with filter identifier and rule text.
+                var selectors = this.cssFilter.buildCssHits(domain, genericHide);
+                selectors.cssHitsCounterEnabled = true;
+                return selectors;
             } else {
                 return this.cssFilter.buildCss(domain, genericHide);
             }
@@ -174,17 +173,6 @@
         getInjectedSelectorsForUrl: function (url, genericHide) {
             var domain = adguard.utils.url.getDomainName(url);
             return this.cssFilter.buildInjectCss(domain, genericHide);
-        },
-
-        /**
-         * This method is used in Firefox extension only.
-         * If user has enabled "Send statistics for ad filters usage" option we change the way of applying CSS rules.
-         * In this case we register browser-wide stylesheet using StyleService.registerSheet.
-         *
-         * @returns Stylesheet
-         */
-        getCssForStyleSheet: function () {
-            return this.cssFilter.buildCssForStyleSheet();
         },
 
         /**

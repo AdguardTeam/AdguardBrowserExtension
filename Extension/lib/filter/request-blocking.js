@@ -48,7 +48,8 @@ adguard.webRequestService = (function (adguard) {
         result = {
             selectors: {
                 css: null,
-                extendedCss: null
+                extendedCss: null,
+                cssHitsCounterEnabled: false
             },
             scripts: null,
             collapseAllElements: adguard.requestFilter.shouldCollapseAllElements(),
@@ -263,12 +264,6 @@ adguard.webRequestService = (function (adguard) {
     };
 
     var shouldLoadAllSelectors = function (collapseAllElements) {
-        if ((adguard.utils.browser.isFirefoxBrowser() && adguard.settings.collectHitsCount()) || adguard.prefs.useGlobalStyleSheet) {
-            // We don't need all CSS selectors in case of FF using global stylesheet
-            // as in this case we register browser wide stylesheet which will be
-            // applied even if page was already loaded
-            return false;
-        }
 
         var safariContentBlockerEnabled = adguard.utils.browser.isContentBlockerEnabled();
         if (safariContentBlockerEnabled && collapseAllElements) {

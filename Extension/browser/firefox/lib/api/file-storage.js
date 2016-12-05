@@ -114,16 +114,7 @@ adguard.fileStorage = (function (adguard) {
 
     var PROFILE_DIR = 'ProfD';
     var ADGUARD_DIR = 'Adguard';
-    var CSS_FILE_PATH = 'elementsHide.css';
     var LINE_BREAK = '\n';
-
-    var isSavingCssStyleSheetNow = false;
-
-    function getFileInAdguardDirUri(filename) {
-        var styleFile = FileUtils.getFile(PROFILE_DIR, [ADGUARD_DIR, filename]);
-        var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
-        return ioService.newFileURI(styleFile).QueryInterface(Ci.nsIFileURL);
-    }
 
     /* Create dir in profile folder */
     function createAdguardDir() {
@@ -240,52 +231,7 @@ adguard.fileStorage = (function (adguard) {
         }
     };
 
-    /**
-     * Saves CSS stylesheet to file.
-     *
-     * This method is used in Firefox extension only.
-     * If user has enabled "Send statistics for ad filters usage" option we change the way of applying CSS rules.
-     * In this case we register browser-wide stylesheet using StyleService.registerSheet.
-     * We should save it to file before registering the stylesheet.
-     *
-     * @param cssRules CSS file content
-     * @param callback Called when operation is finished
-     */
-    var saveStyleSheetToDisk = function (cssRules, callback) {
-
-        if (isSavingCssStyleSheetNow) {
-            return;
-        }
-        isSavingCssStyleSheetNow = true;
-
-        var filePath = CSS_FILE_PATH;
-
-        writeToFile(filePath, cssRules, function (e) {
-            if (e && e.error) {
-                adguard.console.error("Adguard addon: Error write css styleSheet to file {0} cause: {1}", filePath, e);
-                return;
-            } else {
-                callback();
-            }
-            isSavingCssStyleSheetNow = false;
-        });
-    };
-
     return {
-        /**
-         * Gets CSS file URI
-         *
-         * This method is used in Firefox extension only.
-         * If user has enabled "Send statistics for ad filters usage" option we change the way of applying CSS rules.
-         * In this case we register browser-wide stylesheet using StyleService.registerSheet.
-         * We should save it to file before registering the stylesheet.
-         *
-         * @returns CSS file URI
-         */
-        get injectCssFileURI() {
-            return getFileInAdguardDirUri(CSS_FILE_PATH);
-        },
-        saveStyleSheetToDisk: saveStyleSheetToDisk,
         readFromFile: readFromFile,
         writeToFile: writeToFile,
         removeFile: removeFile

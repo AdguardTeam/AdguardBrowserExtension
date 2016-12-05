@@ -202,39 +202,6 @@
         }, {urls: [adguard.integration.getIntegrationBaseUrl() + "*"]}, ["requestHeaders", "blocking"]);
     }
 
-    if (adguard.isModuleSupported('hitStats')) {
-
-        // TODO[Edge]: Add support for collecting hits stats. Currently we cannot add listener for ms-browser-extension:// urls.
-        if (adguard.utils.browser.isChromium() && !adguard.utils.browser.isEdgeBrowser()) {
-            var parseCssRuleFromUrl = function (requestUrl) {
-                if (!requestUrl) {
-                    return null;
-                }
-                var filterIdAndRuleText = decodeURIComponent(adguard.utils.strings.substringAfter(requestUrl, '#'));
-                var filterId = adguard.utils.strings.substringBefore(filterIdAndRuleText, ';');
-                var ruleText = adguard.utils.strings.substringAfter(filterIdAndRuleText, ';');
-                return {
-                    filterId: filterId,
-                    ruleText: ruleText
-                };
-            };
-
-            var onCssRuleHit = function (requestDetails) {
-                if (adguard.frames.isIncognitoTab(requestDetails.tab)) {
-                    return;
-                }
-                var domain = adguard.frames.getFrameDomain(requestDetails.tab);
-                var rule = parseCssRuleFromUrl(requestDetails.requestUrl);
-                if (rule) {
-                    adguard.hitStats.addRuleHit(domain, rule.ruleText, rule.filterId);
-                }
-            };
-
-            var hitPngUrl = adguard.app.getUrlScheme() + "://*/elemhidehit.png";
-            adguard.webRequest.onBeforeRequest.addListener(onCssRuleHit, [hitPngUrl]);
-        }
-    }
-
     var handlerBehaviorTimeout = null;
     adguard.listeners.addListener(function (event) {
         switch (event) {

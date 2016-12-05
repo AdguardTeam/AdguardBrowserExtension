@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Cu, Cc, Ci */
+/* global Cu, Cc, Ci, Services */
 
 /**
  * Object that implements our frame scripts logic.
@@ -150,6 +150,9 @@
             'lib/content-script/assistant/js/assistant.js'
         ], 'document_end', false);
 
+        // Register assistant css
+        registerCss(adguard.loadURL('lib/content-script/assistant/css/selector.css'));
+
         // abp:subscribe
         var subscribeIncludeDomains = [
             "easylist.github.io",
@@ -191,6 +194,27 @@
         ], 'document_end', false, subscribeIncludeDomains);
 
         loadFrameScript();
+    }
+
+    /**
+     * Register css in user sheet
+     * @param cssContent Css content
+     */
+    function registerCss(cssContent) {
+
+        var styleSheetService = Cc['@mozilla.org/content/style-sheet-service;1'].getService(Ci.nsIStyleSheetService);
+        var USER_SHEET = styleSheetService.USER_SHEET;
+
+        var cssUri = Services.io.newURI("data:text/css," + encodeURIComponent(cssContent), null, null);
+        if (!styleSheetService.sheetRegistered(cssUri, USER_SHEET)) {
+            styleSheetService.loadAndRegisterSheet(cssUri, USER_SHEET);
+        }
+        // Cleanup
+        adguard.unload.when(function () {
+            if (styleSheetService.sheetRegistered(cssUri, USER_SHEET)) {
+                styleSheetService.unregisterSheet(cssUri, USER_SHEET);
+            }
+        });
     }
 
     /**
@@ -238,13 +262,11 @@
         var shouldLoadListenerMessageName = 'Adguard:should-load';
         var tabUpdatedListenerMessageName = 'Adguard:tab-updated';
         var navigationTargetCreatedListenerMessageName = 'Adguard:navigation-target-created';
-        var elemHideInterceptorListenerMessageName = 'Adguard:elemhide-interceptor';
 
         var initializeFrameScriptListener = createInitializeFrameScriptListener();
         var shouldLoadListener = createShouldLoadListener();
         var tabUpdatedListener = createTabUpdatedListener();
         var navigationTargetCreatedListener = createNavigationTargetCreatedAsyncListener();
-        var elemHideInterceptorListener = createElemHideInterceptorListener();
 
         /**
          * For some unknown reason we can't use global message messenger for handling synchronous messages from a frame script.
@@ -263,7 +285,6 @@
         globalMessageManager.addMessageListener(shouldLoadListenerMessageName, shouldLoadListener);
         globalMessageManager.addMessageListener(tabUpdatedListenerMessageName, tabUpdatedListener);
         globalMessageManager.addMessageListener(navigationTargetCreatedListenerMessageName, navigationTargetCreatedListener);
-        globalMessageManager.addMessageListener(elemHideInterceptorListenerMessageName, elemHideInterceptorListener);
 
         globalMessageManager.loadFrameScript(frameScriptUrl, true);
 
@@ -274,7 +295,6 @@
             globalMessageManager.removeMessageListener(shouldLoadListenerMessageName, shouldLoadListener);
             globalMessageManager.removeMessageListener(tabUpdatedListenerMessageName, tabUpdatedListener);
             globalMessageManager.removeMessageListener(navigationTargetCreatedListenerMessageName, navigationTargetCreatedListener);
-            globalMessageManager.removeMessageListener(elemHideInterceptorListenerMessageName, elemHideInterceptorListener);
 
             globalMessageManager.removeDelayedFrameScript(frameScriptUrl);
 
@@ -284,10 +304,9 @@
             try {
                 Cu.import(frameModuleURL, frameModule);
                 frameModule.contentPolicyService.unregister();
-                frameModule.interceptHandler.unregister();
                 Cu.unload(frameModuleURL);
             } catch (ex) {
-                adguard.console.error('Error while unregister contentPolicyService and interceptHandler: {0}', ex);
+                adguard.console.error('Error while unregister contentPolicyService: {0}', ex);
             }
         });
     }
@@ -365,28 +384,6 @@
             var tabId = adguard.tabsImpl.getTabIdForTab(tab);
 
             setTimeout(adguard.webNavigation.onPopupCreated.bind(null, tabId, details.targetUrl, details.sourceUrl), 1);
-        };
-    }
-
-    /**
-     * Elemhide listener. Firefox about: protocol.
-     * @returns {Function}
-     */
-    function createElemHideInterceptorListener() {
-
-        return function (e) {
-
-            var browser = e.target;
-            var details = e.data;
-
-            var tab = adguard.tabsImpl.getTabForBrowser(browser);
-
-            var collapse = false;
-            if (tab) {
-                var tabId = adguard.tabsImpl.getTabIdForTab(tab);
-                collapse = adguard.ElemHide.shouldCollapseElement(tabId, details.path);
-            }
-            return {collapse: collapse};
         };
     }
 
