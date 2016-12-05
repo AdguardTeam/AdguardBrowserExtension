@@ -1,6 +1,6 @@
-! Checksum: 0CZ9b+Mpb/JBq0aOEikRvA
-! Version: 1.0.6.6
-! TimeUpdated: 2016-12-01T00:01:34.672+04:00
+! Checksum: 917VJ36+XyHHFb0wan8img
+! Version: 1.0.6.9
+! TimeUpdated: 2016-12-02T18:01:42.383+04:00
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
@@ -13,6 +13,8 @@
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+||api.adflake.com^
+||dante2007.com^
 ||iad.appboy.com^
 ||banners.etermax.com^
 ||mob.huimee.net^$third-party
@@ -1215,5 +1217,6 @@ iapp-cp.nuggad.net^
 ||analy.qq.com^
 ||appsupport.qq.com/cgi-bin/appstage/mstats_batch_report
 ||monitor.uu.qq.com/analytics/
+||wsp.marketgid.com^
 ###ad_foot
 @@||appex-rf.msn.com/*.js?adtype=

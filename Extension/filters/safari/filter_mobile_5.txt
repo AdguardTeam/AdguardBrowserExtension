@@ -1,6 +1,6 @@
-! Checksum: rDLEw0uHanyid3zWxF9L+g
-! Version: 1.0.26.31
-! TimeUpdated: 2016-10-31T17:56:17.412+04:00
+! Checksum: LWjPt/gNTDslrNJAojKSDA
+! Version: 1.0.26.32
+! TimeUpdated: 2016-12-03T09:30:15.626+04:00
 ! Title: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
@@ -14,6 +14,7 @@
 #%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
 neowin.net##article[class^="classes "]:not([itemscope])
+/AppMeasurement-$script
 forum.chatovod.com##iframe[src^="/widgets/?lang="]
 antiblock.org#%#var AG_AntiAntiBlock = function() { var baseCreateElement = document.createElement; document.createElement = function(name) { if (name && name.match(/div|font|center/i)) { return null; } else { return baseCreateElement(name); } } };
 antiblock.org#%#AG_onLoad(function() { AG_AntiAntiBlock(); });
