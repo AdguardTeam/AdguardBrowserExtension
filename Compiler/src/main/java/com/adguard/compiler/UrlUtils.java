@@ -35,6 +35,7 @@ public class UrlUtils {
 
         try {
             connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2792.0 Safari/537.36");
             connection.connect();
             inputStream = connection.getInputStream();
             return IOUtils.toString(inputStream, encoding);
