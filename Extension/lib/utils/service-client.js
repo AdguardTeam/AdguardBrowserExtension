@@ -467,12 +467,6 @@ ServiceClient.prototype = {
 
 			var lines = responseText.split(/[\r\n]+/);
 
-			var metadata = this._getFilterMetadata(lines);
-			if (!metadata) {
-				errorCallback(response, "wrong filter metadata");
-				return;
-			}
-
 			var rules = [];
 			for (var i = 0; i < lines.length; i++) {
 				var rule = FilterRuleBuilder.createRule(lines[i], filterId);
@@ -481,54 +475,11 @@ ServiceClient.prototype = {
 				}
 			}
 
-			var AdguardFilterVersion = require('../../lib/filter/antibanner').AdguardFilterVersion;
-			var filterVersion = new AdguardFilterVersion(metadata.timeUpdated.getTime(), metadata.version, filterId);
-
-			successCallback(filterVersion, rules);
+			successCallback(rules);
 
 		}.bind(this);
 
 		this._executeRequestAsync(url, "text/plain", success, errorCallback);
-	},
-
-	/**
-	 * Retrieve filter metadata from first lines in response
-	 * @param lines
-	 * @returns {*}
-	 * @private
-	 */
-	_getFilterMetadata: function (lines) {
-
-		var version = null;
-		var timeUpdated = null;
-		for (var i = 0; i < 7; i++) {
-
-			var line = lines[i];
-
-			var match;
-			if (version === null) {
-				match = line.match(/!\s+Version:\s+([0-9.]+)/);
-				if (match) {
-					version = match[1];
-					continue;
-				}
-			}
-			if (timeUpdated === null) {
-				match = line.match(/!\s+TimeUpdated:\s+(.+)$/);
-				if (match) {
-					timeUpdated = new Date(match[1]);
-				}
-			}
-		}
-
-		if (!version || !timeUpdated) {
-			return null;
-		}
-
-		return {
-			version: version,
-			timeUpdated: timeUpdated
-		};
 	},
 
 	_executeRequestAsync: function (url, contentType, successCallback, errorCallback) {

@@ -684,10 +684,12 @@ AntiBannerService.prototype = {
             return;
         }
 
+        var filterVersion = this.getFilterMetadata(filterId);
+
         if (FilterUtils.isAdguardFilter(filter)) {
-            this._loadFilterFromRulesStorage(filterId, onFilterLoaded);
+            this._loadFilterFromRulesStorage(filterVersion, onFilterLoaded);
         } else {
-            this._loadFilterFromBackend(filterId, onFilterLoaded);
+            this._loadFilterFromBackend(filterVersion, onFilterLoaded);
         }
     },
 
@@ -790,9 +792,9 @@ AntiBannerService.prototype = {
         Log.info("Checking updates for {0} filters", filterIdsToUpdate.length);
 
         // Load filters with changed version
-        var loadFiltersFromBackend = function (filterIdsToUpdate) {
-            this._loadFiltersFromBackend(filterIdsToUpdate, function (sucess, filterIds) {
-                if (sucess) {
+        var loadFiltersFromBackend = function (filterVersionsToUpdate) {
+            this._loadFiltersFromBackend(filterVersionsToUpdate, function (success, filterIds) {
+                if (success) {
                     var filters = [];
                     for (var i = 0; i < filterIds.length; i++) {
                         var filterId = filterIds[i];
@@ -811,16 +813,16 @@ AntiBannerService.prototype = {
         // Now we check filters version and update filter if needed
         var onLoadVersions = function (sucess, filterVersions) {
             if (sucess) {
-                filterIdsToUpdate = [];
+                var filterVersionsToUpdate = [];
                 for (var i = 0; i < filterVersions.length; i++) {
                     var filterVersion = filterVersions[i];
                     var filter = this._getFilterById(filterVersion.filterId);
                     if (filterVersion.version !== null && Utils.isGreaterVersion(filterVersion.version, filter.version)) {
                         Log.info("Updating filter {0} to version {1}", filter.filterId, filterVersion.version);
-                        filterIdsToUpdate.push(filter.filterId);
+                        filterVersionsToUpdate.push(filterVersion);
                     }
                 }
-                loadFiltersFromBackend(filterIdsToUpdate);
+                loadFiltersFromBackend(filterVersionsToUpdate);
             } else {
                 errorCallback();
             }
@@ -1467,25 +1469,25 @@ AntiBannerService.prototype = {
     /**
      * Loads filters (ony-by-one) from the remote server
      *
-     * @param filterIds List of filter identifiers to load
+     * @param filterVersions List of filter versions to load
      * @param callback Called when filters have been loaded
      * @private
      */
-    _loadFiltersFromBackend: function (filterIds, callback) {
+    _loadFiltersFromBackend: function (filterVersions, callback) {
 
         var loadedFilters = [];
 
         var loadNextFilter = function () {
-            if (filterIds.length === 0) {
+            if (filterVersions.length === 0) {
                 callback(true, loadedFilters);
             } else {
-                var filterId = filterIds.shift();
-                this._loadFilterFromBackend(filterId, function (success) {
+                var filterVersion = filterVersions.shift();
+                this._loadFilterFromBackend(filterVersion, function (success) {
                     if (!success) {
                         callback(false);
                         return;
                     }
-                    loadedFilters.push(filterId);
+                    loadedFilters.push(filterVersion.filterId);
                     loadNextFilter();
                 });
             }
@@ -1497,18 +1499,18 @@ AntiBannerService.prototype = {
     /**
      * Loads filter rules from remote server
      *
-     * @param filterId Filter identifier
+     * @param filterVersion Filter identifier
      * @param callback Called when filter rules have been loaded
      * @private
      */
-    _loadFilterFromBackend: function (filterId, callback) {
+    _loadFilterFromBackend: function (filterVersion, callback) {
 
-        var filter = this._getFilterById(filterId);
+        var filter = this._getFilterById(filterVersion.filterId);
 
         filter._isDownloading = true;
         EventNotifier.notifyListeners(EventNotifierTypes.START_DOWNLOAD_FILTER, filter);
 
-        var successCallback = function (filterVersion, filterRules) {
+        var successCallback = function (filterRules) {
             Log.info("Retrieved response from server for filter {0}, rules count: {1}", filter.filterId, filterRules.length);
             delete filter._isDownloading;
             filter.version = filterVersion.version;
@@ -1563,18 +1565,18 @@ AntiBannerService.prototype = {
 
     /**
      * Load filter rules from rules storage
-     * @param filterId
+     * @param filterVersion
      * @param callback
      * @private
      */
-    _loadFilterFromRulesStorage: function (filterId, callback) {
+    _loadFilterFromRulesStorage: function (filterVersion, callback) {
 
-        var filter = this._getFilterById(filterId);
+        var filter = this._getFilterById(filterVersion.filterId);
 
         filter._isDownloading = true;
         EventNotifier.notifyListeners(EventNotifierTypes.START_DOWNLOAD_FILTER, filter);
 
-        var successCallback = function (filterVersion, filterRules) {
+        var successCallback = function (filterRules) {
             Log.info("Load local filter {0}, rules count: {1}", filter.filterId, filterRules.length);
             delete filter._isDownloading;
             filter.version = filterVersion.version;
