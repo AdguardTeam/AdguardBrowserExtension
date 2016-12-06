@@ -1,6 +1,6 @@
-! Checksum: g6Ft49DMUv028j11T2pm3A
-! Version: 1.0.6.11
-! TimeUpdated: 2016-12-05T18:01:48.689+04:00
+! Checksum: V9b9BgJAAKCgb9VGLTjaRw
+! Version: 1.0.6.14
+! TimeUpdated: 2016-12-06T17:01:48.106+04:00
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
 ! Title: Adguard Mobile Ads Filter
@@ -33,6 +33,9 @@
 !
 ! Section contains list of advertising networks
 !
+||show.niqiu99.org^$third-party
+||pl.263gmail.org^$third-party
+||slb.gedawang.com^$third-party
 ||ctl.buyt.in^
 ||adv.mxmcdn.net^
 ||api.adflake.com^
@@ -728,6 +731,9 @@
 @@||m.beautypageants.in^$elemhide
 !
 !
+! https://forum.adguard.com/index.php?threads/16553/
+@@||adf.ly^$generichide,genericblock
+@@||static.adf.ly^
 ! https://forum.adguard.com/index.php?threads/16365/
 @@||m.beautypageants.in^$generichide
 ! https://forum.adguard.com/index.php?threads/15379/
@@ -845,6 +851,9 @@ deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important
 !##### TEMPORARY #####
 !
 !#####################
+!
+! https://github.com/AdguardTeam/AdguardFilters/issues/3610
+@@||mafia-rules.net^$app=net.bestmafia
 !
 @@||engine.widespace.com/map/provisioning?appId=com.sofoot$app=com.sofoot
 ! https://github.com/AdguardTeam/AdguardForAndroid/issues/925
@@ -992,6 +1001,7 @@ m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"
 ! https://forum.adguard.com/index.php?threads/10464/
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
 !
+mail.yandex.by,mail.yandex.kz,mail.yandex.ru,mail.yandex.ua##.ns-view-direct
 pornhub.com##.adContainer
 ||addown.pipaw.com/phone/
 m.dm5.com##div[class^="adform"]
