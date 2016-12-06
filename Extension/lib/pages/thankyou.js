@@ -92,7 +92,7 @@ PageController.prototype = {
 		if (this.checked) {
 			contentPage.sendMessage({type: 'addAndEnableFilter', filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID});
 		} else {
-			contentPage.sendMessage({type: 'removeAntiBannerFilter', filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID});
+			contentPage.sendMessage({type: 'disableAntiBannerFilter', filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID});
 		}
     },
 
