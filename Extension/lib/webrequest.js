@@ -20,6 +20,22 @@
     'use strict';
 
     /**
+     * Retrieve referrer url from request details.
+     * Extract referrer by priority:
+     * 1. referrerUrl in requestDetails
+     * 2. url of frame where request was created
+     * 3. url of main frame
+     *
+     * @param requestDetails
+     * @returns {*|Frame}
+     */
+    function getReferrerUrl(requestDetails) {
+        return requestDetails.referrerUrl ||
+            adguard.frames.getFrameUrl(requestDetails.tab, requestDetails.requestFrameId) ||
+            adguard.frames.getMainFrameUrl(requestDetails.tab);
+    }
+
+    /**
      * Process request
      *
      * @param requestDetails
@@ -45,7 +61,8 @@
             return true;
         }
 
-        var referrerUrl = adguard.frames.getFrameUrl(tab, requestDetails.requestFrameId) || adguard.frames.getMainFrameUrl(tab);
+        var referrerUrl = getReferrerUrl(requestDetails);
+
         var requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
         adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
         return !adguard.webRequestService.isRequestBlockedByRule(requestRule);
@@ -104,8 +121,7 @@
         var requestUrl = requestDetails.requestUrl;
         var responseHeaders = requestDetails.responseHeaders;
         var requestType = requestDetails.requestType;
-        // Retrieve referrer
-        var referrerUrl = adguard.frames.getFrameUrl(tab, requestDetails.requestFrameId) || adguard.frames.getMainFrameUrl(tab);
+        var referrerUrl = getReferrerUrl(requestDetails);
 
         adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
 

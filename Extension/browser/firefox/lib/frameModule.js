@@ -186,6 +186,11 @@ var contentPolicyService = {
             type: contentType
         };
 
+        // Save referrer to details
+        if (requestOrigin && requestOrigin.asciiSpec && requestOrigin.asciiSpec.indexOf('http') === 0) {
+            requestDetails.referrerUrl = requestOrigin.asciiSpec;
+        }
+
         sendMessage(messageManager, 'Adguard:should-load', requestDetails);
 
         return this.ACCEPT;

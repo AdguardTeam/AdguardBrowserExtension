@@ -421,6 +421,7 @@
                 requestDetails.parentFrameId = details.parentFrameId;
                 requestDetails.type = details.type;
                 requestDetails.tabId = tabId;
+                requestDetails.referrerUrl = details.referrerUrl;
             },
 
             /**
@@ -519,6 +520,7 @@
 
                 return {
                     requestUrl: URI.asciiSpec,
+                    referrerUrl: details.referrerUrl,
                     tab: {tabId: details.tabId},
                     requestType: getRequestType(details.type, URI.path),
                     frameId: frameId,
