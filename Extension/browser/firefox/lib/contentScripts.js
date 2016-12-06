@@ -286,11 +286,10 @@
             var frameModule = {};
             try {
                 Cu.import(frameModuleURL, frameModule);
-                frameModule.contentPolicyService.unregister();
-                frameModule.interceptHandler.unregister();
+                frameModule.unloadModule();
                 Cu.unload(frameModuleURL);
             } catch (ex) {
-                adguard.console.error('Error while unregister contentPolicyService and interceptHandler: {0}', ex);
+                adguard.console.error('Error while unregister frame module: {0}', ex);
             }
         });
     }
