@@ -1,6 +1,6 @@
-! Checksum: 1hPxr41WlqNybzrn07M2IA
-! Version: 1.0.7.47
-! TimeUpdated: 2016-12-06T02:01:58.180+04:00
+! Checksum: RFEiOyd3bY+eX28G/4Ry5g
+! Version: 1.0.7.51
+! TimeUpdated: 2016-12-07T18:02:20.895+04:00
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on webpages including cookie notices third-party widgets and in-page popups.
 ! Title: Adguard Annoyances Filter
@@ -271,6 +271,9 @@ povarenok.ru##.header-socials
 /wp-content/*/an-temp/*
 @@||ds.bitpit.xyz/advertise.js
 @@||ds.bitpit.xyz/ad-top/advertise.js
+!
+! https://forum.adguard.com/index.php?threads/last-fm-anti-adblock-message-on-the-bottom.16897/
+last.fm#%#var st=window.setInterval;window.setInterval=function(a,b){-1!=Object.toString.call(a).indexOf(".no_ab_enabled")&&st(a,b)};
 !
 kinoafisha.info#@##adblock
 alexfilm.cc##div[style="width: 240px; height: 400px;"]
@@ -2834,6 +2837,7 @@ rozetka.com.ua#%#AG_onLoad(function(){ var e = document.querySelector('a.popup-c
 !
 ! Specific sites
 !
+visnyk.lutsk.ua##div.dgd_stb_box
 richlife7.com##.spu-box
 richlife7.com##.spu-bg
 zn.ua###modal_window
@@ -2871,7 +2875,7 @@ tvrain.ru###promo_bottom_nest
 cyberleninka.ru##.visual-big > .combo-box
 meraklimedya.net###mjpopup
 kinopoisk.ru##.feature_promo
-||static.mailerlite.com^$domain=naked-science.ru
+||static.mailerlite.com^$domain=infokava.com|naked-science.ru
 ||turkusozu.com/js/fancybox/
 community.sony.de##.lia-panel-dialog-modal-valuesurvey
 community.sony.de##.lia-panel-dialog-modal-valuesurvey ~ .ui-widget-overlay
@@ -3722,6 +3726,7 @@ revclouds.com#%#AG_onLoad(function() {document.getElementById("tick-dwn").click(
 !
 ! Unblock context menu
 !
+kpssrehber.com#%#Object.defineProperty(window, 'NSclick', { get: function() { return; } });
 kinogo-2017.com#%#Object.defineProperty(window, 'getSelection', { get: function() { return; } });
 dijitalx.com#%#Object.defineProperty(document, 'oncontextmenu', { get: function() { return; } });
 bilenlerkabilesi.com#%#Object.defineProperty(document, 'oncontextmenu', { get: function() { return; } });

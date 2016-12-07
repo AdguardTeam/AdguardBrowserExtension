@@ -1,6 +1,6 @@
-! Checksum: XAkpJCP5SbuI/w0mVv/CxQ
-! Version: 1.0.43.92
-! TimeUpdated: 2016-12-06T20:00:18.971+04:00
+! Checksum: 8KjHUQ890v7PzYfsFzwpVw
+! Version: 1.0.43.97
+! TimeUpdated: 2016-12-07T18:10:57.798+04:00
 ! Title: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 ! Title: Adguard Russian Filter
@@ -3871,6 +3871,7 @@ vk.city4me.com#$##goo_rekm { height: 101px!important; position: absolute!importa
 @@||capricornus.cc/*/iframe$elemhide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3087
 @@||forums.overclockers.ru/styles/*/*ad*.js
+overclockers.ru#%#document.addEventListener('DOMContentLoaded', function(){ window.$.fn.html = function(){}; });
 overclockers.ru#$#body div#wrapper > table#main_table.shifttop > tbody > tr > td#mainplace > div#contentplace > table.decoblock { position: absolute!important; left: -2000px!important; }
 overclockers.ru#@##topbanners
 overclockers.ru#$##topbanners { position: absolute!important; left: -2000px!important; }
@@ -4077,6 +4078,7 @@ kino-dom.org#$##all_players { display: block!important; }
 ! http://forum.adguard.com/showthread.php?7979
 @@||vse.kz/public/js/jsLoader.js
 ! rutube.ru - anti-adblock message in the player
+@@||ad.mail.ru/crossdomain.xml
 @@||adv.rutube.ru/crossdomain.xml$domain=rutube.ru
 @@||vidigital.ru^$domain=rutube.ru
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1001
@@ -4128,6 +4130,8 @@ sharasoft.com##.noadblock
 ! http://forum.adguard.com/showthread.php?6845
 @@||chingachgook.net/wp-content/themes/*/advert.js
 !
+! https://forum.adguard.com/index.php?threads/17022/
+@@||game2day.org/js/ads.js
 theplace.ru#%#AG_onLoad(function() { $("ins.adsbygoogle").html("anti-antiadblock"); });
 ! uakino.net - anti-adblock message
 @@||uakino.net/templates/uakino/images/banner.gif
@@ -5323,6 +5327,8 @@ turk-sinema.ru#%#Object.defineProperty(window, 'flashLayerAdShowed', { get: func
 !-----------------------
 !------- CSS -----------
 !-----------------------
+! https://forum.adguard.com/index.php?threads/17022/
+game2day.org#$#body > div.container { margin-top: 150px !important; }
 ! https://forum.adguard.com/index.php?threads/16876/
 unian.net#$#.social-shares { visibility: hidden!important; }
 ! https://forum.adguard.com/index.php?threads/16760/
@@ -7500,6 +7506,8 @@ yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua##div[class$="b-direct_message
 mail.yandex.by,mail.yandex.kz,mail.yandex.ru,mail.yandex.ua##.b-direct_message-w-bg
 mail.yandex.by,mail.yandex.kz,mail.yandex.ru,mail.yandex.ua##.ns-view-banner
 mail.yandex.by,mail.yandex.kz,mail.yandex.ru,mail.yandex.ua##.ns-view-messages-direct-box
+! Yandex Почта - реклама после отправки письма
+mail.yandex.by,mail.yandex.kz,mail.yandex.ru,mail.yandex.ua##.mail-Done-Direct.js-direct
 ! Яндекс Карты
 ! https://forum.adguard.com/index.php?threads/12782/
 yandex.by,yandex.ru,yandex.ua##.route-panel-content-view__bla-bla-car-banner-layout
@@ -7561,6 +7569,10 @@ rustorka.com##a[href$=".php"]:not([class]) > :not(img)
 ||et-code.ru/bens/vinos.js$empty,important
 ||bgrndi.com/js/*.js$empty,important
 !
+visnyk.lutsk.ua##.banner-block
+220vk.com###narrow_column > div#user_300x600_dt_max+div[id^="block_str"]
+game2day.org###brand_link
+||game2day.org//uploads/Images/*branding
 sports.ru##.js-active.accordion > div[class$="-teaser"]
 ||playground.ru/download/bg/wot-*.mp4
 playground.ru##button#videoCtrl
@@ -11894,7 +11906,7 @@ zvukoff.ru##.adv-list-top
 ||civic-club.ru/static/partners/
 ||click.opennet.ru/cgi-bin
 ||clock.ru/company/$domain=watch.ru
-||cloudfront.net^$domain=batpic.com|kinovideo.tv|mintmanga.com|allfon.org
+||cloudfront.net^$domain=batpic.com|kinovideo.tv|mintmanga.com|allfon.org|allfon.pro
 ||cnews.ru/rotator.php
 ||coads.akipress.org^
 ||code-br.kcdn.kz/s.php$domain=kolesa.kz|krisha.kz
@@ -13605,6 +13617,7 @@ pornolab.net,pornolab.biz###main_content_wrap > table[cellpadding="2"][width="10
 !
 ! The content replacement rules
 !
+! mail.ru video ads
 ! hdrezka.me - удаление отступа сверху
 ! https://forum.adguard.com/index.php?threads/15975/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3205

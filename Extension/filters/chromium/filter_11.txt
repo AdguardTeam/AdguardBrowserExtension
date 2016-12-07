@@ -1,6 +1,6 @@
-! Checksum: V9b9BgJAAKCgb9VGLTjaRw
-! Version: 1.0.6.14
-! TimeUpdated: 2016-12-06T17:01:48.106+04:00
+! Checksum: TxoYYiq5a0VLJeYgf02LcA
+! Version: 1.0.6.16
+! TimeUpdated: 2016-12-07T17:46:26.301+04:00
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
 ! Title: Adguard Mobile Ads Filter
@@ -33,6 +33,8 @@
 !
 ! Section contains list of advertising networks
 !
+||adserver.unityads.unity3d.com^
+||cdn.unityads.unity3d.com^
 ||show.niqiu99.org^$third-party
 ||pl.263gmail.org^$third-party
 ||slb.gedawang.com^$third-party
@@ -853,7 +855,7 @@ deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important
 !#####################
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3610
-@@||mafia-rules.net^$app=net.bestmafia
+@@||mafia-rules.net^$app=net.bestmafia,document
 !
 @@||engine.widespace.com/map/provisioning?appId=com.sofoot$app=com.sofoot
 ! https://github.com/AdguardTeam/AdguardForAndroid/issues/925
@@ -868,7 +870,6 @@ deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important
 @@||android-api-de.gumtree.com/api/users/*/ads.json
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3348
 ! Extended CSS issue(freeze)
-4pda.ru#@#a[title="Dishonored"][-ext-has="img"]
 4pda.ru#@#.sidebar_border_content > a[rel="nofollow"][-ext-has=">img"]
 4pda.ru#@#aside[id] > div[class][-ext-has='div.sidebar_border_content>a>img[height="400"]']
 4pda.ru#@#aside[id] > div[class][-ext-has='h2:contains(AppPromo)']
