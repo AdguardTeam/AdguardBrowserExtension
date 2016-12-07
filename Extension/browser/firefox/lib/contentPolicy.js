@@ -469,7 +469,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
 
         var referrer;
         if (requestOrigin && requestOrigin.asciiSpec
-            && requestOrigin.asciiSpec.indexOf('http') >= 0) {
+            && requestOrigin.asciiSpec.indexOf('http') === 0) {
             referrer = requestOrigin.asciiSpec;
         } else {
             referrer = this.framesMap.getMainFrameUrl(tab);
