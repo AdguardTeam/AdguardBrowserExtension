@@ -1,6 +1,6 @@
-! Checksum: RFEiOyd3bY+eX28G/4Ry5g
-! Version: 1.0.7.51
-! TimeUpdated: 2016-12-07T18:02:20.895+04:00
+! Checksum: R7c6xhlv4+qowEzvv1w9wQ
+! Version: 1.0.7.56
+! TimeUpdated: 2016-12-08T01:02:29.712+04:00
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on webpages including cookie notices third-party widgets and in-page popups.
 ! Title: Adguard Annoyances Filter
@@ -33,6 +33,8 @@
 !
 !######### Annoying elements (not ads)
 !
+! https://forum.adguard.com/index.php?threads/17032/
+3dnews.ru###youtube-chunk-wrapper
 ! https://forum.adguard.com/index.php?threads/16768/
 ibtimes.co.uk##figure.fullVideo > div.relative.stuck
 ibtimes.co.uk###nl_subscribe_anchor
@@ -554,7 +556,7 @@ aol.com##.game-pre-load
 ##.cookie-consent-ctr
 ##.c-cookie
 ###cookie-policy-bar
-##.cookiewall
+~fd.nl##.cookiewall
 ###cookieconfirm
 ##.eh-cookieinfo
 ##.cookie_alert_message
@@ -2405,6 +2407,7 @@ afkortingen.nu#$##cookie_bg { display: none!important; }
 !
 ! JS rules
 !
+fd.nl#%#AG_onLoad(function() { setTimeout(function() {if(document.getElementsByClassName("cookiewall")[0].isvisible = true){document.getElementById("cookieconsent1").click();}}, 300); });
 volkskrant.nl#%#AG_onLoad(function() { setTimeout(function() {if(document.getElementsByClassName("modal-overlay")[0].isvisible = true){document.getElementsByClassName("button button--accept")[0].click();}}, 300); });
 cookies.frankwatching.com#%#AG_onLoad(function() { setTimeout(function() {document.getElementsByClassName("CookiesOK")[0].click();}, 300); });
 dvhn.nl#%#AG_onLoad(function() { setTimeout(function() {if( $('.notification').is(':visible') ) {document.cookie = "allowCookies=true"; window.location.reload(true);}}, 300); });
@@ -2594,6 +2597,9 @@ mail.ru##.tooltip div.tooltip__box[-ext-has="div"]
 !
 !--- Ads ---
 !
+||ukr-today.com/templates/ukrtoday/banner/
+ukr-today.com##.banner_280
+ukr-today.com##.banner_728
 panzehir.net###sidebar > center > div[class^="ad"] + .widget
 ||erotov.ru/tiz/
 erotov.ru##noindex
@@ -2733,6 +2739,7 @@ sportlive.site##div > div[style$="text-align: center;"] > span
 !
 !--- Social ---
 !
+ukr-today.com##.soc_vidgets
 panzehir.net###sidebar > center > a[target$="_blank"]
 panzehir.net###sidebar > center > b
 !#######################################################
@@ -2837,6 +2844,10 @@ rozetka.com.ua#%#AG_onLoad(function(){ var e = document.querySelector('a.popup-c
 !
 ! Specific sites
 !
+ukr-today.com###fb-back
+politeka.net##div[class^="spu-"]
+comments.ua##.spu-bg
+comments.ua##.spu-box
 visnyk.lutsk.ua##div.dgd_stb_box
 richlife7.com##.spu-box
 richlife7.com##.spu-bg
@@ -3119,6 +3130,10 @@ twgreatdaily.com#$#.body.modal-open { overflow: visible!important; }
 !
 sport-express.ru#$#body.popup { overflow: visible!important; }
 sport-express.ru#$#.show-popup{ display: none!important; }
+!
+catalogmineralov.ru#$#body { overflow: visible!important; }
+catalogmineralov.ru##.modal_bg { display: none!important; }
+catalogmineralov.ru##.modal_window { display: none!important; }
 !#######################################################
 !######### Rules for blocking push-notifications #######
 !#######################################################
@@ -3129,7 +3144,7 @@ sport-express.ru#$#.show-popup{ display: none!important; }
 ||cdn.gravitec.net^$third-party
 ||cdn.jeapie.com^$third-party
 ||cdn.onesignal.com^$third-party
-||cdn.sendpulse.com/js/push/$third-party
+||cdn.sendpulse.com^$third-party
 ||panaur.com^$third-party
 ||push.connect.digital^$third-party
 ||push.esputnik.com.ua^$third-party
@@ -3798,12 +3813,13 @@ ukr.net###sinoptik_container
 ||sinoptik.ua/informers$third-party
 ~sinoptik.ua###SinoptikInformer
 ! Курсы валют
+||kurs.com.ua/informer/$third-party
 ||informer.minfin.com.ua
 rosbalt.ru##.ad_tele
 ! GisMeteo widget
 ##.gsInformer
 /gs_informerClient.s$third-party
-||gismeteo.ua/ajax/getInformer/$third-party
+||gismeteo.*/ajax/getInformer/$third-party
 ! Call-back widget
 ||my.zadarma.com/callbackWidget/js/main.min.js
 !
@@ -3814,3 +3830,5 @@ rosbalt.ru##.ad_tele
 ||smartsuppchat.com/loader.js
 taraftarium24-tv.com###free-chat-nandox
 ||nandox.com/*free-chat^$domain=taraftarium24-tv.com
+anime-skorpik.com###sgeChat
+||sge-chat.skorpik.ru^

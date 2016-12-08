@@ -1,6 +1,6 @@
-! Checksum: 8KjHUQ890v7PzYfsFzwpVw
-! Version: 1.0.43.97
-! TimeUpdated: 2016-12-07T18:10:57.798+04:00
+! Checksum: m/pXepjhtotA9O5J2PhIWg
+! Version: 1.0.44.3
+! TimeUpdated: 2016-12-08T01:00:23.931+04:00
 ! Title: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 ! Title: Adguard Russian Filter
@@ -34,6 +34,7 @@
 !
 ! Содержит доменные имена, использующиеся рекламными сетями.
 !
+||ts-ads.info^$third-party
 ||azsin.ru^$third-party
 ||ibishic.ru^$third-party
 ||media.kahoxa.ru^$third-party
@@ -3804,6 +3805,9 @@ ensage-forum.ru,spec-komp.com#%#(function() { var sto = window.setTimeout, re = 
 @@||ad.admitad.com/3rd-party/advert.js
 @@||ad.admitad.com/3rd-party/*/cookie/?f=CookieChecker.remoteTest
 !
+! https://forum.adguard.com/index.php?threads/16639/
+4pda.ru#%#(function(){ var f = Element.prototype.setAttribute; Element.prototype.setAttribute = function(name, value) { if (name === 'style' && value.indexOf('block') !== -1 && value.indexOf('!important') !== -1) return; this.f = f; this.f(name, value); } })();
+4pda.ru#%#(function(){ var f = Element.prototype.removeAttribute; Element.prototype.removeAttribute = function(attrName) { this.f = f; if (attrName !== 'style') this.f(attrName); } })();
 ! https://forum.adguard.com/index.php?threads/16728/
 ||ritzysponge.com^$third-party
 ! https://forum.adguard.com/index.php?threads/16742/
@@ -3871,7 +3875,7 @@ vk.city4me.com#$##goo_rekm { height: 101px!important; position: absolute!importa
 @@||capricornus.cc/*/iframe$elemhide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3087
 @@||forums.overclockers.ru/styles/*/*ad*.js
-overclockers.ru#%#document.addEventListener('DOMContentLoaded', function(){ window.$.fn.html = function(){}; });
+overclockers.ru#%#document.addEventListener('DOMContentLoaded', function(){ window.$.fn.htmlreadonly = window.$.fn.html; window.$.fn.html = function(){ return this.htmlreadonly(); }; });
 overclockers.ru#$#body div#wrapper > table#main_table.shifttop > tbody > tr > td#mainplace > div#contentplace > table.decoblock { position: absolute!important; left: -2000px!important; }
 overclockers.ru#@##topbanners
 overclockers.ru#$##topbanners { position: absolute!important; left: -2000px!important; }
@@ -5103,6 +5107,8 @@ s4galaxy.ru,3dnews.ru,lenovo-smart.ru#%#Object.defineProperty(window, 'SocialMar
 ! Block web-sockets in old versions of Chrome (older then 47)
 rustorka.com,pise4ka.net,nnm-club.me,nnm-club.ws,nnmclub.to,onlainfilm.ucoz.ua,rutor.is,baskino.club,rutor.info,nnm.me,korzik.net,seasonvar.ru,rsload.net,nnm-club.me,nnmclub.to,rustorka.com,auto.mail.ru,horo.mail.ru,realty.mail.ru,health.mail.ru,afisha.mail.ru,cloud.mail.ru,otvet.mail.ru,pogoda.mail.ru,sport.mail.ru,tv.mail.ru,torg.mail.ru,cars.mail.ru,hi-tech.mail.ru,free-torrent.org,free-torrents.org,free-torrent.pw,free-torrents.pw,ukrinform.ru,radikal.ru,trackeroc.ru,trackerock.ru#%#window.WebSocket = undefined;
 !
+! https://forum.adguard.com/index.php?threads/16929/
+hronika.info#%#Object.defineProperty(window, 'NMimgIdPath', { get: function() { return {}; } });
 ! politeka.net - side banners
 politeka.net#%#window.atob = function() {};
 ! https://forum.adguard.com/index.php?threads/16833/
@@ -5327,6 +5333,8 @@ turk-sinema.ru#%#Object.defineProperty(window, 'flashLayerAdShowed', { get: func
 !-----------------------
 !------- CSS -----------
 !-----------------------
+! azbooki.ru - удаление отступа сверху
+azbooki.ru#$#body { margin-top:0px!important; }
 ! https://forum.adguard.com/index.php?threads/17022/
 game2day.org#$#body > div.container { margin-top: 150px !important; }
 ! https://forum.adguard.com/index.php?threads/16876/
@@ -7466,9 +7474,8 @@ ucoz.ru/informer/
 ||news.online.ua/informer_$third-party
 ||newseek.org^$third-party
 ||noteru.com/banner/$third-party
-||novostimira.biz^$third-party,domain=~novostimira.com
-||novostimira.com.ua$third-party
-||novostimira.com^$third-party
+||novostimira.$domain=~novostimira.biz|~novostimira.com|~novostimira.com.ua|~novostimira.press|~novostimira.ua
+||novostimira.*?v=$script
 ||piter.tv/widget_news/$third-party
 ||promotion.vesti.lv/promotion/$third-party
 ||ravnovesienews.ru^$third-party
@@ -7569,6 +7576,39 @@ rustorka.com##a[href$=".php"]:not([class]) > :not(img)
 ||et-code.ru/bens/vinos.js$empty,important
 ||bgrndi.com/js/*.js$empty,important
 !
+||stroyobzor.ua/assets/files/bins/$image
+stroyobzor.ua##a[target="_blank"][rel="nofollow"] > img
+stroyobzor.ua##.alignright
+iskra-sev.ru##div.region > div[id^="block-block-"] > div.content > a > img
+iskra-sev.ru##div.region-sidebar-second > div[id^="block-block-"] > div.content > p > a > img[style$="width:306px"]
+iskra-sev.ru##div.region-sidebar-second > div[id^="block-block-"] > div.content > p > img[style$="width:306px"]
+||iskra-sev.ru/rek/
+iskra-sev.ru##img[src^="rek/"]
+ruinformer.com##.itembanner
+ruinformer.com##noindex >a[rel="nofollow"] > img
+ruinformer.com##.text_block_widget_100
+sevastopol.su##.bannersList
+||hronika.info/dexq/$script
+||picstraff.ru/v/
+||picstraff.ru/protJS/
+||picstraff.ru/tplpay/$script
+://*.picstraff.ru^
+azbooki.ru##.boom_bar
+nb1000.ru##.boom_bar
+azbooki.ru##.textwidget > center > a > img
+azbooki.ru##.adlitewidget
+azbooki.ru##div[id^="ithemesrotatingimages"]
+politeka.net##.comercial
+hd-720.ucoz.ru##div[id^="brnd"]
+gdeposylka.ru##.footer-link-row
+joxi.ru##.banner
+||mirotools.net/bs/bs.php
+niknews.mk.ua##iframe[src^="http://mirotools.net"]
+niknews.mk.ua###banner
+||aniclub.su/rtr/
+aniclub.su##.shapka
+aniclub.su##.hokblokoreklama
+ritm.tv##.e3lan
 visnyk.lutsk.ua##.banner-block
 220vk.com###narrow_column > div#user_300x600_dt_max+div[id^="block_str"]
 game2day.org###brand_link
@@ -8320,7 +8360,7 @@ alib.ru##[width="234"]
 alib.ru##[width="468"]
 alive-ua.com##.col_l_b
 all-ebooks.com##td.news a[alt^="we_pay_"]
-politeka.net,all-ebooks.com,bigtorrent.org,bigtorrents.ru,dengi.ua,depo.ua,fedpress.ru,fost.ws,freshkino.com,hronika.info,k1news.ru,korrespondent.net,mosmonitor.ru,mport.ua,nakanune.ru,newc.info,nikopolnews.net,petrogazeta.ru,spbdnevnik.ru,therussiantimes.com,unn.com.ua,voffka.com,rusdozor.ru,galka.if.ua##div[id^="n4p_"]
+politeka.net,all-ebooks.com,bigtorrent.org,bigtorrents.ru,dengi.ua,depo.ua,fedpress.ru,fost.ws,freshkino.com,hronika.info,k1news.ru,korrespondent.net,mosmonitor.ru,mport.ua,nakanune.ru,newc.info,nikopolnews.net,petrogazeta.ru,spbdnevnik.ru,therussiantimes.com,unn.com.ua,voffka.com,rusdozor.ru,galka.if.ua,ritm.tv##div[id^="n4p_"]
 all-episodes.com##a[href*="/br1.php?url="]
 all-episodes.net##.goolo-link
 all-episodes.net##body > noindex a[rel="nofollow"]
@@ -10365,7 +10405,6 @@ overclockers.ru##.flashbox
 overclockers.ru##.rastya_zka
 overclockers.ru##.rastyazka_kns
 overclockers.ru##a[href="http://vk.com/enermaxrussia"]
-overclockers.ru##body div#wrapper > table#main_table.shifttop > tbody > tr > td#mainplace > div#contentplace > div.decoblock-content
 overclockers.ru##table[width="160"][cellspacing="5"][cellpadding="2"]
 overclockers.ru##td[width="50%"][valign="top"]
 ovgorskiy.ru##a[href^="http://rtbsystem.com"]
@@ -10477,14 +10516,13 @@ porno2you.org##.ftmenu a[rel="nofollow"]
 porno2you.org##a[href^="http://salmonnz.ucoz.com/"]
 pornodemon.com##.video_box_browse > a[rel="nofollow"]
 pornolab.net,pornolab.biz###page_footer > div[class="tCenter nowrap mrg_12"]
-pornolab.net,pornolab.biz###pl-speedbar
+pornolab.biz,pornolab.cc,pornolab.lib,pornolab.net###pl-speedbar
+pornolab.biz,pornolab.cc,pornolab.lib,pornolab.net##a[href="#"][onclick="sOuter();"]
 pornolab.net,pornolab.biz##.post_body > div[id*="-90"]
 pornolab.net,pornolab.biz##.rk_name
 pornolab.net,pornolab.biz##.rk_price
 pornolab.net,pornolab.biz##a[onclick^="new_vs_go"]
-pornolab.net,pornolab.biz##[class^="lfg"] > a[onclick="s_outer();"]
 pornolab.net,pornolab.biz##div[id^="bn-idx"]
-pornolab.net,pornolab.biz##table[width="100%"] > tbody > tr > td > div[class] > a[onclick="s_outer();"]
 pornolabs.org,tfile.me,unionpeer.org###br_block
 pornoneverdie.com##.fly_center
 pornotia.com###pg-ads-bg
