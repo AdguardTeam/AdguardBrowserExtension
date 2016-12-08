@@ -68,10 +68,10 @@ adguard.frames = (function (adguard) {
 	/**
 	 * Gets main frame URL
 	 *
-	 * @param tab	Tab
+	 * @param tab    Tab
 	 * @returns Frame URL
 	 */
-	var getMainFrameUrl = function(tab){
+	var getMainFrameUrl = function (tab) {
 		return getFrameUrl(tab, 0);
 	};
 
@@ -118,7 +118,7 @@ adguard.frames = (function (adguard) {
 	 * @returns true if Adguard for Windows/Android/Mac is detected
 	 */
 	var isTabAdguardDetected = function (tab) {
-		return adguard.tabs.getTabMetadata(tab.tabId, 'adguardDetected');
+		return adguard.isModuleSupported('integration') && adguard.integration.isActive();
 	};
 
 	/**
@@ -128,7 +128,7 @@ adguard.frames = (function (adguard) {
 	 * @returns true if Adguard for Windows/Android/Mac is detected and tab in white list
 	 */
 	var isTabAdguardWhiteListed = function (tab) {
-		var adguardDetected = adguard.tabs.getTabMetadata(tab.tabId, 'adguardDetected');
+		var adguardDetected = isTabAdguardDetected(tab);
 		var adguardDocumentWhiteListed = adguard.tabs.getTabMetadata(tab.tabId, 'adguardDocumentWhiteListed');
 		return adguardDetected && adguardDocumentWhiteListed;
 	};
@@ -138,7 +138,7 @@ adguard.frames = (function (adguard) {
 	 * @returns Adguard whitelist rule in user filter associated with this tab
 	 */
 	var getTabAdguardUserWhiteListRule = function (tab) {
-		var adguardDetected = adguard.tabs.getTabMetadata(tab.tabId, 'adguardDetected');
+		var adguardDetected = isTabAdguardDetected(tab);
 		var adguardUserWhiteListed = adguard.tabs.getTabMetadata(tab.tabId, 'adguardUserWhiteListed');
 		if (adguardDetected && adguardUserWhiteListed) {
 			return adguard.tabs.getTabMetadata(tab.tabId, 'adguardWhiteListRule');
@@ -150,21 +150,15 @@ adguard.frames = (function (adguard) {
 	 * Update tab info if Adguard for Windows/Android/Mac is detected
 	 *
 	 * @param tab                   Tab
-	 * @param adguardDetected       True if Adguard detected
 	 * @param documentWhiteListed   True if Tab whitelisted by Adguard rule
 	 * @param userWhiteListed       True if Adguard whitelist rule in user filter
-	 * @param headerWhiteListRule   Adguard whitelist rule object
-	 * @param adguardProductName    Adguard product name
-	 * @param adguardRemoveRuleNotSupported True if Adguard Api not supported remove rule
+	 * @param whiteListRule         Whitelist rule object
 	 */
-	var recordAdguardIntegrationForTab = function (tab, adguardDetected, documentWhiteListed, userWhiteListed, headerWhiteListRule, adguardProductName, adguardRemoveRuleNotSupported) {
+	var recordAdguardIntegrationForTab = function (tab, documentWhiteListed, userWhiteListed, whiteListRule) {
 		adguard.tabs.updateTabMetadata(tab.tabId, {
-			adguardDetected: adguardDetected,
 			adguardDocumentWhiteListed: documentWhiteListed,
 			adguardUserWhiteListed: userWhiteListed,
-			adguardWhiteListRule: headerWhiteListRule,
-			adguardProductName: adguardProductName,
-			adguardRemoveRuleNotSupported: adguardRemoveRuleNotSupported
+			adguardWhiteListRule: whiteListRule
 		});
 	};
 
@@ -231,18 +225,20 @@ adguard.frames = (function (adguard) {
 		var canAddRemoveRule = false;
 		var frameRule;
 
-		var adguardDetected = adguard.tabs.getTabMetadata(tabId, 'adguardDetected');
+		var adguardDetected = false;
 		var adguardProductName = '';
 
 		if (!urlFilteringDisabled) {
 
+			adguardDetected = isTabAdguardDetected(tab);
+
 			if (adguardDetected) {
 
-				adguardProductName = adguard.tabs.getTabMetadata(tabId, 'adguardProductName');
+				adguardProductName = adguard.integration.getAppInfo().name;
 
 				documentWhiteListed = adguard.tabs.getTabMetadata(tabId, 'adguardDocumentWhiteListed');
 				userWhiteListed = adguard.tabs.getTabMetadata(tabId, 'adguardUserWhiteListed');
-				canAddRemoveRule = !adguard.tabs.getTabMetadata(tabId, 'adguardRemoveRuleNotSupported') && !(documentWhiteListed && !userWhiteListed);
+				canAddRemoveRule = !(documentWhiteListed && !userWhiteListed);
 				applicationFilteringDisabled = false;
 
 				var adguardWhiteListRule = adguard.tabs.getTabMetadata(tabId, 'adguardWhiteListRule');

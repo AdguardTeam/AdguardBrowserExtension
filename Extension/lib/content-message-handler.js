@@ -339,13 +339,13 @@
             case 'addUserRule':
                 adguard.userrules.addRules([message.ruleText]);
                 if (message.adguardDetected || adguard.frames.isTabAdguardDetected(sender.tab)) {
-                    adguard.integration.addRuleToApp(message.ruleText);
+                    adguard.integration.addRule(message.ruleText);
                 }
                 break;
             case 'removeUserRule':
                 adguard.userrules.removeRule(message.ruleText);
                 if (message.adguardDetected || adguard.frames.isTabAdguardDetected(sender.tab)) {
-                    adguard.integration.removeRuleFromApp(message.ruleText);
+                    adguard.integration.removeRule(message.ruleText);
                 }
                 break;
             case 'onOpenFilteringLogPage':

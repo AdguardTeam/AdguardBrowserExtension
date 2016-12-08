@@ -587,15 +587,6 @@ var WebRequestImpl = {
             return;
         }
 
-        // Set authorization headers for requests to desktop AG
-        if (adguard.integration.isIntegrationRequest(subject.URI.asciiSpec)) {
-            var authHeaders = adguard.integration.getAuthorizationHeaders();
-            for (var i = 0; i < authHeaders.length; i++) {
-                subject.setRequestHeader(authHeaders[i].headerName, authHeaders[i].headerValue, false);
-            }
-            return;
-        }
-
         var tabId;
         try {
             tabId = WebRequestHelper.getTabIdForChannel(subject);
@@ -623,17 +614,6 @@ var WebRequestImpl = {
         if (openerTab && this._checkPopupRule(subject.URI.asciiSpec, openerTab)) {
             subject.cancel(Cr.NS_BINDING_ABORTED);
             adguard.tabs.remove(tabId);
-            return;
-        }
-
-        /**
-         * Override request referrer in integration mode
-         */
-        var tab = {tabId: tabId};
-        if (adguard.integration.shouldOverrideReferrer(tab)) {
-            // Retrieve main frame url
-            var frameUrl = adguard.frames.getMainFrameUrl(tab);
-            subject.setRequestHeader('Referer', frameUrl, false);
         }
     },
 

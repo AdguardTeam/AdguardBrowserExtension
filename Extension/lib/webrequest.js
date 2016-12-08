@@ -51,6 +51,13 @@
             adguard.frames.recordFrame(tab, requestDetails.frameId, requestUrl, requestType);
         }
 
+        /**
+         * Try to find rule associated with loading tab in integration mode.
+         */
+        if (requestType == adguard.RequestTypes.DOCUMENT && adguard.frames.isTabAdguardDetected(tab)) {
+            adguard.integration.checkTabWhiteListRule(tab, requestUrl);
+        }
+
         if (requestType === adguard.RequestTypes.DOCUMENT) {
             // Reset tab button state
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_TAB_BUTTON_STATE, tab, true);
@@ -80,21 +87,6 @@
 
         var tab = requestDetails.tab;
         var headers = requestDetails.requestHeaders;
-
-        if (adguard.isModuleSupported('integration')) {
-            if (adguard.integration.shouldOverrideReferrer(tab)) {
-                // Retrieve main frame url
-                var mainFrameUrl = adguard.frames.getMainFrameUrl(tab);
-                headers = adguard.utils.browser.setHeaderValue(headers, 'Referer', mainFrameUrl);
-                return {
-                    requestHeaders: headers,
-                    modifiedHeaders: [{
-                        name: 'Referer',
-                        value: mainFrameUrl
-                    }]
-                };
-            }
-        }
 
         if (requestDetails.requestType === adguard.RequestTypes.DOCUMENT) {
             // Save ref header
@@ -194,25 +186,6 @@
     adguard.webRequest.onBeforeRequest.addListener(onBeforeRequest, ["<all_urls>"]);
     adguard.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, ["<all_urls>"]);
     adguard.webRequest.onHeadersReceived.addListener(onHeadersReceived, ["<all_urls>"]);
-
-
-    // AG for Windows and Mac checks either request signature or request Referer to authorize request.
-    // Referer cannot be forged by the website so it's ok for add-on authorization.
-    if (adguard.isModuleSupported('integration') && adguard.utils.browser.isChromium()) {
-
-        /* global chrome */
-        chrome.webRequest.onBeforeSendHeaders.addListener(function callback(details) {
-
-            var authHeaders = adguard.integration.getAuthorizationHeaders();
-            var headers = details.requestHeaders;
-            for (var i = 0; i < authHeaders.length; i++) {
-                headers = adguard.utils.browser.setHeaderValue(details.requestHeaders, authHeaders[i].headerName, authHeaders[i].headerValue);
-            }
-
-            return {requestHeaders: headers};
-
-        }, {urls: [adguard.integration.getIntegrationBaseUrl() + "*"]}, ["requestHeaders", "blocking"]);
-    }
 
     if (adguard.isModuleSupported('hitStats')) {
 

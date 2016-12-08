@@ -199,14 +199,6 @@ adguard.webRequestService = (function (adguard) {
     var processRequestResponse = function (tab, requestUrl, referrerUrl, requestType, responseHeaders) {
 
         if (requestType == adguard.RequestTypes.DOCUMENT) {
-            // Check headers to detect Adguard application
-
-            if (adguard.isModuleSupported('integration') && // Integration module may be missing
-                !adguard.prefs.mobile &&  // Mobile Firefox doesn't support integration mode
-                !adguard.utils.browser.isEdgeBrowser()) { // TODO[Edge]: Integration mode is not fully functional in Edge (cannot redefine Referer header yet)
-
-                adguard.integration.checkHeaders(tab, responseHeaders, requestUrl);
-            }
             if (adguard.isModuleSupported('filteringLog')) {
                 // Clear previous events
                 adguard.filteringLog.clearEventsByTabId(tab.tabId);
@@ -216,12 +208,8 @@ adguard.webRequestService = (function (adguard) {
         var requestRule = null;
         var appendLogEvent = false;
 
-        if (adguard.isModuleSupported('integration') && adguard.frames.isTabAdguardDetected(tab)) {
-            //parse rule applied to request from response headers
-            requestRule = adguard.integration.parseAdguardRuleFromHeaders(responseHeaders);
-            appendLogEvent = !adguard.backend.isAdguardAppRequest(requestUrl);
-        } else if (adguard.frames.isTabProtectionDisabled(tab)) { // jshint ignore:line
-            //do nothing
+        if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab)) { // jshint ignore:line
+            // Do nothing
         } else if (requestType == adguard.RequestTypes.DOCUMENT) {
             requestRule = adguard.frames.getFrameWhiteListRule(tab);
             var domain = adguard.frames.getFrameDomain(tab);
@@ -250,7 +238,7 @@ adguard.webRequestService = (function (adguard) {
     var postProcessRequest = function (tab, requestUrl, referrerUrl, requestType, requestRule) {
 
         if (adguard.frames.isTabAdguardDetected(tab)) {
-            //do nothing, log event will be added on response
+            // Do nothing
             return;
         }
 
