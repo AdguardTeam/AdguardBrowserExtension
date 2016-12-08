@@ -138,6 +138,7 @@ exports.main = function (options, callbacks) {
         require('./utils/user-settings');
         require('./filter/integration');
         require('./filter/filtering-log');
+        require('./filter/antibanner');
 
         Log.info('Starting adguard addon...');
 
