@@ -1,6 +1,6 @@
-! Checksum: atJtcwfigNPW1+I2eVGP8Q
-! Version: 1.0.15.14
-! TimeUpdated: 2016-12-05T14:00:55.749+04:00
+! Checksum: wuSYPsTEfFSbJaBKCozF1Q
+! Version: 1.0.15.28
+! TimeUpdated: 2016-12-08T01:00:57.807+04:00
 ! Title: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
@@ -209,6 +209,7 @@ _social-button-
 _social-buttons-
 images/livejournal
 lj_bookmarklet
+abendzeitung-muenchen.de##div[class$="statichtmlbrick module"][-ext-has='div[class$="fb-page"]']
 sporhd.com,karadenizmanset.com,saraykoy.com.tr,cayyolu.com.tr,bugununhaberi.com###page_right div.right_block[-ext-has="div.title.grey:contains(Sosyal Medya)"]
 vioyun.com###sidebar > .widget_text[-ext-has="span:contains(Facebook)"]
 onedio.com##.main > .entry.html[-ext-has="h2:contains(YouTube Kanalımıza Abone)"]
@@ -262,6 +263,11 @@ maskme.ru#$#img[width="88"][height="31"] {visibility: hidden!important;}
 gamesradar.com#$#.shareSocialArticle-wrap { visibility: hidden; }
 softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ||mimimi.tv/?*=*&_=
+ritm.tv##.facebook-widget
+trthaber.com##.wrapper.sosyalAglar
+sgkrehberi.com##.mainBox.adsFace
+sanalokulumuz.com##.freklam
+wiwo.de##.hcf-action-share
 zona.media##section[data-share-id]
 m.focus.de##.social_sticky
 blog.milliyet.com.tr##.s_fb
@@ -1556,6 +1562,8 @@ lcpdfr.com##ul[data-controller$="sharelink"]
 ||widget.breakingburner.com/js/jwidget.js$domain=novayagazeta.ru
 ||wow.ya.ru/ajax/share-counter.xml$third-party
 ||yandex.st/share/static/b-share-icon.png
+##.ShareContent
+##.shareContent
 ##.sticky-shares
 ##.page-social
 ###social_share
@@ -2317,6 +2325,14 @@ livejournal.com##.b-ljtimes-wrapper
 ||mailget.net^$third-party
 /wp-content/plugins/facebook-fanbox-popup/*
 /wp-content/plugins/easy-facebook-likebox/*
+ukr-today.com###fb-back
+politeka.net##div[class^="spu-"]
+comments.ua##.spu-bg
+comments.ua##.spu-box
+visnyk.lutsk.ua##div.dgd_stb_box
+richlife7.com##.spu-box
+richlife7.com##.spu-bg
+izzylaif.com###wbounce-modal
 goldkino.net##div[id^="ffbp"]
 worldsoffood.de##div[id^="fblike"]
 promipool.de###pp_fb_popup_wrapper
@@ -2410,6 +2426,10 @@ twgreatdaily.com#$#.modal-backdrop.fade { display: none!important; }
 twgreatdaily.com#$#.body.modal-open { overflow: visible!important; }
 sport-express.ru#$#body.popup { overflow: visible!important; }
 sport-express.ru#$#.show-popup{ display: none!important; }
+catalogmineralov.ru#$#body { overflow: visible!important; }
+catalogmineralov.ru##.modal_bg { display: none!important; }
+catalogmineralov.ru##.modal_window { display: none!important; }
+@@||yastatic.net/share*/share.js$domain=playground.ru|foxtrot.com.ua|biglion.ru|master-of-orion.ru|auto.ru|ktk.kz|universarium.org|pix.playground.ru|lixty.net
 zenmate.com#@#.social-networks
 @@||kinokrik.net/engine/classes/min/index.php
 @@||apis.google.com/js/plusone.js$domain=watch.nba.com
@@ -2418,20 +2438,16 @@ zenmate.com#@#.social-networks
 @@||sdelanounas.ru/app/themes/sdelanounas/images/social/apple.png
 @@||facebook.com/*/plugins/$domain=dlh.net
 dlh.net#@#.fb-like
-@@||yastatic.net/share2/share.js$domain=foxtrot.com.ua
 @@||api.facebook.com/method/links.getStats$domain=grammarly.com
 belgafiles.com,dakine.com,linkedin.com,way2sms.com#@#.share-box
 @@||yandex.st/share/share.js$domain=splav.ru
 @@||vk.com/js/api/share.js$domain=bobfilm1.net|bobfilm.net
 @@||sol-online.ru/art/sol-board
-@@||yastatic.net/share2/share.js$domain=biglion.ru
 @@||yandex.st/share/share.js$domain=vnukovo.ru
 @@||kinogo720.net/engine/classes/min/index.php$domain=kinogo720.net
 @@||apis.google.com/js/platform.js$domain=sneakernews.com
 @@||orlandoweekly.com/wp-content/plugins/wpsocialite/Socialite/socialite.min.js
-@@||yastatic.net/share/share.js$domain=master-of-orion.ru
 @@||platform.linkedin.com/in.js$domain=youngliving.com
-@@||yastatic.net/share2/share.js$domain=auto.ru|ktk.kz
 skladchik.com#@#.shares
 @@||yandex.st/share/share.js$domain=foxtrot.com.ua
 @@||facebook.com/plugins/video.php
@@ -2440,10 +2456,7 @@ skladchik.com#@#.shares
 @@/share42.js$domain=paraknig.ru
 @@||vk.com/widget_auth.php
 @@||zona.mobi/js/build/libs/likely.js
-@@||yastatic.net/share/share.js$domain=universarium.org
 @@||platform.twitter.com/oct.js$domain=vulcun.com
-@@||yastatic.net/share/share.js$domain=pix.playground.ru
-@@||yastatic.net/share/share.js$domain=lixty.net
 @@||talon.by/squeeze/
 @@||addthis.com/js/*/addthis_widget.js$domain=milli-firka.org
 @@||yandex.st/share/share.js$domain=calculatewater.ru
@@ -2479,3 +2492,4 @@ skladchik.com#@#.shares
 @@||twitter.com/share$third-party,domain=lifehacker.com
 @@||yandex.st/share/share.js$domain=yadi.sk
 @@||platform.twitter.com/widgets.js$domain=webfail.com
+lse.co.uk#@#.shareContent

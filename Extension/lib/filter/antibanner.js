@@ -1637,7 +1637,6 @@ adguard.filters = (function (adguard) {
 
         checkFiltersUpdates: checkFiltersUpdates,
 
-        enableFilter: enableFilter,
         addAndEnableFilters: addAndEnableFilters,
         disableFilter: disableFilter,
         removeFilter: removeFilter,

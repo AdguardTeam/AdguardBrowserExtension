@@ -122,13 +122,6 @@ adguard.backend = (function (adguard) {
         },
         get adguardAppUrl() {
             return this.injectionsUrl + "/adguard-ajax-api/api?";
-        },
-
-        /**
-         * Appends to some requests for analytics
-         */
-        get appInfoParam() {
-            return '&app=ag&v=' + adguard.app.getVersion();
         }
     };
 
@@ -312,9 +305,7 @@ adguard.backend = (function (adguard) {
             }
         };
 
-        var url = settings.filtersMetadataUrl + '?' + settings.appInfoParam;
-        url = addKeyParameter(url);
-        executeRequestAsync(url, "application/json", success, errorCallback);
+        executeRequestAsync(settings.filtersMetadataUrl, "application/json", success, errorCallback);
     };
 
     /**
@@ -326,10 +317,7 @@ adguard.backend = (function (adguard) {
      * @param errorCallback        Called on error
      */
     var loadRemoteFilterRules = function (filterId, useOptimizedFilters, successCallback, errorCallback) {
-
-        var url = getUrlForDownloadFilterRules(filterId, useOptimizedFilters) + '?' + settings.appInfoParam;
-        url = addKeyParameter(url);
-
+        var url = getUrlForDownloadFilterRules(filterId, useOptimizedFilters);
         doLoadFilterRules(filterId, url, successCallback, errorCallback);
     };
 

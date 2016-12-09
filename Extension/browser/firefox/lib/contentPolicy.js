@@ -420,7 +420,8 @@ var WebRequestImpl = {
         }
 
         var referrer;
-        if (requestOrigin && requestOrigin.asciiSpec) {
+        if (requestOrigin && requestOrigin.asciiSpec
+            && requestOrigin.asciiSpec.indexOf('http') === 0) {
             referrer = requestOrigin.asciiSpec;
         } else {
             referrer = adguard.frames.getMainFrameUrl(tab);

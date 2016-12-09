@@ -1,6 +1,6 @@
-! Checksum: 1Bi4R2P6eomapmSI2d652g
-! Version: 1.0.7.42
-! TimeUpdated: 2016-12-05T15:02:11.347+04:00
+! Checksum: dLRKF0izsxd4qMmo9dfkKQ
+! Version: 1.0.7.56
+! TimeUpdated: 2016-12-08T01:02:29.712+04:00
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on webpages including cookie notices third-party widgets and in-page popups.
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
@@ -13,6 +13,7 @@
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+3dnews.ru###youtube-chunk-wrapper
 ibtimes.co.uk##figure.fullVideo > div.relative.stuck
 ibtimes.co.uk###nl_subscribe_anchor
 addons.mozilla.org###site-welcome.site-balloon
@@ -76,6 +77,9 @@ ikinohd.com##.browser-fav
 klerk.ru##.lenta-classified
 torrent-kutusu.blogspot.com##div[class][id="drag-div"]
 ivi.ru###traffic-optimizer-warning
+youtube.com##.ytp-ce-element
+youtube.com##.video-annotations
+||youtube.com/annotations_invideo?$object-subrequest
 xeberle.com##.base-box.mom_box_sc.mom_callout
 livescience.com##.right-rail > div[class^="subscribe"]
 glavpost.com##.useful-slider
@@ -146,6 +150,7 @@ povarenok.ru##.header-socials
 /wp-content/*/an-temp/*
 @@||ds.bitpit.xyz/advertise.js
 @@||ds.bitpit.xyz/ad-top/advertise.js
+last.fm#%#var st=window.setInterval;window.setInterval=function(a,b){-1!=Object.toString.call(a).indexOf(".no_ab_enabled")&&st(a,b)};
 kinoafisha.info#@##adblock
 alexfilm.cc##div[style="width: 240px; height: 400px;"]
 @@||divan.tv$generichide
@@ -410,7 +415,7 @@ aol.com##.game-pre-load
 ##.cookie-consent-ctr
 ##.c-cookie
 ###cookie-policy-bar
-##.cookiewall
+~fd.nl##.cookiewall
 ###cookieconfirm
 ##.eh-cookieinfo
 ##.cookie_alert_message
@@ -2030,6 +2035,9 @@ _europecookielaw.
 ||consent.truste.com^$third-party
 ||iubenda.com^$third-party
 ||r42tag.com^$third-party
+ip-address.org###cookie-bar
+2ip.ru##.cookies-notification
+support.ubi.com##.message--cookie
 alexanderschimpf.de,claireperry.org.uk,duden.de,nordbayerischer-kurier.de,zillya.com###sliding-popup
 ganassurances.fr###gan_privacy
 selexion.be###splash_footer
@@ -2241,6 +2249,7 @@ bellen.com#$#body.cookie-active { margin-top: 0!important; }
 afkortingen.nu#$##page_container { display:block!important; }
 afkortingen.nu#$##footer_container { display:block!important; }
 afkortingen.nu#$##cookie_bg { display: none!important; }
+fd.nl#%#AG_onLoad(function() { setTimeout(function() {if(document.getElementsByClassName("cookiewall")[0].isvisible = true){document.getElementById("cookieconsent1").click();}}, 300); });
 volkskrant.nl#%#AG_onLoad(function() { setTimeout(function() {if(document.getElementsByClassName("modal-overlay")[0].isvisible = true){document.getElementsByClassName("button button--accept")[0].click();}}, 300); });
 cookies.frankwatching.com#%#AG_onLoad(function() { setTimeout(function() {document.getElementsByClassName("CookiesOK")[0].click();}, 300); });
 dvhn.nl#%#AG_onLoad(function() { setTimeout(function() {if( $('.notification').is(':visible') ) {document.cookie = "allowCookies=true"; window.location.reload(true);}}, 300); });
@@ -2354,6 +2363,9 @@ pleer.ru##.mainBlock.pie[-ext-has=".banners_close"]
 buzzhand.com#$#.mash-lightbox[-ext-has="div"] { display: none!important; }
 buzzhand.com#$#body[-ext-has="div"] { overflow: visible!important; }
 mail.ru##.tooltip div.tooltip__box[-ext-has="div"]
+||ukr-today.com/templates/ukrtoday/banner/
+ukr-today.com##.banner_280
+ukr-today.com##.banner_728
 panzehir.net###sidebar > center > div[class^="ad"] + .widget
 ||erotov.ru/tiz/
 erotov.ru##noindex
@@ -2489,6 +2501,7 @@ allkerch.ru##.rect
 belfeed.ru##.cbanner
 belfeed.ru##div[class$="banner"]
 sportlive.site##div > div[style$="text-align: center;"] > span
+ukr-today.com##.soc_vidgets
 panzehir.net###sidebar > center > a[target$="_blank"]
 panzehir.net###sidebar > center > b
 onedio.com##.o-ftr > .main > .f-border > .everywhere
@@ -2577,6 +2590,17 @@ rozetka.com.ua#%#AG_onLoad(function(){ var e = document.querySelector('a.popup-c
 /wp-content/plugins/arscode-ninja-popups/*
 /wp-content/plugins/facebook-fanbox-popup/*
 ||optnmnstr.com^$third-party
+ukr-today.com###fb-back
+politeka.net##div[class^="spu-"]
+comments.ua##.spu-bg
+comments.ua##.spu-box
+visnyk.lutsk.ua##div.dgd_stb_box
+richlife7.com##.spu-box
+richlife7.com##.spu-bg
+zn.ua###modal_window
+zn.ua###overlay_fb_modal
+||muzofond.com/mithdl.js
+izzylaif.com###wbounce-modal
 facebook.com###headerArea > div > div[class="_5hn6"][style]
 fxprosystems.com##.wpmui-popup.no-subtitle
 currenttime.tv##.media-block-wrapper.slide-in-widget
@@ -2608,7 +2632,7 @@ tvrain.ru###promo_bottom_nest
 cyberleninka.ru##.visual-big > .combo-box
 meraklimedya.net###mjpopup
 kinopoisk.ru##.feature_promo
-||static.mailerlite.com^$domain=naked-science.ru
+||static.mailerlite.com^$domain=infokava.com|naked-science.ru
 ||turkusozu.com/js/fancybox/
 community.sony.de##.lia-panel-dialog-modal-valuesurvey
 community.sony.de##.lia-panel-dialog-modal-valuesurvey ~ .ui-widget-overlay
@@ -2834,13 +2858,16 @@ twgreatdaily.com#$#.modal-backdrop.fade { display: none!important; }
 twgreatdaily.com#$#.body.modal-open { overflow: visible!important; }
 sport-express.ru#$#body.popup { overflow: visible!important; }
 sport-express.ru#$#.show-popup{ display: none!important; }
+catalogmineralov.ru#$#body { overflow: visible!important; }
+catalogmineralov.ru##.modal_bg { display: none!important; }
+catalogmineralov.ru##.modal_window { display: none!important; }
 ||cdn.letreach.com^$third-party
 ||api.sociaplus.com^$third-party
 ||bildirim.net^$third-party
 ||cdn.gravitec.net^$third-party
 ||cdn.jeapie.com^$third-party
 ||cdn.onesignal.com^$third-party
-||cdn.sendpulse.com/js/push/$third-party
+||cdn.sendpulse.com^$third-party
 ||panaur.com^$third-party
 ||push.connect.digital^$third-party
 ||push.esputnik.com.ua^$third-party
@@ -3292,6 +3319,7 @@ yaplakal.com,yap.ru#%#AG_onLoad(function() { window.clkUnd = function() {} });
 videogamesblogger.com#%#AG_onLoad(function() { window.num_seconds = 1; });
 ||videogamesblogger.com/javascripts/interstitial.client.js
 revclouds.com#%#AG_onLoad(function() {document.getElementById("tick-dwn").click();});
+kpssrehber.com#%#Object.defineProperty(window, 'NSclick', { get: function() { return; } });
 kinogo-2017.com#%#Object.defineProperty(window, 'getSelection', { get: function() { return; } });
 dijitalx.com#%#Object.defineProperty(document, 'oncontextmenu', { get: function() { return; } });
 bilenlerkabilesi.com#%#Object.defineProperty(document, 'oncontextmenu', { get: function() { return; } });
@@ -3345,11 +3373,12 @@ ukr.net###sinoptik_container
 ||sinoptik.ua/_uploaded_files/informer/
 ||sinoptik.ua/informers$third-party
 ~sinoptik.ua###SinoptikInformer
+||kurs.com.ua/informer/$third-party
 ||informer.minfin.com.ua
 rosbalt.ru##.ad_tele
 ##.gsInformer
 /gs_informerClient.s$third-party
-||gismeteo.ua/ajax/getInformer/$third-party
+||gismeteo.*/ajax/getInformer/$third-party
 ||my.zadarma.com/callbackWidget/js/main.min.js
 ||secure.livechatinc.com^$third-party
 ##embed[src="http://www.xatech.com/web_gear/chat/chat.swf"]
@@ -3357,3 +3386,5 @@ rosbalt.ru##.ad_tele
 ||smartsuppchat.com/loader.js
 taraftarium24-tv.com###free-chat-nandox
 ||nandox.com/*free-chat^$domain=taraftarium24-tv.com
+anime-skorpik.com###sgeChat
+||sge-chat.skorpik.ru^
