@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global contentPage, ExtendedCss, HTMLDocument, XMLDocument */
+/* global contentPage, ExtendedCss, HTMLDocument, XMLDocument, ElementCollapser, CssHitsCounter */
 (function() {
 
     var requestTypeMap = {
@@ -43,6 +43,15 @@
     var isOpera = false;
     var shadowRoot = null;
     var loadTruncatedCss = false;
+
+    /**
+     * Set callback for saving css hits
+     */
+    if (typeof CssHitsCounter !== 'undefined') {
+        CssHitsCounter.setCssHitsFoundCallback(function (stats) {
+            contentPage.sendMessage({type: 'saveCssHitStats', stats: stats});
+        });
+    }
     
     /**
      * Initializing content script
@@ -237,91 +246,6 @@
     };
 
     /**
-     * This function prepares calculation of css hits.
-     * We are waiting for DOMContentLoaded and start calculation.
-     */
-    function prepareCssHitsCounter() {
-        // Document can already be loaded
-        if (['interactive', 'complete'].indexOf(document.readyState) >= 0) {
-            countCssHits();
-        } else {
-            addEventListener('DOMContentLoaded', countCssHits);
-        }
-    }
-
-    /**
-     * This function divides calculation process into tasks.
-     * When calculation finishes, sends results to background page.
-     * See countCssHitsBatch for details.
-     */
-    function countCssHits() {
-
-        // Cleanup event listener
-        removeEventListener('DOMContentLoaded', countCssHits);
-
-        var elements = document.querySelectorAll('*');
-        countCssHitsBatch(elements, 0, 100, [], function (result) {
-            if (result.length > 0) {
-                contentPage.sendMessage({type: 'saveCssHitStats', stats: result});
-            }
-        });
-    }
-
-    /**
-     * Main calculation function.
-     * 1. Select sub collection from elements.
-     * 2. For each element from sub collection: retrieve calculated css 'content' attribute and if it contains 'adguard' marker then retrieve rule text and filter identifier.
-     * 3. Start next task with some delay.
-     *
-     * @param elements Collection of all elements
-     * @param start Start of batch
-     * @param end End of batch
-     * @param result Collection for save result
-     * @param callback Finish callback
-     */
-    function countCssHitsBatch(elements, start, end, result, callback) {
-
-        var length = Math.min(end, elements.length);
-        for (var i = start; i < length; i++) {
-
-            var element = elements[i];
-            var style = getComputedStyle(element);
-            var content = style.content;
-            if (!content || content.indexOf('adguard') < 0) {
-                continue;
-            }
-
-            var filterIdAndRuleText = decodeURIComponent(content);
-            // 'content' value includes open and close quotes.
-            filterIdAndRuleText = filterIdAndRuleText.substring(8, content.length - 1);
-            // Attribute 'content' in css looks like: {content: 'adguard{filterId};{ruleText}'}
-            var index = filterIdAndRuleText.indexOf(';');
-            if (index < 0) {
-                continue;
-            }
-            var filterId = filterIdAndRuleText.substring(0, index);
-            var ruleText = filterIdAndRuleText.substring(index + 1);
-            result.push({
-                filterId: filterId,
-                ruleText: ruleText
-            });
-        }
-
-        if (length === elements.length) {
-            callback(result);
-            return;
-        }
-
-        start = end;
-        end += 100;
-
-        // Start next task with some delay
-        setTimeout(function () {
-            countCssHitsBatch(elements, start, end, result, callback);
-        }, 100);
-    }
-
-    /**
      * Loads CSS and JS injections
      */
     var tryLoadCssAndScripts = function () {
@@ -374,8 +298,11 @@
             addIframeHidingStyle();
         }
 
-        if (response && response.selectors && response.selectors.cssHitsCounterEnabled) {
-            prepareCssHitsCounter();
+        if (typeof CssHitsCounter !== 'undefined' &&
+            response && response.selectors && response.selectors.cssHitsCounterEnabled) {
+
+            // Start css hits calculation
+            CssHitsCounter.count();
         }
     };
     
@@ -462,9 +389,9 @@
      */
     var protectStyleElementContent = function (protectStyleEl) {
         var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-        if (!MutationObserver)
+        if (!MutationObserver){
             return;
-
+        }
         /* observer, which observe protectStyleEl inner changes, without deleting styleEl */
         var innerObserver = new MutationObserver(function (mutations) {
 
@@ -518,9 +445,9 @@
      */
     var protectStyleElementFromRemoval = function (protectStyleEl, useShadowDom) {
         var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-        if (!MutationObserver)
+        if (!MutationObserver){
             return;
-
+        }
         /* observer, which observe deleting protectStyleEl */
         var outerObserver = new MutationObserver(function (mutations) {
             for (var i = 0; i < mutations.length; i++) {

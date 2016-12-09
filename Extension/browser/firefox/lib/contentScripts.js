@@ -126,6 +126,7 @@
         registerPageContentScript([
             'lib/libs/extended-css-1.0.6.js',
             'lib/utils/element-collapser.js',
+            'lib/utils/css-hits-counter.js',
             'lib/content-script/content-script.js',
             'lib/content-script/preload.js'
         ], 'document_start', true);
