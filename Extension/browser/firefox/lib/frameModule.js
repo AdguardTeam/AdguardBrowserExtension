@@ -547,10 +547,7 @@ var unloadModule = function () { // jshint ignore:line
     contentPolicyService.unregister();
     interceptHandler.unregister();
     documentObserver.unregister();
-    Cu.reportError('Adguard addon: Frame Module was unloaded.');
 };
 
 contentPolicyService.register();
 interceptHandler.register();
-
-Cu.reportError('Adguard addon: Frame Module was loaded.');
