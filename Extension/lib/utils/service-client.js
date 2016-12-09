@@ -135,9 +135,7 @@ ServiceClient.prototype = {
 			}
 		}.bind(this);
 
-		var url = this.filtersMetadataUrl + '?' + this.APP_PARAM;
-		url = this._addKeyParameter(url);
-		this._executeRequestAsync(url, "application/json", success, errorCallback);
+		this._executeRequestAsync(this.filtersMetadataUrl, "application/json", success, errorCallback);
 	},
 
 	/**
@@ -149,10 +147,7 @@ ServiceClient.prototype = {
 	 * @param errorCallback        Called on error
 	 */
 	loadFilterRules: function (filterId, useOptimizedFilters, successCallback, errorCallback) {
-
-		var url = this._getFilterRulesUrl(filterId, useOptimizedFilters) + '?' + this.APP_PARAM;
-		url = this._addKeyParameter(url);
-
+		var url = this._getFilterRulesUrl(filterId, useOptimizedFilters);
 		this._loadFilterRules(filterId, url, successCallback, errorCallback);
 	},
 
