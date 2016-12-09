@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>Режим интеграции</title>
+
+    <meta charset="utf-8">
+    <link type="text/css" rel="stylesheet" href="skin/fonts.css">
+    <link type="text/css" rel="stylesheet" href="skin/style.css">
+    <link type="text/css" rel="stylesheet" href="skin/my.css">
+    <link type="text/css" rel="stylesheet" href="skin/nprogress.css"/>
+
+    <#if browser.name() == "CHROMIUM" || browser.name() == "EDGE" || browser.name() == "SAFARI">
+        <script type="text/javascript" src="../lib/libs/jquery-2.2.4.min.js"></script>
+        <script type="text/javascript" src="../lib/libs/nprogress.patched.js"></script>
+        <script type="text/javascript" src="../lib/content-script/adguard-content.js"></script>
+        <script type="text/javascript" src="../lib/content-script/common-script.js"></script>
+        <script type="text/javascript" src="../lib/content-script/content-script.js"></script>
+        <script type="text/javascript" src="../lib/content-script/content-utils.js"></script>
+        <script type="text/javascript" src="../lib/content-script/i18n-helper.js"></script>
+        <script type="text/javascript" src="../lib/pages/i18n.js"></script>
+        <script type="text/javascript" src="../lib/pages/integration.js"></script>
+    </#if>
+    <link rel="shortcut icon" href="skin/favicon.png"/>
+</head>
+<body>
+<header class="header downloading">
+    <div class="wrap cf">
+        <a class="header-logo" href="">
+            Adguard
+        </a>
+    </div>
+</header>
+
+<div class="settings-page downloading">
+
+    <div class="wrap">
+
+        <div class="settings-page-title" id="statusText"></div>
+
+        <div class="integration-status integration-success hidden">
+            <a id="disableIntegration" class="spl-user-add-spn"></a>
+        </div>
+
+        <div class="integration-status integration-rejected hidden">
+            <a id="enableIntegration" class="spl-user-add-spn"></a>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

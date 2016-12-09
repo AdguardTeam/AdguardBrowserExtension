@@ -617,7 +617,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     adguard.tabs.onUpdated.addListener(updateTabIconAndContextMenu);
 
     // Reload frame data on tab activation
-    adguard.tabs.onActivated.addListener(function(tab){
+    adguard.tabs.onActivated.addListener(function (tab) {
         adguard.frames.reloadFrameData(tab);
     });
 
@@ -656,16 +656,17 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
     // Adguard Integration events
     adguard.integration.onStateChanged.addListener(function (state) {
-        if (state === adguard.integration.states.PENDING) {
-            openTab(getPageUrl('integration.html'), {
-                active: true
-            });
-        } else { // active or rejected
-            adguard.tabs.forEach(updateTabIconAndContextMenu);
-        }
+        adguard.tabs.forEach(updateTabIconAndContextMenu);
         if (state === adguard.integration.states.ACTIVE) {
             adguard.settings.changeShowInfoAboutAdguardFullVersion(false);
         }
+    });
+
+    adguard.integration.onAuthPending.addListener(function () {
+        openTab(getPageUrl('integration.html'), {
+            active: true,
+            activateSameTab: true
+        });
     });
 
     //close all page on unload

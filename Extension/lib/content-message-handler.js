@@ -245,6 +245,18 @@
                 break;
             case 'checkRequestFilterReady':
                 return {ready: adguard.requestFilter.isReady()};
+            case 'checkIntegrationStatus':
+                return {
+                    state: adguard.integration.getState(),
+                    appInfo: adguard.integration.getAppInfo(),
+                    disabledByUser: adguard.settings.isIntegrationDisabled()
+                };
+            case 'disableIntegration':
+                adguard.integration.disable();
+                break;
+            case 'enableIntegration':
+                adguard.integration.enable();
+                break;
             case 'addAndEnableFilter':
                 adguard.filters.addAndEnableFilters([message.filterId]);
                 break;

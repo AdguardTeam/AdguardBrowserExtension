@@ -37,10 +37,8 @@
             }
         });
 
-        adguard.integration.onStateChanged.addListener(function (state) {
-            if (state !== adguard.integration.states.PENDING) {
-                adguard.SafariContentBlocker.updateContentBlocker();
-            }
+        adguard.integration.onStateChanged.addListener(function () {
+            adguard.SafariContentBlocker.updateContentBlocker();
         });
 
         // When content blocker is updated we need to save finally converted rules count and over limit flag

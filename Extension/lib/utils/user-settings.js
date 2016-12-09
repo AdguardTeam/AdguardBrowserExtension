@@ -33,7 +33,8 @@ adguard.settings = (function (adguard) {
         DISABLE_COLLECT_HITS: 'hits-count-disabled',
         DISABLE_SHOW_CONTEXT_MENU: 'context-menu-disabled',
         USE_OPTIMIZED_FILTERS: 'use-optimized-filters',
-        DEFAULT_WHITE_LIST_MODE: 'default-whitelist-mode'
+        DEFAULT_WHITE_LIST_MODE: 'default-whitelist-mode',
+        DISABLE_INTEGRATION: 'integration-disabled'
     };
 
     var properties = Object.create(null);
@@ -190,6 +191,14 @@ adguard.settings = (function (adguard) {
         setProperty(settings.DEFAULT_WHITE_LIST_MODE, enabled);
     };
 
+    var isIntegrationDisabled = function () {
+        return getProperty(settings.DISABLE_INTEGRATION);
+    };
+
+    var changeIntegrationDisabled = function (disabled) {
+        setProperty(settings.DISABLE_INTEGRATION, disabled);
+    };
+
     var api = {};
 
     // Expose settings to api
@@ -223,6 +232,8 @@ adguard.settings = (function (adguard) {
     api.isDefaultWhiteListMode = isDefaultWhiteListMode;
     api.isUseOptimizedFiltersEnabled = isUseOptimizedFiltersEnabled;
     api.changeDefaultWhiteListMode = changeDefaultWhiteListMode;
+    api.isIntegrationDisabled = isIntegrationDisabled;
+    api.changeIntegrationDisabled = changeIntegrationDisabled;
 
     return api;
 

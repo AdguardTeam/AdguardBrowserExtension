@@ -202,7 +202,7 @@ adguard.integration = (function (adguard, api) {
     var CONNECTED_STATE = 'connected'; // Connection to websocket was established
     var ACTIVE_STATE = 'active';    // Authorization passed. Integation is enabled
     var REJECTED_STATE = 'rejected'; // Authorization failed or integration disabled by user or application.
-    var PENDING_STATE = 'pending'; // Pending authorization
+    var AUTH_PENDING_STATE = 'auth_pending'; // Pending authorization
     var CLOSE_STATE = 'close'; // Connection to websocket was closed
     var NONE_STATE = 'none'; // Default state. In this state we are trying to connect to websocket if it's possible
 
@@ -216,15 +216,20 @@ adguard.integration = (function (adguard, api) {
 
     /**
      * Notifications for integration state changes.
-     * Possible states are: active (integration is active), pending (pending authorization), rejected (integration rejected by user or application)
+     * Possible states are: active (integration is active), rejected (integration rejected by user or application), none (state is unknown)
      */
     var onStateChangedChannel = adguard.utils.channels.newChannel();
 
     var STATES = {
-        PENDING: 'pending',
         ACTIVE: 'active',
-        REJECTED: 'rejected'
+        REJECTED: 'rejected',
+        NONE: 'none'
     };
+
+    /**
+     * Fired when application send auth_pending message
+     */
+    var onAuthPendingChannel = adguard.utils.channels.newChannel();
 
     /**
      * Returns next port or null if ports were ended.
@@ -314,7 +319,7 @@ adguard.integration = (function (adguard, api) {
                 transitionState(REJECTED_STATE);
                 break;
             case 'auth_request':
-                transitionState(PENDING_STATE);
+                transitionState(AUTH_PENDING_STATE);
                 break;
             case 'auth_success':
                 transitionState(ACTIVE_STATE);
@@ -411,8 +416,8 @@ adguard.integration = (function (adguard, api) {
                 }
                 wsWrapper.disconnect(4001, 'Force disconnect'); // Force disconnect websocket. In this case we don't receive 'close' websocket event.
                 break;
-            case PENDING_STATE:
-                // Do nothing here. See below
+            case AUTH_PENDING_STATE:
+                onAuthPendingChannel.notify();
                 break;
             case CLOSE_STATE:
                 transitionState(NONE_STATE);
@@ -436,9 +441,7 @@ adguard.integration = (function (adguard, api) {
 
         if (newState === ACTIVE_STATE) {
             onStateChangedChannel.notify(STATES.ACTIVE);
-        } else if (newState === PENDING_STATE) {
-            onStateChangedChannel.notify(STATES.PENDING);
-        } else {
+        } else if (newState === REJECTED_STATE) {
             onStateChangedChannel.notify(STATES.REJECTED);
         }
     }
@@ -447,7 +450,7 @@ adguard.integration = (function (adguard, api) {
     wsWrapper.onMessage.addListener(handleMessage);
 
     /**
-     * Checks integration is active state
+     * Checks integration is in active state
      * @returns {boolean}
      */
     var isActive = function () {
@@ -455,10 +458,41 @@ adguard.integration = (function (adguard, api) {
     };
 
     /**
+     * Returns integration state. See STATES object
+     */
+    var getState = function () {
+        if (integrationState === ACTIVE_STATE) {
+            return STATES.ACTIVE;
+        } else if (integrationState === REJECTED_STATE) {
+            return STATES.REJECTED;
+        } else {
+            return STATES.NONE;
+        }
+    };
+
+    /**
      * Returns desktop Adguard application info
      */
     var getAppInfo = function () {
         return {name: integrationInfo.name || 'Adguard'};
+    };
+
+    /**
+     * Enable integration and try to find Adguard application
+     */
+    var enable = function () {
+        adguard.settings.changeIntegrationDisabled(false);
+        // reset port discovery index
+        nextPortIndex = 0;
+        transitionState(NONE_STATE);
+    };
+
+    /**
+     * Disable integration and disconnect from Adguard application
+     */
+    var disable = function () {
+        adguard.settings.changeIntegrationDisabled(true);
+        transitionState(REJECTED_STATE);
     };
 
     /**
@@ -512,6 +546,10 @@ adguard.integration = (function (adguard, api) {
      */
     var checkTabWhiteListRule = function (tab, url) {
 
+        if (url.indexOf('http') !== 0) {
+            return;
+        }
+
         findRule(url, null, 'DOCUMENT', function (rule) {
 
             var documentWhiteListRule = null;
@@ -529,10 +567,13 @@ adguard.integration = (function (adguard, api) {
         });
     };
 
-    // Try connect on application initialization
     adguard.listeners.addListener(function (event) {
         if (event === adguard.listeners.APPLICATION_INITIALIZED) {
-            transitionState(NONE_STATE);
+            if (adguard.settings.isIntegrationDisabled()) {
+                transitionState(REJECTED_STATE);
+            } else {
+                transitionState(NONE_STATE);
+            }
         }
     });
 
@@ -542,6 +583,10 @@ adguard.integration = (function (adguard, api) {
 
     api.isActive = isActive;
     api.getAppInfo = getAppInfo;
+    api.getState = getState;
+
+    api.enable = enable;
+    api.disable = disable;
 
     api.addRule = addRule;
     api.removeRule = removeRule;
@@ -549,6 +594,7 @@ adguard.integration = (function (adguard, api) {
     api.checkTabWhiteListRule = checkTabWhiteListRule;
 
     api.onStateChanged = onStateChangedChannel;
+    api.onAuthPending = onAuthPendingChannel;
     api.states = STATES;
 
     return api;
