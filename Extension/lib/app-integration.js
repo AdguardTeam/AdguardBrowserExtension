@@ -20,7 +20,7 @@
  * Communication is based on websocket.
  * Protocol details see here: https://gist.github.com/atropnikov/479d8c7a6d83b5fd93f40b02797f8301 (TODO: change link)
  */
-adguard.integration = (function (adguard) {
+adguard.integration = (function (adguard, api) {
 
     /**
      * Simple api for working with websocket.
@@ -203,6 +203,7 @@ adguard.integration = (function (adguard) {
     var ACTIVE_STATE = 'active';    // Authorization passed. Integation is enabled
     var REJECTED_STATE = 'rejected'; // Authorization failed or integration disabled by user or application.
     var PENDING_STATE = 'pending'; // Pending authorization
+    var CLOSE_STATE = 'close'; // Connection to websocket was closed
     var NONE_STATE = 'none'; // Default state. In this state we are trying to connect to websocket if it's possible
 
     var integrationState = null; // Current integration state
@@ -218,6 +219,12 @@ adguard.integration = (function (adguard) {
      * Possible states are: active (integration is active), pending (pending authorization), rejected (integration rejected by user or application)
      */
     var onStateChangedChannel = adguard.utils.channels.newChannel();
+
+    var STATES = {
+        PENDING: 'pending',
+        ACTIVE: 'active',
+        REJECTED: 'rejected'
+    };
 
     /**
      * Returns next port or null if ports were ended.
@@ -370,7 +377,7 @@ adguard.integration = (function (adguard) {
                 transitionState(CONNECTED_STATE);
                 break;
             case 'close':
-                transitionState(NONE_STATE);
+                transitionState(CLOSE_STATE);
                 break;
             case 'error':
                 // Do nothing
@@ -379,6 +386,10 @@ adguard.integration = (function (adguard) {
     }
 
     function transitionState(newState) {
+
+        if (newState === integrationState) {
+            return;
+        }
 
         adguard.console.debug('Transition to state {0}', newState);
 
@@ -403,6 +414,9 @@ adguard.integration = (function (adguard) {
             case PENDING_STATE:
                 // Do nothing here. See below
                 break;
+            case CLOSE_STATE:
+                transitionState(NONE_STATE);
+                break;
             case NONE_STATE:
                 // Try to connect
                 var port = getNextPort();
@@ -421,11 +435,11 @@ adguard.integration = (function (adguard) {
         }
 
         if (newState === ACTIVE_STATE) {
-            onStateChangedChannel.notify('active');
+            onStateChangedChannel.notify(STATES.ACTIVE);
         } else if (newState === PENDING_STATE) {
-            onStateChangedChannel.notify('pending');
+            onStateChangedChannel.notify(STATES.PENDING);
         } else {
-            onStateChangedChannel.notify('rejected');
+            onStateChangedChannel.notify(STATES.REJECTED);
         }
     }
 
@@ -490,49 +504,53 @@ adguard.integration = (function (adguard) {
         });
     };
 
+    /**
+     * Try to find DOCUMENT whitelist rule for tab.
+     * If it was found then store rule to tab metadata.
+     * @param tab Tab
+     * @param url Tab Url
+     */
     var checkTabWhiteListRule = function (tab, url) {
 
         findRule(url, null, 'DOCUMENT', function (rule) {
 
-            var documentWhiteListed = false;
-            var userWhiteListed = false;
-            var whiteListRule = null;
+            var documentWhiteListRule = null;
 
             if (rule && rule.whiteListRule &&
                 rule instanceof adguard.rules.UrlFilterRule &&
                 rule.isFiltered(url, false, adguard.RequestTypes.DOCUMENT) &&
                 rule.checkContentTypeIncluded('DOCUMENT')) {
 
-                documentWhiteListed = true;
-                userWhiteListed = rule.filterId === adguard.utils.filters.USER_FILTER_ID;
-                whiteListRule = rule;
+                documentWhiteListRule = rule;
             }
 
-            // Save integration info to framesMap
-            adguard.frames.recordAdguardIntegrationForTab(tab, documentWhiteListed, userWhiteListed, whiteListRule);
-
-            onStateChangedChannel.notify('active', tab);
+            // Save whitelist rule to framesMap
+            adguard.frames.recordTabAdguardDocumentWhiteListRule(tab, documentWhiteListRule);
         });
     };
 
-    // Try connect
-    transitionState(NONE_STATE);
+    // Try connect on application initialization
+    adguard.listeners.addListener(function (event) {
+        if (event === adguard.listeners.APPLICATION_INITIALIZED) {
+            transitionState(NONE_STATE);
+        }
+    });
 
     adguard.unload.when(function () {
         transitionState(REJECTED_STATE);
     });
 
-    return {
+    api.isActive = isActive;
+    api.getAppInfo = getAppInfo;
 
-        isActive: isActive,
-        getAppInfo: getAppInfo,
+    api.addRule = addRule;
+    api.removeRule = removeRule;
+    api.findRule = findRule;
+    api.checkTabWhiteListRule = checkTabWhiteListRule;
 
-        addRule: addRule,
-        removeRule: removeRule,
-        findRule: findRule,
+    api.onStateChanged = onStateChangedChannel;
+    api.states = STATES;
 
-        onStateChanged: onStateChangedChannel,
-        checkTabWhiteListRule: checkTabWhiteListRule
-    };
+    return api;
 
-})(adguard);
+})(adguard, adguard.integration || {});

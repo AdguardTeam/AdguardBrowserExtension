@@ -45,7 +45,7 @@
 		var sourceTab = {tabId: details.sourceTabId};
 
 		// Don't process this request
-		if (adguard.frames.isTabAdguardDetected(sourceTab)) {
+		if (adguard.integration.isActive()) {
 			return;
 		}
 

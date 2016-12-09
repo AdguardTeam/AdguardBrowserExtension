@@ -18,7 +18,7 @@
 /**
  * Object for log http requests
  */
-adguard.filteringLog = (function (adguard) {
+adguard.filteringLog = (function (adguard, api) {
 
     'use strict';
 
@@ -207,16 +207,15 @@ adguard.filteringLog = (function (adguard) {
         removeTabById(tab.tabId);
     });
 
-    return {
+    api.synchronizeOpenTabs = synchronizeOpenTabs;
 
-        synchronizeOpenTabs: synchronizeOpenTabs,
+    api.getFilteringInfoByTabId = getFilteringInfoByTabId;
+    api.addEvent = addEvent;
+    api.clearEventsByTabId = clearEventsByTabId;
 
-        getFilteringInfoByTabId: getFilteringInfoByTabId,
-        addEvent: addEvent,
-        clearEventsByTabId: clearEventsByTabId,
+    api.onOpenFilteringLogPage = onOpenFilteringLogPage;
+    api.onCloseFilteringLogPage = onCloseFilteringLogPage;
 
-        onOpenFilteringLogPage: onOpenFilteringLogPage,
-        onCloseFilteringLogPage: onCloseFilteringLogPage
-    };
+    return api;
 
-})(adguard);
+})(adguard, adguard.filteringLog || {});

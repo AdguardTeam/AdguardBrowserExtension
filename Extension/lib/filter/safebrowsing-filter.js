@@ -21,7 +21,7 @@
  * http://adguard.com/en/how-malware-blocked.html#extension
  */
 
-adguard.safebrowsing = (function (adguard, global) {
+adguard.safebrowsing = (function (adguard, global, api) {
 
     /**
      * Cache with maxCacheSize stored in local storage.
@@ -285,46 +285,12 @@ adguard.safebrowsing = (function (adguard, global) {
     }
 
     /**
-     * Checks URL with safebrowsing filter.
-     * http://adguard.com/en/how-malware-blocked.html#extension
-     *
-     * @param requestUrl Request URL
-     * @param referrerUrl Referrer URL
-     * @param safebrowsingCallback Called when check has been finished
-     * @param incognitoTab Tab incognito mode
-     */
-    var checkSafebrowsingFilter = function (requestUrl, referrerUrl, safebrowsingCallback, incognitoTab) {
-
-        if (!adguard.settings.getSafebrowsingInfo().enabled) {
-            return;
-        }
-
-        adguard.console.debug("Checking safebrowsing filter for {0}", requestUrl);
-
-        var callback = function (sbList) {
-
-            if (!sbList) {
-                adguard.console.debug("No safebrowsing rule found");
-                return;
-            }
-            adguard.console.debug("Following safebrowsing filter has been fired: {0}", sbList);
-            if (!incognitoTab && adguard.settings.getSafebrowsingInfo().sendStats) {
-                adguard.backend.trackSafebrowsingStats(requestUrl);
-            }
-            safebrowsingCallback(getErrorPageURL(requestUrl, referrerUrl, sbList));
-
-        };
-
-        lookupUrlWithCallback(requestUrl, callback);
-    };
-
-    /**
      * Performs lookup to safebrowsing service
      *
      * @param requestUrl        Request URL
      * @param lookupUrlCallback Called on successful check
      */
-    var lookupUrlWithCallback = function (requestUrl, lookupUrlCallback) {
+    function lookupUrlWithCallback(requestUrl, lookupUrlCallback) {
 
         var host = adguard.utils.url.getHost(requestUrl);
         if (!host) {
@@ -384,6 +350,59 @@ adguard.safebrowsing = (function (adguard, global) {
         }
 
         adguard.backend.lookupSafebrowsing(shortHashes, successCallback, errorCallback);
+    }
+
+    /**
+     * Access Denied page URL
+     *
+     * @param requestUrl    Request URL
+     * @param referrerUrl   Referrer URL
+     * @param sbList        Safebrowsing list
+     * @returns page URL
+     */
+    function getErrorPageURL(requestUrl, referrerUrl, sbList) {
+        var listName = sbList || "malware";
+        var isMalware = adguard.utils.strings.contains(listName, "malware");
+        var url = 'pages/sb.html';
+        url += "?malware=" + isMalware;
+        url += "&host=" + encodeURIComponent(adguard.utils.url.getHost(requestUrl));
+        url += "&url=" + encodeURIComponent(requestUrl);
+        url += "&ref=" + encodeURIComponent(referrerUrl);
+        return url;
+    }
+
+    /**
+     * Checks URL with safebrowsing filter.
+     * http://adguard.com/en/how-malware-blocked.html#extension
+     *
+     * @param requestUrl Request URL
+     * @param referrerUrl Referrer URL
+     * @param safebrowsingCallback Called when check has been finished
+     * @param incognitoTab Tab incognito mode
+     */
+    var checkSafebrowsingFilter = function (requestUrl, referrerUrl, safebrowsingCallback, incognitoTab) {
+
+        if (!adguard.settings.getSafebrowsingInfo().enabled) {
+            return;
+        }
+
+        adguard.console.debug("Checking safebrowsing filter for {0}", requestUrl);
+
+        var callback = function (sbList) {
+
+            if (!sbList) {
+                adguard.console.debug("No safebrowsing rule found");
+                return;
+            }
+            adguard.console.debug("Following safebrowsing filter has been fired: {0}", sbList);
+            if (!incognitoTab && adguard.settings.getSafebrowsingInfo().sendStats) {
+                adguard.backend.trackSafebrowsingStats(requestUrl);
+            }
+            safebrowsingCallback(getErrorPageURL(requestUrl, referrerUrl, sbList));
+
+        };
+
+        lookupUrlWithCallback(requestUrl, callback);
     };
 
     /**
@@ -400,35 +419,14 @@ adguard.safebrowsing = (function (adguard, global) {
         safebrowsingCache.cache.saveValue(host, SB_WHITE_LIST, Date.now() + TRUSTED_TTL);
     };
 
-    /**
-     * Access Denied page URL
-     *
-     * @param requestUrl    Request URL
-     * @param referrerUrl   Referrer URL
-     * @param sbList        Safebrowsing list
-     * @returns page URL
-     */
-    var getErrorPageURL = function (requestUrl, referrerUrl, sbList) {
-        var listName = sbList || "malware";
-        var isMalware = adguard.utils.strings.contains(listName, "malware");
-        var url = 'pages/sb.html';
-        url += "?malware=" + isMalware;
-        url += "&host=" + encodeURIComponent(adguard.utils.url.getHost(requestUrl));
-        url += "&url=" + encodeURIComponent(requestUrl);
-        url += "&ref=" + encodeURIComponent(referrerUrl);
-        return url;
-    };
+    api.checkSafebrowsingFilter = checkSafebrowsingFilter;
+    api.addToSafebrowsingTrusted = addToSafebrowsingTrusted;
 
-    return {
+    // Test cases
+    api.extractHosts = extractHosts;
+    api.createHashesMap = createHashesMap;
+    api.processSbResponse = processSbResponse;
 
-        checkSafebrowsingFilter: checkSafebrowsingFilter,
-        lookupUrlWithCallback: lookupUrlWithCallback,
-        addToSafebrowsingTrusted: addToSafebrowsingTrusted,
-        getErrorPageURL: getErrorPageURL,
+    return api;
 
-        extractHosts: extractHosts,
-        createHashesMap: createHashesMap,
-        processSbResponse: processSbResponse
-    };
-
-})(adguard, window);
+})(adguard, window, adguard.safebrowsing || {});

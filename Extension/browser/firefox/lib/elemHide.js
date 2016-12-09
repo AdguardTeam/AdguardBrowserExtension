@@ -130,8 +130,8 @@ adguard.ElemHide = (function (adguard) {
 
             var tab = {tabId: tabId};
 
-            if (adguard.frames.isTabAdguardDetected(tab) ||
-                adguard.frames.isTabProtectionDisabled(tab) ||
+            if (adguard.integration.isActive() ||
+                adguard.settings.isFilteringDisabled() ||
                 adguard.frames.isTabWhiteListed(tab)) {
 
                 return false;
@@ -154,8 +154,7 @@ adguard.ElemHide = (function (adguard) {
                 }
 
                 // Track filter rule usage if user has enabled "collect ad filters usage stats"
-                if (adguard.isModuleSupported('hitStats') &&
-                    adguard.settings.collectHitsCount() &&
+                if (adguard.settings.collectHitsCount() &&
                     !adguard.utils.filters.isUserFilterRule(rule) && !adguard.utils.filters.isWhiteListFilterRule(rule) &&
                     !adguard.frames.isIncognitoTab(tab)) {
 

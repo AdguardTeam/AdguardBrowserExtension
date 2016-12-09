@@ -41,7 +41,9 @@ adguard.webRequestService = (function (adguard) {
             };
         }
 
-        if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab) || adguard.frames.isTabWhiteListed(tab)) {
+        if (adguard.integration.isActive() ||
+            adguard.settings.isFilteringDisabled() ||
+            adguard.frames.isTabWhiteListed(tab)) {
             return result;
         }
 
@@ -95,9 +97,7 @@ adguard.webRequestService = (function (adguard) {
 
         var requestRule = getRuleForRequest(tab, requestUrl, referrerUrl, adguard.RequestTypes.WEBSOCKET);
 
-        if (adguard.isModuleSupported('filteringLog')) {
-            adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, adguard.RequestTypes.WEBSOCKET, requestRule);
-        }
+        adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, adguard.RequestTypes.WEBSOCKET, requestRule);
 
         return isRequestBlockedByRule(requestRule);
     };
@@ -165,8 +165,9 @@ adguard.webRequestService = (function (adguard) {
      */
     var getRuleForRequest = function (tab, requestUrl, referrerUrl, requestType) {
 
-        if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab)) {
-            //don't process request
+        if (adguard.integration.isActive() ||
+            adguard.settings.isFilteringDisabled()) {
+            // Don't process request
             return null;
         }
 
@@ -199,21 +200,20 @@ adguard.webRequestService = (function (adguard) {
     var processRequestResponse = function (tab, requestUrl, referrerUrl, requestType, responseHeaders) {
 
         if (requestType == adguard.RequestTypes.DOCUMENT) {
-            if (adguard.isModuleSupported('filteringLog')) {
-                // Clear previous events
-                adguard.filteringLog.clearEventsByTabId(tab.tabId);
-            }
+            // Clear previous events
+            adguard.filteringLog.clearEventsByTabId(tab.tabId);
         }
 
         var requestRule = null;
         var appendLogEvent = false;
 
-        if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab)) { // jshint ignore:line
+        if (adguard.integration.isActive() ||
+            adguard.settings.isFilteringDisabled()) { // jshint ignore:line
             // Do nothing
         } else if (requestType == adguard.RequestTypes.DOCUMENT) {
             requestRule = adguard.frames.getFrameWhiteListRule(tab);
             var domain = adguard.frames.getFrameDomain(tab);
-            if (adguard.isModuleSupported('hitStats') && !adguard.frames.isIncognitoTab(tab)) {
+            if (!adguard.frames.isIncognitoTab(tab)) {
                 //add page view to stats
                 adguard.hitStats.addDomainView(domain);
             }
@@ -221,7 +221,7 @@ adguard.webRequestService = (function (adguard) {
         }
 
         // add event to filtering log
-        if (adguard.isModuleSupported('filteringLog') && appendLogEvent) {
+        if (appendLogEvent) {
             adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
         }
     };
@@ -237,7 +237,7 @@ adguard.webRequestService = (function (adguard) {
      */
     var postProcessRequest = function (tab, requestUrl, referrerUrl, requestType, requestRule) {
 
-        if (adguard.frames.isTabAdguardDetected(tab)) {
+        if (adguard.integration.isActive()) {
             // Do nothing
             return;
         }
@@ -246,12 +246,9 @@ adguard.webRequestService = (function (adguard) {
             adguard.listeners.notifyListenersAsync(adguard.listeners.ADS_BLOCKED, requestRule, tab, 1);
         }
 
-        if (adguard.isModuleSupported('filteringLog')) {
-            adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
-        }
+        adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
 
-        if (adguard.isModuleSupported('hitStats') &&
-            requestRule && !adguard.utils.filters.isUserFilterRule(requestRule) && !adguard.utils.filters.isWhiteListFilterRule(requestRule) && !adguard.frames.isIncognitoTab(tab)) {
+        if (requestRule && !adguard.utils.filters.isUserFilterRule(requestRule) && !adguard.utils.filters.isWhiteListFilterRule(requestRule) && !adguard.frames.isIncognitoTab(tab)) {
 
             var domain = adguard.frames.getFrameDomain(tab);
             adguard.hitStats.addRuleHit(domain, requestRule.ruleText, requestRule.filterId, requestUrl);

@@ -80,7 +80,8 @@ adguard.SafariContentBlocker = (function (adguard) {
          */
         _loadAndConvertRules: adguard.utils.concurrent.debounce(function (rulesLimit, callback) {
 
-            if (adguard.settings.isFilteringDisabled()) {
+            if (adguard.integration.isActive() ||
+                adguard.settings.isFilteringDisabled()) {
                 adguard.console.info('Disabling content blocker.');
                 callback(null);
                 return;

@@ -38,10 +38,10 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             adguard.tabs.getActive(whiteListTab);
         },
         'context_enable_protection': function () {
-            changeApplicationFilteringDisabled(false);
+            adguard.settings.changeFilteringDisabled(false);
         },
         'context_disable_protection': function () {
-            changeApplicationFilteringDisabled(true);
+            adguard.settings.changeFilteringDisabled(true);
         },
         'context_open_settings': function () {
             openSettingsTab();
@@ -339,6 +339,15 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         }
     }
 
+    /**
+     * Updates tab icon and context menu
+     * @param tab
+     */
+    function updateTabIconAndContextMenu(tab) {
+        updateTabIcon(tab);
+        updateTabContextMenu(tab);
+    }
+
     function closeAllPages() {
         adguard.tabs.forEach(function (tab) {
             if (tab.url.indexOf(adguard.getURL('')) >= 0) {
@@ -353,7 +362,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
     function showAlertMessagePopup(title, text, showForAdguardTab) {
         adguard.tabs.getActive(function (tab) {
-            if (!showForAdguardTab && adguard.frames.isTabAdguardDetected(tab)) {
+            if (!showForAdguardTab && adguard.integration.isActive()) {
                 return;
             }
             adguard.tabs.sendMessage(tab.tabId, {
@@ -408,14 +417,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             text: text
         };
     }
-
-    var updateTabIconAndContextMenu = function (tab, reloadFrameData) {
-        if (reloadFrameData) {
-            adguard.frames.reloadFrameData(tab);
-        }
-        updateTabIcon(tab);
-        updateTabContextMenu(tab);
-    };
 
     var openExportRulesTab = function (whitelist) {
         openTab(getPageUrl('export.html' + (whitelist ? '#wl' : '')));
@@ -482,14 +483,15 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         var tabInfo = adguard.frames.getFrameInfo(tab);
         adguard.whitelist.whiteListUrl(tabInfo.url);
 
-        if (adguard.frames.isTabAdguardDetected(tab)) {
+        if (adguard.integration.isActive()) {
             var domain = adguard.utils.url.getHost(tab.url);
             adguard.browserAction.close();
             adguard.integration.addRule("@@//" + domain + "^$document", function () {
                 adguard.tabs.sendMessage(tab.tabId, {type: 'no-cache-reload'});
             });
         } else {
-            updateTabIconAndContextMenu(tab, true);
+            // Force update stored tab metadata
+            adguard.frames.reloadFrameData(tab);
         }
     };
 
@@ -498,7 +500,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         var tabInfo = adguard.frames.getFrameInfo(tab);
         adguard.userrules.unWhiteListFrame(tabInfo);
 
-        if (adguard.frames.isTabAdguardDetected(tab)) {
+        if (adguard.integration.isActive()) {
             var rule = adguard.frames.getTabAdguardUserWhiteListRule(tab);
             if (rule) {
                 adguard.browserAction.close();
@@ -507,15 +509,9 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                 });
             }
         } else {
-            updateTabIconAndContextMenu(tab, true);
+            // Force update stored tab metadata
+            adguard.frames.reloadFrameData(tab);
         }
-    };
-
-    var changeApplicationFilteringDisabled = function (disabled) {
-        adguard.settings.changeFilteringDisabled(disabled);
-        adguard.tabs.getActive(function (tab) {
-            updateTabIconAndContextMenu(tab, true);
-        });
     };
 
     var checkFiltersUpdates = function () {
@@ -618,15 +614,24 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     });
 
     // Update tab icon while loading
-    adguard.tabs.onUpdated.addListener(function (tab) {
-        updateTabIconAndContextMenu(tab);
-    });
-    // Update tab icon on active tab change
-    adguard.tabs.onActivated.addListener(function (tab) {
-        updateTabIconAndContextMenu(tab, true);
+    adguard.tabs.onUpdated.addListener(updateTabIconAndContextMenu);
+
+    // Reload frame data on tab activation
+    adguard.tabs.onActivated.addListener(function(tab){
+        adguard.frames.reloadFrameData(tab);
     });
 
-    //on filter auto-enabled event
+    // On filtering state changes
+    adguard.settings.onUpdated.addListener(function (setting) {
+        if (setting === adguard.settings.DISABLE_FILTERING) {
+            adguard.tabs.forEach(updateTabIconAndContextMenu);
+        }
+    });
+
+    // Update ui on tab frame update
+    adguard.frames.onFrameInfoUpdated.addListener(updateTabIconAndContextMenu);
+
+    // Filter auto-enabled event
     adguard.listeners.addListener(function (event, enabledFilters) {
         if (event === adguard.listeners.ENABLE_FILTER_SHOW_POPUP) {
             var result = getFiltersEnabledResultMessage(enabledFilters);
@@ -634,7 +639,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         }
     });
 
-    //on filters updated event
+    // Filters updated event
     adguard.listeners.addListener(function (event, success, updatedFilters) {
         if (event === adguard.listeners.UPDATE_FILTERS_SHOW_POPUP) {
             var result = getFiltersUpdateResultMessage(success, updatedFilters);
@@ -649,21 +654,17 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         }
     });
 
-
     // Adguard Integration events
-    adguard.integration.onStateChanged.addListener(function (state, tab) {
-        if (state === 'pending') {
+    adguard.integration.onStateChanged.addListener(function (state) {
+        if (state === adguard.integration.states.PENDING) {
             openTab(getPageUrl('integration.html'), {
                 active: true
             });
-        } else {
-            if (tab) {
-                updateTabIconAndContextMenu(tab, true);
-            } else {
-                adguard.tabs.forEach(function (tab) {
-                    updateTabIconAndContextMenu(tab, true);
-                });
-            }
+        } else { // active or rejected
+            adguard.tabs.forEach(updateTabIconAndContextMenu);
+        }
+        if (state === adguard.integration.states.ACTIVE) {
+            adguard.settings.changeShowInfoAboutAdguardFullVersion(false);
         }
     });
 
@@ -679,12 +680,9 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         openExtensionStore: openExtensionStore,
         openFiltersDownloadPage: openFiltersDownloadPage,
 
-        updateTabIconAndContextMenu: updateTabIconAndContextMenu,
-
         whiteListTab: whiteListTab,
         unWhiteListTab: unWhiteListTab,
 
-        changeApplicationFilteringDisabled: changeApplicationFilteringDisabled,
         checkFiltersUpdates: checkFiltersUpdates,
         openAssistant: openAssistant,
         openTab: openTab

@@ -29,10 +29,4 @@
     };
 
     window.i18n = browser.i18n;
-
-    $(window).on('unload', function () {
-        if (window.tab) {
-            adguard.ui.updateTabIconAndContextMenu(window.tab, true);
-        }
-    });
 })();

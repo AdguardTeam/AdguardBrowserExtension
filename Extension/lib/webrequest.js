@@ -54,7 +54,7 @@
         /**
          * Try to find rule associated with loading tab in integration mode.
          */
-        if (requestType == adguard.RequestTypes.DOCUMENT && adguard.frames.isTabAdguardDetected(tab)) {
+        if (requestType == adguard.RequestTypes.DOCUMENT && adguard.integration.isActive()) {
             adguard.integration.checkTabWhiteListRule(tab, requestUrl);
         }
 
@@ -118,8 +118,7 @@
         adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
 
         // Safebrowsing check
-        if (adguard.isModuleSupported('safebrowsing') &&
-            requestType === adguard.RequestTypes.DOCUMENT) {
+        if (requestType === adguard.RequestTypes.DOCUMENT) {
             filterSafebrowsing(tab, requestUrl);
         }
 
@@ -160,7 +159,9 @@
      */
     function filterSafebrowsing(tab, mainFrameUrl) {
 
-        if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab) || adguard.frames.isTabWhiteListedForSafebrowsing(tab)) {
+        if (adguard.integration.isActive() ||
+            adguard.settings.isFilteringDisabled() ||
+            adguard.frames.isTabWhiteListedForSafebrowsing(tab)) {
             return;
         }
 
@@ -187,37 +188,34 @@
     adguard.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, ["<all_urls>"]);
     adguard.webRequest.onHeadersReceived.addListener(onHeadersReceived, ["<all_urls>"]);
 
-    if (adguard.isModuleSupported('hitStats')) {
-
-        // TODO[Edge]: Add support for collecting hits stats. Currently we cannot add listener for ms-browser-extension:// urls.
-        if (adguard.utils.browser.isChromium() && !adguard.utils.browser.isEdgeBrowser()) {
-            var parseCssRuleFromUrl = function (requestUrl) {
-                if (!requestUrl) {
-                    return null;
-                }
-                var filterIdAndRuleText = decodeURIComponent(adguard.utils.strings.substringAfter(requestUrl, '#'));
-                var filterId = adguard.utils.strings.substringBefore(filterIdAndRuleText, ';');
-                var ruleText = adguard.utils.strings.substringAfter(filterIdAndRuleText, ';');
-                return {
-                    filterId: filterId,
-                    ruleText: ruleText
-                };
+    // TODO[Edge]: Add support for collecting hits stats. Currently we cannot add listener for ms-browser-extension:// urls.
+    if (adguard.utils.browser.isChromium() && !adguard.utils.browser.isEdgeBrowser()) {
+        var parseCssRuleFromUrl = function (requestUrl) {
+            if (!requestUrl) {
+                return null;
+            }
+            var filterIdAndRuleText = decodeURIComponent(adguard.utils.strings.substringAfter(requestUrl, '#'));
+            var filterId = adguard.utils.strings.substringBefore(filterIdAndRuleText, ';');
+            var ruleText = adguard.utils.strings.substringAfter(filterIdAndRuleText, ';');
+            return {
+                filterId: filterId,
+                ruleText: ruleText
             };
+        };
 
-            var onCssRuleHit = function (requestDetails) {
-                if (adguard.frames.isIncognitoTab(requestDetails.tab)) {
-                    return;
-                }
-                var domain = adguard.frames.getFrameDomain(requestDetails.tab);
-                var rule = parseCssRuleFromUrl(requestDetails.requestUrl);
-                if (rule) {
-                    adguard.hitStats.addRuleHit(domain, rule.ruleText, rule.filterId);
-                }
-            };
+        var onCssRuleHit = function (requestDetails) {
+            if (adguard.frames.isIncognitoTab(requestDetails.tab)) {
+                return;
+            }
+            var domain = adguard.frames.getFrameDomain(requestDetails.tab);
+            var rule = parseCssRuleFromUrl(requestDetails.requestUrl);
+            if (rule) {
+                adguard.hitStats.addRuleHit(domain, rule.ruleText, rule.filterId);
+            }
+        };
 
-            var hitPngUrl = adguard.app.getUrlScheme() + "://*/elemhidehit.png";
-            adguard.webRequest.onBeforeRequest.addListener(onCssRuleHit, [hitPngUrl]);
-        }
+        var hitPngUrl = adguard.app.getUrlScheme() + "://*/elemhidehit.png";
+        adguard.webRequest.onBeforeRequest.addListener(onCssRuleHit, [hitPngUrl]);
     }
 
     var handlerBehaviorTimeout = null;

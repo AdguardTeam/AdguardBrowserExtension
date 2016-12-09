@@ -741,8 +741,8 @@ var WebRequestImpl = {
     _filterSafebrowsing: function (requestUrl, tab) {
 
         //TODO: check for not http
-        if (adguard.frames.isTabAdguardDetected(tab) ||
-            adguard.frames.isTabProtectionDisabled(tab) ||
+        if (adguard.integration.isActive() ||
+            adguard.settings.isFilteringDisabled() ||
             adguard.frames.isTabWhiteListedForSafebrowsing(tab)) {
             return;
         }

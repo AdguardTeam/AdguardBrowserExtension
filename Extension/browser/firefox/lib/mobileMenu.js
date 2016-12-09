@@ -82,7 +82,7 @@ var MobileMenu = {
 
             adguard.tabs.getActive(function (tab) {
                 var tabInfo = adguard.frames.getFrameInfo(tab);
-                adguard.ui.changeApplicationFilteringDisabled(!tabInfo.applicationFilteringDisabled);
+                adguard.settings.changeFilteringDisabled(!tabInfo.applicationFilteringDisabled);
 
                 adguard.windowsImpl.getLastFocused(function (winId, domWin) {
                     domWin.NativeWindow.menu.update(toggleFilteringEnabledItem, {checked: tabInfo.applicationFilteringDisabled});

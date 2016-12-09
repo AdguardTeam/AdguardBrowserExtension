@@ -47,10 +47,4 @@
 		safari.self.height = height;
 	};
 	window.i18n = adguard.i18n;
-
-	$(window).on('blur', function () {
-		if (window.tab) {
-			adguard.ui.updateTabIconAndContextMenu(window.tab, true);
-		}
-	});
 })();

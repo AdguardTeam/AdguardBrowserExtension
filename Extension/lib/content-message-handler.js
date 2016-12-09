@@ -338,13 +338,13 @@
                 return processLoadAssistant();
             case 'addUserRule':
                 adguard.userrules.addRules([message.ruleText]);
-                if (message.adguardDetected || adguard.frames.isTabAdguardDetected(sender.tab)) {
+                if (adguard.integration.isActive()) {
                     adguard.integration.addRule(message.ruleText);
                 }
                 break;
             case 'removeUserRule':
                 adguard.userrules.removeRule(message.ruleText);
-                if (message.adguardDetected || adguard.frames.isTabAdguardDetected(sender.tab)) {
+                if (adguard.integration.isActive()) {
                     adguard.integration.removeRule(message.ruleText);
                 }
                 break;
@@ -411,7 +411,7 @@
                 });
                 break;
             case 'changeApplicationFilteringDisabled':
-                adguard.ui.changeApplicationFilteringDisabled(message.disabled);
+                adguard.settings.changeFilteringDisabled(message.disabled);
                 break;
             case 'openSiteReportTab':
                 adguard.ui.openSiteReportTab(message.url);

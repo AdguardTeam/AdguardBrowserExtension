@@ -109,21 +109,6 @@ adguard.backend = (function (adguard) {
             return "https://sb.adtidy.org/sb-report.html";
         },
 
-        // This url is used in integration mode. Adguard for Windows/Mac/Android intercepts requests to injections.adguard.com host.
-        // It is not used for remote requests, requests are intercepted by the desktop version of Adguard.
-        get injectionsUrl() {
-            return "http://injections.adguard.com";
-        },
-
-        // URLs used when add-on works in integration mode.
-        // @deprecated
-        get adguardAppUrlOld() {
-            return this.injectionsUrl + "/adguard-ajax-crossdomain-hack/api?";
-        },
-        get adguardAppUrl() {
-            return this.injectionsUrl + "/adguard-ajax-api/api?";
-        },
-
         /**
          * Appends to some requests for analytics
          */
@@ -517,40 +502,6 @@ adguard.backend = (function (adguard) {
     };
 
     /**
-     * Used in integration mode. Sends ajax-request which should be intercepted by Adguard for Windows/Mac/Android.
-     *
-     * @param ruleText          Rule text
-     * @param successCallback   Called on success
-     * @param errorCallback     Called on error
-     */
-    var adguardAppAddRule = function (ruleText, successCallback, errorCallback) {
-        executeRequestAsync(settings.adguardAppUrl + "type=add&rule=" + encodeURIComponent(ruleText), "text/plain", successCallback, errorCallback);
-    };
-
-    /**
-     * Used in integration mode. Sends ajax-request which should be intercepted by Adguard for Windows/Mac/Android.
-     *
-     * @param ruleText
-     * @param successCallback
-     * @param errorCallback
-     */
-    var adguardAppRemoveRule = function (ruleText, successCallback, errorCallback) {
-        executeRequestAsync(settings.adguardAppUrl + "type=remove&rule=" + encodeURIComponent(ruleText), "text/plain", successCallback, errorCallback);
-    };
-
-    /**
-     * Used in integration mode. Sends ajax-request which should be intercepted by Adguard for Windows/Mac/Android.
-     *
-     * @param ruleText          Rule text
-     * @param successCallback   Called on success
-     * @param errorCallback     Called on error
-     * @deprecated
-     */
-    var adguardAppAddRuleOld = function (ruleText, successCallback, errorCallback) {
-        executeRequestAsync(settings.adguardAppUrlOld + "type=add&rule=" + encodeURIComponent(ruleText), "text/plain", successCallback, errorCallback);
-    };
-
-    /**
      * Sends filter hits stats to backend server.
      * This method is used if user has enabled "Send statistics for ad filters usage".
      * More information about ad filters usage stats:
@@ -578,18 +529,7 @@ adguard.backend = (function (adguard) {
         request.send(params);
     };
 
-    /**
-     * @param requestUrl
-     * @returns true if request to adguard application
-     */
-    var isAdguardAppRequest = function (requestUrl) {
-        return requestUrl && (requestUrl.indexOf('/adguard-ajax-crossdomain-hack/') > 0 || requestUrl.indexOf('/adguard-ajax-api/') > 0);
-    };
-
     return {
-
-        adguardAppUrl: settings.adguardAppUrl,
-        injectionsUrl: settings.injectionsUrl,
 
         loadFiltersMetadata: loadFiltersMetadata,
         loadRemoteFilterRules: loadRemoteFilterRules,
@@ -600,19 +540,13 @@ adguard.backend = (function (adguard) {
         loadLocalFiltersMetadata: loadLocalFiltersMetadata,
         loadLocalFiltersI18Metadata: loadLocalFiltersI18Metadata,
 
-        adguardAppAddRule: adguardAppAddRule,
-        adguardAppAddRuleOld: adguardAppAddRuleOld,
-        adguardAppRemoveRule: adguardAppRemoveRule,
-
         lookupSafebrowsing: lookupSafebrowsing,
         trackSafebrowsingStats: trackSafebrowsingStats,
 
         sendUrlReport: sendUrlReport,
         getCountry: getCountry,
         trackInstall: trackInstall,
-        sendHitStats: sendHitStats,
-
-        isAdguardAppRequest: isAdguardAppRequest
+        sendHitStats: sendHitStats
     };
 
 })(adguard);

@@ -60,18 +60,12 @@ $(document).ready(function () {
         //popup checkbox actions
         controller.addWhiteListDomain = function () {
             adguard.ui.whiteListTab(tab);
-            if (tabInfo.adguardDetected) {
-                adguard.closePopup();
-            }
         };
         controller.removeWhiteListDomain = function () {
             adguard.ui.unWhiteListTab(tab);
-            if (tabInfo.adguardDetected) {
-                adguard.closePopup();
-            }
         };
         controller.changeApplicationFilteringDisabled = function (disabled) {
-            adguard.ui.changeApplicationFilteringDisabled(disabled);
+            adguard.settings.changeFilteringDisabled(disabled);
         };
         //popup menu actions
         controller.openSiteReportTab = function (url) {

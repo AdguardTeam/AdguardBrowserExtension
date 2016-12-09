@@ -56,19 +56,38 @@ var adguard = (function () { // jshint ignore:line
         delete object['_' + prop];
     };
 
-    /**
-     * Checks module is in adguard namespace
-     * @param module
-     * @returns {boolean}
-     */
-    var isModuleSupported = function (module) {
-        return module in adguard;
+    function notImplemented() {
+        return false;
+    }
+
+    var hitStatsModule = {
+        addRuleHit: notImplemented,
+        addDomainView: notImplemented,
+        cleanup: notImplemented
+    };
+
+    var filteringLogModule = {
+        addEvent: notImplemented,
+        clearEventsByTabId: notImplemented
+    };
+
+    var safebrowsingModule = {
+        checkSafebrowsingFilter: notImplemented
+    };
+
+    var integrationModule = {
+        isActive: notImplemented
     };
 
     return {
+
         lazyGet: lazyGet,
         lazyGetClear: lazyGetClear,
-        isModuleSupported: isModuleSupported
+
+        hitStats: hitStatsModule,
+        filteringLog: filteringLogModule,
+        safebrowsing: safebrowsingModule,
+        integration: integrationModule
     };
 
 })();

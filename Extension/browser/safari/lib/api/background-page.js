@@ -250,6 +250,9 @@
 			},
 			setPopup: function () {
 				// Do nothing. Popup is already installed in manifest file
+			},
+			close: function(){
+				// Do nothing. Popup is closed automatically
 			}
 		};
 

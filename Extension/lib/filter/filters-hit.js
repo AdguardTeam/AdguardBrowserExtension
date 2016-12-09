@@ -22,7 +22,7 @@
  *
  * @constructor
  */
-adguard.hitStats = (function (adguard) {
+adguard.hitStats = (function (adguard, api) {
 
     'use strict';
 
@@ -185,10 +185,10 @@ adguard.hitStats = (function (adguard) {
         adguard.lazyGetClear(hitStatsHolder, 'hitStats');
     }
 
-    return {
-        addRuleHit: addRuleHit,
-        addDomainView: addDomainView,
-        cleanup: cleanup
-    };
+    api.addRuleHit = addRuleHit;
+    api.addDomainView = addDomainView;
+    api.cleanup = cleanup;
 
-})(adguard);
+    return api;
+
+})(adguard, adguard.hitStats || {});
