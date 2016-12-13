@@ -1484,7 +1484,7 @@ adguard.filters = (function (adguard) {
             return;
         }
 
-        filterIds = adguard.utils.collections.removeDuplicates(filterIds.slice(0));
+        filterIds = adguard.utils.collections.removeDuplicates(filterIds);
 
         var loadNextFilter = function () {
             if (filterIds.length === 0) {
