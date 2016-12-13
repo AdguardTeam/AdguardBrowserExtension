@@ -1399,16 +1399,15 @@ adguard.filters = (function (adguard) {
             filterIds.push(adguard.utils.filters.SAFARI_FILTER);
         }
 
-        // This callback is used to activate language-specific filter after user's country is detected
-        // Country detection is done on the server side.
-        var onCountryDetected = function (countryCode) {
-            var countryFilterIds = adguard.subscriptions.getFilterIdsForLanguage(countryCode);
-            filterIds = filterIds.concat(countryFilterIds);
-            callback(filterIds);
-        };
+        // Get language-specific filters by navigator languages
+        // Get the 2 most commonly used languages
+        var languages = adguard.utils.browser.getNavigatorLanguages(2);
+        for (var i = 0; i < languages.length; i++) {
+            localeFilterIds = adguard.subscriptions.getFilterIdsForLanguage(languages[i]);
+            filterIds = filterIds.concat(localeFilterIds);
+        }
 
-        // Detect user country
-        adguard.backend.getCountry(onCountryDetected);
+        callback(filterIds);
     };
 
     /**
@@ -1500,7 +1499,7 @@ adguard.filters = (function (adguard) {
             return;
         }
 
-        filterIds = filterIds.slice(0);
+        filterIds = adguard.utils.collections.removeDuplicates(filterIds);
 
         var loadNextFilter = function () {
             if (filterIds.length === 0) {

@@ -72,11 +72,6 @@ adguard.backend = (function (adguard) {
             return this.backendUrl + "/url-report.html";
         },
 
-        // URL for detecting user's country code (to auto-enable proper language-specific filter)
-        get getCountryUrl() {
-            return this.backendUrl + "/getcountry.html?";
-        },
-
         // URL for tracking Adguard installation
         get trackInstallUrl() {
             return this.backendUrl + "/install.html?";
@@ -483,20 +478,6 @@ adguard.backend = (function (adguard) {
     };
 
     /**
-     * Gets user's country
-     *
-     * @param successCallback   Called on success
-     */
-    var getCountry = function (successCallback) {
-        var url = addKeyParameter(settings.getCountryUrl);
-        executeRequestAsync(url, "text/plain", function (response) {
-            successCallback(response.responseText);
-        }, function () {
-            successCallback(null);
-        });
-    };
-
-    /**
      * Tracks extension install
      */
     var trackInstall = function () {
@@ -596,7 +577,6 @@ adguard.backend = (function (adguard) {
         trackSafebrowsingStats: trackSafebrowsingStats,
 
         sendUrlReport: sendUrlReport,
-        getCountry: getCountry,
         trackInstall: trackInstall,
         sendHitStats: sendHitStats,
 
