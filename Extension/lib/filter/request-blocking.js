@@ -218,7 +218,9 @@ adguard.webRequestService = (function (adguard) {
         } else if (requestType == adguard.RequestTypes.DOCUMENT) {
             requestRule = adguard.frames.getFrameWhiteListRule(tab);
             var domain = adguard.frames.getFrameDomain(tab);
-            if (adguard.isModuleSupported('hitStats') && !adguard.frames.isIncognitoTab(tab)) {
+            if (adguard.isModuleSupported('hitStats') &&
+                !adguard.frames.isIncognitoTab(tab) &&
+                adguard.settings.collectHitsCount()) {
                 //add page view to stats
                 adguard.hitStats.addDomainView(domain);
             }
@@ -255,8 +257,10 @@ adguard.webRequestService = (function (adguard) {
             adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
         }
 
-        if (adguard.isModuleSupported('hitStats') &&
-            requestRule && !adguard.utils.filters.isUserFilterRule(requestRule) && !adguard.utils.filters.isWhiteListFilterRule(requestRule) && !adguard.frames.isIncognitoTab(tab)) {
+        if (requestRule && adguard.isModuleSupported('hitStats') &&
+            adguard.settings.collectHitsCount() &&
+            !adguard.frames.isIncognitoTab(tab) &&
+            !adguard.utils.filters.isUserFilterRule(requestRule) && !adguard.utils.filters.isWhiteListFilterRule(requestRule)) {
 
             var domain = adguard.frames.getFrameDomain(tab);
             adguard.hitStats.addRuleHit(domain, requestRule.ruleText, requestRule.filterId, requestUrl);

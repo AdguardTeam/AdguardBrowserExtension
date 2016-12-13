@@ -224,7 +224,10 @@
      * @param tab
      * @param stats
      */
-    function processSaveHitStats(tab, stats) {
+    function processSaveCssHitStats(tab, stats) {
+        if (!adguard.settings.collectHitsCount()) {
+            return;
+        }
         if (adguard.frames.isIncognitoTab(tab)) {
             return;
         }
@@ -450,7 +453,7 @@
                 adguard.backend.sendUrlReport(message.url, message.topic, message.comment);
                 break;
             case 'saveCssHitStats':
-                processSaveHitStats(sender.tab, message.stats);
+                processSaveCssHitStats(sender.tab, message.stats);
                 break;
             default :
                 throw 'Unknown message: ' + message;

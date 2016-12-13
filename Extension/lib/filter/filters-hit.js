@@ -66,9 +66,6 @@ adguard.hitStats = (function (adguard) {
         if (overallViews < MAX_PAGE_VIEWS_COUNT) {
             return;
         }
-        if (!adguard.settings.collectHitsCount()) {
-            return;
-        }
         var enabledFilters = adguard.filters.getEnabledFilters();
         adguard.backend.sendHitStats(JSON.stringify(hitStatsHolder.hitStats), enabledFilters);
         cleanup();
@@ -99,9 +96,6 @@ adguard.hitStats = (function (adguard) {
      */
     var addDomainView = function (domain) {
 
-        if (!adguard.settings.collectHitsCount()) {
-            return;
-        }
         if (!domain) {
             return;
         }
@@ -130,10 +124,6 @@ adguard.hitStats = (function (adguard) {
      * @param requestUrl Url to which rule was applied
      */
     var addRuleHit = function (domain, ruleText, filterId, requestUrl) {
-
-        if (!adguard.settings.collectHitsCount()) {
-            return;
-        }
 
         if (!domain || !ruleText || !filterId) {
             return;
@@ -185,10 +175,18 @@ adguard.hitStats = (function (adguard) {
         adguard.lazyGetClear(hitStatsHolder, 'hitStats');
     }
 
+    /**
+     * Hit stats getter
+     */
+    var getStats = function () {
+        return hitStatsHolder.hitStats;
+    };
+
     return {
         addRuleHit: addRuleHit,
         addDomainView: addDomainView,
-        cleanup: cleanup
+        cleanup: cleanup,
+        getStats: getStats
     };
 
 })(adguard);

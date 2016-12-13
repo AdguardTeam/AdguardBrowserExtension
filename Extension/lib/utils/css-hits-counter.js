@@ -19,7 +19,21 @@ var CssHitsCounter = (function () { // jshint ignore:line
 
     'use strict';
 
+    var CONTENT_ATTR_PREFIX = 'adguard';
+
     var onCssHitsFoundCallback;
+
+    /**
+     * Unquotes specified value
+     */
+    function removeQuotes(value) {
+        if (typeof value === "string" && value.length > 1 &&
+            (value[0] === '"' && value[value.length - 1] === '"' || value[0] === '\'' && value[value.length - 1] === '\'')) {
+            // Remove double-quotes or single-quotes
+            value = value.substring(1, value.length - 1);
+        }
+        return value;
+    }
 
     /**
      * Main calculation function.
@@ -30,10 +44,11 @@ var CssHitsCounter = (function () { // jshint ignore:line
      * @param elements Collection of all elements
      * @param start Start of batch
      * @param end End of batch
+     * @param step Size of batch
      * @param result Collection for save result
      * @param callback Finish callback
      */
-    function countCssHitsBatch(elements, start, end, result, callback) {
+    function countCssHitsBatch(elements, start, end, step, result, callback) {
 
         var length = Math.min(end, elements.length);
         for (var i = start; i < length; i++) {
@@ -41,13 +56,15 @@ var CssHitsCounter = (function () { // jshint ignore:line
             var element = elements[i];
             var style = getComputedStyle(element);
             var content = style.content;
-            if (!content || content.indexOf('adguard') < 0) {
+            if (!content || content.indexOf(CONTENT_ATTR_PREFIX) < 0) {
                 continue;
             }
 
             var filterIdAndRuleText = decodeURIComponent(content);
-            // 'content' value includes open and close quotes.
-            filterIdAndRuleText = filterIdAndRuleText.substring(8, content.length - 1);
+            // 'content' value may include open and close quotes.
+            filterIdAndRuleText = removeQuotes(filterIdAndRuleText);
+            // Remove prefix
+            filterIdAndRuleText = filterIdAndRuleText.substring(CONTENT_ATTR_PREFIX.length);
             // Attribute 'content' in css looks like: {content: 'adguard{filterId};{ruleText}'}
             var index = filterIdAndRuleText.indexOf(';');
             if (index < 0) {
@@ -67,11 +84,11 @@ var CssHitsCounter = (function () { // jshint ignore:line
         }
 
         start = end;
-        end += 100;
+        end += step;
 
         // Start next task with some delay
         setTimeout(function () {
-            countCssHitsBatch(elements, start, end, result, callback);
+            countCssHitsBatch(elements, start, end, step, result, callback);
         }, 50);
     }
 
@@ -83,8 +100,9 @@ var CssHitsCounter = (function () { // jshint ignore:line
     function countCssHits() {
 
         var elements = document.querySelectorAll('*');
-        countCssHitsBatch(elements, 0, 100, [], function (result) {
-            if (result.length > 0) {
+        // Submit first task.
+        countCssHitsBatch(elements, 0, 100, 100, [], function (result) {
+            if (result.length > 0 && typeof onCssHitsFoundCallback === 'function') {
                 onCssHitsFoundCallback(result);
             }
         });
