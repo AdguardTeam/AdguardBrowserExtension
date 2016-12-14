@@ -15,6 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global antiBannerService, require, userSettings */
 var SafariContentBlocker = require('content-blocker').SafariContentBlocker;
 var EventNotifier = require('utils/notifier').EventNotifier;
 var EventNotifierTypes = require('utils/common').EventNotifierTypes;
@@ -27,9 +28,9 @@ var Utils = require('utils/browser-utils').Utils;
         // Subscribe to events which lead to content blocker update
         EventNotifier.addListener(function (event, params) {
 
-            if (event == EventNotifierTypes.REQUEST_FILTER_UPDATED
-                || event == EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES
-                || (event == EventNotifierTypes.CHANGE_USER_SETTINGS && params == userSettings.settings.DISABLE_FILTERING)) {
+            if (event == EventNotifierTypes.REQUEST_FILTER_UPDATED || 
+                event == EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES || 
+                (event == EventNotifierTypes.CHANGE_USER_SETTINGS && params == userSettings.settings.DISABLE_FILTERING)) {
 
                 SafariContentBlocker.updateContentBlocker();
             }

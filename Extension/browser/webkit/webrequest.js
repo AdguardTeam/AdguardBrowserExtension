@@ -15,11 +15,12 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global RequestTypes, framesMap, EventNotifier, EventNotifierTypes, UrlUtils, webRequestService */
+/* global RequestTypes, framesMap, EventNotifier, EventNotifierTypes, UrlUtils, webRequestService, CspUtils */
 /* global ext, Prefs, adguardApplication, Utils, antiBannerService, UI, StringUtils, filterRulesHitCount */
 
 /**
  * Process request
+ *
  * @param requestDetails
  * @returns {boolean} False if request must be blocked
  */
@@ -44,6 +45,10 @@ function onBeforeRequest(requestDetails) {
     }
 
     var referrerUrl = framesMap.getFrameUrl(tab, requestDetails.requestFrameId);
+    if (!referrerUrl) {
+        // Assign to main frame
+        referrerUrl = framesMap.getMainFrameUrl(tab);
+    }
     var requestRule = webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
     webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
     return !webRequestService.isRequestBlockedByRule(requestRule);
@@ -64,7 +69,7 @@ function onBeforeSendHeaders(requestDetails) {
 
     if (adguardApplication.shouldOverrideReferrer(tab)) {
         // Retrieve main frame url
-        var mainFrameUrl = framesMap.getFrameUrl(tab, 0);
+        var mainFrameUrl = framesMap.getMainFrameUrl(tab);
         headers = Utils.setHeaderValue(headers, 'Referer', mainFrameUrl);
         return {requestHeaders: headers};
     }
@@ -80,6 +85,14 @@ function onBeforeSendHeaders(requestDetails) {
     return {};
 }
 
+/**
+ * On headers received callback function.
+ * We do check request for safebrowsing
+ * and check if websocket connections should be blocked.
+ *
+ * @param requestDetails Request details
+ * @returns {{responseHeaders: *}} Headers to send
+ */
 function onHeadersReceived(requestDetails) {
 
     var tab = requestDetails.tab;
@@ -92,11 +105,40 @@ function onHeadersReceived(requestDetails) {
     webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
 
     if (requestType == RequestTypes.DOCUMENT) {
-        //safebrowsing check
+        // Safebrowsing check
         filterSafebrowsing(tab, requestUrl);
+    }
+
+    if (requestType == RequestTypes.DOCUMENT || requestType == RequestTypes.SUBDOCUMENT) {
+        /*
+         Websocket check.
+         If 'ws://' request is blocked for not existing domain - it's blocked for all domains.
+         Then we gonna limit frame sources to http to block src:'data/text' etc.
+         More details in these issues:
+         https://github.com/AdguardTeam/AdguardBrowserExtension/issues/344
+         https://github.com/AdguardTeam/AdguardBrowserExtension/issues/440
+
+         WS connections are detected as "other"  by ABP
+         EasyList already contains some rules for WS connections with $other modifier
+         */
+        var frameUrl = framesMap.getFrameUrl(tab, requestDetails.frameId);
+        var websocketCheckUrl = "ws://adguardwebsocket.check/" + UrlUtils.getDomainName(frameUrl);
+        if (webRequestService.checkWebSocketRequest(tab, websocketCheckUrl, frameUrl)) {
+            responseHeaders.push({
+                name: 'Content-Security-Policy',
+                value: 'connect-src http: https:; frame-src http: https:; child-src http: https:'
+            });
+            return {responseHeaders: responseHeaders};
+        }
     }
 }
 
+/**
+ * Safebrowsing check
+ *
+ * @param tab
+ * @param mainFrameUrl
+ */
 function filterSafebrowsing(tab, mainFrameUrl) {
 
     if (framesMap.isTabAdguardDetected(tab) || framesMap.isTabProtectionDisabled(tab) || framesMap.isTabWhiteListedForSafebrowsing(tab)) {
@@ -122,11 +164,13 @@ function filterSafebrowsing(tab, mainFrameUrl) {
     }, incognitoTab);
 }
 
+/**
+ * Add listeners described above.
+ */
 ext.webRequest.onBeforeRequest.addListener(onBeforeRequest, ["<all_urls>"]);
-
 ext.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, ["<all_urls>"]);
-
 ext.webRequest.onHeadersReceived.addListener(onHeadersReceived, ["<all_urls>"]);
+
 
 // AG for Windows and Mac checks either request signature or request Referer to authorize request.
 // Referer cannot be forged by the website so it's ok for add-on authorization.
@@ -148,7 +192,7 @@ if (Prefs.platform === "chromium") {
 
 // TODO[Edge]: Add support for collecting hits statis. Currently we cannot add listener for ms-browser-extension:// urls.
 if (Prefs.platform === "chromium" && Prefs.getBrowser() !== "Edge") {
-    var parseCssRuleFromUrl = function(requestUrl) {
+    var parseCssRuleFromUrl = function (requestUrl) {
         if (!requestUrl) {
             return null;
         }
@@ -161,7 +205,7 @@ if (Prefs.platform === "chromium" && Prefs.getBrowser() !== "Edge") {
         };
     };
 
-    var onCssRuleHit = function(requestDetails) {
+    var onCssRuleHit = function (requestDetails) {
         if (framesMap.isIncognitoTab(requestDetails.tab)) {
             return;
         }

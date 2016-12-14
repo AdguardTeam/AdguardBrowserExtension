@@ -461,7 +461,9 @@ var AdguardAssistant = function ($) {
 			bindClicks(iframe, {
 				'#close-button': onCancelSelectModeClicked,
 				'.adg-close': onCancelSelectModeClicked,
-				'#adv-settings': onScopeChange,
+				'#one-domain-checkbox-block': onScopeChange,
+				'#block-by-url-checkbox-block': onScopeChange,
+				'#block-similar-checkbox-block': onScopeChange,
 				'#adg-cancel': onSelectElementClicked,
 				'#adg-preview': onRulePreview,
 				'#adg-accept': onRuleAccept,

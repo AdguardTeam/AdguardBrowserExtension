@@ -15,11 +15,11 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var StringUtils = require('../../lib/utils/common').StringUtils;
+/* global require, exports */
+
 var LogEvents = require('../../lib/utils/common').LogEvents;
 var UrlUtils = require('../../lib/utils/url').UrlUtils;
 var EventNotifier = require('../../lib/utils/notifier').EventNotifier;
-var AntiBannerFiltersId = require('../../lib/utils/common').AntiBannerFiltersId;
 
 var FilteringLog = exports.FilteringLog = function (BrowserTabsClass, framesMap, UI) {
 	this.tabsInfo = new BrowserTabsClass();
@@ -131,7 +131,7 @@ FilteringLog.prototype.clearEventsForTab = function (tab) {
 
 FilteringLog.prototype.addEvent = function (tab, requestUrl, frameUrl, requestType, requestRule) {
 
-	if (this.openedFilteringLogsPage == 0) {
+	if (this.openedFilteringLogsPage === 0) {
 		return;
 	}
 

@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global exports, safari, require, antiBannerService */
 
 var Log = require('utils/log').Log;
 var SafariContentBlockerConverter = require('converter').SafariContentBlockerConverter;

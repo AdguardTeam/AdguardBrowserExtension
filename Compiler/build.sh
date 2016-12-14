@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version="2.4.10"
+version="2.5.8"
 
 if [[ ! ("$#" == 1) ]] || [[ ! ($1 = dev) && ! ($1 = release) && ! ($1 = beta) ]] ; then
     echo "Pass a single argument as an environment value"
@@ -36,7 +36,7 @@ if [ "$env" = release ]; then
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox release xpi for amo
-    options="--version=$version --dest=$destPath --name=firefox-amo --browser=firefox --pack=xpi_jpm --extensionId=adguardadblocker@adguard.com"
+    options="--version=$version --dest=$destPath --name=firefox-amo --browser=firefox --pack=xpi_jpm --extensionId=adguardadblocker@adguard.com --update-filters=true"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
     
     #firefox beta xpi for AMO
@@ -44,11 +44,11 @@ if [ "$env" = release ]; then
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #safari release for extensions.apple.com
-    options="--version=$version --dest=$destPath --name=Adguard --browser=safari  --extensionId=com.adguard.safari --update-url=https://chrome.adtidy.org/safari/updates.xml"
+    options="--version=$version --dest=$destPath --name=Adguard --browser=safari  --extensionId=com.adguard.safari --update-url=https://chrome.adtidy.org/safari/updates.xml --update-filters=true"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
     
     #edge
-    options="--version=$version --branch=$branch --dest=$destPath --name=edge --browser=edge --pack=zip"
+    options="--version=$version --dest=$destPath --name=edge --browser=edge --pack=zip"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     echo "Release builds created"
@@ -61,7 +61,7 @@ elif [ "$env" = beta ]; then
     branch=beta
 
     #chrome beta zip
-    options="--version=$version --branch=$branch --dest=$destPath --name=chromium-beta --browser=chrome --pack=zip --update-filters=false"
+    options="--version=$version --branch=$branch --dest=$destPath --name=chromium-beta --browser=chrome --pack=zip"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #chrome beta crx
@@ -102,7 +102,7 @@ else
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox legacy
-    options="--version=$version --branch=$branch-Legacy --dest=$destPath --name=firefox-legacy --browser=firefox_legacy --extensionId=adguardadblockerlegacydev@adguard.com"
+    options="--version=$version --branch=$branch-legacy --dest=$destPath --name=firefox-legacy --browser=firefox_legacy --extensionId=adguardadblockerlegacydev@adguard.com"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #safari

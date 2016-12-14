@@ -168,7 +168,7 @@ ContentMessageHandler.prototype = {
                 var cssAndScripts = this.webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl, message.loadTruncatedCss);
                 return cssAndScripts || {};
             case 'checkWebSocketRequest':
-                var block = this.webRequestService.checkWebSocketRequest(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
+                var block = this.webRequestService.checkWebSocketRequest(sender.tab, message.elementUrl, message.documentUrl);
                 return {block: block, requestId: message.requestId};
             case 'processShouldCollapse':
                 

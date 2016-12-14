@@ -146,20 +146,112 @@ QUnit.test("Css GenericHide Exception Rules", function (assert) {
     assert.equal(otherCss.length, 2);
 });
 
+QUnit.test("Css GenericHide Exception Rules in Firefox Global Stylesheet", function (assert) {
+    var genericOne = new CssFilterRule("##.generic-one");
+    var genericTwo = new CssFilterRule("~google.com,~yahoo.com###generic");
+    var nonGeneric = new CssFilterRule("adguard.com##.non-generic");
+
+    var filter = new CssFilter([genericOne]);
+
+    var css = filter.buildCssForStyleSheet();
+    assert.ok(css != null);
+    assert.equal(css.length, 3);
+    assert.equal(css[0], '@-moz-document url-prefix("http://"),url-prefix("https://"){');
+    assert.equal(css[1], '.generic-one{-moz-binding: url("about:adg-intercept?undefined#dummy") !important;}');
+    assert.equal(css[2], '}');
+
+    filter.addRule(genericTwo);
+    css = filter.buildCssForStyleSheet();
+    assert.ok(css != null);
+    assert.equal(css.length, 4);
+    assert.equal(css[0], '@-moz-document url-prefix("http://"),url-prefix("https://"){');
+    assert.ok(css.indexOf('.generic-one{-moz-binding: url("about:adg-intercept?undefined#dummy") !important;}') > 0);
+    assert.ok(css.indexOf('#generic{-moz-binding: url("about:adg-intercept?undefined#dummy") !important;}') > 0);
+    assert.equal(css[3], '}');
+
+    filter.addRule(nonGeneric);
+    css = filter.buildCssForStyleSheet();
+    assert.ok(css != null);
+    assert.equal(css.length, 7);
+    assert.equal(css[0], '@-moz-document url-prefix("http://"),url-prefix("https://"){');
+    assert.ok(css.indexOf('#generic{-moz-binding: url("about:adg-intercept?undefined#dummy") !important;}') > 0);
+    assert.ok(css.indexOf('.generic-one{-moz-binding: url("about:adg-intercept?undefined#dummy") !important;}') > 0);
+    assert.equal(css[3], '}');
+    assert.equal(css[4], '@-moz-document domain("adguard.com"){');
+    assert.ok(css.indexOf('.non-generic{-moz-binding: url("about:adg-intercept?undefined#dummy") !important;}') > 0);
+    assert.equal(css[6], '}');
+});
+
 QUnit.test("Ublock Css Injection Syntax Support", function (assert) {
     var ruleText = "yandex.ru##body:style(background:inherit;)";
     var cssFilterRule = new CssFilterRule(ruleText);
-    assert.equal(ruleText, cssFilterRule.ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
     assert.ok(cssFilterRule.isInjectRule);
     assert.notOk(cssFilterRule.whiteListRule);
-    assert.equal("body { background:inherit; }", cssFilterRule.cssSelector);
+    assert.equal(cssFilterRule.cssSelector, "body { background:inherit; }");
 
     ruleText = "yandex.ru#@#body:style(background:inherit;)";
     cssFilterRule = new CssFilterRule(ruleText);
-    assert.equal(ruleText, cssFilterRule.ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
     assert.ok(cssFilterRule.isInjectRule);
     assert.ok(cssFilterRule.whiteListRule);
-    assert.equal("body { background:inherit; }", cssFilterRule.cssSelector);
+    assert.equal(cssFilterRule.cssSelector, "body { background:inherit; }");
+
+    ruleText = "yandex.ru##a[src^=\"http://domain.com\"]";
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.notOk(cssFilterRule.isInjectRule);
+    assert.notOk(cssFilterRule.whiteListRule);
+    assert.equal(cssFilterRule.cssSelector, "a[src^=\"http://domain.com\"]");
+
+    ruleText = "yandex.ru##[role='main']:style(display: none;)";
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.ok(cssFilterRule.isInjectRule);
+    assert.notOk(cssFilterRule.whiteListRule);
+    assert.equal(cssFilterRule.cssSelector, "[role='main'] { display: none; }");
+
+    ruleText = 'example.com##a[target="_blank"][href^="http://api.taboola.com/"]:style(display: none;)';
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.equal(cssFilterRule.cssSelector, 'a[target="_blank"][href^="http://api.taboola.com/"] { display: none; }');
+});
+
+QUnit.test("Some Complex Selector Rules", function (assert) {
+    var ruleText = 'example.com##td[valign="top"] > .mainmenu[style="padding:10px 0 0 0 !important;"]';
+    var cssFilterRule = new CssFilterRule(ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.equal(cssFilterRule.cssSelector, 'td[valign="top"] > .mainmenu[style="padding:10px 0 0 0 !important;"]');
+
+    ruleText = 'example.com##a[target="_blank"][href^="http://api.taboola.com/"]';
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.equal(cssFilterRule.cssSelector, 'a[target="_blank"][href^="http://api.taboola.com/"]');
+
+    ruleText = 'example.com###mz[width="100%"][valign="top"][style="padding:20px 30px 30px 30px;"] + td[width="150"][valign="top"][style="padding:6px 10px 0px 0px;"]:last-child';
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.equal(cssFilterRule.cssSelector, '#mz[width="100%"][valign="top"][style="padding:20px 30px 30px 30px;"] + td[width="150"][valign="top"][style="padding:6px 10px 0px 0px;"]:last-child');
+
+    ruleText = 'example.com###st-flash > div[class] > [style^="width:"]';
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.equal(cssFilterRule.cssSelector, '#st-flash > div[class] > [style^="width:"]');
+
+    ruleText = 'example.com##.stream-item[data-item-type="tweet"][data-item-id*=":"]';
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.equal(cssFilterRule.cssSelector, '.stream-item[data-item-type="tweet"][data-item-id*=":"]');
+
+    ruleText = 'example.com##[class][style*="data:image"]';
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.equal(cssFilterRule.cssSelector, '[class][style*="data:image"]');
+
+    ruleText = 'example.com##[onclick] > a[href^="javascript:"]';
+    cssFilterRule = new CssFilterRule(ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.equal(cssFilterRule.cssSelector, '[onclick] > a[href^="javascript:"]');
 });
 
 QUnit.test("Invalid Style Syntax", function (assert) {
@@ -431,21 +523,28 @@ QUnit.test("Extended Css Build CssHits", function (assert) {
 
     var selectors, css, extendedCss, commonCss;
 
-    selectors = filter.buildCssHits("adguard.com");
+    selectors = filter.buildCssHits("adguard.com", 'hit-prefix');
     css = selectors.css;
     extendedCss = selectors.extendedCss;
-    commonCss = filter.buildCss(null).css;
+    commonCss = filter.buildCssHits(null).css;
     assert.equal(commonCss.length, 1);
+    assert.equal(commonCss[0].trim(), ".banner { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3B%23%23.banner') !important;}");
     assert.equal(css.length, 2);
+    assert.equal(css[0].trim(), ".banner { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3B%23%23.banner') !important;}");
+    assert.equal(css[1].trim(), ".sponsored { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3Badguard.com%23%23.sponsored') !important;}");
     assert.equal(extendedCss.length, 1);
+    assert.equal(extendedCss[0].trim(), ".sponsored[-ext-contains=test] { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3Badguard.com%23%23.sponsored%5B-ext-contains%3Dtest%5D') !important;}");
 
-    selectors = filter.buildCssHits("adguard.com", '', true);
+    selectors = filter.buildCssHits("adguard.com", 'hit-prefix', true);
     css = selectors.css;
     extendedCss = selectors.extendedCss;
-    commonCss = filter.buildCss(null).css;
+    commonCss = filter.buildCssHits(null).css;
     assert.equal(commonCss.length, 1);
+    assert.equal(commonCss[0].trim(), ".banner { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3B%23%23.banner') !important;}");
     assert.equal(css.length, 1);
+    assert.equal(css[0].trim(), ".sponsored { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3Badguard.com%23%23.sponsored') !important;}");
     assert.equal(extendedCss.length, 1);
+    assert.equal(extendedCss[0].trim(), ".sponsored[-ext-contains=test] { display: none!important; background-image: url('hit-prefix/elemhidehit.png#%3Badguard.com%23%23.sponsored%5B-ext-contains%3Dtest%5D') !important;}");
 
 });
 
@@ -529,4 +628,16 @@ QUnit.test("Css Filter WWW Test", function (assert) {
 
     assert.ok(rule != null);
     assert.equal(rule.permittedDomain, 'google.com');
+});
+
+QUnit.test("Permitted/Restricted domains Test", function (assert) {
+    var ruleText = "##body";
+    var rule = new CssFilterRule(ruleText);
+
+    rule.setRestrictedDomains(['lenta.ru']);
+    rule.setRestrictedDomains(['lenta.ru', 'google.com']);
+
+    assert.ok(rule != null);
+    assert.equal(rule.getRestrictedDomains()[0], 'lenta.ru');
+    assert.equal(rule.getRestrictedDomains()[1], 'google.com');
 });

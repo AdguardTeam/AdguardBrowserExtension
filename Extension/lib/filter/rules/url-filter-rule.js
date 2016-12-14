@@ -54,9 +54,13 @@ var UrlFilterRule = exports.UrlFilterRule = function (rule, filterId) {
     }
 
     var urlRuleText = parseResult.urlRuleText;
-    this.urlRuleText= urlRuleText;
+    this.urlRuleText = urlRuleText;
 
-    var isRegexRule = StringUtils.startWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) && StringUtils.endWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE);
+    var isRegexRule = StringUtils.startWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE)
+        && StringUtils.endWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE)
+        || urlRuleText == ''
+        || urlRuleText == UrlFilterRule.MASK_ANY_SYMBOL;
+
     if (isRegexRule) {
         this.urlRegExpSource = urlRuleText.substring(UrlFilterRule.MASK_REGEX_RULE.length, urlRuleText.length - UrlFilterRule.MASK_REGEX_RULE.length);
         // Pre compile regex rules
@@ -64,6 +68,14 @@ var UrlFilterRule = exports.UrlFilterRule = function (rule, filterId) {
         if (!regexp) {
             throw 'Illegal regexp rule';
         }
+
+        if (UrlFilterRule.REGEXP_ANY_SYMBOL == regexp && !this.hasPermittedDomains()) {
+            // Rule matches everything and does not have any domain restriction
+            throw ("Too wide basic rule: " + this.urlRuleText);
+        }
+
+        // Extract shortcut from regexp rule
+        this.shortcut = extractRegexpShortcut(urlRuleText);
     } else {
         // Searching for shortcut
         this.shortcut = findShortcut(urlRuleText);
@@ -85,7 +97,6 @@ UrlFilterRule.prototype.getUrlRegExpSource = function () {
 
 // Lazy regexp creation
 UrlFilterRule.prototype.getUrlRegExp = function () {
-
     //check already compiled but not successful
     if (this.wrongUrlRegExp) {
         return null;
@@ -94,7 +105,13 @@ UrlFilterRule.prototype.getUrlRegExp = function () {
     if (!this.urlRegExp) {
         var urlRegExpSource = this.getUrlRegExpSource();
         try {
-            this.urlRegExp = new RegExp(urlRegExpSource, this.matchCase ? "" : "i");
+            if (!urlRegExpSource || UrlFilterRule.MASK_ANY_SYMBOL == urlRegExpSource) {
+                // Match any symbol
+                this.urlRegExp = new RegExp(UrlFilterRule.REGEXP_ANY_SYMBOL);
+            } else {
+                this.urlRegExp = new RegExp(urlRegExpSource, this.matchCase ? "" : "i");
+            }
+
             delete this.urlRegExpSource;
         } catch (ex) {
             //malformed regexp
@@ -103,6 +120,7 @@ UrlFilterRule.prototype.getUrlRegExp = function () {
             return null;
         }
     }
+
     return this.urlRegExp;
 };
 
@@ -153,13 +171,7 @@ UrlFilterRule.prototype.isFiltered = function (requestUrl, thirdParty, requestCo
         return false;
     }
 
-    var requestTypeMask = UrlFilterRule.contentTypes[requestContentType];
-    if ((this.permittedContentType & requestTypeMask) != requestTypeMask) {
-        //not in permitted list - skip this rule
-        return false;
-    }
-    if (this.restrictedContentType !== 0 && (this.restrictedContentType & requestTypeMask) == requestTypeMask) {
-        //in restricted list - skip this rule
+    if (!this.checkContentType(requestContentType)) {
         return false;
     }
 
@@ -169,6 +181,45 @@ UrlFilterRule.prototype.isFiltered = function (requestUrl, thirdParty, requestCo
         return false;
     }
     return regexp.test(requestUrl);
+};
+
+/**
+ * Checks if specified content type has intersection with rule's content types.
+ *
+ * @param contentType Request content type (UrlFilterRule.contentTypes)
+ */
+UrlFilterRule.prototype.checkContentType = function (contentType) {
+    var contentTypeMask = UrlFilterRule.contentTypes[contentType];
+    if ((this.permittedContentType & contentTypeMask) == 0) {
+        //not in permitted list - skip this rule
+        return false;
+    }
+
+    if (this.restrictedContentType !== 0 && (this.restrictedContentType & contentTypeMask) == contentTypeMask) {
+        //in restricted list - skip this rule
+        return false;
+    }
+
+    return true;
+};
+
+/**
+ * Checks if specified content type is included in the rule content type.
+ *
+ * @param contentType Request content type (UrlFilterRule.contentTypes)
+ */
+UrlFilterRule.prototype.checkContentTypeIncluded = function (contentType) {
+    var contentTypeMask = UrlFilterRule.contentTypes[contentType];
+    if ((this.permittedContentType & contentTypeMask) == contentTypeMask) {
+        if (this.restrictedContentType !== 0 && (this.restrictedContentType & contentTypeMask) == contentTypeMask) {
+            //in restricted list - skip this rule
+            return false;
+        }
+
+        return true;
+    }
+
+    return false;
 };
 
 /**
@@ -212,6 +263,12 @@ UrlFilterRule.prototype._loadOptions = function (options) {
             case UrlFilterRule.MATCH_CASE_OPTION:
                 //If true - regex is matching case
                 this.matchCase = true;
+                break;
+            case UrlFilterRule.IMPORTANT_OPTION:
+                this.isImportant = true;
+                break;
+            case UrlFilterRule.NOT_MARK + UrlFilterRule.IMPORTANT_OPTION:
+                this.isImportant = false;
                 break;
             case UrlFilterRule.ELEMHIDE_OPTION:
                 permittedContentType |= UrlFilterRule.contentTypes.ELEMHIDE;
@@ -267,7 +324,10 @@ UrlFilterRule.URLBLOCK_OPTION = "urlblock";
 UrlFilterRule.GENERICBLOCK_OPTION = "genericblock";
 UrlFilterRule.JSINJECT_OPTION = "jsinject";
 UrlFilterRule.POPUP_OPTION = "popup";
+UrlFilterRule.IMPORTANT_OPTION = "important";
 UrlFilterRule.MASK_REGEX_RULE = "/";
+UrlFilterRule.MASK_ANY_SYMBOL = "*";
+UrlFilterRule.REGEXP_ANY_SYMBOL = ".*";
 
 UrlFilterRule.contentTypes = {
 
@@ -281,13 +341,15 @@ UrlFilterRule.contentTypes = {
     'OBJECT-SUBREQUEST': 1 << 7,
     MEDIA: 1 << 8,
     FONT: 1 << 9,
+    WEBSOCKET: 1 << 10,
 
-    ELEMHIDE: 1 << 20,  //CssFilter cannot be applied to page
-    URLBLOCK: 1 << 21,  //This attribute is only for exception rules. If true - do not use urlblocking rules for urls where referrer satisfies this rule.
-    JSINJECT: 1 << 22,  //Does not inject javascript rules to page
-    POPUP: 1 << 23,      //check block popups
-    GENERICHIDE: 1 << 24, //CssFilter generic rules cannot be applied to page
-    GENERICBLOCK: 1 << 25 //UrlFilter generic rules cannot be applied to page
+    ELEMHIDE: 1 << 20,      //CssFilter cannot be applied to page
+    URLBLOCK: 1 << 21,      //This attribute is only for exception rules. If true - do not use urlblocking rules for urls where referrer satisfies this rule.
+    JSINJECT: 1 << 22,      //Does not inject javascript rules to page
+    POPUP: 1 << 23,         //check block popups
+    GENERICHIDE: 1 << 24,   //CssFilter generic rules cannot be applied to page
+    GENERICBLOCK: 1 << 25,  //UrlFilter generic rules cannot be applied to page
+    IMPORTANT: 1 << 26      //Important rules cannot be applied to page
 };
 
 // https://code.google.com/p/chromium/issues/detail?id=410382
@@ -310,6 +372,7 @@ UrlFilterRule.ignoreOptions = {
 };
 
 UrlFilterRule.contentTypes.DOCUMENT = UrlFilterRule.contentTypes.ELEMHIDE | UrlFilterRule.contentTypes.URLBLOCK | UrlFilterRule.contentTypes.JSINJECT;
+UrlFilterRule.contentTypes.DOCUMENT_LEVEL_EXCEPTIONS = UrlFilterRule.contentTypes.DOCUMENT | UrlFilterRule.contentTypes.GENERICHIDE | UrlFilterRule.contentTypes.GENERICBLOCK;
 
 UrlFilterRule.contentTypes.ALL = 0;
 UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.OTHER;
@@ -322,6 +385,7 @@ UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.XMLHTTPREQUEST;
 UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes['OBJECT-SUBREQUEST'];
 UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.MEDIA;
 UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.FONT;
+UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.WEBSOCKET;
 
 /**
  * Searches for domain name in rule text and transforms it to punycode if needed.
@@ -336,7 +400,9 @@ function getAsciiDomainRule(ruleText) {
         }
 
         var domain = parseRuleDomain(ruleText, true);
-        if (!domain) return "";
+        if (!domain) {
+            return "";
+        }
 
         //In case of one domain
         return StringUtils.replaceAll(ruleText, domain, UrlUtils.toPunyCode(domain));
@@ -377,7 +443,8 @@ function parseRuleDomain(ruleText, parseOptions) {
             }
 
             if (startIndex == -1) {
-                return "";
+                //Domain is not found in rule options, so we continue a normal way
+                startIndex = 0;
             }
         }
 
@@ -398,10 +465,15 @@ function parseRuleDomain(ruleText, parseOptions) {
     }
 }
 
-// Searches for the shortcut of this url mask.
-// Shortcut is the longest part of the mask without special characters:
-// *,^,|. If not found anything with the length greater or equal to 8 characters -
-// shortcut is not used.
+/**
+ * Searches for the shortcut of this url mask.
+ * Shortcut is the longest part of the mask without special characters:
+ * *,^,|. If not found anything with the length greater or equal to 8 characters -
+ * shortcut is not used.
+ *
+ * @param urlmask
+ * @returns {string}
+ */
 function findShortcut(urlmask) {
     var longest = "";
     var parts = urlmask.split(/[*^|]/);
@@ -412,6 +484,54 @@ function findShortcut(urlmask) {
         }
     }
     return longest.toLowerCase();
+}
+
+/**
+ * Extracts a shortcut from a regexp rule.
+ *
+ * @param ruleText
+ * @returns {*}
+ */
+function extractRegexpShortcut(ruleText) {
+
+    // Get the regexp text
+    var match = ruleText.match(/\/(.*)\/(\$.*)?/);
+    if (!match || match.length < 2) {
+        return null;
+    }
+
+    var reText = match[1];
+
+    var specialCharacter = "...";
+
+    if (reText.indexOf('(?') >= 0 || reText.indexOf('(!?') >= 0) {
+        // Do not mess with complex expressions which use lookahead
+        return null;
+    }
+
+    // (Dirty) prepend specialCharacter for the following replace calls to work properly
+    reText = specialCharacter + reText;
+
+    // Strip all types of brackets
+    reText = reText.replace(/[^\\]\(.*[^\\]\)/, specialCharacter);
+    reText = reText.replace(/[^\\]\[.*[^\\]\]/, specialCharacter);
+    reText = reText.replace(/[^\\]\{.*[^\\]\}/, specialCharacter);
+
+    // Strip some special characters
+    reText = reText.replace(/[^\\]\\[a-zA-Z]/, specialCharacter);
+
+    // Split by special characters
+    var parts = reText.split(/[\\^$*+?.()|[\]{}]/);
+    var token = "";
+    var iParts = parts.length;
+    while (iParts--) {
+        var part = parts[iParts];
+        if (part.length > token.length) {
+            token = part;
+        }
+    }
+
+    return token;
 }
 
 /**

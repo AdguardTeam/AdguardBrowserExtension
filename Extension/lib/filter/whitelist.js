@@ -25,13 +25,11 @@ var LS = require('../../lib/utils/local-storage').LS;
 var userSettings = require('../../lib/utils/user-settings').userSettings;
 
 var FilterRule = require('../../lib/filter/rules/base-filter-rule').FilterRule;
+var UrlFilterRule = require('../../lib/filter/rules/url-filter-rule').UrlFilterRule;
 var FilterRuleBuilder = require('../../lib/filter/rules/filter-rule-builder').FilterRuleBuilder;
 var UrlFilter = require('../../lib/filter/rules/url-filter').UrlFilter;
 
-var allowAllWhiteListRule = {
-    whiteListRule: true,
-    filterId: AntiBannerFiltersId.WHITE_LIST_FILTER_ID
-};
+var allowAllWhiteListRule = new UrlFilterRule('@@whitelist-all$document', AntiBannerFiltersId.WHITE_LIST_FILTER_ID);
 
 var WhiteListService = function () {
 

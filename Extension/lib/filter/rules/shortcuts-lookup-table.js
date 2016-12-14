@@ -39,14 +39,21 @@ var ShortcutsLookupTable = exports.ShortcutsLookupTable = function (rules) {
 
 ShortcutsLookupTable.prototype = {
 
-    // Adds rule to shortcuts lookup table
+    /**
+     * Adds rule to shortcuts lookup table
+     *
+     * @param rule Rule to add to the table
+     * @return boolean true if rule shortcut is applicable and rule was added
+     */
     addRule: function (rule) {
 
         var shortcut = this._getRuleShortcut(rule);
 
-        if (!shortcut) {
+        if (!shortcut
+            || ShortcutsLookupTable.ANY_HTTP_URL == shortcut
+            || ShortcutsLookupTable.ANY_HTTPS_URL == shortcut) {
             // Shortcut does not exists or it is too short
-            return;
+            return false;
         }
 
         if (!(shortcut in this.lookupTable)) {
@@ -61,9 +68,15 @@ ShortcutsLookupTable.prototype = {
                 this.lookupTable[shortcut] = [obj, rule];
             }
         }
+
+        return true;
     },
 
-    // Removes rule from the shortcuts table
+    /**
+     * Removes specified rule from the lookup table
+     *
+     * @param rule Rule to remove
+     */
     removeRule: function (rule) {
 
         var shortcut = this._getRuleShortcut(rule);
@@ -86,10 +99,19 @@ ShortcutsLookupTable.prototype = {
         }
     },
 
+    /**
+     * Clears lookup table
+     */
     clearRules: function () {
         this.lookupTable = Object.create(null);
     },
 
+    /**
+     * Searches for filter rules restricted to the specified url
+     *
+     * @param url url
+     * @return List of filter rules or null if nothing found
+     */
     lookupRules: function (url) {
 
         var result = [];
@@ -106,7 +128,10 @@ ShortcutsLookupTable.prototype = {
         }
         return result;
     },
-    
+
+    /**
+     * @returns {Array} rules in lookup table
+     */
     getRules: function () {
         var result = [];
         for (var r in this.lookupTable) {
@@ -134,3 +159,5 @@ ShortcutsLookupTable.prototype = {
 
 // Constants
 ShortcutsLookupTable.SHORTCUT_LENGTH = 6;
+ShortcutsLookupTable.ANY_HTTP_URL = "http:/";
+ShortcutsLookupTable.ANY_HTTPS_URL = "https:";
