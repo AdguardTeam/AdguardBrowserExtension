@@ -552,6 +552,7 @@
         var requestId = collapseRequestId++;
         collapseRequests[requestId] = {
             element: element,
+            elementUrl: elementUrl,
             tagName: tagName
         };
 
@@ -606,7 +607,8 @@
 
         if (response.collapse === true) {
             var element = collapseRequest.element;
-            ElementCollapser.collapseElement(element, shadowRoot);
+            var elementUrl = collapseRequest.elementUrl;
+            ElementCollapser.collapseElement(element, elementUrl, shadowRoot);
         }
 
         // In any case we should remove hiding style

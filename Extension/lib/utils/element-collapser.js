@@ -253,16 +253,18 @@ var ElementCollapser = (function() {
      * Collapses specified element.
      *
      * @param element Element to collapse
+     * @param elementUrl Element url
      * @param shadowRoot optional
      */
-    var collapseElement = function(element, shadowRoot) {
+    var collapseElement = function(element, elementUrl, shadowRoot) {
 
         var tagName = element.tagName.toLowerCase();
         var source = element.getAttribute('src');
         if (source) {
-            //To not to keep track of changing src for elements, we are going to collapse it with a CSS rule
-            //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/408
-            var srcSelector = createSelectorForSrcAttr(source, tagName);
+            // To not to keep track of changing src for elements, we are going to collapse it with a CSS rule
+            // But we take element url, cause current source could be already modified
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/408
+            var srcSelector = createSelectorForSrcAttr(elementUrl, tagName);
             hideBySelectorAndTagName(srcSelector, tagName, shadowRoot);
 
             return;
