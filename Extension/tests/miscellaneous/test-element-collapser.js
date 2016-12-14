@@ -178,6 +178,30 @@ QUnit.test("Test Empty Styles Element with ShadowDOM ", function(assert) {
 QUnit.test("Test Collapser with special characters in dom path", function(assert) {
     cleanUp();
 
+    var element = document.getElementById('test-div-in-http');
+    var style = window.getComputedStyle(element);
+    assert.equal(style.display, 'block');
+
+    ElementCollapser.hideBySelector('#test-div-in-http', null);
+    style = window.getComputedStyle(element);
+    assert.equal(style.display, 'none');
+
+    ElementCollapser.unhideBySelector('#test-div-in-http');
+    style = window.getComputedStyle(element);
+    assert.equal(style.display, 'block');
+
+    ElementCollapser.hideElement(element);
+    style = window.getComputedStyle(element);
+    assert.equal(style.display, 'none');
+
+    ElementCollapser.unhideElement(element);
+    style = window.getComputedStyle(element);
+    assert.equal(style.display, 'block');
+});
+
+QUnit.test("Test Collapser with special characters in dom path with ShadowRoot", function(assert) {
+    cleanUp();
+
     var shadowRoot = createShadowRoot();
     if (!shadowRoot) {
         //can't run this test without shadowDOM support
