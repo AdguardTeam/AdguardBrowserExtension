@@ -16,46 +16,46 @@
  */
 
 /**
- * Sync settings
+ * Sync settings service
  *
- * @type {{update, load}}
+ * @type {{syncSettings, setSyncProvider}}
  */
-var Sync = (function () { // jshint ignore:line
+var SettingsProvider = (function () { // jshint ignore:line
 
-    var readFile = function (url, callback) {
-        var rawFile = new XMLHttpRequest();
-        rawFile.overrideMimeType("application/json");
-        rawFile.open("GET", url, true);
-        rawFile.onreadystatechange = function() {
-            if (rawFile.readyState === 4 && rawFile.status == "200") {
-                callback(JSON.parse(rawFile.responseText));
-            }
+    var PROTOCOL_VERSION = "1.0";
+    var APP_ID = "adguard-browser-extension";
+
+    var loadSettings = function () {
+        //TODO: Load current set of settings
+
+        var manifest = {
+            "timestamp": new Date().getTime(),
+            "protocol-version": PROTOCOL_VERSION,
+            "min-compatible-version": PROTOCOL_VERSION,
+            "app-id": APP_ID,
+            "sections": [
+                {
+                    "name": "filters.json",
+                    "timestamp": new Date().getTime()
+                }
+            ]
         };
 
-        rawFile.send(null);
+        return manifest;
     };
 
-    var saveFile = function (url, settings) {
+    var loadSettingsSection = function (section) {
         //TODO: Implement
     };
 
-    var processUpdate = function (current, updated) {
+    var saveSettings = function (manifest) {
         //TODO: Implement
-    };
-
-    var update = function (settings, url) {
-        var current = readFile(url);
-        var result = processUpdate(current, settings);
-        saveFile(url, result);
-    };
-
-    var load  = function (url, callback) {
-        readFile(url, callback);
     };
 
     // EXPOSE
     return {
-        update: update,
-        load: load
+        loadSettings: loadSettings,
+        loadSettingsSection: loadSettingsSection,
+        saveSettings: saveSettings
     };
 })();

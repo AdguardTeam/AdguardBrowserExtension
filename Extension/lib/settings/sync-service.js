@@ -21,9 +21,75 @@
  * @type {{syncSettings, setSyncProvider}}
  */
 var SyncService = (function () { // jshint ignore:line
+    var MANIFEST_PATH = "manifest.json";
 
-    var syncSettings = function () {};
-    var setSyncProvider = function (syncProvider) {};
+    var syncProvider = null;
+
+    var isProtocolVersionCompatible = function (manifest, current) {
+        return {
+            canRead: manifest["min-compatible-version"] <= current["min-compatible-version"],
+            canWrite: manifest["protocol-version"] <= current["protocol-version"]
+        }
+    };
+
+    var processManifest = function (callback) {
+        var onManifestLoaded = function (manifest) {
+            if (!manifest) {
+                callback();
+                return;
+            }
+
+            console.log('Manifest loaded');
+
+            var current = SettingsProvider.loadSettings();
+
+            var compatibility = isProtocolVersionCompatible(manifest, current);
+            if (!compatibility.canRead) {
+                console.log('Protocol versions are not compatible');
+                callback();
+                return;
+            }
+
+            processSections(current, manifest, compatibility, function (updated) {
+                console.log('Saving updated manifests..');
+
+                SettingsProvider.saveSettings(updated);
+                if (compatibility.canWrite) {
+                    SyncProvider.save(MANIFEST_PATH, updated, callback);
+                } else {
+                    callback();
+                }
+            });
+        };
+
+        SyncProvider.get(MANIFEST_PATH, onManifestLoaded);
+    };
+
+    var processSections = function (current, manifest, compatibility, callback) {
+        //TODO: Implement processSections
+
+        callback(current);
+    };
+
+
+    // API
+    var syncSettings = function (callback) {
+        console.log('Synchronizing settings..');
+        if (syncProvider == null) {
+            console.error('Sync provider should be set first');
+            callback();
+            return;
+        }
+
+        processManifest(function () {
+            console.log('Synchronizing settings finished');
+            callback();
+        });
+    };
+
+    var setSyncProvider = function (provider) {
+        syncProvider = provider;
+    };
 
     // EXPOSE
     return {
