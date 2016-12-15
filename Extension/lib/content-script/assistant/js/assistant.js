@@ -693,10 +693,10 @@ var AdguardAssistant = function ($) {
 		handleShowBlockSettings(settings.elementInfo.haveUrlBlockParameter && !isBlockSimilar, settings.elementInfo.haveClassAttribute && !isBlockByUrl);
 
 		var options = {
-			isBlockByUrl: isBlockByUrl,
 			urlMask: settings.elementInfo.urlBlockAttributeValue,
-			isBlockSimilar : isBlockSimilar,
 			isBlockOneDomain: isBlockOneDomain,
+			ruleType: isBlockByUrl ? 'URL' : 'CSS',
+			cssSelectorType: isBlockSimilar ? 'SIMILAR' : 'STRICT_FULL',
 			url: document.location
 		};
 
