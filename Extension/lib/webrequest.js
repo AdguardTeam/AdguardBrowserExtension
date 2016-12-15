@@ -20,6 +20,22 @@
     'use strict';
 
     /**
+     * Retrieve referrer url from request details.
+     * Extract referrer by priority:
+     * 1. referrerUrl in requestDetails
+     * 2. url of frame where request was created
+     * 3. url of main frame
+     *
+     * @param requestDetails
+     * @returns {*|Frame}
+     */
+    function getReferrerUrl(requestDetails) {
+        return requestDetails.referrerUrl ||
+            adguard.frames.getFrameUrl(requestDetails.tab, requestDetails.requestFrameId) ||
+            adguard.frames.getMainFrameUrl(requestDetails.tab);
+    }
+
+    /**
      * Process request
      *
      * @param requestDetails
@@ -45,11 +61,8 @@
             return true;
         }
 
-        var referrerUrl = adguard.frames.getFrameUrl(tab, requestDetails.requestFrameId);
-        if (!referrerUrl) {
-            // Assign to main frame
-            referrerUrl = adguard.frames.getFrameUrl(tab, 0);
-        }
+        var referrerUrl = getReferrerUrl(requestDetails);
+
         var requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
         adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
         return !adguard.webRequestService.isRequestBlockedByRule(requestRule);
@@ -71,7 +84,7 @@
         if (adguard.isModuleSupported('integration')) {
             if (adguard.integration.shouldOverrideReferrer(tab)) {
                 // Retrieve main frame url
-                var mainFrameUrl = adguard.frames.getFrameUrl(tab, 0);
+                var mainFrameUrl = adguard.frames.getMainFrameUrl(tab);
                 headers = adguard.utils.browser.setHeaderValue(headers, 'Referer', mainFrameUrl);
                 return {
                     requestHeaders: headers,
@@ -108,36 +121,35 @@
         var requestUrl = requestDetails.requestUrl;
         var responseHeaders = requestDetails.responseHeaders;
         var requestType = requestDetails.requestType;
-        // Retrieve referrer
-        var referrerUrl = adguard.frames.getFrameUrl(tab, requestDetails.requestFrameId);
-        if (!referrerUrl) {
-            referrerUrl = adguard.frames.getFrameUrl(tab, 0);
-        }
+        var referrerUrl = getReferrerUrl(requestDetails);
 
         adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
 
-        if (requestType == adguard.RequestTypes.DOCUMENT) {
+        // Safebrowsing check
+        if (adguard.isModuleSupported('safebrowsing') &&
+            requestType === adguard.RequestTypes.DOCUMENT) {
+            filterSafebrowsing(tab, requestUrl);
+        }
 
-            // Safebrowsing check
-            if (adguard.isModuleSupported('safebrowsing')) {
-                filterSafebrowsing(tab, requestUrl);
-            }
+        if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
 
             /*
              Websocket check.
              If 'ws://' request is blocked for not existing domain - it's blocked for all domains.
              Then we gonna limit frame sources to http to block src:'data/text' etc.
-             More details in the issue:
+             More details in these issue:
              https://github.com/AdguardTeam/AdguardBrowserExtension/issues/344
+             https://github.com/AdguardTeam/AdguardBrowserExtension/issues/440
 
              WS connections are detected as "other"  by ABP
              EasyList already contains some rules for WS connections with $other modifier
              */
-            var websocketCheckUrl = "ws://adguardwebsocket.check/";
-            if (adguard.webRequestService.checkWebSocketRequest(tab, websocketCheckUrl, referrerUrl)) {
+            var frameUrl = adguard.frames.getFrameUrl(tab, requestDetails.frameId);
+            var websocketCheckUrl = "ws://adguardwebsocket.check/" + adguard.utils.url.getDomainName(frameUrl);
+            if (adguard.webRequestService.checkWebSocketRequest(tab, websocketCheckUrl, frameUrl)) {
                 var cspHeader = {
                     name: 'Content-Security-Policy',
-                    value: 'frame-src http: https:; child-src http: https:'
+                    value: 'connect-src http: https:; frame-src http: https:; child-src http: https:'
                 };
                 responseHeaders.push(cspHeader);
                 return {

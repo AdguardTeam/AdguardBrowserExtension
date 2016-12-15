@@ -269,14 +269,12 @@
             case 'addAndEnableFilter':
                 adguard.filters.addAndEnableFilters([message.filterId]);
                 break;
-            case 'removeAntiBannerFilter':
-                adguard.filters.removeFilter(message.filterId);
-                break;
-            case 'enableAntiBannerFilter':
-                adguard.filters.enableFilter(message.filterId);
-                break;
             case 'disableAntiBannerFilter':
-                adguard.filters.disableFilter(message.filterId);
+                if (message.remove) {
+                    adguard.filters.removeFilter(message.filterId);
+                } else {
+                    adguard.filters.disableFilter(message.filterId);
+                }
                 break;
             case 'getWhiteListDomains':
                 var whiteListDomains = searchWhiteListDomains(message.offset, message.limit, message.text);

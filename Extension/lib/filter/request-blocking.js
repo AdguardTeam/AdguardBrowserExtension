@@ -57,6 +57,11 @@ adguard.webRequestService = (function (adguard) {
         };
 
         var whitelistRule = adguard.frames.getFrameWhiteListRule(tab);
+        if (!whitelistRule) {
+            //Check whitelist for current frame
+            var mainFrameUrl = adguard.frames.getMainFrameUrl(tab);
+            whitelistRule = adguard.requestFilter.findWhiteListRule(documentUrl, mainFrameUrl, adguard.RequestTypes.DOCUMENT);
+        }
         var genericHideFlag = genericHide || (whitelistRule && whitelistRule.checkContentType("GENERICHIDE"));
         var elemHideFlag = whitelistRule && whitelistRule.checkContentType("ELEMHIDE");
         if (!elemHideFlag) {
@@ -168,9 +173,12 @@ adguard.webRequestService = (function (adguard) {
 
         var whitelistRule = adguard.frames.getFrameWhiteListRule(tab);
         if (whitelistRule && whitelistRule.checkContentTypeIncluded("DOCUMENT")) {
-            // Frame is whitelisted by $document rule
+            // Frame is whitelisted by main frame's $document rule
             // We do nothing more in this case - return the rule.
             return whitelistRule;
+        } else if (!whitelistRule) {
+            // If whitelist rule is not found for main frame, we check it for referrer
+            whitelistRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
         }
 
         return adguard.requestFilter.findRuleForRequest(requestUrl, referrerUrl, requestType, whitelistRule);

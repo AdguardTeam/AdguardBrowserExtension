@@ -187,6 +187,10 @@ var AdguardRulesConstructorLib = (function (api) {
         return className && className.trim() != '';
     };
 
+    var haveIdAttribute = function (element) {
+        return element.id && element.id.trim() != '';
+    };
+
     var cropDomain = function (url) {
         var domain = getUrl(url).host;
         return domain.replace("www.", "").replace(/:\d+/, '');
@@ -235,7 +239,8 @@ var AdguardRulesConstructorLib = (function (api) {
             attributes: element.attributes ? element.attributes : [],
             urlBlockAttributeValue: getUrlBlockAttribute(element),
             haveUrlBlockParameter: haveUrlBlockParameter(element),
-            haveClassAttribute: haveClassAttribute(element)
+            haveClassAttribute: haveClassAttribute(element),
+            haveIdAttribute: haveIdAttribute(element)
         }
     };
 

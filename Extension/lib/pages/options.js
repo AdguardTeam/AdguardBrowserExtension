@@ -326,7 +326,7 @@ PageController.prototype = {
     allowAcceptableAdsChange: function () {
         if (this.checked) {
             contentPage.sendMessage({
-                type: 'enableAntiBannerFilter',
+                type: 'addAndEnableFilter',
                 filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID
             });
         } else {
@@ -848,7 +848,7 @@ PageController.prototype = {
     _onAntiBannerFilterChange: function () {
         var filterId = this.value - 0;
         if (this.checked) {
-            contentPage.sendMessage({type: 'enableAntiBannerFilter', filterId: filterId});
+            contentPage.sendMessage({type: 'addAndEnableFilter', filterId: filterId});
         } else {
             contentPage.sendMessage({type: 'disableAntiBannerFilter', filterId: filterId});
         }

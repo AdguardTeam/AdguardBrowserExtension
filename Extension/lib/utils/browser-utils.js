@@ -262,6 +262,22 @@
             }
 
             return null;
+        },
+
+        /**
+         * Retrieve languages from navigator
+         * @param limit Limit of preferred languages
+         * @returns {Array}
+         */
+        getNavigatorLanguages: function (limit) {
+            var languages = [];
+            // https://developer.mozilla.org/ru/docs/Web/API/NavigatorLanguage/languages
+            if (adguard.utils.collections.isArray(navigator.languages)) {
+                languages = navigator.languages.slice(0, limit);
+            } else if (navigator.language) {
+                languages.push(navigator.language); // .language is first in .languages
+            }
+            return languages;
         }
     };
 

@@ -1,6 +1,6 @@
-! Checksum: uRDmWoYPtIxdaE+V+k/4VA
-! Version: 1.0.5.88
-! TimeUpdated: 2016-11-21T22:01:31.570+04:00
+! Checksum: McFnyun6IHQOSZ5q7lxkxg
+! Version: 1.0.6.18
+! TimeUpdated: 2016-12-07T22:01:49.282+04:00
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
@@ -13,6 +13,18 @@
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+||adserver.unityads.unity3d.com^
+||cdn.unityads.unity3d.com^
+||show.niqiu99.org^$third-party
+||pl.263gmail.org^$third-party
+||slb.gedawang.com^$third-party
+||ctl.buyt.in^
+||adv.mxmcdn.net^
+||api.adflake.com^
+||dante2007.com^
+||iad.appboy.com^
+||banners.etermax.com^
+||mob.huimee.net^$third-party
 ||mediate-ios-*.hyprmx.com^
 ||marketplace-ios-*.hyprmx.com^
 ||live.hyprmx.com^
@@ -681,9 +693,14 @@
 ||ziffdavis.com^
 ||zoglafi.info^
 ||graph.facebook.com/network_ads
+||rg.yottos.com^
 ||smilered.com^
 ||jfduv7.com^
 ||retarget.ssl-services.com^
+@@||m.beautypageants.in^$elemhide
+@@||adf.ly^$generichide,genericblock
+@@||static.adf.ly^
+@@||m.beautypageants.in^$generichide
 @@||static.expressbpd.com/rsjs/ads.js
 @@||ads.dainikbhaskar.com/AdTech/ads/ads.js
 @@||javadecompilers.com^$generichide
@@ -691,7 +708,6 @@ delfi.ee#@#.adbanner
 delfi.ee#%#Object.defineProperty(window, 'adblock_detect_run', { get: function() { return true; } });
 m.ndtv.com#@#.ad300
 m.ndtv.com#%#Object.defineProperty(window, 'canRunAdsN', { get: function() { return false; } });
-@@||m.beautypageants.in^$generichide
 @@||bild.de^$elemhide
 @@||smartadserver.com/diff/*/partners/$domain=bild.de
 @@||smartadserver.com/diff/*/smartad.js$domain=bild.de
@@ -725,7 +741,7 @@ nasimke.ru##.body > div[class] > div[-ext-has='img[src*="/rekl/"]']
 m.pikabu.ru###stories_container div[class="post"][data-story-id][-ext-has='.post_date:contains(спонсорская ссылка)']
 m.pikabu.ru###stories_container div[class="post"][data-story-id][-ext-has='.post_date:contains(спонсорский пост)']
 m.reddit.com##article[class="Post size-compact"][-ext-has=".PostHeader__sponsored-flair"]
-free-rutor.org,lenfilm.tv,krutor.org,fast-bit.org,tor-ru.net,hd-bit.org,radikal.ru,hdkinomax.com,kino-serial.net,on-movie.net,fastpic.ru,rutor.is,baskino.club,rutor.info,nnm.me,korzik.net,seasonvar.ru,rsload.net,nnm-club.me,nnmclub.to,rustorka.com,auto.mail.ru,horo.mail.ru,realty.mail.ru,health.mail.ru,afisha.mail.ru,cloud.mail.ru,otvet.mail.ru,pogoda.mail.ru,sport.mail.ru,tv.mail.ru,torg.mail.ru,cars.mail.ru,hi-tech.mail.ru,rustorka.com,top-tor.org,super-tor.net,filmix.net,free-ru.org#%#window.WebSocket = undefined;
+all-tor.net,free-rutor.org,lenfilm.tv,krutor.org,fast-bit.org,tor-ru.net,hd-bit.org,radikal.ru,hdkinomax.com,kino-serial.net,on-movie.net,fastpic.ru,rutor.is,baskino.club,rutor.info,nnm.me,korzik.net,seasonvar.ru,rsload.net,nnm-club.me,nnmclub.to,rustorka.com,auto.mail.ru,horo.mail.ru,realty.mail.ru,health.mail.ru,afisha.mail.ru,cloud.mail.ru,otvet.mail.ru,pogoda.mail.ru,sport.mail.ru,tv.mail.ru,torg.mail.ru,cars.mail.ru,hi-tech.mail.ru,rustorka.com,top-tor.org,super-tor.net,filmix.net,free-ru.org#%#window.WebSocket = undefined;
 pornhub.com#%#AG_onLoad(function() { if (typeof redirect !== 'function') return; var str = redirect.toString(); var m = str.match(/\'(\/view.*)\'/); if (m.length != 2) return; var link = m[1]; window.location.href = m[1]; });
 m.spankbang.com#%#AG_onLoad(function() { rpuSetCookie('true', '1000'); });
 sasisa.ru#%#AG_onLoad(function() { window.show_ads = function() {}; });
@@ -735,11 +751,16 @@ factroom.ru#$#.mobile-pop-direct { display: none!important; height: 0px!importan
 deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important;}
 .cn/?ss=
 /adfurikun/*
+m.veporn.net#@#.advertisment
+m.veporn.net#@##topAds
+@@||g.doubleclick.net/gpt/pubads_impl_$script,domain=ukr.net
+@@||mafia-rules.net^$app=net.bestmafia,document
+@@||engine.widespace.com/map/provisioning?appId=com.sofoot$app=com.sofoot
+@@||config2.mparticle.com^$app=via.rider
 @@||b.marfeel.com/statics/marfeel/gardac.js$domain=applesencia.com
 @@||rutube.ru/play/embed/*?advertiser_id=
 @@||forums.windowscentral.com^$script,~third-party
 @@||android-api-de.gumtree.com/api/users/*/ads.json
-4pda.ru#@#a[title="Dishonored"][-ext-has="img"]
 4pda.ru#@#.sidebar_border_content > a[rel="nofollow"][-ext-has=">img"]
 4pda.ru#@#aside[id] > div[class][-ext-has='div.sidebar_border_content>a>img[height="400"]']
 4pda.ru#@#aside[id] > div[class][-ext-has='h2:contains(AppPromo)']
@@ -811,6 +832,13 @@ m.auto.ru##.card.i-bem > div[class^="_"] > div[class^="_"]
 m.auto.ru##.index.i-bem > div[class]:not([data-bem])
 m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"])
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
+mail.yandex.by,mail.yandex.kz,mail.yandex.ru,mail.yandex.ua##.ns-view-direct
+pornhub.com##.adContainer
+||addown.pipaw.com/phone/
+m.dm5.com##div[class^="adform"]
+9to5mac.com##.leaderboard
+9to5mac.com##.adsense
+9to5mac.com##div[id^="div-gpt-ad"]
 ||go.*.com/apu.php$empty,domain=123movies.to|movies.is
 forums.windowscentral.com##.homeforums > div[align="center"][style="padding:15px"]
 forums.windowscentral.com##.adunit
@@ -957,6 +985,10 @@ login.wi-fi.ru#%#window.isPremium = true;
 @@||imasdk.googleapis.com^$app=de.cellular.focus
 @@||ads.cricbuzz.com/adserver/units/mobile/set_ads_values.php
 @@||connect.tapjoy.com/connect$app=com.lucasarts.starts_goo
+||graph.facebook.com^$app=com.eterno
+||graph.facebook.com^$app=com.devexpert.weather
+||graph.facebook.com^$app=com.musixmatch.android.lyrify
+||graph.facebook.com^$app=com.sonyericsson.trackid
 ||graph.facebook.com^$app=com.ketchapp.donttouchthespikes
 ||graph.facebook.com^$app=com.laurencedawson.reddit_sync
 ||graph.facebook.com^$app=com.mobilefootie.wc2010
@@ -1037,7 +1069,18 @@ login.wi-fi.ru#%#window.isPremium = true;
 ||eviltracker.net^
 ||spotify.com/ads/
 ||trackersimulator.org^
-|http*$app=com.adups.fota.sysoper|com.adups.fota
+||metrics.bestbuy.com^
+||analytics-server.gimbal.com^
+||carfax.sc.omtrdc.net^
+||beacon.carfax.com^
+||invenio_tracking_*.sgnapps.com^
+||metrics.macys.net^
+||dsg.sc.omtrdc.net^
+||sypi.gpshopper.com^
+||collector.brandify.com^
+||lhzbdvm.com^
+||prugskh.net^
+||prugskh.com^
 ||rlog.9gag.com^
 ||rlog-api.under9.co^
 ||track.pingstart.com^
@@ -1164,7 +1207,9 @@ iapp-cp.nuggad.net^
 ||stat.duokanbox.com^
 ||statistics.videofarm.daum.net^
 ||stats.unity3d.com^
+||tapjoy.net^
 ||tapjoy.com^
+||4seeresults.com^
 ||taurus.iad.appboy.com^
 ||tns.simba.taobao.com^
 ||tracker-api.my.com^
@@ -1186,4 +1231,6 @@ iapp-cp.nuggad.net^
 ||analy.qq.com^
 ||appsupport.qq.com/cgi-bin/appstage/mstats_batch_report
 ||monitor.uu.qq.com/analytics/
+||wsp.marketgid.com^
+###ad_foot
 @@||appex-rf.msn.com/*.js?adtype=

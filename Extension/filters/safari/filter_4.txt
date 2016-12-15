@@ -1,6 +1,6 @@
-! Checksum: 7zflTERMiIeJ2qiKwGTcWQ
-! Version: 1.0.14.72
-! TimeUpdated: 2016-11-22T00:00:56.244+04:00
+! Checksum: 2tV2E2+oqV3JwKkd5k61dA
+! Version: 1.0.15.28
+! TimeUpdated: 2016-12-08T01:00:57.807+04:00
 ! Title: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
 ! Title: Adguard Social Media Filter
@@ -167,6 +167,7 @@
 !
 ! Contains usorted urls
 !
+/wp-content/plugins/2-click-socialmedia-buttons/*
 /wp-content/plugins/social-count-plus/*
 /plugins/wp-share-to-xing/*
 /wp-content/plugins/indeed-social-media/*
@@ -183,7 +184,7 @@
 /heart_it_button.js
 /icons/share.jpg
 /images/social/*
-/images/vk.png$domain=~cheater-top.ru|~monolife.ru|~mos.ru|~epicwow.com
+/images/vk.png$domain=~cheater-top.ru|~monolife.ru|~mos.ru|~epicwow.com|~epicl2.com
 /img/facebook.gif
 /img/twitter.gif
 /jquery.shareaholic-publishers-sb.min.js
@@ -241,6 +242,9 @@ lj_bookmarklet
 !
 ! Extended CSS rules
 !
+abendzeitung-muenchen.de##div[class$="statichtmlbrick module"][-ext-has='div[class$="fb-page"]']
+sporhd.com,karadenizmanset.com,saraykoy.com.tr,cayyolu.com.tr,bugununhaberi.com###page_right div.right_block[-ext-has="div.title.grey:contains(Sosyal Medya)"]
+vioyun.com###sidebar > .widget_text[-ext-has="span:contains(Facebook)"]
 onedio.com##.main > .entry.html[-ext-has="h2:contains(YouTube Kanalımıza Abone)"]
 applopedi.com##.sag > .single-block[-ext-has=".addthis_toolbox"]
 f3torrent.net##.f3wrapper-right > div[style][-ext-has='div.feedburner']
@@ -299,6 +303,8 @@ takprosto.cc#%#document.cookie = "popup_displayed=true";
 !-------------------
 !-------CSS---------
 !-------------------
+! https://forum.adguard.com/index.php?threads/16636/
+workingkeys.org#$#.onp-sl-content { display: block!important; }
 ! https://forum.adguard.com/index.php?threads/14740/
 milligazete.com.tr#$#.addthis_sharing_toolbox { margin-top: 0px!important; }
 ! https://forum.adguard.com/index.php?threads/14064/
@@ -330,6 +336,63 @@ softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2146
 ||mimimi.tv/?*=*&_=
 !
+ritm.tv##.facebook-widget
+trthaber.com##.wrapper.sosyalAglar
+sgkrehberi.com##.mainBox.adsFace
+sanalokulumuz.com##.freklam
+wiwo.de##.hcf-action-share
+zona.media##section[data-share-id]
+m.focus.de##.social_sticky
+blog.milliyet.com.tr##.s_fb
+blog.milliyet.com.tr##.s_tw
+blog.milliyet.com.tr##.innerShare
+||lxax.com##.social
+tvguide.com##.article-social-section
+thefreethoughtproject.com##.mini-share-post
+thefreethoughtproject.com##.share-post
+haberself.com##.share-box-new
+gricizgi.com##.share-tool
+lookdevices.ru##.onp-sl-overlap-box
+gitfilmizle.net###alt
+warezturkey.org##.theblogwidgets
+fullonlinefilmizle2.net##.begeni-social
+bl.uk###twitterwrapper
+bnkomi.ru###vk_groups3
+||ddizi1.com/images/twitter.png
+chip.de##.LikeButton
+basakgazetesi.com##.block-fan
+||karabuknethaber.com/img/sosyalmedya/
+||workingkeys.org/wp-content/plugins/social-locker/
+workingkeys.org##.onp-sl-outer-wrap
+macizler.trgool.com##.paylas
+trendblog.net###googleplus_widget
+arabadergisi.com##.widget_fans_widget
+mavikocaeli.com.tr##.hbr-shr
+anadolugazetesi.net##.sosyal > a[onclick][href]
+bolgegazetesi.com##.buyukpaylas
+haberekspres.com.tr##.panel-sosyal
+yozgatgazetesi.com###sayfadetaylar > font[face="Times"]
+yozgatgazetesi.com###sayfadetaylar > a[href="#"][onclick] > img
+sporhd.com,karadenizmanset.com,saraykoy.com.tr,cayyolu.com.tr,bugununhaberi.com##.socialRightBlock
+thoughtcatalog.com##.global_sharing_controls
+teknopc.net###fanback
+kidstaff.com.ua##.social_but
+javhdonline.com##.dp-share
+hdkinoklub.com##.social-note
+hdkinoklub.com##.social_share_table
+thenational.ae##.nationalsocialshare a[onclick^="popUpWindow"]
+mhmtyc.com##.widget_sponsor_150 + .widget_sponsor_300:nth-child(4)
+oyunindir.club##.widget_likebox
+cheattr.com##.widget-area > #text-13:first-child
+calisir.net##.yanmenu > .face_h2
+segmentnext.com##.share
+chip.de###like-btn
+fetishshrine.com##.spot-bottom
+webtekno.com##.qa-sss-buttons
+penti.com##.share
+teknopc.net###HTML7
+androidkolik.com##.widget_easy_facebook_page_plugin
+yenifullprogramlarindir.com###social-2
 handelsblatt.com##div[class^="vhb-share-social"]
 intoday.in##.likedisdiv
 cocomy.net##.post-bottom
@@ -367,7 +430,6 @@ kutahyaekspres.com##.facebook-widget
 gercektaraf.com##.socialRightBlock
 gercektaraf.com##form + .right_block > div[class="title grey"]
 ||webspor2.com/social.html
-ubuntumaniac.com###fanback
 ubuntumaniac.com###PlusFollowers1
 filmizlef.net##.widget.border5a > .widget.border5a:first-child
 m.news.de##.social
@@ -454,7 +516,6 @@ computerera.co.in##ism_wrap
 turksinemasi.com##div[class$="bslkzmn2 h300"]
 ||turksinemasi.com/wp-content/themes/ts/images/paylas-*.jpg
 ln-online.de###articlesocial
-fox.com.tr##.vjs-social-share
 canlitv.mobi##.sosyalmedyaaraclari
 canlitvizle.io##.io-sosyal
 canlitvlive.co##.sharelink
@@ -469,7 +530,6 @@ tv360.com.tr###sharingbar
 ~ok.ru##a[href^="//www.odnoklassniki.ru/dk?st.cmd=addShare"]
 digiday.com##.article-sharing
 dom.lenta.ru##.b-topic__socials
-cosmopolitanturkiye.com##.sosyal
 elle.com.tr,milliyetemlak.com##.facebook
 elle.com.tr,milliyetemlak.com##.twitter
 otohaber.com.tr##.pinterest
@@ -543,7 +603,6 @@ softwares-serials.in###facebook_right
 sadeemapk.com,vioyun.com###facebookpopup-fanback
 fulldiziizleyelimm.com###faceuyari
 fulloyunindirsene.com###fadeinbox
-for-ua.com,idevice.ro,majorgeeks.com,ridus.ru,tweaktown.com,uptobox.com###fanback
 mackolik.com###fancybox-close
 mackolik.com###fancybox-frame
 kazanfirst.ru###fancybox-loading
@@ -678,7 +737,6 @@ eksisozluk.com###vertical-share-wrapper
 travelask.ru###vk-popup
 newsvo.ru###vk_group_layer
 spec-komp.com###vk_groups1
-igromania.ru###vk_groups2
 prokazan.ru###vk_groupsVK
 lyrsense.com###vk_groups_ls
 rsn.ru###vk_groups_new
@@ -1019,11 +1077,10 @@ onlinemoviesgold.us##.osd-sms-wrapper
 woman.ru##.our-social__left
 kicker.de##.ovVidPlySocialBtn
 haberdar.com##.page-share
-habertempo.net##.page-social
 watchfree.to##.page_content > div.backdrop
 watchfree.to##.page_content > div.modal
 batpic.com##.panel-share-networks *
-ademocut.com,akdenizhaber.com.tr,donanimhaber.com,kimdirkim.com##.paylas
+ademocut.com,akdenizhaber.com.tr,calisir.net,donanimhaber.com,kimdirkim.com##.paylas
 otohaber.com.tr,teknokulis.com##.paylasM
 haberler.com##.paylassag
 lvz.de##.pda-topmenusocial
@@ -1260,7 +1317,7 @@ forbes.ru##.socnet_left_float
 forbes.ru##.socnet_shares_cont
 m5bilisim.com##.sol-icerik-girinti > a[href^="javascript:void(0)"]
 genius.com##.song_header-share_buttons
-dizifilmdunyasi.org,durdurfilmizle.com,filmbizdeizlenir.com,filmizle.film,hdfilmdeposu.net,islahhaber.net##.sosyal
+pkn918.com,oyungezginler.org,cosmopolitanturkiye.com,dizifilmdunyasi.org,durdurfilmizle.com,filmbizdeizlenir.com,filmizle.film,hdfilmdeposu.net,islahhaber.net##.sosyal
 bedavafilmizleyin.org##.sosyal-aglar
 yookartik.com##.sosyal-paylas
 filmiizle.gen.tr##.sosyal-paylasim > a[title]
@@ -1401,7 +1458,6 @@ softbuild.ru##a[onclick^="window.open('http://www.livejournal.com/update.bml"]
 dizimuzikleri.co,heymp3indir.com,mp3indirco.com##a[title$="Facebook'da Paylaş"]
 konhaber.com##a[title$="Paylaş"]
 ozgurgorgulu.com##a[title^="Share on"]
-zuketapaajabhisa.blogspot.com##body #fanback
 maydanozhaber.com##body > #kodac
 somut.net##body > div#boxes
 ozgurgorgulu.com##body > div#popup
@@ -1585,6 +1641,21 @@ lcpdfr.com##ul[data-controller$="sharelink"]
 !
 ! Section contains list general hiding rules
 !
+##.ShareContent
+##.shareContent
+##.sticky-shares
+##.page-social
+###social_share
+~pinterest.com##a[href^="http://pinterest.com/pin/create/bookmarklet/"]
+##.bts_social
+##.addthis_button_reddit
+###vk_groups2
+##.list_share
+~facebook.com##a[href^="http://facebook.com/share.php?"]
+##.vjs-social-share
+###crestashareicon
+###crestashareiconincontent
+##.cresta-share-icon
 ##.btn_fb
 ##.like-fb
 ##a[href^="https://twitter.com/intent/tweet/?"]
@@ -1962,7 +2033,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.share-btn
 ##.share-btns
 ##.share-button
-~thedodo.com##.share-buttons
+~bleacherreport.com,~thedodo.com##.share-buttons
 ##.share-buttons-multi
 ##.share-cont
 ##.share-counter
@@ -2338,7 +2409,24 @@ livejournal.com##.b-ljtimes-wrapper
 !
 ||mailget.net^$third-party
 /wp-content/plugins/facebook-fanbox-popup/*
+/wp-content/plugins/easy-facebook-likebox/*
 !
+ukr-today.com###fb-back
+politeka.net##div[class^="spu-"]
+comments.ua##.spu-bg
+comments.ua##.spu-box
+visnyk.lutsk.ua##div.dgd_stb_box
+richlife7.com##.spu-box
+richlife7.com##.spu-bg
+izzylaif.com###wbounce-modal
+goldkino.net##div[id^="ffbp"]
+worldsoffood.de##div[id^="fblike"]
+promipool.de###pp_fb_popup_wrapper
+zamunda-torrent.net##.koddostufacee
+hyser.com.ua##.modal-facebook-like
+konyahaber.com###cm-social-overlay
+tecadmin.net###spu-bg
+tecadmin.net###spu-main
 meraklimedya.net###mjpopup
 ||turkusozu.com/js/fancybox/
 doramy.moy.su##.fancybox-desktop
@@ -2372,7 +2460,6 @@ giveaway-club.com###fancybox-overlay
 giveaway-club.com###fancybox-wrap
 coco01.net###fbCover
 masterkreatif.com###fbox-background
-facebook.com###headerArea > div > div[class="_5hn6"][style]
 palo.com.tr###like-popup
 lubernet.ru###overlay
 donanimhaber.com###pnlNoSmTakip
@@ -2434,12 +2521,20 @@ twgreatdaily.com#$#.body.modal-open { overflow: visible!important; }
 !
 sport-express.ru#$#body.popup { overflow: visible!important; }
 sport-express.ru#$#.show-popup{ display: none!important; }
+!
+catalogmineralov.ru#$#body { overflow: visible!important; }
+catalogmineralov.ru##.modal_bg { display: none!important; }
+catalogmineralov.ru##.modal_window { display: none!important; }
 !-------------------------------------------------------------------------------!
 !-------------- Whitelist  -----------------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
 ! Section fixing issues caused by social filter
 !
+! Fixing broken buttons on some sites
+@@||yastatic.net/share*/share.js$domain=playground.ru|foxtrot.com.ua|biglion.ru|master-of-orion.ru|auto.ru|ktk.kz|universarium.org|pix.playground.ru|lixty.net
+! zenmate.com preemium trial sign up
+zenmate.com#@#.social-networks
 ! https://forum.adguard.com/index.php?threads/15307/
 @@||kinokrik.net/engine/classes/min/index.php
 ! https://forum.adguard.com/index.php?threads/14697/
@@ -2452,8 +2547,6 @@ sport-express.ru#$#.show-popup{ display: none!important; }
 ! https://forum.adguard.com/index.php?threads/13009/
 @@||facebook.com/*/plugins/$domain=dlh.net
 dlh.net#@#.fb-like
-! https://forum.adguard.com/index.php?threads/12429/
-@@||yastatic.net/share2/share.js$domain=foxtrot.com.ua
 ! https://forum.adguard.com/index.php?threads/12378/
 @@||api.facebook.com/method/links.getStats$domain=grammarly.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2701
@@ -2464,8 +2557,6 @@ belgafiles.com,dakine.com,linkedin.com,way2sms.com#@#.share-box
 @@||vk.com/js/api/share.js$domain=bobfilm1.net|bobfilm.net
 ! https://forum.adguard.com/index.php?threads/11743/
 @@||sol-online.ru/art/sol-board
-! https://github.com/AdguardTeam/AdguardFilters/issues/2320
-@@||yastatic.net/share2/share.js$domain=biglion.ru
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2264
 @@||yandex.st/share/share.js$domain=vnukovo.ru
 ! https://forum.adguard.com/index.php?threads/10597/
@@ -2474,13 +2565,8 @@ belgafiles.com,dakine.com,linkedin.com,way2sms.com#@#.share-box
 @@||apis.google.com/js/platform.js$domain=sneakernews.com
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2124
 @@||orlandoweekly.com/wp-content/plugins/wpsocialite/Socialite/socialite.min.js
-! https://forum.adguard.com/index.php?threads/9875/
-@@||yastatic.net/share/share.js$domain=master-of-orion.ru
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2052
 @@||platform.linkedin.com/in.js$domain=youngliving.com
-! http://forum.adguard.com/showthread.php?10848
-! https://forum.adguard.com/index.php?threads/10141/
-@@||yastatic.net/share2/share.js$domain=auto.ru|ktk.kz
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1977
 skladchik.com#@#.shares
 ! http://forum.adguard.com/showthread.php?10563
@@ -2497,14 +2583,8 @@ skladchik.com#@#.shares
 @@||vk.com/widget_auth.php
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1437
 @@||zona.mobi/js/build/libs/likely.js
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/1369
-@@||yastatic.net/share/share.js$domain=universarium.org
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1185
 @@||platform.twitter.com/oct.js$domain=vulcun.com
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/1120
-@@||yastatic.net/share/share.js$domain=pix.playground.ru
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/943
-@@||yastatic.net/share/share.js$domain=lixty.net
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/932
 @@||talon.by/squeeze/
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/851
@@ -2565,3 +2645,5 @@ skladchik.com#@#.shares
 @@||yandex.st/share/share.js$domain=yadi.sk
 ! http://forum.adguard.com/showthread.php?3846
 @@||platform.twitter.com/widgets.js$domain=webfail.com
+!
+lse.co.uk#@#.shareContent

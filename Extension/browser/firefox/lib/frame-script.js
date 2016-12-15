@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Components */
+/* global Components, WeakMap */
 
 /**
  * Adguard's frame script.
@@ -39,9 +39,11 @@
      * This script is registered by "loadFrameScript" everywhere.
      * It decides whether we should load our content scripts to the loaded DOMWindow.
      */
-    var {classes: Cc, interfaces: Ci, utils: Cu} = Components; // jshint ignore:line
+    var {interfaces: Ci, utils: Cu} = Components; // jshint ignore:line
     var Services = Cu.import("resource://gre/modules/Services.jsm").Services;
-    var XPCOMUtils = Cu.import('resource://gre/modules/XPCOMUtils.jsm').XPCOMUtils;
+
+    // Load documentObserver and also initialize content policy.
+    var documentObserver = Cu.import('chrome://adguard/content/lib/frameModule.js').documentObserver;
 
     // Used for sandbox creation
     var nextSandboxId = 0;
@@ -283,6 +285,14 @@
             return i18nMessages[messageId];
         };
 
+        // destroy sandbox when window unloaded
+        win.addEventListener('unload', function () {
+            if (sandbox) {
+                Cu.nukeSandbox(sandbox);
+                sandbox = null;
+            }
+        }, true);
+
         return sandbox;
     };
 
@@ -321,72 +331,16 @@
      * @param win DOM window
      */
     var onDocumentStart = function (win) {
-        win.addEventListener('DOMContentLoaded', onDocumentEnd, true);
-        win.addEventListener('unload', onWindowUnload, true);
-
         injectScripts('document_start', win);
+
+        if (win.document.readyState === 'loading') {
+            win.addEventListener('DOMContentLoaded', onDocumentEnd, true);
+        } else {
+            onDocumentEnd({target: win.document});
+        }
+
+        win.addEventListener('unload', onWindowUnload, true);
     };
-
-    /**
-     * Object that wraps nsiObserver and handles observer notifications.
-     *
-     * We use it for handling "document-element-inserted" event:
-     * https://developer.mozilla.org/en/docs/Observer_Notifications
-     *
-     * We can't simply use DOMWindowCreated event as all content scripts need a "document" to be executed.
-     */
-    var documentObserver = (function () {
-
-        var OBS_TOPIC = 'document-element-inserted';
-        var callbacks = new WeakMap();
-
-        /**
-         * nsiObserver implementation: https://developer.mozilla.org/ru/docs/nsIObserver
-         */
-        var contentObserver = {
-            observe: function (subject, topic) {
-
-                switch (topic) {
-                    case OBS_TOPIC:
-                        var doc = subject;
-                        var win = doc && doc.defaultView;
-                        if (!doc || !win) {
-                            return;
-                        }
-                        var topWin = win.top;
-
-                        var frameCallback = callbacks.get(topWin);
-                        if (frameCallback) {
-                            frameCallback(win);
-                        }
-                        break;
-                }
-            },
-            QueryInterface: XPCOMUtils.generateQI([Ci.nsIObserver, Ci.nsISupportsWeakReference])
-        };
-
-        Services.obs.addObserver(contentObserver, OBS_TOPIC, false);
-
-        return {
-            /**
-             * Called when new document element was just created
-             *
-             * @param topWindow Top window object
-             * @param callback  Method called when document element was just created
-             */
-            onNewDocument: function (topWindow, callback) {
-                callbacks.set(topWindow, callback);
-            },
-
-            /**
-             * Called on frame script unload
-             */
-            unload: function () {
-                Services.obs.removeObserver(contentObserver, OBS_TOPIC);
-            }
-        };
-
-    })();
 
     /**
      * Called on DOMWindowCreated event.
@@ -415,7 +369,6 @@
         if (e.target !== context) {
             return;
         }
-        documentObserver.unload();
         chromeMessageListener.unload();
         contentScriptMessageListener.unload();
         tabsObserver.unregister();
@@ -457,19 +410,26 @@
      */
     var initFrameScript = function () {
 
-        // Note that we request for nsISyncMessageSender implementation as now we use sendSyncMessage method
-        var cpmm = Cc["@mozilla.org/childprocessmessagemanager;1"].getService(Ci.nsISyncMessageSender);
-        var response;
-        if (typeof cpmm.sendRpcMessage === 'function') {
-            response = cpmm.sendRpcMessage('Adguard:initialize-frame-script');
-            registeredScripts = response[0].scripts;
-            i18nMessages = response[0].i18nMessages;
-        } else {
-            // Compatibility with older FF versions and PaleMoon
-            response = cpmm.sendSyncMessage('Adguard:initialize-frame-script');
-            registeredScripts = response[0].scripts;
-            i18nMessages = response[0].i18nMessages;
+        var frameScriptMetadata = Cu.import('chrome://adguard/content/lib/frameModule.js').frameScriptMetadata;
+        registeredScripts = frameScriptMetadata.getScripts();
+        i18nMessages = frameScriptMetadata.getI18nMessages();
+
+        // If document is ready already
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/446
+        var inject = function (win) {
+            if (win && win.document) {
+                onDocumentStart(win);
+                for (var i = 0; i < win.frames.length; i++) {
+                    inject(win.frames[i]);
+                }
+            }
+        };
+
+        var win = context.content;
+        if (win && win.document) {
+            inject(win);
         }
+
         context.addEventListener('DOMWindowCreated', onWindowCreated);
 
         // Prepare to clean up on frame script unload

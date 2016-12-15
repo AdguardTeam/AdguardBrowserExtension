@@ -49,7 +49,7 @@
 			return;
 		}
 
-		var referrerUrl = adguard.frames.getFrameUrl(sourceTab, 0);
+		var referrerUrl = adguard.frames.getMainFrameUrl(sourceTab);
 		if (!adguard.utils.url.isHttpRequest(referrerUrl)) {
 			return;
 		}

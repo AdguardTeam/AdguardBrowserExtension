@@ -15,11 +15,14 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Components */
+/* global Components, WeakMap */
 
 var EXPORTED_SYMBOLS = [ // jshint ignore:line
+    'frameScriptMetadata',
     'contentPolicyService',
-    'LocationChangeListener'
+    'LocationChangeListener',
+    'documentObserver',
+    'unloadModule'
 ];
 
 var Ci = Components.interfaces;
@@ -70,6 +73,44 @@ function sendMessage(messageManager, name, message) {
         return messageManager.sendSyncMessage(name, message);
     }
 }
+
+var frameScriptMetadata = (function () {
+
+    var response = null;
+
+    function retrieve() {
+        if (response === null) {
+            // Note that we request for nsISyncMessageSender implementation as now we use sendSyncMessage method
+            var cpmm = Cc["@mozilla.org/childprocessmessagemanager;1"].getService(Ci.nsISyncMessageSender);
+            if (typeof cpmm.sendRpcMessage === 'function') {
+                response = cpmm.sendRpcMessage('Adguard:initialize-frame-script');
+            } else {
+                // Compatibility with older FF versions and PaleMoon
+                response = cpmm.sendSyncMessage('Adguard:initialize-frame-script');
+            }
+        }
+        return response[0];
+    }
+
+    var getScripts = function () {
+        return retrieve().scripts;
+    };
+
+    var getI18nMessages = function () {
+        return retrieve().i18nMessages;
+    };
+
+    var reset = function () {
+        response = null;
+    };
+
+    return {
+        getScripts: getScripts,
+        getI18nMessages: getI18nMessages,
+        reset: reset
+    };
+
+})();
 
 var contentPolicyService = {
 
@@ -185,6 +226,11 @@ var contentPolicyService = {
             type: contentType
         };
 
+        // Save referrer to details
+        if (requestOrigin && requestOrigin.asciiSpec && requestOrigin.asciiSpec.indexOf('http') === 0) {
+            requestDetails.referrerUrl = requestOrigin.asciiSpec;
+        }
+
         sendMessage(messageManager, 'Adguard:should-load', requestDetails);
 
         return this.ACCEPT;
@@ -246,10 +292,80 @@ LocationChangeListener.prototype.onLocationChange = function (webProgress, reque
     if (!webProgress.isTopLevel) {
         return;
     }
-    this.messageManager.sendAsyncMessage(this.messageName, {
+    this.messageManager.sendAsyncMessage('Adguard:tab-updated', {
         url: location.asciiSpec,
         flags: flags
     });
+};
+
+/**
+ * Object that wraps nsiObserver and handles observer notifications.
+ *
+ * We use it for handling "document-element-inserted" event:
+ * https://developer.mozilla.org/en/docs/Observer_Notifications
+ *
+ * We can't simply use DOMWindowCreated event as all content scripts need a "document" to be executed.
+ */
+var documentObserver = (function () {
+
+    var OBS_TOPIC = 'document-element-inserted';
+    var callbacks = new WeakMap();
+
+    /**
+     * nsiObserver implementation: https://developer.mozilla.org/ru/docs/nsIObserver
+     */
+    var contentObserver = {
+        observe: function (subject, topic) {
+
+            switch (topic) {
+                case OBS_TOPIC:
+                    var doc = subject;
+                    var win = doc && doc.defaultView;
+                    if (!doc || !win) {
+                        return;
+                    }
+                    var topWin = win.top;
+
+                    var frameCallback = callbacks.get(topWin);
+                    if (frameCallback) {
+                        frameCallback(win);
+                    }
+                    break;
+            }
+        },
+        QueryInterface: XPCOMUtils.generateQI([Ci.nsIObserver, Ci.nsISupportsWeakReference])
+    };
+
+    /**
+     * Called when new document element was just created
+     *
+     * @param topWindow Top window object
+     * @param callback  Method called when document element was just created
+     */
+    var onNewDocument = function (topWindow, callback) {
+        callbacks.set(topWindow, callback);
+    };
+
+    /**
+     * Called on frame script unload
+     */
+    var unregister = function () {
+        Services.obs.removeObserver(contentObserver, OBS_TOPIC);
+    };
+
+    Services.obs.addObserver(contentObserver, OBS_TOPIC, false);
+
+    return {
+        onNewDocument: onNewDocument,
+        unregister: unregister
+    };
+
+})();
+
+var unloadModule = function () { // jshint ignore:line
+    frameScriptMetadata.reset();
+    contentPolicyService.unregister();
+    documentObserver.unregister();
 };
 
 contentPolicyService.register();

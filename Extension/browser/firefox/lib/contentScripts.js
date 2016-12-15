@@ -277,7 +277,7 @@
 
         parentMessageManager.addMessageListener(initializeFrameScriptListenerName, initializeFrameScriptListener);
 
-        var frameScriptUrl = adguard.getURL('lib/frameScript.js');
+        var frameScriptUrl = adguard.getURL('lib/frame-script.js');
 
         // Using global MM to register our frame script browser-wide
         var globalMessageManager = Cc["@mozilla.org/globalmessagemanager;1"].getService(Ci.nsIMessageListenerManager);
@@ -286,6 +286,9 @@
         globalMessageManager.addMessageListener(shouldLoadListenerMessageName, shouldLoadListener);
         globalMessageManager.addMessageListener(tabUpdatedListenerMessageName, tabUpdatedListener);
         globalMessageManager.addMessageListener(navigationTargetCreatedListenerMessageName, navigationTargetCreatedListener);
+
+        // Cleanup didn't work correctly in previous version. Remove frame-script before loading a new one.
+        globalMessageManager.removeDelayedFrameScript(frameScriptUrl);
 
         globalMessageManager.loadFrameScript(frameScriptUrl, true);
 
@@ -304,10 +307,10 @@
             var frameModule = {};
             try {
                 Cu.import(frameModuleURL, frameModule);
-                frameModule.contentPolicyService.unregister();
+                frameModule.unloadModule();
                 Cu.unload(frameModuleURL);
             } catch (ex) {
-                adguard.console.error('Error while unregister contentPolicyService: {0}', ex);
+                adguard.console.error('Error while unregister frame module: {0}', ex);
             }
         });
     }
