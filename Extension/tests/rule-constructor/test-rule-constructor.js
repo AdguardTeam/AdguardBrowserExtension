@@ -3,9 +3,9 @@ QUnit.test("Rules Constructor for Assistant", function(assert) {
     var elementHref = document.getElementsByClassName('a-test-class')[0];
 
     var options = {
-        isBlockByUrl: false,
+        ruleType: 'CSS',
         urlMask: 'test.com/page',
-        isBlockSimilar : false,
+        cssSelectorType: 'STRICT_FULL',
         isBlockOneDomain: false,
         url: 'http://example.org/test-page.html?param=p1'
     };
@@ -13,24 +13,24 @@ QUnit.test("Rules Constructor for Assistant", function(assert) {
     var ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
     assert.equal(ruleText, 'example.org###test-div');
 
-    options.isBlockByUrl = true;
+    options.ruleType = 'URL';
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
     assert.equal(ruleText, 'test.com/page$domain=example.org');
 
-    options.isBlockByUrl = false;
-    options.isBlockSimilar = true;
+    options.ruleType = 'CSS';
+    options.cssSelectorType = 'SIMILAR';
     options.isBlockOneDomain = false;
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-    assert.equal(ruleText, 'example.org##.test-class.test-class-two');
+    assert.equal(ruleText, 'example.org##.test-class, .test-class-two');
 
-    options.isBlockByUrl = false;
-    options.isBlockSimilar = false;
+    options.ruleType = 'CSS';
+    options.cssSelectorType = 'STRICT_FULL';
     options.isBlockOneDomain = true;
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
     assert.equal(ruleText, '###test-div');
 
-    options.isBlockByUrl = false;
-    options.isBlockSimilar = false;
+    options.ruleType = 'CSS';
+    options.cssSelectorType = 'STRICT_FULL';
     options.isBlockOneDomain = true;
     ruleText = AdguardRulesConstructorLib.constructRuleText(elementHref, options);
     assert.equal(ruleText, '###test-div > a.a-test-class.a-test-class-two.a-test-class-three:first-child');
@@ -41,9 +41,9 @@ QUnit.test("Rules Constructor for DevTools", function(assert) {
     var elementHref = document.getElementsByClassName('a-test-class')[0];
 
     var options = {
-        isBlockByUrl: false,
+        ruleType: 'CSS',
         urlMask: 'test.com/page',
-        isBlockSimilar : false,
+        cssSelectorType: 'STRICT_FULL',
         isBlockOneDomain: false,
         url: 'http://example.org/test-page.html?param=p1',
         attributes: '',
@@ -53,37 +53,37 @@ QUnit.test("Rules Constructor for DevTools", function(assert) {
     var ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
     assert.equal(ruleText, 'example.org###test-div');
 
-    options.isBlockSimilar = true;
-    options.classesSelector = '';
+    options.cssSelectorType = 'SIMILAR';
+    options.classList = [];
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
     assert.equal(ruleText, 'example.org');
 
-    options.classesSelector = null;
+    options.classList = null;
     options.excludeTagName = false;
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-    assert.equal(ruleText, 'example.org##div.test-class.test-class-two');
+    assert.equal(ruleText, 'example.org##.test-class, .test-class-two');
 
-    options.isBlockByUrl = false;
-    options.isBlockSimilar = true;
+    options.ruleType = 'CSS';
+    options.cssSelectorType = 'SIMILAR';
     options.isBlockOneDomain = true;
     options.excludeTagName = true;
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
-    assert.equal(ruleText, '##.test-class.test-class-two');
+    assert.equal(ruleText, '##.test-class, .test-class-two');
 
-    options.classesSelector = '.test-class-two';
+    options.classList = ['test-class-two'];
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
     assert.equal(ruleText, '##.test-class-two');
-    options.classesSelector = null;
+    options.classList = null;
 
-    options.isBlockByUrl = false;
-    options.isBlockSimilar = false;
+    options.ruleType = 'CSS';
+    options.cssSelectorType = 'STRICT_FULL';
     options.isBlockOneDomain = true;
     options.attributes = '[title="Share on Twitter"][attribute="aValue"]';
     ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
     assert.equal(ruleText, '###test-div[title="Share on Twitter"][attribute="aValue"]');
 
-    options.isBlockByUrl = false;
-    options.isBlockSimilar = false;
+    options.ruleType = 'CSS';
+    options.cssSelectorType = 'STRICT_FULL';
     options.isBlockOneDomain = true;
     options.attributes = '';
     options.excludeTagName = false;
@@ -94,7 +94,7 @@ QUnit.test("Rules Constructor for DevTools", function(assert) {
     ruleText = AdguardRulesConstructorLib.constructRuleText(elementHref, options);
     assert.equal(ruleText, '###test-div > .a-test-class.a-test-class-two.a-test-class-three:first-child');
 
-    options.classesSelector = '.a-test-class-two.a-test-class-three';
+    options.classList = ['a-test-class-two', 'a-test-class-three'];
     ruleText = AdguardRulesConstructorLib.constructRuleText(elementHref, options);
     assert.equal(ruleText, '###test-div > .a-test-class-two.a-test-class-three:first-child');
 });
@@ -104,9 +104,9 @@ QUnit.test("Rules Constructor DevTools Id Elements Special Cases", function(asse
     var elementHref = document.getElementsByClassName('a-test-class')[0];
 
     var options = {
-        isBlockByUrl: false,
+        ruleType: 'CSS',
         urlMask: 'test.com/page',
-        isBlockSimilar: false,
+        cssSelectorType: 'STRICT_FULL',
         isBlockOneDomain: false,
         url: 'http://example.org/test-page.html?param=p1',
         attributes: '',
@@ -141,14 +141,14 @@ QUnit.test("Rules Constructor DevTools Id Elements Special Cases", function(asse
 QUnit.test("Rules Constructor for special elements", function(assert) {
     var elementHref = document.querySelector("#test-div h2"); 
     var options = {
-        isBlockByUrl: false,
+        ruleType: 'CSS',
         urlMask: null,
-        isBlockSimilar: false,
+        cssSelectorType: 'STRICT_FULL',
         isBlockOneDomain: false,
         url: 'https://lenta.ru/',
         attributes: '',
         excludeTagName: false,
-        classesSelector: ''
+        classList: null
     };
 
     var ruleText = AdguardRulesConstructorLib.constructRuleText(elementHref, options);
@@ -156,14 +156,14 @@ QUnit.test("Rules Constructor for special elements", function(assert) {
 
     var elementDivId = document.getElementById('test-id-div');
     options = {
-        isBlockByUrl: false,
+        ruleType: 'CSS',
         urlMask: null,
-        isBlockSimilar: false,
+        cssSelectorType: 'STRICT_FULL',
         isBlockOneDomain: false,
         url: 'https://lenta.ru/',
         attributes: '',
         excludeTagName: true,
-        classesSelector: '',
+        classList: null,
         excludeId: false
     };
 
@@ -182,10 +182,10 @@ QUnit.test("Rules Constructor for special elements", function(assert) {
     ruleText = AdguardRulesConstructorLib.constructRuleText(elementDivId, options);
     assert.equal(ruleText, 'lenta.ru##div#test-id-div[someAttr="some-attr-value"][title="Share on Twitter"]');
 
-    options.classesSelector = '.test-class-two';
+    options.classList = ['test-class-two'];
     delete options.attributes;
     ruleText = AdguardRulesConstructorLib.constructRuleText(elementDivId, options);
-    assert.equal(ruleText, 'lenta.ru##div.test-class-two#test-id-div');
+    assert.equal(ruleText, 'lenta.ru##div#test-id-div.test-class-two');
 });
 
 QUnit.test("Rules Constructor for CSS selector", function(assert) {
@@ -207,4 +207,46 @@ QUnit.test("Rules Constructor for CSS selector", function(assert) {
 
     selector = AdguardRulesConstructorLib.constructRuleCssSelector("#%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };");
     assert.equal(selector);
+});
+
+QUnit.test("SVG Elements", function(assert) {
+    var element = document.querySelector(".b-header-main__logo-icon use");
+    assert.ok(element != null);
+
+    var options = {
+        ruleType: 'CSS',
+        urlMask: null,
+        cssSelectorType: 'STRICT_FULL',
+        isBlockOneDomain: false,
+        url: 'https://lenta.ru/',
+        attributes: '',
+        excludeTagName: false,
+        classList: null
+    };
+
+    var ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
+    assert.equal(ruleText, 'lenta.ru###test-id-div > svg.b-header-main__logo-icon:nth-child(2) > use');
+});
+
+QUnit.test("Dot Classes", function(assert) {
+    var element = document.querySelector(".test-div-dot-class");
+    var options = {
+        ruleType: 'CSS',
+        urlMask: null,
+        cssSelectorType: 'STRICT_FULL',
+        isBlockOneDomain: false,
+        url: 'https://lenta.ru/',
+        attributes: '',
+        excludeTagName: false,
+        classList: null
+    };
+
+    var ruleText = AdguardRulesConstructorLib.constructRuleText(element, options);
+    assert.equal(ruleText, 'lenta.ru###test-id-div > div.good-class.bad\\.class:last-child > div.test-div-dot-class');
+
+    element = document.querySelector(".good-class");
+
+    options.cssSelectorType = 'SIMILAR';
+    var selector = AdguardRulesConstructorLib.constructRuleText(element, options);
+    assert.equal(selector, 'lenta.ru##.good-class, .bad\\.class');
 });
