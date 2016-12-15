@@ -458,7 +458,10 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             for (var i = 0; i < tabs.length; i++) {
                 var tab = tabs[i];
                 if (tab.url === filtersDownloadUrl || tab.url === thankyouUrl) {
-                    adguard.tabs.activate(tab.tabId);
+                    // In YaBrowser don't activate found page
+                    if (!adguard.utils.browser.isYaBrowser()) {
+                        adguard.tabs.activate(tab.tabId);
+                    }
                     if (tab.url !== thankyouUrl) {
                         adguard.tabs.reload(tab.tabId, thankyouUrl);
                     }

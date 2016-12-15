@@ -139,6 +139,7 @@
 
         // Assistant
         registerPageContentScript([
+            'lib/libs/css.escape.js',
             'lib/libs/diff_match_patch.js',
             'lib/libs/dom.patched.js',
             'lib/libs/balalaika.patched.js',
