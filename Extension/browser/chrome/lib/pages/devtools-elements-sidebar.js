@@ -63,7 +63,7 @@ var browser = window.browser || chrome;
     };
 
     var updateRule = function () {
-        getInspectedPageUrl(function(res) {
+        getInspectedPageUrl(function (res) {
             updateFilterRuleInput(window.selectedElement, window.selectedElementInfo, res);
         });
     };
@@ -84,6 +84,9 @@ var browser = window.browser || chrome;
                 }
 
                 var ruleText = document.getElementById("filter-rule-text").value;
+                if (!ruleText) {
+                    return;
+                }
                 applyPreview(ruleText);
 
                 previewRuleButton.value = 'Cancel preview';
@@ -190,7 +193,7 @@ var browser = window.browser || chrome;
             placeholder.removeChild(placeholder.firstChild);
         }
 
-        var createAttributeElement = function(attributeName, attributeValue, defaultChecked) {
+        var createAttributeElement = function (attributeName, attributeValue, defaultChecked) {
             var checked = '';
             if (defaultChecked) {
                 checked = '" checked="true"';
@@ -210,16 +213,18 @@ var browser = window.browser || chrome;
         for (var i = 0; i < info.attributes.length; i++) {
             var attribute = info.attributes[i];
 
-            if ((attribute.name === 'class') && (attribute.value)) {
+            if (attribute.name === 'class' && attribute.value) {
                 var split = attribute.value.split(' ');
                 for (var j = 0; j < split.length; j++) {
-                    placeholder.appendChild(createAttributeElement(attribute.name, split[j], true));
+                    var value = split[j];
+                    if (value) { // Skip empty values. Like 'class1 class2   '
+                        placeholder.appendChild(createAttributeElement(attribute.name, value, true));
+                    }
                 }
             } else {
                 placeholder.appendChild(createAttributeElement(attribute.name, attribute.value, attribute.name === 'id'));
             }
         }
-
     };
 
     var getInspectedPageUrl = function (callback) {
@@ -283,40 +288,13 @@ var browser = window.browser || chrome;
     };
 
     var applyPreview = function (ruleText) {
-        togglePreview(ruleText);
+        var func = 'DevToolsHelper.applyPreview(' + JSON.stringify({ruleText: ruleText}) + ');';
+        browser.devtools.inspectedWindow.eval(func, {useContentScriptContext: true});
     };
 
     var cancelPreview = function () {
-        togglePreview();
-    };
-
-    var togglePreview = function (ruleText) {
-
-        var togglePreviewStyle = function (ruleText) {
-
-            var PREVIEW_STYLE_ID = "adguard-preview-style";
-
-            var head = document.getElementsByTagName('head')[0];
-            if (head) {
-                if (ruleText && ruleText != 'undefined') {
-                    var selector = AdguardRulesConstructorLib.constructRuleCssSelector(ruleText);
-                    if (!selector) {
-                        return;
-                    }
-
-                    var style = document.createElement("style");
-                    style.setAttribute("type", "text/css");
-                    style.setAttribute("id", PREVIEW_STYLE_ID);
-                    style.appendChild(document.createTextNode(selector + " {display: none !important;}"));
-
-                    head.appendChild(style);
-                } else {
-                    head.removeChild(document.getElementById(PREVIEW_STYLE_ID));
-                }
-            }
-        };
-
-        browser.devtools.inspectedWindow.eval("(" + togglePreviewStyle.toString() + ")('" + ruleText + "')", { useContentScriptContext: true });
+        var func = 'DevToolsHelper.cancelPreview();';
+        browser.devtools.inspectedWindow.eval(func, {useContentScriptContext: true});
     };
 
     var addRuleForElement = function () {
@@ -326,12 +304,12 @@ var browser = window.browser || chrome;
         }
 
         var ruleText = document.getElementById("filter-rule-text").value;
+        if (!ruleText) {
+            return;
+        }
 
-        var addRule = function (ruleText) {
-            contentPage.sendMessage({type: 'addUserRule', ruleText: ruleText});
-        };
-
-        browser.devtools.inspectedWindow.eval("(" + addRule.toString() + ")('" + ruleText + "')", {
+        var func = 'DevToolsHelper.addRule(' + JSON.stringify({ruleText: ruleText}) + ');';
+        browser.devtools.inspectedWindow.eval(func, {
             useContentScriptContext: true
         }, function () {
             applyPreview(ruleText);
