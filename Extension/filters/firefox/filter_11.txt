@@ -1,6 +1,6 @@
-! Checksum: tymIGxPp2cnMLvDtSEcUQA
-! Version: 1.0.6.18
-! TimeUpdated: 2016-12-07T22:01:49.282+04:00
+! Checksum: 4DgoVhcWarzfVV71tZBaQg
+! Version: 1.0.6.23
+! TimeUpdated: 2016-12-13T21:01:50.752+04:00
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
 ! Title: Adguard Mobile Ads Filter
@@ -854,6 +854,8 @@ deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important
 !
 !#####################
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/3616
+pornhub.com#@#div > [style*="width: 100%;"]:first-child
 ! https://forum.adguard.com/index.php?threads/16921/
 m.veporn.net#@#.advertisment
 m.veporn.net#@##topAds
@@ -1007,6 +1009,9 @@ m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"
 ! https://forum.adguard.com/index.php?threads/10464/
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
 !
+||m.yanglaopt.net^
+||www.a4yy.top/js/w.js
+||www.a4yy.top/js/gg*.js
 mail.yandex.by,mail.yandex.kz,mail.yandex.ru,mail.yandex.ua##.ns-view-direct
 pornhub.com##.adContainer
 ||addown.pipaw.com/phone/
@@ -1164,13 +1169,8 @@ login.wi-fi.ru#%#window.isPremium = true;
 !
 ! Section contains rules for specific applications
 !
-! FOCUS Online
-@@||imasdk.googleapis.com^$app=de.cellular.focus
-! https://github.com/AdguardTeam/AdguardFilters/issues/3131
-@@||ads.cricbuzz.com/adserver/units/mobile/set_ads_values.php
-! https://github.com/AdguardTeam/AdguardFilters/issues/2697
-@@||connect.tapjoy.com/connect$app=com.lucasarts.starts_goo
 ! Blocking of Facebook ads
+||graph.facebook.com^$app=com.mxtech.videoplayer.ad
 ||graph.facebook.com^$app=com.eterno
 ||graph.facebook.com^$app=com.devexpert.weather
 ||graph.facebook.com^$app=com.musixmatch.android.lyrify
@@ -1181,6 +1181,19 @@ login.wi-fi.ru#%#window.isPremium = true;
 ||graph.facebook.com^$app=com.mobilesrepublic.appy
 ||graph.facebook.com^$app=fr.meteo
 !
+!
+! https://github.com/AdguardTeam/AdguardFilters/issues/3738
+||crosspromo*.qplaze.com/PushCampaignXMLOut.php
+! https://github.com/AdguardTeam/AdguardFilters/issues/3717
+@@||ups.ksmobile.net^$app=com.cleanmaster.security
+! https://github.com/AdguardTeam/AdguardFilters/issues/3634
+||server.idreams.pl/news/ads_sfr_*.json
+! FOCUS Online
+@@||imasdk.googleapis.com^$app=de.cellular.focus
+! https://github.com/AdguardTeam/AdguardFilters/issues/3131
+@@||ads.cricbuzz.com/adserver/units/mobile/set_ads_values.php
+! https://github.com/AdguardTeam/AdguardFilters/issues/2697
+@@||connect.tapjoy.com/connect$app=com.lucasarts.starts_goo
 ! com.anoshenko.android.solitaires
 ||alxanosoft.com/rk/
 ! Dailyhunt
