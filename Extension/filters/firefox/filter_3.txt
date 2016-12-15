@@ -1,6 +1,6 @@
-! Checksum: mePBBEBKmILxuZONCavCgQ
-! Version: 1.0.9.42
-! TimeUpdated: 2016-12-08T00:00:48.130+04:00
+! Checksum: rA2DhSASyKhMqAPBcMaTBQ
+! Version: 1.0.9.53
+! TimeUpdated: 2016-12-14T13:00:52.222+04:00
 ! Title: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
 ! Title: Adguard Spyware Filter
@@ -34,6 +34,8 @@
 !-------------------
 !-------JS----------
 !-------------------
+! overclockers.ru - fixing links at the top
+overclockers.ru#%#AG_onLoad(function() { window.trackOutboundLink = window.open; });
 ! Disable Battery Status API
 #%#navigator.getBattery = undefined;
 ! Yandex Metrika dummy
@@ -88,6 +90,9 @@ accountkiller.com#%#window.ga = function(){var a = arguments[5];a&&a.hitCallback
 !-------------- Tracking servers list  -----------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+||m.addthisedge.com^$third-party
+||ct.buzzfeed.com^
+||collector.schibsted.io^
 ||analytics.archive.org^
 ||apps.poln.co^$third-party
 ||hindsight.significanceapps.com^
@@ -3403,6 +3408,10 @@ accountkiller.com#%#window.ga = function(){var a = arguments[5];a&&a.hitCallback
 !
 ! Section contains the list of tracking servers, which are hosted on useful sites as subdomains
 !
+||bat.bing.com^
+||stats.videoseyredin.net^
+||geoip.newsdev.nytimes.com^
+||comet.sputniknews.com^
 ||stat.novostimira.com^
 ||log.rutube.ru^
 ||analytics.mobile.walmart.com^
@@ -3679,6 +3688,16 @@ _tracking.php?b=
 !-------------- Specific web sites ---------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+||fncstatic.com/static/*/VisitorAPI.js^
+||bat.bing.com^
+||dogannet.tv/q/s/stats
+||tv8.com.tr/Ajax/icerik/save_video_event
+||gelderlander.nl/logger
+||sputniknews.com/services/counter/
+||pinterest.com/_/_/report/
+||amazon.com/*/cerberus/log/
+||amazon.com/follow/log-metrics^
+||gismeteo.ru/stat.js
 ||jsdelivr.net/snowplow/
 ||yast.rutube.ru/track
 ||kbb.com/services/psclientlogging
@@ -4209,6 +4228,10 @@ dreamprogs.net##td[width="88"][height="31"]
 !-------------- Whitelist ------------------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/3674
+@@||analytics.edgesuite.net/config/beacon-*.xml$domain=video.foxnews.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/3683
+@@||mc.yandex.ru/metrika/watch.js$domain=лидер-качества.рф
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3651
 @@||tags.tiqcdn.com/utag/amway/eia/prod/utag.js$domain=amway.ua
 ! https://forum.adguard.com/index.php?threads/16836/

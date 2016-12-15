@@ -568,14 +568,11 @@
         var requestId = collapseRequestId++;
         collapseRequests[requestId] = {
             element: element,
+            elementUrl: elementUrl,
             tagName: tagName
         };
 
-        // Hide element temporary
-        // We skip big frames here
-        if (!(element.clientWidth * element.clientHeight > 400 * 300)) {
-            ElementCollapser.hideElement(element, shadowRoot);
-        }
+        tempHideElement(element);
 
         // Send a message to the background page to check if the element really should be collapsed
         var message = {
@@ -587,6 +584,23 @@
         };
 
         contentPage.sendMessage(message, onProcessShouldCollapseResponse);
+    };
+
+    /**
+     * Hides element temporary
+     *
+     * @param element
+     */
+    var tempHideElement = function (element) {
+        // We skip big frames here
+        var tagName = element.tagName.toLowerCase();
+        if (tagName === 'iframe' || tagName === 'frame') {
+            if (element.clientHeight * element.clientWidth > 400 * 300) {
+                return;
+            }
+        }
+
+        ElementCollapser.hideElement(element, shadowRoot);
     };
     
     /**
@@ -609,7 +623,8 @@
 
         if (response.collapse === true) {
             var element = collapseRequest.element;
-            ElementCollapser.collapseElement(element, shadowRoot);
+            var elementUrl = collapseRequest.elementUrl;
+            ElementCollapser.collapseElement(element, elementUrl, shadowRoot);
         }
 
         // In any case we should remove hiding style

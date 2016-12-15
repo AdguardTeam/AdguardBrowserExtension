@@ -1,6 +1,6 @@
-! Checksum: 2tV2E2+oqV3JwKkd5k61dA
-! Version: 1.0.15.28
-! TimeUpdated: 2016-12-08T01:00:57.807+04:00
+! Checksum: /77dxZp8Nr1fpj+aaQNSKw
+! Version: 1.0.15.47
+! TimeUpdated: 2016-12-15T00:00:44.511+04:00
 ! Title: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
 ! Title: Adguard Social Media Filter
@@ -282,6 +282,8 @@ buzzhand.com#$#body[-ext-has="div"] { overflow: visible!important; }
 !-------JS----------
 !-------------------
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/3690
+chip.de#%#document.cookie = "likeGateOpened=true";
 ! mimimi.tv - social locker
 mimimi.tv#%#AG_onLoad(function() { window.bizpanda = {}; });
 !
@@ -336,6 +338,30 @@ softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2146
 ||mimimi.tv/?*=*&_=
 !
+gameguru.ru##.jointCard-spotlight-social-buttons
+gameguru.ru##iframe[src="/x/social/vk_likebox.html"]
+tekst-pesen.ru##.soc_title
+maclife.de##.flexshare > ul.share
+files.love##div[data-target="#tm-share"]
+javhdx.tv###spu-bg
+javhdx.tv###spu-main
+teknokasif.com##.entry-content > .mo-openid-app-icons
+gazetevatan.com##.tweet
+haber3.com##.gallery-list span.sh
+star.com.tr##a[onclick*="'Paylaşım'"]
+urgupajans.com##.facebooks
+avva.com.tr##.product-social-icon-wrapper
+vulture.com##.share-mini
+vulture.com##.share
+timeallnews.ru##.post-face
+forum.digitalfernsehen.de##.sharePage
+last.fm##.user-dashboard-share
+last.fm##button[aria-controls^="share-overlay"]
+androidcentral.com##.fb_like_and_share
+sabah.com.tr##a[onclick^="window.open('https://pinterest.com"]
+news.rambler.ru##.rambler-share
+sinemakeyfi.biz##.film-share
+online720pizle.com##.film-share
 ritm.tv##.facebook-widget
 trthaber.com##.wrapper.sosyalAglar
 sgkrehberi.com##.mainBox.adsFace
@@ -485,7 +511,7 @@ haberaktuel.com##.haber-sosyal
 mynet.com##.mynet-linex
 mynet.com##a[id^="header_social_"]
 cityam.com##.sharing
-sueddeutsche.de##.article-sharing-bottom
+sueddeutsche.de##.twitter-share-button
 deadline.com##.counters
 deadline.com##.social-strip
 10co.xyz##.social
@@ -874,7 +900,6 @@ washingtonpost.com##.connect
 zeroturnaround.com##.contact-us-floating
 anti-malware.ru##.content > div#slidebox
 webtekno.com##.content-header__container__right__social__share
-webtekno.com##.content-share
 hurriyet.com.tr##.cropy-crop-share-button-wrapper
 netzwelt.de##.ctcr div[class="sb tco fi"][data-service] > div[class]
 bournemouthecho.co.uk##.custom-sharing
@@ -1211,7 +1236,7 @@ indiatimes.com##.sharingBox
 therichest.com##.sharingOptions
 giga.de##.sharing_container
 msn.com##.sharingtb
-aksam.com.tr,star.com.tr##.sharingwrap
+aksam.com.tr##.sharingwrap
 forum.xda-developers.com##.showthread-social
 internethaber.com##.shr
 mspoweruser.com##.shunno-share-block
@@ -1641,6 +1666,11 @@ lcpdfr.com##ul[data-controller$="sharelink"]
 !
 ! Section contains list general hiding rules
 !
+###hshare
+##.mo-openid-share-link
+##.content-share
+~twitter.com##a[href^="https://www.twitter.com/share"]
+##.social-bar-wrapper
 ##.ShareContent
 ##.shareContent
 ##.sticky-shares
@@ -1954,7 +1984,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.help-social-buttons
 ##.i_v_fb_like
 ##.icon-digg
-~ain.ua,~comediansincarsgettingcoffee.com,~forbes.com,~hubs.ua,~iguides.ru,~logaster.com,~t3n.de,~theverge,~minfin.com.ua##.icon-facebook
+~cnnturk.com,~ain.ua,~comediansincarsgettingcoffee.com,~forbes.com,~hubs.ua,~iguides.ru,~logaster.com,~t3n.de,~theverge,~minfin.com.ua##.icon-facebook
 ~slashdot.org##.icon-facebook-squared
 ~t3n.de##.icon-google-plus
 ~ain.ua,~iguides.ru,~logaster.com,~minfin.com.ua##.icon-gplus
@@ -1963,7 +1993,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.icon-pinterest-share
 ##.icon-reddit
 ##.icon-stumbleupon
-~ain.ua,~comediansincarsgettingcoffee.com,~forbes.com,~hubs.ua,~t3n.de,~webref.ru##.icon-twitter
+~cnnturk.com,~ain.ua,~comediansincarsgettingcoffee.com,~forbes.com,~hubs.ua,~t3n.de,~webref.ru##.icon-twitter
 ~dailymail.co.uk##.img-share
 ##.img__sharer
 ##.inline_socials
@@ -2145,7 +2175,7 @@ livejournal.com##.b-ljtimes-wrapper
 ~avito.ru,~cbsnews.com,~hh.ru,~spotify.com##.social-icon
 ~acura.com,~avito.ru,~gamingbolt.com,~willdev.in##.social-icons
 ~sports.ru##.social-icons-big
-##.social-likes
+~kinogo-2016.net##.social-likes
 ##.social-likes_single-w
 ##.social-line
 ~filestream.me,~4pda.ru,~asos.com,~playground.ru,~spot.im##.social-link
@@ -2411,6 +2441,7 @@ livejournal.com##.b-ljtimes-wrapper
 /wp-content/plugins/facebook-fanbox-popup/*
 /wp-content/plugins/easy-facebook-likebox/*
 !
+timeallnews.ru###bg_popup
 ukr-today.com###fb-back
 politeka.net##div[class^="spu-"]
 comments.ua##.spu-bg

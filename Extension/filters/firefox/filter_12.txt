@@ -1,6 +1,6 @@
-! Checksum: 5Zi9tSPMyeuP4NgjglqEKQ
-! Version: 1.0.1.81
-! TimeUpdated: 2016-12-06T17:01:56.420+04:00
+! Checksum: 61d1/8U8AxYaqC71EklS0A
+! Version: 1.0.1.85
+! TimeUpdated: 2016-12-13T18:01:49.442+04:00
 ! Title: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! Title: Adguard Safari Filter
@@ -30,6 +30,8 @@
 !
 ! These rules are against anti-adblock scripts
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/3680
+@@||mackungfu.org$generichide
 ! https://forum.adguard.com/index.php?threads/www-lesechos-fr.15718/
 @@||lesechos.com/*/dfp.js^
 ! https://forum.adguard.com/index.php?threads/15039/
@@ -217,6 +219,7 @@ telegraaf.nl##.section-ad
 ! Section contains rules for specific websites
 !
 ! TEMPORARY: until web-sockets are not blocked by content-blocker
+baskino.club##div[id*="Composite"] *
 hdrezka.me##div[class="skin-block"][style^="width: 100%; height: 100%;"]
 hdrezka.me##div[style="padding: 0px; margin: 0px;"] td[width="33%"]
 hdrezka.me##iframe[src*="rootmedia.ws"]
@@ -303,6 +306,8 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 !
 ! White list. Fixing content blocking API issues.
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/3725
+@@||vectorstock.com^$domain=vectorstock.com
 ! https://github.com/AdguardTeam/AdguardBrowserExtension/issues/466
 @@||11street.my/totalsearch/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3559
@@ -482,6 +487,7 @@ youtube.com#%#(function () {try {var youtubeAdRegExp = /^((.*_)?(ad|ads|afv|adse
 @@||gryfindor.com^$generichide
 @@||kflix.tv^$generichide
 @@||netmics.com^$generichide
+@@||ssulwar.com^$generichide
 @@||time.navyism.com^$generichide
 ! Element hiding rules
 time.navyism.com##div > .adsbygoogle

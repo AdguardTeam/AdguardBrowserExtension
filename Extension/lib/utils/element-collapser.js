@@ -129,7 +129,7 @@ var ElementCollapser = (function() {
     /**
      * Unhides elements which were previously hidden by the specified selector
      */
-    var unhideBySelector = function(selectorText, shadowRoot) {
+    var unhideBySelector = function(selectorText, shadowRoot, selectorTextEscaped) {
         var styleElement = getStyleElement(shadowRoot);
         if (!styleElement || !styleElement.sheet) {
             return;
@@ -137,7 +137,9 @@ var ElementCollapser = (function() {
         var iLength = styleElement.sheet.cssRules.length;
         while (iLength--) {
             var cssRule = styleElement.sheet.cssRules[iLength];
-            if (cssRule.selectorText == prepareSelector(selectorText, !!shadowRoot)) {
+            // Returns escaped selector in FF and unescaped in Chrome
+            if (cssRule.selectorText == prepareSelector(selectorText, !!shadowRoot)
+                || cssRule.selectorText == prepareSelector(selectorTextEscaped, !!shadowRoot)) {
                 styleElement.sheet.deleteRule(iLength);
             }
         }
@@ -189,12 +191,14 @@ var ElementCollapser = (function() {
 
         if (hiddenElement) {
             // Remove redundant selector and save the new one
-            unhideBySelector(hiddenElement.selectorText, shadowRoot);
+            unhideBySelector(hiddenElement.selectorText, shadowRoot, hiddenElement.selectorTextEscaped);
             hiddenElement.selectorText = selectorText;
+            hiddenElement.selectorTextEscaped = selectorTextEscaped;
         } else {
             hiddenElement = {
                 node: element,
-                selectorText: selectorText
+                selectorText: selectorText,
+                selectorTextEscaped: selectorTextEscaped
             };
             hiddenElements.push(hiddenElement);
         }
@@ -208,7 +212,7 @@ var ElementCollapser = (function() {
         while (iLength--) {
             var hiddenElement = hiddenElements[iLength];
             if (hiddenElement.node === element) {
-                unhideBySelector(hiddenElement.selectorText, shadowRoot);
+                unhideBySelector(hiddenElement.selectorText, shadowRoot, hiddenElement.selectorTextEscaped);
                 hiddenElements.splice(iLength, 1);
             }
         }
@@ -253,16 +257,18 @@ var ElementCollapser = (function() {
      * Collapses specified element.
      *
      * @param element Element to collapse
+     * @param elementUrl Element url
      * @param shadowRoot optional
      */
-    var collapseElement = function(element, shadowRoot) {
+    var collapseElement = function(element, elementUrl, shadowRoot) {
 
         var tagName = element.tagName.toLowerCase();
         var source = element.getAttribute('src');
         if (source) {
-            //To not to keep track of changing src for elements, we are going to collapse it with a CSS rule
-            //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/408
-            var srcSelector = createSelectorForSrcAttr(source, tagName);
+            // To not to keep track of changing src for elements, we are going to collapse it with a CSS rule
+            // But we take element url, cause current source could be already modified
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/408
+            var srcSelector = createSelectorForSrcAttr(elementUrl, tagName);
             hideBySelectorAndTagName(srcSelector, tagName, shadowRoot);
 
             return;
