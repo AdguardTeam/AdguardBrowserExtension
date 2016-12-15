@@ -289,7 +289,7 @@ adguard.tabsImpl = (function (adguard) {
     };
 
     var getActive = function (callback) {
-        browser.tabs.query({lastFocusedWindow: true, active: true}, function (tabs) {
+        browser.tabs.query({currentWindow: true, active: true}, function (tabs) {
             if (tabs && tabs.length > 0) {
                 callback(tabs[0].id);
             }
