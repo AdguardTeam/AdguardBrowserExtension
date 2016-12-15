@@ -14,6 +14,29 @@ var manifest = {
     ]
 };
 
+var filters = {
+    "filters": {
+        "enabled-filters": [
+            1,
+            2,
+            4
+        ],
+        "custom-filters": [
+            "http://filter-url"
+        ],
+        "user-filter": {
+            "rules": "||test1.org/$script\n||test1.org/$script",
+            "disabled-rules": ""
+        },
+        "whitelist": {
+            "inverted": false,
+            "domains": [
+                "whitelisted-domain"
+            ]
+        }
+    }
+};
+
 var requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
 
 
@@ -221,16 +244,11 @@ QUnit.test("Test sync service", function (assert) {
 
     var cleanUp = function () {
         deleteFile(manifestPath, function () {
-            //deleteFile(filtersPath, done);
             done();
         });
     };
 
     createFile(manifestPath, manifest, function () {
-        // createFile(filtersPath, filters, function () {
-        //
-        // });
-
         SyncService.setSyncProvider(SyncProvider);
 
         SyncService.syncSettings(function () {
@@ -332,5 +350,39 @@ QUnit.test("Test sync service protocol versions", function (assert) {
 });
 
 QUnit.test("Test sync service general", function (assert) {
-    assert.ok(true);
+    var done = assert.async();
+
+    var cleanUp = function () {
+        deleteFile(manifestPath, function () {
+            deleteFile(filtersPath, done);
+        });
+    };
+
+    createFile(manifestPath, manifest, function () {
+        createFile(filtersPath, filters, function () {
+            SyncService.setSyncProvider(SyncProvider);
+
+            SyncService.syncSettings(function () {
+                //TODO: Check app settings
+
+                //Check updated manifest
+                manifest["app-id"] = "adguard-browser-extension";
+
+                var onManifestLoaded = function (data) {
+                    assert.ok(data != null);
+                    assert.notEqual(data.timestamp, manifest.timestamp);
+                    assert.equal(data["protocol-version"], manifest["protocol-version"]);
+                    assert.equal(data["min-compatible-version"], manifest["min-compatible-version"]);
+                    assert.equal(data["app-id"], manifest["app-id"]);
+                    assert.equal(data["sections"].length, 1);
+                    assert.equal(data["sections"][0].name, manifest["sections"][0].name);
+                    assert.notEqual(data["sections"][0].timestamp, manifest["sections"][0].timestamp);
+
+                    cleanUp();
+                };
+
+                SyncProvider.get(manifestPath, onManifestLoaded);
+            });
+        });
+    });
 });
