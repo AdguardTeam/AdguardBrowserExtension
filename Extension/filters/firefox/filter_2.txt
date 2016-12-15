@@ -1,6 +1,6 @@
-! Checksum: MzC2JPrnZA6a1HCPAcUrdA
-! Version: 1.1.3.14
-! TimeUpdated: 2016-12-15T06:00:39.170+04:00
+! Checksum: VVAN6MDj6bxhBo60CbVyCg
+! Version: 1.1.3.18
+! TimeUpdated: 2016-12-15T19:00:25.090+04:00
 ! Title: English filter
 ! Description: EasyList + Adguard English filter. Filter list that specifically removes adverts on English language websites.
 ! Title: Adguard English Filter.
@@ -35,6 +35,9 @@
 !
 ! Section contains list of advertising networks
 !
+||block.s*block.com^$third-party
+||adsrvmedia.adk2.co^$third-party,important
+||onclicktop.com^$third-party
 ||cah9ooy.bid^$third-party
 ||wsp.adskeeper.co.uk^
 ||ov2ochu.bid^$third-party
@@ -2646,6 +2649,7 @@ keezmovies.com#%#window.atob = function() { };
 drtuber.com,planetsuzy.org#%#Object.defineProperty(window, 'phantomPopunder', { get: function() { return {}; } });
 ! impspcabe
 4bir.com,rapidvideo.com,losmovies.club,mcfucker.com,befuck.com,streamgaroo.com,pandamovie.net,pipec.ru,xyya.net,playpornx.net,imageweb.ws,the-watch-series.to,linkshrink.net,imageban.ru,vid.ag,userscloud.com,animeflv.net,icefilms.info,vidzi.tv#%#Object.defineProperties(window, { "_impspcabe_alpha": { value: false, writable: false }, "_impspcabe_beta": { value: false, writable: false }, "_impspcabe_path": { value: 'about:blank', writable: false }, "_impspcabe": { value: false, writable: false } });
+subs.ro#%#Object.defineProperties(window, { "_impspcabe_alpha": { value: false, writable: false }, "_impspcabe_beta": { value: false, writable: false }, "_impspcabe_path": { value: 'about:blank', writable: false }, "_impspcabe": { value: false, writable: false } });
 ! prscripts clickunder
 1337x.to,pornve.com,thepiratebay.org,imagebam.com,pornleech.com#%#Object.defineProperties(window, { _wm: { get: function(){ return null; } }, _wm_settings: { get: function(){return{};} } });
 rarbg.to#%#Object.defineProperties(window, { _wm: { get: function(){ return null; } }, _wm_settings: { get: function(){return{};} } });
@@ -3181,6 +3185,11 @@ google.ad,google.ae,google.al,google.am,google.as,google.at,google.az,google.ba,
 ! News modern app
 ||api.taboola.com/*/json/msn-windowsapps-*/recommendations.get?
 !
+blogto.com##.advert
+sceper.ws###secondcol > div[id^="text-"][class="widget widget_text"]
+||cdn.subs.ro/assets/xservers.png
+||cdn.subs.ro/assets/storm-systems.png
+subs.ro###side a[rel="external nofollow"] > img
 wagnardsoft.com###page-body div.post:not([class*="has-profile"])
 palemoon.org##.sidebar > table.topnews~div[style^="text-align: center;"]
 ||openload.co/assets/js/script.2321.js
@@ -63876,8 +63885,6 @@ www.google.com#@##videoads
 @@||arnhemland-safaris.com/images/*_480_80_
 @@||artserieshotels.com.au/images/*_460_60.
 @@||assets.vice.com^*_120x60.jpg
-@@||assets1.plinxmedia.net^*_300x250.
-@@||assets2.plinxmedia.net^*_300x250.
 @@||bettermarks.com/media$~third-party
 @@||bexio.com/files/content/*160x600.$domain=bexio.com
 @@||bizquest.com^*_img/_franchise/*_120x60.$image
@@ -64230,6 +64237,7 @@ www.google.com#@##videoads
 @@||phncdn.com/underscore-$script
 @@||phncdn.com/videos/$media,object,object-subrequest,other,domain=pornhub.com|redtube.com|tube8.com|youporn.com|youporngay.com
 @@||phncdn.com/vortex-simple-*.js|$script,domain=redtube.com
+@@||phncdn.com/vortex.modern.js$script
 @@||phncdn.com/www-static/*/autocomplete.$script
 @@||phncdn.com/www-static/*/gif-view-functions.js$script
 @@||phncdn.com/www-static/*/gif-view.js$script

@@ -1,6 +1,6 @@
-! Checksum: Y6/r1iWDKofzNi+a4nPCdg
-! Version: 1.0.7.84
-! TimeUpdated: 2016-12-15T14:02:07.932+04:00
+! Checksum: h+1lxnOejL+DOkKy48kZEw
+! Version: 1.0.7.88
+! TimeUpdated: 2016-12-15T18:02:18.144+04:00
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on webpages including cookie notices third-party widgets and in-page popups.
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
@@ -13,6 +13,8 @@
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+subs.ro###subtitles-page > .items > li:empty
+m.economictimes.com###newsWidgetSection
 3dnews.ru###youtube-chunk-wrapper
 ibtimes.co.uk##figure.fullVideo > div.relative.stuck
 ibtimes.co.uk###nl_subscribe_anchor
@@ -153,6 +155,7 @@ povarenok.ru##.header-socials
 /wp-content/*/an-temp/*
 @@||ds.bitpit.xyz/advertise.js
 @@||ds.bitpit.xyz/ad-top/advertise.js
+numberempire.com###toplink
 files.love###body > div.container > div.row > p[style="text-align: center;"]
 @@||dw.cbsimg.net/js/cbsi/ds.js$domain=last.fm
 @@||ds.bitpit.xyz/ad-top/advertise.js
@@ -2950,7 +2953,7 @@ zr.ru#%#document.cookie = "zrPushSubsPopUp=1";
 ||ndtv.com/popupNotification.aspx
 ||superzarabotki.com/notify/
 ||tsn.ua/static/js/push.js
-||neutralen.nl^$third-party,script
+beycan.net###site > #menu + .left
 wiesentbote.de###footer-widgets
 studieren.de###colContents > div#colService
 diakov.net###sidebar > div.blocklite:last-child

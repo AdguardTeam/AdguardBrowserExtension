@@ -1,6 +1,6 @@
-! Checksum: VhuR1Sqi2LU2Kx3BVu8xkg
-! Version: 1.0.7.84
-! TimeUpdated: 2016-12-15T14:02:07.932+04:00
+! Checksum: MvRiuPRvmHwrM+n0TEjjUw
+! Version: 1.0.7.88
+! TimeUpdated: 2016-12-15T18:02:18.144+04:00
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on webpages including cookie notices third-party widgets and in-page popups.
 ! Title: Adguard Annoyances Filter
@@ -33,6 +33,10 @@
 !
 !######### Annoying elements (not ads)
 !
+! https://forum.adguard.com/index.php?threads/17569/
+subs.ro###subtitles-page > .items > li:empty
+! m.economictimes.com - subscription block
+m.economictimes.com###newsWidgetSection
 ! https://forum.adguard.com/index.php?threads/17032/
 3dnews.ru###youtube-chunk-wrapper
 ! https://forum.adguard.com/index.php?threads/16768/
@@ -277,6 +281,7 @@ povarenok.ru##.header-socials
 @@||ds.bitpit.xyz/advertise.js
 @@||ds.bitpit.xyz/ad-top/advertise.js
 !
+numberempire.com###toplink
 files.love###body > div.container > div.row > p[style="text-align: center;"]
 @@||dw.cbsimg.net/js/cbsi/ds.js$domain=last.fm
 @@||ds.bitpit.xyz/ad-top/advertise.js
@@ -3232,10 +3237,7 @@ zr.ru#%#document.cookie = "zrPushSubsPopUp=1";
 !
 !######### Remains of ads
 !
-! https://forum.adguard.com/index.php?threads/hdrezka-me-adblock-detect.16758/
-! Timer
-||neutralen.nl^$third-party,script
-!
+beycan.net###site > #menu + .left
 wiesentbote.de###footer-widgets
 studieren.de###colContents > div#colService
 diakov.net###sidebar > div.blocklite:last-child
