@@ -1,6 +1,6 @@
-! Checksum: 4DgoVhcWarzfVV71tZBaQg
-! Version: 1.0.6.23
-! TimeUpdated: 2016-12-13T21:01:50.752+04:00
+! Checksum: akjRPTJ/8dzZRqGXhpTeaA
+! Version: 1.0.6.25
+! TimeUpdated: 2016-12-15T17:01:35.191+04:00
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
 ! Title: Adguard Mobile Ads Filter
@@ -33,6 +33,11 @@
 !
 ! Section contains list of advertising networks
 !
+||pixel.admobclick.com^
+||bayctrk.com^
+||clk.taptica.com^
+||api.leadbolt.net^
+||exp.glispa.com^
 ||adserver.unityads.unity3d.com^
 ||cdn.unityads.unity3d.com^
 ||show.niqiu99.org^$third-party
@@ -842,6 +847,8 @@ deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important
 !---------------------------------------------------------------------------!
 !-------------- General URL blocking rules ---------------------------------!
 !---------------------------------------------------------------------------!
+/aff_c?*offer_id=*&aff_id=
+/aff_r?*offer_id=*&aff_id=
 .cn/?ss=
 /adfurikun/*
 !---------------------------------------------------------------------------!
@@ -1009,6 +1016,8 @@ m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"
 ! https://forum.adguard.com/index.php?threads/10464/
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
 !
+m.economictimes.com###morePartner
+m.economictimes.com##.moreFrom
 ||m.yanglaopt.net^
 ||www.a4yy.top/js/w.js
 ||www.a4yy.top/js/gg*.js

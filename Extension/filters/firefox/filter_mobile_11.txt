@@ -1,6 +1,6 @@
-! Checksum: xJXcgG2+FdvY4dWQVNHwdA
-! Version: 1.0.6.23
-! TimeUpdated: 2016-12-13T21:01:50.752+04:00
+! Checksum: 126TyDOinonAiAf7ijVlmQ
+! Version: 1.0.6.25
+! TimeUpdated: 2016-12-15T17:01:35.191+04:00
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
@@ -13,6 +13,11 @@
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+||pixel.admobclick.com^
+||bayctrk.com^
+||clk.taptica.com^
+||api.leadbolt.net^
+||exp.glispa.com^
 ||adserver.unityads.unity3d.com^
 ||cdn.unityads.unity3d.com^
 ||show.niqiu99.org^$third-party
@@ -749,6 +754,8 @@ sasisa.ru#%#Object.defineProperty(window, 'Umobi', { get: function() { return; }
 sasisa.ru#%#AG_onLoad(function() { window.Umobi = function() {}; });
 factroom.ru#$#.mobile-pop-direct { display: none!important; height: 0px!important; }
 deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important;}
+/aff_c?*offer_id=*&aff_id=
+/aff_r?*offer_id=*&aff_id=
 .cn/?ss=
 /adfurikun/*
 pornhub.com#@#div > [style*="width: 100%;"]:first-child
@@ -833,6 +840,8 @@ m.auto.ru##.card.i-bem > div[class^="_"] > div[class^="_"]
 m.auto.ru##.index.i-bem > div[class]:not([data-bem])
 m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"])
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
+m.economictimes.com###morePartner
+m.economictimes.com##.moreFrom
 ||m.yanglaopt.net^
 ||www.a4yy.top/js/w.js
 ||www.a4yy.top/js/gg*.js

@@ -28,6 +28,23 @@ adguard.subscriptions = (function (adguard) {
     var filters = [];
 
     /**
+     * @param timeUpdatedString String in format 'yyyy-MM-dd'T'HH:mm:ssZ'
+     * @returns timestamp from date string
+     */
+    function parseTimeUpdated(timeUpdatedString) {
+        // https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Date/parse
+        var timeUpdated = Date.parse(timeUpdatedString);
+        if (isNaN(timeUpdated)) {
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/478
+            timeUpdated = Date.parse(timeUpdatedString.replace(/\+(\d{2})(\d{2})$/, "+$1:$2"));
+        }
+        if (isNaN(timeUpdated)) {
+            timeUpdated = new Date().getTime();
+        }
+        return timeUpdated;
+    }
+
+    /**
      * Group metadata
      */
     var SubscriptionGroup = function (groupId, groupName, displayNumber) {
@@ -80,7 +97,7 @@ adguard.subscriptions = (function (adguard) {
         var defaultDescription = filter.description;
         var homepage = filter.homepage;
         var version = filter.version;
-        var timeUpdated = new Date(filter.timeUpdated).getTime();
+        var timeUpdated = parseTimeUpdated(filter.timeUpdated);
         var expires = filter.expires - 0;
         var subscriptionUrl = filter.subscriptionUrl;
         var languages = filter.languages;
