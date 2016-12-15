@@ -221,7 +221,7 @@ QUnit.test("UrlFilter class tests", function(assert) {
     var filter = new UrlFilter([rule, rule1, rule2]);
 
     assert.notOk(filter.isFiltered("http://test.ru/", "test.test.ru", RequestTypes.SUBDOCUMENT, false) != null);
-    assert.ok(filter.isFiltered("http://test.ru/", "www.google.com", RequestTypes.SUBDOCUMENT, true) != null);
+    assert.ok(filter.isFiltered("http://test.ru/", "www.google.com", RequestTypes.SCRIPT, true) != null);
     assert.ok(filter.isFiltered("http://www.google.com/ad/advertisment", "test.ru", RequestTypes.SUBDOCUMENT, true) != null);
     assert.notOk(filter.isFiltered("http://test.ru/", "www.nigma.ru", RequestTypes.SUBDOCUMENT, true) != null);
     assert.ok(filter.isFiltered("http://partner.nekki.ru/banner.php?no_cache=41122&rotation_id=7", "rutracker.org", RequestTypes.SUBDOCUMENT, true) != null);
@@ -253,4 +253,86 @@ QUnit.test("Complex regexp rule", function(assert) {
     assert.notOk(rule.isFiltered("http://connect.facebook.net/blahblah.js", true, RequestTypes.SCRIPT));
     assert.notOk(rule.isFiltered("https://ajax.cloudflare.com/blahblah.js", true, RequestTypes.SCRIPT));
     assert.notOk(rule.isFiltered("https://www.google-analytics.com/blahblah.js", true, RequestTypes.SCRIPT));
+});
+
+QUnit.test("Test UrlFilterRule Matching Everything", function(assert) {
+    var rule = new UrlFilterRule("*$domain=example.org");
+    assert.ok(rule.isFiltered("http://test.com", true, RequestTypes.SUBDOCUMENT));
+
+    rule = new UrlFilterRule("$domain=example.org");
+    assert.ok(rule.isFiltered("http://test.com", true, RequestTypes.SUBDOCUMENT));
+
+    rule = new UrlFilterRule("*$websocket");
+    // Rule is too wide, it will be considered invalid
+    assert.notOk(rule.isFiltered("http://test.com", true, RequestTypes.SUBDOCUMENT));
+});
+
+QUnit.test("Important modifier rules", function(assert) {
+    var rule = new UrlFilterRule("||example.com^$important");
+    assert.ok(rule.isImportant);
+
+    rule = new UrlFilterRule("||example.com^$\~important");
+    assert.notOk(rule.isImportant);
+
+    rule = new UrlFilterRule("||example.com^");
+    assert.notOk(rule.isImportant);
+});
+
+QUnit.test("Important modifier rules priority", function(assert) {
+    var importantRule = new UrlFilterRule("http://$important,domain=test.com");
+    var basicRule = new UrlFilterRule("||example.com^");
+
+    assert.ok(importantRule.isFiltered("http://example.com", true, RequestTypes.IMAGE));
+    assert.ok(importantRule.isPermitted("test.com"));
+    assert.ok(basicRule.isFiltered("http://example.com", true, RequestTypes.IMAGE));
+    assert.ok(basicRule.isPermitted("http://example.com"));
+
+    var urlFilter = new UrlFilter();
+    urlFilter.addRule(basicRule);
+    urlFilter.addRule(importantRule);
+
+    var result = urlFilter.isFiltered("http://example.com", "test.com", RequestTypes.SUBDOCUMENT, true);
+    assert.ok(result != null);
+    assert.equal(result.ruleText, importantRule.ruleText);
+});
+
+QUnit.test("Rule content types", function(assert) {
+    var basicRule = new UrlFilterRule("||example.com^");
+    assert.notOk(basicRule.checkContentType("DOCUMENT"));
+    assert.notOk(basicRule.checkContentTypeIncluded("DOCUMENT"));
+
+    assert.ok(basicRule.checkContentType("IMAGE"));
+    assert.ok(basicRule.checkContentTypeIncluded("IMAGE"));
+
+    var documentRule = new UrlFilterRule("||example.com^$document");
+    assert.ok(documentRule.checkContentType("DOCUMENT"));
+    assert.ok(documentRule.checkContentTypeIncluded("DOCUMENT"));
+
+    assert.ok(documentRule.checkContentType("ELEMHIDE"));
+    assert.ok(documentRule.checkContentTypeIncluded("ELEMHIDE"));
+
+    assert.notOk(documentRule.checkContentType("IMAGE"));
+    assert.notOk(documentRule.checkContentTypeIncluded("IMAGE"));
+
+    var elemhideRule = new UrlFilterRule("||example.com^$elemhide");
+    assert.ok(elemhideRule.checkContentType("DOCUMENT"));
+    assert.notOk(elemhideRule.checkContentTypeIncluded("DOCUMENT"));
+
+    assert.ok(elemhideRule.checkContentType("ELEMHIDE"));
+    assert.ok(elemhideRule.checkContentTypeIncluded("ELEMHIDE"));
+
+    assert.notOk(elemhideRule.checkContentType("IMAGE"));
+    assert.notOk(elemhideRule.checkContentTypeIncluded("IMAGE"));
+});
+
+QUnit.test("Regexp rules shortcuts", function(assert) {
+    assert.equal(new UrlFilterRule('/quang%20cao/').shortcut, 'quang%20cao');
+    assert.equal(new UrlFilterRule('/YanAds/').shortcut, 'YanAds');
+    assert.equal(new UrlFilterRule('/^http://m\.autohome\.com\.cn\/[a-z0-9]{32}\//$domain=m.autohome.com.cn').shortcut, 'autohome');
+    assert.equal(new UrlFilterRule('/cdsbData_gal/bannerFile/$image,domain=mybogo.net|zipbogo.net	').shortcut, 'cdsbData_gal/bannerFile');
+    assert.equal(new UrlFilterRule('/http:\/\/rustorka.com\/[a-z]+\.js/$domain=rustorka.com').shortcut, 'http://rustorka');
+    assert.equal(new UrlFilterRule('/^http://www\.iqiyi\.com\/common\/flashplayer\/[0-9]{8}/[0-9a-z]{32}.swf/$domain=iqiyi.com').shortcut, 'com/common/flashplayer');
+    assert.equal(new UrlFilterRule('/ulightbox/$domain=hdkinomax.com|tvfru.net').shortcut, 'ulightbox');
+    assert.equal(new UrlFilterRule('/\.sharesix\.com/.*[a-zA-Z0-9]{4}/$script').shortcut, 'sharesix');
+    assert.equal(new UrlFilterRule('/serial_adv_files/$image,domain=xn--80aacbuczbw9a6a.xn--p1ai|куражбамбей.рф').shortcut, 'serial_adv_files');
 });

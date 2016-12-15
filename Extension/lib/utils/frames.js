@@ -127,6 +127,16 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
     };
 
     /**
+     * Gets main frame URL
+     *
+     * @param tab       Tab
+     * @returns Frame URL
+     */
+    this.getMainFrameUrl = function (tab) {
+        return this.getFrameUrl(tab, 0);
+    };
+
+    /**
      * Gets frame Domain
      *
      * @param tab       Tab
@@ -143,7 +153,7 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
      */
     this.isTabWhiteListed = function (tab) {
         var frameData = this.getMainFrame(tab);
-        return frameData && frameData.frameWhiteListRule;
+        return frameData && frameData.frameWhiteListRule && frameData.frameWhiteListRule.checkContentTypeIncluded("DOCUMENT");
     };
 
     /**
@@ -151,8 +161,7 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
      * @returns true if Tab have white list rule and white list isn't invert
      */
     this.isTabWhiteListedForSafebrowsing = function (tab) {
-        var frameData = this.getMainFrame(tab);
-        return frameData && frameData.frameWhiteListRule && whiteListService.isDefaultMode();
+        return this.isTabWhiteListed(tab) && whiteListService.isDefaultMode();
     };
 
     /**
@@ -240,9 +249,9 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
         var frameData = this.getMainFrame(tab);
         if (frameData) {
             var url = frameData.url;
-            var frameWhiteListRule = antiBannerService.getRequestFilter().findWhiteListRule(url, url, RequestTypes.DOCUMENT);
+            var frameWhiteListRule = whiteListService.findWhiteListRule(url);
             if (!frameWhiteListRule) {
-                frameWhiteListRule = whiteListService.findWhiteListRule(url);
+                frameWhiteListRule = antiBannerService.getRequestFilter().findWhiteListRule(url, url, RequestTypes.DOCUMENT);
             }
             frameData.frameWhiteListRule = frameWhiteListRule;
             frameData.applicationFilteringDisabled = antiBannerService.isApplicationFilteringDisabled();
@@ -305,20 +314,19 @@ var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClas
 
                 applicationFilteringDisabled = frameData && frameData.applicationFilteringDisabled;
 
-                var rule = frameData ? frameData.frameWhiteListRule : null;
-                documentWhiteListed = rule != null;
+                documentWhiteListed = this.isTabWhiteListed(tab);
                 if (documentWhiteListed) {
-                    userWhiteListed = FilterUtils.isWhiteListFilterRule(rule) || FilterUtils.isUserFilterRule(rule);
-                }
-                //mean site in exception
-                canAddRemoveRule = !(documentWhiteListed && !userWhiteListed);
+                    var rule = this.getFrameWhiteListRule(tab);
 
-                if (rule) {
+                    userWhiteListed = FilterUtils.isWhiteListFilterRule(rule) || FilterUtils.isUserFilterRule(rule);
+
                     frameRule = {
                         filterId: rule.filterId,
                         ruleText: rule.ruleText
                     };
                 }
+                //mean site in exception
+                canAddRemoveRule = !(documentWhiteListed && !userWhiteListed);
             }
         }
 

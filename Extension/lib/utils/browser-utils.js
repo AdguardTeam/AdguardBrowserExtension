@@ -329,7 +329,7 @@ var Version = exports.Version = function (version) {
 
     this.version = Object.create(null);
 
-    var parts = (version || "").split(".");
+    var parts = String(version || "").split(".");
 
     function parseVersionPart(part) {
         if (isNaN(part)) {

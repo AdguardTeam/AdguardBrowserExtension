@@ -35,7 +35,7 @@ var StringUtils = exports.StringUtils = { // jshint ignore:line
         if (!str || !postfix) {
             return false;
         }
-        
+
         if (str.endsWith) {
             return str.endsWith(postfix);
         }
@@ -175,6 +175,28 @@ var CollectionUtils = exports.CollectionUtils = {
             text.push(collection[i].ruleText);
         }
         return text;
+    },
+
+    /**
+     * Find element in array by property
+     * @param array
+     * @param property
+     * @param value
+     * @returns {*}
+     */
+    find: function (array, property, value) {
+        if (typeof array.find === 'function') {
+            return array.find(function (a) {
+                return a[property] === value;
+            });
+        }
+        for (var i = 0; i < array.length; i++) {
+            var elem = array[i];
+            if (elem[property] === value) {
+                return elem;
+            }
+        }
+        return null;
     }
 };
 
@@ -261,7 +283,8 @@ var AntiBannerFiltersId = exports.AntiBannerFiltersId = { // jshint ignore:line
     EASY_PRIVACY: 118,
     FANBOY_ANNOYANCES: 122,
     FANBOY_SOCIAL: 123,
-    FANBOY_ENHANCED: 215
+    FANBOY_ENHANCED: 215,
+    LAST_ADGUARD_FILTER_ID: 14
 };
 
 var LogEvents = exports.LogEvents = { // jshint ignore:line
@@ -283,8 +306,7 @@ var FilterUtils = exports.FilterUtils = { // jshint ignore:line
     },
 
     isAdguardFilter: function (filter) {
-        return filter.filterId <= AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID ||
-            filter.filterId == AntiBannerFiltersId.SAFARI_FILTER;
+        return filter.filterId <= AntiBannerFiltersId.LAST_ADGUARD_FILTER_ID;
     },
 
     isUserFilterRule: function (rule) {

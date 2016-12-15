@@ -57,9 +57,13 @@
         // We use shadow DOM when it's available to minimize our impact on web page DOM tree.
         // According to ABP issue #452, creating a shadow root breaks running CSS transitions.
         // Because of this, we create shadow root right after content script is initialized.
-        if ("createShadowRoot" in document.documentElement && shadowDomExceptions.indexOf(document.domain) == -1) {
-            shadowRoot = document.documentElement.createShadowRoot();
-            shadowRoot.appendChild(document.createElement("shadow"));
+        // First check if it's available already, chrome shows warning message in case of we try to create an additional root.
+        shadowRoot = document.documentElement.shadowRoot;
+        if (!shadowRoot) {
+            if ("createShadowRoot" in document.documentElement && shadowDomExceptions.indexOf(document.domain) == -1) {
+                shadowRoot = document.documentElement.createShadowRoot();
+                shadowRoot.appendChild(document.createElement("shadow"));
+            }
         }
 
         var userAgent = navigator.userAgent.toLowerCase();
@@ -139,220 +143,6 @@
     };
 
     /**
-     * Object that collapses or hides DOM elements and able to roll it back.
-     */
-    var elementCollapser = (function() {
-
-        var collapserStyleId = "adguard-collapse-styles";
-        var hiddenElements = [];
-
-        /**
-         * Gets full DOM path to the specified element
-         */
-        var getDomPath = function (el) {
-            var stack = [];
-            while (el.parentNode !== null) {
-                var sibCount = 0;
-                var sibIndex = 0;
-                // get sibling indexes
-                for (var i = 0; i < el.parentNode.childNodes.length; i++) {
-                    var sib = el.parentNode.childNodes[i];
-                    if (sib.nodeName == el.nodeName) {
-                        if (sib === el) {
-                            sibIndex = sibCount;
-                        }
-                        sibCount++;
-                    }
-                }
-                var nodeName = el.nodeName.toLowerCase();
-                if (sibCount > 1) {
-                    stack.unshift(nodeName + ':nth-of-type(' + (sibIndex + 1) + ')');
-                } else {
-                    stack.unshift(nodeName);
-                }
-                el = el.parentNode;
-            }
-            stack.splice(0, 1); // removes the html element
-            return stack.join(' > ');
-        };
-
-        /**
-         * Adds "selectorText { display:none!important; }" style 
-         */
-        var hideBySelector = function(selectorText, cssText) {
-            var styleElement = document.getElementById(collapserStyleId);
-            if (!styleElement) {
-                styleElement = document.createElement("style");
-                styleElement.id = collapserStyleId;
-                styleElement.setAttribute("type", "text/css");
-                (document.head || document.documentElement).appendChild(styleElement);
-            }
-
-            var rule = selectorText + '{' + (cssText || "display: none!important") + '}';
-            styleElement.sheet.insertRule(rule, styleElement.sheet.cssRules.length);
-        };
-
-        /**
-         * Unhides elements which were previously hidden by the specified selector
-         */
-        var unhideBySelector = function(selectorText) {
-            var styleElement = document.getElementById(collapserStyleId);
-            if (!styleElement || !styleElement.sheet) {
-                return;
-            }
-            var iLength = styleElement.sheet.cssRules.length;
-            while (iLength--) {
-                var cssRule = styleElement.sheet.cssRules[iLength];
-                if (cssRule.selectorText == selectorText) {
-                    styleElement.sheet.deleteRule(iLength);
-                }
-            }
-
-            if (styleElement.sheet.cssRules.length === 0) {
-                // Schedule empty stylesheet removal
-                setTimeout(function() {
-                    // Double check stylesheet size
-                    if (styleElement.parentNode && styleElement.sheet && styleElement.sheet.cssRules.length === 0) {
-                        styleElement.parentNode.removeChild(styleElement);
-                    }
-                }, 100);
-            }
-        };
-
-        /**
-         * Searches for the specified elements in the hiddenElements collection
-         * and returns the first occurence.
-         */
-        var findHiddenElement = function(element) {
-            var iLength = hiddenElements.length;
-            while (iLength--) {
-                var hiddenElement = hiddenElements[iLength];
-                if (hiddenElement.node === element) {
-                    return hiddenElement;
-                }
-            }
-            return null;
-        };
-        
-        /**
-         * Hides specified element
-         */
-        var hideElement = function(element) {
-            var selectorText = getDomPath(element);
-            // First check if we have hidden it already
-            var hiddenElement = findHiddenElement(element);
-            if (hiddenElement && hiddenElement.selectorText === selectorText) {
-                // Nothing changed, we should do nothing
-                return;
-            }
-
-            var tagName = element.tagName.toLowerCase();
-            if (tagName === "frame" || tagName === "iframe") {
-                // Use specific style for frames due to these issues:
-                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/346
-                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/355
-                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/347
-                hideBySelector(selectorText, "visibility: hidden!important; height: 0px!important;");
-            } else {
-                hideBySelector(selectorText);
-            }
-
-            if (hiddenElement) {
-                // Remove redundant selector and save the new one
-                unhideBySelector(hiddenElement.selectorText);
-                hiddenElement.selectorText = selectorText;
-            } else {
-                hiddenElement = {
-                    node: element,
-                    selectorText: selectorText
-                };
-                hiddenElements.push(hiddenElement);
-            }
-        };
-
-        /**
-         * Unhides specified element
-         */
-        var unhideElement = function(element) {
-            var iLength = hiddenElements.length;
-            while (iLength--) {
-                var hiddenElement = hiddenElements[iLength];
-                if (hiddenElement.node === element) {
-                    unhideBySelector(hiddenElement.selectorText);
-                    hiddenElements.splice(iLength, 1);
-                }
-            }
-        };
-
-        /**
-         * Collapses specified element.
-         *
-         * @param element Element to collapse
-         */
-        var collapseElement = function(element) {
-
-            var tagName = element.tagName.toLowerCase();
-            var cssProperty = "display";
-            var cssValue = "none";
-            var cssPriority = "important";
-
-            if (tagName == "frame") {
-                cssProperty = "visibility";
-                cssValue = "hidden";
-            }
-
-            var elementStyle = element.style;
-            var elCssValue = elementStyle.getPropertyValue(cssProperty);
-            var elCssPriority = elementStyle.getPropertyPriority(cssProperty);
-
-            // <input type="image"> elements try to load their image again
-            // when the "display" CSS property is set. So we have to check
-            // that it isn't already collapsed to avoid an infinite recursion.
-            if (elCssValue != cssValue || elCssPriority != cssPriority) {
-                elementStyle.setProperty(cssProperty, cssValue, cssPriority);
-            }
-        };
-
-        return {
-            /**
-             * Collapses specified element using inline style
-             * 
-             * @param element Element to collapse
-             */
-            collapseElement: collapseElement,
-            
-            /**
-             * Hides specified element
-             * 
-             * @param element Element to hide
-             * @param cssText (optional) Overrides style used for hiding
-             */
-            hideElement: hideElement,
-
-            /**
-             * Removes the style used to hide the specified element
-             * 
-             * @param element Element to unhide
-             */
-            unhideElement: unhideElement,
-
-            /**
-             * Adds "selectorText { display:none!important; }" style
-             * 
-             * @param selectorText CSS selector
-             */
-            hideBySelector: hideBySelector,
-
-            /**
-             * Unhides elements which were previously hidden by the specified selector
-             * 
-             * @param selectorText CSS selector
-             */
-            unhideBySelector: unhideBySelector
-        };
-    })();
-
-    /**
      * The main purpose of this function is to prevent blocked iframes "flickering".
      * So, we do two things:
      * 1. Add a temporary display:none style for all frames (which is removed on DOMContentLoaded event)
@@ -367,7 +157,7 @@
         }
 
         var iframeHidingSelector = "iframe[src]";
-        elementCollapser.hideBySelector(iframeHidingSelector);
+        ElementCollapser.hideBySelector(iframeHidingSelector, null, shadowRoot);
 
         /**
          * For iframes with changed source we check if it should be collapsed
@@ -426,7 +216,7 @@
                 checkShouldCollapseElement(iframes[i]);
             }
 
-            elementCollapser.unhideBySelector(iframeHidingSelector);
+            ElementCollapser.unhideBySelector(iframeHidingSelector, shadowRoot);
 
             if (document.body) {
                 // Handle dynamically added frames
@@ -555,6 +345,9 @@
             } else {
                 (document.head || document.documentElement).appendChild(styleEl);                
             }
+
+            protectStyleElementFromRemoval(styleEl, useShadowDom);
+            protectStyleElementContent(styleEl);
         }
     };
 
@@ -570,6 +363,95 @@
 
         // https://github.com/AdguardTeam/ExtendedCss
         new ExtendedCss(extendedCss.join("\n")).apply();
+    };
+
+    /**
+     * Protects specified style element from changes to the current document
+     * Add a mutation observer, which is adds our rules again if it was removed
+     *
+     * @param protectStyleEl protected style element
+     */
+    var protectStyleElementContent = function (protectStyleEl) {
+        var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+        if (!MutationObserver)
+            return;
+
+        /* observer, which observe protectStyleEl inner changes, without deleting styleEl */
+        var innerObserver = new MutationObserver(function (mutations) {
+
+            for (var i = 0; i < mutations.length; i++) {
+
+                var m = mutations[i];
+                if (protectStyleEl.hasAttribute("mod") && protectStyleEl.getAttribute("mod") == "inner") {
+                    protectStyleEl.removeAttribute("mod");
+                    break;
+                }
+
+                protectStyleEl.setAttribute("mod", "inner");
+                var isProtectStyleElModified = false;
+
+                /* further, there are two mutually exclusive situations: either there were changes the text of protectStyleEl,
+                 either there was removes a whole child "text" element of protectStyleEl
+                 we'll process both of them */
+
+                if (m.removedNodes.length > 0) {
+                    for (var j = 0; j < m.removedNodes.length; j++) {
+                        isProtectStyleElModified = true;
+                        protectStyleEl.appendChild(m.removedNodes[j]);
+                    }
+                } else {
+                    if (m.oldValue) {
+                        isProtectStyleElModified = true;
+                        protectStyleEl.textContent = m.oldValue;
+                    }
+                }
+
+                if (!isProtectStyleElModified) {
+                    protectStyleEl.removeAttribute("mod");
+                }
+            }
+
+        });
+
+        innerObserver.observe(protectStyleEl, {
+                'childList': true,
+                'characterData': true,
+                'subtree': true,
+                'characterDataOldValue': true
+            });
+    };
+
+    /**
+     * Protects style element from removing.
+     *
+     * @param protectStyleEl protected style element
+     * @param useShadowDom shadowDOM flag
+     */
+    var protectStyleElementFromRemoval = function (protectStyleEl, useShadowDom) {
+        var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+        if (!MutationObserver)
+            return;
+
+        /* observer, which observe deleting protectStyleEl */
+        var outerObserver = new MutationObserver(function (mutations) {
+            for (var i = 0; i < mutations.length; i++) {
+
+                var m = mutations[i];
+                var removedNodeIndex = [].indexOf.call(mutations[i].removedNodes, protectStyleEl);
+                if (removedNodeIndex != -1) {
+                    var removedStyleEl = m.removedNodes[removedNodeIndex];
+
+                    outerObserver.disconnect();
+
+                    applyCss([removedStyleEl.textContent], useShadowDom);
+
+                    break;
+                }
+            }
+
+        });
+
+        outerObserver.observe(protectStyleEl.parentNode, {'childList': true, 'characterData': true});
     };
     
     /**
@@ -659,7 +541,10 @@
         }
 
         var elementUrl = element.src || element.data;
-        if (!elementUrl || elementUrl.indexOf('http') !== 0) {
+        if (!elementUrl || elementUrl.indexOf('http') !== 0
+            || elementUrl === element.baseURI) {
+            // Some sources could not be set yet, lazy loaded images or smth.
+            // In some cases like on gog.com, collapsing these elements could break the page script loading their sources
             return;
         }
 
@@ -667,11 +552,11 @@
         var requestId = collapseRequestId++;
         collapseRequests[requestId] = {
             element: element,
+            elementUrl: elementUrl,
             tagName: tagName
         };
 
-        // Hide element temporary
-        elementCollapser.hideElement(element);
+        tempHideElement(element);
 
         // Send a message to the background page to check if the element really should be collapsed
         var message = {
@@ -683,6 +568,23 @@
         };
 
         contentPage.sendMessage(message, onProcessShouldCollapseResponse);
+    };
+
+    /**
+     * Hides element temporary
+     *
+     * @param element
+     */
+    var tempHideElement = function (element) {
+        // We skip big frames here
+        var tagName = element.tagName.toLowerCase();
+        if (tagName === 'iframe' || tagName === 'frame') {
+            if (element.clientHeight * element.clientWidth > 400 * 300) {
+                return;
+            }
+        }
+
+        ElementCollapser.hideElement(element, shadowRoot);
     };
     
     /**
@@ -705,11 +607,12 @@
 
         if (response.collapse === true) {
             var element = collapseRequest.element;
-            elementCollapser.collapseElement(element);
+            var elementUrl = collapseRequest.elementUrl;
+            ElementCollapser.collapseElement(element, elementUrl, shadowRoot);
         }
 
         // In any case we should remove hiding style
-        elementCollapser.unhideElement(collapseRequest.element);
+        ElementCollapser.unhideElement(collapseRequest.element, shadowRoot);
     };
     
     /**

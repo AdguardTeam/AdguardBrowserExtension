@@ -45,4 +45,23 @@ public enum Browser {
 		}
 		return null;
 	}
+
+	/**
+	 * Divides browsers into groups.
+	 * These groups are used for further work with filters
+	 * @return group name
+     */
+	public String getBrowserGroup() {
+		switch (this) {
+			case SAFARI:
+				return "safari";
+			case FIREFOX:
+			case FIREFOX_LEGACY:
+				return "firefox";
+			case CHROMIUM:
+			case EDGE:
+			default:
+				return "chromium";
+		}
+	}
 }

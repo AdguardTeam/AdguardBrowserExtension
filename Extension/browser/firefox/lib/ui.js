@@ -87,7 +87,9 @@ var UI = exports.UI = {
         }
         try {
             if (activateSameTab) {
-                for each (var tab in this._getAllTabs()) {
+                var allTabs = this._getAllTabs();
+                for (var i = 0; i < allTabs.length; i++) {
+                    var tab = allTabs[i];
                     if (UrlUtils.urlEquals(tab.url, url)) {
                         if (tab.window) {
                             tab.window.activate();
@@ -162,7 +164,8 @@ var UI = exports.UI = {
         var thankyouUrl = UI._getURL("thankyou.html");
 
         var windows = tabUtils.getAllTabContentWindows();
-        for each (var win in windows) {
+        for (var i = 0; i < windows.length; i++) {
+            var win = windows[i];
             if (!win.location) {
                 continue;
             }
@@ -185,7 +188,8 @@ var UI = exports.UI = {
     closeAllPages: function () {
         try {
             var windows = tabUtils.getAllTabContentWindows();
-            for each (var win in windows) {
+            for (var i = 0; i < windows.length; i++) {
+                var win = windows[i];
                 if (win.location && win.location.href.indexOf(UI._getURL('')) > -1) {
                     win.close();
                 }

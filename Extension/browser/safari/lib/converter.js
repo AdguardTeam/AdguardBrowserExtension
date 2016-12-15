@@ -18,7 +18,7 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.15';
+var CONVERTER_VERSION = '1.3.20';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var URL_FILTER_ANY_URL = ".*";
@@ -269,8 +269,9 @@ exports.SafariContentBlockerConverter = {
 
             var result = {
                 trigger: {
-                    "url-filter": URL_FILTER_ANY_URL,
-                    "resource-type": [ "document" ]
+                    "url-filter": URL_FILTER_ANY_URL
+                    // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/153#issuecomment-263067779
+                    //,"resource-type": [ "document" ]
                 },
                 action: {
                     type: "css-display-none",
@@ -660,6 +661,7 @@ exports.SafariContentBlockerConverter = {
 
         var cssBlockingWide = [];
         var cssBlockingDomainSensitive = [];
+        var cssBlockingGenericDomainSensitive = [];
 
         var wideSelectors = [];
         var addWideRule = function() {
@@ -670,8 +672,9 @@ exports.SafariContentBlockerConverter = {
 
             var rule = {
                 trigger: {
-                    "url-filter": URL_FILTER_ANY_URL,
-                    "resource-type": [ "document" ]
+                    "url-filter": URL_FILTER_ANY_URL
+                    // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/153#issuecomment-263067779
+                    //,"resource-type": [ "document" ]
                 },
                 action: {
                     type: "css-display-none",
@@ -684,8 +687,10 @@ exports.SafariContentBlockerConverter = {
         for (var i = 0; i < cssBlocking.length; i++) {
 
             var rule = cssBlocking[i];
-            if (rule.trigger['if-domain'] || rule.trigger['unless-domain']) {
+            if (rule.trigger['if-domain']) {
                 cssBlockingDomainSensitive.push(rule);
+            } else if (rule.trigger['unless-domain']) {
+                cssBlockingGenericDomainSensitive.push(rule);
             } else {
                 wideSelectors.push(rule.action.selector);
                 if (wideSelectors.length >= MAX_SELECTORS_PER_WIDE_RULE) {
@@ -699,7 +704,8 @@ exports.SafariContentBlockerConverter = {
         Log.info('Compacted result: wide=' + cssBlockingWide.length + ' domainSensitive=' + cssBlockingDomainSensitive.length);
         return {
             cssBlockingWide: cssBlockingWide,
-            cssBlockingDomainSensitive: cssBlockingDomainSensitive
+            cssBlockingDomainSensitive: cssBlockingDomainSensitive,
+            cssBlockingGenericDomainSensitive: cssBlockingGenericDomainSensitive
         };
     },
 
@@ -714,10 +720,12 @@ exports.SafariContentBlockerConverter = {
         Log.info('Converting ' + rules.length + ' rules. Optimize=' + optimize);
 
         var contentBlocker = {
-            // Elemhide rules (##) - generic rules
+            // Elemhide rules (##) - wide generic rules
             cssBlockingWide: [],
+            // Elemhide rules (##) - generic domain sensitive
+            cssBlockingGenericDomainSensitive: [],
             // Generic hide exceptions
-            cssBlockingWideExceptions: [],
+            cssBlockingGenericHideExceptions: [],
             // Elemhide rules (##) with domain restrictions
             cssBlockingDomainSensitive: [],
             // Elemhide exceptions ($elemhide)
@@ -762,7 +770,7 @@ exports.SafariContentBlockerConverter = {
                     cssExceptions.push(item);
                 } else if (item.action.type == 'ignore-previous-rules' && 
                     (ruleText && ruleText.indexOf('generichide') > 0)) {
-                    contentBlocker.cssBlockingWideExceptions.push(item);
+                    contentBlocker.cssBlockingGenericHideExceptions.push(item);
                 } else if (item.action.type == 'ignore-previous-rules' && 
                         (item.trigger["resource-type"] && 
                         item.trigger["resource-type"].length > 0 &&
@@ -781,13 +789,15 @@ exports.SafariContentBlockerConverter = {
         if (!optimize) {
             contentBlocker.cssBlockingWide = cssCompact.cssBlockingWide;
         }
+        contentBlocker.cssBlockingGenericDomainSensitive = cssCompact.cssBlockingGenericDomainSensitive;
         contentBlocker.cssBlockingDomainSensitive = cssCompact.cssBlockingDomainSensitive;
 
         var convertedCount = rules.length - contentBlocker.errors.length;
         var message = 'Rules converted: ' + convertedCount + ' (' + contentBlocker.errors.length + ' errors)';
         message += '\nBasic rules: ' + contentBlocker.urlBlocking.length;
         message += '\nElemhide rules (wide): ' + contentBlocker.cssBlockingWide.length;
-        message += '\nExceptions Elemhide (wide): ' + contentBlocker.cssBlockingWideExceptions.length;
+        message += '\nElemhide rules (generic domain sensitive): ' + contentBlocker.cssBlockingGenericDomainSensitive.length;
+        message += '\nExceptions Elemhide (wide): ' + contentBlocker.cssBlockingGenericHideExceptions.length;
         message += '\nElemhide rules (domain-sensitive): ' + contentBlocker.cssBlockingDomainSensitive.length;
         message += '\nExceptions (elemhide): ' + contentBlocker.cssElemhide.length;
         message += '\nExceptions (other): ' + contentBlocker.other.length;
@@ -800,7 +810,8 @@ exports.SafariContentBlockerConverter = {
         var overLimit = false;
         var converted = [];
         converted = converted.concat(contentBlocker.cssBlockingWide);
-        converted = converted.concat(contentBlocker.cssBlockingWideExceptions);
+        converted = converted.concat(contentBlocker.cssBlockingGenericDomainSensitive);
+        converted = converted.concat(contentBlocker.cssBlockingGenericHideExceptions);
         converted = converted.concat(contentBlocker.cssBlockingDomainSensitive);
         converted = converted.concat(contentBlocker.cssElemhide);
         converted = converted.concat(contentBlocker.urlBlocking);

@@ -216,6 +216,55 @@ QUnit.test("Generichide rules", function(assert) {
     assert.equal("document", convertedRule.trigger["resource-type"][0]);
 });
 
+QUnit.test("Generic domain sensitive rules", function(assert) {
+    var ruleText = '~google.com##banner';
+
+    var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    assert.equal(1, result.convertedCount);
+    assert.equal(0, result.errorsCount);
+    var converted = JSON.parse(result.converted);
+    assert.equal(1, converted.length);
+
+    var convertedRule = converted[0];
+    assert.equal(convertedRule.action.type, "css-display-none");
+    assert.equal(convertedRule.trigger["unless-domain"], '*google.com');
+    assert.equal(convertedRule.trigger["url-filter"], '.*');
+});
+
+QUnit.test("Generic domain sensitive rules sorting order", function(assert) {
+    var result = SafariContentBlockerConverter.convertArray([ '~example.org##generic', '##wide1', '##specific', '@@||example.org^$generichide' ]);
+    assert.equal(result.convertedCount, 3);
+    assert.equal(result.errorsCount, 0);
+    var converted = JSON.parse(result.converted);
+    assert.equal(converted.length, 3);
+
+    assert.equal(converted[0].action.selector, "wide1, specific");
+    assert.equal(converted[0].action.type, "css-display-none");
+    assert.equal(converted[0].trigger["url-filter"], '.*');
+
+    assert.equal(converted[1].action.selector, "generic");
+    assert.equal(converted[1].action.type, "css-display-none");
+    assert.equal(converted[1].trigger["unless-domain"], '*example.org');
+    assert.equal(converted[1].trigger["url-filter"], '.*');
+
+    assert.equal(converted[2].action.type, "ignore-previous-rules");
+    assert.equal(converted[2].trigger["url-filter"], '^https?://([^/]*\\.)?example\\.org[/:&?]?');
+});
+
+QUnit.test("Convert cyrillic rules", function(assert) {
+    var ruleText = 'меил.рф';
+    var ruleTextMarkedDomain = '||меил.рф';
+
+    var result = SafariContentBlockerConverter.convertArray([ ruleText, ruleTextMarkedDomain ]);
+    assert.equal(2, result.convertedCount);
+    assert.equal(0, result.errorsCount);
+    var converted = JSON.parse(result.converted);
+    assert.equal(2, converted.length);
+
+    assert.equal(converted[0].trigger["url-filter"], "xn--e1agjb\\.xn--p1ai");
+    assert.equal(converted[1].trigger["url-filter"], "^https?://([^/]*\\.)?xn--e1agjb\\.xn--p1ai");
+});
+
 QUnit.test("Convert regexp rules", function(assert) {
     var ruleText = "/^https?://(?!static\.)([^.]+\.)+?fastpic\.ru[:/]/$script,domain=fastpic.ru";
     var result = SafariContentBlockerConverter.convertArray([ ruleText ]);

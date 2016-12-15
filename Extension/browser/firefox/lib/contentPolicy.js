@@ -454,25 +454,34 @@ var WebRequestImpl = exports.WebRequestImpl = {
      * @returns ACCEPT or REJECT_*
      */
     shouldLoad: function (contentType, contentLocation, requestOrigin, aContext, mimeTypeGuess, extra, aRequestPrincipal) {
+        var tab;
+        if (aContext) {
+            var xulTab = WebRequestHelper.getTabForContext(aContext);
+            if (xulTab) {
+                tab = {id: tabUtils.getTabId(xulTab)};
+            }
+        }
 
-        if (!aContext && contentType !== WebRequestHelper.contentTypes.TYPE_WEBSOCKET) {
-            // Context could be empty in case of WebSocket requests:
-            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/334
+        if (!tab && contentType !== WebRequestHelper.contentTypes.TYPE_WEBSOCKET) {
+            // We handle null-tab requests only of websocket type
             return WebRequestHelper.ACCEPT;
         }
 
-        var xulTab = WebRequestHelper.getTabForContext(aContext);
-        if (!xulTab) {
-            return WebRequestHelper.ACCEPT;
+        var referrer;
+        if (requestOrigin && requestOrigin.asciiSpec
+            && requestOrigin.asciiSpec.indexOf('http') === 0) {
+            referrer = requestOrigin.asciiSpec;
+        } else {
+            referrer = this.framesMap.getMainFrameUrl(tab);
         }
 
-        var tab = {id: tabUtils.getTabId(xulTab)};
         var requestUrl = contentLocation.asciiSpec;
         var requestType = WebRequestHelper.getRequestType(contentType, contentLocation);
-        var result = this._shouldBlockRequest(tab, requestUrl, requestType, aContext);
+
+        var result = this._shouldBlockRequest(tab, requestUrl, referrer, requestType, aContext);
 
         Log.debug('shouldLoad: {0} {1}. Result: {2}', requestUrl, requestType, result.blocked);
-        this._saveLastRequestProperties(requestUrl, requestType, result, aContext);
+        this._saveLastRequestProperties(requestUrl, referrer, requestType, result, aContext);
         return result.blocked ? WebRequestHelper.REJECT : WebRequestHelper.ACCEPT;
     },
 
@@ -509,7 +518,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
 
             var tab = {id: tabUtils.getTabId(xulTab)};
             var requestUrl = newChannel.URI.asciiSpec;
-            var shouldBlockResult = this._shouldBlockRequest(tab, requestUrl, requestProperties.requestType, null); 
+            var shouldBlockResult = this._shouldBlockRequest(tab, requestUrl, requestProperties.referrer, requestProperties.requestType, null);
 
             Log.debug('asyncOnChannelRedirect: {0} {1}. Blocked={2}', requestUrl, requestProperties.requestType, shouldBlockResult.blocked);
             if (shouldBlockResult.blocked) {
@@ -591,7 +600,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
         }
 
         // Retrieve referrer URL
-        var referrerUrl = this.framesMap.getFrameUrl(tab, 0);
+        var referrerUrl = this.framesMap.getMainFrameUrl(tab);
 
         if (!!requestProperties) {  
             // Calling postProcessRequest only for requests which were previously processed by "shouldLoad"
@@ -676,7 +685,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
         var tab = {id: tabId};
         if (this.adguardApplication.shouldOverrideReferrer(tab)) {
             // Retrieve main frame url
-            var frameUrl = this.framesMap.getFrameUrl(tab, 0);
+            var frameUrl = this.framesMap.getMainFrameUrl(tab);
             subject.setRequestHeader('Referer', frameUrl, false);
         }
     },
@@ -684,14 +693,15 @@ var WebRequestImpl = exports.WebRequestImpl = {
     /**
      * Checks if request should be blocked
      *
-     * @param tab Browser tab
-     * @param requestUrl Request url
-     * @param requestType Request type
-     * @param node DOM node
+     * @param tab           Browser tab or null
+     * @param requestUrl    Request url
+     * @param referrer      Referrer url
+     * @param requestType   Request type
+     * @param node          DOM node or null
      * @returns {*} object with two properties: "blocked" and "rule"
      * @private
      */
-    _shouldBlockRequest: function (tab, requestUrl, requestType, node) {
+    _shouldBlockRequest: function (tab, requestUrl, referrer, requestType, node) {
 
         var result = {
             blocked: false,
@@ -706,18 +716,16 @@ var WebRequestImpl = exports.WebRequestImpl = {
             return result;
         }
 
-        var tabUrl = this.framesMap.getFrameUrl(tab, 0);
-
-        result.rule = this.webRequestService.getRuleForRequest(tab, requestUrl, tabUrl, requestType);
+        result.rule = this.webRequestService.getRuleForRequest(tab, requestUrl, referrer, requestType);
         result.blocked = this.webRequestService.isRequestBlockedByRule(result.rule);
 
         if (result.blocked || requestType === RequestTypes.WEBSOCKET) {
             this._collapseElement(node, requestType);
-            
+
             // Usually we call this method in _httpOnExamineResponse callback
             // But it won't be called if request is blocked here
             // Also it won't be called for WEBSOCKET requests
-            this.webRequestService.postProcessRequest(tab, requestUrl, tabUrl, requestType, result.rule);            
+            this.webRequestService.postProcessRequest(tab, requestUrl, referrer, requestType, result.rule);
         }
 
         return result;
@@ -729,13 +737,15 @@ var WebRequestImpl = exports.WebRequestImpl = {
      * NOTE: Hi, AMO reviewer! Maybe you know a better solution?:)
      * 
      * @param requestUrl        Request URL
+     * @param referrer          Referrer URL
      * @param requestType       Request content type
      * @param shouldLoadResult  Result of the "shouldLoad" call
      * @param aContext          aContext from the "shouldLoad"" call
      */
-    _saveLastRequestProperties: function(requestUrl, requestType, shouldLoadResult, aContext) {
+    _saveLastRequestProperties: function(requestUrl, referrer, requestType, shouldLoadResult, aContext) {
         this.lastRequestProperties = {
-            requestUrl: requestUrl, 
+            requestUrl: requestUrl,
+            referrer: referrer,
             requestType: requestType,
             shouldLoadResult: shouldLoadResult
         };
@@ -767,7 +777,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
             return false;
         }
 
-        var tabUrl = this.framesMap.getFrameUrl(sourceTab, 0);
+        var tabUrl = this.framesMap.getMainFrameUrl(sourceTab);
 
         var requestRule = this.webRequestService.getRuleForRequest(sourceTab, requestUrl, tabUrl, RequestTypes.POPUP);
         var requestBlocked = this.webRequestService.isRequestBlockedByRule(requestRule);

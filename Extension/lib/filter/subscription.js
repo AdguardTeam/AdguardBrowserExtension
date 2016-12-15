@@ -15,11 +15,12 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global exports, require */
+
 /**
  * Initializing required libraries for this file.
  * require method is overridden in Chrome extension (port/require.js).
  */
-var LS = require('../../lib/utils/local-storage').LS;
 var Log = require('../../lib/utils/log').Log;
 var Prefs = require('../../lib/prefs').Prefs;
 var ServiceClient = require('../../lib/utils/service-client').ServiceClient;
@@ -52,25 +53,9 @@ SubscriptionService.prototype = {
 			Log.error('Error loading metadata, cause: {0} {1}', request.statusText, cause);
 		};
 
-		var dfd1 = new Promise();
-		this.serviceClient.loadLocalGroupsMetadata(function (groups) {
-			this.groups = groups.sort(function (g1, g2) {
-				return g1.displayNumber - g2.displayNumber
-			});
-			Log.info('Groups metadata loaded');
-			dfd1.resolve();
+		this._loadMetadata(function () {
+			this._loadMetadataI18n(callback, errorCallback);
 		}.bind(this), errorCallback);
-
-		var dfd2 = new Promise();
-		this.serviceClient.loadLocalFiltersMetadata(function (filters) {
-			this.filters = filters.sort(function (f1, f2) {
-				return f1.displayNumber - f2.displayNumber;
-			});
-			Log.info('Filters metadata loaded');
-			dfd2.resolve();
-		}.bind(this), errorCallback);
-
-		Promise.all([dfd1, dfd2]).then(callback);
 	},
 
 	/**
@@ -99,6 +84,67 @@ SubscriptionService.prototype = {
 			}
 		}
 		return filtersLanguages;
+	},
+
+	_loadMetadata: function (successCallback, errorCallback) {
+
+		this.serviceClient.loadLocalFiltersMetadata(function (metadata) {
+
+			this.groups = [];
+			this.filters = [];
+
+			for (var i = 0; i < metadata.groups.length; i++) {
+				this.groups.push(SubscriptionGroup.fromJSON(metadata.groups[i], i));
+			}
+
+			for (var j = 0; j < metadata.filters.length; j++) {
+				this.filters.push(SubscriptionFilter.fromJSON(metadata.filters[j], j));
+			}
+
+			Log.info('Filters metadata loaded');
+			successCallback();
+
+		}.bind(this), errorCallback);
+	},
+
+	_loadMetadataI18n: function (successCallback, errorCallback) {
+
+		this.serviceClient.loadLocalFiltersI18Metadata(function (i18nMetadata) {
+
+			var groupsI18n = i18nMetadata.groups;
+			var filtersI18n = i18nMetadata.filters;
+
+			for (var i = 0; i < this.groups.length; i++) {
+				this._applyGroupLocalization(this.groups[i], groupsI18n);
+			}
+
+			for (var j = 0; j < this.filters.length; j++) {
+				this._applyFilterLocalization(this.filters[j], filtersI18n);
+			}
+
+			Log.info('Filters i18n metadata loaded');
+			successCallback();
+
+		}.bind(this), errorCallback);
+	},
+
+	_applyGroupLocalization: function (group, i18nMetadata) {
+		var groupId = group.groupId;
+		var localizations = i18nMetadata[groupId];
+		if (localizations && Locale in localizations) {
+			var localization = localizations[Locale];
+			group.groupName = localization.name;
+		}
+	},
+
+	_applyFilterLocalization: function (filter, i18nMetadata) {
+		var filterId = filter.filterId;
+		var localizations = i18nMetadata[filterId];
+		if (localizations && Locale in localizations) {
+			var localization = localizations[Locale];
+			filter.name = localization.name;
+			filter.description = localization.description;
+		}
 	}
 };
 
@@ -109,31 +155,15 @@ var SubscriptionGroup = exports.SubscriptionGroup = function (groupId, groupName
 };
 
 /**
- * Parsing filters metadata from XML
- * @param group XML element
+ * Create group from object
+ * @param group Object
+ * @param displayNumber Display order
  * @returns {SubscriptionGroup}
  */
-SubscriptionGroup.fromXml = function (group) {
+SubscriptionGroup.fromJSON = function (group, displayNumber) {
 
-	var groupId = getChildTextContent(group, 'groupId') - 0;
-	var defaultGroupName = getChildTextContent(group, 'groupName');
-	var displayNumber = getChildTextContent(group, 'displayNumber') - 0;
-
-	var i18n = Object.create(null);
-	var i18nElement = getChild(group, 'i18n');
-	if (i18nElement) {
-		var localizations = i18nElement.getElementsByTagName('localization');
-		for (var i = 0; i < localizations.length; i++) {
-			var localization = localizations[i];
-			var language = getChildTextContent(localization, 'language');
-			i18n[language] = Object.create(null);
-			i18n[language].groupName = getChildTextContent(localization, 'groupName');
-		}
-	}
-
-	if (Locale in i18n) {
-		defaultGroupName = i18n[Locale].groupName;
-	}
+	var groupId = group.groupId - 0;
+	var defaultGroupName = group.groupName;
 
 	return new SubscriptionGroup(groupId, defaultGroupName, displayNumber);
 };
@@ -158,70 +188,23 @@ var SubscriptionFilter = exports.SubscriptionFilter = function (filterId, groupI
 };
 
 /**
- * Parses filter metadata
- * @param filter XML element
+ * Create filter from object
+ * @param filter Object
+ * @param displayNumber Display order
  * @returns {SubscriptionFilter}
  */
-SubscriptionFilter.fromXml = function (filter) {
+SubscriptionFilter.fromJSON = function (filter, displayNumber) {
 
-	var filterId = getChildTextContent(filter, 'filterId') - 0;
-	var groupId = getChildTextContent(filter, 'groupId') - 0;
-	var defaultName = getChildTextContent(filter, 'name');
-	var defaultDescription = getChildTextContent(filter, 'description');
-	var homepage = getChildTextContent(filter, 'homepage');
-	var version = getChildTextContent(filter, 'version');
-	var timeUpdated = new Date(getChildTextContent(filter, 'timeUpdated')).getTime();
-	var displayNumber = getChildTextContent(filter, 'displayNumber') - 0;
-	var expires = getChildTextContent(filter, 'expires') - 0;
-	var subscriptionUrl = getChildTextContent(filter, 'subscriptionUrl');
-
-	var languages = [];
-	var languagesEl = getChild(filter, 'languages');
-	if (languagesEl) {
-		var languagesElChildNodes = languagesEl.getElementsByTagName('language');
-		for (var i = 0; i < languagesElChildNodes.length; i++) {
-			languages.push(languagesElChildNodes[i].textContent);
-		}
-	}
-
-	var i18n = Object.create(null);
-	var i18nElement = getChild(filter, 'i18n');
-	if (i18nElement) {
-		var localizations = i18nElement.getElementsByTagName('localization');
-		for (i = 0; i < localizations.length; i++) {
-			var localization = localizations[i];
-			var language = getChildTextContent(localization, 'language');
-			i18n[language] = Object.create(null);
-			i18n[language].name = getChildTextContent(localization, 'name');
-			i18n[language].description = getChildTextContent(localization, 'description');
-		}
-	}
-
-	if (Locale in i18n) {
-		defaultName = i18n[Locale].name;
-		defaultDescription = i18n[Locale].description;
-	}
+	var filterId = filter.filterId - 0;
+	var groupId = filter.groupId - 0;
+	var defaultName = filter.name;
+	var defaultDescription = filter.description;
+	var homepage = filter.homepage;
+	var version = filter.version;
+	var timeUpdated = new Date(filter.timeUpdated).getTime();
+	var expires = filter.expires - 0;
+	var subscriptionUrl = filter.subscriptionUrl;
+	var languages = filter.languages;
 
 	return new SubscriptionFilter(filterId, groupId, defaultName, defaultDescription, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl);
 };
-
-
-function getChild(element, localName) {
-
-	if (!element || !element.childNodes) {
-		return null;
-	}
-	var childs = element.childNodes;
-	for (var i = 0; i < childs.length; i++) {
-		var child = childs[i];
-		if (child.localName == localName) {
-			return child;
-		}
-	}
-	return null;
-}
-
-function getChildTextContent(element, localName) {
-	var child = getChild(element, localName);
-	return child ? child.textContent : null;
-}

@@ -64,10 +64,21 @@ public class FileUtil {
 		}
 	}
 
+	/**
+	 * Filters from different browser groups (see {@link Browser#getBrowserGroup()}) have to be stored in different directories.
+	 *
+	 * @param parent  Parent directory
+	 * @param browser Browser
+	 * @return Filter directory
+	 */
+	public static File getFiltersDir(File parent, Browser browser) {
+		return new File(parent, "filters/" + browser.getBrowserGroup());
+	}
+
 	private static void copyCommonFiles(File source, File dest, Browser browser) throws Exception {
 
 		//copy filters and subscriptions
-		File sourceFilters = new File(source, "filters");
+		File sourceFilters = FileUtil.getFiltersDir(source, browser);
 		File destFilters = new File(dest, "filters");
 		copyDirectory(sourceFilters, destFilters);
 
@@ -169,6 +180,11 @@ public class FileUtil {
 		File sourceLibsDir = new File(dest, "lib/libs");
 		File destLibsDir = new File(dest, "data/content/libs");
 		FileUtils.moveDirectory(sourceLibsDir, destLibsDir);
+		//move element-collapser lib
+		File sourceCollapserFile = new File(dest, "lib/utils/element-collapser.js");
+		File destCollapserFile = new File(destLibsDir, "element-collapser.js");
+		FileUtils.copyFile(sourceCollapserFile, destCollapserFile);
+
 		//TODO: optimize
 		//Remove deferred.min.js file, cause use only in chrome and safari extension
 		FileUtils.deleteQuietly(new File(destLibsDir, "deferred.min.js"));
@@ -181,9 +197,9 @@ public class FileUtil {
 		FileUtils.moveDirectory(sourceLocalesDir, destLocalesDir);
 
 		//move filters folder to data folder
-		File sourceFiltersDire = new File(dest, "filters");
+		File sourceFiltersDir = new File(dest, "filters");
 		File destFiltersDir = new File(dest, "data/filters");
-		FileUtils.moveDirectory(sourceFiltersDire, destFiltersDir);
+		FileUtils.moveDirectory(sourceFiltersDir, destFiltersDir);
 	}
 
 	private static void copyFirefoxLegacyFiles(File source, File dest) throws Exception {

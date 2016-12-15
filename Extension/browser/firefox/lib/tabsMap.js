@@ -55,6 +55,10 @@ TabsMap.prototype = {
 	},
 
 	isIncognito: function (tab) {
+		if (!tab) {
+			return null;
+		}
+
 		return this.incognitoTabsById[tab.id];
 	},
 
