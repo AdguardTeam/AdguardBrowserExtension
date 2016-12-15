@@ -19,7 +19,6 @@
 
     'use strict';
 
-    var isFirefox = adguard.utils.browser.isFirefoxBrowser();
     var isShadowDomSupported = adguard.utils.browser.isShadowDomSupported();
 
     /**
@@ -36,13 +35,6 @@
         this.extendedCssRules = [];
         this.exceptionRules = [];
         this.dirty = false;
-        this.interceptPrefix = 'adg-intercept';
-
-        /**
-         * These two maps are used in Firefox when we use browser-wide stylesheet registration.
-         */
-        this.ruleByKeyMap = Object.create(null);
-        this.keyByRuleMap = Object.create(null);
 
         if (rules) {
             for (var i = 0; i < rules.length; i++) {
@@ -71,7 +63,6 @@
                 this.commonRules.push(rule);
             }
 
-            this._addRuleToMap(rule);
             this.dirty = true;
         },
 
@@ -98,7 +89,6 @@
             });
 
             this._rollbackExceptionRule(rule);
-            this._deleteRuleFromMap(rule);
 
             this.dirty = true;
         },
@@ -112,8 +102,6 @@
             this.exceptionRules = [];
             this.extendedCssRules = [];
             this.commonCss = null;
-            this.ruleByKeyMap = Object.create(null);
-            this.keyByRuleMap = Object.create(null);
             this.dirty = true;
         },
 
@@ -185,25 +173,21 @@
         /**
          * Builds CSS to be injected to the page.
          * If user has enabled "Send statistics for ad filters usage" option we build CSS with enabled hits stats.
-         * In this case style contains "background-image" with unique URL.
-         * Tracking requests to this URL shows us which rule has been used.
-         *
-         * This method is used for Chrome extension only.
-         * In firefox we use another way (registering browser-wide stylesheet).
+         * In this case style contains "content" attribute with filter identifier and rule text.
+         * Parsing this attributes shows us which rule has been used.
          *
          * @param domainName    Domain name
-         * @param hitPrefix     Prefix for background-image url
          * @param genericHide   Flag to hide common rules
          * @returns {{css: (*|*[]), extendedCss: (*|*[])}}
          */
-        buildCssHits: function (domainName, hitPrefix, genericHide) {
-            this._rebuildHits(hitPrefix);
+        buildCssHits: function (domainName, genericHide) {
+            this._rebuildHits();
 
             var rules = this._filterRules(domainName, genericHide);
 
-            var stylesheets = this._createCssStylesheetsHits(rules, hitPrefix);
+            var stylesheets = this._createCssStylesheetsHits(rules);
             if (!genericHide) {
-                stylesheets.css = this._getCommonCssHits(hitPrefix).concat(stylesheets.css);
+                stylesheets.css = this._getCommonCssHits().concat(stylesheets.css);
             }
 
             return stylesheets;
@@ -262,11 +246,10 @@
          * Creates separated stylesheet for css and extended css rules.
          *
          * @param rules
-         * @param hitPrefix
          * @returns {{css: (*|List), extendedCss: (*|List)}}
          * @private
          */
-        _createCssStylesheetsHits: function (rules, hitPrefix) {
+        _createCssStylesheetsHits: function (rules) {
             var extendedCssRules = rules.filter(function (rule) {
                 return rule.extendedCss;
             });
@@ -276,72 +259,9 @@
             });
 
             return {
-                css: this._buildCssByRulesHits(cssRules, hitPrefix),
-                extendedCss: this._buildCssByRulesHits(extendedCssRules, hitPrefix)
+                css: this._buildCssByRulesHits(cssRules),
+                extendedCss: this._buildCssByRulesHits(extendedCssRules)
             };
-        },
-
-        /**
-         * Firefox only.
-         *
-         * Builds CSS stylesheet to be registered browser-wide.
-         *
-         * @returns Stylesheet content
-         */
-        buildCssForStyleSheet: function () {
-            //called once on startup or on setting change, force to reload css-filter
-            this.dirty = true;
-            this._rebuildBinding();
-            return this._buildCssStringForInject();
-        },
-
-        /**
-         * Gets rule by it's ID.
-         * ID is generated in _addRuleToMap method.
-         *
-         * @param key Rule key
-         * @returns Rule found or null.
-         */
-        getRuleForKey: function (key) {
-            return key in this.ruleByKeyMap ? this.ruleByKeyMap[key] : null;
-        },
-
-        /**
-         * Deletes rule from maps
-         *
-         * @param rule Rule object
-         * @private
-         */
-        _deleteRuleFromMap: function (rule) {
-            if (isFirefox) {
-                var key = this.keyByRuleMap[rule.ruleText];
-                delete this.ruleByKeyMap[key];
-                delete this.keyByRuleMap[rule.ruleText];
-            }
-        },
-
-        /**
-         * Adds rule to ruleByKeyMap and to keyByRuleMap.
-         * This method also generates unique ID for the rule.
-         *
-         * @param rule Rule object
-         * @private
-         */
-        _addRuleToMap: function (rule) {
-            if (isFirefox) {
-
-                if (rule.ruleText in this.keyByRuleMap) {
-                    return;
-                }
-
-                var key;
-                do {
-                    key = Math.random().toFixed(15).substr(5);
-                } while (key in this.ruleByKeyMap);
-
-                this.ruleByKeyMap[key] = rule;
-                this.keyByRuleMap[rule.ruleText] = key;
-            }
         },
 
         /**
@@ -363,17 +283,15 @@
          * Rebuilds CSS with hits stylesheet if CssFilter is "dirty" (has some changes which are not applied yet).
          *
          * If user has enabled "Send statistics for ad filters usage" option we build CSS with enabled hits stats.
-         * This method is used in Chrome (in Firefox we use another way - registering browser-wide stylesheet).
          *
-         * @param hitPrefix Prefix for background-image url
          * @private
          */
-        _rebuildHits: function (hitPrefix) {
+        _rebuildHits: function () {
             if (!this.dirty) {
                 return;
             }
             this._applyExceptionRules();
-            this.commonCssHits = this._buildCssByRulesHits(this.commonRules, hitPrefix);
+            this.commonCssHits = this._buildCssByRulesHits(this.commonRules);
             this.commonCss = null;
             this.dirty = false;
         },
@@ -396,70 +314,6 @@
             this.commonCssHits = null;
             this.dirty = false;
         },
-        /**
-         * Firefox only.
-         *
-         * Builds CSS stylesheet to be registered browser-wide.
-         * Browser-wide stylesheet contains all element-hiding rules except "extended CSS" rules.
-         *
-         * NOTE: elemHideIntercepter.js decides what to do with the element matching selectors from this stylesheet. For instance, elemHideIntercepter checks rule domain permissions.
-         *
-         * @returns Stylesheet content
-         * @private
-         */
-        _buildCssStringForInject: function () {
-
-            var groupingDomainsAndSelectors = function (rules, domainsAndRules) {
-                for (var i = 0; i < rules.length; i++) {
-                    var rule = rules[i];
-                    var domain = this._getDomainsSource(rule) || "";
-                    var selectors;
-                    if (domain in domainsAndRules) {
-                        selectors = domainsAndRules[domain];
-                    } else {
-                        selectors = Object.create(null);
-                        domainsAndRules[domain] = selectors;
-                    }
-                    selectors[rule.cssSelector] = this.keyByRuleMap[rule.ruleText];
-                }
-            }.bind(this);
-
-            //skip inject and extended rules
-            var commonRules = this.commonRules.filter(function (rule) {
-                return !rule.isInjectRule;
-            });
-            var domainSensitiveRules = this.domainSensitiveRules.filter(function (rule) {
-                return !rule.isInjectRule;
-            });
-
-            var domainsAndRules = Object.create(null);
-            groupingDomainsAndSelectors(commonRules, domainsAndRules);
-            groupingDomainsAndSelectors(domainSensitiveRules, domainsAndRules);
-
-            function escapeChar(match) {
-                return "\\" + match.charCodeAt(0).toString(16) + " ";
-            }
-
-            var cssTemplate = "-moz-binding: url(\"about:" + this.interceptPrefix + "?%ID%#dummy\") !important;";
-            var result = [];
-            for (var domain in domainsAndRules) { // jshint ignore: line
-
-                var selectors = domainsAndRules[domain];
-
-                if (domain) {
-                    result.push('@-moz-document domain("' + domain.split(",").join('"),domain("').replace(/[^\x01-\x7F]/g, escapeChar) + '"){');
-                } else {
-                    result.push('@-moz-document url-prefix("http://"),url-prefix("https://"){');
-                }
-
-                for (var selector in selectors) { // jshint ignore: line
-                    result.push(selector.replace(/[^\x01-\x7F]/g, escapeChar) + "{" + cssTemplate.replace("%ID%", selectors[selector]) + "}");
-                }
-                result.push('}');
-            }
-            return result;
-        },
-
         /**
          * Applies exception rules
          *
@@ -556,13 +410,11 @@
          * Getter for commonCssHits field.
          * Lazy-initializes commonCssHits field if needed.
          *
-         * @param appId Extension id
-         * @returns Prefix for background-image url
          * @private
          */
-        _getCommonCssHits: function (hitPrefix) {
+        _getCommonCssHits: function () {
             if (this.commonCssHits === null || this.commonCssHits.length === 0) {
-                this.commonCssHits = this._buildCssByRulesHits(this.commonRules, hitPrefix);
+                this.commonCssHits = this._buildCssByRulesHits(this.commonRules);
             }
             return this.commonCssHits;
         },
@@ -699,23 +551,20 @@
         },
 
         /**
-         * Chrome extension only.
-         *
-         * Builds CSS with background-image style to be injected.
+         * Builds CSS with content style to be injected.
          * This method is used if user has enabled "Send statistics for ad filters usage" option.
-         * Tracking requests for background image allows us to track rule hits.
+         * Parsing css 'content' attribute allows us to track rule hits.
          *
          * @param rules     List of rules
-         * @param hitPrefix Prefix for background-image url
          * @returns List of CSS stylesheets
          * @private
          */
-        _buildCssByRulesHits: function (rules, hitPrefix) {
+        _buildCssByRulesHits: function (rules) {
 
             var ELEMHIDE_CSS_STYLE = " { display: none!important; }\r\n";
-            var ELEMHIDE_HIT_START = " { display: none!important; background-image: url('" + hitPrefix + "/elemhidehit.png#";
+            var ELEMHIDE_HIT_START = " { display: none!important; content: 'adguard";
             var ELEMHIDE_HIT_SEP = encodeURIComponent(';');
-            var ELEMHIDE_HIT_END = "') !important;}\r\n";
+            var ELEMHIDE_HIT_END = "' !important;}\r\n";
 
             var elemHideSb = [];
             var cssSb = [];
@@ -760,20 +609,6 @@
             } else {
                 return "::content " + rule.cssSelector;
             }
-        },
-
-        _getDomainsSource: function (rule) {
-            var mask;
-            if (rule.isInjectRule) {
-                mask = rule.whiteListRule ? api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE : api.FilterRule.MASK_CSS_INJECT_RULE;
-            } else {
-                mask = rule.whiteListRule ? api.FilterRule.MASK_CSS_EXCEPTION_RULE : api.FilterRule.MASK_CSS_RULE;
-            }
-            var index = rule.ruleText.indexOf(mask);
-            if (index < 0) {
-                return null;
-            }
-            return rule.ruleText.substring(0, index).replace(/,~[^,]+/g, "").replace(/^~[^,]+,?/, "").toLowerCase();
         },
 
         _arrayToMap: function (array, prop) {

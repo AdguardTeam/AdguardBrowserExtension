@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global contentPage, ExtendedCss, HTMLDocument, XMLDocument */
+/* global contentPage, ExtendedCss, HTMLDocument, XMLDocument, ElementCollapser, CssHitsCounter */
 (function() {
 
     var requestTypeMap = {
@@ -43,6 +43,15 @@
     var isOpera = false;
     var shadowRoot = null;
     var loadTruncatedCss = false;
+
+    /**
+     * Set callback for saving css hits
+     */
+    if (typeof CssHitsCounter !== 'undefined') {
+        CssHitsCounter.setCssHitsFoundCallback(function (stats) {
+            contentPage.sendMessage({type: 'saveCssHitStats', stats: stats});
+        });
+    }
     
     /**
      * Initializing content script
@@ -288,6 +297,13 @@
         if (response && response.selectors && response.selectors.css && response.selectors.css.length > 0) {
             addIframeHidingStyle();
         }
+
+        if (typeof CssHitsCounter !== 'undefined' &&
+            response && response.selectors && response.selectors.cssHitsCounterEnabled) {
+
+            // Start css hits calculation
+            CssHitsCounter.count();
+        }
     };
     
     /**
@@ -373,9 +389,9 @@
      */
     var protectStyleElementContent = function (protectStyleEl) {
         var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-        if (!MutationObserver)
+        if (!MutationObserver){
             return;
-
+        }
         /* observer, which observe protectStyleEl inner changes, without deleting styleEl */
         var innerObserver = new MutationObserver(function (mutations) {
 
@@ -429,9 +445,9 @@
      */
     var protectStyleElementFromRemoval = function (protectStyleEl, useShadowDom) {
         var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-        if (!MutationObserver)
+        if (!MutationObserver){
             return;
-
+        }
         /* observer, which observe deleting protectStyleEl */
         var outerObserver = new MutationObserver(function (mutations) {
             for (var i = 0; i < mutations.length; i++) {

@@ -891,12 +891,6 @@ adguard.antiBannerService = (function (adguard) {
                 getRequestFilter().cssFilter.dirty = true;
             }
         });
-
-        adguard.listeners.addListener(function (event, setting) {
-            if (event == adguard.listeners.CHANGE_PREFS && setting === 'use_global_style_sheet') {
-                getRequestFilter().cssFilter.dirty = true;
-            }
-        });
     }
 
     /**
@@ -1219,9 +1213,6 @@ adguard.requestFilter = (function (adguard) {
         return getRequestFilter().findWhiteListRule(requestUrl, referrer, requestType);
     };
 
-    var getCssForStyleSheet = function () {
-        return getRequestFilter().getCssForStyleSheet();
-    };
     var getSelectorsForUrl = function (documentUrl, genericHideFlag) {
         return getRequestFilter().getSelectorsForUrl(documentUrl, genericHideFlag);
     };
@@ -1230,9 +1221,6 @@ adguard.requestFilter = (function (adguard) {
     };
     var getScriptsForUrl = function (documentUrl) {
         return getRequestFilter().getScriptsForUrl(documentUrl);
-    };
-    var findCssRuleByKey = function (key) {
-        return getRequestFilter().cssFilter.getRuleForKey(key);
     };
 
     var getRequestFilterInfo = function () {
@@ -1254,11 +1242,9 @@ adguard.requestFilter = (function (adguard) {
         findRuleForRequest: findRuleForRequest,
         findWhiteListRule: findWhiteListRule,
 
-        getCssForStyleSheet: getCssForStyleSheet,
         getSelectorsForUrl: getSelectorsForUrl,
         getInjectedSelectorsForUrl: getInjectedSelectorsForUrl,
         getScriptsForUrl: getScriptsForUrl,
-        findCssRuleByKey: findCssRuleByKey,
 
         getRequestFilterInfo: getRequestFilterInfo,
         updateContentBlockerInfo: updateContentBlockerInfo,

@@ -48,7 +48,8 @@ adguard.webRequestService = (function (adguard) {
         result = {
             selectors: {
                 css: null,
-                extendedCss: null
+                extendedCss: null,
+                cssHitsCounterEnabled: false
             },
             scripts: null,
             collapseAllElements: adguard.requestFilter.shouldCollapseAllElements(),
@@ -225,7 +226,9 @@ adguard.webRequestService = (function (adguard) {
         } else if (requestType == adguard.RequestTypes.DOCUMENT) {
             requestRule = adguard.frames.getFrameWhiteListRule(tab);
             var domain = adguard.frames.getFrameDomain(tab);
-            if (adguard.isModuleSupported('hitStats') && !adguard.frames.isIncognitoTab(tab)) {
+            if (adguard.isModuleSupported('hitStats') &&
+                !adguard.frames.isIncognitoTab(tab) &&
+                adguard.settings.collectHitsCount()) {
                 //add page view to stats
                 adguard.hitStats.addDomainView(domain);
             }
@@ -262,8 +265,10 @@ adguard.webRequestService = (function (adguard) {
             adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
         }
 
-        if (adguard.isModuleSupported('hitStats') &&
-            requestRule && !adguard.utils.filters.isUserFilterRule(requestRule) && !adguard.utils.filters.isWhiteListFilterRule(requestRule) && !adguard.frames.isIncognitoTab(tab)) {
+        if (requestRule && adguard.isModuleSupported('hitStats') &&
+            adguard.settings.collectHitsCount() &&
+            !adguard.frames.isIncognitoTab(tab) &&
+            !adguard.utils.filters.isUserFilterRule(requestRule) && !adguard.utils.filters.isWhiteListFilterRule(requestRule)) {
 
             var domain = adguard.frames.getFrameDomain(tab);
             adguard.hitStats.addRuleHit(domain, requestRule.ruleText, requestRule.filterId, requestUrl);
@@ -271,12 +276,6 @@ adguard.webRequestService = (function (adguard) {
     };
 
     var shouldLoadAllSelectors = function (collapseAllElements) {
-        if ((adguard.utils.browser.isFirefoxBrowser() && adguard.settings.collectHitsCount()) || adguard.prefs.useGlobalStyleSheet) {
-            // We don't need all CSS selectors in case of FF using global stylesheet
-            // as in this case we register browser wide stylesheet which will be
-            // applied even if page was already loaded
-            return false;
-        }
 
         var safariContentBlockerEnabled = adguard.utils.browser.isContentBlockerEnabled();
         if (safariContentBlockerEnabled && collapseAllElements) {

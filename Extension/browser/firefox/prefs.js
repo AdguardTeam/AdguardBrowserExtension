@@ -47,10 +47,6 @@ adguard.prefs = (function (adguard) {
             return adguard.SimplePrefs.get('speedup_startup');
         },
 
-        get useGlobalStyleSheet() {
-            return adguard.SimplePrefs.get('use_global_style_sheet');
-        },
-
         get ICONS() {
             return adguard.lazyGet(Prefs, 'ICONS', function () {
                 return {

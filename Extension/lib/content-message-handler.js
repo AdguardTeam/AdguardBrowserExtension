@@ -219,6 +219,27 @@
     }
 
     /**
+     * Saves css hits from content-script.
+     * Message includes stats field. [{filterId: 1, ruleText: 'rule1'}, {filterId: 2, ruleText: 'rule2'}...]
+     * @param tab
+     * @param stats
+     */
+    function processSaveCssHitStats(tab, stats) {
+        if (!adguard.settings.collectHitsCount()) {
+            return;
+        }
+        if (adguard.frames.isIncognitoTab(tab)) {
+            return;
+        }
+        var domain = adguard.frames.getFrameDomain(tab);
+        for (var i = 0; i < stats.length; i++) {
+            var stat = stats[i];
+            adguard.hitStats.addRuleHit(domain, stat.ruleText, stat.filterId);
+        }
+    }
+
+
+    /**
      * Main function for processing messages from content-scripts
      *
      * @param message
@@ -428,6 +449,9 @@
                 break;
             case 'sendFeedback':
                 adguard.backend.sendUrlReport(message.url, message.topic, message.comment);
+                break;
+            case 'saveCssHitStats':
+                processSaveCssHitStats(sender.tab, message.stats);
                 break;
             default :
                 throw 'Unknown message: ' + message;

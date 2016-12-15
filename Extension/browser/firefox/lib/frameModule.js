@@ -20,7 +20,6 @@
 var EXPORTED_SYMBOLS = [ // jshint ignore:line
     'frameScriptMetadata',
     'contentPolicyService',
-    'interceptHandler',
     'LocationChangeListener',
     'documentObserver',
     'unloadModule'
@@ -300,185 +299,6 @@ LocationChangeListener.prototype.onLocationChange = function (webProgress, reque
 };
 
 /**
- * Handler that intercepts requests to about:adg-intercept.
- * Read here for details: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIAboutModule
- *
- * So this class intercepts requests to this about:adg-intercept and it replaces a channel with out implementation.
- * Inspired by ABP element hiding logic.
- */
-var interceptHandler = {
-
-    classDescription: "Adguard element hiding protocol handler",
-    classID: Components.ID("{de83ff7c-38a1-49d4-95a0-518ac6b642fd}"),
-    contractID: '@mozilla.org/network/protocol/about;1?what=adg-intercept',
-
-    get principalService() {
-        return Cc["@mozilla.org/systemprincipal;1"].getService(Ci.nsIPrincipal);
-    },
-
-    get componentRegistrar() {
-        return Cm.QueryInterface(Ci.nsIComponentRegistrar);
-    },
-
-    /**
-     * Registers handler
-     */
-    register: function () {
-
-        this.componentRegistrar.registerFactory(
-            this.classID,
-            this.classDescription,
-            this.contractID,
-            this
-        );
-    },
-
-    unregister: function () {
-        this.componentRegistrar.unregisterFactory(this.classID, this);
-    },
-
-    getURIFlags: function () {
-        return ("HIDE_FROM_ABOUTABOUT" in Ci.nsIAboutModule ? Ci.nsIAboutModule.HIDE_FROM_ABOUTABOUT : 0) | Ci.nsIAboutModule.URI_SAFE_FOR_UNTRUSTED_CONTENT; // jshint ignore:line
-    },
-
-    createInstance: function (outer, iid) {
-        if (outer) {
-            throw Cr.NS_ERROR_NO_AGGREGATION;
-        }
-
-        return this.QueryInterface(iid);
-    },
-
-    newChannel: function (uri, loadInfo) {
-        return new HidingChannel(uri, loadInfo);
-    },
-
-    QueryInterface: XPCOMUtils.generateQI([Ci.nsIFactory, Ci.nsIAboutModule])
-};
-
-
-function HidingChannel(uri, loadInfo) {
-    this.URI = this.originalURI = uri;
-    this.loadInfo = loadInfo;
-}
-
-/**
- * nsIChannel implementation which is able to hide elements blocked by CSS rules.
- * Inspired by ABP element hiding logic.
- */
-HidingChannel.prototype = {
-
-    URI: null,
-    originalURI: null,
-    contentCharset: "utf-8",
-    contentLength: 0,
-    contentType: "text/xml",
-    owner: interceptHandler.principalService,
-    securityInfo: null,
-    notificationCallbacks: null,
-    loadFlags: 0,
-    loadGroup: null,
-    name: null,
-    status: Cr.NS_OK,
-
-    notHideData: "<bindings xmlns='http://www.mozilla.org/xbl'><binding id='dummy' bindToUntrustedContent='true'/></bindings>",
-    // The element will be collapsed because of empty binding (it does not contain dummy element which is requested by the URL)
-    hideData: "<bindings xmlns='http://www.mozilla.org/xbl'/>",
-
-    asyncOpen: function (listener, context) {
-        var data = this.getBindingsContent();
-        var stream = Cc["@mozilla.org/io/string-input-stream;1"].createInstance(Ci.nsIStringInputStream);
-        stream.setData(data, data.length);
-        try {
-            listener.onStartRequest(this, context);
-        } catch (e) {
-            // Ignore
-        }
-        try {
-            listener.onDataAvailable(this, context, stream, 0, stream.available());
-        } catch (e) {
-            // Ignore
-        }
-        try {
-            listener.onStopRequest(this, context, Cr.NS_OK);
-        } catch (e) {
-            // Ignore
-        }
-    },
-
-    asyncOpen2: function (listener) {
-        this.checkPrincipal();
-        this.asyncOpen(listener, null);
-    },
-
-    open: function () {
-        //var data = this.getBindingsContent();
-        //var stream = Cc["@mozilla.org/io/string-input-stream;1"].createInstance(Ci.nsIStringInputStream);
-        //stream.setData(data, data.length);
-        //return stream;
-        throw Cr.NS_ERROR_NOT_IMPLEMENTED;
-    },
-
-    open2: function () {
-        this.checkPrincipal();
-        return this.open();
-    },
-
-    checkPrincipal: function () {
-        if (!this.loadInfo.triggeringPrincipal.equals(interceptHandler.principalService)) {
-            throw Cr.NS_ERROR_FAILURE;
-        }
-    },
-
-    getBindingsContent: function () {
-        var win = this.getOwnerWindow(this);
-        if (!win) {
-            return this.notHideData;
-        }
-        var messageManager = getMessageManager(win);
-        if (!messageManager) {
-            return this.notHideData;
-        }
-        var result = sendMessage(messageManager, 'Adguard:elemhide-interceptor', {
-            path: this.URI.path
-        })[0];
-        return result && result.collapse === true ? this.hideData : this.notHideData;
-    },
-
-    getOwnerWindow: function (channel) {
-        try {
-            if (channel.notificationCallbacks) {
-                return channel.notificationCallbacks.getInterface(Ci.nsILoadContext).associatedWindow;
-            }
-        } catch (e) {
-        }
-        try {
-            if (channel.loadGroup && channel.loadGroup.notificationCallbacks) {
-                return channel.loadGroup.notificationCallbacks.getInterface(Ci.nsILoadContext).associatedWindow;
-            }
-        } catch (e) {
-        }
-
-        return null;
-    },
-
-    isPending: function () {
-        return false;
-    },
-    cancel: function () {
-        throw Cr.NS_ERROR_NOT_IMPLEMENTED;
-    },
-    suspend: function () {
-        throw Cr.NS_ERROR_NOT_IMPLEMENTED;
-    },
-    resume: function () {
-        throw Cr.NS_ERROR_NOT_IMPLEMENTED;
-    },
-
-    QueryInterface: XPCOMUtils.generateQI([Ci.nsIChannel, Ci.nsIRequest])
-};
-
-/**
  * Object that wraps nsiObserver and handles observer notifications.
  *
  * We use it for handling "document-element-inserted" event:
@@ -545,9 +365,7 @@ var documentObserver = (function () {
 var unloadModule = function () { // jshint ignore:line
     frameScriptMetadata.reset();
     contentPolicyService.unregister();
-    interceptHandler.unregister();
     documentObserver.unregister();
 };
 
 contentPolicyService.register();
-interceptHandler.register();

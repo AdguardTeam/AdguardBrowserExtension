@@ -25,7 +25,9 @@ adguard.prefs = (function (adguard) {
 
     var Prefs = {
 
-        // Defined in Firefox preferences
+        /**
+         * Makes sense in case of FF add-on only
+         */
         mobile: false,
 
         platform: typeof safari === 'undefined' ? "chromium" : "webkit",
@@ -74,24 +76,12 @@ adguard.prefs = (function (adguard) {
             });
         },
 
-        get hitPrefix() {
-            return adguard.lazyGet(Prefs, 'hitPrefix', function () {
-                var appId = adguard.app.getId();
-                var scheme = adguard.app.getUrlScheme();
-                return scheme + '://' + appId;
-            });
-        },
-
         /**
          * Makes sense in case of FF add-on only
          */
         speedupStartup: function () {
             return false;
         },
-        /**
-         * Makes sense in case of FF add-on only
-         */
-        useGlobalStyleSheet: false,
 
         get ICONS() {
             return adguard.lazyGet(Prefs, 'ICONS', function () {
