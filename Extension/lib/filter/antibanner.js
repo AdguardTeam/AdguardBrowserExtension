@@ -1620,6 +1620,7 @@ var AdguardFilter = function (filterId) {
 
 /**
  * Helper class for working with filters metadata storage (local storage)
+ * //TODO: Duplicated in filters-storage.js
  */
 var FilterLSUtils = exports.FilterLSUtils = {
 
