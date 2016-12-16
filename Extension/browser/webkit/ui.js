@@ -214,7 +214,10 @@ var UI = {
 					}
 				}
 			}
-			if (tabType == "popup" && !Utils.isSafariBrowser()) {
+			if (tabType == "popup" && 
+				!Utils.isSafariBrowser() &&
+				// Does not work properly in Insider builds 
+				!Utils.isEdgeBrowser()) {
 				ext.windows.createPopup(url, onOpen);
 			} else {
 				//create new tab in last focused or new window
@@ -293,7 +296,9 @@ var UI = {
 	},
 
 	openFilteringLog: function (tabId) {
-		UI.openTab("pages/log.html" + (tabId ? "?tabId=" + tabId : ""), {activateSameTab: true, tabType: "popup"});
+		var url = "pages/log.html" + (tabId ? "?tabId=" + tabId : "");
+		var options = {activateSameTab: true, tabType: "popup"};
+		UI.openTab(url, options);
 	},
 
 	openCurrentTabFilteringLog: function () {
