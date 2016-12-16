@@ -322,7 +322,10 @@
         win.removeEventListener('DOMContentLoaded', onDocumentEnd, true);
         injectScripts('document_end', win);
 
-        tabsObserver.onBrowserLoad();
+        if (win === win.top) {
+            // Fires this event only for main frame
+            tabsObserver.onBrowserLoad();
+        }
     };
 
     /**
