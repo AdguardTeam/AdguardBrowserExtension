@@ -433,20 +433,15 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     };
 
     var openFilteringLog = function (tabId) {
+        var options = {activateSameTab: true, type: "popup"};
         if (!tabId) {
             adguard.tabs.getActive(function (tab) {
                 var tabId = tab.tabId;
-                openTab(getPageUrl('log.html') + (tabId ? "#" + tabId : ""), {
-                    activateSameTab: true,
-                    type: "popup"
-                });
+                openTab(getPageUrl('log.html') + (tabId ? "#" + tabId : ""), options);
             });
             return;
         }
-        openTab(getPageUrl('log.html') + (tabId ? "#" + tabId : ""), {
-            activateSameTab: true,
-            type: "popup"
-        });
+        openTab(getPageUrl('log.html') + (tabId ? "#" + tabId : ""), options);
     };
 
     var openThankYouPage = function () {

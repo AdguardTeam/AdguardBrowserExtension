@@ -63,10 +63,11 @@ adguard.utils = (function () {
         collections: null, // CollectionUtils,
         concurrent: null, // ConcurrentUtils,
         channels: null, // EventChannels
+        browser: null, // BrowserUtils
         filters: null, // FilterUtils,
         workaround: null, // WorkaroundUtils
         StopWatch: null,
-        Promise: null // Deferred
+        Promise: null // Deferred,
     };
 
 })();

@@ -131,19 +131,27 @@
             filterSafebrowsing(tab, requestUrl);
         }
 
-        if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
+        /*
+         Websocket check.
+         If 'ws://' request is blocked for not existing domain - it's blocked for all domains.
+         Then we gonna limit frame sources to http to block src:'data/text' etc.
+         More details in these issue:
+         https://github.com/AdguardTeam/AdguardBrowserExtension/issues/344
+         https://github.com/AdguardTeam/AdguardBrowserExtension/issues/440
 
-            /*
-             Websocket check.
-             If 'ws://' request is blocked for not existing domain - it's blocked for all domains.
-             Then we gonna limit frame sources to http to block src:'data/text' etc.
-             More details in these issue:
-             https://github.com/AdguardTeam/AdguardBrowserExtension/issues/344
-             https://github.com/AdguardTeam/AdguardBrowserExtension/issues/440
+         WS connections are detected as "other"  by ABP
+         EasyList already contains some rules for WS connections with $other modifier
+         */
+        var checkWebsocket = (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT);
 
-             WS connections are detected as "other"  by ABP
-             EasyList already contains some rules for WS connections with $other modifier
-             */
+        // Please note, that we do not check WS in Edge:
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/401
+        if (adguard.utils.browser.isEdgeBrowser()) {
+            checkWebsocket = false;
+        }
+
+        if (checkWebsocket) {
+
             var frameUrl = adguard.frames.getFrameUrl(tab, requestDetails.frameId);
             var websocketCheckUrl = "ws://adguardwebsocket.check/" + adguard.utils.url.getDomainName(frameUrl);
             if (adguard.webRequestService.checkWebSocketRequest(tab, websocketCheckUrl, frameUrl)) {
@@ -200,8 +208,8 @@
     // Referer cannot be forged by the website so it's ok for add-on authorization.
     if (adguard.isModuleSupported('integration') && adguard.utils.browser.isChromium()) {
 
-        /* global chrome */
-        chrome.webRequest.onBeforeSendHeaders.addListener(function callback(details) {
+        /* global browser */
+        browser.webRequest.onBeforeSendHeaders.addListener(function callback(details) {
 
             var authHeaders = adguard.integration.getAuthorizationHeaders();
             var headers = details.requestHeaders;
