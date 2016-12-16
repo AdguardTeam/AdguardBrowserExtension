@@ -97,7 +97,7 @@
     };
 
     // Create new CSS object in global scope.
-    // Changing the property of object that already presents in global scope has no effect
+    // Changing the property of object that already presents in global scope has no effect (in Safari)
     root.CSS = {};
 
     root.CSS.escape = cssEscape;

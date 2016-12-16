@@ -139,7 +139,7 @@
 
         // Assistant
         registerPageContentScript([
-            'lib/libs/css.escape.js',
+            'lib/libs/css.escape.js', // It's very weird. This script has been already loaded above, but it doesn't work. Load it again!
             'lib/libs/diff_match_patch.js',
             'lib/libs/dom.patched.js',
             'lib/libs/balalaika.patched.js',
