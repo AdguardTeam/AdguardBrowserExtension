@@ -289,6 +289,13 @@ adguard.tabsImpl = (function (adguard) {
     };
 
     var getActive = function (callback) {
+        /**
+         * lastFocusedWindow parameter isn't supported by Opera
+         * But seems currentWindow has the same effect in our case.
+         * See for details:
+         * https://developer.chrome.com/extensions/windows#current-window
+         * https://dev.opera.com/extensions/tab-window/#accessing-the-current-tab
+         */
         browser.tabs.query({currentWindow: true, active: true}, function (tabs) {
             if (tabs && tabs.length > 0) {
                 callback(tabs[0].id);
