@@ -17,11 +17,11 @@
 
 /* global chrome */
 
-(function (adguard) {
+var browser = window.browser || chrome;
+
+(function (adguard, browser) {
 
     'use strict';
-
-    var browser = browser || chrome;
 
     adguard.runtime = (function () {
 
@@ -309,4 +309,4 @@
 
     adguard.contextMenus = browser.contextMenus;
 
-})(adguard);
+})(adguard, browser);

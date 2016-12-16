@@ -173,6 +173,13 @@
 
         tabsImpl.onUpdated.addListener(function (aTab) {
             var tab = tabs[aTab.tabId];
+            // Sync tab for that 'onCreated' event was missed.
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/481
+            if (!tab) {
+                tabs[aTab.tabId] = aTab;
+                onCreatedChannel.notify(aTab);
+                tab = aTab;
+            }
             if (tab) {
                 tab.url = aTab.url;
                 tab.title = aTab.title;
