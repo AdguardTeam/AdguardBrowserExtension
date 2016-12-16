@@ -207,7 +207,11 @@ public class Main {
 
         String extensionNamePostfix = "";
         if (StringUtils.isNotEmpty(branch)) {
-            extensionNamePostfix = " (" + StringUtils.capitalize(branch) + ")";
+            if (browser == Browser.FIREFOX && "beta".equals(branch)) {
+                extensionNamePostfix = " (Standalone)";
+            } else {
+                extensionNamePostfix = " (" + StringUtils.capitalize(branch) + ")";
+            }
         }
 
         SettingUtils.updateManifestFile(dest, browser, version, extensionId, updateUrl, extensionNamePostfix);
