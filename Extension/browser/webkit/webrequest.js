@@ -109,18 +109,26 @@ function onHeadersReceived(requestDetails) {
         filterSafebrowsing(tab, requestUrl);
     }
 
-    if (requestType == RequestTypes.DOCUMENT || requestType == RequestTypes.SUBDOCUMENT) {
-        /*
-         Websocket check.
-         If 'ws://' request is blocked for not existing domain - it's blocked for all domains.
-         Then we gonna limit frame sources to http to block src:'data/text' etc.
-         More details in these issues:
-         https://github.com/AdguardTeam/AdguardBrowserExtension/issues/344
-         https://github.com/AdguardTeam/AdguardBrowserExtension/issues/440
+    /*
+        Websocket check.
+        If 'ws://' request is blocked for not existing domain - it's blocked for all domains.
+        Then we gonna limit frame sources to http to block src:'data/text' etc.
+        More details in these issues:
+        https://github.com/AdguardTeam/AdguardBrowserExtension/issues/344
+        https://github.com/AdguardTeam/AdguardBrowserExtension/issues/440
 
-         WS connections are detected as "other"  by ABP
-         EasyList already contains some rules for WS connections with $other modifier
-         */
+        WS connections are detected as "other"  by ABP
+        EasyList already contains some rules for WS connections with $other modifier
+    */
+    var checkWebsocket = (requestType == RequestTypes.DOCUMENT || requestType == RequestTypes.SUBDOCUMENT); 
+
+    // Please note, that we do not check WS in Edge:
+    // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/401
+    if (Utils.isEdgeBrowser()) {
+        checkWebsocket = false;
+    }
+
+    if (checkWebsocket) {
         var frameUrl = framesMap.getFrameUrl(tab, requestDetails.frameId);
         var websocketCheckUrl = "ws://adguardwebsocket.check/" + UrlUtils.getDomainName(frameUrl);
         if (webRequestService.checkWebSocketRequest(tab, websocketCheckUrl, frameUrl)) {
@@ -171,10 +179,9 @@ ext.webRequest.onBeforeRequest.addListener(onBeforeRequest, ["<all_urls>"]);
 ext.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, ["<all_urls>"]);
 ext.webRequest.onHeadersReceived.addListener(onHeadersReceived, ["<all_urls>"]);
 
-
 // AG for Windows and Mac checks either request signature or request Referer to authorize request.
 // Referer cannot be forged by the website so it's ok for add-on authorization.
-if (Prefs.platform === "chromium") {
+if (Utils.isChromium()) {
 
     /* global browser */
     browser.webRequest.onBeforeSendHeaders.addListener(function callback(details) {
@@ -190,8 +197,8 @@ if (Prefs.platform === "chromium") {
     }, {urls: [adguardApplication.getIntegrationBaseUrl() + "*"]}, ["requestHeaders", "blocking"]);
 }
 
-// TODO[Edge]: Add support for collecting hits statis. Currently we cannot add listener for ms-browser-extension:// urls.
-if (Prefs.platform === "chromium" && Prefs.getBrowser() !== "Edge") {
+// Edge does not support intercepting chrome:// URLs, so filtering rules stats cannot be collected
+if (Utils.isChromium() && !Utils.isEdgeBrowser()) {
     var parseCssRuleFromUrl = function (requestUrl) {
         if (!requestUrl) {
             return null;
