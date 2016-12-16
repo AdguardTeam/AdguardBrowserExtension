@@ -1,6 +1,6 @@
-! Checksum: WRjfbjg+VIXtxD173FlisQ
-! Version: 1.0.44.33
-! TimeUpdated: 2016-12-15T16:00:18.936+04:00
+! Checksum: CK7G9qkCKBxrHCJUYJ9/PQ
+! Version: 1.0.44.36
+! TimeUpdated: 2016-12-16T00:00:30.388+04:00
 ! Title: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 ! Title: Adguard Russian Filter
@@ -3810,6 +3810,8 @@ ensage-forum.ru,spec-komp.com#%#(function() { var sto = window.setTimeout, re = 
 @@||ad.admitad.com/3rd-party/advert.js
 @@||ad.admitad.com/3rd-party/*/cookie/?f=CookieChecker.remoteTest
 !
+! https://forum.adguard.com/index.php?threads/17426/
+@@||pwcats.info/advert.js
 ! https://forum.adguard.com/index.php?threads/16639/
 4pda.ru#%#(function(){ var f = Element.prototype.setAttribute; Element.prototype.setAttribute = function(name, value) { if (name === 'style' && value.indexOf('block') !== -1 && value.indexOf('!important') !== -1) return; this.f = f; this.f(name, value); } })();
 4pda.ru#%#(function(){ var f = Element.prototype.removeAttribute; Element.prototype.removeAttribute = function(attrName) { this.f = f; if (attrName !== 'style') this.f(attrName); } })();
@@ -5398,8 +5400,6 @@ f-journal.ru#$##conteiner { margin-top: 10px!important; }
 anistar.me#$#div[class^="brend"] { height: 50px!important; background: none!important; }
 ! iledebeaute.ru - удаление брендированного фона
 iledebeaute.ru#$#body { background: #EBDAEA url(http://static.iledebeaute.ru/@/css/pattern.jpg)!important; }
-! dota2.ru - удаление брендированного фона, отступа сверху
-dota2.ru#$#body > div[class^="f1ull4"] { background: none!important; padding-top: 0px!important;}
 ! nnm.me - удаление отступа сверху
 nnm.me#$##content-b { top: 0px!important; }
 ! filmix-online.net - удаление отступа сверху
@@ -7588,6 +7588,20 @@ rustorka.com##a[href$=".php"]:not([class]) > :not(img)
 ||et-code.ru/bens/vinos.js$empty,important
 ||bgrndi.com/js/*.js$empty,important
 !
+dota2.ru##div[id^="ad-gg-"]
+||dota2.ru/img/html/lenovo_
+dota2.ru##div[class^="ara"]
+://*.picmir.nu^$script
+||pwcats.info/img/ft_*.png
+for-ua.info##a[href^="http://bit.ly/"] > img
+for-ua.info##a[href^="https://goo.gl/"] > img
+mega-trek.com##a[href^="http://sub2.admitlead.ru/"]
+||zpppstop.ru/wp-admin/admin-ajax.php
+zpppstop.ru##div[id^="zpppstop-stgroup-wrap"]
+medknsltant.com##a[href^="http://oil-magazine.ru/"]
+||mail.kz/assets/frontend/img/tmp/$subdocument
+mail.kz##.a-slider
+nnmclub.to,nnm-club.me##.btTbl td#lastp.genmed[align="center"] > a[rel^="nofollow"] > img
 ||fast2img.ru/assa.js
 ||radikal.ru/Content/AdmiralX/
 rg-mechanics.org##.bt > noindex
@@ -7749,10 +7763,7 @@ horo.mail.ru##.mailru-visibility-check
 nur.kz##.catalog__item
 nur.kz##.catalog-offers__body
 ok.ru##.browser-banner
-dota2.ru##.b2anners-p
-dota2.ru##.b-place-static
 ||dota2.ru/img/stinger.jpg
-dota2.ru##a#m4a4e
 sosista.biz##div[style^="overflow: hidden; height: 240px;"]
 ||aa.xuy.tv/aa.min.js
 ||js.xuy.tv/
@@ -7976,7 +7987,6 @@ cbonds.info##a[href^="http://ad.cbonds.info/"]
 segodnya.ua##.sunbannerlist[loadedbanner]
 hm6.ru##div[id^="teaser"]
 ||46.30.42.185/sts*/$script
-dota2.ru##body > div[class] > div:not([class]) > a[id]
 ||rustelegraph.ru/media/banners/
 tonkosti.ru##.sys-pwb
 webapteka.ru##a[href^="/redir/advert"]
@@ -8168,7 +8178,6 @@ fotostrana.ru###content-reklama
 rgmechanics.ru##.block_c > center > a[title] > img
 spec-komp.com##.adsbygoogle
 guzei.com##.a > a[rel="nofollow"] > img
-dota2.ru##div[class^="hadv"]
 idwl.cn##.brand
 ||idwl.cn/brand/
 ||cheat-master.ru/rek/
@@ -8186,7 +8195,6 @@ obl-map.com.ua##a[onclick="if (typeof __da_info == 'function') __da_info(this, e
 fastpic.ru###right-bottom
 ||cubis.yyouut.ru^
 hdrezka.me##.b-content__main > div[style$="height: 200px; text-align: center;"]
-dota2.ru##.banners-p
 dota2.ru##a[href^="http://ad.adriver.ru/cgi-bin/"]
 dota2.ru##.bn240
 dota2.ru##.b-place
