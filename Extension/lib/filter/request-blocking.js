@@ -213,7 +213,7 @@ WebRequestService.prototype = (function () {
         if (requestType == RequestTypes.DOCUMENT) {
             // Check headers to detect Adguard application
 
-            if (Prefs.getBrowser() != "Edge") {
+            if (!Utils.isEdgeBrowser()) {
                 // TODO[Edge]: Integration mode is not fully functional in Edge (cannot redefine Referer header yet)
                 this.adguardApplication.checkHeaders(tab, responseHeaders, requestUrl);
             }
