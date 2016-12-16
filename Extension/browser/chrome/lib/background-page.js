@@ -551,7 +551,7 @@ var browser = browser || chrome;
         onActivated: new OnActivatedTabEvent(),
         onRemoved: new OnRemovedTabEvent(),
         getLastFocused: function (callback) {
-            browser.tabs.query({lastFocusedWindow: true, active: true}, function (tabs) {
+            browser.tabs.query({currentWindow: true, active: true}, function (tabs) {
                 if (callback && tabs && tabs.length > 0) {
                     callback(new BrowserTab(tabs[0]));
                 }
