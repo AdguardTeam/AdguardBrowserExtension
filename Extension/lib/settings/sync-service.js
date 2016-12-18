@@ -26,72 +26,91 @@ var SyncService = (function () { // jshint ignore:line
 
     var syncProvider = null;
 
-    var isProtocolVersionCompatible = function (manifest, current) {
+    var isProtocolVersionCompatible = function (remote, local) {
         return {
-            canRead: manifest["min-compatible-version"] <= current["min-compatible-version"],
-            canWrite: manifest["protocol-version"] <= current["protocol-version"]
+            canRead: remote["min-compatible-version"] <= local["min-compatible-version"],
+            canWrite: remote["protocol-version"] <= local["protocol-version"]
         }
     };
 
     var processManifest = function (callback) {
-        var onManifestLoaded = function (manifest) {
-            if (!manifest) {
+        var onManifestLoaded = function (remoteManifest) {
+            console.log('Processing remote manifest..');
+
+            if (!remoteManifest) {
                 callback();
                 return;
             }
 
-            console.log('Manifest loaded');
+            var localManifest = SettingsProvider.loadSettingsManifest();
 
-            var current = SettingsProvider.loadSettings();
-
-            var compatibility = isProtocolVersionCompatible(manifest, current);
+            var compatibility = isProtocolVersionCompatible(remoteManifest, localManifest);
+            console.log(compatibility);
             if (!compatibility.canRead) {
                 console.log('Protocol versions are not compatible');
                 callback();
                 return;
             }
 
-            processSections(current, manifest, compatibility, function (updated) {
-                console.log('Saving updated manifests..');
+            processSections(localManifest, remoteManifest, compatibility, function (resultManifest) {
+                console.log('Saving local manifest..');
 
-                SettingsProvider.saveSettings(updated);
+                SettingsProvider.saveSettingsManifest(resultManifest);
+
                 if (compatibility.canWrite) {
-                    SyncProvider.save(MANIFEST_PATH, updated, callback);
+                    console.log('Saving remote manifest..');
+                    SyncProvider.save(MANIFEST_PATH, resultManifest, callback);
                 } else {
                     callback();
                 }
             });
         };
 
-        SyncProvider.get(MANIFEST_PATH, onManifestLoaded);
+        console.log('Loading remote manifest..');
+        SyncProvider.load(MANIFEST_PATH, onManifestLoaded);
     };
 
-    var processSections = function (current, manifest, compatibility, callback) {
-        var onFiltersSectionLoaded = function (remote) {
-            var onSettingsLoaded = function (local) {
-                var result = mergeFiltersSection(local, remote);
+    var processSections = function (localManifest, remoteManifest, compatibility, callback) {
+        var onFiltersSectionLoaded = function (remoteFiltersSection) {
+            console.log('Remote filters section loaded');
 
-                SettingsProvider.saveSettingsSection(result, function () {
+            var onSettingsLoaded = function (localFiltersSection) {
+                console.log('Local filters section loaded');
+
+                var resultFiltersSection = mergeFiltersSection(localFiltersSection, remoteFiltersSection);
+
+                SettingsProvider.saveFiltersSection(resultFiltersSection, function () {
                     if (compatibility.canWrite) {
-                        SyncProvider.save(FILTERS_PATH, result, function () {
-                            callback(current);
+                        SyncProvider.save(FILTERS_PATH, resultFiltersSection, function () {
+                            console.log('Remote filters section saved');
+
+                            callback(localManifest);
                         });
                     } else {
-                        callback(current);
+                        callback(localManifest);
                     }
                 });
+
+                console.log('Local filters section saved');
             };
 
-            SettingsProvider.loadSettingsSection(onSettingsLoaded);
+            SettingsProvider.loadFiltersSection(onSettingsLoaded);
         };
 
-        SyncProvider.get(FILTERS_PATH, onFiltersSectionLoaded);
+        SyncProvider.load(FILTERS_PATH, onFiltersSectionLoaded);
     };
 
     var mergeFiltersSection = function (local, remote) {
+        console.log('Merging filters sections..');
+        console.log('Local:');
+        console.log(local);
+        console.log('Remote:');
+        console.log(remote);
+
         var result = local;
         //TODO: Implement
 
+        console.log('Merging filters sections..ok');
         return result;
     };
 
@@ -99,6 +118,7 @@ var SyncService = (function () { // jshint ignore:line
     // API
     var syncSettings = function (callback) {
         console.log('Synchronizing settings..');
+
         if (syncProvider == null) {
             console.error('Sync provider should be set first');
             callback();
@@ -113,6 +133,8 @@ var SyncService = (function () { // jshint ignore:line
 
     var setSyncProvider = function (provider) {
         syncProvider = provider;
+
+        console.log('Sync provider has been set');
     };
 
     // EXPOSE

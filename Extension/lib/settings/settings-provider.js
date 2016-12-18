@@ -23,7 +23,7 @@ var AntiBannerFiltersId = require('../../lib/utils/common').AntiBannerFiltersId;
 /**
  * Application settings provider.
  *
- * @type {{loadSettings, loadSettingsSection, saveSettings}}
+ * @type {{loadSettingsManifest, loadFiltersSection, saveSettingsManifest, saveFiltersSection}}
  */
 var SettingsProvider = (function () { // jshint ignore:line
 
@@ -33,9 +33,13 @@ var SettingsProvider = (function () { // jshint ignore:line
     var SYNC_SETTINGS_TIMESTAMP_KEY = 'sync.settings.timestamp';
     var SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY = 'sync.settings.filters.timestamp';
 
+    var WHITELIST_DOMAINS_KEY = 'white-list-domains';
+    var DEFAULT_WHITELIST_FLAG_KEY = 'default-whitelist-mode';
+
     var serviceClient = new ServiceClient();
 
-    var loadSettings = function () {
+
+    var loadSettingsManifest = function () {
         var manifest = {
             "timestamp": LS.getItem(SYNC_SETTINGS_TIMESTAMP_KEY),
             "protocol-version": PROTOCOL_VERSION,
@@ -52,7 +56,7 @@ var SettingsProvider = (function () { // jshint ignore:line
         return manifest;
     };
 
-    var loadSettingsSection = function (callback) {
+    var loadFiltersSection = function (callback) {
         var filtersState = FilterLSUtils.getFiltersStateInfo();
         var enabledFilterIds = [];
         for (var i = 0; i < filtersState.length; i++) {
@@ -63,13 +67,12 @@ var SettingsProvider = (function () { // jshint ignore:line
         }
 
         var whitelistDomains = [];
-        var json = LS.getItem('white-list-domains');
+        var json = LS.getItem(WHITELIST_DOMAINS_KEY);
         if (json) {
             whitelistDomains = JSON.parse(json);
         }
 
-        var defaultWhiteListMode = LS.getItem('default-whitelist-mode');
-        console.log(defaultWhiteListMode);
+        var defaultWhiteListMode = LS.getItem(DEFAULT_WHITELIST_FLAG_KEY);
 
         var onUserFilterRulesLoaded = function (result) {
             var userFilterRules = [];
@@ -102,11 +105,11 @@ var SettingsProvider = (function () { // jshint ignore:line
         serviceClient.loadLocalFilter(AntiBannerFiltersId.USER_FILTER_ID, false, onUserFilterRulesLoaded);
     };
 
-    var saveSettings = function (manifest) {
+    var saveSettingsManifest = function (manifest) {
         LS.setItem(SYNC_SETTINGS_TIMESTAMP_KEY, new Date().getTime());
     };
 
-    var saveSettingsSection = function (section, callback) {
+    var saveFiltersSection = function (section, callback) {
         var enabledFilterIds = section.filters['enabled-filters'];
 
         var filtersState = FilterLSUtils.getFiltersStateInfo();
@@ -120,8 +123,8 @@ var SettingsProvider = (function () { // jshint ignore:line
             }
         }
 
-        LS.setItem('white-list-domains', JSON.stringify(section.filters["whitelist"].domains));
-        LS.setItem('default-whitelist-mode', section.filters["whitelist"].inverted != true);
+        LS.setItem(WHITELIST_DOMAINS_KEY, JSON.stringify(section.filters["whitelist"].domains));
+        LS.setItem(DEFAULT_WHITELIST_FLAG_KEY, section.filters["whitelist"].inverted != true);
 
         //TODO: save user filter
 
@@ -130,23 +133,24 @@ var SettingsProvider = (function () { // jshint ignore:line
         callback(true);
     };
 
+
     // EXPOSE
     return {
         /**
          * Loads app settings manifest
          */
-        loadSettings: loadSettings,
+        loadSettingsManifest: loadSettingsManifest,
         /**
-         * Loads a section of app settings
+         * Loads filters section of app settings
          */
-        loadSettingsSection: loadSettingsSection,
+        loadFiltersSection: loadFiltersSection,
         /**
          * Saves app settings manifest
          */
-        saveSettings: saveSettings,
+        saveSettingsManifest: saveSettingsManifest,
         /**
-         * Saves a section of app settings
+         * Saves filters section of app settings
          */
-        saveSettingsSection: saveSettingsSection
+        saveFiltersSection: saveFiltersSection
     };
 })();

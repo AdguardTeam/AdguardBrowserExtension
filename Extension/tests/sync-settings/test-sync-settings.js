@@ -132,7 +132,7 @@ QUnit.test("Test settings provider", function (assert) {
 
     LS.setItem('sync.settings.timestamp', new Date().getTime() - 10000);
 
-    var before = SettingsProvider.loadSettings();
+    var before = SettingsProvider.loadSettingsManifest();
     assert.ok(before != null);
     assert.ok(before.timestamp);
     assert.ok(before["protocol-version"]);
@@ -140,11 +140,12 @@ QUnit.test("Test settings provider", function (assert) {
     assert.ok(before["app-id"]);
     assert.ok(before["sections"].length > 0);
 
-    SettingsProvider.saveSettings(before);
+    //before.timestamp = new Date().getTime();
+    SettingsProvider.saveSettingsManifest(before);
 
-    var updated = SettingsProvider.loadSettings();
+    var updated = SettingsProvider.loadSettingsManifest();
     assert.ok(updated != null);
-    assert.ok(updated.timestamp > before.timestamp);
+    assert.notEqual(updated.timestamp, before.timestamp);
     assert.equal(updated["protocol-version"], before["protocol-version"]);
     assert.equal(updated["min-compatible-version"], before["min-compatible-version"]);
     assert.equal(updated["app-id"], before["app-id"]);
@@ -174,7 +175,7 @@ QUnit.test("Test settings provider", function (assert) {
 
     var onSectionSaved = function (result) {
         assert.ok(result);
-        SettingsProvider.loadSettingsSection(onSectionUpdated);
+        SettingsProvider.loadFiltersSection(onSectionUpdated);
     };
 
     var onSectionLoaded = function (section) {
@@ -201,10 +202,10 @@ QUnit.test("Test settings provider", function (assert) {
         section.filters["whitelist"].domains.push('whitelisted-domain-two.com');
         section.filters["whitelist"].inverted = true;
 
-        SettingsProvider.saveSettingsSection(section, onSectionSaved);
+        SettingsProvider.saveFiltersSection(section, onSectionSaved);
     };
 
-    SettingsProvider.loadSettingsSection(onSectionLoaded);
+    SettingsProvider.loadFiltersSection(onSectionLoaded);
 });
 
 QUnit.test("Test file sync provider", function (assert) {
@@ -219,7 +220,7 @@ QUnit.test("Test file sync provider", function (assert) {
     var onDataSaved = function (result) {
         assert.ok(result);
 
-        SyncProvider.get(manifestPath, onDataUpdated);
+        SyncProvider.load(manifestPath, onDataUpdated);
     };
 
     var onDataLoaded = function (data) {
@@ -235,7 +236,7 @@ QUnit.test("Test file sync provider", function (assert) {
     };
 
     createFile(manifestPath, manifest, function () {
-        SyncProvider.get(manifestPath, onDataLoaded);
+        SyncProvider.load(manifestPath, onDataLoaded);
     });
 });
 
@@ -286,7 +287,7 @@ QUnit.test("Test sync service general", function (assert) {
                 assert.equal(data["sections"][0].name, manifest["sections"][0].name);
                 assert.notEqual(data["sections"][0].timestamp, manifest["sections"][0].timestamp);
 
-                SyncProvider.get(filtersPath, onFiltersSectionLoaded);
+                SyncProvider.load(filtersPath, onFiltersSectionLoaded);
             };
 
             var onSettingSynced = function () {
@@ -295,7 +296,7 @@ QUnit.test("Test sync service general", function (assert) {
                 //Check updated manifest
                 manifest["app-id"] = "adguard-browser-extension";
 
-                SyncProvider.get(manifestPath, onManifestLoaded);
+                SyncProvider.load(manifestPath, onManifestLoaded);
             };
 
             SyncService.setSyncProvider(SyncProvider);
@@ -338,7 +339,7 @@ QUnit.test("Test sync service protocol versions", function (assert) {
                     callback();
                 };
 
-                SyncProvider.get(manifestPath, onManifestLoaded);
+                SyncProvider.load(manifestPath, onManifestLoaded);
             });
         });
     };
@@ -368,7 +369,7 @@ QUnit.test("Test sync service protocol versions", function (assert) {
                     cleanUp(done);
                 };
 
-                SyncProvider.get(manifestPath, onManifestLoaded);
+                SyncProvider.load(manifestPath, onManifestLoaded);
             });
         });
     };

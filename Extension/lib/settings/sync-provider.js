@@ -99,7 +99,7 @@ var SyncProvider = (function () { // jshint ignore:line
         /**
          * Loads data from provider
          */
-        get: load,
+        load: load,
         /**
          * Saves data to provider
          */
