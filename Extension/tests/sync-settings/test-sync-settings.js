@@ -251,24 +251,49 @@ QUnit.test("Test sync service general", function (assert) {
     createFile(manifestPath, manifest, function () {
         createFile(filtersPath, filters, function () {
 
+            var onFiltersSectionLoaded = function (section) {
+                assert.ok(section != null);
+
+                console.log(section);
+
+                // assert.equal(section.filters["enabled-filters"].length, 3);
+                // assert.equal(section.filters["enabled-filters"][0], 1);
+                // assert.equal(section.filters["enabled-filters"][1], 5);
+                // assert.equal(section.filters["enabled-filters"][2], 7);
+                //
+                // assert.equal(section.filters["user-filter"].rules.length, 4);
+                // assert.equal(section.filters["user-filter"].rules[0], "||ongkidcasarv.com^$third-party");
+                // assert.equal(section.filters["user-filter"].rules[1], "||dashgreen.online^$third-party");
+                // assert.equal(section.filters["user-filter"].rules[2], "||adzos.com^$third-party");
+                // assert.equal(section.filters["user-filter"].rules[3], "||mxtads.com:8040");
+                // //assert.equal(section.filters["user-filter"].rules[4], "test-add-rule");
+                //
+                // assert.equal(section.filters["whitelist"].domains.length, 2);
+                // assert.equal(section.filters["whitelist"].domains[0], 'whitelisted-domain-one.com');
+                // assert.equal(section.filters["whitelist"].domains[1], 'whitelisted-domain-two.com');
+                // assert.equal(section.filters["whitelist"].inverted, true);
+
+                cleanUp();
+            };
+
+            var onManifestLoaded = function (data) {
+                assert.ok(data != null);
+                assert.notEqual(data.timestamp, manifest.timestamp);
+                assert.equal(data["protocol-version"], manifest["protocol-version"]);
+                assert.equal(data["min-compatible-version"], manifest["min-compatible-version"]);
+                assert.equal(data["app-id"], manifest["app-id"]);
+                assert.equal(data["sections"].length, 1);
+                assert.equal(data["sections"][0].name, manifest["sections"][0].name);
+                assert.notEqual(data["sections"][0].timestamp, manifest["sections"][0].timestamp);
+
+                SyncProvider.get(filtersPath, onFiltersSectionLoaded);
+            };
+
             var onSettingSynced = function () {
                 //TODO: Check app settings
 
                 //Check updated manifest
                 manifest["app-id"] = "adguard-browser-extension";
-
-                var onManifestLoaded = function (data) {
-                    assert.ok(data != null);
-                    assert.notEqual(data.timestamp, manifest.timestamp);
-                    assert.equal(data["protocol-version"], manifest["protocol-version"]);
-                    assert.equal(data["min-compatible-version"], manifest["min-compatible-version"]);
-                    assert.equal(data["app-id"], manifest["app-id"]);
-                    assert.equal(data["sections"].length, 1);
-                    assert.equal(data["sections"][0].name, manifest["sections"][0].name);
-                    assert.notEqual(data["sections"][0].timestamp, manifest["sections"][0].timestamp);
-
-                    cleanUp();
-                };
 
                 SyncProvider.get(manifestPath, onManifestLoaded);
             };

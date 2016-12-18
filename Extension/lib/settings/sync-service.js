@@ -22,6 +22,7 @@
  */
 var SyncService = (function () { // jshint ignore:line
     var MANIFEST_PATH = "manifest.json";
+    var FILTERS_PATH = "filters.json";
 
     var syncProvider = null;
 
@@ -66,9 +67,32 @@ var SyncService = (function () { // jshint ignore:line
     };
 
     var processSections = function (current, manifest, compatibility, callback) {
-        //TODO: Implement processSections
+        var onFiltersSectionLoaded = function (remote) {
+            var onSettingsLoaded = function (local) {
+                var result = mergeFiltersSection(local, remote);
 
-        callback(current);
+                SettingsProvider.saveSettingsSection(result, function () {
+                    if (compatibility.canWrite) {
+                        SyncProvider.save(FILTERS_PATH, result, function () {
+                            callback(current);
+                        });
+                    } else {
+                        callback(current);
+                    }
+                });
+            };
+
+            SettingsProvider.loadSettingsSection(onSettingsLoaded);
+        };
+
+        SyncProvider.get(FILTERS_PATH, onFiltersSectionLoaded);
+    };
+
+    var mergeFiltersSection = function (local, remote) {
+        var result = local;
+        //TODO: Implement
+
+        return result;
     };
 
 
