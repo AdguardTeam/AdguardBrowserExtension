@@ -240,7 +240,7 @@ QUnit.test("Test file sync provider", function (assert) {
     });
 });
 
-QUnit.test("Test sync service general", function (assert) {
+QUnit.test("Test sync service local to remote", function (assert) {
     var done = assert.async();
 
     var cleanUp = function () {
@@ -255,24 +255,22 @@ QUnit.test("Test sync service general", function (assert) {
             var onFiltersSectionLoaded = function (section) {
                 assert.ok(section != null);
 
-                console.log(section);
+                assert.equal(section.filters["enabled-filters"].length, 3);
+                assert.equal(section.filters["enabled-filters"][0], 1);
+                assert.equal(section.filters["enabled-filters"][1], 5);
+                assert.equal(section.filters["enabled-filters"][2], 7);
 
-                // assert.equal(section.filters["enabled-filters"].length, 3);
-                // assert.equal(section.filters["enabled-filters"][0], 1);
-                // assert.equal(section.filters["enabled-filters"][1], 5);
-                // assert.equal(section.filters["enabled-filters"][2], 7);
-                //
-                // assert.equal(section.filters["user-filter"].rules.length, 4);
-                // assert.equal(section.filters["user-filter"].rules[0], "||ongkidcasarv.com^$third-party");
-                // assert.equal(section.filters["user-filter"].rules[1], "||dashgreen.online^$third-party");
-                // assert.equal(section.filters["user-filter"].rules[2], "||adzos.com^$third-party");
-                // assert.equal(section.filters["user-filter"].rules[3], "||mxtads.com:8040");
-                // //assert.equal(section.filters["user-filter"].rules[4], "test-add-rule");
-                //
-                // assert.equal(section.filters["whitelist"].domains.length, 2);
-                // assert.equal(section.filters["whitelist"].domains[0], 'whitelisted-domain-one.com');
-                // assert.equal(section.filters["whitelist"].domains[1], 'whitelisted-domain-two.com');
-                // assert.equal(section.filters["whitelist"].inverted, true);
+                assert.equal(section.filters["user-filter"].rules.length, 4);
+                assert.equal(section.filters["user-filter"].rules[0], "||ongkidcasarv.com^$third-party");
+                assert.equal(section.filters["user-filter"].rules[1], "||dashgreen.online^$third-party");
+                assert.equal(section.filters["user-filter"].rules[2], "||adzos.com^$third-party");
+                assert.equal(section.filters["user-filter"].rules[3], "||mxtads.com:8040");
+                //assert.equal(section.filters["user-filter"].rules[4], "test-add-rule");
+
+                assert.equal(section.filters["whitelist"].domains.length, 2);
+                assert.equal(section.filters["whitelist"].domains[0], 'whitelisted-domain-one.com');
+                assert.equal(section.filters["whitelist"].domains[1], 'whitelisted-domain-two.com');
+                assert.equal(section.filters["whitelist"].inverted, true);
 
                 cleanUp();
             };
@@ -291,12 +289,38 @@ QUnit.test("Test sync service general", function (assert) {
             };
 
             var onSettingSynced = function () {
-                //TODO: Check app settings
-
                 //Check updated manifest
                 manifest["app-id"] = "adguard-browser-extension";
 
                 SyncProvider.load(manifestPath, onManifestLoaded);
+            };
+
+            SyncService.setSyncProvider(SyncProvider);
+            SyncService.syncSettings(onSettingSynced);
+        });
+    });
+});
+
+QUnit.test("Test sync service remote to local", function (assert) {
+    var done = assert.async();
+
+    var cleanUp = function () {
+        deleteFile(manifestPath, function () {
+            deleteFile(filtersPath, done);
+        });
+    };
+
+    //manifest.timestamp
+
+    createFile(manifestPath, manifest, function () {
+        createFile(filtersPath, filters, function () {
+
+            var onSettingSynced = function () {
+                //TODO: Check app settings
+
+                assert.ok(true);
+                //SyncProvider.load(manifestPath, onManifestLoaded);
+                cleanUp();
             };
 
             SyncService.setSyncProvider(SyncProvider);
