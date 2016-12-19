@@ -150,6 +150,20 @@
 
         var tabs = Object.create(null);
 
+        /**
+         * Saves tab to collection and notify listeners
+         * @param aTab
+         */
+        function onTabCreated(aTab) {
+            var tab = tabs[aTab.tabId];
+            if (tab) {
+                // Tab has been already synchronized
+                return;
+            }
+            tabs[aTab.tabId] = aTab;
+            onCreatedChannel.notify(aTab);
+        }
+
         // Synchronize opened tabs
         tabsImpl.getAll(function (aTabs) {
             for (var i = 0; i < aTabs.length; i++) {
@@ -158,10 +172,7 @@
             }
         });
 
-        tabsImpl.onCreated.addListener(function (aTab) {
-            tabs[aTab.tabId] = aTab;
-            onCreatedChannel.notify(aTab);
-        });
+        tabsImpl.onCreated.addListener(onTabCreated);
 
         tabsImpl.onRemoved.addListener(function (tabId) {
             var tab = tabs[tabId];
@@ -173,13 +184,6 @@
 
         tabsImpl.onUpdated.addListener(function (aTab) {
             var tab = tabs[aTab.tabId];
-            // Sync tab for that 'onCreated' event was missed.
-            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/481
-            if (!tab) {
-                tabs[aTab.tabId] = aTab;
-                onCreatedChannel.notify(aTab);
-                tab = aTab;
-            }
             if (tab) {
                 tab.url = aTab.url;
                 tab.title = aTab.title;
@@ -284,6 +288,16 @@
         // Records tab's frame
         var recordTabFrame = function (tabId, frameId, url, domainName) {
             var tab = tabs[tabId];
+            if (!tab && frameId === 0) {
+                // Sync tab for that 'onCreated' event was missed.
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/481
+                tab = {
+                    tabId: tabId,
+                    url: url,
+                    status: 'loading'
+                };
+                onTabCreated(tab);
+            }
             if (tab) {
                 if (!tab.frames) {
                     tab.frames = Object.create(null);
