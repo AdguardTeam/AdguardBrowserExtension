@@ -615,13 +615,19 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         }
     });
 
-    // Update tab icon while loading
-    adguard.tabs.onUpdated.addListener(function (tab) {
-        updateTabIconAndContextMenu(tab);
+    // Update tab icon and context menu while loading
+    adguard.tabs.onUpdated.addListener(function () {
+        adguard.tabs.getActive(updateTabIconAndContextMenu);
     });
-    // Update tab icon on active tab change
+    // Update tab icon and context menu on active tab changed
     adguard.tabs.onActivated.addListener(function (tab) {
         updateTabIconAndContextMenu(tab, true);
+    });
+    // Update tab icon and context menu on application initialization
+    adguard.listeners.addListener(function (event) {
+        if (event === adguard.listeners.APPLICATION_INITIALIZED) {
+            adguard.tabs.getActive(updateTabIconAndContextMenu);
+        }
     });
 
     //on filter auto-enabled event
@@ -637,13 +643,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         if (event === adguard.listeners.UPDATE_FILTERS_SHOW_POPUP) {
             var result = getFiltersUpdateResultMessage(success, updatedFilters);
             showAlertMessagePopup(result.title, result.text);
-        }
-    });
-
-    // Update ui on application initialization
-    adguard.listeners.addListener(function (event) {
-        if (event === adguard.listeners.APPLICATION_INITIALIZED) {
-            adguard.tabs.forEach(updateTabIconAndContextMenu);
         }
     });
 
