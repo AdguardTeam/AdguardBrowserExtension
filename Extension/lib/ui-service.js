@@ -616,8 +616,17 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     });
 
     // Update tab icon and context menu while loading
-    adguard.tabs.onUpdated.addListener(function () {
-        adguard.tabs.getActive(updateTabIconAndContextMenu);
+    adguard.tabs.onUpdated.addListener(function (tab) {
+        var tabId = tab.tabId;
+        // BrowserAction is set separately for each tab
+        updateTabIcon(tab);
+        adguard.tabs.getActive(function (aTab) {
+            if (aTab.tabId !== tabId) {
+                return;
+            }
+            // ContextMenu is set for all tabs, so update it only for current tab
+            updateTabContextMenu(aTab);
+        });
     });
     // Update tab icon and context menu on active tab changed
     adguard.tabs.onActivated.addListener(function (tab) {
