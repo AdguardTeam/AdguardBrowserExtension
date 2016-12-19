@@ -28,6 +28,6 @@ var contentPage = (function (adguard) { // jshint ignore:line
 })(adguardContent);
 
 var i18n = (function () { // jshint ignore:line
-    var browser = browser || chrome;
+    var browser = window.browser || chrome;
     return browser.i18n;
 })();

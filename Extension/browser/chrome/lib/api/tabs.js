@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global chrome */
+/* global browser */
 
 /**
  * Chromium windows implementation
@@ -24,8 +24,6 @@
 adguard.windowsImpl = (function (adguard) {
 
     'use strict';
-
-    var browser = browser || chrome;
 
     function toWindowFromChromeWindow(chromeWin) {
         return {
@@ -93,8 +91,6 @@ adguard.windowsImpl = (function (adguard) {
 adguard.tabsImpl = (function (adguard) {
 
     'use strict';
-
-    var browser = browser || chrome;
 
     /**
      * tabId parameter must be integer
