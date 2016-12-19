@@ -274,6 +274,9 @@ var ElementCollapser = (function() {
             return;
         }
 
+        // In any case we should remove hiding style
+        unhideElement(element, shadowRoot);
+
         var cssProperty = "display";
         var cssValue = "none";
         var cssPriority = "important";

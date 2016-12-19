@@ -610,9 +610,6 @@
             var elementUrl = collapseRequest.elementUrl;
             ElementCollapser.collapseElement(element, elementUrl, shadowRoot);
         }
-
-        // In any case we should remove hiding style
-        ElementCollapser.unhideElement(collapseRequest.element, shadowRoot);
     };
     
     /**
