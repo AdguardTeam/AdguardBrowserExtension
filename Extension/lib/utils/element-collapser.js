@@ -274,7 +274,8 @@ var ElementCollapser = (function() {
             return;
         }
 
-        // In any case we should remove hiding style
+        // Src elements above should not be unhidden.
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/486
         unhideElement(element, shadowRoot);
 
         var cssProperty = "display";

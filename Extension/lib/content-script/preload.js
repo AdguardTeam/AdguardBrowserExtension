@@ -605,10 +605,12 @@
         }
         delete collapseRequests[response.requestId];
 
+        var element = collapseRequest.element;
         if (response.collapse === true) {
-            var element = collapseRequest.element;
             var elementUrl = collapseRequest.elementUrl;
             ElementCollapser.collapseElement(element, elementUrl, shadowRoot);
+        } else {
+            ElementCollapser.unhideElement(element, shadowRoot);
         }
     };
     
