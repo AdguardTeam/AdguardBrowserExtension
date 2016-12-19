@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Deferred */
+/* global Promise */
 
 /**
  * Sync settings service
@@ -28,7 +28,15 @@ var SyncService = (function () { // jshint ignore:line
 
     var syncProvider = null;
 
-    var isProtocolVersionCompatible = function (remoteManifest, localManifest) {
+    /**
+     * Constructs the special object containing information about manifests protocols compatibility and then sorts data sections
+     * into arrays by directions we should sync the data.
+     *
+     * @param remoteManifest
+     * @param localManifest
+     * @returns {{canRead: boolean, canWrite: boolean, sectionsRemoteToLocal: Array, sectionsLocalToRemote: Array}}
+     */
+    var findCompatibility = function (remoteManifest, localManifest) {
         var canRead = remoteManifest["min-compatible-version"] <= localManifest["min-compatible-version"];
         var canWrite = remoteManifest["protocol-version"] <= localManifest["protocol-version"];
 
@@ -36,7 +44,6 @@ var SyncService = (function () { // jshint ignore:line
         var sectionsLocalToRemote = [];
 
         if (canRead) {
-            console.log(remoteManifest);
             for (var i = 0; i < remoteManifest.sections.length; i++) {
                 var remoteSection = remoteManifest.sections[i];
                 for (var j = 0; j < localManifest.sections.length; j++) {
@@ -71,6 +78,19 @@ var SyncService = (function () { // jshint ignore:line
         }
     };
 
+    /**
+     * So how does it work:
+     * At first we load manifests for remote and local and then are trying to find can we merge the datasets comparing
+     * protocol versions. Then comparing the timestamps for sections we find the newer data and pick it in some collections
+     * corresponding to the direction: remote-to-local or local-to-remote.
+     *
+     * After that we load selected data sections and process the compatibility result by processSections method,
+     * simply saving the newer sections to remote or local storage.
+     *
+     * As the end we updated manifests with processSections result, setting up the sections timestamps.
+     *
+     * @param callback
+     */
     var processManifest = function (callback) {
         var onManifestLoaded = function (remoteManifest) {
             console.log('Processing remote manifest..');
@@ -82,7 +102,7 @@ var SyncService = (function () { // jshint ignore:line
 
             var localManifest = SettingsProvider.loadSettingsManifest();
 
-            var compatibility = isProtocolVersionCompatible(remoteManifest, localManifest);
+            var compatibility = findCompatibility(remoteManifest, localManifest);
             console.log(compatibility);
             if (!compatibility.canRead) {
                 console.log('Protocol versions are not compatible');
@@ -97,14 +117,7 @@ var SyncService = (function () { // jshint ignore:line
                 if (updatedSections.remoteToLocal.length > 0) {
                     console.log('Saving local manifest..');
 
-                    for (var i = 0; i < localManifest.sections.length; i++) {
-                        var section = localManifest.sections[i];
-                        for (var j = 0; j < updatedSections.remoteToLocal.length; j++) {
-                            if (section.name === updatedSections.remoteToLocal[j].name) {
-                                section.timestamp = updatedSections.remoteToLocal[j].timestamp;
-                            }
-                        }
-                    }
+                    updateManifestSections(localManifest.sections, updatedSections.remoteToLocal);
 
                     localManifest.timestamp = updatedDate;
                     SettingsProvider.saveSettingsManifest(localManifest);
@@ -113,14 +126,7 @@ var SyncService = (function () { // jshint ignore:line
                 if (compatibility.canWrite) {
                     console.log('Saving remote manifest..');
 
-                    for (var i = 0; i < remoteManifest.sections.length; i++) {
-                        var section = remoteManifest.sections[i];
-                        for (var j = 0; j < updatedSections.localToRemote.length; j++) {
-                            if (section.name === updatedSections.localToRemote[j].name) {
-                                section.timestamp = updatedSections.localToRemote[j].timestamp;
-                            }
-                        }
-                    }
+                    updateManifestSections(remoteManifest.sections, updatedSections.localToRemote);
 
                     remoteManifest.timestamp = updatedDate;
                     remoteManifest["app-id"] = localManifest["app-id"];
@@ -136,6 +142,15 @@ var SyncService = (function () { // jshint ignore:line
         SyncProvider.load(MANIFEST_PATH, onManifestLoaded);
     };
 
+    /**
+     * Processes sections synchronization.
+     * Return object with updates sections info.
+     *
+     * @param localManifest
+     * @param remoteManifest
+     * @param compatibility
+     * @param callback
+     */
     var processSections = function (localManifest, remoteManifest, compatibility, callback) {
         var updatedSections = {
             localToRemote: [],
@@ -143,51 +158,73 @@ var SyncService = (function () { // jshint ignore:line
         };
 
         var dfds = [];
+        var dfd;
 
         for (var i = 0; i < compatibility.sectionsLocalToRemote.length; i++) {
-            var dfd = new Promise();
+            dfd = new Promise();
             dfds.push(dfd);
 
-            var section = compatibility.sectionsLocalToRemote[i];
-            console.log('Updating local to remote: ' + section);
+            updateLocalToRemoteSection(dfd, compatibility.sectionsLocalToRemote[i], function (dfd, section) {
+                updatedSections.localToRemote.push(section);
 
-            //TODO: Load section from sectionName
-            SettingsProvider.loadFiltersSection(function(localFiltersSection) {
-                console.log('Local filters section loaded');
-
-                SyncProvider.save(FILTERS_PATH, localFiltersSection, function () {
-                    console.log('Remote filters section updated');
-
-                    updatedSections.localToRemote.push(section);
-
-                    dfd.resolve();
-                });
+                dfd.resolve();
             });
         }
 
-        for (var i = 0; i < compatibility.sectionsRemoteToLocal.length; i++) {
-            var dfd = new Promise();
+        for (var j = 0; j < compatibility.sectionsRemoteToLocal.length; j++) {
+            dfd = new Promise();
             dfds.push(dfd);
 
-            var section = compatibility.sectionsRemoteToLocal[i];
-            console.log('Updating remote to local: ' + section);
+            updateRemoteToLocalSection(dfds, compatibility.sectionsRemoteToLocal[j], function (dfd, section) {
+                updatedSections.remoteToLocal.push(section);
 
-            //TODO: Load section from sectionName
-            SyncProvider.load(FILTERS_PATH, function (remoteFiltersSection) {
-                console.log('Remote filters section loaded');
-
-                SettingsProvider.saveFiltersSection(remoteFiltersSection, function () {
-                    console.log('Local filters section updated');
-
-                    updatedSections.remoteToLocal.push(section);
-
-                    dfd.resolve();
-                });
+                dfd.resolve();
             });
         }
 
         Promise.all(dfds).then(function () {
             callback(updatedSections);
+        });
+    };
+
+    var updateManifestSections = function(manifestSections, updatedSections) {
+        for (var i = 0; i < manifestSections.length; i++) {
+            var section = manifestSections[i];
+            for (var j = 0; j < updatedSections.length; j++) {
+                if (section.name === updatedSections[j].name) {
+                    section.timestamp = updatedSections[j].timestamp;
+                }
+            }
+        }
+    };
+
+    var updateLocalToRemoteSection = function(dfd, section, callback) {
+        console.log('Updating local to remote: ' + section.name);
+
+        //TODO: Load section from sectionName
+        SettingsProvider.loadFiltersSection(function(localFiltersSection) {
+            console.log('Local filters section loaded');
+
+            SyncProvider.save(FILTERS_PATH, localFiltersSection, function () {
+                console.log('Remote filters section updated');
+
+                callback(dfd, section);
+            });
+        });
+    };
+
+    var updateRemoteToLocalSection = function (dfd, section, callback) {
+        console.log('Updating remote to local: ' + section.name);
+
+        //TODO: Load section from sectionName
+        SyncProvider.load(FILTERS_PATH, function (remoteFiltersSection) {
+            console.log('Remote filters section loaded');
+
+            SettingsProvider.saveFiltersSection(remoteFiltersSection, function () {
+                console.log('Local filters section updated');
+
+                callback(dfd, section);
+            });
         });
     };
 
