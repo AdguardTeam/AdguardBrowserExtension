@@ -263,7 +263,7 @@ var ElementCollapser = (function() {
         
         var tagName = element.tagName.toLowerCase();
 
-        // Check that element still has "src" attribute
+        // Check that element still has the same "src" attribute
         if (element.src == elementUrl) {
             // To not to keep track of changing src for elements, we are going to collapse it with a CSS rule
             // But we take element url, cause current source could be already modified
