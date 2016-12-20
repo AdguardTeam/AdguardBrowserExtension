@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global contentPage, ExtendedCss, HTMLDocument, XMLDocument */
+/* global contentPage, ExtendedCss, HTMLDocument, XMLDocument, ElementCollapser */
 (function() {
 
     var requestTypeMap = {
@@ -528,6 +528,24 @@
     };
 
     /**
+     * Extracts element URL from the dom node
+     * 
+     * @param element DOM node
+     */
+    var getElementUrl = function(element) {
+        var elementUrl = element.src || element.data;
+        if (!elementUrl || 
+            elementUrl.indexOf('http') !== 0 ||
+            // Some sources could not be set yet, lazy loaded images or smth.
+            // In some cases like on gog.com, collapsing these elements could break the page script loading their sources 
+            elementUrl === element.baseURI) {
+            return null;
+        }
+
+        return elementUrl;
+    }
+
+    /**
      * Checks if element is blocked by AG and should be hidden
      *
      * @param element
@@ -540,11 +558,8 @@
             return;
         }
 
-        var elementUrl = element.src || element.data;
-        if (!elementUrl || elementUrl.indexOf('http') !== 0
-            || elementUrl === element.baseURI) {
-            // Some sources could not be set yet, lazy loaded images or smth.
-            // In some cases like on gog.com, collapsing these elements could break the page script loading their sources
+        var elementUrl = getElementUrl(element);
+        if (!elementUrl) {
             return;
         }
 
@@ -609,9 +624,12 @@
         if (response.collapse === true) {
             var elementUrl = collapseRequest.elementUrl;
             ElementCollapser.collapseElement(element, elementUrl, shadowRoot);
-        } else {
-            ElementCollapser.unhideElement(element, shadowRoot);
         }
+        
+        // Unhide element, which was previously hidden by "tempHideElement"
+        // In case if element is collapsed, there's no need to hide it
+        // Otherwise we shouldn't hide it either as it shouldn't be blocked
+        ElementCollapser.unhideElement(element, shadowRoot);
     };
     
     /**
@@ -644,9 +662,9 @@
             for (var j = 0; j < elements.length; j++) {
 
                 var element = elements[j];
-                var elementUrl = element.src || element.data;
-                if (!elementUrl || elementUrl.indexOf('http') !== 0) {
-                    continue;
+                var elementUrl = getElementUrl(element);
+                if (!elementUrl) {
+                    return;
                 }
 
                 var requestId = collapseRequestId++;
@@ -656,8 +674,10 @@
                     requestId: requestId,
                     tagName: tagName
                 });
+
                 collapseRequests[requestId] = {
                     element: element,
+                    elementUrl: elementUrl,
                     tagName: tagName
                 };
             }

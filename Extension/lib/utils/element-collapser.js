@@ -105,7 +105,6 @@ var ElementCollapser = (function() {
      */
     var hideBySelector = function(selectorText, cssText, shadowRoot) {
         var rule = selectorText + '{' + (cssText || "display: none!important;") + '}';
-
         applyCss(rule, shadowRoot);
     };
 
@@ -257,26 +256,23 @@ var ElementCollapser = (function() {
      * Collapses specified element.
      *
      * @param element Element to collapse
-     * @param elementUrl Element url
+     * @param elementUrl Element's source url
      * @param shadowRoot optional
      */
     var collapseElement = function(element, elementUrl, shadowRoot) {
-
+        
         var tagName = element.tagName.toLowerCase();
-        var source = element.getAttribute('src');
-        if (source) {
+
+        // Check that element still has "src" attribute
+        if (element.src == elementUrl) {
             // To not to keep track of changing src for elements, we are going to collapse it with a CSS rule
             // But we take element url, cause current source could be already modified
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/408
-            var srcSelector = createSelectorForSrcAttr(elementUrl, tagName);
+            var srcAttribute = element.getAttribute('src');
+            var srcSelector = createSelectorForSrcAttr(srcAttribute, tagName);
             hideBySelectorAndTagName(srcSelector, tagName, shadowRoot);
-
             return;
         }
-
-        // Src elements above should not be unhidden.
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/486
-        unhideElement(element, shadowRoot);
 
         var cssProperty = "display";
         var cssValue = "none";
@@ -304,6 +300,7 @@ var ElementCollapser = (function() {
          * Collapses specified element using inline style
          *
          * @param element Element to collapse
+         * @param elementUrl Element's source url
          * @param shadowRoot optional shadow root element
          */
         collapseElement: collapseElement,
