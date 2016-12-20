@@ -1,6 +1,6 @@
-! Checksum: B2i7XXPVB4arcTkdTPKTuQ
-! Version: 1.0.6.26
-! TimeUpdated: 2016-12-16T02:01:47.115+04:00
+! Checksum: yZN7O5YwPmzJkw2J82tIxQ
+! Version: 1.0.6.30
+! TimeUpdated: 2016-12-19T23:01:40.430+04:00
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
@@ -770,6 +770,9 @@ m.veporn.net#@##topAds
 @@||rutube.ru/play/embed/*?advertiser_id=
 @@||forums.windowscentral.com^$script,~third-party
 @@||android-api-de.gumtree.com/api/users/*/ads.json
+4pda.ru#@$#body > div:first-child > div[class]:first-child>div[class]:first-child>#header+div[id][-ext-has="div"] { background-image: none !important; }
+4pda.ru#@#div[class^="r"][-ext-has="> header"] > div[class]:first-child
+4pda.ru#@$#body > div[id]:first-child > div[class]:first-child > div[class]:first-child > div[-ext-has="div"] { background: #e6e7e9!important; }
 4pda.ru#@#.sidebar_border_content > a[rel="nofollow"][-ext-has=">img"]
 4pda.ru#@#aside[id] > div[class][-ext-has='div.sidebar_border_content>a>img[height="400"]']
 4pda.ru#@#aside[id] > div[class][-ext-has='h2:contains(AppPromo)']
@@ -1006,6 +1009,7 @@ login.wi-fi.ru#%#window.isPremium = true;
 ||graph.facebook.com^$app=com.mobilefootie.wc2010
 ||graph.facebook.com^$app=com.mobilesrepublic.appy
 ||graph.facebook.com^$app=fr.meteo
+||crosspromo*.qplaze.com^$app=com.nomoc.wolfonfarm
 ||crosspromo*.qplaze.com/PushCampaignXMLOut.php
 @@||ups.ksmobile.net^$app=com.cleanmaster.security
 ||server.idreams.pl/news/ads_sfr_*.json
@@ -1249,6 +1253,9 @@ iapp-cp.nuggad.net^
 ||analy.qq.com^
 ||appsupport.qq.com/cgi-bin/appstage/mstats_batch_report
 ||monitor.uu.qq.com/analytics/
+forum.saransk.ru##div[class^="banner_zone"]
+compress.ru##div[class^="baner-top"]
+compress.ru##.right-sidebar
 ||wsp.marketgid.com^
 ###ad_foot
 @@||appex-rf.msn.com/*.js?adtype=

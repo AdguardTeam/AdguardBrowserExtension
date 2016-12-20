@@ -1,6 +1,6 @@
-! Checksum: yFAQUGnc9255vRDFW/w7zQ
-! Version: 1.0.7.92
-! TimeUpdated: 2016-12-16T13:02:04.459+04:00
+! Checksum: lLC+3vtHy7NMGh8itf0Qqg
+! Version: 1.0.8.3
+! TimeUpdated: 2016-12-20T02:02:21.360+04:00
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on webpages including cookie notices third-party widgets and in-page popups.
 ! Title: Adguard Annoyances Filter
@@ -33,6 +33,8 @@
 !
 !######### Annoying elements (not ads)
 !
+! elmundo.es - subscription block
+elmundo.es###banda_suscripcion
 ! https://forum.adguard.com/index.php?threads/17569/
 subs.ro###subtitles-page > .items > li:empty
 ! m.economictimes.com - subscription block
@@ -280,6 +282,9 @@ povarenok.ru##.header-socials
 @@||ds.bitpit.xyz/advertise.js
 @@||ds.bitpit.xyz/ad-top/advertise.js
 !
+prosieben.de##a[href^="http://www.prosieben.de/service/warum-werbung"]
+@@||static.telegraph.co.uk/*/ads.js
+politonline.ru##div[data-type="anti-abp"]
 @@||pornsocket.com/media/ads/site_ads.js
 zakon.kz##.adblock_alert
 numberempire.com###toplink
@@ -561,6 +566,7 @@ aol.com##.game-pre-load
 !#######################################################
 !######### General element hiding rules ################
 !#######################################################
+##div#sliding-popup
 ###cookie_consent_container
 ###cookieInfoBanner
 ###cookie_popup_container
@@ -2193,6 +2199,8 @@ _europecookielaw.
 !#######################################################
 !######### Rules for specific sites ####################
 !#######################################################
+xbox-passion.de##body > #ckch
+stokke.com##.luana-module-cookie-policy
 rtbf.be###js-cookie-policy-default
 weebly.com##.notice--int-cookies
 lawdepot.co.uk#$#html { margin-top: 0px!important; }
@@ -2204,13 +2212,10 @@ tu-dresden.de###privacy-statement
 telekom.com##.cookielayer
 ebz-business-school.de###cooklay
 ||daimler.com/system/js/vendor/jquery-fancybox-pack.js
-royal.uk###sliding-popup
 vipbox.nu###cookies-monster
-gamcare.org.uk###sliding-popup
 ip-address.org###cookie-bar
 2ip.ru##.cookies-notification
 support.ubi.com##.message--cookie
-alexanderschimpf.de,claireperry.org.uk,duden.de,geliebte-katze.de,nordbayerischer-kurier.de,zillya.com###sliding-popup
 ganassurances.fr###gan_privacy
 selexion.be###splash_footer
 0800autolease.nl##body > div[style*="z-index"]
@@ -2551,6 +2556,8 @@ mycard2go.com#@#.cookiebar
 !
 !
 !--- Reamains of ads ---
+imgwallet.com##.sidebar > h3[-ext-has="a:contains(Recommended)"]
+imgwallet.com##.sidebar > h3[-ext-has="a:contains(Recommended)"] + div
 direkizle.org##.sidebar > .sidebaslik:contains(Reklam)
 shoes-report.ru##div[id^="side_"] div.widget-top[-ext-has="h4:contains(Реклама)"]
 uploads.to##.table > tbody > tr[-ext-has='ins.adsbygoogle']
@@ -2771,6 +2778,10 @@ panzehir.net###sidebar > center > b
 !#######################################################
 !######### Banners of mobile apps for the sites ########
 !#######################################################
+m.imgur.com##.PostContainer-postGetApp
+m.imgur.com##.FloatingOIA
+m.imgur.com##.Post-contentContainer > div.Post-metaContainer
+zakon.kz###smartbanner
 sport-express.ru##.addmenu li.advertwww
 regnum.ru##.footer-apps
 pixiv.net##dialog.app-dialog-for-first-user
@@ -2873,6 +2884,8 @@ rozetka.com.ua#%#AG_onLoad(function(){ var e = document.querySelector('a.popup-c
 !
 ! Specific sites
 !
+diziizle.net###facebook-takipet
+diziizle.net###spopup
 techblogng.com##.mailmunch-scrollbox
 techblogng.com##iframe.HB-Takeover[src="about:blank"]
 javhdx.tv###spu-bg
@@ -3199,6 +3212,7 @@ livelib.ru,lenta.ru,mychrome,rambler.ru,sports.ru#%#(function() { if (typeof Not
 sports.ru#%#(function() { try { if ("undefined" != typeof localStorage) { var a = { date: (new Date).toString(), time: (new Date).getTime(), data: 2 }; localStorage.setItem("sports:view:notifications-subscribe-popup:closed:count", JSON.stringify(a)) } } catch (ex) {} })();
 sports.ru#%#(function() { try { if ("undefined" != typeof localStorage) { var a = { date: (new Date).toString(), time: (new Date).getTime(), data: true }; localStorage.setItem("sports:view:notifications-subscribe-popup:view", JSON.stringify(a)) } } catch (ex) {} })();
 !
+kommersant.ru##.push_notification
 ||zakon.kz/static_zakon/push-notifications/main.js
 trinixy.ru##.b-notification-push
 24tv.ua##.subscription-bell-wrap
@@ -3241,6 +3255,7 @@ zr.ru#%#document.cookie = "zrPushSubsPopUp=1";
 !
 !######### Remains of ads
 !
+diziizlep.com###kendisi > div[style="min-height:23px;border: 1px solid #294887; background: #3b5998;text-align:center;padding:10px; margin-bottom:10px; color: #fff; font-size: 14px;"]
 audiotube.org##div[style="color:black;background-color:white;line-height: 11px;"]+hr
 beycan.net###site > #menu + .left
 wiesentbote.de###footer-widgets
@@ -3637,6 +3652,7 @@ ubuntumaniac.com##div[class="widget HTML"][id^="HTML"][-ext-has='a[class="quicke
 !
 !######### Remains of social widgets #########
 !
+diziizlep.com###kendisi+div[style="min-height:80px;border: 1px solid #121212; background: #1e1e1e;padding:5px; margin-top:30px; margin-bottom:30px; color: #797979; font-size: 12px; "]
 torrent-indir.net###sidebar div.sidebarborder[-ext-has='div.facebookbox']
 androidcentral.com##.container > .col-right
 sinemafilm.org##.facebok
@@ -3821,6 +3837,9 @@ kinoprofi.su#%#Object.defineProperty(window, 'getSelection', { get: function() {
 !### 3rd-party assistants, etc #########################
 !#######################################################
 !
+! https://forum.adguard.com/index.php?threads/17661/
+pesni-tut.com##.r_m_genre_songs+div[id]+div:not([id])
+||fresher.ru/widget/
 ! getsitecontrol.com - surveys, email opt-in forms, contact forms, popups, follow, share buttons and live chats
 ||widgets.getsitecontrol.com^$third-party
 ! mailfire.io - email subscription widget
@@ -3861,9 +3880,6 @@ kinoprofi.su#%#Object.defineProperty(window, 'getSelection', { get: function() {
 ||web-client.livetex.ru^$third-party
 ||web-client-02.livetex.ru^$third-party
 ||widgets.livetex.ru^$third-party
-! Sinoptik weather widget
-segodnya.ua##iframe[src^="http://sinoptik.ua/"]
-ukr.net###sinoptik_container
 ||pinformer.sinoptik.ua^$third-party
 ||sinoptik.ua/_uploaded_files/informer/
 ||sinoptik.ua/informers$third-party
@@ -3872,10 +3888,17 @@ ukr.net###sinoptik_container
 ||kurs.com.ua/informer/$third-party
 ||informer.minfin.com.ua
 rosbalt.ru##.ad_tele
-! GisMeteo widget
+!***
+!* Weather widgets
 ##.gsInformer
 /gs_informerClient.s$third-party
 ||gismeteo.*/ajax/getInformer/$third-party
+ua.today###meteoprog_informer_standart
+||meteoprog.ua/*/weather/informer/$third-party
+segodnya.ua##iframe[src^="http://sinoptik.ua/"]
+ukr.net###sinoptik_container
+!*
+!***
 ! Call-back widget
 ||my.zadarma.com/callbackWidget/js/main.min.js
 !

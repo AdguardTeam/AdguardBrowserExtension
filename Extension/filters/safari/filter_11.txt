@@ -1,6 +1,6 @@
-! Checksum: iSD4urBEZWuLxBBaJgiIQQ
-! Version: 1.0.6.26
-! TimeUpdated: 2016-12-16T02:01:47.115+04:00
+! Checksum: A28yVkA+N/f11sLeogw62w
+! Version: 1.0.6.30
+! TimeUpdated: 2016-12-19T23:01:40.430+04:00
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
 ! Title: Adguard Mobile Ads Filter
@@ -886,6 +886,9 @@ m.veporn.net#@##topAds
 @@||android-api-de.gumtree.com/api/users/*/ads.json
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3348
 ! Extended CSS issue(freeze)
+4pda.ru#@$#body > div:first-child > div[class]:first-child>div[class]:first-child>#header+div[id][-ext-has="div"] { background-image: none !important; }
+4pda.ru#@#div[class^="r"][-ext-has="> header"] > div[class]:first-child
+4pda.ru#@$#body > div[id]:first-child > div[class]:first-child > div[class]:first-child > div[-ext-has="div"] { background: #e6e7e9!important; }
 4pda.ru#@#.sidebar_border_content > a[rel="nofollow"][-ext-has=">img"]
 4pda.ru#@#aside[id] > div[class][-ext-has='div.sidebar_border_content>a>img[height="400"]']
 4pda.ru#@#aside[id] > div[class][-ext-has='h2:contains(AppPromo)']
@@ -1194,6 +1197,7 @@ login.wi-fi.ru#%#window.isPremium = true;
 !
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3738
+||crosspromo*.qplaze.com^$app=com.nomoc.wolfonfarm
 ||crosspromo*.qplaze.com/PushCampaignXMLOut.php
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3717
 @@||ups.ksmobile.net^$app=com.cleanmaster.security
@@ -1512,6 +1516,11 @@ iapp-cp.nuggad.net^
 ! Section contains rules, which absent in mobile version of filters
 !
 !--- Russian filter ---
+! https://forum.adguard.com/index.php?threads/17787/
+forum.saransk.ru##div[class^="banner_zone"]
+! https://github.com/AdguardTeam/AdguardFilters/issues/3796
+compress.ru##div[class^="baner-top"]
+compress.ru##.right-sidebar
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3340
 ||wsp.marketgid.com^
 !--- English filter ---
