@@ -45,6 +45,9 @@ var FilterRulesHitCount = function () {
     EventNotifier.addListener(function (event, setting) {
         if (event == EventNotifierTypes.CHANGE_USER_SETTINGS && setting == userSettings.settings.DISABLE_COLLECT_HITS) {
             this.collectStatsEnabled = userSettings.collectHitsCount();
+            if (!this.collectStatsEnabled) {
+                this.cleanup();
+            }
         }
     }.bind(this));
 };

@@ -149,7 +149,9 @@ function onHeadersReceived(requestDetails) {
  */
 function filterSafebrowsing(tab, mainFrameUrl) {
 
-    if (framesMap.isTabAdguardDetected(tab) || framesMap.isTabProtectionDisabled(tab) || framesMap.isTabWhiteListedForSafebrowsing(tab)) {
+    if (framesMap.isTabAdguardDetected(tab) || 
+        framesMap.isTabProtectionDisabled(tab) || 
+        framesMap.isTabWhiteListedForSafebrowsing(tab)) {
         return;
     }
 

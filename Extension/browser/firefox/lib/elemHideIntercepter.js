@@ -151,9 +151,9 @@ HidingChannel.prototype = {
 			var tabId = WebRequestHelper.getTabIdForChannel(this);
 			var tab = {id: tabId};
 
-			if (!tabId
-				|| this._isTabWhiteListed(tab)
-				|| this._isElemHideWhiteListed(tab)) {
+			if (!tabId || 
+				this._isTabWhiteListed(tab) || 
+				this._isElemHideWhiteListed(tab)) {
 				// Return dummy binding if there is an exception rule for this URL
 				data = this.notHideData;
 			} else {

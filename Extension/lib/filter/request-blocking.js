@@ -35,6 +35,24 @@ var WebRequestService = exports.WebRequestService = function (framesMap, antiBan
 WebRequestService.prototype = (function () {
 
     /**
+     * Records filtering rule hit
+     * 
+     * @param tab            Tab object
+     * @param requestRule    Rule to record
+     * @param requestUrl     Request URL
+     */
+    var recordRuleHit = function(tab, requestRule, requestUrl) {
+        if (requestRule && 
+            !FilterUtils.isUserFilterRule(requestRule) && 
+            !FilterUtils.isWhiteListFilterRule(requestRule) && 
+            !this.framesMap.isIncognitoTab(tab)) {
+            
+            var domain = this.framesMap.getFrameDomain(tab);
+            filterRulesHitCount.addRuleHit(domain, requestRule.ruleText, requestRule.filterId, requestUrl);
+        }
+    };
+
+    /**
      * Prepares CSS and JS which should be injected to the page.
      *
      * @param tab           Tab
@@ -56,10 +74,29 @@ WebRequestService.prototype = (function () {
             };
         }
 
-        if (this.framesMap.isTabAdguardDetected(tab) || this.framesMap.isTabProtectionDisabled(tab) || this.framesMap.isTabWhiteListed(tab)) {
+        if (this.framesMap.isTabAdguardDetected(tab) || 
+            this.framesMap.isTabProtectionDisabled(tab)) {
             return result;
         }
 
+        // Looking for the whitelist rule
+        var whitelistRule = this.framesMap.getFrameWhiteListRule(tab);
+        if (!whitelistRule) {
+            // Check whitelist for current frame
+            var mainFrameUrl = this.framesMap.getMainFrameUrl(tab);
+            whitelistRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, mainFrameUrl, RequestTypes.DOCUMENT);
+        }
+
+        // Record rule hit
+        recordRuleHit(tab, whitelistRule, documentUrl);
+
+        // It's important to check this after the recordRuleHit call
+        // as otherwise we will never record $document rules hit for domain
+        if (this.framesMap.isTabWhiteListed(tab)) {
+            return result;
+        }
+
+        // Prepare result
         result = {
             selectors: {
                 css: null,
@@ -70,15 +107,12 @@ WebRequestService.prototype = (function () {
             useShadowDom: Utils.isShadowDomSupported()
         };
 
-        var whitelistRule = this.framesMap.getFrameWhiteListRule(tab);
-        if (!whitelistRule) {
-            //Check whitelist for current frame
-            var mainFrameUrl = this.framesMap.getMainFrameUrl(tab);
-            whitelistRule = this.antiBannerService.getRequestFilter().findWhiteListRule(documentUrl, mainFrameUrl, RequestTypes.DOCUMENT);
-        }
+        // Check what exactly is disabled by this rule
         var genericHideFlag = genericHide || (whitelistRule && whitelistRule.checkContentType("GENERICHIDE"));
         var elemHideFlag = whitelistRule && whitelistRule.checkContentType("ELEMHIDE");
+        
         if (!elemHideFlag) {
+            // Element hiding rules aren't disabled, so we should use them            
             if (shouldLoadAllSelectors(result.collapseAllElements)) {
                 result.selectors = this.antiBannerService.getRequestFilter().getSelectorsForUrl(documentUrl, genericHideFlag);
             } else {
@@ -88,6 +122,7 @@ WebRequestService.prototype = (function () {
 
         var jsInjectFlag = whitelistRule && whitelistRule.checkContentType("JSINJECT");
         if (!jsInjectFlag) {
+            // JS rules aren't disabled, returning them
             result.scripts = this.antiBannerService.getRequestFilter().getScriptsForUrl(documentUrl);
         }
 
@@ -184,11 +219,11 @@ WebRequestService.prototype = (function () {
 
         var whitelistRule = this.framesMap.getFrameWhiteListRule(tab);
         if (whitelistRule && whitelistRule.checkContentTypeIncluded("DOCUMENT")) {
-            // Frame is whitelisted by main frame's $document rule
+            // Frame is whitelisted by the main frame's $document rule
             // We do nothing more in this case - return the rule.
             return whitelistRule;
         } else if (!whitelistRule) {
-            // If whitelist rule is not found for main frame, we check it for referrer
+            // If whitelist rule is not found for the main frame, we check it for referrer
             whitelistRule = this.antiBannerService.getRequestFilter().findWhiteListRule(requestUrl, referrerUrl, RequestTypes.DOCUMENT);
         }
 
@@ -199,7 +234,7 @@ WebRequestService.prototype = (function () {
      * Processes HTTP response.
      * It could do the following:
      * 1. Detect desktop AG and switch to integration mode
-     * 2. Add event to filtering log (for DOCUMENT requests)
+     * 2. Add event to the filtering log (for DOCUMENT requests)
      * 3. Record page stats (if it's enabled)
      *
      * @param tab Tab object
@@ -225,11 +260,11 @@ WebRequestService.prototype = (function () {
         var appendLogEvent = false;
 
         if (this.framesMap.isTabAdguardDetected(tab)) {
-            //parse rule applied to request from response headers
+            // Parse rule applied to request from response headers
             requestRule = this.adguardApplication.parseAdguardRuleFromHeaders(responseHeaders);
             appendLogEvent = !ServiceClient.isAdguardAppRequest(requestUrl);
         } else if (this.framesMap.isTabProtectionDisabled(tab)) {
-            //do nothing
+            // Doing nothing
         } else if (requestType == RequestTypes.DOCUMENT) {
             requestRule = this.framesMap.getFrameWhiteListRule(tab);
             var domain = this.framesMap.getFrameDomain(tab);
@@ -268,11 +303,8 @@ WebRequestService.prototype = (function () {
 
         this.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
 
-        if (requestRule && !FilterUtils.isUserFilterRule(requestRule) && !FilterUtils.isWhiteListFilterRule(requestRule) && !this.framesMap.isIncognitoTab(tab)) {
-
-            var domain = this.framesMap.getFrameDomain(tab);
-            filterRulesHitCount.addRuleHit(domain, requestRule.ruleText, requestRule.filterId, requestUrl);
-        }
+        // Record rule hit
+        recordRuleHit(tab, requestRule, requestUrl);
     };
 
     var shouldLoadAllSelectors = function (collapseAllElements) {
