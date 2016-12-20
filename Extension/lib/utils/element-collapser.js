@@ -274,6 +274,10 @@ var ElementCollapser = (function() {
             return;
         }
 
+        // Src elements above should not be unhidden.
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/486
+        unhideElement(element, shadowRoot);
+
         var cssProperty = "display";
         var cssValue = "none";
         var cssPriority = "important";
