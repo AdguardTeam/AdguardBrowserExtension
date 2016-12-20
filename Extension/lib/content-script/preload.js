@@ -543,57 +543,35 @@
         }
 
         return elementUrl;
-    }
-
-    /**
-     * Checks if element is blocked by AG and should be hidden
-     *
-     * @param element
-     */
-    var checkShouldCollapseElement = function (element) {
-        var tagName = element.tagName.toLowerCase();
-
-        var requestType = requestTypeMap[tagName];
-        if (!requestType) {
-            return;
-        }
-
-        var elementUrl = getElementUrl(element);
-        if (!elementUrl) {
-            return;
-        }
-
-        // Save request to a map (it will be used in response callback)
-        var requestId = collapseRequestId++;
-        collapseRequests[requestId] = {
-            element: element,
-            elementUrl: elementUrl,
-            tagName: tagName
-        };
-
-        tempHideElement(element);
-
-        // Send a message to the background page to check if the element really should be collapsed
-        var message = {
-            type: 'processShouldCollapse',
-            elementUrl: elementUrl,
-            documentUrl: document.URL,
-            requestType: requestType,
-            requestId: requestId
-        };
-
-        contentPage.sendMessage(message, onProcessShouldCollapseResponse);
     };
 
     /**
-     * Hides element temporary
+     * Saves collapse request (to be reused after we get result from bg page)
+     * 
+     * @param element Element to check
+     * @return request ID 
+     */
+    var saveCollapseRequest = function(element) {
+        
+        var tagName = element.tagName.toLowerCase();
+        var requestId = collapseRequestId++;
+        collapseRequests[requestId] = {
+            element: element,
+            src: element.src,
+            tagName: tagName
+        };
+
+        return requestId;
+    };
+
+    /**
+     * Hides element temporarily (until collapse check request is processed)
      *
-     * @param element
+     * @param element Element to hide
      */
     var tempHideElement = function (element) {
         // We skip big frames here
-        var tagName = element.tagName.toLowerCase();
-        if (tagName === 'iframe' || tagName === 'frame') {
+        if (element.localName === 'iframe' || element.localName === 'frame') {
             if (element.clientHeight * element.clientWidth > 400 * 300) {
                 return;
             }
@@ -601,7 +579,7 @@
 
         ElementCollapser.hideElement(element, shadowRoot);
     };
-    
+
     /**
      * Response callback for "processShouldCollapse" message.
      * 
@@ -622,7 +600,7 @@
 
         var element = collapseRequest.element;
         if (response.collapse === true) {
-            var elementUrl = collapseRequest.elementUrl;
+            var elementUrl = collapseRequest.src;
             ElementCollapser.collapseElement(element, elementUrl, shadowRoot);
         }
         
@@ -631,20 +609,57 @@
         // Otherwise we shouldn't hide it either as it shouldn't be blocked
         ElementCollapser.unhideElement(element, shadowRoot);
     };
+
+    /**
+     * Checks if element is blocked by AG and should be hidden
+     *
+     * @param element Element to check
+     */
+    var checkShouldCollapseElement = function (element) {
+
+        var requestType = requestTypeMap[element.localName];
+        if (!requestType) {
+            return;
+        }
+
+        var elementUrl = getElementUrl(element);
+        if (!elementUrl) {
+            return;
+        }
+
+        // Save request to a map (it will be used in response callback)
+        var requestId = saveCollapseRequest(element);
+
+        // Hide element right away (to prevent iframes "blinking")
+        tempHideElement(element);
+
+        // Send a message to the background page to check if the element really should be collapsed
+        var message = {
+            type: 'processShouldCollapse',
+            elementUrl: elementUrl,
+            documentUrl: document.URL,
+            requestType: requestType,
+            requestId: requestId
+        };
+
+        contentPage.sendMessage(message, onProcessShouldCollapseResponse);
+    };
     
     /**
-     * This method is used when we need to check all page elements with collapse rules.
-     * We need this when the browser is just started and add-on is not yet initialized.
-     * In this case content scripts waits for add-on initialization and the
-     * checks all page elements.  
+     * Response callback for "processShouldCollapseMany" message.
+     *
+     * @param response Response from bg page.
      */
-    var initBatchCollapse = function() {
-        if (document.readyState === 'complete' ||
-            document.readyState === 'loaded' ||
-            document.readyState === 'interactive') {
-            checkBatchShouldCollapse();
-        } else {
-            document.addEventListener('DOMContentLoaded', checkBatchShouldCollapse);
+    var onProcessShouldCollapseManyResponse = function(response) {
+
+        if (!response) {
+            return;
+        }
+
+        var requests = response.requests;
+        for (var i = 0; i < requests.length; i++) {
+            var collapseRequest = requests[i];
+            onProcessShouldCollapseResponse(collapseRequest);
         }
     };
     
@@ -667,19 +682,14 @@
                     return;
                 }
 
-                var requestId = collapseRequestId++;
+                var requestId = saveCollapseRequest(element); 
+
                 requests.push({
                     elementUrl: elementUrl,
                     requestType: requestType,
                     requestId: requestId,
                     tagName: tagName
                 });
-
-                collapseRequests[requestId] = {
-                    element: element,
-                    elementUrl: elementUrl,
-                    tagName: tagName
-                };
             }
         }
 
@@ -692,25 +702,23 @@
         // Send all prepared requests in one message
         contentPage.sendMessage(message, onProcessShouldCollapseManyResponse);
     };
-    
+
     /**
-     * Response callback for "processShouldCollapseMany" message.
-     *
-     * @param response Response from bg page.
+     * This method is used when we need to check all page elements with collapse rules.
+     * We need this when the browser is just started and add-on is not yet initialized.
+     * In this case content scripts waits for add-on initialization and the
+     * checks all page elements.  
      */
-    var onProcessShouldCollapseManyResponse = function(response) {
-
-        if (!response) {
-            return;
-        }
-
-        var requests = response.requests;
-        for (var i = 0; i < requests.length; i++) {
-            var collapseRequest = requests[i];
-            onProcessShouldCollapseResponse(collapseRequest);
+    var initBatchCollapse = function() {
+        if (document.readyState === 'complete' ||
+            document.readyState === 'loaded' ||
+            document.readyState === 'interactive') {
+            checkBatchShouldCollapse();
+        } else {
+            document.addEventListener('DOMContentLoaded', checkBatchShouldCollapse);
         }
     };
-    
+   
     /**
      * Called when document become visible.
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/159

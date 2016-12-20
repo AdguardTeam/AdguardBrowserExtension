@@ -20,7 +20,7 @@
 /**
  * Object that collapses or hides DOM elements and able to roll it back.
  */
-var ElementCollapser = (function() {
+var ElementCollapser = (function() { // jshint ignore:line
 
     var collapserStyleId = "adguard-collapse-styles";
     var hiddenElements = [];
@@ -263,14 +263,20 @@ var ElementCollapser = (function() {
         
         var tagName = element.tagName.toLowerCase();
 
-        // Check that element still has the same "src" attribute
-        if (element.src == elementUrl) {
-            // To not to keep track of changing src for elements, we are going to collapse it with a CSS rule
-            // But we take element url, cause current source could be already modified
-            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/408
-            var srcAttribute = element.getAttribute('src');
-            var srcSelector = createSelectorForSrcAttr(srcAttribute, tagName);
-            hideBySelectorAndTagName(srcSelector, tagName, shadowRoot);
+        if (elementUrl) {
+            
+            // Check that element still has the same "src" attribute
+            // If it has changed, we do not need to collapse it anymore
+            if (element.src == elementUrl) {
+                // To not to keep track of changing src for elements, we are going to collapse it with a CSS rule
+                // But we take element url, cause current source could be already modified
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/408
+                var srcAttribute = element.getAttribute('src');
+                var srcSelector = createSelectorForSrcAttr(srcAttribute, tagName);
+                hideBySelectorAndTagName(srcSelector, tagName, shadowRoot);
+            }
+            
+            // Do not process it further in any case
             return;
         }
 
