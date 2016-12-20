@@ -1,6 +1,6 @@
-! Checksum: 9vObkEzCPqP3ajP8sBPGCA
-! Version: 1.0.29.52
-! TimeUpdated: 2016-12-20T14:57:07.915+04:00
+! Checksum: WwNVlI8qScUMb3PJckmsvA
+! Version: 1.0.29.53
+! TimeUpdated: 2016-12-20T16:00:53.915+04:00
 ! Title: German filter
 ! Description: EasyList Germany + Adguard German filter. Filter list that specifically removes adverts on German language websites.
 ! Title: Adguard German Filter.
@@ -306,6 +306,8 @@ pcgames.de##.item.noImg[-ext-has='div.itemHeadline span.itemTitle:contains([Anze
 !--------------------------------------!
 !------- JS rules ---------------------!
 !--------------------------------------!
+! https://forum.adguard.com/index.php?threads/rp-online-de.17415/
+rp-online.de#%#AG_onLoad(function(){var a=document.getElementsByClassName("js-rpoubr")[0];a&&a.setAttribute("data-ad-interval",-1)});
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3471
 java-forum.org#%#var st = ".sidebar > div.widget-container:first-of-type, .sidebar > a[href^=\"http://future-sale-system.de\"], #messageList > li.message:not([id]), .sidebar > a[target=\"_blank\"] > img {display: none!important; }", a=document.createElement("style");a.type="text/css";a.styleSheet?a.styleSheet.cssText=st:a.innerHTML=st;document.getElementsByTagName("head")[0].appendChild(a);
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3437
@@ -383,6 +385,8 @@ freenet.de#$##frnMain { min-height: 0px!important; }
 ! http://forum.adguard.com/showthread.php?8979 (#17)
 ||static.p7s1.com/vendor/webtrekk
 !
+meaningsan.com##.ya3
+meaningsan.com##div[class^="abc"]
 sat1.de##section.box[data-track*="cont:Sales"]
 rtl.de###pl_playerBreakAd
 express.de##.dm_ta300x-- > a[target$="_blank"]

@@ -1,6 +1,6 @@
-! Checksum: lLC+3vtHy7NMGh8itf0Qqg
-! Version: 1.0.8.3
-! TimeUpdated: 2016-12-20T02:02:21.360+04:00
+! Checksum: UvHDS9XqFFycLGPwqxeAww
+! Version: 1.0.8.8
+! TimeUpdated: 2016-12-21T00:02:21.354+04:00
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on webpages including cookie notices third-party widgets and in-page popups.
 ! Title: Adguard Annoyances Filter
@@ -33,6 +33,10 @@
 !
 !######### Annoying elements (not ads)
 !
+! instagram.com - subscription block
+instagram.com##._br9is._3v251
+! bhf.io - новогодние колокола в шапке сайта
+bhf.io##.b-head-decor
 ! elmundo.es - subscription block
 elmundo.es###banda_suscripcion
 ! https://forum.adguard.com/index.php?threads/17569/
@@ -2884,6 +2888,9 @@ rozetka.com.ua#%#AG_onLoad(function(){ var e = document.querySelector('a.popup-c
 !
 ! Specific sites
 !
+hepmacizle.com##.rahatsiz_begeni_kutusu
+yumurtaliekmek.com##div[id^="simplemodal-"]
+rzn.info###myNotification
 diziizle.net###facebook-takipet
 diziizle.net###spopup
 techblogng.com##.mailmunch-scrollbox
@@ -3652,6 +3659,8 @@ ubuntumaniac.com##div[class="widget HTML"][id^="HTML"][-ext-has='a[class="quicke
 !
 !######### Remains of social widgets #########
 !
+taslar.net###right > .rightbaslik[style*="color:#3b5998"] + .rightalan
+taslar.net###right > .rightbaslik[style*="color:#3b5998"]
 diziizlep.com###kendisi+div[style="min-height:80px;border: 1px solid #121212; background: #1e1e1e;padding:5px; margin-top:30px; margin-bottom:30px; color: #797979; font-size: 12px; "]
 torrent-indir.net###sidebar div.sidebarborder[-ext-has='div.facebookbox']
 androidcentral.com##.container > .col-right
@@ -3808,8 +3817,9 @@ videogamesblogger.com#%#AG_onLoad(function() { window.num_seconds = 1; });
 ! revclouds.com - uncheck the loader
 revclouds.com#%#AG_onLoad(function() {document.getElementById("tick-dwn").click();});
 !
-! Unblock context menu
+! Unblock context menu and other mouse limitations
 !
+||cdn.web.tv/asset/javascripts/smothScroll.min.js
 teknokasif.com#%#Object.defineProperty(document, 'oncontextmenu', { get: function() { return; } });
 ceplik.com#%#Object.defineProperty(document, 'oncontextmenu', { get: function() { return; } });
 7lafa.com#%#AG_onLoad(function() {setTimeout(function(){document.getElementsByTagName('body')[0].removeAttribute("oncopy"); document.getElementsByTagName('body')[0].removeAttribute("onselectstart");}, 300);});

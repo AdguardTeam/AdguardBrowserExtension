@@ -1,6 +1,6 @@
-! Checksum: UnFtLEUoCSwdTcOQovjxPw
-! Version: 1.0.29.52
-! TimeUpdated: 2016-12-20T14:57:07.915+04:00
+! Checksum: O7M3gFOImcyEvXtclJFfmg
+! Version: 1.0.29.53
+! TimeUpdated: 2016-12-20T16:00:53.915+04:00
 ! Title: German filter
 ! Description: EasyList Germany + Adguard German filter. Filter list that specifically removes adverts on German language websites.
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
@@ -161,6 +161,7 @@ serien.3dl.tv##a[rel="nofollow"][-ext-has='img[src$="/premium.png"]']
 pcgameshardware.de##.articleticker_item.archive[-ext-has="h3>a:contains([Anzeige])"]
 pcwelt.de##section[class="post"][data-vr-contentbox][-ext-has="div.holder > a > div.tab:contains(Anzeige)"]
 pcgames.de##.item.noImg[-ext-has='div.itemHeadline span.itemTitle:contains([Anzeige])']
+rp-online.de#%#AG_onLoad(function(){var a=document.getElementsByClassName("js-rpoubr")[0];a&&a.setAttribute("data-ad-interval",-1)});
 java-forum.org#%#var st = ".sidebar > div.widget-container:first-of-type, .sidebar > a[href^=\"http://future-sale-system.de\"], #messageList > li.message:not([id]), .sidebar > a[target=\"_blank\"] > img {display: none!important; }", a=document.createElement("style");a.type="text/css";a.styleSheet?a.styleSheet.cssText=st:a.innerHTML=st;document.getElementsByTagName("head")[0].appendChild(a);
 frustfrei-lernen.de#%#AG_onLoad(function(){document.getElementsByClassName("contentBody")[0].innerHTML = document.getElementsByClassName("contentBody")[0].innerHTML.replace(/Anzeigen:<br>\s*<script [\s\S]*?>\s*?\/\/dupZwOX[\s\S]*?<\/script>/, "");});
 news.de#%#window.disablePopUnder = true;
@@ -190,6 +191,8 @@ mathematik-wissen.de#$#body { margin-top: 0px!important; }
 kostenlose-online-rechner.de#$##maincontent { min-height:auto!important; }
 freenet.de#$##frnMain { min-height: 0px!important; }
 ||static.p7s1.com/vendor/webtrekk
+meaningsan.com##.ya3
+meaningsan.com##div[class^="abc"]
 sat1.de##section.box[data-track*="cont:Sales"]
 rtl.de###pl_playerBreakAd
 express.de##.dm_ta300x-- > a[target$="_blank"]
