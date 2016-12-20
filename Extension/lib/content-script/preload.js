@@ -679,7 +679,7 @@
                 var element = elements[j];
                 var elementUrl = getElementUrl(element);
                 if (!elementUrl) {
-                    return;
+                    continue;
                 }
 
                 var requestId = saveCollapseRequest(element); 
