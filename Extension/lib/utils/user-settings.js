@@ -191,12 +191,12 @@ adguard.settings = (function (adguard) {
         setProperty(settings.DEFAULT_WHITE_LIST_MODE, enabled);
     };
 
-    var isIntegrationDisabled = function () {
-        return getProperty(settings.DISABLE_INTEGRATION);
+    var isIntegrationEnabled = function () {
+        return !getProperty(settings.DISABLE_INTEGRATION);
     };
 
-    var changeIntegrationDisabled = function (disabled) {
-        setProperty(settings.DISABLE_INTEGRATION, disabled);
+    var changeIntegrationEnabled = function (enabled) {
+        setProperty(settings.DISABLE_INTEGRATION, !enabled);
     };
 
     var api = {};
@@ -232,8 +232,8 @@ adguard.settings = (function (adguard) {
     api.isDefaultWhiteListMode = isDefaultWhiteListMode;
     api.isUseOptimizedFiltersEnabled = isUseOptimizedFiltersEnabled;
     api.changeDefaultWhiteListMode = changeDefaultWhiteListMode;
-    api.isIntegrationDisabled = isIntegrationDisabled;
-    api.changeIntegrationDisabled = changeIntegrationDisabled;
+    api.isIntegrationEnabled = isIntegrationEnabled;
+    api.changeIntegrationEnabled = changeIntegrationEnabled;
 
     return api;
 

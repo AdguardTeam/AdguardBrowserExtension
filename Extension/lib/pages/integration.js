@@ -19,14 +19,14 @@
 
 $(document).ready(function () {
 
-    var DISABLE_INTEGRATION_TEXT = 'Отключить режим интеграции';
-    var ENABLE_INTEGRATION_TEXT = 'Включить режим интеграции';
-    var FIND_INTEGRATION_APP_TEXT = 'Найти приложение для интеграции';
+    var DISABLE_INTEGRATION_TEXT = 'Disable integration mode';
+    var ENABLE_INTEGRATION_TEXT = 'Enable integration mode';
+    var FIND_INTEGRATION_APP_TEXT = 'Find desktop application';
 
-    var INTEGRATION_APP_SEARCH_TEXT = 'Пожалуйста, подождите идет поиск приложения для интеграции.';
-    var INTEGRATION_DISABLED_TEXT = 'Режим интеграции выключен';
-    var INTEGRATION_APP_FOUND_TEXT = 'Приложения для интеграции найдено. Работает ';
-    var INTEGRATION_APP_NOT_FOUND_TEXT = 'Приложение для интеграции не найдено';
+    var INTEGRATION_APP_SEARCH_TEXT = 'Please wait, searching for desktop application';
+    var INTEGRATION_DISABLED_TEXT = 'Integration mode is disabled';
+    var INTEGRATION_APP_FOUND_TEXT = 'Desktop application has been found: ';
+    var INTEGRATION_APP_NOT_FOUND_TEXT = 'Desktop application hasn\'t been found';
 
     var statusTextEl = $('#statusText');
     var enableButton = $('#enableIntegration');

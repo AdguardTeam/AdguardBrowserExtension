@@ -249,7 +249,7 @@
                 return {
                     state: adguard.integration.getState(),
                     appInfo: adguard.integration.getAppInfo(),
-                    disabledByUser: adguard.settings.isIntegrationDisabled()
+                    disabledByUser: !adguard.settings.isIntegrationEnabled()
                 };
             case 'disableIntegration':
                 adguard.integration.disable();

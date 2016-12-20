@@ -268,6 +268,14 @@ adguard.integration = (function (adguard, api) {
     }
 
     /**
+     * Removes authorization token
+     */
+    function removeToken() {
+        adguard.localStorage.removeItem('integration-token');
+        authToken = null;
+    }
+
+    /**
      * Sends message to websocket
      * @param type Message type
      * @param payload Message payload
@@ -481,7 +489,7 @@ adguard.integration = (function (adguard, api) {
      * Enable integration and try to find Adguard application
      */
     var enable = function () {
-        adguard.settings.changeIntegrationDisabled(false);
+        adguard.settings.changeIntegrationEnabled(true);
         // reset port discovery index
         nextPortIndex = 0;
         transitionState(NONE_STATE);
@@ -491,7 +499,9 @@ adguard.integration = (function (adguard, api) {
      * Disable integration and disconnect from Adguard application
      */
     var disable = function () {
-        adguard.settings.changeIntegrationDisabled(true);
+        adguard.settings.changeIntegrationEnabled(false);
+        // Clear token
+        removeToken();
         transitionState(REJECTED_STATE);
     };
 
@@ -569,7 +579,7 @@ adguard.integration = (function (adguard, api) {
 
     adguard.listeners.addListener(function (event) {
         if (event === adguard.listeners.APPLICATION_INITIALIZED) {
-            if (adguard.settings.isIntegrationDisabled()) {
+            if (!adguard.settings.isIntegrationEnabled()) {
                 transitionState(REJECTED_STATE);
             } else {
                 transitionState(NONE_STATE);
