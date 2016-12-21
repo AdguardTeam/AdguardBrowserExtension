@@ -116,9 +116,8 @@ exports.main = function (options, callbacks) {
         var {FilteringLog} = loadAdguardModule('./filter/filtering-log');
         var {WebRequestService}= loadAdguardModule('./filter/request-blocking');
         var {AntiBannerService} = loadAdguardModule('./filter/antibanner');
-        var {ElemHide} = loadAdguardModule('./elemHide');
+        var {StyleService} = loadAdguardModule('./styleService');
         var {WebRequestImpl} = loadAdguardModule('./contentPolicy');
-        var {InterceptHandler} = loadAdguardModule('./elemHideIntercepter');
         var {UI} = loadAdguardModule('./ui');
         var {ContentMessageHandler}= loadAdguardModule('./content-message-handler');
         var {contentScripts} = loadAdguardModule('./contentScripts');
@@ -126,10 +125,9 @@ exports.main = function (options, callbacks) {
         // These require-calls are needed for proper build by cfx.
         // It does nothing in case of "jpm"-packed add-on
         require('./prefs');
-        require('./elemHide');
+        require('./styleService');
         require('./tabsMap');
         require('./contentPolicy');
-        require('./elemHideIntercepter');
         require('./content-message-handler');
         require('./ui');
         require('./utils/frames');
@@ -138,6 +136,7 @@ exports.main = function (options, callbacks) {
         require('./utils/user-settings');
         require('./filter/integration');
         require('./filter/filtering-log');
+        require('./filter/request-blocking');
         require('./filter/antibanner');
 
         Log.info('Starting adguard addon...');
@@ -148,9 +147,8 @@ exports.main = function (options, callbacks) {
         var filteringLog = new FilteringLog(TabsMap, framesMap, UI);
         var webRequestService = new WebRequestService(framesMap, antiBannerService, filteringLog, adguardApplication);
 
-        WebRequestImpl.init(antiBannerService, adguardApplication, ElemHide, framesMap, filteringLog, webRequestService);
-        ElemHide.init(framesMap, antiBannerService, webRequestService);
-        InterceptHandler.init(framesMap, antiBannerService);
+        WebRequestImpl.init(antiBannerService, adguardApplication, framesMap, filteringLog, webRequestService);
+        StyleService.init();
         filterRulesHitCount.setAntiBannerService(antiBannerService);
 
         // Initialize content-message handler
@@ -282,7 +280,7 @@ var i18n = (function () {
  */
 var loadAdguardModule = function (modulePath) {
 
-    // Module name is full path from lib folder (e.g /lib/filter/antibanner or /lib/elemHide)
+    // Module name is full path from lib folder (e.g /lib/filter/antibanner or /lib/styleService)
     // We do this to store module in a key-value storage (so that we could initialize it only once)
     var moduleName;
 

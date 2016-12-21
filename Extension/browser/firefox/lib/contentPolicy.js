@@ -17,7 +17,7 @@
  */
 
 /* global require, exports */
-var {Cc, Ci, Cu, Cm, Cr, components} = require('chrome'); // jshint ignore:line
+var {Cc, Ci, Cu, Cr, components} = require('chrome'); // jshint ignore:line
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
@@ -33,8 +33,6 @@ var {EventNotifier} = require('./utils/notifier');
 var {EventNotifierTypes,RequestTypes} = require('./utils/common');
 var {UrlUtils} = require('./utils/url');
 var {Utils} = require('./utils/browser-utils');
-var {WebRequestService} = require('./filter/request-blocking'); // jshint ignore:line
-var {WorkaroundUtils} = require('./utils/workaround'); // jshint ignore:line
 
 /**
  * Helper object to work with web requests.
@@ -182,19 +180,6 @@ var WebRequestHelper = exports.WebRequestHelper = {
             return xulTab;
         }
         return null;
-    },
-
-    /**
-     * Gets tab id for channel
-     * @param channel Channel
-     * @returns XUL tab
-     */
-    getTabIdForChannel: function (channel) {
-        var xulTab = this.getTabForChannel(channel);
-        if (!xulTab) {
-            return null;
-        }
-        return tabUtils.getTabId(xulTab);
     },
 
     /**
@@ -377,7 +362,6 @@ var WebRequestImpl = exports.WebRequestImpl = {
 
     antiBannerService: null,
     adguardApplication: null,
-    ElemHide: null,
     framesMap: null,
     filteringLog: null,
     webRequestService: null,
@@ -387,18 +371,16 @@ var WebRequestImpl = exports.WebRequestImpl = {
      *
      * @param antiBannerService     AntiBannerService object (implements the filtering)
      * @param adguardApplication    AdguardApplication (used for integration with Adguard for Windows/Mac/Android)
-     * @param ElemHide              ElemHide object (used to apply CSS rules)
      * @param framesMap             Map with frames data
      * @param filteringLog          Service for log requests
      * @param webRequestService     Request Blocking service
      */
-    init: function (antiBannerService, adguardApplication, ElemHide, framesMap, filteringLog, webRequestService) {
+    init: function (antiBannerService, adguardApplication, framesMap, filteringLog, webRequestService) {
 
         Log.info('Initializing webRequest...');
 
         this.antiBannerService = antiBannerService;
         this.adguardApplication = adguardApplication;
-        this.ElemHide = ElemHide;
         this.framesMap = framesMap;
         this.filteringLog = filteringLog;
         this.webRequestService = webRequestService;
@@ -478,7 +460,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
         var requestUrl = contentLocation.asciiSpec;
         var requestType = WebRequestHelper.getRequestType(contentType, contentLocation);
 
-        var result = this._shouldBlockRequest(tab, requestUrl, referrer, requestType, aContext);
+        var result = this._shouldBlockRequest(tab, requestUrl, referrer, requestType);
 
         Log.debug('shouldLoad: {0} {1}. Result: {2}', requestUrl, requestType, result.blocked);
         this._saveLastRequestProperties(requestUrl, referrer, requestType, result, aContext);
@@ -518,7 +500,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
 
             var tab = {id: tabUtils.getTabId(xulTab)};
             var requestUrl = newChannel.URI.asciiSpec;
-            var shouldBlockResult = this._shouldBlockRequest(tab, requestUrl, requestProperties.referrer, requestProperties.requestType, null);
+            var shouldBlockResult = this._shouldBlockRequest(tab, requestUrl, requestProperties.referrer, requestProperties.requestType);
 
             Log.debug('asyncOnChannelRedirect: {0} {1}. Blocked={2}', requestUrl, requestProperties.requestType, shouldBlockResult.blocked);
             if (shouldBlockResult.blocked) {
@@ -697,11 +679,10 @@ var WebRequestImpl = exports.WebRequestImpl = {
      * @param requestUrl    Request url
      * @param referrer      Referrer url
      * @param requestType   Request type
-     * @param node          DOM node or null
      * @returns {*} object with two properties: "blocked" and "rule"
      * @private
      */
-    _shouldBlockRequest: function (tab, requestUrl, referrer, requestType, node) {
+    _shouldBlockRequest: function (tab, requestUrl, referrer, requestType) {
 
         var result = {
             blocked: false,
@@ -720,8 +701,6 @@ var WebRequestImpl = exports.WebRequestImpl = {
         result.blocked = this.webRequestService.isRequestBlockedByRule(result.rule);
 
         if (result.blocked || requestType === RequestTypes.WEBSOCKET) {
-            this._collapseElement(node, requestType);
-
             // Usually we call this method in _httpOnExamineResponse callback
             // But it won't be called if request is blocked here
             // Also it won't be called for WEBSOCKET requests
@@ -832,19 +811,6 @@ var WebRequestImpl = exports.WebRequestImpl = {
         this.antiBannerService.getRequestFilter().checkSafebrowsingFilter(requestUrl, referrerUrl, function (safebrowsingUrl) {
             tabUtils.setTabURL(xulTab, "chrome://adguard/content/" + safebrowsingUrl);
         }, incognitoTab);
-    },
-
-    /**
-     * Blocking rule found. Collapsing the element.
-     *
-     * @param node Node to collapse
-     * @param requestType Request type (got from nsIHttpChannel)
-     * @private
-     */
-    _collapseElement: function (node, requestType) {
-        if (node && node.ownerDocument && RequestTypes.isVisual(requestType)) {
-            this.ElemHide.collapseNode(node);
-        }
     },
 
     QueryInterface: XPCOMUtils.generateQI([Ci.nsIContentPolicy, Ci.nsIObserver, Ci.nsIChannelEventSink, Ci.nsIFactory, Ci.nsISupportsWeakReference])

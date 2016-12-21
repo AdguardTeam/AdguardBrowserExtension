@@ -256,20 +256,7 @@ var RequestTypes = exports.RequestTypes = { // jshint ignore:line
     /**
      * Synthetic request type for requests detected as pop-ups
      */
-    POPUP: "POPUP",
-
-    /**
-     * Checks if loaded element could be visible to user
-     *
-     * @param requestType Request type
-     * @returns {boolean} true if request is for some visual element
-     */
-    isVisual: function (requestType) {
-        return requestType == this.DOCUMENT ||
-            requestType == this.SUBDOCUMENT ||
-            requestType == this.OBJECT ||
-            requestType == this.IMAGE;
-    }
+    POPUP: "POPUP"
 };
 
 var AntiBannerFiltersId = exports.AntiBannerFiltersId = { // jshint ignore:line
