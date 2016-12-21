@@ -64,7 +64,9 @@ var Prefs = exports.Prefs = {
 	},
 
 	/**
-	 * Collect hit stats only for chromium platform
+	 * If user enables `Send ad filters usage stats` option (which is disabled by default) in Adguard settings, it starts collecting & sending stats on used ad filtering rules.
+	 * We use these stats to get rid of redundant filtering rules and provide "optimized" filters. Details: https://adguard.com/en/filter-rules-statistics.html
+	 * Disabled for the current version of FF add-on.
 	 */
 	collectHitsCountEnabled: false
 };
