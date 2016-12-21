@@ -324,3 +324,114 @@ StopWatch.prototype = {
         console.log(this.name + "[elapsed: " + elapsed + " ms]");
     }
 };
+
+/**
+ * Utility class for saving and retrieving some item by key;
+ * It's bounded with some capacity.
+ * Details are stored in some ring buffer. For each key corresponding item are retrieved in LIFO order.
+ */
+var RingBuffer = exports.RingBuffer = function (size) { // jshint ignore:line
+
+    if (typeof Map === 'undefined') {
+        throw new Error('Unable to create RingBuffer');
+    }
+
+    /**
+     * itemKeyToIndex: Map (key => indexes)
+     * indexes = Array of [index];
+     * index = position of item in ringBuffer
+     */
+    /* global Map */
+    var itemKeyToIndex = new Map();
+    var itemWritePointer = 0; // Current write position
+
+    /**
+     * ringBuffer: Array [0:item][1:item]...[size-1:item]
+     */
+    var ringBuffer = new Array(size);
+
+    var i = ringBuffer.length;
+    while (i--) {
+        ringBuffer[i] = {processedKey: null}; // 'if not null' means this item hasn't been processed yet.
+    }
+
+    /**
+     * Put new value to buffer
+     * 1. Associates item with next index from ringBuffer.
+     * 2. If index has been already in use and item hasn't been processed yet, then removes it from indexes array in itemKeyToIndex
+     * 3. Push this index to indexes array in itemKeyToIndex at first position
+     * @param key Key
+     * @param value Object
+     */
+    var put = function (key, value) {
+
+        var index = itemWritePointer;
+        itemWritePointer = (index + 1) % size;
+
+        var item = ringBuffer[index];
+        var indexes;
+
+        // Cleanup unprocessed item
+        if (item.processedKey !== null) {
+            indexes = itemKeyToIndex.get(item.processedKey);
+            if (indexes.length === 1) {
+                // It's last item with this key
+                itemKeyToIndex.delete(item.processedKey);
+            } else {
+                var pos = indexes.indexOf(index);
+                if (pos >= 0) {
+                    indexes.splice(pos, 1);
+                }
+            }
+            ringBuffer[index] = item = null;
+        }
+        indexes = itemKeyToIndex.get(key);
+        if (indexes === undefined) {
+            // It's first item with this key
+            itemKeyToIndex.set(key, [index]);
+        } else {
+            // Push item index at first position
+            indexes.unshift(index);
+        }
+
+        ringBuffer[index] = value;
+        value.processedKey = key;
+    };
+
+    /**
+     * Finds item by key
+     * 1. Get indexes from itemKeyToIndex by key.
+     * 2. Gets first index from indexes, then gets item from ringBuffer by this index
+     * @param key Key for searching
+     */
+    var pop = function (key) {
+        var indexes = itemKeyToIndex.get(key);
+        if (indexes === undefined) {
+            return null;
+        }
+        var index = indexes.shift();
+        if (indexes.length === 0) {
+            itemKeyToIndex.delete(key);
+        }
+        var item = ringBuffer[index];
+        // Mark as processed
+        item.processedKey = null;
+        return item;
+    };
+
+    var clear = function () {
+        itemKeyToIndex = new Map();
+        itemWritePointer = 0;
+        var i = ringBuffer.length;
+        while (i--) {
+            ringBuffer[i] = {processedKey: null};
+        }
+    };
+
+    return {
+        put: put,
+        pop: pop,
+        clear: clear
+    };
+
+};
