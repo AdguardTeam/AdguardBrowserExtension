@@ -1,6 +1,6 @@
-! Checksum: TSqoMC259ScYvkhWpB9fPg
-! Version: 1.0.5.44
-! TimeUpdated: 2016-12-21T01:01:55.524+04:00
+! Checksum: Tm1mpeoUTo2vRgIaKjgkjA
+! Version: 1.0.5.46
+! TimeUpdated: 2016-12-21T20:02:00.689+04:00
 ! Title: Turkish filter
 ! Description: Adguard Turkish filter. Filter list that specifically removes adverts on Turkish language websites.
 ! Title: Adguard Turkish Filter.
@@ -269,6 +269,7 @@ direkizlehd.tv##.widget_text[-ext-has=".fix:contains(Sponsor)"]
 ##.rek-ivr
 ##.rek-ivr ~ p[style^="background-color:"]
 !
+##.splash-banner
 ##.pmt-ad
 ##img[title="similars powered by maxad"]
 ##.kanalustureklam
@@ -377,6 +378,7 @@ direkizlehd.tv##.widget_text[-ext-has=".fix:contains(Sponsor)"]
 !--------------------------------------!
 !
 ! Clickunders
+720pfilmizle.tv#%#Object.defineProperty(window, 'makePopunder', { get: function() { return; } });
 sonbolumizleyin.org#%#Object.defineProperty(window, 'puShown', { get: function() { return true; } });
 hdfilmarenasi.com,tekparthdkeyfi.com,tekparcafullizle.com#%#Object.defineProperty(window, 'puShown', { get: function() { return true; } });
 filmexpresi.com,sinemafilm.org,filmi-izle.com,hdfilmakinasi.com,limitsizdayi.org,amk3.com,filmsezonu.net,filmexpresi.com,filmhizmeti.com,hdfulltekpart.net,filmbudur.org,filmizle.live,dizi10.com,hdfilmvagonu.net,hdfilmkanali.org,hdfilmkabusu.com,hdfilmtekpart.com,fullhdfilmcenneti.com,altyazilifilm.org,hd-pornoizle.net,tangoarti.com,zamunda-torrent.net#%#Object.defineProperty(window, 'initPu', { get: function() { return {}; } });
@@ -469,6 +471,10 @@ mackolik.com,sahadan.com#%#var criteo_medyanet_loaded = 1;
 !
 ! Unhide the player while ads timeout
 !
+filmizle.film#$#.tab-embed { display: block!important; }
+filmizle.film#$#.tab-reklam { display: none!important; }
+6filmizle.com#$##Movie-video { display: block!important; }
+6filmizle.com#$##Video-Oncesi { display: none!important; }
 hergundizi.com#$##kendisi { display: block!important; }
 canlidizihd5.com#$##konumuz { display: block!important; }
 hddiziizleyin.net#$##rk-content { display: none!important; }
@@ -797,6 +803,16 @@ applopedi.com#$#body { background-position: 0px -100px!important; margin-top: 0p
 ! Images hosting. Used for advertising on many sites
 ://i.hizliresim.com^$domain=720pfilmizle.tv|hdfilmarenasi.com|sports.gool7.net|xsportv1.com|hd-pornoizle.net|hdfilmarenasi.net|filmarenasi.net|haber32.com.tr|filmkomedi.com|tekparthdkeyfi.com
 !
+ecanlitvizle.net##.sag > .sagblokicerik
+||sadecehaber.com/iframe/canlitv.frm
+ecanlitvizle.net##.kanalaciklama
+bursadabugun.com##section[class^="ortablok"] > div.sag
+sarizeybekhaber.com.tr##.reklamic3
+karar.com###widget_background_widget_23
+||sunucu7.com/js/plus90window.js
+izlemeyedeger.com##.banner
+||izlemeyedeger.com/*/pageskin.jpg
+izlemeyedeger.com###uknewad
 shiftdelete.net##.empty-space.h40
 sarkisozlerihd.com##.single-lyric-ads
 tahminkrali.com##.rkdivs
@@ -866,7 +882,6 @@ balikesirhaberajansi.com###colorbox
 balikesirhaberajansi.com###cboxOverlay
 haberturk.com##iframe[src*="/ads/"]
 hdfilmsitesi.com##.filmonu
-hdfilmevreni.org##.splash-banner
 harikadiziler.com###footer-reklam
 harikadiziler.com###footer-reklam
 dizibox.com##.adv-post-right
@@ -1038,9 +1053,7 @@ hdfullfilmizlesene1.org##.splash-reklam
 tekparcafullizle.com###video_inner_ad
 f3torrent.net##.wallpaper-link
 korsandroid.com###sidebar > #HTML1
-birhdfilm.org##.splash-banner
 ||bahissirketleri2.com/wp-content/uploads/tablolar/
-tekfullhdfilmizle.com##.splash-banner
 taraftarium24tv.link##.container > center > a > img[alt]
 taraftarium24tv.link##.footer-bar
 androidcanavari.netandroidcanavari.net##.single-728

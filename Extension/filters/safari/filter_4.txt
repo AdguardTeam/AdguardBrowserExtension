@@ -1,6 +1,6 @@
-! Checksum: 8f2DDySrjk93cEMY8qqCMA
-! Version: 1.0.15.75
-! TimeUpdated: 2016-12-21T01:00:43.906+04:00
+! Checksum: BW7aIZysVLgcPtTg3951WA
+! Version: 1.0.15.79
+! TimeUpdated: 2016-12-21T20:00:49.958+04:00
 ! Title: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
 ! Title: Adguard Social Media Filter
@@ -342,6 +342,13 @@ softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2146
 ||mimimi.tv/?*=*&_=
 !
+4kfilmizle.net###social_alt
+sarizeybekhaber.com.tr##.facewrapper
+dp.ru##.b-article-image-footer__social-link
+rosbalt.ru##div[onclick^="share."]
+fapnews.ru##.line_share
+m.9gag.com##.bottom-sheet > ul.menu-list > li > a[class="icon"]:not([href])
+360tv.ru##.content-social-btn
 shiftdelete.net##.toolbar-bottom
 onedio.com##.floating-social
 ulke.com.tr##.social
@@ -1713,6 +1720,7 @@ lcpdfr.com##ul[data-controller$="sharelink"]
 !
 ! Section contains list general hiding rules
 !
+~ok.ru##a[href^="//connect.ok.ru/dk?st.cmd=WidgetSharePreview"]
 ##.fixed-social
 ###hshare
 ##.mo-openid-share-link
@@ -2617,6 +2625,8 @@ catalogmineralov.ru##.modal_window { display: none!important; }
 !
 ! Section fixing issues caused by social filter
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/3826
+@@||bobfilm.tv/engine/classes/min/index.php
 ! Fixing broken buttons on some sites
 @@||yastatic.net/share*/share.js$domain=playground.ru|foxtrot.com.ua|biglion.ru|master-of-orion.ru|auto.ru|ktk.kz|universarium.org|pix.playground.ru|lixty.net
 ! zenmate.com preemium trial sign up

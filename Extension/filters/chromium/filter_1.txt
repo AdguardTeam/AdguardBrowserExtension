@@ -1,6 +1,6 @@
-! Checksum: gqbFpbBnu/UqjKEVZRZRsA
-! Version: 1.0.44.54
-! TimeUpdated: 2016-12-20T22:00:20.542+04:00
+! Checksum: dZF2FJJd2SwklW8UJ0aa3Q
+! Version: 1.0.44.57
+! TimeUpdated: 2016-12-21T19:00:25.910+04:00
 ! Title: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 ! Title: Adguard Russian Filter
@@ -3956,6 +3956,7 @@ info-mage.ru#%#AG_onLoad(function() { window.onload = function() {}; });
 ! kinogb.net
 ||kinogb.net/js/lev-lisun.js
 ! https://forum.adguard.com/index.php?threads/17789/
+@@||rzn.info/advertisement.js
 @@||rzn.info/viewfiles/last/share/scripts/source/advert.js
 ! https://forum.adguard.com/index.php?threads/10595/
 @@||rustreams.ru^$generichide
@@ -4380,6 +4381,7 @@ forum.cxem.net##form > article[id^="elComment_"][-ext-has='strong[itemprop="name
 ! https://forum.adguard.com/index.php?threads/15617/
 popmech.ru##div[class="content-aside-box"] > div.grid-cell.grid-cell__1[-ext-has=">div[data-banner-type]"]
 !
+drive2.com##.c-block[-ext-has=">h3:contains(Ads)"]
 seosprint.net##.sbtitle[-ext-contains="Это может быть интересно"]
 yap.ru,yaplakal.com,yaplakal.ru##form[method="POST"][name="collect"] > table[width="100%"][id^="p_row_"][-ext-has='span.postdetails > a[href="http://www.yaplakal.com/members/member1438.html"]']
 anti-free.ru##.page > div[style] > fieldset[-ext-has='legend + div[align="center"] > a > img']
@@ -7601,6 +7603,19 @@ rustorka.com##a[href$=".php"]:not([class]) > :not(img)
 ||et-code.ru/bens/vinos.js$empty,important
 ||bgrndi.com/js/*.js$empty,important
 !
+fapnews.ru##.partner_news+div.long_block
+fapnews.ru##div[class^="partner_news"]
+fapnews.ru##iframe[src^="/gtm/"]
+fapnews.ru###first_side_tizer
+fapnews.ru##.square_block
+37.ru##.right-banner-load
+37.ru##.top-header-wrapper
+zebra-tv.ru##.footer-fixed-bnr
+37.ru##div[id^="bxdynamic_"]
+37.ru##.ads-main-load-realty
+37.ru##a[href^="http://chastnik.ru/advertisement/"]
+drive2.com##.c-block__fake-gap
+sports.ru##.rightPart > a[href^="//abs-cdn.org/Click"] > img
 lenta.ru###goodnews-banner
 drive2.com##div[class=""] > .c-block
 ||pidruchniki.com/images/min_adv
@@ -9822,7 +9837,7 @@ kp.ru##.adprofy-adblock-wrap
 kp.ru##.adv-iframe-wrapper
 kp.ru##.all_bblock
 kp.ru##.topuslot_google
-kp.ru,tass.ru##a[href^="http://smi2.ru/"]
+360tv.ru,kp.ru,tass.ru##a[href^="http://smi2.ru/"]
 krasview.ru##.__it-side.left
 krasview.ru##.__it-side.right
 krasview.ru##.__it-top
