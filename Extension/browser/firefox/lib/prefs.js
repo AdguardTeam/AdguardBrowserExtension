@@ -63,17 +63,18 @@ var Prefs = exports.Prefs = {
 		return simplePrefs.prefs['speedup_startup'];
 	},
     collapseByContentScript: simplePrefs.prefs['collapse_by_content_script'],
-    useGlobalStyleSheet: simplePrefs.prefs['use_global_style_sheet']
+
+	/**
+	 * Collect hit stats only for chromium platform
+	 */
+	collectHitsCountEnabled: false
 };
 
 var onPreferenceChanged = function(prefName) {
     Prefs.collapseByContentScript = simplePrefs.prefs['collapse_by_content_script'];
-    Prefs.useGlobalStyleSheet = simplePrefs.prefs['use_global_style_sheet'];
 	EventNotifier.notifyListeners(EventNotifierTypes.CHANGE_PREFS, prefName);
 };
 simplePrefs.on('collapse_by_content_script', onPreferenceChanged);
-simplePrefs.on('use_global_style_sheet', onPreferenceChanged);
 unload.when(function() {
     simplePrefs.removeListener('collapse_by_content_script', onPreferenceChanged);
-    simplePrefs.removeListener('use_global_style_sheet', onPreferenceChanged);
 });

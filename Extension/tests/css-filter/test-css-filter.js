@@ -146,42 +146,6 @@ QUnit.test("Css GenericHide Exception Rules", function (assert) {
     assert.equal(otherCss.length, 2);
 });
 
-QUnit.test("Css GenericHide Exception Rules in Firefox Global Stylesheet", function (assert) {
-    var genericOne = new CssFilterRule("##.generic-one");
-    var genericTwo = new CssFilterRule("~google.com,~yahoo.com###generic");
-    var nonGeneric = new CssFilterRule("adguard.com##.non-generic");
-
-    var filter = new CssFilter([genericOne]);
-
-    var css = filter.buildCssForStyleSheet();
-    assert.ok(css != null);
-    assert.equal(css.length, 3);
-    assert.equal(css[0], '@-moz-document url-prefix("http://"),url-prefix("https://"){');
-    assert.equal(css[1], '.generic-one{-moz-binding: url("about:adg-intercept?undefined#dummy") !important;}');
-    assert.equal(css[2], '}');
-
-    filter.addRule(genericTwo);
-    css = filter.buildCssForStyleSheet();
-    assert.ok(css != null);
-    assert.equal(css.length, 4);
-    assert.equal(css[0], '@-moz-document url-prefix("http://"),url-prefix("https://"){');
-    assert.ok(css.indexOf('.generic-one{-moz-binding: url("about:adg-intercept?undefined#dummy") !important;}') > 0);
-    assert.ok(css.indexOf('#generic{-moz-binding: url("about:adg-intercept?undefined#dummy") !important;}') > 0);
-    assert.equal(css[3], '}');
-
-    filter.addRule(nonGeneric);
-    css = filter.buildCssForStyleSheet();
-    assert.ok(css != null);
-    assert.equal(css.length, 7);
-    assert.equal(css[0], '@-moz-document url-prefix("http://"),url-prefix("https://"){');
-    assert.ok(css.indexOf('#generic{-moz-binding: url("about:adg-intercept?undefined#dummy") !important;}') > 0);
-    assert.ok(css.indexOf('.generic-one{-moz-binding: url("about:adg-intercept?undefined#dummy") !important;}') > 0);
-    assert.equal(css[3], '}');
-    assert.equal(css[4], '@-moz-document domain("adguard.com"){');
-    assert.ok(css.indexOf('.non-generic{-moz-binding: url("about:adg-intercept?undefined#dummy") !important;}') > 0);
-    assert.equal(css[6], '}');
-});
-
 QUnit.test("Ublock Css Injection Syntax Support", function (assert) {
     var ruleText = "yandex.ru##body:style(background:inherit;)";
     var cssFilterRule = new CssFilterRule(ruleText);

@@ -96,8 +96,9 @@ var Prefs = exports.Prefs = {
      * Makes sense in case of FF add-on only
      */
     collapseByContentScript: true,
-    /**
-     * Makes sense in case of FF add-on only
-     */
-    useGlobalStyleSheet: false
+
+	/**
+	 * Collect hit stats only for chromium platform
+	 */
+	collectHitsCountEnabled: (typeof safari == 'undefined')
 };

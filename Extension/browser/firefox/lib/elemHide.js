@@ -14,30 +14,28 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var {Cc, Ci, Cu} = require('chrome');
+
+/* global Services, require */
+
+var {Ci, Cu} = require('chrome');
 
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/FileUtils.jsm");
 
 var self = require('sdk/self');
 
-var {EventNotifier} = require('./utils/notifier');
-let {FS} = require('./utils/file-storage');
-var {EventNotifierTypes} = require('./utils/common');
-var {ConcurrentUtils} = require('./utils/browser-utils');
-var {Log} = require('./utils/log');
-var {userSettings} = require('./utils/user-settings');
+var ConcurrentUtils = require('./utils/browser-utils').ConcurrentUtils;
+var Log = require('./utils/log').Log;
 var Prefs = require('./prefs').Prefs;
 var styleService = require('./styleSheetService');
 
 /**
- * This object manages CSS and JS rules.
+ * This object manages CSS styles
  *
- * Depending on the user settings we can use one of the following ways:
- * 1. Registering browser-wide stylesheet
- * 2. Injecting CSS/JS with content-script/preload.js script
+ * 1. Registering assistant style
+ * 2. Registering collapse elements style
  */
-var ElemHide = exports.ElemHide = {
+var ElemHide = exports.ElemHide = { // jshint ignore:line
 
     collapsedClass: null,
     collapseStyle: null,
@@ -46,70 +44,10 @@ var ElemHide = exports.ElemHide = {
     /**
      * Init ElemHide object
      */
-    init: function (framesMap, antiBannerService, webRequestService) {
-
-        this.framesMap = framesMap;
-        this.antiBannerService = antiBannerService;
-        this.webRequestService = webRequestService;
+    init: function () {
 
         this._registerCollapsedStyle();
         this._registerSelectorStyle();
-
-        EventNotifier.addListener(function (event, settings) {
-            switch (event) {
-                case EventNotifierTypes.REQUEST_FILTER_UPDATED:
-                    if (!this._isGlobalStyleSheetEnabled()) {
-                        // Do nothing if global stylesheet is disabled
-                        return;
-                    }
-                    this._saveStyleSheetToDisk();
-                    break;
-                case EventNotifierTypes.CHANGE_USER_SETTINGS:
-                    if (settings == userSettings.settings.DISABLE_COLLECT_HITS) {
-                        this.changeElemhideMethod(settings);
-                    }
-                    break;
-                case EventNotifierTypes.CHANGE_PREFS:
-                    if (settings == 'use_global_style_sheet') {
-                        this.changeElemhideMethod(settings);
-                    }
-                    break;
-            }
-        }.bind(this));
-
-        if (this._isGlobalStyleSheetEnabled()) {
-            this._applyCssStyleSheet(FS.getInjectCssFileURI(), true);
-        }
-    },
-
-    /**
-     * Called if user settings or prefs have been changed.
-     * In this case we check "Send statistics for ad filters usage" option value or "use_global_style_sheet" preference.
-     * If this flag has been changed - switching CSS injection method.
-     */
-    changeElemhideMethod: function () {
-        if (this._isGlobalStyleSheetEnabled()) {
-            this._saveStyleSheetToDisk();
-        } else {
-            this._disableStyleSheet(FS.getInjectCssFileURI());
-        }
-    },
-
-    /**
-     * Unregister our stylesheet by it's uri
-     *
-     * @param uri Stylesheet URI
-     * @private
-     */
-    _disableStyleSheet: function (uri) {
-        styleService.unloadUserSheetByUri(uri);
-    },
-
-    /**
-     * Returns true if we should register global style sheet
-     */
-    _isGlobalStyleSheetEnabled: function () {
-        return userSettings.collectHitsCount() || Prefs.useGlobalStyleSheet;
     },
 
     /**
@@ -203,44 +141,20 @@ var ElemHide = exports.ElemHide = {
     },
 
     /**
-     * Saves CSS content built by CssFilter to file.
-     * This file is then registered as browser-wide stylesheet.
-     * @private
-     */
-    _saveStyleSheetToDisk: function () {
-        ConcurrentUtils.runAsync(function () {
-            var content = this.antiBannerService.getRequestFilter().getCssForStyleSheet();
-            FS.saveStyleSheetToDisk(content, function () {
-                this._applyCssStyleSheet(FS.getInjectCssFileURI());
-            }.bind(this));
-        }, this);
-    },
-
-    /**
      * Registers specified stylesheet
      * @param uri                   Stylesheet URI
-     * @param needCheckFileExist    If true - check if file exists
      * @private
      */
-    _applyCssStyleSheet: function (uri, needCheckFileExist) {
+    _applyCssStyleSheet: function (uri) {
         try {
             if (uri) {
-                if (needCheckFileExist) {
-                    if (uri.file) {
-                        var exists = uri.file.exists();
-                        if (!exists) {
-                            Log.info('Css stylesheet cannot apply file: ' + uri.path + ' because file does not exist');
-                            return;
-                        }
-                    }
-                }
                 //disable previous registered sheet
                 if (styleService.sheetRegistered(uri)) {
                     styleService.unloadUserSheetByUri(uri);
                 }
                 //load new stylesheet
                 styleService.loadUserSheetByUri(uri);
-                Log.debug('styles hiding elements are successfully registered.')
+                Log.debug('styles hiding elements are successfully registered.');
             }
         } catch (ex) {
             Log.error('Error while register stylesheet ' + uri + ':' + ex);

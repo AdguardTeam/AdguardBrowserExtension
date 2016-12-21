@@ -118,7 +118,6 @@ exports.main = function (options, callbacks) {
         var {AntiBannerService} = loadAdguardModule('./filter/antibanner');
         var {ElemHide} = loadAdguardModule('./elemHide');
         var {WebRequestImpl} = loadAdguardModule('./contentPolicy');
-        var {InterceptHandler} = loadAdguardModule('./elemHideIntercepter');
         var {UI} = loadAdguardModule('./ui');
         var {ContentMessageHandler}= loadAdguardModule('./content-message-handler');
         var {contentScripts} = loadAdguardModule('./contentScripts');
@@ -129,7 +128,6 @@ exports.main = function (options, callbacks) {
         require('./elemHide');
         require('./tabsMap');
         require('./contentPolicy');
-        require('./elemHideIntercepter');
         require('./content-message-handler');
         require('./ui');
         require('./utils/frames');
@@ -149,8 +147,7 @@ exports.main = function (options, callbacks) {
         var webRequestService = new WebRequestService(framesMap, antiBannerService, filteringLog, adguardApplication);
 
         WebRequestImpl.init(antiBannerService, adguardApplication, ElemHide, framesMap, filteringLog, webRequestService);
-        ElemHide.init(framesMap, antiBannerService, webRequestService);
-        InterceptHandler.init(framesMap, antiBannerService);
+        ElemHide.init();
         filterRulesHitCount.setAntiBannerService(antiBannerService);
 
         // Initialize content-message handler

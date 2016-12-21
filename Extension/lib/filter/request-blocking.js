@@ -309,12 +309,6 @@ WebRequestService.prototype = (function () {
     };
 
     var shouldLoadAllSelectors = function (collapseAllElements) {
-        if ((Utils.isFirefoxBrowser() && userSettings.collectHitsCount()) || Prefs.useGlobalStyleSheet) {
-            // We don't need all CSS selectors in case of FF using global stylesheet
-            // as in this case we register browser wide stylesheet which will be
-            // applied even if page was already loaded
-            return false;
-        }
 
         var safariContentBlockerEnabled = Utils.isContentBlockerEnabled();
         if (safariContentBlockerEnabled && collapseAllElements) {

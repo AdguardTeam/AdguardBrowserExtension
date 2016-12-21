@@ -25,8 +25,6 @@ var {FileUtils} = Cu.import("resource://gre/modules/FileUtils.jsm", null);
 var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"].createInstance(Ci.nsIScriptableUnicodeConverter);
 converter.charset = "UTF-8";
 
-var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
-
 var Log = require('../../lib/utils/log').Log;
 
 /**
@@ -139,59 +137,6 @@ var FS = exports.FS = {
             //ignore
             Log.error('Error remove profile directory, cause {0}', ex);
         }
-    },
-
-    /**
-     * Saves CSS stylesheet to file.
-     *
-     * This method is used in Firefox extension only.
-     * If user has enabled "Send statistics for ad filters usage" option we change the way of applying CSS rules.
-     * In this case we register browser-wide stylesheet using StyleService.registerSheet.
-     * We should save it to file before registering the stylesheet.
-     *
-     * @param cssRules CSS file content
-     * @param callback Called when operation is finished
-     */
-    saveStyleSheetToDisk: function (cssRules, callback) {
-        if (this._cssSaving) {
-            return;
-        }
-        this._cssSaving = true;
-
-        var filePath = this.CSS_FILE_PATH;
-
-        FS.writeToFile(filePath, cssRules, function (e) {
-            if (e && e.error) {
-                Log.error("Error write css styleSheet to file {0} cause: {1}", filePath, e);
-                return;
-            } else {
-                callback();
-            }
-            this._cssSaving = false;
-        }.bind(this));
-
-    },
-
-    /**
-     * Gets CSS file URI
-     *
-     * This method is used in Firefox extension only.
-     * If user has enabled "Send statistics for ad filters usage" option we change the way of applying CSS rules.
-     * In this case we register browser-wide stylesheet using StyleService.registerSheet.
-     * We should save it to file before registering the stylesheet.
-     *
-     * @returns CSS file URI
-     */
-    getInjectCssFileURI: function () {
-        if (!this.injectCssUrl) {
-            this.injectCssUrl = this._getFileInAdguardDirUri(this.CSS_FILE_PATH);
-        }
-        return this.injectCssUrl;
-    },
-
-    _getFileInAdguardDirUri: function (filename) {
-        var styleFile = FileUtils.getFile(this.PROFILE_DIR, [this.ADGUARD_DIR, filename]);
-        return ioService.newFileURI(styleFile).QueryInterface(Ci.nsIFileURL);
     },
 
     /* Create dir in profile folder */
