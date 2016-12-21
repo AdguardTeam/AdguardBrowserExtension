@@ -744,24 +744,26 @@ var WebRequestImpl = exports.WebRequestImpl = {
      * @param aContext          aContext from the "shouldLoad"" call
      */
     _saveLastRequestProperties: function (requestUrl, referrer, requestType, shouldLoadResult, aContext) {
-        var requestDetails = this.requestDetailsBuffer.push(requestUrl);
-        requestDetails.requestUrl = requestUrl;
-        requestDetails.referrer = referrer;
-        requestDetails.requestType = requestType;
-        requestDetails.shouldLoadResult = shouldLoadResult;
+
+        var requestDetails = {
+            requestUrl: requestUrl,
+            referrer: referrer,
+            requestType: requestType,
+            shouldLoadResult: shouldLoadResult
+        };
 
         // Also check if window has an "opener" and save it to request properties
-        if (requestType != RequestTypes.DOCUMENT) {
-            return;
-        }
-
-        var window = aContext.contentWindow || aContext;
-        if (window.top === window && window.opener && window.opener !== window) {
-            var openerXulTab = WebRequestHelper.getTabForContext(window.opener);
-            if (openerXulTab) {
-                requestDetails.openerTab = {id: tabUtils.getTabId(openerXulTab)};
+        if (requestType == RequestTypes.DOCUMENT) {
+            var window = aContext.contentWindow || aContext;
+            if (window.top === window && window.opener && window.opener !== window) {
+                var openerXulTab = WebRequestHelper.getTabForContext(window.opener);
+                if (openerXulTab) {
+                    requestDetails.openerTab = {id: tabUtils.getTabId(openerXulTab)};
+                }
             }
         }
+
+        this.requestDetailsBuffer.put(requestUrl, requestDetails);
     },
 
     /**

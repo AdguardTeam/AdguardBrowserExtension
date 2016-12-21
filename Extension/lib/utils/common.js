@@ -343,7 +343,7 @@ StopWatch.prototype = {
  * It's bounded with some capacity.
  * Details are stored in some ring buffer. For each key corresponding item are retrieved in LIFO order.
  */
-var RingBuffer = exports.RingBuffer = function (size) {
+var RingBuffer = exports.RingBuffer = function (size) { // jshint ignore:line
 
     if (typeof Map === 'undefined') {
         throw new Error('Unable to create RingBuffer');
@@ -369,13 +369,14 @@ var RingBuffer = exports.RingBuffer = function (size) {
     }
 
     /**
-     * Creates and store new item
+     * Put new value to buffer
      * 1. Associates item with next index from ringBuffer.
      * 2. If index has been already in use and item hasn't been processed yet, then removes it from indexes array in itemKeyToIndex
      * 3. Push this index to indexes array in itemKeyToIndex at first position
      * @param key Key
+     * @param value Object
      */
-    var push = function (key) {
+    var put = function (key, value) {
 
         var index = itemWritePointer;
         itemWritePointer = (index + 1) % size;
@@ -395,6 +396,7 @@ var RingBuffer = exports.RingBuffer = function (size) {
                     indexes.splice(pos, 1);
                 }
             }
+            ringBuffer[index] = item = null;
         }
         indexes = itemKeyToIndex.get(key);
         if (indexes === undefined) {
@@ -405,8 +407,8 @@ var RingBuffer = exports.RingBuffer = function (size) {
             indexes.unshift(index);
         }
 
-        item.processedKey = key;
-        return item;
+        ringBuffer[index] = value;
+        value.processedKey = key;
     };
 
     /**
@@ -440,7 +442,7 @@ var RingBuffer = exports.RingBuffer = function (size) {
     };
 
     return {
-        push: push,
+        put: put,
         pop: pop,
         clear: clear
     };

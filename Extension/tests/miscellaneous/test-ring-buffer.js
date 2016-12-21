@@ -2,29 +2,27 @@
 
 QUnit.test("Test Ring Buffer", function (assert) {
 
+    function newItem(prop) {
+        return {property: prop};
+    }
+
     var bufferSize = 128;
 
     var key1 = 'key1';
     var ringBuffer = new RingBuffer(bufferSize);
     assert.ok(!ringBuffer.pop(key1));
 
-    var item = ringBuffer.push(key1);
-    assert.ok(!!item);
-    assert.ok(!item.property);
-    item.property = 'property';
+    ringBuffer.put(key1, newItem('property'));
 
-    item = ringBuffer.pop(key1);
+    var item = ringBuffer.pop(key1);
     assert.ok(!!item);
     assert.equal(item.property, 'property');
 
     item = ringBuffer.pop(key1);
     assert.ok(!item);
 
-    item = ringBuffer.push(key1);
-    item.property = 'property1';
-
-    item = ringBuffer.push(key1);
-    item.property = 'property2';
+    ringBuffer.put(key1, newItem('property1'));
+    ringBuffer.put(key1, newItem('property2'));
 
     item = ringBuffer.pop(key1);
     assert.ok(!!item);
@@ -40,10 +38,8 @@ QUnit.test("Test Ring Buffer", function (assert) {
     var factor = 4;
     var itemsCount = bufferSize * factor;
     for (var i = 0; i < itemsCount; i++) {
-        item = ringBuffer.push(key1 + '-1');
-        item.property = 'property-1' + i;
-        item = ringBuffer.push(key1 + '-2');
-        item.property = 'property-2' + i;
+        ringBuffer.put(key1 + '-1', newItem('property-1' + i));
+        ringBuffer.put(key1 + '-2', newItem('property-2' + i));
     }
 
     for (i = 0; i < itemsCount; i++) {
