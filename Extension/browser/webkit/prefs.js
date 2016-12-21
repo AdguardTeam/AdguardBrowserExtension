@@ -92,10 +92,6 @@ var Prefs = exports.Prefs = {
 	speedupStartup: function () {
 		return false;
 	},
-    /**
-     * Makes sense in case of FF add-on only
-     */
-    collapseByContentScript: true,
 
 	/**
 	 * Collect hit stats only for chromium platform

@@ -62,19 +62,9 @@ var Prefs = exports.Prefs = {
 	speedupStartup: function () {
 		return simplePrefs.prefs['speedup_startup'];
 	},
-    collapseByContentScript: simplePrefs.prefs['collapse_by_content_script'],
 
 	/**
 	 * Collect hit stats only for chromium platform
 	 */
 	collectHitsCountEnabled: false
 };
-
-var onPreferenceChanged = function(prefName) {
-    Prefs.collapseByContentScript = simplePrefs.prefs['collapse_by_content_script'];
-	EventNotifier.notifyListeners(EventNotifierTypes.CHANGE_PREFS, prefName);
-};
-simplePrefs.on('collapse_by_content_script', onPreferenceChanged);
-unload.when(function() {
-    simplePrefs.removeListener('collapse_by_content_script', onPreferenceChanged);
-});
