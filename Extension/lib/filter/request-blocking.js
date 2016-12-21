@@ -40,14 +40,15 @@ WebRequestService.prototype = (function () {
      * @param tab            Tab object
      * @param requestRule    Rule to record
      * @param requestUrl     Request URL
+     * @param framesMap      Frames map
      */
-    var recordRuleHit = function(tab, requestRule, requestUrl) {
+    var recordRuleHit = function(tab, requestRule, requestUrl, framesMap) {
         if (requestRule && 
             !FilterUtils.isUserFilterRule(requestRule) && 
             !FilterUtils.isWhiteListFilterRule(requestRule) && 
-            !this.framesMap.isIncognitoTab(tab)) {
+            !framesMap.isIncognitoTab(tab)) {
             
-            var domain = this.framesMap.getFrameDomain(tab);
+            var domain = framesMap.getFrameDomain(tab);
             filterRulesHitCount.addRuleHit(domain, requestRule.ruleText, requestRule.filterId, requestUrl);
         }
     };
@@ -88,7 +89,7 @@ WebRequestService.prototype = (function () {
         }
 
         // Record rule hit
-        recordRuleHit(tab, whitelistRule, documentUrl);
+        recordRuleHit(tab, whitelistRule, documentUrl, this.framesMap);
 
         // It's important to check this after the recordRuleHit call
         // as otherwise we will never record $document rules hit for domain
@@ -304,7 +305,7 @@ WebRequestService.prototype = (function () {
         this.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
 
         // Record rule hit
-        recordRuleHit(tab, requestRule, requestUrl);
+        recordRuleHit(tab, requestRule, requestUrl, this.framesMap);
     };
 
     var shouldLoadAllSelectors = function (collapseAllElements) {
