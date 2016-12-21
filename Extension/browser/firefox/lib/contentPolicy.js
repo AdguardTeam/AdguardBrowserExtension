@@ -30,7 +30,7 @@ var events = require('sdk/system/events');
 
 var {Log} = require('./utils/log');
 var {EventNotifier} = require('./utils/notifier');
-var {EventNotifierTypes,RequestTypes,DetailsStorage} = require('./utils/common');
+var {EventNotifierTypes,RequestTypes,RingBuffer} = require('./utils/common');
 var {UrlUtils} = require('./utils/url');
 var {Utils} = require('./utils/browser-utils');
 var {WebRequestService} = require('./filter/request-blocking'); // jshint ignore:line
@@ -402,6 +402,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
         this.framesMap = framesMap;
         this.filteringLog = filteringLog;
         this.webRequestService = webRequestService;
+        this.requestDetailsBuffer = new RingBuffer(256);
 
         let registrar = components.manager.QueryInterface(Ci.nsIComponentRegistrar);
         registrar.registerFactory(this.classID, this.classDescription, this.contractID, this);
@@ -652,7 +653,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
             return;
         }
 
-        var requestDetails = DetailsStorage.get(subject.URI.asciiSpec);
+        var requestDetails = this.requestDetailsBuffer.pop(subject.URI.asciiSpec);
 
         var openerTab;
         if (requestDetails) {
@@ -735,7 +736,6 @@ var WebRequestImpl = exports.WebRequestImpl = {
     /**
      * Save request properties to be reused further in http-on-opening-request method.
      * This is ugly, but I have not found a better solution to pass requestType and shouldLoadResult
-     * NOTE: Hi, AMO reviewer! Maybe you know a better solution?:)
      *
      * @param requestUrl        Request URL
      * @param referrer          Referrer URL
@@ -744,7 +744,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
      * @param aContext          aContext from the "shouldLoad"" call
      */
     _saveLastRequestProperties: function (requestUrl, referrer, requestType, shouldLoadResult, aContext) {
-        var requestDetails = DetailsStorage.create(requestUrl);
+        var requestDetails = this.requestDetailsBuffer.push(requestUrl);
         requestDetails.requestUrl = requestUrl;
         requestDetails.referrer = referrer;
         requestDetails.requestType = requestType;

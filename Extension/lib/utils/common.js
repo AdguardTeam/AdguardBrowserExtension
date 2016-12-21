@@ -339,56 +339,56 @@ StopWatch.prototype = {
 };
 
 /**
- * Utility class for saving and retrieving some details by key;
+ * Utility class for saving and retrieving some item by key;
  * It's bounded with some capacity.
- * Details are stored in some ring buffer. For each key corresponding details are retrieved in LIFO order.
+ * Details are stored in some ring buffer. For each key corresponding item are retrieved in LIFO order.
  */
-var DetailsStorage = exports.DetailsStorage = (function () {
+var RingBuffer = exports.RingBuffer = function (size) {
 
     if (typeof Map === 'undefined') {
-        return;
+        throw new Error('Unable to create RingBuffer');
     }
 
     /**
-     * detailsKeyToIndex: Map (key => indexes)
+     * itemKeyToIndex: Map (key => indexes)
      * indexes = Array of [index];
-     * index = position of details in detailsRingBuffer
+     * index = position of item in ringBuffer
      */
     /* global Map */
-    var detailsKeyToIndex = new Map();
-    var detailsWritePointer = 0; // Current write position
+    var itemKeyToIndex = new Map();
+    var itemWritePointer = 0; // Current write position
 
     /**
-     * detailsRingBuffer: Array [0:details][1:details]...[255:details]
+     * ringBuffer: Array [0:item][1:item]...[size-1:item]
      */
-    var detailsRingBuffer = new Array(256);
+    var ringBuffer = new Array(size);
 
-    var i = detailsRingBuffer.length;
+    var i = ringBuffer.length;
     while (i--) {
-        detailsRingBuffer[i] = {processedKey: null}; // 'if not null' means this details hasn't been processed yet.
+        ringBuffer[i] = {processedKey: null}; // 'if not null' means this item hasn't been processed yet.
     }
 
     /**
-     * Creates and store new details
-     * 1. Associates details with next index from detailsRingBuffer.
-     * 2. If index has been already in use and details hasn't been processed yet, then removes it from indexes array in detailsKeyToIndex
-     * 3. Push this index to indexes array in detailsKeyToIndex at first position
+     * Creates and store new item
+     * 1. Associates item with next index from ringBuffer.
+     * 2. If index has been already in use and item hasn't been processed yet, then removes it from indexes array in itemKeyToIndex
+     * 3. Push this index to indexes array in itemKeyToIndex at first position
      * @param key Key
      */
-    var create = function (key) {
+    var push = function (key) {
 
-        var index = detailsWritePointer;
-        detailsWritePointer = (index + 1) % 256;
+        var index = itemWritePointer;
+        itemWritePointer = (index + 1) % size;
 
-        var details = detailsRingBuffer[index];
+        var item = ringBuffer[index];
         var indexes;
 
-        // Cleanup unprocessed details
-        if (details.processedKey !== null) {
-            indexes = detailsKeyToIndex.get(details.processedKey);
+        // Cleanup unprocessed item
+        if (item.processedKey !== null) {
+            indexes = itemKeyToIndex.get(item.processedKey);
             if (indexes.length === 1) {
-                // It's last details with this key
-                detailsKeyToIndex.delete(details.processedKey);
+                // It's last item with this key
+                itemKeyToIndex.delete(item.processedKey);
             } else {
                 var pos = indexes.indexOf(index);
                 if (pos >= 0) {
@@ -396,43 +396,53 @@ var DetailsStorage = exports.DetailsStorage = (function () {
                 }
             }
         }
-        indexes = detailsKeyToIndex.get(key);
+        indexes = itemKeyToIndex.get(key);
         if (indexes === undefined) {
-            // It's first details with this key
-            detailsKeyToIndex.set(key, [index]);
+            // It's first item with this key
+            itemKeyToIndex.set(key, [index]);
         } else {
-            // Push details index at first position
+            // Push item index at first position
             indexes.unshift(index);
         }
 
-        details.processedKey = key;
-        return details;
+        item.processedKey = key;
+        return item;
     };
 
     /**
-     * Finds details by key
-     * 1. Get indexes from detailsKeyToIndex by key.
-     * 2. Gets first index from indexes, then gets details from detailsRingBuffer by this index
+     * Finds item by key
+     * 1. Get indexes from itemKeyToIndex by key.
+     * 2. Gets first index from indexes, then gets item from ringBuffer by this index
      * @param key Key for searching
      */
-    var get = function (key) {
-        var indexes = detailsKeyToIndex.get(key);
+    var pop = function (key) {
+        var indexes = itemKeyToIndex.get(key);
         if (indexes === undefined) {
             return null;
         }
         var index = indexes.shift();
         if (indexes.length === 0) {
-            detailsKeyToIndex.delete(key);
+            itemKeyToIndex.delete(key);
         }
-        var details = detailsRingBuffer[index];
+        var item = ringBuffer[index];
         // Mark as processed
-        details.processedKey = null;
-        return details;
+        item.processedKey = null;
+        return item;
+    };
+
+    var clear = function () {
+        itemKeyToIndex = new Map();
+        itemWritePointer = 0;
+        var i = ringBuffer.length;
+        while (i--) {
+            ringBuffer[i] = {processedKey: null};
+        }
     };
 
     return {
-        create: create,
-        get: get
+        push: push,
+        pop: pop,
+        clear: clear
     };
 
-})();
+};
