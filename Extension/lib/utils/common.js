@@ -337,3 +337,102 @@ StopWatch.prototype = {
         console.log(this.name + "[elapsed: " + elapsed + " ms]");
     }
 };
+
+/**
+ * Utility class for saving and retrieving some details by key;
+ * It's bounded with some capacity.
+ * Details are stored in some ring buffer. For each key corresponding details are retrieved in LIFO order.
+ */
+var DetailsStorage = exports.DetailsStorage = (function () {
+
+    if (typeof Map === 'undefined') {
+        return;
+    }
+
+    /**
+     * detailsKeyToIndex: Map (key => indexes)
+     * indexes = Array of [index];
+     * index = position of details in detailsRingBuffer
+     */
+    /* global Map */
+    var detailsKeyToIndex = new Map();
+    var detailsWritePointer = 0; // Current write position
+
+    /**
+     * detailsRingBuffer: Array [0:details][1:details]...[255:details]
+     */
+    var detailsRingBuffer = new Array(256);
+
+    var i = detailsRingBuffer.length;
+    while (i--) {
+        detailsRingBuffer[i] = {processedKey: null}; // 'if not null' means this details hasn't been processed yet.
+    }
+
+    /**
+     * Creates and store new details
+     * 1. Associates details with next index from detailsRingBuffer.
+     * 2. If index has been already in use and details hasn't been processed yet, then removes it from indexes array in detailsKeyToIndex
+     * 3. Push this index to indexes array in detailsKeyToIndex at first position
+     * @param key Key
+     */
+    var create = function (key) {
+
+        var index = detailsWritePointer;
+        detailsWritePointer = (index + 1) % 256;
+
+        var details = detailsRingBuffer[index];
+        var indexes;
+
+        // Cleanup unprocessed details
+        if (details.processedKey !== null) {
+            indexes = detailsKeyToIndex.get(details.processedKey);
+            if (indexes.length === 1) {
+                // It's last details with this key
+                detailsKeyToIndex.delete(details.processedKey);
+            } else {
+                var pos = indexes.indexOf(index);
+                if (pos >= 0) {
+                    indexes.splice(pos, 1);
+                }
+            }
+        }
+        indexes = detailsKeyToIndex.get(key);
+        if (indexes === undefined) {
+            // It's first details with this key
+            detailsKeyToIndex.set(key, [index]);
+        } else {
+            // Push details index at first position
+            indexes.unshift(index);
+        }
+
+        details.processedKey = key;
+        return details;
+    };
+
+    /**
+     * Finds details by key
+     * 1. Get indexes from detailsKeyToIndex by key.
+     * 2. Gets first index from indexes, then gets details from detailsRingBuffer by this index
+     * @param key Key for searching
+     */
+    var get = function (key) {
+        var indexes = detailsKeyToIndex.get(key);
+        if (indexes === undefined) {
+            return null;
+        }
+        var index = indexes.shift();
+        if (indexes.length === 0) {
+            detailsKeyToIndex.delete(key);
+        }
+        var details = detailsRingBuffer[index];
+        // Mark as processed
+        details.processedKey = null;
+        return details;
+    };
+
+    return {
+        create: create,
+        get: get
+    };
+
+})();
