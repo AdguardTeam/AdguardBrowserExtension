@@ -113,7 +113,7 @@ var overrideWebSocket = function () { // jshint ignore:line
             });
         }
 
-        WebSocket = function WrappedWebSocket(url, protocols) {
+        function WrappedWebSocket(url, protocols) {
             // Throw correct exceptions if the constructor is used improperly.
             if (!(this instanceof WrappedWebSocket)) return RealWebSocket();
             if (arguments.length < 1) return new RealWebSocket();
@@ -126,7 +126,11 @@ var overrideWebSocket = function () { // jshint ignore:line
             });
 
             return websocket;
-        }.bind();
+        }
+
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/488
+        WrappedWebSocket.prototype = RealWebSocket.prototype;
+        WebSocket = WrappedWebSocket.bind();
 
         Object.defineProperties(WebSocket, {
             CONNECTING: {value: RealWebSocket.CONNECTING, enumerable: true},

@@ -96,9 +96,9 @@
         return result;
     };
 
-    if (!root.CSS) {
-        root.CSS = {};
-    }
+    // Create new CSS object in global scope.
+    // Changing the property of object that already presents in global scope has no effect
+    root.CSS = {};
 
     root.CSS.escape = cssEscape;
     return cssEscape;

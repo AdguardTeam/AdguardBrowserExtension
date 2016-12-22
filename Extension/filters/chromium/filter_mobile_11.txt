@@ -1,6 +1,6 @@
-! Checksum: McFnyun6IHQOSZ5q7lxkxg
-! Version: 1.0.6.18
-! TimeUpdated: 2016-12-07T22:01:49.282+04:00
+! Checksum: +J/WiJWpWZUKMCAoeL678A
+! Version: 1.0.6.32
+! TimeUpdated: 2016-12-21T18:01:40.285+04:00
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
@@ -13,6 +13,11 @@
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+||pixel.admobclick.com^
+||bayctrk.com^
+||clk.taptica.com^
+||api.leadbolt.net^
+||exp.glispa.com^
 ||adserver.unityads.unity3d.com^
 ||cdn.unityads.unity3d.com^
 ||show.niqiu99.org^$third-party
@@ -749,8 +754,12 @@ sasisa.ru#%#Object.defineProperty(window, 'Umobi', { get: function() { return; }
 sasisa.ru#%#AG_onLoad(function() { window.Umobi = function() {}; });
 factroom.ru#$#.mobile-pop-direct { display: none!important; height: 0px!important; }
 deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important;}
+/aff_c?*offer_id=*&aff_id=
+/aff_r?*offer_id=*&aff_id=
 .cn/?ss=
 /adfurikun/*
+@@||m.haberturk.com/adscbg/mdet.js
+pornhub.com#@#div > [style*="width: 100%;"]:first-child
 m.veporn.net#@#.advertisment
 m.veporn.net#@##topAds
 @@||g.doubleclick.net/gpt/pubads_impl_$script,domain=ukr.net
@@ -761,6 +770,9 @@ m.veporn.net#@##topAds
 @@||rutube.ru/play/embed/*?advertiser_id=
 @@||forums.windowscentral.com^$script,~third-party
 @@||android-api-de.gumtree.com/api/users/*/ads.json
+4pda.ru#@$#body > div:first-child > div[class]:first-child>div[class]:first-child>#header+div[id][-ext-has="div"] { background-image: none !important; }
+4pda.ru#@#div[class^="r"][-ext-has="> header"] > div[class]:first-child
+4pda.ru#@$#body > div[id]:first-child > div[class]:first-child > div[class]:first-child > div[-ext-has="div"] { background: #e6e7e9!important; }
 4pda.ru#@#.sidebar_border_content > a[rel="nofollow"][-ext-has=">img"]
 4pda.ru#@#aside[id] > div[class][-ext-has='div.sidebar_border_content>a>img[height="400"]']
 4pda.ru#@#aside[id] > div[class][-ext-has='h2:contains(AppPromo)']
@@ -827,11 +839,18 @@ deviantart.com#@#.mobile-ad
 @@||forum.mobilism.org^$document
 @@||android.clients.google.com/market/GetBinary/$document
 @@||play.google.com/store/apps/$document
+@@||googleadservices.com^|$app=com.google.android.youtube
 google.ad,google.ae,google.al,google.am,google.as,google.at,google.az,google.ba,google.be,google.bf,google.bg,google.bi,google.bj,google.bs,google.bt,google.by,google.ca,google.cat,google.cd,google.cf,google.cg,google.ch,google.ci,google.cl,google.cm,google.cn,google.co.ao,google.co.bw,google.co.ck,google.co.cr,google.co.id,google.co.il,google.co.in,google.co.jp,google.co.ke,google.co.kr,google.co.ls,google.co.ma,google.co.mz,google.co.nz,google.co.th,google.co.tz,google.co.ug,google.co.uk,google.co.uz,google.co.ve,google.co.vi,google.co.za,google.co.zm,google.co.zw,google.com,google.com.af,google.com.ag,google.com.ai,google.com.ar,google.com.au,google.com.bd,google.com.bh,google.com.bn,google.com.bo,google.com.br,google.com.bz,google.com.co,google.com.cu,google.com.cy,google.com.do,google.com.ec,google.com.eg,google.com.et,google.com.fj,google.com.gh,google.com.gi,google.com.gt,google.com.hk,google.com.jm,google.com.kh,google.com.kw,google.com.lb,google.com.ly,google.com.mm,google.com.mt,google.com.mx,google.com.my,google.com.na,google.com.nf,google.com.ng,google.com.ni,google.com.np,google.com.om,google.com.pa,google.com.pe,google.com.pg,google.com.ph,google.com.pk,google.com.pr,google.com.py,google.com.qa,google.com.sa,google.com.sb,google.com.sg,google.com.sl,google.com.sv,google.com.tj,google.com.tr,google.com.tw,google.com.ua,google.com.uy,google.com.vc,google.com.vn,google.cv,google.cz,google.de,google.dj,google.dk,google.dm,google.dz,google.ee,google.es,google.fi,google.fm,google.fr,google.ga,google.ge,google.gg,google.gl,google.gm,google.gp,google.gr,google.gy,google.hn,google.hr,google.ht,google.hu,google.ie,google.im,google.iq,google.is,google.it,google.je,google.jo,google.kg,google.ki,google.kz,google.la,google.li,google.lk,google.lt,google.lu,google.lv,google.md,google.me,google.mg,google.mk,google.ml,google.mn,google.ms,google.mu,google.mv,google.mw,google.ne,google.nl,google.no,google.nr,google.nu,google.pl,google.pn,google.ps,google.pt,google.ro,google.rs,google.ru,google.rw,google.sc,google.se,google.sh,google.si,google.sk,google.sm,google.sn,google.so,google.sr,google.st,google.td,google.tg,google.tk,google.tl,google.tm,google.tn,google.to,google.tt,google.vg,google.vu,google.ws###taw
 m.auto.ru##.card.i-bem > div[class^="_"] > div[class^="_"]
 m.auto.ru##.index.i-bem > div[class]:not([data-bem])
 m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"])
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
+m.9gag.com##section.salt-container
+m.economictimes.com###morePartner
+m.economictimes.com##.moreFrom
+||m.yanglaopt.net^
+||www.a4yy.top/js/w.js
+||www.a4yy.top/js/gg*.js
 mail.yandex.by,mail.yandex.kz,mail.yandex.ru,mail.yandex.ua##.ns-view-direct
 pornhub.com##.adContainer
 ||addown.pipaw.com/phone/
@@ -982,9 +1001,7 @@ login.wi-fi.ru#%#window.isPremium = true;
 ||vmet.ro^$third-party
 ||wi-fi.ru/ad_video/
 ||wi-fi.ru^$script,third-party
-@@||imasdk.googleapis.com^$app=de.cellular.focus
-@@||ads.cricbuzz.com/adserver/units/mobile/set_ads_values.php
-@@||connect.tapjoy.com/connect$app=com.lucasarts.starts_goo
+||graph.facebook.com^$app=com.mxtech.videoplayer.ad
 ||graph.facebook.com^$app=com.eterno
 ||graph.facebook.com^$app=com.devexpert.weather
 ||graph.facebook.com^$app=com.musixmatch.android.lyrify
@@ -994,6 +1011,13 @@ login.wi-fi.ru#%#window.isPremium = true;
 ||graph.facebook.com^$app=com.mobilefootie.wc2010
 ||graph.facebook.com^$app=com.mobilesrepublic.appy
 ||graph.facebook.com^$app=fr.meteo
+||crosspromo*.qplaze.com^$app=com.nomoc.wolfonfarm
+||crosspromo*.qplaze.com/PushCampaignXMLOut.php
+@@||ups.ksmobile.net^$app=com.cleanmaster.security
+||server.idreams.pl/news/ads_sfr_*.json
+@@||imasdk.googleapis.com^$app=de.cellular.focus
+@@||ads.cricbuzz.com/adserver/units/mobile/set_ads_values.php
+@@||connect.tapjoy.com/connect$app=com.lucasarts.starts_goo
 ||alxanosoft.com/rk/
 ||assets.sport1.de/imagix/filter2/jpeg/_set=dyn_size_no_crop/imagix/
 ||gumtree.com/partner/bing?*&adUnitId=
@@ -1231,6 +1255,9 @@ iapp-cp.nuggad.net^
 ||analy.qq.com^
 ||appsupport.qq.com/cgi-bin/appstage/mstats_batch_report
 ||monitor.uu.qq.com/analytics/
+forum.saransk.ru##div[class^="banner_zone"]
+compress.ru##div[class^="baner-top"]
+compress.ru##.right-sidebar
 ||wsp.marketgid.com^
 ###ad_foot
 @@||appex-rf.msn.com/*.js?adtype=

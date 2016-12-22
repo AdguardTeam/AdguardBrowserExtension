@@ -1,6 +1,6 @@
-! Checksum: 1AHM5GigPrDBirgGEbBgTA
-! Version: 1.0.9.42
-! TimeUpdated: 2016-12-08T00:00:48.130+04:00
+! Checksum: kKud0O/1ay4GOc5LIuutYg
+! Version: 1.0.9.70
+! TimeUpdated: 2016-12-21T18:00:34.939+04:00
 ! Title: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
@@ -13,6 +13,7 @@
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+overclockers.ru#%#AG_onLoad(function() { window.trackOutboundLink = window.open; });
 #%#navigator.getBattery = undefined;
 ~yandex.ru,~yandex.com,~yandex.ua,~yandex.kz,~yandex.by,~yandex.com.tr#%#(function() { window.Ya = window.Ya || {}; window.Ya.Metrika = function() { var noop = function() {}; this.addFileExtension = noop; this.extLink = noop; this.file = noop; this.hit = noop; this.notBounce = noop; this.params = noop; this.reachGoal = noop; this.replacePhones = noop; this.clickmap = noop; this.trackLinks = noop; }; })();
 films.imhonet.ru#@%#(function() { window.Ya = window.Ya || {}; window.Ya.Metrika = function() { var noop = function() {}; this.addFileExtension = noop; this.extLink = noop; this.file = noop; this.hit = noop; this.notBounce = noop; this.params = noop; this.reachGoal = noop; this.replacePhones = noop; this.clickmap = noop; this.trackLinks = noop; }; })();
@@ -36,6 +37,12 @@ accountkiller.com#%#window.ga = function(){var a = arguments[5];a&&a.hitCallback
 ##img[src*="counter.yadro.ru"]
 ##img[src^="http://c.bigmir.net/"]
 ~epicl2.com,~gamepedia.com,~forum.themega.ru,~makeserver.ru,~forum.ixbt.com,~mozhor.ru,~onliner.by,~wiktionary.org,~yandex.by,~yandex.com,~yandex.com.tr,~yandex.ru,~yandex.ua##img[width="88"][height="31"]
+||mastertag.kpcustomer.de^
+||p.d.rpts.org^
+||ctl.mobitrack.co.kr^
+||m.addthisedge.com^$third-party
+||ct.buzzfeed.com^
+||collector.schibsted.io^
 ||analytics.archive.org^
 ||apps.poln.co^$third-party
 ||hindsight.significanceapps.com^
@@ -3348,6 +3355,17 @@ accountkiller.com#%#window.ga = function(){var a = arguments[5];a&&a.hitCallback
 ||zowary.com^$third-party
 ||zqtk.net^$third-party
 ||zroitracker.com^$third-party
+||metric.gstatic.com^$third-party
+||startrekk.flaconi.de^
+||tracking.rtl.de^
+||d31bfnnwekbny6.cloudfront.net^
+||epiv.cardlytics.com^$third-party
+||track.tiara.daum.net^
+||put.qostore.daumkakao.io^
+||bat.bing.com^
+||stats.videoseyredin.net^
+||geoip.newsdev.nytimes.com^
+||comet.sputniknews.com^
 ||stat.novostimira.com^
 ||log.rutube.ru^
 ||analytics.mobile.walmart.com^
@@ -3448,6 +3466,9 @@ accountkiller.com#%#window.ga = function(){var a = arguments[5];a&&a.hitCallback
 ||tracking.tchibo.de^
 ||wtsdc.uhc.com^$image
 ||x.ligatus.com^$third-party
+/admantx-
+/admantx.
+/admantx/*
 /aspenanalytics.
 /cdn-cgi/pe/bag2?r[]=*ps.eyeota.net
 /cdn-cgi/pe/bag2?r[]=*whos.amung.us
@@ -3616,6 +3637,27 @@ _social_tracking.js^
 ://b.*/vanity/?
 ://top.*/count/cnt.php?
 _tracking.php?b=
+||collections.mp.microsoft.com/*/collections/query
+||dc.services.visualstudio.com/*/track
+||core.bunchbox.co/geo.js^
+||ztat.net/*/webtrekk.min.js^
+||ztat.net/*/adrum.js^
+||comicvine.com^*/tracking.js?
+||cdn-library.net/*&data=anti-abp
+||marketing.dropbox.com^
+||static-mail.kz/assets/frontend/js/counter.js
+||mail.kz/assets/frontend/img/counter.png
+||dot-stat.radikal.ru^
+||fncstatic.com/static/*/VisitorAPI.js^
+||bat.bing.com^
+||dogannet.tv/q/s/stats
+||tv8.com.tr/Ajax/icerik/save_video_event
+||gelderlander.nl/logger
+||sputniknews.com/services/counter/
+||pinterest.com/_/_/report/
+||amazon.com/*/cerberus/log/
+||amazon.com/follow/log-metrics^
+||gismeteo.ru/stat.js
 ||jsdelivr.net/snowplow/
 ||yast.rutube.ru/track
 ||kbb.com/services/psclientlogging
@@ -4141,6 +4183,10 @@ dreamprogs.net##td[width="88"][height="31"]
 ||do-not-tracker.org^$third-party
 ||eviltracker.net^$third-party
 ||trackersimulator.org^$third-party
+@@||evernote.com^$domain=pioclpoplcdbaefihamjohnefbikjilc
+@@||static.parsely.com^$script,domain=dailystar.co.uk|express.co.uk|nydailynews.com
+@@||analytics.edgesuite.net/config/beacon-*.xml$domain=video.foxnews.com
+@@||mc.yandex.ru/metrika/watch.js$domain=лидер-качества.рф
 @@||tags.tiqcdn.com/utag/amway/eia/prod/utag.js$domain=amway.ua
 @@||mc.yandex.ru/metrika/watch.js$domain=stopgame.ru
 @@||mc.yandex.ru/metrika/watch.js$domain=spor.internethaber.com

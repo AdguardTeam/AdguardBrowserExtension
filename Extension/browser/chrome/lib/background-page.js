@@ -287,7 +287,7 @@ var browser = browser || chrome;
         },
         reload: function (url) {
             if (url) {
-                if (Prefs.getBrowser() == "Edge") {
+                if (Utils.isEdgeBrowser()) {
                     /**
                      * For security reasons, in Firefox and Edge, this may not be a privileged URL.
                      * So passing any of the following URLs will fail, with runtime.lastError being set to an error message:
@@ -551,7 +551,7 @@ var browser = browser || chrome;
         onActivated: new OnActivatedTabEvent(),
         onRemoved: new OnRemovedTabEvent(),
         getLastFocused: function (callback) {
-            browser.tabs.query({lastFocusedWindow: true, active: true}, function (tabs) {
+            browser.tabs.query({currentWindow: true, active: true}, function (tabs) {
                 if (callback && tabs && tabs.length > 0) {
                     callback(new BrowserTab(tabs[0]));
                 }

@@ -167,7 +167,7 @@ RequestFilter.prototype = {
      */
     getSelectorsForUrl: function (url, genericHide) {
         var domain = UrlUtils.getDomainName(url);
-        if (userSettings.collectHitsCount()) {
+        if (Prefs.collectHitsCountEnabled && userSettings.collectHitsCount()) {
             // If user has enabled "Send statistics for ad filters usage" option we build CSS with enabled hits stats.
             // In this case style contains "background-image" to the unique URL.
             // Tracking requests to this URL shows us which rule has been used.
@@ -191,17 +191,6 @@ RequestFilter.prototype = {
     getInjectedSelectorsForUrl: function (url, genericHide) {
         var domain = UrlUtils.getDomainName(url);
         return this.cssFilter.buildInjectCss(domain, genericHide);
-    },
-
-    /**
-     * This method is used in Firefox extension only.
-     * If user has enabled "Send statistics for ad filters usage" option we change the way of applying CSS rules.
-     * In this case we register browser-wide stylesheet using StyleService.registerSheet.
-     *
-     * @returns Stylesheet
-     */
-    getCssForStyleSheet: function () {
-        return this.cssFilter.buildCssForStyleSheet();
     },
 
     /**

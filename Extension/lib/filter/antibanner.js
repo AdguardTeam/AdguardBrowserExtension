@@ -1390,8 +1390,7 @@ AntiBannerService.prototype = {
                 onUsedOptimizedFiltersChange();
                 return;
             }
-            if (event == EventNotifierTypes.CHANGE_USER_SETTINGS && setting == userSettings.settings.DISABLE_COLLECT_HITS ||
-                event == EventNotifierTypes.CHANGE_PREFS && setting == 'use_global_style_sheet') {
+            if (event == EventNotifierTypes.CHANGE_USER_SETTINGS && setting == userSettings.settings.DISABLE_COLLECT_HITS) {
                 this.getRequestFilter().cssFilter.dirty = true;
             }
         }.bind(this));

@@ -62,18 +62,11 @@ var Prefs = exports.Prefs = {
 	speedupStartup: function () {
 		return simplePrefs.prefs['speedup_startup'];
 	},
-    collapseByContentScript: simplePrefs.prefs['collapse_by_content_script'],
-    useGlobalStyleSheet: simplePrefs.prefs['use_global_style_sheet']
-};
 
-var onPreferenceChanged = function(prefName) {
-    Prefs.collapseByContentScript = simplePrefs.prefs['collapse_by_content_script'];
-    Prefs.useGlobalStyleSheet = simplePrefs.prefs['use_global_style_sheet'];
-	EventNotifier.notifyListeners(EventNotifierTypes.CHANGE_PREFS, prefName);
+	/**
+	 * If user enables `Send ad filters usage stats` option (which is disabled by default) in Adguard settings, it starts collecting & sending stats on used ad filtering rules.
+	 * We use these stats to get rid of redundant filtering rules and provide "optimized" filters. Details: https://adguard.com/en/filter-rules-statistics.html
+	 * Disabled for the current version of FF add-on.
+	 */
+	collectHitsCountEnabled: false
 };
-simplePrefs.on('collapse_by_content_script', onPreferenceChanged);
-simplePrefs.on('use_global_style_sheet', onPreferenceChanged);
-unload.when(function() {
-    simplePrefs.removeListener('collapse_by_content_script', onPreferenceChanged);
-    simplePrefs.removeListener('use_global_style_sheet', onPreferenceChanged);
-});

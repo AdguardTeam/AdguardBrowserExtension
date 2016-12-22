@@ -171,12 +171,6 @@ ContentMessageHandler.prototype = {
                 var block = this.webRequestService.checkWebSocketRequest(sender.tab, message.elementUrl, message.documentUrl);
                 return {block: block, requestId: message.requestId};
             case 'processShouldCollapse':
-                
-                if (!Prefs.collapseByContentScript) {
-                    // In case of FF we may collapse nodes with nsiContentPolicy
-                    return {collapse: false, requestId: message.requestId};
-                }
-                
                 var collapse = this.webRequestService.processShouldCollapse(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
                 return {collapse: collapse, requestId: message.requestId};
             case 'processShouldCollapseMany':

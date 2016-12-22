@@ -17,7 +17,7 @@
  */
 
 /* global require, exports */
-var {Cc, Ci, Cu, Cm, Cr, components} = require('chrome'); // jshint ignore:line
+var {Cc, Ci, Cu, Cr, components} = require('chrome'); // jshint ignore:line
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
@@ -30,11 +30,9 @@ var events = require('sdk/system/events');
 
 var {Log} = require('./utils/log');
 var {EventNotifier} = require('./utils/notifier');
-var {EventNotifierTypes,RequestTypes} = require('./utils/common');
+var {EventNotifierTypes,RequestTypes,RingBuffer} = require('./utils/common');
 var {UrlUtils} = require('./utils/url');
 var {Utils} = require('./utils/browser-utils');
-var {WebRequestService} = require('./filter/request-blocking'); // jshint ignore:line
-var {WorkaroundUtils} = require('./utils/workaround'); // jshint ignore:line
 
 /**
  * Helper object to work with web requests.
@@ -167,34 +165,21 @@ var WebRequestHelper = exports.WebRequestHelper = {
         }
         if (contextData && contextData.browser) {
             var browser = contextData.browser;
-            
+
             var xulTab = tabUtils.getTabForBrowser(browser);
-            
+
             // getTabForBrowser() returns null for FF 38 ESR
             if (!xulTab) {
                 // TODO: temporary fix
                 // If browser.docShell returns null then browser.contentWindow throws exception: this.docShell is null
                 if (browser.docShell && browser.contentWindow) {
-                    xulTab = tabUtils.getTabForContentWindow(browser.contentWindow);                    
+                    xulTab = tabUtils.getTabForContentWindow(browser.contentWindow);
                 }
             }
 
             return xulTab;
         }
         return null;
-    },
-
-    /**
-     * Gets tab id for channel
-     * @param channel Channel
-     * @returns XUL tab
-     */
-    getTabIdForChannel: function (channel) {
-        var xulTab = this.getTabForChannel(channel);
-        if (!xulTab) {
-            return null;
-        }
-        return tabUtils.getTabId(xulTab);
     },
 
     /**
@@ -332,7 +317,7 @@ var WebRequestHelper = exports.WebRequestHelper = {
      * We get these
      *
      * @param request nsIHttpChannel
-     * @param requestProperties Contains 
+     * @param requestProperties Contains
      */
     attachRequestProperties: function (request, requestProperties) {
         if (request instanceof Ci.nsIWritablePropertyBag) {
@@ -377,7 +362,6 @@ var WebRequestImpl = exports.WebRequestImpl = {
 
     antiBannerService: null,
     adguardApplication: null,
-    ElemHide: null,
     framesMap: null,
     filteringLog: null,
     webRequestService: null,
@@ -387,21 +371,20 @@ var WebRequestImpl = exports.WebRequestImpl = {
      *
      * @param antiBannerService     AntiBannerService object (implements the filtering)
      * @param adguardApplication    AdguardApplication (used for integration with Adguard for Windows/Mac/Android)
-     * @param ElemHide              ElemHide object (used to apply CSS rules)
      * @param framesMap             Map with frames data
      * @param filteringLog          Service for log requests
      * @param webRequestService     Request Blocking service
      */
-    init: function (antiBannerService, adguardApplication, ElemHide, framesMap, filteringLog, webRequestService) {
+    init: function (antiBannerService, adguardApplication, framesMap, filteringLog, webRequestService) {
 
         Log.info('Initializing webRequest...');
 
         this.antiBannerService = antiBannerService;
         this.adguardApplication = adguardApplication;
-        this.ElemHide = ElemHide;
         this.framesMap = framesMap;
         this.filteringLog = filteringLog;
         this.webRequestService = webRequestService;
+        this.requestDetailsBuffer = new RingBuffer(256);
 
         let registrar = components.manager.QueryInterface(Ci.nsIComponentRegistrar);
         registrar.registerFactory(this.classID, this.classDescription, this.contractID, this);
@@ -478,7 +461,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
         var requestUrl = contentLocation.asciiSpec;
         var requestType = WebRequestHelper.getRequestType(contentType, contentLocation);
 
-        var result = this._shouldBlockRequest(tab, requestUrl, referrer, requestType, aContext);
+        var result = this._shouldBlockRequest(tab, requestUrl, referrer, requestType);
 
         Log.debug('shouldLoad: {0} {1}. Result: {2}', requestUrl, requestType, result.blocked);
         this._saveLastRequestProperties(requestUrl, referrer, requestType, result, aContext);
@@ -518,7 +501,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
 
             var tab = {id: tabUtils.getTabId(xulTab)};
             var requestUrl = newChannel.URI.asciiSpec;
-            var shouldBlockResult = this._shouldBlockRequest(tab, requestUrl, requestProperties.referrer, requestProperties.requestType, null);
+            var shouldBlockResult = this._shouldBlockRequest(tab, requestUrl, requestProperties.referrer, requestProperties.requestType);
 
             Log.debug('asyncOnChannelRedirect: {0} {1}. Blocked={2}', requestUrl, requestProperties.requestType, shouldBlockResult.blocked);
             if (shouldBlockResult.blocked) {
@@ -576,7 +559,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
         if (!xulTab) {
             return;
         }
-        
+
         var tab = {id: tabUtils.getTabId(xulTab)};
         var requestUrl = subject.URI.asciiSpec;
         var responseHeaders = WebRequestHelper.getResponseHeaders(subject);
@@ -602,7 +585,7 @@ var WebRequestImpl = exports.WebRequestImpl = {
         // Retrieve referrer URL
         var referrerUrl = this.framesMap.getMainFrameUrl(tab);
 
-        if (!!requestProperties) {  
+        if (!!requestProperties) {
             // Calling postProcessRequest only for requests which were previously processed by "shouldLoad"
             var filteringRule = requestProperties.shouldLoadResult.rule;
             this.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, filteringRule);
@@ -652,15 +635,16 @@ var WebRequestImpl = exports.WebRequestImpl = {
             return;
         }
 
+        var requestDetails = this.requestDetailsBuffer.pop(subject.URI.asciiSpec);
+
         var openerTab;
-        if (this.lastRequestProperties && subject.URI.asciiSpec == this.lastRequestProperties.requestUrl) {
+        if (requestDetails) {
             /**
-             * Stores requestProperties, it is then used in asyncOnChannelRedirect 
+             * Stores requestProperties, it is then used in asyncOnChannelRedirect
              * and httpOnExamineResponse callback methods
              */
-            WebRequestHelper.attachRequestProperties(subject, this.lastRequestProperties);
-            openerTab = this.lastRequestProperties.openerTab;
-            this.lastRequestProperties = null;
+            WebRequestHelper.attachRequestProperties(subject, requestDetails);
+            openerTab = requestDetails.openerTab;
         }
 
         // Check for opener
@@ -697,11 +681,10 @@ var WebRequestImpl = exports.WebRequestImpl = {
      * @param requestUrl    Request url
      * @param referrer      Referrer url
      * @param requestType   Request type
-     * @param node          DOM node or null
      * @returns {*} object with two properties: "blocked" and "rule"
      * @private
      */
-    _shouldBlockRequest: function (tab, requestUrl, referrer, requestType, node) {
+    _shouldBlockRequest: function (tab, requestUrl, referrer, requestType) {
 
         var result = {
             blocked: false,
@@ -720,8 +703,6 @@ var WebRequestImpl = exports.WebRequestImpl = {
         result.blocked = this.webRequestService.isRequestBlockedByRule(result.rule);
 
         if (result.blocked || requestType === RequestTypes.WEBSOCKET) {
-            this._collapseElement(node, requestType);
-
             // Usually we call this method in _httpOnExamineResponse callback
             // But it won't be called if request is blocked here
             // Also it won't be called for WEBSOCKET requests
@@ -730,38 +711,38 @@ var WebRequestImpl = exports.WebRequestImpl = {
 
         return result;
     },
-    
+
     /**
      * Save request properties to be reused further in http-on-opening-request method.
      * This is ugly, but I have not found a better solution to pass requestType and shouldLoadResult
-     * NOTE: Hi, AMO reviewer! Maybe you know a better solution?:)
-     * 
+     *
      * @param requestUrl        Request URL
      * @param referrer          Referrer URL
      * @param requestType       Request content type
      * @param shouldLoadResult  Result of the "shouldLoad" call
      * @param aContext          aContext from the "shouldLoad"" call
      */
-    _saveLastRequestProperties: function(requestUrl, referrer, requestType, shouldLoadResult, aContext) {
-        this.lastRequestProperties = {
+    _saveLastRequestProperties: function (requestUrl, referrer, requestType, shouldLoadResult, aContext) {
+
+        var requestDetails = {
             requestUrl: requestUrl,
             referrer: referrer,
             requestType: requestType,
             shouldLoadResult: shouldLoadResult
         };
-        
-        // Also check if window has an "opener" and save it to request properties
-        if (requestType != RequestTypes.DOCUMENT) {
-            return;
-        }
 
-        var window = aContext.contentWindow || aContext;
-        if (window.top === window && window.opener && window.opener !== window) {
-            var openerXulTab = WebRequestHelper.getTabForContext(window.opener);
-            if (openerXulTab) {
-                this.lastRequestProperties.openerTab = {id: tabUtils.getTabId(openerXulTab)};
+        // Also check if window has an "opener" and save it to request properties
+        if (requestType == RequestTypes.DOCUMENT) {
+            var window = aContext.contentWindow || aContext;
+            if (window.top === window && window.opener && window.opener !== window) {
+                var openerXulTab = WebRequestHelper.getTabForContext(window.opener);
+                if (openerXulTab) {
+                    requestDetails.openerTab = {id: tabUtils.getTabId(openerXulTab)};
+                }
             }
         }
+
+        this.requestDetailsBuffer.put(requestUrl, requestDetails);
     },
 
     /**
@@ -832,19 +813,6 @@ var WebRequestImpl = exports.WebRequestImpl = {
         this.antiBannerService.getRequestFilter().checkSafebrowsingFilter(requestUrl, referrerUrl, function (safebrowsingUrl) {
             tabUtils.setTabURL(xulTab, "chrome://adguard/content/" + safebrowsingUrl);
         }, incognitoTab);
-    },
-
-    /**
-     * Blocking rule found. Collapsing the element.
-     *
-     * @param node Node to collapse
-     * @param requestType Request type (got from nsIHttpChannel)
-     * @private
-     */
-    _collapseElement: function (node, requestType) {
-        if (node && node.ownerDocument && RequestTypes.isVisual(requestType)) {
-            this.ElemHide.collapseNode(node);
-        }
     },
 
     QueryInterface: XPCOMUtils.generateQI([Ci.nsIContentPolicy, Ci.nsIObserver, Ci.nsIChannelEventSink, Ci.nsIFactory, Ci.nsISupportsWeakReference])

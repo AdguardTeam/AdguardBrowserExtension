@@ -1,6 +1,6 @@
-! Checksum: 5Zi9tSPMyeuP4NgjglqEKQ
-! Version: 1.0.1.81
-! TimeUpdated: 2016-12-06T17:01:56.420+04:00
+! Checksum: Rvu2U+F4fqWDpx/BtGtwnA
+! Version: 1.0.1.89
+! TimeUpdated: 2016-12-21T17:01:46.755+04:00
 ! Title: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! Title: Adguard Safari Filter
@@ -30,14 +30,29 @@
 !
 ! These rules are against anti-adblock scripts
 !
+!****** TEMPORARY ******
+! https://github.com/AdguardTeam/AdguardFilters/issues/3821
+@@||securepubads.g.doubleclick.net/gampad/ads?gdfp_req=1$other,domain=theatlantic.com
+@@||g.doubleclick.net/gpt/pubads_impl_$script,domain=theatlantic.com
+@@||theatlantic.com/widget/$xmlhttprequest
+@@||g.doubleclick.net/gampad/ads?gdfp_req=1&$script,domain=theatlantic.com
+@@||partner.googleadservices.com/gpt/pubads_impl_$script,domain=theatlantic.com
+@@||serving-sys.com^$xmlhttprequest,domain=theatlantic.com
+@@||theatlantic.com^$generichide
+@@||theatlantic.com^*/adver$script
+!***********************
+!
+! https://github.com/AdguardTeam/AdguardFilters/issues/3680
+@@||mackungfu.org$generichide
 ! https://forum.adguard.com/index.php?threads/www-lesechos-fr.15718/
 @@||lesechos.com/*/dfp.js^
 ! https://forum.adguard.com/index.php?threads/15039/
 @@||lesinrocks.com^$generichide
-! impspcabe clickunder
+!***
+!* impspcabe clickunder
 @@/ads/ad$domain=pipec.ru|xyya.net|pandamovie.net|streamgaroo.com|vidzi.tv|befuck.com
 @@||adstreet.tech/*ad$domain=befuck.com
-@@.adcenter.$domain=mcfucker.com|losmovies.club|rapidvideo.com
+@@.adcenter.$domain=mcfucker.com|losmovies.club|rapidvideo.com|subs.ro
 @@||mcfucker.com$generichide
 @@||losmovies.club^$generichide
 @@||vidzi.tv^$generichide
@@ -45,6 +60,9 @@
 @@||pipec.ru^$generichide
 @@||pandamovie.net^$generichide
 @@||xyya.net^$generichide
+@@||subs.ro^$generichide
+!*
+!***
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3109
 @@||mackie100projects.altervista.org^$generichide
 ! https://forum.adguard.com/index.php?threads/13867/
@@ -217,6 +235,7 @@ telegraaf.nl##.section-ad
 ! Section contains rules for specific websites
 !
 ! TEMPORARY: until web-sockets are not blocked by content-blocker
+baskino.club##div[id*="Composite"] *
 hdrezka.me##div[class="skin-block"][style^="width: 100%; height: 100%;"]
 hdrezka.me##div[style="padding: 0px; margin: 0px;"] td[width="33%"]
 hdrezka.me##iframe[src*="rootmedia.ws"]
@@ -225,6 +244,8 @@ filmix.net##div[id*="Composite"]
 free-torrent.org,free-torrents.org,onlyf.ws##body > :not(div)
 yourcinema.tv,kinogo-online.net,ovgorskiy.ru,24video.cc,torrent-games.net,nowa.cc,my-tfile.org,stereotraker.ru,kinogo-net-co.ru,kino-v-online.tv,hd720.biz,all-tv.org,n-torrents.ru,kinogo-co-2016.ru,allhit.tv,trackerock.ru,yummyanime.com,rsload.net,krutor.org,rutor.info,kinogo.club,24video.xxx,24videos.me,ahs-online.net,amovies.biz,audioboo.ru,baskino.club,bigcinema.to,bigtorrent.org,bobfilm1.net,cloud.mail.ru,comedy-portal.net,cwer.ws,dnevniki-vampira.net,dochronika.ru,doramatv.ru,fanserials.tv,fast-bit.org,fast-torrent.ru,fastpic.ru,fasttorrent.ru,filin.tv,filmix-online.net,filmix.net,filmogo.co,filmtor.net,findanime.ru,firebit.net,fizrukoff.net,free-torrent.org,free-torrent.pw,free-torrents.org,free-torrents.pw,freehd.com.ua,game-torrent.info,games-reviews.net,hdclub.org,hdkinomax.com,hdkinoshka.com,hdkinoteatr.com,hdrezka.me,hronika.info,igra-prestoloff.cx,ikinohd.com,kino-dom.org,kino-hd.in,kino-hd720.net,kino-live.red,kino-live2.org,kino-nada.net,kino-nada.ru,kinoclips.net,kinogb.net,kinogo-hd.net,kinogo-net-2016.ru,kinogo.club,kinogo.eu,kinoklad.net,kinokong.net,kinokrad.co,kinoprosmotr.net,kinosvit.tv,kinozadrot.net,kinozz.net,klipzona.co,linecinema.org,livetv-torrent.com,lostfilm-online.ru,lostfilmonline.ru,megaserial.net,megogo-hd.net,multiki-online24.ru,nice-film.ru,nnm-club.me,nnm-club.to,nnmclub.to,nod32eset.ru,onelike.tv,onlainfilm.ucoz.ua,online-freebee.net,online-life.cc,only-tv.org,ostfilm.tv,pleer.ws,radikal.ru,rufilmtv.org,rumedia.ws,rustorka.com,seasonvar.ru,serialguru.ru,serialytut.tv,sezon-hd.ru,show-online.tv,tapochek.net,tfile-music.org,tfile.co,tfilm.club,tivix.net,torrent-soft.net,torrent-windows.net,tracker.hdclub.com.ua,trackeroc.ru,tracktor.tv,trialeset.ru,turkcinema.tv,tushkan.tv,tv-torrent.org,tvbook.tv,tvfru.net,uniongang.net,unionpeer.org,wikianime.ru,x-true.info,zagonka.ru,zfilm-hd.net,baskino.club,hdrezka.me,all-episodes.net##body > div[id][class][style*="data:image/jpeg;base64"]
 !
+! https://forum.adguard.com/index.php?threads/12421/
+@@||sadeempc.com^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3327
 vidzi.tv##.player-ads
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3090
@@ -303,6 +324,8 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 !
 ! White list. Fixing content blocking API issues.
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/3725
+@@||vectorstock.com^$domain=vectorstock.com
 ! https://github.com/AdguardTeam/AdguardBrowserExtension/issues/466
 @@||11street.my/totalsearch/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3559
@@ -472,8 +495,10 @@ youtube.com#%#(function () {try {var youtubeAdRegExp = /^((.*_)?(ad|ads|afv|adse
 ! ---------------------------------------------------------------
 ! Url exception rules
 @@/js/ads.js^$domain=anigod.com|gryfindor.com|kflix.tv|netmics.com
+@@||ads-optima.com/www/delivery/ajs.php?zoneid=3686^$domain=sportsseoul.co.kr|sportsseoul.com
 @@||adverweb.cjenm.com/vod.mezzo/$domain=m.tving.com
 @@||cc.naver.com/cc^$image
+@@||pagead2.googlesyndication.com/pagead/show_ads.js^$domain=sportsseoul.co.kr|sportsseoul.com
 !@@||tvcast.naver.com/resources/*/clickcr_*.js^ - until Adguard browser extensions suppport $empty modifier
 @@||wcs.naver.net/wcslog.js^
 @@||web.n2s.co.kr/js/_n2s_ygosu_$domain=ygosu.com
@@ -482,6 +507,7 @@ youtube.com#%#(function () {try {var youtubeAdRegExp = /^((.*_)?(ad|ads|afv|adse
 @@||gryfindor.com^$generichide
 @@||kflix.tv^$generichide
 @@||netmics.com^$generichide
+@@||ssulwar.com^$generichide
 @@||time.navyism.com^$generichide
 ! Element hiding rules
 time.navyism.com##div > .adsbygoogle

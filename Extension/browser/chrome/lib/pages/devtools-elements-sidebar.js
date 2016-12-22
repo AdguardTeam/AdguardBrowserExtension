@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global chrome */
+/* global chrome, contentPage, AdguardRulesConstructorLib, balalaika */
 
 var browser = window.browser || chrome;
 
@@ -52,7 +52,7 @@ var browser = window.browser || chrome;
 
     var initElements = function () {
         $('#block-by-url-checkbox').get(0).checked = false;
-        $('#block-similar-checkbox').get(0).checked = false;
+        $('#create-full-css-path').get(0).checked = false;
         $('#one-domain-checkbox').get(0).checked = true;
 
         $("#filter-rule-text").get(0).value = '';
@@ -64,7 +64,7 @@ var browser = window.browser || chrome;
     };
 
     var updateRule = function () {
-        getInspectedPageUrl(function(res) {
+        getInspectedPageUrl(function (res) {
             updateFilterRuleInput(window.selectedElement, window.selectedElementInfo, res);
         });
     };
@@ -85,6 +85,9 @@ var browser = window.browser || chrome;
                 }
 
                 var ruleText = document.getElementById("filter-rule-text").value;
+                if (!ruleText) {
+                    return;
+                }
                 applyPreview(ruleText);
 
                 previewRuleButton.value = 'Cancel preview';
@@ -159,29 +162,29 @@ var browser = window.browser || chrome;
     };
 
     var updatePanelElements = function () {
-        var checkboxes = $('#one-domain-checkbox, #block-similar-checkbox, .attribute-check-box');
+        var checkboxes = $('#one-domain-checkbox, #create-full-css-path, .attribute-check-box');
 
         //All checkboxes should be disabled if block by url is checked
-        if ($('#block-by-url-checkbox').get(0).checked == true) {
+        if ($('#block-by-url-checkbox').get(0).checked) {
             checkboxes.attr("disabled", "disabled");
         } else {
             checkboxes.removeAttr("disabled");
         }
     };
 
-    var handleShowBlockSettings = function (showBlockByUrl, showBlockSimilar) {
+    var handleShowBlockSettings = function (showBlockByUrl, createFullCssPath) {
         if (showBlockByUrl) {
             $('#block-by-url-checkbox-block').show();
         } else {
             $('#block-by-url-checkbox').get(0).checked = false;
             $('#block-by-url-checkbox-block').hide();
         }
-        if (showBlockSimilar) {
-            $('#block-similar-checkbox-block').show();
-            $('#block-similar-checkbox').get(0).checked = false;
+        if (createFullCssPath) {
+            $('#create-full-css-path-block').show();
+            $('#create-full-css-path').get(0).checked = false;
         } else {
-            $('#block-similar-checkbox').get(0).checked = true;
-            $('#block-similar-checkbox-block').hide();
+            $('#create-full-css-path').get(0).checked = true;
+            $('#create-full-css-path-block').hide();
         }
     };
 
@@ -191,18 +194,18 @@ var browser = window.browser || chrome;
             placeholder.removeChild(placeholder.firstChild);
         }
 
-        var createAttributeElement = function(attributeName, attributeValue, defaultChecked) {
+        var createAttributeElement = function (attributeName, attributeValue, defaultChecked) {
             var checked = '';
             if (defaultChecked) {
                 checked = '" checked="true"';
             }
 
             var el = $(
-                '<li class="parent">'
-                + '<input class="enabled-button attribute-check-box" type="checkbox" id="' + 'attribute-check-box-' + attributeName + checked + '">'
-                + '<span class="webkit-css-property">' + attributeName + '</span>: '
-                + '<span class="value attribute-check-box-value">' + attributeValue + '</span>'
-                + '</li>');
+                '<li class="parent">' +
+                '<input class="enabled-button attribute-check-box" type="checkbox" id="' + 'attribute-check-box-' + attributeName + checked + '">' +
+                '<span class="webkit-css-property">' + attributeName + '</span>: ' +
+                '<span class="value attribute-check-box-value">' + attributeValue + '</span>' +
+                '</li>');
             return el.get(0);
         };
 
@@ -211,16 +214,18 @@ var browser = window.browser || chrome;
         for (var i = 0; i < info.attributes.length; i++) {
             var attribute = info.attributes[i];
 
-            if ((attribute.name == 'class') && (attribute.value)) {
+            if (attribute.name === 'class' && attribute.value) {
                 var split = attribute.value.split(' ');
                 for (var j = 0; j < split.length; j++) {
-                    placeholder.appendChild(createAttributeElement(attribute.name, split[j], true));
+                    var value = split[j];
+                    if (value) { // Skip empty values. Like 'class1 class2   '
+                        placeholder.appendChild(createAttributeElement(attribute.name, value, true));
+                    }
                 }
             } else {
-                placeholder.appendChild(createAttributeElement(attribute.name, attribute.value, attribute.name == 'id'));
+                placeholder.appendChild(createAttributeElement(attribute.name, attribute.value, attribute.name === 'id'));
             }
         }
-
     };
 
     var getInspectedPageUrl = function (callback) {
@@ -231,7 +236,7 @@ var browser = window.browser || chrome;
 
     var updateFilterRuleInput = function (element, info, url) {
         var isBlockByUrl = $('#block-by-url-checkbox').get(0).checked;
-        var isBlockSimilar = $("#block-similar-checkbox").get(0).checked;
+        var createFullCssPath = $("#create-full-css-path").get(0).checked;
         var isBlockOneDomain = $("#one-domain-checkbox").get(0).checked;
 
         var includeTagName = true;
@@ -241,17 +246,17 @@ var browser = window.browser || chrome;
         $('.attribute-check-box').forEach(function (el) {
             if (el) {
                 var attrName = el.id.substring('attribute-check-box-'.length);
-                if (attrName == 'tag') {
+                if (attrName === 'tag') {
                     includeTagName = el.checked;
-                } else if (attrName == 'id') {
+                } else if (attrName === 'id') {
                     includeElementId = el.checked;
                 } else {
                     if (el.checked && info.attributes) {
                         var attr = info.attributes[attrName];
                         if (attr) {
-                            if (attrName == 'class') {
+                            if (attrName === 'class') {
                                 var className = el.parentNode.querySelector('.attribute-check-box-value').innerText;
-                                selectedClasses.push('.' + className);
+                                selectedClasses.push(className);
                             } else {
                                 attributesSelector += '[' + attr.name + '="' + attr.value + '"]';
                             }
@@ -262,15 +267,15 @@ var browser = window.browser || chrome;
         });
 
         var options = {
-            isBlockByUrl: isBlockByUrl,
             urlMask: info.urlBlockAttributeValue,
-            isBlockSimilar : !isBlockSimilar,
             isBlockOneDomain: !isBlockOneDomain,
             url: url,
+            ruleType: isBlockByUrl ? 'URL' : 'CSS',
+            cssSelectorType: createFullCssPath ? 'STRICT_FULL' : 'STRICT',
             attributes: attributesSelector,
             excludeTagName: !includeTagName,
             excludeId: !includeElementId,
-            classesSelector: selectedClasses.join('')
+            classList: selectedClasses
         };
 
         var func = 'AdguardRulesConstructorLib.constructRuleText($0, ' + JSON.stringify(options) + ');';
@@ -284,39 +289,13 @@ var browser = window.browser || chrome;
     };
 
     var applyPreview = function (ruleText) {
-        togglePreview(ruleText);
+        var func = 'DevToolsHelper.applyPreview(' + JSON.stringify({ruleText: ruleText}) + ');';
+        browser.devtools.inspectedWindow.eval(func, {useContentScriptContext: true});
     };
 
     var cancelPreview = function () {
-        togglePreview();
-    };
-
-    var togglePreview = function (ruleText) {
-
-        var togglePreviewStyle = function (ruleText) {
-            var PREVIEW_STYLE_ID = "adguard-preview-style";
-
-            var head = document.getElementsByTagName('head')[0];
-            if (head) {
-                if (ruleText && ruleText != 'undefined') {
-                    var selector = AdguardRulesConstructorLib.constructRuleCssSelector(ruleText);
-                    if (!selector) {
-                        return;
-                    }
-
-                    var style = document.createElement("style");
-                    style.setAttribute("type", "text/css");
-                    style.setAttribute("id", PREVIEW_STYLE_ID);
-                    style.appendChild(document.createTextNode(selector + " {display: none !important;}"));
-
-                    head.appendChild(style);
-                } else {
-                    head.removeChild(document.getElementById(PREVIEW_STYLE_ID));
-                }
-            }
-        };
-
-        browser.devtools.inspectedWindow.eval("(" + togglePreviewStyle.toString() + ")('" + ruleText + "')", { useContentScriptContext: true });
+        var func = 'DevToolsHelper.cancelPreview();';
+        browser.devtools.inspectedWindow.eval(func, {useContentScriptContext: true});
     };
 
     var addRuleForElement = function () {
@@ -326,12 +305,12 @@ var browser = window.browser || chrome;
         }
 
         var ruleText = document.getElementById("filter-rule-text").value;
+        if (!ruleText) {
+            return;
+        }
 
-        var addRule = function (ruleText) {
-            contentPage.sendMessage({type: 'addUserRule', ruleText: ruleText});
-        };
-
-        browser.devtools.inspectedWindow.eval("(" + addRule.toString() + ")('" + ruleText + "')", {
+        var func = 'DevToolsHelper.addRule(' + JSON.stringify({ruleText: ruleText}) + ');';
+        browser.devtools.inspectedWindow.eval(func, {
             useContentScriptContext: true
         }, function () {
             applyPreview(ruleText);
