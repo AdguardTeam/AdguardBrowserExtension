@@ -606,6 +606,22 @@ var WebRequestImpl = exports.WebRequestImpl = {
         if (isMainFrame) {
             // Do safebrowsing check
             this._filterSafebrowsing(requestUrl, tab, xulTab);
+
+            /*
+             Websocket check.
+             If 'ws://' request is blocked for not existing domain - it's blocked for all domains.
+             Then we gonna limit frame sources to http to block src:'data/text' etc.
+             More details in the issue:
+             https://github.com/AdguardTeam/AdguardBrowserExtension/issues/344
+             https://github.com/AdguardTeam/AdguardBrowserExtension/issues/416
+
+             WS connections are detected as "other"  by ABP
+             EasyList already contains some rules for WS connections with $other modifier
+             */
+            var websocketCheckUrl = "ws://adguardwebsocket.check/";
+            if (this.webRequestService.checkWebSocketRequest(tab, websocketCheckUrl, referrerUrl)) {
+                subject.setResponseHeader('Content-Security-Policy', 'frame-src http: https:; child-src http: https:', false);
+            }
         }
     },
 
