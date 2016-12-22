@@ -150,9 +150,6 @@
             api.FilterRule.call(this, rule, filterId);
 
             var isInjectRule = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_INJECT_RULE) || adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE);
-            if (isInjectRule) {
-                this.isInjectRule = isInjectRule;
-            }
 
             var mask;
             if (isInjectRule) {
@@ -198,8 +195,8 @@
             }
 
             this.isInjectRule = isInjectRule;
-            this.cssSelector = cssContent;
             this.extendedCss = isExtendedCss;
+            this.cssSelector = cssContent;
         };
 
         return constructor;

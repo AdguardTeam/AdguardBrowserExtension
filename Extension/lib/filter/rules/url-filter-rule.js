@@ -228,7 +228,6 @@
         }
 
         var urlRuleText = parseResult.urlRuleText;
-        this.urlRuleText = urlRuleText;
 
         var isRegexRule = adguard.utils.strings.startWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) &&
             adguard.utils.strings.endWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) ||
@@ -245,7 +244,7 @@
 
             if (UrlFilterRule.REGEXP_ANY_SYMBOL == regexp && !this.hasPermittedDomains()) {
                 // Rule matches everything and does not have any domain restriction
-                throw ("Too wide basic rule: " + this.urlRuleText);
+                throw ("Too wide basic rule: " + urlRuleText);
             }
 
             // Extract shortcut from regexp rule
@@ -296,6 +295,16 @@
         }
 
         return this.urlRegExp;
+    };
+
+    /**
+     * Lazy getter for url rule text ( uses in safari content blocker)
+     */
+    UrlFilterRule.prototype.getUrlRuleText = function () {
+        if (!this.urlRuleText) {
+            this.urlRuleText = parseRuleText(this.ruleText).urlRuleText;
+        }
+        return this.urlRuleText;
     };
 
     /**

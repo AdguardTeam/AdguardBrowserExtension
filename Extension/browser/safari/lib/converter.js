@@ -180,7 +180,7 @@ var SafariContentBlockerConverter = {
                 return filter.urlRegExp.source;
             }
 
-            if (filter.urlRuleText == '||*') {
+            if (filter.getUrlRuleText() == '||*') {
                 return URL_FILTER_ANY_URL;
             }
             
@@ -320,7 +320,7 @@ var SafariContentBlockerConverter = {
                         delete result.trigger["resource-type"];
                     }
                     
-                    var parseDomainResult = this._parseRuleDomain(rule.urlRuleText);                    
+                    var parseDomainResult = this._parseRuleDomain(rule.getUrlRuleText());
 
                     if (parseDomainResult !== null && 
                         parseDomainResult.path !== null &&
