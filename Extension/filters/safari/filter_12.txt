@@ -1,6 +1,6 @@
-! Checksum: QLzZFfVWleJaGlb1czjatQ
-! Version: 1.0.1.88
-! TimeUpdated: 2016-12-20T01:01:49.073+04:00
+! Checksum: Rvu2U+F4fqWDpx/BtGtwnA
+! Version: 1.0.1.89
+! TimeUpdated: 2016-12-21T17:01:46.755+04:00
 ! Title: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! Title: Adguard Safari Filter
@@ -29,6 +29,18 @@
 !---------------------------------------------------------------------------!
 !
 ! These rules are against anti-adblock scripts
+!
+!****** TEMPORARY ******
+! https://github.com/AdguardTeam/AdguardFilters/issues/3821
+@@||securepubads.g.doubleclick.net/gampad/ads?gdfp_req=1$other,domain=theatlantic.com
+@@||g.doubleclick.net/gpt/pubads_impl_$script,domain=theatlantic.com
+@@||theatlantic.com/widget/$xmlhttprequest
+@@||g.doubleclick.net/gampad/ads?gdfp_req=1&$script,domain=theatlantic.com
+@@||partner.googleadservices.com/gpt/pubads_impl_$script,domain=theatlantic.com
+@@||serving-sys.com^$xmlhttprequest,domain=theatlantic.com
+@@||theatlantic.com^$generichide
+@@||theatlantic.com^*/adver$script
+!***********************
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3680
 @@||mackungfu.org$generichide

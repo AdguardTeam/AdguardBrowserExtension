@@ -295,7 +295,15 @@ adguard.integration = (function (adguard) {
         getAuthorizationHeaders: getAuthorizationHeaders,
 
         shouldOverrideReferrer: shouldOverrideReferrer,
-        getIntegrationBaseUrl: getIntegrationBaseUrl
+        getIntegrationBaseUrl: getIntegrationBaseUrl,
+
+        /**
+         * In simple api integration module may be missed
+         * @returns {boolean}
+         */
+        isSupported: function () {
+            return true;
+        }
     };
 
 })(adguard);

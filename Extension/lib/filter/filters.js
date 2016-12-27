@@ -150,7 +150,7 @@
          */
         getSelectorsForUrl: function (url, genericHide) {
             var domain = adguard.utils.url.getDomainName(url);
-            if (adguard.settings.collectHitsCount()) {
+            if (adguard.prefs.collectHitsCountEnabled && adguard.settings.collectHitsCount()) {
                 // If user has enabled "Send statistics for ad filters usage" option we build CSS with enabled hits stats.
                 // In this case style contains "content" with filter identifier and rule text.
                 var selectors = this.cssFilter.buildCssHits(domain, genericHide);

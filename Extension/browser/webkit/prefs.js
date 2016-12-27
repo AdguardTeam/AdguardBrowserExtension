@@ -100,7 +100,13 @@ adguard.prefs = (function (adguard) {
                     }
                 };
             });
-        }
+        },
+
+        /**
+         * If user enables `Send ad filters usage stats` option (which is disabled by default) in Adguard settings, it starts collecting & sending stats on used ad filtering rules.
+         * We use these stats to get rid of redundant filtering rules and provide "optimized" filters. Details: https://adguard.com/en/filter-rules-statistics.html
+         */
+        collectHitsCountEnabled: (typeof safari === 'undefined')
     };
 
     return Prefs;

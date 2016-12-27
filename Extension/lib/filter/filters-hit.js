@@ -182,6 +182,15 @@ adguard.hitStats = (function (adguard) {
         return hitStatsHolder.hitStats;
     };
 
+    /**
+     * Cleanup stats on property disabled
+     */
+    adguard.settings.onUpdated.addListener(function (setting) {
+        if (setting === adguard.settings.DISABLE_COLLECT_HITS && !adguard.settings.collectHitsCount()) {
+            cleanup();
+        }
+    });
+
     return {
         addRuleHit: addRuleHit,
         addDomainView: addDomainView,

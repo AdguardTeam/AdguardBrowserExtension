@@ -57,3 +57,6 @@ node-qunit-phantomjs css-filter/test-css-hits.html
 
 echo "Request filter tests"
 node-qunit-phantomjs request-filter/test-request-filter.html
+
+echo "Ring buffer tests"
+node-qunit-phantomjs miscellaneous/test-ring-buffer.html

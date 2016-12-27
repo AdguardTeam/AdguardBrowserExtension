@@ -1,6 +1,6 @@
-! Checksum: nsQVsGvwWntcygHMO8+/Jw
-! Version: 1.1.3.54
-! TimeUpdated: 2016-12-20T13:00:39.750+04:00
+! Checksum: YSHVvW13u76bMkQyuYadiw
+! Version: 1.1.3.64
+! TimeUpdated: 2016-12-21T20:00:32.403+04:00
 ! Title: English filter
 ! Description: EasyList + Adguard English filter. Filter list that specifically removes adverts on English language websites.
 ! Title: Adguard English Filter.
@@ -889,8 +889,9 @@ apkandroidfree.info###fab
 @@||ad.doubleclick.net/ddm/ad/*$domain=fyi.tv
 ! https://forum.adguard.com/index.php?threads/12937/
 @@||winphonehub.org^$generichide
-! https://forum.adguard.com/index.php?threads/12845/
+! https://forum.adguard.com/index.php?threads/17947/
 @@||uploadrocket.net/ads.js
+@@||uploadrocket.net/advertising/ads.js
 ! https://forum.adguard.com/index.php?threads/13055/
 @@||download.jkmk.net^$genericblock,~image
 ||jkmk.net/wp-content/uploads/*/*.js?ver=
@@ -2610,6 +2611,7 @@ nhaccuatui.com##div[class^="adv_"]
 !
 ! For example: http://vol.az/mp3-3288-Nara-Richebru-Araftayim-2016
 ##div[id*="ScriptRootC"]
+##div[id*="ScriptRootN"]
 !
 ##.SC_TBlock
 ###BannerBox
@@ -2678,8 +2680,11 @@ newpct1.com,al.ly,uplod.ws,tumejortorrent.com#%#Object.defineProperty(window, '_
 ! PopAds-b
 letwatch.to,hqq.tv,xonline.vip,pornhd.com,thevideo.me#%#Object.defineProperty(window, 'popns', { get: function() { return {}; } });
 ! AdMaven
+albumkings.org#%#window.btoa = function() {};
 uploadocean.com,zippyshare.com,bigfile.to,www.flashxx.tv,bigfile.to,imgcandy.net,uptobox.com,embed.nowvideo.sx,uptostream.com,flashx.tv,userscloud.com,imageweb.ws,salefiles.com,eztv.ag,extra.to#%#window.btoa = function() {};
 pornscum.com,pornsocket.com,depositfiles.com,depositfiles.org,dfiles.eu,dfiles.ru,pornve.com,yourbittorrent.com,nowvideo.ag,nowvideo.co,nowvideo.li,nowvideo.sx,nowvideo.to,karanpc.com#%#var er = Math.random().toString(36).substring(2); Object.defineProperty(window, 'admvpu', { set: function(){ throw new TypeError(er); } });
+! new line for FF
+freelive365.com#%#var er = Math.random().toString(36).substring(2); Object.defineProperty(window, 'admvpu', { set: function(){ throw new TypeError(er); } });
 ! For scripts, which uses base64
 keezmovies.com#%#window.atob = function() { };
 ! phantomPopunder
@@ -3030,6 +3035,8 @@ zippymoviez.com#%#window.open = function() {};
 !-------------------
 !-------CSS---------
 !-------------------
+! https://forum.adguard.com/index.php?threads/rockpapershotgun-com.17594/
+rockpapershotgun.com#$##page-wrapper { background: inherit!important; padding-top: inherit!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3792
 pcmag.com#$##adkit_billboard { padding-top: 0px!important; }
 ! https://forum.adguard.com/index.php?threads/17649/
@@ -3225,11 +3232,30 @@ google.ad,google.ae,google.al,google.am,google.as,google.at,google.az,google.ba,
 /bl.php$domain=imgwallet.com|pornleech.com|prostoporno.tv|picfox.org|picturelol.com|croea.com|beeg.com|imagetwist.com|yourporn.sexy|pandamovie.net|imagepearl.com|img24.org|prostoporno.me|porntube.com|pornleech.com|hipornvideo.com|kporno.com|pornorip.biz|picshick.com
 /fl.js$domain=imgwallet.com|pornleech.com|prostoporno.tv|picfox.org|picturelol.com|croea.com|beeg.com|imagetwist.com|yourporn.sexy|pandamovie.net|imagepearl.com|img24.org|prostoporno.me|porntube.com|pornleech.com|hipornvideo.com|kporno.com|pornorip.biz|picshick.com
 !
+!***
+!* Metro Apps
+||files.adduplexcontent.com/bannerads/
+||impus.tradedoubler.com/imp?type(img)
+||adduplex.com/*/GetAd
 ! Microsoft Solitaire Collection
 ||adbroker.mp.dse.microsoft.com^
 ! News modern app
 ||api.taboola.com/*/json/msn-windowsapps-*/recommendations.get?
+! Metro Commander
+||apps.boo-studio.com/*/banner/
+||apps.boo-studio.com/promotion/
+!*
+!***
 !
+uploadrocket.net##table.download div[style^="z-index:"]
+theatlantic.com##.bottompersistent-wrapper
+theatlantic.com##.ad-boxinjector-wrapper
+theatlantic.com##.ad-boxright-wrapper
+theatlantic.com##.homepage-ad
+theatlantic.com##.ad-wrapper
+theatlantic.com##.liveblog__highlights__ad
+theatlantic.com##.liveblog__ad
+freelive365.com###ad300
 sadeempc.com##.entry-inner > div[style] > center
 pcmag.com###uswitch_widget_container
 giveaway-club.com##.b-spot-adsense
@@ -4770,6 +4796,10 @@ protopage.com#%#(function(){var pageParams={};Object.defineProperty(window,"page
 @@||adv.wp.pl/RM/Box/c/b/money_rail_and_frames/money-rail-1.0.2.js
 !#########################################
 !
+! ibtimes.co.in - site is hanging
+@@||securepubads.g.doubleclick.net/gpt/pubads_impl_$domain=ibtimes.co.in
+! https://forum.adguard.com/index.php?threads/17898/
+@@||bucket.fitwhey.com/Banners^$domain=fitwhey.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3729
 @@||player.ooyala.com/static/*/ad-plugin/google_ima.min.js$domain=vulture.com
 ! https://forum.adguard.com/index.php?threads/17083/

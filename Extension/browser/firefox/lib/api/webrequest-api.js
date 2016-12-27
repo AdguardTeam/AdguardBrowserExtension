@@ -16,6 +16,8 @@
         var onBeforeSendHeadersChannel = adguard.utils.channels.newChannel();
         var onHeadersReceivedChannel = adguard.utils.channels.newChannel();
 
+        var requestDetailsBuffer = new adguard.utils.RingBuffer(256);
+
         // https://developer.mozilla.org/ja/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIContentPolicy#Constants
         var ContentTypes = {
             TYPE_OTHER: 1,
@@ -258,70 +260,6 @@
             return null;
         }
 
-        var RequestsDetailsStorage = (function () {
-
-            function RequestDetails() {
-                this.frameId = 0;
-                this.parentFrameId = 0;
-                this.type = 0;
-                this.tabId = 0;
-                this._key = ''; // key is url, from URI.spec
-            }
-
-            var detailsURLToIndex = new Map();
-            var detailsWritePointer = 0;
-            var detailsRingBuffer = new Array(256);
-
-            var i = detailsRingBuffer.length;
-            while (i--) {
-                detailsRingBuffer[i] = new RequestDetails();
-            }
-
-            var create = function (url) {
-                var bucket;
-                var i = detailsWritePointer;
-                detailsWritePointer = i + 1 & 255; // jshint ignore:line
-                var details = detailsRingBuffer[i];
-                var si = String.fromCharCode(i);
-                // Cleanup unserviced pending request
-                if (details._key !== '') {
-                    bucket = detailsURLToIndex.get(details._key);
-                    if (bucket.length === 1) {
-                        detailsURLToIndex.delete(details._key);
-                    } else {
-                        var pos = bucket.indexOf(si);
-                        detailsURLToIndex.set(details._key, bucket.slice(0, pos) + bucket.slice(pos + 1));
-                    }
-                }
-                bucket = detailsURLToIndex.get(url);
-                detailsURLToIndex.set(url, bucket === undefined ? si : si + bucket);
-                details._key = url;
-                return details;
-            };
-
-            var get = function (url) {
-                var bucket = detailsURLToIndex.get(url);
-                if (bucket === undefined) {
-                    return null;
-                }
-                var i = bucket.charCodeAt(0);
-                if (bucket.length === 1) {
-                    detailsURLToIndex.delete(url);
-                } else {
-                    detailsURLToIndex.set(url, bucket.slice(1));
-                }
-                var details = detailsRingBuffer[i];
-                details._key = ''; // mark as "serviced"
-                return details;
-            };
-
-            return {
-                create: create,
-                get: get
-            };
-
-        })();
-
         /**
          * This objects manages HTTP requests filtering.
          *
@@ -413,15 +351,6 @@
                     this.contractID,
                     false
                 );
-            },
-
-            saveRequestDetails: function (tabId, details) {
-                var requestDetails = RequestsDetailsStorage.create(details.url);
-                requestDetails.frameId = details.frameId;
-                requestDetails.parentFrameId = details.parentFrameId;
-                requestDetails.type = details.type;
-                requestDetails.tabId = tabId;
-                requestDetails.referrerUrl = details.referrerUrl;
             },
 
             /**
@@ -551,7 +480,7 @@
                     return;
                 }
 
-                details = RequestsDetailsStorage.get(channel.URI.asciiSpec);
+                details = requestDetailsBuffer.pop(channel.URI.asciiSpec);
 
                 var type = ContentTypes.TYPE_OTHER;
                 var frameId = 0;
@@ -651,7 +580,7 @@
 
                 // TODO: can we move it to webrequest.js?
                 // Set authorization headers for requests to desktop AG
-                if (adguard.isModuleSupported('integration') && adguard.integration.isIntegrationRequest(request.requestUrl)) {
+                if (adguard.integration.isIntegrationRequest(request.requestUrl)) {
                     var authHeaders = adguard.integration.getAuthorizationHeaders();
                     for (var i = 0; i < authHeaders.length; i++) {
                         channel.setRequestHeader(authHeaders[i].headerName, authHeaders[i].headerValue, false);
@@ -692,7 +621,14 @@
         };
 
         var saveRequestDetails = function (tabId, details) {
-            WebRequestImpl.saveRequestDetails(tabId, details);
+            var requestDetails = {
+                frameId: details.frameId,
+                parentFrameId: details.parentFrameId,
+                type: details.type,
+                tabId: tabId,
+                referrerUrl: details.referrerUrl
+            };
+            requestDetailsBuffer.put(details.url, requestDetails);
         };
 
         WebRequestImpl.init();

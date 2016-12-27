@@ -1,6 +1,6 @@
-! Checksum: A28yVkA+N/f11sLeogw62w
-! Version: 1.0.6.30
-! TimeUpdated: 2016-12-19T23:01:40.430+04:00
+! Checksum: 8lQtZH7YgDCK9KDYifPR/Q
+! Version: 1.0.6.32
+! TimeUpdated: 2016-12-21T18:01:40.285+04:00
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
 ! Title: Adguard Mobile Ads Filter
@@ -1005,6 +1005,8 @@ deviantart.com#@#.mobile-ad
 ! Prevent filtering apk storage of Google Play
 @@||android.clients.google.com/market/GetBinary/$document
 @@||play.google.com/store/apps/$document
+! Youtube & Samsung issue: https://github.com/AdguardTeam/AdguardForAndroid/issues/986
+@@||googleadservices.com^|$app=com.google.android.youtube
 !---------------------------------------------------------------------------!
 !-------------- Rules for specific websites --------------------------------!
 !---------------------------------------------------------------------------!
@@ -1021,6 +1023,7 @@ m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"
 ! https://forum.adguard.com/index.php?threads/10464/
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
 !
+m.9gag.com##section.salt-container
 m.economictimes.com###morePartner
 m.economictimes.com##.moreFrom
 ||m.yanglaopt.net^

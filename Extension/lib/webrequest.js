@@ -81,19 +81,17 @@
         var tab = requestDetails.tab;
         var headers = requestDetails.requestHeaders;
 
-        if (adguard.isModuleSupported('integration')) {
-            if (adguard.integration.shouldOverrideReferrer(tab)) {
-                // Retrieve main frame url
-                var mainFrameUrl = adguard.frames.getMainFrameUrl(tab);
-                headers = adguard.utils.browser.setHeaderValue(headers, 'Referer', mainFrameUrl);
-                return {
-                    requestHeaders: headers,
-                    modifiedHeaders: [{
-                        name: 'Referer',
-                        value: mainFrameUrl
-                    }]
-                };
-            }
+        if (adguard.integration.shouldOverrideReferrer(tab)) {
+            // Retrieve main frame url
+            var mainFrameUrl = adguard.frames.getMainFrameUrl(tab);
+            headers = adguard.utils.browser.setHeaderValue(headers, 'Referer', mainFrameUrl);
+            return {
+                requestHeaders: headers,
+                modifiedHeaders: [{
+                    name: 'Referer',
+                    value: mainFrameUrl
+                }]
+            };
         }
 
         if (requestDetails.requestType === adguard.RequestTypes.DOCUMENT) {
@@ -126,8 +124,7 @@
         adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
 
         // Safebrowsing check
-        if (adguard.isModuleSupported('safebrowsing') &&
-            requestType === adguard.RequestTypes.DOCUMENT) {
+        if (requestType === adguard.RequestTypes.DOCUMENT) {
             filterSafebrowsing(tab, requestUrl);
         }
 
@@ -176,7 +173,9 @@
      */
     function filterSafebrowsing(tab, mainFrameUrl) {
 
-        if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab) || adguard.frames.isTabWhiteListedForSafebrowsing(tab)) {
+        if (adguard.frames.isTabAdguardDetected(tab) ||
+            adguard.frames.isTabProtectionDisabled(tab) ||
+            adguard.frames.isTabWhiteListedForSafebrowsing(tab)) {
             return;
         }
 
@@ -206,7 +205,7 @@
 
     // AG for Windows and Mac checks either request signature or request Referer to authorize request.
     // Referer cannot be forged by the website so it's ok for add-on authorization.
-    if (adguard.isModuleSupported('integration') && adguard.utils.browser.isChromium()) {
+    if (adguard.integration.isSupported() && adguard.utils.browser.isChromium()) {
 
         /* global browser */
         browser.webRequest.onBeforeSendHeaders.addListener(function callback(details) {

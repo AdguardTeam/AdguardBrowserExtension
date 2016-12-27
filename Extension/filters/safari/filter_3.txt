@@ -1,6 +1,6 @@
-! Checksum: tW53ckD/L3cXCwfcJ0O/nw
-! Version: 1.0.9.65
-! TimeUpdated: 2016-12-20T14:56:49.010+04:00
+! Checksum: +LoU+JRdQhk8lu5WDiXZWg
+! Version: 1.0.9.70
+! TimeUpdated: 2016-12-21T18:00:34.939+04:00
 ! Title: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
 ! Title: Adguard Spyware Filter
@@ -3411,6 +3411,7 @@ accountkiller.com#%#window.ga = function(){var a = arguments[5];a&&a.hitCallback
 !
 ! Section contains the list of tracking servers, which are hosted on useful sites as subdomains
 !
+||metric.gstatic.com^$third-party
 ||startrekk.flaconi.de^
 ||tracking.rtl.de^
 ||d31bfnnwekbny6.cloudfront.net^
@@ -3700,6 +3701,11 @@ _tracking.php?b=
 !-------------- Specific web sites ---------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+||collections.mp.microsoft.com/*/collections/query
+||dc.services.visualstudio.com/*/track
+||core.bunchbox.co/geo.js^
+||ztat.net/*/webtrekk.min.js^
+||ztat.net/*/adrum.js^
 ||comicvine.com^*/tracking.js?
 ||cdn-library.net/*&data=anti-abp
 ||marketing.dropbox.com^
@@ -4246,6 +4252,10 @@ dreamprogs.net##td[width="88"][height="31"]
 !-------------- Whitelist ------------------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/3814
+@@||evernote.com^$domain=pioclpoplcdbaefihamjohnefbikjilc
+! https://forum.adguard.com/index.php?threads/17074/
+@@||static.parsely.com^$script,domain=dailystar.co.uk|express.co.uk|nydailynews.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3674
 @@||analytics.edgesuite.net/config/beacon-*.xml$domain=video.foxnews.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3683
