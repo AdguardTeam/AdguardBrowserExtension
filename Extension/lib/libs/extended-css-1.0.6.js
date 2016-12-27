@@ -2600,7 +2600,7 @@ return Sizzle;
 
 })( window );
 
-/* global SimpleRegex, console */
+/* global console */
 /**
  * Class that extends Sizzle and adds support for "matches-css" pseudo element.
  */

@@ -54,20 +54,6 @@ var StringUtils = {
 
 var UrlUtils = {
 
-	getParamValue: function (url, paramName) {
-		var query = StringUtils.substringAfter(url, '?');
-		if (query) {
-			var params = query.split('&');
-			for (var i = 0; i < params.length; i++) {
-				var paramAndValue = params[i].split('=');
-				if (paramAndValue[0] == paramName) {
-					return paramAndValue[1];
-				}
-			}
-		}
-		return null;
-	},
-
 	getDomainName: function (url) {
 		if (!this.linkHelper) {
 			this.linkHelper = document.createElement('a');
@@ -115,11 +101,15 @@ PageController.prototype = {
 			this.tabSelector.removeClass('opened');
 		}.bind(this));
 
-		//bind on change of selected tab
+		// bind on change of selected tab
 		this.tabSelectorList.on('click', 'div', function (e) {
 			var el = $(e.currentTarget);
-			this.currentTabId = el.attr('data-tab-id');
-			this.onSelectedTabChange();
+			document.location.hash = '#' + el.attr('data-tab-id');
+		}.bind(this));
+
+		// bind location hash change
+		$(window).on('hashchange', function () {
+			this._onOpenedTabsReceived();
 		}.bind(this));
 
 		this.searchRequest = null;
@@ -162,10 +152,12 @@ PageController.prototype = {
 	},
 
 	_onOpenedTabsReceived: function () {
-		// Try to retrieve tabId from query string
-		var tabId = UrlUtils.getParamValue(document.location.href, 'tabId');
-		if (tabId) {
-			this.currentTabId = tabId;
+		// Try to retrieve tabId from hash
+		if (document.location.hash) {
+			var tabId = document.location.hash.substring(1);
+			if (tabId) {
+				this.currentTabId = tabId;
+			}
 		}
 		this.onSelectedTabChange();
 	},
@@ -175,7 +167,11 @@ PageController.prototype = {
 		if (!tabInfo.isHttp) {
 			return;
 		}
-		this.tabSelectorList.append($('<div>', {'class': 'task-manager-header-dropdown-select-list-item', text: tabInfo.tab.title, 'data-tab-id': tabInfo.tabId}));
+		this.tabSelectorList.append($('<div>', {
+			'class': 'task-manager-header-dropdown-select-list-item',
+			text: tabInfo.title,
+			'data-tab-id': tabInfo.tabId
+		}));
 		if (!this.currentTabId) {
 			this.onSelectedTabChange();
 		}
@@ -189,9 +185,9 @@ PageController.prototype = {
 			return;
 		}
 		if (item && item.length > 0) {
-			item.text(tabInfo.tab.title);
+			item.text(tabInfo.title);
 			if (tabInfo.tabId == this.currentTabId) {
-				this.tabSelectorValue.text(tabInfo.tab.title);
+				this.tabSelectorValue.text(tabInfo.title);
 				//update icon logo
 				this._updateLogoIcon();
 			}
@@ -303,11 +299,8 @@ PageController.prototype = {
 		var rows = this.logTable.children();
 
 		// Filters not set
-		if (!this.searchRequest && 
-			this.searchTypes.length === 0 &&
-			!this.searchThirdParty &&
-			!this.searchBlocked && 
-			!this.searchWhitelisted) {
+		if (!this.searchRequest &&
+			this.searchTypes.length === 0 && !this.searchThirdParty && !this.searchBlocked && !this.searchWhitelisted) {
 
 			rows.removeClass('hidden');
 			return;
@@ -337,13 +330,13 @@ PageController.prototype = {
 
 		this.logTable.empty();
 
-		contentPage.sendMessage({type: 'getTabInfoById', tabId: tabId}, function (response) {
+		contentPage.sendMessage({type: 'getFilteringInfoByTabId', tabId: tabId}, function (response) {
 
-			var tabInfo = response.tabInfo;
+			var filteringInfo = response.filteringInfo;
 
 			var filteringEvents = [];
-			if (tabInfo) {
-				filteringEvents = tabInfo.filteringEvents || [];
+			if (filteringInfo) {
+				filteringEvents = filteringInfo.filteringEvents || [];
 			}
 
 			this._renderEvents(filteringEvents);
@@ -388,10 +381,19 @@ PageController.prototype = {
 		}
 
 		var el = $('<div>', metadata);
-		el.append($('<div>', {text: event.requestUrl, 'class': 'task-manager-content-header-body-col task-manager-content-item-url'}));
+		el.append($('<div>', {
+			text: event.requestUrl,
+			'class': 'task-manager-content-header-body-col task-manager-content-item-url'
+		}));
 		el.append($('<div>', {text: RequestWizard.getRequestType(event.requestType), 'class': requestTypeClass}));
-		el.append($('<div>', {text: ruleText, 'class': 'task-manager-content-header-body-col task-manager-content-item-rule'}));
-		el.append($('<div>', {text: RequestWizard.getSource(event.frameDomain), 'class': 'task-manager-content-header-body-col task-manager-content-item-source'}));
+		el.append($('<div>', {
+			text: ruleText,
+			'class': 'task-manager-content-header-body-col task-manager-content-item-rule'
+		}));
+		el.append($('<div>', {
+			text: RequestWizard.getSource(event.frameDomain),
+			'class': 'task-manager-content-header-body-col task-manager-content-item-source'
+		}));
 
 		return el;
 	},
@@ -400,7 +402,7 @@ PageController.prototype = {
 
 		var filterData = el.data();
 
-		var show = !this.searchRequest || StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest); 
+		var show = !this.searchRequest || StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest);
 		show &= this.searchTypes.length === 0 || this.searchTypes.indexOf(filterData.requestType) >= 0;
 
 		var checkboxes = !(this.searchWhitelisted || this.searchBlocked || this.searchThirdParty);
@@ -530,11 +532,10 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 
 	removeUserFilterRuleButton.on('click', function (e) {
 		e.preventDefault();
-		contentPage.sendMessage({type: 'removeUserFilter', text: requestRule.ruleText});
+		contentPage.sendMessage({type: 'removeUserRule', ruleText: requestRule.ruleText, adguardDetected: frameInfo.adguardDetected});
 		if (frameInfo.adguardDetected) {
 			// In integration mode rule may be present in whitelist filter
 			contentPage.sendMessage({type: 'unWhiteListFrame', frameInfo: frameInfo});
-			contentPage.sendMessage({type: 'removeRuleFromApp', ruleText: requestRule.ruleText});
 		}
 		this.closeModal();
 	}.bind(this));
@@ -577,8 +578,20 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 	var rulePatternsEl = template.find('#rulePatterns');
 	for (var i = 0; i < patterns.length; i++) {
 		var patternEl = $('<div>', {'class': 'radio radio-patterns'});
-		var input = $('<input>', {'class': 'radio-input', type: 'radio', name: 'rulePattern', id: 'pattern' + i, value: patterns[i]});
-		var label = $('<label>', {'class': 'radio-label', 'for': 'pattern' + i}).append($('<span>', {'class': 'radio-icon'})).append($('<span>', {'class': 'radio-label-text', text: patterns[i]}));
+		var input = $('<input>', {
+			'class': 'radio-input',
+			type: 'radio',
+			name: 'rulePattern',
+			id: 'pattern' + i,
+			value: patterns[i]
+		});
+		var label = $('<label>', {
+			'class': 'radio-label',
+			'for': 'pattern' + i
+		}).append($('<span>', {'class': 'radio-icon'})).append($('<span>', {
+			'class': 'radio-label-text',
+			text: patterns[i]
+		}));
 		patternEl.append(input);
 		patternEl.append(label);
 		rulePatternsEl.append(patternEl);
@@ -633,12 +646,9 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 		if (!ruleText) {
 			return;
 		}
-		//add rule to user filter
-		contentPage.sendMessage({type: 'addUserFilterRule', text: ruleText});
-		if (frameInfo.adguardDetected) {
-			contentPage.sendMessage({type: 'addRuleToApp', ruleText: ruleText});
-		}
-		//close modal
+		// Add rule to user filter
+		contentPage.sendMessage({type: 'addUserRule', ruleText: ruleText, adguardDetected: frameInfo.adguardDetected});
+		// Close modal
 		this.closeModal();
 	}.bind(this));
 
@@ -745,23 +755,19 @@ RequestWizard.getSource = function (frameDomain) {
 };
 
 var userSettings;
-var enabledFilters;
 var environmentOptions;
 var AntiBannerFiltersId;
 var EventNotifierTypes;
-var LogEvents;
 var filtersMetadata;
 
 contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
 
 	userSettings = response.userSettings;
-	enabledFilters = response.enabledFilters;
 	filtersMetadata = response.filtersMetadata;
 	environmentOptions = response.environmentOptions;
 
 	AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
 	EventNotifierTypes = response.constants.EventNotifierTypes;
-	LogEvents = response.constants.LogEvents;
 
 	$(document).ready(function () {
 
@@ -769,30 +775,30 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
 
 		function onEvent(event, tabInfo, filteringEvent) {
 			switch (event) {
-				case LogEvents.TAB_ADDED:
+				case EventNotifierTypes.TAB_ADDED:
 					pageController.onTabAdded(tabInfo);
 					break;
-				case LogEvents.TAB_UPDATE:
+				case EventNotifierTypes.TAB_UPDATE:
 					pageController.onTabUpdated(tabInfo);
 					break;
-				case LogEvents.TAB_CLOSE:
+				case EventNotifierTypes.TAB_CLOSE:
 					pageController.onTabClose(tabInfo);
 					break;
-				case LogEvents.TAB_RESET:
+				case EventNotifierTypes.TAB_RESET:
 					pageController.onTabReset(tabInfo);
 					break;
-				case LogEvents.EVENT_ADDED:
+				case EventNotifierTypes.LOG_EVENT_ADDED :
 					pageController.onEventAdded(tabInfo, filteringEvent);
 					break;
 			}
 		}
 
 		var events = [
-			LogEvents.TAB_ADDED,
-			LogEvents.TAB_UPDATE,
-			LogEvents.TAB_CLOSE,
-			LogEvents.TAB_RESET,
-			LogEvents.EVENT_ADDED
+			EventNotifierTypes.TAB_ADDED,
+			EventNotifierTypes.TAB_UPDATE,
+			EventNotifierTypes.TAB_CLOSE,
+			EventNotifierTypes.TAB_RESET,
+			EventNotifierTypes.LOG_EVENT_ADDED
 		];
 
 		//set log is open

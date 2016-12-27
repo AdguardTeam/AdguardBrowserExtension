@@ -14,50 +14,50 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global exports, LS */
 
 /**
- * Filter rules storage adapter.
- * 
+ * Filter rules storage implementation.
+ *
  * Edge storage has a weird 1MB limit per value. Also Edge does not support "unlimitedStorage" permission.
  * The weird thing is that local storage does not limited like that so we just use it instead.
- * 
- * TODO[Edge]: There is still a possibility to exceed local storage quota. 
+ *
+ * TODO[Edge]: There is still a possibility to exceed local storage quota.
  * Consider using http://pieroxy.net/blog/pages/lz-string/index.html
  */
-var RulesStorage = exports.RulesStorage = (function() {
-    
+adguard.rulesStorageImpl = (function (adguard) {
+
     var read = function (path, callback) {
-		try {
-			var value = LS.getItem(path);
-			var lines = [];
-			if (value) {
-				lines = value.split(/[\r\n]+/);
-			}
-			callback(null, lines);
-		} catch (ex) {
-			callback(ex);
-		}
-	};
-    
+        try {
+            var value = adguard.localStorageImpl.getItem(path);
+            var lines = [];
+            if (value) {
+                lines = value.split(/[\r\n]+/);
+            }
+            callback(null, lines);
+        } catch (ex) {
+            callback(ex);
+        }
+    };
+
     var write = function (path, data, callback) {
-		var value = data.join('\n');
-		try {
-			LS.setItem(path, value);
-			callback();
-		} catch (ex) {
-			callback(ex);
-		}
-	};
-    
+        var value = data.join('\n');
+        try {
+            adguard.localStorageImpl.setItem(path, value);
+            callback();
+        } catch (ex) {
+            callback(ex);
+        }
+    };
+
     var remove = function (path, successCallback) {
-		LS.removeItem(path);
-		successCallback();
-	};
-    
+        adguard.localStorageImpl.removeItem(path);
+        successCallback();
+    };
+
     return {
         write: write,
         read: read,
         remove: remove
     };
-})();
+
+})(adguard);

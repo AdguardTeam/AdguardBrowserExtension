@@ -15,427 +15,504 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-var Log = require('../../lib/utils/log').Log;
-var Utils = require('../../lib/utils/browser-utils').Utils;
-var LS = require('../../lib/utils/local-storage').LS;
-var Prefs = require('../../lib/prefs').Prefs;
-var AntiBannerFiltersId = require('../../lib/utils/common').AntiBannerFiltersId;
-var RulesStorage = require('../../lib/utils/rules-storage').RulesStorage;
-var FilterStorage = require('../../lib/filter/storage').FilterStorage;
-var CollectionUtils = require('../../lib/utils/common').CollectionUtils;
-var Promise = require('../../lib/utils/promises').Promise;
-var filterRulesHitCount = require('../../lib/filter/filters-hit').filterRulesHitCount;
-var simpleStorage = require('sdk/simple-storage');
+/* global FileUtils */
 
 /**
  * Service that manages extension version information and handles
  * extension update. For instance we may need to change storage schema on update.
  */
-exports.ApplicationUpdateService = {
+adguard.applicationUpdateService = (function (adguard) {
 
-	/**
-	 * Returns extension run info
-	 * @returns {{isFirstRun: boolean, isUpdate: (boolean|*), currentVersion: (exports.Prefs.version|*), prevVersion: *}}
-	 */
-	getRunInfo: function () {
+    /**
+     * File storage adapter
+     * @Deprecated Used now only to upgrade from versions older than v2.3.5
+     */
+    var FileStorage = {
 
-		var currentVersion = Prefs.version;
-		var prevVersion = Utils.getAppVersion();
-		Utils.setAppVersion(currentVersion);
+        LINE_BREAK: '\n',
+        FILE_PATH: "filters.ini",
 
-		var isFirstRun = currentVersion != prevVersion && !prevVersion;
-		var isUpdate = currentVersion != prevVersion && prevVersion;
+        readFromFile: function (path, callback) {
 
-		return {
-			isFirstRun: isFirstRun,
-			isUpdate: isUpdate,
-			currentVersion: currentVersion,
-			prevVersion: prevVersion
-		};
-	},
+            var successCallback = function (fs, fileEntry) {
 
-	/**
-	 * Handle extension update
-	 * @param runInfo   Run info
-	 * @param callback  Called after update was handled
-	 */
-	onUpdate: function (runInfo, callback) {
+                fileEntry.file(function (file) {
 
-		var methods = [];
-		if (Utils.isGreaterVersion("1.0.1.0", runInfo.prevVersion)) {
-			methods.push(this._onUpdateToSaveFilterRulesToDifferentFiles);
-		}
-		if (Utils.isGreaterVersion("1.0.3.0", runInfo.prevVersion)) {
-			methods.push(this._onUpdateToMultiplySubscriptions);
-		}
-		if (Utils.isGreaterVersion("2.0.0", runInfo.prevVersion)) {
-			methods.push(this._onUpdateRemoveIpResolver);
-		}
-		if (Utils.isGreaterVersion("2.0.9", runInfo.prevVersion)) {
-			methods.push(this._onUpdateWhiteListService);
-		}
-		if (Utils.isGreaterVersion("2.0.10", runInfo.prevVersion)) {
-			methods.push(this._onUpdateRuleHitStats);
-		}
-		if (Utils.isGreaterVersion("2.1.2", runInfo.prevVersion) && Utils.isFirefoxBrowser()) {
-			methods.push(this._onUpdateFirefoxStorage);
-		}
-		if (Utils.isGreaterVersion("2.3.5", runInfo.prevVersion) && Utils.isChromium() && !Utils.isSafariBrowser()) {
-			methods.push(this._onUpdateChromiumStorage);
-		}
+                    var reader = new FileReader();
+                    reader.onloadend = function () {
 
-		var dfd = this._executeMethods(methods);
-		dfd.then(callback);
-	},
+                        if (reader.error) {
+                            callback(reader.error);
+                        } else {
+                            var lines = [];
+                            if (reader.result) {
+                                lines = reader.result.split(/[\r\n]+/);
+                            }
+                            callback(null, lines);
+                        }
+                    };
 
-	/**
-	 * Helper to execute deferred objects
-	 *
-	 * @param methods Methods to execute
-	 * @returns {Deferred}
-	 * @private
-	 */
-	_executeMethods: function (methods) {
+                    reader.onerror = function (e) {
+                        callback(e);
+                    };
 
-		var mainDfd = new Promise();
+                    reader.readAsText(file);
 
-		var executeNextMethod = function () {
-			if (methods.length == 0) {
-				mainDfd.resolve();
-			} else {
-				var method = methods.shift();
-				var dfd = method.call(this);
-				dfd.then(executeNextMethod);
-			}
-		}.bind(this);
+                }, callback);
+            };
 
-		executeNextMethod();
+            this._getFile(path, true, successCallback, callback);
+        },
 
-		return mainDfd;
-	},
+        _getFile: function (path, create, successCallback, errorCallback) {
 
-	/**
-	 * Earlier filters rules were saved to filters.ini.
-	 * Now filters rules save to filter_1.txt, filter_2.txt, ...
-	 * @private
-	 */
-	_onUpdateToSaveFilterRulesToDifferentFiles: function () {
+            path = path.replace(/^.*[\/\\]/, "");
 
-		Log.info('Call update to version 1.0.1.0');
+            var requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
+            requestFileSystem(window.PERSISTENT, 1024 * 1024 * 1024, function (fs) {
+                fs.root.getFile(path, {create: create}, function (fileEntry) {
+                    successCallback(fs, fileEntry);
+                }, errorCallback);
+            }, errorCallback);
+        },
 
-		var updateDfd = new Promise();
+        removeFile: function (path, successCallback, errorCallback) {
+            this._getFile(path, false, function (fs, fileEntry) {
+                fileEntry.remove(successCallback, errorCallback);
+            }, errorCallback);
+        }
+    };
 
-		FilterStorage.loadFromDisk(function (filters) {
+    /**
+     * Helper to execute deferred objects
+     *
+     * @param methods Methods to execute
+     * @returns {Deferred}
+     * @private
+     */
+    function executeMethods(methods) {
 
-			var adguardFilters = Object.create(null);
+        var mainDfd = new adguard.utils.Promise();
 
-			var processNextFilter = function () {
-				if (filters.length === 0) {
-					//update adguard-filters in local storage for next update iteration
-					LS.setItem('adguard-filters', JSON.stringify(adguardFilters));
+        var executeNextMethod = function () {
+            if (methods.length === 0) {
+                mainDfd.resolve();
+            } else {
+                var method = methods.shift();
+                var dfd = method();
+                dfd.then(executeNextMethod);
+            }
+        };
 
-					//cleanup old file
-					var removeCallback = function () {
+        executeNextMethod();
+
+        return mainDfd;
+    }
+
+    /**
+     * Earlier filters rules were saved to filters.ini.
+     * Now filters rules save to filter_1.txt, filter_2.txt, ...
+     * @private
+     */
+    function onUpdateToSaveFilterRulesToDifferentFiles() {
+
+        adguard.console.info('Call update to version 1.0.1.0');
+
+        var updateDfd = new adguard.utils.Promise();
+
+        adguard.rulesStorage.read(function (filters) {
+
+            var adguardFilters = Object.create(null);
+
+            var processNextFilter = function () {
+                if (filters.length === 0) {
+                    //update adguard-filters in local storage for next update iteration
+                    adguard.localStorage.setItem('adguard-filters', JSON.stringify(adguardFilters));
+
+                    //cleanup old file
+                    var removeCallback = function () {
                         // Ignore
-					};
-					RulesStorage.remove(FileStorage.FILE_PATH, removeCallback, removeCallback);
-					updateDfd.resolve();
-				} else {
-					var filter = filters.shift();
-					adguardFilters[filter.filterId] = {
-						version: filter.version,
-						lastCheckTime: filter.lastCheckTime,
-						lastUpdateTime: filter.lastUpdateTime,
-						disabled: filter.disabled
-					};
-					var dfd = new Promise();
-					var rulesText = CollectionUtils.getRulesText(filter.filterRules);
-					FilterStorage.saveFilterRules(filter.filterId, rulesText, dfd.resolve);
-					dfd.then(processNextFilter);
-				}
-			};
+                    };
+                    adguard.rulesStorageImpl.remove(FileStorage.FILE_PATH, removeCallback, removeCallback);
+                    updateDfd.resolve();
+                } else {
+                    var filter = filters.shift();
+                    adguardFilters[filter.filterId] = {
+                        version: filter.version,
+                        lastCheckTime: filter.lastCheckTime,
+                        lastUpdateTime: filter.lastUpdateTime,
+                        disabled: filter.disabled
+                    };
+                    var dfd = new adguard.utils.Promise();
+                    var rulesText = adguard.utils.collections.getRulesText(filter.filterRules);
+                    adguard.rulesStorage.write(filter.filterId, rulesText, dfd.resolve);
+                    dfd.then(processNextFilter);
+                }
+            };
 
-			processNextFilter();
-		});
+            processNextFilter();
+        });
 
-		return updateDfd;
-	},
+        return updateDfd;
+    }
 
-	/**
-	 * Update to version with filter subscriptions
-	 *
-	 * version 1.0.3.0
-	 * @private
-	 */
-	_onUpdateToMultiplySubscriptions: function () {
+    /**
+     * Update to version with filter subscriptions
+     *
+     * version 1.0.3.0
+     * @private
+     */
+    function onUpdateToMultiplySubscriptions() {
 
-		Log.info('Call update to version 1.0.3.0');
+        adguard.console.info('Call update to version 1.0.3.0');
 
-		if ('adguard-filters' in LS.storage) {
-			this._saveInstalledFiltersOnUpdate();
-			this._saveFiltersVersionInfoOnUpdate();
-			LS.removeItem('adguard-filters');
-		}
+        if (adguard.localStorage.hasItem('adguard-filters')) {
+            saveInstalledFiltersOnUpdate();
+            saveFiltersVersionInfoOnUpdate();
+            adguard.localStorage.removeItem('adguard-filters');
+        }
 
-		var dfd = new Promise();
-		dfd.resolve();
-		return dfd;
-	},
+        var dfd = new adguard.utils.Promise();
+        dfd.resolve();
+        return dfd;
+    }
 
-	/**
-	 * Update to version without ip-resolve
-	 *
-	 * version 2.0.0
-	 * @private
-	 */
-	_onUpdateRemoveIpResolver: function () {
+    /**
+     * Update to version without ip-resolve
+     *
+     * version 2.0.0
+     * @private
+     */
+    function onUpdateRemoveIpResolver() {
 
-		Log.info('Call update to version 1.0.3.0');
+        adguard.console.info('Call update to version 1.0.3.0');
 
-		LS.removeItem('ip-cache');
+        adguard.localStorage.removeItem('ip-cache');
 
-		var dfd = new Promise();
-		dfd.resolve();
-		return dfd;
-	},
+        var dfd = new adguard.utils.Promise();
+        dfd.resolve();
+        return dfd;
+    }
 
-	/**
-	 * Update whitelist service
-	 *
-	 * Version 2.0.9
-	 * @private
-	 */
-	_onUpdateWhiteListService: function () {
+    /**
+     * Update whitelist service
+     *
+     * Version 2.0.9
+     * @private
+     */
+    function onUpdateWhiteListService() {
 
-		Log.info('Call update to version 2.0.9');
+        adguard.console.info('Call update to version 2.0.9');
 
-		var dfd = new Promise();
+        var dfd = new adguard.utils.Promise();
 
-		var filterId = AntiBannerFiltersId.WHITE_LIST_FILTER_ID;
+        var filterId = adguard.utils.filters.WHITE_LIST_FILTER_ID;
 
-		FilterStorage.loadFilterRules(filterId, function (rulesText) {
+        adguard.rulesStorage.read(filterId, function (rulesText) {
 
-			var whiteListDomains = [];
+            var whiteListDomains = [];
 
-			if (!rulesText) {
-				dfd.resolve();
-				return;
-			}
+            if (!rulesText) {
+                dfd.resolve();
+                return;
+            }
 
-			for (var i = 0; i < rulesText.length; i++) {
-				if (/^@@\/\/([^\/]+)\^\$document$/.test(rulesText[i])) {
-					var domain = RegExp.$1;
-					if (whiteListDomains.indexOf(domain) < 0) {
-						whiteListDomains.push(domain);
-					}
-				}
-			}
+            for (var i = 0; i < rulesText.length; i++) {
+                if (/^@@\/\/([^\/]+)\^\$document$/.test(rulesText[i])) {
+                    var domain = RegExp.$1;
+                    if (whiteListDomains.indexOf(domain) < 0) {
+                        whiteListDomains.push(domain);
+                    }
+                }
+            }
 
-			LS.setItem('white-list-domains', JSON.stringify(whiteListDomains));
+            adguard.localStorage.setItem('white-list-domains', JSON.stringify(whiteListDomains));
 
-			dfd.resolve();
-		}.bind(this));
+            dfd.resolve();
+        });
 
-		return dfd;
-	},
+        return dfd;
+    }
 
-	/**
-	 * Update rule hit stats
-	 *
-	 * Version 2.0.10
-	 * @private
-	 */
-	_onUpdateRuleHitStats: function () {
+    /**
+     * Update rule hit stats
+     *
+     * Version 2.0.10
+     * @private
+     */
+    function onUpdateRuleHitStats() {
 
-		filterRulesHitCount.cleanup();
+        adguard.hitStats.cleanup();
 
-		var dfd = new Promise();
-		dfd.resolve();
-		return dfd;
-	},
+        var dfd = new adguard.utils.Promise();
+        dfd.resolve();
+        return dfd;
+    }
 
-	/**
-	 * Update Firefox storage by moving to prefs
-	 *
-	 * Version 2.1.2
-	 * @returns {exports.Promise}
-	 * @private
-	 */
-	_onUpdateFirefoxStorage: function () {
+    /**
+     * Update Firefox storage by moving to prefs
+     *
+     * Version 2.1.2
+     * @returns {Promise}
+     * @private
+     */
+    function onUpdateFirefoxStorage() {
 
-		Log.info('Call update to version 2.1.2');
+        adguard.console.info('Call update to version 2.1.2');
 
-		var dfd = new Promise();
+        var dfd = new adguard.utils.Promise();
 
-		var ss = simpleStorage.storage;
-		for (var k in ss) {
-			if (ss.hasOwnProperty(k)) {
-				var v = ss[k];
-				LS.setItem(k, v);
-				delete ss[k];
-			}
-		}
+        readFirefoxSdkLocalStorage(function (storage) {
+            if (storage) {
+                for (var key in storage) {
+                    if (storage.hasOwnProperty(key)) {
+                        if (key === 'app-version') { // Skip app-version property. It has already set.
+                            continue;
+                        }
+                        adguard.localStorage.setItem(key, storage[key]);
+                    }
+                }
+            }
+            try {
+                var storeFile = getSdkLocalStorageFile();
+                if (storeFile.exists()) {
+                    storeFile.remove(0);
+                }
+            } catch (ex) {
+                adguard.console.error('Adguard addon: Cannot remove sdk simple-storage store.json file: {0}', ex);
+            }
+            dfd.resolve();
+        });
 
-		dfd.resolve();
-		return dfd;
-	},
+        return dfd;
+    }
 
-	/**
-	 * Updates filters storage - move from files to the storage API.
-	 *
-	 * Version 2.3.5
-	 * @returns {exports.Promise}
-	 * @private
-	 */
-	_onUpdateChromiumStorage: function () {
-		Log.info('Call update to version 2.3.5');
+    /**
+     * Updates filters storage - move from files to the storage API.
+     *
+     * Version 2.3.5
+     * @returns {Promise}
+     * @private
+     */
+    function onUpdateChromiumStorage() {
+        adguard.console.info('Call update to version 2.3.5');
 
-		var dfd = new Promise();
+        var dfd = new adguard.utils.Promise();
 
-		var filterId = AntiBannerFiltersId.USER_FILTER_ID;
-		var filePath = FilterStorage._getFilePath(filterId);
+        var filterId = adguard.utils.filters.USER_FILTER_ID;
+        var filePath = "filterrules_" + filterId + ".txt";
 
-		FileStorage.readFromFile(filePath, function (e, rules) {
-			if (e) {
-				Log.error("Error while reading rules from file {0} cause: {1}", filePath, e);
-				return;
-			}
+        FileStorage.readFromFile(filePath, function (e, rules) {
+            if (e) {
+                adguard.console.error("Error while reading rules from file {0} cause: {1}", filePath, e);
+                return;
+            }
 
-			var onTransferCompleted = function () {
-				Log.info("Rules have been transferred to local storage for filter {0}", filterId);
+            var onTransferCompleted = function () {
+                adguard.console.info("Rules have been transferred to local storage for filter {0}", filterId);
 
-				FileStorage.removeFile(filePath, function () {
-					Log.info("File removed for filter {0}", filterId);
-				}, function () {
-					Log.error("File remove error for filter {0}", filterId);
-				});
-			};
+                FileStorage.removeFile(filePath, function () {
+                    adguard.console.info("File removed for filter {0}", filterId);
+                }, function () {
+                    adguard.console.error("File remove error for filter {0}", filterId);
+                });
+            };
 
-			if (rules) {
-				Log.info('Found rules:' + rules.length);
-			}
+            if (rules) {
+                adguard.console.info('Found rules:' + rules.length);
+            }
 
-			FilterStorage.saveFilterRules(filterId, rules, onTransferCompleted.bind(this));
-		}.bind(this));
+            adguard.rulesStorage.write(filterId, rules, onTransferCompleted);
+        });
 
-		dfd.resolve();
-		return dfd;
-	},
+        dfd.resolve();
+        return dfd;
+    }
 
-	/**
-	 * Mark 'adguard-filters' as installed and loaded on extension version update
-	 * @private
-	 */
-	_saveInstalledFiltersOnUpdate: function () {
+    /**
+     * Mark 'adguard-filters' as installed and loaded on extension version update
+     * @private
+     */
+    function saveInstalledFiltersOnUpdate() {
 
-		var FilterLSUtils = require('filter/antibanner').FilterLSUtils;
-		var adguardFilters = JSON.parse(LS.getItem('adguard-filters')) || Object.create(null);
+        var adguardFilters = JSON.parse(adguard.localStorage.getItem('adguard-filters')) || Object.create(null);
 
-		for (var filterId in adguardFilters) {
-			var filterInfo = adguardFilters[filterId];
-			if (filterId == AntiBannerFiltersId.USER_FILTER_ID || filterId == AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
-				continue;
-			}
-			var filter = {
-				filterId: filterId,
-				loaded: true
-			};
-			if (!filterInfo.disabled) {
-				filter.installed = true;
-				filter.enabled = true;
-			}
-			if (filterId == AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID) {
-				filter.installed = true;
-			}
-			FilterLSUtils.updateFilterStateInfo(filter);
-		}
-	},
+        for (var filterId in adguardFilters) { // jshint ignore:line
+            var filterInfo = adguardFilters[filterId];
+            if (filterId == adguard.utils.filters.USER_FILTER_ID || filterId == adguard.utils.filters.WHITE_LIST_FILTER_ID) {
+                continue;
+            }
+            var filter = {
+                filterId: filterId,
+                loaded: true
+            };
+            if (!filterInfo.disabled) {
+                filter.installed = true;
+                filter.enabled = true;
+            }
+            if (filterId == adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID) {
+                filter.installed = true;
+            }
+            adguard.filtersState.updateFilterState(filter);
+        }
+    }
 
-	/**
-	 * Update 'adguard-filters' version and last check and update time
-	 * @private
-	 */
-	_saveFiltersVersionInfoOnUpdate: function () {
+    /**
+     * Update 'adguard-filters' version and last check and update time
+     * @private
+     */
+    function saveFiltersVersionInfoOnUpdate() {
 
-		var FilterLSUtils = require('filter/antibanner').FilterLSUtils;
-		var adguardFilters = JSON.parse(LS.getItem('adguard-filters')) || Object.create(null);
+        var adguardFilters = JSON.parse(adguard.localStorage.getItem('adguard-filters')) || Object.create(null);
 
-		for (var filterId in adguardFilters) {
-			var filterInfo = adguardFilters[filterId];
-			var filter = {
-				filterId: filterId,
-				version: filterInfo.version,
-				lastCheckTime: filterInfo.lastCheckTime,
-				lastUpdateTime: filterInfo.lastUpdateTime
-			};
-			FilterLSUtils.updateFilterVersionInfo(filter);
-		}
-	}
-};
+        for (var filterId in adguardFilters) { // jshint ignore:line
+            var filterInfo = adguardFilters[filterId];
+            var filter = {
+                filterId: filterId,
+                version: filterInfo.version,
+                lastCheckTime: filterInfo.lastCheckTime,
+                lastUpdateTime: filterInfo.lastUpdateTime
+            };
+            adguard.filtersState.updateFilterVersion(filter);
+        }
+    }
 
-/**
- * File storage adapter
- * @Deprecated Used now only to upgrade from versions older than v2.3.5
- */
-var FileStorage = exports.FileStorage = {
+    /**
+     * Firefox sdk simple-storage settings are saved into file: [ProfD]/jetpack/[extension_id]/simple-storage
+     * See lib/sdk/simple-storage.js:248 for details
+     * @returns {*}
+     */
+    /**
+     The filename of the store, based on the profile dir and extension ID.
+     get filename() {
+     let storeFile = Cc["@mozilla.org/file/directory_service;1"].
+     getService(Ci.nsIProperties).
+     get("ProfD", Ci.nsIFile);
+     storeFile.append(JETPACK_DIR_BASENAME);
+     storeFile.append(jpSelf.id);
+     storeFile.append("simple-storage");
+     file.mkpath(storeFile.path);
+     storeFile.append("store.json");
+     return storeFile.path;
+     }
+     */
+    function getSdkLocalStorageFile() {
+        return FileUtils.getFile('ProfD', ['jetpack', adguard.app.getId(), 'simple-storage', 'store.json']);
+    }
 
-	LINE_BREAK: '\n',
-	FILE_PATH: "filters.ini",
+    /**
+     * Reads file where sdk simple-storage values were saved
+     * @param callback Callback with passed json object (object may be null)
+     */
+    function readFirefoxSdkLocalStorage(callback) {
 
-	readFromFile: function (path, callback) {
+        var storeFile = getSdkLocalStorageFile();
+        if (!storeFile.exists() || storeFile.fileSize === 0) {
+            callback();
+            return;
+        }
 
-		var successCallback = function (fs, fileEntry) {
+        adguard.fileStorageImpl.readAsync(storeFile, function (error, data) {
+            var storage = null;
+            if (error) {
+                adguard.console.error('Error read firefox sdk local storage: {0}', error);
+            } else {
+                try {
+                    storage = JSON.parse(data);
+                } catch (ex) {
+                    adguard.console.error('Error read firefox sdk local storage: {0}', ex);
+                }
+            }
+            callback(storage);
+        });
+    }
 
-			fileEntry.file(function (file) {
+    /**
+     * Async loads previous version of installed application
+     * @param callback Callback with passed version (version may be null)
+     */
+    function loadApplicationPreviousVersion(callback) {
 
-				var reader = new FileReader();
-				reader.onloadend = function () {
+        var prevVersion = adguard.utils.browser.getAppVersion();
+        if (prevVersion || !adguard.utils.browser.isFirefoxBrowser()) {
+            callback(prevVersion);
+            return;
+        }
 
-					if (reader.error) {
-						callback(reader.error);
-					} else {
-						var lines = [];
-						if (reader.result) {
-							lines = reader.result.split(/[\r\n]+/);
-						}
-						callback(null, lines);
-					}
-				};
+        // In version 2.1.2 we migrated to prefs instead of sdk simple-storage. Let's try to retrieve version from simple-storage file.
+        readFirefoxSdkLocalStorage(function (storage) {
+            var prevVersionInStorage = null;
+            if (storage) {
+                prevVersionInStorage = storage['app-version'];
+            }
+            callback(prevVersionInStorage);
+        });
+    }
 
-				reader.onerror = function (e) {
-					callback(e);
-				};
+    /**
+     * Async returns extension run info
+     *
+     * @param callback Run info callback with passed object {{isFirstRun: boolean, isUpdate: (boolean|*), currentVersion: (Prefs.version|*), prevVersion: *}}
+     */
+    var getRunInfo = function (callback) {
 
-				reader.readAsText(file);
+        loadApplicationPreviousVersion(function (prevVersion) {
 
-			}, callback);
-		};
+            var currentVersion = adguard.app.getVersion();
+            adguard.utils.browser.setAppVersion(currentVersion);
 
-		this._getFile(path, true, successCallback, callback);
-	},
+            var isFirstRun = !!(currentVersion !== prevVersion && !prevVersion);
+            var isUpdate = !!(currentVersion !== prevVersion && prevVersion);
 
-	_getFile: function (path, create, successCallback, errorCallback) {
+            callback({
+                isFirstRun: isFirstRun,
+                isUpdate: isUpdate,
+                currentVersion: currentVersion,
+                prevVersion: prevVersion
+            });
+        });
+    };
 
-		path = path.replace(/^.*[\/\\]/, "");
+    /**
+     * Handle extension update
+     * @param runInfo   Run info
+     * @param callback  Called after update was handled
+     */
+    var onUpdate = function (runInfo, callback) {
 
-		var requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
-		requestFileSystem(window.PERSISTENT, 1024 * 1024 * 1024, function (fs) {
-			fs.root.getFile(path, {create: create}, function (fileEntry) {
-				successCallback(fs, fileEntry);
-			}, errorCallback);
-		}, errorCallback);
-	},
+        var methods = [];
+        if (adguard.utils.browser.isGreaterVersion("1.0.1.0", runInfo.prevVersion)) {
+            methods.push(onUpdateToSaveFilterRulesToDifferentFiles);
+        }
+        if (adguard.utils.browser.isGreaterVersion("1.0.3.0", runInfo.prevVersion)) {
+            methods.push(onUpdateToMultiplySubscriptions);
+        }
+        if (adguard.utils.browser.isGreaterVersion("2.0.0", runInfo.prevVersion)) {
+            methods.push(onUpdateRemoveIpResolver);
+        }
+        if (adguard.utils.browser.isGreaterVersion("2.0.9", runInfo.prevVersion)) {
+            methods.push(onUpdateWhiteListService);
+        }
+        if (adguard.utils.browser.isGreaterVersion("2.0.10", runInfo.prevVersion)) {
+            methods.push(onUpdateRuleHitStats);
+        }
+        if (adguard.utils.browser.isGreaterVersion("2.1.2", runInfo.prevVersion) && adguard.utils.browser.isFirefoxBrowser()) {
+            methods.push(onUpdateFirefoxStorage);
+        }
+        if (adguard.utils.browser.isGreaterVersion("2.3.5", runInfo.prevVersion) && adguard.utils.browser.isChromium() && !adguard.utils.browser.isSafariBrowser()) {
+            methods.push(onUpdateChromiumStorage);
+        }
 
-	removeFile: function (path, successCallback, errorCallback) {
-		this._getFile(path, false, function (fs, fileEntry) {
-			fileEntry.remove(successCallback, errorCallback);
-		}, errorCallback);
-	}
-};
+        var dfd = executeMethods(methods);
+        dfd.then(callback);
+    };
+
+    return {
+        getRunInfo: getRunInfo,
+        onUpdate: onUpdate
+    };
+
+})(adguard);
 
 
 

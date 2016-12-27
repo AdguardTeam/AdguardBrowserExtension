@@ -55,12 +55,12 @@ DomPredictionHelper.prototype.pathOf = function (elem) {
         var e = nodes[i];
         if (e) {
             path += e.nodeName.toLowerCase();
-            var escaped = e.id && self.escapeCssNames(new String(e.id));
+            var escaped = e.id && CSS.escape(String(e.id));
             if (escaped && escaped.length > 0) path += '#' + escaped;
 
             if (e.classList) {
                 for (var j = 0; j < e.classList.length; j++) {
-                    var escaped = self.escapeCssNames(e.classList[j]);
+                    escaped = CSS.escape(e.classList[j]);
                     if (e.classList[j] && escaped.length > 0) {
                         path += '.' + escaped;
                     }
@@ -68,7 +68,7 @@ DomPredictionHelper.prototype.pathOf = function (elem) {
             }
 
             path += ':nth-child(' + (self.childElemNumber(e) + 1) + ')';
-            path += ' '
+            path += ' ';
         }
     }
     if (path.charAt(path.length - 1) == ' ') path = path.substring(0, path.length - 1);

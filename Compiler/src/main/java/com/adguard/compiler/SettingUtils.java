@@ -22,11 +22,8 @@ import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Helper method for customizing manifest files and extension local script rules
@@ -60,7 +57,7 @@ public class SettingUtils {
             " * 3. We allow only custom rules got from the User filter (which user creates manually)\r\n" +
             " *    or from this DEFAULT_SCRIPT_RULES object\r\n" +
             " */\r\n" +
-            "var DEFAULT_SCRIPT_RULES = exports.DEFAULT_SCRIPT_RULES = Object.create(null);\r\n%s";
+            "adguard.rules.DEFAULT_SCRIPT_RULES = Object.create(null);\r\n%s";
 
     private final static String MESSAGE_IDS_FILE_TEMPLATE = "/**\r\n" +
             " * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).\r\n" +
@@ -79,7 +76,7 @@ public class SettingUtils {
             " * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.\r\n" +
             " */\r\n" +
             "\r\n" +
-            "var I18N_MESSAGES = exports.I18N_MESSAGES = [%s];\r\n";
+            "var I18N_MESSAGES = [%s];\r\n";
 
     public static void writeLocalScriptRulesToFile(File dest, Set<String> scriptRules) throws IOException {
         String scriptRulesText = getScriptRulesText(scriptRules);
@@ -97,6 +94,7 @@ public class SettingUtils {
         switch (browser) {
             case CHROMIUM:
             case EDGE:
+            case CHROMIUM_SIMPLE:
                 File manifestFile = new File(dest, "manifest.json");
                 String content = FileUtils.readFileToString(manifestFile, "utf-8").trim();
                 if (updateUrl != null) {
@@ -147,24 +145,24 @@ public class SettingUtils {
      * By default we use "require" to be used in jpm-packed extension.
      * But in case of Legacy build we will pack it with cfx, so path should be different.
      */
-    public static void updateRequirePathForCfx(File dest) throws IOException {
-
-        Collection<File> files = FileUtils.listFiles(dest, new String[]{"js"}, true);
-
-        for (File file : files) {
-            // JPM does not allow to use absolute path
-            // So now we have rewritten everything to relative
-            // Example: utils/log --> ../../lib/utils/log
-
-            String content = FileUtils.readFileToString(file, "utf-8");
-            Matcher matcher = Pattern.compile("require\\(('|\")(..\\/)*lib\\/(.*)('|\")\\)").matcher(content);
-            String newContent = matcher.replaceAll("require('$3')");
-
-            if (!content.equals(newContent)) {
-                FileUtils.writeStringToFile(file, newContent, "utf-8");
-            }
-        }
-    }
+//    public static void updateRequirePathForCfx(File dest) throws IOException {
+//
+//        Collection<File> files = FileUtils.listFiles(dest, new String[]{"js"}, true);
+//
+//        for (File file : files) {
+//            // JPM does not allow to use absolute path
+//            // So now we have rewritten everything to relative
+//            // Example: utils/log --> ../../lib/utils/log
+//
+//            String content = FileUtils.readFileToString(file, "utf-8");
+//            Matcher matcher = Pattern.compile("require\\(('|\")(..\\/)*lib\\/(.*)('|\")\\)").matcher(content);
+//            String newContent = matcher.replaceAll("require('$3')");
+//
+//            if (!content.equals(newContent)) {
+//                FileUtils.writeStringToFile(file, newContent, "utf-8");
+//            }
+//        }
+//    }
 
     /**
      * By the rules of AMO and addons.opera.com we cannot use remote scripts,
@@ -185,7 +183,7 @@ public class SettingUtils {
 
             String replaceClauseTemplate = "if (!isFirefox && !isOpera) {";
 
-            File file = new File(dest, "data/content/content-script/preload.js");
+            File file = new File(dest, "lib/content-script/preload.js");
             String content = FileUtils.readFileToString(file, "utf-8").trim();
 
             if (StringUtils.indexOf(content, replaceClauseTemplate) < 0) {
@@ -201,20 +199,19 @@ public class SettingUtils {
         }
     }
 
-
     public static String getScriptRulesText(Set<String> scriptRules) {
         StringBuilder sb = new StringBuilder();
         if (scriptRules != null) {
             for (String scriptRule : scriptRules) {
                 String ruleText = StringEscapeUtils.escapeJavaScript(scriptRule);
-                sb.append("DEFAULT_SCRIPT_RULES[\"").append(ruleText).append("\"] = true;\r\n");
+                sb.append("adguard.rules.DEFAULT_SCRIPT_RULES[\"").append(ruleText).append("\"] = true;\r\n");
             }
         }
         return sb.toString();
     }
 
     private static File getLocalScriptRulesFile(File sourcePath) {
-        return new File(sourcePath, "lib/utils/local-script-rules.js");
+        return new File(sourcePath, "lib/filter/rules/local-script-rules.js");
     }
 
     private static File getMessageIdsFile(File sourcePath) {

@@ -1,0 +1,44 @@
+{
+  "manifest_version": 2,
+  "name": "Simple addon",
+  "short_name": "Simple addon",
+  "author": "Company LLC",
+  "version": "${version}",
+  "description": "Simple addon description",
+  "background": {
+    "page": "background.html",
+    "persistent": true
+  },
+  "content_scripts": [
+    {
+      "all_frames": true,
+      "js": [
+        "lib/utils/element-collapser.js",
+        "lib/libs/extended-css-1.0.6.js",
+        "lib/content-script/adguard-content.js",
+        "lib/content-script/common-script.js",
+        "lib/content-script/content-script.js",
+        "lib/content-script/websocket.js",
+        "lib/content-script/preload.js"
+      ],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "match_about_blank": true,
+      "run_at": "document_start"
+    }
+  ],
+  "minimum_chrome_version": "21.0",
+  "permissions": [
+    "tabs",
+    "http://*/*",
+    "https://*/*",
+    "webRequest",
+    "webRequestBlocking",
+    "webNavigation",
+    "storage",
+    "unlimitedStorage",
+    "contextMenus"
+  ]
+}

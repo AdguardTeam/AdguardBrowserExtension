@@ -1,16 +1,16 @@
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
- * <p/>
+ * <p>
  * Adguard Browser Extension is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * <p/>
+ * <p>
  * Adguard Browser Extension is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * <p/>
+ * <p>
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -37,6 +37,7 @@ public class FileUtil {
 	private static final String SAFARI_FOLDER = "browser/safari";
 	private static final String FIREFOX_FOLDER = "browser/firefox";
 	private static final String FIREFOX_LEGACY_FOLDER = "browser/firefox_legacy";
+	private static final String CHROME_SIMPLE_FOLDER = "browser/chrome-simple";
 
 	public static void copyFiles(File source, File dest, Browser browser) throws Exception {
 
@@ -47,6 +48,10 @@ public class FileUtil {
 		switch (browser) {
 			case CHROMIUM:
 				copyChromiumFiles(source, dest, browser);
+				break;
+			case CHROMIUM_SIMPLE:
+				copyChromiumFiles(source, dest, browser);
+				copyChromiumSimpleFiles(source, dest);
 				break;
 			case EDGE:
 				copyChromiumFiles(source, dest, browser);
@@ -123,11 +128,21 @@ public class FileUtil {
 		// copy common files
 		copyCommonFiles(source, dest, browser);
 	}
-	
+
 	private static void copyEdgeFiles(File source, File dest) throws Exception {
 		// copy edge files
 		File edgeBase = new File(source, EDGE_FOLDER);
 		copyDirectory(edgeBase, dest);
+	}
+
+	private static void copyChromiumSimpleFiles(File source, File dest) throws Exception {
+		File simpleBase = new File(source, CHROME_SIMPLE_FOLDER);
+		copyDirectory(simpleBase, dest);
+		FileUtils.deleteQuietly(new File(dest, "_locales"));
+		FileUtils.deleteQuietly(new File(dest, "pages"));
+		FileUtils.deleteQuietly(new File(dest, "lib/pages"));
+		FileUtils.deleteQuietly(new File(dest, "lib/content-script/assistant"));
+		FileUtils.deleteQuietly(new File(dest, "icons"));
 	}
 
 	private static void copySafariFiles(File source, File dest) throws Exception {
@@ -151,43 +166,13 @@ public class FileUtil {
 
 		copyCommonFiles(source, dest, browser);
 
-		//move processed html pages to data/content folder
-		File sourcePagesDir = new File(dest, "pages");
-		File destPagesDir = new File(dest, "data/content");
-		copyDirectory(sourcePagesDir, destPagesDir);
-		FileUtils.deleteQuietly(sourcePagesDir);
-
 		//Fix fonts file
-		File fontsFile = new File(destPagesDir, "/skin/fonts.css");
-		File firefoxFontsFile = new File(destPagesDir, "/skin/fonts_firefox.css");
-		File fontsDir = new File(destPagesDir, "/skin/fonts");
+		File fontsFile = new File(dest, "skin/fonts.css");
+		File firefoxFontsFile = new File(dest, "skin/fonts_firefox.css");
+		File fontsDir = new File(dest, "skin/fonts");
 		FileUtils.deleteQuietly(fontsFile);
 		FileUtils.moveFile(firefoxFontsFile, fontsFile);
 		FileUtils.deleteQuietly(fontsDir);
-
-		//move js pages files to data/content/pages folder
-		File sourceJsPagesDir = new File(dest, "lib/pages");
-		File destJsPagesDir = new File(dest, "data/content/pages");
-		FileUtils.moveDirectory(sourceJsPagesDir, destJsPagesDir);
-
-		//move lib/content-script folder to data/content/content-script folder
-		File sourceContentScript = new File(dest, "lib/content-script");
-		File destContentScript = new File(dest, "data/content/content-script");
-		copyDirectory(sourceContentScript, destContentScript);
-		FileUtils.deleteQuietly(sourceContentScript);
-
-		//move third-party js files to data/content folder
-		File sourceLibsDir = new File(dest, "lib/libs");
-		File destLibsDir = new File(dest, "data/content/libs");
-		FileUtils.moveDirectory(sourceLibsDir, destLibsDir);
-		//move element-collapser lib
-		File sourceCollapserFile = new File(dest, "lib/utils/element-collapser.js");
-		File destCollapserFile = new File(destLibsDir, "element-collapser.js");
-		FileUtils.copyFile(sourceCollapserFile, destCollapserFile);
-
-		//TODO: optimize
-		//Remove deferred.min.js file, cause use only in chrome and safari extension
-		FileUtils.deleteQuietly(new File(destLibsDir, "deferred.min.js"));
 
 		//convert chrome style locales to firefox style
 		File sourceLocalesDir = new File(dest, "_locales");
@@ -195,11 +180,6 @@ public class FileUtil {
 		LocaleUtils.convertFromChromeToFirefoxLocales(sourceLocalesDir);
 		//rename folder
 		FileUtils.moveDirectory(sourceLocalesDir, destLocalesDir);
-
-		//move filters folder to data folder
-		File sourceFiltersDir = new File(dest, "filters");
-		File destFiltersDir = new File(dest, "data/filters");
-		FileUtils.moveDirectory(sourceFiltersDir, destFiltersDir);
 	}
 
 	private static void copyFirefoxLegacyFiles(File source, File dest) throws Exception {

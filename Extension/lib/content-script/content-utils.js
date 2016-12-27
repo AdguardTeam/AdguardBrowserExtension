@@ -99,11 +99,11 @@ if (window === window.top) {
 		}
 
 		contentPage.onMessage.addListener(function (message) {
-			if (message.type == 'show-alert-popup') {
+			if (message.type === 'show-alert-popup') {
 				showAlertPopup(message);
-			} else if (message.type == 'no-cache-reload') {
+			} else if (message.type === 'no-cache-reload') {
 				noCacheReload();
-			} else if (message.type == 'update-tab-url') {
+			} else if (message.type === 'update-tab-url') {
 				window.location = message.url;
 			}
 		});

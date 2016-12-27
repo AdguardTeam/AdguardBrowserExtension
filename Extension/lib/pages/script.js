@@ -14,6 +14,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* global $, i18n */
+
 $(function () {
 
     $.fn.toggleCheckbox = function () {
@@ -119,7 +122,7 @@ $(function () {
                 }
             });
         });
-    }
+    };
 });
 
 function updateDisplayAdguardPromo(showPromo) {

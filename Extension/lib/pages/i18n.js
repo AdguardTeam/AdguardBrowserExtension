@@ -1,4 +1,3 @@
-/* global I18nHelper, $ */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -15,6 +14,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* global I18nHelper, $, i18n */
 
 i18n.translateElement = function (element, messageId, args) {
     var message = i18n.getMessage(messageId, args);

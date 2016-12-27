@@ -15,50 +15,50 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-var StringUtils = require('../../../lib/utils/common').StringUtils;
-var FilterRule = require('../../../lib/filter/rules/base-filter-rule').FilterRule;
-var AntiBannerFiltersId = require('../../../lib/utils/common').AntiBannerFiltersId;
-var DEFAULT_SCRIPT_RULES = require('../../../lib/utils/local-script-rules').DEFAULT_SCRIPT_RULES;
+(function (adguard, api) {
 
-/**
- * JS injection rule:
- * http://adguard.com/en/filterrules.html#javascriptInjection
- */
-var ScriptFilterRule = exports.ScriptFilterRule = function (rule, filterId) {
+    'use strict';
 
-	FilterRule.call(this, rule, filterId);
+    /**
+     * JS injection rule:
+     * http://adguard.com/en/filterrules.html#javascriptInjection
+     */
+    var ScriptFilterRule = function (rule, filterId) {
 
-	this.script = null;
-	this.whiteListRule = StringUtils.contains(rule, FilterRule.MASK_SCRIPT_EXCEPTION_RULE);
-	var mask = this.whiteListRule ? FilterRule.MASK_SCRIPT_EXCEPTION_RULE : FilterRule.MASK_SCRIPT_RULE;
+        api.FilterRule.call(this, rule, filterId);
 
-	var indexOfMask = rule.indexOf(mask);
-	if (indexOfMask > 0) {
-		// domains are specified, parsing
-		var domains = rule.substring(0, indexOfMask);
-		this.loadDomains(domains);
-	}
+        this.script = null;
+        this.whiteListRule = adguard.utils.strings.contains(rule, api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE);
+        var mask = this.whiteListRule ? api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE : api.FilterRule.MASK_SCRIPT_RULE;
 
-	this.script = rule.substring(indexOfMask + mask.length);
+        var indexOfMask = rule.indexOf(mask);
+        if (indexOfMask > 0) {
+            // domains are specified, parsing
+            var domains = rule.substring(0, indexOfMask);
+            this.loadDomains(domains);
+        }
 
-	/**
-	 * By the rules of AMO and addons.opera.com we cannot use remote scripts
-	 * (and our JS injection rules could be considered as remote scripts).
-	 *
-	 * So, what we do:
-	 * 1. Pre-compile all current JS rules to the add-on and mark them as 'local'. Other JS rules (new not pre-compiled) are maked as 'remote'.
-	 * 2. Also we mark as 'local' rules from the "User Filter" (local filter which user can edit)
-	 * 3. In case of Firefox and Opera we apply only 'local' JS rules and ignore all marked as 'remote'
-	 */
-	function getScriptSource(filterId, ruleText) {
-		return (filterId == AntiBannerFiltersId.USER_FILTER_ID || ruleText in DEFAULT_SCRIPT_RULES) ? 'local' : 'remote';
-	}
+        this.script = rule.substring(indexOfMask + mask.length);
 
-	this.scriptSource = getScriptSource(filterId, rule);
-};
+        /**
+         * By the rules of AMO and addons.opera.com we cannot use remote scripts
+         * (and our JS injection rules could be considered as remote scripts).
+         *
+         * So, what we do:
+         * 1. Pre-compile all current JS rules to the add-on and mark them as 'local'. Other JS rules (new not pre-compiled) are maked as 'remote'.
+         * 2. Also we mark as 'local' rules from the "User Filter" (local filter which user can edit)
+         * 3. In case of Firefox and Opera we apply only 'local' JS rules and ignore all marked as 'remote'
+         */
+        function getScriptSource(filterId, ruleText) {
+            return (filterId == adguard.utils.filters.USER_FILTER_ID || ruleText in api.DEFAULT_SCRIPT_RULES) ? 'local' : 'remote';
+        }
 
-ScriptFilterRule.prototype = Object.create(FilterRule.prototype);
+        this.scriptSource = getScriptSource(filterId, rule);
+    };
+
+    ScriptFilterRule.prototype = Object.create(api.FilterRule.prototype);
+
+    api.ScriptFilterRule = ScriptFilterRule;
+
+})(adguard, adguard.rules);
+

@@ -108,9 +108,13 @@ else
     #safari
     options="--version=$version --branch=$branch --dest=$destPath --name=AdguardDev --browser=safari --extensionId=com.adguard.safaridev"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
-    
+
     #edge
     options="--version=$version --branch=$branch --dest=$destPath --name=edge --browser=edge"
+    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
+
+    # chrome simple
+    options="--version=$version --branch=$branch --dest=$destPath --name=chrome-simple --browser=chrome-simple"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     echo "Dev builds created"

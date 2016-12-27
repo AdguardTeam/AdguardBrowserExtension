@@ -2,29 +2,42 @@
 <html>
 <head>
 
+    <!--Third party libraries-->
     <script type="text/javascript" src="lib/libs/deferred.min.js"></script>
-    <script type="text/javascript" src="lib/utils/language.js"></script>
-    <script type="text/javascript" src="lib/content-script/common-script.js"></script>
-    <script type="text/javascript" src="lib/background-page.js"></script>
-    <script type="text/javascript" src="require.js"></script>
-    <script type="text/javascript" src="prefs.js"></script>
     <script type="text/javascript" src="lib/utils/sha256.patched.js"></script>
-    <script type="text/javascript" src="lib/utils/promises.js"></script>
     <script type="text/javascript" src="lib/utils/punycode.js"></script>
+
+    <!--Adguard Global and preferences-->
+    <script type="text/javascript" src="lib/adguard.js"></script>
+    <script type="text/javascript" src="prefs.js"></script>
+
+    <!--Utils libraries-->
+    <script type="text/javascript" src="lib/utils/common.js"></script>
+    <script type="text/javascript" src="lib/utils/log.js"></script>
+    <script type="text/javascript" src="lib/utils/url.js"></script>
+    <script type="text/javascript" src="lib/utils/notifier.js"></script>
+    <script type="text/javascript" src="lib/utils/browser-utils.js"></script>
+    <script type="text/javascript" src="lib/utils/service-client.js"></script>
+    <script type="text/javascript" src="lib/utils/page-stats.js"></script>
+    <script type="text/javascript" src="lib/utils/user-settings.js"></script>
+    <script type="text/javascript" src="lib/utils/frames.js"></script>
+
+    <!--Local storage and rules storage libraries-->
     <script type="text/javascript" src="lib/utils/local-storage.js"></script>
     <script type="text/javascript" src="lib/utils/rules-storage.js"></script>
-    <script type="text/javascript" src="lib/utils/local-script-rules.js"></script>
-    <script type="text/javascript" src="lib/utils/workaround.js"></script>
-    <script type="text/javascript" src="lib/utils/common.js"></script>
-    <script type="text/javascript" src="lib/utils/browser-utils.js"></script>
-    <script type="text/javascript" src="lib/utils/cache.js"></script>
-    <script type="text/javascript" src="lib/utils/url.js"></script>
-    <script type="text/javascript" src="lib/utils/log.js"></script>
-    <script type="text/javascript" src="lib/utils/service-client.js"></script>
-    <script type="text/javascript" src="lib/utils/user-settings.js"></script>
-    <script type="text/javascript" src="lib/utils/notifier.js"></script>
-    <script type="text/javascript" src="lib/utils/frames.js"></script>
-    <script type="text/javascript" src="lib/utils/page-stats.js"></script>
+    <script type="text/javascript" src="lib/storage.js"></script>
+
+    <!--Chromium api adapter libraries-->
+    <script type="text/javascript" src="lib/content-script/common-script.js"></script>
+    <script type="text/javascript" src="lib/api/background-page.js"></script>
+
+    <!--Tabs api library-->
+    <script type="text/javascript" src="lib/api/tabs.js"></script>
+    <script type="text/javascript" src="lib/tabs/tabs-api.js"></script>
+
+    <!--Rules and filters libraries-->
+    <script type="text/javascript" src="lib/filter/rules/rules.js"></script>
+    <script type="text/javascript" src="lib/filter/rules/local-script-rules.js"></script>
     <script type="text/javascript" src="lib/filter/rules/shortcuts-lookup-table.js"></script>
     <script type="text/javascript" src="lib/filter/rules/domains-lookup-table.js"></script>
     <script type="text/javascript" src="lib/filter/rules/url-filter-lookup-table.js"></script>
@@ -37,22 +50,30 @@
     <script type="text/javascript" src="lib/filter/rules/url-filter-rule.js"></script>
     <script type="text/javascript" src="lib/filter/rules/url-filter.js"></script>
     <script type="text/javascript" src="lib/filter/rules/filter-rule-builder.js"></script>
-    <script type="text/javascript" src="lib/filter/safebrowsing-filter.js"></script>
-    <script type="text/javascript" src="lib/filter/whitelist.js"></script>
-    <script type="text/javascript" src="lib/filter/filters.js"></script>
-    <script type="text/javascript" src="lib/filter/filters-hit.js"></script>
-    <script type="text/javascript" src="lib/filter/storage.js"></script>
-    <script type="text/javascript" src="lib/filter/locale-detect.js"></script>
+
+    <!--Filters metadata and filtration modules-->
     <script type="text/javascript" src="lib/filter/subscription.js"></script>
     <script type="text/javascript" src="lib/filter/update-service.js"></script>
+    <script type="text/javascript" src="lib/filter/whitelist.js"></script>
+    <script type="text/javascript" src="lib/filter/userrules.js"></script>
+    <script type="text/javascript" src="lib/filter/filters.js"></script>
     <script type="text/javascript" src="lib/filter/antibanner.js"></script>
+    <script type="text/javascript" src="lib/filter/request-blocking.js"></script>
+
+    <!--Various modules for safebrowsing, logging, integration, ui and etc-->
+    <script type="text/javascript" src="lib/filter/safebrowsing-filter.js"></script>
+    <script type="text/javascript" src="lib/filter/filters-hit.js"></script>
+    <script type="text/javascript" src="lib/filter/locale-detect.js"></script>
     <script type="text/javascript" src="lib/filter/integration.js"></script>
     <script type="text/javascript" src="lib/filter/filtering-log.js"></script>
-    <script type="text/javascript" src="lib/filter/request-blocking.js"></script>
+    <script type="text/javascript" src="lib/ui-service.js"></script>
+
+    <!--Content messaging-->
     <script type="text/javascript" src="lib/content-message-handler.js"></script>
-    <script type="text/javascript" src="ui.js"></script>
-    <script type="text/javascript" src="background.js"></script>
-    <script type="text/javascript" src="webrequest.js"></script>
-    <script type="text/javascript" src="blockpopup.js"></script>
+
+    <script type="text/javascript" src="lib/start.js"></script>
+    <script type="text/javascript" src="lib/webrequest.js"></script>
+    <script type="text/javascript" src="lib/blockpopup.js"></script>
+
 </head>
 </html>

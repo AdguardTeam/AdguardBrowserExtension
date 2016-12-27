@@ -15,196 +15,208 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global require, exports */
+/**
+ * Object for log http requests
+ */
+adguard.filteringLog = (function (adguard) {
 
-var LogEvents = require('../../lib/utils/common').LogEvents;
-var UrlUtils = require('../../lib/utils/url').UrlUtils;
-var EventNotifier = require('../../lib/utils/notifier').EventNotifier;
+    'use strict';
 
-var FilteringLog = exports.FilteringLog = function (BrowserTabsClass, framesMap, UI) {
-	this.tabsInfo = new BrowserTabsClass();
-	this.framesMap = framesMap;
-	this.UI = UI;
-	this.lastTabId = 1;
-	this.openedFilteringLogsPage = 0;
-};
+    var REQUESTS_SIZE_PER_TAB = 1000;
 
-FilteringLog.REQUESTS_SIZE_PER_TAB = 1000;
+    var tabsInfoMap = Object.create(null);
+    var openedFilteringLogsPage = 0;
 
-FilteringLog.prototype.synchronizeOpenTabs = function (callback) {
-	var openTabsCallback = function (tabs) {
-		var tabsToRemove = this.tabsInfo.collection().slice(0);
-		for (var i = 0; i < tabs.length; i++) {
-			var openTab = tabs[i];
-			var tabInfo = this.tabsInfo.get(openTab);
-			if (!tabInfo) {
-				//add tab
-				this.addTab(openTab);
-			} else {
-				//update tab
-				this.updateTab(openTab);
-			}
-			var index = tabsToRemove.indexOf(tabInfo);
-			if (index >= 0) {
-				tabsToRemove.splice(index, 1);
-			}
-		}
-		for (var j = 0; j < tabsToRemove.length; j++) {
-			this.removeTab(tabsToRemove[j].tab);
-		}
-		if (callback) {
-			callback();
-		}
-	}.bind(this);
-	this.UI.getAllOpenedTabs(openTabsCallback);
-};
+    /**
+     * Updates tab info (title and url)
+     * @param tab
+     */
+    function updateTabInfo(tab) {
+        var tabInfo = tabsInfoMap[tab.tabId] || Object.create(null);
+        tabInfo.tabId = tab.tabId;
+        tabInfo.title = tab.title;
+        tabInfo.isHttp = adguard.utils.url.isHttpRequest(tab.url);
+        tabsInfoMap[tab.tabId] = tabInfo;
+        return tabInfo;
+    }
 
-FilteringLog.prototype.addTab = function (tab) {
-	var tabInfo = this._updateTabInfo(tab);
-	if (tabInfo) {
-		EventNotifier.notifyListeners(LogEvents.TAB_ADDED, this.serializeTabInfo(tabInfo));
-	}
-};
+    /**
+     * Adds tab
+     * @param tab
+     */
+    function addTab(tab) {
+        var tabInfo = updateTabInfo(tab);
+        if (tabInfo) {
+            adguard.listeners.notifyListeners(adguard.listeners.TAB_ADDED, tabInfo);
+        }
+    }
 
-FilteringLog.prototype.removeTab = function (tab) {
-	var tabInfo = this.tabsInfo.get(tab);
-	if (tabInfo) {
-		EventNotifier.notifyListeners(LogEvents.TAB_CLOSE, this.serializeTabInfo(tabInfo));
-	}
-	this.tabsInfo.remove(tab);
-};
+    /**
+     * Removes tab
+     * @param tabId
+     */
+    function removeTabById(tabId) {
+        var tabInfo = tabsInfoMap[tabId];
+        if (tabInfo) {
+            adguard.listeners.notifyListeners(adguard.listeners.TAB_CLOSE, tabInfo);
+        }
+        delete tabsInfoMap[tabId];
+    }
 
-FilteringLog.prototype.updateTab = function (tab) {
-	var tabInfo = this._updateTabInfo(tab);
-	if (tabInfo) {
-		EventNotifier.notifyListeners(LogEvents.TAB_UPDATE, this.serializeTabInfo(tabInfo));
-	}
-};
+    /**
+     * Updates tab
+     * @param tab
+     */
+    function updateTab(tab) {
+        var tabInfo = updateTabInfo(tab);
+        if (tabInfo) {
+            adguard.listeners.notifyListeners(adguard.listeners.TAB_UPDATE, tabInfo);
+        }
+    }
 
-FilteringLog.prototype._updateTabInfo = function (tab) {
-	var tabInfo = this.tabsInfo.get(tab) || Object.create(null);
-	if (!tabInfo.tabId) {
-		tabInfo.tabId = this.lastTabId++;
-	}
-	tabInfo.tab = tab;
-	tabInfo.isHttp = UrlUtils.isHttpRequest(tab.url);
-	this.tabsInfo.set(tab, tabInfo);
-	return tabInfo;
-};
+    /**
+     * Get filtering info for tab
+     * @param tabId
+     */
+    var getFilteringInfoByTabId = function (tabId) {
+        return tabsInfoMap[tabId];
+    };
 
-FilteringLog.prototype.reloadTabById = function (tabId) {
-	var tabInfo = this.getTabInfoById(tabId);
-	if (tabInfo) {
-		tabInfo.tab.reload();
-	}
-};
+    /**
+     * Add request to log
+     * @param tab
+     * @param requestUrl
+     * @param frameUrl
+     * @param requestType
+     * @param requestRule
+     */
+    var addEvent = function (tab, requestUrl, frameUrl, requestType, requestRule) {
 
-FilteringLog.prototype.getTabInfoById = function (tabId) {
-	var tabsInfo = this.tabsInfo.collection();
-	for (var i = 0; i < tabsInfo.length; i++) {
-		if (tabsInfo[i].tabId == tabId) {
-			return tabsInfo[i];
-		}
-	}
-	return null;
-};
+        if (openedFilteringLogsPage === 0) {
+            return;
+        }
 
-FilteringLog.prototype.getTabFrameInfoById = function (tabId) {
-	var tabInfo = this.getTabInfoById(tabId);
-	return tabInfo ? this.framesMap.getFrameInfo(tabInfo.tab) : null;
-};
+        var tabInfo = tabsInfoMap[tab.tabId];
+        if (!tabInfo) {
+            return;
+        }
 
-FilteringLog.prototype.getTabInfo = function (tab) {
-	var tabInfo = this.tabsInfo.get(tab);
-	return this.serializeTabInfo(tabInfo);
-};
+        if (!tabInfo.filteringEvents) {
+            tabInfo.filteringEvents = [];
+        }
 
-FilteringLog.prototype.clearEventsForTab = function (tab) {
-	var tabInfo = this.tabsInfo.get(tab);
-	if (!tabInfo) {
-		return;
-	}
-	//remove previous events
-	delete tabInfo.filteringEvents;
-	EventNotifier.notifyListeners(LogEvents.TAB_RESET, this.serializeTabInfo(tabInfo));
-};
+        var requestDomain = adguard.utils.url.getDomainName(requestUrl);
+        var frameDomain = adguard.utils.url.getDomainName(frameUrl);
 
-FilteringLog.prototype.addEvent = function (tab, requestUrl, frameUrl, requestType, requestRule) {
+        var filteringEvent = {
+            requestUrl: requestUrl,
+            requestDomain: requestDomain,
+            frameUrl: frameUrl,
+            frameDomain: frameDomain,
+            requestType: requestType,
+            requestThirdParty: adguard.utils.url.isThirdPartyRequest(requestUrl, frameUrl),
+            requestRule: requestRule
+        };
+        if (requestRule) {
+            filteringEvent.requestRule = Object.create(null);
+            filteringEvent.requestRule.filterId = requestRule.filterId;
+            filteringEvent.requestRule.ruleText = requestRule.ruleText;
+            filteringEvent.requestRule.whiteListRule = requestRule.whiteListRule;
+        }
+        tabInfo.filteringEvents.push(filteringEvent);
 
-	if (this.openedFilteringLogsPage === 0) {
-		return;
-	}
+        if (tabInfo.filteringEvents.length > REQUESTS_SIZE_PER_TAB) {
+            //don't remove first item, cause it's request to main frame
+            tabInfo.filteringEvents.splice(1, 1);
+        }
 
-	var tabInfo = this.tabsInfo.get(tab);
-	if (!tabInfo) {
-		return;
-	}
+        adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_ADDED, tabInfo, filteringEvent);
+    };
 
-	if (!tabInfo.filteringEvents) {
-		tabInfo.filteringEvents = [];
-	}
+    /**
+     * Remove log requests for tab
+     * @param tabId
+     */
+    var clearEventsByTabId = function (tabId) {
+        var tabInfo = tabsInfoMap[tabId];
+        if (tabInfo) {
+            delete tabInfo.filteringEvents;
+            adguard.listeners.notifyListeners(adguard.listeners.TAB_RESET, tabInfo);
+        }
+    };
 
-	var requestDomain = UrlUtils.getDomainName(requestUrl);
-	var frameDomain = UrlUtils.getDomainName(frameUrl);
+    /**
+     * Synchronize currently opened tabs with out state
+     * @param callback
+     */
+    var synchronizeOpenTabs = function (callback) {
+        adguard.tabs.getAll(function (tabs) {
+            var tabIdsToRemove = Object.keys(tabsInfoMap);
+            for (var i = 0; i < tabs.length; i++) {
+                var openTab = tabs[i];
+                var tabInfo = tabsInfoMap[openTab.tabId];
+                if (!tabInfo) {
+                    //add tab
+                    addTab(openTab);
+                } else {
+                    //update tab
+                    updateTab(openTab);
+                }
+                var index = tabIdsToRemove.indexOf(String(openTab.tabId));
+                if (index >= 0) {
+                    tabIdsToRemove.splice(index, 1);
+                }
+            }
+            for (var j = 0; j < tabIdsToRemove.length; j++) {
+                removeTabById(tabIdsToRemove[j]);
+            }
+            if (typeof callback === 'function') {
+                callback();
+            }
+        });
+    };
 
-	var filteringEvent = {
-		requestUrl: requestUrl,
-		requestDomain: requestDomain,
-		frameUrl: frameUrl,
-		frameDomain: frameDomain,
-		requestType: requestType,
-		requestThirdParty: UrlUtils.isThirdPartyRequest(requestUrl, frameUrl),
-		requestRule: requestRule
-	};
-	if (requestRule) {
-		filteringEvent.requestRule = Object.create(null);
-		filteringEvent.requestRule.filterId = requestRule.filterId;
-		filteringEvent.requestRule.ruleText = requestRule.ruleText;
-		filteringEvent.requestRule.whiteListRule = requestRule.whiteListRule;
-	}
-	tabInfo.filteringEvents.push(filteringEvent);
+    /**
+     * We collect filtering events if opened at least one page of log
+     */
+    var onOpenFilteringLogPage = function () {
+        openedFilteringLogsPage++;
+    };
 
-	if (tabInfo.filteringEvents.length > FilteringLog.REQUESTS_SIZE_PER_TAB) {
-		//don't remove first item, cause it's request to main frame
-		tabInfo.filteringEvents.splice(1, 1);
-	}
+    /**
+     * Cleanup when last page of log closes
+     */
+    var onCloseFilteringLogPage = function () {
+        openedFilteringLogsPage = Math.max(openedFilteringLogsPage - 1, 0);
+        if (openedFilteringLogsPage === 0) {
+            // Clear events
+            for (var tabId in tabsInfoMap) { // jshint ignore:line
+                var tabInfo = tabsInfoMap[tabId];
+                delete tabInfo.filteringEvents;
+            }
+        }
+    };
 
-	EventNotifier.notifyListeners(LogEvents.EVENT_ADDED, this.serializeTabInfo(tabInfo), filteringEvent);
-};
+    // Initialize filtering log
+    synchronizeOpenTabs();
 
-FilteringLog.prototype.clearEventsByTabId = function (tabId) {
-	var tabInfo = this.getTabInfoById(tabId);
-	if (tabInfo) {
-		delete tabInfo.filteringEvents;
-		EventNotifier.notifyListeners(LogEvents.TAB_RESET, this.serializeTabInfo(tabInfo));
-	}
-};
+    // Bind to tab events
+    adguard.tabs.onCreated.addListener(addTab);
+    adguard.tabs.onUpdated.addListener(updateTab);
+    adguard.tabs.onRemoved.addListener(function (tab) {
+        removeTabById(tab.tabId);
+    });
 
-FilteringLog.prototype.onOpenFilteringLogPage = function () {
-	this.openedFilteringLogsPage++;
-};
+    return {
 
-FilteringLog.prototype.onCloseFilteringLogPage = function () {
-	this.openedFilteringLogsPage = Math.max(this.openedFilteringLogsPage - 1, 0);
-	if (this.openedFilteringLogsPage == 0) {
-		//clear events
-		var tabsInfo = this.tabsInfo.collection();
-		for (var i = 0; i < tabsInfo.length; i++) {
-			delete tabsInfo[i].filteringEvents;
-		}
-	}
-};
+        synchronizeOpenTabs: synchronizeOpenTabs,
 
-FilteringLog.prototype.serializeTabInfo = function (tabInfo) {
-	if (!tabInfo) {
-		return null;
-	}
-	return {
-		tabId: tabInfo.tabId,
-		isHttp: tabInfo.isHttp,
-		filteringEvents: tabInfo.filteringEvents,
-		tab: {
-			title: tabInfo.tab.title
-		}
-	};
-};
+        getFilteringInfoByTabId: getFilteringInfoByTabId,
+        addEvent: addEvent,
+        clearEventsByTabId: clearEventsByTabId,
+
+        onOpenFilteringLogPage: onOpenFilteringLogPage,
+        onCloseFilteringLogPage: onCloseFilteringLogPage
+    };
+
+})(adguard);

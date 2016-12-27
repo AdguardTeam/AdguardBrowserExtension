@@ -1,5 +1,5 @@
-/* global SafariBrowserTab */
-/* global BrowserTab */
+/* global safari */
+
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -16,192 +16,151 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var BaseEvent, OnMessageEvent, SendMessageFunction, I18NSupport;
+(function (adguard) {
 
-(function () {
+    'use strict';
 
-	// Safari variable may be undefined in a frame
-	(function () {
-		if (typeof safari === "undefined" && typeof chrome === "undefined") {
-			var w = window;
-			while (w.safari === undefined && w !== window.top) {
-				w = w.parent;
-			}
-			window.safari = w.safari;
-		}
-	})();
+    // Safari variable may be undefined in a frame
+    (function () {
+        if (typeof safari === 'undefined') {
+            var w = window;
+            while (w.safari === undefined && w !== window.top) {
+                w = w.parent;
+            }
+            window.safari = w.safari;
+        }
+    })();
 
-	// Event implementation
-	BaseEvent = function (target, eventName, capture) {
+    // Message passing implementation
+    adguard.runtimeImpl = (function () {
 
-		this.eventListeners = [];
-		this.specialEventListeners = [];
+        var sendMessageNextRequestId = 1;
 
-		this.eventTarget = target;
-		this.eventName = eventName;
-		this.eventCapture = capture;
-	};
-	BaseEvent.prototype = {
+        var sendMessage = function (dispatcher, eventTarget, message, responseCallback) {
 
-		addListener: function (listener) {
+            var requestId = sendMessageNextRequestId++;
 
-			var specialListener = this.specifyListener(listener);
-			this.eventListeners.push(listener);
-			this.specialEventListeners.push(specialListener);
+            if (typeof responseCallback === 'function') {
+                var responseListener = function (event) {
+                    if (event.name === "response-" + requestId) {
+                        eventTarget.removeEventListener('message', responseListener, false);
+                        responseCallback(event.message);
+                    }
+                };
+                eventTarget.addEventListener('message', responseListener, false);
+            }
 
-			this.eventTarget.addEventListener(this.eventName, specialListener, this.eventCapture);
-		},
+            dispatcher.dispatchMessage('request-' + requestId, message);
+        };
 
-		removeListener: function (listener) {
-			var index = this.eventListeners.indexOf(listener);
-			if (index >= 0) {
-				this.eventTarget.removeEventListener(this.eventName, this.specialEventListeners[index], this.eventCapture);
-				this.eventListeners.splice(index, 1);
-				this.specialEventListeners.splice(index, 1);
-			}
-		}
-	};
+        var onMessage = {
 
-	// OnMessage event implementation
-	OnMessageEvent = function (target) {
-		BaseEvent.call(this, target, "message", false);
-	};
+            addListener: function (eventTarget, callback) {
 
-	LanguageUtils.inherit(OnMessageEvent, BaseEvent);
-	OnMessageEvent.prototype.specifyListener = function (listener) {
-		return function (event) {
+                eventTarget.addEventListener('message', function (event) {
 
-			if (event.name.indexOf("request-") != 0) {
-				return;
-			}
+                    if (event.name.indexOf('request-') !== 0) {
+                        return;
+                    }
 
-			var sender = {};
-			var dispatcher;
+                    callback(event);
 
-			if ("BrowserTab" in window && "SafariBrowserTab" in window &&
-					event.target instanceof SafariBrowserTab) {
+                }, false);
+            }
+        };
 
-				dispatcher = event.target.page;
-				sender.tab = new BrowserTab(event.target);
-			} else {
-				dispatcher = event.target.tab;
-				sender.tab = null;
-			}
+        return {
+            sendMessage: sendMessage,
+            onMessage: onMessage
+        };
 
-			listener(event.message, sender, function (message) {
-				dispatcher.dispatchMessage("response-" + event.name.substr(8), message);
-			});
-		};
-	};
+    })();
 
+    // I18n implementation
+    adguard.i18n = (function () {
 
-	// Messaging implementation
-	var nextRequestNumber = 0;
+        var defaultLocale = 'en';
+        var supportedLocales = ['ru', 'en', 'tr', 'uk', 'de', 'pl', 'pt_BR', 'pt_PT', 'ko', 'zh_CN', 'sr', 'fr', 'sk', 'hy', 'es', 'es_419', 'it', 'id'];
 
-	SendMessageFunction = function (message, responseCallback) {
-		var requestId = ++nextRequestNumber;
-		if (responseCallback) {
-			var eventTarget = this._eventTarget;
-			var responseListener = function (event) {
-				if (event.name == "response-" + requestId) {
-					eventTarget.removeEventListener("message", responseListener, false);
-					responseCallback(event.message);
-				}
-			};
-			eventTarget.addEventListener("message", responseListener, false);
-		}
-		this._messageDispatcher.dispatchMessage("request-" + requestId, message);
-	};
+        var _messages = null;
+        var _defaultMessages = null;
 
-	// I18n implementation
-	var I18n = function () {
-		this._uiLocale = this._getLocale();
-		this._messages = null;
-		this._defaultMessages = null;
-	};
+        var _uiLocale = (function () {
+            var prefix = navigator.language;
+            var parts = prefix.replace('-', '_').split('_');
+            var locale = parts[0].toLowerCase();
+            if (parts[1]) {
+                locale += '_' + parts[1].toUpperCase();
+            }
+            if (supportedLocales.indexOf(locale) < 0) {
+                locale = parts[0];
+            }
+            if (supportedLocales.indexOf(locale) < 0) {
+                locale = defaultLocale;
+            }
+            return locale;
+        })();
 
-	I18n.prototype = {
+        function getMessages(locale) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", safari.extension.baseURI + "_locales/" + locale + "/messages.json", false);
+            try {
+                xhr.send();
+            } catch (e) {
+                return Object.create(null);
+            }
+            return JSON.parse(xhr.responseText);
+        }
 
-		defaultLocale: 'en',
+        var getMessage = function (msgId, substitutions) {
 
-		supportedLocales: ['ru', 'en', 'tr', 'uk', 'de', 'pl', 'pt_BR', 'pt_PT', 'ko', 'zh_CN', 'sr', 'fr', 'sk', 'hy', 'es', 'es_419', 'it', 'id'],
+            if (msgId === "@@ui_locale") {
+                return getUILanguage();
+            }
 
-		_getLocale: function () {
-			var prefix = navigator.language;
-			var parts = prefix.replace('-', '_').split('_');
-			var locale = parts[0].toLowerCase();
-			if (parts[1]) {
-				locale += '_' + parts[1].toUpperCase();
-			}
-			if (this.supportedLocales.indexOf(locale) < 0) {
-				locale = parts[0];
-			}
-			if (this.supportedLocales.indexOf(locale) < 0) {
-				locale = "en";
-			}
-			return locale;
-		},
+            if (!_messages) {
+                _messages = getMessages(_uiLocale);
+                if (_uiLocale === defaultLocale) {
+                    _defaultMessages = _messages;
+                }
+            }
 
-		_getMessages: function (locale) {
-			var xhr = new XMLHttpRequest();
-			xhr.open("GET", this._getMessageFile(locale), false);
-			try {
-				xhr.send();
-			} catch (e) {
-				return Object.create(null);
-			}
-			return JSON.parse(xhr.responseText);
-		},
+            // Load messages for default locale
+            if (!_defaultMessages) {
+                _defaultMessages = getMessages(defaultLocale);
+            }
 
-		_getMessageFile: function (locale) {
-			return safari.extension.baseURI + "_locales/" + locale + "/messages.json";
-		},
+            return _getI18nMessage(msgId, substitutions);
+        };
 
-		getMessage: function (msgId, substitutions) {
+        var getUILanguage = function () {
+            return _uiLocale;
+        };
 
-			if (msgId == "@@ui_locale") {
-				return this.getUILanguage();
-			}
+        function _getI18nMessage(msgId, substitutions) {
 
-			if (!this._messages) {
-				this._messages = this._getMessages(this._uiLocale);
-				if (this._uiLocale == this.defaultLocale) {
-					this._defaultMessages = this._messages;
-				}
-			}
+            var msg = _messages[msgId] || _defaultMessages[msgId];
+            if (!msg) {
+                return "";
+            }
 
-			// Load messages for default locale
-			if (!this._defaultMessages) {
-				this._defaultMessages = this._getMessages(this.defaultLocale);
-			}
+            var msgstr = msg.message;
+            if (!msgstr) {
+                return "";
+            }
 
-			return this._getI18nMessage(msgId, substitutions);
-		},
-		
-		getUILanguage: function() {
-			return this._uiLocale;
-		},
+            if (substitutions && substitutions.length > 0) {
+                msgstr = msgstr.replace(/\$(\d+)/g, function (match, number) {
+                    return typeof substitutions[number - 1] !== 'undefined' ? substitutions[number - 1] : match;
+                });
+            }
+            return msgstr;
+        }
 
-		_getI18nMessage: function (msgId, substitutions) {
+        return {
+            getUILanguage: getUILanguage,
+            getMessage: getMessage
+        };
+    })();
 
-			var msg = this._messages[msgId] || this._defaultMessages[msgId];
-			if (!msg) {
-				return "";
-			}
-
-			var msgstr = msg.message;
-			if (!msgstr) {
-				return "";
-			}
-
-			if (substitutions && substitutions.length > 0) {
-				msgstr = msgstr.replace(/\$(\d+)/g, function (match, number) {
-					return typeof substitutions[number - 1] != "undefined" ? substitutions[number - 1] : match;
-				});
-			}
-			return msgstr;
-		}
-	};
-
-	I18NSupport = I18n;
-})();
+})(typeof adguard !== 'undefined' ? adguard : adguardContent);

@@ -14,25 +14,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global require, exports */
-/**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-var Utils = require('../../lib/utils/browser-utils').Utils;
-var LS = require('../../lib/utils/local-storage').LS;
-var Log = require('../../lib/utils/log').Log;
-var EventNotifier = require('../../lib/utils/notifier').EventNotifier;
-var EventNotifierTypes = require('../../lib/utils/common').EventNotifierTypes;
 
 /**
  * Object that manages user settings.
  * @constructor
  */
-var UserSettings = function () {
+adguard.settings = (function (adguard) {
 
-    this.settings = {
+    'use strict';
 
+    var settings = {
         DISABLE_DETECT_FILTERS: 'detect-filters-disabled',
         DISABLE_SHOW_PAGE_STATS: 'disable-show-page-statistic',
         DISABLE_SHOW_ADGUARD_PROMO_INFO: 'show-info-about-adguard-disabled',
@@ -45,140 +36,194 @@ var UserSettings = function () {
         DEFAULT_WHITE_LIST_MODE: 'default-whitelist-mode'
     };
 
-    this.defaultProperties = Object.create(null);
-    for (var name in this.settings) { // jshint ignore: line
-        this.defaultProperties[this.settings[name]] = false;
-    }
-    this.defaultProperties[this.settings.DISABLE_SHOW_ADGUARD_PROMO_INFO] = (!Utils.isWindowsOs() && !Utils.isMacOs()) || Utils.isEdgeBrowser();
-    this.defaultProperties[this.settings.DISABLE_SAFEBROWSING] = true;
-    this.defaultProperties[this.settings.DISABLE_COLLECT_HITS] = true;
-    this.defaultProperties[this.settings.DISABLE_SEND_SAFEBROWSING_STATS] = true;
-    this.defaultProperties[this.settings.DEFAULT_WHITE_LIST_MODE] = true;
-    this.defaultProperties[this.settings.USE_OPTIMIZED_FILTERS] = Utils.isContentBlockerEnabled();
+    var properties = Object.create(null);
+    var propertyUpdateChannel = adguard.utils.channels.newChannel();
 
-    this.properties = Object.create(null);
-};
-
-UserSettings.prototype.getProperty = function (propertyName) {
-
-    if (propertyName in this.properties) {
-        return this.properties[propertyName];
-    }
-
-    var propertyValue = null;
-
-    if (propertyName in LS.storage) {
-        try {
-            propertyValue = JSON.parse(LS.getItem(propertyName));
-        } catch (ex) {
-            Log.error('Error get property {0}, cause: {1}', propertyName, ex);
+    /**
+     * Lazy default properties
+     */
+    var defaultProperties = {
+        get defaults() {
+            return adguard.lazyGet(this, 'defaults', function () {
+                // Initialize default properties
+                var defaults = Object.create(null);
+                for (var name in settings) {
+                    if (settings.hasOwnProperty(name)) {
+                        defaults[settings[name]] = false;
+                    }
+                }
+                defaults[settings.DISABLE_SHOW_ADGUARD_PROMO_INFO] = (!adguard.utils.browser.isWindowsOs() && !adguard.utils.browser.isMacOs()) || adguard.utils.browser.isEdgeBrowser();
+                defaults[settings.DISABLE_SAFEBROWSING] = true;
+                defaults[settings.DISABLE_COLLECT_HITS] = true;
+                defaults[settings.DISABLE_SEND_SAFEBROWSING_STATS] = true;
+                defaults[settings.DEFAULT_WHITE_LIST_MODE] = true;
+                defaults[settings.USE_OPTIMIZED_FILTERS] = adguard.utils.browser.isContentBlockerEnabled() || adguard.prefs.mobile;
+                return defaults;
+            });
         }
-    } else if (propertyName in this.defaultProperties) {
-        propertyValue = this.defaultProperties[propertyName];
-    }
-
-    this.properties[propertyName] = propertyValue;
-
-    return propertyValue;
-};
-
-UserSettings.prototype.setProperty = function (propertyName, propertyValue) {
-    LS.setItem(propertyName, propertyValue);
-    this.properties[propertyName] = propertyValue;
-    EventNotifier.notifyListeners(EventNotifierTypes.CHANGE_USER_SETTINGS, propertyName, propertyValue);
-};
-
-UserSettings.prototype.isFilteringDisabled = function () {
-    return this.getProperty(this.settings.DISABLE_FILTERING);
-};
-
-UserSettings.prototype.changeFilteringDisabled = function (disabled) {
-    this.setProperty(this.settings.DISABLE_FILTERING, disabled);
-};
-
-UserSettings.prototype.isAutodetectFilters = function () {
-    return !this.getProperty(this.settings.DISABLE_DETECT_FILTERS);
-};
-
-UserSettings.prototype.changeAutodetectFilters = function (enabled) {
-    this.setProperty(this.settings.DISABLE_DETECT_FILTERS, !enabled);
-};
-
-UserSettings.prototype.showPageStatistic = function () {
-    return !this.getProperty(this.settings.DISABLE_SHOW_PAGE_STATS);
-};
-
-UserSettings.prototype.changeShowPageStatistic = function (enabled) {
-    this.setProperty(this.settings.DISABLE_SHOW_PAGE_STATS, !enabled);
-};
-
-UserSettings.prototype.isShowInfoAboutAdguardFullVersion = function () {
-    return !this.getProperty(this.settings.DISABLE_SHOW_ADGUARD_PROMO_INFO);
-};
-
-UserSettings.prototype.changeShowInfoAboutAdguardFullVersion = function (show) {
-    this.setProperty(this.settings.DISABLE_SHOW_ADGUARD_PROMO_INFO, !show);
-};
-
-UserSettings.prototype.changeEnableSafebrowsing = function (enabled) {
-    this.setProperty(this.settings.DISABLE_SAFEBROWSING, !enabled);
-};
-
-UserSettings.prototype.changeSendSafebrowsingStats = function (enabled) {
-    this.setProperty(this.settings.DISABLE_SEND_SAFEBROWSING_STATS, !enabled);
-};
-
-UserSettings.prototype.getSafebrowsingInfo = function () {
-    return {
-        enabled: !this.getProperty(this.settings.DISABLE_SAFEBROWSING),
-        sendStats: !this.getProperty(this.settings.DISABLE_SEND_SAFEBROWSING_STATS)
-    };
-};
-
-UserSettings.prototype.collectHitsCount = function () {
-    return !this.getProperty(this.settings.DISABLE_COLLECT_HITS);
-};
-
-UserSettings.prototype.changeCollectHitsCount = function (enabled) {
-    this.setProperty(this.settings.DISABLE_COLLECT_HITS, !enabled);
-};
-
-UserSettings.prototype.showContextMenu = function () {
-    return !this.getProperty(this.settings.DISABLE_SHOW_CONTEXT_MENU);
-};
-
-UserSettings.prototype.changeShowContextMenu = function (enabled) {
-    this.setProperty(this.settings.DISABLE_SHOW_CONTEXT_MENU, !enabled);
-};
-
-UserSettings.prototype.isDefaultWhiteListMode = function () {
-    return this.getProperty(this.settings.DEFAULT_WHITE_LIST_MODE);
-};
-
-UserSettings.prototype.isUseOptimizedFiltersEnabled = function () {
-    return this.getProperty(this.settings.USE_OPTIMIZED_FILTERS);
-};
-
-UserSettings.prototype.changeDefaultWhiteListMode = function (enabled) {
-    this.setProperty(this.settings.DEFAULT_WHITE_LIST_MODE, enabled);
-};
-
-UserSettings.prototype.getAllSettings = function () {
-
-    var result = {
-        names: Object.create(null),
-        values: Object.create(null),
     };
 
-    for (var key in this.settings) {
-        if (this.settings.hasOwnProperty(key)) {
-            var setting = this.settings[key];
-            result.names[key] = setting;
-            result.values[setting] = this.getProperty(setting);
+    var getProperty = function (propertyName) {
+
+        if (propertyName in properties) {
+            return properties[propertyName];
+        }
+
+        var propertyValue = null;
+
+        if (adguard.localStorage.hasItem(propertyName)) {
+            try {
+                propertyValue = JSON.parse(adguard.localStorage.getItem(propertyName));
+            } catch (ex) {
+                adguard.console.error('Error get property {0}, cause: {1}', propertyName, ex);
+            }
+        } else if (propertyName in defaultProperties.defaults) {
+            propertyValue = defaultProperties.defaults[propertyName];
+        }
+
+        properties[propertyName] = propertyValue;
+
+        return propertyValue;
+    };
+
+    var setProperty = function (propertyName, propertyValue) {
+        adguard.localStorage.setItem(propertyName, propertyValue);
+        properties[propertyName] = propertyValue;
+        propertyUpdateChannel.notify(propertyName, propertyValue);
+    };
+
+    var getAllSettings = function () {
+
+        var result = {
+            names: Object.create(null),
+            values: Object.create(null)
+        };
+
+        for (var key in settings) {
+            if (settings.hasOwnProperty(key)) {
+                var setting = settings[key];
+                result.names[key] = setting;
+                result.values[setting] = getProperty(setting);
+            }
+        }
+
+        return result;
+    };
+
+    /**
+     * True if filtering is disabled globally.
+     *
+     * @returns {boolean} true if disabled
+     */
+    var isFilteringDisabled = function () {
+        return getProperty(settings.DISABLE_FILTERING);
+    };
+
+    var changeFilteringDisabled = function (disabled) {
+        setProperty(settings.DISABLE_FILTERING, disabled);
+    };
+
+    var isAutodetectFilters = function () {
+        return !getProperty(settings.DISABLE_DETECT_FILTERS);
+    };
+
+    var changeAutodetectFilters = function (enabled) {
+        setProperty(settings.DISABLE_DETECT_FILTERS, !enabled);
+    };
+
+    var showPageStatistic = function () {
+        return !getProperty(settings.DISABLE_SHOW_PAGE_STATS);
+    };
+
+    var changeShowPageStatistic = function (enabled) {
+        setProperty(settings.DISABLE_SHOW_PAGE_STATS, !enabled);
+    };
+
+    var isShowInfoAboutAdguardFullVersion = function () {
+        return !getProperty(settings.DISABLE_SHOW_ADGUARD_PROMO_INFO);
+    };
+
+    var changeShowInfoAboutAdguardFullVersion = function (show) {
+        setProperty(settings.DISABLE_SHOW_ADGUARD_PROMO_INFO, !show);
+    };
+
+    var changeEnableSafebrowsing = function (enabled) {
+        setProperty(settings.DISABLE_SAFEBROWSING, !enabled);
+    };
+
+    var changeSendSafebrowsingStats = function (enabled) {
+        setProperty(settings.DISABLE_SEND_SAFEBROWSING_STATS, !enabled);
+    };
+
+    var getSafebrowsingInfo = function () {
+        return {
+            enabled: !getProperty(settings.DISABLE_SAFEBROWSING),
+            sendStats: !getProperty(settings.DISABLE_SEND_SAFEBROWSING_STATS)
+        };
+    };
+
+    var collectHitsCount = function () {
+        return !getProperty(settings.DISABLE_COLLECT_HITS);
+    };
+
+    var changeCollectHitsCount = function (enabled) {
+        setProperty(settings.DISABLE_COLLECT_HITS, !enabled);
+    };
+
+    var showContextMenu = function () {
+        return !getProperty(settings.DISABLE_SHOW_CONTEXT_MENU);
+    };
+
+    var changeShowContextMenu = function (enabled) {
+        setProperty(settings.DISABLE_SHOW_CONTEXT_MENU, !enabled);
+    };
+
+    var isDefaultWhiteListMode = function () {
+        return getProperty(settings.DEFAULT_WHITE_LIST_MODE);
+    };
+
+    var isUseOptimizedFiltersEnabled = function () {
+        return getProperty(settings.USE_OPTIMIZED_FILTERS);
+    };
+
+    var changeDefaultWhiteListMode = function (enabled) {
+        setProperty(settings.DEFAULT_WHITE_LIST_MODE, enabled);
+    };
+
+    var api = {};
+
+    // Expose settings to api
+    for (var key in settings) {
+        if (settings.hasOwnProperty(key)) {
+            api[key] = settings[key];
         }
     }
 
-    return result;
-};
+    api.getProperty = getProperty;
+    api.setProperty = setProperty;
+    api.getAllSettings = getAllSettings;
 
-var userSettings = exports.userSettings = new UserSettings();
+    api.onUpdated = propertyUpdateChannel;
+
+    api.isFilteringDisabled = isFilteringDisabled;
+    api.changeFilteringDisabled = changeFilteringDisabled;
+    api.isAutodetectFilters = isAutodetectFilters;
+    api.changeAutodetectFilters = changeAutodetectFilters;
+    api.showPageStatistic = showPageStatistic;
+    api.changeShowPageStatistic = changeShowPageStatistic;
+    api.isShowInfoAboutAdguardFullVersion = isShowInfoAboutAdguardFullVersion;
+    api.changeShowInfoAboutAdguardFullVersion = changeShowInfoAboutAdguardFullVersion;
+    api.changeEnableSafebrowsing = changeEnableSafebrowsing;
+    api.changeSendSafebrowsingStats = changeSendSafebrowsingStats;
+    api.getSafebrowsingInfo = getSafebrowsingInfo;
+    api.collectHitsCount = collectHitsCount;
+    api.changeCollectHitsCount = changeCollectHitsCount;
+    api.showContextMenu = showContextMenu;
+    api.changeShowContextMenu = changeShowContextMenu;
+    api.isDefaultWhiteListMode = isDefaultWhiteListMode;
+    api.isUseOptimizedFiltersEnabled = isUseOptimizedFiltersEnabled;
+    api.changeDefaultWhiteListMode = changeDefaultWhiteListMode;
+
+    return api;
+
+})(adguard);

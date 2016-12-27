@@ -19,13 +19,24 @@ $(document).ready(function () {
 
     NProgress.inc();
 
-    var onLoaded = function () {
+    function onLoaded() {
         NProgress.done();
         setTimeout(function () {
             if (window) {
                 contentPage.sendMessage({type: 'openThankYouPage'});
             }
         }, 1000);
-    };
-    contentPage.sendMessage({type: 'initializeFiltersOnInstall'}, onLoaded);
+    }
+
+    function checkRequestFilterReady() {
+        contentPage.sendMessage({type: 'checkRequestFilterReady'}, function (response) {
+            if (response.ready) {
+                onLoaded();
+            } else {
+                setTimeout(checkRequestFilterReady, 500);
+            }
+        });
+    }
+
+    checkRequestFilterReady();
 });

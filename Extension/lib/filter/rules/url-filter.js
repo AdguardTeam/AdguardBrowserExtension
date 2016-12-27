@@ -15,94 +15,94 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-var UrlFilterRuleLookupTable = require('../../../lib/filter/rules/url-filter-lookup-table').UrlFilterRuleLookupTable;
-var StringUtils = require('../../../lib/utils/common').StringUtils;
-var UrlUtils = require('../../../lib/utils/url').UrlUtils;
+(function (api) {
 
-/**
- * Filter for Url filter rules.
- * Read here for details:
- * http://adguard.com/en/filterrules.html#baseRules
- */
-var UrlFilter = exports.UrlFilter = function (rules) {
+    'use strict';
 
-	this.basicRulesTable = new UrlFilterRuleLookupTable();
-	this.importantRulesTable = new UrlFilterRuleLookupTable();
+    /**
+     * Filter for Url filter rules.
+     * Read here for details:
+     * http://adguard.com/en/filterrules.html#baseRules
+     */
+    var UrlFilter = function (rules) {
 
-	if (rules) {
-		for (var i = 0; i < rules.length; i++) {
-			this.addRule(rules[i]);
-		}
-	}
-};
+        this.basicRulesTable = new api.UrlFilterRuleLookupTable();
+        this.importantRulesTable = new api.UrlFilterRuleLookupTable();
 
-UrlFilter.prototype = {
+        if (rules) {
+            for (var i = 0; i < rules.length; i++) {
+                this.addRule(rules[i]);
+            }
+        }
+    };
 
-	/**
-	 * Adds rule to UrlFilter
-	 *
-	 * @param rule Rule object
-	 */
-	addRule: function (rule) {
+    UrlFilter.prototype = {
 
-		if (rule.isImportant) {
-			this.importantRulesTable.addRule(rule);
-		} else {
-			this.basicRulesTable.addRule(rule);
-		}
-	},
+        /**
+         * Adds rule to UrlFilter
+         *
+         * @param rule Rule object
+         */
+        addRule: function (rule) {
 
-	/**
-	 * Removes rule from UrlFilter
-	 *
-	 * @param rule Rule to remove
-	 */
-	removeRule: function (rule) {
+            if (rule.isImportant) {
+                this.importantRulesTable.addRule(rule);
+            } else {
+                this.basicRulesTable.addRule(rule);
+            }
+        },
 
-		if (rule.isImportant) {
-			this.importantRulesTable.removeRule(rule);
-		} else {
-			this.basicRulesTable.removeRule(rule);
-		}
-	},
+        /**
+         * Removes rule from UrlFilter
+         *
+         * @param rule Rule to remove
+         */
+        removeRule: function (rule) {
 
-	/**
-	 * Removes all rules from UrlFilter
-	 */
-	clearRules: function () {
-		this.basicRulesTable.clearRules();
-		this.importantRulesTable.clearRules();
-	},
+            if (rule.isImportant) {
+                this.importantRulesTable.removeRule(rule);
+            } else {
+                this.basicRulesTable.removeRule(rule);
+            }
+        },
 
-	/**
-	 * Searches for first rule matching specified request
-	 *
-	 * @param url           Request url
-	 * @param documentHost  Document host
-	 * @param requestType   Request content type (UrlFilterRule.contentTypes)
-	 * @param thirdParty    true if request is third-party
-	 * @param skipGenericRules    skip generic rules
-	 * @return matching rule or null if no match found
-	 */
-	isFiltered: function (url, documentHost, requestType, thirdParty, skipGenericRules) {
-		// First looking for the rule marked with $important modifier
-		var rule = this.importantRulesTable.findRule(url, documentHost, thirdParty, requestType, !skipGenericRules);
+        /**
+         * Removes all rules from UrlFilter
+         */
+        clearRules: function () {
+            this.basicRulesTable.clearRules();
+            this.importantRulesTable.clearRules();
+        },
 
-		if (rule == null) {
-			rule = this.basicRulesTable.findRule(url, documentHost, thirdParty, requestType, !skipGenericRules);
-		}
-		return rule;
-	},
+        /**
+         * Searches for first rule matching specified request
+         *
+         * @param url           Request url
+         * @param documentHost  Document host
+         * @param requestType   Request content type (UrlFilterRule.contentTypes)
+         * @param thirdParty    true if request is third-party
+         * @param skipGenericRules    skip generic rules
+         * @return matching rule or null if no match found
+         */
+        isFiltered: function (url, documentHost, requestType, thirdParty, skipGenericRules) {
+            // First looking for the rule marked with $important modifier
+            var rule = this.importantRulesTable.findRule(url, documentHost, thirdParty, requestType, !skipGenericRules);
+            if (!rule) {
+                rule = this.basicRulesTable.findRule(url, documentHost, thirdParty, requestType, !skipGenericRules);
+            }
+            return rule;
+        },
 
-	/**
-	 * Returns the array of loaded rules
-	 */
-	getRules: function () {
-		var rules = this.basicRulesTable.getRules();
-		return rules.concat(this.importantRulesTable.getRules());
-	}
-};
+        /**
+         * Returns the array of loaded rules
+         */
+        getRules: function () {
+            var rules = this.basicRulesTable.getRules();
+            return rules.concat(this.importantRulesTable.getRules());
+        }
+    };
+
+    api.UrlFilter = UrlFilter;
+
+})(adguard.rules);
+

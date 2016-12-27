@@ -15,65 +15,67 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global exports, browser */
+/* global browser */
+
 /**
- * Filter rules storage adapter
+ * Filter rules storage implementation
  */
-var RulesStorage = exports.RulesStorage = (function() {
-	
-	/**
-	 * Checks runtime.lastError and calls "callback" if so.
-	 * 
-	 * @returns true if operation caused error
-	 */
-	var checkLastError = function(callback) {
-		if (browser.runtime.lastError) {
-			callback(browser.runtime.lastError);
-			return true;
-		}
-		
-		return false;
-	};
-	
-	var read = function (path, callback) {
-		try {
-            browser.storage.local.get(path, function(results) {
+adguard.rulesStorageImpl = (function () {
+
+    /**
+     * Checks runtime.lastError and calls "callback" if so.
+     *
+     * @returns true if operation caused error
+     */
+    var checkLastError = function (callback) {
+        if (browser.runtime.lastError) {
+            callback(browser.runtime.lastError);
+            return true;
+        }
+
+        return false;
+    };
+
+    var read = function (path, callback) {
+        try {
+            browser.storage.local.get(path, function (results) {
                 if (!checkLastError(callback)) {
                     var lines = [];
-					
-					if (results && results[path] instanceof Array) {
-						lines = results[path];
-					}
-					
+
+                    if (results && results[path] instanceof Array) {
+                        lines = results[path];
+                    }
+
                     callback(null, lines);
                 }
             });
-		} catch (ex) {
-			callback(ex);
-		}
-	};
-	
-	var write = function (path, data, callback) {
+        } catch (ex) {
+            callback(ex);
+        }
+    };
+
+    var write = function (path, data, callback) {
         var item = {};
         item[path] = data;
-		try {
-            browser.storage.local.set(item, function() {
+        try {
+            browser.storage.local.set(item, function () {
                 if (!checkLastError(callback)) {
                     callback();
                 }
             });
-		} catch (ex) {
-			callback(ex);
-		}
-	};
-	
-	var remove = function (path, successCallback) {
-		browser.storage.local.remove(path, successCallback);
-	};
-	
-	return {
-		read: read,
-		write: write,
-		remove: remove
-	};
+        } catch (ex) {
+            callback(ex);
+        }
+    };
+
+    var remove = function (path, successCallback) {
+        browser.storage.local.remove(path, successCallback);
+    };
+
+    return {
+        read: read,
+        write: write,
+        remove: remove
+    };
+
 })();

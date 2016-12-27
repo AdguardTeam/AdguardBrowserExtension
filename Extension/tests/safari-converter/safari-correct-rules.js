@@ -284,7 +284,7 @@ function _checkResult(json, errors) {
     }
 
     var converted = JSON.parse(convertedString);
-    Log.debug(converted);
+    adguard.console.debug(converted);
     if (converted.length != rules.length - expectedErrorsCount - expectedCssTrunkatedCount) {
         errors.push('Not all the rules presented in json');
     }
@@ -352,8 +352,8 @@ function _checkResult(json, errors) {
     converted.forEach(function (current, i) {
         var expected = correct[i];
 
-        //Log.debug(current);
-        //Log.debug(expected);
+        //adguard.console.debug(current);
+        //adguard.console.debug(expected);
 
         checkRule(current, expected);
     });

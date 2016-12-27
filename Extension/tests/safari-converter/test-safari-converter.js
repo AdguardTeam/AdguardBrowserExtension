@@ -2,9 +2,6 @@
  * Test script for Safari content-blocking rules converter
  */
 
-var Log = require('lib/utils/log').Log;
-var SafariContentBlockerConverter = require('converter').SafariContentBlockerConverter;
-
 // Setup test
 var specials = [
     '.',

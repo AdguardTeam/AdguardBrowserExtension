@@ -15,390 +15,350 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var PageStatistic = require('../../lib/utils/page-stats').PageStatistic;
-var FilterUtils = require('../../lib/utils/common').FilterUtils;
-var RequestTypes = require('../../lib/utils/common').RequestTypes;
-var UrlUtils = require('../../lib/utils/url').UrlUtils;
-var WorkaroundUtils = require('../../lib/utils/workaround').WorkaroundUtils;
-
-var whiteListService = require('../../lib/filter/whitelist').whiteListService;
-var AntiBannerFiltersId = require('../../lib/utils/common').AntiBannerFiltersId;
-
 /**
- * Map that contains info about every browser tab.
+ * Object that contains info about every browser tab.
  */
-var FramesMap = exports.FramesMap = function (antiBannerService, BrowserTabsClass) {
+adguard.frames = (function (adguard) {
 
-    /**
-     * Interface to work with browser tabs
-     */
-    var tabs = new BrowserTabsClass();
-    var pageStatistic = new PageStatistic(this);
+	'use strict';
 
-    /**
-     * Gets frame data by tab and frame id
-     *
-     * @param tab       Tab
-     * @param frameId   Frame ID
-     * @returns Frame data or null
-     */
-    function getFrameData(tab, frameId) {
-        var framesOfTab = tabs.get(tab);
-        if (framesOfTab) {
-            if (frameId in framesOfTab) {
-                return framesOfTab[frameId];
-            }
-            if (frameId != -1) {
-                return framesOfTab[0];
-            }
-        }
-        return null;
-    }
+	/**
+	 * Adds frame to map. This method is called on first document request.
+	 * If this is a main frame - saves this info in frame data.
+	 *
+	 * @param tab       Tab object
+	 * @param frameId   Frame ID
+	 * @param url       Page URL
+	 * @param type      Request content type (UrlFilterRule.contentTypes)
+	 * @returns Frame data
+	 */
+	var recordFrame = function (tab, frameId, url, type) {
 
-    /**
-     * Adds frame to map. This method is called on first document request.
-     * If this is a main frame - saves this info in frame data.
-     *
-     * @param tab       Tab object
-     * @param frameId   Frame ID
-     * @param url       Page URL
-     * @param type      Request content type (UrlFilterRule.contentTypes)
-     * @returns Frame data
-     */
-    this.recordFrame = function (tab, frameId, url, type) {
+		var frame = adguard.tabs.getTabFrame(tab.tabId, frameId);
 
-        var framesOfTab = tabs.get(tab);
+		var previousUrl = '';
+		if (type === adguard.RequestTypes.DOCUMENT) {
+			adguard.tabs.clearTabFrames(tab.tabId);
+			adguard.tabs.clearTabMetadata(tab.tabId);
+			if (frame) {
+				previousUrl = frame.url;
+			}
+		}
 
-        var previousUrl = '';
-        if (type == RequestTypes.DOCUMENT && framesOfTab) {
-            var frameInfo = framesOfTab[frameId];
-            if (frameInfo) {
-                previousUrl = frameInfo.url;
-            }
-        }
+		adguard.tabs.recordTabFrame(tab.tabId, frameId, url, adguard.utils.url.getDomainName(url));
 
-        if (!framesOfTab || type == RequestTypes.DOCUMENT) {
-            tabs.set(tab, (framesOfTab = Object.create(null)));
-        }
+		if (type === adguard.RequestTypes.DOCUMENT) {
+			adguard.tabs.updateTabMetadata(tab.tabId, {previousUrl: previousUrl});
+			reloadFrameData(tab);
+		}
+	};
 
-        framesOfTab[frameId] = {
-            url: url,
-            domainName: UrlUtils.getDomainName(url),
-            previousUrl: previousUrl
-        };
+	/**
+	 * Gets frame URL
+	 *
+	 * @param tab       Tab
+	 * @param frameId   Frame ID
+	 * @returns Frame URL
+	 */
+	var getFrameUrl = function (tab, frameId) {
+		var frame = adguard.tabs.getTabFrame(tab.tabId, frameId);
+		return frame ? frame.url : null;
+	};
 
-        if (type == RequestTypes.DOCUMENT) {
-            framesOfTab[frameId].timeAdded = Date.now();
-            this.reloadFrameData(tab);
-        }
+	/**
+	 * Gets main frame URL
+	 *
+	 * @param tab	Tab
+	 * @returns Frame URL
+	 */
+	var getMainFrameUrl = function(tab){
+		return getFrameUrl(tab, 0);
+	};
 
-        return framesOfTab[frameId];
-    };
+	/**
+	 * Gets frame Domain
+	 *
+	 * @param tab       Tab
+	 * @returns Frame Domain
+	 */
+	var getFrameDomain = function (tab) {
+		var frame = adguard.tabs.getTabFrame(tab.tabId, 0);
+		return frame ? frame.domainName : null;
+	};
 
-    /**
-     * Removes specified frame from the map
-     *
-     * @param tab Tab to remove
-     */
-    this.removeFrame = function (tab) {
-        tabs.remove(tab);
-    };
+	/**
+	 * @param tab Tab
+	 * @returns true if Tab have white list rule
+	 */
+	var isTabWhiteListed = function (tab) {
+		var frameWhiteListRule = adguard.tabs.getTabMetadata(tab.tabId, 'frameWhiteListRule');
+		return frameWhiteListRule && frameWhiteListRule.checkContentTypeIncluded("DOCUMENT");
+	};
 
-    /**
-     * Gets main frame for the specified tab
-     *
-     * @param tab   Tab
-     * @returns Frame data
-     */
-    this.getMainFrame = function (tab) {
-        return getFrameData(tab, 0);
-    };
+	/**
+	 * @param tab Tab
+	 * @returns true if Tab have white list rule and white list isn't invert
+	 */
+	var isTabWhiteListedForSafebrowsing = function (tab) {
+		return isTabWhiteListed(tab) && adguard.whitelist.isDefaultMode();
+	};
 
-    /**
-     * Gets frame URL
-     *
-     * @param tab       Tab
-     * @param frameId   Frame ID
-     * @returns Frame URL
-     */
-    this.getFrameUrl = function (tab, frameId) {
-        var frameData = getFrameData(tab, frameId);
-        return (frameData ? frameData.url : null);
-    };
+	/**
+	 * @param tab Tab
+	 * @returns true if protection is paused
+	 */
+	var isTabProtectionDisabled = function (tab) {
+		return adguard.tabs.getTabMetadata(tab.tabId, 'applicationFilteringDisabled');
+	};
 
-    /**
-     * Gets main frame URL
-     *
-     * @param tab       Tab
-     * @returns Frame URL
-     */
-    this.getMainFrameUrl = function (tab) {
-        return this.getFrameUrl(tab, 0);
-    };
+	/**
+	 * Returns true if Adguard for Windows/Android/Mac is detected in this tab.
+	 *
+	 * @param tab   Tab
+	 * @returns true if Adguard for Windows/Android/Mac is detected
+	 */
+	var isTabAdguardDetected = function (tab) {
+		return adguard.tabs.getTabMetadata(tab.tabId, 'adguardDetected');
+	};
 
-    /**
-     * Gets frame Domain
-     *
-     * @param tab       Tab
-     * @returns Frame Domain
-     */
-    this.getFrameDomain = function (tab) {
-        var frameData = getFrameData(tab, 0);
-        return frameData ? frameData.domainName : null;
-    };
+	/**
+	 * Returns true if Adguard for Windows/Android/Mac is detected in this tab and tab in white list
+	 *
+	 * @param tab Tab
+	 * @returns true if Adguard for Windows/Android/Mac is detected and tab in white list
+	 */
+	var isTabAdguardWhiteListed = function (tab) {
+		var adguardDetected = adguard.tabs.getTabMetadata(tab.tabId, 'adguardDetected');
+		var adguardDocumentWhiteListed = adguard.tabs.getTabMetadata(tab.tabId, 'adguardDocumentWhiteListed');
+		return adguardDetected && adguardDocumentWhiteListed;
+	};
 
-    /**
-     * @param tab Tab
-     * @returns true if Tab have white list rule
-     */
-    this.isTabWhiteListed = function (tab) {
-        var frameData = this.getMainFrame(tab);
-        return frameData && frameData.frameWhiteListRule && frameData.frameWhiteListRule.checkContentTypeIncluded("DOCUMENT");
-    };
+	/**
+	 * @param tab   Tab
+	 * @returns Adguard whitelist rule in user filter associated with this tab
+	 */
+	var getTabAdguardUserWhiteListRule = function (tab) {
+		var adguardDetected = adguard.tabs.getTabMetadata(tab.tabId, 'adguardDetected');
+		var adguardUserWhiteListed = adguard.tabs.getTabMetadata(tab.tabId, 'adguardUserWhiteListed');
+		if (adguardDetected && adguardUserWhiteListed) {
+			return adguard.tabs.getTabMetadata(tab.tabId, 'adguardWhiteListRule');
+		}
+		return null;
+	};
 
-    /**
-     * @param tab Tab
-     * @returns true if Tab have white list rule and white list isn't invert
-     */
-    this.isTabWhiteListedForSafebrowsing = function (tab) {
-        return this.isTabWhiteListed(tab) && whiteListService.isDefaultMode();
-    };
+	/**
+	 * Update tab info if Adguard for Windows/Android/Mac is detected
+	 *
+	 * @param tab                   Tab
+	 * @param adguardDetected       True if Adguard detected
+	 * @param documentWhiteListed   True if Tab whitelisted by Adguard rule
+	 * @param userWhiteListed       True if Adguard whitelist rule in user filter
+	 * @param headerWhiteListRule   Adguard whitelist rule object
+	 * @param adguardProductName    Adguard product name
+	 * @param adguardRemoveRuleNotSupported True if Adguard Api not supported remove rule
+	 */
+	var recordAdguardIntegrationForTab = function (tab, adguardDetected, documentWhiteListed, userWhiteListed, headerWhiteListRule, adguardProductName, adguardRemoveRuleNotSupported) {
+		adguard.tabs.updateTabMetadata(tab.tabId, {
+			adguardDetected: adguardDetected,
+			adguardDocumentWhiteListed: documentWhiteListed,
+			adguardUserWhiteListed: userWhiteListed,
+			adguardWhiteListRule: headerWhiteListRule,
+			adguardProductName: adguardProductName,
+			adguardRemoveRuleNotSupported: adguardRemoveRuleNotSupported
+		});
+	};
 
-    /**
-     * @param tab Tab
-     * @returns true if protection is paused
-     */
-    this.isTabProtectionDisabled = function (tab) {
-        var frameData = this.getMainFrame(tab);
-        return frameData && frameData.applicationFilteringDisabled;
-    };
+	/**
+	 * Gets whitelist rule for the specified tab
+	 * @param tab Tab to check
+	 * @returns whitelist rule applied to that tab (if any)
+	 */
+	var getFrameWhiteListRule = function (tab) {
+		return adguard.tabs.getTabMetadata(tab.tabId, 'frameWhiteListRule');
+	};
 
-    /**
-     * Returns true if Adguard for Windows/Android/Mac is detected in this tab.
-     *
-     * @param tab   Tab
-     * @returns true if Adguard for Windows/Android/Mac is detected
-     */
-    this.isTabAdguardDetected = function (tab) {
-        var frameData = this.getMainFrame(tab);
-        return frameData && frameData.adguardDetected;
-    };
+	/**
+	 * Reloads tab data (checks whitelist and filtering status)
+	 *
+	 * @param tab Tab to reload
+	 */
+	var reloadFrameData = function (tab) {
+		var frame = adguard.tabs.getTabFrame(tab.tabId, 0);
+		if (frame) {
+			var url = frame.url;
+			var frameWhiteListRule = adguard.whitelist.findWhiteListRule(url);
+			if (!frameWhiteListRule) {
+				frameWhiteListRule = adguard.requestFilter.findWhiteListRule(url, url, adguard.RequestTypes.DOCUMENT);
+			}
+			adguard.tabs.updateTabMetadata(tab.tabId, {
+				frameWhiteListRule: frameWhiteListRule,
+				applicationFilteringDisabled: adguard.settings.isFilteringDisabled()
+			});
+		}
+	};
 
-    /**
-     * Returns true if Adguard for Windows/Android/Mac is detected in this tab and tab in white list
-     *
-     * @param tab Tab
-     * @returns true if Adguard for Windows/Android/Mac is detected and tab in white list
-     */
-    this.isTabAdguardWhiteListed = function (tab) {
-        var frameData = this.getMainFrame(tab);
-        return frameData && frameData.adguardDetected && frameData.adguardDocumentWhiteListed;
-    };
+	/**
+	 * Attach referrer url to the tab's main frame object.
+	 * This referrer is then used on safebrowsing "Access Denied" for proper "Go Back" behavior.
+	 *
+	 * @param tab Tab
+	 * @param referrerUrl Referrer to record
+	 */
+	var recordFrameReferrerHeader = function (tab, referrerUrl) {
+		adguard.tabs.updateTabMetadata(tab.tabId, {referrerUrl: referrerUrl});
+	};
 
-    /**
-     * @param tab   Tab
-     * @returns Adguard whitelist rule in user filter associated with this tab
-     */
-    this.getTabAdguardUserWhiteListRule = function (tab) {
-        var frameData = this.getMainFrame(tab);
-        if (frameData && frameData.adguardDetected && frameData.adguardUserWhiteListed) {
-            return frameData.adguardWhiteListRule;
-        }
-        return null;
-    };
+	/**
+	 * Gets main frame data
+	 *
+	 * @param tab Tab
+	 * @returns frame data
+	 */
+	var getFrameInfo = function (tab) {
 
-    /**
-     * Update tab info if Adguard for Windows/Android/Mac is detected
-     *
-     * @param tab                   Tab
-     * @param adguardDetected       True if Adguard detected
-     * @param documentWhiteListed   True if Tab whitelisted by Adguard rule
-     * @param userWhiteListed       True if Adguard whitelist rule in user filter
-     * @param headerWhiteListRule   Adguard whitelist rule object
-     * @param adguardProductName    Adguard product name
-     * @param adguardRemoveRuleNotSupported True if Adguard Api not supported remove rule
-     */
-    this.recordAdguardIntegrationForTab = function (tab, adguardDetected, documentWhiteListed, userWhiteListed, headerWhiteListRule, adguardProductName, adguardRemoveRuleNotSupported) {
-        var frameData = this.getMainFrame(tab);
-        if (frameData) {
-            frameData.adguardDetected = adguardDetected;
-            frameData.adguardDocumentWhiteListed = documentWhiteListed;
-            frameData.adguardUserWhiteListed = userWhiteListed;
-            frameData.adguardWhiteListRule = headerWhiteListRule;
-            frameData.adguardProductName = adguardProductName;
-            frameData.adguardRemoveRuleNotSupported = adguardRemoveRuleNotSupported;
-        }
-    };
+		var tabId = tab.tabId;
+		var frame = adguard.tabs.getTabFrame(tabId);
 
-    /**
-     * Gets whitelist rule for the specified tab
-     * @param tab Tab to check
-     * @returns whitelist rule applied to that tab (if any)
-     */
-    this.getFrameWhiteListRule = function (tab) {
-        var frameData = this.getMainFrame(tab);
-        return frameData ? frameData.frameWhiteListRule : null;
-    };
+		var url = tab.url;
+		if (!url && frame) {
+			url = frame.url;
+		}
 
-    /**
-     * Reloads tab data (checks whitelist and filtering status)
-     *
-     * @param tab Tab to reload
-     */
-    this.reloadFrameData = function (tab) {
-        var frameData = this.getMainFrame(tab);
-        if (frameData) {
-            var url = frameData.url;
-            var frameWhiteListRule = whiteListService.findWhiteListRule(url);
-            if (!frameWhiteListRule) {
-                frameWhiteListRule = antiBannerService.getRequestFilter().findWhiteListRule(url, url, RequestTypes.DOCUMENT);
-            }
-            frameData.frameWhiteListRule = frameWhiteListRule;
-            frameData.applicationFilteringDisabled = antiBannerService.isApplicationFilteringDisabled();
-        }
-    };
+		var urlFilteringDisabled = !adguard.utils.url.isHttpRequest(url);
+		var applicationFilteringDisabled;
+		var documentWhiteListed = false;
+		var userWhiteListed = false;
+		var canAddRemoveRule = false;
+		var frameRule;
 
-    /**
-     * Attach referrer url to the tab's main frame object.
-     * This referrer is then used on safebrowsing "Access Denied" for proper "Go Back" behavior.
-     *
-     * @param tab Tab
-     * @param referrerUrl Referrer to record
-     */
-    this.recordFrameReferrerHeader = function (tab, referrerUrl) {
-        var frameData = this.getMainFrame(tab);
-        if (frameData) {
-            frameData.referrerUrl = referrerUrl;
-        }
-    };
+		var adguardDetected = adguard.tabs.getTabMetadata(tabId, 'adguardDetected');
+		var adguardProductName = '';
 
-    /**
-     * Gets main frame data
-     *
-     * @param tab Tab
-     * @returns frame data
-     */
-    this.getFrameInfo = function (tab) {
+		if (!urlFilteringDisabled) {
 
-        var frameData = this.getMainFrame(tab);
+			if (adguardDetected) {
 
-        var url = tab.url;
-        if (!url && frameData) {
-            url = frameData.url;
-        }
+				adguardProductName = adguard.tabs.getTabMetadata(tabId, 'adguardProductName');
 
-        var urlFilteringDisabled = !UrlUtils.isHttpRequest(url);
-        var applicationFilteringDisabled;
-        var documentWhiteListed = false;
-        var userWhiteListed = false;
-        var canAddRemoveRule = false;
-        var frameRule;
+				documentWhiteListed = adguard.tabs.getTabMetadata(tabId, 'adguardDocumentWhiteListed');
+				userWhiteListed = adguard.tabs.getTabMetadata(tabId, 'adguardUserWhiteListed');
+				canAddRemoveRule = !adguard.tabs.getTabMetadata(tabId, 'adguardRemoveRuleNotSupported') && !(documentWhiteListed && !userWhiteListed);
+				applicationFilteringDisabled = false;
 
-        if (!urlFilteringDisabled) {
+				var adguardWhiteListRule = adguard.tabs.getTabMetadata(tabId, 'adguardWhiteListRule');
+				if (adguardWhiteListRule) {
+					frameRule = {
+						filterId: adguard.utils.filters.WHITE_LIST_FILTER_ID,
+						ruleText: adguardWhiteListRule.ruleText
+					};
+				}
 
-            if (frameData && frameData.adguardDetected) {
+			} else {
 
-                documentWhiteListed = frameData.adguardDocumentWhiteListed;
-                userWhiteListed = frameData.adguardUserWhiteListed;
-                canAddRemoveRule = !frameData.adguardRemoveRuleNotSupported && !(documentWhiteListed && !userWhiteListed);
-                applicationFilteringDisabled = false;
+				applicationFilteringDisabled = adguard.tabs.getTabMetadata(tabId, 'applicationFilteringDisabled');
 
-                if (frameData.adguardWhiteListRule) {
-                    frameRule = {
-                        filterId: AntiBannerFiltersId.WHITE_LIST_FILTER_ID,
-                        ruleText: frameData.adguardWhiteListRule.ruleText
-                    }
-                }
+				documentWhiteListed = isTabWhiteListed(tab);
+				if (documentWhiteListed) {
+					var rule = getFrameWhiteListRule(tab);
+					userWhiteListed = adguard.utils.filters.isWhiteListFilterRule(rule) || adguard.utils.filters.isUserFilterRule(rule);
+					frameRule = {
+						filterId: rule.filterId,
+						ruleText: rule.ruleText
+					};
+				}
+				// It means site in exception
+				canAddRemoveRule = !(documentWhiteListed && !userWhiteListed);
+			}
+		}
 
-            } else {
+		var totalBlockedTab = adguard.tabs.getTabMetadata(tabId, 'blocked') || 0;
+		var totalBlocked = adguard.pageStats.getTotalBlocked();
 
-                applicationFilteringDisabled = frameData && frameData.applicationFilteringDisabled;
+		return {
 
-                documentWhiteListed = this.isTabWhiteListed(tab);
-                if (documentWhiteListed) {
-                    var rule = this.getFrameWhiteListRule(tab);
+			url: url,
 
-                    userWhiteListed = FilterUtils.isWhiteListFilterRule(rule) || FilterUtils.isUserFilterRule(rule);
+			applicationFilteringDisabled: applicationFilteringDisabled,
+			urlFilteringDisabled: urlFilteringDisabled,
 
-                    frameRule = {
-                        filterId: rule.filterId,
-                        ruleText: rule.ruleText
-                    };
-                }
-                //mean site in exception
-                canAddRemoveRule = !(documentWhiteListed && !userWhiteListed);
-            }
-        }
+			documentWhiteListed: documentWhiteListed,
+			userWhiteListed: userWhiteListed,
+			canAddRemoveRule: canAddRemoveRule,
+			frameRule: frameRule,
 
-        var totalBlockedTab = frameData ? frameData.blocked : 0;
-        var totalBlocked = pageStatistic.getTotalBlocked();
+			adguardDetected: adguardDetected,
+			adguardProductName: adguardProductName,
 
-        return {
+			totalBlockedTab: totalBlockedTab || 0,
+			totalBlocked: totalBlocked || 0
+		};
+	};
 
-            url: url,
+	/**
+	 * Update count of blocked requests
+	 *
+	 * @param tab - Tab
+	 * @param blocked - count of blocked requests
+	 * @returns  updated count of blocked requests
+	 */
+	var updateBlockedAdsCount = function (tab, blocked) {
 
-            applicationFilteringDisabled: applicationFilteringDisabled,
-            urlFilteringDisabled: urlFilteringDisabled,
+		adguard.pageStats.updateTotalBlocked(blocked);
 
-            documentWhiteListed: documentWhiteListed,
-            userWhiteListed: userWhiteListed,
-            canAddRemoveRule: canAddRemoveRule,
-            frameRule: frameRule,
+		blocked = (adguard.tabs.getTabMetadata(tab.tabId, 'blocked') || 0) + blocked;
+		adguard.tabs.updateTabMetadata(tab.tabId, {blocked: blocked});
 
-            adguardDetected: frameData && frameData.adguardDetected,
-            adguardProductName: frameData ? frameData.adguardProductName : null,
+		return blocked;
+	};
 
-            totalBlockedTab: totalBlockedTab || 0,
-            totalBlocked: totalBlocked || 0
-        };
-    };
+	/**
+	 * Reset count of blocked requests for tab or overall stats
+	 * @param tab - Tab (optional)
+	 */
+	var resetBlockedAdsCount = function (tab) {
+		if (tab) {
+			adguard.tabs.updateTabMetadata(tab.tabId, {blocked: 0});
+		} else {
+			adguard.pageStats.resetStats();
+		}
+	};
 
-    /**
-     * Update count of blocked requests
-     *
-     * @param tab - Tab
-     * @param blocked - count of blocked requests
-     * @returns  updated count of blocked requests
-     */
-    this.updateBlockedAdsCount = function (tab, blocked) {
-        var frameData = this.getMainFrame(tab);
-        if (!frameData) {
-            return null;
-        }
+	/**
+	 * Is tab in incognito mode?
+	 * @param tab Tab
+	 */
+	var isIncognitoTab = function (tab) {
+		return adguard.tabs.isIncognito(tab.tabId);
+	};
 
-        frameData.blocked = (frameData.blocked || 0) + blocked;
-        pageStatistic.updateTotalBlocked(blocked);
-        return frameData.blocked;
-    };
+	// Records frames on application initialization
+	adguard.listeners.addListener(function (event) {
+		if (event === adguard.listeners.APPLICATION_INITIALIZED) {
+			adguard.tabs.forEach(function (tab) {
+				recordFrame(tab, 0, tab.url, adguard.RequestTypes.DOCUMENT);
+			});
+		}
+	});
 
-    /**
-     * Reset count of blocked requests for tab or overall stats
-     * @param tab - Tab (optional)
-     */
-    this.resetBlockedAdsCount = function (tab) {
-        if (tab) {
-            var frameData = this.getMainFrame(tab);
-            if (frameData) {
-                frameData.blocked = 0;
-            }
-        } else {
-            pageStatistic.resetStats();
-        }
-    };
+	return {
+		recordFrame: recordFrame,
+		getFrameUrl: getFrameUrl,
+		getMainFrameUrl: getMainFrameUrl,
+		getFrameDomain: getFrameDomain,
+		isTabWhiteListed: isTabWhiteListed,
+		isTabWhiteListedForSafebrowsing: isTabWhiteListedForSafebrowsing,
+		isTabProtectionDisabled: isTabProtectionDisabled,
+		isTabAdguardDetected: isTabAdguardDetected,
+		isTabAdguardWhiteListed: isTabAdguardWhiteListed,
+		getTabAdguardUserWhiteListRule: getTabAdguardUserWhiteListRule,
+		recordAdguardIntegrationForTab: recordAdguardIntegrationForTab,
+		getFrameWhiteListRule: getFrameWhiteListRule,
+		reloadFrameData: reloadFrameData,
+		recordFrameReferrerHeader: recordFrameReferrerHeader,
+		getFrameInfo: getFrameInfo,
+		updateBlockedAdsCount: updateBlockedAdsCount,
+		resetBlockedAdsCount: resetBlockedAdsCount,
+		isIncognitoTab: isIncognitoTab
+	};
 
-    /**
-     * Check tab is incognito and store value
-     * @param tab Tab
-     */
-    this.checkTabIncognitoMode = function (tab) {
-        tabs.checkIncognitoMode(tab);
-    };
-
-    /**
-     * Is tab in incognito mode?
-     * @param tab Tab
-     */
-    this.isIncognitoTab = function (tab) {
-        return tabs.isIncognito(tab);
-    }
-};
+})(adguard);

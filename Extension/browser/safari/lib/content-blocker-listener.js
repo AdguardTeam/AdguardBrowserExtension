@@ -15,33 +15,34 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global antiBannerService, require, userSettings */
-var SafariContentBlocker = require('content-blocker').SafariContentBlocker;
-var EventNotifier = require('utils/notifier').EventNotifier;
-var EventNotifierTypes = require('utils/common').EventNotifierTypes;
-var Utils = require('utils/browser-utils').Utils;
+(function (adguard) {
 
-(function () {
+    'use strict';
 
-    if (Utils.isContentBlockerEnabled()) {
+    if (adguard.utils.browser.isContentBlockerEnabled()) {
 
         // Subscribe to events which lead to content blocker update
-        EventNotifier.addListener(function (event, params) {
+        adguard.listeners.addListener(function (event) {
 
-            if (event == EventNotifierTypes.REQUEST_FILTER_UPDATED || 
-                event == EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES || 
-                (event == EventNotifierTypes.CHANGE_USER_SETTINGS && params == userSettings.settings.DISABLE_FILTERING)) {
+            if (event === adguard.listeners.REQUEST_FILTER_UPDATED ||
+                event === adguard.listeners.UPDATE_WHITELIST_FILTER_RULES) {
 
-                SafariContentBlocker.updateContentBlocker();
+                adguard.SafariContentBlocker.updateContentBlocker();
+            }
+        });
+
+        adguard.settings.onUpdated.addListener(function (setting) {
+            if (setting === adguard.settings.DISABLE_FILTERING) {
+                adguard.SafariContentBlocker.updateContentBlocker();
             }
         });
 
         // When content blocker is updated we need to save finally converted rules count and over limit flag
-        EventNotifier.addListener(function (event, info) {
-            if (event === EventNotifierTypes.CONTENT_BLOCKER_UPDATED) {
-                antiBannerService.updateContentBlockerInfo(info);
+        adguard.listeners.addListener(function (event, info) {
+            if (event === adguard.listeners.CONTENT_BLOCKER_UPDATED) {
+                adguard.requestFilter.updateContentBlockerInfo(info);
             }
         });
     }
 
-})();
+})(adguard);

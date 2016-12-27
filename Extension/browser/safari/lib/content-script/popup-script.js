@@ -14,7 +14,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* global $, safari, controller */
+
 (function () {
+
+	'use strict';
 
 	var backgroundPage = safari.extension.globalPage.contentWindow;
 
@@ -32,23 +37,20 @@
 		safari.self.hide();
 	}, true);
 
-	window.ext = Object.create(backgroundPage.ext);
-	window.ext.closePopup =  function () {
+	var adguard = window.adguard = Object.create(backgroundPage.adguard);
+	adguard.closePopup =  function () {
 		controller.resizePopupWindow();
 		safari.self.hide();
 	};
-	window.ext.resizePopup =  function (width, height) {
+	adguard.resizePopup =  function (width, height) {
 		safari.self.width = width;
 		safari.self.height = height;
 	};
-
-	window.BrowserTabs = backgroundPage.BrowserTabs;
-
-	window.i18n = new backgroundPage.I18NSupport();
+	window.i18n = adguard.i18n;
 
 	$(window).on('blur', function () {
 		if (window.tab) {
-			UI.updateTabIconAndContextMenu(tab, true);
+			adguard.ui.updateTabIconAndContextMenu(window.tab, true);
 		}
 	});
 })();

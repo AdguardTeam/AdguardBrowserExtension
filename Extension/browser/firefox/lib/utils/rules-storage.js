@@ -1,4 +1,3 @@
-/* global require, exports */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -15,23 +14,29 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var FS = require('../../lib/utils/file-storage').FS;
 
 /**
- * Filter rules storage adapter.
+ * Filter rules storage implementation.
  * For FF we store rules in files
  */
-var RulesStorage = exports.RulesStorage = {
+adguard.rulesStorageImpl = (function (adguard) {
 
-    read: function (filename, callback) {
-        FS.readFromFile(filename, callback);
-    },
+    var read = function (filename, callback) {
+        adguard.fileStorage.readFromFile(filename, callback);
+    };
 
-    write: function (filename, data, callback) {
-        FS.writeToFile(filename, data, callback);
-    },
+    var write = function (filename, data, callback) {
+        adguard.fileStorage.writeToFile(filename, data, callback);
+    };
 
-    remove: function (path, successCallback) {
-        FS.removeFile(path, successCallback);
-    }
-};
+    var remove = function (path, successCallback) {
+        adguard.fileStorage.removeFile(path, successCallback);
+    };
+
+    return {
+        write: write,
+        read: read,
+        remove: remove
+    };
+
+})(adguard);

@@ -14,27 +14,33 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global exports, Log */
+
 /**
- * Local storage adapter
+ * Local storage implementation for chromium-based browsers
  */
-var LS = exports.LS = {
+adguard.localStorageImpl = (function () {
 
-	storage: localStorage,
+    var getItem = function (key) {
+        return localStorage.getItem(key);
+    };
 
-	getItem: function (key) {
-		return LS.storage.getItem(key);
-	},
+    var setItem = function (key, value) {
+        localStorage.setItem(key, value);
+    };
 
-	setItem: function (key, value) {
-		try {
-			LS.storage.setItem(key, value);
-		} catch (ex) {
-			Log.error("Error while saving item {0} to the localStorage: {1}", key, ex);
-		}
-	},
+    var removeItem = function (key) {
+        localStorage.removeItem(key);
+    };
 
-	removeItem: function (key) {
-		LS.storage.removeItem(key);
-	}
-};
+    var hasItem = function (key) {
+        return key in localStorage;
+    };
+
+    return {
+        getItem: getItem,
+        setItem: setItem,
+        removeItem: removeItem,
+        hasItem: hasItem
+    };
+
+})();
