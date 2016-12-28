@@ -109,7 +109,8 @@ PageController.prototype = {
 
 		// bind location hash change
 		$(window).on('hashchange', function () {
-			this._onOpenedTabsReceived();
+			this._updateTabIdFromHash();
+			this.onSelectedTabChange();
 		}.bind(this));
 
 		this.searchRequest = null;
@@ -145,21 +146,26 @@ PageController.prototype = {
 
 		this._bindSearchFilters();
 
+		this._updateTabIdFromHash();
+
 		// Synchronize opened tabs
-		contentPage.sendMessage({type: 'synchronizeOpenTabs'}, function () {
-			this._onOpenedTabsReceived();
+		contentPage.sendMessage({type: 'synchronizeOpenTabs'}, function (response) {
+			var tabs = response.tabs;
+			for (var i = 0; i < tabs.length; i++) {
+				this.onTabAdded(tabs[i]);
+			}
+			this.onSelectedTabChange();
 		}.bind(this));
 	},
 
-	_onOpenedTabsReceived: function () {
-		// Try to retrieve tabId from hash
+	// Try to retrieve tabId from hash
+	_updateTabIdFromHash: function () {
 		if (document.location.hash) {
 			var tabId = document.location.hash.substring(1);
 			if (tabId) {
 				this.currentTabId = tabId;
 			}
 		}
-		this.onSelectedTabChange();
 	},
 
 	onTabAdded: function (tabInfo) {
@@ -532,7 +538,11 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 
 	removeUserFilterRuleButton.on('click', function (e) {
 		e.preventDefault();
-		contentPage.sendMessage({type: 'removeUserRule', ruleText: requestRule.ruleText, adguardDetected: frameInfo.adguardDetected});
+		contentPage.sendMessage({
+			type: 'removeUserRule',
+			ruleText: requestRule.ruleText,
+			adguardDetected: frameInfo.adguardDetected
+		});
 		if (frameInfo.adguardDetected) {
 			// In integration mode rule may be present in whitelist filter
 			contentPage.sendMessage({type: 'unWhiteListFrame', frameInfo: frameInfo});
@@ -772,6 +782,7 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
 	$(document).ready(function () {
 
 		var pageController = new PageController();
+		pageController.init();
 
 		function onEvent(event, tabInfo, filteringEvent) {
 			switch (event) {
@@ -828,8 +839,6 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
 		//unload event
 		$(window).on('beforeunload', onUnload);
 		$(window).on('unload', onUnload);
-
-		pageController.init();
 	});
 
 });

@@ -395,8 +395,8 @@
                 var filteringInfo = adguard.filteringLog.getFilteringInfoByTabId(message.tabId);
                 return {filteringInfo: filteringInfo};
             case 'synchronizeOpenTabs':
-                adguard.filteringLog.synchronizeOpenTabs(function () {
-                    callback({});
+                adguard.filteringLog.synchronizeOpenTabs(function (tabs) {
+                    callback({tabs: tabs});
                 });
                 return true; // Async
             case 'checkSubscriptionUrl':
