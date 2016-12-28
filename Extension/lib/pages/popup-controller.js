@@ -98,35 +98,65 @@ PopupController.prototype = {
     _renderPopup: function (tabInfo) {
 
         var parent = $('.widjet-popup');
-        parent.empty();
+        //parent.empty();
+        parent.find('.footer').remove();
 
-        //top block
-        this.siteStatsTemplate = this._getTemplate('page-stats-template');
-        this.adguardDetectedMessageTemplate = this._getTemplate('adguard-detected-message-template');
-        this.siteFilteringDisabledMessageTemplate = this._getTemplate('site-filtering-disabled-message-template');
-        this.siteProtectionDisabledMessageTemplate = this._getTemplate('site-protection-disabled-message-template');
+        var stack = parent.find('.tabstack');
 
-        //middle block
-        this.siteFilteringExceptionMessageTemplate = this._getTemplate('site-filtering-exception-message-template');
-        this.siteFilteringStateTemplate = this._getTemplate('site-filtering-checkbox-template');
+        var container = parent.find('.tab-main');
+        container.empty();
 
-        //actions block
-        this.assistantTemplate = this._getTemplate('open-assistant-template');
-        this.abuseTemplate = this._getTemplate('open-abuse-template');
-        this.siteReportTemplate = this._getTemplate('site-report-template');
-        this.settingsTemplate = this._getTemplate('open-settings-template');
-        this.protectionDisabledTemplate = this._getTemplate('protection-disabled-template');
-        this.protectionEnabledTemplate = this._getTemplate('protection-enabled-template');
+        stack.attr('class', 'tabstack');
 
-        //footer
-        this.footerTemplate = this._getTemplate('popup-footer-template');
-        this.footerIntegrationTemplate = this._getTemplate('popup-footer-integration-template');
+        // define class
+        if (tabInfo.urlFilteringDisabled) {
+            stack.addClass('status-checkmark-disabled');
+        } else if (tabInfo.applicationFilteringDisabled) {
+            stack.addClass('status-paused');
+        } else {
+            if (!tabInfo.canAddRemoveRule) {
+                stack.addClass('status-checkmark-disabled');
+            } else {
+                if (tabInfo.documentWhiteListed) {
+                    stack.addClass('status-cross');
+                } else {
+                    stack.addClass('status-checkmark');
+                }
+            }
+        }
 
-        //render
-        this._renderTopMessageBlock(parent, tabInfo);
-        this._renderSiteExceptionBlock(parent, tabInfo);
-        this._renderFilteringCheckboxBlock(parent, tabInfo);
-        this._renderActionsBlock(parent, tabInfo);
+        //TODO: integration text??
+        //if (tabInfo.adguardProductName) {
+        //    i18n.translateElement(message, 'popup_ads_has_been_removed_by_adguard', [tabInfo.adguardProductName]);
+        //} else {
+        //    i18n.translateElement(message, 'popup_ads_has_been_removed');
+        //}
+
+
+        // Header
+        this.filteringDisabledHeader = this._getTemplate('filtering-disabled-header-template');
+        this.filteringPausedHeader = this._getTemplate('filtering-paused-header-template');
+        this.filteringDefaultHeader = this._getTemplate('filtering-default-header-template');
+
+        // Controls
+        this.filteringControlButtons = this._getTemplate('filtering-default-control-template');
+
+        // Actions
+        this.actionOpenAssistant = this._getTemplate('action-open-assistant-template');
+        this.actionOpenAbuse = this._getTemplate('action-open-abuse-template');
+        this.actionOpenSiteReport = this._getTemplate('action-site-report-template');
+
+        // Status Text
+        this.filteringStatusText = this._getTemplate('filtering-status-template');
+
+        // Footer
+        this.footerDefault = this._getTemplate('footer-default-template');
+        this.footerIntegration = this._getTemplate('footer-integration-template');
+
+        this._renderHeader(container, tabInfo);
+        this._renderFilteringControls(container, tabInfo);
+        this._renderStatus(container, tabInfo);
+        this._renderActions(container, tabInfo);
         this._renderFooter(parent, tabInfo);
     },
 
@@ -134,113 +164,104 @@ PopupController.prototype = {
         return $('#' + id).children().clone();
     },
 
-    _renderTopMessageBlock: function (parent, tabInfo) {
+    _renderHeader: function (container, tabInfo) {
 
         function formatNumber(v) {
             return v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
         }
 
         var template;
-        if (tabInfo.adguardDetected) {
-            template = this.adguardDetectedMessageTemplate;
-            if (tabInfo.adguardProductName) {
-                i18n.translateElement(template.children()[0], 'popup_ads_has_been_removed_by_adguard', [tabInfo.adguardProductName])
-            } else {
-                i18n.translateElement(template.children()[0], 'popup_ads_has_been_removed');
-            }
+        if (tabInfo.urlFilteringDisabled) {
+            template = this.filteringDisabledHeader;
         } else if (tabInfo.applicationFilteringDisabled) {
-            template = this.siteProtectionDisabledMessageTemplate;
-        } else if (tabInfo.urlFilteringDisabled) {
-            template = this.siteFilteringDisabledMessageTemplate;
-        } else if (this.showStatsSupported == null || this.showStatsSupported) {
-            template = this.siteStatsTemplate;
-            var titleBlocked = template.find('.w-popup-filter-title-blocked');
-            i18n.translateElement(titleBlocked[0], 'popup_tab_blocked', [formatNumber(tabInfo.totalBlockedTab || 0)]);
-            i18n.translateElement(template.find('.w-popup-filter-title-blocked-all')[0], 'popup_tab_blocked_all', [formatNumber(tabInfo.totalBlocked || 0)]);
+            template = this.filteringPausedHeader;
+        } else {
+            template = this.filteringDefaultHeader;
+            var tabBlocked = template.find('.blocked-tab');
+            var totalBlocked = template.find('.blocked-all');
+            i18n.translateElement(tabBlocked[0], 'popup_tab_blocked', [formatNumber(tabInfo.totalBlockedTab || 0)]);
+            i18n.translateElement(totalBlocked[0], 'popup_tab_blocked_all', [formatNumber(tabInfo.totalBlocked || 0)]);
             if (tabInfo.totalBlocked >= 10000000) {
-                titleBlocked.closest('.widjet-popup-filter').addClass('db');
+                tabBlocked.closest('.widjet-popup-filter').addClass('db');
             } else {
-                titleBlocked.closest('.widjet-popup-filter').removeClass('db');
+                tabBlocked.closest('.widjet-popup-filter').removeClass('db');
             }
         }
-        parent.append(template);
+
+        container.append(template);
     },
 
-    _renderSiteExceptionBlock: function (parent, tabInfo) {
-
-        if (tabInfo.urlFilteringDisabled || tabInfo.applicationFilteringDisabled) {
-            return;
+    _renderFilteringControls: function (container, tabInfo) {
+        var template = this.filteringControlButtons;
+        if (tabInfo.urlFilteringDisabled ||
+            tabInfo.applicationFilteringDisabled ||
+            tabInfo.adguardDetected) {
+            template.find('.pause').hide();
         }
-
-        var template;
-        if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
-            template = this.siteFilteringExceptionMessageTemplate;
+        if (tabInfo.adguardDetected) {
+            template.find('.settings').hide();
         }
-
-        if (template) {
-            parent.append(template);
-        }
+        container.append(template);
     },
 
-    _renderFilteringCheckboxBlock: function (parent, tabInfo) {
+    _renderStatus: function (container, tabInfo) {
 
-        if (tabInfo.urlFilteringDisabled || tabInfo.applicationFilteringDisabled) {
-            return;
-        }
+        var template = this.filteringStatusText;
 
-        var template = this.siteFilteringStateTemplate;
-        var checkbox = template.find('#siteFilteringDisabledCheckbox');
-        if (tabInfo.canAddRemoveRule) {
-            if (tabInfo.documentWhiteListed) {
-                checkbox.removeAttr('checked');
+        var text = '';
+
+        if (tabInfo.urlFilteringDisabled) {
+            text = 'popup_site_filtering_disabled';
+        } else if (tabInfo.applicationFilteringDisabled) {
+            text = 'popup_enable_protection';
+        } else {
+            if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
+                text = 'popup_site_exception';
             } else {
-                checkbox.attr('checked', 'checked');
-            }
-            checkbox.toggleCheckbox();
-            parent.append(template);
-        }
-    },
-
-    _renderActionsBlock: function (parent, tabInfo) {
-
-        var el = $('<nav>', {class: 'widjet-popup-menu'});
-
-        if (!tabInfo.adguardDetected && !tabInfo.urlFilteringDisabled) {
-            if (tabInfo.applicationFilteringDisabled) {
-                el.append(this.protectionDisabledTemplate);
-            } else {
-                el.append(this.protectionEnabledTemplate);
+                if (tabInfo.documentWhiteListed) {
+                    text = 'context_site_filtering_on';
+                } else {
+                    text = 'context_site_filtering_off';
+                }
             }
         }
+        i18n.translateElement(template[0], text);
+
+        container.append(template);
+    },
+
+    _renderActions: function (container, tabInfo) {
+
+        var el = $('<div>', {class: 'actions'});
 
         if (!tabInfo.urlFilteringDisabled) {
-            el.append(this.assistantTemplate);
+            el.append(this.actionOpenAssistant);
             if (tabInfo.applicationFilteringDisabled || tabInfo.documentWhiteListed) {
-                //may be show later
-                this.assistantTemplate.hide();
+                // May be show later
+                this.actionOpenAssistant.hide();
             }
         }
 
         if (!tabInfo.urlFilteringDisabled) {
-            el.append(this.abuseTemplate);
+            el.append(this.actionOpenAbuse);
         }
 
-        if (!tabInfo.urlFilteringDisabled && !tabInfo.applicationFilteringDisabled) {
-            el.append(this.siteReportTemplate);
+        if (!tabInfo.urlFilteringDisabled) {
+            el.append(this.actionOpenSiteReport);
         }
 
         if (!tabInfo.adguardDetected) {
-            el.append(this.settingsTemplate);
+            //el.append(this.settingsTemplate);
         }
 
-        parent.append(el);
+        container.append(el);
     },
 
-    _renderFooter: function (parent, tabInfo) {
+    _renderFooter: function (footer, tabInfo) {
         if (tabInfo.adguardDetected) {
-            parent.append(this.footerIntegrationTemplate);
+            footer.append(this.footerIntegration);
         } else {
-            parent.append(this.footerTemplate);
+            footer.append(this.footerDefault);
         }
     },
 
@@ -280,38 +301,51 @@ PopupController.prototype = {
             self.openLink(e.currentTarget.href);
         });
 
-        //checkbox
-        parent.on('change', '#siteFilteringDisabledCheckbox', function () {
+        // checkbox
+        parent.on('click', '.changeDocumentWhiteListed', function (e) {
+            e.preventDefault();
             var tabInfo = self.tabInfo;
-            var isWhiteListed = !this.checked;
+            if (tabInfo.urlFilteringDisabled || tabInfo.applicationFilteringDisabled) {
+                return;
+            }
+            if (!tabInfo.canAddRemoveRule) {
+                return;
+            }
+            var isWhiteListed = tabInfo.documentWhiteListed;
             if (isWhiteListed) {
-                self.addWhiteListDomain(tabInfo.url);
-            } else {
                 self.removeWhiteListDomain(tabInfo.url);
+                isWhiteListed = false;
+            } else {
+                self.addWhiteListDomain(tabInfo.url);
+                isWhiteListed = true;
             }
             tabInfo.documentWhiteListed = isWhiteListed;
             tabInfo.userWhiteListed = isWhiteListed;
-            if (isWhiteListed) {
-                self.assistantTemplate.hide();
-            } else {
-                self.assistantTemplate.show();
-            }
+            self._renderPopup(tabInfo);
             self.resizePopupWindow();
         });
 
-        //pause/unpause protection
-        parent.on('click', '.changeProtectionState', function (e) {
-
-            e.preventDefault();
-
+        function changeProtectionState(disabled) {
             var tabInfo = self.tabInfo;
-
-            var disabled = !tabInfo.applicationFilteringDisabled;
+            if (tabInfo.applicationFilteringDisabled == disabled) {
+                return;
+            }
             self.changeApplicationFilteringDisabled(disabled);
-
             tabInfo.applicationFilteringDisabled = disabled;
             self._renderPopup(tabInfo);
             self.resizePopupWindow();
+        }
+
+        // Disable filtering
+        parent.on('click', '.changeProtectionStateDisable', function (e) {
+            e.preventDefault();
+            changeProtectionState(true);
+        });
+
+        // Enable filtering
+        parent.on('click', '.changeProtectionStateEnable', function (e) {
+            e.preventDefault();
+            changeProtectionState(false);
         });
     },
 

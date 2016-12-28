@@ -24,7 +24,7 @@ var resizePopupWindowForMacOs = function ($) {
     }
     setTimeout(function () {
         var block = $(".macoshackresize");
-        block.css("padding-top", "23px");
+        block.css("margin-top", "1px");
     }, 1000);
 };
 
