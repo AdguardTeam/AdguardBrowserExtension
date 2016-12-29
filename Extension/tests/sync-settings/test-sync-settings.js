@@ -252,6 +252,8 @@ QUnit.test("Test sync service local to remote", function (assert) {
     createFile(manifestPath, manifest, function () {
         createFile(filtersPath, filters, function () {
 
+            //Remote settings should be updated
+
             var onFiltersSectionLoaded = function (section) {
                 assert.ok(section != null);
 
@@ -304,23 +306,50 @@ QUnit.test("Test sync service local to remote", function (assert) {
 QUnit.test("Test sync service remote to local", function (assert) {
     var done = assert.async();
 
-    var cleanUp = function () {
+    var cleanUp = function (callback) {
         deleteFile(manifestPath, function () {
-            deleteFile(filtersPath, done);
+            deleteFile(filtersPath, callback);
         });
     };
 
-    //manifest.timestamp
+    var settingsManifest = SettingsProvider.loadSettingsManifest();
+
+    manifest.timestamp = new Date().getTime() + 100000;
+    manifest.sections[0].timestamp = new Date().getTime() + 100000;
 
     createFile(manifestPath, manifest, function () {
         createFile(filtersPath, filters, function () {
 
             var onSettingSynced = function () {
-                //TODO: Check app settings
+                //Local settings should be updated
+                //App settings should be modified
+                var updatedSettingsManifest = SettingsProvider.loadSettingsManifest();
+                assert.ok(updatedSettingsManifest != null);
+                assert.notEqual(updatedSettingsManifest.timestamp, settingsManifest.timestamp);
+                assert.equal(updatedSettingsManifest["protocol-version"], settingsManifest["protocol-version"]);
+                assert.equal(updatedSettingsManifest["min-compatible-version"], settingsManifest["min-compatible-version"]);
+                assert.equal(updatedSettingsManifest["app-id"], settingsManifest["app-id"]);
+                assert.equal(updatedSettingsManifest["sections"].length, settingsManifest["sections"].length);
+                assert.equal(updatedSettingsManifest["sections"][0].name, settingsManifest["sections"][0].name);
+                assert.notEqual(updatedSettingsManifest["sections"][0].timestamp, settingsManifest["sections"][0].timestamp);
 
-                assert.ok(true);
-                //SyncProvider.load(manifestPath, onManifestLoaded);
-                cleanUp();
+                SettingsProvider.loadFiltersSection(function (section) {
+                    assert.ok(section);
+                    assert.equal(section.filters["enabled-filters"].length, 1);
+                    assert.equal(section.filters["enabled-filters"][0], 1);
+
+                    assert.equal(section.filters["user-filter"].rules.length, 4);
+                    assert.equal(section.filters["user-filter"].rules[0], "||ongkidcasarv.com^$third-party");
+                    assert.equal(section.filters["user-filter"].rules[1], "||dashgreen.online^$third-party");
+                    assert.equal(section.filters["user-filter"].rules[2], "||adzos.com^$third-party");
+                    assert.equal(section.filters["user-filter"].rules[3], "||mxtads.com:8040");
+
+                    assert.equal(section.filters["whitelist"].domains.length, 1);
+                    assert.equal(section.filters["whitelist"].domains[0], 'whitelisted-domain');
+                    assert.equal(section.filters["whitelist"].inverted, false);
+
+                    cleanUp(done);
+                });
             };
 
             SyncService.setSyncProvider(SyncProvider);
@@ -334,36 +363,50 @@ QUnit.test("Test sync service protocol versions", function (assert) {
 
     var cleanUp = function (callback) {
         deleteFile(manifestPath, function () {
-            callback();
+            deleteFile(filtersPath, callback);
         });
     };
 
     var testPartlyCompatibleVersions = function (callback) {
         manifest["protocol-version"] = "3.0";
         manifest["min-compatible-version"] = "1.0";
+        manifest.timestamp = new Date().getTime() + 100000;
+        manifest.sections[0].timestamp = new Date().getTime() + 100000;
+
+        var settingsManifest = SettingsProvider.loadSettingsManifest();
 
         createFile(manifestPath, manifest, function () {
-            SyncService.setSyncProvider(SyncProvider);
+            createFile(filtersPath, filters, function () {
+                SyncService.setSyncProvider(SyncProvider);
 
-            SyncService.syncSettings(function () {
-                //TODO: Check app settings
-                //App settings should be modified
+                SyncService.syncSettings(function () {
+                    //App settings should be modified
+                    var updatedSettingsManifest = SettingsProvider.loadSettingsManifest();
+                    assert.ok(updatedSettingsManifest != null);
+                    assert.notEqual(updatedSettingsManifest.timestamp, settingsManifest.timestamp);
+                    assert.equal(updatedSettingsManifest["protocol-version"], settingsManifest["protocol-version"]);
+                    assert.equal(updatedSettingsManifest["min-compatible-version"], settingsManifest["min-compatible-version"]);
+                    assert.equal(updatedSettingsManifest["app-id"], settingsManifest["app-id"]);
+                    assert.equal(updatedSettingsManifest["sections"].length, settingsManifest["sections"].length);
+                    assert.equal(updatedSettingsManifest["sections"][0].name, settingsManifest["sections"][0].name);
+                    assert.notEqual(updatedSettingsManifest["sections"][0].timestamp, settingsManifest["sections"][0].timestamp);
 
-                //Manifest should not be updated
-                var onManifestLoaded = function (data) {
-                    assert.ok(data != null);
-                    assert.equal(data.timestamp, manifest.timestamp);
-                    assert.equal(data["protocol-version"], manifest["protocol-version"]);
-                    assert.equal(data["min-compatible-version"], manifest["min-compatible-version"]);
-                    assert.equal(data["app-id"], manifest["app-id"]);
-                    assert.equal(data["sections"].length, 1);
-                    assert.equal(data["sections"][0].name, manifest["sections"][0].name);
-                    assert.equal(data["sections"][0].timestamp, manifest["sections"][0].timestamp);
+                    //Manifest should not be updated
+                    var onManifestLoaded = function (data) {
+                        assert.ok(data != null);
+                        assert.equal(data.timestamp, manifest.timestamp);
+                        assert.equal(data["protocol-version"], manifest["protocol-version"]);
+                        assert.equal(data["min-compatible-version"], manifest["min-compatible-version"]);
+                        assert.equal(data["app-id"], manifest["app-id"]);
+                        assert.equal(data["sections"].length, 1);
+                        assert.equal(data["sections"][0].name, manifest["sections"][0].name);
+                        assert.equal(data["sections"][0].timestamp, manifest["sections"][0].timestamp);
 
-                    callback();
-                };
+                        callback();
+                    };
 
-                SyncProvider.load(manifestPath, onManifestLoaded);
+                    SyncProvider.load(manifestPath, onManifestLoaded);
+                });
             });
         });
     };
@@ -371,29 +414,43 @@ QUnit.test("Test sync service protocol versions", function (assert) {
     var testInCompatibleVersions = function () {
         manifest["protocol-version"] = "3.0";
         manifest["min-compatible-version"] = "2.0";
+        manifest.timestamp = new Date().getTime() + 100000;
+        manifest.sections[0].timestamp = new Date().getTime() + 100000;
+
+        var settingsManifest = SettingsProvider.loadSettingsManifest();
 
         createFile(manifestPath, manifest, function () {
-            SyncService.setSyncProvider(SyncProvider);
+            createFile(filtersPath, filters, function () {
+                SyncService.setSyncProvider(SyncProvider);
 
-            SyncService.syncSettings(function () {
-                //TODO: Check app settings
-                //App settings should not be modified
+                SyncService.syncSettings(function () {
+                    //App settings should not be modified
+                    var updatedSettingsManifest = SettingsProvider.loadSettingsManifest();
+                    assert.ok(updatedSettingsManifest != null);
+                    assert.equal(updatedSettingsManifest.timestamp, settingsManifest.timestamp);
+                    assert.equal(updatedSettingsManifest["protocol-version"], settingsManifest["protocol-version"]);
+                    assert.equal(updatedSettingsManifest["min-compatible-version"], settingsManifest["min-compatible-version"]);
+                    assert.equal(updatedSettingsManifest["app-id"], settingsManifest["app-id"]);
+                    assert.equal(updatedSettingsManifest["sections"].length, settingsManifest["sections"].length);
+                    assert.equal(updatedSettingsManifest["sections"][0].name, settingsManifest["sections"][0].name);
+                    assert.equal(updatedSettingsManifest["sections"][0].timestamp, settingsManifest["sections"][0].timestamp);
 
-                //Manifest should not be updated
-                var onManifestLoaded = function (data) {
-                    assert.ok(data != null);
-                    assert.equal(data.timestamp, manifest.timestamp);
-                    assert.equal(data["protocol-version"], manifest["protocol-version"]);
-                    assert.equal(data["min-compatible-version"], manifest["min-compatible-version"]);
-                    assert.equal(data["app-id"], manifest["app-id"]);
-                    assert.equal(data["sections"].length, 1);
-                    assert.equal(data["sections"][0].name, manifest["sections"][0].name);
-                    assert.equal(data["sections"][0].timestamp, manifest["sections"][0].timestamp);
+                    //Manifest should not be updated
+                    var onManifestLoaded = function (data) {
+                        assert.ok(data != null);
+                        assert.equal(data.timestamp, manifest.timestamp);
+                        assert.equal(data["protocol-version"], manifest["protocol-version"]);
+                        assert.equal(data["min-compatible-version"], manifest["min-compatible-version"]);
+                        assert.equal(data["app-id"], manifest["app-id"]);
+                        assert.equal(data["sections"].length, 1);
+                        assert.equal(data["sections"][0].name, manifest["sections"][0].name);
+                        assert.equal(data["sections"][0].timestamp, manifest["sections"][0].timestamp);
 
-                    cleanUp(done);
-                };
+                        cleanUp(done);
+                    };
 
-                SyncProvider.load(manifestPath, onManifestLoaded);
+                    SyncProvider.load(manifestPath, onManifestLoaded);
+                });
             });
         });
     };

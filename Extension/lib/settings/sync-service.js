@@ -175,7 +175,7 @@ var SyncService = (function () { // jshint ignore:line
             dfd = new Promise();
             dfds.push(dfd);
 
-            updateRemoteToLocalSection(dfds, compatibility.sectionsRemoteToLocal[j], function (dfd, section) {
+            updateRemoteToLocalSection(dfd, compatibility.sectionsRemoteToLocal[j], function (dfd, section) {
                 updatedSections.remoteToLocal.push(section);
 
                 dfd.resolve();
