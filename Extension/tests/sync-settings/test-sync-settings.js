@@ -32,7 +32,8 @@ var filters = {
             "inverted": false,
             "domains": [
                 "whitelisted-domain"
-            ]
+            ],
+            "inverted-domains": []
         }
     }
 };

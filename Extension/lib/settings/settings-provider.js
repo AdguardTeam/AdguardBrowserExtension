@@ -34,6 +34,7 @@ var SettingsProvider = (function () { // jshint ignore:line
     var SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY = 'sync.settings.filters.timestamp';
 
     var WHITELIST_DOMAINS_KEY = 'white-list-domains';
+    var BLOCKLIST_DOMAINS_KEY = 'block-list-domains';
     var DEFAULT_WHITELIST_FLAG_KEY = 'default-whitelist-mode';
 
     var serviceClient = new ServiceClient();
@@ -72,6 +73,12 @@ var SettingsProvider = (function () { // jshint ignore:line
             whitelistDomains = JSON.parse(json);
         }
 
+        var blocklistDomains = [];
+        var blocklistJson = LS.getItem(BLOCKLIST_DOMAINS_KEY);
+        if (blocklistJson) {
+            blocklistDomains = JSON.parse(blocklistJson);
+        }
+
         var defaultWhiteListMode = LS.getItem(DEFAULT_WHITELIST_FLAG_KEY);
 
         var onUserFilterRulesLoaded = function (result) {
@@ -94,7 +101,8 @@ var SettingsProvider = (function () { // jshint ignore:line
                     },
                     "whitelist": {
                         "inverted": defaultWhiteListMode != 'true',
-                        "domains": whitelistDomains
+                        "domains": whitelistDomains,
+                        "inverted-domains": blocklistDomains
                     }
                 }
             };
@@ -124,6 +132,7 @@ var SettingsProvider = (function () { // jshint ignore:line
         }
 
         LS.setItem(WHITELIST_DOMAINS_KEY, JSON.stringify(section.filters["whitelist"].domains));
+        LS.setItem(BLOCKLIST_DOMAINS_KEY, JSON.stringify(section.filters["whitelist"]["inverted-domains"]));
         LS.setItem(DEFAULT_WHITELIST_FLAG_KEY, section.filters["whitelist"].inverted != true);
 
         //TODO: save user filter
