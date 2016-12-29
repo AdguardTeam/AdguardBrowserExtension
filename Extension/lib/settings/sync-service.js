@@ -161,25 +161,19 @@ var SyncService = (function () { // jshint ignore:line
         var dfd;
 
         for (var i = 0; i < compatibility.sectionsLocalToRemote.length; i++) {
-            dfd = new Promise();
-            dfds.push(dfd);
-
-            updateLocalToRemoteSection(dfd, compatibility.sectionsLocalToRemote[i], function (dfd, section) {
+            dfd = updateLocalToRemoteSection(compatibility.sectionsLocalToRemote[i], function (section) {
                 updatedSections.localToRemote.push(section);
-
-                dfd.resolve();
             });
+
+            dfds.push(dfd);
         }
 
         for (var j = 0; j < compatibility.sectionsRemoteToLocal.length; j++) {
-            dfd = new Promise();
-            dfds.push(dfd);
-
-            updateRemoteToLocalSection(dfd, compatibility.sectionsRemoteToLocal[j], function (dfd, section) {
+            dfd = updateRemoteToLocalSection(compatibility.sectionsRemoteToLocal[j], function (section) {
                 updatedSections.remoteToLocal.push(section);
-
-                dfd.resolve();
             });
+
+            dfds.push(dfd);
         }
 
         Promise.all(dfds).then(function () {
@@ -198,8 +192,10 @@ var SyncService = (function () { // jshint ignore:line
         }
     };
 
-    var updateLocalToRemoteSection = function(dfd, section, callback) {
+    var updateLocalToRemoteSection = function(section, callback) {
         console.log('Updating local to remote: ' + section.name);
+
+        var dfd = new Promise();
 
         //TODO: Load section from sectionName
         SettingsProvider.loadFiltersSection(function(localFiltersSection) {
@@ -208,13 +204,19 @@ var SyncService = (function () { // jshint ignore:line
             SyncProvider.save(FILTERS_PATH, localFiltersSection, function () {
                 console.log('Remote filters section updated');
 
-                callback(dfd, section);
+                callback(section);
+
+                dfd.resolve();
             });
         });
+
+        return dfd;
     };
 
-    var updateRemoteToLocalSection = function (dfd, section, callback) {
+    var updateRemoteToLocalSection = function (section, callback) {
         console.log('Updating remote to local: ' + section.name);
+
+        var dfd = new Promise();
 
         //TODO: Load section from sectionName
         SyncProvider.load(FILTERS_PATH, function (remoteFiltersSection) {
@@ -223,9 +225,13 @@ var SyncService = (function () { // jshint ignore:line
             SettingsProvider.saveFiltersSection(remoteFiltersSection, function () {
                 console.log('Local filters section updated');
 
-                callback(dfd, section);
+                callback(section);
+
+                dfd.resolve();
             });
         });
+
+        return dfd;
     };
 
 
