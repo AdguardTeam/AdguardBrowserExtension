@@ -25,7 +25,7 @@
         "object": "OBJECT",
         "frame": "SUBDOCUMENT",
         "iframe": "SUBDOCUMENT",
-        "embed": "SUBDOCUMENT"
+        "embed": "OBJECT"
     };
     
     /**
