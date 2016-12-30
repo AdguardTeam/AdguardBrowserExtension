@@ -24,7 +24,8 @@
         "video": "MEDIA",
         "object": "OBJECT",
         "frame": "SUBDOCUMENT",
-        "iframe": "SUBDOCUMENT"
+        "iframe": "SUBDOCUMENT",
+        "embed": "SUBDOCUMENT"
     };
     
     /**
@@ -535,7 +536,7 @@
         var eventType = event.type;
         var tagName = element.tagName.toLowerCase();
 
-        var expectedEventType = (tagName == "iframe" || tagName == "frame") ? "load" : "error";
+        var expectedEventType = (tagName == "iframe" || tagName == "frame" || tagName == "embed") ? "load" : "error";
         if (eventType != expectedEventType) {
             return;
         }
@@ -587,7 +588,7 @@
      */
     var tempHideElement = function (element) {
         // We skip big frames here
-        if (element.localName === 'iframe' || element.localName === 'frame') {
+        if (element.localName === 'iframe' || element.localName === 'frame' || element.localName === 'embed') {
             if (element.clientHeight * element.clientWidth > 400 * 300) {
                 return;
             }
