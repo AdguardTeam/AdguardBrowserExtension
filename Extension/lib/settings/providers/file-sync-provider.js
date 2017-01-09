@@ -20,9 +20,9 @@
 /**
  * Sync settings provider
  *
- * @type {{get, save}}
+ * @type {{load, save}}
  */
-var SyncProvider = (function () { // jshint ignore:line
+var FileSyncProvider = (function () { // jshint ignore:line
 
     var requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
 
