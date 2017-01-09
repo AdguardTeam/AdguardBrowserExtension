@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Promise */
+/* global Promise, Log */
 
 /**
  * Sync settings service
@@ -24,7 +24,6 @@
  */
 var SyncService = (function () { // jshint ignore:line
     var MANIFEST_PATH = "manifest.json";
-    var FILTERS_PATH = "filters.json";
 
     var syncProvider = null;
 
@@ -78,6 +77,12 @@ var SyncService = (function () { // jshint ignore:line
         }
     };
 
+    var validateManifest = function (manifest) {
+        return manifest["min-compatible-version"]
+            && manifest["protocol-version"]
+            && manifest["timestamp"];
+    };
+
     /**
      * So how does it work:
      * At first we load manifests for remote and local and then are trying to find can we merge the datasets comparing
@@ -93,10 +98,17 @@ var SyncService = (function () { // jshint ignore:line
      */
     var processManifest = function (callback) {
         var onManifestLoaded = function (remoteManifest) {
-            console.log('Processing remote manifest..');
+            Log.info('Processing remote manifest..');
 
             if (!remoteManifest) {
-                callback();
+                Log.warn('Error loading remote manifest');
+                callback(false);
+                return;
+            }
+
+            if (!validateManifest(remoteManifest)) {
+                Log.warn('Remote manifest not valid');
+                callback(false);
                 return;
             }
 
@@ -105,17 +117,22 @@ var SyncService = (function () { // jshint ignore:line
             var compatibility = findCompatibility(remoteManifest, localManifest);
             //console.log(compatibility);
             if (!compatibility.canRead) {
-                console.log('Protocol versions are not compatible');
-                callback();
+                Log.warn('Protocol versions are not compatible');
+                callback(false);
                 return;
             }
 
-            processSections(localManifest, remoteManifest, compatibility, function (updatedSections) {
-                //console.log(updatedSections);
+            processSections(localManifest, remoteManifest, compatibility, function (success, updatedSections) {
+                if (!success) {
+                    callback(false);
+                    return;
+                }
+
+                Log.info('Sections updated local-to-remote: {0}, remote-to-local: {1}', updatedSections.localToRemote.length, updatedSections.remoteToLocal.length);
 
                 var updatedDate = new Date().getTime();
                 if (updatedSections.remoteToLocal.length > 0) {
-                    console.log('Saving local manifest..');
+                    Log.debug('Saving local manifest..');
 
                     updateManifestSections(localManifest.sections, updatedSections.remoteToLocal);
 
@@ -124,7 +141,7 @@ var SyncService = (function () { // jshint ignore:line
                 }
 
                 if (compatibility.canWrite) {
-                    console.log('Saving remote manifest..');
+                    Log.debug('Saving remote manifest..');
 
                     updateManifestSections(remoteManifest.sections, updatedSections.localToRemote);
 
@@ -133,12 +150,12 @@ var SyncService = (function () { // jshint ignore:line
 
                     SyncProvider.save(MANIFEST_PATH, remoteManifest, callback);
                 } else {
-                    callback();
+                    callback(true);
                 }
             });
         };
 
-        console.log('Loading remote manifest..');
+        Log.debug('Loading remote manifest..');
         SyncProvider.load(MANIFEST_PATH, onManifestLoaded);
     };
 
@@ -177,11 +194,23 @@ var SyncService = (function () { // jshint ignore:line
         }
 
         Promise.all(dfds).then(function () {
-            callback(updatedSections);
+            Log.info('Sections updated successfully');
+
+            callback(true, updatedSections);
+        }, function () {
+            Log.error('Sections update failed');
+
+            callback(false, updatedSections);
         });
     };
 
-    var updateManifestSections = function(manifestSections, updatedSections) {
+    /**
+     * Updates sections timestamps
+     *
+     * @param manifestSections
+     * @param updatedSections
+     */
+    var updateManifestSections = function (manifestSections, updatedSections) {
         for (var i = 0; i < manifestSections.length; i++) {
             var section = manifestSections[i];
             for (var j = 0; j < updatedSections.length; j++) {
@@ -192,21 +221,27 @@ var SyncService = (function () { // jshint ignore:line
         }
     };
 
-    var updateLocalToRemoteSection = function(section, callback) {
-        console.log('Updating local to remote: ' + section.name);
+    var updateLocalToRemoteSection = function (section, callback) {
+        var sectionName = section.name;
+        Log.info('Updating local to remote: ' + section.name);
 
         var dfd = new Promise();
 
-        //TODO: Load section from sectionName
-        SettingsProvider.loadFiltersSection(function(localFiltersSection) {
-            console.log('Local filters section loaded');
+        SettingsProvider.loadSettingsSection(sectionName, function (localFiltersSection) {
+            Log.debug('Local {0} section loaded', sectionName);
 
-            SyncProvider.save(FILTERS_PATH, localFiltersSection, function () {
-                console.log('Remote filters section updated');
+            SyncProvider.save(sectionName, localFiltersSection, function (success) {
+                if (success) {
+                    Log.info('Remote {0} section updated', sectionName);
 
-                callback(section);
+                    callback(section);
 
-                dfd.resolve();
+                    dfd.resolve();
+                } else {
+                    Log.error('Remote {0} section update failed', sectionName);
+
+                    dfd.reject();
+                }
             });
         });
 
@@ -214,20 +249,26 @@ var SyncService = (function () { // jshint ignore:line
     };
 
     var updateRemoteToLocalSection = function (section, callback) {
-        console.log('Updating remote to local: ' + section.name);
+        var sectionName = section.name;
+        Log.info('Updating remote to local: ' + sectionName);
 
         var dfd = new Promise();
 
-        //TODO: Load section from sectionName
-        SyncProvider.load(FILTERS_PATH, function (remoteFiltersSection) {
-            console.log('Remote filters section loaded');
+        SyncProvider.load(sectionName, function (remoteFiltersSection) {
+            Log.debug('Remote {0} section loaded', sectionName);
 
-            SettingsProvider.saveFiltersSection(remoteFiltersSection, function () {
-                console.log('Local filters section updated');
+            SettingsProvider.saveSettingsSection(sectionName, remoteFiltersSection, function (success) {
+                if (success) {
+                    Log.info('Local {0} section updated', sectionName);
 
-                callback(section);
+                    callback(section);
 
-                dfd.resolve();
+                    dfd.resolve();
+                } else {
+                    Log.error('Local {0} section update failed', sectionName);
+
+                    dfd.reject();
+                }
             });
         });
 
@@ -237,26 +278,30 @@ var SyncService = (function () { // jshint ignore:line
 
     // API
     var syncSettings = function (callback) {
-        console.log('Synchronizing settings..');
+        Log.info('Synchronizing settings..');
 
         if (syncProvider == null) {
-            console.error('Sync provider should be set first');
+            Log.error('Sync provider should be set first');
 
-            //TODO: Add error result to callback
-            callback();
+            callback(false);
             return;
         }
 
-        processManifest(function () {
-            console.log('Synchronizing settings finished');
-            callback();
+        processManifest(function (success) {
+            if (success) {
+                Log.info('Synchronizing settings finished');
+            } else {
+                Log.warn('Error synchronizing settings');
+            }
+
+            callback(success);
         });
     };
 
     var setSyncProvider = function (provider) {
         syncProvider = provider;
 
-        console.log('Sync provider has been set');
+        Log.debug('Sync provider has been set');
     };
 
     // EXPOSE

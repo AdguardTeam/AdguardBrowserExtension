@@ -15,9 +15,10 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Log */
+
 /**
  * Sync settings provider
- * TODO: Add error handling and file validation
  *
  * @type {{get, save}}
  */
@@ -28,9 +29,9 @@ var SyncProvider = (function () { // jshint ignore:line
     var readFile = function (path, callback) {
 
         var errorHandler = function (e) {
-            console.error(e);
+            Log.error(e);
 
-            callback();
+            callback(false);
         };
 
         var onInitFs = function (fs) {
@@ -54,7 +55,7 @@ var SyncProvider = (function () { // jshint ignore:line
 
     var saveFile = function (path, data, callback) {
         var errorHandler = function (e) {
-            console.error(e);
+            Log.error(e);
 
             callback(false);
         };
@@ -70,7 +71,7 @@ var SyncProvider = (function () { // jshint ignore:line
                     };
 
                     fileWriter.onerror = function(e) {
-                        console.log('Write failed: ' + e.toString());
+                        Log.error(e);
                         callback(false);
                     };
 

@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Log */
+
 var LS = require('../../lib/utils/local-storage').LS;
 var FilterLSUtils = require('../../lib/utils/filters-storage').FilterLSUtils;
 var AntiBannerFiltersId = require('../../lib/utils/common').AntiBannerFiltersId;
@@ -29,6 +31,8 @@ var SettingsProvider = (function () { // jshint ignore:line
 
     var PROTOCOL_VERSION = "1.0";
     var APP_ID = "adguard-browser-extension";
+
+    var FILTERS_SECTION = "filters.json";
 
     var SYNC_SETTINGS_TIMESTAMP_KEY = 'sync.settings.timestamp';
     var SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY = 'sync.settings.filters.timestamp';
@@ -142,6 +146,25 @@ var SettingsProvider = (function () { // jshint ignore:line
         });
     };
 
+    var loadSettingsSection = function(sectionName, callback) {
+        if (sectionName === FILTERS_SECTION) {
+            loadFiltersSection(callback);
+        } else {
+            Log.error('Section {0} is not supported', sectionName);
+
+            callback(false);
+        }
+    };
+
+    var saveSettingsSection = function (sectionName, section, callback) {
+        if (sectionName === FILTERS_SECTION) {
+            saveFiltersSection(section, callback);
+        } else {
+            Log.error('Section {0} is not supported', sectionName);
+
+            callback(false);
+        }
+    };
 
     // EXPOSE
     return {
@@ -150,16 +173,16 @@ var SettingsProvider = (function () { // jshint ignore:line
          */
         loadSettingsManifest: loadSettingsManifest,
         /**
-         * Loads filters section of app settings
+         * Loads section of app settings
          */
-        loadFiltersSection: loadFiltersSection,
+        loadSettingsSection: loadSettingsSection,
         /**
          * Saves app settings manifest
          */
         saveSettingsManifest: saveSettingsManifest,
         /**
-         * Saves filters section of app settings
+         * Saves section of app settings
          */
-        saveFiltersSection: saveFiltersSection
+        saveSettingsSection: saveSettingsSection
     };
 })();

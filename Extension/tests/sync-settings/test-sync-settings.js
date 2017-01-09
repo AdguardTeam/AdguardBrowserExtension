@@ -182,7 +182,7 @@ QUnit.test("Test settings provider", function (assert) {
 
     var onSectionSaved = function (result) {
         assert.ok(result);
-        SettingsProvider.loadFiltersSection(onSectionUpdated);
+        SettingsProvider.loadSettingsSection(filtersPath, onSectionUpdated);
     };
 
     var onSectionLoaded = function (section) {
@@ -210,10 +210,10 @@ QUnit.test("Test settings provider", function (assert) {
         section.filters["whitelist"].domains.push('whitelisted-domain-two.com');
         section.filters["whitelist"].inverted = true;
 
-        SettingsProvider.saveFiltersSection(section, onSectionSaved);
+        SettingsProvider.saveSettingsSection(filtersPath, section, onSectionSaved);
     };
 
-    SettingsProvider.loadFiltersSection(onSectionLoaded);
+    SettingsProvider.loadSettingsSection(filtersPath, onSectionLoaded);
 });
 
 QUnit.test("Test file sync provider", function (assert) {
@@ -299,7 +299,9 @@ QUnit.test("Test sync service local to remote", function (assert) {
                 SyncProvider.load(filtersPath, onFiltersSectionLoaded);
             };
 
-            var onSettingSynced = function () {
+            var onSettingSynced = function (result) {
+                assert.ok(result);
+
                 //Check updated manifest
                 manifest["app-id"] = "adguard-browser-extension";
 
@@ -329,7 +331,9 @@ QUnit.test("Test sync service remote to local", function (assert) {
     createFile(manifestPath, manifest, function () {
         createFile(filtersPath, filters, function () {
 
-            var onSettingSynced = function () {
+            var onSettingSynced = function (result) {
+                assert.ok(result);
+
                 //Local settings should be updated
                 //App settings should be modified
                 var updatedSettingsManifest = SettingsProvider.loadSettingsManifest();
@@ -342,7 +346,7 @@ QUnit.test("Test sync service remote to local", function (assert) {
                 assert.equal(updatedSettingsManifest["sections"][0].name, settingsManifest["sections"][0].name);
                 assert.notEqual(updatedSettingsManifest["sections"][0].timestamp, settingsManifest["sections"][0].timestamp);
 
-                SettingsProvider.loadFiltersSection(function (section) {
+                SettingsProvider.loadSettingsSection(filtersPath, function (section) {
                     assert.ok(section);
                     assert.equal(section.filters["enabled-filters"].length, 1);
                     assert.equal(section.filters["enabled-filters"][0], 1);
@@ -387,7 +391,9 @@ QUnit.test("Test sync service protocol versions", function (assert) {
             createFile(filtersPath, filters, function () {
                 SyncService.setSyncProvider(SyncProvider);
 
-                SyncService.syncSettings(function () {
+                SyncService.syncSettings(function (result) {
+                    assert.ok(result);
+
                     //App settings should be modified
                     var updatedSettingsManifest = SettingsProvider.loadSettingsManifest();
                     assert.ok(updatedSettingsManifest != null);
@@ -431,7 +437,9 @@ QUnit.test("Test sync service protocol versions", function (assert) {
             createFile(filtersPath, filters, function () {
                 SyncService.setSyncProvider(SyncProvider);
 
-                SyncService.syncSettings(function () {
+                SyncService.syncSettings(function (result) {
+                    assert.notOk(result);
+
                     //App settings should not be modified
                     var updatedSettingsManifest = SettingsProvider.loadSettingsManifest();
                     assert.ok(updatedSettingsManifest != null);
