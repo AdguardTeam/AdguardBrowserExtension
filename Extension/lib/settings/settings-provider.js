@@ -82,6 +82,7 @@ var SettingsProvider = (function () { // jshint ignore:line
         var defaultWhiteListMode = LS.getItem(DEFAULT_WHITELIST_FLAG_KEY);
 
         var onUserFilterRulesLoaded = function (result) {
+            console.log(result);
             var userFilterRules = [];
 
             for (var i = 0; i < result.length; i++) {
@@ -96,7 +97,7 @@ var SettingsProvider = (function () { // jshint ignore:line
                         // Custom filters are not supported yet
                     ],
                     "user-filter": {
-                        "rules": userFilterRules,
+                        "rules": userFilterRules.join('\n'),
                         "disabled-rules": ""
                     },
                     "whitelist": {
@@ -135,12 +136,11 @@ var SettingsProvider = (function () { // jshint ignore:line
         LS.setItem(BLOCKLIST_DOMAINS_KEY, JSON.stringify(section.filters["whitelist"]["inverted-domains"]));
         LS.setItem(DEFAULT_WHITELIST_FLAG_KEY, section.filters["whitelist"].inverted != true);
 
-        //TODO: save user filter
-        //FilterStorage.saveFilterRules();
+        FilterStorage.saveFilterRules(AntiBannerFiltersId.USER_FILTER_ID, section.filters["user-filter"].rules.split('\n'), function () {
+            LS.setItem(SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY, new Date().getTime());
 
-        LS.setItem(SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY, new Date().getTime());
-
-        callback(true);
+            callback(true);
+        });
     };
 
 

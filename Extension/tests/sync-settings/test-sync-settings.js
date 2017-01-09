@@ -25,7 +25,7 @@ var filters = {
             "http://filter-url"
         ],
         "user-filter": {
-            "rules": "||test1.org/$script\n||test1.org/$script",
+            "rules": "||test1.org/$script\n||test2.org/$script",
             "disabled-rules": ""
         },
         "whitelist": {
@@ -164,12 +164,13 @@ QUnit.test("Test settings provider", function (assert) {
         assert.equal(section.filters["enabled-filters"][1], 5);
         assert.equal(section.filters["enabled-filters"][2], 7);
 
-        assert.equal(section.filters["user-filter"].rules.length, 4);
-        assert.equal(section.filters["user-filter"].rules[0], "||ongkidcasarv.com^$third-party");
-        assert.equal(section.filters["user-filter"].rules[1], "||dashgreen.online^$third-party");
-        assert.equal(section.filters["user-filter"].rules[2], "||adzos.com^$third-party");
-        assert.equal(section.filters["user-filter"].rules[3], "||mxtads.com:8040");
-        //assert.equal(section.filters["user-filter"].rules[4], "test-add-rule");
+        var userRules = section.filters["user-filter"].rules.split('\n');
+        assert.equal(userRules.length, 5);
+        assert.equal(userRules[0], "||ongkidcasarv.com^$third-party");
+        assert.equal(userRules[1], "||dashgreen.online^$third-party");
+        assert.equal(userRules[2], "||adzos.com^$third-party");
+        assert.equal(userRules[3], "||mxtads.com:8040");
+        assert.equal(userRules[4], "test-add-rule");
 
         assert.equal(section.filters["whitelist"].domains.length, 2);
         assert.equal(section.filters["whitelist"].domains[0], 'whitelisted-domain-one.com');
@@ -190,18 +191,19 @@ QUnit.test("Test settings provider", function (assert) {
         assert.equal(section.filters["enabled-filters"][0], 1);
         assert.equal(section.filters["enabled-filters"][1], 3);
 
-        assert.equal(section.filters["user-filter"].rules.length, 4);
-        assert.equal(section.filters["user-filter"].rules[0], "||ongkidcasarv.com^$third-party");
-        assert.equal(section.filters["user-filter"].rules[1], "||dashgreen.online^$third-party");
-        assert.equal(section.filters["user-filter"].rules[2], "||adzos.com^$third-party");
-        assert.equal(section.filters["user-filter"].rules[3], "||mxtads.com:8040");
+        var userRules = section.filters["user-filter"].rules.split('\n');
+        assert.equal(userRules.length, 4);
+        assert.equal(userRules[0], "||ongkidcasarv.com^$third-party");
+        assert.equal(userRules[1], "||dashgreen.online^$third-party");
+        assert.equal(userRules[2], "||adzos.com^$third-party");
+        assert.equal(userRules[3], "||mxtads.com:8040");
 
         assert.equal(section.filters["whitelist"].domains.length, 1);
         assert.equal(section.filters["whitelist"].domains[0], 'whitelisted-domain-one.com');
         assert.equal(section.filters["whitelist"].inverted, false);
 
         //Modify
-        //section.filters["user-filter"].rules.push('test-add-rule');
+        section.filters["user-filter"].rules += '\ntest-add-rule';
         section.filters["enabled-filters"].splice(1);
         section.filters["enabled-filters"].push(5);
         section.filters["enabled-filters"].push(7);
@@ -268,12 +270,13 @@ QUnit.test("Test sync service local to remote", function (assert) {
                 assert.equal(section.filters["enabled-filters"][1], 5);
                 assert.equal(section.filters["enabled-filters"][2], 7);
 
-                assert.equal(section.filters["user-filter"].rules.length, 4);
-                assert.equal(section.filters["user-filter"].rules[0], "||ongkidcasarv.com^$third-party");
-                assert.equal(section.filters["user-filter"].rules[1], "||dashgreen.online^$third-party");
-                assert.equal(section.filters["user-filter"].rules[2], "||adzos.com^$third-party");
-                assert.equal(section.filters["user-filter"].rules[3], "||mxtads.com:8040");
-                //assert.equal(section.filters["user-filter"].rules[4], "test-add-rule");
+                var userRules = section.filters["user-filter"].rules.split('\n');
+                assert.equal(userRules.length, 5);
+                assert.equal(userRules[0], "||ongkidcasarv.com^$third-party");
+                assert.equal(userRules[1], "||dashgreen.online^$third-party");
+                assert.equal(userRules[2], "||adzos.com^$third-party");
+                assert.equal(userRules[3], "||mxtads.com:8040");
+                assert.equal(userRules[4], "test-add-rule");
 
                 assert.equal(section.filters["whitelist"].domains.length, 2);
                 assert.equal(section.filters["whitelist"].domains[0], 'whitelisted-domain-one.com');
@@ -344,11 +347,10 @@ QUnit.test("Test sync service remote to local", function (assert) {
                     assert.equal(section.filters["enabled-filters"].length, 1);
                     assert.equal(section.filters["enabled-filters"][0], 1);
 
-                    assert.equal(section.filters["user-filter"].rules.length, 4);
-                    assert.equal(section.filters["user-filter"].rules[0], "||ongkidcasarv.com^$third-party");
-                    assert.equal(section.filters["user-filter"].rules[1], "||dashgreen.online^$third-party");
-                    assert.equal(section.filters["user-filter"].rules[2], "||adzos.com^$third-party");
-                    assert.equal(section.filters["user-filter"].rules[3], "||mxtads.com:8040");
+                    var userRules = section.filters["user-filter"].rules.split('\n');
+                    assert.equal(userRules.length, 2);
+                    assert.equal(userRules[0], "||test1.org/$script");
+                    assert.equal(userRules[1], "||test2.org/$script");
 
                     assert.equal(section.filters["whitelist"].domains.length, 1);
                     assert.equal(section.filters["whitelist"].domains[0], 'whitelisted-domain');
