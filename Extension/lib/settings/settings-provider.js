@@ -17,8 +17,8 @@
 
 var LS = require('../../lib/utils/local-storage').LS;
 var FilterLSUtils = require('../../lib/utils/filters-storage').FilterLSUtils;
-var ServiceClient = require('../../lib/utils/service-client').ServiceClient;
 var AntiBannerFiltersId = require('../../lib/utils/common').AntiBannerFiltersId;
+var FilterStorage = require('../../lib/filter/storage').FilterStorage;
 
 /**
  * Application settings provider.
@@ -36,8 +36,6 @@ var SettingsProvider = (function () { // jshint ignore:line
     var WHITELIST_DOMAINS_KEY = 'white-list-domains';
     var BLOCKLIST_DOMAINS_KEY = 'block-list-domains';
     var DEFAULT_WHITELIST_FLAG_KEY = 'default-whitelist-mode';
-
-    var serviceClient = new ServiceClient();
 
 
     var loadSettingsManifest = function () {
@@ -60,10 +58,12 @@ var SettingsProvider = (function () { // jshint ignore:line
     var loadFiltersSection = function (callback) {
         var filtersState = FilterLSUtils.getFiltersStateInfo();
         var enabledFilterIds = [];
-        for (var i = 0; i < filtersState.length; i++) {
-            var f = filtersState[i];
-            if (f && f.enabled) {
-                enabledFilterIds.push(i);
+        if (filtersState instanceof Array) {
+            for (var i = 0; i < filtersState.length; i++) {
+                var f = filtersState[i];
+                if (f && f.enabled) {
+                    enabledFilterIds.push(i);
+                }
             }
         }
 
@@ -86,7 +86,7 @@ var SettingsProvider = (function () { // jshint ignore:line
 
             for (var i = 0; i < result.length; i++) {
                 var r = result[i];
-                userFilterRules.push(r.ruleText);
+                userFilterRules.push(r);
             }
 
             var section = {
@@ -110,7 +110,7 @@ var SettingsProvider = (function () { // jshint ignore:line
             callback(section);
         };
 
-        serviceClient.loadLocalFilter(AntiBannerFiltersId.USER_FILTER_ID, false, onUserFilterRulesLoaded);
+        FilterStorage.loadFilterRules(AntiBannerFiltersId.USER_FILTER_ID, onUserFilterRulesLoaded);
     };
 
     var saveSettingsManifest = function (manifest) {
@@ -136,6 +136,7 @@ var SettingsProvider = (function () { // jshint ignore:line
         LS.setItem(DEFAULT_WHITELIST_FLAG_KEY, section.filters["whitelist"].inverted != true);
 
         //TODO: save user filter
+        //FilterStorage.saveFilterRules();
 
         LS.setItem(SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY, new Date().getTime());
 

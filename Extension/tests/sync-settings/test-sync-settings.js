@@ -103,6 +103,11 @@ QUnit.test("Test settings provider", function (assert) {
     LS.setItem('white-list-domains', JSON.stringify(['whitelisted-domain-one.com']));
     LS.setItem('default-whitelist-mode', true);
 
+    LS.setItem('filterrules_0.txt', '||ongkidcasarv.com^$third-party\n' +
+        '||dashgreen.online^$third-party\n' +
+        '||adzos.com^$third-party\n' +
+        '||mxtads.com:8040');
+
     FilterLSUtils.updateFilterStateInfo({
         filterId: 1,
         loaded: true,
