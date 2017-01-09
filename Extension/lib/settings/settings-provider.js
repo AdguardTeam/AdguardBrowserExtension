@@ -82,7 +82,6 @@ var SettingsProvider = (function () { // jshint ignore:line
         var defaultWhiteListMode = LS.getItem(DEFAULT_WHITELIST_FLAG_KEY);
 
         var onUserFilterRulesLoaded = function (result) {
-            console.log(result);
             var userFilterRules = [];
 
             for (var i = 0; i < result.length; i++) {

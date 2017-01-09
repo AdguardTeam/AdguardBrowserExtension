@@ -17,6 +17,7 @@
 
 /**
  * Sync settings provider
+ * TODO: Add error handling and file validation
  *
  * @type {{get, save}}
  */

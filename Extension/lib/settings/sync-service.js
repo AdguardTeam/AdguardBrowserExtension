@@ -103,7 +103,7 @@ var SyncService = (function () { // jshint ignore:line
             var localManifest = SettingsProvider.loadSettingsManifest();
 
             var compatibility = findCompatibility(remoteManifest, localManifest);
-            console.log(compatibility);
+            //console.log(compatibility);
             if (!compatibility.canRead) {
                 console.log('Protocol versions are not compatible');
                 callback();
@@ -111,7 +111,7 @@ var SyncService = (function () { // jshint ignore:line
             }
 
             processSections(localManifest, remoteManifest, compatibility, function (updatedSections) {
-                console.log(updatedSections);
+                //console.log(updatedSections);
 
                 var updatedDate = new Date().getTime();
                 if (updatedSections.remoteToLocal.length > 0) {
@@ -241,6 +241,8 @@ var SyncService = (function () { // jshint ignore:line
 
         if (syncProvider == null) {
             console.error('Sync provider should be set first');
+
+            //TODO: Add error result to callback
             callback();
             return;
         }
