@@ -190,6 +190,23 @@ adguard.webRequestService = (function (adguard) {
     };
 
     /**
+     * Gets blocked response by rule
+     * See https://developer.chrome.com/extensions/webRequest#type-BlockingResponse or https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webRequest/BlockingResponse for details
+     * @param requestRule Request rule or null
+     * @returns {*} Blocked response or null
+     */
+    var getBlockedResponseByRule = function (requestRule) {
+        if (isRequestBlockedByRule(requestRule)) {
+            if (requestRule.emptyResponse) {
+                return {redirectUrl: 'data:,'};
+            } else {
+                return {cancel: true};
+            }
+        }
+        return null;
+    };
+
+    /**
      * Finds rule for request
      *
      * @param tab           Tab
@@ -318,6 +335,7 @@ adguard.webRequestService = (function (adguard) {
         processShouldCollapse: processShouldCollapse,
         processShouldCollapseMany: processShouldCollapseMany,
         isRequestBlockedByRule: isRequestBlockedByRule,
+        getBlockedResponseByRule: getBlockedResponseByRule,
         getRuleForRequest: getRuleForRequest,
         processRequestResponse: processRequestResponse,
         postProcessRequest: postProcessRequest

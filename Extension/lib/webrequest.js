@@ -54,18 +54,19 @@
         if (requestType === adguard.RequestTypes.DOCUMENT) {
             // Reset tab button state
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_TAB_BUTTON_STATE, tab, true);
-            return true;
+            return;
         }
 
         if (!adguard.utils.url.isHttpRequest(requestUrl)) {
-            return true;
+            return;
         }
 
         var referrerUrl = getReferrerUrl(requestDetails);
 
         var requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
         adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
-        return !adguard.webRequestService.isRequestBlockedByRule(requestRule);
+
+        return adguard.webRequestService.getBlockedResponseByRule(requestRule);
     }
 
     /**

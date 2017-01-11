@@ -472,6 +472,9 @@
                 case UrlFilterRule.POPUP_OPTION:
                     permittedContentType |= UrlFilterRule.contentTypes.POPUP; // jshint ignore:line
                     break;
+                case UrlFilterRule.EMPTY_OPTION:
+                    this.emptyResponse = true;
+                    break;
                 default:
                     optionName = optionName.toUpperCase();
                     if (optionName in UrlFilterRule.contentTypes) {
@@ -509,6 +512,7 @@
     UrlFilterRule.MASK_REGEX_RULE = "/";
     UrlFilterRule.MASK_ANY_SYMBOL = "*";
     UrlFilterRule.REGEXP_ANY_SYMBOL = ".*";
+    UrlFilterRule.EMPTY_OPTION = "empty";
 
     UrlFilterRule.contentTypes = {
 
@@ -550,8 +554,6 @@
         'COLLAPSE': true,
         '~COLLAPSE': true,
         '~DOCUMENT': true,
-        // Process as a common url-blocking rule
-        'EMPTY': true,
         // http://adguard.com/en/filterrules.html#advanced
         'CONTENT': true
     };
