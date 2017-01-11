@@ -288,10 +288,22 @@ var AdguardRulesConstructorLib = (function (api) {
      */
     api.getElementInfo = function (element) {
 
+        // Convert attributes to array
+        var attributes = [];
+        var elementAttributes = element.attributes;
+        if (elementAttributes) {
+            for (var i = 0; i < elementAttributes.length; i++) {
+                var attr = elementAttributes[i];
+                attributes.push({
+                    name: attr.name,
+                    value: attr.value
+                });
+            }
+        }
+
         return {
             tagName: element.tagName,
-            classes: element.classList,
-            attributes: element.attributes ? element.attributes : [],
+            attributes: attributes,
             urlBlockAttributeValue: getUrlBlockAttribute(element),
             haveUrlBlockParameter: haveUrlBlockParameter(element),
             haveClassAttribute: haveClassAttribute(element),
