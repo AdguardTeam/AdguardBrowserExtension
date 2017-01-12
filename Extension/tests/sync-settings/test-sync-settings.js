@@ -135,8 +135,8 @@ QUnit.test("Test settings provider", function (assert) {
         //Modify
         section.filters["user-filter"].rules += '\ntest-add-rule';
         section.filters["enabled-filters"].splice(1);
-        section.filters["enabled-filters"].push(5);
-        section.filters["enabled-filters"].push(7);
+        section.filters["enabled-filters"].push("5");
+        section.filters["enabled-filters"].push("7");
         section.filters["whitelist"].domains.push('whitelisted-domain-two.com');
         section.filters["whitelist"].inverted = true;
 

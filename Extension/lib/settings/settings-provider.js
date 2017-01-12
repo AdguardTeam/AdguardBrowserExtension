@@ -62,12 +62,10 @@ var SettingsProvider = (function () { // jshint ignore:line
     var loadFiltersSection = function (callback) {
         var filtersState = FilterLSUtils.getFiltersStateInfo();
         var enabledFilterIds = [];
-        if (filtersState instanceof Array) {
-            for (var i = 0; i < filtersState.length; i++) {
-                var f = filtersState[i];
-                if (f && f.enabled) {
-                    enabledFilterIds.push(i);
-                }
+        for (var i in filtersState) {
+            var f = filtersState[i];
+            if (f && f.enabled) {
+                enabledFilterIds.push(i);
             }
         }
 
@@ -104,7 +102,7 @@ var SettingsProvider = (function () { // jshint ignore:line
                         "disabled-rules": ""
                     },
                     "whitelist": {
-                        "inverted": defaultWhiteListMode != 'true',
+                        "inverted": defaultWhiteListMode === 'false',
                         "domains": whitelistDomains,
                         "inverted-domains": blocklistDomains
                     }
@@ -125,7 +123,7 @@ var SettingsProvider = (function () { // jshint ignore:line
         var enabledFilterIds = section.filters['enabled-filters'];
 
         var filtersState = FilterLSUtils.getFiltersStateInfo();
-        for (var i = 0; i < filtersState.length; i++) {
+        for (var i in filtersState) {
             var f = filtersState[i];
             if (f) {
                 f.filterId = i;

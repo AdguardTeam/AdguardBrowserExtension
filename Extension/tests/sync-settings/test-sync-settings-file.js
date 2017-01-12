@@ -1,9 +1,9 @@
 var filters = {
     "filters": {
         "enabled-filters": [
-            1,
-            2,
-            4
+            "1",
+            "2",
+            "4"
         ],
         "custom-filters": [
             "http://filter-url"
