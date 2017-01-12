@@ -148,7 +148,7 @@ var SyncService = (function () { // jshint ignore:line
                     remoteManifest.timestamp = updatedDate;
                     remoteManifest["app-id"] = localManifest["app-id"];
 
-                    FileSyncProvider.save(MANIFEST_PATH, remoteManifest, callback);
+                    syncProvider.save(MANIFEST_PATH, remoteManifest, callback);
                 } else {
                     callback(true);
                 }
@@ -156,7 +156,7 @@ var SyncService = (function () { // jshint ignore:line
         };
 
         Log.debug('Loading remote manifest..');
-        FileSyncProvider.load(MANIFEST_PATH, onManifestLoaded);
+        syncProvider.load(MANIFEST_PATH, onManifestLoaded);
     };
 
     /**
@@ -230,7 +230,7 @@ var SyncService = (function () { // jshint ignore:line
         SettingsProvider.loadSettingsSection(sectionName, function (localFiltersSection) {
             Log.debug('Local {0} section loaded', sectionName);
 
-            FileSyncProvider.save(sectionName, localFiltersSection, function (success) {
+            syncProvider.save(sectionName, localFiltersSection, function (success) {
                 if (success) {
                     Log.info('Remote {0} section updated', sectionName);
 
@@ -254,7 +254,14 @@ var SyncService = (function () { // jshint ignore:line
 
         var dfd = new Promise();
 
-        FileSyncProvider.load(sectionName, function (remoteFiltersSection) {
+        syncProvider.load(sectionName, function (remoteFiltersSection) {
+            if (!remoteFiltersSection) {
+                Log.error('Remote {0} section loading failed', sectionName);
+
+                dfd.reject();
+                return;
+            }
+
             Log.debug('Remote {0} section loaded', sectionName);
 
             SettingsProvider.saveSettingsSection(sectionName, remoteFiltersSection, function (success) {
