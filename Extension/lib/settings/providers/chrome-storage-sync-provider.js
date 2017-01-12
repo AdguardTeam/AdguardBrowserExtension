@@ -26,11 +26,27 @@ var StorageSyncProvider = (function () { // jshint ignore:line
 
     // API
     var load = function (filePath, callback) {
+        chrome.storage.sync.get(filePath, function(items) {
+            if (chrome.runtime.lastError) {
+                Log.error(chrome.runtime.lastError);
+                callback(false);
+            }
+
+            callback(items);
+        });
+
         callback(false);
     };
 
     var save = function (filePath, data, callback) {
-        callback(false);
+        chrome.storage.sync.set({filePath: data}, function() {
+            if (chrome.runtime.lastError) {
+                Log.error(chrome.runtime.lastError);
+                callback(false);
+            }
+
+            callback(true);
+        });
     };
 
     // EXPOSE
