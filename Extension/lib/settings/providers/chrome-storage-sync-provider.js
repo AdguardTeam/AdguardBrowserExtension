@@ -38,7 +38,7 @@ var StorageSyncProvider = (function () { // jshint ignore:line
                 console.log(items);
                 var r = items[filePath];
                 if (r) {
-                    callback(JSON.parse(r));
+                    callback(r);
                     return;
                 }
             }

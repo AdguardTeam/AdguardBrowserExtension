@@ -83,6 +83,28 @@ var SyncService = (function () { // jshint ignore:line
             && manifest["timestamp"];
     };
 
+    var createRemoteData = function () {
+        var localManifest = SettingsProvider.loadSettingsManifest();
+        syncProvider.save(MANIFEST_PATH, localManifest, function (success) {
+            if (success) {
+                //TODO: Add other sections
+                var sectionName = localManifest.sections[0].name;
+                SettingsProvider.loadSettingsSection(sectionName, function (localFiltersSection) {
+                    syncProvider.save(sectionName, localFiltersSection, function (success) {
+                        if (success) {
+                            Log.info('Remote {0} section created', sectionName);
+                            Log.info('Remote manifest created');
+                        } else {
+                            Log.error('Remote {0} section update failed', sectionName);
+                        }
+                    });
+                });
+            } else {
+                Log.error('Error creating remote manifest');
+            }
+        });
+    };
+
     /**
      * So how does it work:
      * At first we load manifests for remote and local and then are trying to find can we merge the datasets comparing
@@ -102,6 +124,7 @@ var SyncService = (function () { // jshint ignore:line
 
             if (!remoteManifest) {
                 Log.warn('Error loading remote manifest');
+                createRemoteData();
                 callback(false);
                 return;
             }
