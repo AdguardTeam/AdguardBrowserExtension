@@ -108,6 +108,8 @@ QUnit.test("Test sync service local to remote", function (assert) {
         });
     };
 
+    var localManifest = SettingsProvider.loadSettingsManifest();
+
     createFile(manifestPath, manifest, function () {
         createFile(filtersPath, filters, function () {
 
@@ -139,13 +141,13 @@ QUnit.test("Test sync service local to remote", function (assert) {
 
             var onManifestLoaded = function (data) {
                 assert.ok(data != null);
-                assert.notEqual(data.timestamp, manifest.timestamp);
-                assert.equal(data["protocol-version"], manifest["protocol-version"]);
-                assert.equal(data["min-compatible-version"], manifest["min-compatible-version"]);
-                assert.equal(data["app-id"], manifest["app-id"]);
+                assert.notEqual(data.timestamp, localManifest.timestamp);
+                assert.equal(data["protocol-version"], localManifest["protocol-version"]);
+                assert.equal(data["min-compatible-version"], localManifest["min-compatible-version"]);
+                assert.equal(data["app-id"], localManifest["app-id"]);
                 assert.equal(data["sections"].length, 1);
-                assert.equal(data["sections"][0].name, manifest["sections"][0].name);
-                assert.notEqual(data["sections"][0].timestamp, manifest["sections"][0].timestamp);
+                assert.equal(data["sections"][0].name, localManifest["sections"][0].name);
+                assert.equal(data["sections"][0].timestamp, localManifest["sections"][0].timestamp);
 
                 FileSyncProvider.load(filtersPath, onFiltersSectionLoaded);
             };
@@ -190,12 +192,14 @@ QUnit.test("Test sync service remote to local", function (assert) {
                 var updatedSettingsManifest = SettingsProvider.loadSettingsManifest();
                 assert.ok(updatedSettingsManifest != null);
                 assert.notEqual(updatedSettingsManifest.timestamp, settingsManifest.timestamp);
+                //assert.equal(updatedSettingsManifest.timestamp, manifest.timestamp);
                 assert.equal(updatedSettingsManifest["protocol-version"], settingsManifest["protocol-version"]);
                 assert.equal(updatedSettingsManifest["min-compatible-version"], settingsManifest["min-compatible-version"]);
                 assert.equal(updatedSettingsManifest["app-id"], settingsManifest["app-id"]);
                 assert.equal(updatedSettingsManifest["sections"].length, settingsManifest["sections"].length);
                 assert.equal(updatedSettingsManifest["sections"][0].name, settingsManifest["sections"][0].name);
                 assert.notEqual(updatedSettingsManifest["sections"][0].timestamp, settingsManifest["sections"][0].timestamp);
+                assert.equal(updatedSettingsManifest["sections"][0].timestamp, manifest["sections"][0].timestamp);
 
                 SettingsProvider.loadSettingsSection(filtersPath, function (section) {
                     assert.ok(section);

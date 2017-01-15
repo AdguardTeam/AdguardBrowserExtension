@@ -138,7 +138,7 @@ var SyncService = (function () { // jshint ignore:line
             var localManifest = SettingsProvider.loadSettingsManifest();
 
             var compatibility = findCompatibility(remoteManifest, localManifest);
-            //console.log(compatibility);
+            console.log(compatibility);
             if (!compatibility.canRead) {
                 Log.warn('Protocol versions are not compatible');
                 callback(false);

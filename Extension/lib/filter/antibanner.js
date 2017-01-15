@@ -963,7 +963,33 @@ AntiBannerService.prototype = {
             }
         }.bind(this));
     },
-    
+
+    /**
+     * TODO: Remove, this is temporary
+     */
+    testSyncSettings: function () {
+        //Sync
+        // var manifest = SettingsProvider.loadSettingsManifest();
+        // console.log(manifest);
+        //
+        // SettingsProvider.loadSettingsSection('filters.json', function(result) {
+        //     console.log(result);
+        // });
+
+        //StorageSyncProvider.load('manifest.json', function(r) { console.log(r); });
+
+        // StorageSyncProvider.save('manifest.json', '', function () {
+        //     StorageSyncProvider.save('filters.json', '', function () {
+        //         console.log('Cleaned up');
+        //     });
+        // });
+
+        // SyncService.setSyncProvider(StorageSyncProvider);
+        // SyncService.syncSettings(function (syncResult) {
+        //     console.log('Settings synced with result: ' + syncResult);
+        // });
+    },
+
     /**
      * Called when filters were loaded from the storage
      * 
@@ -1002,6 +1028,8 @@ AntiBannerService.prototype = {
             
             EventNotifier.notifyListeners(EventNotifierTypes.REQUEST_FILTER_UPDATED, this.getRequestFilterInfo());            
             Log.info("Finished request filter initialization in {0} ms. Rules count: {1}", (new Date().getTime() - start), requestFilter.rulesCount);
+
+            this.testSyncSettings();
 
             if (requestFilter.rulesCount == 0 && !this.reloadedRules) {
                 //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/205

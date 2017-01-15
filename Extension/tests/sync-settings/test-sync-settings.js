@@ -76,12 +76,11 @@ QUnit.test("Test settings provider", function (assert) {
     assert.ok(before["app-id"]);
     assert.ok(before["sections"].length > 0);
 
-    //before.timestamp = new Date().getTime();
     SettingsProvider.saveSettingsManifest(before);
 
     var updated = SettingsProvider.loadSettingsManifest();
     assert.ok(updated != null);
-    assert.notEqual(updated.timestamp, before.timestamp);
+    assert.equal(updated.timestamp, before.timestamp);
     assert.equal(updated["protocol-version"], before["protocol-version"]);
     assert.equal(updated["min-compatible-version"], before["min-compatible-version"]);
     assert.equal(updated["app-id"], before["app-id"]);

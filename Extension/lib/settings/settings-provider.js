@@ -116,7 +116,14 @@ var SettingsProvider = (function () { // jshint ignore:line
     };
 
     var saveSettingsManifest = function (manifest) {
-        LS.setItem(SYNC_SETTINGS_TIMESTAMP_KEY, new Date().getTime());
+        LS.setItem(SYNC_SETTINGS_TIMESTAMP_KEY, manifest.timestamp);
+
+        for (var i = 0; i < manifest.sections.length; i++) {
+            var section = manifest.sections[i];
+            if (section.name === FILTERS_SECTION) {
+                LS.setItem(SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY, section.timestamp);
+            }
+        }
     };
 
     var saveFiltersSection = function (section, callback) {
@@ -164,6 +171,12 @@ var SettingsProvider = (function () { // jshint ignore:line
         }
     };
 
+    var updateSettingsTimestamp = function () {
+        var time = new Date().getTime();
+        LS.setItem(SYNC_SETTINGS_TIMESTAMP_KEY, time);
+        LS.setItem(SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY, time);
+    };
+
     // EXPOSE
     return {
         /**
@@ -181,6 +194,10 @@ var SettingsProvider = (function () { // jshint ignore:line
         /**
          * Saves section of app settings
          */
-        saveSettingsSection: saveSettingsSection
+        saveSettingsSection: saveSettingsSection,
+        /**
+         * Updates app settings timestamp
+         */
+        updateSettingsTimestamp: updateSettingsTimestamp
     };
 })();
