@@ -161,6 +161,13 @@ var SettingsProvider = (function () { // jshint ignore:line
         }
     };
 
+    /**
+     * TODO: Should trigger app settings refresh
+     *
+     * @param sectionName
+     * @param section
+     * @param callback
+     */
     var saveSettingsSection = function (sectionName, section, callback) {
         if (sectionName === FILTERS_SECTION) {
             saveFiltersSection(section, callback);
@@ -171,6 +178,9 @@ var SettingsProvider = (function () { // jshint ignore:line
         }
     };
 
+    /**
+     * TODO: Should be triggered on app settings updates
+     */
     var updateSettingsTimestamp = function () {
         var time = new Date().getTime();
         LS.setItem(SYNC_SETTINGS_TIMESTAMP_KEY, time);

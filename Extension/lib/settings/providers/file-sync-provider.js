@@ -53,6 +53,13 @@ var FileSyncProvider = (function () { // jshint ignore:line
         requestFileSystem(window.TEMPORARY, 1024 * 1024, onInitFs, errorHandler);
     };
 
+    /**
+     * TODO: This way we can only work on browser sandbox file system
+     *
+     * @param path
+     * @param data
+     * @param callback
+     */
     var saveFile = function (path, data, callback) {
         var errorHandler = function (e) {
             Log.error(e);
