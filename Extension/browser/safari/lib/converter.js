@@ -18,7 +18,7 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.21';
+var CONVERTER_VERSION = '1.3.22';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var ANY_URL_TEMPLATES = ['||*', '', '*'];
@@ -316,7 +316,8 @@ exports.SafariContentBlockerConverter = {
 
             function isUrlBlockRule(r) {
                 return self._isContentType(r, UrlFilterRule.contentTypes.URLBLOCK) ||
-                    self._isContentType(r, UrlFilterRule.contentTypes.GENERICBLOCK);
+                    self._isContentType(r, UrlFilterRule.contentTypes.GENERICBLOCK) ||
+                    self._isContentType(r, UrlFilterRule.contentTypes.GENERICHIDE);
             }
 
             if (rule.whiteListRule && rule.whiteListRule === true) {
@@ -328,7 +329,13 @@ exports.SafariContentBlockerConverter = {
                         //http://jira.performix.ru/browse/AG-8715
                         delete result.trigger["resource-type"];
                     }
-                    
+
+                    if (this._isContentType(rule, UrlFilterRule.contentTypes.GENERICHIDE)) {
+                        result.trigger["resource-type"] = ['document'];
+                    } else {
+                        delete result.trigger["resource-type"];
+                    }
+
                     var parseDomainResult = this._parseRuleDomain(rule.urlRuleText);
 
                     if (parseDomainResult !== null && 
@@ -355,10 +362,8 @@ exports.SafariContentBlockerConverter = {
                     this._writeDomainOptions(included, excluded, result.trigger);
 
                     result.trigger["url-filter"] = URL_FILTER_ANY_URL;
-                    delete result.trigger["resource-type"];
 
-                } else if (this._hasContentType(rule, UrlFilterRule.contentTypes.ELEMHIDE | // jshint ignore:line
-                        UrlFilterRule.contentTypes.GENERICHIDE)) {  // jshint ignore:line
+                } else if (this._hasContentType(rule, UrlFilterRule.contentTypes.ELEMHIDE)) {  // jshint ignore:line
                     result.trigger["resource-type"] = ['document'];
                 }
             }
