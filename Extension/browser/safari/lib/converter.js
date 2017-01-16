@@ -18,7 +18,7 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.20';
+var CONVERTER_VERSION = '1.3.21';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var URL_FILTER_ANY_URL = ".*";
@@ -176,12 +176,12 @@ var SafariContentBlockerConverter = {
         },
 
         _createUrlFilterString: function (filter) {
-            if (filter.urlRegExp) {
-                return filter.urlRegExp.source;
-            }
-
             if (filter.getUrlRuleText() == '||*') {
                 return URL_FILTER_ANY_URL;
+            }
+
+            if (filter.isRegexRule && filter.urlRegExp) {
+                return filter.urlRegExp.source;
             }
             
             var urlRegExpSource = filter.getUrlRegExpSource();

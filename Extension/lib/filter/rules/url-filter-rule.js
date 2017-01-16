@@ -229,12 +229,12 @@
 
         var urlRuleText = parseResult.urlRuleText;
 
-        var isRegexRule = adguard.utils.strings.startWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) &&
+        this.isRegexRule = adguard.utils.strings.startWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) &&
             adguard.utils.strings.endWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) ||
             urlRuleText === '' ||
             urlRuleText == UrlFilterRule.MASK_ANY_SYMBOL;
 
-        if (isRegexRule) {
+        if (this.isRegexRule) {
             this.urlRegExpSource = urlRuleText.substring(UrlFilterRule.MASK_REGEX_RULE.length, urlRuleText.length - UrlFilterRule.MASK_REGEX_RULE.length);
             // Pre compile regex rules
             var regexp = this.getUrlRegExp();
