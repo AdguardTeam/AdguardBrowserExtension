@@ -184,7 +184,7 @@ exports.SafariContentBlockerConverter = {
         },
 
         _createUrlFilterString: function (filter) {
-            if (filter.getUrlRuleText() == '||*') {
+            if (['||*', '', '*'].indexOf(filter.getUrlRuleText()) >= 0) {
                 return URL_FILTER_ANY_URL;
             }
 
