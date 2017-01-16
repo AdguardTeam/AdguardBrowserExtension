@@ -18,7 +18,7 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.20';
+var CONVERTER_VERSION = '1.3.21';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var URL_FILTER_ANY_URL = ".*";
@@ -184,14 +184,14 @@ exports.SafariContentBlockerConverter = {
         },
 
         _createUrlFilterString: function (filter) {
-            if (filter.urlRegExp) {
+            if (filter.getUrlRuleText() == '||*') {
+                return URL_FILTER_ANY_URL;
+            }
+
+            if (filter.isRegexRule && filter.urlRegExp) {
                 return filter.urlRegExp.source;
             }
 
-            if (filter.urlRuleText == '||*') {
-                return URL_FILTER_ANY_URL;
-            }
-            
             var urlRegExpSource = filter.getUrlRegExpSource();
             if (urlRegExpSource) {
                 return urlRegExpSource;
@@ -328,7 +328,7 @@ exports.SafariContentBlockerConverter = {
                         delete result.trigger["resource-type"];
                     }
                     
-                    var parseDomainResult = this._parseRuleDomain(rule.urlRuleText);                    
+                    var parseDomainResult = this._parseRuleDomain(rule.urlRuleText);
 
                     if (parseDomainResult !== null && 
                         parseDomainResult.path !== null &&
@@ -356,7 +356,7 @@ exports.SafariContentBlockerConverter = {
                     result.trigger["url-filter"] = URL_FILTER_ANY_URL;
                     delete result.trigger["resource-type"];
 
-                } else if (this._hasContentType(rule, UrlFilterRule.contentTypes.ELEMHIDE | // jshint ignore:line 
+                } else if (this._hasContentType(rule, UrlFilterRule.contentTypes.ELEMHIDE | // jshint ignore:line
                         UrlFilterRule.contentTypes.GENERICHIDE)) {  // jshint ignore:line
                     result.trigger["resource-type"] = ['document'];
                 }
