@@ -128,7 +128,7 @@
                 }
             }
 
-            return urlFilterRules;
+            return adguard.utils.collections.removeDuplicates(urlFilterRules);
         },
 
         /**
@@ -147,7 +147,7 @@
                 }
             }
 
-            return result;
+            return adguard.utils.collections.removeDuplicates(result);
         }
     };
 
