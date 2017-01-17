@@ -128,8 +128,8 @@ DomainsLookupTable.prototype = {
             }
         }
 
-        return urlFilterRules;
-    },
+            return CollectionUtils.removeDuplicates(urlFilterRules);
+        },
 
     /**
      * @returns {Array} rules in lookup table
@@ -147,6 +147,6 @@ DomainsLookupTable.prototype = {
             }
         }
 
-        return result;
+            return CollectionUtils.removeDuplicates(result);
     }
 };
