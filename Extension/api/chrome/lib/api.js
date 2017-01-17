@@ -19,7 +19,7 @@
  * Adguard simple api
  * @type {{start, stop, configure}}
  */
-var adguardApi = (function (adguard) { // jshint ignore:line
+(function (adguard, global) {
 
     /**
      * Configures white and black lists.
@@ -103,10 +103,10 @@ var adguardApi = (function (adguard) { // jshint ignore:line
         }
     };
 
-    return {
+    global.adguardApi = {
         start: start,
         stop: stop,
         configure: configure
     };
 
-})(adguard);
+})(adguard, window);

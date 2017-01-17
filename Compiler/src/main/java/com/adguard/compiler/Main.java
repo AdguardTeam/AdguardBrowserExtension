@@ -77,6 +77,9 @@ public class Main {
         //safari extension id
         String extensionId = getParamValue(args, "--extensionId", null);
 
+        //create api
+        boolean createApi = Boolean.valueOf(getParamValue(args, "--create-api", "false"));
+
         //pack method
         String packMethod = getParamValue(args, "--pack", null);
 
@@ -96,7 +99,7 @@ public class Main {
 
         Set<String> scriptRules = FilterUtils.getScriptRules(source, browser);
 
-        File buildResult = createBuild(source, dest, scriptRules, extensionId, updateUrl, browser, version, branch);
+        File buildResult = createBuild(source, dest, scriptRules, extensionId, updateUrl, browser, version, branch, createApi);
 
         File packedFile = null;
         if (packMethod != null) {
@@ -188,21 +191,21 @@ public class Main {
      * @param browser     Browser type
      * @param version     Build version
      * @param branch      Build branch
+     * @param createApi   If true creates simple api addon
      * @return Path to build result
      * @throws Exception
      */
     private static File createBuild(File source, File dest,
                                     Set<String> scriptRules,
-                                    String extensionId, String updateUrl, Browser browser, String version, String branch) throws Exception {
+                                    String extensionId, String updateUrl, Browser browser, String version, String branch, boolean createApi) throws Exception {
 
         if (dest.exists()) {
             log.debug("Removed previous build: " + dest.getName());
             FileUtils.deleteQuietly(dest);
         }
 
-        FileUtil.copyFiles(source, dest, browser);
+        FileUtil.copyFiles(source, dest, browser, createApi);
 
-        SettingUtils.writeMessageIdsToFile(dest, LocaleUtils.getMessageIds(source));
         SettingUtils.writeLocalScriptRulesToFile(dest, scriptRules);
 
         String extensionNamePostfix = "";
@@ -216,7 +219,7 @@ public class Main {
 
         SettingUtils.updateManifestFile(dest, browser, version, extensionId, updateUrl, extensionNamePostfix);
 
-        if (browser == Browser.CHROMIUM) {
+        if (browser == Browser.CHROMIUM && !createApi) {
             LocaleUtils.updateExtensionNameForChromeLocales(dest, extensionNamePostfix);
         }
 
@@ -230,10 +233,9 @@ public class Main {
             SettingUtils.updatePreloadRemoteScriptRules(dest, branch);
         }
 
-//        if (browser == Browser.FIREFOX_LEGACY) {
-//            log.info("Update 'require' parameters in order to pack with CFX");
-//            SettingUtils.updateRequirePathForCfx(dest);
-//        }
+        if (createApi) {
+            SettingUtils.createApiBuild(dest, browser);
+        }
 
         return dest;
     }

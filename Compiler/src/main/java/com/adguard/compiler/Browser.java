@@ -29,12 +29,7 @@ public enum Browser {
 	/**
 	 * Legacy firefox (older than v30)
 	 */
-	FIREFOX_LEGACY("firefox_legacy"),
-
-	/**
-	 * Chromimum extension with simple api
-	 */
-	CHROMIUM_SIMPLE("chrome-simple");
+	FIREFOX_LEGACY("firefox_legacy");
 
 	private String name;
 
@@ -66,7 +61,6 @@ public enum Browser {
 				return "firefox";
 			case CHROMIUM:
 			case EDGE:
-			case CHROMIUM_SIMPLE:
 			default:
 				return "chromium";
 		}

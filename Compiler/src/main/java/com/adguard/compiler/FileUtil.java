@@ -37,9 +37,8 @@ public class FileUtil {
 	private static final String SAFARI_FOLDER = "browser/safari";
 	private static final String FIREFOX_FOLDER = "browser/firefox";
 	private static final String FIREFOX_LEGACY_FOLDER = "browser/firefox_legacy";
-	private static final String CHROME_SIMPLE_FOLDER = "browser/chrome-simple";
 
-	public static void copyFiles(File source, File dest, Browser browser) throws Exception {
+	public static void copyFiles(File source, File dest, Browser browser, boolean createApi) throws Exception {
 
 		if (dest.exists()) {
 			FileUtils.deleteDirectory(dest);
@@ -48,10 +47,6 @@ public class FileUtil {
 		switch (browser) {
 			case CHROMIUM:
 				copyChromiumFiles(source, dest, browser);
-				break;
-			case CHROMIUM_SIMPLE:
-				copyChromiumFiles(source, dest, browser);
-				copyChromiumSimpleFiles(source, dest);
 				break;
 			case EDGE:
 				copyChromiumFiles(source, dest, browser);
@@ -66,6 +61,10 @@ public class FileUtil {
 			case FIREFOX_LEGACY:
 				copyFirefoxLegacyFiles(source, dest);
 				break;
+		}
+
+		if (createApi) {
+			copyApiFiles(source, dest, browser);
 		}
 	}
 
@@ -133,16 +132,6 @@ public class FileUtil {
 		// copy edge files
 		File edgeBase = new File(source, EDGE_FOLDER);
 		copyDirectory(edgeBase, dest);
-	}
-
-	private static void copyChromiumSimpleFiles(File source, File dest) throws Exception {
-		File simpleBase = new File(source, CHROME_SIMPLE_FOLDER);
-		copyDirectory(simpleBase, dest);
-		FileUtils.deleteQuietly(new File(dest, "_locales"));
-		FileUtils.deleteQuietly(new File(dest, "pages"));
-		FileUtils.deleteQuietly(new File(dest, "lib/pages"));
-		FileUtils.deleteQuietly(new File(dest, "lib/content-script/assistant"));
-		FileUtils.deleteQuietly(new File(dest, "icons"));
 	}
 
 	private static void copySafariFiles(File source, File dest) throws Exception {
@@ -224,5 +213,21 @@ public class FileUtil {
 		}
 
 		FileUtils.writeStringToFile(file, result, "utf-8");
+	}
+
+	private static void copyApiFiles(File source, File dest, Browser browser) throws IOException {
+
+		switch (browser) {
+			case CHROMIUM:
+				File base = new File(source, "api/chrome");
+				copyDirectory(base, dest);
+				FileUtils.deleteQuietly(new File(dest, "_locales"));
+				FileUtils.deleteQuietly(new File(dest, "pages"));
+				FileUtils.deleteQuietly(new File(dest, "icons"));
+				FileUtils.deleteQuietly(new File(dest, "devtools.html"));
+				break;
+			default:
+				throw new UnsupportedOperationException();
+		}
 	}
 }
