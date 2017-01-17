@@ -21,6 +21,7 @@
 var CONVERTER_VERSION = '1.3.21';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
+var ANY_URL_TEMPLATES = ['||*', '', '*'];
 var URL_FILTER_ANY_URL = ".*";
 // Improved regular expression instead of UrlFilterRule.REGEXP_START_URL
 var URL_FILTER_REGEXP_START_URL = "^https?://([^/]*\\.)?";
@@ -176,7 +177,7 @@ var SafariContentBlockerConverter = {
         },
 
         _createUrlFilterString: function (filter) {
-            if (['||*', '', '*'].indexOf(filter.getUrlRuleText()) >= 0) {
+            if (ANY_URL_TEMPLATES.indexOf(filter.getUrlRuleText()) >= 0) {
                 return URL_FILTER_ANY_URL;
             }
 
