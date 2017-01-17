@@ -91,10 +91,9 @@ adguard.webRequestService = (function (adguard) {
             return result;
         }
 
-        // Prepare result
-        result = Object.create(null);
-
         if (retrieveSelectors) {
+
+            // Prepare result
             result.selectors = {
                 css: null,
                 extendedCss: null,
@@ -103,13 +102,6 @@ adguard.webRequestService = (function (adguard) {
             };
             result.collapseAllElements = adguard.requestFilter.shouldCollapseAllElements();
             result.useShadowDom = adguard.utils.browser.isShadowDomSupported();
-        }
-
-        if (retrieveScripts) {
-            result.scripts = null;
-        }
-
-        if (retrieveSelectors) {
 
             // Check what exactly is disabled by this rule
             var genericHideFlag = options.genericHide || (whitelistRule && whitelistRule.checkContentType("GENERICHIDE"));

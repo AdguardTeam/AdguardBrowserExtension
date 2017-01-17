@@ -250,6 +250,9 @@
 
             var options = null;
             if (!isEdgeBrowser) {
+                /**
+                 * In Edge browser: If we pass frameId in tabs.sendMessage then message aren't delivered to content-script
+                 */
                 options = {frameId: frameId};
             }
 
