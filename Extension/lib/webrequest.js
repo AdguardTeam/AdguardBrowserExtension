@@ -238,4 +238,56 @@
         }
     });
 
+    /**
+     * When frame is committed we send to it js rules
+     * We do this because we need to apply js rules as soon as possible
+     */
+    (function fastScriptRulesLoader(adguard) {
+
+        var isEdgeBrowser = adguard.utils.browser.isEdgeBrowser();
+
+        function tryInjectScripts(tabId, frameId, url, result, limit) {
+
+            var options = null;
+            if (!isEdgeBrowser) {
+                options = {frameId: frameId};
+            }
+
+            adguard.tabs.sendMessage(tabId, result, function (response) {
+
+                // Try again if no response was received from content-script
+                if (adguard.runtime.lastError || !response) {
+
+                    if (--limit <= 0) {
+                        return;
+                    }
+
+                    setTimeout(function () {
+                        tryInjectScripts(tabId, frameId, url, result, limit);
+                    }, 10);
+                }
+
+            }, options);
+        }
+
+        adguard.webNavigation.onCommitted.addListener(function (tabId, frameId, url) {
+
+            /**
+             * Messaging a specific frame is not yet supported in Edge
+             */
+            if (frameId !== 0 && isEdgeBrowser) {
+                return;
+            }
+
+            var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, url, {filter: ['scripts']});
+            if (!result.scripts || result.scripts.length === 0) {
+                return;
+            }
+
+            result.type = 'injectScripts';
+            tryInjectScripts(tabId, frameId, url, result, 5);
+        });
+
+    })(adguard);
+
 })(adguard);

@@ -219,7 +219,8 @@
 	};
 
 	adguard.webNavigation = {
-		onCreatedNavigationTarget: emptyListener
+		onCreatedNavigationTarget: emptyListener,
+		onCommitted: emptyListener
 	};
 
 
