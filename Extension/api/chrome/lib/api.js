@@ -21,6 +21,11 @@
  */
 (function (adguard, global) {
 
+    'use strict';
+
+    function noOpFunc() {
+    }
+
     /**
      * Configures white and black lists.
      * If blacklist is not null filtration will be in inverted mode, otherwise in default mode.
@@ -41,35 +46,24 @@
             domains = configuration.whitelist;
         }
         adguard.whitelist.clearWhiteList();
-        adguard.whitelist.addToWhiteListArray(domains || []);
+        adguard.whitelist.addToWhiteListArray(domains);
     }
 
     /**
      * Start filtration.
      * Also perform installation on first run.
-     * @param configuration Install configuration: {filters: [], whitelist: [], blacklist: []}
-     * @param callback Start callback
+     * @param callback Callback function
      */
-    var start = function (configuration, callback) {
-        configuration = configuration || {};
-        adguard.filters.start({
-            onInstall: function (installCallback) {
-                var filterIds = configuration.filters || [];
-                configureWhiteBlackLists(configuration);
-                adguard.filters.addAndEnableFilters(filterIds, installCallback);
-            }
-        }, callback);
+    var start = function (callback) {
+        adguard.filters.start({}, callback || noOpFunc);
     };
 
     /**
      * Stop filtration
-     * @param callback
+     * @param callback Callback function
      */
     var stop = function (callback) {
-        adguard.filters.stop();
-        if (typeof callback == 'function') {
-            callback();
-        }
+        adguard.filters.stop(callback || noOpFunc);
     };
 
     /**
@@ -79,11 +73,11 @@
      */
     var configure = function (configuration, callback) {
 
+        callback = callback || noOpFunc;
+
         var callbackWrapper = function (configuration) {
             configureWhiteBlackLists(configuration);
-            if (typeof callback === 'function') {
-                callback();
-            }
+            callback();
         };
 
         if (configuration.filters) {

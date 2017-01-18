@@ -110,9 +110,7 @@ adguard.antiBannerService = (function (adguard) {
             loadFiltersVersionAndStateInfo();
             createRequestFilter(function () {
                 addFiltersChangeEventListener();
-                if (typeof callback === 'function') {
-                    callback();
-                }
+                callback();
             });
         };
 
@@ -132,7 +130,11 @@ adguard.antiBannerService = (function (adguard) {
                 addFiltersChangeEventListener();
                 // Run callback
                 // Request filter will be initialized during install
-                options.onInstall(callback);
+                if (typeof options.onInstall === 'function') {
+                    options.onInstall(callback);
+                } else {
+                    callback();
+                }
             } else if (runInfo.isUpdate) {
                 // Updating storage schema on extension update (if needed)
                 adguard.applicationUpdateService.onUpdate(runInfo, initRequestFilter);
@@ -161,6 +163,10 @@ adguard.antiBannerService = (function (adguard) {
      */
     var start = function (options, callback) {
 
+        if (applicationRunning === true) {
+            callback();
+            return;
+        }
         applicationRunning = true;
 
         if (!applicationInitialized) {
@@ -169,11 +175,7 @@ adguard.antiBannerService = (function (adguard) {
             return;
         }
 
-        createRequestFilter(function () {
-            if (typeof callback === 'function') {
-                callback();
-            }
-        });
+        createRequestFilter(callback);
     };
 
     /**
@@ -633,9 +635,7 @@ adguard.antiBannerService = (function (adguard) {
     function createRequestFilter(callback) {
 
         if (applicationRunning === false) {
-            if (typeof callback === "function") {
-                callback();
-            }
+            callback();
             return;
         }
 
@@ -1363,8 +1363,9 @@ adguard.filters = (function (adguard) {
         antiBannerService.start(options, callback);
     };
 
-    var stop = function () {
+    var stop = function (callback) {
         antiBannerService.stop();
+        callback();
     };
 
     /**
