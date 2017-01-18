@@ -1486,7 +1486,7 @@ adguard.filters = (function (adguard) {
             return;
         }
 
-        filterIds = adguard.utils.collections.removeDuplicates(filterIds);
+        filterIds = adguard.utils.collections.removeDuplicates(filterIds.slice(0)); // Copy array to prevent parameter mutation
 
         var loadNextFilter = function () {
             if (filterIds.length === 0) {
