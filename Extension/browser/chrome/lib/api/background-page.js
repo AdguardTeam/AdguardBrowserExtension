@@ -46,7 +46,10 @@ var browser = window.browser || chrome;
         };
 
         return {
-            onMessage: onMessage
+            onMessage: onMessage,
+            get lastError() {
+                return browser.runtime.lastError;
+            }
         };
     })();
 
@@ -259,8 +262,26 @@ var browser = window.browser || chrome;
         }
     };
 
+    var onCommitted = {
+
+        addListener: function (callback) {
+
+            // https://developer.chrome.com/extensions/webNavigation#event-onCommitted
+            browser.webNavigation.onCommitted.addListener(function (details) {
+
+                if (details.tabId === -1) {
+                    return;
+                }
+
+                callback(details.tabId, details.frameId, details.url);
+            });
+        }
+    };
+
+    // https://developer.chrome.com/extensions/webNavigation
     adguard.webNavigation = {
-        onCreatedNavigationTarget: onCreatedNavigationTarget
+        onCreatedNavigationTarget: onCreatedNavigationTarget,
+        onCommitted: onCommitted
     };
 
     //noinspection JSUnusedLocalSymbols,JSHint
