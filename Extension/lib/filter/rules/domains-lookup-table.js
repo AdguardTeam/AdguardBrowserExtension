@@ -128,7 +128,7 @@
                 }
             }
 
-            return adguard.utils.collections.removeDuplicates(urlFilterRules);
+            return urlFilterRules;
         },
 
         /**

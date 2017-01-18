@@ -139,7 +139,7 @@
                 }
             }
 
-            return adguard.utils.collections.removeDuplicates(result);
+            return result;
         },
 
         /**
@@ -158,7 +158,7 @@
                 }
             }
 
-            return adguard.utils.collections.removeDuplicates(result);
+            return result;
         }
     };
 
