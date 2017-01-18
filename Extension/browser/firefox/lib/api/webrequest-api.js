@@ -1,16 +1,14 @@
 /* global XPCOMUtils, Services, Cc, Ci, Cr, Cm, components */
 
-/* global Map */
-
 /**
  * Web requests implementation
  */
 (function (adguard) {
 
-    adguard.webRequest = (function (adguard) {
+    function noOpFunc() {
+    }
 
-        function noOpFunc() {
-        }
+    adguard.webRequest = (function (adguard) {
 
         var onBeforeRequestChannel = adguard.utils.channels.newChannel();
         var onBeforeSendHeadersChannel = adguard.utils.channels.newChannel();
@@ -648,6 +646,12 @@
     adguard.webNavigation = (function (adguard) {
 
         var onCreatedNavigationTargetChannel = adguard.utils.channels.newChannel();
+        /**
+         * There is no need in this event for Firefox
+         * It is used in Chromium for fast applying js rules
+         * In Firefox they are applied quite fast
+         */
+        var onCommitted = {addListener: noOpFunc};
 
         var onPopupCreated = function (tabId, targetUrl, sourceUrl) {
 
@@ -686,7 +690,8 @@
 
             onPopupCreated: onPopupCreated,
 
-            onCreatedNavigationTarget: onCreatedNavigationTargetChannel
+            onCreatedNavigationTarget: onCreatedNavigationTargetChannel,
+            onCommitted: onCommitted
         };
 
     })(adguard);

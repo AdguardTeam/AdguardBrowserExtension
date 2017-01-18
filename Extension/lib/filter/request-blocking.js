@@ -26,7 +26,7 @@ adguard.webRequestService = (function (adguard) {
      * @param requestRule    Rule to record
      * @param requestUrl     Request URL
      */
-    var recordRuleHit = function(tab, requestRule, requestUrl) {
+    var recordRuleHit = function (tab, requestRule, requestUrl) {
         if (requestRule &&
             adguard.settings.collectHitsCount() &&
             !adguard.utils.filters.isUserFilterRule(requestRule) &&
@@ -43,21 +43,25 @@ adguard.webRequestService = (function (adguard) {
      *
      * @param tab           Tab
      * @param documentUrl   Document URL
-     * @param genericHide   flag to hide common rules
+     * @param options       Options for select:
+     * options = {
+     *      filter: ['selectors', 'scripts'] (selection filter) (mandatory)
+     *      genericHide: true|false ( select only generic hide css rules) (optional)
+     * }
+     *
      * @returns {*}         null or object the following properties: "selectors", "scripts", "collapseAllElements"
      */
-    var processGetSelectorsAndScripts = function (tab, documentUrl, genericHide) {
+    var processGetSelectorsAndScripts = function (tab, documentUrl, options) {
 
-        var result = {};
+        var result = Object.create(null);
 
         if (!tab) {
             return result;
         }
 
         if (!adguard.requestFilter.isReady()) {
-            return {
-                requestFilterReady: false
-            };
+            result.requestFilterReady = false;
+            return result;
         }
 
         if (adguard.frames.isTabAdguardDetected(tab) ||
@@ -73,8 +77,13 @@ adguard.webRequestService = (function (adguard) {
             whitelistRule = adguard.requestFilter.findWhiteListRule(documentUrl, mainFrameUrl, adguard.RequestTypes.DOCUMENT);
         }
 
-        // Record rule hit
-        recordRuleHit(tab, whitelistRule, documentUrl);
+        var retrieveSelectors = options.filter.indexOf('selectors') >= 0;
+        var retrieveScripts = options.filter.indexOf('scripts') >= 0;
+
+        if (retrieveSelectors) {
+            // Record rule hit
+            recordRuleHit(tab, whitelistRule, documentUrl);
+        }
 
         // It's important to check this after the recordRuleHit call
         // as otherwise we will never record $document rules hit for domain
@@ -82,35 +91,38 @@ adguard.webRequestService = (function (adguard) {
             return result;
         }
 
-        // Prepare result
-        result = {
-            selectors: {
+        if (retrieveSelectors) {
+
+            // Prepare result
+            result.selectors = {
                 css: null,
                 extendedCss: null,
                 cssHitsCounterEnabled: false
-            },
-            scripts: null,
-            collapseAllElements: adguard.requestFilter.shouldCollapseAllElements(),
-            useShadowDom: adguard.utils.browser.isShadowDomSupported()
-        };
 
-        // Check what exactly is disabled by this rule
-        var genericHideFlag = genericHide || (whitelistRule && whitelistRule.checkContentType("GENERICHIDE"));
-        var elemHideFlag = whitelistRule && whitelistRule.checkContentType("ELEMHIDE");
+            };
+            result.collapseAllElements = adguard.requestFilter.shouldCollapseAllElements();
+            result.useShadowDom = adguard.utils.browser.isShadowDomSupported();
 
-        if (!elemHideFlag) {
-            // Element hiding rules aren't disabled, so we should use them            
-            if (shouldLoadAllSelectors(result.collapseAllElements)) {
-                result.selectors = adguard.requestFilter.getSelectorsForUrl(documentUrl, genericHideFlag);
-            } else {
-                result.selectors = adguard.requestFilter.getInjectedSelectorsForUrl(documentUrl, genericHideFlag);
+            // Check what exactly is disabled by this rule
+            var genericHideFlag = options.genericHide || (whitelistRule && whitelistRule.checkContentType("GENERICHIDE"));
+            var elemHideFlag = whitelistRule && whitelistRule.checkContentType("ELEMHIDE");
+
+            if (!elemHideFlag) {
+                // Element hiding rules aren't disabled, so we should use them
+                if (shouldLoadAllSelectors(result.collapseAllElements)) {
+                    result.selectors = adguard.requestFilter.getSelectorsForUrl(documentUrl, genericHideFlag);
+                } else {
+                    result.selectors = adguard.requestFilter.getInjectedSelectorsForUrl(documentUrl, genericHideFlag);
+                }
             }
         }
 
-        var jsInjectFlag = whitelistRule && whitelistRule.checkContentType("JSINJECT");
-        if (!jsInjectFlag) {
-            // JS rules aren't disabled, returning them
-            result.scripts = adguard.requestFilter.getScriptsForUrl(documentUrl);
+        if (retrieveScripts) {
+            var jsInjectFlag = whitelistRule && whitelistRule.checkContentType("JSINJECT");
+            if (!jsInjectFlag) {
+                // JS rules aren't disabled, returning them
+                result.scripts = adguard.requestFilter.getScriptsForUrl(documentUrl);
+            }
         }
 
         return result;

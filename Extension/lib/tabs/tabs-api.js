@@ -235,8 +235,8 @@
         };
 
         // Sends message to tab
-        var sendMessage = function (tabId, message, responseCallback) {
-            tabsImpl.sendMessage(tabId, message, responseCallback);
+        var sendMessage = function (tabId, message, responseCallback, options) {
+            tabsImpl.sendMessage(tabId, message, responseCallback, options);
         };
 
         // Gets all opened tabs
