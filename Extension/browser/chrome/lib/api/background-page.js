@@ -139,10 +139,7 @@ var browser = window.browser || chrome;
                 }
 
                 var requestDetails = getRequestDetails(details);
-                var skip = callback(requestDetails);
-                return {
-                    cancel: skip === false
-                };
+                return callback(requestDetails);
 
             }, urls ? {urls: urls} : {}, ["blocking"]);
         }

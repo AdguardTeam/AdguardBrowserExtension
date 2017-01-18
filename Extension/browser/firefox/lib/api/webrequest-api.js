@@ -455,13 +455,25 @@
                 };
             },
 
+            /**
+             * Handles request and blocks it if needed
+             * @param channel nsiHttpChannel
+             * @param details Request details
+             * @returns {boolean} True if request was blocked
+             */
             handleRequest: function (channel, details) {
 
                 var request = this.convertToRequest(channel.URI, details);
 
-                var skip = onBeforeRequestChannel.notify(request);
-                if (skip === false) {
+                var response = onBeforeRequestChannel.notify(request);
+
+                if (response && response.cancel) {
                     channel.cancel(Cr.NS_BINDING_ABORTED);
+                    return true;
+                }
+
+                if (response && response.redirectUrl) {
+                    channel.redirectTo(Services.io.newURI(response.redirectUrl, null, null));
                     return true;
                 }
 

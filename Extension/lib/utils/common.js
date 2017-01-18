@@ -18,40 +18,34 @@
 /**
  * Request types enumeration
  */
-adguard.RequestTypes = (function () {
+adguard.RequestTypes = {
 
-    'use strict';
+    /**
+     * Document that is loaded for a top-level frame
+     */
+    DOCUMENT: "DOCUMENT",
 
-    return {
+    /**
+     * Document that is loaded for an embedded frame (iframe)
+     */
+    SUBDOCUMENT: "SUBDOCUMENT",
 
-        /**
-         * Document that is loaded for a top-level frame
-         */
-        DOCUMENT: "DOCUMENT",
+    SCRIPT: "SCRIPT",
+    STYLESHEET: "STYLESHEET",
+    OBJECT: "OBJECT",
+    IMAGE: "IMAGE",
+    XMLHTTPREQUEST: "XMLHTTPREQUEST",
+    OBJECT_SUBREQUEST: "OBJECT-SUBREQUEST",
+    MEDIA: "MEDIA",
+    FONT: "FONT",
+    WEBSOCKET: "WEBSOCKET",
+    OTHER: "OTHER",
 
-        /**
-         * Document that is loaded for an embedded frame (iframe)
-         */
-        SUBDOCUMENT: "SUBDOCUMENT",
-
-        SCRIPT: "SCRIPT",
-        STYLESHEET: "STYLESHEET",
-        OBJECT: "OBJECT",
-        IMAGE: "IMAGE",
-        XMLHTTPREQUEST: "XMLHTTPREQUEST",
-        OBJECT_SUBREQUEST: "OBJECT-SUBREQUEST",
-        MEDIA: "MEDIA",
-        FONT: "FONT",
-        WEBSOCKET: "WEBSOCKET",
-        OTHER: "OTHER",
-
-        /**
-         * Synthetic request type for requests detected as pop-ups
-         */
-        POPUP: "POPUP"
-    };
-
-})();
+    /**
+     * Synthetic request type for requests detected as pop-ups
+     */
+    POPUP: "POPUP"
+};
 
 /**
  * Utilities namespace
