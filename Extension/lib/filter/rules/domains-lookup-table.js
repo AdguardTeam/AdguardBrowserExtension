@@ -128,7 +128,7 @@ DomainsLookupTable.prototype = {
             }
         }
 
-            return CollectionUtils.removeDuplicates(urlFilterRules);
+            return urlFilterRules;
         },
 
     /**
