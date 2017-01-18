@@ -35,10 +35,13 @@ var safariCorrectRules = [
   },
   {
     "trigger": {
-      "url-filter": "^https?://([^/]*\\.)?test-elemhide\\.com",
+      "url-filter": ".*",
       "resource-type": [
         "document"
-      ]
+      ],
+        "if-domain": [
+            "*test-elemhide.com"
+        ]
     },
     "action": {
       "type": "ignore-previous-rules"

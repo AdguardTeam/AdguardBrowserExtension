@@ -316,21 +316,25 @@ exports.SafariContentBlockerConverter = {
 
             function isUrlBlockRule(r) {
                 return self._isContentType(r, UrlFilterRule.contentTypes.URLBLOCK) ||
-                    self._isContentType(r, UrlFilterRule.contentTypes.GENERICBLOCK) ||
-                    self._isContentType(r, UrlFilterRule.contentTypes.GENERICHIDE);
+                    self._isContentType(r, UrlFilterRule.contentTypes.GENERICBLOCK);
+            }
+
+            function isCssHideRule(r) {
+                return self._isContentType(r, UrlFilterRule.contentTypes.GENERICHIDE) ||
+                    self._isContentType(r, UrlFilterRule.contentTypes.ELEMHIDE);
             }
 
             if (rule.whiteListRule && rule.whiteListRule === true) {
                 
                 var documentRule = isDocumentRule(rule); 
                 
-                if (documentRule || isUrlBlockRule(rule)) {
+                if (documentRule || isUrlBlockRule(rule) || isCssHideRule(rule)) {
                     if (documentRule) {
                         //http://jira.performix.ru/browse/AG-8715
                         delete result.trigger["resource-type"];
                     }
 
-                    if (this._isContentType(rule, UrlFilterRule.contentTypes.GENERICHIDE)) {
+                    if (isCssHideRule(rule)) {
                         result.trigger["resource-type"] = ['document'];
                     } else {
                         delete result.trigger["resource-type"];
@@ -363,8 +367,6 @@ exports.SafariContentBlockerConverter = {
 
                     result.trigger["url-filter"] = URL_FILTER_ANY_URL;
 
-                } else if (this._hasContentType(rule, UrlFilterRule.contentTypes.ELEMHIDE)) {  // jshint ignore:line
-                    result.trigger["resource-type"] = ['document'];
                 }
             }
         },
