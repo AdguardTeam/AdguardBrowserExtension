@@ -188,6 +188,14 @@ adguard.antiBannerService = (function (adguard) {
     };
 
     /**
+     * Checks application has been initialized
+     * @returns {boolean}
+     */
+    var isInitialized = function () {
+        return applicationInitialized;
+    };
+
+    /**
      * Getter for request filter
      */
     var getRequestFilter = function () {
@@ -1145,6 +1153,7 @@ adguard.antiBannerService = (function (adguard) {
 
         start: start,
         stop: stop,
+        isInitialized: isInitialized,
 
         getAntiBannerFilterById: getAntiBannerFilterById,
         getAntiBannerFilters: getAntiBannerFilters,
@@ -1366,6 +1375,14 @@ adguard.filters = (function (adguard) {
     var stop = function (callback) {
         antiBannerService.stop();
         callback();
+    };
+
+    /**
+     * Checks application has been initialized
+     * @returns {boolean}
+     */
+    var isInitialized = function () {
+        return antiBannerService.isInitialized();
     };
 
     /**
@@ -1612,6 +1629,7 @@ adguard.filters = (function (adguard) {
 
         start: start,
         stop: stop,
+        isInitialized: isInitialized,
 
         offerFilters: offerFilters,
 

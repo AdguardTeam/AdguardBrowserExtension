@@ -27,6 +27,62 @@
     }
 
     /**
+     * Checks that adguard.filters was initialized (i.e. filters metadata was loaded)
+     */
+    function assertFiltersInitialized() {
+        if (!adguard.filters.isInitialized()) {
+            throw new Error('Applications is not initialized. Use \'start\' method.');
+        }
+    }
+
+    /**
+     * Validates configuration
+     * @param configuration Configuration object
+     */
+    function validateConfiguration(configuration) {
+        validateFiltersConfiguration(configuration.filters);
+        validateDomains(configuration.whitelist, 'whitelist');
+        validateDomains(configuration.blacklist, 'blacklist');
+    }
+
+    /**
+     * Validates filters identifiers
+     * @param filters Array
+     */
+    function validateFiltersConfiguration(filters) {
+        if (!filters || filters.length === 0) {
+            return;
+        }
+        for (var i = 0; i < filters.length; i++) {
+            var filterId = filters[i];
+            if (typeof filterId !== 'number') {
+                throw new Error(filterId + ' is not a number');
+            }
+            var metadata = adguard.subscriptions.getFilterMetadata(filterId);
+            if (!metadata) {
+                throw new Error('Filter with id ' + filterId + ' does not exist');
+            }
+        }
+    }
+
+    /**
+     * Validate domains
+     * @param domains Array
+     * @param prop Property name (whitelist or blacklist)
+     */
+    function validateDomains(domains, prop) {
+        if (!domains || domains.length === 0) {
+            return;
+        }
+        for (var i = 0; i < domains.length; i++) {
+            var domain = domains[i];
+            if (typeof domain !== 'string') {
+                throw new Error('Domain ' + domain + ' at position ' + i + ' in ' + prop + ' is not a string');
+            }
+        }
+    }
+
+    /**
      * Configures white and black lists.
      * If blacklist is not null filtration will be in inverted mode, otherwise in default mode.
      * @param configuration Filtration configuration: {whitelist: [], blacklist: []}
@@ -80,6 +136,9 @@
             callback();
         };
 
+        assertFiltersInitialized();
+        validateConfiguration(configuration);
+
         if (configuration.filters) {
             var filterIds = configuration.filters || [];
             adguard.filters.addAndEnableFilters(filterIds, function () {
@@ -92,9 +151,10 @@
                 }
                 callbackWrapper(configuration);
             });
-        } else {
-            callbackWrapper(configuration);
+            return;
         }
+
+        callbackWrapper(configuration);
     };
 
     global.adguardApi = {
