@@ -5,9 +5,7 @@
     <title i18n="filtering_log_title"></title>
 
     <meta charset="utf-8">
-    <link rel="stylesheet" href="skin/fonts.css">
-    <link rel="stylesheet" href="skin/logpage/css/style.css"/>
-    <link rel="stylesheet" href="skin/my.css"/>
+    <link rel="stylesheet" href="css/style-settings.css"/>
 
     <#if browser.name() == "CHROMIUM" || browser.name() == "EDGE" || browser.name() == "SAFARI">
         <script type="text/javascript" src="../lib/libs/jquery-2.2.4.min.js"></script>
@@ -26,100 +24,67 @@
 </head>
 <body>
 
-<div class="task-manager">
-    <div class="task-manager-header">
-        <div class="task-manager-header-row cf">
-            <div class="task-manager-header-dropdown">
-                <img id="logoIcon" class="task-manager-header-dropdown-img" src="skin/logpage/images/dropdown-logo.png"/>
-                <span class="task-manager-header-dropdown-text" i18n="filtering_log_tab"></span>
-
-                <div id="tabSelector" class="task-manager-header-dropdown-select">
-                    <div class="task-manager-header-dropdown-select-text" data-toggle="dropdown" data-target="#tabSelector"></div>
-                    <div class="task-manager-header-dropdown-select-list"></div>
-                </div>
-            </div>
-            <div class="task-manager-header-controls">
-                <a href="#" class="reloadTab task-manager-header-controls-refresh button button-small button-green" i18n="filtering_refresh_tab"></a>
-                <a id="clearTabLog" href="#" class="task-manager-header-controls-clear button-link" i18n="filtering_clear_tab_events"></a>
-            </div>
-        </div>
-        <div class="task-manager-header-row cf">
-            <div class="task-manager-header-filter">
-                <span class="task-manager-header-filter-icon"></span>
-                <input class="task-manager-header-filter-input" type="text" i18n-plhr="filtering_log_search_string" name="searchEventRequest"/>
-            </div>
-            <div class="task-manager-header-tabs cf select-none">
-                <div class="task-manager-header-tabs-item-wrap active">
-                    <a class="task-manager-header-tabs-item searchEventType" href="#" i18n="filtering_type_all"></a>
-                </div>
-                <div class="task-manager-header-tabs-item-wrap">
-                    <a class="task-manager-header-tabs-item searchEventType" href="#" attr-type="DOCUMENT,SUBDOCUMENT">HTML</a>
-                </div>
-                <div class="task-manager-header-tabs-item-wrap">
-                    <a class="task-manager-header-tabs-item searchEventType" href="#" attr-type="STYLESHEET">CSS</a>
-                </div>
-                <div class="task-manager-header-tabs-item-wrap">
-                    <a class="task-manager-header-tabs-item searchEventType" href="#" attr-type="SCRIPT">JavaScript</a>
-                </div>
-                <div class="task-manager-header-tabs-item-wrap">
-                    <a class="task-manager-header-tabs-item searchEventType" href="#" attr-type="XMLHTTPREQUEST">Ajax</a>
-                </div>
-                <div class="task-manager-header-tabs-item-wrap">
-                    <a class="task-manager-header-tabs-item searchEventType" href="#" attr-type="IMAGE">Image</a>
-                </div>
-                <div class="task-manager-header-tabs-item-wrap">
-                    <a class="task-manager-header-tabs-item searchEventType" href="#" attr-type="OBJECT,OBJECT-SUBREQUEST,MEDIA">Media</a>
-                </div>
-                <div class="task-manager-header-tabs-item-wrap">
-                    <a class="task-manager-header-tabs-item searchEventType" href="#" attr-type="OTHER,FONT,WEBSOCKET">Other</a>
-                </div>
-                <div class="task-manager-header-tabs-checkbox">
-                    <input class="task-manager-header-tabs-checkbox-input" type="checkbox" id="task-manager-whitelisted"
-                           name="searchEventWhitelisted">
-                    <label class="task-manager-header-tabs-checkbox-label" for="task-manager-whitelisted">
-                        <span class="task-manager-header-tabs-checkbox-icon"></span>
-                        <span class="task-manager-header-tabs-checkbox-label-text">Whitelisted</span>
-                    </label>
-                </div>
-                <div class="task-manager-header-tabs-checkbox">
-                    <input class="task-manager-header-tabs-checkbox-input" type="checkbox" id="task-manager-blocked"
-                           name="searchEventBlocked">
-                    <label class="task-manager-header-tabs-checkbox-label" for="task-manager-blocked">
-                        <span class="task-manager-header-tabs-checkbox-icon"></span>
-                        <span class="task-manager-header-tabs-checkbox-label-text">Blocked</span>
-                    </label>
-                </div>
-                <div class="task-manager-header-tabs-checkbox">
-                    <input class="task-manager-header-tabs-checkbox-input" type="checkbox" id="task-manager-third-party" name="searchEventThirdParty">
-                    <label class="task-manager-header-tabs-checkbox-label" for="task-manager-third-party">
-                        <span class="task-manager-header-tabs-checkbox-icon"></span>
-                        <span class="task-manager-header-tabs-checkbox-label-text">Third party</span>
-                    </label>
-                </div>
+<div class="log-header">
+    <div class="col-tabs">
+        <div class="col-logo"><img id="logoIcon" src="images/icon-adguard.png" alt=""></div>
+        <div class="col-tab" i18n="filtering_log_tab"></div>
+        <div class="col-tab-drop">
+            <div id="tabSelector" class="dropdown" data-toggle="dropdown" data-target="#tabSelector">
+                <span id="selectorListCurrentValue" class="current-value"></span>
+                <span class="caret"></span>
+                <ul id="selectorList" class="drop-items"></ul>
             </div>
         </div>
     </div>
-
-    <div class="task-manager-content">
-        <div class="task-manager-content-header cf">
-            <div class="task-manager-content-header-item task-manager-content-item-url">
-                <div class="task-manager-content-header-item-wrap">URL</div>
-            </div>
-            <div class="task-manager-content-header-item task-manager-content-item-type">
-                <div class="task-manager-content-header-item-wrap" i18n="filtering_table_type"></div>
-            </div>
-            <div class="task-manager-content-header-item task-manager-content-item-rule">
-                <div class="task-manager-content-header-item-wrap" i18n="filtering_table_rule"></div>
-            </div>
-            <div class="task-manager-content-header-item task-manager-content-item-source">
-                <div class="task-manager-content-header-item-wrap" i18n="filtering_table_source"></div>
-            </div>
+    <div class="col-refresh">
+        <button class="btn reloadTab" i18n="filtering_refresh_tab"></button>
+        <a id="clearTabLog" href="#" class="text-green" i18n="filtering_clear_tab_events"></a>
+    </div>
+    <div class="col-search">
+        <div class="icon-search"><img src="images/icon-magnifying-small.png" alt=""></div>
+        <input type="text" i18n-plhr="filtering_log_search_string" name="searchEventRequest"/>
+    </div>
+    <div class="col-filter-log">
+        <div class="col-type-tabs">
+            <a class="searchEventType active" href="#" i18n="filtering_type_all"></a>
+            <a class="searchEventType" href="#" attr-type="DOCUMENT,SUBDOCUMENT">HTML</a>
+            <a class="searchEventType" href="#" attr-type="STYLESHEET">CSS</a>
+            <a class="searchEventType" href="#" attr-type="SCRIPT">JavaScript</a>
+            <a class="searchEventType" href="#" attr-type="XMLHTTPREQUEST">Ajax</a>
+            <a class="searchEventType" href="#" attr-type="IMAGE">Image</a>
+            <a class="searchEventType" href="#" attr-type="OBJECT,OBJECT-SUBREQUEST,MEDIA">Media</a>
+            <a class="searchEventType" href="#" attr-type="OTHER,FONT,WEBSOCKET">Other</a>
         </div>
-        <div id="logTable" class="task-manager-content-header-body hidden"></div>
-        <div id="logTableEmpty" class="task-manager-content-header-body hidden">
-            <div class="task-manager-content-header-body-row-empty" i18n="filtering_table_empty_row"></div>
+        <div class="col-rules">
+            <div class="checkb-wrap searchEventThirdParty">
+                <div class="checkbox"></div>
+                <label>Third party</label>
+            </div>
+            <div class="checkb-wrap searchEventWhitelisted">
+                <div class="checkbox"></div>
+                <label>Whitelisted</label>
+            </div>
+            <div class="checkb-wrap searchEventBlocked">
+                <div class="checkbox"></div>
+                <label>Blocked</label>
+            </div>
         </div>
     </div>
+</div>
+
+<table class="log-table">
+    <thead>
+        <th>URL</th>
+        <th i18n="filtering_table_type"></th>
+        <th i18n="filtering_table_rule"></th>
+        <th i18n="filtering_table_source"></th>
+    </thead>
+    <tbody id="logTable"></tbody>
+</table>
+
+<div id="logTableEmpty" class="log-empty">
+    <img src="images/log-empty.png" alt="">
+    <div class="desc" i18n="filtering_table_empty_row"></div>
 </div>
 
 <div id="modal-request-info" class="modal compact-view" style="display: none;">
