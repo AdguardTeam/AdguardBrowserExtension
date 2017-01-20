@@ -823,7 +823,6 @@ var SafariContentBlockerConverter = {
 
         this._applyDomainWildcards(converted);
         adguard.console.info('Content blocker length: ' + converted.length);
-        console.log(contentBlocker.errors);
 
         var result = {
             totalConvertedCount: convertedLength,
