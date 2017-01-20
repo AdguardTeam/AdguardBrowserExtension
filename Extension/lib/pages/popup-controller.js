@@ -110,12 +110,12 @@ PopupController.prototype = {
 
         // define class
         if (tabInfo.urlFilteringDisabled) {
-            stack.addClass('status-checkmark-disabled');
+            stack.addClass('status-error error-sad');
         } else if (tabInfo.applicationFilteringDisabled) {
             stack.addClass('status-paused');
         } else {
             if (!tabInfo.canAddRemoveRule) {
-                stack.addClass('status-checkmark-disabled');
+                stack.addClass('status-error error-filter');
             } else {
                 if (tabInfo.documentWhiteListed) {
                     stack.addClass('status-cross');
@@ -125,21 +125,14 @@ PopupController.prototype = {
             }
         }
 
-        //TODO: integration text??
-        //if (tabInfo.adguardProductName) {
-        //    i18n.translateElement(message, 'popup_ads_has_been_removed_by_adguard', [tabInfo.adguardProductName]);
-        //} else {
-        //    i18n.translateElement(message, 'popup_ads_has_been_removed');
-        //}
-
-
         // Header
-        this.filteringDisabledHeader = this._getTemplate('filtering-disabled-header-template');
-        this.filteringPausedHeader = this._getTemplate('filtering-paused-header-template');
+        this.filteringIntegrationHeader = this._getTemplate('filtering-integration-header-template');
         this.filteringDefaultHeader = this._getTemplate('filtering-default-header-template');
 
         // Controls
-        this.filteringControlButtons = this._getTemplate('filtering-default-control-template');
+        this.filteringControlDefault = this._getTemplate('filtering-default-control-template');
+        this.filteringControlDisabled = this._getTemplate('filtering-disabled-control-template');
+        this.filteringControlException = this._getTemplate('filtering-site-exception-control-template');
 
         // Actions
         this.actionOpenAssistant = this._getTemplate('action-open-assistant-template');
@@ -148,6 +141,8 @@ PopupController.prototype = {
 
         // Status Text
         this.filteringStatusText = this._getTemplate('filtering-status-template');
+        // Message text
+        this.filteringMessageText = this._getTemplate('filtering-message-template');
 
         // Footer
         this.footerDefault = this._getTemplate('footer-default-template');
@@ -157,6 +152,7 @@ PopupController.prototype = {
         this._renderFilteringControls(container, tabInfo);
         this._renderStatus(container, tabInfo);
         this._renderActions(container, tabInfo);
+        this._renderMessage(container, tabInfo);
         this._renderFooter(parent, tabInfo);
     },
 
@@ -171,10 +167,13 @@ PopupController.prototype = {
         }
 
         var template;
-        if (tabInfo.urlFilteringDisabled) {
-            template = this.filteringDisabledHeader;
-        } else if (tabInfo.applicationFilteringDisabled) {
-            template = this.filteringPausedHeader;
+        if (tabInfo.adguardDetected) {
+            template = this.filteringIntegrationHeader;
+            if (tabInfo.adguardProductName) {
+                i18n.translateElement(template.find('.blocked-tab')[0], 'popup_ads_has_been_removed_by_adguard', [tabInfo.adguardProductName]);
+            } else {
+                i18n.translateElement(template.find('.blocked-tab')[0], 'popup_ads_has_been_removed');
+            }
         } else {
             template = this.filteringDefaultHeader;
             var tabBlocked = template.find('.blocked-tab');
@@ -192,10 +191,17 @@ PopupController.prototype = {
     },
 
     _renderFilteringControls: function (container, tabInfo) {
-        var template = this.filteringControlButtons;
-        if (tabInfo.urlFilteringDisabled ||
-            tabInfo.applicationFilteringDisabled ||
-            tabInfo.adguardDetected) {
+        var template = this.filteringControlDefault;
+        if (tabInfo.urlFilteringDisabled) {
+            template = this.filteringControlDisabled;
+        } else if (tabInfo.applicationFilteringDisabled) { // jshint ignore:line
+            // Use default template
+        } else {
+            if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
+                template = this.filteringControlException;
+            }
+        }
+        if (tabInfo.urlFilteringDisabled || tabInfo.applicationFilteringDisabled || tabInfo.adguardDetected) {
             template.find('.pause').hide();
         }
         if (tabInfo.adguardDetected) {
@@ -230,29 +236,45 @@ PopupController.prototype = {
         container.append(template);
     },
 
-    _renderActions: function (container, tabInfo) {
+    _renderMessage: function (container, tabInfo) {
 
-        var el = $('<div>', {class: 'actions'});
+        var text;
 
-        if (!tabInfo.urlFilteringDisabled) {
-            el.append(this.actionOpenAssistant);
-            if (tabInfo.applicationFilteringDisabled || tabInfo.documentWhiteListed) {
-                // May be show later
-                this.actionOpenAssistant.hide();
+        if (tabInfo.urlFilteringDisabled) {
+            text = 'popup_site_filtering_disabled';
+        } else if (tabInfo.applicationFilteringDisabled) {
+
+        } else {
+            if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
+                text = 'popup_site_exception_info';
             }
         }
 
-        if (!tabInfo.urlFilteringDisabled) {
-            el.append(this.actionOpenAbuse);
+        var template = this.filteringMessageText;
+        if (text) {
+            i18n.translateElement(template[0], text);
+            container.append(template);
+        }
+    },
+
+    _renderActions: function (container, tabInfo) {
+
+        if (tabInfo.urlFilteringDisabled) {
+            return;
         }
 
-        if (!tabInfo.urlFilteringDisabled) {
-            el.append(this.actionOpenSiteReport);
+
+
+        var el = $('<div>', {class: 'actions'});
+
+        el.append(this.actionOpenAssistant);
+        if (tabInfo.applicationFilteringDisabled || tabInfo.documentWhiteListed) {
+            // May be show later
+            this.actionOpenAssistant.hide();
         }
 
-        if (!tabInfo.adguardDetected) {
-            //el.append(this.settingsTemplate);
-        }
+        el.append(this.actionOpenAbuse);
+        el.append(this.actionOpenSiteReport);
 
         container.append(el);
     },

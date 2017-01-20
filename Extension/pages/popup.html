@@ -57,16 +57,12 @@
 <!--Templates-->
 
 <!--Headers-->
-
-<div id="filtering-disabled-header-template" style="display: none;">
+<div id="filtering-integration-header-template" style="display: none;">
     <div class="head">
-        <div class="msg" i18n="popup_site_filtering_disabled"></div>
-    </div>
-</div>
-
-<div id="filtering-paused-header-template" style="display: none;">
-    <div class="head">
-        <div class="msg" i18n="popup_site_protection_disabled"></div>
+        <div class="blocked msg">
+            <span class="blocked-tab"></span>
+            <img src="images/icon-magnifying.png" class="icon-magnifying openFilteringLog" alt="">
+        </div>
     </div>
 </div>
 
@@ -85,16 +81,37 @@
     <div class="control-buttons">
         <button class="cir-btn settings openSettings"><img src="images/icon-settings.png" alt=""></button>
         <button class="cir-btn pause changeProtectionStateDisable"><img src="images/icon-pause.png" alt=""></button>
-        <div class="error-win"></div>
+        <!--<div class="error-win"></div>-->
         <div class="center-switch">
             <div class="switch-btn changeProtectionStateEnable changeDocumentWhiteListed"></div>
         </div>
     </div>
 </div>
 
+<div id="filtering-disabled-control-template" style="display: none;">
+    <div class="control-buttons">
+        <button class="cir-btn settings openSettings"><img src="images/icon-settings.png" alt=""></button>
+        <button class="cir-btn pause changeProtectionStateDisable"><img src="images/icon-pause.png" alt=""></button>
+        <div class="error-win"></div>
+    </div>
+</div>
+
+<div id="filtering-site-exception-control-template" style="display: none;">
+    <div class="control-buttons">
+        <button class="cir-btn settings openSettings"><img src="images/icon-settings.png" alt=""></button>
+        <button class="cir-btn pause changeProtectionStateDisable"><img src="images/icon-pause.png" alt=""></button>
+        <div class="error-win"></div>
+    </div>
+</div>
+
 <!--Status Text-->
 <div id="filtering-status-template" style="display: none;">
     <div class="status"></div>
+</div>
+
+<!--Message Text-->
+<div id="filtering-message-template" style="display: none;">
+    <div class="error-msg"></div>
 </div>
 
 <!--Actions-->
