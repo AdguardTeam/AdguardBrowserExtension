@@ -239,7 +239,7 @@ var SafariContentBlockerConverter = {
                 }
 
                 return {
-                    domain: adguard.utils.url.toPunyCode(domain),
+                    domain: adguard.utils.url.toPunyCode(domain).toLowerCase(),
                     path: path
                 };
 
