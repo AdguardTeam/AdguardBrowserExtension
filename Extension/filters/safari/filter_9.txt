@@ -1,6 +1,6 @@
-! Checksum: N/A1Q9Ni+Wnto+zdnfCOug
-! Version: 1.0.86.47
-! TimeUpdated: 2016-11-25T16:01:23.435+04:00
+! Checksum: MNDSh2P97CQJYu70vDJPzA
+! Version: 1.0.86.49
+! TimeUpdated: 2017-01-04T17:01:21.361+04:00
 ! Title: Spanish/Portuguese filter
 ! Description: Adguard Spanish/Portuguese filter. Filter list that specifically removes adverts on Spanish and Portuguese language websites.
 ! Title: Adguard Spanish/Portuguese Filter.
@@ -173,6 +173,11 @@
 !
 ! These rules are against anti-adblock scripts
 !
+! https://forum.adguard.com/index.php?threads/18397/
+@@||diariovasco.com/comun/js/*/adframe.js
+@@||diariovasco.com/comun/js/*/adfrm.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/3946
+@@||satcesc.com/*/banner.gif
 ! https://forum.adguard.com/index.php?threads/11826/
 @@||cdn.komoona.com/scripts/kmn_sa.js$domain=mangahost.net
 ! https://forum.adguard.com/index.php?threads/14959/
@@ -431,6 +436,9 @@ http://adw.
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
 !
+diariovasco.com##div[id*="publicidad"]
+diariovasco.com##.publiTop[id^="megabanner_"]
+diariovasco.com##.roba
 tumejortorrent.com###box-ads-tr
 tumejortorrent.com##.pub728x90
 mangahost.net##.ads
