@@ -349,7 +349,7 @@ QUnit.test("Regular expressions performance", function(assert) {
 
 QUnit.test("Content Blocker RegExp Problem", function (assert) {
 
-    var rule = new adguard.rules.UrlFilterRule('@@||4players.de^$genericblock', 0);
+    var rule = new UrlFilterRule('@@||4players.de^$genericblock', 0);
 
     var result = SafariContentBlockerConverter.convertArray([rule]);
     assert.equal(result.errorsCount, 0);
