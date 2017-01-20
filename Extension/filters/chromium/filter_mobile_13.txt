@@ -1,6 +1,6 @@
-! Checksum: 2vCOLIDYIYVtXK8QyZZKvA
-! Version: 1.0.6.1
-! TimeUpdated: 2017-01-20T07:02:11.991+04:00
+! Checksum: Phv/YXaoOAyTXHXIioz5cA
+! Version: 1.0.6.2
+! TimeUpdated: 2017-01-20T20:02:18.976+04:00
 ! Title: Turkish filter
 ! Description: Adguard Turkish filter. Filter list that specifically removes adverts on Turkish language websites.
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
@@ -313,7 +313,6 @@ direkizlehd.tv##.widget_text[-ext-has=".fix:contains(Sponsor)"]
 ##body > div[id="toolbar"][style]
 ##div[class^="bireklam"]
 ##div[class^="gogads"]
-~baglanfilmiizle.com##div[class^="reklam-"]
 ##div[class^="reklam_"]
 ##div[class^="sag-reklam"]
 ##div[class^="vSagReklam-"]
@@ -384,6 +383,8 @@ mackolik.com,sahadan.com#%#var advertisement_not_blocked = 1;
 mackolik.com,sahadan.com#%#var criteo_medyanet_loaded = 1;
 fullfilmizlesin.com#$##banner { position: absolute!important; left: -3000px!important; }
 sabah.com.tr#$#header.advertControlArea { top: 0px!important; }
+hintcefilm.com#$##movieoncereklam { display: none!important; }
+hintcefilm.com#$##movie { display: block!important; }
 seyirlikfilm.net,jetfilmizle.biz,hdfilmevreni.co,fullfilmihdizlesene.com,filmihdizlesene1.com,birhdfilmizle.org,hdfilmhizmeti.com,hdfilmaz.com,filmakinesi.org,filmlobisi.com,pembetv.org,hdfilmarenasi.com,sinemafilm.org,filmi-izle.org,jetfilmizle.net#$##filmoncereklam { display:none!important; }
 seyirlikfilm.net,jetfilmizle.biz,hdfilmevreni.co,fullfilmihdizlesene.com,filmihdizlesene1.com,birhdfilmizle.org,hdfilmhizmeti.com,hdfilmaz.com,filmakinesi.org,filmlobisi.com,pembetv.org,hdfilmarenasi.com,sinemafilm.org,filmi-izle.org,jetfilmizle.net#$##film { display:block!important; }
 hdfilmdeposu.com.tr,720pfilmizle.tv,filmbilir.com,filmi-izle.com,filmizle.film,filmizletix.com,hdfilmdeposu.net,izleorg.org,sinefan.com#$#.tab-embed { display: block!important; }
