@@ -209,8 +209,6 @@ QUnit.test("Generichide rules", function(assert) {
     var convertedRule = converted[0];
     assert.equal("ignore-previous-rules", convertedRule.action.type);
     assert.equal('^https?://([^/]*\\.)?hulu\\.com\\/page', convertedRule.trigger["url-filter"]);
-    assert.equal(1, convertedRule.trigger["resource-type"].length);
-    assert.equal("document", convertedRule.trigger["resource-type"][0]);
 });
 
 QUnit.test("Generic domain sensitive rules", function(assert) {
@@ -247,8 +245,6 @@ QUnit.test("Generic domain sensitive rules sorting order", function(assert) {
     assert.equal(converted[2].action.type, "ignore-previous-rules");
     assert.equal(converted[2].trigger["url-filter"], '.*');
     assert.equal(converted[2].trigger["if-domain"], '*example.org');
-    assert.ok(converted[2].trigger["resource-type"]);
-    assert.equal("document", converted[2].trigger["resource-type"][0]);
 });
 
 QUnit.test("Convert cyrillic rules", function(assert) {

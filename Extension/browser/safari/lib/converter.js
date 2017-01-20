@@ -311,7 +311,7 @@ var SafariContentBlockerConverter = {
                     self._isContentType(r, adguard.rules.UrlFilterRule.contentTypes.GENERICBLOCK);
             }
 
-            function isCssHideRule(r) {
+            function isCssExceptionRule(r) {
                 return self._isContentType(r, adguard.rules.UrlFilterRule.contentTypes.GENERICHIDE) ||
                     self._isContentType(r, adguard.rules.UrlFilterRule.contentTypes.ELEMHIDE);
             }
@@ -320,15 +320,9 @@ var SafariContentBlockerConverter = {
                 
                 var documentRule = isDocumentRule(rule); 
                 
-                if (documentRule || isUrlBlockRule(rule) || isCssHideRule(rule)) {
+                if (documentRule || isUrlBlockRule(rule) || isCssExceptionRule(rule)) {
                     if (documentRule) {
                         //http://jira.performix.ru/browse/AG-8715
-                        delete result.trigger["resource-type"];
-                    }
-
-                    if (isCssHideRule(rule)) {
-                        result.trigger["resource-type"] = ['document'];
-                    } else {
                         delete result.trigger["resource-type"];
                     }
                     
@@ -358,7 +352,7 @@ var SafariContentBlockerConverter = {
                     this._writeDomainOptions(included, excluded, result.trigger);
 
                     result.trigger["url-filter"] = URL_FILTER_ANY_URL;
-
+                    delete result.trigger["resource-type"];
                 }
             }
         },
@@ -829,6 +823,7 @@ var SafariContentBlockerConverter = {
 
         this._applyDomainWildcards(converted);
         adguard.console.info('Content blocker length: ' + converted.length);
+        console.log(contentBlocker.errors);
 
         var result = {
             totalConvertedCount: convertedLength,
