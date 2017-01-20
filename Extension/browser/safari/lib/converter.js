@@ -247,7 +247,7 @@ exports.SafariContentBlockerConverter = {
                 }
 
                 return {
-                    domain: UrlUtils.toPunyCode(domain),
+                    domain: UrlUtils.toPunyCode(domain).toLowerCase(),
                     path: path
                 };
 
