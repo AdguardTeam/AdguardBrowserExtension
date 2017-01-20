@@ -185,7 +185,7 @@ exports.SafariContentBlockerConverter = {
         },
 
         _createUrlFilterString: function (filter) {
-            if (ANY_URL_TEMPLATES.indexOf(filter.getUrlRuleText()) >= 0) {
+            if (ANY_URL_TEMPLATES.indexOf(filter.urlRuleText) >= 0) {
                 return URL_FILTER_ANY_URL;
             }
 
@@ -334,7 +334,7 @@ exports.SafariContentBlockerConverter = {
                         delete result.trigger["resource-type"];
                     }
 
-                    var parseDomainResult = this._parseRuleDomain(rule.getUrlRuleText());
+                    var parseDomainResult = this._parseRuleDomain(rule.urlRuleText);
 
                     if (parseDomainResult !== null && 
                         parseDomainResult.path !== null &&
