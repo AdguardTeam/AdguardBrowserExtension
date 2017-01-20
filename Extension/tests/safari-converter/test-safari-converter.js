@@ -364,7 +364,7 @@ QUnit.test("Content Blocker RegExp Problem", function (assert) {
 
 QUnit.test("UpperCase domains", function (assert) {
 
-    var rule = new adguard.rules.UrlFilterRule('@@||UpperCase.test^$genericblock', 0);
+    var rule = new UrlFilterRule('@@||UpperCase.test^$genericblock', 0);
 
     var result = SafariContentBlockerConverter.convertArray([rule]);
     assert.equal(result.errorsCount, 0);
