@@ -30,11 +30,63 @@ PageController.prototype = {
 
     init: function () {
 
+        $('.sp-table-row-info').hide();
+
+        (function () {
+
+            var activeTab = null;
+
+            if (document.location.hash) {
+                onTabClicked(document.location.hash);
+            } else {
+                onTabClicked('#general-settings');
+            }
+
+            window.addEventListener('hashchange', function () {
+                onTabClicked(document.location.hash);
+            });
+
+            function onTabClicked(tab) {
+
+                if (tab === activeTab) {
+                    return;
+                }
+
+                if (activeTab) {
+                    $(activeTab).hide();
+                }
+
+                var el = $(tab);
+                if (!el || el.length === 0) {
+                    tab = '#general-settings';
+                    el = $(tab);
+                }
+
+                if (el && el.length > 0) {
+                    el.show();
+                    activeTab = tab;
+                }
+
+                $('html, body').animate({
+                    scrollTop: 0
+                }, 0);
+            }
+
+            $('.nav-tabs a').on('click', function (e) {
+                e.preventDefault();
+                var hash = $(this).attr('href');
+                setTimeout(function () {
+                    document.location.hash = hash;
+                }, 0);
+            });
+
+        })();
+
         this.linkHelper = document.createElement('a');
 
         this._bindEvents();
         this._render();
-        this._initTopMenu();
+        //this._initTopMenu();
 
         $(".sp-table-row-input").toggleCheckbox();
 
@@ -538,7 +590,8 @@ PageController.prototype = {
             return;
         }
 
-        var text = input.val().trim();
+        var value = input.val() || '';
+        var text = value.trim();
         sResult.searchMode = text.length > 0;
 
         contentPage.sendMessage({
@@ -1089,7 +1142,10 @@ PageController.prototype = {
 
     _getAntiBannerFilterTemplate: function (filterId, version, description) {
         return $('<div>', {class: 's-page-table-row cf'})
-            .append($('<div>', {class: 'sp-table-row-label', text: description}).append($('<span>', {class: 'sp-table-row-info', text: version})))
+            .append($('<div>', {
+                class: 'sp-table-row-label',
+                text: description
+            }).append($('<span>', {class: 'sp-table-row-info', text: version})))
             .append($('<input>', {type: 'checkbox', name: 'filterId', class: 'sp-table-row-input', value: filterId}))
             .append($('<div>', {class: 'preloader hidden'}));
     },
@@ -1115,7 +1171,13 @@ PageController.prototype = {
         var el = $('<div>', {class: 'panel filter-panel'});
 
         var header = $('<div>', {class: 'settings-page-title spt-font-s'})
-            .append($('<a>', {href: '#group' + groupId, 'data-parent': '#groupsList', 'data-toggle': 'collapse', class: 'spt-link-dashed collapsed', text: groupName}))
+            .append($('<a>', {
+                href: '#group' + groupId,
+                'data-parent': '#groupsList',
+                'data-toggle': 'collapse',
+                class: 'spt-link-dashed collapsed',
+                text: groupName
+            }))
             .append($('<div>', {class: 'spt-font-small'}));
 
         var group = $('<div>', {id: 'group' + groupId, class: 'panel-collapse collapse ' + collapseClass})
@@ -1128,8 +1190,16 @@ PageController.prototype = {
     _getFilterMetadataTemplate: function (filterId, filterName, filterDescription, homepageLink, homepageText) {
 
         return $('<div>', {class: 's-page-table-row cf'})
-            .append($('<div>', {class: 'sp-table-row-label', text: filterName}).append($('<a>', {class: 'sp-table-row-info', href: homepageLink, text: homepageText, target: '_blank'})))
-            .append($('<input>', {type: 'checkbox', name: 'modalFilterId', value: filterId, class: 'sp-table-row-input'}))
+            .append($('<div>', {
+                class: 'sp-table-row-label',
+                text: filterName
+            }).append($('<a>', {class: 'sp-table-row-info', href: homepageLink, text: homepageText, target: '_blank'})))
+            .append($('<input>', {
+                type: 'checkbox',
+                name: 'modalFilterId',
+                value: filterId,
+                class: 'sp-table-row-input'
+            }))
             .append($('<div>', {class: 'sp-table-row-descr', text: filterDescription}));
 
     },
@@ -1159,7 +1229,7 @@ var contentBlockerInfo;
 /**
  * Initializes page
  */
-var initPage = function(response) {
+var initPage = function (response) {
 
     userSettings = response.userSettings;
     enabledFilters = response.enabledFilters;

@@ -4,11 +4,12 @@
     <title i18n="options_settings"></title>
 
     <meta charset="utf-8">
-    <link type="text/css" rel="stylesheet" href="skin/fonts.css">
-    <link type="text/css" rel="stylesheet" href="skin/style.css">
-    <link type="text/css" rel="stylesheet" href="skin/my.css">
-    <link type="text/css" rel="stylesheet" href="skin/jquery.jscrollpane.css">
-    <link type="text/css" rel="stylesheet" href="skin/bootstrap.css">
+    <!--<link type="text/css" rel="stylesheet" href="skin/fonts.css">-->
+    <!--<link type="text/css" rel="stylesheet" href="skin/style.css">-->
+    <!--<link type="text/css" rel="stylesheet" href="skin/my.css">-->
+    <!--<link type="text/css" rel="stylesheet" href="skin/jquery.jscrollpane.css">-->
+    <!--<link type="text/css" rel="stylesheet" href="skin/bootstrap.css">-->
+    <link rel="stylesheet" href="css/style-settings.css">
 
     <#if browser.name() == "CHROMIUM" || browser.name() == "EDGE" || browser.name() == "SAFARI">
         <script type="text/javascript" src="../lib/libs/jquery-2.2.4.min.js"></script>
@@ -28,277 +29,416 @@
     <link rel="shortcut icon" href="skin/favicon.png"/>
 </head>
 <body>
-<header class="header">
-    <div class="wrap cf">
-        <a class="header-logo" href="">
-            Adguard
-        </a>
-        <a class="header-like openExtensionStore" href="#"><i class="header-like-icon"></i><span i18n="options_like_us"></span></a>
-    </div>
-</header>
-<nav class="top-menu">
-    <div class="wrap">
-        <a class="top-menu-item" href="#general-settings" i18n="options_general_settings"></a>
-        <a class="top-menu-item" href="#antibanner" i18n="options_antibanner"></a>
-        <a class="top-menu-item" href="#safebrowsing" i18n="options_safebrowsing"></a>
-        <a class="top-menu-item" href="#whitelist" i18n="options_whitelist"></a>
-        <a class="top-menu-item" href="#userfilter" i18n="options_userfilter"></a>
-        <a class="top-menu-item" href="#miscellaneous-settings" i18n="options_miscellaneous_settings"></a>
-    </div>
-</nav>
-<div class="settings-page">
-
-    <div class="wrap">
-
-        <div id="general-settings" class="settings-page-title" i18n="options_general_settings"></div>
-        <div class="settings-page-table">
-            <div class="s-page-table-row cf">
-                <div class="sp-table-row-label" i18n="options_allow_acceptable_ads"></div>
-                <input type="checkbox" class="sp-table-row-input" id="allowAcceptableAds"/>
-            </div>
-            <div class="s-page-table-row cf page-stats-switch-block">
-                <div class="sp-table-row-label" i18n="options_show_blocked_ads_count"></div>
-                <input type="checkbox" class="sp-table-row-input" id="showPageStatisticCheckbox"/>
-            </div>
-            <div class="s-page-table-row cf">
-                <div class="sp-table-row-label" i18n="options_enable_autodetect_filter"></div>
-                <input type="checkbox" class="sp-table-row-input" id="autodetectFiltersCheckbox"/>
-            </div>
+<div class="settings-wrap">
+    <div class="wlimit">
+        <div class="settings-sidebar">
+            <div class="logo"><img src="images/adguard-logo.png" alt=""></div>
+            <ul class="nav nav-tabs">
+                <li><a href="#general-settings" i18n="options_general_settings"></a></li>
+                <li><a href="#antibanner" i18n="options_antibanner"></a></li>
+                <li><a href="#whitelist" i18n="options_whitelist"></a></li>
+                <li><a href="#userfilter" i18n="options_userfilter"></a></li>
+                <li><a href="#miscellaneous-settings" i18n="options_miscellaneous_settings"></a></li>
+                <!--<a class="top-menu-item" href="#general-settings" i18n="options_general_settings"></a>-->
+                <!--<a class="top-menu-item" href="#antibanner" i18n="options_antibanner"></a>-->
+                <!--<a class="top-menu-item" href="#safebrowsing" i18n="options_safebrowsing"></a>-->
+                <!--<a class="top-menu-item" href="#whitelist" i18n="options_whitelist"></a>-->
+                <!--<a class="top-menu-item" href="#userfilter" i18n="options_userfilter"></a>-->
+                <!--<a class="top-menu-item" href="#miscellaneous-settings" i18n="options_miscellaneous_settings"></a>-->
+            </ul>
         </div>
-
-        <div id="antibanner" class="settings-page-title">
-            <span i18n="options_antibanner"></span>
-            <span i18n="options_antibanner_info" class="settings-page-title-info" style="display: none;"></span>
-        </div>
-        <div class="settings-page-table" id="antiBannerFiltersList">
-        </div>
-        <div class="settings-page-table" id="antiBannerFiltersListEmpty" style="display: none;">
-            <div class="s-page-table-row cf active">
-                <div class="sp-lists-filters-empty" i18n="options_antibanner_list_empty"></div>
-            </div>
-        </div>
-        <a class="sp-lists-user-add no-icon">
-            <span id="updateAntiBannerFilters" class="spl-user-add-spn" i18n="options_update_antibanner_filters"></span>
-            <span class="spl-user-add-spn editAntiBannerFilters" i18n="options_edit_antibanner_filters"></span>
-        </a>
-
-        <div id="safebrowsing" class="settings-page-title" i18n="options_safebrowsing"></div>
-        <div class="settings-page-table">
-            <div class="s-page-table-row cf">
-                <div class="sp-table-row-label" i18n="options_safebrowsing_enabled"></div>
-                <input type="checkbox" class="sp-table-row-input" id="safebrowsingEnabledCheckbox"/>
-            </div>
-            <div class="s-page-table-row cf">
-                <div class="sp-table-row-label" i18n="options_safebrowsing_help"></div>
-                <input type="checkbox" class="sp-table-row-input" id="sendSafebrowsingStatsCheckbox"/>
-            </div>
-        </div>
-
-        <div class="settings-page-lists cf">
-            <div id="whitelist" class="s-page-lists-user">
-                <div class="sp-lists-user-title" i18n="options_whitelist"></div>
-                <div class="sp-lists-user-descr" i18n="options_whitelist_description"></div>
-                <div class="settings-page-table whitelist-table whitelist-mode-switch">
-                    <div class="s-page-table-row cf">
-                        <div class="sp-table-row-label" i18n="options_whitelist_inverse"></div>
-                        <input type="checkbox" class="sp-table-row-input" id="changeDefaultWhiteListMode"/>
-                    </div>
-                </div>
-                <div class="sp-lists-user-table sp-lists-search-table">
-                    <div class="spl-user-table-row cf">
-                        <label for="white-search" i18n="options_whitelist_search"></label>
-
-                        <div class="search-field">
-                            <input type="text" id="white-search" i18n-plhr="options_whitelist_search_placeholder">
-                            <a href="#" class="btn-search"></a>
+        <div id="general-settings" class="settings-content tab-pane">
+            <div class="page-title">Settings</div>
+            <div class="settings-body">
+                <div class="subtitle" i18n="options_general_settings"></div>
+                <ul class="opts-list">
+                    <li class="active">
+                        <div class="opt-name" i18n="options_allow_acceptable_ads">Allow search ads and websites' self-promotion <a href="" class="question"></a></div>
+                        <div class="opt-state">
+                            <input type="checkbox" class="sp-table-row-input" id="allowAcceptableAds"/>
+                            <!--<div class="toggler"></div>-->
                         </div>
-                    </div>
-                </div>
-                <div class="sp-lists-user-table" id="whiteListFilters">
-                </div>
-                <a class="sp-lists-user-add">
-                    <span class="spl-user-add-spn addWhiteListFilter" i18n="options_whitelist_add_domain"></span>
-                    <span id="clearWhiteListFilter" class="spl-user-add-spn" i18n="options_userfilter_clear"></span>
-                    <span id="importWhiteListFilter" class="spl-user-add-spn" i18n="options_userfilter_import"></span>
-                    <span id="exportWhiteListFilter" class="spl-user-add-spn" i18n="options_userfilter_export"></span>
-                    <input type="file" id="importWhiteListFilterInput" style="display: none;"/>
-                </a>
-            </div>
-
-            <div id="userfilter" class="s-page-lists-user">
-                <div class="sp-lists-user-title" i18n="options_userfilter"></div>
-                <div class="sp-lists-user-descr" i18n="options_userfilter_description"></div>
-                <div class="sp-lists-user-table sp-lists-search-table">
-                    <div class="spl-user-table-row cf">
-                        <label for="user-search" i18n="options_userfilter_search"></label>
-
-                        <div class="search-field">
-                            <input type="text" id="user-search" i18n-plhr="options_userfilter_search_placeholder">
-                            <a href="#" class="btn-search"></a>
+                    </li>
+                    <li class="active">
+                        <div class="opt-name" i18n="options_show_blocked_ads_count">Indicate the number of blocked ads on the Adguard extension icon</div>
+                        <div class="opt-state">
+                            <input type="checkbox" class="sp-table-row-input" id="showPageStatisticCheckbox"/>
+                            <!--<div class="toggler"></div>-->
                         </div>
-                    </div>
+                    </li>
+                    <li>
+                        <div class="opt-name" i18n="options_enable_autodetect_filter">Activate the most appropriate filters automatically</div>
+                        <div class="opt-state">
+                            <input type="checkbox" class="sp-table-row-input" id="autodetectFiltersCheckbox"/>
+                            <!--<div class="toggler"></div>-->
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="subtitle" i18n="options_safebrowsing"></div>
+                <ul class="opts-list">
+                    <li>
+                        <div class="title" i18n="options_safebrowsing_enabled">Phishing and malware protection <a href="" class="question"></a></div>
+                        <div class="opt-state">
+                            <input type="checkbox" class="sp-table-row-input" id="safebrowsingEnabledCheckbox"/>
+                            <!--<div class="toggler"></div>-->
+                        </div>
+                    </li>
+                    <li>
+                        <div class="title" i18n="options_safebrowsing_help">Help us in Browsing security filters development</div>
+                        <div class="opt-state">
+                            <div class="desc">Submit anonymous security information</div>
+                            <input type="checkbox" class="sp-table-row-input" id="sendSafebrowsingStatsCheckbox"/>
+                            <!--<div class="toggler"></div>-->
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="miscellaneous-settings" class="settings-content tab-pane">
+            <div class="page-title">
+                Miscellaneous
+            </div>
+            <div class="settings-body">
+                <ul class="opts-list">
+                    <li>
+                        <div class="opt-name">
+                            Use optimized filters
+                        </div>
+                        <div class="opt-state">
+                            <div class="desc">Light filter lists optimized for mobile devices</div>
+                            <div class="toggler"></div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="opt-name">
+                            Send statistics for ad filters usage <a href="" class="question"></a>
+                        </div>
+                        <div class="opt-state">
+                            <div class="toggler"></div>
+                        </div>
+                    </li>
+                    <li class="active">
+                        <div class="opt-name">
+                            Send statistics for ad filters usage
+                        </div>
+                        <div class="opt-state">
+                            <div class="toggler"></div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="opt-name">
+                            Show information on Adguard full version
+                        </div>
+                        <div class="opt-state">
+                            <div class="toggler"></div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="settings-actions">
+                <a href="">Filtering log</a>
+                <a href="">Reset statistics</a>
+                <a href="">Changelog</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="settings-footer">
+        <div class="rate-row">
+            <div class="wlimit">
+                <div class="text">Do you like Adguard?</div>
+                <a href="" class="btn-rate"><img src="images/icon-like.png" alt=""> Rate it</a>
+            </div>
+        </div>
+        <div class="links-row">
+            <div class="wlimit">
+                <div class="copy">
+                    <img src="images/icon-logo-white.png" alt="">
+                    &copy; Adguard, 2009-2017
                 </div>
-                <div class="sp-lists-user-table" id="userFilters">
-                </div>
-                <a class="sp-lists-user-add">
-                    <span class="spl-user-add-spn addUserFilter" i18n="options_userfilter_add_rule"></span>
-                    <span id="clearUserFilter" class="spl-user-add-spn" i18n="options_userfilter_clear"></span>
-                    <span id="importUserFilter" class="spl-user-add-spn" i18n="options_userfilter_import"></span>
-                    <span id="exportUserFilter" class="spl-user-add-spn" i18n="options_userfilter_export"></span>
-                    <input type="file" id="importUserFilterInput" style="display: none;"/>
-                </a>
-            </div>
-        </div>
-
-        <div id="miscellaneous-settings" class="settings-page-title" i18n="options_miscellaneous_settings"></div>
-        <div class="settings-page-table">
-            <div class="s-page-table-row cf">
-                <div class="sp-table-row-label" i18n="options_use_optimized_filters"></div>
-                <input type="checkbox" class="sp-table-row-input" id="useOptimizedFilters"/>
-            </div>
-            <div class="s-page-table-row cf">
-                <div class="sp-table-row-label" i18n="options_collect_hit_stats"></div>
-                <input type="checkbox" class="sp-table-row-input" id="enableHitsCount"/>
-            </div>
-            <div class="s-page-table-row cf">
-                <div class="sp-table-row-label" i18n="options_show_context_menu"></div>
-                <input type="checkbox" class="sp-table-row-input" id="enableShowContextMenu"/>
-            </div>
-            <div class="s-page-table-row cf">
-                <div class="sp-table-row-label" i18n="options_show_adguard_full_version"></div>
-                <input type="checkbox" class="sp-table-row-input" id="showInfoAboutAdguardFullVersion"/>
-            </div>
-        </div>
-        <div class="sp-lists-user-add no-icon">
-            <span id="openLog" class="spl-user-add-spn" i18n="options_open_log"></span>
-            <span id="resetStats" class="spl-user-add-spn" i18n="options_reset_stats"></span>
-            <a href="https://github.com/AdguardTeam/AdguardBrowserExtension/releases" target="_blank" class="spl-user-add-spn" i18n="options_open_changelog"></a>
-        </div>
-    </div>
-</div>
-
-<div class="thanks-prefooter download-adguard-block">
-    <div class="wrap">
-        <div class="thanks-prefooter-title"></div>
-        <div class="thanks-prefooter-table">
-            <div class="tp-table-head cf">
-                <div class="tpt-head-min" i18n="thankyou_compare_ext_title"></div>
-                <div class="tpt-head-full"></div>
-            </div>
-            <div class="tp-table-row cf high">
-                <div class="tpt-row-label"><span class="tpt-label-spn"><span i18n="thankyou_compare_blocked"></span><!--<span class="tptl-spn-question" data-popup="phishingPopup"></span>--></span></div>
-                <div class="tpt-row-min-val" i18n="thankyou_compare_ext_blocking"></div>
-                <div class="tpt-row-full-val" i18n="thankyou_compare_full_blocking"></div>
-            </div>
-            <div class="tp-table-row cf">
-                <div class="tpt-row-label"><span class="tpt-label-spn"><span i18n="thankyou_compare_safebrowsing"></span><!--<span class="tptl-spn-question" data-popup="phishingPopup"></span>--></span></div>
-                <div class="tpt-row-min-val"><i class="thanks-tick"></i></div>
-                <div class="tpt-row-full-val"><i class="thanks-tick"></i></div>
-            </div>
-            <div class="tp-table-row cf parental-control-feature">
-                <div class="tpt-row-label"><span class="tpt-label-spn"><span i18n="thankyou_compare_parent"></span><!--<span class="tptl-spn-question" data-popup="phishingPopup"></span>--></span></div>
-                <div class="tpt-row-min-val"><i class="thanks-cross"></i></div>
-                <div class="tpt-row-full-val"><i class="thanks-tick"></i></div>
-            </div>
-            <div class="tp-table-row cf">
-                <div class="tpt-row-label"><span class="tpt-label-spn"><span i18n="thankyou_compare_safebrowsing_attack"></span><!--<span class="tptl-spn-question" data-popup="phishingPopup"></span>--></span></div>
-                <div class="tpt-row-min-val"><i class="thanks-cross"></i></div>
-                <div class="tpt-row-full-val"><i class="thanks-tick"></i></div>
-            </div>
-            <div class="tp-table-row cf">
-                <div class="tpt-row-label"><span class="tpt-label-spn"><span i18n="thankyou_compare_any_browser"></span><!--<span class="tptl-spn-question" data-popup="phishingPopup"></span>--></span></div>
-                <div class="tpt-row-min-val"><i class="thanks-cross"></i></div>
-                <div class="tpt-row-full-val"><i class="thanks-tick"></i></div>
-            </div>
-            <div class="tp-table-row cf">
-                <div class="tpt-row-label"><span class="tpt-label-spn"><span i18n="thankyou_compare_traffic"></span><!--<span class="tptl-spn-question" data-popup="phishingPopup"></span>--></span></div>
-                <div class="tpt-row-min-val"><i class="thanks-cross"></i></div>
-                <div class="tpt-row-full-val"><i class="thanks-tick"></i></div>
-            </div>
-            <div class="tp-table-row cf">
-                <div class="tpt-row-label"><span class="tpt-label-spn"><span i18n="thankyou_compare_increase"></span><!--<span class="tptl-spn-question" data-popup="phishingPopup"></span>--></span></div>
-                <div class="tpt-row-min-val"><i class="thanks-cross"></i></div>
-                <div class="tpt-row-full-val"><i class="thanks-tick"></i></div>
-            </div>
-            <div class="tp-table-row cf">
-                <div class="tpt-row-label"><span class="tpt-label-spn"><span i18n="thankyou_compare_support"></span><!--<span class="tptl-spn-question" data-popup="phishingPopup"></span>--></span></div>
-                <div class="tpt-row-min-val"><i class="thanks-cross"></i></div>
-                <div class="tpt-row-full-val"><i class="thanks-tick"></i></div>
-            </div>
-
-            <div class="tp-table-foot cf">
-                <div class="tpt-foot-min" i18n="thankyou_installed"></div>
-                <div><a class="tptf-full-btn tpt-foot-full" href="https://adguard.com/download.html?utm_source=extension&aid=16593"><i class="pdy-want-btn-icon"></i><span i18n="thankyou_download"></span></a></div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div id="download" class="prefooter non-download-adguard-block">
-    <div class="wrap cf">
-        <div class="prefooter-do-you-like">
-            <span class="pd-you-like-text" i18n="options_do_you_like"></span>
-            <a class="pd-you-like-btn openExtensionStore" href="#"><i class="pdy-like-btn-icon"></i><span i18n="options_footer_like_us"></span></a>
-        </div>
-    </div>
-</div>
-
-<footer class="footer">
-    <div class="wrap cf">
-        <div class="footer-copy">&copy; Adguard 2009-2016</div>
-        <nav class="footer-menu">
-            <a class="footer-menu-item" href="https://adguard.com?utm_source=extension&aid=16593" target="_blank" i18n="options_site"></a>
-            <a class="footer-menu-item" href="#" target="_blank" i18n="options_blog" i18n-href="options_blog_link"></a>
-            <a class="footer-menu-item" href="https://forum.adguard.com?utm_source=extension&aid=16593" target="_blank" i18n="options_forum"></a>
-            <a class="footer-menu-item" href="https://adguard.com/feedback.html?utm_source=extension&aid=16593" target="_blank" i18n="options_feedback"></a>
-        </nav>
-    </div>
-</footer>
-
-<div id="resetStatsPopup" class="alert-attention updates-filter-popup" style="display: none;">
-    <div class="alert-attention-title" i18n="options_reset_stats_done"></div>
-</div>
-
-<div class="modal fade" id="subscriptionModal" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="subscriptionModalLabel">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
-                <div class="settings-page-title" i18n="options_modal_edit"></div>
-            </div>
-            <div class="modal-body">
-                <div id="groupsList">
+                <div class="links">
+                    <a href="https://adguard.com?utm_source=extension&aid=16593" target="_blank" i18n="options_site"></a>
+                    <a href="#" target="_blank" i18n="options_blog" i18n-href="options_blog_link"></a>
+                    <a href="https://forum.adguard.com?utm_source=extension&aid=16593" target="_blank" i18n="options_forum"></a>
+                    <a href="https://adguard.com/feedback.html?utm_source=extension&aid=16593" target="_blank" i18n="options_feedback"></a>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal" i18n="options_modal_cancel"></button>
-                <button id="submitSubscriptions" type="button" class="btn btn-primary" i18n="options_modal_save"></button>
-            </div>
         </div>
     </div>
 </div>
+<!--<header class="header">-->
+    <!--<div class="wrap cf">-->
+        <!--<a class="header-logo" href="">-->
+            <!--Adguard-->
+        <!--</a>-->
+        <!--<a class="header-like openExtensionStore" href="#"><i class="header-like-icon"></i><span i18n="options_like_us"></span></a>-->
+    <!--</div>-->
+<!--</header>-->
+<!--<nav class="top-menu">-->
+    <!--<div class="wrap">-->
+        <!--<a class="top-menu-item" href="#general-settings" i18n="options_general_settings"></a>-->
+        <!--<a class="top-menu-item" href="#antibanner" i18n="options_antibanner"></a>-->
+        <!--<a class="top-menu-item" href="#safebrowsing" i18n="options_safebrowsing"></a>-->
+        <!--<a class="top-menu-item" href="#whitelist" i18n="options_whitelist"></a>-->
+        <!--<a class="top-menu-item" href="#userfilter" i18n="options_userfilter"></a>-->
+        <!--<a class="top-menu-item" href="#miscellaneous-settings" i18n="options_miscellaneous_settings"></a>-->
+    <!--</div>-->
+<!--</nav>-->
+<!--<div class="settings-page">-->
 
-<div id="tooManySubscriptions" class="alert-topline" style="display: none;">
-    <div class="wrap">
-        <p i18n="options_too_many_filters_selected"></p>
-    </div>
-</div>
+    <!--<div class="wrap">-->
 
-<div id="tooManyRules" class="alert-topline" style="display: none;">
-    <div class="wrap">
-        <p i18n="options_content_blocker_overlimit"></p>
-    </div>
-</div>
+        <!--<div id="general-settings" class="settings-page-title" i18n="options_general_settings"></div>-->
+        <!--<div class="settings-page-table">-->
+            <!--<div class="s-page-table-row cf">-->
+                <!--<div class="sp-table-row-label" i18n="options_allow_acceptable_ads"></div>-->
+                <!--<input type="checkbox" class="sp-table-row-input" id="allowAcceptableAds"/>-->
+            <!--</div>-->
+            <!--<div class="s-page-table-row cf page-stats-switch-block">-->
+                <!--<div class="sp-table-row-label" i18n="options_show_blocked_ads_count"></div>-->
+                <!--<input type="checkbox" class="sp-table-row-input" id="showPageStatisticCheckbox"/>-->
+            <!--</div>-->
+            <!--<div class="s-page-table-row cf">-->
+                <!--<div class="sp-table-row-label" i18n="options_enable_autodetect_filter"></div>-->
+                <!--<input type="checkbox" class="sp-table-row-input" id="autodetectFiltersCheckbox"/>-->
+            <!--</div>-->
+        <!--</div>-->
 
-<div id="whitelist-overlay" style="display: none">
-    <div class='sp-lists-table-overlay hidden' i18n="options_whitelist_empty"></div>
-    <div class='sp-lists-table-overlay overlay-search hidden' i18n="options_searchlist_empty"></div>
-</div>
+        <!--<div id="antibanner" class="settings-page-title">-->
+            <!--<span i18n="options_antibanner"></span>-->
+            <!--<span i18n="options_antibanner_info" class="settings-page-title-info" style="display: none;"></span>-->
+        <!--</div>-->
+        <!--<div class="settings-page-table" id="antiBannerFiltersList">-->
+        <!--</div>-->
+        <!--<div class="settings-page-table" id="antiBannerFiltersListEmpty" style="display: none;">-->
+            <!--<div class="s-page-table-row cf active">-->
+                <!--<div class="sp-lists-filters-empty" i18n="options_antibanner_list_empty"></div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<a class="sp-lists-user-add no-icon">-->
+            <!--<span id="updateAntiBannerFilters" class="spl-user-add-spn" i18n="options_update_antibanner_filters"></span>-->
+            <!--<span class="spl-user-add-spn editAntiBannerFilters" i18n="options_edit_antibanner_filters"></span>-->
+        <!--</a>-->
 
-<div id="userlist-overlay" style="display: none">
-    <div class="sp-lists-table-overlay hidden" i18n="options_userlist_empty"></div>
-    <div class="sp-lists-table-overlay overlay-search hidden" i18n="options_searchlist_empty"></div>
-</div>
+        <!--<div id="safebrowsing" class="settings-page-title" i18n="options_safebrowsing"></div>-->
+        <!--<div class="settings-page-table">-->
+            <!--<div class="s-page-table-row cf">-->
+                <!--<div class="sp-table-row-label" i18n="options_safebrowsing_enabled"></div>-->
+                <!--<input type="checkbox" class="sp-table-row-input" id="safebrowsingEnabledCheckbox"/>-->
+            <!--</div>-->
+            <!--<div class="s-page-table-row cf">-->
+                <!--<div class="sp-table-row-label" i18n="options_safebrowsing_help"></div>-->
+                <!--<input type="checkbox" class="sp-table-row-input" id="sendSafebrowsingStatsCheckbox"/>-->
+            <!--</div>-->
+        <!--</div>-->
+
+        <!--<div class="settings-page-lists cf">-->
+            <!--<div id="whitelist" class="s-page-lists-user">-->
+                <!--<div class="sp-lists-user-title" i18n="options_whitelist"></div>-->
+                <!--<div class="sp-lists-user-descr" i18n="options_whitelist_description"></div>-->
+                <!--<div class="settings-page-table whitelist-table whitelist-mode-switch">-->
+                    <!--<div class="s-page-table-row cf">-->
+                        <!--<div class="sp-table-row-label" i18n="options_whitelist_inverse"></div>-->
+                        <!--<input type="checkbox" class="sp-table-row-input" id="changeDefaultWhiteListMode"/>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="sp-lists-user-table sp-lists-search-table">-->
+                    <!--<div class="spl-user-table-row cf">-->
+                        <!--<label for="white-search" i18n="options_whitelist_search"></label>-->
+
+                        <!--<div class="search-field">-->
+                            <!--<input type="text" id="white-search" i18n-plhr="options_whitelist_search_placeholder">-->
+                            <!--<a href="#" class="btn-search"></a>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="sp-lists-user-table" id="whiteListFilters">-->
+                <!--</div>-->
+                <!--<a class="sp-lists-user-add">-->
+                    <!--<span class="spl-user-add-spn addWhiteListFilter" i18n="options_whitelist_add_domain"></span>-->
+                    <!--<span id="clearWhiteListFilter" class="spl-user-add-spn" i18n="options_userfilter_clear"></span>-->
+                    <!--<span id="importWhiteListFilter" class="spl-user-add-spn" i18n="options_userfilter_import"></span>-->
+                    <!--<span id="exportWhiteListFilter" class="spl-user-add-spn" i18n="options_userfilter_export"></span>-->
+                    <!--<input type="file" id="importWhiteListFilterInput" style="display: none;"/>-->
+                <!--</a>-->
+            <!--</div>-->
+
+            <!--<div id="userfilter" class="s-page-lists-user">-->
+                <!--<div class="sp-lists-user-title" i18n="options_userfilter"></div>-->
+                <!--<div class="sp-lists-user-descr" i18n="options_userfilter_description"></div>-->
+                <!--<div class="sp-lists-user-table sp-lists-search-table">-->
+                    <!--<div class="spl-user-table-row cf">-->
+                        <!--<label for="user-search" i18n="options_userfilter_search"></label>-->
+
+                        <!--<div class="search-field">-->
+                            <!--<input type="text" id="user-search" i18n-plhr="options_userfilter_search_placeholder">-->
+                            <!--<a href="#" class="btn-search"></a>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="sp-lists-user-table" id="userFilters">-->
+                <!--</div>-->
+                <!--<a class="sp-lists-user-add">-->
+                    <!--<span class="spl-user-add-spn addUserFilter" i18n="options_userfilter_add_rule"></span>-->
+                    <!--<span id="clearUserFilter" class="spl-user-add-spn" i18n="options_userfilter_clear"></span>-->
+                    <!--<span id="importUserFilter" class="spl-user-add-spn" i18n="options_userfilter_import"></span>-->
+                    <!--<span id="exportUserFilter" class="spl-user-add-spn" i18n="options_userfilter_export"></span>-->
+                    <!--<input type="file" id="importUserFilterInput" style="display: none;"/>-->
+                <!--</a>-->
+            <!--</div>-->
+        <!--</div>-->
+
+        <!--<div id="miscellaneous-settings" class="settings-page-title" i18n="options_miscellaneous_settings"></div>-->
+        <!--<div class="settings-page-table">-->
+            <!--<div class="s-page-table-row cf">-->
+                <!--<div class="sp-table-row-label" i18n="options_use_optimized_filters"></div>-->
+                <!--<input type="checkbox" class="sp-table-row-input" id="useOptimizedFilters"/>-->
+            <!--</div>-->
+            <!--<div class="s-page-table-row cf">-->
+                <!--<div class="sp-table-row-label" i18n="options_collect_hit_stats"></div>-->
+                <!--<input type="checkbox" class="sp-table-row-input" id="enableHitsCount"/>-->
+            <!--</div>-->
+            <!--<div class="s-page-table-row cf">-->
+                <!--<div class="sp-table-row-label" i18n="options_show_context_menu"></div>-->
+                <!--<input type="checkbox" class="sp-table-row-input" id="enableShowContextMenu"/>-->
+            <!--</div>-->
+            <!--<div class="s-page-table-row cf">-->
+                <!--<div class="sp-table-row-label" i18n="options_show_adguard_full_version"></div>-->
+                <!--<input type="checkbox" class="sp-table-row-input" id="showInfoAboutAdguardFullVersion"/>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="sp-lists-user-add no-icon">-->
+            <!--<span id="openLog" class="spl-user-add-spn" i18n="options_open_log"></span>-->
+            <!--<span id="resetStats" class="spl-user-add-spn" i18n="options_reset_stats"></span>-->
+            <!--<a href="https://github.com/AdguardTeam/AdguardBrowserExtension/releases" target="_blank" class="spl-user-add-spn" i18n="options_open_changelog"></a>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
+
+<!--<div class="thanks-prefooter download-adguard-block">-->
+    <!--<div class="wrap">-->
+        <!--<div class="thanks-prefooter-title"></div>-->
+        <!--<div class="thanks-prefooter-table">-->
+            <!--<div class="tp-table-head cf">-->
+                <!--<div class="tpt-head-min" i18n="thankyou_compare_ext_title"></div>-->
+                <!--<div class="tpt-head-full"></div>-->
+            <!--</div>-->
+            <!--<div class="tp-table-row cf high">-->
+                <!--<div class="tpt-row-label"><span class="tpt-label-spn"><span i18n="thankyou_compare_blocked"></span>&lt;!&ndash;<span class="tptl-spn-question" data-popup="phishingPopup"></span>&ndash;&gt;</span></div>-->
+                <!--<div class="tpt-row-min-val" i18n="thankyou_compare_ext_blocking"></div>-->
+                <!--<div class="tpt-row-full-val" i18n="thankyou_compare_full_blocking"></div>-->
+            <!--</div>-->
+            <!--<div class="tp-table-row cf">-->
+                <!--<div class="tpt-row-label"><span class="tpt-label-spn"><span i18n="thankyou_compare_safebrowsing"></span>&lt;!&ndash;<span class="tptl-spn-question" data-popup="phishingPopup"></span>&ndash;&gt;</span></div>-->
+                <!--<div class="tpt-row-min-val"><i class="thanks-tick"></i></div>-->
+                <!--<div class="tpt-row-full-val"><i class="thanks-tick"></i></div>-->
+            <!--</div>-->
+            <!--<div class="tp-table-row cf parental-control-feature">-->
+                <!--<div class="tpt-row-label"><span class="tpt-label-spn"><span i18n="thankyou_compare_parent"></span>&lt;!&ndash;<span class="tptl-spn-question" data-popup="phishingPopup"></span>&ndash;&gt;</span></div>-->
+                <!--<div class="tpt-row-min-val"><i class="thanks-cross"></i></div>-->
+                <!--<div class="tpt-row-full-val"><i class="thanks-tick"></i></div>-->
+            <!--</div>-->
+            <!--<div class="tp-table-row cf">-->
+                <!--<div class="tpt-row-label"><span class="tpt-label-spn"><span i18n="thankyou_compare_safebrowsing_attack"></span>&lt;!&ndash;<span class="tptl-spn-question" data-popup="phishingPopup"></span>&ndash;&gt;</span></div>-->
+                <!--<div class="tpt-row-min-val"><i class="thanks-cross"></i></div>-->
+                <!--<div class="tpt-row-full-val"><i class="thanks-tick"></i></div>-->
+            <!--</div>-->
+            <!--<div class="tp-table-row cf">-->
+                <!--<div class="tpt-row-label"><span class="tpt-label-spn"><span i18n="thankyou_compare_any_browser"></span>&lt;!&ndash;<span class="tptl-spn-question" data-popup="phishingPopup"></span>&ndash;&gt;</span></div>-->
+                <!--<div class="tpt-row-min-val"><i class="thanks-cross"></i></div>-->
+                <!--<div class="tpt-row-full-val"><i class="thanks-tick"></i></div>-->
+            <!--</div>-->
+            <!--<div class="tp-table-row cf">-->
+                <!--<div class="tpt-row-label"><span class="tpt-label-spn"><span i18n="thankyou_compare_traffic"></span>&lt;!&ndash;<span class="tptl-spn-question" data-popup="phishingPopup"></span>&ndash;&gt;</span></div>-->
+                <!--<div class="tpt-row-min-val"><i class="thanks-cross"></i></div>-->
+                <!--<div class="tpt-row-full-val"><i class="thanks-tick"></i></div>-->
+            <!--</div>-->
+            <!--<div class="tp-table-row cf">-->
+                <!--<div class="tpt-row-label"><span class="tpt-label-spn"><span i18n="thankyou_compare_increase"></span>&lt;!&ndash;<span class="tptl-spn-question" data-popup="phishingPopup"></span>&ndash;&gt;</span></div>-->
+                <!--<div class="tpt-row-min-val"><i class="thanks-cross"></i></div>-->
+                <!--<div class="tpt-row-full-val"><i class="thanks-tick"></i></div>-->
+            <!--</div>-->
+            <!--<div class="tp-table-row cf">-->
+                <!--<div class="tpt-row-label"><span class="tpt-label-spn"><span i18n="thankyou_compare_support"></span>&lt;!&ndash;<span class="tptl-spn-question" data-popup="phishingPopup"></span>&ndash;&gt;</span></div>-->
+                <!--<div class="tpt-row-min-val"><i class="thanks-cross"></i></div>-->
+                <!--<div class="tpt-row-full-val"><i class="thanks-tick"></i></div>-->
+            <!--</div>-->
+
+            <!--<div class="tp-table-foot cf">-->
+                <!--<div class="tpt-foot-min" i18n="thankyou_installed"></div>-->
+                <!--<div><a class="tptf-full-btn tpt-foot-full" href="https://adguard.com/download.html?utm_source=extension&aid=16593"><i class="pdy-want-btn-icon"></i><span i18n="thankyou_download"></span></a></div>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
+
+<!--<div id="download" class="prefooter non-download-adguard-block">-->
+    <!--<div class="wrap cf">-->
+        <!--<div class="prefooter-do-you-like">-->
+            <!--<span class="pd-you-like-text" i18n="options_do_you_like"></span>-->
+            <!--<a class="pd-you-like-btn openExtensionStore" href="#"><i class="pdy-like-btn-icon"></i><span i18n="options_footer_like_us"></span></a>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
+
+<!--<footer class="footer">-->
+    <!--<div class="wrap cf">-->
+        <!--<div class="footer-copy">&copy; Adguard 2009-2016</div>-->
+        <!--<nav class="footer-menu">-->
+            <!--<a class="footer-menu-item" href="https://adguard.com?utm_source=extension&aid=16593" target="_blank" i18n="options_site"></a>-->
+            <!--<a class="footer-menu-item" href="#" target="_blank" i18n="options_blog" i18n-href="options_blog_link"></a>-->
+            <!--<a class="footer-menu-item" href="https://forum.adguard.com?utm_source=extension&aid=16593" target="_blank" i18n="options_forum"></a>-->
+            <!--<a class="footer-menu-item" href="https://adguard.com/feedback.html?utm_source=extension&aid=16593" target="_blank" i18n="options_feedback"></a>-->
+        <!--</nav>-->
+    <!--</div>-->
+<!--</footer>-->
+
+<!--<div id="resetStatsPopup" class="alert-attention updates-filter-popup" style="display: none;">-->
+    <!--<div class="alert-attention-title" i18n="options_reset_stats_done"></div>-->
+<!--</div>-->
+
+<!--<div class="modal fade" id="subscriptionModal" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="subscriptionModalLabel">-->
+    <!--<div class="modal-dialog">-->
+        <!--<div class="modal-content">-->
+            <!--<div class="modal-header">-->
+                <!--<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>-->
+                <!--<div class="settings-page-title" i18n="options_modal_edit"></div>-->
+            <!--</div>-->
+            <!--<div class="modal-body">-->
+                <!--<div id="groupsList">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="modal-footer">-->
+                <!--<button type="button" class="btn btn-default" data-dismiss="modal" i18n="options_modal_cancel"></button>-->
+                <!--<button id="submitSubscriptions" type="button" class="btn btn-primary" i18n="options_modal_save"></button>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
+
+<!--<div id="tooManySubscriptions" class="alert-topline" style="display: none;">-->
+    <!--<div class="wrap">-->
+        <!--<p i18n="options_too_many_filters_selected"></p>-->
+    <!--</div>-->
+<!--</div>-->
+
+<!--<div id="tooManyRules" class="alert-topline" style="display: none;">-->
+    <!--<div class="wrap">-->
+        <!--<p i18n="options_content_blocker_overlimit"></p>-->
+    <!--</div>-->
+<!--</div>-->
+
+<!--<div id="whitelist-overlay" style="display: none">-->
+    <!--<div class='sp-lists-table-overlay hidden' i18n="options_whitelist_empty"></div>-->
+    <!--<div class='sp-lists-table-overlay overlay-search hidden' i18n="options_searchlist_empty"></div>-->
+<!--</div>-->
+
+<!--<div id="userlist-overlay" style="display: none">-->
+    <!--<div class="sp-lists-table-overlay hidden" i18n="options_userlist_empty"></div>-->
+    <!--<div class="sp-lists-table-overlay overlay-search hidden" i18n="options_searchlist_empty"></div>-->
+<!--</div>-->
 
 </body>
 </html>
