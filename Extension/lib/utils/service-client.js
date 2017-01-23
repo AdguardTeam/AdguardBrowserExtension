@@ -555,19 +555,27 @@ adguard.backend = (function (adguard) {
         return requestUrl && (requestUrl.indexOf('/adguard-ajax-crossdomain-hack/') > 0 || requestUrl.indexOf('/adguard-ajax-api/') > 0);
     };
 
+    /**
+     * Configures backend's URLs
+     * @param configuration Configuration object: {filtersMetadataUrl: '...', filterRulesUrl: '...'}
+     */
     var configure = function (configuration) {
         var filtersMetadataUrl = configuration.filtersMetadataUrl;
+        if (filtersMetadataUrl) {
+            Object.defineProperty(settings, 'filtersMetadataUrl', {
+                get: function () {
+                    return filtersMetadataUrl;
+                }
+            });
+        }
         var filterRulesUrl = configuration.filterRulesUrl;
-        Object.defineProperty(settings, 'filtersMetadataUrl', {
-            get: function () {
-                return filtersMetadataUrl;
-            }
-        });
-        Object.defineProperty(settings, 'filterRulesUrl', {
-            get: function () {
-                return filterRulesUrl;
-            }
-        });
+        if (filterRulesUrl) {
+            Object.defineProperty(settings, 'filterRulesUrl', {
+                get: function () {
+                    return filterRulesUrl;
+                }
+            });
+        }
     };
 
     return {

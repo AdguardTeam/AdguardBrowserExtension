@@ -131,7 +131,7 @@
      * @param configuration Configuration object: {filtersMetadataUrl: '...', filterRulesUrl: '...'}
      */
     function configureFiltersUrl(configuration) {
-        if (!configuration.filtersMetadataUrl || !configuration.filterRulesUrl) {
+        if (!configuration.filtersMetadataUrl && !configuration.filterRulesUrl) {
             return;
         }
         adguard.backend.configure({
