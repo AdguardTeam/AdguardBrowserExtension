@@ -36,16 +36,6 @@
     }
 
     /**
-     * Validates configuration
-     * @param configuration Configuration object
-     */
-    function validateConfiguration(configuration) {
-        validateFiltersConfiguration(configuration.filters);
-        validateDomains(configuration.whitelist, 'whitelist');
-        validateDomains(configuration.blacklist, 'blacklist');
-    }
-
-    /**
      * Validates filters identifiers
      * @param filters Array
      */
@@ -85,13 +75,16 @@
     /**
      * Configures white and black lists.
      * If blacklist is not null filtration will be in inverted mode, otherwise in default mode.
-     * @param configuration Filtration configuration: {whitelist: [], blacklist: []}
+     * @param configuration Configuration object: {whitelist: [], blacklist: []}
      */
     function configureWhiteBlackLists(configuration) {
 
         if (!configuration.blacklist && !configuration.whitelist) {
             return;
         }
+
+        validateDomains(configuration.whitelist, 'whitelist');
+        validateDomains(configuration.blacklist, 'blacklist');
 
         var domains;
         if (configuration.blacklist) {
@@ -103,6 +96,48 @@
         }
         adguard.whitelist.clearWhiteList();
         adguard.whitelist.addToWhiteListArray(domains);
+    }
+
+    /**
+     * Configures enabled filters
+     * @param configuration Configuration object: {filters: [...]}
+     * @param callback
+     */
+    function configureFilters(configuration, callback) {
+
+        if (!configuration.filters) {
+            callback();
+            return;
+        }
+
+        assertFiltersInitialized();
+        validateFiltersConfiguration(configuration.filters);
+
+        var filterIds = configuration.filters;
+        adguard.filters.addAndEnableFilters(filterIds, function () {
+            var enabledFilters = adguard.filters.getEnabledFilters();
+            for (var i = 0; i < enabledFilters.length; i++) {
+                var filter = enabledFilters[i];
+                if (filterIds.indexOf(filter.filterId) < 0) {
+                    adguard.filters.disableFilter(filter.filterId);
+                }
+            }
+            callback();
+        });
+    }
+
+    /**
+     * Configures backend's URLs
+     * @param configuration Configuration object: {filtersMetadataUrl: '...', filterRulesUrl: '...'}
+     */
+    function configureFiltersUrl(configuration) {
+        if (!configuration.filtersMetadataUrl || !configuration.filterRulesUrl) {
+            return;
+        }
+        adguard.backend.configure({
+            filtersMetadataUrl: configuration.filtersMetadataUrl,
+            filterRulesUrl: configuration.filterRulesUrl
+        });
     }
 
     /**
@@ -131,30 +166,9 @@
 
         callback = callback || noOpFunc;
 
-        var callbackWrapper = function (configuration) {
-            configureWhiteBlackLists(configuration);
-            callback();
-        };
-
-        assertFiltersInitialized();
-        validateConfiguration(configuration);
-
-        if (configuration.filters) {
-            var filterIds = configuration.filters || [];
-            adguard.filters.addAndEnableFilters(filterIds, function () {
-                var enabledFilters = adguard.filters.getEnabledFilters();
-                for (var i = 0; i < enabledFilters.length; i++) {
-                    var filter = enabledFilters[i];
-                    if (filterIds.indexOf(filter.filterId) < 0) {
-                        adguard.filters.disableFilter(filter.filterId);
-                    }
-                }
-                callbackWrapper(configuration);
-            });
-            return;
-        }
-
-        callbackWrapper(configuration);
+        configureFiltersUrl(configuration);
+        configureWhiteBlackLists(configuration);
+        configureFilters(configuration, callback);
     };
 
     global.adguardApi = {

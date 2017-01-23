@@ -53,12 +53,12 @@ adguard.backend = (function (adguard) {
         },
 
         // URL for downloading AG filters
-        get getFilterRulesUrl() {
+        get filterRulesUrl() {
             return this.filtersUrl + "/filters/{filter_id}.txt";
         },
 
         // URL for downloading optimized AG filters
-        get getOptimizedFilterRulesUrl() {
+        get optimizedFilterRulesUrl() {
             return this.filtersUrl + "/filters/{filter_id}_optimized.txt";
         },
 
@@ -241,7 +241,7 @@ adguard.backend = (function (adguard) {
      * @private
      */
     function getUrlForDownloadFilterRules(filterId, useOptimizedFilters) {
-        var url = useOptimizedFilters ? settings.getOptimizedFilterRulesUrl : settings.getFilterRulesUrl;
+        var url = useOptimizedFilters ? settings.optimizedFilterRulesUrl : settings.filterRulesUrl;
         return adguard.utils.strings.replaceAll(url, '{filter_id}', filterId);
     }
 
@@ -555,6 +555,21 @@ adguard.backend = (function (adguard) {
         return requestUrl && (requestUrl.indexOf('/adguard-ajax-crossdomain-hack/') > 0 || requestUrl.indexOf('/adguard-ajax-api/') > 0);
     };
 
+    var configure = function (configuration) {
+        var filtersMetadataUrl = configuration.filtersMetadataUrl;
+        var filterRulesUrl = configuration.filterRulesUrl;
+        Object.defineProperty(settings, 'filtersMetadataUrl', {
+            get: function () {
+                return filtersMetadataUrl;
+            }
+        });
+        Object.defineProperty(settings, 'filterRulesUrl', {
+            get: function () {
+                return filterRulesUrl;
+            }
+        });
+    };
+
     return {
 
         adguardAppUrl: settings.adguardAppUrl,
@@ -580,7 +595,9 @@ adguard.backend = (function (adguard) {
         trackInstall: trackInstall,
         sendHitStats: sendHitStats,
 
-        isAdguardAppRequest: isAdguardAppRequest
+        isAdguardAppRequest: isAdguardAppRequest,
+
+        configure: configure
     };
 
 })(adguard);
