@@ -744,6 +744,8 @@ PageController.prototype = {
         input.on('keypress', function (e) {
             if (e.keyCode == 13) {
                 e.preventDefault();
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/521#issuecomment-274470832
+                input.blur();
                 onSaveClicked();
             }
         });
