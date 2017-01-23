@@ -27,7 +27,8 @@ browser.webNavigation.onCreatedNavigationTarget.addListener(function (details) {
         return;
     }
 
-    var referrerUrl = framesMap.getMainFrameUrl(sourceTab);
+    // webRequest.onBeforeRequest event may hasn't been received yet.
+    var referrerUrl = framesMap.getMainFrameUrl(sourceTab) || details.url;
     if (!UrlUtils.isHttpRequest(referrerUrl)) {
         return;
     }
