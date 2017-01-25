@@ -115,7 +115,7 @@
                 longest = part;
             }
         }
-        return longest.toLowerCase();
+        return longest ? longest.toLowerCase() : null;
     }
 
     /**
@@ -163,7 +163,7 @@
             }
         }
 
-        return token;
+        return token ? token.toLowerCase() : null;
     }
 
     /**
@@ -183,11 +183,24 @@
             whiteListRule = true;
         }
 
-        var optionsIndex = urlRuleText.lastIndexOf(UrlFilterRule.OPTIONS_DELIMITER);
-        if (optionsIndex >= 0) {
-            var optionsBase = urlRuleText;
-            urlRuleText = urlRuleText.substring(0, optionsIndex);
-            options = optionsBase.substring(optionsIndex + 1);
+        var parseOptions = true;
+
+        /**
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/517
+         * regexp rule may contain dollar sign which also is options delimiter
+         */
+        if (adguard.utils.strings.startWith(urlRuleText, api.UrlFilterRule.MASK_REGEX_RULE) &&
+            adguard.utils.strings.endWith(urlRuleText, api.UrlFilterRule.MASK_REGEX_RULE)) {
+            parseOptions = false;
+        }
+
+        if (parseOptions) {
+            var optionsIndex = urlRuleText.lastIndexOf(UrlFilterRule.OPTIONS_DELIMITER);
+            if (optionsIndex >= 0) {
+                var optionsBase = urlRuleText;
+                urlRuleText = urlRuleText.substring(0, optionsIndex);
+                options = optionsBase.substring(optionsIndex + 1);
+            }
         }
 
         // Transform to punycode
