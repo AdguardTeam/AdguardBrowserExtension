@@ -1,6 +1,6 @@
-! Checksum: hnoTa/m5394HG2XJaxzZZQ
-! Version: 1.0.9.17
-! TimeUpdated: 2017-01-20T19:02:27.349+04:00
+! Checksum: FbEcQCXeyfvQpDyqiXxmPg
+! Version: 1.0.9.29
+! TimeUpdated: 2017-01-25T15:02:29.963+04:00
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on webpages including cookie notices third-party widgets and in-page popups.
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
@@ -177,6 +177,7 @@ povarenok.ru##.header-socials
 /wp-content/*/an-temp/*
 @@||ds.bitpit.xyz/advertise.js
 @@||ds.bitpit.xyz/ad-top/advertise.js
+||androidexplained.com/wp-content/uploads/*/*.js
 gamedev.net###gd
 rutvet.ru##div[data-type="anti-abp"]
 alcpu.com##div[id$="ad-blocked"]
@@ -467,6 +468,8 @@ pornreactor.cc,joyreactor.cc,reactor.cc#%#Object.defineProperty(document, 'write
 aol.com##.game-pre-load
 howwindows.ru#%#window.canRunAds = true;
 @@||howwindows.ru/wp-content/themes/howwindows/js/ads.js
+###CookieConsent
+###cookie-info-container
 ###cookies_banner
 ###CookieAdvice
 ##.agree-cookie-wrap
@@ -2101,6 +2104,11 @@ _europecookielaw.
 ||consent.truste.com^$third-party
 ||iubenda.com^$third-party
 ||r42tag.com^$third-party
+systemexplorer.net###cookie_statement
+aklamio.com##.alert.cookie
+fussball.de##div[data-ng-click="closeFlyout()"]
+dict.com##.lck-wrapper
+luxuryestate.com###footerCookieAlertContainer
 eforum.de###cbar
 ray-ban.com###rb_cookieBox
 alternativeto.net###bottomNotifierContent
@@ -2383,6 +2391,7 @@ vi.nl#%#AG_onLoad(function() { if(window.location.href.indexOf("cookies") != -1)
 ziekenhuis.nl#%#AG_onLoad(function() { setTimeout(function() {var check = document.getElementsByClassName('cookiewall')[0]; if (check){document.cookie = "acceptcookies=true"; location.reload();}; }, 300); });
 thenewdaily.com.au#%#document.cookie = "tnd_subscribe_shown=true";
 ad.nl#%#AG_onLoad(function() { if (document.cookie.indexOf('nl_cookiewall_version') ==-1) { document.cookie = "nl_cookiewall_version=1"; location.reload(); } });
+@@||privacy.www.nu.nl/script/cookiebar.js
 @@||deepviz.com/js/jquery.cookieBar.js
 emedicinehealth.com#@#.cookie-consent
 @@||sephora.fr/eStore-webMaster/js/common/acceptCookies.js
@@ -2487,6 +2496,7 @@ pleer.ru##.mainBlock.pie[-ext-has=".banners_close"]
 buzzhand.com#$#.mash-lightbox[-ext-has="div"] { display: none!important; }
 buzzhand.com#$#body[-ext-has="div"] { overflow: visible!important; }
 mail.ru##.tooltip div.tooltip__box[-ext-has="div"]
+link-base.org##img[width="460px"][height="59px"]
 ||ukr-today.com/templates/ukrtoday/banner/
 ukr-today.com##.banner_280
 ukr-today.com##.banner_728
@@ -2628,6 +2638,7 @@ sportlive.site##div > div[style$="text-align: center;"] > span
 ukr-today.com##.soc_vidgets
 panzehir.net###sidebar > center > a[target$="_blank"]
 panzehir.net###sidebar > center > b
+bundesliga.de###smartbanner
 frankfurt-airport.com##.fra_js_app_banner
 opodo.de###smart-banner
 reddit.com##.NavFrame > .DualPartInterstitial
@@ -2738,6 +2749,8 @@ momondo.de#$##mobile-splash-popup { display: none!important; }
 /wp-content/plugins/arscode-ninja-popups/*
 /wp-content/plugins/facebook-fanbox-popup/*
 ||optnmnstr.com^$third-party
+forum.donanimhaber.com##.smtakip
+aznews.az##.fixed_iframe
 yts.ac###fb-back
 cosmo.ru###widget-collection-overlay
 cosmo.ru###widget-collection-popup
@@ -3130,6 +3143,7 @@ zr.ru#%#document.cookie = "zrPushSubsPopUp=1";
 ||ndtv.com/popupNotification.aspx
 ||superzarabotki.com/notify/
 ||tsn.ua/static/js/push.js
+transfermarkt.de##div[style="margin-top:20px;"] > div.fl
 vwcorrado.de##div[id^="edit"] > div.vbmenu_popup+table[style="margin-top:6px;"]
 mobafire.com###sidebar-free-champs+div.box-shadow.mb10
 heroesfire.com,vaingloryfire.com,pgfire.net,owfire.com##.sidebar-feature.add.box
@@ -3523,6 +3537,11 @@ geektimes.ru,habrahabr.ru##.promo-block
 habrahabr.ru##.company_widget > .announce
 ||filearchive.cnews.ru/*promo$media,domain=cnews.ru
 cnews.ru##.video.img-block
+computerbild.de##.newsletterteaser
+transfermarkt.de##.newsletter-anzeige
+m.heise.de##.mheise--preisvergleich-banner
+go.rtl2.de##.fixed-footer
+meduza.io##.MediaMaterial-banner
 reddit.com##.content > section.newsletterbar
 t3n.de##a[href="https://t3n.de/store/mediadaten/"]
 picjumbo.com##.promo_line
@@ -3567,7 +3586,7 @@ gamer-info.com#$##all-content-container { padding: 10px!important; background-co
 softpedia.com#$#iframe.swipebox-rightxd[id="relcontent"] { top: 60px!important; height: 535px!important; }
 letitbit.net##img[class="mcmp_postrol_img"]
 newsweek.com##iframe[src="http://sns.europe.newsweek.com/newsletter?popup=1"]
-lostfilm.tv##div[style="width:100%;height:316px;cursor:pointer"]
+lostfilm.tv###MainDiv > div[style][id="Onwrapper"] > div > a
 lostfilm.tv#$#body { background-image: none!important; }
 lostfilm.tv#$#body { padding-top: 45px!important; }
 delta.lostfilm.tv##.mesto

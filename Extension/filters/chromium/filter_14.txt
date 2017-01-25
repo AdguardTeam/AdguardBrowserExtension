@@ -1,6 +1,6 @@
-! Checksum: +1FE8DbOdLGfK1NRUmrfJQ
-! Version: 1.0.9.17
-! TimeUpdated: 2017-01-20T19:02:27.349+04:00
+! Checksum: nPPygc7Yqy1D77CiZvQ4cg
+! Version: 1.0.9.29
+! TimeUpdated: 2017-01-25T15:02:29.963+04:00
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on webpages including cookie notices third-party widgets and in-page popups.
 ! Title: Adguard Annoyances Filter
@@ -309,6 +309,7 @@ povarenok.ru##.header-socials
 @@||ds.bitpit.xyz/advertise.js
 @@||ds.bitpit.xyz/ad-top/advertise.js
 !
+||androidexplained.com/wp-content/uploads/*/*.js
 gamedev.net###gd
 rutvet.ru##div[data-type="anti-abp"]
 alcpu.com##div[id$="ad-blocked"]
@@ -615,6 +616,8 @@ howwindows.ru#%#window.canRunAds = true;
 !#######################################################
 !######### General element hiding rules ################
 !#######################################################
+###CookieConsent
+###cookie-info-container
 ###cookies_banner
 ###CookieAdvice
 ##.agree-cookie-wrap
@@ -2255,6 +2258,11 @@ _europecookielaw.
 !#######################################################
 !######### Rules for specific sites ####################
 !#######################################################
+systemexplorer.net###cookie_statement
+aklamio.com##.alert.cookie
+fussball.de##div[data-ng-click="closeFlyout()"]
+dict.com##.lck-wrapper
+luxuryestate.com###footerCookieAlertContainer
 eforum.de###cbar
 ray-ban.com###rb_cookieBox
 alternativeto.net###bottomNotifierContent
@@ -2553,6 +2561,8 @@ ad.nl#%#AG_onLoad(function() { if (document.cookie.indexOf('nl_cookiewall_versio
 !#######################################################
 !######### White list. Fixing filtering errors #########
 !#######################################################
+! nu.nl - excluded it, because cookie acceptation take a lot of time
+@@||privacy.www.nu.nl/script/cookiebar.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3563
 @@||deepviz.com/js/jquery.cookieBar.js
 ! https://forum.adguard.com/index.php?threads/emedicinehealth-com.15924/
@@ -2730,6 +2740,7 @@ mail.ru##.tooltip div.tooltip__box[-ext-has="div"]
 !
 !--- Ads ---
 !
+link-base.org##img[width="460px"][height="59px"]
 ||ukr-today.com/templates/ukrtoday/banner/
 ukr-today.com##.banner_280
 ukr-today.com##.banner_728
@@ -2878,6 +2889,7 @@ panzehir.net###sidebar > center > b
 !#######################################################
 !######### Banners of mobile apps for the sites ########
 !#######################################################
+bundesliga.de###smartbanner
 frankfurt-airport.com##.fra_js_app_banner
 opodo.de###smart-banner
 reddit.com##.NavFrame > .DualPartInterstitial
@@ -3002,6 +3014,8 @@ momondo.de#$##mobile-splash-popup { display: none!important; }
 !
 ! Specific sites
 !
+forum.donanimhaber.com##.smtakip
+aznews.az##.fixed_iframe
 yts.ac###fb-back
 cosmo.ru###widget-collection-overlay
 cosmo.ru###widget-collection-popup
@@ -3426,6 +3440,7 @@ zr.ru#%#document.cookie = "zrPushSubsPopUp=1";
 !
 !######### Remains of ads
 !
+transfermarkt.de##div[style="margin-top:20px;"] > div.fl
 vwcorrado.de##div[id^="edit"] > div.vbmenu_popup+table[style="margin-top:6px;"]
 mobafire.com###sidebar-free-champs+div.box-shadow.mb10
 heroesfire.com,vaingloryfire.com,pgfire.net,owfire.com##.sidebar-feature.add.box
@@ -3938,6 +3953,11 @@ habrahabr.ru##.company_widget > .announce
 ||filearchive.cnews.ru/*promo$media,domain=cnews.ru
 cnews.ru##.video.img-block
 !
+computerbild.de##.newsletterteaser
+transfermarkt.de##.newsletter-anzeige
+m.heise.de##.mheise--preisvergleich-banner
+go.rtl2.de##.fixed-footer
+meduza.io##.MediaMaterial-banner
 reddit.com##.content > section.newsletterbar
 t3n.de##a[href="https://t3n.de/store/mediadaten/"]
 picjumbo.com##.promo_line
@@ -3991,7 +4011,7 @@ letitbit.net##img[class="mcmp_postrol_img"]
 ! newsweek.com - hide the popup which limits the number of articles that can be read
 newsweek.com##iframe[src="http://sns.europe.newsweek.com/newsletter?popup=1"]
 ! lostfilm.tv - remove background with logo, top padding
-lostfilm.tv##div[style="width:100%;height:316px;cursor:pointer"]
+lostfilm.tv###MainDiv > div[style][id="Onwrapper"] > div > a
 lostfilm.tv#$#body { background-image: none!important; }
 lostfilm.tv#$#body { padding-top: 45px!important; }
 !

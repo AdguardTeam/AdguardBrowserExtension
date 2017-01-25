@@ -1,6 +1,6 @@
-! Checksum: ZOeh+AizABUmDeJhBqhdBg
-! Version: 1.0.2.17
-! TimeUpdated: 2017-01-19T09:02:00.708+04:00
+! Checksum: VOu1OFvV72F7P0JKCkgUQQ
+! Version: 1.0.2.21
+! TimeUpdated: 2017-01-25T15:02:10.399+04:00
 ! Title: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! Title: Adguard Safari Filter
@@ -77,6 +77,11 @@
 @@||hentai-id.tv^$generichide
 !*
 !***
+! https://github.com/AdguardTeam/AdguardFilters/issues/4189
+@@||websetnet.com$elemhide
+@@||websetnet.r.worldssl.net/wp-content/themes/mts_ad_sense/js/ads.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/4183
+@@||phonearena.com^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3849
 @@google$domain=focus.de,script
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3109
@@ -103,7 +108,7 @@
 ! https://forum.adguard.com/index.php?threads/12421/
 @@||sadeempc.com^$generichide
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1309
-@@||bild.de^$elemhide
+@@||bild.de^$generichide
 @@||smartadserver.com/diff/*/partners/$domain=bild.de
 @@||smartadserver.com/diff/*/smartad.js$domain=bild.de
 @@||sascdn.com^$domain=bild.de,script
@@ -367,9 +372,6 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 @@||google-analytics.com/plugins/ua/ec.js^$domain=cosstores.com
 ! https://github.com/AdguardTeam/AdguardDNS/issues/109
 @@||ad.admitad.com/*/?subid=*&ulp=
-! https://github.com/AdguardTeam/AdguardFilters/issues/3986
-@@||googlevideo.com/videoplayback?
-@@||youtube.com/get_video_info?
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3898
 ||fls-na.amazon.com^
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3879

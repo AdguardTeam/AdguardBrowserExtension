@@ -1,6 +1,6 @@
-! Checksum: ye7vF1qerJQnMtwn1Sa70A
-! Version: 1.0.6.74
-! TimeUpdated: 2017-01-20T09:09:35.209+04:00
+! Checksum: 2anEz2dwteSlON/bbshGrg
+! Version: 1.0.6.81
+! TimeUpdated: 2017-01-24T18:01:45.521+04:00
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
 #%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
@@ -13,6 +13,8 @@
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+||appwall.tv2phone.cn^
+||ads.pdbarea.com^
 ||sdk.starbolt.io^
 ||mobads4app.com^
 ||50.17.161.250/appodeal/
@@ -724,7 +726,8 @@ delfi.ee#@#.adbanner
 delfi.ee#%#Object.defineProperty(window, 'adblock_detect_run', { get: function() { return true; } });
 m.ndtv.com#@#.ad300
 m.ndtv.com#%#Object.defineProperty(window, 'canRunAdsN', { get: function() { return false; } });
-@@||bild.de^$elemhide
+@@||bild.de^$generichide
+@@||cdn1.smartadserver.com/diff/251/divscripte/adplayer.css$domain=bild.de
 @@||smartadserver.com/diff/*/partners/$domain=bild.de
 @@||smartadserver.com/diff/*/smartad.js$domain=bild.de
 @@||sascdn.com^$domain=bild.de,script
@@ -772,6 +775,7 @@ deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important
 .cn/?ss=
 /adfurikun/*
 @@||tf-robots.nl^$elemhide,jsinject,content
+@@||mc.yandex.ru^$app=ru.yandex.weatherplugin
 @@||google-analytics.com/plugins/ua/ec.js$domain=saturn.de
 @@||google-analytics.com/analytics.js$domain=saturn.de
 @@||googletagmanager.com/gtm.js$domain=saturn.de
@@ -866,6 +870,9 @@ m.auto.ru##.card.i-bem > div[class^="_"] > div[class^="_"]
 m.auto.ru##.index.i-bem > div[class]:not([data-bem])
 m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"])
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
+forums.androidcentral.com##.adunit
+forums.androidcentral.com##.homeforums >div.forumbit_nopost+div[align="center"]
+forums.androidcentral.com##.threadbit+li.ui-body-null
 ||youtube.com/_get_ads?
 babycenter.de###topAdContainerMobile
 opodo.de###appLayer
@@ -1048,6 +1055,7 @@ login.wi-fi.ru#%#window.isPremium = true;
 ||wi-fi.ru/ad_video/
 ||wi-fi.ru^$script,third-party
 @@||googleads.g.doubleclick.net/mads/static/mad/sdk/native/*/sdk-core-v40-impl.js$app=com.devexpert.weather
+||graph.facebook.com^$app=com.hornet.android
 ||graph.facebook.com^$app=com.jrtstudio.AnotherMusicPlayer
 ||graph.facebook.com^$app=ferp.android
 ||graph.facebook.com^$app=io.casper.android
@@ -1061,7 +1069,9 @@ login.wi-fi.ru#%#window.isPremium = true;
 ||graph.facebook.com^$app=com.laurencedawson.reddit_sync
 ||graph.facebook.com^$app=com.mobilefootie.wc2010
 ||graph.facebook.com^$app=com.mobilesrepublic.appy
+||graph.facebook.com^$app=com.mobilesrepublic.appygeek
 ||graph.facebook.com^$app=fr.meteo
+||graph.facebook.com^$app=com.xda.labs.play
 @@||engine.widespace.com/map/provisioning?appId=com.sofoot$app=com.sofoot
 ||banners.mobile.yandex.net^
 ||banners-slb.mobile.yandex.net^

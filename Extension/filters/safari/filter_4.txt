@@ -1,6 +1,6 @@
-! Checksum: hxIV1nkhf9k00uq09ZBfmg
-! Version: 1.0.16.61
-! TimeUpdated: 2017-01-20T19:01:01.682+04:00
+! Checksum: qlJWThW0WHsbLwp/mcPGCA
+! Version: 1.0.16.77
+! TimeUpdated: 2017-01-25T12:00:47.420+04:00
 ! Title: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
 ! Title: Adguard Social Media Filter
@@ -245,6 +245,7 @@ lj_bookmarklet
 !
 ! Extended CSS rules
 !
+waz.de,nrz.de,wp.de,wr.de,ikz-online.de##.content-triple__column[-ext-has=".fb_iframe_widget"]
 filmizlef.net##section.widget[-ext-has=".g-page"]
 filmrax.com##.Widget[-ext-has='.g-page']
 disk.yandex.ru,disk.yandex.by,disk.yandex.ua,kz##.popup-share__item-group div.popup-share__item:not([-ext-has=".icon_social_qr"])
@@ -324,6 +325,10 @@ takprosto.cc#%#document.cookie = "popup_displayed=true";
 !-------------------
 !-------CSS---------
 !-------------------
+! https://forum.adguard.com/index.php?threads/http-muzikindirco-com.18955/
+muzikindirco.com#$#.track-faq {padding-top: 60px!important;}
+! https://forum.adguard.com/index.php?threads/18884/
+kartal24.com#$#.adsbygoogle { position: absolute!important; left: -3000px!important; }
 ! https://forum.adguard.com/index.php?threads/16636/
 workingkeys.org#$#.onp-sl-content { display: block!important; }
 ! https://forum.adguard.com/index.php?threads/14740/
@@ -358,6 +363,27 @@ softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ||mimimi.tv/?*=*&_=
 ||k2nblog.com/?*=*&_=
 !
+songtexte.com##.mobileShare
+en.actualitix.com###text-html-widget-4:nth-child(3)
+gutezitate.com##a[onclick^="sbWindow('http://www.facebook.com"]
+fussball.de##.in-page-share
+fussball.de###sharing
+transfermarkt.de###socialMediaLeisteMobilSticky
+sozlerisozu.com###share-button-templatoid
+evrenselfilmler.com##.share
+evrenselfilmler.com###menuContainer + * > div[style*="710px"]
+sozlerle.com###floating-box-wrapper
+muzikindirco.com##.socials-share
+muzikindirco.com##.fb-comment
+sarkisarki.com###konular > .icerik + .kutu
+kartal24.com##.facebook
+kartal24.com##.twitter
+derwesten.de##.socialbar
+mashable.com##.follow-channel
+mashable.com##.microcontent-shares
+progorod59.ru##.article__likes-title
+lifehacker.ru##.widgets-above-comments
+hdfilmsitesi.com##.film-share
 tekparcafullizle1.com##span[class$="_share_box"]
 sinemadafilmizlee.com##.addthis_button_google_plusone + font[face="Georgia"]
 otukenim.tv##.SolBasliklar
@@ -1844,10 +1870,14 @@ lcpdfr.com##ul[data-controller$="sharelink"]
 !
 ! Section contains list general hiding rules
 !
+###fblikebox
+##.share-googleplus
 ###socialshare
 ###sag-facebook
 ##a[target="socialbookmark"]
 ###social_btns
+##.social-sidebar
+##.share-side
 ~reddit.com##a[href^="https://www.reddit.com/submit?url="]
 ~reddit.com##a[href^="http://reddit.com/submit?url="]
 ~reddit.com##a[href^="http://www.reddit.com/submit"]
@@ -2190,7 +2220,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.help-social-buttons
 ##.i_v_fb_like
 ##.icon-digg
-~pexels.com,~cnnturk.com,~ain.ua,~comediansincarsgettingcoffee.com,~forbes.com,~hubs.ua,~iguides.ru,~logaster.com,~t3n.de,~theverge,~minfin.com.ua##.icon-facebook
+~aklamio.com,~pexels.com,~cnnturk.com,~ain.ua,~comediansincarsgettingcoffee.com,~forbes.com,~hubs.ua,~iguides.ru,~logaster.com,~t3n.de,~theverge,~minfin.com.ua##.icon-facebook
 ~slashdot.org##.icon-facebook-squared
 ~t3n.de##.icon-google-plus
 ~pexels.com,~ain.ua,~iguides.ru,~logaster.com,~minfin.com.ua##.icon-gplus
