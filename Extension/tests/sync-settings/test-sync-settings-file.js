@@ -1,27 +1,3 @@
-var filters = {
-    "filters": {
-        "enabled-filters": [
-            "1",
-            "2",
-            "4"
-        ],
-        "custom-filters": [
-            "http://filter-url"
-        ],
-        "user-filter": {
-            "rules": "||test1.org/$script\n||test2.org/$script",
-            "disabled-rules": ""
-        },
-        "whitelist": {
-            "inverted": false,
-            "domains": [
-                "whitelisted-domain"
-            ],
-            "inverted-domains": []
-        }
-    }
-};
-
 var requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
 
 function errorHandler(e) {
