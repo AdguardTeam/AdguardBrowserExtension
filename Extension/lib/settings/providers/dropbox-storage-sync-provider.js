@@ -24,15 +24,16 @@
  */
 var DropboxSyncProvider = (function () { // jshint ignore:line
 
+    //TODO: Change to real
     var CLIENT_ID = 'nu18d3bocnpkvg5';
 
     var accessToken;
+    var dbx;
 
     // API
     var load = function (filePath, callback) {
         //TODO: Check auth
 
-        var dbx = new Dropbox({accessToken: accessToken});
         dbx.filesDownload({path: '/' + filePath})
             .then(function (response) {
                 var fileReader = new FileReader();
@@ -40,35 +41,33 @@ var DropboxSyncProvider = (function () { // jshint ignore:line
                     callback(JSON.parse(this.result));
                 };
                 fileReader.onerror = function () {
-                    console.log('Error reading file');
+                    Log.error('Error reading file');
                     callback(false);
                 };
 
                 fileReader.readAsText(response.fileBlob);
             })
             .catch(function (error) {
-                console.log(error);
+                Log.error(error);
                 callback(false);
+
+                //TODO: Handle auth error
             });
     };
 
     var save = function (filePath, data, callback) {
         //TODO: Check auth
 
-        var dbx = new Dropbox({accessToken: accessToken});
         dbx.filesUpload({path: '/' + filePath, mode: "overwrite", contents: JSON.stringify(data)})
-            .then(function (response) {
-                console.log(response);
+            .then(function () {
                 callback(true);
             })
             .catch(function (error) {
-                console.error(error);
+                Log.error(error);
                 callback(false);
-            });
-    };
 
-    var isAuthenticated = function () {
-        return !!accessToken;
+                //TODO: Handle auth error
+            });
     };
 
     var getAuthenticationUrl = function (callbackUrl) {
@@ -78,6 +77,7 @@ var DropboxSyncProvider = (function () { // jshint ignore:line
 
     var setAccessToken = function (token) {
         accessToken = token;
+        dbx = new Dropbox({accessToken: accessToken});
     };
 
     // EXPOSE
@@ -90,10 +90,6 @@ var DropboxSyncProvider = (function () { // jshint ignore:line
          * Saves data to provider
          */
         save: save,
-        /**
-         * Checks if user had authentication
-         */
-        isAuthenticated: isAuthenticated,
         /**
          * Returns dropbox auth url
          */

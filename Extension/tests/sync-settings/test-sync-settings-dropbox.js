@@ -18,7 +18,6 @@ QUnit.test("Test Dropbox sync provider", function (assert) {
     };
 
     var onDataLoaded = function (data) {
-        console.log(data);
         checkManifestData(assert, data);
 
         //Modify data
