@@ -1,9 +1,8 @@
 
-
-var token = '';
+var token;
 DropboxSyncProvider.setAccessToken(token);
 
-QUnit.test("Test file sync provider", function (assert) {
+QUnit.test("Test Dropbox sync provider", function (assert) {
     var done = assert.async();
 
     var onDataUpdated = function (data) {
@@ -28,9 +27,10 @@ QUnit.test("Test file sync provider", function (assert) {
         data["app-id"] = data["app-id"] + "2";
         manifest["app-id"] = manifest["app-id"] + "2";
 
-        // DropboxSyncProvider.save(manifestPath, data, onDataSaved);
-        done();
+        DropboxSyncProvider.save(manifestPath, data, onDataSaved);
     };
 
-    DropboxSyncProvider.load(manifestPath, onDataLoaded);
+    DropboxSyncProvider.save(manifestPath, manifest, function () {
+        DropboxSyncProvider.load(manifestPath, onDataLoaded);
+    });
 });

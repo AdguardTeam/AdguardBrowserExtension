@@ -35,8 +35,6 @@ var DropboxSyncProvider = (function () { // jshint ignore:line
         var dbx = new Dropbox({accessToken: accessToken});
         dbx.filesDownload({path: '/' + filePath})
             .then(function (response) {
-                console.log(response);
-
                 var fileReader = new FileReader();
                 fileReader.onload = function () {
                     callback(JSON.parse(this.result));
@@ -55,7 +53,18 @@ var DropboxSyncProvider = (function () { // jshint ignore:line
     };
 
     var save = function (filePath, data, callback) {
-        callback(false);
+        //TODO: Check auth
+
+        var dbx = new Dropbox({accessToken: accessToken});
+        dbx.filesUpload({path: '/' + filePath, mode: "overwrite", contents: JSON.stringify(data)})
+            .then(function (response) {
+                console.log(response);
+                callback(true);
+            })
+            .catch(function (error) {
+                console.error(error);
+                callback(false);
+            });
     };
 
     var isAuthenticated = function () {
