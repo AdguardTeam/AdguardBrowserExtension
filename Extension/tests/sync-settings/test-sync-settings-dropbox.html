@@ -14,76 +14,9 @@
 <script src="../qunit/qunit-2.0.1.js"></script>
 
 <script src="../../lib/libs/Dropbox-sdk.min.js"></script>
-
-<!--<script type="text/javascript">var ext = {};</script>-->
-
-<!--<script type="text/javascript" src="../../lib/libs/deferred.min.js"></script>-->
-
-<!--<script type="text/javascript" src="../../browser/webkit/require.js"></script>-->
-<!--<script type="text/javascript" src="../prefs.js"></script>-->
-
-<!--<script type="text/javascript" src="../../lib/utils/promises.js"></script>-->
-
-<!--<script type="text/javascript" src="../../browser/chrome/lib/utils/local-storage.js"></script>-->
-<!--<script type="text/javascript" src="../../browser/webkit/lib/utils/rules-storage.js"></script>-->
-<!--<script type="text/javascript" src="../../lib/utils/common.js"></script>-->
-<!--<script type="text/javascript" src="../../lib/utils/log.js"></script>-->
-<!--<script type="text/javascript" src="../../lib/utils/browser-utils.js"></script>-->
-<!--<script type="text/javascript" src="../../lib/utils/filters-storage.js"></script>-->
-<!--<script type="text/javascript" src="../../lib/utils/service-client.js"></script>-->
-
-<!--<script type="text/javascript" src="../../lib/filter/rules/base-filter-rule.js"></script>-->
-<!--<script type="text/javascript" src="../../lib/filter/rules/filter-rule-builder.js"></script>-->
-<!--<script type="text/javascript" src="../../lib/filter/rules/url-filter-rule.js"></script>-->
-<!--<script type="text/javascript" src="../../lib/filter/rules/url-filter.js"></script>-->
-<!--<script type="text/javascript" src="../../lib/filter/rules/css-filter-rule.js"></script>-->
-<!--<script type="text/javascript" src="../../lib/filter/rules/css-filter.js"></script>-->
-<!--<script type="text/javascript" src="../../lib/filter/rules/script-filter-rule.js"></script>-->
-<!--<script type="text/javascript" src="../../lib/filter/rules/script-filter.js"></script>-->
-<!--<script type="text/javascript" src="../../lib/filter/rules/filter-rule-builder.js"></script>-->
-
-<!--<script type="text/javascript" src="../../lib/filter/storage.js"></script>-->
-
-<!--<script type="text/javascript" src="../../lib/settings/settings-provider.js"></script>-->
-<!--<script type="text/javascript" src="../../lib/settings/sync-service.js"></script>-->
-<!--<script type="text/javascript" src="../../lib/settings/providers/file-sync-provider.js"></script>-->
 <script type="text/javascript" src="../../lib/settings/providers/dropbox-storage-sync-provider.js"></script>
 
 <script type="text/javascript" src="test-sync-settings-common.js"></script>
-
-<div id="pre-auth-section" style="display:none;">
-    <p>This example takes the user through Dropbox's API OAuth flow using <code>Dropbox.getAuthenticationUrl()</code> method [<a href="http://dropbox.github.io/dropbox-sdk-js/Dropbox.html#getAuthenticationUrl">docs</a>] and then uses the generated access token to list the contents of their root directory.</p>
-    <a href="" id="authlink" class="button">Authenticate</a>
-    <p class="info">Once authenticated, it will use the access token to list the files in your app directory.</p>
-</div>
-
-<div id="authed-section" style="display:none;">
-    <p>You have successfully authenticated.</p>
-</div>
-
-<script>
-    function showPageSection(elementId) {
-        document.getElementById(elementId).style.display = 'block';
-    }
-
-    function getAccessTokenFromUrl() {
-        var s = window.location.hash;
-        return s.substr(s.indexOf('access_token=') + 13);
-    }
-
-    DropboxSyncProvider.setAccessToken(getAccessTokenFromUrl());
-    var auth = DropboxSyncProvider.isAuthenticated();
-    if (!auth) {
-        //TODO: This should be window.location
-        var authUrl = DropboxSyncProvider.getAuthenticationUrl('http://localhost:63342/AdguardBrowserExtension/Extension/tests/sync-settings/test-sync-settings-dropbox.html?_ijt=ht68ak0gr8e9pqecl6fnccfdfn');
-        document.getElementById('authlink').href = authUrl;
-
-        showPageSection('pre-auth-section');
-    } else {
-        showPageSection('authed-section');
-    }
-</script>
-
 <script type="text/javascript" src="test-sync-settings-dropbox.js"></script>
 
 </body>

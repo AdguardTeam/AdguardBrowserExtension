@@ -31,13 +31,22 @@ var DropboxSyncProvider = (function () { // jshint ignore:line
     // API
     var load = function (filePath, callback) {
         //TODO: Check auth
-        console.log(filePath);
 
         var dbx = new Dropbox({accessToken: accessToken});
         dbx.filesDownload({path: '/' + filePath})
             .then(function (response) {
                 console.log(response);
-                callback(response);
+
+                var fileReader = new FileReader();
+                fileReader.onload = function () {
+                    callback(JSON.parse(this.result));
+                };
+                fileReader.onerror = function () {
+                    console.log('Error reading file');
+                    callback(false);
+                };
+
+                fileReader.readAsText(response.fileBlob);
             })
             .catch(function (error) {
                 console.log(error);
@@ -46,7 +55,7 @@ var DropboxSyncProvider = (function () { // jshint ignore:line
     };
 
     var save = function (filePath, data, callback) {
-
+        callback(false);
     };
 
     var isAuthenticated = function () {
@@ -54,7 +63,6 @@ var DropboxSyncProvider = (function () { // jshint ignore:line
     };
 
     var getAuthenticationUrl = function (callbackUrl) {
-        // Set the login anchors href using dbx.getAuthenticationUrl()
         var dbx = new Dropbox({clientId: CLIENT_ID});
         return dbx.getAuthenticationUrl(callbackUrl);
     };
@@ -81,6 +89,9 @@ var DropboxSyncProvider = (function () { // jshint ignore:line
          * Returns dropbox auth url
          */
         getAuthenticationUrl: getAuthenticationUrl,
+        /**
+         * Sets access token
+         */
         setAccessToken: setAccessToken
     };
 })();
