@@ -166,26 +166,6 @@
     }
 
     /**
-     * Searches for user rules.
-     *
-     * @param offset Offset
-     * @param limit Limit
-     * @param text Search string
-     * @returns {Array} Rules found
-     */
-    function searchUserRules(offset, limit, text) {
-        var userRules = adguard.userrules.getRules();
-        var result = [];
-        for (var i = 0; i < userRules.length; i++) {
-            var ruleText = userRules[i];
-            if (!text || adguard.utils.strings.containsIgnoreCase(ruleText, text)) {
-                result.push(ruleText);
-            }
-        }
-        return limit ? result.slice(offset, offset + limit) : result;
-    }
-
-    /**
      * Constructs assistant options. Includes css style and localization messages
      */
     function processLoadAssistant() {
@@ -279,9 +259,14 @@
             case 'getWhiteListDomains':
                 var whiteListDomains = searchWhiteListDomains(message.offset, message.limit, message.text);
                 return {rules: whiteListDomains};
-            case 'getUserFilters':
-                var rules = searchUserRules(message.offset, message.limit, message.text);
-                return {rules: rules};
+            case 'getUserRules':
+                adguard.userrules.getUserRulesText(function (content) {
+                    callback({content: content});
+                });
+                return true;
+            case 'saveUserRules':
+                adguard.userrules.updateUserRulesText(message.content);
+                break;
             case 'checkAntiBannerFiltersUpdate':
                 adguard.ui.checkFiltersUpdates();
                 break;

@@ -15,8 +15,459 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 /* global $, updateDisplayAdguardPromo, customizePopupFooter, contentPage, i18n, moment */
+
+var Utils = {
+
+    debounce: function (func, wait) {
+        var timeout;
+        return function () {
+            var context = this, args = arguments;
+            var later = function () {
+                timeout = null;
+                func.apply(context, args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+};
+
+var WhiteListFilter = function () {
+
+    var DEFAULT_LIMIT = 200;
+
+    var linkHelper = document.createElement('a');
+    var omitRenderEventsCount = 0;
+
+    var wlFilters = $("#whiteListFilters");
+    var importWlFilterInput = $("#importWhiteListFilterInput");
+    var clearWlFilterButton = $("#clearWhiteListFilter");
+    var searchWlFilterInput = $("#white-search");
+
+    var wlSearchResult = {
+        offset: 0,
+        limit: DEFAULT_LIMIT,
+        allLoaded: false
+    };
+
+    wlFilters.jScrollPane({
+        contentWidth: '0px',
+        mouseWheelSpeed: 20
+    });
+    var jScrollPane = wlFilters.data('jsp');
+
+    function renderEmptyRulesOverlay() {
+        var items = wlFilters.find("li");
+        if (items.length === 0) {
+            showEmptyRulesOverlay();
+            if (!wlSearchResult.searchMode) {
+                clearWlFilterButton.hide();
+            }
+        } else {
+            hideEmptyRulesOverlay();
+            clearWlFilterButton.show();
+        }
+    }
+
+    function showEmptyRulesOverlay() {
+        hideEmptyRulesOverlay();
+        if (wlSearchResult.searchMode) {
+            wlFilters.find(".sp-lists-table-overlay.overlay-search").removeClass("hidden");
+        } else {
+            wlFilters.find(".sp-lists-table-overlay:not(.overlay-search)").removeClass("hidden");
+        }
+    }
+
+    function hideEmptyRulesOverlay() {
+        wlFilters.find(".sp-lists-table-overlay").addClass("hidden");
+    }
+
+    function onAddWhiteListFilterClicked(e) {
+        e.preventDefault();
+        renderWhiteListFilterRuleLines([null], {prepend: true});
+    }
+
+    function onImportWhiteListFilterClicked(e) {
+        e.preventDefault();
+        importWlFilterInput.trigger("click");
+    }
+
+    function onImportWhiteListFilterInputChange() {
+        var fileInput = importWlFilterInput[0];
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            try {
+                var text = e.target.result;
+                var domains = text ? text.split(/[\r\n]+/) : [];
+                contentPage.sendMessage({type: 'addWhiteListDomains', domains: domains});
+            } catch (ex) {
+                adguard.console.error("Error while loading whitelist rules {0}", ex);
+            }
+            fileInput.value = '';
+        };
+        reader.onerror = function () {
+            adguard.console.error("Error load whitelist rules");
+            fileInput.value = '';
+        };
+        var file = fileInput.files[0];
+        if (file) {
+            reader.readAsText(file, "utf-8");
+        }
+    }
+
+    function onExportWhiteListFilterClicked(e) {
+        e.preventDefault();
+        contentPage.sendMessage({type: 'openExportRulesTab', whitelist: true});
+    }
+
+    function onClearWhiteListFilterClicked(e) {
+        e.preventDefault();
+        var message = i18n.getMessage("options_whitelistfilter_clear_confirm");
+        if (!confirm(message)) {
+            return;
+        }
+        contentPage.sendMessage({type: 'clearWhiteListFilter'});
+    }
+
+    function getWhiteListRuleLineTemplate() {
+
+        var el = $('<li>')
+            .append($('<div>', {class: 'rule-name rule-text'}))
+            .append($('<div>', {class: 'rule-name rule-input'}).append($('<input/>', {type: 'text'})));
+
+        var options = $('<div>', {class: 'rule-ctrl'})
+            .append($('<a>', {class: 'icon-pencil edit', href: '#'}))
+            .append($('<a>', {class: 'icon-trash delete', href: '#'}))
+            .append($('<a>', {class: 'icon-check-green save', href: '#'}))
+            .append($('<a>', {class: 'icon-cancel-edit cancel', href: '#'}));
+
+        el.append(options);
+        return el;
+    }
+
+    function renderWhiteListFilterRuleLines(rulesText, options) {
+
+        hideEmptyRulesOverlay();
+
+        var fragment = document.createDocumentFragment();
+
+        var editItems = [];
+
+        for (var i = 0; i < rulesText.length; i++) {
+
+            var ruleText = rulesText[i];
+
+            var el = getWhiteListRuleLineTemplate();
+            fragment.appendChild(el[0]);
+
+            var text = el.find('.rule-text');
+
+            if (!ruleText) {
+                el.data("isNew", true);
+                editItems.push(el);
+            } else {
+                el.data("ruleText", ruleText);
+                text.text(ruleText);
+            }
+        }
+
+        if (options && options.prepend) {
+            jScrollPane.getContentPane().prepend(fragment);
+        } else {
+            jScrollPane.getContentPane().append(fragment);
+        }
+        jScrollPane.reinitialise();
+
+        renderEmptyRulesOverlay();
+
+        wlFilters.removeClass("editing");
+        for (var j = 0; j < editItems.length; j++) {
+            editItems[j].find('.edit').click();
+        }
+    }
+
+    function removeWhiteListFilterRuleLine(ruleText) {
+        var filters = wlFilters.find("li");
+        $.each(filters, function (index, f) {
+            var $el = $(f);
+            if ($el.data("ruleText") == ruleText) {
+                $el.remove();
+            }
+        });
+        jScrollPane.reinitialise();
+        renderEmptyRulesOverlay();
+    }
+
+    function clearWhiteListFilterRuleLines() {
+        var filters = wlFilters.find("li");
+        filters.remove();
+        jScrollPane.reinitialise();
+        renderEmptyRulesOverlay();
+    }
+
+    function startEditRuleLine(el) {
+        var input = el.find('input');
+        wlFilters.addClass("editing");
+        el.closest('li').addClass('editing-row');
+        var ruleText = el.data("ruleText");
+        if (ruleText) {
+            input.val(ruleText);
+        }
+        input.focus();
+    }
+
+    function stopEditRuleLine(el) {
+        el.closest('li').removeClass('editing-row');
+        wlFilters.removeClass("editing");
+    }
+
+    function onSaveRuleLineClicked(el) {
+
+        var input = el.find('input');
+        var text = el.find('.rule-text');
+
+        normalizeWhiteListInput(input, text);
+
+        var value = input.val().trim();
+        if (!value) {
+            return;
+        }
+        var newText = saveWhiteListFilterRule({
+            isNew: el.data("isNew"),
+            text: value,
+            prevText: el.data("ruleText")
+        });
+        if (newText) {
+            el.data("isNew", false);
+            el.data("ruleText", newText);
+            text.text(newText);
+        }
+        stopEditRuleLine(el);
+    }
+
+    function onCancelEditRuleLineClicked(el) {
+        if (el.data("isNew")) {
+            el.remove();
+            wlFilters.removeClass("editing");
+        } else {
+            stopEditRuleLine(el);
+        }
+    }
+
+    function saveWhiteListFilterRule(item) {
+        if (item.isNew) {
+            omitRenderEventsCount = 1;
+            contentPage.sendMessage({type: 'addWhiteListDomains', domains: [item.text]});
+        } else {
+            //start edit rule
+            omitRenderEventsCount = 2;
+            contentPage.sendMessage({type: 'removeWhiteListDomain', text: item.prevText}, function () {
+                contentPage.sendMessage({type: 'addWhiteListDomains', domains: [item.text]});
+            });
+        }
+        return item.text;
+    }
+
+    function deleteWhiteListFilterRule(item) {
+        omitRenderEventsCount = 1;
+        contentPage.sendMessage({type: 'removeWhiteListDomain', text: item.text}, function () {
+            removeWhiteListFilterRuleLine(item.text);
+        });
+    }
+
+    function normalizeWhiteListInput(input, text) {
+        var value = input.val().trim();
+        if (!value) {
+            return;
+        }
+        if (value.indexOf('http://') < 0 && value.indexOf('https://') < 0) {
+            if (value.indexOf('//') === 0) {
+                value = 'http:' + value;
+            } else {
+                value = 'http://' + value;
+            }
+        }
+        linkHelper.href = value;
+        var host = linkHelper.hostname;
+        input.val(host);
+        text.text(host);
+    }
+
+    function loadAndRenderWhiteListFilterRuleLines(loadNext) {
+
+        loadNext = loadNext === true;
+
+        if (!loadNext) {
+            wlSearchResult.offset = 0;
+            wlSearchResult.allLoaded = false;
+        }
+
+        if (wlSearchResult._isLoading || wlSearchResult.allLoaded) {
+            return;
+        }
+
+        var value = searchWlFilterInput.val() || '';
+        var text = value.trim();
+        wlSearchResult.searchMode = text.length > 0;
+
+        contentPage.sendMessage({
+            type: 'getWhiteListDomains',
+            offset: wlSearchResult.offset,
+            limit: wlSearchResult.limit,
+            text: text
+        }, function (response) {
+
+            var rules = response.rules;
+            if (rules.length < wlSearchResult.limit) {
+                wlSearchResult.allLoaded = true;
+            }
+            wlSearchResult.offset += rules.length;
+            wlSearchResult._isLoading = false;
+
+            if (!loadNext) {
+                clearWhiteListFilterRuleLines();
+            }
+            renderWhiteListFilterRuleLines(rules);
+            renderEmptyRulesOverlay();
+        });
+    }
+
+    var updateWhiteListFilterRules = function () {
+        if (omitRenderEventsCount > 0) {
+            omitRenderEventsCount--;
+            return;
+        }
+        loadAndRenderWhiteListFilterRuleLines();
+    };
+
+    var onShown = function () {
+        jScrollPane.reinitialise();
+    };
+
+    wlFilters.append($('#whitelist-overlay').children());
+
+    var whiteListSection = $("#whitelist");
+    whiteListSection.on('click', '.addWhiteListFilter', onAddWhiteListFilterClicked);
+    whiteListSection.on('click', '#importWhiteListFilter', onImportWhiteListFilterClicked);
+    whiteListSection.on('change', '#importWhiteListFilterInput', onImportWhiteListFilterInputChange);
+    whiteListSection.on('click', '#exportWhiteListFilter', onExportWhiteListFilterClicked);
+    whiteListSection.on('click', '#clearWhiteListFilter', onClearWhiteListFilterClicked);
+
+    whiteListSection.find("#searchWhitelist").on('click', function (e) {
+        e.preventDefault();
+        loadAndRenderWhiteListFilterRuleLines();
+    });
+    searchWlFilterInput.on('keyup', Utils.debounce(loadAndRenderWhiteListFilterRuleLines, 300));
+    wlFilters.bind('jsp-scroll-y', function (e, posY, isAtTop, isAtBottom) {
+        if (isAtBottom) {
+            loadAndRenderWhiteListFilterRuleLines(true);
+        }
+    });
+
+    wlFilters.on('click', '.edit', function (e) {
+        e.preventDefault();
+        startEditRuleLine($(this).closest('li'));
+    });
+
+    wlFilters.on('click', '.save', function (e) {
+        e.preventDefault();
+        onSaveRuleLineClicked($(this).closest('li'));
+    });
+
+    wlFilters.on('click', '.cancel', function (e) {
+        e.preventDefault();
+        onCancelEditRuleLineClicked($(this).closest('li'));
+        jScrollPane.reinitialise();
+        renderEmptyRulesOverlay();
+    });
+
+    wlFilters.on('click', '.delete', function (e) {
+        e.preventDefault();
+        var el = $(this).closest('li');
+        deleteWhiteListFilterRule({text: el.data("ruleText")});
+    });
+
+    wlFilters.on('keypress', 'input[type="text"]', function (e) {
+        if (e.keyCode == 13) {
+            e.preventDefault();
+            onSaveRuleLineClicked($(this).closest('li'));
+        }
+    });
+
+    $(document).keydown(function (e) {
+        if (e.keyCode == 27) {
+            var elements = wlFilters.find('li');
+            for (var i = 0; i < elements.length; i++) {
+                onCancelEditRuleLineClicked($(elements[i]));
+            }
+            jScrollPane.reinitialise();
+            renderEmptyRulesOverlay();
+        }
+    });
+
+    return {
+        updateWhiteListFilterRules: updateWhiteListFilterRules,
+        onShown: onShown
+    };
+};
+
+var UserFilter = function () {
+
+    var omitRenderEventsCount = 0;
+
+    var editor = ace.edit('userRules');
+    editor.setShowPrintMargin(false);
+    editor.getSession().setMode("ace/mode/text");
+
+    function loadUserRules() {
+        contentPage.sendMessage({
+            type: 'getUserRules'
+        }, function (response) {
+            editor.setValue(response.content || '');
+            $('#userFilterApplyChanges').hide();
+        });
+    }
+
+    function saveUserRules(e) {
+
+        e.preventDefault();
+
+        omitRenderEventsCount = 1;
+
+        editor.setReadOnly(true);
+        var text = editor.getValue();
+
+        contentPage.sendMessage({
+            type: 'saveUserRules',
+            content: text
+        }, function () {
+            editor.setReadOnly(false);
+            $('#userFilterApplyChanges').hide();
+        });
+    }
+
+    function updateUserFilterRules() {
+        if (omitRenderEventsCount > 0) {
+            omitRenderEventsCount--;
+            return;
+        }
+        loadUserRules();
+    }
+
+    $('#userFilterApplyChanges').on('click', saveUserRules);
+
+    editor.getSession().on('change', function () {
+        $('#userFilterApplyChanges').show();
+    });
+
+    return {
+        updateUserFilterRules: updateUserFilterRules
+    };
+};
+
 var PageController = function () {
 };
+
 
 PageController.prototype = {
 
@@ -30,105 +481,43 @@ PageController.prototype = {
 
     init: function () {
 
-        $('.sp-table-row-info').hide();
-
-        (function () {
-
-            var activeTab = null;
-
-            if (document.location.hash) {
-                onTabClicked(document.location.hash);
-            } else {
-                onTabClicked('#general-settings');
-            }
-
-            window.addEventListener('hashchange', function () {
-                onTabClicked(document.location.hash);
-            });
-
-            function onTabClicked(tab) {
-
-                if (tab === activeTab) {
-                    return;
-                }
-
-                if (activeTab) {
-                    $(activeTab).hide();
-                }
-
-                var el = $(tab);
-                if (!el || el.length === 0) {
-                    tab = '#general-settings';
-                    el = $(tab);
-                }
-
-                if (el && el.length > 0) {
-                    el.show();
-                    activeTab = tab;
-                }
-
-                $('html, body').animate({
-                    scrollTop: 0
-                }, 0);
-            }
-
-            $('.nav-tabs a').on('click', function (e) {
-                e.preventDefault();
-                var hash = $(this).attr('href');
-                setTimeout(function () {
-                    document.location.hash = hash;
-                }, 0);
-            });
-
-        })();
-
         this.linkHelper = document.createElement('a');
 
+        this._customizeText();
         this._bindEvents();
         this._render();
-        //this._initTopMenu();
 
-        $(".sp-table-row-input").toggleCheckbox();
+        $(".opt-state input:checkbox").toggleCheckbox();
 
         updateDisplayAdguardPromo(!userSettings.values[userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO]);
         customizePopupFooter(environmentOptions.isMacOs);
 
-        var currentAnchor = null;
+        this._initTopMenu();
+    },
 
-        function checkAnchor() {
-            var anchor = window.location.hash;
-            if (anchor && anchor != currentAnchor) {
-                currentAnchor = anchor;
-                $('a.top-menu-item[href="' + anchor + '"]').click();
-            }
-            setTimeout(function () {
-                checkAnchor();
-            }, 100);
+    _customizeText: function () {
+        $('a.sp-table-row-info').addClass('question').text('');
+        var elements = $('span.sp-table-row-info');
+        for (var i = 0; i < elements.length; i++) {
+            var element = $(elements[i]);
+            var li = element.closest('li');
+            element.remove();
+            var state = li.find('.opt-state');
+            element.addClass('desc');
+            state.prepend(element);
         }
-
-        setTimeout(function () {
-            checkAnchor();
-        }, 100);
     },
 
     _bindEvents: function () {
 
         this.antiBannerFiltersList = $("#antiBannerFiltersList");
         this.antiBannerFiltersListEmpty = $("#antiBannerFiltersListEmpty");
-        this.userFilters = $("#userFilters");
-        this.wlFilters = $("#whiteListFilters");
         this.safebrowsingEnabledCheckbox = $("#safebrowsingEnabledCheckbox");
         this.sendSafebrowsingStatsCheckbox = $("#sendSafebrowsingStatsCheckbox");
         this.showPageStatisticCheckbox = $("#showPageStatisticCheckbox");
         this.allowAcceptableAdsCheckbox = $("#allowAcceptableAds");
         this.updateAntiBannerFiltersButton = $("#updateAntiBannerFilters");
         this.autodetectFiltersCheckbox = $("#autodetectFiltersCheckbox");
-        this.importUserFilterInput = $("#importUserFilterInput");
-        this.clearUserFilterButton = $("#clearUserFilter");
-        this.importWlFilterInput = $("#importWhiteListFilterInput");
-        this.clearWlFilterButton = $("#clearWhiteListFilter");
-        this.userFilterSearchInput = $("#user-search");
-        this.wlFilterSearchInput = $("#white-search");
         this.showInfoAboutAdguardFullVersionCheckbox = $("#showInfoAboutAdguardFullVersion");
         this.enableHitsCountCheckbox = $("#enableHitsCount");
         this.resetStatsPopup = $("#resetStatsPopup");
@@ -157,18 +546,6 @@ PageController.prototype = {
 
         $('.settings-page').on('click', '.editAntiBannerFilters', this._openSubscriptionModal.bind(this));
 
-        var listSettings = $(".settings-page-lists");
-        listSettings.on('click', '.addWhiteListFilter', this.onAddWhiteListFilterClicked.bind(this));
-        listSettings.on('click', '.addUserFilter', this.onAddUserFilterClicked.bind(this));
-        listSettings.on('click', '#importUserFilter', this.onImportUserFilterClicked.bind(this));
-        listSettings.on('change', '#importUserFilterInput', this.onImportUserFilterInputChange.bind(this));
-        listSettings.on('click', '#exportUserFilter', this.onExportUserFilterClicked.bind(this));
-        listSettings.on('click', '#clearUserFilter', this.onClearUserFilterClicked.bind(this));
-        listSettings.on('click', '#importWhiteListFilter', this.onImportWhiteListFilterClicked.bind(this));
-        listSettings.on('change', '#importWhiteListFilterInput', this.onImportWhiteListFilterInputChange.bind(this));
-        listSettings.on('click', '#exportWhiteListFilter', this.onExportWhiteListFilterClicked.bind(this));
-        listSettings.on('click', '#clearWhiteListFilter', this.onClearWhiteListFilterClicked.bind(this));
-
         $(".openExtensionStore").on('click', function (e) {
             e.preventDefault();
             contentPage.sendMessage({type: 'openExtensionStore'});
@@ -178,92 +555,46 @@ PageController.prototype = {
             e.preventDefault();
             contentPage.sendMessage({type: 'openFilteringLog'});
         });
-
-        this.wlFilters.jScrollPane({
-            contentWidth: '0px',
-            mouseWheelSpeed: 20
-        });
-        this.userFilters.jScrollPane({
-            contentWidth: '0px',
-            mouseWheelSpeed: 20
-        });
-        this._renderWhiteListOverlay();
-        this._renderUserFilterListOverlay();
-
-        var initSearch = function (el, input, listEl, renderFunc) {
-            el.find(".sp-lists-user-table.sp-lists-search-table").find(".btn-search").on('click', function (e) {
-                e.preventDefault();
-                renderFunc.call(this);
-            }.bind(this));
-            input.on('keyup', this._debounce(renderFunc.bind(this), 300));
-            listEl.bind('jsp-scroll-y', function (e, posY, isAtTop, isAtBottom) {
-                if (isAtBottom) {
-                    renderFunc.call(this, true);
-                }
-            }.bind(this));
-        }.bind(this);
-
-        initSearch($("#whitelist"), this.wlFilterSearchInput, this.wlFilters, this._renderWhiteListFilters);
-        initSearch($("#userfilter"), this.userFilterSearchInput, this.userFilters, this._renderUserFilters);
     },
 
     _initTopMenu: function () {
-        var lastId;
-        var topMenu = $(".top-menu");
-        var firstItem = $("#general-settings");
-        var topMenuHeight = topMenu.outerHeight() + 25;
-        var menuItems = topMenu.find("a");
-        var scrollItems = menuItems.map(function () {
-            var item = $($(this).attr("href"));
-            if (item.length) {
-                return item;
-            }
-            return null;
-        });
 
-        menuItems.on('click', function (e) {
+        $('[data-tab]').on('click', function (e) {
             e.preventDefault();
-            var offsetTop = $(this.hash).offset().top - topMenuHeight + 1;
-            $('html, body').stop().animate({
-                scrollTop: offsetTop
-            }, 300);
+            document.location.hash = $(this).attr('data-tab');
         });
 
-        var onscroll = function () {
-            var scrollTop = $(this).scrollTop();
-            var fromTop = scrollTop + topMenuHeight;
-            if (fromTop > topMenuHeight + 100) {
-                topMenu.removeClass("affix affix-top").addClass("affix");
-                firstItem.removeClass("affix affix-top").addClass("affix");
-            } else {
-                topMenu.removeClass("affix affix-top").addClass("affix-top");
-                firstItem.removeClass("affix affix-top").addClass("affix-top");
+        window.addEventListener('hashchange', toggleTab);
+
+        var prevTabId;
+        var self = this;
+
+        function toggleTab() {
+
+            var tabId = document.location.hash || '#general-settings';
+            var tab = $(tabId);
+
+            if (!tab || tab.length === 0) {
+                tabId = '#general-settings';
+                tab = $(tabId);
             }
 
-            if ($(document).height() - $(window).height() - scrollTop < 10) {
-                //get the last item
-                id = scrollItems[scrollItems.length - 1][0].id;
-            } else {
-                // Get id of current scroll item
-                var cur = scrollItems.map(function () {
-                    if ($(this).offset().top < fromTop) {
-                        return this;
-                    }
-                    return null;
-                });
-                cur = cur[cur.length - 1];
-                var id = cur && cur.length ? cur[0].id : "";
+            if (prevTabId) {
+                $('[data-tab="' + prevTabId + '"]').removeClass('active');
+                $(prevTabId).hide();
             }
 
-            if (lastId !== id) {
-                lastId = id;
-                // Set/remove active class
-                menuItems.removeClass("active");
-                menuItems.filter("[href='#" + id + "']").addClass("active");
+            $('[data-tab="' + tabId + '"]').addClass('active');
+            tab.show();
+
+            if (tabId === '#whitelist') {
+                self.whiteListFilter.onShown();
             }
-        };
-        $(window).on('scroll', onscroll);
-        onscroll();
+
+            prevTabId = tabId;
+        }
+
+        toggleTab();
     },
 
     _render: function () {
@@ -280,8 +611,6 @@ PageController.prototype = {
         var acceptableAdsEnabled = AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID in enabledFilters;
 
         this._renderAntiBannerFilters();
-        this._renderUserFilters();
-        this._renderWhiteListFilters();
         this._renderSafebrowsingSection(safebrowsingEnabled, sendSafebrowsingStats);
         this._renderShowPageStatistics(showPageStats, environmentOptions.Prefs.mobile);
         this._renderAllowAcceptableAds(acceptableAdsEnabled);
@@ -306,6 +635,14 @@ PageController.prototype = {
         }
         this._initializeSubscriptionModal();
         this.checkSubscriptionsCount();
+
+        // Initialize whitelist filter
+        this.whiteListFilter = new WhiteListFilter();
+        this.whiteListFilter.updateWhiteListFilterRules();
+
+        // Initialize User filter
+        this.userFilter = new UserFilter();
+        this.userFilter.updateUserFilterRules();
     },
 
     _onAntiBannerFilterStateChange: function (antiBannerFilter) {
@@ -437,104 +774,14 @@ PageController.prototype = {
     changeDefaultWhiteListMode: function (e) {
         e.preventDefault();
         contentPage.sendMessage({type: 'changeDefaultWhiteListMode', enabled: !e.currentTarget.checked}, function () {
-            this._renderWhiteListFilters();
+            this.whiteListFilter.updateWhiteListFilterRules();
         }.bind(this));
-    },
-
-    onAddWhiteListFilterClicked: function (e) {
-        e.preventDefault();
-        this._renderWhiteListFilter(null);
-    },
-
-    onAddUserFilterClicked: function (e) {
-        e.preventDefault();
-        this._renderUserFilter(null);
     },
 
     onResetStatsClicked: function (e) {
         e.preventDefault();
         contentPage.sendMessage({type: 'resetBlockedAdsCount'});
         this._onStatsReset();
-    },
-
-    onImportUserFilterClicked: function (e) {
-        e.preventDefault();
-        this.importUserFilterInput.trigger("click");
-    },
-
-    onImportWhiteListFilterClicked: function (e) {
-        e.preventDefault();
-        this.importWlFilterInput.trigger("click");
-    },
-
-    onImportUserFilterInputChange: function () {
-        var fileInput = this.importUserFilterInput[0];
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            try {
-                this._importUserFilterRules(e.target.result);
-            } catch (ex) {
-                adguard.console.error("Error while loading user rules {0}", ex);
-            }
-            fileInput.value = '';
-        }.bind(this);
-        reader.onerror = function () {
-            adguard.console.error("Error load user rules");
-            fileInput.value = '';
-        };
-        var file = fileInput.files[0];
-        if (file) {
-            reader.readAsText(file, "utf-8");
-        }
-    },
-
-    onImportWhiteListFilterInputChange: function () {
-        var fileInput = this.importWlFilterInput[0];
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            try {
-                this._importWhiteListFilterRules(e.target.result);
-            } catch (ex) {
-                adguard.console.error("Error while loading whitelist rules {0}", ex);
-            }
-            fileInput.value = '';
-        }.bind(this);
-        reader.onerror = function () {
-            adguard.console.error("Error load whitelist rules");
-            fileInput.value = '';
-        };
-        var file = fileInput.files[0];
-        if (file) {
-            reader.readAsText(file, "utf-8");
-        }
-    },
-
-    onExportUserFilterClicked: function (e) {
-        e.preventDefault();
-        contentPage.sendMessage({type: 'openExportRulesTab', whitelist: false});
-    },
-
-    onExportWhiteListFilterClicked: function (e) {
-        e.preventDefault();
-        contentPage.sendMessage({type: 'openExportRulesTab', whitelist: true});
-    },
-
-    onClearUserFilterClicked: function (e) {
-        e.preventDefault();
-        var message = i18n.getMessage("options_userfilter_clear_confirm");
-        if (!confirm(message)) {
-            return;
-        }
-        contentPage.sendMessage({type: 'clearUserFilter'});
-    },
-
-    onClearWhiteListFilterClicked: function (e) {
-        e.preventDefault();
-        var message = i18n.getMessage("options_whitelistfilter_clear_confirm");
-        if (!confirm(message)) {
-            return;
-        }
-        contentPage.sendMessage({type: 'clearWhiteListFilter'});
     },
 
     /**
@@ -575,273 +822,6 @@ PageController.prototype = {
         if (environmentOptions.isContentBlockerEnabled) {
             this._checkSafariContentBlockerRulesLimit(info.rulesOverLimit);
         }
-    },
-
-    _renderSearchFilters: function (input, listEl, clearButton, sResult, renderFunc, searchFunc, loadNext) {
-
-        loadNext = loadNext === true;
-
-        if (!loadNext) {
-            sResult.offset = 0;
-            sResult.allLoaded = false;
-        }
-
-        if (this._isLoading || sResult.allLoaded) {
-            return;
-        }
-
-        var value = input.val() || '';
-        var text = value.trim();
-        sResult.searchMode = text.length > 0;
-
-        contentPage.sendMessage({
-            type: searchFunc,
-            offset: sResult.offset,
-            limit: sResult.limit,
-            text: text
-        }, function (response) {
-
-            var rules = response.rules;
-            if (rules.length < sResult.limit) {
-                sResult.allLoaded = true;
-            }
-            sResult.offset += rules.length;
-            sResult._isLoading = false;
-
-            if (!loadNext) {
-                this._clearEditableFilters(listEl, clearButton, sResult.searchMode);
-            }
-            for (var i = 0; i < rules.length; i++) {
-                renderFunc.call(this, rules[i]);
-            }
-            this._checkOverlayHide(listEl, clearButton, sResult.searchMode);
-
-        }.bind(this));
-    },
-
-    _renderWhiteListFilters: function (loadNext) {
-        if (!this.wlSearchResult) {
-            this.wlSearchResult = {
-                offset: 0,
-                limit: this.DEFAULT_LIMIT,
-                allLoaded: false
-            };
-        }
-        this._renderSearchFilters(this.wlFilterSearchInput, this.wlFilters, this.clearWlFilterButton, this.wlSearchResult, this._renderWhiteListFilter, 'getWhiteListDomains', loadNext);
-    },
-
-    _renderWhiteListFilter: function (whiteListFilter) {
-        var saveCallback = function (item) {
-            if (item.isNew) {
-                this.omitRenderEventsCount = 1;
-                contentPage.sendMessage({type: 'addWhiteListDomains', domains: [item.text]});
-            } else {
-                //start edit rule
-                this.omitRenderEventsCount = 2;
-                contentPage.sendMessage({type: 'removeWhiteListDomain', text: item.prevText}, function () {
-                    contentPage.sendMessage({type: 'addWhiteListDomains', domains: [item.text]});
-                });
-            }
-            return item.text;
-        }.bind(this);
-
-        var deleteCallback = function (item) {
-            this.omitRenderEventsCount = 1;
-            contentPage.sendMessage({type: 'removeWhiteListDomain', text: item.text}, function () {
-                this._removeEditableFilter(this.wlFilters, item.text, this.clearWlFilterButton, this.wlSearchResult.searchMode);
-            }.bind(this));
-        }.bind(this);
-
-        var transformInput = function (input, text) {
-            var value = input.val().trim();
-            if (!value) {
-                return;
-            }
-            if (value.indexOf('http://') < 0 && value.indexOf('https://') < 0) {
-                if (value.indexOf('//') === 0) {
-                    value = 'http:' + value;
-                } else {
-                    value = 'http://' + value;
-                }
-            }
-            this.linkHelper.href = value;
-            var host = this.linkHelper.hostname;
-            input.val(host);
-            text.text(host);
-        }.bind(this);
-
-        this._renderEditableFilter(this.wlFilters, whiteListFilter, saveCallback, deleteCallback, this.clearWlFilterButton, this.wlSearchResult.searchMode, transformInput);
-    },
-
-    _renderUserFilters: function (loadNext) {
-        if (!this.userSearchResult) {
-            this.userSearchResult = {
-                offset: 0,
-                limit: this.DEFAULT_LIMIT,
-                allLoaded: false
-            };
-        }
-        this._renderSearchFilters(this.userFilterSearchInput, this.userFilters, this.clearUserFilterButton, this.userSearchResult, this._renderUserFilter, 'getUserFilters', loadNext);
-    },
-
-    _renderUserFilter: function (userFilter) {
-        var saveCallback = function (item) {
-            if (item.isNew) {
-                this.omitRenderEventsCount = 1;
-                contentPage.sendMessage({type: 'addUserRule', ruleText: item.text});
-            } else {
-                this.omitRenderEventsCount = 2;
-                contentPage.sendMessage({type: 'removeUserRule', ruleText: item.prevText}, function () {
-                    contentPage.sendMessage({type: 'addUserRule', ruleText: item.text});
-                });
-            }
-            return item.text;
-        }.bind(this);
-
-        var deleteCallback = function (item) {
-            this.omitRenderEventsCount = 1;
-            contentPage.sendMessage({type: 'removeUserRule', ruleText: item.text}, function () {
-                this._removeEditableFilter(this.userFilters, item.text, this.clearUserFilterButton, this.userSearchResult.searchMode);
-            }.bind(this));
-        }.bind(this);
-
-        this._renderEditableFilter(this.userFilters, userFilter, saveCallback, deleteCallback, this.clearUserFilterButton, this.userSearchResult.searchMode);
-    },
-
-    _renderEditableFilter: function (listEl, ruleText, saveCallback, deleteCallback, clearButton, searchMode, transformInput) {
-        var jScrollPane = listEl.data('jsp');
-        if (!jScrollPane) {
-            return;
-        }
-
-        var el = this._getFilterRuleTemplate();
-
-        //hide overlay
-        this._hideOverlay(listEl);
-
-        jScrollPane.getContentPane().append(el);
-        jScrollPane.reinitialise();
-
-        var editButton = el.find('.edit');
-        var deleteButton = el.find('.delete');
-        var saveButton = el.find('.save');
-        var cancelButton = el.find('.cancel');
-        var input = el.find("input[type='text']");
-        var text = el.find('.rule-text');
-
-        if (!ruleText) {
-            el.data("isNew", true);
-            startEdit();
-        } else {
-            el.data("ruleText", ruleText);
-            text.text(ruleText);
-            stopEdit();
-        }
-
-        function startEdit() {
-            el.addClass("editing");
-            var ruleText = el.data("ruleText");
-            if (ruleText) {
-                input.val(ruleText);
-            }
-            input.focus();
-        }
-
-        function stopEdit() {
-            el.removeClass("editing");
-        }
-
-        function onSaveClicked() {
-            if (transformInput) {
-                transformInput(input, text);
-            }
-            var value = input.val().trim();
-            if (!value) {
-                return;
-            }
-            var newText = saveCallback({
-                isNew: el.data("isNew"),
-                text: value,
-                prevText: el.data("ruleText")
-            });
-            if (newText) {
-                el.data("isNew", false);
-                el.data("ruleText", newText);
-                text.text(newText);
-            }
-            stopEdit();
-        }
-
-        var self = this;
-
-        function removeEditableItem() {
-            el.remove();
-            jScrollPane.reinitialise();
-            self._checkOverlayHide(listEl, clearButton, searchMode);
-        }
-
-        function onCancelEditClicked() {
-            if (el.data("isNew")) {
-                removeEditableItem();
-            } else {
-                stopEdit();
-            }
-        }
-
-        //handle start edit
-        editButton.click(function () {
-            startEdit();
-        });
-        //handle save
-        saveButton.click(onSaveClicked);
-        input.on('keypress', function (e) {
-            if (e.keyCode == 13) {
-                e.preventDefault();
-                onSaveClicked();
-            }
-        });
-        //handle cancel edit
-        cancelButton.click(onCancelEditClicked);
-        $(document).keydown(function (e) {
-            if (e.keyCode == 27) {
-                onCancelEditClicked();
-            }
-        });
-        deleteButton.click(function () {
-            deleteCallback({text: el.data("ruleText")});
-        });
-
-        this._checkOverlayHide(listEl, clearButton, searchMode);
-    },
-
-    _removeEditableFilter: function (listEl, ruleText, clearButton, searchMode) {
-
-        var jScrollPane = listEl.data('jsp');
-        if (!jScrollPane) {
-            return;
-        }
-
-        var filters = listEl.find(".spl-user-table-row");
-        $.each(filters, function (index, f) {
-            var $el = $(f);
-            if ($el.data("ruleText") == ruleText) {
-                $el.remove();
-            }
-        });
-        jScrollPane.reinitialise();
-        this._checkOverlayHide(listEl, clearButton, searchMode);
-    },
-
-    _clearEditableFilters: function (listEl, clearButton, searchMode) {
-        var jScrollPane = listEl.data('jsp');
-        if (!jScrollPane) {
-            return;
-        }
-
-        var filters = listEl.find(".spl-user-table-row");
-        filters.remove();
-        jScrollPane.reinitialise();
-        this._checkOverlayHide(listEl, clearButton, searchMode);
     },
 
     _renderAntiBannerFilters: function () {
@@ -948,50 +928,6 @@ PageController.prototype = {
         this.changeDefaultWhiteListModeCheckbox.updateCheckbox(!defaultWhiteListMode);
     },
 
-    _renderWhiteListOverlay: function () {
-        this.wlFilters.append($('#whitelist-overlay').children())
-    },
-
-    _renderUserFilterListOverlay: function () {
-        this.userFilters.append($('#userlist-overlay').children());
-    },
-
-    _checkOverlayHide: function (listEl, clearButton, searchMode) {
-        var items = listEl.find(".spl-user-table-row");
-        if (items.length === 0) {
-            this._showOverlay(listEl, searchMode);
-            if (!searchMode) {
-                clearButton.hide();
-            }
-        } else {
-            this._hideOverlay(listEl);
-            clearButton.show();
-        }
-    },
-
-    _showOverlay: function (listEl, searchMode) {
-        this._hideOverlay(listEl);
-        if (searchMode) {
-            listEl.find(".sp-lists-table-overlay.overlay-search").removeClass("hidden");
-        } else {
-            listEl.find(".sp-lists-table-overlay:not(.overlay-search)").removeClass("hidden");
-        }
-    },
-
-    _hideOverlay: function (listEl) {
-        listEl.find(".sp-lists-table-overlay").addClass("hidden");
-    },
-
-    _importUserFilterRules: function (text) {
-        var rules = text ? text.split(/[\r\n]+/) : [];
-        contentPage.sendMessage({type: 'addUserFilterRules', rules: rules});
-    },
-
-    _importWhiteListFilterRules: function (text) {
-        var domains = text ? text.split(/[\r\n]+/) : [];
-        contentPage.sendMessage({type: 'addWhiteListDomains', domains: domains});
-    },
-
     _onStatsReset: function () {
         this.resetStatsPopup.show();
         if (this.closePopupTimeoutId) {
@@ -1005,6 +941,8 @@ PageController.prototype = {
     _renderFiltersMetadataModal: function () {
 
         contentPage.sendMessage({type: 'getFiltersMetadata'}, function (response) {
+
+            var filter;
 
             var groups = response.groups;
             var filtersMeta = response.filters;
@@ -1025,7 +963,7 @@ PageController.prototype = {
                 var filters = filtersMeta[group.groupId];
                 for (var j = 0; j < filters.length; j++) {
 
-                    var filter = filters[j];
+                    filter = filters[j];
                     allFilters.push(filter);
 
                     var filterElement = this._getFilterMetadataTemplate(filter.filterId, filter.name, filter.description, filter.homepage, homepageText);
@@ -1040,7 +978,7 @@ PageController.prototype = {
             $groupsList.append(allGroupsElements);
 
             for (i = 0; i < allFilters.length; i++) {
-                var filter = allFilters[i];
+                filter = allFilters[i];
                 var checkbox = $groupsList.find('input[name="modalFilterId"][value="' + filter.filterId + '"]');
                 var installed = filter.filterId in installedFilters;
                 var enabled = filter.filterId in enabledFilters;
@@ -1150,22 +1088,6 @@ PageController.prototype = {
             .append($('<div>', {class: 'preloader hidden'}));
     },
 
-    _getFilterRuleTemplate: function () {
-
-        var el = $('<div>', {class: 'spl-user-table-row cf'})
-            .append($('<div>', {class: 'splu-table-row-label rule-text'}))
-            .append($('<input>', {class: 'splu-table-row-input', type: 'text'}));
-
-        var options = $('<div>', {class: 'splu-table-row-options'})
-            .append($('<i>', {class: 'settings-options-icon-edit edit'}))
-            .append($('<i>', {class: 'settings-options-icon-delete delete'}))
-            .append($('<i>', {class: 'settings-options-icon-tick save'}))
-            .append($('<i>', {class: 'settings-options-icon-cross cancel'}));
-
-        el.append(options);
-        return el;
-    },
-
     _getGroupMetadataTemplate: function (groupId, groupName, collapseClass, filtersElements) {
 
         var el = $('<div>', {class: 'panel filter-panel'});
@@ -1202,19 +1124,6 @@ PageController.prototype = {
             }))
             .append($('<div>', {class: 'sp-table-row-descr', text: filterDescription}));
 
-    },
-
-    _debounce: function (func, wait) {
-        var timeout;
-        return function () {
-            var context = this, args = arguments;
-            var later = function () {
-                timeout = null;
-                func.apply(context, args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
     }
 };
 
@@ -1274,21 +1183,13 @@ var initPage = function (response) {
                     controller._updateAntiBannerFilter(filter);
                     break;
                 case EventNotifierTypes.UPDATE_USER_FILTER_RULES:
-                    if (controller.omitRenderEventsCount > 0) {
-                        controller.omitRenderEventsCount--;
-                        break;
-                    }
-                    controller._renderUserFilters();
+                    controller.userFilter.updateUserFilterRules();
                     if (!environmentOptions.isContentBlockerEnabled) {
                         controller.renderFilterRulesInfo(filter);
                     }
                     break;
                 case EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES:
-                    if (controller.omitRenderEventsCount > 0) {
-                        controller.omitRenderEventsCount--;
-                        break;
-                    }
-                    controller._renderWhiteListFilters();
+                    controller.whiteListFilter.updateWhiteListFilterRules();
                     break;
                 case EventNotifierTypes.REQUEST_FILTER_UPDATED:
                     // Don't react on this event. If ContentBlockerEnabled CONTENT_BLOCKER_UPDATED event will be received.

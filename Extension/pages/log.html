@@ -6,6 +6,7 @@
 
     <meta charset="utf-8">
     <link rel="stylesheet" href="css/style-settings.css"/>
+    <link rel="stylesheet" href="css/custom.css"/>
 
     <#if browser.name() == "CHROMIUM" || browser.name() == "EDGE" || browser.name() == "SAFARI">
         <script type="text/javascript" src="../lib/libs/jquery-2.2.4.min.js"></script>
@@ -37,7 +38,7 @@
         </div>
     </div>
     <div class="col-refresh">
-        <button class="btn reloadTab" i18n="filtering_refresh_tab"></button>
+        <a class="btn reloadTab" i18n="filtering_refresh_tab"></a>
         <a id="clearTabLog" href="#" class="text-green" i18n="filtering_clear_tab_events"></a>
     </div>
     <div class="col-search">
@@ -60,13 +61,13 @@
                 <div class="checkbox"></div>
                 <label>Third party</label>
             </div>
-            <div class="checkb-wrap searchEventWhitelisted">
-                <div class="checkbox"></div>
-                <label>Whitelisted</label>
-            </div>
             <div class="checkb-wrap searchEventBlocked">
                 <div class="checkbox"></div>
                 <label>Blocked</label>
+            </div>
+            <div class="checkb-wrap searchEventWhitelisted">
+                <div class="checkbox"></div>
+                <label>Whitelisted</label>
             </div>
         </div>
     </div>
@@ -79,168 +80,142 @@
         <th i18n="filtering_table_rule"></th>
         <th i18n="filtering_table_source"></th>
     </thead>
-    <tbody id="logTable"></tbody>
+    <tbody id="logTable" class="hidden"></tbody>
 </table>
 
-<div id="logTableEmpty" class="log-empty">
+<div id="logTableEmpty" class="log-empty hidden">
     <img src="images/log-empty.png" alt="">
     <div class="desc" i18n="filtering_table_empty_row"></div>
 </div>
 
-<div id="modal-request-info" class="modal compact-view" style="display: none;">
-    <div class="modal-dialog adg-modal-window">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h4 class="modal-title" i18n="filtering_modal_info_title"></h4>
-            </div>
-            <div class="modal-body adg-modal-window-locking-info cf">
-                <div class="adg-modal-window-locking-info-left pull-left">
-                    <div class="adg-modal-window-locking-info-left-row cf">
-                        <div class="adg-modal-window-locking-info-left-col">URL:</div>
-                        <div class="adg-modal-window-locking-info-left-col" attr-text="requestUrl"></div>
-                    </div>
-                    <div class="adg-modal-window-locking-info-left-row cf">
-                        <div class="adg-modal-window-locking-info-left-col" i18n="filtering_modal_type"></div>
-                        <div class="adg-modal-window-locking-info-left-col" attr-text="requestType"></div>
-                    </div>
-                    <div class="adg-modal-window-locking-info-left-row cf">
-                        <div class="adg-modal-window-locking-info-left-col" i18n="filtering_modal_source"></div>
-                        <div class="adg-modal-window-locking-info-left-col" attr-text="frameDomain"></div>
-                    </div>
-                    <div class="adg-modal-window-locking-info-left-row cf">
-                        <div class="adg-modal-window-locking-info-left-col" i18n="filtering_modal_rule"></div>
-                        <div class="adg-modal-window-locking-info-left-col" attr-text="requestRule"></div>
-                    </div>
-                    <div class="adg-modal-window-locking-info-left-row cf">
-                        <div class="adg-modal-window-locking-info-left-col" i18n="filtering_modal_filter"></div>
-                        <div class="adg-modal-window-locking-info-left-col" attr-text="requestRuleFilter"></div>
-                    </div>
-                </div>
-                <div class="adg-modal-window-locking-info-right pull-right" style="display: none;">
-                    <img class="adg-modal-window-locking-info-right-pic" attr-src="requestUrl">
-                </div>
-            </div>
-            <div class="modal-footer cf">
-                <a id="openRequestNewTab" href="#" class="button button-gray pull-left" i18n="filtering_modal_open_in_new_tab"></a>
-
-                <div class="pull-right">
-                    <a id="blockRequest" href="#" class="button button-red hidden" i18n="filtering_modal_block"></a>
-                    <a id="unblockRequest" href="#" class="button hidden" i18n="filtering_modal_unblock"></a>
-                    <a id="removeUserFilterRule" href="#" class="button hidden" i18n="filtering_modal_remove_user"></a>
-                    <a id="removeWhiteListDomain" href="#" class="button hidden" i18n="filtering_modal_remove_whitelist"></a>
-                </div>
-            </div>
-        </div>
+<div <div id="modal-request-info" class="modal modal-request-details" style="display: none;">
+    <div class="head">
+        <div class="close" data-dismiss="modal" aria-label="Close"></div>
+        <div class="title" i18n="filtering_modal_info_title"></div>
+    </div>
+    <div class="body">
+        <ul class="list">
+            <li>
+                <div class="name">URL:</div>
+                <div class="value" attr-text="requestUrl"></div>
+            </li>
+        </ul>
+        <ul class="list">
+            <li>
+                <div class="name" i18n="filtering_modal_type"></div>
+                <div class="value" attr-text="requestType"></div>
+            </li>
+            <li>
+                <div class="name" i18n="filtering_modal_source"></div>
+                <div class="value" attr-text="frameDomain"></div>
+            </li>
+            <li>
+                <div class="name" i18n="filtering_modal_rule"></div>
+                <div class="value" attr-text="requestRule"></div>
+            </li>
+            <li>
+                <div class="name" i18n="filtering_modal_filter"></div>
+                <div class="value" attr-text="requestRuleFilter"></div>
+            </li>
+        </ul>
+    </div>
+    <div class="foot">
+        <a id="openRequestNewTab" href="#" class="btn" i18n="filtering_modal_open_in_new_tab"></a>
+        <a id="blockRequest" href="#" class="btn hidden" i18n="filtering_modal_block"></a>
+        <a id="unblockRequest" href="#" class="btn hidden" i18n="filtering_modal_unblock"></a>
+        <a id="removeUserFilterRule" href="#" class="btn hidden" i18n="filtering_modal_remove_user"></a>
+        <a id="removeWhiteListDomain" href="#" class="btn hidden" i18n="filtering_modal_remove_whitelist"></a>
     </div>
 </div>
 
-<div id="modal-create-block-rule" class="modal" style="display: none;">
-    <div class="modal-dialog adg-modal-window">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h4 class="modal-title" i18n="filtering_modal_add_title"></h4>
-            </div>
-            <div class="modal-body addition-rule cf">
-                <div class="addition-rule-row cf">
-                    <div class="addition-rule-row-left addition-rule-row-right-controls addition-rule-row-right-filtername" i18n="filtering_modal_rule_text"></div>
-                    <div class="addition-rule-row-right">
-                        <input name="ruleText" class="addition-rule-row-right-input" type="text"/>
-                    </div>
-                </div>
-                <div class="addition-rule-row cf">
-                    <div class="addition-rule-row-left addition-rule-row-right-controls addition-rule-row-left-patterns" i18n="filtering_modal_patterns"></div>
-                    <div id="rulePatterns" class="addition-rule-row-right addition-rule-row-right-patterns"></div>
-                </div>
-                <div class="addition-rule-row cf">
-                    <div class="addition-rule-row-left addition-rule-row-left-options addition-rule-row-right-controls" i18n="filtering_modal_options"></div>
-                    <div class="addition-rule-row-right addition-rule-row-right-options">
-                        <div class="checkbox checkbox-options">
-                            <input name="ruleDomain" class="checkbox-input" type="checkbox">
-                            <label class="checkbox-label">
-                                <span class="checkbox-icon"></span>
-                                <span class="checkbox-label-text" i18n="filtering_modal_apply_domains"></span>
-                            </label>
-                        </div>
-                        <div class="checkbox checkbox-options">
-                            <input name="ruleMatchCase" class="checkbox-input" type="checkbox">
-                            <label class="checkbox-label">
-                                <span class="checkbox-icon"></span>
-                                <span class="checkbox-label-text" i18n="filtering_modal_match_case"></span>
-                            </label>
-                        </div>
-                        <div class="checkbox checkbox-options">
-                            <input name="ruleThirdParty" class="checkbox-input" type="checkbox">
-                            <label class="checkbox-label">
-                                <span class="checkbox-icon"></span>
-                                <span class="checkbox-label-text" i18n="filtering_modal_third_party"></span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer cf">
-                <div class="pull-right">
-                    <a id="createRule" href="#" class="button button-red" i18n="filtering_modal_add_rule"></a>
-                </div>
-            </div>
-        </div>
+<div id="modal-create-block-rule"  class="modal modal-add-new-rule" style="display: none;">
+    <div class="head">
+        <div class="close" data-dismiss="modal" aria-label="Close"></div>
+        <div class="title" i18n="filtering_modal_add_title"></div>
     </div>
+    <div class="body">
+        <ul class="list">
+            <li>
+                <div class="name" i18n="filtering_modal_rule_text"></div>
+                <div class="value"><input type="text" class="rule-text" name="ruleText"/></div>
+            </li>
+        </ul>
+        <ul class="list">
+            <li>
+                <div class="name" i18n="filtering_modal_patterns"></div>
+                <div class="value">
+                    <ul id="rulePatterns" class="list"></ul>
+                </div>
+            </li>
+        </ul>
+        <ul class="list">
+            <li>
+                <div class="name" i18n="filtering_modal_options"></div>
+                <div class="value">
+                    <ul class="list">
+                        <li class="checkb-wrap">
+                            <input name="ruleDomain" class="checkbox-input" type="checkbox"/>
+                            <label><div class="checkbox"></div><span i18n="filtering_modal_apply_domains"></span></label>
+                        </li>
+                        <li class="checkb-wrap">
+                            <input name="ruleMatchCase" class="checkbox-input" type="checkbox"/>
+                            <label><div class="checkbox"></div><span i18n="filtering_modal_match_case"></span></label>
+                        </li>
+                        <li class="checkb-wrap">
+                            <input name="ruleThirdParty" class="checkbox-input" type="checkbox"/>
+                            <label><div class="checkbox"></div><span i18n="filtering_modal_third_party"></span></label>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="foot"><a id="createRule" href="#" class="btn" i18n="filtering_modal_add_rule"></a></div>
 </div>
 
-<div id="modal-create-exception-rule" class="modal" style="display: none;">
-    <div class="modal-dialog adg-modal-window">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h4 class="modal-title" i18n="filtering_modal_exception_title"></h4>
-            </div>
-            <div class="modal-body addition-rule cf">
-                <div class="addition-rule-row cf">
-                    <div class="addition-rule-row-left addition-rule-row-right-controls addition-rule-row-right-filtername" i18n="filtering_modal_rule_text"></div>
-                    <div class="addition-rule-row-right">
-                        <input name="ruleText" class="addition-rule-row-right-input" type="text"/>
-                    </div>
-                </div>
-                <div class="addition-rule-row cf">
-                    <div class="addition-rule-row-left addition-rule-row-right-controls addition-rule-row-left-patterns" i18n="filtering_modal_patterns"></div>
-                    <div id="rulePatterns" class="addition-rule-row-right addition-rule-row-right-patterns"></div>
-                </div>
-                <div class="addition-rule-row cf">
-                    <div class="addition-rule-row-left addition-rule-row-left-options addition-rule-row-right-controls" i18n="filtering_modal_options"></div>
-                    <div class="addition-rule-row-right addition-rule-row-right-options">
-                        <div class="checkbox checkbox-options">
-                            <input name="ruleDomain" class="checkbox-input" type="checkbox">
-                            <label class="checkbox-label">
-                                <span class="checkbox-icon"></span>
-                                <span class="checkbox-label-text" i18n="filtering_modal_apply_domains"></span>
-                            </label>
-                        </div>
-                        <div class="checkbox checkbox-options">
-                            <input name="ruleMatchCase" class="checkbox-input" type="checkbox">
-                            <label class="checkbox-label">
-                                <span class="checkbox-icon"></span>
-                                <span class="checkbox-label-text" i18n="filtering_modal_match_case"></span>
-                            </label>
-                        </div>
-                        <div class="checkbox checkbox-options">
-                            <input name="ruleThirdParty" class="checkbox-input" type="checkbox">
-                            <label class="checkbox-label">
-                                <span class="checkbox-icon"></span>
-                                <span class="checkbox-label-text" i18n="filtering_modal_third_party"></span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer cf">
-                <div class="pull-right">
-                    <a id="createRule" href="#" class="button button-red" i18n="filtering_modal_add_rule"></a>
-                </div>
-            </div>
-        </div>
+<div id="modal-create-exception-rule" class="modal modal-add-new-rule" style="display: none;">
+    <div class="head">
+        <div class="close" data-dismiss="modal" aria-label="Close"></div>
+        <div class="title" i18n="filtering_modal_exception_title"></div>
     </div>
+    <div class="body">
+        <ul class="list">
+            <li>
+                <div class="name" i18n="filtering_modal_rule_text"></div>
+                <div class="value"><input type="text" class="rule-text" name="ruleText"/></div>
+            </li>
+        </ul>
+        <ul class="list">
+            <li>
+                <div class="name" i18n="filtering_modal_patterns"></div>
+                <div class="value">
+                    <ul id="rulePatterns" class="list"></ul>
+                </div>
+            </li>
+        </ul>
+        <ul class="list">
+            <li>
+                <div class="name" i18n="filtering_modal_options"></div>
+                <div class="value">
+                    <ul class="list">
+                        <li class="checkb-wrap">
+                            <input name="ruleDomain" class="checkbox-input" type="checkbox"/>
+                            <label><div class="checkbox"></div><span i18n="filtering_modal_apply_domains"></span></label>
+                        </li>
+                        <li class="checkb-wrap">
+                            <input name="ruleMatchCase" class="checkbox-input" type="checkbox"/>
+                            <label><div class="checkbox"></div><span i18n="filtering_modal_match_case"></span></label>
+                        </li>
+                        <li class="checkb-wrap">
+                            <input name="ruleThirdParty" class="checkbox-input" type="checkbox"/>
+                            <label><div class="checkbox"></div><span i18n="filtering_modal_third_party"></span></label>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="foot"><a id="createRule" href="#" class="btn" i18n="filtering_modal_add_rule"></a></div>
 </div>
 
 </body>

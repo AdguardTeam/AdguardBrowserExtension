@@ -6,10 +6,10 @@
     <meta charset="utf-8">
     <!--<link type="text/css" rel="stylesheet" href="skin/fonts.css">-->
     <!--<link type="text/css" rel="stylesheet" href="skin/style.css">-->
-    <!--<link type="text/css" rel="stylesheet" href="skin/my.css">-->
-    <!--<link type="text/css" rel="stylesheet" href="skin/jquery.jscrollpane.css">-->
+    <link type="text/css" rel="stylesheet" href="skin/jquery.jscrollpane.css">
     <!--<link type="text/css" rel="stylesheet" href="skin/bootstrap.css">-->
     <link rel="stylesheet" href="css/style-settings.css">
+    <link rel="stylesheet" href="css/custom.css">
 
     <#if browser.name() == "CHROMIUM" || browser.name() == "EDGE" || browser.name() == "SAFARI">
         <script type="text/javascript" src="../lib/libs/jquery-2.2.4.min.js"></script>
@@ -17,6 +17,7 @@
         <script type="text/javascript" src="../lib/libs/jquery.mousewheel.min.js"></script>
         <script type="text/javascript" src="../lib/libs/jquery.jscrollpane.min.js"></script>
         <script type="text/javascript" src="../lib/libs/moment-with-locales.min.js"></script>
+        <script type="text/javascript" src="../lib/libs/ace/ace.js"></script>
         <script type="text/javascript" src="../lib/content-script/adguard-content.js"></script>
         <script type="text/javascript" src="../lib/content-script/common-script.js"></script>
         <script type="text/javascript" src="../lib/content-script/content-script.js"></script>
@@ -30,126 +31,162 @@
 </head>
 <body>
 <div class="settings-wrap">
+
     <div class="wlimit">
+
         <div class="settings-sidebar">
             <div class="logo"><img src="images/adguard-logo.png" alt=""></div>
             <ul class="nav nav-tabs">
-                <li><a href="#general-settings" i18n="options_general_settings"></a></li>
-                <li><a href="#antibanner" i18n="options_antibanner"></a></li>
-                <li><a href="#whitelist" i18n="options_whitelist"></a></li>
-                <li><a href="#userfilter" i18n="options_userfilter"></a></li>
-                <li><a href="#miscellaneous-settings" i18n="options_miscellaneous_settings"></a></li>
-                <!--<a class="top-menu-item" href="#general-settings" i18n="options_general_settings"></a>-->
-                <!--<a class="top-menu-item" href="#antibanner" i18n="options_antibanner"></a>-->
-                <!--<a class="top-menu-item" href="#safebrowsing" i18n="options_safebrowsing"></a>-->
-                <!--<a class="top-menu-item" href="#whitelist" i18n="options_whitelist"></a>-->
-                <!--<a class="top-menu-item" href="#userfilter" i18n="options_userfilter"></a>-->
-                <!--<a class="top-menu-item" href="#miscellaneous-settings" i18n="options_miscellaneous_settings"></a>-->
+                <li><a href="#" data-tab="#general-settings" i18n="options_general_settings"></a></li>
+                <li><a href="#" data-tab="#antibanner" i18n="options_antibanner"></a></li>
+                <li><a href="#" data-tab="#whitelist" i18n="options_whitelist"></a></li>
+                <li><a href="#" data-tab="#userfilter" i18n="options_userfilter"></a></li>
+                <li><a href="#" data-tab="#miscellaneous-settings" i18n="options_miscellaneous_settings"></a></li>
             </ul>
         </div>
-        <div id="general-settings" class="settings-content tab-pane">
-            <div class="page-title">Settings</div>
-            <div class="settings-body">
-                <div class="subtitle" i18n="options_general_settings"></div>
-                <ul class="opts-list">
-                    <li class="active">
-                        <div class="opt-name" i18n="options_allow_acceptable_ads">Allow search ads and websites' self-promotion <a href="" class="question"></a></div>
-                        <div class="opt-state">
-                            <input type="checkbox" class="sp-table-row-input" id="allowAcceptableAds"/>
-                            <!--<div class="toggler"></div>-->
-                        </div>
-                    </li>
-                    <li class="active">
-                        <div class="opt-name" i18n="options_show_blocked_ads_count">Indicate the number of blocked ads on the Adguard extension icon</div>
-                        <div class="opt-state">
-                            <input type="checkbox" class="sp-table-row-input" id="showPageStatisticCheckbox"/>
-                            <!--<div class="toggler"></div>-->
-                        </div>
-                    </li>
-                    <li>
-                        <div class="opt-name" i18n="options_enable_autodetect_filter">Activate the most appropriate filters automatically</div>
-                        <div class="opt-state">
-                            <input type="checkbox" class="sp-table-row-input" id="autodetectFiltersCheckbox"/>
-                            <!--<div class="toggler"></div>-->
-                        </div>
-                    </li>
-                </ul>
 
-                <div class="subtitle" i18n="options_safebrowsing"></div>
-                <ul class="opts-list">
-                    <li>
-                        <div class="title" i18n="options_safebrowsing_enabled">Phishing and malware protection <a href="" class="question"></a></div>
-                        <div class="opt-state">
-                            <input type="checkbox" class="sp-table-row-input" id="safebrowsingEnabledCheckbox"/>
-                            <!--<div class="toggler"></div>-->
-                        </div>
-                    </li>
-                    <li>
-                        <div class="title" i18n="options_safebrowsing_help">Help us in Browsing security filters development</div>
-                        <div class="opt-state">
-                            <div class="desc">Submit anonymous security information</div>
-                            <input type="checkbox" class="sp-table-row-input" id="sendSafebrowsingStatsCheckbox"/>
-                            <!--<div class="toggler"></div>-->
-                        </div>
-                    </li>
-                </ul>
+        <div id="general-settings" class="settings-content tab-pane">
+        <div class="page-title">Settings</div>
+        <div class="settings-body">
+            <div class="subtitle" i18n="options_general_settings"></div>
+            <ul class="opts-list">
+                <li class="active">
+                    <div class="opt-name" i18n="options_allow_acceptable_ads"></div>
+                    <div class="opt-state">
+                        <input type="checkbox" class="sp-table-row-input" id="allowAcceptableAds"/>
+                    </div>
+                </li>
+                <li class="active">
+                    <div class="opt-name" i18n="options_show_blocked_ads_count"></div>
+                    <div class="opt-state">
+                        <input type="checkbox" class="sp-table-row-input" id="showPageStatisticCheckbox"/>
+                    </div>
+                </li>
+                <li>
+                    <div class="opt-name" i18n="options_enable_autodetect_filter"></div>
+                    <div class="opt-state">
+                        <input type="checkbox" class="sp-table-row-input" id="autodetectFiltersCheckbox"/>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="subtitle" i18n="options_safebrowsing"></div>
+            <ul class="opts-list">
+                <li>
+                    <div class="title" i18n="options_safebrowsing_enabled"></div>
+                    <div class="opt-state">
+                        <input type="checkbox" class="sp-table-row-input" id="safebrowsingEnabledCheckbox"/>
+                    </div>
+                </li>
+                <li>
+                    <div class="title" i18n="options_safebrowsing_help"></div>
+                    <div class="opt-state">
+                        <input type="checkbox" class="sp-table-row-input" id="sendSafebrowsingStatsCheckbox"/>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+        <div id="antibanner" class="settings-content tab-pane"></div>
+
+        <div id="whitelist" class="settings-content tab-pane">
+            <div class="settings-content">
+                <div class="page-title" i18n="options_whitelist"></div>
+                <div class="settings-body">
+                    <div class="setting-desc" i18n="options_whitelist_description"></div>
+                    <ul class="opts-list">
+                        <li>
+                            <div class="opt-name" i18n="options_whitelist_inverse"></div>
+                            <div class="opt-state">
+                                <input type="checkbox" class="sp-table-row-input" id="changeDefaultWhiteListMode"/>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="search-row">
+                        <input type="text" id="white-search" i18n-plhr="options_whitelist_search_placeholder">
+                        <span id="searchWhitelist" class="submit"><img src="images/icon-magnifying-green.png" alt=""></span>
+                    </div>
+                    <ul id="whiteListFilters" class="white-list"></ul>
+                </div>
+                <div class="settings-actions">
+                    <a href="#" class="addWhiteListFilter" i18n="options_whitelist_add_domain"></a>
+                    <a href="#"  id="clearWhiteListFilter" i18n="options_userfilter_clear"></a>
+                    <a href="#"  id="importWhiteListFilter" i18n="options_userfilter_import"></a>
+                    <a href="#"  id="exportWhiteListFilter" i18n="options_userfilter_export"></a>
+                    <input type="file" id="importWhiteListFilterInput" style="display: none;"/>
+                </div>
             </div>
+        </div>
+
+        <div id="userfilter" class="settings-content tab-pane">
+
+            <div class="settings-content">
+                <div class="page-title" i18n="options_userfilter"></div>
+                <div class="settings-body">
+                    <div class="setting-desc" i18n="options_userfilter_description"></div>
+                </div>
+                <div class="filter-rules">
+                    <div class="search-row">
+                        <input type="text" placeholder="Enter search string">
+                        <span class="submit"><img src="images/icon-magnifying-green.png" alt=""></span>
+                    </div>
+                    <div id="userRules" class="user-rules"></div>
+                </div>
+                <div class="settings-actions">
+                    <!--<a id="clearUserFilter" href="#" i18n="options_userfilter_clear"></a>-->
+                    <!--<a id="importUserFilter" href="#" i18n="options_userfilter_import"></a>-->
+                    <!--<a id="exportUserFilter" href="#" i18n="options_userfilter_export"></a>-->
+                    <a id="userFilterApplyChanges" href="#" i18n="options_modal_save"></a>
+                </div>
+            </div>
+
         </div>
 
         <div id="miscellaneous-settings" class="settings-content tab-pane">
-            <div class="page-title">
-                Miscellaneous
-            </div>
-            <div class="settings-body">
-                <ul class="opts-list">
-                    <li>
-                        <div class="opt-name">
-                            Use optimized filters
-                        </div>
-                        <div class="opt-state">
-                            <div class="desc">Light filter lists optimized for mobile devices</div>
-                            <div class="toggler"></div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="opt-name">
-                            Send statistics for ad filters usage <a href="" class="question"></a>
-                        </div>
-                        <div class="opt-state">
-                            <div class="toggler"></div>
-                        </div>
-                    </li>
-                    <li class="active">
-                        <div class="opt-name">
-                            Send statistics for ad filters usage
-                        </div>
-                        <div class="opt-state">
-                            <div class="toggler"></div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="opt-name">
-                            Show information on Adguard full version
-                        </div>
-                        <div class="opt-state">
-                            <div class="toggler"></div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            <div class="settings-actions">
-                <a href="">Filtering log</a>
-                <a href="">Reset statistics</a>
-                <a href="">Changelog</a>
-            </div>
+        <div class="page-title" i18n="options_miscellaneous_settings"></div>
+        <div class="settings-body">
+            <ul class="opts-list">
+                <li>
+                    <div class="opt-name" i18n="options_use_optimized_filters"></div>
+                    <div class="opt-state">
+                        <input type="checkbox" class="sp-table-row-input" id="useOptimizedFilters"/>
+                    </div>
+                </li>
+                <li>
+                    <div class="opt-name" i18n="options_collect_hit_stats"></div>
+                    <div class="opt-state">
+                        <input type="checkbox" class="sp-table-row-input" id="enableHitsCount"/>
+                    </div>
+                </li>
+                <li class="active">
+                    <div class="opt-name" i18n="options_show_context_menu"></div>
+                    <div class="opt-state">
+                        <input type="checkbox" class="sp-table-row-input" id="enableShowContextMenu"/>
+                    </div>
+                </li>
+                <li>
+                    <div class="opt-name" i18n="options_show_adguard_full_version"></div>
+                    <div class="opt-state">
+                        <input type="checkbox" class="sp-table-row-input" id="showInfoAboutAdguardFullVersion"/>
+                    </div>
+                </li>
+            </ul>
         </div>
+        <div class="settings-actions">
+            <a id="openLog" href="#" i18n="options_open_log"></a>
+            <a id="resetStats" href="#" i18n="options_reset_stats"></a>
+            <a href="https://github.com/AdguardTeam/AdguardBrowserExtension/releases" target="_blank" i18n="options_open_changelog"></a>
+        </div>
+    </div>
+
     </div>
 
     <div class="settings-footer">
         <div class="rate-row">
             <div class="wlimit">
-                <div class="text">Do you like Adguard?</div>
-                <a href="" class="btn-rate"><img src="images/icon-like.png" alt=""> Rate it</a>
+                <div class="text" i18n="options_do_you_like"></div>
+                <a href="#" class="btn-rate openExtensionStore"><img src="images/icon-like.png" alt=""><span i18n="options_footer_like_us"></span></a>
             </div>
         </div>
         <div class="links-row">
@@ -395,9 +432,9 @@
     <!--</div>-->
 <!--</footer>-->
 
-<!--<div id="resetStatsPopup" class="alert-attention updates-filter-popup" style="display: none;">-->
-    <!--<div class="alert-attention-title" i18n="options_reset_stats_done"></div>-->
-<!--</div>-->
+<div id="resetStatsPopup" class="alert-attention updates-filter-popup" style="display: none;">
+    <div class="alert-attention-title" i18n="options_reset_stats_done"></div>
+</div>
 
 <!--<div class="modal fade" id="subscriptionModal" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="subscriptionModalLabel">-->
     <!--<div class="modal-dialog">-->
@@ -418,17 +455,17 @@
     <!--</div>-->
 <!--</div>-->
 
-<!--<div id="tooManySubscriptions" class="alert-topline" style="display: none;">-->
-    <!--<div class="wrap">-->
-        <!--<p i18n="options_too_many_filters_selected"></p>-->
-    <!--</div>-->
-<!--</div>-->
+<div id="tooManySubscriptions" class="alert-topline" style="display: none;">
+    <div class="wrap">
+        <p i18n="options_too_many_filters_selected"></p>
+    </div>
+</div>
 
-<!--<div id="tooManyRules" class="alert-topline" style="display: none;">-->
-    <!--<div class="wrap">-->
-        <!--<p i18n="options_content_blocker_overlimit"></p>-->
-    <!--</div>-->
-<!--</div>-->
+<div id="tooManyRules" class="alert-topline" style="display: none;">
+    <div class="wrap">
+        <p i18n="options_content_blocker_overlimit"></p>
+    </div>
+</div>
 
 <!--<div id="whitelist-overlay" style="display: none">-->
     <!--<div class='sp-lists-table-overlay hidden' i18n="options_whitelist_empty"></div>-->

@@ -86,9 +86,6 @@ PageController.prototype = {
         this.logTableEmpty = $('#logTableEmpty');
         this.logTableHidden = true;
 
-        this.logTable.hide();
-        this.logTableEmpty.hide();
-
         this.tabSelector = $('#tabSelector');
         this.tabSelectorValue = this.tabSelector.find('#selectorListCurrentValue');
         this.tabSelectorList = this.tabSelector.find('#selectorList');
@@ -152,6 +149,12 @@ PageController.prototype = {
         contentPage.sendMessage({type: 'synchronizeOpenTabs'}, function () {
             this._onOpenedTabsReceived();
         }.bind(this));
+
+        $(document).keyup(function (e) {
+            if (e.keyCode === 27) {
+                self.requestWizard.closeModal();
+            }
+        });
     },
 
     _onOpenedTabsReceived: function () {
@@ -301,7 +304,7 @@ PageController.prototype = {
         if (!this.searchRequest &&
             this.searchTypes.length === 0 && !this.searchThirdParty && !this.searchBlocked && !this.searchWhitelisted) {
 
-            rows.show();
+            rows.removeClass('hidden');
             return;
         }
 
@@ -313,15 +316,15 @@ PageController.prototype = {
 
     _onEmptyTable: function () {
         this.logTableHidden = true;
-        this.logTable.hide();
-        this.logTableEmpty.show();
+        this.logTable.addClass('hidden');
+        this.logTableEmpty.removeClass('hidden');
     },
 
     _onNotEmptyTable: function () {
         if (this.logTableHidden) {
             this.logTableHidden = false;
-            this.logTableEmpty.hide();
-            this.logTable.show();
+            this.logTableEmpty.addClass('hidden');
+            this.logTable.removeClass('hidden');
         }
     },
 
@@ -376,7 +379,7 @@ PageController.prototype = {
 
         var el = $('<tr>', metadata);
         // Url
-        el.append($('<td>', {text: event.requestUrl.substring(0, 20)}));
+        el.append($('<td>', {text: event.requestUrl}));
         // Type
         var typeEl = $('<td>', {text: RequestWizard.getRequestType(event.requestType)});
         if (event.requestThirdParty) {
@@ -406,9 +409,9 @@ PageController.prototype = {
         show &= checkboxes; // jshint ignore:line
 
         if (show) {
-            el.show();
+            el.removeClass('hidden');
         } else {
-            el.hide();
+            el.addClass('hidden');
         }
     }
 };
@@ -433,6 +436,8 @@ RequestWizard.getFilterName = function (filterId) {
 };
 
 RequestWizard.prototype.showModal = function (template) {
+
+    this.closeModal();
 
     $(document.body).append(template);
     template.show();
@@ -463,19 +468,19 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
     template.find('[attr-text="requestType"]').text(RequestWizard.getRequestType(filteringEvent.requestType));
     template.find('[attr-text="frameDomain"]').text(RequestWizard.getSource(filteringEvent.frameDomain));
     if (!filteringEvent.frameDomain || filteringEvent.frameDomain === null) {
-        template.find('[attr-text="frameDomain"]').closest('.adg-modal-window-locking-info-left-row').hide();
+        template.find('[attr-text="frameDomain"]').closest('li').hide();
     }
 
     if (requestRule) {
         if (requestRule.filterId != AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
             template.find('[attr-text="requestRule"]').text(requestRule.ruleText);
         } else {
-            template.find('[attr-text="requestRule"]').closest('.adg-modal-window-locking-info-left-row').hide();
+            template.find('[attr-text="requestRule"]').closest('li').hide();
         }
         template.find('[attr-text="requestRuleFilter"]').text(RequestWizard.getFilterName(requestRule.filterId));
     } else {
-        template.find('[attr-text="requestRule"]').closest('.adg-modal-window-locking-info-left-row').hide();
-        template.find('[attr-text="requestRuleFilter"]').closest('.adg-modal-window-locking-info-left-row').hide();
+        template.find('[attr-text="requestRule"]').closest('li').hide();
+        template.find('[attr-text="requestRuleFilter"]').closest('li').hide();
     }
 
     if (filteringEvent.requestType == "IMAGE") {
@@ -575,23 +580,19 @@ RequestWizard.prototype.showCreateExceptionRuleModal = function (frameInfo, filt
 RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, patterns, urlDomain, isThirdPartyRequest) {
     var rulePatternsEl = template.find('#rulePatterns');
     for (var i = 0; i < patterns.length; i++) {
-        var patternEl = $('<div>', {'class': 'radio radio-patterns'});
+        var patternEl = $('<li>', {'class': 'checkb-wrap'});
         var input = $('<input>', {
-            'class': 'radio-input',
             type: 'radio',
             name: 'rulePattern',
             id: 'pattern' + i,
             value: patterns[i]
         });
-        var label = $('<label>', {
-            'class': 'radio-label',
-            'for': 'pattern' + i
-        }).append($('<span>', {'class': 'radio-icon'})).append($('<span>', {
-            'class': 'radio-label-text',
-            text: patterns[i]
-        }));
+        var div = $('<div>', {class: 'radio'});
+        var label = $('<label>', {'for': 'pattern' + i});
         patternEl.append(input);
         patternEl.append(label);
+        label.append(div);
+        label.append(document.createTextNode(patterns[i]));
         rulePatternsEl.append(patternEl);
         if (i === 0) {
             input.attr('checked', 'checked');
