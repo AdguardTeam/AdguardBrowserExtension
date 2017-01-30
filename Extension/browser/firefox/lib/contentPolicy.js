@@ -129,12 +129,12 @@ var WebRequestHelper = exports.WebRequestHelper = {
 
         if (!(context instanceof Ci.nsIDOMWindow)) {
             // If this is an element, get the corresponding document
-            if (context instanceof Ci.nsIDOMNode && context.ownerDocument) {
+            if (context.ownerDocument) {
                 context = context.ownerDocument;
             }
 
             // Now we should have a document, get its window
-            if (context instanceof Ci.nsIDOMDocument) {
+            if (context.defaultView) {
                 context = context.defaultView;
             } else {
                 return null;
@@ -143,13 +143,28 @@ var WebRequestHelper = exports.WebRequestHelper = {
 
         // If we have a window now - get the tab
         if (context && context instanceof Ci.nsIDOMWindow) {
-            //http://jira.performix.ru/browse/AG-7285
-            if ("" + context === "[object ChromeWindow]") {
-                return null;
-            }
             return tabUtils.getTabForContentWindow(context.top);
         }
+
         return null;
+    },
+
+    getDocumentContextWindow: function (context) {
+        if (!(context instanceof Ci.nsIDOMWindow)) {
+            // If this is an element, get the corresponding document
+            if (context.ownerDocument) {
+                context = context.ownerDocument;
+            }
+
+            // Now we should have a document, get its window
+            if (context.defaultView) {
+                return context.defaultView;
+            } else {
+                return null;
+            }
+        }
+
+        return context;
     },
 
     /**
