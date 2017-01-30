@@ -318,11 +318,17 @@ ContentScripts.prototype = {
         var listener = (function (contentMessageHandler) {
 
             function getTabFromTarget(target) {
-                var tab = tabUtils.getTabForBrowser(target);
+                var tab;
+
+                if (typeof tabUtils.getTabForBrowser === 'function') {
+                    tab = tabUtils.getTabForBrowser(target);
+                }
+
                 if (!tab) {
                     // Legacy browsers support. For PaleMoon and old Firefox getTabForBrowser returns null
                     tab = tabUtils.getTabForContentWindow(target.contentWindow);
                 }
+
                 return tab;
             }
 
