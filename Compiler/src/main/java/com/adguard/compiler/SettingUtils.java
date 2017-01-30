@@ -23,7 +23,6 @@ import org.apache.commons.lang.StringUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -169,92 +168,77 @@ public class SettingUtils {
         return sb.toString();
     }
 
-	/**
+    /**
      * Copy specific api files, join all js files into one, remove unused files
-     * @param dest      Build folder
-     * @param browser   Browser
+     *
+     * @param dest    Build folder
+     * @param browser Browser
      * @throws IOException
      */
     public static void createApiBuild(File dest, Browser browser) throws IOException {
 
-        List<File> keepFiles = new ArrayList<File>();
-        // Read manifest file
-        List<String> lines = FileUtils.readLines(new File(dest, "manifest.json"));
+        // Concat content scripts
+        File manifestFile = new File(dest, "manifest.json");
+        String contentScriptsFile = "adguard/adguard-content.js";
+        List<File> contentScripts = new ArrayList<File>();
+        List<String> lines = FileUtils.readLines(manifestFile);
         for (String line : lines) {
             if (line.contains(".js")) {
-                keepFiles.add(new File(dest, StringUtils.substringBetween(line, "\"", "\"")));
+                contentScripts.add(new File(dest, StringUtils.substringBetween(line, "\"", "\"")));
             }
         }
+        concatFiles(new File(dest, contentScriptsFile), contentScripts);
 
-        String apiJsFile = "lib/adguard-api.js";
-        StringBuilder apiJsContent = new StringBuilder();
-        apiJsContent.append(LICENSE_TEMPLATE).append("\r\n\r\n");
-        apiJsContent.append("(function (window, undefined) {\r\n");
+        // Update manifest.json content
+        String manifestJsonContent = FileUtils.readFileToString(manifestFile);
+        manifestJsonContent = Pattern.compile("\"js\":\\s+\\[[^\\]]+?\\]", Pattern.MULTILINE).matcher(manifestJsonContent).replaceFirst("\"js\": [\"" + contentScriptsFile + "\"]");
+        FileUtils.writeStringToFile(manifestFile, manifestJsonContent);
 
+        // Concat background scripts
         File backgroundPageFile = new File(dest, "background.html");
+        String backgroundScriptFile = "adguard/adguard-api.js";
+        List<File> backgroundScripts = new ArrayList<File>();
         lines = FileUtils.readLines(backgroundPageFile);
         for (String line : lines) {
-            if (!line.contains("<script")) {
-                continue;
-            }
-            String jsContent = FileUtils.readFileToString(new File(dest, StringUtils.substringBetween(line, "src=\"", "\"")));
-            Matcher matcher = LICENSE_TEMPLATE_PATTERN.matcher(jsContent);
-            if (matcher.find()) {
-                jsContent = matcher.replaceFirst("");
-            }
-            jsContent = jsContent.trim();
-            apiJsContent.append("\r\n");
-            apiJsContent.append(jsContent);
-            apiJsContent.append("\r\n");
-        }
-
-        // Cleanup unused files
-        File libDir = new File(dest, "lib/");
-        Iterator<File> iterator = FileUtils.iterateFiles(libDir, null, true);
-        while (iterator.hasNext()) {
-            File file = iterator.next();
-            if (!keepFiles.contains(file)) {
-                FileUtils.forceDelete(file);
+            if (line.contains("<script")) {
+                backgroundScripts.add(new File(dest, StringUtils.substringBetween(line, "src=\"", "\"")));
             }
         }
-
-        cleanupEmptyDirs(libDir);
-
+        concatFiles(new File(dest, backgroundScriptFile), backgroundScripts);
         String backgroundPageContent = ("<!DOCTYPE html>\r\n" +
                 "<html>\r\n" +
                 "<head>\r\n") +
-                "<script type=\"text/javascript\" src=\"" + apiJsFile + "\"></script>\r\n" +
+                "<script type=\"text/javascript\" src=\"" + backgroundScriptFile + "\"></script>\r\n" +
                 "</head>\r\n" +
                 "</html>";
-
-        apiJsContent.append("\r\n})(window);");
-
         FileUtils.writeStringToFile(backgroundPageFile, backgroundPageContent);
-        FileUtils.writeStringToFile(new File(dest, apiJsFile), apiJsContent.toString());
+
+        FileUtils.moveFileToDirectory(new File(dest, "filters/filters.json"), new File(dest, "adguard"), false);
+        FileUtils.moveFileToDirectory(new File(dest, "filters/filters_i18n.json"), new File(dest, "adguard"), false);
+        FileUtils.deleteDirectory(new File(dest, "filters"));
+        FileUtils.deleteDirectory(new File(dest, "lib"));
     }
 
     private static File getLocalScriptRulesFile(File sourcePath) {
         return new File(sourcePath, "lib/filter/rules/local-script-rules.js");
     }
 
-
-    private static void cleanupEmptyDirs(File file) throws IOException {
-        if (!file.isDirectory()) {
-            return;
+    private static void concatFiles(File resultFile, List<File> files) throws IOException {
+        StringBuilder resultContent = new StringBuilder();
+        resultContent.append(LICENSE_TEMPLATE).append("\r\n\r\n");
+        resultContent.append("(function (window, undefined) {\r\n");
+        for (File file : files) {
+            String fileContent = FileUtils.readFileToString(file);
+            Matcher matcher = LICENSE_TEMPLATE_PATTERN.matcher(fileContent);
+            if (matcher.find()) {
+                fileContent = matcher.replaceFirst("");
+            }
+            fileContent = fileContent.trim();
+            resultContent.append("\r\n");
+            resultContent.append(fileContent);
+            resultContent.append("\r\n");
         }
-        File[] files = file.listFiles();
-        if (files == null) {
-            throw new IOException();
-        }
-        for (File child : files) {
-            cleanupEmptyDirs(child);
-        }
-        files = file.listFiles();
-        if (files == null) {
-            throw new IOException();
-        }
-        if (files.length == 0) {
-            FileUtils.forceDelete(file);
-        }
+        resultContent.append("\r\n})(window);");
+        FileUtils.writeStringToFile(resultFile, resultContent.toString());
     }
 }

@@ -233,12 +233,7 @@ adguard.antiBannerService = (function (adguard) {
          * TODO: when we want to load filter from backend, we should retrieve metadata from backend too, but not from local file.
          */
         var filterMetadata = adguard.subscriptions.getFilterMetadata(filterId);
-
-        if (adguard.utils.filters.isAdguardFilter(filter)) {
-            loadFilterFromLocalFile(filterMetadata, onFilterLoaded);
-        } else {
-            loadFilterFromBackend(filterMetadata, onFilterLoaded);
-        }
+        loadFilterRules(filterMetadata, false, onFilterLoaded);
     };
 
     /**
@@ -960,7 +955,7 @@ adguard.antiBannerService = (function (adguard) {
                 callback(true, loadedFilters);
             } else {
                 var filterMetadata = filterMetadataList.shift();
-                loadFilterFromBackend(filterMetadata, function (success) {
+                loadFilterRules(filterMetadata, true, function (success) {
                     if (!success) {
                         callback(false);
                         return;
@@ -975,13 +970,14 @@ adguard.antiBannerService = (function (adguard) {
     }
 
     /**
-     * Loads filter rules from remote server
+     * Loads filter rules
      *
      * @param filterMetadata Filter metadata
+     * @param forceRemote Force download filter rules from remote server (if false try to download local copy of rules if it's possible)
      * @param callback Called when filter rules have been loaded
      * @private
      */
-    function loadFilterFromBackend(filterMetadata, callback) {
+    function loadFilterRules(filterMetadata, forceRemote, callback) {
 
         var filter = getFilterById(filterMetadata.filterId);
 
@@ -1008,7 +1004,7 @@ adguard.antiBannerService = (function (adguard) {
             callback(false);
         };
 
-        adguard.backend.loadRemoteFilterRules(filter.filterId, adguard.settings.isUseOptimizedFiltersEnabled(), successCallback, errorCallback);
+        adguard.backend.loadFilterRules(filter.filterId, forceRemote, adguard.settings.isUseOptimizedFiltersEnabled(), successCallback, errorCallback);
     }
 
     /**
@@ -1036,40 +1032,6 @@ adguard.antiBannerService = (function (adguard) {
         };
 
         adguard.backend.loadFiltersMetadata(filterIds, loadSuccess, loadError);
-    }
-
-    /**
-     * Load filter rules from local file
-     * @param filterMetadata
-     * @param callback
-     * @private
-     */
-    function loadFilterFromLocalFile(filterMetadata, callback) {
-
-        var filter = getFilterById(filterMetadata.filterId);
-
-        filter._isDownloading = true;
-        adguard.listeners.notifyListeners(adguard.listeners.START_DOWNLOAD_FILTER, filter);
-
-        var successCallback = function (filterRules) {
-            adguard.console.info("Load local filter {0}, rules count: {1}", filter.filterId, filterRules.length);
-            delete filter._isDownloading;
-            filter.version = filterMetadata.version;
-            filter.lastUpdateTime = filterMetadata.timeUpdated;
-            filter.loaded = true;
-            //notify listeners
-            adguard.listeners.notifyListeners(adguard.listeners.SUCCESS_DOWNLOAD_FILTER, filter);
-            adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, filter, filterRules);
-            callback(true);
-        };
-
-        var errorCallback = function () {
-            delete filter._isDownloading;
-            adguard.listeners.notifyListeners(adguard.listeners.ERROR_DOWNLOAD_FILTER, filter);
-            callback(false);
-        };
-
-        adguard.backend.loadLocalFilterRules(filter.filterId, adguard.settings.isUseOptimizedFiltersEnabled(), successCallback, errorCallback);
     }
 
     /**

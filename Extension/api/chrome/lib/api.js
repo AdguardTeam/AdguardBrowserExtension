@@ -27,12 +27,16 @@
     }
 
     /**
-     * Checks that adguard.filters was initialized (i.e. filters metadata was loaded)
+     * Validates configuration
+     * @param configuration Configuration object
      */
-    function assertFiltersInitialized() {
-        if (!adguard.filters.isInitialized()) {
-            throw new Error('Applications is not initialized. Use \'start\' method.');
+    function validateConfiguration(configuration) {
+        if (!configuration) {
+            throw new Error('"configuration" parameter is required');
         }
+        validateFiltersConfiguration(configuration.filters);
+        validateDomains(configuration.whitelist, 'whitelist');
+        validateDomains(configuration.blacklist, 'blacklist');
     }
 
     /**
@@ -47,10 +51,6 @@
             var filterId = filters[i];
             if (typeof filterId !== 'number') {
                 throw new Error(filterId + ' is not a number');
-            }
-            var metadata = adguard.subscriptions.getFilterMetadata(filterId);
-            if (!metadata) {
-                throw new Error('Filter with id ' + filterId + ' does not exist');
             }
         }
     }
@@ -79,12 +79,9 @@
      */
     function configureWhiteBlackLists(configuration) {
 
-        if (!configuration.blacklist && !configuration.whitelist) {
+        if (!configuration.force && !configuration.blacklist && !configuration.whitelist) {
             return;
         }
-
-        validateDomains(configuration.whitelist, 'whitelist');
-        validateDomains(configuration.blacklist, 'blacklist');
 
         var domains;
         if (configuration.blacklist) {
@@ -95,7 +92,9 @@
             domains = configuration.whitelist;
         }
         adguard.whitelist.clearWhiteList();
-        adguard.whitelist.addToWhiteListArray(domains);
+        if (domains) {
+            adguard.whitelist.addToWhiteListArray(domains);
+        }
     }
 
     /**
@@ -105,15 +104,21 @@
      */
     function configureFilters(configuration, callback) {
 
-        if (!configuration.filters) {
+        if (!configuration.force && !configuration.filters) {
             callback();
             return;
         }
 
-        assertFiltersInitialized();
-        validateFiltersConfiguration(configuration.filters);
+        var filterIds = (configuration.filters || []).slice(0);
+        for (var i = filterIds.length - 1; i >= 0; i--) {
+            var filterId = filterIds[i];
+            var metadata = adguard.subscriptions.getFilterMetadata(filterId);
+            if (!metadata) {
+                adguard.console.error('Filter with id {0} not found. Skip it...', filterId);
+                filterIds.splice(i, 1);
+            }
+        }
 
-        var filterIds = configuration.filters;
         adguard.filters.addAndEnableFilters(filterIds, function () {
             var enabledFilters = adguard.filters.getEnabledFilters();
             for (var i = 0; i < enabledFilters.length; i++) {
@@ -131,7 +136,7 @@
      * @param configuration Configuration object: {filtersMetadataUrl: '...', filterRulesUrl: '...'}
      */
     function configureFiltersUrl(configuration) {
-        if (!configuration.filtersMetadataUrl && !configuration.filterRulesUrl) {
+        if (!configuration.force && !configuration.filtersMetadataUrl && !configuration.filterRulesUrl) {
             return;
         }
         adguard.backend.configure({
@@ -143,10 +148,21 @@
     /**
      * Start filtration.
      * Also perform installation on first run.
+     * @param configuration Configuration object
      * @param callback Callback function
      */
-    var start = function (callback) {
-        adguard.filters.start({}, callback || noOpFunc);
+    var start = function (configuration, callback) {
+
+        validateConfiguration(configuration);
+
+        callback = callback || noOpFunc;
+
+        // Force apply all configuration fields
+        configuration.force = true;
+
+        adguard.filters.start({}, function () {
+            configure(configuration, callback);
+        });
     };
 
     /**
@@ -164,12 +180,22 @@
      */
     var configure = function (configuration, callback) {
 
+        if (!adguard.filters.isInitialized()) {
+            throw new Error('Applications is not initialized. Use \'start\' method.');
+        }
+        validateConfiguration(configuration);
+
         callback = callback || noOpFunc;
 
         configureFiltersUrl(configuration);
         configureWhiteBlackLists(configuration);
         configureFilters(configuration, callback);
     };
+
+    adguard.backend.configure({
+        localFiltersFolder: 'adguard',
+        localFilterIds: []
+    });
 
     global.adguardApi = {
         start: start,
