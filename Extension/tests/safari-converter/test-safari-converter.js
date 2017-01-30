@@ -209,8 +209,6 @@ QUnit.test("Generichide rules", function(assert) {
     var convertedRule = converted[0];
     assert.equal("ignore-previous-rules", convertedRule.action.type);
     assert.equal('^https?://([^/]*\\.)?hulu\\.com\\/page', convertedRule.trigger["url-filter"]);
-    assert.equal(1, convertedRule.trigger["resource-type"].length);
-    assert.equal("document", convertedRule.trigger["resource-type"][0]);
 });
 
 QUnit.test("Generic domain sensitive rules", function(assert) {
@@ -245,7 +243,8 @@ QUnit.test("Generic domain sensitive rules sorting order", function(assert) {
     assert.equal(converted[1].trigger["url-filter"], '.*');
 
     assert.equal(converted[2].action.type, "ignore-previous-rules");
-    assert.equal(converted[2].trigger["url-filter"], '^https?://([^/]*\\.)?example\\.org[/:&?]?');
+    assert.equal(converted[2].trigger["url-filter"], '.*');
+    assert.equal(converted[2].trigger["if-domain"], '*example.org');
 });
 
 QUnit.test("Convert cyrillic rules", function(assert) {
@@ -358,4 +357,17 @@ QUnit.test("Content Blocker RegExp Problem", function (assert) {
     // Convert again
     result = SafariContentBlockerConverter.convertArray([rule]);
     assert.equal(result.errorsCount, 0);
+});
+
+QUnit.test("UpperCase domains", function (assert) {
+
+    var rule = new adguard.rules.UrlFilterRule('@@||UpperCase.test^$genericblock', 0);
+
+    var result = SafariContentBlockerConverter.convertArray([rule]);
+    assert.equal(result.errorsCount, 0);
+
+    var converted = JSON.parse(result.converted);
+    assert.equal(1, converted.length);
+
+    assert.equal(converted[0].trigger["if-domain"], "*uppercase.test");
 });

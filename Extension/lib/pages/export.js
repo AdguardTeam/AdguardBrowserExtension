@@ -55,7 +55,7 @@ var showSaveFunc = (function () {
     var Blob = window.Blob || window.WebKitBlob || window.MozBlob;
     var URL = window.URL || window.webkitURL || window.mozURL;
 
-    navigator.saveBlob = navigator.saveBlob || navigator.mozSaveBlob || navigator.webkitSaveBlob;
+    navigator.saveBlob = navigator.saveBlob || navigator.mozSaveBlob || navigator.webkitSaveBlob || navigator.msSaveBlob;
     window.saveAs = window.saveAs || window.webkitSaveAs || window.mozSaveAs || window.msSaveAs;
 
     if (Blob && navigator.saveBlob) {

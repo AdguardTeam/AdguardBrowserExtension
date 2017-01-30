@@ -147,7 +147,7 @@
                 }
             }
 
-            return result;
+            return adguard.utils.collections.removeDuplicates(result);
         }
     };
 

@@ -54,18 +54,19 @@
         if (requestType === adguard.RequestTypes.DOCUMENT) {
             // Reset tab button state
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_TAB_BUTTON_STATE, tab, true);
-            return true;
+            return;
         }
 
         if (!adguard.utils.url.isHttpRequest(requestUrl)) {
-            return true;
+            return;
         }
 
         var referrerUrl = getReferrerUrl(requestDetails);
 
         var requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
         adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
-        return !adguard.webRequestService.isRequestBlockedByRule(requestRule);
+
+        return adguard.webRequestService.getBlockedResponseByRule(requestRule);
     }
 
     /**
@@ -237,5 +238,60 @@
                 }, 3000);
         }
     });
+
+    /**
+     * When frame is committed we send to it js rules
+     * We do this because we need to apply js rules as soon as possible
+     */
+    (function fastScriptRulesLoader(adguard) {
+
+        var isEdgeBrowser = adguard.utils.browser.isEdgeBrowser();
+
+        function tryInjectScripts(tabId, frameId, url, result, limit) {
+
+            var options = null;
+            if (!isEdgeBrowser) {
+                /**
+                 * In Edge browser: If we pass frameId in tabs.sendMessage then message aren't delivered to content-script
+                 */
+                options = {frameId: frameId};
+            }
+
+            adguard.tabs.sendMessage(tabId, result, function (response) {
+
+                // Try again if no response was received from content-script
+                if (adguard.runtime.lastError || !response) {
+
+                    if (--limit <= 0) {
+                        return;
+                    }
+
+                    setTimeout(function () {
+                        tryInjectScripts(tabId, frameId, url, result, limit);
+                    }, 10);
+                }
+
+            }, options);
+        }
+
+        adguard.webNavigation.onCommitted.addListener(function (tabId, frameId, url) {
+
+            /**
+             * Messaging a specific frame is not yet supported in Edge
+             */
+            if (frameId !== 0 && isEdgeBrowser) {
+                return;
+            }
+
+            var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, url, {filter: ['scripts']});
+            if (!result.scripts || result.scripts.length === 0) {
+                return;
+            }
+
+            result.type = 'injectScripts';
+            tryInjectScripts(tabId, frameId, url, result, 5);
+        });
+
+    })(adguard);
 
 })(adguard);

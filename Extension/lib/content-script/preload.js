@@ -27,6 +27,9 @@
         "iframe": "SUBDOCUMENT",
         "embed": "OBJECT"
     };
+
+    // Don't apply scripts twice
+    var scriptsApplied = false;
     
     /**
      * Do not use shadow DOM on some websites
@@ -53,6 +56,22 @@
             contentPage.sendMessage({type: 'saveCssHitStats', stats: stats});
         });
     }
+
+    /**
+     * When Background page receives 'onCommitted' frame event then it sends scripts to corresponding frame
+     * It allows us to execute script as soon as possible, because runtime.messaging makes huge overhead
+     * If onCommitted event doesn't occur for the frame, scripts will be applied in usual way.
+     */
+    contentPage.onMessage.addListener(function (response, sender, sendResponse) {
+        if (response.type === 'injectScripts') {
+            // Notify background-page that content-script was received scripts
+            sendResponse({applied: true});
+            if (!isHtml()) {
+                return;
+            }
+            applyScripts(response.scripts);
+        }
+    });
     
     /**
      * Initializing content script
@@ -253,7 +272,10 @@
         var message = {
             type: 'getSelectorsAndScripts',
             documentUrl: window.location.href,
-            loadTruncatedCss: loadTruncatedCss
+            options: {
+                filter: ['selectors', 'scripts'],
+                genericHide: loadTruncatedCss
+            }
         };
 
         /**
@@ -477,6 +499,12 @@
      * @param scripts Array with JS scripts and scriptSource ('remote' or 'local')
      */
     var applyScripts = function(scripts) {
+
+        if (scriptsApplied) {
+            return;
+        }
+        scriptsApplied = true;
+
         if (!scripts || scripts.length === 0) {
             return;
         }
