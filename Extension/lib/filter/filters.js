@@ -413,8 +413,13 @@ RequestFilter.prototype = {
      */
     _searchRequestCache: function (requestUrl, refHost, requestType) {
         var cacheItem = this.requestCache[requestUrl];
-        if (cacheItem && cacheItem[1] === refHost && cacheItem[2] === requestType) {
-            return cacheItem;
+        if (!cacheItem) {
+            return null;
+        }
+
+        var c = cacheItem[requestType];
+        if (c && c[1] === refHost) {
+            return c;
         }
 
         return null;
@@ -433,7 +438,12 @@ RequestFilter.prototype = {
         if (this.requestCacheSize > this.requestCacheMaxSize) {
             this._clearRequestCache();
         }
-        this.requestCache[requestUrl] = [rule, refHost, requestType];
+
+        if (!this.requestCache[requestUrl]) {
+            this.requestCache[requestUrl] = Object.create(null);
+        }
+
+        this.requestCache[requestUrl][requestType] = [rule, refHost];
         this.requestCacheSize++;
     },
 
