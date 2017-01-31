@@ -441,10 +441,10 @@ RequestFilter.prototype = {
 
         if (!this.requestCache[requestUrl]) {
             this.requestCache[requestUrl] = Object.create(null);
+            this.requestCacheSize++;
         }
 
         this.requestCache[requestUrl][requestType] = [rule, refHost];
-        this.requestCacheSize++;
     },
 
     /**
