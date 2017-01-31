@@ -149,24 +149,6 @@ var WebRequestHelper = exports.WebRequestHelper = {
         return null;
     },
 
-    getDocumentContextWindow: function (context) {
-        if (!(context instanceof Ci.nsIDOMWindow)) {
-            // If this is an element, get the corresponding document
-            if (context.ownerDocument) {
-                context = context.ownerDocument;
-            }
-
-            // Now we should have a document, get its window
-            if (context.defaultView) {
-                return context.defaultView;
-            } else {
-                return null;
-            }
-        }
-
-        return context;
-    },
-
     /**
      * Gets tab for specified channel
      *
