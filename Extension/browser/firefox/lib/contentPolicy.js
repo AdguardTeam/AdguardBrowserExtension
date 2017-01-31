@@ -114,6 +114,32 @@ var WebRequestHelper = exports.WebRequestHelper = {
         return responseHeaders;
     },
 
+    _getCachedTab: function (winTop) {
+        if (!this.tabsCache) {
+            return null;
+        }
+
+        return this.tabsCache.get(winTop);
+    },
+
+    _saveTabToCache: function (winTop, tab) {
+        if (!this.tabsCache) {
+            this.tabsCache = new WeakMap();
+        }
+
+        this.tabsCache.set(winTop, tab);
+    },
+
+    _getTabForWindowTop: function (winTop) {
+        var tab = this._getCachedTab(winTop);
+        if (!tab) {
+            tab = tabUtils.getTabForContentWindow(winTop);
+            this._saveTabToCache(winTop, tab);
+        }
+
+        return tab;
+    },
+
     /**
      * Gets tab by node
      *
@@ -124,7 +150,7 @@ var WebRequestHelper = exports.WebRequestHelper = {
 
         // If it is the main frame
         if (context._contentWindow instanceof Ci.nsIDOMWindow) {
-            return tabUtils.getTabForContentWindow(context._contentWindow.top);
+            return this._getTabForWindowTop(context._contentWindow.top);
         }
 
         if (!(context instanceof Ci.nsIDOMWindow)) {
@@ -143,7 +169,7 @@ var WebRequestHelper = exports.WebRequestHelper = {
 
         // If we have a window now - get the tab
         if (context && context instanceof Ci.nsIDOMWindow) {
-            return tabUtils.getTabForContentWindow(context.top);
+            return this._getTabForWindowTop(context.top);
         }
 
         return null;
