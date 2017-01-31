@@ -130,6 +130,14 @@ var WebRequestHelper = exports.WebRequestHelper = {
         this.tabsCache.set(winTop, tab);
     },
 
+    /**
+     * Wrapped with cache tabutils method.
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/526
+     *
+     * @param winTop window
+     * @returns {*} tab
+     * @private
+     */
     _getTabForWindowTop: function (winTop) {
         var tab = this._getCachedTab(winTop);
         if (!tab) {

@@ -444,6 +444,7 @@ RequestFilter.prototype = {
             this.requestCacheSize++;
         }
 
+        //Two-levels gives us an ability to not to override cached item for different request types with the same url
         this.requestCache[requestUrl][requestType] = [rule, refHost];
     },
 
