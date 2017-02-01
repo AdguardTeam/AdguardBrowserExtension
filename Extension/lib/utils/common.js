@@ -341,15 +341,10 @@ adguard.utils = (function () {
         EASY_PRIVACY: 118,
         FANBOY_ANNOYANCES: 122,
         FANBOY_SOCIAL: 123,
-        FANBOY_ENHANCED: 215,
-        LAST_ADGUARD_FILTER_ID: 14
+        FANBOY_ENHANCED: 215
     };
 
     var FilterUtils = {
-
-        isAdguardFilter: function (filter) {
-            return filter.filterId <= AntiBannerFiltersId.LAST_ADGUARD_FILTER_ID;
-        },
 
         isUserFilterRule: function (rule) {
             return rule.filterId == AntiBannerFiltersId.USER_FILTER_ID;

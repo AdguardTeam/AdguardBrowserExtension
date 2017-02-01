@@ -40,7 +40,7 @@ public class FilterUtils {
 
     private static Logger log = Logger.getLogger(FilterUtils.class);
 
-    private static final int LAST_ADGUARD_FILTER_ID = 14; // If this value is changed, will not forget to change LAST_ADGUARD_FILTER_ID in lib/utils/common.js#AntiBannerFiltersId
+    private static final int LAST_ADGUARD_FILTER_ID = 14; // If this value is changed, will not forget to change localFilterIds in lib/utils/service-client.js
 
     /**
      * String is formatted by browser group. See {@link Browser#getBrowserGroup()}
