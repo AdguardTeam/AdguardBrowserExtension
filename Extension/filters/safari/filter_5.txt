@@ -1,6 +1,6 @@
-! Checksum: ZIHkfzmW/S4irxLGMg8CUg
-! Version: 1.0.26.36
-! TimeUpdated: 2016-12-15T21:30:23.439+04:00
+! Checksum: t9RuMQjJUTeHSuxrFq3nFg
+! Version: 1.0.26.48
+! TimeUpdated: 2017-01-21T01:30:14.412+04:00
 ! Title: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! Title: Adguard Experimental Filter
@@ -108,6 +108,7 @@ neowin.net##article[class^="classes "]:not([itemscope])
 !
 ! This file contains all experimental rules for Spyware filter.
 !
+/ads/beacon-
 /AppMeasurement-$script
 !-------------------------------------------------------------------!
 !------- Experimental rules for Social filter ----------------------!
@@ -115,6 +116,7 @@ neowin.net##article[class^="classes "]:not([itemscope])
 !
 ! This file contains all experimental rules for Social filter.
 !
+dp.ru##.b-nav-panel__cell.b-nav-panel__cell_100 ul.list-unstyled
 ! http://forum.adguard.com/showthread.php?6539
 forum.chatovod.com##iframe[src^="/widgets/?lang="]
 !-------------------------------------------------------------------!
@@ -219,13 +221,20 @@ antiblock.org#%#AG_onLoad(function() { AG_AntiAntiBlock(); });
 !
 !################## For advertisement ##################
 ! Dangerous "nofollow" links blocking rule
-~cheater-top.ru,~allkey.org,~anti-free.ru,~art-on.ru,~blogig.org,~bloknot-krasnodar.ru,~bloknot-rostov.ru,~bloknot-stavropol.ru,~bucwar.ru,~bukvaved.biz,~capa.me,~car72.ru,~crox.ws,~delo.ua,~dfm.ru,~edp.kiev.ua,~f1comp.ru,~firstvds.ru,~forum.esetnod32.ru,~forum.ixbt.com,~fsm-portal.net,~gamai.ru,~gamegpu.ru,~games-java.ru,~golos-naroda.tv,~gradmart.ru,~hcdinamo.by,~hitfm.ru,~igromania.ru,~joomla.ru,~kahai.ru,~keddr.com,~kinogo.co,~kinoshka-new.ru,~maximum.ru,~maxthon.org.ru,~metallurg.ru,~mixupload.com,~montecarlo.ru,~moviez.kz,~onlinefilmu.ru,~planetaua.net,~respecta.net,~rulit.net,~rus-linux.net,~rusradio.ru,~smotretfilmy.ru,~sobytiya.info,~softek.ucoz.ru,~speedy-warez.ru,~uznayvse.ru,~vestivrn.ru,~wowjp.net,~yarportal.ru,~rozetka.com.ua,~kaermorhen.ru##noindex a[rel="nofollow"] > img
+~prophotos.ru,~cheater-top.ru,~allkey.org,~anti-free.ru,~art-on.ru,~blogig.org,~bloknot-krasnodar.ru,~bloknot-rostov.ru,~bloknot-stavropol.ru,~bucwar.ru,~bukvaved.biz,~capa.me,~car72.ru,~crox.ws,~delo.ua,~dfm.ru,~edp.kiev.ua,~f1comp.ru,~firstvds.ru,~forum.esetnod32.ru,~forum.ixbt.com,~fsm-portal.net,~gamai.ru,~gamegpu.ru,~games-java.ru,~golos-naroda.tv,~gradmart.ru,~hcdinamo.by,~hitfm.ru,~igromania.ru,~joomla.ru,~kahai.ru,~keddr.com,~kinogo.co,~kinoshka-new.ru,~maximum.ru,~maxthon.org.ru,~metallurg.ru,~mixupload.com,~montecarlo.ru,~moviez.kz,~onlinefilmu.ru,~planetaua.net,~respecta.net,~rulit.net,~rus-linux.net,~rusradio.ru,~smotretfilmy.ru,~sobytiya.info,~softek.ucoz.ru,~speedy-warez.ru,~uznayvse.ru,~vestivrn.ru,~wowjp.net,~yarportal.ru,~rozetka.com.ua,~kaermorhen.ru,~rubasket.com##noindex a[rel="nofollow"] > img
 !
-~allmult.com,~batzbatz.com,~batzbatz.ru,~bobfilm.net,~bobfilm1.net,~fanserials.tv,~kinobar.kz,~kinoimperiya.net,~latino-serialo.ru,~nastol.com.ua,~novinkionlain.ru,~online-multy.ru,~rusdtp.ru,~smeshnoevideo.com,~vidoser.com,~xrust.ru,~zerx.tv,~docfilms.info###dle-content noindex > div[style]
+~allmult.com,~batzbatz.com,~batzbatz.ru,~bobfilm.net,~bobfilm1.net,~fanserials.tv,~kinobar.kz,~kinoimperiya.net,~latino-serialo.ru,~nastol.com.ua,~novinkionlain.ru,~online-multy.ru,~rusdtp.ru,~smeshnoevideo.com,~vidoser.com,~xrust.ru,~zerx.tv,~docfilms.info,~kinogohd.net###dle-content noindex > div[style]
 !
 ! fake browser update
 ~junodownload.com#%#document.onmouseout = null; window.onbeforeunload = null; window.blur = null;
 !
+! https://forum.adguard.com/index.php?threads/18762/
+direkizlehd.tv##h2.post-baslik
+! https://forum.adguard.com/index.php?threads/18545/
+backpack.tf##.row-media > .col-md-5
+backpack.tf##.container > div[class="hidden-xs"] > div#media-side
+! https://forum.adguard.com/index.php?threads/17019/
+dailystar.co.uk##.rh.type1
 ! https://forum.adguard.com/index.php?threads/17605/
 butamsenlik.com###content > div#single > div.breadcrumb+h1.mainHeading+div#singleBlock
 solidshare.net###genel > div.main > div#header

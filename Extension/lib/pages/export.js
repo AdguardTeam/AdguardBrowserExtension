@@ -14,7 +14,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 /* global $, contentPage */
+
+/**
+ * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/541
+ */
+function isFirefox51OrHigher() {
+    var userAgent = navigator.userAgent.toLowerCase();
+    var match = userAgent.match(/firefox\/([0-9]+)/);
+    var version = match ? parseInt(match[1]) : 0;
+    return version >= 51;
+}
+
 $(document).ready(function () {
 
     var callback = function (response) {
@@ -29,6 +41,11 @@ $(document).ready(function () {
         var rulesText = rules ? rules.join('\r\n') : '';
         el.text(rulesText);
         $("body").append(el);
+
+        // FF (>= 51) doesn't correctly process clicking on the download link, so don't do it.
+        if (isFirefox51OrHigher()) {
+            return;
+        }
 
         var filename = whitelist ? 'whitelist.txt' : 'rules.txt';
         if (showSaveFunc) {

@@ -1,6 +1,6 @@
-! Checksum: 8lQtZH7YgDCK9KDYifPR/Q
-! Version: 1.0.6.32
-! TimeUpdated: 2016-12-21T18:01:40.285+04:00
+! Checksum: lyeu+kEHExYRzEvzFhKsxw
+! Version: 1.0.6.81
+! TimeUpdated: 2017-01-24T18:01:45.521+04:00
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
 ! Title: Adguard Mobile Ads Filter
@@ -33,6 +33,19 @@
 !
 ! Section contains list of advertising networks
 !
+||appwall.tv2phone.cn^
+||ads.pdbarea.com^
+||sdk.starbolt.io^
+||mobads4app.com^
+||50.17.161.250/appodeal/
+||mxttrf.com^
+||redirector.gvt1.com^
+||adsmoloco.com^
+||yhdichan.com^$third-party
+||partnerad.l.doubleclick.net^$third-party
+||pagead46.l.doubleclick.net^$third-party
+||ad.kixer.com^
+||mobon.com^$third-party
 ||pixel.admobclick.com^
 ||bayctrk.com^
 ||clk.taptica.com^
@@ -756,7 +769,8 @@ delfi.ee#%#Object.defineProperty(window, 'adblock_detect_run', { get: function()
 m.ndtv.com#@#.ad300
 m.ndtv.com#%#Object.defineProperty(window, 'canRunAdsN', { get: function() { return false; } });
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1309
-@@||bild.de^$elemhide
+@@||bild.de^$generichide
+@@||cdn1.smartadserver.com/diff/251/divscripte/adplayer.css$domain=bild.de
 @@||smartadserver.com/diff/*/partners/$domain=bild.de
 @@||smartadserver.com/diff/*/smartad.js$domain=bild.de
 @@||sascdn.com^$domain=bild.de,script
@@ -836,6 +850,9 @@ sasisa.ru#%#AG_onLoad(function() { window.Umobi = function() {}; });
 !-------------------
 !-------CSS---------
 !-------------------
+! https://github.com/AdguardTeam/AdguardFilters/issues/3916
+spaces.ru#$##left_nav > ul+div[class] { position: absolute!important; left: -3000px!important; }
+spaces.ru#$#.content_wrap > div:not([id]):not([class]):empty+div:not([id*="_"]) { position: absolute!important; left: -3000px!important; }
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2068
 factroom.ru#$#.mobile-pop-direct { display: none!important; height: 0px!important; }
 !
@@ -843,6 +860,8 @@ deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important
 !-------------------
 !-------HTML--------
 !-------------------
+! WebSocket ads
+! or #%#Object.defineProperty(window, 'AMSP', { get: function() { return []; } });
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2637
 !---------------------------------------------------------------------------!
 !-------------- General URL blocking rules ---------------------------------!
@@ -859,8 +878,22 @@ deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important
 !
 !##### TEMPORARY #####
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/3707
+@@||tf-robots.nl^$elemhide,jsinject,content
+!
 !#####################
 !
+! http://4pda.ru/forum/index.php?showtopic=601691&st=8140#entry57313153
+@@||mc.yandex.ru^$app=ru.yandex.weatherplugin
+! https://github.com/AdguardTeam/AdguardFilters/issues/4060
+@@||google-analytics.com/plugins/ua/ec.js$domain=saturn.de
+@@||google-analytics.com/analytics.js$domain=saturn.de
+@@||googletagmanager.com/gtm.js$domain=saturn.de
+! https://github.com/AdguardTeam/AdguardFilters/issues/4096
+@@||v.fwmrm.net/ad/g/*$domain=nhl.com|dtmts.com
+@@||mssl.fwmrm.net/*/AdManager.js?$domain=nhl.com|dtmts.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/4059
+@@||securepubads.g.doubleclick.net/gpt/pubads_impl_$domain=espn.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3755
 @@||m.haberturk.com/adscbg/mdet.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3616
@@ -872,8 +905,6 @@ m.veporn.net#@##topAds
 @@||g.doubleclick.net/gpt/pubads_impl_$script,domain=ukr.net
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3610
 @@||mafia-rules.net^$app=net.bestmafia,document
-!
-@@||engine.widespace.com/map/provisioning?appId=com.sofoot$app=com.sofoot
 ! https://github.com/AdguardTeam/AdguardForAndroid/issues/925
 @@||config2.mparticle.com^$app=via.rider
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3492
@@ -1016,6 +1047,10 @@ deviantart.com#@#.mobile-ad
 ! Google Search
 google.ad,google.ae,google.al,google.am,google.as,google.at,google.az,google.ba,google.be,google.bf,google.bg,google.bi,google.bj,google.bs,google.bt,google.by,google.ca,google.cat,google.cd,google.cf,google.cg,google.ch,google.ci,google.cl,google.cm,google.cn,google.co.ao,google.co.bw,google.co.ck,google.co.cr,google.co.id,google.co.il,google.co.in,google.co.jp,google.co.ke,google.co.kr,google.co.ls,google.co.ma,google.co.mz,google.co.nz,google.co.th,google.co.tz,google.co.ug,google.co.uk,google.co.uz,google.co.ve,google.co.vi,google.co.za,google.co.zm,google.co.zw,google.com,google.com.af,google.com.ag,google.com.ai,google.com.ar,google.com.au,google.com.bd,google.com.bh,google.com.bn,google.com.bo,google.com.br,google.com.bz,google.com.co,google.com.cu,google.com.cy,google.com.do,google.com.ec,google.com.eg,google.com.et,google.com.fj,google.com.gh,google.com.gi,google.com.gt,google.com.hk,google.com.jm,google.com.kh,google.com.kw,google.com.lb,google.com.ly,google.com.mm,google.com.mt,google.com.mx,google.com.my,google.com.na,google.com.nf,google.com.ng,google.com.ni,google.com.np,google.com.om,google.com.pa,google.com.pe,google.com.pg,google.com.ph,google.com.pk,google.com.pr,google.com.py,google.com.qa,google.com.sa,google.com.sb,google.com.sg,google.com.sl,google.com.sv,google.com.tj,google.com.tr,google.com.tw,google.com.ua,google.com.uy,google.com.vc,google.com.vn,google.cv,google.cz,google.de,google.dj,google.dk,google.dm,google.dz,google.ee,google.es,google.fi,google.fm,google.fr,google.ga,google.ge,google.gg,google.gl,google.gm,google.gp,google.gr,google.gy,google.hn,google.hr,google.ht,google.hu,google.ie,google.im,google.iq,google.is,google.it,google.je,google.jo,google.kg,google.ki,google.kz,google.la,google.li,google.lk,google.lt,google.lu,google.lv,google.md,google.me,google.mg,google.mk,google.ml,google.mn,google.ms,google.mu,google.mv,google.mw,google.ne,google.nl,google.no,google.nr,google.nu,google.pl,google.pn,google.ps,google.pt,google.ro,google.rs,google.ru,google.rw,google.sc,google.se,google.sh,google.si,google.sk,google.sm,google.sn,google.so,google.sr,google.st,google.td,google.tg,google.tk,google.tl,google.tm,google.tn,google.to,google.tt,google.vg,google.vu,google.ws###taw
 !
+! Yandex Search
+yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by##.teaser_type_internal
+yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by##.body__topblocks
+!
 m.auto.ru##.card.i-bem > div[class^="_"] > div[class^="_"]
 m.auto.ru##.index.i-bem > div[class]:not([data-bem])
 m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"])
@@ -1023,6 +1058,37 @@ m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"
 ! https://forum.adguard.com/index.php?threads/10464/
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
 !
+forums.androidcentral.com##.adunit
+forums.androidcentral.com##.homeforums >div.forumbit_nopost+div[align="center"]
+forums.androidcentral.com##.threadbit+li.ui-body-null
+||youtube.com/_get_ads?
+babycenter.de###topAdContainerMobile
+opodo.de###appLayer
+m.avtovokzaly.ru##.block.pt.pb
+m.avtovokzaly.ru##.block.bbc.pointer
+m.dwdl.de##.dwdlAd
+mangastream.com##.mobile-ad-home
+m.windowscentral.com##.netshelter-ad
+m.ynet.co.il##div[id^="GoogleAdStrip"]
+m.mangatown.com##div[class^="adv-"]
+spaces.ru##body > div#main_wrap > div#wrap_all > div#main_shadow > div#main_content_block > div.content_wrap > div:not([id]):not([class]):empty+div:not([id*="_"])
+spaces.ru###index_page > div[class][id]:last-child
+spaces.ru###page_ads
+spaces.ru###page_ofk
+spaces.ru##.content_wrap > div[id]:not([id="header_elements"]):not([id="coins_gift"]):not([class])
+spaces.ru##.ofk_main
+spaces.ru##a[href^="http://spaces.ru/app/close_notify/?link_id="]
+spaces.ru##a[href^="http://spaces.ru/app/close_notify/?link_id="] + div.stnd-block
+spaces.ru##a[href^="http://spaces.ru/services/ads_off/?link_id="]
+spaces.ru##a[href^="http://spaces.ru/services/ads_off/?link_id="] + div[class] > div > div[id^="spac"]
+spaces.ru##div[class] > a[href*="m.mobiads.ru/"][class]
+spaces.ru##div[class] > a[href*="m.mobiads.ru/"][class] ~ div
+sciencedaily.com##.mobile-top-rectangle
+sciencedaily.com##.mobile-middle-rectangle
+sciencedaily.com##.mobile-bottom-rectangle
+||rueconomics.ru/template/mobile/assets/jquery.smartbanner/jquery.smartbanner.js
+anwap.org##body > div:not([class]):not([id]) > div[class]:not([class="ball"]):not([class^="chislo"]):not([class="logo"]):not([class="news"]):not([style])
+anwap.org##body > div[class]:not([class="ball"]):not([class^="chislo"]):not([class="logo"]):not([class="news"]):not([class="blm"]):not([class="menuniz"]):not([style])
 m.9gag.com##section.salt-container
 m.economictimes.com###morePartner
 m.economictimes.com##.moreFrom
@@ -1038,7 +1104,6 @@ m.dm5.com##div[class^="adform"]
 9to5mac.com##div[id^="div-gpt-ad"]
 ||go.*.com/apu.php$empty,domain=123movies.to|movies.is
 forums.windowscentral.com##.homeforums > div[align="center"][style="padding:15px"]
-forums.windowscentral.com##.adunit
 ||m.wxrw123.com/style/js/feimobile.js
 ||oss-cn-shanghai.aliyuncs.com/feimobileA.js
 ||m.wxrw123.com/style/js/tongji.js
@@ -1093,7 +1158,6 @@ m.yingshidaquan.cc##.banner
 vnexpress.net##.banner_mobile
 redtube.com##.between-videos
 thesun.co.uk##.billboard
-yandex.by,yandex.ru,yandex.ua##.body__topblocks
 ircity.ru##.cr_mobile_banner
 filext.com##.dap-wrap
 yelp.be,yelp.ca,yelp.ch,yelp.co.nz,yelp.co.uk,yelp.com,yelp.com.au,yelp.com.sg,yelp.ie##.data-ad-placement
@@ -1124,14 +1188,13 @@ nydailynews.com##body > #r-main > div.r-yieldmo
 anwap.org##body > div > div[class^="uc"][class*=" "]
 thenewslens.com##body > div#bottombar
 bubluoteka.org##body > div.d table[onclick^="window.open"]
-anwap.org##body > div[class*=" "]:not([class="ball"]):not([class^="chislo"]):not([class="logo"]):not([class="news"])
 liga.net##body > div[id^="holder_320x"][style]
 asbook.net##div.mgline[class*="teaser-"]
 health.mail.ru##div[class$="trg-b-banner-block"]
 anwap.org##div[class*="footrek"]
 m.yelp.com##div[class*="yelp-ad"]
 eastmoney.com##div[class^="ban"]
-dreamfilmhd.bz##div[class^="mob-slider"]
+dreamfilmhd.sh##div[class^="mob-slider"]
 mobilesyrup.com##div[class^="mobile-ads"]
 sinoptik.ua##div[class^="rozetka"]
 piluli.ru##div[class^="ya_adv_"]
@@ -1186,7 +1249,16 @@ login.wi-fi.ru#%#window.isPremium = true;
 !
 ! Section contains rules for specific applications
 !
+! com.devexpert.weather https://github.com/AdguardTeam/AdguardFilters/issues/3865
+! apptornado ads, when Google/FB ads are blocked
+@@||googleads.g.doubleclick.net/mads/static/mad/sdk/native/*/sdk-core-v40-impl.js$app=com.devexpert.weather
+!
 ! Blocking of Facebook ads
+||graph.facebook.com^$app=com.hornet.android
+||graph.facebook.com^$app=com.jrtstudio.AnotherMusicPlayer
+||graph.facebook.com^$app=ferp.android
+||graph.facebook.com^$app=io.casper.android
+||graph.facebook.com^$app=com.popularapp.thirtydayfitnesschallenge
 ||graph.facebook.com^$app=com.mxtech.videoplayer.ad
 ||graph.facebook.com^$app=com.eterno
 ||graph.facebook.com^$app=com.devexpert.weather
@@ -1196,9 +1268,18 @@ login.wi-fi.ru#%#window.isPremium = true;
 ||graph.facebook.com^$app=com.laurencedawson.reddit_sync
 ||graph.facebook.com^$app=com.mobilefootie.wc2010
 ||graph.facebook.com^$app=com.mobilesrepublic.appy
+||graph.facebook.com^$app=com.mobilesrepublic.appygeek
 ||graph.facebook.com^$app=fr.meteo
+||graph.facebook.com^$app=com.xda.labs.play
 !
-!
+! com.sofoot app
+@@||engine.widespace.com/map/provisioning?appId=com.sofoot$app=com.sofoot
+! https://github.com/AdguardTeam/AdguardFilters/issues/3933
+! Yandex apps
+||banners.mobile.yandex.net^
+||banners-slb.mobile.yandex.net^
+! https://github.com/AdguardTeam/AdguardFilters/issues/3533
+@@||rutube.ru/api/play/options/$app=ru.rutube.app|ru.rutube.RutubeKids,important
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3738
 ||crosspromo*.qplaze.com^$app=com.nomoc.wolfonfarm
 ||crosspromo*.qplaze.com/PushCampaignXMLOut.php
@@ -1348,6 +1429,16 @@ login.wi-fi.ru#%#window.isPremium = true;
 !
 ! Section contains rules for mobile analytics and spyware
 !
+||bidder.mdspinc.com^
+||report.appmetrica.yandex.net^
+||click.webeyemob.com/*/ad/click?subsite_id=
+||clktrk.display.io^
+||events.lbesecapi.com^
+||clktrk.display.io^
+||imp.apprevolve.com^
+||tracking.lenzmx.com^
+||tknet.rayjump.com^
+||analyzer.omniata.com^
 ||metrics.bestbuy.com^
 ||analytics-server.gimbal.com^
 ||carfax.sc.omtrdc.net^
