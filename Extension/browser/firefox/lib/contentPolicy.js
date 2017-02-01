@@ -182,21 +182,17 @@ var WebRequestHelper = exports.WebRequestHelper = {
         }
         if (contextData && contextData.browser) {
             var browser = contextData.browser;
-
-            if (typeof tabUtils.getTabForBrowser === 'function') {
-
-                var xulTab = tabUtils.getTabForBrowser(browser);
-                // getTabForBrowser() returns null for FF 38 ESR
-                if (!xulTab) {
-                    // TODO: temporary fix
-                    // If browser.docShell returns null then browser.contentWindow throws exception: this.docShell is null
-                    if (browser.docShell && browser.contentWindow) {
-                        xulTab = tabUtils.getTabForContentWindow(browser.contentWindow);
-                    }
+            var xulTab = tabUtils.getTabForBrowser(browser);
+            // getTabForBrowser() returns null for FF 38 ESR
+            if (!xulTab) {
+                // TODO: temporary fix
+                // If browser.docShell returns null then browser.contentWindow throws exception: this.docShell is null
+                if (browser.docShell && browser.contentWindow) {
+                    xulTab = tabUtils.getTabForContentWindow(browser.contentWindow);
                 }
-
-                return xulTab;
             }
+
+            return xulTab;
         }
         return null;
     },

@@ -303,27 +303,25 @@ ContentScripts.prototype = {
         /**
          * For some unknown reason we can't use global message messenger for handling synchronous messages from a frame script.
          * On the other hand, parent process manager allows us to receive syncrhonous messages and send immediate response.
-         */ 
+         */
         var ppmm = Cc["@mozilla.org/parentprocessmessagemanager;1"].getService(Ci.nsIMessageListenerManager);
-        ppmm.addMessageListener('Adguard:get-content-scripts', function () {
+        var getContentScripts = function () {
             return this.scripts;
-        }.bind(this));
-        ppmm.addMessageListener('Adguard:get-i18n-messages', function () {
+        }.bind(this);
+        var getI18nMessages = function () {
             return this.i18nMessages;
-        }.bind(this));
-        
+        }.bind(this);
+        ppmm.addMessageListener('Adguard:get-content-scripts', getContentScripts);
+        ppmm.addMessageListener('Adguard:get-i18n-messages', getI18nMessages);
+
         /**
          * nsIMessageListener implementation
          */
         var listener = (function (contentMessageHandler) {
 
             function getTabFromTarget(target) {
-                var tab;
 
-                if (typeof tabUtils.getTabForBrowser === 'function') {
-                    tab = tabUtils.getTabForBrowser(target);
-                }
-
+                var tab = tabUtils.getTabForBrowser(target);
                 if (!tab) {
                     // Legacy browsers support. For PaleMoon and old Firefox getTabForBrowser returns null
                     tab = tabUtils.getTabForContentWindow(target.contentWindow);
@@ -340,11 +338,11 @@ ContentScripts.prototype = {
                     result: result
                 };
             }
-            
+
             /**
              * Receives a message from the frame script
              * https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIMessageListener#receiveMessage()
-             * 
+             *
              * @message Message object
              */
             var receiveMessage = function (message) {
@@ -353,13 +351,13 @@ ContentScripts.prototype = {
                     Log.debug('Unable to retrieve tab from {0}', message.target);
                     return;
                 }
-                
+
                 // Get the message manager of the sender frame script
                 var messageManager = message.target
                     .QueryInterface(Ci.nsIFrameLoaderOwner)
                     .frameLoader
                     .messageManager;
-                    
+
                 // Message sender identification
                 var sender = {
                     tab: {id: tabUtils.getTabId(tab)},
@@ -411,6 +409,9 @@ ContentScripts.prototype = {
         // Remove frame script on unload
         unload.when(function () {
             messageManager.removeDelayedFrameScript(frameScriptUrl);
+            messageManager.removeMessageListener('Adguard:send-message-channel', listener);
+            ppmm.removeMessageListener('Adguard:get-content-scripts', getContentScripts);
+            ppmm.removeMessageListener('Adguard:get-i18n-messages', getI18nMessages);
         });
     },
 
