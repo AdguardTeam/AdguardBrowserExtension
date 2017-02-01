@@ -61,6 +61,8 @@ var WebRequestHelper = exports.WebRequestHelper = {
         TYPE_WEBSOCKET: 16
     },
 
+    tabsCache: new WeakMap(),
+
     /**
      * Gets request type string representation
      *
@@ -115,6 +117,24 @@ var WebRequestHelper = exports.WebRequestHelper = {
     },
 
     /**
+     * Wrapped with cache tabutils method.
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/526
+     *
+     * @param winTop window
+     * @returns {*} tab
+     * @private
+     */
+    _getTabForWindowTop: function (winTop) {
+        var tab = this.tabsCache.get(winTop);
+        if (!tab) {
+            tab = tabUtils.getTabForContentWindow(winTop);
+            this.tabsCache.set(winTop, tab);
+        }
+
+        return tab;
+    },
+
+    /**
      * Gets tab by node
      *
      * @param context       Node   True if request content type is TYPE_DOCUMENT
@@ -124,17 +144,17 @@ var WebRequestHelper = exports.WebRequestHelper = {
 
         // If it is the main frame
         if (context._contentWindow instanceof Ci.nsIDOMWindow) {
-            return tabUtils.getTabForContentWindow(context._contentWindow.top);
+            return this._getTabForWindowTop(context._contentWindow.top);
         }
 
         if (!(context instanceof Ci.nsIDOMWindow)) {
             // If this is an element, get the corresponding document
-            if (context instanceof Ci.nsIDOMNode && context.ownerDocument) {
+            if (context.ownerDocument) {
                 context = context.ownerDocument;
             }
 
             // Now we should have a document, get its window
-            if (context instanceof Ci.nsIDOMDocument) {
+            if (context.defaultView) {
                 context = context.defaultView;
             } else {
                 return null;
@@ -143,12 +163,9 @@ var WebRequestHelper = exports.WebRequestHelper = {
 
         // If we have a window now - get the tab
         if (context && context instanceof Ci.nsIDOMWindow) {
-            //http://jira.performix.ru/browse/AG-7285
-            if ("" + context === "[object ChromeWindow]") {
-                return null;
-            }
-            return tabUtils.getTabForContentWindow(context.top);
+            return this._getTabForWindowTop(context.top);
         }
+
         return null;
     },
 
@@ -165,9 +182,7 @@ var WebRequestHelper = exports.WebRequestHelper = {
         }
         if (contextData && contextData.browser) {
             var browser = contextData.browser;
-
             var xulTab = tabUtils.getTabForBrowser(browser);
-
             // getTabForBrowser() returns null for FF 38 ESR
             if (!xulTab) {
                 // TODO: temporary fix
