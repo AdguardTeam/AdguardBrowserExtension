@@ -61,6 +61,8 @@ var WebRequestHelper = exports.WebRequestHelper = {
         TYPE_WEBSOCKET: 16
     },
 
+    tabsCache: new WeakMap(),
+
     /**
      * Gets request type string representation
      *
@@ -114,22 +116,6 @@ var WebRequestHelper = exports.WebRequestHelper = {
         return responseHeaders;
     },
 
-    _getCachedTab: function (winTop) {
-        if (!this.tabsCache) {
-            return null;
-        }
-
-        return this.tabsCache.get(winTop);
-    },
-
-    _saveTabToCache: function (winTop, tab) {
-        if (!this.tabsCache) {
-            this.tabsCache = new WeakMap();
-        }
-
-        this.tabsCache.set(winTop, tab);
-    },
-
     /**
      * Wrapped with cache tabutils method.
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/526
@@ -139,10 +125,10 @@ var WebRequestHelper = exports.WebRequestHelper = {
      * @private
      */
     _getTabForWindowTop: function (winTop) {
-        var tab = this._getCachedTab(winTop);
+        var tab = this.tabsCache.get(winTop);
         if (!tab) {
             tab = tabUtils.getTabForContentWindow(winTop);
-            this._saveTabToCache(winTop, tab);
+            this.tabsCache.set(winTop, tab);
         }
 
         return tab;
