@@ -1,6 +1,6 @@
-! Checksum: lyeu+kEHExYRzEvzFhKsxw
-! Version: 1.0.6.81
-! TimeUpdated: 2017-01-24T18:01:45.521+04:00
+! Checksum: 5DJucff5gp3HgVtpMpo8ig
+! Version: 1.0.6.93
+! TimeUpdated: 2017-02-01T16:01:57.434+04:00
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
 ! Title: Adguard Mobile Ads Filter
@@ -759,7 +759,7 @@
 ! https://forum.adguard.com/index.php?threads/15379/
 @@||static.expressbpd.com/rsjs/ads.js
 ! https://forum.adguard.com/index.php?threads/15378/
-@@||ads.dainikbhaskar.com/AdTech/ads/ads.js
+@@||ads.dainikbhaskar.com/*ads
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3067
 @@||javadecompilers.com^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3067
@@ -883,6 +883,10 @@ deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important
 !
 !#####################
 !
+! https://forum.adguard.com/index.php?threads/le-bon-coin-apk-from-googleplay.18840/ fix ?ad_id= in Liste FR
+@@||mobile.leboncoin.fr/templates/api/view.json?ad_id=$app=fr.leboncoin
+! https://github.com/AdguardTeam/AdguardFilters/issues/4243
+@@||bc.marfeel.com/statics/marfeel/gardac.js$domain=elperiodico.com
 ! http://4pda.ru/forum/index.php?showtopic=601691&st=8140#entry57313153
 @@||mc.yandex.ru^$app=ru.yandex.weatherplugin
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4060
@@ -1058,6 +1062,16 @@ m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"
 ! https://forum.adguard.com/index.php?threads/10464/
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
 !
+bhaskar.com,divyabhaskar.co.in,fashion101.in##.ad_320
+bhaskar.com,divyabhaskar.co.in,fashion101.in##.mb_ads_title
+gadgets.bhaskar.com##.md_ads
+bhaskar.com,divyabhaskar.co.in##[id^="TaboolaNativerecommendAd"]
+||ymcdn.ymtrack6.co/offer_single_files/
+||ymcdn.ymtrack6.co/ads_file/
+ticotimes.net##div[class^="ticot-"]
+eurogamer.net###mobile-leaderboard
+eurogamer.net##.mobile-mpu-wrapper
+rtl.de##div[class^="rtlde-medium-rectangle"]
 forums.androidcentral.com##.adunit
 forums.androidcentral.com##.homeforums >div.forumbit_nopost+div[align="center"]
 forums.androidcentral.com##.threadbit+li.ui-body-null
@@ -1272,6 +1286,10 @@ login.wi-fi.ru#%#window.isPremium = true;
 ||graph.facebook.com^$app=fr.meteo
 ||graph.facebook.com^$app=com.xda.labs.play
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/4184
+! https://github.com/AdguardTeam/AdguardFilters/issues/4161
+||baidu.com/setting/grobal_strategy?p=com.adslib.mobovee$app=cn.xender
+||api.mobojoy.baidu.com/strategy/api/v1/rule/get?p=com.adslib.mobovee$app=cn.xender
 ! com.sofoot app
 @@||engine.widespace.com/map/provisioning?appId=com.sofoot$app=com.sofoot
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3933
@@ -1293,8 +1311,8 @@ login.wi-fi.ru#%#window.isPremium = true;
 @@||ads.cricbuzz.com/adserver/units/mobile/set_ads_values.php
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2697
 @@||connect.tapjoy.com/connect$app=com.lucasarts.starts_goo
-! com.anoshenko.android.solitaires
-||alxanosoft.com/rk/
+! https://github.com/AdguardTeam/AdguardForAndroid/issues/569
+||alxanosoft.com/rk/$empty
 ! Dailyhunt
 ! sport1.mobile.android.apps
 ||assets.sport1.de/imagix/filter2/jpeg/_set=dyn_size_no_crop/imagix/
@@ -1396,8 +1414,6 @@ login.wi-fi.ru#%#window.isPremium = true;
 ! megogo for Android
 ||vcdn.biz/*_mggads/
 ! START: ivi.ru for Android
-.digitalaccess.ru/*.mp4
-.ivi.ru/*.mp4
 .mp4?redirected=1&quality=
 @@.digitalaccess.ru/*sessionID=
 @@.ivi.ru/*sessionID=
@@ -1429,6 +1445,8 @@ login.wi-fi.ru#%#window.isPremium = true;
 !
 ! Section contains rules for mobile analytics and spyware
 !
+||logger.ntracecloud.com^
+||ymtracking.com^
 ||bidder.mdspinc.com^
 ||report.appmetrica.yandex.net^
 ||click.webeyemob.com/*/ad/click?subsite_id=
