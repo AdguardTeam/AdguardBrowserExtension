@@ -18,7 +18,7 @@
 /* global Log */
 
 /**
- * Sync settings provider
+ * Dropbox sync settings provider
  *
  * @type {{load, save, isAuthenticated}}
  */
@@ -30,12 +30,25 @@ var DropboxSyncProvider = (function () { // jshint ignore:line
     var accessToken;
     var dbx;
 
+    var isAuthorized = function () {
+        if (!accessToken) {
+            Log.warn("Unauthorized! Please set access token first.");
+            return false;
+        }
+
+        return true;
+    };
+
     // API
     var load = function (filePath, callback) {
-        //TODO: Check auth
+        if (!isAuthorized()) {
+            callback(false);
+            return;
+        }
 
         dbx.filesDownload({path: '/' + filePath})
             .then(function (response) {
+                console.log(response);
                 var fileReader = new FileReader();
                 fileReader.onload = function () {
                     callback(JSON.parse(this.result));
@@ -49,14 +62,19 @@ var DropboxSyncProvider = (function () { // jshint ignore:line
             })
             .catch(function (error) {
                 Log.error(error);
-                callback(false);
+                if (error && error.status === 400) {
+                    accessToken = null;
+                }
 
-                //TODO: Handle auth error
+                callback(false);
             });
     };
 
     var save = function (filePath, data, callback) {
-        //TODO: Check auth
+        if (!isAuthorized()) {
+            callback(false);
+            return;
+        }
 
         dbx.filesUpload({path: '/' + filePath, mode: "overwrite", contents: JSON.stringify(data)})
             .then(function () {
@@ -64,9 +82,11 @@ var DropboxSyncProvider = (function () { // jshint ignore:line
             })
             .catch(function (error) {
                 Log.error(error);
-                callback(false);
+                if (error && error.status === 400) {
+                    accessToken = null;
+                }
 
-                //TODO: Handle auth error
+                callback(false);
             });
     };
 
