@@ -162,7 +162,7 @@ adguard.whitelist = (function (adguard) {
      */
     var findWhiteListRule = function (url) {
 
-        if (adguard.utils.strings.isEmpty(url)) {
+        if (!url) {
             return null;
         }
 

@@ -43,12 +43,12 @@
          * @return boolean true if rule was added. Otherwise - false.
          */
         addRule: function (rule) {
-            var permittedDomains = rule.getPermittedDomains();
-            if (!permittedDomains || permittedDomains.length === 0) {
+            if (!rule.hasPermittedDomains()) {
                 // No permitted domains, we can't do anything
                 return false;
             }
 
+            var permittedDomains = rule.getPermittedDomains();
             for (var i = 0; i < permittedDomains.length; i++) {
                 var domainName = permittedDomains[i];
                 var rules = this.lookupTable[domainName];
@@ -69,12 +69,13 @@
          * @param rule Rule to remove
          */
         removeRule: function (rule) {
-            var permittedDomains = rule.getPermittedDomains();
-            if (!permittedDomains || permittedDomains.length === 0) {
+
+            if (!rule.hasPermittedDomains()) {
                 // No permitted domains, we can't do anything
                 return;
             }
 
+            var permittedDomains = rule.getPermittedDomains();
             for (var i = 0; i < permittedDomains.length; i++) {
                 var domainName = permittedDomains[i];
                 var rules = this.lookupTable[domainName];

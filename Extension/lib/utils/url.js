@@ -27,12 +27,11 @@
         },
 
         isHttpOrWsRequest: function (url) {
-            return url
-                && (url.indexOf('http') == 0 || url.indexOf('wss:') == 0 || url.indexOf('ws:') == 0);
+            return url && (url.indexOf('http') == 0 || url.indexOf('wss:') == 0 || url.indexOf('ws:') == 0);
         },
 
         toPunyCode: function (domain) {
-            if (api.strings.isEmpty(domain)) {
+            if (!domain) {
                 return "";
             }
             if (/^[\x00-\x7F]+$/.test(domain)) {
@@ -74,26 +73,10 @@
             return domainName != refDomainName;
         },
 
-        getAbsoluteUrl: function (url) {
-
-            if (api.strings.isEmpty(url)) {
-                return null;
-            }
-
-            if (!api.strings.startWith(url, "http://") && !api.strings.startWith(url, "https://")) {
-                if (api.strings.startWith(url, "//")) {
-                    return "http:" + url;
-                }
-                return "http://" + url;
-            }
-
-            return url;
-        },
-
         //Get host name
         getHost: function (url) {
 
-            if (api.strings.isEmpty(url)) {
+            if (!url) {
                 return null;
             }
 
@@ -218,19 +201,16 @@
          * @returns boolean true if there is suitable domain in domainNames
          */
         isDomainOrSubDomain: function (domainNameToCheck, domainName) {
-
             // Double endsWith check is memory optimization
             // Works in android, not sure if it makes sense here
-            return (domainName == domainNameToCheck ||
-            (api.strings.endWith(domainNameToCheck, domainName) &&
-            api.strings.endWith(domainNameToCheck, "." + domainName)));
+            return domainName == domainNameToCheck || domainNameToCheck.endsWith(domainName) && domainNameToCheck.endsWith("." + domainName);
         },
 
         _get2NdLevelDomainName: function (url) {
 
             var host = this.getHost(url);
 
-            if (api.strings.isEmpty(host)) {
+            if (!host) {
                 return null;
             }
 

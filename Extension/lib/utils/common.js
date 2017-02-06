@@ -71,6 +71,13 @@ adguard.utils = (function () {
  */
 (function (api) {
 
+    if (!String.prototype.endsWith) {
+        String.prototype.endsWith = function (suffix) { // jshint ignore:line
+            var index = this.lastIndexOf(suffix);
+            return index !== -1 && index === this.length - suffix.length;
+        };
+    }
+
     //noinspection UnnecessaryLocalVariableJS
     var StringUtils = {
 
@@ -80,19 +87,6 @@ adguard.utils = (function () {
 
         startWith: function (str, prefix) {
             return str && str.indexOf(prefix) === 0;
-        },
-
-        endWith: function (str, postfix) {
-            if (!str || !postfix) {
-                return false;
-            }
-
-            if (str.endsWith) {
-                return str.endsWith(postfix);
-            }
-            var t = String(postfix);
-            var index = str.lastIndexOf(t);
-            return index >= 0 && index === str.length - t.length;
         },
 
         substringAfter: function (str, separator) {

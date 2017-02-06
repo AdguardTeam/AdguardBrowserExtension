@@ -261,7 +261,7 @@
          * @private
          */
         _checkWhiteList: function (requestUrl, documentHost, requestType, thirdParty) {
-            if (this.urlWhiteFilter === null || adguard.utils.strings.isEmpty(requestUrl)) {
+            if (this.urlWhiteFilter === null || !requestUrl) {
                 return null;
             }
             return this.urlWhiteFilter.isFiltered(requestUrl, documentHost, requestType, thirdParty);
@@ -279,7 +279,7 @@
          * @private
          */
         _checkUrlBlockingList: function (requestUrl, refHost, requestType, thirdParty, genericRulesAllowed) {
-            if (this.urlBlockingFilter === null || adguard.utils.strings.isEmpty(requestUrl)) {
+            if (this.urlBlockingFilter === null || !requestUrl) {
                 return null;
             }
 
