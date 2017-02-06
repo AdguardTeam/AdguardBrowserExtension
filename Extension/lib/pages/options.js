@@ -32,7 +32,68 @@ var Utils = {
     }
 };
 
-var WhiteListFilter = function () {
+var TopMenu = (function () {
+
+    var prevTabId;
+    var onHashUpdatedCallback;
+
+    var toggleTab = function () {
+
+        var tabId = document.location.hash || '#general-settings';
+        var tab = $(tabId);
+
+        if (tabId.indexOf('#antibanner') === 0 && tab.length === 0) {
+            // AntiBanner groups and filters are loaded and rendered async
+            return;
+        }
+
+        if (tab.length === 0) {
+            tabId = '#general-settings';
+            tab = $(tabId);
+        }
+
+        if (prevTabId) {
+            $('[data-tab="' + prevTabId + '"]').removeClass('active');
+            if (prevTabId.indexOf('#antibanner') === 0) {
+                $('[data-tab="#antibanner"]').removeClass('active');
+            }
+            $(prevTabId).hide();
+        }
+
+        $('[data-tab="' + tabId + '"]').addClass('active');
+        if (tabId.indexOf('#antibanner') === 0) {
+            $('[data-tab="#antibanner"]').addClass('active');
+        }
+
+        tab.show();
+
+        if (tabId === '#whitelist') {
+            if (typeof onHashUpdatedCallback === 'function') {
+                onHashUpdatedCallback(tabId);
+            }
+        }
+
+        prevTabId = tabId;
+    };
+
+    var init = function (options) {
+        onHashUpdatedCallback = options.onHashUpdated;
+        window.addEventListener('hashchange', toggleTab);
+        $('[data-tab]').on('click', function (e) {
+            e.preventDefault();
+            document.location.hash = $(this).attr('data-tab');
+        });
+        toggleTab();
+    };
+
+    return {
+        init: init,
+        toggleTab: toggleTab
+    };
+
+})();
+
+var WhiteListFilter = function (options) {
 
     var DEFAULT_LIMIT = 200;
 
@@ -43,6 +104,7 @@ var WhiteListFilter = function () {
     var importWlFilterInput = $("#importWhiteListFilterInput");
     var clearWlFilterButton = $("#clearWhiteListFilter");
     var searchWlFilterInput = $("#white-search");
+    var changeDefaultWhiteListModeCheckbox = $('#changeDefaultWhiteListMode');
 
     var wlSearchResult = {
         offset: 0,
@@ -293,6 +355,13 @@ var WhiteListFilter = function () {
         text.text(host);
     }
 
+    function changeDefaultWhiteListMode(e) {
+        e.preventDefault();
+        contentPage.sendMessage({type: 'changeDefaultWhiteListMode', enabled: !e.currentTarget.checked}, function () {
+            updateWhiteListFilterRules();
+        });
+    }
+
     function loadAndRenderWhiteListFilterRuleLines(loadNext) {
 
         loadNext = loadNext === true;
@@ -405,6 +474,9 @@ var WhiteListFilter = function () {
         }
     });
 
+    changeDefaultWhiteListModeCheckbox.on('change', changeDefaultWhiteListMode);
+    changeDefaultWhiteListModeCheckbox.updateCheckbox(!options.defaultWhiteListMode);
+
     return {
         updateWhiteListFilterRules: updateWhiteListFilterRules,
         onShown: onShown
@@ -465,9 +537,238 @@ var UserFilter = function () {
     };
 };
 
-var PageController = function () {
+var AntiBannerFilters = function (options) {
+
+    var groupsAndFiltersInfo = {
+        enabledFilters: {},
+        filters: {}
+    };
+
+    var groupsList = $('#groupsList');
+
+    function countEnabledFiltersInGroup(groupFilters, enabledFilters) {
+        var count = 0;
+        for (var i = 0; i < groupFilters.length; i++) {
+            if (groupFilters[i].filterId in enabledFilters) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    function getGroupElement(groupId) {
+        return $('#group' + groupId);
+    }
+
+    function getGroupCheckbox(groupId) {
+        return getGroupElement(groupId).find('input');
+    }
+
+    function getFilterElement(filterId) {
+        return $('#filter' + filterId);
+    }
+
+    function getFilterCheckbox(filterId) {
+        return getFilterElement(filterId).find('input');
+    }
+
+    function updateGroupFiltersInfo(groupId) {
+
+        var groupFilters = groupsAndFiltersInfo.filters[groupId];
+        var enabledFiltersCount = countEnabledFiltersInGroup(groupFilters, groupsAndFiltersInfo.enabledFilters);
+
+        var element = getGroupElement(groupId);
+        var checkbox = getGroupCheckbox(groupId);
+        element.find('.desc').text('Enabled filters: ' + enabledFiltersCount);
+        checkbox.updateCheckbox(enabledFiltersCount > 0);
+    }
+
+    function updateFilterStateInfo(filter) {
+        var checkbox = getFilterCheckbox(filter.filterId);
+        checkbox.updateCheckbox(filter.enabled);
+    }
+
+    function getGroupTemplate(group) {
+
+        return $('<li>', {id: 'group' + group.groupId})
+            .append($('<div>', {class: 'block-type'})
+                .append($('<img>', {src: 'images/icon-block-ads.png'}))
+                .append($('<a>', {
+                    href: '#antibanner' + group.groupId,
+                    text: group.groupName
+                })))
+            .append($('<div>', {class: 'opt-state'})
+                .append($('<div>', {class: 'preloader'}))
+                .append($('<div>', {class: 'desc'}))
+                .append($('<input>', {type: 'checkbox', name: 'groupId', value: group.groupId})));
+    }
+
+    function getFilterTemplate(filter, enabled) {
+        return $('<li>', {id: 'filter' + filter.filterId})
+            .append($('<div>', {class: 'opt-name'})
+                .append($('<div>', {class: 'title', text: filter.name}))
+                .append($('<div>', {class: 'desc', text: filter.description})))
+            .append($('<div>', {class: 'opt-state'})
+                .append($('<div>', {class: 'preloader'}))
+                .append($('<a>', {class: 'icon-home', target: '_blank', href: filter.homepage}))
+                .append($('<input>', {type: 'checkbox', name: 'filterId', value: filter.filterId, checked: enabled})));
+    }
+
+    function getFiltersContentTemplate(group, filters, enabledFilters) {
+
+        var pageTitleEl = $('<div>', {class: 'page-title'})
+            .append($('<a>', {href: '#antibanner'})
+                .append($('<img>', {
+                    src: 'images/icon-back.png',
+                    class: 'back'
+                })))
+            .append(document.createTextNode(group.groupName));
+
+        var tabsBar = $('<div>', {class: 'tabs-bar'})
+            .append($('<a>', {href: '', class: 'tab', text: 'Recommended'}))
+            .append($('<a>', {href: '', class: 'tab', text: 'Other'}));
+
+        var filtersList = $('<ul>', {class: 'opts-list'});
+
+        for (var i = 0; i < filters.length; i++) {
+
+            var filter = filters[i];
+            var enabled = filter.filterId in enabledFilters;
+            var filterTemplate = getFilterTemplate(filter, enabled);
+            filtersList.append(filterTemplate);
+        }
+
+        return $('<div>', {id: 'antibanner' + group.groupId, class: 'settings-content tab-pane filters-list'})
+            .append(pageTitleEl)
+            .append($('<div>', {class: 'settings-body'})
+                .append(tabsBar)
+                .append(filtersList));
+    }
+
+    function renderCategoriesAndFilters() {
+
+        contentPage.sendMessage({type: 'getFiltersMetadata'}, function (response) {
+
+            groupsAndFiltersInfo.enabledFilters = response.enabledFilters;
+            groupsAndFiltersInfo.filters = response.filters;
+
+            var groups = response.groups;
+            var filtersMeta = response.filters;
+            var enabledFilters = response.enabledFilters;
+            var installedFilters = response.installedFilters;
+
+            for (var i = 0; i < groups.length; i++) {
+
+                var group = groups[i];
+                var groupFilters = filtersMeta[group.groupId];
+
+                var groupTemplate = getGroupTemplate(group);
+                groupsList.append(groupTemplate);
+                updateGroupFiltersInfo(group.groupId);
+
+                var filtersContentTemplate = getFiltersContentTemplate(group, groupFilters, enabledFilters);
+
+                $('#antibanner').parent().append(filtersContentTemplate);
+            }
+
+            $(".opt-state input:checkbox").toggleCheckbox();
+
+            // check document hash
+            var hash = document.location.hash;
+            if (hash && hash.indexOf('#antibanner') === 0) {
+                TopMenu.toggleTab();
+            }
+        });
+    }
+
+    function toggleFilterState() {
+        var filterId = this.value - 0;
+        if (this.checked) {
+            contentPage.sendMessage({type: 'addAndEnableFilter', filterId: filterId});
+        } else {
+            contentPage.sendMessage({type: 'disableAntiBannerFilter', filterId: filterId});
+        }
+    }
+
+    /**
+     * Checks Safari content blocker rules limit, shows alert message for rules overlimit.
+     * It's important to check that limit because of Safari limitations.
+     * Content blocker with too many rules won't work at all.
+     *
+     * @param rulesOverLimit True if loaded rules more than limit
+     * @private
+     */
+    function checkSafariContentBlockerRulesLimit(rulesOverLimit) {
+        if (rulesOverLimit) {
+            this.tooManyRulesEl.show();
+        } else {
+            this.tooManyRulesEl.hide();
+        }
+    }
+
+    function updateAntiBannerFilters(e) {
+        e.preventDefault();
+        contentPage.sendMessage({type: 'checkAntiBannerFiltersUpdate'}, function () {
+        });
+    }
+
+    var updateRulesCountInfo = function (info) {
+
+        var el = $('#filtersRulesInfo');
+        if (!info.rulesCount) {
+            el.hide();
+            return;
+        }
+
+        //Prevent translating on document loaded
+        el.removeAttr('i18n');
+
+        var message = i18n.getMessage("options_antibanner_info", [String(info.rulesCount)]);
+        el.text(message);
+        el.show();
+
+        if (environmentOptions.isContentBlockerEnabled) {
+            checkSafariContentBlockerRulesLimit(info.rulesOverLimit);
+        }
+    };
+
+    var onFilterStateChanged = function (filter) {
+        if (filter.enabled) {
+            groupsAndFiltersInfo.enabledFilters[filter.filterId] = true;
+        } else {
+            delete groupsAndFiltersInfo.enabledFilters[filter.filterId];
+        }
+        updateGroupFiltersInfo(filter.groupId);
+        updateFilterStateInfo(filter);
+    };
+
+    var onFilterDownloadStarted = function (filter) {
+        getGroupElement(filter.groupId).find('.preloader').addClass('active');
+        getFilterElement(filter.filterId).find('.preloader').addClass('active');
+    };
+
+    var onFilterDownloadFinished = function (filter) {
+        getGroupElement(filter.groupId).find('.preloader').removeClass('active');
+        getFilterElement(filter.filterId).find('.preloader').removeClass('active');
+    };
+
+    // Bind events
+    $(document).on('change', '.filters-list [name="filterId"]', toggleFilterState);
+    $('#updateAntiBannerFilters').on('click', updateAntiBannerFilters);
+
+    updateRulesCountInfo(options.rulesInfo);
+
+    return {
+        render: renderCategoriesAndFilters,
+        updateRulesCountInfo: updateRulesCountInfo,
+        onFilterStateChanged: onFilterStateChanged,
+        onFilterDownloadStarted: onFilterDownloadStarted,
+        onFilterDownloadFinished: onFilterDownloadFinished
+    };
 };
 
+var PageController = function () {
+};
 
 PageController.prototype = {
 
@@ -489,10 +790,17 @@ PageController.prototype = {
 
         $(".opt-state input:checkbox").toggleCheckbox();
 
-        updateDisplayAdguardPromo(!userSettings.values[userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO]);
-        customizePopupFooter(environmentOptions.isMacOs);
+        // Initialize top menu
+        TopMenu.init({
+            onHashUpdated: function (tabId) {
+                if (tabId === '#whitelist') {
+                    this.whiteListFilter.onShown();
+                }
+            }.bind(this)
+        });
 
-        this._initTopMenu();
+        //updateDisplayAdguardPromo(!userSettings.values[userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO]);
+        //customizePopupFooter(environmentOptions.isMacOs);
     },
 
     _customizeText: function () {
@@ -516,14 +824,12 @@ PageController.prototype = {
         this.sendSafebrowsingStatsCheckbox = $("#sendSafebrowsingStatsCheckbox");
         this.showPageStatisticCheckbox = $("#showPageStatisticCheckbox");
         this.allowAcceptableAdsCheckbox = $("#allowAcceptableAds");
-        this.updateAntiBannerFiltersButton = $("#updateAntiBannerFilters");
         this.autodetectFiltersCheckbox = $("#autodetectFiltersCheckbox");
         this.showInfoAboutAdguardFullVersionCheckbox = $("#showInfoAboutAdguardFullVersion");
         this.enableHitsCountCheckbox = $("#enableHitsCount");
         this.resetStatsPopup = $("#resetStatsPopup");
         this.enableShowContextMenuCheckbox = $('#enableShowContextMenu');
         this.useOptimizedFiltersCheckbox = $('#useOptimizedFilters');
-        this.changeDefaultWhiteListModeCheckbox = $('#changeDefaultWhiteListMode');
         if (environmentOptions.isSafariBrowser) {
             this.enableShowContextMenuCheckbox.closest('.s-page-table-row').hide();
         }
@@ -536,12 +842,10 @@ PageController.prototype = {
         this.showPageStatisticCheckbox.on('change', this.showPageStatisticsChange);
         this.autodetectFiltersCheckbox.on('change', this.autodetectFiltersChange);
         this.allowAcceptableAdsCheckbox.on('change', this.allowAcceptableAdsChange);
-        this.updateAntiBannerFiltersButton.on('click', this.updateAntiBannerFilters.bind(this));
         this.showInfoAboutAdguardFullVersionCheckbox.on('change', this.updateShowInfoAboutAdguardFullVersion);
         this.enableHitsCountCheckbox.on('change', this.changeEnableHitsCount);
         this.enableShowContextMenuCheckbox.on('change', this.changeEnableShowContextMenu);
         this.useOptimizedFiltersCheckbox.on('change', this.changeUseOptimizedFilters);
-        this.changeDefaultWhiteListModeCheckbox.on('change', this.changeDefaultWhiteListMode.bind(this));
         $("#resetStats").on('click', this.onResetStatsClicked.bind(this));
 
         $('.settings-page').on('click', '.editAntiBannerFilters', this._openSubscriptionModal.bind(this));
@@ -555,46 +859,6 @@ PageController.prototype = {
             e.preventDefault();
             contentPage.sendMessage({type: 'openFilteringLog'});
         });
-    },
-
-    _initTopMenu: function () {
-
-        $('[data-tab]').on('click', function (e) {
-            e.preventDefault();
-            document.location.hash = $(this).attr('data-tab');
-        });
-
-        window.addEventListener('hashchange', toggleTab);
-
-        var prevTabId;
-        var self = this;
-
-        function toggleTab() {
-
-            var tabId = document.location.hash || '#general-settings';
-            var tab = $(tabId);
-
-            if (!tab || tab.length === 0) {
-                tabId = '#general-settings';
-                tab = $(tabId);
-            }
-
-            if (prevTabId) {
-                $('[data-tab="' + prevTabId + '"]').removeClass('active');
-                $(prevTabId).hide();
-            }
-
-            $('[data-tab="' + tabId + '"]').addClass('active');
-            tab.show();
-
-            if (tabId === '#whitelist') {
-                self.whiteListFilter.onShown();
-            }
-
-            prevTabId = tabId;
-        }
-
-        toggleTab();
     },
 
     _render: function () {
@@ -619,10 +883,6 @@ PageController.prototype = {
         this._renderCollectHitsCount(collectHitsCount);
         this._renderShowContextMenu(showContextMenu);
         this._renderUseOptimizedFilters(useOptimizedFilters);
-        this._renderDefaultWhiteListMode(defaultWhitelistMode);
-
-        var rulesInfo = environmentOptions.isContentBlockerEnabled ? contentBlockerInfo : requestFilterInfo;
-        this.renderFilterRulesInfo(rulesInfo);
 
         if (environmentOptions.Prefs.mobile) {
             $('#resetStats').hide();
@@ -637,12 +897,16 @@ PageController.prototype = {
         this.checkSubscriptionsCount();
 
         // Initialize whitelist filter
-        this.whiteListFilter = new WhiteListFilter();
+        this.whiteListFilter = new WhiteListFilter({defaultWhiteListMode: defaultWhitelistMode});
         this.whiteListFilter.updateWhiteListFilterRules();
 
         // Initialize User filter
         this.userFilter = new UserFilter();
         this.userFilter.updateUserFilterRules();
+
+        // Initialize AntiBanner filters
+        this.antiBannerFilters = new AntiBannerFilters({rulesInfo: environmentOptions.isContentBlockerEnabled ? contentBlockerInfo : requestFilterInfo});
+        this.antiBannerFilters.render();
     },
 
     _onAntiBannerFilterStateChange: function (antiBannerFilter) {
@@ -726,12 +990,6 @@ PageController.prototype = {
         }
     },
 
-    updateAntiBannerFilters: function (e) {
-        e.preventDefault();
-        contentPage.sendMessage({type: 'checkAntiBannerFiltersUpdate'}, function () {
-        });
-    },
-
     updateShowInfoAboutAdguardFullVersion: function (e) {
         e.preventDefault();
         var showPromo = this.checked;
@@ -771,57 +1029,10 @@ PageController.prototype = {
         });
     },
 
-    changeDefaultWhiteListMode: function (e) {
-        e.preventDefault();
-        contentPage.sendMessage({type: 'changeDefaultWhiteListMode', enabled: !e.currentTarget.checked}, function () {
-            this.whiteListFilter.updateWhiteListFilterRules();
-        }.bind(this));
-    },
-
     onResetStatsClicked: function (e) {
         e.preventDefault();
         contentPage.sendMessage({type: 'resetBlockedAdsCount'});
         this._onStatsReset();
-    },
-
-    /**
-     * Checks Safari content blocker rules limit, shows alert message for rules overlimit.
-     * It's important to check that limit because of Safari limitations.
-     * Content blocker with too many rules won't work at all.
-     *
-     * @param rulesOverLimit True if loaded rules more than limit
-     * @private
-     */
-    _checkSafariContentBlockerRulesLimit: function (rulesOverLimit) {
-        if (rulesOverLimit) {
-            this.tooManyRulesEl.show();
-        } else {
-            this.tooManyRulesEl.hide();
-        }
-    },
-
-    /**
-     * Renders rules info panel
-     *
-     * @param info Object contains loaded rules count
-     */
-    renderFilterRulesInfo: function (info) {
-        var el = $('.settings-page-title-info');
-        if (!info.rulesCount) {
-            el.hide();
-            return;
-        }
-
-        //Prevent translating on document loaded
-        el.removeAttr('i18n');
-
-        var message = i18n.getMessage("options_antibanner_info", [String(info.rulesCount)]);
-        el.text(message);
-        el.show();
-
-        if (environmentOptions.isContentBlockerEnabled) {
-            this._checkSafariContentBlockerRulesLimit(info.rulesOverLimit);
-        }
     },
 
     _renderAntiBannerFilters: function () {
@@ -922,10 +1133,6 @@ PageController.prototype = {
 
     _renderUseOptimizedFilters: function (show) {
         this.useOptimizedFiltersCheckbox.updateCheckbox(show);
-    },
-
-    _renderDefaultWhiteListMode: function (defaultWhiteListMode) {
-        this.changeDefaultWhiteListModeCheckbox.updateCheckbox(!defaultWhiteListMode);
     },
 
     _onStatsReset: function () {
@@ -1171,21 +1378,24 @@ var initPage = function (response) {
                 case EventNotifierTypes.FILTER_ENABLE_DISABLE:
                     controller._onAntiBannerFilterStateChange(filter);
                     controller.checkSubscriptionsCount();
+                    controller.antiBannerFilters.onFilterStateChanged(filter);
                     break;
                 case EventNotifierTypes.FILTER_ADD_REMOVE:
                     controller._renderAntiBannerFilters();
                     break;
                 case EventNotifierTypes.START_DOWNLOAD_FILTER:
                     controller._showFilterLoader(filter);
+                    controller.antiBannerFilters.onFilterDownloadStarted(filter);
                     break;
                 case EventNotifierTypes.SUCCESS_DOWNLOAD_FILTER:
                 case EventNotifierTypes.ERROR_DOWNLOAD_FILTER:
                     controller._updateAntiBannerFilter(filter);
+                    controller.antiBannerFilters.onFilterDownloadFinished(filter);
                     break;
                 case EventNotifierTypes.UPDATE_USER_FILTER_RULES:
                     controller.userFilter.updateUserFilterRules();
                     if (!environmentOptions.isContentBlockerEnabled) {
-                        controller.renderFilterRulesInfo(filter);
+                        controller.antiBannerFilters.updateRulesCountInfo(filter);
                     }
                     break;
                 case EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES:
@@ -1196,10 +1406,10 @@ var initPage = function (response) {
                     if (environmentOptions.isContentBlockerEnabled) {
                         break;
                     }
-                    controller.renderFilterRulesInfo(filter);
+                    controller.antiBannerFilters.updateRulesCountInfo(filter);
                     break;
                 case EventNotifierTypes.CONTENT_BLOCKER_UPDATED:
-                    controller.renderFilterRulesInfo(filter);
+                    controller.antiBannerFilters.updateRulesCountInfo(filter);
                     break;
             }
         }

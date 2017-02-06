@@ -66,8 +66,12 @@ $(function () {
             var $this = $(this);
             if (checked) {
                 $this.attr('checked', 'checked');
+                $this.next('.toggler').addClass('active');
+                $this.closest('li').addClass('active');
             } else {
                 $this.removeAttr('checked');
+                $this.next('.toggler').removeClass('active');
+                $this.closest('li').removeClass('active');
             }
         });
     };
