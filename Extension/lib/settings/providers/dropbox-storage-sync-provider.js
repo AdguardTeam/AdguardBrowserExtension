@@ -17,6 +17,7 @@
 
 /* global Log */
 
+var Dropbox = exports.Dropbox;
 /**
  * Dropbox sync settings provider
  *
@@ -117,6 +118,7 @@ var DropboxSyncProvider = (function () { // jshint ignore:line
         /**
          * Sets access token
          */
-        setAccessToken: setAccessToken
+        setAccessToken: setAccessToken,
+        isAuthorized: isAuthorized
     };
 })();

@@ -127,6 +127,10 @@ PageController.prototype = {
             contentPage.sendMessage({type: 'openFilteringLog'});
         });
 
+        $('.syncSettingsFile').on('click', this.onSyncSettingsFileClicked.bind(this));
+        $('.syncSettingsDropbox').on('click', this.onSyncSettingsDropboxClicked.bind(this));
+        $('.syncSettingsChrome').on('click', this.onSyncSettingsChromeClicked.bind(this));
+
         this.wlFilters.jScrollPane({
             contentWidth: '0px',
             mouseWheelSpeed: 20
@@ -483,6 +487,35 @@ PageController.prototype = {
             return;
         }
         contentPage.sendMessage({type: 'clearWhiteListFilter'});
+    },
+
+    onSyncSettingsFileClicked: function (e) {
+        e.preventDefault();
+
+        contentPage.sendMessage({type: 'syncSettings', provider: 'FILE'});
+    },
+
+    onSyncSettingsDropboxClicked: function (e) {
+        e.preventDefault();
+
+        var token;
+        var hash = window.location.hash;
+        if (hash) {
+            token = hash.substring(14, hash.indexOf('&'));
+        }
+
+        var url = window.location.href;
+        contentPage.sendMessage({type: 'syncSettings', provider: 'DROPBOX', token: token, callbackUrl: url}, function (response) {
+            if (response) {
+                window.location.href = response;
+            }
+        });
+    },
+
+    onSyncSettingsChromeClicked: function (e) {
+        e.preventDefault();
+
+        contentPage.sendMessage({type: 'syncSettings', provider: 'CHROME'});
     },
 
     /**

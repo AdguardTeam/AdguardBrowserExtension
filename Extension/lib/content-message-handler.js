@@ -107,6 +107,8 @@ ContentMessageHandler.prototype = {
             case 'getAntiBannerFiltersForOptionsPage':
                 var renderedFilters = this.antiBannerService.getAntiBannerFiltersForOptionsPage();
                 return {filters: renderedFilters};
+            case 'syncSettings':
+                return this.antiBannerService.syncSettings(message.provider, message.token, message.callbackUrl);
             case 'changeDefaultWhiteListMode':
                 this.antiBannerService.changeDefaultWhiteListMode(message.enabled);
                 break;
