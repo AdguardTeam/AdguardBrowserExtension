@@ -1,45 +1,45 @@
 QUnit.test("Test settings provider", function (assert) {
     var done = assert.async();
 
-    LS.setItem(FilterLSUtils.FILTERS_STATE_PROP, JSON.stringify([]));
+    adguard.localStorage.setItem('filters-state', JSON.stringify([]));
 
-    LS.setItem('white-list-domains', JSON.stringify(['whitelisted-domain-one.com']));
-    LS.setItem('default-whitelist-mode', true);
+    adguard.localStorage.setItem('white-list-domains', JSON.stringify(['whitelisted-domain-one.com']));
+    adguard.localStorage.setItem('default-whitelist-mode', true);
 
-    LS.setItem('filterrules_0.txt', '||ongkidcasarv.com^$third-party\n' +
+    adguard.localStorage.setItem('filterrules_0.txt', '||ongkidcasarv.com^$third-party\n' +
         '||dashgreen.online^$third-party\n' +
         '||adzos.com^$third-party\n' +
         '||mxtads.com:8040');
 
-    FilterLSUtils.updateFilterStateInfo({
+    adguard.filtersState.updateFilterState({
         filterId: 1,
         loaded: true,
         enabled: true,
         installed: true
     });
 
-    FilterLSUtils.updateFilterStateInfo({
+    adguard.filtersState.updateFilterState({
         filterId: 3,
         loaded: true,
         enabled: true,
         installed: true
     });
 
-    FilterLSUtils.updateFilterStateInfo({
+    adguard.filtersState.updateFilterState({
         filterId: 5,
         loaded: true,
         enabled: false,
         installed: true
     });
 
-    FilterLSUtils.updateFilterStateInfo({
+    adguard.filtersState.updateFilterState({
         filterId: 7,
         loaded: true,
         enabled: false,
         installed: true
     });
 
-    LS.setItem('sync.settings.timestamp', new Date().getTime() - 10000);
+    adguard.localStorage.setItem('sync.settings.timestamp', new Date().getTime() - 10000);
 
     var before = SettingsProvider.loadSettingsManifest();
     assert.ok(before != null);

@@ -71,7 +71,14 @@ var FileSyncProvider = (function () { // jshint ignore:line
                 // Create a FileWriter object for our FileEntry (log.txt).
                 fileEntry.createWriter(function(fileWriter) {
 
+                    var truncated = false;
                     fileWriter.onwriteend = function(e) {
+                        if (!truncated) {
+                            truncated = true;
+                            this.truncate(this.position);
+                            return;
+                        }
+
                         callback(true);
                     };
 
@@ -81,7 +88,6 @@ var FileSyncProvider = (function () { // jshint ignore:line
                     };
 
                     var blob = new Blob([JSON.stringify(data)], {type: 'text/plain'});
-
                     fileWriter.write(blob);
 
                 }, errorHandler);

@@ -105,7 +105,8 @@ var SettingsProvider = (function () { // jshint ignore:line
             callback(section);
         };
 
-        onUserFilterRulesLoaded(adguard.userrules.getRules());
+        var filterId = adguard.utils.filters.USER_FILTER_ID;
+        adguard.rulesStorage.read(filterId, onUserFilterRulesLoaded);
     };
 
     var saveSettingsManifest = function (manifest) {
@@ -137,10 +138,11 @@ var SettingsProvider = (function () { // jshint ignore:line
         adguard.localStorage.setItem(BLOCKLIST_DOMAINS_KEY, JSON.stringify(section.filters["whitelist"]["inverted-domains"]));
         adguard.localStorage.setItem(DEFAULT_WHITELIST_FLAG_KEY, section.filters["whitelist"].inverted != true);
 
-        adguard.userrules.setRules(section.filters["user-filter"].rules.split('\n'));
-        adguard.localStorage.setItem(SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY, new Date().getTime());
+        adguard.rulesStorage.write(adguard.utils.filters.USER_FILTER_ID, section.filters["user-filter"].rules.split('\n'), function() {
+            adguard.localStorage.setItem(SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY, new Date().getTime());
 
-        callback(true);
+            callback(true);
+        });
     };
 
     var loadSettingsSection = function(sectionName, callback) {
