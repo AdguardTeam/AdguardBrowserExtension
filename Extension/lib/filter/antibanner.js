@@ -753,31 +753,6 @@ adguard.antiBannerService = (function (adguard) {
         return contentBlockerInfo;
     };
 
-    syncSettings: function (provider, token, url) {
-        var syncProvider;
-        switch (provider) {
-            case 'FILE':
-                syncProvider = FileSyncProvider;
-                break;
-            case 'DROPBOX':
-                if (!token && !DropboxSyncProvider.isAuthorized()) {
-                    return DropboxSyncProvider.getAuthenticationUrl(url);
-                }
-
-                syncProvider = DropboxSyncProvider;
-                syncProvider.setAccessToken(token);
-                break;
-            case 'CHROME':
-                syncProvider = StorageSyncProvider;
-                break;
-        }
-
-        SyncService.setSyncProvider(syncProvider);
-        SyncService.syncSettings(function (result) {
-            console.log(result);
-        });
-    },
-
     /**
      * Adds event listener for filters changes.
      * If filter is somehow changed this method checks if we should save changes to the storage

@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Log */
-
 /**
  * Sync settings provider
  *
@@ -29,7 +27,7 @@ var FileSyncProvider = (function () { // jshint ignore:line
     var readFile = function (path, callback) {
 
         var errorHandler = function (e) {
-            Log.error(e);
+            adguard.console.error(e);
 
             callback(false);
         };
@@ -62,7 +60,7 @@ var FileSyncProvider = (function () { // jshint ignore:line
      */
     var saveFile = function (path, data, callback) {
         var errorHandler = function (e) {
-            Log.error(e);
+            adguard.console.error(e);
 
             callback(false);
         };
@@ -78,7 +76,7 @@ var FileSyncProvider = (function () { // jshint ignore:line
                     };
 
                     fileWriter.onerror = function(e) {
-                        Log.error(e);
+                        adguard.console.error(e);
                         callback(false);
                     };
 

@@ -15,13 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Log */
-
-var LS = require('../../lib/utils/local-storage').LS;
-var FilterLSUtils = require('../../lib/utils/filters-storage').FilterLSUtils;
-var AntiBannerFiltersId = require('../../lib/utils/common').AntiBannerFiltersId;
-var FilterStorage = require('../../lib/filter/storage').FilterStorage;
-
 /**
  * Application settings provider.
  *
@@ -44,14 +37,14 @@ var SettingsProvider = (function () { // jshint ignore:line
 
     var loadSettingsManifest = function () {
         var manifest = {
-            "timestamp": LS.getItem(SYNC_SETTINGS_TIMESTAMP_KEY),
+            "timestamp": adguard.localStorage.getItem(SYNC_SETTINGS_TIMESTAMP_KEY),
             "protocol-version": PROTOCOL_VERSION,
             "min-compatible-version": PROTOCOL_VERSION,
             "app-id": APP_ID,
             "sections": [
                 {
                     "name": "filters.json",
-                    "timestamp": LS.getItem(SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY)
+                    "timestamp": adguard.localStorage.getItem(SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY)
                 }
             ]
         };
@@ -60,7 +53,7 @@ var SettingsProvider = (function () { // jshint ignore:line
     };
 
     var loadFiltersSection = function (callback) {
-        var filtersState = FilterLSUtils.getFiltersStateInfo();
+        var filtersState = adguard.filtersState.getFiltersState();
         var enabledFilterIds = [];
         for (var i in filtersState) {
             var f = filtersState[i];
@@ -70,18 +63,18 @@ var SettingsProvider = (function () { // jshint ignore:line
         }
 
         var whitelistDomains = [];
-        var json = LS.getItem(WHITELIST_DOMAINS_KEY);
+        var json = adguard.localStorage.getItem(WHITELIST_DOMAINS_KEY);
         if (json) {
             whitelistDomains = JSON.parse(json);
         }
 
         var blocklistDomains = [];
-        var blocklistJson = LS.getItem(BLOCKLIST_DOMAINS_KEY);
+        var blocklistJson = adguard.localStorage.getItem(BLOCKLIST_DOMAINS_KEY);
         if (blocklistJson) {
             blocklistDomains = JSON.parse(blocklistJson);
         }
 
-        var defaultWhiteListMode = LS.getItem(DEFAULT_WHITELIST_FLAG_KEY);
+        var defaultWhiteListMode = adguard.localStorage.getItem(DEFAULT_WHITELIST_FLAG_KEY);
 
         var onUserFilterRulesLoaded = function (result) {
             var userFilterRules = [];
@@ -112,16 +105,16 @@ var SettingsProvider = (function () { // jshint ignore:line
             callback(section);
         };
 
-        FilterStorage.loadFilterRules(AntiBannerFiltersId.USER_FILTER_ID, onUserFilterRulesLoaded);
+        onUserFilterRulesLoaded(adguard.userrules.getRules());
     };
 
     var saveSettingsManifest = function (manifest) {
-        LS.setItem(SYNC_SETTINGS_TIMESTAMP_KEY, manifest.timestamp);
+        adguard.localStorage.setItem(SYNC_SETTINGS_TIMESTAMP_KEY, manifest.timestamp);
 
         for (var i = 0; i < manifest.sections.length; i++) {
             var section = manifest.sections[i];
             if (section.name === FILTERS_SECTION) {
-                LS.setItem(SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY, section.timestamp);
+                adguard.localStorage.setItem(SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY, section.timestamp);
             }
         }
     };
@@ -129,33 +122,32 @@ var SettingsProvider = (function () { // jshint ignore:line
     var saveFiltersSection = function (section, callback) {
         var enabledFilterIds = section.filters['enabled-filters'];
 
-        var filtersState = FilterLSUtils.getFiltersStateInfo();
+        var filtersState = adguard.filtersState.getFiltersState();
         for (var i in filtersState) {
             var f = filtersState[i];
             if (f) {
                 f.filterId = i;
                 f.enabled = enabledFilterIds.indexOf(i) >= 0;
 
-                FilterLSUtils.updateFilterStateInfo(f);
+                adguard.filtersState.updateFilterState(f);
             }
         }
 
-        LS.setItem(WHITELIST_DOMAINS_KEY, JSON.stringify(section.filters["whitelist"].domains));
-        LS.setItem(BLOCKLIST_DOMAINS_KEY, JSON.stringify(section.filters["whitelist"]["inverted-domains"]));
-        LS.setItem(DEFAULT_WHITELIST_FLAG_KEY, section.filters["whitelist"].inverted != true);
+        adguard.localStorage.setItem(WHITELIST_DOMAINS_KEY, JSON.stringify(section.filters["whitelist"].domains));
+        adguard.localStorage.setItem(BLOCKLIST_DOMAINS_KEY, JSON.stringify(section.filters["whitelist"]["inverted-domains"]));
+        adguard.localStorage.setItem(DEFAULT_WHITELIST_FLAG_KEY, section.filters["whitelist"].inverted != true);
 
-        FilterStorage.saveFilterRules(AntiBannerFiltersId.USER_FILTER_ID, section.filters["user-filter"].rules.split('\n'), function () {
-            LS.setItem(SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY, new Date().getTime());
+        adguard.userrules.setRules(section.filters["user-filter"].rules.split('\n'));
+        adguard.localStorage.setItem(SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY, new Date().getTime());
 
-            callback(true);
-        });
+        callback(true);
     };
 
     var loadSettingsSection = function(sectionName, callback) {
         if (sectionName === FILTERS_SECTION) {
             loadFiltersSection(callback);
         } else {
-            Log.error('Section {0} is not supported', sectionName);
+            adguard.console.error('Section {0} is not supported', sectionName);
 
             callback(false);
         }
@@ -172,7 +164,7 @@ var SettingsProvider = (function () { // jshint ignore:line
         if (sectionName === FILTERS_SECTION) {
             saveFiltersSection(section, callback);
         } else {
-            Log.error('Section {0} is not supported', sectionName);
+            adguard.console.error('Section {0} is not supported', sectionName);
 
             callback(false);
         }
@@ -183,8 +175,8 @@ var SettingsProvider = (function () { // jshint ignore:line
      */
     var updateSettingsTimestamp = function () {
         var time = new Date().getTime();
-        LS.setItem(SYNC_SETTINGS_TIMESTAMP_KEY, time);
-        LS.setItem(SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY, time);
+        adguard.localStorage.setItem(SYNC_SETTINGS_TIMESTAMP_KEY, time);
+        adguard.localStorage.setItem(SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY, time);
     };
 
     // EXPOSE

@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Log */
-
 /**
  * Sync settings provider
  *
@@ -29,7 +27,7 @@ var StorageSyncProvider = (function () { // jshint ignore:line
         chrome.storage.sync.get(filePath, function(items) {
             var e = chrome.runtime.lastError;
             if (e) {
-                Log.error(e);
+                adguard.console.error(e);
                 callback(false);
                 return;
             }
@@ -54,7 +52,7 @@ var StorageSyncProvider = (function () { // jshint ignore:line
         chrome.storage.sync.set(save, function() {
             var e = chrome.runtime.lastError;
             if (e) {
-                Log.error(e);
+                adguard.console.error(e);
                 callback(false);
                 return;
             }

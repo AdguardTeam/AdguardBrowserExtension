@@ -15,8 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Promise, Log */
-
 /**
  * Sync settings service
  *
@@ -92,15 +90,15 @@ var SyncService = (function () { // jshint ignore:line
                 SettingsProvider.loadSettingsSection(sectionName, function (localFiltersSection) {
                     syncProvider.save(sectionName, localFiltersSection, function (success) {
                         if (success) {
-                            Log.info('Remote {0} section created', sectionName);
-                            Log.info('Remote manifest created');
+                            adguard.console.info('Remote {0} section created', sectionName);
+                            adguard.console.info('Remote manifest created');
                         } else {
-                            Log.error('Remote {0} section update failed', sectionName);
+                            adguard.console.error('Remote {0} section update failed', sectionName);
                         }
                     });
                 });
             } else {
-                Log.error('Error creating remote manifest');
+                adguard.console.error('Error creating remote manifest');
             }
         });
     };
@@ -120,17 +118,17 @@ var SyncService = (function () { // jshint ignore:line
      */
     var processManifest = function (callback) {
         var onManifestLoaded = function (remoteManifest) {
-            Log.info('Processing remote manifest..');
+            adguard.console.info('Processing remote manifest..');
 
             if (!remoteManifest) {
-                Log.warn('Error loading remote manifest');
+                adguard.console.warn('Error loading remote manifest');
                 createRemoteData();
                 callback(false);
                 return;
             }
 
             if (!validateManifest(remoteManifest)) {
-                Log.warn('Remote manifest not valid');
+                adguard.console.warn('Remote manifest not valid');
                 callback(false);
                 return;
             }
@@ -140,7 +138,7 @@ var SyncService = (function () { // jshint ignore:line
             var compatibility = findCompatibility(remoteManifest, localManifest);
             console.log(compatibility);
             if (!compatibility.canRead) {
-                Log.warn('Protocol versions are not compatible');
+                adguard.console.warn('Protocol versions are not compatible');
                 callback(false);
                 return;
             }
@@ -151,11 +149,11 @@ var SyncService = (function () { // jshint ignore:line
                     return;
                 }
 
-                Log.info('Sections updated local-to-remote: {0}, remote-to-local: {1}', updatedSections.localToRemote.length, updatedSections.remoteToLocal.length);
+                adguard.console.info('Sections updated local-to-remote: {0}, remote-to-local: {1}', updatedSections.localToRemote.length, updatedSections.remoteToLocal.length);
 
                 var updatedDate = new Date().getTime();
                 if (updatedSections.remoteToLocal.length > 0) {
-                    Log.debug('Saving local manifest..');
+                    adguard.console.debug('Saving local manifest..');
 
                     updateManifestSections(localManifest.sections, updatedSections.remoteToLocal);
 
@@ -164,7 +162,7 @@ var SyncService = (function () { // jshint ignore:line
                 }
 
                 if (compatibility.canWrite) {
-                    Log.debug('Saving remote manifest..');
+                    adguard.console.debug('Saving remote manifest..');
 
                     updateManifestSections(remoteManifest.sections, updatedSections.localToRemote);
 
@@ -178,7 +176,7 @@ var SyncService = (function () { // jshint ignore:line
             });
         };
 
-        Log.debug('Loading remote manifest..');
+        adguard.console.debug('Loading remote manifest..');
         syncProvider.load(MANIFEST_PATH, onManifestLoaded);
     };
 
@@ -216,12 +214,12 @@ var SyncService = (function () { // jshint ignore:line
             dfds.push(dfd);
         }
 
-        Promise.all(dfds).then(function () {
-            Log.info('Sections updated successfully');
+        adguard.utils.Promise.all(dfds).then(function () {
+            adguard.console.info('Sections updated successfully');
 
             callback(true, updatedSections);
         }, function () {
-            Log.error('Sections update failed');
+            adguard.console.error('Sections update failed');
 
             callback(false, updatedSections);
         });
@@ -246,22 +244,22 @@ var SyncService = (function () { // jshint ignore:line
 
     var updateLocalToRemoteSection = function (section, callback) {
         var sectionName = section.name;
-        Log.info('Updating local to remote: ' + section.name);
+        adguard.console.info('Updating local to remote: ' + section.name);
 
-        var dfd = new Promise();
+        var dfd = new adguard.utils.Promise();
 
         SettingsProvider.loadSettingsSection(sectionName, function (localFiltersSection) {
-            Log.debug('Local {0} section loaded', sectionName);
+            adguard.console.debug('Local {0} section loaded', sectionName);
 
             syncProvider.save(sectionName, localFiltersSection, function (success) {
                 if (success) {
-                    Log.info('Remote {0} section updated', sectionName);
+                    adguard.console.info('Remote {0} section updated', sectionName);
 
                     callback(section);
 
                     dfd.resolve();
                 } else {
-                    Log.error('Remote {0} section update failed', sectionName);
+                    adguard.console.error('Remote {0} section update failed', sectionName);
 
                     dfd.reject();
                 }
@@ -273,29 +271,29 @@ var SyncService = (function () { // jshint ignore:line
 
     var updateRemoteToLocalSection = function (section, callback) {
         var sectionName = section.name;
-        Log.info('Updating remote to local: ' + sectionName);
+        adguard.console.info('Updating remote to local: ' + sectionName);
 
-        var dfd = new Promise();
+        var dfd = adguard.utils.Promise();
 
         syncProvider.load(sectionName, function (remoteFiltersSection) {
             if (!remoteFiltersSection) {
-                Log.error('Remote {0} section loading failed', sectionName);
+                adguard.console.error('Remote {0} section loading failed', sectionName);
 
                 dfd.reject();
                 return;
             }
 
-            Log.debug('Remote {0} section loaded', sectionName);
+            adguard.console.debug('Remote {0} section loaded', sectionName);
 
             SettingsProvider.saveSettingsSection(sectionName, remoteFiltersSection, function (success) {
                 if (success) {
-                    Log.info('Local {0} section updated', sectionName);
+                    adguard.console.info('Local {0} section updated', sectionName);
 
                     callback(section);
 
                     dfd.resolve();
                 } else {
-                    Log.error('Local {0} section update failed', sectionName);
+                    adguard.console.error('Local {0} section update failed', sectionName);
 
                     dfd.reject();
                 }
@@ -308,10 +306,10 @@ var SyncService = (function () { // jshint ignore:line
 
     // API
     var syncSettings = function (callback) {
-        Log.info('Synchronizing settings..');
+        adguard.console.info('Synchronizing settings..');
 
         if (syncProvider == null) {
-            Log.error('Sync provider should be set first');
+            adguard.console.error('Sync provider should be set first');
 
             callback(false);
             return;
@@ -319,9 +317,9 @@ var SyncService = (function () { // jshint ignore:line
 
         processManifest(function (success) {
             if (success) {
-                Log.info('Synchronizing settings finished');
+                adguard.console.info('Synchronizing settings finished');
             } else {
-                Log.warn('Error synchronizing settings');
+                adguard.console.warn('Error synchronizing settings');
             }
 
             callback(success);
@@ -331,7 +329,7 @@ var SyncService = (function () { // jshint ignore:line
     var setSyncProvider = function (provider) {
         syncProvider = provider;
 
-        Log.debug('Sync provider has been set');
+        adguard.console.debug('Sync provider has been set');
     };
 
     // EXPOSE

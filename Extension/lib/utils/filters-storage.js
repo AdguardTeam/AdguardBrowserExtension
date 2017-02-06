@@ -16,78 +16,95 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var Log = require('../../lib/utils/log').Log; // jshint ignore:line
-var LS = require('../../lib/utils/local-storage').LS;
+adguard.filtersState = (function (adguard) {
 
-/**
- * Helper class for working with filters metadata storage (local storage)
- */
-var FilterLSUtils = exports.FilterLSUtils = {
-
-    FILTERS_STATE_PROP: 'filters-state',
-    FILTERS_VERSION_PROP: 'filters-version',
+    var FILTERS_STATE_PROP = 'filters-state';
+    var FILTERS_VERSION_PROP = 'filters-version';
 
     /**
      * Gets filter version from the local storage
      * @returns {*}
      */
-    getFiltersVersionInfo: function () {
+    var getFiltersVersion = function () {
         var filters = Object.create(null);
         try {
-            var json = LS.getItem(FilterLSUtils.FILTERS_VERSION_PROP);
+            var json = adguard.localStorage.getItem(FILTERS_VERSION_PROP);
             if (json) {
                 filters = JSON.parse(json);
             }
         } catch (ex) {
-            Log.error("Error retrieve filters version info, cause {0}", ex);
+            adguard.console.error("Error retrieve filters version info, cause {0}", ex);
         }
         return filters;
-    },
+    };
 
     /**
      * Gets filters state from the local storage
      * @returns {*}
      */
-    getFiltersStateInfo: function () {
+    var getFiltersState = function () {
         var filters = Object.create(null);
         try {
-            var json = LS.getItem(FilterLSUtils.FILTERS_STATE_PROP);
+            var json = adguard.localStorage.getItem(FILTERS_STATE_PROP);
             if (json) {
                 filters = JSON.parse(json);
             }
         } catch (ex) {
-            Log.error("Error retrieve filters state info, cause {0}", ex);
+            adguard.console.error("Error retrieve filters state info, cause {0}", ex);
         }
         return filters;
-    },
+    };
 
     /**
      * Updates filter version in the local storage
      *
      * @param filter Filter version metadata
      */
-    updateFilterVersionInfo: function (filter) {
-        var filters = FilterLSUtils.getFiltersVersionInfo();
+    var updateFilterVersion = function (filter) {
+        var filters = getFiltersVersion();
         filters[filter.filterId] = {
             version: filter.version,
             lastCheckTime: filter.lastCheckTime,
             lastUpdateTime: filter.lastUpdateTime
         };
-        LS.setItem(FilterLSUtils.FILTERS_VERSION_PROP, JSON.stringify(filters));
-    },
+        adguard.localStorage.setItem(FILTERS_VERSION_PROP, JSON.stringify(filters));
+    };
 
     /**
      * Updates filter state in the local storage
      *
      * @param filter Filter state object
      */
-    updateFilterStateInfo: function (filter) {
-        var filters = FilterLSUtils.getFiltersStateInfo();
+    var updateFilterState = function (filter) {
+        var filters = getFiltersState();
         filters[filter.filterId] = {
             loaded: filter.loaded,
             enabled: filter.enabled,
             installed: filter.installed
         };
-        LS.setItem(FilterLSUtils.FILTERS_STATE_PROP, JSON.stringify(filters));
-    }
-};
+        adguard.localStorage.setItem(FILTERS_STATE_PROP, JSON.stringify(filters));
+    };
+
+    // Add event listener to persist filter metadata to local storage
+    adguard.listeners.addListener(function (event, filter) {
+        switch (event) {
+            case adguard.listeners.SUCCESS_DOWNLOAD_FILTER:
+                updateFilterState(filter);
+                updateFilterVersion(filter);
+                break;
+            case adguard.listeners.FILTER_ADD_REMOVE:
+            case adguard.listeners.FILTER_ENABLE_DISABLE:
+                updateFilterState(filter);
+                break;
+        }
+    });
+
+    return {
+        getFiltersVersion: getFiltersVersion,
+        getFiltersState: getFiltersState,
+        // These methods are used only for migrate from old versions
+        updateFilterVersion: updateFilterVersion,
+        updateFilterState: updateFilterState
+    };
+
+})(adguard);

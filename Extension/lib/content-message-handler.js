@@ -289,7 +289,7 @@
                 var renderedFilters = adguard.filters.getFiltersForOptionsPage();
                 return {filters: renderedFilters};
             case 'syncSettings':
-                return this.antiBannerService.syncSettings(message.provider, message.token, message.callbackUrl);
+                return adguard.settings.syncSettings(message.provider, message.token, message.callbackUrl);
             case 'changeDefaultWhiteListMode':
                 adguard.whitelist.changeDefaultWhiteListMode(message.enabled);
                 break;

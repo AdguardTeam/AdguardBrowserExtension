@@ -15,9 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Log */
-
-var Dropbox = exports.Dropbox;
 /**
  * Dropbox sync settings provider
  *
@@ -33,7 +30,7 @@ var DropboxSyncProvider = (function () { // jshint ignore:line
 
     var isAuthorized = function () {
         if (!accessToken) {
-            Log.warn("Unauthorized! Please set access token first.");
+            adguard.console.warn("Unauthorized! Please set access token first.");
             return false;
         }
 
@@ -55,14 +52,14 @@ var DropboxSyncProvider = (function () { // jshint ignore:line
                     callback(JSON.parse(this.result));
                 };
                 fileReader.onerror = function () {
-                    Log.error('Error reading file');
+                    adguard.console.error('Error reading file');
                     callback(false);
                 };
 
                 fileReader.readAsText(response.fileBlob);
             })
             .catch(function (error) {
-                Log.error(error);
+                adguard.console.error(error);
                 if (error && error.status === 400) {
                     accessToken = null;
                 }
@@ -82,7 +79,7 @@ var DropboxSyncProvider = (function () { // jshint ignore:line
                 callback(true);
             })
             .catch(function (error) {
-                Log.error(error);
+                adguard.console.error(error);
                 if (error && error.status === 400) {
                     accessToken = null;
                 }
