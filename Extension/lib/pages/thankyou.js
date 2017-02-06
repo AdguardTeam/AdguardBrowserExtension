@@ -63,7 +63,7 @@ PageController.prototype = {
 		if (this.checked) {
 			contentPage.sendMessage({type: 'addAndEnableFilter', filterId: AntiBannerFiltersId.TRACKING_FILTER_ID});
 		} else {
-			contentPage.sendMessage({type: 'removeAntiBannerFilter', filterId: AntiBannerFiltersId.TRACKING_FILTER_ID});
+			contentPage.sendMessage({type: 'disableAntiBannerFilter', filterId: AntiBannerFiltersId.TRACKING_FILTER_ID, remove: true});
 		}
 	},
 
@@ -71,7 +71,7 @@ PageController.prototype = {
 		if (this.checked) {
 			contentPage.sendMessage({type: 'addAndEnableFilter', filterId: AntiBannerFiltersId.SOCIAL_FILTER_ID});
 		} else {
-			contentPage.sendMessage({type: 'removeAntiBannerFilter', filterId: AntiBannerFiltersId.SOCIAL_FILTER_ID});
+			contentPage.sendMessage({type: 'disableAntiBannerFilter', filterId: AntiBannerFiltersId.SOCIAL_FILTER_ID, remove: true});
 		}
 	},
 
@@ -92,7 +92,7 @@ PageController.prototype = {
 		if (this.checked) {
 			contentPage.sendMessage({type: 'addAndEnableFilter', filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID});
 		} else {
-			contentPage.sendMessage({type: 'disableAntiBannerFilter', filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID});
+			contentPage.sendMessage({type: 'disableAntiBannerFilter', filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID, remove: true});
 		}
     },
 

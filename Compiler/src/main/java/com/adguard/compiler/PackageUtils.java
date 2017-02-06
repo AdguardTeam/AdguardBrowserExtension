@@ -53,7 +53,7 @@ public class PackageUtils {
 	public static File createXpi(String makeXpiSh, File file) throws Exception {
 		String xpiName = "adguard-adblocker";
 		execute(makeXpiSh, file.getAbsolutePath(), xpiName);
-		File xpiFile = new File(file, xpiName + ".xpi");
+		File xpiFile = new File(file.getParentFile(), xpiName + ".xpi");
 		File destXpiFile = new File(file.getParentFile(), file.getName() + ".xpi");
 		if (destXpiFile.exists()) {
 			FileUtils.deleteQuietly(destXpiFile);

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global contentPage, ExtendedCss, HTMLDocument, XMLDocument, ElementCollapser */
+/* global contentPage, ExtendedCss, HTMLDocument, XMLDocument, ElementCollapser, CssHitsCounter */
 (function() {
 
     var requestTypeMap = {
@@ -24,8 +24,12 @@
         "video": "MEDIA",
         "object": "OBJECT",
         "frame": "SUBDOCUMENT",
-        "iframe": "SUBDOCUMENT"
+        "iframe": "SUBDOCUMENT",
+        "embed": "OBJECT"
     };
+
+    // Don't apply scripts twice
+    var scriptsApplied = false;
     
     /**
      * Do not use shadow DOM on some websites
@@ -43,6 +47,31 @@
     var isOpera = false;
     var shadowRoot = null;
     var loadTruncatedCss = false;
+
+    /**
+     * Set callback for saving css hits
+     */
+    if (typeof CssHitsCounter !== 'undefined') {
+        CssHitsCounter.setCssHitsFoundCallback(function (stats) {
+            contentPage.sendMessage({type: 'saveCssHitStats', stats: stats});
+        });
+    }
+
+    /**
+     * When Background page receives 'onCommitted' frame event then it sends scripts to corresponding frame
+     * It allows us to execute script as soon as possible, because runtime.messaging makes huge overhead
+     * If onCommitted event doesn't occur for the frame, scripts will be applied in usual way.
+     */
+    contentPage.onMessage.addListener(function (response, sender, sendResponse) {
+        if (response.type === 'injectScripts') {
+            // Notify background-page that content-script was received scripts
+            sendResponse({applied: true});
+            if (!isHtml()) {
+                return;
+            }
+            applyScripts(response.scripts);
+        }
+    });
     
     /**
      * Initializing content script
@@ -243,7 +272,10 @@
         var message = {
             type: 'getSelectorsAndScripts',
             documentUrl: window.location.href,
-            loadTruncatedCss: loadTruncatedCss
+            options: {
+                filter: ['selectors', 'scripts'],
+                genericHide: loadTruncatedCss
+            }
         };
 
         /**
@@ -287,6 +319,13 @@
 
         if (response && response.selectors && response.selectors.css && response.selectors.css.length > 0) {
             addIframeHidingStyle();
+        }
+
+        if (typeof CssHitsCounter !== 'undefined' &&
+            response && response.selectors && response.selectors.cssHitsCounterEnabled) {
+
+            // Start css hits calculation
+            CssHitsCounter.count();
         }
     };
     
@@ -373,9 +412,9 @@
      */
     var protectStyleElementContent = function (protectStyleEl) {
         var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-        if (!MutationObserver)
+        if (!MutationObserver){
             return;
-
+        }
         /* observer, which observe protectStyleEl inner changes, without deleting styleEl */
         var innerObserver = new MutationObserver(function (mutations) {
 
@@ -429,9 +468,9 @@
      */
     var protectStyleElementFromRemoval = function (protectStyleEl, useShadowDom) {
         var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-        if (!MutationObserver)
+        if (!MutationObserver){
             return;
-
+        }
         /* observer, which observe deleting protectStyleEl */
         var outerObserver = new MutationObserver(function (mutations) {
             for (var i = 0; i < mutations.length; i++) {
@@ -460,6 +499,12 @@
      * @param scripts Array with JS scripts and scriptSource ('remote' or 'local')
      */
     var applyScripts = function(scripts) {
+
+        if (scriptsApplied) {
+            return;
+        }
+        scriptsApplied = true;
+
         if (!scripts || scripts.length === 0) {
             return;
         }
@@ -476,7 +521,7 @@
                     /**
                      * Note (!) (Firefox, Opera):
                      * In case of Firefox and Opera add-ons, JS filtering rules are hardcoded into add-on code.
-                     * Look at WorkaroundUtils.getScriptSource to learn more.
+                     * Look at ScriptFilterRule.getScriptSource to learn more.
                      */
                     if (!isFirefox && !isOpera) {
                         scriptsToApply.push(scriptRule.rule);
@@ -519,7 +564,7 @@
         var eventType = event.type;
         var tagName = element.tagName.toLowerCase();
 
-        var expectedEventType = (tagName == "iframe" || tagName == "frame") ? "load" : "error";
+        var expectedEventType = (tagName == "iframe" || tagName == "frame" || tagName == "embed") ? "load" : "error";
         if (eventType != expectedEventType) {
             return;
         }
@@ -571,7 +616,7 @@
      */
     var tempHideElement = function (element) {
         // We skip big frames here
-        if (element.localName === 'iframe' || element.localName === 'frame') {
+        if (element.localName === 'iframe' || element.localName === 'frame' || element.localName === 'embed') {
             if (element.clientHeight * element.clientWidth > 400 * 300) {
                 return;
             }

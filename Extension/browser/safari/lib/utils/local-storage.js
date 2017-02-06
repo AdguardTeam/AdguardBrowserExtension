@@ -14,28 +14,35 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global exports, safari, Log */
+
+/* global safari */
 
 /**
- * Local storage adapter
+ * Local storage implementation for safari
  */
-var LS = exports.LS = {
+adguard.localStorageImpl = (function () {
 
-	storage: safari.extension.settings,
+    var getItem = function (key) {
+        return safari.extension.settings.getItem(key);
+    };
 
-	getItem: function (key) {
-		return LS.storage.getItem(key);
-	},
+    var setItem = function (key, value) {
+        safari.extension.settings.setItem(key, value);
+    };
 
-	setItem: function (key, value) {
-		try {
-			LS.storage.setItem(key, value);
-		} catch (ex) {
-			Log.error("Error save item cause: {0}", e);
-		}
-	},
+    var removeItem = function (key) {
+        safari.extension.settings.removeItem(key);
+    };
 
-	removeItem: function (key) {
-		LS.storage.removeItem(key);
-	}
-};
+    var hasItem = function (key) {
+        return key in safari.extension.settings;
+    };
+
+    return {
+        getItem: getItem,
+        setItem: setItem,
+        removeItem: removeItem,
+        hasItem: hasItem
+    };
+
+})();

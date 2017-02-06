@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global $, updateDisplayAdguardPromo, customizePopupFooter, contentPage, i18n, Log, moment */
+/* global $, updateDisplayAdguardPromo, customizePopupFooter, contentPage, i18n, moment */
 var PageController = function () {
 };
 
@@ -330,7 +330,7 @@ PageController.prototype = {
     allowAcceptableAdsChange: function () {
         if (this.checked) {
             contentPage.sendMessage({
-                type: 'enableAntiBannerFilter',
+                type: 'addAndEnableFilter',
                 filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID
             });
         } else {
@@ -426,12 +426,12 @@ PageController.prototype = {
             try {
                 this._importUserFilterRules(e.target.result);
             } catch (ex) {
-                Log.error("Error while loading user rules {0}", ex);
+                adguard.console.error("Error while loading user rules {0}", ex);
             }
             fileInput.value = '';
         }.bind(this);
         reader.onerror = function () {
-            Log.error("Error load user rules");
+            adguard.console.error("Error load user rules");
             fileInput.value = '';
         };
         var file = fileInput.files[0];
@@ -447,12 +447,12 @@ PageController.prototype = {
             try {
                 this._importWhiteListFilterRules(e.target.result);
             } catch (ex) {
-                Log.error("Error while loading whitelist rules {0}", ex);
+                adguard.console.error("Error while loading whitelist rules {0}", ex);
             }
             fileInput.value = '';
         }.bind(this);
         reader.onerror = function () {
-            Log.error("Error load whitelist rules");
+            adguard.console.error("Error load whitelist rules");
             fileInput.value = '';
         };
         var file = fileInput.files[0];
@@ -614,12 +614,12 @@ PageController.prototype = {
         var saveCallback = function (item) {
             if (item.isNew) {
                 this.omitRenderEventsCount = 1;
-                contentPage.sendMessage({type: 'addWhiteListDomain', text: item.text});
+                contentPage.sendMessage({type: 'addWhiteListDomains', domains: [item.text]});
             } else {
                 //start edit rule
                 this.omitRenderEventsCount = 2;
                 contentPage.sendMessage({type: 'removeWhiteListDomain', text: item.prevText}, function () {
-                    contentPage.sendMessage({type: 'addWhiteListDomain', text: item.text});
+                    contentPage.sendMessage({type: 'addWhiteListDomains', domains: [item.text]});
                 });
             }
             return item.text;
@@ -668,11 +668,11 @@ PageController.prototype = {
         var saveCallback = function (item) {
             if (item.isNew) {
                 this.omitRenderEventsCount = 1;
-                contentPage.sendMessage({type: 'addUserFilterRule', text: item.text});
+                contentPage.sendMessage({type: 'addUserRule', ruleText: item.text});
             } else {
                 this.omitRenderEventsCount = 2;
-                contentPage.sendMessage({type: 'removeUserFilter', text: item.prevText}, function () {
-                    contentPage.sendMessage({type: 'addUserFilterRule', text: item.text});
+                contentPage.sendMessage({type: 'removeUserRule', ruleText: item.prevText}, function () {
+                    contentPage.sendMessage({type: 'addUserRule', ruleText: item.text});
                 });
             }
             return item.text;
@@ -680,7 +680,7 @@ PageController.prototype = {
 
         var deleteCallback = function (item) {
             this.omitRenderEventsCount = 1;
-            contentPage.sendMessage({type: 'removeUserFilter', text: item.text}, function () {
+            contentPage.sendMessage({type: 'removeUserRule', ruleText: item.text}, function () {
                 this._removeEditableFilter(this.userFilters, item.text, this.clearUserFilterButton, this.userSearchResult.searchMode);
             }.bind(this));
         }.bind(this);
@@ -881,7 +881,7 @@ PageController.prototype = {
     _onAntiBannerFilterChange: function () {
         var filterId = this.value - 0;
         if (this.checked) {
-            contentPage.sendMessage({type: 'enableAntiBannerFilter', filterId: filterId});
+            contentPage.sendMessage({type: 'addAndEnableFilter', filterId: filterId});
         } else {
             contentPage.sendMessage({type: 'disableAntiBannerFilter', filterId: filterId});
         }
@@ -1209,10 +1209,8 @@ var initPage = function(response) {
         controller.init();
 
         var events = [
-            EventNotifierTypes.ENABLE_FILTER,
-            EventNotifierTypes.DISABLE_FILTER,
-            EventNotifierTypes.ADD_FILTER,
-            EventNotifierTypes.REMOVE_FILTER,
+            EventNotifierTypes.FILTER_ENABLE_DISABLE,
+            EventNotifierTypes.FILTER_ADD_REMOVE,
             EventNotifierTypes.START_DOWNLOAD_FILTER,
             EventNotifierTypes.SUCCESS_DOWNLOAD_FILTER,
             EventNotifierTypes.ERROR_DOWNLOAD_FILTER,
@@ -1224,13 +1222,11 @@ var initPage = function(response) {
 
         function eventListener(event, filter) {
             switch (event) {
-                case EventNotifierTypes.ENABLE_FILTER:
-                case EventNotifierTypes.DISABLE_FILTER:
+                case EventNotifierTypes.FILTER_ENABLE_DISABLE:
                     controller._onAntiBannerFilterStateChange(filter);
                     controller.checkSubscriptionsCount();
                     break;
-                case EventNotifierTypes.ADD_FILTER:
-                case EventNotifierTypes.REMOVE_FILTER:
+                case EventNotifierTypes.FILTER_ADD_REMOVE:
                     controller._renderAntiBannerFilters();
                     break;
                 case EventNotifierTypes.START_DOWNLOAD_FILTER:

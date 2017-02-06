@@ -1,13 +1,13 @@
 var safariCorrectRules = [
-  {
-    "trigger": {
-      "url-filter": ".*"
+    {
+        "trigger": {
+            "url-filter": ".*"
+        },
+        "action": {
+            "type": "css-display-none",
+            "selector": ".banner"
+        }
     },
-    "action": {
-      "type": "css-display-none",
-      "selector": ".banner"
-    }
-  },
     {
         "trigger": {
             "url-filter": ".*",
@@ -21,236 +21,242 @@ var safariCorrectRules = [
             "selector": "#social"
         }
     },
-  {
-    "trigger": {
-      "url-filter": ".*",
-      "if-domain": [
-        "*popsugar.com"
-      ]
+    {
+        "trigger": {
+            "url-filter": ".*",
+            "if-domain": [
+                "*popsugar.com"
+            ]
+        },
+        "action": {
+            "type": "css-display-none",
+            "selector": "#calendar_widget"
+        }
     },
-    "action": {
-      "type": "css-display-none",
-      "selector": "#calendar_widget"
-    }
-  },
-  {
-    "trigger": {
-      "url-filter": "^https?://([^/]*\\.)?test-elemhide\\.com",
-      "resource-type": [
-        "document"
-      ]
+    {
+        "trigger": {
+            "url-filter": "^https?://([^/]*\\.)?pics\\.rbc\\.ru\\/js\\/swf"
+        },
+        "action": {
+            "type": "block"
+        }
     },
-    "action": {
-      "type": "ignore-previous-rules"
-    }
-  },
-  {
-      "trigger": {
-          "url-filter": "^https?://([^/]*\\.)?pics\\.rbc\\.ru\\/js\\/swf"
-      },
-      "action": {
-          "type":"block"
-      }
-  },
-  {
-    "trigger": {
-      "url-filter": "^https?://([^/]*\\.)?tardangro\\.com[/:&?]?",
-      "load-type": [
-        "third-party"
-      ]
+    {
+        "trigger": {
+            "url-filter": "^https?://([^/]*\\.)?tardangro\\.com[/:&?]?",
+            "load-type": [
+                "third-party"
+            ]
+        },
+        "action": {
+            "type": "block"
+        }
     },
-    "action": {
-      "type": "block"
-    }
-  },
-  {
-    "trigger": {
-      "url-filter": "^https?://([^/]*\\.)?videoplaza\\.com[/:&?]?",
-      "resource-type": [
-        "image",
-        "style-sheet",
-        "script",
-        "media",
-        "raw",
-        "font",
-        "document"
-      ],
-      "load-type": [
-        "third-party"
-      ]
+    {
+        "trigger": {
+            "url-filter": "^https?://([^/]*\\.)?videoplaza\\.com[/:&?]?",
+            "resource-type": [
+                "image",
+                "style-sheet",
+                "script",
+                "media",
+                "raw",
+                "font",
+                "document"
+            ],
+            "load-type": [
+                "third-party"
+            ]
+        },
+        "action": {
+            "type": "block"
+        }
     },
-    "action": {
-      "type": "block"
-    }
-  },
-  {
-    "trigger": {
-      "url-filter": "^https?://([^/]*\\.)?b\\.babylon\\.com[/:&?]?"
+
+    {
+        "trigger": {
+            "url-filter": "^https?://([^/]*\\.)?b\\.babylon\\.com[/:&?]?"
+        },
+        "action": {
+            "type": "block"
+        }
     },
-    "action": {
-      "type": "block"
-    }
-  },
-  {
-    "trigger": {
-      "url-filter": "^https?://([^/]*\\.)?getsecuredfiles\\.com[/:&?]?",
-      "resource-type": [
-        "popup",
-      ],
-      "load-type": [
-        "third-party"
-      ]
+
+    {
+        "trigger": {
+            "url-filter": "^https?://([^/]*\\.)?getsecuredfiles\\.com[/:&?]?",
+            "resource-type": [
+                "popup",
+            ],
+            "load-type": [
+                "third-party"
+            ]
+        },
+        "action": {
+            "type": "block"
+        }
     },
-    "action": {
-      "type": "block"
-    }
-  },
-  {
-    "trigger": {
-      "url-filter": "\\/addyn\\|.*\\|adtech;"
+    {
+        "trigger": {
+            "url-filter": "\\/addyn\\|.*\\|adtech;"
+        },
+        "action": {
+            "type": "block"
+        }
     },
-    "action": {
-      "type": "block"
-    }
-  },
-  {
-    "trigger": {
-      "url-filter": "^https?://([^/]*\\.)?emjcd\\.com[/:&?]?",
-      "resource-type": [
-        "image"
-      ],
-      "if-domain": [
-        "*freeshipping.com",
-        "*catalogfavoritesvip.com"
-      ]
+
+    {
+        "trigger": {
+            "url-filter": "^https?://([^/]*\\.)?emjcd\\.com[/:&?]?",
+            "resource-type": [
+                "image"
+            ],
+            "if-domain": [
+                "*freeshipping.com",
+                "*catalogfavoritesvip.com"
+            ]
+        },
+        "action": {
+            "type": "ignore-previous-rules"
+        }
     },
-    "action": {
-      "type": "ignore-previous-rules"
-    }
-  },
-  {
-    "trigger": {
-      "url-filter": "^https?://([^/]*\\.)?intellitxt\\.com\\/ast\\/js\\/nbcuni\\/",
-      "resource-type": [
-        "script"
-      ]
+
+    {
+        "trigger": {
+            "url-filter": "^https?://([^/]*\\.)?intellitxt\\.com\\/ast\\/js\\/nbcuni\\/",
+            "resource-type": [
+                "script"
+            ]
+        },
+        "action": {
+            "type": "ignore-previous-rules"
+        }
     },
-    "action": {
-      "type": "ignore-previous-rules"
-    }
-  },
-  {
-    "trigger": {
-      "url-filter": "^https?://([^/]*\\.)?hulu\\.com\\/embed"
+
+    {
+        "trigger": {
+            "url-filter": "^https?://([^/]*\\.)?hulu\\.com\\/embed"
+        },
+        "action": {
+            "type": "ignore-previous-rules"
+        }
     },
-    "action": {
-      "type": "ignore-previous-rules"
-    }
-  },
-  {
-    "trigger": {
-      "url-filter": ".*",
-      "if-domain": [
-        "*hulu.com"
-      ]
+    {
+        "trigger": {
+            "url-filter": ".*",
+            "if-domain": [
+                "*hulu.com"
+            ]
+        },
+        "action": {
+            "type": "ignore-previous-rules"
+        }
     },
-    "action": {
-      "type": "ignore-previous-rules"
-    }
-  },
-  {
-    "trigger": {
-      "url-filter": ".*",
-      "if-domain": [
-        "*hulu.com"
-      ]
+    {
+        "trigger": {
+            "url-filter": ".*",
+            "if-domain": [
+                "*hulu.com"
+            ]
+        },
+        "action": {
+            "type": "ignore-previous-rules"
+        }
     },
-    "action": {
-      "type": "ignore-previous-rules"
-    }
-  },
-  {
-    "trigger": {
-      "url-filter": ".*",
-      "if-domain": [
-        "*hulu.com"
-      ]
+    {
+        "trigger": {
+            "url-filter": ".*",
+            "if-domain": [
+                "*hulu.com"
+            ]
+        },
+        "action": {
+            "type": "ignore-previous-rules"
+        }
     },
-    "action": {
-      "type": "ignore-previous-rules"
-    }
-  },
-  {
-    "trigger": {
-      "url-filter": ".*",
-      "if-domain": [
-        "*www.any.gs"
-      ]
+    {
+        "trigger": {
+            "url-filter": ".*",
+            "if-domain": [
+                "*www.any.gs"
+            ]
+        },
+        "action": {
+            "type": "ignore-previous-rules"
+        }
     },
-    "action": {
-      "type": "ignore-previous-rules"
-    }
-  },
-  {
-    "trigger": {
-      "url-filter": ".*",
-      "if-domain": [
-        "*wfarm.yandex.net"
-      ]
+
+    {
+        "trigger": {
+            "url-filter": ".*",
+            "if-domain": [
+                "*wfarm.yandex.net"
+            ]
+        },
+        "action": {
+            "type": "ignore-previous-rules"
+        }
     },
-    "action": {
-      "type": "ignore-previous-rules"
-    }
-  },
-  {
-    "trigger": {
-      "url-filter": "\\.instantservice\\.com"
+    {
+        "trigger": {
+            "url-filter": "\\.instantservice\\.com"
+        },
+        "action": {
+            "type": "ignore-previous-rules"
+        }
     },
-    "action": {
-      "type": "ignore-previous-rules"
-    }
-  },
-  {
-    "trigger": {
-      "url-filter": "^https?://([^/]*\\.)?hulu-jsinject-image\\.com",
-      "resource-type": [
-        "image"
-      ]
+    {
+        "trigger": {
+            "url-filter": "^https?://([^/]*\\.)?hulu-jsinject-image\\.com",
+            "resource-type": [
+                "image"
+            ]
+        },
+        "action": {
+            "type": "ignore-previous-rules"
+        }
     },
-    "action": {
-      "type": "ignore-previous-rules"
-    }
-  },
-  {
-    "trigger": {
-      "url-filter": ".*",
-      "if-domain": [
-        "*test-document.com"
-      ]
+    {
+        "trigger": {
+            "url-filter": ".*",
+            "if-domain": [
+                "*test-document.com"
+            ]
+        },
+        "action": {
+            "type": "ignore-previous-rules"
+        }
     },
-    "action": {
-      "type": "ignore-previous-rules"
-    }
-  },
-  {
-    "trigger": {
-      "url-filter": ".*",
-      "if-domain": [
-        "*test-urlblock.com"
-      ]
+    {
+        "trigger": {
+            "url-filter": ".*",
+            "if-domain": [
+                "*test-urlblock.com"
+            ]
+        },
+        "action": {
+            "type": "ignore-previous-rules"
+        }
     },
-    "action": {
-      "type": "ignore-previous-rules"
-    }
-  },
-  {
-    "trigger": {
-      "url-filter": "\\/testelemhidenodomain"
+    {
+        "trigger": {
+            "url-filter": ".*",
+            "if-domain": [
+                "*test-elemhide.com"
+            ]
+        },
+        "action": {
+            "type": "ignore-previous-rules"
+        }
     },
-    "action": {
-      "type": "ignore-previous-rules"
+    {
+        "trigger": {
+            "url-filter": "\\/testelemhidenodomain"
+        },
+        "action": {
+            "type": "ignore-previous-rules"
+        }
     }
-  }
 ];
 
 function _checkResult(json, errors) {
@@ -284,7 +290,7 @@ function _checkResult(json, errors) {
     }
 
     var converted = JSON.parse(convertedString);
-    Log.debug(converted);
+    adguard.console.debug(converted);
     if (converted.length != rules.length - expectedErrorsCount - expectedCssTrunkatedCount) {
         errors.push('Not all the rules presented in json');
     }
@@ -352,8 +358,8 @@ function _checkResult(json, errors) {
     converted.forEach(function (current, i) {
         var expected = correct[i];
 
-        //Log.debug(current);
-        //Log.debug(expected);
+        //adguard.console.debug(current);
+        //adguard.console.debug(expected);
 
         checkRule(current, expected);
     });

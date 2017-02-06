@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global chrome, contentPage, AdguardRulesConstructorLib, balalaika */
+/* global chrome, AdguardRulesConstructorLib, balalaika */
 
 var browser = window.browser || chrome;
 
@@ -24,18 +24,26 @@ var browser = window.browser || chrome;
         bindEvents();
 
         var onElementSelected = function () {
-            getSelectedElement(function (result) {
-                if (!result) {
+
+            browser.devtools.inspectedWindow.eval("AdguardRulesConstructorLib.getElementInfo($0)", {
+                useContentScriptContext: true
+            }, function (info) {
+                if (!info) {
                     return;
                 }
 
-                window.selectedElement = result;
-                window.selectedElementInfo = AdguardRulesConstructorLib.getElementInfo(result);
+                // Sort attributes
+                info.attributes.sort(function(a1, a2){
+                    var i1 = a1.name === 'id' ? 0 : (a1.name === 'class' ? 1 : 2);
+                    var i2 = a2.name === 'id' ? 0 : (a2.name === 'class' ? 1 : 2);
+                    return i1 - i2;
+                });
+
+                window.selectedElementInfo = info;
 
                 updateRule();
-                handleShowBlockSettings(window.selectedElementInfo.haveUrlBlockParameter,
-                    window.selectedElementInfo.haveClassAttribute && !window.selectedElementInfo.haveIdAttribute);
-                setupAttributesInfo(window.selectedElementInfo);
+                handleShowBlockSettings(info.haveUrlBlockParameter, info.haveClassAttribute && !info.haveIdAttribute);
+                setupAttributesInfo(info);
             });
         };
 
@@ -64,8 +72,8 @@ var browser = window.browser || chrome;
     };
 
     var updateRule = function () {
-        getInspectedPageUrl(function (res) {
-            updateFilterRuleInput(window.selectedElement, window.selectedElementInfo, res);
+        getInspectedPageUrl(function (url) {
+            updateFilterRuleInput(window.selectedElementInfo, url);
         });
     };
 
@@ -74,7 +82,7 @@ var browser = window.browser || chrome;
         previewRuleButton.addEventListener("click", function (e) {
             e.preventDefault();
 
-            if (window.selectedElement) {
+            if (window.selectedElementInfo) {
                 if (window.adguardDevToolsPreview) {
                     // Remove preview
                     cancelPreview();
@@ -92,72 +100,21 @@ var browser = window.browser || chrome;
 
                 previewRuleButton.value = 'Cancel preview';
 
-                window.adguardDevToolsPreview = window.selectedElement;
+                window.adguardDevToolsPreview = true;
             }
         });
 
         document.getElementById("add-rule-button").addEventListener("click", function (e) {
             e.preventDefault();
 
-            if (window.selectedElement) {
-                addRuleForElement(window.selectedElement);
+            if (window.selectedElementInfo) {
+                addRuleForElement();
             }
         });
 
         $('.update-rule-block').on('click', function () {
             updatePanelElements();
             updateRule();
-        });
-    };
-
-    var getSelectedElement = function (callback) {
-        /**
-         * Only serializable data can be passed in callback function
-         */
-        var serializeElement = function (node) {
-            if (!node || !node.tagName) {
-                return '';
-            }
-
-            if (node.outerHTML) {
-                return node.outerHTML;
-            }
-
-            // polyfill:
-            var wrapper = document.createElement('div');
-            wrapper.appendChild(node.cloneNode(true));
-            return wrapper.innerHTML;
-        };
-
-        var deserializeElement = function (html) {
-            var wrapper = document.createElement('div');
-
-            if (html) {
-                if (html.startsWith('<body') || html.startsWith('<BODY')) {
-                    wrapper = document.createElement('body');
-                    wrapper.innerHTML = html;
-                    return wrapper;
-                }
-
-                if (html.startsWith('<html') || html.startsWith('<HTML')) {
-                    wrapper = document.createElement('html');
-                    wrapper.innerHTML = html;
-                    return wrapper;
-                }
-
-                if (html.startsWith('<head') || html.startsWith('<HEAD')) {
-                    wrapper = document.createElement('head');
-                    wrapper.innerHTML = html;
-                    return wrapper;
-                }
-            }
-
-            wrapper.innerHTML = html;
-            return wrapper.firstChild;
-        };
-
-        browser.devtools.inspectedWindow.eval("(" + serializeElement.toString() + ")($0)", function (result) {
-            callback(deserializeElement(result));
         });
     };
 
@@ -234,7 +191,7 @@ var browser = window.browser || chrome;
         });
     };
 
-    var updateFilterRuleInput = function (element, info, url) {
+    var updateFilterRuleInput = function (info, url) {
         var isBlockByUrl = $('#block-by-url-checkbox').get(0).checked;
         var createFullCssPath = $("#create-full-css-path").get(0).checked;
         var isBlockOneDomain = $("#one-domain-checkbox").get(0).checked;
@@ -251,15 +208,12 @@ var browser = window.browser || chrome;
                 } else if (attrName === 'id') {
                     includeElementId = el.checked;
                 } else {
-                    if (el.checked && info.attributes) {
-                        var attr = info.attributes[attrName];
-                        if (attr) {
-                            if (attrName === 'class') {
-                                var className = el.parentNode.querySelector('.attribute-check-box-value').innerText;
-                                selectedClasses.push(className);
-                            } else {
-                                attributesSelector += '[' + attr.name + '="' + attr.value + '"]';
-                            }
+                    if (el.checked) {
+                        var attrValue = el.parentNode.querySelector('.attribute-check-box-value').innerText;
+                        if (attrName === 'class') {
+                            selectedClasses.push(attrValue);
+                        } else {
+                            attributesSelector += '[' + attrName + '="' + attrValue + '"]';
                         }
                     }
                 }
@@ -315,7 +269,6 @@ var browser = window.browser || chrome;
         }, function () {
             applyPreview(ruleText);
 
-            delete window.selectedElement;
             delete window.selectedElementInfo;
 
             initElements();

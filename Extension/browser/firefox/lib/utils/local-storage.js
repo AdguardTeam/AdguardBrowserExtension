@@ -14,41 +14,33 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var Cu = require('chrome').Cu;
-Cu.import("resource://gre/modules/Services.jsm");
-
-var SimplePrefs = require('sdk/simple-prefs');
-var Log = require('../../lib/utils/log').Log;
-
-var self = require('sdk/self');
 
 /**
- * Local storage adapter
+ * Local storage implementation for firefox
  */
-exports.LS = {
+adguard.localStorageImpl = (function (adguard) {
 
-	storage: SimplePrefs.prefs,
-	branch: Services.prefs.getBranch('extensions.' + self.id + '.'),
+    var getItem = function (key) {
+        return adguard.SimplePrefs.get(key);
+    };
 
-	getItem: function (key) {
-		return this.storage[key];
-	},
+    var setItem = function (key, value) {
+        adguard.SimplePrefs.set(key, value);
+    };
 
-	setItem: function (key, value) {
-		try {
-			this.storage[key] = value;
-		} catch (ex) {
-			Log.error("Error save item cause: {0}", ex);
-		}
-	},
+    var removeItem = function (key) {
+        adguard.SimplePrefs.remove(key);
+    };
 
-	removeItem: function (key) {
-		this.branch.clearUserPref(key);
-	},
+    var hasItem = function (key) {
+        return adguard.SimplePrefs.has(key);
+    };
 
-	clean: function () {
-		for (var key in this.storage) {
-			this.removeItem(key);
-		}
-	}
-};
+    return {
+        getItem: getItem,
+        setItem: setItem,
+        removeItem: removeItem,
+        hasItem: hasItem
+    };
+
+})(adguard);

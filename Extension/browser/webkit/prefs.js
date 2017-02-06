@@ -1,5 +1,3 @@
-/* global safari */
-/* global ext */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -17,85 +15,100 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global exports */
+/* global safari */
+
 /**
  * Extension global preferences.
  * (!) Firefox has it's own implementation
  */
-var Prefs = exports.Prefs = {
+adguard.prefs = (function (adguard) {
 
-	version: ext.app.getVersion(),
-	locale: ext.app.getLocale(),
-	getLocalFilterPath: function (filterId) {
-		var url = "filters/filter_" + filterId + ".txt";
-		return ext.getURL(url);
-	},
-	getLocalMobileFilterPath: function (filterId) {
-		var url = "filters/filter_mobile_" + filterId + ".txt";
-		return ext.getURL(url);
-	},
-	localFiltersMetadataPath: ext.getURL('filters/filters.json'),
-	localFiltersMetadataI18nPath: ext.getURL('filters/filters_i18n.json'),
-	safebrowsingPagePath: ext.getURL("pages/sb.html"),
-	platform: (typeof safari == 'undefined' ? "chromium" : "webkit"),
-	getBrowser: function () {
-		if (!Prefs.browser) {
-			var browser;
-			var userAgent = navigator.userAgent;
-			if (userAgent.toLowerCase().indexOf("yabrowser") >= 0) {
-				browser = "YaBrowser";
-			} else if (userAgent.toLowerCase().indexOf("edge") >= 0) {
-				browser = "Edge";
-			} else if (userAgent.toLowerCase().indexOf("opera") >= 0 || userAgent.toLowerCase().indexOf("opr") >= 0) {
-				browser = "Opera";
-			} else if (userAgent.indexOf("Safari") >= 0 && userAgent.indexOf('Chrome') < 0) {
-				browser = "Safari";
-			} else {
-				browser = "Chrome";
-			}
-			Prefs.browser = browser;
+    var Prefs = {
 
-			if (browser == "Safari") {
-				var parseSafariVersion = function() {
-					var i = userAgent.indexOf("Version/");
-					if (i < 0) {
+        /**
+         * Makes sense in case of FF add-on only
+         */
+        mobile: false,
+
+        platform: typeof safari === 'undefined' ? "chromium" : "webkit",
+
+        get browser() {
+            return adguard.lazyGet(Prefs, 'browser', function () {
+                var browser;
+                var userAgent = navigator.userAgent;
+                if (userAgent.toLowerCase().indexOf("yabrowser") >= 0) {
+                    browser = "YaBrowser";
+                } else if (userAgent.toLowerCase().indexOf("edge") >= 0) {
+                    browser = "Edge";
+                } else if (userAgent.toLowerCase().indexOf("opera") >= 0 || userAgent.toLowerCase().indexOf("opr") >= 0) {
+                    browser = "Opera";
+                } else if (userAgent.indexOf("Safari") >= 0 && userAgent.indexOf('Chrome') < 0) {
+                    browser = "Safari";
+                } else {
+                    browser = "Chrome";
+                }
+                return browser;
+            });
+        },
+
+        get safariVersion() {
+            return adguard.lazyGet(Prefs, 'safariVersion', function () {
+                if (this.browser === 'Safari') {
+                    var i = navigator.userAgent.indexOf("Version/");
+                    if (i < 0) {
                         return null;
                     }
+                    return parseInt(navigator.userAgent.substring(i + 8));
+                }
+                return null;
+            });
+        },
 
-					return parseInt(userAgent.substring(i + 8));
-				};
+        get chromeVersion() {
+            return adguard.lazyGet(Prefs, 'chromeVersion', function () {
+                if (this.browser == "Chrome") {
+                    var i = navigator.userAgent.indexOf("Chrome/");
+                    if (i < 0) {
+                        return null;
+                    }
+                    return parseInt(navigator.userAgent.substring(i + 7));
+                }
+            });
+        },
 
-				Prefs.safariVersion = parseSafariVersion();
-			} else if (browser == "Chrome") {
-				var parseChromeVersion = function() {
-					var i = userAgent.indexOf("Chrome/");
-					if (i < 0) {
-						return null;
-					}
+        /**
+         * Makes sense in case of FF add-on only
+         */
+        speedupStartup: function () {
+            return false;
+        },
 
-					return parseInt(userAgent.substring(i + 7));
-				};
+        get ICONS() {
+            return adguard.lazyGet(Prefs, 'ICONS', function () {
+                return {
+                    ICON_BLUE: {
+                        '19': adguard.getURL('icons/blue-19.png'),
+                        '38': adguard.getURL('icons/blue-38.png')
+                    },
+                    ICON_GREEN: {
+                        '19': adguard.getURL('icons/green-19.png'),
+                        '38': adguard.getURL('icons/green-38.png')
+                    },
+                    ICON_GRAY: {
+                        '19': adguard.getURL('icons/gray-19.png'),
+                        '38': adguard.getURL('icons/gray-38.png')
+                    }
+                };
+            });
+        },
 
-				Prefs.chromeVersion = parseChromeVersion();
-			}
-		}
-		return Prefs.browser;
-	},
-	hitPrefix: (function() {
-		var appId = ext.app.getId();
-		var scheme = ext.app.getUrlScheme();
-		return scheme + '://' + appId;
-	})(),
-    /**
-     * Makes sense in case of FF add-on only
-     */
-	speedupStartup: function () {
-		return false;
-	},
+        /**
+         * If user enables `Send ad filters usage stats` option (which is disabled by default) in Adguard settings, it starts collecting & sending stats on used ad filtering rules.
+         * We use these stats to get rid of redundant filtering rules and provide "optimized" filters. Details: https://adguard.com/en/filter-rules-statistics.html
+         */
+        collectHitsCountEnabled: (typeof safari === 'undefined')
+    };
 
-	/**
-	 * If user enables `Send ad filters usage stats` option (which is disabled by default) in Adguard settings, it starts collecting & sending stats on used ad filtering rules.
-	 * We use these stats to get rid of redundant filtering rules and provide "optimized" filters. Details: https://adguard.com/en/filter-rules-statistics.html
-	 */
-	collectHitsCountEnabled: (typeof safari == 'undefined')
-};
+    return Prefs;
+
+})(adguard);

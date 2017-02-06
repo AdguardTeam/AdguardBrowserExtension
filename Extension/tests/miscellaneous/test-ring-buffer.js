@@ -9,7 +9,7 @@ QUnit.test("Test Ring Buffer", function (assert) {
     var bufferSize = 128;
 
     var key1 = 'key1';
-    var ringBuffer = new RingBuffer(bufferSize);
+    var ringBuffer = new adguard.utils.RingBuffer(bufferSize);
     assert.ok(!ringBuffer.pop(key1));
 
     ringBuffer.put(key1, newItem('property'));

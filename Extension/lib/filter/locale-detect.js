@@ -16,42 +16,18 @@
  */
 
 /**
- * Initializing required libraries for this file.
- * require method is overridden in Chrome extension (port/require.js).
- */
-var Utils = require('../../lib/utils/browser-utils').Utils;
-var Prefs = require('../../lib/prefs').Prefs;
-var UrlUtils = require('../../lib/utils/url').UrlUtils;
-var userSettings = require('../../lib/utils/user-settings').userSettings;
-var EventNotifier = require('../../lib/utils/notifier').EventNotifier;
-var EventNotifierTypes = require('../../lib/utils/common').EventNotifierTypes;
-
-/**
  * Initialize LocaleDetectService.
  *
  * This service is used to auto-enable language-specific filters.
  */
-var LocaleDetectService = exports.LocaleDetectService = function (detectCallback) {
+(function (adguard) {
 
-    this.detectCallback = detectCallback;
-    this.browsingLanguages = [];
-    this.detectFiltersEnabled = userSettings.isAutodetectFilters();
+    var browsingLanguages = [];
 
-    EventNotifier.addListener(function (event, setting) {
-        if (event == EventNotifierTypes.CHANGE_USER_SETTINGS && setting == userSettings.settings.DISABLE_DETECT_FILTERS) {
-            this.detectFiltersEnabled = userSettings.isAutodetectFilters();
-        }
-    }.bind(this));
-};
+    var SUCCESS_HIT_COUNT = 3;
+    var MAX_HISTORY_LENGTH = 10;
 
-LocaleDetectService.prototype = {
-
-    SUCCESS_HIT_COUNT: 3,
-    MAX_HISTORY_LENGTH: 10,
-
-    filtersLanguages: null,
-
-    domainToLanguges: {
+    var domainToLanguagesMap = {
         // Russian
         'ru': 'ru',
         'ua': 'ru',
@@ -112,76 +88,24 @@ LocaleDetectService.prototype = {
         'cn': 'zh',
         // Indonesian
         'id': 'id'
-    },
+    };
 
     /**
-     * Sets current filter-language mapping
+     * Called when LocaleDetectorService has detected language-specific filters we can enable.
      *
-     * @param filtersLanguages Map containing pairs of filterId and list of supported languages
+     * @param filterIds List of detected language-specific filters identifiers
+     * @private
      */
-    setFiltersLanguages: function (filtersLanguages) {
-        this.filtersLanguages = filtersLanguages;
-    },
-
-    /**
-     * Gets list of filters for the specified languages
-     *
-     * @param lang Language to check
-     * @returns List of filters identifiers
-     */
-    getFilterIdsForLanguage: function (lang) {
-        if (!lang || !this.filtersLanguages) {
-            return [];
-        }
-        lang = lang.substring(0, 2).toLowerCase();
-        var filterIds = [];
-        for (var filterId in this.filtersLanguages) {
-            var languages = this.filtersLanguages[filterId];
-            if (languages.indexOf(lang) >= 0) {
-                filterIds.push(filterId);
-            }
-        }
-        return filterIds;
-    },
-
-    /**
-     * Detects language for the specified page
-     * @param tabId  Tab identifier
-     * @param url    Page URL
-     */
-    detectTabLanguage: function (tabId, url) {
-        if (!this.detectFiltersEnabled) {
+    function onFilterDetectedByLocale(filterIds) {
+        if (!filterIds) {
             return;
         }
-
-        // Check language only for http://... tabs
-        if (!UrlUtils.isHttpRequest(url)) {
-            return;
-        }
-
-        if (tabId && typeof chrome != 'undefined' && chrome.tabs && chrome.tabs.detectLanguage) {
-            // Using Chrome language detection if possible
-            //detectLanguage working only in chrome browser (Opera and YaBrowser not fire callback method)
-            if (Utils.isChromeBrowser()) {
-                chrome.tabs.detectLanguage(tabId, function (language) {
-                    if (chrome.runtime.lastError) {
-                        return;
-                    }
-                    this._detectLanguage(language);
-                }.bind(this));
-                return;
+        adguard.filters.addAndEnableFilters(filterIds, function (enabledFilters) {
+            if (enabledFilters.length > 0) {
+                adguard.listeners.notifyListeners(adguard.listeners.ENABLE_FILTER_SHOW_POPUP, enabledFilters);
             }
-        }
-
-        // Detecting language by top-level domain if Chrome language detection is unavailable
-        var host = UrlUtils.getHost(url);
-        if (host) {
-            var parts = host ? host.split('.') : [];
-            var tld = parts[parts.length - 1];
-            var lang = this.domainToLanguges[tld];
-            this._detectLanguage(lang);
-        }
-    },
+        });
+    }
 
     /**
      * Stores language in the special array containing languages of the last visited pages.
@@ -191,7 +115,7 @@ LocaleDetectService.prototype = {
      * @param language Page language
      * @private
      */
-    _detectLanguage: function (language) {
+    function detectLanguage(language) {
 
         if (!language || language == "und") {
             return;
@@ -199,21 +123,69 @@ LocaleDetectService.prototype = {
 
         language = language.trim().toLowerCase();
 
-        this.browsingLanguages.push({
+        browsingLanguages.push({
             language: language,
             time: Date.now()
         });
-        if (this.browsingLanguages.length > this.MAX_HISTORY_LENGTH) {
-            this.browsingLanguages.shift();
+        if (browsingLanguages.length > MAX_HISTORY_LENGTH) {
+            browsingLanguages.shift();
         }
 
-        var history = this.browsingLanguages.filter(function (h) {
+        var history = browsingLanguages.filter(function (h) {
             return h.language == language;
         });
 
-        if (history.length >= this.SUCCESS_HIT_COUNT) {
-            var filterIds = this.getFilterIdsForLanguage(language);
-            this.detectCallback(filterIds);
+        if (history.length >= SUCCESS_HIT_COUNT) {
+            var filterIds = adguard.subscriptions.getFilterIdsForLanguage(language);
+            onFilterDetectedByLocale(filterIds);
         }
     }
-};
+
+    /**
+     * Detects language for the specified page
+     * @param tabId  Tab identifier
+     * @param url    Page URL
+     */
+    function detectTabLanguage(tabId, url) {
+        if (!adguard.settings.isAutodetectFilters()) {
+            return;
+        }
+
+        // Check language only for http://... tabs
+        if (!adguard.utils.url.isHttpRequest(url)) {
+            return;
+        }
+
+        /* global chrome */
+        if (tabId && typeof chrome != 'undefined' && chrome.tabs && chrome.tabs.detectLanguage) {
+            // Using Chrome language detection if possible
+            //detectLanguage working only in chrome browser (Opera and YaBrowser not fire callback method)
+            if (adguard.utils.browser.isChromeBrowser()) {
+                chrome.tabs.detectLanguage(tabId, function (language) {
+                    if (chrome.runtime.lastError) {
+                        return;
+                    }
+                    detectLanguage(language);
+                }.bind(this));
+                return;
+            }
+        }
+
+        // Detecting language by top-level domain if Chrome language detection is unavailable
+        var host = adguard.utils.url.getHost(url);
+        if (host) {
+            var parts = host ? host.split('.') : [];
+            var tld = parts[parts.length - 1];
+            var lang = domainToLanguagesMap[tld];
+            detectLanguage(lang);
+        }
+    }
+
+    // Locale detect
+    adguard.tabs.onUpdated.addListener(function (tab) {
+        if (tab.status === 'complete') {
+            detectTabLanguage(tab.tabId, tab.url);
+        }
+    });
+
+})(adguard);

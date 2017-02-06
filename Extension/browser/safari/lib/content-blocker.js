@@ -14,125 +14,129 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global exports, safari, require, antiBannerService */
 
-var Log = require('utils/log').Log;
-var SafariContentBlockerConverter = require('converter').SafariContentBlockerConverter;
-var EventNotifier = require('utils/notifier').EventNotifier;
-var EventNotifierTypes = require('utils/common').EventNotifierTypes;
-var Utils = require('utils/browser-utils').Utils;
-var userSettings = require('utils/user-settings').userSettings;
-var whiteListService = require('filter/whitelist').whiteListService;
+/* global safari */
 
 /**
  * Safari Content Blocker helper
  */
-exports.SafariContentBlocker = {
+adguard.SafariContentBlocker = (function (adguard) {
 
-    RULES_LIMIT: 50000,
+    //noinspection UnnecessaryLocalVariableJS
+    var SafariContentBlocker = {
 
-    emptyBlockerUrl: 'config/empty.json',
-    emptyBlockerJSON: null,
+        RULES_LIMIT: 50000,
 
-    /**
-     * Load content blocker
-     */
-    updateContentBlocker: function () {
+        emptyBlockerUrl: 'config/empty.json',
+        emptyBlockerJSON: null,
 
-        this._loadAndConvertRules(this.RULES_LIMIT, function (result) {
+        /**
+         * Load content blocker
+         */
+        updateContentBlocker: function () {
 
-            if (!result) {
-                this._clearFilters();
+            this._loadAndConvertRules(this.RULES_LIMIT, function (result) {
+
+                if (!result) {
+                    this._clearFilters();
+                    return;
+                }
+
+                var json = JSON.parse(result.converted);
+                this._setSafariContentBlocker(json);
+                adguard.listeners.notifyListeners(adguard.listeners.CONTENT_BLOCKER_UPDATED, {
+                    rulesCount: json.length,
+                    rulesOverLimit: result.overLimit
+                });
+
+            }.bind(this));
+        },
+
+        /**
+         * Disables content blocker
+         * @private
+         */
+        _clearFilters: function () {
+            this._setSafariContentBlocker(this._getEmptyBlockerJson());
+        },
+
+        /**
+         * @returns JSON for empty content blocker
+         * @private
+         */
+        _getEmptyBlockerJson: function () {
+            if (!this.emptyBlockerJSON) {
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", this.emptyBlockerUrl, false);
+                xhr.send(null);
+                this.emptyBlockerJSON = JSON.parse(xhr.responseText);
+            }
+            return this.emptyBlockerJSON;
+        },
+
+        /**
+         * Load rules from requestFilter and WhiteListService and convert for ContentBlocker
+         * @private
+         */
+        _loadAndConvertRules: adguard.utils.concurrent.debounce(function (rulesLimit, callback) {
+
+            if (adguard.settings.isFilteringDisabled()) {
+                adguard.console.info('Disabling content blocker.');
+                callback(null);
                 return;
             }
 
-            var json = JSON.parse(result.converted);
-            this._setSafariContentBlocker(json);
-            EventNotifier.notifyListeners(EventNotifierTypes.CONTENT_BLOCKER_UPDATED, {rulesCount: json.length, rulesOverLimit: result.overLimit});
+            adguard.console.info('Starting loading content blocker.');
 
-        }.bind(this));
-    },
+            var rules = adguard.requestFilter.getRules();
 
-    /**
-     * Disables content blocker
-     * @private
-     */
-    _clearFilters: function () {
-        this._setSafariContentBlocker(this._getEmptyBlockerJson());
-    },
-
-    /**
-     * @returns JSON for empty content blocker
-     * @private
-     */
-    _getEmptyBlockerJson: function () {
-        if (!this.emptyBlockerJSON) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", this.emptyBlockerUrl, false);
-            xhr.send(null);
-            this.emptyBlockerJSON = JSON.parse(xhr.responseText);
-        }
-        return this.emptyBlockerJSON;
-    },
-
-    /**
-     * Load rules from requestFilter and WhiteListService and convert for ContentBlocker
-     * @private
-     */
-    _loadAndConvertRules: Utils.debounce(function (rulesLimit, callback) {
-
-        if (userSettings.isFilteringDisabled()) {
-            Log.info('Disabling content blocker.');
-            callback(null);
-            return;
-        }
-
-        Log.info('Starting loading content blocker.');
-
-        var rules = antiBannerService.getRequestFilter().getRules();
-
-        if (userSettings.isDefaultWhiteListMode()) {
-            rules = rules.concat(whiteListService.getRules());
-        } else {
-            var invertedWhitelistRule = this._constructInvertedWhitelistRule();
-            if (invertedWhitelistRule) {
-                rules = rules.concat(invertedWhitelistRule);
-            }
-        }
-
-        var result = SafariContentBlockerConverter.convertArray(rules, rulesLimit);
-        if (result && result.converted) {
-            callback(result);
-        } else {
-            callback(null);
-        }
-
-    }, 500),
-
-    _setSafariContentBlocker: function (json) {
-        try {
-            Log.info('Setting content blocker. Length=' + json.length);
-            safari.extension.setContentBlocker(json);
-            Log.info('Content blocker has been set.');
-        } catch (ex) {
-            Log.error('Error while setting content blocker: ' + ex);
-        }
-    },
-
-    _constructInvertedWhitelistRule: function () {
-        var domains = whiteListService.getWhiteList();
-        var invertedWhitelistRule = '@@||*$document';
-        if (domains && domains.length > 0) {
-            invertedWhitelistRule += ",domain=";
-            for (var i = 0, len = domains.length; i < len; i++) {
-                if (i > 0) {
-                    invertedWhitelistRule += '|';
+            if (adguard.settings.isDefaultWhiteListMode()) {
+                rules = rules.concat(adguard.whitelist.getRules());
+            } else {
+                var invertedWhitelistRule = this._constructInvertedWhitelistRule();
+                if (invertedWhitelistRule) {
+                    rules = rules.concat(invertedWhitelistRule);
                 }
-
-                invertedWhitelistRule += '~' + domains[i];
             }
-        }
+
+            var result = SafariContentBlockerConverter.convertArray(rules, rulesLimit);
+            if (result && result.converted) {
+                callback(result);
+            } else {
+                callback(null);
+            }
+
+        }, 500),
+
+        _setSafariContentBlocker: function (json) {
+            try {
+                adguard.console.info('Setting content blocker. Length=' + json.length);
+                safari.extension.setContentBlocker(json);
+                adguard.console.info('Content blocker has been set.');
+            } catch (ex) {
+                adguard.console.error('Error while setting content blocker: ' + ex);
+            }
+        },
+
+        _constructInvertedWhitelistRule: function () {
+            var domains = adguard.whitelist.getWhiteListDomains();
+            var invertedWhitelistRule = '@@||*$document';
+            if (domains && domains.length > 0) {
+                invertedWhitelistRule += ",domain=";
+                for (var i = 0, len = domains.length; i < len; i++) {
+                    if (i > 0) {
+                        invertedWhitelistRule += '|';
+                    }
+
+                    invertedWhitelistRule += '~' + domains[i];
+                }
+            }
 
             return invertedWhitelistRule;
-    }
-};
+        }
+    };
+
+    return SafariContentBlocker;
+
+})(adguard);
+
