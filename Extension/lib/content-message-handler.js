@@ -88,45 +88,31 @@
     }
 
     /**
-     * Returns collection of filters for selected group to display for user
-     * @param groupId Group identifier
-     * @returns {*|Array} List of filters
-     */
-    function getFiltersMetadataForGroup(groupId) {
-        return adguard.subscriptions.getFilters().filter(function (f) {
-            return f.groupId == groupId &&
-                f.filterId != adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID;
-        });
-    }
-
-    /**
      * Constructs filters metadata for options.html page
      */
     function processGetFiltersMetadata() {
-        var groupsMeta = adguard.subscriptions.getGroups();
-        var filtersMeta = Object.create(null);
-        var enabledFilters = Object.create(null);
-        var installedFilters = Object.create(null);
-        for (var i = 0; i < groupsMeta.length; i++) {
-            var groupId = groupsMeta[i].groupId;
-            var filters = filtersMeta[groupId] = getFiltersMetadataForGroup(groupId);
-            for (var j = 0; j < filters.length; j++) {
-                var filter = filters[j];
-                var installed = adguard.filters.isFilterInstalled(filter.filterId);
-                var enabled = adguard.filters.isFilterEnabled(filter.filterId);
-                if (installed) {
-                    installedFilters[filter.filterId] = true;
-                }
-                if (enabled) {
-                    enabledFilters[filter.filterId] = true;
-                }
+
+        var groups = adguard.subscriptions.getGroups();
+        var allFiltersMetadata = adguard.subscriptions.getFilters().filter(function (f) {
+            return f.filterId != adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID;
+        });
+        var installedFilters = adguard.filters.getInstalledFilters().filter(function (f) {
+            return f.filterId != adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID;
+        });
+
+        var enabledFiltersMap = Object.create(null);
+        for (var i = 0; i < allFiltersMetadata.length; i++) {
+            var filterId = allFiltersMetadata[i].filterId;
+            var enabled = adguard.filters.isFilterEnabled(filterId);
+            if (enabled) {
+                enabledFiltersMap[filterId] = true;
             }
         }
         return {
-            groups: groupsMeta,
-            filters: filtersMeta,
-            enabledFilters: enabledFilters,
-            installedFilters: installedFilters
+            groups: groups,
+            allFiltersMetadata: allFiltersMetadata,
+            installedFilters: installedFilters,
+            enabledFilters: enabledFiltersMap
         };
     }
 
@@ -270,9 +256,6 @@
             case 'checkAntiBannerFiltersUpdate':
                 adguard.ui.checkFiltersUpdates();
                 break;
-            case 'getAntiBannerFiltersForOptionsPage':
-                var renderedFilters = adguard.filters.getFiltersForOptionsPage();
-                return {filters: renderedFilters};
             case 'changeDefaultWhiteListMode':
                 adguard.whitelist.changeDefaultWhiteListMode(message.enabled);
                 break;
@@ -290,9 +273,6 @@
                 break;
             case 'addUserFilterRules':
                 adguard.userrules.addRules(message.rules);
-                break;
-            case 'onFiltersSubscriptionChange':
-                adguard.filters.onFiltersListChange(message.filterIds);
                 break;
             case 'getFiltersMetadata':
                 return processGetFiltersMetadata();

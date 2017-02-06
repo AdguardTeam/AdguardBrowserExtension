@@ -1416,17 +1416,16 @@ adguard.filters = (function (adguard) {
     };
 
     /**
-     * Returns collection of filters for settings page.
-     * Private filters (user filter, whitelist filter, useful ads filter) are excluded.
+     * Returns collection of filters installed filters
+     * Private filters (user filter, whitelist filter) are excluded.
      *
      * @returns {Array} List of filters
      */
-    var getFiltersForOptionsPage = function () {
+    var getInstalledFilters = function () {
         return antiBannerService.getAntiBannerFilters().filter(function (f) {
             return f.installed &&
                 f.filterId != adguard.utils.filters.USER_FILTER_ID &&
-                f.filterId != adguard.utils.filters.WHITE_LIST_FILTER_ID &&
-                f.filterId != adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID;
+                f.filterId != adguard.utils.filters.WHITE_LIST_FILTER_ID;
         });
     };
 
@@ -1553,29 +1552,6 @@ adguard.filters = (function (adguard) {
     };
 
     /**
-     * This method is called from UI when user changes list of active filters
-     * @param filterIds List of active filters identifiers
-     */
-    var onFiltersListChange = function (filterIds) {
-
-        var filters = antiBannerService.getAntiBannerFilters();
-        for (var i = 0; i < filters.length; i++) {
-            var filterId = filters[i].filterId;
-            // Skip acceptable ads filter
-            if (filterId == adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID) {
-                continue;
-            }
-            // Remove filter if it is not present in the new list
-            if (filterIds.indexOf(filterId) < 0) {
-                removeFilter(filterId);
-            }
-        }
-
-        // Add and enable filters
-        addAndEnableFilters(filterIds);
-    };
-
-    /**
      * Returns filter metadata by subscription url
      * @param subscriptionUrl - subscription url
      * @returns {*|T}
@@ -1620,7 +1596,7 @@ adguard.filters = (function (adguard) {
         offerFilters: offerFilters,
 
         getEnabledFilters: getEnabledFilters,
-        getFiltersForOptionsPage: getFiltersForOptionsPage,
+        getInstalledFilters: getInstalledFilters,
 
         isFilterEnabled: isFilterEnabled,
         isFilterInstalled: isFilterInstalled,
@@ -1630,7 +1606,6 @@ adguard.filters = (function (adguard) {
         addAndEnableFilters: addAndEnableFilters,
         disableFilter: disableFilter,
         removeFilter: removeFilter,
-        onFiltersListChange: onFiltersListChange,
 
         findFilterMetadataBySubscriptionUrl: findFilterMetadataBySubscriptionUrl,
         processAbpSubscriptionUrl: processAbpSubscriptionUrl
