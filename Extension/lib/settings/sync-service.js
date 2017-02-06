@@ -77,8 +77,7 @@ var SyncService = (function () { // jshint ignore:line
 
     var validateManifest = function (manifest) {
         return manifest["min-compatible-version"]
-            && manifest["protocol-version"]
-            && manifest["timestamp"];
+            && manifest["protocol-version"];
     };
 
     var createRemoteData = function () {

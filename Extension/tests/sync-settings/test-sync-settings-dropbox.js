@@ -5,6 +5,12 @@ DropboxSyncProvider.setAccessToken(token);
 QUnit.test("Test Dropbox sync provider", function (assert) {
     var done = assert.async();
 
+    if (!DropboxSyncProvider.isAuthorized()) {
+        assert.ok(true);
+        done();
+        return;
+    }
+
     var onDataUpdated = function (data) {
         checkManifestData(assert, data);
 
