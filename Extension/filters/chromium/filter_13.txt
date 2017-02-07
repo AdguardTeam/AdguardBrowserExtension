@@ -1,6 +1,6 @@
-! Checksum: RDd8eq5w7JQyZ9+vDNDnWg
-! Version: 1.0.6.29
-! TimeUpdated: 2017-02-01T17:10:42.944+04:00
+! Checksum: 0wPogG4mhrpeBaOyjSMNVQ
+! Version: 1.0.6.42
+! TimeUpdated: 2017-02-07T17:24:56.953+04:00
 ! Title: Turkish filter
 ! Description: Adguard Turkish filter. Filter list that specifically removes adverts on Turkish language websites.
 ! Title: Adguard Turkish Filter.
@@ -14,14 +14,7 @@
 !---------------------------------------------------------------------------!
 !-------------- General JS API ---------------------------------------------!
 !---------------------------------------------------------------------------!
-! JS API START (Old version, until FF and Opera add-ons are updated, remove after v2.4 release)
-#%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
-#%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
-#%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
-#%#window.AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
-#%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
-! JS API FINISH
-! JS API START (New version)
+! JS API START
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -180,6 +173,9 @@
 !-------------- Anti-adblock rules -----------------------------------------!
 !---------------------------------------------------------------------------!
 !
+! https://forum.adguard.com/index.php?threads/http-www-rong-chang-com-adblock.19361/
+rong-chang.com#@#.adsBox
+rong-chang.com###content > div > table:nth-child(3)
 ! https://forum.adguard.com/index.php?threads/http-muzikindir-xyz-adblock.19127/
 muzikindir.xyz##.ad-box
 @@||muzikindir.xyz^$generichide
@@ -266,6 +262,8 @@ kizlarsoruyor.com#%#window.canRunAds=!0;
 !
 ! Extended CSS rules
 !
+filmexpresi.com###sidebar > .sidebarborder[-ext-has=">.sidebar-right>.textwidget>iframe[src^='http://wlperabet.adsrv.']"]
+filmexpresi.com###sidebar > .sidebarborder[-ext-has=">.sidebar-right>.textwidget:empty"]
 hdfilmtekpart.net###sidebar > .sidebarborder[-ext-has=">.sidebar-right>.textwidget:empty"]
 hesaplama.net##.hesaplama_sonuclari > ol li[-ext-has='a[href^="http://ad."]']
 filmarenasi.org###sidebar > .sidebarborder[-ext-has='a > img[src^="http://i.hizliresim.com"]']
@@ -411,17 +409,11 @@ direkizlehd.tv##.widget_text[-ext-has=".fix:contains(Sponsor)"]
 !
 ! Clickunders
 ! initPu, puShown
-tekparcafullizle1.com#%#Object.defineProperty(window, 'puShown', { get: function() { return true; } });
-filmotoru.com#%#Object.defineProperty(window, 'puShown', { get: function() { return true; } });
-sonbolumizleyin.org#%#Object.defineProperty(window, 'puShown', { get: function() { return true; } });
-hdfilmarenasi.com,tekparthdkeyfi.com,tekparcafullizle.com#%#Object.defineProperty(window, 'puShown', { get: function() { return true; } });
-zak4.com#%#Object.defineProperty(window, 'puShown', { get: function() { return true; } });
-taraftarium24tv.link,hdfilmseli.com#%#Object.defineProperty(window, 'puShown', { get: function() { return true; } });
+fulldiziizleyelim2.com,diziizlehdfulltr.com,diziizlendi.com,tekparcafullizle1.com,filmotoru.com,sonbolumizleyin.org,hdfilmarenasi.com,tekparthdkeyfi.com,tekparcafullizle.com,zak4.com,taraftarium24tv.link,hdfilmseli.com#%#Object.defineProperty(window, 'puShown', { get: function() { return true; } });
 filmexpresi.com,sinemafilm.org,filmi-izle.com,hdfilmakinasi.com,limitsizdayi.org,amk3.com,filmsezonu.net,filmexpresi.com,filmhizmeti.com,hdfulltekpart.net,filmbudur.org,filmizle.live,dizi10.com,hdfilmvagonu.net,hdfilmkanali.org,hdfilmkabusu.com,hdfilmtekpart.com,fullhdfilmcenneti.com,altyazilifilm.org,hd-pornoizle.net,tangoarti.com,zamunda-torrent.net#%#Object.defineProperty(window, 'initPu', { get: function() { return {}; } });
 !
 720pfilmizle.tv#%#Object.defineProperty(window, 'makePopunder', { get: function() { return; } });
-hdfulltekpart.net,hdfullfilmizlesene1.org,hdjetfilm1.com,filmcuk.org,hdfilmevreni.org,dizifilmdunyasi.org,ziruze.com,hddiziizleyin.com,diziyifullizle.org,hddiziizle.kim,fullfilmhdizle1.net,hdfilmseli.com,hdcanlidiziler.net,hdfilmizlesek.net,altyazilifilm.org,torrent-oyunindir.com,hdsonbolumizle.net,hdfulltekpart.com,dizi10.com#%#document.cookie = "popundr=1";
-hdfullfilmizlesene.tv#%#document.cookie = "popundr=1";
+hdfulltekpart.net,hdfullfilmizlesene1.org,hdjetfilm1.com,filmcuk.org,hdfilmevreni.org,dizifilmdunyasi.org,ziruze.com,hddiziizleyin.com,diziyifullizle.org,hddiziizle.kim,fullfilmhdizle1.net,hdfilmseli.com,hdcanlidiziler.net,hdfilmizlesek.net,altyazilifilm.org,torrent-oyunindir.com,hdsonbolumizle.net,hdfulltekpart.com,dizi10.com,hdfullfilmizlesene.tv#%#document.cookie = "popundr=1";
 hdfilmkablosu.com,ilkfullfilmizle.com,evrenselfilmler.net#%#document.cookie = "i=1";
 technopat.net#%#(function() { var w_open = window.open, regex = /goo.gl/; window.open = function(a, b) { if (typeof a !== 'string' || !regex.test(a)) { w_open(a, b); } }; })();
 diziay.com#%#AG_onLoad(function() { window.clickOnLoad = function() {}; });
@@ -522,6 +514,15 @@ sabah.com.tr#$#header.advertControlArea { top: 0px!important; }
 !
 ! Unhide the player while ads timeout
 !
+canlidizihd5.net#$##konumuz { display: block!important; }
+dizipas.com#$##videoonureklam { display:none!important; }
+dizipas.com#$##videoplayer { display:block!important; }
+diziizlevv.com,hdfulldizi.org#$##rk-content { display: none!important; }
+diziizlevv.com,hdfulldizi.org#$##cn-content { display: block!important; }
+direkizlehd.tv#$##video-oncesi { display: none!important; }
+direkizlehd.tv#$##video { display: block!important; }
+diziband.com#$##player-before-ads { display: none!important; }
+diziband.com#$##player-has-ads { display: block!important; }
 hdfilmseli.com#$##postReklam { display: none!important; }
 hdfilmseli.com#$##postIcerik { display: block!important; }
 canlidizihd5.net#$##reklamlar {display:none!important;}
@@ -828,6 +829,7 @@ hdfilmifullizlesene.com#$##movie-ads { display: none!important; }
 hintfilmiizle.com#$#.tab-reklam { display: none!important; }
 !
 !
+zargan.com#$#section#results #header {background-image: none!important; }
 applopedi.com#$#body { background-position: 0px -100px!important; margin-top: 0px!important; }
 izlemeyedeger.com#$#body > div[class^="remodal-"] { display: none!important; }
 izlemeyedeger.com#$#.remodal-is-locked {overflow:visible!important}
@@ -883,8 +885,28 @@ izlemeyedeger.com#$#.remodal-is-locked {overflow:visible!important}
 !---------------------------------------------------------------------------!
 !
 ! Images hosting. Used for advertising on many sites
-://i.hizliresim.com^$domain=fullfilmihdizlesene.com|filmihdizlesene1.com|ayfilmizle.net|diziay.com|bahisortami.com|ediziizleyin.com|720pfilmizle.tv|hdfilmarenasi.com|sports.gool7.net|xsportv1.com|hd-pornoizle.net|hdfilmarenasi.net|filmarenasi.net|haber32.com.tr|filmkomedi.com|tekparthdkeyfi.com
+://i.hizliresim.com^$domain=asyafanatikleri.net|diziband.com|fullfilmihdizlesene.com|filmihdizlesene1.com|ayfilmizle.net|diziay.com|bahisortami.com|ediziizleyin.com|720pfilmizle.tv|hdfilmarenasi.com|sports.gool7.net|xsportv1.com|hd-pornoizle.net|hdfilmarenasi.net|filmarenasi.net|haber32.com.tr|filmkomedi.com|tekparthdkeyfi.com
 !
+totube.pw##.adserv
+zargan.com##section#results #header > a.clicker
+ultrahdfilmizle.org###betvid
+gezginler.net##div[class^="reklam-"]
+xtubecinema.co##td > a[href^="//goo.gl"] > img
+xtubecinema.co##.banner-tengah
+xtubecinema.co##.headbanner
+dizipas.com###ad-close
+dizipas.com##.footer > #sticky
+diziizlevv.com,hdfulldizi.org##.footer-sticky
+filmtadim.com###shrSplashTwo
+filmcuks.com###text-12
+fullhdfilm.gen.tr###footerfixedfhdf
+dizist1.com##div[class^="ads-"]
+dizist1.com##div[class^="ad-"]
+dizist1.com##body > .pageskin-background
+ediziizleyin.com###body-right > .left-menu:nth-child(2)
+filmsanayisi.com##.reklam-645x90
+anizm.tv##.RightFloatPano
+dizimag1.co###backkapat
 mynet.com##span#\33 00x250body2
 tekparcafullizle1.com##.ads_728_inner
 hdfilmkanali.net##.reklam-first
