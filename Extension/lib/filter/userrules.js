@@ -36,14 +36,14 @@ adguard.userrules = (function (adguard) {
      * @param rulesText List of rules to add
      */
     var addRules = function (rulesText) {
-        return getAntiBannerService().addFilterRules(adguard.utils.filters.USER_FILTER_ID, rulesText);
+        return getAntiBannerService().addUserFilterRules(rulesText);
     };
 
     /**
      * Removes all user's custom rules
      */
     var clearRules = function () {
-        getAntiBannerService().updateFilterRules(adguard.utils.filters.USER_FILTER_ID, []);
+        getAntiBannerService().updateUserFilterRules([]);
     };
 
     /**
@@ -52,7 +52,7 @@ adguard.userrules = (function (adguard) {
      * @param ruleText Rule text
      */
     var removeRule = function (ruleText) {
-        getAntiBannerService().removeFilterRule(adguard.utils.filters.USER_FILTER_ID, ruleText);
+        getAntiBannerService().removeUserFilterRule(ruleText);
     };
 
     /**
@@ -61,7 +61,7 @@ adguard.userrules = (function (adguard) {
      */
     var updateUserRulesText = function (content) {
         var lines = content.split(/[\r\n]+/) || [];
-        getAntiBannerService().updateFilterRules(adguard.utils.filters.USER_FILTER_ID, lines);
+        getAntiBannerService().updateUserFilterRules(lines);
     };
 
     /**

@@ -540,10 +540,20 @@ var UserFilter = function () {
 
 var AntiBannerFilters = function (options) {
 
-    var groupsAndFiltersInfo = {
-        enabledFilters: {},
-        allFiltersMetadata: {},
-        lastUpdateTime: null
+    var loadedFiltersInfo = {
+        filters: [],
+        filtersById: {},
+        lastUpdateTime: 0,
+        isEnabled: function (filterId) {
+            var info = this.filtersById[filterId];
+            return info && info.enabled;
+        },
+        updateEnabled: function (filterId, enabled) {
+            var info = this.filtersById[filterId];
+            if (info) {
+                info.enabled = enabled;
+            }
+        }
     };
 
     var groupsList = $('#groupsList');
@@ -554,10 +564,11 @@ var AntiBannerFilters = function (options) {
         });
     }
 
-    function countEnabledFiltersInGroup(groupFilters, enabledFilters) {
+    function countEnabledFilters(filters) {
         var count = 0;
-        for (var i = 0; i < groupFilters.length; i++) {
-            if (groupFilters[i].filterId in enabledFilters) {
+        for (var i = 0; i < filters.length; i++) {
+            var filterId = filters[i].filterId;
+            if (loadedFiltersInfo.isEnabled(filterId)) {
                 count++;
             }
         }
@@ -582,18 +593,13 @@ var AntiBannerFilters = function (options) {
 
     function updateGroupFiltersInfo(groupId) {
 
-        var groupFilters = getFiltersInGroup(groupId, groupsAndFiltersInfo.allFiltersMetadata);
-        var enabledFiltersCount = countEnabledFiltersInGroup(groupFilters, groupsAndFiltersInfo.enabledFilters);
+        var groupFilters = getFiltersInGroup(groupId, loadedFiltersInfo.filters);
+        var enabledFiltersCount = countEnabledFilters(groupFilters);
 
         var element = getGroupElement(groupId);
         var checkbox = getGroupCheckbox(groupId);
         element.find('.desc').text('Enabled filters: ' + enabledFiltersCount);
         checkbox.updateCheckbox(enabledFiltersCount > 0);
-    }
-
-    function updateFilterStateInfo(filter) {
-        var checkbox = getFilterCheckbox(filter.filterId);
-        checkbox.updateCheckbox(filter.enabled);
     }
 
     function getGroupTemplate(group) {
@@ -622,7 +628,7 @@ var AntiBannerFilters = function (options) {
                 .append($('<input>', {type: 'checkbox', name: 'filterId', value: filter.filterId, checked: enabled})));
     }
 
-    function getFiltersContentTemplate(group, filters, enabledFilters) {
+    function getFiltersContentTemplate(group, filters) {
 
         var pageTitleEl = $('<div>', {class: 'page-title'})
             .append($('<a>', {href: '#antibanner'})
@@ -633,7 +639,7 @@ var AntiBannerFilters = function (options) {
             .append(document.createTextNode(group.groupName));
 
         var tabsBar = $('<div>', {class: 'tabs-bar'})
-            .append($('<a>', {href: '', class: 'tab', text: 'Recommended'}))
+            .append($('<a>', {href: '', class: 'tab active', text: 'Recommended'}))
             .append($('<a>', {href: '', class: 'tab', text: 'Other'}));
 
         var filtersList = $('<ul>', {class: 'opts-list'});
@@ -641,7 +647,7 @@ var AntiBannerFilters = function (options) {
         for (var i = 0; i < filters.length; i++) {
 
             var filter = filters[i];
-            var enabled = filter.filterId in enabledFilters;
+            var enabled = loadedFiltersInfo.isEnabled(filter.filterId);
             var filterTemplate = getFilterTemplate(filter, enabled);
             filtersList.append(filterTemplate);
         }
@@ -653,31 +659,30 @@ var AntiBannerFilters = function (options) {
                 .append(filtersList));
     }
 
-    function getFiltersLastUpdateTime(filters) {
-        var lastUpdateTime = 0;
-        for (var i = 0; i < filters.length; i++) {
-            var filter = filters[i];
-            if (filter.lastUpdateTime && filter.lastUpdateTime > lastUpdateTime) {
-                lastUpdateTime = filter.lastUpdateTime;
-            }
-        }
-        return lastUpdateTime;
-    }
-
     function renderCategoriesAndFilters() {
 
         contentPage.sendMessage({type: 'getFiltersMetadata'}, function (response) {
 
-            groupsAndFiltersInfo.allFiltersMetadata = response.allFiltersMetadata;
-            groupsAndFiltersInfo.enabledFilters = response.enabledFilters;
+            var i;
 
-            // Set last update time
+            loadedFiltersInfo.filters = response.filters;
 
             var groups = response.groups;
-            var filters = response.allFiltersMetadata;
-            var enabledFilters = response.enabledFilters;
+            var filters = response.filters;
 
-            for (var i = 0; i < groups.length; i++) {
+            var lastUpdateTime = 0;
+            var filtersById = Object.create(null);
+            for (i = 0; i < filters.length; i++) {
+                var filter = filters[i];
+                filtersById[filter.filterId] = filter;
+                if (filter.lastUpdateTime && filter.lastUpdateTime > lastUpdateTime) {
+                    lastUpdateTime = filter.lastUpdateTime;
+                }
+            }
+            loadedFiltersInfo.filtersById = filtersById;
+            setLastUpdatedTimeText(lastUpdateTime);
+
+            for (i = 0; i < groups.length; i++) {
 
                 var group = groups[i];
                 var groupFilters = getFiltersInGroup(group.groupId, filters);
@@ -686,14 +691,12 @@ var AntiBannerFilters = function (options) {
                 groupsList.append(groupTemplate);
                 updateGroupFiltersInfo(group.groupId);
 
-                var filtersContentTemplate = getFiltersContentTemplate(group, groupFilters, enabledFilters);
+                var filtersContentTemplate = getFiltersContentTemplate(group, groupFilters);
 
                 $('#antibanner').parent().append(filtersContentTemplate);
             }
 
             $(".opt-state input:checkbox").toggleCheckbox();
-
-            setLastUpdatedTimeText(getFiltersLastUpdateTime(response.installedFilters));
 
             // check document hash
             var hash = document.location.hash;
@@ -735,11 +738,11 @@ var AntiBannerFilters = function (options) {
     }
 
     function setLastUpdatedTimeText(lastUpdateTime) {
-        if (lastUpdateTime && lastUpdateTime > groupsAndFiltersInfo.lastUpdateTime) {
-            groupsAndFiltersInfo.lastUpdateTime = lastUpdateTime;
+        if (lastUpdateTime && lastUpdateTime > loadedFiltersInfo.lastUpdateTime) {
+            loadedFiltersInfo.lastUpdateTime = lastUpdateTime;
         }
         var updateText = "";
-        lastUpdateTime = groupsAndFiltersInfo.lastUpdateTime;
+        lastUpdateTime = loadedFiltersInfo.lastUpdateTime;
         if (lastUpdateTime) {
             lastUpdateTime = moment(lastUpdateTime);
             lastUpdateTime.locale(environmentOptions.Prefs.locale);
@@ -762,13 +765,11 @@ var AntiBannerFilters = function (options) {
     };
 
     var onFilterStateChanged = function (filter) {
-        if (filter.enabled) {
-            groupsAndFiltersInfo.enabledFilters[filter.filterId] = true;
-        } else {
-            delete groupsAndFiltersInfo.enabledFilters[filter.filterId];
-        }
+        var filterId = filter.filterId;
+        var enabled = filter.enabled;
+        loadedFiltersInfo.updateEnabled(filterId, enabled);
         updateGroupFiltersInfo(filter.groupId);
-        updateFilterStateInfo(filter);
+        getFilterCheckbox(filterId).updateCheckbox(enabled);
     };
 
     var onFilterDownloadStarted = function (filter) {

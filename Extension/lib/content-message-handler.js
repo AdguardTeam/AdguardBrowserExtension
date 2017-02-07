@@ -93,26 +93,13 @@
     function processGetFiltersMetadata() {
 
         var groups = adguard.subscriptions.getGroups();
-        var allFiltersMetadata = adguard.subscriptions.getFilters().filter(function (f) {
-            return f.filterId != adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID;
-        });
-        var installedFilters = adguard.filters.getInstalledFilters().filter(function (f) {
+        var filters = adguard.subscriptions.getFilters().filter(function (f) {
             return f.filterId != adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID;
         });
 
-        var enabledFiltersMap = Object.create(null);
-        for (var i = 0; i < allFiltersMetadata.length; i++) {
-            var filterId = allFiltersMetadata[i].filterId;
-            var enabled = adguard.filters.isFilterEnabled(filterId);
-            if (enabled) {
-                enabledFiltersMap[filterId] = true;
-            }
-        }
         return {
             groups: groups,
-            allFiltersMetadata: allFiltersMetadata,
-            installedFilters: installedFilters,
-            enabledFilters: enabledFiltersMap
+            filters: filters
         };
     }
 
