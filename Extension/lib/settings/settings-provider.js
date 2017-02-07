@@ -61,7 +61,6 @@ adguard.sync.settingsProvider = (function () { // jshint ignore:line
         var whitelistDomains = adguard.whitelist.getWhiteListedDomains();
         var blocklistDomains = adguard.whitelist.getBlockListedDomains();
         var defaultWhiteListMode = adguard.whitelist.isDefaultMode();
-        //TODO: 7. Chrome storage quota
         var userRules = adguard.userrules.getRules();
 
         var section = {
