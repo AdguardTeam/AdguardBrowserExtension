@@ -30,10 +30,6 @@ var SettingsProvider = (function () { // jshint ignore:line
     var SYNC_SETTINGS_TIMESTAMP_KEY = 'sync.settings.timestamp';
     var SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY = 'sync.settings.filters.timestamp';
 
-    var WHITELIST_DOMAINS_KEY = 'white-list-domains';
-    var BLOCKLIST_DOMAINS_KEY = 'block-list-domains';
-    var DEFAULT_WHITELIST_FLAG_KEY = 'default-whitelist-mode';
-
 
     var loadSettingsManifest = function () {
         var manifest = {
@@ -65,6 +61,7 @@ var SettingsProvider = (function () { // jshint ignore:line
         var whitelistDomains = adguard.whitelist.getWhiteListedDomains();
         var blocklistDomains = adguard.whitelist.getBlockListedDomains();
         var defaultWhiteListMode = adguard.whitelist.isDefaultMode();
+        //TODO: 7. Chrome storage quota
         var userRules = adguard.userrules.getRules();
 
         var section = {
@@ -101,6 +98,7 @@ var SettingsProvider = (function () { // jshint ignore:line
     };
 
     var saveFiltersSection = function (section, callback) {
+        //TODO: 5. Is it correct to clear lists first?
         adguard.whitelist.clearWhiteListed();
         adguard.whitelist.addWhiteListed(section.filters["whitelist"].domains);
         adguard.whitelist.clearBlockListed();

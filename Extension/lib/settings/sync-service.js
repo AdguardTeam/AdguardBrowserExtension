@@ -17,6 +17,7 @@
 
 /**
  * Sync settings service
+ * TODO: 8. Move to adguard.sync
  *
  * @type {{syncSettings, setSyncProvider}}
  */
@@ -120,6 +121,7 @@ var SyncService = (function () { // jshint ignore:line
             adguard.console.info('Processing remote manifest..');
 
             if (!remoteManifest) {
+                //TODO: 1. Rethink if load failed it's not always correct to create new remote data
                 adguard.console.warn('Error loading remote manifest');
                 createRemoteData();
                 callback(false);
