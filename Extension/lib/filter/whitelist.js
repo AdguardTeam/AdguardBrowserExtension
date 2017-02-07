@@ -236,22 +236,56 @@ adguard.whitelist = (function (adguard) {
         if (!domains) {
             return;
         }
+
+        if (defaultWhiteListMode) {
+            addWhiteListed(domains);
+        } else {
+            addBlockListed(domains);
+        }
+
+        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_WHITELIST_FILTER_RULES);
+    };
+
+    /**
+     * Add domains to whitelist
+     * @param domains
+     */
+    var addWhiteListed = function (domains) {
+        if (!domains) {
+            return;
+        }
         var rules = [];
         for (var i = 0; i < domains.length; i++) {
             var domain = domains[i];
             var rule = createWhiteListRule(domain);
             if (rule) {
                 rules.push(rule);
-                if (defaultWhiteListMode) {
-                    whiteListFilter.addRule(rule);
-                } else {
-                    blockListFilter.addRule(rule);
-                }
+                whiteListFilter.addRule(rule);
                 addDomainToWhiteList(domain);
             }
         }
         saveDomainsToLocalStorage();
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_WHITELIST_FILTER_RULES);
+    };
+
+    /**
+     * Add domains to blocklist
+     * @param domains
+     */
+    var addBlockListed = function (domains) {
+        if (!domains) {
+            return;
+        }
+        var rules = [];
+        for (var i = 0; i < domains.length; i++) {
+            var domain = domains[i];
+            var rule = createWhiteListRule(domain);
+            if (rule) {
+                rules.push(rule);
+                blockListFilter.addRule(rule);
+                addDomainToWhiteList(domain);
+            }
+        }
+        saveDomainsToLocalStorage();
     };
 
     /**
@@ -273,19 +307,34 @@ adguard.whitelist = (function (adguard) {
     };
 
     /**
-     * Clear whitelist
+     * Clear whitelist current mode
      */
     var clearWhiteList = function () {
         if (defaultWhiteListMode) {
-            adguard.localStorage.removeItem(WHITE_LIST_DOMAINS_LS_PROP);
-            adguard.lazyGetClear(whiteListDomainsHolder, 'domains');
-            whiteListFilter = new adguard.rules.UrlFilter();
+            clearWhiteListed();
         } else {
-            adguard.localStorage.removeItem(BLOCK_LIST_DOMAINS_LS_PROP);
-            adguard.lazyGetClear(blockListDomainsHolder, 'domains');
-            blockListFilter = new adguard.rules.UrlFilter();
+            clearBlockListed();
         }
+
         adguard.listeners.notifyListeners(adguard.listeners.UPDATE_WHITELIST_FILTER_RULES);
+    };
+
+    /**
+     * Clear whitelisted only
+     */
+    var clearWhiteListed = function () {
+        adguard.localStorage.removeItem(WHITE_LIST_DOMAINS_LS_PROP);
+        adguard.lazyGetClear(whiteListDomainsHolder, 'domains');
+        whiteListFilter = new adguard.rules.UrlFilter();
+    };
+
+    /**
+     * Clear blocklisted only
+     */
+    var clearBlockListed = function () {
+        adguard.localStorage.removeItem(BLOCK_LIST_DOMAINS_LS_PROP);
+        adguard.lazyGetClear(blockListDomainsHolder, 'domains');
+        blockListFilter = new adguard.rules.UrlFilter();
     };
 
     /**
@@ -297,6 +346,20 @@ adguard.whitelist = (function (adguard) {
         } else {
             return blockListDomainsHolder.domains;
         }
+    };
+
+    /**
+     * Returns the array of whitelisted domains
+     */
+    var getWhiteListedDomains = function () {
+        return whiteListDomainsHolder.domains;
+    };
+
+    /**
+     * Returns the array of blocklisted domains, inverted mode
+     */
+    var getBlockListedDomains = function () {
+        return blockListDomainsHolder.domains;
     };
 
     /**
@@ -313,15 +376,22 @@ adguard.whitelist = (function (adguard) {
         getRules: getRules,
         getWhiteListDomains: getWhiteListDomains,
 
+        getWhiteListedDomains: getWhiteListedDomains,
+        getBlockListedDomains: getBlockListedDomains,
+
         findWhiteListRule: findWhiteListRule,
 
         whiteListUrl: whiteListUrl,
         unWhiteListUrl: unWhiteListUrl,
 
         addToWhiteListArray: addToWhiteListArray,
+        addWhiteListed: addWhiteListed,
+        addBlockListed: addBlockListed,
 
         removeFromWhiteList: removeFromWhiteList,
         clearWhiteList: clearWhiteList,
+        clearWhiteListed: clearWhiteListed,
+        clearBlockListed: clearBlockListed,
 
         isDefaultMode: isDefaultMode,
         changeDefaultWhiteListMode: changeDefaultWhiteListMode

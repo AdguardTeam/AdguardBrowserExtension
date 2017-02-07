@@ -53,60 +53,40 @@ var SettingsProvider = (function () { // jshint ignore:line
     };
 
     var loadFiltersSection = function (callback) {
-        var filtersState = adguard.filtersState.getFiltersState();
+        var enabledFilters = adguard.filters.getEnabledFilters();
         var enabledFilterIds = [];
-        for (var i in filtersState) {
-            var f = filtersState[i];
+        for (var i in enabledFilters) {
+            var f = enabledFilters[i];
             if (f && f.enabled) {
-                enabledFilterIds.push(i);
+                enabledFilterIds.push(f.filterId);
             }
         }
 
-        var whitelistDomains = [];
-        var json = adguard.localStorage.getItem(WHITELIST_DOMAINS_KEY);
-        if (json) {
-            whitelistDomains = JSON.parse(json);
-        }
+        var whitelistDomains = adguard.whitelist.getWhiteListedDomains();
+        var blocklistDomains = adguard.whitelist.getBlockListedDomains();
+        var defaultWhiteListMode = adguard.whitelist.isDefaultMode();
+        var userRules = adguard.userrules.getRules();
 
-        var blocklistDomains = [];
-        var blocklistJson = adguard.localStorage.getItem(BLOCKLIST_DOMAINS_KEY);
-        if (blocklistJson) {
-            blocklistDomains = JSON.parse(blocklistJson);
-        }
-
-        var defaultWhiteListMode = adguard.localStorage.getItem(DEFAULT_WHITELIST_FLAG_KEY);
-
-        var onUserFilterRulesLoaded = function (result) {
-            var userFilterRules = [];
-
-            for (var i = 0; i < result.length; i++) {
-                var r = result[i];
-                userFilterRules.push(r);
-            }
-
-            var section = {
-                "filters": {
-                    "enabled-filters": enabledFilterIds,
-                    "custom-filters": [
-                        // Custom filters are not supported yet
-                    ],
-                    "user-filter": {
-                        "rules": userFilterRules.join('\n'),
-                        "disabled-rules": ""
-                    },
-                    "whitelist": {
-                        "inverted": defaultWhiteListMode === 'false',
-                        "domains": whitelistDomains,
-                        "inverted-domains": blocklistDomains
-                    }
+        var section = {
+            "filters": {
+                "enabled-filters": enabledFilterIds,
+                "custom-filters": [
+                    // Custom filters are not supported yet
+                ],
+                "user-filter": {
+                    "rules": userRules.join('\n'),
+                    "disabled-rules": ""
+                },
+                "whitelist": {
+                    "inverted": !defaultWhiteListMode,
+                    "domains": whitelistDomains,
+                    "inverted-domains": blocklistDomains
                 }
-            };
-
-            callback(section);
+            }
         };
 
-        var filterId = adguard.utils.filters.USER_FILTER_ID;
-        adguard.rulesStorage.read(filterId, onUserFilterRulesLoaded);
+        console.log(section);
+        callback(section);
     };
 
     var saveSettingsManifest = function (manifest) {
@@ -121,24 +101,17 @@ var SettingsProvider = (function () { // jshint ignore:line
     };
 
     var saveFiltersSection = function (section, callback) {
+        adguard.whitelist.clearWhiteListed();
+        adguard.whitelist.addWhiteListed(section.filters["whitelist"].domains);
+        adguard.whitelist.clearBlockListed();
+        adguard.whitelist.addBlockListed(section.filters["whitelist"]["inverted-domains"]);
+        adguard.whitelist.changeDefaultWhiteListMode(section.filters["whitelist"].inverted != true);
+
+        adguard.userrules.clearRules();
+        adguard.userrules.addRules(section.filters["user-filter"].rules.split('\n'));
+
         var enabledFilterIds = section.filters['enabled-filters'];
-
-        var filtersState = adguard.filtersState.getFiltersState();
-        for (var i in filtersState) {
-            var f = filtersState[i];
-            if (f) {
-                f.filterId = i;
-                f.enabled = enabledFilterIds.indexOf(i) >= 0;
-
-                adguard.filtersState.updateFilterState(f);
-            }
-        }
-
-        adguard.localStorage.setItem(WHITELIST_DOMAINS_KEY, JSON.stringify(section.filters["whitelist"].domains));
-        adguard.localStorage.setItem(BLOCKLIST_DOMAINS_KEY, JSON.stringify(section.filters["whitelist"]["inverted-domains"]));
-        adguard.localStorage.setItem(DEFAULT_WHITELIST_FLAG_KEY, section.filters["whitelist"].inverted != true);
-
-        adguard.rulesStorage.write(adguard.utils.filters.USER_FILTER_ID, section.filters["user-filter"].rules.split('\n'), function() {
+        adguard.filters.addAndEnableFilters(enabledFilterIds, function () {
             adguard.localStorage.setItem(SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY, new Date().getTime());
 
             callback(true);
@@ -156,7 +129,7 @@ var SettingsProvider = (function () { // jshint ignore:line
     };
 
     /**
-     * TODO: Should trigger app settings refresh
+     * Saves settings section
      *
      * @param sectionName
      * @param section
@@ -164,7 +137,13 @@ var SettingsProvider = (function () { // jshint ignore:line
      */
     var saveSettingsSection = function (sectionName, section, callback) {
         if (sectionName === FILTERS_SECTION) {
-            saveFiltersSection(section, callback);
+            saveFiltersSection(section, function (result) {
+                if (result) {
+                    adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE);
+                }
+
+                callback(result);
+            });
         } else {
             adguard.console.error('Section {0} is not supported', sectionName);
 
@@ -173,13 +152,21 @@ var SettingsProvider = (function () { // jshint ignore:line
     };
 
     /**
-     * TODO: Should be triggered on app settings updates
+     * Updates settings record timestamp
      */
     var updateSettingsTimestamp = function () {
         var time = new Date().getTime();
         adguard.localStorage.setItem(SYNC_SETTINGS_TIMESTAMP_KEY, time);
         adguard.localStorage.setItem(SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY, time);
     };
+
+    // Add listener on user settings change
+    adguard.listeners.addListener(function (event) {
+        if (event === adguard.listeners.FILTER_ENABLE_DISABLE) {
+            console.log('update');
+            updateSettingsTimestamp();
+        }
+    });
 
     // EXPOSE
     return {
