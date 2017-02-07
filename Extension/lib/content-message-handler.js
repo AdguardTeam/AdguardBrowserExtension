@@ -294,7 +294,7 @@
                 if (adguard.utils.workaround.isFacebookIframe(message.documentUrl)) {
                     return {};
                 }
-                var cssAndScripts = adguard.webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl, message.loadTruncatedCss);
+                var cssAndScripts = adguard.webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl, message.options);
                 return cssAndScripts || {};
             case 'checkWebSocketRequest':
                 var block = adguard.webRequestService.checkWebSocketRequest(sender.tab, message.elementUrl, message.documentUrl);
@@ -347,8 +347,8 @@
                 var filteringInfo = adguard.filteringLog.getFilteringInfoByTabId(message.tabId);
                 return {filteringInfo: filteringInfo};
             case 'synchronizeOpenTabs':
-                adguard.filteringLog.synchronizeOpenTabs(function () {
-                    callback({});
+                adguard.filteringLog.synchronizeOpenTabs(function (tabs) {
+                    callback({tabs: tabs});
                 });
                 return true; // Async
             case 'checkSubscriptionUrl':

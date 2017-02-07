@@ -102,8 +102,8 @@
 
 					var requestListener = this.requestListeners[i];
 
-					var result = requestListener(requestDetails);
-					if (result === false) {
+					var response = requestListener(requestDetails);
+					if (response && (response.cancel || response.redirectUrl)) {
 						return false;
 					}
 				}
@@ -219,7 +219,8 @@
 	};
 
 	adguard.webNavigation = {
-		onCreatedNavigationTarget: emptyListener
+		onCreatedNavigationTarget: emptyListener,
+		onCommitted: emptyListener
 	};
 
 

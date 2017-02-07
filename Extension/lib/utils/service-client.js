@@ -53,12 +53,12 @@ adguard.backend = (function (adguard) {
         },
 
         // URL for downloading AG filters
-        get getFilterRulesUrl() {
+        get filterRulesUrl() {
             return this.filtersUrl + "/filters/{filter_id}.txt";
         },
 
         // URL for downloading optimized AG filters
-        get getOptimizedFilterRulesUrl() {
+        get optimizedFilterRulesUrl() {
             return this.filtersUrl + "/filters/{filter_id}_optimized.txt";
         },
 
@@ -117,6 +117,14 @@ adguard.backend = (function (adguard) {
         },
         get adguardAppUrl() {
             return this.injectionsUrl + "/adguard-ajax-api/api?";
+        },
+        // Folder that contains filters metadata and files with rules. 'filters' by default
+        get localFiltersFolder() {
+            return 'filters';
+        },
+        // Array of filter identifiers, that have local file with rules. Range from 1 to 14 by default
+        get localFilterIds() {
+            return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
         }
     };
 
@@ -241,7 +249,7 @@ adguard.backend = (function (adguard) {
      * @private
      */
     function getUrlForDownloadFilterRules(filterId, useOptimizedFilters) {
-        var url = useOptimizedFilters ? settings.getOptimizedFilterRulesUrl : settings.getFilterRulesUrl;
+        var url = useOptimizedFilters ? settings.optimizedFilterRulesUrl : settings.filterRulesUrl;
         return adguard.utils.strings.replaceAll(url, '{filter_id}', filterId);
     }
 
@@ -307,28 +315,21 @@ adguard.backend = (function (adguard) {
      * Downloads filter rules by filter ID
      *
      * @param filterId            Filter identifier
+     * @param forceRemote         Force download filter rules from remote server
      * @param useOptimizedFilters    Download optimized filters flag
      * @param successCallback    Called on success
      * @param errorCallback        Called on error
      */
-    var loadRemoteFilterRules = function (filterId, useOptimizedFilters, successCallback, errorCallback) {
-        var url = getUrlForDownloadFilterRules(filterId, useOptimizedFilters);
-        doLoadFilterRules(filterId, url, successCallback, errorCallback);
-    };
+    var loadFilterRules = function (filterId, forceRemote, useOptimizedFilters, successCallback, errorCallback) {
 
-    /**
-     * Loads filter rules from a local file
-     *
-     * @param filterId            Filter identifier
-     * @param useOptimizedFilters    Download optimized filters flag
-     * @param successCallback    Called on success
-     * @param errorCallback        Called on error
-     */
-    var loadLocalFilterRules = function (filterId, useOptimizedFilters, successCallback, errorCallback) {
-
-        var url = adguard.getURL("filters/filter_" + filterId + ".txt");
-        if (useOptimizedFilters) {
-            url = adguard.getURL("filters/filter_mobile_" + filterId + ".txt");
+        var url;
+        if (forceRemote || settings.localFilterIds.indexOf(filterId) < 0) {
+            url = getUrlForDownloadFilterRules(filterId, useOptimizedFilters);
+        } else {
+            url = adguard.getURL(settings.localFiltersFolder + "/filter_" + filterId + ".txt");
+            if (useOptimizedFilters) {
+                url = adguard.getURL(settings.localFiltersFolder + "/filter_mobile_" + filterId + ".txt");
+            }
         }
 
         doLoadFilterRules(filterId, url, successCallback, errorCallback);
@@ -401,7 +402,7 @@ adguard.backend = (function (adguard) {
             }
         };
 
-        var url = adguard.getURL('filters/filters.json');
+        var url = adguard.getURL(settings.localFiltersFolder + '/filters.json');
         executeRequestAsync(url, 'application/json', success, errorCallback);
     };
 
@@ -426,7 +427,7 @@ adguard.backend = (function (adguard) {
             }
         };
 
-        var url = adguard.getURL('filters/filters_i18n.json');
+        var url = adguard.getURL(settings.localFiltersFolder + '/filters_i18n.json');
         executeRequestAsync(url, 'application/json', success, errorCallback);
     };
 
@@ -555,14 +556,58 @@ adguard.backend = (function (adguard) {
         return requestUrl && (requestUrl.indexOf('/adguard-ajax-crossdomain-hack/') > 0 || requestUrl.indexOf('/adguard-ajax-api/') > 0);
     };
 
+    /**
+     * Configures backend's URLs
+     * @param configuration Configuration object:
+     * {
+     *  filtersMetadataUrl: '...',
+     *  filterRulesUrl: '...',
+     *  localFiltersFolder: '...',
+     *  localFilterIds: []
+     * }
+     */
+    var configure = function (configuration) {
+        var filtersMetadataUrl = configuration.filtersMetadataUrl;
+        if (filtersMetadataUrl) {
+            Object.defineProperty(settings, 'filtersMetadataUrl', {
+                get: function () {
+                    return filtersMetadataUrl;
+                }
+            });
+        }
+        var filterRulesUrl = configuration.filterRulesUrl;
+        if (filterRulesUrl) {
+            Object.defineProperty(settings, 'filterRulesUrl', {
+                get: function () {
+                    return filterRulesUrl;
+                }
+            });
+        }
+        var localFiltersFolder = configuration.localFiltersFolder;
+        if (localFiltersFolder) {
+            Object.defineProperty(settings, 'localFiltersFolder', {
+                get: function () {
+                    return localFiltersFolder;
+                }
+            });
+        }
+        var localFilterIds = configuration.localFilterIds;
+        if (localFilterIds) {
+            Object.defineProperty(settings, 'localFilterIds', {
+                get: function () {
+                    return localFilterIds;
+                }
+            });
+        }
+    };
+
     return {
 
         adguardAppUrl: settings.adguardAppUrl,
         injectionsUrl: settings.injectionsUrl,
 
         loadFiltersMetadata: loadFiltersMetadata,
-        loadRemoteFilterRules: loadRemoteFilterRules,
-        loadLocalFilterRules: loadLocalFilterRules,
+        loadFilterRules: loadFilterRules,
 
         loadFilterRulesBySubscriptionUrl: loadFilterRulesBySubscriptionUrl,
 
@@ -580,7 +625,9 @@ adguard.backend = (function (adguard) {
         trackInstall: trackInstall,
         sendHitStats: sendHitStats,
 
-        isAdguardAppRequest: isAdguardAppRequest
+        isAdguardAppRequest: isAdguardAppRequest,
+
+        configure: configure
     };
 
 })(adguard);

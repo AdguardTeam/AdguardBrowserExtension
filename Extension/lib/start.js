@@ -52,6 +52,8 @@
                 adguard.filters.addAndEnableFilters(filterIds, callback);
             });
         }
+    }, function () {
+        // Doing nothing
     });
 
 })();

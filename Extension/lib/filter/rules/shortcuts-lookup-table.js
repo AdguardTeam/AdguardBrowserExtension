@@ -29,7 +29,7 @@
      * @param rule
      */
     function getRuleShortcut(rule) {
-        if (adguard.utils.strings.isEmpty(rule.shortcut) || rule.shortcut.length < SHORTCUT_LENGTH) {
+        if (!rule.shortcut || rule.shortcut.length < SHORTCUT_LENGTH) {
             return null;
         }
         return rule.shortcut.substring(rule.shortcut.length - SHORTCUT_LENGTH);
@@ -126,18 +126,25 @@
          */
         lookupRules: function (url) {
 
-            var result = [];
+            var result = null;
             for (var i = 0; i <= url.length - SHORTCUT_LENGTH; i++) {
                 var hash = url.substring(i, i + SHORTCUT_LENGTH);
                 var value = this.lookupTable[hash];
                 if (value) {
                     if (adguard.utils.collections.isArray(value)) {
+                        if (result === null) {
+                            result = [];
+                        }
                         result = result.concat(value);
                     } else {
+                        if (result === null) {
+                            result = [];
+                        }
                         result.push(value);
                     }
                 }
             }
+
             return result;
         },
 

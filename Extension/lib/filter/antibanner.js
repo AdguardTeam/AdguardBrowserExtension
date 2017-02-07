@@ -94,9 +94,7 @@ adguard.antiBannerService = (function (adguard) {
             loadFiltersVersionAndStateInfo();
             createRequestFilter(function () {
                 addFiltersChangeEventListener();
-                if (typeof callback === 'function') {
-                    callback();
-                }
+                callback();
             });
         };
 
@@ -113,7 +111,11 @@ adguard.antiBannerService = (function (adguard) {
                 addFiltersChangeEventListener();
                 // Run callback
                 // Request filter will be initialized during install
-                options.onInstall(callback);
+                if (typeof options.onInstall === 'function') {
+                    options.onInstall(callback);
+                } else {
+                    callback();
+                }
             } else if (runInfo.isUpdate) {
                 // Updating storage schema on extension update (if needed)
                 adguard.applicationUpdateService.onUpdate(runInfo, initRequestFilter);
@@ -142,6 +144,10 @@ adguard.antiBannerService = (function (adguard) {
      */
     var start = function (options, callback) {
 
+        if (applicationRunning === true) {
+            callback();
+            return;
+        }
         applicationRunning = true;
 
         if (!applicationInitialized) {
@@ -150,11 +156,7 @@ adguard.antiBannerService = (function (adguard) {
             return;
         }
 
-        createRequestFilter(function () {
-            if (typeof callback === 'function') {
-                callback();
-            }
-        });
+        createRequestFilter(callback);
     };
 
     /**
@@ -164,6 +166,14 @@ adguard.antiBannerService = (function (adguard) {
         applicationRunning = false;
         requestFilter = new adguard.RequestFilter();
         adguard.listeners.notifyListeners(adguard.listeners.REQUEST_FILTER_UPDATED, getRequestFilterInfo());
+    };
+
+    /**
+     * Checks application has been initialized
+     * @returns {boolean}
+     */
+    var isInitialized = function () {
+        return applicationInitialized;
     };
 
     /**
@@ -203,11 +213,7 @@ adguard.antiBannerService = (function (adguard) {
         /**
          * TODO: when we want to load filter from backend, we should retrieve metadata from backend too, but not from local file.
          */
-        if (adguard.utils.filters.isAdguardFilter(filter)) {
-            loadFilterFromLocalFile(filter, onFilterLoaded);
-        } else {
-            loadFilterFromBackend(filter, onFilterLoaded);
-        }
+        loadFilterRules(filter, false, onFilterLoaded);
     };
 
     /**
@@ -575,9 +581,7 @@ adguard.antiBannerService = (function (adguard) {
     function createRequestFilter(callback) {
 
         if (applicationRunning === false) {
-            if (typeof callback === "function") {
-                callback();
-            }
+            callback();
             return;
         }
 
@@ -895,7 +899,7 @@ adguard.antiBannerService = (function (adguard) {
                 callback(true, loadedFilters);
             } else {
                 var filterMetadata = filterMetadataList.shift();
-                loadFilterFromBackend(filterMetadata, function (success) {
+                loadFilterRules(filterMetadata, true, function (success) {
                     if (!success) {
                         callback(false);
                         return;
@@ -910,13 +914,14 @@ adguard.antiBannerService = (function (adguard) {
     }
 
     /**
-     * Loads filter rules from remote server
+     * Loads filter rules
      *
      * @param filterMetadata Filter metadata
+     * @param forceRemote Force download filter rules from remote server (if false try to download local copy of rules if it's possible)
      * @param callback Called when filter rules have been loaded
      * @private
      */
-    function loadFilterFromBackend(filterMetadata, callback) {
+    function loadFilterRules(filterMetadata, forceRemote, callback) {
 
         var filter = getFilterById(filterMetadata.filterId);
 
@@ -943,7 +948,7 @@ adguard.antiBannerService = (function (adguard) {
             callback(false);
         };
 
-        adguard.backend.loadRemoteFilterRules(filter.filterId, adguard.settings.isUseOptimizedFiltersEnabled(), successCallback, errorCallback);
+        adguard.backend.loadFilterRules(filter.filterId, forceRemote, adguard.settings.isUseOptimizedFiltersEnabled(), successCallback, errorCallback);
     }
 
     /**
@@ -971,41 +976,6 @@ adguard.antiBannerService = (function (adguard) {
         };
 
         adguard.backend.loadFiltersMetadata(filterIds, loadSuccess, loadError);
-    }
-
-    /**
-     * Load filter rules from local file
-     * @param filterMetadata
-     * @param callback
-     * @private
-     */
-    function loadFilterFromLocalFile(filterMetadata, callback) {
-
-        var filter = getFilterById(filterMetadata.filterId);
-
-        filter._isDownloading = true;
-        adguard.listeners.notifyListeners(adguard.listeners.START_DOWNLOAD_FILTER, filter);
-
-        var successCallback = function (filterRules) {
-            adguard.console.info("Load local filter {0}, rules count: {1}", filter.filterId, filterRules.length);
-            delete filter._isDownloading;
-            filter.version = filterMetadata.version;
-            filter.lastUpdateTime = filterMetadata.timeUpdated;
-            filter.loaded = true;
-            //notify listeners
-            adguard.listeners.notifyListeners(adguard.listeners.SUCCESS_DOWNLOAD_FILTER, filter);
-            adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, filter, filterRules);
-            callback(true);
-        };
-
-        var errorCallback = function (request, cause) {
-            delete filter._isDownloading;
-            adguard.console.error("Error retrieved response from local file for filter {0}, cause: {1} {2}", filter.filterId, request.statusText, cause || "");
-            adguard.listeners.notifyListeners(adguard.listeners.ERROR_DOWNLOAD_FILTER, filter);
-            callback(false);
-        };
-
-        adguard.backend.loadLocalFilterRules(filter.filterId, adguard.settings.isUseOptimizedFiltersEnabled(), successCallback, errorCallback);
     }
 
     /**
@@ -1068,6 +1038,7 @@ adguard.antiBannerService = (function (adguard) {
 
         start: start,
         stop: stop,
+        isInitialized: isInitialized,
 
         addAntiBannerFilter: addAntiBannerFilter,
 
@@ -1284,8 +1255,17 @@ adguard.filters = (function (adguard) {
         antiBannerService.start(options, callback);
     };
 
-    var stop = function () {
+    var stop = function (callback) {
         antiBannerService.stop();
+        callback();
+    };
+
+    /**
+     * Checks application has been initialized
+     * @returns {boolean}
+     */
+    var isInitialized = function () {
+        return antiBannerService.isInitialized();
     };
 
     /**
@@ -1391,7 +1371,7 @@ adguard.filters = (function (adguard) {
             return;
         }
 
-        filterIds = adguard.utils.collections.removeDuplicates(filterIds);
+        filterIds = adguard.utils.collections.removeDuplicates(filterIds.slice(0)); // Copy array to prevent parameter mutation
 
         var loadNextFilter = function () {
             if (filterIds.length === 0) {
@@ -1494,6 +1474,7 @@ adguard.filters = (function (adguard) {
 
         start: start,
         stop: stop,
+        isInitialized: isInitialized,
 
         offerFilters: offerFilters,
 

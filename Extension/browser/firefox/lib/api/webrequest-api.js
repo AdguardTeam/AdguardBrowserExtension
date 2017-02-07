@@ -1,16 +1,14 @@
 /* global XPCOMUtils, Services, Cc, Ci, Cr, Cm, components */
 
-/* global Map */
-
 /**
  * Web requests implementation
  */
 (function (adguard) {
 
-    adguard.webRequest = (function (adguard) {
+    function noOpFunc() {
+    }
 
-        function noOpFunc() {
-        }
+    adguard.webRequest = (function (adguard) {
 
         var onBeforeRequestChannel = adguard.utils.channels.newChannel();
         var onBeforeSendHeadersChannel = adguard.utils.channels.newChannel();
@@ -457,13 +455,25 @@
                 };
             },
 
+            /**
+             * Handles request and blocks it if needed
+             * @param channel nsiHttpChannel
+             * @param details Request details
+             * @returns {boolean} True if request was blocked
+             */
             handleRequest: function (channel, details) {
 
                 var request = this.convertToRequest(channel.URI, details);
 
-                var skip = onBeforeRequestChannel.notify(request);
-                if (skip === false) {
+                var response = onBeforeRequestChannel.notify(request);
+
+                if (response && response.cancel) {
                     channel.cancel(Cr.NS_BINDING_ABORTED);
+                    return true;
+                }
+
+                if (response && response.redirectUrl) {
+                    channel.redirectTo(Services.io.newURI(response.redirectUrl, null, null));
                     return true;
                 }
 
@@ -648,6 +658,12 @@
     adguard.webNavigation = (function (adguard) {
 
         var onCreatedNavigationTargetChannel = adguard.utils.channels.newChannel();
+        /**
+         * There is no need in this event for Firefox
+         * It is used in Chromium for fast applying js rules
+         * In Firefox they are applied quite fast
+         */
+        var onCommitted = {addListener: noOpFunc};
 
         var onPopupCreated = function (tabId, targetUrl, sourceUrl) {
 
@@ -686,7 +702,8 @@
 
             onPopupCreated: onPopupCreated,
 
-            onCreatedNavigationTarget: onCreatedNavigationTargetChannel
+            onCreatedNavigationTarget: onCreatedNavigationTargetChannel,
+            onCommitted: onCommitted
         };
 
     })(adguard);

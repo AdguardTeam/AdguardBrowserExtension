@@ -171,7 +171,11 @@ adguard.filteringLog = (function (adguard) {
                 removeTabById(tabIdsToRemove[j]);
             }
             if (typeof callback === 'function') {
-                callback();
+                var syncTabs = [];
+                for (var tabId in tabsInfoMap) { // jshint ignore:line
+                    syncTabs.push(tabsInfoMap[tabId]);
+                }
+                callback(syncTabs);
             }
         });
     };

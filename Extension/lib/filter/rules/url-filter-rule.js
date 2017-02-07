@@ -163,7 +163,7 @@
             }
         }
 
-        return token;
+        return token.toLowerCase();
     }
 
     /**
@@ -229,12 +229,12 @@
 
         var urlRuleText = parseResult.urlRuleText;
 
-        var isRegexRule = adguard.utils.strings.startWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) &&
-            adguard.utils.strings.endWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) ||
+        this.isRegexRule = adguard.utils.strings.startWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) &&
+            urlRuleText.endsWith(UrlFilterRule.MASK_REGEX_RULE) ||
             urlRuleText === '' ||
             urlRuleText == UrlFilterRule.MASK_ANY_SYMBOL;
 
-        if (isRegexRule) {
+        if (this.isRegexRule) {
             this.urlRegExpSource = urlRuleText.substring(UrlFilterRule.MASK_REGEX_RULE.length, urlRuleText.length - UrlFilterRule.MASK_REGEX_RULE.length);
             // Pre compile regex rules
             var regexp = this.getUrlRegExp();
@@ -317,7 +317,7 @@
      */
     UrlFilterRule.prototype.isPermitted = function (domainName) {
 
-        if (adguard.utils.strings.isEmpty(domainName)) {
+        if (!domainName) {
             var hasPermittedDomains = this.hasPermittedDomains();
 
             // For white list rules to fire when request has no referrer
@@ -350,7 +350,8 @@
             }
         }
 
-        if (this.shortcut !== null && !adguard.utils.strings.containsIgnoreCase(requestUrl, this.shortcut)) {
+        // Shortcut is always in lower case
+        if (this.shortcut !== null && requestUrl.toLowerCase().indexOf(this.shortcut) < 0) {
             return false;
         }
 
@@ -472,6 +473,9 @@
                 case UrlFilterRule.POPUP_OPTION:
                     permittedContentType |= UrlFilterRule.contentTypes.POPUP; // jshint ignore:line
                     break;
+                case UrlFilterRule.EMPTY_OPTION:
+                    this.emptyResponse = true;
+                    break;
                 default:
                     optionName = optionName.toUpperCase();
                     if (optionName in UrlFilterRule.contentTypes) {
@@ -509,6 +513,7 @@
     UrlFilterRule.MASK_REGEX_RULE = "/";
     UrlFilterRule.MASK_ANY_SYMBOL = "*";
     UrlFilterRule.REGEXP_ANY_SYMBOL = ".*";
+    UrlFilterRule.EMPTY_OPTION = "empty";
 
     UrlFilterRule.contentTypes = {
 
@@ -550,8 +555,6 @@
         'COLLAPSE': true,
         '~COLLAPSE': true,
         '~DOCUMENT': true,
-        // Process as a common url-blocking rule
-        'EMPTY': true,
         // http://adguard.com/en/filterrules.html#advanced
         'CONTENT': true
     };

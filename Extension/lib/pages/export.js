@@ -14,7 +14,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 /* global $, contentPage */
+
+/**
+ * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/541
+ */
+function isFirefox51OrHigher() {
+    var userAgent = navigator.userAgent.toLowerCase();
+    var match = userAgent.match(/firefox\/([0-9]+)/);
+    var version = match ? parseInt(match[1]) : 0;
+    return version >= 51;
+}
+
 $(document).ready(function () {
 
     var callback = function (rulesText) {
@@ -22,6 +34,11 @@ $(document).ready(function () {
         var el = $('<pre/>');
         el.text(rulesText);
         $("body").append(el);
+
+        // FF (>= 51) doesn't correctly process clicking on the download link, so don't do it.
+        if (isFirefox51OrHigher()) {
+            return;
+        }
 
         var filename = whitelist ? 'whitelist.txt' : 'rules.txt';
         if (showSaveFunc) {
@@ -62,7 +79,7 @@ var showSaveFunc = (function () {
     var Blob = window.Blob || window.WebKitBlob || window.MozBlob;
     var URL = window.URL || window.webkitURL || window.mozURL;
 
-    navigator.saveBlob = navigator.saveBlob || navigator.mozSaveBlob || navigator.webkitSaveBlob;
+    navigator.saveBlob = navigator.saveBlob || navigator.mozSaveBlob || navigator.webkitSaveBlob || navigator.msSaveBlob;
     window.saveAs = window.saveAs || window.webkitSaveAs || window.mozSaveAs || window.msSaveAs;
 
     if (Blob && navigator.saveBlob) {

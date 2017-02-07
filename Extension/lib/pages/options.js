@@ -460,6 +460,8 @@ var WhiteListFilter = function (options) {
     wlFilters.on('keypress', 'input[type="text"]', function (e) {
         if (e.keyCode == 13) {
             e.preventDefault();
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/521#issuecomment-274470832
+            $(this).blur();
             onSaveRuleLineClicked($(this).closest('li'));
         }
     });

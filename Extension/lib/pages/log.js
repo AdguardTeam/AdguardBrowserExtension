@@ -109,7 +109,8 @@ PageController.prototype = {
 
         // bind location hash change
         $(window).on('hashchange', function () {
-            this._onOpenedTabsReceived();
+            this._updateTabIdFromHash();
+            this.onSelectedTabChange();
         }.bind(this));
 
         this.searchRequest = null;
@@ -145,9 +146,15 @@ PageController.prototype = {
 
         this._bindSearchFilters();
 
+        this._updateTabIdFromHash();
+
         // Synchronize opened tabs
-        contentPage.sendMessage({type: 'synchronizeOpenTabs'}, function () {
-            this._onOpenedTabsReceived();
+        contentPage.sendMessage({type: 'synchronizeOpenTabs'}, function (response) {
+            var tabs = response.tabs;
+            for (var i = 0; i < tabs.length; i++) {
+                this.onTabAdded(tabs[i]);
+            }
+            this.onSelectedTabChange();
         }.bind(this));
 
         $(document).keyup(function (e) {
@@ -157,7 +164,8 @@ PageController.prototype = {
         });
     },
 
-    _onOpenedTabsReceived: function () {
+    // Try to retrieve tabId from hash
+    _updateTabIdFromHash: function () {
         // Try to retrieve tabId from hash
         if (document.location.hash) {
             var tabId = document.location.hash.substring(1);
@@ -165,7 +173,6 @@ PageController.prototype = {
                 this.currentTabId = tabId;
             }
         }
-        this.onSelectedTabChange();
     },
 
     onTabAdded: function (tabInfo) {
@@ -771,6 +778,7 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
     $(document).ready(function () {
 
         var pageController = new PageController();
+        pageController.init();
 
         function onEvent(event, tabInfo, filteringEvent) {
             switch (event) {
@@ -827,8 +835,6 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
         //unload event
         $(window).on('beforeunload', onUnload);
         $(window).on('unload', onUnload);
-
-        pageController.init();
     });
 
 });

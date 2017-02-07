@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version="2.5.11"
+version="2.5.12"
 
 if [[ ! ("$#" == 1) ]] || [[ ! ($1 = dev) && ! ($1 = release) && ! ($1 = beta) ]] ; then
     echo "Pass a single argument as an environment value"
@@ -113,8 +113,8 @@ else
     options="--version=$version --branch=$branch --dest=$destPath --name=edge --browser=edge"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
-    # chrome simple
-    options="--version=$version --branch=$branch --dest=$destPath --name=chrome-simple --browser=chrome-simple"
+    # chrome api
+    options="--version=$version --branch=$branch --dest=$destPath --name=chrome-api --browser=chrome --create-api=true"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     echo "Dev builds created"

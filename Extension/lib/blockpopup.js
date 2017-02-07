@@ -49,7 +49,8 @@
 			return;
 		}
 
-		var referrerUrl = adguard.frames.getMainFrameUrl(sourceTab);
+		// webRequest.onBeforeRequest event may hasn't been received yet.
+		var referrerUrl = adguard.frames.getMainFrameUrl(sourceTab) || details.url;
 		if (!adguard.utils.url.isHttpRequest(referrerUrl)) {
 			return;
 		}

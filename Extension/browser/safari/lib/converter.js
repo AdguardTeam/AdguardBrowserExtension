@@ -18,9 +18,10 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.20';
+var CONVERTER_VERSION = '1.3.23';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
+var ANY_URL_TEMPLATES = ['||*', '', '*'];
 var URL_FILTER_ANY_URL = ".*";
 // Improved regular expression instead of UrlFilterRule.REGEXP_START_URL
 var URL_FILTER_REGEXP_START_URL = "^https?://([^/]*\\.)?";
@@ -176,14 +177,14 @@ var SafariContentBlockerConverter = {
         },
 
         _createUrlFilterString: function (filter) {
-            if (filter.urlRegExp) {
+            if (ANY_URL_TEMPLATES.indexOf(filter.getUrlRuleText()) >= 0) {
+                return URL_FILTER_ANY_URL;
+            }
+
+            if (filter.isRegexRule && filter.urlRegExp) {
                 return filter.urlRegExp.source;
             }
 
-            if (filter.getUrlRuleText() == '||*') {
-                return URL_FILTER_ANY_URL;
-            }
-            
             var urlRegExpSource = filter.getUrlRegExpSource();
             if (urlRegExpSource) {
                 return urlRegExpSource;
@@ -238,7 +239,7 @@ var SafariContentBlockerConverter = {
                 }
 
                 return {
-                    domain: adguard.utils.url.toPunyCode(domain),
+                    domain: adguard.utils.url.toPunyCode(domain).toLowerCase(),
                     path: path
                 };
 
@@ -310,16 +311,21 @@ var SafariContentBlockerConverter = {
                     self._isContentType(r, adguard.rules.UrlFilterRule.contentTypes.GENERICBLOCK);
             }
 
+            function isCssExceptionRule(r) {
+                return self._isContentType(r, adguard.rules.UrlFilterRule.contentTypes.GENERICHIDE) ||
+                    self._isContentType(r, adguard.rules.UrlFilterRule.contentTypes.ELEMHIDE);
+            }
+
             if (rule.whiteListRule && rule.whiteListRule === true) {
                 
                 var documentRule = isDocumentRule(rule); 
                 
-                if (documentRule || isUrlBlockRule(rule)) {
+                if (documentRule || isUrlBlockRule(rule) || isCssExceptionRule(rule)) {
                     if (documentRule) {
                         //http://jira.performix.ru/browse/AG-8715
                         delete result.trigger["resource-type"];
                     }
-                    
+
                     var parseDomainResult = this._parseRuleDomain(rule.getUrlRuleText());
 
                     if (parseDomainResult !== null && 
@@ -347,10 +353,6 @@ var SafariContentBlockerConverter = {
 
                     result.trigger["url-filter"] = URL_FILTER_ANY_URL;
                     delete result.trigger["resource-type"];
-
-                } else if (this._hasContentType(rule, adguard.rules.UrlFilterRule.contentTypes.ELEMHIDE | // jshint ignore:line
-                        adguard.rules.UrlFilterRule.contentTypes.GENERICHIDE)) {  // jshint ignore:line
-                    result.trigger["resource-type"] = ['document'];
                 }
             }
         },

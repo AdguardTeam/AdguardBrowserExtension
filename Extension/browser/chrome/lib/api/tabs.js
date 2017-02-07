@@ -269,8 +269,12 @@ adguard.tabsImpl = (function (adguard) {
         }
     };
 
-    var sendMessage = function (tabId, message, responseCallback) {
+    var sendMessage = function (tabId, message, responseCallback, options) {
         // https://developer.chrome.com/extensions/tabs#method-sendMessage
+        if (typeof options === 'object' && browser.tabs.sendMessage) {
+            browser.tabs.sendMessage(tabIdToInt(tabId), message, options, responseCallback);
+            return;
+        }
         (browser.tabs.sendMessage || browser.tabs.sendRequest)(tabIdToInt(tabId), message, responseCallback);
     };
 
