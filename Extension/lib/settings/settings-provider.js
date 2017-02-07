@@ -137,6 +137,7 @@ var SettingsProvider = (function () { // jshint ignore:line
         if (sectionName === FILTERS_SECTION) {
             saveFiltersSection(section, function (result) {
                 if (result) {
+                    //TODO: Trigger app settings update
                     adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE);
                 }
 
@@ -158,7 +159,7 @@ var SettingsProvider = (function () { // jshint ignore:line
         adguard.localStorage.setItem(SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY, time);
     };
 
-    // Add listener on user settings change
+    // TODO: Add listener on user settings changes/ filters updates
     adguard.listeners.addListener(function (event) {
         if (event === adguard.listeners.FILTER_ENABLE_DISABLE) {
             console.log('update');
