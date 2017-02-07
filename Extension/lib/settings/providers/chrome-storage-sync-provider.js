@@ -30,7 +30,7 @@ adguard.sync.storageSyncProvider = (function () { // jshint ignore:line
      * @param callback
      */
     var load = function (filePath, callback) {
-        chrome.storage.sync.get(filePath, function(items) {
+        chrome.storage.largeSync.get(filePath, function(items) {
             var e = chrome.runtime.lastError;
             if (e) {
                 adguard.console.error(e);
@@ -52,7 +52,6 @@ adguard.sync.storageSyncProvider = (function () { // jshint ignore:line
 
     /**
      * Saves file to to chrome syncable storage.
-     * TODO: The storage has a quota, so we need to split long files.
      *
      * @param filePath
      * @param data
@@ -62,7 +61,7 @@ adguard.sync.storageSyncProvider = (function () { // jshint ignore:line
         var save = {};
         save[filePath] = data;
 
-        chrome.storage.sync.set(save, function() {
+        chrome.storage.largeSync.set(save, function() {
             var e = chrome.runtime.lastError;
             if (e) {
                 adguard.console.error(e);
