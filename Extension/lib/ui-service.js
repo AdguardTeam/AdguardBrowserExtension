@@ -229,11 +229,13 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         if (tabInfo.applicationFilteringDisabled) {
             addMenu('context_site_protection_disabled');
             addSeparator();
+            addMenu('context_open_log');
             addSettingsSubMenu();
             addMenu('context_enable_protection');
         } else if (tabInfo.urlFilteringDisabled) {
             addMenu('context_site_filtering_disabled');
             addSeparator();
+            addMenu('context_open_log');
             addSettingsSubMenu();
             addMenu('context_update_antibanner_filters');
         } else {
@@ -281,9 +283,11 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                 checked: true,
                 checkable: true
             });
+            addMenu('popup_open_log_android', {action: 'context_open_log'});
             addMenu('popup_open_settings', {action: 'context_open_settings'});
         } else if (tabInfo.urlFilteringDisabled) {
             addMenu('context_site_filtering_disabled');
+            addMenu('popup_open_log_android', {action: 'context_open_log'});
             addMenu('popup_open_settings', {action: 'context_open_settings'});
             addMenu('context_update_antibanner_filters');
         } else {
