@@ -55,7 +55,7 @@ QUnit.test("Test file sync provider", function (assert) {
     var onDataSaved = function (result) {
         assert.ok(result);
 
-        FileSyncProvider.load(manifestPath, onDataUpdated);
+        adguard.sync.fileSyncProvider.load(manifestPath, onDataUpdated);
     };
 
     var onDataLoaded = function (data) {
@@ -67,11 +67,11 @@ QUnit.test("Test file sync provider", function (assert) {
         data["app-id"] = data["app-id"] + "2";
         manifest["app-id"] = manifest["app-id"] + "2";
 
-        FileSyncProvider.save(manifestPath, data, onDataSaved);
+        adguard.sync.fileSyncProvider.save(manifestPath, data, onDataSaved);
     };
 
     createFile(manifestPath, manifest, function () {
-        FileSyncProvider.load(manifestPath, onDataLoaded);
+        adguard.sync.fileSyncProvider.load(manifestPath, onDataLoaded);
     });
 });
 

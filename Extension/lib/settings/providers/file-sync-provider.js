@@ -20,7 +20,7 @@
  *
  * @type {{load, save}}
  */
-var FileSyncProvider = (function () { // jshint ignore:line
+adguard.sync.fileSyncProvider = (function () { // jshint ignore:line
 
     var requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
 

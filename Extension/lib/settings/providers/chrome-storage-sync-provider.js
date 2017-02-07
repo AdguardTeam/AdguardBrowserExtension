@@ -20,7 +20,7 @@
  *
  * @type {{load, save}}
  */
-var StorageSyncProvider = (function () { // jshint ignore:line
+adguard.sync.storageSyncProvider = (function () { // jshint ignore:line
 
     // API
     var load = function (filePath, callback) {

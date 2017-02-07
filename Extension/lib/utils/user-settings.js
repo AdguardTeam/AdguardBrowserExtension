@@ -194,23 +194,23 @@ adguard.settings = (function (adguard) {
         var syncProvider;
         switch (provider) {
             case 'FILE':
-                syncProvider = FileSyncProvider;
+                syncProvider = adguard.sync.fileSyncProvider;
                 break;
             case 'DROPBOX':
-                if (!token && !DropboxSyncProvider.isAuthorized()) {
-                    return DropboxSyncProvider.getAuthenticationUrl(url);
+                if (!token && !adguard.sync.dropboxSyncProvider.isAuthorized()) {
+                    return adguard.sync.dropboxSyncProvider.getAuthenticationUrl(url);
                 }
 
-                syncProvider = DropboxSyncProvider;
+                syncProvider = adguard.sync.dropboxSyncProvider;
                 syncProvider.setAccessToken(token);
                 break;
             case 'CHROME':
-                syncProvider = StorageSyncProvider;
+                syncProvider = adguard.sync.storageSyncProvider;
                 break;
         }
 
-        SyncService.setSyncProvider(syncProvider);
-        SyncService.syncSettings(function (result) {
+        adguard.sync.syncService.setSyncProvider(syncProvider);
+        adguard.sync.syncService.syncSettings(function (result) {
             console.log(result);
         });
     };

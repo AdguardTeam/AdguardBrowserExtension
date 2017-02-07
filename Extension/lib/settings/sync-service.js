@@ -17,11 +17,10 @@
 
 /**
  * Sync settings service
- * TODO: 8. Move to adguard.sync
  *
  * @type {{syncSettings, setSyncProvider}}
  */
-var SyncService = (function () { // jshint ignore:line
+adguard.sync.syncService = (function () { // jshint ignore:line
     var MANIFEST_PATH = "manifest.json";
 
     var syncProvider = null;
@@ -82,12 +81,12 @@ var SyncService = (function () { // jshint ignore:line
     };
 
     var createRemoteData = function () {
-        var localManifest = SettingsProvider.loadSettingsManifest();
+        var localManifest = adguard.sync.settingsProvider.loadSettingsManifest();
         syncProvider.save(MANIFEST_PATH, localManifest, function (success) {
             if (success) {
                 //TODO: Add other sections
                 var sectionName = localManifest.sections[0].name;
-                SettingsProvider.loadSettingsSection(sectionName, function (localFiltersSection) {
+                adguard.sync.settingsProvider.loadSettingsSection(sectionName, function (localFiltersSection) {
                     syncProvider.save(sectionName, localFiltersSection, function (success) {
                         if (success) {
                             adguard.console.info('Remote {0} section created', sectionName);
@@ -134,7 +133,7 @@ var SyncService = (function () { // jshint ignore:line
                 return;
             }
 
-            var localManifest = SettingsProvider.loadSettingsManifest();
+            var localManifest = adguard.sync.settingsProvider.loadSettingsManifest();
 
             var compatibility = findCompatibility(remoteManifest, localManifest);
             console.log(compatibility);
@@ -159,7 +158,7 @@ var SyncService = (function () { // jshint ignore:line
                     updateManifestSections(localManifest.sections, updatedSections.remoteToLocal);
 
                     localManifest.timestamp = updatedDate;
-                    SettingsProvider.saveSettingsManifest(localManifest);
+                    adguard.sync.settingsProvider.saveSettingsManifest(localManifest);
                 }
 
                 if (compatibility.canWrite) {
@@ -249,7 +248,7 @@ var SyncService = (function () { // jshint ignore:line
 
         var dfd = new adguard.utils.Promise();
 
-        SettingsProvider.loadSettingsSection(sectionName, function (localFiltersSection) {
+        adguard.sync.settingsProvider.loadSettingsSection(sectionName, function (localFiltersSection) {
             adguard.console.debug('Local {0} section loaded', sectionName);
 
             syncProvider.save(sectionName, localFiltersSection, function (success) {
@@ -286,7 +285,7 @@ var SyncService = (function () { // jshint ignore:line
 
             adguard.console.debug('Remote {0} section loaded', sectionName);
 
-            SettingsProvider.saveSettingsSection(sectionName, remoteFiltersSection, function (success) {
+            adguard.sync.settingsProvider.saveSettingsSection(sectionName, remoteFiltersSection, function (success) {
                 if (success) {
                     adguard.console.info('Local {0} section updated', sectionName);
 

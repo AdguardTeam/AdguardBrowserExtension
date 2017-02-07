@@ -20,7 +20,7 @@
  *
  * @type {{loadSettingsManifest, loadFiltersSection, saveSettingsManifest, saveFiltersSection}}
  */
-var SettingsProvider = (function () { // jshint ignore:line
+adguard.sync.settingsProvider = (function () { // jshint ignore:line
 
     var PROTOCOL_VERSION = "1.0";
     var APP_ID = "adguard-browser-extension";

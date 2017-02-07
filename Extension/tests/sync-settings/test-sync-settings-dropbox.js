@@ -1,11 +1,11 @@
 
 var token;
-DropboxSyncProvider.setAccessToken(token);
+adguard.sync.dropboxSyncProvider.setAccessToken(token);
 
 QUnit.test("Test Dropbox sync provider", function (assert) {
     var done = assert.async();
 
-    if (!DropboxSyncProvider.isAuthorized()) {
+    if (!adguard.sync.dropboxSyncProvider.isAuthorized()) {
         assert.ok(true);
         done();
         return;
@@ -20,7 +20,7 @@ QUnit.test("Test Dropbox sync provider", function (assert) {
     var onDataSaved = function (result) {
         assert.ok(result);
 
-        DropboxSyncProvider.load(manifestPath, onDataUpdated);
+        adguard.sync.dropboxSyncProvider.load(manifestPath, onDataUpdated);
     };
 
     var onDataLoaded = function (data) {
@@ -32,10 +32,10 @@ QUnit.test("Test Dropbox sync provider", function (assert) {
         data["app-id"] = data["app-id"] + "2";
         manifest["app-id"] = manifest["app-id"] + "2";
 
-        DropboxSyncProvider.save(manifestPath, data, onDataSaved);
+        adguard.sync.dropboxSyncProvider.save(manifestPath, data, onDataSaved);
     };
 
-    DropboxSyncProvider.save(manifestPath, manifest, function () {
-        DropboxSyncProvider.load(manifestPath, onDataLoaded);
+    adguard.sync.dropboxSyncProvider.save(manifestPath, manifest, function () {
+        adguard.sync.dropboxSyncProvider.load(manifestPath, onDataLoaded);
     });
 });

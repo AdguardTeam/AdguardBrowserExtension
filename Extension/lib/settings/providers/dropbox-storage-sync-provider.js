@@ -20,7 +20,7 @@
  *
  * @type {{load, save, isAuthenticated}}
  */
-var DropboxSyncProvider = (function () { // jshint ignore:line
+adguard.sync.dropboxSyncProvider = (function () { // jshint ignore:line
 
     //TODO: Change to real
     var CLIENT_ID = 'nu18d3bocnpkvg5';
