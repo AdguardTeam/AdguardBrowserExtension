@@ -172,6 +172,7 @@
             "dajbych.net",
             "fanboy.co.nz",
             "fredfiber.no",
+            "filterlists.com",
             "gardar.net",
             "github.com",
             "henrik.schack.dk",
