@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global chrome */
+
 /**
  * Sync settings provider
  *
@@ -23,6 +25,7 @@
 adguard.sync.storageSyncProvider = (function () { // jshint ignore:line
 
     // API
+
     /**
      * Loads file from chrome syncable storage.
      *
@@ -30,7 +33,9 @@ adguard.sync.storageSyncProvider = (function () { // jshint ignore:line
      * @param callback
      */
     var load = function (filePath, callback) {
-        chrome.storage.largeSync.get(filePath, function(items) {
+
+        chrome.storage.largeSync.get([filePath], function (items) {
+
             var e = chrome.runtime.lastError;
             if (e) {
                 adguard.console.error(e);
@@ -38,15 +43,8 @@ adguard.sync.storageSyncProvider = (function () { // jshint ignore:line
                 return;
             }
 
-            if (items) {
-                var r = items[filePath];
-                if (r) {
-                    callback(r);
-                    return;
-                }
-            }
-
-            callback(false);
+            var data = items ? items[filePath] : null;
+            callback(data);
         });
     };
 
@@ -58,10 +56,12 @@ adguard.sync.storageSyncProvider = (function () { // jshint ignore:line
      * @param callback
      */
     var save = function (filePath, data, callback) {
-        var save = {};
-        save[filePath] = data;
 
-        chrome.storage.largeSync.set(save, function() {
+        var items = {};
+        items[filePath] = data;
+
+        chrome.storage.largeSync.set(items, function () {
+
             var e = chrome.runtime.lastError;
             if (e) {
                 adguard.console.error(e);

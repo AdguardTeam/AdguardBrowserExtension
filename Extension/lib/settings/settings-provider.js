@@ -18,7 +18,7 @@
 /**
  * Application settings provider.
  *
- * @type {{loadSettingsManifest, loadFiltersSection, saveSettingsManifest, saveFiltersSection}}
+ * @type {{loadSettingsManifest, loadFiltersSection, updateManifestSyncTime, saveFiltersSection}}
  */
 adguard.sync.settingsProvider = (function () { // jshint ignore:line
 
@@ -27,41 +27,98 @@ adguard.sync.settingsProvider = (function () { // jshint ignore:line
 
     var FILTERS_SECTION = "filters.json";
 
-    var SYNC_SETTINGS_TIMESTAMP_KEY = 'sync.settings.timestamp';
-    var SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY = 'sync.settings.filters.timestamp';
+    var SYNC_TIMESTAMPS_PROP = "sync-timestamps";
 
+    /**
+     * Loads sync timestamps from local storage
+     * @returns {{timestamp: number, sections: {}}}
+     */
+    function loadSyncTimestamps() {
+        var timestamps = {
+            timestamp: 0,
+            sections: {}
+        };
+        var item = adguard.localStorage.getItem(SYNC_TIMESTAMPS_PROP);
+        if (!item) {
+            return timestamps;
+        }
+        return JSON.parse(item);
+    }
 
+    /**
+     * Save sync timestamps to local storage
+     * @param manifest
+     */
+    function saveSyncTimestamps(manifest) {
+        var timestamps = {
+            timestamp: manifest.timestamp,
+            sections: {}
+        };
+        for (var i = 0; i < manifest.sections.length; i++) {
+            var section = manifest.sections[i];
+            timestamps.sections[section.name] = section.timestamp;
+        }
+        adguard.localStorage.setItem(SYNC_TIMESTAMPS_PROP, JSON.stringify(timestamps));
+    }
+
+    /**
+     * Loads local manifest object
+     */
     var loadSettingsManifest = function () {
-        var manifest = {
-            "timestamp": adguard.localStorage.getItem(SYNC_SETTINGS_TIMESTAMP_KEY),
+        var timestamps = loadSyncTimestamps();
+        return {
+            "timestamp": timestamps.timestamp || 0,
             "protocol-version": PROTOCOL_VERSION,
             "min-compatible-version": PROTOCOL_VERSION,
             "app-id": APP_ID,
             "sections": [
                 {
-                    "name": "filters.json",
-                    "timestamp": adguard.localStorage.getItem(SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY)
+                    "name": FILTERS_SECTION,
+                    "timestamp": timestamps.sections[FILTERS_SECTION] || 0
                 }
             ]
         };
-
-        return manifest;
     };
 
+    /**
+     * Creates empty settings manifest.
+     */
+    var getEmptySettingsManifest = function () {
+        return {
+            "timestamp": 0,
+            "protocol-version": PROTOCOL_VERSION,
+            "min-compatible-version": PROTOCOL_VERSION,
+            "app-id": APP_ID,
+            "sections": [
+                {
+                    "name": FILTERS_SECTION,
+                    "timestamp": 0
+                }
+            ]
+        };
+    };
+
+    /**
+     * Loads filters settings section
+     * @param callback
+     */
     var loadFiltersSection = function (callback) {
+
+        // Collect enabled filters
         var enabledFilters = adguard.filters.getEnabledFilters();
         var enabledFilterIds = [];
-        for (var i in enabledFilters) {
-            var f = enabledFilters[i];
-            if (f && f.enabled) {
-                enabledFilterIds.push(f.filterId);
-            }
+        for (var i = 0; i < enabledFilters.length; i++) {
+            var filter = enabledFilters[i];
+            enabledFilterIds.push(filter.filterId);
         }
 
-        var whitelistDomains = adguard.whitelist.getWhiteListedDomains();
-        var blocklistDomains = adguard.whitelist.getBlockListedDomains();
-        var defaultWhiteListMode = adguard.whitelist.isDefaultMode();
-        var userRules = adguard.userrules.getRules();
+        // Collect whitelist/blacklist domains and whitelist mode
+        var whitelistDomains = adguard.whitelist.getWhiteListedDomains() || [];
+        var blocklistDomains = adguard.whitelist.getBlockListedDomains() || [];
+        var defaultWhiteListMode = !!adguard.whitelist.isDefaultMode();
+
+        // Collect user rules
+        var userRules = adguard.userrules.getRules() || [];
 
         var section = {
             "filters": {
@@ -85,86 +142,89 @@ adguard.sync.settingsProvider = (function () { // jshint ignore:line
         callback(section);
     };
 
-    var saveSettingsManifest = function (manifest) {
-        adguard.localStorage.setItem(SYNC_SETTINGS_TIMESTAMP_KEY, manifest.timestamp);
-
-        for (var i = 0; i < manifest.sections.length; i++) {
-            var section = manifest.sections[i];
-            if (section.name === FILTERS_SECTION) {
-                adguard.localStorage.setItem(SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY, section.timestamp);
+    /**
+     * Updates sync timestamp. If syncTime is passed it overrides manifest timestamps
+     * @param manifest
+     * @param syncTime
+     */
+    var updateManifestSyncTime = function (manifest, syncTime) {
+        if (syncTime) {
+            manifest.timestamp = syncTime;
+            for (var i = 0; i < manifest.sections.length; i++) {
+                manifest.sections[i].timestamp = syncTime;
             }
         }
+        saveSyncTimestamps(manifest);
     };
 
-    var saveFiltersSection = function (section, callback) {
-        //TODO: 5. Is it correct to clear lists first?
+    /**
+     * Applies filters section settings to application
+     * @param section Section
+     * @param callback Finish callback
+     */
+    var applyFiltersSection = function (section, callback) {
+
+        var whiteListSection = section.filters["whitelist"] || {}; // jshint ignore:line
+        var whitelistDomains = whiteListSection.domains || [];
+        var blacklistDomains = whiteListSection["inverted-domains"] || [];
+
+        // Apply whitelist/blacklist domains and whitelist mode
         adguard.whitelist.clearWhiteListed();
-        adguard.whitelist.addWhiteListed(section.filters["whitelist"].domains);
+        adguard.whitelist.addWhiteListed(whitelistDomains);
         adguard.whitelist.clearBlockListed();
-        adguard.whitelist.addBlockListed(section.filters["whitelist"]["inverted-domains"]);
-        adguard.whitelist.changeDefaultWhiteListMode(section.filters["whitelist"].inverted != true);
+        adguard.whitelist.addBlockListed(blacklistDomains);
+        adguard.whitelist.changeDefaultWhiteListMode(!whiteListSection.inverted);
 
+        var userFilterSection = section.filters["user-filter"] || {};
+        var userRules = userFilterSection.rules || "";
+
+        // Apply user rules
         adguard.userrules.clearRules();
-        adguard.userrules.addRules(section.filters["user-filter"].rules.split('\n'));
+        adguard.userrules.addRules(userRules.split('\n'));
 
-        var enabledFilterIds = section.filters['enabled-filters'];
+        // Apply enabled filters
+        var enabledFilterIds = section.filters['enabled-filters'] || [];
         adguard.filters.addAndEnableFilters(enabledFilterIds, function () {
-            adguard.localStorage.setItem(SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY, new Date().getTime());
-
             callback(true);
         });
+
+        //TODO: disable filters that are not in the list
     };
 
-    var loadSettingsSection = function(sectionName, callback) {
-        if (sectionName === FILTERS_SECTION) {
-            loadFiltersSection(callback);
-        } else {
-            adguard.console.error('Section {0} is not supported', sectionName);
-
-            callback(false);
+    /**
+     * Constructs section from application settings
+     * @param sectionName Section name
+     * @param callback Finish callback
+     */
+    var loadSection = function (sectionName, callback) {
+        switch (sectionName) {
+            case FILTERS_SECTION:
+                loadFiltersSection(callback);
+                break;
+            default:
+                adguard.console.error('Section {0} is not supported', sectionName);
+                callback(false);
         }
     };
 
     /**
-     * Saves settings section
+     * Apply section to application.
+     * Now we support only filters.json section
      *
-     * @param sectionName
-     * @param section
-     * @param callback
+     * @param sectionName Section name
+     * @param section Section object
+     * @param callback Finish callback
      */
-    var saveSettingsSection = function (sectionName, section, callback) {
-        if (sectionName === FILTERS_SECTION) {
-            saveFiltersSection(section, function (result) {
-                if (result) {
-                    //TODO: Trigger app settings update
-                    adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE);
-                }
-
-                callback(result);
-            });
-        } else {
-            adguard.console.error('Section {0} is not supported', sectionName);
-
-            callback(false);
+    var applySection = function (sectionName, section, callback) {
+        switch (sectionName) {
+            case FILTERS_SECTION:
+                applyFiltersSection(section, callback);
+                break;
+            default:
+                adguard.console.error('Section {0} is not supported', sectionName);
+                callback(false);
         }
     };
-
-    /**
-     * Updates settings record timestamp
-     */
-    var updateSettingsTimestamp = function () {
-        var time = new Date().getTime();
-        adguard.localStorage.setItem(SYNC_SETTINGS_TIMESTAMP_KEY, time);
-        adguard.localStorage.setItem(SYNC_SETTINGS_FILTERS_TIMESTAMP_KEY, time);
-    };
-
-    // TODO: Add listener on user settings changes/ filters updates
-    adguard.listeners.addListener(function (event) {
-        if (event === adguard.listeners.FILTER_ENABLE_DISABLE) {
-            console.log('update');
-            updateSettingsTimestamp();
-        }
-    });
 
     // EXPOSE
     return {
@@ -173,20 +233,20 @@ adguard.sync.settingsProvider = (function () { // jshint ignore:line
          */
         loadSettingsManifest: loadSettingsManifest,
         /**
+         * Gets empty settings manifest
+         */
+        getEmptySettingsManifest: getEmptySettingsManifest,
+        /**
          * Loads section of app settings
          */
-        loadSettingsSection: loadSettingsSection,
+        loadSection: loadSection,
         /**
-         * Saves app settings manifest
+         * Updates manifest and sections sync time
          */
-        saveSettingsManifest: saveSettingsManifest,
+        updateManifestSyncTime: updateManifestSyncTime,
         /**
-         * Saves section of app settings
+         * Apply section to application
          */
-        saveSettingsSection: saveSettingsSection,
-        /**
-         * Updates app settings timestamp
-         */
-        updateSettingsTimestamp: updateSettingsTimestamp
+        applySection: applySection
     };
 })();

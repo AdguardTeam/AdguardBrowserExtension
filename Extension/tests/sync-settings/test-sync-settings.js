@@ -49,7 +49,7 @@
 //     assert.ok(before["app-id"]);
 //     assert.ok(before["sections"].length > 0);
 //
-//     SettingsProvider.saveSettingsManifest(before);
+//     SettingsProvider.updateManifestSyncTime(before);
 //
 //     var updated = SettingsProvider.loadSettingsManifest();
 //     assert.ok(updated != null);
@@ -84,7 +84,7 @@
 //
 //     var onSectionSaved = function (result) {
 //         assert.ok(result);
-//         SettingsProvider.loadSettingsSection(filtersPath, onSectionUpdated);
+//         SettingsProvider.loadSection(filtersPath, onSectionUpdated);
 //     };
 //
 //     var onSectionLoaded = function (section) {
@@ -115,5 +115,5 @@
 //         SettingsProvider.saveSettingsSection(filtersPath, section, onSectionSaved);
 //     };
 //
-//     SettingsProvider.loadSettingsSection(filtersPath, onSectionLoaded);
+//     SettingsProvider.loadSection(filtersPath, onSectionLoaded);
 // });

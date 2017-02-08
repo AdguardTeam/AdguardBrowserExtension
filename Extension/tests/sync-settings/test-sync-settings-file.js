@@ -177,7 +177,7 @@ QUnit.test("Test file sync provider", function (assert) {
 //                 assert.notEqual(updatedSettingsManifest["sections"][0].timestamp, settingsManifest["sections"][0].timestamp);
 //                 assert.equal(updatedSettingsManifest["sections"][0].timestamp, manifest["sections"][0].timestamp);
 //
-//                 SettingsProvider.loadSettingsSection(filtersPath, function (section) {
+//                 SettingsProvider.loadSection(filtersPath, function (section) {
 //                     assert.ok(section);
 //                     assert.equal(section.filters["enabled-filters"].length, 1);
 //                     assert.equal(section.filters["enabled-filters"][0], 1);
