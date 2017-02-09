@@ -200,7 +200,21 @@
     global.adguardApi = {
         start: start,
         stop: stop,
-        configure: configure
+        configure: configure,
+        /**
+         *  Fired when a request is blocked
+         *  var onBlocked = function (details) {console.log(details);};
+         *  adguardApi.onRequestBlocked.addListener(onBlocked);
+         *  adguardApi.onRequestBlocked.removeListener(onBlocked);
+         *  details = {
+         *      tabId: ...,
+         *      requestUrl: "...",
+         *      referrerUrl: "...",
+         *      requestType: "...", see adguard.RequestTypes
+         *      rule: "..." // Rule text
+         *   };
+         */
+        onRequestBlocked: adguard.webRequestService.onRequestBlocked
     };
 
 })(adguard, window);

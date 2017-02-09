@@ -19,6 +19,8 @@ adguard.webRequestService = (function (adguard) {
 
     'use strict';
 
+    var onRequestBlockedChannel = adguard.utils.channels.newChannel();
+
     /**
      * Records filtering rule hit
      *
@@ -319,6 +321,13 @@ adguard.webRequestService = (function (adguard) {
 
         if (isRequestBlockedByRule(requestRule)) {
             adguard.listeners.notifyListenersAsync(adguard.listeners.ADS_BLOCKED, requestRule, tab, 1);
+            onRequestBlockedChannel.notify({
+                tabId: tab.tabId,
+                requestUrl: requestUrl,
+                referrerUrl: referrerUrl,
+                requestType: requestType,
+                rule: requestRule.ruleText
+            });
         }
 
         adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
@@ -350,7 +359,8 @@ adguard.webRequestService = (function (adguard) {
         getBlockedResponseByRule: getBlockedResponseByRule,
         getRuleForRequest: getRuleForRequest,
         processRequestResponse: processRequestResponse,
-        postProcessRequest: postProcessRequest
+        postProcessRequest: postProcessRequest,
+        onRequestBlocked: onRequestBlockedChannel
     };
 
 })(adguard);
