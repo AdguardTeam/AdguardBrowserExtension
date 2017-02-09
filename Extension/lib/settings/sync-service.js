@@ -397,28 +397,6 @@
         adguard.console.debug('Sync provider has been set');
     };
 
-    var syncRequiredEvents = [
-        adguard.listeners.FILTER_ENABLE_DISABLE,
-        adguard.listeners.UPDATE_WHITELIST_FILTER_RULES,
-        adguard.listeners.UPDATE_USER_FILTER_RULES];
-
-    adguard.listeners.addSpecifiedListener(syncRequiredEvents, adguard.utils.concurrent.debounce(function () {
-
-        if (!syncProvider) {
-            return;
-        }
-        //TODO: check if sync provider is correctly initialized (e.g. Dropbox is required in authorization)
-
-        // Override current sync time
-        var localManifest = api.settingsProvider.loadLocalManifest();
-        api.settingsProvider.syncLocalManifest(localManifest, Date.now());
-
-        syncSettings(function () {
-
-        });
-
-    }, 5000));
-
     // EXPOSE
     api.syncService = {
         /**
