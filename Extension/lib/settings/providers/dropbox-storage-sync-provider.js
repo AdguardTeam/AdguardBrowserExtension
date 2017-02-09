@@ -15,27 +15,20 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Dropbox */
+
 /**
  * Dropbox sync settings provider
  *
  * @type {{load, save, isAuthenticated}}
  */
-adguard.sync.dropboxSyncProvider = (function () { // jshint ignore:line
+(function (api, adguard) { // jshint ignore:line
 
     //TODO: Change to real
-    var CLIENT_ID = 'nu18d3bocnpkvg5';
+    var CLIENT_ID = 'bubtujvx7p81yjo';
 
     var accessToken;
     var dbx;
-
-    var isAuthorized = function () {
-        if (!accessToken) {
-            adguard.console.warn("Unauthorized! Please set access token first.");
-            return false;
-        }
-
-        return true;
-    };
 
     // API
     var load = function (filePath, callback) {
@@ -88,6 +81,15 @@ adguard.sync.dropboxSyncProvider = (function () { // jshint ignore:line
             });
     };
 
+    var isAuthorized = function () {
+        if (!accessToken) {
+            adguard.console.warn("Unauthorized! Please set access token first.");
+            return false;
+        }
+
+        return true;
+    };
+
     var getAuthenticationUrl = function (callbackUrl) {
         var dbx = new Dropbox({clientId: CLIENT_ID});
         return dbx.getAuthenticationUrl(callbackUrl);
@@ -99,7 +101,7 @@ adguard.sync.dropboxSyncProvider = (function () { // jshint ignore:line
     };
 
     // EXPOSE
-    return {
+    api.dropboxSyncProvider = {
         /**
          * Loads data from provider
          */
@@ -118,4 +120,5 @@ adguard.sync.dropboxSyncProvider = (function () { // jshint ignore:line
         setAccessToken: setAccessToken,
         isAuthorized: isAuthorized
     };
-})();
+
+})(adguard.sync, adguard);

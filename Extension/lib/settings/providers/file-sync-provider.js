@@ -17,10 +17,8 @@
 
 /**
  * Sync settings provider
- *
- * @type {{load, save}}
  */
-adguard.sync.fileSyncProvider = (function () { // jshint ignore:line
+(function (api, adguard) { // jshint ignore:line
 
     var requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
 
@@ -66,13 +64,13 @@ adguard.sync.fileSyncProvider = (function () { // jshint ignore:line
         };
 
         var onInitFs = function (fs) {
-            fs.root.getFile(path, {create: true}, function(fileEntry) {
+            fs.root.getFile(path, {create: true}, function (fileEntry) {
 
                 // Create a FileWriter object for our FileEntry (log.txt).
-                fileEntry.createWriter(function(fileWriter) {
+                fileEntry.createWriter(function (fileWriter) {
 
                     var truncated = false;
-                    fileWriter.onwriteend = function(e) {
+                    fileWriter.onwriteend = function (e) {
                         if (!truncated) {
                             truncated = true;
                             this.truncate(this.position);
@@ -82,7 +80,7 @@ adguard.sync.fileSyncProvider = (function () { // jshint ignore:line
                         callback(true);
                     };
 
-                    fileWriter.onerror = function(e) {
+                    fileWriter.onerror = function (e) {
                         adguard.console.error(e);
                         callback(false);
                     };
@@ -108,7 +106,7 @@ adguard.sync.fileSyncProvider = (function () { // jshint ignore:line
     };
 
     // EXPOSE
-    return {
+    api.fileSyncProvider = {
         /**
          * Loads data from provider
          */
@@ -118,4 +116,5 @@ adguard.sync.fileSyncProvider = (function () { // jshint ignore:line
          */
         save: save
     };
-})();
+
+})(adguard.sync, adguard);

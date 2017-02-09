@@ -17,78 +17,55 @@
 
 /**
  * Application settings provider.
- *
- * @type {{loadSettingsManifest, loadFiltersSection, updateManifestSyncTime, saveFiltersSection}}
  */
-adguard.sync.settingsProvider = (function () { // jshint ignore:line
+(function (api, adguard) { // jshint ignore:line
 
     var PROTOCOL_VERSION = "1.0";
     var APP_ID = "adguard-browser-extension";
 
     var FILTERS_SECTION = "filters.json";
 
-    var SYNC_TIMESTAMPS_PROP = "sync-timestamps";
-
-    /**
-     * Loads sync timestamps from local storage
-     * @returns {{timestamp: number, sections: {}}}
-     */
-    function loadSyncTimestamps() {
-        var timestamps = {
-            timestamp: 0,
-            sections: {}
-        };
-        var item = adguard.localStorage.getItem(SYNC_TIMESTAMPS_PROP);
-        if (!item) {
-            return timestamps;
-        }
-        return JSON.parse(item);
-    }
-
-    /**
-     * Save sync timestamps to local storage
-     * @param manifest
-     */
-    function saveSyncTimestamps(manifest) {
-        var timestamps = {
-            timestamp: manifest.timestamp,
-            sections: {}
-        };
-        for (var i = 0; i < manifest.sections.length; i++) {
-            var section = manifest.sections[i];
-            timestamps.sections[section.name] = section.timestamp;
-        }
-        adguard.localStorage.setItem(SYNC_TIMESTAMPS_PROP, JSON.stringify(timestamps));
-    }
+    var SYNC_MANIFEST_PROP = "sync-manifest";
 
     /**
      * Loads local manifest object
      */
-    var loadSettingsManifest = function () {
-        var timestamps = loadSyncTimestamps();
-        return {
-            "timestamp": timestamps.timestamp || 0,
+    var loadLocalManifest = function () {
+        var manifest = {
             "protocol-version": PROTOCOL_VERSION,
             "min-compatible-version": PROTOCOL_VERSION,
             "app-id": APP_ID,
+            "timestamp": 0,
             "sections": [
                 {
                     "name": FILTERS_SECTION,
-                    "timestamp": timestamps.sections[FILTERS_SECTION] || 0
+                    "timestamp": 0
                 }
             ]
         };
+        var item = adguard.localStorage.getItem(SYNC_MANIFEST_PROP);
+        if (!item) {
+            return manifest;
+        }
+        try {
+            var localManifest = JSON.parse(item);
+            manifest.timestamp = localManifest.timestamp;
+            manifest.sections = localManifest.sections;
+        } catch (ex) {
+            adguard.console.error('Error parsing local manifest {0}, {1}', item, ex);
+        }
+        return manifest;
     };
 
     /**
      * Creates empty settings manifest.
      */
-    var getEmptySettingsManifest = function () {
+    var getEmptyLocalManifest = function () {
         return {
-            "timestamp": 0,
             "protocol-version": PROTOCOL_VERSION,
             "min-compatible-version": PROTOCOL_VERSION,
             "app-id": APP_ID,
+            "timestamp": 0,
             "sections": [
                 {
                     "name": FILTERS_SECTION,
@@ -143,18 +120,18 @@ adguard.sync.settingsProvider = (function () { // jshint ignore:line
     };
 
     /**
-     * Updates sync timestamp. If syncTime is passed it overrides manifest timestamps
-     * @param manifest
-     * @param syncTime
+     * Saves manifest and its sections timestamps. If syncTime is passed, timestamps are updated with this value
+     * @param manifest Manifest
+     * @param syncTime Synchronization time
      */
-    var updateManifestSyncTime = function (manifest, syncTime) {
+    var syncLocalManifest = function (manifest, syncTime) {
         if (syncTime) {
             manifest.timestamp = syncTime;
             for (var i = 0; i < manifest.sections.length; i++) {
                 manifest.sections[i].timestamp = syncTime;
             }
         }
-        saveSyncTimestamps(manifest);
+        adguard.localStorage.setItem(SYNC_MANIFEST_PROP, JSON.stringify(manifest));
     };
 
     /**
@@ -185,10 +162,15 @@ adguard.sync.settingsProvider = (function () { // jshint ignore:line
         // Apply enabled filters
         var enabledFilterIds = section.filters['enabled-filters'] || [];
         adguard.filters.addAndEnableFilters(enabledFilterIds, function () {
+            var enabledFilters = adguard.filters.getEnabledFilters();
+            for (var i = 0; i < enabledFilters.length; i++) {
+                var filterId = enabledFilters[i].filterId;
+                if (enabledFilterIds.indexOf(filterId) < 0) {
+                    adguard.filters.disableFilter(filterId);
+                }
+            }
             callback(true);
         });
-
-        //TODO: disable filters that are not in the list
     };
 
     /**
@@ -227,26 +209,29 @@ adguard.sync.settingsProvider = (function () { // jshint ignore:line
     };
 
     // EXPOSE
-    return {
+    api.settingsProvider = {
         /**
          * Loads app settings manifest
          */
-        loadSettingsManifest: loadSettingsManifest,
+        loadLocalManifest: loadLocalManifest,
         /**
          * Gets empty settings manifest
          */
-        getEmptySettingsManifest: getEmptySettingsManifest,
+        getEmptyLocalManifest: getEmptyLocalManifest,
         /**
          * Loads section of app settings
          */
         loadSection: loadSection,
+
         /**
-         * Updates manifest and sections sync time
+         * Saves manifest to local storage
          */
-        updateManifestSyncTime: updateManifestSyncTime,
+        syncLocalManifest: syncLocalManifest,
+
         /**
          * Apply section to application
          */
         applySection: applySection
     };
-})();
+
+})(adguard.sync, adguard);

@@ -19,12 +19,8 @@
 
 /**
  * Sync settings provider
- *
- * @type {{load, save}}
  */
-adguard.sync.storageSyncProvider = (function () { // jshint ignore:line
-
-    // API
+(function (api, adguard) {
 
     /**
      * Loads file from chrome syncable storage.
@@ -74,7 +70,7 @@ adguard.sync.storageSyncProvider = (function () { // jshint ignore:line
     };
 
     // EXPOSE
-    return {
+    api.storageSyncProvider = {
         /**
          * Loads data from provider
          */
@@ -84,4 +80,5 @@ adguard.sync.storageSyncProvider = (function () { // jshint ignore:line
          */
         save: save
     };
-})();
+
+})(adguard.sync, adguard);

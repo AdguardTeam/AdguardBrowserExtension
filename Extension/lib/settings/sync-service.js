@@ -20,7 +20,7 @@
  *
  * @type {{syncSettings, setSyncProvider}}
  */
-adguard.sync.syncService = (function (adguard) { // jshint ignore:line
+(function (api, adguard) {
 
     var MANIFEST_PATH = "manifest.json";
 
@@ -42,33 +42,68 @@ adguard.sync.syncService = (function (adguard) { // jshint ignore:line
         var canRead = remoteManifest[MIN_COMPATIBLE_VERSION_PROP] <= localManifest[MIN_COMPATIBLE_VERSION_PROP];
         var canWrite = remoteManifest[PROTOCOL_VERSION_PROP] <= localManifest[PROTOCOL_VERSION_PROP];
 
+        if (!canRead) {
+            return {canRead: false};
+        }
+
+        var i;
+        var merge = {};
+
+        var localSection, remoteSection, sectionName;
+
+        for (i = 0; i < localManifest.sections.length; i++) {
+            localSection = localManifest.sections[i];
+            sectionName = localSection.name;
+            merge[sectionName] = {
+                timestamp: localSection.timestamp,
+                local: true
+            };
+        }
+
+        for (i = 0; i < remoteManifest.sections.length; i++) {
+
+            remoteSection = remoteManifest.sections[i];
+            sectionName = remoteSection.name;
+
+            localSection = merge[sectionName];
+
+            if (localSection && localSection.timestamp === remoteSection.timestamp) {
+                // Doing nothing. It's synced
+                delete merge[sectionName];
+                continue;
+            }
+
+            if (!localSection || localSection.timestamp < remoteSection.timestamp) {
+                // Local section doesn't exist or it's outdated
+                merge[sectionName] = {
+                    timestamp: remoteSection.timestamp,
+                    local: false
+                };
+            }
+
+            // Remote section doesn't exist or it's outdated. In this case we use local section, that is already in merge object
+        }
+
         var sectionsRemoteToLocal = [];
         var sectionsLocalToRemote = [];
 
-        if (canRead) {
-            for (var i = 0; i < remoteManifest.sections.length; i++) {
-                var remoteSection = remoteManifest.sections[i];
-                for (var j = 0; j < localManifest.sections.length; j++) {
-                    var localSection = localManifest.sections[j];
-                    if (localSection.name === remoteSection.name) {
-                        var sectionName = localSection.name;
-                        if (localSection.timestamp === remoteSection.timestamp) {
-                            //Do nothing it's synced
-                        } else if (localSection.timestamp < remoteSection.timestamp) {
-                            sectionsRemoteToLocal.push({
-                                name: sectionName,
-                                timestamp: remoteSection.timestamp
-                            });
-                        } else {
-                            if (canWrite) {
-                                sectionsLocalToRemote.push({
-                                    name: sectionName,
-                                    timestamp: localSection.timestamp
-                                });
-                            }
-                        }
-                    }
+        for (sectionName in merge) {
+            if (!merge.hasOwnProperty(sectionName)) {
+                continue;
+            }
+            var section = merge[sectionName];
+            if (section.local) {
+                if (canWrite) {
+                    sectionsLocalToRemote.push({
+                        name: sectionName,
+                        timestamp: section.timestamp
+                    });
                 }
+            } else {
+                sectionsRemoteToLocal.push({
+                    name: sectionName,
+                    timestamp: section.timestamp
+                });
             }
         }
 
@@ -80,8 +115,34 @@ adguard.sync.syncService = (function (adguard) { // jshint ignore:line
         };
     }
 
+    /**
+     * Validates remote manifest
+     * @param manifest
+     * @returns {*}
+     */
     function validateManifest(manifest) {
         return manifest[MIN_COMPATIBLE_VERSION_PROP] && manifest[PROTOCOL_VERSION_PROP];
+    }
+
+    function updateManifestSections(manifest, sections) {
+        for (var i = 0; i < sections.length; i++) {
+            var section = sections[i];
+            var found = false;
+            for (var j = 0; j < manifest.sections.length; j++) {
+                var manifestSection = manifest.sections[j];
+                if (manifestSection.name === section.name) {
+                    // Section found, update timestmap
+                    manifestSection.timestamp = section.timestamp;
+                    found = true;
+                }
+            }
+            if (!found) {
+                manifest.sections.push({
+                    name: section.name,
+                    timestamp: section.timestamp
+                });
+            }
+        }
     }
 
     /**
@@ -105,27 +166,26 @@ adguard.sync.syncService = (function (adguard) { // jshint ignore:line
 
             if (remoteManifest === false) {
                 // Unable to fetch remote manifest
-                //TODO: 1. Rethink if load failed it's not always correct to create new remote data
                 adguard.console.warn('Error loading remote manifest');
                 callback(false);
                 return;
             }
 
-            var localManifest = adguard.sync.settingsProvider.loadSettingsManifest();
+            var localManifest = api.settingsProvider.loadLocalManifest();
 
             if (!remoteManifest) {
 
                 adguard.console.info('Remote manifest does not exist');
-                remoteManifest = adguard.sync.settingsProvider.getEmptySettingsManifest();
+                remoteManifest = api.settingsProvider.getEmptyLocalManifest();
 
                 if (!localManifest.timestamp) {
-                    // Force update sync time, if it doesn't set
-                    adguard.sync.settingsProvider.updateManifestSyncTime(localManifest, Date.now());
+                    // Force sync manifest
+                    api.settingsProvider.syncLocalManifest(localManifest, Date.now());
                 }
             }
 
             if (!validateManifest(remoteManifest)) {
-                adguard.console.warn('Remote manifest not valid');
+                adguard.console.warn('Remote manifest is not valid');
                 callback(false);
                 return;
             }
@@ -138,7 +198,7 @@ adguard.sync.syncService = (function (adguard) { // jshint ignore:line
                 return;
             }
 
-            processSections(localManifest, remoteManifest, compatibility, function (success, updatedSections) {
+            processSections(compatibility.sectionsLocalToRemote, compatibility.sectionsRemoteToLocal, function (success, updatedSections) {
 
                 if (!success) {
                     callback(false);
@@ -149,23 +209,24 @@ adguard.sync.syncService = (function (adguard) { // jshint ignore:line
 
                 // Mark manifests as synchronized
                 var syncTime = Math.max(localManifest.timestamp, remoteManifest.timestamp);
-                localManifest.timestamp = syncTime;
-                remoteManifest.timestamp = syncTime;
 
                 // Setup sync time for updated local sections
-                adguard.console.debug('Saving local manifest..');
-                syncSectionsTimestamp(localManifest.sections, updatedSections.remoteToLocal);
-                adguard.sync.settingsProvider.updateManifestSyncTime(localManifest);
+                if (updatedSections.remoteToLocal.length > 0) {
+                    adguard.console.debug('Saving local manifest..');
+                    localManifest.timestamp = syncTime;
+                    updateManifestSections(localManifest, updatedSections.remoteToLocal);
+                    api.settingsProvider.syncLocalManifest(localManifest);
+                }
 
-                if (compatibility.canWrite) {
+                if (compatibility.canWrite && updatedSections.localToRemote.length > 0) {
 
-                    adguard.console.debug('Saving remote manifest..');
+                    // Sets that the browser extension has applied the last changes
+                    remoteManifest["app-id"] = localManifest["app-id"];
 
                     // Setup sync time for updated remote sections
-                    syncSectionsTimestamp(remoteManifest.sections, updatedSections.localToRemote);
-
-                    // TODO: why do we need this?
-                    remoteManifest["app-id"] = localManifest["app-id"];
+                    adguard.console.debug('Saving remote manifest..');
+                    remoteManifest.timestamp = syncTime;
+                    updateManifestSections(remoteManifest, updatedSections.localToRemote);
 
                     syncProvider.save(MANIFEST_PATH, remoteManifest, callback);
 
@@ -183,12 +244,11 @@ adguard.sync.syncService = (function (adguard) { // jshint ignore:line
      * Processes sections synchronization.
      * Return object with updates sections info.
      *
-     * @param localManifest Local manifest
-     * @param remoteManifest Remove manifest
-     * @param compatibility Compatibility object
+     * @param sectionsLocalToRemote Array of local sections that should be push to remote
+     * @param sectionsRemoteToLocal Array of remote sections that should be applied to local
      * @param callback Finish callback
      */
-    function processSections(localManifest, remoteManifest, compatibility, callback) {
+    function processSections(sectionsLocalToRemote, sectionsRemoteToLocal, callback) {
 
         var updatedSections = {
             localToRemote: [],
@@ -206,13 +266,13 @@ adguard.sync.syncService = (function (adguard) { // jshint ignore:line
         var dfds = [];
         var dfd;
 
-        for (var i = 0; i < compatibility.sectionsLocalToRemote.length; i++) {
-            dfd = updateLocalToRemoteSection(compatibility.sectionsLocalToRemote[i], pushLocalToRemoteSection);
+        for (var i = 0; i < sectionsLocalToRemote.length; i++) {
+            dfd = updateLocalToRemoteSection(sectionsLocalToRemote[i], pushLocalToRemoteSection);
             dfds.push(dfd);
         }
 
-        for (var j = 0; j < compatibility.sectionsRemoteToLocal.length; j++) {
-            dfd = updateRemoteToLocalSection(compatibility.sectionsRemoteToLocal[j], pushRemoteToLocalSection);
+        for (var j = 0; j < sectionsRemoteToLocal.length; j++) {
+            dfd = updateRemoteToLocalSection(sectionsRemoteToLocal[j], pushRemoteToLocalSection);
             dfds.push(dfd);
         }
 
@@ -223,23 +283,6 @@ adguard.sync.syncService = (function (adguard) { // jshint ignore:line
             adguard.console.error('Sections update failed');
             callback(false, updatedSections);
         });
-    }
-
-    /**
-     * Updates sections timestamps
-     *
-     * @param sections
-     * @param updatedSections
-     */
-    function syncSectionsTimestamp(sections, updatedSections) {
-        for (var i = 0; i < sections.length; i++) {
-            var section = sections[i];
-            for (var j = 0; j < updatedSections.length; j++) {
-                if (section.name === updatedSections[j].name) {
-                    section.timestamp = updatedSections[j].timestamp;
-                }
-            }
-        }
     }
 
     /**
@@ -275,7 +318,7 @@ adguard.sync.syncService = (function (adguard) { // jshint ignore:line
         };
 
         // Constructs section object from application settings
-        adguard.sync.settingsProvider.loadSection(sectionName, onSectionLoaded);
+        api.settingsProvider.loadSection(sectionName, onSectionLoaded);
 
         return dfd;
     }
@@ -307,7 +350,7 @@ adguard.sync.syncService = (function (adguard) { // jshint ignore:line
 
             adguard.console.debug('Remote {0} section loaded', sectionName);
 
-            adguard.sync.settingsProvider.applySection(sectionName, remoteSection, function (success) {
+            api.settingsProvider.applySection(sectionName, remoteSection, function (success) {
                 if (success) {
                     adguard.console.info('Local {0} section applied', sectionName);
                     callback(section);
@@ -367,8 +410,8 @@ adguard.sync.syncService = (function (adguard) { // jshint ignore:line
         //TODO: check if sync provider is correctly initialized (e.g. Dropbox is required in authorization)
 
         // Override current sync time
-        var localManifest = adguard.sync.settingsProvider.loadSettingsManifest();
-        adguard.sync.settingsProvider.updateManifestSyncTime(localManifest, Date.now());
+        var localManifest = api.settingsProvider.loadLocalManifest();
+        api.settingsProvider.syncLocalManifest(localManifest, Date.now());
 
         syncSettings(function () {
 
@@ -377,7 +420,7 @@ adguard.sync.syncService = (function (adguard) { // jshint ignore:line
     }, 5000));
 
     // EXPOSE
-    return {
+    api.syncService = {
         /**
          * Synchronizes settings between current application and sync provider
          */
@@ -388,4 +431,4 @@ adguard.sync.syncService = (function (adguard) { // jshint ignore:line
         setSyncProvider: setSyncProvider
     };
 
-})(adguard);
+})(adguard.sync, adguard);
