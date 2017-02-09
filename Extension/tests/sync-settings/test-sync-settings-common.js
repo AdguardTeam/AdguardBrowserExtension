@@ -23,27 +23,3 @@ var checkManifestData = function (assert, data) {
     assert.equal(data["sections"][0].name, manifest["sections"][0].name);
     assert.equal(data["sections"][0].timestamp, manifest["sections"][0].timestamp);
 };
-
-var filters = {
-    "filters": {
-        "enabled-filters": [
-            "1",
-            "2",
-            "4"
-        ],
-        "custom-filters": [
-            "http://filter-url"
-        ],
-        "user-filter": {
-            "rules": "||test1.org/$script\n||test2.org/$script",
-            "disabled-rules": ""
-        },
-        "whitelist": {
-            "inverted": false,
-            "domains": [
-                "whitelisted-domain"
-            ],
-            "inverted-domains": []
-        }
-    }
-};
