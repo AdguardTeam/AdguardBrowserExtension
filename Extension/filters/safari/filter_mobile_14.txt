@@ -1,6 +1,6 @@
-! Checksum: SbrYVwCIRHlsX/jOmoOYfQ
-! Version: 1.0.9.85
-! TimeUpdated: 2017-02-07T14:02:19.888+04:00
+! Checksum: 3an9h12vZ+rpc/xZ/0frlw
+! Version: 1.0.9.92
+! TimeUpdated: 2017-02-09T12:02:14.606+04:00
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on webpages including cookie notices third-party widgets and in-page popups.
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
@@ -178,6 +178,11 @@ povarenok.ru##.header-socials
 /wp-content/*/an-temp/*
 @@||ds.bitpit.xyz/advertise.js
 @@||ds.bitpit.xyz/ad-top/advertise.js
+||gamekings.tv/wp-content/themes/gamekings2016/img/zwervers.gif
+gamekings.tv##.addblocker-detected
+nowloading.co##.supplication
+@@||assets.nowloading.co/js/vendor/advertising.js^
+wowhead.com##.vertical-bg.is-atf
 ||windowstechblog.nl/wp-content/uploads/*/*.js$script
 gismeteo.ru##div[class^="stopblock"]
 newsnow.co.uk#@#.adsbox
@@ -2117,6 +2122,10 @@ _europecookielaw.
 ||consent.truste.com^$third-party
 ||iubenda.com^$third-party
 ||r42tag.com^$third-party
+seat.com##.cp1CookieBanner
+mclaren.com##.messages.show
+astonmartin.com###cookieheader
+designhousestockholm.com###Cookies
 newsnow.co.uk###pmbar
 grammaring.com##body > #sliding-popup
 nordbayerischer-kurier.de##div#sliding-popup
@@ -2799,6 +2808,8 @@ momondo.de#$##mobile-splash-popup { display: none!important; }
 /wp-content/plugins/arscode-ninja-popups/*
 /wp-content/plugins/facebook-fanbox-popup/*
 ||optnmnstr.com^$third-party
+31tv.ru###fancybox-overlay
+31tv.ru###fancybox-wrap
 itpro.co.uk###block-dennis-newsletter-newsletter-block
 unn.com.ua###social_popup
 unn.com.ua##.jqmOverlay
@@ -3216,6 +3227,7 @@ zr.ru#%#document.cookie = "zrPushSubsPopUp=1";
 ||ndtv.com/popupNotification.aspx
 ||superzarabotki.com/notify/
 ||tsn.ua/static/js/push.js
+asyafanatikleri.net##div[style="width: 581px; height: auto; float: left; margin-top: 10px; margin-left: 10px; padding: 5px 5px;"]
 pornolab.biz,pornolab.cc,pornolab.lib,pornolab.net##.forums > tbody > tr[id^="f-"][-ext-has=' > td > p.forum_desc.hidden > script']
 porndoe.com##div[data-subscript="Advertising"]
 porndoe.com##div[data-supscript="Advertising"]
@@ -3542,6 +3554,7 @@ drive2.ru###side-dv-pinned
 drive2.ru##.c-block > div[class^="c-dv-"]
 xtreme.ws##aside[role="complementary"] > div.counter1
 ubuntumaniac.com##div[class="widget HTML"][id^="HTML"][-ext-has='a[class="quickedit"]']
+muzikindir.xyz##body > nav.navbar-fixed-top+div.sub-header
 rgmechanics.com##.footer > div.section-inner > div.column-3
 digitalfernsehen.de##.service_zeile_unten
 direkizlehd.tv##.film_meta > ul > li[class]
@@ -3686,6 +3699,7 @@ revclouds.com#%#AG_onLoad(function() {document.getElementById("tick-dwn").click(
 /wp-content/plugins/disable-right-click/*
 /wp-content/plugins/digiproveblog/*$domain=~wordpress.org
 lavka-invaitov.ru#$#body * { -webkit-user-select: text!important; -moz-user-select: text!important; }
+f4freesoftware.com#%#Object.defineProperties(document,{oncontextmenu:{set:function(){}},ondragstart:{set:function(){}}});
 half-musiq.blogspot.com#%#Object.defineProperty(document, 'onselectstart', { get: function() { return; } });
 half-musiq.blogspot.com#%#Object.defineProperty(document, 'onmousedown', { get: function() { return; } });
 antenasport.eu#%#Object.defineProperty(document, 'onmousedown', { get: function() { return; } });
@@ -3759,6 +3773,8 @@ pesni-tut.com##.r_m_genre_songs+div[id]+div:not([id])
 rosbalt.ru##.ad_tele
 ||finam.ru/widget/$third-party
 ##.gsInformer
+31tv.ru##div[id^="gsInformerID-"]
+/gs_informerClient.min.$third-party
 /gs_informerClient.s$third-party
 ||gismeteo.*/ajax/getInformer/$third-party
 ua.today###meteoprog_informer_standart
@@ -3779,3 +3795,5 @@ anime-skorpik.com###sgeChat
 tuttosportweb.com###sidebar
 ||tuttosportweb.com/tochat
 ||money.yandex.ru/embed/$domain=samlab.ws
+f4freesoftware.com#$#.onp-sl-content {display:block!important;}
+f4freesoftware.com#$#.onp-sl-social-locker {display:none!important;}

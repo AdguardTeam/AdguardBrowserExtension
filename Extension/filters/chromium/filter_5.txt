@@ -1,6 +1,6 @@
-! Checksum: w3KOGxalqG4nsCwlTsx4jA
-! Version: 1.0.26.50
-! TimeUpdated: 2017-02-02T21:30:28.192+04:00
+! Checksum: X+Qpz685tULnkTzUUjSnxg
+! Version: 1.0.26.51
+! TimeUpdated: 2017-02-08T21:30:14.183+04:00
 ! Title: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! Title: Adguard Experimental Filter
@@ -221,6 +221,9 @@ antiblock.org#%#AG_onLoad(function() { AG_AntiAntiBlock(); });
 ! fake browser update
 ~junodownload.com#%#document.onmouseout = null; window.onbeforeunload = null; window.blur = null;
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/4322
+wowhead.com###page-content > div[class="main"] > div[class="blocks"]
+wowhead.com##div[class="wrapper"] > div[class="blocks"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4175
 rgmechanics.com##.sidebar.fright > div.widget.widget_text
 ! https://forum.adguard.com/index.php?threads/18762/

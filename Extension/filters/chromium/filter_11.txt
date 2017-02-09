@@ -1,6 +1,6 @@
-! Checksum: SEBdzn07VCKL7xIMkDxZFw
-! Version: 1.0.7.1
-! TimeUpdated: 2017-02-07T20:01:42.308+04:00
+! Checksum: uqi12jwawD8FSqQAaSPU4w
+! Version: 1.0.7.3
+! TimeUpdated: 2017-02-08T17:01:42.349+04:00
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
 ! Title: Adguard Mobile Ads Filter
@@ -881,6 +881,8 @@ deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important
 !
 !#####################
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/4317
+@@||films.imhonet.ru^$jsinject
 ! https://forum.adguard.com/index.php?threads/le-bon-coin-apk-from-googleplay.18840/ fix ?ad_id= in Liste FR
 @@||mobile.leboncoin.fr/templates/api/view.json?ad_id=$app=fr.leboncoin
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4243
@@ -1449,6 +1451,7 @@ login.wi-fi.ru#%#window.isPremium = true;
 !
 ! Section contains rules for mobile analytics and spyware
 !
+buffed.de##.shopLinkButtonsWrapper
 ||logger.ntracecloud.com^
 ||ymtracking.com^
 ||bidder.mdspinc.com^

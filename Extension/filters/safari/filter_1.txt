@@ -1,6 +1,6 @@
-! Checksum: Q+njhRmiDfDFE87FlkIBWw
-! Version: 1.0.46.65
-! TimeUpdated: 2017-02-07T19:13:44.329+04:00
+! Checksum: HU3RetXfZ4LmE6zu4dNIBA
+! Version: 1.0.46.74
+! TimeUpdated: 2017-02-09T14:01:32.272+04:00
 ! Title: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 ! Title: Adguard Russian Filter
@@ -3946,7 +3946,8 @@ rango-hack.ru##.svg-adblock
 ! https://forum.adguard.com/index.php?threads/18882/
 @@||track24.ru$generichide
 ! https://forum.adguard.com/index.php?threads/18580/
-@@||ukr.net^$generichide
+@@||www.ukr.net^$generichide
+www.ukr.net#%#Object.defineProperty(window, 'whore', { get: function(){ return false; } });
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4075
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=wormax.io
 @@||googleads.g.doubleclick.net/pagead/ads?sdkv=*&url=http%3A%2F%2Fwormax.io
@@ -7620,7 +7621,7 @@ gismeteo.ru##.article > div.article__ctrls
 gismeteo.ru##.media_with_map > div.media_left
 gismeteo.ru##.main.withoutFav > div.news_frame+div[class="__frame"]
 gismeteo.ru##.flexbox > div.right_col_2
-gismeteo.ru##.flexbox > div.right_col_1 > div.wrap_small.__frame
+gismeteo.ru##.flexbox > div.right_col_1 > div.wrap_small.__frame > div:not([class^="weather_now"])
 gismeteo.ru##.media_frame.x400
 !
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1289
@@ -7661,6 +7662,22 @@ rustorka.com##a[href$=".php"]:not([class]) > :not(img)
 ||bigmp4data.ru/*.js|
 ||onestreamget.ru/*.js|
 !
+||serpens.nl^$third-party,script
+online-life.cc##noindex > div[class^="brnding"]
+online-life.cc##.head-height
+||31tv.ru/bi.php?url=
+www.ukr.net##section.commercial-right-block > *
+www.ukr.net##.commercial-left-block
+windowslatest.com##.td-header-sp-recs
+katushka.net##div[style*="text-align: center;"] > a[rel="nofollow"] > img
+techsupport.diary.ru##.rotator-zone
+sports.ru##a[href^="http://winline"]
+beta.gismeteo.ru##body > section.crtframe+section.media_top
+beta.gismeteo.ru##body > section.crtframe
+newrutor.org##center > a[rel="nofollow"][href^="http"] > img
+18pornoonline.ru##.sexx
+allserials.net##iframe[src^="https://www.youtube.com/embed/"]
+kinogo-1080.net##div[style="line-height: 1px; margin-left:3px; padding-bottom:30px;"]
 dialog.ua##table.NMg
 ||mirorgazmov.net/templates/$script
 gismeteo.ru##body > section.crframe > div.wrap > div.mt_frame
@@ -7870,7 +7887,6 @@ pornobudka.org##.visitweb_videoplayer
 ekranka.tv##.invideo
 kinoklad.net##.reklamal
 ||seopickup.ru/banners/
-ukr.net##div[id^="ecbr-"]
 ||imagebam.com/*.php?$script
 kinopictures.net###adv_kod_frame
 kinokrik.net###utPlayer
@@ -8387,8 +8403,6 @@ galka.if.ua##.banners_news
 galka.if.ua##.rel_news a:not([href^="http://www.galka.if.ua"]) > img
 galka.if.ua##a[href^="http://vambud.com.ua/"]
 galka.if.ua##.header > div.wrapper > a:not([class]) > img
-ukr.net##div[class^="commercial-"]
-www.ukr.net##div[data-side][hr]
 gta.com.ua##.leftbox > div[style^="border:"] > a[rel="nofollow"] > img
 gta.com.ua##div#main_nav[style="height:80px"]
 ||personalbanker.com.ua/images/Other/Banners-PB/
@@ -9700,7 +9714,7 @@ free-torrent.org,free-torrent.pw,free-torrents.org,free-torrents.pw##div > div[s
 free-torrent.org,free-torrents.org##.visitweb_ad
 free-torrent.org,free-torrents.org##div[id^="b_pr_"]
 free-torrent.org,free-torrents.org##td[width="77%"] > fieldset[style="text-align: center !important; display: inline; width: 82%; border: 8px solid black;"]
-free-torrent.org,free-torrents.org,turbobit.net,tv-torrent.org,kinospy.net##div[id^="b_bn_"]
+kinogo-1080.net,free-torrent.org,free-torrents.org,turbobit.net,tv-torrent.org,kinospy.net##div[id^="b_bn_"]
 free-torrent.org.ua##a[class="partfile"][href^="/engine/go.php"]
 free-torrents.org###page_header + center
 free-torrents.org##.forumline.dl_list ~ table[width="100%"] noindex > center
@@ -9808,7 +9822,7 @@ gigart.ru,unikalsoft.ru###top
 gigporno.com##a[href*="/adv.php"]
 gigporno.com##div[style="WIDTH: 975px; HEIGHT: 255px; background: #EEEEEE;"]
 gismeteo.by##.__frame > div.media_middle
-gismeteo.by##.right_col_1 > div.wrap_small.__frame
+gismeteo.by##.right_col_1 > div.wrap_small.__frame > div:not([class^="weather_now"])
 gismeteo.by##body > section.media_top
 gismeteo.by##div.media_frame.x400
 gismeteo.ru,gismeteo.kz,gismeteo.md,gismeteo.ua##div#weather-left[id="weather-left"]
@@ -11752,15 +11766,7 @@ uapress.info##.jq_roll_banner
 udaff.com###objav
 udaff.com##a[href="http://libertyou2caz5lr.onion.to/"]
 ugyalta.com##.banner__img
-ukr.net###ad_ph_1
-ukr.net##.bonprix
-ukr.net##.book
-ukr.net##.commercial-left-block
-ukr.net##.commercial-right-block
-ukr.net##.emarket
-ukr.net##.onona
-ukr.net##.prestige
-ukr.net##.restoraunt
+www.ukr.net###ad_ph_1
 ukrainefootball.net###bg-advert
 ulmart.ru##._brick_720x90
 ultimatv.org###google_adsence_horizontal
@@ -14190,6 +14196,8 @@ joyreactor.cc#@#div#sidebar
 @@||vetton.ru^$jsinject,elemhide
 !#################
 !
+! mymagic.ru - при вырезании iframe кнопки Like, страница ломается
+@@||mymagic.ru^$content
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4280
 oma.by#@#.banners-block
 ! https://forum.adguard.com/index.php?threads/19303/
