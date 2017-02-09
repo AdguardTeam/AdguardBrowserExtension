@@ -115,7 +115,6 @@
             }
         };
 
-        console.log(section);
         callback(section);
     };
 

@@ -1,5 +1,4 @@
 var manifestPath = 'manifest.json';
-var filtersPath = 'filters.json';
 
 var manifest = {
     "timestamp": "1472817032841",
