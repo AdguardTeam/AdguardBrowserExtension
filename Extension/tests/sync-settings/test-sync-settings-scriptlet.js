@@ -1,3 +1,7 @@
+/**
+ * The contents of this file should be pasted to extension background console.
+ */
+
 var manifestPath = 'manifest.json';
 var filtersPath = 'filters.json';
 
