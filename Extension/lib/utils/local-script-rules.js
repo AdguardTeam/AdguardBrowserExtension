@@ -25,4 +25,36 @@
  * 3. We allow only custom rules got from the User filter (which user creates manually)
  *    or from this DEFAULT_SCRIPT_RULES object
  */
-var DEFAULT_SCRIPT_RULES = exports.DEFAULT_SCRIPT_RULES = Object.create(null);
+exports.LocalScriptRulesSevice = (function () {
+
+    var DEFAULT_SCRIPT_RULES = Object.create(null);
+
+    /**
+     * Saves local script rules to object
+     * @param json JSON object loaded from the filters/local_script_rules.json file
+     */
+    var setLocalScriptRules = function (json) {
+
+        DEFAULT_SCRIPT_RULES = Object.create(null);
+
+        var rules = json.rules;
+        for (var i = 0; i < rules.length; i++) {
+            DEFAULT_SCRIPT_RULES[rules[i].script] = true;
+        }
+    };
+
+    /**
+     * Checks js rule is local
+     * @param script ScriptFilterRule.script field
+     * @returns {boolean}
+     */
+    var isLocal = function (script) {
+        return script in DEFAULT_SCRIPT_RULES;
+    };
+
+    return {
+        setLocalScriptRules: setLocalScriptRules,
+        isLocal: isLocal
+    };
+
+})();

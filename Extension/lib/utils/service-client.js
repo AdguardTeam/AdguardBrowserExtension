@@ -280,6 +280,30 @@ ServiceClient.prototype = {
 	},
 
 	/**
+	 * Loads script rules from local file
+	 *
+	 * @param successCallback   Called on success
+	 * @param errorCallback     Called on error
+	 */
+	loadLocalScriptRules: function (successCallback, errorCallback) {
+
+		var success = function (response) {
+			if (response && response.responseText) {
+				var metadata = this._parseJson(response.responseText);
+				if (!metadata) {
+					errorCallback(response, 'invalid response');
+					return;
+				}
+				successCallback(metadata);
+			} else {
+				errorCallback(response, 'empty response');
+			}
+		}.bind(this);
+
+		this._executeRequestAsync(Prefs.localScriptRulesPath, 'application/json', success, errorCallback);
+	},
+
+	/**
 	 * Checks specified host hashes with our safebrowsing service
 	 *
 	 * @param hashes                Host hashes

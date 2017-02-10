@@ -42,7 +42,7 @@ var Promise = exports.Promise = function () {
 	};
 
 	this.then = function (onSuccess, onReject) {
-		promise.then(onSuccess, onReject);
+		return promise.then(onSuccess, onReject);
 	};
 };
 

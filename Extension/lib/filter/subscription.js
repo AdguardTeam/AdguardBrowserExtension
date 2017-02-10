@@ -25,6 +25,7 @@ var Log = require('../../lib/utils/log').Log;
 var Prefs = require('../../lib/prefs').Prefs;
 var ServiceClient = require('../../lib/utils/service-client').ServiceClient;
 var Promise = require('../../lib/utils/promises').Promise;
+var LocalScriptRulesSevice = require('../../../lib/utils/local-script-rules').LocalScriptRulesSevice;
 
 var Locale = Prefs.locale.substring(0, 2).toLowerCase();
 
@@ -49,13 +50,14 @@ SubscriptionService.prototype = {
 	 */
 	init: function (callback) {
 
-		var errorCallback = function (request, cause) {
-			Log.error('Error loading metadata, cause: {0} {1}', request.statusText, cause);
+		var errorCallback = function () {
+			Log.error('Error loading metadata');
 		};
 
-		this._loadMetadata(function () {
-			this._loadMetadataI18n(callback, errorCallback);
-		}.bind(this), errorCallback);
+		this._loadMetadata()
+			.then(this._loadMetadataI18n.bind(this), errorCallback)
+			.then(this._loadLocalScriptRules.bind(this), errorCallback)
+			.then(callback, errorCallback);
 	},
 
 	/**
@@ -86,7 +88,9 @@ SubscriptionService.prototype = {
 		return filtersLanguages;
 	},
 
-	_loadMetadata: function (successCallback, errorCallback) {
+	_loadMetadata: function () {
+
+		var dfd = new Promise();
 
 		this.serviceClient.loadLocalFiltersMetadata(function (metadata) {
 
@@ -102,12 +106,16 @@ SubscriptionService.prototype = {
 			}
 
 			Log.info('Filters metadata loaded');
-			successCallback();
+			dfd.resolve();
 
-		}.bind(this), errorCallback);
+		}.bind(this), dfd.reject);
+
+		return dfd;
 	},
 
-	_loadMetadataI18n: function (successCallback, errorCallback) {
+	_loadMetadataI18n: function () {
+
+		var dfd = new Promise();
 
 		this.serviceClient.loadLocalFiltersI18Metadata(function (i18nMetadata) {
 
@@ -123,9 +131,28 @@ SubscriptionService.prototype = {
 			}
 
 			Log.info('Filters i18n metadata loaded');
-			successCallback();
+			dfd.resolve();
 
-		}.bind(this), errorCallback);
+		}.bind(this), dfd.reject);
+
+		return dfd;
+	},
+
+	/**
+	 * Loads script rules from local file
+	 * @returns {exports.Promise}
+	 * @private
+	 */
+	_loadLocalScriptRules: function () {
+
+		var dfd = new Promise();
+
+		this.serviceClient.loadLocalScriptRules(function (json) {
+			LocalScriptRulesSevice.setLocalScriptRules(json);
+			dfd.resolve();
+		}, dfd.reject);
+
+		return dfd;
 	},
 
 	_applyGroupLocalization: function (group, i18nMetadata) {

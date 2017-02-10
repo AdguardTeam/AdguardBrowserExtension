@@ -25,7 +25,6 @@ import java.io.File;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
-import java.util.Set;
 
 public class Main {
 
@@ -92,11 +91,10 @@ public class Main {
         if (updateFilters) {
             FilterUtils.updateGroupsAndFiltersMetadata(source, browser);
             FilterUtils.updateLocalFilters(source, browser);
+            FilterUtils.updateLocalScriptRules(source, browser);
         }
 
-        Set<String> scriptRules = FilterUtils.getScriptRules(source, browser);
-
-        File buildResult = createBuild(source, dest, scriptRules, extensionId, updateUrl, browser, version, branch);
+        File buildResult = createBuild(source, dest, extensionId, updateUrl, browser, version, branch);
 
         File packedFile = null;
         if (packMethod != null) {
@@ -176,9 +174,6 @@ public class Main {
      *
      * @param source      Source path
      * @param dest        Destination folder
-     * @param scriptRules List of javascript injection rules.
-     *                    For AMO and addons.opera.com we embed all
-     *                    js rules into the extension and do not update them
      *                    from remote server.
      * @param extensionId Extension identifier (Use for safari)
      * @param updateUrl   Add to manifest update url.
@@ -192,7 +187,6 @@ public class Main {
      * @throws Exception
      */
     private static File createBuild(File source, File dest,
-                                    Set<String> scriptRules,
                                     String extensionId, String updateUrl, Browser browser, String version, String branch) throws Exception {
 
         if (dest.exists()) {
@@ -203,7 +197,6 @@ public class Main {
         FileUtil.copyFiles(source, dest, browser);
 
         SettingUtils.writeMessageIdsToFile(dest, LocaleUtils.getMessageIds(source));
-        SettingUtils.writeLocalScriptRulesToFile(dest, scriptRules);
 
         String extensionNamePostfix = "";
         if (StringUtils.isNotEmpty(branch)) {

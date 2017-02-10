@@ -22,7 +22,7 @@
 var StringUtils = require('../../../lib/utils/common').StringUtils;
 var FilterRule = require('../../../lib/filter/rules/base-filter-rule').FilterRule;
 var AntiBannerFiltersId = require('../../../lib/utils/common').AntiBannerFiltersId;
-var DEFAULT_SCRIPT_RULES = require('../../../lib/utils/local-script-rules').DEFAULT_SCRIPT_RULES;
+var LocalScriptRulesSevice = require('../../../lib/utils/local-script-rules').LocalScriptRulesSevice;
 
 /**
  * JS injection rule:
@@ -54,11 +54,11 @@ var ScriptFilterRule = exports.ScriptFilterRule = function (rule, filterId) {
 	 * 2. Also we mark as 'local' rules from the "User Filter" (local filter which user can edit)
 	 * 3. In case of Firefox and Opera we apply only 'local' JS rules and ignore all marked as 'remote'
 	 */
-	function getScriptSource(filterId, ruleText) {
-		return (filterId == AntiBannerFiltersId.USER_FILTER_ID || ruleText in DEFAULT_SCRIPT_RULES) ? 'local' : 'remote';
+	function getScriptSource(filterId, script) {
+		return (filterId == AntiBannerFiltersId.USER_FILTER_ID || LocalScriptRulesSevice.isLocal(script)) ? 'local' : 'remote';
 	}
 
-	this.scriptSource = getScriptSource(filterId, rule);
+	this.scriptSource = getScriptSource(filterId, this.script);
 };
 
 ScriptFilterRule.prototype = Object.create(FilterRule.prototype);

@@ -21,6 +21,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.util.DefaultPrettyPrinter;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,7 +55,15 @@ public class FilterUtils {
     private final static String FILTER_DOWNLOAD_URL_FORMAT = EXTENSION_FILTERS_SERVER_URL_FORMAT + "/filters/%s.txt";
     private final static String OPTIMIZED_FILTER_DOWNLOAD_URL_FORMAT = EXTENSION_FILTERS_SERVER_URL_FORMAT + "/filters/%s_optimized.txt";
 
-    private static final Pattern CHECKSUM_PATTERN = Pattern.compile("^\\s*!\\s*checksum[\\s\\-:]+([\\w\\+\\/=]+).*[\r\n]+", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+    private static final Pattern CHECKSUM_PATTERN = Pattern.compile("^\\s*!\\s*checksum[\\s\\-:]+([\\w\\+/=]+).*[\r\n]+", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+
+    private final static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    private static DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
+
+    static {
+        prettyPrinter.indentArraysWith(new DefaultPrettyPrinter.Lf2SpacesIndenter());
+    }
 
     /**
      * Downloads filters from our backend server
@@ -110,14 +120,14 @@ public class FilterUtils {
     }
 
     /**
-     * Gets javascript injection rules.
+     * Writes list of javascript injection rules to local file
+     * For AMO and addons.opera.com we embed al js rules into the extension and do not update them
      *
-     * @param source  Extension source
+     * @param source  Source folder
      * @param browser Browser
-     * @return List of rules
      * @throws IOException
      */
-    public static Set<String> getScriptRules(File source, Browser browser) throws IOException {
+    public static void updateLocalScriptRules(File source, Browser browser) throws IOException {
 
         Set<String> scriptRules = new HashSet<String>();
 
@@ -126,13 +136,22 @@ public class FilterUtils {
             File filterFile = new File(filtersDir, "filter_" + filterId + ".txt");
             List<String> lines = FileUtils.readLines(filterFile, "utf-8");
             for (String line : lines) {
-                if (line.contains("#%#")) {
+                line = line.trim();
+                if (line.startsWith(ScriptRules.MASK_COMMENT_RULE)) {
+                    continue;
+                }
+                if (line.contains(ScriptRules.MASK_SCRIPT_RULE)) {
                     scriptRules.add(line.trim());
                 }
             }
         }
 
-        return scriptRules;
+        File localScriptRulesFile = new File(filtersDir, "local_script_rules.json");
+
+        ScriptRules scriptRulesObject = new ScriptRules();
+        scriptRulesObject.addRawRules(scriptRules);
+        String json = OBJECT_MAPPER.writer(prettyPrinter).writeValueAsString(scriptRulesObject);
+        FileUtils.writeStringToFile(localScriptRulesFile, json, "utf-8");
     }
 
     /**
