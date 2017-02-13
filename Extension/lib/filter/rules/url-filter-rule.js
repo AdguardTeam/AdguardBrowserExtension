@@ -243,7 +243,7 @@
         var urlRuleText = parseResult.urlRuleText;
 
         this.isRegexRule = adguard.utils.strings.startWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) &&
-            adguard.utils.strings.endWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) ||
+            urlRuleText.endsWith(UrlFilterRule.MASK_REGEX_RULE) ||
             urlRuleText === '' ||
             urlRuleText == UrlFilterRule.MASK_ANY_SYMBOL;
 
@@ -330,7 +330,7 @@
      */
     UrlFilterRule.prototype.isPermitted = function (domainName) {
 
-        if (adguard.utils.strings.isEmpty(domainName)) {
+        if (!domainName) {
             var hasPermittedDomains = this.hasPermittedDomains();
 
             // For white list rules to fire when request has no referrer
@@ -363,7 +363,8 @@
             }
         }
 
-        if (this.shortcut !== null && !adguard.utils.strings.containsIgnoreCase(requestUrl, this.shortcut)) {
+        // Shortcut is always in lower case
+        if (this.shortcut !== null && requestUrl.toLowerCase().indexOf(this.shortcut) < 0) {
             return false;
         }
 

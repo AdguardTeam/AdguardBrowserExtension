@@ -184,7 +184,7 @@ var SafariContentBlockerConverter = {
             if (filter.isRegexRule && filter.urlRegExp) {
                 return filter.urlRegExp.source;
             }
-            
+
             var urlRegExpSource = filter.getUrlRegExpSource();
             if (urlRegExpSource) {
                 return urlRegExpSource;
@@ -325,7 +325,7 @@ var SafariContentBlockerConverter = {
                         //http://jira.performix.ru/browse/AG-8715
                         delete result.trigger["resource-type"];
                     }
-                    
+
                     var parseDomainResult = this._parseRuleDomain(rule.getUrlRuleText());
 
                     if (parseDomainResult !== null && 
