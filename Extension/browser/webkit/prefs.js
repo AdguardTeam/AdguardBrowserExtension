@@ -36,6 +36,7 @@ var Prefs = exports.Prefs = {
 	},
 	localFiltersMetadataPath: ext.getURL('filters/filters.json'),
 	localFiltersMetadataI18nPath: ext.getURL('filters/filters_i18n.json'),
+	localScriptRulesPath: ext.getURL('filters/local_script_rules.json'),
 	safebrowsingPagePath: ext.getURL("pages/sb.html"),
 	platform: (typeof safari == 'undefined' ? "chromium" : "webkit"),
 	getBrowser: function () {

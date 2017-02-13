@@ -44,6 +44,7 @@ var Prefs = exports.Prefs = {
 	},
 	localFiltersMetadataPath: self.data.url('filters/filters.json'),
 	localFiltersMetadataI18nPath: self.data.url('filters/filters_i18n.json'),
+	localScriptRulesPath: self.data.url('filters/local_script_rules.json'),
 	safebrowsingPagePath: 'sb.html',
 	platform: "firefox",
 	mobile: platform.indexOf('android') > -1,
