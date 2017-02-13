@@ -24,7 +24,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             openAssistant();
         },
         'context_block_site_element': function () {
-            openAssistant({selectElement: true});
+            openAssistant(true);
         },
         'context_security_report': function () {
             adguard.tabs.getActive(function (tab) {
@@ -101,6 +101,59 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
         return urlBuilder.join("");
     })();
+
+    // Assistant
+
+    var assistantOptions = null;
+
+    /**
+     * Returns localization map by passed message identifiers
+     * @param ids Message identifiers
+     */
+    function getLocalization(ids) {
+        var result = {};
+        for (var id in ids) {
+            if (ids.hasOwnProperty(id)) {
+                var current = ids[id];
+                result[current] = adguard.i18n.getMessage(current);
+            }
+        }
+        return result;
+    }
+
+    function getAssistantOptions() {
+        if (assistantOptions !== null) {
+            return assistantOptions;
+        }
+        assistantOptions = {
+            cssLink: adguard.getURL('lib/content-script/assistant/css/assistant.css'),
+            addRuleCallbackName: 'addUserRule'
+        };
+        var ids = [
+            'assistant_select_element',
+            'assistant_select_element_ext',
+            'assistant_select_element_cancel',
+            'assistant_block_element',
+            'assistant_block_element_explain',
+            'assistant_slider_explain',
+            'assistant_slider_if_hide',
+            'assistant_slider_min',
+            'assistant_slider_max',
+            'assistant_extended_settings',
+            'assistant_apply_rule_to_all_sites',
+            'assistant_block_by_reference',
+            'assistant_block_similar',
+            'assistant_block',
+            'assistant_another_element',
+            'assistant_preview',
+            'assistant_preview_header',
+            'assistant_preview_header_info',
+            'assistant_preview_end',
+            'assistant_preview_start'
+        ];
+        assistantOptions.localization = getLocalization(ids);
+        return assistantOptions;
+    }
 
     /**
      * Update icon for tab
@@ -524,11 +577,15 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         });
     };
 
-    var openAssistant = function (options) {
+    var openAssistant = function (selectElement) {
+
+        var options = getAssistantOptions();
+        options.selectElement = selectElement;
+
         adguard.tabs.getActive(function (tab) {
             adguard.tabs.sendMessage(tab.tabId, {
                 type: 'initAssistant',
-                options: options || {}
+                options: options
             });
         });
     };

@@ -143,14 +143,13 @@
             'lib/libs/diff_match_patch.js',
             'lib/libs/dom.patched.js',
             'lib/libs/balalaika.patched.js',
-            'lib/libs/deferred.js',
             'lib/content-script/i18n-helper.js',    // Localization placeholders
             'lib/content-script/content-script.js', // Message passing
             'lib/content-script/assistant/js/slider-widget.js',
-            'lib/content-script/assistant/js/start-assistant.js',
             'lib/content-script/assistant/js/adguard-selector.js',
             'lib/content-script/assistant/js/adguard-rules-constructor.js',
-            'lib/content-script/assistant/js/assistant.js'
+            'lib/content-script/assistant/js/assistant.js',
+            'lib/content-script/assistant/js/start-assistant.js'
         ], 'document_end', false);
 
         // Register assistant css

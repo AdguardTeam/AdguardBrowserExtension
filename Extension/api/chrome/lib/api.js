@@ -27,6 +27,32 @@
     }
 
     /**
+     * Default assistant localization
+     */
+    var defaultAssistantLocalization = {
+        'assistant_select_element': 'Selection mode',
+        'assistant_select_element_ext': 'Click on&nbsp;any element on&nbsp;the page',
+        'assistant_select_element_cancel': 'Cancel',
+        'assistant_block_element': 'Block element',
+        'assistant_block_element_explain': 'Element blocking rule setup',
+        'assistant_slider_explain': 'Use the slider to&nbsp;change the size of&nbsp;the element to&nbsp;be&nbsp;blocked by&nbsp;this rule:',
+        'assistant_slider_if_hide': 'The filter will contain a&nbsp;rule that blocks the selected element',
+        'assistant_slider_min': 'SMALLER',
+        'assistant_slider_max': 'LARGER',
+        'assistant_extended_settings': 'Advanced settings',
+        'assistant_apply_rule_to_all_sites': 'Apply this rule to&nbsp;every web site',
+        'assistant_block_by_reference': 'Block element by&nbsp;url',
+        'assistant_block_similar': 'Block similar elements',
+        'assistant_block': 'Block',
+        'assistant_another_element': 'Select another element',
+        'assistant_preview': 'Preview',
+        'assistant_preview_header': 'Block element - Preview',
+        'assistant_preview_header_info': 'Check how the page will look like before confirming the block.',
+        'assistant_preview_start': 'Preview',
+        'assistant_preview_end': 'Finish preview'
+    };
+
+    /**
      * Validates configuration
      * @param configuration Configuration object
      */
@@ -132,6 +158,20 @@
     }
 
     /**
+     * Configures custom (user) rules
+     * @param configuration Configuration object: {rules: [...]}
+     */
+    function configureCustomRules(configuration) {
+
+        if (!configuration.force && !configuration.rules) {
+            return;
+        }
+
+        adguard.userrules.clearRules();
+        adguard.userrules.addRules(configuration.rules || []);
+    }
+
+    /**
      * Configures backend's URLs
      * @param configuration Configuration object: {filtersMetadataUrl: '...', filterRulesUrl: '...'}
      */
@@ -189,7 +229,34 @@
 
         configureFiltersUrl(configuration);
         configureWhiteBlackLists(configuration);
+        configureCustomRules(configuration);
         configureFilters(configuration, callback);
+    };
+
+    /**
+     * Opens assistant dialog in the specified tab
+     * @param tabId Tab identifier
+     */
+    var openAssistant = function (tabId) {
+        var assistantOptions = {
+            cssLink: adguard.getURL('adguard/assistant/css/assistant.css'),
+            addRuleCallbackName: 'assistant-create-rule',
+            localization: defaultAssistantLocalization
+        };
+        adguard.tabs.sendMessage(tabId, {
+            type: 'initAssistant',
+            options: assistantOptions
+        });
+    };
+
+    /**
+     * Closes assistant dialog in the specified tab
+     * @param tabId Tab identifier
+     */
+    var closeAssistant = function (tabId) {
+        adguard.tabs.sendMessage(tabId, {
+            type: 'destroyAssistant'
+        });
     };
 
     adguard.backend.configure({
@@ -214,7 +281,9 @@
          *      rule: "..." // Rule text
          *   };
          */
-        onRequestBlocked: adguard.webRequestService.onRequestBlocked
+        onRequestBlocked: adguard.webRequestService.onRequestBlocked,
+        openAssistant: openAssistant,
+        closeAssistant: closeAssistant
     };
 
 })(adguard, window);
