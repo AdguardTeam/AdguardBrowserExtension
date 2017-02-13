@@ -44,7 +44,6 @@
 
     /**
      * Saves file to to chrome syncable storage.
-     * TODO: The storage has a quota, so we need to split long files.
      *
      * @param filePath
      * @param data
@@ -53,7 +52,7 @@
     var save = function (filePath, data, callback) {
 
         var items = {};
-        items[filePath] = data;
+        items[filePath] = cropData(filePath, data, true);
 
         chrome.storage.sync.set(items, function () {
 
@@ -66,6 +65,37 @@
 
             callback(true);
         });
+    };
+
+    /**
+     * The storage has a quota, so we need to crop long files.
+     *
+     * @param key
+     * @param data
+     * @param warn
+     */
+    var cropData = function (key, data, warn) {
+        var itemSize = key.length + JSON.stringify(data).length + 20;
+        var oversize = itemSize - chrome.storage.sync.QUOTA_BYTES_PER_ITEM;
+        if (oversize > 0) {
+            if (data.filters && data.filters["user-filter"]
+                && data.filters["user-filter"].rules) {
+                // Cut user-filter field
+                if (warn) {
+                    adguard.console.warn('The data is over quota limit and will be cropped approximately by ' + oversize + ' bytes');
+                }
+
+                var rules = data.filters["user-filter"].rules;
+                rules = rules.substring(0, JSON.stringify(rules).length - oversize);
+                rules = rules.substring(0, rules.lastIndexOf('\n'));
+                data.filters["user-filter"].rules = rules;
+
+                return cropData(key, data);
+            }
+        }
+
+        // Can't do anything return untouched data
+        return data;
     };
 
     // EXPOSE
