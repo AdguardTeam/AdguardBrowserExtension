@@ -355,6 +355,8 @@ QUnit.test("Regexp rules shortcuts", function (assert) {
     assert.equal(new adguard.rules.UrlFilterRule('/ulightbox/$domain=hdkinomax.com|tvfru.net').shortcut, 'ulightbox');
     assert.equal(new adguard.rules.UrlFilterRule('/\.sharesix\.com/.*[a-zA-Z0-9]{4}/$script').shortcut, 'sharesix');
     assert.equal(new adguard.rules.UrlFilterRule('/serial_adv_files/$image,domain=xn--80aacbuczbw9a6a.xn--p1ai|куражбамбей.рф').shortcut, 'serial_adv_files');
+    assert.ok(new adguard.rules.UrlFilterRule('/(.jpg)$/').shortcut === null);
+    assert.ok(new adguard.rules.UrlFilterRule('@@||*$domain=lenta.ru').shortcut === null);
 });
 
 QUnit.test("Many rules in one rule filter", function (assert) {
