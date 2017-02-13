@@ -190,7 +190,7 @@
          * regexp rule may contain dollar sign which also is options delimiter
          */
         if (adguard.utils.strings.startWith(urlRuleText, api.UrlFilterRule.MASK_REGEX_RULE) &&
-            adguard.utils.strings.endWith(urlRuleText, api.UrlFilterRule.MASK_REGEX_RULE)) {
+            adguard.utils.strings.endsWith(urlRuleText, api.UrlFilterRule.MASK_REGEX_RULE)) {
             parseOptions = false;
         }
 
@@ -243,7 +243,7 @@
         var urlRuleText = parseResult.urlRuleText;
 
         this.isRegexRule = adguard.utils.strings.startWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) &&
-            urlRuleText.endsWith(UrlFilterRule.MASK_REGEX_RULE) ||
+            adguard.utils.strings.endsWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) ||
             urlRuleText === '' ||
             urlRuleText == UrlFilterRule.MASK_ANY_SYMBOL;
 

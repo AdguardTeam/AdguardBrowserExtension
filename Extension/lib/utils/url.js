@@ -203,7 +203,9 @@
         isDomainOrSubDomain: function (domainNameToCheck, domainName) {
             // Double endsWith check is memory optimization
             // Works in android, not sure if it makes sense here
-            return domainName == domainNameToCheck || domainNameToCheck.endsWith(domainName) && domainNameToCheck.endsWith("." + domainName);
+            return domainName == domainNameToCheck ||
+                api.strings.endsWith(domainNameToCheck, domainName) &&
+                api.strings.endsWith(domainNameToCheck, "." + domainName);
         },
 
         _get2NdLevelDomainName: function (url) {

@@ -17,14 +17,12 @@
 package com.adguard.compiler;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,26 +48,7 @@ public class SettingUtils {
             " * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.\r\n " +
             " */";
 
-    private final static String LOCAL_SCRIPT_RULES_FILE_TEMPLATE = LICENSE_TEMPLATE + "\r\n" +
-            "/**\r\n" +
-            " * By the rules of AMO and addons.opera.com we cannot use remote scripts\r\n" +
-            " * (and our JS injection rules could be counted as remote scripts).\r\n" +
-            " *\r\n" +
-            " * So what we do:\r\n" +
-            " * 1. We gather all current JS rules in the DEFAULT_SCRIPT_RULES object\r\n" +
-            " * 2. We disable JS rules got from remote server\r\n" +
-            " * 3. We allow only custom rules got from the User filter (which user creates manually)\r\n" +
-            " *    or from this DEFAULT_SCRIPT_RULES object\r\n" +
-            " */\r\n" +
-            "adguard.rules.DEFAULT_SCRIPT_RULES = Object.create(null);\r\n%s";
-
     private final static Pattern LICENSE_TEMPLATE_PATTERN = Pattern.compile("(/\\*.+(?=This file is part of Adguard Browser Extension).+?\\*/)", Pattern.DOTALL);
-
-    public static void writeLocalScriptRulesToFile(File dest, Set<String> scriptRules) throws IOException {
-        String scriptRulesText = getScriptRulesText(scriptRules);
-        String settings = String.format(LOCAL_SCRIPT_RULES_FILE_TEMPLATE, scriptRulesText);
-        FileUtils.writeStringToFile(getLocalScriptRulesFile(dest), settings, "utf-8");
-    }
 
     public static void updateManifestFile(File dest, Browser browser, String version, String extensionId, String updateUrl, String extensionNamePostfix) throws IOException {
 
@@ -157,17 +136,6 @@ public class SettingUtils {
         }
     }
 
-    public static String getScriptRulesText(Set<String> scriptRules) {
-        StringBuilder sb = new StringBuilder();
-        if (scriptRules != null) {
-            for (String scriptRule : scriptRules) {
-                String ruleText = StringEscapeUtils.escapeJavaScript(scriptRule);
-                sb.append("adguard.rules.DEFAULT_SCRIPT_RULES[\"").append(ruleText).append("\"] = true;\r\n");
-            }
-        }
-        return sb.toString();
-    }
-
     /**
      * Copy specific api files, join all js files into one, remove unused files
      *
@@ -217,10 +185,6 @@ public class SettingUtils {
         FileUtils.moveFileToDirectory(new File(dest, "filters/filters_i18n.json"), new File(dest, "adguard"), false);
         FileUtils.deleteDirectory(new File(dest, "filters"));
         FileUtils.deleteDirectory(new File(dest, "lib"));
-    }
-
-    private static File getLocalScriptRulesFile(File sourcePath) {
-        return new File(sourcePath, "lib/filter/rules/local-script-rules.js");
     }
 
     private static void concatFiles(File resultFile, List<File> files) throws IOException {
