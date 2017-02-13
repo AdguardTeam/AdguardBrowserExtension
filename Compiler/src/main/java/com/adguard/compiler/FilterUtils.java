@@ -57,6 +57,12 @@ public class FilterUtils {
 
     private static final Pattern CHECKSUM_PATTERN = Pattern.compile("^\\s*!\\s*checksum[\\s\\-:]+([\\w\\+/=]+).*[\r\n]+", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
 
+    private static final String LOCAL_SCRIPT_RULES_COMMENT = "By the rules of AMO and addons.opera.com we cannot use remote scripts (and our JS injection rules could be counted as remote scripts).\r\n" +
+            "So what we do:\r\n" +
+            "1. We gather all current JS rules in the DEFAULT_SCRIPT_RULES object (see lib/utils/local-script-rules.js)\r\n" +
+            "2. We disable JS rules got from remote server\r\n" +
+            "3. We allow only custom rules got from the User filter (which user creates manually) or from this DEFAULT_SCRIPT_RULES object";
+
     private final static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private static DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
@@ -148,7 +154,7 @@ public class FilterUtils {
 
         File localScriptRulesFile = new File(filtersDir, "local_script_rules.json");
 
-        ScriptRules scriptRulesObject = new ScriptRules();
+        ScriptRules scriptRulesObject = new ScriptRules(LOCAL_SCRIPT_RULES_COMMENT);
         scriptRulesObject.addRawRules(scriptRules);
         String json = OBJECT_MAPPER.writer(prettyPrinter).writeValueAsString(scriptRulesObject);
         FileUtils.writeStringToFile(localScriptRulesFile, json, "utf-8");

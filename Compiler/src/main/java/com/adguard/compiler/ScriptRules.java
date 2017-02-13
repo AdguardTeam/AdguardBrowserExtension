@@ -9,6 +9,7 @@ import java.util.List;
 /**
  * Script rules object. For serialization into json object
  * {
+ *  comment: '...',
  *  rules: [{
  *              domains: 'domain|<any>',
  *              script: '...'
@@ -26,8 +27,15 @@ public class ScriptRules {
 
     private static final String ANY_DOMAIN = "<any>";
 
+    @JsonProperty("comment")
+    private final String comment;
+
     @JsonProperty("rules")
     private final List<ScriptRule> rules = new ArrayList<ScriptRule>();
+
+    public ScriptRules(String comment) {
+        this.comment = comment;
+    }
 
     public void addRawRules(Collection<String> rulesText) {
         for (String ruleText : rulesText) {

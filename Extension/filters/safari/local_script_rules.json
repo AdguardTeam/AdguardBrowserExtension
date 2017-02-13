@@ -1,4 +1,5 @@
 {
+  "comment" : "By the rules of AMO and addons.opera.com we cannot use remote scripts (and our JS injection rules could be counted as remote scripts).\nSo what we do:\n1. We gather all current JS rules in the DEFAULT_SCRIPT_RULES object (see lib/utils/local-script-rules.js)\n2. We disable JS rules got from remote server\n3. We allow only custom rules got from the User filter (which user creates manually) or from this DEFAULT_SCRIPT_RULES object",
   "rules" : [
     {
       "domains" : "datafilehost.com",

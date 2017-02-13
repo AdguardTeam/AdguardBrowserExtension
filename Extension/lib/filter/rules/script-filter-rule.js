@@ -54,11 +54,11 @@ var ScriptFilterRule = exports.ScriptFilterRule = function (rule, filterId) {
 	 * 2. Also we mark as 'local' rules from the "User Filter" (local filter which user can edit)
 	 * 3. In case of Firefox and Opera we apply only 'local' JS rules and ignore all marked as 'remote'
 	 */
-	function getScriptSource(filterId, script) {
-		return (filterId == AntiBannerFiltersId.USER_FILTER_ID || LocalScriptRulesSevice.isLocal(script)) ? 'local' : 'remote';
+	function getScriptSource(filterId, ruleText) {
+		return (filterId == AntiBannerFiltersId.USER_FILTER_ID || LocalScriptRulesSevice.isLocal(ruleText)) ? 'local' : 'remote';
 	}
 
-	this.scriptSource = getScriptSource(filterId, this.script);
+	this.scriptSource = getScriptSource(filterId, rule);
 };
 
 ScriptFilterRule.prototype = Object.create(FilterRule.prototype);

@@ -25,6 +25,9 @@
  * 3. We allow only custom rules got from the User filter (which user creates manually)
  *    or from this DEFAULT_SCRIPT_RULES object
  */
+
+var FilterRule = require('../../../lib/filter/rules/base-filter-rule').FilterRule;
+
 exports.LocalScriptRulesSevice = (function () {
 
     var DEFAULT_SCRIPT_RULES = Object.create(null);
@@ -39,17 +42,25 @@ exports.LocalScriptRulesSevice = (function () {
 
         var rules = json.rules;
         for (var i = 0; i < rules.length; i++) {
-            DEFAULT_SCRIPT_RULES[rules[i].script] = true;
+            var rule = rules[i];
+            var domains = rule.domains;
+            var script = rule.script;
+            var ruleText = '';
+            if (domains !== '<any>') {
+                ruleText = domains;
+            }
+            ruleText += FilterRule.MASK_SCRIPT_RULE + script;
+            DEFAULT_SCRIPT_RULES[ruleText] = true;
         }
     };
 
     /**
      * Checks js rule is local
-     * @param script ScriptFilterRule.script field
+     * @param ruleText Rule text
      * @returns {boolean}
      */
-    var isLocal = function (script) {
-        return script in DEFAULT_SCRIPT_RULES;
+    var isLocal = function (ruleText) {
+        return ruleText in DEFAULT_SCRIPT_RULES;
     };
 
     return {
