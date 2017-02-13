@@ -14,20 +14,29 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var AdguardAssistant = function ($) {
+var AdguardAssistant = function ($, AdguardSelectorLib, AdguardRulesConstructorLib, SliderWidget) { // jshint ignore:line
 
-	var self = this;
-
-	var i18n = {
-		getMessage: function (id) {
-			return self.localization[id];
-		}
+	/**
+	 * Contains assistant settings (style, callbacks)
+	 */
+	var settings = {
+		cssLink: null,
+		onElementBlocked: null, // Called when element is blocked,
+		translateElement: null // Called when element needs to be translated
 	};
 
-	var settings = {
-		iframeId: 'adguard-assistant-dialog',
-		selectedElement: null,
-		lastPreview: null
+	// Iframe identifier
+	var iframeId = 'adguard-assistant-dialog';
+
+	// Current preview style element
+	var previewStyle = null;
+
+	/**
+	 * Contains selected element and info about it
+	 */
+	var selected = {
+		element: null,
+		elementInfo: null
 	};
 
 	var constants = {
@@ -40,7 +49,23 @@ var AdguardAssistant = function ($) {
 		}
 	};
 
+	var ignoreClassName = AdguardSelectorLib.ignoreClassName();
+
 	var utils = {
+
+		debounce: function (func, wait) {
+			var timeout;
+			return function () {
+				var context = this, args = arguments;
+				var later = function () {
+					timeout = null;
+					func.apply(context, args);
+				};
+				clearTimeout(timeout);
+				timeout = setTimeout(later, wait);
+			};
+		},
+
 		getAllChildren: function (element) {
 			var childArray = [];
 			var child = element;
@@ -51,10 +76,12 @@ var AdguardAssistant = function ($) {
 		},
 
 		getChildren: function (element) {
+
+			var count = 0;
+			var child;
+
 			var children = element.childNodes;
 			if (children) {
-				var count = 0;
-				var child;
 				var i;
 				for (i = 0; i < children.length; i++) {
 					if (children[i].nodeType == 1) {
@@ -78,10 +105,6 @@ var AdguardAssistant = function ($) {
 		getNodeName: function (element) {
 			return element && element.nodeName ? element.nodeName.toUpperCase() : "";
 		}
-	};
-
-	var getMessage = function (msgId) {
-		return self.localization[msgId];
 	};
 
 	/**
@@ -170,7 +193,7 @@ var AdguardAssistant = function ($) {
 		return {
 			width: window.innerWidth,
 			height: window.innerHeight
-		}
+		};
 	};
 
 	var getPositionsForIframe = function (offset, viewPort, height, width) {
@@ -180,13 +203,14 @@ var AdguardAssistant = function ($) {
 		};
 	};
 
-	var createIframe = function (width, height, dfd) {
+	var createIframe = function (width, height, callback) {
+
 		var viewPort = getViewport();
 		var positions = getPositionsForIframe(constants.iframe.topOffset, viewPort, height, width);
 
 		var iframe = document.createElement('iframe');
-		iframe.setAttribute('id', settings.iframeId);
-		iframe.setAttribute('class', 'sg_ignore adg-view-important');
+		iframe.setAttribute('id', iframeId);
+		iframe.setAttribute('class', ignoreClassName);
 		iframe.setAttribute('frameBorder', '0');
 		iframe.setAttribute('allowTransparency', 'true');
 
@@ -197,13 +221,14 @@ var AdguardAssistant = function ($) {
 		iframe.style.top = positions.top + 'px';
 
 		// Wait for iframe load and then apply styles
-		$(iframe).on('load', loadDefaultScriptsAndStyles.bind(null, iframe, dfd));
+		$(iframe).on('load', function () {
+			loadDefaultScriptsAndStyles(iframe);
+			callback(iframe);
+		});
 		document.body.appendChild(iframe);
-
-		return iframe;
 	};
 
-	var loadDefaultScriptsAndStyles = function (iframe, dfd) {
+	var loadDefaultScriptsAndStyles = function (iframe) {
 
 		// Chrome doesn't inject scripts in empty iframe
 		try {
@@ -215,52 +240,21 @@ var AdguardAssistant = function ($) {
 			// Ignore (does not work in FF)
 		}
 
-		contentPage.sendMessage({type: 'loadAssistant'}, function (response) {
+		var head = iframe.contentDocument.getElementsByTagName('head')[0];
 
-			if (response.localization) {
-				self.localization = response.localization;
-			}
-
-			var cssContent = response.cssContent;
-			var cssLink = response.cssLink;
-
-			var iframe = document.getElementById(settings.iframeId);
-			var head = iframe.contentDocument.getElementsByTagName('head')[0];
-
-			if (cssContent) {
-				var style = document.createElement("style");
-				style.type = "text/css";
-				style.textContent = cssContent;
-				head.appendChild(style);
-			}
-			if (cssLink) {
-				var link = document.createElement("link");
-				link.type = "text/css";
-				link.rel = "stylesheet";
-				link.href = cssLink;
-				head.appendChild(link);
-			}
-			dfd.resolve();
-		});
+		var link = document.createElement("link");
+		link.type = "text/css";
+		link.rel = "stylesheet";
+		link.href = settings.cssLink;
+		head.appendChild(link);
 	};
 
 	var findIframe = function () {
-		return $('#' + settings.iframeId);
+		return $('#' + iframeId);
 	};
 
 	var findInIframe = function (selector) {
 		return $(findIframe().get(0).contentDocument.querySelectorAll(selector));
-	};
-
-	var runCallbacks = function (iframe, beforeUnhide, afterUnhide) {
-		if (beforeUnhide) {
-			beforeUnhide(iframe);
-		}
-		makeDraggable(iframe);
-		findInIframe('body').removeClass('adg-hide');
-		if (afterUnhide) {
-			afterUnhide(iframe);
-		}
 	};
 
 	/**
@@ -269,27 +263,27 @@ var AdguardAssistant = function ($) {
 	 * @param content
 	 * @param width
 	 * @param height
-	 * @param beforeUnhide
-	 * @param afterUnhide
+	 * @param callback
 	 */
-	var showDialog = function (content, width, height, beforeUnhide, afterUnhide) {
-		var appendContent = function () {
+	var showDialog = function (content, width, height, callback) {
+
+		var appendContent = function (iframe) {
 			appendContentToIframe(iframe, content);
-			runCallbacks(iframe, beforeUnhide, afterUnhide);
+			localizeMenu();
+			makeDraggable(iframe);
 			checkPosition();
+			callback(iframe);
 		};
 
 		var existIframe = findIframe();
 		if (existIframe.length > 0) {
-			iframe = existIframe.get(0);
+			var iframe = existIframe.get(0);
 			changeCurrentIframe(width, height, iframe);
-			appendContent();
+			appendContent(iframe);
 			return;
 		}
 
-		var dfd = new Deferred();
-		dfd.done(appendContent);
-		var iframe = createIframe(width, height, dfd);
+		createIframe(width, height, appendContent);
 	};
 
 	var changeCurrentIframe = function (width, height, iframe) {
@@ -299,37 +293,30 @@ var AdguardAssistant = function ($) {
 
 	var appendContentToIframe = function (iframe, content) {
 		var body = iframe.contentDocument.body;
-		for (var i = 0; i < body.children.length; i++) {
-			body.removeChild(body.children[i]);
+		while (body.lastChild) {
+			body.removeChild(body.lastChild);
 		}
-
 		body.appendChild(content.get(0));
-		findInIframe('body').addClass('adg-hide');
 	};
-
 
 	var bindClicks = function (iframe, events) {
 		for (var event in events) {
-			$(iframe.contentDocument.querySelectorAll(event)).on('click', events[event]);
+			if (events.hasOwnProperty(event)) {
+				$(iframe.contentDocument.querySelectorAll(event)).on('click', events[event]);
+			}
 		}
 	};
 
-	var onSelectElementClicked = function (e) {
+	var onCancelSelectClicked = function (e) {
 		e.preventDefault();
-
-		var dfd = new Deferred();
-		dfd.done(function () {
-			localizeMenu();
+		showSelectorMenu(function () {
 			removePreview();
 			startSelector();
 		});
-
-		showSelectorMenu(dfd);
 	};
 
 	var onCancelSelectModeClicked = function (e) {
 		e.preventDefault();
-
 		removePreview();
 		cancelSelectMode();
 		closeAssistant();
@@ -343,10 +330,9 @@ var AdguardAssistant = function ($) {
 	};
 
 	var onElementSelected = function (element) {
-		settings.selectedElement = element;
-		settings.elementInfo = AdguardRulesConstructorLib.getElementInfo(element);
-
-		showHidingRuleWindow(element, settings.elementInfo.haveUrlBlockParameter, settings.elementInfo.haveClassAttribute);
+		selected.element = element;
+		selected.elementInfo = AdguardRulesConstructorLib.getElementInfo(element);
+		showHidingRuleWindow(element, selected.elementInfo.haveUrlBlockParameter, selected.elementInfo.haveClassAttribute);
 	};
 
 	var closeAssistant = function () {
@@ -370,14 +356,9 @@ var AdguardAssistant = function ($) {
 	var localizeMenu = function () {
 		var elements = findInIframe("[i18n]");
 		for (var i = 0; i < elements.length; i++) {
-			var message = getMessage(elements[i].getAttribute("i18n"));
-			I18nHelper.translateElement(elements[i], message);
+			var msgId = elements[i].getAttribute("i18n");
+			settings.translateElement(elements[i], msgId);
 		}
-
-		//TODO: Remove after all translations update
-		findInIframe('#blockSimilar').hide();
-		findInIframe('#blockByUrl').hide();
-		findInIframe('#oneDomainRadio').hide();
 	};
 
 	var createAdguardDetailedMenu = function () {
@@ -443,7 +424,7 @@ var AdguardAssistant = function ($) {
 	};
 
 	var createAdguardSelectorMenu = function () {
-		return $('<div class="main sg_ignore">' +
+		return $('<div class="main ' + ignoreClassName + '">' +
 			'<div class="close adg-close" id="close-button"></div>' +
 			'<div class="head" id="drag-handle">' +
 			'	<div i18n="assistant_select_element" class="head_title"></div>' +
@@ -455,7 +436,7 @@ var AdguardAssistant = function ($) {
 			'</div>');
 	};
 
-	var showDetailedMenu = function (dfd) {
+	var showDetailedMenu = function (callback) {
 		var content = createAdguardDetailedMenu();
 		showDialog(content, constants.iframe.baseWidth, constants.iframe.detailedMenuHeight, function (iframe) {
 			bindClicks(iframe, {
@@ -464,44 +445,36 @@ var AdguardAssistant = function ($) {
 				'#one-domain-checkbox-block': onScopeChange,
 				'#block-by-url-checkbox-block': onScopeChange,
 				'#block-similar-checkbox-block': onScopeChange,
-				'#adg-cancel': onSelectElementClicked,
-				'#adg-preview': onRulePreview,
+				'#adg-cancel': onCancelSelectClicked,
+				'#adg-preview': toggleRulePreview,
 				'#adg-accept': onRuleAccept,
 				'#adg-show-adv-settings': onExtendDetailedSettings
 			});
-			dfd.resolve();
-		}, function () {
-			localizeMenu();
+			callback();
 		});
 	};
 
 	/**
 	 * Shows Adguard selector menu
 	 */
-	var showSelectorMenu = function (dfd) {
+	var showSelectorMenu = function (callback) {
 		var content = createAdguardSelectorMenu();
-
 		showDialog(content, constants.iframe.baseWidth, constants.iframe.selectorMenuHeight, function (iframe) {
 			bindClicks(iframe, {
 				'#cancel-select-mode': onCancelSelectModeClicked,
 				'.adg-close': onCancelSelectModeClicked
 			});
-			dfd.resolve();
-		}, null);
+			callback();
+		});
 	};
 
 	var showHidingRuleWindow = function (element, urlBlock, blockSimilar) {
-		var dfd = new Deferred();
-		dfd.done(function () {
+		showDetailedMenu(function () {
 			createSlider(element);
-
 			AdguardSelectorLib.selectElement(element);
-
 			onScopeChange();
 			handleShowBlockSettings(urlBlock, blockSimilar);
 		});
-
-		showDetailedMenu(dfd);
 	};
 
 	var resizeIframe = function (width, height) {
@@ -561,7 +534,7 @@ var AdguardAssistant = function ($) {
 
 			var el = findInIframe('.element-rule_text').get(0);
 			el.removeAttribute('i18n');
-			el.innerHTML = getMessage("assistant_slider_if_hide");
+			settings.translateElement(el, 'assistant_slider_if_hide');
 
 			return;
 		}
@@ -571,7 +544,7 @@ var AdguardAssistant = function ($) {
 			if (delta > 0) {
 				elem = parents[delta - 1];
 			}
-			if (delta == 0) {
+			if (delta === 0) {
 				elem = element;
 			}
 			if (delta < 0) {
@@ -607,15 +580,16 @@ var AdguardAssistant = function ($) {
 	};
 
 	var onSliderMove = function (element) {
+
 		removePreview();
 
-		settings.selectedElement = element;
-		settings.elementInfo = AdguardRulesConstructorLib.getElementInfo(element);
+		selected.element = element;
+		selected.elementInfo = AdguardRulesConstructorLib.getElementInfo(element);
 		AdguardSelectorLib.selectElement(element);
 
 		makeDefaultCheckboxesForDetailedMenu();
 		onScopeChange();
-		handleShowBlockSettings(settings.elementInfo.haveUrlBlockParameter, settings.elementInfo.haveClassAttribute);
+		handleShowBlockSettings(selected.elementInfo.haveUrlBlockParameter, selected.elementInfo.haveClassAttribute);
 	};
 
 	var makeDefaultCheckboxesForDetailedMenu = function () {
@@ -624,19 +598,20 @@ var AdguardAssistant = function ($) {
 		findInIframe('#one-domain-checkbox').get(0).checked = false;
 	};
 
-	var onRulePreview = function (e) {
+	var toggleRulePreview = function (e) {
+
 		if (e) {
 			e.preventDefault();
 		}
 
-		if (settings.lastPreview) {
+		if (previewStyle) {
 			// On finish preview and come back to selected
 			removePreview();
-			findInIframe('#head_title').text(getMessage("assistant_block_element"));
-			findInIframe('#head_text').text(getMessage("assistant_block_element_explain"));
-			findInIframe('#adg-preview').text(getMessage("assistant_preview_start"));
+			settings.translateElement(findInIframe('#head_title').get(0), "assistant_block_element");
+			settings.translateElement(findInIframe('#head_text').get(0), "assistant_block_element_explain");
+			settings.translateElement(findInIframe('#adg-preview').get(0), "assistant_preview_start");
 
-			AdguardSelectorLib.selectElement(settings.selectedElement);
+			AdguardSelectorLib.selectElement(selected.element);
 
 			findInIframe('.content').show();
 
@@ -645,9 +620,10 @@ var AdguardAssistant = function ($) {
 
 		hideElement();
 
-		findInIframe('#head_title').text(getMessage("assistant_preview_header"));
-		findInIframe('#head_text').text(getMessage("assistant_preview_header_info"));
-		findInIframe('#adg-preview').text(getMessage("assistant_preview_end"));
+		settings.translateElement(findInIframe('#head_title').get(0), "assistant_preview_header");
+		settings.translateElement(findInIframe('#head_text').get(0), "assistant_preview_header_info");
+		settings.translateElement(findInIframe('#adg-preview').get(0), "assistant_preview_end");
+
 		findInIframe('.content').hide();
 	};
 
@@ -662,7 +638,7 @@ var AdguardAssistant = function ($) {
 
 		var style = document.createElement("style");
 		style.setAttribute("type", "text/css");
-		settings.lastPreview = style;
+		previewStyle = style;
 
 		var head = document.getElementsByTagName('head')[0];
 		if (head) {
@@ -672,16 +648,17 @@ var AdguardAssistant = function ($) {
 	};
 
 	var removePreview = function () {
-		if (settings.lastPreview == null) {
+
+		if (!previewStyle) {
 			return;
 		}
 
 		var head = document.getElementsByTagName("head")[0];
 		if (head) {
-			head.removeChild(settings.lastPreview);
+			head.removeChild(previewStyle);
 		}
 
-		settings.lastPreview = null;
+		previewStyle = null;
 	};
 
 	var onScopeChange = function () {
@@ -690,62 +667,59 @@ var AdguardAssistant = function ($) {
 		var isBlockSimilar = findInIframe("#block-similar-checkbox").get(0).checked;
 		var isBlockOneDomain = findInIframe("#one-domain-checkbox").get(0).checked;
 
-		handleShowBlockSettings(settings.elementInfo.haveUrlBlockParameter && !isBlockSimilar, settings.elementInfo.haveClassAttribute && !isBlockByUrl);
+		handleShowBlockSettings(selected.elementInfo.haveUrlBlockParameter && !isBlockSimilar, selected.elementInfo.haveClassAttribute && !isBlockByUrl);
 
 		var options = {
-			urlMask: settings.elementInfo.urlBlockAttributeValue,
+			urlMask: selected.elementInfo.urlBlockAttributeValue,
 			isBlockOneDomain: isBlockOneDomain,
 			ruleType: isBlockByUrl ? 'URL' : 'CSS',
 			cssSelectorType: isBlockSimilar ? 'SIMILAR' : 'STRICT_FULL',
 			url: document.location
 		};
 
-		var ruleText = AdguardRulesConstructorLib.constructRuleText(settings.selectedElement, options);
+		var ruleText = AdguardRulesConstructorLib.constructRuleText(selected.element, options);
 		setFilterRuleInputText(ruleText);
 	};
 
 	var onRuleAccept = function () {
+
 		removePreview();
-		onRulePreview();
-		settings.lastPreview = null;
+		toggleRulePreview();
+		previewStyle = null;
 
 		var ruleText = findInIframe('#filter-rule').get(0).value;
-		contentPage.sendMessage({type: 'addUserRule', ruleText: ruleText}, function () {
-			closeAssistant();
-		});
+		settings.onElementBlocked(ruleText, closeAssistant);
 	};
 
-	var windowChangeFix = function () {
-		var reselectElement = function () {
-			if (settings.selectedElement && !settings.lastPreview) {
-				AdguardSelectorLib.selectElement(settings.selectedElement);
-			}
-		};
-
-		$(window).on('resize', reselectElement);
-		$(window).on('scroll', reselectElement);
-	};
-	windowChangeFix();
+	var reselectElement = utils.debounce(function () {
+		if (selected.element && !previewStyle) {
+			AdguardSelectorLib.selectElement(selected.element);
+		}
+	}, 50);
+	$(window).on('resize', reselectElement);
+	$(window).on('scroll', reselectElement);
 
 	this.init = function (options) {
-		self.localization = options.localization;
-		var dfd = new Deferred();
-		dfd.done(function () {
-			localizeMenu();
+
+		settings.cssLink = options.cssLink;
+		settings.onElementBlocked = options.onElementBlocked;
+		settings.translateElement = options.translateElement;
+
+		showSelectorMenu(function () {
 			removePreview();
 			startSelector();
-			//choose element for assistant
+			// Choose element for assistant
 			if (options.selectedElement) {
-				$(options.selectedElement).click();
+				$(options.selectedElement).trigger('click');
 			}
 		});
-
-		showSelectorMenu(dfd);
 	};
 
 	this.destroy = function () {
 		removePreview();
 		cancelSelectMode();
 		closeAssistant();
-	}
+		$(window).off('resize', reselectElement);
+		$(window).off('scroll', reselectElement);
+	};
 };

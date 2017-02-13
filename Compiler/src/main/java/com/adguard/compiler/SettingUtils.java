@@ -17,10 +17,12 @@
 package com.adguard.compiler;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -49,6 +51,9 @@ public class SettingUtils {
             " */";
 
     private final static Pattern LICENSE_TEMPLATE_PATTERN = Pattern.compile("(/\\*.+(?=This file is part of Adguard Browser Extension).+?\\*/)", Pattern.DOTALL);
+
+    private static final Pattern CONTENT_SCRIPTS_DOCUMENT_START_PATTERN = Pattern.compile("\"js\":\\s+\\[([^\\]]+)\\].+\"run_at\":\\s+\"document_start\"", Pattern.MULTILINE | Pattern.DOTALL);
+    private static final Pattern CONTENT_SCRIPTS_DOCUMENT_END_PATTERN = Pattern.compile("\"document_start\".+\"js\":\\s+\\[([^\\]]+)\\].+\"run_at\":\\s+\"document_end\"", Pattern.MULTILINE | Pattern.DOTALL);
 
     public static void updateManifestFile(File dest, Browser browser, String version, String extensionId, String updateUrl, String extensionNamePostfix) throws IOException {
 
@@ -147,20 +152,44 @@ public class SettingUtils {
 
         // Concat content scripts
         File manifestFile = new File(dest, "manifest.json");
-        String contentScriptsFile = "adguard/adguard-content.js";
-        List<File> contentScripts = new ArrayList<File>();
-        List<String> lines = FileUtils.readLines(manifestFile);
-        for (String line : lines) {
-            if (line.contains(".js")) {
-                contentScripts.add(new File(dest, StringUtils.substringBetween(line, "\"", "\"")));
-            }
-        }
-        concatFiles(new File(dest, contentScriptsFile), contentScripts);
+        String manifestContent = FileUtils.readFileToString(manifestFile);
+
+        String contentScriptsStartFile = "adguard/adguard-content.js";
+        List<File> contentScriptsStart = extractContentScriptsFromManifest(dest, manifestContent, CONTENT_SCRIPTS_DOCUMENT_START_PATTERN);
+        concatFiles(new File(dest, contentScriptsStartFile), contentScriptsStart);
+
+        String contentScriptsEndFile = "adguard/adguard-assistant.js";
+        List<File> contentScriptsEnd = extractContentScriptsFromManifest(dest, manifestContent, CONTENT_SCRIPTS_DOCUMENT_END_PATTERN);
+        concatFiles(new File(dest, contentScriptsEndFile), contentScriptsEnd);
 
         // Update manifest.json content
-        String manifestJsonContent = FileUtils.readFileToString(manifestFile);
-        manifestJsonContent = Pattern.compile("\"js\":\\s+\\[[^\\]]+?\\]", Pattern.MULTILINE).matcher(manifestJsonContent).replaceFirst("\"js\": [\"" + contentScriptsFile + "\"]");
-        FileUtils.writeStringToFile(manifestFile, manifestJsonContent);
+        Matcher matcher = CONTENT_SCRIPTS_DOCUMENT_START_PATTERN.matcher(manifestContent);
+        if (!matcher.find()) {
+            throw new IllegalStateException();
+        }
+        manifestContent = StringUtils.replace(manifestContent, matcher.group(1), "\"" + contentScriptsStartFile + "\"");
+
+        matcher = CONTENT_SCRIPTS_DOCUMENT_END_PATTERN.matcher(manifestContent);
+        if (!matcher.find()) {
+            throw new IllegalStateException();
+        }
+        manifestContent = StringUtils.replace(manifestContent, matcher.group(1), "\"" + contentScriptsEndFile + "\"");
+
+        // Copy assistant file
+        File assistantDir = new File(dest, "adguard/assistant");
+        List<String> lines = IOUtils.readLines(new StringReader(manifestContent));
+        for (String line : lines) {
+            if (line.contains("/assistant/")) {
+                String fileName = StringUtils.substringBetween(line.trim(), "\"", "\"");
+                String copyFileName = StringUtils.substringAfter(fileName, "/assistant/");
+                File file = new File(dest, fileName);
+                File copyFile = new File(assistantDir, copyFileName);
+                FileUtils.copyFile(file, copyFile);
+                manifestContent = StringUtils.replace(manifestContent, fileName, "adguard/assistant/" + copyFileName);
+            }
+        }
+
+        FileUtils.writeStringToFile(manifestFile, manifestContent);
 
         // Concat background scripts
         File backgroundPageFile = new File(dest, "background.html");
@@ -205,4 +234,22 @@ public class SettingUtils {
         resultContent.append("\r\n})(window);");
         FileUtils.writeStringToFile(resultFile, resultContent.toString());
     }
+
+    private static List<File> extractContentScriptsFromManifest(File dest, String manifestContent, Pattern pattern) throws IOException {
+        Matcher matcher = pattern.matcher(manifestContent);
+        if (!matcher.find()) {
+            throw new IllegalStateException();
+        }
+        List<String> contentScriptsStart = IOUtils.readLines(new StringReader(matcher.group(1)));
+        List<File> result = new ArrayList<File>();
+        for (String script : contentScriptsStart) {
+            script = script.trim();
+            if (!script.contains(".js")) {
+                continue;
+            }
+            result.add(new File(dest, StringUtils.substringBetween(script, "\"", "\"")));
+        }
+        return result;
+    }
+
 }

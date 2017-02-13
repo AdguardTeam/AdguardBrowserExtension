@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* global contentPage, I18nHelper, AdguardAssistant, balalaika, AdguardSelectorLib, AdguardRulesConstructorLib */
 if (window.top === window && document.documentElement instanceof HTMLElement) {
 
     var adguardAssistant;
@@ -29,17 +31,34 @@ if (window.top === window && document.documentElement instanceof HTMLElement) {
     contentPage.onMessage.addListener(function (message) {
         switch (message.type) {
             case 'initAssistant':
+                var options = message.options;
+                var localization = options.localization;
+                var addRuleCallbackName = options.addRuleCallbackName;
+
+                var onElementBlocked = function (ruleText, callback) {
+                    contentPage.sendMessage({type: addRuleCallbackName, ruleText: ruleText}, callback);
+                };
+
+                var translateElement = function (element, msgId) {
+                    var message = localization[msgId];
+                    I18nHelper.translateElement(element, message);
+                };
+
                 if (adguardAssistant) {
                     adguardAssistant.destroy();
                 } else {
-                    adguardAssistant = new AdguardAssistant(balalaika);
+                    adguardAssistant = new AdguardAssistant(balalaika, AdguardSelectorLib, AdguardRulesConstructorLib, SliderWidget);
                 }
-                var selectedElement;
-                var options = message.options;
+
                 if (clickedEl && options.selectElement) {
-                    selectedElement = clickedEl;
+                    options.selectedElement = clickedEl;
                 }
-                adguardAssistant.init({selectedElement: selectedElement});
+
+                adguardAssistant.init({
+                    cssLink: options.cssLink,
+                    onElementBlocked: onElementBlocked,
+                    translateElement: translateElement
+                });
                 break;
             case 'destroyAssistant':
                 if (adguardAssistant) {
