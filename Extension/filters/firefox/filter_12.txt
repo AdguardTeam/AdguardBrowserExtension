@@ -1,6 +1,6 @@
-! Checksum: xdX9cD336QzIAvSlyujnJg
-! Version: 1.0.2.41
-! TimeUpdated: 2017-02-08T17:01:50.544+04:00
+! Checksum: PTx0oLy2zyVXlRKZH5vx3A
+! Version: 1.0.2.47
+! TimeUpdated: 2017-02-10T19:05:58.262+04:00
 ! Title: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! Title: Adguard Safari Filter
@@ -36,16 +36,16 @@
 !
 !****** TEMPORARY ******
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3821
-@@||securepubads.g.doubleclick.net/gampad/ads?gdfp_req=1$other,domain=theatlantic.com
-@@||g.doubleclick.net/gpt/pubads_impl_$script,domain=theatlantic.com
-@@||theatlantic.com/widget/$xmlhttprequest
-@@||g.doubleclick.net/gampad/ads?gdfp_req=1&$script,domain=theatlantic.com
-@@||partner.googleadservices.com/gpt/pubads_impl_$script,domain=theatlantic.com
-@@||serving-sys.com^$xmlhttprequest,domain=theatlantic.com
-@@||theatlantic.com^$generichide
-@@||theatlantic.com^*/adver$script
+!
 !***********************
 !
+! https://forum.adguard.com/index.php?threads/19455/
+@@||thaivisa.com^$generichide,content
+@@||thaivisa.com/js/fuckadblock.js
+! https://forum.adguard.com/index.php?threads/jkwaveblog-com.19449/
+@@||jkwaveblog.com^$generichide
+! https://forum.adguard.com/index.php?threads/putlockerlink-com.19442/
+@@||putlockerlink.com^$generichide
 ! https://forum.adguard.com/index.php?threads/18222/
 @@||oaome.com^$generichide
 ! https://forum.adguard.com/index.php?threads/18517/
@@ -388,6 +388,13 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 !
 ! White list. Fixing content blocking API issues.
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/3986
+@@||googlevideo.com/videoplayback?$domain=korrespondent.net
+@@||youtube.com/get_video_info?$domain=korrespondent.net
+! https://github.com/AdguardTeam/AdguardFilters/issues/4338
+@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=vod.pl
+! https://github.com/AdguardTeam/AdguardFilters/issues/4309
+@@||igen.fr/sites/www.igen.fr/files/advagg_js/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4330
 @@||xhamster.com/ajax/
 @@||google.com/recaptcha/$domain=xhamster.com
@@ -424,7 +431,7 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 ! https://github.com/AdguardTeam/AdguardBrowserExtension/issues/466
 @@||11street.my/totalsearch/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3559
-@@|http://*$domain=fmovies.to,~third-party
+@@|http://*$domain=fmovies.to|fmovies.se,~third-party
 !https://forum.adguard.com/index.php?threads/accountkiller-com.16162/
 @@||google-analytics.com/analytics.js^$domain=accountkiller.com
 ! https://forum.adguard.com/index.php?threads/pornve-com-nsfw.16118/

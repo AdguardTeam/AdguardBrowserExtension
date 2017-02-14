@@ -1,6 +1,6 @@
-! Checksum: VMVma5FI8UDKFgosnejYtw
-! Version: 1.0.9.92
-! TimeUpdated: 2017-02-09T12:02:14.606+04:00
+! Checksum: F6gT+v/I4d4/1tOaX1gb+Q
+! Version: 1.0.10.2
+! TimeUpdated: 2017-02-14T00:02:05.235+04:00
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on webpages including cookie notices third-party widgets and in-page popups.
 ! Title: Adguard Annoyances Filter
@@ -30,6 +30,8 @@
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3877
 myscore.com.ua###lsid-window-mask
 !
+! https://forum.adguard.com/index.php?threads/19501/
+100tipcams.com,adultcams.me,adultchat2100.com,adultlivechatrooms.com,alphafreecams.com,bimbolive.com,bonga-cams.net,bongacam.net,bongacam.org,bongacams-chat.ru,bongacams.com,bongacams.eu,cammbi.com,dcmoz.net,prostocams.com,r2games.com,redlightarea.com,smutcam.com###dmca_security
 ! Yandex search - опрос про игру
 ! https://forum.adguard.com/index.php?threads/https-yandex-ru.19144/
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by,yandex.com.tr##.template-composite__item > div.object-figures.object-figures_wide_yes.object-figures_type_gallery
@@ -309,6 +311,8 @@ povarenok.ru##.header-socials
 @@||ds.bitpit.xyz/advertise.js
 @@||ds.bitpit.xyz/ad-top/advertise.js
 !
+imslp.org###adsremovead
+warcraftlogs.com###top-banner
 ||gamekings.tv/wp-content/themes/gamekings2016/img/zwervers.gif
 gamekings.tv##.addblocker-detected
 nowloading.co##.supplication
@@ -514,7 +518,7 @@ bloomberg.com###adBlockerContainer
 2gis.ru##.dashboard__promo
 2ip.ru##div[id^="notification-"]
 2ip.ru#%#window.qwerty = { on: function() { return { onNotDetected: function() {} }; } };
-@@/advertise.js$domain=pb.wtf
+@@/advertise.js$domain=pb.wtf|piratbit.org|piratbit.ru
 @@/js/advert.js$domain=chit24.ru|seo-fast.ru|clipiki.ru|newauto46.ru
 @@http://q.gs^$elemhide
 @@||9now.com.au^$generichide
@@ -1992,6 +1996,7 @@ amnesty.org##.cookies
 !#######################################################
 !######### General URL blocking rules ##################
 !#######################################################
+||tm.tradetracker.net/public/styles/ttCookieDirective.css
 -agree-cookies/
 -cookie-banner-
 -cookie-cnil.
@@ -2275,6 +2280,7 @@ _europecookielaw.
 !#######################################################
 !######### Rules for specific sites ####################
 !#######################################################
+ciceksepeti.com##.policy-popup
 seat.com##.cp1CookieBanner
 mclaren.com##.messages.show
 astonmartin.com###cookieheader
@@ -2693,6 +2699,7 @@ mycard2go.com#@#.cookiebar
 !
 !
 !--- Reamains of ads ---
+vanion.eu##.sidebar_inner article.widget[-ext-has=">div.inner-widget > ins.adsbygoogle"]
 4kfilmizle.org###sidebar div.sidebarborder[-ext-has="div.g-page"]
 ds-scene.net###boxes > div[id^="item_left_item_"][-ext-has='div.boxHdr:contains(Advertisement)']
 lolchampion.de###sidebar div[class="widget widget_text"][-ext-has=".textwidget:contains(Anzeige)"]
@@ -2727,9 +2734,12 @@ online-life.cc##div[style="height:10px;"] ~ div.block_title[-ext-contains="РЕ�
 patronlardunyasi.com##td[bgcolor="#F5F5F5"][-ext-has='a[href^="/showad.asp?"]']
 patronlardunyasi.com##td[bgcolor="#F5F5F5"][-ext-has='ins[class$="adsbygoogle"]']
 zoomgirls.net##ul[class$="side-panel"][-ext-has='noscript']
+!
 !--- Reamains of socials ---
+vanion.eu##.sidebar_inner article.widget[-ext-has="div#facebook-widget"]
 muhammetefe.com###leftcol .module-outer[-ext-has='a[href^="http://www.facebook.com"]']
 mathematik-wissen.de###infobereich > div.info[-ext-has="h4:contains(Facebook)"]
+!----------------------------------!
 !
 !--------- Mobile apps ------------!
 shiftdelete.net##div[itemprop="articleBody"] p[-ext-has='a[href*="/app"] > img']
@@ -2930,6 +2940,7 @@ panzehir.net###sidebar > center > b
 !#######################################################
 !######### Banners of mobile apps for the sites ########
 !#######################################################
+ciceksepeti.com##body > .smart-banner
 miui.com##.app_download
 life.ru#%#document.cookie = "smartbanner=already_shows";
 ria.ru###smartbanner
@@ -3075,6 +3086,10 @@ momondo.de#$##mobile-splash-popup { display: none!important; }
 !
 ! Specific sites
 !
+100tipcams.com,adultcams.me,adultchat2100.com,adultlivechatrooms.com,alphafreecams.com,bimbolive.com,bonga-cams.net,bongacam.net,bongacam.org,bongacams-chat.ru,bongacams.com,bongacams.eu,cammbi.com,dcmoz.net,prostocams.com,r2games.com,redlightarea.com,smutcam.com##.fancybox-wrap
+100tipcams.com,adultcams.me,adultchat2100.com,adultlivechatrooms.com,alphafreecams.com,bimbolive.com,bonga-cams.net,bongacam.net,bongacam.org,bongacams-chat.ru,bongacams.com,bongacams.eu,cammbi.com,dcmoz.net,prostocams.com,r2games.com,redlightarea.com,smutcam.com##.fancybox-overlay
+ntv.ru##.xpopup_overlay
+pcportal.org.ru###nnews_ovnews
 31tv.ru###fancybox-overlay
 31tv.ru###fancybox-wrap
 itpro.co.uk###block-dennis-newsletter-newsletter-block
@@ -3526,6 +3541,8 @@ zr.ru#%#document.cookie = "zrPushSubsPopUp=1";
 !
 !######### Remains of ads
 !
+chinamobilemag.de###sp-user3
+sadeempc.com###secondary > aside#text-15
 asyafanatikleri.net##div[style="width: 581px; height: auto; float: left; margin-top: 10px; margin-left: 10px; padding: 5px 5px;"]
 pornolab.biz,pornolab.cc,pornolab.lib,pornolab.net##.forums > tbody > tr[id^="f-"][-ext-has=' > td > p.forum_desc.hidden > script']
 porndoe.com##div[data-subscript="Advertising"]
@@ -3945,6 +3962,8 @@ ubuntumaniac.com##div[class="widget HTML"][id^="HTML"][-ext-has='a[class="quicke
 !
 !######### Remains of social widgets #########
 !
+sadeempc.com###secondary > aside#text-16
+putlockers.ch##td[valign="top"] + td[valign="top"] > .menu-box
 muzikindir.xyz##body > nav.navbar-fixed-top+div.sub-header
 rgmechanics.com##.footer > div.section-inner > div.column-3
 digitalfernsehen.de##.service_zeile_unten
@@ -4139,6 +4158,10 @@ videogamesblogger.com#%#AG_onLoad(function() { window.num_seconds = 1; });
 ||videogamesblogger.com/javascripts/interstitial.client.js
 ! revclouds.com - uncheck the loader
 revclouds.com#%#AG_onLoad(function() {document.getElementById("tick-dwn").click();});
+!
+! Remove timer, during which ads or self-promos were shown
+!
+imslp.org#%#AG_onLoad(function(){var b=document.getElementById("sm_dl_wait");if(b){var c=document.createElement("a");c.setAttribute("href",b.getAttribute("data-id"));c.innerHTML="<b>"+("function"==typeof window.a?IMSLPGetMsg("js-s"):"Click here to continue your download.")+"</b>";var d=document.createElement("style");d.innerHTML="#sm_dl_wait{display:none!important;}";b.parentNode.insertBefore(c,b);b.parentNode.insertBefore(d,b)}});
 !
 ! Unblock context menu and other mouse limitations
 !
