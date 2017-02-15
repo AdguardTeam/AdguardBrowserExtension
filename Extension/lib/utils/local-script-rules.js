@@ -26,7 +26,7 @@
  *    or from this DEFAULT_SCRIPT_RULES object
  */
 
-var FilterRule = require('../../../lib/filter/rules/base-filter-rule').FilterRule;
+var FilterRule = require('../../lib/filter/rules/base-filter-rule').FilterRule;
 
 exports.LocalScriptRulesSevice = (function () {
 

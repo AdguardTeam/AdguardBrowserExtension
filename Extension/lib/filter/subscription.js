@@ -25,7 +25,7 @@ var Log = require('../../lib/utils/log').Log;
 var Prefs = require('../../lib/prefs').Prefs;
 var ServiceClient = require('../../lib/utils/service-client').ServiceClient;
 var Promise = require('../../lib/utils/promises').Promise;
-var LocalScriptRulesSevice = require('../../../lib/utils/local-script-rules').LocalScriptRulesSevice;
+var LocalScriptRulesSevice = require('../../lib/utils/local-script-rules').LocalScriptRulesSevice;
 
 var Locale = Prefs.locale.substring(0, 2).toLowerCase();
 
