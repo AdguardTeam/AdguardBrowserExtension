@@ -101,13 +101,19 @@
     // EXPOSE
     api.storageSyncProvider = {
         /**
+         * Provider name
+         */
+        get name() {
+            return 'CHROME';
+        },
+        /**
          * Loads data from provider
          */
         load: load,
         /**
          * Saves data to provider
          */
-        save: save
+        save: save,
     };
 
 })(adguard.sync, adguard);

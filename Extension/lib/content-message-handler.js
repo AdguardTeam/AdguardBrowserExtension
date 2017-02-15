@@ -288,8 +288,6 @@
             case 'getAntiBannerFiltersForOptionsPage':
                 var renderedFilters = adguard.filters.getFiltersForOptionsPage();
                 return {filters: renderedFilters};
-            case 'syncSettings':
-                return adguard.settings.syncSettings(message.provider, message.token, message.callbackUrl);
             case 'changeDefaultWhiteListMode':
                 adguard.whitelist.changeDefaultWhiteListMode(message.enabled);
                 break;
@@ -454,6 +452,14 @@
                 break;
             case 'saveCssHitStats':
                 processSaveCssHitStats(sender.tab, message.stats);
+                break;
+            case 'syncSettings':
+                adguard.sync.syncService.setSyncProvider(message.provider);
+                break;
+            case 'setOauthToken':
+                var provider = message.provider;
+                var token = message.token;
+                adguard.sync.syncService.setSyncProvider(provider, token);
                 break;
             default :
                 throw 'Unknown message: ' + message;

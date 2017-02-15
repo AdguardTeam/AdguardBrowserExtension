@@ -55,21 +55,24 @@ adguard.userrules = (function (adguard) {
      * Adds list of rules to the user filter
      *
      * @param rulesText List of rules to add
+     * @param options
      */
-    var addRules = function (rulesText) {
+    var addRules = function (rulesText, options) {
         var rules = getAntiBannerService().addFilterRules(adguard.utils.filters.USER_FILTER_ID, rulesText);
         for (var i = 0; i < rules.length; i++) {
             userRules.push(rules[i].ruleText);
         }
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_LOCAL_REQUIRED, options);
         return rules;
     };
 
     /**
      * Removes all user's custom rules
      */
-    var clearRules = function () {
+    var clearRules = function (options) {
         userRules = [];
         getAntiBannerService().clearFilterRules(adguard.utils.filters.USER_FILTER_ID);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_LOCAL_REQUIRED, options);
     };
 
     /**
@@ -80,6 +83,7 @@ adguard.userrules = (function (adguard) {
     var removeRule = function (ruleText) {
         adguard.utils.collections.removeAll(userRules, ruleText);
         getAntiBannerService().removeFilterRule(adguard.utils.filters.USER_FILTER_ID, ruleText);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_LOCAL_REQUIRED);
     };
 
     var unWhiteListFrame = function (frameInfo) {

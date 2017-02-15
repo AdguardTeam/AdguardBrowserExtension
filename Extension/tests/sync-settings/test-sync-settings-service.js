@@ -1,24 +1,7 @@
 /**
  * Dummy settings provider
  */
-adguard.sync.settingsProvider = (function () {
-    var PROTOCOL_VERSION = "1.0";
-    var APP_ID = "adguard-browser-extension";
-
-    var FILTERS_SECTION = "filters.json";
-
-    var manifest = {
-        "timestamp": "1472817032850",
-        "protocol-version": "1.0",
-        "min-compatible-version": "1.0",
-        "app-id": APP_ID,
-        "sections": [
-            {
-                "name": "filters.json",
-                "timestamp": 1472817032850
-            }
-        ]
-    };
+(function () {
 
     var filters = {
         "filters": {
@@ -44,67 +27,15 @@ adguard.sync.settingsProvider = (function () {
         }
     };
 
-    var loadLocalManifest = function () {
-        return manifest;
-    };
-
-    var getEmptyLocalManifest = function () {
-        return {
-            "protocol-version": PROTOCOL_VERSION,
-            "min-compatible-version": PROTOCOL_VERSION,
-            "app-id": APP_ID,
-            "timestamp": 0,
-            "sections": [
-                {
-                    "name": FILTERS_SECTION,
-                    "timestamp": 0
-                }
-            ]
-        };
-    };
-
-    var syncLocalManifest = function (manifest, syncTime) {
-        if (syncTime) {
-            manifest.timestamp = syncTime;
-            for (var i = 0; i < manifest.sections.length; i++) {
-                manifest.sections[i].timestamp = syncTime;
-            }
-        }
-    };
-
-    var loadSection = function (sectionName, callback) {
+    adguard.sync.settingsProvider.loadSection = function (sectionName, callback) {
         callback(filters);
     };
 
-    var applySection = function (sectionName, section, callback) {
+    adguard.sync.settingsProvider.applySection = function (sectionName, section, callback) {
         filters = section;
         callback(true);
     };
 
-    return {
-        /**
-         * Loads app settings manifest
-         */
-        loadLocalManifest: loadLocalManifest,
-        /**
-         * Gets empty settings manifest
-         */
-        getEmptyLocalManifest: getEmptyLocalManifest,
-        /**
-         * Loads section of app settings
-         */
-        loadSection: loadSection,
-
-        /**
-         * Saves manifest to local storage
-         */
-        syncLocalManifest: syncLocalManifest,
-
-        /**
-         * Apply section to application
-         */
-        applySection: applySection
-    }
 })();
 
 var cleanUp = function (callback) {
@@ -153,7 +84,7 @@ QUnit.test("Test local to remote", function (assert) {
                 adguard.sync.fileSyncProvider.load(manifestPath, onManifestLoaded);
             };
 
-            adguard.sync.syncService.setSyncProvider(adguard.sync.fileSyncProvider);
+            adguard.sync.syncService.setSyncProvider(adguard.sync.fileSyncProvider.name);
             adguard.sync.syncService.syncSettings(onSettingSynced);
         });
     });
@@ -204,7 +135,7 @@ QUnit.test("Test remote to local", function (assert) {
                 });
             };
 
-            adguard.sync.syncService.setSyncProvider(adguard.sync.fileSyncProvider);
+            adguard.sync.syncService.setSyncProvider(adguard.sync.fileSyncProvider.name);
             adguard.sync.syncService.syncSettings(onSettingSynced);
         });
     });

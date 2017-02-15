@@ -15,21 +15,94 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var syncRequiredEvents = [
-    adguard.listeners.FILTER_ENABLE_DISABLE,
-    adguard.listeners.UPDATE_WHITELIST_FILTER_RULES,
-    adguard.listeners.UPDATE_USER_FILTER_RULES];
+(function (syncApi, adguard) {
 
-adguard.listeners.addSpecifiedListener(syncRequiredEvents, adguard.utils.concurrent.debounce(function () {
+    var syncRequiredEvents = [
+        adguard.listeners.SYNC_LOCAL_REQUIRED, // Local data was changed
+        adguard.listeners.SYNC_REMOTE_REQUIRED // Remote data was changed
+    ];
 
-    //TODO: check if sync provider is correctly initialized (e.g. Dropbox is required in authorization)
+    var timeoutId = null;
+    var pending = false;
+    var running = false;
 
-    // Override current sync time
-    var localManifest = adguard.sync.settingsProvider.loadLocalManifest();
-    adguard.sync.settingsProvider.syncLocalManifest(localManifest, Date.now());
+    /**
+     * Checks at least one section was updated since the last sync
+     * @param callback
+     */
+    function isSectionsUpdated(callback) {
 
-    adguard.sync.syncService.syncSettings(function () {
+        var dfds = [];
+        var updated = false;
 
+        var localManifest = syncApi.settingsProvider.loadLocalManifest();
+        localManifest.sections.forEach(function (section) {
+            var dfd = new adguard.utils.Promise();
+            syncApi.sections.loadLocalSection(section.name, function (data) {
+                if (syncApi.sections.isSectionUpdated(section.name, data)) {
+                    updated = true;
+                }
+                dfd.resolve();
+            });
+        });
+
+        adguard.utils.Promise.all(dfds).then(function () {
+            callback(updated);
+        });
+    }
+
+    function sync(event, callback) {
+
+        if (event === adguard.listeners.SYNC_LOCAL_REQUIRED) {
+            isSectionsUpdated(function (updated) {
+                if (updated) {
+                    var localManifest = syncApi.settingsProvider.loadLocalManifest();
+                    syncApi.settingsProvider.syncLocalManifest(localManifest, Date.now());
+                }
+                syncApi.syncService.syncSettings(callback);
+            });
+        } else {
+            syncApi.syncService.syncSettings(callback);
+        }
+    }
+
+    function onSyncFinished() {
+        running = false;
+        if (pending) {
+            syncListener(adguard.listeners.SYNC_LOCAL_REQUIRED);
+            pending = false;
+        }
+    }
+
+    var syncListener = function (event, options) {
+
+        if (options && options.syncSuppress) {
+            return;
+        }
+
+        if (running) {
+            pending = true;
+            return;
+        }
+
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+
+        timeoutId = setTimeout(function () {
+            running = true;
+            sync(event, onSyncFinished);
+        }, 5000);
+    };
+
+    function initialize() {
+        adguard.listeners.addSpecifiedListener(syncRequiredEvents, syncListener);
+        syncApi.syncService.init();
+    }
+
+    adguard.listeners.addSpecifiedListener([adguard.listeners.APPLICATION_INITIALIZED], function () {
+        // Sync local state
+        isSectionsUpdated(initialize);
     });
 
-}, 5000));
+})(adguard.sync, adguard);

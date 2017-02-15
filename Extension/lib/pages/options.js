@@ -497,19 +497,7 @@ PageController.prototype = {
 
     onSyncSettingsDropboxClicked: function (e) {
         e.preventDefault();
-
-        var token;
-        var hash = window.location.hash;
-        if (hash) {
-            token = hash.substring(14, hash.indexOf('&'));
-        }
-
-        var url = window.location.href;
-        contentPage.sendMessage({type: 'syncSettings', provider: 'DROPBOX', token: token, callbackUrl: url}, function (response) {
-            if (response) {
-                window.location.href = response;
-            }
-        });
+        contentPage.sendMessage({type: 'syncSettings', provider: 'DROPBOX'});
     },
 
     onSyncSettingsChromeClicked: function (e) {

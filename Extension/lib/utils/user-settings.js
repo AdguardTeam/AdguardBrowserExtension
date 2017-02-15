@@ -190,31 +190,6 @@ adguard.settings = (function (adguard) {
         setProperty(settings.DEFAULT_WHITE_LIST_MODE, enabled);
     };
 
-    var syncSettings = function (provider, token, url) {
-        var syncProvider;
-        switch (provider) {
-            case 'FILE':
-                syncProvider = adguard.sync.fileSyncProvider;
-                break;
-            case 'DROPBOX':
-                if (!token && !adguard.sync.dropboxSyncProvider.isAuthorized()) {
-                    return adguard.sync.dropboxSyncProvider.getAuthenticationUrl(url);
-                }
-
-                syncProvider = adguard.sync.dropboxSyncProvider;
-                syncProvider.setAccessToken(token);
-                break;
-            case 'CHROME':
-                syncProvider = adguard.sync.storageSyncProvider;
-                break;
-        }
-
-        adguard.sync.syncService.setSyncProvider(syncProvider);
-        adguard.sync.syncService.syncSettings(function (result) {
-            console.log(result);
-        });
-    };
-
     var api = {};
 
     // Expose settings to api
@@ -248,7 +223,6 @@ adguard.settings = (function (adguard) {
     api.isDefaultWhiteListMode = isDefaultWhiteListMode;
     api.isUseOptimizedFiltersEnabled = isUseOptimizedFiltersEnabled;
     api.changeDefaultWhiteListMode = changeDefaultWhiteListMode;
-    api.syncSettings = syncSettings;
 
     return api;
 
