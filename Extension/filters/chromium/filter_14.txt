@@ -1,6 +1,6 @@
-! Checksum: F6gT+v/I4d4/1tOaX1gb+Q
-! Version: 1.0.10.2
-! TimeUpdated: 2017-02-14T00:02:05.235+04:00
+! Checksum: 4j3ZP0hOnVndvBnu36chqw
+! Version: 1.0.10.6
+! TimeUpdated: 2017-02-14T20:02:19.678+04:00
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on webpages including cookie notices third-party widgets and in-page popups.
 ! Title: Adguard Annoyances Filter
@@ -311,6 +311,7 @@ povarenok.ru##.header-socials
 @@||ds.bitpit.xyz/advertise.js
 @@||ds.bitpit.xyz/ad-top/advertise.js
 !
+vesti-ukr.com###adblockpopup
 imslp.org###adsremovead
 warcraftlogs.com###top-banner
 ||gamekings.tv/wp-content/themes/gamekings2016/img/zwervers.gif
@@ -2280,6 +2281,7 @@ _europecookielaw.
 !#######################################################
 !######### Rules for specific sites ####################
 !#######################################################
+ratemyprofessors.com##.overlay.show
 ciceksepeti.com##.policy-popup
 seat.com##.cp1CookieBanner
 mclaren.com##.messages.show
@@ -3075,6 +3077,7 @@ momondo.de#$##mobile-splash-popup { display: none!important; }
 !
 ! Generic rules
 !
+||files.jumpoutpopup.ru^$third-party,domain=~makedreamprofits.com
 ||mailganer.com/jsapi/*?ref=
 ||cdn-library.su/plusonet/lib/$domain=~pluso.net
 ||mailget.net^$third-party
@@ -3086,6 +3089,10 @@ momondo.de#$##mobile-splash-popup { display: none!important; }
 !
 ! Specific sites
 !
+vesti-ukr.com###radioblockholder
+||glavbukh.ru/js/popupManager.js
+online-buhuchet.ru##.spu-box
+online-buhuchet.ru##.spu-bg
 100tipcams.com,adultcams.me,adultchat2100.com,adultlivechatrooms.com,alphafreecams.com,bimbolive.com,bonga-cams.net,bongacam.net,bongacam.org,bongacams-chat.ru,bongacams.com,bongacams.eu,cammbi.com,dcmoz.net,prostocams.com,r2games.com,redlightarea.com,smutcam.com##.fancybox-wrap
 100tipcams.com,adultcams.me,adultchat2100.com,adultlivechatrooms.com,alphafreecams.com,bimbolive.com,bonga-cams.net,bongacam.net,bongacam.org,bongacams-chat.ru,bongacams.com,bongacams.eu,cammbi.com,dcmoz.net,prostocams.com,r2games.com,redlightarea.com,smutcam.com##.fancybox-overlay
 ntv.ru##.xpopup_overlay
@@ -4122,6 +4129,9 @@ xtremetop100.com##a[href="/contact.php"][rel="nofollow"]
 !##############################
 !######### CSS tweaks #########
 !##############################
+! http://forum.ru-board.com/topic.cgi?forum=2&topic=5372&start=240#8
+youtube.com#$##masthead-positioner-height-offset { height: 90px!important; }
+youtube.com#$##appbar-guide-menu { margin-top: 50px!important; }
 ! https://forum.adguard.com/index.php?threads/resolved-linkshrink-net.18185/#post-125279 - bypass timer
 linkshrink.net#$##skip {display: block!important;}
 linkshrink.net#$##pause {display: none!important;}

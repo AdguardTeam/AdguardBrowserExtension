@@ -1,6 +1,6 @@
-! Checksum: 5OreZreqfdyJKaqzyTpfPQ
-! Version: 1.0.46.95
-! TimeUpdated: 2017-02-14T02:00:29.404+04:00
+! Checksum: /evznLpdJtXlcvDpcTZazg
+! Version: 1.0.47
+! TimeUpdated: 2017-02-14T21:00:13.414+04:00
 ! Title: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 ! Title: Adguard Russian Filter
@@ -4554,6 +4554,7 @@ forum.cxem.net##form > article[id^="elComment_"][-ext-has='strong[itemprop="name
 popmech.ru##div[class="content-aside-box"] > div.grid-cell.grid-cell__1[-ext-has=">div[data-banner-type]"]
 !
 !e.mail.ru##div:not([style^="min-height:"]) > div[id][data-uniqid^="toolkit-"]:not([data-bem]):not([data-mnemo])[-ext-has='a[href^="https://an.yandex."]>img']
+yadi.sk##.ns-view-folderPublic > div.folder-public__content-wrapper[-ext-has='span[class$="__title-link"] > img[src^="https://favicon.yandex.net/favicon/yandex."]+span']
 pb.wtf,piratbit.org,piratbit.ru###main_content > script+div[id][-ext-has='div > a > img[src*="zer/"]+br']
 newstudio.tv###sideLeft > div[class="accordion-group"][-ext-has="h5:contains(seedbox.org.ua)"]
 urod.ru##td[align="left"] .BodyNewsStyle[-ext-has='a[href="/news/75237/"]']
@@ -5523,6 +5524,9 @@ api.kinomoov.org#%#AG_onLoad(function() { window.flashLayerAdSkipDelay = 1; });
 !-----------------------
 !------- CSS -----------
 !-----------------------
+! https://forum.adguard.com/index.php?threads/19540/
+vesti-ukr.com#$#body div.sunsite_actions.ad+iframe[style*="width: 100%;"] { position: absolute!important; left: -3000px!important; }
+vesti-ukr.com#$#.article-text-holder+iframe[style*="width: 100%;"] { position: absolute!important; left: -3000px!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4368
 arendator.ru#$#.arcticmodal-container { display: none!important; }
 arendator.ru#$#.arcticmodal-overlay { display: none!important; }
@@ -5783,10 +5787,6 @@ gazeta.ru#$#body { padding-top: 0px!important; }
 tfile.me#$#body { padding: 0 0 0!important; background: transparent!important; }
 ! http://forum.adguard.com/showthread.php?7685
 mail.ru#$#div.direct_top { height: 0px!important; }
-mail.ru#$#.direct-state * { visibility: hidden!important; height: 0px!important; }
-e.mail.ru#$##leftcol-banners { position: fixed!important; top: -1000px!important; }
-e.mail.ru#$#.b-rb { position: absolute!important; left: -3000px!important; }
-mail.ru#$#div[id="leftcol-banners"] { position: absolute; left: -1000px; top: -1000px; }
 ! sport.ua - удаление отступа сверху
 sport.ua#$#body[style] { padding-top: 0px!important; }
 ! meteo-tv.ru - удаление брендированного фона, отступа сверху
@@ -7691,6 +7691,10 @@ rustorka.com##a[href$=".php"]:not([class]) > :not(img)
 ||flvvideostream.ru/*.js|
 ||27i2gr13ad7w.ru/*.js|
 !
+||hdclub.org/dox/topsmart.png
+vesti-ukr.com##.title-rubric.partners
+online-buhuchet.ru##.stb-bottom-left-container
+studfiles.ru##.banner_bottom_preview
 ||pornk.in/tn.php?b=
 pornk.in##.banner
 hd-porno.tv##a[href^="http://shakesclick.com/"]
@@ -8426,7 +8430,6 @@ hmn.ru,meteonovosti.ru###top_ban
 ||delo.ua/skin/img/project/specprojects/telecom_msb/
 delo.ua##a[href="http://delo.ua/tech/telecom-msb/"]
 e.mail.ru##.b-layout_flex > .b-layout__col_1_2 > div > div.b-nav_settings-on-hover:not(:first-child)
-e.mail.ru##.b-rb *
 e.mail.ru##.message-sent__ads
 tehnari.ru##div[style="padding:0px 25px 0px 25px"] > table[class="tborder"][style="margin: 0px 0px 10px 0px;"]
 baibako.tv##div[style="padding-bottom:15px;margin-bottom:15px;border-bottom:1px solid #dfdfdf;"]
@@ -9542,7 +9545,7 @@ electronics-review.ru##.td-header-header > div.td-header-sp-recs
 emls.ru##.table_banner_td
 emls.ru##a[href^="/special/"]
 emls.ru##iframe[src*="/special/"]
-epidemz.co,epidemz.com##.topreklama
+epidemz.co##.topreklama
 epidemz.co,epidemz.com##div[id^="radeant"]
 epidemz.co,epidemz.net##div[align="right"] > a[rel="nofollow"][target="_blank"] > img
 epidemz.co,epidemz.net##td > a[rel="nofollow"][target="_blank"] font
@@ -10431,7 +10434,7 @@ mail.ru###banner_container_1
 mail.ru###banner_container_2
 mail.ru###bgshechka
 mail.ru###browser-offer
-mail.ru###leftcol-banners
+~e.mail.ru,mail.ru###leftcol-banners
 mail.ru###rb-context-left-slots
 mail.ru###right_240x400
 mail.ru###top_direct
@@ -10447,7 +10450,6 @@ mail.ru##.br-ulmart
 mail.ru##.branding-footer
 mail.ru##.branding_link
 mail.ru##.branding_link_foot
-mail.ru##.direct-state
 mail.ru##.direct_top
 mail.ru##.directhack
 mail.ru##.firefox-offer
