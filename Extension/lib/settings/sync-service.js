@@ -293,15 +293,28 @@
     function updateLocalToRemoteSection(section, callback) {
 
         var sectionName = section.name;
-        adguard.console.info('Updating local to remote: ' + section.name);
+        adguard.console.info('Updating local to remote: {0}', section.name);
 
         var dfd = new adguard.utils.Promise();
+
+        // If section isn't supported just skip it
+        if (!api.settingsProvider.isSectionSupported(sectionName)) {
+            callback(section);
+            dfd.resolve();
+            return dfd;
+        }
 
         /**
          * Saves section to sync provider
          * @param localSection Section object
          */
         var onSectionLoaded = function (localSection) {
+
+            if (!localSection) {
+                adguard.console.error('Local {0} section loading failed', sectionName);
+                dfd.reject();
+                return;
+            }
 
             adguard.console.debug('Local {0} section loaded', sectionName);
 
@@ -332,9 +345,16 @@
     function updateRemoteToLocalSection(section, callback) {
 
         var sectionName = section.name;
-        adguard.console.info('Updating remote to local: ' + sectionName);
+        adguard.console.info('Updating remote to local: {0}', sectionName);
 
         var dfd = adguard.utils.Promise();
+
+        // If section isn't supported just skip it
+        if (!api.settingsProvider.isSectionSupported(sectionName)) {
+            callback(section);
+            dfd.resolve();
+            return dfd;
+        }
 
         /**
          * Applies remote section to application

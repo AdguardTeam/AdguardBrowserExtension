@@ -127,7 +127,10 @@
         if (syncTime) {
             manifest.timestamp = syncTime;
             for (var i = 0; i < manifest.sections.length; i++) {
-                manifest.sections[i].timestamp = syncTime;
+                var section = manifest.sections[i];
+                if (section.name === FILTERS_SECTION) {
+                    section.timestamp = syncTime;
+                }
             }
         }
         adguard.localStorage.setItem(SYNC_MANIFEST_PROP, JSON.stringify(manifest));
@@ -173,6 +176,14 @@
     };
 
     /**
+     * Checks section is supported
+     * @param sectionName Section name
+     */
+    var isSectionSupported = function (sectionName) {
+        return sectionName === FILTERS_SECTION;
+    };
+
+    /**
      * Constructs section from application settings
      * @param sectionName Section name
      * @param callback Finish callback
@@ -209,23 +220,31 @@
 
     // EXPOSE
     api.settingsProvider = {
+
         /**
          * Loads app settings manifest
          */
         loadLocalManifest: loadLocalManifest,
+
         /**
          * Gets empty settings manifest
          */
         getEmptyLocalManifest: getEmptyLocalManifest,
-        /**
-         * Loads section of app settings
-         */
-        loadSection: loadSection,
 
         /**
          * Saves manifest to local storage
          */
         syncLocalManifest: syncLocalManifest,
+
+        /**
+         * Checks section is supported
+         */
+        isSectionSupported: isSectionSupported,
+
+        /**
+         * Loads section of app settings
+         */
+        loadSection: loadSection,
 
         /**
          * Apply section to application
