@@ -36,7 +36,7 @@
      */
     var sectionsRevisions = (function () {
 
-        var revisions = [];
+        var revisions = {};
 
         var getSectionHash = function (section) {
             return global.SHA256.hash(JSON.stringify(section));

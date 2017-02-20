@@ -101,12 +101,12 @@
         if (areaName !== 'sync') {
             return;
         }
-        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REMOTE_REQUIRED);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED);
     };
 
     var init = function () {
         chrome.storage.onChanged.addListener(onStorageChanged);
-        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REMOTE_REQUIRED);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED);
     };
 
     var shutdown = function () {

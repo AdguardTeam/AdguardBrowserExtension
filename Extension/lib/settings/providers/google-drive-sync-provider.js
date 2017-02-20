@@ -255,7 +255,7 @@
                 }
                 var changes = response.changes || [];
                 if (changes.length > 0 || googleDriveFolderState.files === null) {
-                    adguard.listeners.notifyListeners(adguard.listeners.SYNC_REMOTE_REQUIRED);
+                    adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED);
                 }
             });
     }
