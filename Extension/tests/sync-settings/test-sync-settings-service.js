@@ -140,3 +140,19 @@ QUnit.test("Test remote to local", function (assert) {
         });
     });
 });
+
+QUnit.test("Test section revisions", function (assert) {
+    var done = assert.async();
+
+    adguard.sync.sections.loadLocalSection(filtersPath, function (section) {
+        assert.ok(section);
+
+        var updated = adguard.sync.sections.isSectionUpdated(filtersPath, section);
+        assert.notOk(updated);
+
+        updated = adguard.sync.sections.isSectionUpdated(filtersPath, {});
+        assert.ok(updated);
+
+        done();
+    });
+});

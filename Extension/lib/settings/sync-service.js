@@ -20,7 +20,7 @@
  *
  * @type {{syncSettings, setSyncProvider}}
  */
-(function (api, adguard) {
+(function (api, adguard, global) {
 
     var MANIFEST_PATH = "manifest.json";
 
@@ -33,14 +33,17 @@
 
     /**
      * Sections revisions
-     * TODO: normalize section. Use some hash instead of JSON.stringify
      */
     var sectionsRevisions = (function () {
 
         var revisions = [];
 
+        var getSectionHash = function (section) {
+            return global.SHA256.hash(JSON.stringify(section));
+        };
+
         var update = function (sectionName, section) {
-            revisions[sectionName] = JSON.stringify(section);
+            revisions[sectionName] = getSectionHash(section);
         };
 
         var updateIfEmpty = function (sectionName, section) {
@@ -51,7 +54,7 @@
         };
 
         var isUpdated = function (sectionName, section) {
-            return revisions[sectionName] !== JSON.stringify(section);
+            return revisions[sectionName] !== getSectionHash(section);
         };
 
         return {
@@ -574,4 +577,4 @@
         syncSettings: syncSettings
     };
 
-})(adguard.sync, adguard);
+})(adguard.sync, adguard, window);
