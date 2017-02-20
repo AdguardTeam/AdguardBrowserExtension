@@ -313,7 +313,6 @@
             }
 
             var compatibility = findCompatibility(remoteManifest, localManifest);
-            console.log(compatibility);
             if (!compatibility.canRead) {
                 adguard.console.warn('Protocol versions are not compatible');
                 callback(false);

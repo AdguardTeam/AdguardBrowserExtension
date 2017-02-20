@@ -73,7 +73,7 @@ adguard.whitelist = (function (adguard) {
 
     function notifyWhiteListUpdated(options) {
         adguard.listeners.notifyListeners(adguard.listeners.UPDATE_WHITELIST_FILTER_RULES);
-        adguard.listeners.notifyListeners(adguard.listeners.SYNC_LOCAL_REQUIRED, options);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     }
 
     /**

@@ -169,7 +169,7 @@
                     }
                 }
                 if (updated) {
-                    adguard.listeners.notifyListeners(adguard.listeners.SYNC_REMOTE_REQUIRED);
+                    adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED);
                 }
             });
     }

@@ -18,8 +18,7 @@
 (function (syncApi, adguard) {
 
     var syncRequiredEvents = [
-        adguard.listeners.SYNC_LOCAL_REQUIRED, // Local data was changed
-        adguard.listeners.SYNC_REMOTE_REQUIRED // Remote data was changed
+        adguard.listeners.SYNC_REQUIRED // Data was changed
     ];
 
     var timeoutId = null;
@@ -51,25 +50,20 @@
         });
     }
 
-    function sync(event, callback) {
-
-        if (event === adguard.listeners.SYNC_LOCAL_REQUIRED) {
-            isSectionsUpdated(function (updated) {
-                if (updated) {
-                    var localManifest = syncApi.settingsProvider.loadLocalManifest();
-                    syncApi.settingsProvider.syncLocalManifest(localManifest, Date.now());
-                }
-                syncApi.syncService.syncSettings(callback);
-            });
-        } else {
+    function sync(callback) {
+        isSectionsUpdated(function (updated) {
+            if (updated) {
+                var localManifest = syncApi.settingsProvider.loadLocalManifest();
+                syncApi.settingsProvider.syncLocalManifest(localManifest, Date.now());
+            }
             syncApi.syncService.syncSettings(callback);
-        }
+        });
     }
 
     function onSyncFinished() {
         running = false;
         if (pending) {
-            syncListener(adguard.listeners.SYNC_LOCAL_REQUIRED);
+            syncListener(adguard.listeners.SYNC_REQUIRED);
             pending = false;
         }
     }
@@ -91,7 +85,7 @@
 
         timeoutId = setTimeout(function () {
             running = true;
-            sync(event, onSyncFinished);
+            sync(onSyncFinished);
         }, 5000);
     };
 

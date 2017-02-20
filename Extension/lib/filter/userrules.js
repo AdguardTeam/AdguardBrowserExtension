@@ -62,7 +62,7 @@ adguard.userrules = (function (adguard) {
         for (var i = 0; i < rules.length; i++) {
             userRules.push(rules[i].ruleText);
         }
-        adguard.listeners.notifyListeners(adguard.listeners.SYNC_LOCAL_REQUIRED, options);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
         return rules;
     };
 
@@ -72,7 +72,7 @@ adguard.userrules = (function (adguard) {
     var clearRules = function (options) {
         userRules = [];
         getAntiBannerService().clearFilterRules(adguard.utils.filters.USER_FILTER_ID);
-        adguard.listeners.notifyListeners(adguard.listeners.SYNC_LOCAL_REQUIRED, options);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     };
 
     /**
@@ -83,7 +83,7 @@ adguard.userrules = (function (adguard) {
     var removeRule = function (ruleText) {
         adguard.utils.collections.removeAll(userRules, ruleText);
         getAntiBannerService().removeFilterRule(adguard.utils.filters.USER_FILTER_ID, ruleText);
-        adguard.listeners.notifyListeners(adguard.listeners.SYNC_LOCAL_REQUIRED);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED);
     };
 
     var unWhiteListFrame = function (frameInfo) {

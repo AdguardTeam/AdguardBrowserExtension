@@ -1466,7 +1466,7 @@ adguard.filters = (function (adguard) {
 
         filter.enabled = true;
         adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
-        adguard.listeners.notifyListeners(adguard.listeners.SYNC_LOCAL_REQUIRED, options);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
         return true;
     };
 
@@ -1527,7 +1527,7 @@ adguard.filters = (function (adguard) {
 
         filter.enabled = false;
         adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
-        adguard.listeners.notifyListeners(adguard.listeners.SYNC_LOCAL_REQUIRED, options);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
         return true;
     };
 
@@ -1551,7 +1551,7 @@ adguard.filters = (function (adguard) {
         filter.installed = false;
         adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
         adguard.listeners.notifyListeners(adguard.listeners.FILTER_ADD_REMOVE, filter);
-        adguard.listeners.notifyListeners(adguard.listeners.SYNC_LOCAL_REQUIRED, options);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
         return true;
     };
 
