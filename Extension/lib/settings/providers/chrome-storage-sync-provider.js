@@ -78,8 +78,7 @@
         var itemSize = key.length + JSON.stringify(data).length + 20;
         var oversize = itemSize - chrome.storage.sync.QUOTA_BYTES_PER_ITEM;
         if (oversize > 0) {
-            if (data.filters && data.filters["user-filter"]
-                && data.filters["user-filter"].rules) {
+            if (data.filters && data.filters["user-filter"] && data.filters["user-filter"].rules) {
                 // Cut user-filter field
                 if (warn) {
                     adguard.console.warn('The data is over quota limit and will be cropped approximately by ' + oversize + ' bytes');
@@ -98,6 +97,22 @@
         return data;
     };
 
+    var onStorageChanged = function (changes, areaName) {
+        if (areaName !== 'sync') {
+            return;
+        }
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REMOTE_REQUIRED);
+    };
+
+    var init = function () {
+        chrome.storage.onChanged.addListener(onStorageChanged);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REMOTE_REQUIRED);
+    };
+
+    var shutdown = function () {
+        chrome.storage.onChanged.removeListener(onStorageChanged);
+    };
+
     // EXPOSE
     api.storageSyncProvider = {
         /**
@@ -106,6 +121,8 @@
         get name() {
             return 'CHROME';
         },
+        init: init,
+        shutdown: shutdown,
         /**
          * Loads data from provider
          */

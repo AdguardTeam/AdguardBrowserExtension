@@ -532,6 +532,10 @@
     };
 
     var removeSyncProvider = function (providerName) {
+        providerName = providerName || adguard.localStorage.getItem(CURRENT_PROVIDER_PROP);
+        if (!providerName) {
+            return;
+        }
         adguard.localStorage.removeItem(CURRENT_PROVIDER_PROP);
         adguard.console.debug('Sync provider {0} has been unset', providerName.name);
         var providerService = findProviderByName(providerName);
@@ -568,6 +572,10 @@
          * Sets sync provider to current service
          */
         setSyncProvider: setSyncProvider,
+        /**
+         * Removes sync provider
+         */
+        removeSyncProvider: removeSyncProvider,
         /**
          * Synchronizes settings between current application and sync provider
          */
