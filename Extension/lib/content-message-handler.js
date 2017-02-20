@@ -457,9 +457,10 @@
                 adguard.sync.syncService.setSyncProvider(message.provider);
                 break;
             case 'setOauthToken':
-                var provider = message.provider;
-                var token = message.token;
-                adguard.sync.syncService.setSyncProvider(provider, token);
+                adguard.sync.syncService.setSyncProvider(message.provider, message.token);
+                break;
+            case 'onAuthError':
+                adguard.sync.syncService.removeSyncProvider(message.provider);
                 break;
             default :
                 throw 'Unknown message: ' + message;

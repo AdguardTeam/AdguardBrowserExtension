@@ -37,6 +37,16 @@
         return null;
     }
 
+    function showError(error, description) {
+        if (description) {
+            description = description.replace(/\+/g, ' ');
+            var element = document.getElementById('errorDescription');
+            if (element) {
+                element.appendChild(document.createTextNode(description));
+            }
+        }
+    }
+
     if (document.domain === 'injections.adguard.com') {
 
         var hash = window.location.hash;
@@ -44,24 +54,23 @@
         var token = getParameter('access_token', hash);
         var provider = getParameter('provider', search);
         var error = getParameter('error', hash);
-        var errorDescription = getParameter('error_description', hash);
-        if (error && errorDescription) {
-            errorDescription = errorDescription.replace(/\+/g, ' ');
-            var element = document.getElementById('errorDescription');
-            if (element) {
-                element.appendChild(document.createTextNode(errorDescription));
-            }
+
+        if (error) {
+            var errorDescription = getParameter('error_description', hash);
+            showError(error, errorDescription);
+            contentPage.sendMessage({
+                type: 'onAuthError',
+                error: error,
+                provider: provider
+            });
             return;
         }
+
         if (token && provider) {
             contentPage.sendMessage({
                 type: 'setOauthToken',
                 provider: provider,
                 token: token
-            }, function () {
-                setTimeout(function () {
-                    window.close();
-                }, 50);
             });
         }
     }

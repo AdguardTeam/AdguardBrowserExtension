@@ -200,7 +200,7 @@
                 if (isInvalidToken(error)) {
                     clearAccessToken();
                 }
-                adguard.console.error('Error while poll changes from Dropbox {0}', JSON.stringify(error));
+                adguard.console.error('Dropbox sync error {0}', error);
                 // Retry after 5 minutes
                 callListFolderLongPollTimeout(5 * 60 * 1000);
             });
@@ -249,7 +249,7 @@
                 if (isInvalidToken(error)) {
                     clearAccessToken();
                 }
-                adguard.console.error('Error while downloading file {0} from Dropbox, {1}', name, JSON.stringify(error || {}));
+                adguard.console.error('Dropbox sync error {0} {1}', name, error);
                 callback(false);
             });
     };
@@ -277,7 +277,7 @@
                 if (isInvalidToken(error)) {
                     clearAccessToken();
                 }
-                adguard.console.error('Error while uploading file {0} to Dropbox, {1}', name, JSON.stringify(error || {}));
+                adguard.console.error('Dropbox sync error {0} {1}', name, error);
                 callback(false);
             });
     };
@@ -295,9 +295,9 @@
      *
      * http://dropbox.github.io/dropbox-sdk-js/Dropbox.html#authTokenRevoke__anchor
      */
-    var logout = function (callback) {
+    var logout = function () {
         if (accessToken) {
-            dropbox.authTokenRevoke().then(callback, callback);
+            dropbox.authTokenRevoke();
             clearAccessToken();
         }
     };
@@ -321,6 +321,10 @@
             });
         }
     };
+
+    var shutdown = function () {
+        //TODO: stop polling
+    }
 
     // EXPOSE
     api.dropboxSyncProvider = {
