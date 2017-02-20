@@ -108,6 +108,12 @@
     // EXPOSE
     api.fileSyncProvider = {
         /**
+         * Provider name
+         */
+        get name() {
+            return 'FILE';
+        },
+        /**
          * Loads data from provider
          */
         load: load,

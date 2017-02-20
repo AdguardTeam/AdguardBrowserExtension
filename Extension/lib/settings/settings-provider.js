@@ -127,7 +127,10 @@
         if (syncTime) {
             manifest.timestamp = syncTime;
             for (var i = 0; i < manifest.sections.length; i++) {
-                manifest.sections[i].timestamp = syncTime;
+                var section = manifest.sections[i];
+                if (section.name === FILTERS_SECTION) {
+                    section.timestamp = syncTime;
+                }
             }
         }
         adguard.localStorage.setItem(SYNC_MANIFEST_PROP, JSON.stringify(manifest));
@@ -140,23 +143,23 @@
      */
     var applyFiltersSection = function (section, callback) {
 
+        var syncSuppressOptions = {
+            syncSuppress: true
+        };
+
         var whiteListSection = section.filters["whitelist"] || {}; // jshint ignore:line
         var whitelistDomains = whiteListSection.domains || [];
         var blacklistDomains = whiteListSection["inverted-domains"] || [];
 
         // Apply whitelist/blacklist domains and whitelist mode
-        adguard.whitelist.clearWhiteListed();
-        adguard.whitelist.addWhiteListed(whitelistDomains);
-        adguard.whitelist.clearBlockListed();
-        adguard.whitelist.addBlockListed(blacklistDomains);
-        adguard.whitelist.changeDefaultWhiteListMode(!whiteListSection.inverted);
+        adguard.whitelist.configure(whitelistDomains, blacklistDomains, !whiteListSection.inverted, syncSuppressOptions);
 
         var userFilterSection = section.filters["user-filter"] || {};
         var userRules = userFilterSection.rules || "";
 
         // Apply user rules
-        adguard.userrules.clearRules();
-        adguard.userrules.addRules(userRules.split('\n'));
+        adguard.userrules.clearRules(syncSuppressOptions);
+        adguard.userrules.addRules(userRules.split('\n'), syncSuppressOptions);
 
         // Apply enabled filters
         var enabledFilterIds = section.filters['enabled-filters'] || [];
@@ -165,11 +168,19 @@
             for (var i = 0; i < enabledFilters.length; i++) {
                 var filterId = enabledFilters[i].filterId;
                 if (enabledFilterIds.indexOf(filterId) < 0) {
-                    adguard.filters.disableFilter(filterId);
+                    adguard.filters.disableFilter(filterId, syncSuppressOptions);
                 }
             }
             callback(true);
-        });
+        }, syncSuppressOptions);
+    };
+
+    /**
+     * Checks section is supported
+     * @param sectionName Section name
+     */
+    var isSectionSupported = function (sectionName) {
+        return sectionName === FILTERS_SECTION;
     };
 
     /**
@@ -209,23 +220,31 @@
 
     // EXPOSE
     api.settingsProvider = {
+
         /**
          * Loads app settings manifest
          */
         loadLocalManifest: loadLocalManifest,
+
         /**
          * Gets empty settings manifest
          */
         getEmptyLocalManifest: getEmptyLocalManifest,
-        /**
-         * Loads section of app settings
-         */
-        loadSection: loadSection,
 
         /**
          * Saves manifest to local storage
          */
         syncLocalManifest: syncLocalManifest,
+
+        /**
+         * Checks section is supported
+         */
+        isSectionSupported: isSectionSupported,
+
+        /**
+         * Loads section of app settings
+         */
+        loadSection: loadSection,
 
         /**
          * Apply section to application

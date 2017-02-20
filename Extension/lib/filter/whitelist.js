@@ -71,6 +71,11 @@ adguard.whitelist = (function (adguard) {
         }
     };
 
+    function notifyWhiteListUpdated(options) {
+        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_WHITELIST_FILTER_RULES);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_LOCAL_REQUIRED, options);
+    }
+
     /**
      * Create whitelist rule from input text
      * @param domain Domain
@@ -154,6 +159,7 @@ adguard.whitelist = (function (adguard) {
             }
             addDomainToWhiteList(domain);
             saveDomainsToLocalStorage();
+            notifyWhiteListUpdated();
         }
     }
 
@@ -197,7 +203,7 @@ adguard.whitelist = (function (adguard) {
     var changeDefaultWhiteListMode = function (defaultMode) {
         defaultWhiteListMode = defaultMode;
         adguard.settings.changeDefaultWhiteListMode(defaultMode);
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_WHITELIST_FILTER_RULES);
+        notifyWhiteListUpdated();
     };
 
     /**
@@ -211,7 +217,6 @@ adguard.whitelist = (function (adguard) {
         } else {
             removeFromWhiteList(domain);
         }
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_WHITELIST_FILTER_RULES);
     };
 
     /**
@@ -225,7 +230,6 @@ adguard.whitelist = (function (adguard) {
         } else {
             addToWhiteList(domain);
         }
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_WHITELIST_FILTER_RULES);
     };
 
     /**
@@ -242,8 +246,7 @@ adguard.whitelist = (function (adguard) {
         } else {
             addBlockListed(domains);
         }
-
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_WHITELIST_FILTER_RULES);
+        notifyWhiteListUpdated();
     };
 
     /**
@@ -303,7 +306,7 @@ adguard.whitelist = (function (adguard) {
         }
         removeDomainFromWhiteList(domain);
         saveDomainsToLocalStorage();
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_WHITELIST_FILTER_RULES);
+        notifyWhiteListUpdated();
     };
 
     /**
@@ -315,8 +318,7 @@ adguard.whitelist = (function (adguard) {
         } else {
             clearBlockListed();
         }
-
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_WHITELIST_FILTER_RULES);
+        notifyWhiteListUpdated();
     };
 
     /**
@@ -335,6 +337,23 @@ adguard.whitelist = (function (adguard) {
         adguard.localStorage.removeItem(BLOCK_LIST_DOMAINS_LS_PROP);
         adguard.lazyGetClear(blockListDomainsHolder, 'domains');
         blockListFilter = new adguard.rules.UrlFilter();
+    };
+
+    /**
+     * Configures whitelist service
+     * @param whitelist Whitelist domains
+     * @param blocklist Blocklist domains
+     * @param whiteListMode Whitelist mode
+     * @param options
+     */
+    var configure = function (whitelist, blocklist, whiteListMode, options) {
+        clearWhiteListed();
+        clearBlockListed();
+        addWhiteListed(whitelist || []);
+        addBlockListed(blocklist || []);
+        defaultWhiteListMode = whiteListMode;
+        adguard.settings.changeDefaultWhiteListMode(whiteListMode);
+        notifyWhiteListUpdated(options);
     };
 
     /**
@@ -385,13 +404,11 @@ adguard.whitelist = (function (adguard) {
         unWhiteListUrl: unWhiteListUrl,
 
         addToWhiteListArray: addToWhiteListArray,
-        addWhiteListed: addWhiteListed,
-        addBlockListed: addBlockListed,
 
         removeFromWhiteList: removeFromWhiteList,
         clearWhiteList: clearWhiteList,
-        clearWhiteListed: clearWhiteListed,
-        clearBlockListed: clearBlockListed,
+
+        configure: configure,
 
         isDefaultMode: isDefaultMode,
         changeDefaultWhiteListMode: changeDefaultWhiteListMode

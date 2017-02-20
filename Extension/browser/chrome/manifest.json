@@ -120,6 +120,16 @@
 				"*://*.zoso.ro/*"
 			],
 			"run_at": "document_idle"
+		},
+		{
+			"all_frames": false,
+			"js": [
+				"lib/content-script/oauth.js"
+			],
+			"matches": [
+				"*://*.injections.adguard.com/*"
+			],
+			"run_at": "document_end"
 		}
 	],
 
@@ -142,7 +152,6 @@
 	],
 
 	"web_accessible_resources": [
-		"pages/options.html",
 		"lib/content-script/assistant/css/assistant.css",
 		"lib/content-script/assistant/i/close.svg",
 		"lib/content-script/assistant/i/logo.svg",

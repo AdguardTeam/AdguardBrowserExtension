@@ -45,7 +45,10 @@ adguard.listeners = (function () {
         TAB_CLOSE: 'log.tab.close',
         TAB_UPDATE: 'log.tab.update',
         TAB_RESET: 'log.tab.reset',
-        LOG_EVENT_ADDED: 'log.event.added'
+        LOG_EVENT_ADDED: 'log.event.added',
+        // Sync events
+        SYNC_LOCAL_REQUIRED: 'event.sync.local.required',
+        SYNC_REMOTE_REQUIRED: 'event.sync.remote.required'
     };
 
     var EventNotifierEventsMap = Object.create(null);
