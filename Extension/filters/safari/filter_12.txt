@@ -1,6 +1,6 @@
-! Checksum: Y0ukg1dsYL5DA1YB8JCjhA
-! Version: 1.0.2.50
-! TimeUpdated: 2017-02-15T20:00:14.603+04:00
+! Checksum: BD9NhorXBdwk91tr/CKoAw
+! Version: 1.0.2.56
+! TimeUpdated: 2017-02-21T17:02:06.578+04:00
 ! Title: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! Title: Adguard Safari Filter
@@ -16,6 +16,7 @@
 !
 ! Section contains list of advertising networks
 !
+||xdbwc.com^
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3656
 ||cb8717377086c72d.com^$popup
 ||go.mobiprotg.com^$popup
@@ -39,6 +40,11 @@
 !
 !***********************
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/4423
+@@||xpicw.top/*.js$script
+@@||xpicw.top/ajax/
+! https://github.com/AdguardTeam/AdguardFilters/issues/4404
+@@||c1.popads.net/pop.js$domain=vidlox.tv
 ! https://forum.adguard.com/index.php?threads/19455/
 @@||thaivisa.com^$generichide,content
 @@||thaivisa.com/js/fuckadblock.js
@@ -388,6 +394,10 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 !
 ! White list. Fixing content blocking API issues.
 !
+! https://forum.adguard.com/index.php?threads/19610/
+@@||boards.4chan.org/adv/
+! https://github.com/AdguardTeam/AdguardFilters/issues/4384
+@@||mobilitymag.de/werbung/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4375
 @@||basicthinking.de/blog/advertisment/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3986
@@ -628,3 +638,5 @@ youtube.com#%#(function () {try {var youtubeAdRegExp = /^((.*_)?(ad|ads|afv|adse
 ! Element hiding rules
 mongri.net##.sidebar_adsense
 time.navyism.com##div > .adsbygoogle
+zangsisi.net###head-menu > .wrapper > a[href$="=zangsisi"]
+zangsisi.net##A[href^="http://www.bondisk.com/?ad=zangsisi"]

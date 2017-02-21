@@ -1,6 +1,6 @@
-! Checksum: QCwYeWmpeGu/D/qfjJaY6g
-! Version: 1.0.10.11
-! TimeUpdated: 2017-02-15T20:00:34.959+04:00
+! Checksum: xsMjwU8tztV5iZFqmxAyOQ
+! Version: 1.0.10.23
+! TimeUpdated: 2017-02-21T19:02:20.641+04:00
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on webpages including cookie notices third-party widgets and in-page popups.
 ! Title: Adguard Annoyances Filter
@@ -30,6 +30,8 @@
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3877
 myscore.com.ua###lsid-window-mask
 !
+! https://forum.adguard.com/index.php?threads/19587/
+geektimes.ru,habrahabr.ru##.posts > div.post+div[style="margin-bottom: 40px;"][class="shortcuts_item"]
 ! https://forum.adguard.com/index.php?threads/19501/
 100tipcams.com,adultcams.me,adultchat2100.com,adultlivechatrooms.com,alphafreecams.com,bimbolive.com,bonga-cams.net,bongacam.net,bongacam.org,bongacams-chat.ru,bongacams.com,bongacams.eu,cammbi.com,dcmoz.net,prostocams.com,r2games.com,redlightarea.com,smutcam.com###dmca_security
 ! Yandex search - опрос про игру
@@ -241,6 +243,9 @@ vchaspik.ua##div[id="conteiner"][style="height: 410px;"]
 !
 !***
 !* Subscriptions (not popups)
+unn.com.ua##div[class^="join_informer"]
+facenews.ua##.joinus
+24tv.ua###mc_embed_signup
 golem.de###abo-clip
 elmundo.es###banda_suscripcion
 lifehacker.ru###lhPopupsRoot
@@ -311,6 +316,8 @@ gazetevatan.com##form ._soc.news
 @@||ds.bitpit.xyz/advertise.js
 @@||ds.bitpit.xyz/ad-top/advertise.js
 !
+chess.com##adblocker-check
+mocasoft.ro##.kill-adblock-container
 vesti-ukr.com###adblockpopup
 imslp.org###adsremovead
 warcraftlogs.com###top-banner
@@ -638,6 +645,7 @@ howwindows.ru#%#window.canRunAds = true;
 !#######################################################
 !######### General element hiding rules ################
 !#######################################################
+##.cookie-consent-content
 ###AvisoCookieslaw
 ###BandeauInfoCookie
 ###BlkCookies
@@ -2280,6 +2288,10 @@ _europecookielaw.
 !#######################################################
 !######### Rules for specific sites ####################
 !#######################################################
+breuninger.com##.cookieAcceptance
+nelly.de###toast-container
+hurriyet.com.tr###CookieMsgBox
+theinquirer.net##.cookie-consent-content
 madeleine.de###AcceptCookiesBannerTemplate
 designhousestockholm.com###Cookies
 druckerchannel.de###DCINFO_COOKIE_AGB
@@ -3067,6 +3079,7 @@ momondo.de#$#.flights-section-container { display: block!important; }
 !
 ! Specific sites
 !
+mocasoft.ro###fanback
 securitylab.ru###BottomSocial
 odeonbet999.com###ModalOverlay
 thefreedictionary.com###SubscrSlider
@@ -3439,6 +3452,8 @@ livelib.ru,lenta.ru,mychrome,rambler.ru,sports.ru#%#(function() { if (typeof Not
 sports.ru#%#(function() { try { if ("undefined" != typeof localStorage) { var a = { date: (new Date).toString(), time: (new Date).getTime(), data: 2 }; localStorage.setItem("sports:view:notifications-subscribe-popup:closed:count", JSON.stringify(a)) } } catch (ex) {} })();
 sports.ru#%#(function() { try { if ("undefined" != typeof localStorage) { var a = { date: (new Date).toString(), time: (new Date).getTime(), data: true }; localStorage.setItem("sports:view:notifications-subscribe-popup:view", JSON.stringify(a)) } } catch (ex) {} })();
 !
+vesti.ru###push-notification-pop-up
+yeniakit.com.tr##.popBottomchip
 unian.info,unian.net,unian.ua###SubscribePush
 obozrevatel.com,rozetka.com.ua###SubscribePushNotificationPanel
 ndtv.com###__cricketsubscribe
@@ -3485,6 +3500,7 @@ zr.ru#%#document.cookie = "zrPushSubsPopUp=1";
 !
 !######### Remains of ads
 !
+moscow.regnews.info##a.sidebar-toggle+div.sidebar-content > div[class="widget widget_text"]
 rksports.info###.col-lg-4 > div > div[class$="panel-heading"]
 trainbit.com###Adv2
 koddostu.com###HTML2
@@ -3690,9 +3706,6 @@ benchmarkreviews.com###content > div#sidebar2 > div
 sd-company.su#%#AG_onLoad(function() { $('div[class$="sdc-box-sdads"]').closest('div[class$="sdc-box-i"]').remove(); });
 ! http://forum.adguard.com/showthread.php?10839
 samathalemonseio.com##body > a[href^="http://"]
-! http://forum.adguard.com/showthread.php?6322
-rsload.net##td[valign="top"]:not([width]) > a[href^="http://goo.gl/"]
-rsload.net##td[valign="top"]:not([width]) > span[style]
 ! http://forum.adguard.com/showthread.php?9995
 firstrowas.co##body > input[type$="text"]
 04stream.com##body > table
@@ -4013,6 +4026,9 @@ habrahabr.ru##.company_widget > .announce
 cnews.ru##.video.img-block
 ||filearchive.cnews.ru/*promo$media,domain=cnews.ru
 !
+||imgsmail.ru/static/js/chromebar.js
+go.mail.ru##.go-headlinks__wrap > div[class^="tb-"]
+pogoda.mail.ru##body > header > a[href^="https://r.mail.ru/"][class^="tb-"]
 rp5.ru###bannerBottom
 aclu.org###block-aclu-promotions-aclu-promotions-banner
 microsoft.com###epb
