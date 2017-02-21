@@ -53,6 +53,7 @@
         var search = window.location.search;
         var token = getParameter('access_token', hash);
         var provider = getParameter('provider', search);
+        var securityToken = getParameter('state', search);
         var error = getParameter('error', hash);
 
         if (error) {
@@ -70,7 +71,8 @@
             contentPage.sendMessage({
                 type: 'setOauthToken',
                 provider: provider,
-                token: token
+                token: token,
+                securityToken: securityToken
             });
         }
     }

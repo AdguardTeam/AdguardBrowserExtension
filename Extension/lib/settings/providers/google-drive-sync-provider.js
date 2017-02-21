@@ -40,6 +40,8 @@
 
     var GoogleDriveClient = (function () {
 
+        var securityToken;
+
         function checkInvalidToken(status) {
             if (status === 401 || status === 403) {
                 revokeToken();
@@ -197,17 +199,34 @@
          * @returns {string}
          */
         var getAuthenticationUrl = function (redirectUri) {
+            var securityToken = getSecurityToken();
             var params = {
                 client_id: CLIENT_ID,
                 redirect_uri: redirectUri,
                 response_type: 'token',
-                scope: 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.appdata'
+                scope: 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.appdata',
+                state: securityToken
             };
             var query = [];
             Object.keys(params).forEach(function (key) {
                 query.push(key + '=' + encodeURIComponent(params[key]));
             });
             return 'https://accounts.google.com/o/oauth2/v2/auth?' + query.join('&');
+        };
+
+        /**
+         * Gets random one time token
+         * @returns {*}
+         */
+        var getSecurityToken = function () {
+            var token = securityToken;
+            if (!token) {
+                token = Math.random().toString(36).substring(7);
+            } else {
+                securityToken = null;
+            }
+
+            return token;
         };
 
         return {
@@ -218,7 +237,8 @@
             listFiles: listFiles,
             revokeToken: revokeToken,
             deleteFile: deleteFile,
-            getAuthenticationUrl: getAuthenticationUrl
+            getAuthenticationUrl: getAuthenticationUrl,
+            getSecurityToken: getSecurityToken
         };
 
     })();
@@ -343,7 +363,14 @@
         GoogleDriveClient.revokeToken();
     };
 
-    var init = function (token) {
+    var init = function (token, securityToken) {
+        if (securityToken) {
+            if (securityToken !== GoogleDriveClient.getSecurityToken()) {
+                adguard.console.warn("Security token doesn't match");
+                return;
+            }
+        }
+
         if (token) {
             accessToken = token;
             adguard.localStorage.setItem(TOKEN_STORAGE_PROP, token);

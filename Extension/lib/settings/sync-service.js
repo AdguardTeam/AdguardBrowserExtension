@@ -516,7 +516,7 @@
         }
     };
 
-    var setSyncProvider = function (providerName, token) {
+    var setSyncProvider = function (providerName, token, securityToken) {
         //TODO: check provider is compatible with the current browser
         var providerService = findProviderByName(providerName);
         if (!providerService) {
@@ -529,7 +529,7 @@
         adguard.console.debug('Sync provider has been set to {0}', providerName);
         adguard.localStorage.setItem(CURRENT_PROVIDER_PROP, providerName);
         if (typeof providerService.init === 'function') {
-            providerService.init(token);
+            providerService.init(token, securityToken);
         }
     };
 
