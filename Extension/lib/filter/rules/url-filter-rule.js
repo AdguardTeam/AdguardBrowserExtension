@@ -195,7 +195,7 @@
         }
 
         if (parseOptions) {
-            var optionsIndex = urlRuleText.lastIndexOf(UrlFilterRule.OPTIONS_DELIMITER);
+            var optionsIndex = urlRuleText.indexOf(UrlFilterRule.OPTIONS_DELIMITER);
             if (optionsIndex >= 0) {
                 var optionsBase = urlRuleText;
                 urlRuleText = urlRuleText.substring(0, optionsIndex);
