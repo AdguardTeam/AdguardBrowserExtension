@@ -1,6 +1,6 @@
 // Add your token here
 var token = '';
-adguard.sync.dropboxSyncProvider.setAccessToken(token);
+//adguard.sync.dropboxSyncProvider.init(token);
 
 QUnit.test("Test Dropbox sync provider", function (assert) {
     var done = assert.async();

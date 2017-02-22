@@ -20,14 +20,136 @@
  *
  * @type {{syncSettings, setSyncProvider}}
  */
-(function (api, adguard) {
+(function (api, adguard, global) {
 
     var MANIFEST_PATH = "manifest.json";
 
     var MIN_COMPATIBLE_VERSION_PROP = "min-compatible-version";
     var PROTOCOL_VERSION_PROP = "protocol-version";
 
+    var CURRENT_PROVIDER_PROP = 'current-sync-provider';
+
     var syncProvider = null;
+
+    /**
+     * Sections revisions
+     */
+    var sectionsRevisions = (function () {
+
+        var revisions = {};
+
+        var getSectionHash = function (section) {
+            return global.SHA256.hash(JSON.stringify(section));
+        };
+
+        var update = function (sectionName, section) {
+            revisions[sectionName] = getSectionHash(section);
+        };
+
+        var updateIfEmpty = function (sectionName, section) {
+            if (sectionName in revisions) {
+                return;
+            }
+            update(sectionName, section);
+        };
+
+        var isUpdated = function (sectionName, section) {
+            return revisions[sectionName] !== getSectionHash(section);
+        };
+
+        return {
+            update: update,
+            updateIfEmpty: updateIfEmpty,
+            isUpdated: isUpdated
+        };
+
+    })();
+
+    /**
+     * Loads remote section
+     * @param sectionName
+     * @param callback
+     */
+    function loadRemoteSection(sectionName, callback) {
+        syncProvider.load(sectionName, callback);
+    }
+
+    /**
+     * Loads local section
+     * @param sectionName
+     * @param callback
+     */
+    var loadLocalSection = function (sectionName, callback) {
+        api.settingsProvider.loadSection(sectionName, function (section) {
+            if (section === false) {
+                callback(false);
+                return;
+            }
+            if (section) {
+                // If section is loaded first time, updates it revision.
+                sectionsRevisions.updateIfEmpty(sectionName, section);
+            }
+            callback(section);
+        });
+    };
+
+    /**
+     * Saves remote section
+     * @param sectionName
+     * @param section
+     * @param callback
+     */
+    function saveRemoteSection(sectionName, section, callback) {
+        syncProvider.save(sectionName, section, function (success) {
+            if (success) {
+                // Saves revision for loaded section
+                sectionsRevisions.update(sectionName, section);
+            }
+            callback(success);
+        });
+    }
+
+    /**
+     * Saves and apply local section
+     * @param sectionName
+     * @param section
+     * @param callback
+     */
+    var saveLocalSection = function (sectionName, section, callback) {
+        api.settingsProvider.applySection(sectionName, section, function (success) {
+            if (success) {
+                // Section was applied. Updates revision.
+                sectionsRevisions.update(sectionName, section);
+            }
+            callback(success);
+        });
+    };
+
+    /**
+     * Checks section was updated after the last sync
+     * @param sectionName
+     * @param section
+     */
+    var isSectionUpdated = function (sectionName, section) {
+        return sectionsRevisions.isUpdated(sectionName, section);
+    };
+
+    /**
+     * Finds sync provider by name
+     * @param providerName Provider name
+     * @returns {*}
+     */
+    function findProviderByName(providerName) {
+        for (var key in api) {
+            if (api.hasOwnProperty(key)) {
+                var provider = api[key];
+                if (provider.name === providerName) {
+                    return provider;
+                }
+            }
+        }
+        return null;
+    }
 
     /**
      * Constructs the special object containing information about manifests protocols compatibility and then sorts data sections
@@ -191,7 +313,6 @@
             }
 
             var compatibility = findCompatibility(remoteManifest, localManifest);
-            console.log(compatibility);
             if (!compatibility.canRead) {
                 adguard.console.warn('Protocol versions are not compatible');
                 callback(false);
@@ -228,7 +349,7 @@
                     remoteManifest.timestamp = syncTime;
                     updateManifestSections(remoteManifest, updatedSections.localToRemote);
 
-                    syncProvider.save(MANIFEST_PATH, remoteManifest, callback);
+                    saveRemoteSection(MANIFEST_PATH, remoteManifest, callback);
 
                 } else {
                     callback(true);
@@ -237,7 +358,7 @@
         };
 
         adguard.console.debug('Loading remote manifest..');
-        syncProvider.load(MANIFEST_PATH, onManifestLoaded);
+        loadRemoteSection(MANIFEST_PATH, onManifestLoaded);
     }
 
     /**
@@ -318,7 +439,7 @@
 
             adguard.console.debug('Local {0} section loaded', sectionName);
 
-            syncProvider.save(sectionName, localSection, function (success) {
+            saveRemoteSection(sectionName, localSection, function (success) {
                 if (success) {
                     adguard.console.info('Remote {0} section updated', sectionName);
                     callback(section);
@@ -331,7 +452,7 @@
         };
 
         // Constructs section object from application settings
-        api.settingsProvider.loadSection(sectionName, onSectionLoaded);
+        loadLocalSection(sectionName, onSectionLoaded);
 
         return dfd;
     }
@@ -370,7 +491,7 @@
 
             adguard.console.debug('Remote {0} section loaded', sectionName);
 
-            api.settingsProvider.applySection(sectionName, remoteSection, function (success) {
+            saveLocalSection(sectionName, remoteSection, function (success) {
                 if (success) {
                     adguard.console.info('Local {0} section applied', sectionName);
                     callback(section);
@@ -383,23 +504,51 @@
         };
 
         // Load section from sync provider
-        syncProvider.load(sectionName, onSectionLoaded);
+        loadRemoteSection(sectionName, onSectionLoaded);
 
         return dfd;
     }
 
-    // API
-    var syncSettings = function (callback) {
+    var init = function () {
+        var providerName = adguard.localStorage.getItem(CURRENT_PROVIDER_PROP);
+        if (providerName) {
+            setSyncProvider(providerName);
+        }
+    };
 
-        // TODO: check sync in progress
-
-        adguard.console.info('Synchronizing settings..');
-
-        if (!syncProvider) {
-            adguard.console.error('Sync provider should be set first');
-            callback(false);
+    var setSyncProvider = function (providerName, token) {
+        //TODO: check provider is compatible with the current browser
+        var providerService = findProviderByName(providerName);
+        if (!providerService) {
             return;
         }
+        if (syncProvider) {
+            removeSyncProvider(syncProvider);
+        }
+        syncProvider = providerService;
+        adguard.console.debug('Sync provider has been set to {0}', providerName);
+        adguard.localStorage.setItem(CURRENT_PROVIDER_PROP, providerName);
+        if (typeof providerService.init === 'function') {
+            providerService.init(token);
+        }
+    };
+
+    var removeSyncProvider = function (providerName) {
+        providerName = providerName || adguard.localStorage.getItem(CURRENT_PROVIDER_PROP);
+        if (!providerName) {
+            return;
+        }
+        adguard.localStorage.removeItem(CURRENT_PROVIDER_PROP);
+        adguard.console.debug('Sync provider {0} has been unset', providerName.name);
+        var providerService = findProviderByName(providerName);
+        if (providerService && typeof providerService.shutdown === 'function') {
+            providerService.shutdown();
+        }
+    };
+
+    var syncSettings = function (callback) {
+
+        adguard.console.info('Synchronizing settings..');
 
         processManifest(function (success) {
             if (success) {
@@ -411,22 +560,28 @@
         });
     };
 
-    var setSyncProvider = function (provider) {
-        //TODO: check provider is compatible with the current browser
-        syncProvider = provider;
-        adguard.console.debug('Sync provider has been set');
+    api.sections = {
+        loadLocalSection: loadLocalSection,
+        isSectionUpdated: isSectionUpdated
     };
 
-    // EXPOSE
     api.syncService = {
         /**
-         * Synchronizes settings between current application and sync provider
+         * Initializes sync service
          */
-        syncSettings: syncSettings,
+        init: init,
         /**
          * Sets sync provider to current service
          */
-        setSyncProvider: setSyncProvider
+        setSyncProvider: setSyncProvider,
+        /**
+         * Removes sync provider
+         */
+        removeSyncProvider: removeSyncProvider,
+        /**
+         * Synchronizes settings between current application and sync provider
+         */
+        syncSettings: syncSettings
     };
 
-})(adguard.sync, adguard);
+})(adguard.sync, adguard, window);
