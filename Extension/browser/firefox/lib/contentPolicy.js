@@ -544,8 +544,6 @@ var WebRequestImpl = exports.WebRequestImpl = {
 
             switch (type) {
                 case "http-on-examine-response":
-                case "http-on-examine-cached-response":
-                case "http-on-examine-merged-response":
                     this._httpOnExamineResponse(subject);
                     break;
                 case "http-on-opening-request":
