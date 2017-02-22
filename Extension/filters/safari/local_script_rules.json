@@ -238,10 +238,6 @@
       "script" : "window.WebSocket = undefined;"
     },
     {
-      "domains" : "online.kinopleer.info,cdn.filmtybe.pl,kinomoove.com",
-      "script" : "Object.defineProperty(window, 'adv_enabled', { get: function() { return false; } });"
-    },
-    {
       "domains" : "ilive.to",
       "script" : "setTimeout(removeOverlayHTML, 2000);"
     },
@@ -2330,6 +2326,10 @@
       "script" : "AG_onLoad(function() { $('a[href*=\"/E-Commerce\"]').closest('div[class*=\"item noImg\"]').remove(); });"
     },
     {
+      "domains" : "online.kinopleer.info,cdn.filmtybe.pl,kinomoove.com,video.hostapi.ru",
+      "script" : "Object.defineProperty(window, 'adv_enabled', { get: function() { return false; } });"
+    },
+    {
       "domains" : "hdxxx.me",
       "script" : "Object.defineProperty( window, 'popper', { get: function(){ return {}; } });"
     },
@@ -2726,10 +2726,6 @@
       "script" : "document.cookie = \"i=1\";"
     },
     {
-      "domains" : "auto.ru",
-      "script" : "AG_onLoad(function() { $('a[href*=\"an.yandex.ru/count/\"]').closest('div.sales-list-item').remove(); });"
-    },
-    {
       "domains" : "mackolik.com,sahadan.com",
       "script" : "setTimeout (\"HideFloatAdBanner()\", 1000);"
     },
@@ -2802,6 +2798,10 @@
       "script" : "Object.defineProperty(window, 'SocialMartDocumentHelper', { get: function() { return function SocialMartDocumentHelper(){} } });"
     },
     {
+      "domains" : "alluc.ee",
+      "script" : "adblock = false;"
+    },
+    {
       "domains" : "takprosto.cc",
       "script" : "document.cookie = \"popup_displayed=true\";"
     },
@@ -2868,6 +2868,10 @@
     {
       "domains" : "ftop.ru",
       "script" : "Object.defineProperty( window, 'random_imglink', { get: function() { return; } });"
+    },
+    {
+      "domains" : "auto.ru",
+      "script" : "AG_onLoad(function() { window.Ya.Context.AdvManager = {}; });"
     },
     {
       "domains" : "golem.de",

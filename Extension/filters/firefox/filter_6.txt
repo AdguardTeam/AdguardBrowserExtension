@@ -1,6 +1,6 @@
-! Checksum: D5ixAFnz0IKVHKjGppuntw
-! Version: 1.0.31.50
-! TimeUpdated: 2017-02-21T18:10:00.793+04:00
+! Checksum: AzvDNefinqPbcfptgUyg2A
+! Version: 1.0.31.53
+! TimeUpdated: 2017-02-22T12:00:57.995+04:00
 ! Title: German filter
 ! Description: EasyList Germany + Adguard German filter. Filter list that specifically removes adverts on German language websites.
 ! Title: Adguard German Filter.
@@ -419,6 +419,8 @@ menshealth.de#%#function google_ad_request_done() {};
 !--------------------------------------!
 !------- CSS fixes --------------------!
 !--------------------------------------!
+! https://forum.adguard.com/index.php?threads/cleverdialer-de.19689/
+cleverdialer.de#$#.header-spam {min-height:0px!important;}
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4223
 deutscherskiverband.de#$#.container-head { height: auto!important; }
 ! https://forum.adguard.com/index.php?threads/tagesspiegel-de.19065/
@@ -464,6 +466,14 @@ freenet.de#$##frnMain { min-height: 0px!important; }
 ! http://forum.adguard.com/showthread.php?8979 (#17)
 ||static.p7s1.com/vendor/webtrekk
 !
+cleverdialer.de##.banner-google
+forum.buffed.de###plakatfullsize
+tchgdns.de##.index-pub
+tchgdns.de##.sidebar-pub-top
+tchgdns.de##.sidebar-pub-end
+tchgdns.de##.header-pub
+||zeit.de/www.zeit.de/static/amp-ads/
+www-zeit-de.cdn.ampproject.org##.advertising
 chinamobilemag.de###sp-ad1
 easycredit-bbl.de##.partners
 easycredit-bbl.de##.box.cad
@@ -1128,14 +1138,12 @@ tvspielfilm.de##div[class^="netflix"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3346
 ||api.ebay-kleinanzeigen.de/api/ads.json*^q=$app=com.ebay.kleinanzeigen,replace=/"(adsense|ecn|native-ad)"/"x\$1"/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2304
-||damoh.computerbild.de^$important,replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\$1<\/VAST>/
 ! autobild.de
 ! huffingtonpost.de
 ! n24.de
 ! gamesaktuell.de
 ! videogameszone.de
 ! 4players.de
-||damoh.4players.de^$important,replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\$1<\/VAST>/
 ! pcgames.de
 ! pcgameshardware.de
 ! sueddeutsche.de
@@ -1147,28 +1155,19 @@ tvspielfilm.de##div[class^="netflix"]
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1344
 ! http://forum.adguard.com/showthread.php?8784
 ! http://forum.adguard.com/showthread.php?7285
-||adfarm*.adition.com/banner$important,replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\$1<\/VAST>/,domain=spiegel.de
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3094
-||damoh.golem.de^$important,replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\$1<\/VAST>/
 ! winfuture.de
 ! canalplus.fr
 ! chip.de
 ! tvnow.de
-||damoh.tvnow.de^$important,replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\$1<\/VAST>/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3012
-||damoh.welt.de^$important,replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\$1<\/VAST>/
-||smartadserver.com/ac?siteid=$important,replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\$1<\/VAST>/
 ! t-online.de
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1774
-||damoh.aws.stern.de^$important,replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\$1<\/VAST>/
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1812
-||damoh.giga.de^$important,replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\$1<\/VAST>/
 !
-||damoh.rtl2.de^$important,replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\$1<\/VAST>/
 !
 !
 ! https://forum.adguard.com/index.php?threads/10477/
-||adserver.adtech.de/?advideo/$important,replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\$1<\/VAST>/
 !
 ! https://forum.adguard.com/index.php?threads/7957/
 @@||cdn.videoplaza.tv/contrib/de-ipd/svm/homadConfigVideoplaza-wetter.json
@@ -5012,6 +5011,7 @@ gofeminin.de,guterhut.de,rtl.de,zalando.de#@#iframe[id^="google_ads_iframe"]
 ||zumlink.de/public/images/banner/
 ||zweinullig.de/wp-content/uploads/125.png
 ||zweinullig.de/wp-content/uploads/chaershop.jpg
+@@||onvista.de/news/boxes/ad_cache/$image,domain=onvista.de
 ||www.onvista.de/news/boxes/news-image/?newsId=*&width=*&height=*-$image,domain=onvista.de
 ||www.onvista.de/news/boxes/news-image/?newsId=*&width=*&height=*_$image,domain=onvista.de
 ||www.onvista.de/news/boxes/news-image/?newsId=*-*&width=*&height=$image,domain=onvista.de
@@ -5140,8 +5140,8 @@ iban.de##.ibanafar2
 skodacommunity.de,windows-7-forum.net##.section.funbox
 liga3-online.de##.widget.widget_text
 wintotal.de##.widget.widget_wt_wintotal_rotator
-/\/[a-zA-Z0-9]{44,}\/[\d\D]{1,}[^_-]{31,}(bmp|png|jpg|jpeg|gif)$/$image,domain=aachener-nachrichten.de|bikerszene.de|deine-tierwelt.de|donnerwetter.de|e-hausaufgaben.de|fanfiktion.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|gevestor.de|haz.de|iban-rechner.de|juraforum.de|liga3-online.de|ln-online.de|lvz.de|lz.de|motorsport-total.com|moviejones.de|mt.de|news.de|nickles.de|nw.de|pferde.de|pixelio.de|psychic.de|spielen.de|spielfilm.de|tvinfo.de|unicum.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
-/\/[a-z_-]{1,}[^_-]{31,}(bmp|png|jpg|jpeg|gif)$/$image,domain=finya.de
+/\/[a-zA-Z0-9]{44,}\/[\d\D]{1,}[^_-]{28,}(bmp|png|jpg|jpeg|gif)$/$image,domain=aachener-nachrichten.de|bikerszene.de|deine-tierwelt.de|donnerwetter.de|e-hausaufgaben.de|fanfiktion.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|gevestor.de|haz.de|iban-rechner.de|juraforum.de|liga3-online.de|ln-online.de|lvz.de|lz.de|motorsport-total.com|moviejones.de|mt.de|news.de|nickles.de|nw.de|pferde.de|pixelio.de|psychic.de|spielen.de|spielfilm.de|tvinfo.de|unicum.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
+/\/[a-z_-]{1,}[^_-]{28,}(bmp|jpeg|gif)$/$image,domain=finya.de
 rp-online.de##[style="margin-left: 106px;"]
 rp-online.de##[style="margin-left: 142px;"]
 liga3-online.de##[style="margin-top: -160px; margin-left: -242px;"]
