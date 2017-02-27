@@ -250,7 +250,13 @@
             urlRuleText == UrlFilterRule.MASK_PIPE;
 
         if (this.isRegexRule) {
-            this.urlRegExpSource = urlRuleText.substring(UrlFilterRule.MASK_REGEX_RULE.length, urlRuleText.length - UrlFilterRule.MASK_REGEX_RULE.length);
+            if (urlRuleText == UrlFilterRule.MASK_START_URL ||
+                urlRuleText == UrlFilterRule.MASK_PIPE) {
+                this.urlRegExpSource = UrlFilterRule.MASK_ANY_SYMBOL;
+            } else {
+                this.urlRegExpSource = urlRuleText.substring(UrlFilterRule.MASK_REGEX_RULE.length, urlRuleText.length - UrlFilterRule.MASK_REGEX_RULE.length);
+            }
+
             // Pre compile regex rules
             var regexp = this.getUrlRegExp();
             if (!regexp) {
@@ -278,7 +284,12 @@
             //parse rule text
             var parseResult = parseRuleText(this.ruleText);
             // Creating regex source
-            this.urlRegExpSource = api.SimpleRegex.createRegexText(parseResult.urlRuleText);
+            if (parseResult.urlRuleText == UrlFilterRule.MASK_START_URL ||
+                parseResult.urlRuleText == UrlFilterRule.MASK_PIPE) {
+                this.urlRegExpSource = UrlFilterRule.MASK_ANY_SYMBOL;
+            } else {
+                this.urlRegExpSource = api.SimpleRegex.createRegexText(parseResult.urlRuleText);
+            }
         }
         return this.urlRegExpSource;
     };

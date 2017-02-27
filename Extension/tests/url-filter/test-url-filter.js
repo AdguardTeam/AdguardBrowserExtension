@@ -334,13 +334,23 @@ QUnit.test("Test UrlFilterRule Matching Any Url", function (assert) {
 
     ruleText = "|$domain=test.com,script";
     rule = new adguard.rules.UrlFilterRule(ruleText);
-    console.log(rule);
 
     assert.notOk(rule.isThirdParty);
     assert.ok(rule.getPermittedDomains());
     assert.equal(1, rule.getPermittedDomains().length);
     assert.notOk(rule.shortcut);
     assert.ok(rule.isRegexRule);
+    assert.ok(rule.isFiltered("http://example.com", true, adguard.RequestTypes.SCRIPT));
+
+    ruleText = "||$domain=test.com,script";
+    rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.notOk(rule.isThirdParty);
+    assert.ok(rule.getPermittedDomains());
+    assert.equal(1, rule.getPermittedDomains().length);
+    assert.notOk(rule.shortcut);
+    assert.ok(rule.isRegexRule);
+    assert.ok(rule.isFiltered("http://example.com", true, adguard.RequestTypes.SCRIPT));
 
 });
 
