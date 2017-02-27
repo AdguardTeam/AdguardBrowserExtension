@@ -245,7 +245,9 @@
         this.isRegexRule = adguard.utils.strings.startWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) &&
             adguard.utils.strings.endsWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) ||
             urlRuleText === '' ||
-            urlRuleText == UrlFilterRule.MASK_ANY_SYMBOL;
+            urlRuleText == UrlFilterRule.MASK_ANY_SYMBOL ||
+            urlRuleText == UrlFilterRule.MASK_START_URL ||
+            urlRuleText == UrlFilterRule.MASK_PIPE;
 
         if (this.isRegexRule) {
             this.urlRegExpSource = urlRuleText.substring(UrlFilterRule.MASK_REGEX_RULE.length, urlRuleText.length - UrlFilterRule.MASK_REGEX_RULE.length);
@@ -525,6 +527,8 @@
     UrlFilterRule.IMPORTANT_OPTION = "important";
     UrlFilterRule.MASK_REGEX_RULE = "/";
     UrlFilterRule.MASK_ANY_SYMBOL = "*";
+    UrlFilterRule.MASK_START_URL = "||";
+    UrlFilterRule.MASK_PIPE = "|";
     UrlFilterRule.REGEXP_ANY_SYMBOL = ".*";
     UrlFilterRule.EMPTY_OPTION = "empty";
 

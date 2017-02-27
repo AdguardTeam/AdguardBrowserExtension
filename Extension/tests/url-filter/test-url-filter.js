@@ -312,6 +312,7 @@ QUnit.test("Test UrlFilterRule Matching Any Url", function (assert) {
     assert.ok(rule.getPermittedDomains());
     assert.equal(1, rule.getPermittedDomains().length);
     assert.notOk(rule.shortcut);
+    assert.ok(rule.isRegexRule);
 
     ruleText = "|$domain=test.com";
     rule = new adguard.rules.UrlFilterRule(ruleText);
@@ -320,6 +321,7 @@ QUnit.test("Test UrlFilterRule Matching Any Url", function (assert) {
     assert.ok(rule.getPermittedDomains());
     assert.equal(1, rule.getPermittedDomains().length);
     assert.notOk(rule.shortcut);
+    assert.ok(rule.isRegexRule);
 
     ruleText = "@@||$xmlhttprequest,domain=last.fm";
     rule = new adguard.rules.UrlFilterRule(ruleText);
@@ -328,14 +330,17 @@ QUnit.test("Test UrlFilterRule Matching Any Url", function (assert) {
     assert.ok(rule.getPermittedDomains());
     assert.equal(1, rule.getPermittedDomains().length);
     assert.notOk(rule.shortcut);
+    assert.ok(rule.isRegexRule);
 
     ruleText = "|$domain=test.com,script";
     rule = new adguard.rules.UrlFilterRule(ruleText);
+    console.log(rule);
 
     assert.notOk(rule.isThirdParty);
     assert.ok(rule.getPermittedDomains());
     assert.equal(1, rule.getPermittedDomains().length);
     assert.notOk(rule.shortcut);
+    assert.ok(rule.isRegexRule);
 
 });
 
