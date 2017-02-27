@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version="2.5.14"
+version="2.6.0"
 
 if [[ ! ("$#" == 1) ]] || [[ ! ($1 = dev) && ! ($1 = release) && ! ($1 = beta) ]] ; then
     echo "Pass a single argument as an environment value"
@@ -76,6 +76,10 @@ elif [ "$env" = beta ]; then
     options="--version=$version --branch=legacy --dest=$destPath --name=legacy --browser=firefox_legacy --pack=xpi_cfx --extensionId=adguardadblockerlegacy@adguard.com --update-url=https://chrome.adtidy.org/updates.rdf"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
+    #firefox beta palemoon xpi
+    options="--version=$version --branch=$branch --dest=$destPath --name=palemoon --browser=palemoon --pack=xpi_cfx --extensionId=adguardadblockerpalemoon@adguard.com --update-url=https://chrome.adtidy.org/updates.rdf"
+    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
+
     #safari beta
     options="--version=$version --branch=$branch --dest=$destPath --name=AdguardBeta --browser=safari  --extensionId=com.adguard.safaribeta --update-url=https://chrome.adtidy.org/safari/updates.xml"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
@@ -103,6 +107,10 @@ else
 
     #firefox legacy
     options="--version=$version --branch=$branch-legacy --dest=$destPath --name=firefox-legacy --browser=firefox_legacy --extensionId=adguardadblockerlegacydev@adguard.com"
+    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
+
+    #palemoon
+    options="--version=$version --branch=$branch --dest=$destPath --name=palemoon --browser=palemoon --extensionId=adguardadblockerpalemoondev@adguard.com"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #safari

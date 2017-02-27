@@ -29,7 +29,12 @@ public enum Browser {
 	/**
 	 * Legacy firefox (older than v30)
 	 */
-	FIREFOX_LEGACY("firefox_legacy");
+	FIREFOX_LEGACY("firefox_legacy"),
+
+	/**
+	 * Pale Moon browser (>= v25)
+	 */
+	PALEMOON("palemoon");
 
 	private String name;
 
@@ -58,6 +63,7 @@ public enum Browser {
 				return "safari";
 			case FIREFOX:
 			case FIREFOX_LEGACY:
+			case PALEMOON:
 				return "firefox";
 			case CHROMIUM:
 			case EDGE:

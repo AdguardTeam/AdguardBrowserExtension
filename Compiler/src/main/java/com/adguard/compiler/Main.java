@@ -164,8 +164,8 @@ public class Main {
             return false;
         }
 
-        if (extensionId == null && (browser == Browser.FIREFOX || browser == Browser.FIREFOX_LEGACY)) {
-            log.error("Set --extensionId for Safari build");
+        if (extensionId == null && (browser == Browser.FIREFOX || browser == Browser.FIREFOX_LEGACY || browser == Browser.PALEMOON)) {
+            log.error("Set --extensionId for Firefox/PaleMoon build");
             return false;
         }
 
@@ -215,7 +215,7 @@ public class Main {
             LocaleUtils.updateExtensionNameForChromeLocales(dest, extensionNamePostfix);
         }
 
-        if (browser == Browser.FIREFOX || browser == Browser.FIREFOX_LEGACY) {
+        if (browser == Browser.FIREFOX || browser == Browser.FIREFOX_LEGACY || browser == Browser.PALEMOON) {
             LocaleUtils.writeLocalesToFirefoxInstallRdf(dest, extensionNamePostfix);
             LocaleUtils.writeLocalesToChromeManifest(dest);
 
@@ -257,8 +257,9 @@ public class Main {
                 }
                 return true;
             case FIREFOX_LEGACY:
+            case PALEMOON:
                 if (!PACK_METHOD_XPI_CFX.equals(packMethod)) {
-                    log.error("Firefox support only xpi through cfx pack method");
+                    log.error("Firefox/PaleMoon support only xpi through cfx pack method");
                     return false;
                 }
                 return true;

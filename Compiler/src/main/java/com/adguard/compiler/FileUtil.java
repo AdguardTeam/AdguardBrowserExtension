@@ -37,6 +37,7 @@ public class FileUtil {
 	private static final String SAFARI_FOLDER = "browser/safari";
 	private static final String FIREFOX_FOLDER = "browser/firefox";
 	private static final String FIREFOX_LEGACY_FOLDER = "browser/firefox_legacy";
+	private static final String PALEMOON_FOLDER = "browser/palemoon";
 
 	public static void copyFiles(File source, File dest, Browser browser, boolean createApi) throws Exception {
 
@@ -60,6 +61,9 @@ public class FileUtil {
 				break;
 			case FIREFOX_LEGACY:
 				copyFirefoxLegacyFiles(source, dest);
+				break;
+			case PALEMOON:
+				copyPaleMoonFiles(source, dest);
 				break;
 		}
 
@@ -178,6 +182,15 @@ public class FileUtil {
 		//copy all files to dest folder
 		File firefoxLegacyBase = new File(source, FIREFOX_LEGACY_FOLDER);
 		copyDirectory(firefoxLegacyBase, dest);
+	}
+
+	private static void copyPaleMoonFiles(File source, File dest) throws Exception {
+
+		copyFirefoxFiles(source, dest, Browser.PALEMOON);
+
+		//copy all files to dest folder
+		File paleMoonBase = new File(source, PALEMOON_FOLDER);
+		copyDirectory(paleMoonBase, dest);
 	}
 
 	private static void copyDirectory(File source, File dest) throws IOException {

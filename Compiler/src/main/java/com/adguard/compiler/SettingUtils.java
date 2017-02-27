@@ -83,6 +83,7 @@ public class SettingUtils {
                 break;
             case FIREFOX:
             case FIREFOX_LEGACY:
+            case PALEMOON:
                 File installRdf = new File(dest, "install.rdf");
                 String contentRdf = FileUtils.readFileToString(installRdf, "utf-8").trim();
                 //write update url link
