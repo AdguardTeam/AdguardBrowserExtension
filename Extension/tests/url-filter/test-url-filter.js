@@ -329,6 +329,14 @@ QUnit.test("Test UrlFilterRule Matching Any Url", function (assert) {
     assert.equal(1, rule.getPermittedDomains().length);
     assert.notOk(rule.shortcut);
 
+    ruleText = "|$domain=test.com,script";
+    rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.notOk(rule.isThirdParty);
+    assert.ok(rule.getPermittedDomains());
+    assert.equal(1, rule.getPermittedDomains().length);
+    assert.notOk(rule.shortcut);
+
 });
 
 QUnit.test("Important modifier rules", function (assert) {
