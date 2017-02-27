@@ -174,17 +174,21 @@
      */
     function parseRuleText(ruleText) {
 
+        var ESCAPE_CHARACTER = '\\';
+
         var urlRuleText = ruleText;
         var whiteListRule = null;
         var options = null;
 
+        var startIndex = 0;
+
         if (adguard.utils.strings.startWith(urlRuleText, api.FilterRule.MASK_WHITE_LIST)) {
-            urlRuleText = urlRuleText.substring(api.FilterRule.MASK_WHITE_LIST.length);
+            startIndex = api.FilterRule.MASK_WHITE_LIST.length;
+            urlRuleText = urlRuleText.substring(startIndex);
             whiteListRule = true;
         }
 
         var parseOptions = true;
-
         /**
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/517
          * regexp rule may contain dollar sign which also is options delimiter
@@ -195,11 +199,27 @@
         }
 
         if (parseOptions) {
-            var optionsIndex = urlRuleText.indexOf(UrlFilterRule.OPTIONS_DELIMITER);
-            if (optionsIndex >= 0) {
-                var optionsBase = urlRuleText;
-                urlRuleText = urlRuleText.substring(0, optionsIndex);
-                options = optionsBase.substring(optionsIndex + 1);
+            var foundEscaped = false;
+            // Start looking from the prev to the last symbol
+            // If dollar sign is the last symbol - we simply ignore it.
+            for (var i = (ruleText.length - 2); i >= startIndex; i--) {
+                var c = ruleText.charAt(i);
+                if (c == UrlFilterRule.OPTIONS_DELIMITER) {
+                    if (i > 0 && ruleText.charAt(i - 1) == ESCAPE_CHARACTER) {
+                        foundEscaped = true;
+                    } else {
+                        urlRuleText = ruleText.substring(startIndex, i);
+                        options = ruleText.substring(i + 1);
+
+                        if (foundEscaped) {
+                            // Find and replace escaped options delimiter
+                            options = options.replace(ESCAPE_CHARACTER + UrlFilterRule.OPTIONS_DELIMITER, UrlFilterRule.OPTIONS_DELIMITER);
+                        }
+
+                        // Options delimiter was found, doing nothing
+                        break;
+                    }
+                }
             }
         }
 

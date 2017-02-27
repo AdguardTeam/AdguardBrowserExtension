@@ -422,3 +422,9 @@ QUnit.test("Many rules in one rule filter", function (assert) {
     assert.ok(filter);
     assert.equal(filter.getRules().length, 1);
 });
+
+QUnit.test("Escaped ampersand symbol in options", function (assert) {
+    var rule = new adguard.rules.UrlFilterRule('||goodgame.ru/*.php?script=*vastInlineBannerTypeHtml$important,jsinject=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\\$1<\/VAST>/', 1);
+
+    assert.ok(rule);
+});
