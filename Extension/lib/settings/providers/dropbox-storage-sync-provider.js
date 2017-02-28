@@ -27,23 +27,22 @@
 
     //TODO: Change to real
     var CLIENT_ID = 'bubtujvx7p81yjo';
-    var TOKEN_STORAGE_PROP = 'dropbox-auth-token';
 
     var dropbox;
     var PROVIDER_NAME = 'DROPBOX';
-    var accessToken = null;
 
     /**
      * Dropbox client
      */
     var DropboxClient = (function () {
 
-        function makeRequest(url, token, params) {
+        function makeRequest(url, params) {
 
             return new Promise(function (resolve, reject) {
 
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', url, true);
+                var token = api.oauthService.getToken(PROVIDER_NAME);
                 if (token) {
                     xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                 }
@@ -71,7 +70,7 @@
          * @returns {*}
          */
         var listFolder = function () {
-            return makeRequest('https://api.dropboxapi.com/2/files/list_folder', accessToken, {
+            return makeRequest('https://api.dropboxapi.com/2/files/list_folder', {
                 path: '',
                 include_deleted: true
             });
@@ -81,7 +80,7 @@
          * https://www.dropbox.com/developers/documentation/http/documentation#files-list_folder-longpoll
          */
         var listFolderLongPoll = function (cursor) {
-            return makeRequest('https://notify.dropboxapi.com/2/files/list_folder/longpoll', null, {
+            return makeRequest('https://notify.dropboxapi.com/2/files/list_folder/longpoll', {
                 cursor: cursor
             });
         };
@@ -124,9 +123,8 @@
     }
 
     function clearAccessToken() {
-        accessToken = null;
         dropboxFolderState.forceSync = true;
-        adguard.localStorage.removeItem(TOKEN_STORAGE_PROP);
+        api.oauthService.setToken(PROVIDER_NAME, null);
     }
 
     /**
@@ -283,7 +281,7 @@
     };
 
     var isAuthorized = function () {
-        if (!accessToken) {
+        if (!api.oauthService.getToken(PROVIDER_NAME)) {
             adguard.console.warn("Unauthorized! Please set access token first.");
             return false;
         }
@@ -294,21 +292,25 @@
      * Revokes Dropbox token
      *
      * http://dropbox.github.io/dropbox-sdk-js/Dropbox.html#authTokenRevoke__anchor
+     * TODO: Remove, change to OathService.revokeToken()
      */
     var logout = function () {
-        if (accessToken) {
+        var token = api.oauthService.getToken(PROVIDER_NAME);
+        if (token) {
             dropbox.authTokenRevoke();
             clearAccessToken();
         }
     };
 
     var init = function (token) {
+        var accessToken;
         if (token) {
+            api.oauthService.setToken(PROVIDER_NAME, token);
             accessToken = token;
-            adguard.localStorage.setItem(TOKEN_STORAGE_PROP, token);
         } else {
-            accessToken = adguard.localStorage.getItem(TOKEN_STORAGE_PROP);
+            accessToken = api.oauthService.getToken(PROVIDER_NAME);
         }
+
         if (accessToken) {
             dropbox = new Dropbox({accessToken: accessToken});
             callListFolderLongPoll();
@@ -317,13 +319,22 @@
             adguard.tabs.create({
                 active: true,
                 type: 'popup',
-                url: dropbox.getAuthenticationUrl('https://injections.adguard.com?provider=' + PROVIDER_NAME)
+                url: api.oauthService.getAuthUrl(PROVIDER_NAME, 'https://injections.adguard.com?provider=' + PROVIDER_NAME)
             });
         }
     };
 
     var shutdown = function () {
         //TODO: stop polling
+    };
+
+    var getAuthUrl = function (redirectUri, securityToken) {
+        //TODO: Find out if CSRF token is supported
+        return dropbox.getAuthenticationUrl(redirectUri);
+    };
+
+    var revokeToken = function () {
+        dropbox.authTokenRevoke();
     };
 
     // EXPOSE
@@ -337,7 +348,9 @@
         init: init,
         // Auth api
         isAuthorized: isAuthorized,
-        logout: logout
+        logout: logout,
+        getAuthUrl: getAuthUrl,
+        revokeToken: revokeToken
     };
 
 })(adguard.sync, adguard);

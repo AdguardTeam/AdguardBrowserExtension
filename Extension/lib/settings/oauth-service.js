@@ -18,13 +18,30 @@
 /**
  * OAuth service
  */
-(function (adguard) { // jshint ignore:line
+(function (api, adguard) { // jshint ignore:line
 
     var TOKEN_STORAGE_PROP = 'sync-provider-auth-tokens';
 
     var accessTokens = Object.create(null);
     var securityToken;
     var expires;
+
+    /**
+     * Finds sync provider by name
+     * @param providerName Provider name
+     * @returns {*}
+     */
+    function findProviderByName(providerName) {
+        for (var key in api) {
+            if (api.hasOwnProperty(key)) {
+                var provider = api[key];
+                if (provider.name === providerName) {
+                    return provider;
+                }
+            }
+        }
+        return null;
+    }
 
     var getAccessTokens = function () {
         if (!accessTokens) {
@@ -51,13 +68,14 @@
 
     /**
      * Returns provider auth url
-     * @param provider
+     * @param providerName
      * @param redirectUri
      * @returns {null}
      */
-    var getAuthUrl = function (provider, redirectUri) {
+    var getAuthUrl = function (providerName, redirectUri) {
         var securityToken = getSecurityToken();
 
+        var provider = findProviderByName(providerName);
         if (provider && typeof provider.getAuthUrl === 'function') {
             return provider.getAuthUrl(redirectUri, securityToken);
         }
@@ -67,13 +85,13 @@
 
     /**
      * Returns provider token
-     * @param provider
+     * @param providerName
      * @returns {null}
      */
-    var getToken = function (provider) {
+    var getToken = function (providerName) {
         var tokens = getAccessTokens();
         if (tokens) {
-            return tokens[provider.name];
+            return tokens[providerName];
         }
 
         return null;
@@ -81,14 +99,14 @@
 
     /**
      * Sets provider token
-     * @param provider
+     * @param providerName
      * @param token
      * @param expires
      */
-    var setToken = function (provider, token, expires) {
+    var setToken = function (providerName, token, expires) {
         var tokens = getAccessTokens();
 
-        tokens[provider.name] = token;
+        tokens[providerName] = token;
         accessTokens = tokens;
 
         adguard.localStorage.setItem(TOKEN_STORAGE_PROP, accessTokens);
@@ -98,21 +116,23 @@
 
     /**
      * Revokes provider token
-     * @param provider
+     * @param providerName
      */
-    var revokeToken = function (provider) {
+    var revokeToken = function (providerName) {
         var tokens = getAccessTokens();
-        if (tokens[provider.name]) {
+        var token = tokens[providerName];
+        if (token) {
+            var provider = findProviderByName(providerName);
             if (provider && typeof provider.revokeToken === 'function') {
-                provider.revokeToken();
+                provider.revokeToken(token);
             }
 
-            setToken(provider, null);
+            setToken(providerName, null);
         }
     };
 
     // EXPOSE
-    adguard.oauthService = {
+    api.oauthService = {
         /**
          * Returns saved one time token
          */
@@ -135,4 +155,4 @@
         revokeToken: revokeToken
     };
 
-})(adguard);
+})(adguard.sync, adguard);

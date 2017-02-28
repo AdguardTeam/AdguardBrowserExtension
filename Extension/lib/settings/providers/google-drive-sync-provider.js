@@ -26,7 +26,6 @@
 
     var CLIENT_ID = '379033535124-eegqqpu1d232b5u1r8dkeu9h2ukkhejd.apps.googleusercontent.com';
     var PROVIDER_NAME = 'GOOGLE_DRIVE';
-    var TOKEN_STORAGE_PROP = 'google-drive-auth-token';
 
     var accessToken;
 
@@ -40,19 +39,15 @@
 
     var GoogleDriveClient = (function () {
 
-        var securityToken;
-
         function checkInvalidToken(status) {
             if (status === 401 || status === 403) {
-                revokeToken();
+                revokeToken(api.oauthService.getToken(PROVIDER_NAME));
             }
         }
 
-        function revokeToken() {
-            if (accessToken) {
-                makeRequest('GET', 'https://accounts.google.com/o/oauth2/revoke?token=' + accessToken);
-                adguard.localStorage.removeItem(TOKEN_STORAGE_PROP);
-                accessToken = null;
+        function revokeToken(token) {
+            if (token) {
+                makeRequest('GET', 'https://accounts.google.com/o/oauth2/revoke?token=' + token);
             }
         }
 
@@ -67,7 +62,7 @@
                 xhr.open(method, url, true);
 
                 // Include common headers (auth and version) and add rest.
-                xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+                xhr.setRequestHeader('Authorization', 'Bearer ' + api.oauthService.getToken(PROVIDER_NAME));
                 if (headers) {
                     for (var key in headers) {
                         if (headers.hasOwnProperty(key)) {
@@ -198,8 +193,7 @@
          * @param redirectUri
          * @returns {string}
          */
-        var getAuthenticationUrl = function (redirectUri) {
-            var securityToken = getSecurityToken();
+        var getAuthenticationUrl = function (redirectUri, securityToken) {
             var params = {
                 client_id: CLIENT_ID,
                 redirect_uri: redirectUri,
@@ -214,21 +208,6 @@
             return 'https://accounts.google.com/o/oauth2/v2/auth?' + query.join('&');
         };
 
-        /**
-         * Gets random one time token
-         * @returns {*}
-         */
-        var getSecurityToken = function () {
-            var token = securityToken;
-            if (!token) {
-                token = Math.random().toString(36).substring(7);
-            } else {
-                securityToken = null;
-            }
-
-            return token;
-        };
-
         return {
             uploadFile: uploadFile,
             downloadFile: downloadFile,
@@ -237,8 +216,7 @@
             listFiles: listFiles,
             revokeToken: revokeToken,
             deleteFile: deleteFile,
-            getAuthenticationUrl: getAuthenticationUrl,
-            getSecurityToken: getSecurityToken
+            getAuthenticationUrl: getAuthenticationUrl
         };
 
     })();
@@ -349,7 +327,7 @@
     };
 
     var isAuthorized = function () {
-        if (!accessToken) {
+        if (!api.oauthService.getToken(PROVIDER_NAME)) {
             adguard.console.warn("Unauthorized! Please set access token first.");
             return false;
         }
@@ -358,39 +336,49 @@
 
     /**
      * Revokes Google Drive token
+     * TODO: Remove, change to OathService.revokeToken()
      */
     var logout = function () {
-        GoogleDriveClient.revokeToken();
+        GoogleDriveClient.revokeToken(api.oauthService.getToken(PROVIDER_NAME));
     };
 
     var init = function (token, securityToken) {
         if (securityToken) {
-            if (securityToken !== GoogleDriveClient.getSecurityToken()) {
+            if (securityToken !== api.oauthService.getSecurityToken()) {
                 adguard.console.warn("Security token doesn't match");
                 return;
             }
         }
 
+        var accessToken;
         if (token) {
+            api.oauthService.setToken(PROVIDER_NAME, token);
             accessToken = token;
-            adguard.localStorage.setItem(TOKEN_STORAGE_PROP, token);
         } else {
-            accessToken = adguard.localStorage.getItem(TOKEN_STORAGE_PROP);
+            accessToken = api.oauthService.getToken(PROVIDER_NAME);
         }
+
         if (accessToken) {
             startPolling();
         } else {
             adguard.tabs.create({
                 active: true,
                 type: 'popup',
-                url: GoogleDriveClient.getAuthenticationUrl('https://injections.adguard.com?provider=' + PROVIDER_NAME)
+                url: api.oauthService.getAuthUrl(PROVIDER_NAME, 'https://injections.adguard.com?provider=' + PROVIDER_NAME)
             });
         }
     };
 
     var shutdown = function () {
         clearTimeout(googleDriveFolderState.pollingTimeoutId);
-        accessToken = null;
+    };
+
+    var getAuthUrl = function (redirectUri, securityToken) {
+        return GoogleDriveClient.getAuthenticationUrl(redirectUri, securityToken);
+    };
+
+    var revokeToken = function (token) {
+        GoogleDriveClient.revokeToken(token);
     };
 
     api.googleDriveSyncProvider = {
@@ -404,7 +392,9 @@
         shutdown: shutdown,
         // Auth api
         isAuthorized: isAuthorized,
-        logout: logout
+        logout: logout,
+        getAuthUrl: getAuthUrl,
+        revokeToken: revokeToken
     };
 
 })(adguard.sync, adguard);
