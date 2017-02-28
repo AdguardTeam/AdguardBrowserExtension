@@ -403,6 +403,9 @@
             case 'saveCssHitStats':
                 processSaveCssHitStats(sender.tab, message.stats);
                 break;
+            default:
+                // Unhandled message
+                return true;
         }
     }
 
