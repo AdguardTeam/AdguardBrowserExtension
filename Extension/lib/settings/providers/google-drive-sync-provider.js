@@ -334,14 +334,6 @@
         return true;
     };
 
-    /**
-     * Revokes Google Drive token
-     * TODO: Remove, change to OathService.revokeToken()
-     */
-    var logout = function () {
-        GoogleDriveClient.revokeToken(api.oauthService.getToken(PROVIDER_NAME));
-    };
-
     var init = function (token, securityToken) {
         if (securityToken) {
             if (securityToken !== api.oauthService.getSecurityToken()) {
@@ -392,7 +384,6 @@
         shutdown: shutdown,
         // Auth api
         isAuthorized: isAuthorized,
-        logout: logout,
         getAuthUrl: getAuthUrl,
         revokeToken: revokeToken
     };

@@ -288,20 +288,6 @@
         return true;
     };
 
-    /**
-     * Revokes Dropbox token
-     *
-     * http://dropbox.github.io/dropbox-sdk-js/Dropbox.html#authTokenRevoke__anchor
-     * TODO: Remove, change to OathService.revokeToken()
-     */
-    var logout = function () {
-        var token = api.oauthService.getToken(PROVIDER_NAME);
-        if (token) {
-            dropbox.authTokenRevoke();
-            clearAccessToken();
-        }
-    };
-
     var init = function (token) {
         var accessToken;
         if (token) {
@@ -348,7 +334,6 @@
         init: init,
         // Auth api
         isAuthorized: isAuthorized,
-        logout: logout,
         getAuthUrl: getAuthUrl,
         revokeToken: revokeToken
     };
