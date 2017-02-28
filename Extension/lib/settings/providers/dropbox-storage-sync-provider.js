@@ -324,7 +324,7 @@
 
     var shutdown = function () {
         //TODO: stop polling
-    }
+    };
 
     // EXPOSE
     api.dropboxSyncProvider = {
