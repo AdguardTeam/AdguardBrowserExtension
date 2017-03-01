@@ -45,7 +45,7 @@
 
     var getAccessTokens = function () {
         if (!accessTokens) {
-            accessTokens = adguard.localStorage.getItem(TOKEN_STORAGE_PROP) || Object.create(null);
+            accessTokens = JSON.parse(adguard.localStorage.getItem(TOKEN_STORAGE_PROP)) || Object.create(null);
         }
 
         return accessTokens;
@@ -109,7 +109,7 @@
         tokens[providerName] = token;
         accessTokens = tokens;
 
-        adguard.localStorage.setItem(TOKEN_STORAGE_PROP, accessTokens);
+        adguard.localStorage.setItem(TOKEN_STORAGE_PROP, JSON.stringify(accessTokens));
 
         //TODO: Save expires
     };

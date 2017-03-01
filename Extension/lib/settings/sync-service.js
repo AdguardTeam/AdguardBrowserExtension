@@ -526,7 +526,7 @@
             removeSyncProvider(syncProvider);
         }
         syncProvider = providerService;
-        adguard.console.debug('Sync provider has been set to {0}', providerName);
+        adguard.console.info('Sync provider has been set to {0}', providerName);
         adguard.localStorage.setItem(CURRENT_PROVIDER_PROP, providerName);
         if (typeof providerService.init === 'function') {
             providerService.init(token, securityToken);
