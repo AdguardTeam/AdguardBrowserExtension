@@ -1,6 +1,6 @@
-! Checksum: 3sAHt7+alxn9p4KroOP/mw
-! Version: 1.0.7.12
-! TimeUpdated: 2017-02-20T17:22:16.804+04:00
+! Checksum: 0Bwyqgtdbvr+VqCzFCH21A
+! Version: 1.0.7.19
+! TimeUpdated: 2017-02-28T23:01:50.446+04:00
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
 ! Title: Adguard Mobile Ads Filter
@@ -838,7 +838,7 @@ m.reddit.com##article[class="Post size-compact"][-ext-has=".PostHeader__sponsore
 !-------------------
 !### TEMPORARY ###
 ! WebSockets are not blocked
-all-tor.net,free-rutor.org,lenfilm.tv,krutor.org,fast-bit.org,tor-ru.net,hd-bit.org,radikal.ru,hdkinomax.com,kino-serial.net,on-movie.net,fastpic.ru,rutor.is,baskino.club,rutor.info,nnm.me,korzik.net,seasonvar.ru,rsload.net,nnm-club.me,nnmclub.to,rustorka.com,auto.mail.ru,horo.mail.ru,realty.mail.ru,health.mail.ru,afisha.mail.ru,cloud.mail.ru,otvet.mail.ru,pogoda.mail.ru,sport.mail.ru,tv.mail.ru,torg.mail.ru,cars.mail.ru,hi-tech.mail.ru,rustorka.com,top-tor.org,super-tor.net,filmix.net,free-ru.org#%#window.WebSocket = undefined;
+all-tor.net,free-rutor.org,lenfilm.tv,krutor.org,fast-bit.org,tor-ru.net,hd-bit.org,radikal.ru,hdkinomax.com,on-movie.net,fastpic.ru,rutor.is,baskino.club,rutor.info,nnm.me,korzik.net,seasonvar.ru,rsload.net,nnm-club.me,nnmclub.to,rustorka.com,auto.mail.ru,horo.mail.ru,realty.mail.ru,health.mail.ru,afisha.mail.ru,cloud.mail.ru,otvet.mail.ru,pogoda.mail.ru,sport.mail.ru,tv.mail.ru,torg.mail.ru,cars.mail.ru,hi-tech.mail.ru,rustorka.com,top-tor.org,super-tor.net,filmix.net,free-ru.org#%#window.WebSocket = undefined;
 ! https://forum.adguard.com/index.php?threads/12443/
 pornhub.com#%#AG_onLoad(function() { if (typeof redirect !== 'function') return; var str = redirect.toString(); var m = str.match(/\'(\/view.*)\'/); if (m.length != 2) return; var link = m[1]; window.location.href = m[1]; });
 !#################
@@ -854,6 +854,8 @@ sasisa.ru#%#AG_onLoad(function() { window.Umobi = function() {}; });
 !-------------------
 !-------CSS---------
 !-------------------
+! https://github.com/AdguardTeam/AdguardFilters/issues/4453
+15min.lt#$#.ads { position: absolute!important; left: -3000px!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3916
 spaces.ru#$##left_nav > ul+div[class] { position: absolute!important; left: -3000px!important; }
 spaces.ru#$#.content_wrap > div:not([id]):not([class]):empty+div:not([id*="_"]) { position: absolute!important; left: -3000px!important; }
@@ -888,6 +890,13 @@ deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important
 !
 !#####################
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/4453
+@@||15min.lt^$generichide
+15min.lt#@#.widget.ads
+15min.lt#@#.ads
+@@||securepubads.g.doubleclick.net/gpt/pubads_impl_$domain=15min.lt
+@@||pubads.g.doubleclick.net/activity;$domain=15min.lt
+@@||securepubads.g.doubleclick.net/gampad/ads?gdfp_req=1$domain=15min.lt
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4317
 @@||films.imhonet.ru^$jsinject
 ! https://forum.adguard.com/index.php?threads/le-bon-coin-apk-from-googleplay.18840/ fix ?ad_id= in Liste FR
@@ -1069,6 +1078,11 @@ m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"
 ! https://forum.adguard.com/index.php?threads/10464/
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
 !
+m.filmix.me##.remove-sda-wrap
+m.filmix.me##div[id*="Composite"]
+economictimes.com##style[type="text/css"] + div[class]:not([id]):not([style]):not([class*=" "])
+||economictimes.com/etmpat/
+m.economictimes.com###morePartner
 theatlantic.com##.ad-loaded
 theatlantic.com##.native-promo-slider
 ulm-news.de###SWU-schwabenstrom
@@ -1114,7 +1128,6 @@ about.com##.adhesive
 9to5mac.com##.adsense
 forums.androidcentral.com##.adunit
 mangafox.me##.adv-here
-slon.ru##.advert
 redtube.com##.after-header
 m.sondakika.com##.an-container
 avito.ru##.b-ads
@@ -1163,7 +1176,6 @@ spaces.ru##.ofk_main
 m.iguides.ru##.pageContent_topBar > a[href="https://www.iguides.ru/blackfriday2016-mobile"]
 xhamster.com##.pop-advertise
 xhamster.com##.pop-fade
-quoidenoeuf.com##.pub
 zvistka.net##.pum-container
 pcmag.com##.row.pcm-content
 healthboards.com##.sticky_ad
@@ -1192,7 +1204,6 @@ nydailynews.com##body > #r-main > div.r-yieldmo
 anwap.org##body > div > div[class^="uc"][class*=" "]
 thenewslens.com##body > div#bottombar
 spaces.ru##body > div#main_wrap > div#wrap_all > div#main_shadow > div#main_content_block > div.content_wrap > div:not([id]):not([class]):empty + div:not([id*="_"])
-bubluoteka.org##body > div.d table[onclick^="window.open"]
 anwap.org##body > div:not([class]):not([id]) > div[class]:not([class="ball"]):not([class^="chislo"]):not([class="logo"]):not([class="news"]):not([style])
 anwap.org##body > div[class]:not([class="ball"]):not([class^="chislo"]):not([class="logo"]):not([class="news"]):not([class="blm"]):not([class="menuniz"]):not([style])
 liga.net##body > div[id^="holder_320x"][style]
@@ -1224,7 +1235,6 @@ piluli.ru##div[id^="medads_banner"]
 bash.im##div[style*="width: 300px; height: 250px;"]
 4pda.ru##header#header + div[id] > div:not([class*=" "]) + div:not([class*=" "]) + div[class*=" "]
 sports.ru##iframe[src^="http://www.sports.ru/desktop/special"]
-bubluoteka.org##iframe[width="320"][height="50"]
 iphoneitalia.com.page-wrapper > center > div[style^="height:50px;"]
 m.9gag.com##section.salt-container
 livestrong.com##section[class*="js-mobile_adsense"]
@@ -1234,7 +1244,7 @@ pornhd.com##ul.thumbs.inside-row > li:not([data-thumbindexes])
 ||campaign.brandseven.com/get^$third-party
 ||coandroid.ru/uploads/mobcoin.png
 ||expertvaz.ru/wp-content/plugins/helper/inc/jquery.mobileInterestial
-||go.*.com/apu.php$empty,domain=123movies.to|movies.is
+||go.*.com/apu.php$empty,domain=movies.is
 ||i.now.ru/*/MobileBannerView.js
 ||im.20xs.cc/?ss=
 ||m.20xs.cc/qirui/s/tss.js
@@ -1310,9 +1320,12 @@ login.wi-fi.ru#%#window.isPremium = true;
 ||graph.facebook.com^$app=fr.meteo
 ||graph.facebook.com^$app=io.casper.android
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/4493
+@@||imasdk.googleapis.com/native/core/*/native_bridge__en.js$app=com.mylocaltv.wptv
+! https://github.com/AdguardTeam/AdguardFilters/issues/4471
+@@||bbci.co.uk/static/*/adunit.json|$app=bbc.mobile.news.ww
 ! https://github.com/AdguardTeam/AdguardForAndroid/issues/1016
 ||taboola.com^$app=com.microsoft.microsoftsolitairecollection
-!
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4184
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4161
 ||api.mobojoy.baidu.com/strategy/api/v1/rule/get?p=com.adslib.mobovee$app=cn.xender
