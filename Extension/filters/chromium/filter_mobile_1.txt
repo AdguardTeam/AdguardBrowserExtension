@@ -1,6 +1,6 @@
-! Checksum: ECiYVkYtYOoVNmBiwqG4MA
-! Version: 1.0.47.78
-! TimeUpdated: 2017-02-28T22:00:27.020+04:00
+! Checksum: 0wu6Yl5C4uyEnZh6MV5q1Q
+! Version: 1.0.47.80
+! TimeUpdated: 2017-03-01T16:00:14.255+04:00
 ! Title: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
@@ -8,6 +8,7 @@
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+||ijtozat.ru^$third-party
 ||news-super.com^$third-party
 ||refpa.top^$third-party
 ||news.govorjat.ru^$third-party
@@ -1607,7 +1608,7 @@ auto62rus.ru#%#window.aadnet = {};
 rango-hack.ru##.svg-adblock
 @@||track24.ru$generichide
 @@||www.ukr.net^$generichide
-www.ukr.net#%#Object.defineProperty(window, 'whore', { get: function(){ return false; } });
+www.ukr.net#%#Object.defineProperty(window, 'adEcbrStart', { get: function() { return; } });
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=wormax.io
 @@||googleads.g.doubleclick.net/pagead/ads?sdkv=*&url=http%3A%2F%2Fwormax.io
 @@||wormax.io$generichide
@@ -2338,6 +2339,7 @@ e.mail.ru#$#.b-rb { height: 0px!important; padding: 0px 0px 0px!important; }
 e.mail.ru#$##b-slot-left-direct { position: absolute!important; left: -3000px!important; }
 e.mail.ru#$#.message-sent__ads { position: absolute!important; left: -3000px!important; }
 sinoptik.ua#$#iframe[bb] { position: absolute!important; left: -3000px!important; }
+sinoptik.com.ru#$#iframe[bb] { visibility: hidden!important; }
 go.mail.ru#$#.responses__wrapper > div#js-bottomBlock > div[class$="-block"] > div[class$="_bottom"] { position: absolute!important; left: -3000px!important; }
 pogoda.mail.ru#$#footer div.cols__column__item > div.informer { position: absolute!important; left: -3000px!important; }
 izzylaif.com#$#.adsbygoogle { position: absolute!important; left: -3000px!important; }
@@ -3151,6 +3153,7 @@ rustorka.com#%#Object.defineProperty(window, 'MTretCK', { get: function() { retu
 @@||rustorka.com/forum/privmsg.php
 @@||rustorka.com/forum/search.php
 rustorka.com##a[href$=".php"]:not([class]) > :not(img)
+torrent-soft.info##.fstory-content > center > a[href^="https://clck.ru/"] > img
 ||znaj.ua/banner/
 znaj.ua##.new-banners
 kinozadrot.club##.film-item > div[align="center"] > div[style$="width: 510px;height: 375px;text-align: center;"]

@@ -1,6 +1,6 @@
-! Checksum: OArg3ZYnAot5Pu/0ok3m/g
-! Version: 1.0.47.78
-! TimeUpdated: 2017-02-28T22:00:27.020+04:00
+! Checksum: A0FzEZR0mi6OAFn0j45doQ
+! Version: 1.0.47.80
+! TimeUpdated: 2017-03-01T16:00:14.255+04:00
 ! Title: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
 ! Title: Adguard Russian Filter
@@ -27,6 +27,7 @@
 !
 ! Содержит доменные имена, использующиеся рекламными сетями.
 !
+||ijtozat.ru^$third-party
 ||news-super.com^$third-party
 ||refpa.top^$third-party
 ||news.govorjat.ru^$third-party
@@ -3946,7 +3947,7 @@ rango-hack.ru##.svg-adblock
 @@||track24.ru$generichide
 ! https://forum.adguard.com/index.php?threads/18580/
 @@||www.ukr.net^$generichide
-www.ukr.net#%#Object.defineProperty(window, 'whore', { get: function(){ return false; } });
+www.ukr.net#%#Object.defineProperty(window, 'adEcbrStart', { get: function() { return; } });
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4075
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=wormax.io
 @@||googleads.g.doubleclick.net/pagead/ads?sdkv=*&url=http%3A%2F%2Fwormax.io
@@ -5468,6 +5469,7 @@ e.mail.ru#$##b-slot-left-direct { position: absolute!important; left: -3000px!im
 e.mail.ru#$#.message-sent__ads { position: absolute!important; left: -3000px!important; }
 ! https://forum.adguard.com/index.php?threads/10880/
 sinoptik.ua#$#iframe[bb] { position: absolute!important; left: -3000px!important; }
+sinoptik.com.ru#$#iframe[bb] { visibility: hidden!important; }
 ! go.mail.ru - ads in search results
 go.mail.ru#$#.responses__wrapper > div#js-bottomBlock > div[class$="-block"] > div[class$="_bottom"] { position: absolute!important; left: -3000px!important; }
 ! pogoda.mail.ru - banner
@@ -7642,6 +7644,7 @@ rustorka.com#%#Object.defineProperty(window, 'MTretCK', { get: function() { retu
 rustorka.com##a[href$=".php"]:not([class]) > :not(img)
 !rustorka.com##:not(div):not(a):not(form):not(body):not(tbody):not(table):not(b):not(tr):not(td):not(img):not(span):not(html):not(title):not(input):not(select):not(option):not(th):not(i):not(h3):not(br):not(li):not(ul):not(p):not(hr):not(iframe):not(thead):not(h4):not(em):not(h6):not(wbr):not(center):not(fieldset):not(legend):not(label) > a
 !
+torrent-soft.info##.fstory-content > center > a[href^="https://clck.ru/"] > img
 ||znaj.ua/banner/
 znaj.ua##.new-banners
 kinozadrot.club##.film-item > div[align="center"] > div[style$="width: 510px;height: 375px;text-align: center;"]
