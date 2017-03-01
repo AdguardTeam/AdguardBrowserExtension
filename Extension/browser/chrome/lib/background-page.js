@@ -475,7 +475,7 @@ var browser = browser || chrome;
 
     ext.windows = {
         getAll: function (callback) {
-            browser.windows.getAll(function (windows) {
+            browser.windows.getAll({}, function (windows) {
                 callback(windows.map(function (win) {
                     return new BrowserWindow(win);
                 }));
@@ -498,7 +498,7 @@ var browser = browser || chrome;
                     return;
                 }
                 //try to find appropriate window
-                browser.windows.getAll(function (windows) {
+                browser.windows.getAll({}, function (windows) {
                     for (var i = 0; i < windows.length; i++) {
                         var wnd = windows[i];
                         if (isAppropriateWindow(wnd)) {
