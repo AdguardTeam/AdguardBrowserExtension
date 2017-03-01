@@ -124,7 +124,7 @@
 
     function clearAccessToken() {
         dropboxFolderState.forceSync = true;
-        api.oauthService.setToken(PROVIDER_NAME, null);
+        api.oauthService.revokeToken(PROVIDER_NAME);
     }
 
     /**

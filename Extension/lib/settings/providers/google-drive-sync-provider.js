@@ -27,8 +27,6 @@
     var CLIENT_ID = '379033535124-eegqqpu1d232b5u1r8dkeu9h2ukkhejd.apps.googleusercontent.com';
     var PROVIDER_NAME = 'GOOGLE_DRIVE';
 
-    var accessToken;
-
     /**
      * Keeps local folder structure
      */
@@ -41,7 +39,7 @@
 
         function checkInvalidToken(status) {
             if (status === 401 || status === 403) {
-                revokeToken(api.oauthService.getToken(PROVIDER_NAME));
+                api.oauthService.revokeToken(PROVIDER_NAME);
             }
         }
 
@@ -259,7 +257,7 @@
     }
 
     function startPolling(timeout) {
-        if (!accessToken) {
+        if (!api.oauthService.getToken(PROVIDER_NAME)) {
             adguard.console.info('Access token is empty. Stop polling changes...');
             return;
         }
