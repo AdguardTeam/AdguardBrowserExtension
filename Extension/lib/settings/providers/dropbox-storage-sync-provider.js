@@ -36,13 +36,12 @@
      */
     var DropboxClient = (function () {
 
-        function makeRequest(url, params) {
+        function makeRequest(url, params, token) {
 
             return new Promise(function (resolve, reject) {
 
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', url, true);
-                var token = api.oauthService.getToken(PROVIDER_NAME);
                 if (token) {
                     xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                 }
@@ -73,7 +72,7 @@
             return makeRequest('https://api.dropboxapi.com/2/files/list_folder', {
                 path: '',
                 include_deleted: true
-            });
+            }, api.oauthService.getToken(PROVIDER_NAME));
         };
 
         /**
