@@ -38,7 +38,7 @@
         var syncTimestamp = null;
 
         var httpApiEndpoint = 'http://testsync.adguard.com/1';
-        var wsApiEndpoint = 'ws://testsync.adguard.com:8182/1';
+        var wsApiEndpoint = 'ws://testsync.adguard.com/1';
 
         var webSocket;
         var checkConnectionTimeoutId;
