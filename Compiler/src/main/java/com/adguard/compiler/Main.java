@@ -204,6 +204,8 @@ public class Main {
         if (StringUtils.isNotEmpty(branch)) {
             if (browser == Browser.FIREFOX && "beta".equals(branch)) {
                 extensionNamePostfix = " (Standalone)";
+            } else if (browser == Browser.PALEMOON && "beta".equals(branch)) {
+                extensionNamePostfix = "";
             } else {
                 extensionNamePostfix = " (" + StringUtils.capitalize(branch) + ")";
             }
