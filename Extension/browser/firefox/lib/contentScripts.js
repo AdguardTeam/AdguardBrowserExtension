@@ -200,7 +200,7 @@
         registerPageContentScript([
             'lib/content-script/content-script.js',
             'lib/content-script/oauth.js'
-        ], 'document_end', false, ['injections.adguard.com']);
+        ], 'document_end', false, ['testsync.adguard.com']);
 
         loadFrameScript();
     }

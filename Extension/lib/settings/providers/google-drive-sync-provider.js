@@ -356,7 +356,7 @@
             adguard.tabs.create({
                 active: true,
                 type: 'popup',
-                url: GoogleDriveClient.getAuthenticationUrl('https://injections.adguard.com?provider=' + PROVIDER_NAME)
+                url: GoogleDriveClient.getAuthenticationUrl('https://testsync.adguard.com/oauth?provider=' + PROVIDER_NAME)
             });
         }
     };

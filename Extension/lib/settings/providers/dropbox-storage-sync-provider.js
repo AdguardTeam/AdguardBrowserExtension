@@ -318,7 +318,7 @@
             adguard.tabs.create({
                 active: true,
                 type: 'popup',
-                url: dropbox.getAuthenticationUrl('https://injections.adguard.com?provider=' + PROVIDER_NAME)
+                url: dropbox.getAuthenticationUrl('https://testsync.adguard.com/oauth?provider=' + PROVIDER_NAME)
             });
         }
     };
