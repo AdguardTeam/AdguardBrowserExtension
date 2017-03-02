@@ -422,3 +422,25 @@ QUnit.test("Many rules in one rule filter", function (assert) {
     assert.ok(filter);
     assert.equal(filter.getRules().length, 1);
 });
+
+QUnit.test("Escaped ampersand symbol in options", function (assert) {
+    try {
+        new adguard.rules.UrlFilterRule('||goodgame.ru/*.php?script=*vastInlineBannerTypeHtml$important,replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\\$1<\/VAST>/', 1);
+        assert.ok(false);
+    } catch (ex) {
+        assert.ok(ex === 'Unknown option: REPLACE');
+    }
+});
+
+QUnit.test('RegExp Rules Parsing', function (assert) {
+
+    assert.ok(new adguard.rules.UrlFilterRule('/(.jpg)$/').isFiltered('http://test.ru/foo.jpg', false, adguard.RequestTypes.IMAGE));
+    assert.notOk(new adguard.rules.UrlFilterRule('/(.jpg)$/').isFiltered('http://test.ru/foo.png', false, adguard.RequestTypes.IMAGE));
+
+    try {
+        new adguard.rules.UrlFilterRule('/.*/$replace=/hello/bug/');
+        assert.ok(false);
+    } catch (ex) {
+        assert.ok(ex === 'Unknown option: REPLACE');
+    }
+});
