@@ -47,7 +47,7 @@
         }
     }
 
-    if (document.domain === 'injections.adguard.com') {
+    if (document.domain === 'testsync.adguard.com') {
 
         var hash = window.location.hash;
         var search = window.location.search;
