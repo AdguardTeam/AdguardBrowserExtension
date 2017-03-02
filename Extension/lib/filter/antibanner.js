@@ -638,7 +638,9 @@ adguard.antiBannerService = (function (adguard) {
     function createRequestFilter(callback) {
 
         if (applicationRunning === false) {
-            callback();
+            if (typeof callback === 'function') {
+                callback();
+            }
             return;
         }
 

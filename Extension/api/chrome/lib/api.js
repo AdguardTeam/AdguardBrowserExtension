@@ -279,6 +279,7 @@
          *      referrerUrl: "...",
          *      requestType: "...", see adguard.RequestTypes
          *      rule: "..." // Rule text
+         *      filterId: ... // Filter identifier
          *   };
          */
         onRequestBlocked: adguard.webRequestService.onRequestBlocked,

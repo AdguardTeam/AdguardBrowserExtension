@@ -15639,7 +15639,9 @@ adguard.antiBannerService = (function (adguard) {
     function createRequestFilter(callback) {
 
         if (applicationRunning === false) {
-            callback();
+            if (typeof callback === 'function') {
+                callback();
+            }
             return;
         }
 
@@ -16921,13 +16923,17 @@ adguard.webRequestService = (function (adguard) {
 
         if (isRequestBlockedByRule(requestRule)) {
             adguard.listeners.notifyListenersAsync(adguard.listeners.ADS_BLOCKED, requestRule, tab, 1);
-            onRequestBlockedChannel.notify({
+            var details = {
                 tabId: tab.tabId,
                 requestUrl: requestUrl,
                 referrerUrl: referrerUrl,
-                requestType: requestType,
-                rule: requestRule.ruleText
-            });
+                requestType: requestType
+            };
+            if (requestRule) {
+                details.rule = requestRule.ruleText;
+                details.filterId = requestRule.filterId;
+            }
+            onRequestBlockedChannel.notify(details);
         }
 
         adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
@@ -17976,6 +17982,7 @@ adguard.webRequestService = (function (adguard) {
          *      referrerUrl: "...",
          *      requestType: "...", see adguard.RequestTypes
          *      rule: "..." // Rule text
+         *      filterId: ... // Filter identifier
          *   };
          */
         onRequestBlocked: adguard.webRequestService.onRequestBlocked,

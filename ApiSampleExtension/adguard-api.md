@@ -173,6 +173,9 @@ Referrer URL.
 `rule`
 Filtering rule, which has blocked this request.
 
+`filterId`
+Rule's filter identifier.
+
 `requestType`
 Request mime type. Possible values are listed below.
 

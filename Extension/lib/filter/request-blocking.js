@@ -321,13 +321,17 @@ adguard.webRequestService = (function (adguard) {
 
         if (isRequestBlockedByRule(requestRule)) {
             adguard.listeners.notifyListenersAsync(adguard.listeners.ADS_BLOCKED, requestRule, tab, 1);
-            onRequestBlockedChannel.notify({
+            var details = {
                 tabId: tab.tabId,
                 requestUrl: requestUrl,
                 referrerUrl: referrerUrl,
-                requestType: requestType,
-                rule: requestRule.ruleText
-            });
+                requestType: requestType
+            };
+            if (requestRule) {
+                details.rule = requestRule.ruleText;
+                details.filterId = requestRule.filterId;
+            }
+            onRequestBlockedChannel.notify(details);
         }
 
         adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
