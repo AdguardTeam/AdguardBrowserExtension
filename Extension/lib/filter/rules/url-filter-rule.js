@@ -193,8 +193,12 @@
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/517
          * regexp rule may contain dollar sign which also is options delimiter
          */
+        // Added check for replacement rule, because maybe problem with rules for example /.*/$replace=/hello/bug/
+
         if (adguard.utils.strings.startWith(urlRuleText, api.UrlFilterRule.MASK_REGEX_RULE) &&
-            adguard.utils.strings.endsWith(urlRuleText, api.UrlFilterRule.MASK_REGEX_RULE)) {
+            adguard.utils.strings.endsWith(urlRuleText, api.UrlFilterRule.MASK_REGEX_RULE) &&
+            !adguard.utils.strings.contains(urlRuleText, api.UrlFilterRule.REPLACE_OPTION + '=')) {
+
             parseOptions = false;
         }
 
@@ -551,6 +555,7 @@
     UrlFilterRule.MASK_PIPE = "|";
     UrlFilterRule.REGEXP_ANY_SYMBOL = ".*";
     UrlFilterRule.EMPTY_OPTION = "empty";
+    UrlFilterRule.REPLACE_OPTION = "replace"; // Extension doesn't support replace rules, $replace option is here only for correctly parsing
 
     UrlFilterRule.contentTypes = {
 
