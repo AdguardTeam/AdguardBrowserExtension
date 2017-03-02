@@ -354,7 +354,7 @@
             adguard.tabs.create({
                 active: true,
                 type: 'popup',
-                url: api.oauthService.getAuthUrl(PROVIDER_NAME, 'https://testsync.adguard.com/oauth?provider=' + PROVIDER_NAME)
+                url: api.oauthService.getAuthUrl(PROVIDER_NAME, 'http://testsync.adguard.com/oauth?provider=' + PROVIDER_NAME)
             });
         }
     };

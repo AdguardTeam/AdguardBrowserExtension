@@ -22,8 +22,8 @@
 
     var TOKEN_STORAGE_PROP = 'sync-provider-auth-tokens';
 
-    var accessTokens = Object.create(null);
-    var securityToken;
+    var accessTokens = null;
+    var securityToken = null;
     var expires;
 
     /**
@@ -56,14 +56,10 @@
      * @returns {*}
      */
     var getSecurityToken = function () {
-        var token = securityToken;
-        if (!token) {
-            token = Math.random().toString(36).substring(7);
-        } else {
-            securityToken = null;
+        if (!securityToken) {
+            securityToken = Math.random().toString(36).substring(7);
         }
-
-        return token;
+        return securityToken;
     };
 
     /**
@@ -104,8 +100,8 @@
      * @param expires
      */
     var setToken = function (providerName, token, expires) {
-        var tokens = getAccessTokens();
 
+        var tokens = getAccessTokens();
         tokens[providerName] = token;
         accessTokens = tokens;
 

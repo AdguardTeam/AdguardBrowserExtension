@@ -21,20 +21,17 @@
 
     'use strict';
 
-    function getParameter(name, str) {
-        if (!str) {
-            return;
+    function getParams(queryString) {
+        if (!queryString) {
+            return {};
         }
-        var start = str.indexOf(name + '=');
-        if (start >= 0) {
-            start = start + (name + '=').length;
-            var end = str.indexOf('&', start);
-            if (end < 0) {
-                end = str.length;
-            }
-            return str.substring(start, end);
+        var params = {};
+        var regex = /([^&=]+)=([^&]*)/g;
+        var part;
+        while (part = regex.exec(queryString)) { // jshint ignore:line
+            params[decodeURIComponent(part[1])] = decodeURIComponent(part[2]);
         }
-        return null;
+        return params;
     }
 
     function showError(error, description) {
@@ -50,14 +47,23 @@
     if (document.domain === 'testsync.adguard.com') {
 
         var hash = window.location.hash;
+        if (hash) {
+            hash = hash.substring(1);
+        }
         var search = window.location.search;
-        var token = getParameter('access_token', hash);
-        var provider = getParameter('provider', search);
-        var securityToken = getParameter('state', search);
-        var error = getParameter('error', hash);
+        if (search) {
+            search = search.substring(1);
+        }
+        var hashParams = getParams(hash);
+        var searchParams = getParams(search);
+
+        var provider = searchParams.provider;
+        var token = hashParams.access_token;
+        var securityToken = hashParams.state;
+        var error = hashParams.error;
 
         if (error) {
-            var errorDescription = getParameter('error_description', hash);
+            var errorDescription = hashParams.error_description;
             showError(error, errorDescription);
             contentPage.sendMessage({
                 type: 'onAuthError',
