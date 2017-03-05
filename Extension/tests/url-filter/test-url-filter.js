@@ -287,6 +287,79 @@ QUnit.test("Test UrlFilterRule Matching Everything", function (assert) {
     assert.notOk(rule.isFiltered("http://test.com", true, RequestTypes.SUBDOCUMENT));
 });
 
+QUnit.test("Test UrlFilterRule Matching Any Url", function (assert) {
+
+    var ruleText = "*$domain=test.com";
+    var rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.notOk(rule.isThirdParty);
+    assert.ok(rule.getPermittedDomains());
+    assert.equal(1, rule.getPermittedDomains().length);
+    assert.notOk(rule.shortcut);
+    assert.ok(rule.isRegexRule);
+    assert.ok(rule.isFiltered("http://example.com", true, adguard.RequestTypes.SCRIPT));
+
+    ruleText = "$domain=test.com";
+    rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.notOk(rule.isThirdParty);
+    assert.ok(rule.getPermittedDomains());
+    assert.equal(1, rule.getPermittedDomains().length);
+    assert.notOk(rule.shortcut);
+    assert.ok(rule.isRegexRule);
+    assert.ok(rule.isFiltered("http://example.com", true, adguard.RequestTypes.SCRIPT));
+
+    ruleText = "||$domain=test.com";
+    rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.notOk(rule.isThirdParty);
+    assert.ok(rule.getPermittedDomains());
+    assert.equal(1, rule.getPermittedDomains().length);
+    assert.notOk(rule.shortcut);
+    assert.ok(rule.isRegexRule);
+    assert.ok(rule.isFiltered("http://example.com", true, adguard.RequestTypes.SCRIPT));
+
+    ruleText = "|$domain=test.com";
+    rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.notOk(rule.isThirdParty);
+    assert.ok(rule.getPermittedDomains());
+    assert.equal(1, rule.getPermittedDomains().length);
+    assert.notOk(rule.shortcut);
+    assert.ok(rule.isRegexRule);
+    assert.ok(rule.isFiltered("http://example.com", true, adguard.RequestTypes.SCRIPT));
+
+    ruleText = "@@||$xmlhttprequest,domain=last.fm";
+    rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.notOk(rule.isThirdParty);
+    assert.ok(rule.getPermittedDomains());
+    assert.equal(1, rule.getPermittedDomains().length);
+    assert.notOk(rule.shortcut);
+    assert.ok(rule.isRegexRule);
+    assert.ok(rule.isFiltered("http://example.com", true, adguard.RequestTypes.XMLHTTPREQUEST));
+
+    ruleText = "|$domain=test.com,script";
+    rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.notOk(rule.isThirdParty);
+    assert.ok(rule.getPermittedDomains());
+    assert.equal(1, rule.getPermittedDomains().length);
+    assert.notOk(rule.shortcut);
+    assert.ok(rule.isRegexRule);
+    assert.ok(rule.isFiltered("http://example.com", true, adguard.RequestTypes.SCRIPT));
+
+    ruleText = "||$domain=test.com,script";
+    rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.notOk(rule.isThirdParty);
+    assert.ok(rule.getPermittedDomains());
+    assert.equal(1, rule.getPermittedDomains().length);
+    assert.notOk(rule.shortcut);
+    assert.ok(rule.isRegexRule);
+    assert.ok(rule.isFiltered("http://example.com", true, adguard.RequestTypes.SCRIPT));
+});
+
 QUnit.test("Important modifier rules", function (assert) {
     var rule = new adguard.rules.UrlFilterRule("||example.com^$important");
     assert.ok(rule.isImportant);
