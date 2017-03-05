@@ -522,14 +522,30 @@
         if (!providerService) {
             return;
         }
+
         if (syncProvider) {
             removeSyncProvider(syncProvider);
         }
+
         syncProvider = providerService;
         adguard.console.info('Sync provider has been set to {0}', providerName);
         adguard.localStorage.setItem(CURRENT_PROVIDER_PROP, providerName);
+
+        if (providerService.oauthSupported) {
+            if ((!token || !api.oauthService.setToken(providerName, token, securityToken))
+                && !api.oauthService.isAuthorized(providerName)) {
+                adguard.tabs.create({
+                    active: true,
+                    type: 'popup',
+                    url: api.oauthService.getAuthUrl(providerName, 'http://testsync.adguard.com/oauth?provider=' + providerName)
+                });
+
+                return;
+            }
+        }
+
         if (typeof providerService.init === 'function') {
-            providerService.init(token, securityToken);
+            providerService.init();
         }
     };
 

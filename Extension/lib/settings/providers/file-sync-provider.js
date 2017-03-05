@@ -113,6 +113,9 @@
         get name() {
             return 'FILE';
         },
+        get oauthSupported() {
+            return false;
+        },
         /**
          * Loads data from provider
          */

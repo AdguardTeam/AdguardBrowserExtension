@@ -189,6 +189,7 @@
         /**
          * https://developers.google.com/drive/v3/web/about-auth
          * @param redirectUri
+         * @param securityToken
          * @returns {string}
          */
         var getAuthenticationUrl = function (redirectUri, securityToken) {
@@ -324,39 +325,8 @@
             });
     };
 
-    var isAuthorized = function () {
-        if (!api.oauthService.getToken(PROVIDER_NAME)) {
-            adguard.console.warn("Unauthorized! Please set access token first.");
-            return false;
-        }
-        return true;
-    };
-
-    var init = function (token, securityToken) {
-        if (securityToken) {
-            if (securityToken !== api.oauthService.getSecurityToken()) {
-                adguard.console.warn("Security token doesn't match");
-                return;
-            }
-        }
-
-        var accessToken;
-        if (token) {
-            api.oauthService.setToken(PROVIDER_NAME, token);
-            accessToken = token;
-        } else {
-            accessToken = api.oauthService.getToken(PROVIDER_NAME);
-        }
-
-        if (accessToken) {
-            startPolling();
-        } else {
-            adguard.tabs.create({
-                active: true,
-                type: 'popup',
-                url: api.oauthService.getAuthUrl(PROVIDER_NAME, 'http://testsync.adguard.com/oauth?provider=' + PROVIDER_NAME)
-            });
-        }
+    var init = function () {
+        startPolling();
     };
 
     var shutdown = function () {
@@ -375,13 +345,15 @@
         get name() {
             return PROVIDER_NAME;
         },
+        get oauthSupported() {
+            return true;
+        },
         // Storage api
         load: load,
         save: save,
         init: init,
         shutdown: shutdown,
         // Auth api
-        isAuthorized: isAuthorized,
         getAuthUrl: getAuthUrl,
         revokeToken: revokeToken
     };

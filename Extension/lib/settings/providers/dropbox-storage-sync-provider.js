@@ -225,7 +225,7 @@
      */
     var load = function (name, callback) {
 
-        if (!isAuthorized()) {
+        if (!api.oauthService.isAuthorized(PROVIDER_NAME)) {
             callback(false);
             return;
         }
@@ -259,7 +259,7 @@
      */
     var save = function (name, data, callback) {
 
-        if (!isAuthorized()) {
+        if (!api.oauthService.isAuthorized(PROVIDER_NAME)) {
             callback(false);
             return;
         }
@@ -279,34 +279,9 @@
             });
     };
 
-    var isAuthorized = function () {
-        if (!api.oauthService.getToken(PROVIDER_NAME)) {
-            adguard.console.warn("Unauthorized! Please set access token first.");
-            return false;
-        }
-        return true;
-    };
-
-    var init = function (token) {
-        var accessToken;
-        if (token) {
-            api.oauthService.setToken(PROVIDER_NAME, token);
-            accessToken = token;
-        } else {
-            accessToken = api.oauthService.getToken(PROVIDER_NAME);
-        }
-
-        if (accessToken) {
-            dropbox = new Dropbox({accessToken: accessToken});
-            callListFolderLongPoll();
-        } else {
-            dropbox = new Dropbox({clientId: CLIENT_ID});
-            adguard.tabs.create({
-                active: true,
-                type: 'popup',
-                url: api.oauthService.getAuthUrl(PROVIDER_NAME, 'http://testsync.adguard.com/oauth?provider=' + PROVIDER_NAME)
-            });
-        }
+    var init = function () {
+        dropbox = new Dropbox({accessToken: api.oauthService.getToken(PROVIDER_NAME)});
+        callListFolderLongPoll();
     };
 
     var shutdown = function () {
@@ -315,10 +290,12 @@
 
     var getAuthUrl = function (redirectUri, securityToken) {
         //TODO: Find out if CSRF token is supported
+        dropbox = new Dropbox({clientId: CLIENT_ID});
         return dropbox.getAuthenticationUrl(redirectUri);
     };
 
     var revokeToken = function () {
+        dropbox = new Dropbox({clientId: CLIENT_ID});
         dropbox.authTokenRevoke();
     };
 
@@ -327,12 +304,14 @@
         get name() {
             return PROVIDER_NAME;
         },
+        get oauthSupported() {
+            return true;
+        },
         // Storage api
         load: load,
         save: save,
         init: init,
         // Auth api
-        isAuthorized: isAuthorized,
         getAuthUrl: getAuthUrl,
         revokeToken: revokeToken
     };

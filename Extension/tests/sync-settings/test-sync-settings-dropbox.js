@@ -5,6 +5,7 @@ var token = '';
 QUnit.test("Test Dropbox sync provider", function (assert) {
     var done = assert.async();
 
+    //TODO: Change
     if (!adguard.sync.dropboxSyncProvider.isAuthorized()) {
         assert.ok(true);
         done();

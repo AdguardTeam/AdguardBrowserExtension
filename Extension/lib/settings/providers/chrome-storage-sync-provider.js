@@ -121,6 +121,9 @@
         get name() {
             return 'CHROME';
         },
+        get oauthSupported() {
+            return false;
+        },
         init: init,
         shutdown: shutdown,
         /**
@@ -130,7 +133,7 @@
         /**
          * Saves data to provider
          */
-        save: save,
+        save: save
     };
 
 })(adguard.sync, adguard);

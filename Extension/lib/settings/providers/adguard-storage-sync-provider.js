@@ -312,6 +312,9 @@
         get name() {
             return PROVIDER_NAME;
         },
+        get oauthSupported() {
+            return true;
+        },
         // Storage api
         load: load,
         save: save,

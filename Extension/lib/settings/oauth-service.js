@@ -97,9 +97,18 @@
      * Sets provider token
      * @param providerName
      * @param token
+     * @param securityToken
      * @param expires
+     * @returns {boolean}
      */
-    var setToken = function (providerName, token, expires) {
+    var setToken = function (providerName, token, securityToken, expires) {
+
+        if (securityToken) {
+            if (securityToken !== getSecurityToken()) {
+                adguard.console.warn("Security token doesn't match");
+                return false;
+            }
+        }
 
         var tokens = getAccessTokens();
         tokens[providerName] = token;
@@ -108,6 +117,7 @@
         adguard.localStorage.setItem(TOKEN_STORAGE_PROP, JSON.stringify(accessTokens));
 
         //TODO: Save expires
+        return true;
     };
 
     /**
@@ -127,12 +137,23 @@
         }
     };
 
+    /**
+     * Checks if token is presented and up to date
+     * @param providerName
+     * @returns {boolean}
+     */
+    var isAuthorized = function (providerName) {
+        if (!getToken(providerName)) {
+            adguard.console.warn("Unauthorized! Please set access token first.");
+            return false;
+        }
+
+        //TODO: Check the token is fresh
+        return true;
+    };
+
     // EXPOSE
     api.oauthService = {
-        /**
-         * Returns saved one time token
-         */
-        getSecurityToken: getSecurityToken,
         /**
          * Returns auth url
          */
@@ -148,7 +169,11 @@
         /**
          * Revokes auth token
          */
-        revokeToken: revokeToken
+        revokeToken: revokeToken,
+        /**
+         * Checks if token is presented and up to date
+         */
+        isAuthorized: isAuthorized
     };
 
 })(adguard.sync, adguard);
