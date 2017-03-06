@@ -131,6 +131,7 @@ PageController.prototype = {
         $('.syncSettingsDropbox').on('click', this.onSyncSettingsDropboxClicked.bind(this));
         $('.syncSettingsChrome').on('click', this.onSyncSettingsChromeClicked.bind(this));
         $('.syncSettingsGoogleDrive').on('click', this.onSyncSettingsGoogleDriveClicked.bind(this));
+        $('.syncSettingsAGSync').on('click', this.onSyncSettingsAGSyncClicked.bind(this));
 
         this.wlFilters.jScrollPane({
             contentWidth: '0px',
@@ -511,6 +512,12 @@ PageController.prototype = {
         e.preventDefault();
 
         contentPage.sendMessage({type: 'syncSettings', provider: 'GOOGLE_DRIVE'});
+    },
+
+    onSyncSettingsAGSyncClicked: function (e) {
+        e.preventDefault();
+
+        contentPage.sendMessage({type: 'syncSettings', provider: 'ADGUARD_SYNC'});
     },
 
     /**
