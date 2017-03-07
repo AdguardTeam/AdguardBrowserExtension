@@ -516,7 +516,7 @@
         }
     };
 
-    var setSyncProvider = function (providerName, token, securityToken) {
+    var setSyncProvider = function (providerName, token, securityToken, expires) {
         //TODO: check provider is compatible with the current browser
         var providerService = findProviderByName(providerName);
         if (!providerService) {
@@ -532,7 +532,7 @@
         adguard.localStorage.setItem(CURRENT_PROVIDER_PROP, providerName);
 
         if (providerService.oauthSupported) {
-            if ((!token || !api.oauthService.setToken(providerName, token, securityToken))
+            if ((!token || !api.oauthService.setToken(providerName, token, securityToken, expires))
                 && !api.oauthService.isAuthorized(providerName)) {
                 adguard.tabs.create({
                     active: true,

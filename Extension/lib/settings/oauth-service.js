@@ -87,7 +87,7 @@
     var getToken = function (providerName) {
         var tokens = getAccessTokens();
         if (tokens) {
-            return tokens[providerName];
+            return tokens[providerName] ? tokens[providerName].token : null;
         }
 
         return null;
@@ -111,12 +111,16 @@
         }
 
         var tokens = getAccessTokens();
-        tokens[providerName] = token;
+        tokens[providerName] = {
+            token: token,
+            expires: expires ? Date.now() + parseInt(expires) * 1000 : null
+        };
         accessTokens = tokens;
+
+        //TODO: handle token expiration
 
         adguard.localStorage.setItem(TOKEN_STORAGE_PROP, JSON.stringify(accessTokens));
 
-        //TODO: Save expires
         return true;
     };
 
@@ -126,11 +130,10 @@
      */
     var revokeToken = function (providerName) {
         var tokens = getAccessTokens();
-        var token = tokens[providerName];
-        if (token) {
+        if (tokens[providerName]) {
             var provider = findProviderByName(providerName);
             if (provider && typeof provider.revokeToken === 'function') {
-                provider.revokeToken(token);
+                provider.revokeToken(tokens[providerName].token);
             }
 
             setToken(providerName, null);

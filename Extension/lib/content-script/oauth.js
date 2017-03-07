@@ -61,6 +61,8 @@
         var token = hashParams.access_token;
         var securityToken = hashParams.state;
         var error = hashParams.error;
+        var expires = hashParams.expires_in;
+        //var refreshToken = hashParams.refresh_token;
 
         if (error) {
             var errorDescription = hashParams.error_description;
@@ -78,7 +80,9 @@
                 type: 'setOauthToken',
                 provider: provider,
                 token: token,
-                securityToken: securityToken
+                securityToken: securityToken,
+                expires: expires,
+                //refreshToken: refreshToken
             });
         }
     }
