@@ -216,6 +216,11 @@ QUnit.test("Some Complex Selector Rules", function (assert) {
     cssFilterRule = new adguard.rules.CssFilterRule(ruleText);
     assert.equal(cssFilterRule.ruleText, ruleText);
     assert.equal(cssFilterRule.cssSelector, '[onclick] > a[href^="javascript:"]');
+
+    ruleText = 'example.com###main_content_wrap > table[width="100%"] > tbody > tr > td:empty+td > aside > a[href="#"]';
+    cssFilterRule = new adguard.rules.CssFilterRule(ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.equal(cssFilterRule.cssSelector, '#main_content_wrap > table[width=\"100%\"] > tbody > tr > td:empty+td > aside > a[href=\"#\"]');
 });
 
 QUnit.test("Invalid Style Syntax", function (assert) {
