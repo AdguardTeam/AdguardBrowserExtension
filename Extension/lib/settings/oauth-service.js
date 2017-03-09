@@ -155,6 +155,25 @@
         return true;
     };
 
+    /**
+     * Requests access and refresh token for access code
+     * @param providerName
+     * @param accessCode
+     * @param successCallback
+     */
+    var requestAccessTokens = function (providerName, accessCode, successCallback) {
+        var provider = findProviderByName(providerName);
+        if (provider && typeof provider.requestAccessTokens === 'function') {
+            provider.requestAccessTokens(accessCode, function (token, refreshToken, expires) {
+                //TODO: Save refresh token as well
+
+                if (setToken(providerName, token, null, expires)) {
+                    successCallback();
+                }
+            });
+        }
+    };
+
     // EXPOSE
     api.oauthService = {
         /**
@@ -176,7 +195,11 @@
         /**
          * Checks if token is presented and up to date
          */
-        isAuthorized: isAuthorized
+        isAuthorized: isAuthorized,
+        /**
+         * Requests access and refresh token for access code
+         */
+        requestAccessTokens: requestAccessTokens
     };
 
 })(adguard.sync, adguard);

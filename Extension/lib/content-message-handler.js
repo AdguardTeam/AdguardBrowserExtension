@@ -457,7 +457,7 @@
                 adguard.sync.syncService.setSyncProvider(message.provider);
                 break;
             case 'setOauthToken':
-                adguard.sync.syncService.setSyncProvider(message.provider, message.token, message.securityToken, message.expires);
+                adguard.sync.syncService.setSyncProvider(message.provider, message.token, message.securityToken, message.expires, message.accessCode);
                 break;
             case 'onAuthError':
                 adguard.sync.syncService.removeSyncProvider(message.provider);

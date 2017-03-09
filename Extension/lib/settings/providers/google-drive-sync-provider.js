@@ -196,7 +196,7 @@
             var params = {
                 client_id: CLIENT_ID,
                 redirect_uri: redirectUri,
-                response_type: 'token',
+                response_type: 'code',
                 scope: 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.appdata',
                 state: securityToken
             };
@@ -207,6 +207,28 @@
             return 'https://accounts.google.com/o/oauth2/v2/auth?' + query.join('&');
         };
 
+        /**
+         * Exchange authorization code for refresh and access tokens
+         * https://www.googleapis.com/oauth2/v4/token
+         * @param accessCode
+         * @param callback
+         */
+        var requestAccessTokens = function (accessCode, callback) {
+            var requestBody =
+                'Host: www.googleapis.com\r\n' +
+                'Content-Type: application/x-www-form-urlencoded\r\n\r\n' +
+                'code=' + accessCode + '&' +
+                'client_id=' + CLIENT_ID + '&' +
+                'redirect_uri=urn:ietf:wg:oauth:2.0:oob&' +
+                'grant_type=authorization_code';
+
+            return makeRequest('POST', 'https://www.googleapis.com/oauth2/v4/token', requestBody).then(function (response) {
+                console.log(response);
+                //TODO: Parse response and pass to callback
+                callback();
+            });
+        };
+
         return {
             uploadFile: uploadFile,
             downloadFile: downloadFile,
@@ -214,6 +236,7 @@
             listChanges: listChanges,
             listFiles: listFiles,
             revokeToken: revokeToken,
+            requestAccessTokens: requestAccessTokens,
             deleteFile: deleteFile,
             getAuthenticationUrl: getAuthenticationUrl
         };
@@ -341,6 +364,10 @@
         GoogleDriveClient.revokeToken(token);
     };
 
+    var requestAccessTokens = function (accessCode, callback) {
+        GoogleDriveClient.requestAccessTokens(accessCode, callback);
+    };
+
     api.googleDriveSyncProvider = {
         get name() {
             return PROVIDER_NAME;
@@ -355,7 +382,8 @@
         shutdown: shutdown,
         // Auth api
         getAuthUrl: getAuthUrl,
-        revokeToken: revokeToken
+        revokeToken: revokeToken,
+        requestAccessTokens: requestAccessTokens
     };
 
 })(adguard.sync, adguard);

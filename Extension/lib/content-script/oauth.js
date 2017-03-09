@@ -59,10 +59,10 @@
 
         var provider = searchParams.provider;
         var token = hashParams.access_token;
-        var securityToken = hashParams.state;
+        var securityToken = hashParams.state ? hashParams.state : searchParams.state;
         var error = hashParams.error;
         var expires = hashParams.expires_in;
-        //var refreshToken = hashParams.refresh_token;
+        var accessCode = searchParams.code;
 
         if (error) {
             var errorDescription = hashParams.error_description;
@@ -75,14 +75,14 @@
             return;
         }
 
-        if (token && provider) {
+        if (token || accessCode && provider) {
             contentPage.sendMessage({
                 type: 'setOauthToken',
                 provider: provider,
                 token: token,
                 securityToken: securityToken,
                 expires: expires,
-                //refreshToken: refreshToken
+                accessCode: accessCode
             });
         }
     }
