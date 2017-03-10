@@ -540,6 +540,10 @@
         if (providerService.oauthSupported) {
             if (api.oauthService.isAuthorized(providerName)) {
                 initSyncProvider(providerService);
+            } else if (api.oauthService.isTokenExpired(providerName)) {
+                api.oauthService.refreshAccessToken(providerName, function () {
+                    initSyncProvider(providerService);
+                });
             } else if (token) {
                 if (api.oauthService.setToken(providerName, token, securityToken, expires)) {
                     initSyncProvider(providerService);

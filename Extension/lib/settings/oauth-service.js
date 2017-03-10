@@ -24,7 +24,6 @@
 
     var accessTokens = null;
     var securityToken = null;
-    var expires;
 
     /**
      * Finds sync provider by name
@@ -43,9 +42,13 @@
         return null;
     }
 
-    var getAccessTokens = function () {
+    var getAccessTokens = function (providerName) {
         if (!accessTokens) {
             accessTokens = JSON.parse(adguard.localStorage.getItem(TOKEN_STORAGE_PROP)) || Object.create(null);
+        }
+
+        if (providerName) {
+            return accessTokens[providerName];
         }
 
         return accessTokens;
@@ -85,9 +88,9 @@
      * @returns {null}
      */
     var getToken = function (providerName) {
-        var tokens = getAccessTokens();
+        var tokens = getAccessTokens(providerName);
         if (tokens) {
-            return tokens[providerName] ? tokens[providerName].token : null;
+            return tokens.token;
         }
 
         return null;
@@ -99,6 +102,7 @@
      * @param token
      * @param securityToken
      * @param expires
+     * @param refreshToken
      * @returns {boolean}
      */
     var setToken = function (providerName, token, securityToken, expires, refreshToken) {
@@ -117,8 +121,6 @@
             refreshToken: refreshToken
         };
         accessTokens = tokens;
-
-        //TODO: handle token expiration
 
         adguard.localStorage.setItem(TOKEN_STORAGE_PROP, JSON.stringify(accessTokens));
 
@@ -152,8 +154,20 @@
             return false;
         }
 
-        //TODO: Check the token is fresh
-        return true;
+        return !isTokenExpired(providerName);
+    };
+
+    /**
+     * Checks the token is presented but expired
+     * @param providerName
+     */
+    var isTokenExpired = function (providerName) {
+        var tokens = getAccessTokens(providerName);
+        if (!tokens || !tokens.token || !tokens.expires || !tokens.refreshToken) {
+            return false;
+        }
+
+        return Date.now() > tokens.expires;
     };
 
     /**
@@ -170,6 +184,30 @@
                     successCallback();
                 }
             });
+        }
+    };
+
+    /**
+     * Refreshes access token
+     * @param providerName
+     * @param successCallback
+     */
+    var refreshAccessToken = function (providerName, successCallback) {
+        var provider = findProviderByName(providerName);
+        if (provider && typeof provider.refreshAccessToken === 'function') {
+            var tokens = getAccessTokens();
+            if (tokens && tokens[providerName]) {
+                var refreshToken = tokens[providerName].refreshToken;
+                if (refreshToken) {
+                    provider.refreshAccessToken(refreshToken, function (token, expires) {
+                        if (setToken(providerName, token, null, expires, refreshToken)) {
+                            successCallback();
+                        }
+                    });
+                } else {
+                    adguard.console.error('No refresh token presented');
+                }
+            }
         }
     };
 
@@ -196,9 +234,17 @@
          */
         isAuthorized: isAuthorized,
         /**
+         * Checks if token is presented but expired
+         */
+        isTokenExpired: isTokenExpired,
+        /**
          * Requests access and refresh token for access code
          */
-        requestAccessTokens: requestAccessTokens
+        requestAccessTokens: requestAccessTokens,
+        /**
+         * Refreshes access token
+         */
+        refreshAccessToken: refreshAccessToken
     };
 
 })(adguard.sync, adguard);

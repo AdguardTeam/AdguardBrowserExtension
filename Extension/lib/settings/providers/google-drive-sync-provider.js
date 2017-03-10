@@ -241,6 +241,36 @@
             });
         };
 
+        /**
+         * Refreshes access token
+         * https://www.googleapis.com/oauth2/v4/token
+         * @param refreshToken
+         * @param callback
+         */
+        var refreshAccessToken = function (refreshToken, callback) {
+            var params = {
+                refresh_token: refreshToken,
+                client_id: CLIENT_ID,
+                client_secret: CLIENT_SECRET,
+                grant_type: 'refresh_token'
+            };
+            var query = [];
+            Object.keys(params).forEach(function (key) {
+                query.push(key + '=' + encodeURIComponent(params[key]));
+            });
+
+            var headers = {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            };
+
+            return makeRequest('POST', 'https://www.googleapis.com/oauth2/v4/token?' + query.join('&'), null, headers).then(function (response) {
+                console.log(response);
+                if (response && response.access_token) {
+                    callback(response.access_token, response.expires_in);
+                }
+            });
+        };
+
         return {
             uploadFile: uploadFile,
             downloadFile: downloadFile,
@@ -249,6 +279,7 @@
             listFiles: listFiles,
             revokeToken: revokeToken,
             requestAccessTokens: requestAccessTokens,
+            refreshAccessToken: refreshAccessToken,
             deleteFile: deleteFile,
             getAuthenticationUrl: getAuthenticationUrl
         };
@@ -380,6 +411,10 @@
         GoogleDriveClient.requestAccessTokens(accessCode, callback);
     };
 
+    var refreshAccessToken = function (refreshToken, callback) {
+        GoogleDriveClient.refreshAccessToken(refreshToken, callback);
+    };
+
     api.googleDriveSyncProvider = {
         get name() {
             return PROVIDER_NAME;
@@ -395,7 +430,8 @@
         // Auth api
         getAuthUrl: getAuthUrl,
         revokeToken: revokeToken,
-        requestAccessTokens: requestAccessTokens
+        requestAccessTokens: requestAccessTokens,
+        refreshAccessToken: refreshAccessToken
     };
 
 })(adguard.sync, adguard);
