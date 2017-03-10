@@ -24,7 +24,8 @@
 
     'use strict';
 
-    var CLIENT_ID = '379033535124-eegqqpu1d232b5u1r8dkeu9h2ukkhejd.apps.googleusercontent.com';
+    var CLIENT_ID = '513610050689-qok3p0u3um2dqcs8md9u21rdegnanrnm.apps.googleusercontent.com';
+    var CLIENT_SECRET = 'TvoOix6n-gONwr5AZbnX4cFk';
     var PROVIDER_NAME = 'GOOGLE_DRIVE';
 
     /**
@@ -214,18 +215,29 @@
          * @param callback
          */
         var requestAccessTokens = function (accessCode, callback) {
-            var requestBody =
-                'Host: www.googleapis.com\r\n' +
-                'Content-Type: application/x-www-form-urlencoded\r\n\r\n' +
-                'code=' + accessCode + '&' +
-                'client_id=' + CLIENT_ID + '&' +
-                'redirect_uri=urn:ietf:wg:oauth:2.0:oob&' +
-                'grant_type=authorization_code';
+            var params = {
+                code: accessCode,
+                client_id: CLIENT_ID,
+                client_secret: CLIENT_SECRET,
+                response_type: 'code',
+                redirect_uri: 'http://testsync.adguard.com/oauth?provider=' + PROVIDER_NAME,
+                grant_type: 'authorization_code'
+            };
+            var query = [];
+            Object.keys(params).forEach(function (key) {
+                query.push(key + '=' + encodeURIComponent(params[key]));
+            });
 
-            return makeRequest('POST', 'https://www.googleapis.com/oauth2/v4/token', requestBody).then(function (response) {
+            var headers = {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            };
+
+            return makeRequest('POST', 'https://www.googleapis.com/oauth2/v4/token?' + query.join('&'), null, headers).then(function (response) {
+                //TODO: WTF There is no refresh token in response!
                 console.log(response);
-                //TODO: Parse response and pass to callback
-                callback();
+                if (response && response.access_token) {
+                    callback(response.access_token, response.refresh_token, response.expires_in);
+                }
             });
         };
 

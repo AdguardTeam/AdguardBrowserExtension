@@ -101,7 +101,7 @@
      * @param expires
      * @returns {boolean}
      */
-    var setToken = function (providerName, token, securityToken, expires) {
+    var setToken = function (providerName, token, securityToken, expires, refreshToken) {
 
         if (securityToken) {
             if (securityToken !== getSecurityToken()) {
@@ -113,7 +113,8 @@
         var tokens = getAccessTokens();
         tokens[providerName] = {
             token: token,
-            expires: expires ? Date.now() + parseInt(expires) * 1000 : null
+            expires: expires ? Date.now() + parseInt(expires) * 1000 : null,
+            refreshToken: refreshToken
         };
         accessTokens = tokens;
 
@@ -165,9 +166,7 @@
         var provider = findProviderByName(providerName);
         if (provider && typeof provider.requestAccessTokens === 'function') {
             provider.requestAccessTokens(accessCode, function (token, refreshToken, expires) {
-                //TODO: Save refresh token as well
-
-                if (setToken(providerName, token, null, expires)) {
+                if (setToken(providerName, token, null, expires, refreshToken)) {
                     successCallback();
                 }
             });
