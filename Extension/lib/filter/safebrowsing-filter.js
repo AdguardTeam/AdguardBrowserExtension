@@ -416,7 +416,7 @@ adguard.safebrowsing = (function (adguard, global) {
         url += "&host=" + encodeURIComponent(adguard.utils.url.getHost(requestUrl));
         url += "&url=" + encodeURIComponent(requestUrl);
         url += "&ref=" + encodeURIComponent(referrerUrl);
-        return url;
+        return adguard.getURL(url);
     };
 
     return {
