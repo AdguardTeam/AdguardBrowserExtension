@@ -456,10 +456,12 @@
             case 'syncSettings':
                 adguard.sync.syncService.setSyncProvider(message.provider);
                 break;
-            case 'setOauthToken':
-                adguard.sync.syncService.setSyncProvider(message.provider, message.token, message.securityToken, message.expires, message.accessCode);
+            case 'setOAuthToken':
+                if (adguard.sync.oauthService.setToken(message.provider, message.token, message.csrfState, message.expires)) {
+                    adguard.sync.syncService.setSyncProvider(message.provider);
+                }
                 break;
-            case 'onAuthError':
+            case 'onOAuthError':
                 adguard.sync.syncService.removeSyncProvider(message.provider);
                 break;
             default :

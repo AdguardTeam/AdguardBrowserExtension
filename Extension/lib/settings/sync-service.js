@@ -135,23 +135,6 @@
     };
 
     /**
-     * Finds sync provider by name
-     * @param providerName Provider name
-     * @returns {*}
-     */
-    function findProviderByName(providerName) {
-        for (var key in api) {
-            if (api.hasOwnProperty(key)) {
-                var provider = api[key];
-                if (provider.name === providerName) {
-                    return provider;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
      * Constructs the special object containing information about manifests protocols compatibility and then sorts data sections
      * into arrays by directions we should sync the data.
      *
@@ -516,21 +499,16 @@
         }
     };
 
-    var initSyncProvider = function (provider) {
-        if (typeof provider.init === 'function') {
-            provider.init();
-        }
-    };
+    /**
+     * Sets sync provider to current service
+     */
+    var setSyncProvider = function (providerName) {
 
-    var setSyncProvider = function (providerName, token, securityToken, expires, accessCode) {
         //TODO: check provider is compatible with the current browser
-        var providerService = findProviderByName(providerName);
+
+        var providerService = api.syncProviders.getProvider(providerName);
         if (!providerService) {
             return;
-        }
-
-        if (syncProvider) {
-            removeSyncProvider(syncProvider);
         }
 
         syncProvider = providerService;
@@ -538,32 +516,23 @@
         adguard.localStorage.setItem(CURRENT_PROVIDER_PROP, providerName);
 
         if (providerService.oauthSupported) {
-            if (api.oauthService.isAuthorized(providerName)) {
-                initSyncProvider(providerService);
-            } else if (api.oauthService.isTokenExpired(providerName)) {
-                api.oauthService.refreshAccessToken(providerName, function () {
-                    initSyncProvider(providerService);
-                });
-            } else if (token) {
-                if (api.oauthService.setToken(providerName, token, securityToken, expires)) {
-                    initSyncProvider(providerService);
-                }
-            } else if (accessCode) {
-                api.oauthService.requestAccessTokens(providerName, accessCode, function () {
-                    initSyncProvider(providerService);
-                });
-            } else {
+            if (!api.oauthService.isAuthorized(providerName)) {
+                var csrfState = api.oauthService.getOrGenerateCSRFState();
                 adguard.tabs.create({
                     active: true,
                     type: 'popup',
-                    url: api.oauthService.getAuthUrl(providerName, 'http://testsync.adguard.com/oauth?provider=' + providerName)
+                    url: providerService.getAuthUrl('https://testsync.adguard.com/oauth?provider=' + providerName, csrfState)
                 });
+                return;
             }
-        } else {
-            initSyncProvider(providerService);
         }
+
+        providerService.init();
     };
 
+    /**
+     * Removes sync provider
+     */
     var removeSyncProvider = function (providerName) {
         providerName = providerName || adguard.localStorage.getItem(CURRENT_PROVIDER_PROP);
         if (!providerName) {
@@ -571,12 +540,15 @@
         }
         adguard.localStorage.removeItem(CURRENT_PROVIDER_PROP);
         adguard.console.debug('Sync provider {0} has been unset', providerName.name);
-        var providerService = findProviderByName(providerName);
-        if (providerService && typeof providerService.shutdown === 'function') {
+        var providerService = api.syncProviders.getProvider(providerName);
+        if (providerService) {
             providerService.shutdown();
         }
     };
 
+    /**
+     * Synchronizes settings between current application and sync provider
+     */
     var syncSettings = function (callback) {
 
         adguard.console.info('Synchronizing settings..');
@@ -601,17 +573,8 @@
          * Initializes sync service
          */
         init: init,
-        /**
-         * Sets sync provider to current service
-         */
         setSyncProvider: setSyncProvider,
-        /**
-         * Removes sync provider
-         */
         removeSyncProvider: removeSyncProvider,
-        /**
-         * Synchronizes settings between current application and sync provider
-         */
         syncSettings: syncSettings
     };
 

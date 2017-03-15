@@ -123,7 +123,8 @@
 
     function clearAccessToken() {
         dropboxFolderState.forceSync = true;
-        api.oauthService.revokeToken(PROVIDER_NAME);
+        dropbox.authTokenRevoke();
+        api.oauthService.clearToken(PROVIDER_NAME);
     }
 
     /**
@@ -225,11 +226,6 @@
      */
     var load = function (name, callback) {
 
-        if (!api.oauthService.isAuthorized(PROVIDER_NAME)) {
-            callback(false);
-            return;
-        }
-
         isFileExists(name)
             .then(function (exists) {
                 if (exists) {
@@ -259,11 +255,6 @@
      */
     var save = function (name, data, callback) {
 
-        if (!api.oauthService.isAuthorized(PROVIDER_NAME)) {
-            callback(false);
-            return;
-        }
-
         var contents = JSON.stringify(data);
         dropbox.filesUpload({path: '/' + name, mode: "overwrite", contents: contents})
             .then(function (metadata) {
@@ -288,32 +279,21 @@
         //TODO: stop polling
     };
 
-    var getAuthUrl = function (redirectUri, securityToken) {
-        //TODO: Find out if CSRF token is supported
+    var getAuthUrl = function (redirectUri, csrfState) {
         dropbox = new Dropbox({clientId: CLIENT_ID});
-        return dropbox.getAuthenticationUrl(redirectUri);
-    };
-
-    var revokeToken = function () {
-        dropbox = new Dropbox({clientId: CLIENT_ID});
-        dropbox.authTokenRevoke();
+        return dropbox.getAuthenticationUrl(redirectUri, csrfState);
     };
 
     // EXPOSE
-    api.dropboxSyncProvider = {
-        get name() {
-            return PROVIDER_NAME;
-        },
-        get oauthSupported() {
-            return true;
-        },
+    api.syncProviders.register(PROVIDER_NAME, {
+        oauthSupported: true,
         // Storage api
         load: load,
         save: save,
         init: init,
+        shutdown: shutdown,
         // Auth api
-        getAuthUrl: getAuthUrl,
-        revokeToken: revokeToken
-    };
+        getAuthUrl: getAuthUrl
+    });
 
 })(adguard.sync, adguard);

@@ -106,24 +106,9 @@
     };
 
     // EXPOSE
-    api.fileSyncProvider = {
-        /**
-         * Provider name
-         */
-        get name() {
-            return 'FILE';
-        },
-        get oauthSupported() {
-            return false;
-        },
-        /**
-         * Loads data from provider
-         */
+    api.syncProviders.register('FILE', {
         load: load,
-        /**
-         * Saves data to provider
-         */
         save: save
-    };
+    });
 
 })(adguard.sync, adguard);

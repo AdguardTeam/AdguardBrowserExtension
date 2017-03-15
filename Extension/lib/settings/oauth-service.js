@@ -23,34 +23,12 @@
     var TOKEN_STORAGE_PROP = 'sync-provider-auth-tokens';
 
     var accessTokens = null;
-    var securityToken = null;
+    var csrfState = null;
 
-    /**
-     * Finds sync provider by name
-     * @param providerName Provider name
-     * @returns {*}
-     */
-    function findProviderByName(providerName) {
-        for (var key in api) {
-            if (api.hasOwnProperty(key)) {
-                var provider = api[key];
-                if (provider.name === providerName) {
-                    return provider;
-                }
-            }
-        }
-        return null;
-    }
-
-    var getAccessTokens = function (providerName) {
-        if (!accessTokens) {
+    var getAccessTokens = function () {
+        if (accessTokens === null) {
             accessTokens = JSON.parse(adguard.localStorage.getItem(TOKEN_STORAGE_PROP)) || Object.create(null);
         }
-
-        if (providerName) {
-            return accessTokens[providerName];
-        }
-
         return accessTokens;
     };
 
@@ -58,28 +36,11 @@
      * Gets random one time token
      * @returns {*}
      */
-    var getSecurityToken = function () {
-        if (!securityToken) {
-            securityToken = Math.random().toString(36).substring(7);
+    var getOrGenerateCSRFState = function () {
+        if (csrfState === null) {
+            csrfState = Math.random().toString(36).substring(7);
         }
-        return securityToken;
-    };
-
-    /**
-     * Returns provider auth url
-     * @param providerName
-     * @param redirectUri
-     * @returns {null}
-     */
-    var getAuthUrl = function (providerName, redirectUri) {
-        var securityToken = getSecurityToken();
-
-        var provider = findProviderByName(providerName);
-        if (provider && typeof provider.getAuthUrl === 'function') {
-            return provider.getAuthUrl(redirectUri, securityToken);
-        }
-
-        return null;
+        return csrfState;
     };
 
     /**
@@ -88,11 +49,10 @@
      * @returns {null}
      */
     var getToken = function (providerName) {
-        var tokens = getAccessTokens(providerName);
+        var tokens = getAccessTokens()[providerName];
         if (tokens) {
             return tokens.token;
         }
-
         return null;
     };
 
@@ -100,47 +60,35 @@
      * Sets provider token
      * @param providerName
      * @param token
-     * @param securityToken
+     * @param csrfState
      * @param expires
-     * @param refreshToken
      * @returns {boolean}
      */
-    var setToken = function (providerName, token, securityToken, expires, refreshToken) {
+    var setToken = function (providerName, token, csrfState, expires) {
 
-        if (securityToken) {
-            if (securityToken !== getSecurityToken()) {
-                adguard.console.warn("Security token doesn't match");
-                return false;
-            }
+        if (csrfState !== getOrGenerateCSRFState()) {
+            adguard.console.warn("Security token doesn't match");
+            return false;
         }
 
-        var tokens = getAccessTokens();
-        tokens[providerName] = {
+        var accessTokens = getAccessTokens();
+        accessTokens[providerName] = {
             token: token,
-            expires: expires ? Date.now() + parseInt(expires) * 1000 : null,
-            refreshToken: refreshToken
+            expires: expires ? Date.now() + parseInt(expires) * 1000 : null
         };
-        accessTokens = tokens;
 
         adguard.localStorage.setItem(TOKEN_STORAGE_PROP, JSON.stringify(accessTokens));
-
         return true;
     };
 
     /**
-     * Revokes provider token
+     * Clears provider token
      * @param providerName
      */
-    var revokeToken = function (providerName) {
-        var tokens = getAccessTokens();
-        if (tokens[providerName]) {
-            var provider = findProviderByName(providerName);
-            if (provider && typeof provider.revokeToken === 'function') {
-                provider.revokeToken(tokens[providerName].token);
-            }
-
-            setToken(providerName, null);
-        }
+    var clearToken = function (providerName) {
+        accessTokens = getAccessTokens();
+        delete accessTokens[providerName];
+        adguard.localStorage.setItem(TOKEN_STORAGE_PROP, JSON.stringify(accessTokens));
     };
 
     /**
@@ -153,7 +101,6 @@
             adguard.console.warn("Unauthorized! Please set access token first.");
             return false;
         }
-
         return !isTokenExpired(providerName);
     };
 
@@ -162,61 +109,19 @@
      * @param providerName
      */
     var isTokenExpired = function (providerName) {
-        var tokens = getAccessTokens(providerName);
-        if (!tokens || !tokens.token || !tokens.expires || !tokens.refreshToken) {
+        var tokens = getAccessTokens()[providerName];
+        if (!tokens || !tokens.token || !tokens.expires) {
             return false;
         }
-
         return Date.now() > tokens.expires;
-    };
-
-    /**
-     * Requests access and refresh token for access code
-     * @param providerName
-     * @param accessCode
-     * @param successCallback
-     */
-    var requestAccessTokens = function (providerName, accessCode, successCallback) {
-        var provider = findProviderByName(providerName);
-        if (provider && typeof provider.requestAccessTokens === 'function') {
-            provider.requestAccessTokens(accessCode, function (token, refreshToken, expires) {
-                if (setToken(providerName, token, null, expires, refreshToken)) {
-                    successCallback();
-                }
-            });
-        }
-    };
-
-    /**
-     * Refreshes access token
-     * @param providerName
-     * @param successCallback
-     */
-    var refreshAccessToken = function (providerName, successCallback) {
-        var provider = findProviderByName(providerName);
-        if (provider && typeof provider.refreshAccessToken === 'function') {
-            var tokens = getAccessTokens();
-            if (tokens && tokens[providerName]) {
-                var refreshToken = tokens[providerName].refreshToken;
-                if (refreshToken) {
-                    provider.refreshAccessToken(refreshToken, function (token, expires) {
-                        if (setToken(providerName, token, null, expires, refreshToken)) {
-                            successCallback();
-                        }
-                    });
-                } else {
-                    adguard.console.error('No refresh token presented');
-                }
-            }
-        }
     };
 
     // EXPOSE
     api.oauthService = {
         /**
-         * Returns auth url
+         * Returns generated csrf state
          */
-        getAuthUrl: getAuthUrl,
+        getOrGenerateCSRFState: getOrGenerateCSRFState,
         /**
          * Returns auth token
          */
@@ -226,25 +131,13 @@
          */
         setToken: setToken,
         /**
-         * Revokes auth token
+         * Clears auth token
          */
-        revokeToken: revokeToken,
+        clearToken: clearToken,
         /**
          * Checks if token is presented and up to date
          */
-        isAuthorized: isAuthorized,
-        /**
-         * Checks if token is presented but expired
-         */
-        isTokenExpired: isTokenExpired,
-        /**
-         * Requests access and refresh token for access code
-         */
-        requestAccessTokens: requestAccessTokens,
-        /**
-         * Refreshes access token
-         */
-        refreshAccessToken: refreshAccessToken
+        isAuthorized: isAuthorized
     };
 
 })(adguard.sync, adguard);

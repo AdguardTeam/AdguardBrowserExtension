@@ -35,8 +35,8 @@
         var SYNC_TIMESTAMP_PROP = 'adguard-provider-sync-timestamp';
         var syncTimestamp = null;
 
-        var httpApiEndpoint = 'http://testsync.adguard.com/1';
-        var wsApiEndpoint = 'ws://testsync.adguard.com/1';
+        var httpApiEndpoint = 'https://testsync.adguard.com/1';
+        var wsApiEndpoint = 'wss://testsync.adguard.com/1';
 
         var webSocket;
         var checkConnectionTimeoutId;
@@ -228,11 +228,12 @@
             webSocketConnect();
         };
 
-        var getAuthenticationUrl = function (redirectUri) {
+        var getAuthenticationUrl = function (redirectUri, csrfState) {
             var params = {
                 client_id: CLIENT_ID,
                 redirect_uri: redirectUri,
-                response_type: 'token'
+                response_type: 'token',
+                state: csrfState
             };
             var query = [];
             Object.keys(params).forEach(function (key) {
@@ -291,18 +292,13 @@
         AdguardClient.shutdown();
     };
 
-    var getAuthUrl = function (redirectUri) {
-        return AdguardClient.getAuthenticationUrl(redirectUri);
+    var getAuthUrl = function (redirectUri, csrfState) {
+        return AdguardClient.getAuthenticationUrl(redirectUri, csrfState);
     };
 
     // EXPOSE
-    api.adguardSyncProvider = {
-        get name() {
-            return PROVIDER_NAME;
-        },
-        get oauthSupported() {
-            return true;
-        },
+    api.syncProviders.register(PROVIDER_NAME, {
+        oauthSupported: true,
         // Storage api
         load: load,
         save: save,
@@ -310,6 +306,6 @@
         shutdown: shutdown,
         // Auth api
         getAuthUrl: getAuthUrl
-    };
+    });
 
 })(adguard.sync, adguard);
