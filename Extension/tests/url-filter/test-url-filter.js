@@ -316,7 +316,6 @@ QUnit.test("Test UrlFilterRule Matching Any Url", function (assert) {
     assert.ok(rule.getPermittedDomains());
     assert.equal(1, rule.getPermittedDomains().length);
     assert.notOk(rule.shortcut);
-    assert.ok(rule.isRegexRule);
     assert.ok(rule.isFiltered("http://example.com", true, adguard.RequestTypes.SCRIPT));
 
     ruleText = "|$domain=test.com";
@@ -326,7 +325,6 @@ QUnit.test("Test UrlFilterRule Matching Any Url", function (assert) {
     assert.ok(rule.getPermittedDomains());
     assert.equal(1, rule.getPermittedDomains().length);
     assert.notOk(rule.shortcut);
-    assert.ok(rule.isRegexRule);
     assert.ok(rule.isFiltered("http://example.com", true, adguard.RequestTypes.SCRIPT));
 
     ruleText = "@@||$xmlhttprequest,domain=last.fm";
@@ -336,7 +334,6 @@ QUnit.test("Test UrlFilterRule Matching Any Url", function (assert) {
     assert.ok(rule.getPermittedDomains());
     assert.equal(1, rule.getPermittedDomains().length);
     assert.notOk(rule.shortcut);
-    assert.ok(rule.isRegexRule);
     assert.ok(rule.isFiltered("http://example.com", true, adguard.RequestTypes.XMLHTTPREQUEST));
 
     ruleText = "|$domain=test.com,script";
@@ -346,7 +343,6 @@ QUnit.test("Test UrlFilterRule Matching Any Url", function (assert) {
     assert.ok(rule.getPermittedDomains());
     assert.equal(1, rule.getPermittedDomains().length);
     assert.notOk(rule.shortcut);
-    assert.ok(rule.isRegexRule);
     assert.ok(rule.isFiltered("http://example.com", true, adguard.RequestTypes.SCRIPT));
 
     ruleText = "||$domain=test.com,script";
@@ -356,7 +352,6 @@ QUnit.test("Test UrlFilterRule Matching Any Url", function (assert) {
     assert.ok(rule.getPermittedDomains());
     assert.equal(1, rule.getPermittedDomains().length);
     assert.notOk(rule.shortcut);
-    assert.ok(rule.isRegexRule);
     assert.ok(rule.isFiltered("http://example.com", true, adguard.RequestTypes.SCRIPT));
 });
 
