@@ -254,7 +254,13 @@ adguard.tabsImpl = (function (adguard) {
                  *
                  * So we use a content script instead.
                  */
-                sendMessage(tabId, {type: 'update-tab-url', url: url});
+                /**
+                 * Content script may not have been loaded at this point yet.
+                 * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/580
+                 */
+                setTimeout(function () {
+                    sendMessage(tabId, {type: 'update-tab-url', url: url});
+                }, 100);
             } else {
                 browser.tabs.update(tabIdToInt(tabId), {url: url}, checkLastError);
             }
