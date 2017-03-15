@@ -91,7 +91,8 @@
          */
         var createRegexText = function (str) {
             if (str === regexConfiguration.maskStartUrl
-                || str === regexConfiguration.maskStartUrl) {
+                || str === regexConfiguration.maskPipe
+                || str === regexConfiguration.maskAnySymbol) {
                 return regexConfiguration.maskAnySymbol;
             }
 

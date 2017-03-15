@@ -269,9 +269,7 @@
         this.isRegexRule = adguard.utils.strings.startWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) &&
             adguard.utils.strings.endsWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) ||
             urlRuleText === '' ||
-            urlRuleText == UrlFilterRule.MASK_ANY_SYMBOL ||
-            urlRuleText == UrlFilterRule.MASK_START_URL ||
-            urlRuleText == UrlFilterRule.MASK_PIPE;
+            urlRuleText == UrlFilterRule.MASK_ANY_SYMBOL;
 
         if (this.isRegexRule) {
             this.urlRegExpSource = urlRuleText.substring(UrlFilterRule.MASK_REGEX_RULE.length, urlRuleText.length - UrlFilterRule.MASK_REGEX_RULE.length);
