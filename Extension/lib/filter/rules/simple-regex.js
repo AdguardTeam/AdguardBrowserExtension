@@ -93,7 +93,7 @@
             if (str === regexConfiguration.maskStartUrl
                 || str === regexConfiguration.maskPipe
                 || str === regexConfiguration.maskAnySymbol) {
-                return regexConfiguration.maskAnySymbol;
+                return regexConfiguration.regexAnySymbol;
             }
 
             var regex = escapeRegExp(str);
