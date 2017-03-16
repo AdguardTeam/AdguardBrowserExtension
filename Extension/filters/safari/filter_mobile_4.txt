@@ -1,6 +1,6 @@
-! Checksum: SIllnZJROpv/gy1g1+X31g
-! Version: 1.0.17.70
-! TimeUpdated: 2017-03-06T07:00:48.791+04:00
+! Checksum: KB9JHTECl5OCUfdy5JQuBQ
+! Version: 1.0.17.89
+! TimeUpdated: 2017-03-16T12:00:50.894+04:00
 ! Title: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
@@ -8,6 +8,7 @@
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+||youtube.com/subscribe_embed?$third-party
 ||addnow.com/widget/$third-party
 ||addthis.com^$third-party,domain=~civilization.com|~imgur.com
 ||addthiscdn.com^$third-party
@@ -19,7 +20,7 @@
 ||apis.google.com/*/sharebutton
 ||apis.google.com/_/widget/render/follow
 ||apis.google.com/js/platform.js$third-party
-||apis.google.com/js/plusone.js$domain=~blogger.com|~blogspot.com|~blogspot.ru|~pikucha.ru
+||apis.google.com/js/plusone.js$domain=~blogger.com|~blogspot.com|~blogspot.ru|~pikucha.ru|~googleblog.com
 ||assets.pinterest.com/images/pidgets/$third-party
 ||assets.pinterest.com/js/pinit.js^$third-party
 ||button.flattr.com^$third-party
@@ -134,6 +135,10 @@
 ||yandex.st/share/share.js$domain=~24auto.ru|~calculatewater.ru|~novoeradio.by|~pikucha.ru|~realty.dmir.ru|~transport.mos.ru|~yandex.com|~yandex.ru|~yandex.ua
 ||yastatic.net/*/share.js$third-party,domain=~alexey-osipov.ru|~avtodispetcher.ru|~fanserials.tv|~yandex.by|~yandex.kz|~yandex.ru|~yandex.ua
 ||youtube.com/subscribe_widget$third-party
+||embed.tumblr.com/widgets/share/button$third-party
+||platform.tumblr.com/v2/follow_button.html$third-party
+/plugins/content/jllikepro/js/buttons.
+/wp-content/plugins/sassy-social-share/*
 /asd.share.buttons/*
 /copy_to_blog_button_
 /copy_to_blog_icon_diary.gif
@@ -283,6 +288,22 @@ softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ||k2nblog.com/?*=*&_=
 ||miladynews.ru/?*=*&_=
 ||mimimi.tv/?*=*&_=
+||mindspace.ru/?*=*&_=
+unvan.az##.fbsmallshare
+turkcell.com.tr##.hero-social
+putlockertv.is##.menu-box > h2:first-of-type
+appleinsider.ru###ShareButton
+inradio.tv##.share
+hpe.com##.footer-social
+bizimyol.info##.title_blok_share
+protect-sc.ru##.likes-block_left
+dnainfo.com##.social-group
+dizimag4.com##.headblock > table > tbody > tr > td[width="10"] + td[valign="top"] > .fp.yorumb
+huffingtonpost.fr##aside[id^="highlight-share_"]
+yeniakit.com.tr##.social
+fraza.ua##.share
+mirtankov.su###popup-message-window
+mirtankov.su###popup-message-background
 ||karakartal.com/_iframe/haber_paylas_kutular.php?
 karakartal.com##.body > div > .img ~ div[style^="border: 3px"]
 afisha.ru##.share_items
@@ -1705,6 +1726,7 @@ lcpdfr.com##ul[data-controller$="sharelink"]
 ||workingkeys.org/wp-content/plugins/social-locker/
 ||wow.ya.ru/ajax/share-counter.xml$third-party
 ||yandex.st/share/static/b-share-icon.png
+##.heateor_sss_sharing_container
 ##a[href^="https://telegram.me/share/url?"]
 ##.module-social-share-icons
 ###Followers1
@@ -2187,7 +2209,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.soc-button
 ~vesti.ru##.soc-buttons
 ##.soc-likes
-##.soc-links
+~spaces.ru##.soc-links
 ##.soc24
 ##.socBmFb
 ##.socBmTw
@@ -2509,6 +2531,10 @@ livejournal.com##.b-ljtimes-wrapper
 /wp-content/plugins/facebook-fanbox-popup/*
 ||cdn-library.su/plusonet/lib/$domain=~pluso.net
 ||mailget.net^$third-party
+ensonxeber.com###fancybox-wrap
+ensonxeber.com###fancybox-overlay
+analizmerkezi.com###cm-facetwit
+beyazgazete.com###myModal
 adfreeapk.org###fbox-background
 mocasoft.ro###fanback
 popmech.ru###_sim_popup

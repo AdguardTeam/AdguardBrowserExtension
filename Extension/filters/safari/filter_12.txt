@@ -1,6 +1,6 @@
-! Checksum: NYlcslkkG1rDuTQKcwZS7w
-! Version: 1.0.2.64
-! TimeUpdated: 2017-03-06T13:01:50.459+04:00
+! Checksum: Jtm6j262WL1JIrsm8/xB9g
+! Version: 1.0.2.69
+! TimeUpdated: 2017-03-15T20:04:21.745+04:00
 ! Title: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! Title: Adguard Safari Filter
@@ -67,14 +67,17 @@
 @@||lesinrocks.com^$generichide
 !***
 !* impspcabe clickunder
+@@/path/ads/ads.js|
 ||bambergerkennanchitinous.com/.adframesrc.
 @@||adsrvgateway.com/.adframesrc.
+@@||imprisonemblemhoosier.com/path/ads/ads.js
 @@||requiredcollectfilm.info/path/ads/ads.js
 @@||linoleictanzaniatitanic.com/path/ads/ads.js
 @@.adframesrc.$domain=votrube.ru|tumejortorrent.com|soundpark.pw|hentai-id.tv|salefiles.com
 @@/ads/ad$domain=pipec.ru|xyya.net|pandamovie.net|streamgaroo.com|vidzi.tv|befuck.com
 @@||adstreet.tech/*ad$domain=befuck.com
 @@.adcenter.$domain=mcfucker.com|losmovies.club|rapidvideo.com|subs.ro
+@@||watchvideo.us^$generichide
 @@||salefiles.com$generichide
 @@||soundpark.pw^$generichide
 @@||tumejortorrent.com^$generichide
@@ -293,7 +296,7 @@ tapochek.net##body > div#body_container > div#page_container > div#page_content 
 24videos.me,ahs-online.net,all-episodes.net,all-tv.org,allhit.tv,amovies.biz,audioboo.ru,baskino.club,bigcinema.to,bigtorrent.org,bobfilm1.net,cloud.mail.ru,comedy-portal.net,cwer.ws,dnevniki-vampira.net,dochronika.ru,doramatv.ru,fanserials.tv,fast-bit.org,fast-torrent.ru,fastpic.ru,fasttorrent.ru,filin.tv,filmix-online.net,filmix.net,filmogo.co,filmtor.net,findanime.ru,firebit.net,fizrukoff.net,free-torrent.org,free-torrents.org,freehd.com.ua,game-torrent.info,games-reviews.net,hd720.biz,hdclub.org,hdkinomax.com,hdkinoteatr.com,hdrezka.me,hronika.info,ikinohd.com,kino-dom.org,kino-hd.in,kino-hd720.net,kino-live.red,kino-live2.org,kino-nada.net,kino-v-online.tv,kinoclips.net,kinogb.net,kinogo-co-2016.ru,kinogo-hd.net,kinogo-net-2016.ru,kinogo-net-co.ru,kinogo-online.net,kinogo.club,kinogo.eu,kinoklad.net,kinokong.net,kinokrad.co,kinoprosmotr.net,kinosvit.tv,kinozadrot.net,kinozz.net,klipzona.co,krutor.org,linecinema.org,livetv-torrent.com,lostfilm-online.ru,lostfilmonline.ru,megaserial.net,megogo-hd.net,multiki-online24.ru,my-tfile.org,n-torrents.ru,nice-film.ru,nnm-club.me,nnmclub.to,nod32eset.ru,nowa.cc,onelike.tv,onlainfilm.ucoz.ua,online-freebee.net,online-life.cc,only-tv.org,ostfilm.tv,ovgorskiy.ru,radikal.ru,rsload.net,rufilmtv.org,rumedia.ws,rustorka.com,rutor.info,seasonvar.ru,serialguru.ru,serialytut.tv,sezon-hd.ru,show-online.tv,stereotraker.ru,tapochek.net,tfile-music.org,tfile.co,tfilm.club,tivix.net,torrent-games.net,torrent-soft.net,torrent-windows.net,tracker.hdclub.com.ua,trackeroc.ru,trackerock.ru,tracktor.tv,trialeset.ru,turkcinema.tv,tv-torrent.org,tvbook.tv,tvfru.net,uniongang.net,unionpeer.org,wikianime.ru,x-true.info,yourcinema.tv,yummyanime.com,zagonka.ru,zfilm-hd.net##body > div[id][class][style*="data:image/jpeg;base64"]
 rutorgames.org##body > noindex
 hdrezka.me##div[class="skin-block"][style^="width: 100%; height: 100%;"]
-filmix.net##div[id*="Composite"]
+nnm-club.me,nnmclub.to,filmix.net,kinokrad.co##div[id*="Composite"]
 baskino.club##div[id*="Composite"] *
 hdrezka.me##div[id][style^="display: block; width: 600px; height: 200px;"]
 hdrezka.me##div[style="padding: 0px; margin: 0px;"] td[width="33%"]
@@ -301,6 +304,9 @@ meddaily.ru##div[style="width: 240px; background-color: White;"]
 hdrezka.me##iframe[src*="rootmedia.ws"]
 filmix.net##noindex > div[style$="!important;"]
 hdrezka.me##table[class$="dcb_table"]
+nnm-club.me,nnmclub.to##.leftnav > center > noindex
+hdrezka.me##div[style="padding: 0px; margin: 0px;"] > table > tbody > tr > td[style*="width:33%"]
+hdrezka.me##div[style="padding: 0px; margin: 0px;"] > table[style*="word-break:break-word"]
 !
 ! https://forum.adguard.com/index.php?threads/19151/
 avaxhome.co##a[href^="http://ul.to/ref"]
@@ -395,6 +401,9 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 !
 ! White list. Fixing content blocking API issues.
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/4563
+@@||youtube.com/yts/jsbin/player-*/base.js$domain=godlikeproductions.com
+@@||youtube.com/yts/jsbin/www-embed-player-*/www-embed-player.js$domain=godlikeproductions.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4392
 @@||app.adjust.io/*&utm_source=desktop_kleiderkreisel.de
 ! https://forum.adguard.com/index.php?threads/19610/
@@ -628,6 +637,7 @@ youtube.com#%#(function () {try {var youtubeAdRegExp = /^((.*_)?(ad|ads|afv|adse
 @@||gryfindor.com^$generichide
 @@||jimnong.tistory.com^$generichide
 @@||kflix.tv^$generichide
+@@||lalawin.tistory.com^$generichide
 @@||minitoon.net^$generichide
 @@||money2015.tistory.com^$generichide
 @@||mongri.net^$generichide
@@ -642,6 +652,7 @@ prettygom.com,whria.net#@#.adsense
 ! Url blocking rules
 ||melon.com/mlog.js^
 ! Element hiding rules
+lalawin.tistory.com##.adsbygoogle
 mongri.net##.sidebar_adsense
 time.navyism.com##div > .adsbygoogle
 zangsisi.net###head-menu > .wrapper > a[href$="=zangsisi"]
