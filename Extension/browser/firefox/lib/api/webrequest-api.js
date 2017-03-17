@@ -440,6 +440,10 @@
                         break;
                 }
 
+                if (details.type === ContentTypes.TYPE_WEBSOCKET && URI.asciiSpec.startsWith('http')) {
+                    URI = Services.io.newURI(URI.asciiSpec.replace(/^http(s)?:/, 'ws$1:'), null, null);
+                }
+
                 // Relate request to main_frame
                 if (requestFrameId === -1) {
                     requestFrameId = 0;
