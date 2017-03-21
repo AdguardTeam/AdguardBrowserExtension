@@ -181,9 +181,13 @@
          */
         if (websocketBlocked || workerBlocked) {
             var cspHeader = {
-                name: 'Content-Security-Policy',
-                value: 'connect-src http: https:; frame-src http: https:; child-src http: https:'
+                name: 'Content-Security-Policy'
             };
+            if (websocketBlocked) {
+                cspHeader.value = 'connect-src http: https:; frame-src http: https:; child-src http: https:';
+            } else if (workerBlocked) {
+                cspHeader.value = 'child-src http: https:';
+            }
             responseHeaders.push(cspHeader);
             return {
                 responseHeaders: responseHeaders,

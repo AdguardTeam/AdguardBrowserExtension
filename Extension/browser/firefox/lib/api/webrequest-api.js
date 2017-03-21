@@ -440,6 +440,9 @@
                         break;
                 }
 
+                /**
+                 * FF sends http instead of ws protocol at the http-listeners layer
+                 */
                 if (details.type === ContentTypes.TYPE_WEBSOCKET && URI.asciiSpec.startsWith('http')) {
                     URI = Services.io.newURI(URI.asciiSpec.replace(/^http(s)?:/, 'ws$1:'), null, null);
                 }
