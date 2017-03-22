@@ -147,6 +147,13 @@
             return;
         }
 
+        // And we don't need this check on newer than 58 chromes anymore
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/572
+        if (adguard.utils.browser.isChromeBrowser() &&
+            adguard.utils.browser.isGreaterOrEqualsVersion(adguard.prefs.chromeVersion, "58.0")) {
+            return;
+        }
+
         var tab = requestDetails.tab;
         var requestUrl = requestDetails.requestUrl;
         var responseHeaders = requestDetails.responseHeaders;
