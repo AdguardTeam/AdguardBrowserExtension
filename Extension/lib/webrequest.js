@@ -57,7 +57,7 @@
             return;
         }
 
-        if (!adguard.utils.url.isHttpRequest(requestUrl)) {
+        if (!adguard.utils.url.isHttpOrWsRequest(requestUrl)) {
             return;
         }
 
@@ -129,40 +129,70 @@
             filterSafebrowsing(tab, requestUrl);
         }
 
-        /*
-         Websocket check.
-         If 'ws://' request is blocked for not existing domain - it's blocked for all domains.
-         Then we gonna limit frame sources to http to block src:'data/text' etc.
-         More details in these issue:
-         https://github.com/AdguardTeam/AdguardBrowserExtension/issues/344
-         https://github.com/AdguardTeam/AdguardBrowserExtension/issues/440
+        if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
+            return modifyCSPHeader(requestDetails);
+        }
+    }
 
-         WS connections are detected as "other"  by ABP
-         EasyList already contains some rules for WS connections with $other modifier
-         */
-        var checkWebsocket = (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT);
+    /**
+     * Modify CSP header to block websocket connections and web workers
+     * @param requestDetails
+     * @returns {{responseHeaders: *}}
+     */
+    function modifyCSPHeader(requestDetails) {
 
-        // Please note, that we do not check WS in Edge:
+        // Please note, that we do not modify response headers in Edge:
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/401
         if (adguard.utils.browser.isEdgeBrowser()) {
-            checkWebsocket = false;
+            return;
         }
 
-        if (checkWebsocket) {
+        var tab = requestDetails.tab;
+        var requestUrl = requestDetails.requestUrl;
+        var responseHeaders = requestDetails.responseHeaders;
 
-            var frameUrl = adguard.frames.getFrameUrl(tab, requestDetails.frameId);
-            var websocketCheckUrl = "ws://adguardwebsocket.check/" + adguard.utils.url.getDomainName(frameUrl);
-            if (adguard.webRequestService.checkWebSocketRequest(tab, websocketCheckUrl, frameUrl)) {
-                var cspHeader = {
-                    name: 'Content-Security-Policy',
-                    value: 'connect-src http: https:; frame-src http: https:; child-src http: https:'
-                };
-                responseHeaders.push(cspHeader);
-                return {
-                    responseHeaders: responseHeaders,
-                    modifiedHeaders: [cspHeader]
-                };
+        var frameUrl = adguard.frames.getFrameUrl(tab, requestDetails.frameId);
+        var websocketCheckUrl = "ws://adguardwebsocket.check/" + adguard.utils.url.getDomainName(frameUrl);
+        var websocketRule = adguard.webRequestService.getRuleForRequest(tab, websocketCheckUrl, frameUrl, adguard.RequestTypes.WEBSOCKET);
+        var websocketBlocked = adguard.webRequestService.isRequestBlockedByRule(websocketRule);
+
+        var workerRule = adguard.webRequestService.getRuleForRequest(tab, 'blob:', frameUrl, adguard.RequestTypes.SCRIPT);
+        var workerBlocked = adguard.webRequestService.isRequestBlockedByRule(workerRule);
+
+        if (websocketBlocked) {
+            adguard.filteringLog.addEvent(tab, websocketCheckUrl, frameUrl, adguard.RequestTypes.WEBSOCKET, websocketRule);
+        }
+        if (workerBlocked) {
+            adguard.filteringLog.addEvent(tab, requestUrl, frameUrl, adguard.RequestTypes.OTHER, workerRule);
+        }
+
+        /**
+         * Websocket connection is blocked by connect-src directive
+         * https://www.w3.org/TR/CSP2/#directive-connect-src
+         *
+         * Web Workers is blocked by child-src directive
+         * https://www.w3.org/TR/CSP2/#directive-child-src
+         * https://www.w3.org/TR/CSP3/#directive-worker-src
+         * We have to use child-src as fallback for worker-src, because it isn't supported
+         * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/worker-src#Browser_compatibility
+         *
+         * We also need the frame-src restriction since CSPs are not inherited from the parent for documents with data: and blob: URLs
+         * https://bugs.chromium.org/p/chromium/issues/detail?id=513860
+         */
+        if (websocketBlocked || workerBlocked) {
+            var cspHeader = {
+                name: 'Content-Security-Policy'
+            };
+            if (websocketBlocked) {
+                cspHeader.value = 'connect-src http: https:; frame-src http: https:; child-src http: https:';
+            } else if (workerBlocked) {
+                cspHeader.value = 'child-src http: https:';
             }
+            responseHeaders.push(cspHeader);
+            return {
+                responseHeaders: responseHeaders,
+                modifiedHeaders: [cspHeader]
+            };
         }
     }
 

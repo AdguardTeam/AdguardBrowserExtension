@@ -23,11 +23,11 @@
     var UrlUtils = {
 
         isHttpRequest: function (url) {
-            return url && url.indexOf('http') == 0;
+            return url && url.indexOf('http') === 0;
         },
 
         isHttpOrWsRequest: function (url) {
-            return url && (url.indexOf('http') == 0 || url.indexOf('wss:') == 0 || url.indexOf('ws:') == 0);
+            return url && (url.indexOf('http') === 0 || url.indexOf('ws') === 0);
         },
 
         toPunyCode: function (domain) {
