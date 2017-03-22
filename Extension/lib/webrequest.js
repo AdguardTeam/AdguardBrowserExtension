@@ -152,7 +152,8 @@
         var responseHeaders = requestDetails.responseHeaders;
 
         var frameUrl = adguard.frames.getFrameUrl(tab, requestDetails.frameId);
-        var websocketCheckUrl = "ws://adguardwebsocket.check/" + adguard.utils.url.getDomainName(frameUrl);
+        var websocketCheckUrl = "ws://adguardwebsocket.check";
+        var websocketCheckLogUrl = websocketCheckUrl + "/" + adguard.utils.url.getDomainName(frameUrl);
         var websocketRule = adguard.webRequestService.getRuleForRequest(tab, websocketCheckUrl, frameUrl, adguard.RequestTypes.WEBSOCKET);
         var websocketBlocked = adguard.webRequestService.isRequestBlockedByRule(websocketRule);
 
@@ -160,7 +161,7 @@
         var workerBlocked = adguard.webRequestService.isRequestBlockedByRule(workerRule);
 
         if (websocketBlocked) {
-            adguard.filteringLog.addEvent(tab, websocketCheckUrl, frameUrl, adguard.RequestTypes.WEBSOCKET, websocketRule);
+            adguard.filteringLog.addEvent(tab, websocketCheckLogUrl, frameUrl, adguard.RequestTypes.WEBSOCKET, websocketRule);
         }
         if (workerBlocked) {
             adguard.filteringLog.addEvent(tab, requestUrl, frameUrl, adguard.RequestTypes.OTHER, workerRule);
