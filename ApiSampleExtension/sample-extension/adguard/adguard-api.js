@@ -10447,7 +10447,13 @@ adguard.tabsImpl = (function (adguard) {
                  *
                  * So we use a content script instead.
                  */
-                sendMessage(tabId, {type: 'update-tab-url', url: url});
+                /**
+                 * Content script may not have been loaded at this point yet.
+                 * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/580
+                 */
+                setTimeout(function () {
+                    sendMessage(tabId, {type: 'update-tab-url', url: url});
+                }, 100);
             } else {
                 browser.tabs.update(tabIdToInt(tabId), {url: url}, checkLastError);
             }
@@ -11442,6 +11448,12 @@ adguard.rules = (function () {
          * Creates regex
          */
         var createRegexText = function (str) {
+            if (str === regexConfiguration.maskStartUrl ||
+                str === regexConfiguration.maskPipe ||
+                str === regexConfiguration.maskAnySymbol) {
+                return regexConfiguration.regexAnySymbol;
+            }
+
             var regex = escapeRegExp(str);
 
             if (startsWith(regex, regexConfiguration.maskStartUrl)) {
@@ -11834,7 +11846,7 @@ adguard.rules = (function () {
                 }
             }
 
-            var nameEndIndex = adguard.utils.strings.indexOfAny(selector, nameStartIndex + 1, [' ', '\t', '>', '(', '[', '.', '#', ':']);
+            var nameEndIndex = adguard.utils.strings.indexOfAny(selector, nameStartIndex + 1, [' ', '\t', '>', '(', '[', '.', '#', ':', '+', '~']);
             if (nameEndIndex < 0) {
                 nameEndIndex = selector.length;
             }
@@ -12885,32 +12897,56 @@ adguard.rules = (function () {
      */
     function parseRuleText(ruleText) {
 
+        var ESCAPE_CHARACTER = '\\';
+
         var urlRuleText = ruleText;
         var whiteListRule = null;
         var options = null;
 
+        var startIndex = 0;
+
         if (adguard.utils.strings.startWith(urlRuleText, api.FilterRule.MASK_WHITE_LIST)) {
-            urlRuleText = urlRuleText.substring(api.FilterRule.MASK_WHITE_LIST.length);
+            startIndex = api.FilterRule.MASK_WHITE_LIST.length;
+            urlRuleText = urlRuleText.substring(startIndex);
             whiteListRule = true;
         }
 
         var parseOptions = true;
-
         /**
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/517
          * regexp rule may contain dollar sign which also is options delimiter
          */
+        // Added check for replacement rule, because maybe problem with rules for example /.*/$replace=/hello/bug/
+
         if (adguard.utils.strings.startWith(urlRuleText, api.UrlFilterRule.MASK_REGEX_RULE) &&
-            adguard.utils.strings.endsWith(urlRuleText, api.UrlFilterRule.MASK_REGEX_RULE)) {
+            adguard.utils.strings.endsWith(urlRuleText, api.UrlFilterRule.MASK_REGEX_RULE) &&
+            !adguard.utils.strings.contains(urlRuleText, api.UrlFilterRule.REPLACE_OPTION + '=')) {
+
             parseOptions = false;
         }
 
         if (parseOptions) {
-            var optionsIndex = urlRuleText.indexOf(UrlFilterRule.OPTIONS_DELIMITER);
-            if (optionsIndex >= 0) {
-                var optionsBase = urlRuleText;
-                urlRuleText = urlRuleText.substring(0, optionsIndex);
-                options = optionsBase.substring(optionsIndex + 1);
+            var foundEscaped = false;
+            // Start looking from the prev to the last symbol
+            // If dollar sign is the last symbol - we simply ignore it.
+            for (var i = (ruleText.length - 2); i >= startIndex; i--) {
+                var c = ruleText.charAt(i);
+                if (c == UrlFilterRule.OPTIONS_DELIMITER) {
+                    if (i > 0 && ruleText.charAt(i - 1) == ESCAPE_CHARACTER) {
+                        foundEscaped = true;
+                    } else {
+                        urlRuleText = ruleText.substring(startIndex, i);
+                        options = ruleText.substring(i + 1);
+
+                        if (foundEscaped) {
+                            // Find and replace escaped options delimiter
+                            options = options.replace(ESCAPE_CHARACTER + UrlFilterRule.OPTIONS_DELIMITER, UrlFilterRule.OPTIONS_DELIMITER);
+                        }
+
+                        // Options delimiter was found, doing nothing
+                        break;
+                    }
+                }
             }
         }
 
@@ -12956,12 +12992,11 @@ adguard.rules = (function () {
         this.isRegexRule = adguard.utils.strings.startWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) &&
             adguard.utils.strings.endsWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) ||
             urlRuleText === '' ||
-            urlRuleText == UrlFilterRule.MASK_ANY_SYMBOL ||
-            urlRuleText == UrlFilterRule.MASK_START_URL ||
-            urlRuleText == UrlFilterRule.MASK_PIPE;
+            urlRuleText === UrlFilterRule.MASK_ANY_SYMBOL;
 
         if (this.isRegexRule) {
             this.urlRegExpSource = urlRuleText.substring(UrlFilterRule.MASK_REGEX_RULE.length, urlRuleText.length - UrlFilterRule.MASK_REGEX_RULE.length);
+
             // Pre compile regex rules
             var regexp = this.getUrlRegExp();
             if (!regexp) {
@@ -13238,10 +13273,9 @@ adguard.rules = (function () {
     UrlFilterRule.IMPORTANT_OPTION = "important";
     UrlFilterRule.MASK_REGEX_RULE = "/";
     UrlFilterRule.MASK_ANY_SYMBOL = "*";
-    UrlFilterRule.MASK_START_URL = "||";
-    UrlFilterRule.MASK_PIPE = "|";
     UrlFilterRule.REGEXP_ANY_SYMBOL = ".*";
     UrlFilterRule.EMPTY_OPTION = "empty";
+    UrlFilterRule.REPLACE_OPTION = "replace"; // Extension doesn't support replace rules, $replace option is here only for correctly parsing
 
     UrlFilterRule.contentTypes = {
 
