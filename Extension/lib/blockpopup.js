@@ -23,8 +23,8 @@
 
 	function checkPopupBlockedRule(tabId, requestUrl, referrerUrl, sourceTab) {
 
-		//is not http request or url of tab isn't ready
-		if (!adguard.utils.url.isHttpRequest(requestUrl)) {
+		// Tab isn't ready
+		if (!requestUrl) {
 			return;
 		}
 
