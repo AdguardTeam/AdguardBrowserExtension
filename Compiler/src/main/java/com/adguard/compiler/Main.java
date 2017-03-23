@@ -80,9 +80,7 @@ public class Main {
         //pack method
         String packMethod = getParamValue(args, "--pack", null);
 
-        if (!validateParameters(sourcePath, buildName, version, extensionId, configBrowser, packMethod)) {
-            System.exit(-1);
-        }
+        validateParameters(sourcePath, buildName, version, extensionId, configBrowser, packMethod);
 
         File source = new File(sourcePath);
 
@@ -126,45 +124,37 @@ public class Main {
         }
     }
 
-    private static boolean validateParameters(String sourcePath, String buildName, String version, String extensionId, String configBrowser, String packMethod) {
+    private static void validateParameters(String sourcePath, String buildName, String version, String extensionId, String configBrowser, String packMethod) {
 
         if (buildName == null) {
-            log.error("Name is required");
-            return false;
+            throw new IllegalArgumentException("Name is required");
         }
 
         if (version == null) {
-            log.error("Version is required");
-            return false;
+            throw new IllegalArgumentException("Version is required");
         }
 
         Browser browser = Browser.getByName(configBrowser);
         if (browser == null) {
-            log.error("Unknown browser: " + configBrowser);
-            return false;
+            throw new IllegalArgumentException("Unknown browser: " + configBrowser);
         }
 
         if (!validatePackMethod(browser, packMethod)) {
-            return false;
+            throw new IllegalArgumentException();
         }
 
         File source = new File(sourcePath);
         if (!source.exists()) {
-            log.error("Source path '" + source.getAbsolutePath() + "' not found");
-            return false;
+            throw new IllegalArgumentException("Source path '" + source.getAbsolutePath() + "' not found");
         }
 
         if (extensionId == null && browser == Browser.SAFARI) {
-            log.error("Set --extensionId for Safari build");
-            return false;
+            throw new IllegalArgumentException("Set --extensionId for Safari build");
         }
 
         if (extensionId == null && (browser == Browser.FIREFOX_LEGACY || browser == Browser.FIREFOX_WEBEXT)) {
-            log.error("Set --extensionId for Firefox build");
-            return false;
+            throw new IllegalArgumentException("Set --extensionId for Firefox build");
         }
-
-        return true;
     }
 
     /**
