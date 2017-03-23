@@ -35,9 +35,8 @@ public class FileUtil {
 	private static final String CHROME_FOLDER = "browser/chrome";
 	private static final String EDGE_FOLDER = "browser/edge";
 	private static final String SAFARI_FOLDER = "browser/safari";
-	private static final String FIREFOX_FOLDER = "browser/firefox";
-	private static final String FIREFOX_LEGACY_FOLDER = "browser/firefox_legacy";
-	private static final String PALEMOON_FOLDER = "browser/palemoon";
+	private static final String FIREFOX_LEGACY_FOLDER = "browser/firefox";
+	private static final String FIREFOX_WEBEXT_FOLDER = "browser/firefox_webext";
 
 	public static void copyFiles(File source, File dest, Browser browser, boolean createApi) throws Exception {
 
@@ -56,14 +55,11 @@ public class FileUtil {
 			case SAFARI:
 				copySafariFiles(source, dest);
 				break;
-			case FIREFOX:
-				copyFirefoxFiles(source, dest, Browser.FIREFOX);
-				break;
 			case FIREFOX_LEGACY:
-				copyFirefoxLegacyFiles(source, dest);
+				copyFirefoxFiles(source, dest, Browser.FIREFOX_LEGACY);
 				break;
-			case PALEMOON:
-				copyPaleMoonFiles(source, dest);
+			case FIREFOX_WEBEXT:
+				copyWebExtFiles(source, dest);
 				break;
 		}
 
@@ -152,9 +148,29 @@ public class FileUtil {
 		copyCommonFiles(source, dest, Browser.SAFARI);
 	}
 
+	private static void copyWebExtFiles(File source, File dest) throws Exception {
+
+		File webExtFolder = new File(dest, "webextension");
+		copyChromiumFiles(source, webExtFolder, Browser.CHROMIUM);
+
+		File webExtBase = new File(source, FIREFOX_WEBEXT_FOLDER);
+		copyDirectory(webExtBase, dest);
+
+        File migration = new File(dest, "migration.js");
+		FileUtils.moveFileToDirectory(migration, new File(webExtFolder, "lib"), false);
+
+		File manifest = new File(dest, "manifest.json");
+		FileUtils.deleteQuietly(new File(webExtFolder, "manifest.json"));
+		FileUtils.moveFileToDirectory(manifest, webExtFolder, false);
+
+		File background = new File(dest, "background.html");
+		FileUtils.deleteQuietly(new File(webExtFolder, "background.html"));
+		FileUtils.moveFileToDirectory(background, webExtFolder, false);
+	}
+
 	private static void copyFirefoxFiles(File source, File dest, Browser browser) throws Exception {
 
-		File firefoxBase = new File(source, FIREFOX_FOLDER);
+		File firefoxBase = new File(source, FIREFOX_LEGACY_FOLDER);
 		copyDirectory(firefoxBase, dest);
 
 		copyCommonFiles(source, dest, browser);
@@ -173,24 +189,6 @@ public class FileUtil {
 		LocaleUtils.convertFromChromeToFirefoxLocales(sourceLocalesDir);
 		//rename folder
 		FileUtils.moveDirectory(sourceLocalesDir, destLocalesDir);
-	}
-
-	private static void copyFirefoxLegacyFiles(File source, File dest) throws Exception {
-
-		copyFirefoxFiles(source, dest, Browser.FIREFOX_LEGACY);
-
-		//copy all files to dest folder
-		File firefoxLegacyBase = new File(source, FIREFOX_LEGACY_FOLDER);
-		copyDirectory(firefoxLegacyBase, dest);
-	}
-
-	private static void copyPaleMoonFiles(File source, File dest) throws Exception {
-
-		copyFirefoxFiles(source, dest, Browser.PALEMOON);
-
-		//copy all files to dest folder
-		File paleMoonBase = new File(source, PALEMOON_FOLDER);
-		copyDirectory(paleMoonBase, dest);
 	}
 
 	private static void copyDirectory(File source, File dest) throws IOException {

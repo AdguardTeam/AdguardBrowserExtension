@@ -41,7 +41,6 @@ $(document).ready(function () {
         var tabInfo = adguard.frames.getFrameInfo(tab);
 
         controller = new PopupController({
-            platform: adguard.prefs.platform,
             showStatsSupported: !adguard.utils.browser.isContentBlockerEnabled()
         });
 

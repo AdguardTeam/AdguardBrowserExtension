@@ -22,7 +22,6 @@
  */
 var PopupController = function (options) {
     if (options) {
-        this.platform = options.platform;
         this.showStatsSupported = options.showStatsSupported;
     }
 };
