@@ -125,29 +125,24 @@ public class SettingUtils {
      * In this temp solution we simply edit preload js code to allow all rules in FF
      *
      * @param dest   source path
-     * @param branch branch name (release/beta/dev)
      */
-    public static void updatePreloadRemoteScriptRules(File dest, String branch) throws Exception {
-        if ("beta".equals(branch) ||
-                "dev".equals(branch) ||
-                "legacy".equals(branch)) {
+    public static void updatePreloadRemoteScriptRules(File dest) throws Exception {
 
-            String replaceClauseTemplate = "if (!isFirefox && !isOpera) {";
+        String replaceClauseTemplate = "if (!isFirefox && !isOpera) {";
 
-            File file = new File(dest, "lib/content-script/preload.js");
-            String content = FileUtils.readFileToString(file, "utf-8").trim();
+        File file = new File(dest, "lib/content-script/preload.js");
+        String content = FileUtils.readFileToString(file, "utf-8").trim();
 
-            if (StringUtils.indexOf(content, replaceClauseTemplate) < 0) {
-                throw new Exception("Invalid code working with FF remote rules");
-            }
-
-            content = StringUtils.replaceOnce(content, replaceClauseTemplate, "if (!isOpera) {");
-            if (StringUtils.indexOf(content, replaceClauseTemplate) > 0) {
-                throw new Exception("Invalid code working with FF remote rules");
-            }
-
-            FileUtils.writeStringToFile(file, content, "utf-8");
+        if (StringUtils.indexOf(content, replaceClauseTemplate) < 0) {
+            throw new Exception("Invalid code working with FF remote rules");
         }
+
+        content = StringUtils.replaceOnce(content, replaceClauseTemplate, "if (!isOpera) {");
+        if (StringUtils.indexOf(content, replaceClauseTemplate) > 0) {
+            throw new Exception("Invalid code working with FF remote rules");
+        }
+
+        FileUtils.writeStringToFile(file, content, "utf-8");
     }
 
     /**

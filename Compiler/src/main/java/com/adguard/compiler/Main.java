@@ -80,11 +80,14 @@ public class Main {
         //pack method
         String packMethod = getParamValue(args, "--pack", null);
 
-        validateParameters(sourcePath, buildName, version, extensionId, configBrowser, packMethod);
+        // allow remote js rules
+        boolean allowRemoteScripts = Boolean.valueOf(getParamValue(args, "--remote-scripts", "true"));
+
+        validateParameters(sourcePath, version, extensionId, configBrowser, packMethod);
 
         File source = new File(sourcePath);
 
-        buildName = getBuildName(buildName, browser, version);
+        buildName = getBuildName(buildName, browser, version, branch, allowRemoteScripts);
         File dest = new File(destPath, buildName);
 
         if (updateFilters) {
@@ -93,7 +96,7 @@ public class Main {
             FilterUtils.updateLocalScriptRules(source, browser);
         }
 
-        File buildResult = createBuild(source, dest, extensionId, updateUrl, browser, version, branch, createApi);
+        File buildResult = createBuild(source, dest, extensionId, updateUrl, browser, version, branch, createApi, allowRemoteScripts);
 
         File packedFile = null;
         if (packMethod != null) {
@@ -124,11 +127,7 @@ public class Main {
         }
     }
 
-    private static void validateParameters(String sourcePath, String buildName, String version, String extensionId, String configBrowser, String packMethod) {
-
-        if (buildName == null) {
-            throw new IllegalArgumentException("Name is required");
-        }
+    private static void validateParameters(String sourcePath, String version, String extensionId, String configBrowser, String packMethod) {
 
         if (version == null) {
             throw new IllegalArgumentException("Version is required");
@@ -160,23 +159,24 @@ public class Main {
     /**
      * Builds extension
      *
-     * @param source      Source path
-     * @param dest        Destination folder
-     *                    from remote server.
-     * @param extensionId Extension identifier (Use for safari)
-     * @param updateUrl   Add to manifest update url.
-     *                    Otherwise - do not add it.
-     *                    All extension stores have their own update channels so
-     *                    we shouldn't add update channel to the manifest.
-     * @param browser     Browser type
-     * @param version     Build version
-     * @param branch      Build branch
-     * @param createApi   If true creates simple api addon
+     * @param source             Source path
+     * @param dest               Destination folder
+     *                           from remote server.
+     * @param extensionId        Extension identifier (Use for safari)
+     * @param updateUrl          Add to manifest update url.
+     *                           Otherwise - do not add it.
+     *                           All extension stores have their own update channels so
+     *                           we shouldn't add update channel to the manifest.
+     * @param browser            Browser type
+     * @param version            Build version
+     * @param branch             Build branch
+     * @param createApi          If true creates simple api addon
+     * @param allowRemoteScripts If true remote js rules are allowed
      * @return Path to build result
      * @throws Exception
      */
     private static File createBuild(File source, File dest,
-                                    String extensionId, String updateUrl, Browser browser, String version, String branch, boolean createApi) throws Exception {
+                                    String extensionId, String updateUrl, Browser browser, String version, String branch, boolean createApi, boolean allowRemoteScripts) throws Exception {
 
         if (dest.exists()) {
             log.debug("Removed previous build: " + dest.getName());
@@ -203,11 +203,12 @@ public class Main {
         if (browser == Browser.FIREFOX_LEGACY) {
             LocaleUtils.writeLocalesToFirefoxInstallRdf(source, dest, extensionNamePostfix);
             LocaleUtils.writeLocalesToChromeManifest(dest);
-
-            //TODO: This is the temp fix to avoid long time AMO review
-            //Should be removed after merge with
-            //https://github.com/AdguardTeam/AdguardBrowserExtension/pull/421
-            SettingUtils.updatePreloadRemoteScriptRules(dest, branch);
+            if (allowRemoteScripts) {
+                //TODO: This is the temp fix to avoid long time AMO review
+                //Should be removed after merge with
+                //https://github.com/AdguardTeam/AdguardBrowserExtension/pull/421
+                SettingUtils.updatePreloadRemoteScriptRules(dest);
+            }
         }
 
         if (browser == Browser.FIREFOX_WEBEXT) {
@@ -216,8 +217,10 @@ public class Main {
             LocaleUtils.updateExtensionNameForChromeLocales(webExtensionDest, extensionNamePostfix);
             // Write localized strings to install.rdf
             LocaleUtils.writeLocalesToFirefoxInstallRdf(source, dest, extensionNamePostfix);
-            // Remote scripts issue
-            SettingUtils.updatePreloadRemoteScriptRules(webExtensionDest, branch);
+            if (allowRemoteScripts) {
+                // Remote scripts issue
+                SettingUtils.updatePreloadRemoteScriptRules(webExtensionDest);
+            }
         }
 
         if (createApi) {
@@ -256,7 +259,34 @@ public class Main {
         return true;
     }
 
-    private static String getBuildName(String buildName, Browser browser, String version) {
+    private static String getBuildName(String buildName, Browser browser, String version, String branch, boolean allowRemoteScripts) {
+        if (buildName == null) {
+            switch (browser) {
+                case CHROMIUM:
+                    buildName = "chrome";
+                    break;
+                case EDGE:
+                    buildName = "edge";
+                    break;
+                case SAFARI:
+                    buildName = "safari";
+                    break;
+                case FIREFOX_LEGACY:
+                    buildName = "firefox-legacy";
+                    break;
+                case FIREFOX_WEBEXT:
+                    if (allowRemoteScripts) {
+                        buildName = "firefox-standalone";
+                    } else {
+                        buildName = "firefox-amo";
+                    }
+                    break;
+            }
+        }
+        if (!"dev".equalsIgnoreCase(branch)) {
+            buildName += "-" + branch.toLowerCase();
+        }
+
         String result = buildName + "-" + version;
         if (browser == Browser.SAFARI) {
             result += ".safariextension";

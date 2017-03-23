@@ -20,6 +20,3 @@ sed -i '' -e "s/%LEGACY_NAME%/firefox-legacy-beta-${version}.xpi/g"         ../R
 
 sed -i '' -e "s/%VERSION%/${version}/g"                             ../Releases/safari_updates.xml
 sed -i '' -e "s/%NAME%/safari-beta-${version}.safariextension/g"    ../Releases/safari_updates.xml
-
-#git checkout gh-pages
-#git add ../Releases/
