@@ -28,34 +28,22 @@ if [ "$env" = release ]; then
     opts="--version=$version --branch=$branch --dest=$destPath"
 
     #chrome release zip for chrome.store
-    options="$opts --browser=chrome --pack=zip --update-filters=false"
+    options="$opts --browser=chrome --pack=zip --update-filters=true"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #opera release crx for addons.opera.com
-    options="$opts --browser=chrome --pack=zip --name=opera"
+    options="$opts --browser=chrome --pack=crx --name=opera"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
-    #firefox release xpi for AMO (WebExt)
-    options="$opts --browser=firefox_webext --pack=xpi --extensionId=adguardadblocker@adguard.com --update-filters=false --remote-scripts=false"
+    #firefox release for AMO (WebExt)
+    options="$opts --browser=firefox_webext --pack=xpi --extensionId=adguardadblocker@adguard.com --update-filters=true --remote-scripts=false"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
     
-    #firefox beta xpi for AMO (WebExt)
-    options="$opts --browser=firefox_webext --pack=xpi --extensionId=adguardadblocker@adguard.com --remote-scripts=false --name=firefox-amo-beta"
-    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
-
-    #firefox release xpi (WebExt)
-    options="$opts --browser=firefox_webext --pack=xpi --extensionId=adguardadblocker@adguard.com"
-    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
-
-    #firefox release xpi (Legacy)
-    options="$opts --browser=firefox --pack=xpi --extensionId=adguardadblocker@adguard.com"
-    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
-
     #safari release for extensions.apple.com
-    options="$opts --browser=safari --extensionId=com.adguard.safari --update-filters=false"
+    options="$opts --browser=safari --pack=extz --extensionId=com.adguard.safari --update-filters=true"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
     
-    #edge
+    #edge release
     options="$opts --browser=edge --pack=zip"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
@@ -73,24 +61,24 @@ elif [ "$env" = beta ]; then
     options="$opts --browser=chrome --pack=zip"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
-    #opera beta zip
-    options="$opts --browser=chrome --pack=zip --name=opera"
+    #chrome beta crx
+    options="$opts --browser=chrome --pack=crx --update-url=https://adguardteam.github.io/AdguardBrowserExtension/chrome_updates.xml"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
-    #firefox beta xpi for AMO (WebExt)
+    #firefox beta for AMO (WebExt)
     options="$opts --browser=firefox_webext --pack=xpi --extensionId=adguardadblockerbeta@adguard.com --remote-scripts=false"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
-    #firefox beta xpi (WebExt)
-    options="$opts --browser=firefox_webext --pack=xpi --extensionId=adguardadblockerbeta@adguard.com --update-url=https://adguardteam.github.io/AdguardBrowserExtension/Releases/firefox_updates.rdf"
+    #firefox beta (WebExt)
+    options="$opts --browser=firefox_webext --pack=xpi --extensionId=adguardadblockerbeta@adguard.com --update-url=https://adguardteam.github.io/AdguardBrowserExtension/firefox_updates.rdf"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
-    #firefox beta xpi (Legacy)
-    options="$opts --browser=firefox --pack=xpi --extensionId=adguardadblockerlegacy@adguard.com --update-url=https://adguardteam.github.io/AdguardBrowserExtension/Releases/firefox_updates.rdf"
+    #firefox beta (Legacy)
+    options="$opts --browser=firefox --pack=xpi --extensionId=adguardadblockerlegacy@adguard.com --update-url=https://adguardteam.github.io/AdguardBrowserExtension/firefox_updates.rdf"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #safari beta
-    options="$opts --browser=safari  --extensionId=com.adguard.safaribeta --update-url=https://adguardteam.github.io/AdguardBrowserExtension/Releases/safari_updates.xml"
+    options="$opts --browser=safari  --pack=extz --extensionId=com.adguard.safaribeta --update-url=https://adguardteam.github.io/AdguardBrowserExtension/safari_updates.xml"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
     
     #edge beta zip
@@ -109,10 +97,6 @@ else
 
     #chrome
     options="$opts --browser=chrome"
-    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
-
-    #opera
-    options="$opts --browser=chrome --name=opera"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox for AMO (WebExt)

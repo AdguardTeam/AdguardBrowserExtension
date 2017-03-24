@@ -33,11 +33,13 @@ public class Main {
     private static final String CRX_MAKE_PATH = "../scripts/chrome/crxmake.sh";
     private static final String ZIP_MAKE_PATH = "../scripts/chrome/zipmake.sh";
     private static final String XPI_MAKE_PATH = "../scripts/firefox/xpimake.sh";
+    private static final String EXTZ_MAKE_PATH = "../scripts/safari/extzmake.sh";
     private static final File CHROME_CERT_FILE = new File("../../extensions/AdguardBrowserExtension/certificate.pem");
 
     private static final String PACK_METHOD_ZIP = "zip";
     private static final String PACK_METHOD_CRX = "crx";
     private static final String PACK_METHOD_XPI = "xpi";
+    private static final String PACK_METHOD_EXTZ = "extz"; // Safari
 
     /**
      * Script for building extension
@@ -108,6 +110,9 @@ public class Main {
                 FileUtils.deleteQuietly(buildResult);
             } else if (PACK_METHOD_XPI.equals(packMethod)) {
                 packedFile = PackageUtils.createXpi(XPI_MAKE_PATH, buildResult);
+                FileUtils.deleteQuietly(buildResult);
+            } else if (PACK_METHOD_EXTZ.equals(packMethod)) {
+                packedFile = PackageUtils.createExtz(EXTZ_MAKE_PATH, buildResult);
                 FileUtils.deleteQuietly(buildResult);
             }
         }
@@ -186,12 +191,34 @@ public class Main {
         FileUtil.copyFiles(source, dest, browser, createApi);
 
         String extensionNamePostfix = "";
-        if (StringUtils.isNotEmpty(branch)) {
-            if (browser == Browser.FIREFOX_WEBEXT && "beta".equals(branch)) {
-                extensionNamePostfix = " (Standalone)";
-            } else {
-                extensionNamePostfix = " (" + StringUtils.capitalize(branch) + ")";
-            }
+        switch (browser) {
+            case FIREFOX_LEGACY:
+                if ("beta".equals(branch)) {
+                    extensionNamePostfix = " (Legacy)";
+                } else if ("dev".equals(branch)) {
+                    extensionNamePostfix = " (Legacy Dev)";
+                }
+                break;
+            case FIREFOX_WEBEXT:
+                if (allowRemoteScripts) {
+                    if ("beta".equals(branch)) {
+                        extensionNamePostfix = " (Standalone)";
+                    } else if ("dev".equals(branch)) {
+                        extensionNamePostfix = " (Standalone Dev)";
+                    }
+                } else {
+                    if ("beta".equals(branch)) {
+                        extensionNamePostfix = " (Beta)";
+                    } else if ("dev".equals(branch)) {
+                        extensionNamePostfix = " (AMO Dev)";
+                    }
+                }
+                break;
+            default:
+                if (!"release".equals(branch)) {
+                    extensionNamePostfix = " (" + StringUtils.capitalize(branch) + ")";
+                }
+                break;
         }
 
         SettingUtils.updateManifestFile(dest, browser, version, extensionId, updateUrl, extensionNamePostfix);
@@ -246,12 +273,15 @@ public class Main {
                 }
                 return true;
             case SAFARI:
-                log.error("Safari doesn't support pack methods. Pack extension manually.");
-                return false;
+                if (!PACK_METHOD_EXTZ.equals(packMethod)) {
+                    log.error("Safari supports only extz pack method");
+                    return false;
+                }
+                return true;
             case FIREFOX_LEGACY:
             case FIREFOX_WEBEXT:
-                if (!PACK_METHOD_XPI.equals(packMethod)) {
-                    log.error("Firefox support only xpi pack methods");
+                if (!PACK_METHOD_XPI.equals(packMethod) && !PACK_METHOD_ZIP.equals(packMethod)) {
+                    log.error("Firefox support only xpi/zip pack methods");
                     return false;
                 }
                 return true;

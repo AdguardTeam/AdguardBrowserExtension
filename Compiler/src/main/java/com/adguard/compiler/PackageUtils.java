@@ -63,6 +63,11 @@ public class PackageUtils {
 		return destXpiFile;
 	}
 
+	public static File createExtz(String makeExtzSh, File file) throws IOException, InterruptedException {
+		execute(makeExtzSh, file.getAbsolutePath());
+		return new File(file.getParentFile(), file.getName().replace("safariextension", "safariextz"));
+	}
+
 	private static void execute(String... commands) throws IOException, InterruptedException {
 		ProcessBuilder pb = new ProcessBuilder(commands);
 		Process p = pb.start();
