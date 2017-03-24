@@ -657,7 +657,8 @@
             onBeforeRequest: onBeforeRequestChannel,
             onBeforeSendHeaders: onBeforeSendHeadersChannel,
             onHeadersReceived: onHeadersReceivedChannel,
-            handlerBehaviorChanged: noOpFunc
+            handlerBehaviorChanged: noOpFunc,
+            webSocketSupported: true
         };
 
     })(adguard);
