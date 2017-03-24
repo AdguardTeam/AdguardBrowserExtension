@@ -147,27 +147,25 @@
             return;
         }
 
-        // And we don't need this check on newer than 58 chromes anymore
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/572
-        if (adguard.webRequest.webSocketSupported) {
-            return;
-        }
-
         var tab = requestDetails.tab;
         var requestUrl = requestDetails.requestUrl;
         var responseHeaders = requestDetails.responseHeaders;
-
         var frameUrl = adguard.frames.getFrameUrl(tab, requestDetails.frameId);
-        var websocketCheckUrl = "ws://adguardwebsocket.check/" + adguard.utils.url.getDomainName(frameUrl);
-        var websocketRule = adguard.webRequestService.getRuleForRequest(tab, websocketCheckUrl, frameUrl, adguard.RequestTypes.WEBSOCKET);
-        var websocketBlocked = adguard.webRequestService.isRequestBlockedByRule(websocketRule);
+
+        // And we don't need this check on newer than 58 chromes anymore
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/572
+        var websocketBlocked = false;
+        if (!adguard.webRequest.webSocketSupported) {
+            var websocketCheckUrl = "ws://adguardwebsocket.check/" + adguard.utils.url.getDomainName(frameUrl);
+            var websocketRule = adguard.webRequestService.getRuleForRequest(tab, websocketCheckUrl, frameUrl, adguard.RequestTypes.WEBSOCKET);
+            websocketBlocked = adguard.webRequestService.isRequestBlockedByRule(websocketRule);
+            if (websocketBlocked) {
+                adguard.filteringLog.addEvent(tab, websocketCheckUrl, frameUrl, adguard.RequestTypes.WEBSOCKET, websocketRule);
+            }
+        }
 
         var workerRule = adguard.webRequestService.getRuleForRequest(tab, 'blob:', frameUrl, adguard.RequestTypes.SCRIPT);
         var workerBlocked = adguard.webRequestService.isRequestBlockedByRule(workerRule);
-
-        if (websocketBlocked) {
-            adguard.filteringLog.addEvent(tab, websocketCheckUrl, frameUrl, adguard.RequestTypes.WEBSOCKET, websocketRule);
-        }
         if (workerBlocked) {
             adguard.filteringLog.addEvent(tab, requestUrl, frameUrl, adguard.RequestTypes.OTHER, workerRule);
         }
