@@ -237,7 +237,8 @@ var browser = window.browser || chrome;
         onCompleted: browser.webRequest.onCompleted,
         onErrorOccurred: browser.webRequest.onErrorOccurred,
         onHeadersReceived: onHeadersReceived,
-        onBeforeSendHeaders: onBeforeSendHeaders
+        onBeforeSendHeaders: onBeforeSendHeaders,
+        webSocketSupported: browser.webRequest.ResourceType['WEBSOCKET'] === 'websocket'
     };
 
     var onCreatedNavigationTarget = {
