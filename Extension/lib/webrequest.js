@@ -156,11 +156,12 @@
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/572
         var websocketBlocked = false;
         if (!adguard.webRequest.webSocketSupported) {
-            var websocketCheckUrl = "ws://adguardwebsocket.check/" + adguard.utils.url.getDomainName(frameUrl);
+            var websocketCheckUrl = "ws://adguardwebsocket.check";
+            var websocketCheckLogUrl = websocketCheckUrl + "/" + adguard.utils.url.getDomainName(frameUrl);
             var websocketRule = adguard.webRequestService.getRuleForRequest(tab, websocketCheckUrl, frameUrl, adguard.RequestTypes.WEBSOCKET);
             websocketBlocked = adguard.webRequestService.isRequestBlockedByRule(websocketRule);
             if (websocketBlocked) {
-                adguard.filteringLog.addEvent(tab, websocketCheckUrl, frameUrl, adguard.RequestTypes.WEBSOCKET, websocketRule);
+                adguard.filteringLog.addEvent(tab, websocketCheckLogUrl, frameUrl, adguard.RequestTypes.WEBSOCKET, websocketRule);
             }
         }
 
