@@ -142,12 +142,15 @@
         }
 
         // WebSockets are broken in old versions of chrome
+        // and we don't need this hack in new version cause then websocket traffic is intercepted
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/273
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/572
         var userAgent = navigator.userAgent.toLowerCase();
         var cIndex = userAgent.indexOf('chrome/');
         if (cIndex > 0) {
             var version = userAgent.substring(cIndex + 7);
-            if (Number.parseInt(version.substring(0, version.indexOf('.'))) < 47) {
+            var versionNumber = Number.parseInt(version.substring(0, version.indexOf('.')));
+            if (versionNumber < 47 || versionNumber > 57) {
                 return;
             }
         }
