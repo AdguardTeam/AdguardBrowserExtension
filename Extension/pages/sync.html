@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sync settings</title>
+    <meta charset="utf-8">
+    <link type="text/css" rel="stylesheet" href="skin/fonts.css">
+    <link type="text/css" rel="stylesheet" href="skin/style.css">
+    <link type="text/css" rel="stylesheet" href="skin/my.css">
+    <link type="text/css" rel="stylesheet" href="skin/bootstrap.css">
+
+    <#if browser.name() == "CHROMIUM" || browser.name() == "EDGE" || browser.name() == "SAFARI">
+        <script type="text/javascript" src="../lib/libs/jquery-2.2.4.min.js"></script>
+        <script type="text/javascript" src="../lib/content-script/adguard-content.js"></script>
+        <script type="text/javascript" src="../lib/content-script/common-script.js"></script>
+        <script type="text/javascript" src="../lib/content-script/content-script.js"></script>
+        <!--<script type="text/javascript" src="../lib/content-script/i18n-helper.js"></script>-->
+        <!--<script type="text/javascript" src="../lib/pages/i18n.js"></script>-->
+        <script type="text/javascript" src="../lib/pages/script.js"></script>
+        <script type="text/javascript" src="../lib/pages/sync.js"></script>
+    </#if>
+    <link rel="shortcut icon" href="skin/favicon.png"/>
+</head>
+<body>
+
+<header class="thanks-header">
+    <div class="wrap">
+        <img class="thanks-header-img" src="skin/img/thanks-header-logo.png">
+        <div class="thanks-header-title">Sync settings</div>
+    </div>
+</header>
+
+<div class="thanks-content">
+    <div class="wrap">
+
+        <div class="settings-page-title">Status:</div>
+        <div class="settings-page-table">
+            <div class="s-page-table-row cf">
+                <div id="statusPlaceholder"></div>
+            </div>
+        </div>
+
+        <div class="settings-page-title">Controls:</div>
+        <div class="settings-page-table">
+            <div class="s-page-table-row cf">
+                <div class="sp-table-row-label"></div>
+
+                <!--<div class="sp-table-row-descr" i18n="thankyou_tracking_spyware_filter_description"></div>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--
+Status:
+1 Enabled
+2 Last sync time
+3 Current provider
+4 Auth
+---Reload
+
+Controls:
+1 Enable/disable
+2 Choose sync provider: either Dropbox or Adguard Sync or Browser Storage
+3 Auth
+4 Sync now button
+5 What to sync
+    [x] Filter subscriptions
+    [x] User filter
+    [x] Whitelist
+-->
+
+<footer class="footer">
+    <div class="wrap cf">
+        <div class="footer-copy">&copy; Adguard 2009-2017</div>
+        <nav class="footer-menu">
+            <a class="footer-menu-item" href="https://adguard.com?utm_source=extension&aid=16593" target="_blank" i18n="options_site"></a>
+            <a class="footer-menu-item" href="#" target="_blank" i18n="options_blog" i18n-href="options_blog_link"></a>
+            <a class="footer-menu-item" href="https://forum.adguard.com?utm_source=extension&aid=16593" target="_blank" i18n="options_forum"></a>
+            <a class="footer-menu-item" href="https://adguard.com/feedback.html?utm_source=extension&aid=16593" target="_blank" i18n="options_feedback"></a>
+        </nav>
+    </div>
+</footer>
+
+</body>
+</html>
