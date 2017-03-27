@@ -148,27 +148,30 @@
         }
 
         var tab = requestDetails.tab;
-        var requestUrl = requestDetails.requestUrl;
         var responseHeaders = requestDetails.responseHeaders;
         var frameUrl = adguard.frames.getFrameUrl(tab, requestDetails.frameId);
 
+        var ruleForCSP = null;
+        var applyCSP = false;
+
+        /**
+         * Websocket check.
+         * If 'ws://' request is blocked for not existing domain - it's blocked for all domains.
+         * Then we gonna limit frame sources to http to block src:'data/text' etc.
+         * More details in these issue:
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/344
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/440
+         */
+
         // And we don't need this check on newer than 58 chromes anymore
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/572
-        var websocketBlocked = false;
         if (!adguard.webRequest.webSocketSupported) {
-            var websocketCheckUrl = "ws://adguardwebsocket.check";
-            var websocketCheckLogUrl = websocketCheckUrl + "/" + adguard.utils.url.getDomainName(frameUrl);
-            var websocketRule = adguard.webRequestService.getRuleForRequest(tab, websocketCheckUrl, frameUrl, adguard.RequestTypes.WEBSOCKET);
-            websocketBlocked = adguard.webRequestService.isRequestBlockedByRule(websocketRule);
-            if (websocketBlocked) {
-                adguard.filteringLog.addEvent(tab, websocketCheckLogUrl, frameUrl, adguard.RequestTypes.WEBSOCKET, websocketRule);
-            }
+            ruleForCSP = adguard.webRequestService.getRuleForRequest(tab, 'ws://adguardwebsocket.check', frameUrl, adguard.RequestTypes.WEBSOCKET);
+            applyCSP = adguard.webRequestService.isRequestBlockedByRule(ruleForCSP);
         }
-
-        var workerRule = adguard.webRequestService.getRuleForRequest(tab, 'blob:', frameUrl, adguard.RequestTypes.SCRIPT);
-        var workerBlocked = adguard.webRequestService.isRequestBlockedByRule(workerRule);
-        if (workerBlocked) {
-            adguard.filteringLog.addEvent(tab, requestUrl, frameUrl, adguard.RequestTypes.OTHER, workerRule);
+        if (!applyCSP) {
+            ruleForCSP = adguard.webRequestService.getRuleForRequest(tab, 'blob:', frameUrl, adguard.RequestTypes.SCRIPT);
+            applyCSP = adguard.webRequestService.isRequestBlockedByRule(ruleForCSP);
         }
 
         /**
@@ -184,15 +187,12 @@
          * We also need the frame-src restriction since CSPs are not inherited from the parent for documents with data: and blob: URLs
          * https://bugs.chromium.org/p/chromium/issues/detail?id=513860
          */
-        if (websocketBlocked || workerBlocked) {
+        if (applyCSP) {
+            adguard.filteringLog.addEvent(tab, 'content-security-policy-check', frameUrl, adguard.RequestTypes.OTHER, ruleForCSP);
             var cspHeader = {
-                name: 'Content-Security-Policy'
+                name: 'Content-Security-Policy',
+                value: 'connect-src http: https:; frame-src http: https:; child-src http: https:'
             };
-            if (websocketBlocked) {
-                cspHeader.value = 'connect-src http: https:; frame-src http: https:; child-src http: https:';
-            } else if (workerBlocked) {
-                cspHeader.value = 'child-src http: https:';
-            }
             responseHeaders.push(cspHeader);
             return {
                 responseHeaders: responseHeaders,
