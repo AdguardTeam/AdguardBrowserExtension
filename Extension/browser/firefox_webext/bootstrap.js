@@ -135,6 +135,11 @@ var FileStorage = (function () {
     var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"].createInstance(Ci.nsIScriptableUnicodeConverter);
     converter.charset = "UTF-8";
 
+    /**
+     * Reads file's content
+     * @param file
+     * @param callback
+     */
     function readAsync(file, callback) {
 
         var fetchCallback = function (inputStream, status) {
@@ -158,6 +163,11 @@ var FileStorage = (function () {
         }
     }
 
+    /**
+     * Reads file's content
+     * @param filename
+     * @param callback
+     */
     var read = function (filename, callback) {
         var file = FileUtils.getFile(PROFILE_DIR, [ADGUARD_DIR, filename]);
         if (!file.exists() || file.fileSize === 0) {
@@ -178,16 +188,10 @@ var FileStorage = (function () {
         });
     };
 
-    var remove = function (path, successCallback) {
-        var file = FileUtils.getFile(PROFILE_DIR, [ADGUARD_DIR, path]);
-        if (!file.exists() || file.fileSize === 0) {
-            successCallback();
-            return;
-        }
-        file.remove(0);
-        successCallback();
-    };
-
+    /**
+     * List of files in directory
+     * @returns {Array}
+     */
     var list = function () {
         var adguardDir = FileUtils.getDir(PROFILE_DIR, [ADGUARD_DIR]);
         var entries = adguardDir.directoryEntries;
@@ -202,7 +206,6 @@ var FileStorage = (function () {
 
     return {
         readFromFile: read,
-        removeFile: remove,
         list: list
     };
 
@@ -228,6 +231,10 @@ var MigrationHelper = function (simplePrefs) {
         });
     }
 
+    /**
+     * Gets all extension's preferences
+     * @returns {{}}
+     */
     function getSimplePrefs() {
         var values = {};
         var keys = simplePrefs.keys();
@@ -242,6 +249,12 @@ var MigrationHelper = function (simplePrefs) {
         return values;
     }
 
+    /**
+     * Migration process consists of 2 steps:
+     * 1. Migrate extension's preferences.
+     * 2. Migrate extension's filter rules. Rules migration is performed for each filter, one by one.
+     * @param callback
+     */
     var migrate = function (callback) {
 
         if (settingsMigrated) {
@@ -252,7 +265,7 @@ var MigrationHelper = function (simplePrefs) {
         if (!simplePrefsMigrated) {
             var values = getSimplePrefs();
             callback({
-                type: 'localStorage',
+                type: 'user-settings',
                 values: values
             });
             simplePrefsMigrated = true;
@@ -269,7 +282,7 @@ var MigrationHelper = function (simplePrefs) {
             var file = filesToMigrate.pop();
             FileStorage.readFromFile(file, function (error, lines) {
                 callback({
-                    type: 'storage',
+                    type: 'filter-rules',
                     values: {
                         key: file,
                         value: lines

@@ -156,8 +156,9 @@ public class FileUtil {
 		File webExtBase = new File(source, FIREFOX_WEBEXT_FOLDER);
 		copyDirectory(webExtBase, dest);
 
-        File migration = new File(dest, "migration.js");
-		FileUtils.moveFileToDirectory(migration, new File(webExtFolder, "lib"), false);
+		File libFolder = new File(dest, "lib");
+		FileUtils.copyDirectoryToDirectory(libFolder, webExtFolder);
+		FileUtils.deleteDirectory(libFolder);
 
 		File manifest = new File(dest, "manifest.json");
 		FileUtils.deleteQuietly(new File(webExtFolder, "manifest.json"));
