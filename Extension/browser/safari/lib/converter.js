@@ -18,10 +18,10 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.24';
+var CONVERTER_VERSION = '1.3.25';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
-var ANY_URL_TEMPLATES = ['||*', '', '*'];
+var ANY_URL_TEMPLATES = ['||*', '', '*', '|*'];
 var URL_FILTER_ANY_URL = ".*";
 var URL_FILTER_WS_ANY_URL = "|ws*://*";
 // Improved regular expression instead of UrlFilterRule.REGEXP_START_URL
