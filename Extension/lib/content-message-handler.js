@@ -467,6 +467,12 @@
             case 'authSync':
                 adguard.sync.syncService.authorize();
                 break;
+            case 'toggleSync':
+                adguard.sync.syncService.toggleSyncStatus();
+                break;
+            case 'syncNow':
+                adguard.sync.syncService.syncSettings();
+                break;
             default :
                 throw 'Unknown message: ' + message;
         }

@@ -20,24 +20,7 @@ var PageController = function () {
 PageController.prototype = {
 
     init: function (status) {
-
-        this._bindEvents();
         this._render(status);
-    },
-
-    _bindEvents: function () {
-
-        // this.safebrowsingEnabledCheckbox = $("#safebrowsingEnabledCheckbox");
-        // this.trackingFilterEnabledCheckbox = $("#trackingFilterEnabledCheckbox");
-        // this.socialFilterEnabledCheckbox = $("#socialFilterEnabledCheckbox");
-        // this.sendSafebrowsingStatsCheckbox = $("#sendSafebrowsingStatsCheckbox");
-        // this.allowAcceptableAdsCheckbox = $("#allowAcceptableAds");
-        //
-        // this.safebrowsingEnabledCheckbox.on('change', this.safebrowsingEnabledChange);
-        // this.trackingFilterEnabledCheckbox.on('change', this.trackingFilterEnabledChange);
-        // this.socialFilterEnabledCheckbox.on('change', this.socialFilterEnabledChange);
-        // this.sendSafebrowsingStatsCheckbox.on('change', this.sendSafebrowsingStatsChange);
-        // this.allowAcceptableAdsCheckbox.on('change', this.allowAcceptableAdsChange);
     },
 
     _render: function (status) {
@@ -60,6 +43,24 @@ PageController.prototype = {
                 });
             });
         }
+
+        if (status.enabled) {
+            $('#toggleStatus').text('Disable sync');
+        } else {
+            $('#toggleStatus').text('Enable sync');
+        }
+
+        $('#toggleStatus').click(function () {
+            contentPage.sendMessage({type: 'toggleSync'}, function () {
+                document.location.reload();
+            });
+        });
+
+        $('#syncNow').click(function () {
+            contentPage.sendMessage({type: 'syncNow'}, function () {
+                document.location.reload();
+            });
+        });
     }
 };
 

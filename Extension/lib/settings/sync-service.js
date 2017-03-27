@@ -32,6 +32,7 @@
 
     var syncProvider = null;
     var lastSyncTime = null;
+    var syncEnabled = true;
 
     /**
      * Sections revisions
@@ -527,6 +528,20 @@
         });
     }
 
+    var toggleSyncStatus = function (enabled) {
+        if (enabled == undefined) {
+            syncEnabled = !syncEnabled;
+        } else {
+            syncEnabled = enabled;
+        }
+
+        if (!syncEnabled) {
+           syncProvider = null;
+        } else if (!syncProvider) {
+            init();
+        }
+    };
+
     var init = function () {
         var providerName = adguard.localStorage.getItem(CURRENT_PROVIDER_PROP);
         if (providerName) {
@@ -568,8 +583,10 @@
         if (!providerName) {
             return;
         }
-        adguard.localStorage.removeItem(CURRENT_PROVIDER_PROP);
+
+        toggleSyncStatus(false);
         adguard.console.debug('Sync provider {0} has been unset', providerName.name);
+
         var providerService = findProviderByName(providerName);
         if (providerService && typeof providerService.shutdown === 'function') {
             providerService.shutdown();
@@ -580,6 +597,11 @@
 
         adguard.console.info('Synchronizing settings..');
 
+        if (!syncEnabled) {
+            adguard.console.warn('Sync is disabled');
+            return;
+        }
+
         processManifest(function (success) {
             if (success) {
                 lastSyncTime = Date.now();
@@ -589,13 +611,16 @@
             } else {
                 adguard.console.warn('Error synchronizing settings');
             }
-            callback(success);
+
+            if (callback) {
+                callback(success);
+            }
         });
     };
 
     var getSyncStatus = function () {
 
-        var enabled = !!syncProvider;
+        var enabled = !!syncEnabled;
         var lastSyncTime = getLastSyncTime();
         var syncProviderName = null;
         var isAuthenticated = true;
@@ -649,7 +674,11 @@
         /**
          * Opens auth tab
          */
-        authorize: authorize
+        authorize: authorize,
+        /**
+         * Enables/disables sync
+         */
+        toggleSyncStatus: toggleSyncStatus
     };
 
 })(adguard.sync, adguard, window);
