@@ -49,7 +49,17 @@ PageController.prototype = {
 
         $("#statusPlaceholder").html(statusText);
 
-        //TODO: Add refresh auth
+        var refreshAuthButton = $('#refreshAuth');
+        if (status.isAuthenticated) {
+            refreshAuthButton.hide();
+        } else {
+            refreshAuthButton.show();
+            refreshAuthButton.click(function () {
+                contentPage.sendMessage({type: 'authSync'}, function () {
+                    document.location.reload();
+                });
+            });
+        }
     }
 };
 

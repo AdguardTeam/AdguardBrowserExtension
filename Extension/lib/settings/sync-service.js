@@ -519,6 +519,14 @@
         return lastSyncTime;
     }
 
+    function openAuthTab(providerName) {
+        adguard.tabs.create({
+            active: true,
+            type: 'popup',
+            url: api.oauthService.getAuthUrl(providerName, 'http://testsync.adguard.com/oauth?provider=' + providerName)
+        });
+    }
+
     var init = function () {
         var providerName = adguard.localStorage.getItem(CURRENT_PROVIDER_PROP);
         if (providerName) {
@@ -544,11 +552,7 @@
         if (providerService.oauthSupported) {
             if ((!token || !api.oauthService.setToken(providerName, token, securityToken, expires))
                 && !api.oauthService.isAuthorized(providerName)) {
-                adguard.tabs.create({
-                    active: true,
-                    type: 'popup',
-                    url: api.oauthService.getAuthUrl(providerName, 'http://testsync.adguard.com/oauth?provider=' + providerName)
-                });
+                openAuthTab(providerName);
 
                 return;
             }
@@ -610,6 +614,12 @@
         }
     };
 
+    var authorize = function () {
+        if (syncProvider && syncProvider.oauthSupported) {
+            openAuthTab(syncProvider.name);
+        }
+    };
+
     api.sections = {
         loadLocalSection: loadLocalSection,
         isSectionUpdated: isSectionUpdated
@@ -635,7 +645,11 @@
         /**
          * Returns sync status
          */
-        getSyncStatus: getSyncStatus
+        getSyncStatus: getSyncStatus,
+        /**
+         * Opens auth tab
+         */
+        authorize: authorize
     };
 
 })(adguard.sync, adguard, window);

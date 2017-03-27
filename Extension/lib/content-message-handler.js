@@ -464,6 +464,9 @@
                 break;
             case 'getSyncStatus':
                 return adguard.sync.syncService.getSyncStatus();
+            case 'authSync':
+                adguard.sync.syncService.authorize();
+                break;
             default :
                 throw 'Unknown message: ' + message;
         }
