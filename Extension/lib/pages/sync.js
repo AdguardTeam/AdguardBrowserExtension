@@ -19,10 +19,10 @@ var PageController = function () {
 
 PageController.prototype = {
 
-    init: function () {
+    init: function (status) {
 
         this._bindEvents();
-        this._render();
+        this._render(status);
     },
 
     _bindEvents: function () {
@@ -40,36 +40,23 @@ PageController.prototype = {
         // this.allowAcceptableAdsCheckbox.on('change', this.allowAcceptableAdsChange);
     },
 
-    _render: function () {
+    _render: function (status) {
+        var statusText =
+            'Sync enabled: ' + status.enabled + '<br/>'
+            + 'Last sync time: ' + (status.lastSyncTime ? new Date(parseInt(status.lastSyncTime)) : '') + '<br/>'
+            + 'Current provider: ' + status.syncProvider + '<br/>'
+            + 'Auth: ' + status.isAuthenticated + '<br/>';
 
-        // var safebrowsingEnabled = !userSettings.values[userSettings.names.DISABLE_SAFEBROWSING];
-        // var sendSafebrowsingStats = !userSettings.values[userSettings.names.DISABLE_SEND_SAFEBROWSING_STATS];
-        // var collectHitsCount = !userSettings.values[userSettings.names.DISABLE_COLLECT_HITS];
-        // var trackingFilterEnabled = AntiBannerFiltersId.TRACKING_FILTER_ID in enabledFilters;
-        // var socialFilterEnabled = AntiBannerFiltersId.SOCIAL_FILTER_ID in enabledFilters;
-        // var allowAcceptableAdsEnabled = AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID in enabledFilters;
-        //
-        // this._renderSafebrowsingSection(safebrowsingEnabled, sendSafebrowsingStats, collectHitsCount);
-        // this._renderFilter(this.trackingFilterEnabledCheckbox, trackingFilterEnabled);
-        // this._renderFilter(this.socialFilterEnabledCheckbox, socialFilterEnabled);
-        // this._renderFilter(this.allowAcceptableAdsCheckbox, allowAcceptableAdsEnabled);
+        $("#statusPlaceholder").html(statusText);
+
+        //TODO: Add refresh auth
     }
 };
 
-var userSettings;
-var AntiBannerFiltersId;
-var enabledFilters;
-var environmentOptions;
-
-contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
-
-    userSettings = response.userSettings;
-    enabledFilters = response.enabledFilters;
-    environmentOptions = response.environmentOptions;
-    AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
+contentPage.sendMessage({type: 'getSyncStatus'}, function (response) {
 
     $(document).ready(function () {
         var controller = new PageController();
-        controller.init();
+        controller.init(response);
     });
 });

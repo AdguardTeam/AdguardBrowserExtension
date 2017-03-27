@@ -28,8 +28,10 @@
     var PROTOCOL_VERSION_PROP = "protocol-version";
 
     var CURRENT_PROVIDER_PROP = 'current-sync-provider';
+    var LAST_SYNC_TIME_PROP = 'last-sync-time';
 
     var syncProvider = null;
+    var lastSyncTime = null;
 
     /**
      * Sections revisions
@@ -509,6 +511,14 @@
         return dfd;
     }
 
+    function getLastSyncTime() {
+        if (!lastSyncTime) {
+            lastSyncTime = adguard.localStorage.getItem(LAST_SYNC_TIME_PROP);
+        }
+
+        return lastSyncTime;
+    }
+
     var init = function () {
         var providerName = adguard.localStorage.getItem(CURRENT_PROVIDER_PROP);
         if (providerName) {
@@ -568,12 +578,36 @@
 
         processManifest(function (success) {
             if (success) {
+                lastSyncTime = Date.now();
+                adguard.localStorage.setItem(LAST_SYNC_TIME_PROP, lastSyncTime);
+
                 adguard.console.info('Synchronizing settings finished');
             } else {
                 adguard.console.warn('Error synchronizing settings');
             }
             callback(success);
         });
+    };
+
+    var getSyncStatus = function () {
+
+        var enabled = !!syncProvider;
+        var lastSyncTime = getLastSyncTime();
+        var syncProviderName = null;
+        var isAuthenticated = true;
+        if (syncProvider) {
+            syncProviderName = syncProvider.name;
+            if (syncProvider.oauthSupported) {
+                isAuthenticated = api.oauthService.isAuthorized(syncProviderName);
+            }
+        }
+
+        return {
+            enabled: enabled,
+            lastSyncTime: lastSyncTime,
+            syncProvider: syncProviderName,
+            isAuthenticated: isAuthenticated
+        }
     };
 
     api.sections = {
@@ -597,7 +631,11 @@
         /**
          * Synchronizes settings between current application and sync provider
          */
-        syncSettings: syncSettings
+        syncSettings: syncSettings,
+        /**
+         * Returns sync status
+         */
+        getSyncStatus: getSyncStatus
     };
 
 })(adguard.sync, adguard, window);

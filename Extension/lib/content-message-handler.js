@@ -462,6 +462,8 @@
             case 'onAuthError':
                 adguard.sync.syncService.removeSyncProvider(message.provider);
                 break;
+            case 'getSyncStatus':
+                return adguard.sync.syncService.getSyncStatus();
             default :
                 throw 'Unknown message: ' + message;
         }
