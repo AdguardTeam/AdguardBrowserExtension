@@ -534,12 +534,6 @@
         } else {
             syncEnabled = enabled;
         }
-
-        if (!syncEnabled) {
-           syncProvider = null;
-        } else if (!syncProvider) {
-            init();
-        }
     };
 
     var init = function () {
@@ -584,7 +578,7 @@
             return;
         }
 
-        toggleSyncStatus(false);
+        syncProvider = null;
         adguard.console.debug('Sync provider {0} has been unset', providerName.name);
 
         var providerService = findProviderByName(providerName);

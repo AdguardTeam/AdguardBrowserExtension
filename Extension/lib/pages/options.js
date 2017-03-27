@@ -127,12 +127,6 @@ PageController.prototype = {
             contentPage.sendMessage({type: 'openFilteringLog'});
         });
 
-        $('.syncSettingsFile').on('click', this.onSyncSettingsFileClicked.bind(this));
-        $('.syncSettingsDropbox').on('click', this.onSyncSettingsDropboxClicked.bind(this));
-        $('.syncSettingsChrome').on('click', this.onSyncSettingsChromeClicked.bind(this));
-        $('.syncSettingsGoogleDrive').on('click', this.onSyncSettingsGoogleDriveClicked.bind(this));
-        $('.syncSettingsAGSync').on('click', this.onSyncSettingsAGSyncClicked.bind(this));
-
         this.wlFilters.jScrollPane({
             contentWidth: '0px',
             mouseWheelSpeed: 20
@@ -489,35 +483,6 @@ PageController.prototype = {
             return;
         }
         contentPage.sendMessage({type: 'clearWhiteListFilter'});
-    },
-
-    onSyncSettingsFileClicked: function (e) {
-        e.preventDefault();
-
-        contentPage.sendMessage({type: 'syncSettings', provider: 'FILE'});
-    },
-
-    onSyncSettingsDropboxClicked: function (e) {
-        e.preventDefault();
-        contentPage.sendMessage({type: 'syncSettings', provider: 'DROPBOX'});
-    },
-
-    onSyncSettingsChromeClicked: function (e) {
-        e.preventDefault();
-
-        contentPage.sendMessage({type: 'syncSettings', provider: 'CHROME'});
-    },
-
-    onSyncSettingsGoogleDriveClicked: function (e) {
-        e.preventDefault();
-
-        contentPage.sendMessage({type: 'syncSettings', provider: 'GOOGLE_DRIVE'});
-    },
-
-    onSyncSettingsAGSyncClicked: function (e) {
-        e.preventDefault();
-
-        contentPage.sendMessage({type: 'syncSettings', provider: 'ADGUARD_SYNC'});
     },
 
     /**

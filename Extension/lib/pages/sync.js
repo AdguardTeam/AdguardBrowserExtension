@@ -61,6 +61,24 @@ PageController.prototype = {
                 document.location.reload();
             });
         });
+
+        $('#dropboxProvider').click(function () {
+            contentPage.sendMessage({type: 'syncSettings', provider: 'DROPBOX'}, function () {
+                document.location.reload();
+            });
+        });
+
+        $('#agSyncProvider').click(function () {
+            contentPage.sendMessage({type: 'syncSettings', provider: 'ADGUARD_SYNC'}, function () {
+                document.location.reload();
+            });
+        });
+
+        $('#browserStorageProvider').click(function () {
+            contentPage.sendMessage({type: 'syncSettings', provider: 'CHROME'}, function () {
+                document.location.reload();
+            });
+        });
     }
 };
 
