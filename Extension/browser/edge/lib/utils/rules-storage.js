@@ -21,7 +21,8 @@
  * Filter rules storage implementation.
  *
  * Unfortunately we have to use this strange logic due to Edge API incompatibilities:
- * unlimitedStorage permission is supported only from Insider build 15063. Also, before this build Edge storage has a weird 1MB limit per value.
+ * unlimitedStorage permission isn't supported in the Anniversary update. Also, in this update (and of course before) Edge storage has a weird 1MB limit per value.
+ * These issues will be fixed in the Creators update.
  *
  * See for details: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/566
  */
@@ -29,7 +30,7 @@
 adguard.rulesStorageImpl = (function (adguard) {
 
     // TODO[Edge]: Remove this 'if' condition, when Insider build 15063 will be applied widely.
-    if (adguard.utils.browser.isEdgeBeforeInsiderPreview()) {
+    if (adguard.utils.browser.isEdgeBeforeCreatorsUpdate()) {
 
         return (function () {
 

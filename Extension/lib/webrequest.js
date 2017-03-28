@@ -141,10 +141,10 @@
      */
     function modifyCSPHeader(requestDetails) {
 
-        // Please note, that we do not modify response headers in Edge before 15016 build:
+        // Please note, that we do not modify response headers in Edge before Creators update:
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/401
         // https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8796739/
-        if (adguard.utils.browser.isEdgeBeforeInsiderPreview()) {
+        if (adguard.utils.browser.isEdgeBeforeCreatorsUpdate()) {
             return;
         }
 

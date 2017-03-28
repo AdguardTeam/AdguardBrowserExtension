@@ -285,11 +285,13 @@
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/602
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/566
          * 'Popup' window
-         */
-        EDGE_BUILD_15063: 15063,
 
-        isEdgeBeforeInsiderPreview: function () {
-            return this.isEdgeBrowser() && adguard.prefs.edgeVersion.build < this.EDGE_BUILD_15063;
+         * Creators update is not yet released, so we use Insider build 15063 instead.
+         */
+        EDGE_CREATORS_UPDATE: 15063,
+
+        isEdgeBeforeCreatorsUpdate: function () {
+            return this.isEdgeBrowser() && adguard.prefs.edgeVersion.build < this.EDGE_CREATORS_UPDATE;
         }
     };
 

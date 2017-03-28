@@ -330,7 +330,7 @@ adguard.applicationUpdateService = (function (adguard) {
     }
 
     /**
-     * Edge supports unlimitedStorage since Insider build 15063.
+     * Edge supports unlimitedStorage since Creators update.
      * Previously, we keep filter rules in localStorage, and now we have to migrate this rules to browser.storage.local
      * See https://github.com/AdguardTeam/AdguardBrowserExtension/issues/566
      */
@@ -338,7 +338,7 @@ adguard.applicationUpdateService = (function (adguard) {
 
         var dfd = new adguard.utils.Promise();
 
-        var fixProperty = 'edge-storage-local-fix-build' + adguard.utils.browser.EDGE_BUILD_15063;
+        var fixProperty = 'edge-storage-local-fix-build' + adguard.utils.browser.EDGE_CREATORS_UPDATE;
         if (localStorage[fixProperty]) {
             dfd.resolve();
             return dfd;
@@ -549,7 +549,7 @@ adguard.applicationUpdateService = (function (adguard) {
         if (adguard.utils.browser.isGreaterVersion("2.3.5", runInfo.prevVersion) && adguard.utils.browser.isChromium() && !adguard.utils.browser.isSafariBrowser()) {
             methods.push(onUpdateChromiumStorage);
         }
-        if (adguard.utils.browser.isEdgeBrowser() && !adguard.utils.browser.isEdgeBeforeInsiderPreview()) {
+        if (adguard.utils.browser.isEdgeBrowser() && !adguard.utils.browser.isEdgeBeforeCreatorsUpdate()) {
             methods.push(onUpdateEdgeRulesStorage);
         }
 
