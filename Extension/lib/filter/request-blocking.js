@@ -264,12 +264,12 @@ adguard.webRequestService = (function (adguard) {
      */
     var processRequestResponse = function (tab, requestUrl, referrerUrl, requestType, responseHeaders) {
 
-        if (requestType == adguard.RequestTypes.DOCUMENT) {
+        if (requestType === adguard.RequestTypes.DOCUMENT) {
             // Check headers to detect Adguard application
 
             if (adguard.integration.isSupported() && // Integration module may be missing
                 !adguard.prefs.mobile &&  // Mobile Firefox doesn't support integration mode
-                !adguard.utils.browser.isEdgeBrowser()) { // TODO[Edge]: Integration mode is not fully functional in Edge (cannot redefine Referer header yet)
+                !adguard.utils.browser.isEdgeBrowser()) { // TODO[Edge]: Integration mode is not fully functional in Edge (cannot redefine Referer header yet and Edge doesn't intercept requests from background page)
 
                 adguard.integration.checkHeaders(tab, responseHeaders, requestUrl);
             }
@@ -286,7 +286,7 @@ adguard.webRequestService = (function (adguard) {
             appendLogEvent = !adguard.backend.isAdguardAppRequest(requestUrl);
         } else if (adguard.frames.isTabProtectionDisabled(tab)) { // jshint ignore:line
             // Doing nothing
-        } else if (requestType == adguard.RequestTypes.DOCUMENT) {
+        } else if (requestType === adguard.RequestTypes.DOCUMENT) {
             requestRule = adguard.frames.getFrameWhiteListRule(tab);
             var domain = adguard.frames.getFrameDomain(tab);
             if (!adguard.frames.isIncognitoTab(tab) &&

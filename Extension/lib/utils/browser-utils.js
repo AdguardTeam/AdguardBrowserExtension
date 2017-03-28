@@ -278,6 +278,18 @@
                 languages.push(navigator.language); // .language is first in .languages
             }
             return languages;
+        },
+
+        /**
+         * Affected issues:
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/602
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/566
+         * 'Popup' window
+         */
+        EDGE_BUILD_15063: 15063,
+
+        isEdgeBeforeInsiderPreview: function () {
+            return this.isEdgeBrowser() && adguard.prefs.edgeVersion.build < this.EDGE_BUILD_15063;
         }
     };
 

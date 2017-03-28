@@ -158,7 +158,7 @@ adguard.tabsImpl = (function (adguard) {
 
         if (createData.type === 'popup' &&
             // Does not work properly in Insider builds
-            !adguard.utils.browser.isEdgeBrowser()) {
+            !adguard.utils.browser.isEdgeBeforeInsiderPreview()) {
             // https://developer.chrome.com/extensions/windows#method-create
             browser.windows.create({
                 url: url,
