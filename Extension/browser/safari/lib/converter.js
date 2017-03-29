@@ -18,7 +18,7 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.25';
+var CONVERTER_VERSION = '1.3.26';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var ANY_URL_TEMPLATES = ['||*', '', '*', '|*'];
