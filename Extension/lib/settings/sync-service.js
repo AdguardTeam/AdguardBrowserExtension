@@ -543,7 +543,7 @@
         }
     };
 
-    var setSyncProvider = function (providerName, token, securityToken, expires) {
+    var setSyncProvider = function (providerName) {
         //TODO: check provider is compatible with the current browser
         var providerService = findProviderByName(providerName);
         if (!providerService) {
