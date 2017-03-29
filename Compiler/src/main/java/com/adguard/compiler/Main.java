@@ -34,7 +34,7 @@ public class Main {
     private static final String ZIP_MAKE_PATH = "../scripts/chrome/zipmake.sh";
     private static final String XPI_MAKE_PATH = "../scripts/firefox/xpimake.sh";
     private static final String EXTZ_MAKE_PATH = "../scripts/safari/extzmake.sh";
-    private static final File CHROME_CERT_FILE = new File("../../extensions/AdguardBrowserExtension/certificate.pem");
+    private static final File CRX_CERT_FILE = new File("../resources/certificate.pem");
 
     private static final String PACK_METHOD_ZIP = "zip";
     private static final String PACK_METHOD_CRX = "crx";
@@ -106,7 +106,7 @@ public class Main {
                 packedFile = PackageUtils.createZip(ZIP_MAKE_PATH, buildResult);
                 FileUtils.deleteQuietly(buildResult);
             } else if (PACK_METHOD_CRX.equals(packMethod)) {
-                packedFile = PackageUtils.createCrx(CRX_MAKE_PATH, buildResult, CHROME_CERT_FILE);
+                packedFile = PackageUtils.createCrx(CRX_MAKE_PATH, buildResult, CRX_CERT_FILE);
                 FileUtils.deleteQuietly(buildResult);
             } else if (PACK_METHOD_XPI.equals(packMethod)) {
                 packedFile = PackageUtils.createXpi(XPI_MAKE_PATH, buildResult);
@@ -267,8 +267,8 @@ public class Main {
                     log.error("Chrome support only crx and zip pack methods");
                     return false;
                 }
-                if (PACK_METHOD_CRX.equals(packMethod) && !CHROME_CERT_FILE.exists()) {
-                    log.error("Chrome cert file " + CHROME_CERT_FILE + " not found");
+                if (PACK_METHOD_CRX.equals(packMethod) && !CRX_CERT_FILE.exists()) {
+                    log.error("Chrome cert file " + CRX_CERT_FILE + " not found");
                     return false;
                 }
                 return true;
