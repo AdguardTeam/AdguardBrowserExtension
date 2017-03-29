@@ -32,7 +32,7 @@
 
     var syncProvider = null;
     var lastSyncTime = null;
-    var syncEnabled = true;
+    var syncEnabled = false;
 
     /**
      * Sections revisions
@@ -514,7 +514,7 @@
 
     function getLastSyncTime() {
         if (!lastSyncTime) {
-            lastSyncTime = adguard.localStorage.getItem(LAST_SYNC_TIME_PROP);
+            lastSyncTime = parseInt(adguard.localStorage.getItem(LAST_SYNC_TIME_PROP));
         }
 
         return lastSyncTime;
@@ -529,7 +529,7 @@
     }
 
     var toggleSyncStatus = function (enabled) {
-        if (enabled == undefined) {
+        if (enabled === undefined) {
             syncEnabled = !syncEnabled;
         } else {
             syncEnabled = enabled;
@@ -559,8 +559,8 @@
         adguard.localStorage.setItem(CURRENT_PROVIDER_PROP, providerName);
 
         if (providerService.oauthSupported) {
-            if ((!token || !api.oauthService.setToken(providerName, token, securityToken, expires))
-                && !api.oauthService.isAuthorized(providerName)) {
+            if ((!token || !api.oauthService.setToken(providerName, token, securityToken, expires)) &&
+                !api.oauthService.isAuthorized(providerName)) {
                 openAuthTab(providerName);
 
                 return;
@@ -614,7 +614,7 @@
 
     var getSyncStatus = function () {
 
-        var enabled = !!syncEnabled;
+        var enabled = syncEnabled;
         var lastSyncTime = getLastSyncTime();
         var syncProviderName = null;
         var isAuthenticated = true;
@@ -623,6 +623,8 @@
             if (syncProvider.oauthSupported) {
                 isAuthenticated = api.oauthService.isAuthorized(syncProviderName);
             }
+        } else {
+            isAuthenticated = false;
         }
 
         return {
@@ -630,7 +632,7 @@
             lastSyncTime: lastSyncTime,
             syncProvider: syncProviderName,
             isAuthenticated: isAuthenticated
-        }
+        };
     };
 
     var authorize = function () {
