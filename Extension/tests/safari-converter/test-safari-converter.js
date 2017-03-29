@@ -125,7 +125,7 @@ QUnit.test("Convert websocket rule", function(assert) {
     assert.equal(1, converted.length);
 
     convertedRule = converted[0];
-    assert.equal(convertedRule.trigger["url-filter"], "|ws*://*");
+    assert.equal(convertedRule.trigger["url-filter"], "^wss?://.*");
     assert.equal(convertedRule.trigger["if-domain"][0], "*123movies.is");
     assert.ok(convertedRule.trigger["resource-type"]);
     assert.equal(convertedRule.trigger["resource-type"][0], "raw");
