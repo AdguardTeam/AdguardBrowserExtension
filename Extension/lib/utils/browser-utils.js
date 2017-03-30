@@ -182,16 +182,33 @@
             return !this._useOldSafariAPI;
         },
 
+        /**
+         * Finds header object by header name (case insensitive)
+         * @param headers Headers collection
+         * @param headerName Header name
+         * @returns {*}
+         */
         findHeaderByName: function (headers, headerName) {
             if (headers) {
                 for (var i = 0; i < headers.length; i++) {
                     var header = headers[i];
-                    if (header.name === headerName) {
+                    if (header.name.toLowerCase() === headerName.toLowerCase()) {
                         return header;
                     }
                 }
             }
             return null;
+        },
+
+        /**
+         * Finds header value by name (case insensitive)
+         * @param headers Headers collection
+         * @param headerName Header name
+         * @returns {null}
+         */
+        getHeaderValueByName: function (headers, headerName) {
+            var header = this.findHeaderByName(headers, headerName);
+            return header ? header.value : null;
         },
 
         /**
