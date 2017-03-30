@@ -278,6 +278,20 @@
                 languages.push(navigator.language); // .language is first in .languages
             }
             return languages;
+        },
+
+        /**
+         * Affected issues:
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/602
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/566
+         * 'Popup' window
+
+         * Creators update is not yet released, so we use Insider build 15063 instead.
+         */
+        EDGE_CREATORS_UPDATE: 15063,
+
+        isEdgeBeforeCreatorsUpdate: function () {
+            return this.isEdgeBrowser() && adguard.prefs.edgeVersion.build < this.EDGE_CREATORS_UPDATE;
         }
     };
 

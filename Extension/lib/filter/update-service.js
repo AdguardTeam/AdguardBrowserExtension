@@ -330,6 +330,53 @@ adguard.applicationUpdateService = (function (adguard) {
     }
 
     /**
+     * Edge supports unlimitedStorage since Creators update.
+     * Previously, we keep filter rules in localStorage, and now we have to migrate this rules to browser.storage.local
+     * See https://github.com/AdguardTeam/AdguardBrowserExtension/issues/566
+     */
+    function onUpdateEdgeRulesStorage() {
+
+        var dfd = new adguard.utils.Promise();
+
+        var fixProperty = 'edge-storage-local-fix-build' + adguard.utils.browser.EDGE_CREATORS_UPDATE;
+        if (localStorage[fixProperty]) {
+            dfd.resolve();
+            return dfd;
+        }
+
+        adguard.console.info('Call update to use storage.local for Edge browser');
+
+        var keys = [];
+        for (var key in localStorage) {
+            if (localStorage.hasOwnProperty(key) && key.indexOf('filterrules_') === 0) {
+                keys.push(key);
+            }
+        }
+
+        function writeFilterRules() {
+            if (keys.length === 0) {
+                localStorage[fixProperty] = true;
+                dfd.resolve();
+            } else {
+                var key = keys.shift();
+                var lines = [];
+                var value = localStorage[key];
+                if (value) {
+                    lines = value.split(/[\r\n]+/);
+                }
+                adguard.rulesStorageImpl.write(key, lines, function () {
+                    delete localStorage[key];
+                    writeFilterRules();
+                });
+            }
+        }
+
+        writeFilterRules();
+
+        return dfd;
+    }
+
+    /**
      * Mark 'adguard-filters' as installed and loaded on extension version update
      * @private
      */
@@ -501,6 +548,9 @@ adguard.applicationUpdateService = (function (adguard) {
         }
         if (adguard.utils.browser.isGreaterVersion("2.3.5", runInfo.prevVersion) && adguard.utils.browser.isChromium() && !adguard.utils.browser.isSafariBrowser()) {
             methods.push(onUpdateChromiumStorage);
+        }
+        if (adguard.utils.browser.isEdgeBrowser() && !adguard.utils.browser.isEdgeBeforeCreatorsUpdate()) {
+            methods.push(onUpdateEdgeRulesStorage);
         }
 
         var dfd = executeMethods(methods);

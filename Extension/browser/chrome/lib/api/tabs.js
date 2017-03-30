@@ -157,8 +157,8 @@ adguard.tabsImpl = (function (adguard) {
         var active = createData.active === true;
 
         if (createData.type === 'popup' &&
-            // Does not work properly in Insider builds
-            !adguard.utils.browser.isEdgeBrowser()) {
+            // Does not work properly in Anniversary builds
+            !adguard.utils.browser.isEdgeBeforeCreatorsUpdate()) {
             // https://developer.chrome.com/extensions/windows#method-create
             browser.windows.create({
                 url: url,

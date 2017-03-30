@@ -77,6 +77,31 @@ adguard.prefs = (function (adguard) {
         },
 
         /**
+         * https://msdn.microsoft.com/ru-ru/library/hh869301(v=vs.85).aspx
+         * @returns {*}
+         */
+        get edgeVersion() {
+            return adguard.lazyGet(Prefs, 'edgeVersion', function () {
+                if (this.browser === 'Edge') {
+                    var userAgent = navigator.userAgent;
+                    var i = userAgent.indexOf('Edge/');
+                    if (i < 0) {
+                        return {
+                            rev: 0,
+                            build: 0
+                        };
+                    }
+                    var version = userAgent.substring(i + 'Edge/'.length);
+                    var parts = version.split('.');
+                    return {
+                        rev: parseInt(parts[0]),
+                        build: parseInt(parts[1])
+                    };
+                }
+            });
+        },
+
+        /**
          * Makes sense in case of FF add-on only
          */
         speedupStartup: function () {
