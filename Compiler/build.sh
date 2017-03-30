@@ -7,9 +7,7 @@ if [[ ! ("$#" == 1) ]] || [[ ! ($1 = dev) && ! ($1 = release) && ! ($1 = beta) ]
     exit 2
 fi
 env=$1
-if [ -z $(which jpm 2> /dev/null) ] || [ -z $(which cfx 2> /dev/null) ]; then
-    echo "Release or beta bundle creation would fail, please install cfx and jpm utilities"
-fi
+
 mvn package
 if [ -d deploy ]; then
     cd deploy
@@ -26,29 +24,27 @@ if [ "$env" = release ]; then
     echo "Creating release builds..."
 
     destPath=../../Build/Release
+    branch=release
+    opts="--version=$version --branch=$branch --dest=$destPath"
 
     #chrome release zip for chrome.store
-    options="--version=$version --dest=$destPath --name=chromium --browser=chrome --pack=zip --update-filters=true"
+    options="$opts --browser=chrome --pack=zip --update-filters=true"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #opera release crx for addons.opera.com
-    options="--version=$version --dest=$destPath --name=opera --browser=chrome --pack=crx"
+    options="$opts --browser=chrome --pack=crx --name=opera"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
-    #firefox release xpi for amo
-    options="--version=$version --dest=$destPath --name=firefox-amo --browser=firefox --pack=xpi --extensionId=adguardadblocker@adguard.com --update-filters=true"
+    #firefox release for AMO (WebExt)
+    options="$opts --browser=firefox_webext --pack=xpi --extensionId=adguardadblocker@adguard.com --update-filters=true --remote-scripts=false"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
     
-    #firefox beta xpi for AMO
-    options="--version=$version-beta --dest=$destPath --name=firefox-amo --browser=firefox --pack=xpi --extensionId=adguardadblocker@adguard.com"
-    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
-
     #safari release for extensions.apple.com
-    options="--version=$version --dest=$destPath --name=Adguard --browser=safari  --extensionId=com.adguard.safari --update-url=https://chrome.adtidy.org/safari/updates.xml --update-filters=true"
+    options="$opts --browser=safari --pack=extz --extensionId=com.adguard.safari --update-filters=true"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
     
-    #edge
-    options="--version=$version --dest=$destPath --name=edge --browser=edge --pack=zip"
+    #edge release
+    options="$opts --browser=edge --pack=zip"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     echo "Release builds created"
@@ -59,29 +55,34 @@ elif [ "$env" = beta ]; then
 
     destPath=../../Build/Beta
     branch=beta
+    opts="--version=$version --branch=$branch --dest=$destPath"
 
     #chrome beta zip
-    options="--version=$version --branch=$branch --dest=$destPath --name=chromium-beta --browser=chrome --pack=zip"
+    options="$opts --browser=chrome --pack=zip"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #chrome beta crx
-    options="--version=$version --branch=$branch --dest=$destPath --name=chromium-beta --browser=chrome --pack=crx --update-url=https://chrome.adtidy.org/updates.xml"
+    options="$opts --browser=chrome --pack=crx --update-url=https://adguardteam.github.io/AdguardBrowserExtension/chrome_updates.xml"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
-    #firefox beta xpi
-    options="--version=$version --branch=$branch --dest=$destPath --name=firefox-standalone --browser=firefox --pack=xpi --extensionId=adguardadblockerbeta@adguard.com --update-url=https://chrome.adtidy.org/updates.rdf"
+    #firefox beta for AMO (WebExt)
+    options="$opts --browser=firefox_webext --pack=xpi --extensionId=adguardadblockerbeta@adguard.com --remote-scripts=false"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
-    #firefox beta legacy xpi
-    options="--version=$version --branch=legacy --dest=$destPath --name=legacy --browser=firefox --pack=xpi --extensionId=adguardadblockerlegacy@adguard.com --update-url=https://chrome.adtidy.org/updates.rdf"
+    #firefox beta (WebExt)
+    options="$opts --browser=firefox_webext --pack=xpi --extensionId=adguardadblockerbeta@adguard.com --update-url=https://adguardteam.github.io/AdguardBrowserExtension/firefox_updates.rdf"
+    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
+
+    #firefox beta (Legacy)
+    options="$opts --browser=firefox --pack=xpi --extensionId=adguardadblockerlegacy@adguard.com --update-url=https://adguardteam.github.io/AdguardBrowserExtension/firefox_updates.rdf"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #safari beta
-    options="--version=$version --branch=$branch --dest=$destPath --name=AdguardBeta --browser=safari  --extensionId=com.adguard.safaribeta --update-url=https://chrome.adtidy.org/safari/updates.xml"
+    options="$opts --browser=safari  --pack=extz --extensionId=com.adguard.safaribeta --update-url=https://adguardteam.github.io/AdguardBrowserExtension/safari_updates.xml"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
     
-    #edge
-    options="--version=$version --branch=$branch --dest=$destPath --name=edge --browser=edge --pack=zip"
+    #edge beta zip
+    options="$opts --browser=edge --pack=zip"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     echo "Beta builds created"
@@ -92,29 +93,34 @@ else
 
     destPath=../../Build/Dev
     branch=dev
+    opts="--version=$version --branch=$branch --dest=$destPath"
 
     #chrome
-    options="--version=$version --branch=$branch --dest=$destPath --name=chrome --browser=chrome"
+    options="$opts --browser=chrome"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
-    #firefox legacy
-    options="--version=$version --branch=$branch --dest=$destPath --name=firefox --browser=firefox --extensionId=adguardadblockerdev@adguard.com"
+    #firefox for AMO (WebExt)
+    options="$opts --browser=firefox_webext --extensionId=adguardadblockerdev@adguard.com --remote-scripts=false"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
-    #firefox webext
-    options="--version=$version --branch=$branch --dest=$destPath --name=firefox-webext --browser=firefox_webext --extensionId=adguardadblockerdev@adguard.com"
+    #firefox (WebExt)
+    options="$opts --browser=firefox_webext --extensionId=adguardadblockerdev@adguard.com"
+    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
+
+    #firefox (Legacy)
+    options="$opts --browser=firefox --extensionId=adguardadblockerdev@adguard.com"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #safari
-    options="--version=$version --branch=$branch --dest=$destPath --name=AdguardDev --browser=safari --extensionId=com.adguard.safaridev"
+    options="$opts --browser=safari --extensionId=com.adguard.safaridev"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #edge
-    options="--version=$version --branch=$branch --dest=$destPath --name=edge --browser=edge"
+    options="$opts --browser=edge"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     # chrome api
-    options="--version=$version --branch=$branch --dest=$destPath --name=chrome-api --browser=chrome --create-api=true"
+    options="$opts --browser=chrome  --name=chrome-api --create-api=true"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     echo "Dev builds created"

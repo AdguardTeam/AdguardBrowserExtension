@@ -481,7 +481,7 @@ adguard.applicationUpdateService = (function (adguard) {
     function loadApplicationPreviousVersion(callback) {
 
         var prevVersion = adguard.utils.browser.getAppVersion();
-        if (prevVersion || !adguard.utils.browser.isFirefoxBrowser()) {
+        if (prevVersion || adguard.prefs.platform !== 'firefox') {
             callback(prevVersion);
             return;
         }
@@ -543,7 +543,7 @@ adguard.applicationUpdateService = (function (adguard) {
         if (adguard.utils.browser.isGreaterVersion("2.0.10", runInfo.prevVersion)) {
             methods.push(onUpdateRuleHitStats);
         }
-        if (adguard.utils.browser.isGreaterVersion("2.1.2", runInfo.prevVersion) && adguard.utils.browser.isFirefoxBrowser()) {
+        if (adguard.utils.browser.isGreaterVersion("2.1.2", runInfo.prevVersion) && adguard.prefs.platform === 'firefox') {
             methods.push(onUpdateFirefoxStorage);
         }
         if (adguard.utils.browser.isGreaterVersion("2.3.5", runInfo.prevVersion) && adguard.utils.browser.isChromium() && !adguard.utils.browser.isSafariBrowser()) {

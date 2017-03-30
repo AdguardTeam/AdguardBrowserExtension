@@ -487,7 +487,7 @@
                 case UrlFilterRule.IMPORTANT_OPTION:
                     this.isImportant = true;
                     break;
-                case UrlFilterRule.NOT_MARK + UrlFilterRule.IMPORTANT_OPTION:
+                case api.FilterRule.NOT_MARK + UrlFilterRule.IMPORTANT_OPTION:
                     this.isImportant = false;
                     break;
                 case UrlFilterRule.ELEMHIDE_OPTION:
