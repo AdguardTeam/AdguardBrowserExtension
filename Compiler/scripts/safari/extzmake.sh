@@ -12,20 +12,20 @@
 [ "$(uname)" == "Darwin" ] && { shopt -s expand_aliases; alias readlink=greadlink; }
 
 curdir="$( cd "$( dirname "$( readlink -f "${BASH_SOURCE[0]}" )" )/" && pwd )"
-certdir="${curdir}/certs"
+certdir="$2"
 xar="${curdir}/xar"
 
-# Allow override through environment variables
-[ -n "$XARPATH" ] && xar="$XARPATH"
-[ -n "$CERTDIR" ] && certdir="$CERTDIR"
+## Allow override through environment variables
+#[ -n "$XARPATH" ] && xar="$XARPATH"
+#[ -n "$CERTDIR" ] && certdir="$CERTDIR"
 
 if [ ! -x "${xar}" ] ; then
     echo "${xar} is not an executable!"
     exit 10
 fi
 
-if [ $# == 0 ] ; then
-    echo "Usage: $0 path/to/name.safariextension/"
+if [[ !($# == 2) ]] ; then
+    echo "Usage: $0 path/to/name.safariextension/ path/to/certs_dir/"
     exit 1
 fi
 # Resolve relative paths, get rid of trailing slashes, validate path
@@ -102,5 +102,6 @@ openssl rsautl -sign -inkey "${certdir}/key.pem" -in tmp-digest.dat -out tmp-sig
 "${xar}" --inject-sig tmp-sig.dat -f "${extzfile}"
 
 rm -f tmp-sig.dat tmp-digest.dat
+rm -f $sigsizefile
 
 echo "Built ${extzfile}"
