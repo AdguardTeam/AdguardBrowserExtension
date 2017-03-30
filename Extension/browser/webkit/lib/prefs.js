@@ -44,6 +44,8 @@ adguard.prefs = (function (adguard) {
                     browser = "Opera";
                 } else if (userAgent.indexOf("Safari") >= 0 && userAgent.indexOf('Chrome') < 0) {
                     browser = "Safari";
+                } else if (userAgent.indexOf("Firefox") >= 0) {
+                    browser = "Firefox";
                 } else {
                     browser = "Chrome";
                 }

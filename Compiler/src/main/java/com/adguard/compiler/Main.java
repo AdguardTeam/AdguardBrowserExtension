@@ -33,13 +33,11 @@ public class Main {
     private static final String CRX_MAKE_PATH = "../scripts/chrome/crxmake.sh";
     private static final String ZIP_MAKE_PATH = "../scripts/chrome/zipmake.sh";
     private static final String XPI_MAKE_PATH = "../scripts/firefox/xpimake.sh";
-    private static final String XPI_CFX_MAKE_PATH = "../scripts/firefox/xpimake.sh";
     private static final File CHROME_CERT_FILE = new File("../../extensions/AdguardBrowserExtension/certificate.pem");
 
     private static final String PACK_METHOD_ZIP = "zip";
     private static final String PACK_METHOD_CRX = "crx";
-    private static final String PACK_METHOD_XPI_JPM = "xpi_jpm";
-    private static final String PACK_METHOD_XPI_CFX = "xpi_cfx";
+    private static final String PACK_METHOD_XPI = "xpi";
 
     /**
      * Script for building extension
@@ -107,11 +105,8 @@ public class Main {
             } else if (PACK_METHOD_CRX.equals(packMethod)) {
                 packedFile = PackageUtils.createCrx(CRX_MAKE_PATH, buildResult, CHROME_CERT_FILE);
                 FileUtils.deleteQuietly(buildResult);
-            } else if (PACK_METHOD_XPI_JPM.equals(packMethod)) {
+            } else if (PACK_METHOD_XPI.equals(packMethod)) {
                 packedFile = PackageUtils.createXpi(XPI_MAKE_PATH, buildResult);
-                FileUtils.deleteQuietly(buildResult);
-            } else if (PACK_METHOD_XPI_CFX.equals(packMethod)) {
-                packedFile = PackageUtils.createXpi(XPI_CFX_MAKE_PATH, buildResult);
                 FileUtils.deleteQuietly(buildResult);
             }
         }
@@ -164,8 +159,8 @@ public class Main {
             return false;
         }
 
-        if (extensionId == null && (browser == Browser.FIREFOX || browser == Browser.FIREFOX_LEGACY || browser == Browser.PALEMOON)) {
-            log.error("Set --extensionId for Firefox/PaleMoon build");
+        if (extensionId == null && (browser == Browser.FIREFOX_LEGACY || browser == Browser.FIREFOX_WEBEXT)) {
+            log.error("Set --extensionId for Firefox build");
             return false;
         }
 
@@ -202,10 +197,8 @@ public class Main {
 
         String extensionNamePostfix = "";
         if (StringUtils.isNotEmpty(branch)) {
-            if (browser == Browser.FIREFOX && "beta".equals(branch)) {
+            if (browser == Browser.FIREFOX_WEBEXT && "beta".equals(branch)) {
                 extensionNamePostfix = " (Standalone)";
-            } else if (browser == Browser.PALEMOON && "beta".equals(branch)) {
-                extensionNamePostfix = "";
             } else {
                 extensionNamePostfix = " (" + StringUtils.capitalize(branch) + ")";
             }
@@ -217,14 +210,24 @@ public class Main {
             LocaleUtils.updateExtensionNameForChromeLocales(dest, extensionNamePostfix);
         }
 
-        if (browser == Browser.FIREFOX || browser == Browser.FIREFOX_LEGACY || browser == Browser.PALEMOON) {
-            LocaleUtils.writeLocalesToFirefoxInstallRdf(dest, extensionNamePostfix);
+        if (browser == Browser.FIREFOX_LEGACY) {
+            LocaleUtils.writeLocalesToFirefoxInstallRdf(source, dest, extensionNamePostfix);
             LocaleUtils.writeLocalesToChromeManifest(dest);
 
             //TODO: This is the temp fix to avoid long time AMO review
             //Should be removed after merge with
             //https://github.com/AdguardTeam/AdguardBrowserExtension/pull/421
             SettingUtils.updatePreloadRemoteScriptRules(dest, branch);
+        }
+
+        if (browser == Browser.FIREFOX_WEBEXT) {
+            File webExtensionDest = new File(dest, "webextension");
+            // Update name and short_name in messages.json
+            LocaleUtils.updateExtensionNameForChromeLocales(webExtensionDest, extensionNamePostfix);
+            // Write localized strings to install.rdf
+            LocaleUtils.writeLocalesToFirefoxInstallRdf(source, dest, extensionNamePostfix);
+            // Remote scripts issue
+            SettingUtils.updatePreloadRemoteScriptRules(webExtensionDest, branch);
         }
 
         if (createApi) {
@@ -252,16 +255,10 @@ public class Main {
             case SAFARI:
                 log.error("Safari doesn't support pack methods. Pack extension manually.");
                 return false;
-            case FIREFOX:
-                if (!PACK_METHOD_XPI_JPM.equals(packMethod)) {
-                    log.error("Firefox support only xpi pack methods");
-                    return false;
-                }
-                return true;
             case FIREFOX_LEGACY:
-            case PALEMOON:
-                if (!PACK_METHOD_XPI_CFX.equals(packMethod)) {
-                    log.error("Firefox/PaleMoon support only xpi through cfx pack method");
+            case FIREFOX_WEBEXT:
+                if (!PACK_METHOD_XPI.equals(packMethod)) {
+                    log.error("Firefox support only xpi pack methods");
                     return false;
                 }
                 return true;

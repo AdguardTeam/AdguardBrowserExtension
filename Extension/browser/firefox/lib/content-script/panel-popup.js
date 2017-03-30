@@ -14,9 +14,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var controller = new PopupController({
-    platform: 'firefox'
-});
+
+/* global PopupController, contentPage */
+
+var controller = new PopupController();
 
 //override
 controller.afterRender = function () {

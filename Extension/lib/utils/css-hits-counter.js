@@ -55,6 +55,9 @@ var CssHitsCounter = (function () { // jshint ignore:line
 
             var element = elements[i];
             var style = getComputedStyle(element);
+            if (!style) {
+                continue;
+            }
             var content = style.content;
             if (!content || content.indexOf(CONTENT_ATTR_PREFIX) < 0) {
                 continue;

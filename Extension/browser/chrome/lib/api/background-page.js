@@ -245,6 +245,11 @@ var browser = window.browser || chrome;
 
         addListener: function (callback) {
 
+            // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webNavigation/onCreatedNavigationTarget#Browser_compatibility
+            if (typeof browser.webNavigation.onCreatedNavigationTarget === 'undefined') {
+                return;
+            }
+
             browser.webNavigation.onCreatedNavigationTarget.addListener(function (details) {
 
                 if (details.tabId === -1) {

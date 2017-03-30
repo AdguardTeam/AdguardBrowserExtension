@@ -60,51 +60,60 @@ public class SettingUtils {
         switch (browser) {
             case CHROMIUM:
             case EDGE:
-                File manifestFile = new File(dest, "manifest.json");
-                String content = FileUtils.readFileToString(manifestFile, "utf-8").trim();
-                if (updateUrl != null) {
-                    content = StringUtils.removeEnd(content, "}").trim();
-                    content = content + ",\r\n\r\n";
-                    content = content + "\t\"update_url\": \"" + updateUrl + "\"\r\n}";
-                }
-                content = StringUtils.replace(content, "${version}", version);
-                FileUtils.writeStringToFile(manifestFile, content, "utf-8");
+                updateManifestJsonFile(dest, version, extensionId, updateUrl);
                 break;
             case SAFARI:
-                File infoPlistFile = new File(dest, "Info.plist");
-                String contentInfoPlist = FileUtils.readFileToString(infoPlistFile, "utf-8");
-                contentInfoPlist = StringUtils.replace(contentInfoPlist, "${extensionId}", extensionId);
-                contentInfoPlist = StringUtils.replace(contentInfoPlist, "${version}", version);
-                contentInfoPlist = StringUtils.replace(contentInfoPlist, "${updateURL}", updateUrl != null ? updateUrl : "");
-                String updateFromGallery = StringUtils.contains(extensionId, "beta") ? "false" : "true";
-                contentInfoPlist = StringUtils.replace(contentInfoPlist, "${updateFromGallery}", updateFromGallery);
-                contentInfoPlist = StringUtils.replace(contentInfoPlist, "${extensionNamePostfix}", extensionNamePostfix);
-                FileUtils.writeStringToFile(infoPlistFile, contentInfoPlist, "utf-8");
+                updateInfoPlistFile(dest, version, extensionId, updateUrl, extensionNamePostfix);
                 break;
-            case FIREFOX:
             case FIREFOX_LEGACY:
-            case PALEMOON:
-                File installRdf = new File(dest, "install.rdf");
-                String contentRdf = FileUtils.readFileToString(installRdf, "utf-8").trim();
-                //write update url link
-                if (updateUrl == null) {
-                    updateUrl = "";
-                } else {
-                    updateUrl = "<em:updateURL>" + updateUrl + "</em:updateURL>";
-                }
-                contentRdf = StringUtils.replace(contentRdf, "${updateUrl}", updateUrl);
-                contentRdf = StringUtils.replace(contentRdf, "${version}", version);
-                contentRdf = StringUtils.replace(contentRdf, "${extensionId}", extensionId);
-                FileUtils.writeStringToFile(installRdf, contentRdf, "utf-8");
-                //write version
-                File packageJson = new File(dest, "package.json");
-                String contentPackageJson = FileUtils.readFileToString(packageJson, "utf-8");
-                contentPackageJson = StringUtils.replace(contentPackageJson, "${version}", version);
-                contentPackageJson = StringUtils.replace(contentPackageJson, "${extensionId}", extensionId);
-                contentPackageJson = StringUtils.replace(contentPackageJson, "${extensionNamePostfix}", extensionNamePostfix);
-                FileUtils.writeStringToFile(packageJson, contentPackageJson, "utf-8");
+                updateInstallRdfFile(dest, version, extensionId, updateUrl);
+                break;
+            case FIREFOX_WEBEXT:
+                File webExtensionDest = new File(dest, "webextension");
+                updateManifestJsonFile(webExtensionDest, version, extensionId, updateUrl);
+                updateInstallRdfFile(dest, version, extensionId, updateUrl);
                 break;
         }
+    }
+
+    private static void updateManifestJsonFile(File dest, String version, String extensionId, String updateUrl) throws IOException {
+        File manifestFile = new File(dest, "manifest.json");
+        String content = FileUtils.readFileToString(manifestFile, "utf-8").trim();
+        if (updateUrl != null) {
+            content = StringUtils.removeEnd(content, "}").trim();
+            content = content + ",\r\n\r\n";
+            content = content + "\t\"update_url\": \"" + updateUrl + "\"\r\n}";
+        }
+        content = StringUtils.replace(content, "${version}", version);
+        content = StringUtils.replace(content, "${extensionId}", extensionId);
+        FileUtils.writeStringToFile(manifestFile, content, "utf-8");
+    }
+
+    private static void updateInstallRdfFile(File dest, String version, String extensionId, String updateUrl) throws IOException {
+        File installRdf = new File(dest, "install.rdf");
+        String content = FileUtils.readFileToString(installRdf, "utf-8").trim();
+        //write update url link
+        if (updateUrl == null) {
+            updateUrl = "";
+        } else {
+            updateUrl = "<em:updateURL>" + updateUrl + "</em:updateURL>";
+        }
+        content = StringUtils.replace(content, "${updateUrl}", updateUrl);
+        content = StringUtils.replace(content, "${version}", version);
+        content = StringUtils.replace(content, "${extensionId}", extensionId);
+        FileUtils.writeStringToFile(installRdf, content, "utf-8");
+    }
+
+    private static void updateInfoPlistFile(File dest, String version, String extensionId, String updateUrl, String extensionNamePostfix) throws IOException {
+        File infoPlistFile = new File(dest, "Info.plist");
+        String content = FileUtils.readFileToString(infoPlistFile, "utf-8");
+        content = StringUtils.replace(content, "${extensionId}", extensionId);
+        content = StringUtils.replace(content, "${version}", version);
+        content = StringUtils.replace(content, "${updateURL}", updateUrl != null ? updateUrl : "");
+        String updateFromGallery = StringUtils.contains(extensionId, "beta") ? "false" : "true";
+        content = StringUtils.replace(content, "${updateFromGallery}", updateFromGallery);
+        content = StringUtils.replace(content, "${extensionNamePostfix}", extensionNamePostfix);
+        FileUtils.writeStringToFile(infoPlistFile, content, "utf-8");
     }
 
     /**
@@ -119,10 +128,9 @@ public class SettingUtils {
      * @param branch branch name (release/beta/dev)
      */
     public static void updatePreloadRemoteScriptRules(File dest, String branch) throws Exception {
-        if ("beta".equals(branch)
-                || "dev".equals(branch)
-                || "legacy".equals(branch)
-                || "dev-legacy".equals(branch)) {
+        if ("beta".equals(branch) ||
+                "dev".equals(branch) ||
+                "legacy".equals(branch)) {
 
             String replaceClauseTemplate = "if (!isFirefox && !isOpera) {";
 
