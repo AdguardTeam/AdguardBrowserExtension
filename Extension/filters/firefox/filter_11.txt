@@ -1,6 +1,6 @@
-! Checksum: ZT79Wy9t1KL1aukaybiD3g
-! Version: 1.0.7.41
-! TimeUpdated: 2017-03-15T21:01:47.425+04:00
+! Checksum: vR8JuPXewn7mV2Kzu0rkLQ
+! Version: 1.0.7.63
+! TimeUpdated: 2017-03-30T13:02:02.364+04:00
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
 ! Title: Adguard Mobile Ads Filter
@@ -26,6 +26,13 @@
 !
 ! Section contains list of advertising networks
 !
+||clickkydsp.com^
+||bidsopt.com^
+||tpbid.com^
+||exe.bid^
+||ssphwy.com^
+||hyperadx.com^
+||admarvel.com^
 ||mopub-win-us-east.bksn.se^
 ||nativead.s3.amazonaws.com^
 ||adserver.*.yahoodns.net^
@@ -38,7 +45,6 @@
 ||setting.rayjump.com^
 ||ad.myinstashot.com^
 ||net.rayjump.com^
-||mtdata*.ru$third-party
 ||95.213.231.34^$third-party
 ||ad.cauly.co.kr^
 ||config.appjolt.com
@@ -714,7 +720,8 @@
 ! https://github.com/AdguardTeam/AdguardForiOS/issues/255
 @@||m.beautypageants.in^$elemhide
 !
-!
+! https://forum.adguard.com/index.php?threads/20215/
+@@||smedia2.intoday.in/aajtak_pwapp$script
 ! https://forum.adguard.com/index.php?threads/19885/
 ||m.eisamay.com/detector.cms
 ! https://forum.adguard.com/index.php?threads/19892/
@@ -724,7 +731,7 @@
 ! https://forum.adguard.com/index.php?threads/15379/
 @@||static.expressbpd.com/rsjs/ads.js
 ! https://forum.adguard.com/index.php?threads/15378/
-@@||ads.dainikbhaskar.com/*ads
+@@||ads.dainikbhaskar.com/AdTech/ads/ads.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3067
 @@||javadecompilers.com^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3067
@@ -774,6 +781,8 @@ westseattleblog.com#@#.header-ad
 !
 ! Extended CSS rules
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/1304
+spaces.ru##body.touch div.main#siteContent > div[class]:not([id]) > div[class][-ext-has='script[src*="http://mtdata"]']
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3218
 lenfilm.tv##body > div.rek[-ext-has="div"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/1748
@@ -807,6 +816,8 @@ m.reddit.com##article[class="Post size-compact"][-ext-has=".PostHeader__sponsore
 all-tor.net,free-rutor.org,lenfilm.tv,krutor.org,fast-bit.org,tor-ru.net,hd-bit.org,radikal.ru,hdkinomax.com,on-movie.net,fastpic.ru,rutor.is,baskino.club,rutor.info,nnm.me,korzik.net,seasonvar.ru,rsload.net,nnm-club.me,nnmclub.to,rustorka.com,auto.mail.ru,horo.mail.ru,realty.mail.ru,health.mail.ru,afisha.mail.ru,cloud.mail.ru,otvet.mail.ru,pogoda.mail.ru,sport.mail.ru,tv.mail.ru,torg.mail.ru,cars.mail.ru,hi-tech.mail.ru,rustorka.com,top-tor.org,super-tor.net,filmix.net,free-ru.org#%#window.WebSocket = undefined;
 ! https://forum.adguard.com/index.php?threads/12443/
 pornhub.com#%#AG_onLoad(function() { if (typeof redirect !== 'function') return; var str = redirect.toString(); var m = str.match(/\'(\/view.*)\'/); if (m.length != 2) return; var link = m[1]; window.location.href = m[1]; });
+! 4pda.ru
+4pda.ru#%#AG_onLoad(function() { try { jQuery('header#header+div[id] > div[class*=" "]~div:empty+div:empty+div:empty+div[class*=" "] > section > article > article.post > div.visual > a').remove(); } catch (ex) {} });
 !#################
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4360
@@ -904,7 +915,12 @@ deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important
 @@||tf-robots.nl^$elemhide,jsinject,content
 !
 !#####################
-!
+! https://github.com/AdguardTeam/AdguardFilters/issues/4659
+@@||report-ads-to.pubnation.com/dist/pnr.js?t=$domain=m.neogaf.com
+! https://github.com/AdguardTeam/AdguardDNS/issues/64
+! Fixing Google Search ads when HTTPS filtering is disabled
+@@://googleadservices.com
+@@://www.googleadservices.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4453
 @@||15min.lt^$generichide
 15min.lt#@#.widget.ads
@@ -1091,6 +1107,22 @@ m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"
 ! https://forum.adguard.com/index.php?threads/10464/
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
 !
+rbc.ru##.banners__wrap-article
+m.timesofindia.com##.ad1
+eenaduindia.com##[class^="Adv-"]
+eenaduindia.com##div[style="width:100%;text-align:center;margin:10px 0;"]
+afaqs.com##.topban-container
+m.lenta.ru##.b-list-item_advert
+m.neogaf.com###neogaf_mobile-header
+||m.flowcodeapp.com^$domain=wumaow.com
+dailyo.in##div[id^="taboola_mob"]
+||media.mensxp.com/mxmeg/
+mensxp.com##style[type="text/css"] + div[class]:not([id]):not([style]):not([class*=" "])
+aajtak.in##.mobileAd
+aajtak.in##.adsection
+||m.quankan.tv/js/dibu.js
+spaces.ru##body.touch_light #index_page > div.wrapper+div[id][class]
+spaces.ru##body.mobile #index_page > div.wrapper+div[id][class]
 eurogamer.net##.mobile-mpu-wrapper
 eurogamer.net###mobile-leaderboard
 merriam-webster.com##.mobile-fixed-ad
@@ -1320,6 +1352,8 @@ login.wi-fi.ru#%#window.isPremium = true;
 ||googleads.g.doubleclick.net/mads/gma?carrier=$app=com.devexpert.weather,important,replace=/\<script\>[\s\S]*\<\/script\>/
 !
 ! Blocking of Facebook ads
+||graph.facebook.com^$app=es.rafalense.themes
+||graph.facebook.com^$app=com.xoopsoft.apps.bundesliga.free
 ||graph.facebook.com^$app=com.trungpt.video.download
 ||graph.facebook.com^$app=com.devexpert.weather
 ||graph.facebook.com^$app=com.eterno
@@ -1339,6 +1373,13 @@ login.wi-fi.ru#%#window.isPremium = true;
 ||graph.facebook.com^$app=fr.meteo
 ||graph.facebook.com^$app=io.casper.android
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/4645
+||adserver.shadow.snapads.com^
+||ads-chunks.prod.ihrhls.com^
+! https://github.com/AdguardTeam/AdguardFilters/issues/4644
+||api.hh.ru/banners_targeting
+! https://forum.adguard.com/index.php?threads/le-bon-coin-apk-from-googleplay.18840/ fix ?ad_id= in Liste FR
+@@||mobile.leboncoin.fr/templates/api/view.json?ad_id=$app=fr.leboncoin
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4572
 ||config.ioam.de^$app=com.netbiscuits.kicker
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4572
@@ -1508,6 +1549,12 @@ login.wi-fi.ru#%#window.isPremium = true;
 !
 ! Section contains rules for mobile analytics and spyware
 !
+||geoip.ifunny.co^
+||alogs.umeng.com^
+||alogs.umengcloud.com^
+||stats.umsns.com^
+||mobileanalytics.*.amazonaws.com^
+||device-metrics-*.amazon.com^
 ||flurry.agentportal.*.yahoodns.net^
 ||analytics.rayjump.com^
 ||api.appsflyer.com^
@@ -1703,6 +1750,11 @@ login.wi-fi.ru#%#window.isPremium = true;
 ! Section contains rules, which absent in mobile version of filters
 !
 !--- Russian filter ---
+! 4pda.ru ads
+! https://github.com/AdguardTeam/AdguardFilters/issues/4692
+forum.exploit.in##body > div > table[align="center"] a[rel$="nofollow"] > img
+! https://forum.adguard.com/index.php?threads/13627/
+vfl.ru##a[href^="http://optimizator.ru/"]
 ! https://forum.adguard.com/index.php?threads/17787/
 forum.saransk.ru##div[class^="banner_zone"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3796

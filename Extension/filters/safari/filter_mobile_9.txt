@@ -1,6 +1,6 @@
-! Checksum: bFP5UK2Cm4Cj2MYikoHjoA
-! Version: 1.0.86.58
-! TimeUpdated: 2017-03-09T15:01:42.549+04:00
+! Checksum: 5irVBw55Xye/64YHMmeURg
+! Version: 1.0.86.59
+! TimeUpdated: 2017-03-23T17:01:53.730+04:00
 ! Title: Spanish/Portuguese filter
 ! Description: Adguard Spanish/Portuguese filter. Filter list that specifically removes adverts on Spanish and Portuguese language websites.
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
@@ -138,6 +138,7 @@
 ||xclk-integracion.com^$third-party
 ||yestorrents.org^$third-party
 ||zebestof.com^$third-party
+zonasports.me#%#var baseCreateElement = document.createElement.bind(document); document.createElement = function(name) { var el = baseCreateElement(name); if(name != 'span') { return el; } else { Object.defineProperty(el, 'innerHTML', { set: function(text) { if(/^(<a id="[^"]*"><\/a>)*$/.test(text)) { throw new Error(); } Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML').set.call(el, text); }, get: function() { return el.innerHTML; } }); return el; }};
 @@||tabletsesmartphones.org^$generichide
 ||tinypass.com/xbuilder/experience/load?$script,domain=a
 @@||diariovasco.com/comun/js/*/adframe.js
@@ -337,6 +338,8 @@ _publicidade.
 _publicidade_
 _publicitario.
 http://adw.
+zonasports.me##iframe[src^="http://zonasports.at.ua/"]
+zonasports.me##iframe[src^="http://zonasports.at.ua/"] + p
 tabletsesmartphones.org##.banner-336x280
 reelworldfilmfest.com##.film-social
 ig.com.br###BF6F388D-5A38-457D-991A-A827E8F29D58

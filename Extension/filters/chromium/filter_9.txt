@@ -1,6 +1,6 @@
-! Checksum: Ma+R//UFZRB3kAuSg8u27g
-! Version: 1.0.86.58
-! TimeUpdated: 2017-03-09T15:01:42.549+04:00
+! Checksum: IGqQQqKnnBMNbHoizYTXwA
+! Version: 1.0.86.59
+! TimeUpdated: 2017-03-23T17:01:53.730+04:00
 ! Title: Spanish/Portuguese filter
 ! Description: Adguard Spanish/Portuguese filter. Filter list that specifically removes adverts on Spanish and Portuguese language websites.
 ! Title: Adguard Spanish/Portuguese Filter.
@@ -166,6 +166,8 @@
 !
 ! These rules are against anti-adblock scripts
 !
+! https://forum.adguard.com/index.php?threads/http-zonasports-me.20289/
+zonasports.me#%#var baseCreateElement = document.createElement.bind(document); document.createElement = function(name) { var el = baseCreateElement(name); if(name != 'span') { return el; } else { Object.defineProperty(el, 'innerHTML', { set: function(text) { if(/^(<a id="[^"]*"><\/a>)*$/.test(text)) { throw new Error(); } Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML').set.call(el, text); }, get: function() { return el.innerHTML; } }); return el; }};
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4538
 @@||tabletsesmartphones.org^$generichide
 ! https://forum.adguard.com/index.php?threads/18891/
@@ -433,6 +435,8 @@ http://adw.
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
 !
+zonasports.me##iframe[src^="http://zonasports.at.ua/"]
+zonasports.me##iframe[src^="http://zonasports.at.ua/"] + p
 tabletsesmartphones.org##.banner-336x280
 reelworldfilmfest.com##.film-social
 ig.com.br###BF6F388D-5A38-457D-991A-A827E8F29D58

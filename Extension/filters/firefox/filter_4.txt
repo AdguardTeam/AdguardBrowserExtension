@@ -1,6 +1,6 @@
-! Checksum: LxsCUobbtq7URgSrTW3SSg
-! Version: 1.0.17.89
-! TimeUpdated: 2017-03-16T12:00:50.894+04:00
+! Checksum: kYWibBrhOtJY5lZmPf6XbQ
+! Version: 1.0.18.21
+! TimeUpdated: 2017-03-29T18:00:46.955+04:00
 ! Title: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
 ! Title: Adguard Social Media Filter
@@ -27,6 +27,7 @@
 !
 ! This section contains rules for common trackers/buttons
 !
+||widget.pushbullet.com^$third-party
 ||youtube.com/subscribe_embed?$third-party
 ||addnow.com/widget/$third-party
 ||addthis.com^$third-party,domain=~civilization.com|~imgur.com
@@ -154,12 +155,19 @@
 ||yandex.st/share/share.js$domain=~24auto.ru|~calculatewater.ru|~novoeradio.by|~pikucha.ru|~realty.dmir.ru|~transport.mos.ru|~yandex.com|~yandex.ru|~yandex.ua
 ||yastatic.net/*/share.js$third-party,domain=~alexey-osipov.ru|~avtodispetcher.ru|~fanserials.tv|~yandex.by|~yandex.kz|~yandex.ru|~yandex.ua
 ||youtube.com/subscribe_widget$third-party
+!
+||story.kakao.com/s/follow?$third-party
+||share.naver.net/js/naver_sharebutton.js^$third-party
+||developers.band.us/js/share/band-button.js^$third-party
+||media.line.me/js/line-button.js^$third-party
+||cp.news.search.daum.net/api/publish.json^
 !-------------------------------------------------------------------------------!
 !-------------- Unsorted urls --------------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
 ! Contains usorted urls
 !
+||flipboard.com/web/buttons/$third-party
 ||embed.tumblr.com/widgets/share/button$third-party
 ||platform.tumblr.com/v2/follow_button.html$third-party
 /plugins/content/jllikepro/js/buttons.
@@ -202,7 +210,7 @@
 /sharebox.min.js
 /sharedaddy/sharing.js
 /sharing_buttons.js
-/social-likes.min.js$domain=~animalreader.ru|~ichip.ru|~keddr.com|~kino-max.com|~kino24x7.com|~make-3d.ru|~miuipro.ru|~omelchuck.ru|~podfm.ru|~serial-online.com|~sputniknews.com|~trinixy.ru
+/social-likes.min.js$domain=~sputnik-news.ee|~animalreader.ru|~ichip.ru|~keddr.com|~kino-max.com|~kino24x7.com|~make-3d.ru|~miuipro.ru|~omelchuck.ru|~podfm.ru|~serial-online.com|~sputniknews.com|~trinixy.ru
 /social_networks.js
 /socialbar-js.php
 /socialbuttons.js
@@ -234,12 +242,24 @@ _social-button-
 _social-buttons-
 images/livejournal
 lj_bookmarklet
+!
+/btn_sns_$image
+/icon_kakao.
+/send_kakaotalk.
+/image2006/default/facebook.gif^
+/image2006/default/google.gif^
+/image2006/default/me2day.gif^
+/image2006/default/msn.gif^
+/image2006/default/naver.gif^
+/image2006/default/Twitter.gif^
+/image2006/default/yozm.gif^
 !---------------------------------------------------------------------------!
 !-------------- Extended CSS rules -----------------------------------------!
 !---------------------------------------------------------------------------!
 !
 ! Extended CSS rules
 !
+schwaebische.de##aside > .grey[-ext-has='>div.fb-page']
 filmlobisi.com###sidebar > .sidebarborder[-ext-has='div.g-page']
 geektimes.ru##.sidebar_right > div.default-block_sidebar[-ext-has="div.default-block__content > div#facebook_like_box"]
 geektimes.ru##.sidebar_right > div.default-block_sidebar[-ext-has="div.default-block__content > div#vk_groups"]
@@ -323,6 +343,10 @@ takprosto.cc#%#document.cookie = "popup_displayed=true";
 !-------------------
 !-------CSS---------
 !-------------------
+! https://github.com/AdguardTeam/AdguardFilters/issues/4655
+onlinemschool.com#$#.share_buttons { position: absolute!important; left: -3000px!important; }
+! https://forum.adguard.com/index.php?threads/ofpof-com.20190/
+ofpof.com#$#.sosyal-sabitle {visibility:hidden!important;}
 ! https://forum.adguard.com/index.php?threads/http-muzikindirco-com.18955/
 muzikindirco.com#$#.track-faq {padding-top: 60px!important;}
 ! https://forum.adguard.com/index.php?threads/18884/
@@ -347,6 +371,9 @@ maskme.ru#$#img[width="88"][height="31"] {visibility: hidden!important;}
 !
 gamesradar.com#$#.shareSocialArticle-wrap { visibility: hidden; }
 softwares-serials.in#$##FTslide { visibility: hidden;!important; }
+!
+m.media.daum.net,m.sports.media.daum.net#$#.wrap_share { min-height: auto!important; }
+m.tf.co.kr#$#li.sBtn_reply { float: initial!important; display: inline-block!important; }
 !-------------------
 !-------HTML--------
 !-------------------
@@ -363,6 +390,44 @@ softwares-serials.in#$##FTslide { visibility: hidden;!important; }
 ||mimimi.tv/?*=*&_=
 ||mindspace.ru/?*=*&_=
 !
+cosmo.ru##.sharing-div
+spielesite.com##.social-sharing-buttons
+||spielesite.com/*/share/?ref
+symantec.com##[data-share-config="controller.shareConfig"]
+symantec.com##.action-links
+cevapla.tv##.sci
+haber2000.com##.sosyal2
+newizv.ru##.share-popups-component
+angrycitizen.ru##.socials-block
+mirror.co.uk##.mod-socialFollow
+mirror.co.uk##.sharebar
+eonline.com##.cs-share
+outlookindia.com##iframe[src="http://www.outlookindia.com/dialog_slides/facebook.php"]
+outlookindia.com##.social-links
+outlookindia.com##.addthis_button
+womanadvice.ru###socialsticky
+medyascope.tv##.social-listing
+medyascope.tv###tab-share
+mockupworld.co##.checkout-share
+otukenim.tv##.sociaPayLasim
+hdfulltekpart.net##.sosyal_buton
+yasam.1001kadin.com##.social
+revolvy.com###quiz_share_btns
+revolvy.com###fb_like_pop
+gadgetsnow.com##.leftsocial
+fiat.com.tr##.NoJSSMContainer
+infowars.com##.cresta-share-icon
+androidcentral.com##.mn_mbn_share
+riafan.ru##.share
+fun01.net###win_like_mask
+fun01.net###win_like
+boredpanda.com##.fb-custom-share-mobile
+paratic.com###paraticPostShareButtons
+ofpof.com##.resim-boyutu-fix > div[onmouseover^="GaleriFacebookGoster"]
+ofpof.com###tablet-mobil-sosyal-ust
+metro.us##.social-share-icons
+fortuneturkey.com##a[data-flip-widget="flipit"]
+xda-developers-forum.blogspot.com##.post-share-buttons
 unvan.az##.fbsmallshare
 turkcell.com.tr##.hero-social
 putlockertv.is##.menu-box > h2:first-of-type
@@ -529,7 +594,6 @@ adme.ru###js-article-share-top
 surfingbird.ru###js-share
 nhk.or.jp###js-social-btns
 ulusalses.com###kdfbplug
-haberevet.com,savunmaveteknoloji.com###koddostu-face8
 sondakikahaberleri.info.tr###koddostu_facebook_begen
 sarkisarki.com###konular > .icerik + .kutu
 ripten.com###leftcontainerBox
@@ -1397,7 +1461,6 @@ anadolugazetesi.net##.sosyal > a[onclick][href]
 bedavafilmizleyin.org##.sosyal-aglar
 yookartik.com##.sosyal-paylas
 filmiizle.gen.tr##.sosyal-paylasim > a[title]
-ofpof.com##.sosyal-sabitle
 buguzelsozler.net##.sosyal-yan
 scroll.com.tr##.sosyalAglar
 dizibilgi.net,dizibilgi.tv,esekadam.com,kadinextra.com,sempatiklopedi.com##.sosyal_buton
@@ -1800,12 +1863,72 @@ lcpdfr.com##ul[data-controller$="sharelink"]
 ||workingkeys.org/wp-content/plugins/social-locker/
 ||wow.ya.ru/ajax/share-counter.xml$third-party
 ||yandex.st/share/static/b-share-icon.png
+!
+biz.chosun.com###article_sns2014
+cafe.daum.net##.sns_comm
+dailian.co.kr##.view_title_sub_sns
+edaily.co.kr##.leftSNS
+ekn.kr##.util2 > ul > li.tit
+etnews.com##.sns_btn
+etnews.com##li[class^="sns2_"]
+hankookilbo.com##.snsGroup > ul > li[sipujs]:not([sipujs="URL-SHARE"])
+health.chosun.com##.left_aside_sns > li:not(.cmt)
+hubnews.co.kr##.view_share
+imnews.imbc.com##div[class="share fixed"]
+insight.co.kr##.fixedhead-share
+khan.co.kr##.articlek_share_wrap
+khan.co.kr##.social_btm
+m.chosun.com##.sns_area
+m.dailian.co.kr##.responsive_col1 > .h3_area:nth-child(3)
+m.gobalnews.com##.sns-list
+m.health.chosun.com##.sharing
+m.joseilbo.com##.sns_icon_set
+m.kmib.co.kr##.article_sns
+m.newspim.com##.snslink
+m.ohmynews.com##.app_move_box
+m.pann.nate.com##.social_area
+m.sisain.co.kr##.m_a_sns
+m.sportschosun.com##.sns1
+m.sportsseoul.com##.bottom_iconMenu
+m.sportsseoul.com##.iconMenu_wrap
+m.starjn.com##.m_sns
+m.tf.co.kr##li[class^="sBtn_"]:not(.sBtn_reply)
+m.todayhumor.co.kr###linkButtonsContainer
+m.viva100.com##.bm_sns
+m.wikitree.co.kr##.nav-share > div[style="float:left;width:25%;height:100%"]:not([onclick^="layer_"])
+m.ytn.co.kr##.sns_btns
+mnews.sbs.co.kr##.ec_icshare_ca
+naver.com##.naver-splugin
+news.chosun.com##.left_aside_sns > li[class]:not(.cmt)
+news.kmib.co.kr##.btn_google
+news.kmib.co.kr##.btn_tw
+news.kmib.co.kr##.b_sns
+!news.naver.com###spiLayer
+news.tf.co.kr###SUDA_SHARE_BOX
+news.tf.co.kr##.subSnsBtn
+newstomato.com##.rnsc_sns
+ohmynews.com##.social_bind
+ohmynews.com##.newsinfo_area
+pann.nate.com##.social_send
+samsungsvc.co.kr##a.sns
+sedaily.com##.news_sns
+sisapress.com##div[class^="newscontSns"]
+sportsseoul.com,sportsseoul.co.kr##.left_socialWap
+sportsseoul.com,sportsseoul.co.kr##.right_iconMenu
+star.mt.co.kr##.lst_sc
+viva100.com##.left_top_sns
+wikitree.co.kr##.v_sns
+zdnet.co.kr##ul.sub_view_tit4.clfx
 !-------------------------------------------------------------------------------!
 !-------------- General hiding rules -------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
 ! Section contains list general hiding rules
 !
+##a[title="Share on Google Plus"]
+##a[title="Share on LinkedIn"]
+###koddostu-face8
+##.postShare
 ##.heateor_sss_sharing_container
 ##a[href^="https://telegram.me/share/url?"]
 ##.module-social-share-icons
@@ -2052,14 +2175,14 @@ livejournal.com##.b-ljtimes-wrapper
 ##.et_social_twitter
 ##.etsy-pin-it
 ##.etsy-tweet
-##.fa-facebook-square
-##.fa-google-plus-square
+~nv.ua##.fa-facebook-square
+~nv.ua##.fa-google-plus-square
 ##.fa-linkedin-square
 ##.fa-pinterest-p
 ##.fa-pinterest-square
 ##.fa-reddit-square
 ##.fa-tumblr-square
-##.fa-twitter-square
+~nv.ua##.fa-twitter-square
 ##.fa-youtube-square
 ##.facebook-like
 ##.facebook-share
@@ -2267,7 +2390,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.sharelist
 ##.sharelist_vertical
 ##.sharepost
-##.shares
+~abscity.ru##.shares
 ##.sharethis
 ##.sharethis-container
 ##.sharethisawrp
@@ -2606,6 +2729,36 @@ livejournal.com##.b-ljtimes-wrapper
 ~androeed.ru,~facebook.com##input.fb
 ~twitter.com##input.tweet
 ~vk.com,~vkontakte.ru##input.vk
+!
+~cyworld.com##a[href^="http://csp.cyworld.com/bi/bi_recommend_pop.php?"]
+~story.kakao.com###kakaostory-follow-button
+~story.kakao.com###kakaostory-share-button
+~story.kakao.com##a[href^="https://story.kakao.com/s/share?url="]
+~story.kakao.com##a[href^="https://story.kakao.com/share?url="]
+###kakao-link-btn
+###kakao-story-btn
+###share_kakaostory
+##.share-kakaotalk
+~blog.naver.com##a[href^="http://blog.naver.com/openapi/share?url="]
+~blog.naver.com##a[onclick^="window.open('http://blog.naver.com/openapi/share?url="]
+~blog.naver.com##a[onclick^="javascript:window.open('http://share.naver.com/web/shareView.nhn?"]
+##a[href^="http://line.me/R/msg/text/?"]
+~band.us##a[onclick^="window.open('http://www.band.us/plugin/share?"]
+~band.us##a[href^="http://www.band.us/plugin/share?"]
+##.tt-plugin.tt-share-entry-with-sns
+##.to_sns.rd_nav
+###bottomsns
+##.article_sns
+##.share_sns
+##.sns_facebook
+##.sns_kakao
+##.sns_list
+##.sns_scroll
+##.sns_share
+##.sns_share_area
+##.sns_twit
+##.sns_view
+##.view_sns
 !-------------------------------------------------------------------------------!
 !-------------- Rules for removing full screen popups --------------------------!
 !-------------------------------------------------------------------------------!
@@ -2618,6 +2771,10 @@ livejournal.com##.b-ljtimes-wrapper
 ||cdn-library.su/plusonet/lib/$domain=~pluso.net
 ||mailget.net^$third-party
 !
+ren.tv###banner_ss_all
+bogazgazetesi.com.tr###myModal
+bogazgazetesi.com.tr##.modal-backdrop
+riafan.ru###like_box
 ensonxeber.com###fancybox-wrap
 ensonxeber.com###fancybox-overlay
 analizmerkezi.com###cm-facetwit
@@ -2745,6 +2902,8 @@ bomb01.com#$#.modal-open { overflow: visible!important; }
 !
 ! Section fixing issues caused by social filter
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/4648
+@@||apis.google.com/js/platform.js$domain=geekinformer.net
 ! Unblock minificated scripts library
 ! for example: http://kinogo-net-co.ru/engine/classes/min/index.php?charset=windows-1251&f=/engine/classes/js/jquery.js,*,/templates/Kinogo/js/social-likes.min.js
 @@||kinogo-kinopoisk.net/engine/classes/min/index.php
