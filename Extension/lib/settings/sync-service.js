@@ -590,6 +590,10 @@
 
         if (!syncEnabled) {
             adguard.console.warn('Sync is disabled');
+            if (callback) {
+                callback(false);
+            }
+
             return;
         }
 

@@ -458,7 +458,7 @@
                 break;
             case 'setOauthToken':
                 adguard.sync.oauthService.setToken(message.provider, message.token, message.securityToken, message.expires);
-                adguard.sync.syncService.setSyncProvider(message.provider, message.token, message.securityToken, message.expires);
+                adguard.sync.syncService.setSyncProvider(message.provider);
                 break;
             case 'onAuthError':
                 adguard.sync.syncService.removeSyncProvider(message.provider);
@@ -472,7 +472,7 @@
                 adguard.sync.syncService.toggleSyncStatus();
                 break;
             case 'syncNow':
-                adguard.sync.syncService.syncSettings();
+                adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, {force: true});
                 break;
             default :
                 throw 'Unknown message: ' + message;

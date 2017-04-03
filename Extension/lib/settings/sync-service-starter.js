@@ -79,14 +79,19 @@
             return;
         }
 
-        if (timeoutId) {
-            clearTimeout(timeoutId);
-        }
-
-        timeoutId = setTimeout(function () {
+        if (options && options.force) {
             running = true;
             sync(onSyncFinished);
-        }, 5000);
+        } else {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+
+            timeoutId = setTimeout(function () {
+                running = true;
+                sync(onSyncFinished);
+            }, 5000);
+        }
     };
 
     function initialize() {
