@@ -364,7 +364,7 @@
                 adguard.filters.processAbpSubscriptionUrl(message.url, function (rulesAddedCount) {
                     callback({
                         title: adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_title'),
-                        text: adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_text', [rulesAddedCount])
+                        text: adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_text', [String(rulesAddedCount)])
                     });
                 });
                 return true; // Async
