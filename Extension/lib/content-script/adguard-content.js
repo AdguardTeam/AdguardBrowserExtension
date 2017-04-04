@@ -17,8 +17,5 @@
 
 /**
  * Global object for content scripts
- * @type {{}}
  */
-var adguardContent = (function () { // jshint ignore:line
-    return {};
-})();
+var adguardContent = {}; // jshint ignore:line

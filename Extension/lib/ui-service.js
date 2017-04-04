@@ -736,7 +736,9 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         changeApplicationFilteringDisabled: changeApplicationFilteringDisabled,
         checkFiltersUpdates: checkFiltersUpdates,
         openAssistant: openAssistant,
-        openTab: openTab
+        openTab: openTab,
+
+        showAlertMessagePopup: showAlertMessagePopup
     };
 
 })(adguard);

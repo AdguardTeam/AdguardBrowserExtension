@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-var I18nHelper = {
+var I18nHelper = { // jshint ignore:line
 
     translateElement: function (element, message) {
 
@@ -35,7 +35,7 @@ var I18nHelper = {
         }
         if (args && args.length > 0) {
             text = text.replace(/\$(\d+)/g, function (match, number) {
-                return typeof args[number - 1] != "undefined" ? args[number - 1] : match;
+                return typeof args[number - 1] !== "undefined" ? args[number - 1] : match;
             });
         }
         return text;

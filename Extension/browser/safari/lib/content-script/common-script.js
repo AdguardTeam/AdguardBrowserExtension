@@ -163,4 +163,4 @@
         };
     })();
 
-})(typeof adguard !== 'undefined' ? adguard : adguardContent);
+})(typeof adguardContent !== 'undefined' ? adguardContent : adguard); // jshint ignore:line
