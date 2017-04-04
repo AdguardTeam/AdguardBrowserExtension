@@ -25,6 +25,10 @@
     var pending = false;
     var running = false;
 
+    var lastSyncTimes = [];
+    var INF_LOOPS_CHECK_SIZE = 10;
+    var INF_LOOPS_CHECK_TIME = 30 * 60 * 1000; // 1/2 hour
+
     /**
      * Checks at least one section was updated since the last sync
      * @param callback
@@ -51,6 +55,21 @@
     }
 
     function sync(callback) {
+        var now = Date.now();
+        lastSyncTimes.push(now);
+        if (lastSyncTimes.length > INF_LOOPS_CHECK_SIZE) {
+            var first = lastSyncTimes.shift();
+            if (now - first < INF_LOOPS_CHECK_TIME) {
+                /**
+                 * This means that there were too many sync fires INF_LOOPS_CHECK_SIZE in specified INF_LOOPS_CHECK_TIME time.
+                 * As a hard protection of infinitive sync fires, we shut it down.
+                 */
+                syncApi.syncService.toggleSyncStatus(false);
+                adguard.console.warn('Sync is disabled under suspicion of infinitive loop.');
+                return;
+            }
+        }
+
         isSectionsUpdated(function (updated) {
             if (updated) {
                 var localManifest = syncApi.settingsProvider.loadLocalManifest();
