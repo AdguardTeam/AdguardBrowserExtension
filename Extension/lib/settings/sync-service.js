@@ -29,10 +29,11 @@
 
     var CURRENT_PROVIDER_PROP = 'current-sync-provider';
     var LAST_SYNC_TIME_PROP = 'last-sync-time';
+    var SYNC_STATUS_PROP = 'sync-status';
 
     var syncProvider = null;
     var lastSyncTime = null;
-    var syncEnabled = false;
+    var syncEnabled;
 
     /**
      * Sections revisions
@@ -534,9 +535,13 @@
         } else {
             syncEnabled = enabled;
         }
+
+        adguard.localStorage.setItem(SYNC_STATUS_PROP, syncEnabled);
     };
 
     var init = function () {
+        syncEnabled = adguard.localStorage.getItem(SYNC_STATUS_PROP) === 'true';
+
         var providerName = adguard.localStorage.getItem(CURRENT_PROVIDER_PROP);
         if (providerName) {
             setSyncProvider(providerName);
