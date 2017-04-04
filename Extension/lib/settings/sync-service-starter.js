@@ -65,7 +65,9 @@
                  * As a hard protection of infinitive sync fires, we shut it down.
                  */
                 syncApi.syncService.toggleSyncStatus(false);
-                adguard.console.warn('Sync is disabled under suspicion of infinitive loop.');
+                adguard.console.warn('Sync is disabled under suspicion of infinite loop.');
+
+                lastSyncTimes = [];
                 return;
             }
         }
