@@ -837,6 +837,19 @@
             callback(getTabId(xulTab));
         };
 
+        /**
+         * Gets tab by id
+         * @param tabId Tab identifier
+         * @param callback
+         */
+        var get = function (tabId, callback) {
+            var xulTab = getTabById(tabId);
+            if (!xulTab) {
+                return;
+            }
+            callback(toTabFromXulTab(xulTab));
+        };
+
         return {
 
             onCreated: onCreatedChannel,
@@ -851,6 +864,7 @@
             sendMessage: sendMessage,
             getAll: getAll,
             getActive: getActive,
+            get: get,
 
             getTabIdForTab: getTabId,
             getTabForBrowser: getTabForBrowser,

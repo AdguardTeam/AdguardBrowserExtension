@@ -323,6 +323,20 @@ adguard.tabsImpl = (function (adguard) {
         });
     };
 
+    /**
+     * Gets tab by id
+     * @param tabId Tab identifier
+     * @param callback
+     */
+    var get = function (tabId, callback) {
+        browser.tabs.get(tabIdToInt(tabId), function (chromeTab) {
+            if (browser.runtime.lastError) {
+                return;
+            }
+            callback(toTabFromChromeTab(chromeTab));
+        });
+    };
+
     return {
 
         onCreated: onCreatedChannel,
@@ -337,6 +351,7 @@ adguard.tabsImpl = (function (adguard) {
         sendMessage: sendMessage,
         getAll: getAll,
         getActive: getActive,
+        get: get,
 
         fromChromeTab: toTabFromChromeTab
     };
