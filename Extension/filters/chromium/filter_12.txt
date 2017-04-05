@@ -1,6 +1,6 @@
-! Checksum: XPoO0g6NfNPpUND00gSBjg
-! Version: 1.0.2.77
-! TimeUpdated: 2017-03-24T21:02:04.971+04:00
+! Checksum: BY8Cg3O59zzYTxPlisatRw
+! Version: 1.0.2.81
+! TimeUpdated: 2017-04-04T08:02:03.171+04:00
 ! Title: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
 ! Title: Adguard Safari Filter
@@ -96,6 +96,11 @@
 @@||hentai-id.tv^$generichide
 !*
 !***
+! https://forum.adguard.com/index.php?threads/camiris-com-nsfw-anti-adblock.20650/
+@@||camiris.com^$generichide
+@@/fuckadblock.js$domain=camiris.com
+! https://forum.adguard.com/index.php?threads/antiadblock-cat3movie-us-nsfw.20574/
+@@||cat3movie.us^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4665
 @@||inside-handy.de^$generichide
 ! https://forum.adguard.com/index.php?threads/19012/
@@ -296,7 +301,8 @@ telegraaf.nl##.section-ad
 !
 ! Section contains rules for specific websites
 !
-! TEMPORARY: until web-sockets are not blocked by content-blocker
+!*****
+!*** TEMPORARY: until web-sockets are not blocked by content-blocker
 !
 @@||gynax.com/js/*.js$important,domain=wikimovies.ru
 wikimovies.ru##body > noindex
@@ -320,7 +326,11 @@ nnm-club.me,nnmclub.to,filmix.net,kinokrad.co##div[id*="Composite"]
 nnm-club.me,nnmclub.to##.leftnav > center > noindex
 baskino.club##div[id*="Composite"] *
 meddaily.ru##div[style="width: 240px; background-color: White;"]
+!***
+!******
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/4703
+dizipub.com###video-oncesi img
 ! https://forum.adguard.com/index.php?threads/19151/
 avaxhome.co##a[href^="http://ul.to/ref"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4061
@@ -657,6 +667,7 @@ youtube.com#%#(function () {try {var youtubeAdRegExp = /^((.*_)?(ad|ads|afv|adse
 @@||gryfindor.com^$generichide
 @@||jimnong.tistory.com^$generichide
 @@||kflix.tv^$generichide
+@@||lalawin.com^$generichide
 @@||lalawin.tistory.com^$generichide
 @@||minitoon.net^$generichide
 @@||money2015.tistory.com^$generichide
@@ -673,7 +684,7 @@ prettygom.com,whria.net#@#.adsense
 ! Url blocking rules
 ||melon.com/mlog.js^
 ! Element hiding rules
-lalawin.tistory.com##.adsbygoogle
+lalawin.com,lalawin.tistory.com##.adsbygoogle
 mongri.net##.sidebar_adsense
 time.navyism.com##div > .adsbygoogle
 zangsisi.net###head-menu > .wrapper > a[href$="=zangsisi"]

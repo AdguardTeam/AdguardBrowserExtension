@@ -1,6 +1,6 @@
-! Checksum: 5YujmFHw4OqvrXc2HClhdQ
-! Version: 1.0.18.21
-! TimeUpdated: 2017-03-29T18:00:46.955+04:00
+! Checksum: 0AT0RL58VuS2RyRFMvPcNg
+! Version: 1.0.18.43
+! TimeUpdated: 2017-04-05T06:00:58.350+04:00
 ! Title: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
@@ -184,7 +184,7 @@
 /sharebox.min.js
 /sharedaddy/sharing.js
 /sharing_buttons.js
-/social-likes.min.js$domain=~sputnik-news.ee|~animalreader.ru|~ichip.ru|~keddr.com|~kino-max.com|~kino24x7.com|~make-3d.ru|~miuipro.ru|~omelchuck.ru|~podfm.ru|~serial-online.com|~sputniknews.com|~trinixy.ru
+/social-likes.min.js$domain=~sputnik-news.ee|~animalreader.ru|~ichip.ru|~keddr.com|~kino-max.com|~kino24x7.com|~make-3d.ru|~miuipro.ru|~omelchuck.ru|~podfm.ru|~serial-online.com|~sputniknews.com|~trinixy.ru|~kinogo-kinopoisk.net|~bobfilm-online.ru|~westernfilm.ru|~bobfilm.tv|~kinokrik.net|~kinogo720.net|~kinogo-net-co.ru|~kinoklad.net
 /social_networks.js
 /socialbar-js.php
 /socialbuttons.js
@@ -311,6 +311,26 @@ m.tf.co.kr#$#li.sBtn_reply { float: initial!important; display: inline-block!imp
 ||miladynews.ru/?*=*&_=
 ||mimimi.tv/?*=*&_=
 ||mindspace.ru/?*=*&_=
+yapx.ru##.photoblock-footer-social
+track24.ru##.b-share
+imore.com##.mn_mbn_share
+software.informer.com##.wrapper_like
+kibrisgazetesi.com##.ustpaylas
+robtex.com##.soctop
+stranamam.ru##.vkfb
+cnbc.com###social_bar_top_gig_containerParent
+cnbc.com###social-tools-panel_gig_containerParent
+cheezburger.com##.nw-sharing-buttons
+canlitv.life##.paylas
+showmore.com##.counted-share-vertical
+haberodasi.tv###share
+yeniduzen.com###cm-social-overlay
+bursahakimiyet.com.tr##.sharenewsin
+riafan.ru##.rambler-share
+realnoevremya.ru##.colorShareBtn
+realnoevremya.ru##.grayShareBtn
+windowscentral.com##.mn_mbn_share
+sueddeutsche.de###article-sidebar-action-facebook
 cosmo.ru##.sharing-div
 spielesite.com##.social-sharing-buttons
 ||spielesite.com/*/share/?ref
@@ -1785,12 +1805,17 @@ lcpdfr.com##ul[data-controller$="sharelink"]
 ||wow.ya.ru/ajax/share-counter.xml$third-party
 ||yandex.st/share/static/b-share-icon.png
 biz.chosun.com###article_sns2014
+boannews.com###news_util03
+boannews.com###news_util04
+boannews.com###news_util07
+boannews.com###news_util08
 cafe.daum.net##.sns_comm
 dailian.co.kr##.view_title_sub_sns
 edaily.co.kr##.leftSNS
 ekn.kr##.util2 > ul > li.tit
 etnews.com##.sns_btn
 etnews.com##li[class^="sns2_"]
+focus.kr##.sns
 hankookilbo.com##.snsGroup > ul > li[sipujs]:not([sipujs="URL-SHARE"])
 health.chosun.com##.left_aside_sns > li:not(.cmt)
 hubnews.co.kr##.view_share
@@ -1800,6 +1825,8 @@ khan.co.kr##.articlek_share_wrap
 khan.co.kr##.social_btm
 m.chosun.com##.sns_area
 m.dailian.co.kr##.responsive_col1 > .h3_area:nth-child(3)
+m.edaily.co.kr##.social-login
+m.focus.kr##.sns_box
 m.gobalnews.com##.sns-list
 m.health.chosun.com##.sharing
 m.joseilbo.com##.sns_icon_set
@@ -1825,6 +1852,7 @@ news.kmib.co.kr##.btn_tw
 news.kmib.co.kr##.b_sns
 news.tf.co.kr###SUDA_SHARE_BOX
 news.tf.co.kr##.subSnsBtn
+news.zum.com##.article_bottom_share
 newstomato.com##.rnsc_sns
 ohmynews.com##.social_bind
 ohmynews.com##.newsinfo_area
@@ -1838,6 +1866,12 @@ star.mt.co.kr##.lst_sc
 viva100.com##.left_top_sns
 wikitree.co.kr##.v_sns
 zdnet.co.kr##ul.sub_view_tit4.clfx
+###wpbfsb
+##.share_box
+##.share_article
+##.article_share
+##.btn_share
+~ok.ru##a[href^="https://connect.ok.ru/dk?st.cmd=WidgetSharePreview"]
 ##a[title="Share on Google Plus"]
 ##a[title="Share on LinkedIn"]
 ###koddostu-face8
@@ -2270,7 +2304,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.shareBar
 ##.shareButtons
 ##.shareComment
-##.shareContent
+~soundcloud.com##.shareContent
 ##.shareLinks
 ##.shareSocialArticle
 ##.shareThis
@@ -2676,6 +2710,14 @@ livejournal.com##.b-ljtimes-wrapper
 /wp-content/plugins/facebook-fanbox-popup/*
 ||cdn-library.su/plusonet/lib/$domain=~pluso.net
 ||mailget.net^$third-party
+takprosto.cc###facebook_takprosto
+takprosto.cc##.jquery-modal.blocker
+||kibrissondakika.com/wp-content/plugins/popup-maker/
+kibrissondakika.com##.popmake
+haberkibris.com##.boxfb
+haberkibris.com###overlay
+utro.ru##.mask
+utro.ru##.facebook__box
 ren.tv###banner_ss_all
 bogazgazetesi.com.tr###myModal
 bogazgazetesi.com.tr##.modal-backdrop
@@ -2785,19 +2827,13 @@ twgreatdaily.com#$#.modal-backdrop.fade { display: none!important; }
 twgreatdaily.com#$#div[aria-labelledby="mySmallModalLabel"] { display: none!important; }
 sport-express.ru#$#.show-popup{ display: none!important; }
 sport-express.ru#$#body.popup { overflow: visible!important; }
-catalogmineralov.ru##.modal_bg { display: none!important; }
-catalogmineralov.ru##.modal_window { display: none!important; }
+catalogmineralov.ru#$#.modal_bg { display: none!important; }
+catalogmineralov.ru#$#.modal_window { display: none!important; }
 catalogmineralov.ru#$#body { overflow: visible!important; }
 bomb01.com#$##modal{ display: none!important; }
 bomb01.com#$#.modal-open { overflow: visible!important; }
 @@||apis.google.com/js/platform.js$domain=geekinformer.net
-@@||kinogo-kinopoisk.net/engine/classes/min/index.php
-@@||bobfilm-online.ru/engine/classes/min/index.php
-@@||westernfilm.ru/engine/classes/min/index.php
-@@||bobfilm.tv/engine/classes/min/index.php
-@@||kinokrik.net/engine/classes/min/index.php
-@@||kinogo720.net/engine/classes/min/index.php
-@@||kinogo-net-co.ru/engine/classes/min/index.php
+@@/engine/classes/min/index.php?*/social-likes.min.js$~third-party
 @@||facebook.com/*/plugins/login_button.
 @@||addthis.com/js/*/addthis_widget.js^$domain=hatsandcaps.co.uk
 @@||yandex.st/share/share.js$domain=66.ru|calculatewater.ru|ktk.kz|splav.ru|vnukovo.ru|foxtrot.com.ua|yadi.sk|gama-gama.ru|foxtrot.com.ua|radiorecord.ru|рязанскийкирпич.рф

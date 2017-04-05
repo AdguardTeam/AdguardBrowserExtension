@@ -1,6 +1,6 @@
-! Checksum: vR8JuPXewn7mV2Kzu0rkLQ
-! Version: 1.0.7.63
-! TimeUpdated: 2017-03-30T13:02:02.364+04:00
+! Checksum: fAWYMCjRiyQPrHDm5xAIWQ
+! Version: 1.0.7.79
+! TimeUpdated: 2017-04-05T16:02:10.065+04:00
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
 ! Title: Adguard Mobile Ads Filter
@@ -26,6 +26,26 @@
 !
 ! Section contains list of advertising networks
 !
+||api.cloudmobi.net
+||polymorphicads.jp^
+||cdns.lodeo.io^
+||ingamesads.gameloft.com^
+||i2ad.jp^
+||mxvp-ad-config-prod-1.zenmxapps.com^
+||mxvp-feature-toggle-prod-1.zenmxapps.com^
+||js4386.fujianryt.com^
+||m.12306media.com^
+||zzhengre.com^
+||wmhlch.com^
+||fjrkn.com^
+||tongqing2015.com^$third-party
+||m.jsqinvest.com^$third-party
+||sube.puwangkj.com^$third-party
+||pw.lpsxssm.com^$third-party
+||go.admost.com^
+||med-api.admost.com^
+||cdn-api.admost.com^
+||webview.unityads.unity3d.com^
 ||clickkydsp.com^
 ||bidsopt.com^
 ||tpbid.com^
@@ -719,7 +739,10 @@
 !--- Temporary
 ! https://github.com/AdguardTeam/AdguardForiOS/issues/255
 @@||m.beautypageants.in^$elemhide
-!
+!---
+! https://github.com/AdguardTeam/AdguardFilters/issues/4732
+@@/popunder*.js$domain=kissanime.ru
+@@/adlabs.js$domain=kissanime.ru
 ! https://forum.adguard.com/index.php?threads/20215/
 @@||smedia2.intoday.in/aajtak_pwapp$script
 ! https://forum.adguard.com/index.php?threads/19885/
@@ -785,10 +808,8 @@ westseattleblog.com#@#.header-ad
 spaces.ru##body.touch div.main#siteContent > div[class]:not([id]) > div[class][-ext-has='script[src*="http://mtdata"]']
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3218
 lenfilm.tv##body > div.rek[-ext-has="div"]
-! https://github.com/AdguardTeam/AdguardFilters/issues/1748
-anwap.org##.my_razdel div.zag[-ext-has='a[href^="/asd/"]']
-anwap.org##.my_razdel[-ext-has='a[href^="/asd/"]']
-anwap.org##body > div > div[class*=" "][-ext-has='a[href^="/asd/"]']
+! https://forum.adguard.com/index.php?threads/20680/
+anwap.org##.zag > div.my_razdel[-ext-has='a[href][target="_blank"]']
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2637
 nasimke.ru##.body > div[class] > div[-ext-has='img[src*="/rekl/"]']
 ! https://forum.adguard.com/index.php?threads/12804/
@@ -816,8 +837,6 @@ m.reddit.com##article[class="Post size-compact"][-ext-has=".PostHeader__sponsore
 all-tor.net,free-rutor.org,lenfilm.tv,krutor.org,fast-bit.org,tor-ru.net,hd-bit.org,radikal.ru,hdkinomax.com,on-movie.net,fastpic.ru,rutor.is,baskino.club,rutor.info,nnm.me,korzik.net,seasonvar.ru,rsload.net,nnm-club.me,nnmclub.to,rustorka.com,auto.mail.ru,horo.mail.ru,realty.mail.ru,health.mail.ru,afisha.mail.ru,cloud.mail.ru,otvet.mail.ru,pogoda.mail.ru,sport.mail.ru,tv.mail.ru,torg.mail.ru,cars.mail.ru,hi-tech.mail.ru,rustorka.com,top-tor.org,super-tor.net,filmix.net,free-ru.org#%#window.WebSocket = undefined;
 ! https://forum.adguard.com/index.php?threads/12443/
 pornhub.com#%#AG_onLoad(function() { if (typeof redirect !== 'function') return; var str = redirect.toString(); var m = str.match(/\'(\/view.*)\'/); if (m.length != 2) return; var link = m[1]; window.location.href = m[1]; });
-! 4pda.ru
-4pda.ru#%#AG_onLoad(function() { try { jQuery('header#header+div[id] > div[class*=" "]~div:empty+div:empty+div:empty+div[class*=" "] > section > article > article.post > div.visual > a').remove(); } catch (ex) {} });
 !#################
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4360
@@ -835,7 +854,7 @@ sasisa.ru#%#AG_onLoad(function() { window.Umobi = function() {}; });
 spaces.ru#$##siteContent > div#main_footer+div[class] > div[class]:not([id]) { position: absolute!important; left: -3000px!important; }
 spaces.ru#$##siteContent > div#main_content+div[class] { position: absolute!important; left: -3000px!important; }
 ! Яндекс.Телепрограмма
-m.tv.yandex.ua,m.tv.yandex.ru##.adv-manager { position: absolute!important; left: -3000px!important; }
+m.tv.yandex.ua,m.tv.yandex.ru#$#.adv-manager { position: absolute!important; left: -3000px!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4453
 15min.lt#$#.ads { position: absolute!important; left: -3000px!important; }
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2068
@@ -1107,6 +1126,13 @@ m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"
 ! https://forum.adguard.com/index.php?threads/10464/
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
 !
+radio.yandex.ru,radio.yandex.by,radio.yandex.ua##.slider > .slider__item_advert
+||kissanime.ru/ads/
+*/1121482/|$domain=kissanime.ru
+cnbc.com##amp-embed[type="taboola"]
+cnbc.com##.leaderboard_ad
+zybang.com##.qb-wgt_float-banner
+zybang.com##.cmn-zuoyebang-slogan
 rbc.ru##.banners__wrap-article
 m.timesofindia.com##.ad1
 eenaduindia.com##[class^="Adv-"]
@@ -1174,7 +1200,6 @@ appcrawlr.com###top-row.mobile-top-slot
 babycenter.de###topAdContainerMobile
 reshil.org###trr
 rg.ru###yandex_ads_hor_pda
-anwap.org##.MIXADVERT_NET
 apkmirror.com##.OUTBRAIN
 m.timesofindia.com##.ad1.nocss
 4g.co.uk##.ad4
@@ -1246,7 +1271,6 @@ kisscartoon.me##.wrap > [style] > div[style^="height: 250px;"]
 bhaskar.com,divyabhaskar.co.in##[id^="TaboolaNativerecommendAd"]
 udaff.com##[width="240"][height="300"]
 111cn.net##a[class][style][onclick$="JpgClick();"]
-anwap.org##a[href^="/asd/"]
 cnbeta.com##a[href^="http://click.aliyun.com/"]
 spaces.ru##a[href^="http://spaces.ru/services/ads_off/?link_id="]
 androidcentral.com##a[href^="http://www.amazon.com/gp/"]
@@ -1254,14 +1278,12 @@ ok-tv.org##a[href^="https://ad.admitad.com/"]
 wapbaike.baidu.com##a[onclick^="Mixedor.mixedOpen"]
 pcgameshardware.de##aside[class$="inArticleTextAd"]
 nydailynews.com##body > #r-main > div.r-yieldmo
-anwap.org##body > div > div[class^="uc"][class*=" "]
 thenewslens.com##body > div#bottombar
 anwap.org##body > div:not([class]):not([id]) > div[class]:not([class="ball"]):not([class^="chislo"]):not([class="logo"]):not([class="news"]):not([style])
 anwap.org##body > div[class]:not([class="ball"]):not([class^="chislo"]):not([class="logo"]):not([class="news"]):not([class="blm"]):not([class="menuniz"]):not([style])
 liga.net##body > div[id^="holder_320x"][style]
 asbook.net##div.mgline[class*="teaser-"]
 health.mail.ru##div[class$="trg-b-banner-block"]
-anwap.org##div[class*="footrek"]
 m.yelp.com##div[class*="yelp-ad"]
 m.dm5.com##div[class^="adform"]
 m.mangatown.com##div[class^="adv-"]
@@ -1352,6 +1374,7 @@ login.wi-fi.ru#%#window.isPremium = true;
 ||googleads.g.doubleclick.net/mads/gma?carrier=$app=com.devexpert.weather,important,replace=/\<script\>[\s\S]*\<\/script\>/
 !
 ! Blocking of Facebook ads
+||graph.facebook.com^$app=com.textra
 ||graph.facebook.com^$app=es.rafalense.themes
 ||graph.facebook.com^$app=com.xoopsoft.apps.bundesliga.free
 ||graph.facebook.com^$app=com.trungpt.video.download
@@ -1373,6 +1396,13 @@ login.wi-fi.ru#%#window.isPremium = true;
 ||graph.facebook.com^$app=fr.meteo
 ||graph.facebook.com^$app=io.casper.android
 !
+! https://forum.adguard.com/index.php?threads/20641/
+||wpsconfig4svr.elasticbeanstalk.com/config/android/list?
+||minfo.wps.cn/minfo/infos.ads?
+||abroad-ad.kingsoft-office-service.com^
+||cloudservice14.kingsoft-office-service.com/onlineParam
+! https://forum.adguard.com/index.php?threads/hd-videobox.20645/
+||startappservice.com/*/getadsmetadata?
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4645
 ||adserver.shadow.snapads.com^
 ||ads-chunks.prod.ihrhls.com^
@@ -1549,6 +1579,22 @@ login.wi-fi.ru#%#window.isPremium = true;
 !
 ! Section contains rules for mobile analytics and spyware
 !
+||vortex.data.microsoft.com^
+||onedrive-collection.device.mobileengagement.windows.net^
+||metrics.timewarnercable.com^
+||flurry.agentportal-*.yahoodns.net^
+||amptrack-dailymail-co-uk.cdn.ampproject.org^
+||metrics-cbslocal-com.cdn.ampproject.org^
+||startappservice.com/tracking/
+||counter.hdvb.info^
+||tracking-server-prod-1.zenmxapps.com^
+||api.uca.cloud.unity3d.com^
+||resolver.msg.xiaomi.net^
+||resolver.gslb.mi-idc.com^
+||o2o.api.xiaomi.com^
+||auth.be.sec.miui.com^
+||thm.market.xiaomi.com/thm/stats
+||behacdn.ksmobile.net^
 ||geoip.ifunny.co^
 ||alogs.umeng.com^
 ||alogs.umengcloud.com^

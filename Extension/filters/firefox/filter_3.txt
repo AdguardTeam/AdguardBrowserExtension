@@ -1,6 +1,6 @@
-! Checksum: SsL7lzckN6MvVk3jbP74jw
-! Version: 1.0.11.22
-! TimeUpdated: 2017-03-29T20:00:37.223+04:00
+! Checksum: bwjyHOb/zq1QcJFULziLYQ
+! Version: 1.0.11.29
+! TimeUpdated: 2017-04-05T15:00:54.623+04:00
 ! Title: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
 ! Title: Adguard Spyware Filter
@@ -93,6 +93,7 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 ||p.d.1enm.com^
 ||p.d.rpts.org^
 !
+||ad.gt^$third-party
 ||toolcount.ru^$third-party
 ||ya.domain-vip.net^$third-party
 ||retarala.ru^$third-party
@@ -3380,6 +3381,9 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 !
 ! Section contains the list of tracking servers, which are hosted on useful sites as subdomains
 !
+||t.sgc.io^
+||stat.sputnik.ru^
+||wstat.ozon.ru^
 ||analytics.vooxe.com^
 ||udc.yahoo.com^
 ||tracker.giftd.ru^$third-party
@@ -3780,6 +3784,9 @@ _tracking.php?b=
 !-------------- Specific web sites ---------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+||linclik.com/info.php^
+||games.softgames.de/assets/sg-ga-track-sdk.js
+||7tv.de/service/log/
 ||ad.antventure.com/pixel
 ||songmeanings.com/*/e.gif?pixels=
 ||vidoo.de/api_v3/index.php?service=stats&
@@ -3894,7 +3901,7 @@ dreamprogs.net##td[width="88"][height="31"]
 ||apple.com/metrics/
 ||arcpublishing.com^$domain=washingtonpost.com
 ||assets-jpcust.jwpsrv.com/*/ping.js
-||assets.adobedtm.com^$domain=eonline.com|f1sport.autorevue.cz|geico.com|samsung.com
+||assets.adobedtm.com^$domain=eonline.com|f1sport.autorevue.cz|geico.com|samsung.com|lnk.to
 ||at.mklaud.com/at/at_log_*.php
 ||auto-bild.de/*/gaEvents
 ||auto-motor-und-sport.de/js/sophus3/logging.js
@@ -4397,6 +4404,11 @@ dreamprogs.net##td[width="88"][height="31"]
 !-------------- Whitelist ------------------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+! https://forum.adguard.com/index.php?threads/20668/
+@@||gaua.hit.gemius.pl/gplayer.js$domain=kanald.com.tr
+@@||sb.scorecardresearch.com/beacon.js$domain=kanald.com.tr
+! https://github.com/AdguardTeam/AdguardFilters/issues/4713
+@@||dev.visualwebsiteoptimizer.com/j.php$domain=skinny.co.nz
 ! https://forum.adguard.com/index.php?threads/startpage-tracking-adblock-users.20202/
 @@||startpage.com/js/abp.js^
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4519
