@@ -652,18 +652,27 @@
         };
     };
 
-    var authorize = function (options) {
+    var authorize = function () {
         if (!syncProvider) {
             adguard.console.warn('Sync provider is not defined');
             return;
         }
 
         if (syncProvider.oauthSupported) {
-            if (options && options.logout) {
-                api.oauthService.revokeToken(syncProvider.name);
-            } else {
-                api.oauthService.authorize(syncProvider.name);
-            }
+            api.oauthService.authorize(syncProvider.name);
+        } else {
+            adguard.console.warn('Sync provider doesn\'t support oauth');
+        }
+    };
+
+    var dropAuth = function () {
+        if (!syncProvider) {
+            adguard.console.warn('Sync provider is not defined');
+            return;
+        }
+
+        if (syncProvider.oauthSupported) {
+            api.oauthService.revokeToken(syncProvider.name);
         } else {
             adguard.console.warn('Sync provider doesn\'t support oauth');
         }
@@ -696,9 +705,13 @@
          */
         getSyncStatus: getSyncStatus,
         /**
-         * Authorize or drop
+         * Authorize current sync provider
          */
         authorize: authorize,
+        /**
+         * Drops current provider authorization
+         */
+        dropAuth: dropAuth,
         /**
          * Enables/disables sync
          */

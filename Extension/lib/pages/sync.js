@@ -41,7 +41,7 @@ PageController.prototype = {
 
                 logoutAuthButton.show();
                 logoutAuthButton.click(function () {
-                    contentPage.sendMessage({type: 'authSyncLogout'}, function () {
+                    contentPage.sendMessage({type: 'dropAuthSync'}, function () {
                         document.location.reload();
                     });
                 });
