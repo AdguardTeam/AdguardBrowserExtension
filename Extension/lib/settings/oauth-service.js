@@ -154,7 +154,6 @@
      */
     var isAuthorized = function (providerName) {
         if (!getToken(providerName)) {
-            adguard.console.warn("Unauthorized! Please set access token first.");
             return false;
         }
 

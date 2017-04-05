@@ -590,7 +590,22 @@
             if (callback) {
                 callback(false);
             }
+            return;
+        }
 
+        if (!syncProvider) {
+            adguard.console.warn('Sync provider is not defined');
+            if (callback) {
+                callback(false);
+            }
+            return;
+        }
+
+        if (syncProvider.oauthSupported && !api.oauthService.isAuthorized(syncProvider.name)) {
+            adguard.console.warn('Sync provider is not authorized');
+            if (callback) {
+                callback(false);
+            }
             return;
         }
 
@@ -616,9 +631,12 @@
         var lastSyncTime = getLastSyncTime();
         var syncProviderName = null;
         var isAuthenticated = true;
+        var isOathSupported;
         if (syncProvider) {
             syncProviderName = syncProvider.name;
-            if (syncProvider.oauthSupported) {
+            isOathSupported = syncProvider.oauthSupported;
+
+            if (isOathSupported) {
                 isAuthenticated = api.oauthService.isAuthorized(syncProviderName);
             }
         } else {
@@ -629,13 +647,25 @@
             enabled: enabled,
             lastSyncTime: lastSyncTime,
             syncProvider: syncProviderName,
+            isOathSupported: isOathSupported,
             isAuthenticated: isAuthenticated
         };
     };
 
-    var authorize = function () {
-        if (syncProvider && syncProvider.oauthSupported) {
-            api.oauthService.authorize(syncProvider.name);
+    var authorize = function (options) {
+        if (!syncProvider) {
+            adguard.console.warn('Sync provider is not defined');
+            return;
+        }
+
+        if (syncProvider.oauthSupported) {
+            if (options && options.logout) {
+                api.oauthService.revokeToken(syncProvider.name);
+            } else {
+                api.oauthService.authorize(syncProvider.name);
+            }
+        } else {
+            adguard.console.warn('Sync provider doesn\'t support oauth');
         }
     };
 
@@ -666,7 +696,7 @@
          */
         getSyncStatus: getSyncStatus,
         /**
-         * Opens auth tab
+         * Authorize or drop
          */
         authorize: authorize,
         /**

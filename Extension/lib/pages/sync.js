@@ -28,20 +28,36 @@ PageController.prototype = {
             'Sync enabled: ' + status.enabled + '<br/>'
             + 'Last sync time: ' + (status.lastSyncTime ? new Date(parseInt(status.lastSyncTime)) : '') + '<br/>'
             + 'Current provider: ' + status.syncProvider + '<br/>'
+            + 'Oauth supported: ' + status.isOathSupported + '<br/>'
             + 'Auth: ' + status.isAuthenticated + '<br/>';
 
         $("#statusPlaceholder").html(statusText);
 
         var refreshAuthButton = $('#refreshAuth');
-        if (status.isAuthenticated) {
-            refreshAuthButton.hide();
-        } else {
-            refreshAuthButton.show();
-            refreshAuthButton.click(function () {
-                contentPage.sendMessage({type: 'authSync'}, function () {
-                    document.location.reload();
+        var logoutAuthButton = $('#logoutAuth');
+        if (status.isOathSupported) {
+            if (status.isAuthenticated) {
+                refreshAuthButton.hide();
+
+                logoutAuthButton.show();
+                logoutAuthButton.click(function () {
+                    contentPage.sendMessage({type: 'authSyncLogout'}, function () {
+                        document.location.reload();
+                    });
                 });
-            });
+            } else {
+                refreshAuthButton.show();
+                refreshAuthButton.click(function () {
+                    contentPage.sendMessage({type: 'authSync'}, function () {
+                        document.location.reload();
+                    });
+                });
+
+                logoutAuthButton.hide();
+            }
+        } else {
+            refreshAuthButton.hide();
+            logoutAuthButton.hide();
         }
 
         if (status.enabled) {

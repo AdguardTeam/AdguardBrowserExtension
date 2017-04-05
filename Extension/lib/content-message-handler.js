@@ -468,6 +468,9 @@
             case 'authSync':
                 adguard.sync.syncService.authorize();
                 break;
+            case 'authSyncLogout':
+                adguard.sync.syncService.authorize({logout:true});
+                break;
             case 'toggleSync':
                 adguard.sync.syncService.toggleSyncStatus();
                 break;
