@@ -28,14 +28,14 @@ PageController.prototype = {
             'Sync enabled: ' + status.enabled + '<br/>'
             + 'Last sync time: ' + (status.lastSyncTime ? new Date(parseInt(status.lastSyncTime)) : '') + '<br/>'
             + 'Current provider: ' + status.syncProvider + '<br/>'
-            + 'Oauth supported: ' + status.isOathSupported + '<br/>'
+            + 'OAuth supported: ' + status.isOAuthSupported + '<br/>'
             + 'Auth: ' + status.isAuthenticated + '<br/>';
 
         $("#statusPlaceholder").html(statusText);
 
         var refreshAuthButton = $('#refreshAuth');
         var logoutAuthButton = $('#logoutAuth');
-        if (status.isOathSupported) {
+        if (status.isOAuthSupported) {
             if (status.isAuthenticated) {
                 refreshAuthButton.hide();
 

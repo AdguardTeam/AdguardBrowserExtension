@@ -631,12 +631,12 @@
         var lastSyncTime = getLastSyncTime();
         var syncProviderName = null;
         var isAuthenticated = true;
-        var isOathSupported;
+        var isOAuthSupported;
         if (syncProvider) {
             syncProviderName = syncProvider.name;
-            isOathSupported = syncProvider.oauthSupported;
+            isOAuthSupported = syncProvider.oauthSupported;
 
-            if (isOathSupported) {
+            if (isOAuthSupported) {
                 isAuthenticated = api.oauthService.isAuthorized(syncProviderName);
             }
         } else {
@@ -647,7 +647,7 @@
             enabled: enabled,
             lastSyncTime: lastSyncTime,
             syncProvider: syncProviderName,
-            isOathSupported: isOathSupported,
+            isOAuthSupported: isOAuthSupported,
             isAuthenticated: isAuthenticated
         };
     };
