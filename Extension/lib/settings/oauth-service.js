@@ -24,7 +24,6 @@
 
     var accessTokens = null;
     var securityToken = null;
-    var expires;
 
     /**
      * Finds sync provider by name
@@ -41,6 +40,14 @@
             }
         }
         return null;
+    }
+
+    function openAuthTab(providerName) {
+        adguard.tabs.create({
+            active: true,
+            type: 'popup',
+            url: getAuthUrl(providerName, 'http://testsync.adguard.com/oauth?provider=' + providerName)
+        });
     }
 
     var getAccessTokens = function () {
@@ -155,12 +162,19 @@
         return true;
     };
 
+    /**
+     * Opens a tab with auth url
+     * @param providerName
+     */
+    var authorize = function (providerName) {
+        var provider = findProviderByName(providerName);
+        if (provider && provider.oauthSupported) {
+            openAuthTab(provider.name);
+        }
+    };
+
     // EXPOSE
     api.oauthService = {
-        /**
-         * Returns auth url
-         */
-        getAuthUrl: getAuthUrl,
         /**
          * Returns auth token
          */
@@ -176,7 +190,11 @@
         /**
          * Checks if token is presented and up to date
          */
-        isAuthorized: isAuthorized
+        isAuthorized: isAuthorized,
+        /**
+         * Opens auth tab
+         */
+        authorize: authorize
     };
 
 })(adguard.sync, adguard);

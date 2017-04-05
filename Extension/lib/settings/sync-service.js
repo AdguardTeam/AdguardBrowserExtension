@@ -521,14 +521,6 @@
         return lastSyncTime;
     }
 
-    function openAuthTab(providerName) {
-        adguard.tabs.create({
-            active: true,
-            type: 'popup',
-            url: api.oauthService.getAuthUrl(providerName, 'http://testsync.adguard.com/oauth?provider=' + providerName)
-        });
-    }
-
     var toggleSyncStatus = function (enabled) {
         if (enabled === undefined) {
             syncEnabled = !syncEnabled;
@@ -643,7 +635,7 @@
 
     var authorize = function () {
         if (syncProvider && syncProvider.oauthSupported) {
-            openAuthTab(syncProvider.name);
+            api.oauthService.authorize(syncProvider.name);
         }
     };
 

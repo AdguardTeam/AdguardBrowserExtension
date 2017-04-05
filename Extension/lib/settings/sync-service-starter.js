@@ -54,22 +54,30 @@
         });
     }
 
-    function sync(callback) {
+    /**
+     * This is a simple check if there were too many sync fires INF_LOOPS_CHECK_SIZE in specified INF_LOOPS_CHECK_TIME time.
+     * As a hard protection of infinitive sync fires, we shut it down.
+     */
+    function checkInfiniteLooping() {
         var now = Date.now();
         lastSyncTimes.push(now);
         if (lastSyncTimes.length > INF_LOOPS_CHECK_SIZE) {
             var first = lastSyncTimes.shift();
             if (now - first < INF_LOOPS_CHECK_TIME) {
-                /**
-                 * This means that there were too many sync fires INF_LOOPS_CHECK_SIZE in specified INF_LOOPS_CHECK_TIME time.
-                 * As a hard protection of infinitive sync fires, we shut it down.
-                 */
                 syncApi.syncService.toggleSyncStatus(false);
                 adguard.console.warn('Sync is disabled under suspicion of infinite loop.');
 
                 lastSyncTimes = [];
-                return;
+                return true;
             }
+        }
+
+        return false;
+    }
+
+    function sync(callback) {
+        if (checkInfiniteLooping()) {
+            return;
         }
 
         isSectionsUpdated(function (updated) {
@@ -100,14 +108,14 @@
             return;
         }
 
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+
         if (options && options.force) {
             running = true;
             sync(onSyncFinished);
         } else {
-            if (timeoutId) {
-                clearTimeout(timeoutId);
-            }
-
             timeoutId = setTimeout(function () {
                 running = true;
                 sync(onSyncFinished);

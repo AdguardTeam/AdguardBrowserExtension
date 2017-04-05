@@ -63,19 +63,19 @@ PageController.prototype = {
         });
 
         $('#dropboxProvider').click(function () {
-            contentPage.sendMessage({type: 'syncSettings', provider: 'DROPBOX'}, function () {
+            contentPage.sendMessage({type: 'setSyncProvider', provider: 'DROPBOX'}, function () {
                 document.location.reload();
             });
         });
 
         $('#agSyncProvider').click(function () {
-            contentPage.sendMessage({type: 'syncSettings', provider: 'ADGUARD_SYNC'}, function () {
+            contentPage.sendMessage({type: 'setSyncProvider', provider: 'ADGUARD_SYNC'}, function () {
                 document.location.reload();
             });
         });
 
         $('#browserStorageProvider').click(function () {
-            contentPage.sendMessage({type: 'syncSettings', provider: 'CHROME'}, function () {
+            contentPage.sendMessage({type: 'setSyncProvider', provider: 'CHROME'}, function () {
                 document.location.reload();
             });
         });

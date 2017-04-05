@@ -453,7 +453,7 @@
             case 'saveCssHitStats':
                 processSaveCssHitStats(sender.tab, message.stats);
                 break;
-            case 'syncSettings':
+            case 'setSyncProvider':
                 adguard.sync.syncService.setSyncProvider(message.provider);
                 break;
             case 'setOauthToken':
