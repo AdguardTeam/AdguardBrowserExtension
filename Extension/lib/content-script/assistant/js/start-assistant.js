@@ -15,8 +15,13 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global contentPage, I18nHelper, AdguardAssistant, balalaika, AdguardSelectorLib, AdguardRulesConstructorLib */
-if (window.top === window && document.documentElement instanceof HTMLElement) {
+/* global contentPage, I18nHelper, AdguardAssistant, balalaika, AdguardSelectorLib, AdguardRulesConstructorLib, SliderWidget */
+
+(function () {
+
+    if (window.top !== window || !(document.documentElement instanceof HTMLElement)) {
+        return;
+    }
 
     var adguardAssistant;
 
@@ -50,14 +55,16 @@ if (window.top === window && document.documentElement instanceof HTMLElement) {
                     adguardAssistant = new AdguardAssistant(balalaika, AdguardSelectorLib, AdguardRulesConstructorLib, SliderWidget);
                 }
 
+                var selectedElement = null;
                 if (clickedEl && options.selectElement) {
-                    options.selectedElement = clickedEl;
+                    selectedElement = clickedEl;
                 }
 
                 adguardAssistant.init({
                     cssLink: options.cssLink,
                     onElementBlocked: onElementBlocked,
-                    translateElement: translateElement
+                    translateElement: translateElement,
+                    selectedElement: selectedElement
                 });
                 break;
             case 'destroyAssistant':
@@ -68,4 +75,6 @@ if (window.top === window && document.documentElement instanceof HTMLElement) {
                 break;
         }
     });
-}
+
+})();
+

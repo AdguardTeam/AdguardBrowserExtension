@@ -362,10 +362,9 @@
                 return {confirmText: confirmText};
             case 'enableSubscription':
                 adguard.filters.processAbpSubscriptionUrl(message.url, function (rulesAddedCount) {
-                    callback({
-                        title: adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_title'),
-                        text: adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_text', [String(rulesAddedCount)])
-                    });
+                    var title = adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_title');
+                    var text = adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_text', [String(rulesAddedCount)]);
+                    adguard.ui.showAlertMessagePopup(title, text);
                 });
                 return true; // Async
             // Popup methods

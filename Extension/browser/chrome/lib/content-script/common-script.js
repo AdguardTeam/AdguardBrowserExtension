@@ -15,46 +15,39 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global chrome, browser */
-
-(function (adguard) {
+(function (adguard, self) {
 
     'use strict';
+
+    /**
+     * https://bugs.chromium.org/p/project-zero/issues/detail?id=1225&desc=6
+     * Page script can inject global variables into the DOM, so content script isolation doesn't work as expected
+     * So we have to make additional check before accessing a global variable.
+     */
+    function isDefined(property) {
+        return Object.prototype.hasOwnProperty.call(self, property);
+    }
+
+    var browserApi = adguard.browserApi = isDefined('browser') ? self.browser : self.chrome;
 
     adguard.runtimeImpl = (function () {
 
         var onMessage = (function () {
-            if (typeof browser !== 'undefined' && browser.runtime && browser.runtime.onMessage) {
-                // Edge, Firefox WebExtensions
-                return browser.runtime.onMessage;
+            if (browserApi.runtime && browserApi.runtime.onMessage) {
+                // Chromium, Edge, Firefox WebExtensions
+                return browserApi.runtime.onMessage;
             }
-            if (chrome.runtime && chrome.runtime.onMessage) {
-                // Chromium
-                return chrome.runtime.onMessage;
-            } else if (chrome.extension.onMessage) {
-                // Old Chromium
-                return chrome.extension.onMessage;
-            } else {
-                // Old Chromium
-                return chrome.extension.onRequest;
-            }
+            // Old Chromium
+            return browserApi.extension.onMessage || browserApi.extension.onRequest;
         })();
 
         var sendMessage = (function () {
-            if (typeof browser !== 'undefined' && browser.runtime && browser.runtime.sendMessage) {
-                // Edge, Firefox WebExtensions
-                return browser.runtime.sendMessage;
+            if (browserApi.runtime && browserApi.runtime.sendMessage) {
+                // Chromium, Edge, Firefox WebExtensions
+                return browserApi.runtime.sendMessage;
             }
-            if (chrome.runtime && chrome.runtime.sendMessage) {
-                // Chromium
-                return chrome.runtime.sendMessage;
-            } else if (chrome.extension.sendMessage) {
-                // Old Chromium
-                return chrome.extension.sendMessage;
-            } else {
-                // Old Chromium
-                return chrome.extension.sendRequest;
-            }
+            // Old Chromium
+            return browserApi.extension.sendMessage || browserApi.extension.sendRequest;
         })();
 
         return {
@@ -64,4 +57,4 @@
 
     })();
 
-})(typeof adguard !== 'undefined' ? adguard : adguardContent);
+})(typeof adguardContent !== 'undefined' ? adguardContent : adguard, this); // jshint ignore:line

@@ -49,6 +49,7 @@
         registerChromeContentScript('pages/filter-download.html', [
             'lib/libs/jquery-2.2.4.min.js',
             'lib/libs/nprogress.patched.js',
+            'lib/content-script/adguard-content.js',
             'lib/content-script/content-script.js',
             'lib/content-script/i18n-helper.js',
             'lib/pages/i18n.js',
@@ -59,6 +60,7 @@
         // Thankyou.html
         registerChromeContentScript('pages/thankyou.html', [
             'lib/libs/jquery-2.2.4.min.js',
+            'lib/content-script/adguard-content.js',
             'lib/content-script/content-script.js',
             'lib/content-script/content-utils.js',
             'lib/content-script/i18n-helper.js',
@@ -74,6 +76,7 @@
             'lib/libs/jquery.mousewheel.min.js',
             'lib/libs/jquery.jscrollpane.min.js',
             'lib/libs/moment-with-locales.min.js',
+            'lib/content-script/adguard-content.js',
             'lib/content-script/content-script.js',
             'lib/content-script/content-utils.js',
             'lib/content-script/i18n-helper.js',
@@ -87,6 +90,7 @@
             'lib/libs/jquery-2.2.4.min.js',
             'lib/libs/bootstrap.min.js',
             'lib/libs/moment-with-locales.min.js',
+            'lib/content-script/adguard-content.js',
             'lib/content-script/content-script.js',
             'lib/content-script/content-utils.js',
             'lib/content-script/i18n-helper.js',
@@ -98,6 +102,7 @@
         // Export.html
         registerChromeContentScript('pages/export.html', [
             'lib/libs/jquery-2.2.4.min.js',
+            'lib/content-script/adguard-content.js',
             'lib/content-script/content-script.js',
             'lib/pages/export.js'
         ]);
@@ -105,6 +110,7 @@
         // Popup.html
         registerChromeContentScript('pages/popup.html', [
             'lib/libs/jquery-2.2.4.min.js',
+            'lib/content-script/adguard-content.js',
             'lib/content-script/content-script.js',
             'lib/content-script/i18n-helper.js',
             'lib/pages/i18n.js',
@@ -116,6 +122,7 @@
         // Sb.html
         registerChromeContentScript('pages/sb.html', [
             'lib/libs/jquery-2.2.4.min.js',
+            'lib/content-script/adguard-content.js',
             'lib/content-script/content-script.js',
             'lib/content-script/i18n-helper.js',
             'lib/pages/i18n.js',
@@ -128,11 +135,13 @@
             'lib/libs/extended-css-1.0.6.js',
             'lib/utils/element-collapser.js',
             'lib/utils/css-hits-counter.js',
+            'lib/content-script/adguard-content.js',
             'lib/content-script/content-script.js',
             'lib/content-script/preload.js'
         ], 'document_start', true);
 
         registerPageContentScript([
+            'lib/content-script/adguard-content.js',
             'lib/content-script/content-script.js', // Message passing
             'lib/content-script/content-utils.js'   // Show alert popup and reload without cache functionality
         ], 'document_start', false);
@@ -144,6 +153,7 @@
             'lib/libs/dom.patched.js',
             'lib/libs/balalaika.patched.js',
             'lib/content-script/i18n-helper.js',    // Localization placeholders
+            'lib/content-script/adguard-content.js',
             'lib/content-script/content-script.js', // Message passing
             'lib/content-script/assistant/js/slider-widget.js',
             'lib/content-script/assistant/js/adguard-selector.js',
@@ -191,6 +201,7 @@
         ];
 
         registerPageContentScript([
+            'lib/content-script/adguard-content.js',
             'lib/content-script/content-script.js', // message-passing
             'lib/content-script/content-utils.js',  // showAlertPopup function
             'lib/content-script/subscribe.js'
