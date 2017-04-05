@@ -536,6 +536,10 @@
             }
         }
 
+        if (scriptsToApply.length === 0) {
+            return;
+        }
+
         /**
          * JS injections are created by JS filtering rules:
          * http://adguard.com/en/filterrules.html#javascriptInjection
@@ -544,6 +548,16 @@
         script.setAttribute("type", "text/javascript");
         scriptsToApply.unshift("try {");
         scriptsToApply.push("} catch (ex) { console.error('Error executing AG js: ' + ex); }");
+
+        // Try to keep DOM clean: let script removes itself when execution completes
+        scriptsToApply.push('(function () {\r\n' +
+            '   var current = document.currentScript;\r\n' +
+            '   var parent = current && current.parentNode;\r\n' +
+            '   if (parent) {\r\n' +
+            '       parent.removeChild(current);\r\n' +
+            '   }\r\n' +
+            '})();');
+
         script.textContent = scriptsToApply.join("\r\n");
         (document.head || document.documentElement).appendChild(script);
     };
