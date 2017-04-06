@@ -85,6 +85,7 @@ QUnit.test("Test local to remote", function (assert) {
                 fileSyncProvider.load(manifestPath, onManifestLoaded);
             };
 
+            adguard.sync.syncService.toggleSyncStatus(true);
             adguard.sync.syncService.setSyncProvider('FILE');
             adguard.sync.syncService.syncSettings(onSettingSynced);
         });
@@ -136,6 +137,7 @@ QUnit.test("Test remote to local", function (assert) {
                 });
             };
 
+            adguard.sync.syncService.toggleSyncStatus(true);
             adguard.sync.syncService.setSyncProvider('FILE');
             adguard.sync.syncService.syncSettings(onSettingSynced);
         });
