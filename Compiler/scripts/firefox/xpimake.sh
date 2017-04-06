@@ -14,7 +14,7 @@ jpmXpiFile="$2.xpi"
 
 # xpi up the dir
 (cd "$dir" && jpm xpi)
-(cd "$dir" && unzip $jpmXpiFile -d adguard-adblocker)
+(cd "$dir" && unzip *.xpi -d adguard-adblocker)
 (cd "$dir" && cp install.rdf adguard-adblocker/)
 echo "Copy install.rdf"
 (cd "$dir/adguard-adblocker" && zip -r adguard-adblocker.xpi *)

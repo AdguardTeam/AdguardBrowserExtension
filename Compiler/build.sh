@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version="2.5.19"
+version="2.5.20"
 
 if [[ ! ("$#" == 1) ]] || [[ ! ($1 = dev) && ! ($1 = release) && ! ($1 = beta) ]] ; then
     echo "Pass a single argument as an environment value"
@@ -44,7 +44,7 @@ if [ "$env" = release ]; then
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #safari release for extensions.apple.com
-    options="--version=$version --dest=$destPath --name=Adguard --browser=safari  --extensionId=com.adguard.safari --update-url=https://chrome.adtidy.org/safari/updates.xml --update-filters=true"
+    options="--version=$version --dest=$destPath --name=Adguard --browser=safari --extensionId=com.adguard.safari --update-filters=true"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
     
     #edge
@@ -65,19 +65,19 @@ elif [ "$env" = beta ]; then
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #chrome beta crx
-    options="--version=$version --branch=$branch --dest=$destPath --name=chromium-beta --browser=chrome --pack=crx --update-url=https://chrome.adtidy.org/updates.xml"
+    options="--version=$version --branch=$branch --dest=$destPath --name=chromium-beta --browser=chrome --pack=crx --update-url=https://adguardteam.github.io/AdguardBrowserExtension/chrome_updates.xml"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox beta xpi
-    options="--version=$version --branch=$branch --dest=$destPath --name=firefox-standalone --browser=firefox --pack=xpi_jpm --extensionId=adguardadblockerbeta@adguard.com --update-url=https://chrome.adtidy.org/updates.rdf"
+    options="--version=$version --branch=$branch --dest=$destPath --name=firefox-standalone --browser=firefox --pack=xpi_jpm --extensionId=adguardadblockerbeta@adguard.com --update-url=https://adguardteam.github.io/AdguardBrowserExtension/firefox_updates.rdf"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox beta legacy xpi
-    options="--version=$version --branch=legacy --dest=$destPath --name=legacy --browser=firefox_legacy --pack=xpi_cfx --extensionId=adguardadblockerlegacy@adguard.com --update-url=https://chrome.adtidy.org/updates.rdf"
+    options="--version=$version --branch=legacy --dest=$destPath --name=legacy --browser=firefox_legacy --pack=xpi_cfx --extensionId=adguardadblockerlegacy@adguard.com --update-url=https://adguardteam.github.io/AdguardBrowserExtension/firefox_updates.rdf"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #safari beta
-    options="--version=$version --branch=$branch --dest=$destPath --name=AdguardBeta --browser=safari  --extensionId=com.adguard.safaribeta --update-url=https://chrome.adtidy.org/safari/updates.xml"
+    options="--version=$version --branch=$branch --dest=$destPath --name=AdguardBeta --browser=safari  --extensionId=com.adguard.safaribeta --update-url=https://adguardteam.github.io/AdguardBrowserExtension/safari_updates.xml"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
     
     #edge
