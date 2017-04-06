@@ -1,6 +1,6 @@
-! Checksum: t9RuMQjJUTeHSuxrFq3nFg
-! Version: 1.0.26.48
-! TimeUpdated: 2017-01-21T01:30:14.412+04:00
+! Checksum: iSyH1fxQOY3RrrvOeb+MBg
+! Version: 1.0.26.57
+! TimeUpdated: 2017-03-30T17:49:02.094+04:00
 ! Title: Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
 ! Title: Adguard Experimental Filter
@@ -13,14 +13,7 @@
 !-------------------------------------------------------------------!
 !------------------ General JS API ---------------------------------!
 !-------------------------------------------------------------------!
-! JS API START (Old version, until FF and Opera add-ons are updated, remove after v2.4 release)
-#%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
-#%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
-#%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
-#%#window.AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
-#%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
-! JS API FINISH
-! JS API START (New version)
+! JS API START
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -108,6 +101,7 @@ neowin.net##article[class^="classes "]:not([itemscope])
 !
 ! This file contains all experimental rules for Spyware filter.
 !
+/fbevents.js^
 /ads/beacon-
 /AppMeasurement-$script
 !-------------------------------------------------------------------!
@@ -186,7 +180,6 @@ forum.chatovod.com##iframe[src^="/widgets/?lang="]
 ! Rules which are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
 !
-!
 ! Whitelist
 ! http://adguard.com/filterrules.html#exclusionRules
 ! http://adguard.com/filterrules.html#hideRulesExceptions
@@ -221,13 +214,20 @@ antiblock.org#%#AG_onLoad(function() { AG_AntiAntiBlock(); });
 !
 !################## For advertisement ##################
 ! Dangerous "nofollow" links blocking rule
-~prophotos.ru,~cheater-top.ru,~allkey.org,~anti-free.ru,~art-on.ru,~blogig.org,~bloknot-krasnodar.ru,~bloknot-rostov.ru,~bloknot-stavropol.ru,~bucwar.ru,~bukvaved.biz,~capa.me,~car72.ru,~crox.ws,~delo.ua,~dfm.ru,~edp.kiev.ua,~f1comp.ru,~firstvds.ru,~forum.esetnod32.ru,~forum.ixbt.com,~fsm-portal.net,~gamai.ru,~gamegpu.ru,~games-java.ru,~golos-naroda.tv,~gradmart.ru,~hcdinamo.by,~hitfm.ru,~igromania.ru,~joomla.ru,~kahai.ru,~keddr.com,~kinogo.co,~kinoshka-new.ru,~maximum.ru,~maxthon.org.ru,~metallurg.ru,~mixupload.com,~montecarlo.ru,~moviez.kz,~onlinefilmu.ru,~planetaua.net,~respecta.net,~rulit.net,~rus-linux.net,~rusradio.ru,~smotretfilmy.ru,~sobytiya.info,~softek.ucoz.ru,~speedy-warez.ru,~uznayvse.ru,~vestivrn.ru,~wowjp.net,~yarportal.ru,~rozetka.com.ua,~kaermorhen.ru,~rubasket.com##noindex a[rel="nofollow"] > img
+~ukrinform.ua,~prophotos.ru,~cheater-top.ru,~allkey.org,~anti-free.ru,~art-on.ru,~blogig.org,~bloknot-krasnodar.ru,~bloknot-rostov.ru,~bloknot-stavropol.ru,~bucwar.ru,~bukvaved.biz,~capa.me,~car72.ru,~crox.ws,~delo.ua,~dfm.ru,~edp.kiev.ua,~f1comp.ru,~firstvds.ru,~forum.esetnod32.ru,~forum.ixbt.com,~fsm-portal.net,~gamai.ru,~gamegpu.ru,~games-java.ru,~golos-naroda.tv,~gradmart.ru,~hcdinamo.by,~hitfm.ru,~igromania.ru,~joomla.ru,~kahai.ru,~keddr.com,~kinogo.co,~kinoshka-new.ru,~maximum.ru,~maxthon.org.ru,~metallurg.ru,~mixupload.com,~montecarlo.ru,~moviez.kz,~onlinefilmu.ru,~planetaua.net,~respecta.net,~rulit.net,~rus-linux.net,~rusradio.ru,~smotretfilmy.ru,~sobytiya.info,~softek.ucoz.ru,~speedy-warez.ru,~uznayvse.ru,~vestivrn.ru,~wowjp.net,~yarportal.ru,~rozetka.com.ua,~kaermorhen.ru,~rubasket.com,~anal-porno.su##noindex a[rel="nofollow"] > img
 !
-~allmult.com,~batzbatz.com,~batzbatz.ru,~bobfilm.net,~bobfilm1.net,~fanserials.tv,~kinobar.kz,~kinoimperiya.net,~latino-serialo.ru,~nastol.com.ua,~novinkionlain.ru,~online-multy.ru,~rusdtp.ru,~smeshnoevideo.com,~vidoser.com,~xrust.ru,~zerx.tv,~docfilms.info,~kinogohd.net###dle-content noindex > div[style]
+~kinogo-onlaine.net,~allmult.com,~batzbatz.com,~batzbatz.ru,~bobfilm.net,~bobfilm1.net,~fanserials.tv,~kinobar.kz,~kinoimperiya.net,~latino-serialo.ru,~nastol.com.ua,~novinkionlain.ru,~online-multy.ru,~rusdtp.ru,~smeshnoevideo.com,~vidoser.com,~xrust.ru,~zerx.tv,~docfilms.info,~kinogohd.net,porno-hd.tv###dle-content noindex > div[style]
 !
 ! fake browser update
 ~junodownload.com#%#document.onmouseout = null; window.onbeforeunload = null; window.blur = null;
 !
+! https://forum.adguard.com/index.php?threads/19852/
+fullfilmihdizlesene.com###sidebar > .sidebarborder:not(:nth-child(3))
+! https://github.com/AdguardTeam/AdguardFilters/issues/4322
+wowhead.com###page-content > div[class="main"] > div[class="blocks"]
+wowhead.com##div[class="wrapper"] > div[class="blocks"]
+! https://github.com/AdguardTeam/AdguardFilters/issues/4175
+rgmechanics.com##.sidebar.fright > div.widget.widget_text
 ! https://forum.adguard.com/index.php?threads/18762/
 direkizlehd.tv##h2.post-baslik
 ! https://forum.adguard.com/index.php?threads/18545/

@@ -152,7 +152,7 @@ PageController.prototype = {
         contentPage.sendMessage({type: 'synchronizeOpenTabs'}, function (response) {
             var tabs = response.tabs;
             for (var i = 0; i < tabs.length; i++) {
-                this.onTabAdded(tabs[i]);
+                this.onTabUpdated(tabs[i]);
             }
             this.onSelectedTabChange();
         }.bind(this));
@@ -783,8 +783,6 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
         function onEvent(event, tabInfo, filteringEvent) {
             switch (event) {
                 case EventNotifierTypes.TAB_ADDED:
-                    pageController.onTabAdded(tabInfo);
-                    break;
                 case EventNotifierTypes.TAB_UPDATE:
                     pageController.onTabUpdated(tabInfo);
                     break;
@@ -818,7 +816,7 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
         });
 
         contentPage.onMessage.addListener(function (message) {
-            if (message.type == 'notifyListeners') {
+            if (message.type === 'notifyListeners') {
                 onEvent.apply(this, message.args);
             }
         });

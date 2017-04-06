@@ -1,6 +1,6 @@
-! Checksum: eK5beo3FQqo+1A0Twg1L5w
-! Version: 1.0.9.16
-! TimeUpdated: 2017-01-10T02:01:31.154+04:00
+! Checksum: 6zvA/dWPDWHd7Pq9KhGvjQ
+! Version: 1.0.9.23
+! TimeUpdated: 2017-03-24T20:01:27.532+04:00
 ! Title: Dutch filter
 ! Description: EasyList Dutch + Adguard Dutch filter. Filter list that specifically removes adverts on Dutch language websites.
 ! Title: Adguard Dutch Filter.
@@ -16,14 +16,7 @@
 !---------------------------------------------------------------------------!
 !------------------ General JS API -----------------------------------------!
 !---------------------------------------------------------------------------!
-! JS API START (Old version, until FF and Opera add-ons are updated, remove after v2.4 release)
-#%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
-#%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
-#%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
-#%#window.AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
-#%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
-! JS API FINISH
-! JS API START (New version)
+! JS API START
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -1325,7 +1318,7 @@ tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
 ! These rules are against anti-adblock scripts
 !
 ! ! Prevent AdFender detection
-@@/ad_bomb/*$image,domain=computerworld.nl|webwereld.nl|ajaxshowtime.com
+@@/ad_bomb/*$image,domain=computerworld.nl|webwereld.nl
 ! https://forum.adguard.com/index.php?threads/11357/
 @@||static.buienradar.nl/resources/js/advertisement.js
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2160
@@ -1380,38 +1373,41 @@ omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3
 !--------------------------------------------------------!
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
-gelderlander.nl##.sidelane-filling > a > img
-gelderlander.nl##.ad
-vlinderscrime.nl###top-banner
-vlinderscrime.nl##a[href="http://www.fashioncarmen.nl"]
-vlinderscrime.nl##.a-single > a[class="gofollow"] > img
-afkortingen.nu###banner_top
-afkortingen.nu###banner_right
-afkortingen.nu##.banner
-afkortingen.nu###link_unit
-funx.nl##.leaderboard-container
-funx.nl##.sidebar_item--ad
-klusidee.nl##td > .hide-mobile[style*="728px; height:"]
-klusidee.nl##.show-mobile[style="width:300px; height:600px; margin: 0 auto;"]
-klusidee.nl##td.td-ad
-ondertitel.com##.leaderbord-container
+||iframe.gsminfo.nl/*/populair-beknopt^$domain=allaboutphones.nl
+allaboutphones.nl##.ad-container
+autoweek.nl##.page-banner
 marktplaats.nl###banner-aanbieding
 marktplaats.nl###banner-bottom
 marktplaats.nl###banner-marketing
 marktplaats.nl###banner-viptop
+afkortingen.nu###banner_right
+afkortingen.nu###banner_top
 iphoned.nl###featured-header
 tvgids.nl###ligatus_under_content
+afkortingen.nu###link_unit
 fok.nl###mainContent > div.ad
+vlinderscrime.nl###top-banner
+vlinderscrime.nl##.a-single > a[class="gofollow"] > img
+gelderlander.nl##.ad
 iphoned.nl##.advert-sidebar
+afkortingen.nu##.banner
 marktplaats.nl##.banner-vipbottom
 nu.nl##.block.advertoriallist
 tvgids.nl##.interstitial_banner
 weeronline.nl##.leaderboard
+funx.nl##.leaderboard-container
+ondertitel.com##.leaderbord-container
 nu.nl##.section-mediapartner-external.source-normal
+klusidee.nl##.show-mobile[style="width:300px; height:600px; margin: 0 auto;"]
+funx.nl##.sidebar_item--ad
+gelderlander.nl##.sidelane-filling > a > img
 iculture.nl##.site-header__compare
 iphoned.nl##.widget.widget_static_device_widget
 iphoned.nl##.widget_ad_html
 vlinderscrime.nl##a[href="http://mariska-o.nl/"]
+vlinderscrime.nl##a[href="http://www.fashioncarmen.nl"]
+klusidee.nl##td > .hide-mobile[style*="728px; height:"]
+klusidee.nl##td.td-ad
 ||bs.serving-sys.com/BurstingPipe/adServer.bs$domain=kijk.nl
 ||cdn.sbsnet.nl/creatives/assets/*.mp4$domain=kijk.nl
 ||d33t3vvu2t2yu5.cloudfront.net^$domain=nl.express.live

@@ -14,7 +14,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global chrome, adguardContent */
+
+/* global adguardContent */
 
 var contentPage = (function (adguard) { // jshint ignore:line
 
@@ -27,7 +28,6 @@ var contentPage = (function (adguard) { // jshint ignore:line
 
 })(adguardContent);
 
-var i18n = (function () { // jshint ignore:line
-    var browser = window.browser || chrome;
-    return browser.i18n;
-})();
+var i18n = (function (adguard) { // jshint ignore:line
+    return adguard.browserApi.i18n;
+})(adguardContent);

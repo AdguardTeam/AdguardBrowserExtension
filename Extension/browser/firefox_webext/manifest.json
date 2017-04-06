@@ -1,0 +1,153 @@
+{
+	"manifest_version": 2,
+	"name": "__MSG_name__",
+	"short_name": "__MSG_short_name__",
+	"author": "Performix LLC",
+	"version": "${version}",
+
+	"applications": {
+		"gecko": {
+			"id": "${extensionId}",
+			"strict_min_version": "51.0"
+		}
+	},
+
+	"default_locale": "en",
+	"description": "__MSG_description__",
+	"icons": {
+		"16": "icons/green-16.png",
+		"128": "icons/green-128.png"
+	},
+
+	"browser_action": {
+		"default_icon": {
+			"19": "icons/gray-19.png",
+			"38": "icons/gray-38.png"
+		},
+		"default_title": "__MSG_name__",
+		"default_popup": "pages/popup.html"
+	},
+
+	"background": {
+		"page": "background.html",
+		"persistent": true
+	},
+
+	"content_scripts": [
+		{
+			"all_frames": true,
+			"js": [
+				"lib/libs/css.escape.js",
+				"lib/utils/element-collapser.js",
+				"lib/utils/css-hits-counter.js",
+				"lib/libs/extended-css-1.0.6.js",
+				"lib/content-script/adguard-content.js",
+				"lib/content-script/common-script.js",
+				"lib/content-script/content-script.js",
+				"lib/content-script/websocket.js",
+				"lib/content-script/preload.js"
+			],
+			"matches": [
+				"http://*/*",
+				"https://*/*"
+			],
+		  	"match_about_blank": true,
+			"run_at": "document_start"
+		},
+		{
+			"all_frames": false,
+			"js": [
+				"lib/content-script/content-utils.js"
+			],
+			"matches": [
+				"http://*/*",
+				"https://*/*"
+			],
+			"run_at": "document_start"
+		},
+		{
+			"all_frames": false,
+			"css": [
+				"lib/content-script/assistant/css/selector.css"
+			],
+			"js": [
+				"lib/libs/diff_match_patch.js",
+				"lib/libs/dom.patched.js",
+				"lib/libs/balalaika.patched.js",
+				"lib/content-script/i18n-helper.js",
+				"lib/content-script/assistant/js/adguard-selector.js",
+				"lib/content-script/assistant/js/adguard-rules-constructor.js",
+				"lib/content-script/assistant/js/slider-widget.js",
+				"lib/content-script/assistant/js/assistant.js",
+				"lib/content-script/assistant/js/start-assistant.js",
+				"lib/content-script/devtools-helper.js"
+			],
+			"matches": [
+				"http://*/*",
+				"https://*/*"
+			],
+			"run_at": "document_end"
+		},
+		{
+			"all_frames": false,
+			"js": [
+				"lib/content-script/subscribe.js"
+			],
+			"matches": [
+				"*://*.github.io/*",
+				"*://*.abpchina.org/*",
+				"*://*.abpindo.blogspot.com/*",
+				"*://*.abpvn.com/*",
+				"*://*.adblock-listefr.com/*",
+				"*://*.adblock.gardar.net/*",
+				"*://*.adblockplus.org/*",
+				"*://*.adblockplus.me/*",
+				"*://*.adguard.com/*",
+				"*://*.certyficate.it/*",
+				"*://*.code.google.com/*",
+				"*://*.dajbych.net/*",
+				"*://*.fanboy.co.nz/*",
+				"*://*.fredfiber.no/*",
+				"*://*.filterlists.com/*",
+				"*://*.gardar.net/*",
+				"*://*.github.com/*",
+				"*://*.henrik.schack.dk/*",
+				"*://*.latvian-list.site11.com/*",
+				"*://*.liamja.co.uk/*",
+				"*://*.malwaredomains.com/*",
+				"*://*.margevicius.lt/*",
+				"*://*.nauscopio.nireblog.com/*",
+				"*://*.nireblog.com/*",
+				"*://*.noads.it/*",
+				"*://*.schack.dk/*",
+				"*://*.spam404.com/*",
+				"*://*.stanev.org/*",
+				"*://*.void.gr/*",
+				"*://*.yoyo.org/*",
+				"*://*.zoso.ro/*"
+			],
+			"run_at": "document_idle"
+		}
+	],
+
+	"minimum_chrome_version": "21.0",
+
+	"options_page": "pages/options.html",
+  	"devtools_page": "devtools.html",
+
+	"permissions": [
+		"tabs",
+		"http://*/*",
+		"https://*/*",
+		"webRequest",
+		"webRequestBlocking",
+		"webNavigation",
+		"storage",
+		"contextMenus"
+	],
+
+	"web_accessible_resources": [
+		"lib/content-script/assistant/css/assistant.css",
+		"lib/content-script/assistant/i/close.svg"
+	]
+}

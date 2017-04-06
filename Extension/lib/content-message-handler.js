@@ -104,21 +104,6 @@
     }
 
     /**
-     * Returns localization map by passed message identifiers
-     * @param ids Message identifiers
-     */
-    function getLocalization(ids) {
-        var result = {};
-        for (var id in ids) {
-            if (ids.hasOwnProperty(id)) {
-                var current = ids[id];
-                result[current] = adguard.i18n.getMessage(current);
-            }
-        }
-        return result;
-    }
-
-    /**
      * Searches for whitelisted domains.
      *
      * @param offset Offset
@@ -136,39 +121,6 @@
             }
         }
         return limit ? result.slice(offset, offset + limit) : result;
-    }
-
-    /**
-     * Constructs assistant options. Includes css style and localization messages
-     */
-    function processLoadAssistant() {
-        var options = {
-            cssLink: adguard.getURL('lib/content-script/assistant/css/assistant.css')
-        };
-        var ids = [
-            'assistant_select_element',
-            'assistant_select_element_ext',
-            'assistant_select_element_cancel',
-            'assistant_block_element',
-            'assistant_block_element_explain',
-            'assistant_slider_explain',
-            'assistant_slider_if_hide',
-            'assistant_slider_min',
-            'assistant_slider_max',
-            'assistant_extended_settings',
-            'assistant_apply_rule_to_all_sites',
-            'assistant_block_by_reference',
-            'assistant_block_similar',
-            'assistant_block',
-            'assistant_another_element',
-            'assistant_preview',
-            'assistant_preview_header',
-            'assistant_preview_header_info',
-            'assistant_preview_end',
-            'assistant_preview_start'
-        ];
-        options.localization = getLocalization(ids);
-        return options;
     }
 
     /**
@@ -305,8 +257,6 @@
             case 'processShouldCollapseMany':
                 var requests = adguard.webRequestService.processShouldCollapseMany(sender.tab, message.documentUrl, message.requests);
                 return {requests: requests};
-            case 'loadAssistant':
-                return processLoadAssistant();
             case 'addUserRule':
                 adguard.userrules.addRules([message.ruleText]);
                 if (message.adguardDetected || adguard.frames.isTabAdguardDetected(sender.tab)) {
@@ -364,10 +314,9 @@
                 return {confirmText: confirmText};
             case 'enableSubscription':
                 adguard.filters.processAbpSubscriptionUrl(message.url, function (rulesAddedCount) {
-                    callback({
-                        title: adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_title'),
-                        text: adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_text', [rulesAddedCount])
-                    });
+                    var title = adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_title');
+                    var text = adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_text', [String(rulesAddedCount)]);
+                    adguard.ui.showAlertMessagePopup(title, text);
                 });
                 return true; // Async
             // Popup methods
@@ -405,8 +354,9 @@
             case 'saveCssHitStats':
                 processSaveCssHitStats(sender.tab, message.stats);
                 break;
-            default :
-                throw 'Unknown message: ' + message;
+            default:
+                // Unhandled message
+                return true;
         }
     }
 

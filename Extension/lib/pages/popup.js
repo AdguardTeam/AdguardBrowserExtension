@@ -28,21 +28,19 @@ var resizePopupWindowForMacOs = function ($) {
     }, 1000);
 };
 
-// Make global for popup-script.js (Safari Code)
 var controller;
 var tab;
 
-//make global for other popup scripts;
 $(document).ready(function () {
 
-    adguard.tabs.getActive(function (t) {
+    var onActiveTabReceived = function (t) {
 
+        // Make global for other popup scripts;
         tab = t;
 
         var tabInfo = adguard.frames.getFrameInfo(tab);
 
         controller = new PopupController({
-            platform: adguard.prefs.platform,
             showStatsSupported: !adguard.utils.browser.isContentBlockerEnabled()
         });
 
@@ -103,5 +101,18 @@ $(document).ready(function () {
 
         //render popup
         controller.render(tabInfo);
+    };
+
+    adguard.tabs.getActive(function (tab) {
+
+        /**
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/551
+         * MS Edge unexpectedly crashes on opening the popup.
+         * We do not quite understand the reason for this behavior, but we assume it happens due to code flow execution and changing the DOM.
+         * setTimeout allows us to resolve this "race condition".
+         */
+        setTimeout(function () {
+            onActiveTabReceived(tab);
+        }, 10);
     });
 });

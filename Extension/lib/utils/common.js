@@ -89,6 +89,10 @@ adguard.utils = (function () {
             return str && str.indexOf(prefix) === 0;
         },
 
+        endsWith: function (str, postfix) {
+            return str.endsWith(postfix);
+        },
+
         substringAfter: function (str, separator) {
             if (!str) {
                 return str;

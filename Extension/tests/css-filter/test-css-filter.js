@@ -216,6 +216,23 @@ QUnit.test("Some Complex Selector Rules", function (assert) {
     cssFilterRule = new adguard.rules.CssFilterRule(ruleText);
     assert.equal(cssFilterRule.ruleText, ruleText);
     assert.equal(cssFilterRule.cssSelector, '[onclick] > a[href^="javascript:"]');
+
+    ruleText = 'example.com###main_content_wrap > table[width="100%"] > tbody > tr > td:empty+td > aside > a[href="#"]';
+    cssFilterRule = new adguard.rules.CssFilterRule(ruleText);
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.equal(cssFilterRule.cssSelector, '#main_content_wrap > table[width=\"100%\"] > tbody > tr > td:empty+td > aside > a[href=\"#\"]');
+
+    ruleText = 'pornolab.biz,pornolab.cc,pornolab.net###main_content_wrap > table[width="100%"] > tbody > tr > td:empty+td > aside > a[href="#"]';
+    cssFilterRule = new adguard.rules.CssFilterRule(ruleText);
+
+    assert.equal(cssFilterRule.cssSelector, '#main_content_wrap > table[width="100%"] > tbody > tr > td:empty+td > aside > a[href="#"]')
+    assert.equal(cssFilterRule.ruleText, ruleText);
+
+    ruleText = 'm.hindustantimes.com##.container-fluid > section.noBorder[-ext-has=">.recommended-story>.recommended-list>ul>li:not([class]):empty"]';
+    cssFilterRule = new adguard.rules.CssFilterRule(ruleText);
+
+    assert.equal(cssFilterRule.ruleText, ruleText);
+    assert.equal(cssFilterRule.cssSelector, '.container-fluid > section.noBorder[-ext-has=\">.recommended-story>.recommended-list>ul>li:not([class]):empty\"]')
 });
 
 QUnit.test("Invalid Style Syntax", function (assert) {

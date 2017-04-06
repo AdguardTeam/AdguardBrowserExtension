@@ -25,4 +25,45 @@
  * 3. We allow only custom rules got from the User filter (which user creates manually)
  *    or from this DEFAULT_SCRIPT_RULES object
  */
-adguard.rules.DEFAULT_SCRIPT_RULES = Object.create(null);
+
+(function (api) {
+
+    var DEFAULT_SCRIPT_RULES = Object.create(null);
+
+    /**
+     * Saves local script rules to object
+     * @param json JSON object loaded from the filters/local_script_rules.json file
+     */
+    var setLocalScriptRules = function (json) {
+
+        DEFAULT_SCRIPT_RULES = Object.create(null);
+
+        var rules = json.rules;
+        for (var i = 0; i < rules.length; i++) {
+            var rule = rules[i];
+            var domains = rule.domains;
+            var script = rule.script;
+            var ruleText = '';
+            if (domains !== '<any>') {
+                ruleText = domains;
+            }
+            ruleText += api.FilterRule.MASK_SCRIPT_RULE + script;
+            DEFAULT_SCRIPT_RULES[ruleText] = true;
+        }
+    };
+
+    /**
+     * Checks js rule is local
+     * @param ruleText Rule text
+     * @returns {boolean}
+     */
+    var isLocal = function (ruleText) {
+        return ruleText in DEFAULT_SCRIPT_RULES;
+    };
+
+    api.LocalScriptRulesService = {
+        setLocalScriptRules: setLocalScriptRules,
+        isLocal: isLocal
+    };
+
+})(adguard.rules);

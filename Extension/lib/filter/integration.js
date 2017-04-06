@@ -156,25 +156,8 @@ adguard.integration = (function (adguard) {
      */
     var checkHeaders = function (tab, headers, frameUrl) {
 
-        // Check headers
-        var adguardAppHeaderValue = null;
-        var adguardRuleHeaderValue = null;
-        if (headers) {
-            for (var i = 0; i < headers.length; i++) {
-                var header = headers[i];
-                if (!header.value) {
-                    continue;
-                }
-                switch (header.name) {
-                    case ADGUARD_APP_HEADER:
-                        adguardAppHeaderValue = header.value;
-                        break;
-                    case ADGUARD_RULE_HEADER:
-                        adguardRuleHeaderValue = header.value;
-                        break;
-                }
-            }
-        }
+        // Check for X-Adguard-Filtered header
+        var adguardAppHeaderValue = adguard.utils.browser.getHeaderValueByName(headers, ADGUARD_APP_HEADER);
 
         if (!adguardAppHeaderValue) {
             // No X-Adguard-Filtered header, disable integration mode for this tab
@@ -194,6 +177,7 @@ adguard.integration = (function (adguard) {
         // Check for white list rule in frame
         var ruleInfo = Object.create(null);
         if (isFullIntegrationMode) {
+            var adguardRuleHeaderValue = adguard.utils.browser.getHeaderValueByName(headers, ADGUARD_RULE_HEADER);
             ruleInfo = parseRuleHeader(adguardRuleHeaderValue, frameUrl);
         }
 
@@ -209,13 +193,9 @@ adguard.integration = (function (adguard) {
      * @param headers
      */
     var parseAdguardRuleFromHeaders = function (headers) {
-        if (headers) {
-            for (var i = 0; i < headers.length; i++) {
-                var header = headers[i];
-                if (header.name === ADGUARD_RULE_HEADER) {
-                    return createRuleFromHeader(header.value);
-                }
-            }
+        var header = adguard.utils.browser.findHeaderByName(headers, ADGUARD_RULE_HEADER);
+        if (header) {
+            return createRuleFromHeader(header.value);
         }
         return null;
     };

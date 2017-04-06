@@ -101,8 +101,7 @@ QUnit.test("Convert first-party rule", function(assert) {
 });
 
 QUnit.test("Convert websocket rule", function(assert) {
-    var ruleText = "||test.com^$websocket";
-    var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    var result = SafariContentBlockerConverter.convertArray([ "||test.com^$websocket" ]);
     assert.equal(1, result.convertedCount);
     assert.equal(0, result.errorsCount);
 
@@ -116,6 +115,20 @@ QUnit.test("Convert websocket rule", function(assert) {
     assert.notOk(convertedRule.trigger["load-type"]);
     assert.ok(convertedRule.trigger["resource-type"]);
     assert.equal("raw", convertedRule.trigger["resource-type"][0]);
+
+
+    result = SafariContentBlockerConverter.convertArray([ "$websocket,domain=123movies.is" ]);
+    assert.equal(1, result.convertedCount);
+    assert.equal(0, result.errorsCount);
+
+    converted = JSON.parse(result.converted);
+    assert.equal(1, converted.length);
+
+    convertedRule = converted[0];
+    assert.equal(convertedRule.trigger["url-filter"], "^wss?://.*");
+    assert.equal(convertedRule.trigger["if-domain"][0], "*123movies.is");
+    assert.ok(convertedRule.trigger["resource-type"]);
+    assert.equal(convertedRule.trigger["resource-type"][0], "raw");
 });
 
 QUnit.test("Convert ~script rule", function(assert) {

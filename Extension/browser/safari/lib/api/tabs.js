@@ -331,6 +331,19 @@ adguard.tabsImpl = (function (adguard) {
         }
     };
 
+    /**
+     * Gets tab by id
+     * @param tabId Tab identifier
+     * @param callback
+     */
+    var get = function (tabId, callback) {
+        var safariTab = tabs[tabId];
+        if (!safariTab) {
+            return;
+        }
+        callback(toTabFromSafariTab(tabId, safariTab));
+    };
+
     var fromSafariTab = function (safariTab) {
         var tabId = getOrCreateTabId(safariTab);
         return {tabId: tabId};
@@ -354,6 +367,7 @@ adguard.tabsImpl = (function (adguard) {
         sendMessage: sendMessage,
         getAll: getAll,
         getActive: getActive,
+        get: get,
 
         fromSafariTab: fromSafariTab,
         toSafariTab: toSafariTab

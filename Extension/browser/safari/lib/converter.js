@@ -18,13 +18,14 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.23';
+var CONVERTER_VERSION = '1.3.27';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
-var ANY_URL_TEMPLATES = ['||*', '', '*'];
+var ANY_URL_TEMPLATES = ['||*', '', '*', '|*'];
 var URL_FILTER_ANY_URL = ".*";
+var URL_FILTER_WS_ANY_URL = "^wss?://.*";
 // Improved regular expression instead of UrlFilterRule.REGEXP_START_URL
-var URL_FILTER_REGEXP_START_URL = "^https?://([^/]*\\.)?";
+var URL_FILTER_REGEXP_START_URL = "^[htpsw]+://([^/]*\\.)?";
 // Simplified separator (to fix an issue with $ restriction - it can be only in the end of regexp)
 var URL_FILTER_REGEXP_SEPARATOR = "[/:&?]?";
 
@@ -178,6 +179,9 @@ var SafariContentBlockerConverter = {
 
         _createUrlFilterString: function (filter) {
             if (ANY_URL_TEMPLATES.indexOf(filter.getUrlRuleText()) >= 0) {
+                if (adguard.rules.UrlFilterRule.contentTypes.WEBSOCKET === filter.permittedContentType) {
+                    return URL_FILTER_WS_ANY_URL;
+                }
                 return URL_FILTER_ANY_URL;
             }
 

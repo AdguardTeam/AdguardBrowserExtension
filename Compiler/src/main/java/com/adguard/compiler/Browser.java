@@ -22,14 +22,14 @@ public enum Browser {
 	SAFARI("safari"),
 
 	/**
-	 * Firefox browser
+	 * Firefox browser (legacy XPCOM)
 	 */
-	FIREFOX("firefox"),
+	FIREFOX_LEGACY("firefox"),
 
 	/**
-	 * Legacy firefox (older than v30)
+	 * Firefox WebExtensions
 	 */
-	FIREFOX_LEGACY("firefox_legacy");
+	FIREFOX_WEBEXT("firefox_webext");
 
 	private String name;
 
@@ -56,8 +56,8 @@ public enum Browser {
 		switch (this) {
 			case SAFARI:
 				return "safari";
-			case FIREFOX:
 			case FIREFOX_LEGACY:
+			case FIREFOX_WEBEXT:
 				return "firefox";
 			case CHROMIUM:
 			case EDGE:

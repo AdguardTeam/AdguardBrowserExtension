@@ -432,6 +432,29 @@ adguard.backend = (function (adguard) {
     };
 
     /**
+     * Loads script rules from local file
+     *
+     * @param successCallback   Called on success
+     * @param errorCallback     Called on error
+     */
+    var loadLocalScriptRules = function (successCallback, errorCallback) {
+        var success = function (response) {
+            if (response && response.responseText) {
+                var metadata = parseJson(response.responseText);
+                if (!metadata) {
+                    errorCallback(response, 'invalid response');
+                    return;
+                }
+                successCallback(metadata);
+            } else {
+                errorCallback(response, 'empty response');
+            }
+        };
+        var url = adguard.getURL(settings.localFiltersFolder + '/local_script_rules.json');
+        executeRequestAsync(url, 'application/json', success, errorCallback);
+    };
+
+    /**
      * Checks specified host hashes with our safebrowsing service
      *
      * @param hashes                Host hashes
@@ -613,6 +636,7 @@ adguard.backend = (function (adguard) {
 
         loadLocalFiltersMetadata: loadLocalFiltersMetadata,
         loadLocalFiltersI18Metadata: loadLocalFiltersI18Metadata,
+        loadLocalScriptRules: loadLocalScriptRules,
 
         adguardAppAddRule: adguardAppAddRule,
         adguardAppAddRuleOld: adguardAppAddRuleOld,
