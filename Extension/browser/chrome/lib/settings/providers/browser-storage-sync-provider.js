@@ -121,7 +121,7 @@
     };
 
     // EXPOSE
-    api.syncProviders.register('CHROME', {
+    api.syncProviders.register('BROWSER_SYNC', {
         load: load,
         save: save,
         init: init,

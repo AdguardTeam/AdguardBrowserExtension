@@ -107,7 +107,7 @@ PageController.prototype = {
         });
 
         $('#browserStorageProvider').click(function () {
-            contentPage.sendMessage({type: 'setSyncProvider', provider: 'CHROME'}, function () {
+            contentPage.sendMessage({type: 'setSyncProvider', provider: 'BROWSER_SYNC'}, function () {
                 document.location.reload();
             });
         });

@@ -25,7 +25,7 @@
 
     'use strict';
 
-    //TODO: Change to real
+    //TODO[SYNC]: Change to real
     var DROPBOX_CLIENT_ID = 'bubtujvx7p81yjo';
     var DROPBOX_PROVIDER_NAME = 'DROPBOX';
 
@@ -289,7 +289,6 @@
         if (dropboxFolderState.longPollTimeoutId) {
             clearTimeout(dropboxFolderState.longPollTimeoutId);
         }
-        //TODO[SYNC]: stop polling
     };
 
     var getAuthUrl = function (redirectUri, csrfState) {
