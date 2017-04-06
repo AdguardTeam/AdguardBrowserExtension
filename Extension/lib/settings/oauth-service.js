@@ -23,67 +23,34 @@
     var TOKEN_STORAGE_PROP = 'sync-provider-auth-tokens';
 
     var accessTokens = null;
-    var securityToken = null;
-
-    /**
-     * Finds sync provider by name
-     * @param providerName Provider name
-     * @returns {*}
-     */
-    function findProviderByName(providerName) {
-        for (var key in api) {
-            if (api.hasOwnProperty(key)) {
-                var provider = api[key];
-                if (provider.name === providerName) {
-                    return provider;
-                }
-            }
-        }
-        return null;
-    }
-
-    function openAuthTab(providerName) {
-        adguard.tabs.create({
-            active: true,
-            type: 'popup',
-            url: getAuthUrl(providerName, 'http://testsync.adguard.com/oauth?provider=' + providerName)
-        });
-    }
+    var csrfState = null;
 
     var getAccessTokens = function () {
-        if (!accessTokens) {
+        if (accessTokens === null) {
             accessTokens = JSON.parse(adguard.localStorage.getItem(TOKEN_STORAGE_PROP)) || Object.create(null);
         }
-
         return accessTokens;
     };
+
+    /**
+     * Clears provider token
+     * @param providerName
+     */
+    function clearToken(providerName) {
+        accessTokens = getAccessTokens();
+        delete accessTokens[providerName];
+        adguard.localStorage.setItem(TOKEN_STORAGE_PROP, JSON.stringify(accessTokens));
+    }
 
     /**
      * Gets random one time token
      * @returns {*}
      */
-    var getSecurityToken = function () {
-        if (!securityToken) {
-            securityToken = Math.random().toString(36).substring(7);
+    var getOrGenerateCSRFState = function () {
+        if (csrfState === null) {
+            csrfState = Math.random().toString(36).substring(7);
         }
-        return securityToken;
-    };
-
-    /**
-     * Returns provider auth url
-     * @param providerName
-     * @param redirectUri
-     * @returns {null}
-     */
-    var getAuthUrl = function (providerName, redirectUri) {
-        var securityToken = getSecurityToken();
-
-        var provider = findProviderByName(providerName);
-        if (provider && typeof provider.getAuthUrl === 'function') {
-            return provider.getAuthUrl(redirectUri, securityToken);
-        }
-
-        return null;
+        return csrfState;
     };
 
     /**
@@ -92,11 +59,10 @@
      * @returns {null}
      */
     var getToken = function (providerName) {
-        var tokens = getAccessTokens();
+        var tokens = getAccessTokens()[providerName];
         if (tokens) {
-            return tokens[providerName] ? tokens[providerName].token : null;
+            return tokens.token;
         }
-
         return null;
     };
 
@@ -104,47 +70,27 @@
      * Sets provider token
      * @param providerName
      * @param token
-     * @param securityToken
+     * @param csrfState
      * @param expires
      * @returns {boolean}
      */
-    var setToken = function (providerName, token, securityToken, expires) {
+    var setToken = function (providerName, token, csrfState, expires) {
 
-        if (securityToken) {
-            if (securityToken !== getSecurityToken()) {
-                adguard.console.warn("Security token doesn't match");
-                return false;
-            }
+        if (csrfState !== getOrGenerateCSRFState()) {
+            adguard.console.warn("Security token doesn't match");
+            return false;
         }
 
-        var tokens = getAccessTokens();
-        tokens[providerName] = {
+        var accessTokens = getAccessTokens();
+        accessTokens[providerName] = {
             token: token,
             expires: expires ? Date.now() + parseInt(expires) * 1000 : null
         };
-        accessTokens = tokens;
 
-        //TODO: handle token expiration
+        adguard.console.info('Set OAuth token {0} for sync provider {1}', token, providerName);
 
         adguard.localStorage.setItem(TOKEN_STORAGE_PROP, JSON.stringify(accessTokens));
-
         return true;
-    };
-
-    /**
-     * Revokes provider token
-     * @param providerName
-     */
-    var revokeToken = function (providerName) {
-        var tokens = getAccessTokens();
-        if (tokens[providerName]) {
-            var provider = findProviderByName(providerName);
-            if (provider && typeof provider.revokeToken === 'function') {
-                provider.revokeToken(tokens[providerName].token);
-            }
-
-            setToken(providerName, null);
-        }
     };
 
     /**
@@ -153,12 +99,29 @@
      * @returns {boolean}
      */
     var isAuthorized = function (providerName) {
+        var provider = api.syncProviders.getProvider(providerName);
+        if (!provider) {
+            return false;
+        }
+        if (!provider.isOAuthSupported) {
+            return true;
+        }
         if (!getToken(providerName)) {
             return false;
         }
+        return !isTokenExpired(providerName);
+    };
 
-        //TODO: Check the token is fresh
-        return true;
+    /**
+     * Checks the token is presented but expired
+     * @param providerName
+     */
+    var isTokenExpired = function (providerName) {
+        var tokens = getAccessTokens()[providerName];
+        if (!tokens || !tokens.token || !tokens.expires) {
+            return false;
+        }
+        return Date.now() > tokens.expires;
     };
 
     /**
@@ -166,10 +129,39 @@
      * @param providerName
      */
     var authorize = function (providerName) {
-        var provider = findProviderByName(providerName);
-        if (provider && provider.oauthSupported) {
-            openAuthTab(provider.name);
+        var provider = api.syncProviders.getProvider(providerName);
+        if (!provider) {
+            return;
         }
+        if (!provider.isOAuthSupported) {
+            adguard.console.warn('Sync provider doesn\'t support oauth');
+            return;
+        }
+        adguard.tabs.create({
+            active: true,
+            type: 'popup',
+            url: provider.getAuthUrl('https://testsync.adguard.com/oauth?provider=' + providerName, getOrGenerateCSRFState())
+        });
+    };
+
+    /**
+     * Clear and revoke provider's token
+     */
+    var clearAndRevokeToken = function (providerName) {
+        var provider = api.syncProviders.getProvider(providerName);
+        if (!provider) {
+            return;
+        }
+        if (!provider.isOAuthSupported) {
+            adguard.console.warn('Sync provider doesn\'t support oauth');
+            return;
+        }
+        var token = getToken(providerName);
+        if (token) {
+            clearToken(providerName);
+            provider.revokeToken(token);
+        }
+        adguard.console.info('Remove OAuth token \'{0}\' for sync provider {1}', token, providerName);
     };
 
     // EXPOSE
@@ -183,17 +175,17 @@
          */
         setToken: setToken,
         /**
-         * Revokes auth token
-         */
-        revokeToken: revokeToken,
-        /**
          * Checks if token is presented and up to date
          */
         isAuthorized: isAuthorized,
         /**
          * Opens auth tab
          */
-        authorize: authorize
+        authorize: authorize,
+        /**
+         * Clear and revoke provider's token
+         */
+        clearAndRevokeToken: clearAndRevokeToken
     };
 
 })(adguard.sync, adguard);

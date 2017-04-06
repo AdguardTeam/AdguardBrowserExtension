@@ -15,12 +15,20 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global chrome */
+/* global browser */
 
 /**
  * Sync settings provider
  */
 (function (api, adguard) {
+
+    if (typeof browser === 'undefined' ||
+        typeof browser.storage === 'undefined' ||
+        typeof browser.storage.sync === 'undefined') {
+
+        adguard.console.info('Browser storage sync provider isn\'t supported');
+        return;
+    }
 
     /**
      * Loads file from chrome syncable storage.
@@ -29,14 +37,13 @@
      * @param callback
      */
     var load = function (filePath, callback) {
-        chrome.storage.sync.get([filePath], function (items) {
-            var e = chrome.runtime.lastError;
+        browser.storage.sync.get([filePath], function (items) {
+            var e = browser.runtime.lastError;
             if (e) {
                 adguard.console.error(e);
                 callback(false);
                 return;
             }
-
             var data = items ? items[filePath] : null;
             callback(data);
         });
@@ -54,9 +61,9 @@
         var items = {};
         items[filePath] = cropData(filePath, data, true);
 
-        chrome.storage.sync.set(items, function () {
+        browser.storage.sync.set(items, function () {
 
-            var e = chrome.runtime.lastError;
+            var e = browser.runtime.lastError;
             if (e) {
                 adguard.console.error(e);
                 callback(false);
@@ -76,7 +83,7 @@
      */
     var cropData = function (key, data, warn) {
         var itemSize = key.length + JSON.stringify(data).length + 20;
-        var oversize = itemSize - chrome.storage.sync.QUOTA_BYTES_PER_ITEM;
+        var oversize = itemSize - browser.storage.sync.QUOTA_BYTES_PER_ITEM;
         if (oversize > 0) {
             if (data.filters && data.filters["user-filter"] && data.filters["user-filter"].rules) {
                 // Cut user-filter field
@@ -105,35 +112,20 @@
     };
 
     var init = function () {
-        chrome.storage.onChanged.addListener(onStorageChanged);
+        browser.storage.onChanged.addListener(onStorageChanged);
         adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED);
     };
 
     var shutdown = function () {
-        chrome.storage.onChanged.removeListener(onStorageChanged);
+        browser.storage.onChanged.removeListener(onStorageChanged);
     };
 
     // EXPOSE
-    api.storageSyncProvider = {
-        /**
-         * Provider name
-         */
-        get name() {
-            return 'CHROME';
-        },
-        get oauthSupported() {
-            return false;
-        },
-        init: init,
-        shutdown: shutdown,
-        /**
-         * Loads data from provider
-         */
+    api.syncProviders.register('CHROME', {
         load: load,
-        /**
-         * Saves data to provider
-         */
-        save: save
-    };
+        save: save,
+        init: init,
+        shutdown: shutdown
+    });
 
 })(adguard.sync, adguard);

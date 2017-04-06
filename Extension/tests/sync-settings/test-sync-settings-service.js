@@ -46,6 +46,7 @@ var cleanUp = function (callback) {
 
 
 QUnit.test("Test local to remote", function (assert) {
+    var fileSyncProvider = adguard.sync.syncProviders.getProvider('FILE');
     var done = assert.async();
 
     var localManifest = adguard.sync.settingsProvider.loadLocalManifest();
@@ -75,16 +76,16 @@ QUnit.test("Test local to remote", function (assert) {
                 assert.equal(data["sections"][0].name, localManifest["sections"][0].name);
                 assert.equal(data["sections"][0].timestamp, localManifest["sections"][0].timestamp);
 
-                adguard.sync.fileSyncProvider.load(filtersPath, onFiltersSectionLoaded);
+                fileSyncProvider.load(filtersPath, onFiltersSectionLoaded);
             };
 
             var onSettingSynced = function (result) {
                 assert.ok(result);
 
-                adguard.sync.fileSyncProvider.load(manifestPath, onManifestLoaded);
+                fileSyncProvider.load(manifestPath, onManifestLoaded);
             };
 
-            adguard.sync.syncService.setSyncProvider(adguard.sync.fileSyncProvider.name);
+            adguard.sync.syncService.setSyncProvider('FILE');
             adguard.sync.syncService.syncSettings(onSettingSynced);
         });
     });
@@ -135,7 +136,7 @@ QUnit.test("Test remote to local", function (assert) {
                 });
             };
 
-            adguard.sync.syncService.setSyncProvider(adguard.sync.fileSyncProvider.name);
+            adguard.sync.syncService.setSyncProvider('FILE');
             adguard.sync.syncService.syncSettings(onSettingSynced);
         });
     });

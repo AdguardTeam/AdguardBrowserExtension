@@ -17,10 +17,6 @@
 
 (function (syncApi, adguard) {
 
-    var syncRequiredEvents = [
-        adguard.listeners.SYNC_REQUIRED // Data was changed
-    ];
-
     var timeoutId = null;
     var pending = false;
     var running = false;
@@ -124,13 +120,18 @@
     };
 
     function initialize() {
-        adguard.listeners.addSpecifiedListener(syncRequiredEvents, syncListener);
+        adguard.listeners.addSpecifiedListener([adguard.listeners.SYNC_REQUIRED], syncListener);
         syncApi.syncService.init();
     }
 
     adguard.listeners.addSpecifiedListener([adguard.listeners.APPLICATION_INITIALIZED], function () {
         // Sync local state
         isSectionsUpdated(initialize);
+    });
+
+    adguard.listeners.addSpecifiedListener([adguard.listeners.SYNC_BAD_OR_EXPIRED_TOKEN], function (event, provider) {
+        syncApi.oauthService.clearAndRevokeToken(provider);
+        syncApi.syncService.shutdown();
     });
 
 })(adguard.sync, adguard);

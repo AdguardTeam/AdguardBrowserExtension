@@ -59,30 +59,24 @@
 
         var provider = searchParams.provider;
         var token = hashParams.access_token;
-        var securityToken = hashParams.state;
+        var csrfState = hashParams.state ? hashParams.state : searchParams.state;
         var error = hashParams.error;
         var expires = hashParams.expires_in;
-        //var refreshToken = hashParams.refresh_token;
 
         if (error) {
             var errorDescription = hashParams.error_description;
             showError(error, errorDescription);
-            contentPage.sendMessage({
-                type: 'onAuthError',
-                error: error,
-                provider: provider
-            });
+            // TODO[SYNC]: handle this case
             return;
         }
 
         if (token && provider) {
             contentPage.sendMessage({
-                type: 'setOauthToken',
+                type: 'setOAuthToken',
                 provider: provider,
                 token: token,
-                securityToken: securityToken,
-                expires: expires,
-                //refreshToken: refreshToken
+                csrfState: csrfState,
+                expires: expires
             });
         }
     }

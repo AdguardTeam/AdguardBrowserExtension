@@ -14,6 +14,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* global contentPage, $ */
+
 var PageController = function () {
 };
 
@@ -24,31 +27,44 @@ PageController.prototype = {
     },
 
     _render: function (status) {
+        var providerName = null;
+        var isOAuthSupported = false;
+        var isAuthorized = false;
+        if (status.currentProvider) {
+            providerName = status.currentProvider.name;
+            isOAuthSupported = status.currentProvider.isOAuthSupported;
+            isAuthorized = status.currentProvider.isAuthorized;
+        }
         var statusText =
-            'Sync enabled: ' + status.enabled + '<br/>'
-            + 'Last sync time: ' + (status.lastSyncTime ? new Date(parseInt(status.lastSyncTime)) : '') + '<br/>'
-            + 'Current provider: ' + status.syncProvider + '<br/>'
-            + 'OAuth supported: ' + status.isOAuthSupported + '<br/>'
-            + 'Auth: ' + status.isAuthenticated + '<br/>';
+            'Sync enabled: ' + status.enabled + '<br/>' +
+            'Last sync time: ' + (status.lastSyncTime ? new Date(parseInt(status.lastSyncTime)) : '') + '<br/>' +
+            'Current provider: ' + providerName + '<br/>' +
+            'OAuth supported: ' + isOAuthSupported + '<br/>' +
+            'Auth: ' + isAuthorized + '<br/>';
 
         $("#statusPlaceholder").html(statusText);
 
         var refreshAuthButton = $('#refreshAuth');
         var logoutAuthButton = $('#logoutAuth');
-        if (status.isOAuthSupported) {
-            if (status.isAuthenticated) {
+        if (isOAuthSupported) {
+            if (isAuthorized) {
                 refreshAuthButton.hide();
-
                 logoutAuthButton.show();
                 logoutAuthButton.click(function () {
-                    contentPage.sendMessage({type: 'dropAuthSync'}, function () {
+                    contentPage.sendMessage({
+                        type: 'dropAuthSync',
+                        provider: providerName
+                    }, function () {
                         document.location.reload();
                     });
                 });
             } else {
                 refreshAuthButton.show();
                 refreshAuthButton.click(function () {
-                    contentPage.sendMessage({type: 'authSync'}, function () {
+                    contentPage.sendMessage({
+                        type: 'authSync',
+                        provider: providerName
+                    }, function () {
                         document.location.reload();
                     });
                 });

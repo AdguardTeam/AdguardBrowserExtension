@@ -75,7 +75,11 @@
      * @param callback
      */
     function loadRemoteSection(sectionName, callback) {
-        syncProvider.load(sectionName, callback);
+        if (syncProvider) {
+            syncProvider.load(sectionName, callback);
+        } else {
+            callback(false);
+        }
     }
 
     /**
@@ -104,13 +108,18 @@
      * @param callback
      */
     function saveRemoteSection(sectionName, section, callback) {
-        syncProvider.save(sectionName, section, function (success) {
-            if (success) {
-                // Saves revision for loaded section
-                sectionsRevisions.update(sectionName, section);
-            }
-            callback(success);
-        });
+        if (syncProvider) {
+            syncProvider.save(sectionName, section, function (success) {
+                if (success) {
+                    // Saves revision for loaded section
+                    sectionsRevisions.update(sectionName, section);
+                }
+                callback(success);
+            });
+        } else {
+            callback(false);
+        }
+
     }
 
     /**
@@ -137,23 +146,6 @@
     var isSectionUpdated = function (sectionName, section) {
         return sectionsRevisions.isUpdated(sectionName, section);
     };
-
-    /**
-     * Finds sync provider by name
-     * @param providerName Provider name
-     * @returns {*}
-     */
-    function findProviderByName(providerName) {
-        for (var key in api) {
-            if (api.hasOwnProperty(key)) {
-                var provider = api[key];
-                if (provider.name === providerName) {
-                    return provider;
-                }
-            }
-        }
-        return null;
-    }
 
     /**
      * Constructs the special object containing information about manifests protocols compatibility and then sorts data sections
@@ -522,6 +514,7 @@
     }
 
     var toggleSyncStatus = function (enabled) {
+
         if (enabled === undefined) {
             syncEnabled = !syncEnabled;
         } else {
@@ -529,10 +522,17 @@
         }
 
         adguard.localStorage.setItem(SYNC_STATUS_PROP, syncEnabled);
+
+        if (syncEnabled) {
+            init();
+        } else {
+            shutdown();
+        }
     };
 
     var init = function () {
-        syncEnabled = adguard.localStorage.getItem(SYNC_STATUS_PROP) === 'true';
+
+        syncEnabled = String(adguard.localStorage.getItem(SYNC_STATUS_PROP)) === 'true';
 
         var providerName = adguard.localStorage.getItem(CURRENT_PROVIDER_PROP);
         if (providerName) {
@@ -540,47 +540,39 @@
         }
     };
 
+    var shutdown = function () {
+        if (syncProvider) {
+            syncProvider.shutdown();
+            syncProvider = null;
+        }
+    };
+
+    /**
+     * Sets sync provider to current service
+     */
     var setSyncProvider = function (providerName) {
-        //TODO: check provider is compatible with the current browser
-        var providerService = findProviderByName(providerName);
-        if (!providerService) {
+
+        var provider = api.syncProviders.getProvider(providerName);
+        if (!provider) {
             return;
         }
 
         if (syncProvider) {
-            removeSyncProvider(syncProvider);
+            syncProvider.shutdown();
         }
 
-        syncProvider = providerService;
         adguard.console.info('Sync provider has been set to {0}', providerName);
         adguard.localStorage.setItem(CURRENT_PROVIDER_PROP, providerName);
 
-        if (providerService.oauthSupported) {
-            if (!api.oauthService.isAuthorized(providerName)) {
-                return;
-            }
-        }
-
-        if (typeof providerService.init === 'function') {
-            providerService.init();
+        if (api.oauthService.isAuthorized(providerName) && syncEnabled) {
+            syncProvider = provider;
+            provider.init();
         }
     };
 
-    var removeSyncProvider = function (providerName) {
-        providerName = providerName || adguard.localStorage.getItem(CURRENT_PROVIDER_PROP);
-        if (!providerName) {
-            return;
-        }
-
-        syncProvider = null;
-        adguard.console.debug('Sync provider {0} has been unset', providerName.name);
-
-        var providerService = findProviderByName(providerName);
-        if (providerService && typeof providerService.shutdown === 'function') {
-            providerService.shutdown();
-        }
-    };
-
+    /**
+     * Synchronizes settings between current application and sync provider
+     */
     var syncSettings = function (callback) {
 
         adguard.console.info('Synchronizing settings..');
@@ -601,7 +593,7 @@
             return;
         }
 
-        if (syncProvider.oauthSupported && !api.oauthService.isAuthorized(syncProvider.name)) {
+        if (!api.oauthService.isAuthorized(syncProvider.name)) {
             adguard.console.warn('Sync provider is not authorized');
             if (callback) {
                 callback(false);
@@ -627,55 +619,21 @@
 
     var getSyncStatus = function () {
 
-        var enabled = syncEnabled;
-        var lastSyncTime = getLastSyncTime();
-        var syncProviderName = null;
-        var isAuthenticated = true;
-        var isOAuthSupported;
-        if (syncProvider) {
-            syncProviderName = syncProvider.name;
-            isOAuthSupported = syncProvider.oauthSupported;
+        var providers = api.syncProviders.getProvidersInfo();
+        var currentProvider = null;
 
-            if (isOAuthSupported) {
-                isAuthenticated = api.oauthService.isAuthorized(syncProviderName);
-            }
-        } else {
-            isAuthenticated = false;
+        var providerName = adguard.localStorage.getItem(CURRENT_PROVIDER_PROP);
+        if (providerName) {
+            currentProvider = providers.filter(function (p) {
+                return p.name === providerName;
+            })[0];
         }
-
         return {
-            enabled: enabled,
-            lastSyncTime: lastSyncTime,
-            syncProvider: syncProviderName,
-            isOAuthSupported: isOAuthSupported,
-            isAuthenticated: isAuthenticated
+            enabled: syncEnabled,
+            lastSyncTime: getLastSyncTime(),
+            providers: providers,
+            currentProvider: currentProvider
         };
-    };
-
-    var authorize = function () {
-        if (!syncProvider) {
-            adguard.console.warn('Sync provider is not defined');
-            return;
-        }
-
-        if (syncProvider.oauthSupported) {
-            api.oauthService.authorize(syncProvider.name);
-        } else {
-            adguard.console.warn('Sync provider doesn\'t support oauth');
-        }
-    };
-
-    var dropAuth = function () {
-        if (!syncProvider) {
-            adguard.console.warn('Sync provider is not defined');
-            return;
-        }
-
-        if (syncProvider.oauthSupported) {
-            api.oauthService.revokeToken(syncProvider.name);
-        } else {
-            adguard.console.warn('Sync provider doesn\'t support oauth');
-        }
     };
 
     api.sections = {
@@ -689,13 +647,13 @@
          */
         init: init,
         /**
+         * Shutdown sync service
+         */
+        shutdown: shutdown,
+        /**
          * Sets sync provider to current service
          */
         setSyncProvider: setSyncProvider,
-        /**
-         * Removes sync provider
-         */
-        removeSyncProvider: removeSyncProvider,
         /**
          * Synchronizes settings between current application and sync provider
          */
@@ -704,14 +662,6 @@
          * Returns sync status
          */
         getSyncStatus: getSyncStatus,
-        /**
-         * Authorize current sync provider
-         */
-        authorize: authorize,
-        /**
-         * Drops current provider authorization
-         */
-        dropAuth: dropAuth,
         /**
          * Enables/disables sync
          */

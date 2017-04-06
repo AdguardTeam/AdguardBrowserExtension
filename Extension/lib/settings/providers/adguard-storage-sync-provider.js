@@ -25,8 +25,8 @@
 
     'use strict';
 
-    var CLIENT_ID = 'adguard-browser-extension';
-    var PROVIDER_NAME = 'ADGUARD_SYNC';
+    var ADGUARD_CLIENT_ID = 'adguard-browser-extension';
+    var ADGUARD_PROVIDER_NAME = 'ADGUARD_SYNC';
 
     var AdguardClient = (function () {
 
@@ -35,8 +35,8 @@
         var SYNC_TIMESTAMP_PROP = 'adguard-provider-sync-timestamp';
         var syncTimestamp = null;
 
-        var httpApiEndpoint = 'http://testsync.adguard.com/1';
-        var wsApiEndpoint = 'ws://testsync.adguard.com/1';
+        var httpApiEndpoint = 'https://testsync.adguard.com/1';
+        var wsApiEndpoint = 'wss://testsync.adguard.com/1';
 
         var webSocket;
         var checkConnectionTimeoutId;
@@ -65,16 +65,12 @@
 
             lastPingTime = Date.now() - DEFAULT_PING_TIMEOUT + Math.floor(DEFAULT_PING_TIMEOUT / 4);
 
-            if (!api.oauthService.isAuthorized(PROVIDER_NAME)) {
-                return;
-            }
-
             initWebSocketConnection();
             watchConnectionIsAlive();
         };
 
         function initWebSocketConnection() {
-            webSocket = new WebSocket(wsApiEndpoint + '/websocket?authorization=' + api.oauthService.getToken(PROVIDER_NAME));
+            webSocket = new WebSocket(wsApiEndpoint + '/websocket?authorization=' + api.oauthService.getToken(ADGUARD_PROVIDER_NAME));
             webSocket.onopen = function () {
                 lastPingTime = Date.now();
             };
@@ -185,13 +181,13 @@
 
         function syncFiles() {
             return makeRequest(httpApiEndpoint + '/files/sync', {
-                accessToken: api.oauthService.getToken(PROVIDER_NAME)
+                accessToken: api.oauthService.getToken(ADGUARD_PROVIDER_NAME)
             });
         }
 
         var filesDownload = function (name) {
             return makeRequest(httpApiEndpoint + '/files/download', {
-                accessToken: api.oauthService.getToken(PROVIDER_NAME),
+                accessToken: api.oauthService.getToken(ADGUARD_PROVIDER_NAME),
                 headers: {
                     'Adguard-API-Arg': JSON.stringify({name: name})
                 },
@@ -201,7 +197,7 @@
 
         var filesUpload = function (name, contents) {
             return makeRequest(httpApiEndpoint + '/files/upload', {
-                accessToken: api.oauthService.getToken(PROVIDER_NAME),
+                accessToken: api.oauthService.getToken(ADGUARD_PROVIDER_NAME),
                 headers: {
                     'Content-Type': 'application/octet-stream',
                     'Adguard-API-Arg': JSON.stringify({name: name})
@@ -228,11 +224,12 @@
             webSocketConnect();
         };
 
-        var getAuthenticationUrl = function (redirectUri) {
+        var getAuthenticationUrl = function (redirectUri, csrfState) {
             var params = {
-                client_id: CLIENT_ID,
+                client_id: ADGUARD_CLIENT_ID,
                 redirect_uri: redirectUri,
-                response_type: 'token'
+                response_type: 'token',
+                state: csrfState
             };
             var query = [];
             Object.keys(params).forEach(function (key) {
@@ -284,32 +281,34 @@
     };
 
     var init = function () {
+        adguard.console.info('Initialize {0} sync provider', ADGUARD_PROVIDER_NAME);
         AdguardClient.init();
     };
 
     var shutdown = function () {
+        adguard.console.info('Shutdown {0} sync provider', ADGUARD_PROVIDER_NAME);
         AdguardClient.shutdown();
     };
 
-    var getAuthUrl = function (redirectUri) {
-        return AdguardClient.getAuthenticationUrl(redirectUri);
+    var getAuthUrl = function (redirectUri, csrfState) {
+        return AdguardClient.getAuthenticationUrl(redirectUri, csrfState);
+    };
+
+    var revokeToken = function (token) {
+        //TODO[SYNC]: implement
     };
 
     // EXPOSE
-    api.adguardSyncProvider = {
-        get name() {
-            return PROVIDER_NAME;
-        },
-        get oauthSupported() {
-            return true;
-        },
+    api.syncProviders.register(ADGUARD_PROVIDER_NAME, {
+        isOAuthSupported: true,
         // Storage api
         load: load,
         save: save,
         init: init,
         shutdown: shutdown,
         // Auth api
-        getAuthUrl: getAuthUrl
-    };
+        getAuthUrl: getAuthUrl,
+        revokeToken: revokeToken
+    });
 
 })(adguard.sync, adguard);
