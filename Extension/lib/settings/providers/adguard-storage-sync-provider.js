@@ -43,6 +43,12 @@
         var pingTimeout = DEFAULT_PING_TIMEOUT;
         var lastPingTime;
 
+        function checkInvalidToken(status) {
+            if (status === 401) {
+                adguard.listeners.notifyListeners(adguard.listeners.SYNC_BAD_OR_EXPIRED_TOKEN, ADGUARD_PROVIDER_NAME);
+            }
+        }
+
         function getSyncTimestamp() {
             if (syncTimestamp === null) {
                 syncTimestamp = parseInt(adguard.localStorage.getItem(SYNC_TIMESTAMP_PROP) || 0);
@@ -167,11 +173,13 @@
                             resolve(xhr.responseText);
                         }
                     } else {
+                        checkInvalidToken(xhr.status);
                         reject({status: status, error: new Error(xhr.statusText)});
                     }
                 };
 
                 xhr.onerror = function () {
+                    checkInvalidToken(xhr.status);
                     reject({status: xhr.status, error: new Error(xhr.statusText)});
                 };
 
@@ -242,12 +250,19 @@
             webSocketDisconnect();
         };
 
+        var revokeToken = function (token) {
+            return makeRequest(httpApiEndpoint + '/oauth2/token/revoke', {
+                accessToken: token
+            });
+        };
+
         return {
             filesDownload: filesDownload,
             filesUpload: filesUpload,
             init: init,
             getAuthenticationUrl: getAuthenticationUrl,
-            shutdown: shutdown
+            shutdown: shutdown,
+            revokeToken: revokeToken
         };
 
     })();
@@ -295,7 +310,7 @@
     };
 
     var revokeToken = function (token) {
-        //TODO[SYNC]: implement
+        AdguardClient.revokeToken(token);
     };
 
     // EXPOSE
