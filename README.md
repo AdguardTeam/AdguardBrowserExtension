@@ -1,14 +1,14 @@
-#Adguard Browser Extension
+# Adguard Browser Extension
 
-##How to build extension
+## How to build extension
 
-###Requirements
+### Requirements
 
 - [JDK 1.7+](http://www.oracle.com/technetwork/java/javaee/downloads/index.html)
 - [Apache Maven 2+](http://maven.apache.org/download.cgi)
 - Set JAVA_HOME and JDK_HOME environment variables
 
-###Building dev version
+### Building dev version
 
 Run the following command in the Compiler directory:
 ```
@@ -23,7 +23,7 @@ This will create a Build directory with unpacked extensions for all browsers:
   Build/safari-$currentVersion.safariextension
 ```
 
-###Building beta and release versions
+### Building beta and release versions
 ```
   ./build.sh beta
   ./build.sh release
