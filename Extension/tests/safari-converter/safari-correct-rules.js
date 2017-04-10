@@ -46,14 +46,6 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": "\\/testelemhidenodomain"
-        },
-        "action": {
-            "type": "ignore-previous-rules"
-        }
-    },
-    {
-        "trigger": {
             "url-filter": "^[htpsw]+://([^/]*\\.)?pics\\.rbc\\.ru\\/js\\/swf"
         },
         "action": {
@@ -246,6 +238,14 @@ var safariCorrectRules = [
             "if-domain": [
                 "*test-urlblock.com"
             ]
+        },
+        "action": {
+            "type": "ignore-previous-rules"
+        }
+    },
+    {
+        "trigger": {
+            "url-filter": "\\/testelemhidenodomain"
         },
         "action": {
             "type": "ignore-previous-rules"

@@ -18,7 +18,7 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.28';
+var CONVERTER_VERSION = '1.3.29';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var ANY_URL_TEMPLATES = ['||*', '', '*', '|*'];
@@ -442,7 +442,29 @@ var SafariContentBlockerConverter = {
      */
     convertLine: function (ruleText, errors) {
         try {
-            if (ruleText === null || ruleText === '' || 
+            return this._convertAGRule(this.parseAGRule(ruleText, errors));
+        } catch (ex) {
+            var message = 'Error converting rule from: ' + ruleText + ' cause:\n' + ex;
+            message = ruleText + '\r\n' + message + '\r\n';
+            adguard.console.debug(message);
+
+            if (errors) {
+                errors.push(message);
+            }
+
+            return null;
+        }
+    },
+
+    /**
+     * Creates AG rule form text
+     *
+     * @param ruleText
+     * @param errors
+     */
+    parseAGRule: function (ruleText, errors) {
+        try {
+            if (ruleText === null || ruleText === '' ||
                 ruleText.indexOf('!') === 0 || ruleText.indexOf(' ') === 0 ||
                 ruleText.indexOf(' - ') > 0) {
                 return null;
@@ -453,10 +475,9 @@ var SafariContentBlockerConverter = {
                 throw new Error('Cannot create rule from: ' + ruleText);
             }
 
-            return this._convertAGRule(agRule);
-
+            return agRule;
         } catch (ex) {
-            var message = 'Error converting rule from: ' + ruleText + ' cause:\n' + ex;
+            var message = 'Error creating rule from: ' + ruleText + ' cause:\n' + ex;
             message = ruleText + '\r\n' + message + '\r\n';
             adguard.console.debug(message);
 
@@ -744,12 +765,16 @@ var SafariContentBlockerConverter = {
 
         for (var i = 0, len = rules.length; i < len; i++) {
             var item;
+            var agRule;
             var ruleText;
+
             if (rules[i] !== null && rules[i].ruleText) {
+                agRule = rules[i];
                 item = this.convertAGRule(rules[i], contentBlocker.errors);
                 ruleText = rules[i].ruleText;
             } else {
-                item = this.convertLine(rules[i], contentBlocker.errors);
+                agRule = this.parseAGRule(rules[i], contentBlocker.errors);
+                item = this.convertAGRule(agRule, contentBlocker.errors);
                 ruleText = rules[i];
             }
 
@@ -766,11 +791,11 @@ var SafariContentBlockerConverter = {
                     (item.action.selector && item.action.selector !== '')) {
                     // #@# rules
                     cssExceptions.push(item);
-                } else if (item.action.type == 'ignore-previous-rules' && 
-                    (ruleText && ruleText.indexOf('generichide') > 0)) {
+                } else if (item.action.type == 'ignore-previous-rules' &&
+                    this.AGRuleConverter._isContentType(agRule, adguard.rules.UrlFilterRule.contentTypes.GENERICHIDE)) {
                     contentBlocker.cssBlockingGenericHideExceptions.push(item);
                 } else if (item.action.type == 'ignore-previous-rules' &&
-                    (ruleText && ruleText.indexOf('elemhide') > 0)) {
+                    this.AGRuleConverter._isContentType(agRule, adguard.rules.UrlFilterRule.contentTypes.ELEMHIDE)) {
                     // elemhide rules
                     contentBlocker.cssElemhide.push(item);
                 } else {
