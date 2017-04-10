@@ -384,3 +384,19 @@ QUnit.test("UpperCase domains", function (assert) {
 
     assert.equal(converted[0].trigger["if-domain"], "*uppercase.test");
 });
+
+QUnit.test("Elemhide suspicious test", function (assert) {
+
+    var rule = new adguard.rules.UrlFilterRule('lenta.ru###root > section.b-header.b-header-main.js-header:nth-child(4) > div.g-layout > div.row', 0);
+    var rule1 = new adguard.rules.UrlFilterRule('https://icdn.lenta.ru/images/2017/04/10/16/20170410160659586/top7_f07b6db166774abba29e0de2e335f50a.jpg', 0);
+    var rule2 = new adguard.rules.UrlFilterRule('@@||lenta.ru^$elemhide', 0);
+
+    var result = SafariContentBlockerConverter.convertArray([rule, rule1, rule2]);
+    assert.equal(result.errorsCount, 0);
+
+    var converted = JSON.parse(result.converted);
+    assert.equal(1, converted.length);
+    console.log(converted);
+
+    //assert.equal(converted[0].trigger["if-domain"], "*uppercase.test");
+});
