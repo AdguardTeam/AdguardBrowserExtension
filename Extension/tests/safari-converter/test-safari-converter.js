@@ -385,18 +385,23 @@ QUnit.test("UpperCase domains", function (assert) {
     assert.equal(converted[0].trigger["if-domain"], "*uppercase.test");
 });
 
-QUnit.test("Elemhide suspicious test", function (assert) {
+QUnit.test("Elemhide rules", function (assert) {
 
-    var rule = new adguard.rules.UrlFilterRule('lenta.ru###root > section.b-header.b-header-main.js-header:nth-child(4) > div.g-layout > div.row', 0);
-    var rule1 = new adguard.rules.UrlFilterRule('https://icdn.lenta.ru/images/2017/04/10/16/20170410160659586/top7_f07b6db166774abba29e0de2e335f50a.jpg', 0);
-    var rule2 = new adguard.rules.UrlFilterRule('@@||lenta.ru^$elemhide', 0);
+    var ruleCss = new adguard.rules.UrlFilterRule('lenta.ru###root > section.b-header.b-header-main.js-header:nth-child(4) > div.g-layout > div.row', 0);
+    var ruleBlockingUrl = new adguard.rules.UrlFilterRule('https://icdn.lenta.ru/images/2017/04/10/16/20170410160659586/top7_f07b6db166774abba29e0de2e335f50a.jpg', 0);
+    var ruleElemhide = new adguard.rules.UrlFilterRule('@@||lenta.ru^$elemhide', 0);
 
-    var result = SafariContentBlockerConverter.convertArray([rule, rule1, rule2]);
+    var result = SafariContentBlockerConverter.convertArray([ruleCss, ruleBlockingUrl, ruleElemhide]);
     assert.equal(result.errorsCount, 0);
 
     var converted = JSON.parse(result.converted);
-    assert.equal(1, converted.length);
+    assert.equal(3, converted.length);
     console.log(converted);
 
-    //assert.equal(converted[0].trigger["if-domain"], "*uppercase.test");
+    assert.equal(converted[0].trigger["url-filter"], "lenta\\.ru###root > section\\.b-header\\.b-header-main\\.js-header:nth-child\\(4\\) > div\\.g-layout > div\\.row");
+    assert.equal(converted[0].action.type, "block");
+    assert.equal(converted[1].trigger["url-filter"], ".*");
+    assert.equal(converted[1].action.type, "ignore-previous-rules");
+    assert.equal(converted[2].trigger["url-filter"], "https:\/\/icdn\.lenta\.ru\/images\/2017\/04\/10\/16\/20170410160659586\/top7_f07b6db166774abba29e0de2e335f50a\.jpg");
+    assert.equal(converted[2].action.type, "block");
 });
