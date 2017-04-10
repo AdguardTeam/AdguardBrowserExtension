@@ -35,7 +35,7 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": "^https?://([^/]*\\.)?pics\\.rbc\\.ru\\/js\\/swf"
+            "url-filter": "^[htpsw]+://([^/]*\\.)?pics\\.rbc\\.ru\\/js\\/swf"
         },
         "action": {
             "type": "block"
@@ -43,7 +43,7 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": "^https?://([^/]*\\.)?tardangro\\.com[/:&?]?",
+            "url-filter": "^[htpsw]+://([^/]*\\.)?tardangro\\.com[/:&?]?",
             "load-type": [
                 "third-party"
             ]
@@ -54,7 +54,7 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": "^https?://([^/]*\\.)?videoplaza\\.com[/:&?]?",
+            "url-filter": "^[htpsw]+://([^/]*\\.)?videoplaza\\.com[/:&?]?",
             "resource-type": [
                 "image",
                 "style-sheet",
@@ -75,7 +75,7 @@ var safariCorrectRules = [
 
     {
         "trigger": {
-            "url-filter": "^https?://([^/]*\\.)?b\\.babylon\\.com[/:&?]?"
+            "url-filter": "^[htpsw]+://([^/]*\\.)?b\\.babylon\\.com[/:&?]?"
         },
         "action": {
             "type": "block"
@@ -84,7 +84,7 @@ var safariCorrectRules = [
 
     {
         "trigger": {
-            "url-filter": "^https?://([^/]*\\.)?getsecuredfiles\\.com[/:&?]?",
+            "url-filter": "^[htpsw]+://([^/]*\\.)?getsecuredfiles\\.com[/:&?]?",
             "resource-type": [
                 "popup",
             ],
@@ -107,7 +107,7 @@ var safariCorrectRules = [
 
     {
         "trigger": {
-            "url-filter": "^https?://([^/]*\\.)?emjcd\\.com[/:&?]?",
+            "url-filter": "^[htpsw]+://([^/]*\\.)?emjcd\\.com[/:&?]?",
             "resource-type": [
                 "image"
             ],
@@ -123,7 +123,7 @@ var safariCorrectRules = [
 
     {
         "trigger": {
-            "url-filter": "^https?://([^/]*\\.)?intellitxt\\.com\\/ast\\/js\\/nbcuni\\/",
+            "url-filter": "^[htpsw]+://([^/]*\\.)?intellitxt\\.com\\/ast\\/js\\/nbcuni\\/",
             "resource-type": [
                 "script"
             ]
@@ -135,7 +135,7 @@ var safariCorrectRules = [
 
     {
         "trigger": {
-            "url-filter": "^https?://([^/]*\\.)?hulu\\.com\\/embed"
+            "url-filter": "^[htpsw]+://([^/]*\\.)?hulu\\.com\\/embed"
         },
         "action": {
             "type": "ignore-previous-rules"
@@ -207,7 +207,7 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": "^https?://([^/]*\\.)?hulu-jsinject-image\\.com",
+            "url-filter": "^[htpsw]+://([^/]*\\.)?hulu-jsinject-image\\.com",
             "resource-type": [
                 "image"
             ]
