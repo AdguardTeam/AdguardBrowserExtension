@@ -769,10 +769,8 @@ var SafariContentBlockerConverter = {
                 } else if (item.action.type == 'ignore-previous-rules' && 
                     (ruleText && ruleText.indexOf('generichide') > 0)) {
                     contentBlocker.cssBlockingGenericHideExceptions.push(item);
-                } else if (item.action.type == 'ignore-previous-rules' && 
-                        (item.trigger["resource-type"] && 
-                        item.trigger["resource-type"].length > 0 &&
-                        item.trigger["resource-type"][0] == 'document')) {
+                } else if (item.action.type == 'ignore-previous-rules' &&
+                    (ruleText && ruleText.indexOf('elemhide') > 0)) {
                     // elemhide rules
                     contentBlocker.cssElemhide.push(item);
                 } else {
