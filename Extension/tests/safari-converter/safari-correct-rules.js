@@ -35,6 +35,25 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
+            "url-filter": ".*",
+            "if-domain": [
+                "*test-elemhide.com"
+            ]
+        },
+        "action": {
+            "type": "ignore-previous-rules"
+        }
+    },
+    {
+        "trigger": {
+            "url-filter": "\\/testelemhidenodomain"
+        },
+        "action": {
+            "type": "ignore-previous-rules"
+        }
+    },
+    {
+        "trigger": {
             "url-filter": "^[htpsw]+://([^/]*\\.)?pics\\.rbc\\.ru\\/js\\/swf"
         },
         "action": {
@@ -72,7 +91,6 @@ var safariCorrectRules = [
             "type": "block"
         }
     },
-
     {
         "trigger": {
             "url-filter": "^[htpsw]+://([^/]*\\.)?b\\.babylon\\.com[/:&?]?"
@@ -81,12 +99,11 @@ var safariCorrectRules = [
             "type": "block"
         }
     },
-
     {
         "trigger": {
             "url-filter": "^[htpsw]+://([^/]*\\.)?getsecuredfiles\\.com[/:&?]?",
             "resource-type": [
-                "popup",
+                "popup"
             ],
             "load-type": [
                 "third-party"
@@ -104,7 +121,6 @@ var safariCorrectRules = [
             "type": "block"
         }
     },
-
     {
         "trigger": {
             "url-filter": "^[htpsw]+://([^/]*\\.)?emjcd\\.com[/:&?]?",
@@ -120,7 +136,6 @@ var safariCorrectRules = [
             "type": "ignore-previous-rules"
         }
     },
-
     {
         "trigger": {
             "url-filter": "^[htpsw]+://([^/]*\\.)?intellitxt\\.com\\/ast\\/js\\/nbcuni\\/",
@@ -132,7 +147,6 @@ var safariCorrectRules = [
             "type": "ignore-previous-rules"
         }
     },
-
     {
         "trigger": {
             "url-filter": "^[htpsw]+://([^/]*\\.)?hulu\\.com\\/embed"
@@ -185,7 +199,6 @@ var safariCorrectRules = [
             "type": "ignore-previous-rules"
         }
     },
-
     {
         "trigger": {
             "url-filter": ".*",
@@ -233,25 +246,6 @@ var safariCorrectRules = [
             "if-domain": [
                 "*test-urlblock.com"
             ]
-        },
-        "action": {
-            "type": "ignore-previous-rules"
-        }
-    },
-    {
-        "trigger": {
-            "url-filter": ".*",
-            "if-domain": [
-                "*test-elemhide.com"
-            ]
-        },
-        "action": {
-            "type": "ignore-previous-rules"
-        }
-    },
-    {
-        "trigger": {
-            "url-filter": "\\/testelemhidenodomain"
         },
         "action": {
             "type": "ignore-previous-rules"
