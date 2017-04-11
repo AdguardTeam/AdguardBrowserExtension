@@ -131,22 +131,24 @@ adguard.webRequestService = (function (adguard) {
     };
 
     /**
-     * Checks if websocket request is blocked
+     * Checks if request that is wrapped in page script should be blocked.
+     * We do this because browser API doesn't have full support for intercepting all requests, e.g. WebSocket or WebRTC.
      *
      * @param tab           Tab
      * @param requestUrl    request url
      * @param referrerUrl   referrer url
+     * @param requestType   Request type (WEBSOCKET or WEBRTC)
      * @returns {boolean}   true if request is blocked
      */
-    var checkWebSocketRequest = function (tab, requestUrl, referrerUrl) {
+    var checkPageScriptWrapperRequest = function (tab, requestUrl, referrerUrl, requestType) {
 
         if (!tab) {
             return false;
         }
 
-        var requestRule = getRuleForRequest(tab, requestUrl, referrerUrl, adguard.RequestTypes.WEBSOCKET);
+        var requestRule = getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
 
-        adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, adguard.RequestTypes.WEBSOCKET, requestRule);
+        adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
 
         return isRequestBlockedByRule(requestRule);
     };
@@ -356,7 +358,7 @@ adguard.webRequestService = (function (adguard) {
     // EXPOSE
     return {
         processGetSelectorsAndScripts: processGetSelectorsAndScripts,
-        checkWebSocketRequest: checkWebSocketRequest,
+        checkPageScriptWrapperRequest: checkPageScriptWrapperRequest,
         processShouldCollapse: processShouldCollapse,
         processShouldCollapseMany: processShouldCollapseMany,
         isRequestBlockedByRule: isRequestBlockedByRule,

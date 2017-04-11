@@ -479,7 +479,7 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 	}
 
 	if (requestRule) {
-		if (requestRule.filterId != AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+		if (requestRule.filterId !== AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
 			template.find('[attr-text="requestRule"]').text(requestRule.ruleText);
 		} else {
 			template.find('[attr-text="requestRule"]').closest('.adg-modal-window-locking-info-left-row').hide();
@@ -490,7 +490,7 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 		template.find('[attr-text="requestRuleFilter"]').closest('.adg-modal-window-locking-info-left-row').hide();
 	}
 
-	if (filteringEvent.requestType == "IMAGE") {
+	if (filteringEvent.requestType === "IMAGE") {
 
 		template.removeClass('compact-view');
 
@@ -553,9 +553,9 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 	if (!requestRule) {
 		blockRequestButton.removeClass('hidden');
 	} else {
-		if (requestRule.filterId == AntiBannerFiltersId.USER_FILTER_ID) {
+		if (requestRule.filterId === AntiBannerFiltersId.USER_FILTER_ID) {
 			removeUserFilterRuleButton.removeClass('hidden');
-		} else if (requestRule.filterId == AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+		} else if (requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
 			removeWhiteListDomainButton.removeClass('hidden');
 		} else if (!requestRule.whiteListRule) {
 			unblockRequestButton.removeClass('hidden');
@@ -605,7 +605,7 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 		patternEl.append(input);
 		patternEl.append(label);
 		rulePatternsEl.append(patternEl);
-		if (i == 0) {
+		if (i === 0) {
 			input.attr('checked', 'checked');
 		}
 	}
@@ -618,7 +618,7 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 
 	ruleDomainCheckbox.attr('id', 'ruleDomain');
 	ruleDomainCheckbox.parent().find('label').attr('for', 'ruleDomain');
-	if (!urlDomain || urlDomain == null) {
+	if (!urlDomain) {
 		ruleDomainCheckbox.closest('.checkbox').hide();
 	}
 
@@ -754,6 +754,8 @@ RequestWizard.getRequestType = function (requestType) {
 			return 'Font';
 		case 'WEBSOCKET':
 			return 'WebSocket';
+		case 'WEBRTC':
+			return 'WebRTC';
 		case 'OTHER':
 			return 'Other';
 	}
@@ -820,7 +822,7 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
 		});
 
 		contentPage.onMessage.addListener(function (message) {
-			if (message.type == 'notifyListeners') {
+			if (message.type === 'notifyListeners') {
 				onEvent.apply(this, message.args);
 			}
 		});

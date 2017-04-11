@@ -79,7 +79,7 @@
      * Initializing content script
      */
     var init = function () {
-        initWebSocketWrapper();
+        initRequestWrappers();
 
         if (!isHtml()) {
             return;
@@ -126,16 +126,29 @@
     };
 
     /**
-     * Overrides window.WebSocket running the function from websocket.js
-     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/203
+     * Try to keep DOM clean: let script removes itself when execution completes
+     * @returns {string}
      */
-    /* global initPageMessageListener, overrideWebSocket */
-    var initWebSocketWrapper = function () {
-        // This is chrome-specific feature for blocking WebSocket connections
-        // overrideWebSocket function is not defined in case of other browsers
-        if (typeof overrideWebSocket !== 'function') {
-            return;
-        }
+    var cleanupCurrentScriptToString = function () {
+
+        var cleanup = function () {
+            var current = document.currentScript;
+            var parent = current && current.parentNode;
+            if (parent) {
+                parent.removeChild(current);
+            }
+        };
+
+        return '(' + cleanup.toString() + ')();';
+    };
+
+    /**
+     * Overrides window.WebSocket and window.RTCPeerConnection running the function from wrappers.js
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/203
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/588
+     */
+    /* global initPageMessageListener, overrideWebSocket, overrideWebRTC, injectPageScriptAPI */
+    var initRequestWrappers = function () {
 
         // Only for dynamically created frames and http/https documents.
         if (!isHtml() &&
@@ -143,35 +156,54 @@
             return;
         }
 
-        // WebSockets are broken in old versions of chrome
-        // and we don't need this hack in new version cause then websocket traffic is intercepted
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/273
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/572
         var userAgent = navigator.userAgent.toLowerCase();
-        var cIndex = userAgent.indexOf('chrome/');
-        if (cIndex > 0) {
-            var version = userAgent.substring(cIndex + 7);
-            var versionNumber = Number.parseInt(version.substring(0, version.indexOf('.')));
-            if (versionNumber < 47 || versionNumber > 57) {
-                return;
-            }
-        }
-
         if (userAgent.indexOf('firefox') >= 0) {
             // Explicit check, we must not go further in case of Firefox
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/379
             return;
         }
 
+        var scripts = [];
+
+        // WebSockets are broken in old versions of chrome
+        // and we don't need this hack in new version cause then websocket traffic is intercepted
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/273
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/572
+        var cIndex = userAgent.indexOf('chrome/');
+        if (cIndex > 0) {
+            var version = userAgent.substring(cIndex + 7);
+            var versionNumber = Number.parseInt(version.substring(0, version.indexOf('.')));
+            if (versionNumber >= 47 && versionNumber <= 57 &&
+                // This is chrome-specific feature for blocking WebSocket connections
+                // overrideWebSocket function is not defined in case of other browsers
+                typeof overrideWebSocket === 'function') {
+                scripts.push("(" + overrideWebSocket.toString() + ")(api);");
+            }
+        }
+
+        if (typeof overrideWebRTC === 'function') {
+            scripts.push("(" + overrideWebRTC.toString() + ")(api);");
+        }
+
+        if (scripts.length === 0) {
+            return;
+        }
+
         initPageMessageListener();
 
-        var content = "try {\n";
-        content += '(' + overrideWebSocket.toString() + ')();';
-        content += "\n} catch (ex) { console.error('Error executing AG js: ' + ex); }";
+        var content = [];
+        content.push("(function(){");
+        content.push("var api = {};");
+        content.push("try {");
+        content.push("(" + injectPageScriptAPI.toString() + ")(api);");
+        content = content.concat(scripts);
+        content.push("} catch (ex) { console.error('Error executing AG js: ' + ex); }");
+        content.push(cleanupCurrentScriptToString());
+        content.push("})();");
 
         var script = document.createElement("script");
         script.setAttribute("type", "text/javascript");
-        script.textContent = content;
+        script.textContent = content.join("\r\n");
 
         (document.head || document.documentElement).appendChild(script);
     };
@@ -548,15 +580,7 @@
         script.setAttribute("type", "text/javascript");
         scriptsToApply.unshift("try {");
         scriptsToApply.push("} catch (ex) { console.error('Error executing AG js: ' + ex); }");
-
-        // Try to keep DOM clean: let script removes itself when execution completes
-        scriptsToApply.push('(function () {\r\n' +
-            '   var current = document.currentScript;\r\n' +
-            '   var parent = current && current.parentNode;\r\n' +
-            '   if (parent) {\r\n' +
-            '       parent.removeChild(current);\r\n' +
-            '   }\r\n' +
-            '})();');
+        scriptsToApply.push(cleanupCurrentScriptToString());
 
         script.textContent = scriptsToApply.join("\r\n");
         (document.head || document.documentElement).appendChild(script);
