@@ -271,8 +271,7 @@ var overrideWebRTC = function (injectApi) { // jshint ignore:line
         var realSetConfiguration = Function.prototype.call.bind(RealRTCPeerConnection.prototype.setConfiguration);
 
         RealRTCPeerConnection.prototype.setConfiguration = function (configuration) {
-            // Call the real method first, so that validates the configuration for
-            // us. Also we might as well since checkRequest is asynchronous anyway.
+            // Call the real method first, so that validates the configuration
             realSetConfiguration(this, configuration);
             checkConfiguration(this, configuration);
         };
