@@ -667,6 +667,8 @@ PageController.prototype = {
 
         function onEditClicked(e) {
 
+            e.preventDefault();
+
             var el = getElementFromEvent(e);
             var input = el.find("input[type='text']");
 
@@ -689,6 +691,8 @@ PageController.prototype = {
         }.bind(this);
 
         function onSaveClicked(e) {
+
+            e.preventDefault();
 
             var el = getElementFromEvent(e);
             var input = el.find("input[type='text']");
@@ -715,6 +719,7 @@ PageController.prototype = {
         }
 
         function onCancelEditClicked(e) {
+            e.preventDefault();
             var el = getElementFromEvent(e);
             stopEdit(el);
         }
@@ -728,6 +733,7 @@ PageController.prototype = {
         }
 
         function onDeleteClicked(e) {
+            e.preventDefault();
             var el = getElementFromEvent(e);
             deleteCallback({text: el.data("ruleText")});
         }
@@ -774,12 +780,15 @@ PageController.prototype = {
         this._hideOverlay(listEl);
         if (isNewElement) {
             jScrollPane.getContentPane().prepend(fragment);
-            listEl.find('.spl-user-table-row:first .edit').trigger('click');
         } else {
             jScrollPane.getContentPane().append(fragment);
         }
-
         jScrollPane.reinitialise();
+
+        if (isNewElement) {
+            jScrollPane.scrollToY(0);
+            listEl.find('.spl-user-table-row:first .edit').trigger('click');
+        }
 
         this._checkOverlayHide(listEl, clearButton, searchMode);
     },
