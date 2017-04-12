@@ -1,8 +1,9 @@
-! Checksum: fAWYMCjRiyQPrHDm5xAIWQ
-! Version: 1.0.7.79
-! TimeUpdated: 2017-04-05T16:02:10.065+04:00
+! Checksum: gvg1noA2hTfxgxNlYpG36Q
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
+! Version: 1.0.7.95
+! TimeUpdated: 2017-04-12T15:01:49.421+04:00
+! Expires: 2 days (update frequency)
 ! Title: Adguard Mobile Ads Filter
 !
 ! This filter blocks all known mobile ad networks and banners.
@@ -579,7 +580,6 @@
 ||rbnt.org^
 ||reate.info^
 ||recreativ.ru^
-||redirector.gvt1.com^
 ||rek.mobi^
 ||reklamz.com^
 ||relap.io^
@@ -837,6 +837,8 @@ m.reddit.com##article[class="Post size-compact"][-ext-has=".PostHeader__sponsore
 all-tor.net,free-rutor.org,lenfilm.tv,krutor.org,fast-bit.org,tor-ru.net,hd-bit.org,radikal.ru,hdkinomax.com,on-movie.net,fastpic.ru,rutor.is,baskino.club,rutor.info,nnm.me,korzik.net,seasonvar.ru,rsload.net,nnm-club.me,nnmclub.to,rustorka.com,auto.mail.ru,horo.mail.ru,realty.mail.ru,health.mail.ru,afisha.mail.ru,cloud.mail.ru,otvet.mail.ru,pogoda.mail.ru,sport.mail.ru,tv.mail.ru,torg.mail.ru,cars.mail.ru,hi-tech.mail.ru,rustorka.com,top-tor.org,super-tor.net,filmix.net,free-ru.org#%#window.WebSocket = undefined;
 ! https://forum.adguard.com/index.php?threads/12443/
 pornhub.com#%#AG_onLoad(function() { if (typeof redirect !== 'function') return; var str = redirect.toString(); var m = str.match(/\'(\/view.*)\'/); if (m.length != 2) return; var link = m[1]; window.location.href = m[1]; });
+! For Moscow metro Wi-Fi
+auth.wi-fi.ru#%#(function(){var b={};(function(a,c,d){"undefined"!==typeof window[a]?window[a][c]=d:Object.defineProperty(window,a,{get:function(){return b[a]},set:function(e){b[a]=e;e[c]=d}})})("authConfig","adfox",[])})();
 !#################
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4360
@@ -934,6 +936,8 @@ deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important
 @@||tf-robots.nl^$elemhide,jsinject,content
 !
 !#####################
+! https://github.com/AdguardTeam/AdguardForAndroid/issues/1160
+@@||api.branch.io^$app=com.reddit.frontpage
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4659
 @@||report-ads-to.pubnation.com/dist/pnr.js?t=$domain=m.neogaf.com
 ! https://github.com/AdguardTeam/AdguardDNS/issues/64
@@ -1126,6 +1130,28 @@ m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"
 ! https://forum.adguard.com/index.php?threads/10464/
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
 !
+m.gsmarena.com##.adv-top
+m.gsmarena.com##.adv-bottom
+phonearena.com##div[style="min-width:300px; min-height:250px; overflow: hidden; margin: 0 auto;"]
+wired.com##.amp-wp-banner-ad
+wired.com##.amp-wp-inline-ad
+wired.com##.amp-wp-footer-ad
+m.gadgets.ndtv.com##amp-ad
+m.gadgets.ndtv.com##.top_ad
+m.gadgets.ndtv.com##amp-embed[type="taboola"]
+||api.kostprice.com/api/amp-widget$domain=m.gadgets.ndtv.com
+m.gadgets.ndtv.com##amp-iframe
+gizmodo.com##amp-embed[type="taboola"]
+||pstatp.com/site/reads-sdk*/*.js
+||duanwenxue.com/js/tongji.js
+||partner.toutiao.com/partner_recommend/*&url=http%3A%2F%2Fm.duanwenxue.com
+://*.rbc.ru/*/?target-ref=*&
+rbc.ru##.g-banner__main
+rbc.ru##.g-banner__main__width-240+div[class="g-tabletVisible"]
+taxidrivermovie.com##.mask
+ndtv.com##.ad-wgt
+mdaily.bhaskar.com###atf_ad
+iapps.im##.experience-zyc
 radio.yandex.ru,radio.yandex.by,radio.yandex.ua##.slider > .slider__item_advert
 ||kissanime.ru/ads/
 */1121482/|$domain=kissanime.ru
@@ -1239,7 +1265,7 @@ forums.windowscentral.com##.homeforums > div[align="center"][style="padding:15px
 nfl.com##.hp-tablet-cp-ad-row > div[class^="hp-tablet"]
 livestrong.com##.js-mobile_adsense
 9to5mac.com##.leaderboard
-bhaskar.com,divyabhaskar.co.in,fashion101.in##.mb_ads_title
+bhaskar.com,divyabhaskar.co.in,fashion101.in##[class^="mb_ads_title"]
 delfi.ee##.md-banner-placement
 gadgets.bhaskar.com##.md_ads
 mangastream.com##.mobile-ad-home
@@ -1353,15 +1379,10 @@ pornhd.com##ul.thumbs.inside-row > li:not([data-thumbindexes])
 ||ymcdn.ymtrack6.co/offer_single_files/
 ||youtube.com/_get_ads?
 ! For Moscow metro WiFi
-login.wi-fi.ru#%#window.isPremium = true;
-||ads.adfox.ru^
-||login.wi-fi.ru/ad_video/
+||static.wi-fi.ru/brandings/_cacheAssets/branding.js
 ||login.wi-fi.ru^$script,third-party
 ||static.wi-fi.ru/brandings/rb/
 ||static0.wi-fi.ru/static/000/ios/index.html
-||vmet.ro^$third-party
-||wi-fi.ru/ad_video/
-||wi-fi.ru^$script,third-party
 !---------------------------------------------------------------------------!
 !-------------- Rules for specific applications ----------------------------!
 !---------------------------------------------------------------------------!
@@ -1395,7 +1416,18 @@ login.wi-fi.ru#%#window.isPremium = true;
 ||graph.facebook.com^$app=ferp.android
 ||graph.facebook.com^$app=fr.meteo
 ||graph.facebook.com^$app=io.casper.android
+||graph.facebook.com^$app=com.cmplay.cellconnect
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/4774
+@@||irr.ru/mobile_api^$app=com.umojo.irr.android
+! https://github.com/AdguardTeam/AdguardFilters/issues/4757
+||ad.flipboard.com^
+! https://github.com/AdguardTeam/AdguardFilters/issues/4759
+||overall.ikvapp.ru/api/ad?api_key=
+! https://github.com/AdguardTeam/AdguardFilters/issues/4722
+||api.bitmango.com/api/ad_manager
+! https://forum.adguard.com/index.php?threads/19617/
+@@||gabe.it.gemius.pl/gemiuslib.js$app=com.saipm.dh|com.twipemobile.laderniereheure|com.vlan.capteo|be.rossel.sudpresse.sports|be.rossel.lesoir.sports|be.rossel.westtoer|com.audaxis.mobile.sudpresse.lameuse|com.audaxis.mobile.sudpresse.lacapitale|com.audaxis.mobile.sudpresse.laprovince|com.audaxis.mobile.sudpresse.lanouvellegazette|com.audaxis.mobile.sudpresse.nordeclair|be.lesoir.geeko|be.lesoir.goToJo|be.rossel.android.communales|be.sudpresse.blogs|be.sudpresse.reader|be.vlan.reader|com.rossel.hslesoir|com.audaxis.mobile.sudpresse|be.rossel.soirmag|com.rosselfestival|be.appsolution.lesoir|com.twipemobile.lalibreplus|com.tapptic.cinebel|com.tapptic.lalibre|be.twizz
 ! https://forum.adguard.com/index.php?threads/20641/
 ||wpsconfig4svr.elasticbeanstalk.com/config/android/list?
 ||minfo.wps.cn/minfo/infos.ads?
@@ -1579,6 +1611,9 @@ login.wi-fi.ru#%#window.isPremium = true;
 !
 ! Section contains rules for mobile analytics and spyware
 !
+||a.bitmango.com^
+||bitmango.com/log
+||tracking.directservices.it^
 ||vortex.data.microsoft.com^
 ||onedrive-collection.device.mobileengagement.windows.net^
 ||metrics.timewarnercable.com^

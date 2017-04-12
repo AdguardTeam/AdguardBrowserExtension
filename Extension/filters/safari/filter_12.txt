@@ -1,8 +1,9 @@
-! Checksum: BY8Cg3O59zzYTxPlisatRw
-! Version: 1.0.2.81
-! TimeUpdated: 2017-04-04T08:02:03.171+04:00
+! Checksum: kiGdF6V2xZ1n1jaHGV1MyQ
 ! Title: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
+! Version: 1.0.2.87
+! TimeUpdated: 2017-04-10T20:02:02.701+04:00
+! Expires: 2 days (update frequency)
 ! Title: Adguard Safari Filter
 !
 ! Special filter for Safari. We need a separate filter for Safari because it does not fully support rules syntax.
@@ -16,6 +17,7 @@
 !
 ! Section contains list of advertising networks
 !
+||307cc283bab2ffdec92.com^
 ||xdbwc.com^
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3656
 ||cb8717377086c72d.com^$popup
@@ -40,6 +42,14 @@
 !
 !***********************
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/4767
+! BlockAdBlock
+@@||bannertrack.net^$script,other,domain=animmex.tv|finalservers.net
+@@||adnetasia.com^$script,other,domain=animmex.tv|finalservers.net
+@@||adclixx.net^$script,other,domain=animmex.tv|finalservers.net
+@@*.ico$domain=animmex.tv|finalservers.net
+@@||adtrackers.net^$script,other,domain=animmex.tv|finalservers.net
+@@||finalservers.net^$generichide
 ! https://forum.adguard.com/index.php?threads/20240/
 @@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=broadbandforum.co
 @@||broadbandforum.co$generichide
@@ -329,6 +339,11 @@ meddaily.ru##div[style="width: 240px; background-color: White;"]
 !***
 !******
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/4764
+o2.pl##div[data-st-area="ST-Article-Body"] > div._1-MSN > div[style*="width: 970px;"]
+o2.pl##div[data-st-area="ST-Article-Body"] > div._1-MSN+div > div[style="padding-top: 20px;"] > div[class] > div[style*="height: 600px;"]
+! https://github.com/AdguardTeam/AdguardFilters/issues/4750
+filmexpresi.com###wrap > center > a > img
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4703
 dizipub.com###video-oncesi img
 ! https://forum.adguard.com/index.php?threads/19151/
@@ -408,9 +423,6 @@ wi-fi.ru,vmet.ro#video-b
 ||login.wi-fi.ru^$script,third-party
 ||static.wi-fi.ru/brandings/rb/
 ||static0.wi-fi.ru/static/000/ios/index.html
-||vmet.ro^$third-party
-||wi-fi.ru/ad_video/
-||wi-fi.ru^$script,third-party
 ! http://forum.adguard.com/showthread.php?5125 (the slider on the main page will be broket, but there is not other way to block fullscrean ad)
 ||gamer.ru/alarmalarm/js/
 ! http://forum.adguard.com/showthread.php?7471
@@ -424,6 +436,12 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 !
 ! White list. Fixing content blocking API issues.
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/4772
+@@||static.adf.ly/static/css/$domain=adf.ly
+@@||static.adf.ly/static/js/$domain=adf.ly
+! https://github.com/AdguardTeam/AdguardFilters/issues/4766
+! Fixing redirects via an.yandex.ru
+@@||an.yandex.ru/mapuid/*?location=*&jsredir=
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4626
 @@||youtube.com/yts/jsbin/player-*/base.js$domain=infowars.com
 @@||youtube.com/yts/jsbin/www-embed-player-*/www-embed-player.js$domain=infowars.com

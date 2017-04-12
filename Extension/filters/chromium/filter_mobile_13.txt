@@ -1,13 +1,15 @@
-! Checksum: NevbbLRd7Mhbn+DTqLPVkg
-! Version: 1.0.7.18
-! TimeUpdated: 2017-04-05T14:02:18.131+04:00
+! Checksum: XRlzrYC3jl42CA0RSLWiHw
 ! Title: Turkish filter
 ! Description: Adguard Turkish filter. Filter list that specifically removes adverts on Turkish language websites.
+! Version: 1.0.7.24
+! TimeUpdated: 2017-04-12T07:02:10.455+04:00
+! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+||adserver.tutkusunucu.com^
 ||ad.eglenced.com^
 ||cdn.klasseo.com^$third-party
 ||ad.reyazilim.com^
@@ -675,7 +677,6 @@ yabancidizisitesi.com#$#body { background: #000000!important; }
 webtedizi.org#$#body { background: #000000!important; }
 filmbudur.org#$#body { background: #000000!important; }
 guncelmacizlet.net#$#body { background: #000000!important; }
-filmexpresi.com#$#body { background: #000000!important; }
 hwa.com.tr#$#body { background: #000000!important; }
 technopat.net#$#body { background: #000000!important; }
 diziizle.site#$#body { background: #000000!important; }
@@ -797,7 +798,17 @@ izlemeyedeger.com#$#.remodal-is-locked {overflow:visible!important}
 /wp-content/uploads/*_reklam.
 ||media.*.com/renderimage.aspx?pid=$third-party
 ||wingobet10.com/banner/$third-party
-://i.hizliresim.com^$domain=bankotahminler1.org|hintfilmi.net|fullhdfilmgecesi.com|sinemaizlefullhd.net|720pfilmizle.tv|asyafanatikleri.net|ayfilmizle.net|diziay.com|diziband.com|ediziizleyin.com|filmarenasi.net|filmkomedi.com|fullfilmihdizlesene.com|haber32.com.tr|hd-pornoizle.net|hdfilmarenasi.com|hdfilmarenasi.net|sinemapol.org|sonbolumizleyin.net|sports.gool7.net|tekparthdkeyfi.com|xsportv1.com|fullfilmsitesi.com|filmbilir.net|hdfilmakinasi.com
+://i.hizliresim.com^$domain=filmexpresi.com|bankotahminler1.org|hintfilmi.net|fullhdfilmgecesi.com|sinemaizlefullhd.net|720pfilmizle.tv|asyafanatikleri.net|ayfilmizle.net|diziay.com|diziband.com|ediziizleyin.com|filmarenasi.net|filmkomedi.com|fullfilmihdizlesene.com|haber32.com.tr|hd-pornoizle.net|hdfilmarenasi.com|hdfilmarenasi.net|sinemapol.org|sonbolumizleyin.net|sports.gool7.net|tekparthdkeyfi.com|xsportv1.com|fullfilmsitesi.com|filmbilir.net|hdfilmakinasi.com
+haberinadresi.com##.span-rise-featured
+haberinadresi.com##.hs-daily-container
+||rsc.cdn77.org/betper/
+bobiler.org###tepe-banner-bey
+720pizle.com##div[id^="ads_"]
+memurlar.net##.defaultAds
+haber61.net##.mreklam
+kibrissondakika.com##.rek1
+kibrissondakika.com##img[style="width:460px; height:90px"]
+kibrissondakika.com##img[width="460"][height="80"]
 sonbolumizle.co##.footer-sticky
 nefilmdibe.com##.post > .entry > center
 nefilmdibe.com##.post > .entry + center
