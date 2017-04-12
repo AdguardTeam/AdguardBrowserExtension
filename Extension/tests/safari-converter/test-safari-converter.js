@@ -403,8 +403,6 @@ QUnit.test("Elemhide rules", function (assert) {
 
     assert.equal(converted[1].trigger["url-filter"], ".*");
     assert.equal(converted[1].trigger["if-domain"], "*lenta.ru");
-    assert.equal(converted[1].trigger["url-filter"], ".*");
-    assert.equal(converted[1].trigger["if-domain"], "*lenta.ru");
     assert.equal(converted[1].action.type, "ignore-previous-rules");
 
     assert.equal(converted[2].trigger["url-filter"], "https:\\/\\/icdn\\.lenta\\.ru\\/images\\/2017\\/04\\/10\\/16\\/20170410160659586\\/top7_f07b6db166774abba29e0de2e335f50a\\.jpg");

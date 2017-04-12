@@ -435,6 +435,7 @@ var SafariContentBlockerConverter = {
 
     /**
      * Converts ruleText string to Safari format
+     * Used in iOS.
      *
      * @param ruleText string
      * @param errors array
@@ -442,7 +443,7 @@ var SafariContentBlockerConverter = {
      */
     convertLine: function (ruleText, errors) {
         try {
-            return this._convertAGRule(this.parseAGRule(ruleText, errors));
+            return this._convertAGRule(this._parseAGRule(ruleText, errors));
         } catch (ex) {
             var message = 'Error converting rule from: ' + ruleText + ' cause:\n' + ex;
             message = ruleText + '\r\n' + message + '\r\n';
@@ -462,7 +463,7 @@ var SafariContentBlockerConverter = {
      * @param ruleText
      * @param errors
      */
-    parseAGRule: function (ruleText, errors) {
+    _parseAGRule: function (ruleText, errors) {
         try {
             if (ruleText === null || ruleText === '' ||
                 ruleText.indexOf('!') === 0 || ruleText.indexOf(' ') === 0 ||
@@ -773,7 +774,7 @@ var SafariContentBlockerConverter = {
                 item = this.convertAGRule(rules[i], contentBlocker.errors);
                 ruleText = rules[i].ruleText;
             } else {
-                agRule = this.parseAGRule(rules[i], contentBlocker.errors);
+                agRule = this._parseAGRule(rules[i], contentBlocker.errors);
                 item = this.convertAGRule(agRule, contentBlocker.errors);
                 ruleText = rules[i];
             }
