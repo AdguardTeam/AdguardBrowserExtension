@@ -55,6 +55,20 @@ var StringUtils = {
 var UrlUtils = {
 
 	getDomainName: function (url) {
+        if (!url) {
+            return null;
+        }
+        if (url.indexOf('//') < 0) {
+            var index = url.indexOf(':');
+            if (index < 0) {
+                return null;
+            }
+            /**
+			 * It's non hierarchical structured URL (e.g. stun: or turn:).
+			 * For hostname parsing makes it hierarchical. (we can loose protocol, but it doesn't matter)
+             */
+            url = 'http://' + url.substring(index + 1);
+        }
 		if (!this.linkHelper) {
 			this.linkHelper = document.createElement('a');
 		}
@@ -671,7 +685,7 @@ RequestWizard.PATTERNS_COUNT = 2; //exclude domain and full request url
 
 RequestWizard.splitToPatterns = function (requestUrl, prefix) {
 
-	var domain = UrlUtils.getDomainName(requestUrl);
+	var domain = UrlUtils.getDomainName(requestUrl) || '';
 	var patterns = [];//domain pattern
 
 	var relative = StringUtils.substringAfter(requestUrl, domain + '/');
