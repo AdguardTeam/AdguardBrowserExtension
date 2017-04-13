@@ -153,8 +153,8 @@ var AdguardAssistant = function ($, AdguardSelectorLib, AdguardRulesConstructorL
 				newPositionY = 0;
 			}
 
-			iframeJ.css('left', newPositionX + 'px');
-			iframeJ.css('top', newPositionY + 'px');
+			iframeJ.get(0).style.setProperty('left', newPositionX + 'px', 'important');
+			iframeJ.get(0).style.setProperty('top', newPositionY + 'px', 'important');
 		};
 
 		var cancelIFrameSelection = function (e) {
@@ -214,11 +214,11 @@ var AdguardAssistant = function ($, AdguardSelectorLib, AdguardRulesConstructorL
 		iframe.setAttribute('frameBorder', '0');
 		iframe.setAttribute('allowTransparency', 'true');
 
-		iframe.style.width = width + 'px';
-		iframe.style.height = height + 'px';
-		iframe.style.position = 'fixed';
-		iframe.style.left = positions.left + 'px';
-		iframe.style.top = positions.top + 'px';
+		iframe.style.setProperty('width', width + 'px', "important");
+		iframe.style.setProperty('height', height + 'px', "important");
+		iframe.style.setProperty('width', width + 'px', "important");
+		iframe.style.setProperty('left', positions.left + 'px', "important");
+		iframe.style.setProperty('top', positions.top + 'px', "important");
 
 		// Wait for iframe load and then apply styles
 		$(iframe).on('load', function () {
@@ -287,8 +287,8 @@ var AdguardAssistant = function ($, AdguardSelectorLib, AdguardRulesConstructorL
 	};
 
 	var changeCurrentIframe = function (width, height, iframe) {
-		iframe.style.width = width + 'px';
-		iframe.style.height = height + 'px';
+        iframe.style.setProperty('width', width + 'px', "important");
+        iframe.style.setProperty('height', height + 'px', "important");
 	};
 
 	var appendContentToIframe = function (iframe, content) {
@@ -481,11 +481,11 @@ var AdguardAssistant = function ($, AdguardSelectorLib, AdguardRulesConstructorL
 		var iframe = findIframe().get(0);
 
 		if (height) {
-			iframe.style.height = height + "px";
+            iframe.style.setProperty('height', height + 'px', "important");
 		}
 
 		if (width) {
-			iframe.style.width = width + "px";
+            iframe.style.setProperty('width', width + 'px', "important");
 		}
 
 		checkPosition();
@@ -503,7 +503,7 @@ var AdguardAssistant = function ($, AdguardSelectorLib, AdguardRulesConstructorL
 			if (top < 0) {
 				top = constants.iframe.topOffset;
 			}
-			iframe.style.top = top + 'px';
+            iframe.style.setProperty('top', top + 'px', "important");
 		}
 	};
 
