@@ -216,7 +216,7 @@ var AdguardAssistant = function ($, AdguardSelectorLib, AdguardRulesConstructorL
 
 		iframe.style.setProperty('width', width + 'px', "important");
 		iframe.style.setProperty('height', height + 'px', "important");
-		iframe.style.setProperty('width', width + 'px', "important");
+		iframe.style.setProperty('position', 'fixed', "important");
 		iframe.style.setProperty('left', positions.left + 'px', "important");
 		iframe.style.setProperty('top', positions.top + 'px', "important");
 
