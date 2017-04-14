@@ -72,7 +72,9 @@
     }
 
     function sync(callback) {
+
         if (checkInfiniteLooping()) {
+            callback();
             return;
         }
 
