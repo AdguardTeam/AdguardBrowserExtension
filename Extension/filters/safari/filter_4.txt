@@ -1,8 +1,8 @@
-! Checksum: tsu7kpp+jxZw0VmfafrYkg
+! Checksum: 0Z92yZ7CsuLEcnfXwmKLhg
 ! Title: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
-! Version: 1.0.18.57
-! TimeUpdated: 2017-04-12T19:00:57.691+04:00
+! Version: 1.0.18.63
+! TimeUpdated: 2017-04-14T10:00:50.007+04:00
 ! Expires: 2 days (update frequency)
 ! Title: Adguard Social Media Filter
 !
@@ -391,6 +391,10 @@ m.tf.co.kr#$#li.sBtn_reply { float: initial!important; display: inline-block!imp
 ||mimimi.tv/?*=*&_=
 ||mindspace.ru/?*=*&_=
 !
+duzcepostasi.com##td[style$="300px;"] >table[width="300"][height="61"]
+izlemeyedeger.com##.share-social
+fstoppers.com##a[data-featherlight=".share-buttons"]
+planet-today.ru##div[id^="jlvkgroup"]
 m.gsmarena.com##.share-buttons
 wired.com##.amp-wp-social
 wsj.com##.wsj-amp-share
@@ -429,7 +433,6 @@ cheezburger.com##.nw-sharing-buttons
 canlitv.life##.paylas
 showmore.com##.counted-share-vertical
 haberodasi.tv###share
-yeniduzen.com###cm-social-overlay
 bursahakimiyet.com.tr##.sharenewsin
 riafan.ru##.rambler-share
 realnoevremya.ru##.colorShareBtn
@@ -577,7 +580,6 @@ schwaebische.de###button_bar > div[data-original-title*="teilen"]
 fishki.net###cboxBottom
 applopedi.com,donday.ru###cboxOverlay
 f5haber.com###cdxhd_interstitial
-gazetevahdet.com,ozgurkocaeli.com.tr,sariyermanset.com,wanhaber.com,yenicaggazetesi.com.tr###cm-social-overlay
 cnn.com###cnnShare2
 windeln.de###col2_content > div[id^="block-block-"][class="block block-block"]:last-child
 applopedi.com,donday.ru###colorbox
@@ -1980,6 +1982,9 @@ zdnet.co.kr##ul.sub_view_tit4.clfx
 !
 ! Section contains list general hiding rules
 !
+~pinterest.com##a[href^="https://pinterest.com/pin/create/link/?"]
+###cm-social-overlay
+~ok##a[href^="https://connect.ok.ru/offer?url="]
 ~pinterest.com##a[href^="https://www.pinterest.com/pin/create/link/"]
 ###wpbfsb
 ##.share_box
@@ -2625,7 +2630,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.st_stumbleupon_large
 ##.st_twitter_hcount
 ##.st_twitter_large
-##.sticky-shares
+~fstoppers.com##.sticky-shares
 ##.stumbleupon
 ##.surfinbird__like_button
 ##.td-post-sharing
@@ -2856,7 +2861,6 @@ mocasoft.ro###fanback
 popmech.ru###_sim_popup
 timeallnews.ru###bg_popup
 androidcanavari.net###cboxOverlay
-bilecikhaber.com.tr,konyahaber.com###cm-social-overlay
 androidcanavari.net,dnepr24.com.ua###colorbox
 cydiageeks.com###conversions-box
 diziizle.net###facebook-takipet
