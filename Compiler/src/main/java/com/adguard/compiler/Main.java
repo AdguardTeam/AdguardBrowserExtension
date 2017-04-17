@@ -319,6 +319,11 @@ public class Main {
         }
 
         String result = buildName + "-" + version;
+
+        if (browser == Browser.FIREFOX_WEBEXT && allowRemoteScripts) {
+            result += "-unsigned";
+        }
+
         if (browser == Browser.SAFARI) {
             result += ".safariextension";
         }
