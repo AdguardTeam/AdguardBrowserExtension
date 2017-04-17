@@ -104,7 +104,11 @@ var injectPageScriptAPI = function (injectApi) { // jshint ignore:line
     injectApi.copyProperties = function (src, dest, properties) {
         for (var i = 0; i < properties.length; i++) {
             var prop = properties[i];
-            Object.defineProperty(dest, prop, Object.getOwnPropertyDescriptor(src, prop));
+            var descriptor = Object.getOwnPropertyDescriptor(src, prop);
+            // Passed property may be undefined
+            if (descriptor) {
+                Object.defineProperty(dest, prop, descriptor);
+            }
         }
     };
 
