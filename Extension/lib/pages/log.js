@@ -54,27 +54,45 @@ var StringUtils = {
 
 var UrlUtils = {
 
+    /**
+	 * Retrieves hostname from URL
+     */
 	getDomainName: function (url) {
         if (!url) {
             return null;
         }
-        if (url.indexOf('//') < 0) {
-            var index = url.indexOf(':');
-            if (index < 0) {
-                return null;
-            }
-            /**
-			 * It's non hierarchical structured URL (e.g. stun: or turn:).
-			 * For hostname parsing makes it hierarchical. (we can loose protocol, but it doesn't matter)
-             */
-            url = 'http://' + url.substring(index + 1);
-        }
+        url = this.getUrlWithoutScheme(url);
 		if (!this.linkHelper) {
 			this.linkHelper = document.createElement('a');
 		}
-		this.linkHelper.href = url;
-		var host = this.linkHelper.hostname;
-		return StringUtils.startWith(host, "www.") ? host.substring(4) : host;
+		this.linkHelper.href = 'http://' + url;
+		return this.linkHelper.hostname;
+	},
+
+    /**
+	 * Removes protocol from URL
+     */
+    getUrlWithoutScheme: function (url) {
+        var index = url.indexOf('//');
+        if (index >= 0) {
+            url = url.substring(index + 2);
+        } else {
+            // It's non hierarchical structured URL (e.g. stun: or turn:)
+            index = url.indexOf(':');
+            if (index >= 0) {
+                url = url.substring(index + 1);
+            }
+        }
+        return StringUtils.startWith(url, 'www.') ? url.substring(4) : url;
+    },
+
+    /**
+	 * Checks the given URL whether is hierarchical or not
+     * @param url
+     * @returns {boolean}
+     */
+    isHierarchicUrl: function(url){
+        return url.indexOf('//') !== -1;
 	}
 };
 
@@ -583,7 +601,9 @@ RequestWizard.prototype.showCreateBlockRuleModal = function (frameInfo, filterin
 
 	var template = this.createBlockRuleTemplate.clone();
 
-	var patterns = RequestWizard.splitToPatterns(filteringEvent.requestUrl, UrlFilterRule.MASK_START_URL).reverse();
+    var prefix = UrlUtils.isHierarchicUrl(filteringEvent.requestUrl) ? UrlFilterRule.MASK_START_URL : '';
+
+    var patterns = RequestWizard.splitToPatterns(filteringEvent.requestUrl, prefix).reverse();
 
 	this._initCreateRuleDialog(frameInfo, template, patterns, filteringEvent.frameDomain, filteringEvent.requestThirdParty);
 };
@@ -592,8 +612,9 @@ RequestWizard.prototype.showCreateExceptionRuleModal = function (frameInfo, filt
 
 	var template = this.createExceptionRuleTemplate.clone();
 
-	var prefix = FilterRule.MASK_WHITE_LIST + UrlFilterRule.MASK_START_URL;
-	var patterns = RequestWizard.splitToPatterns(filteringEvent.requestUrl, prefix).reverse();
+	var prefix = UrlUtils.isHierarchicUrl(filteringEvent.requestUrl) ? UrlFilterRule.MASK_START_URL : '';
+
+	var patterns = RequestWizard.splitToPatterns(filteringEvent.requestUrl, FilterRule.MASK_WHITE_LIST + prefix).reverse();
 
 	this._initCreateRuleDialog(frameInfo, template, patterns, filteringEvent.frameDomain, filteringEvent.requestThirdParty);
 };
@@ -713,10 +734,7 @@ RequestWizard.splitToPatterns = function (requestUrl, prefix) {
 	patterns.unshift(prefix + domain + UrlFilterRule.MASK_SEPARATOR);
 
 	//push full url pattern
-	var url = StringUtils.substringAfter(requestUrl, '//');
-	if (StringUtils.startWith(url, 'www.')) {
-		url = url.substring(4);
-	}
+	var url = UrlUtils.getUrlWithoutScheme(requestUrl);
 	if (patterns.indexOf(prefix + url) < 0) {
 		patterns.push(prefix + url);
 	}

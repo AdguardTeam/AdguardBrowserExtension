@@ -32,7 +32,7 @@
 
             regexAnySymbol: ".*",
             regexSeparator: "([^ a-zA-Z0-9.%]|$)",
-            regexStartUrl: "^(http://|https://|ws://|wss://|stun:|stuns:|turn:|turns:)([a-z0-9-_.]+\\.)?",
+            regexStartUrl: "^(http|https|ws|wss)://([a-z0-9-_.]+\\.)?",
             regexStartString: "^",
             regexEndString: "$"
         };

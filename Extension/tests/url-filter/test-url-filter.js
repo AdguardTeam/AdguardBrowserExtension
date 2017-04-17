@@ -4,8 +4,8 @@ QUnit.test("Punycode rules", function (assert) {
     var rule = new adguard.rules.UrlFilterRule(ruleText);
     assert.ok(rule);
 
-    assert.equal("^(http://|https://|ws://|wss://|stun:|stuns:|turn:|turns:)([a-z0-9-_.]+\\.)?xn--d1acpjx3f\\.xn--p1ai([^ a-zA-Z0-9.%]|$)", rule.getUrlRegExpSource());
-    assert.equal("/^(http:\\/\\/|https:\\/\\/|ws:\\/\\/|wss:\\/\\/|stun:|stuns:|turn:|turns:)([a-z0-9-_.]+\\.)?xn--d1acpjx3f\\.xn--p1ai([^ a-zA-Z0-9.%]|$)/i", rule.getUrlRegExp().toString());
+    assert.equal("^(http|https|ws|wss)://([a-z0-9-_.]+\\.)?xn--d1acpjx3f\\.xn--p1ai([^ a-zA-Z0-9.%]|$)", rule.getUrlRegExpSource());
+    assert.equal("/^(http|https|ws|wss):\\/\\/([a-z0-9-_.]+\\.)?xn--d1acpjx3f\\.xn--p1ai([^ a-zA-Z0-9.%]|$)/i", rule.getUrlRegExp().toString());
     assert.equal("xn--80a1acny.xn--p1ai", rule.getPermittedDomains()[0]);
 });
 
@@ -19,8 +19,8 @@ QUnit.test("Whitelist rule", function (assert) {
     assert.notOk(rule.isThirdParty);
     assert.notOk(rule.checkThirdParty);
     assert.ok(rule.getPermittedDomains().indexOf("topzone.lt") >= 0);
-    assert.equal("^(http://|https://|ws://|wss://|stun:|stuns:|turn:|turns:)([a-z0-9-_.]+\\.)?tradedoubler\\.com\\/anet\\?type\\(iframe\\)loc\\(", rule.getUrlRegExpSource());
-    assert.equal("/^(http:\\/\\/|https:\\/\\/|ws:\\/\\/|wss:\\/\\/|stun:|stuns:|turn:|turns:)([a-z0-9-_.]+\\.)?tradedoubler\\.com\\/anet\\?type\\(iframe\\)loc\\(/i", rule.getUrlRegExp().toString());
+    assert.equal("^(http|https|ws|wss)://([a-z0-9-_.]+\\.)?tradedoubler\\.com\\/anet\\?type\\(iframe\\)loc\\(", rule.getUrlRegExpSource());
+    assert.equal("/^(http|https|ws|wss):\\/\\/([a-z0-9-_.]+\\.)?tradedoubler\\.com\\/anet\\?type\\(iframe\\)loc\\(/i", rule.getUrlRegExp().toString());
 });
 
 QUnit.test("Generic rule", function (assert) {
@@ -156,8 +156,8 @@ QUnit.test("Url blocking rule", function (assert) {
     assert.equal("test.ru/", rule.shortcut);
     assert.equal("google.com", rule.getPermittedDomains()[0]);
     assert.equal("nigma.ru", rule.getRestrictedDomains()[0]);
-    assert.equal("^(http://|https://|ws://|wss://|stun:|stuns:|turn:|turns:)([a-z0-9-_.]+\\.)?test\\.ru\\/([^ a-zA-Z0-9.%]|$)", rule.getUrlRegExpSource());
-    assert.equal("/^(http:\\/\\/|https:\\/\\/|ws:\\/\\/|wss:\\/\\/|stun:|stuns:|turn:|turns:)([a-z0-9-_.]+\\.)?test\\.ru\\/([^ a-zA-Z0-9.%]|$)/", rule.getUrlRegExp().toString());
+    assert.equal("^(http|https|ws|wss)://([a-z0-9-_.]+\\.)?test\\.ru\\/([^ a-zA-Z0-9.%]|$)", rule.getUrlRegExpSource());
+    assert.equal("/^(http|https|ws|wss):\\/\\/([a-z0-9-_.]+\\.)?test\\.ru\\/([^ a-zA-Z0-9.%]|$)/", rule.getUrlRegExp().toString());
 
     // Check rule work
     assert.ok(rule.isFiltered("http://test.ru/", true, RequestTypes.POPUP));
@@ -219,7 +219,7 @@ QUnit.test("Content-specific URL blocking", function (assert) {
     assert.ok(rule.isFiltered("ws://test.ru/?ololo=ololo", false, RequestTypes.WEBSOCKET));
     assert.notOk(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.SUBDOCUMENT));
     assert.notOk(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.OTHER));
-    mask = "||test.ru$webrtc";
+    mask = "stun:test.ru$webrtc";
     rule = new adguard.rules.UrlFilterRule(mask);
     assert.ok(rule.isFiltered("stun:test.ru:19302/?ololo=ololo", false, RequestTypes.WEBRTC));
     assert.notOk(rule.isFiltered("ws://test.ru/?ololo=ololo", false, RequestTypes.WEBSOCKET));

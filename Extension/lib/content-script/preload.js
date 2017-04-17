@@ -157,25 +157,30 @@
         }
 
         var userAgent = navigator.userAgent.toLowerCase();
-        if (userAgent.indexOf('firefox') >= 0) {
-            // Explicit check, we must not go further in case of Firefox
-            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/379
-            return;
-        }
+        var isFirefox = userAgent.indexOf('firefox') >= 0;
 
         var scripts = [];
 
-        // WebSockets are broken in old versions of chrome
-        // and we don't need this hack in new version cause then websocket traffic is intercepted
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/273
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/572
+        /**
+         * This is browsers, that support WebExt-API, specific feature for blocking WebSocket connections
+         * Firefox (both Legacy and WebExt) and Safari allow Websocket blocking by default
+         *
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/273
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/572
+         *
+         * Keep in mind that the following browsers (that support WebExt-API) Chrome, Edge, YaBrowser and Opera contain `Chrome/<version>` in their User-Agent string.
+         */
         var cIndex = userAgent.indexOf('chrome/');
-        if (cIndex > 0) {
+        if (cIndex > 0 &&
+            // Explicit check, we must not go further in case of Firefox
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/379
+            !isFirefox) {
+
             var version = userAgent.substring(cIndex + 7);
             var versionNumber = Number.parseInt(version.substring(0, version.indexOf('.')));
+
+            // WebSockets are broken in old versions of chrome and we don't need this hack in new version cause then websocket traffic is intercepted
             if (versionNumber >= 47 && versionNumber <= 57 &&
-                // This is chrome-specific feature for blocking WebSocket connections
-                // overrideWebSocket function is not defined in case of other browsers
                 typeof overrideWebSocket === 'function') {
                 scripts.push("(" + overrideWebSocket.toString() + ")(api);");
             }
