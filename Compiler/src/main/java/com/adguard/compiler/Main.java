@@ -62,7 +62,7 @@ public class Main {
         String version = getParamValue(args, "--version", null);
 
         //build branch
-        String branch = getParamValue(args, "--branch", null);
+        Branch branch = Branch.fromName(getParamValue(args, "--branch", null));
 
         //browser
         String configBrowser = getParamValue(args, "--browser", null);
@@ -182,7 +182,7 @@ public class Main {
      * @throws Exception
      */
     private static File createBuild(File source, File dest,
-                                    String extensionId, String updateUrl, Browser browser, String version, String branch, boolean createApi, boolean allowRemoteScripts) throws Exception {
+                                    String extensionId, String updateUrl, Browser browser, String version, Branch branch, boolean createApi, boolean allowRemoteScripts) throws Exception {
 
         if (dest.exists()) {
             log.debug("Removed previous build: " + dest.getName());
@@ -194,35 +194,35 @@ public class Main {
         String extensionNamePostfix = "";
         switch (browser) {
             case FIREFOX_LEGACY:
-                if ("beta".equals(branch)) {
+                if (branch == Branch.BETA) {
                     extensionNamePostfix = " (Legacy)";
-                } else if ("dev".equals(branch)) {
+                } else if (branch == Branch.DEV) {
                     extensionNamePostfix = " (Legacy Dev)";
                 }
                 break;
             case FIREFOX_WEBEXT:
                 if (allowRemoteScripts) {
-                    if ("beta".equals(branch)) {
+                    if (branch == Branch.BETA) {
                         extensionNamePostfix = " (Standalone)";
-                    } else if ("dev".equals(branch)) {
+                    } else if (branch == Branch.DEV) {
                         extensionNamePostfix = " (Standalone Dev)";
                     }
                 } else {
-                    if ("beta".equals(branch)) {
+                    if (branch == Branch.BETA) {
                         extensionNamePostfix = " (Beta)";
-                    } else if ("dev".equals(branch)) {
+                    } else if (branch == Branch.DEV) {
                         extensionNamePostfix = " (AMO Dev)";
                     }
                 }
                 break;
             default:
-                if (!"release".equals(branch)) {
-                    extensionNamePostfix = " (" + StringUtils.capitalize(branch) + ")";
+                if (branch != Branch.RELEASE) {
+                    extensionNamePostfix = " (" + StringUtils.capitalize(branch.getName()) + ")";
                 }
                 break;
         }
 
-        SettingUtils.updateManifestFile(dest, browser, version, extensionId, updateUrl, extensionNamePostfix);
+        SettingUtils.updateManifestFile(dest, browser, version, extensionId, updateUrl, extensionNamePostfix, branch);
 
         if (browser == Browser.CHROMIUM && !createApi) {
             LocaleUtils.updateExtensionNameForChromeLocales(dest, extensionNamePostfix);
@@ -290,7 +290,7 @@ public class Main {
         return true;
     }
 
-    private static String getBuildName(String buildName, Browser browser, String version, String branch, boolean allowRemoteScripts) {
+    private static String getBuildName(String buildName, Browser browser, String version, Branch branch, boolean allowRemoteScripts) {
         if (buildName == null) {
             switch (browser) {
                 case CHROMIUM:
@@ -314,13 +314,13 @@ public class Main {
                     break;
             }
         }
-        if (!"dev".equalsIgnoreCase(branch)) {
-            buildName += "-" + branch.toLowerCase();
+        if (branch != Branch.DEV) {
+            buildName += "-" + branch.getName().toLowerCase();
         }
 
         String result = buildName + "-" + version;
 
-        if (browser == Browser.FIREFOX_WEBEXT && allowRemoteScripts) {
+        if ((browser == Browser.FIREFOX_WEBEXT || browser == Browser.FIREFOX_LEGACY) && branch != Branch.DEV) {
             result += "-unsigned";
         }
 
