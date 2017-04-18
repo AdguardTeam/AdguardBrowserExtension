@@ -1,8 +1,8 @@
-! Checksum: sV5DY82VU+w5U7t9BlEX+g
+! Checksum: ggidTh2uIdQT7ynx14J/Ww
 ! Title: Spanish/Portuguese filter
 ! Description: Adguard Spanish/Portuguese filter. Filter list that specifically removes adverts on Spanish and Portuguese language websites.
-! Version: 1.0.86.59
-! TimeUpdated: 2017-03-23T17:01:53.730+04:00
+! Version: 1.0.86.61
+! TimeUpdated: 2017-04-17T15:01:20.389+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -339,6 +339,8 @@ _publicidade.
 _publicidade_
 _publicitario.
 http://adw.
+marca.com##.content > iframe[src^="http://91.116.142.114"]
+||91.116.142.114/iframe$domain=marca.com
 zonasports.me##iframe[src^="http://zonasports.at.ua/"]
 zonasports.me##iframe[src^="http://zonasports.at.ua/"] + p
 tabletsesmartphones.org##.banner-336x280

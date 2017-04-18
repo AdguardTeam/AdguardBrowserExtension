@@ -1,14 +1,19 @@
-! Checksum: W07v59ETsyPCBAD6Je+EtQ
+! Checksum: X4R5LZrx/H/3wYjD31zR7w
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 1.0.7.95
-! TimeUpdated: 2017-04-12T15:01:49.421+04:00
+! Version: 1.0.8.1
+! TimeUpdated: 2017-04-18T14:01:48.067+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+||banners-slb.mobile.yandex.net^
+||banners.mobile.yandex.net^
+||rtb.adentifi.com^$third-party
+||adtheorent.com^$third-party
+||qgss8.com^
 ||api.cloudmobi.net
 ||polymorphicads.jp^
 ||cdns.lodeo.io^
@@ -928,6 +933,14 @@ m.auto.ru##.card.i-bem > div[class^="_"] > div[class^="_"]
 m.auto.ru##.index.i-bem > div[class]:not([data-bem])
 m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"])
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
+lifehacker.com##amp-embed[type="taboola"]
+jalopnik.com##amp-embed[type="taboola"]
+foxnews.com##amp-iframe
+amp.theguardian.com##amp-list
+amp.theguardian.com##amp-iframe
+wccftech.com##.amp-ad
+zeenews.india.com##amp-iframe
+bloomberg.com##.amp-taboola
 m.gsmarena.com##.adv-top
 m.gsmarena.com##.adv-bottom
 phonearena.com##div[style="min-width:300px; min-height:250px; overflow: hidden; margin: 0 auto;"]
@@ -1309,6 +1322,9 @@ pornhd.com##ul.thumbs.inside-row > li:not([data-thumbindexes])
 ||eviltracker.net^
 ||spotify.com/ads/
 ||trackersimulator.org^
+||mazu.sec.miui.com^
+||shenghuo.xiaomi.com^
+||api.ad.xiaomi.com^
 ||a.bitmango.com^
 ||bitmango.com/log
 ||tracking.directservices.it^

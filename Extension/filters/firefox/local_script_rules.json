@@ -70,10 +70,6 @@
       "script" : "window.open = function() {};"
     },
     {
-      "domains" : "37.220.36.15,cdnapponline.com,hdkinoteatr.com,pandastream.cc,moonwalk.cc,capricornus.cc,online.the-cinema.tv,video.muvix.org,staticnlcdn.com,player.kinolist.org,video.icinemax.net,video.tvepisodeswatch.net,new-serials.ru,kinospy.net,play.hdnow.biz,apollocdn.cc,video.kodik.name,kino-strah.ru,anilibria.tv,ua-cinema.com,serpens.nl,creativportal.ru,online.kinozz.net,moonwalk.center,kinogo-hd-720.net,cdn.kinoprofi.tv,video.kinorom.com,cdn1.kinogo-720.club,kino.ivi-ru.xyz,a.kinoboom.net,mw.kinolution.com,cdn.wifilm.ru,bob.videobob.ru,online.zzonlinepleer.info,lastfilms.org,video.kinoogo.ru,cdn.kapnob.ru,servkino.ru,kinosky.net,onlinemix.org,kinosklad.net,kinoleto.com,video.anpopcorn.com,zserials.me,kinoprofi.club,bestkino.su,cdn.ex-fs.net",
-      "script" : "Object.defineProperty(window, 'adv_enabled', { get: function() { return false; } });"
-    },
-    {
       "domains" : "fmovies.to",
       "script" : "Object.defineProperty(window, 'j4v6', { get: function() { return {}; } });"
     },
@@ -324,6 +320,10 @@
     {
       "domains" : "dizilab.tv",
       "script" : "(function(){var b=\"html.remodal-is-locked{overflow:visible!important;touch-action:auto!important;-ms-touch-action:auto!important}div[class^='remodal-']{display:none!important}\",a=document.createElement(\"style\");a.type=\"text/css\";a.styleSheet?a.styleSheet.cssText=b:a.innerHTML=b;document.getElementsByTagName(\"head\")[0].appendChild(a);})();"
+    },
+    {
+      "domains" : "skidrowgamesreloaded.com",
+      "script" : "Object.defineProperty(window, 'tQZr', { get: function() { return {}; } });"
     },
     {
       "domains" : "ipatriot.com",
@@ -930,6 +930,10 @@
       "script" : "var canRunAds = true;"
     },
     {
+      "domains" : "24tv.ua,autoua.net,azov-sea.info,beztabu.net,boxnews.com.ua,buhgalter911.com,buhgalter.com.ua,buhgalter.com.ua,depo.ua,dovidka.biz.ua,dsnews.ua,dynamo.kiev.ua,expres.ua,lvivexpres.com,facenews.ua,finance.ua,football24.ua,gagadget.com,gazeta.ua,guru.ua,headinsider.net,hvylya.net,hyser.com.ua,kaktus.site,korupciya.com,love.ua,luxlux.net,mabila.ua,mama.ua,minfin.com.ua,nashasvadba.ua,newsyou.info,novostivmire.com,okino.ua,ostrnum.com,qp.ua,radio24.ua,maximum.fm,rbc.ua,real-vin.com,ringside24.com,segodnya.ua,sinoptik.ua,sinoptik.com.ru,strana.ua,subject.com.ua,toneto.net,tv.ua,ubr.ua,udoktora.net,ukrinform.ua,ukrlib.com.ua,u-news.com.ua,unian.net,vchaspik.ua,vesti.ua,vesti-ukr.com,vmirechudes.com,vsetv.com,woman.ua,zaxid.net",
+      "script" : "var dce = document.createElement.bind(document); document.createElement = function(a) { var el = dce(a); if(a.toLowerCase() == \"script\") { Object.defineProperty(el, 'textContent', { set: function(i) { /*console.log(i);*/ if(!/function\\(mz_str\\).*?\"[a-z0-9]{100,}\"/.test(i)) { Object.getOwnPropertyDescriptor(Node.prototype, 'textContent').set.call(el, i); } }, get: function () { return el.textContent; } }) } return el; };"
+    },
+    {
       "domains" : "byetv.org",
       "script" : "window.open = function() {};"
     },
@@ -956,6 +960,10 @@
     {
       "domains" : "nosteam.ro",
       "script" : "window.open = function() {};"
+    },
+    {
+      "domains" : "37.220.36.15,cdnapponline.com,hdkinoteatr.com,moonwalk.cc,capricornus.cc,online.the-cinema.tv,video.muvix.org,staticnlcdn.com,player.kinolist.org,video.icinemax.net,video.tvepisodeswatch.net,new-serials.ru,kinospy.net,play.hdnow.biz,apollocdn.cc,video.kodik.name,kino-strah.ru,anilibria.tv,ua-cinema.com,serpens.nl,creativportal.ru,online.kinozz.net,moonwalk.center,kinogo-hd-720.net,cdn.kinoprofi.tv,video.kinorom.com,cdn1.kinogo-720.club,kino.ivi-ru.xyz,a.kinoboom.net,mw.kinolution.com,cdn.wifilm.ru,bob.videobob.ru,online.zzonlinepleer.info,lastfilms.org,video.kinoogo.ru,cdn.kapnob.ru,servkino.ru,kinosky.net,onlinemix.org,kinosklad.net,kinoleto.com,video.anpopcorn.com,zserials.me,kinoprofi.club,bestkino.su,cdn.ex-fs.net",
+      "script" : "Object.defineProperty(window, 'adv_enabled', { get: function() { return false; } });"
     },
     {
       "domains" : "bessporno.tv",
@@ -1116,10 +1124,6 @@
     {
       "domains" : "motherless.com",
       "script" : "Object.defineProperty(window, 'popad', { get: function() { return; } });"
-    },
-    {
-      "domains" : "noslocker.com,vshare.eu,thevideobee.to,istockfile.com,streamin.to,extratorrent.cc,shaanig.org,flashx.tv,divxme.com,bitsnoop.com,vidzi.tv,movdivx.com,downace.com,vidabc.com,upfile.mobi,rocktv.co,watchseries.cr,readmanga.today",
-      "script" : "(function(){var b=window.setTimeout;window.setTimeout=function(a,c){if(!/RTCPeerConnection[\\s\\S]*?new MouseEvent\\(\"click\"/.test(a.toString()))return b(a,c)};})();"
     },
     {
       "domains" : "streamango.com",
@@ -1562,10 +1566,6 @@
       "script" : "AG_onLoad(function() { setTimeout(function() {document.getElementsByTagName(\"HTML\")[0].classList.remove(\"remodal-is-locked\");}, 300); });"
     },
     {
-      "domains" : "last.fm",
-      "script" : "(function(b,c,d){window.setInterval=function(){var a=arguments[0];a[d]&&(a=a[d]);return/\\.redirect_url&&\\/\\^\\(https\\?\\:\\\\\\/\\\\\\/\\|[\\s\\S]*\\.enabled[\\s\\S]*?\\.no_ab_enabled/.test(c.call(a))?NaN:b.apply(window,arguments)}})(window.setInterval,Function.prototype.toString,\"nr@original\");"
-    },
-    {
       "domains" : "zoomtv.me",
       "script" : "Object.defineProperty(window, '_pao', { get: function() { return {}; } });"
     },
@@ -1584,6 +1584,10 @@
     {
       "domains" : "dizimag.co",
       "script" : "AG_onLoad(function() { hiVideorek(); });"
+    },
+    {
+      "domains" : "realty.mail.ru,pogoda.mail.ru,otvet.mail.ru,horo.mail.ru,sport.mail.ru,auto.mail.ru,hi-tech.mail.ru,news.mail.ru,deti.mail.ru,health.mail.ru,afisha.mail.ru,lady.mail.ru,realty.mail.rucars.mail.ru,my.mail.ru",
+      "script" : "Object.defineProperty(Object.prototype, 'restoreVisibility', { get: function() { return { hpConfig: {} }; }, set: function() {} });"
     },
     {
       "domains" : "fd.nl",
@@ -1782,10 +1786,6 @@
       "script" : "AG_onLoad(function() { window.onload = function() {}; });"
     },
     {
-      "domains" : "love.ua,okino.ua,strana.ua,segodnya.ua,beztabu.net,dynamo.kiev.ua,24tv.ua,gagadget.com,minfin.com.ua,facenews.ua,sinoptik.ua,vesti-ukr.com,sinoptik.com.ru",
-      "script" : "var dce = document.createElement.bind(document); document.createElement = function(a) { var el = dce(a); if(a.toLowerCase() == \"script\") { Object.defineProperty(el, 'textContent', { set: function(i) { /*console.log(i);*/ if(!/function\\(mz_str\\).*?\"[a-z0-9]{100,}\"/.test(i)) { Object.getOwnPropertyDescriptor(Node.prototype, 'textContent').set.call(el, i); } }, get: function () { return el.textContent; } }) } return el; };"
-    },
-    {
       "domains" : "turbobit.net",
       "script" : "AG_onLoad(function() { setCookie('turbobit2', 86400000); });"
     },
@@ -1974,6 +1974,10 @@
       "script" : "(function() { window.xRds = false; window.frg = true; window.frag = true;  })();"
     },
     {
+      "domains" : "pl.theserials.ru,video.hdlava.me,video.duralenta.ru,cdn.ettochno.ru,i.kino-nada.net,yallaneliera.com,online.kinopleer.info,cdn.filmtybe.pl,kinomoove.com,video.hostapi.ru,server.zzonlinepleer.info,cdn.kinorom.com,hd.films-online.cc,streamguard.cc,online.hdkinogohit.net,cdn.newfilms.online",
+      "script" : "Object.defineProperty(window, 'adv_enabled', { get: function() { return false; } });"
+    },
+    {
       "domains" : "cookies.weeronline.nl",
       "script" : "AG_onLoad(function() { setTimeout(function() {var check = document.getElementsByClassName('btn-accept')[0]; if (check){check.click();}; }, 300); });"
     },
@@ -2060,10 +2064,6 @@
     {
       "domains" : "uppit.com",
       "script" : "AG_onLoad(function() { document.getElementById('btn_download').disabled = false; AG_removeElementBySelector('input[id=\"countdown\"]'); });"
-    },
-    {
-      "domains" : "video.duralenta.ru,cdn.ettochno.ru,i.kino-nada.net,yallaneliera.com,online.kinopleer.info,cdn.filmtybe.pl,kinomoove.com,video.hostapi.ru,server.zzonlinepleer.info,cdn.kinorom.com,hd.films-online.cc,streamguard.cc,online.hdkinogohit.net,cdn.newfilms.online",
-      "script" : "Object.defineProperty(window, 'adv_enabled', { get: function() { return false; } });"
     },
     {
       "domains" : "diziyifullizle.org",
@@ -2290,6 +2290,10 @@
       "script" : "AG_onLoad(function(){$('.smalladv,.ads-block__no-ads').remove()})"
     },
     {
+      "domains" : "oload.tv",
+      "script" : "window.addEventListener(\"load\", function(){ document.getElementById(\"videooverlay\").click(); });"
+    },
+    {
       "domains" : "pornxs.com",
       "script" : "Object.defineProperty(window, 'th_ab_pop', { get: function() { return {}; } });"
     },
@@ -2364,6 +2368,10 @@
     {
       "domains" : "kizlarsoruyor.com",
       "script" : "window.canRunAds=!0;"
+    },
+    {
+      "domains" : "last.fm",
+      "script" : "(function(b,c){window.setTimeout=function(){var a=arguments[0];if(\"function\"==typeof a&&/^function [A-Za-z]{1,2}\\(\\)\\s*\\{([A-Za-z])\\|\\|\\(\\1=!0,[A-Za-z]{1,2}\\(\\)/.test(c.call(a)))throw Error();return b.apply(window,arguments)}})(window.setTimeout,Function.prototype.toString);"
     },
     {
       "domains" : "drtuber.com,planetsuzy.org",
@@ -2782,12 +2790,12 @@
       "script" : "(function() { var w_open = window.open, regex = /sapphirum.com/; window.open = function(a, b) { if (typeof a !== 'string' || !regex.test(a)) { w_open(a, b); } }; })();"
     },
     {
-      "domains" : "sergeistrelec.ru",
-      "script" : "Object.defineProperty(Object.prototype,\"\\uff9f\\u0414\\uff9f\",{get:function(){return!1}});"
-    },
-    {
       "domains" : "revclouds.com",
       "script" : "AG_onLoad(function() {document.getElementById(\"tick-dwn\").click();});"
+    },
+    {
+      "domains" : "sergeistrelec.ru",
+      "script" : "Object.defineProperty(Object.prototype,\"\\uff9f\\u0414\\uff9f\",{get:function(){return!1}});"
     },
     {
       "domains" : "yts.ag",
@@ -2932,6 +2940,10 @@
     {
       "domains" : "mackolik.com,sahadan.com",
       "script" : "var _amw1 = 1;"
+    },
+    {
+      "domains" : "wizhdsports.is,noslocker.com,vshare.eu,thevideobee.to,istockfile.com,streamin.to,extratorrent.cc,shaanig.org,flashx.tv,divxme.com,bitsnoop.com,vidzi.tv,movdivx.com,downace.com,vidabc.com,upfile.mobi,rocktv.co,watchseries.cr,readmanga.today",
+      "script" : "(function(){var b=window.setTimeout;window.setTimeout=function(a,c){if(!/RTCPeerConnection[\\s\\S]*?new MouseEvent\\(\"click\"/.test(a.toString()))return b(a,c)};})();"
     },
     {
       "domains" : "dfiles.ru",
@@ -3140,6 +3152,10 @@
     {
       "domains" : "xtube.com",
       "script" : "Object.defineProperty(window, 'PopUnder', { get: function() { return function() { }; } });"
+    },
+    {
+      "domains" : "rarbg.to",
+      "script" : "Object.defineProperties(window, { _wm2: { get: function(){ return null; } }, _wm_settings: { get: function(){return{};} } });"
     },
     {
       "domains" : "custompcreview.com",

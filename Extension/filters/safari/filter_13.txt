@@ -1,8 +1,8 @@
-! Checksum: 1mzLfzljMie4TqukpnnXWQ
+! Checksum: u298297h3r37q+MXM9dO6Q
 ! Title: Turkish filter
 ! Description: Adguard Turkish filter. Filter list that specifically removes adverts on Turkish language websites.
-! Version: 1.0.7.30
-! TimeUpdated: 2017-04-14T10:02:03.102+04:00
+! Version: 1.0.7.33
+! TimeUpdated: 2017-04-18T14:02:05.202+04:00
 ! Expires: 2 days (update frequency)
 ! Title: Adguard Turkish Filter.
 !
@@ -26,6 +26,7 @@
 !-------------- Advertising networks ---------------------------------------!
 !---------------------------------------------------------------------------!
 !
+||d1d8vn0fpluuz7.cloudfront.net^
 ||ad.setrowid.com^
 ||savoybettingcustomer.com^$third-party
 ||adserver.tutkusunucu.com^
@@ -289,6 +290,7 @@ kizlarsoruyor.com#%#window.canRunAds=!0;
 !
 ! Extended CSS rules
 !
+otohaber.com.tr##.itemFrame > .row > .col-lg-4.sm-center[-ext-has=">.advert"]
 filmkorku.org##.acikk > .arka2:contains(Reklam)
 hdsonbolumizleyin.com##.sidebarWidget.box[-ext-has='>.textwidget:empty']
 hdsonbolumizleyin.com##.sidebarWidget.box[-ext-has='a[href*="adsrv.eacdn.com"],iframe[src^="http://ad.serve-sys.com"]']
@@ -967,6 +969,12 @@ izlemeyedeger.com#$#.remodal-is-locked {overflow:visible!important}
 ! Images hosting. Used for advertising on many sites
 ://i.hizliresim.com^$domain=filmifullizle.org|filmexpresi.com|bankotahminler1.org|hintfilmi.net|fullhdfilmgecesi.com|sinemaizlefullhd.net|720pfilmizle.tv|asyafanatikleri.net|ayfilmizle.net|diziay.com|diziband.com|ediziizleyin.com|filmarenasi.net|filmkomedi.com|fullfilmihdizlesene.com|haber32.com.tr|hd-pornoizle.net|hdfilmarenasi.com|hdfilmarenasi.net|sinemapol.org|sonbolumizleyin.net|sports.gool7.net|tekparthdkeyfi.com|xsportv1.com|fullfilmsitesi.com|filmbilir.net|hdfilmakinasi.com
 !
+||resim.filmifullizle.org/video.mp4
+posta.com.tr##.square-banner
+gezipgordum.com##.widget > .code-block > a > img[width="300"][height="110"]
+korhaber.com##table[bordercolor="#111111"] > tbody > tr > td[height="100"][bgcolor]
+gercekgundem.com###header > div[style$="265px;"]
+otohaber.com.tr##.advert
 duzcepostasi.com##table[width="885"] > tbody > tr > td[style$="300px;"] > a > img
 duzcepostasi.com##td[style$="570px;"] > table[width="570"] + img[src*="/resim/upload/"]
 2eylul.com.tr##.fixed_banner

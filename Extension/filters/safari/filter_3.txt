@@ -1,8 +1,8 @@
-! Checksum: mo2LC5cOQDf0XpYE/BAhTA
+! Checksum: Oc/Y+iunorQ1hMuu7pwt6g
 ! Title: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! Version: 1.0.11.49
-! TimeUpdated: 2017-04-14T10:00:40.753+04:00
+! Version: 1.0.11.56
+! TimeUpdated: 2017-04-18T14:00:47.273+04:00
 ! Expires: 2 days (update frequency)
 ! Title: Adguard Spyware Filter
 !
@@ -94,6 +94,8 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 ||p.d.1enm.com^
 ||p.d.rpts.org^
 !
+||audienceinsights.net^$third-party
+||pv.pjtsu.com^
 ||webanalyzer.bussion.com^$third-party
 ||tt.ttarget.ru^$third-party
 ||adplus.io^$third-party
@@ -3388,6 +3390,7 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 !
 ! Section contains the list of tracking servers, which are hosted on useful sites as subdomains
 !
+||ad.kinozal.website^
 ||t1.clipkit.com^
 ||lentaru.stat.eagleplatform.com^
 ||1l-hit.mail.ru^
@@ -3615,6 +3618,7 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 !-------------- General (unsorted) url blocking --------------------------------!
 !-------------------------------------------------------------------------------!
 !
+/wp-content/plugins/pageviews/pageviews.js
 /adrum.js^
 -asset-tag.
 -ajax.php?action=ajax-hits-counter-
@@ -3797,6 +3801,11 @@ _tracking.php?b=
 !-------------- Specific web sites ---------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+amp.cnn.com##amp-iframe
+||visualstudio.com/_apis/customerintelligence/
+||hqq.tv/js/counters.js
+||hqq.tv/cdn-cgi/trace
+||oload.tv/log|
 ||hqq.tv/js/gcounter.js
 ||hqq.tv/js/amung_counter.js
 theverge.com##amp-iframe
@@ -4424,6 +4433,10 @@ dreamprogs.net##td[width="88"][height="31"]
 !-------------- Whitelist ------------------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/4816
+@@||googleadservices.com/pagead/conversion_async.js$domain=knowledgecity.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/4800
+@@||tags.tiqcdn.com/utag/tfl/main/prod/utag.js$domain=tfl.gov.uk
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4769
 @@||google-analytics.com/cx/api.js$domain=stern.de
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4746
