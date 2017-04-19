@@ -425,8 +425,6 @@
             case 'syncNow':
                 adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, {force: true});
                 break;
-            default :
-                throw 'Unknown message: ' + message;
             default:
                 // Unhandled message
                 return true;
