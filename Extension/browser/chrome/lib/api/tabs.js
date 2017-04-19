@@ -59,7 +59,8 @@ adguard.windowsImpl = (function (adguard) {
     var forEachNative = function (callback) {
         // https://developer.chrome.com/extensions/windows#method-getAll
         // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/getAll
-        browser.windows.getAll(function (chromeWins) {
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/569
+        browser.windows.getAll({}, function (chromeWins) {
             for (var i = 0; i < chromeWins.length; i++) {
                 var chromeWin = chromeWins[i];
                 callback(chromeWin, toWindowFromChromeWindow(chromeWin));
@@ -204,7 +205,8 @@ adguard.tabsImpl = (function (adguard) {
                 return;
             }
 
-            browser.windows.getAll(function (wins) {
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/569
+            browser.windows.getAll({}, function (wins) {
 
                 for (var i = 0; i < wins.length; i++) {
                     var win = wins[i];
