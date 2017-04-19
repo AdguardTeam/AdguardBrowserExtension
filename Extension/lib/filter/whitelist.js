@@ -22,10 +22,37 @@ adguard.whitelist = (function (adguard) {
 
     var allowAllWhiteListRule = new adguard.rules.UrlFilterRule('@@whitelist-all$document', adguard.utils.filters.WHITE_LIST_FILTER_ID);
 
-    var defaultWhiteListMode = adguard.settings.isDefaultWhiteListMode();
-
     var whiteListFilter = new adguard.rules.UrlFilter();
     var blockListFilter = new adguard.rules.UrlFilter();
+
+    /**
+     * Whitelist filter may not have been initialized yet
+     * @returns {*|UrlFilter}
+     */
+    function getWhiteListFilter() {
+        // Request domains property for filter initialization
+        whiteListDomainsHolder.domains; // jshint ignore:line
+        return whiteListFilter;
+    }
+
+    /**
+     * Blacklist filter may not have been initialized yet
+     * @returns {*|UrlFilter}
+     */
+    function getBlockListFilter() {
+        // Request domains property for filter initialization
+        blockListDomainsHolder.domains; // jshint ignore:line
+        return blockListFilter;
+    }
+
+    /**
+     * Returns whitelist mode
+     * In default mode filtration is enabled for all sites
+     * In inverted model filtration is disabled for all sites
+     */
+    function isDefaultWhiteListMode() {
+        return adguard.settings.isDefaultWhiteListMode();
+    }
 
     /**
      * Read domains and initialize filters lazy
@@ -33,6 +60,7 @@ adguard.whitelist = (function (adguard) {
     var whiteListDomainsHolder = {
         get domains() {
             return adguard.lazyGet(whiteListDomainsHolder, 'domains', function () {
+                whiteListFilter = new adguard.rules.UrlFilter();
                 // Reading from local storage
                 var domains = getDomainsFromLocalStorage(WHITE_LIST_DOMAINS_LS_PROP);
                 for (var i = 0; i < domains.length; i++) {
@@ -53,6 +81,7 @@ adguard.whitelist = (function (adguard) {
     var blockListDomainsHolder = {
         get domains() {
             return adguard.lazyGet(blockListDomainsHolder, 'domains', function () {
+                blockListFilter = new adguard.rules.UrlFilter();
                 // Reading from local storage
                 var domains = getDomainsFromLocalStorage(BLOCK_LIST_DOMAINS_LS_PROP);
                 for (var i = 0; i < domains.length; i++) {
@@ -97,7 +126,7 @@ adguard.whitelist = (function (adguard) {
         if (!domain) {
             return;
         }
-        if (defaultWhiteListMode) {
+        if (isDefaultWhiteListMode()) {
             whiteListDomainsHolder.add(domain);
         } else {
             blockListDomainsHolder.add(domain);
@@ -112,7 +141,7 @@ adguard.whitelist = (function (adguard) {
         if (!domain) {
             return;
         }
-        if (defaultWhiteListMode) {
+        if (isDefaultWhiteListMode()) {
             adguard.utils.collections.removeAll(whiteListDomainsHolder.domains, domain);
         } else {
             adguard.utils.collections.removeAll(blockListDomainsHolder.domains, domain);
@@ -152,10 +181,10 @@ adguard.whitelist = (function (adguard) {
     function addToWhiteList(domain) {
         var rule = createWhiteListRule(domain);
         if (rule) {
-            if (defaultWhiteListMode) {
-                whiteListFilter.addRule(rule);
+            if (isDefaultWhiteListMode()) {
+                getWhiteListFilter().addRule(rule);
             } else {
-                blockListFilter.addRule(rule);
+                getBlockListFilter().addRule(rule);
             }
             addDomainToWhiteList(domain);
             saveDomainsToLocalStorage();
@@ -168,16 +197,16 @@ adguard.whitelist = (function (adguard) {
      */
     var findWhiteListRule = function (url) {
 
-        if (adguard.utils.strings.isEmpty(url)) {
+        if (!url) {
             return null;
         }
 
         var host = adguard.utils.url.getHost(url);
 
-        if (defaultWhiteListMode) {
-            return whiteListFilter.isFiltered(url, host, adguard.RequestTypes.DOCUMENT, false);
+        if (isDefaultWhiteListMode()) {
+            return getWhiteListFilter().isFiltered(url, host, adguard.RequestTypes.DOCUMENT, false);
         } else {
-            var rule = blockListFilter.isFiltered(url, host, adguard.RequestTypes.DOCUMENT, false);
+            var rule = getBlockListFilter().isFiltered(url, host, adguard.RequestTypes.DOCUMENT, false);
             if (rule) {
                 //filtering is enabled on this website
                 return null;
@@ -188,20 +217,10 @@ adguard.whitelist = (function (adguard) {
     };
 
     /**
-     * Returns whitelist mode
-     * In default mode filtration is enabled for all sites
-     * In inverted model filtration is disabled for all sites
-     */
-    var isDefaultMode = function () {
-        return defaultWhiteListMode;
-    };
-
-    /**
      * Changes whitelist mode
      * @param defaultMode
      */
     var changeDefaultWhiteListMode = function (defaultMode) {
-        defaultWhiteListMode = defaultMode;
         adguard.settings.changeDefaultWhiteListMode(defaultMode);
         notifyWhiteListUpdated();
     };
@@ -212,7 +231,7 @@ adguard.whitelist = (function (adguard) {
      */
     var whiteListUrl = function (url) {
         var domain = adguard.utils.url.getHost(url);
-        if (defaultWhiteListMode) {
+        if (isDefaultWhiteListMode()) {
             addToWhiteList(domain);
         } else {
             removeFromWhiteList(domain);
@@ -225,7 +244,7 @@ adguard.whitelist = (function (adguard) {
      */
     var unWhiteListUrl = function (url) {
         var domain = adguard.utils.url.getHost(url);
-        if (defaultWhiteListMode) {
+        if (isDefaultWhiteListMode()) {
             removeFromWhiteList(domain);
         } else {
             addToWhiteList(domain);
@@ -298,10 +317,10 @@ adguard.whitelist = (function (adguard) {
     var removeFromWhiteList = function (domain) {
         var rule = createWhiteListRule(domain);
         if (rule) {
-            if (defaultWhiteListMode) {
-                whiteListFilter.removeRule(rule);
+            if (isDefaultWhiteListMode()) {
+                getWhiteListFilter().removeRule(rule);
             } else {
-                blockListFilter.removeRule(rule);
+                getBlockListFilter().removeRule(rule);
             }
         }
         removeDomainFromWhiteList(domain);
@@ -313,7 +332,7 @@ adguard.whitelist = (function (adguard) {
      * Clear whitelist current mode
      */
     var clearWhiteList = function () {
-        if (defaultWhiteListMode) {
+        if (isDefaultWhiteListMode()) {
             clearWhiteListed();
         } else {
             clearBlockListed();
@@ -360,7 +379,7 @@ adguard.whitelist = (function (adguard) {
      * Returns the array of whitelist domains
      */
     var getWhiteListDomains = function () {
-        if (defaultWhiteListMode) {
+        if (isDefaultWhiteListMode()) {
             return whiteListDomainsHolder.domains;
         } else {
             return blockListDomainsHolder.domains;
@@ -387,7 +406,7 @@ adguard.whitelist = (function (adguard) {
     var getRules = function () {
         //TODO: blockListFilter
 
-        return whiteListFilter.getRules();
+        return getWhiteListFilter().getRules();
     };
 
     return {
@@ -410,7 +429,7 @@ adguard.whitelist = (function (adguard) {
 
         configure: configure,
 
-        isDefaultMode: isDefaultMode,
+        isDefaultMode: isDefaultWhiteListMode,
         changeDefaultWhiteListMode: changeDefaultWhiteListMode
     };
 

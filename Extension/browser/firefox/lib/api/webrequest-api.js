@@ -440,6 +440,14 @@
                         break;
                 }
 
+                /**
+                 * FF sends http instead of ws protocol at the http-listeners layer
+                 * Although this is expected, as the Upgrade request is indeed an HTTP request, we use a chromium based approach in this case.
+                 */
+                if (details.type === ContentTypes.TYPE_WEBSOCKET && URI.asciiSpec.startsWith('http')) {
+                    URI = Services.io.newURI(URI.asciiSpec.replace(/^http(s)?:/, 'ws$1:'), null, null);
+                }
+
                 // Relate request to main_frame
                 if (requestFrameId === -1) {
                     requestFrameId = 0;
@@ -650,7 +658,8 @@
             onBeforeRequest: onBeforeRequestChannel,
             onBeforeSendHeaders: onBeforeSendHeadersChannel,
             onHeadersReceived: onHeadersReceivedChannel,
-            handlerBehaviorChanged: noOpFunc
+            handlerBehaviorChanged: noOpFunc,
+            webSocketSupported: true
         };
 
     })(adguard);

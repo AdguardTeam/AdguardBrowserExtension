@@ -15,44 +15,12 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * Extension startup entry point
+ */
 (function () {
 
-    adguard.console.info('Starting adguard... Version: {0}. Id: {1}', adguard.app.getVersion(), adguard.app.getId());
-
-    // Initialize popup button
-    adguard.browserAction.setPopup({
-        popup: adguard.getURL('pages/popup.html')
-    });
-
-    /**
-     * Start application
-     */
-    adguard.filters.start({
-
-        onInstall: function (callback) {
-
-            // Process installation
-
-            /**
-             * Show UI installation page
-             */
-            adguard.ui.openFiltersDownloadPage();
-
-            /**
-             * Tracking extension install or update according to http://adguard.com/en/privacy.html#browsers
-             * We do this with a single purpose: to know the number of unique installations of our extension.
-             * This information is stored for 24 hours and then it is deleted.
-             *
-             * The only thing which is not deleted is the aggregated info: installs count and active users count.
-             */
-            adguard.backend.trackInstall();
-
-            // Retrieve filters and install them
-            adguard.filters.offerFilters(function (filterIds) {
-                adguard.filters.addAndEnableFilters(filterIds, callback);
-            });
-        }
-    });
+    adguard.initialize();
 
 })();
 

@@ -160,6 +160,25 @@ adguard.subscriptions = (function (adguard) {
         }, errorCallback);
     }
 
+
+    /**
+     * Loads script rules from local file
+     * @returns {exports.Promise}
+     * @private
+     */
+    function loadLocalScriptRules(successCallback, errorCallback) {
+        var localScriptRulesService = adguard.rules.LocalScriptRulesService;
+        if (typeof localScriptRulesService !== 'undefined') {
+            adguard.backend.loadLocalScriptRules(function (json) {
+                localScriptRulesService.setLocalScriptRules(json);
+                successCallback();
+            }, errorCallback);
+        } else {
+            // LocalScriptRulesService may be undefined, in this case don't load local script rules
+            successCallback();
+        }
+    }
+
     /**
      * Localize group
      * @param group
@@ -205,7 +224,9 @@ adguard.subscriptions = (function (adguard) {
         };
 
         loadMetadata(function () {
-            loadMetadataI18n(callback, errorCallback);
+            loadMetadataI18n(function () {
+                loadLocalScriptRules(callback, errorCallback);
+            }, errorCallback);
         }, errorCallback);
     };
 

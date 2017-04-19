@@ -15,49 +15,122 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global browser */
+
 /**
  * Filter rules storage implementation.
  *
- * Edge storage has a weird 1MB limit per value. Also Edge does not support "unlimitedStorage" permission.
- * The weird thing is that local storage does not limited like that so we just use it instead.
+ * Unfortunately we have to use this strange logic due to Edge API incompatibilities:
+ * unlimitedStorage permission isn't supported in the Anniversary update. Also, in this update (and of course before) Edge storage has a weird 1MB limit per value.
+ * These issues will be fixed in the Creators update.
  *
- * TODO[Edge]: There is still a possibility to exceed local storage quota.
- * Consider using http://pieroxy.net/blog/pages/lz-string/index.html
+ * See for details: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/566
  */
+
 adguard.rulesStorageImpl = (function (adguard) {
 
-    var read = function (path, callback) {
-        try {
-            var value = adguard.localStorageImpl.getItem(path);
-            var lines = [];
-            if (value) {
-                lines = value.split(/[\r\n]+/);
-            }
-            callback(null, lines);
-        } catch (ex) {
-            callback(ex);
-        }
-    };
+    // TODO[Edge]: Remove this 'if' condition, when Insider build 15063 will be applied widely.
+    if (adguard.utils.browser.isEdgeBeforeCreatorsUpdate()) {
 
-    var write = function (path, data, callback) {
-        var value = data.join('\n');
-        try {
-            adguard.localStorageImpl.setItem(path, value);
-            callback();
-        } catch (ex) {
-            callback(ex);
-        }
-    };
+        return (function () {
 
-    var remove = function (path, successCallback) {
-        adguard.localStorageImpl.removeItem(path);
-        successCallback();
-    };
+            var read = function (path, callback) {
+                try {
+                    var value = adguard.localStorageImpl.getItem(path);
+                    var lines = [];
+                    if (value) {
+                        lines = value.split(/[\r\n]+/);
+                    }
+                    callback(null, lines);
+                } catch (ex) {
+                    callback(ex);
+                }
+            };
 
-    return {
-        write: write,
-        read: read,
-        remove: remove
-    };
+            var write = function (path, data, callback) {
+                var value = data.join('\n');
+                try {
+                    adguard.localStorageImpl.setItem(path, value);
+                    callback();
+                } catch (ex) {
+                    callback(ex);
+                }
+            };
+
+            var remove = function (path, successCallback) {
+                adguard.localStorageImpl.removeItem(path);
+                successCallback();
+            };
+
+            return {
+                write: write,
+                read: read,
+                remove: remove
+            };
+
+        })();
+
+    } else {
+
+        return (function () {
+
+            /**
+             * Checks runtime.lastError and calls "callback" if so.
+             *
+             * @returns true if operation caused error
+             */
+            var checkLastError = function (callback) {
+                if (browser.runtime.lastError) {
+                    callback(browser.runtime.lastError);
+                    return true;
+                }
+
+                return false;
+            };
+
+            var read = function (path, callback) {
+                try {
+                    browser.storage.local.get(path, function (results) {
+                        if (!checkLastError(callback)) {
+                            var lines = [];
+
+                            if (results && results[path] instanceof Array) {
+                                lines = results[path];
+                            }
+
+                            callback(null, lines);
+                        }
+                    });
+                } catch (ex) {
+                    callback(ex);
+                }
+            };
+
+            var write = function (path, data, callback) {
+                var item = {};
+                item[path] = data;
+                try {
+                    browser.storage.local.set(item, function () {
+                        if (!checkLastError(callback)) {
+                            callback();
+                        }
+                    });
+                } catch (ex) {
+                    callback(ex);
+                }
+            };
+
+            var remove = function (path, successCallback) {
+                browser.storage.local.remove(path, successCallback);
+            };
+
+            return {
+                read: read,
+                write: write,
+                remove: remove
+            };
+
+        })();
+    }
 
 })(adguard);

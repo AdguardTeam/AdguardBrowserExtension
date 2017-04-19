@@ -35,11 +35,10 @@ public class FileUtil {
 	private static final String CHROME_FOLDER = "browser/chrome";
 	private static final String EDGE_FOLDER = "browser/edge";
 	private static final String SAFARI_FOLDER = "browser/safari";
-	private static final String FIREFOX_FOLDER = "browser/firefox";
-	private static final String FIREFOX_LEGACY_FOLDER = "browser/firefox_legacy";
-	private static final String CHROME_SIMPLE_FOLDER = "browser/chrome-simple";
+	private static final String FIREFOX_LEGACY_FOLDER = "browser/firefox";
+	private static final String FIREFOX_WEBEXT_FOLDER = "browser/firefox_webext";
 
-	public static void copyFiles(File source, File dest, Browser browser) throws Exception {
+	public static void copyFiles(File source, File dest, Browser browser, boolean createApi) throws Exception {
 
 		if (dest.exists()) {
 			FileUtils.deleteDirectory(dest);
@@ -49,10 +48,6 @@ public class FileUtil {
 			case CHROMIUM:
 				copyChromiumFiles(source, dest, browser);
 				break;
-			case CHROMIUM_SIMPLE:
-				copyChromiumFiles(source, dest, browser);
-				copyChromiumSimpleFiles(source, dest);
-				break;
 			case EDGE:
 				copyChromiumFiles(source, dest, browser);
 				copyEdgeFiles(source, dest);
@@ -60,12 +55,16 @@ public class FileUtil {
 			case SAFARI:
 				copySafariFiles(source, dest);
 				break;
-			case FIREFOX:
-				copyFirefoxFiles(source, dest, Browser.FIREFOX);
-				break;
 			case FIREFOX_LEGACY:
-				copyFirefoxLegacyFiles(source, dest);
+				copyFirefoxFiles(source, dest, Browser.FIREFOX_LEGACY);
 				break;
+			case FIREFOX_WEBEXT:
+				copyWebExtFiles(source, dest);
+				break;
+		}
+
+		if (createApi) {
+			copyApiFiles(source, dest, browser);
 		}
 	}
 
@@ -135,16 +134,6 @@ public class FileUtil {
 		copyDirectory(edgeBase, dest);
 	}
 
-	private static void copyChromiumSimpleFiles(File source, File dest) throws Exception {
-		File simpleBase = new File(source, CHROME_SIMPLE_FOLDER);
-		copyDirectory(simpleBase, dest);
-		FileUtils.deleteQuietly(new File(dest, "_locales"));
-		FileUtils.deleteQuietly(new File(dest, "pages"));
-		FileUtils.deleteQuietly(new File(dest, "lib/pages"));
-		FileUtils.deleteQuietly(new File(dest, "lib/content-script/assistant"));
-		FileUtils.deleteQuietly(new File(dest, "icons"));
-	}
-
 	private static void copySafariFiles(File source, File dest) throws Exception {
 
 		//copy base chrome/safari code
@@ -159,9 +148,30 @@ public class FileUtil {
 		copyCommonFiles(source, dest, Browser.SAFARI);
 	}
 
+	private static void copyWebExtFiles(File source, File dest) throws Exception {
+
+		File webExtFolder = new File(dest, "webextension");
+		copyChromiumFiles(source, webExtFolder, Browser.CHROMIUM);
+
+		File webExtBase = new File(source, FIREFOX_WEBEXT_FOLDER);
+		copyDirectory(webExtBase, dest);
+
+		File libFolder = new File(dest, "lib");
+		FileUtils.copyDirectoryToDirectory(libFolder, webExtFolder);
+		FileUtils.deleteDirectory(libFolder);
+
+		File manifest = new File(dest, "manifest.json");
+		FileUtils.deleteQuietly(new File(webExtFolder, "manifest.json"));
+		FileUtils.moveFileToDirectory(manifest, webExtFolder, false);
+
+		File background = new File(dest, "background.html");
+		FileUtils.deleteQuietly(new File(webExtFolder, "background.html"));
+		FileUtils.moveFileToDirectory(background, webExtFolder, false);
+	}
+
 	private static void copyFirefoxFiles(File source, File dest, Browser browser) throws Exception {
 
-		File firefoxBase = new File(source, FIREFOX_FOLDER);
+		File firefoxBase = new File(source, FIREFOX_LEGACY_FOLDER);
 		copyDirectory(firefoxBase, dest);
 
 		copyCommonFiles(source, dest, browser);
@@ -180,15 +190,6 @@ public class FileUtil {
 		LocaleUtils.convertFromChromeToFirefoxLocales(sourceLocalesDir);
 		//rename folder
 		FileUtils.moveDirectory(sourceLocalesDir, destLocalesDir);
-	}
-
-	private static void copyFirefoxLegacyFiles(File source, File dest) throws Exception {
-
-		copyFirefoxFiles(source, dest, Browser.FIREFOX_LEGACY);
-
-		//copy all files to dest folder
-		File firefoxLegacyBase = new File(source, FIREFOX_LEGACY_FOLDER);
-		copyDirectory(firefoxLegacyBase, dest);
 	}
 
 	private static void copyDirectory(File source, File dest) throws IOException {
@@ -224,5 +225,21 @@ public class FileUtil {
 		}
 
 		FileUtils.writeStringToFile(file, result, "utf-8");
+	}
+
+	private static void copyApiFiles(File source, File dest, Browser browser) throws IOException {
+
+		switch (browser) {
+			case CHROMIUM:
+				File base = new File(source, "api/chrome");
+				copyDirectory(base, dest);
+				FileUtils.deleteQuietly(new File(dest, "_locales"));
+				FileUtils.deleteQuietly(new File(dest, "pages"));
+				FileUtils.deleteQuietly(new File(dest, "icons"));
+				FileUtils.deleteQuietly(new File(dest, "devtools.html"));
+				break;
+			default:
+				throw new UnsupportedOperationException();
+		}
 	}
 }

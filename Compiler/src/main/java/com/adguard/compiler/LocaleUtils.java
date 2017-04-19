@@ -25,7 +25,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Helper class for working with locales
@@ -162,7 +164,7 @@ public class LocaleUtils {
 
         StringBuilder sb = new StringBuilder("\n");
         for (SupportedLocales locale : SupportedLocales.values()) {
-            sb.append("\nlocale adguard " + locale.code.replace("_", "-") + " ./chrome/locale/" + locale.code.replace("_", "-") + "/");
+            sb.append("\nlocale adguard ").append(locale.code.replace("_", "-")).append(" ./chrome/locale/").append(locale.code.replace("_", "-")).append("/");
         }
 
         String content = FileUtils.readFileToString(chromeManifest, "utf-8");
@@ -170,7 +172,7 @@ public class LocaleUtils {
         FileUtils.writeStringToFile(chromeManifest, content, "utf-8");
     }
 
-    public static void writeLocalesToFirefoxInstallRdf(File dest, String extensionNamePostfix) throws IOException {
+    public static void writeLocalesToFirefoxInstallRdf(File source, File dest, String extensionNamePostfix) throws IOException {
 //		<em:localized>
 //		<Description>
 //		<em:locale>en</em:locale>
@@ -185,10 +187,10 @@ public class LocaleUtils {
 
         StringBuilder sb = new StringBuilder();
         for (SupportedLocales locale : SupportedLocales.values()) {
-            File localeFile = new File(dest, "chrome/locale/" + locale.code.replace("_", "-") + "/messages.properties");
-            String[] messages = StringUtils.split(FileUtils.readFileToString(localeFile, "utf-8"), System.lineSeparator());
-            String name = findMessage(messages, "name") + extensionNamePostfix;
-            String description = findMessage(messages, "description");
+            File localeFile = new File(source, "_locales/" + locale.code + "/messages.json");
+            Map<String, String> messages = readMessagesToMap(localeFile);
+            String name = messages.get("name") + extensionNamePostfix;
+            String description = messages.get("description");
             sb.append("<em:localized>").append(System.lineSeparator());
             sb.append("\t<Description>").append(System.lineSeparator());
             sb.append("\t\t<em:locale>").append(locale.code).append("</em:locale>").append(System.lineSeparator());
@@ -213,22 +215,4 @@ public class LocaleUtils {
         return messages;
     }
 
-    public static List<String> getMessageIds(File source) throws IOException {
-        File enMessages = new File(source, "_locales/en/messages.json");
-        Set<String> ids = readMessagesToMap(enMessages).keySet();
-        List<String> messageIds = new ArrayList<String>();
-        for (String msgId : ids) {
-            messageIds.add("\"" + String.valueOf(msgId) + "\"");
-        }
-        return messageIds;
-    }
-
-    private static String findMessage(String[] messages, String key) {
-        for (String message : messages) {
-            if (message.startsWith(key + "=")) {
-                return StringUtils.substringAfter(message, key + "=");
-            }
-        }
-        throw new IllegalStateException("Can't find message " + key);
-    }
 }

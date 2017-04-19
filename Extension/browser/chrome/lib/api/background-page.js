@@ -237,12 +237,18 @@ var browser = window.browser || chrome;
         onCompleted: browser.webRequest.onCompleted,
         onErrorOccurred: browser.webRequest.onErrorOccurred,
         onHeadersReceived: onHeadersReceived,
-        onBeforeSendHeaders: onBeforeSendHeaders
+        onBeforeSendHeaders: onBeforeSendHeaders,
+        webSocketSupported: typeof browser.webRequest.ResourceType !== 'undefined' && browser.webRequest.ResourceType['WEBSOCKET'] === 'websocket'
     };
 
     var onCreatedNavigationTarget = {
 
         addListener: function (callback) {
+
+            // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webNavigation/onCreatedNavigationTarget#Browser_compatibility
+            if (typeof browser.webNavigation.onCreatedNavigationTarget === 'undefined') {
+                return;
+            }
 
             browser.webNavigation.onCreatedNavigationTarget.addListener(function (details) {
 

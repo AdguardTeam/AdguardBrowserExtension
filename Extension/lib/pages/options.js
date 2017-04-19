@@ -188,6 +188,7 @@ PageController.prototype = {
                 firstItem.removeClass("affix affix-top").addClass("affix-top");
             }
 
+            var id;
             if ($(document).height() - $(window).height() - scrollTop < 10) {
                 //get the last item
                 id = scrollItems[scrollItems.length - 1][0].id;
@@ -200,7 +201,7 @@ PageController.prototype = {
                     return null;
                 });
                 cur = cur[cur.length - 1];
-                var id = cur && cur.length ? cur[0].id : "";
+                id = cur && cur.length ? cur[0].id : "";
             }
 
             if (lastId !== id) {
@@ -391,12 +392,12 @@ PageController.prototype = {
 
     onAddWhiteListFilterClicked: function (e) {
         e.preventDefault();
-        this._renderWhiteListFilter(null);
+        this._renderWhiteListFilter([null]);
     },
 
     onAddUserFilterClicked: function (e) {
         e.preventDefault();
-        this._renderUserFilter(null);
+        this._renderUserFilter([null]);
     },
 
     onResetStatsClicked: function (e) {
@@ -558,9 +559,7 @@ PageController.prototype = {
             if (!loadNext) {
                 this._clearEditableFilters(listEl, clearButton, sResult.searchMode);
             }
-            for (var i = 0; i < rules.length; i++) {
-                renderFunc.call(this, rules[i]);
-            }
+            renderFunc.call(this, rules);
             this._checkOverlayHide(listEl, clearButton, sResult.searchMode);
 
         }.bind(this));
@@ -577,7 +576,7 @@ PageController.prototype = {
         this._renderSearchFilters(this.wlFilterSearchInput, this.wlFilters, this.clearWlFilterButton, this.wlSearchResult, this._renderWhiteListFilter, 'getWhiteListDomains', loadNext);
     },
 
-    _renderWhiteListFilter: function (whiteListFilter) {
+    _renderWhiteListFilter: function (whiteListFilters) {
         var saveCallback = function (item) {
             if (item.isNew) {
                 this.omitRenderEventsCount = 1;
@@ -617,7 +616,7 @@ PageController.prototype = {
             text.text(host);
         }.bind(this);
 
-        this._renderEditableFilter(this.wlFilters, whiteListFilter, saveCallback, deleteCallback, this.clearWlFilterButton, this.wlSearchResult.searchMode, transformInput);
+        this._renderEditableFilter(this.wlFilters, whiteListFilters, saveCallback, deleteCallback, this.clearWlFilterButton, this.wlSearchResult.searchMode, transformInput);
     },
 
     _renderUserFilters: function (loadNext) {
@@ -631,7 +630,7 @@ PageController.prototype = {
         this._renderSearchFilters(this.userFilterSearchInput, this.userFilters, this.clearUserFilterButton, this.userSearchResult, this._renderUserFilter, 'getUserFilters', loadNext);
     },
 
-    _renderUserFilter: function (userFilter) {
+    _renderUserFilter: function (userFilters) {
         var saveCallback = function (item) {
             if (item.isNew) {
                 this.omitRenderEventsCount = 1;
@@ -652,40 +651,27 @@ PageController.prototype = {
             }.bind(this));
         }.bind(this);
 
-        this._renderEditableFilter(this.userFilters, userFilter, saveCallback, deleteCallback, this.clearUserFilterButton, this.userSearchResult.searchMode);
+        this._renderEditableFilter(this.userFilters, userFilters, saveCallback, deleteCallback, this.clearUserFilterButton, this.userSearchResult.searchMode);
     },
 
-    _renderEditableFilter: function (listEl, ruleText, saveCallback, deleteCallback, clearButton, searchMode, transformInput) {
+    _renderEditableFilter: function (listEl, rulesText, saveCallback, deleteCallback, clearButton, searchMode, transformInput) {
+
         var jScrollPane = listEl.data('jsp');
         if (!jScrollPane) {
             return;
         }
 
-        var el = this._getFilterRuleTemplate();
-
-        //hide overlay
-        this._hideOverlay(listEl);
-
-        jScrollPane.getContentPane().append(el);
-        jScrollPane.reinitialise();
-
-        var editButton = el.find('.edit');
-        var deleteButton = el.find('.delete');
-        var saveButton = el.find('.save');
-        var cancelButton = el.find('.cancel');
-        var input = el.find("input[type='text']");
-        var text = el.find('.rule-text');
-
-        if (!ruleText) {
-            el.data("isNew", true);
-            startEdit();
-        } else {
-            el.data("ruleText", ruleText);
-            text.text(ruleText);
-            stopEdit();
+        function getElementFromEvent(e) {
+            return $(e.currentTarget).closest('.spl-user-table-row');
         }
 
-        function startEdit() {
+        function onEditClicked(e) {
+
+            e.preventDefault();
+
+            var el = getElementFromEvent(e);
+            var input = el.find("input[type='text']");
+
             el.addClass("editing");
             var ruleText = el.data("ruleText");
             if (ruleText) {
@@ -694,11 +680,24 @@ PageController.prototype = {
             input.focus();
         }
 
-        function stopEdit() {
-            el.removeClass("editing");
-        }
+        var stopEdit = function (el) {
+            if (el.data("isNew")) {
+                el.remove();
+                jScrollPane.reinitialise();
+                this._checkOverlayHide(listEl, clearButton, searchMode);
+            } else {
+                el.removeClass("editing");
+            }
+        }.bind(this);
 
-        function onSaveClicked() {
+        function onSaveClicked(e) {
+
+            e.preventDefault();
+
+            var el = getElementFromEvent(e);
+            var input = el.find("input[type='text']");
+            var text = el.find('.rule-text');
+
             if (transformInput) {
                 transformInput(input, text);
             }
@@ -716,47 +715,80 @@ PageController.prototype = {
                 el.data("ruleText", newText);
                 text.text(newText);
             }
-            stopEdit();
+            stopEdit(el);
         }
 
-        var self = this;
-
-        function removeEditableItem() {
-            el.remove();
-            jScrollPane.reinitialise();
-            self._checkOverlayHide(listEl, clearButton, searchMode);
+        function onCancelEditClicked(e) {
+            e.preventDefault();
+            var el = getElementFromEvent(e);
+            stopEdit(el);
         }
 
-        function onCancelEditClicked() {
-            if (el.data("isNew")) {
-                removeEditableItem();
-            } else {
-                stopEdit();
+        function onCancellEditAllClicked() {
+            var elements = listEl.find('.spl-user-table-row');
+            for (var i = 0; i < elements.length; i++) {
+                var el = $(elements[i]);
+                stopEdit(el);
             }
         }
 
-        //handle start edit
-        editButton.click(function () {
-            startEdit();
-        });
-        //handle save
-        saveButton.click(onSaveClicked);
-        input.on('keypress', function (e) {
-            if (e.keyCode == 13) {
-                e.preventDefault();
-                onSaveClicked();
-            }
-        });
-        //handle cancel edit
-        cancelButton.click(onCancelEditClicked);
-        $(document).keydown(function (e) {
-            if (e.keyCode == 27) {
-                onCancelEditClicked();
-            }
-        });
-        deleteButton.click(function () {
+        function onDeleteClicked(e) {
+            e.preventDefault();
+            var el = getElementFromEvent(e);
             deleteCallback({text: el.data("ruleText")});
+        }
+
+        function onKeyPressed(e) {
+            if (e.keyCode === 13) {
+                e.preventDefault();
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/521#issuecomment-274470832
+                $(this).blur();
+                onSaveClicked(e);
+            }
+        }
+
+        var isNewElement = false;
+
+        var fragment = document.createDocumentFragment();
+        for (var i = 0; i < rulesText.length; i++) {
+
+            var el = this._getFilterRuleTemplate();
+            fragment.appendChild(el[0]);
+
+            var ruleText = rulesText[i];
+            if (!ruleText) {
+                el.data("isNew", true);
+                isNewElement = true;
+            } else {
+                el.data("ruleText", ruleText);
+                el.find('.rule-text').text(ruleText);
+            }
+
+            el.find('.edit').on('click', onEditClicked);
+            el.find('.save').on('click', onSaveClicked);
+            el.find("input[type='text']").on('keypress', onKeyPressed);
+            el.find('.cancel').on('click', onCancelEditClicked);
+            el.find('.delete').on('click', onDeleteClicked);
+        }
+
+        $(document).keydown(function (e) {
+            if (e.keyCode === 27) {
+                onCancellEditAllClicked();
+            }
         });
+
+        this._hideOverlay(listEl);
+        if (isNewElement) {
+            jScrollPane.getContentPane().prepend(fragment);
+        } else {
+            jScrollPane.getContentPane().append(fragment);
+        }
+        jScrollPane.reinitialise();
+
+        if (isNewElement) {
+            jScrollPane.scrollToY(0);
+            listEl.find('.spl-user-table-row:first .edit').trigger('click');
+        }
 
         this._checkOverlayHide(listEl, clearButton, searchMode);
     },
@@ -771,7 +803,7 @@ PageController.prototype = {
         var filters = listEl.find(".spl-user-table-row");
         $.each(filters, function (index, f) {
             var $el = $(f);
-            if ($el.data("ruleText") == ruleText) {
+            if ($el.data("ruleText") === ruleText) {
                 $el.remove();
             }
         });
@@ -896,7 +928,7 @@ PageController.prototype = {
     },
 
     _renderWhiteListOverlay: function () {
-        this.wlFilters.append($('#whitelist-overlay').children())
+        this.wlFilters.append($('#whitelist-overlay').children());
     },
 
     _renderUserFilterListOverlay: function () {
@@ -957,6 +989,7 @@ PageController.prototype = {
             var filtersMeta = response.filters;
             var enabledFilters = response.enabledFilters;
             var installedFilters = response.installedFilters;
+            var filter;
 
             var homepageText = i18n.getMessage('options_modal_homepage');
 
@@ -972,7 +1005,7 @@ PageController.prototype = {
                 var filters = filtersMeta[group.groupId];
                 for (var j = 0; j < filters.length; j++) {
 
-                    var filter = filters[j];
+                    filter = filters[j];
                     allFilters.push(filter);
 
                     var filterElement = this._getFilterMetadataTemplate(filter.filterId, filter.name, filter.description, filter.homepage, homepageText);
@@ -987,7 +1020,7 @@ PageController.prototype = {
             $groupsList.append(allGroupsElements);
 
             for (i = 0; i < allFilters.length; i++) {
-                var filter = allFilters[i];
+                filter = allFilters[i];
                 var checkbox = $groupsList.find('input[name="modalFilterId"][value="' + filter.filterId + '"]');
                 var installed = filter.filterId in installedFilters;
                 var enabled = filter.filterId in enabledFilters;
@@ -1089,7 +1122,10 @@ PageController.prototype = {
 
     _getAntiBannerFilterTemplate: function (filterId, version, description) {
         return $('<div>', {class: 's-page-table-row cf'})
-            .append($('<div>', {class: 'sp-table-row-label', text: description}).append($('<span>', {class: 'sp-table-row-info', text: version})))
+            .append($('<div>', {
+                class: 'sp-table-row-label',
+                text: description
+            }).append($('<span>', {class: 'sp-table-row-info', text: version})))
             .append($('<input>', {type: 'checkbox', name: 'filterId', class: 'sp-table-row-input', value: filterId}))
             .append($('<div>', {class: 'preloader hidden'}));
     },
@@ -1115,7 +1151,13 @@ PageController.prototype = {
         var el = $('<div>', {class: 'panel filter-panel'});
 
         var header = $('<div>', {class: 'settings-page-title spt-font-s'})
-            .append($('<a>', {href: '#group' + groupId, 'data-parent': '#groupsList', 'data-toggle': 'collapse', class: 'spt-link-dashed collapsed', text: groupName}))
+            .append($('<a>', {
+                href: '#group' + groupId,
+                'data-parent': '#groupsList',
+                'data-toggle': 'collapse',
+                class: 'spt-link-dashed collapsed',
+                text: groupName
+            }))
             .append($('<div>', {class: 'spt-font-small'}));
 
         var group = $('<div>', {id: 'group' + groupId, class: 'panel-collapse collapse ' + collapseClass})
@@ -1128,8 +1170,16 @@ PageController.prototype = {
     _getFilterMetadataTemplate: function (filterId, filterName, filterDescription, homepageLink, homepageText) {
 
         return $('<div>', {class: 's-page-table-row cf'})
-            .append($('<div>', {class: 'sp-table-row-label', text: filterName}).append($('<a>', {class: 'sp-table-row-info', href: homepageLink, text: homepageText, target: '_blank'})))
-            .append($('<input>', {type: 'checkbox', name: 'modalFilterId', value: filterId, class: 'sp-table-row-input'}))
+            .append($('<div>', {
+                class: 'sp-table-row-label',
+                text: filterName
+            }).append($('<a>', {class: 'sp-table-row-info', href: homepageLink, text: homepageText, target: '_blank'})))
+            .append($('<input>', {
+                type: 'checkbox',
+                name: 'modalFilterId',
+                value: filterId,
+                class: 'sp-table-row-input'
+            }))
             .append($('<div>', {class: 'sp-table-row-descr', text: filterDescription}));
 
     },
@@ -1159,7 +1209,7 @@ var contentBlockerInfo;
 /**
  * Initializes page
  */
-var initPage = function(response) {
+var initPage = function (response) {
 
     userSettings = response.userSettings;
     enabledFilters = response.enabledFilters;

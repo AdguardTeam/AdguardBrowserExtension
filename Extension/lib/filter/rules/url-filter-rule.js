@@ -115,7 +115,7 @@
                 longest = part;
             }
         }
-        return longest.toLowerCase();
+        return longest ? longest.toLowerCase() : null;
     }
 
     /**
@@ -163,7 +163,7 @@
             }
         }
 
-        return token;
+        return token ? token.toLowerCase() : null;
     }
 
     /**
@@ -174,20 +174,57 @@
      */
     function parseRuleText(ruleText) {
 
+        var ESCAPE_CHARACTER = '\\';
+
         var urlRuleText = ruleText;
         var whiteListRule = null;
         var options = null;
 
+        var startIndex = 0;
+
         if (adguard.utils.strings.startWith(urlRuleText, api.FilterRule.MASK_WHITE_LIST)) {
-            urlRuleText = urlRuleText.substring(api.FilterRule.MASK_WHITE_LIST.length);
+            startIndex = api.FilterRule.MASK_WHITE_LIST.length;
+            urlRuleText = urlRuleText.substring(startIndex);
             whiteListRule = true;
         }
 
-        var optionsIndex = urlRuleText.lastIndexOf(UrlFilterRule.OPTIONS_DELIMITER);
-        if (optionsIndex >= 0) {
-            var optionsBase = urlRuleText;
-            urlRuleText = urlRuleText.substring(0, optionsIndex);
-            options = optionsBase.substring(optionsIndex + 1);
+        var parseOptions = true;
+        /**
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/517
+         * regexp rule may contain dollar sign which also is options delimiter
+         */
+        // Added check for replacement rule, because maybe problem with rules for example /.*/$replace=/hello/bug/
+
+        if (adguard.utils.strings.startWith(urlRuleText, api.UrlFilterRule.MASK_REGEX_RULE) &&
+            adguard.utils.strings.endsWith(urlRuleText, api.UrlFilterRule.MASK_REGEX_RULE) &&
+            !adguard.utils.strings.contains(urlRuleText, api.UrlFilterRule.REPLACE_OPTION + '=')) {
+
+            parseOptions = false;
+        }
+
+        if (parseOptions) {
+            var foundEscaped = false;
+            // Start looking from the prev to the last symbol
+            // If dollar sign is the last symbol - we simply ignore it.
+            for (var i = (ruleText.length - 2); i >= startIndex; i--) {
+                var c = ruleText.charAt(i);
+                if (c == UrlFilterRule.OPTIONS_DELIMITER) {
+                    if (i > 0 && ruleText.charAt(i - 1) == ESCAPE_CHARACTER) {
+                        foundEscaped = true;
+                    } else {
+                        urlRuleText = ruleText.substring(startIndex, i);
+                        options = ruleText.substring(i + 1);
+
+                        if (foundEscaped) {
+                            // Find and replace escaped options delimiter
+                            options = options.replace(ESCAPE_CHARACTER + UrlFilterRule.OPTIONS_DELIMITER, UrlFilterRule.OPTIONS_DELIMITER);
+                        }
+
+                        // Options delimiter was found, doing nothing
+                        break;
+                    }
+                }
+            }
         }
 
         // Transform to punycode
@@ -230,12 +267,13 @@
         var urlRuleText = parseResult.urlRuleText;
 
         this.isRegexRule = adguard.utils.strings.startWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) &&
-            adguard.utils.strings.endWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) ||
+            adguard.utils.strings.endsWith(urlRuleText, UrlFilterRule.MASK_REGEX_RULE) ||
             urlRuleText === '' ||
-            urlRuleText == UrlFilterRule.MASK_ANY_SYMBOL;
+            urlRuleText === UrlFilterRule.MASK_ANY_SYMBOL;
 
         if (this.isRegexRule) {
             this.urlRegExpSource = urlRuleText.substring(UrlFilterRule.MASK_REGEX_RULE.length, urlRuleText.length - UrlFilterRule.MASK_REGEX_RULE.length);
+
             // Pre compile regex rules
             var regexp = this.getUrlRegExp();
             if (!regexp) {
@@ -317,7 +355,7 @@
      */
     UrlFilterRule.prototype.isPermitted = function (domainName) {
 
-        if (adguard.utils.strings.isEmpty(domainName)) {
+        if (!domainName) {
             var hasPermittedDomains = this.hasPermittedDomains();
 
             // For white list rules to fire when request has no referrer
@@ -350,7 +388,8 @@
             }
         }
 
-        if (this.shortcut !== null && !adguard.utils.strings.containsIgnoreCase(requestUrl, this.shortcut)) {
+        // Shortcut is always in lower case
+        if (this.shortcut !== null && requestUrl.toLowerCase().indexOf(this.shortcut) < 0) {
             return false;
         }
 
@@ -448,7 +487,7 @@
                 case UrlFilterRule.IMPORTANT_OPTION:
                     this.isImportant = true;
                     break;
-                case UrlFilterRule.NOT_MARK + UrlFilterRule.IMPORTANT_OPTION:
+                case api.FilterRule.NOT_MARK + UrlFilterRule.IMPORTANT_OPTION:
                     this.isImportant = false;
                     break;
                 case UrlFilterRule.ELEMHIDE_OPTION:
@@ -513,6 +552,7 @@
     UrlFilterRule.MASK_ANY_SYMBOL = "*";
     UrlFilterRule.REGEXP_ANY_SYMBOL = ".*";
     UrlFilterRule.EMPTY_OPTION = "empty";
+    UrlFilterRule.REPLACE_OPTION = "replace"; // Extension doesn't support replace rules, $replace option is here only for correctly parsing
 
     UrlFilterRule.contentTypes = {
 

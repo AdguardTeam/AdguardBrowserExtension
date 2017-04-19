@@ -287,6 +287,74 @@ QUnit.test("Test UrlFilterRule Matching Everything", function (assert) {
     assert.notOk(rule.isFiltered("http://test.com", true, RequestTypes.SUBDOCUMENT));
 });
 
+QUnit.test("Test UrlFilterRule Matching Any Url", function (assert) {
+
+    var ruleText = "*$domain=test.com";
+    var rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.notOk(rule.isThirdParty);
+    assert.ok(rule.getPermittedDomains());
+    assert.equal(1, rule.getPermittedDomains().length);
+    assert.notOk(rule.shortcut);
+    assert.ok(rule.isRegexRule);
+    assert.ok(rule.isFiltered("http://example.com", true, adguard.RequestTypes.SCRIPT));
+
+    ruleText = "$domain=test.com";
+    rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.notOk(rule.isThirdParty);
+    assert.ok(rule.getPermittedDomains());
+    assert.equal(1, rule.getPermittedDomains().length);
+    assert.notOk(rule.shortcut);
+    assert.ok(rule.isRegexRule);
+    assert.ok(rule.isFiltered("http://example.com", true, adguard.RequestTypes.SCRIPT));
+
+    ruleText = "||$domain=test.com";
+    rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.notOk(rule.isThirdParty);
+    assert.ok(rule.getPermittedDomains());
+    assert.equal(1, rule.getPermittedDomains().length);
+    assert.notOk(rule.shortcut);
+    assert.ok(rule.isFiltered("http://example.com", true, adguard.RequestTypes.SCRIPT));
+
+    ruleText = "|$domain=test.com";
+    rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.notOk(rule.isThirdParty);
+    assert.ok(rule.getPermittedDomains());
+    assert.equal(1, rule.getPermittedDomains().length);
+    assert.notOk(rule.shortcut);
+    assert.ok(rule.isFiltered("http://example.com", true, adguard.RequestTypes.SCRIPT));
+
+    ruleText = "@@||$xmlhttprequest,domain=last.fm";
+    rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.notOk(rule.isThirdParty);
+    assert.ok(rule.getPermittedDomains());
+    assert.equal(1, rule.getPermittedDomains().length);
+    assert.notOk(rule.shortcut);
+    assert.ok(rule.isFiltered("http://example.com", true, adguard.RequestTypes.XMLHTTPREQUEST));
+
+    ruleText = "|$domain=test.com,script";
+    rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.notOk(rule.isThirdParty);
+    assert.ok(rule.getPermittedDomains());
+    assert.equal(1, rule.getPermittedDomains().length);
+    assert.notOk(rule.shortcut);
+    assert.ok(rule.isFiltered("http://example.com", true, adguard.RequestTypes.SCRIPT));
+
+    ruleText = "||$domain=test.com,script";
+    rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.notOk(rule.isThirdParty);
+    assert.ok(rule.getPermittedDomains());
+    assert.equal(1, rule.getPermittedDomains().length);
+    assert.notOk(rule.shortcut);
+    assert.ok(rule.isFiltered("http://example.com", true, adguard.RequestTypes.SCRIPT));
+});
+
 QUnit.test("Important modifier rules", function (assert) {
     var rule = new adguard.rules.UrlFilterRule("||example.com^$important");
     assert.ok(rule.isImportant);
@@ -347,14 +415,16 @@ QUnit.test("Rule content types", function (assert) {
 
 QUnit.test("Regexp rules shortcuts", function (assert) {
     assert.equal(new adguard.rules.UrlFilterRule('/quang%20cao/').shortcut, 'quang%20cao');
-    assert.equal(new adguard.rules.UrlFilterRule('/YanAds/').shortcut, 'YanAds');
+    assert.equal(new adguard.rules.UrlFilterRule('/YanAds/').shortcut, 'yanads');
     assert.equal(new adguard.rules.UrlFilterRule('/^http://m\.autohome\.com\.cn\/[a-z0-9]{32}\//$domain=m.autohome.com.cn').shortcut, 'autohome');
-    assert.equal(new adguard.rules.UrlFilterRule('/cdsbData_gal/bannerFile/$image,domain=mybogo.net|zipbogo.net	').shortcut, 'cdsbData_gal/bannerFile');
+    assert.equal(new adguard.rules.UrlFilterRule('/cdsbData_gal/bannerFile/$image,domain=mybogo.net|zipbogo.net	').shortcut, 'cdsbdata_gal/bannerfile');
     assert.equal(new adguard.rules.UrlFilterRule('/http:\/\/rustorka.com\/[a-z]+\.js/$domain=rustorka.com').shortcut, 'http://rustorka');
     assert.equal(new adguard.rules.UrlFilterRule('/^http://www\.iqiyi\.com\/common\/flashplayer\/[0-9]{8}/[0-9a-z]{32}.swf/$domain=iqiyi.com').shortcut, 'com/common/flashplayer');
     assert.equal(new adguard.rules.UrlFilterRule('/ulightbox/$domain=hdkinomax.com|tvfru.net').shortcut, 'ulightbox');
     assert.equal(new adguard.rules.UrlFilterRule('/\.sharesix\.com/.*[a-zA-Z0-9]{4}/$script').shortcut, 'sharesix');
     assert.equal(new adguard.rules.UrlFilterRule('/serial_adv_files/$image,domain=xn--80aacbuczbw9a6a.xn--p1ai|куражбамбей.рф').shortcut, 'serial_adv_files');
+    assert.ok(new adguard.rules.UrlFilterRule('/(.jpg)$/').shortcut === null);
+    assert.ok(new adguard.rules.UrlFilterRule('@@||*$domain=lenta.ru').shortcut === null);
 });
 
 QUnit.test("Many rules in one rule filter", function (assert) {
@@ -362,4 +432,26 @@ QUnit.test("Many rules in one rule filter", function (assert) {
     var filter = new adguard.rules.UrlFilter([rule]);
     assert.ok(filter);
     assert.equal(filter.getRules().length, 1);
+});
+
+QUnit.test("Escaped ampersand symbol in options", function (assert) {
+    try {
+        new adguard.rules.UrlFilterRule('||goodgame.ru/*.php?script=*vastInlineBannerTypeHtml$important,replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\\$1<\/VAST>/', 1);
+        assert.ok(false);
+    } catch (ex) {
+        assert.ok(ex === 'Unknown option: REPLACE');
+    }
+});
+
+QUnit.test('RegExp Rules Parsing', function (assert) {
+
+    assert.ok(new adguard.rules.UrlFilterRule('/(.jpg)$/').isFiltered('http://test.ru/foo.jpg', false, adguard.RequestTypes.IMAGE));
+    assert.notOk(new adguard.rules.UrlFilterRule('/(.jpg)$/').isFiltered('http://test.ru/foo.png', false, adguard.RequestTypes.IMAGE));
+
+    try {
+        new adguard.rules.UrlFilterRule('/.*/$replace=/hello/bug/');
+        assert.ok(false);
+    } catch (ex) {
+        assert.ok(ex === 'Unknown option: REPLACE');
+    }
 });

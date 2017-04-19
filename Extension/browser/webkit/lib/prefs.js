@@ -44,6 +44,8 @@ adguard.prefs = (function (adguard) {
                     browser = "Opera";
                 } else if (userAgent.indexOf("Safari") >= 0 && userAgent.indexOf('Chrome') < 0) {
                     browser = "Safari";
+                } else if (userAgent.indexOf("Firefox") >= 0) {
+                    browser = "Firefox";
                 } else {
                     browser = "Chrome";
                 }
@@ -72,6 +74,31 @@ adguard.prefs = (function (adguard) {
                         return null;
                     }
                     return parseInt(navigator.userAgent.substring(i + 7));
+                }
+            });
+        },
+
+        /**
+         * https://msdn.microsoft.com/ru-ru/library/hh869301(v=vs.85).aspx
+         * @returns {*}
+         */
+        get edgeVersion() {
+            return adguard.lazyGet(Prefs, 'edgeVersion', function () {
+                if (this.browser === 'Edge') {
+                    var userAgent = navigator.userAgent;
+                    var i = userAgent.indexOf('Edge/');
+                    if (i < 0) {
+                        return {
+                            rev: 0,
+                            build: 0
+                        };
+                    }
+                    var version = userAgent.substring(i + 'Edge/'.length);
+                    var parts = version.split('.');
+                    return {
+                        rev: parseInt(parts[0]),
+                        build: parseInt(parts[1])
+                    };
                 }
             });
         },

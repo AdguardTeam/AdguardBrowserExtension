@@ -1,8 +1,9 @@
-! Checksum: N/A1Q9Ni+Wnto+zdnfCOug
-! Version: 1.0.86.47
-! TimeUpdated: 2016-11-25T16:01:23.435+04:00
+! Checksum: Q5B2CDonPig+LTf+FXzgng
 ! Title: Spanish/Portuguese filter
 ! Description: Adguard Spanish/Portuguese filter. Filter list that specifically removes adverts on Spanish and Portuguese language websites.
+! Version: 1.0.86.61
+! TimeUpdated: 2017-04-17T15:01:20.389+04:00
+! Expires: 2 days (update frequency)
 ! Title: Adguard Spanish/Portuguese Filter.
 !
 ! Filter that enables removing of the ads from websites in Spanish.
@@ -16,14 +17,7 @@
 !---------------------------------------------------------------------------!
 !-------------- General JS API ---------------------------------------------!
 !---------------------------------------------------------------------------!
-! JS API START (Old version, until FF and Opera add-ons are updated, remove after v2.4 release)
-#%#window.AG_onLoad = function(func) { if (window.addEventListener) { window.addEventListener('DOMContentLoaded', func); } };
-#%#window.AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
-#%#window.AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
-#%#window.AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
-#%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
-! JS API FINISH
-! JS API START (New version)
+! JS API START
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
@@ -173,6 +167,17 @@
 !
 ! These rules are against anti-adblock scripts
 !
+! https://forum.adguard.com/index.php?threads/http-zonasports-me.20289/
+zonasports.me#%#var baseCreateElement = document.createElement.bind(document); document.createElement = function(name) { var el = baseCreateElement(name); if(name != 'span') { return el; } else { Object.defineProperty(el, 'innerHTML', { set: function(text) { if(/^(<a id="[^"]*"><\/a>)*$/.test(text)) { throw new Error(); } Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML').set.call(el, text); }, get: function() { return el.innerHTML; } }); return el; }};
+! https://github.com/AdguardTeam/AdguardFilters/issues/4538
+@@||tabletsesmartphones.org^$generichide
+! https://forum.adguard.com/index.php?threads/18891/
+||tinypass.com/xbuilder/experience/load?$script,domain=a
+! https://forum.adguard.com/index.php?threads/18397/
+@@||diariovasco.com/comun/js/*/adframe.js
+@@||diariovasco.com/comun/js/*/adfrm.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/3946
+@@||satcesc.com/*/banner.gif
 ! https://forum.adguard.com/index.php?threads/11826/
 @@||cdn.komoona.com/scripts/kmn_sa.js$domain=mangahost.net
 ! https://forum.adguard.com/index.php?threads/14959/
@@ -431,11 +436,12 @@ http://adw.
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
 !
-tumejortorrent.com###box-ads-tr
-tumejortorrent.com##.pub728x90
-mangahost.net##.ads
-elcorreo.com##div[id^="ads_"]
-telecinco.es##.ad-top
+marca.com##.content > iframe[src^="http://91.116.142.114"]
+||91.116.142.114/iframe$domain=marca.com
+zonasports.me##iframe[src^="http://zonasports.at.ua/"]
+zonasports.me##iframe[src^="http://zonasports.at.ua/"] + p
+tabletsesmartphones.org##.banner-336x280
+reelworldfilmfest.com##.film-social
 ig.com.br###BF6F388D-5A38-457D-991A-A827E8F29D58
 bandaancha.eu###BandaAncha_160x600
 bandaancha.eu###BandaAncha_Roba_300x250_Sec
@@ -541,6 +547,7 @@ autobild.es###block-block-23
 autobild.es###block-views-sales_admin-block_2
 cruzeirodosul.inf.br###bnrfull
 guiasp.com.br###box-ad-topo
+tumejortorrent.com###box-ads-tr
 clicrbs.com.br###box-clicshop
 facilisimo.com###boxPubli2
 estadao.com.br###box_zapimoveis
@@ -780,10 +787,13 @@ animeflv.net,animeid.com##.a160
 animeflv.net##.a300x250
 animeflv.net,animeid.com##.a728
 abril.com.br##.ad
+letras.mus.br##.ad-full
+telecinco.es##.ad-top
 ondacero.es##.adContainer1
 informador.com.mx##.adHz
 informador.com.mx##.adSt
 informador.com.mx##.adVl
+mangahost.net##.ads
 brasilportais.com.br##.ads-lateral
 impre.com##.ads125BackTexture
 elnuevodiario.com.ni##.ads728_90
@@ -878,6 +888,7 @@ r7.com##.cidades_banner
 cinemainterativo.com##.cloudbanner
 elcorreogallego.es##.cntBannVertArriba
 iol.pt##.col-google
+futandres.ml##.column-right-outer
 sapo.pt##.comentariosPag
 millenniumbcp.pt##.commBanners
 wareztuga.tv##.comments-pub
@@ -906,8 +917,10 @@ estadao.com.br##.dvBannerX08
 europasur.es##.ePubli1
 entremujeres.com##.emj-it-adv
 entremujeres.com##.emj-it-advright
+futandres.ml##.entry-content > center > b
 easyviajar.com##.esv-pub-300-250
 saludalia.com##.etiquetaPublicidadNueva
+futandres.ml##.fauxcolumn-right-outer
 orange.es##.fdo_banner
 latribuna.hn##.featuredtop2
 seriescoco.com##.filenium
@@ -995,6 +1008,7 @@ ig.com.br##.pub-ticker.fl
 punch-fansub.com.br,tiinside.com.br##.pub1
 estadao.com.br##.pub157x27
 internautas.org##.pub60
+tumejortorrent.com##.pub728x90
 telanon.info,xl.pt##.pubBlock
 clix.pt,publico.pt##.pubHeader
 clix.pt,publico.pt##.pubTextual
@@ -1015,6 +1029,7 @@ antena3.com##.publi5
 abc.es##.publiABC
 antena3.com##.publiRoba
 abc.es##.publiTextlink
+diariovasco.com##.publiTop[id^="megabanner_"]
 cinetube.es##.publi_1
 marca.com##.publi_630_noticia
 telecinco.es##.publi_bg
@@ -1034,10 +1049,12 @@ eleconomista.es##.punteado
 elperiodicodearagon.com##.recomendados
 elespectador.com##.relpauta
 filmixt.com##.rightbanner1
+diariovasco.com##.roba
 abc.es,interviu.es,lavanguardia.com,muyinteresante.es,que.es##.robapaginas
 abril.com.br##.rodape-verao
 mail.yahoo.com##.scAdvertisement
 r7.com##.side-banner-container
+hayatbul.org##.sidebaha[style^="background-color:"]
 forum.ad##.simple_overlay
 abril.com.br##.skyBanner
 laflecha.net##.slogan.bottom
@@ -1122,7 +1139,9 @@ www.forumchaves.com.br##a[target="_blank"][href^="http://www.forumchaves.com.br/
 mail.yahoo.com##body[onload="stopAdTimer()"]
 bigbangnews.com##div[class$="b300x250"]
 tuenti.com##div[id$="ad_container"]
+diariovasco.com##div[id*="publicidad"]
 tuenti.com##div[id*="sponsor"]
+elcorreo.com##div[id^="ads_"]
 brasilligado.org,filmessemlimite.com.br,jogossemlimite.com.br##div[id^="floatLayer"]
 yucatan.com.mx##div[style="background:#CCC; width:310; height:280; float:left"]
 01net.com##div[style="border:solid 1px black;text-align:center; margin:10px 0 10px 0;"]
@@ -1189,6 +1208,7 @@ ultradownloads.uol.com.br##tr[height="90"]
 uol.com.br##ul.produtos
 ||184.154.142.242/download.aspx?
 ||187.6.64.32/especialdenatal/home/produto_
+||91.116.142.114/iframeNOTICIA2016/
 ||abc.com.py/banners/
 ||abc.es/imag/480x030
 ||ac.viatecla.pt/?

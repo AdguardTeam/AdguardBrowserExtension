@@ -15,10 +15,12 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global balalaika, DomPredictionHelper */
+
 /**
  * Adguard selector library
  */
-var AdguardSelectorLib = (function (api, $) {
+var AdguardSelectorLib = (function ($) { // jshint ignore:line
 
    // PRIVATE FIELDS
 
@@ -561,6 +563,7 @@ var AdguardSelectorLib = (function (api, $) {
     selectionRenderer = BorderSelectionRenderer;
 
     // PUBLIC API
+    var api = {};
 
     /**
      * Starts selector module.
@@ -627,4 +630,4 @@ var AdguardSelectorLib = (function (api, $) {
 
     return api;
 
-})(AdguardSelectorLib || {}, balalaika);
+})(balalaika);

@@ -156,22 +156,19 @@
             return;
         }
 
-        /* global chrome */
-        if (tabId && typeof chrome != 'undefined' && chrome.tabs && chrome.tabs.detectLanguage) {
-            // Using Chrome language detection if possible
-            //detectLanguage working only in chrome browser (Opera and YaBrowser not fire callback method)
-            if (adguard.utils.browser.isChromeBrowser()) {
-                chrome.tabs.detectLanguage(tabId, function (language) {
-                    if (chrome.runtime.lastError) {
-                        return;
-                    }
-                    detectLanguage(language);
-                }.bind(this));
-                return;
-            }
+        /* global browser */
+        if (tabId && typeof browser != 'undefined' && browser.tabs && browser.tabs.detectLanguage) {
+            // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/detectLanguage
+            browser.tabs.detectLanguage(tabId, function (language) {
+                if (browser.runtime.lastError) {
+                    return;
+                }
+                detectLanguage(language);
+            });
+            return;
         }
 
-        // Detecting language by top-level domain if Chrome language detection is unavailable
+        // Detecting language by top-level domain if extension API language detection is unavailable
         var host = adguard.utils.url.getHost(url);
         if (host) {
             var parts = host ? host.split('.') : [];

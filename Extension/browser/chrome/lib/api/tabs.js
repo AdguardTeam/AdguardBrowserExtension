@@ -37,17 +37,20 @@ adguard.windowsImpl = (function (adguard) {
     var onUpdatedChannel = adguard.utils.channels.newChannel();
 
     // https://developer.chrome.com/extensions/windows#event-onCreated
+    // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/onCreated
     browser.windows.onCreated.addListener(function (chromeWin) {
         onCreatedChannel.notify(toWindowFromChromeWindow(chromeWin), chromeWin);
     });
 
     // https://developer.chrome.com/extensions/windows#event-onRemoved
+    // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/onRemoved
     browser.windows.onRemoved.addListener(function (windowId) {
         onRemovedChannel.notify(windowId);
     });
 
     var create = function (createData, callback) {
         // https://developer.chrome.com/extensions/windows#method-create
+        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/create
         browser.windows.create(createData, function (chromeWin) {
             callback(toWindowFromChromeWindow(chromeWin), chromeWin);
         });
@@ -55,7 +58,9 @@ adguard.windowsImpl = (function (adguard) {
 
     var forEachNative = function (callback) {
         // https://developer.chrome.com/extensions/windows#method-getAll
-        browser.windows.getAll(function (chromeWins) {
+        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/getAll
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/569
+        browser.windows.getAll({}, function (chromeWins) {
             for (var i = 0; i < chromeWins.length; i++) {
                 var chromeWin = chromeWins[i];
                 callback(chromeWin, toWindowFromChromeWindow(chromeWin));
@@ -157,13 +162,13 @@ adguard.tabsImpl = (function (adguard) {
         var active = createData.active === true;
 
         if (createData.type === 'popup' &&
-            // Does not work properly in Insider builds
-            !adguard.utils.browser.isEdgeBrowser()) {
+            // Does not work properly in Anniversary builds
+            !adguard.utils.browser.isEdgeBeforeCreatorsUpdate()) {
             // https://developer.chrome.com/extensions/windows#method-create
+            // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/create
             browser.windows.create({
                 url: url,
                 type: 'popup',
-                focused: active,
                 width: 1230,
                 height: 630
             }, callback);
@@ -190,6 +195,8 @@ adguard.tabsImpl = (function (adguard) {
 
         // https://developer.chrome.com/extensions/windows#method-create
         // https://developer.chrome.com/extensions/windows#method-getLastFocused
+        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/create
+        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/getLastFocused
 
         browser.windows.getLastFocused(function (win) {
 
@@ -198,7 +205,8 @@ adguard.tabsImpl = (function (adguard) {
                 return;
             }
 
-            browser.windows.getAll(function (wins) {
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/569
+            browser.windows.getAll({}, function (wins) {
 
                 for (var i = 0; i < wins.length; i++) {
                     var win = wins[i];
@@ -216,6 +224,7 @@ adguard.tabsImpl = (function (adguard) {
 
     var remove = function (tabId, callback) {
         // https://developer.chrome.com/extensions/tabs#method-remove
+        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/remove
         browser.tabs.remove(tabIdToInt(tabId), function () {
             if (checkLastError()) {
                 return;
@@ -225,6 +234,7 @@ adguard.tabsImpl = (function (adguard) {
     };
 
     var activate = function (tabId, callback) {
+        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/update
         browser.tabs.update(tabIdToInt(tabId), {active: true}, function (tab) {
             if (checkLastError()) {
                 return;
@@ -254,12 +264,19 @@ adguard.tabsImpl = (function (adguard) {
                  *
                  * So we use a content script instead.
                  */
-                sendMessage(tabId, {type: 'update-tab-url', url: url});
+                /**
+                 * Content script may not have been loaded at this point yet.
+                 * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/580
+                 */
+                setTimeout(function () {
+                    sendMessage(tabId, {type: 'update-tab-url', url: url});
+                }, 100);
             } else {
                 browser.tabs.update(tabIdToInt(tabId), {url: url}, checkLastError);
             }
         } else {
             // https://developer.chrome.com/extensions/tabs#method-reload
+            // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/reload#Browser_compatibility
             if (browser.tabs.reload) {
                 browser.tabs.reload(tabIdToInt(tabId), {bypassCache: true}, checkLastError);
             } else {
@@ -271,6 +288,7 @@ adguard.tabsImpl = (function (adguard) {
 
     var sendMessage = function (tabId, message, responseCallback, options) {
         // https://developer.chrome.com/extensions/tabs#method-sendMessage
+        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/sendMessage
         if (typeof options === 'object' && browser.tabs.sendMessage) {
             browser.tabs.sendMessage(tabIdToInt(tabId), message, options, responseCallback);
             return;
@@ -280,6 +298,7 @@ adguard.tabsImpl = (function (adguard) {
 
     var getAll = function (callback) {
         // https://developer.chrome.com/extensions/tabs#method-query
+        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/query
         browser.tabs.query({}, function (chromeTabs) {
             var result = [];
             for (var i = 0; i < chromeTabs.length; i++) {
@@ -297,11 +316,26 @@ adguard.tabsImpl = (function (adguard) {
          * See for details:
          * https://developer.chrome.com/extensions/windows#current-window
          * https://dev.opera.com/extensions/tab-window/#accessing-the-current-tab
+         * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/query
          */
         browser.tabs.query({currentWindow: true, active: true}, function (tabs) {
             if (tabs && tabs.length > 0) {
                 callback(tabs[0].id);
             }
+        });
+    };
+
+    /**
+     * Gets tab by id
+     * @param tabId Tab identifier
+     * @param callback
+     */
+    var get = function (tabId, callback) {
+        browser.tabs.get(tabIdToInt(tabId), function (chromeTab) {
+            if (browser.runtime.lastError) {
+                return;
+            }
+            callback(toTabFromChromeTab(chromeTab));
         });
     };
 
@@ -319,6 +353,7 @@ adguard.tabsImpl = (function (adguard) {
         sendMessage: sendMessage,
         getAll: getAll,
         getActive: getActive,
+        get: get,
 
         fromChromeTab: toTabFromChromeTab
     };

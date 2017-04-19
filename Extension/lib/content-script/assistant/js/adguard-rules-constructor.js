@@ -15,12 +15,10 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global SVGAnimatedString */
-
 /**
  * Adguard rules constructor library
  */
-var AdguardRulesConstructorLib = (function (api) {
+var AdguardRulesConstructorLib = (function () { // jshint ignore:line
 
     var CSS_RULE_MARK = '##';
     var RULE_OPTIONS_MARK = '$';
@@ -213,7 +211,7 @@ var AdguardRulesConstructorLib = (function (api) {
     };
 
     var haveIdAttribute = function (element) {
-        return element.id && element.id.trim() != '';
+        return element.id && element.id.trim() !== '';
     };
 
     var cropDomain = function (url) {
@@ -272,6 +270,9 @@ var AdguardRulesConstructorLib = (function (api) {
         }
         return selectors.join(', ');
     };
+
+    // Public API
+    var api = {};
 
     /**
      * Utility method
@@ -392,4 +393,4 @@ var AdguardRulesConstructorLib = (function (api) {
 
     return api;
 
-})(AdguardRulesConstructorLib || {});
+})();
