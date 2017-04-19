@@ -1,14 +1,15 @@
-! Checksum: 3c0WBnyLmJXAO8TuspR3xw
+! Checksum: 8WS8rBv3KBrX9ynzCWpXVg
 ! Title: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
-! Version: 1.0.18.76
-! TimeUpdated: 2017-04-18T01:00:56.156+04:00
+! Version: 1.0.18.81
+! TimeUpdated: 2017-04-19T16:01:01.874+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+||widgets.instela.com/widget.php?url=$third-party
 ||widget.pushbullet.com^$third-party
 ||youtube.com/subscribe_embed?$third-party
 ||addnow.com/widget/$third-party
@@ -185,7 +186,7 @@
 /sharebox.min.js
 /sharedaddy/sharing.js
 /sharing_buttons.js
-/social-likes.min.js$domain=~sputnik-news.ee|~animalreader.ru|~ichip.ru|~keddr.com|~kino-max.com|~kino24x7.com|~make-3d.ru|~miuipro.ru|~omelchuck.ru|~podfm.ru|~serial-online.com|~sputniknews.com|~trinixy.ru|~kinogo-kinopoisk.net|~bobfilm-online.ru|~westernfilm.ru|~bobfilm.tv|~kinokrik.net|~kinogo720.net|~kinogo-net-co.ru|~kinoklad.net
+/social-likes.min.js$domain=~sputnik-news.ee|~animalreader.ru|~ichip.ru|~keddr.com|~kino-max.com|~kino24x7.com|~make-3d.ru|~miuipro.ru|~omelchuck.ru|~podfm.ru|~serial-online.com|~sputniknews.com|~trinixy.ru|~kinogo-kinopoisk.net|~bobfilm-online.ru|~westernfilm.ru|~bobfilm.tv|~kinokrik.net|~kinogo720.net|~kinogo-net-co.ru|~kinoklad.net|~intex-press.by
 /social_networks.js
 /socialbar-js.php
 /socialbuttons.js
@@ -313,6 +314,16 @@ m.tf.co.kr#$#li.sBtn_reply { float: initial!important; display: inline-block!imp
 ||miladynews.ru/?*=*&_=
 ||mimimi.tv/?*=*&_=
 ||mindspace.ru/?*=*&_=
+esquire.ru##.post-sharebox
+esquire.ru##.sharebox-button
+tjournal.ru##.b-articles__b__share
+tree.tv##.seti_popup_wrap
+referandum.ntv.com.tr##.fixed-social-share
+ajans23.com##img[alt="facebook-paylas"]
+line.do##timeline-moment-share
+line.do##share-button
+line.do##share-count
+cmo.com##.getsocial
 pcadvisor.co.uk##.shareContainer
 gsstore.org##.share
 gooool.org##.socialb
@@ -2227,7 +2238,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.help-social-buttons
 ##.i_v_fb_like
 ##.icon-digg
-~ain.ua,~aklamio.com,~cnnturk.com,~comediansincarsgettingcoffee.com,~forbes.com,~hubs.ua,~iguides.ru,~kicker.de,~logaster.com,~minfin.com.ua,~pexels.com,~t3n.de,~theverge,~deezer.com##.icon-facebook
+~tjournal.ru,~ain.ua,~aklamio.com,~cnnturk.com,~comediansincarsgettingcoffee.com,~forbes.com,~hubs.ua,~iguides.ru,~kicker.de,~logaster.com,~minfin.com.ua,~pexels.com,~t3n.de,~theverge,~deezer.com##.icon-facebook
 ~slashdot.org##.icon-facebook-squared
 ~t3n.de##.icon-google-plus
 ~ain.ua,~iguides.ru,~logaster.com,~minfin.com.ua,~pexels.com##.icon-gplus
@@ -2756,6 +2767,7 @@ livejournal.com##.b-ljtimes-wrapper
 /wp-content/plugins/facebook-fanbox-popup/*
 ||cdn-library.su/plusonet/lib/$domain=~pluso.net
 ||mailget.net^$third-party
+line.do##facebook-like-box
 tvfru.ru###fancybox-overlay
 tvfru.ru##.fancybox-wrap
 znaj.ua###parent_popup

@@ -594,6 +594,10 @@
       "script" : "Object.defineProperty(window,\"cxAsyncLoad\",{set:function(){throw Error();}});"
     },
     {
+      "domains" : "news.rambler.ru",
+      "script" : "Object.defineProperty(Object.prototype, 'checkAdBlockVisability', { set:function(){ throw new Error(); }});"
+    },
+    {
       "domains" : "uploadrocket.net",
       "script" : "Object.defineProperty(window, 'p0t', { get: function() { return; } });"
     },
@@ -1192,10 +1196,6 @@
     {
       "domains" : "rozetka.com.ua",
       "script" : "document.cookie = \"hide_popup_banner=true\";"
-    },
-    {
-      "domains" : "cat3movie.us",
-      "script" : "(function(b){Object.defineProperty(Element.prototype,\"innerHTML\",{get:function(){b.get.call(this)},set:function(a){/^(?:<([abisuq]) id=\"[^\"]*\"><\\/\\1>)*$/.test(a)||b.set.call(this,a)},enumerable:!0,configurable:!0})})(Object.getOwnPropertyDescriptor(Element.prototype,\"innerHTML\"));"
     },
     {
       "domains" : "cnet.com",
@@ -2182,6 +2182,10 @@
       "script" : "AG_onLoad(function() { $('body').unbind('click'); });"
     },
     {
+      "domains" : "heromicegame.com,cat3movie.us",
+      "script" : "(function(b){Object.defineProperty(Element.prototype,\"innerHTML\",{get:function(){b.get.call(this)},set:function(a){/^(?:<([abisuq]) id=\"[^\"]*\"><\\/\\1>)*$/.test(a)||b.set.call(this,a)},enumerable:!0,configurable:!0})})(Object.getOwnPropertyDescriptor(Element.prototype,\"innerHTML\"));"
+    },
+    {
       "domains" : "videokub.me",
       "script" : "document.cookie = \"mycp=1\";"
     },
@@ -2716,6 +2720,10 @@
     {
       "domains" : "sendspace.com",
       "script" : "window.runad = function() {};"
+    },
+    {
+      "domains" : "auto.ru",
+      "script" : "Object.defineProperty(Object.prototype, 'missMatryoshka', { get: function() { return { options: {} }; }, set: function() {} });"
     },
     {
       "domains" : "bicycling.com,menshealth.com,prevention.com,rodale.tv,rodalesorganiclife.com,rodalewellness.com,runnersworld.com,womenshealthmag.com",

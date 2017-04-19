@@ -1,8 +1,8 @@
-! Checksum: 6nJ8HZ0opMomyLldpIZk+A
+! Checksum: xmd6KdGl1+5bh32AbWjKWQ
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 1.0.8.1
-! TimeUpdated: 2017-04-18T14:01:48.067+04:00
+! Version: 1.0.8.5
+! TimeUpdated: 2017-04-19T13:10:18.145+04:00
 ! Expires: 2 days (update frequency)
 ! Title: Adguard Mobile Ads Filter
 !
@@ -33,6 +33,7 @@
 ||banners-slb.mobile.yandex.net^
 ||banners.mobile.yandex.net^
 !
+||dc.altmob.com^
 ||rtb.adentifi.com^$third-party
 ||adtheorent.com^$third-party
 ||qgss8.com^
@@ -1395,7 +1396,9 @@ pornhd.com##ul.thumbs.inside-row > li:not([data-thumbindexes])
 ||ymcdn.ymtrack6.co/ads_file/
 ||ymcdn.ymtrack6.co/offer_single_files/
 ||youtube.com/_get_ads?
-! For Moscow metro WiFi
+! For Moscow subway WiFi
+auth.wi-fi.ru##.c-video-banner
+auth.wi-fi.ru##.c-fullscreen-banner
 ||static.wi-fi.ru/brandings/_cacheAssets/branding.js
 ||login.wi-fi.ru^$script,third-party
 ||static.wi-fi.ru/brandings/rb/
@@ -1434,7 +1437,12 @@ pornhd.com##ul.thumbs.inside-row > li:not([data-thumbindexes])
 ||graph.facebook.com^$app=fr.meteo
 ||graph.facebook.com^$app=io.casper.android
 ||graph.facebook.com^$app=com.cmplay.cellconnect
+||graph.facebook.com^$app=com.apxsoft.dodonpachi_gg
 !
+! https://forum.adguard.com/index.php?threads/dodonpachi-unlimited-missed-ads-android.21000/
+||dzpu6za66svjl.cloudfront.net^
+! com.camerasideas.instashot
+||ad.api.kaffnet.com^
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4774
 @@||irr.ru/mobile_api^$app=com.umojo.irr.android
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4757
@@ -1628,6 +1636,10 @@ pornhd.com##ul.thumbs.inside-row > li:not([data-thumbindexes])
 !
 ! Section contains rules for mobile analytics and spyware
 !
+||applog.uc.cn^
+||dispatcher.upmc.uc.cn^
+||gj.applog.uc.cn^
+||gjapplog.uc.cn^
 ||mazu.sec.miui.com^
 ||shenghuo.xiaomi.com^
 ||api.ad.xiaomi.com^

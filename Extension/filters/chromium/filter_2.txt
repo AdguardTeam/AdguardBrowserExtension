@@ -1,8 +1,8 @@
-! Checksum: Q4ozFza5iz3rUIz7r9B/xA
+! Checksum: ctGwLxpoQh8dmjjTDRoy8w
 ! Title: English filter
 ! Description: EasyList + Adguard English filter. Filter list that specifically removes adverts on English language websites.
-! Version: 1.1.14.90
-! TimeUpdated: 2017-04-18T14:00:38.504+04:00
+! Version: 1.1.14.99
+! TimeUpdated: 2017-04-19T16:00:43.702+04:00
 ! Expires: 2 days (update frequency)
 ! Title: Adguard English Filter.
 !
@@ -593,7 +593,7 @@ finalservers.net,animmex.tv,uplod.ws,sportbikerider.us,a2zapk.com,stupdroid.com,
 !--- antiblock.org ---
 ! https://forum.adguard.com/index.php?threads/resolved-ag_antiantiblock.19151/
 abcast.net#%#var baseCreateElement = document.createElement.bind(document); document.createElement = function(name) { var el = baseCreateElement(name); if(name != 'span') { return el; } else { Object.defineProperty(el, 'innerHTML', { set: function(text) { if(/^(<a id="[^"]*"><\/a>)*$/.test(text)) { throw new Error(); } Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML').set.call(el, text); }, get: function() { return el.innerHTML; } }); return el; }};
-cat3movie.us#%#(function(b){Object.defineProperty(Element.prototype,"innerHTML",{get:function(){b.get.call(this)},set:function(a){/^(?:<([abisuq]) id="[^"]*"><\/\1>)*$/.test(a)||b.set.call(this,a)},enumerable:!0,configurable:!0})})(Object.getOwnPropertyDescriptor(Element.prototype,"innerHTML"));
+heromicegame.com,cat3movie.us#%#(function(b){Object.defineProperty(Element.prototype,"innerHTML",{get:function(){b.get.call(this)},set:function(a){/^(?:<([abisuq]) id="[^"]*"><\/\1>)*$/.test(a)||b.set.call(this,a)},enumerable:!0,configurable:!0})})(Object.getOwnPropertyDescriptor(Element.prototype,"innerHTML"));
 !--- InstartLogic ---
 ! abd
 !
@@ -625,7 +625,7 @@ pocketnow.com,geektime.co.il#%#Object.defineProperty(window,"cxAsyncLoad",{set:f
 !
 !*****
 !* adf.ly, q.gs, j.gs, al.ly etc.
-@@/ad_top_$domain=microify.com|atominik.com|dl.android-zone.org|bluenik.com
+@@/ad_top_$domain=pintient.com|microify.com|atominik.com|dl.android-zone.org|bluenik.com
 ||al.ly/static/fuckadblock.min.js
 al.ly#$#.ads { position: absolute!important; left: -3000px!important; }
 @@||q.gs^$generichide
@@ -4061,6 +4061,8 @@ google.ad,google.ae,google.al,google.am,google.as,google.at,google.az,google.ba,
 ||*.*$domain=s1-adfly.com
 !*****
 !
+adultboard.net##td[align="center"] > a > img
+stackexchange.com##div[id^="adzerk"]
 pushsquare.com##div[id^="rcjsload"]
 pushsquare.com##.insert.with-label
 bgr.com##.bgr-outbrain-amp-widget
@@ -6165,8 +6167,8 @@ blag-vesti.ru#@#.adslot_1
 @@||c.betrad.com/pub/c/*.js$domain=video.corriere.it
 ! Skype app - Assistant in the auth window
 @@||clientlogin.cdn.skype.com^$document
-! https://forum.adguard.com/index.php?threads/19902/
-@@||gecce.com/i/js/ads-v4.js
+! https://forum.adguard.com/index.php?threads/20922/
+@@||gecce.com/i/js/ads-v*.js
 ! Youtube search suggestions not working (Edge with browser extension only)
 @@||pubads.g.doubleclick.net/gampad/ads?ad_rule=0&d_imp=1&gdfp_req=1&iu=%2F6762%2Fmkt.ythome_1x1$domain=youtube.com
 @@||pubads.g.doubleclick.net/gampad/ads?ad_rule=0&d_imp=1&gdfp_req=1&impl=ifr$domain=youtube.com
@@ -32669,6 +32671,7 @@ _popunder+$popup
 ##.with-background-ads
 ##.with-wrapper-ads
 ##.withAds
+##.with_ctecad
 ##.wixAdsdesktopBottomAd
 ##.wl-ad
 ##.wloadIframeAD
@@ -33971,6 +33974,7 @@ marketgid.com,mgid.com#@#a[id^="mg_add"]
 marketgid.com,mgid.com#@#div[id^="MarketGid"]
 flightcentre.co.uk,out.com#@#div[id^="dfp-ad-"]
 amazon.com,beqala.com,concursovirtual.com.br,drupalcommerce.org,ensonhaber.com,eurweb.com,faceyourmanga.com,isc2.org,lavozdegalicia.es,liverc.com,liverpoolfc.com,mit.edu,payback.pl,peekyou.com,pianobuyer.com,podomatic.com,ripley.cl,ripley.com.pe,suntimes.com,timesofoman.com,virginaustralia.com,wlj.net,zavvi.com#@#div[id^="div-gpt-ad"]
+ripley.cl,ripley.com.pe#@#div[id^="google_ads_iframe_"]
 lavozdegalicia.es#@#div[itemtype="http://schema.org/WPAdBlock"]
 bodas.com.mx,bodas.net,mariages.net,matrimonio.com,weddingspot.co.uk#@#iframe[id^="google_ads_frame"]
 bodas.com.mx,bodas.net,concursovirtual.com.br,economist.com,flightcentre.co.uk,forbes.com,lavozdegalicia.es,liverpoolfc.com,mariages.net,matrimonio.com,payback.pl,pianobuyer.com,ripley.cl,ripley.com.pe,thoughtcatalog.com,vroomvroomvroom.com.au,weddingspot.co.uk,wsj.com,zillow.com#@#iframe[id^="google_ads_iframe"]
@@ -38352,6 +38356,7 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad"]
 ||spillvacation.com^$third-party
 ||stormyshock.com^$third-party
 ||structuresofa.com^$third-party
+||succeedscene.com^$third-party
 ||terribleturkey.com^$third-party
 ||tidytrail.com^$third-party
 ||truthfulhead.com^$third-party
@@ -44429,7 +44434,7 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad"]
 /wp-content/plugins/wbounce/*$script,domain=viralcraze.net
 ?random=$script,domain=allmyvideos.net|mediafire.com|mooshare.biz|muchshare.net|tvmuse.com|tvmuse.eu|vidspot.net
 ^guid=$script,domain=allmyvideos.net|mediafire.com|mooshare.biz|muchshare.net|tvmuse.com|tvmuse.eu|vidspot.net
-|blob:$domain=1337x.to|1channel.biz|ancient-origins.net|androidcentral.com|anime-joy.tv|auroravid.to|bitvid.sx|breakingisraelnews.com|britannica.com|champion.gg|closerweekly.com|cloudtime.to|connectedly.com|couch-tuner.at|couch-tuner.me|couchtuner.ac|couchtuner.us|crackberry.com|dailycaller.com|demonoid.pw|destructoid.com|dreamfilm.se|episodetube.com|episodetube.net|etmirror.com|etproxy.com|extra.to|extratorrent.cc|extratorrent.date|extratorrent.works|extratorrentlive.com|extratorrentonline.com|filme-streamz.com|filmlinks4u.is|firstforwomen.com|firstrowau.eu|firstrowus1.eu|fmovies.se|fmovies.to|fullmatchesandshows.com|gofirstrow.eu|homerun.re|imagefap.com|imgadult.com|imgtaxi.com|imgwallet.com|imore.com|investopedia.com|israelnationalnews.com|jerusalemonline.com|jewsnews.co.il|keepvid.com|kickass.cd|kino-streamz.com|kiplinger.com|letmewatchthis.pl|letmewatchthis.video|livecricketz.org|livescience.com|lolcounter.com|mashable.com|merriam-webster.com|movies4stream.com|mylivecricket.org|newtvworld.com|noslocker.com|nosvideo.com|nowfeed2all.eu|nowvideo.li|nowvideo.sx|nowvideo.to|olympicstreams.me|onwatchseries.to|openload.co|pcgamer.com|pcgames-download.net|phonearena.com|pocketnow.com|primewire.ag|primewire.is|primewire.to|primewire.unblockall.xyz|rinf.com|roadracerunner.com|sgvideos.net|skidrowcrack.com|snowysmile.com|stream2watch.cc|streamazone.com|streamgaroo.com|strikeout.co|strikeout.me|strikeout.mobi|teamliquid.net|thefreethoughtproject.com|thevideo.me|tomsguide.com|tomshardware.co.uk|tomshardware.com|torrentz2.eu|torrentz2.me|trifind.com|tv-series.me|veteranstoday.com|vidlox.tv|vidtodo.com|vidup.me|vidwatch3.me|vipbox.bz|vipbox.is|vipbox.nu|vipbox.sx|vipbox.tv|vipboxeu.co|vipboxoc.co|vipboxtv.me|vipleague.ch|vipleague.co|vipleague.is|vipleague.me|vipleague.mobi|vipleague.se|vipleague.sx|vipleague.tv|vipleague.ws|vipstand.is|vivo.sx|vrheads.com|watch-series-tv.to|watch-series.ag|watch-tv-series.to|watchcartoononline.io|watchepisodes-tv.com|watchseries.ag|watchseries.li|watchseries.lt|watchseries.ph|watchseries.vc|watchseriesuk.ag|watchseriesuk.lt|watchtvseries.se|watchtvseries.unblocked.cat|watchtvseries.vc|watchvideo.us|watchvideo10.us|watchvideo11.us|watchvideo12.us|watchvideo13.us|watchvideo14.us|watchvideo15.us|webfirstrow.eu|wholecloud.net|windowscentral.com|world4ufree.ws|xda-developers.com
+|blob:$domain=1337x.to|1channel.biz|ancient-origins.net|androidcentral.com|anime-joy.tv|auroravid.to|bitvid.sx|breakingisraelnews.com|britannica.com|champion.gg|closerweekly.com|cloudtime.to|connectedly.com|couch-tuner.at|couch-tuner.me|couchtuner.ac|couchtuner.us|crackberry.com|dailycaller.com|demonoid.pw|destructoid.com|dreamfilm.se|episodetube.com|episodetube.net|etmirror.com|etproxy.com|extra.to|extratorrent.cc|extratorrent.date|extratorrent.works|extratorrentlive.com|extratorrentonline.com|filme-streamz.com|filmlinks4u.is|firstforwomen.com|firstrowau.eu|firstrowus1.eu|fmovies.se|fmovies.to|fullmatchesandshows.com|gofirstrow.eu|homerun.re|imagefap.com|imgadult.com|imgtaxi.com|imgwallet.com|imore.com|investopedia.com|israelnationalnews.com|jerusalemonline.com|jewsnews.co.il|keepvid.com|kickass.cd|kino-streamz.com|kiplinger.com|letmewatchthis.pl|letmewatchthis.video|livecricketz.org|livescience.com|lolcounter.com|mashable.com|merriam-webster.com|movies4stream.com|mylivecricket.org|newtvworld.com|noslocker.com|nosvideo.com|nowfeed2all.eu|nowvideo.li|nowvideo.sx|nowvideo.to|olympicstreams.me|onwatchseries.to|openload.co|pcgamer.com|pcgames-download.net|phonearena.com|pocketnow.com|primewire.ag|primewire.is|primewire.to|primewire.unblockall.xyz|rinf.com|roadracerunner.com|sgvideos.net|skidrowcrack.com|snowysmile.com|stream2watch.cc|streamazone.com|streamgaroo.com|strikeout.co|strikeout.me|strikeout.mobi|teamliquid.net|thefreethoughtproject.com|thevideo.me|tomsguide.com|tomshardware.co.uk|tomshardware.com|torrentz2.eu|torrentz2.me|trifind.com|tv-series.me|twitch.tv|veteranstoday.com|vidlox.tv|vidtodo.com|vidup.me|vidwatch3.me|vipbox.bz|vipbox.is|vipbox.nu|vipbox.sx|vipbox.tv|vipboxeu.co|vipboxoc.co|vipboxtv.me|vipleague.ch|vipleague.co|vipleague.is|vipleague.me|vipleague.mobi|vipleague.se|vipleague.sx|vipleague.tv|vipleague.ws|vipstand.is|vivo.sx|vrheads.com|watch-series-tv.to|watch-series.ag|watch-tv-series.to|watchcartoononline.io|watchepisodes-tv.com|watchseries.ag|watchseries.li|watchseries.lt|watchseries.ph|watchseries.vc|watchseriesuk.ag|watchseriesuk.lt|watchtvseries.se|watchtvseries.unblocked.cat|watchtvseries.vc|watchvideo.us|watchvideo10.us|watchvideo11.us|watchvideo12.us|watchvideo13.us|watchvideo14.us|watchvideo15.us|webfirstrow.eu|wholecloud.net|windowscentral.com|world4ufree.ws|xda-developers.com
 |http://creative.*/smart.js$script,third-party
 |http://go.$domain=nowvideo.sx
 |http://j.gs/omnigy*.swf
@@ -47236,6 +47241,7 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad"]
 ||publicityupdate.co.za/temp/banner_
 ||publicradio.org^*/banners/
 ||publicservice.co.uk^*/spons_
+||pubster.twitch.tv^$websocket
 ||pulsetv.com/banner/
 ||pumasrugbyunion.com/images/sponsors/
 ||punch.cdn.ng^*/wp-banners/
@@ -47634,6 +47640,7 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad"]
 ||spa.dictionary.com^$object
 ||space.com/promo/
 ||spaceweather.com/abdfeeter/$image
+||spade.twitch.tv^$websocket
 ||spartoo.eu/footer_tag_iframe_
 ||spcontentcdn.net^$domain=sporcle.com
 ||speedtest.net/flash/59rvvrpc-$object-subrequest
@@ -48677,6 +48684,9 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad"]
 ||zshares.net/fm.html
 ||zurrieqfc.com/images/banners/
 ||zws.avvo.com^
+@@||ajax.googleapis.com^$script,domain=pcper.com
+|http://$script,third-party,xmlhttprequest,domain=pcper.com
+|https://$script,third-party,xmlhttprequest,domain=pcper.com
 |http://$third-party,xmlhttprequest,domain=freewarefiles.com
 |https://$third-party,xmlhttprequest,domain=freewarefiles.com
 |http://$script,third-party,xmlhttprequest,domain=demonoid.pw
@@ -59418,6 +59428,7 @@ yahoo.com##[data-ad-enhanced="text"]
 adlipay.com##[data-ad-slot]
 destructoid.com##[data-delivery]
 facebook.com##[data-referrer="pagelet_side_ads"]
+deathandtaxesmag.com##[data-refresh]
 softonic.com##[data-ua-common] > [data-column-balancer]
 hulu.com##[flashvars^="backgroundURL=http://ads.hulu.com/published/"]
 bunalti.com##[height="90"][width="728"]
@@ -62576,7 +62587,7 @@ baltimoresun.com,boston.com,calgaryherald.com,capitalgazette.com,carrollcountyti
 marketwatch.com##.trending__ad
 mingle2.com##.user_profile_ads
 bmmagazine.co.uk,thefreethoughtproject.com##.wpInsertInPostAd
-spin.com##.zergnet-holder
+deathandtaxesmag.com,spin.com##.zergnet-holder
 intoday.in##a[href*=".zedo.com/"]
 monova.org##a[href^="http://adsrvmedia.adk2x.com/"]
 revclouds.com##a[href^="http://adtrack123.pl/"]

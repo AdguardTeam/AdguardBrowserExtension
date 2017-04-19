@@ -1,8 +1,8 @@
-! Checksum: X4R5LZrx/H/3wYjD31zR7w
+! Checksum: t80UcNUiHI34unKn6VHsNA
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 1.0.8.1
-! TimeUpdated: 2017-04-18T14:01:48.067+04:00
+! Version: 1.0.8.5
+! TimeUpdated: 2017-04-19T13:10:18.145+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -11,6 +11,7 @@
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
 ||banners-slb.mobile.yandex.net^
 ||banners.mobile.yandex.net^
+||dc.altmob.com^
 ||rtb.adentifi.com^$third-party
 ||adtheorent.com^$third-party
 ||qgss8.com^
@@ -1189,6 +1190,8 @@ pornhd.com##ul.thumbs.inside-row > li:not([data-thumbindexes])
 ||ymcdn.ymtrack6.co/ads_file/
 ||ymcdn.ymtrack6.co/offer_single_files/
 ||youtube.com/_get_ads?
+auth.wi-fi.ru##.c-video-banner
+auth.wi-fi.ru##.c-fullscreen-banner
 ||static.wi-fi.ru/brandings/_cacheAssets/branding.js
 ||login.wi-fi.ru^$script,third-party
 ||static.wi-fi.ru/brandings/rb/
@@ -1217,6 +1220,9 @@ pornhd.com##ul.thumbs.inside-row > li:not([data-thumbindexes])
 ||graph.facebook.com^$app=fr.meteo
 ||graph.facebook.com^$app=io.casper.android
 ||graph.facebook.com^$app=com.cmplay.cellconnect
+||graph.facebook.com^$app=com.apxsoft.dodonpachi_gg
+||dzpu6za66svjl.cloudfront.net^
+||ad.api.kaffnet.com^
 @@||irr.ru/mobile_api^$app=com.umojo.irr.android
 ||ad.flipboard.com^
 ||overall.ikvapp.ru/api/ad?api_key=
@@ -1322,6 +1328,10 @@ pornhd.com##ul.thumbs.inside-row > li:not([data-thumbindexes])
 ||eviltracker.net^
 ||spotify.com/ads/
 ||trackersimulator.org^
+||applog.uc.cn^
+||dispatcher.upmc.uc.cn^
+||gj.applog.uc.cn^
+||gjapplog.uc.cn^
 ||mazu.sec.miui.com^
 ||shenghuo.xiaomi.com^
 ||api.ad.xiaomi.com^
