@@ -71,6 +71,7 @@
             filtersMetadata: adguard.subscriptions.getFilters(),
             requestFilterInfo: adguard.requestFilter.getRequestFilterInfo(),
             contentBlockerInfo: adguard.requestFilter.getContentBlockerInfo(),
+            syncStatusInfo: adguard.sync.syncService.getSyncStatus(),
             environmentOptions: {
                 isMacOs: adguard.utils.browser.isMacOs(),
                 isSafariBrowser: adguard.utils.browser.isSafariBrowser(),

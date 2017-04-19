@@ -628,6 +628,7 @@
                 return p.name === providerName;
             })[0];
         }
+
         return {
             enabled: syncEnabled,
             lastSyncTime: getLastSyncTime(),
