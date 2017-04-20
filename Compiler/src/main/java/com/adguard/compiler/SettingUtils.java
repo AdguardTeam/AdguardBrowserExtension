@@ -67,12 +67,12 @@ public class SettingUtils {
                 updateInfoPlistFile(dest, version, extensionId, updateUrl, extensionNamePostfix);
                 break;
             case FIREFOX_LEGACY:
-                updateInstallRdfFile(dest, version, extensionId, updateUrl);
+                updateInstallRdfFile(dest, version, extensionId, updateUrl, branch);
                 break;
             case FIREFOX_WEBEXT:
                 File webExtensionDest = new File(dest, "webextension");
                 updateManifestJsonFile(webExtensionDest, version, extensionId, updateUrl);
-                updateInstallRdfFile(dest, version, extensionId, updateUrl);
+                updateInstallRdfFile(dest, version, extensionId, updateUrl, branch);
                 break;
         }
     }
@@ -104,7 +104,7 @@ public class SettingUtils {
         FileUtils.writeStringToFile(manifestFile, content, "utf-8");
     }
 
-    private static void updateInstallRdfFile(File dest, String version, String extensionId, String updateUrl) throws IOException {
+    private static void updateInstallRdfFile(File dest, String version, String extensionId, String updateUrl, Branch branch) throws IOException {
         File installRdf = new File(dest, "install.rdf");
         String content = FileUtils.readFileToString(installRdf, "utf-8").trim();
         //write update url link
@@ -113,8 +113,12 @@ public class SettingUtils {
         } else {
             updateUrl = "<em:updateURL>" + updateUrl + "</em:updateURL>";
         }
+        String versionString = version;
+        if (Branch.BETA.equals(branch)) {
+            versionString += branch.getName();
+        }
         content = StringUtils.replace(content, "${updateUrl}", updateUrl);
-        content = StringUtils.replace(content, "${version}", version);
+        content = StringUtils.replace(content, "${version}", versionString);
         content = StringUtils.replace(content, "${extensionId}", extensionId);
         FileUtils.writeStringToFile(installRdf, content, "utf-8");
     }
