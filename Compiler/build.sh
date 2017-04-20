@@ -66,7 +66,7 @@ elif [ "$env" = beta ]; then
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox beta for AMO (WebExt)
-    options="$opts --browser=firefox_webext --pack=xpi --extensionId=adguardadblocker@adguard.com --remote-scripts=false"
+    options="--version=${version}beta --branch=$branch --dest=$destPath --browser=firefox_webext --pack=xpi --extensionId=adguardadblocker@adguard.com --remote-scripts=false"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox beta (WebExt)

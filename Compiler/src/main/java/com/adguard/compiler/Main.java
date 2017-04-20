@@ -222,7 +222,7 @@ public class Main {
                 break;
         }
 
-        SettingUtils.updateManifestFile(dest, browser, version, extensionId, updateUrl, extensionNamePostfix, branch);
+        SettingUtils.updateManifestFile(dest, browser, version, extensionId, updateUrl, extensionNamePostfix);
 
         if (browser == Browser.CHROMIUM && !createApi) {
             LocaleUtils.updateExtensionNameForChromeLocales(dest, extensionNamePostfix);
