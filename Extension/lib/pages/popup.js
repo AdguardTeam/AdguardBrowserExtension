@@ -49,7 +49,7 @@ $(document).ready(function () {
             //add some delay for show popup size properly
             setTimeout(function () {
                 controller.resizePopupWindow();
-            }, 10);
+            }, 150);
             resizePopupWindowForMacOs($);
         };
         controller.resizePopup = function (width, height) {
