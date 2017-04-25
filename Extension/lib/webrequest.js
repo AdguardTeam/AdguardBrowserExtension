@@ -149,7 +149,7 @@
         }
 
         var tab = requestDetails.tab;
-        var responseHeaders = requestDetails.responseHeaders;
+        var responseHeaders = requestDetails.responseHeaders || [];
         var frameUrl = adguard.frames.getFrameUrl(tab, requestDetails.frameId);
 
         var ruleForCSP = null;
