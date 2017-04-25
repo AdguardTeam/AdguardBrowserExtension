@@ -59,6 +59,31 @@ PageController.prototype = {
             $('#authorizedBlock').show();
 
             $('#providerNameInfo').text(providerName);
+
+            if (isOAuthSupported) {
+                if (providerName === 'ADGUARD_SYNC') {
+                    $('#manageAccountButton').show();
+                } else {
+                    $('#manageAccountButton').hide();
+                }
+
+                $('#signOutButton').click(function () {
+                    contentPage.sendMessage({
+                        type: 'dropAuthSync',
+                        provider: providerName
+                    }, function () {
+                        document.location.reload();
+                    });
+                });
+            } else {
+                $('#manageAccountButton').hide();
+
+                $('#signOutButton').click(function () {
+                    contentPage.sendMessage({type: 'toggleSync'}, function () {
+                        document.location.reload();
+                    });
+                });
+            }
         }
 
         this._initializeProvidersModal();
@@ -79,6 +104,17 @@ PageController.prototype = {
 
         $('#startSyncButton').click(function () {
             contentPage.sendMessage({type: 'toggleSync'}, function () {
+                document.location.reload();
+            });
+        });
+
+
+        $('#manageAccountButton').click(function () {
+            window.location.href = 'http://adguard.com/login.html';
+        });
+
+        $('#syncNowButton').click(function () {
+            contentPage.sendMessage({type: 'syncNow'}, function () {
                 document.location.reload();
             });
         });
