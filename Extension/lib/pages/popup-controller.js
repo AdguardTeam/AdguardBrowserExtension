@@ -15,15 +15,12 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global $, i18n */
+/* global $, i18n, popupPage */
 
 /**
  * Controller that manages add-on popup window
  */
-var PopupController = function (options) {
-    if (options) {
-        this.showStatsSupported = options.showStatsSupported;
-    }
+var PopupController = function () {
 };
 
 PopupController.prototype = {
@@ -31,10 +28,12 @@ PopupController.prototype = {
     /**
      * Renders popup using specified model object
      * @param tabInfo
+     * @param options
      */
-    render: function (tabInfo) {
+    render: function (tabInfo, options) {
 
         this.tabInfo = tabInfo;
+        this.options = options || {};
 
         //render
         this._renderPopup(tabInfo);
@@ -50,48 +49,51 @@ PopupController.prototype = {
         var $widjet = $('body>div:not(.hidden)');
         var width = $widjet.outerWidth();
         var height = $widjet.outerHeight();
-        this.resizePopup(width, height);
+        popupPage.resizePopup(width, height);
     },
 
     afterRender: function () {
-    },
 
-    resizePopup: function (width, height) {
     },
 
     addWhiteListDomain: function (url) {
+        popupPage.sendMessage({type: 'addWhiteListDomainPopup', url: url});
     },
 
     removeWhiteListDomain: function (url) {
+        popupPage.sendMessage({type: 'removeWhiteListDomainPopup', url: url});
     },
 
     changeApplicationFilteringDisabled: function (disabled) {
-
+        popupPage.sendMessage({type: 'changeApplicationFilteringDisabled', disabled: disabled});
     },
 
     sendFeedback: function (url, topic, comment) {
+        popupPage.sendMessage({type: 'sendFeedback', url: url, topic: topic, comment: comment});
     },
 
     openSiteReportTab: function (url) {
+        popupPage.sendMessage({type: 'openSiteReportTab', url: url});
     },
 
     openSettingsTab: function () {
+        popupPage.sendMessage({type: 'openSettingsTab'});
     },
 
     openAssistantInTab: function () {
+        popupPage.sendMessage({type: 'openAssistant'});
     },
 
     openFilteringLog: function (tabId) {
+        popupPage.sendMessage({type: 'openFilteringLog', tabId: tabId});
     },
 
     resetBlockedAdsCount: function () {
-
+        popupPage.sendMessage({type: 'resetBlockedAdsCount'});
     },
 
     openLink: function (url) {
-    },
-
-    translateElement: function (el, messageId, args) {
+        popupPage.sendMessage({type: 'openTab', url: url});
     },
 
     _renderPopup: function (tabInfo) {
@@ -143,7 +145,7 @@ PopupController.prototype = {
         if (tabInfo.adguardDetected) {
             template = this.adguardDetectedMessageTemplate;
             if (tabInfo.adguardProductName) {
-                i18n.translateElement(template.children()[0], 'popup_ads_has_been_removed_by_adguard', [tabInfo.adguardProductName])
+                i18n.translateElement(template.children()[0], 'popup_ads_has_been_removed_by_adguard', [tabInfo.adguardProductName]);
             } else {
                 i18n.translateElement(template.children()[0], 'popup_ads_has_been_removed');
             }
@@ -151,7 +153,7 @@ PopupController.prototype = {
             template = this.siteProtectionDisabledMessageTemplate;
         } else if (tabInfo.urlFilteringDisabled) {
             template = this.siteFilteringDisabledMessageTemplate;
-        } else if (this.showStatsSupported == null || this.showStatsSupported) {
+        } else if (this.options.showStatsSupported) {
             template = this.siteStatsTemplate;
             var titleBlocked = template.find('.w-popup-filter-title-blocked');
             i18n.translateElement(titleBlocked[0], 'popup_tab_blocked', [formatNumber(tabInfo.totalBlockedTab || 0)]);
@@ -256,18 +258,22 @@ PopupController.prototype = {
         parent.on('click', '.siteReport', function (e) {
             e.preventDefault();
             self.openSiteReportTab(self.tabInfo.url);
+            popupPage.closePopup();
         });
         parent.on('click', '.openSettings', function (e) {
             e.preventDefault();
             self.openSettingsTab();
+            popupPage.closePopup();
         });
         parent.on('click', '.openAssistant', function (e) {
             e.preventDefault();
             self.openAssistantInTab();
+            popupPage.closePopup();
         });
         parent.on('click', '.openFilteringLog', function (e) {
             e.preventDefault();
             self.openFilteringLog();
+            popupPage.closePopup();
         });
         parent.on('click', '.resetStats', function (e) {
             e.preventDefault();
@@ -277,6 +283,7 @@ PopupController.prototype = {
         parent.on('click', '.openLink', function (e) {
             e.preventDefault();
             self.openLink(e.currentTarget.href);
+            popupPage.closePopup();
         });
 
         //checkbox
@@ -296,6 +303,10 @@ PopupController.prototype = {
                 self.assistantTemplate.show();
             }
             self.resizePopupWindow();
+
+            if (tabInfo.adguardDetected) {
+                popupPage.closePopup();
+            }
         });
 
         //pause/unpause protection
@@ -384,5 +395,50 @@ PopupController.prototype = {
             selectorDropdown.addClass('hidden');
             feedbackErrorMessage.removeClass('show');
         });
+    },
+
+    // http://jira.performix.ru/browse/AG-3474
+    resizePopupWindowForMacOs: function () {
+        var options = this.options;
+        if (options.isSafariBrowser || options.isFirefoxBrowser || !options.isMacOs) {
+            return;
+        }
+        setTimeout(function () {
+            var block = $(".macoshackresize");
+            block.css("padding-top", "23px");
+        }, 1000);
     }
 };
+
+(function () {
+
+    /**
+     * TODO: check the following EDGE issue
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/551
+     * MS Edge unexpectedly crashes on opening the popup.
+     * We do not quite understand the reason for this behavior, but we assume it happens due to code flow execution and changing the DOM.
+     * setTimeout allows us to resolve this "race condition".
+     */
+
+    var controller = new PopupController();
+    controller.afterRender = function () {
+        // Add some delay for show popup size properly
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/505
+        var timeout = controller.options.isSafariBrowser ? 150 : 10;
+        setTimeout(function () {
+            controller.resizePopupWindow();
+            controller.resizePopupWindowForMacOs();
+        }, timeout);
+    };
+
+    document.addEventListener('resizePopup', function () {
+        controller.resizePopupWindow();
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        popupPage.sendMessage({type: 'getTabInfoForPopup'}, function (message) {
+            controller.render(message.frameInfo, message.options);
+        });
+    }, true);
+
+})();

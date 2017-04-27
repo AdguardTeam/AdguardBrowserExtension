@@ -541,7 +541,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             var domain = adguard.utils.url.getHost(tab.url);
             adguard.integration.addRuleToApp("@@//" + domain + "^$document", function () {
                 adguard.tabs.sendMessage(tab.tabId, {type: 'no-cache-reload'});
-                adguard.browserAction.close();
             });
         } else {
             updateTabIconAndContextMenu(tab, true);
@@ -558,7 +557,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             if (rule) {
                 adguard.integration.removeRuleFromApp(rule.ruleText, function () {
                     adguard.tabs.sendMessage(tab.tabId, {type: 'no-cache-reload'});
-                    adguard.browserAction.close();
                 });
             }
         } else {

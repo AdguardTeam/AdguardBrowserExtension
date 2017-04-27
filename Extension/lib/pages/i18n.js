@@ -22,7 +22,7 @@ i18n.translateElement = function (element, messageId, args) {
     I18nHelper.translateElement(element, message);
 };
 
-i18n.localizeDocument = function () {
+document.addEventListener('DOMContentLoaded', function () {
     $("[i18n]").each(function () {
         var $el = $(this);
         var message = i18n.getMessage($el.attr("i18n"));
@@ -40,6 +40,4 @@ i18n.localizeDocument = function () {
         var $el = $(this);
         $el.attr("title", i18n.getMessage($el.attr("i18n-title")));
     });
-};
-
-$(document).ready(i18n.localizeDocument);
+});

@@ -112,11 +112,11 @@
             'lib/libs/jquery-2.2.4.min.js',
             'lib/content-script/adguard-content.js',
             'lib/content-script/content-script.js',
+            'lib/content-script/popup-script.js',
             'lib/content-script/i18n-helper.js',
             'lib/pages/i18n.js',
-            'lib/pages/popup-controller.js',
             'lib/pages/script.js',
-            'lib/content-script/panel-popup.js'
+            'lib/pages/popup-controller.js'
         ]);
 
         // Sb.html

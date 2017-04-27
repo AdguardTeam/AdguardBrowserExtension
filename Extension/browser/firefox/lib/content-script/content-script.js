@@ -1,4 +1,3 @@
-/* global sendMessageToChrome, addChromeMessageListener, self, i18nMessageApi, I18nHelper */
 /**
  * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -15,6 +14,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* global i18nMessageApi, sendMessageToChrome, addChromeMessageListener */
 
 /**
  * contentPage object is used for messaging between a content script and a frame script.
@@ -44,16 +45,12 @@ var contentPage = (function () { // jshint ignore:line
         };
     }
 
-    /**
-     * Expose contentPage public API
-     */
-    var api = {};
-    api.sendMessage = sendMessage;
-    api.onMessage = {
-        addListener: addMessageListener
+    return {
+        sendMessage: sendMessage,
+        onMessage: {
+            addListener: addMessageListener
+        }
     };
-
-    return api;
 
 })();
 
@@ -62,16 +59,31 @@ var contentPage = (function () { // jshint ignore:line
  */
 var i18n = (function () { // jshint ignore:line
 
+    function replacePlaceholders(text, args) {
+        if (!text) {
+            return "";
+        }
+        if (args && args.length > 0) {
+            text = text.replace(/\$(\d+)/g, function (match, number) {
+                return typeof args[number - 1] !== "undefined" ? args[number - 1] : match;
+            });
+        }
+        return text;
+    }
+
     /**
      * Expose i18n public API
      */
-    var api = {};
-    api.getMessage = function (messageId, args) {
+    var getMessage = function (messageId, args) {
         var message = i18nMessageApi(messageId);
         if (!message) {
             throw 'Message ' + messageId + ' not found';
         }
-        return I18nHelper.replacePlaceholders(message, args);
+        return replacePlaceholders(message, args);
     };
-    return api;
+
+    return {
+        getMessage: getMessage
+    };
+
 })();
