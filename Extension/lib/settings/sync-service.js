@@ -630,7 +630,7 @@
             })[0];
         }
 
-        return {
+        var result = {
             enabled: syncEnabled,
             lastSyncTime: getLastSyncTime(),
             providers: providers,
@@ -638,6 +638,14 @@
             deviceName: adguard.localStorage.getItem(DEVICE_NAME_PROP),
             browserStorageSupported: adguard.utils.browser.isChromeBrowser()
         };
+
+        if (currentProvider) {
+            result.providerName = currentProvider.name;
+            result.isOAuthSupported = currentProvider.isOAuthSupported;
+            result.isAuthorized = currentProvider.isAuthorized;
+        }
+
+        return result;
     };
 
     var changeDeviceName = function (deviceName) {

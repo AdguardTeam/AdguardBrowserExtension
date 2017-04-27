@@ -22,91 +22,88 @@ var PageController = function () {
 
 PageController.prototype = {
 
-    init: function (status) {
-        this._render(status);
+    providersLocales: {
+        'ADGUARD_SYNC': 'Adguard',
+        'DROPBOX': 'Dropbox',
+        'BROWSER_SYNC': 'Browser storage'
     },
 
-    _render: function (status) {
-        var providerName = null;
-        var isOAuthSupported = false;
-        var isAuthorized = false;
-        if (status.currentProvider) {
-            providerName = status.currentProvider.name;
-            isOAuthSupported = status.currentProvider.isOAuthSupported;
-            isAuthorized = status.currentProvider.isAuthorized;
-        }
+    init: function (status) {
+        this._render(status);
+        this._initializeProvidersModal(status);
+        this._bindControls(status);
+    },
 
-        if (!isAuthorized || !status.enabled) {
-            $('#loginBlock').show();
-            $('#authorizedBlock').hide();
+    _render: function (options) {
+        var unauthorizedBlock = $('#loginBlock');
+        var authorizedBlock = $('#authorizedBlock');
 
-            if (isOAuthSupported && !isAuthorized) {
-                $('#signInButton').show();
-            } else {
-                $('#signInButton').hide();
-            }
+        if (!options.isAuthorized || !options.enabled) {
+            unauthorizedBlock.show();
+            authorizedBlock.hide();
 
-            if (!status.enabled && isAuthorized) {
-                $('#startSyncButton').show();
-            } else {
-                $('#startSyncButton').hide();
-            }
-
-            $('#selectProviderButton').text(providerName);
+            this._renderUnauthorizedBlock(options);
 
         } else {
-            $('#loginBlock').hide();
-            $('#authorizedBlock').show();
+            unauthorizedBlock.hide();
+            authorizedBlock.show();
 
-            $('#providerNameInfo').text(providerName);
-            if (status.lastSyncTime) {
-                $('#lastSyncTimeInfo').text(new Date(parseInt(status.lastSyncTime)).toLocaleString());
-            } else {
-                $('#lastSyncTimeInfo').text('Never synced');
-            }
+            this._renderAuthorizedBlock(options);
+        }
+    },
 
-            if (isOAuthSupported) {
-                if (providerName === 'ADGUARD_SYNC') {
-                    $('#manageAccountButton').show();
-                    $('#deviceNameBlock').show();
+    _renderUnauthorizedBlock: function (options) {
+        var signInButton = $('#signInButton');
+        var startSyncButton = $('#startSyncButton');
 
-                    $('#deviceNameInput').val(status.deviceName);
-                } else {
-                    $('#manageAccountButton').hide();
-                    $('#deviceNameBlock').hide();
-                }
-
-                $('#signOutButton').click(function () {
-                    contentPage.sendMessage({
-                        type: 'dropAuthSync',
-                        provider: providerName
-                    }, function () {
-                        document.location.reload();
-                    });
-                });
-            } else {
-                $('#manageAccountButton').hide();
-                $('#deviceNameBlock').hide();
-
-                $('#signOutButton').click(function () {
-                    contentPage.sendMessage({type: 'toggleSync'}, function () {
-                        document.location.reload();
-                    });
-                });
-            }
+        if (options.isOAuthSupported && !options.isAuthorized) {
+            signInButton.show();
+        } else {
+            signInButton.hide();
         }
 
-        this._initializeProvidersModal(status);
+        if (!options.enabled && options.isAuthorized) {
+            startSyncButton.show();
+        } else {
+            startSyncButton.hide();
+        }
 
-        var self = this;
+        $('#selectProviderButton').text(this.providersLocales[options.providerName]);
+    },
+
+    _renderAuthorizedBlock: function (options) {
+        $('#providerNameInfo').text(this.providersLocales[options.providerName]);
+
+        var lastSyncTimeInfo = $('#lastSyncTimeInfo');
+        var manageAccountButton = $('#manageAccountButton');
+        var deviceNameBlock = $('#deviceNameBlock');
+
+        if (options.lastSyncTime) {
+            lastSyncTimeInfo.text(new Date(parseInt(options.lastSyncTime)).toLocaleString());
+        } else {
+            lastSyncTimeInfo.text('Never synced');
+        }
+
+        if (options.isOAuthSupported && options.providerName === 'ADGUARD_SYNC') {
+            manageAccountButton.show();
+            deviceNameBlock.show();
+
+            $('#deviceNameInput').val(options.deviceName);
+        } else {
+            manageAccountButton.hide();
+            deviceNameBlock.hide();
+        }
+    },
+
+    _bindControls: function (options) {
         $('#selectProviderButton').click(function () {
-            self.providersModal.modal('show');
-        });
+            this.providersModal.modal('show');
+        }.bind(this));
 
         $('#signInButton').click(function () {
             contentPage.sendMessage({
                 type: 'authSync',
-                provider: providerName
+                provider: options.providerName
             }, function () {
                 document.location.reload();
             });
@@ -138,61 +135,61 @@ PageController.prototype = {
                 document.location.reload();
             });
         });
+
+        $('#signOutButton').click(function () {
+            if (options.isOAuthSupported) {
+                contentPage.sendMessage({
+                    type: 'dropAuthSync',
+                    provider: options.providerName
+                }, function () {
+                    document.location.reload();
+                });
+            } else {
+                contentPage.sendMessage({type: 'toggleSync'}, function () {
+                    document.location.reload();
+                });
+            }
+        });
     },
 
-    _initializeProvidersModal: function (status) {
+    _initializeProvidersModal: function (options) {
         this.providersModalEl = $('#providersModal');
         this.providersModal = this.providersModalEl.modal({
             backdrop: 'static',
             show: false
         });
 
-        //TODO: Mark current provider
-
-        if (!status.browserStorageSupported) {
+        if (!options.browserStorageSupported) {
             this.providersModal.find('.browser-storage-provider-select').hide();
         }
 
-        if (status.currentProvider) {
-            switch (status.currentProvider.name) {
-                case 'ADGUARD_SYNC':
-                    this.providersModal.find('.adguard-provider-select').addClass('active');
-                    break;
-                case 'DROPBOX':
-                    this.providersModal.find('.dropbox-provider-select').addClass('active');
-                    break;
-                case 'BROWSER_SYNC':
-                    this.providersModal.find('.browser-storage-provider-select').addClass('active');
-                    break;
-            }
+        switch (options.providerName) {
+            case 'ADGUARD_SYNC':
+                this.providersModal.find('.adguard-provider-select').addClass('active');
+                break;
+            case 'DROPBOX':
+                this.providersModal.find('.dropbox-provider-select').addClass('active');
+                break;
+            case 'BROWSER_SYNC':
+                this.providersModal.find('.browser-storage-provider-select').addClass('active');
+                break;
         }
 
-        this.providersModal.find('#adguardSelectProvider').on('click', function (e) {
-            e.preventDefault();
-
-            this.providersModalEl.modal('hide');
-            this._onProviderSelected('ADGUARD_SYNC');
-        }.bind(this));
-
-        this.providersModal.find('#dropboxSelectProvider').on('click', function (e) {
-            e.preventDefault();
-
-            this.providersModalEl.modal('hide');
-            this._onProviderSelected('DROPBOX');
-        }.bind(this));
-
-        this.providersModal.find('#browserStorageSelectProvider').on('click', function (e) {
-            e.preventDefault();
-
-            this.providersModalEl.modal('hide');
-            this._onProviderSelected('BROWSER_SYNC');
-        }.bind(this));
+        this.providersModal.find('#adguardSelectProvider').on('click', this._onProviderSelected('ADGUARD_SYNC'));
+        this.providersModal.find('#dropboxSelectProvider').on('click', this._onProviderSelected('DROPBOX'));
+        this.providersModal.find('#browserStorageSelectProvider').on('click', this._onProviderSelected('BROWSER_SYNC'));
     },
 
     _onProviderSelected: function (providerName) {
-        contentPage.sendMessage({type: 'setSyncProvider', provider: providerName}, function () {
-            document.location.reload();
-        });
+        return function (e) {
+            e.preventDefault();
+
+            this.providersModalEl.modal('hide');
+
+            contentPage.sendMessage({type: 'setSyncProvider', provider: providerName}, function () {
+                document.location.reload();
+            });
+        }.bind(this);
     }
 };
 
