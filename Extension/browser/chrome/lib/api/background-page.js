@@ -77,6 +77,14 @@ var browser = window.browser || chrome;
 
         var tab = {tabId: details.tabId};
 
+        /**
+         * FF sends http instead of ws protocol at the http-listeners layer
+         * Although this is expected, as the Upgrade request is indeed an HTTP request, we use a chromium based approach in this case.
+         */
+        if (details.type === 'websocket' && details.url.indexOf('http') === 0) {
+            details.url = details.url.replace(/^http(s)?:/, 'ws$1:');
+        }
+
         //https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
         var requestDetails = {
             requestUrl: details.url,    //request url
