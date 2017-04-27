@@ -635,7 +635,8 @@
             lastSyncTime: getLastSyncTime(),
             providers: providers,
             currentProvider: currentProvider,
-            deviceName: adguard.localStorage.getItem(DEVICE_NAME_PROP)
+            deviceName: adguard.localStorage.getItem(DEVICE_NAME_PROP),
+            browserStorageSupported: adguard.utils.browser.isChromeBrowser()
         };
     };
 

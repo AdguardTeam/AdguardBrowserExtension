@@ -96,7 +96,7 @@ PageController.prototype = {
             }
         }
 
-        this._initializeProvidersModal();
+        this._initializeProvidersModal(status);
 
         var self = this;
         $('#selectProviderButton').click(function () {
@@ -138,89 +138,9 @@ PageController.prototype = {
                 document.location.reload();
             });
         });
-
-
-        ///
-
-        var statusText =
-            'Sync enabled: ' + status.enabled + '<br/>' +
-            'Last sync time: ' + (status.lastSyncTime ? new Date(parseInt(status.lastSyncTime)) : '') + '<br/>' +
-            'Current provider: ' + providerName + '<br/>' +
-            'OAuth supported: ' + isOAuthSupported + '<br/>' +
-            'Auth: ' + isAuthorized + '<br/>';
-
-        $("#statusPlaceholder").html(statusText);
-
-        var refreshAuthButton = $('#refreshAuth');
-        var logoutAuthButton = $('#logoutAuth');
-        if (isOAuthSupported) {
-            if (isAuthorized) {
-                refreshAuthButton.hide();
-                logoutAuthButton.show();
-                logoutAuthButton.click(function () {
-                    contentPage.sendMessage({
-                        type: 'dropAuthSync',
-                        provider: providerName
-                    }, function () {
-                        document.location.reload();
-                    });
-                });
-            } else {
-                refreshAuthButton.show();
-                refreshAuthButton.click(function () {
-                    contentPage.sendMessage({
-                        type: 'authSync',
-                        provider: providerName
-                    }, function () {
-                        document.location.reload();
-                    });
-                });
-
-                logoutAuthButton.hide();
-            }
-        } else {
-            refreshAuthButton.hide();
-            logoutAuthButton.hide();
-        }
-
-        if (status.enabled) {
-            $('#toggleStatus').text('Disable sync');
-        } else {
-            $('#toggleStatus').text('Enable sync');
-        }
-
-        $('#toggleStatus').click(function () {
-            contentPage.sendMessage({type: 'toggleSync'}, function () {
-                document.location.reload();
-            });
-        });
-
-        $('#syncNow').click(function () {
-            contentPage.sendMessage({type: 'syncNow'}, function () {
-                document.location.reload();
-            });
-        });
-
-        $('#dropboxProvider').click(function () {
-            contentPage.sendMessage({type: 'setSyncProvider', provider: 'DROPBOX'}, function () {
-                document.location.reload();
-            });
-        });
-
-        $('#agSyncProvider').click(function () {
-            contentPage.sendMessage({type: 'setSyncProvider', provider: 'ADGUARD_SYNC'}, function () {
-                document.location.reload();
-            });
-        });
-
-        $('#browserStorageProvider').click(function () {
-            contentPage.sendMessage({type: 'setSyncProvider', provider: 'BROWSER_SYNC'}, function () {
-                document.location.reload();
-            });
-        });
     },
 
-    _initializeProvidersModal: function () {
+    _initializeProvidersModal: function (status) {
         this.providersModalEl = $('#providersModal');
         this.providersModal = this.providersModalEl.modal({
             backdrop: 'static',
@@ -228,6 +148,24 @@ PageController.prototype = {
         });
 
         //TODO: Mark current provider
+
+        if (!status.browserStorageSupported) {
+            this.providersModal.find('.browser-storage-provider-select').hide();
+        }
+
+        if (status.currentProvider) {
+            switch (status.currentProvider.name) {
+                case 'ADGUARD_SYNC':
+                    this.providersModal.find('.adguard-provider-select').addClass('active');
+                    break;
+                case 'DROPBOX':
+                    this.providersModal.find('.dropbox-provider-select').addClass('active');
+                    break;
+                case 'BROWSER_SYNC':
+                    this.providersModal.find('.browser-storage-provider-select').addClass('active');
+                    break;
+            }
+        }
 
         this.providersModal.find('#adguardSelectProvider').on('click', function (e) {
             e.preventDefault();
