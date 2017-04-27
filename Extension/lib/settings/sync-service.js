@@ -30,6 +30,7 @@
     var CURRENT_PROVIDER_PROP = 'current-sync-provider';
     var LAST_SYNC_TIME_PROP = 'last-sync-time';
     var SYNC_STATUS_PROP = 'sync-status';
+    var DEVICE_NAME_PROP = 'sync-device-name';
 
     var syncProvider = null;
     var lastSyncTime = null;
@@ -633,8 +634,13 @@
             enabled: syncEnabled,
             lastSyncTime: getLastSyncTime(),
             providers: providers,
-            currentProvider: currentProvider
+            currentProvider: currentProvider,
+            deviceName: adguard.localStorage.getItem(DEVICE_NAME_PROP)
         };
+    };
+
+    var changeDeviceName = function (deviceName) {
+        adguard.localStorage.setItem(DEVICE_NAME_PROP, deviceName);
     };
 
     api.sections = {
@@ -666,7 +672,11 @@
         /**
          * Enables/disables sync
          */
-        toggleSyncStatus: toggleSyncStatus
+        toggleSyncStatus: toggleSyncStatus,
+        /**
+         * Changes device name
+         */
+        changeDeviceName: changeDeviceName
     };
 
 })(adguard.sync, adguard, window);

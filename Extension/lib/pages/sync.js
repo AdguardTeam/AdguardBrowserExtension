@@ -59,12 +59,21 @@ PageController.prototype = {
             $('#authorizedBlock').show();
 
             $('#providerNameInfo').text(providerName);
+            if (status.lastSyncTime) {
+                $('#lastSyncTimeInfo').text(new Date(parseInt(status.lastSyncTime)).toLocaleString());
+            } else {
+                $('#lastSyncTimeInfo').text('Never synced');
+            }
 
             if (isOAuthSupported) {
                 if (providerName === 'ADGUARD_SYNC') {
                     $('#manageAccountButton').show();
+                    $('#deviceNameBlock').show();
+
+                    $('#deviceNameInput').val(status.deviceName);
                 } else {
                     $('#manageAccountButton').hide();
+                    $('#deviceNameBlock').hide();
                 }
 
                 $('#signOutButton').click(function () {
@@ -77,6 +86,7 @@ PageController.prototype = {
                 });
             } else {
                 $('#manageAccountButton').hide();
+                $('#deviceNameBlock').hide();
 
                 $('#signOutButton').click(function () {
                     contentPage.sendMessage({type: 'toggleSync'}, function () {
@@ -115,6 +125,16 @@ PageController.prototype = {
 
         $('#syncNowButton').click(function () {
             contentPage.sendMessage({type: 'syncNow'}, function () {
+                document.location.reload();
+            });
+        });
+
+        $('#changeDeviceNameButton').click(function () {
+            var deviceName = $('#deviceNameInput').val();
+            contentPage.sendMessage({
+                type: 'syncChangeDeviceName',
+                deviceName: deviceName
+            }, function () {
                 document.location.reload();
             });
         });

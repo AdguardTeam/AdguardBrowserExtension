@@ -426,6 +426,9 @@
             case 'syncNow':
                 adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, {force: true});
                 break;
+            case 'syncChangeDeviceName':
+                adguard.sync.syncService.changeDeviceName(message.deviceName);
+                break;
             default:
                 // Unhandled message
                 return true;
