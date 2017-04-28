@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global contentPage, $ */
+/* global contentPage, $, i18n */
 
 var PageController = function () {
 };
@@ -23,9 +23,9 @@ var PageController = function () {
 PageController.prototype = {
 
     providersLocales: {
-        'ADGUARD_SYNC': 'Adguard',
-        'DROPBOX': 'Dropbox',
-        'BROWSER_SYNC': 'Browser storage'
+        'ADGUARD_SYNC': i18n.getMessage("sync_provider_adguard"),
+        'DROPBOX': i18n.getMessage("sync_provider_dropbox"),
+        'BROWSER_SYNC': i18n.getMessage("sync_provider_browser_storage")
     },
 
     init: function (status) {
