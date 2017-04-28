@@ -100,7 +100,9 @@ PageController.prototype = {
             this.providersModal.modal('show');
         }.bind(this));
 
-        $('#signInButton').click(function () {
+        $('#signInButton').click(function (e) {
+            e.preventDefault();
+
             contentPage.sendMessage({
                 type: 'authSync',
                 provider: options.providerName
@@ -109,24 +111,25 @@ PageController.prototype = {
             });
         });
 
-        $('#startSyncButton').click(function () {
+        $('#startSyncButton').click(function (e) {
+            e.preventDefault();
+
             contentPage.sendMessage({type: 'toggleSync'}, function () {
                 document.location.reload();
             });
         });
 
+        $('#syncNowButton').click(function (e) {
+            e.preventDefault();
 
-        $('#manageAccountButton').click(function () {
-            window.location.href = 'http://adguard.com/login.html';
-        });
-
-        $('#syncNowButton').click(function () {
             contentPage.sendMessage({type: 'syncNow'}, function () {
                 document.location.reload();
             });
         });
 
-        $('#changeDeviceNameButton').click(function () {
+        $('#changeDeviceNameButton').click(function (e) {
+            e.preventDefault();
+
             var deviceName = $('#deviceNameInput').val();
             contentPage.sendMessage({
                 type: 'syncChangeDeviceName',
@@ -136,7 +139,9 @@ PageController.prototype = {
             });
         });
 
-        $('#signOutButton').click(function () {
+        $('#signOutButton').click(function (e) {
+            e.preventDefault();
+
             if (options.isOAuthSupported) {
                 contentPage.sendMessage({
                     type: 'dropAuthSync',

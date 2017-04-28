@@ -410,6 +410,9 @@
             case 'setOAuthToken':
                 if (adguard.sync.oauthService.setToken(message.provider, message.token, message.csrfState, message.expires)) {
                     adguard.sync.syncService.setSyncProvider(message.provider);
+
+                    adguard.tabs.remove(sender.tab.tabId);
+                    adguard.ui.openTab('/pages/sync.html', {activateSameTab: true});
                 }
                 break;
             case 'getSyncStatus':
