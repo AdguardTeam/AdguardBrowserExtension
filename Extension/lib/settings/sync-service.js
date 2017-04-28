@@ -635,7 +635,7 @@
             lastSyncTime: getLastSyncTime(),
             providers: providers,
             currentProvider: currentProvider,
-            deviceName: adguard.localStorage.getItem(DEVICE_NAME_PROP),
+            deviceName: getDeviceName(),
             browserStorageSupported: adguard.utils.browser.isChromeBrowser()
         };
 
@@ -646,6 +646,16 @@
         }
 
         return result;
+    };
+
+    var getDeviceName = function () {
+        var deviceName = adguard.localStorage.getItem(DEVICE_NAME_PROP);
+        if (!deviceName) {
+            deviceName = adguard.utils.browser.getClientId()
+                + ' (' + adguard.prefs.browser + ' ' + window.navigator.platform + ')';
+        }
+
+        return deviceName;
     };
 
     var changeDeviceName = function (deviceName) {

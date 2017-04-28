@@ -412,7 +412,7 @@
                     adguard.sync.syncService.setSyncProvider(message.provider);
 
                     adguard.tabs.remove(sender.tab.tabId);
-                    adguard.ui.openTab('/pages/sync.html', {activateSameTab: true});
+                    adguard.ui.openTab('/pages/sync.html', {activateSameTab: true, reload: true});
                 }
                 break;
             case 'getSyncStatus':
