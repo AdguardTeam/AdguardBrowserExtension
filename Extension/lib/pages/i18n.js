@@ -22,7 +22,7 @@ i18n.translateElement = function (element, messageId, args) {
     I18nHelper.translateElement(element, message);
 };
 
-document.addEventListener('DOMContentLoaded', function () {
+$(document).ready(function () {
     $("[i18n]").each(function () {
         var $el = $(this);
         var message = i18n.getMessage($el.attr("i18n"));

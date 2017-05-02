@@ -435,10 +435,10 @@ PopupController.prototype = {
         controller.resizePopupWindow();
     });
 
-    document.addEventListener('DOMContentLoaded', function () {
-        popupPage.sendMessage({type: 'getTabInfoForPopup'}, function (message) {
+    popupPage.sendMessage({type: 'getTabInfoForPopup'}, function (message) {
+        $(document).ready(function () {
             controller.render(message.frameInfo, message.options);
         });
-    }, true);
+    });
 
 })();
