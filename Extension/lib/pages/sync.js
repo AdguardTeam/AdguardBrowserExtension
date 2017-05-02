@@ -81,7 +81,7 @@ PageController.prototype = {
         if (options.lastSyncTime) {
             lastSyncTimeInfo.text(new Date(parseInt(options.lastSyncTime)).toLocaleString());
         } else {
-            lastSyncTimeInfo.text('Never synced');
+            lastSyncTimeInfo.text(i18n.getMessage('sync_last_sync_time_never_sync_text'));
         }
 
         if (options.isOAuthSupported && options.providerName === 'ADGUARD_SYNC') {

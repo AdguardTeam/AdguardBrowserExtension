@@ -33,7 +33,7 @@
     var DEVICE_NAME_PROP = 'sync-device-name';
 
     var syncProvider = null;
-    var lastSyncTime = null;
+    var lastSyncTimes = null;
     var syncEnabled;
 
     /**
@@ -506,12 +506,32 @@
         return dfd;
     }
 
-    function getLastSyncTime() {
-        if (!lastSyncTime) {
-            lastSyncTime = parseInt(adguard.localStorage.getItem(LAST_SYNC_TIME_PROP));
+    function getLastSyncTimes() {
+        if (lastSyncTimes === null) {
+            lastSyncTimes = JSON.parse(adguard.localStorage.getItem(LAST_SYNC_TIME_PROP)) || Object.create(null);
         }
 
-        return lastSyncTime;
+        return lastSyncTimes;
+    }
+
+    function getLastSyncTime(providerName) {
+        if (!providerName) {
+            return null;
+        }
+
+        var times = getLastSyncTimes();
+        if (times) {
+            return times[providerName];
+        }
+
+        return null;
+    }
+
+    function setLastSyncTime(dateTime, providerName) {
+        var times = getLastSyncTimes();
+        times[providerName] = dateTime;
+
+        adguard.localStorage.setItem(LAST_SYNC_TIME_PROP, JSON.stringify(times));
     }
 
     var toggleSyncStatus = function (enabled) {
@@ -604,8 +624,7 @@
 
         processManifest(function (success) {
             if (success) {
-                lastSyncTime = Date.now();
-                adguard.localStorage.setItem(LAST_SYNC_TIME_PROP, lastSyncTime);
+                setLastSyncTime(Date.now(), syncProvider.name);
 
                 adguard.console.info('Synchronizing settings finished');
             } else {
@@ -632,7 +651,7 @@
 
         var result = {
             enabled: syncEnabled,
-            lastSyncTime: getLastSyncTime(),
+            lastSyncTime: getLastSyncTime(providerName),
             providers: providers,
             currentProvider: currentProvider,
             deviceName: getDeviceName(),
