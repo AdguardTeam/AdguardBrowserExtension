@@ -1,8 +1,8 @@
-! Checksum: ggidTh2uIdQT7ynx14J/Ww
+! Checksum: jjtSL6HSZkTNd5kRmD0wSg
 ! Title: Spanish/Portuguese filter
 ! Description: Adguard Spanish/Portuguese filter. Filter list that specifically removes adverts on Spanish and Portuguese language websites.
-! Version: 1.0.86.61
-! TimeUpdated: 2017-04-17T15:01:20.389+04:00
+! Version: 1.0.86.64
+! TimeUpdated: 2017-04-28T07:01:37.649+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -139,6 +139,7 @@
 ||xclk-integracion.com^$third-party
 ||yestorrents.org^$third-party
 ||zebestof.com^$third-party
+@@||connect-trojan.net^$generichide
 zonasports.me#%#var baseCreateElement = document.createElement.bind(document); document.createElement = function(name) { var el = baseCreateElement(name); if(name != 'span') { return el; } else { Object.defineProperty(el, 'innerHTML', { set: function(text) { if(/^(<a id="[^"]*"><\/a>)*$/.test(text)) { throw new Error(); } Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML').set.call(el, text); }, get: function() { return el.innerHTML; } }); return el; }};
 @@||tabletsesmartphones.org^$generichide
 ||tinypass.com/xbuilder/experience/load?$script,domain=a
@@ -339,6 +340,12 @@ _publicidade.
 _publicidade_
 _publicitario.
 http://adw.
+||mocosoft.com/cialis.jpg
+||mocosoft.com/cpiu.gif
+mocosoft.com##table[bgcolor="red"]
+||mocosoft.com/prope.jpg
+||youtube.com/v/^$domain=mocosoft.com
+programaswebfull.net##.topad
 marca.com##.content > iframe[src^="http://91.116.142.114"]
 ||91.116.142.114/iframe$domain=marca.com
 zonasports.me##iframe[src^="http://zonasports.at.ua/"]

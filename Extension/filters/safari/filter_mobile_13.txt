@@ -1,8 +1,8 @@
-! Checksum: hdG4WSM2zYLVDxkH5FNSRQ
+! Checksum: 6U9zzC7AwX4Ob69V28MZvA
 ! Title: Turkish filter
 ! Description: Adguard Turkish filter. Filter list that specifically removes adverts on Turkish language websites.
-! Version: 1.0.7.35
-! TimeUpdated: 2017-04-19T08:02:06.810+04:00
+! Version: 1.0.7.44
+! TimeUpdated: 2017-05-01T15:01:59.082+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -415,6 +415,7 @@ hdfullfilmizlesene1.org#%#AG_onLoad(function() { document.getElementById('reklam
 dizimag.co#%#AG_onLoad(function() { hiVideorek(); });
 baglanfilmiizle.com#%#Object.defineProperty(window, 'sure', { get: function() { return 0; } });
 onlinedizi.co#%#AG_onLoad(function() { setTimeout(function() {jQuery(".video-player").css("display", "block"); }, 300); });
+finikeakdeniz.com.tr#%#AG_onLoad(function() { if (window.location.href.indexOf("/reklam.asp") != -1) { window.location.href = "/" }; });
 populerfilmler.net#%#Object.defineProperty(window, 'undercipop', { get: function() { return {}; } });
 diziizleyin.gen.tr#%#AG_onLoad(function() { document.getElementById('kendisi').style.display = 'block'; });
 altyazilifilmizle.org#%#AG_onLoad(function() { psrklm_kpt(); });
@@ -815,6 +816,28 @@ izlemeyedeger.com#$#.remodal-is-locked {overflow:visible!important}
 ||media.*.com/renderimage.aspx?pid=$third-party
 ||wingobet10.com/banner/$third-party
 ://i.hizliresim.com^$domain=filmifullizle.org|filmexpresi.com|bankotahminler1.org|hintfilmi.net|fullhdfilmgecesi.com|sinemaizlefullhd.net|720pfilmizle.tv|asyafanatikleri.net|ayfilmizle.net|diziay.com|diziband.com|ediziizleyin.com|filmarenasi.net|filmkomedi.com|fullfilmihdizlesene.com|haber32.com.tr|hd-pornoizle.net|hdfilmarenasi.com|hdfilmarenasi.net|sinemapol.org|sonbolumizleyin.net|sports.gool7.net|tekparthdkeyfi.com|xsportv1.com|fullfilmsitesi.com|filmbilir.net|hdfilmakinasi.com
+fullhdfilm.gen.tr###xxx_kayan_fixed_fhdf
+||harikadizi5.com/harikadizi5/r/
+harikadizi5.com##.yan-bosluk
+internethaber.com##.ad
+aydinhedef.com.tr##.ad
+cinemadran.com##.ad
+antalyaburada.com###rightBanners
+antalyaburada.com##.bannerBox
+antalyaburada.com##.banner
+posofsnrgazetesi.com##.yazar_banner > a
+finikeakdeniz.com.tr##.reklam_tikla
+antalyakorfez.com##.dissagreklam
+kemerhaber.com##img[width="900"][height="160"]
+kemerhaber.com##div[style="width:966px; height:165px !important; overflow:hidden"]+div.textwidget > center > a > img
+kemerhaber.com##a[title="Güral Premier"]
+afyonhisargazetesi.com##.reklam_tikla
+instela.com##.entry-banner
+gergerhaber.net##.reklam_tikla
+||ceyhanmavihaber.com/images/*Reklam/
+ceyhanmavihaber.com##.tekparcareklamalani2
+||www.adanahaber.net/images/banner/
+www.5ocakgazetesi.com##div:not([id]):not([class]) > a[target="_blank"] > img[src^="/upload/"]
 ||rqd.qq.com/analytics^
 ||resim.filmifullizle.org/video.mp4
 posta.com.tr##.square-banner
@@ -2412,7 +2435,7 @@ taraftarium24tv.link##video[preload="none"][autoplay]
 ||cdn.html5maker.com^$domain=dizibox.com|hdfilmcehennemi.com|larende.com|truvafilmizle.net
 ||cdn.md/admost/$domain=mackolik.com
 ||cdn.sikisizlemece.com/bnr/
-||cdn.tuttur.com/marketing/banner/
+||tuttur.com/marketing/banner$third-party
 ||clnyourpc.com/images^$third-party
 ||cloudadhost.com/btn/indir.png
 ||cloudfront.net^$domain=hdfilmifullizle.com.tr
@@ -2728,6 +2751,7 @@ taraftarium24tv.link##video[preload="none"][autoplay]
 ||zapkolik.vod.cubecdn.net/*.mp4^$domain=diziay.com|hdfilmakinasi.com
 ||zaytung.com/banner
 ||zaytung.com/images/alternatif_okullar.gif
+@@||www.adanahaber.net/images/banner/15000
 haberler.com#@#iframe[width="300"][height="250"]
 @@||dijitalx.com/wp-content/uploads/2016/12/digital_advertising.jpg
 tvshowtime.com#@##top-banner

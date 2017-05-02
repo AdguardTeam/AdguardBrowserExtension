@@ -1,8 +1,8 @@
-! Checksum: Q5B2CDonPig+LTf+FXzgng
+! Checksum: jOgMRoqwGVkYWvhWwi0ovA
 ! Title: Spanish/Portuguese filter
 ! Description: Adguard Spanish/Portuguese filter. Filter list that specifically removes adverts on Spanish and Portuguese language websites.
-! Version: 1.0.86.61
-! TimeUpdated: 2017-04-17T15:01:20.389+04:00
+! Version: 1.0.86.64
+! TimeUpdated: 2017-04-28T07:01:37.649+04:00
 ! Expires: 2 days (update frequency)
 ! Title: Adguard Spanish/Portuguese Filter.
 !
@@ -167,6 +167,8 @@
 !
 ! These rules are against anti-adblock scripts
 !
+! https://forum.adguard.com/index.php?threads/21090/
+@@||connect-trojan.net^$generichide
 ! https://forum.adguard.com/index.php?threads/http-zonasports-me.20289/
 zonasports.me#%#var baseCreateElement = document.createElement.bind(document); document.createElement = function(name) { var el = baseCreateElement(name); if(name != 'span') { return el; } else { Object.defineProperty(el, 'innerHTML', { set: function(text) { if(/^(<a id="[^"]*"><\/a>)*$/.test(text)) { throw new Error(); } Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML').set.call(el, text); }, get: function() { return el.innerHTML; } }); return el; }};
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4538
@@ -436,6 +438,12 @@ http://adw.
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
 !
+||mocosoft.com/cialis.jpg
+||mocosoft.com/cpiu.gif
+mocosoft.com##table[bgcolor="red"]
+||mocosoft.com/prope.jpg
+||youtube.com/v/^$domain=mocosoft.com
+programaswebfull.net##.topad
 marca.com##.content > iframe[src^="http://91.116.142.114"]
 ||91.116.142.114/iframe$domain=marca.com
 zonasports.me##iframe[src^="http://zonasports.at.ua/"]

@@ -1,8 +1,8 @@
-! Checksum: 6QFae+VnDw4ICUwlGGhmYA
+! Checksum: Sl4uXzV0wYjcAjLW6EOM3Q
 ! Title: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
-! Version: 1.0.18.81
-! TimeUpdated: 2017-04-19T16:01:01.874+04:00
+! Version: 1.0.19.20
+! TimeUpdated: 2017-05-02T16:01:01.047+04:00
 ! Expires: 2 days (update frequency)
 ! Title: Adguard Social Media Filter
 !
@@ -28,6 +28,7 @@
 !
 ! This section contains rules for common trackers/buttons
 !
+||developers.rambler.ru/likes/widget.js
 ||widgets.instela.com/widget.php?url=$third-party
 ||widget.pushbullet.com^$third-party
 ||youtube.com/subscribe_embed?$third-party
@@ -212,7 +213,7 @@
 /sharebox.min.js
 /sharedaddy/sharing.js
 /sharing_buttons.js
-/social-likes.min.js$domain=~sputnik-news.ee|~animalreader.ru|~ichip.ru|~keddr.com|~kino-max.com|~kino24x7.com|~make-3d.ru|~miuipro.ru|~omelchuck.ru|~podfm.ru|~serial-online.com|~sputniknews.com|~trinixy.ru|~kinogo-kinopoisk.net|~bobfilm-online.ru|~westernfilm.ru|~bobfilm.tv|~kinokrik.net|~kinogo720.net|~kinogo-net-co.ru|~kinoklad.net|~intex-press.by
+/social-likes.min.js$domain=~sputnik.by|~sputnik-news.ee|~animalreader.ru|~ichip.ru|~keddr.com|~kino-max.com|~kino24x7.com|~make-3d.ru|~miuipro.ru|~omelchuck.ru|~podfm.ru|~serial-online.com|~sputniknews.com|~trinixy.ru|~kinogo-kinopoisk.net|~bobfilm-online.ru|~westernfilm.ru|~bobfilm.tv|~kinokrik.net|~kinogo720.net|~kinogo-net-co.ru|~kinoklad.net|~intex-press.by
 /social_networks.js
 /socialbar-js.php
 /socialbuttons.js
@@ -393,6 +394,44 @@ m.tf.co.kr#$#li.sBtn_reply { float: initial!important; display: inline-block!imp
 ||mimimi.tv/?*=*&_=
 ||mindspace.ru/?*=*&_=
 !
+ain.ua##.post-social
+abril.com.br##.share
+garten.de##h2.pane-title:first-of-type
+antenne.de##.sharing
+s0ft4pc.com##.share-post
+sat1.de##.social-wrapper
+androidcentral.com,crackberry.com,imore.com,teslacentral.com,vrheads.com,windowscentral.com##.mn_mbn_share
+donanimhaber.com##.lnk-paylas.google
+gorod48.ru##.socialBlock
+knowyourmeme.com###ctoolbar
+tass.ru##.b-social-buttons > *
+antalyaburada.com###twitterfllowBoxSmall
+antalyaburada.com##.facebookLikeBoxSmall
+paperpaper.ru##.r-likes-wrapper
+news.vtomske.ru##.share
+uip.me##.post-share > div.show
+gamesofdesire.com###addthis_sharing_toolbox
+mobil.ksta.de##.social_btn
+sportfm.ru##.share
+esenyurthaberleri.com##div[class^="fix-share-"]
+politeka.net##.share
+znaj.ua##.field-name-addtoany
+drive2.com,drive2.ru##.o-group.o-group--m.js-share
+connect-trojan.net###floating-fblog
+gismeteo.ru##.article__ctrls
+screenshot.ru##.panel-share-networks
+screenshot.ru##.panel-share-networks > ul
+||finikeakdeniz.com.tr/images/facebook.png
+gergerhaber.net##a[href*="www.facebook.com/sharer/sharer.php"]
+cukurovametropol.com,golbasiguncel.com,cukurovametropol.com,haberamasya.com,suluovagazetesi.com,yesilirmakgazetesi.com###share
+||kahtagundem.com/i/share-$image
+aksarayajans.com,kahtamanset.com##a[onclick*="www.facebook.com/sharer/sharer.php"]
+amp.usatoday.com##.story-share-tools
+amp.ibtimes.co.uk##.article--share
+pcworld.com##.social
+gizmochina.com##.smbt-social-icons
+xiaomitoday.com##.widget_bimber_widget_facebook_page
+up-4ever.com##.btn-social-icon
 esquire.ru##.post-sharebox
 esquire.ru##.sharebox-button
 tjournal.ru##.b-articles__b__share
@@ -445,7 +484,6 @@ nevnov.ru##.share_wrap
 politico.com##.story-share
 yapx.ru##.photoblock-footer-social
 track24.ru##.b-share
-imore.com##.mn_mbn_share
 software.informer.com##.wrapper_like
 kibrisgazetesi.com##.ustpaylas
 robtex.com##.soctop
@@ -460,7 +498,6 @@ bursahakimiyet.com.tr##.sharenewsin
 riafan.ru##.rambler-share
 realnoevremya.ru##.colorShareBtn
 realnoevremya.ru##.grayShareBtn
-windowscentral.com##.mn_mbn_share
 sueddeutsche.de###article-sidebar-action-facebook
 cosmo.ru##.sharing-div
 spielesite.com##.social-sharing-buttons
@@ -489,7 +526,6 @@ revolvy.com###fb_like_pop
 gadgetsnow.com##.leftsocial
 fiat.com.tr##.NoJSSMContainer
 infowars.com##.cresta-share-icon
-androidcentral.com##.mn_mbn_share
 riafan.ru##.share
 fun01.net###win_like_mask
 fun01.net###win_like
@@ -1995,8 +2031,11 @@ sisapress.com##div[class^="newscontSns"]
 sportsseoul.com,sportsseoul.co.kr##.left_socialWap
 sportsseoul.com,sportsseoul.co.kr##.right_iconMenu
 star.mt.co.kr##.lst_sc
+story369.com##.mak-sns
 viva100.com##.left_top_sns
 wikitree.co.kr##.v_sns
+ygosu.com###footer_sns
+ygosu.com###sns_bar
 zdnet.co.kr##ul.sub_view_tit4.clfx
 !-------------------------------------------------------------------------------!
 !-------------- General hiding rules -------------------------------------------!
@@ -2004,6 +2043,7 @@ zdnet.co.kr##ul.sub_view_tit4.clfx
 !
 ! Section contains list general hiding rules
 !
+##.nc_socialPanel
 ##.share-icon
 ##.social-box
 ~pinterest.com##a[href^="https://pinterest.com/pin/create/link/?"]
@@ -2226,7 +2266,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.b-sharing
 ~rg.ru##.b-social
 ##.b-social-button
-##.b-social-buttons
+~tass.ru##.b-social-buttons
 ##.b-social-share
 ##.b-social-sharing
 ##.b-social_like_buttons
@@ -2383,7 +2423,7 @@ livejournal.com##.b-ljtimes-wrapper
 ##.pocket-btn
 ##.popup-social
 ##.post-item__social
-##.post-share
+~uip.me##.post-share
 ##.post-share-box
 ##.post-share-buttons
 ##.post-share-links
@@ -2862,6 +2902,10 @@ livejournal.com##.b-ljtimes-wrapper
 ||cdn-library.su/plusonet/lib/$domain=~pluso.net
 ||mailget.net^$third-party
 !
+afyonprestij.com##body > div#kodac
+afyonnews.com##.simplemodal-container
+afyonnews.com###simplemodal-overlay
+afyonajans.com##body > div#kodac
 line.do##facebook-like-box
 tvfru.ru###fancybox-overlay
 tvfru.ru##.fancybox-wrap
@@ -2961,6 +3005,14 @@ com-magazin.de##w-div[role$="dialog"]
 ||turkusozu.com/js/fancybox/
 ||ufatime.ru/st/libs/magnific/jquery.magnific-popup.min.js
 !
+!
+esenyurthaberleri.com#%#AG_onLoad(function() { setTimeout(function() { document.body.className = document.body.className.replace("jconfirm-noscroll",""); }, 500); });
+esenyurthaberleri.com#$#.jconfirm.supervan{display:none!important;}
+esenyurthaberleri.com#$#html > body.jconfirm-noscroll{overflow:visible!important;}
+!
+forum.autoua.net#$#.fader-social { display: none!important; }
+forum.autoua.net#$#body { overflow: visible!important; }
+!
 gordonua.com#$##socialModal { display: none!important; }
 gordonua.com#$#.modal-backdrop { display: none!important; }
 gordonua.com#$#body.modal-open { overflow: visible!important; }
@@ -3005,18 +3057,21 @@ bomb01.com#$#.modal-open { overflow: visible!important; }
 !
 ! Section fixing issues caused by social filter
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/4902
+@@||xing-share.com/plugins^$domain=bewerbung.co
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4648
 @@||apis.google.com/js/platform.js$domain=geekinformer.net
 ! Unblock minificated scripts library
 ! for example: http://kinogo-net-co.ru/engine/classes/min/index.php?charset=windows-1251&f=/engine/classes/js/jquery.js,*,/templates/Kinogo/js/social-likes.min.js
 @@/engine/classes/min/index.php?*/social-likes.min.js$~third-party
+@@/engine/classes/min/?charset=*/social-likes.min.js$~third-party
 ! Fixing authorization via FaceBook
 @@||facebook.com/*/plugins/login_button.
 ! https://forum.adguard.com/index.php?threads/18418/
 @@||addthis.com/js/*/addthis_widget.js^$domain=hatsandcaps.co.uk
 ! Fixing broken buttons on some sites
 @@||yandex.st/share/share.js$domain=66.ru|calculatewater.ru|ktk.kz|splav.ru|vnukovo.ru|foxtrot.com.ua|yadi.sk|gama-gama.ru|foxtrot.com.ua|radiorecord.ru|рязанскийкирпич.рф
-@@||yastatic.net/share*/share.js$domain=kinogo-720.net|рязанскийкирпич.рф|playground.ru|foxtrot.com.ua|biglion.ru|master-of-orion.ru|auto.ru|ktk.kz|universarium.org|pix.playground.ru
+@@||yastatic.net/share*/share.js$domain=vse.fm|kinogo-720.net|рязанскийкирпич.рф|playground.ru|foxtrot.com.ua|biglion.ru|master-of-orion.ru|auto.ru|ktk.kz|universarium.org|pix.playground.ru
 ! zenmate.com preemium trial sign up
 zenmate.com#@#.social-networks
 ! https://forum.adguard.com/index.php?threads/14697/

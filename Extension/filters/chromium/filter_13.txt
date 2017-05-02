@@ -1,8 +1,8 @@
-! Checksum: map0SGo7ecu3W47vTaM87Q
+! Checksum: dLq2VJOVm5+8kXvwuJSVww
 ! Title: Turkish filter
 ! Description: Adguard Turkish filter. Filter list that specifically removes adverts on Turkish language websites.
-! Version: 1.0.7.35
-! TimeUpdated: 2017-04-19T08:02:06.810+04:00
+! Version: 1.0.7.44
+! TimeUpdated: 2017-05-01T15:01:59.082+04:00
 ! Expires: 2 days (update frequency)
 ! Title: Adguard Turkish Filter.
 !
@@ -445,7 +445,8 @@ turkanime.tv##td[valign="top"][style="padding-top:10px; padding-left:5px; width:
 !------- JS rules ---------------------!
 !--------------------------------------!
 !
-! Clickunders
+!*****
+!* Clickunders
 ! initPu, puShown
 seyirlikfilm.net,fulldiziizleyelim2.com,diziizlehdfulltr.com,diziizlendi.com,tekparcafullizle1.com,filmotoru.net,sonbolumizleyin.org,hdfilmarenasi.com,tekparthdkeyfi.com,tekparcafullizle.com,zak4.com,taraftarium24tv.link,hdfilmseli.com#%#Object.defineProperty(window, 'puShown', { get: function() { return true; } });
 filmexpresi.com,sinemafilm.org,filmi-izle.com,hdfilmakinasi.com,limitsizdayi.org,amk3.com,filmsezonu.net,filmexpresi.com,filmhizmeti.com,hdfulltekpart.net,filmbudur.org,filmizle.live,dizi10.com,hdfilmvagonu.net,hdizletekpart.com,hdfilmkabusu.com,altyazilifilm.org,hd-pornoizle.net,tangoarti.com,zamunda-torrent.net#%#Object.defineProperty(window, 'initPu', { get: function() { return {}; } });
@@ -506,6 +507,8 @@ wowturkey.com#%#window.google_jobrunner = function() {};
 excel.web.tr#%#AG_onLoad(function() { $('td[class="alt1Active"] > a > img').closest('tr[align$="center"]').remove(); });
 ! http://forum.adguard.com/showthread.php?9303
 webaslan.com#%#AG_onLoad(function() { setTimeout(function() { yonlen(); }, 300); });
+!*
+!*****
 !
 !### [START] Skip ad before the video ###
 !
@@ -527,9 +530,10 @@ onlinedizi.co#%#AG_onLoad(function() { setTimeout(function() {jQuery(".video-pla
 !
 !### [END] Skip ad before the video ###
 !
+! https://forum.adguard.com/index.php?threads/21052/
+finikeakdeniz.com.tr#%#AG_onLoad(function() { if (window.location.href.indexOf("/reklam.asp") != -1) { window.location.href = "/" }; });
 ! http://forum.adguard.com/showthread.php?9105
 populerfilmler.net#%#Object.defineProperty(window, 'undercipop', { get: function() { return {}; } });
-!
 ! http://forum.adguard.com/showthread.php?8992
 diziizleyin.gen.tr#%#AG_onLoad(function() { document.getElementById('kendisi').style.display = 'block'; });
 ! http://forum.adguard.com/showthread.php?8676
@@ -970,6 +974,28 @@ izlemeyedeger.com#$#.remodal-is-locked {overflow:visible!important}
 ! Images hosting. Used for advertising on many sites
 ://i.hizliresim.com^$domain=filmifullizle.org|filmexpresi.com|bankotahminler1.org|hintfilmi.net|fullhdfilmgecesi.com|sinemaizlefullhd.net|720pfilmizle.tv|asyafanatikleri.net|ayfilmizle.net|diziay.com|diziband.com|ediziizleyin.com|filmarenasi.net|filmkomedi.com|fullfilmihdizlesene.com|haber32.com.tr|hd-pornoizle.net|hdfilmarenasi.com|hdfilmarenasi.net|sinemapol.org|sonbolumizleyin.net|sports.gool7.net|tekparthdkeyfi.com|xsportv1.com|fullfilmsitesi.com|filmbilir.net|hdfilmakinasi.com
 !
+fullhdfilm.gen.tr###xxx_kayan_fixed_fhdf
+||harikadizi5.com/harikadizi5/r/
+harikadizi5.com##.yan-bosluk
+internethaber.com##.ad
+aydinhedef.com.tr##.ad
+cinemadran.com##.ad
+antalyaburada.com###rightBanners
+antalyaburada.com##.bannerBox
+antalyaburada.com##.banner
+posofsnrgazetesi.com##.yazar_banner > a
+finikeakdeniz.com.tr##.reklam_tikla
+antalyakorfez.com##.dissagreklam
+kemerhaber.com##img[width="900"][height="160"]
+kemerhaber.com##div[style="width:966px; height:165px !important; overflow:hidden"]+div.textwidget > center > a > img
+kemerhaber.com##a[title="Güral Premier"]
+afyonhisargazetesi.com##.reklam_tikla
+instela.com##.entry-banner
+gergerhaber.net##.reklam_tikla
+||ceyhanmavihaber.com/images/*Reklam/
+ceyhanmavihaber.com##.tekparcareklamalani2
+||www.adanahaber.net/images/banner/
+www.5ocakgazetesi.com##div:not([id]):not([class]) > a[target="_blank"] > img[src^="/upload/"]
 ||rqd.qq.com/analytics^
 ||resim.filmifullizle.org/video.mp4
 posta.com.tr##.square-banner
@@ -2567,7 +2593,7 @@ taraftarium24tv.link##video[preload="none"][autoplay]
 ||cdn.html5maker.com^$domain=dizibox.com|hdfilmcehennemi.com|larende.com|truvafilmizle.net
 ||cdn.md/admost/$domain=mackolik.com
 ||cdn.sikisizlemece.com/bnr/
-||cdn.tuttur.com/marketing/banner/
+||tuttur.com/marketing/banner$third-party
 ||clnyourpc.com/images^$third-party
 ||cloudadhost.com/btn/indir.png
 ||cloudfront.net^$domain=hdfilmifullizle.com.tr
@@ -2886,6 +2912,8 @@ taraftarium24tv.link##video[preload="none"][autoplay]
 !---------------------------------------------------------------------------!
 !------ White list. Fixing filtration errors (false-positive)---------------!
 !---------------------------------------------------------------------------!
+! https://forum.adguard.com/index.php?threads/adanahaber-net.21034/ - un-hiding logo
+@@||www.adanahaber.net/images/banner/15000
 ! https://forum.adguard.com/index.php?threads/haberler-com.19961/
 haberler.com#@#iframe[width="300"][height="250"]
 ! https://forum.adguard.com/index.php?threads/17091/

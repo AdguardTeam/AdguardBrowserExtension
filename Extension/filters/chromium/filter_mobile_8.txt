@@ -1,8 +1,8 @@
-! Checksum: LIyu25DWJegOO0z3YhW0XA
+! Checksum: 2kL+2MsKXknJD/M05tKPxA
 ! Title: Dutch filter
 ! Description: EasyList Dutch + Adguard Dutch filter. Filter list that specifically removes adverts on Dutch language websites.
-! Version: 1.0.9.23
-! TimeUpdated: 2017-03-24T20:01:27.532+04:00
+! Version: 1.0.9.26
+! TimeUpdated: 2017-05-02T15:01:15.882+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -1291,12 +1291,16 @@ voetbalnieuws.be#@#a[href^="http://adserving.unibet.com/"]
 tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
 ||wwa.pacific-yield.com^$third-party
 @@/ad_bomb/*$image,domain=computerworld.nl|webwereld.nl
+@@||telegraaf.tcdn.nl/javascript/ads/*$domain=telegraaf.nl,third-party
+telegraaf.nl#%#window.canRunAds = true;
 @@||static.buienradar.nl/resources/js/advertisement.js
 biernet.nl#@#.afs_ads
 @@||telegraaf.tcdn.nl/javascript/showads*.js
-gelderlander.nl##.page-content > .theme-default[-ext-has='div.ad']s
+ad.nl##.tile[-ext-has=">.ankeiler--advertisement"]
+gelderlander.nl##.page-content > .theme-default[-ext-has='div.ad']
 klusidee.nl##tr.table-row[-ext-has=".td-ad"]
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
+ad.nl##.ankeiler--advertisement
 ||iframe.gsminfo.nl/*/populair-beknopt^$domain=allaboutphones.nl
 allaboutphones.nl##.ad-container
 autoweek.nl##.page-banner
