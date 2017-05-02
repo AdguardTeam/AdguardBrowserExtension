@@ -137,6 +137,7 @@
             'lib/utils/css-hits-counter.js',
             'lib/content-script/adguard-content.js',
             'lib/content-script/content-script.js',
+            'lib/content-script/wrappers.js',
             'lib/content-script/preload.js'
         ], 'document_start', true);
 
