@@ -296,8 +296,8 @@
                 }
                 var cssAndScripts = adguard.webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl, message.options);
                 return cssAndScripts || {};
-            case 'checkWebSocketRequest':
-                var block = adguard.webRequestService.checkWebSocketRequest(sender.tab, message.elementUrl, message.documentUrl);
+            case 'checkPageScriptWrapperRequest':
+                var block = adguard.webRequestService.checkPageScriptWrapperRequest(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
                 return {block: block, requestId: message.requestId};
             case 'processShouldCollapse':
                 var collapse = adguard.webRequestService.processShouldCollapse(sender.tab, message.elementUrl, message.documentUrl, message.requestType);

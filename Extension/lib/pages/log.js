@@ -54,13 +54,45 @@ var StringUtils = {
 
 var UrlUtils = {
 
+    /**
+	 * Retrieves hostname from URL
+     */
 	getDomainName: function (url) {
+        if (!url) {
+            return null;
+        }
+        url = this.getUrlWithoutScheme(url);
 		if (!this.linkHelper) {
 			this.linkHelper = document.createElement('a');
 		}
-		this.linkHelper.href = url;
-		var host = this.linkHelper.hostname;
-		return StringUtils.startWith(host, "www.") ? host.substring(4) : host;
+		this.linkHelper.href = 'http://' + url;
+		return this.linkHelper.hostname;
+	},
+
+    /**
+	 * Removes protocol from URL
+     */
+    getUrlWithoutScheme: function (url) {
+        var index = url.indexOf('//');
+        if (index >= 0) {
+            url = url.substring(index + 2);
+        } else {
+            // It's non hierarchical structured URL (e.g. stun: or turn:)
+            index = url.indexOf(':');
+            if (index >= 0) {
+                url = url.substring(index + 1);
+            }
+        }
+        return StringUtils.startWith(url, 'www.') ? url.substring(4) : url;
+    },
+
+    /**
+	 * Checks the given URL whether is hierarchical or not
+     * @param url
+     * @returns {boolean}
+     */
+    isHierarchicUrl: function(url){
+        return url.indexOf('//') !== -1;
 	}
 };
 
@@ -479,7 +511,7 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 	}
 
 	if (requestRule) {
-		if (requestRule.filterId != AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+		if (requestRule.filterId !== AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
 			template.find('[attr-text="requestRule"]').text(requestRule.ruleText);
 		} else {
 			template.find('[attr-text="requestRule"]').closest('.adg-modal-window-locking-info-left-row').hide();
@@ -490,7 +522,7 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 		template.find('[attr-text="requestRuleFilter"]').closest('.adg-modal-window-locking-info-left-row').hide();
 	}
 
-	if (filteringEvent.requestType == "IMAGE") {
+	if (filteringEvent.requestType === "IMAGE") {
 
 		template.removeClass('compact-view');
 
@@ -553,9 +585,9 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 	if (!requestRule) {
 		blockRequestButton.removeClass('hidden');
 	} else {
-		if (requestRule.filterId == AntiBannerFiltersId.USER_FILTER_ID) {
+		if (requestRule.filterId === AntiBannerFiltersId.USER_FILTER_ID) {
 			removeUserFilterRuleButton.removeClass('hidden');
-		} else if (requestRule.filterId == AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+		} else if (requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
 			removeWhiteListDomainButton.removeClass('hidden');
 		} else if (!requestRule.whiteListRule) {
 			unblockRequestButton.removeClass('hidden');
@@ -569,7 +601,9 @@ RequestWizard.prototype.showCreateBlockRuleModal = function (frameInfo, filterin
 
 	var template = this.createBlockRuleTemplate.clone();
 
-	var patterns = RequestWizard.splitToPatterns(filteringEvent.requestUrl, UrlFilterRule.MASK_START_URL).reverse();
+    var prefix = UrlUtils.isHierarchicUrl(filteringEvent.requestUrl) ? UrlFilterRule.MASK_START_URL : '';
+
+    var patterns = RequestWizard.splitToPatterns(filteringEvent.requestUrl, prefix).reverse();
 
 	this._initCreateRuleDialog(frameInfo, template, patterns, filteringEvent.frameDomain, filteringEvent.requestThirdParty);
 };
@@ -578,8 +612,9 @@ RequestWizard.prototype.showCreateExceptionRuleModal = function (frameInfo, filt
 
 	var template = this.createExceptionRuleTemplate.clone();
 
-	var prefix = FilterRule.MASK_WHITE_LIST + UrlFilterRule.MASK_START_URL;
-	var patterns = RequestWizard.splitToPatterns(filteringEvent.requestUrl, prefix).reverse();
+	var prefix = UrlUtils.isHierarchicUrl(filteringEvent.requestUrl) ? UrlFilterRule.MASK_START_URL : '';
+
+	var patterns = RequestWizard.splitToPatterns(filteringEvent.requestUrl, FilterRule.MASK_WHITE_LIST + prefix).reverse();
 
 	this._initCreateRuleDialog(frameInfo, template, patterns, filteringEvent.frameDomain, filteringEvent.requestThirdParty);
 };
@@ -605,7 +640,7 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 		patternEl.append(input);
 		patternEl.append(label);
 		rulePatternsEl.append(patternEl);
-		if (i == 0) {
+		if (i === 0) {
 			input.attr('checked', 'checked');
 		}
 	}
@@ -618,7 +653,7 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 
 	ruleDomainCheckbox.attr('id', 'ruleDomain');
 	ruleDomainCheckbox.parent().find('label').attr('for', 'ruleDomain');
-	if (!urlDomain || urlDomain == null) {
+	if (!urlDomain) {
 		ruleDomainCheckbox.closest('.checkbox').hide();
 	}
 
@@ -671,7 +706,7 @@ RequestWizard.PATTERNS_COUNT = 2; //exclude domain and full request url
 
 RequestWizard.splitToPatterns = function (requestUrl, prefix) {
 
-	var domain = UrlUtils.getDomainName(requestUrl);
+	var domain = UrlUtils.getDomainName(requestUrl) || '';
 	var patterns = [];//domain pattern
 
 	var relative = StringUtils.substringAfter(requestUrl, domain + '/');
@@ -699,10 +734,7 @@ RequestWizard.splitToPatterns = function (requestUrl, prefix) {
 	patterns.unshift(prefix + domain + UrlFilterRule.MASK_SEPARATOR);
 
 	//push full url pattern
-	var url = StringUtils.substringAfter(requestUrl, '//');
-	if (StringUtils.startWith(url, 'www.')) {
-		url = url.substring(4);
-	}
+	var url = UrlUtils.getUrlWithoutScheme(requestUrl);
 	if (patterns.indexOf(prefix + url) < 0) {
 		patterns.push(prefix + url);
 	}
@@ -754,6 +786,8 @@ RequestWizard.getRequestType = function (requestType) {
 			return 'Font';
 		case 'WEBSOCKET':
 			return 'WebSocket';
+		case 'WEBRTC':
+			return 'WebRTC';
 		case 'OTHER':
 			return 'Other';
 	}
@@ -820,7 +854,7 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
 		});
 
 		contentPage.onMessage.addListener(function (message) {
-			if (message.type == 'notifyListeners') {
+			if (message.type === 'notifyListeners') {
 				onEvent.apply(this, message.args);
 			}
 		});

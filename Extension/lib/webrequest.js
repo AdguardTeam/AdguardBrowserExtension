@@ -135,7 +135,7 @@
     }
 
     /**
-     * Modify CSP header to block websocket connections and web workers
+     * Modify CSP header to block WebSocket, prohibit data: and blob: frames and WebWorkers
      * @param requestDetails
      * @returns {{responseHeaders: *}}
      */
@@ -149,7 +149,7 @@
         }
 
         var tab = requestDetails.tab;
-        var responseHeaders = requestDetails.responseHeaders;
+        var responseHeaders = requestDetails.responseHeaders || [];
         var frameUrl = adguard.frames.getFrameUrl(tab, requestDetails.frameId);
 
         var ruleForCSP = null;
@@ -171,8 +171,16 @@
             applyCSP = adguard.webRequestService.isRequestBlockedByRule(ruleForCSP);
         }
         if (!applyCSP) {
-            ruleForCSP = adguard.webRequestService.getRuleForRequest(tab, 'blob:', frameUrl, adguard.RequestTypes.SCRIPT);
+            ruleForCSP = adguard.webRequestService.getRuleForRequest(tab, 'blob:adguardblob.check', frameUrl, adguard.RequestTypes.SCRIPT);
             applyCSP = adguard.webRequestService.isRequestBlockedByRule(ruleForCSP);
+        }
+        if (!applyCSP) {
+            ruleForCSP = adguard.webRequestService.getRuleForRequest(tab, 'stun:adguardwebrtc.check', frameUrl, adguard.RequestTypes.WEBRTC);
+            applyCSP = adguard.webRequestService.isRequestBlockedByRule(ruleForCSP);
+        }
+
+        if (ruleForCSP) {
+            adguard.filteringLog.addEvent(tab, 'content-security-policy-check', frameUrl, adguard.RequestTypes.OTHER, ruleForCSP);
         }
 
         /**
@@ -189,7 +197,6 @@
          * https://bugs.chromium.org/p/chromium/issues/detail?id=513860
          */
         if (applyCSP) {
-            adguard.filteringLog.addEvent(tab, 'content-security-policy-check', frameUrl, adguard.RequestTypes.OTHER, ruleForCSP);
             var cspHeader = {
                 name: 'Content-Security-Policy',
                 value: 'connect-src http: https:; frame-src http: https:; child-src http: https:'

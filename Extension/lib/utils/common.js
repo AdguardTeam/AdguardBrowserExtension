@@ -39,6 +39,7 @@ adguard.RequestTypes = {
     MEDIA: "MEDIA",
     FONT: "FONT",
     WEBSOCKET: "WEBSOCKET",
+    WEBRTC: "WEBRTC",
     OTHER: "OTHER",
 
     /**
