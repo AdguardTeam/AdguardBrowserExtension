@@ -198,8 +198,6 @@ var browser = window.browser || chrome;
      */
     adguard.getURL = browser.extension.getURL;
 
-    adguard.i18n = browser.i18n;
-
     adguard.backgroundPage = {};
     adguard.backgroundPage.getWindow = function () {
         return browser.extension.getBackgroundPage();
@@ -333,6 +331,9 @@ var browser = window.browser || chrome;
         },
         setPopup: function () {
             // Do nothing. Popup is already installed in manifest file
+        },
+        resize: function () {
+            // Do nothing
         },
         close: function () {
             // Do nothing

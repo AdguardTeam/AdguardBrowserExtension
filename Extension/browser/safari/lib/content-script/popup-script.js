@@ -15,42 +15,66 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global $, safari, controller */
+/* global safari */
 
 (function () {
 
-	'use strict';
+    'use strict';
 
-	var backgroundPage = safari.extension.globalPage.contentWindow;
+    var backgroundPage = safari.extension.globalPage.contentWindow;
+    var adguard = backgroundPage.adguard;
 
-	safari.self.addEventListener("popover", function () {
+    // We have some problems with the correct drawing of a popup, so we have to predict popup's size and apply the real size with some delay.
+    // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/505
+    var popupSizes = {
+        compact: {
+            width: 340,
+            height: 174
+        },
+        default: {
+            width: 340,
+            height: 340
+        }
+    };
 
-		safari.self.width = 320;
-		safari.self.height = 340;
+    window.i18n = adguard.i18n;
 
-		document.documentElement.style.display = "none";
-		document.location.reload();
-	});
+    window.popupPage = {
+        sendMessage: function (message, responseCallback) {
+            // There is no messaging in popover, call method directly
+            var safariTab = safari.application.activeBrowserWindow.activeTab;
+            var sender = {tab: adguard.tabsImpl.fromSafariTab(safariTab)};
+            var callback = responseCallback || function () {
+                };
+            adguard.runtime.onMessageHandler(message, sender, callback);
+        },
+        closePopup: function () {
+            document.dispatchEvent(new Event('resizePopup'));
+            safari.self.hide();
+        },
+        resizePopup: function (width, height) {
+            safari.self.width = width;
+            safari.self.height = height;
+        }
+    };
 
-	safari.application.addEventListener("activate", function () {
-		controller.resizePopupWindow();
-		safari.self.hide();
-	}, true);
+    safari.self.addEventListener("popover", function () {
 
-	var adguard = window.adguard = Object.create(backgroundPage.adguard);
-	adguard.closePopup =  function () {
-		controller.resizePopupWindow();
-		safari.self.hide();
-	};
-	adguard.resizePopup =  function (width, height) {
-		safari.self.width = width;
-		safari.self.height = height;
-	};
-	window.i18n = adguard.i18n;
+        // Try to predict popup size
+        var safariTab = safari.application.activeBrowserWindow.activeTab;
+        var url = safariTab.url;
+        if (url && url.indexOf('http') === 0) {
+            window.popupPage.resizePopup(popupSizes.default.width, popupSizes.default.height);
+        } else {
+            window.popupPage.resizePopup(popupSizes.compact.width, popupSizes.compact.height);
+        }
 
-	$(window).on('blur', function () {
-		if (window.tab) {
-			adguard.ui.updateTabIconAndContextMenu(window.tab, true);
-		}
-	});
+        document.documentElement.style.display = "none";
+        document.location.reload();
+    });
+
+    safari.application.addEventListener("activate", function () {
+        window.popupPage.closePopup();
+    }, true);
+
 })();

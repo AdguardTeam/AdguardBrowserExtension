@@ -29,18 +29,6 @@ var I18nHelper = { // jshint ignore:line
         }
     },
 
-    replacePlaceholders: function (text, args) {
-        if (!text) {
-            return "";
-        }
-        if (args && args.length > 0) {
-            text = text.replace(/\$(\d+)/g, function (match, number) {
-                return typeof args[number - 1] !== "undefined" ? args[number - 1] : match;
-            });
-        }
-        return text;
-    },
-
     processString: function (str, element) {
 
         var el;

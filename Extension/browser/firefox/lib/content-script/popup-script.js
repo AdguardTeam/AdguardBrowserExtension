@@ -15,17 +15,20 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global adguardContent */
+/* global contentPage */
 
-(function (adguard) {
+(function () {
 
     'use strict';
 
-    window.i18n = adguard.i18n;
-
-    window.contentPage = {
-        sendMessage: adguard.runtimeImpl.sendMessage,
-        onMessage: adguard.runtimeImpl.onMessage
+    window.popupPage = {
+        sendMessage: contentPage.sendMessage,
+        closePopup: function () {
+            this.sendMessage({type: 'closePanelPopup'});
+        },
+        resizePopup: function (width, height) {
+            this.sendMessage({type: 'resizePanelPopup', width: width, height: height});
+        }
     };
 
-})(adguardContent);
+})();
