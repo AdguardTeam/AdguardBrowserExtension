@@ -143,11 +143,16 @@
 
     /**
      * Detects language for the specified page
-     * @param tabId  Tab identifier
+     * @param tab    Tab
      * @param url    Page URL
      */
-    function detectTabLanguage(tabId, url) {
+    function detectTabLanguage(tab, url) {
         if (!adguard.settings.isAutodetectFilters()) {
+            return;
+        }
+
+        if (adguard.integration.isSupported() && adguard.frames.isTabAdguardDetected(tab)) {
+            // Autodetect is disabled in integration mode
             return;
         }
 
@@ -157,9 +162,9 @@
         }
 
         /* global browser */
-        if (tabId && typeof browser != 'undefined' && browser.tabs && browser.tabs.detectLanguage) {
+        if (tab.tabId && typeof browser != 'undefined' && browser.tabs && browser.tabs.detectLanguage) {
             // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/detectLanguage
-            browser.tabs.detectLanguage(tabId, function (language) {
+            browser.tabs.detectLanguage(tab.tabId, function (language) {
                 if (browser.runtime.lastError) {
                     return;
                 }
@@ -181,7 +186,7 @@
     // Locale detect
     adguard.tabs.onUpdated.addListener(function (tab) {
         if (tab.status === 'complete') {
-            detectTabLanguage(tab.tabId, tab.url);
+            detectTabLanguage(tab, tab.url);
         }
     });
 
