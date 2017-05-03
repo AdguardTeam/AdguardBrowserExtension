@@ -22,73 +22,86 @@ var PageController = function () {
 
 PageController.prototype = {
 
-    providersLocales: {
-        'ADGUARD_SYNC': i18n.getMessage("sync_provider_adguard"),
-        'DROPBOX': i18n.getMessage("sync_provider_dropbox"),
-        'BROWSER_SYNC': i18n.getMessage("sync_provider_browser_storage")
-    },
-
     init: function (status) {
+
+        this.unauthorizedBlock = $('#loginBlock');
+        this.authorizedBlock = $('#authorizedBlock');
+        this.signInButton = $('#signInButton');
+        this.signOutButton = $('#signOutButton');
+        this.startSyncButton = $('#startSyncButton');
+        this.syncNowButton = $('#syncNowButton');
+        this.selectProviderButton = $('#selectProviderButton');
+        this.providersModalEl = $('#providersModal');
+
         this._render(status);
         this._initializeProvidersModal(status);
         this._bindControls(status);
     },
 
     _render: function (options) {
-        var unauthorizedBlock = $('#loginBlock');
-        var authorizedBlock = $('#authorizedBlock');
 
-        if (!options.isAuthorized || !options.enabled) {
-            unauthorizedBlock.show();
-            authorizedBlock.hide();
+        var provider = options.currentProvider;
+        if (!provider) {
+            this._renderSelectProviderBlock();
+            return;
+        }
 
-            this._renderUnauthorizedBlock(options);
-
+        if (!provider.isAuthorized || !options.enabled) {
+            this._renderUnauthorizedBlock(provider, options);
         } else {
-            unauthorizedBlock.hide();
-            authorizedBlock.show();
 
-            this._renderAuthorizedBlock(options);
+            this._renderAuthorizedBlock(provider);
         }
     },
 
-    _renderUnauthorizedBlock: function (options) {
-        var signInButton = $('#signInButton');
-        var startSyncButton = $('#startSyncButton');
-
-        if (options.isOAuthSupported && !options.isAuthorized) {
-            signInButton.show();
-        } else {
-            signInButton.hide();
-        }
-
-        if (!options.enabled && options.isAuthorized) {
-            startSyncButton.show();
-        } else {
-            startSyncButton.hide();
-        }
-
-        $('#selectProviderButton').text(this.providersLocales[options.providerName]);
+    _renderSelectProviderBlock: function () {
+        this.unauthorizedBlock.show();
+        this.authorizedBlock.hide();
+        this.signInButton.hide();
+        this.startSyncButton.hide();
     },
 
-    _renderAuthorizedBlock: function (options) {
-        $('#providerNameInfo').text(this.providersLocales[options.providerName]);
+    _renderUnauthorizedBlock: function (provider, options) {
+
+        this.unauthorizedBlock.show();
+        this.authorizedBlock.hide();
+
+        if (provider.isOAuthSupported && !provider.isAuthorized) {
+            this.signInButton.show();
+        } else {
+            this.signInButton.hide();
+        }
+
+        if (!options.enabled && provider.isAuthorized) {
+            this.startSyncButton.show();
+        } else {
+            this.startSyncButton.hide();
+        }
+
+        this.selectProviderButton.text(provider.title);
+    },
+
+    _renderAuthorizedBlock: function (provider) {
+
+        this.unauthorizedBlock.hide();
+        this.authorizedBlock.show();
+
+        $('#providerNameInfo').text(provider.title);
 
         var lastSyncTimeInfo = $('#lastSyncTimeInfo');
         var manageAccountButton = $('#manageAccountButton');
         var deviceNameBlock = $('#deviceNameBlock');
 
-        if (options.lastSyncTime) {
-            lastSyncTimeInfo.text(new Date(parseInt(options.lastSyncTime)).toLocaleString());
+        if (provider.lastSyncTime) {
+            lastSyncTimeInfo.text(new Date(parseInt(provider.lastSyncTime)).toLocaleString());
         } else {
             lastSyncTimeInfo.text(i18n.getMessage('sync_last_sync_time_never_sync_text'));
         }
 
-        if (options.isOAuthSupported && options.providerName === 'ADGUARD_SYNC') {
+        if (provider.isOAuthSupported && provider.name === 'ADGUARD_SYNC') {
             manageAccountButton.show();
             deviceNameBlock.show();
-
-            $('#deviceNameInput').val(options.deviceName);
+            $('#deviceNameInput').val(provider.deviceName);
         } else {
             manageAccountButton.hide();
             deviceNameBlock.hide();
@@ -96,88 +109,85 @@ PageController.prototype = {
     },
 
     _bindControls: function (options) {
-        $('#selectProviderButton').click(function () {
+
+        function reload() {
+            document.location.reload();
+        }
+
+        this.selectProviderButton.on('click', function () {
             this.providersModal.modal('show');
         }.bind(this));
 
-        $('#signInButton').click(function (e) {
-            e.preventDefault();
+        var provider = options.currentProvider;
 
-            contentPage.sendMessage({
-                type: 'authSync',
-                provider: options.providerName
-            }, function () {
-                document.location.reload();
+        if (provider) {
+            this.signInButton.on('click', function (e) {
+                e.preventDefault();
+                contentPage.sendMessage({
+                    type: 'authSync',
+                    provider: provider.name
+                }, reload);
             });
+            this.signOutButton.on('click', function (e) {
+                e.preventDefault();
+                if (provider.isOAuthSupported) {
+                    contentPage.sendMessage({
+                        type: 'dropAuthSync',
+                        provider: provider.name
+                    }, reload);
+                } else {
+                    contentPage.sendMessage({type: 'toggleSync'}, reload);
+                }
+            });
+        }
+
+        this.startSyncButton.on('click', function (e) {
+            e.preventDefault();
+            contentPage.sendMessage({type: 'toggleSync'}, reload);
         });
 
-        $('#startSyncButton').click(function (e) {
+        this.syncNowButton.on('click', function (e) {
             e.preventDefault();
-
-            contentPage.sendMessage({type: 'toggleSync'}, function () {
-                document.location.reload();
-            });
+            contentPage.sendMessage({type: 'syncNow'}, reload);
         });
 
-        $('#syncNowButton').click(function (e) {
+        $('#changeDeviceNameButton').on('click', function (e) {
             e.preventDefault();
-
-            contentPage.sendMessage({type: 'syncNow'}, function () {
-                document.location.reload();
-            });
-        });
-
-        $('#changeDeviceNameButton').click(function (e) {
-            e.preventDefault();
-
             var deviceName = $('#deviceNameInput').val();
             contentPage.sendMessage({
                 type: 'syncChangeDeviceName',
                 deviceName: deviceName
-            }, function () {
-                document.location.reload();
-            });
-        });
-
-        $('#signOutButton').click(function (e) {
-            e.preventDefault();
-
-            if (options.isOAuthSupported) {
-                contentPage.sendMessage({
-                    type: 'dropAuthSync',
-                    provider: options.providerName
-                }, function () {
-                    document.location.reload();
-                });
-            } else {
-                contentPage.sendMessage({type: 'toggleSync'}, function () {
-                    document.location.reload();
-                });
-            }
+            }, reload);
         });
     },
 
     _initializeProvidersModal: function (options) {
-        this.providersModalEl = $('#providersModal');
+
         this.providersModal = this.providersModalEl.modal({
             backdrop: 'static',
             show: false
         });
 
-        if (!options.browserStorageSupported) {
+        var browserStorageSupported = options.providers.filter(function (p) {
+                return p.name === 'BROWSER_SYNC';
+            }).length > 0;
+        if (!browserStorageSupported) {
             this.providersModal.find('.browser-storage-provider-select').hide();
         }
 
-        switch (options.providerName) {
-            case 'ADGUARD_SYNC':
-                this.providersModal.find('.adguard-provider-select').addClass('active');
-                break;
-            case 'DROPBOX':
-                this.providersModal.find('.dropbox-provider-select').addClass('active');
-                break;
-            case 'BROWSER_SYNC':
-                this.providersModal.find('.browser-storage-provider-select').addClass('active');
-                break;
+        var provider = options.currentProvider;
+        if (provider) {
+            switch (provider.name) {
+                case 'ADGUARD_SYNC':
+                    this.providersModal.find('.adguard-provider-select').addClass('active');
+                    break;
+                case 'DROPBOX':
+                    this.providersModal.find('.dropbox-provider-select').addClass('active');
+                    break;
+                case 'BROWSER_SYNC':
+                    this.providersModal.find('.browser-storage-provider-select').addClass('active');
+                    break;
+            }
         }
 
         this.providersModal.find('#adguardSelectProvider').on('click', this._onProviderSelected('ADGUARD_SYNC'));
@@ -188,9 +198,7 @@ PageController.prototype = {
     _onProviderSelected: function (providerName) {
         return function (e) {
             e.preventDefault();
-
             this.providersModalEl.modal('hide');
-
             contentPage.sendMessage({type: 'setSyncProvider', provider: providerName}, function () {
                 document.location.reload();
             });

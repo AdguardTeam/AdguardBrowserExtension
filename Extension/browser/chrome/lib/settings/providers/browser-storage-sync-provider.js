@@ -122,6 +122,7 @@
 
     // EXPOSE
     api.syncProviders.register('BROWSER_SYNC', {
+        title: adguard.i18n.getMessage("sync_provider_browser_storage"),
         load: load,
         save: save,
         init: init,

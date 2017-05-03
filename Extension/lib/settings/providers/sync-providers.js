@@ -34,6 +34,9 @@
         get name() {
             return 'BASE_SYNC_PROVIDER';
         },
+        get title() {
+            return 'Sync provider';
+        },
         get isOAuthSupported() {
             return false;
         },
@@ -63,6 +66,9 @@
         Object.defineProperty(o, 'name', {
             value: name
         });
+        Object.defineProperty(o, 'title', {
+            value: methods.title || name
+        });
         Object.defineProperty(o, 'isOAuthSupported', {
             value: methods.isOAuthSupported || false
         });
@@ -88,6 +94,7 @@
             var provider = providers[name];
             result.push({
                 name: name,
+                title: provider.title,
                 isOAuthSupported: provider.isOAuthSupported,
                 isAuthorized: api.oauthService.isAuthorized(name)
             });

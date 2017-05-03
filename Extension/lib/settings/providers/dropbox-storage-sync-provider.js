@@ -304,6 +304,7 @@
     // EXPOSE
     api.syncProviders.register(DROPBOX_PROVIDER_NAME, {
         isOAuthSupported: true,
+        title: adguard.i18n.getMessage("sync_provider_dropbox"),
         // Storage api
         load: load,
         save: save,

@@ -27,10 +27,10 @@
     var MIN_COMPATIBLE_VERSION_PROP = "min-compatible-version";
     var PROTOCOL_VERSION_PROP = "protocol-version";
 
-    var CURRENT_PROVIDER_PROP = 'current-sync-provider';
-    var LAST_SYNC_TIME_PROP = 'last-sync-time';
-    var SYNC_STATUS_PROP = 'sync-status';
-    var DEVICE_NAME_PROP = 'sync-device-name';
+    var SYNC_CURRENT_PROVIDER_PROP = 'sync-current-sync-provider';
+    var SYNC_LAST_SYNC_TIME_PROP = 'sync-last-sync-time';
+    var SYNC_STATUS_ENABLED_PROP = 'sync-status-enabled';
+    var SYNC_DEVICE_NAME_PROP = 'sync-device-name';
 
     var syncProvider = null;
     var lastSyncTimes = null;
@@ -508,30 +508,16 @@
 
     function getLastSyncTimes() {
         if (lastSyncTimes === null) {
-            lastSyncTimes = JSON.parse(adguard.localStorage.getItem(LAST_SYNC_TIME_PROP)) || Object.create(null);
+            lastSyncTimes = JSON.parse(adguard.localStorage.getItem(SYNC_LAST_SYNC_TIME_PROP)) || Object.create(null);
         }
-
         return lastSyncTimes;
-    }
-
-    function getLastSyncTime(providerName) {
-        if (!providerName) {
-            return null;
-        }
-
-        var times = getLastSyncTimes();
-        if (times) {
-            return times[providerName];
-        }
-
-        return null;
     }
 
     function setLastSyncTime(dateTime, providerName) {
         var times = getLastSyncTimes();
         times[providerName] = dateTime;
 
-        adguard.localStorage.setItem(LAST_SYNC_TIME_PROP, JSON.stringify(times));
+        adguard.localStorage.setItem(SYNC_LAST_SYNC_TIME_PROP, JSON.stringify(times));
     }
 
     var toggleSyncStatus = function (enabled) {
@@ -542,7 +528,7 @@
             syncEnabled = enabled;
         }
 
-        adguard.localStorage.setItem(SYNC_STATUS_PROP, syncEnabled);
+        adguard.localStorage.setItem(SYNC_STATUS_ENABLED_PROP, syncEnabled);
 
         if (syncEnabled) {
             init();
@@ -553,9 +539,9 @@
 
     var init = function () {
 
-        syncEnabled = String(adguard.localStorage.getItem(SYNC_STATUS_PROP)) === 'true';
+        syncEnabled = String(adguard.localStorage.getItem(SYNC_STATUS_ENABLED_PROP)) === 'true';
 
-        var providerName = adguard.localStorage.getItem(CURRENT_PROVIDER_PROP);
+        var providerName = adguard.localStorage.getItem(SYNC_CURRENT_PROVIDER_PROP);
         if (providerName) {
             setSyncProvider(providerName);
         }
@@ -583,7 +569,7 @@
         }
 
         adguard.console.info('Sync provider has been set to {0}', providerName);
-        adguard.localStorage.setItem(CURRENT_PROVIDER_PROP, providerName);
+        adguard.localStorage.setItem(SYNC_CURRENT_PROVIDER_PROP, providerName);
 
         if (api.oauthService.isAuthorized(providerName) && syncEnabled) {
             syncProvider = provider;
@@ -642,43 +628,42 @@
         var providers = api.syncProviders.getProvidersInfo();
         var currentProvider = null;
 
-        var providerName = adguard.localStorage.getItem(CURRENT_PROVIDER_PROP);
+        var providerName = adguard.localStorage.getItem(SYNC_CURRENT_PROVIDER_PROP);
         if (providerName) {
             currentProvider = providers.filter(function (p) {
                 return p.name === providerName;
             })[0];
         }
 
-        var result = {
-            enabled: syncEnabled,
-            lastSyncTime: getLastSyncTime(providerName),
-            providers: providers,
-            currentProvider: currentProvider,
-            deviceName: getDeviceName(),
-            browserStorageSupported: adguard.utils.browser.isChromeBrowser()
-        };
-
-        if (currentProvider) {
-            result.providerName = currentProvider.name;
-            result.isOAuthSupported = currentProvider.isOAuthSupported;
-            result.isAuthorized = currentProvider.isAuthorized;
+        // Populate provides with additional info
+        var lastSyncTimes = getLastSyncTimes();
+        for (var i = 0; i < providers.length; i++) {
+            var provider = providers[i];
+            provider.lastSyncTime = lastSyncTimes[provider.name];
+            if (provider.name === 'ADGUARD_SYNC') {
+                provider.deviceName = getDeviceName();
+            }
         }
 
-        return result;
+        return {
+            enabled: syncEnabled,
+            providers: providers,
+            currentProvider: currentProvider
+        };
     };
 
     var getDeviceName = function () {
-        var deviceName = adguard.localStorage.getItem(DEVICE_NAME_PROP);
+        var deviceName = adguard.localStorage.getItem(SYNC_DEVICE_NAME_PROP);
         if (!deviceName) {
-            deviceName = adguard.utils.browser.getClientId()
-                + ' (' + adguard.prefs.browser + ' ' + window.navigator.platform + ')';
+            deviceName = adguard.utils.browser.getClientId() +
+                ' (' + adguard.prefs.browser + ' ' + window.navigator.platform + ')';
         }
 
         return deviceName;
     };
 
     var changeDeviceName = function (deviceName) {
-        adguard.localStorage.setItem(DEVICE_NAME_PROP, deviceName);
+        adguard.localStorage.setItem(SYNC_DEVICE_NAME_PROP, deviceName);
     };
 
     api.sections = {

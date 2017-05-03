@@ -32,8 +32,8 @@
 
         var DEFAULT_PING_TIMEOUT = 40 * 1000;
 
-        var SYNC_TIMESTAMP_PROP = 'adguard-provider-sync-timestamp';
-        var syncTimestamp = null;
+        var FILE_SYNC_TIMESTAMP_PROP = 'sync-adguard-provider-filesync-timestamp';
+        var fileSyncTimestamp = null;
 
         var httpApiEndpoint = 'https://testsync.adguard.com/1';
         var wsApiEndpoint = 'wss://testsync.adguard.com/1';
@@ -50,16 +50,16 @@
         }
 
         function getSyncTimestamp() {
-            if (syncTimestamp === null) {
-                syncTimestamp = parseInt(adguard.localStorage.getItem(SYNC_TIMESTAMP_PROP) || 0);
+            if (fileSyncTimestamp === null) {
+                fileSyncTimestamp = parseInt(adguard.localStorage.getItem(FILE_SYNC_TIMESTAMP_PROP) || 0);
             }
-            return syncTimestamp;
+            return fileSyncTimestamp;
         }
 
         function updateSyncTimestamp(timestamp) {
             if (timestamp !== getSyncTimestamp()) {
-                syncTimestamp = timestamp;
-                adguard.localStorage.setItem(SYNC_TIMESTAMP_PROP, timestamp);
+                fileSyncTimestamp = timestamp;
+                adguard.localStorage.setItem(FILE_SYNC_TIMESTAMP_PROP, timestamp);
                 return true;
             }
             return false;
@@ -316,6 +316,7 @@
     // EXPOSE
     api.syncProviders.register(ADGUARD_PROVIDER_NAME, {
         isOAuthSupported: true,
+        title: adguard.i18n.getMessage("sync_provider_adguard"),
         // Storage api
         load: load,
         save: save,
