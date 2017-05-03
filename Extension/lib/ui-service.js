@@ -596,17 +596,16 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
     var openTab = function (url, options, callback) {
 
-        var activateSameTab, inNewWindow, type, inBackground, forceReload;
+        var activateSameTab, inNewWindow, type, inBackground;
         if (options) {
             activateSameTab = options.activateSameTab;
             inBackground = options.inBackground;
             inNewWindow = options.inNewWindow;
             type = options.type;
-            forceReload = options.reload;
         }
 
         function onTabFound(tab) {
-            if (tab.url !== url || forceReload) {
+            if (tab.url !== url) {
                 adguard.tabs.reload(tab.tabId, url);
             }
             if (!inBackground) {

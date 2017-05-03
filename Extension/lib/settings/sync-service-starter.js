@@ -21,10 +21,6 @@
     var pending = false;
     var running = false;
 
-    var lastSyncTimes = [];
-    var INF_LOOPS_CHECK_SIZE = 10;
-    var INF_LOOPS_CHECK_TIME = 30 * 60 * 1000; // 1/2 hour
-
     /**
      * Checks at least one section was updated since the last sync
      * @param callback
@@ -50,33 +46,7 @@
         });
     }
 
-    /**
-     * This is a simple check if there were too many sync fires INF_LOOPS_CHECK_SIZE in specified INF_LOOPS_CHECK_TIME time.
-     * As a hard protection of infinitive sync fires, we shut it down.
-     */
-    function checkInfiniteLooping() {
-        var now = Date.now();
-        lastSyncTimes.push(now);
-        if (lastSyncTimes.length > INF_LOOPS_CHECK_SIZE) {
-            var first = lastSyncTimes.shift();
-            if (now - first < INF_LOOPS_CHECK_TIME) {
-                syncApi.syncService.toggleSyncStatus(false);
-                adguard.console.warn('Sync is disabled under suspicion of infinite loop.');
-
-                lastSyncTimes = [];
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     function sync(callback) {
-
-        if (checkInfiniteLooping()) {
-            callback();
-            return;
-        }
 
         isSectionsUpdated(function (updated) {
             if (updated) {

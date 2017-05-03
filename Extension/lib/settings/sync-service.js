@@ -32,9 +32,14 @@
     var SYNC_STATUS_ENABLED_PROP = 'sync-status-enabled';
     var SYNC_DEVICE_NAME_PROP = 'sync-device-name';
 
+    var lastSyncTimesQueue = [];
+    var INF_LOOPS_CHECK_SIZE = 10;
+    var INF_LOOPS_CHECK_TIME = 30 * 60 * 1000; // 1/2 hour
+
+    var syncInProgress = false;
     var syncProvider = null;
     var lastSyncTimes = null;
-    var syncEnabled;
+    var syncEnabled = false;
 
     /**
      * Sections revisions
@@ -69,6 +74,12 @@
         };
 
     })();
+
+    function onSyncStatusUpdated() {
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_STATUS_UPDATED, {
+            status: getSyncStatus()
+        });
+    }
 
     /**
      * Loads remote section
@@ -520,6 +531,25 @@
         adguard.localStorage.setItem(SYNC_LAST_SYNC_TIME_PROP, JSON.stringify(times));
     }
 
+    /**
+     * This is a simple check if there were too many sync fires INF_LOOPS_CHECK_SIZE in specified INF_LOOPS_CHECK_TIME time.
+     * As a hard protection of infinitive sync fires, we shut it down.
+     */
+    function checkInfiniteLooping() {
+        var now = Date.now();
+        lastSyncTimesQueue.push(now);
+        if (lastSyncTimesQueue.length > INF_LOOPS_CHECK_SIZE) {
+            var first = lastSyncTimesQueue.shift();
+            if (now - first < INF_LOOPS_CHECK_TIME) {
+                toggleSyncStatus(false);
+                adguard.console.warn('Sync is disabled under suspicion of infinite loop.');
+                lastSyncTimesQueue = [];
+                return true;
+            }
+        }
+        return false;
+    }
+
     var toggleSyncStatus = function (enabled) {
 
         if (enabled === undefined) {
@@ -552,6 +582,7 @@
             syncProvider.shutdown();
             syncProvider = null;
         }
+        onSyncStatusUpdated();
     };
 
     /**
@@ -575,6 +606,8 @@
             syncProvider = provider;
             provider.init();
         }
+
+        onSyncStatusUpdated();
     };
 
     /**
@@ -582,44 +615,60 @@
      */
     var syncSettings = function (callback) {
 
+        function onFinished(success) {
+            syncInProgress = false;
+            if (typeof callback === 'function') {
+                callback(success);
+            }
+            onSyncStatusUpdated();
+        }
+
         adguard.console.info('Synchronizing settings..');
+
+        if (syncInProgress) {
+            adguard.console.info('Sync is already in progress...');
+            onFinished(false);
+            return;
+        }
+        syncInProgress = true;
+
+        onSyncStatusUpdated();
 
         if (!syncEnabled) {
             adguard.console.warn('Sync is disabled');
-            if (callback) {
-                callback(false);
-            }
+            onFinished(false);
             return;
         }
 
         if (!syncProvider) {
             adguard.console.warn('Sync provider is not defined');
-            if (callback) {
-                callback(false);
-            }
+            onFinished(false);
             return;
         }
 
-        if (!api.oauthService.isAuthorized(syncProvider.name)) {
+        var providerName = syncProvider.name;
+
+        if (!api.oauthService.isAuthorized(providerName)) {
             adguard.console.warn('Sync provider is not authorized');
-            if (callback) {
-                callback(false);
-            }
+            onFinished(false);
+            return;
+        }
+
+        if (checkInfiniteLooping()) {
+            onFinished(false);
             return;
         }
 
         processManifest(function (success) {
-            if (success) {
-                setLastSyncTime(Date.now(), syncProvider.name);
 
+            if (success) {
+                setLastSyncTime(Date.now(), providerName);
                 adguard.console.info('Synchronizing settings finished');
             } else {
                 adguard.console.warn('Error synchronizing settings');
             }
 
-            if (callback) {
-                callback(success);
-            }
+            onFinished(success);
         });
     };
 
@@ -636,10 +685,9 @@
         }
 
         // Populate provides with additional info
-        var lastSyncTimes = getLastSyncTimes();
         for (var i = 0; i < providers.length; i++) {
             var provider = providers[i];
-            provider.lastSyncTime = lastSyncTimes[provider.name];
+            provider.lastSyncTime = getLastSyncTimes()[provider.name];
             if (provider.name === 'ADGUARD_SYNC') {
                 provider.deviceName = getDeviceName();
             }
@@ -648,7 +696,8 @@
         return {
             enabled: syncEnabled,
             providers: providers,
-            currentProvider: currentProvider
+            currentProvider: currentProvider,
+            syncInProgress: syncInProgress
         };
     };
 

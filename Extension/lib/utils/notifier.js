@@ -48,7 +48,8 @@ adguard.listeners = (function () {
         LOG_EVENT_ADDED: 'log.event.added',
         // Sync events
         SYNC_REQUIRED: 'event.sync.required',
-        SYNC_BAD_OR_EXPIRED_TOKEN: 'event.sync.bad.or.expired.token'
+        SYNC_BAD_OR_EXPIRED_TOKEN: 'event.sync.bad.or.expired.token',
+        SYNC_STATUS_UPDATED: 'event.sync.status.updated'
     };
 
     var EventNotifierEventsMap = Object.create(null);
