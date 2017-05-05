@@ -79,11 +79,12 @@
      * Initializing content script
      */
     var init = function () {
-        initRequestWrappers();
 
         if (!isHtml()) {
             return;
         }
+
+        initRequestWrappers();
 
         // We use shadow DOM when it's available to minimize our impact on web page DOM tree.
         // According to ABP issue #452, creating a shadow root breaks running CSS transitions.
@@ -123,6 +124,16 @@
         return (document instanceof HTMLDocument) ||
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/233
             ((document instanceof XMLDocument) && (document.createElement('div') instanceof HTMLDivElement));
+    };
+
+    /**
+     * Checks location's protocol.
+     * Returns true if we are on a 'http(s)' or 'about:' page
+     */
+    var isHttpOrAboutPage = function () {
+        // Only for dynamically created frames and http/https documents.
+        var protocol = window.location.protocol;
+        return protocol.indexOf('http') === 0 || protocol.indexOf('about:') === 0;
     };
 
     /**
@@ -200,8 +211,7 @@
     var initRequestWrappers = function () {
 
         // Only for dynamically created frames and http/https documents.
-        if (!isHtml() &&
-            window.location.href !== "about:blank") {
+        if (!isHttpOrAboutPage()) {
             return;
         }
 
@@ -243,6 +253,10 @@
         script.setAttribute("type", "text/javascript");
         script.textContent = content.join("\r\n");
 
+        // Check location directly before the script injection
+        if (!isHttpOrAboutPage()) {
+            return;
+        }
         (document.head || document.documentElement).appendChild(script);
     };
 
