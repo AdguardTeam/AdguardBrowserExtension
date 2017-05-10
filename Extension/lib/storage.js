@@ -57,11 +57,20 @@ adguard.localStorage = (function (adguard, impl) {
         return impl.hasItem(key);
     };
 
+    var init = function (callback) {
+        if (typeof impl.init === 'function') {
+            impl.init(callback);
+        } else {
+            callback();
+        }
+    };
+
     return {
         getItem: getItem,
         setItem: setItem,
         removeItem: removeItem,
-        hasItem: hasItem
+        hasItem: hasItem,
+        init: init
     };
 
 })(adguard, adguard.localStorageImpl);
