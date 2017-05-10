@@ -127,11 +127,11 @@
     };
 
     /**
-     * Checks location's protocol.
-     * Returns true if we are on a 'http(s)' or 'about:' page
+     * Uses in `initRequestWrappers` method.
+     * We insert wrapper's code into http/https documents and dynamically created frames.
+     * The last one is due to the circumvention with using iframe's contentWindow.
      */
     var isHttpOrAboutPage = function () {
-        // Only for dynamically created frames and http/https documents.
         var protocol = window.location.protocol;
         return protocol.indexOf('http') === 0 || protocol.indexOf('about:') === 0;
     };

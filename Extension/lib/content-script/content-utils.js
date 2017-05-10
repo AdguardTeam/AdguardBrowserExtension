@@ -28,7 +28,7 @@
     }
 
     /**
-     * It appears on the extension startup
+     * On extension startup contentPage is undefined
      */
     if (typeof contentPage === 'undefined') {
         return;
