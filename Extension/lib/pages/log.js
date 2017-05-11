@@ -61,12 +61,25 @@ var UrlUtils = {
         if (!url) {
             return null;
         }
-        url = this.getUrlWithoutScheme(url);
 		if (!this.linkHelper) {
 			this.linkHelper = document.createElement('a');
 		}
-		this.linkHelper.href = 'http://' + url;
-		return this.linkHelper.hostname;
+        if (this.isHierarchicUrl(url)) {
+            this.linkHelper.href = url;
+            return this.linkHelper.hostname;
+        }
+        // stun:1755001826:443
+		// stun:stun.l.google.com:19302
+		var index = url.indexOf(':');
+        if (index < 0) {
+            return null;
+        }
+        var host = url.substring(index + 1);
+        index = host.indexOf(':');
+        if (index > 0) {
+            host = host.substring(0, index);
+        }
+        return host;
 	},
 
     /**

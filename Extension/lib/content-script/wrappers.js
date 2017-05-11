@@ -214,7 +214,109 @@ var overrideWebRTC = function (injectApi) { // jshint ignore:line
 
     var RealRTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection;
     var closeRTCPeerConnection = Function.prototype.call.bind(RealRTCPeerConnection.prototype.close);
+
     var RealArray = Array;
+    var RealString = String;
+    var createObject = Object.create;
+    var defineProperty = Object.defineProperty;
+
+    /**
+     * Convert passed url to string
+     * @param url URL
+     * @returns {string}
+     */
+    function urlToString(url) {
+        if (typeof url !== "undefined") {
+            return RealString(url);
+        }
+    }
+
+    /**
+     * Creates new immutable array from original with some transform function
+     * @param original
+     * @param transform
+     * @returns {*}
+     */
+    function safeCopyArray(original, transform) {
+
+        if (original === null || typeof original !== "object") {
+            return original;
+        }
+
+        var immutable = RealArray(original.length);
+        for (var i = 0; i < immutable.length; i++) {
+            defineProperty(immutable, i, {
+                configurable: false, enumerable: false, writable: false,
+                value: transform(original[i])
+            });
+        }
+        defineProperty(immutable, "length", {
+            configurable: false, enumerable: false, writable: false,
+            value: immutable.length
+        });
+        return immutable;
+    }
+
+    /**
+     * Protect configuration from mutations
+     * @param configuration RTCPeerConnection configuration object
+     * @returns {*}
+     */
+    function protectConfiguration(configuration) {
+
+        if (configuration === null || typeof configuration !== "object") {
+            return configuration;
+        }
+
+        var iceServers = safeCopyArray(
+            configuration.iceServers,
+            function (iceServer) {
+
+                var url = iceServer.url;
+                var urls = iceServer.urls;
+
+                // RTCPeerConnection doesn't iterate through pseudo Arrays of urls.
+                if (typeof urls !== "undefined" && !(urls instanceof RealArray)) {
+                    urls = [urls];
+                }
+
+                return createObject(iceServer, {
+                    url: {
+                        configurable: false, enumerable: false, writable: false,
+                        value: urlToString(url)
+                    },
+                    urls: {
+                        configurable: false, enumerable: false, writable: false,
+                        value: safeCopyArray(urls, urlToString)
+                    }
+                });
+            }
+        );
+
+        return createObject(configuration, {
+            iceServers: {
+                configurable: false, enumerable: false, writable: false,
+                value: iceServers
+            }
+        });
+    }
+
+    /**
+     * Check WebRTC connection's URL and close if it's blocked by rule
+     * @param connection Connection
+     * @param url URL to check
+     */
+    function checkWebRTCRequest(connection, url) {
+        injectApi.checkRequest(url, 'WEBRTC', function (blocked) {
+            if (blocked) {
+                try {
+                    closeRTCPeerConnection(connection);
+                } catch (e) {
+                    // Ignore exceptions
+                }
+            }
+        });
+    }
 
     /**
      * Check each URL of ice server in configuration for blocking.
@@ -225,18 +327,6 @@ var overrideWebRTC = function (injectApi) { // jshint ignore:line
      */
     function checkConfiguration(connection, configuration) {
 
-        function checkWebRTCRequest(url) {
-            injectApi.checkRequest(url, 'WEBRTC', function (blocked) {
-                if (blocked) {
-                    try {
-                        closeRTCPeerConnection(connection);
-                    } catch (e) {
-                        // Ignore exceptions
-                    }
-                }
-            });
-        }
-
         if (!configuration || !configuration.iceServers) {
             return;
         }
@@ -245,23 +335,18 @@ var overrideWebRTC = function (injectApi) { // jshint ignore:line
         for (var i = 0; i < iceServers.length; i++) {
 
             var iceServer = iceServers[i];
-            if (!iceServer || !iceServer.urls) {
+            if (!iceServer) {
                 continue;
             }
 
-            var urls = iceServer.urls;
-            // RTCPeerConnection doesn't seem to iterate through pseudo Arrays.
-            if (!(urls instanceof RealArray)) {
-                urls = [urls];
+            if (iceServer.url) {
+                checkWebRTCRequest(connection, iceServer.url);
             }
 
-            for (var j = 0; j < urls.length; j++) {
-                var url = urls[j];
-                // RTCPeerConnection also calls the url's .toString method.
-                if (typeof url !== 'string') {
-                    url = url.toString();
+            if (iceServer.urls) {
+                for (var j = 0; j < iceServer.urls.length; j++) {
+                    checkWebRTCRequest(connection, iceServer.urls[j]);
                 }
-                checkWebRTCRequest(url);
             }
         }
     }
@@ -275,20 +360,26 @@ var overrideWebRTC = function (injectApi) { // jshint ignore:line
         var realSetConfiguration = Function.prototype.call.bind(RealRTCPeerConnection.prototype.setConfiguration);
 
         RealRTCPeerConnection.prototype.setConfiguration = function (configuration) {
+            configuration = protectConfiguration(configuration);
             // Call the real method first, so that validates the configuration
             realSetConfiguration(this, configuration);
             checkConfiguration(this, configuration);
         };
     }
 
-    function WrappedRTCPeerConnection(config) {
+    function WrappedRTCPeerConnection(configuration, arg) {
 
         if (!(this instanceof WrappedRTCPeerConnection)) {
             return RealRTCPeerConnection();
         }
 
-        var connection = new RealRTCPeerConnection(config);
-        checkConfiguration(connection, config);
+        configuration = protectConfiguration(configuration);
+
+        /**
+         * The old webkitRTCPeerConnection constructor takes an optional second argument and we must pass it.
+         */
+        var connection = new RealRTCPeerConnection(configuration, arg);
+        checkConfiguration(connection, configuration);
         return connection;
     }
 
