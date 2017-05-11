@@ -137,7 +137,7 @@
 
     adguard.SimplePrefs = (function () {
 
-        var branch = Services.prefs.getBranch('extensions.' + id + '.sdk.');
+        var branch = Services.prefs.getBranch('extensions.' + id + '.');
 
         var get = function (name, defaultValue) {
             var prefType = branch.getPrefType(name);

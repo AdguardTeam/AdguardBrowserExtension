@@ -18,15 +18,16 @@
 /* global Promise */
 
 /**
+ * Temporary unused
+ *
  * Google Drive sync provider
  */
 (function (api, adguard) {
 
     'use strict';
 
-    var CLIENT_ID = '513610050689-qok3p0u3um2dqcs8md9u21rdegnanrnm.apps.googleusercontent.com';
-    var CLIENT_SECRET = 'TvoOix6n-gONwr5AZbnX4cFk';
-    var PROVIDER_NAME = 'GOOGLE_DRIVE';
+    var GOOGLE_CLIENT_ID = '379033535124-eegqqpu1d232b5u1r8dkeu9h2ukkhejd.apps.googleusercontent.com';
+    var GOOGLE_PROVIDER_NAME = 'GOOGLE_DRIVE';
 
     /**
      * Keeps local folder structure
@@ -40,13 +41,7 @@
 
         function checkInvalidToken(status) {
             if (status === 401 || status === 403) {
-                api.oauthService.revokeToken(PROVIDER_NAME);
-            }
-        }
-
-        function revokeToken(token) {
-            if (token) {
-                makeRequest('GET', 'https://accounts.google.com/o/oauth2/revoke?token=' + token);
+                adguard.listeners.notifyListeners(adguard.listeners.SYNC_BAD_OR_EXPIRED_TOKEN, GOOGLE_PROVIDER_NAME);
             }
         }
 
@@ -61,7 +56,7 @@
                 xhr.open(method, url, true);
 
                 // Include common headers (auth and version) and add rest.
-                xhr.setRequestHeader('Authorization', 'Bearer ' + api.oauthService.getToken(PROVIDER_NAME));
+                xhr.setRequestHeader('Authorization', 'Bearer ' + api.oauthService.getToken(GOOGLE_PROVIDER_NAME));
                 if (headers) {
                     for (var key in headers) {
                         if (headers.hasOwnProperty(key)) {
@@ -190,16 +185,16 @@
         /**
          * https://developers.google.com/drive/v3/web/about-auth
          * @param redirectUri
-         * @param securityToken
+         * @param csrfState
          * @returns {string}
          */
-        var getAuthenticationUrl = function (redirectUri, securityToken) {
+        var getAuthenticationUrl = function (redirectUri, csrfState) {
             var params = {
-                client_id: CLIENT_ID,
+                client_id: GOOGLE_CLIENT_ID,
                 redirect_uri: redirectUri,
-                response_type: 'code',
+                response_type: 'token',
                 scope: 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.appdata',
-                state: securityToken
+                state: csrfState
             };
             var query = [];
             Object.keys(params).forEach(function (key) {
@@ -209,66 +204,13 @@
         };
 
         /**
-         * Exchange authorization code for refresh and access tokens
-         * https://www.googleapis.com/oauth2/v4/token
-         * @param accessCode
-         * @param callback
+         * Revokes token
+         * @param token
          */
-        var requestAccessTokens = function (accessCode, callback) {
-            var params = {
-                code: accessCode,
-                client_id: CLIENT_ID,
-                client_secret: CLIENT_SECRET,
-                response_type: 'code',
-                redirect_uri: 'http://testsync.adguard.com/oauth?provider=' + PROVIDER_NAME,
-                grant_type: 'authorization_code'
-            };
-            var query = [];
-            Object.keys(params).forEach(function (key) {
-                query.push(key + '=' + encodeURIComponent(params[key]));
-            });
-
-            var headers = {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            };
-
-            return makeRequest('POST', 'https://www.googleapis.com/oauth2/v4/token?' + query.join('&'), null, headers).then(function (response) {
-                //TODO: WTF There is no refresh token in response!
-                console.log(response);
-                if (response && response.access_token) {
-                    callback(response.access_token, response.refresh_token, response.expires_in);
-                }
-            });
-        };
-
-        /**
-         * Refreshes access token
-         * https://www.googleapis.com/oauth2/v4/token
-         * @param refreshToken
-         * @param callback
-         */
-        var refreshAccessToken = function (refreshToken, callback) {
-            var params = {
-                refresh_token: refreshToken,
-                client_id: CLIENT_ID,
-                client_secret: CLIENT_SECRET,
-                grant_type: 'refresh_token'
-            };
-            var query = [];
-            Object.keys(params).forEach(function (key) {
-                query.push(key + '=' + encodeURIComponent(params[key]));
-            });
-
-            var headers = {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            };
-
-            return makeRequest('POST', 'https://www.googleapis.com/oauth2/v4/token?' + query.join('&'), null, headers).then(function (response) {
-                console.log(response);
-                if (response && response.access_token) {
-                    callback(response.access_token, response.expires_in);
-                }
-            });
+        var revokeToken = function (token) {
+            if (token) {
+                makeRequest('GET', 'https://accounts.google.com/o/oauth2/revoke?token=' + token);
+            }
         };
 
         return {
@@ -277,11 +219,9 @@
             getStartPageToken: getStartPageToken,
             listChanges: listChanges,
             listFiles: listFiles,
-            revokeToken: revokeToken,
-            requestAccessTokens: requestAccessTokens,
-            refreshAccessToken: refreshAccessToken,
             deleteFile: deleteFile,
-            getAuthenticationUrl: getAuthenticationUrl
+            getAuthenticationUrl: getAuthenticationUrl,
+            revokeToken: revokeToken
         };
 
     })();
@@ -309,25 +249,20 @@
         }
 
         return tokenPromise.then(function (token) {
-                googleDriveFolderState.startPageToken = token;
-                return GoogleDriveClient.listChanges(token);
-            })
-            .then(function (response) {
-                if (response.newStartPageToken) {
-                    googleDriveFolderState.startPageToken = response.newStartPageToken;
-                }
-                var changes = response.changes || [];
-                if (changes.length > 0 || googleDriveFolderState.files === null) {
-                    adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED);
-                }
-            });
+            googleDriveFolderState.startPageToken = token;
+            return GoogleDriveClient.listChanges(token);
+        }).then(function (response) {
+            if (response.newStartPageToken) {
+                googleDriveFolderState.startPageToken = response.newStartPageToken;
+            }
+            var changes = response.changes || [];
+            if (changes.length > 0 || googleDriveFolderState.files === null) {
+                adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED);
+            }
+        });
     }
 
     function startPolling(timeout) {
-        if (!api.oauthService.getToken(PROVIDER_NAME)) {
-            adguard.console.info('Access token is empty. Stop polling changes...');
-            return;
-        }
         googleDriveFolderState.pollingTimeoutId = setTimeout(function () {
             syncListChanges()
                 .then(function () {
@@ -392,36 +327,25 @@
     };
 
     var init = function () {
+        adguard.console.info('Initialize {0} sync provider', GOOGLE_PROVIDER_NAME);
         startPolling();
     };
 
     var shutdown = function () {
+        adguard.console.info('Shutdown {0} sync provider', GOOGLE_PROVIDER_NAME);
         clearTimeout(googleDriveFolderState.pollingTimeoutId);
     };
 
-    var getAuthUrl = function (redirectUri, securityToken) {
-        return GoogleDriveClient.getAuthenticationUrl(redirectUri, securityToken);
+    var getAuthUrl = function (redirectUri, csrfState) {
+        return GoogleDriveClient.getAuthenticationUrl(redirectUri, csrfState);
     };
 
     var revokeToken = function (token) {
         GoogleDriveClient.revokeToken(token);
     };
 
-    var requestAccessTokens = function (accessCode, callback) {
-        GoogleDriveClient.requestAccessTokens(accessCode, callback);
-    };
-
-    var refreshAccessToken = function (refreshToken, callback) {
-        GoogleDriveClient.refreshAccessToken(refreshToken, callback);
-    };
-
-    api.googleDriveSyncProvider = {
-        get name() {
-            return PROVIDER_NAME;
-        },
-        get oauthSupported() {
-            return true;
-        },
+    api.syncProviders.register(GOOGLE_PROVIDER_NAME, {
+        isOAuthSupported: true,
         // Storage api
         load: load,
         save: save,
@@ -429,9 +353,7 @@
         shutdown: shutdown,
         // Auth api
         getAuthUrl: getAuthUrl,
-        revokeToken: revokeToken,
-        requestAccessTokens: requestAccessTokens,
-        refreshAccessToken: refreshAccessToken
-    };
+        revokeToken: revokeToken
+    });
 
 })(adguard.sync, adguard);

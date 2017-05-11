@@ -23,8 +23,8 @@
 
 	function checkPopupBlockedRule(tabId, requestUrl, referrerUrl, sourceTab) {
 
-		//is not http request or url of tab isn't ready
-		if (!adguard.utils.url.isHttpRequest(requestUrl)) {
+		// Tab isn't ready
+		if (!requestUrl) {
 			return;
 		}
 
@@ -49,7 +49,8 @@
 			return;
 		}
 
-		var referrerUrl = adguard.frames.getMainFrameUrl(sourceTab);
+		// webRequest.onBeforeRequest event may hasn't been received yet.
+		var referrerUrl = adguard.frames.getMainFrameUrl(sourceTab) || details.url;
 		if (!adguard.utils.url.isHttpRequest(referrerUrl)) {
 			return;
 		}

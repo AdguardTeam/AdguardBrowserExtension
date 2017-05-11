@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 /* global contentPage, ExtendedCss, HTMLDocument, XMLDocument, ElementCollapser, CssHitsCounter */
-(function() {
+(function () {
 
     var requestTypeMap = {
         "img": "IMAGE",
@@ -30,7 +30,7 @@
 
     // Don't apply scripts twice
     var scriptsApplied = false;
-    
+
     /**
      * Do not use shadow DOM on some websites
      * https://code.google.com/p/chromium/issues/detail?id=496055
@@ -40,7 +40,7 @@
         'inbox.google.com',
         'productforums.google.com'
     ];
-    
+
     var collapseRequests = Object.create(null);
     var collapseRequestId = 1;
     var isFirefox = false;
@@ -51,7 +51,9 @@
     /**
      * Set callback for saving css hits
      */
-    if (typeof CssHitsCounter !== 'undefined') {
+    if (typeof CssHitsCounter !== 'undefined' &&
+        typeof CssHitsCounter.setCssHitsFoundCallback === 'function') {
+
         CssHitsCounter.setCssHitsFoundCallback(function (stats) {
             contentPage.sendMessage({type: 'saveCssHitStats', stats: stats});
         });
@@ -72,7 +74,7 @@
             applyScripts(response.scripts);
         }
     });
-    
+
     /**
      * Initializing content script
      */
@@ -119,7 +121,7 @@
      */
     var isHtml = function () {
         return (document instanceof HTMLDocument) ||
-                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/233
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/233
             ((document instanceof XMLDocument) && (document.createElement('div') instanceof HTMLDivElement));
     };
 
@@ -127,7 +129,7 @@
      * Overrides window.WebSocket running the function from websocket.js
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/203
      */
-    /*global initPageMessageListener, overrideWebSocket*/
+    /* global initPageMessageListener, overrideWebSocket */
     var initWebSocketWrapper = function () {
         // This is chrome-specific feature for blocking WebSocket connections
         // overrideWebSocket function is not defined in case of other browsers
@@ -136,22 +138,25 @@
         }
 
         // Only for dynamically created frames and http/https documents.
-        if (!isHtml() && 
+        if (!isHtml() &&
             window.location.href !== "about:blank") {
             return;
         }
 
         // WebSockets are broken in old versions of chrome
+        // and we don't need this hack in new version cause then websocket traffic is intercepted
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/273
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/572
         var userAgent = navigator.userAgent.toLowerCase();
         var cIndex = userAgent.indexOf('chrome/');
         if (cIndex > 0) {
             var version = userAgent.substring(cIndex + 7);
-            if (Number.parseInt(version.substring(0, version.indexOf('.'))) < 47) {
+            var versionNumber = Number.parseInt(version.substring(0, version.indexOf('.')));
+            if (versionNumber < 47 || versionNumber > 57) {
                 return;
             }
         }
-        
+
         if (userAgent.indexOf('firefox') >= 0) {
             // Explicit check, we must not go further in case of Firefox
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/379
@@ -193,7 +198,7 @@
          *
          * @param mutations
          */
-        var handleIframeSrcChanged = function(mutations) {
+        var handleIframeSrcChanged = function (mutations) {
             for (var i = 0; i < mutations.length; i++) {
                 var iframe = mutations[i].target;
                 if (iframe) {
@@ -205,7 +210,7 @@
         var iframeObserver = new MutationObserver(handleIframeSrcChanged);
         var iframeObserverOptions = {
             attributes: true,
-            attributeFilter: [ 'src' ]
+            attributeFilter: ['src']
         };
 
         /**
@@ -213,7 +218,7 @@
          *
          * @param mutations
          */
-        var handleDomChanged = function(mutations) {
+        var handleDomChanged = function (mutations) {
             var iframes = [];
             for (var i = 0; i < mutations.length; i++) {
                 var mutation = mutations[i];
@@ -231,7 +236,7 @@
                 while (iIframes--) {
                     var iframe = iframes[iIframes];
                     checkShouldCollapseElement(iframe);
-                    iframeObserver.observe(iframe, iframeObserverOptions);                    
+                    iframeObserver.observe(iframe, iframeObserverOptions);
                 }
             }
         };
@@ -239,7 +244,7 @@
         /**
          * Removes iframes hide style and initiates should-collapse check for iframes
          */
-        var onDocumentReady = function() {
+        var onDocumentReady = function () {
             var iframes = document.getElementsByTagName('iframe');
             for (var i = 0; i < iframes.length; i++) {
                 checkShouldCollapseElement(iframes[i]);
@@ -283,17 +288,17 @@
          */
         contentPage.sendMessage(message, processCssAndScriptsResponse);
     };
-    
+
     /**
      * Processes response from the background page containing CSS and JS injections
      *
      * @param response Response from the background page
      */
-    var processCssAndScriptsResponse = function(response) {
+    var processCssAndScriptsResponse = function (response) {
         if (!response || response.requestFilterReady === false) {
             /**
-             * This flag (requestFilterReady) means that we should wait for a while, because the 
-             * request filter is not ready yet. This is possible only on browser startup. 
+             * This flag (requestFilterReady) means that we should wait for a while, because the
+             * request filter is not ready yet. This is possible only on browser startup.
              * In this case we'll delay injections until extension is fully initialized.
              */
             setTimeout(function () {
@@ -302,11 +307,11 @@
 
             return;
         } else if (response.collapseAllElements) {
-            
+
             /**
-             * This flag (collapseAllElements) means that we should check all page elements 
-             * and collapse them if needed. Why? On browser startup we can't block some 
-             * ad/tracking requests because extension is not yet initialized when 
+             * This flag (collapseAllElements) means that we should check all page elements
+             * and collapse them if needed. Why? On browser startup we can't block some
+             * ad/tracking requests because extension is not yet initialized when
              * these requests are executed. At least we could hide these elements.
              */
             applySelectors(response.selectors, response.useShadowDom);
@@ -322,22 +327,23 @@
         }
 
         if (typeof CssHitsCounter !== 'undefined' &&
+            typeof CssHitsCounter.count === 'function' &&
             response && response.selectors && response.selectors.cssHitsCounterEnabled) {
 
             // Start css hits calculation
             CssHitsCounter.count();
         }
     };
-    
+
     /**
      * Sets "style" DOM element content.
-     * 
+     *
      * @param styleEl       "style" DOM element
      * @param cssContent    CSS content to set
      * @param useShadowDom  true if we want to use shadow DOM
      */
-    var setStyleContent = function(styleEl, cssContent, useShadowDom) {
-        
+    var setStyleContent = function (styleEl, cssContent, useShadowDom) {
+
         if (useShadowDom && !shadowRoot) {
             // Despite our will to use shadow DOM we cannot
             // It is rare case, but anyway: https://code.google.com/p/chromium/issues/detail?id=496055
@@ -345,15 +351,15 @@
             // We should remove ::content pseudo-element first
             cssContent = cssContent.replace(new RegExp('::content ', 'g'), '');
         }
-        
+
         styleEl.textContent = cssContent;
     };
-    
+
     /**
      * Applies CSS and extended CSS stylesheets
-     * 
+     *
      * @param selectors     Object with the stylesheets got from the background page.
-     * @param useShadowDom  If true - add styles to shadow DOM instead of normal DOM. 
+     * @param useShadowDom  If true - add styles to shadow DOM instead of normal DOM.
      */
     var applySelectors = function (selectors, useShadowDom) {
         if (!selectors) {
@@ -366,7 +372,7 @@
 
     /**
      * Applies CSS stylesheets
-     * 
+     *
      * @param css Array with CSS stylesheets
      */
     var applyCss = function (css, useShadowDom) {
@@ -382,7 +388,7 @@
             if (useShadowDom && shadowRoot) {
                 shadowRoot.appendChild(styleEl);
             } else {
-                (document.head || document.documentElement).appendChild(styleEl);                
+                (document.head || document.documentElement).appendChild(styleEl);
             }
 
             protectStyleElementFromRemoval(styleEl, useShadowDom);
@@ -412,7 +418,7 @@
      */
     var protectStyleElementContent = function (protectStyleEl) {
         var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-        if (!MutationObserver){
+        if (!MutationObserver) {
             return;
         }
         /* observer, which observe protectStyleEl inner changes, without deleting styleEl */
@@ -453,11 +459,11 @@
         });
 
         innerObserver.observe(protectStyleEl, {
-                'childList': true,
-                'characterData': true,
-                'subtree': true,
-                'characterDataOldValue': true
-            });
+            'childList': true,
+            'characterData': true,
+            'subtree': true,
+            'characterDataOldValue': true
+        });
     };
 
     /**
@@ -468,7 +474,7 @@
      */
     var protectStyleElementFromRemoval = function (protectStyleEl, useShadowDom) {
         var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-        if (!MutationObserver){
+        if (!MutationObserver) {
             return;
         }
         /* observer, which observe deleting protectStyleEl */
@@ -492,13 +498,13 @@
 
         outerObserver.observe(protectStyleEl.parentNode, {'childList': true, 'characterData': true});
     };
-    
+
     /**
      * Applies JS injections.
      *
      * @param scripts Array with JS scripts and scriptSource ('remote' or 'local')
      */
-    var applyScripts = function(scripts) {
+    var applyScripts = function (scripts) {
 
         if (scriptsApplied) {
             return;
@@ -530,6 +536,10 @@
             }
         }
 
+        if (scriptsToApply.length === 0) {
+            return;
+        }
+
         /**
          * JS injections are created by JS filtering rules:
          * http://adguard.com/en/filterrules.html#javascriptInjection
@@ -538,28 +548,38 @@
         script.setAttribute("type", "text/javascript");
         scriptsToApply.unshift("try {");
         scriptsToApply.push("} catch (ex) { console.error('Error executing AG js: ' + ex); }");
+
+        // Try to keep DOM clean: let script removes itself when execution completes
+        scriptsToApply.push('(function () {\r\n' +
+            '   var current = document.currentScript;\r\n' +
+            '   var parent = current && current.parentNode;\r\n' +
+            '   if (parent) {\r\n' +
+            '       parent.removeChild(current);\r\n' +
+            '   }\r\n' +
+            '})();');
+
         script.textContent = scriptsToApply.join("\r\n");
         (document.head || document.documentElement).appendChild(script);
     };
-    
+
     /**
      * Init listeners for error and load events.
      * We will then check loaded elements if they are blocked by our extension.
      * In this case we'll hide these blocked elements.
      */
-    var initCollapseEventListeners = function() {
+    var initCollapseEventListeners = function () {
         document.addEventListener("error", checkShouldCollapse, true);
 
         // We need to listen for load events to hide blocked iframes (they don't raise error event)
         document.addEventListener("load", checkShouldCollapse, true);
     };
-    
+
     /**
      * Checks if loaded element is blocked by AG and should be hidden
-     * 
+     *
      * @param event Load or error event
      */
-    var checkShouldCollapse = function(event) {
+    var checkShouldCollapse = function (event) {
         var element = event.target;
         var eventType = event.type;
         var tagName = element.tagName.toLowerCase();
@@ -574,12 +594,12 @@
 
     /**
      * Extracts element URL from the dom node
-     * 
+     *
      * @param element DOM node
      */
-    var getElementUrl = function(element) {
+    var getElementUrl = function (element) {
         var elementUrl = element.src || element.data;
-        if (!elementUrl || 
+        if (!elementUrl ||
             elementUrl.indexOf('http') !== 0 ||
             // Some sources could not be set yet, lazy loaded images or smth.
             // In some cases like on gog.com, collapsing these elements could break the page script loading their sources 
@@ -592,12 +612,12 @@
 
     /**
      * Saves collapse request (to be reused after we get result from bg page)
-     * 
+     *
      * @param element Element to check
-     * @return request ID 
+     * @return request ID
      */
-    var saveCollapseRequest = function(element) {
-        
+    var saveCollapseRequest = function (element) {
+
         var tagName = element.tagName.toLowerCase();
         var requestId = collapseRequestId++;
         collapseRequests[requestId] = {
@@ -627,7 +647,7 @@
 
     /**
      * Response callback for "processShouldCollapse" message.
-     * 
+     *
      * @param response Response got from the background page
      */
     var onProcessShouldCollapseResponse = function (response) {
@@ -635,7 +655,7 @@
         if (!response) {
             return;
         }
-        
+
         // Get original collapse request
         var collapseRequest = collapseRequests[response.requestId];
         if (!collapseRequest) {
@@ -648,7 +668,7 @@
             var elementUrl = collapseRequest.src;
             ElementCollapser.collapseElement(element, elementUrl, shadowRoot);
         }
-        
+
         // Unhide element, which was previously hidden by "tempHideElement"
         // In case if element is collapsed, there's no need to hide it
         // Otherwise we shouldn't hide it either as it shouldn't be blocked
@@ -689,13 +709,13 @@
 
         contentPage.sendMessage(message, onProcessShouldCollapseResponse);
     };
-    
+
     /**
      * Response callback for "processShouldCollapseMany" message.
      *
      * @param response Response from bg page.
      */
-    var onProcessShouldCollapseManyResponse = function(response) {
+    var onProcessShouldCollapseManyResponse = function (response) {
 
         if (!response) {
             return;
@@ -707,11 +727,11 @@
             onProcessShouldCollapseResponse(collapseRequest);
         }
     };
-    
+
     /**
      * Collects all elements from the page and checks if we should hide them.
      */
-    var checkBatchShouldCollapse = function() {
+    var checkBatchShouldCollapse = function () {
         var requests = [];
 
         // Collect collapse requests
@@ -727,7 +747,7 @@
                     continue;
                 }
 
-                var requestId = saveCollapseRequest(element); 
+                var requestId = saveCollapseRequest(element);
 
                 requests.push({
                     elementUrl: elementUrl,
@@ -741,7 +761,7 @@
         var message = {
             type: 'processShouldCollapseMany',
             requests: requests,
-            documentUrl: document.URL            
+            documentUrl: document.URL
         };
 
         // Send all prepared requests in one message
@@ -752,9 +772,9 @@
      * This method is used when we need to check all page elements with collapse rules.
      * We need this when the browser is just started and add-on is not yet initialized.
      * In this case content scripts waits for add-on initialization and the
-     * checks all page elements.  
+     * checks all page elements.
      */
-    var initBatchCollapse = function() {
+    var initBatchCollapse = function () {
         if (document.readyState === 'complete' ||
             document.readyState === 'loaded' ||
             document.readyState === 'interactive') {
@@ -763,27 +783,27 @@
             document.addEventListener('DOMContentLoaded', checkBatchShouldCollapse);
         }
     };
-   
+
     /**
      * Called when document become visible.
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/159
      */
-    var onVisibilityChange = function() {
+    var onVisibilityChange = function () {
 
         if (document.hidden === false) {
             document.removeEventListener("visibilitychange", onVisibilityChange);
             init();
         }
     };
-    
+
     /**
      * Messaging won't work when page is loaded by Safari top hits
-     */        
-    if (typeof safari != 'undefined' && document.hidden) {
+     */
+    if (contentPage.isSafari && document.hidden) {
         document.addEventListener("visibilitychange", onVisibilityChange);
         return;
     }
-    
+
     // Start the content script
     init();
 })();

@@ -101,8 +101,7 @@ QUnit.test("Convert first-party rule", function(assert) {
 });
 
 QUnit.test("Convert websocket rule", function(assert) {
-    var ruleText = "||test.com^$websocket";
-    var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    var result = SafariContentBlockerConverter.convertArray([ "||test.com^$websocket" ]);
     assert.equal(1, result.convertedCount);
     assert.equal(0, result.errorsCount);
 
@@ -116,6 +115,20 @@ QUnit.test("Convert websocket rule", function(assert) {
     assert.notOk(convertedRule.trigger["load-type"]);
     assert.ok(convertedRule.trigger["resource-type"]);
     assert.equal("raw", convertedRule.trigger["resource-type"][0]);
+
+
+    result = SafariContentBlockerConverter.convertArray([ "$websocket,domain=123movies.is" ]);
+    assert.equal(1, result.convertedCount);
+    assert.equal(0, result.errorsCount);
+
+    converted = JSON.parse(result.converted);
+    assert.equal(1, converted.length);
+
+    convertedRule = converted[0];
+    assert.equal(convertedRule.trigger["url-filter"], "^wss?://.*");
+    assert.equal(convertedRule.trigger["if-domain"][0], "*123movies.is");
+    assert.ok(convertedRule.trigger["resource-type"]);
+    assert.equal(convertedRule.trigger["resource-type"][0], "raw");
 });
 
 QUnit.test("Convert ~script rule", function(assert) {
@@ -207,8 +220,8 @@ QUnit.test("Generichide rules", function(assert) {
     assert.equal(1, converted.length);
 
     var convertedRule = converted[0];
-    assert.equal("ignore-previous-rules", convertedRule.action.type);
-    assert.equal('^https?://([^/]*\\.)?hulu\\.com\\/page', convertedRule.trigger["url-filter"]);
+    assert.equal(convertedRule.action.type, "ignore-previous-rules");
+    assert.equal(convertedRule.trigger["url-filter"], '^[htpsw]+://([^/]*\\.)?hulu\\.com\\/page');
 });
 
 QUnit.test("Generic domain sensitive rules", function(assert) {
@@ -258,7 +271,7 @@ QUnit.test("Convert cyrillic rules", function(assert) {
     assert.equal(2, converted.length);
 
     assert.equal(converted[0].trigger["url-filter"], "xn--e1agjb\\.xn--p1ai");
-    assert.equal(converted[1].trigger["url-filter"], "^https?://([^/]*\\.)?xn--e1agjb\\.xn--p1ai");
+    assert.equal(converted[1].trigger["url-filter"], "^[htpsw]+://([^/]*\\.)?xn--e1agjb\\.xn--p1ai");
 });
 
 QUnit.test("Convert regexp rules", function(assert) {
@@ -370,4 +383,31 @@ QUnit.test("UpperCase domains", function (assert) {
     assert.equal(1, converted.length);
 
     assert.equal(converted[0].trigger["if-domain"], "*uppercase.test");
+});
+
+QUnit.test("Elemhide rules", function (assert) {
+
+    var ruleCss = new adguard.rules.CssFilterRule('lenta.ru###root > section.b-header.b-header-main.js-header:nth-child(4) > div.g-layout > div.row', 0);
+    var ruleBlockingUrl = new adguard.rules.UrlFilterRule('https://icdn.lenta.ru/images/2017/04/10/16/20170410160659586/top7_f07b6db166774abba29e0de2e335f50a.jpg', 0);
+    var ruleElemhide = new adguard.rules.UrlFilterRule('@@||lenta.ru^$elemhide', 0);
+    var ruleElemhideGenericBlock = new adguard.rules.UrlFilterRule('@@||lenta.ru^$elemhide,genericblock', 0);
+
+    var result = SafariContentBlockerConverter.convertArray([ruleCss, ruleBlockingUrl, ruleElemhide, ruleElemhideGenericBlock]);
+    assert.equal(result.errorsCount, 0);
+
+    var converted = JSON.parse(result.converted);
+    assert.equal(4, converted.length);
+
+    assert.equal(converted[0].action["selector"], "#root > section.b-header.b-header-main.js-header:nth-child(4) > div.g-layout > div.row");
+    assert.equal(converted[0].action.type, "css-display-none");
+
+    assert.equal(converted[1].trigger["url-filter"], ".*");
+    assert.equal(converted[1].trigger["if-domain"], "*lenta.ru");
+    assert.equal(converted[1].action.type, "ignore-previous-rules");
+
+    assert.equal(converted[2].trigger["url-filter"], "https:\\/\\/icdn\\.lenta\\.ru\\/images\\/2017\\/04\\/10\\/16\\/20170410160659586\\/top7_f07b6db166774abba29e0de2e335f50a\\.jpg");
+    assert.equal(converted[2].action.type, "block");
+
+    assert.equal(converted[3].action.type, "ignore-previous-rules");
+    assert.equal(converted[3].trigger["url-filter"], "^[htpsw]+://([^/]*\\.)?lenta\\.ru[/:&?]?");
 });

@@ -25,11 +25,11 @@
 
     'use strict';
 
-    //TODO: Change to real
-    var CLIENT_ID = 'bubtujvx7p81yjo';
+    //TODO[SYNC]: Change to real
+    var DROPBOX_CLIENT_ID = 'bubtujvx7p81yjo';
+    var DROPBOX_PROVIDER_NAME = 'DROPBOX';
 
     var dropbox;
-    var PROVIDER_NAME = 'DROPBOX';
 
     /**
      * Dropbox client
@@ -72,7 +72,7 @@
             return makeRequest('https://api.dropboxapi.com/2/files/list_folder', {
                 path: '',
                 include_deleted: true
-            }, api.oauthService.getToken(PROVIDER_NAME));
+            }, api.oauthService.getToken(DROPBOX_PROVIDER_NAME));
         };
 
         /**
@@ -97,7 +97,9 @@
     var dropboxFolderState = {
         cursor: null,
         forceSync: true,
-        files: {}
+        files: {},
+        longPollTimeoutId: 0,
+        longPollingEnabled: false
     };
 
     function readBlobFromResponse(response) {
@@ -123,7 +125,7 @@
 
     function clearAccessToken() {
         dropboxFolderState.forceSync = true;
-        api.oauthService.revokeToken(PROVIDER_NAME);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_BAD_OR_EXPIRED_TOKEN, DROPBOX_PROVIDER_NAME);
     }
 
     /**
@@ -172,12 +174,15 @@
     }
 
     function callListFolderLongPollTimeout(timeoutMs) {
-        setTimeout(function () {
-            callListFolderLongPoll();
-        }, timeoutMs);
+        dropboxFolderState.longPollTimeoutId = setTimeout(callListFolderLongPoll, timeoutMs);
     }
 
     function callListFolderLongPoll() {
+
+        if (!dropboxFolderState.longPollingEnabled) {
+            adguard.console.info('{0} long polling is disabled', DROPBOX_PROVIDER_NAME);
+            return;
+        }
 
         syncListFiles()
             .then(function () {
@@ -190,14 +195,15 @@
                 if (result.backoff) {
                     callListFolderLongPollTimeout(result.backoff * 1000);
                 } else {
-                    callListFolderLongPoll();
+                    callListFolderLongPollTimeout(0);
                 }
             })
             .catch(function (error) {
+                adguard.console.error('Dropbox sync error {0}', error);
                 if (isInvalidToken(error)) {
                     clearAccessToken();
+                    return;
                 }
-                adguard.console.error('Dropbox sync error {0}', error);
                 // Retry after 5 minutes
                 callListFolderLongPollTimeout(5 * 60 * 1000);
             });
@@ -224,11 +230,6 @@
      * @param callback
      */
     var load = function (name, callback) {
-
-        if (!api.oauthService.isAuthorized(PROVIDER_NAME)) {
-            callback(false);
-            return;
-        }
 
         isFileExists(name)
             .then(function (exists) {
@@ -259,11 +260,6 @@
      */
     var save = function (name, data, callback) {
 
-        if (!api.oauthService.isAuthorized(PROVIDER_NAME)) {
-            callback(false);
-            return;
-        }
-
         var contents = JSON.stringify(data);
         dropbox.filesUpload({path: '/' + name, mode: "overwrite", contents: contents})
             .then(function (metadata) {
@@ -271,49 +267,52 @@
                 callback(true);
             })
             .catch(function (error) {
+                adguard.console.error('Dropbox sync error {0} {1}', name, error);
                 if (isInvalidToken(error)) {
                     clearAccessToken();
                 }
-                adguard.console.error('Dropbox sync error {0} {1}', name, error);
                 callback(false);
             });
     };
 
     var init = function () {
-        dropbox = new Dropbox({accessToken: api.oauthService.getToken(PROVIDER_NAME)});
+        adguard.console.info('Initialize {0} sync provider', DROPBOX_PROVIDER_NAME);
+        dropbox = new Dropbox({accessToken: api.oauthService.getToken(DROPBOX_PROVIDER_NAME)});
+        dropboxFolderState.longPollingEnabled = true;
         callListFolderLongPoll();
     };
 
     var shutdown = function () {
-        //TODO: stop polling
+        adguard.console.info('Shutdown {0} sync provider', DROPBOX_PROVIDER_NAME);
+        dropboxFolderState.forceSync = true;
+        dropboxFolderState.longPollingEnabled = false;
+        if (dropboxFolderState.longPollTimeoutId) {
+            clearTimeout(dropboxFolderState.longPollTimeoutId);
+        }
     };
 
-    var getAuthUrl = function (redirectUri, securityToken) {
-        //TODO: Find out if CSRF token is supported
-        dropbox = new Dropbox({clientId: CLIENT_ID});
-        return dropbox.getAuthenticationUrl(redirectUri);
+    var getAuthUrl = function (redirectUri, csrfState) {
+        dropbox = new Dropbox({clientId: DROPBOX_CLIENT_ID});
+        return dropbox.getAuthenticationUrl(redirectUri, csrfState);
     };
 
-    var revokeToken = function () {
-        dropbox = new Dropbox({clientId: CLIENT_ID});
+    var revokeToken = function (token) {
+        dropbox = new Dropbox({accessToken: token});
         dropbox.authTokenRevoke();
     };
 
     // EXPOSE
-    api.dropboxSyncProvider = {
-        get name() {
-            return PROVIDER_NAME;
-        },
-        get oauthSupported() {
-            return true;
-        },
+    api.syncProviders.register(DROPBOX_PROVIDER_NAME, {
+        isOAuthSupported: true,
+        title: adguard.i18n.getMessage("sync_provider_dropbox"),
         // Storage api
         load: load,
         save: save,
         init: init,
+        shutdown: shutdown,
         // Auth api
         getAuthUrl: getAuthUrl,
         revokeToken: revokeToken
-    };
+    });
 
 })(adguard.sync, adguard);

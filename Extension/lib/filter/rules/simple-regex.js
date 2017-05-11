@@ -90,6 +90,12 @@
          * Creates regex
          */
         var createRegexText = function (str) {
+            if (str === regexConfiguration.maskStartUrl ||
+                str === regexConfiguration.maskPipe ||
+                str === regexConfiguration.maskAnySymbol) {
+                return regexConfiguration.regexAnySymbol;
+            }
+
             var regex = escapeRegExp(str);
 
             if (startsWith(regex, regexConfiguration.maskStartUrl)) {

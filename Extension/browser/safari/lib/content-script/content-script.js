@@ -14,7 +14,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global safari */
+
+/* global safari, adguardContent */
 
 (function (global, adguard) {
 
@@ -309,7 +310,8 @@
 
         return {
             sendMessage: sendMessage,
-            onMessage: onMessage
+            onMessage: onMessage,
+            isSafari: true
         };
     })();
 

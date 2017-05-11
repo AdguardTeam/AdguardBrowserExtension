@@ -71,6 +71,13 @@ adguard.utils = (function () {
  */
 (function (api) {
 
+    if (!String.prototype.endsWith) {
+        String.prototype.endsWith = function (suffix) { // jshint ignore:line
+            var index = this.lastIndexOf(suffix);
+            return index !== -1 && index === this.length - suffix.length;
+        };
+    }
+
     //noinspection UnnecessaryLocalVariableJS
     var StringUtils = {
 
@@ -82,17 +89,8 @@ adguard.utils = (function () {
             return str && str.indexOf(prefix) === 0;
         },
 
-        endWith: function (str, postfix) {
-            if (!str || !postfix) {
-                return false;
-            }
-
-            if (str.endsWith) {
-                return str.endsWith(postfix);
-            }
-            var t = String(postfix);
-            var index = str.lastIndexOf(t);
-            return index >= 0 && index === str.length - t.length;
+        endsWith: function (str, postfix) {
+            return str.endsWith(postfix);
         },
 
         substringAfter: function (str, separator) {
@@ -341,15 +339,10 @@ adguard.utils = (function () {
         EASY_PRIVACY: 118,
         FANBOY_ANNOYANCES: 122,
         FANBOY_SOCIAL: 123,
-        FANBOY_ENHANCED: 215,
-        LAST_ADGUARD_FILTER_ID: 14
+        FANBOY_ENHANCED: 215
     };
 
     var FilterUtils = {
-
-        isAdguardFilter: function (filter) {
-            return filter.filterId <= AntiBannerFiltersId.LAST_ADGUARD_FILTER_ID;
-        },
 
         isUserFilterRule: function (rule) {
             return rule.filterId == AntiBannerFiltersId.USER_FILTER_ID;

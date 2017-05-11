@@ -122,7 +122,8 @@
                 reload: noOpFunc,
                 sendMessage: noOpFunc,
                 getAll: noOpFunc,		// callback(tabs)
-                getActive: noOpFunc		// callback(tabId)
+                getActive: noOpFunc,    // callback(tabId),
+                get: noOpFunc           // callback(tab)
             };
 
         })();
@@ -276,6 +277,13 @@
                 var tab = tabs[tabId];
                 if (tab) {
                     callback(tab);
+                } else {
+                    // Tab not found in the local state, but we are sure that this tab exists. Sync...
+                    // TODO[Edge]: Relates to Edge Bug https://github.com/AdguardTeam/AdguardBrowserExtension/issues/481
+                    tabsImpl.get(tabId, function (tab) {
+                        onTabCreated(tab);
+                        callback(tab);
+                    });
                 }
             });
         };

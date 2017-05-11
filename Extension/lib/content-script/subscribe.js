@@ -15,6 +15,8 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global HTMLDocument, contentPage */
+
 (function () {
 
     if (!(document instanceof HTMLDocument)) {
@@ -30,9 +32,6 @@
         contentPage.sendMessage({
             type: 'enableSubscription',
             url: url
-        }, function (response) {
-            var message = {title: response.title, text: response.text};
-            showAlertPopupMessage(message);
         });
     }
 
@@ -43,7 +42,7 @@
 
         for (var i = 0; i < urlParams.length; i++) {
             var parts = urlParams[i].split("=", 2);
-            if (parts.length != 2) {
+            if (parts.length !== 2) {
                 continue;
             }
             switch (parts[0]) {
@@ -59,7 +58,7 @@
         return {
             title: title,
             url: url
-        }
+        };
     }
 
     var onLinkClicked = function (e) {
@@ -81,7 +80,7 @@
             return;
         }
 
-        if (target.protocol === 'http:' || target.protocol == 'https:') {
+        if (target.protocol === 'http:' || target.protocol === 'https:') {
             if (target.host !== 'subscribe.adblockplus.org' || target.pathname !== '/') {
                 return;
             }

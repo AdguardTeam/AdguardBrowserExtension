@@ -15,10 +15,12 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global balalaika */
+
 /**
  * Slider widget
  */
-var SliderWidget = (function (api, $) {
+var SliderWidget = (function ($) { // jshint ignore:line
 
     var PLACEHOLDER_CLASS = "adg-slide ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all";
     var HANDLE_CLASS = "ui-slider-handle";
@@ -55,7 +57,7 @@ var SliderWidget = (function (api, $) {
         $(placeholder).addClass(PLACEHOLDER_CLASS);
 
         var handle = document.createElement('a');
-        handle.setAttribute('href', 'javascript:void(0);');
+        handle.setAttribute('href', '#');
         handle.setAttribute('class', HANDLE_FULL_CLASS);
         placeholder.appendChild(handle);
 
@@ -140,6 +142,9 @@ var SliderWidget = (function (api, $) {
         });
     };
 
+    // Public API
+    var api = {};
+
     /**
      *
      * @param placeholderElement
@@ -158,4 +163,5 @@ var SliderWidget = (function (api, $) {
     };
 
     return api;
-})(SliderWidget || {}, balalaika);
+
+})(balalaika);

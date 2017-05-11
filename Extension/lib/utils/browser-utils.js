@@ -182,16 +182,33 @@
             return !this._useOldSafariAPI;
         },
 
+        /**
+         * Finds header object by header name (case insensitive)
+         * @param headers Headers collection
+         * @param headerName Header name
+         * @returns {*}
+         */
         findHeaderByName: function (headers, headerName) {
             if (headers) {
                 for (var i = 0; i < headers.length; i++) {
                     var header = headers[i];
-                    if (header.name === headerName) {
+                    if (header.name.toLowerCase() === headerName.toLowerCase()) {
                         return header;
                     }
                 }
             }
             return null;
+        },
+
+        /**
+         * Finds header value by name (case insensitive)
+         * @param headers Headers collection
+         * @param headerName Header name
+         * @returns {null}
+         */
+        getHeaderValueByName: function (headers, headerName) {
+            var header = this.findHeaderByName(headers, headerName);
+            return header ? header.value : null;
         },
 
         /**
@@ -278,6 +295,20 @@
                 languages.push(navigator.language); // .language is first in .languages
             }
             return languages;
+        },
+
+        /**
+         * Affected issues:
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/602
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/566
+         * 'Popup' window
+
+         * Creators update is not yet released, so we use Insider build 15063 instead.
+         */
+        EDGE_CREATORS_UPDATE: 15063,
+
+        isEdgeBeforeCreatorsUpdate: function () {
+            return this.isEdgeBrowser() && adguard.prefs.edgeVersion.build < this.EDGE_CREATORS_UPDATE;
         }
     };
 

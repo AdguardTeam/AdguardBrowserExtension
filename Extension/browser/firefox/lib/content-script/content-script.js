@@ -19,7 +19,7 @@
 /**
  * contentPage object is used for messaging between a content script and a frame script.
  */
-var contentPage = (function (api) {
+var contentPage = (function () { // jshint ignore:line
 
     var sendMessage;
     if (typeof sendMessageToChrome !== 'undefined') {
@@ -47,6 +47,7 @@ var contentPage = (function (api) {
     /**
      * Expose contentPage public API
      */
+    var api = {};
     api.sendMessage = sendMessage;
     api.onMessage = {
         addListener: addMessageListener
@@ -54,28 +55,23 @@ var contentPage = (function (api) {
 
     return api;
 
-})(contentPage || {});
+})();
 
 /**
  * This object is used to pass translations from the chrome process to the content.
  */
-var i18n = (function (api) {
+var i18n = (function () { // jshint ignore:line
 
     /**
      * Expose i18n public API
      */
+    var api = {};
     api.getMessage = function (messageId, args) {
-        var message;
-        if (typeof i18nMessageApi !== 'undefined') {
-            message = i18nMessageApi(messageId);
-        } else {
-            // TODO: Remove this when we finally drop addon SDK
-            message = self.options.i18nMessages[messageId];
-        }
+        var message = i18nMessageApi(messageId);
         if (!message) {
             throw 'Message ' + messageId + ' not found';
         }
         return I18nHelper.replacePlaceholders(message, args);
     };
     return api;
-})(i18n || {});
+})();

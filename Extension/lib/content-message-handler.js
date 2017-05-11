@@ -71,6 +71,7 @@
             filtersMetadata: adguard.subscriptions.getFilters(),
             requestFilterInfo: adguard.requestFilter.getRequestFilterInfo(),
             contentBlockerInfo: adguard.requestFilter.getContentBlockerInfo(),
+            syncStatusInfo: adguard.sync.syncService.getSyncStatus(),
             environmentOptions: {
                 isMacOs: adguard.utils.browser.isMacOs(),
                 isSafariBrowser: adguard.utils.browser.isSafariBrowser(),
@@ -131,21 +132,6 @@
     }
 
     /**
-     * Returns localization map by passed message identifiers
-     * @param ids Message identifiers
-     */
-    function getLocalization(ids) {
-        var result = {};
-        for (var id in ids) {
-            if (ids.hasOwnProperty(id)) {
-                var current = ids[id];
-                result[current] = adguard.i18n.getMessage(current);
-            }
-        }
-        return result;
-    }
-
-    /**
      * Searches for whitelisted domains.
      *
      * @param offset Offset
@@ -183,39 +169,6 @@
             }
         }
         return limit ? result.slice(offset, offset + limit) : result;
-    }
-
-    /**
-     * Constructs assistant options. Includes css style and localization messages
-     */
-    function processLoadAssistant() {
-        var options = {
-            cssLink: adguard.getURL('lib/content-script/assistant/css/assistant.css')
-        };
-        var ids = [
-            'assistant_select_element',
-            'assistant_select_element_ext',
-            'assistant_select_element_cancel',
-            'assistant_block_element',
-            'assistant_block_element_explain',
-            'assistant_slider_explain',
-            'assistant_slider_if_hide',
-            'assistant_slider_min',
-            'assistant_slider_max',
-            'assistant_extended_settings',
-            'assistant_apply_rule_to_all_sites',
-            'assistant_block_by_reference',
-            'assistant_block_similar',
-            'assistant_block',
-            'assistant_another_element',
-            'assistant_preview',
-            'assistant_preview_header',
-            'assistant_preview_header_info',
-            'assistant_preview_end',
-            'assistant_preview_start'
-        ];
-        options.localization = getLocalization(ids);
-        return options;
     }
 
     /**
@@ -353,8 +306,6 @@
             case 'processShouldCollapseMany':
                 var requests = adguard.webRequestService.processShouldCollapseMany(sender.tab, message.documentUrl, message.requests);
                 return {requests: requests};
-            case 'loadAssistant':
-                return processLoadAssistant();
             case 'addUserRule':
                 adguard.userrules.addRules([message.ruleText]);
                 if (message.adguardDetected || adguard.frames.isTabAdguardDetected(sender.tab)) {
@@ -412,10 +363,9 @@
                 return {confirmText: confirmText};
             case 'enableSubscription':
                 adguard.filters.processAbpSubscriptionUrl(message.url, function (rulesAddedCount) {
-                    callback({
-                        title: adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_title'),
-                        text: adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_text', [rulesAddedCount])
-                    });
+                    var title = adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_title');
+                    var text = adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_text', [String(rulesAddedCount)]);
+                    adguard.ui.showAlertMessagePopup(title, text);
                 });
                 return true; // Async
             // Popup methods
@@ -453,17 +403,36 @@
             case 'saveCssHitStats':
                 processSaveCssHitStats(sender.tab, message.stats);
                 break;
-            case 'syncSettings':
+            // Sync messages
+            case 'setSyncProvider':
                 adguard.sync.syncService.setSyncProvider(message.provider);
                 break;
-            case 'setOauthToken':
-                adguard.sync.syncService.setSyncProvider(message.provider, message.token, message.securityToken, message.expires, message.accessCode);
+            case 'setOAuthToken':
+                if (adguard.sync.oauthService.setToken(message.provider, message.token, message.csrfState, message.expires)) {
+                    adguard.sync.syncService.setSyncProvider(message.provider);
+                    adguard.tabs.remove(sender.tab.tabId);
+                }
                 break;
-            case 'onAuthError':
-                adguard.sync.syncService.removeSyncProvider(message.provider);
+            case 'getSyncStatus':
+                return adguard.sync.syncService.getSyncStatus();
+            case 'authSync':
+                adguard.sync.oauthService.authorize(message.provider);
                 break;
-            default :
-                throw 'Unknown message: ' + message;
+            case 'dropAuthSync':
+                adguard.listeners.notifyListeners(adguard.listeners.SYNC_BAD_OR_EXPIRED_TOKEN, message.provider);
+                break;
+            case 'toggleSync':
+                adguard.sync.syncService.toggleSyncStatus();
+                break;
+            case 'syncNow':
+                adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, {force: true});
+                break;
+            case 'syncChangeDeviceName':
+                adguard.sync.syncService.changeDeviceName(message.deviceName);
+                break;
+            default:
+                // Unhandled message
+                return true;
         }
     }
 
