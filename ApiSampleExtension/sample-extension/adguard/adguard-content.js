@@ -18,111 +18,95 @@
 (function (window, undefined) {
 
 /*! https://mths.be/cssescape v1.5.1 by @mathias | MIT license */
-;(function(root, factory) {
-    // https://github.com/umdjs/umd/blob/master/returnExports.js
-    if (typeof exports == 'object') {
-        // For Node.js.
-        module.exports = factory(root);
-    } else if (typeof define == 'function' && define.amd) {
-        // For AMD. Register as an anonymous module.
-        define([], factory.bind(root, root));
-    } else {
-        // For browser globals (not exposing the function separately).
-        factory(root);
-    }
-}(typeof global != 'undefined' ? global : this, function(root) {
+(function (root) {
 
-    if (root.CSS && root.CSS.escape) {
-        return root.CSS.escape;
+    if (!root.CSS) {
+        root.CSS = {};
     }
 
-    // https://drafts.csswg.org/cssom/#serialize-an-identifier
-    var cssEscape = function(value) {
-        if (arguments.length == 0) {
-            throw new TypeError('`CSS.escape` requires an argument.');
-        }
-        var string = String(value);
-        var length = string.length;
-        var index = -1;
-        var codeUnit;
-        var result = '';
-        var firstCodeUnit = string.charCodeAt(0);
-        while (++index < length) {
-            codeUnit = string.charCodeAt(index);
-            // Note: there’s no need to special-case astral symbols, surrogate
-            // pairs, or lone surrogates.
+    if (!root.CSS.escape) {
 
-            // If the character is NULL (U+0000), then the REPLACEMENT CHARACTER
-            // (U+FFFD).
-            if (codeUnit == 0x0000) {
-                result += '\uFFFD';
-                continue;
+        // https://drafts.csswg.org/cssom/#serialize-an-identifier
+        root.CSS.escape = function (value) {
+            if (arguments.length === 0) {
+                throw new TypeError('`CSS.escape` requires an argument.');
             }
+            var string = String(value);
+            var length = string.length;
+            var index = -1;
+            var codeUnit;
+            var result = '';
+            var firstCodeUnit = string.charCodeAt(0);
+            while (++index < length) {
+                codeUnit = string.charCodeAt(index);
+                // Note: there’s no need to special-case astral symbols, surrogate
+                // pairs, or lone surrogates.
 
-            if (
-                // If the character is in the range [\1-\1F] (U+0001 to U+001F) or is
-            // U+007F, […]
-            (codeUnit >= 0x0001 && codeUnit <= 0x001F) || codeUnit == 0x007F ||
-            // If the character is the first character and is in the range [0-9]
-            // (U+0030 to U+0039), […]
-            (index == 0 && codeUnit >= 0x0030 && codeUnit <= 0x0039) ||
-            // If the character is the second character and is in the range [0-9]
-            // (U+0030 to U+0039) and the first character is a `-` (U+002D), […]
-            (
-                index == 1 &&
-                codeUnit >= 0x0030 && codeUnit <= 0x0039 &&
-                firstCodeUnit == 0x002D
-            )
-            ) {
-                // https://drafts.csswg.org/cssom/#escape-a-character-as-code-point
-                result += '\\' + codeUnit.toString(16) + ' ';
-                continue;
-            }
+                // If the character is NULL (U+0000), then the REPLACEMENT CHARACTER
+                // (U+FFFD).
+                if (codeUnit === 0x0000) {
+                    result += '\uFFFD';
+                    continue;
+                }
 
-            if (
-                // If the character is the first character and is a `-` (U+002D), and
-            // there is no second character, […]
-            index == 0 &&
-            length == 1 &&
-            codeUnit == 0x002D
-            ) {
+                if (
+                    // If the character is in the range [\1-\1F] (U+0001 to U+001F) or is
+                // U+007F, […]
+                (codeUnit >= 0x0001 && codeUnit <= 0x001F) || codeUnit === 0x007F ||
+                // If the character is the first character and is in the range [0-9]
+                // (U+0030 to U+0039), […]
+                (index === 0 && codeUnit >= 0x0030 && codeUnit <= 0x0039) ||
+                // If the character is the second character and is in the range [0-9]
+                // (U+0030 to U+0039) and the first character is a `-` (U+002D), […]
+                (
+                    index === 1 &&
+                    codeUnit >= 0x0030 && codeUnit <= 0x0039 &&
+                    firstCodeUnit === 0x002D
+                )
+                ) {
+                    // https://drafts.csswg.org/cssom/#escape-a-character-as-code-point
+                    result += '\\' + codeUnit.toString(16) + ' ';
+                    continue;
+                }
+
+                if (
+                    // If the character is the first character and is a `-` (U+002D), and
+                // there is no second character, […]
+                index === 0 &&
+                length === 1 &&
+                codeUnit === 0x002D
+                ) {
+                    result += '\\' + string.charAt(index);
+                    continue;
+                }
+
+                // If the character is not handled by one of the above rules and is
+                // greater than or equal to U+0080, is `-` (U+002D) or `_` (U+005F), or
+                // is in one of the ranges [0-9] (U+0030 to U+0039), [A-Z] (U+0041 to
+                // U+005A), or [a-z] (U+0061 to U+007A), […]
+                if (
+                    codeUnit >= 0x0080 ||
+                    codeUnit === 0x002D ||
+                    codeUnit === 0x005F ||
+                    codeUnit >= 0x0030 && codeUnit <= 0x0039 ||
+                    codeUnit >= 0x0041 && codeUnit <= 0x005A ||
+                    codeUnit >= 0x0061 && codeUnit <= 0x007A
+                ) {
+                    // the character itself
+                    result += string.charAt(index);
+                    continue;
+                }
+
+                // Otherwise, the escaped character.
+                // https://drafts.csswg.org/cssom/#escape-a-character
                 result += '\\' + string.charAt(index);
-                continue;
+
             }
+            return result;
+        };
+    }
 
-            // If the character is not handled by one of the above rules and is
-            // greater than or equal to U+0080, is `-` (U+002D) or `_` (U+005F), or
-            // is in one of the ranges [0-9] (U+0030 to U+0039), [A-Z] (U+0041 to
-            // U+005A), or [a-z] (U+0061 to U+007A), […]
-            if (
-                codeUnit >= 0x0080 ||
-                codeUnit == 0x002D ||
-                codeUnit == 0x005F ||
-                codeUnit >= 0x0030 && codeUnit <= 0x0039 ||
-                codeUnit >= 0x0041 && codeUnit <= 0x005A ||
-                codeUnit >= 0x0061 && codeUnit <= 0x007A
-            ) {
-                // the character itself
-                result += string.charAt(index);
-                continue;
-            }
-
-            // Otherwise, the escaped character.
-            // https://drafts.csswg.org/cssom/#escape-a-character
-            result += '\\' + string.charAt(index);
-
-        }
-        return result;
-    };
-
-    // Create new CSS object in global scope.
-    // Changing the property of object that already presents in global scope has no effect (in Safari)
-    root.CSS = {};
-
-    root.CSS.escape = cssEscape;
-    return cssEscape;
-
-}));
+})(this);
 
 /* global CSS */
 
@@ -3799,52 +3783,44 @@ return ExtendedCss;
 
 /**
  * Global object for content scripts
- * @type {{}}
  */
-var adguardContent = (function () { // jshint ignore:line
-    return {};
-})();
+var adguardContent = {}; // jshint ignore:line
 
-/* global chrome, browser */
-
-(function (adguard) {
+(function (adguard, self) {
 
     'use strict';
+
+    /**
+     * https://bugs.chromium.org/p/project-zero/issues/detail?id=1225&desc=6
+     * Page script can inject global variables into the DOM, so content script isolation doesn't work as expected
+     * So we have to make additional check before accessing a global variable.
+     */
+    function isDefined(property) {
+        return Object.prototype.hasOwnProperty.call(self, property);
+    }
+
+    var browserApi = isDefined('browser') ? self.browser : self.chrome;
+
+    adguard.i18n = browserApi.i18n;
 
     adguard.runtimeImpl = (function () {
 
         var onMessage = (function () {
-            if (typeof browser !== 'undefined' && browser.runtime && browser.runtime.onMessage) {
-                // Edge, Firefox WebExtensions
-                return browser.runtime.onMessage;
+            if (browserApi.runtime && browserApi.runtime.onMessage) {
+                // Chromium, Edge, Firefox WebExtensions
+                return browserApi.runtime.onMessage;
             }
-            if (chrome.runtime && chrome.runtime.onMessage) {
-                // Chromium
-                return chrome.runtime.onMessage;
-            } else if (chrome.extension.onMessage) {
-                // Old Chromium
-                return chrome.extension.onMessage;
-            } else {
-                // Old Chromium
-                return chrome.extension.onRequest;
-            }
+            // Old Chromium
+            return browserApi.extension.onMessage || browserApi.extension.onRequest;
         })();
 
         var sendMessage = (function () {
-            if (typeof browser !== 'undefined' && browser.runtime && browser.runtime.sendMessage) {
-                // Edge, Firefox WebExtensions
-                return browser.runtime.sendMessage;
+            if (browserApi.runtime && browserApi.runtime.sendMessage) {
+                // Chromium, Edge, Firefox WebExtensions
+                return browserApi.runtime.sendMessage;
             }
-            if (chrome.runtime && chrome.runtime.sendMessage) {
-                // Chromium
-                return chrome.runtime.sendMessage;
-            } else if (chrome.extension.sendMessage) {
-                // Old Chromium
-                return chrome.extension.sendMessage;
-            } else {
-                // Old Chromium
-                return chrome.extension.sendRequest;
-            }
+            // Old Chromium
+            return browserApi.extension.sendMessage || browserApi.extension.sendRequest;
         })();
 
         return {
@@ -3854,62 +3830,58 @@ var adguardContent = (function () { // jshint ignore:line
 
     })();
 
-})(typeof adguard !== 'undefined' ? adguard : adguardContent);
+})(typeof adguardContent !== 'undefined' ? adguardContent : adguard, this); // jshint ignore:line
 
-/* global chrome, adguardContent */
+/* global adguardContent */
 
-var contentPage = (function (adguard) { // jshint ignore:line
+(function (adguard) {
 
     'use strict';
 
-    return {
+    window.i18n = adguard.i18n;
+
+    window.contentPage = {
         sendMessage: adguard.runtimeImpl.sendMessage,
         onMessage: adguard.runtimeImpl.onMessage
     };
 
 })(adguardContent);
 
-var i18n = (function () { // jshint ignore:line
-    var browser = window.browser || chrome;
-    return browser.i18n;
-})();
-
-/*global contentPage*/
+/* global contentPage */
 
 /**
- * The function overrides window.WebSocket with our wrapper, that will check url with filters through messaging with content-script.
- * 
- * IMPORTANT NOTE: 
- * This function is first loaded as a content script. The only purpose of it is to call 
- * the "toString" method and use resulting string as a text content for injected script.
+ * Function for injecting some helper API into page context, that is used by request wrappers.
+ *
+ * @param injectApi Object for exposing API (messaging and objects wrapping)
  */
-var overrideWebSocket = function () { // jshint ignore:line
+var injectPageScriptAPI = function (injectApi) { // jshint ignore:line
+
+    'use strict';
 
     /**
-     * Sends a message to the content-script to check if WebSocket should be allowed or not.
+     * Sends a message to the content-script to check if request should be allowed or not.
      */
-    var messageChannel = (function() {
-        'use strict';
+    var messageChannel = (function () {
 
-        // Save original postMessage and addEventListener functions to prevent webpage from tampering both. 
+        // Save original postMessage and addEventListener functions to prevent webpage from tampering both.
         var postMessage = window.postMessage;
         var addEventListener = window.addEventListener;
 
-        // Current request ID (incremented every time we send a new message)    
+        // Current request ID (incremented every time we send a new message)
         var currentRequestId = 0;
         var requestsMap = {};
 
         /**
          * Handles messages sent from the content script back to the page script.
-         * 
+         *
          * @param event Event with necessary data
          */
-        var onMessageReceived = function(event) {
-            
-            if (!event.data || !event.data.direction || event.data.direction != "to-page-script@adguard") {
+        var onMessageReceived = function (event) {
+
+            if (!event.data || !event.data.direction || event.data.direction !== "to-page-script@adguard") {
                 return;
             }
-            
+
             var requestData = requestsMap[event.data.requestId];
             if (requestData) {
                 var wrapper = requestData.wrapper;
@@ -3917,33 +3889,34 @@ var overrideWebSocket = function () { // jshint ignore:line
                 delete requestsMap[event.data.requestId];
             }
         };
-        
-        /** 
-         * @param url                The URL to which WS is willing to connect
+
+        /**
+         * @param url                The URL to which wrapped object is willing to connect
+         * @param requestType        Request type ( WEBSOCKET or WEBRTC)
          * @param wrapper            WebSocket wrapper instance
          * @param onResponseReceived Called when response is received
          */
-        var sendMessage = function(url, wrapper, onResponseReceived) {
-            
+        var sendMessage = function (url, requestType, wrapper, onResponseReceived) {
+
             if (currentRequestId === 0) {
                 // Subscribe to response when this method is called for the first time
                 addEventListener.call(window, "message", onMessageReceived, false);
             }
-            
+
             var requestId = ++currentRequestId;
-            var requestData = {
+            requestsMap[requestId] = {
                 wrapper: wrapper,
                 onResponseReceived: onResponseReceived
-            };            
-            requestsMap[requestId] = requestData;
-            
+            };
+
             var message = {
                 requestId: requestId,
                 direction: 'from-page-script@adguard',
                 elementUrl: url,
-                documentUrl: document.URL
+                documentUrl: document.URL,
+                requestType: requestType
             };
-            
+
             // Send a message to the background page to check if the request should be blocked
             postMessage.call(window, message, "*");
         };
@@ -3951,7 +3924,53 @@ var overrideWebSocket = function () { // jshint ignore:line
         return {
             sendMessage: sendMessage
         };
+
     })();
+
+    /**
+     * Defines properties in destination object
+     * @param src Source object
+     * @param dest Destination object
+     * @param properties Properties to copy
+     */
+    injectApi.copyProperties = function (src, dest, properties) {
+        for (var i = 0; i < properties.length; i++) {
+            var prop = properties[i];
+            var descriptor = Object.getOwnPropertyDescriptor(src, prop);
+            // Passed property may be undefined
+            if (descriptor) {
+                Object.defineProperty(dest, prop, descriptor);
+            }
+        }
+    };
+
+    /**
+     * Check request by sending message to content script
+     * @param url URL to block
+     * @param type Request type
+     * @param callback Result callback
+     */
+    injectApi.checkRequest = function (url, type, callback) {
+        messageChannel.sendMessage(url, type, this, function (wrapper, blockConnection) {
+            callback(blockConnection);
+        });
+    };
+};
+
+/**
+ * The function overrides window.WebSocket with our wrapper, that will check url with filters through messaging with content-script.
+ *
+ * IMPORTANT NOTE:
+ * This function is first loaded as a content script. The only purpose of it is to call
+ * the "toString" method and use resulting string as a text content for injected script.
+ */
+var overrideWebSocket = function (injectApi) { // jshint ignore:line
+
+    'use strict';
+
+    if (!(window.WebSocket instanceof Function)) {
+        return false;
+    }
 
     /**
      * WebSocket wrapper implementation.
@@ -3960,59 +3979,262 @@ var overrideWebSocket = function () { // jshint ignore:line
      * Based on:
      * https://github.com/adblockplus/adblockpluschrome/commit/457a336ee55a433217c3ffe5d363e5c6980f26f4
      */
-    (function(channel) {
-        // As far as possible we must track everything we use that could be
-        // sabotaged by the website later in order to circumvent us.
-        var RealWebSocket = WebSocket;
-        var closeWebSocket = Function.prototype.call.bind(RealWebSocket.prototype.close);
 
-        function checkRequest(url, callback) {
-            // This is the key point: checking if this WS should be blocked or not
-            channel.sendMessage(url, this, function (wrapper, blockConnection) {
-                callback(blockConnection);
-            });
+    /**
+     * As far as possible we must track everything we use that could be sabotaged by the website later in order to circumvent us.
+     */
+    var RealWebSocket = WebSocket;
+    var closeWebSocket = Function.prototype.call.bind(RealWebSocket.prototype.close);
+
+    function WrappedWebSocket(url, protocols) {
+        // Throw correct exceptions if the constructor is used improperly.
+        if (!(this instanceof WrappedWebSocket)) {
+            return RealWebSocket();
+        }
+        if (arguments.length < 1) {
+            return new RealWebSocket();
         }
 
-        function WrappedWebSocket(url, protocols) {
-            // Throw correct exceptions if the constructor is used improperly.
-            if (!(this instanceof WrappedWebSocket)) return RealWebSocket();
-            if (arguments.length < 1) return new RealWebSocket();
+        var websocket = new RealWebSocket(url, protocols);
 
-            var websocket = new RealWebSocket(url, protocols);
-
-            checkRequest(websocket.url, function(blocked) {
-                if (blocked)
-                    closeWebSocket(websocket);
-            });
-
-            return websocket;
-        }
-
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/488
-        WrappedWebSocket.prototype = RealWebSocket.prototype;
-        WebSocket = WrappedWebSocket.bind();
-
-        Object.defineProperties(WebSocket, {
-            CONNECTING: {value: RealWebSocket.CONNECTING, enumerable: true},
-            OPEN: {value: RealWebSocket.OPEN, enumerable: true},
-            CLOSING: {value: RealWebSocket.CLOSING, enumerable: true},
-            CLOSED: {value: RealWebSocket.CLOSED, enumerable: true},
-            prototype: {value: RealWebSocket.prototype}
+        // This is the key point: checking if this WS should be blocked or not
+        // Don't forget that the type of 'websocket.url' is String, but 'url 'parameter might have another type.
+        injectApi.checkRequest(websocket.url, 'WEBSOCKET', function (blocked) {
+            if (blocked) {
+                closeWebSocket(websocket);
+            }
         });
 
-        RealWebSocket.prototype.constructor = WebSocket;
+        return websocket;
+    }
 
-        var me = document.currentScript;		
-        if ( me && me.parentNode !== null ) {		
-            me.parentNode.removeChild(me);		
+    // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/488
+    WrappedWebSocket.prototype = RealWebSocket.prototype;
+    window.WebSocket = WrappedWebSocket.bind();
+
+    injectApi.copyProperties(RealWebSocket, WebSocket, ["CONNECTING", "OPEN", "CLOSING", "CLOSED", "name", "prototype"]);
+
+    RealWebSocket.prototype.constructor = WebSocket;
+};
+
+/**
+ * The function overrides window.RTCPeerConnection with our wrapper, that will check ice servers URLs with filters through messaging with content-script.
+ *
+ * IMPORTANT NOTE:
+ * This function is first loaded as a content script. The only purpose of it is to call
+ * the "toString" method and use resulting string as a text content for injected script.
+ */
+var overrideWebRTC = function (injectApi) { // jshint ignore:line
+
+    'use strict';
+
+    if (!(window.RTCPeerConnection instanceof Function) &&
+        !(window.webkitRTCPeerConnection instanceof Function)) {
+        return;
+    }
+
+    /**
+     * RTCPeerConnection wrapper implementation.
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/588
+     *
+     * Based on:
+     * https://github.com/adblockplus/adblockpluschrome/commit/af0585137be19011eace1cf68bf61eed2e6db974
+     *
+     * Chromium webRequest API doesn't allow the blocking of WebRTC connections
+     * https://bugs.chromium.org/p/chromium/issues/detail?id=707683
+     */
+
+    var RealRTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection;
+    var closeRTCPeerConnection = Function.prototype.call.bind(RealRTCPeerConnection.prototype.close);
+
+    var RealArray = Array;
+    var RealString = String;
+    var createObject = Object.create;
+    var defineProperty = Object.defineProperty;
+
+    /**
+     * Convert passed url to string
+     * @param url URL
+     * @returns {string}
+     */
+    function urlToString(url) {
+        if (typeof url !== "undefined") {
+            return RealString(url);
         }
-    })(messageChannel);
+    }
+
+    /**
+     * Creates new immutable array from original with some transform function
+     * @param original
+     * @param transform
+     * @returns {*}
+     */
+    function safeCopyArray(original, transform) {
+
+        if (original === null || typeof original !== "object") {
+            return original;
+        }
+
+        var immutable = RealArray(original.length);
+        for (var i = 0; i < immutable.length; i++) {
+            defineProperty(immutable, i, {
+                configurable: false, enumerable: false, writable: false,
+                value: transform(original[i])
+            });
+        }
+        defineProperty(immutable, "length", {
+            configurable: false, enumerable: false, writable: false,
+            value: immutable.length
+        });
+        return immutable;
+    }
+
+    /**
+     * Protect configuration from mutations
+     * @param configuration RTCPeerConnection configuration object
+     * @returns {*}
+     */
+    function protectConfiguration(configuration) {
+
+        if (configuration === null || typeof configuration !== "object") {
+            return configuration;
+        }
+
+        var iceServers = safeCopyArray(
+            configuration.iceServers,
+            function (iceServer) {
+
+                var url = iceServer.url;
+                var urls = iceServer.urls;
+
+                // RTCPeerConnection doesn't iterate through pseudo Arrays of urls.
+                if (typeof urls !== "undefined" && !(urls instanceof RealArray)) {
+                    urls = [urls];
+                }
+
+                return createObject(iceServer, {
+                    url: {
+                        configurable: false, enumerable: false, writable: false,
+                        value: urlToString(url)
+                    },
+                    urls: {
+                        configurable: false, enumerable: false, writable: false,
+                        value: safeCopyArray(urls, urlToString)
+                    }
+                });
+            }
+        );
+
+        return createObject(configuration, {
+            iceServers: {
+                configurable: false, enumerable: false, writable: false,
+                value: iceServers
+            }
+        });
+    }
+
+    /**
+     * Check WebRTC connection's URL and close if it's blocked by rule
+     * @param connection Connection
+     * @param url URL to check
+     */
+    function checkWebRTCRequest(connection, url) {
+        injectApi.checkRequest(url, 'WEBRTC', function (blocked) {
+            if (blocked) {
+                try {
+                    closeRTCPeerConnection(connection);
+                } catch (e) {
+                    // Ignore exceptions
+                }
+            }
+        });
+    }
+
+    /**
+     * Check each URL of ice server in configuration for blocking.
+     *
+     * @param connection RTCPeerConnection
+     * @param configuration Configuration for RTCPeerConnection
+     * https://developer.mozilla.org/en-US/docs/Web/API/RTCConfiguration
+     */
+    function checkConfiguration(connection, configuration) {
+
+        if (!configuration || !configuration.iceServers) {
+            return;
+        }
+
+        var iceServers = configuration.iceServers;
+        for (var i = 0; i < iceServers.length; i++) {
+
+            var iceServer = iceServers[i];
+            if (!iceServer) {
+                continue;
+            }
+
+            if (iceServer.url) {
+                checkWebRTCRequest(connection, iceServer.url);
+            }
+
+            if (iceServer.urls) {
+                for (var j = 0; j < iceServer.urls.length; j++) {
+                    checkWebRTCRequest(connection, iceServer.urls[j]);
+                }
+            }
+        }
+    }
+
+    /**
+     * Overrides setConfiguration method
+     * https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/setConfiguration
+     */
+    if (RealRTCPeerConnection.prototype.setConfiguration) {
+
+        var realSetConfiguration = Function.prototype.call.bind(RealRTCPeerConnection.prototype.setConfiguration);
+
+        RealRTCPeerConnection.prototype.setConfiguration = function (configuration) {
+            configuration = protectConfiguration(configuration);
+            // Call the real method first, so that validates the configuration
+            realSetConfiguration(this, configuration);
+            checkConfiguration(this, configuration);
+        };
+    }
+
+    function WrappedRTCPeerConnection(configuration, arg) {
+
+        if (!(this instanceof WrappedRTCPeerConnection)) {
+            return RealRTCPeerConnection();
+        }
+
+        configuration = protectConfiguration(configuration);
+
+        /**
+         * The old webkitRTCPeerConnection constructor takes an optional second argument and we must pass it.
+         */
+        var connection = new RealRTCPeerConnection(configuration, arg);
+        checkConfiguration(connection, configuration);
+        return connection;
+    }
+
+    WrappedRTCPeerConnection.prototype = RealRTCPeerConnection.prototype;
+
+    var boundWrappedRTCPeerConnection = WrappedRTCPeerConnection.bind();
+    injectApi.copyProperties(RealRTCPeerConnection, boundWrappedRTCPeerConnection, ["caller", "generateCertificate", "name", "prototype"]);
+    RealRTCPeerConnection.prototype.constructor = boundWrappedRTCPeerConnection;
+
+    if ("RTCPeerConnection" in window) {
+        window.RTCPeerConnection = boundWrappedRTCPeerConnection;
+    }
+    if ("webkitRTCPeerConnection" in window) {
+        window.webkitRTCPeerConnection = boundWrappedRTCPeerConnection;
+    }
 };
 
 /**
  * This function is executed in the content script. It starts listening to events from the page script and passes them further to the background page.
  */
-var initPageMessageListener = function() { // jshint ignore:line
+var initPageMessageListener = function () { // jshint ignore:line
+
+    'use strict';
 
     /**
      * Listener for websocket wrapper messages.
@@ -4020,18 +4242,19 @@ var initPageMessageListener = function() { // jshint ignore:line
      * @param event
      */
     function pageMessageListener(event) {
-        if (!(event.source == window &&
+        if (!(event.source === window &&
             event.data.direction &&
-            event.data.direction == "from-page-script@adguard" &&
+            event.data.direction === "from-page-script@adguard" &&
             event.data.elementUrl &&
             event.data.documentUrl)) {
             return;
         }
 
         var message = {
-            type: 'checkWebSocketRequest',
+            type: 'checkPageScriptWrapperRequest',
             elementUrl: event.data.elementUrl,
             documentUrl: event.data.documentUrl,
+            requestType: event.data.requestType,
             requestId: event.data.requestId
         };
 
@@ -4039,24 +4262,25 @@ var initPageMessageListener = function() { // jshint ignore:line
             if (!response) {
                 return;
             }
-            
+
             var message = {
                 direction: 'to-page-script@adguard',
                 elementUrl: event.data.elementUrl,
                 documentUrl: event.data.documentUrl,
+                requestType: event.data.requestType,
                 requestId: response.requestId,
                 block: response.block
             };
-            
+
             event.source.postMessage(message, event.origin);
         });
     }
 
-    window.addEventListener("message", pageMessageListener, false);    
+    window.addEventListener("message", pageMessageListener, false);
 };
 
 /* global contentPage, ExtendedCss, HTMLDocument, XMLDocument, ElementCollapser, CssHitsCounter */
-(function() {
+(function () {
 
     var requestTypeMap = {
         "img": "IMAGE",
@@ -4071,7 +4295,7 @@ var initPageMessageListener = function() { // jshint ignore:line
 
     // Don't apply scripts twice
     var scriptsApplied = false;
-    
+
     /**
      * Do not use shadow DOM on some websites
      * https://code.google.com/p/chromium/issues/detail?id=496055
@@ -4081,7 +4305,7 @@ var initPageMessageListener = function() { // jshint ignore:line
         'inbox.google.com',
         'productforums.google.com'
     ];
-    
+
     var collapseRequests = Object.create(null);
     var collapseRequestId = 1;
     var isFirefox = false;
@@ -4092,7 +4316,9 @@ var initPageMessageListener = function() { // jshint ignore:line
     /**
      * Set callback for saving css hits
      */
-    if (typeof CssHitsCounter !== 'undefined') {
+    if (typeof CssHitsCounter !== 'undefined' &&
+        typeof CssHitsCounter.setCssHitsFoundCallback === 'function') {
+
         CssHitsCounter.setCssHitsFoundCallback(function (stats) {
             contentPage.sendMessage({type: 'saveCssHitStats', stats: stats});
         });
@@ -4113,12 +4339,12 @@ var initPageMessageListener = function() { // jshint ignore:line
             applyScripts(response.scripts);
         }
     });
-    
+
     /**
      * Initializing content script
      */
     var init = function () {
-        initWebSocketWrapper();
+        initRequestWrappers();
 
         if (!isHtml()) {
             return;
@@ -4160,54 +4386,127 @@ var initPageMessageListener = function() { // jshint ignore:line
      */
     var isHtml = function () {
         return (document instanceof HTMLDocument) ||
-                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/233
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/233
             ((document instanceof XMLDocument) && (document.createElement('div') instanceof HTMLDivElement));
     };
 
     /**
-     * Overrides window.WebSocket running the function from websocket.js
-     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/203
+     * Try to keep DOM clean: let script removes itself when execution completes
+     * @returns {string}
      */
-    /*global initPageMessageListener, overrideWebSocket*/
-    var initWebSocketWrapper = function () {
-        // This is chrome-specific feature for blocking WebSocket connections
-        // overrideWebSocket function is not defined in case of other browsers
-        if (typeof overrideWebSocket !== 'function') {
-            return;
+    var cleanupCurrentScriptToString = function () {
+
+        var cleanup = function () {
+            var current = document.currentScript;
+            var parent = current && current.parentNode;
+            if (parent) {
+                parent.removeChild(current);
+            }
+        };
+
+        return '(' + cleanup.toString() + ')();';
+    };
+
+    /**
+     * We should override WebSocket constructor in the following browsers: Chrome (between 47 and 57 versions), Edge, YaBrowser, Opera and Safari (old versions)
+     * Firefox and Safari (9 or higher) can be omitted because they allow us to inspect and block WS requests.
+     * This function simply checks the conditions above.
+     * @returns true if WebSocket constructor should be overridden
+     */
+    var shouldOverrideWebSocket = function () {
+
+        // Checks for using of Content Blocker API for Safari 9+
+        if (contentPage.isSafari) {
+            return !contentPage.isSafariContentBlockerEnabled;
         }
 
+        var userAgent = navigator.userAgent.toLowerCase();
+        var isFirefox = userAgent.indexOf('firefox') >= 0;
+
+        // Explicit check, we must not go further in case of Firefox
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/379
+        if (isFirefox) {
+            return false;
+        }
+
+        // Keep in mind that the following browsers (that support WebExt-API) Chrome, Edge, YaBrowser and Opera contain `Chrome/<version>` in their User-Agent string.
+        var cIndex = userAgent.indexOf('chrome/');
+        if (cIndex < 0) {
+            return false;
+        }
+
+        var version = userAgent.substring(cIndex + 7);
+        var versionNumber = Number.parseInt(version.substring(0, version.indexOf('.')));
+
+        // WebSockets are broken in old versions of chrome and we don't need this hack in new version cause then websocket traffic is intercepted
+        return versionNumber >= 47 && versionNumber <= 57;
+    };
+
+    /**
+     * We should override RTCPeerConnection in all browsers, except the case of using of Content Blocker API for Safari 9+
+     * @returns true if RTCPeerConnection should be overridden
+     */
+    var shouldOverrideWebRTC = function () {
+
+        // Checks for using of Content Blocker API for Safari 9+
+        if (contentPage.isSafari) {
+            return !contentPage.isSafariContentBlockerEnabled;
+        }
+
+        return true;
+    };
+
+    /**
+     * Overrides window.WebSocket and window.RTCPeerConnection running the function from wrappers.js
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/203
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/588
+     */
+    /* global initPageMessageListener, overrideWebSocket, overrideWebRTC, injectPageScriptAPI */
+    var initRequestWrappers = function () {
+
         // Only for dynamically created frames and http/https documents.
-        if (!isHtml() && 
+        if (!isHtml() &&
             window.location.href !== "about:blank") {
             return;
         }
 
-        // WebSockets are broken in old versions of chrome
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/273
-        var userAgent = navigator.userAgent.toLowerCase();
-        var cIndex = userAgent.indexOf('chrome/');
-        if (cIndex > 0) {
-            var version = userAgent.substring(cIndex + 7);
-            if (Number.parseInt(version.substring(0, version.indexOf('.'))) < 47) {
-                return;
-            }
+        var scripts = [];
+
+        /**
+         *
+         * The code below is supposed to be used in WebExt extensions.
+         * This code overrides WebSocket constructor (except for newer Chrome and FF) and RTCPeerConnection constructor, so that we could inspect & block them.
+         *
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/273
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/572
+         */
+        if (shouldOverrideWebSocket()) {
+            scripts.push("(" + overrideWebSocket.toString() + ")(api);");
         }
-        
-        if (userAgent.indexOf('firefox') >= 0) {
-            // Explicit check, we must not go further in case of Firefox
-            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/379
+
+        if (shouldOverrideWebRTC()) {
+            scripts.push("(" + overrideWebRTC.toString() + ")(api);");
+        }
+
+        if (scripts.length === 0) {
             return;
         }
 
         initPageMessageListener();
 
-        var content = "try {\n";
-        content += '(' + overrideWebSocket.toString() + ')();';
-        content += "\n} catch (ex) { console.error('Error executing AG js: ' + ex); }";
+        var content = [];
+        content.push("(function(){");
+        content.push("var api = {};");
+        content.push("try {");
+        content.push("(" + injectPageScriptAPI.toString() + ")(api);");
+        content = content.concat(scripts);
+        content.push("} catch (ex) { console.error('Error executing AG js: ' + ex); }");
+        content.push(cleanupCurrentScriptToString());
+        content.push("})();");
 
         var script = document.createElement("script");
         script.setAttribute("type", "text/javascript");
-        script.textContent = content;
+        script.textContent = content.join("\r\n");
 
         (document.head || document.documentElement).appendChild(script);
     };
@@ -4234,7 +4533,7 @@ var initPageMessageListener = function() { // jshint ignore:line
          *
          * @param mutations
          */
-        var handleIframeSrcChanged = function(mutations) {
+        var handleIframeSrcChanged = function (mutations) {
             for (var i = 0; i < mutations.length; i++) {
                 var iframe = mutations[i].target;
                 if (iframe) {
@@ -4246,7 +4545,7 @@ var initPageMessageListener = function() { // jshint ignore:line
         var iframeObserver = new MutationObserver(handleIframeSrcChanged);
         var iframeObserverOptions = {
             attributes: true,
-            attributeFilter: [ 'src' ]
+            attributeFilter: ['src']
         };
 
         /**
@@ -4254,7 +4553,7 @@ var initPageMessageListener = function() { // jshint ignore:line
          *
          * @param mutations
          */
-        var handleDomChanged = function(mutations) {
+        var handleDomChanged = function (mutations) {
             var iframes = [];
             for (var i = 0; i < mutations.length; i++) {
                 var mutation = mutations[i];
@@ -4272,7 +4571,7 @@ var initPageMessageListener = function() { // jshint ignore:line
                 while (iIframes--) {
                     var iframe = iframes[iIframes];
                     checkShouldCollapseElement(iframe);
-                    iframeObserver.observe(iframe, iframeObserverOptions);                    
+                    iframeObserver.observe(iframe, iframeObserverOptions);
                 }
             }
         };
@@ -4280,7 +4579,7 @@ var initPageMessageListener = function() { // jshint ignore:line
         /**
          * Removes iframes hide style and initiates should-collapse check for iframes
          */
-        var onDocumentReady = function() {
+        var onDocumentReady = function () {
             var iframes = document.getElementsByTagName('iframe');
             for (var i = 0; i < iframes.length; i++) {
                 checkShouldCollapseElement(iframes[i]);
@@ -4324,17 +4623,17 @@ var initPageMessageListener = function() { // jshint ignore:line
          */
         contentPage.sendMessage(message, processCssAndScriptsResponse);
     };
-    
+
     /**
      * Processes response from the background page containing CSS and JS injections
      *
      * @param response Response from the background page
      */
-    var processCssAndScriptsResponse = function(response) {
+    var processCssAndScriptsResponse = function (response) {
         if (!response || response.requestFilterReady === false) {
             /**
-             * This flag (requestFilterReady) means that we should wait for a while, because the 
-             * request filter is not ready yet. This is possible only on browser startup. 
+             * This flag (requestFilterReady) means that we should wait for a while, because the
+             * request filter is not ready yet. This is possible only on browser startup.
              * In this case we'll delay injections until extension is fully initialized.
              */
             setTimeout(function () {
@@ -4343,11 +4642,11 @@ var initPageMessageListener = function() { // jshint ignore:line
 
             return;
         } else if (response.collapseAllElements) {
-            
+
             /**
-             * This flag (collapseAllElements) means that we should check all page elements 
-             * and collapse them if needed. Why? On browser startup we can't block some 
-             * ad/tracking requests because extension is not yet initialized when 
+             * This flag (collapseAllElements) means that we should check all page elements
+             * and collapse them if needed. Why? On browser startup we can't block some
+             * ad/tracking requests because extension is not yet initialized when
              * these requests are executed. At least we could hide these elements.
              */
             applySelectors(response.selectors, response.useShadowDom);
@@ -4363,22 +4662,23 @@ var initPageMessageListener = function() { // jshint ignore:line
         }
 
         if (typeof CssHitsCounter !== 'undefined' &&
+            typeof CssHitsCounter.count === 'function' &&
             response && response.selectors && response.selectors.cssHitsCounterEnabled) {
 
             // Start css hits calculation
             CssHitsCounter.count();
         }
     };
-    
+
     /**
      * Sets "style" DOM element content.
-     * 
+     *
      * @param styleEl       "style" DOM element
      * @param cssContent    CSS content to set
      * @param useShadowDom  true if we want to use shadow DOM
      */
-    var setStyleContent = function(styleEl, cssContent, useShadowDom) {
-        
+    var setStyleContent = function (styleEl, cssContent, useShadowDom) {
+
         if (useShadowDom && !shadowRoot) {
             // Despite our will to use shadow DOM we cannot
             // It is rare case, but anyway: https://code.google.com/p/chromium/issues/detail?id=496055
@@ -4386,15 +4686,15 @@ var initPageMessageListener = function() { // jshint ignore:line
             // We should remove ::content pseudo-element first
             cssContent = cssContent.replace(new RegExp('::content ', 'g'), '');
         }
-        
+
         styleEl.textContent = cssContent;
     };
-    
+
     /**
      * Applies CSS and extended CSS stylesheets
-     * 
+     *
      * @param selectors     Object with the stylesheets got from the background page.
-     * @param useShadowDom  If true - add styles to shadow DOM instead of normal DOM. 
+     * @param useShadowDom  If true - add styles to shadow DOM instead of normal DOM.
      */
     var applySelectors = function (selectors, useShadowDom) {
         if (!selectors) {
@@ -4407,7 +4707,7 @@ var initPageMessageListener = function() { // jshint ignore:line
 
     /**
      * Applies CSS stylesheets
-     * 
+     *
      * @param css Array with CSS stylesheets
      */
     var applyCss = function (css, useShadowDom) {
@@ -4423,7 +4723,7 @@ var initPageMessageListener = function() { // jshint ignore:line
             if (useShadowDom && shadowRoot) {
                 shadowRoot.appendChild(styleEl);
             } else {
-                (document.head || document.documentElement).appendChild(styleEl);                
+                (document.head || document.documentElement).appendChild(styleEl);
             }
 
             protectStyleElementFromRemoval(styleEl, useShadowDom);
@@ -4453,7 +4753,7 @@ var initPageMessageListener = function() { // jshint ignore:line
      */
     var protectStyleElementContent = function (protectStyleEl) {
         var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-        if (!MutationObserver){
+        if (!MutationObserver) {
             return;
         }
         /* observer, which observe protectStyleEl inner changes, without deleting styleEl */
@@ -4494,11 +4794,11 @@ var initPageMessageListener = function() { // jshint ignore:line
         });
 
         innerObserver.observe(protectStyleEl, {
-                'childList': true,
-                'characterData': true,
-                'subtree': true,
-                'characterDataOldValue': true
-            });
+            'childList': true,
+            'characterData': true,
+            'subtree': true,
+            'characterDataOldValue': true
+        });
     };
 
     /**
@@ -4509,7 +4809,7 @@ var initPageMessageListener = function() { // jshint ignore:line
      */
     var protectStyleElementFromRemoval = function (protectStyleEl, useShadowDom) {
         var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-        if (!MutationObserver){
+        if (!MutationObserver) {
             return;
         }
         /* observer, which observe deleting protectStyleEl */
@@ -4533,13 +4833,13 @@ var initPageMessageListener = function() { // jshint ignore:line
 
         outerObserver.observe(protectStyleEl.parentNode, {'childList': true, 'characterData': true});
     };
-    
+
     /**
      * Applies JS injections.
      *
      * @param scripts Array with JS scripts and scriptSource ('remote' or 'local')
      */
-    var applyScripts = function(scripts) {
+    var applyScripts = function (scripts) {
 
         if (scriptsApplied) {
             return;
@@ -4571,6 +4871,10 @@ var initPageMessageListener = function() { // jshint ignore:line
             }
         }
 
+        if (scriptsToApply.length === 0) {
+            return;
+        }
+
         /**
          * JS injections are created by JS filtering rules:
          * http://adguard.com/en/filterrules.html#javascriptInjection
@@ -4579,28 +4883,30 @@ var initPageMessageListener = function() { // jshint ignore:line
         script.setAttribute("type", "text/javascript");
         scriptsToApply.unshift("try {");
         scriptsToApply.push("} catch (ex) { console.error('Error executing AG js: ' + ex); }");
+        scriptsToApply.push(cleanupCurrentScriptToString());
+
         script.textContent = scriptsToApply.join("\r\n");
         (document.head || document.documentElement).appendChild(script);
     };
-    
+
     /**
      * Init listeners for error and load events.
      * We will then check loaded elements if they are blocked by our extension.
      * In this case we'll hide these blocked elements.
      */
-    var initCollapseEventListeners = function() {
+    var initCollapseEventListeners = function () {
         document.addEventListener("error", checkShouldCollapse, true);
 
         // We need to listen for load events to hide blocked iframes (they don't raise error event)
         document.addEventListener("load", checkShouldCollapse, true);
     };
-    
+
     /**
      * Checks if loaded element is blocked by AG and should be hidden
-     * 
+     *
      * @param event Load or error event
      */
-    var checkShouldCollapse = function(event) {
+    var checkShouldCollapse = function (event) {
         var element = event.target;
         var eventType = event.type;
         var tagName = element.tagName.toLowerCase();
@@ -4615,12 +4921,12 @@ var initPageMessageListener = function() { // jshint ignore:line
 
     /**
      * Extracts element URL from the dom node
-     * 
+     *
      * @param element DOM node
      */
-    var getElementUrl = function(element) {
+    var getElementUrl = function (element) {
         var elementUrl = element.src || element.data;
-        if (!elementUrl || 
+        if (!elementUrl ||
             elementUrl.indexOf('http') !== 0 ||
             // Some sources could not be set yet, lazy loaded images or smth.
             // In some cases like on gog.com, collapsing these elements could break the page script loading their sources 
@@ -4633,12 +4939,12 @@ var initPageMessageListener = function() { // jshint ignore:line
 
     /**
      * Saves collapse request (to be reused after we get result from bg page)
-     * 
+     *
      * @param element Element to check
-     * @return request ID 
+     * @return request ID
      */
-    var saveCollapseRequest = function(element) {
-        
+    var saveCollapseRequest = function (element) {
+
         var tagName = element.tagName.toLowerCase();
         var requestId = collapseRequestId++;
         collapseRequests[requestId] = {
@@ -4668,7 +4974,7 @@ var initPageMessageListener = function() { // jshint ignore:line
 
     /**
      * Response callback for "processShouldCollapse" message.
-     * 
+     *
      * @param response Response got from the background page
      */
     var onProcessShouldCollapseResponse = function (response) {
@@ -4676,7 +4982,7 @@ var initPageMessageListener = function() { // jshint ignore:line
         if (!response) {
             return;
         }
-        
+
         // Get original collapse request
         var collapseRequest = collapseRequests[response.requestId];
         if (!collapseRequest) {
@@ -4689,7 +4995,7 @@ var initPageMessageListener = function() { // jshint ignore:line
             var elementUrl = collapseRequest.src;
             ElementCollapser.collapseElement(element, elementUrl, shadowRoot);
         }
-        
+
         // Unhide element, which was previously hidden by "tempHideElement"
         // In case if element is collapsed, there's no need to hide it
         // Otherwise we shouldn't hide it either as it shouldn't be blocked
@@ -4730,13 +5036,13 @@ var initPageMessageListener = function() { // jshint ignore:line
 
         contentPage.sendMessage(message, onProcessShouldCollapseResponse);
     };
-    
+
     /**
      * Response callback for "processShouldCollapseMany" message.
      *
      * @param response Response from bg page.
      */
-    var onProcessShouldCollapseManyResponse = function(response) {
+    var onProcessShouldCollapseManyResponse = function (response) {
 
         if (!response) {
             return;
@@ -4748,11 +5054,11 @@ var initPageMessageListener = function() { // jshint ignore:line
             onProcessShouldCollapseResponse(collapseRequest);
         }
     };
-    
+
     /**
      * Collects all elements from the page and checks if we should hide them.
      */
-    var checkBatchShouldCollapse = function() {
+    var checkBatchShouldCollapse = function () {
         var requests = [];
 
         // Collect collapse requests
@@ -4768,7 +5074,7 @@ var initPageMessageListener = function() { // jshint ignore:line
                     continue;
                 }
 
-                var requestId = saveCollapseRequest(element); 
+                var requestId = saveCollapseRequest(element);
 
                 requests.push({
                     elementUrl: elementUrl,
@@ -4782,7 +5088,7 @@ var initPageMessageListener = function() { // jshint ignore:line
         var message = {
             type: 'processShouldCollapseMany',
             requests: requests,
-            documentUrl: document.URL            
+            documentUrl: document.URL
         };
 
         // Send all prepared requests in one message
@@ -4793,9 +5099,9 @@ var initPageMessageListener = function() { // jshint ignore:line
      * This method is used when we need to check all page elements with collapse rules.
      * We need this when the browser is just started and add-on is not yet initialized.
      * In this case content scripts waits for add-on initialization and the
-     * checks all page elements.  
+     * checks all page elements.
      */
-    var initBatchCollapse = function() {
+    var initBatchCollapse = function () {
         if (document.readyState === 'complete' ||
             document.readyState === 'loaded' ||
             document.readyState === 'interactive') {
@@ -4804,27 +5110,27 @@ var initPageMessageListener = function() { // jshint ignore:line
             document.addEventListener('DOMContentLoaded', checkBatchShouldCollapse);
         }
     };
-   
+
     /**
      * Called when document become visible.
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/159
      */
-    var onVisibilityChange = function() {
+    var onVisibilityChange = function () {
 
         if (document.hidden === false) {
             document.removeEventListener("visibilitychange", onVisibilityChange);
             init();
         }
     };
-    
+
     /**
      * Messaging won't work when page is loaded by Safari top hits
-     */        
-    if (typeof safari != 'undefined' && document.hidden) {
+     */
+    if (contentPage.isSafari && document.hidden) {
         document.addEventListener("visibilitychange", onVisibilityChange);
         return;
     }
-    
+
     // Start the content script
     init();
 })();

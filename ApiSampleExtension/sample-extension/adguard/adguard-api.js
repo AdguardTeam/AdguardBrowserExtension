@@ -830,6 +830,8 @@ adguard.prefs = (function (adguard) {
                     browser = "Opera";
                 } else if (userAgent.indexOf("Safari") >= 0 && userAgent.indexOf('Chrome') < 0) {
                     browser = "Safari";
+                } else if (userAgent.indexOf("Firefox") >= 0) {
+                    browser = "Firefox";
                 } else {
                     browser = "Chrome";
                 }
@@ -858,6 +860,31 @@ adguard.prefs = (function (adguard) {
                         return null;
                     }
                     return parseInt(navigator.userAgent.substring(i + 7));
+                }
+            });
+        },
+
+        /**
+         * https://msdn.microsoft.com/ru-ru/library/hh869301(v=vs.85).aspx
+         * @returns {*}
+         */
+        get edgeVersion() {
+            return adguard.lazyGet(Prefs, 'edgeVersion', function () {
+                if (this.browser === 'Edge') {
+                    var userAgent = navigator.userAgent;
+                    var i = userAgent.indexOf('Edge/');
+                    if (i < 0) {
+                        return {
+                            rev: 0,
+                            build: 0
+                        };
+                    }
+                    var version = userAgent.substring(i + 'Edge/'.length);
+                    var parts = version.split('.');
+                    return {
+                        rev: parseInt(parts[0]),
+                        build: parseInt(parts[1])
+                    };
                 }
             });
         },
@@ -923,6 +950,7 @@ adguard.RequestTypes = {
     MEDIA: "MEDIA",
     FONT: "FONT",
     WEBSOCKET: "WEBSOCKET",
+    WEBRTC: "WEBRTC",
     OTHER: "OTHER",
 
     /**
@@ -1712,11 +1740,11 @@ adguard.console = (function () {
     var UrlUtils = {
 
         isHttpRequest: function (url) {
-            return url && url.indexOf('http') == 0;
+            return url && url.indexOf('http') === 0;
         },
 
         isHttpOrWsRequest: function (url) {
-            return url && (url.indexOf('http') == 0 || url.indexOf('wss:') == 0 || url.indexOf('ws:') == 0);
+            return url && (url.indexOf('http') === 0 || url.indexOf('ws') === 0);
         },
 
         toPunyCode: function (domain) {
@@ -1729,40 +1757,15 @@ adguard.console = (function () {
             return global.punycode.toASCII(domain);
         },
 
-        urlToPunyCode: function (url) {
-
-            if (!url || /^[\x00-\x7F]+$/.test(url)) {
-                return url;
-            }
-
-            var i;
-            var startsWith = ["http://www.", "https://www.", "http://", "https://"];
-            var startIndex = -1;
-
-            for (i = 0; i < startsWith.length; i++) {
-                var start = startsWith[i];
-                if (api.strings.startWith(url, start)) {
-                    startIndex = start.length;
-                    break;
-                }
-            }
-
-            if (startIndex == -1) {
-                return url;
-            }
-
-            var symbolIndex = url.indexOf("/", startIndex);
-            var domain = symbolIndex == -1 ? url.substring(startIndex) : url.substring(startIndex, symbolIndex);
-            return api.strings.replaceAll(url, domain, this.toPunyCode(domain));
-        },
-
         isThirdPartyRequest: function (requestUrl, referrer) {
             var domainName = this._get2NdLevelDomainName(requestUrl);
             var refDomainName = this._get2NdLevelDomainName(referrer);
             return domainName != refDomainName;
         },
 
-        //Get host name
+        /**
+         * Retrieves hostname from URL
+         */
         getHost: function (url) {
 
             if (!url) {
@@ -1770,9 +1773,19 @@ adguard.console = (function () {
             }
 
             var firstIdx = url.indexOf("//");
-            if (firstIdx == -1) {
-                return null;
+            if (firstIdx === -1) {
+                /**
+                 * It's non hierarchical structured URL (e.g. stun: or turn:)
+                 * https://tools.ietf.org/html/rfc4395#section-2.2
+                 * https://tools.ietf.org/html/draft-nandakumar-rtcweb-stun-uri-08#appendix-B
+                 */
+                firstIdx = url.indexOf(":");
+                if (firstIdx === -1) {
+                    return null;
+                }
+                firstIdx = firstIdx - 1;
             }
+
             var nextSlashIdx = url.indexOf("/", firstIdx + 2);
             var startParamsIdx = url.indexOf("?", firstIdx + 2);
 
@@ -1781,10 +1794,10 @@ adguard.console = (function () {
                 lastIdx = startParamsIdx;
             }
 
-            var host = lastIdx == -1 ? url.substring(firstIdx + 2) : url.substring(firstIdx + 2, lastIdx);
+            var host = lastIdx === -1 ? url.substring(firstIdx + 2) : url.substring(firstIdx + 2, lastIdx);
 
             var portIndex = host.indexOf(":");
-            return portIndex == -1 ? host : host.substring(0, portIndex);
+            return portIndex === -1 ? host : host.substring(0, portIndex);
         },
 
         getDomainName: function (url) {
@@ -8242,16 +8255,33 @@ adguard.listeners = (function () {
             return !this._useOldSafariAPI;
         },
 
+        /**
+         * Finds header object by header name (case insensitive)
+         * @param headers Headers collection
+         * @param headerName Header name
+         * @returns {*}
+         */
         findHeaderByName: function (headers, headerName) {
             if (headers) {
                 for (var i = 0; i < headers.length; i++) {
                     var header = headers[i];
-                    if (header.name === headerName) {
+                    if (header.name.toLowerCase() === headerName.toLowerCase()) {
                         return header;
                     }
                 }
             }
             return null;
+        },
+
+        /**
+         * Finds header value by name (case insensitive)
+         * @param headers Headers collection
+         * @param headerName Header name
+         * @returns {null}
+         */
+        getHeaderValueByName: function (headers, headerName) {
+            var header = this.findHeaderByName(headers, headerName);
+            return header ? header.value : null;
         },
 
         /**
@@ -8338,6 +8368,20 @@ adguard.listeners = (function () {
                 languages.push(navigator.language); // .language is first in .languages
             }
             return languages;
+        },
+
+        /**
+         * Affected issues:
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/602
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/566
+         * 'Popup' window
+
+         * Creators update is not yet released, so we use Insider build 15063 instead.
+         */
+        EDGE_CREATORS_UPDATE: 15063,
+
+        isEdgeBeforeCreatorsUpdate: function () {
+            return this.isEdgeBrowser() && adguard.prefs.edgeVersion.build < this.EDGE_CREATORS_UPDATE;
         }
     };
 
@@ -9843,46 +9887,41 @@ adguard.rulesStorage = (function (adguard, impl) {
 
 })(adguard, adguard.rulesStorageImpl);
 
-/* global chrome, browser */
-
-(function (adguard) {
+(function (adguard, self) {
 
     'use strict';
+
+    /**
+     * https://bugs.chromium.org/p/project-zero/issues/detail?id=1225&desc=6
+     * Page script can inject global variables into the DOM, so content script isolation doesn't work as expected
+     * So we have to make additional check before accessing a global variable.
+     */
+    function isDefined(property) {
+        return Object.prototype.hasOwnProperty.call(self, property);
+    }
+
+    var browserApi = isDefined('browser') ? self.browser : self.chrome;
+
+    adguard.i18n = browserApi.i18n;
 
     adguard.runtimeImpl = (function () {
 
         var onMessage = (function () {
-            if (typeof browser !== 'undefined' && browser.runtime && browser.runtime.onMessage) {
-                // Edge, Firefox WebExtensions
-                return browser.runtime.onMessage;
+            if (browserApi.runtime && browserApi.runtime.onMessage) {
+                // Chromium, Edge, Firefox WebExtensions
+                return browserApi.runtime.onMessage;
             }
-            if (chrome.runtime && chrome.runtime.onMessage) {
-                // Chromium
-                return chrome.runtime.onMessage;
-            } else if (chrome.extension.onMessage) {
-                // Old Chromium
-                return chrome.extension.onMessage;
-            } else {
-                // Old Chromium
-                return chrome.extension.onRequest;
-            }
+            // Old Chromium
+            return browserApi.extension.onMessage || browserApi.extension.onRequest;
         })();
 
         var sendMessage = (function () {
-            if (typeof browser !== 'undefined' && browser.runtime && browser.runtime.sendMessage) {
-                // Edge, Firefox WebExtensions
-                return browser.runtime.sendMessage;
+            if (browserApi.runtime && browserApi.runtime.sendMessage) {
+                // Chromium, Edge, Firefox WebExtensions
+                return browserApi.runtime.sendMessage;
             }
-            if (chrome.runtime && chrome.runtime.sendMessage) {
-                // Chromium
-                return chrome.runtime.sendMessage;
-            } else if (chrome.extension.sendMessage) {
-                // Old Chromium
-                return chrome.extension.sendMessage;
-            } else {
-                // Old Chromium
-                return chrome.extension.sendRequest;
-            }
+            // Old Chromium
+            return browserApi.extension.sendMessage || browserApi.extension.sendRequest;
         })();
 
         return {
@@ -9892,7 +9931,7 @@ adguard.rulesStorage = (function (adguard, impl) {
 
     })();
 
-})(typeof adguard !== 'undefined' ? adguard : adguardContent);
+})(typeof adguardContent !== 'undefined' ? adguardContent : adguard, this); // jshint ignore:line
 
 /* global chrome */
 
@@ -9955,6 +9994,14 @@ var browser = window.browser || chrome;
     function getRequestDetails(details) {
 
         var tab = {tabId: details.tabId};
+
+        /**
+         * FF sends http instead of ws protocol at the http-listeners layer
+         * Although this is expected, as the Upgrade request is indeed an HTTP request, we use a chromium based approach in this case.
+         */
+        if (details.type === 'websocket' && details.url.indexOf('http') === 0) {
+            details.url = details.url.replace(/^http(s)?:/, 'ws$1:');
+        }
 
         //https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
         var requestDetails = {
@@ -10069,8 +10116,6 @@ var browser = window.browser || chrome;
      */
     adguard.getURL = browser.extension.getURL;
 
-    adguard.i18n = browser.i18n;
-
     adguard.backgroundPage = {};
     adguard.backgroundPage.getWindow = function () {
         return browser.extension.getBackgroundPage();
@@ -10116,12 +10161,18 @@ var browser = window.browser || chrome;
         onCompleted: browser.webRequest.onCompleted,
         onErrorOccurred: browser.webRequest.onErrorOccurred,
         onHeadersReceived: onHeadersReceived,
-        onBeforeSendHeaders: onBeforeSendHeaders
+        onBeforeSendHeaders: onBeforeSendHeaders,
+        webSocketSupported: typeof browser.webRequest.ResourceType !== 'undefined' && browser.webRequest.ResourceType['WEBSOCKET'] === 'websocket'
     };
 
     var onCreatedNavigationTarget = {
 
         addListener: function (callback) {
+
+            // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webNavigation/onCreatedNavigationTarget#Browser_compatibility
+            if (typeof browser.webNavigation.onCreatedNavigationTarget === 'undefined') {
+                return;
+            }
 
             browser.webNavigation.onCreatedNavigationTarget.addListener(function (details) {
 
@@ -10199,6 +10250,9 @@ var browser = window.browser || chrome;
         setPopup: function () {
             // Do nothing. Popup is already installed in manifest file
         },
+        resize: function () {
+            // Do nothing
+        },
         close: function () {
             // Do nothing
         }
@@ -10230,17 +10284,20 @@ adguard.windowsImpl = (function (adguard) {
     var onUpdatedChannel = adguard.utils.channels.newChannel();
 
     // https://developer.chrome.com/extensions/windows#event-onCreated
+    // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/onCreated
     browser.windows.onCreated.addListener(function (chromeWin) {
         onCreatedChannel.notify(toWindowFromChromeWindow(chromeWin), chromeWin);
     });
 
     // https://developer.chrome.com/extensions/windows#event-onRemoved
+    // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/onRemoved
     browser.windows.onRemoved.addListener(function (windowId) {
         onRemovedChannel.notify(windowId);
     });
 
     var create = function (createData, callback) {
         // https://developer.chrome.com/extensions/windows#method-create
+        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/create
         browser.windows.create(createData, function (chromeWin) {
             callback(toWindowFromChromeWindow(chromeWin), chromeWin);
         });
@@ -10248,7 +10305,9 @@ adguard.windowsImpl = (function (adguard) {
 
     var forEachNative = function (callback) {
         // https://developer.chrome.com/extensions/windows#method-getAll
-        browser.windows.getAll(function (chromeWins) {
+        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/getAll
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/569
+        browser.windows.getAll({}, function (chromeWins) {
             for (var i = 0; i < chromeWins.length; i++) {
                 var chromeWin = chromeWins[i];
                 callback(chromeWin, toWindowFromChromeWindow(chromeWin));
@@ -10350,13 +10409,13 @@ adguard.tabsImpl = (function (adguard) {
         var active = createData.active === true;
 
         if (createData.type === 'popup' &&
-            // Does not work properly in Insider builds
-            !adguard.utils.browser.isEdgeBrowser()) {
+            // Does not work properly in Anniversary builds
+            !adguard.utils.browser.isEdgeBeforeCreatorsUpdate()) {
             // https://developer.chrome.com/extensions/windows#method-create
+            // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/create
             browser.windows.create({
                 url: url,
                 type: 'popup',
-                focused: active,
                 width: 1230,
                 height: 630
             }, callback);
@@ -10383,6 +10442,8 @@ adguard.tabsImpl = (function (adguard) {
 
         // https://developer.chrome.com/extensions/windows#method-create
         // https://developer.chrome.com/extensions/windows#method-getLastFocused
+        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/create
+        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/getLastFocused
 
         browser.windows.getLastFocused(function (win) {
 
@@ -10391,7 +10452,8 @@ adguard.tabsImpl = (function (adguard) {
                 return;
             }
 
-            browser.windows.getAll(function (wins) {
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/569
+            browser.windows.getAll({}, function (wins) {
 
                 for (var i = 0; i < wins.length; i++) {
                     var win = wins[i];
@@ -10409,6 +10471,7 @@ adguard.tabsImpl = (function (adguard) {
 
     var remove = function (tabId, callback) {
         // https://developer.chrome.com/extensions/tabs#method-remove
+        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/remove
         browser.tabs.remove(tabIdToInt(tabId), function () {
             if (checkLastError()) {
                 return;
@@ -10418,6 +10481,7 @@ adguard.tabsImpl = (function (adguard) {
     };
 
     var activate = function (tabId, callback) {
+        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/update
         browser.tabs.update(tabIdToInt(tabId), {active: true}, function (tab) {
             if (checkLastError()) {
                 return;
@@ -10459,6 +10523,7 @@ adguard.tabsImpl = (function (adguard) {
             }
         } else {
             // https://developer.chrome.com/extensions/tabs#method-reload
+            // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/reload#Browser_compatibility
             if (browser.tabs.reload) {
                 browser.tabs.reload(tabIdToInt(tabId), {bypassCache: true}, checkLastError);
             } else {
@@ -10470,6 +10535,7 @@ adguard.tabsImpl = (function (adguard) {
 
     var sendMessage = function (tabId, message, responseCallback, options) {
         // https://developer.chrome.com/extensions/tabs#method-sendMessage
+        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/sendMessage
         if (typeof options === 'object' && browser.tabs.sendMessage) {
             browser.tabs.sendMessage(tabIdToInt(tabId), message, options, responseCallback);
             return;
@@ -10479,6 +10545,7 @@ adguard.tabsImpl = (function (adguard) {
 
     var getAll = function (callback) {
         // https://developer.chrome.com/extensions/tabs#method-query
+        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/query
         browser.tabs.query({}, function (chromeTabs) {
             var result = [];
             for (var i = 0; i < chromeTabs.length; i++) {
@@ -10496,11 +10563,26 @@ adguard.tabsImpl = (function (adguard) {
          * See for details:
          * https://developer.chrome.com/extensions/windows#current-window
          * https://dev.opera.com/extensions/tab-window/#accessing-the-current-tab
+         * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/query
          */
         browser.tabs.query({currentWindow: true, active: true}, function (tabs) {
             if (tabs && tabs.length > 0) {
                 callback(tabs[0].id);
             }
+        });
+    };
+
+    /**
+     * Gets tab by id
+     * @param tabId Tab identifier
+     * @param callback
+     */
+    var get = function (tabId, callback) {
+        browser.tabs.get(tabIdToInt(tabId), function (chromeTab) {
+            if (browser.runtime.lastError) {
+                return;
+            }
+            callback(toTabFromChromeTab(chromeTab));
         });
     };
 
@@ -10518,6 +10600,7 @@ adguard.tabsImpl = (function (adguard) {
         sendMessage: sendMessage,
         getAll: getAll,
         getActive: getActive,
+        get: get,
 
         fromChromeTab: toTabFromChromeTab
     };
@@ -10631,7 +10714,8 @@ adguard.tabsImpl = (function (adguard) {
                 reload: noOpFunc,
                 sendMessage: noOpFunc,
                 getAll: noOpFunc,		// callback(tabs)
-                getActive: noOpFunc		// callback(tabId)
+                getActive: noOpFunc,    // callback(tabId),
+                get: noOpFunc           // callback(tab)
             };
 
         })();
@@ -10785,6 +10869,13 @@ adguard.tabsImpl = (function (adguard) {
                 var tab = tabs[tabId];
                 if (tab) {
                     callback(tab);
+                } else {
+                    // Tab not found in the local state, but we are sure that this tab exists. Sync...
+                    // TODO[Edge]: Relates to Edge Bug https://github.com/AdguardTeam/AdguardBrowserExtension/issues/481
+                    tabsImpl.get(tabId, function (tab) {
+                        onTabCreated(tab);
+                        callback(tab);
+                    });
                 }
             });
         };
@@ -11846,7 +11937,7 @@ adguard.rules = (function () {
                 }
             }
 
-            var nameEndIndex = adguard.utils.strings.indexOfAny(selector, nameStartIndex + 1, [' ', '\t', '>', '(', '[', '.', '#', ':', '+', '~']);
+            var nameEndIndex = adguard.utils.strings.indexOfAny(selector, nameStartIndex + 1, [' ', '\t', '>', '(', '[', '.', '#', ':', '+', '~', '"', "'"]);
             if (nameEndIndex < 0) {
                 nameEndIndex = selector.length;
             }
@@ -13210,7 +13301,7 @@ adguard.rules = (function () {
                 case UrlFilterRule.IMPORTANT_OPTION:
                     this.isImportant = true;
                     break;
-                case UrlFilterRule.NOT_MARK + UrlFilterRule.IMPORTANT_OPTION:
+                case api.FilterRule.NOT_MARK + UrlFilterRule.IMPORTANT_OPTION:
                     this.isImportant = false;
                     break;
                 case UrlFilterRule.ELEMHIDE_OPTION:
@@ -13291,6 +13382,7 @@ adguard.rules = (function () {
         MEDIA: 1 << 8,
         FONT: 1 << 9,
         WEBSOCKET: 1 << 10,
+        WEBRTC: 1 << 11,
 
         ELEMHIDE: 1 << 20,      //CssFilter cannot be applied to page
         URLBLOCK: 1 << 21,      //This attribute is only for exception rules. If true - do not use urlblocking rules for urls where referrer satisfies this rule.
@@ -13337,6 +13429,7 @@ adguard.rules = (function () {
     UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.MEDIA;
     UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.FONT;
     UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.WEBSOCKET;
+    UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.WEBRTC;
     // jshint ignore:end
 
     api.UrlFilterRule = UrlFilterRule;
@@ -14074,6 +14167,53 @@ adguard.applicationUpdateService = (function (adguard) {
     }
 
     /**
+     * Edge supports unlimitedStorage since Creators update.
+     * Previously, we keep filter rules in localStorage, and now we have to migrate this rules to browser.storage.local
+     * See https://github.com/AdguardTeam/AdguardBrowserExtension/issues/566
+     */
+    function onUpdateEdgeRulesStorage() {
+
+        var dfd = new adguard.utils.Promise();
+
+        var fixProperty = 'edge-storage-local-fix-build' + adguard.utils.browser.EDGE_CREATORS_UPDATE;
+        if (localStorage[fixProperty]) {
+            dfd.resolve();
+            return dfd;
+        }
+
+        adguard.console.info('Call update to use storage.local for Edge browser');
+
+        var keys = [];
+        for (var key in localStorage) {
+            if (localStorage.hasOwnProperty(key) && key.indexOf('filterrules_') === 0) {
+                keys.push(key);
+            }
+        }
+
+        function writeFilterRules() {
+            if (keys.length === 0) {
+                localStorage[fixProperty] = true;
+                dfd.resolve();
+            } else {
+                var key = keys.shift();
+                var lines = [];
+                var value = localStorage[key];
+                if (value) {
+                    lines = value.split(/[\r\n]+/);
+                }
+                adguard.rulesStorageImpl.write(key, lines, function () {
+                    delete localStorage[key];
+                    writeFilterRules();
+                });
+            }
+        }
+
+        writeFilterRules();
+
+        return dfd;
+    }
+
+    /**
      * Mark 'adguard-filters' as installed and loaded on extension version update
      * @private
      */
@@ -14178,7 +14318,7 @@ adguard.applicationUpdateService = (function (adguard) {
     function loadApplicationPreviousVersion(callback) {
 
         var prevVersion = adguard.utils.browser.getAppVersion();
-        if (prevVersion || !adguard.utils.browser.isFirefoxBrowser()) {
+        if (prevVersion || adguard.prefs.platform !== 'firefox') {
             callback(prevVersion);
             return;
         }
@@ -14240,11 +14380,14 @@ adguard.applicationUpdateService = (function (adguard) {
         if (adguard.utils.browser.isGreaterVersion("2.0.10", runInfo.prevVersion)) {
             methods.push(onUpdateRuleHitStats);
         }
-        if (adguard.utils.browser.isGreaterVersion("2.1.2", runInfo.prevVersion) && adguard.utils.browser.isFirefoxBrowser()) {
+        if (adguard.utils.browser.isGreaterVersion("2.1.2", runInfo.prevVersion) && adguard.prefs.platform === 'firefox') {
             methods.push(onUpdateFirefoxStorage);
         }
         if (adguard.utils.browser.isGreaterVersion("2.3.5", runInfo.prevVersion) && adguard.utils.browser.isChromium() && !adguard.utils.browser.isSafariBrowser()) {
             methods.push(onUpdateChromiumStorage);
+        }
+        if (adguard.utils.browser.isEdgeBrowser() && !adguard.utils.browser.isEdgeBeforeCreatorsUpdate()) {
+            methods.push(onUpdateEdgeRulesStorage);
         }
 
         var dfd = executeMethods(methods);
@@ -14265,10 +14408,37 @@ adguard.whitelist = (function (adguard) {
 
     var allowAllWhiteListRule = new adguard.rules.UrlFilterRule('@@whitelist-all$document', adguard.utils.filters.WHITE_LIST_FILTER_ID);
 
-    var defaultWhiteListMode = adguard.settings.isDefaultWhiteListMode();
-
     var whiteListFilter = new adguard.rules.UrlFilter();
     var blockListFilter = new adguard.rules.UrlFilter();
+
+    /**
+     * Whitelist filter may not have been initialized yet
+     * @returns {*|UrlFilter}
+     */
+    function getWhiteListFilter() {
+        // Request domains property for filter initialization
+        whiteListDomainsHolder.domains; // jshint ignore:line
+        return whiteListFilter;
+    }
+
+    /**
+     * Blacklist filter may not have been initialized yet
+     * @returns {*|UrlFilter}
+     */
+    function getBlockListFilter() {
+        // Request domains property for filter initialization
+        blockListDomainsHolder.domains; // jshint ignore:line
+        return blockListFilter;
+    }
+
+    /**
+     * Returns whitelist mode
+     * In default mode filtration is enabled for all sites
+     * In inverted model filtration is disabled for all sites
+     */
+    function isDefaultWhiteListMode() {
+        return adguard.settings.isDefaultWhiteListMode();
+    }
 
     /**
      * Read domains and initialize filters lazy
@@ -14276,6 +14446,7 @@ adguard.whitelist = (function (adguard) {
     var whiteListDomainsHolder = {
         get domains() {
             return adguard.lazyGet(whiteListDomainsHolder, 'domains', function () {
+                whiteListFilter = new adguard.rules.UrlFilter();
                 // Reading from local storage
                 var domains = getDomainsFromLocalStorage(WHITE_LIST_DOMAINS_LS_PROP);
                 for (var i = 0; i < domains.length; i++) {
@@ -14296,6 +14467,7 @@ adguard.whitelist = (function (adguard) {
     var blockListDomainsHolder = {
         get domains() {
             return adguard.lazyGet(blockListDomainsHolder, 'domains', function () {
+                blockListFilter = new adguard.rules.UrlFilter();
                 // Reading from local storage
                 var domains = getDomainsFromLocalStorage(BLOCK_LIST_DOMAINS_LS_PROP);
                 for (var i = 0; i < domains.length; i++) {
@@ -14335,7 +14507,7 @@ adguard.whitelist = (function (adguard) {
         if (!domain) {
             return;
         }
-        if (defaultWhiteListMode) {
+        if (isDefaultWhiteListMode()) {
             whiteListDomainsHolder.add(domain);
         } else {
             blockListDomainsHolder.add(domain);
@@ -14350,7 +14522,7 @@ adguard.whitelist = (function (adguard) {
         if (!domain) {
             return;
         }
-        if (defaultWhiteListMode) {
+        if (isDefaultWhiteListMode()) {
             adguard.utils.collections.removeAll(whiteListDomainsHolder.domains, domain);
         } else {
             adguard.utils.collections.removeAll(blockListDomainsHolder.domains, domain);
@@ -14390,10 +14562,10 @@ adguard.whitelist = (function (adguard) {
     function addToWhiteList(domain) {
         var rule = createWhiteListRule(domain);
         if (rule) {
-            if (defaultWhiteListMode) {
-                whiteListFilter.addRule(rule);
+            if (isDefaultWhiteListMode()) {
+                getWhiteListFilter().addRule(rule);
             } else {
-                blockListFilter.addRule(rule);
+                getBlockListFilter().addRule(rule);
             }
             addDomainToWhiteList(domain);
             saveDomainsToLocalStorage();
@@ -14411,10 +14583,10 @@ adguard.whitelist = (function (adguard) {
 
         var host = adguard.utils.url.getHost(url);
 
-        if (defaultWhiteListMode) {
-            return whiteListFilter.isFiltered(url, host, adguard.RequestTypes.DOCUMENT, false);
+        if (isDefaultWhiteListMode()) {
+            return getWhiteListFilter().isFiltered(url, host, adguard.RequestTypes.DOCUMENT, false);
         } else {
-            var rule = blockListFilter.isFiltered(url, host, adguard.RequestTypes.DOCUMENT, false);
+            var rule = getBlockListFilter().isFiltered(url, host, adguard.RequestTypes.DOCUMENT, false);
             if (rule) {
                 //filtering is enabled on this website
                 return null;
@@ -14425,20 +14597,10 @@ adguard.whitelist = (function (adguard) {
     };
 
     /**
-     * Returns whitelist mode
-     * In default mode filtration is enabled for all sites
-     * In inverted model filtration is disabled for all sites
-     */
-    var isDefaultMode = function () {
-        return defaultWhiteListMode;
-    };
-
-    /**
      * Changes whitelist mode
      * @param defaultMode
      */
     var changeDefaultWhiteListMode = function (defaultMode) {
-        defaultWhiteListMode = defaultMode;
         adguard.settings.changeDefaultWhiteListMode(defaultMode);
         adguard.listeners.notifyListeners(adguard.listeners.UPDATE_WHITELIST_FILTER_RULES);
     };
@@ -14449,7 +14611,7 @@ adguard.whitelist = (function (adguard) {
      */
     var whiteListUrl = function (url) {
         var domain = adguard.utils.url.getHost(url);
-        if (defaultWhiteListMode) {
+        if (isDefaultWhiteListMode()) {
             addToWhiteList(domain);
         } else {
             removeFromWhiteList(domain);
@@ -14463,7 +14625,7 @@ adguard.whitelist = (function (adguard) {
      */
     var unWhiteListUrl = function (url) {
         var domain = adguard.utils.url.getHost(url);
-        if (defaultWhiteListMode) {
+        if (isDefaultWhiteListMode()) {
             removeFromWhiteList(domain);
         } else {
             addToWhiteList(domain);
@@ -14485,10 +14647,10 @@ adguard.whitelist = (function (adguard) {
             var rule = createWhiteListRule(domain);
             if (rule) {
                 rules.push(rule);
-                if (defaultWhiteListMode) {
-                    whiteListFilter.addRule(rule);
+                if (isDefaultWhiteListMode()) {
+                    getWhiteListFilter().addRule(rule);
                 } else {
-                    blockListFilter.addRule(rule);
+                    getBlockListFilter().addRule(rule);
                 }
                 addDomainToWhiteList(domain);
             }
@@ -14504,10 +14666,10 @@ adguard.whitelist = (function (adguard) {
     var removeFromWhiteList = function (domain) {
         var rule = createWhiteListRule(domain);
         if (rule) {
-            if (defaultWhiteListMode) {
-                whiteListFilter.removeRule(rule);
+            if (isDefaultWhiteListMode()) {
+                getWhiteListFilter().removeRule(rule);
             } else {
-                blockListFilter.removeRule(rule);
+                getBlockListFilter().removeRule(rule);
             }
         }
         removeDomainFromWhiteList(domain);
@@ -14519,14 +14681,12 @@ adguard.whitelist = (function (adguard) {
      * Clear whitelist
      */
     var clearWhiteList = function () {
-        if (defaultWhiteListMode) {
+        if (isDefaultWhiteListMode()) {
             adguard.localStorage.removeItem(WHITE_LIST_DOMAINS_LS_PROP);
             adguard.lazyGetClear(whiteListDomainsHolder, 'domains');
-            whiteListFilter = new adguard.rules.UrlFilter();
         } else {
             adguard.localStorage.removeItem(BLOCK_LIST_DOMAINS_LS_PROP);
             adguard.lazyGetClear(blockListDomainsHolder, 'domains');
-            blockListFilter = new adguard.rules.UrlFilter();
         }
         adguard.listeners.notifyListeners(adguard.listeners.UPDATE_WHITELIST_FILTER_RULES);
     };
@@ -14535,7 +14695,7 @@ adguard.whitelist = (function (adguard) {
      * Returns the array of whitelist domains
      */
     var getWhiteListDomains = function () {
-        if (defaultWhiteListMode) {
+        if (isDefaultWhiteListMode()) {
             return whiteListDomainsHolder.domains;
         } else {
             return blockListDomainsHolder.domains;
@@ -14548,7 +14708,7 @@ adguard.whitelist = (function (adguard) {
     var getRules = function () {
         //TODO: blockListFilter
 
-        return whiteListFilter.getRules();
+        return getWhiteListFilter().getRules();
     };
 
     return {
@@ -14566,7 +14726,7 @@ adguard.whitelist = (function (adguard) {
         removeFromWhiteList: removeFromWhiteList,
         clearWhiteList: clearWhiteList,
 
-        isDefaultMode: isDefaultMode,
+        isDefaultMode: isDefaultWhiteListMode,
         changeDefaultWhiteListMode: changeDefaultWhiteListMode
     };
 
@@ -16767,22 +16927,24 @@ adguard.webRequestService = (function (adguard) {
     };
 
     /**
-     * Checks if websocket request is blocked
+     * Checks if request that is wrapped in page script should be blocked.
+     * We do this because browser API doesn't have full support for intercepting all requests, e.g. WebSocket or WebRTC.
      *
      * @param tab           Tab
      * @param requestUrl    request url
      * @param referrerUrl   referrer url
+     * @param requestType   Request type (WEBSOCKET or WEBRTC)
      * @returns {boolean}   true if request is blocked
      */
-    var checkWebSocketRequest = function (tab, requestUrl, referrerUrl) {
+    var checkPageScriptWrapperRequest = function (tab, requestUrl, referrerUrl, requestType) {
 
         if (!tab) {
             return false;
         }
 
-        var requestRule = getRuleForRequest(tab, requestUrl, referrerUrl, adguard.RequestTypes.WEBSOCKET);
+        var requestRule = getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
 
-        adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, adguard.RequestTypes.WEBSOCKET, requestRule);
+        adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
 
         return isRequestBlockedByRule(requestRule);
     };
@@ -16900,12 +17062,12 @@ adguard.webRequestService = (function (adguard) {
      */
     var processRequestResponse = function (tab, requestUrl, referrerUrl, requestType, responseHeaders) {
 
-        if (requestType == adguard.RequestTypes.DOCUMENT) {
+        if (requestType === adguard.RequestTypes.DOCUMENT) {
             // Check headers to detect Adguard application
 
             if (adguard.integration.isSupported() && // Integration module may be missing
                 !adguard.prefs.mobile &&  // Mobile Firefox doesn't support integration mode
-                !adguard.utils.browser.isEdgeBrowser()) { // TODO[Edge]: Integration mode is not fully functional in Edge (cannot redefine Referer header yet)
+                !adguard.utils.browser.isEdgeBrowser()) { // TODO[Edge]: Integration mode is not fully functional in Edge (cannot redefine Referer header yet and Edge doesn't intercept requests from background page)
 
                 adguard.integration.checkHeaders(tab, responseHeaders, requestUrl);
             }
@@ -16922,7 +17084,7 @@ adguard.webRequestService = (function (adguard) {
             appendLogEvent = !adguard.backend.isAdguardAppRequest(requestUrl);
         } else if (adguard.frames.isTabProtectionDisabled(tab)) { // jshint ignore:line
             // Doing nothing
-        } else if (requestType == adguard.RequestTypes.DOCUMENT) {
+        } else if (requestType === adguard.RequestTypes.DOCUMENT) {
             requestRule = adguard.frames.getFrameWhiteListRule(tab);
             var domain = adguard.frames.getFrameDomain(tab);
             if (!adguard.frames.isIncognitoTab(tab) &&
@@ -16992,7 +17154,7 @@ adguard.webRequestService = (function (adguard) {
     // EXPOSE
     return {
         processGetSelectorsAndScripts: processGetSelectorsAndScripts,
-        checkWebSocketRequest: checkWebSocketRequest,
+        checkPageScriptWrapperRequest: checkPageScriptWrapperRequest,
         processShouldCollapse: processShouldCollapse,
         processShouldCollapseMany: processShouldCollapseMany,
         isRequestBlockedByRule: isRequestBlockedByRule,
@@ -17260,7 +17422,6 @@ adguard.webRequestService = (function (adguard) {
                 adguard.ui.openExtensionStore();
                 break;
             case 'openFilteringLog':
-                adguard.browserAction.close();
                 adguard.ui.openFilteringLog(message.tabId);
                 break;
             case 'openExportRulesTab':
@@ -17274,11 +17435,9 @@ adguard.webRequestService = (function (adguard) {
                 break;
             case 'openTab':
                 adguard.ui.openTab(message.url, message.options);
-                adguard.browserAction.close();
                 break;
             case 'resetBlockedAdsCount':
                 adguard.frames.resetBlockedAdsCount();
-                adguard.browserAction.close();
                 break;
             case 'getSelectorsAndScripts':
                 if (adguard.utils.workaround.isFacebookIframe(message.documentUrl)) {
@@ -17286,8 +17445,8 @@ adguard.webRequestService = (function (adguard) {
                 }
                 var cssAndScripts = adguard.webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl, message.options);
                 return cssAndScripts || {};
-            case 'checkWebSocketRequest':
-                var block = adguard.webRequestService.checkWebSocketRequest(sender.tab, message.elementUrl, message.documentUrl);
+            case 'checkPageScriptWrapperRequest':
+                var block = adguard.webRequestService.checkPageScriptWrapperRequest(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
                 return {block: block, requestId: message.requestId};
             case 'processShouldCollapse':
                 var collapse = adguard.webRequestService.processShouldCollapse(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
@@ -17352,10 +17511,9 @@ adguard.webRequestService = (function (adguard) {
                 return {confirmText: confirmText};
             case 'enableSubscription':
                 adguard.filters.processAbpSubscriptionUrl(message.url, function (rulesAddedCount) {
-                    callback({
-                        title: adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_title'),
-                        text: adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_text', [rulesAddedCount])
-                    });
+                    var title = adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_title');
+                    var text = adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_text', [String(rulesAddedCount)]);
+                    adguard.ui.showAlertMessagePopup(title, text);
                 });
                 return true; // Async
             // Popup methods
@@ -17374,18 +17532,32 @@ adguard.webRequestService = (function (adguard) {
                 break;
             case 'openSiteReportTab':
                 adguard.ui.openSiteReportTab(message.url);
-                adguard.browserAction.close();
                 break;
             case 'openSettingsTab':
                 adguard.ui.openSettingsTab();
-                adguard.browserAction.close();
                 break;
             case 'openAssistant':
                 adguard.ui.openAssistant();
-                adguard.browserAction.close();
                 break;
+            case 'getTabInfoForPopup':
+                adguard.tabs.getActive(function (tab) {
+                    var frameInfo = adguard.frames.getFrameInfo(tab);
+                    callback({
+                        frameInfo: frameInfo,
+                        options: {
+                            showStatsSupported: !adguard.utils.browser.isContentBlockerEnabled(),
+                            isSafariBrowser: adguard.utils.browser.isSafariBrowser(),
+                            isFirefoxBrowser: adguard.utils.browser.isFirefoxBrowser(),
+                            isMacOs: adguard.utils.browser.isMacOs()
+                        }
+                    });
+                });
+                return true; // Async
             case 'resizePanelPopup':
                 adguard.browserAction.resize(message.width, message.height);
+                break;
+            case 'closePanelPopup':
+                adguard.browserAction.close();
                 break;
             case 'sendFeedback':
                 adguard.backend.sendUrlReport(message.url, message.topic, message.comment);
@@ -17401,6 +17573,12 @@ adguard.webRequestService = (function (adguard) {
 
     // Add event listener from content-script messages
     adguard.runtime.onMessage.addListener(handleMessage);
+
+    /**
+     * There is no messaging in Safari popover context,
+     * so we have to expose this method to keep the message-like style that is used in other browsers for communication between popup and background page.
+     */
+    adguard.runtime.onMessageHandler = handleMessage;
 
 })(adguard);
 
@@ -17446,7 +17624,7 @@ adguard.webRequestService = (function (adguard) {
             return;
         }
 
-        if (!adguard.utils.url.isHttpRequest(requestUrl)) {
+        if (!adguard.utils.url.isHttpOrWsRequest(requestUrl)) {
             return;
         }
 
@@ -17518,40 +17696,83 @@ adguard.webRequestService = (function (adguard) {
             filterSafebrowsing(tab, requestUrl);
         }
 
-        /*
-         Websocket check.
-         If 'ws://' request is blocked for not existing domain - it's blocked for all domains.
-         Then we gonna limit frame sources to http to block src:'data/text' etc.
-         More details in these issue:
-         https://github.com/AdguardTeam/AdguardBrowserExtension/issues/344
-         https://github.com/AdguardTeam/AdguardBrowserExtension/issues/440
+        if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
+            return modifyCSPHeader(requestDetails);
+        }
+    }
 
-         WS connections are detected as "other"  by ABP
-         EasyList already contains some rules for WS connections with $other modifier
-         */
-        var checkWebsocket = (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT);
+    /**
+     * Modify CSP header to block WebSocket, prohibit data: and blob: frames and WebWorkers
+     * @param requestDetails
+     * @returns {{responseHeaders: *}}
+     */
+    function modifyCSPHeader(requestDetails) {
 
-        // Please note, that we do not check WS in Edge:
+        // Please note, that we do not modify response headers in Edge before Creators update:
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/401
-        if (adguard.utils.browser.isEdgeBrowser()) {
-            checkWebsocket = false;
+        // https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8796739/
+        if (adguard.utils.browser.isEdgeBeforeCreatorsUpdate()) {
+            return;
         }
 
-        if (checkWebsocket) {
+        var tab = requestDetails.tab;
+        var responseHeaders = requestDetails.responseHeaders || [];
+        var frameUrl = adguard.frames.getFrameUrl(tab, requestDetails.frameId);
 
-            var frameUrl = adguard.frames.getFrameUrl(tab, requestDetails.frameId);
-            var websocketCheckUrl = "ws://adguardwebsocket.check/" + adguard.utils.url.getDomainName(frameUrl);
-            if (adguard.webRequestService.checkWebSocketRequest(tab, websocketCheckUrl, frameUrl)) {
-                var cspHeader = {
-                    name: 'Content-Security-Policy',
-                    value: 'connect-src http: https:; frame-src http: https:; child-src http: https:'
-                };
-                responseHeaders.push(cspHeader);
-                return {
-                    responseHeaders: responseHeaders,
-                    modifiedHeaders: [cspHeader]
-                };
-            }
+        var ruleForCSP = null;
+        var applyCSP = false;
+
+        /**
+         * Websocket check.
+         * If 'ws://' request is blocked for not existing domain - it's blocked for all domains.
+         * Then we gonna limit frame sources to http to block src:'data/text' etc.
+         * More details in these issue:
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/344
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/440
+         */
+
+        // And we don't need this check on newer than 58 chromes anymore
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/572
+        if (!adguard.webRequest.webSocketSupported) {
+            ruleForCSP = adguard.webRequestService.getRuleForRequest(tab, 'ws://adguardwebsocket.check', frameUrl, adguard.RequestTypes.WEBSOCKET);
+            applyCSP = adguard.webRequestService.isRequestBlockedByRule(ruleForCSP);
+        }
+        if (!applyCSP) {
+            ruleForCSP = adguard.webRequestService.getRuleForRequest(tab, 'blob:adguardblob.check', frameUrl, adguard.RequestTypes.SCRIPT);
+            applyCSP = adguard.webRequestService.isRequestBlockedByRule(ruleForCSP);
+        }
+        if (!applyCSP) {
+            ruleForCSP = adguard.webRequestService.getRuleForRequest(tab, 'stun:adguardwebrtc.check', frameUrl, adguard.RequestTypes.WEBRTC);
+            applyCSP = adguard.webRequestService.isRequestBlockedByRule(ruleForCSP);
+        }
+
+        if (ruleForCSP) {
+            adguard.filteringLog.addEvent(tab, 'content-security-policy-check', frameUrl, adguard.RequestTypes.OTHER, ruleForCSP);
+        }
+
+        /**
+         * Websocket connection is blocked by connect-src directive
+         * https://www.w3.org/TR/CSP2/#directive-connect-src
+         *
+         * Web Workers is blocked by child-src directive
+         * https://www.w3.org/TR/CSP2/#directive-child-src
+         * https://www.w3.org/TR/CSP3/#directive-worker-src
+         * We have to use child-src as fallback for worker-src, because it isn't supported
+         * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/worker-src#Browser_compatibility
+         *
+         * We also need the frame-src restriction since CSPs are not inherited from the parent for documents with data: and blob: URLs
+         * https://bugs.chromium.org/p/chromium/issues/detail?id=513860
+         */
+        if (applyCSP) {
+            var cspHeader = {
+                name: 'Content-Security-Policy',
+                value: 'connect-src http: https:; frame-src http: https:; child-src http: https:'
+            };
+            responseHeaders.push(cspHeader);
+            return {
+                responseHeaders: responseHeaders,
+                modifiedHeaders: [cspHeader]
+            };
         }
     }
 
@@ -17693,8 +17914,8 @@ adguard.webRequestService = (function (adguard) {
 
 	function checkPopupBlockedRule(tabId, requestUrl, referrerUrl, sourceTab) {
 
-		//is not http request or url of tab isn't ready
-		if (!adguard.utils.url.isHttpRequest(requestUrl)) {
+		// Tab isn't ready
+		if (!requestUrl) {
 			return;
 		}
 
