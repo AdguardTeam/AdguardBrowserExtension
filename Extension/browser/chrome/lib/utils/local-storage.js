@@ -32,16 +32,20 @@ adguard.localStorageImpl = (function () {
     }
 
     /**
-     * Checks runtime.lastError and calls "callback" if so.
-     *
-     * @returns true if operation caused error
+     * Creates default handler for async operation
+     * @param callback Callback, fired with parameters (ex, result)
      */
-    function checkLastError(callback) {
-        if (browser.runtime.lastError) {
-            callback(browser.runtime.lastError);
-            return true;
-        }
-        return false;
+    function createDefaultAsyncHandler(callback) {
+
+        var dfd = new adguard.utils.Promise();
+        dfd.then(
+            function (result) {
+                callback(null, result);
+            }, function (ex) {
+                callback(ex);
+            });
+
+        return dfd;
     }
 
     /**
@@ -50,18 +54,19 @@ adguard.localStorageImpl = (function () {
      * @param callback Callback
      */
     function read(path, callback) {
+
+        var dfd = createDefaultAsyncHandler(callback);
+
         try {
             browser.storage.local.get(path, function (results) {
-                if (!checkLastError(callback)) {
-                    var result = null;
-                    if (results) {
-                        result = results[path];
-                    }
-                    callback(null, result);
+                if (browser.runtime.lastError) {
+                    dfd.reject(browser.runtime.lastError);
+                } else {
+                    dfd.resolve(results ? results[path] : null);
                 }
             });
         } catch (ex) {
-            callback(ex);
+            dfd.reject(ex);
         }
     }
 
@@ -72,16 +77,21 @@ adguard.localStorageImpl = (function () {
      * @param callback Callback
      */
     function write(path, data, callback) {
-        var item = {};
-        item[path] = data;
+
+        var dfd = createDefaultAsyncHandler(callback);
+
         try {
+            var item = {};
+            item[path] = data;
             browser.storage.local.set(item, function () {
-                if (!checkLastError(callback)) {
-                    callback();
+                if (browser.runtime.lastError) {
+                    dfd.reject(browser.runtime.lastError);
+                } else {
+                    dfd.resolve();
                 }
             });
         } catch (ex) {
-            callback(ex);
+            dfd.reject(ex);
         }
     }
 

@@ -526,8 +526,8 @@ adguard.utils = (function () {
             deferred.resolve(arg);
         };
 
-        var reject = function () {
-            deferred.reject();
+        var reject = function (arg) {
+            deferred.reject(arg);
         };
 
         var then = function (onSuccess, onReject) {
