@@ -19,6 +19,9 @@
 
     'use strict';
 
+    var CSP_HEADER_NAME = 'Content-Security-Policy';
+    var DEFAULT_BLOCK_CSP_DIRECTIVE = 'connect-src http: https:; frame-src http: https:; child-src http: https:';
+
     /**
      * Retrieve referrer url from request details.
      * Extract referrer by priority:
@@ -149,11 +152,13 @@
         }
 
         var tab = requestDetails.tab;
+        var requestUrl = requestDetails.requestUrl;
         var responseHeaders = requestDetails.responseHeaders || [];
         var frameUrl = adguard.frames.getFrameUrl(tab, requestDetails.frameId);
 
         var ruleForCSP = null;
         var applyCSP = false;
+        var cspHeaders = [];
 
         /**
          * Websocket check.
@@ -178,9 +183,30 @@
             ruleForCSP = adguard.webRequestService.getRuleForRequest(tab, 'stun:adguardwebrtc.check', frameUrl, adguard.RequestTypes.WEBRTC);
             applyCSP = adguard.webRequestService.isRequestBlockedByRule(ruleForCSP);
         }
-
+        if (applyCSP) {
+            cspHeaders.push({
+                name: CSP_HEADER_NAME,
+                value: DEFAULT_BLOCK_CSP_DIRECTIVE
+            });
+        }
         if (ruleForCSP) {
-            adguard.filteringLog.addEvent(tab, 'content-security-policy-check', frameUrl, adguard.RequestTypes.OTHER, ruleForCSP);
+            adguard.filteringLog.addEvent(tab, 'content-security-policy-check', frameUrl, adguard.RequestTypes.CSP, ruleForCSP);
+        }
+
+        /**
+         * Retrieve $CSP rules specific for the request
+         * https://github.com/adguardteam/adguardbrowserextension/issues/685
+         */
+        var cspRules = adguard.webRequestService.getCspRules(tab, requestUrl, frameUrl);
+        if (cspRules) {
+            for (var i = 0; i < cspRules.length; i++) {
+                var rule = cspRules[i];
+                cspHeaders.push({
+                    name: CSP_HEADER_NAME,
+                    value: rule.cspDirective
+                });
+                adguard.filteringLog.addEvent(tab, requestUrl, frameUrl, adguard.RequestTypes.CSP, rule);
+            }
         }
 
         /**
@@ -196,15 +222,11 @@
          * We also need the frame-src restriction since CSPs are not inherited from the parent for documents with data: and blob: URLs
          * https://bugs.chromium.org/p/chromium/issues/detail?id=513860
          */
-        if (applyCSP) {
-            var cspHeader = {
-                name: 'Content-Security-Policy',
-                value: 'connect-src http: https:; frame-src http: https:; child-src http: https:'
-            };
-            responseHeaders.push(cspHeader);
+        if (cspHeaders.length > 0) {
+            responseHeaders = responseHeaders.concat(cspHeaders);
             return {
                 responseHeaders: responseHeaders,
-                modifiedHeaders: [cspHeader]
+                modifiedHeaders: cspHeaders
             };
         }
     }

@@ -252,6 +252,28 @@ adguard.webRequestService = (function (adguard) {
     };
 
     /**
+     * Find CSP rules for request
+     * @param tab           Tab
+     * @param requestUrl    Request URL
+     * @param referrerUrl   Referrer URL
+     * @returns {*}         Collection of rules or null
+     */
+    var getCspRules = function (tab, requestUrl, referrerUrl) {
+
+        if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab) || adguard.frames.isTabWhiteListed(tab)) {
+            //don't process request
+            return null;
+        }
+
+        var whitelistRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
+        if (whitelistRule && whitelistRule.checkContentTypeIncluded("DOCUMENT")) {
+            return null;
+        }
+
+        return adguard.requestFilter.getCspRules(requestUrl, referrerUrl);
+    };
+
+    /**
      * Processes HTTP response.
      * It could do the following:
      * 1. Detect desktop AG and switch to integration mode
@@ -364,6 +386,7 @@ adguard.webRequestService = (function (adguard) {
         isRequestBlockedByRule: isRequestBlockedByRule,
         getBlockedResponseByRule: getBlockedResponseByRule,
         getRuleForRequest: getRuleForRequest,
+        getCspRules: getCspRules,
         processRequestResponse: processRequestResponse,
         postProcessRequest: postProcessRequest,
         onRequestBlocked: onRequestBlockedChannel

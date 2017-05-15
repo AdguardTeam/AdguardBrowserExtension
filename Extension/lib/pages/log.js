@@ -801,6 +801,8 @@ RequestWizard.getRequestType = function (requestType) {
 			return 'WebSocket';
 		case 'WEBRTC':
 			return 'WebRTC';
+        case 'CSP':
+            return 'CSP';
 		case 'OTHER':
 			return 'Other';
 	}

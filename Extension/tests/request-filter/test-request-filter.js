@@ -1,4 +1,4 @@
-QUnit.test("General", function(assert) {
+QUnit.test("General", function (assert) {
     var url = "https://test.com/";
     var referrer = "example.org";
 
@@ -12,7 +12,7 @@ QUnit.test("General", function(assert) {
     assert.equal(result.ruleText, rule.ruleText);
 });
 
-QUnit.test("Whitelist rules selecting", function(assert) {
+QUnit.test("Whitelist rules selecting", function (assert) {
 
     var RequestTypes = adguard.RequestTypes;
 
@@ -28,7 +28,7 @@ QUnit.test("Whitelist rules selecting", function(assert) {
     requestFilter.addRule(rule);
 
     var result;
-    result= requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT);
+    result = requestFilter.findRuleForRequest(url, referrer, RequestTypes.SUBDOCUMENT);
     assert.ok(result != null);
     assert.equal(result.ruleText, rule.ruleText);
 
@@ -57,7 +57,7 @@ QUnit.test("Whitelist rules selecting", function(assert) {
     assert.equal(result.ruleText, genericHideRule.ruleText);
 });
 
-QUnit.test("Important modifier rules", function(assert) {
+QUnit.test("Important modifier rules", function (assert) {
 
     var RequestTypes = adguard.RequestTypes;
 
@@ -99,7 +99,43 @@ QUnit.test("Important modifier rules", function(assert) {
     assert.equal(result.ruleText, documentRule.ruleText);
 });
 
-QUnit.test("Request filter performance", function(assert) {
+QUnit.test("CSP rules", function (assert) {
+
+    var rule = new adguard.rules.UrlFilterRule('||xpanama.net^$third-party,csp=connect-src \'none\',domain=~example.org|merriam-webster.com');
+    var requestFilter = new adguard.RequestFilter();
+    requestFilter.addRule(rule);
+
+    var rules = requestFilter.findCspRules('https://nop.xpanama.net/if.html?adflag=1&cb=kq4iOggNyP', 'https://www.merriam-webster.com/');
+    assert.ok(rules.length === 1);
+    assert.equal(rules[0].ruleText, rule.ruleText);
+
+    rules = requestFilter.findCspRules('https://xpanama.net', 'https://example.org');
+    assert.ok(!rules || rules.length === 0);
+
+    // Add matching directive whitelist rule
+    var directiveWhiteListRule = new adguard.rules.UrlFilterRule('@@||xpanama.net^$csp=connect-src \'none\'');
+    requestFilter.addRule(directiveWhiteListRule);
+    rules = requestFilter.findCspRules('https://xpanama.net', 'https://www.merriam-webster.com/');
+    assert.ok(!rules || rules.length === 0);
+    requestFilter.removeRule(directiveWhiteListRule);
+
+    // Add global whitelist rule
+    var globalWhiteListRule = new adguard.rules.UrlFilterRule('@@||xpanama.net^$csp');
+    requestFilter.addRule(globalWhiteListRule);
+    rules = requestFilter.findCspRules('https://xpanama.net', 'https://www.merriam-webster.com/');
+    assert.ok(!rules || rules.length === 0);
+    requestFilter.removeRule(globalWhiteListRule);
+
+    // Add whitelist rule, but with not matched directive
+    var directiveMissWhiteListRule = new adguard.rules.UrlFilterRule('@@||xpanama.net^$csp=frame-src \'none\'');
+    requestFilter.addRule(directiveMissWhiteListRule);
+    rules = requestFilter.findCspRules('https://xpanama.net', 'https://www.merriam-webster.com/');
+    assert.ok(rules.length === 1);
+    assert.equal(rules[0].ruleText, rule.ruleText);
+
+});
+
+QUnit.test("Request filter performance", function (assert) {
 
     var done = assert.async();
 
