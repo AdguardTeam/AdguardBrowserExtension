@@ -208,11 +208,13 @@ adguard.tabsImpl = (function (adguard) {
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/569
             browser.windows.getAll({}, function (wins) {
 
-                for (var i = 0; i < wins.length; i++) {
-                    var win = wins[i];
-                    if (isAppropriateWindow(win)) {
-                        onWindowFound(win);
-                        return;
+                if (wins) {
+                    for (var i = 0; i < wins.length; i++) {
+                        var win = wins[i];
+                        if (isAppropriateWindow(win)) {
+                            onWindowFound(win);
+                            return;
+                        }
                     }
                 }
 
