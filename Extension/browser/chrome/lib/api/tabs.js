@@ -105,10 +105,10 @@ adguard.tabsImpl = (function (adguard) {
         return parseInt(tabId);
     }
 
-    function checkLastError() {
+    function checkLastError(operation) {
         var ex = browser.runtime.lastError;
         if (ex) {
-            adguard.console.error("Error while executing operation: {0}", ex);
+            adguard.console.error("Error while executing operation{1}: {0}", ex, operation ? " '" + operation + "'" : '');
         }
         return ex;
     }
@@ -238,14 +238,21 @@ adguard.tabsImpl = (function (adguard) {
     var activate = function (tabId, callback) {
         // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/update
         browser.tabs.update(tabIdToInt(tabId), {active: true}, function (tab) {
-            if (checkLastError()) {
+            if (checkLastError("Before tab update")) {
                 return;
             }
-            // Focus window
-            browser.windows.update(tab.windowId, {focused: true}, function () {
-                if (checkLastError()) {
-                    return;
+
+            getActive(function (activeTabId) {
+                if (tabId !== activeTabId) {
+                    // Focus window
+                    browser.windows.update(tab.windowId, {focused: true}, function () {
+                        if (checkLastError("Update tab")) {
+                            return;
+                        }
+                        callback(tabId);
+                    });
                 }
+
                 callback(tabId);
             });
         });
