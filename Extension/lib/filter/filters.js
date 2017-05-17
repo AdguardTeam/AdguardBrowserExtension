@@ -149,7 +149,7 @@
          * @returns CSS ready to be injected
          */
         getSelectorsForUrl: function (url, genericHide) {
-            var domain = adguard.utils.url.getDomainName(url);
+            var domain = adguard.utils.url.getHost(url);
             if (adguard.prefs.collectHitsCountEnabled && adguard.settings.collectHitsCount()) {
                 // If user has enabled "Send statistics for ad filters usage" option we build CSS with enabled hits stats.
                 // In this case style contains "content" with filter identifier and rule text.
@@ -171,7 +171,7 @@
          * @returns CSS ready to be injected.
          */
         getInjectedSelectorsForUrl: function (url, genericHide) {
-            var domain = adguard.utils.url.getDomainName(url);
+            var domain = adguard.utils.url.getHost(url);
             return this.cssFilter.buildInjectCss(domain, genericHide);
         },
 
@@ -183,7 +183,7 @@
          * @returns Javascript
          */
         getScriptsForUrl: function (url) {
-            var domain = adguard.utils.url.toPunyCode(adguard.utils.url.getDomainName(url));
+            var domain = adguard.utils.url.getHost(url);
             return this.scriptFilter.buildScript(domain);
         },
 
