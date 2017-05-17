@@ -67,8 +67,8 @@
         }
 
         /**
-         * Searches for rules matching specified request.
-         * It worth noting that rules will be filtered by whitelist $csp rules.
+         * Searches for CSP rules matching specified request.
+         * It worth noting that all (blocked and whitelisted!) CSP rules will be returned: client should select which CSP rules will be added to headers.
          * @param url URL
          * @param documentHost Document Host
          * @param thirdParty true if request is third-party
@@ -76,37 +76,46 @@
          */
         function findCspRules(url, documentHost, thirdParty) {
 
-            var i, rule;
+            var blockingRules = cspBlockFilter.findRules(url, documentHost, thirdParty, adguard.RequestTypes.CSP);
+            if (!blockingRules || blockingRules.length === 0) { // Nothing to block
+                return null;
+            }
 
             var whiteRules = cspWhiteFilter.findRules(url, documentHost, thirdParty, adguard.RequestTypes.CSP);
 
-            var whitelisted = Object.create(null);
+            var rulesByDirective = Object.create(null);
 
-            // Collect whitelisted CSP directives
+            var i, rule;
+
+            // Collect whitelisted CSP rules
             if (whiteRules) {
                 for (i = 0; i < whiteRules.length; i++) {
                     rule = whiteRules[i];
                     if (!rule.cspDirective) { // Global whitelist rule
-                        return null;
+                        return [rule];
                     }
-                    whitelisted[rule.cspDirective] = true;
+                    rulesByDirective[rule.cspDirective] = rule;
                 }
             }
 
-            var cspRules = null;
+            var cspRules = [];
 
-            var blockingRules = cspBlockFilter.findRules(url, documentHost, thirdParty, adguard.RequestTypes.CSP);
-
-            // Collect blocking CSP directives which aren't in whitelist
-            if (blockingRules) {
-                for (i = 0; i < blockingRules.length; i++) {
-                    rule = blockingRules[i];
-                    if (rule.cspDirective in whitelisted) {
-                        continue;
+            // Collect whitelist and blocking CSP rules in one array
+            for (i = 0; i < blockingRules.length; i++) {
+                rule = blockingRules[i];
+                var cspDirective = rule.cspDirective;
+                if (cspDirective in rulesByDirective) {
+                    var existRule = rulesByDirective[cspDirective];
+                    if (existRule.whiteListRule) {
+                        // Append this whitelist rule
+                        rule = existRule;
+                    } else {
+                        // Skip rule with duplicated CSP directive
+                        rule = null;
                     }
-                    if (cspRules === null) {
-                        cspRules = [];
-                    }
+                }
+                if (rule) {
+                    rulesByDirective[cspDirective] = rule;
                     cspRules.push(rule);
                 }
             }

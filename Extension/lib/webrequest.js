@@ -138,6 +138,45 @@
     }
 
     /**
+     * Before the introduction of $CSP rules, we used another approach for modifying Content-Security-Policy header.
+     * We are looking for URL blocking rule that matches some request type and protocol (ws:, blob:, stun:)
+     *
+     * @param tab Tab
+     * @param frameUrl Frame URL
+     * @returns matching rule
+     */
+    function findLegacyCspRule(tab, frameUrl) {
+
+        var rule = null;
+        var applyCSP = false;
+
+        /**
+         * Websocket check.
+         * If 'ws://' request is blocked for not existing domain - it's blocked for all domains.
+         * Then we gonna limit frame sources to http to block src:'data/text' etc.
+         * More details in these issue:
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/344
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/440
+         */
+
+        // And we don't need this check on newer than 58 chromes anymore
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/572
+        if (!adguard.webRequest.webSocketSupported) {
+            rule = adguard.webRequestService.getRuleForRequest(tab, 'ws://adguardwebsocket.check', frameUrl, adguard.RequestTypes.WEBSOCKET);
+            applyCSP = adguard.webRequestService.isRequestBlockedByRule(rule);
+        }
+        if (!applyCSP) {
+            rule = adguard.webRequestService.getRuleForRequest(tab, 'blob:adguardblob.check', frameUrl, adguard.RequestTypes.SCRIPT);
+            applyCSP = adguard.webRequestService.isRequestBlockedByRule(rule);
+        }
+        if (!applyCSP) {
+            rule = adguard.webRequestService.getRuleForRequest(tab, 'stun:adguardwebrtc.check', frameUrl, adguard.RequestTypes.WEBRTC);
+        }
+
+        return rule;
+    }
+
+    /**
      * Modify CSP header to block WebSocket, prohibit data: and blob: frames and WebWorkers
      * @param requestDetails
      * @returns {{responseHeaders: *}}
@@ -156,41 +195,17 @@
         var responseHeaders = requestDetails.responseHeaders || [];
         var frameUrl = adguard.frames.getFrameUrl(tab, requestDetails.frameId);
 
-        var ruleForCSP = null;
-        var applyCSP = false;
         var cspHeaders = [];
 
-        /**
-         * Websocket check.
-         * If 'ws://' request is blocked for not existing domain - it's blocked for all domains.
-         * Then we gonna limit frame sources to http to block src:'data/text' etc.
-         * More details in these issue:
-         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/344
-         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/440
-         */
-
-        // And we don't need this check on newer than 58 chromes anymore
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/572
-        if (!adguard.webRequest.webSocketSupported) {
-            ruleForCSP = adguard.webRequestService.getRuleForRequest(tab, 'ws://adguardwebsocket.check', frameUrl, adguard.RequestTypes.WEBSOCKET);
-            applyCSP = adguard.webRequestService.isRequestBlockedByRule(ruleForCSP);
-        }
-        if (!applyCSP) {
-            ruleForCSP = adguard.webRequestService.getRuleForRequest(tab, 'blob:adguardblob.check', frameUrl, adguard.RequestTypes.SCRIPT);
-            applyCSP = adguard.webRequestService.isRequestBlockedByRule(ruleForCSP);
-        }
-        if (!applyCSP) {
-            ruleForCSP = adguard.webRequestService.getRuleForRequest(tab, 'stun:adguardwebrtc.check', frameUrl, adguard.RequestTypes.WEBRTC);
-            applyCSP = adguard.webRequestService.isRequestBlockedByRule(ruleForCSP);
-        }
-        if (applyCSP) {
+        var legacyCspRule = findLegacyCspRule(tab, frameUrl);
+        if (adguard.webRequestService.isRequestBlockedByRule(legacyCspRule)) {
             cspHeaders.push({
                 name: CSP_HEADER_NAME,
                 value: DEFAULT_BLOCK_CSP_DIRECTIVE
             });
         }
-        if (ruleForCSP) {
-            adguard.filteringLog.addEvent(tab, 'content-security-policy-check', frameUrl, adguard.RequestTypes.CSP, ruleForCSP);
+        if (legacyCspRule) {
+            adguard.filteringLog.addEvent(tab, 'content-security-policy-check', frameUrl, adguard.RequestTypes.CSP, legacyCspRule);
         }
 
         /**
@@ -201,10 +216,13 @@
         if (cspRules) {
             for (var i = 0; i < cspRules.length; i++) {
                 var rule = cspRules[i];
-                cspHeaders.push({
-                    name: CSP_HEADER_NAME,
-                    value: rule.cspDirective
-                });
+                // Don't forget: getCspRules returns all $csp rules, we must directly check that the rule is blocking.
+                if (adguard.webRequestService.isRequestBlockedByRule(rule)) {
+                    cspHeaders.push({
+                        name: CSP_HEADER_NAME,
+                        value: rule.cspDirective
+                    });
+                }
                 adguard.filteringLog.addEvent(tab, requestUrl, frameUrl, adguard.RequestTypes.CSP, rule);
             }
         }

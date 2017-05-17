@@ -101,13 +101,14 @@ QUnit.test("Important modifier rules", function (assert) {
 
 QUnit.test("CSP rules", function (assert) {
 
-    var rule = new adguard.rules.UrlFilterRule('||xpanama.net^$third-party,csp=connect-src \'none\',domain=~example.org|merriam-webster.com');
     var requestFilter = new adguard.RequestFilter();
-    requestFilter.addRule(rule);
+
+    var cspRule = new adguard.rules.UrlFilterRule('||xpanama.net^$third-party,csp=connect-src \'none\',domain=~example.org|merriam-webster.com');
+    requestFilter.addRule(cspRule);
 
     var rules = requestFilter.findCspRules('https://nop.xpanama.net/if.html?adflag=1&cb=kq4iOggNyP', 'https://www.merriam-webster.com/');
     assert.ok(rules.length === 1);
-    assert.equal(rules[0].ruleText, rule.ruleText);
+    assert.equal(rules[0].ruleText, cspRule.ruleText);
 
     rules = requestFilter.findCspRules('https://xpanama.net', 'https://example.org');
     assert.ok(!rules || rules.length === 0);
@@ -116,14 +117,18 @@ QUnit.test("CSP rules", function (assert) {
     var directiveWhiteListRule = new adguard.rules.UrlFilterRule('@@||xpanama.net^$csp=connect-src \'none\'');
     requestFilter.addRule(directiveWhiteListRule);
     rules = requestFilter.findCspRules('https://xpanama.net', 'https://www.merriam-webster.com/');
-    assert.ok(!rules || rules.length === 0);
-    requestFilter.removeRule(directiveWhiteListRule);
+    // Specific whitelist rule should be returned
+    assert.ok(rules.length === 1);
+    assert.equal(rules[0].ruleText, directiveWhiteListRule.ruleText);
 
     // Add global whitelist rule
     var globalWhiteListRule = new adguard.rules.UrlFilterRule('@@||xpanama.net^$csp');
     requestFilter.addRule(globalWhiteListRule);
     rules = requestFilter.findCspRules('https://xpanama.net', 'https://www.merriam-webster.com/');
-    assert.ok(!rules || rules.length === 0);
+    // Global whitelist rule should be returned
+    assert.ok(rules.length === 1);
+    assert.equal(rules[0].ruleText, globalWhiteListRule.ruleText);
+    requestFilter.removeRule(directiveWhiteListRule);
     requestFilter.removeRule(globalWhiteListRule);
 
     // Add whitelist rule, but with not matched directive
@@ -131,7 +136,14 @@ QUnit.test("CSP rules", function (assert) {
     requestFilter.addRule(directiveMissWhiteListRule);
     rules = requestFilter.findCspRules('https://xpanama.net', 'https://www.merriam-webster.com/');
     assert.ok(rules.length === 1);
-    assert.equal(rules[0].ruleText, rule.ruleText);
+    assert.equal(rules[0].ruleText, cspRule.ruleText);
+
+    // Add CSP rule with duplicated directive
+    var duplicateCspRule = new adguard.rules.UrlFilterRule('||xpanama.net^$third-party,csp=connect-src \'none\'');
+    requestFilter.addRule(duplicateCspRule);
+    rules = requestFilter.findCspRules('https://xpanama.net', 'https://www.merriam-webster.com/');
+    assert.ok(rules.length === 1);
+    assert.ok(rules[0].ruleText === cspRule.ruleText || rules[0].ruleText === duplicateCspRule.ruleText);
 
 });
 
