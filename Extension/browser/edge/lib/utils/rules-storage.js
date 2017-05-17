@@ -36,7 +36,7 @@ adguard.rulesStorageImpl = (function (adguard) {
 
             var read = function (path, callback) {
                 try {
-                    var value = adguard.localStorageImpl.getItem(path);
+                    var value = localStorage.getItem(path);
                     var lines = [];
                     if (value) {
                         lines = value.split(/[\r\n]+/);
@@ -50,7 +50,7 @@ adguard.rulesStorageImpl = (function (adguard) {
             var write = function (path, data, callback) {
                 var value = data.join('\n');
                 try {
-                    adguard.localStorageImpl.setItem(path, value);
+                    localStorage.setItem(path, value);
                     callback();
                 } catch (ex) {
                     callback(ex);
@@ -58,7 +58,7 @@ adguard.rulesStorageImpl = (function (adguard) {
             };
 
             var remove = function (path, successCallback) {
-                adguard.localStorageImpl.removeItem(path);
+                localStorage.removeItem(path);
                 successCallback();
             };
 
