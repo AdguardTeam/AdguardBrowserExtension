@@ -155,7 +155,6 @@
 
     /**
      * Execute scripts in a page context and cleanup itself when execution completes
-     * Expose this function for accessing
      * @param scripts Array of scripts to execute
      */
     var executeScripts = function (scripts) {
