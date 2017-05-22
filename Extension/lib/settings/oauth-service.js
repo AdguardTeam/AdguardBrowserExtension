@@ -27,7 +27,8 @@
 
     var getAccessTokens = function () {
         if (accessTokens === null) {
-            accessTokens = JSON.parse(adguard.localStorage.getItem(TOKEN_STORAGE_PROP)) || Object.create(null);
+            var tokens = adguard.localStorage.getItem(TOKEN_STORAGE_PROP);
+            accessTokens = tokens ? JSON.parse(tokens) : Object.create(null);
         }
         return accessTokens;
     };

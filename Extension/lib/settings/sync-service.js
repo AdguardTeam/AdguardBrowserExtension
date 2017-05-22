@@ -519,7 +519,8 @@
 
     function getLastSyncTimes() {
         if (lastSyncTimes === null) {
-            lastSyncTimes = JSON.parse(adguard.localStorage.getItem(SYNC_LAST_SYNC_TIME_PROP)) || Object.create(null);
+            var times = adguard.localStorage.getItem(SYNC_LAST_SYNC_TIME_PROP);
+            lastSyncTimes = times ? JSON.parse(times) : Object.create(null);
         }
         return lastSyncTimes;
     }
