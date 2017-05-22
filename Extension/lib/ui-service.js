@@ -69,6 +69,9 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         },
         'context_update_antibanner_filters': function () {
             checkFiltersUpdates();
+        },
+        'context_ads_has_been_removed_by_adguard': function () {
+            openIntegrationModeInfo();
         }
     };
 
@@ -522,6 +525,10 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             }
             openTab(thankyouUrl);
         });
+    };
+
+    var openIntegrationModeInfo = function () {
+        openTab('https://adguard.com/adguard-adblock-browser-extension/integration-mode.html#integrationMode');
     };
 
     var openExtensionStore = function () {
