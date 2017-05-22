@@ -219,6 +219,12 @@ QUnit.test("Content-specific URL blocking", function (assert) {
     assert.ok(rule.isFiltered("ws://test.ru/?ololo=ololo", false, RequestTypes.WEBSOCKET));
     assert.notOk(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.SUBDOCUMENT));
     assert.notOk(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.OTHER));
+    mask = "stun:test.ru$webrtc";
+    rule = new adguard.rules.UrlFilterRule(mask);
+    assert.ok(rule.isFiltered("stun:test.ru:19302/?ololo=ololo", false, RequestTypes.WEBRTC));
+    assert.notOk(rule.isFiltered("ws://test.ru/?ololo=ololo", false, RequestTypes.WEBSOCKET));
+    assert.notOk(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.SUBDOCUMENT));
+    assert.notOk(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.OTHER));
 });
 
 QUnit.test("UrlFilter class tests", function (assert) {

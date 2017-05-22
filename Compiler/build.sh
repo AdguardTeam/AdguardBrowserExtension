@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version="2.6.1"
+version="2.6.3"
 
 if [[ ! ("$#" == 1) ]] || [[ ! ($1 = dev) && ! ($1 = release) && ! ($1 = beta) ]] ; then
     echo "Pass a single argument as an environment value"
@@ -66,7 +66,7 @@ elif [ "$env" = beta ]; then
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox beta for AMO (WebExt)
-    options="$opts --browser=firefox_webext --pack=xpi --extensionId=adguardadblocker@adguard.com --remote-scripts=false"
+    options="--version=${version}beta --branch=$branch --dest=$destPath --browser=firefox_webext --pack=xpi --extensionId=adguardadblocker@adguard.com --remote-scripts=false"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox beta (WebExt)

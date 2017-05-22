@@ -77,6 +77,14 @@ var browser = window.browser || chrome;
 
         var tab = {tabId: details.tabId};
 
+        /**
+         * FF sends http instead of ws protocol at the http-listeners layer
+         * Although this is expected, as the Upgrade request is indeed an HTTP request, we use a chromium based approach in this case.
+         */
+        if (details.type === 'websocket' && details.url.indexOf('http') === 0) {
+            details.url = details.url.replace(/^http(s)?:/, 'ws$1:');
+        }
+
         //https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
         var requestDetails = {
             requestUrl: details.url,    //request url
@@ -189,8 +197,6 @@ var browser = window.browser || chrome;
      * Gets URL of a file that belongs to our extension
      */
     adguard.getURL = browser.extension.getURL;
-
-    adguard.i18n = browser.i18n;
 
     adguard.backgroundPage = {};
     adguard.backgroundPage.getWindow = function () {
@@ -325,6 +331,9 @@ var browser = window.browser || chrome;
         },
         setPopup: function () {
             // Do nothing. Popup is already installed in manifest file
+        },
+        resize: function () {
+            // Do nothing
         },
         close: function () {
             // Do nothing

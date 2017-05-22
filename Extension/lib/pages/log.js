@@ -56,13 +56,44 @@ var StringUtils = {
 
 var UrlUtils = {
 
-	getDomainName: function (url) {
-		if (!this.linkHelper) {
-			this.linkHelper = document.createElement('a');
-		}
-		this.linkHelper.href = url;
-		var host = this.linkHelper.hostname;
-		return StringUtils.startWith(host, "www.") ? host.substring(4) : host;
+	getProtocol: function (url) {
+        var index = url.indexOf('//');
+        if (index >= 0) {
+            return url.substring(0, index);
+        } else {
+            // It's non hierarchical structured URL (e.g. stun: or turn:)
+            index = url.indexOf(':');
+            if (index >= 0) {
+                return url.substring(0, index);
+            }
+        }
+        return '';
+    },
+
+    /**
+	 * Removes protocol from URL
+     */
+    getUrlWithoutScheme: function (url) {
+        var index = url.indexOf('//');
+        if (index >= 0) {
+            url = url.substring(index + 2);
+        } else {
+            // It's non hierarchical structured URL (e.g. stun: or turn:)
+            index = url.indexOf(':');
+            if (index >= 0) {
+                url = url.substring(index + 1);
+            }
+        }
+        return StringUtils.startWith(url, 'www.') ? url.substring(4) : url;
+    },
+
+    /**
+	 * Checks the given URL whether is hierarchical or not
+     * @param url
+     * @returns {boolean}
+     */
+    isHierarchicUrl: function(url){
+        return url.indexOf('//') !== -1;
 	}
 };
 
@@ -77,7 +108,8 @@ var UrlFilterRule = {
 	DOMAIN_OPTION: "domain",
 	MATCH_CASE_OPTION: "match-case",
 	THIRD_PARTY_OPTION: "third-party",
-	OPTIONS_DELIMITER: "$"
+	OPTIONS_DELIMITER: "$",
+    CSP_OPTION: "csp"
 };
 
 PageController.prototype = {
@@ -476,12 +508,12 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 	template.find('[attr-text="requestUrl"]').text(filteringEvent.requestUrl);
 	template.find('[attr-text="requestType"]').text(RequestWizard.getRequestType(filteringEvent.requestType));
 	template.find('[attr-text="frameDomain"]').text(RequestWizard.getSource(filteringEvent.frameDomain));
-	if (!filteringEvent.frameDomain || filteringEvent.frameDomain === null) {
+	if (!filteringEvent.frameDomain) {
 		template.find('[attr-text="frameDomain"]').closest('.adg-modal-window-locking-info-left-row').hide();
 	}
 
 	if (requestRule) {
-		if (requestRule.filterId != AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+		if (requestRule.filterId !== AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
 			template.find('[attr-text="requestRule"]').text(requestRule.ruleText);
 		} else {
 			template.find('[attr-text="requestRule"]').closest('.adg-modal-window-locking-info-left-row').hide();
@@ -492,7 +524,7 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 		template.find('[attr-text="requestRuleFilter"]').closest('.adg-modal-window-locking-info-left-row').hide();
 	}
 
-	if (filteringEvent.requestType == "IMAGE") {
+	if (filteringEvent.requestType === "IMAGE") {
 
 		template.removeClass('compact-view');
 
@@ -555,9 +587,9 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 	if (!requestRule) {
 		blockRequestButton.removeClass('hidden');
 	} else {
-		if (requestRule.filterId == AntiBannerFiltersId.USER_FILTER_ID) {
+		if (requestRule.filterId === AntiBannerFiltersId.USER_FILTER_ID) {
 			removeUserFilterRuleButton.removeClass('hidden');
-		} else if (requestRule.filterId == AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+		} else if (requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
 			removeWhiteListDomainButton.removeClass('hidden');
 		} else if (!requestRule.whiteListRule) {
 			unblockRequestButton.removeClass('hidden');
@@ -571,22 +603,25 @@ RequestWizard.prototype.showCreateBlockRuleModal = function (frameInfo, filterin
 
 	var template = this.createBlockRuleTemplate.clone();
 
-	var patterns = RequestWizard.splitToPatterns(filteringEvent.requestUrl, UrlFilterRule.MASK_START_URL).reverse();
+    var patterns = RequestWizard.splitToPatterns(filteringEvent, false).reverse();
 
-	this._initCreateRuleDialog(frameInfo, template, patterns, filteringEvent.frameDomain, filteringEvent.requestThirdParty);
+	this._initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
 };
 
 RequestWizard.prototype.showCreateExceptionRuleModal = function (frameInfo, filteringEvent) {
 
 	var template = this.createExceptionRuleTemplate.clone();
 
-	var prefix = FilterRule.MASK_WHITE_LIST + UrlFilterRule.MASK_START_URL;
-	var patterns = RequestWizard.splitToPatterns(filteringEvent.requestUrl, prefix).reverse();
+	var patterns = RequestWizard.splitToPatterns(filteringEvent, true).reverse();
 
-	this._initCreateRuleDialog(frameInfo, template, patterns, filteringEvent.frameDomain, filteringEvent.requestThirdParty);
+	this._initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
 };
 
-RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, patterns, urlDomain, isThirdPartyRequest) {
+RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, patterns, filteringEvent) {
+
+	var frameDomain = filteringEvent.frameDomain;
+	var isThirdPartyRequest = filteringEvent.requestThirdParty;
+
 	var rulePatternsEl = template.find('#rulePatterns');
 	for (var i = 0; i < patterns.length; i++) {
 		var patternEl = $('<div>', {'class': 'radio radio-patterns'});
@@ -607,7 +642,7 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 		patternEl.append(input);
 		patternEl.append(label);
 		rulePatternsEl.append(patternEl);
-		if (i == 0) {
+		if (i === 0) {
 			input.attr('checked', 'checked');
 		}
 	}
@@ -620,7 +655,7 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 
 	ruleDomainCheckbox.attr('id', 'ruleDomain');
 	ruleDomainCheckbox.parent().find('label').attr('for', 'ruleDomain');
-	if (!urlDomain || urlDomain == null) {
+	if (!frameDomain) {
 		ruleDomainCheckbox.closest('.checkbox').hide();
 	}
 
@@ -641,7 +676,17 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 		var matchCase = ruleMatchCaseCheckbox.is(':checked');
 		var thirdParty = ruleThirdPartyCheckbox.is(':checked');
 
-		var ruleText = RequestWizard.createRuleFromParams(urlPattern, urlDomain, permitDomain, matchCase, thirdParty);
+		var domain = permitDomain ? frameDomain : null;
+
+		var mandatoryOptions = null;
+
+		// Deal with csp rule
+        var requestRule = filteringEvent.requestRule;
+        if (requestRule && requestRule.cspRule) {
+			mandatoryOptions = [UrlFilterRule.CSP_OPTION];
+        }
+
+		var ruleText = RequestWizard.createRuleFromParams(urlPattern, domain, matchCase, thirdParty, mandatoryOptions);
 		ruleTextEl.val(ruleText);
 	}
 
@@ -671,15 +716,29 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 
 RequestWizard.PATTERNS_COUNT = 2; //exclude domain and full request url
 
-RequestWizard.splitToPatterns = function (requestUrl, prefix) {
+RequestWizard.splitToPatterns = function (filteringEvent, whitelist) {
 
-	var domain = UrlUtils.getDomainName(requestUrl);
-	var patterns = [];//domain pattern
+    var requestUrl = filteringEvent.requestUrl;
+	var domain = filteringEvent.requestDomain;
+
+	var hierarchicUrl = UrlUtils.isHierarchicUrl(requestUrl);
+    var protocol = UrlUtils.getProtocol(requestUrl);
+
+    var prefix;
+    if (hierarchicUrl) {
+        prefix = UrlFilterRule.MASK_START_URL; // Covers default protocols: http, ws
+    }else {
+        prefix = protocol + ':'; // Covers non-default protocols: stun, turn
+	}
+    if (whitelist) {
+        prefix = FilterRule.MASK_WHITE_LIST + prefix;
+    }
+
+	var patterns = [];
 
 	var relative = StringUtils.substringAfter(requestUrl, domain + '/');
 
 	var path = StringUtils.substringBefore(relative, '?');
-	//var query = StringUtils.substringAfter(relative, '?');
 
 	if (path) {
 
@@ -701,24 +760,23 @@ RequestWizard.splitToPatterns = function (requestUrl, prefix) {
 	patterns.unshift(prefix + domain + UrlFilterRule.MASK_SEPARATOR);
 
 	//push full url pattern
-	var url = StringUtils.substringAfter(requestUrl, '//');
-	if (StringUtils.startWith(url, 'www.')) {
-		url = url.substring(4);
-	}
-	if (patterns.indexOf(prefix + url) < 0) {
-		patterns.push(prefix + url);
-	}
+	var url = UrlUtils.getUrlWithoutScheme(requestUrl);
+    if (domain + '/' !== url) { // Don't duplicate: ||example.com/ and ||example.com^
+        if (patterns.indexOf(prefix + url) < 0) {
+            patterns.push(prefix + url);
+        }
+    }
 
 	return patterns;
 };
 
-RequestWizard.createRuleFromParams = function (urlPattern, urlDomain, permitDomain, matchCase, thirdParty) {
+RequestWizard.createRuleFromParams = function (urlPattern, urlDomain, matchCase, thirdParty, mandatoryOptions) {
 
 	var ruleText = urlPattern;
 	var options = [];
 
 	//add domain option
-	if (permitDomain && urlDomain) {
+	if (urlDomain) {
 		options.push(UrlFilterRule.DOMAIN_OPTION + '=' + urlDomain);
 	}
 	//add match case option
@@ -729,6 +787,9 @@ RequestWizard.createRuleFromParams = function (urlPattern, urlDomain, permitDoma
 	if (thirdParty) {
 		options.push(UrlFilterRule.THIRD_PARTY_OPTION);
 	}
+    if (mandatoryOptions) {
+		options = options.concat(mandatoryOptions);
+    }
 	if (options.length > 0) {
 		ruleText += UrlFilterRule.OPTIONS_DELIMITER + options.join(',');
 	}
@@ -756,6 +817,10 @@ RequestWizard.getRequestType = function (requestType) {
 			return 'Font';
 		case 'WEBSOCKET':
 			return 'WebSocket';
+		case 'WEBRTC':
+			return 'WebRTC';
+        case 'CSP':
+            return 'CSP';
 		case 'OTHER':
 			return 'Other';
 	}

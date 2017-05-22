@@ -43,6 +43,10 @@
         // JS injection rules: http://adguard.com/en/filterrules.html#javascriptInjection
         this.scriptFilter = new adguard.rules.ScriptFilter();
 
+        // Filter that applies CSP rules
+        // CSP rules: TODO: add link
+        this.cspFilter = new adguard.rules.CspFilter();
+
         // Rules count (includes all types of rules)
         this.rulesCount = 0;
 
@@ -85,10 +89,14 @@
                 return;
             }
             if (rule instanceof adguard.rules.UrlFilterRule) {
-                if (rule.whiteListRule) {
-                    this.urlWhiteFilter.addRule(rule);
+                if (rule.cspRule) {
+                    this.cspFilter.addRule(rule);
                 } else {
-                    this.urlBlockingFilter.addRule(rule);
+                    if (rule.whiteListRule) {
+                        this.urlWhiteFilter.addRule(rule);
+                    } else {
+                        this.urlBlockingFilter.addRule(rule);
+                    }
                 }
             } else if (rule instanceof adguard.rules.CssFilterRule) {
                 this.cssFilter.addRule(rule);
@@ -111,10 +119,14 @@
                 return;
             }
             if (rule instanceof adguard.rules.UrlFilterRule) {
-                if (rule.whiteListRule) {
-                    this.urlWhiteFilter.removeRule(rule);
+                if (rule.cspRule) {
+                    this.cspFilter.removeRule(rule);
                 } else {
-                    this.urlBlockingFilter.removeRule(rule);
+                    if (rule.whiteListRule) {
+                        this.urlWhiteFilter.removeRule(rule);
+                    } else {
+                        this.urlBlockingFilter.removeRule(rule);
+                    }
                 }
             } else if (rule instanceof adguard.rules.CssFilterRule) {
                 this.cssFilter.removeRule(rule);
@@ -135,6 +147,7 @@
             result = result.concat(this.urlBlockingFilter.getRules());
             result = result.concat(this.cssFilter.getRules());
             result = result.concat(this.scriptFilter.getRules());
+            result = result.concat(this.cspFilter.getRules());
 
             return result;
         },
@@ -149,7 +162,7 @@
          * @returns CSS ready to be injected
          */
         getSelectorsForUrl: function (url, genericHide) {
-            var domain = adguard.utils.url.getDomainName(url);
+            var domain = adguard.utils.url.getHost(url);
             if (adguard.prefs.collectHitsCountEnabled && adguard.settings.collectHitsCount()) {
                 // If user has enabled "Send statistics for ad filters usage" option we build CSS with enabled hits stats.
                 // In this case style contains "content" with filter identifier and rule text.
@@ -171,7 +184,7 @@
          * @returns CSS ready to be injected.
          */
         getInjectedSelectorsForUrl: function (url, genericHide) {
-            var domain = adguard.utils.url.getDomainName(url);
+            var domain = adguard.utils.url.getHost(url);
             return this.cssFilter.buildInjectCss(domain, genericHide);
         },
 
@@ -183,7 +196,7 @@
          * @returns Javascript
          */
         getScriptsForUrl: function (url) {
-            var domain = adguard.utils.url.toPunyCode(adguard.utils.url.getDomainName(url));
+            var domain = adguard.utils.url.getHost(url);
             return this.scriptFilter.buildScript(domain);
         },
 
@@ -248,6 +261,20 @@
 
             this._saveResultToCache(requestUrl, rule, documentHost, requestType);
             return rule;
+        },
+
+        /**
+         * Searches for CSP rules for the specified request
+         * @param requestUrl Request URL
+         * @param documentUrl Document URL
+         * @returns Collection of CSP rules for applying to the request or null
+         */
+        findCspRules: function (requestUrl, documentUrl) {
+
+            var documentHost = adguard.utils.url.getHost(documentUrl);
+            var thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
+
+            return this.cspFilter.findCspRules(requestUrl, documentHost, thirdParty);
         },
 
         /**

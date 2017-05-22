@@ -1,8 +1,8 @@
-! Checksum: 6V9hmes55JJaAi5khGZnRQ
+! Checksum: d2OgGo2LPxV4U6Bt5WXDXg
 ! Title: Dutch filter
 ! Description: EasyList Dutch + Adguard Dutch filter. Filter list that specifically removes adverts on Dutch language websites.
-! Version: 1.0.9.23
-! TimeUpdated: 2017-03-24T20:01:27.532+04:00
+! Version: 1.0.9.26
+! TimeUpdated: 2017-05-02T15:01:15.882+04:00
 ! Expires: 2 days (update frequency)
 ! Title: Adguard Dutch Filter.
 !
@@ -1318,8 +1318,11 @@ tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
 !
 ! These rules are against anti-adblock scripts
 !
-! ! Prevent AdFender detection
+! Prevent AdFender detection
 @@/ad_bomb/*$image,domain=computerworld.nl|webwereld.nl
+! https://forum.adguard.com/index.php?threads/telegraaf-nl-antiadblock-warning.21364/
+@@||telegraaf.tcdn.nl/javascript/ads/*$domain=telegraaf.nl,third-party
+telegraaf.nl#%#window.canRunAds = true;
 ! https://forum.adguard.com/index.php?threads/11357/
 @@||static.buienradar.nl/resources/js/advertisement.js
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2160
@@ -1332,7 +1335,8 @@ biernet.nl#@#.afs_ads
 !
 ! Extended CSS rules
 !
-gelderlander.nl##.page-content > .theme-default[-ext-has='div.ad']s
+ad.nl##.tile[-ext-has=">.ankeiler--advertisement"]
+gelderlander.nl##.page-content > .theme-default[-ext-has='div.ad']
 klusidee.nl##tr.table-row[-ext-has=".td-ad"]
 !---------------------------------------------------------------------------!
 !-------------- General element hiding rules -------------------------------!
@@ -1374,6 +1378,7 @@ omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3
 !--------------------------------------------------------!
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
+ad.nl##.ankeiler--advertisement
 ||iframe.gsminfo.nl/*/populair-beknopt^$domain=allaboutphones.nl
 allaboutphones.nl##.ad-container
 autoweek.nl##.page-banner

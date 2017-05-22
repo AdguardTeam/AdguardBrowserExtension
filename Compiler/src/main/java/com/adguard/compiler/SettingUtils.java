@@ -55,13 +55,12 @@ public class SettingUtils {
     private static final Pattern CONTENT_SCRIPTS_DOCUMENT_START_PATTERN = Pattern.compile("\"js\":\\s+\\[([^\\]]+)\\].+\"run_at\":\\s+\"document_start\"", Pattern.MULTILINE | Pattern.DOTALL);
     private static final Pattern CONTENT_SCRIPTS_DOCUMENT_END_PATTERN = Pattern.compile("\"document_start\".+\"js\":\\s+\\[([^\\]]+)\\].+\"run_at\":\\s+\"document_end\"", Pattern.MULTILINE | Pattern.DOTALL);
 
-    public static void updateManifestFile(File dest, Browser browser, String version, String extensionId, String updateUrl, String extensionNamePostfix, Branch branch) throws IOException {
+    public static void updateManifestFile(File dest, Browser browser, String version, String extensionId, String updateUrl, String extensionNamePostfix) throws IOException {
 
         switch (browser) {
             case CHROMIUM:
             case EDGE:
                 updateManifestJsonFile(dest, version, extensionId, updateUrl);
-                updateCompatibilities(dest, browser, branch);
                 break;
             case SAFARI:
                 updateInfoPlistFile(dest, version, extensionId, updateUrl, extensionNamePostfix);
@@ -74,20 +73,6 @@ public class SettingUtils {
                 updateManifestJsonFile(webExtensionDest, version, extensionId, updateUrl);
                 updateInstallRdfFile(dest, version, extensionId, updateUrl);
                 break;
-        }
-    }
-
-    /**
-     * Compatibility workarounds
-     */
-    private static void updateCompatibilities(File dest, Browser browser, Branch branch) throws IOException {
-
-        if ((browser == Browser.CHROMIUM || browser == Browser.EDGE) && branch != Branch.DEV) {
-            // wss scheme is supported only from 58 version, which isn't yet released.
-            File manifestFile = new File(dest, "manifest.json");
-            String content = FileUtils.readFileToString(manifestFile, "utf-8").trim();
-            content = content.replaceAll("\"wss?://\\*/\\*\",\\s+", "");
-            FileUtils.writeStringToFile(manifestFile, content);
         }
     }
 

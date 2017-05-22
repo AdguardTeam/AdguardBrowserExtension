@@ -23,6 +23,17 @@
         return;
     }
 
+    /**
+     * `contentPage` may be undefined on the extension startup in FF browser.
+     *
+     * Different browsers have different strategies of the content scripts injections on extension startup.
+     * For example, FF injects content scripts in already opened tabs, but Chrome doesn't do it.
+     * In the case of the FF browser, content scripts with the `document_start` option won't injected into opened tabs, so we have to directly check this case.
+     */
+    if (typeof contentPage === 'undefined') {
+        return;
+    }
+
     var adguardAssistant;
 
     //save right-clicked element for assistant

@@ -40,40 +40,15 @@
             return global.punycode.toASCII(domain);
         },
 
-        urlToPunyCode: function (url) {
-
-            if (!url || /^[\x00-\x7F]+$/.test(url)) {
-                return url;
-            }
-
-            var i;
-            var startsWith = ["http://www.", "https://www.", "http://", "https://"];
-            var startIndex = -1;
-
-            for (i = 0; i < startsWith.length; i++) {
-                var start = startsWith[i];
-                if (api.strings.startWith(url, start)) {
-                    startIndex = start.length;
-                    break;
-                }
-            }
-
-            if (startIndex == -1) {
-                return url;
-            }
-
-            var symbolIndex = url.indexOf("/", startIndex);
-            var domain = symbolIndex == -1 ? url.substring(startIndex) : url.substring(startIndex, symbolIndex);
-            return api.strings.replaceAll(url, domain, this.toPunyCode(domain));
-        },
-
         isThirdPartyRequest: function (requestUrl, referrer) {
             var domainName = this._get2NdLevelDomainName(requestUrl);
             var refDomainName = this._get2NdLevelDomainName(referrer);
             return domainName != refDomainName;
         },
 
-        //Get host name
+        /**
+         * Retrieves hostname from URL
+         */
         getHost: function (url) {
 
             if (!url) {
@@ -81,9 +56,19 @@
             }
 
             var firstIdx = url.indexOf("//");
-            if (firstIdx == -1) {
-                return null;
+            if (firstIdx === -1) {
+                /**
+                 * It's non hierarchical structured URL (e.g. stun: or turn:)
+                 * https://tools.ietf.org/html/rfc4395#section-2.2
+                 * https://tools.ietf.org/html/draft-nandakumar-rtcweb-stun-uri-08#appendix-B
+                 */
+                firstIdx = url.indexOf(":");
+                if (firstIdx === -1) {
+                    return null;
+                }
+                firstIdx = firstIdx - 1;
             }
+
             var nextSlashIdx = url.indexOf("/", firstIdx + 2);
             var startParamsIdx = url.indexOf("?", firstIdx + 2);
 
@@ -92,10 +77,10 @@
                 lastIdx = startParamsIdx;
             }
 
-            var host = lastIdx == -1 ? url.substring(firstIdx + 2) : url.substring(firstIdx + 2, lastIdx);
+            var host = lastIdx === -1 ? url.substring(firstIdx + 2) : url.substring(firstIdx + 2, lastIdx);
 
             var portIndex = host.indexOf(":");
-            return portIndex == -1 ? host : host.substring(0, portIndex);
+            return portIndex === -1 ? host : host.substring(0, portIndex);
         },
 
         getDomainName: function (url) {

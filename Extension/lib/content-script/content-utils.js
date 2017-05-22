@@ -27,6 +27,13 @@
         return;
     }
 
+    /**
+     * On extension startup contentPage is undefined
+     */
+    if (typeof contentPage === 'undefined') {
+        return;
+    }
+
     var MAIN_DIV_STYLE = "position: fixed !important;top: 10px !important;right: 0px !important;z-index: 9999999999 !important;" +
         "width: 390px !important;padding: 30px 20px 30px 36px !important;border-right: 6px solid #409e56 !important;-webkit-border-radius: 9px 0 0 9px !important;border-radius: 9px 0 0 9px !important;" +
         "background: rgba(0, 0, 0, 0.93) !important;color: #fff !important;text-align: left !important;";

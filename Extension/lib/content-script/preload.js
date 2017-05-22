@@ -79,11 +79,12 @@
      * Initializing content script
      */
     var init = function () {
-        initWebSocketWrapper();
 
         if (!isHtml()) {
             return;
         }
+
+        initRequestWrappers();
 
         // We use shadow DOM when it's available to minimize our impact on web page DOM tree.
         // According to ABP issue #452, creating a shadow root breaks running CSS transitions.
@@ -126,54 +127,134 @@
     };
 
     /**
-     * Overrides window.WebSocket running the function from websocket.js
-     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/203
+     * Uses in `initRequestWrappers` method.
+     * We insert wrapper's code into http/https documents and dynamically created frames.
+     * The last one is due to the circumvention with using iframe's contentWindow.
      */
-    /* global initPageMessageListener, overrideWebSocket */
-    var initWebSocketWrapper = function () {
-        // This is chrome-specific feature for blocking WebSocket connections
-        // overrideWebSocket function is not defined in case of other browsers
-        if (typeof overrideWebSocket !== 'function') {
-            return;
-        }
+    var isHttpOrAboutPage = function () {
+        var protocol = window.location.protocol;
+        return protocol.indexOf('http') === 0 || protocol.indexOf('about:') === 0;
+    };
 
-        // Only for dynamically created frames and http/https documents.
-        if (!isHtml() &&
-            window.location.href !== "about:blank") {
-            return;
-        }
+    /**
+     * Try to keep DOM clean: let script removes itself when execution completes
+     * @returns {string}
+     */
+    var cleanupCurrentScriptToString = function () {
 
-        // WebSockets are broken in old versions of chrome
-        // and we don't need this hack in new version cause then websocket traffic is intercepted
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/273
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/572
-        var userAgent = navigator.userAgent.toLowerCase();
-        var cIndex = userAgent.indexOf('chrome/');
-        if (cIndex > 0) {
-            var version = userAgent.substring(cIndex + 7);
-            var versionNumber = Number.parseInt(version.substring(0, version.indexOf('.')));
-            if (versionNumber < 47 || versionNumber > 57) {
-                return;
+        var cleanup = function () {
+            var current = document.currentScript;
+            var parent = current && current.parentNode;
+            if (parent) {
+                parent.removeChild(current);
             }
-        }
+        };
 
-        if (userAgent.indexOf('firefox') >= 0) {
-            // Explicit check, we must not go further in case of Firefox
-            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/379
+        return '(' + cleanup.toString() + ')();';
+    };
+
+    /**
+     * Execute scripts in a page context and cleanup itself when execution completes
+     * @param scripts Array of scripts to execute
+     */
+    var executeScripts = function (scripts) {
+
+        if (!scripts || scripts.length === 0) {
             return;
         }
 
-        initPageMessageListener();
-
-        var content = "try {\n";
-        content += '(' + overrideWebSocket.toString() + ')();';
-        content += "\n} catch (ex) { console.error('Error executing AG js: ' + ex); }";
+        // Wraps with try catch and appends cleanup
+        scripts.unshift("try {");
+        scripts.push("} catch (ex) { console.error('Error executing AG js: ' + ex); }");
+        scripts.push(cleanupCurrentScriptToString());
 
         var script = document.createElement("script");
         script.setAttribute("type", "text/javascript");
-        script.textContent = content;
-
+        script.textContent = scripts.join("\r\n");
         (document.head || document.documentElement).appendChild(script);
+    };
+
+    /**
+     * We should override WebSocket constructor in the following browsers: Chrome (between 47 and 57 versions), Edge, YaBrowser, Opera and Safari (old versions)
+     * Firefox and Safari (9 or higher) can be omitted because they allow us to inspect and block WS requests.
+     * This function simply checks the conditions above.
+     * @returns true if WebSocket constructor should be overridden
+     */
+    var shouldOverrideWebSocket = function () {
+
+        // Checks for using of Content Blocker API for Safari 9+
+        if (contentPage.isSafari) {
+            return !contentPage.isSafariContentBlockerEnabled;
+        }
+
+        var userAgent = navigator.userAgent.toLowerCase();
+        var isFirefox = userAgent.indexOf('firefox') >= 0;
+
+        // Explicit check, we must not go further in case of Firefox
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/379
+        if (isFirefox) {
+            return false;
+        }
+
+        // Keep in mind that the following browsers (that support WebExt-API) Chrome, Edge, YaBrowser and Opera contain `Chrome/<version>` in their User-Agent string.
+        var cIndex = userAgent.indexOf('chrome/');
+        if (cIndex < 0) {
+            return false;
+        }
+
+        var version = userAgent.substring(cIndex + 7);
+        var versionNumber = Number.parseInt(version.substring(0, version.indexOf('.')));
+
+        // WebSockets are broken in old versions of chrome and we don't need this hack in new version cause then websocket traffic is intercepted
+        return versionNumber >= 47 && versionNumber <= 57;
+    };
+
+    /**
+     * We should override RTCPeerConnection in all browsers, except the case of using of Content Blocker API for Safari 9+
+     * @returns true if RTCPeerConnection should be overridden
+     */
+    var shouldOverrideWebRTC = function () {
+
+        // Checks for using of Content Blocker API for Safari 9+
+        if (contentPage.isSafari) {
+            return !contentPage.isSafariContentBlockerEnabled;
+        }
+
+        return true;
+    };
+
+    /**
+     * Overrides window.WebSocket and window.RTCPeerConnection running the function from wrappers.js
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/203
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/588
+     */
+    /* global injectPageScriptAPI, initPageMessageListener */
+    var initRequestWrappers = function () {
+
+        // Only for dynamically created frames and http/https documents.
+        if (!isHttpOrAboutPage()) {
+            return;
+        }
+
+        /**
+         *
+         * The code below is supposed to be used in WebExt extensions.
+         * This code overrides WebSocket constructor (except for newer Chrome and FF) and RTCPeerConnection constructor, so that we could inspect & block them.
+         *
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/273
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/572
+         */
+        var overrideWebSocket = shouldOverrideWebSocket();
+        var overrideWebRTC = shouldOverrideWebRTC();
+
+        if (overrideWebSocket || overrideWebRTC) {
+
+            initPageMessageListener();
+
+            var wrapperScriptName = 'wrapper-script-' + Math.random().toString().substr(2);
+            var script = "(" + injectPageScriptAPI.toString() + ")('" + wrapperScriptName + "', " + overrideWebSocket + ", " + overrideWebRTC + ");";
+            executeScripts([script]);
+        }
     };
 
     /**
@@ -544,22 +625,7 @@
          * JS injections are created by JS filtering rules:
          * http://adguard.com/en/filterrules.html#javascriptInjection
          */
-        var script = document.createElement("script");
-        script.setAttribute("type", "text/javascript");
-        scriptsToApply.unshift("try {");
-        scriptsToApply.push("} catch (ex) { console.error('Error executing AG js: ' + ex); }");
-
-        // Try to keep DOM clean: let script removes itself when execution completes
-        scriptsToApply.push('(function () {\r\n' +
-            '   var current = document.currentScript;\r\n' +
-            '   var parent = current && current.parentNode;\r\n' +
-            '   if (parent) {\r\n' +
-            '       parent.removeChild(current);\r\n' +
-            '   }\r\n' +
-            '})();');
-
-        script.textContent = scriptsToApply.join("\r\n");
-        (document.head || document.documentElement).appendChild(script);
+        executeScripts(scriptsToApply);
     };
 
     /**

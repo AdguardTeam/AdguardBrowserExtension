@@ -39,7 +39,9 @@ adguard.RequestTypes = {
     MEDIA: "MEDIA",
     FONT: "FONT",
     WEBSOCKET: "WEBSOCKET",
+    WEBRTC: "WEBRTC",
     OTHER: "OTHER",
+    CSP: "CSP",
 
     /**
      * Synthetic request type for requests detected as pop-ups
@@ -525,8 +527,8 @@ adguard.utils = (function () {
             deferred.resolve(arg);
         };
 
-        var reject = function () {
-            deferred.reject();
+        var reject = function (arg) {
+            deferred.reject(arg);
         };
 
         var then = function (onSuccess, onReject) {

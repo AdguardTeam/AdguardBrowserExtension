@@ -36,7 +36,7 @@
         if (values) {
             for (var key in values) {
                 if (values.hasOwnProperty(key)) {
-                    localStorage[key] = values[key];
+                    adguard.localStorage.setItem(key, values[key]);
                 }
             }
         }
@@ -53,9 +53,9 @@
         if (values) {
             var item = {};
             item[values.key] = values.value;
-            browser.storage.local.set(item, function () {
-                if (browser.runtime.lastError) {
-                    adguard.console.error('Adguard: Error while migrate filter "{0}" rules, {1}', values.key, browser.runtime.lastError);
+            adguard.rulesStorageImpl.write(values.key, values.value, function (ex) {
+                if (ex) {
+                    adguard.console.error('Adguard: Error while migrate filter "{0}" rules, {1}', values.key, ex);
                 } else {
                     adguard.console.info('Adguard: Filter "{0}" rules have been migrated', values.key);
                 }
@@ -112,10 +112,12 @@
         migrateNext();
     }
 
-    /**
-     * Migrate extension settings. Request to listener in bootstrap.js which is allowed in EmbeddedWebExtensions.
-     * https://blog.mozilla.org/addons/2017/01/20/migrating-to-webextensions-port-your-stored-data/
-     */
-    migrateAll(adguard.initialize);
+    adguard.localStorage.init(function () {
+        /**
+         * Migrate extension settings. Request to listener in bootstrap.js which is allowed in EmbeddedWebExtensions.
+         * https://blog.mozilla.org/addons/2017/01/20/migrating-to-webextensions-port-your-stored-data/
+         */
+        migrateAll(adguard.initialize);
+    });
 
 })(adguard);
