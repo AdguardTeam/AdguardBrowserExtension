@@ -154,6 +154,27 @@
     };
 
     /**
+     * Execute scripts in a page context and cleanup itself when execution completes
+     * @param scripts Array of scripts to execute
+     */
+    var executeScripts = function (scripts) {
+
+        if (!scripts || scripts.length === 0) {
+            return;
+        }
+
+        // Wraps with try catch and appends cleanup
+        scripts.unshift("try {");
+        scripts.push("} catch (ex) { console.error('Error executing AG js: ' + ex); }");
+        scripts.push(cleanupCurrentScriptToString());
+
+        var script = document.createElement("script");
+        script.setAttribute("type", "text/javascript");
+        script.textContent = scripts.join("\r\n");
+        (document.head || document.documentElement).appendChild(script);
+    };
+
+    /**
      * We should override WebSocket constructor in the following browsers: Chrome (between 47 and 57 versions), Edge, YaBrowser, Opera and Safari (old versions)
      * Firefox and Safari (9 or higher) can be omitted because they allow us to inspect and block WS requests.
      * This function simply checks the conditions above.
@@ -207,15 +228,13 @@
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/203
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/588
      */
-    /* global initPageMessageListener, overrideWebSocket, overrideWebRTC, injectPageScriptAPI */
+    /* global injectPageScriptAPI, initPageMessageListener */
     var initRequestWrappers = function () {
 
         // Only for dynamically created frames and http/https documents.
         if (!isHttpOrAboutPage()) {
             return;
         }
-
-        var scripts = [];
 
         /**
          *
@@ -225,39 +244,17 @@
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/273
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/572
          */
-        if (shouldOverrideWebSocket()) {
-            scripts.push("(" + overrideWebSocket.toString() + ")(api);");
+        var overrideWebSocket = shouldOverrideWebSocket();
+        var overrideWebRTC = shouldOverrideWebRTC();
+
+        if (overrideWebSocket || overrideWebRTC) {
+
+            initPageMessageListener();
+
+            var wrapperScriptName = 'wrapper-script-' + Math.random().toString().substr(2);
+            var script = "(" + injectPageScriptAPI.toString() + ")('" + wrapperScriptName + "', " + overrideWebSocket + ", " + overrideWebRTC + ");";
+            executeScripts([script]);
         }
-
-        if (shouldOverrideWebRTC()) {
-            scripts.push("(" + overrideWebRTC.toString() + ")(api);");
-        }
-
-        if (scripts.length === 0) {
-            return;
-        }
-
-        initPageMessageListener();
-
-        var content = [];
-        content.push("(function(){");
-        content.push("var api = {};");
-        content.push("try {");
-        content.push("(" + injectPageScriptAPI.toString() + ")(api);");
-        content = content.concat(scripts);
-        content.push("} catch (ex) { console.error('Error executing AG js: ' + ex); }");
-        content.push(cleanupCurrentScriptToString());
-        content.push("})();");
-
-        var script = document.createElement("script");
-        script.setAttribute("type", "text/javascript");
-        script.textContent = content.join("\r\n");
-
-        // Check location directly before the script injection
-        if (!isHttpOrAboutPage()) {
-            return;
-        }
-        (document.head || document.documentElement).appendChild(script);
     };
 
     /**
@@ -628,14 +625,7 @@
          * JS injections are created by JS filtering rules:
          * http://adguard.com/en/filterrules.html#javascriptInjection
          */
-        var script = document.createElement("script");
-        script.setAttribute("type", "text/javascript");
-        scriptsToApply.unshift("try {");
-        scriptsToApply.push("} catch (ex) { console.error('Error executing AG js: ' + ex); }");
-        scriptsToApply.push(cleanupCurrentScriptToString());
-
-        script.textContent = scriptsToApply.join("\r\n");
-        (document.head || document.documentElement).appendChild(script);
+        executeScripts(scriptsToApply);
     };
 
     /**
