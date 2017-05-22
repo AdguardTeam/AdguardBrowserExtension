@@ -54,33 +54,19 @@ var StringUtils = {
 
 var UrlUtils = {
 
-    /**
-	 * Retrieves hostname from URL
-     */
-	getDomainName: function (url) {
-        if (!url) {
-            return null;
+	getProtocol: function (url) {
+        var index = url.indexOf('//');
+        if (index >= 0) {
+            return url.substring(0, index);
+        } else {
+            // It's non hierarchical structured URL (e.g. stun: or turn:)
+            index = url.indexOf(':');
+            if (index >= 0) {
+                return url.substring(0, index);
+            }
         }
-		if (!this.linkHelper) {
-			this.linkHelper = document.createElement('a');
-		}
-        if (this.isHierarchicUrl(url)) {
-            this.linkHelper.href = url;
-            return this.linkHelper.hostname;
-        }
-        // stun:1755001826:443
-		// stun:stun.l.google.com:19302
-		var index = url.indexOf(':');
-        if (index < 0) {
-            return null;
-        }
-        var host = url.substring(index + 1);
-        index = host.indexOf(':');
-        if (index > 0) {
-            host = host.substring(0, index);
-        }
-        return host;
-	},
+        return '';
+    },
 
     /**
 	 * Removes protocol from URL
@@ -120,7 +106,8 @@ var UrlFilterRule = {
 	DOMAIN_OPTION: "domain",
 	MATCH_CASE_OPTION: "match-case",
 	THIRD_PARTY_OPTION: "third-party",
-	OPTIONS_DELIMITER: "$"
+	OPTIONS_DELIMITER: "$",
+    CSP_OPTION: "csp"
 };
 
 PageController.prototype = {
@@ -519,7 +506,7 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 	template.find('[attr-text="requestUrl"]').text(filteringEvent.requestUrl);
 	template.find('[attr-text="requestType"]').text(RequestWizard.getRequestType(filteringEvent.requestType));
 	template.find('[attr-text="frameDomain"]').text(RequestWizard.getSource(filteringEvent.frameDomain));
-	if (!filteringEvent.frameDomain || filteringEvent.frameDomain === null) {
+	if (!filteringEvent.frameDomain) {
 		template.find('[attr-text="frameDomain"]').closest('.adg-modal-window-locking-info-left-row').hide();
 	}
 
@@ -614,25 +601,25 @@ RequestWizard.prototype.showCreateBlockRuleModal = function (frameInfo, filterin
 
 	var template = this.createBlockRuleTemplate.clone();
 
-    var prefix = UrlUtils.isHierarchicUrl(filteringEvent.requestUrl) ? UrlFilterRule.MASK_START_URL : '';
+    var patterns = RequestWizard.splitToPatterns(filteringEvent, false).reverse();
 
-    var patterns = RequestWizard.splitToPatterns(filteringEvent.requestUrl, prefix).reverse();
-
-	this._initCreateRuleDialog(frameInfo, template, patterns, filteringEvent.frameDomain, filteringEvent.requestThirdParty);
+	this._initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
 };
 
 RequestWizard.prototype.showCreateExceptionRuleModal = function (frameInfo, filteringEvent) {
 
 	var template = this.createExceptionRuleTemplate.clone();
 
-	var prefix = UrlUtils.isHierarchicUrl(filteringEvent.requestUrl) ? UrlFilterRule.MASK_START_URL : '';
+	var patterns = RequestWizard.splitToPatterns(filteringEvent, true).reverse();
 
-	var patterns = RequestWizard.splitToPatterns(filteringEvent.requestUrl, FilterRule.MASK_WHITE_LIST + prefix).reverse();
-
-	this._initCreateRuleDialog(frameInfo, template, patterns, filteringEvent.frameDomain, filteringEvent.requestThirdParty);
+	this._initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
 };
 
-RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, patterns, urlDomain, isThirdPartyRequest) {
+RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, patterns, filteringEvent) {
+
+	var frameDomain = filteringEvent.frameDomain;
+	var isThirdPartyRequest = filteringEvent.requestThirdParty;
+
 	var rulePatternsEl = template.find('#rulePatterns');
 	for (var i = 0; i < patterns.length; i++) {
 		var patternEl = $('<div>', {'class': 'radio radio-patterns'});
@@ -666,7 +653,7 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 
 	ruleDomainCheckbox.attr('id', 'ruleDomain');
 	ruleDomainCheckbox.parent().find('label').attr('for', 'ruleDomain');
-	if (!urlDomain) {
+	if (!frameDomain) {
 		ruleDomainCheckbox.closest('.checkbox').hide();
 	}
 
@@ -687,7 +674,17 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 		var matchCase = ruleMatchCaseCheckbox.is(':checked');
 		var thirdParty = ruleThirdPartyCheckbox.is(':checked');
 
-		var ruleText = RequestWizard.createRuleFromParams(urlPattern, urlDomain, permitDomain, matchCase, thirdParty);
+		var domain = permitDomain ? frameDomain : null;
+
+		var mandatoryOptions = null;
+
+		// Deal with csp rule
+        var requestRule = filteringEvent.requestRule;
+        if (requestRule && requestRule.cspRule) {
+			mandatoryOptions = [UrlFilterRule.CSP_OPTION];
+        }
+
+		var ruleText = RequestWizard.createRuleFromParams(urlPattern, domain, matchCase, thirdParty, mandatoryOptions);
 		ruleTextEl.val(ruleText);
 	}
 
@@ -717,15 +714,29 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 
 RequestWizard.PATTERNS_COUNT = 2; //exclude domain and full request url
 
-RequestWizard.splitToPatterns = function (requestUrl, prefix) {
+RequestWizard.splitToPatterns = function (filteringEvent, whitelist) {
 
-	var domain = UrlUtils.getDomainName(requestUrl) || '';
-	var patterns = [];//domain pattern
+    var requestUrl = filteringEvent.requestUrl;
+	var domain = filteringEvent.requestDomain;
+
+	var hierarchicUrl = UrlUtils.isHierarchicUrl(requestUrl);
+    var protocol = UrlUtils.getProtocol(requestUrl);
+
+    var prefix;
+    if (hierarchicUrl) {
+        prefix = UrlFilterRule.MASK_START_URL; // Covers default protocols: http, ws
+    }else {
+        prefix = protocol + ':'; // Covers non-default protocols: stun, turn
+	}
+    if (whitelist) {
+        prefix = FilterRule.MASK_WHITE_LIST + prefix;
+    }
+
+	var patterns = [];
 
 	var relative = StringUtils.substringAfter(requestUrl, domain + '/');
 
 	var path = StringUtils.substringBefore(relative, '?');
-	//var query = StringUtils.substringAfter(relative, '?');
 
 	if (path) {
 
@@ -748,20 +759,22 @@ RequestWizard.splitToPatterns = function (requestUrl, prefix) {
 
 	//push full url pattern
 	var url = UrlUtils.getUrlWithoutScheme(requestUrl);
-	if (patterns.indexOf(prefix + url) < 0) {
-		patterns.push(prefix + url);
-	}
+    if (domain + '/' !== url) { // Don't duplicate: ||example.com/ and ||example.com^
+        if (patterns.indexOf(prefix + url) < 0) {
+            patterns.push(prefix + url);
+        }
+    }
 
 	return patterns;
 };
 
-RequestWizard.createRuleFromParams = function (urlPattern, urlDomain, permitDomain, matchCase, thirdParty) {
+RequestWizard.createRuleFromParams = function (urlPattern, urlDomain, matchCase, thirdParty, mandatoryOptions) {
 
 	var ruleText = urlPattern;
 	var options = [];
 
 	//add domain option
-	if (permitDomain && urlDomain) {
+	if (urlDomain) {
 		options.push(UrlFilterRule.DOMAIN_OPTION + '=' + urlDomain);
 	}
 	//add match case option
@@ -772,6 +785,9 @@ RequestWizard.createRuleFromParams = function (urlPattern, urlDomain, permitDoma
 	if (thirdParty) {
 		options.push(UrlFilterRule.THIRD_PARTY_OPTION);
 	}
+    if (mandatoryOptions) {
+		options = options.concat(mandatoryOptions);
+    }
 	if (options.length > 0) {
 		ruleText += UrlFilterRule.OPTIONS_DELIMITER + options.join(',');
 	}
@@ -801,6 +817,8 @@ RequestWizard.getRequestType = function (requestType) {
 			return 'WebSocket';
 		case 'WEBRTC':
 			return 'WebRTC';
+        case 'CSP':
+            return 'CSP';
 		case 'OTHER':
 			return 'Other';
 	}

@@ -41,6 +41,7 @@ adguard.RequestTypes = {
     WEBSOCKET: "WEBSOCKET",
     WEBRTC: "WEBRTC",
     OTHER: "OTHER",
+    CSP: "CSP",
 
     /**
      * Synthetic request type for requests detected as pop-ups

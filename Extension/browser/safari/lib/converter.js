@@ -160,15 +160,17 @@ var SafariContentBlockerConverter = {
 
             // Not supported modificators
             if (this._isContentType(rule, UrlFilterRule.contentTypes.OBJECT)) {
-                throw new Error('Object content type is not yet supported');
+                throw new Error('$object content type is not yet supported');
             }
             if (this._isContentType(rule, UrlFilterRule.contentTypes['OBJECT-SUBREQUEST'])) {
-                throw new Error('Object_subrequest content type is not yet supported');
+                throw new Error('$object_subrequest content type is not yet supported');
             }
             if (this._isContentType(rule, UrlFilterRule.contentTypes.WEBRTC)) {
-                throw new Error('WebRTC content type is not yet supported');
+                throw new Error('$webrtc content type is not yet supported');
             }
-
+            if (this._isContentType(rule, UrlFilterRule.contentTypes.CSP)) {
+                throw new Error('$csp content type is not yet supported');
+            }
             if (this._isContentType(rule, UrlFilterRule.contentTypes.JSINJECT)) {
                 throw new Error('$jsinject rules are ignored.');
             }
