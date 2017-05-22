@@ -76,11 +76,6 @@
          */
         function findCspRules(url, documentHost, thirdParty) {
 
-            var blockingRules = cspBlockFilter.findRules(url, documentHost, thirdParty, adguard.RequestTypes.CSP);
-            if (!blockingRules || blockingRules.length === 0) { // Nothing to block
-                return null;
-            }
-
             var whiteRules = cspWhiteFilter.findRules(url, documentHost, thirdParty, adguard.RequestTypes.CSP);
 
             var rulesByDirective = Object.create(null);
@@ -100,23 +95,27 @@
 
             var cspRules = [];
 
+            var blockingRules = cspBlockFilter.findRules(url, documentHost, thirdParty, adguard.RequestTypes.CSP);
+
             // Collect whitelist and blocking CSP rules in one array
-            for (i = 0; i < blockingRules.length; i++) {
-                rule = blockingRules[i];
-                var cspDirective = rule.cspDirective;
-                if (cspDirective in rulesByDirective) {
-                    var existRule = rulesByDirective[cspDirective];
-                    if (existRule.whiteListRule) {
-                        // Append this whitelist rule
-                        rule = existRule;
-                    } else {
-                        // Skip rule with duplicated CSP directive
-                        rule = null;
+            if (blockingRules) {
+                for (i = 0; i < blockingRules.length; i++) {
+                    rule = blockingRules[i];
+                    var cspDirective = rule.cspDirective;
+                    if (cspDirective in rulesByDirective) {
+                        var existRule = rulesByDirective[cspDirective];
+                        if (existRule.whiteListRule) {
+                            // Append this whitelist rule
+                            rule = existRule;
+                        } else {
+                            // Skip rule with duplicated CSP directive
+                            rule = null;
+                        }
                     }
-                }
-                if (rule) {
-                    rulesByDirective[cspDirective] = rule;
-                    cspRules.push(rule);
+                    if (rule) {
+                        rulesByDirective[cspDirective] = rule;
+                        cspRules.push(rule);
+                    }
                 }
             }
 
