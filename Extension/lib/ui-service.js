@@ -528,7 +528,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     };
 
     var openIntegrationModeInfo = function () {
-        openTab('https://adguard.com/adguard-adblock-browser-extension/integration-mode.html#integrationMode');
+        openTab('https://adguard.com/adguard-adblock-browser-extension/integration-mode.html?utm_source=extension&aid=16593#integrationMode');
     };
 
     var openExtensionStore = function () {
