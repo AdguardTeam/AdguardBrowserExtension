@@ -104,6 +104,7 @@ var UrlFilterRule = {
 	MASK_ANY_SYMBOL: "*",
 	MASK_SEPARATOR: "^",
 	DOMAIN_OPTION: "domain",
+    IMPORTANT_OPTION: "important",
 	MATCH_CASE_OPTION: "match-case",
 	THIRD_PARTY_OPTION: "third-party",
 	OPTIONS_DELIMITER: "$",
@@ -647,6 +648,7 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 
 	var rulePatterns = template.find('[name="rulePattern"]');
 	var ruleDomainCheckbox = template.find('[name="ruleDomain"]');
+	var ruleImportantCheckbox = template.find('[name="ruleImportant"]');
 	var ruleMatchCaseCheckbox = template.find('[name="ruleMatchCase"]');
 	var ruleThirdPartyCheckbox = template.find('[name="ruleThirdParty"]');
 	var ruleTextEl = template.find('[name="ruleText"]');
@@ -656,6 +658,9 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 	if (!frameDomain) {
 		ruleDomainCheckbox.closest('.checkbox').hide();
 	}
+
+    ruleImportantCheckbox.attr('id', 'ruleImportant');
+    ruleImportantCheckbox.parent().find('label').attr('for', 'ruleImportant');
 
 	ruleMatchCaseCheckbox.attr('id', 'ruleMatchCase');
 	ruleMatchCaseCheckbox.parent().find('label').attr('for', 'ruleMatchCase');
@@ -671,6 +676,7 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 
 		var urlPattern = rulePatterns.filter(':checked').val();
 		var permitDomain = !ruleDomainCheckbox.is(':checked');
+		var important = ruleImportantCheckbox.is(':checked');
 		var matchCase = ruleMatchCaseCheckbox.is(':checked');
 		var thirdParty = ruleThirdPartyCheckbox.is(':checked');
 
@@ -684,12 +690,13 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 			mandatoryOptions = [UrlFilterRule.CSP_OPTION];
         }
 
-		var ruleText = RequestWizard.createRuleFromParams(urlPattern, domain, matchCase, thirdParty, mandatoryOptions);
+		var ruleText = RequestWizard.createRuleFromParams(urlPattern, domain, matchCase, thirdParty, important, mandatoryOptions);
 		ruleTextEl.val(ruleText);
 	}
 
 	//update rule text events
 	ruleDomainCheckbox.on('change', updateRuleText);
+    ruleImportantCheckbox.on('change', updateRuleText);
 	ruleMatchCaseCheckbox.on('change', updateRuleText);
 	ruleThirdPartyCheckbox.on('change', updateRuleText);
 	rulePatterns.on('change', updateRuleText);
@@ -768,7 +775,7 @@ RequestWizard.splitToPatterns = function (filteringEvent, whitelist) {
 	return patterns;
 };
 
-RequestWizard.createRuleFromParams = function (urlPattern, urlDomain, matchCase, thirdParty, mandatoryOptions) {
+RequestWizard.createRuleFromParams = function (urlPattern, urlDomain, matchCase, thirdParty, important, mandatoryOptions) {
 
 	var ruleText = urlPattern;
 	var options = [];
@@ -777,6 +784,10 @@ RequestWizard.createRuleFromParams = function (urlPattern, urlDomain, matchCase,
 	if (urlDomain) {
 		options.push(UrlFilterRule.DOMAIN_OPTION + '=' + urlDomain);
 	}
+	//add important option
+    if (important) {
+        options.push(UrlFilterRule.IMPORTANT_OPTION);
+    }
 	//add match case option
 	if (matchCase) {
 		options.push(UrlFilterRule.MATCH_CASE_OPTION);
