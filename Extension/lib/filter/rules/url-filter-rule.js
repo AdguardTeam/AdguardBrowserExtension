@@ -527,6 +527,20 @@
                     if (!whiteListRule && !this.cspDirective) {
                         throw 'Invalid $CSP rule: CSP directive must not be empty';
                     }
+
+                    if (this.cspDirective) {
+
+                        /**
+                         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/685#issue-228287090
+                         * Forbids report-to and report-uri directives
+                         */
+                        var cspDirective = this.cspDirective.toLowerCase();
+                        if (cspDirective.indexOf('report-uri') >= 0 ||
+                            cspDirective.indexOf('report-to') >= 0) {
+
+                            throw 'Forbidden CSP directive: ' + cspDirective;
+                        }
+                    }
                     break;
                 default:
                     optionName = optionName.toUpperCase();

@@ -145,6 +145,12 @@ QUnit.test("CSP rules", function (assert) {
     assert.ok(rules.length === 1);
     assert.ok(rules[0].ruleText === cspRule.ruleText || rules[0].ruleText === duplicateCspRule.ruleText);
 
+    // Invalid csp rules
+    var invalidRule = adguard.rules.builder.createRule('||$csp=report-uri /csp-violation-report-endpoint/', 1);
+    assert.ok(!invalidRule);
+
+    invalidRule = adguard.rules.builder.createRule('||$csp=report-to /csp-violation-report-endpoint/', 1);
+    assert.ok(!invalidRule);
 });
 
 QUnit.test("Request filter performance", function (assert) {
