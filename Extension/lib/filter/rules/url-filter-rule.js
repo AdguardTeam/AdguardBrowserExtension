@@ -238,6 +238,35 @@
     }
 
     /**
+     * Validates CSP rule
+     * @param rule Rule with $CSP modifier
+     */
+    function validateCspRule(rule) {
+
+        /**
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/685
+         * CSP directive may be empty in case of whitelist rule, it means to disable all $csp rules matching the whitelist rule
+         */
+        if (!rule.whiteListRule && !rule.cspDirective) {
+            throw 'Invalid $CSP rule: CSP directive must not be empty';
+        }
+
+        if (rule.cspDirective) {
+
+            /**
+             * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/685#issue-228287090
+             * Forbids report-to and report-uri directives
+             */
+            var cspDirective = rule.cspDirective.toLowerCase();
+            if (cspDirective.indexOf('report-uri') >= 0 ||
+                cspDirective.indexOf('report-to') >= 0) {
+
+                throw 'Forbidden CSP directive: ' + cspDirective;
+            }
+        }
+    }
+
+    /**
      * Rule for blocking requests to URLs.
      * Read here for details:
      * http://adguard.com/en/filterrules.html#baseRules
@@ -256,7 +285,7 @@
         var parseResult = parseRuleText(rule);
         // Load options
         if (parseResult.options) {
-            this._loadOptions(parseResult.options, parseResult.whiteListRule);
+            this._loadOptions(parseResult.options);
         }
 
         // Exception rule flag
@@ -280,7 +309,7 @@
                 throw 'Illegal regexp rule';
             }
 
-            if (UrlFilterRule.REGEXP_ANY_SYMBOL == regexp && !this.hasPermittedDomains()) {
+            if (UrlFilterRule.REGEXP_ANY_SYMBOL === regexp && !this.hasPermittedDomains()) {
                 // Rule matches everything and does not have any domain restriction
                 throw ("Too wide basic rule: " + urlRuleText);
             }
@@ -290,6 +319,10 @@
         } else {
             // Searching for shortcut
             this.shortcut = findShortcut(urlRuleText);
+        }
+
+        if (this.cspRule) {
+            validateCspRule(this);
         }
     };
 
@@ -417,7 +450,7 @@
             return false;
         }
 
-        if (this.restrictedContentType !== 0 && (this.restrictedContentType & contentTypeMask) == contentTypeMask) { // jshint ignore:line
+        if (this.restrictedContentType !== 0 && (this.restrictedContentType & contentTypeMask) === contentTypeMask) { // jshint ignore:line
             //in restricted list - skip this rule
             return false;
         }
@@ -446,10 +479,9 @@
      * Loads rule options
      *
      * @param options Options string
-     * @param whiteListRule Whitelist rule flag
      * @private
      */
-    UrlFilterRule.prototype._loadOptions = function (options, whiteListRule) {
+    UrlFilterRule.prototype._loadOptions = function (options) {
 
         var optionsParts = options.split(api.FilterRule.COMA_DELIMITER);
 
@@ -519,27 +551,6 @@
                     this.cspRule = true;
                     if (optionsKeyValue.length > 1) {
                         this.cspDirective = optionsKeyValue[1];
-                    }
-                    /**
-                     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/685
-                     * CSP directive may be empty in case of whitelist rule, it means to disable all $csp rules matching the whitelist rule
-                     */
-                    if (!whiteListRule && !this.cspDirective) {
-                        throw 'Invalid $CSP rule: CSP directive must not be empty';
-                    }
-
-                    if (this.cspDirective) {
-
-                        /**
-                         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/685#issue-228287090
-                         * Forbids report-to and report-uri directives
-                         */
-                        var cspDirective = this.cspDirective.toLowerCase();
-                        if (cspDirective.indexOf('report-uri') >= 0 ||
-                            cspDirective.indexOf('report-to') >= 0) {
-
-                            throw 'Forbidden CSP directive: ' + cspDirective;
-                        }
                     }
                     break;
                 default:
@@ -646,7 +657,6 @@
     UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.FONT;
     UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.WEBSOCKET;
     UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.WEBRTC;
-    UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.CSP;
     // jshint ignore:end
 
     api.UrlFilterRule = UrlFilterRule;

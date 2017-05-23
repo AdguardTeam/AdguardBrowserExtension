@@ -72,11 +72,17 @@
          * @param url URL
          * @param documentHost Document Host
          * @param thirdParty true if request is third-party
+         * @param requestType   Request content type. $CSP rules are applied only at DOCUMENT or SUB_DOCUMENT levels.
          * @returns Matching rules
          */
-        function findCspRules(url, documentHost, thirdParty) {
+        function findCspRules(url, documentHost, thirdParty, requestType) {
 
-            var whiteRules = cspWhiteFilter.findRules(url, documentHost, thirdParty, adguard.RequestTypes.CSP);
+            /**
+             * DOCUMENT request type at the rule's level has other meaning, so replace it with OTHER modifier
+             */
+            requestType = requestType === adguard.RequestTypes.DOCUMENT ? adguard.RequestTypes.OTHER : requestType;
+
+            var whiteRules = cspWhiteFilter.findRules(url, documentHost, thirdParty, requestType);
 
             var rulesByDirective = Object.create(null);
 
@@ -93,17 +99,30 @@
                 }
             }
 
-            var cspRules = [];
+            var blockingRules = cspBlockFilter.findRules(url, documentHost, thirdParty, requestType);
 
-            var blockingRules = cspBlockFilter.findRules(url, documentHost, thirdParty, adguard.RequestTypes.CSP);
+            var cspRules = [];
 
             // Collect whitelist and blocking CSP rules in one array
             if (blockingRules) {
+
+                // Add important rules, ignore whitelist
                 for (i = 0; i < blockingRules.length; i++) {
                     rule = blockingRules[i];
+                    if (rule.isImportant) {
+                        cspRules.push(rule);
+                        rulesByDirective[rule.cspDirective] = rule;
+                    }
+                }
+
+                for (i = 0; i < blockingRules.length; i++) {
+                    rule = blockingRules[i];
+                    if (rule.isImportant) {
+                        continue;
+                    }
                     var cspDirective = rule.cspDirective;
-                    if (cspDirective in rulesByDirective) {
-                        var existRule = rulesByDirective[cspDirective];
+                    var existRule = rulesByDirective[cspDirective];
+                    if (existRule) {
                         if (existRule.whiteListRule) {
                             // Append this whitelist rule
                             rule = existRule;

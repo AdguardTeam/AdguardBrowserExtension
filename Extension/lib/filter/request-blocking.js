@@ -256,9 +256,10 @@ adguard.webRequestService = (function (adguard) {
      * @param tab           Tab
      * @param requestUrl    Request URL
      * @param referrerUrl   Referrer URL
+     * @param requestType   Request type (DOCUMENT or SUBDOCUMENT)
      * @returns {*}         Collection of rules or null
      */
-    var getCspRules = function (tab, requestUrl, referrerUrl) {
+    var getCspRules = function (tab, requestUrl, referrerUrl, requestType) {
 
         if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab) || adguard.frames.isTabWhiteListed(tab)) {
             //don't process request
@@ -270,7 +271,7 @@ adguard.webRequestService = (function (adguard) {
             return null;
         }
 
-        return adguard.requestFilter.getCspRules(requestUrl, referrerUrl);
+        return adguard.requestFilter.getCspRules(requestUrl, referrerUrl, requestType);
     };
 
     /**
