@@ -19,6 +19,51 @@
     'use strict';
 
     /**
+     * Returns rule priority
+     * @param rule CSP rule
+     */
+    function getRulePriority(rule) {
+        if (!rule) {
+            return 0;
+        }
+        if (rule.whiteListRule && rule.isImportant) {
+            return 4;
+        } else if (rule.isImportant) {
+            return 3;
+        } else if (rule.whiteListRule) {
+            return 2;
+        }
+        return 1;
+    }
+
+    /**
+     * Decides which rule should be put into the given map.
+     * Compares priorities of the two given rules with the equal CSP directive and the rule that may already in the map.
+     *
+     * @param rule CSP rule (not null)
+     * @param whiteListRule CSP whitelist rule (may be null)
+     * @param map Rules mapped by csp directive
+     */
+    function putWithPriority(rule, whiteListRule, map) {
+
+        var cspDirective = rule.cspDirective;
+        var existRule = map[cspDirective];
+
+        var pr1 = getRulePriority(rule);
+        var pr2 = getRulePriority(whiteListRule);
+        var pr3 = getRulePriority(existRule);
+
+        var max = Math.max(pr1, pr2, pr3);
+        if (max === pr1) {
+            map[cspDirective] = rule;
+        } else if (max === pr2) {
+            map[cspDirective] = whiteListRule;
+        } else if (max === pr3) {
+            map[cspDirective] = existRule;
+        }
+    }
+
+    /**
      * Filter for CSP filter rules
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/685
      */
@@ -78,13 +123,23 @@
         function findCspRules(url, documentHost, thirdParty, requestType) {
 
             /**
-             * DOCUMENT request type at the rule's level has other meaning, so replace it with OTHER modifier
+             * CSP rules support only $SUBDOCUMENT request type modifier. If it presents, we should match this rule when an iframe is loaded.
+             * If a main_frame is loaded we should match rules without $SUBDOCUMENT modifier (or with negation $~SUBDOCUMENT)
+             * We can't pass `adguard.RequestTypes.DOCUMENT` to findRules `function`, because $DOCUMENT modifier has other meaning for the rules.
+             * So if we pass `adguard.RequestTypes.OTHER` we won't match rules with $SUBDOCUMENT modifier, as we expected
+             *
+             * For example:
+             * rule1 = '||$csp'
+             * rule2 = '||$csp,subdocument'
+             * rule3 = '||$csp,~subdocument'
+             * findCspRules(adguard.RequestTypes.SUBDOCUMENT) = [rule1, rule2];
+             * findCspRules(adguard.RequestTypes.DOCUMENT) = [rule1, rule3];
              */
-            requestType = requestType === adguard.RequestTypes.DOCUMENT ? adguard.RequestTypes.OTHER : requestType;
+            requestType = requestType === adguard.RequestTypes.SUBDOCUMENT ? requestType : adguard.RequestTypes.OTHER;
 
             var whiteRules = cspWhiteFilter.findRules(url, documentHost, thirdParty, requestType);
 
-            var rulesByDirective = Object.create(null);
+            var whitelistedRulesByDirective = Object.create(null);
 
             var i, rule;
 
@@ -95,49 +150,27 @@
                     if (!rule.cspDirective) { // Global whitelist rule
                         return [rule];
                     }
-                    rulesByDirective[rule.cspDirective] = rule;
+                    putWithPriority(rule, null, whitelistedRulesByDirective);
                 }
             }
 
             var blockingRules = cspBlockFilter.findRules(url, documentHost, thirdParty, requestType);
-
-            var cspRules = [];
+            var rulesByDirective = Object.create(null);
 
             // Collect whitelist and blocking CSP rules in one array
             if (blockingRules) {
 
-                // Add important rules, ignore whitelist
                 for (i = 0; i < blockingRules.length; i++) {
                     rule = blockingRules[i];
-                    if (rule.isImportant) {
-                        cspRules.push(rule);
-                        rulesByDirective[rule.cspDirective] = rule;
-                    }
-                }
-
-                for (i = 0; i < blockingRules.length; i++) {
-                    rule = blockingRules[i];
-                    if (rule.isImportant) {
-                        continue;
-                    }
-                    var cspDirective = rule.cspDirective;
-                    var existRule = rulesByDirective[cspDirective];
-                    if (existRule) {
-                        if (existRule.whiteListRule) {
-                            // Append this whitelist rule
-                            rule = existRule;
-                        } else {
-                            // Skip rule with duplicated CSP directive
-                            rule = null;
-                        }
-                    }
-                    if (rule) {
-                        rulesByDirective[cspDirective] = rule;
-                        cspRules.push(rule);
-                    }
+                    var whiteListRule = whitelistedRulesByDirective[rule.cspDirective];
+                    putWithPriority(rule, whiteListRule, rulesByDirective);
                 }
             }
 
+            var cspRules = [];
+            Object.keys(rulesByDirective).forEach(function (key) {
+                cspRules.push(rulesByDirective[key]);
+            });
             return cspRules;
         }
 
