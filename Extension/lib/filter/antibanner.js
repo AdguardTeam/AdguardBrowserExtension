@@ -1196,8 +1196,8 @@ adguard.requestFilter = (function (adguard) {
         return getRequestFilter().getScriptsForUrl(documentUrl);
     };
 
-    var getCspRules = function (requestUrl, referrer) {
-        return getRequestFilter().findCspRules(requestUrl, referrer);
+    var getCspRules = function (requestUrl, referrer, requestType) {
+        return getRequestFilter().findCspRules(requestUrl, referrer, requestType);
     };
 
     var getRequestFilterInfo = function () {

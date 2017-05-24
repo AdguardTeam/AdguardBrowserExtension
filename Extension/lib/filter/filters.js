@@ -267,14 +267,15 @@
          * Searches for CSP rules for the specified request
          * @param requestUrl Request URL
          * @param documentUrl Document URL
+         * @param requestType Request Type (DOCUMENT or SUBDOCUMENT)
          * @returns Collection of CSP rules for applying to the request or null
          */
-        findCspRules: function (requestUrl, documentUrl) {
+        findCspRules: function (requestUrl, documentUrl, requestType) {
 
             var documentHost = adguard.utils.url.getHost(documentUrl);
             var thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
 
-            return this.cspFilter.findCspRules(requestUrl, documentHost, thirdParty);
+            return this.cspFilter.findCspRules(requestUrl, documentHost, thirdParty, requestType);
         },
 
         /**
@@ -346,8 +347,8 @@
             // STEP 3: Analyze results, first - basic exception rule
 
             if (urlWhiteListRule &&
-                    // Please note, that if blocking rule has $important modifier, it could
-                    // overcome existing exception rule
+                // Please note, that if blocking rule has $important modifier, it could
+                // overcome existing exception rule
                 (urlWhiteListRule.isImportant || !blockingRule || !blockingRule.isImportant)) {
                 adguard.console.debug("White list rule found {0} for url: {1} document: {2}, requestType: {3}", urlWhiteListRule.ruleText, requestUrl, documentHost, requestType);
                 return urlWhiteListRule;

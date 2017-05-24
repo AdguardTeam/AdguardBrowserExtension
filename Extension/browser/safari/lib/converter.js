@@ -168,11 +168,11 @@ var SafariContentBlockerConverter = {
             if (this._isContentType(rule, UrlFilterRule.contentTypes.WEBRTC)) {
                 throw new Error('$webrtc content type is not yet supported');
             }
-            if (this._isContentType(rule, UrlFilterRule.contentTypes.CSP)) {
-                throw new Error('$csp content type is not yet supported');
-            }
             if (this._isContentType(rule, UrlFilterRule.contentTypes.JSINJECT)) {
                 throw new Error('$jsinject rules are ignored.');
+            }
+            if (rule.cspRule) {
+                throw new Error('$csp content type is not yet supported');
             }
 
             if (types.length > 0) {

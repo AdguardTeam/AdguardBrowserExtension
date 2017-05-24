@@ -193,6 +193,7 @@
         var tab = requestDetails.tab;
         var requestUrl = requestDetails.requestUrl;
         var responseHeaders = requestDetails.responseHeaders || [];
+        var requestType = requestDetails.requestType;
         var frameUrl = adguard.frames.getFrameUrl(tab, requestDetails.frameId);
 
         var cspHeaders = [];
@@ -212,7 +213,7 @@
          * Retrieve $CSP rules specific for the request
          * https://github.com/adguardteam/adguardbrowserextension/issues/685
          */
-        var cspRules = adguard.webRequestService.getCspRules(tab, requestUrl, frameUrl);
+        var cspRules = adguard.webRequestService.getCspRules(tab, requestUrl, frameUrl, requestType);
         if (cspRules) {
             for (var i = 0; i < cspRules.length; i++) {
                 var rule = cspRules[i];
