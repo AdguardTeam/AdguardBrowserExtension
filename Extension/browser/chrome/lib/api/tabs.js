@@ -156,6 +156,31 @@ adguard.tabsImpl = (function (adguard) {
         getActive(onActivatedChannel.notify);
     });
 
+    /**
+     * Give focus to a window
+     * @param tabId Tab identifier
+     * @param windowId Window identifier
+     * @param callback Callback
+     */
+    function focusWindow(tabId, windowId, callback) {
+        /**
+         * Updating already focused window produces bug in Edge browser
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/675
+         */
+        getActive(function (activeTabId) {
+            if (tabId !== activeTabId) {
+                // Focus window
+                browser.windows.update(windowId, {focused: true}, function () {
+                    if (checkLastError("Update window " + windowId)) {
+                        return;
+                    }
+                    callback();
+                });
+            }
+            callback();
+        });
+    }
+
     var create = function (createData, callback) {
 
         var url = createData.url;
@@ -184,6 +209,10 @@ adguard.tabsImpl = (function (adguard) {
                 url: url,
                 active: active
             }, function (chromeTab) {
+                if (active) {
+                    focusWindow(chromeTab.id, chromeTab.windowId, function () {
+                    });
+                }
                 callback(toTabFromChromeTab(chromeTab));
             });
         }
@@ -237,22 +266,11 @@ adguard.tabsImpl = (function (adguard) {
 
     var activate = function (tabId, callback) {
         // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/update
-        browser.tabs.update(tabIdToInt(tabId), {active: true}, function (tab) {
+        browser.tabs.update(tabIdToInt(tabId), {active: true}, function (chromeTab) {
             if (checkLastError("Before tab update")) {
                 return;
             }
-
-            getActive(function (activeTabId) {
-                if (tabId !== activeTabId) {
-                    // Focus window
-                    browser.windows.update(tab.windowId, {focused: true}, function () {
-                        if (checkLastError("Update tab")) {
-                            return;
-                        }
-                        callback(tabId);
-                    });
-                }
-
+            focusWindow(tabId, chromeTab.windowId, function () {
                 callback(tabId);
             });
         });
