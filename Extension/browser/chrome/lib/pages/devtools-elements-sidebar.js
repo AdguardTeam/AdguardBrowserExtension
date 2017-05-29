@@ -116,6 +116,15 @@ var browser = window.browser || chrome;
             updatePanelElements();
             updateRule();
         });
+
+        document.getElementById("select-attributes-checkbox").addEventListener("click", function (e) {
+            var checked = e.currentTarget.checked;
+            $('.attribute-check-box').forEach(function (el) {
+                if (el) {
+                    el.checked = checked;
+                }
+            });
+        });
     };
 
     var updatePanelElements = function () {
@@ -182,6 +191,12 @@ var browser = window.browser || chrome;
             } else {
                 placeholder.appendChild(createAttributeElement(attribute.name, attribute.value, attribute.name === 'id'));
             }
+        }
+
+        if (placeholder.childNodes.length > 2) {
+            $("#select-attributes-checkbox").get(0).style['display'] = 'inline';
+        } else {
+            $("#select-attributes-checkbox").hide();
         }
     };
 
