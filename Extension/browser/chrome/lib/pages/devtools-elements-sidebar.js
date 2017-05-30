@@ -124,6 +124,9 @@ var browser = window.browser || chrome;
                     el.checked = checked;
                 }
             });
+
+            updatePanelElements();
+            updateRule();
         });
     };
 
