@@ -41,6 +41,14 @@
         'productforums.google.com'
     ];
 
+    /**
+     * Do not use iframes pre-hiding on some websites.
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/720
+     */
+    var iframeHidingExceptions = [
+        'docs.google.com'
+    ];
+
     var collapseRequests = Object.create(null);
     var collapseRequestId = 1;
     var isFirefox = false;
@@ -271,8 +279,15 @@
             return;
         }
 
+        /**
+         * Checks for pre-hide iframes exception
+         */
+        var hideIframes = iframeHidingExceptions.indexOf(document.domain) < 0;
+
         var iframeHidingSelector = "iframe[src]";
-        ElementCollapser.hideBySelector(iframeHidingSelector, null, shadowRoot);
+        if (hideIframes) {
+            ElementCollapser.hideBySelector(iframeHidingSelector, null, shadowRoot);
+        }
 
         /**
          * For iframes with changed source we check if it should be collapsed
@@ -331,7 +346,9 @@
                 checkShouldCollapseElement(iframes[i]);
             }
 
-            ElementCollapser.unhideBySelector(iframeHidingSelector, shadowRoot);
+            if (hideIframes) {
+                ElementCollapser.unhideBySelector(iframeHidingSelector, shadowRoot);
+            }
 
             if (document.body) {
                 // Handle dynamically added frames
