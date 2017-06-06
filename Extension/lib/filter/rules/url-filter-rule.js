@@ -554,7 +554,7 @@
                     }
                     break;
                 case UrlFilterRule.CONTENT_OPTION:
-                    this.contentOption = true;
+                    permittedContentType |= UrlFilterRule.contentTypes.CONTENT; // jshint ignore:line
                     break;
                 default:
                     optionName = optionName.toUpperCase();
@@ -577,7 +577,8 @@
             this.restrictedContentType = restrictedContentType;
         }
 
-        if (this.contentOption && this.permittedContentType === UrlFilterRule.contentTypes.ALL) {
+        if (this.permittedContentType === UrlFilterRule.contentTypes.CONTENT
+            || this.restrictedContentType === UrlFilterRule.contentTypes.CONTENT) {
             //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/719
             throw 'Single $content option rule is ignored: ' + this.ruleText;
         }
@@ -619,6 +620,7 @@
         WEBSOCKET: 1 << 10,
         WEBRTC: 1 << 11,
         CSP: 1 << 12,
+        CONTENT: 1 << 13,
 
         ELEMHIDE: 1 << 20,      //CssFilter cannot be applied to page
         URLBLOCK: 1 << 21,      //This attribute is only for exception rules. If true - do not use urlblocking rules for urls where referrer satisfies this rule.
