@@ -553,6 +553,9 @@
                         this.cspDirective = optionsKeyValue[1];
                     }
                     break;
+                case UrlFilterRule.CONTENT_OPTION:
+                    this.contentOption = true;
+                    break;
                 default:
                     optionName = optionName.toUpperCase();
                     if (optionName in UrlFilterRule.contentTypes) {
@@ -560,10 +563,6 @@
                     } else if (optionName[0] === api.FilterRule.NOT_MARK && optionName.substring(1) in UrlFilterRule.contentTypes) {
                         restrictedContentType |= UrlFilterRule.contentTypes[optionName.substring(1)]; // jshint ignore:line
                     } else if (optionName in UrlFilterRule.ignoreOptions) { // jshint ignore:line
-                        if (optionName === 'CONTENT' && optionsParts.length === 1) {
-                            //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/719
-                            throw 'Single $content option rule is ignored: ' + this.ruleText;
-                        }
                         // Ignore others
                     } else {
                         throw 'Unknown option: ' + optionName;
@@ -576,6 +575,11 @@
         }
         if (restrictedContentType > 0) {
             this.restrictedContentType = restrictedContentType;
+        }
+
+        if (this.contentOption && this.permittedContentType === UrlFilterRule.contentTypes.ALL) {
+            //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/719
+            throw 'Single $content option rule is ignored: ' + this.ruleText;
         }
     };
 
@@ -597,6 +601,7 @@
     UrlFilterRule.EMPTY_OPTION = "empty";
     UrlFilterRule.REPLACE_OPTION = "replace"; // Extension doesn't support replace rules, $replace option is here only for correctly parsing
     UrlFilterRule.CSP_OPTION = "csp";
+    UrlFilterRule.CONTENT_OPTION = "content";
 
     UrlFilterRule.contentTypes = {
 
@@ -639,9 +644,7 @@
         // Unused modifiers
         'COLLAPSE': true,
         '~COLLAPSE': true,
-        '~DOCUMENT': true,
-        // http://adguard.com/en/filterrules.html#advanced
-        'CONTENT': true
+        '~DOCUMENT': true
     };
 
     // jshint ignore:start
