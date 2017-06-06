@@ -206,6 +206,7 @@
             });
         }
         if (legacyCspRule) {
+            adguard.webRequestService.recordRuleHit(tab, legacyCspRule, frameUrl);
             adguard.filteringLog.addEvent(tab, 'content-security-policy-check', frameUrl, adguard.RequestTypes.CSP, legacyCspRule);
         }
 
@@ -224,6 +225,7 @@
                         value: rule.cspDirective
                     });
                 }
+                adguard.webRequestService.recordRuleHit(tab, rule, requestUrl);
                 adguard.filteringLog.addEvent(tab, requestUrl, frameUrl, adguard.RequestTypes.CSP, rule);
             }
         }
