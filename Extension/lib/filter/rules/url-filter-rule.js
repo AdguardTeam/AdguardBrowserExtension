@@ -553,9 +553,6 @@
                         this.cspDirective = optionsKeyValue[1];
                     }
                     break;
-                case UrlFilterRule.CONTENT_OPTION:
-                    permittedContentType |= UrlFilterRule.contentTypes.CONTENT; // jshint ignore:line
-                    break;
                 default:
                     optionName = optionName.toUpperCase();
                     if (optionName in UrlFilterRule.contentTypes) {
