@@ -560,7 +560,11 @@
                     } else if (optionName[0] === api.FilterRule.NOT_MARK && optionName.substring(1) in UrlFilterRule.contentTypes) {
                         restrictedContentType |= UrlFilterRule.contentTypes[optionName.substring(1)]; // jshint ignore:line
                     } else if (optionName in UrlFilterRule.ignoreOptions) { // jshint ignore:line
-                        // Ignore
+                        if (optionName === 'CONTENT' && optionsParts.length === 1) {
+                            //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/719
+                            throw 'Single $content option rule is ignored: ' + this.ruleText;
+                        }
+                        // Ignore others
                     } else {
                         throw 'Unknown option: ' + optionName;
                     }
