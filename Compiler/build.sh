@@ -44,7 +44,7 @@ if [ "$env" = release ]; then
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
     
     #edge release
-    options="$opts --browser=edge --pack=zip"
+    options="$opts --browser=edge --pack=zip --update-filters=true"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     echo "Release builds created"

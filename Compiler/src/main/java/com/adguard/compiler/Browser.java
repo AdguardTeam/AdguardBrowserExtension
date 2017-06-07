@@ -59,8 +59,9 @@ public enum Browser {
 			case FIREFOX_LEGACY:
 			case FIREFOX_WEBEXT:
 				return "firefox";
-			case CHROMIUM:
 			case EDGE:
+				return "edge";
+			case CHROMIUM:
 			default:
 				return "chromium";
 		}
