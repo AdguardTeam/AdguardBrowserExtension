@@ -1,8 +1,8 @@
-! Checksum: N4OgdwL/1WxT2LrzmERc6g
+! Checksum: 3Pjz0N/B+cSPo5iUJS31Fw
 ! Title: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
-! Version: 1.0.52.19
-! TimeUpdated: 2017-06-07T14:30:56.988+04:00
+! Version: 1.0.52.20
+! TimeUpdated: 2017-06-07T16:00:21.553+04:00
 ! Expires: 2 days (update frequency)
 ! Title: Adguard Russian Filter
 !
@@ -5572,7 +5572,7 @@ kakprosto.ru#%#AG_onLoad(function() { window.getDirectBlock = function() {}; });
 ! geektimes.ru,habrahabr.ru - a lot of errors in console
 geektimes.ru,habrahabr.ru#%#AG_onLoad(function() { window.loadAdriverBanner = function() {}; });
 ! Ads replacement script (trafmag.com)
-avtovod.org.ua,kurs.com.ua,nnm.me,censor.net.ua,ukrlit.vn.ua,24tv.ua,autoua.net,azov-sea.info,beztabu.net,boxnews.com.ua,buhgalter911.com,buhgalter.com.ua,buhgalter.com.ua,depo.ua,dovidka.biz.ua,dsnews.ua,dynamo.kiev.ua,expres.ua,lvivexpres.com,facenews.ua,finance.ua,football24.ua,gagadget.com,gazeta.ua,guru.ua,headinsider.net,hvylya.net,hyser.com.ua,kaktus.site,korupciya.com,love.ua,luxlux.net,mabila.ua,mama.ua,minfin.com.ua,nashasvadba.ua,newsyou.info,novostivmire.com,okino.ua,ostrnum.com,qp.ua,radio24.ua,maximum.fm,rbc.ua,real-vin.com,ringside24.com,segodnya.ua,sinoptik.ua,sinoptik.com.ru,strana.ua,subject.com.ua,toneto.net,tv.ua,ubr.ua,udoktora.net,ukrinform.ua,ukrlib.com.ua,u-news.com.ua,unian.net,vchaspik.ua,vesti.ua,vesti-ukr.com,vmirechudes.com,vsetv.com,woman.ua,zaxid.net#%#var dce = document.createElement.bind(document); document.createElement = function(a) { var el = dce(a); if(a.toLowerCase() == "script") { Object.defineProperty(el, 'textContent', { set: function(i) { /*console.log(i);*/ if(!/function\(mz_str\).*?"[a-z0-9]{100,}"/.test(i)) { Object.getOwnPropertyDescriptor(Node.prototype, 'textContent').set.call(el, i); } }, get: function () { return el.textContent; } }) } return el; };
+obozrevatel.com,avtovod.org.ua,kurs.com.ua,nnm.me,censor.net.ua,ukrlit.vn.ua,24tv.ua,autoua.net,azov-sea.info,beztabu.net,boxnews.com.ua,buhgalter911.com,buhgalter.com.ua,buhgalter.com.ua,depo.ua,dovidka.biz.ua,dsnews.ua,dynamo.kiev.ua,expres.ua,lvivexpres.com,facenews.ua,finance.ua,football24.ua,gagadget.com,gazeta.ua,guru.ua,headinsider.net,hvylya.net,hyser.com.ua,kaktus.site,korupciya.com,love.ua,luxlux.net,mabila.ua,mama.ua,minfin.com.ua,nashasvadba.ua,newsyou.info,novostivmire.com,okino.ua,ostrnum.com,qp.ua,radio24.ua,maximum.fm,rbc.ua,real-vin.com,ringside24.com,segodnya.ua,sinoptik.ua,sinoptik.com.ru,strana.ua,subject.com.ua,toneto.net,tv.ua,ubr.ua,udoktora.net,ukrinform.ua,ukrlib.com.ua,u-news.com.ua,unian.net,vchaspik.ua,vesti.ua,vesti-ukr.com,vmirechudes.com,vsetv.com,woman.ua,zaxid.net#%#var dce = document.createElement.bind(document); document.createElement = function(a) { var el = dce(a); if(a.toLowerCase() == "script") { Object.defineProperty(el, 'textContent', { set: function(i) { /*console.log(i);*/ if(!/function\(mz_str\).*?"[a-z0-9]{100,}"/.test(i)) { Object.getOwnPropertyDescriptor(Node.prototype, 'textContent').set.call(el, i); } }, get: function () { return el.textContent; } }) } return el; };
 ! https://forum.adguard.com/index.php?threads/19366/
 porno-go.com#%#Object.defineProperty(window, 'slo', { get: function(){ return false; } });
 ! PanamaClient WebRTC circumvention
@@ -8112,6 +8112,7 @@ rustorka.com##.post_body > div[align="center"] > a > img
 /(rustorka.com\/forum\/(?!login)(?!tracker)(?!shoutbox)(?!viewtopic)(?!privmsg)(?!search)(?!thanks)(?!posting)(?!profile)).*php/$domain=rustorka.com,popup
 !rustorka.com##a[href$=".php"]:not([class]) > :not(img)
 !
+||auto.ru/cry/Ly9hbi55YW5kZXgucnUvc3lzdGVtL2NvbnRleHRfYWRiLmpz/|$script
 ||free-tor.com/*.php?q=$script
 e.mail.ru###YaDirectLine > div
 e.mail.ru##.mailruVertical > div.item > div > *
