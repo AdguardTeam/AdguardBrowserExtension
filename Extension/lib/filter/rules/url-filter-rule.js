@@ -560,7 +560,7 @@
                     } else if (optionName[0] === api.FilterRule.NOT_MARK && optionName.substring(1) in UrlFilterRule.contentTypes) {
                         restrictedContentType |= UrlFilterRule.contentTypes[optionName.substring(1)]; // jshint ignore:line
                     } else if (optionName in UrlFilterRule.ignoreOptions) { // jshint ignore:line
-                        // Ignore
+                        // Ignore others
                     } else {
                         throw 'Unknown option: ' + optionName;
                     }
@@ -572,6 +572,12 @@
         }
         if (restrictedContentType > 0) {
             this.restrictedContentType = restrictedContentType;
+        }
+
+        if (this.permittedContentType === UrlFilterRule.contentTypes.CONTENT
+            || this.restrictedContentType === UrlFilterRule.contentTypes.CONTENT) {
+            //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/719
+            throw 'Single $content option rule is ignored: ' + this.ruleText;
         }
     };
 
@@ -593,6 +599,7 @@
     UrlFilterRule.EMPTY_OPTION = "empty";
     UrlFilterRule.REPLACE_OPTION = "replace"; // Extension doesn't support replace rules, $replace option is here only for correctly parsing
     UrlFilterRule.CSP_OPTION = "csp";
+    UrlFilterRule.CONTENT_OPTION = "content";
 
     UrlFilterRule.contentTypes = {
 
@@ -610,6 +617,7 @@
         WEBSOCKET: 1 << 10,
         WEBRTC: 1 << 11,
         CSP: 1 << 12,
+        CONTENT: 1 << 13,
 
         ELEMHIDE: 1 << 20,      //CssFilter cannot be applied to page
         URLBLOCK: 1 << 21,      //This attribute is only for exception rules. If true - do not use urlblocking rules for urls where referrer satisfies this rule.
@@ -635,9 +643,7 @@
         // Unused modifiers
         'COLLAPSE': true,
         '~COLLAPSE': true,
-        '~DOCUMENT': true,
-        // http://adguard.com/en/filterrules.html#advanced
-        'CONTENT': true
+        '~DOCUMENT': true
     };
 
     // jshint ignore:start
