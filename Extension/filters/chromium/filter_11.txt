@@ -1,8 +1,8 @@
-! Checksum: 0+E4J4cSDuesJg9kIwm0Qw
+! Checksum: ntJ2BAXBOfKHWbAu0fwE+g
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 1.0.8.23
-! TimeUpdated: 2017-05-02T18:01:37.041+04:00
+! Version: 1.0.8.68
+! TimeUpdated: 2017-06-06T18:02:30.709+04:00
 ! Expires: 2 days (update frequency)
 ! Title: Adguard Mobile Ads Filter
 !
@@ -33,6 +33,55 @@
 ||banners-slb.mobile.yandex.net^
 ||banners.mobile.yandex.net^
 !
+||ad.period-calendar.com^
+||dc.altamob.com^
+||cpactions.com^
+||native.cli.bz^
+||adplatform.vrtcal.com^
+||appodealx.com^
+||go.vrvm.com^
+||c.vrvm.com^
+||cls.vrvm.com^
+||nycp-hlb.dvgtm.akadns.net^
+||abbott.vo.llnwd.net^
+||advantech.vo.llnwd.net^
+||atkins.vo.llnwd.net^
+||bandai.hs.llnwd.net^
+||behance.vo.llnwd.net^
+||edwlifes.vo.llnwd.net^
+||embanet.vo.llnwd.net^
+||eyewond.hs.llnwd.net^
+||finedesign.vo.llnwd.net^
+||gulfstream.vo.llnwd.net^
+||gymboree.hs.llnwd.net^
+||harvardbp.vo.llnwd.net^
+||hbpub.vo.llnwd.net^
+||icvdm.vo.llnwd.net^
+||inskin.vo.llnwd.net^
+||kjos.vo.llnwd.net^
+||msbmopod.vo.llnwd.net^
+||msbrandent.vo.llnwd.net^
+||navigon.vo.llnwd.net^
+||nytelecom.vo.llnwd.net^
+||rbb.ic.llnwd.net^
+||responsys.hs.llnwd.net^
+||surveyor.vo.llnwd.net^
+||synthes.vo.llnwd.net^
+||teachscape.vo.llnwd.net^
+||textron.vo.llnwd.net^
+||tmz.vo.llnwd.net^
+||toyota.vo.llnwd.net^
+||usarmy.vo.llnwd.net^
+||videoplus.vo.llnwd.net^
+||wdig.vo.llnwd.net^
+||xmpie.vo.llnwd.net^
+||appnext.hs.llnwd.net^
+||sdk.adincube.com^
+||ads.avocarrot.com^
+||adsdk.vrvm.com^
+||moatads.com.edgekey.net^
+||nexage.akadns.net^
+||a.applvn.com^
 ||listat.biz^
 ||buzzad.io^
 ||adslot.uc.cn^
@@ -754,6 +803,8 @@
 ! https://github.com/AdguardTeam/AdguardForiOS/issues/255
 @@||m.beautypageants.in^$elemhide
 !---
+! https://github.com/AdguardTeam/AdguardFilters/issues/5033
+@@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=dthforum.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4732
 @@/popunder*.js$domain=kissanime.ru
 @@/adlabs.js$domain=kissanime.ru
@@ -818,11 +869,8 @@ westseattleblog.com#@#.header-ad
 !
 ! Extended CSS rules
 !
-! https://github.com/AdguardTeam/AdguardFilters/issues/4836
-spaces.ru###index_page > div[class][id][-ext-has='div[class][id] > a[href^="http://spaces.ru/index/reklama/?"]']
-spaces.ru###index_page > div[class][id][-ext-has='> div[class][id] > div > script[src^="http://mtdata"]']
-spaces.ru###main_content_block > div.content_wrap > div[class]:not([id])[-ext-has='> div[id][class] > img[src^="//counter"]']
-spaces.ru###main_content div.cont_usr[-ext-has='a.ico_close_btn[href^="http://spaces.ru/app/close_notify/?link_id="]']
+! Context ads in Yandex search results
+yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by,yandex.com.tr##.main > div.serp-list > div.serp-item[-ext-has='> div.organic > h2 > a[href^="http://yabs.yandex.ru/count/"]']
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3218
 lenfilm.tv##body > div.rek[-ext-has="div"]
 ! https://forum.adguard.com/index.php?threads/20680/
@@ -843,6 +891,8 @@ m.reddit.com##article[class="Post size-compact"][-ext-has=".PostHeader__sponsore
 !--- popular banner sizes ---
 ##img[width="320"][height="50"]
 ##iframe[width="320"][height="50"]
+! AMP websites ad container class
+##.amp-ad container
 !---------------------------------------------------------------------------!
 !-------------- General javascript, CSS and HTML extensions ----------------!
 !---------------------------------------------------------------------------!
@@ -869,6 +919,8 @@ sasisa.ru#%#AG_onLoad(function() { window.Umobi = function() {}; });
 !-------------------
 !-------CSS---------
 !-------------------
+! https://forum.adguard.com/index.php?threads/22273/
+skymetweather.com#$#.ui-mobile-viewport { padding-bottom: 0px!important; }
 ! Яндекс.Телепрограмма
 m.tv.yandex.ua,m.tv.yandex.ru#$#.adv-manager { position: absolute!important; left: -3000px!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4453
@@ -950,6 +1002,10 @@ deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important
 @@||tf-robots.nl^$elemhide,jsinject,content
 !
 !#####################
+! https://github.com/AdguardTeam/AdguardFilters/issues/4965
+@@||nzherald.co.nz^$elemhide,jsinject
+! https://github.com/AdguardTeam/AdguardFilters/issues/5005
+@@||doc.echoban.ru/delivery/spcjs.php?id=1$domain=echo.msk.ru|doc.echoban.ru
 ! https://forum.adguard.com/index.php?threads/21029/
 @@||pubads.g.doubleclick.net/gampad/ads?env=vp&gdfp_req=1&output=xml_vast*&url=http%3A%2F%2Famp.usatoday.com
 @@||players.brightcove.net/*/index.html?videoId=$domain=amp.usatoday.com
@@ -1147,6 +1203,31 @@ m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"
 ! https://forum.adguard.com/index.php?threads/10464/
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
 !
+dictionary.cambridge.org##div[id^="ad_topslot"]
+skymetweather.com##.stickyfooter
+m.bild.de##.promotion_collection
+m.waz-online.de##.pdma-adaside
+techradar.com###content > div.slotify-slot[style]
+tube8.com##body top-adblock
+autoexperience.de##body > div.ui-page > br:first-child
+autoexperience.de##body > div.ui-page > br:first-child + div#AdMobileAdxTop + br
+edition.cnn.com##div[data-bundle="adzones"]
+edition.cnn.com##.zn-body__read-more-outbrain
+edition.cnn.com##.zn-story-bottom-second
+edition.cnn.com##section[id^="ad-spon-"]
+trustedreviews.com##.ebay-deals-container
+trustedreviews.com###dfpIdtop
+mobil.ruhrnachrichten.de###ivwblock > img[src*="vgwort.de"]
+drive2.ru##.c-transformers-banner
+||drive2.ru/assets/*/banner.html
+gofeminin.de##.af-block-native
+gofeminin.de##.story-ad-mobile
+gadgethacks.com##.fixed-height-features+aside.whtaph-rightbox.whtaph-600
+m.academyvn.com##.float-ck
+touch.otvet.mail.ru##.mailru-visibility-check > div.ad
+rbc.ru##.banner__container
+winfuture.mobi##iframe[src*="_adcode_"]
+gutefrage.net##.AdSticky
 gadgets360.com,ndtv.com##div[data-google-ad="googlead"]
 m.news.de##p.articleTeaser+div[style="height: 500px"]
 dbquiz.bhaskar.com##.Q_topad
@@ -1354,7 +1435,6 @@ eastmoney.com##div[class^="ban"]
 dreamfilmhd.sh##div[class^="mob-slider"]
 mobilesyrup.com##div[class^="mobile-ads"]
 sinoptik.ua##div[class^="rozetka"]
-rtl.de##div[class^="rtlde-medium-rectangle"]
 ticotimes.net##div[class^="ticot-"]
 piluli.ru##div[class^="ya_adv_"]
 nordbayern.de##div[id*="-mobile-ad-"]
@@ -1434,6 +1514,10 @@ auth.wi-fi.ru##.c-fullscreen-banner
 ||googleads.g.doubleclick.net/mads/gma?carrier=$app=com.devexpert.weather,important,replace=/\<script\>[\s\S]*\<\/script\>/
 !
 ! Blocking of Facebook ads
+||graph.facebook.com^$app=com.balysv.loop
+||graph.facebook.com^$app=org.aastudio.games.longnards
+||graph.facebook.com^$app=com.flyersoft.moonreader
+||graph.facebook.com^$app=com.sofascore.results
 ||graph.facebook.com^$app=com.textra
 ||graph.facebook.com^$app=es.rafalense.themes
 ||graph.facebook.com^$app=com.xoopsoft.apps.bundesliga.free
@@ -1458,6 +1542,17 @@ auth.wi-fi.ru##.c-fullscreen-banner
 ||graph.facebook.com^$app=com.cmplay.cellconnect
 ||graph.facebook.com^$app=com.apxsoft.dodonpachi_gg
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/5248
+||global.appnext.com/offerWallApi.aspx
+! https://github.com/AdguardTeam/AdguardFilters/issues/3346
+||api.ebay-kleinanzeigen.de/api/ads.json*^q=$app=com.ebay.kleinanzeigen,replace=/"(adsense|ecn|native-ad)"/"x\$1"/
+! https://forum.adguard.com/index.php?threads/le-bon-coin-apk-from-googleplay.18840/
+! fix ?ad_id= in Liste FR
+@@||mobile.leboncoin.fr/templates/api/view.json?ad_id=$app=fr.leboncoin
+! https://github.com/AdguardTeam/AdguardFilters/issues/5191
+||104.199.8.250^*/webservices/getDialogAdDetails.php
+! https://forum.adguard.com/index.php?threads/21611/
+||todayweather.co/ads.json
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4901
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$app=com.makonda.blic
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4898
@@ -1664,6 +1759,19 @@ auth.wi-fi.ru##.c-fullscreen-banner
 !
 ! Section contains rules for mobile analytics and spyware
 !
+||analytics-tracker.thescore.com^
+||app.roximity.com^
+||dc.webtrends.com^
+||report.appmetrica.webvisor.com^
+||api.oneaudience.com^
+||api.gameofwhales.com^
+||geoplugin.net^
+||d.applvn.com^
+||rt.applvn.com^
+||sdklogs.avocarrot.com^
+||ip-api.com^$domain=~ip-api.com
+||apiv2.moengage.com^
+||rt.applovin.com^
 ||track.uc.cn^
 ||uc.ucweb.com^
 ||puds.ucweb.com^
@@ -1726,7 +1834,6 @@ auth.wi-fi.ru##.c-fullscreen-banner
 ||4seeresults.com^
 ||abcd.mdc.akamaized.net/materials/index/?country=
 ||abtest.mistat.xiaomi.com^
-||acompli.helpshift.com^
 ||ad-analytics-bootstrap.metaps.com^
 ||adash.m.taobao.com/rest/sur?ak=
 ||adfuture.cn^
@@ -1909,6 +2016,8 @@ auth.wi-fi.ru##.c-fullscreen-banner
 ! Section contains rules, which absent in mobile version of filters
 !
 !--- Russian filter ---
+! https://github.com/AdguardTeam/AdguardFilters/issues/5009
+ekurilka.ua##a[href^="https://ekurilka.ua/rbs_banner.php"]
 ! 4pda.ru ads
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4692
 forum.exploit.in##body > div > table[align="center"] a[rel$="nofollow"] > img

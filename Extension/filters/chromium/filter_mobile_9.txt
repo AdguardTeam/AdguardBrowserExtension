@@ -1,14 +1,15 @@
-! Checksum: jjtSL6HSZkTNd5kRmD0wSg
+! Checksum: JtVYqw87sR6TpXiznz00HQ
 ! Title: Spanish/Portuguese filter
 ! Description: Adguard Spanish/Portuguese filter. Filter list that specifically removes adverts on Spanish and Portuguese language websites.
-! Version: 1.0.86.64
-! TimeUpdated: 2017-04-28T07:01:37.649+04:00
+! Version: 1.0.86.68
+! TimeUpdated: 2017-05-31T09:09:21.823+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+||waycash.net^$third-party
 ||184.106.248.76^
 ||200.72.40.46^$third-party
 ||abril.lojaabril.com^*/abrilcom/$third-party
@@ -139,6 +140,9 @@
 ||xclk-integracion.com^$third-party
 ||yestorrents.org^$third-party
 ||zebestof.com^$third-party
+bludv.com#%#Object.defineProperty(window,'bsaAQyLSuO',{get:function(){},set:function(){throw"Adguard: stopped a script execution."}});
+||uol.com.br/camaleao/assets/web/javascript/detectadblock/detectadblock.js$important
+@@||player.animeid.io/static/ads.js
 @@||connect-trojan.net^$generichide
 zonasports.me#%#var baseCreateElement = document.createElement.bind(document); document.createElement = function(name) { var el = baseCreateElement(name); if(name != 'span') { return el; } else { Object.defineProperty(el, 'innerHTML', { set: function(text) { if(/^(<a id="[^"]*"><\/a>)*$/.test(text)) { throw new Error(); } Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML').set.call(el, text); }, get: function() { return el.innerHTML; } }); return el; }};
 @@||tabletsesmartphones.org^$generichide
@@ -250,6 +254,7 @@ mangahost.net##.sidebar > section.clearfix[-ext-has='div.ads']
 ##.standard-ad
 ##.video_ads_overdiv
 ##[href^="http://ads.glispa.com/"]
+bludv.com#%#Object.defineProperty(window, 'puShown', { get: function() { return true; } });
 -publicidad-
 -publicidad/
 -publicidade.
@@ -340,6 +345,12 @@ _publicidade.
 _publicidade_
 _publicitario.
 http://adw.
+uol.com.br##.lista-ecommerce
+uol.com.br###banner-stick
+animeid.io###divFloatRight
+abril.com.br##div[id^="ad_"]
+abril.com.br##.ad-sense
+abril.com.br##.widget-superbanner
 ||mocosoft.com/cialis.jpg
 ||mocosoft.com/cpiu.gif
 mocosoft.com##table[bgcolor="red"]

@@ -1,8 +1,8 @@
-! Checksum: jOgMRoqwGVkYWvhWwi0ovA
+! Checksum: g3w/TdwngmA3FzeUpHp5Yw
 ! Title: Spanish/Portuguese filter
 ! Description: Adguard Spanish/Portuguese filter. Filter list that specifically removes adverts on Spanish and Portuguese language websites.
-! Version: 1.0.86.64
-! TimeUpdated: 2017-04-28T07:01:37.649+04:00
+! Version: 1.0.86.68
+! TimeUpdated: 2017-05-31T09:09:21.823+04:00
 ! Expires: 2 days (update frequency)
 ! Title: Adguard Spanish/Portuguese Filter.
 !
@@ -31,6 +31,7 @@
 !
 ! Section contains list of advertising networks
 !
+||waycash.net^$third-party
 ||184.106.248.76^
 ||200.72.40.46^$third-party
 ||abril.lojaabril.com^*/abrilcom/$third-party
@@ -167,6 +168,13 @@
 !
 ! These rules are against anti-adblock scripts
 !
+! antiblock.org
+bludv.com#%#Object.defineProperty(window,'bsaAQyLSuO',{get:function(){},set:function(){throw"Adguard: stopped a script execution."}});
+!
+! uol.com.br antiadblock
+||uol.com.br/camaleao/assets/web/javascript/detectadblock/detectadblock.js$important
+! https://forum.adguard.com/index.php?threads/21915/
+@@||player.animeid.io/static/ads.js
 ! https://forum.adguard.com/index.php?threads/21090/
 @@||connect-trojan.net^$generichide
 ! https://forum.adguard.com/index.php?threads/http-zonasports-me.20289/
@@ -321,6 +329,8 @@ mangahost.net##.sidebar > section.clearfix[-ext-has='div.ads']
 !------- JS rules ---------------------!
 !--------------------------------------!
 !
+! puOverlay, puShown
+bludv.com#%#Object.defineProperty(window, 'puShown', { get: function() { return true; } });
 !--------------------------------------!
 !------- CSS fixes --------------------!
 !--------------------------------------!
@@ -438,6 +448,12 @@ http://adw.
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
 !
+uol.com.br##.lista-ecommerce
+uol.com.br###banner-stick
+animeid.io###divFloatRight
+abril.com.br##div[id^="ad_"]
+abril.com.br##.ad-sense
+abril.com.br##.widget-superbanner
 ||mocosoft.com/cialis.jpg
 ||mocosoft.com/cpiu.gif
 mocosoft.com##table[bgcolor="red"]

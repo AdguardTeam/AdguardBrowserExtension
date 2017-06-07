@@ -1,8 +1,8 @@
-! Checksum: U+J5FXaC7JQ3W8KVCtBDtQ
+! Checksum: iiGgMN5zcK60fLUZlWXuhA
 ! Title: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
-! Version: 1.0.2.99
-! TimeUpdated: 2017-05-02T16:02:01.788+04:00
+! Version: 1.0.3.46
+! TimeUpdated: 2017-06-07T03:01:47.231+04:00
 ! Expires: 2 days (update frequency)
 ! Title: Adguard Safari Filter
 !
@@ -17,6 +17,9 @@
 !
 ! Section contains list of advertising networks
 !
+||adexec.net^$popup
+||0912701309f8ce.com^$popup
+||d71e6dd31a026d45.com*^$popup
 ||307cc283bab2ffdec92.com^
 ||xdbwc.com^
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3656
@@ -38,10 +41,47 @@
 ! These rules are against anti-adblock scripts
 !
 !****** TEMPORARY ******
-! https://github.com/AdguardTeam/AdguardFilters/issues/3821
 !
 !***********************
 !
+! https://forum.adguard.com/index.php?threads/clkmein-com.22184/
+@@||clkmein.com^$generichide
+! https://github.com/AdguardTeam/AdguardFilters/issues/5162
+@@||business-tv.me^$generichide
+! https://forum.adguard.com/index.php?threads/22117/
+@@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=cokomik.net
+@@||pagead2.googlesyndication.com/pagead/js/*/show_ads_impl.js$domain=cokomik.net
+cokomik.net#@#.adsbygoogle
+! https://forum.adguard.com/index.php?threads/22028/
+@@||gamedev.net^$generichide
+! https://github.com/AdguardTeam/AdguardFilters/issues/5090
+@@||arkforum.de^$generichide
+! https://forum.adguard.com/index.php?threads/22031/
+@@||appdrop.net^$generichide
+! https://forum.adguard.com/index.php?threads/22030/
+@@||chelsea24news.pl^$generichide
+! https://forum.adguard.com/index.php?threads/pikio-pl.22007/
+@@||pikio.pl^$generichide
+! https://forum.adguard.com/index.php?threads/hiding-the-use-of-adguard.21983/#post-138159
+@@||gestyy.com^$generichide
+! minigames.mail.ru - ads replacement script
+minigames.mail.ru##yatag *
+@@||an.yandex.ru/page/*?target-ref=$domain=minigames.mail.ru
+@@||an.yandex.ru/resource/context_static_r_*.js$domain=minigames.mail.ru
+@@||an.yandex.ru/system/context.js$domain=minigames.mail.ru
+! https://forum.adguard.com/index.php?threads/motorradonline-de.21544/
+motorradonline.de#@#.mps-banner
+@@||motorradonline.de^$generichide
+! https://forum.adguard.com/index.php?threads/21564/
+@@||it-times.de^$generichide
+! https://github.com/AdguardTeam/AdguardFilters/issues/4920
+mathb-ege.sdamgia.ru##.content >div[style="margin-bottom:20px"] > div[style="width:728px;margin:auto"]+div
+! http://freetvall.com/video/9kb116rwshsb/motors-tv http://www.estadiofutebol.com/gratis/motorstv
+@@||ib.adnxs.com/tt^$domain=televisaofutebol.com
+televisaofutebol.com#@#iframe[width="300"][height="250"]
+! https://github.com/AdguardTeam/AdguardFilters/issues/4906
+@@||mobilesringtones.com^$generichide
+@@||cdnjs.cloudflare.com/ajax/libs/fuckadblock/*/fuckadblock.min.js$domain=mobilesringtones.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4899
 @@||susutin.com^$generichide
 ! https://forum.adguard.com/index.php?threads/deezer-com-antiadblock.21269/
@@ -55,12 +95,13 @@
 @@||computerworm.net^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4767
 ! BlockAdBlock
-@@||bannertrack.net^$script,other,domain=animmex.tv|finalservers.net
-@@||adnetasia.com^$script,other,domain=animmex.tv|finalservers.net
-@@||adclixx.net^$script,other,domain=animmex.tv|finalservers.net
-@@*.ico$domain=animmex.tv|finalservers.net
-@@||adtrackers.net^$script,other,domain=animmex.tv|finalservers.net
+@@||bannertrack.net^$script,other,domain=animmex.tv|finalservers.net|freeomovie.com|cmacapps.com
+@@||adnetasia.com^$script,other,domain=animmex.tv|finalservers.net|freeomovie.com|cmacapps.com
+@@||adclixx.net^$script,other,domain=animmex.tv|finalservers.net|freeomovie.com|cmacapps.com
+@@*.ico$domain=animmex.tv|finalservers.net|freeomovie.com|cmacapps.com
+@@||adtrackers.net^$script,other,domain=animmex.tv|finalservers.net|freeomovie.com|cmacapps.com
 @@||finalservers.net^$generichide
+@@||freeomovie.com^$generichide
 ! https://forum.adguard.com/index.php?threads/20240/
 @@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=broadbandforum.co
 @@||broadbandforum.co$generichide
@@ -93,14 +134,16 @@
 !* impspcabe clickunder
 @@/path/ads/ads.js|
 ||bambergerkennanchitinous.com/.adframesrc.
+@@||bambergerkennanchitinous.com/.adframesrc.
 @@||adsrvgateway.com/.adframesrc.
 @@||imprisonemblemhoosier.com/path/ads/ads.js
 @@||requiredcollectfilm.info/path/ads/ads.js
 @@||linoleictanzaniatitanic.com/path/ads/ads.js
-@@.adframesrc.$domain=votrube.ru|tumejortorrent.com|soundpark.pw|hentai-id.tv|salefiles.com
+@@.adframesrc.$domain=votrube.ru|tumejortorrent.com|soundpark.pw|hentai-id.tv|salefiles.com|convertfiles.com
 @@/ads/ad$domain=pipec.ru|xyya.net|pandamovie.net|streamgaroo.com|vidzi.tv|befuck.com
 @@||adstreet.tech/*ad$domain=befuck.com
 @@.adcenter.$domain=mcfucker.com|losmovies.club|rapidvideo.com|subs.ro
+@@||convertfiles.com^$generichide
 @@||watchvideo.us^$generichide
 @@||salefiles.com$generichide
 @@||soundpark.pw^$generichide
@@ -436,6 +479,8 @@ eenadu.net#@##body_ad
 !----- General URL blocking rules ------
 !
 !----- Rules for specific websites -----
+! https://forum.adguard.com/index.php?threads/21789/
+vk.com##._ads_promoted_post_data_w
 ! https://forum.adguard.com/index.php?threads/21094/
 dnepr.info##.item-bg
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3944
@@ -481,6 +526,25 @@ meddaily.ru##div[style="width: 240px; background-color: White;"]
 !***
 !******
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/5149
+convertfiles.com###advertisement_section
+convertfiles.com##div[id^="div-gpt-ad"]
+! https://github.com/AdguardTeam/AdguardFilters/issues/5121
+tchgdns.de##.footer-pub
+tchgdns.de##.header-pub
+! https://github.com/AdguardTeam/AdguardFilters/issues/5091
+||goo.gl^$domain=paklight-sharing.com,popup
+! https://github.com/AdguardTeam/AdguardFilters/issues/5025
+gesundheit.de##.adsense
+! https://github.com/AdguardTeam/AdguardFilters/issues/5006
+macrumors.com##.ad
+! sports.ru
+sports.ru##a[href^="http://media-rotate.com"]
+sports.ru##.bonuses-aside
+/\/\/s5o.ru\/source\/_desktop\/assets\/[0-9][0-9][0-9][0-9].(jpg)/$domain=sports.ru,image
+/\/\/s5o.ru\/source\/_desktop\/assets\/[0-9].(jpg)/$domain=sports.ru,image
+/\/\/s5o.ru\/source\/_desktop\/assets\/[0-9][0-9][0-9][0-9].(png)/$domain=sports.ru,image
+/\/\/s5o.ru\/source\/_desktop\/assets\/[0-9].(png)/$domain=sports.ru,image
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4764
 o2.pl##div[data-st-area="ST-Article-Body"] > div._1-MSN > div[style*="width: 970px;"]
 o2.pl##div[data-st-area="ST-Article-Body"] > div._1-MSN+div > div[style="padding-top: 20px;"] > div[class] > div[style*="height: 600px;"]
@@ -580,6 +644,27 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 !
 ! White list. Fixing content blocking API issues.
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/5095
+@@||gumtree.com.au/p-post-ad*.html
+! https://forum.adguard.com/index.php?threads/21858/
+@@||engine.admelon.ru/c?pid=$domain=argumenti.ru
+@@||engine2.admelon.ru/c?pid=$domain=argumenti.ru
+! rarbg - сhoose popup instead of popunder. Popup will be blocked.
+@@||dyncdn.me/static/20/js/expla*.js$domain=rarbg.to|rarbg.unblocked.work|rarbgmirror.com
+! https://github.com/AdguardTeam/AdguardBrowserExtension/issues/678
+! Prevent self-blocking of Adguard for Safari extension
+@@safari-extension://com.adguard.safari-$document
+@@safari-extension://com.adguard.safaridev-$document
+! https://github.com/AdguardTeam/AdguardFilters/issues/3460
+@@||motherlessmedia.com^$domain=motherless.com
+! Fixing Depositfiles
+@@://dfiles.ru^$domain=dfiles.ru,~third-party
+@@://dfiles.eu^$domain=dfiles.eu,~third-party
+@@://depositfiles.org^$domain=depositfiles.org,~third-party
+@@://depositfiles.com^$domain=depositfiles.com,~third-party
+! https://github.com/AdguardTeam/AdguardFilters/issues/4832
+! Player is broken, when video is blocked
+@@||pipki.r.worldssl.net/media/*$domain=allmovie.tv
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4859
 @@|blob:https://www.twitch.tv
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4772
@@ -814,33 +899,60 @@ youtube.com#%#(function () {try {var youtubeAdRegExp = /^((.*_)?(ad|ads|afv|adse
 !
 ! ---------------------------------------------------------------
 ! Url exception rules
-@@/fuckadblock.js^$~third-party,domain=anigod.com|gryfindor.com|kflix.tv|netmics.com
-@@/js/ads.js^$domain=anigod.com|gryfindor.com|kflix.tv|netmics.com
+@@/fuckadblock.js^$~third-party,domain=anigod.com|anigod.org|kflix.tv|netmics.com|deepanda.com|deepanda.io|deepanda.net|deepanda.org|deeppanda.com|deeppanda.io|deeppanda.net|deeppanda.org|amazooon.website|apppple.website|awscontent.com|facebooook.website|goooooooogle.website|iiinstagram.website|kakaooo.website|netflixxx.website|oderk.com|teslaaa.website|teslacdn.com|twittter.website|unknowncdn.com|youtubbe.website
+@@/js/ads.js^$domain=anigod.com|anigod.org|kflix.tv|netmics.com|deepanda.com|deepanda.io|deepanda.net|deepanda.org|deeppanda.com|deeppanda.io|deeppanda.net|deeppanda.org|amazooon.website|apppple.website|awscontent.com|facebooook.website|goooooooogle.website|iiinstagram.website|kakaooo.website|netflixxx.website|oderk.com|teslaaa.website|teslacdn.com|twittter.website|unknowncdn.com|youtubbe.website
 @@/skin/images/fuckadblock.js^$domain=10games.tistory.com|money2015.tistory.com|mongri.net
 @@||ads-optima.com/www/delivery/ajs.php?zoneid=3686^$domain=sportsseoul.co.kr|sportsseoul.com
 @@||adverweb.cjenm.com/vod.mezzo/$domain=m.tving.com
 @@||cc.naver.com/cc^$image
 @@||pagead2.googlesyndication.com/pagead/show_ads.js^$domain=sportsseoul.co.kr|sportsseoul.com
+@@||tab2.clickmon.co.kr/pop/wp_ad_728_js.php^$domain=ilsangt.tistory.com
 !@@||tvcast.naver.com/resources/*/clickcr_*.js^ - until Adguard browser extensions suppport $empty modifier
 @@||wcs.naver.net/wcslog.js^
 @@||web.n2s.co.kr/js/_n2s_ygosu_$domain=ygosu.com
 ! Element hiding exception rules
 @@||10games.tistory.com^$generichide
-@@||anigod.com^$generichide
 @@||caskers.tistory.com^$generichide
+@@||fmgunzo.tistory.com^$generichide
 @@||frostfire.tistory.com^$generichide
-@@||gryfindor.com^$generichide
 @@||jimnong.tistory.com^$generichide
-@@||kflix.tv^$generichide
+@@||koreapas.com^$generichide
 @@||lalawin.com^$generichide
 @@||lalawin.tistory.com^$generichide
+@@||linsoo.co.kr^$generichide
 @@||minitoon.net^$generichide
 @@||money2015.tistory.com^$generichide
 @@||mongri.net^$generichide
-@@||netmics.com^$generichide
 @@||pinaya.center^$generichide
+@@||ruinses.tistory.com^$generichide
 @@||ssulwar.com^$generichide
 @@||te31.com^$generichide
+@@||anigod.com^$generichide
+@@||anigod.org^$generichide
+@@||kflix.tv^$generichide
+@@||netmics.com^$generichide
+@@||deepanda.com^$generichide
+@@||deepanda.io^$generichide
+@@||deepanda.net^$generichide
+@@||deepanda.org^$generichide
+@@||deeppanda.com^$generichide
+@@||deeppanda.io^$generichide
+@@||deeppanda.net^$generichide
+@@||deeppanda.org^$generichide
+@@||amazooon.website^$generichide
+@@||apppple.website^$generichide
+@@||awscontent.com^$generichide
+@@||facebooook.website^$generichide
+@@||goooooooogle.website^$generichide
+@@||iiinstagram.website^$generichide
+@@||kakaooo.website^$generichide
+@@||netflixxx.website^$generichide
+@@||oderk.com^$generichide
+@@||teslaaa.website^$generichide
+@@||teslacdn.com^$generichide
+@@||twittter.website^$generichide
+@@||unknowncdn.com^$generichide
+@@||youtubbe.website^$generichide
 @@||time.navyism.com^$generichide
 @@||wasabisyrup.com^$generichide
 !
@@ -849,8 +961,18 @@ prettygom.com,whria.net#@#.adsense
 ! Url blocking rules
 ||melon.com/mlog.js^
 ! Element hiding rules
+koreapas.com##ins.adsbygoogle
 lalawin.com,lalawin.tistory.com##.adsbygoogle
 mongri.net##.sidebar_adsense
+reblogit.tistory.com#@##AD2line
+reblogit.tistory.com#@##ADbox
+reblogit.tistory.com#@##ad_close
+reblogit.tistory.com#@##ads
+reblogit.tistory.com#@##adsense
+reblogit.tistory.com#@##adsimage
+reblogit.tistory.com#@##pencil-ad
+reblogit.tistory.com#@##vListAds
+reblogit.tistory.com#@##vid-left-ad
 time.navyism.com##div > .adsbygoogle
 zangsisi.net###head-menu > .wrapper > a[href$="=zangsisi"]
 zangsisi.net##A[href^="http://www.bondisk.com/?ad=zangsisi"]

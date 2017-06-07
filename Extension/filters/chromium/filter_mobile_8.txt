@@ -1,8 +1,8 @@
-! Checksum: 2kL+2MsKXknJD/M05tKPxA
+! Checksum: KdRkiCKM19snJEtyTnPNUA
 ! Title: Dutch filter
 ! Description: EasyList Dutch + Adguard Dutch filter. Filter list that specifically removes adverts on Dutch language websites.
-! Version: 1.0.9.26
-! TimeUpdated: 2017-05-02T15:01:15.882+04:00
+! Version: 1.0.9.28
+! TimeUpdated: 2017-06-05T23:01:12.506+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -1290,6 +1290,7 @@ kamernet.nl#@#.topAdd
 voetbalnieuws.be#@#a[href^="http://adserving.unibet.com/"]
 tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
 ||wwa.pacific-yield.com^$third-party
+vogelgeluid.nl#@##banner_ad
 @@/ad_bomb/*$image,domain=computerworld.nl|webwereld.nl
 @@||telegraaf.tcdn.nl/javascript/ads/*$domain=telegraaf.nl,third-party
 telegraaf.nl#%#window.canRunAds = true;
