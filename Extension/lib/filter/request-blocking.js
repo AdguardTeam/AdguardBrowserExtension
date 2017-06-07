@@ -148,7 +148,7 @@ adguard.webRequestService = (function (adguard) {
 
         var requestRule = getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
 
-        adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
+        postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
 
         return isRequestBlockedByRule(requestRule);
     };
@@ -390,6 +390,7 @@ adguard.webRequestService = (function (adguard) {
         getCspRules: getCspRules,
         processRequestResponse: processRequestResponse,
         postProcessRequest: postProcessRequest,
+        recordRuleHit: recordRuleHit,
         onRequestBlocked: onRequestBlockedChannel
     };
 
