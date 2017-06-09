@@ -293,11 +293,11 @@ var ElementCollapser = (function() { // jshint ignore:line
                 var srcAttribute = element.getAttribute('src');
                 var srcSelector = createSelectorForSrcAttr(srcAttribute, tagName);
                 hideBySelectorAndTagName(srcSelector, tagName, shadowRoot);
-            }
 
-            // Remove important priority from element style
-            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/733
-            clearElStylesPriority(element, ['display', 'visibility', 'height', 'min-height']);
+                // Remove important priority from element style
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/733
+                clearElStylesPriority(element, ['display', 'visibility', 'height', 'min-height']);
+            }
 
             // Do not process it further in any case
             return;
