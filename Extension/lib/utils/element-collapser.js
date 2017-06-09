@@ -266,7 +266,6 @@ var ElementCollapser = (function() { // jshint ignore:line
             var elCssPriority = elementStyle.getPropertyPriority(prop);
             if (elCssPriority && elCssPriority.toLowerCase() === 'important') {
                 var elCssValue = elementStyle.getPropertyValue(prop);
-                console.log('remove important' + prop);
                 elementStyle.setProperty(prop, elCssValue, null);
             }
         });
