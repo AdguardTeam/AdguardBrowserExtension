@@ -119,7 +119,8 @@ var ElementCollapser = (function() { // jshint ignore:line
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/346
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/355
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/347
-            hideBySelector(selectorText, "visibility: hidden!important; height: 0px!important;", shadowRoot);
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/733
+            hideBySelector(selectorText, "visibility: hidden!important; height: 0px!important; min-height: 0px!important;", shadowRoot);
         } else {
             hideBySelector(selectorText, null, shadowRoot);
         }
@@ -253,6 +254,24 @@ var ElementCollapser = (function() { // jshint ignore:line
     };
 
     /**
+     * Clears priority for specified styles
+     *
+     * @param element element affected
+     * @param styles array of style names
+     */
+    var clearElStylesPriority = function(element, styles) {
+        var elementStyle = element.style;
+
+        styles.forEach(function (prop) {
+            var elCssPriority = elementStyle.getPropertyPriority(prop);
+            if (elCssPriority && elCssPriority.toLowerCase() === 'important') {
+                var elCssValue = elementStyle.getPropertyValue(prop);
+                elementStyle.setProperty(prop, elCssValue, null);
+            }
+        });
+    };
+
+    /**
      * Collapses specified element.
      *
      * @param element Element to collapse
@@ -274,8 +293,12 @@ var ElementCollapser = (function() { // jshint ignore:line
                 var srcAttribute = element.getAttribute('src');
                 var srcSelector = createSelectorForSrcAttr(srcAttribute, tagName);
                 hideBySelectorAndTagName(srcSelector, tagName, shadowRoot);
+
+                // Remove important priority from element style
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/733
+                clearElStylesPriority(element, ['display', 'visibility', 'height', 'min-height']);
             }
-            
+
             // Do not process it further in any case
             return;
         }
