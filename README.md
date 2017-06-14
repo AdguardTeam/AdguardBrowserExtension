@@ -33,3 +33,7 @@ You will need to put certificate.pem file to the Compiler directory. This build 
 ## How to download a beta version of the extension?
 
 All information related to Adguard beta testing is collected in this [blog article](https://blog.adguard.com/en/adguard-beta-test/). 
+
+## Releases
+
+You can find all Adguard browser extension releases here: https://github.com/AdguardTeam/AdguardBrowserExtension/releases
