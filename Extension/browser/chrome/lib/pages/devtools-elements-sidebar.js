@@ -20,6 +20,7 @@ var browser = window.browser || chrome;
 
 (function ($) {
     var initPanel = function () {
+        initTheme();
         initElements();
         bindEvents();
 
@@ -56,6 +57,13 @@ var browser = window.browser || chrome;
         browser.devtools && browser.devtools.network.onNavigated.addListener(onPageChanged);
 
         onElementSelected();
+    };
+
+    var initTheme = function () {
+        var theme = browser.devtools.panels.themeName;
+        if (theme === 'dark') {
+            $(document.body).addClass('-theme-with-dark-background');
+        }
     };
 
     var initElements = function () {
