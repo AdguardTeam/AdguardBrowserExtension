@@ -314,6 +314,7 @@
             case adguard.listeners.ADD_RULES:
             case adguard.listeners.REMOVE_RULE:
             case adguard.listeners.UPDATE_FILTER_RULES:
+            case adguard.listeners.UPDATE_WHITELIST_FILTER_RULES:
             case adguard.listeners.FILTER_ENABLE_DISABLE:
                 if (handlerBehaviorTimeout !== null) {
                     clearTimeout(handlerBehaviorTimeout);
