@@ -1,8 +1,8 @@
-! Checksum: cSZr4cBXdg7wu3RE01+c8w
+! Checksum: xyl2CMHi7af846+2AYuf4A
 ! Title: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
-! Version: 1.0.20.19
-! TimeUpdated: 2017-06-06T20:00:53.447+04:00
+! Version: 1.0.20.57
+! TimeUpdated: 2017-06-18T00:00:42.951+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -162,7 +162,7 @@
 /goodshare/*
 /heart_it_button.js
 /icons/share.jpg
-/images/social/*
+/images/social/*$domain=~smofast.com|~promin.cv.ua|~rsload.net
 /images/vk.png$domain=~cheater-top.ru|~epicl2.com|~epicwow.com|~monolife.ru|~mos.ru
 /img/facebook.gif
 /img/twitter.gif
@@ -233,6 +233,8 @@ lj_bookmarklet
 otohaber.com.tr##body > .fancybox-container[-ext-has=".lightbox"]
 schwaebische.de##aside > .grey[-ext-has='>div.fb-page']
 filmlobisi.com###sidebar > .sidebarborder[-ext-has='div.g-page']
+habrahabr.ru##.sidebar_right > div.default-block_sidebar[-ext-has="> div.default-block__header > span.default-block__header-title:contains(ВКонтакте)"]
+habrahabr.ru##.sidebar_right > div.default-block_sidebar[-ext-has="> div.default-block__header > span.default-block__header-title:contains(Facebook)"]
 geektimes.ru##.sidebar_right > div.default-block_sidebar[-ext-has="div.default-block__content > div#facebook_like_box"]
 geektimes.ru##.sidebar_right > div.default-block_sidebar[-ext-has="div.default-block__content > div#vk_groups"]
 solidshare.net###dle-content div.cerceve[-ext-has='center > img[src$="/paylas.png"]']
@@ -316,6 +318,47 @@ m.tf.co.kr#$#li.sBtn_reply { float: initial!important; display: inline-block!imp
 ||miladynews.ru/?*=*&_=
 ||mimimi.tv/?*=*&_=
 ||mindspace.ru/?*=*&_=
+motorpage.ru##.float-right.text-center > a[class$="-share"]
+life.ru##.sharing
+dunyatv.az##a[href="http://dunyatv.az/esrin-sedasi/"] > .bloktitle:first-child
+deathandtaxesmag.com##.social-container > .sharrre
+pz-news.de##.nfy-sebox-facebook-like
+tarsusmerhabagazetesi.com##.detail_share_buttons
+cenubxeberleri.com##.slide_likebox
+||olkem.az/wp-content/themes/olkem11/images/sosyal/
+mouse-sensitivity.com##.slContainer
+chernozem.info##.button_more
+dailymail.co.uk##.mol-img > noscript+div[class^="container-"]
+dailymail.co.uk##.shareComment
+||syndication.twimg.com/widgets/$third-party,domain=gazetadaily.ru
+gazetadaily.ru##.socialbox
+altapress.ru##.b-social_like_box
+morgenweb.de##li[title][onclick^="javascript:mmShare"]
+morgenweb.de##.nfy-sticky-icon-more
+||azadliq.az/wp-content/themes/azadliqv1/images/sosyal/
+internethaber.com##.wrt > .si
+ulke.com.tr##.news-sidebar-item.share
+comicbook.com##.social_blk
+narcity.com##body > [class$="-sharer"][id$="-sharer"]
+ucarliyiq.biz##.ui-widget
+ucarliyiq.biz##.widgets-holder > aside[id="zn_text_widget-4"]
+dinamani.com##.Share_Icons
+turystam.in.ua##.likes-block_left
+sonxeber.az##.fbbigshare
+dizimag2.co##a[onclick="fbs_click();sharecount();return false"]
+dizimag2.co##a[onclick="tw_click();return false"]
+oncunatural.com##.theblogwidgets
+oncunatural.com###fbox-background
+socialblade.com##.content-container > div[style^="width: 840px; padding: 10px"]
+wissen.de###block-wissen-socialbar-likebox
+iclarified.com##.article_header_share
+gala.de##.m-sharing
+yerlifilmiizle.net##.pull-right > .widget_recent_comments+div[class="widget-wrapper"]
+nettenfilm.com##.film-share
+cloudyfiles.co##a[href^="javascript:share"]
+fullonlinefilmizle.net##.begeni-social
+volyn24.com##.like-box
+filmionlineizle.net###content > .sidebarnew
 haberturk.com##.bottomSocialBtns
 mobil.berliner-zeitung.de##aside.recommend-article
 mobil.berliner-zeitung.de##.mfb-component--br
@@ -333,7 +376,7 @@ giga.de##.share
 stuttgarter-nachrichten.de##.m-shares
 mobile2.tagesanzeiger.ch##.socialMedia
 tz.de##.id-Actionbox-items-el--whatsapp
-m.morgenpost.de##.socialbar
+morgenpost.de##.socialbar
 pcmag.com###share_container
 schwarzwaelder-bote.de##.social-ext
 rhein-zeitung.de##div.servicebox.html_content[id^="sebox_"]
@@ -556,7 +599,6 @@ medyascope.tv##.social-listing
 medyascope.tv###tab-share
 mockupworld.co##.checkout-share
 otukenim.tv##.sociaPayLasim
-hdfulltekpart.net##.sosyal_buton
 yasam.1001kadin.com##.social
 revolvy.com###quiz_share_btns
 revolvy.com###fb_like_pop
@@ -1926,7 +1968,6 @@ lcpdfr.com##ul[data-controller$="sharelink"]
 ||connect.ok.ru/dk?st.cmd=WidgetShare$domain=gazeta.ua
 ||cumhuriyet.com.tr/image/share_facebook.gif
 ||ddizi1.com/images/twitter.png
-||dizimag.co/insert/i/share_
 ||dizimag1.co/insert/i/share_
 ||eventsfolder.ru/modules/mod_lock/js/jquery.onp.sociallocker.*.js
 ||eventsfolder.ru/templates/ef/js/lockers-ru_*.min.js
@@ -2934,6 +2975,16 @@ designboom.com,livescience.com,pbtech.co.nz,peoplesworld.org,space.com##.fa-face
 /wp-content/plugins/facebook-fanbox-popup/*
 ||cdn-library.su/plusonet/lib/$domain=~pluso.net
 ||mailget.net^$third-party
+kepeztv.az##body > #overlay
+kepeztv.az##body > #frame
+onpress.info##.modalParent
+eadaily.com###like_box
+chernozem.info###social-community-popup
+tvfru.org##.fancybox-wrap
+tvfru.org###fancybox-overlay
+ternopillive.com.ua##.spu-bg
+ternopillive.com.ua##.spu-box
+ogo.ua###aPopup
 tv5.zp.ua###social-community-popup
 seattletimes.com##.facebook-modal
 theonion.ru##.fbpopup
@@ -3080,10 +3131,16 @@ catalogmineralov.ru#$#.modal_window { display: none!important; }
 catalogmineralov.ru#$#body { overflow: visible!important; }
 bomb01.com#$##modal{ display: none!important; }
 bomb01.com#$#.modal-open { overflow: visible!important; }
+@@||apis.google.com/js/api.js$domain=9anime.to
+@@||googlevideo.com/videoplayback?$domain=9anime.to
+@@||blogspot.com^$~image,domain=9anime.to
+@@||mycloud.to/resources/css/
+@@||ajax.googleapis.com/ajax/libs/jquery/*/jquery.min.js$domain=fmovies.is|mycloud.to
+@@//mycloud.to/resources/js/player.js
+@@//mycloud.to/resources/player/jwplayer-*/jwplayer.js
 bie-dro.de#@#.header-social
 @@||ghbtns.com/github-btn.html$domain=etcher.io
 @@||apis.google.com/js/platform.js$domain=9gag.com
-@@||promin.cv.ua/templates/promin/images/social/facebook.gif
 @@||xing-share.com/plugins^$domain=bewerbung.co
 @@||apis.google.com/js/platform.js$domain=geekinformer.net
 @@/engine/classes/min/index.php?*/social-likes.min.js$~third-party
@@ -3094,9 +3151,6 @@ bie-dro.de#@#.header-social
 @@||yastatic.net/share*/share.js$domain=vse.fm|kinogo-720.net|рязанскийкирпич.рф|playground.ru|foxtrot.com.ua|biglion.ru|master-of-orion.ru|auto.ru|ktk.kz|universarium.org|pix.playground.ru
 zenmate.com#@#.social-networks
 @@||apis.google.com/js/plusone.js$domain=watch.nba.com
-@@||smofast.com/theme/default/images/social/
-@@||sdelanounas.ru/app/themes/sdelanounas/images/social/android.png
-@@||sdelanounas.ru/app/themes/sdelanounas/images/social/apple.png
 @@||facebook.com/*/plugins/$domain=dlh.net
 dlh.net#@#.fb-like
 @@||api.facebook.com/method/links.getStats$domain=grammarly.com

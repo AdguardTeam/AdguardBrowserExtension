@@ -1,8 +1,8 @@
-! Checksum: ntJ2BAXBOfKHWbAu0fwE+g
+! Checksum: DEWEwxYRD+md/eXMIjWG8w
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 1.0.8.68
-! TimeUpdated: 2017-06-06T18:02:30.709+04:00
+! Version: 1.0.8.76
+! TimeUpdated: 2017-06-19T14:01:53.800+04:00
 ! Expires: 2 days (update frequency)
 ! Title: Adguard Mobile Ads Filter
 !
@@ -871,6 +871,8 @@ westseattleblog.com#@#.header-ad
 !
 ! Context ads in Yandex search results
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by,yandex.com.tr##.main > div.serp-list > div.serp-item[-ext-has='> div.organic > h2 > a[href^="http://yabs.yandex.ru/count/"]']
+! https://github.com/AdguardTeam/AdguardFilters/issues/5316
+giveawayoftheday.com#$#.middle.cf > .col1.giveaway_day[-ext-matches-css="padding-right: 10px"] { padding-top: 0px!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3218
 lenfilm.tv##body > div.rek[-ext-has="div"]
 ! https://forum.adguard.com/index.php?threads/20680/
@@ -1062,17 +1064,6 @@ m.veporn.net#@##topAds
 @@||forums.windowscentral.com^$script,~third-party
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3310
 @@||android-api-de.gumtree.com/api/users/*/ads.json
-! https://github.com/AdguardTeam/AdguardFilters/issues/3348
-! Extended CSS issue(freeze)
-4pda.ru#@$#body > div:first-child > div[class]:first-child>div[class]:first-child>#header+div[id][-ext-has="div"] { background-image: none !important; }
-4pda.ru#@#div[class^="r"][-ext-has="> header"] > div[class]:first-child
-4pda.ru#@$#body > div[id]:first-child > div[class]:first-child > div[class]:first-child > div[-ext-has="div"] { background: #e6e7e9!important; }
-4pda.ru#@#.sidebar_border_content > a[rel="nofollow"][-ext-has=">img"]
-4pda.ru#@#aside[id] > div[class][-ext-has='div.sidebar_border_content>a>img[height="400"]']
-4pda.ru#@#aside[id] > div[class][-ext-has='h2:contains(AppPromo)']
-4pda.ru#@#div[class^="r"][-ext-has="> header"] > div[class]:first-child
-4pda.ru#@$#body > div:first-child > div[class]:first-child>div[class]:first-child>#header+div[id][-ext-has="div"] { background-image: none !important; }
-4pda.ru#@$#body > div[id]:first-child > div[class]:first-child > div[class]:first-child > div[-ext-has="div"] { background: #e6e7e9!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/1275
 idownloadblog.com#@#.header-ad
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3085
@@ -1203,6 +1194,13 @@ m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"
 ! https://forum.adguard.com/index.php?threads/10464/
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
 !
+udn.com##.only_mobile.mm-slideout
+zdnet.de###pageads_menu
+m.investing.com##.adDrawer.js-swipe-banner
+m.investing.com##.boxItem > [class="mediaItem addUnit"]
+m.investing.com##.boxItem > [class="mediaItem"]:not([data-href])
+online-lernen.levrai.de###advertmitlinks
+netdoktor.de##.ad-container-mobile
 dictionary.cambridge.org##div[id^="ad_topslot"]
 skymetweather.com##.stickyfooter
 m.bild.de##.promotion_collection
@@ -1514,6 +1512,7 @@ auth.wi-fi.ru##.c-fullscreen-banner
 ||googleads.g.doubleclick.net/mads/gma?carrier=$app=com.devexpert.weather,important,replace=/\<script\>[\s\S]*\<\/script\>/
 !
 ! Blocking of Facebook ads
+||graph.facebook.com^$app=com.contapps.android
 ||graph.facebook.com^$app=com.balysv.loop
 ||graph.facebook.com^$app=org.aastudio.games.longnards
 ||graph.facebook.com^$app=com.flyersoft.moonreader
@@ -2016,6 +2015,8 @@ auth.wi-fi.ru##.c-fullscreen-banner
 ! Section contains rules, which absent in mobile version of filters
 !
 !--- Russian filter ---
+! https://github.com/AdguardTeam/AdguardFilters/issues/5276
+dnepr.info##.item-bg
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5009
 ekurilka.ua##a[href^="https://ekurilka.ua/rbs_banner.php"]
 ! 4pda.ru ads

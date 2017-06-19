@@ -1,8 +1,8 @@
-! Checksum: ZzgFf77ZCCkeclay1JCNkw
+! Checksum: +U52N/59pejzfW6f9AhU4A
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 1.0.8.68
-! TimeUpdated: 2017-06-06T18:02:30.709+04:00
+! Version: 1.0.8.76
+! TimeUpdated: 2017-06-19T14:01:53.800+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -811,6 +811,7 @@ blogdoiphone.com#@#.custom-ad
 westseattleblog.com#@#.custom-ad
 westseattleblog.com#@#.header-ad
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by,yandex.com.tr##.main > div.serp-list > div.serp-item[-ext-has='> div.organic > h2 > a[href^="http://yabs.yandex.ru/count/"]']
+giveawayoftheday.com#$#.middle.cf > .col1.giveaway_day[-ext-matches-css="padding-right: 10px"] { padding-top: 0px!important; }
 lenfilm.tv##body > div.rek[-ext-has="div"]
 anwap.org##.zag > div.my_razdel[-ext-has='a[href][target="_blank"]']
 nasimke.ru##.body > div[class] > div[-ext-has='img[src*="/rekl/"]']
@@ -916,15 +917,6 @@ m.veporn.net#@##topAds
 @@||rutube.ru/play/embed/*?advertiser_id=
 @@||forums.windowscentral.com^$script,~third-party
 @@||android-api-de.gumtree.com/api/users/*/ads.json
-4pda.ru#@$#body > div:first-child > div[class]:first-child>div[class]:first-child>#header+div[id][-ext-has="div"] { background-image: none !important; }
-4pda.ru#@#div[class^="r"][-ext-has="> header"] > div[class]:first-child
-4pda.ru#@$#body > div[id]:first-child > div[class]:first-child > div[class]:first-child > div[-ext-has="div"] { background: #e6e7e9!important; }
-4pda.ru#@#.sidebar_border_content > a[rel="nofollow"][-ext-has=">img"]
-4pda.ru#@#aside[id] > div[class][-ext-has='div.sidebar_border_content>a>img[height="400"]']
-4pda.ru#@#aside[id] > div[class][-ext-has='h2:contains(AppPromo)']
-4pda.ru#@#div[class^="r"][-ext-has="> header"] > div[class]:first-child
-4pda.ru#@$#body > div:first-child > div[class]:first-child>div[class]:first-child>#header+div[id][-ext-has="div"] { background-image: none !important; }
-4pda.ru#@$#body > div[id]:first-child > div[class]:first-child > div[class]:first-child > div[-ext-has="div"] { background: #e6e7e9!important; }
 idownloadblog.com#@#.header-ad
 @@||mc.yandex.ru/metrika/watch.js$domain=m.market.yandex.ru|m.market.yandex.ua|m.market.yandex.by|m.market.yandex.kz
 @@||metrics.us.playstation.com/b/ss/
@@ -992,6 +984,13 @@ m.auto.ru##.card.i-bem > div[class^="_"] > div[class^="_"]
 m.auto.ru##.index.i-bem > div[class]:not([data-bem])
 m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"])
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
+udn.com##.only_mobile.mm-slideout
+zdnet.de###pageads_menu
+m.investing.com##.adDrawer.js-swipe-banner
+m.investing.com##.boxItem > [class="mediaItem addUnit"]
+m.investing.com##.boxItem > [class="mediaItem"]:not([data-href])
+online-lernen.levrai.de###advertmitlinks
+netdoktor.de##.ad-container-mobile
 dictionary.cambridge.org##div[id^="ad_topslot"]
 skymetweather.com##.stickyfooter
 m.bild.de##.promotion_collection
@@ -1292,6 +1291,7 @@ auth.wi-fi.ru##.c-fullscreen-banner
 ||static0.wi-fi.ru/static/000/ios/index.html
 @@||googleads.g.doubleclick.net/mads/static/mad/sdk/native/*/sdk-core-v40-impl.js$app=com.devexpert.weather
 ||googleads.g.doubleclick.net/mads/gma?carrier=$app=com.devexpert.weather,important,replace=/\<script\>[\s\S]*\<\/script\>/
+||graph.facebook.com^$app=com.contapps.android
 ||graph.facebook.com^$app=com.balysv.loop
 ||graph.facebook.com^$app=org.aastudio.games.longnards
 ||graph.facebook.com^$app=com.flyersoft.moonreader
@@ -1678,6 +1678,7 @@ auth.wi-fi.ru##.c-fullscreen-banner
 ||analy.qq.com^
 ||appsupport.qq.com/cgi-bin/appstage/mstats_batch_report
 ||monitor.uu.qq.com/analytics/
+dnepr.info##.item-bg
 ekurilka.ua##a[href^="https://ekurilka.ua/rbs_banner.php"]
 forum.exploit.in##body > div > table[align="center"] a[rel$="nofollow"] > img
 vfl.ru##a[href^="http://optimizator.ru/"]
