@@ -1,8 +1,8 @@
-! Checksum: bYI7zrjfgq2RJI+U0y1bRA
+! Checksum: nwTlpKsPO3gU8vpjtqp3gQ
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on webpages including cookie notices third-party widgets and in-page popups.
-! Version: 1.0.14.26
-! TimeUpdated: 2017-06-19T15:02:18.198+04:00
+! Version: 1.0.14.34
+! TimeUpdated: 2017-06-20T13:02:29.591+04:00
 ! Expires: 2 days (update frequency)
 ! Title: Adguard Annoyances Filter
 !
@@ -31,6 +31,9 @@
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3877
 myscore.com.ua###lsid-window-mask
 !
+! https://forum.adguard.com/index.php?threads/www-theguardian-com.22731/
+theguardian.com##.content__main-column > .contributions__epic
+theguardian.com##.site-message--banner.yellow.site-message--membership-prominent
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5312
 morgenweb.de##.nfy-mobile-sticky-buttons
 ! avinfo.co - browser extension banner
@@ -293,6 +296,8 @@ vchaspik.ua##div[id="conteiner"][style="height: 410px;"]
 !***
 !* Subscriptions/newsletters (not popups)
 !*
+buzz.be.com###text-35
+buzz.be.com###blockRight > .list-ms-item > [class="col-xs-12 col-sm-6 col-md-12 ms-item pull-left widget widget_text"]
 nkd.com##.footerNaviWrapperRight > .footer_newsletterbox
 nkd.com##.footerNaviWrapperRight > .footer_headline:first-child
 giveawayoftheday.com##.wrap_subscrb
@@ -831,6 +836,7 @@ howwindows.ru#%#window.canRunAds = true;
 !#######################################################
 !######### General element hiding rules ################
 !#######################################################
+##.cookie-hint
 ###cookies-alert
 ###cookieChoiceInfo
 ##.c-cookiebar
@@ -2479,6 +2485,10 @@ _europecookielaw.
 !#######################################################
 !######### Rules for specific sites ####################
 !#######################################################
+be.com###rw_alert_cookies
+melty.fr##.toast.cPolicy
+buzz.be.com###rw_alert_cookies
+teamliquid.net##body > div[style="position: fixed; bottom: 0px; width: 98%; padding: 1%; text-align: center; z-index: 1000; border-top-width: 1px; border-top-style: solid; border-top-color: rgb(227, 227, 227); background-color: white;"]
 nkd.com##body > #DIV_1
 theverge.com###notice.p-notice
 winfuture.de##body > div[style*="z-index"][style*="bottom"][style*="right"]
@@ -2709,7 +2719,6 @@ okayfreedom.com,statarea.com,werkenbijbdo.nl##.cookie
 m.shop-apotheke.com##.cookie-advice
 netzwelt.de##.cookie-choice
 v3.co.uk##.cookie-consent-content
-stylight.de,weltbild.de##.cookie-hint
 ferrari.com##.cookie-law-info
 autoscout24.nl##.cookie-layer-container
 kvk.nl##.cookie-melding
@@ -2878,8 +2887,13 @@ afkortingen.nu#$##cookie_bg { display: none!important; }
 afkortingen.nu#$##footer_container { display:block!important; }
 afkortingen.nu#$##page_container { display:block!important; }
 !
+! Extended CSS rules
+!
+aliexpress.com###j-site-notice-header[-ext-has='>.site-notice-container:contains(ookies)']
+!
 ! JS rules
 !
+3suisses.fr#%#!function(a,b,c,f,g,d,e){e=a[c]||a['WebKit'+c]||a['Moz'+c],e&&(d=new e(function(){b[f].contains(g)&&(b[f].remove(g),d.disconnect())}),d.observe(b,{attributes:!0,attributeFilter:['class']}))}(window,document.documentElement,'MutationObserver','classList','layer_cookie__visible');
 hardware.info#%#AG_onLoad(function() { var el=document.querySelector('button.btn-tertiary[name="accept"]'); if(el) el.click(); });
 lezenenschrijven.nl#%#AG_onLoad(function() { if(window.location.href.indexOf("cookie/?url") != -1){document.getElementsByClassName('cookie-button')[0].click();} });
 taalvoorhetleven.nl#%#AG_onLoad(function() { if(window.location.href.indexOf("cookie?url") != -1){document.getElementsByClassName('cookie-button')[0].click();} });
@@ -2914,6 +2928,10 @@ ziekenhuis.nl#%#AG_onLoad(function() { setTimeout(function() {var check = docume
 !#######################################################
 !######### White list. Fixing filtering errors #########
 !#######################################################
+! https://github.com/AdguardTeam/AdguardFilters/issues/5394
+@@||cookiesv2.publiekeomroep.nl/data/script/cconsent-no-rw.$domain=nos.nl
+! https://forum.adguard.com/index.php?threads/22703/
+@@||ioi.dk/wp-content/plugins/cookie-law-info/js/cookielawinfo.js$domain=ioi.dk
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5200
 @@/wp-content/plugins/bwp-minify/min/?f=*/cookie-notice/*
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5031
@@ -3107,6 +3125,8 @@ mail.ru##.tooltip div.tooltip__box[-ext-has="div"]
 !----------------------------------!
 !
 !---------- Widgets ---------------!
+! https://github.com/AdguardTeam/AdguardFilters/issues/5367
+aachener-zeitung.de###content > section > .tab-nav[-ext-has='ul > li > a:contains(Whatsapp)']
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5328
 pz-news.de##.nfy-content+aside.nfy-service > aside > section.nfy-sebox-multibox.nfy-merge-marked[-ext-has=">article > h3 > span:contains(Tages per WhatsApp)"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5171
@@ -3468,6 +3488,7 @@ mail.yandex.ua,mail.yandex.ru,mail.yandex.kz,mail.yandex.com.tr#%#AG_onLoad(func
 !
 ! Generic rules
 !
+||optnmstr.com^$third-party
 ||messenger.ngageics.com^$third-party
 /wp-content/plugins/popup-maker/*
 ||a.mailmunch.co/app/$script,third-party
@@ -3488,6 +3509,7 @@ mail.yandex.ua,mail.yandex.ru,mail.yandex.kz,mail.yandex.com.tr#%#AG_onLoad(func
 !
 ! Specific sites
 !
+3suisses.fr##body > .mfp-ready
 xakep.ru##.snp-fb
 xakep.ru##.snp-pop-127840-overlay
 onpress.info##.modalParent
@@ -4032,6 +4054,8 @@ zr.ru#%#document.cookie = "zrPushSubsPopUp=1";
 !
 !######### Remains of ads
 !
+prizyv.ru###text-10.widget_text
+prizyv.ru###text-9.widget_text
 xtreme.rip##.topBorder > table[border="0"][width="100%"][height="205"]+div.separator
 porno720p.org##.side > .side-box > br
 porno720p.org#$#.side { padding: 0px!important }

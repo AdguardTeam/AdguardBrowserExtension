@@ -1,8 +1,8 @@
-! Checksum: n5JTfhAGNhMTa8f/Fyf49g
+! Checksum: cnEUTW10+Sqc13UvCUuI3g
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on webpages including cookie notices third-party widgets and in-page popups.
-! Version: 1.0.14.26
-! TimeUpdated: 2017-06-19T15:02:18.198+04:00
+! Version: 1.0.14.34
+! TimeUpdated: 2017-06-20T13:02:29.591+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -10,6 +10,8 @@
 #%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
 myscore.com.ua###lsid-window-mask
+theguardian.com##.content__main-column > .contributions__epic
+theguardian.com##.site-message--banner.yellow.site-message--membership-prominent
 morgenweb.de##.nfy-mobile-sticky-buttons
 ||avinfo.co/i/chromavinfo.jpg
 mobil.berliner-zeitung.de##.whatsapp-widget-blz
@@ -149,6 +151,8 @@ yadi.sk##.content-poster-public__poster
 torrentleech.org##a[href="/user/donate"]
 otzyv.ru##div[align="center"] > .aviasales
 vchaspik.ua##div[id="conteiner"][style="height: 410px;"]
+buzz.be.com###text-35
+buzz.be.com###blockRight > .list-ms-item > [class="col-xs-12 col-sm-6 col-md-12 ms-item pull-left widget widget_text"]
 nkd.com##.footerNaviWrapperRight > .footer_newsletterbox
 nkd.com##.footerNaviWrapperRight > .footer_headline:first-child
 giveawayoftheday.com##.wrap_subscrb
@@ -652,6 +656,7 @@ pornreactor.cc,joyreactor.cc,reactor.cc#%#Object.defineProperty(document, 'write
 aol.com##.game-pre-load
 howwindows.ru#%#window.canRunAds = true;
 @@||howwindows.ru/wp-content/themes/howwindows/js/ads.js
+##.cookie-hint
 ###cookies-alert
 ###cookieChoiceInfo
 ##.c-cookiebar
@@ -2294,6 +2299,10 @@ _europecookielaw.
 ||iubenda.com^$third-party
 ||r42tag.com^$third-party
 ||tm.tradetracker.net/public/styles/ttCookieDirective.css
+be.com###rw_alert_cookies
+melty.fr##.toast.cPolicy
+buzz.be.com###rw_alert_cookies
+teamliquid.net##body > div[style="position: fixed; bottom: 0px; width: 98%; padding: 1%; text-align: center; z-index: 1000; border-top-width: 1px; border-top-style: solid; border-top-color: rgb(227, 227, 227); background-color: white;"]
 nkd.com##body > #DIV_1
 theverge.com###notice.p-notice
 winfuture.de##body > div[style*="z-index"][style*="bottom"][style*="right"]
@@ -2524,7 +2533,6 @@ okayfreedom.com,statarea.com,werkenbijbdo.nl##.cookie
 m.shop-apotheke.com##.cookie-advice
 netzwelt.de##.cookie-choice
 v3.co.uk##.cookie-consent-content
-stylight.de,weltbild.de##.cookie-hint
 ferrari.com##.cookie-law-info
 autoscout24.nl##.cookie-layer-container
 kvk.nl##.cookie-melding
@@ -2682,6 +2690,8 @@ bellen.com#$#body.cookie-active { margin-top: 0!important; }
 afkortingen.nu#$##cookie_bg { display: none!important; }
 afkortingen.nu#$##footer_container { display:block!important; }
 afkortingen.nu#$##page_container { display:block!important; }
+aliexpress.com###j-site-notice-header[-ext-has='>.site-notice-container:contains(ookies)']
+3suisses.fr#%#!function(a,b,c,f,g,d,e){e=a[c]||a['WebKit'+c]||a['Moz'+c],e&&(d=new e(function(){b[f].contains(g)&&(b[f].remove(g),d.disconnect())}),d.observe(b,{attributes:!0,attributeFilter:['class']}))}(window,document.documentElement,'MutationObserver','classList','layer_cookie__visible');
 hardware.info#%#AG_onLoad(function() { var el=document.querySelector('button.btn-tertiary[name="accept"]'); if(el) el.click(); });
 lezenenschrijven.nl#%#AG_onLoad(function() { if(window.location.href.indexOf("cookie/?url") != -1){document.getElementsByClassName('cookie-button')[0].click();} });
 taalvoorhetleven.nl#%#AG_onLoad(function() { if(window.location.href.indexOf("cookie?url") != -1){document.getElementsByClassName('cookie-button')[0].click();} });
@@ -2713,6 +2723,8 @@ trouw.nl#%#AG_onLoad(function() { var check = document.getElementsByClassName('s
 vi.nl#%#AG_onLoad(function() { if(window.location.href.indexOf("cookies") != -1){document.getElementsByClassName('btn')[0].click();} });
 volkskrant.nl#%#AG_onLoad(function() { setTimeout(function() {if(document.getElementsByClassName("modal-overlay")[0].isvisible = true){document.getElementsByClassName("button button--accept")[0].click();}}, 300); });
 ziekenhuis.nl#%#AG_onLoad(function() { setTimeout(function() {var check = document.getElementsByClassName('cookiewall')[0]; if (check){document.cookie = "acceptcookies=true"; location.reload();}; }, 300); });
+@@||cookiesv2.publiekeomroep.nl/data/script/cconsent-no-rw.$domain=nos.nl
+@@||ioi.dk/wp-content/plugins/cookie-law-info/js/cookielawinfo.js$domain=ioi.dk
 @@/wp-content/plugins/bwp-minify/min/?f=*/cookie-notice/*
 @@||blog-rct.com/wp-content/plugins/cookie-law-info/js/cookielawinfo.js
 funk-gruppe.de#@#.cookiebanner
@@ -2825,6 +2837,7 @@ rp5.ru##td > div > div > div:not([id="content"]):not([class="footerMenu"])[-ext-
 buzzhand.com#$#.mash-lightbox[-ext-has="div"] { display: none!important; }
 buzzhand.com#$#body[-ext-has="div"] { overflow: visible!important; }
 mail.ru##.tooltip div.tooltip__box[-ext-has="div"]
+aachener-zeitung.de###content > section > .tab-nav[-ext-has='ul > li > a:contains(Whatsapp)']
 pz-news.de##.nfy-content+aside.nfy-service > aside > section.nfy-sebox-multibox.nfy-merge-marked[-ext-has=">article > h3 > span:contains(Tages per WhatsApp)"]
 morgenpost.de##.article--type-news > aside.article__aside[-ext-has="> div.sidebar__column > div.cross-heading > h3:contains(News per WhatsApp)"]
 btscenetorrents.unlockpro.racing##.dlb > a[rel="nofollow"][onclick]:not(.dl_black)
@@ -3155,6 +3168,7 @@ finanzen.net#%#document.cookie="sb-closed=true; path=/;";
 rozetka.com.ua#%#AG_onLoad(function(){ var e = document.querySelector('a.popup-close'); if (e) e.click(); });
 rozetka.com.ua#%#document.cookie = "hide_popup_banner=true";
 mail.yandex.ua,mail.yandex.ru,mail.yandex.kz,mail.yandex.com.tr#%#AG_onLoad(function(){ var e = document.querySelector('span[data-href="/touch/"][id="js-app-promo-close"]'); if (e) e.click(); });
+||optnmstr.com^$third-party
 ||messenger.ngageics.com^$third-party
 /wp-content/plugins/popup-maker/*
 ||a.mailmunch.co/app/$script,third-party
@@ -3172,6 +3186,7 @@ mail.yandex.ua,mail.yandex.ru,mail.yandex.kz,mail.yandex.com.tr#%#AG_onLoad(func
 ||mailget.net^$third-party
 ||optnmnstr.com^$third-party
 ||static.popmechanic.ru/service/loader.js$third-party
+3suisses.fr##body > .mfp-ready
 xakep.ru##.snp-fb
 xakep.ru##.snp-pop-127840-overlay
 onpress.info##.modalParent
@@ -3675,6 +3690,8 @@ zr.ru#%#document.cookie = "zrPushSubsPopUp=1";
 ||zakon.kz/static_zakon/push-notifications/main.js
 @@||cdn.onesignal.com/sdks/OneSignalSDK.js^$domain=puls4.com
 @@||cdn.sendpulse.com/js/push/*.js$domain=surfingbird.ru
+prizyv.ru###text-10.widget_text
+prizyv.ru###text-9.widget_text
 xtreme.rip##.topBorder > table[border="0"][width="100%"][height="205"]+div.separator
 porno720p.org##.side > .side-box > br
 porno720p.org#$#.side { padding: 0px!important }
