@@ -38,25 +38,25 @@ echo "Running tests"
 echo "-------------"
 
 echo "Rule constructor tests"
-node-qunit-phantomjs rule-constructor/test-rule-constructor.html
+node-qunit-phantomjs rule-constructor/test-rule-constructor.html || exit 1
 
 echo "Safari converter tests"
-node-qunit-phantomjs safari-converter/test-safari-converter.html
+node-qunit-phantomjs safari-converter/test-safari-converter.html || exit 1
 
 echo "Safebrowsing filter tests"
-node-qunit-phantomjs sb-filter/test-sb-filter.html
+node-qunit-phantomjs sb-filter/test-sb-filter.html || exit 1
 
 echo "Url filter tests"
-node-qunit-phantomjs url-filter/test-url-filter.html
+node-qunit-phantomjs url-filter/test-url-filter.html || exit 1
 
 echo "Css filter tests"
-node-qunit-phantomjs css-filter/test-css-filter.html
+node-qunit-phantomjs css-filter/test-css-filter.html || exit 1
 
 echo "Css hits tests"
-node-qunit-phantomjs css-filter/test-css-hits.html
+node-qunit-phantomjs css-filter/test-css-hits.html || exit 1
 
 echo "Request filter tests"
-node-qunit-phantomjs request-filter/test-request-filter.html
+node-qunit-phantomjs request-filter/test-request-filter.html || exit 1
 
 echo "Ring buffer tests"
-node-qunit-phantomjs miscellaneous/test-ring-buffer.html
+node-qunit-phantomjs miscellaneous/test-ring-buffer.html || exit 1
