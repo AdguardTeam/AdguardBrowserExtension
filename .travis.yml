@@ -1,0 +1,19 @@
+language: bash
+
+node_js:
+    - "4.1"
+
+install:
+    - npm install -g node-qunit-phantomjs
+
+script:
+    - cd Extension/tests
+    - bash run.sh
+    - cd ..
+
+deploy:
+  - provider: pages
+    skip_cleanup: true
+    github_token: $GITHUB_TOKEN
+    on:
+      branch: master
