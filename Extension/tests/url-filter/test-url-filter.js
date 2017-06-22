@@ -480,7 +480,3 @@ QUnit.test('RegExp Rules Parsing', function (assert) {
         assert.ok(ex === 'Unknown option: REPLACE');
     }
 });
-
-QUnit.test("Fail test", function (assert) {
-    assert.ok(false);
-});

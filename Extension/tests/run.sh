@@ -74,6 +74,7 @@ result=1
 
 if [ $result = 0 ]
 then
+    echo "-------------"
     echo "Tests failed"
     exit 1
 fi
