@@ -32,7 +32,7 @@ if [ "$env" = release ]; then
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #opera release crx for addons.opera.com
-    options="$opts --browser=chrome --pack=crx --name=opera"
+    options="$opts --browser=opera --pack=crx --name=opera --update-filters=true"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox release for AMO (WebExt)
