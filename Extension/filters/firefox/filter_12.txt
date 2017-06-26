@@ -1,8 +1,8 @@
-! Checksum: SQGjCNTqBLQIUsauHqcg6Q
+! Checksum: mZfO4euyI0dVC7vwTvmNcA
 ! Title: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
-! Version: 1.0.3.49
-! TimeUpdated: 2017-06-14T18:01:55.912+04:00
+! Version: 1.0.3.52
+! TimeUpdated: 2017-06-26T17:02:01.322+04:00
 ! Expires: 2 days (update frequency)
 ! Title: Adguard Safari Filter
 !
@@ -66,11 +66,6 @@ cokomik.net#@#.adsbygoogle
 @@||pikio.pl^$generichide
 ! https://forum.adguard.com/index.php?threads/hiding-the-use-of-adguard.21983/#post-138159
 @@||gestyy.com^$generichide
-! minigames.mail.ru - ads replacement script
-minigames.mail.ru##yatag *
-@@||an.yandex.ru/page/*?target-ref=$domain=minigames.mail.ru
-@@||an.yandex.ru/resource/context_static_r_*.js$domain=minigames.mail.ru
-@@||an.yandex.ru/system/context.js$domain=minigames.mail.ru
 ! https://forum.adguard.com/index.php?threads/motorradonline-de.21544/
 motorradonline.de#@#.mps-banner
 @@||motorradonline.de^$generichide
@@ -342,10 +337,7 @@ televisaofutebol.com#@#iframe[width="300"][height="250"]
 ! https://forum.adguard.com/index.php?threads/12421/
 @@||sadeempc.com^$generichide
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1309
-@@||bild.de^$elemhide
-!@@||smartadserver.com/diff/*/partners/$domain=bild.de
-!@@||smartadserver.com/diff/*/smartad.js$domain=bild.de
-!@@||sascdn.com^$domain=bild.de,script
+@@||bild.de^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2787
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=vmf.edge-apps.net|americatv.com.ar
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2777
@@ -528,8 +520,6 @@ meddaily.ru##div[style="width: 240px; background-color: White;"]
 !***
 !******
 !
-! https://forum.adguard.com/index.php?threads/22127/
-freerutor.org##div[id^="epom-pushdown-"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5149
 convertfiles.com###advertisement_section
 convertfiles.com##div[id^="div-gpt-ad"]
