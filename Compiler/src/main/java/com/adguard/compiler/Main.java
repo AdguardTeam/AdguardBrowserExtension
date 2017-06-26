@@ -224,7 +224,7 @@ public class Main {
 
         SettingUtils.updateManifestFile(dest, browser, version, extensionId, updateUrl, extensionNamePostfix);
 
-        if (browser == Browser.CHROMIUM && !createApi) {
+        if ((browser == Browser.CHROMIUM || browser == Browser.OPERA) && !createApi) {
             LocaleUtils.updateExtensionNameForChromeLocales(dest, extensionNamePostfix);
         }
 
@@ -264,6 +264,7 @@ public class Main {
         }
         switch (browser) {
             case CHROMIUM:
+            case OPERA:
                 if (!PACK_METHOD_CRX.equals(packMethod) && !PACK_METHOD_ZIP.equals(packMethod)) {
                     log.error("Chrome support only crx and zip pack methods");
                     return false;
@@ -295,6 +296,9 @@ public class Main {
             switch (browser) {
                 case CHROMIUM:
                     buildName = "chrome";
+                    break;
+                case OPERA:
+                    buildName = "opera";
                     break;
                 case EDGE:
                     buildName = "edge";

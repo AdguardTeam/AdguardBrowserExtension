@@ -59,6 +59,7 @@ public class SettingUtils {
 
         switch (browser) {
             case CHROMIUM:
+            case OPERA:
             case EDGE:
                 updateManifestJsonFile(dest, version, extensionId, updateUrl);
                 break;

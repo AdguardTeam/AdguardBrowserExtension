@@ -48,6 +48,9 @@ public class FileUtil {
 			case CHROMIUM:
 				copyChromiumFiles(source, dest, browser);
 				break;
+			case OPERA:
+				copyChromiumFiles(source, dest, browser);
+				break;
 			case EDGE:
 				copyChromiumFiles(source, dest, browser);
 				copyEdgeFiles(source, dest);
