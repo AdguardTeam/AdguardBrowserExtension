@@ -1,8 +1,8 @@
-! Checksum: 5HMeApRjKlmdALG6p66zDg
+! Checksum: e9SopuTseC9Sx6sJC+fyoA
 ! Title: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
-! Version: 1.0.53.11
-! TimeUpdated: 2017-06-26T21:05:14.339+04:00
+! Version: 1.0.53.13
+! TimeUpdated: 2017-06-27T11:08:26.895+04:00
 ! Expires: 2 days (update frequency)
 ! Title: Adguard Russian Filter
 !
@@ -5594,7 +5594,7 @@ rg.ru,meduza.io#%#AG_onLoad(function() { setTimeout(function() { AG_removeElemen
 forums.overclockers.ru,tbs-play.com#%#AG_onLoad(function() { AG_removeElementBySelector('ins[id^="aswift_"]'); });
 rustorka.com#%#AG_onLoad(function() { AG_removeElementBySelector('iframe[src*="bubblesmedia.ru"]'); });
 izzylaif.com,kttc.ru,semestr.ru#%#AG_onLoad(function() { setTimeout(function() { AG_removeElementBySelector('ins[id^="aswift_"]'); }, 6000); });
-#%#AG_onLoad(function() { AG_each('iframe[id^="AdFox_iframe_"]', function(el) { if (el && el.parentNode) { el.parentNode.removeChild(el); } }); });
+~mos.ru#@%#AG_onLoad(function() { AG_each('iframe[id^="AdFox_iframe_"]', function(el) { if (el && el.parentNode) { el.parentNode.removeChild(el); } }); });
 #%#try { Object.defineProperty(window, 'noAdsAtAll', { get: function() { return true; } }); } catch (ex) {}
 !--- [END] Fixing AdFox constant page load ---
 ! SocialMart banner
@@ -8099,8 +8099,8 @@ news.yandex.by,news.yandex.kz,news.yandex.ru,news.yandex.ua##div[class$="right"]
 news.yandex.by,news.yandex.com,news.yandex.kz,news.yandex.ru,news.yandex.ua##.page-content__left > div[class] > div[class] > h3
 !
 ! HDGO clickunder
-.ru/*/|$script,domain=46.30.41.195|vg672plpaer.ru|0q265r664x1.ru|66i753q703.ru
-/\:\/\/[a-z0-9]+\.[a-z0-9]+\.[a-z]+\/\d+\.js/$domain=46.30.41.195
+.ru/*/|$script,domain=46.30.41.195|vg672plpaer.ru|0q265r664x1.ru|66i753q703.ru|0q265r664x1.ru
+/:\/\/[a-z0-9]+\.[a-z0-9]+\.[a-z]+\/\d+\.js/$domain=46.30.41.195|0q265r664x1.ru
 ||p6co60zgzke.ru/*.js|
 ||p6co60zgzke.ru/*.js|
 ||efqpxlg793ipg.ru/*.js|
@@ -15438,7 +15438,6 @@ joyreactor.cc#@#div#sidebar
 @@||banners.adfox.ru^$domain=mos.ru
 mos.ru#@#div[id^="AdFox_banner_"]
 @@||ads.adfox.ru/*/getCode$domain=mos.ru
-mos.ru#@%#AG_onLoad(function() { AG_each('iframe[id^="AdFox_iframe_"]', function(el) { if (el && el.parentNode) { el.parentNode.removeChild(el); } }); });
 ! https://forum.adguard.com/index.php?threads/22201/
 dtkrostov.ru#@#.top_banner
 ! https://forum.adguard.com/index.php?threads/22137/
