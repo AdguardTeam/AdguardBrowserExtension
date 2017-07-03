@@ -1,0 +1,269 @@
+! Checksum: qBIkPc2ZnIhPSUty/nFreA
+! Title: Experimental filter
+! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
+! Version: 1.0.26.65
+! TimeUpdated: 2017-06-13T17:00:53.705+04:00
+! Expires: 2 days (update frequency)
+! Title: Adguard Experimental Filter
+!
+! Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
+!
+! License: http://creativecommons.org/licenses/by-sa/3.0/
+! Homepage: http://adguard.com/filters.html#experimental
+!
+!-------------------------------------------------------------------!
+!------------------ General JS API ---------------------------------!
+!-------------------------------------------------------------------!
+! JS API START
+#%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
+#%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
+#%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
+#%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
+#%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+! JS API FINISH
+!-------------------------------------------------------------------!
+!------- Experimental rules for English filter ---------------------!
+!-------------------------------------------------------------------!
+!
+! Advertising networks known rotator domains
+!
+! This section contains the list of rules blocking requests
+! to known rotator domains of the advertising networks.
+! For example, "*.doubleclick.net" are rotator domains
+! of Doubleclick ad network.
+!
+! Do not mix it up with direct adverts domains.
+! Read about it in direct_adverts.txt
+!
+!
+! Direct adverts
+!
+! Contains rules which are blocking URLs to direct adverts.
+! What do we mean by direct adverts - it is all kind of advertisers
+! who are not ad networks.
+!
+! For example, rules that block referral links.
+!
+!
+! URL blocking rules unsorted list
+! http://adguard.com/filterrules.html#baseRules
+!
+! Add basic rule here if it cannot be added to
+! direct_adverts.txt or advertising_networks.txt.
+! For example rules like "http://example.com/banner.png"
+! blocking specific URL should be added to this section.
+!
+!
+! Common CSS rules
+! http://adguard.com/filterrules.html#hideRules
+! http://adguard.com/filterrules.html#cssInjection
+!
+! This section contains CSS rules without domain restrictions.
+! Be cautious and add rules here even if you are sure that this
+! rule could be used for more than one web site.
+!
+!
+! Common HTML rules
+! http://adguard.com/filterrules.html#htmlContentFilter
+!
+! This section contains the list of common HTML rules
+! without domain restrictions.
+! Be aware that rules added to this section cannot be used
+! by Adguard extensions.
+! We advise you to stick to CSS/Javascript/URL rule types
+! and use HTML rules if there is no other way only.
+!
+!
+! Common javascript rules
+! http://adguard.com/filterrules.html#javascriptInjection
+!
+! Javascript rules which are not restricted to specific domains.
+! Be VERY cautious with this type of rules.
+!
+!
+! Rules that are restricted to one or more domains.
+! This section contain any type of rule grouped by domain.
+!
+!
+!
+! Whitelist
+! http://adguard.com/filterrules.html#exclusionRules
+! http://adguard.com/filterrules.html#hideRulesExceptions
+! http://adguard.com/filterrules.html#cssInjectionExceptions
+! http://adguard.com/filterrules.html#javascriptInjectionExceptions
+!
+! This section contains all kinds of exception rules.
+!
+!-------------------------------------------------------------------!
+!------- Experimental rules for Spyware filter ---------------------!
+!-------------------------------------------------------------------!
+!
+! This file contains all experimental rules for Spyware filter.
+!
+/generate_204^$image,other
+/fbevents.js^
+/ads/beacon-
+/AppMeasurement-$script
+!-------------------------------------------------------------------!
+!------- Experimental rules for Social filter ----------------------!
+!-------------------------------------------------------------------!
+!
+! This file contains all experimental rules for Social filter.
+!
+dp.ru##.b-nav-panel__cell.b-nav-panel__cell_100 ul.list-unstyled
+! http://forum.adguard.com/showthread.php?6539
+forum.chatovod.com##iframe[src^="/widgets/?lang="]
+!-------------------------------------------------------------------!
+!------- Experimental rules for Russian filter ---------------------!
+!-------------------------------------------------------------------!
+!
+! Advertising networks known rotator domains
+!
+! This section contains the list of rules blocking requests
+! to known rotator domains of the advertising networks.
+! For example, "*.doubleclick.net" are rotator domains
+! of Doubleclick ad network.
+!
+! Do not mix it up with direct adverts domains.
+! Read about it in direct_adverts.txt
+!
+!
+!
+! Direct adverts
+!
+! Contains rules which are blocking URLs to direct adverts.
+! What do we mean by direct adverts - it is all kind of advertisers
+! who are not ad networks.
+!
+! For example, rules that block referral links.
+!
+!
+! URL blocking rules unsorted list
+! http://adguard.com/filterrules.html#baseRules
+!
+! Add basic rule here if it cannot be added to
+! direct_adverts.txt or advertising_networks.txt.
+! For example rules like "http://example.com/banner.png"
+! blocking specific URL should be added to this section.
+!
+!
+! Common CSS rules
+! http://adguard.com/filterrules.html#hideRules
+! http://adguard.com/filterrules.html#cssInjection
+!
+! This section contains CSS rules without domain restrictions.
+! Be cautious and add rules here even if you are sure that this
+! rule could be used for more than one web site.
+!
+!
+! Common HTML rules
+! http://adguard.com/filterrules.html#htmlContentFilter
+!
+! This section contains the list of common HTML rules
+! without domain restrictions.
+! Be aware that rules added to this section cannot be used
+! by Adguard extensions.
+! We advise you to stick to CSS/Javascript/URL rule types
+! and use HTML rules if there is no other way only.
+!
+!
+! Common javascript rules
+! http://adguard.com/filterrules.html#javascriptInjection
+!
+! Javascript rules which are not restricted to specific domains.
+! Be VERY cautious with this type of rules.
+!
+!
+! Rules which are restricted to one or more domains.
+! This section contain any type of rule grouped by domain.
+!
+! Rules which are restricted to one or more domains.
+! This section contain any type of rule grouped by domain.
+!
+! Whitelist
+! http://adguard.com/filterrules.html#exclusionRules
+! http://adguard.com/filterrules.html#hideRulesExceptions
+! http://adguard.com/filterrules.html#cssInjectionExceptions
+! http://adguard.com/filterrules.html#javascriptInjectionExceptions
+!
+! This section contains all kinds of exception rules.
+!
+!-------------------------------------------------------------------!
+!------- Experimental rules for Other filters ----------------------!
+!-------------------------------------------------------------------!
+!
+! This file contains all filters other than English, Social, Spyware and Russian.
+!
+! antiblock.org test page
+antiblock.org#%#var AG_AntiAntiBlock = function() { var baseCreateElement = document.createElement; document.createElement = function(name) { if (name && name.match(/div|font|center/i)) { return null; } else { return baseCreateElement(name); } } };
+antiblock.org#%#AG_onLoad(function() { AG_AntiAntiBlock(); });
+!-------------------------------------------------------------------!
+!------- Experimental rules for Mobile ads filter-------------------!
+!-------------------------------------------------------------------!
+!
+! Mobile advertising networks known rotator domains
+! Used to show ads in mobile apps and websites
+!
+!-------------------------------------------------------------------!
+!---------------------- Dangerous rules ----------------------------!
+!-------------------------------------------------------------------!
+!#######################################################
+!######### The list of dangerous rules #################
+!#######################################################
+!
+!################## For advertisement ##################
+! Dangerous "nofollow" links blocking rule
+~ukrinform.ua,~ukrinform.ru,~prophotos.ru,~cheater-top.ru,~allkey.org,~anti-free.ru,~art-on.ru,~blogig.org,~bloknot-krasnodar.ru,~bloknot-rostov.ru,~bloknot-stavropol.ru,~bucwar.ru,~bukvaved.biz,~capa.me,~car72.ru,~crox.ws,~delo.ua,~dfm.ru,~edp.kiev.ua,~f1comp.ru,~firstvds.ru,~forum.esetnod32.ru,~forum.ixbt.com,~fsm-portal.net,~gamai.ru,~gamegpu.ru,~games-java.ru,~golos-naroda.tv,~gradmart.ru,~hcdinamo.by,~hitfm.ru,~igromania.ru,~joomla.ru,~kahai.ru,~keddr.com,~kinogo.co,~kinoshka-new.ru,~maximum.ru,~maxthon.org.ru,~metallurg.ru,~mixupload.com,~montecarlo.ru,~moviez.kz,~onlinefilmu.ru,~planetaua.net,~respecta.net,~rulit.net,~rus-linux.net,~rusradio.ru,~smotretfilmy.ru,~sobytiya.info,~softek.ucoz.ru,~speedy-warez.ru,~uznayvse.ru,~vestivrn.ru,~wowjp.net,~yarportal.ru,~rozetka.com.ua,~kaermorhen.ru,~rubasket.com,~anal-porno.su##noindex a[rel="nofollow"] > img
+!
+~kinogo-onlaine.net,~allmult.com,~batzbatz.com,~batzbatz.ru,~bobfilm.net,~bobfilm1.net,~fanserials.tv,~kinobar.kz,~kinoimperiya.net,~latino-serialo.ru,~nastol.com.ua,~novinkionlain.ru,~online-multy.ru,~rusdtp.ru,~smeshnoevideo.com,~vidoser.com,~xrust.ru,~zerx.tv,~docfilms.info,~kinogohd.net,porno-hd.tv###dle-content noindex > div[style]
+!
+! fake browser update
+~junodownload.com#%#document.onmouseout = null; window.onbeforeunload = null; window.blur = null;
+!
+! https://github.com/AdguardTeam/AdguardFilters/issues/4983
+mobiflip.de##div[data-widget="plista_widget_belowArticle"] ~ h4.post-header
+! https://forum.adguard.com/index.php?threads/20885/
+real-vin.com##div.sm-widget
+! https://forum.adguard.com/index.php?threads/19852/
+fullfilmihdizlesene.com###sidebar > .sidebarborder:not(:nth-child(3))
+! https://github.com/AdguardTeam/AdguardFilters/issues/4322
+wowhead.com###page-content > div[class="main"] > div[class="blocks"]
+wowhead.com##div[class="wrapper"] > div[class="blocks"]
+! https://github.com/AdguardTeam/AdguardFilters/issues/4175
+rgmechanics.com##.sidebar.fright > div.widget.widget_text
+! https://forum.adguard.com/index.php?threads/18762/
+direkizlehd.tv##h2.post-baslik
+! https://forum.adguard.com/index.php?threads/18545/
+backpack.tf##.row-media > .col-md-5
+backpack.tf##.container > div[class="hidden-xs"] > div#media-side
+! https://forum.adguard.com/index.php?threads/17019/
+dailystar.co.uk##.rh.type1
+! https://forum.adguard.com/index.php?threads/17605/
+butamsenlik.com###content > div#single > div.breadcrumb+h1.mainHeading+div#singleBlock
+solidshare.net###genel > div.main > div#header
+! https://github.com/AdguardTeam/AdguardFilters/issues/2487
+rusnewstoday24.ru##.td-main-sidebar
+! https://forum.adguard.com/index.php?threads/10688/
+www.tut.by##.l-main > div#resource_block
+! https://forum.adguard.com/index.php?threads/10833/
+searchengines.guru##.smallfont td > div[align="right"]
+searchengines.guru##.smallfont td > div[style="white-space: nowrap;text-align: right"]
+searchengines.guru##table[id^="header"] div[style="display: block;"]
+! https://forum.adguard.com/index.php?threads/11285/
+null24.net##.td_block_text_with_title
+! https://forum.adguard.com/index.php?threads/https-tosunkaya-com.11681/
+tosunkaya.com###text-html-widget-5
+! https://forum.adguard.com/index.php?threads/resolved-gamona-de.3539/
+gamona.de##ul[class$="list_base cols col2 image_base icon"]
+! http://forum.adguard.com/showthread.php?6186
+pcgames.de#%#AG_onLoad(function() { $('a[title*="[Anzeige]"]').closest('div[class^="item noImg"]').remove(); });
+! http://forum.adguard.com/showthread.php?6796
+buffed.de#%#AG_onLoad(function() { $('a[href*="-Anzeige-"]').closest('div[class*="item noImg"]').remove(); });
+buffed.de#%#AG_onLoad(function() { $('a[href*="/E-Commerce"]').closest('div[class*="item noImg"]').remove(); });
+forum.gamezone.de#%#AG_onLoad(function() { $('dl[class*="userinfo_extra"]').closest('li[id*="post_rec"]').remove(); });
+! https://forum.adguard.com/index.php?threads/11935/
+focus.de#%#AG_onLoad(function() { $('div[class^="surftippTitle"]').closest('div[class$="block grid_4 "]').remove(); });
+! https://forum.adguard.com/index.php?threads/12079/
+multiup.org##div[class^="span"] > div[class="well"][style^="height"]
+! https://github.com/AdguardTeam/AdguardForAndroid/issues/718
+pocketnow.com##div+center > small

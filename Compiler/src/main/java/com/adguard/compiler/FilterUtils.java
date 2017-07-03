@@ -82,6 +82,7 @@ public class FilterUtils {
         File filtersDir = FileUtil.getFiltersDir(source, browser);
         File dest = new File(source, "tmp-filters");
 
+        log.info("Start downloading local filters");
         List<File> filesToCopy = new ArrayList<File>();
         try {
             for (int filterId = 1; filterId <= LAST_ADGUARD_FILTER_ID; filterId++) {
@@ -96,6 +97,8 @@ public class FilterUtils {
             for (File file : filesToCopy) {
                 FileUtils.copyFileToDirectory(file, filtersDir);
             }
+
+            log.info("Filters updated");
         } finally {
             FileUtils.deleteDirectory(dest);
         }
@@ -114,15 +117,15 @@ public class FilterUtils {
         File metadataFile = new File(filtersDir, "filters.json");
         File metadataI18nFile = new File(filtersDir, "filters_i18n.json");
 
-        log.info("Start download filters metadata");
+        log.info("Start downloading filters metadata");
         String response = UrlUtils.downloadString(new URL(getFiltersMetadataDownloadUrl(browser, false)), "utf-8");
         FileUtils.write(metadataFile, response, "utf-8");
-        log.info("Write filters metadata to " + metadataFile);
+        log.info("Filters metadata saved to " + metadataFile);
 
-        log.info("Start download filters i18n metadata");
+        log.info("Start downloading filters i18n metadata");
         response = UrlUtils.downloadString(new URL(getFiltersMetadataDownloadUrl(browser, true)), "utf-8");
         FileUtils.write(metadataI18nFile, response, "utf-8");
-        log.info("Write filters i18n metadata to " + metadataI18nFile);
+        log.info("Filters i18n metadata saved to " + metadataI18nFile);
     }
 
     /**
@@ -158,6 +161,8 @@ public class FilterUtils {
         scriptRulesObject.addRawRules(scriptRules);
         String json = OBJECT_MAPPER.writer(prettyPrinter).writeValueAsString(scriptRulesObject);
         FileUtils.writeStringToFile(localScriptRulesFile, json, "utf-8");
+
+        log.info("Local script rules updated");
     }
 
     /**
@@ -172,7 +177,7 @@ public class FilterUtils {
      */
     private static File downloadFilterFile(File dest, int filterId, String filterDownloadUrl, String fileName) throws IOException {
 
-        log.debug("Start download filter " + filterId + " from " + filterDownloadUrl);
+        log.debug("Start downloading filter " + filterId + " from " + filterDownloadUrl);
 
         String downloadUrl = String.format(filterDownloadUrl, filterId);
         String response = UrlUtils.downloadString(new URL(downloadUrl), "UTF-8");
@@ -182,7 +187,7 @@ public class FilterUtils {
         File filterFile = new File(dest, fileName);
         FileUtils.write(filterFile, response, "utf-8");
 
-        log.debug("Filter " + filterId + " download successfully");
+        log.debug("Filter " + filterId + " downloaded successfully");
         return filterFile;
     }
 

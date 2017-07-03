@@ -48,6 +48,8 @@ adguard.backend = (function (adguard) {
                     return 'https://filters.adtidy.org/extension/safari';
                 } else if (adguard.utils.browser.isEdgeBrowser()) {
                     return 'https://filters.adtidy.org/extension/edge';
+                } else if (adguard.utils.browser.isOperaBrowser()) {
+                    return 'https://filters.adtidy.org/extension/opera';
                 } else {
                     return 'https://filters.adtidy.org/extension/chromium';
                 }
