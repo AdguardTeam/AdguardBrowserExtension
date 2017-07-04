@@ -149,11 +149,13 @@ public class SettingUtils {
     /**
      * Copy specific api files, join all js files into one, remove unused files
      *
+     * @param source  Source folder
      * @param dest    Build folder
      * @param browser Browser
+     * @param version Version string
      * @throws IOException
      */
-    public static void createApiBuild(File dest, Browser browser) throws IOException {
+    public static void createApiBuild(File source, File dest, Browser browser, String version) throws IOException {
 
         // Concat content scripts
         File manifestFile = new File(dest, "manifest.json");
@@ -219,6 +221,13 @@ public class SettingUtils {
         FileUtils.moveFileToDirectory(new File(dest, "filters/filters_i18n.json"), new File(dest, "adguard"), false);
         FileUtils.deleteDirectory(new File(dest, "filters"));
         FileUtils.deleteDirectory(new File(dest, "lib"));
+
+        FileUtils.copyDirectory(new File(source, "api/sample-extension"), dest);
+
+        // Update version in sample extension
+        manifestContent = FileUtils.readFileToString(manifestFile);
+        manifestContent = StringUtils.replace(manifestContent, "${version}", version);
+        FileUtils.writeStringToFile(manifestFile, manifestContent, "utf-8");
     }
 
     private static void concatFiles(File resultFile, List<File> files) throws IOException {

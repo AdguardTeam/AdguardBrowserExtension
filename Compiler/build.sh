@@ -80,9 +80,13 @@ elif [ "$env" = beta ]; then
     #safari beta
     options="$opts --browser=safari  --pack=extz --extensionId=com.adguard.safaribeta --update-url=https://adguardteam.github.io/AdguardBrowserExtension/safari_updates.xml"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
-    
+
     #edge beta zip
     options="$opts --browser=edge --pack=zip"
+    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
+
+    # chrome api zip
+    options="$opts --browser=chrome --name=adguard --create-api=true --pack=zip"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     echo "Beta builds created"
@@ -120,7 +124,7 @@ else
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     # chrome api
-    options="$opts --browser=chrome  --name=chrome-api --create-api=true"
+    options="$opts --browser=chrome --name=adguard --create-api=true"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     echo "Dev builds created"

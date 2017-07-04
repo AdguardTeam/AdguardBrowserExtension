@@ -90,7 +90,7 @@ public class Main {
 
         File source = new File(sourcePath);
 
-        buildName = getBuildName(buildName, browser, version, branch, allowRemoteScripts);
+        buildName = getBuildName(buildName, browser, version, branch, allowRemoteScripts, createApi);
         File dest = new File(destPath, buildName);
 
         if (updateFilters) {
@@ -252,7 +252,7 @@ public class Main {
         }
 
         if (createApi) {
-            SettingUtils.createApiBuild(dest, browser);
+            SettingUtils.createApiBuild(source, dest, browser, version);
         }
 
         return dest;
@@ -291,7 +291,7 @@ public class Main {
         return true;
     }
 
-    private static String getBuildName(String buildName, Browser browser, String version, Branch branch, boolean allowRemoteScripts) {
+    private static String getBuildName(String buildName, Browser browser, String version, Branch branch, boolean allowRemoteScripts, boolean createApi) {
         if (buildName == null) {
             switch (browser) {
                 case CHROMIUM:
@@ -320,6 +320,10 @@ public class Main {
         }
         if (branch != Branch.DEV) {
             buildName += "-" + branch.getName().toLowerCase();
+        }
+
+        if (createApi) {
+            buildName += "-api";
         }
 
         String result = buildName + "-" + version;
