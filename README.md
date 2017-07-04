@@ -31,8 +31,11 @@ This will create a Build directory with unpacked extensions for all browsers:
 ```
 You will need to put certificate.pem file to the Compiler directory. This build will create unpacked extensions and then pack them (crx for Chrome, xpi for Firefox).
 
-## Tests
-https://AdguardTeam.github.io/AdguardBrowserExtension/tests/tests.html
+## How to run tests
+```
+  cd tests 
+  ./run.sh
+```
 
 ## How to download a beta version of the extension?
 
