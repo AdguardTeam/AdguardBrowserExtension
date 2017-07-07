@@ -1,8 +1,8 @@
-! Checksum: 6eAQcpHk/FwnHulN9NYm4Q
+! Checksum: OhlCp9SHiE6He2ViXZfpOg
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 1.0.8.79
-! TimeUpdated: 2017-06-26T14:01:59.288+04:00
+! Version: 1.0.8.86
+! TimeUpdated: 2017-07-03T21:41:15.379+04:00
 ! Expires: 2 days (update frequency)
 ! Title: Adguard Mobile Ads Filter
 !
@@ -534,7 +534,7 @@
 ||mi.gdt.qq.com^
 ||microad.net^
 ||millennialmedia.com^
-||mixadvert.com^
+||mixadvert.com
 ||mixmarket.biz^
 ||mmnetwork.mobi^
 ||moatads.com^
@@ -1004,6 +1004,7 @@ deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important
 @@||tf-robots.nl^$elemhide,jsinject,content
 !
 !#####################
+! https://github.com/AdguardTeam/AdguardFilters/issues/5539
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3708
 @@||securepubads.g.doubleclick.net/gpt/pubads_impl_$domain=m.legacy.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4965
@@ -1187,6 +1188,9 @@ m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"
 ! https://forum.adguard.com/index.php?threads/10464/
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
 !
+||m.kuku.lu/smphone.footer.blockspecial.php
+4chan.org##.adg-rects
+4chan.org###bd > div[style="width:300px;height:250px;margin:10px auto 10px auto"]
 download.cnet.com###mobile_incontent_ad_plus
 udn.com##.only_mobile.mm-slideout
 zdnet.de###pageads_menu
@@ -1471,7 +1475,6 @@ pornhd.com##ul.thumbs.inside-row > li:not([data-thumbindexes])
 ||onlain-multiki.ru/config.json
 ||only-tv.org/config.json
 ||oss-cn-shanghai.aliyuncs.com/feimobileA.js
-||rueconomics.ru/template/mobile/assets/jquery.smartbanner/jquery.smartbanner.js
 ||sasisa.ru/images/*banners
 ||sodu.cc/js/tj1.js
 ||spac.me/js/mobiads.js
@@ -1686,6 +1689,8 @@ auth.wi-fi.ru##.c-fullscreen-banner
 !
 ! Section contains rules for mobile analytics and spyware
 !
+||measuread.com^
+||global.cmcs.service.amazonsilk.com/metrics
 ||analytics-tracker.thescore.com^
 ||app.roximity.com^
 ||dc.webtrends.com^

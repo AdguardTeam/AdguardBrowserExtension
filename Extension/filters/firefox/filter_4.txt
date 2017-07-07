@@ -1,8 +1,8 @@
-! Checksum: oMiomkY/AI4l9ilfAFvXjg
+! Checksum: 4Ft3pEiDTrvOPf9lB7ji4w
 ! Title: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
-! Version: 1.0.20.75
-! TimeUpdated: 2017-06-26T13:01:02.446+04:00
+! Version: 1.0.20.94
+! TimeUpdated: 2017-07-07T20:00:43.230+04:00
 ! Expires: 2 days (update frequency)
 ! Title: Adguard Social Media Filter
 !
@@ -171,6 +171,7 @@
 !
 ! Contains usorted urls
 !
+/wp-content/plugins/add-to-any/addtoany.min.
 ||flipboard.com/web/buttons/$third-party
 ||embed.tumblr.com/widgets/share/button$third-party
 ||platform.tumblr.com/v2/follow_button.html$third-party
@@ -398,6 +399,26 @@ m.tf.co.kr#$#li.sBtn_reply { float: initial!important; display: inline-block!imp
 ||mimimi.tv/?*=*&_=
 ||mindspace.ru/?*=*&_=
 !
+m-bild-de.cdn.ampproject.org##.socialbar
+amp.welt.de##.c-social
+ampproject.org##amp-social-share
+www-tz-de.cdn.ampproject.org,www-merkur-de.cdn.ampproject.org##.id-Amp-socialShare
+cyberscoop.com##a[href^="https://www.addtoany.com/add_to/"]
+ipleer.fm##.onesongblock-end > i
+kp.ru##.shareAfterAuthors > span.title
+kp.ru##.externalBlock > div.left > span.title
+porn-monkey.com###fb_video_link
+apkmb.com##.widget_facebook_likebox
+stereogum.com##.social-holder
+tvtorrent.me##.news_btn
+nordbuzz.de##.id-Actionbox-items-el--whatsapp
+nordbuzz.de##.id-Actionbox-items-el--facebook
+nordbuzz.de##.id-Actionbox-items-el--twitter
+nordbuzz.de##.id-Actionbox-items-el--googleplus
+wetteronline.de###socialmedia
+cosmo.ru##.social-box-widget
+donnerwetter.de##.addthis_horizontal_follow_toolbox
+moustique.be###block-artwhere-newsletter-newsletter-inscription
 legacy.com###StickySocialContainer
 politolog.net##div[id*="Composite"]
 politolog.net##.bnr_300_600
@@ -2226,6 +2247,9 @@ zdnet.co.kr##ul.sub_view_tit4.clfx
 !
 ! Section contains list general hiding rules
 !
+##.article-sharing
+~facebook.com##a[href^="http://www.facebook.com/plugins/like.php"]
+###sb_instagram
 ##a[href^="https://www.xing-share.com/app/user?op=share;"]
 ##.sparkling-social
 ##.bt-social-share-button
@@ -3100,6 +3124,13 @@ designboom.com,livescience.com,pbtech.co.nz,peoplesworld.org,space.com##.fa-face
 ||cdn-library.su/plusonet/lib/$domain=~pluso.net
 ||mailget.net^$third-party
 !
+trancepodcasts.com##.cp-overlay
+trancepodcasts.com##.cp-social-media
+firstone.tv##body > div[class]:empty
+firstone.tv##body > div[class]:empty+div[class]
+||weather.com/sites/all/modules/glomo/modules/glomo_like_gate/
+kiev24.ua###parent_popup
+dailylviv.com###followdaily
 experttur.com###parent_popup
 gamerconfig.eu###fb_wrapper
 kepeztv.az##body > #overlay
@@ -3279,6 +3310,12 @@ bomb01.com#$#.modal-open { overflow: visible!important; }
 ! Section fixing issues caused by social filter
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/5452
+benetton.com#@#.icon-facebook
+benetton.com#@#.icon-twitter
+benetton.com#@#.icon-instagram
+benetton.com#@#.icon-google-plus
+benetton.com#@#.icon-pinterest
 ! https://github.com/AdguardTeam/AdguardForiOS/issues/287
 @@||w.sharethis.com/button/buttons.js$domain=legacy.com
 !
@@ -3288,7 +3325,7 @@ bomb01.com#$#.modal-open { overflow: visible!important; }
 @@||blogspot.com^$~image,domain=9anime.to
 !
 @@||mycloud.to/resources/css/
-@@||ajax.googleapis.com/ajax/libs/jquery/*/jquery.min.js$domain=fmovies.is|mycloud.to
+@@||ajax.googleapis.com/ajax/libs/jquery/*/jquery.min.js$domain=fmovies.is|mycloud.to|fmovies.se
 @@//mycloud.to/resources/js/player.js
 @@//mycloud.to/resources/player/jwplayer-*/jwplayer.js
 !!!

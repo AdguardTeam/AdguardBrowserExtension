@@ -1,8 +1,8 @@
-! Checksum: TD+3ZhEfcXPG3yUXtZAlew
+! Checksum: 7buNCI8NO/Y0WVwIswHvuw
 ! Title: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! Version: 1.0.12.97
-! TimeUpdated: 2017-06-26T23:00:45.798+04:00
+! Version: 1.0.13.19
+! TimeUpdated: 2017-07-07T14:17:49.609+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -34,6 +34,7 @@ accountkiller.com#%#window.ga = function(){var a = arguments[5];a&&a.hitCallback
 ##img[src*="counter.yadro.ru"]
 ##img[src^="http://c.bigmir.net/"]
 ~epicl2.com,~forum.ixbt.com,~forum.themega.ru,~gamepedia.com,~makeserver.ru,~mozhor.ru,~onliner.by,~wiktionary.org,~yandex.by,~yandex.com,~yandex.com.tr,~yandex.ru,~yandex.ua##img[width="88"][height="31"]
+donnerwetter.de##.col-xs-12 > div.block.prepend-top[-ext-has='> div.blocktitle-brand > h2 > span.blocktitle-brand:contains(weitere Wetter-Nachrichten)']
 journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Счетчик)"]
 ||p.d.0emn.com^
 ||p.d.0fmm.com^
@@ -41,6 +42,7 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 ||p.d.1enm.com^
 ||p.d.nn0e.com^
 ||p.d.rpts.org^
+||measuread.com^$third-party
 ||adblockanalytics.com^$third-party
 ||sitestatlog.net^$third-party
 ||listat.biz^$third-party
@@ -1787,7 +1789,7 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 ||mbww.com^$third-party
 ||mc.yandex.ru/clmap$third-party
 ||mc.yandex.ru/informer$third-party
-||mc.yandex.ru/metrika$third-party,domain=~mp3poisk.ru|~yandex.by|~yandex.com|~yandex.kz|~yandex.ru|~yandex.ua
+||mc.yandex.ru/metrika$third-party,domain=~mp3poisk.ru
 ||mc.yandex.ru/watch$third-party
 ||mc.yandex.ru/webvisor$third-party
 ||mcount.ru^$third-party
@@ -3382,6 +3384,9 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 ||zowary.com^$third-party
 ||zqtk.net^$third-party
 ||zroitracker.com^$third-party
+||r.my.com^
+||tracking.g2crowd.com^
+||mtrcs.samba.tv^
 ||stat*.1internet.tv^
 ||stats.persgroep.be^
 ||stats.persgroep.nl^
@@ -3659,6 +3664,8 @@ charlestownwyllie.oaklawnnonantum.com^
 ||xtag.autotrader.com^
 ||xtag.kbb.com^
 ||zdlogs.sphereup.com^
+/fingerprint2.min.js
+/clarity-*.js
 /smartpixel.
 /smartpixel-1.js
 .cf/gif/impression?
@@ -3853,6 +3860,21 @@ charlestownwyllie.oaklawnnonantum.com^
 _pagespeed_beacon?
 _social_tracking.js^
 _tracking.php?b=
+||vkcache.com/js/amung_counter.js
+||va.tawk.to/log^
+||inputs.alooma.com/track^
+||syl.ru/misc/js/global/tracker.js
+||saavn.com/stats.php^
+||sitejabber.com/set-fingerprint/
+||spinmedia.com/clarity.min.js
+||spinmediacdn.com/clarity.min.js
+||dove.com*/Assets/JS/udm.js
+||cdn.ampproject.org/*/amp-analytics-
+||log.ventunotech.com^*/beacon.gif?
+||venlog-1542946650.us-west-2.elb.amazonaws.com^*/beacon.gif?
+||vkcache.com/js/video.*counter*.js
+||hqq.watch/cdn-cgi/trace|
+||vidoza.net/papi/*/addevent/promo_data
 ||daxab.com/ip.get^
 ||daxab.com/logger^
 ||sueddeutsche.de/statistics?eventType=
@@ -3948,14 +3970,12 @@ thehill.com###block-thehill-blocks-amp-outbrain
 ||cstream.wi-fi.ru/csc-event
 ||gj.applog.uc.cn/collect^
 ||gjapplog.uc.cn/collect^
-amp.cnn.com##amp-iframe
 ||visualstudio.com/_apis/customerintelligence/
 ||hqq.tv/js/counters.js
 ||hqq.tv/cdn-cgi/trace
 ||oload.tv/log|
 ||hqq.tv/js/gcounter.js
 ||hqq.tv/js/amung_counter.js
-theverge.com##amp-iframe
 ||reutersmedia.net/*/js/analytics/win-GTM.js$domain=mobile.reuters.com
 ||web.tv/analytics/
 ||biz.alibaba.com/order/ajax/AjaxOrderStatistic.do$third-party
@@ -3989,11 +4009,9 @@ europcar.com###wt_overlay
 -pcre-js-gen.herokuapp.com/tracking-event|
 .arcor.de/pixel/
 .arnostat.nl/click.
-rambler.ru##.aside-banners__banner-static
 m24.ru##.b-counters > ul
 lenta.ru,udaff.com##.counters
 efirde.az,legend.az##.counts
-news.rambler.ru##.j-cemetery__item.cemetery__item.partner
 blogovo.ru##.metrika_sapaclick
 newslab.ru##.r-recommend
 businessinsider.co.uk,businessinsider.com##.rail-recommended
@@ -4092,7 +4110,6 @@ dreamprogs.net##td[width="88"][height="31"]
 ||b-ssl.grvcdn.com^
 ||backup-bar-navig.yandex.ru/u
 ||bar-navig.yandex.ru/u
-||bat.bing.com^
 ||bazaarvoice.com^*/magpie.js
 ||beacon.richrelevance.com^
 ||bild.de/code/webtrekk-core*.bild.js
@@ -4574,6 +4591,7 @@ dreamprogs.net##td[width="88"][height="31"]
 ||do-not-tracker.org^$third-party
 ||eviltracker.net^$third-party
 ||trackersimulator.org^$third-party
+@@||tags.tiqcdn.com/utag/amway/eia/prod/utag.js$domain=amway.ru
 @@||cdn.mxpnl.com/libs/mixpanel*.min.js$domain=account.cyberghostvpn.com
 @@||mpsnare.iesnare.com/script/logo.js$domain=westernunion.com
 @@||mpsnare.iesnare.com/wu/snare.js$domain=westernunion.com
@@ -5012,7 +5030,7 @@ mozilla-russia.org#@#img[width="88"][height="31"]
 @@||hotwirestatic.com^*/opinionLab.js$domain=hotwire.com
 @@||imrworldwide.com/crossdomain.xml$object-subrequest,domain=sbs.com.au
 @@||imrworldwide.com/novms/*/ggcm*.js$domain=europafm.com
-@@||imrworldwide.com/v60.js$domain=musicfeeds.com.au|nzherald.co.nz|sf.se|weatherchannel.com.au
+@@||imrworldwide.com/v60.js$domain=last.fm|musicfeeds.com.au|nzherald.co.nz|realestateview.com.au|sf.se|threenow.co.nz|weatherchannel.com.au|corriereadriatico.it|ilgazzettino.it|ilmattino.it|ilmessaggero.it|leggo.it|quotidianodipuglia.it|freeview.com.au
 @@||imrworldwide.com^*-mediaplayer&$domain=au.launch.yahoo.com
 @@||imrworldwide.com^*/flashdetect.js
 @@||imrworldwide.com^*/ggce354.swf$domain=espn.go.com
