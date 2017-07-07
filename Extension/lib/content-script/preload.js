@@ -725,6 +725,14 @@
             }
         }
 
+        /**
+         * Due to some reasons after applying style to 'embed' element with SVG causes 'load' event, so we get into the infinite loop.
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/770
+         */
+        if (element.localName === 'embed' && element.type === 'image/svg+xml') {
+            return;
+        }
+
         ElementCollapser.hideElement(element, shadowRoot);
     };
 
