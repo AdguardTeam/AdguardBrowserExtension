@@ -24,6 +24,14 @@
 
 </details>
 
+<details><summary>Screenshot of the browser console:</summary>
+
+<!--- If there are any errors in browser console, please make a screenshot of them as well-->
+<!---Open Developer Tools and bring focus to the console	(Ctrl + Shift + J for Windows and	(Cmd + Opt + J)-->
+
+</details>
+
+
 ### Your environment
 <!--- Please include all relevant details about the environment you experienced the bug in -->
 * Adguard AdBlocker extension version: 
