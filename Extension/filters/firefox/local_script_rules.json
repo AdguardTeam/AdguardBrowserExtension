@@ -218,10 +218,6 @@
       "script" : "document.cookie = \"acceptCookies=1\";"
     },
     {
-      "domains" : "bild.de",
-      "script" : "(function(){var __de,__bild,__cmsKonfig;try{var b=function(a){a&&__bild!=a&&(__bild=a,__cmsKonfig=a.cmsKonfig,Object.defineProperty(a,\"cmsKonfig\",{get:function(){return __cmsKonfig},set:function(a){a&&a.system&&a.system.ad_smart_site_id&&(a.a={b:1},a.system.ad_smart_site_id=void 0);__cmsKonfig=a}}))},c=function(a){__de!=a&&(__de=a,b(__de.bild),Object.defineProperty(__de,\"bild\",{get:function(){return __bild},set:function(a){b(a)}}))};Object.defineProperty(window,\"de\",{get:function(){return __de},set:function(a){c(a)}})}catch(a){console&&console.error&&console.error(a)}})();"
-    },
-    {
       "domains" : "armorgames.com,onrpg.com,mmohuts.com,newgrounds.com",
       "script" : "Object.defineProperty(window, 'cpmstar_siteskin', { get: function() { return {}; } });"
     },
@@ -340,6 +336,10 @@
     {
       "domains" : "pornreactor.cc,joyreactor.cc,reactor.cc",
       "script" : "Object.defineProperty(document, 'write', { get: function() { return {}; } });"
+    },
+    {
+      "domains" : "gogoanime.io",
+      "script" : "AG_onLoad(function() { setTimeout(function() { var e = document.querySelector('.anime_video_body_watch_items .ads_iframe'); if (e) e.click(); }, 300); });"
     },
     {
       "domains" : "programegratuitepc.com",
@@ -630,10 +630,6 @@
       "script" : "(function(){var c=document.addEventListener;document.addEventListener=function(a,b,d,e){\"click\"!=a&&-1==b.toString().indexOf('postWindowPop')&&c(a,b,d,e)}.bind(document);})();"
     },
     {
-      "domains" : "4pda.ru",
-      "script" : "(function(){ var f = Element.prototype.removeAttribute; Element.prototype.removeAttribute = function(attrName) { this.f = f; if (attrName !== 'style') this.f(attrName); } })();"
-    },
-    {
       "domains" : "small-games.info",
       "script" : "(function() { window.open_ = window.open; var w_open = window.open, regex = /cityadspix.com/; window.open = function(a, b) { if (typeof a !== 'string' || !regex.test(a)) { w_open(a, b); } }; })();"
     },
@@ -758,8 +754,16 @@
       "script" : "AG_onLoad(function() { setTimeout(function() {if(document.getElementsByClassName(\"modal-overlay\")[0].isvisible = true){document.getElementsByClassName(\"button button--accept\")[0].click();}}, 300); });"
     },
     {
+      "domains" : "gazeta.ru,lenta.ru,rambler.ru",
+      "script" : "(function() { var pr = window.Promise; var tostr = Function.prototype.toString; window.Promise = function(executor) { if(tostr.call(executor).indexOf('getRandomSelector') != -1) { console.log('caught!'); throw new Error();  } else { return new pr(executor); } }.bind();  Object.getOwnPropertyNames(pr).forEach(function(propName) { Object.defineProperty(window.Promise, propName, Object.getOwnPropertyDescriptor(pr, propName)); });  pr.prototype.constructor = window.Promise; })();"
+    },
+    {
       "domains" : "hdfilmkablosu.com,ilkfullfilmizle.com,evrenselfilmler.net",
       "script" : "document.cookie = \"i=1\";"
+    },
+    {
+      "domains" : "muchfriends.com,smsreceiveonline.com,rule34hentai.net",
+      "script" : "(function() { var sto = window.setTimeout, re = /\\.bab_elementid.$/; window.setTimeout = function(a, b) { if ( typeof a !== 'string' || !re.test(a) ) { return sto(a, b); } }.bind(window); var signatures = [ ['blockadblock'], ['babasbm'], [/getItem\\('babn'\\)/], ['getElementById','String.fromCharCode','ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789','charAt','DOMContentLoaded','AdBlock','addEventListener','doScroll','fromCharCode','<<2|r>>4','sessionStorage','clientWidth','localStorage','Math','random'] ]; var check = function(s) { var tokens, match, j, token, pos; for ( var i = 0; i < signatures.length; i++ ) { tokens = signatures[i]; match = 0; for ( j = 0, pos = 0; j < tokens.length; j++ ) { token = tokens[j]; pos = token instanceof RegExp ? s.search(token) : s.indexOf(token); if ( pos !== -1 ) { match += 1; } } if ( (match / tokens.length) >= 0.8 ) { return true; } } return false; }; var realEval = window.eval; window.eval = function(a) { if ( !check(a) ) { return realEval(a); } var el = document.body; if ( el ) { el.style.removeProperty('visibility'); } el = document.getElementById('babasbmsgx'); if ( el ) { el.parentNode.removeChild(el); } }.bind(window); })();"
     },
     {
       "domains" : "linkshrink.net",
@@ -788,10 +792,6 @@
     {
       "domains" : "yaplakal.com,yap.ru",
       "script" : "AG_onLoad(function() { window.clkUnd = function() {} });"
-    },
-    {
-      "domains" : "webspor2.com,biyografi.info",
-      "script" : "AG_onLoad(function() { setTimeout(function() {document.getElementsByTagName(\"Body\")[0].removeAttribute(\"oncontextmenu\");}, 300); });"
     },
     {
       "domains" : "yts.ag",
@@ -894,6 +894,10 @@
       "script" : "window.open = function() {};"
     },
     {
+      "domains" : "www.wp.pl",
+      "script" : "Object.defineProperty(window, 'testMess', { get: function() { return; }, set: function() {} });"
+    },
+    {
       "domains" : "linclik.com",
       "script" : "(function(a){window.open=function(){if(\"Popup_Window\"!==argument[1])return a.apply(window,arguments)};})(window.open);"
     },
@@ -920,10 +924,6 @@
     {
       "domains" : "kakprosto.ru",
       "script" : "AG_onLoad(function() { window.getDirectBlock = function() {}; });"
-    },
-    {
-      "domains" : "deadspin.com,gizmodo.com,jalopnik.com,jezebel.com,kinja.com,kotaku.com,lifehacker.com,theroot.com,gutefrage.net,alloaadvertiser.com,andoveradvertiser.co.uk,autoexchange.co.uk,ayradvertiser.com,banburycake.co.uk,barrheadnews.com,barryanddistrictnews.co.uk,basildonstandard.co.uk,bicesteradvertiser.net,borehamwoodtimes.co.uk,boxingnewsonline.net,bracknellnews.co.uk,braintreeandwithamtimes.co.uk,brentwoodlive.co.uk,burnhamandhighbridgeweeklynews.co.uk,campaignseries.co.uk,carrickherald.com,centralfifetimes.com,chardandilminsternews.co.uk,chelmsfordweeklynews.co.uk,chesterlestreetadvertiser.co.uk,chorleycitizen.co.uk,consettstanleyadvertiser.co.uk,cotswoldjournal.co.uk,cravenherald.co.uk,creweguardian.co.uk,cumnockchronicle.com,droitwichadvertiser.co.uk,dumbartonreporter.co.uk,durhamadvertiser.co.uk,ealingtimes.co.uk,engagedinvestor.co.uk,epsomguardian.co.uk,freepressseries.co.uk,gazetteherald.co.uk,globalreinsurance.com,halesowennews.co.uk,harrowtimes.co.uk,harwichandmanningtreestandard.co.uk,helensburghadvertiser.co.uk,heraldseries.co.uk,hillingdontimes.co.uk,ilkleygazette.co.uk,impartialreporter.com,insurancetimes.co.uk,knutsfordguardian.co.uk,leighjournal.co.uk,ludlowadvertiser.co.uk,malverngazette.co.uk,messengernewspapers.co.uk,middlewichguardian.co.uk,milfordmercury.co.uk,monmouthshirecountylife.co.uk,northernfarmer.co.uk,northyorkshireadvertiser.co.uk,peeblesshirenews.com,pembrokeshirecountyliving.co.uk,penarthtimes.co.uk,pensions-insight.co.uk,prestwichandwhitefieldguide.co.uk,redditchadvertiser.co.uk,reward-guide.co.uk,romseyadvertiser.co.uk,s1cars.com,s1homes.com,s1jobs.com,s1rental.com,sloughobserver.co.uk,smallholder.co.uk,southendstandard.co.uk,southwalesguardian.co.uk,southwestfarmer.co.uk,strategic-risk-global.com,tewkesburyadmag.co.uk,thescottishfarmer.co.uk,thestrad.com,thetottenhamindependent.co.uk,thevillager.co.uk,thisisthewestcountry.co.uk,tivysideadvertiser.co.uk,troontimes.com,wandsworthguardian.co.uk,wearvalleyadvertiser.co.uk,wharfedaleobserver.co.uk,wilmslowguardian.co.uk,windsorobserver.co.uk,witneygazette.co.uk,yeovilexpress.co.uk,dudleynews.co.uk,irvinetimes.com,aol.co.uk,chip.de,codeproject.com,erdbeerlounge.de,gamona.de,huffingtonpost.co.uk,huffingtonpost.com,itpro.co.uk",
-      "script" : "(function(o){function a(a){return{get:function(){return a},set:b}}function b(){}function c(){throw\"Adguard: stopped a script execution.\";}var d={},e=a(function(a){a(!1)}),f={},g=EventTarget.prototype.addEventListener;o(d,{spid_control_callback:a(b),content_control_callback:a(b),vid_control_callback:a(b)});o(f,{config:a(d),_setSpKey:{get:c,set:c},checkState:e,isAdBlocking:e,getSafeUri:a(function(a){return a}),pageChange:a(b),setupSmartBeacons:a(b)});Object.defineProperty(window,\"_sp_\",a(f));EventTarget.prototype.addEventListener=function(a){\"sp.blocking\"!=a&&\"sp.not_blocking\"!=a&&g.apply(this,arguments)}})(Object.defineProperties);"
     },
     {
       "domains" : "~yandex.ru,~wetter.com,~milli-firka.org,~assassinscreed.com,~surfingbird.ru,~samsung.com,~imgur.com,~rockstargames.com",
@@ -960,10 +960,6 @@
     {
       "domains" : "iguide.to",
       "script" : "window.open = function() {};"
-    },
-    {
-      "domains" : "smsreceiveonline.com,rule34hentai.net",
-      "script" : "(function() { var sto = window.setTimeout, re = /\\.bab_elementid.$/; window.setTimeout = function(a, b) { if ( typeof a !== 'string' || !re.test(a) ) { return sto(a, b); } }.bind(window); var signatures = [ ['blockadblock'], ['babasbm'], [/getItem\\('babn'\\)/], ['getElementById','String.fromCharCode','ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789','charAt','DOMContentLoaded','AdBlock','addEventListener','doScroll','fromCharCode','<<2|r>>4','sessionStorage','clientWidth','localStorage','Math','random'] ]; var check = function(s) { var tokens, match, j, token, pos; for ( var i = 0; i < signatures.length; i++ ) { tokens = signatures[i]; match = 0; for ( j = 0, pos = 0; j < tokens.length; j++ ) { token = tokens[j]; pos = token instanceof RegExp ? s.search(token) : s.indexOf(token); if ( pos !== -1 ) { match += 1; } } if ( (match / tokens.length) >= 0.8 ) { return true; } } return false; }; var realEval = window.eval; window.eval = function(a) { if ( !check(a) ) { return realEval(a); } var el = document.body; if ( el ) { el.style.removeProperty('visibility'); } el = document.getElementById('babasbmsgx'); if ( el ) { el.parentNode.removeChild(el); } }.bind(window); })();"
     },
     {
       "domains" : "translate.yandex.ru,translate.yandex.ua",
@@ -1108,6 +1104,10 @@
     {
       "domains" : "videotoolbox.com,convertfiles.com,private-shows.net,flashx.tv,extratorrent.cc,uploads.to,drtuber.com,uplod.it,4bir.com,rapidvideo.com,losmovies.club,mcfucker.com,befuck.com,streamgaroo.com,pandamovie.net,pipec.ru,xyya.net,playpornx.net,imageweb.ws,the-watch-series.to,linkshrink.net,imageban.ru,vid.ag,userscloud.com,animeflv.net,icefilms.info,vidzi.tv,subs.ro,tumejortorrent.com,hdxpornx.com,thefappening.one,thefappening2015.com,thefappeningnew.com,yourporn.sexy,vshare.eu,anon-v.com,raptu.com,tubedupe.com,estream.to,hentai-id.tv,soundpark.pt,kingvid.tv,demonoid.pw,demonoid.click,dreamamateurs.com,thenewporn.com,ddlvalley.cool,salefiles.com,watchvideo.us",
       "script" : "Object.defineProperties(window, { \"_impspcabe_alpha\": { value: false, writable: false }, \"_impspcabe_beta\": { value: false, writable: false }, \"_impspcabe_path\": { value: 'about:blank', writable: false }, \"_impspcabe\": { value: false, writable: false } });"
+    },
+    {
+      "domains" : "kino-city.net",
+      "script" : "AG_onLoad(function() { document.onselectstart=function(){return true}; document.oncontextmenu=function(){return true}; });"
     },
     {
       "domains" : "<any>",
@@ -1538,6 +1538,10 @@
       "script" : "(function(){var b=window.setTimeout;window.setTimeout=function(a,c){if(!/RTCPeerConnection[\\s\\S]*?new MouseEvent\\(\"click\"/.test(a.toString()))return b(a,c)};})();"
     },
     {
+      "domains" : "hdkinohit.net,112.ua,klerk.ru,m24.ru,cn.ru,nnmclub.to,nnm-club.me,nnm-club.name,khazin.ru,fontanka.ru,24tv.ua,allboxing.ru,altapress.ru,autoua.net,avtodispetcher.ru,avtovod.org.ua,azov-sea.info,beztabu.net,boxnews.com.ua,buhgalter.com.ua,buhgalter911.com,censor.net.ua,depo.ua,dovidka.biz.ua,dsnews.ua,dynamo.kiev.ua,expres.ua,facenews.ua,fightsday.com,finance.ua,fontanka.fm,football24.ua,gagadget.com,gazeta.ua,glavcom.ua,guru.ua,headinsider.net,hronika.info,hvylya.net,hyser.com.ua,inforesist.org,kaktus.site,korupciya.com,kriminal.tv,kurs.com.ua,love.ua,luxlux.net,lvivexpres.com,mabila.ua,mama.ua,maximum.fm,minfin.com.ua,nashasvadba.ua,newsyou.info,nnm.me,nnovosti.info,novostivmire.com,obozrevatel.com,obsuzhday.com,okino.ua,ostrnum.com,qp.ua,radio24.ua,rbc.ua,real-vin.com,ria-m.tv,ringside24.com,scribble.su,segodnya.ua,sinoptik.com.ru,sinoptik.ua,socportal.info,sprashivalka.com,strana.ua,subject.com.ua,toneto.net,tv.ua,u-news.com.ua,ubr.ua,udoktora.net,ukrinform.ua,ukrlib.com.ua,ukrlit.vn.ua,unian.net,vchaspik.ua,vesti-ukr.com,vesti.ua,vmirechudes.com,vsetv.com,webpark.ru,woman.ua,zarlit.com,zaxid.net",
+      "script" : "var dce = document.createElement.bind(document); document.createElement = function(a) { var el = dce(a); if(a.toLowerCase() == \"script\") { Object.defineProperty(el, 'textContent', { set: function(i) { /*console.log(i);*/ if(!/function\\(mz_str\\).*?\"[a-z0-9]{100,}\"/.test(i)) { Object.getOwnPropertyDescriptor(Node.prototype, 'textContent').set.call(el, i); } }, get: function () { return el.textContent; } }) } return el; };"
+    },
+    {
       "domains" : "znaj.ua",
       "script" : "window.flag_gtrf = true;"
     },
@@ -1814,10 +1818,6 @@
       "script" : "window.ADFOX = {};"
     },
     {
-      "domains" : "4pda.ru",
-      "script" : "(function(){ var f = Element.prototype.setAttribute; Element.prototype.setAttribute = function(name, value) { if (name === 'style' && value.indexOf('block') !== -1 && value.indexOf('!important') !== -1) return; this.f = f; this.f(name, value); } })();"
-    },
-    {
       "domains" : "fd.nl",
       "script" : "AG_onLoad(function() { setTimeout(function() {if(document.getElementsByClassName(\"cookiewall\")[0].isvisible = true){document.getElementById(\"cookieconsent1\").click();}}, 300); });"
     },
@@ -1908,6 +1908,10 @@
     {
       "domains" : "720pfilmizle.tv",
       "script" : "Object.defineProperty(window, 'makePopunder', { get: function() { return; } });"
+    },
+    {
+      "domains" : "gezondheidsplein.nl",
+      "script" : "AG_onLoad(function() { var el=document.querySelector('a.button[href=\"/?acceptcookies=true\"]'); if(el) el.click(); });"
     },
     {
       "domains" : "sportsfan.com.au",
@@ -2298,10 +2302,6 @@
       "script" : "AG_onLoad(function() { AG_removeElementBySelector('ins[id^=\"aswift_\"]'); });"
     },
     {
-      "domains" : "112.ua,klerk.ru,m24.ru,cn.ru,nnmclub.to,nnm-club.me,nnm-club.name,khazin.ru,fontanka.ru,24tv.ua,allboxing.ru,altapress.ru,autoua.net,avtodispetcher.ru,avtovod.org.ua,azov-sea.info,beztabu.net,boxnews.com.ua,buhgalter.com.ua,buhgalter911.com,censor.net.ua,depo.ua,dovidka.biz.ua,dsnews.ua,dynamo.kiev.ua,expres.ua,facenews.ua,fightsday.com,finance.ua,fontanka.fm,football24.ua,gagadget.com,gazeta.ua,glavcom.ua,guru.ua,headinsider.net,hronika.info,hvylya.net,hyser.com.ua,inforesist.org,kaktus.site,korupciya.com,kriminal.tv,kurs.com.ua,love.ua,luxlux.net,lvivexpres.com,mabila.ua,mama.ua,maximum.fm,minfin.com.ua,nashasvadba.ua,newsyou.info,nnm.me,nnovosti.info,novostivmire.com,obozrevatel.com,obsuzhday.com,okino.ua,ostrnum.com,qp.ua,radio24.ua,rbc.ua,real-vin.com,ria-m.tv,ringside24.com,scribble.su,segodnya.ua,sinoptik.com.ru,sinoptik.ua,socportal.info,sprashivalka.com,strana.ua,subject.com.ua,toneto.net,tv.ua,u-news.com.ua,ubr.ua,udoktora.net,ukrinform.ua,ukrlib.com.ua,ukrlit.vn.ua,unian.net,vchaspik.ua,vesti-ukr.com,vesti.ua,vmirechudes.com,vsetv.com,webpark.ru,woman.ua,zarlit.com,zaxid.net",
-      "script" : "var dce = document.createElement.bind(document); document.createElement = function(a) { var el = dce(a); if(a.toLowerCase() == \"script\") { Object.defineProperty(el, 'textContent', { set: function(i) { /*console.log(i);*/ if(!/function\\(mz_str\\).*?\"[a-z0-9]{100,}\"/.test(i)) { Object.getOwnPropertyDescriptor(Node.prototype, 'textContent').set.call(el, i); } }, get: function () { return el.textContent; } }) } return el; };"
-    },
-    {
       "domains" : "yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by,beta.yandex.by",
       "script" : "window.__adgEnabled=false;"
     },
@@ -2348,6 +2348,10 @@
     {
       "domains" : "yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by",
       "script" : "AG_onLoad(function() { function adgObserver() { var observer = new MutationObserver(function(mutations) { adgRemoveDirect();}); observer.observe(document.body, { childList: true, characterData: true, subtree: true }) } var adgRemoveDirect = function() { try { adgRemoveDirectMail(); adgRemoveDirectPogoda(); if (typeof __adgEnabled != \"undefined\" && !__adgEnabled) { return; } else {adgRemoveContext(); } } catch (ex) {} }; var adgRemoveContext = function() { AG_each(\".serp-list > .serp-item .label\", function(node) { if (node.innerText == \"\\u0420\\u0435\\u043a\\u043b\\u0430\\u043c\\u0430\") AG_removeParent(node, function(parent) { return parent.className && (parent.className.indexOf(\"serp-item\") >= 0 && parent.getAttribute(\"data-cid\") || parent.className && parent.className.indexOf(\"serp-adv__block\") >= 0) }) }) }; var adgRemoveDirectMail = function() { AG_each(\".js-folders__nesting\", function(node) { AG_each('a[class=\"b-folders__folder__link\"][href*=\"direct.yandex.ru\"]', function(node) { AG_removeParent(node, function(parent) { return parent.className && parent.className.indexOf(\"b-folders__nesting\") >= 0 }) }) }) }; var adgRemoveDirectNews = function() { AG_each('a[href^=\"http://news-clck.yandex.\"]', function(node) { AG_removeParent(node, function(parent) { return parent.className && parent.className.indexOf(\"story\") >= 0 }) }) }; var adgRemoveDirectPogoda = function() { AG_each('a[href^=\"/pogoda/counters/\"]', function(node) { AG_removeParent(node, function(parent) { return parent.className && (parent.className.indexOf(\"info__map\") >= 0 || parent.className && parent.className.indexOf(\"navigation-city \") >= 0) }) }) }; adgRemoveDirect(); adgObserver(); });"
+    },
+    {
+      "domains" : "webspor2.com,biyografi.info,seiya-saiga.com",
+      "script" : "AG_onLoad(function() { setTimeout(function() { document.getElementsByTagName(\"Body\")[0].removeAttribute(\"oncontextmenu\"); document.getElementsByTagName(\"Body\")[0].removeAttribute(\"onselectstart\"); }, 300); });"
     },
     {
       "domains" : "solidfiles.com",
@@ -2778,6 +2782,10 @@
       "script" : "(function(b,c){setTimeout=function(){var a=arguments[0];if(\"function\"==typeof a&&/^function [A-Za-z]{1,2}\\(\\)\\s*\\{([A-Za-z])\\|\\|\\(\\1=!0,[\\s\\S]{1,13}\\(\\)\\)\\}$/.test(c.call(a)))throw\"Adguard stopped a script execution.\";return b.apply(window,arguments)}})(setTimeout,Function.prototype.toString);"
     },
     {
+      "domains" : "wunderground.com,deadspin.com,gizmodo.com,jalopnik.com,jezebel.com,kinja.com,kotaku.com,lifehacker.com,theroot.com,gutefrage.net,alloaadvertiser.com,andoveradvertiser.co.uk,autoexchange.co.uk,ayradvertiser.com,banburycake.co.uk,barrheadnews.com,barryanddistrictnews.co.uk,basildonstandard.co.uk,bicesteradvertiser.net,borehamwoodtimes.co.uk,boxingnewsonline.net,bracknellnews.co.uk,braintreeandwithamtimes.co.uk,brentwoodlive.co.uk,burnhamandhighbridgeweeklynews.co.uk,campaignseries.co.uk,carrickherald.com,centralfifetimes.com,chardandilminsternews.co.uk,chelmsfordweeklynews.co.uk,chesterlestreetadvertiser.co.uk,chorleycitizen.co.uk,consettstanleyadvertiser.co.uk,cotswoldjournal.co.uk,cravenherald.co.uk,creweguardian.co.uk,cumnockchronicle.com,droitwichadvertiser.co.uk,dumbartonreporter.co.uk,durhamadvertiser.co.uk,ealingtimes.co.uk,engagedinvestor.co.uk,epsomguardian.co.uk,freepressseries.co.uk,gazetteherald.co.uk,globalreinsurance.com,halesowennews.co.uk,harrowtimes.co.uk,harwichandmanningtreestandard.co.uk,helensburghadvertiser.co.uk,heraldseries.co.uk,hillingdontimes.co.uk,ilkleygazette.co.uk,impartialreporter.com,insurancetimes.co.uk,knutsfordguardian.co.uk,leighjournal.co.uk,ludlowadvertiser.co.uk,malverngazette.co.uk,messengernewspapers.co.uk,middlewichguardian.co.uk,milfordmercury.co.uk,monmouthshirecountylife.co.uk,northernfarmer.co.uk,northyorkshireadvertiser.co.uk,peeblesshirenews.com,pembrokeshirecountyliving.co.uk,penarthtimes.co.uk,pensions-insight.co.uk,prestwichandwhitefieldguide.co.uk,redditchadvertiser.co.uk,reward-guide.co.uk,romseyadvertiser.co.uk,s1cars.com,s1homes.com,s1jobs.com,s1rental.com,sloughobserver.co.uk,smallholder.co.uk,southendstandard.co.uk,southwalesguardian.co.uk,southwestfarmer.co.uk,strategic-risk-global.com,tewkesburyadmag.co.uk,thescottishfarmer.co.uk,thestrad.com,thetottenhamindependent.co.uk,thevillager.co.uk,thisisthewestcountry.co.uk,tivysideadvertiser.co.uk,troontimes.com,wandsworthguardian.co.uk,wearvalleyadvertiser.co.uk,wharfedaleobserver.co.uk,wilmslowguardian.co.uk,windsorobserver.co.uk,witneygazette.co.uk,yeovilexpress.co.uk,dudleynews.co.uk,irvinetimes.com,aol.co.uk,chip.de,codeproject.com,erdbeerlounge.de,gamona.de,huffingtonpost.co.uk,huffingtonpost.com,itpro.co.uk",
+      "script" : "(function(o){function a(a){return{get:function(){return a},set:b}}function b(){}function c(){throw\"Adguard: stopped a script execution.\";}var d={},e=a(function(a){a(!1)}),f={},g=EventTarget.prototype.addEventListener;o(d,{spid_control_callback:a(b),content_control_callback:a(b),vid_control_callback:a(b)});o(f,{config:a(d),_setSpKey:{get:c,set:c},checkState:e,isAdBlocking:e,getSafeUri:a(function(a){return a}),pageChange:a(b),setupSmartBeacons:a(b)});Object.defineProperty(window,\"_sp_\",a(f));EventTarget.prototype.addEventListener=function(a){\"sp.blocking\"!=a&&\"sp.not_blocking\"!=a&&g.apply(this,arguments)}})(Object.defineProperties);"
+    },
+    {
       "domains" : "4pda.ru",
       "script" : "AG_onLoad(function() { AG_removeElementBySelector('body > div[id^=\"r\"] > div[class^=\"r\"] > div[class^=\"r\"] > div[class^=\"r\"] > a[rel=\"nofollow\"]'); });"
     },
@@ -2894,6 +2902,10 @@
       "script" : "AG_onLoad(function() { setTimeout(function() {document.getElementsByTagName(\"HTML\")[0].classList.remove(\"remodal-is-locked\");}, 300); });"
     },
     {
+      "domains" : "farodevigo.es",
+      "script" : "window.pr_okvalida = true;"
+    },
+    {
       "domains" : "cnews.ru",
       "script" : "Object.defineProperty(window, '_', { get: function() { return 0; } });"
     },
@@ -2908,6 +2920,10 @@
     {
       "domains" : "overclockers.ru",
       "script" : "AG_onLoad(function() { window.trackOutboundLink = window.open; });"
+    },
+    {
+      "domains" : "bild.de",
+      "script" : "(function(){var __de,__bild,__cmsKonfig;try{var b=function(a){a&&__bild!=a&&(__bild=a,__cmsKonfig=a.cmsKonfig,Object.defineProperty(a,\"cmsKonfig\",{get:function(){return __cmsKonfig},set:function(a){a&&a.system&&a.system.ad_smart_site_id&&(a.a={a:0,b:1},a.system.ad_smart_site_id=void 0);__cmsKonfig=a}}))},c=function(a){__de!=a&&(__de=a,b(__de.bild),Object.defineProperty(__de,\"bild\",{get:function(){return __bild},set:function(a){b(a)}}))};Object.defineProperty(window,\"de\",{get:function(){return __de},set:function(a){c(a)}})}catch(a){console&&console.error&&console.error(a)}})();"
     },
     {
       "domains" : "ziekenhuis.nl",
@@ -2952,10 +2968,6 @@
     {
       "domains" : "pcworld.com",
       "script" : "setInterval(function() { var el = document.querySelector('.howto-video video'); if (el) { el.pause(); el.src = ''; }}, 100);"
-    },
-    {
-      "domains" : "www.wp.pl",
-      "script" : "Object.defineProperty(window,'testMess',{value:''});"
     },
     {
       "domains" : "dvhn.nl",

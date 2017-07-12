@@ -1,8 +1,8 @@
-! Checksum: TluTIXS71YjHaFBzae2uyw
+! Checksum: 0hWGz0ysFLaRk0dauf/yQw
 ! Title: Turkish filter
 ! Description: Adguard Turkish filter. Filter list that specifically removes adverts on Turkish language websites.
-! Version: 1.0.7.91
-! TimeUpdated: 2017-07-07T13:13:02.168+04:00
+! Version: 1.0.7.94
+! TimeUpdated: 2017-07-12T19:02:14.342+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -439,6 +439,8 @@ hddiziizleyin.net#$#body {background: url('http://www.hddiziizleyin.net/wp-conte
 muzikindir.xyz#$#.ad-box { height: 0px!important; }
 fullfilmizlesin.com#$##banner { position: absolute!important; left: -3000px!important; }
 sabah.com.tr#$#header.advertControlArea { top: 0px!important; }
+sineturk.co#$##cn-content { display: block!important; }
+sineturk.co#$##rk-content { display: none!important; }
 hddiziizletir.com#$##film { display: block!important; }
 hddiziizletir.com#$##filmoncereklam { display: none!important; }
 fullhdfilmizles.org#$##VideOnrekLam { display: none!important; }
@@ -654,6 +656,7 @@ sinemapol.org#$##video-oncesi { display: none!important; }
 sinemapol.org#$##video { display: block!important; }
 720pizle.com#$##kendisi { display: block!important; }
 720pizle.com#$##reklami { display: none!important; }
+jetfilmizle.biz#$#body { background: #000000!important; }
 izlemeyedeger.com#$#body { background: #000000!important; }
 hdfilmhizmeti.org#$#body { background: #272727 url(images/bg.png) repeat-x!important; }
 hdcehennem.com#$#body{background:#000000 url(/wp-content/themes/keremiya/images/body_bg.png) center top fixed repeat!important;}
@@ -837,9 +840,14 @@ izlemeyedeger.com#$#.remodal-is-locked {overflow:visible!important}
 /wp-content/uploads/*_reklam.
 ||media.*.com/renderimage.aspx?pid=$third-party
 ||wingobet10.com/banner/$third-party
-://i.hizliresim.com^$domain=limitsizfilmizle.net,hizlifullfilmizle.com|4ia.net|filmifullizle.org|filmexpresi.com|bankotahminler1.org|hintfilmi.net|fullhdfilmgecesi.com|sinemaizlefullhd.net|720pfilmizle.tv|asyafanatikleri.net|ayfilmizle.net|diziay.com|diziband.com|ediziizleyin.com|filmarenasi.net|filmkomedi.com|fullfilmihdizlesene.com|haber32.com.tr|hd-pornoizle.net|hdfilmarenasi.com|hdfilmarenasi.net|sinemapol.org|sonbolumizleyin.net|sports.gool7.net|tekparthdkeyfi.com|xsportv1.com|fullfilmsitesi.com|filmbilir.net|hdfilmakinasi.com
+://i.hizliresim.com^$domain=jetfilmizle.biz|limitsizfilmizle.net|hizlifullfilmizle.com|4ia.net|filmifullizle.org|filmexpresi.com|bankotahminler1.org|hintfilmi.net|fullhdfilmgecesi.com|sinemaizlefullhd.net|720pfilmizle.tv|asyafanatikleri.net|ayfilmizle.net|diziay.com|diziband.com|ediziizleyin.com|filmarenasi.net|filmkomedi.com|fullfilmihdizlesene.com|haber32.com.tr|hd-pornoizle.net|hdfilmarenasi.com|hdfilmarenasi.net|sinemapol.org|sonbolumizleyin.net|sports.gool7.net|tekparthdkeyfi.com|xsportv1.com|fullfilmsitesi.com|filmbilir.net|hdfilmakinasi.com
+||haber4saat.com/dd.mp4
+sineturk.co##.footer-sticky
+||franecki.net^$third-party
 ||dizipub.com/Bets*_Video_600x400.mp4^
 neoldu.com##.news_detail > div.side_detail
+||urbanfasion.com/ban*.gif
+urbanfasion.com##.watch_video > p[style*="text-align: center;"]
 mp3indirco.org##a[href^="http://track.bcvc.mobi"]
 filmionlineizle.net##.fancybox-wrap
 filmionlineizle.net##.fancybox-overlay

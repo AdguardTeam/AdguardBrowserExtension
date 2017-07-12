@@ -1,8 +1,8 @@
-! Checksum: OhlCp9SHiE6He2ViXZfpOg
+! Checksum: HzRNWd3lR0GO74QfxoEVXQ
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 1.0.8.86
-! TimeUpdated: 2017-07-03T21:41:15.379+04:00
+! Version: 1.0.8.91
+! TimeUpdated: 2017-07-12T19:01:58.348+04:00
 ! Expires: 2 days (update frequency)
 ! Title: Adguard Mobile Ads Filter
 !
@@ -33,6 +33,7 @@
 ||banners-slb.mobile.yandex.net^
 ||banners.mobile.yandex.net^
 !
+||crosspromotion-us.avosapps.us^
 ||ad.period-calendar.com^
 ||dc.altamob.com^
 ||cpactions.com^
@@ -1188,6 +1189,8 @@ m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"
 ! https://forum.adguard.com/index.php?threads/10464/
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
 !
+mobile.1haza.com##.main > a:not([href*="1haza.com"]) > img[width="100%"]
+mobile.1haza.com##.wrapper > a:not([href*="1haza.com"]) > img[width="100%"]
 ||m.kuku.lu/smphone.footer.blockspecial.php
 4chan.org##.adg-rects
 4chan.org###bd > div[style="width:300px;height:250px;margin:10px auto 10px auto"]
@@ -1689,6 +1692,9 @@ auth.wi-fi.ru##.c-fullscreen-banner
 !
 ! Section contains rules for mobile analytics and spyware
 !
+||sync.adotmob.com^
+||tracker.adotmob.com^
+||dmx.sync.yume.com/tracker/
 ||measuread.com^
 ||global.cmcs.service.amazonsilk.com/metrics
 ||analytics-tracker.thescore.com^
@@ -1948,6 +1954,8 @@ auth.wi-fi.ru##.c-fullscreen-banner
 ! Section contains rules, which absent in mobile version of filters
 !
 !--- Russian filter ---
+! https://github.com/AdguardTeam/AdguardFilters/issues/2841
+||qashqairussia.ru/script.php?
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5276
 dnepr.info##.item-bg
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5009

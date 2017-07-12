@@ -1,8 +1,8 @@
-! Checksum: KdRkiCKM19snJEtyTnPNUA
+! Checksum: 8wYa/rxWbHcw8mIMKi4h6w
 ! Title: Dutch filter
 ! Description: EasyList Dutch + Adguard Dutch filter. Filter list that specifically removes adverts on Dutch language websites.
-! Version: 1.0.9.28
-! TimeUpdated: 2017-06-05T23:01:12.506+04:00
+! Version: 1.0.9.29
+! TimeUpdated: 2017-07-10T23:01:25.585+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -1301,6 +1301,10 @@ ad.nl##.tile[-ext-has=">.ankeiler--advertisement"]
 gelderlander.nl##.page-content > .theme-default[-ext-has='div.ad']
 klusidee.nl##tr.table-row[-ext-has=".td-ad"]
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
+feyenoord.nl##.reveal-modal-bg
+feyenoord.nl###adModal
+feyenoord.nl###ads.show-for-medium-up
+feyenoord.nl###more-ads
 ad.nl##.ankeiler--advertisement
 ||iframe.gsminfo.nl/*/populair-beknopt^$domain=allaboutphones.nl
 allaboutphones.nl##.ad-container

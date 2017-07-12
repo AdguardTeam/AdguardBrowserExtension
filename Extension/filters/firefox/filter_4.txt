@@ -1,8 +1,8 @@
-! Checksum: 4Ft3pEiDTrvOPf9lB7ji4w
+! Checksum: iiQBUJzIAPbBQjLQxbJoXw
 ! Title: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
-! Version: 1.0.20.94
-! TimeUpdated: 2017-07-07T20:00:43.230+04:00
+! Version: 1.0.21.11
+! TimeUpdated: 2017-07-12T18:00:50.163+04:00
 ! Expires: 2 days (update frequency)
 ! Title: Adguard Social Media Filter
 !
@@ -264,6 +264,9 @@ lj_bookmarklet
 !
 ! Extended CSS rules
 !
+csgo-stats.net##.container > div.row > div > div.picture-list[-ext-has="> div.card-header > h2:contains(Share)"]
+kachelmannwetter.com##.row > .col-lg-6 > h2.head-index:contains(Facebook)
+stylevamp.de##.site-main > #secondary > .widget > .section-title:contains(Finde uns auf Facebook)
 g2esports.com##.container-fluid > .section-header > .pull-right[-ext-has='a[href="https://twitter.com/G2Esports"]']
 otohaber.com.tr##body > .fancybox-container[-ext-has=".lightbox"]
 schwaebische.de##aside > .grey[-ext-has='>div.fb-page']
@@ -399,10 +402,23 @@ m.tf.co.kr#$#li.sBtn_reply { float: initial!important; display: inline-block!imp
 ||mimimi.tv/?*=*&_=
 ||mindspace.ru/?*=*&_=
 !
+gofobo.com##.button.share
+unwetteralarm.com##.sticky_social
+europaplus.ru##.footer-social-widgets
+road.cc##.sharethis-wrapper
+wallgif.com##.social
+haber1905.net##.SocialTools > ul > li:not(.print):not(.resizer)
+blick.ch##.standingShareBar
+royal-canin.ru##.share
+washingtonpost.com##.inline-sharebar
+amp-vox-de.cdn.ampproject.org##.rtli-master-social-share
+gizmodo-com.cdn.ampproject.org##.sharingfooter
+kinomassa.biz###vk_group_kinomassa
+www-pcgameshardware-de.cdn.ampproject.org,www-pcgames-de.cdn.ampproject.org##.socialbar
 m-bild-de.cdn.ampproject.org##.socialbar
 amp.welt.de##.c-social
 ampproject.org##amp-social-share
-www-tz-de.cdn.ampproject.org,www-merkur-de.cdn.ampproject.org##.id-Amp-socialShare
+www-op--online-de.cdn.ampproject.org,www-tz-de.cdn.ampproject.org,www-merkur-de.cdn.ampproject.org##.id-Amp-socialShare
 cyberscoop.com##a[href^="https://www.addtoany.com/add_to/"]
 ipleer.fm##.onesongblock-end > i
 kp.ru##.shareAfterAuthors > span.title
@@ -792,7 +808,6 @@ toughnickel.com###social_share_wrapper
 onlinemarketingrockstars.de##.socialbar-wrap-bottom
 putlocker-movies.is##.dt_social_single
 eatthis.com##.article-social-rel
-kick.media##.article-sharing
 windowsreport.com##.widget.dp-social
 theatlantic.com##nav#action-bar
 allmusic.com##.allmusic-share
@@ -1110,7 +1125,6 @@ forbes.com##.article-fbs-sharing
 adme.ru##.article-pic-soc
 unian.info##.article-selection-shares
 indiatimes.com##.article-share
-digiday.com##.article-sharing
 computerra.ru##.article-soc
 livedoor.com##.article-social
 tvguide.com##.article-social-section
@@ -2196,6 +2210,7 @@ khan.co.kr##.articlek_share_wrap
 khan.co.kr##.social_btm
 m.chosun.com##.sns_area
 m.dailian.co.kr##.responsive_col1 > .h3_area:nth-child(3)
+m.ebn.co.kr##.list_4 > .top_box
 m.edaily.co.kr##.social-login
 m.focus.kr##.sns_box
 m.gobalnews.com##.sns-list
@@ -3124,6 +3139,9 @@ designboom.com,livescience.com,pbtech.co.nz,peoplesworld.org,space.com##.fa-face
 ||cdn-library.su/plusonet/lib/$domain=~pluso.net
 ||mailget.net^$third-party
 !
+alimentation-sante.net##body > [id^="spu-"]
+watch5s.rs##.modal-backdrop
+watch5s.rs###pop-subscribe
 trancepodcasts.com##.cp-overlay
 trancepodcasts.com##.cp-social-media
 firstone.tv##body > div[class]:empty
@@ -3336,6 +3354,7 @@ bie-dro.de#@#.header-social
 ! 9gag.com - broken Google auth
 @@||apis.google.com/js/platform.js$domain=9gag.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4902
+@@||xing-share.com/assets/spi/message_proxy-*.js$domain=xing.com
 @@||xing-share.com/plugins^$domain=bewerbung.co
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4648
 @@||apis.google.com/js/platform.js$domain=geekinformer.net
