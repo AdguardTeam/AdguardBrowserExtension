@@ -730,7 +730,7 @@
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/770
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/779
          */
-        if (element.localName === 'embed' && (element.type === 'image/svg+xml' || element.getAttribute('preventhide') == 1)) {
+        if (element.localName === 'embed') {
             return;
         }
 
