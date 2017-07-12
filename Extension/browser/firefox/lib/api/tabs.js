@@ -176,10 +176,18 @@
     }
 
     function getURI(tab) {
-        if (tab.browser) { // fennec
-            return tab.browser.currentURI.asciiSpec;
+        try {
+            if (tab.browser) { // fennec
+                return tab.browser.currentURI.asciiSpec;
+            }
+            return tab.linkedBrowser.currentURI.asciiSpec;
+        } catch (ex) {
+            /**
+             * Access currentURI may throw exception on browser startup
+             * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/773
+             */
+            adguard.console.error('Error while getting URI, {0}', ex);
         }
-        return tab.linkedBrowser.currentURI.asciiSpec;
     }
 
     function getTabTitle(tab) {
@@ -316,7 +324,11 @@
             };
         }
 
-        (function () {
+        /**
+         * Initializes service for working with windows
+         * Stores currently opened windows and binds to different windows events
+         */
+        var init = function () {
 
             function isTabBrowserInitialized(win) {
 
@@ -444,7 +456,7 @@
             while (winEnumerator.hasMoreElements()) {
                 win = winEnumerator.getNext();
                 if (!win.closed) {
-                    windowsIdMap.set(win, nextWindowId++);
+                    addWindow(win);
                 }
             }
 
@@ -455,7 +467,7 @@
                     .QueryInterface(Ci.nsIInterfaceRequestor)
                     .getInterface(Ci.nsIDOMWindow);
                 if (!win.closed) {
-                    windowsIdMap.set(win, nextWindowId++);
+                    addWindow(win);
                 }
             }
 
@@ -469,7 +481,7 @@
                 Services.obs.removeObserver(windowEventsListeners, 'chrome-document-global-created');
                 windowsIdMap.clear();
             });
-        })();
+        };
 
         var create = function (createData, callback) { // jshint ignore:line
             //TODO: implement
@@ -505,6 +517,7 @@
 
         return {
 
+            init: init,
             onCreated: onCreatedChannel, // callback (adguardWin, nativeWin)
             onRemoved: onRemovedChannel, // callback (windowId, nativeWin)
             onUpdated: onUpdatedChannel, // callback (adguardWin, nativeWin, type)
@@ -614,9 +627,9 @@
             win.removeEventListener('activate', onTabEvent, false);
         }
 
-        // Initialize with currently opened windows
-        adguard.windowsImpl.forEachNative(onTabBrowserInitialized);
-
+        /**
+         * We will receive this event after UI initialization
+         */
         adguard.windowsImpl.onUpdated.addListener(function (adgWin, domWin, event) {
             if (event === 'TabBrowserReady') {
                 onTabBrowserInitialized(domWin);
@@ -629,6 +642,11 @@
         adguard.unload.when(function () {
             adguard.windowsImpl.forEachNative(detachFromTabBrowser);
         });
+
+        /**
+         * Here we are ready to initialize windows implementation service
+         */
+        adguard.windowsImpl.init();
 
         function isPrivate(xulTab) {
 
