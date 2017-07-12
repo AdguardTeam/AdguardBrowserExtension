@@ -120,6 +120,14 @@ var browser = window.browser || chrome;
             requestType = parseRequestTypeFromUrl(details.url);
         }
 
+        /**
+         * Use `OTHER` type as fallback
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/777
+         */
+        if (!(requestType in adguard.RequestTypes)) {
+            requestType = adguard.RequestTypes.OTHER;
+        }
+
         requestDetails.frameId = frameId;
         requestDetails.requestFrameId = requestFrameId;
         requestDetails.requestType = requestType;
