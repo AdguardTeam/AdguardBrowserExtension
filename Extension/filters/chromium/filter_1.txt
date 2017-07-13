@@ -1,8 +1,8 @@
-! Checksum: 7afZJkmUW8ccGITSuruY5w
+! Checksum: 8PJYglPugD4hBL7ga6xaNA
 ! Title: Russian filter
 ! Description: Adguard Russian filter. Filter that enables blocking of ads on websites in Russian.
-! Version: 1.0.53.88
-! TimeUpdated: 2017-07-12T20:00:16.972+04:00
+! Version: 1.0.53.97
+! TimeUpdated: 2017-07-13T19:00:12.752+04:00
 ! Expires: 2 days (update frequency)
 ! Title: Adguard Russian Filter
 !
@@ -28,6 +28,7 @@
 !
 ! Содержит доменные имена, использующиеся рекламными сетями.
 !
+||teaser.media^$third-party
 ||log2.ru^$third-party
 ||srkft.com^$third-party
 ||52.210.16.150^$empty
@@ -5667,7 +5668,7 @@ kakprosto.ru#%#AG_onLoad(function() { window.getDirectBlock = function() {}; });
 ! geektimes.ru,habrahabr.ru - a lot of errors in console
 geektimes.ru,habrahabr.ru#%#AG_onLoad(function() { window.loadAdriverBanner = function() {}; });
 ! Ads replacement script (trafmag.com)
-hdkinohit.net,112.ua,klerk.ru,m24.ru,cn.ru,nnmclub.to,nnm-club.me,nnm-club.name,khazin.ru,fontanka.ru,24tv.ua,allboxing.ru,altapress.ru,autoua.net,avtodispetcher.ru,avtovod.org.ua,azov-sea.info,beztabu.net,boxnews.com.ua,buhgalter.com.ua,buhgalter911.com,censor.net.ua,depo.ua,dovidka.biz.ua,dsnews.ua,dynamo.kiev.ua,expres.ua,facenews.ua,fightsday.com,finance.ua,fontanka.fm,football24.ua,gagadget.com,gazeta.ua,glavcom.ua,guru.ua,headinsider.net,hronika.info,hvylya.net,hyser.com.ua,inforesist.org,kaktus.site,korupciya.com,kriminal.tv,kurs.com.ua,love.ua,luxlux.net,lvivexpres.com,mabila.ua,mama.ua,maximum.fm,minfin.com.ua,nashasvadba.ua,newsyou.info,nnm.me,nnovosti.info,novostivmire.com,obozrevatel.com,obsuzhday.com,okino.ua,ostrnum.com,qp.ua,radio24.ua,rbc.ua,real-vin.com,ria-m.tv,ringside24.com,scribble.su,segodnya.ua,sinoptik.com.ru,sinoptik.ua,socportal.info,sprashivalka.com,strana.ua,subject.com.ua,toneto.net,tv.ua,u-news.com.ua,ubr.ua,udoktora.net,ukrinform.ua,ukrlib.com.ua,ukrlit.vn.ua,unian.net,vchaspik.ua,vesti-ukr.com,vesti.ua,vmirechudes.com,vsetv.com,webpark.ru,woman.ua,zarlit.com,zaxid.net#%#var dce = document.createElement.bind(document); document.createElement = function(a) { var el = dce(a); if(a.toLowerCase() == "script") { Object.defineProperty(el, 'textContent', { set: function(i) { /*console.log(i);*/ if(!/function\(mz_str\).*?"[a-z0-9]{100,}"/.test(i)) { Object.getOwnPropertyDescriptor(Node.prototype, 'textContent').set.call(el, i); } }, get: function () { return el.textContent; } }) } return el; };
+rustorka.com,ekabu.ru,hdkinohit.net,112.ua,klerk.ru,m24.ru,cn.ru,nnmclub.to,nnm-club.me,nnm-club.name,khazin.ru,fontanka.ru,24tv.ua,allboxing.ru,altapress.ru,autoua.net,avtodispetcher.ru,avtovod.org.ua,azov-sea.info,beztabu.net,boxnews.com.ua,buhgalter.com.ua,buhgalter911.com,censor.net.ua,depo.ua,dovidka.biz.ua,dsnews.ua,dynamo.kiev.ua,expres.ua,facenews.ua,fightsday.com,finance.ua,fontanka.fm,football24.ua,gagadget.com,gazeta.ua,glavcom.ua,guru.ua,headinsider.net,hronika.info,hvylya.net,hyser.com.ua,inforesist.org,kaktus.site,korupciya.com,kriminal.tv,kurs.com.ua,love.ua,luxlux.net,lvivexpres.com,mabila.ua,mama.ua,maximum.fm,minfin.com.ua,nashasvadba.ua,newsyou.info,nnm.me,nnovosti.info,novostivmire.com,obozrevatel.com,obsuzhday.com,okino.ua,ostrnum.com,qp.ua,radio24.ua,rbc.ua,real-vin.com,ria-m.tv,ringside24.com,scribble.su,segodnya.ua,sinoptik.com.ru,sinoptik.ua,socportal.info,sprashivalka.com,strana.ua,subject.com.ua,toneto.net,tv.ua,u-news.com.ua,ubr.ua,udoktora.net,ukrinform.ua,ukrlib.com.ua,ukrlit.vn.ua,unian.net,vchaspik.ua,vesti-ukr.com,vesti.ua,vmirechudes.com,vsetv.com,webpark.ru,woman.ua,zarlit.com,zaxid.net#%#var dce = document.createElement.bind(document); document.createElement = function(a) { var el = dce(a); if(a.toLowerCase() == "script") { Object.defineProperty(el, 'textContent', { set: function(i) { /*console.log(i);*/ if(!/function\(mz_str\).*?"[a-z0-9]{100,}"/.test(i)) { Object.getOwnPropertyDescriptor(Node.prototype, 'textContent').set.call(el, i); } }, get: function () { return el.textContent; } }) } return el; };
 ! https://forum.adguard.com/index.php?threads/19366/
 porno-go.com#%#Object.defineProperty(window, 'slo', { get: function(){ return false; } });
 ! PanamaClient WebRTC circumvention
@@ -5870,6 +5871,8 @@ api.kinomoov.org#%#AG_onLoad(function() { window.flashLayerAdSkipDelay = 1; });
 !-----------------------
 !------- CSS -----------
 !-----------------------
+! https://forum.adguard.com/index.php?threads/11280/
+rustorka.com,ekabu.ru#$#iframe:not([src]) { position: absolute!important; left: -3000px!important; }
 ! 24video.in - удаление отступа сверхуs
 24video.in#$#body { padding: 0 0 0!important; }
 ! news.rambler.ru
@@ -8052,6 +8055,7 @@ tizblock.ru/news.js
 !
 ! Новостные тизерки
 !
+||sosnews.ru^$third-party
 ||rb.infox.sg^$third-party
 ||gazeta.ru/export/rss/
 .az^*iframe2news*$third-party
@@ -8110,6 +8114,8 @@ tizblock.ru/news.js
 !
 !----------------
 !--- Hints ------
+! https://forum.adguard.com/index.php?threads/11280/
+!
 !
 !+ PLATFORM(ext_chromium, ext_ff)
 ||api.tree.tv/getreklama^$empty,important
@@ -8262,7 +8268,7 @@ aHR0cDovL2NyeXByb3gueWFuZGV4Lm5ld
 ! razlozhi.ru|yandex.by|yandex.com.tr|yandex.kz|yandex.ru|yandex.ua|syl.ru
 aHR0cHM6Ly9hbi55YW5kZXgucnUv
 !
-://*.rustorka.com^*/|$empty,~script,~image
+://*.rustorka.com^*/|$empty
 rustorka.com##a[href^="http://www.gearbest.com/"]
 rustorka.com##div[align="center"] > a > img
 /(rustorka.com\/forum\/misc\/js\/(?!ifix)(?!ajax)(?!main)(?!fancybox)(?!scrolltopcontrol)(?!jquery)(?!ct)(?!bbcode))/$domain=rustorka.com
@@ -8271,6 +8277,27 @@ rustorka.com##.post_body > div[align="center"] > a > img
 /(rustorka.com\/forum\/(?!login)(?!tracker)(?!shoutbox)(?!viewtopic)(?!privmsg)(?!search)(?!thanks)(?!posting)(?!profile)).*php/$domain=rustorka.com,popup
 !rustorka.com##a[href$=".php"]:not([class]) > :not(img)
 !
+||gigporn.org/contents/other/player/
+sport.ua##.b_position[id^="b_sport_"]
+||darkside.ru/banners/
+sarnovosti.ru###wrap > noindex
+||sarnovosti.ru/upload/gazprombnr.gif
+sarnovosti.ru##.newsverst > tbody > tr > td.td2 > noindex > a > img
+sarnovosti.ru##td.td2 > a[href^="http"] > img
+sarnovosti.ru##a[href^="https://ad.adriver.ru/cgi-bin/"]
+||sarnovosti.ru/banners/
+amic.ru###author~div.insider.wide.news
+1tv.ru##.side-promo-place-right
+auto.gorod-vrn.ru##.content_adv
+nsn.fm##.b-partners
+fontanka.ru##.wrapper > div[style="min-height: 250px; font-size: 0;"]
+||nation-news.ru/generated/nizhnee-menyu.json
+forumodua.com##.posts > li.postcontainer[id^="yui-gen"]
+yo-soft.net##.rbanner
+yo-soft.net##.contbanner
+yo-soft.net##div[align="center"] > a[rel="nofollow"] > img
+avito.ru##.avito-ads-container
+vpk.name###side > noindex
 ||24video.*/xml/rotator
 webos-forums.ru##div[data-lang-ru^="Уважаемый"] > center > a > img
 gazeta.ru##.js-adv-forever

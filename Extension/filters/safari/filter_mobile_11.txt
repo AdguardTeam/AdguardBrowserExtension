@@ -1,8 +1,8 @@
-! Checksum: KvMdEspv9KTHakywNex9hQ
+! Checksum: P6Nhme6xMs5ixUZ+TitRFg
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 1.0.8.91
-! TimeUpdated: 2017-07-12T19:01:58.348+04:00
+! Version: 1.0.8.93
+! TimeUpdated: 2017-07-13T16:02:01.457+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -11,6 +11,7 @@
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
 ||banners-slb.mobile.yandex.net^
 ||banners.mobile.yandex.net^
+||holder.com.ua^
 ||crosspromotion-us.avosapps.us^
 ||ad.period-calendar.com^
 ||dc.altamob.com^
@@ -830,6 +831,7 @@ m.spankbang.com#%#AG_onLoad(function() { rpuSetCookie('true', '1000'); });
 sasisa.ru#%#AG_onLoad(function() { window.show_ads = function() {}; });
 sasisa.ru#%#Object.defineProperty(window, 'Umobi', { get: function() { return; } });
 sasisa.ru#%#AG_onLoad(function() { window.Umobi = function() {}; });
+gmx.net#$#body > div[class*="has-ad-"] div.base-page__content { bottom: 0px!important; }
 skymetweather.com#$#.ui-mobile-viewport { padding-bottom: 0px!important; }
 m.tv.yandex.ua,m.tv.yandex.ru#$#.adv-manager { position: absolute!important; left: -3000px!important; }
 15min.lt#$#.ads { position: absolute!important; left: -3000px!important; }

@@ -1,8 +1,8 @@
-! Checksum: 6RBrVDxALoDsNtMHx4j85Q
+! Checksum: i4c86WmEqEEBQY3HxRcGMg
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on webpages including cookie notices third-party widgets and in-page popups.
-! Version: 1.0.15.40
-! TimeUpdated: 2017-07-12T18:02:16.985+04:00
+! Version: 1.0.15.46
+! TimeUpdated: 2017-07-13T19:02:10.948+04:00
 ! Expires: 2 days (update frequency)
 ! Title: Adguard Annoyances Filter
 !
@@ -27,7 +27,9 @@
 !
 !######### Annoying elements (not ads)
 !
+! https://forum.adguard.com/index.php?threads/23364/
 ! Yandex bookmark widget
+nation-news.ru###yandex_save
 politexpert.net##.yandex_button
 riafan.ru###yandex_widget_one
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5430
@@ -306,6 +308,7 @@ vchaspik.ua##div[id="conteiner"][style="height: 410px;"]
 !***
 !* Subscriptions/newsletters (not popups)
 !*
+smh.com.au###subscribe-newsletter
 reverso.net##.subscribe-block
 businessinsider.de##.newsletter-signup
 businessinsider.com##.right-subscribe
@@ -495,10 +498,11 @@ gazetevatan.com##form ._soc.news
 /wp-content/plugins/kill-adblock/*
 ##.kill-adblock-container
 !
-!+ NOT_PLATFORM(ext_cb, ext_ios)
+@@||torrenting.com/js/advertisement*.js
 pokehuntr.com#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
 !+ PLATFORM(ext_cb, ext_ios)
 @@||pokehuntr.com^$generichide
+@@||pcgames-download.com/wp-content/plugins/noadb-leftthenicemessage/assets/js/ads.js
 psm7.com##.detect-block
 @@||numerama.com/ads.js
 @@||heidoc.net/amazon/detect.js
@@ -2559,6 +2563,8 @@ _europecookielaw.
 !#######################################################
 !######### Rules for specific sites ####################
 !#######################################################
+viber.com##.banner > .policy
+gofobo.com##.cc_banner-wrapper
 wefashion.de##.s2mCookiesOptinDialog
 twitch.tv###noty_bottomCenter_layout_container
 unwetteralarm.com###amp-user-notification1
@@ -3444,6 +3450,7 @@ ukr-today.com##.soc_vidgets
 ###smartbanner.ios
 ###smartbanner.windows
 !
+mail.yandex.by,mail.yandex.kz,mail.yandex.ru,mail.yandex.ua##.ns-view-inline-wizard-container
 www-chip-de.cdn.ampproject.org##AMP-APP-BANNER
 stackoverflow.com##.app-banner
 m.tv.naver.com##.app_banner
@@ -3668,6 +3675,9 @@ mail.yandex.ua,mail.yandex.ru,mail.yandex.kz,mail.yandex.com.tr#%#AG_onLoad(func
 !
 ! Specific sites
 !
+huffingtonpost.com.au##.newsletter-toaster
+||nation-news.ru/assets/js/user.js
+||nation-news.ru/assets/js/likebox.js
 webos-forums.ru###purr-container
 geant-beaux-arts.fr###page > .js-home-lightbox
 alimentation-sante.net##body > [id^="spu-"]
@@ -4281,6 +4291,7 @@ zr.ru#%#document.cookie = "zrPushSubsPopUp=1";
 !
 !######### Remains of ads
 !
+||nation-news.ru/assets/js/push.js
 prizyv.ru###text-10.widget_text
 prizyv.ru###text-9.widget_text
 xtreme.rip##.topBorder > table[border="0"][width="100%"][height="205"]+div.separator
@@ -4977,6 +4988,7 @@ imslp.org#%#AG_onLoad(function(){var b=document.getElementById("sm_dl_wait");if(
 !--- CSS ---
 kinogo-net-2017.ru,kinogo-online.online,kino-zal.net,lavka-invaitov.ru#$#body * { -moz-user-select: text!important; -webkit-user-select: text!important; -ms-user-select: text!important; -o-user-select: text!important; user-select: text!important; }
 !--- JS ----
+7days2die.info#%#Object.defineProperties(document,{oncontextmenu:{set:function(){}},ondragstart:{set:function(){}}});
 kino-city.net#%#AG_onLoad(function() { document.onselectstart=function(){return true}; document.oncontextmenu=function(){return true}; });
 bvb09fans.ru#%#AG_onLoad(function() { document.ondragstart = document.onselectstart = document.oncontextmenu = null; });
 7lafa.com#%#AG_onLoad(function() {setTimeout(function(){document.getElementsByTagName('body')[0].removeAttribute("oncopy"); document.getElementsByTagName('body')[0].removeAttribute("onselectstart");}, 300);});

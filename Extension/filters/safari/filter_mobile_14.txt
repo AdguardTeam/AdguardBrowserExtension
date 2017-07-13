@@ -1,14 +1,15 @@
-! Checksum: 54A0ZE6oMQELnv3nzmU5ng
+! Checksum: oMD0Z8Dch3E3PppLhsJgyQ
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on webpages including cookie notices third-party widgets and in-page popups.
-! Version: 1.0.15.40
-! TimeUpdated: 2017-07-12T18:02:16.985+04:00
+! Version: 1.0.15.46
+! TimeUpdated: 2017-07-13T19:02:10.948+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+nation-news.ru###yandex_save
 politexpert.net##.yandex_button
 riafan.ru###yandex_widget_one
 blick.ch###article-flyin-container
@@ -159,6 +160,7 @@ yadi.sk##.content-poster-public__poster
 torrentleech.org##a[href="/user/donate"]
 otzyv.ru##div[align="center"] > .aviasales
 vchaspik.ua##div[id="conteiner"][style="height: 410px;"]
+smh.com.au###subscribe-newsletter
 reverso.net##.subscribe-block
 businessinsider.de##.newsletter-signup
 businessinsider.com##.right-subscribe
@@ -331,10 +333,11 @@ gazetevatan.com##form ._soc.news
 ||s3.amazonaws.com/assets.sidearmsports.com/plugins/detector.min.js
 /wp-content/plugins/kill-adblock/*
 ##.kill-adblock-container
-!+ NOT_PLATFORM(ext_cb, ext_ios)
+@@||torrenting.com/js/advertisement*.js
 pokehuntr.com#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
 !+ PLATFORM(ext_cb, ext_ios)
 @@||pokehuntr.com^$generichide
+@@||pcgames-download.com/wp-content/plugins/noadb-leftthenicemessage/assets/js/ads.js
 psm7.com##.detect-block
 @@||numerama.com/ads.js
 @@||heidoc.net/amazon/detect.js
@@ -2371,6 +2374,8 @@ _europecookielaw.
 ||iubenda.com^$third-party
 ||r42tag.com^$third-party
 ||tm.tradetracker.net/public/styles/ttCookieDirective.css
+viber.com##.banner > .policy
+gofobo.com##.cc_banner-wrapper
 wefashion.de##.s2mCookiesOptinDialog
 twitch.tv###noty_bottomCenter_layout_container
 unwetteralarm.com###amp-user-notification1
@@ -3129,6 +3134,7 @@ ukr-today.com##.soc_vidgets
 ###smartbanner.android
 ###smartbanner.ios
 ###smartbanner.windows
+mail.yandex.by,mail.yandex.kz,mail.yandex.ru,mail.yandex.ua##.ns-view-inline-wizard-container
 www-chip-de.cdn.ampproject.org##AMP-APP-BANNER
 stackoverflow.com##.app-banner
 m.tv.naver.com##.app_banner
@@ -3333,6 +3339,9 @@ mail.yandex.ua,mail.yandex.ru,mail.yandex.kz,mail.yandex.com.tr#%#AG_onLoad(func
 ||mailget.net^$third-party
 ||optnmnstr.com^$third-party
 ||static.popmechanic.ru/service/loader.js$third-party
+huffingtonpost.com.au##.newsletter-toaster
+||nation-news.ru/assets/js/user.js
+||nation-news.ru/assets/js/likebox.js
 webos-forums.ru###purr-container
 geant-beaux-arts.fr###page > .js-home-lightbox
 alimentation-sante.net##body > [id^="spu-"]
@@ -3895,6 +3904,7 @@ zr.ru#%#document.cookie = "zrPushSubsPopUp=1";
 ||zakon.kz/static_zakon/push-notifications/main.js
 @@||cdn.onesignal.com/sdks/OneSignalSDK.js^$domain=puls4.com
 @@||cdn.sendpulse.com/js/push/*.js$domain=surfingbird.ru
+||nation-news.ru/assets/js/push.js
 prizyv.ru###text-10.widget_text
 prizyv.ru###text-9.widget_text
 xtreme.rip##.topBorder > table[border="0"][width="100%"][height="205"]+div.separator
@@ -4419,6 +4429,7 @@ imslp.org#%#AG_onLoad(function(){var b=document.getElementById("sm_dl_wait");if(
 ||cdn.web.tv/asset/javascripts/smothScroll.min.js
 ||serialuk.net/js/copyright.js
 kinogo-net-2017.ru,kinogo-online.online,kino-zal.net,lavka-invaitov.ru#$#body * { -moz-user-select: text!important; -webkit-user-select: text!important; -ms-user-select: text!important; -o-user-select: text!important; user-select: text!important; }
+7days2die.info#%#Object.defineProperties(document,{oncontextmenu:{set:function(){}},ondragstart:{set:function(){}}});
 kino-city.net#%#AG_onLoad(function() { document.onselectstart=function(){return true}; document.oncontextmenu=function(){return true}; });
 bvb09fans.ru#%#AG_onLoad(function() { document.ondragstart = document.onselectstart = document.oncontextmenu = null; });
 7lafa.com#%#AG_onLoad(function() {setTimeout(function(){document.getElementsByTagName('body')[0].removeAttribute("oncopy"); document.getElementsByTagName('body')[0].removeAttribute("onselectstart");}, 300);});

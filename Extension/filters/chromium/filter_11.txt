@@ -1,8 +1,8 @@
-! Checksum: HzRNWd3lR0GO74QfxoEVXQ
+! Checksum: xB7hVuaIlAzQf5lfNGokZw
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 1.0.8.91
-! TimeUpdated: 2017-07-12T19:01:58.348+04:00
+! Version: 1.0.8.93
+! TimeUpdated: 2017-07-13T16:02:01.457+04:00
 ! Expires: 2 days (update frequency)
 ! Title: Adguard Mobile Ads Filter
 !
@@ -33,6 +33,7 @@
 ||banners-slb.mobile.yandex.net^
 ||banners.mobile.yandex.net^
 !
+||holder.com.ua^
 ||crosspromotion-us.avosapps.us^
 ||ad.period-calendar.com^
 ||dc.altamob.com^
@@ -922,6 +923,8 @@ sasisa.ru#%#AG_onLoad(function() { window.Umobi = function() {}; });
 !-------------------
 !-------CSS---------
 !-------------------
+! https://github.com/AdguardTeam/AdguardFilters/issues/5130
+gmx.net#$#body > div[class*="has-ad-"] div.base-page__content { bottom: 0px!important; }
 ! https://forum.adguard.com/index.php?threads/22273/
 skymetweather.com#$#.ui-mobile-viewport { padding-bottom: 0px!important; }
 ! Яндекс.Телепрограмма
@@ -1945,6 +1948,7 @@ auth.wi-fi.ru##.c-fullscreen-banner
 !
 ! The content replacement rules
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/5676
 ! https://forum.adguard.com/index.php?threads/21029/
 !
 !---------------------------------------------------------------------------!
