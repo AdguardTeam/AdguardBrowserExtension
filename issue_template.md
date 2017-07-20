@@ -14,7 +14,7 @@
 ### Expected behavior
 <!--- Tell us what should happen -->
 
-### Actual behaviour
+### Actual behavior
 <!--- Tell us what happens instead -->
 
 
