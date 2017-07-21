@@ -186,12 +186,21 @@
              * Access currentURI may throw exception on browser startup
              * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/773
              */
-            adguard.console.error('Error while getting URI, {0}', ex);
+            adguard.console.error('Error while getting tab URI, {0}', ex);
         }
     }
 
     function getTabTitle(tab) {
-        return getBrowserForTab(tab).contentTitle || tab.label || "";
+        try {
+            return getBrowserForTab(tab).contentTitle || tab.label || "";
+        } catch (ex) {
+            /**
+             * Access contentTitle may throw exception on browser startup
+             * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/773
+             */
+            adguard.console.error('Error while getting tab title, {0}', ex);
+            return '';
+        }
     }
 
     var toTabFromTarget = (function () {
@@ -838,6 +847,16 @@
             }
             callback(tabs);
         };
+
+        /**
+         * On the browser startup, tabs aren't available immediately, so we have to apply additional tabs synchronization later.
+         */
+        setTimeout(function () {
+            var xulTabs = getTabs();
+            for (var i = 0; i < xulTabs.length; i++) {
+                addTab(xulTabs[i]);
+            }
+        }, 1000);
 
         /**
          * Gets an active tab
