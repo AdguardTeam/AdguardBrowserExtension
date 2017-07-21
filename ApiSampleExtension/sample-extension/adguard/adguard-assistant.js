@@ -19,52 +19,44 @@
 
 /**
  * Global object for content scripts
- * @type {{}}
  */
-var adguardContent = (function () { // jshint ignore:line
-    return {};
-})();
+var adguardContent = {}; // jshint ignore:line
 
-/* global chrome, browser */
-
-(function (adguard) {
+(function (adguard, self) {
 
     'use strict';
+
+    /**
+     * https://bugs.chromium.org/p/project-zero/issues/detail?id=1225&desc=6
+     * Page script can inject global variables into the DOM, so content script isolation doesn't work as expected
+     * So we have to make additional check before accessing a global variable.
+     */
+    function isDefined(property) {
+        return Object.prototype.hasOwnProperty.call(self, property);
+    }
+
+    var browserApi = isDefined('browser') ? self.browser : self.chrome;
+
+    adguard.i18n = browserApi.i18n;
 
     adguard.runtimeImpl = (function () {
 
         var onMessage = (function () {
-            if (typeof browser !== 'undefined' && browser.runtime && browser.runtime.onMessage) {
-                // Edge, Firefox WebExtensions
-                return browser.runtime.onMessage;
+            if (browserApi.runtime && browserApi.runtime.onMessage) {
+                // Chromium, Edge, Firefox WebExtensions
+                return browserApi.runtime.onMessage;
             }
-            if (chrome.runtime && chrome.runtime.onMessage) {
-                // Chromium
-                return chrome.runtime.onMessage;
-            } else if (chrome.extension.onMessage) {
-                // Old Chromium
-                return chrome.extension.onMessage;
-            } else {
-                // Old Chromium
-                return chrome.extension.onRequest;
-            }
+            // Old Chromium
+            return browserApi.extension.onMessage || browserApi.extension.onRequest;
         })();
 
         var sendMessage = (function () {
-            if (typeof browser !== 'undefined' && browser.runtime && browser.runtime.sendMessage) {
-                // Edge, Firefox WebExtensions
-                return browser.runtime.sendMessage;
+            if (browserApi.runtime && browserApi.runtime.sendMessage) {
+                // Chromium, Edge, Firefox WebExtensions
+                return browserApi.runtime.sendMessage;
             }
-            if (chrome.runtime && chrome.runtime.sendMessage) {
-                // Chromium
-                return chrome.runtime.sendMessage;
-            } else if (chrome.extension.sendMessage) {
-                // Old Chromium
-                return chrome.extension.sendMessage;
-            } else {
-                // Old Chromium
-                return chrome.extension.sendRequest;
-            }
+            // Old Chromium
+            return browserApi.extension.sendMessage || browserApi.extension.sendRequest;
         })();
 
         return {
@@ -74,25 +66,22 @@ var adguardContent = (function () { // jshint ignore:line
 
     })();
 
-})(typeof adguard !== 'undefined' ? adguard : adguardContent);
+})(typeof adguardContent !== 'undefined' ? adguardContent : adguard, this); // jshint ignore:line
 
-/* global chrome, adguardContent */
+/* global adguardContent */
 
-var contentPage = (function (adguard) { // jshint ignore:line
+(function (adguard) {
 
     'use strict';
 
-    return {
+    window.i18n = adguard.i18n;
+
+    window.contentPage = {
         sendMessage: adguard.runtimeImpl.sendMessage,
         onMessage: adguard.runtimeImpl.onMessage
     };
 
 })(adguardContent);
-
-var i18n = (function () { // jshint ignore:line
-    var browser = window.browser || chrome;
-    return browser.i18n;
-})();
 
 /**
  * Diff Match and Patch
@@ -2874,7 +2863,7 @@ balalaika.fn.trigger = function (eventName, options) {
     return this;
 };
 
-var I18nHelper = {
+var I18nHelper = { // jshint ignore:line
 
     translateElement: function (element, message) {
 
@@ -2887,18 +2876,6 @@ var I18nHelper = {
         } catch (ex) {
             // Ignore exceptions
         }
-    },
-
-    replacePlaceholders: function (text, args) {
-        if (!text) {
-            return "";
-        }
-        if (args && args.length > 0) {
-            text = text.replace(/\$(\d+)/g, function (match, number) {
-                return typeof args[number - 1] != "undefined" ? args[number - 1] : match;
-            });
-        }
-        return text;
     },
 
     processString: function (str, element) {
@@ -2961,10 +2938,12 @@ var I18nHelper = {
     }
 };
 
+/* global balalaika, DomPredictionHelper */
+
 /**
  * Adguard selector library
  */
-var AdguardSelectorLib = (function (api, $) {
+var AdguardSelectorLib = (function ($) { // jshint ignore:line
 
    // PRIVATE FIELDS
 
@@ -3507,6 +3486,7 @@ var AdguardSelectorLib = (function (api, $) {
     selectionRenderer = BorderSelectionRenderer;
 
     // PUBLIC API
+    var api = {};
 
     /**
      * Starts selector module.
@@ -3573,14 +3553,12 @@ var AdguardSelectorLib = (function (api, $) {
 
     return api;
 
-})(AdguardSelectorLib || {}, balalaika);
-
-/* global SVGAnimatedString */
+})(balalaika);
 
 /**
  * Adguard rules constructor library
  */
-var AdguardRulesConstructorLib = (function (api) {
+var AdguardRulesConstructorLib = (function () { // jshint ignore:line
 
     var CSS_RULE_MARK = '##';
     var RULE_OPTIONS_MARK = '$';
@@ -3773,7 +3751,7 @@ var AdguardRulesConstructorLib = (function (api) {
     };
 
     var haveIdAttribute = function (element) {
-        return element.id && element.id.trim() != '';
+        return element.id && element.id.trim() !== '';
     };
 
     var cropDomain = function (url) {
@@ -3832,6 +3810,9 @@ var AdguardRulesConstructorLib = (function (api) {
         }
         return selectors.join(', ');
     };
+
+    // Public API
+    var api = {};
 
     /**
      * Utility method
@@ -3952,12 +3933,14 @@ var AdguardRulesConstructorLib = (function (api) {
 
     return api;
 
-})(AdguardRulesConstructorLib || {});
+})();
+
+/* global balalaika */
 
 /**
  * Slider widget
  */
-var SliderWidget = (function (api, $) {
+var SliderWidget = (function ($) { // jshint ignore:line
 
     var PLACEHOLDER_CLASS = "adg-slide ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all";
     var HANDLE_CLASS = "ui-slider-handle";
@@ -3994,7 +3977,7 @@ var SliderWidget = (function (api, $) {
         $(placeholder).addClass(PLACEHOLDER_CLASS);
 
         var handle = document.createElement('a');
-        handle.setAttribute('href', 'javascript:void(0);');
+        handle.setAttribute('href', '#');
         handle.setAttribute('class', HANDLE_FULL_CLASS);
         placeholder.appendChild(handle);
 
@@ -4079,6 +4062,9 @@ var SliderWidget = (function (api, $) {
         });
     };
 
+    // Public API
+    var api = {};
+
     /**
      *
      * @param placeholderElement
@@ -4097,7 +4083,8 @@ var SliderWidget = (function (api, $) {
     };
 
     return api;
-})(SliderWidget || {}, balalaika);
+
+})(balalaika);
 
 ﻿
 var AdguardAssistant = function ($, AdguardSelectorLib, AdguardRulesConstructorLib, SliderWidget) { // jshint ignore:line
@@ -4239,8 +4226,8 @@ var AdguardAssistant = function ($, AdguardSelectorLib, AdguardRulesConstructorL
 				newPositionY = 0;
 			}
 
-			iframeJ.css('left', newPositionX + 'px');
-			iframeJ.css('top', newPositionY + 'px');
+			iframeJ.get(0).style.setProperty('left', newPositionX + 'px', 'important');
+			iframeJ.get(0).style.setProperty('top', newPositionY + 'px', 'important');
 		};
 
 		var cancelIFrameSelection = function (e) {
@@ -4300,11 +4287,11 @@ var AdguardAssistant = function ($, AdguardSelectorLib, AdguardRulesConstructorL
 		iframe.setAttribute('frameBorder', '0');
 		iframe.setAttribute('allowTransparency', 'true');
 
-		iframe.style.width = width + 'px';
-		iframe.style.height = height + 'px';
-		iframe.style.position = 'fixed';
-		iframe.style.left = positions.left + 'px';
-		iframe.style.top = positions.top + 'px';
+		iframe.style.setProperty('width', width + 'px', "important");
+		iframe.style.setProperty('height', height + 'px', "important");
+		iframe.style.setProperty('position', 'fixed', "important");
+		iframe.style.setProperty('left', positions.left + 'px', "important");
+		iframe.style.setProperty('top', positions.top + 'px', "important");
 
 		// Wait for iframe load and then apply styles
 		$(iframe).on('load', function () {
@@ -4373,8 +4360,8 @@ var AdguardAssistant = function ($, AdguardSelectorLib, AdguardRulesConstructorL
 	};
 
 	var changeCurrentIframe = function (width, height, iframe) {
-		iframe.style.width = width + 'px';
-		iframe.style.height = height + 'px';
+        iframe.style.setProperty('width', width + 'px', "important");
+        iframe.style.setProperty('height', height + 'px', "important");
 	};
 
 	var appendContentToIframe = function (iframe, content) {
@@ -4567,11 +4554,11 @@ var AdguardAssistant = function ($, AdguardSelectorLib, AdguardRulesConstructorL
 		var iframe = findIframe().get(0);
 
 		if (height) {
-			iframe.style.height = height + "px";
+            iframe.style.setProperty('height', height + 'px', "important");
 		}
 
 		if (width) {
-			iframe.style.width = width + "px";
+            iframe.style.setProperty('width', width + 'px', "important");
 		}
 
 		checkPosition();
@@ -4589,7 +4576,7 @@ var AdguardAssistant = function ($, AdguardSelectorLib, AdguardRulesConstructorL
 			if (top < 0) {
 				top = constants.iframe.topOffset;
 			}
-			iframe.style.top = top + 'px';
+            iframe.style.setProperty('top', top + 'px', "important");
 		}
 	};
 
@@ -4810,8 +4797,24 @@ var AdguardAssistant = function ($, AdguardSelectorLib, AdguardRulesConstructorL
 	};
 };
 
-/* global contentPage, I18nHelper, AdguardAssistant, balalaika, AdguardSelectorLib, AdguardRulesConstructorLib */
-if (window.top === window && document.documentElement instanceof HTMLElement) {
+/* global contentPage, I18nHelper, AdguardAssistant, balalaika, AdguardSelectorLib, AdguardRulesConstructorLib, SliderWidget */
+
+(function () {
+
+    if (window.top !== window || !(document.documentElement instanceof HTMLElement)) {
+        return;
+    }
+
+    /**
+     * `contentPage` may be undefined on the extension startup in FF browser.
+     *
+     * Different browsers have different strategies of the content scripts injections on extension startup.
+     * For example, FF injects content scripts in already opened tabs, but Chrome doesn't do it.
+     * In the case of the FF browser, content scripts with the `document_start` option won't injected into opened tabs, so we have to directly check this case.
+     */
+    if (typeof contentPage === 'undefined') {
+        return;
+    }
 
     var adguardAssistant;
 
@@ -4845,14 +4848,16 @@ if (window.top === window && document.documentElement instanceof HTMLElement) {
                     adguardAssistant = new AdguardAssistant(balalaika, AdguardSelectorLib, AdguardRulesConstructorLib, SliderWidget);
                 }
 
+                var selectedElement = null;
                 if (clickedEl && options.selectElement) {
-                    options.selectedElement = clickedEl;
+                    selectedElement = clickedEl;
                 }
 
                 adguardAssistant.init({
                     cssLink: options.cssLink,
                     onElementBlocked: onElementBlocked,
-                    translateElement: translateElement
+                    translateElement: translateElement,
+                    selectedElement: selectedElement
                 });
                 break;
             case 'destroyAssistant':
@@ -4863,6 +4868,7 @@ if (window.top === window && document.documentElement instanceof HTMLElement) {
                 break;
         }
     });
-}
+
+})();
 
 })(window);

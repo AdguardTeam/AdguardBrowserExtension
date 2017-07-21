@@ -69,6 +69,9 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         },
         'context_update_antibanner_filters': function () {
             checkFiltersUpdates();
+        },
+        'context_ads_has_been_removed_by_adguard': function () {
+            openIntegrationModeInfo();
         }
     };
 
@@ -524,6 +527,10 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         });
     };
 
+    var openIntegrationModeInfo = function () {
+        openTab('https://adguard.com/adguard-adblock-browser-extension/integration-mode.html?utm_source=extension&aid=16593#integrationMode');
+    };
+
     var openExtensionStore = function () {
         openTab(extensionStoreLink);
     };
@@ -541,7 +548,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             var domain = adguard.utils.url.getHost(tab.url);
             adguard.integration.addRuleToApp("@@//" + domain + "^$document", function () {
                 adguard.tabs.sendMessage(tab.tabId, {type: 'no-cache-reload'});
-                adguard.browserAction.close();
             });
         } else {
             updateTabIconAndContextMenu(tab, true);
@@ -558,7 +564,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             if (rule) {
                 adguard.integration.removeRuleFromApp(rule.ruleText, function () {
                     adguard.tabs.sendMessage(tab.tabId, {type: 'no-cache-reload'});
-                    adguard.browserAction.close();
                 });
             }
         } else {

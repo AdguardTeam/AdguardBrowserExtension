@@ -118,10 +118,13 @@ adguard.filteringLog = (function (adguard) {
             requestRule: requestRule
         };
         if (requestRule) {
+            // Copy useful properties
             filteringEvent.requestRule = Object.create(null);
             filteringEvent.requestRule.filterId = requestRule.filterId;
             filteringEvent.requestRule.ruleText = requestRule.ruleText;
             filteringEvent.requestRule.whiteListRule = requestRule.whiteListRule;
+            filteringEvent.requestRule.cspRule = requestRule.cspRule;
+            filteringEvent.requestRule.cspDirective = requestRule.cspDirective;
         }
         tabInfo.filteringEvents.push(filteringEvent);
 

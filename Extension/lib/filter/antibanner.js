@@ -1117,6 +1117,10 @@ adguard.requestFilter = (function (adguard) {
         return getRequestFilter().getScriptsForUrl(documentUrl);
     };
 
+    var getCspRules = function (requestUrl, referrer, requestType) {
+        return getRequestFilter().findCspRules(requestUrl, referrer, requestType);
+    };
+
     var getRequestFilterInfo = function () {
         return antiBannerService.getRequestFilterInfo();
     };
@@ -1139,6 +1143,7 @@ adguard.requestFilter = (function (adguard) {
         getSelectorsForUrl: getSelectorsForUrl,
         getInjectedSelectorsForUrl: getInjectedSelectorsForUrl,
         getScriptsForUrl: getScriptsForUrl,
+        getCspRules: getCspRules,
 
         getRequestFilterInfo: getRequestFilterInfo,
         updateContentBlockerInfo: updateContentBlockerInfo,

@@ -1,8 +1,9 @@
-! Checksum: IGqQQqKnnBMNbHoizYTXwA
-! Version: 1.0.86.59
-! TimeUpdated: 2017-03-23T17:01:53.730+04:00
+! Checksum: u2p1zdgx1yjRF74pUU33ig
 ! Title: Spanish/Portuguese filter
 ! Description: Adguard Spanish/Portuguese filter. Filter list that specifically removes adverts on Spanish and Portuguese language websites.
+! Version: 1.0.86.72
+! TimeUpdated: 2017-07-08T17:01:33.572+04:00
+! Expires: 2 days (update frequency)
 ! Title: Adguard Spanish/Portuguese Filter.
 !
 ! Filter that enables removing of the ads from websites in Spanish.
@@ -30,6 +31,7 @@
 !
 ! Section contains list of advertising networks
 !
+||waycash.net^$third-party
 ||184.106.248.76^
 ||200.72.40.46^$third-party
 ||abril.lojaabril.com^*/abrilcom/$third-party
@@ -166,6 +168,21 @@
 !
 ! These rules are against anti-adblock scripts
 !
+! antiblock.org
+bludv.com#%#Object.defineProperty(window,'bsaAQyLSuO',{get:function(){},set:function(){throw"Adguard: stopped a script execution."}});
+!
+! https://github.com/AdguardTeam/AdguardFilters/issues/5548
+@@||farodevigo.es/servicios/ads/dfp.js^
+farodevigo.es#%#window.pr_okvalida = true;
+! https://github.com/AdguardTeam/AdguardFilters/issues/5480
+@@||levante-emv.com/elementosWeb/js/ads.js^
+@@||levante-emv.com/servicios/ads/dfp.js^
+! uol.com.br antiadblock
+||uol.com.br/camaleao/assets/web/javascript/detectadblock/detectadblock.js$important
+! https://forum.adguard.com/index.php?threads/21915/
+@@||player.animeid.io/static/ads.js
+! https://forum.adguard.com/index.php?threads/21090/
+@@||connect-trojan.net^$generichide
 ! https://forum.adguard.com/index.php?threads/http-zonasports-me.20289/
 zonasports.me#%#var baseCreateElement = document.createElement.bind(document); document.createElement = function(name) { var el = baseCreateElement(name); if(name != 'span') { return el; } else { Object.defineProperty(el, 'innerHTML', { set: function(text) { if(/^(<a id="[^"]*"><\/a>)*$/.test(text)) { throw new Error(); } Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML').set.call(el, text); }, get: function() { return el.innerHTML; } }); return el; }};
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4538
@@ -318,6 +335,8 @@ mangahost.net##.sidebar > section.clearfix[-ext-has='div.ads']
 !------- JS rules ---------------------!
 !--------------------------------------!
 !
+! puOverlay, puShown
+bludv.com#%#Object.defineProperty(window, 'puShown', { get: function() { return true; } });
 !--------------------------------------!
 !------- CSS fixes --------------------!
 !--------------------------------------!
@@ -435,6 +454,20 @@ http://adw.
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
 !
+uol.com.br##.lista-ecommerce
+uol.com.br###banner-stick
+animeid.io###divFloatRight
+abril.com.br##div[id^="ad_"]
+abril.com.br##.ad-sense
+abril.com.br##.widget-superbanner
+||mocosoft.com/cialis.jpg
+||mocosoft.com/cpiu.gif
+mocosoft.com##table[bgcolor="red"]
+||mocosoft.com/prope.jpg
+||youtube.com/v/^$domain=mocosoft.com
+programaswebfull.net##.topad
+marca.com##.content > iframe[src^="http://91.116.142.114"]
+||91.116.142.114/iframe$domain=marca.com
 zonasports.me##iframe[src^="http://zonasports.at.ua/"]
 zonasports.me##iframe[src^="http://zonasports.at.ua/"] + p
 tabletsesmartphones.org##.banner-336x280

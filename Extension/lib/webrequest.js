@@ -19,6 +19,9 @@
 
     'use strict';
 
+    var CSP_HEADER_NAME = 'Content-Security-Policy';
+    var DEFAULT_BLOCK_CSP_DIRECTIVE = 'connect-src http: https:; frame-src http: https:; child-src http: https:';
+
     /**
      * Retrieve referrer url from request details.
      * Extract referrer by priority:
@@ -135,24 +138,16 @@
     }
 
     /**
-     * Modify CSP header to block websocket connections and web workers
-     * @param requestDetails
-     * @returns {{responseHeaders: *}}
+     * Before the introduction of $CSP rules, we used another approach for modifying Content-Security-Policy header.
+     * We are looking for URL blocking rule that matches some request type and protocol (ws:, blob:, stun:)
+     *
+     * @param tab Tab
+     * @param frameUrl Frame URL
+     * @returns matching rule
      */
-    function modifyCSPHeader(requestDetails) {
+    function findLegacyCspRule(tab, frameUrl) {
 
-        // Please note, that we do not modify response headers in Edge before Creators update:
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/401
-        // https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8796739/
-        if (adguard.utils.browser.isEdgeBeforeCreatorsUpdate()) {
-            return;
-        }
-
-        var tab = requestDetails.tab;
-        var responseHeaders = requestDetails.responseHeaders;
-        var frameUrl = adguard.frames.getFrameUrl(tab, requestDetails.frameId);
-
-        var ruleForCSP = null;
+        var rule = null;
         var applyCSP = false;
 
         /**
@@ -167,12 +162,72 @@
         // And we don't need this check on newer than 58 chromes anymore
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/572
         if (!adguard.webRequest.webSocketSupported) {
-            ruleForCSP = adguard.webRequestService.getRuleForRequest(tab, 'ws://adguardwebsocket.check', frameUrl, adguard.RequestTypes.WEBSOCKET);
-            applyCSP = adguard.webRequestService.isRequestBlockedByRule(ruleForCSP);
+            rule = adguard.webRequestService.getRuleForRequest(tab, 'ws://adguardwebsocket.check', frameUrl, adguard.RequestTypes.WEBSOCKET);
+            applyCSP = adguard.webRequestService.isRequestBlockedByRule(rule);
         }
         if (!applyCSP) {
-            ruleForCSP = adguard.webRequestService.getRuleForRequest(tab, 'blob:', frameUrl, adguard.RequestTypes.SCRIPT);
-            applyCSP = adguard.webRequestService.isRequestBlockedByRule(ruleForCSP);
+            rule = adguard.webRequestService.getRuleForRequest(tab, 'blob:adguardblob.check', frameUrl, adguard.RequestTypes.SCRIPT);
+            applyCSP = adguard.webRequestService.isRequestBlockedByRule(rule);
+        }
+        if (!applyCSP) {
+            rule = adguard.webRequestService.getRuleForRequest(tab, 'stun:adguardwebrtc.check', frameUrl, adguard.RequestTypes.WEBRTC);
+        }
+
+        return rule;
+    }
+
+    /**
+     * Modify CSP header to block WebSocket, prohibit data: and blob: frames and WebWorkers
+     * @param requestDetails
+     * @returns {{responseHeaders: *}}
+     */
+    function modifyCSPHeader(requestDetails) {
+
+        // Please note, that we do not modify response headers in Edge before Creators update:
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/401
+        // https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8796739/
+        if (adguard.utils.browser.isEdgeBeforeCreatorsUpdate()) {
+            return;
+        }
+
+        var tab = requestDetails.tab;
+        var requestUrl = requestDetails.requestUrl;
+        var responseHeaders = requestDetails.responseHeaders || [];
+        var requestType = requestDetails.requestType;
+        var frameUrl = adguard.frames.getFrameUrl(tab, requestDetails.frameId);
+
+        var cspHeaders = [];
+
+        var legacyCspRule = findLegacyCspRule(tab, frameUrl);
+        if (adguard.webRequestService.isRequestBlockedByRule(legacyCspRule)) {
+            cspHeaders.push({
+                name: CSP_HEADER_NAME,
+                value: DEFAULT_BLOCK_CSP_DIRECTIVE
+            });
+        }
+        if (legacyCspRule) {
+            adguard.webRequestService.recordRuleHit(tab, legacyCspRule, frameUrl);
+            adguard.filteringLog.addEvent(tab, 'content-security-policy-check', frameUrl, adguard.RequestTypes.CSP, legacyCspRule);
+        }
+
+        /**
+         * Retrieve $CSP rules specific for the request
+         * https://github.com/adguardteam/adguardbrowserextension/issues/685
+         */
+        var cspRules = adguard.webRequestService.getCspRules(tab, requestUrl, frameUrl, requestType);
+        if (cspRules) {
+            for (var i = 0; i < cspRules.length; i++) {
+                var rule = cspRules[i];
+                // Don't forget: getCspRules returns all $csp rules, we must directly check that the rule is blocking.
+                if (adguard.webRequestService.isRequestBlockedByRule(rule)) {
+                    cspHeaders.push({
+                        name: CSP_HEADER_NAME,
+                        value: rule.cspDirective
+                    });
+                }
+                adguard.webRequestService.recordRuleHit(tab, rule, requestUrl);
+                adguard.filteringLog.addEvent(tab, requestUrl, frameUrl, adguard.RequestTypes.CSP, rule);
+            }
         }
 
         /**
@@ -188,16 +243,11 @@
          * We also need the frame-src restriction since CSPs are not inherited from the parent for documents with data: and blob: URLs
          * https://bugs.chromium.org/p/chromium/issues/detail?id=513860
          */
-        if (applyCSP) {
-            adguard.filteringLog.addEvent(tab, 'content-security-policy-check', frameUrl, adguard.RequestTypes.OTHER, ruleForCSP);
-            var cspHeader = {
-                name: 'Content-Security-Policy',
-                value: 'connect-src http: https:; frame-src http: https:; child-src http: https:'
-            };
-            responseHeaders.push(cspHeader);
+        if (cspHeaders.length > 0) {
+            responseHeaders = responseHeaders.concat(cspHeaders);
             return {
                 responseHeaders: responseHeaders,
-                modifiedHeaders: [cspHeader]
+                modifiedHeaders: cspHeaders
             };
         }
     }
@@ -264,6 +314,7 @@
             case adguard.listeners.ADD_RULES:
             case adguard.listeners.REMOVE_RULE:
             case adguard.listeners.UPDATE_FILTER_RULES:
+            case adguard.listeners.UPDATE_WHITELIST_FILTER_RULES:
             case adguard.listeners.FILTER_ENABLE_DISABLE:
                 if (handlerBehaviorTimeout !== null) {
                     clearTimeout(handlerBehaviorTimeout);

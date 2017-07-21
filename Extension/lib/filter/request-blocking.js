@@ -131,22 +131,24 @@ adguard.webRequestService = (function (adguard) {
     };
 
     /**
-     * Checks if websocket request is blocked
+     * Checks if request that is wrapped in page script should be blocked.
+     * We do this because browser API doesn't have full support for intercepting all requests, e.g. WebSocket or WebRTC.
      *
      * @param tab           Tab
      * @param requestUrl    request url
      * @param referrerUrl   referrer url
+     * @param requestType   Request type (WEBSOCKET or WEBRTC)
      * @returns {boolean}   true if request is blocked
      */
-    var checkWebSocketRequest = function (tab, requestUrl, referrerUrl) {
+    var checkPageScriptWrapperRequest = function (tab, requestUrl, referrerUrl, requestType) {
 
         if (!tab) {
             return false;
         }
 
-        var requestRule = getRuleForRequest(tab, requestUrl, referrerUrl, adguard.RequestTypes.WEBSOCKET);
+        var requestRule = getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
 
-        adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, adguard.RequestTypes.WEBSOCKET, requestRule);
+        postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
 
         return isRequestBlockedByRule(requestRule);
     };
@@ -247,6 +249,29 @@ adguard.webRequestService = (function (adguard) {
         }
 
         return adguard.requestFilter.findRuleForRequest(requestUrl, referrerUrl, requestType, whitelistRule);
+    };
+
+    /**
+     * Find CSP rules for request
+     * @param tab           Tab
+     * @param requestUrl    Request URL
+     * @param referrerUrl   Referrer URL
+     * @param requestType   Request type (DOCUMENT or SUBDOCUMENT)
+     * @returns {*}         Collection of rules or null
+     */
+    var getCspRules = function (tab, requestUrl, referrerUrl, requestType) {
+
+        if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab) || adguard.frames.isTabWhiteListed(tab)) {
+            //don't process request
+            return null;
+        }
+
+        var whitelistRule = adguard.requestFilter.findWhiteListRule(requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
+        if (whitelistRule && whitelistRule.checkContentTypeIncluded("DOCUMENT")) {
+            return null;
+        }
+
+        return adguard.requestFilter.getCspRules(requestUrl, referrerUrl, requestType);
     };
 
     /**
@@ -356,14 +381,16 @@ adguard.webRequestService = (function (adguard) {
     // EXPOSE
     return {
         processGetSelectorsAndScripts: processGetSelectorsAndScripts,
-        checkWebSocketRequest: checkWebSocketRequest,
+        checkPageScriptWrapperRequest: checkPageScriptWrapperRequest,
         processShouldCollapse: processShouldCollapse,
         processShouldCollapseMany: processShouldCollapseMany,
         isRequestBlockedByRule: isRequestBlockedByRule,
         getBlockedResponseByRule: getBlockedResponseByRule,
         getRuleForRequest: getRuleForRequest,
+        getCspRules: getCspRules,
         processRequestResponse: processRequestResponse,
         postProcessRequest: postProcessRequest,
+        recordRuleHit: recordRuleHit,
         onRequestBlocked: onRequestBlockedChannel
     };
 

@@ -251,7 +251,13 @@
 			},
 			setPopup: function () {
 				// Do nothing. Popup is already installed in manifest file
-			}
+			},
+            resize: function () {
+                // Do nothing
+            },
+            close: function () {
+                // Do nothing
+            }
 		};
 
 	})(adguard);

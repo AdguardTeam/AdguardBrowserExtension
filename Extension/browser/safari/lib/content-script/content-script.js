@@ -311,7 +311,8 @@
         return {
             sendMessage: sendMessage,
             onMessage: onMessage,
-            isSafari: true
+            isSafari: true,
+            isSafariContentBlockerEnabled: ContentScript.contentBlockerEnabled
         };
     })();
 

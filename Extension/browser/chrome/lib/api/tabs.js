@@ -59,7 +59,8 @@ adguard.windowsImpl = (function (adguard) {
     var forEachNative = function (callback) {
         // https://developer.chrome.com/extensions/windows#method-getAll
         // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/getAll
-        browser.windows.getAll(function (chromeWins) {
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/569
+        browser.windows.getAll({}, function (chromeWins) {
             for (var i = 0; i < chromeWins.length; i++) {
                 var chromeWin = chromeWins[i];
                 callback(chromeWin, toWindowFromChromeWindow(chromeWin));
@@ -104,10 +105,10 @@ adguard.tabsImpl = (function (adguard) {
         return parseInt(tabId);
     }
 
-    function checkLastError() {
+    function checkLastError(operation) {
         var ex = browser.runtime.lastError;
         if (ex) {
-            adguard.console.error("Error while executing operation: {0}", ex);
+            adguard.console.error("Error while executing operation{1}: {0}", ex, operation ? " '" + operation + "'" : '');
         }
         return ex;
     }
@@ -155,6 +156,31 @@ adguard.tabsImpl = (function (adguard) {
         getActive(onActivatedChannel.notify);
     });
 
+    /**
+     * Give focus to a window
+     * @param tabId Tab identifier
+     * @param windowId Window identifier
+     * @param callback Callback
+     */
+    function focusWindow(tabId, windowId, callback) {
+        /**
+         * Updating already focused window produces bug in Edge browser
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/675
+         */
+        getActive(function (activeTabId) {
+            if (tabId !== activeTabId) {
+                // Focus window
+                browser.windows.update(windowId, {focused: true}, function () {
+                    if (checkLastError("Update window " + windowId)) {
+                        return;
+                    }
+                    callback();
+                });
+            }
+            callback();
+        });
+    }
+
     var create = function (createData, callback) {
 
         var url = createData.url;
@@ -183,6 +209,10 @@ adguard.tabsImpl = (function (adguard) {
                 url: url,
                 active: active
             }, function (chromeTab) {
+                if (active) {
+                    focusWindow(chromeTab.id, chromeTab.windowId, function () {
+                    });
+                }
                 callback(toTabFromChromeTab(chromeTab));
             });
         }
@@ -204,13 +234,16 @@ adguard.tabsImpl = (function (adguard) {
                 return;
             }
 
-            browser.windows.getAll(function (wins) {
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/569
+            browser.windows.getAll({}, function (wins) {
 
-                for (var i = 0; i < wins.length; i++) {
-                    var win = wins[i];
-                    if (isAppropriateWindow(win)) {
-                        onWindowFound(win);
-                        return;
+                if (wins) {
+                    for (var i = 0; i < wins.length; i++) {
+                        var win = wins[i];
+                        if (isAppropriateWindow(win)) {
+                            onWindowFound(win);
+                            return;
+                        }
                     }
                 }
 
@@ -233,15 +266,11 @@ adguard.tabsImpl = (function (adguard) {
 
     var activate = function (tabId, callback) {
         // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/update
-        browser.tabs.update(tabIdToInt(tabId), {active: true}, function (tab) {
-            if (checkLastError()) {
+        browser.tabs.update(tabIdToInt(tabId), {active: true}, function (chromeTab) {
+            if (checkLastError("Before tab update")) {
                 return;
             }
-            // Focus window
-            browser.windows.update(tab.windowId, {focused: true}, function () {
-                if (checkLastError()) {
-                    return;
-                }
+            focusWindow(tabId, chromeTab.windowId, function () {
                 callback(tabId);
             });
         });

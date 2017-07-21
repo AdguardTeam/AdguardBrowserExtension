@@ -28,7 +28,9 @@
         return Object.prototype.hasOwnProperty.call(self, property);
     }
 
-    var browserApi = adguard.browserApi = isDefined('browser') ? self.browser : self.chrome;
+    var browserApi = isDefined('browser') ? self.browser : self.chrome;
+
+    adguard.i18n = browserApi.i18n;
 
     adguard.runtimeImpl = (function () {
 

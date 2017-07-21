@@ -222,7 +222,6 @@
                 adguard.ui.openExtensionStore();
                 break;
             case 'openFilteringLog':
-                adguard.browserAction.close();
                 adguard.ui.openFilteringLog(message.tabId);
                 break;
             case 'openExportRulesTab':
@@ -236,11 +235,9 @@
                 break;
             case 'openTab':
                 adguard.ui.openTab(message.url, message.options);
-                adguard.browserAction.close();
                 break;
             case 'resetBlockedAdsCount':
                 adguard.frames.resetBlockedAdsCount();
-                adguard.browserAction.close();
                 break;
             case 'getSelectorsAndScripts':
                 if (adguard.utils.workaround.isFacebookIframe(message.documentUrl)) {
@@ -248,8 +245,8 @@
                 }
                 var cssAndScripts = adguard.webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl, message.options);
                 return cssAndScripts || {};
-            case 'checkWebSocketRequest':
-                var block = adguard.webRequestService.checkWebSocketRequest(sender.tab, message.elementUrl, message.documentUrl);
+            case 'checkPageScriptWrapperRequest':
+                var block = adguard.webRequestService.checkPageScriptWrapperRequest(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
                 return {block: block, requestId: message.requestId};
             case 'processShouldCollapse':
                 var collapse = adguard.webRequestService.processShouldCollapse(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
@@ -335,18 +332,32 @@
                 break;
             case 'openSiteReportTab':
                 adguard.ui.openSiteReportTab(message.url);
-                adguard.browserAction.close();
                 break;
             case 'openSettingsTab':
                 adguard.ui.openSettingsTab();
-                adguard.browserAction.close();
                 break;
             case 'openAssistant':
                 adguard.ui.openAssistant();
-                adguard.browserAction.close();
                 break;
+            case 'getTabInfoForPopup':
+                adguard.tabs.getActive(function (tab) {
+                    var frameInfo = adguard.frames.getFrameInfo(tab);
+                    callback({
+                        frameInfo: frameInfo,
+                        options: {
+                            showStatsSupported: !adguard.utils.browser.isContentBlockerEnabled(),
+                            isSafariBrowser: adguard.utils.browser.isSafariBrowser(),
+                            isFirefoxBrowser: adguard.utils.browser.isFirefoxBrowser(),
+                            isMacOs: adguard.utils.browser.isMacOs()
+                        }
+                    });
+                });
+                return true; // Async
             case 'resizePanelPopup':
                 adguard.browserAction.resize(message.width, message.height);
+                break;
+            case 'closePanelPopup':
+                adguard.browserAction.close();
                 break;
             case 'sendFeedback':
                 adguard.backend.sendUrlReport(message.url, message.topic, message.comment);
@@ -362,6 +373,12 @@
 
     // Add event listener from content-script messages
     adguard.runtime.onMessage.addListener(handleMessage);
+
+    /**
+     * There is no messaging in Safari popover context,
+     * so we have to expose this method to keep the message-like style that is used in other browsers for communication between popup and background page.
+     */
+    adguard.runtime.onMessageHandler = handleMessage;
 
 })(adguard);
 

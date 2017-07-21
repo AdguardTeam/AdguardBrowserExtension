@@ -7,7 +7,7 @@ package com.adguard.compiler;
 public enum Browser {
 
 	/**
-	 * Chrome-based (Chrome, Opera, YaBrowser)
+	 * Chrome-based (Chrome, YaBrowser)
 	 */
 	CHROMIUM("chrome"),
 
@@ -15,6 +15,11 @@ public enum Browser {
 	 * Microsoft edge
 	 */
 	EDGE("edge"),
+
+	/**
+	 * Opera
+	 */
+	OPERA("opera"),
 
 	/**
 	 * Safari
@@ -59,8 +64,11 @@ public enum Browser {
 			case FIREFOX_LEGACY:
 			case FIREFOX_WEBEXT:
 				return "firefox";
-			case CHROMIUM:
 			case EDGE:
+				return "edge";
+			case OPERA:
+				return "opera";
+			case CHROMIUM:
 			default:
 				return "chromium";
 		}

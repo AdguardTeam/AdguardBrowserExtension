@@ -1,13 +1,15 @@
-! Checksum: 5irVBw55Xye/64YHMmeURg
-! Version: 1.0.86.59
-! TimeUpdated: 2017-03-23T17:01:53.730+04:00
+! Checksum: LaEJs4L1IjZR+jCnwRayjQ
 ! Title: Spanish/Portuguese filter
 ! Description: Adguard Spanish/Portuguese filter. Filter list that specifically removes adverts on Spanish and Portuguese language websites.
+! Version: 1.0.86.72
+! TimeUpdated: 2017-07-08T17:01:33.572+04:00
+! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+||waycash.net^$third-party
 ||184.106.248.76^
 ||200.72.40.46^$third-party
 ||abril.lojaabril.com^*/abrilcom/$third-party
@@ -138,6 +140,14 @@
 ||xclk-integracion.com^$third-party
 ||yestorrents.org^$third-party
 ||zebestof.com^$third-party
+bludv.com#%#Object.defineProperty(window,'bsaAQyLSuO',{get:function(){},set:function(){throw"Adguard: stopped a script execution."}});
+@@||farodevigo.es/servicios/ads/dfp.js^
+farodevigo.es#%#window.pr_okvalida = true;
+@@||levante-emv.com/elementosWeb/js/ads.js^
+@@||levante-emv.com/servicios/ads/dfp.js^
+||uol.com.br/camaleao/assets/web/javascript/detectadblock/detectadblock.js$important
+@@||player.animeid.io/static/ads.js
+@@||connect-trojan.net^$generichide
 zonasports.me#%#var baseCreateElement = document.createElement.bind(document); document.createElement = function(name) { var el = baseCreateElement(name); if(name != 'span') { return el; } else { Object.defineProperty(el, 'innerHTML', { set: function(text) { if(/^(<a id="[^"]*"><\/a>)*$/.test(text)) { throw new Error(); } Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML').set.call(el, text); }, get: function() { return el.innerHTML; } }); return el; }};
 @@||tabletsesmartphones.org^$generichide
 ||tinypass.com/xbuilder/experience/load?$script,domain=a
@@ -248,6 +258,7 @@ mangahost.net##.sidebar > section.clearfix[-ext-has='div.ads']
 ##.standard-ad
 ##.video_ads_overdiv
 ##[href^="http://ads.glispa.com/"]
+bludv.com#%#Object.defineProperty(window, 'puShown', { get: function() { return true; } });
 -publicidad-
 -publicidad/
 -publicidade.
@@ -338,6 +349,20 @@ _publicidade.
 _publicidade_
 _publicitario.
 http://adw.
+uol.com.br##.lista-ecommerce
+uol.com.br###banner-stick
+animeid.io###divFloatRight
+abril.com.br##div[id^="ad_"]
+abril.com.br##.ad-sense
+abril.com.br##.widget-superbanner
+||mocosoft.com/cialis.jpg
+||mocosoft.com/cpiu.gif
+mocosoft.com##table[bgcolor="red"]
+||mocosoft.com/prope.jpg
+||youtube.com/v/^$domain=mocosoft.com
+programaswebfull.net##.topad
+marca.com##.content > iframe[src^="http://91.116.142.114"]
+||91.116.142.114/iframe$domain=marca.com
 zonasports.me##iframe[src^="http://zonasports.at.ua/"]
 zonasports.me##iframe[src^="http://zonasports.at.ua/"] + p
 tabletsesmartphones.org##.banner-336x280

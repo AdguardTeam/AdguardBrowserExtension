@@ -11,23 +11,8 @@
     <link rel="stylesheet" href="skin/devtools/inspectorSyntaxHighlight.css"/>
     <link rel="stylesheet" href="skin/devtools/sidebarPane.css"/>
     <link rel="stylesheet" href="skin/devtools/elementsPanel.css"/>
-
-    <style type="text/css">
-        .styles-section .style-properties .enabled-button {
-            visibility: visible !important;
-        }
-        .action-button {
-            margin-top: 4px;
-            margin-bottom: 4px;
-            margin-left: 4px;
-        }
-        .rule-input {
-            padding: 4px;
-        }
-        .webkit-css-property {
-            color: #5a5a5a;
-        }
-    </style>
+    <link rel="stylesheet" href="skin/devtools/custom.css"/>
+    <link rel="stylesheet" href="skin/devtools/dark.css"/>
 </head>
 <body class="undocked platform-mac inactive">
     <div class="sidebar-pane composite fill metrics-and-styles">
@@ -40,7 +25,7 @@
                         <input type="button" id="preview-rule-button" value="Preview" class="action-button" />
                     </div>
                 </div>
-                <div class="sidebar-separator monospace">Rule properties</div>
+                <div class="sidebar-separator monospace separator-properties">Rule properties</div>
                 <div class="sidebar-pane">
                     <div class="styles-section matched-styles monospace">
                         <ol class="style-properties monospace update-rule-block">
@@ -60,7 +45,10 @@
                         </ol>
                     </div>
                 </div>
-                <div class="sidebar-separator monospace">Attributes</div>
+                <div class="sidebar-separator monospace separator-attributes">
+                    <input class="enabled-button" type="checkbox" id="select-attributes-checkbox">
+                    Attributes
+                </div>
                 <div class="sidebar-pane monospace">
                     <div class="styles-section matched-styles monospace">
                         <ol class="style-properties monospace update-rule-block" id="attributes-block"></ol>

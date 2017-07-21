@@ -1,8 +1,9 @@
-! Checksum: 6zvA/dWPDWHd7Pq9KhGvjQ
-! Version: 1.0.9.23
-! TimeUpdated: 2017-03-24T20:01:27.532+04:00
+! Checksum: bL1U0mBJGWpK3ugSh7j6Dw
 ! Title: Dutch filter
 ! Description: EasyList Dutch + Adguard Dutch filter. Filter list that specifically removes adverts on Dutch language websites.
+! Version: 1.0.9.29
+! TimeUpdated: 2017-07-10T23:01:25.585+04:00
+! Expires: 2 days (update frequency)
 ! Title: Adguard Dutch Filter.
 !
 ! Filter that enables removing of the ads from websites with Dutch content.
@@ -1317,8 +1318,13 @@ tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
 !
 ! These rules are against anti-adblock scripts
 !
-! ! Prevent AdFender detection
+! https://github.com/AdguardTeam/AdguardFilters/issues/5246
+vogelgeluid.nl#@##banner_ad
+! Prevent AdFender detection
 @@/ad_bomb/*$image,domain=computerworld.nl|webwereld.nl
+! https://forum.adguard.com/index.php?threads/telegraaf-nl-antiadblock-warning.21364/
+@@||telegraaf.tcdn.nl/javascript/ads/*$domain=telegraaf.nl,third-party
+telegraaf.nl#%#window.canRunAds = true;
 ! https://forum.adguard.com/index.php?threads/11357/
 @@||static.buienradar.nl/resources/js/advertisement.js
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2160
@@ -1331,7 +1337,8 @@ biernet.nl#@#.afs_ads
 !
 ! Extended CSS rules
 !
-gelderlander.nl##.page-content > .theme-default[-ext-has='div.ad']s
+ad.nl##.tile[-ext-has=">.ankeiler--advertisement"]
+gelderlander.nl##.page-content > .theme-default[-ext-has='div.ad']
 klusidee.nl##tr.table-row[-ext-has=".td-ad"]
 !---------------------------------------------------------------------------!
 !-------------- General element hiding rules -------------------------------!
@@ -1367,12 +1374,18 @@ omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3
 !
 ! The content replacement rules
 !
+! https://forum.adguard.com/index.php?threads/tv2-no.22252/
 !---------------------------------------------------------------------------!
 !-------------- Rules for specific websites --------------------------------!
 !---------------------------------------------------------------------------!
 !--------------------------------------------------------!
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
+feyenoord.nl##.reveal-modal-bg
+feyenoord.nl###adModal
+feyenoord.nl###ads.show-for-medium-up
+feyenoord.nl###more-ads
+ad.nl##.ankeiler--advertisement
 ||iframe.gsminfo.nl/*/populair-beknopt^$domain=allaboutphones.nl
 allaboutphones.nl##.ad-container
 autoweek.nl##.page-banner

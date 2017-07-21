@@ -194,12 +194,17 @@ var FileStorage = (function () {
      */
     var list = function () {
         var adguardDir = FileUtils.getDir(PROFILE_DIR, [ADGUARD_DIR]);
+        if (!adguardDir.exists()) {
+            return [];
+        }
         var entries = adguardDir.directoryEntries;
         var array = [];
         while (entries.hasMoreElements()) {
             var entry = entries.getNext();
             entry.QueryInterface(Components.interfaces.nsIFile);
-            array.push(entry.leafName);
+            if (entry.isFile()) {
+                array.push(entry.leafName);
+            }
         }
         return array;
     };
@@ -262,33 +267,40 @@ var MigrationHelper = function (simplePrefs) {
             return;
         }
 
-        if (!simplePrefsMigrated) {
-            var values = getSimplePrefs();
-            callback({
-                type: 'user-settings',
-                values: values
-            });
-            simplePrefsMigrated = true;
-            return;
-        }
-
-        if (filesToMigrate === null) {
-            filesToMigrate = FileStorage.list();
-        }
-        if (filesToMigrate.length === 0) {
-            simplePrefs.set('adguard-settings-migrated', true);
-            onMigrationFinished(callback);
-        } else {
-            var file = filesToMigrate.pop();
-            FileStorage.readFromFile(file, function (error, lines) {
+        try {
+            if (!simplePrefsMigrated) {
+                var values = getSimplePrefs();
                 callback({
-                    type: 'filter-rules',
-                    values: {
-                        key: file,
-                        value: lines
-                    }
+                    type: 'user-settings',
+                    values: values
                 });
-            });
+                simplePrefsMigrated = true;
+                return;
+            }
+
+            if (filesToMigrate === null) {
+                filesToMigrate = FileStorage.list();
+            }
+            if (filesToMigrate.length === 0) {
+                simplePrefs.set('adguard-settings-migrated', true);
+                onMigrationFinished(callback);
+            } else {
+                var file = filesToMigrate.pop();
+                FileStorage.readFromFile(file, function (error, lines) {
+                    callback({
+                        type: 'filter-rules',
+                        values: {
+                            key: file,
+                            value: lines
+                        }
+                    });
+                });
+            }
+
+        } catch (ex) {
+            onMigrationFinished(callback);
+            Cu.reportError('Adguard: Unable to migrate settings...');
+            Cu.reportError(ex);
         }
 
         simplePrefs.set('adguard-settings-migrated', true);

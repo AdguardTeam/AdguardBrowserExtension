@@ -17,17 +17,15 @@
 
 /* global adguardContent */
 
-var contentPage = (function (adguard) { // jshint ignore:line
+(function (adguard) {
 
     'use strict';
 
-    return {
+    window.i18n = adguard.i18n;
+
+    window.contentPage = {
         sendMessage: adguard.runtimeImpl.sendMessage,
         onMessage: adguard.runtimeImpl.onMessage
     };
 
-})(adguardContent);
-
-var i18n = (function (adguard) { // jshint ignore:line
-    return adguard.browserApi.i18n;
 })(adguardContent);

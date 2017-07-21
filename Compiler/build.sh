@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version="2.6.0"
+version="2.6.7"
 
 if [[ ! ("$#" == 1) ]] || [[ ! ($1 = dev) && ! ($1 = release) && ! ($1 = beta) ]] ; then
     echo "Pass a single argument as an environment value"
@@ -32,7 +32,7 @@ if [ "$env" = release ]; then
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #opera release crx for addons.opera.com
-    options="$opts --browser=chrome --pack=crx --name=opera"
+    options="$opts --browser=opera --pack=crx --name=opera --update-filters=true"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox release for AMO (WebExt)
@@ -44,7 +44,7 @@ if [ "$env" = release ]; then
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
     
     #edge release
-    options="$opts --browser=edge --pack=zip"
+    options="$opts --browser=edge --pack=zip --update-filters=true"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     echo "Release builds created"
@@ -66,7 +66,7 @@ elif [ "$env" = beta ]; then
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox beta for AMO (WebExt)
-    options="$opts --browser=firefox_webext --pack=xpi --extensionId=adguardadblockerbeta@adguard.com --remote-scripts=false"
+    options="--version=${version}beta --branch=$branch --dest=$destPath --browser=firefox_webext --pack=xpi --extensionId=adguardadblocker@adguard.com --remote-scripts=false"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox beta (WebExt)
@@ -80,9 +80,13 @@ elif [ "$env" = beta ]; then
     #safari beta
     options="$opts --browser=safari  --pack=extz --extensionId=com.adguard.safaribeta --update-url=https://adguardteam.github.io/AdguardBrowserExtension/safari_updates.xml"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
-    
+
     #edge beta zip
     options="$opts --browser=edge --pack=zip"
+    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
+
+    # chrome api zip
+    options="$opts --browser=chrome --name=adguard --create-api=true --pack=zip"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     echo "Beta builds created"
@@ -120,7 +124,7 @@ else
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     # chrome api
-    options="$opts --browser=chrome  --name=chrome-api --create-api=true"
+    options="$opts --browser=chrome --name=adguard --create-api=true"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     echo "Dev builds created"

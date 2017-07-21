@@ -238,6 +238,35 @@
     }
 
     /**
+     * Validates CSP rule
+     * @param rule Rule with $CSP modifier
+     */
+    function validateCspRule(rule) {
+
+        /**
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/685
+         * CSP directive may be empty in case of whitelist rule, it means to disable all $csp rules matching the whitelist rule
+         */
+        if (!rule.whiteListRule && !rule.cspDirective) {
+            throw 'Invalid $CSP rule: CSP directive must not be empty';
+        }
+
+        if (rule.cspDirective) {
+
+            /**
+             * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/685#issue-228287090
+             * Forbids report-to and report-uri directives
+             */
+            var cspDirective = rule.cspDirective.toLowerCase();
+            if (cspDirective.indexOf('report-uri') >= 0 ||
+                cspDirective.indexOf('report-to') >= 0) {
+
+                throw 'Forbidden CSP directive: ' + cspDirective;
+            }
+        }
+    }
+
+    /**
      * Rule for blocking requests to URLs.
      * Read here for details:
      * http://adguard.com/en/filterrules.html#baseRules
@@ -280,7 +309,7 @@
                 throw 'Illegal regexp rule';
             }
 
-            if (UrlFilterRule.REGEXP_ANY_SYMBOL == regexp && !this.hasPermittedDomains()) {
+            if (UrlFilterRule.REGEXP_ANY_SYMBOL === regexp && !this.hasPermittedDomains()) {
                 // Rule matches everything and does not have any domain restriction
                 throw ("Too wide basic rule: " + urlRuleText);
             }
@@ -290,6 +319,10 @@
         } else {
             // Searching for shortcut
             this.shortcut = findShortcut(urlRuleText);
+        }
+
+        if (this.cspRule) {
+            validateCspRule(this);
         }
     };
 
@@ -417,7 +450,7 @@
             return false;
         }
 
-        if (this.restrictedContentType !== 0 && (this.restrictedContentType & contentTypeMask) == contentTypeMask) { // jshint ignore:line
+        if (this.restrictedContentType !== 0 && (this.restrictedContentType & contentTypeMask) === contentTypeMask) { // jshint ignore:line
             //in restricted list - skip this rule
             return false;
         }
@@ -514,14 +547,24 @@
                 case UrlFilterRule.EMPTY_OPTION:
                     this.emptyResponse = true;
                     break;
+                case UrlFilterRule.CSP_OPTION:
+                    this.cspRule = true;
+                    if (optionsKeyValue.length > 1) {
+                        this.cspDirective = optionsKeyValue[1];
+                    }
+                    break;
                 default:
                     optionName = optionName.toUpperCase();
                     if (optionName in UrlFilterRule.contentTypes) {
                         permittedContentType |= UrlFilterRule.contentTypes[optionName]; // jshint ignore:line
-                    } else if (optionName[0] == api.FilterRule.NOT_MARK && optionName.substring(1) in UrlFilterRule.contentTypes) {
+                    } else if (optionName[0] === api.FilterRule.NOT_MARK && optionName.substring(1) in UrlFilterRule.contentTypes) {
                         restrictedContentType |= UrlFilterRule.contentTypes[optionName.substring(1)]; // jshint ignore:line
                     } else if (optionName in UrlFilterRule.ignoreOptions) { // jshint ignore:line
-                        // Ignore
+                        if (optionName === 'CONTENT' && optionsParts.length === 1) {
+                            //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/719
+                            throw 'Single $content option rule is ignored: ' + this.ruleText;
+                        }
+                        // Ignore others
                     } else {
                         throw 'Unknown option: ' + optionName;
                     }
@@ -553,6 +596,7 @@
     UrlFilterRule.REGEXP_ANY_SYMBOL = ".*";
     UrlFilterRule.EMPTY_OPTION = "empty";
     UrlFilterRule.REPLACE_OPTION = "replace"; // Extension doesn't support replace rules, $replace option is here only for correctly parsing
+    UrlFilterRule.CSP_OPTION = "csp";
 
     UrlFilterRule.contentTypes = {
 
@@ -568,6 +612,8 @@
         MEDIA: 1 << 8,
         FONT: 1 << 9,
         WEBSOCKET: 1 << 10,
+        WEBRTC: 1 << 11,
+        CSP: 1 << 12,
 
         ELEMHIDE: 1 << 20,      //CssFilter cannot be applied to page
         URLBLOCK: 1 << 21,      //This attribute is only for exception rules. If true - do not use urlblocking rules for urls where referrer satisfies this rule.
@@ -581,7 +627,7 @@
 
     // https://code.google.com/p/chromium/issues/detail?id=410382
     if (adguard.prefs.platform === 'chromium' ||
-        adguard.prefs.platform == 'webkit') {
+        adguard.prefs.platform === 'webkit') {
 
         UrlFilterRule.contentTypes['OBJECT-SUBREQUEST'] = UrlFilterRule.contentTypes.OBJECT;
     }
@@ -614,6 +660,7 @@
     UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.MEDIA;
     UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.FONT;
     UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.WEBSOCKET;
+    UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.WEBRTC;
     // jshint ignore:end
 
     api.UrlFilterRule = UrlFilterRule;
