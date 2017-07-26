@@ -99,35 +99,61 @@ PopupController.prototype = {
     _renderPopup: function (tabInfo) {
 
         var parent = $('.widjet-popup');
-        parent.empty();
+        //parent.empty();
+        parent.find('.footer').remove();
 
-        //top block
-        this.siteStatsTemplate = this._getTemplate('page-stats-template');
-        this.adguardDetectedMessageTemplate = this._getTemplate('adguard-detected-message-template');
-        this.siteFilteringDisabledMessageTemplate = this._getTemplate('site-filtering-disabled-message-template');
-        this.siteProtectionDisabledMessageTemplate = this._getTemplate('site-protection-disabled-message-template');
+        var stack = parent.find('.tabstack');
 
-        //middle block
-        this.siteFilteringExceptionMessageTemplate = this._getTemplate('site-filtering-exception-message-template');
-        this.siteFilteringStateTemplate = this._getTemplate('site-filtering-checkbox-template');
+        var container = parent.find('.tab-main');
+        container.empty();
 
-        //actions block
-        this.assistantTemplate = this._getTemplate('open-assistant-template');
-        this.abuseTemplate = this._getTemplate('open-abuse-template');
-        this.siteReportTemplate = this._getTemplate('site-report-template');
-        this.settingsTemplate = this._getTemplate('open-settings-template');
-        this.protectionDisabledTemplate = this._getTemplate('protection-disabled-template');
-        this.protectionEnabledTemplate = this._getTemplate('protection-enabled-template');
+        stack.attr('class', 'tabstack');
 
-        //footer
-        this.footerTemplate = this._getTemplate('popup-footer-template');
-        this.footerIntegrationTemplate = this._getTemplate('popup-footer-integration-template');
+        // define class
+        if (tabInfo.urlFilteringDisabled) {
+            stack.addClass('status-error error-sad');
+        } else if (tabInfo.applicationFilteringDisabled) {
+            stack.addClass('status-paused');
+        } else {
+            if (!tabInfo.canAddRemoveRule) {
+                stack.addClass('status-error error-filter');
+            } else {
+                if (tabInfo.documentWhiteListed) {
+                    stack.addClass('status-cross');
+                } else {
+                    stack.addClass('status-checkmark');
+                }
+            }
+        }
 
-        //render
-        this._renderTopMessageBlock(parent, tabInfo);
-        this._renderSiteExceptionBlock(parent, tabInfo);
-        this._renderFilteringCheckboxBlock(parent, tabInfo);
-        this._renderActionsBlock(parent, tabInfo);
+        // Header
+        this.filteringIntegrationHeader = this._getTemplate('filtering-integration-header-template');
+        this.filteringDefaultHeader = this._getTemplate('filtering-default-header-template');
+
+        // Controls
+        this.filteringControlDefault = this._getTemplate('filtering-default-control-template');
+        this.filteringControlDisabled = this._getTemplate('filtering-disabled-control-template');
+        this.filteringControlException = this._getTemplate('filtering-site-exception-control-template');
+
+        // Actions
+        this.actionOpenAssistant = this._getTemplate('action-open-assistant-template');
+        this.actionOpenAbuse = this._getTemplate('action-open-abuse-template');
+        this.actionOpenSiteReport = this._getTemplate('action-site-report-template');
+
+        // Status Text
+        this.filteringStatusText = this._getTemplate('filtering-status-template');
+        // Message text
+        this.filteringMessageText = this._getTemplate('filtering-message-template');
+
+        // Footer
+        this.footerDefault = this._getTemplate('footer-default-template');
+        this.footerIntegration = this._getTemplate('footer-integration-template');
+
+        this._renderHeader(container, tabInfo);
+        this._renderFilteringControls(container, tabInfo);
+        this._renderStatus(container, tabInfo);
+        this._renderActions(container, tabInfo);
+        this._renderMessage(container, tabInfo);
         this._renderFooter(parent, tabInfo);
     },
 
@@ -135,7 +161,7 @@ PopupController.prototype = {
         return $('#' + id).children().clone();
     },
 
-    _renderTopMessageBlock: function (parent, tabInfo) {
+    _renderHeader: function (container, tabInfo) {
 
         function formatNumber(v) {
             return v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
@@ -143,105 +169,122 @@ PopupController.prototype = {
 
         var template;
         if (tabInfo.adguardDetected) {
-            template = this.adguardDetectedMessageTemplate;
+            template = this.filteringIntegrationHeader;
             if (tabInfo.adguardProductName) {
-                i18n.translateElement(template.children()[0], 'popup_ads_has_been_removed_by_adguard', [tabInfo.adguardProductName]);
+                i18n.translateElement(template.find('.blocked-tab')[0], 'popup_ads_has_been_removed_by_adguard', [tabInfo.adguardProductName]);
             } else {
-                i18n.translateElement(template.children()[0], 'popup_ads_has_been_removed');
+                i18n.translateElement(template.find('.blocked-tab')[0], 'popup_ads_has_been_removed');
             }
-        } else if (tabInfo.applicationFilteringDisabled) {
-            template = this.siteProtectionDisabledMessageTemplate;
-        } else if (tabInfo.urlFilteringDisabled) {
-            template = this.siteFilteringDisabledMessageTemplate;
-        } else if (this.options.showStatsSupported) {
-            template = this.siteStatsTemplate;
-            var titleBlocked = template.find('.w-popup-filter-title-blocked');
-            i18n.translateElement(titleBlocked[0], 'popup_tab_blocked', [formatNumber(tabInfo.totalBlockedTab || 0)]);
-            i18n.translateElement(template.find('.w-popup-filter-title-blocked-all')[0], 'popup_tab_blocked_all', [formatNumber(tabInfo.totalBlocked || 0)]);
-            if (tabInfo.totalBlocked >= 10000000) {
-                titleBlocked.closest('.widjet-popup-filter').addClass('db');
-            } else {
-                titleBlocked.closest('.widjet-popup-filter').removeClass('db');
-            }
-        }
-        parent.append(template);
-    },
-
-    _renderSiteExceptionBlock: function (parent, tabInfo) {
-
-        if (tabInfo.urlFilteringDisabled || tabInfo.applicationFilteringDisabled) {
-            return;
-        }
-
-        var template;
-        if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
-            template = this.siteFilteringExceptionMessageTemplate;
-        }
-
-        if (template) {
-            parent.append(template);
-        }
-    },
-
-    _renderFilteringCheckboxBlock: function (parent, tabInfo) {
-
-        if (tabInfo.urlFilteringDisabled || tabInfo.applicationFilteringDisabled) {
-            return;
-        }
-
-        var template = this.siteFilteringStateTemplate;
-        var checkbox = template.find('#siteFilteringDisabledCheckbox');
-        if (tabInfo.canAddRemoveRule) {
-            if (tabInfo.documentWhiteListed) {
-                checkbox.removeAttr('checked');
-            } else {
-                checkbox.attr('checked', 'checked');
-            }
-            checkbox.toggleCheckbox();
-            parent.append(template);
-        }
-    },
-
-    _renderActionsBlock: function (parent, tabInfo) {
-
-        var el = $('<nav>', {class: 'widjet-popup-menu'});
-
-        if (!tabInfo.adguardDetected && !tabInfo.urlFilteringDisabled) {
-            if (tabInfo.applicationFilteringDisabled) {
-                el.append(this.protectionDisabledTemplate);
-            } else {
-                el.append(this.protectionEnabledTemplate);
-            }
-        }
-
-        if (!tabInfo.urlFilteringDisabled) {
-            el.append(this.assistantTemplate);
-            if (tabInfo.applicationFilteringDisabled || tabInfo.documentWhiteListed) {
-                //may be show later
-                this.assistantTemplate.hide();
-            }
-        }
-
-        if (!tabInfo.urlFilteringDisabled) {
-            el.append(this.abuseTemplate);
-        }
-
-        if (!tabInfo.urlFilteringDisabled && !tabInfo.applicationFilteringDisabled) {
-            el.append(this.siteReportTemplate);
-        }
-
-        if (!tabInfo.adguardDetected) {
-            el.append(this.settingsTemplate);
-        }
-
-        parent.append(el);
-    },
-
-    _renderFooter: function (parent, tabInfo) {
-        if (tabInfo.adguardDetected) {
-            parent.append(this.footerIntegrationTemplate);
         } else {
-            parent.append(this.footerTemplate);
+            template = this.filteringDefaultHeader;
+            var tabBlocked = template.find('.blocked-tab');
+            var totalBlocked = template.find('.blocked-all');
+            i18n.translateElement(tabBlocked[0], 'popup_tab_blocked', [formatNumber(tabInfo.totalBlockedTab || 0)]);
+            i18n.translateElement(totalBlocked[0], 'popup_tab_blocked_all', [formatNumber(tabInfo.totalBlocked || 0)]);
+            if (tabInfo.totalBlocked >= 10000000) {
+                tabBlocked.closest('.widjet-popup-filter').addClass('db');
+            } else {
+                tabBlocked.closest('.widjet-popup-filter').removeClass('db');
+            }
+        }
+
+        container.append(template);
+    },
+
+    _renderFilteringControls: function (container, tabInfo) {
+        var template = this.filteringControlDefault;
+        if (tabInfo.urlFilteringDisabled) {
+            template = this.filteringControlDisabled;
+        } else if (tabInfo.applicationFilteringDisabled) { // jshint ignore:line
+            // Use default template
+        } else {
+            if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
+                template = this.filteringControlException;
+            }
+        }
+        if (tabInfo.urlFilteringDisabled || tabInfo.applicationFilteringDisabled || tabInfo.adguardDetected) {
+            template.find('.pause').hide();
+        }
+        if (tabInfo.adguardDetected) {
+            template.find('.settings').hide();
+        }
+        container.append(template);
+    },
+
+    _renderStatus: function (container, tabInfo) {
+
+        var template = this.filteringStatusText;
+
+        var text = '';
+
+        if (tabInfo.urlFilteringDisabled) {
+            text = 'popup_site_filtering_disabled';
+        } else if (tabInfo.applicationFilteringDisabled) {
+            text = 'popup_enable_protection';
+        } else {
+            if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
+                text = 'popup_site_exception';
+            } else {
+                if (tabInfo.documentWhiteListed) {
+                    text = 'context_site_filtering_on';
+                } else {
+                    text = 'context_site_filtering_off';
+                }
+            }
+        }
+        i18n.translateElement(template[0], text);
+
+        container.append(template);
+    },
+
+    _renderMessage: function (container, tabInfo) {
+
+        var text;
+
+        if (tabInfo.urlFilteringDisabled) {
+            text = 'popup_site_filtering_disabled';
+        } else if (tabInfo.applicationFilteringDisabled) {
+
+        } else {
+            if (tabInfo.documentWhiteListed && !tabInfo.userWhiteListed) {
+                text = 'popup_site_exception_info';
+            }
+        }
+
+        var template = this.filteringMessageText;
+        if (text) {
+            i18n.translateElement(template[0], text);
+            container.append(template);
+        }
+    },
+
+    _renderActions: function (container, tabInfo) {
+
+        if (tabInfo.urlFilteringDisabled) {
+            return;
+        }
+
+
+
+        var el = $('<div>', {class: 'actions'});
+
+        el.append(this.actionOpenAssistant);
+        if (tabInfo.applicationFilteringDisabled || tabInfo.documentWhiteListed) {
+            // May be show later
+            this.actionOpenAssistant.hide();
+        }
+
+        el.append(this.actionOpenAbuse);
+        el.append(this.actionOpenSiteReport);
+
+        container.append(el);
+    },
+
+    _renderFooter: function (footer, tabInfo) {
+        if (tabInfo.adguardDetected) {
+            footer.append(this.footerIntegration);
+        } else {
+            footer.append(this.footerDefault);
         }
     },
 
@@ -286,22 +329,27 @@ PopupController.prototype = {
             popupPage.closePopup();
         });
 
-        //checkbox
-        parent.on('change', '#siteFilteringDisabledCheckbox', function () {
+        // checkbox
+        parent.on('click', '.changeDocumentWhiteListed', function (e) {
+            e.preventDefault();
             var tabInfo = self.tabInfo;
-            var isWhiteListed = !this.checked;
+            if (tabInfo.urlFilteringDisabled || tabInfo.applicationFilteringDisabled) {
+                return;
+            }
+            if (!tabInfo.canAddRemoveRule) {
+                return;
+            }
+            var isWhiteListed = tabInfo.documentWhiteListed;
             if (isWhiteListed) {
-                self.addWhiteListDomain(tabInfo.url);
-            } else {
                 self.removeWhiteListDomain(tabInfo.url);
+                isWhiteListed = false;
+            } else {
+                self.addWhiteListDomain(tabInfo.url);
+                isWhiteListed = true;
             }
             tabInfo.documentWhiteListed = isWhiteListed;
             tabInfo.userWhiteListed = isWhiteListed;
-            if (isWhiteListed) {
-                self.assistantTemplate.hide();
-            } else {
-                self.assistantTemplate.show();
-            }
+            self._renderPopup(tabInfo);
             self.resizePopupWindow();
 
             if (tabInfo.adguardDetected) {
@@ -309,19 +357,27 @@ PopupController.prototype = {
             }
         });
 
-        //pause/unpause protection
-        parent.on('click', '.changeProtectionState', function (e) {
-
-            e.preventDefault();
-
+        function changeProtectionState(disabled) {
             var tabInfo = self.tabInfo;
-
-            var disabled = !tabInfo.applicationFilteringDisabled;
+            if (tabInfo.applicationFilteringDisabled == disabled) {
+                return;
+            }
             self.changeApplicationFilteringDisabled(disabled);
-
             tabInfo.applicationFilteringDisabled = disabled;
             self._renderPopup(tabInfo);
             self.resizePopupWindow();
+        }
+
+        // Disable filtering
+        parent.on('click', '.changeProtectionStateDisable', function (e) {
+            e.preventDefault();
+            changeProtectionState(true);
+        });
+
+        // Enable filtering
+        parent.on('click', '.changeProtectionStateEnable', function (e) {
+            e.preventDefault();
+            changeProtectionState(false);
         });
     },
 

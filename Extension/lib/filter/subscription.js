@@ -26,6 +26,7 @@ adguard.subscriptions = (function (adguard) {
 
     var groups = [];
     var filters = [];
+    var filtersMap = {};
 
     /**
      * @param timeUpdatedString String in format 'yyyy-MM-dd'T'HH:mm:ssZ'
@@ -119,14 +120,21 @@ adguard.subscriptions = (function (adguard) {
 
             groups = [];
             filters = [];
+            filtersMap = {};
 
             for (var i = 0; i < metadata.groups.length; i++) {
                 groups.push(createSubscriptionGroupFromJSON(metadata.groups[i]));
             }
 
             for (var j = 0; j < metadata.filters.length; j++) {
-                filters.push(createSubscriptionFilterFromJSON(metadata.filters[j]));
+                var filter = createSubscriptionFilterFromJSON(metadata.filters[j]);
+                filters.push(filter);
+                filtersMap[filter.filterId] = filter;
             }
+
+            filters.sort(function (f1, f2) {
+                return f1.displayNumber - f2.displayNumber;
+            });
 
             adguard.console.info('Filters metadata loaded');
             successCallback();
@@ -240,10 +248,8 @@ adguard.subscriptions = (function (adguard) {
     /**
      * Gets filter metadata by filter identifier
      */
-    var getFilterMetadata = function (filterId) {
-        return filters.filter(function (f) {
-            return f.filterId == filterId;
-        })[0];
+    var getFilter = function (filterId) {
+        return filtersMap[filterId];
     };
 
     /**
@@ -280,7 +286,7 @@ adguard.subscriptions = (function (adguard) {
         getFilterIdsForLanguage: getFilterIdsForLanguage,
         getGroups: getGroups,
         getFilters: getFilters,
-        getFilterMetadata: getFilterMetadata,
+        getFilter: getFilter,
         createSubscriptionFilterFromJSON: createSubscriptionFilterFromJSON
     };
 

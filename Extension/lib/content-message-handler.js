@@ -88,45 +88,18 @@
     }
 
     /**
-     * Returns collection of filters for selected group to display for user
-     * @param groupId Group identifier
-     * @returns {*|Array} List of filters
-     */
-    function getFiltersMetadataForGroup(groupId) {
-        return adguard.subscriptions.getFilters().filter(function (f) {
-            return f.groupId == groupId &&
-                f.filterId != adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID;
-        });
-    }
-
-    /**
      * Constructs filters metadata for options.html page
      */
     function processGetFiltersMetadata() {
-        var groupsMeta = adguard.subscriptions.getGroups();
-        var filtersMeta = Object.create(null);
-        var enabledFilters = Object.create(null);
-        var installedFilters = Object.create(null);
-        for (var i = 0; i < groupsMeta.length; i++) {
-            var groupId = groupsMeta[i].groupId;
-            var filters = filtersMeta[groupId] = getFiltersMetadataForGroup(groupId);
-            for (var j = 0; j < filters.length; j++) {
-                var filter = filters[j];
-                var installed = adguard.filters.isFilterInstalled(filter.filterId);
-                var enabled = adguard.filters.isFilterEnabled(filter.filterId);
-                if (installed) {
-                    installedFilters[filter.filterId] = true;
-                }
-                if (enabled) {
-                    enabledFilters[filter.filterId] = true;
-                }
-            }
-        }
+
+        var groups = adguard.subscriptions.getGroups();
+        var filters = adguard.subscriptions.getFilters().filter(function (f) {
+            return f.filterId != adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID;
+        });
+
         return {
-            groups: groupsMeta,
-            filters: filtersMeta,
-            enabledFilters: enabledFilters,
-            installedFilters: installedFilters
+            groups: groups,
+            filters: filters
         };
     }
 
@@ -145,26 +118,6 @@
             var domain = domains[i];
             if (!text || adguard.utils.strings.containsIgnoreCase(domain, text)) {
                 result.push(domain);
-            }
-        }
-        return limit ? result.slice(offset, offset + limit) : result;
-    }
-
-    /**
-     * Searches for user rules.
-     *
-     * @param offset Offset
-     * @param limit Limit
-     * @param text Search string
-     * @returns {Array} Rules found
-     */
-    function searchUserRules(offset, limit, text) {
-        var userRules = adguard.userrules.getRules();
-        var result = [];
-        for (var i = 0; i < userRules.length; i++) {
-            var ruleText = userRules[i];
-            if (!text || adguard.utils.strings.containsIgnoreCase(ruleText, text)) {
-                result.push(ruleText);
             }
         }
         return limit ? result.slice(offset, offset + limit) : result;
@@ -231,15 +184,17 @@
             case 'getWhiteListDomains':
                 var whiteListDomains = searchWhiteListDomains(message.offset, message.limit, message.text);
                 return {rules: whiteListDomains};
-            case 'getUserFilters':
-                var rules = searchUserRules(message.offset, message.limit, message.text);
-                return {rules: rules};
+            case 'getUserRules':
+                adguard.userrules.getUserRulesText(function (content) {
+                    callback({content: content});
+                });
+                return true;
+            case 'saveUserRules':
+                adguard.userrules.updateUserRulesText(message.content);
+                break;
             case 'checkAntiBannerFiltersUpdate':
                 adguard.ui.checkFiltersUpdates();
                 break;
-            case 'getAntiBannerFiltersForOptionsPage':
-                var renderedFilters = adguard.filters.getFiltersForOptionsPage();
-                return {filters: renderedFilters};
             case 'changeDefaultWhiteListMode':
                 adguard.whitelist.changeDefaultWhiteListMode(message.enabled);
                 break;
@@ -257,9 +212,6 @@
                 break;
             case 'addUserFilterRules':
                 adguard.userrules.addRules(message.rules);
-                break;
-            case 'onFiltersSubscriptionChange':
-                adguard.filters.onFiltersListChange(message.filterIds);
                 break;
             case 'getFiltersMetadata':
                 return processGetFiltersMetadata();

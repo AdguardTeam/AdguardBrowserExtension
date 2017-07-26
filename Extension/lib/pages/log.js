@@ -16,40 +16,40 @@
  */
 /* global i18n, $, contentPage */
 var PageController = function () {
-	this.requestWizard = new RequestWizard();
+    this.requestWizard = new RequestWizard();
 };
 
 var Messages = {
-	OPTIONS_USERFILTER: i18n.getMessage('options_userfilter'),
-	OPTIONS_WHITELIST: i18n.getMessage('options_whitelist'),
-	IN_WHITELIST: i18n.getMessage('filtering_log_in_whitelist')
+    OPTIONS_USERFILTER: i18n.getMessage('options_userfilter'),
+    OPTIONS_WHITELIST: i18n.getMessage('options_whitelist'),
+    IN_WHITELIST: i18n.getMessage('filtering_log_in_whitelist')
 };
 
 var StringUtils = {
 
-	startWith: function (str, prefix) {
-		return str && str.indexOf(prefix) === 0;
-	},
+    startWith: function (str, prefix) {
+        return str && str.indexOf(prefix) === 0;
+    },
 
-	containsIgnoreCase: function (str, searchString) {
-		return str && searchString && str.toUpperCase().indexOf(searchString.toUpperCase()) >= 0;
-	},
+    containsIgnoreCase: function (str, searchString) {
+        return str && searchString && str.toUpperCase().indexOf(searchString.toUpperCase()) >= 0;
+    },
 
-	substringAfter: function (str, separator) {
-		if (!str) {
-			return str;
-		}
-		var index = str.indexOf(separator);
-		return index < 0 ? "" : str.substring(index + separator.length);
-	},
+    substringAfter: function (str, separator) {
+        if (!str) {
+            return str;
+        }
+        var index = str.indexOf(separator);
+        return index < 0 ? "" : str.substring(index + separator.length);
+    },
 
-	substringBefore: function (str, separator) {
-		if (!str || !separator) {
-			return str;
-		}
-		var index = str.indexOf(separator);
-		return index < 0 ? str : str.substring(0, index);
-	}
+    substringBefore: function (str, separator) {
+        if (!str || !separator) {
+            return str;
+        }
+        var index = str.indexOf(separator);
+        return index < 0 ? str : str.substring(0, index);
+    }
 };
 
 var UrlUtils = {
@@ -96,7 +96,7 @@ var UrlUtils = {
 };
 
 var FilterRule = {
-	MASK_WHITE_LIST: "@@"
+    MASK_WHITE_LIST: "@@"
 };
 
 var UrlFilterRule = {
@@ -113,503 +113,503 @@ var UrlFilterRule = {
 
 PageController.prototype = {
 
-	init: function () {
+    init: function () {
 
-		this.logTable = $("#logTable");
-		this.logTableEmpty = $('#logTableEmpty');
-		this.logTableHidden = true;
+        this.logTable = $("#logTable");
+        this.logTableEmpty = $('#logTableEmpty');
+        this.logTableHidden = true;
 
-		this.tabSelector = $('#tabSelector');
-		this.tabSelectorValue = this.tabSelector.find('.task-manager-header-dropdown-select-text');
-		this.tabSelectorList = this.tabSelector.find('.task-manager-header-dropdown-select-list');
+        this.tabSelector = $('#tabSelector');
+        this.tabSelectorValue = this.tabSelector.find('#selectorListCurrentValue');
+        this.tabSelectorList = this.tabSelector.find('#selectorList');
 
-		this.logoIcon = $('#logoIcon');
+        this.logoIcon = $('#logoIcon');
 
-		this.tabSelectorValue.dropdown();
+        this.tabSelectorValue.dropdown();
 
-		this.tabSelector.on('show.bs.dropdown', function () {
-			this.tabSelector.addClass('opened');
-		}.bind(this));
-		this.tabSelector.on('hide.bs.dropdown', function () {
-			this.tabSelector.removeClass('opened');
-		}.bind(this));
+        this.tabSelector.on('show.bs.dropdown', function () {
+            this.tabSelector.addClass('active');
+        }.bind(this));
+        this.tabSelector.on('hide.bs.dropdown', function () {
+            this.tabSelector.removeClass('active');
+        }.bind(this));
 
-		// bind on change of selected tab
-		this.tabSelectorList.on('click', 'div', function (e) {
-			var el = $(e.currentTarget);
-			document.location.hash = '#' + el.attr('data-tab-id');
-		}.bind(this));
+        // bind on change of selected tab
+        this.tabSelectorList.on('click', 'li', function (e) {
+            var el = $(e.currentTarget);
+            document.location.hash = '#' + el.attr('data-tab-id');
+        }.bind(this));
 
-		// bind location hash change
-		$(window).on('hashchange', function () {
-			this._updateTabIdFromHash();
-			this.onSelectedTabChange();
-		}.bind(this));
+        // bind location hash change
+        $(window).on('hashchange', function () {
+            this._updateTabIdFromHash();
+            this.onSelectedTabChange();
+        }.bind(this));
 
-		this.searchRequest = null;
-		this.searchTypes = [];
-		this.searchThirdParty = false;
-		this.searchBlocked = false;
-		this.searchWhitelisted = false;
+        this.searchRequest = null;
+        this.searchTypes = [];
+        this.searchThirdParty = false;
+        this.searchBlocked = false;
+        this.searchWhitelisted = false;
 
-		// Bind click to reload tab
-		$('.task-manager').on('click', '.reloadTab', function (e) {
-			e.preventDefault();
-			contentPage.sendMessage({type: 'reloadTabById', tabId: this.currentTabId});
-		}.bind(this));
+        // Bind click to reload tab
+        $('body').on('click', '.reloadTab', function (e) {
+            e.preventDefault();
+            contentPage.sendMessage({type: 'reloadTabById', tabId: this.currentTabId});
+        }.bind(this));
 
-		// Bind click to clear events
-		$('#clearTabLog').on('click', function (e) {
-			e.preventDefault();
-			contentPage.sendMessage({type: 'clearEventsByTabId', tabId: this.currentTabId});
-		}.bind(this));
+        // Bind click to clear events
+        $('#clearTabLog').on('click', function (e) {
+            e.preventDefault();
+            contentPage.sendMessage({type: 'clearEventsByTabId', tabId: this.currentTabId});
+        }.bind(this));
 
-		// Bind click to show request info
-		var self = this;
-		this.logTable.on('click', '.task-manager-content-header-body-row', function () {
-			var filteringEvent = $(this).data();
-			contentPage.sendMessage({type: 'getTabFrameInfoById', tabId: self.currentTabId}, function (response) {
-				var frameInfo = response.frameInfo;
-				if (!frameInfo) {
-					return;
-				}
-				self.requestWizard.showRequestInfoModal(frameInfo, filteringEvent);
-			});
-		});
+        // Bind click to show request info
+        var self = this;
+        this.logTable.on('click', 'tr', function () {
+            var filteringEvent = $(this).data();
+            contentPage.sendMessage({type: 'getTabFrameInfoById', tabId: self.currentTabId}, function (response) {
+                var frameInfo = response.frameInfo;
+                if (!frameInfo) {
+                    return;
+                }
+                self.requestWizard.showRequestInfoModal(frameInfo, filteringEvent);
+            });
+        });
 
-		this._bindSearchFilters();
+        this._bindSearchFilters();
 
-		this._updateTabIdFromHash();
+        this._updateTabIdFromHash();
 
-		// Synchronize opened tabs
-		contentPage.sendMessage({type: 'synchronizeOpenTabs'}, function (response) {
-			var tabs = response.tabs;
-			for (var i = 0; i < tabs.length; i++) {
-				this.onTabUpdated(tabs[i]);
-			}
-			this.onSelectedTabChange();
-		}.bind(this));
-	},
+        // Synchronize opened tabs
+        contentPage.sendMessage({type: 'synchronizeOpenTabs'}, function (response) {
+            var tabs = response.tabs;
+            for (var i = 0; i < tabs.length; i++) {
+                this.onTabUpdated(tabs[i]);
+            }
+            this.onSelectedTabChange();
+        }.bind(this));
 
-	// Try to retrieve tabId from hash
-	_updateTabIdFromHash: function () {
-		if (document.location.hash) {
-			var tabId = document.location.hash.substring(1);
-			if (tabId) {
-				this.currentTabId = tabId;
-			}
-		}
-	},
+        $(document).keyup(function (e) {
+            if (e.keyCode === 27) {
+                self.requestWizard.closeModal();
+            }
+        });
+    },
 
-	onTabAdded: function (tabInfo) {
-		//don't add not http tabs
-		if (!tabInfo.isHttp) {
-			return;
-		}
-		this.tabSelectorList.append($('<div>', {
-			'class': 'task-manager-header-dropdown-select-list-item',
-			text: tabInfo.title,
-			'data-tab-id': tabInfo.tabId
-		}));
-		if (!this.currentTabId) {
-			this.onSelectedTabChange();
-		}
-	},
+    // Try to retrieve tabId from hash
+    _updateTabIdFromHash: function () {
+        // Try to retrieve tabId from hash
+        if (document.location.hash) {
+            var tabId = document.location.hash.substring(1);
+            if (tabId) {
+                this.currentTabId = tabId;
+            }
+        }
+    },
 
-	onTabUpdated: function (tabInfo) {
-		var item = this.tabSelectorList.find('[data-tab-id=' + tabInfo.tabId + ']');
-		if (!tabInfo.isHttp) {
-			//remove not http tabs
-			this.onTabClose(tabInfo);
-			return;
-		}
-		if (item && item.length > 0) {
-			item.text(tabInfo.title);
-			if (tabInfo.tabId == this.currentTabId) {
-				this.tabSelectorValue.text(tabInfo.title);
-				//update icon logo
-				this._updateLogoIcon();
-			}
-		} else {
-			this.onTabAdded(tabInfo);
-		}
-	},
+    onTabAdded: function (tabInfo) {
+        //don't add not http tabs
+        if (!tabInfo.isHttp) {
+            return;
+        }
+        this.tabSelectorList.append($('<li>', {
+            text: tabInfo.title,
+            'data-tab-id': tabInfo.tabId
+        }));
+        if (!this.currentTabId) {
+            this.onSelectedTabChange();
+        }
+    },
 
-	onTabClose: function (tabInfo) {
-		this.tabSelectorList.find('[data-tab-id=' + tabInfo.tabId + ']').remove();
-		if (this.currentTabId == tabInfo.tabId) {
-			//current tab was removed
-			this.currentTabId = null;
-			this.onSelectedTabChange();
-		}
-	},
+    onTabUpdated: function (tabInfo) {
+        var item = this.tabSelectorList.find('[data-tab-id=' + tabInfo.tabId + ']');
+        if (!tabInfo.isHttp) {
+            //remove not http tabs
+            this.onTabClose(tabInfo);
+            return;
+        }
+        if (item && item.length > 0) {
+            item.text(tabInfo.title);
+            if (tabInfo.tabId == this.currentTabId) {
+                this.tabSelectorValue.text(tabInfo.title);
+                //update icon logo
+                this._updateLogoIcon();
+            }
+        } else {
+            this.onTabAdded(tabInfo);
+        }
+    },
 
-	onTabReset: function (tabInfo) {
-		if (this.currentTabId == tabInfo.tabId) {
-			this.logTable.empty();
-			this._onEmptyTable();
-		}
-	},
+    onTabClose: function (tabInfo) {
+        this.tabSelectorList.find('[data-tab-id=' + tabInfo.tabId + ']').remove();
+        if (this.currentTabId == tabInfo.tabId) {
+            //current tab was removed
+            this.currentTabId = null;
+            this.onSelectedTabChange();
+        }
+    },
 
-	onEventAdded: function (tabInfo, event) {
-		if (this.currentTabId != tabInfo.tabId) {
-			//don't relate to the current tab
-			return;
-		}
-		this._renderEvents([event]);
-	},
+    onTabReset: function (tabInfo) {
+        if (this.currentTabId == tabInfo.tabId) {
+            this.logTable.empty();
+            this._onEmptyTable();
+        }
+    },
 
-	onSelectedTabChange: function () {
-		var selectedItem = this.tabSelectorList.find('[data-tab-id="' + this.currentTabId + '"]');
-		if (selectedItem.length === 0) {
-			selectedItem = this.tabSelectorList.find(':first');
-		}
-		var text = '';
-		var selectedTabId = null;
-		if (selectedItem.length > 0) {
-			text = selectedItem.text();
-			selectedTabId = selectedItem.attr('data-tab-id');
-		}
-		this.currentTabId = selectedTabId;
-		this.tabSelectorValue.text(text);
-		this._updateLogoIcon();
-		//render events
-		this._renderEventsForTab(this.currentTabId);
-	},
+    onEventAdded: function (tabInfo, event) {
+        if (this.currentTabId != tabInfo.tabId) {
+            //don't relate to the current tab
+            return;
+        }
+        this._renderEvents([event]);
+    },
 
-	_updateLogoIcon: function () {
-		contentPage.sendMessage({type: 'getTabFrameInfoById', tabId: this.currentTabId}, function (response) {
-			var frameInfo = response.frameInfo;
-			var src = 'skin/logpage/images/dropdown-logo.png';
-			if (frameInfo && frameInfo.adguardDetected) {
-				src = 'skin/logpage/images/dropdown-logo-blue.png';
-			}
-			this.logoIcon.attr('src', src);
-		}.bind(this));
-	},
+    onSelectedTabChange: function () {
+        var selectedItem = this.tabSelectorList.find('[data-tab-id="' + this.currentTabId + '"]');
+        if (selectedItem.length === 0) {
+            selectedItem = this.tabSelectorList.find(':first');
+        }
+        var text = '';
+        var selectedTabId = null;
+        if (selectedItem.length > 0) {
+            text = selectedItem.text();
+            selectedTabId = selectedItem.attr('data-tab-id');
+        }
+        this.currentTabId = selectedTabId;
+        this.tabSelectorValue.text(text);
+        this._updateLogoIcon();
+        //render events
+        this._renderEventsForTab(this.currentTabId);
+    },
 
-	_bindSearchFilters: function () {
+    _updateLogoIcon: function () {
+        contentPage.sendMessage({type: 'getTabFrameInfoById', tabId: this.currentTabId}, function (response) {
+            var frameInfo = response.frameInfo;
+            var src = 'images/icon-adguard.png';
+            if (frameInfo && frameInfo.adguardDetected) {
+                src = 'skin/logpage/images/dropdown-logo-blue.png'; // TODO: integration icon
+            }
+            this.logoIcon.attr('src', src);
+        }.bind(this));
+    },
 
-		var self = this;
+    _bindSearchFilters: function () {
 
-		//bind click to search http request
-		$('[name="searchEventRequest"]').on('keyup', function () {
-			self.searchRequest = this.value.trim();
-			self._filterEvents();
-		});
+        var self = this;
 
-		//bind click to filter by type
-		var searchEventTypeItems = $('.searchEventType');
-		searchEventTypeItems.on('click', function (e) {
+        //bind click to search http request
+        $('[name="searchEventRequest"]').on('keyup', function () {
+            self.searchRequest = this.value.trim();
+            self._filterEvents();
+        });
 
-			e.preventDefault();
+        //bind click to filter by type
+        var searchEventTypeItems = $('.searchEventType');
+        searchEventTypeItems.on('click', function (e) {
 
-			searchEventTypeItems.parent().removeClass('active');
+            e.preventDefault();
 
-			var selectedItem = $(e.currentTarget);
-			selectedItem.parent().addClass('active');
-			var selectedValue = selectedItem.attr('attr-type');
+            searchEventTypeItems.removeClass('active');
 
-			self.searchTypes = selectedValue ? selectedValue.split(',') : [];
-			self._filterEvents();
-		});
+            var selectedItem = $(e.currentTarget);
+            selectedItem.addClass('active');
+            var selectedValue = selectedItem.attr('attr-type');
 
-		//bind click to filter by third party
-		$('[name="searchEventThirdParty"]').on('change', function () {
-			self.searchThirdParty = this.checked;
-			self._filterEvents();
-		});
+            self.searchTypes = selectedValue ? selectedValue.split(',') : [];
+            self._filterEvents();
+        });
 
-		//bind click to filter by blocked
-		$('[name="searchEventBlocked"]').on('change', function () {
-			self.searchBlocked = this.checked;
-			self._filterEvents();
-		});
+        $('.checkb-wrap').on('click', function () {
+            var el = $(this);
+            var checkbox = el.find('.checkbox');
+            checkbox.toggleClass('active');
+            var active = checkbox.is('.active');
+            if (el.is('.searchEventThirdParty')) {
+                self.searchThirdParty = active;
+            } else if (el.is('.searchEventBlocked')) {
+                self.searchBlocked = active;
+            } else if (el.is('.searchEventWhitelisted')) {
+                self.searchWhitelisted = active;
+            }
+            self._filterEvents();
+        });
+    },
 
-		//bind click to filter by whitelisted
-		$('[name="searchEventWhitelisted"]').on('change', function () {
-			self.searchWhitelisted = this.checked;
-			self._filterEvents();
-		});
-	},
+    _filterEvents: function () {
 
-	_filterEvents: function () {
+        var rows = this.logTable.children();
 
-		var rows = this.logTable.children();
+        // Filters not set
+        if (!this.searchRequest &&
+            this.searchTypes.length === 0 && !this.searchThirdParty && !this.searchBlocked && !this.searchWhitelisted) {
 
-		// Filters not set
-		if (!this.searchRequest &&
-			this.searchTypes.length === 0 && !this.searchThirdParty && !this.searchBlocked && !this.searchWhitelisted) {
+            rows.removeClass('hidden');
+            return;
+        }
 
-			rows.removeClass('hidden');
-			return;
-		}
+        var self = this;
+        $.each(rows, function () {
+            self._handleEventShow($(this));
+        });
+    },
 
-		var self = this;
-		$.each(rows, function () {
-			self._handleEventShow($(this));
-		});
-	},
+    _onEmptyTable: function () {
+        this.logTableHidden = true;
+        this.logTable.addClass('hidden');
+        this.logTableEmpty.removeClass('hidden');
+    },
 
-	_onEmptyTable: function () {
-		this.logTableHidden = true;
-		this.logTable.addClass('hidden');
-		this.logTableEmpty.removeClass('hidden');
-	},
+    _onNotEmptyTable: function () {
+        if (this.logTableHidden) {
+            this.logTableHidden = false;
+            this.logTableEmpty.addClass('hidden');
+            this.logTable.removeClass('hidden');
+        }
+    },
 
-	_onNotEmptyTable: function () {
-		if (this.logTableHidden) {
-			this.logTableHidden = false;
-			this.logTableEmpty.addClass('hidden');
-			this.logTable.removeClass('hidden');
-		}
-	},
+    _renderEventsForTab: function (tabId) {
 
-	_renderEventsForTab: function (tabId) {
+        this.logTable.empty();
 
-		this.logTable.empty();
+        contentPage.sendMessage({type: 'getFilteringInfoByTabId', tabId: tabId}, function (response) {
 
-		contentPage.sendMessage({type: 'getFilteringInfoByTabId', tabId: tabId}, function (response) {
+            var filteringInfo = response.filteringInfo;
 
-			var filteringInfo = response.filteringInfo;
+            var filteringEvents = [];
+            if (filteringInfo) {
+                filteringEvents = filteringInfo.filteringEvents || [];
+            }
 
-			var filteringEvents = [];
-			if (filteringInfo) {
-				filteringEvents = filteringInfo.filteringEvents || [];
-			}
+            this._renderEvents(filteringEvents);
 
-			this._renderEvents(filteringEvents);
+        }.bind(this));
+    },
 
-		}.bind(this));
-	},
+    _renderEvents: function (events) {
+        if (!events || events.length === 0) {
+            this._onEmptyTable();
+            return;
+        }
+        var templates = [];
+        for (var i = 0; i < events.length; i++) {
+            var template = this._renderTemplate(events[i]);
+            this._handleEventShow(template);
+            templates.push(template);
+        }
+        this._onNotEmptyTable();
+        this.logTable.append(templates);
+    },
 
-	_renderEvents: function (events) {
-		if (!events || events.length === 0) {
-			this._onEmptyTable();
-			return;
-		}
-		var templates = [];
-		for (var i = 0; i < events.length; i++) {
-			var template = this._renderTemplate(events[i]);
-			this._handleEventShow(template);
-			templates.push(template);
-		}
-		this._onNotEmptyTable();
-		this.logTable.append(templates);
-	},
+    _renderTemplate: function (event) {
 
-	_renderTemplate: function (event) {
+        var metadata = {data: event};
+        if (event.requestRule) {
+            metadata.class += event.requestRule.whiteListRule ? ' green' : ' red';
+        }
 
-		var metadata = {data: event, 'class': 'task-manager-content-header-body-row cf'};
-		if (event.requestRule) {
-			metadata.class += event.requestRule.whiteListRule ? ' green' : ' red';
-		}
+        var ruleText = '';
+        if (event.requestRule) {
+            if (event.requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+                ruleText = Messages.IN_WHITELIST;
+            } else {
+                ruleText = event.requestRule.ruleText;
+            }
+        }
 
-		var ruleText = '';
-		if (event.requestRule) {
-			if (event.requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
-				ruleText = Messages.IN_WHITELIST;
-			} else {
-				ruleText = event.requestRule.ruleText;
-			}
-		}
+        var el = $('<tr>', metadata);
+        // Url
+        el.append($('<td>', {text: event.requestUrl}));
+        // Type
+        var typeEl = $('<td>', {text: RequestWizard.getRequestType(event.requestType)});
+        if (event.requestThirdParty) {
+            typeEl.append($('<img/>', {src: "images/icon-chain-link.png", class: "icon-chain"}));
+            typeEl.append($('<small>', {text: 'Third party'}));
+        }
+        el.append(typeEl);
+        // Rule
+        el.append($('<td>', {text: ruleText}));
+        // Source
+        el.append($('<td>', {text: RequestWizard.getSource(event.frameDomain)}));
 
-		var requestTypeClass = 'task-manager-content-header-body-col task-manager-content-item-type';
-		if (event.requestThirdParty) {
-			requestTypeClass += ' third-party';
-		}
+        return el;
+    },
 
-		var el = $('<div>', metadata);
-		el.append($('<div>', {
-			text: event.requestUrl,
-			'class': 'task-manager-content-header-body-col task-manager-content-item-url'
-		}));
-		el.append($('<div>', {text: RequestWizard.getRequestType(event.requestType), 'class': requestTypeClass}));
-		el.append($('<div>', {
-			text: ruleText,
-			'class': 'task-manager-content-header-body-col task-manager-content-item-rule'
-		}));
-		el.append($('<div>', {
-			text: RequestWizard.getSource(event.frameDomain),
-			'class': 'task-manager-content-header-body-col task-manager-content-item-source'
-		}));
+    _handleEventShow: function (el) {
 
-		return el;
-	},
+        var filterData = el.data();
 
-	_handleEventShow: function (el) {
+        var show = !this.searchRequest || StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest);
+        show &= this.searchTypes.length === 0 || this.searchTypes.indexOf(filterData.requestType) >= 0; // jshint ignore:line
 
-		var filterData = el.data();
+        var checkboxes = !(this.searchWhitelisted || this.searchBlocked || this.searchThirdParty);
+        checkboxes |= this.searchWhitelisted && filterData.requestRule && filterData.requestRule.whiteListRule; // jshint ignore:line
+        checkboxes |= this.searchBlocked && filterData.requestRule && !filterData.requestRule.whiteListRule; // jshint ignore:line
+        checkboxes |= this.searchThirdParty && filterData.requestThirdParty; // jshint ignore:line
+        show &= checkboxes; // jshint ignore:line
 
-		var show = !this.searchRequest || StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest);
-		show &= this.searchTypes.length === 0 || this.searchTypes.indexOf(filterData.requestType) >= 0;
-
-		var checkboxes = !(this.searchWhitelisted || this.searchBlocked || this.searchThirdParty);
-		checkboxes |= this.searchWhitelisted && filterData.requestRule && filterData.requestRule.whiteListRule;
-		checkboxes |= this.searchBlocked && filterData.requestRule && !filterData.requestRule.whiteListRule;
-		checkboxes |= this.searchThirdParty && filterData.requestThirdParty;
-		show &= checkboxes;
-
-		if (show) {
-			el.removeClass('hidden');
-		} else {
-			el.addClass('hidden');
-		}
-	}
+        if (show) {
+            el.removeClass('hidden');
+        } else {
+            el.addClass('hidden');
+        }
+    }
 };
 
 var RequestWizard = function () {
-	this.requestInfoTemplate = $('#modal-request-info');
-	this.createBlockRuleTemplate = $('#modal-create-block-rule');
-	this.createExceptionRuleTemplate = $('#modal-create-exception-rule');
+    this.requestInfoTemplate = $('#modal-request-info');
+    this.createBlockRuleTemplate = $('#modal-create-block-rule');
+    this.createExceptionRuleTemplate = $('#modal-create-exception-rule');
 };
 
 RequestWizard.getFilterName = function (filterId) {
-	if (filterId == AntiBannerFiltersId.USER_FILTER_ID) {
-		return Messages.OPTIONS_USERFILTER;
-	}
-	if (filterId == AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
-		return Messages.OPTIONS_WHITELIST;
-	}
-	var filterMetadata = filtersMetadata.filter(function (el) {
-		return el.filterId == filterId;
-	})[0];
-	return filterMetadata ? filterMetadata.name : "";
+    if (filterId == AntiBannerFiltersId.USER_FILTER_ID) {
+        return Messages.OPTIONS_USERFILTER;
+    }
+    if (filterId == AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+        return Messages.OPTIONS_WHITELIST;
+    }
+    var filterMetadata = filtersMetadata.filter(function (el) {
+        return el.filterId == filterId;
+    })[0];
+    return filterMetadata ? filterMetadata.name : "";
 };
 
 RequestWizard.prototype.showModal = function (template) {
 
-	$(document.body).append(template);
-	template.show();
+    this.closeModal();
 
-	template.modal();
+    $(document.body).append(template);
+    template.show();
 
-	template.on('hidden.bs.modal', function () {
-		$(this).remove();
-	});
+    template.modal();
 
-	this.currentModal = template;
+    template.on('hidden.bs.modal', function () {
+        $(this).remove();
+    });
+
+    this.currentModal = template;
 };
 
 RequestWizard.prototype.closeModal = function () {
-	if (this.currentModal) {
-		this.currentModal.modal('hide');
-		this.currentModal = null;
-	}
+    if (this.currentModal) {
+        this.currentModal.modal('hide');
+        this.currentModal = null;
+    }
 };
 
 RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEvent) {
 
-	var template = this.requestInfoTemplate.clone();
+    var template = this.requestInfoTemplate.clone();
 
-	var requestRule = filteringEvent.requestRule;
+    var requestRule = filteringEvent.requestRule;
 
-	template.find('[attr-text="requestUrl"]').text(filteringEvent.requestUrl);
-	template.find('[attr-text="requestType"]').text(RequestWizard.getRequestType(filteringEvent.requestType));
-	template.find('[attr-text="frameDomain"]').text(RequestWizard.getSource(filteringEvent.frameDomain));
-	if (!filteringEvent.frameDomain) {
-		template.find('[attr-text="frameDomain"]').closest('.adg-modal-window-locking-info-left-row').hide();
-	}
+    template.find('[attr-text="requestUrl"]').text(filteringEvent.requestUrl);
+    template.find('[attr-text="requestType"]').text(RequestWizard.getRequestType(filteringEvent.requestType));
+    template.find('[attr-text="frameDomain"]').text(RequestWizard.getSource(filteringEvent.frameDomain));
+    if (!filteringEvent.frameDomain) {
+        template.find('[attr-text="frameDomain"]').closest('li').hide();
+    }
 
-	if (requestRule) {
-		if (requestRule.filterId !== AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
-			template.find('[attr-text="requestRule"]').text(requestRule.ruleText);
-		} else {
-			template.find('[attr-text="requestRule"]').closest('.adg-modal-window-locking-info-left-row').hide();
-		}
-		template.find('[attr-text="requestRuleFilter"]').text(RequestWizard.getFilterName(requestRule.filterId));
-	} else {
-		template.find('[attr-text="requestRule"]').closest('.adg-modal-window-locking-info-left-row').hide();
-		template.find('[attr-text="requestRuleFilter"]').closest('.adg-modal-window-locking-info-left-row').hide();
-	}
+    if (requestRule) {
+        if (requestRule.filterId !== AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+            template.find('[attr-text="requestRule"]').text(requestRule.ruleText);
+        } else {
+            template.find('[attr-text="requestRule"]').closest('li').hide();
+        }
+        template.find('[attr-text="requestRuleFilter"]').text(RequestWizard.getFilterName(requestRule.filterId));
+    } else {
+        template.find('[attr-text="requestRule"]').closest('li').hide();
+        template.find('[attr-text="requestRuleFilter"]').closest('li').hide();
+    }
 
 	if (filteringEvent.requestType === "IMAGE") {
 
-		template.removeClass('compact-view');
+        template.removeClass('compact-view');
 
-		var imagePreview = template.find('[attr-src="requestUrl"]');
-		var image = new Image();
-		image.src = filteringEvent.requestUrl;
-		image.onload = function () {
-			var width = this.width;
-			var height = this.height;
-			if (width > 1 && height > 1) {
-				imagePreview.attr('src', filteringEvent.requestUrl);
-				imagePreview.parent().show();
-			}
-		};
-	}
+        var imagePreview = template.find('[attr-src="requestUrl"]');
+        var image = new Image();
+        image.src = filteringEvent.requestUrl;
+        image.onload = function () {
+            var width = this.width;
+            var height = this.height;
+            if (width > 1 && height > 1) {
+                imagePreview.attr('src', filteringEvent.requestUrl);
+                imagePreview.parent().show();
+            }
+        };
+    }
 
-	//bind events
-	template.find('#openRequestNewTab').on('click', function (e) {
-		e.preventDefault();
-		contentPage.sendMessage({type: 'openTab', url: filteringEvent.requestUrl, options: {inNewWindow: true}});
-	});
+    //bind events
+    template.find('#openRequestNewTab').on('click', function (e) {
+        e.preventDefault();
+        contentPage.sendMessage({type: 'openTab', url: filteringEvent.requestUrl, options: {inNewWindow: true}});
+    });
 
-	var blockRequestButton = template.find('#blockRequest');
-	var unblockRequestButton = template.find('#unblockRequest');
-	var removeWhiteListDomainButton = template.find('#removeWhiteListDomain');
-	var removeUserFilterRuleButton = template.find('#removeUserFilterRule');
+    var blockRequestButton = template.find('#blockRequest');
+    var unblockRequestButton = template.find('#unblockRequest');
+    var removeWhiteListDomainButton = template.find('#removeWhiteListDomain');
+    var removeUserFilterRuleButton = template.find('#removeUserFilterRule');
 
-	blockRequestButton.on('click', function (e) {
-		e.preventDefault();
-		this.closeModal();
-		this.showCreateBlockRuleModal(frameInfo, filteringEvent);
-	}.bind(this));
+    blockRequestButton.on('click', function (e) {
+        e.preventDefault();
+        this.closeModal();
+        this.showCreateBlockRuleModal(frameInfo, filteringEvent);
+    }.bind(this));
 
-	unblockRequestButton.on('click', function (e) {
-		e.preventDefault();
-		this.closeModal();
-		this.showCreateExceptionRuleModal(frameInfo, filteringEvent);
-	}.bind(this));
+    unblockRequestButton.on('click', function (e) {
+        e.preventDefault();
+        this.closeModal();
+        this.showCreateExceptionRuleModal(frameInfo, filteringEvent);
+    }.bind(this));
 
-	removeWhiteListDomainButton.on('click', function (e) {
-		e.preventDefault();
-		contentPage.sendMessage({type: 'unWhiteListFrame', frameInfo: frameInfo});
-		this.closeModal();
-	}.bind(this));
+    removeWhiteListDomainButton.on('click', function (e) {
+        e.preventDefault();
+        contentPage.sendMessage({type: 'unWhiteListFrame', frameInfo: frameInfo});
+        this.closeModal();
+    }.bind(this));
 
-	removeUserFilterRuleButton.on('click', function (e) {
-		e.preventDefault();
-		contentPage.sendMessage({
-			type: 'removeUserRule',
-			ruleText: requestRule.ruleText,
-			adguardDetected: frameInfo.adguardDetected
-		});
-		if (frameInfo.adguardDetected) {
-			// In integration mode rule may be present in whitelist filter
-			contentPage.sendMessage({type: 'unWhiteListFrame', frameInfo: frameInfo});
-		}
-		this.closeModal();
-	}.bind(this));
+    removeUserFilterRuleButton.on('click', function (e) {
+        e.preventDefault();
+        contentPage.sendMessage({
+            type: 'removeUserRule',
+            ruleText: requestRule.ruleText,
+            adguardDetected: frameInfo.adguardDetected
+        });
+        if (frameInfo.adguardDetected) {
+            // In integration mode rule may be present in whitelist filter
+            contentPage.sendMessage({type: 'unWhiteListFrame', frameInfo: frameInfo});
+        }
+        this.closeModal();
+    }.bind(this));
 
-	if (!requestRule) {
-		blockRequestButton.removeClass('hidden');
-	} else {
-		if (requestRule.filterId === AntiBannerFiltersId.USER_FILTER_ID) {
-			removeUserFilterRuleButton.removeClass('hidden');
-		} else if (requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
-			removeWhiteListDomainButton.removeClass('hidden');
-		} else if (!requestRule.whiteListRule) {
-			unblockRequestButton.removeClass('hidden');
-		}
-	}
+    if (!requestRule) {
+        blockRequestButton.removeClass('hidden');
+    } else {
+        if (requestRule.filterId === AntiBannerFiltersId.USER_FILTER_ID) {
+            removeUserFilterRuleButton.removeClass('hidden');
+        } else if (requestRule.filterId === AntiBannerFiltersId.WHITE_LIST_FILTER_ID) {
+            removeWhiteListDomainButton.removeClass('hidden');
+        } else if (!requestRule.whiteListRule) {
+            unblockRequestButton.removeClass('hidden');
+        }
+    }
 
-	this.showModal(template);
+    this.showModal(template);
 };
 
 RequestWizard.prototype.showCreateBlockRuleModal = function (frameInfo, filteringEvent) {
 
-	var template = this.createBlockRuleTemplate.clone();
+    var template = this.createBlockRuleTemplate.clone();
 
     var patterns = RequestWizard.splitToPatterns(filteringEvent, false).reverse();
 
-	this._initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
+    this._initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
 };
 
 RequestWizard.prototype.showCreateExceptionRuleModal = function (frameInfo, filteringEvent) {
 
-	var template = this.createExceptionRuleTemplate.clone();
+    var template = this.createExceptionRuleTemplate.clone();
 
 	var patterns = RequestWizard.splitToPatterns(filteringEvent, true).reverse();
 
@@ -621,30 +621,26 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 	var frameDomain = filteringEvent.frameDomain;
 	var isThirdPartyRequest = filteringEvent.requestThirdParty;
 
-	var rulePatternsEl = template.find('#rulePatterns');
-	for (var i = 0; i < patterns.length; i++) {
-		var patternEl = $('<div>', {'class': 'radio radio-patterns'});
-		var input = $('<input>', {
-			'class': 'radio-input',
-			type: 'radio',
-			name: 'rulePattern',
-			id: 'pattern' + i,
-			value: patterns[i]
-		});
-		var label = $('<label>', {
-			'class': 'radio-label',
-			'for': 'pattern' + i
-		}).append($('<span>', {'class': 'radio-icon'})).append($('<span>', {
-			'class': 'radio-label-text',
-			text: patterns[i]
-		}));
-		patternEl.append(input);
-		patternEl.append(label);
-		rulePatternsEl.append(patternEl);
-		if (i === 0) {
-			input.attr('checked', 'checked');
-		}
-	}
+    var rulePatternsEl = template.find('#rulePatterns');
+    for (var i = 0; i < patterns.length; i++) {
+        var patternEl = $('<li>', {'class': 'checkb-wrap'});
+        var input = $('<input>', {
+            type: 'radio',
+            name: 'rulePattern',
+            id: 'pattern' + i,
+            value: patterns[i]
+        });
+        var div = $('<div>', {class: 'radio'});
+        var label = $('<label>', {'for': 'pattern' + i});
+        patternEl.append(input);
+        patternEl.append(label);
+        label.append(div);
+        label.append(document.createTextNode(patterns[i]));
+        rulePatternsEl.append(patternEl);
+        if (i === 0) {
+            input.attr('checked', 'checked');
+        }
+    }
 
 	var rulePatterns = template.find('[name="rulePattern"]');
 	var ruleDomainCheckbox = template.find('[name="ruleDomain"]');
@@ -665,14 +661,14 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 	ruleMatchCaseCheckbox.attr('id', 'ruleMatchCase');
 	ruleMatchCaseCheckbox.parent().find('label').attr('for', 'ruleMatchCase');
 
-	ruleThirdPartyCheckbox.attr('id', 'ruleThirdParty');
-	ruleThirdPartyCheckbox.parent().find('label').attr('for', 'ruleThirdParty');
-	if (isThirdPartyRequest) {
-		ruleThirdPartyCheckbox.attr('checked', 'checked');
-	}
+    ruleThirdPartyCheckbox.attr('id', 'ruleThirdParty');
+    ruleThirdPartyCheckbox.parent().find('label').attr('for', 'ruleThirdParty');
+    if (isThirdPartyRequest) {
+        ruleThirdPartyCheckbox.attr('checked', 'checked');
+    }
 
-	//bind events
-	function updateRuleText() {
+    //bind events
+    function updateRuleText() {
 
 		var urlPattern = rulePatterns.filter(':checked').val();
 		var permitDomain = !ruleDomainCheckbox.is(':checked');
@@ -701,22 +697,22 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 	ruleThirdPartyCheckbox.on('change', updateRuleText);
 	rulePatterns.on('change', updateRuleText);
 
-	//create rule event
-	template.find('#createRule').on('click', function (e) {
-		e.preventDefault();
-		var ruleText = ruleTextEl.val();
-		if (!ruleText) {
-			return;
-		}
-		// Add rule to user filter
-		contentPage.sendMessage({type: 'addUserRule', ruleText: ruleText, adguardDetected: frameInfo.adguardDetected});
-		// Close modal
-		this.closeModal();
-	}.bind(this));
+    //create rule event
+    template.find('#createRule').on('click', function (e) {
+        e.preventDefault();
+        var ruleText = ruleTextEl.val();
+        if (!ruleText) {
+            return;
+        }
+        // Add rule to user filter
+        contentPage.sendMessage({type: 'addUserRule', ruleText: ruleText, adguardDetected: frameInfo.adguardDetected});
+        // Close modal
+        this.closeModal();
+    }.bind(this));
 
-	updateRuleText();
+    updateRuleText();
 
-	this.showModal(template);
+    this.showModal(template);
 };
 
 RequestWizard.PATTERNS_COUNT = 2; //exclude domain and full request url
@@ -741,28 +737,28 @@ RequestWizard.splitToPatterns = function (filteringEvent, whitelist) {
 
 	var patterns = [];
 
-	var relative = StringUtils.substringAfter(requestUrl, domain + '/');
+    var relative = StringUtils.substringAfter(requestUrl, domain + '/');
 
 	var path = StringUtils.substringBefore(relative, '?');
 
-	if (path) {
+    if (path) {
 
-		var parts = path.split('/');
+        var parts = path.split('/');
 
-		var pattern = domain + '/';
-		for (var i = 0; i < Math.min(parts.length - 1, RequestWizard.PATTERNS_COUNT); i++) {
-			pattern += parts[i] + '/';
-			patterns.push(prefix + pattern + UrlFilterRule.MASK_ANY_SYMBOL);
-		}
-		var file = parts[parts.length - 1];
-		if (file && patterns.length < RequestWizard.PATTERNS_COUNT) {
-			pattern += file;
-			patterns.push(prefix + pattern);
-		}
-	}
+        var pattern = domain + '/';
+        for (var i = 0; i < Math.min(parts.length - 1, RequestWizard.PATTERNS_COUNT); i++) {
+            pattern += parts[i] + '/';
+            patterns.push(prefix + pattern + UrlFilterRule.MASK_ANY_SYMBOL);
+        }
+        var file = parts[parts.length - 1];
+        if (file && patterns.length < RequestWizard.PATTERNS_COUNT) {
+            pattern += file;
+            patterns.push(prefix + pattern);
+        }
+    }
 
-	//add domain pattern to start
-	patterns.unshift(prefix + domain + UrlFilterRule.MASK_SEPARATOR);
+    //add domain pattern to start
+    patterns.unshift(prefix + domain + UrlFilterRule.MASK_SEPARATOR);
 
 	//push full url pattern
 	var url = UrlUtils.getUrlWithoutScheme(requestUrl);
@@ -772,13 +768,13 @@ RequestWizard.splitToPatterns = function (filteringEvent, whitelist) {
         }
     }
 
-	return patterns;
+    return patterns;
 };
 
 RequestWizard.createRuleFromParams = function (urlPattern, urlDomain, matchCase, thirdParty, important, mandatoryOptions) {
 
-	var ruleText = urlPattern;
-	var options = [];
+    var ruleText = urlPattern;
+    var options = [];
 
 	//add domain option
 	if (urlDomain) {
@@ -837,7 +833,7 @@ RequestWizard.getRequestType = function (requestType) {
 };
 
 RequestWizard.getSource = function (frameDomain) {
-	return frameDomain || '';
+    return frameDomain || '';
 };
 
 var userSettings;
@@ -848,71 +844,71 @@ var filtersMetadata;
 
 contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
 
-	userSettings = response.userSettings;
-	filtersMetadata = response.filtersMetadata;
-	environmentOptions = response.environmentOptions;
+    userSettings = response.userSettings;
+    filtersMetadata = response.filtersMetadata;
+    environmentOptions = response.environmentOptions;
 
-	AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
-	EventNotifierTypes = response.constants.EventNotifierTypes;
+    AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
+    EventNotifierTypes = response.constants.EventNotifierTypes;
 
-	$(document).ready(function () {
+    $(document).ready(function () {
 
-		var pageController = new PageController();
-		pageController.init();
+        var pageController = new PageController();
+        pageController.init();
 
-		function onEvent(event, tabInfo, filteringEvent) {
-			switch (event) {
-				case EventNotifierTypes.TAB_ADDED:
-				case EventNotifierTypes.TAB_UPDATE:
-					pageController.onTabUpdated(tabInfo);
-					break;
-				case EventNotifierTypes.TAB_CLOSE:
-					pageController.onTabClose(tabInfo);
-					break;
-				case EventNotifierTypes.TAB_RESET:
-					pageController.onTabReset(tabInfo);
-					break;
-				case EventNotifierTypes.LOG_EVENT_ADDED :
-					pageController.onEventAdded(tabInfo, filteringEvent);
-					break;
-			}
-		}
+        function onEvent(event, tabInfo, filteringEvent) {
+            switch (event) {
+                case EventNotifierTypes.TAB_ADDED:
+                case EventNotifierTypes.TAB_UPDATE:
+                    pageController.onTabUpdated(tabInfo);
+                    break;
+                case EventNotifierTypes.TAB_CLOSE:
+                    pageController.onTabClose(tabInfo);
+                    break;
+                case EventNotifierTypes.TAB_RESET:
+                    pageController.onTabReset(tabInfo);
+                    break;
+                case EventNotifierTypes.LOG_EVENT_ADDED :
+                    pageController.onEventAdded(tabInfo, filteringEvent);
+                    break;
+            }
+        }
 
-		var events = [
-			EventNotifierTypes.TAB_ADDED,
-			EventNotifierTypes.TAB_UPDATE,
-			EventNotifierTypes.TAB_CLOSE,
-			EventNotifierTypes.TAB_RESET,
-			EventNotifierTypes.LOG_EVENT_ADDED
-		];
+        var events = [
+            EventNotifierTypes.TAB_ADDED,
+            EventNotifierTypes.TAB_UPDATE,
+            EventNotifierTypes.TAB_CLOSE,
+            EventNotifierTypes.TAB_RESET,
+            EventNotifierTypes.LOG_EVENT_ADDED
+        ];
 
-		//set log is open
-		contentPage.sendMessage({type: 'onOpenFilteringLogPage'});
+        //set log is open
+        contentPage.sendMessage({type: 'onOpenFilteringLogPage'});
 
-		var listenerId;
-		//add listener for log events
-		contentPage.sendMessage({type: 'addEventListener', events: events}, function (response) {
-			listenerId = response.listenerId;
-		});
+        var listenerId;
+        //add listener for log events
+        contentPage.sendMessage({type: 'addEventListener', events: events}, function (response) {
+            listenerId = response.listenerId;
+        });
 
-		contentPage.onMessage.addListener(function (message) {
-			if (message.type === 'notifyListeners') {
-				onEvent.apply(this, message.args);
-			}
-		});
+        contentPage.onMessage.addListener(function (message) {
+            if (message.type === 'notifyListeners') {
+                onEvent.apply(this, message.args);
+            }
+        });
 
-		var onUnload = function () {
-			if (listenerId) {
-				contentPage.sendMessage({type: 'removeListener', listenerId: listenerId});
-				//set log is closed
-				contentPage.sendMessage({type: 'onCloseFilteringLogPage'});
-				listenerId = null;
-			}
-		};
+        var onUnload = function () {
+            if (listenerId) {
+                contentPage.sendMessage({type: 'removeListener', listenerId: listenerId});
+                //set log is closed
+                contentPage.sendMessage({type: 'onCloseFilteringLogPage'});
+                listenerId = null;
+            }
+        };
 
-		//unload event
-		$(window).on('beforeunload', onUnload);
-		$(window).on('unload', onUnload);
-	});
+        //unload event
+        $(window).on('beforeunload', onUnload);
+        $(window).on('unload', onUnload);
+    });
 
 });

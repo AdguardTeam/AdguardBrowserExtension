@@ -29,16 +29,9 @@ function isFirefox51OrHigher() {
 
 $(document).ready(function () {
 
-    var callback = function (response) {
-
-        var rules = response.rules;
-
-        if (!rules || rules.length === 0) {
-            return;
-        }
+    var callback = function (rulesText) {
 
         var el = $('<pre/>');
-        var rulesText = rules ? rules.join('\r\n') : '';
         el.text(rulesText);
         $("body").append(el);
 
@@ -55,13 +48,27 @@ $(document).ready(function () {
 
     var whitelist = document.location.hash == '#wl';
     var messageType;
+
+    var preProcessResponse = callback;
     if (whitelist) {
         messageType = 'getWhiteListDomains';
+        preProcessResponse = function (response) {
+            var rules = response.rules;
+            if (!rules || rules.length === 0) {
+                return;
+            }
+            callback(rules.join('\r\n'));
+        };
     } else {
-        messageType = 'getUserFilters';
+        messageType = 'getUserRules';
+        preProcessResponse = function (response) {
+            if (response.content) {
+                callback(response.content);
+            }
+        };
     }
 
-    contentPage.sendMessage({type: messageType}, callback);
+    contentPage.sendMessage({type: messageType}, preProcessResponse);
 });
 
 var showSaveFunc = (function () {

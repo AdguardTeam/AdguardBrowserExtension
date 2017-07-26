@@ -31,7 +31,7 @@ $(function () {
                 return;
             }
 
-            var el = $("<div>", {class: 'sp-table-row-pseudo'}).append($('<span>', {class: 'spt-row-pseudo-handler'}));
+            var el = $('<div>', {class: 'toggler'});
             el.insertAfter(checkbox);
 
             el.on('click', function () {
@@ -46,10 +46,10 @@ $(function () {
             function onClicked(checked) {
                 if (checked) {
                     el.addClass("active");
-                    el.closest(".s-page-table-row").addClass("active");
+                    el.closest("li").addClass("active");
                 } else {
                     el.removeClass("active");
-                    el.closest(".s-page-table-row").removeClass("active");
+                    el.closest("li").removeClass("active");
                 }
             }
 
@@ -66,8 +66,12 @@ $(function () {
             var $this = $(this);
             if (checked) {
                 $this.attr('checked', 'checked');
+                $this.next('.toggler').addClass('active');
+                $this.closest('li').addClass('active');
             } else {
                 $this.removeAttr('checked');
+                $this.next('.toggler').removeClass('active');
+                $this.closest('li').removeClass('active');
             }
         });
     };
