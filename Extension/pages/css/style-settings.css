@@ -37,7 +37,8 @@ a {
   color: currentColor;
 }
 .wlimit {
-  max-width: 960px;
+  max-width: 990px;
+  padding: 0 15px;
   margin: 0 auto;
 }
 .btn {
@@ -478,14 +479,17 @@ ul.list li:first-child {
   display: -ms-flex;
   display: -o-flex;
   display: flex;
+  justify-content: space-between;
   width: 100%;
+  min-width: 990px;
+  padding-bottom: 50px;
 }
 .settings-wrap .page-title {
   font-family: GothamProBold;
   font-size: 30px;
   letter-spacing: -1.5px;
   color: #454545;
-  line-height: 0.7;
+  line-height: 1.4;
 }
 .settings-wrap .page-title .back {
   width: 10px;
@@ -514,10 +518,7 @@ ul.list li:first-child {
   margin-bottom: 30px;
 }
 .settings-body {
-  margin-top: 65px;
-}
-.settings-sidebar {
-  margin-right: 122px;
+  margin-top: 45px;
 }
 .settings-sidebar .logo img {
   width: 160px;
@@ -531,7 +532,7 @@ ul.list li:first-child {
   list-style: none;
   padding: 0;
   margin: 0;
-  margin-top: 50px;
+  margin-top: 48px;
 }
 .settings-sidebar .nav a {
   display: inline-block;
@@ -555,6 +556,11 @@ ul.list li:first-child {
 }
 .settings-content {
   flex-grow: 1;
+}
+.settings-content.tab-pane {
+  flex-grow: 1;
+  width: 700px;
+  padding-left: 125px;
 }
 .settings-content a {
   color: #66b574;
@@ -661,12 +667,16 @@ ul.list li:first-child {
   display: flex;
   align-items: center;
 }
+.opt-state.input .sp-table-row-info.desc{
+  display: none;
+}
 .opts-list .opt-state .desc {
   color: #D6D6D6;
   font-size: 12px;
   font-family: GothamProRegular;
   padding-right: 25px;
   letter-spacing: -0.2px;
+  margin-top: 5px;
 }
 .opts-list .opt-state .icon-home {
   width: 18px;
@@ -767,6 +777,7 @@ li.active .toggler:before {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  min-width: 990px;
 }
 .settings-footer .copy {
   color: #fff;
