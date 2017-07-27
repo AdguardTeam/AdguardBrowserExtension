@@ -1067,14 +1067,25 @@ label {
 }
 
 /* Thanks page */
+.thanks-wrap {
+    min-height: 100%;
+    display: flex;
+    flex-flow: column;
+}
 .thanks-header{
-    height: 89px;
-    border-bottom: 3px solid #2fa449;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 120px;
+    background-color: #f5f5f5;
+}
+.thanks-header-wrap{
+    text-align: center;
 }
 .thanks-header-img{
     width: 41px;
     height: 42px;
-    margin: 24px 7px 0 36px;
+    margin-right: 30px;
 }
 .thanks-header-title{
     position: relative;
@@ -1084,12 +1095,21 @@ label {
     color: #333;
 }
 .thanks-content{
-    padding: 26px 0 70px;
+    padding: 45px 0 70px;
 }
 .thanks-content-descr{
-    margin: 0 0 25px 36px;
+    margin-bottom: 50px;
     font: 18px/170% 'gotham_proregular', 'opensans_semibold', sans-serif;
     color: #333;
+    line-height: 28px;
+    text-align: center;
+    opacity: 0.7;
+}
+.thanks-content-title{
+    text-align: center;
+    margin-bottom: 65px;
+    color: #333;
+    font: 700 26px/100% 'gotham_promedium', 'opensans_semibold', sans-serif;
 }
 .thanks-content-regform{
     padding: 20px 36px;
@@ -1452,4 +1472,6 @@ label {
 ul ul .stats-counter {
     font-size: 11px;
 }
-
+.thanks-opts-list {
+    margin-bottom: 90px;
+}
