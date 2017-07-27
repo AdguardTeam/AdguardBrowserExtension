@@ -618,8 +618,20 @@ ul.list li:first-child {
   display: flex;
   justify-content: space-between;
 }
+.opts-list li .warn-message{
+  color: #D6D6D6;
+}
+.opts-list li a{
+  color: #D6D6D6;
+}
 .opts-list li.active {
   color: #4d4d4d;
+}
+.opts-list li.active .warn-message{
+  color: #e85037;
+}
+.opts-list li.active a{
+  color: #409e56;
 }
 .opts-list li:first-child {
   border-top-width: 1px;
@@ -627,6 +639,10 @@ ul.list li:first-child {
 .opts-list .opt-name {
   position: relative;
   z-index: 1;
+}
+.opt-descr{
+  margin-top: 5px;
+  font: 400 12px/130% 'gotham_proregular', 'opensans_semibold', sans-serif;
 }
 .opts-list .opt-name .title {
   font-size: 15px;
