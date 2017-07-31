@@ -478,6 +478,38 @@ li.active .toggler:before {
 .preloader.active {
   display: inline-block;
 }
+.tabs-bar + .opts-list li {
+  padding: 27px 0;
+}
+.tabs-bar + .opts-list li:first-child {
+  border-top: 0;
+}
+.tabs-bar {
+  border-bottom: 1px solid #E7E7E7;
+  margin-bottom: 20px;
+}
+.tabs-bar .tab {
+  font-family: gotham_promedium;
+  font-size: 14px;
+  color: #4d4d4d;
+  border: 0;
+  background: none;
+  padding: 0 0 10px;
+  margin-right: 50px;
+  text-decoration: none;
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+}
+.tabs-bar .tab.active:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background-color: #66b574;
+  bottom: -5px;
+}
 /* /st */
 .icon-trash {
   background-image: url(../images/icon-trash.png);
@@ -568,7 +600,7 @@ li.active .toggler:before {
 .filter-download__header-logo{
   float: left;
   width: 206px;
-  height: 34px;
+  height: 45px;
   padding: 12px 0 0;
   margin: 1px 0 0 35px;
   font: 0/0 a;
@@ -600,6 +632,9 @@ li.active .toggler:before {
 .settings-page.downloading .sp-lists-user-descr {
   color: #999;
   font-style: italic;
+  font-size: 14px;
+  line-height: 19px;
+  margin: 0px 35px 17px;
 }
 
 .filter-download__header.downloading .filter-download__header-logo {
