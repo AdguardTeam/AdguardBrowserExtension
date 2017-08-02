@@ -739,6 +739,14 @@ var AntiBannerFilters = function (options) {
         });
     }
 
+    function addCustomFilter(e) {
+        e.preventDefault();
+
+        var url = $('#customFilterUrl').val();
+        contentPage.sendMessage({type: 'addCustomFilter', url: url}, function () {
+        });
+    }
+
     function setLastUpdatedTimeText(lastUpdateTime) {
         if (lastUpdateTime && lastUpdateTime > loadedFiltersInfo.lastUpdateTime) {
             loadedFiltersInfo.lastUpdateTime = lastUpdateTime;
@@ -788,6 +796,7 @@ var AntiBannerFilters = function (options) {
     // Bind events
     $(document).on('change', '.filters-list [name="filterId"]', toggleFilterState);
     $('#updateAntiBannerFilters').on('click', updateAntiBannerFilters);
+    $('#addCustomFilter').on('click', addCustomFilter);
 
     updateRulesCountInfo(options.rulesInfo);
 
