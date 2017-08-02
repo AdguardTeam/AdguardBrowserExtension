@@ -30,6 +30,43 @@ var Utils = {
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
         };
+    },
+
+    initAceEditor: function () {
+        var editor = ace.edit('userRules');
+
+        editor.setShowPrintMargin(false);
+        //editor.setTheme("ace/theme/twilight");
+
+        editor.session.setMode("ace/mode/javascript");
+        //editor.session.setMode("ace/mode/text_highlight_rules");
+
+        var newRules = {
+            start: [
+                {
+                    token : "comment",
+                    regex : "\\/\\/.*$"
+                },
+                {
+                    token : "comment",
+                    regex : "^!.*$"
+                },
+                {
+                    token: "keyword",
+                    regex: "^@@.*$"
+                },
+                {
+                    token: "keyword",
+                    regex: "^\\s*#(if|else|elif|endif|define|undef|warning|error|line|region|endregion|pragma)"
+                }
+            ]
+        };
+
+        editor.getSession().getMode().$highlightRules.addRules(newRules, "new-");
+        //editor.session.getMode().$highlightRules.$rules = newRules;
+        // console.log(editor.getSession().getMode().$highlightRules.getRules());
+
+        return editor;
     }
 };
 
@@ -490,9 +527,7 @@ var UserFilter = function () {
 
     var omitRenderEventsCount = 0;
 
-    var editor = ace.edit('userRules');
-    editor.setShowPrintMargin(false);
-    editor.getSession().setMode("ace/mode/text");
+    var editor = Utils.initAceEditor();
 
     function loadUserRules() {
         contentPage.sendMessage({
