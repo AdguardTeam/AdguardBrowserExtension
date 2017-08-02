@@ -1,0 +1,421 @@
+/* log */
+.btn {
+    font-family: 'gotham_proregular';
+    background-color: #66B574;
+    color: #fff;
+    border: 0;
+    padding: 0.713em 1em;
+    border-radius: 3px;
+    vertical-align: middle;
+    display: inline-block;
+    margin: 0;
+    text-decoration: none;
+    outline: none;
+    cursor: pointer;
+}
+.text-green {
+    color: #66b574;
+}
+.dropdown {
+    font-size: 12px;
+    padding: 18px 13px;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+    font-family: 'gotham_promedium';
+    user-select: none;
+}
+.dropdown .current-value {
+    position: absolute;
+    left: 10px;
+    right: 27px;
+    top: 11px;
+    font-family: 'gotham_probol';
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.dropdown .value {
+    opacity: 0.94;
+    letter-spacing: -0.3px;
+}
+.dropdown .caret {
+    position: absolute;
+    right: 13px;
+    top: 50%;
+    margin-top: -3px;
+    width: 11px;
+    height: 6px;
+    display: inline-block;
+    background-image: url(../images/icon-caret-down-gray.png);
+    background-size: contain;
+    background-position: 50%;
+    background-repeat: no-repeat;
+    opacity: 0.54;
+}
+.dropdown .drop-items {
+    list-style: none;
+    margin: 0;
+    margin-top: 1px;
+    position: absolute;
+    background: #fff;
+    text-align: left;
+    padding: 0;
+    left: 0;
+    top: 100%;
+    color: #000;
+    width: 100%;
+    box-shadow: 0 9px 14px 0 rgba(77, 77, 77, 0.18);
+    display: none;
+}
+.dropdown .drop-items li {
+    padding: 12px 20px;
+}
+.dropdown .drop-items li:hover {
+    background-color: rgba(102, 181, 116, 0.14);
+}
+.dropdown .drop-items a {
+    text-decoration: none;
+}
+.dropdown.active {
+    background-color: #fff;
+    color: #000;
+}
+.dropdown.active .caret {
+    background-image: url(../images/caret-up.png);
+}
+.dropdown.active .drop-items {
+    display: block;
+}
+
+.log-header {
+    display: flex;
+    flex-wrap: wrap;
+}
+.log-header > * {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    padding-left: 13px;
+    border-bottom: 1px solid #ececec;
+}
+.log-header > *:nth-child(-n+2) {
+    height: 50px;
+}
+.log-header > *:nth-child(odd) {
+    width: 35%;
+    flex-basis: 35%;
+}
+.log-header > *:nth-child(even) {
+    width: 65%;
+    flex-basis: 65%;
+    border-left: 1px solid #ececec;
+}
+.log-header .col-tab-drop {
+    flex-grow: 1;
+}
+.log-header .col-logo {
+    width: 35px;
+    flex-shrink: 0;
+}
+.log-header .col-logo img {
+    width: 21px;
+}
+.log-header .col-refresh .btn {
+    margin-right: 16px;
+}
+.log-header .col-search .icon-search {
+    width: 35px;
+    padding-left: 1px;
+}
+.log-header .col-search .icon-search img {
+    width: 16px;
+}
+.log-header .col-search input {
+    flex-grow: 1;
+    border: 0;
+    background: none;
+    outline: none;
+    padding: 5px 0;
+}
+.log-header .col-rules {
+    display: flex;
+    font-size: 11px;
+}
+.log-header .col-rules > * {
+    margin-left: 18px;
+}
+.log-header .col-rules > *:first-child {
+    margin-left: 0;
+}
+.log-header .col-filter-log {
+    padding-right: 13px;
+}
+.log-header .col-type-tabs {
+    display: flex;
+    font-size: 11px;
+    margin-right: auto;
+}
+.log-header .col-type-tabs a {
+    text-decoration: none;
+    padding: 0 12px;
+    position: relative;
+    z-index: 1;
+}
+.log-header .col-type-tabs a.active:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 3px;
+    bottom: -14px;
+    background-color: #66b574;
+}
+
+.checkb-wrap {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.checkb-wrap label {
+    cursor: pointer;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.checkb-wrap .checkbox {
+    width: 16px;
+    height: 16px;
+    flex-basis: 16px;
+    flex-shrink: 0;
+    background-color: #f3f3f3;
+    background-position: 50%;
+    background-repeat: no-repeat;
+    background-size: 10px 9px;
+    border-radius: 2px;
+    margin-right: 10px;
+}
+.checkb-wrap .checkbox.active {
+    background-color: #66b574;
+    background-image: url(../images/icon-checkbox-tick.png);
+}
+.checkb-wrap .radio {
+    width: 20px;
+    height: 20px;
+    flex-basis: 20px;
+    flex-shrink: 0;
+    background-color: #f3f3f3;
+    border-radius: 50%;
+    margin-right: 10px;
+    position: relative;
+    z-index: 1;
+}
+.checkb-wrap .radio.active:before {
+    content: '';
+    position: absolute;
+    left: 4px;
+    right: 4px;
+    top: 4px;
+    bottom: 4px;
+    border-radius: 50%;
+    background-color: #66b574;
+}
+.checkb-wrap .radio, .checkb-wrap .checkbox {
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.checkb-wrap > input {
+    display: none;
+}
+
+.checkb-wrap > input:checked + label > .radio:before {
+    content: '';
+    position: absolute;
+    left: 4px;
+    right: 4px;
+    top: 4px;
+    bottom: 4px;
+    border-radius: 50%;
+    background-color: #66b574;
+}
+
+.checkb-wrap > input:checked + label > .checkbox {
+    background-color: #66b574;
+    background-image: url(../images/icon-checkbox-tick.png);
+}
+.log-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+.log-table tr {
+    cursor: pointer;
+}
+.log-table tr:hover td {
+    background-color: #FCFBF7;
+}
+.log-table tr.green td {
+    background-color: #E9F4EB;
+    border-bottom-color: #dae3dc;
+}
+.log-table tr.green:hover td {
+    background-color: #e0efe3;
+}
+.log-table tr.red td {
+    background-color: #f4e9e9;
+    border-bottom-color: #e3dada;
+}
+.log-table tr.red:hover td {
+    background-color: #efe0e0;
+}
+.log-table th {
+    background-color: #f7f7f7;
+    text-align: left;
+    padding: 13px 0 13px 13px;
+    color: #ababab;
+    font-weight: normal;
+    font-size: 11px;
+}
+.log-table th:first-child {
+    width: 45%;
+}
+.log-table th:nth-child(2) {
+    width: 15%;
+}
+.log-table td {
+    padding: 13px 0 13px 13px;
+    border-bottom: 1px solid #ececec;
+    color: #4D4D4D;
+}
+.log-table td:first-child {
+    font-family: "gotham_promedium";
+    color: #1D1D1D;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.log-table .icon-chain {
+    margin: 0 4px;
+}
+.log-table small {
+    font-size: 9px;
+    color: rgba(77, 77, 77, 0.5);
+}
+.log-table td:first-child {
+    white-space: nowrap;
+}
+.log-table td {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.log-empty {
+    text-align: center;
+    position: absolute;
+    width: 182px;
+    left: 50%;
+    margin-left: -91px;
+    top: calc(50% - 53px);
+}
+.log-empty img {
+    vertical-align: middle;
+    margin-bottom: 67px;
+}
+.log-empty a {
+    color: #66b574;
+    text-decoration: none;
+}
+.log-empty .desc {
+    line-height: 18px;
+}
+.modal {
+    background-color: #fff;
+    position: fixed;
+    z-index: 10;
+    width: 700px;
+    box-shadow: 0 0 31px 4px rgba(0, 0, 0, 0.1);
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+}
+.modal.active {
+    display: block;
+}
+.modal .rule-text {
+    display: block;
+    width: 100%;
+    border: 0;
+    font-family: gotham_proregular;
+    color: #4d4d4d;
+    font-size: 12px;
+    letter-spacing: -0.4px;
+    outline: none;
+}
+.modal .checkbox {
+    width: 20px;
+    height: 20px;
+    flex-basis: 20px;
+}
+.modal .head .title {
+    font-size: 23px;
+    font-family: gotham_probol;
+    text-align: center;
+    padding: 30px 20px;
+    letter-spacing: -1px;
+    color: #4D4D4D;
+}
+.modal .head .close {
+    width: 22px;
+    height: 22px;
+    position: absolute;
+    right: 30px;
+    top: 30px;
+    background: url(../images/log-modal-close.png) 50% no-repeat;
+    background-size: contain;
+    cursor: pointer;
+    opacity: 0.15;
+}
+.modal .head .close:hover {
+    opacity: 1;
+}
+.modal .body {
+    padding: 0 40px;
+    color: #4d4d4d;
+}
+.modal .body > .list {
+    padding: 34px 0;
+    border-top: 1px solid #EFEFEF;
+}
+.modal .body > .list li {
+    display: flex;
+    letter-spacing: -0.4px;
+}
+.modal .body > .list .name {
+    width: 100px;
+    flex-shrink: 0;
+    font-family: font-family;
+}
+.modal .body > .list .value {
+    word-break: break-word;
+}
+.modal .foot {
+    text-align: center;
+    padding-bottom: 40px;
+}
+.modal .foot .btn {
+    font-size: 14px;
+}
+
+ul.list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+ul.list li {
+    margin-top: 20px;
+}
+ul.list li:first-child {
+    margin-top: 0;
+}
+/* /log */
