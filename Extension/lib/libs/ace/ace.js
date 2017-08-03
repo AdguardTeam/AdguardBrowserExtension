@@ -5741,13 +5741,73 @@ ace.define("ace/mode/text_highlight_rules",["require","exports","module","ace/li
 
     var TextHighlightRules = function() {
 
+        // regexp must not have capturing parentheses
+        // regexps are ordered -> the first match is used
+
         this.$rules = {
-            "start" : [{
-                token : "empty_line",
-                regex : '^$'
-            }, {
-                defaultToken : "text"
-            }]
+            "start": [
+                {
+                    token: "empty_line",
+                    regex: '^$'
+                },
+                //Comments
+                {
+                    token: "keyword.operator",
+                    regex: "^!.*$"
+                },
+                //Whitelist
+                {
+                    token: "comment",
+                    regex: "^@@.*$"
+                },
+                //CssElement
+                {
+                    token: "variable",
+                    regex: "^[^#\$@%]*##.*$"
+                },
+                //CssElement
+                {
+                    token: "variable",
+                    regex: "^[^#\$@%]*#@#.*$"
+                },
+                //JsElement
+                {
+                    token: "constant.language",
+                    regex: "^[^#\$@%]*%%.*$"
+                },
+                //JsElement
+                {
+                    token: "constant.language",
+                    regex: "^[^#\$@%]*#%#.*$"
+                },
+                //JsElement
+                {
+                    token: "constant.language",
+                    regex: "^[^#\$@%]*#@%#.*$"
+                },
+                //ContentElement
+                {
+                    token: "keyword",
+                    regex: "^[^#\$@%]*\\$\\$.*$"
+                },
+                //ContentElement
+                {
+                    token: "keyword",
+                    regex: "^[^#\$@%]*\\$@\\$.*$"
+                },
+                //CssInject
+                {
+                    token: "string",
+                    regex: "^[^#\$@%]*#\\$#.*$"
+                },
+                //CssInject
+                {
+                    token: "string",
+                    regex: "^[^#\$@%]*#@\\$#.*$"
+                },
+                {
+                    defaultToken: "text"
+                }]
         };
     };
 
