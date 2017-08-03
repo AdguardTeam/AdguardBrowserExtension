@@ -15,6 +15,11 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global $, updateDisplayAdguardPromo, customizePopupFooter, contentPage, i18n, moment, createEventListener */
+
+var PageController = function () {
+};
+
 /* global $, updateDisplayAdguardPromo, contentPage, i18n, moment, ace */
 
 var Utils = {
@@ -1032,6 +1037,7 @@ var AntiBannerFiltersId;
 var EventNotifierTypes;
 var requestFilterInfo;
 var contentBlockerInfo;
+var syncStatusInfo;
 
 /**
  * Initializes page
@@ -1043,6 +1049,7 @@ var initPage = function (response) {
     environmentOptions = response.environmentOptions;
     requestFilterInfo = response.requestFilterInfo;
     contentBlockerInfo = response.contentBlockerInfo;
+    syncStatusInfo = response.syncStatusInfo;
 
     AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
     EventNotifierTypes = response.constants.EventNotifierTypes;
@@ -1064,7 +1071,7 @@ var initPage = function (response) {
             EventNotifierTypes.REQUEST_FILTER_UPDATED
         ];
 
-        function eventListener(event, filter) {
+        createEventListener(events, function (event, filter) {
             switch (event) {
                 case EventNotifierTypes.FILTER_ENABLE_DISABLE:
                     controller.checkSubscriptionsCount();
@@ -1100,29 +1107,7 @@ var initPage = function (response) {
                     controller.antiBannerFilters.updateRulesCountInfo(filter);
                     break;
             }
-        }
-
-        var listenerId;
-        contentPage.sendMessage({type: 'addEventListener', events: events}, function (response) {
-            listenerId = response.listenerId;
         });
-
-        contentPage.onMessage.addListener(function (message) {
-            if (message.type == 'notifyListeners') {
-                eventListener.apply(this, message.args);
-            }
-        });
-
-        var onUnload = function () {
-            if (listenerId) {
-                contentPage.sendMessage({type: 'removeListener', listenerId: listenerId});
-                listenerId = null;
-            }
-        };
-
-        // unload event
-        $(window).on('beforeunload', onUnload);
-        $(window).on('unload', onUnload);
     });
 };
 
