@@ -15,11 +15,6 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global $, updateDisplayAdguardPromo, customizePopupFooter, contentPage, i18n, moment, createEventListener */
-
-var PageController = function () {
-};
-
 /* global $, updateDisplayAdguardPromo, contentPage, i18n, moment, ace */
 
 var Utils = {
@@ -805,6 +800,207 @@ var AntiBannerFilters = function (options) {
     };
 };
 
+var SyncSettings = function (options) {
+
+    var syncStatus = options.syncStatusInfo;
+    var currentProvider = options.syncStatusInfo.currentProvider;
+
+    var unauthorizedBlock = $('#unauthorizedBlock');
+    var authorizedBlock = $('#authorizedBlock');
+    var signInButton = $('#signInButton');
+    var signOutButton = $('#signOutButton');
+    var startSyncButton = $('#startSyncButton');
+    var syncNowButton = $('#syncNowButton');
+    var lastSyncTimeInfo = $('#lastSyncTimeInfo');
+    var selectProviderButton = $('#selectProviderButton');
+
+    var providersDropdown = $('#selectProviderDropdown');
+
+    bindControls();
+
+    function bindControls() {
+
+        selectProviderButton.on('click', function () {
+            providersDropdown.show();
+        }.bind(this));
+
+        signInButton.on('click', function (e) {
+            e.preventDefault();
+            if (currentProvider) {
+                contentPage.sendMessage({
+                    type: 'authSync',
+                    provider: currentProvider.name
+                });
+            }
+        }.bind(this));
+
+        signOutButton.on('click', function (e) {
+            e.preventDefault();
+            if (currentProvider && currentProvider.isOAuthSupported) {
+                contentPage.sendMessage({
+                    type: 'dropAuthSync',
+                    provider: currentProvider.name
+                });
+            } else {
+                contentPage.sendMessage({type: 'toggleSync'});
+            }
+        }.bind(this));
+
+        startSyncButton.on('click', function (e) {
+            e.preventDefault();
+            contentPage.sendMessage({type: 'toggleSync'});
+        });
+
+        syncNowButton.on('click', function (e) {
+            e.preventDefault();
+            updateSyncState();
+            contentPage.sendMessage({type: 'syncNow'});
+        }.bind(this));
+
+        $('#changeDeviceNameButton').on('click', function (e) {
+            e.preventDefault();
+            var deviceName = $('#deviceNameInput').val();
+            contentPage.sendMessage({
+                type: 'syncChangeDeviceName',
+                deviceName: deviceName
+            });
+        });
+
+        $('#adguardSelectProvider').on('click', onProviderSelected('ADGUARD_SYNC'));
+        $('#dropboxSelectProvider').on('click', onProviderSelected('DROPBOX'));
+        $('#browserStorageSelectProvider').on('click', onProviderSelected('BROWSER_SYNC'));
+    }
+
+    function onProviderSelected(providerName) {
+        return function (e) {
+            e.preventDefault();
+            providersDropdown.hide();
+            contentPage.sendMessage({type: 'setSyncProvider', provider: providerName}, function () {
+                document.location.reload();
+            });
+        }.bind(this);
+    }
+
+    function renderSelectProviderBlock() {
+        unauthorizedBlock.show();
+        authorizedBlock.hide();
+        signInButton.hide();
+        startSyncButton.hide();
+    }
+
+    function renderUnauthorizedBlock() {
+
+        unauthorizedBlock.show();
+        authorizedBlock.hide();
+
+        if (currentProvider.isOAuthSupported && !currentProvider.isAuthorized) {
+            signInButton.show();
+        } else {
+            signInButton.hide();
+        }
+
+        if (!syncStatus.enabled && currentProvider.isAuthorized) {
+            startSyncButton.show();
+        } else {
+            startSyncButton.hide();
+        }
+
+        selectProviderButton.text(currentProvider.title);
+    }
+
+    function renderAuthorizedBlock() {
+
+        unauthorizedBlock.hide();
+        authorizedBlock.show();
+
+        $('#providerNameInfo').text(currentProvider.title);
+
+        var manageAccountButton = $('#manageAccountButton');
+        var deviceNameBlock = $('#deviceNameBlock');
+
+        updateSyncState();
+
+        if (currentProvider.isOAuthSupported && currentProvider.name === 'ADGUARD_SYNC') {
+            manageAccountButton.show();
+            deviceNameBlock.show();
+            $('#deviceNameInput').val(currentProvider.deviceName);
+        } else {
+            manageAccountButton.hide();
+            deviceNameBlock.hide();
+        }
+
+        //TODO: Handle sync settings checkboxes
+    }
+
+    function renderSyncSettings() {
+
+        if (!currentProvider) {
+            renderSelectProviderBlock();
+            return;
+        }
+
+        if (!currentProvider.isAuthorized || !syncStatus.enabled) {
+            renderUnauthorizedBlock();
+        } else {
+            renderAuthorizedBlock();
+        }
+
+        var browserStorageSupported = syncStatus.providers.filter(function (p) {
+                return p.name === 'BROWSER_SYNC';
+            }).length > 0;
+
+        if (!browserStorageSupported) {
+            $('#browserStorageSelectProvider').hide();
+        }
+
+        if (currentProvider) {
+            var activeClass = 'dropdown__item--active';
+
+            switch (currentProvider.name) {
+                case 'ADGUARD_SYNC':
+                    $('#adguardSelectProvider').addClass(activeClass);
+                    break;
+                case 'DROPBOX':
+                    $('#dropboxSelectProvider').addClass(activeClass);
+                    break;
+                case 'BROWSER_SYNC':
+                    $('#browserStorageSelectProvider').addClass(activeClass);
+                    break;
+            }
+        }
+    }
+
+    function updateSyncSettings(options) {
+        syncStatus = options.status;
+        currentProvider = options.status.currentProvider;
+        renderSyncSettings();
+    }
+
+    function updateSyncState() {
+        if (syncStatus.syncInProgress) {
+            syncNowButton.attr('disabled', 'disabled');
+            syncNowButton.text(i18n.getMessage('sync_in_progress_button_text'));
+        } else {
+            syncNowButton.removeAttr('disabled');
+            syncNowButton.text(i18n.getMessage('sync_now_button_text'));
+        }
+
+        if (currentProvider) {
+            var lastSyncTime = currentProvider.lastSyncTime;
+            if (lastSyncTime) {
+                lastSyncTimeInfo.text(new Date(parseInt(lastSyncTime)).toLocaleString());
+            } else {
+                lastSyncTimeInfo.text(i18n.getMessage('sync_last_sync_time_never_sync_text'));
+            }
+        }
+    }
+
+    return {
+        renderSyncSettings: renderSyncSettings,
+        updateSyncSettings: updateSyncSettings
+    };
+};
+
 var Settings = function () {
 
     var Checkbox = function (id, property, options) {
@@ -977,6 +1173,10 @@ PageController.prototype = {
         // Initialize AntiBanner filters
         this.antiBannerFilters = new AntiBannerFilters({rulesInfo: environmentOptions.isContentBlockerEnabled ? contentBlockerInfo : requestFilterInfo});
         this.antiBannerFilters.render();
+
+        // Initialize sync tab
+        this.syncSettings = new SyncSettings({syncStatusInfo:syncStatusInfo});
+        this.syncSettings.renderSyncSettings();
     },
 
     allowAcceptableAdsChange: function () {
@@ -1068,29 +1268,30 @@ var initPage = function (response) {
             EventNotifierTypes.UPDATE_USER_FILTER_RULES,
             EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES,
             EventNotifierTypes.CONTENT_BLOCKER_UPDATED,
-            EventNotifierTypes.REQUEST_FILTER_UPDATED
+            EventNotifierTypes.REQUEST_FILTER_UPDATED,
+            EventNotifierTypes.SYNC_STATUS_UPDATED
         ];
 
-        createEventListener(events, function (event, filter) {
+        createEventListener(events, function (event, options) {
             switch (event) {
                 case EventNotifierTypes.FILTER_ENABLE_DISABLE:
                     controller.checkSubscriptionsCount();
-                    controller.antiBannerFilters.onFilterStateChanged(filter);
+                    controller.antiBannerFilters.onFilterStateChanged(options);
                     break;
                 case EventNotifierTypes.FILTER_ADD_REMOVE:
-                    controller.antiBannerFilters.onFilterStateChanged(filter);
+                    controller.antiBannerFilters.onFilterStateChanged(options);
                     break;
                 case EventNotifierTypes.START_DOWNLOAD_FILTER:
-                    controller.antiBannerFilters.onFilterDownloadStarted(filter);
+                    controller.antiBannerFilters.onFilterDownloadStarted(options);
                     break;
                 case EventNotifierTypes.SUCCESS_DOWNLOAD_FILTER:
                 case EventNotifierTypes.ERROR_DOWNLOAD_FILTER:
-                    controller.antiBannerFilters.onFilterDownloadFinished(filter);
+                    controller.antiBannerFilters.onFilterDownloadFinished(options);
                     break;
                 case EventNotifierTypes.UPDATE_USER_FILTER_RULES:
                     controller.userFilter.updateUserFilterRules();
                     if (!environmentOptions.isContentBlockerEnabled) {
-                        controller.antiBannerFilters.updateRulesCountInfo(filter);
+                        controller.antiBannerFilters.updateRulesCountInfo(options);
                     }
                     break;
                 case EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES:
@@ -1101,10 +1302,13 @@ var initPage = function (response) {
                     if (environmentOptions.isContentBlockerEnabled) {
                         break;
                     }
-                    controller.antiBannerFilters.updateRulesCountInfo(filter);
+                    controller.antiBannerFilters.updateRulesCountInfo(options);
                     break;
                 case EventNotifierTypes.CONTENT_BLOCKER_UPDATED:
-                    controller.antiBannerFilters.updateRulesCountInfo(filter);
+                    controller.antiBannerFilters.updateRulesCountInfo(options);
+                    break;
+                case EventNotifierTypes.SYNC_STATUS_UPDATED:
+                    controller.syncSettings.updateSyncSettings(options);
                     break;
             }
         });
