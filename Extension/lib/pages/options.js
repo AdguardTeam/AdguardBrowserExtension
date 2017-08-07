@@ -492,7 +492,9 @@ var UserFilter = function () {
 
     var editor = ace.edit('userRules');
     editor.setShowPrintMargin(false);
-    editor.getSession().setMode("ace/mode/text");
+
+    // Ace TextHighlightRules mode is edited in ace.js library file
+    editor.session.setMode("ace/mode/text_highlight_rules");
 
     function loadUserRules() {
         contentPage.sendMessage({
