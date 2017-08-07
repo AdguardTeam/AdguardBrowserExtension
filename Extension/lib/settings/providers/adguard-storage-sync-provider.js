@@ -35,6 +35,7 @@
         var FILE_SYNC_TIMESTAMP_PROP = 'sync-adguard-provider-filesync-timestamp';
         var fileSyncTimestamp = null;
 
+        var httpAuthApiEndpoint = 'https://testauth.adguard.com';
         var httpApiEndpoint = 'https://testsync.adguard.com/1';
         var wsApiEndpoint = 'wss://testsync.adguard.com/1';
 
@@ -243,7 +244,7 @@
             Object.keys(params).forEach(function (key) {
                 query.push(key + '=' + encodeURIComponent(params[key]));
             });
-            return httpApiEndpoint + '/oauth2/authorize?' + query.join('&');
+            return httpAuthApiEndpoint + '/oauth/authorize?' + query.join('&');
         };
 
         var shutdown = function () {
@@ -251,7 +252,7 @@
         };
 
         var revokeToken = function (token) {
-            return makeRequest(httpApiEndpoint + '/oauth2/token/revoke', {
+            return makeRequest(httpAuthApiEndpoint + '/oauth/token/revoke', {
                 accessToken: token
             });
         };
