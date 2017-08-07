@@ -18890,7 +18890,7 @@ color: rgb(191, 191, 191);\
 }\
 .ace-tm .ace_storage,\
 .ace-tm .ace_keyword {\
-color: blue;\
+color: #a176a2;\
 }\
 .ace-tm .ace_constant {\
 color: rgb(197, 6, 11);\
@@ -18899,7 +18899,7 @@ color: rgb(197, 6, 11);\
 color: rgb(88, 72, 246);\
 }\
 .ace-tm .ace_constant.ace_language {\
-color: rgb(88, 92, 246);\
+color: #999933;\
 }\
 .ace-tm .ace_constant.ace_library {\
 color: rgb(6, 150, 14);\
@@ -18919,13 +18919,13 @@ color: rgb(6, 150, 14);\
 color: rgb(109, 121, 222);\
 }\
 .ace-tm .ace_keyword.ace_operator {\
-color: rgb(104, 118, 135);\
+color: #808080;\
 }\
 .ace-tm .ace_string {\
-color: rgb(3, 106, 7);\
+color: #4477aa;\
 }\
 .ace-tm .ace_comment {\
-color: rgb(76, 136, 107);\
+color: #336666;\
 }\
 .ace-tm .ace_comment.ace_doc {\
 color: rgb(0, 102, 255);\
@@ -18937,7 +18937,7 @@ color: rgb(128, 159, 191);\
 color: rgb(0, 0, 205);\
 }\
 .ace-tm .ace_variable {\
-color: rgb(49, 132, 149);\
+color: #6699cc;\
 }\
 .ace-tm .ace_xml-pe {\
 color: rgb(104, 104, 91);\
