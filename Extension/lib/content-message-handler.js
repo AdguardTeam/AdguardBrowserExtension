@@ -92,13 +92,13 @@
      */
     function processGetFiltersMetadata() {
 
-        var groups = adguard.subscriptions.getGroups();
+        var tags = adguard.subscriptions.getTags();
         var filters = adguard.subscriptions.getFilters().filter(function (f) {
             return f.filterId != adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID;
         });
 
         return {
-            groups: groups,
+            tags: tags,
             filters: filters
         };
     }
@@ -176,10 +176,16 @@
                 break;
             case 'disableAntiBannerFilter':
                 if (message.remove) {
-                    adguard.filters.removeFilter(message.filterId);
+                    adguard.filters.removeFilters([message.filterId]);
                 } else {
-                    adguard.filters.disableFilter(message.filterId);
+                    adguard.filters.disableFilters([message.filterId]);
                 }
+                break;
+            case 'addAndEnableFilters':
+                adguard.filters.addAndEnableFilters(message.filterIds);
+                break;
+            case 'disableAntiBannerFilters':
+                adguard.filters.disableFilters(message.filterIds);
                 break;
             case 'getWhiteListDomains':
                 var whiteListDomains = searchWhiteListDomains(message.offset, message.limit, message.text);
