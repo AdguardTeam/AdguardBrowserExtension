@@ -104,8 +104,11 @@ PopupController.prototype = {
 
         var stack = parent.find('.tabstack');
 
-        var container = parent.find('.tab-main');
-        container.empty();
+        var containerMain = parent.find('.tab-main');
+        containerMain.empty();
+
+        var containerStats = parent.find('.tab-statistics');
+        containerStats.empty();
 
         stack.attr('class', 'tabstack');
 
@@ -145,15 +148,19 @@ PopupController.prototype = {
         // Message text
         this.filteringMessageText = this._getTemplate('filtering-message-template');
 
+        // Stats
+        this.filteringStatisticsTemplate = this._getTemplate('filtering-statistics-template');
+
         // Footer
         this.footerDefault = this._getTemplate('footer-default-template');
         this.footerIntegration = this._getTemplate('footer-integration-template');
 
-        this._renderHeader(container, tabInfo);
-        this._renderFilteringControls(container, tabInfo);
-        this._renderStatus(container, tabInfo);
-        this._renderActions(container, tabInfo);
-        this._renderMessage(container, tabInfo);
+        this._renderHeader(containerMain, tabInfo);
+        this._renderFilteringControls(containerMain, tabInfo);
+        this._renderStatus(containerMain, tabInfo);
+        this._renderActions(containerMain, tabInfo);
+        this._renderMessage(containerMain, tabInfo);
+        this._renderStats(containerStats, tabInfo);
         this._renderFooter(parent, tabInfo);
     },
 
@@ -256,6 +263,50 @@ PopupController.prototype = {
             i18n.translateElement(template[0], text);
             container.append(template);
         }
+    },
+
+    _renderStats: function (container, tabInfo) {
+        var template = this.filteringStatisticsTemplate;
+        container.append(template);
+
+        var grad1 =
+            '<linearGradient id="grad1" x1="50%" y1="0%" x2="50%" y2="100%">'+
+            '  <stop offset="0%" style="stop-color:rgb(196,229,255);stop-opacity:1" />'+
+            '  <stop offset="23%" style="stop-color:rgb(196,229,255);stop-opacity:1" />'+
+            '  <stop offset="100%" style="stop-color:rgb(10,149,255);stop-opacity:1" />'+
+            '</linearGradient>';
+
+        var grad2 =
+            '<linearGradient id="grad2" x1="0%" y1="100%" x2="100%" y2="0%" >'+
+            '  <stop offset="0%" style="stop-color:rgb(77,0,0);stop-opacity:1" />'+
+            '  <stop offset="50%" style="stop-color:rgb(255,0,0);stop-opacity:1" />'+
+            '  <stop offset="100%" style="stop-color:rgb(77,0,0);stop-opacity:0" />'+
+            '</linearGradient>';
+
+
+        var chart = c3.generate({
+            data: {
+                columns: [
+                    ['data1', 100, 200, 150, 300, 200],
+                    ['data2', 400, 500, 250, 700, 300]
+                ],
+                types: {
+                    data1: 'area-spline',
+                    data2: 'area-spline'
+                },
+                colors: {
+                    data1: 'url(#grad1)',
+                    data2: 'url(#grad2)'
+                }
+            },
+            color: {
+                pattern: ['url(#grad1)', '#ffff00']
+            },
+            oninit: function() {
+                this.svg[0][0].getElementsByTagName('defs')[0].innerHTML += grad1 + grad2;
+            }
+
+        });
     },
 
     _renderActions: function (container, tabInfo) {
