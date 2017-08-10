@@ -357,18 +357,20 @@ adguard.antiBannerService = (function (adguard) {
         var filters = [];
         for (var i = 0; i < customFilterIds.length; i++) {
             var filter = adguard.subscriptions.getFilter(customFilterIds[i]);
-            filters.push(filter);
 
-            dfds.push((function (filterUrl) {
+            dfds.push((function (filter, filters) {
                 var dfd = new adguard.utils.Promise();
 
-                adguard.subscriptions.updateCustomFilter(filterUrl, function () {
+                adguard.subscriptions.updateCustomFilter(filter.customUrl, function (filterId) {
+                    if (filterId) {
+                        filters.push(filter);
+                    }
+
                     dfd.resolve();
                 });
 
                 return dfd;
-            })(filter.customUrl));
-
+            })(filter, filters));
         }
 
         adguard.utils.Promise.all(dfds).then(function () {
