@@ -183,8 +183,9 @@ adguard.subscriptions = (function (adguard) {
                 var subscriptionUrl = url;
                 var languages = [];
                 var displayNumber = 0;
+                var tags = [0];
 
-                filter = new SubscriptionFilter(filterId, groupId, defaultName, defaultDescription, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl);
+                filter = new SubscriptionFilter(filterId, groupId, defaultName, defaultDescription, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl, tags);
                 filter.loaded = true;
                 //custom filters have special field
                 filter.customUrl = url;
