@@ -265,10 +265,7 @@ PopupController.prototype = {
         }
     },
 
-    _renderStats: function (container, tabInfo) {
-        var template = this.filteringStatisticsTemplate;
-        container.append(template);
-
+    _renderStatsBlock: function (stats) {
         var grad1 =
             '<linearGradient id="grad1" x1="50%" y1="0%" x2="50%" y2="100%">'+
             '  <stop offset="0%" style="stop-color:rgb(196,229,255);stop-opacity:1" />'+
@@ -309,13 +306,21 @@ PopupController.prototype = {
         });
     },
 
+    _renderStats: function (container, tabInfo) {
+        var template = this.filteringStatisticsTemplate;
+        container.append(template);
+
+        var self = this;
+        popupPage.sendMessage({type: 'getStatisticsData'}, function (message) {
+            self._renderStatsBlock(message.stats);
+        });
+    },
+
     _renderActions: function (container, tabInfo) {
 
         if (tabInfo.urlFilteringDisabled) {
             return;
         }
-
-
 
         var el = $('<div>', {class: 'actions'});
 
