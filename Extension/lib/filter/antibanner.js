@@ -1455,41 +1455,49 @@ adguard.filters = (function (adguard) {
     /**
      * Disables filter by id
      *
-     * @param filterId Filter identifier
+     * @param filterIds Filter identifier
      * @returns {boolean} true if filter was disabled successfully
      */
-    var disableFilter = function (filterId) {
+    var disableFilters = function (filterIds) {
 
-        var filter = adguard.subscriptions.getFilter(filterId);
-        if (!filter || !filter.enabled || !filter.installed) {
-            return false;
+        filterIds = adguard.utils.collections.removeDuplicates(filterIds.slice(0)); // Copy array to prevent parameter mutation
+
+        for (var i = 0; i < filterIds.length; i++) {
+            var filterId = filterIds[i];
+            var filter = adguard.subscriptions.getFilter(filterId);
+            if (!filter || !filter.enabled || !filter.installed) {
+                continue;
+            }
+
+            filter.enabled = false;
+            adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
         }
-
-        filter.enabled = false;
-        adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
-        return true;
     };
 
     /**
      * Removes filter
      *
-     * @param filterId Filter identifier
+     * @param filterIds Filter identifier
      * @returns {boolean} true if filter was removed successfully
      */
-    var removeFilter = function (filterId) {
+    var removeFilters = function (filterIds) {
 
-        var filter = adguard.subscriptions.getFilter(filterId);
-        if (!filter || !filter.installed) {
-            return false;
+        filterIds = adguard.utils.collections.removeDuplicates(filterIds.slice(0)); // Copy array to prevent parameter mutation
+
+        for (var i = 0; i < filterIds.length; i++) {
+            var filterId = filterIds[i];
+            var filter = adguard.subscriptions.getFilter(filterId);
+            if (!filter || !filter.installed) {
+                continue;
+            }
+
+            adguard.console.debug("Remove filter {0}", filter.filterId);
+
+            filter.enabled = false;
+            filter.installed = false;
+            adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
+            adguard.listeners.notifyListeners(adguard.listeners.FILTER_ADD_REMOVE, filter);
         }
-
-        adguard.console.debug("Remove filter {0}", filter.filterId);
-
-        filter.enabled = false;
-        filter.installed = false;
-        adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
-        adguard.listeners.notifyListeners(adguard.listeners.FILTER_ADD_REMOVE, filter);
-        return true;
     };
 
     /**
@@ -1572,8 +1580,8 @@ adguard.filters = (function (adguard) {
         checkFiltersUpdates: checkFiltersUpdates,
 
         addAndEnableFilters: addAndEnableFilters,
-        disableFilter: disableFilter,
-        removeFilter: removeFilter,
+        disableFilters: disableFilters,
+        removeFilters: removeFilters,
 
         findFilterMetadataBySubscriptionUrl: findFilterMetadataBySubscriptionUrl,
         processAbpSubscriptionUrl: processAbpSubscriptionUrl,
