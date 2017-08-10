@@ -353,6 +353,11 @@
                     });
                 });
                 return true; // Async
+            case 'getStatisticsData':
+                callback({
+                    stats: adguard.pageStats.getTotalBlocked()
+                });
+                return true;
             case 'resizePanelPopup':
                 adguard.browserAction.resize(message.width, message.height);
                 break;
