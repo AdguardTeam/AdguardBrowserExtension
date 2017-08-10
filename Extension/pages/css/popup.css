@@ -524,3 +524,86 @@ img .footer .platforms:first-child {
   display: block;
   text-align: center;
 }
+.chart {
+  position: relative;
+  height: 150px;
+}
+.chart .c3-line-data1 {
+  stroke-width: 4px;
+}
+.chart path.domain {
+  display: none;
+}
+.chart .tick text {
+  stroke: #c5c5c5;
+}
+.chart.c3 line {
+  stroke: #4a6d79;
+  opacity: 1;
+}
+.chart .tick line {
+  display: none;
+}
+.chart .c3-xgrid,
+.chart .c3-ygrid {
+  stroke-dasharray: 0;
+}
+.chart__tooltip {
+  position: relative;
+  padding: 10px 20px;
+  font-family: gotham_promedium, sans-serif;
+  color: #fff;
+  border-radius: 8px;
+  background-color: #547B88;
+  -webkit-filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
+}
+.chart__tooltip:before {
+  content: " ";
+  top: 99%;
+  left: 50%;
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border: solid transparent;
+  border-color: rgba(255, 255, 255, 0);
+  border-top-color: #547B88;
+  border-width: 8px;
+  margin-left: -8px;
+}
+.statistics-wrapper {
+  padding: 10px 20px 90px 20px;
+  white-space: nowrap;
+}
+.statistics-wrapper:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.statistics-select {
+  height: 33px;
+  padding: 0 25px 0 0;
+  font-family: gotham_proregular, sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  color: #fff;
+  border: 0;
+  outline: 0;
+  background-color: transparent;
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMSA3IiBmaWxsPSJub25lIiBzdHJva2U9IiNiOWI5YjkiIHN0cm9rZS13aWR0aD0iMS4yMTUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+PHBhdGggZD0iTTEgMUw1LjQgNiAxMCAxIi8+PC9zdmc+);
+  background-repeat: no-repeat;
+  background-position: right 5px bottom 11px;
+  background-size: 12px 10px;
+  box-shadow: 1px 1px 6px rgba(74, 74, 74, .10);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+.statistics-select:first-child {
+  float: left;
+}
+.statistics-select:last-child {
+  float: right;
+}
