@@ -742,7 +742,8 @@ var AntiBannerFilters = function (options) {
 
                 var attr = $(e.target).attr('data-tab');
 
-                $('.opts-list').hide();
+                $('.opts-list[data-tab="recommended"]').hide();
+                $('.opts-list[data-tab="other"]').hide();
                 $('.opts-list[data-tab="' + attr + '"]').show();
             });
 
