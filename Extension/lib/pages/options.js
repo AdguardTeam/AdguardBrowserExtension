@@ -645,11 +645,11 @@ var AntiBannerFilters = function (options) {
             .append(document.createTextNode(tag.keyword));
 
         var tabsBar = $('<div>', {class: 'tabs-bar'})
-            .append($('<a>', {href: '', class: 'tab active', text: 'Recommended'}))
-            .append($('<a>', {href: '', class: 'tab', text: 'Other'}));
+            .append($('<a>', {href: '', class: 'tab active', text: 'Recommended', 'data-tab': 'recommended'}))
+            .append($('<a>', {href: '', class: 'tab', text: 'Other', 'data-tab': 'other'}));
 
-        var recommendedFiltersList = $('<ul>', {class: 'opts-list'});
-        var filtersList = $('<ul>', {class: 'opts-list'});
+        var recommendedFiltersList = $('<ul>', {class: 'opts-list', 'data-tab': 'recommended'});
+        var filtersList = $('<ul>', {class: 'opts-list', 'data-tab': 'other', style: 'display:none;'});
 
         function appendFilterTemplate(filter, list) {
             var enabled = loadedFiltersInfo.isEnabled(filter.filterId);
@@ -683,9 +683,15 @@ var AntiBannerFilters = function (options) {
         var recommendedFilters = filtersByTag.filter(function (f) {
             return f.tags.indexOf(RECOMMENDED_TAG_ID) >= 0;
         });
+        recommendedFilters.sort(function (a, b) {
+            return a.displayNumber - b.displayNumber;
+        });
 
         var otherFilters = filtersByTag.filter(function (f) {
             return f.tags.indexOf(RECOMMENDED_TAG_ID) < 0;
+        });
+        otherFilters.sort(function (a, b) {
+            return a.displayNumber - b.displayNumber;
         });
 
         var filtersContentTemplate = getFiltersContentTemplate(tag, otherFilters, recommendedFilters);
@@ -727,6 +733,18 @@ var AntiBannerFilters = function (options) {
             }
 
             renderFilterCategory({tagId: 0, keyword: "Custom Filters"}, filters);
+
+            $('.tabs-bar .tab').click(function (e) {
+                e.preventDefault();
+
+                $('.tabs-bar .tab').removeClass('active');
+                $(e.target).addClass('active');
+
+                var attr = $(e.target).attr('data-tab');
+
+                $('.opts-list').hide();
+                $('.opts-list[data-tab="' + attr + '"]').show();
+            });
 
             $(".opt-state input:checkbox").toggleCheckbox();
 
