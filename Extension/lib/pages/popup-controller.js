@@ -270,41 +270,71 @@ PopupController.prototype = {
 
         var grad1 =
             '<linearGradient id="grad1" x1="50%" y1="0%" x2="50%" y2="100%">'+
-            '  <stop offset="0%" style="stop-color:rgb(196,229,255);stop-opacity:1" />'+
-            '  <stop offset="23%" style="stop-color:rgb(196,229,255);stop-opacity:1" />'+
-            '  <stop offset="100%" style="stop-color:rgb(10,149,255);stop-opacity:1" />'+
+            '  <stop offset="0%" style="stop-color:#73BE66;stop-opacity:1" />'+
+            '  <stop offset="23%" style="stop-color:#6DBE85;stop-opacity:1" />'+
+            '  <stop offset="100%" style="stop-color:#65BDA8;stop-opacity:1" />'+
             '</linearGradient>';
-
-        var grad2 =
-            '<linearGradient id="grad2" x1="0%" y1="100%" x2="100%" y2="0%" >'+
-            '  <stop offset="0%" style="stop-color:rgb(77,0,0);stop-opacity:1" />'+
-            '  <stop offset="50%" style="stop-color:rgb(255,0,0);stop-opacity:1" />'+
-            '  <stop offset="100%" style="stop-color:rgb(77,0,0);stop-opacity:0" />'+
-            '</linearGradient>';
-
 
         var chart = c3.generate({
             data: {
                 columns: [
-                    ['data1', 100, 200, 150, 300, 200],
-                    ['data2', 400, 500, 250, 700, 300]
+                    ['data1', 40, 55, 60, 43, 58, 63, 60]
                 ],
                 types: {
-                    data1: 'area-spline',
-                    data2: 'area-spline'
+                    data1: 'area-spline'
                 },
                 colors: {
-                    data1: 'url(#grad1)',
-                    data2: 'url(#grad2)'
+                    data1: 'url(#grad1)'
                 }
             },
-            color: {
-                pattern: ['url(#grad1)', '#ffff00']
+            axis: {
+                x: {
+                    show: true,
+                    type: 'category',
+                    categories: ['Mo', 'Tu', 'Wn', 'Th', 'Fr', 'St', 'Su'],
+                    tick: {
+                        outer: false,
+                    }
+                },
+                y: {
+                    show: false
+                }
+            },
+            legend: {
+                show: false
+            },
+            grid: {
+                x: {
+                    show: true
+                },
+                focus: {
+                    show: false
+                }
+            },
+            spline: {
+                interpolation: {
+                    type: 'basis'
+                }
+            },
+            point: {
+                show: false
+            },
+            tooltip: {
+                position: function(data, width, height, element) {
+                    var top = d3.mouse(element)[1] - 50;
+                    return {
+                        top: top,
+                        left: parseInt(element.getAttribute('x')) - 3
+                    }
+                },
+                contents: function(d, defaultTitleFormat, defaultValueFormat, color) {
+                    d = d[0].value;
+                    return '<div id="tooltip" class="chart__tooltip">' + d + '</div>'
+                }
             },
             oninit: function() {
-                this.svg[0][0].getElementsByTagName('defs')[0].innerHTML += grad1 + grad2;
+                this.svg[0][0].getElementsByTagName('defs')[0].innerHTML += grad1;
             }
-
         });
     },
 

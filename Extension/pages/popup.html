@@ -128,9 +128,19 @@
 
 <!--Statistics-->
 <div id="filtering-statistics-template" style="display: none;">
-    <div>
-        <div id="chart"></div>
+    <div class="statistics-wrapper">
+        <select name="type" class="statistics-select">
+            <option value="">Bad requests</option>
+            <option value="">Some requests</option>
+            <option value="">Other requests</option>
+        </select>
+        <select name="time" class="statistics-select">
+            <option value="">Last week</option>
+            <option value="">Last month</option>
+            <option value="">Last year</option>
+        </select>
     </div>
+    <div id="chart" class="chart"></div>
 </div>
 
 <div id="action-open-abuse-template" style="display: none;">
