@@ -355,7 +355,7 @@
                 return true; // Async
             case 'getStatisticsData':
                 callback({
-                    stats: adguard.pageStats.getTotalBlocked()
+                    stats: adguard.pageStats.getStatisticsData()
                 });
                 return true;
             case 'resizePanelPopup':

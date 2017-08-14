@@ -266,6 +266,8 @@ PopupController.prototype = {
     },
 
     _renderStatsBlock: function (stats) {
+        //TODO: Use stats object
+
         var grad1 =
             '<linearGradient id="grad1" x1="50%" y1="0%" x2="50%" y2="100%">'+
             '  <stop offset="0%" style="stop-color:rgb(196,229,255);stop-opacity:1" />'+
