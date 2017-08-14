@@ -124,10 +124,22 @@ adguard.pageStats = (function (adguard) {
 
     var createStatsData = function (now, type, blocked) {
         var result = Object.create(null);
+        result.hours = [];
+        result.days = [];
+        result.months = [];
 
-        result.hours = [createStatsDataItem(type, blocked)];
-        result.days = [createStatsDataItem(type, blocked)];
-        result.months = [createStatsDataItem(type, blocked)];
+        for (var i = 0; i < MAX_HOURS_HISTORY; i++) {
+            result.hours.push(createStatsDataItem(null, 0));
+        }
+        result.hours.push(createStatsDataItem(type, blocked));
+
+        for (var j = 0; j < MAX_DAYS_HISTORY; j++) {
+            result.days.push(createStatsDataItem(null, 0));
+        }
+        result.days.push(createStatsDataItem(type, blocked));
+
+        result.months.push(createStatsDataItem(type, blocked));
+
         result.updated = now.getTime();
 
         return result;
@@ -135,7 +147,9 @@ adguard.pageStats = (function (adguard) {
 
     var createStatsDataItem = function (type, blocked) {
         var result = new Object(null);
-        result[type] = blocked;
+        if (type) {
+            result[type] = blocked;
+        }
         result.total = blocked;
         return result;
     };
@@ -158,24 +172,42 @@ adguard.pageStats = (function (adguard) {
         if (adguard.utils.dates.isSameHour(now, currentDate) && result.hours.length > 0) {
             result.hours[result.hours.length - 1] = updateStatsDataItem(type, blocked, result.hours[result.hours.length - 1]);
         } else {
+            var diffHours = adguard.utils.dates.getDifferenceInHours(now, currentDate);
+            while (diffHours > 1) {
+                result.hours.push(createStatsDataItem(null, 0));
+                diffHours--;
+            }
+
             result.hours.push(createStatsDataItem(type, blocked));
             if (result.hours.length > MAX_HOURS_HISTORY) {
-                result.hours.shift();
+                result.hours = result.hours.slice(0, MAX_HOURS_HISTORY);
             }
         }
 
         if (adguard.utils.dates.isSameDay(now, currentDate) && result.days.length > 0) {
             result.days[result.days.length - 1] = updateStatsDataItem(type, blocked, result.days[result.days.length - 1]);
         } else {
+            var diffDays = adguard.utils.dates.getDifferenceInDays(now, currentDate);
+            while (diffDays > 1) {
+                result.days.push(createStatsDataItem(null, 0));
+                diffDays--;
+            }
+
             result.days.push(createStatsDataItem(type, blocked));
             if (result.days.length > MAX_DAYS_HISTORY) {
-                result.days.shift();
+                result.days = result.days.slice(0, MAX_DAYS_HISTORY);
             }
         }
 
         if (adguard.utils.dates.isSameMonth(now, currentDate) && result.months.length > 0) {
             result.months[result.months.length - 1] = updateStatsDataItem(type, blocked, result.months[result.months.length - 1]);
         } else {
+            var diffMonths = adguard.utils.dates.getDifferenceInMonths(now, currentDate);
+            while (diffMonths > 1) {
+                result.months.push(createStatsDataItem(null, 0));
+                diffMonths--;
+            }
+
             result.months.push(createStatsDataItem(type, blocked));
         }
 

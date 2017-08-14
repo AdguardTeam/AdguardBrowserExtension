@@ -160,7 +160,7 @@ PopupController.prototype = {
         this._renderStatus(containerMain, tabInfo);
         this._renderActions(containerMain, tabInfo);
         this._renderMessage(containerMain, tabInfo);
-        this._renderStats(containerStats, tabInfo);
+        this._renderStats(containerStats);
         this._renderFooter(parent, tabInfo);
     },
 
@@ -265,8 +265,74 @@ PopupController.prototype = {
         }
     },
 
-    _renderStatsBlock: function (stats) {
-        //TODO: Use stats object
+    _selectStatsData: function (stats, range) {
+        var result = [];
+
+        switch (range) {
+            case 'day':
+                stats.today.forEach(function (d) {
+                    result.push(d.total);
+                });
+                break;
+            case 'week':
+                stats.lastWeek.forEach(function (d) {
+                    result.push(d.total);
+                });
+                break;
+            case 'month':
+                stats.lastMonth.forEach(function (d) {
+                    result.push(d.total);
+                });
+                break;
+            case 'year':
+                stats.lastYear.forEach(function (d) {
+                    result.push(d.total);
+                });
+                break;
+                break;
+        }
+
+        return result;
+    },
+
+    _getCategories: function (range) {
+        var now = new Date();
+        //TODO: Fill with correct labels
+
+        var result = [];
+        switch (range) {
+            case 'day':
+                for (var i = 0; i < 24; i++) {
+                    result.push(i.toString());
+                }
+
+                break;
+            case 'week':
+                for (var i = 1; i < 8; i++) {
+                    result.push(i.toString());
+                }
+
+                break;
+            case 'month':
+                for (var i = 1; i < 31; i++) {
+                    result.push(i.toString());
+                }
+
+                break;
+            case 'year':
+                for (var i = 1; i < 12; i++) {
+                    result.push(i.toString());
+                }
+
+                break;
+        }
+
+        return result;
+    },
+
+    _renderStatsGraphs: function (stats, range) {
+        var statsData = this._selectStatsData(stats, range);
+        var categories = this._getCategories(range);
 
         var grad1 =
             '<linearGradient id="grad1" x1="50%" y1="0%" x2="50%" y2="100%">'+
@@ -278,7 +344,7 @@ PopupController.prototype = {
         var chart = c3.generate({
             data: {
                 columns: [
-                    ['data1', 40, 55, 60, 43, 58, 63, 60]
+                    ['data1'].concat(statsData)
                 ],
                 types: {
                     data1: 'area-spline'
@@ -291,7 +357,7 @@ PopupController.prototype = {
                 x: {
                     show: true,
                     type: 'category',
-                    categories: ['Mo', 'Tu', 'Wn', 'Th', 'Fr', 'St', 'Su'],
+                    categories: categories,
                     tick: {
                         outer: false,
                     }
@@ -338,14 +404,20 @@ PopupController.prototype = {
         });
     },
 
-    _renderStats: function (container, tabInfo) {
-        var template = this.filteringStatisticsTemplate;
-        container.append(template);
+    _renderStatsBlock: function () {
+        var timeRange = $('.statistics-select-time').val();
 
         var self = this;
         popupPage.sendMessage({type: 'getStatisticsData'}, function (message) {
-            self._renderStatsBlock(message.stats);
+            self._renderStatsGraphs(message.stats, timeRange);
         });
+    },
+
+    _renderStats: function (container) {
+        var template = this.filteringStatisticsTemplate;
+        container.append(template);
+
+        this._renderStatsBlock();
     },
 
     _renderActions: function (container, tabInfo) {
@@ -481,6 +553,11 @@ PopupController.prototype = {
             $('.tab-switch-tab[tab-switch="' + attr + '"]').show();
 
         });
+
+        // Stats filters
+        parent.on('change', '.statistics-select-time', function (e) {
+            self._renderStatsBlock();
+        })
     },
 
     _initFeedback: function () {

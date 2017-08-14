@@ -131,13 +131,14 @@
     <div class="statistics-wrapper">
         <select name="type" class="statistics-select">
             <option value="">Bad requests</option>
-            <option value="">Some requests</option>
-            <option value="">Other requests</option>
+            <!--<option value="">Some requests</option>-->
+            <!--<option value="">Other requests</option>-->
         </select>
-        <select name="time" class="statistics-select">
-            <option value="">Last week</option>
-            <option value="">Last month</option>
-            <option value="">Last year</option>
+        <select name="time" class="statistics-select statistics-select-time">
+            <option value="day">Last day</option>
+            <option value="week" selected="true">Last week</option>
+            <option value="month">Last month</option>
+            <option value="year">Last year</option>
         </select>
     </div>
     <div id="chart" class="chart"></div>

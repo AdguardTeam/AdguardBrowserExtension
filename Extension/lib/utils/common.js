@@ -183,25 +183,14 @@ adguard.utils = (function () {
     var DateUtils = {
 
         isSameHour: function (a, b) {
-            if (!a || !b) {
-                return false;
-            }
-
             return (
-                a.getYear() === b.getYear() &&
-                a.getMonth() === b.getMonth() &&
-                a.getDate() === b.getDate() &&
+                this.isSameDay(a, b) &&
                 a.getHours() === b.getHours()
             );
         },
         isSameDay: function (a, b) {
-            if (!a || !b) {
-                return false;
-            }
-
             return (
-                a.getYear() === b.getYear() &&
-                a.getMonth() === b.getMonth() &&
+                this.isSameMonth(a, b) &&
                 a.getDate() === b.getDate()
             );
         },
@@ -214,6 +203,15 @@ adguard.utils = (function () {
                 a.getYear() === b.getYear() &&
                 a.getMonth() === b.getMonth()
             );
+        },
+        getDifferenceInHours: function (a, b) {
+            return (a.getTime() - b.getTime()) / 1000 / 60 / 60;
+        },
+        getDifferenceInDays: function (a, b) {
+            return this.getDifferenceInHours(a, b) / 24;
+        },
+        getDifferenceInMonths: function (a, b) {
+            return this.getDifferenceInDays(a, b) / 30;
         }
     };
 
