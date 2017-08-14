@@ -467,6 +467,20 @@ PopupController.prototype = {
             e.preventDefault();
             changeProtectionState(false);
         });
+
+        // Tabs
+        parent.on('click', '.tabbar .tab', function (e) {
+            e.preventDefault();
+
+            $('.tabbar .tab').removeClass('active');
+            $(e.target).addClass('active');
+
+            var attr = $(e.target).attr('tab-switch');
+
+            $('.tab-switch-tab').hide();
+            $('.tab-switch-tab[tab-switch="' + attr + '"]').show();
+
+        });
     },
 
     _initFeedback: function () {
