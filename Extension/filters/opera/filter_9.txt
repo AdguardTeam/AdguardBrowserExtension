@@ -1,16 +1,9 @@
-! Checksum: u2p1zdgx1yjRF74pUU33ig
+! Checksum: 8Ek/dG01g/NvYs4eFne/yw
 ! Title: Spanish/Portuguese filter
 ! Description: Adguard Spanish/Portuguese filter. Filter list that specifically removes adverts on Spanish and Portuguese language websites.
-! Version: 1.0.86.72
-! TimeUpdated: 2017-07-08T17:01:33.572+04:00
+! Version: 1.0.86.85
+! TimeUpdated: 2017-08-14T20:01:37.848+04:00
 ! Expires: 2 days (update frequency)
-! Title: Adguard Spanish/Portuguese Filter.
-!
-! Filter that enables removing of the ads from websites in Spanish.
-! Originally based on the Fanboy’s Spanish/Portuguese Adblock list filter (http://www.fanboy.co.nz/).
-! Modified by Adguard Team according to the complaints from users.
-! This filter is licensed under the Creative Commons Attribution-ShareAlike 3.0 Unported license.
-!
 ! Homepage: http://adguard.com/filters.html#spanish
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
 !
@@ -168,9 +161,58 @@
 !
 ! These rules are against anti-adblock scripts
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/6152
+flooxer.com#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
+! https://github.com/AdguardTeam/AdguardFilters/issues/6061
+expansion.com#@#.adsbox
+expansion.com#@#div[id^="div-gpt-ad"]
+@@||securepubads.g.doubleclick.net/gpt/pubads_impl_$domain=expansion.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/6118
+telecinco.es#%#window._detecAdblock_fake1 = true;
+telecinco.es#%#window._detecAdblock_fake2 = true;
+telecinco.es#$##adsFooter { height: 1px!important; width: 1px!important; }
+telecinco.es#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
+@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=telecinco.es
+!+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb)
+@@||mdsrwdassets-a.akamaihd.net/dist/assets/nonAdBlock/adjs.js$domain=telecinco.es
+!+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb)
+@@||mdsrwdassets-a.akamaihd.net/dist/assets/nonAdBlock/adframe.js$domain=telecinco.es
+! https://forum.adguard.com/index.php?threads/24052/
+@@||animeflv.me/static/ads.js
 ! antiblock.org
 bludv.com#%#Object.defineProperty(window,'bsaAQyLSuO',{get:function(){},set:function(){throw"Adguard: stopped a script execution."}});
+! https://github.com/AdguardTeam/AdguardFilters/issues/6051
+@@||mitele.es^$generichide
+@@||mitele.es/vendor/fuckadblock.js
+@@||mitele.es/vendor/adjs.js
+@@||securepubads.g.doubleclick.net/gpt/pubads_impl_*.js$domain=mitele.es
+@@||player.ooyala.com/static/*/ad-plugin/google_ima.min.js$domain=mitele.es
+@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=mitele.es
+! https://github.com/AdguardTeam/AdguardFilters/issues/6079
+@@||minhaconexao.com.br/js/ads_detect.js
+minhaconexao.com.br#%#window.canRunAds = true;
+! https://github.com/AdguardTeam/AdguardFilters/issues/6052
+diariodemallorca.es#%#window.pr_okvalida=true;
+!+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb)
+@@||diariodemallorca.es/servicios/ads/dfp.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/5860
+@@||hdstatic.net/holadoctor/*-phoneformat/js/default-rsp/common/adblock/adsbygoogle.js$domain=holadoctor.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/5857
+@@||zeiz.me/js/ads.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/5709
+maisgasolina.com#@##adblock
+maisgasolina.com#%#window.google_jobrunner = function() {};
+!+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
+maisgasolina.com#@#.adsbygoogle
+!+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
+@@||maisgasolina.com/ajax.php?loadData=1&banner_id=ublock&someSoup=1
+!+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
+@@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=maisgasolina.com
+!+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
+@@||pagead2.googlesyndication.com/pagead/js/*/show_ads_impl.js$domain=maisgasolina.com
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/5656
+||vocento.com/adblock-detector/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5548
 @@||farodevigo.es/servicios/ads/dfp.js^
 farodevigo.es#%#window.pr_okvalida = true;
@@ -207,8 +249,6 @@ forum.outerspace.com.br#@#.adsbygoogle
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3198
 @@||dtorrent.com.br^$generichide
 @@||bludv.com^$generichide
-! https://github.com/AdguardTeam/AdguardFilters/issues/3157
-@@||telecinco.es^$generichide
 ! https://github.com/AdguardTeam/AdguardDNS/issues/23
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=vmf.edge-apps.net|americatv.com.ar
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1328
@@ -241,6 +281,7 @@ jokerfansub.com#@##adsense
 ! Extended CSS rules
 !
 mangahost.net##.sidebar > section.clearfix[-ext-has='div.ads']
+maisgasolina.com###main [id$="Block"][-ext-has='.adsbygoogle']
 !---------------------------------------------------------------------------!
 !-------------- General element hiding rules -------------------------------!
 !---------------------------------------------------------------------------!
@@ -454,6 +495,12 @@ http://adw.
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
 !
+animeflv.me##.banner_center
+animeid.io##.banner_center
+mitele.es##.ad-wrapper
+tudotv.tv##.Publicidade728
+tudotv.tv##div[id*="Composite"]
+holadoctor.com##.banner_cubo_space
 uol.com.br##.lista-ecommerce
 uol.com.br###banner-stick
 animeid.io###divFloatRight

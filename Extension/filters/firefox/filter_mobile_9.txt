@@ -1,8 +1,8 @@
-! Checksum: LaEJs4L1IjZR+jCnwRayjQ
+! Checksum: AmTzS1LPPwxispMmlI4ThA
 ! Title: Spanish/Portuguese filter
 ! Description: Adguard Spanish/Portuguese filter. Filter list that specifically removes adverts on Spanish and Portuguese language websites.
-! Version: 1.0.86.72
-! TimeUpdated: 2017-07-08T17:01:33.572+04:00
+! Version: 1.0.86.85
+! TimeUpdated: 2017-08-14T20:01:37.848+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -140,7 +140,45 @@
 ||xclk-integracion.com^$third-party
 ||yestorrents.org^$third-party
 ||zebestof.com^$third-party
+flooxer.com#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
+expansion.com#@#.adsbox
+expansion.com#@#div[id^="div-gpt-ad"]
+@@||securepubads.g.doubleclick.net/gpt/pubads_impl_$domain=expansion.com
+telecinco.es#%#window._detecAdblock_fake1 = true;
+telecinco.es#%#window._detecAdblock_fake2 = true;
+telecinco.es#$##adsFooter { height: 1px!important; width: 1px!important; }
+telecinco.es#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
+@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=telecinco.es
+!+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb)
+@@||mdsrwdassets-a.akamaihd.net/dist/assets/nonAdBlock/adjs.js$domain=telecinco.es
+!+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb)
+@@||mdsrwdassets-a.akamaihd.net/dist/assets/nonAdBlock/adframe.js$domain=telecinco.es
+@@||animeflv.me/static/ads.js
 bludv.com#%#Object.defineProperty(window,'bsaAQyLSuO',{get:function(){},set:function(){throw"Adguard: stopped a script execution."}});
+@@||mitele.es^$generichide
+@@||mitele.es/vendor/fuckadblock.js
+@@||mitele.es/vendor/adjs.js
+@@||securepubads.g.doubleclick.net/gpt/pubads_impl_*.js$domain=mitele.es
+@@||player.ooyala.com/static/*/ad-plugin/google_ima.min.js$domain=mitele.es
+@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=mitele.es
+@@||minhaconexao.com.br/js/ads_detect.js
+minhaconexao.com.br#%#window.canRunAds = true;
+diariodemallorca.es#%#window.pr_okvalida=true;
+!+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb)
+@@||diariodemallorca.es/servicios/ads/dfp.js
+@@||hdstatic.net/holadoctor/*-phoneformat/js/default-rsp/common/adblock/adsbygoogle.js$domain=holadoctor.com
+@@||zeiz.me/js/ads.js
+maisgasolina.com#@##adblock
+maisgasolina.com#%#window.google_jobrunner = function() {};
+!+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
+maisgasolina.com#@#.adsbygoogle
+!+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
+@@||maisgasolina.com/ajax.php?loadData=1&banner_id=ublock&someSoup=1
+!+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
+@@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=maisgasolina.com
+!+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
+@@||pagead2.googlesyndication.com/pagead/js/*/show_ads_impl.js$domain=maisgasolina.com
+||vocento.com/adblock-detector/
 @@||farodevigo.es/servicios/ads/dfp.js^
 farodevigo.es#%#window.pr_okvalida = true;
 @@||levante-emv.com/elementosWeb/js/ads.js^
@@ -162,7 +200,6 @@ forum.outerspace.com.br#@#.adsbygoogle
 @@||comandofilmes.net^$generichide
 @@||dtorrent.com.br^$generichide
 @@||bludv.com^$generichide
-@@||telecinco.es^$generichide
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=vmf.edge-apps.net|americatv.com.ar
 tustoons.blogspot.com.es#@#.afs_ads
 peru21.pe#@#.adstop
@@ -177,6 +214,7 @@ jokerfansub.com#@##adsense
 @@||autonocion.com/js/advertisement.js
 @@||subedlc.com^$elemhide
 mangahost.net##.sidebar > section.clearfix[-ext-has='div.ads']
+maisgasolina.com###main [id$="Block"][-ext-has='.adsbygoogle']
 ###PublicidadCentro
 ###PublicidadSuperior
 ###Publicidade
@@ -349,6 +387,12 @@ _publicidade.
 _publicidade_
 _publicitario.
 http://adw.
+animeflv.me##.banner_center
+animeid.io##.banner_center
+mitele.es##.ad-wrapper
+tudotv.tv##.Publicidade728
+tudotv.tv##div[id*="Composite"]
+holadoctor.com##.banner_cubo_space
 uol.com.br##.lista-ecommerce
 uol.com.br###banner-stick
 animeid.io###divFloatRight

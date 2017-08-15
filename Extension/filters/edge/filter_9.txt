@@ -1,16 +1,9 @@
-! Checksum: u2p1zdgx1yjRF74pUU33ig
+! Checksum: iolH6GQfzV8rV7UWqXuiGA
 ! Title: Spanish/Portuguese filter
 ! Description: Adguard Spanish/Portuguese filter. Filter list that specifically removes adverts on Spanish and Portuguese language websites.
-! Version: 1.0.86.72
-! TimeUpdated: 2017-07-08T17:01:33.572+04:00
+! Version: 1.0.86.85
+! TimeUpdated: 2017-08-14T20:01:37.848+04:00
 ! Expires: 2 days (update frequency)
-! Title: Adguard Spanish/Portuguese Filter.
-!
-! Filter that enables removing of the ads from websites in Spanish.
-! Originally based on the Fanboy’s Spanish/Portuguese Adblock list filter (http://www.fanboy.co.nz/).
-! Modified by Adguard Team according to the complaints from users.
-! This filter is licensed under the Creative Commons Attribution-ShareAlike 3.0 Unported license.
-!
 ! Homepage: http://adguard.com/filters.html#spanish
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
 !
@@ -168,9 +161,44 @@
 !
 ! These rules are against anti-adblock scripts
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/6152
+flooxer.com#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
+! https://github.com/AdguardTeam/AdguardFilters/issues/6061
+expansion.com#@#.adsbox
+expansion.com#@#div[id^="div-gpt-ad"]
+@@||securepubads.g.doubleclick.net/gpt/pubads_impl_$domain=expansion.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/6118
+telecinco.es#%#window._detecAdblock_fake1 = true;
+telecinco.es#%#window._detecAdblock_fake2 = true;
+telecinco.es#$##adsFooter { height: 1px!important; width: 1px!important; }
+telecinco.es#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
+@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=telecinco.es
+! https://forum.adguard.com/index.php?threads/24052/
+@@||animeflv.me/static/ads.js
 ! antiblock.org
 bludv.com#%#Object.defineProperty(window,'bsaAQyLSuO',{get:function(){},set:function(){throw"Adguard: stopped a script execution."}});
+! https://github.com/AdguardTeam/AdguardFilters/issues/6051
+@@||mitele.es^$generichide
+@@||mitele.es/vendor/fuckadblock.js
+@@||mitele.es/vendor/adjs.js
+@@||securepubads.g.doubleclick.net/gpt/pubads_impl_*.js$domain=mitele.es
+@@||player.ooyala.com/static/*/ad-plugin/google_ima.min.js$domain=mitele.es
+@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=mitele.es
+! https://github.com/AdguardTeam/AdguardFilters/issues/6079
+@@||minhaconexao.com.br/js/ads_detect.js
+minhaconexao.com.br#%#window.canRunAds = true;
+! https://github.com/AdguardTeam/AdguardFilters/issues/6052
+diariodemallorca.es#%#window.pr_okvalida=true;
+! https://github.com/AdguardTeam/AdguardFilters/issues/5860
+@@||hdstatic.net/holadoctor/*-phoneformat/js/default-rsp/common/adblock/adsbygoogle.js$domain=holadoctor.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/5857
+@@||zeiz.me/js/ads.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/5709
+maisgasolina.com#@##adblock
+maisgasolina.com#%#window.google_jobrunner = function() {};
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/5656
+||vocento.com/adblock-detector/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5548
 @@||farodevigo.es/servicios/ads/dfp.js^
 farodevigo.es#%#window.pr_okvalida = true;
@@ -207,8 +235,6 @@ forum.outerspace.com.br#@#.adsbygoogle
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3198
 @@||dtorrent.com.br^$generichide
 @@||bludv.com^$generichide
-! https://github.com/AdguardTeam/AdguardFilters/issues/3157
-@@||telecinco.es^$generichide
 ! https://github.com/AdguardTeam/AdguardDNS/issues/23
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=vmf.edge-apps.net|americatv.com.ar
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1328
@@ -241,6 +267,7 @@ jokerfansub.com#@##adsense
 ! Extended CSS rules
 !
 mangahost.net##.sidebar > section.clearfix[-ext-has='div.ads']
+maisgasolina.com###main [id$="Block"][-ext-has='.adsbygoogle']
 !---------------------------------------------------------------------------!
 !-------------- General element hiding rules -------------------------------!
 !---------------------------------------------------------------------------!
@@ -454,6 +481,12 @@ http://adw.
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
 !
+animeflv.me##.banner_center
+animeid.io##.banner_center
+mitele.es##.ad-wrapper
+tudotv.tv##.Publicidade728
+tudotv.tv##div[id*="Composite"]
+holadoctor.com##.banner_cubo_space
 uol.com.br##.lista-ecommerce
 uol.com.br###banner-stick
 animeid.io###divFloatRight
@@ -1108,10 +1141,10 @@ globo.com##.vitrine_banner
 globo.com##.widget-shopping
 autocity.com##.zonaGoogle
 caracoltv.com##.zona_comercial
-record.pt##[align="right"][width="348"]
+record.pt##[align="right"][Width="348"]
 impulsonegocios.com##[class^="list_table_banner"]
-record.pt##[height="76"][width="8"]
-itweb.com.br,record.pt##[height="90"][width="728"]
+record.pt##[Height="76"][Width="8"]
+itweb.com.br,record.pt##[Height="90"][Width="728"]
 sapo.pt##[style="WIDTH:300px; margin-bottom:10px; TEXT-ALIGN:right"]
 expressomt.com.br##[style="clear: both; position:relative;	top: 0px; 	width: 990px; border: 1px solid #c1c1c1; padding-left: 5px; padding-bottom: 5px; padding-top: 5px; height:100px"]
 gazetaesportiva.net##[style="float:left; padding-right:0px; width:130px; display:inline;"]
@@ -1144,8 +1177,8 @@ autosport.aeiou.pt##[style="width:300px;height:250px;overflow:visible;z-index:0;
 eladelantado.com##[style="width:330px; margin-top:4px; margin-bottom:4px; background-color:#eef0ed; padding-top:13px; padding-bottom:5px; background-image:url(imagenes/bannerFichero/publicidadHorizontal.gif); background-repeat:no-repeat; background-position:top;"]
 sapo.pt##[style="width:527px; height:150px; float:right"]
 vagos.es##[style="width:906px !important;height:98px !important;width:908px;height:100px;background:#F1F1F1;border:1px solid #9F6A1E;margin-left:auto;margin-right:auto;padding:0;position:relative"]
-itweb.com.br##[width="300"]
-univision.com##[width="320"][align="left"]
+itweb.com.br##[Width="300"]
+univision.com##[Width="320"][align="left"]
 tuga-filmes.com##a[href="http://www.brigtek.com"]
 oxe7.com##a[href="http://www.maiores18.com/"]
 degracaemaisgostoso.org##a[href="http://www.primecursos.com.br/"]
@@ -1197,14 +1230,14 @@ aristeguinoticias.com##div[style="width:728px;height:90px;margin:0 auto;"]
 aristeguinoticias.com##div[style="width:728px;height:90px;margin:0 auto;padding: 0 0 5px 0;"]
 damepc.com##div[style="width:950px;margin-left:auto;margin-right:auto;"]
 peliculas-flv.com##div[style^="position:fixed; left:50%; top:50%"]
-tomadivx.org##iframe[height="600"]
-tomadivx.org##iframe[width="130"]
-tomadivx.org##iframe[width="300"]
-tomadivx.org##iframe[width="728"]
+tomadivx.org##iframe[Height="600"]
+tomadivx.org##iframe[Width="130"]
+tomadivx.org##iframe[Width="300"]
+tomadivx.org##iframe[Width="728"]
 baixeturbo.org##img[style="border: 0px solid; width: 300px; height: 250px;"]
 tuga-filmes.com##img[style="width: 125px; height: 125px;"]
-internetcine.com##img[width="350"][height="225"]
-futbolme.com##img[width="468"]
+internetcine.com##img[Width="350"][Height="225"]
+futbolme.com##img[Width="468"]
 tvportugalhd.com##noscript + [id^="r"]
 eleconomista.es##p[style="font-size:11px; padding:5px"]
 forumchaves.com.br##p[style="line-height: 150%;"]
@@ -1212,29 +1245,29 @@ tvportugalhd.com##script + i[id^="r"]
 forocoches.com##span[style="border: solid #FAFAFA; border-left: 10px solid #DADADA; PADDING-LEFT: 5px; padding:5px; margin: 1px; float: right; width: 301px; height: 251px;"]
 burbuja.info##span[style="float: right; width: 300px; height: 260px;"]
 guiadasemana.com.br##table[bgcolor="#808080"]
-24horasnews.com.br##table[cellpadding="1"][width="640"]
-sapo.pt##table[cellpadding="5"][width="641"]
-elfolladero.com##table[height="19"][width="98%"][id="AutoNumber4"]
-vagos.es##table[height="250px"][width="700px"]
-elfolladero.com##table[height="368"][width="1000"][id="AutoNumber1"]
-elcorillord.com,ultradownloads.uol.com.br##table[height="600"]
+24horasnews.com.br##table[cellpadding="1"][Width="640"]
+sapo.pt##table[cellpadding="5"][Width="641"]
+elfolladero.com##table[Height="19"][Width="98%"][id="AutoNumber4"]
+vagos.es##table[Height="250px"][Width="700px"]
+elfolladero.com##table[Height="368"][Width="1000"][id="AutoNumber1"]
+elcorillord.com,ultradownloads.uol.com.br##table[Height="600"]
 vagos.es##table[style="border:0px width:1010px;height:250px;margin-left:auto;margin-right:auto;margin-top:10px;margin-bottom:10px;"]
 portalangop.co.ao##table[style="padding-left: 8px; padding-top: 8px; padding-bottom: 0px;"]
 portalangop.co.ao##table[style="padding-left:8px;padding-top:8px;padding-bottom:0px;"]
 ultimahora.com##table[summary="banner"]
-minutodigital.com##table[width="335"][height="260"]
-facilisimo.com##table[width="336"]
-24horasnews.com.br##table[width="468"]
-elcorillord.com##table[width="600"]
-omelete.com.br##table[width="768"]
-r7.com##td[align="center"][height="110"]
+minutodigital.com##table[Width="335"][Height="260"]
+facilisimo.com##table[Width="336"]
+24horasnews.com.br##table[Width="468"]
+elcorillord.com##table[Width="600"]
+omelete.com.br##table[Width="768"]
+r7.com##td[align="center"][Height="110"]
 guiadasemana.com.br##td[bgcolor="#dcdcdc"]
-juegosypelis.ws##td[height="630"]
+juegosypelis.ws##td[Height="630"]
 saludalia.com##td[style="height:110px;width:760px;padding-left:25px;padding-top:5px;"]
-forum.clubedohardware.com.br##td[width="20%"]
-orapois.com.br##td[width="300"]
-infonegocios.tv##td[width="961"][height="60"]
-ultradownloads.uol.com.br##tr[height="90"]
+forum.clubedohardware.com.br##td[Width="20%"]
+orapois.com.br##td[Width="300"]
+infonegocios.tv##td[Width="961"][Height="60"]
+ultradownloads.uol.com.br##tr[Height="90"]
 uol.com.br##ul.produtos
 ||184.154.142.242/download.aspx?
 ||187.6.64.32/especialdenatal/home/produto_

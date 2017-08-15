@@ -1,13 +1,9 @@
-! Checksum: xB7hVuaIlAzQf5lfNGokZw
+! Checksum: PYJOMgP83wQFg1Lc9lAlRg
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 1.0.8.93
-! TimeUpdated: 2017-07-13T16:02:01.457+04:00
+! Version: 1.0.9.29
+! TimeUpdated: 2017-08-15T17:01:56.294+04:00
 ! Expires: 2 days (update frequency)
-! Title: Adguard Mobile Ads Filter
-!
-! This filter blocks all known mobile ad networks and banners.
-!
 ! Homepage: http://adguard.com/filters.html#mobile
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
 !
@@ -27,11 +23,29 @@
 !
 ! Section contains list of advertising networks
 !
+!
+! ||mobileapptracking.com^ - don't block this domain with all subdomiains. https://forum.adguard.com/index.php?threads/23917/
+!
 ! ***For test: Duplicated from specific_app.txt ***
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3933
 ! Yandex apps
 ||banners-slb.mobile.yandex.net^
 ||banners.mobile.yandex.net^
+!
+! Ads on some Chinese smartphones
+||sync.mobojoy.baidu.com^
+||api.mobojoy.baidu.com^
+||js.mobojoy.baidu.com^
+||ufz.doesxyz.com^
+||id1.cn^
+||xdrig.com^
+||usp1.baidu.com^
+||i2.myapkcdn.in^
+||admin.appnext.com^
+||c3.myapkcdn.in^
+||54.222.186.106^
+||plugin.mobopay.baidu.com^
+||mo.freeindoapp.com^
 !
 ||holder.com.ua^
 ||crosspromotion-us.avosapps.us^
@@ -554,7 +568,6 @@
 ||mobile.mng-ads.com^
 ||mobile333.com^
 ||mobileads.msn.com^
-||mobileapptracking.com^
 ||mobilecore.com^
 ||mobiledl.adboe.com^
 ||moboland.net^
@@ -871,6 +884,9 @@ westseattleblog.com#@#.header-ad
 !
 ! Extended CSS rules
 !
+! https://forum.adguard.com/index.php?threads/24017/
+fishki.net##.list-view-items div.content__preview[-ext-has='> div.picture-holder > a[href="/go/"][target="_blank"]']
+fishki.net##div[class^="list-view"] > div[class^="content__intro-text"][-ext-has='> p.content__intro-text__author > a[href="/profile/543769"]']
 ! Context ads in Yandex search results
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by,yandex.com.tr##.main > div.serp-list > div.serp-item[-ext-has='> div.organic > h2 > a[href^="http://yabs.yandex.ru/count/"]']
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5316
@@ -945,13 +961,13 @@ deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important
 !---------------------------------------------------------------------------!
 !-------------- General URL blocking rules ---------------------------------!
 !---------------------------------------------------------------------------!
+!
+! General URL(for apps only)
+!
 .cn/?ss=
 /adfurikun/*
 /aff_c?*offer_id=*&aff_id=
 /aff_r?*offer_id=*&aff_id=
-!
-! General URL(for apps only)
-!
 ||rt.api.glispa.com/native/v1/ad
 ||doodlemobile.com/feature_server/fullScreen/get.php
 ||doodlemobile.com/feature_server/geo-ip/test.php
@@ -1008,6 +1024,12 @@ deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important
 @@||tf-robots.nl^$elemhide,jsinject,content
 !
 !#####################
+! https://forum.adguard.com/index.php?threads/20287/
+@@||securepubads.g.doubleclick.net/gpt/pubads_impl_$script,domain=m.timesofindia.com
+@@||mobileads.indiatimes.com/Web_Ads/js/22april16/prebid_1.js$script,domain=m.timesofindia.com
+timesofindia.indiatimes.com#@#style[type="text/css"] + div[class]:not([id]):not([style]):not([class*=" "])
+! https://github.com/AdguardTeam/AdguardFilters/issues/976
+! https://github.com/AdguardTeam/AdguardForAndroid/issues/1256
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5539
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3708
 @@||securepubads.g.doubleclick.net/gpt/pubads_impl_$domain=m.legacy.com
@@ -1128,7 +1150,7 @@ arseblog.com#@#.header-ad
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1374
 @@||bankofamerica.com/content/images/ContextualSiteGraphics/Marketing/Banners/
 ! http://forum.adguard.com/showthread.php?8708
-@@||imasdk.googleapis.com/native/core*/native_bridge__de.js$domain=2mdn.net
+@@||imasdk.googleapis.com/native/core*/native_bridge__*.js$domain=2mdn.net
 ! twitch.tv on iPhone
 @@||imasdk.googleapis.com/js/core/bridge*.html$domain=twitch.tv
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1034
@@ -1166,8 +1188,6 @@ deviantart.com#@#.mobile-ad
 @@||mms.vtext.com^$document
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/310
 @@||convertpad.com/ad/
-! Filtering of this forum will break Mobilism app: issue #AG-6290
-@@||forum.mobilism.org^$document
 ! Prevent filtering apk storage of Google Play
 @@||android.clients.google.com/market/GetBinary/$document
 @@||play.google.com/store/apps/$document
@@ -1192,6 +1212,24 @@ m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"
 ! https://forum.adguard.com/index.php?threads/10464/
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
 !
+m.sweclockers.com##.header > .container > #topBanner
+lenfilm.tv##.rek
+mp4mania.rocks##center > a[rel="nofollow"] > img
+||mobj.space/api/openOffer?asid=
+kachelmannwetter.com###mobilebb-main
+stereogum.com##.ad-holder
+3g.163.com##.content-list > section.m_papa,papa-item
+fuw.ch###js-icon-list
+bodybuilding.com##.ad-container
+timesofindia.indiatimes.com###s_rhs
+independent.co.uk##.taboola
+skymetweather.com###outbrainmobile
+mobil.nwzonline.de##.article-list.compact > .ressort-divider
+||gadgetsnow.com/ngwm/
+gadgetsnow.com##style[type="text/css"] + div[class]:not([id]):not([style]):not([class*=" "])
+m.txxx.com##.section--normal > .section__panel.text-center:first-child
+csgostash.com##.adv-top-header-mobile
+mein-wahres-ich.de##.wrapper-content > .quiz.clearfix > div[align="center"]
 mobile.1haza.com##.main > a:not([href*="1haza.com"]) > img[width="100%"]
 mobile.1haza.com##.wrapper > a:not([href*="1haza.com"]) > img[width="100%"]
 ||m.kuku.lu/smphone.footer.blockspecial.php
@@ -1509,11 +1547,18 @@ auth.wi-fi.ru##.c-fullscreen-banner
 !
 ! Section contains rules for specific applications
 !
+! ua.slando - fixing adverts
 ! com.devexpert.weather https://github.com/AdguardTeam/AdguardFilters/issues/3865
 ! apptornado ads, when Google/FB ads are blocked
 !
 ! Blocking of Facebook ads
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/6167
+||ketchapp.org/crosspromo/
+! https://github.com/AdguardTeam/AdguardFilters/issues/6134
+! https://github.com/AdguardTeam/AdguardFilters/issues/6133
+! https://forum.adguard.com/index.php?threads/13437/
+! https://forum.adguard.com/index.php?threads/13437/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5248
 ||global.appnext.com/offerWallApi.aspx
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3346
@@ -1695,7 +1740,10 @@ auth.wi-fi.ru##.c-fullscreen-banner
 !
 ! Section contains rules for mobile analytics and spyware
 !
+||api.miui.security.xiaomi.com^
+||metok.sys.miui.com^
 ||sync.adotmob.com^
+||logger.cloudmobi.net^
 ||tracker.adotmob.com^
 ||dmx.sync.yume.com/tracker/
 ||measuread.com^
@@ -1948,6 +1996,8 @@ auth.wi-fi.ru##.c-fullscreen-banner
 !
 ! The content replacement rules
 !
+! https://forum.adguard.com/index.php?threads/23599/
+! https://forum.adguard.com/index.php?threads/23662/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5676
 ! https://forum.adguard.com/index.php?threads/21029/
 !
@@ -1958,6 +2008,13 @@ auth.wi-fi.ru##.c-fullscreen-banner
 ! Section contains rules, which absent in mobile version of filters
 !
 !--- Russian filter ---
+! https://forum.adguard.com/index.php?threads/23548/
+doramatv.ru,librebook.ru,findanime.me,findanime.me,mintmanga.com,grouple.co##.manga_ba
+doramatv.ru,librebook.ru,findanime.me,findanime.me,mintmanga.com,grouple.co##a[onclick="ga('send', 'event', 'buka', 'click', 'top_content')"][rel="nofollow"]
+doramatv.ru,librebook.ru,findanime.me,findanime.me,mintmanga.com,grouple.co##div[onclick="ga('send', 'event', 'destiny', 'click', '635x225')"]
+doramatv.ru,librebook.ru,findanime.me,findanime.me,mintmanga.com,grouple.co##.sidebar-block > div[style="height: 400px;"]
+doramatv.ru,librebook.ru,findanime.me,findanime.me,mintmanga.com,grouple.co##.admachina-banner
+doramatv.ru,librebook.ru,findanime.me,findanime.me,mintmanga.com,grouple.co##div[onclick="ga('send', 'event', 'adwise', 'click', 'under_player')"][style]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2841
 ||qashqairussia.ru/script.php?
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5276

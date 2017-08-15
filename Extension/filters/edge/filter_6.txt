@@ -1,19 +1,11 @@
-! Checksum: rJMHIaSYcfsqP4LAlq50eg
+! Checksum: FUHjGX9z0mJNUGktknpYgA
 ! Title: German filter
 ! Description: EasyList Germany + Adguard German filter. Filter list that specifically removes adverts on German language websites.
-! Version: 1.0.35.55
-! TimeUpdated: 2017-07-13T16:01:18.261+04:00
+! Version: 1.0.36.11
+! TimeUpdated: 2017-08-15T14:01:14.755+04:00
 ! Expires: 2 days (update frequency)
-! Title: Adguard German Filter.
-!
-! Filter that enables removing of the ads from websites with German content.
-! Originally based on the EasyList Germany filter.
-! Modified by Adguard team according to the complaints from users.
-! This filter is licensed under the Creative Commons Attribution-ShareAlike 3.0 Unported license.
-!
 ! Homepage: http://adguard.com/filters.html#german
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
-!
 !
 !---------------------------------------------------------------------------!
 !-------------- General JS API ---------------------------------------------!
@@ -42,7 +34,7 @@
 ! These rules are against anti-adblock scripts
 !
 !--- Prevent AdFender detection ---
-@@/ad_bomb/*$image,domain=areadvd.de|woxikon.de|mopo.de|areamobile.de|promipool.de|pc-magazin.de|gamestar.de|pietsmiet.de|prosieben.de|buffed.de|4players.de|pcgames.de|stern.de|general-anzeiger-bonn.de|chefkoch.de|serienjunkies.de|pcgameshardware.de|gamepro.de|brigitte.de|gala.de|hoerzu.de|autobild.de|sat1.de|pcwelt.de|wiesbadener-kurier.de|wiesbadener-tagblatt.de|lampertheimer-zeitung.de|boerse-online.de|welt.de|wetter.com|sixx.ch
+@@/ad_bomb/*$image,domain=menshealth.de|9monate.de|mehr-tanken.de|nwzonline.de|arcor.de|areadvd.de|woxikon.de|mopo.de|areamobile.de|promipool.de|pc-magazin.de|gamestar.de|pietsmiet.de|prosieben.de|buffed.de|4players.de|pcgames.de|stern.de|general-anzeiger-bonn.de|chefkoch.de|serienjunkies.de|pcgameshardware.de|gamepro.de|brigitte.de|gala.de|hoerzu.de|autobild.de|sat1.de|pcwelt.de|wiesbadener-kurier.de|wiesbadener-tagblatt.de|lampertheimer-zeitung.de|boerse-online.de|welt.de|wetter.com|sixx.ch
 #%#window.uabInject = function() {};
 wetteronline.de,gamona.de,gamepro.de,gta-5-forum.de,prosieben.de,stern.de,webfail.com,focus.de,finanzen.net,prosiebenmaxx.de,sixx.de,kabeleins.de,sat1gold.de,tvtoday.de,tvspielfilm.de,wetter.com,gamestar.de#%#window.UABPtracked = true;
 prosieben.de,stern.de,webfail.com,focus.de,finanzen.net,prosiebenmaxx.de,sixx.de,kabeleins.de#%#AG_onLoad(function() { window.UABPTrack = function() {}; });
@@ -51,9 +43,15 @@ prosieben.de,stern.de,webfail.com,focus.de,finanzen.net,prosiebenmaxx.de,sixx.de
 motorradonline.de#%#(function() { var noopfn = function() {;}; var Fab = function() {}; Fab.prototype.check = noopfn; Fab.prototype.clearEvent = noopfn;  Fab.prototype.emitEvent = noopfn; Fab.prototype.on = function(a, b) { if ( !a ) { b(); } return this; }; Fab.prototype.onDetected = function() {  return this; }; Fab.prototype.onNotDetected = function(a) { a(); return this; }; Fab.prototype.setOption = noopfn; var fab = new Fab(),  getSetFab = { get: function() { return Fab; }, set: function() {} }, getsetfab = { get: function() { return fab; }, set: function() {} }; if ( window.hasOwnProperty('FuckAdBlock') ) { window.FuckAdBlock = Fab; } else { Object.defineProperty(window, 'FuckAdBlock', getSetFab); } if ( window.hasOwnProperty('BlockAdBlock') ) { window.BlockAdBlock = Fab; } else {Object.defineProperty(window, 'BlockAdBlock', getSetFab); } if ( window.hasOwnProperty('SniffAdBlock') ) { window.SniffAdBlock = Fab; } else { Object.defineProperty(window, 'SniffAdBlock', getSetFab); } if ( window.hasOwnProperty('fuckAdBlock') ) { window.fuckAdBlock = fab; } else { Object.defineProperty(window, 'fuckAdBlock', getsetfab); } if ( window.hasOwnProperty('blockAdBlock') ) { window.blockAdBlock = fab; } else { Object.defineProperty(window, 'blockAdBlock', getsetfab); } if ( window.hasOwnProperty('sniffAdBlock') ) { window.sniffAdBlock = fab; } else { Object.defineProperty(window, 'sniffAdBlock', getsetfab); } })();
 !
 !--- BlockAdBlock ---
-it-times.de#%#(function() { var sto = window.setTimeout, re = /\.bab_elementid.$/; window.setTimeout = function(a, b) { if ( typeof a !== 'string' || !re.test(a) ) { return sto(a, b); } }.bind(window); var signatures = [ ['blockadblock'], ['babasbm'], [/getItem\('babn'\)/], ['getElementById','String.fromCharCode','ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789','charAt','DOMContentLoaded','AdBlock','addEventListener','doScroll','fromCharCode','<<2|r>>4','sessionStorage','clientWidth','localStorage','Math','random'] ]; var check = function(s) { var tokens, match, j, token, pos; for ( var i = 0; i < signatures.length; i++ ) { tokens = signatures[i]; match = 0; for ( j = 0, pos = 0; j < tokens.length; j++ ) { token = tokens[j]; pos = token instanceof RegExp ? s.search(token) : s.indexOf(token); if ( pos !== -1 ) { match += 1; } } if ( (match / tokens.length) >= 0.8 ) { return true; } } return false; }; var realEval = window.eval; window.eval = function(a) { if ( !check(a) ) { return realEval(a); } var el = document.body; if ( el ) { el.style.removeProperty('visibility'); } el = document.getElementById('babasbmsgx'); if ( el ) { el.parentNode.removeChild(el); } }.bind(window); })();
+klartext-ne.de,it-times.de#%#(function() { var sto = window.setTimeout, re = /\.bab_elementid.$/; window.setTimeout = function(a, b) { if ( typeof a !== 'string' || !re.test(a) ) { return sto(a, b); } }.bind(window); var signatures = [ ['blockadblock'], ['babasbm'], [/getItem\('babn'\)/], ['getElementById','String.fromCharCode','ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789','charAt','DOMContentLoaded','AdBlock','addEventListener','doScroll','fromCharCode','<<2|r>>4','sessionStorage','clientWidth','localStorage','Math','random'] ]; var check = function(s) { var tokens, match, j, token, pos; for ( var i = 0; i < signatures.length; i++ ) { tokens = signatures[i]; match = 0; for ( j = 0, pos = 0; j < tokens.length; j++ ) { token = tokens[j]; pos = token instanceof RegExp ? s.search(token) : s.indexOf(token); if ( pos !== -1 ) { match += 1; } } if ( (match / tokens.length) >= 0.8 ) { return true; } } return false; }; var realEval = window.eval; window.eval = function(a) { if ( !check(a) ) { return realEval(a); } var el = document.body; if ( el ) { el.style.removeProperty('visibility'); } el = document.getElementById('babasbmsgx'); if ( el ) { el.parentNode.removeChild(el); } }.bind(window); })();
 !----------------------------------
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/5939
+!
+! https://github.com/AdguardTeam/AdguardFilters/issues/5928
+||amateurfilm-forum.de/wcf/js/ABDetector.class.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/5717
+groove.de#@#.adsbox
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5615
 juice.de#@#.adsbox
 ! https://forum.adguard.com/index.php?threads/23007/
@@ -319,6 +317,14 @@ teleboy.ch#@#.adWrapper
 !
 ! Extended CSS rules
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/6127
+focus.de##.articleContent >div[class="clearfix"]:contains(Anzeige)
+! https://github.com/AdguardTeam/AdguardFilters/issues/5947
+psd-tutorials.de##.container > [class="site-sidebar-bottom footerbox-table"] > [class="footerbox-table-col"][-ext-has='.content-headline:contains(Anzeige)']
+! https://forum.adguard.com/index.php?threads/23468/
+gamestar.de##.fxAuHht > .elemCont:not([style])[-ext-has="> div#ad-rectangle1-outer"]
+! https://github.com/AdguardTeam/AdguardFilters/issues/5639
+vip.de##.rtli-master-article > [class="rtli-master-section"][-ext-has='.rtli-master-ad']
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5617
 focus.de###sidebar > .block.grid_4[-ext-has='> .content > [id^="fwid"] > .surftippTitle > .surftipp:contains(Partnerangebot)']
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5476
@@ -407,7 +413,7 @@ abnehmen.com##.yui-sidebar div.ffwidget_sidebar[-ext-has=">div.ffwidget_sidebar_
 sat1.de###left-zone > div[id^="container_left_"][-ext-has='#plista_widget_belowVideo']
 ! https://forum.adguard.com/index.php?threads/express-de.17398/
 express.de##.dm_container-300x--[-ext-has=">.dm_container_inner_wrapper>h3:contains((Anzeige))"]
-express.de##.dm_ta300x--[-ext-has=">iframe[width='300'][height='275']"]
+express.de##.dm_ta300x--[-ext-has=">iframe[Width='300'][Height='275']"]
 express.de##article[class^="dm_ta"][-ext-has='>a.trackedTeaser']
 ! https://forum.adguard.com/index.php?threads/winsoftware-de.17397/
 winsoftware.de###contentrightm > .box490[-ext-has='ins.adsbygoogle']
@@ -532,6 +538,9 @@ menshealth.de#%#function google_ad_request_done() {};
 !--------------------------------------!
 !------- CSS fixes --------------------!
 !--------------------------------------!
+! https://github.com/AdguardTeam/AdguardFilters/issues/5913
+gamekeyfinder.de#$##container > #content { top: 0px!important; }
+gamekeyfinder.de#$#body #bottom { bottom: -20px!important; }
 ! https://forum.adguard.com/index.php?threads/19957/
 bild.de#$#.eyecatcher { position: absolute!important; left: -3000px!important; }
 bild.de#$#.tea-rectangle { position: absolute!important; left: -3000px!important; }
@@ -604,6 +613,66 @@ freenet.de#$##frnMain { min-height: 0px!important; }
 ! http://forum.adguard.com/showthread.php?8979 (#17)
 ||static.p7s1.com/vendor/webtrekk
 !
+tichyseinblick.de##.adwidget_sidebar
+||mobil.news.at/_storage/asset/*/storage/master/file/*/0600x0100_branding*.gif
+m-kurier-at.cdn.ampproject.org##.c-adcontainer
+telefonspion.de##.adlb
+||kaeuferportal.de/partnerprogramm/
+iphone-tricks.de###text-21:nth-child(6)
+iphone-tricks.de###text-24:nth-child(3)
+html.de##.sidebar > .widget-container > #widget-14
+psd-tutorials.de###sidebar-banner
+am-play.de##.news_ad
+am-play.de##.amAdSide
+am-play.de##.amAd
+am-play.de##div.facebook
+amateurfilm-forum.de###main > [class="message"][style="height: auto;"]:not([id])
+||amateurfilm-forum.de/images/gnubrew/threads_spotrocker.jpg
+gamestar.de###rectangle-container-desktop
+sport1.de##amp-embed[type="taboola"]
+computerbild.de##.adsbygoogle
+computerbild.de##.adsensebox
+otz.de,thueringer-allgemeine.de,tlz.de##.advertising
+otz.de,thueringer-allgemeine.de,tlz.de##.adsense-article
+otz.de,thueringer-allgemeine.de,tlz.de###oms_gpt_rectangle
+itopnews.de##.bannerDesktop
+itopnews.de##.widget.xt_news > #post-list > div[style="padding-top:10px;margin-bottom:40px;"]
+itopnews.de##.sidebar > #text-3
+itopnews.de##.sidebar > #text-5
+meinanzeiger.de##body > .adLeaderboard
+meinanzeiger.de##body > div[id]:not([class]) > [class="right sublime tinyContent"]
+meinanzeiger.de###sidebar > [id^="44"][class="teaserBox"] > div[class="right sublime tinyContent"]
+ran.de###ad-fullbanner-outer
+focus.de##.adp-admarker
+clashroyaleforum.de##.wcfAdLocation
+clashroyaleforum.de##.section > .messageList > li:not([class]):not([id])
+fuw.ch##.ad
+erdbeerlounge.de##[id^="owwotm_"][id*="_adblock_sd"]
+www-eurosport-de.cdn.ampproject.org##.related-content-story--organic
+www-eurosport-de.cdn.ampproject.org##.related-content-story--sponsored
+clashofclansforum.de##.wcfAdLocation
+clashofclansforum.de##.sidebarMenu > [class="mainMenu sidebarCustomBox"][style="margin-top:10px"]:last-child
+forum.videogameszone.de###post_rec
+forum.videogameszone.de###post_rec2
+gamezone.de###pricehitsTextTeaser
+sat1spiele.de##.background-banner
+sat1spiele.de##.off-canvas-content > .background[style^="background-image"]
+mein-wahres-ich.de##.googlebanner
+mein-wahres-ich.de###banneranzeige-leaderboard
+vip.de###pl_playerBreakAd
+vip.de##.rtli-master-ad
+vip.de##[data-adformat="octopus_mr"]
+mein--mmo-de.cdn.ampproject.org##.amp-ad-wrapper
+www-bloomberg-com.cdn.ampproject.org##section.main-column > .body-copy > div[data-position="mobile-box"]
+dejure.org##.reihe.googlediv
+dejure.org###werbungrechtsfloat
+dejure.org##content > #mobildiv
+||j2.dejure.org/jcg/anzeige_horizontal.svg
+amp-rtl-de.cdn.ampproject.org##amp-embed[type="outbrain"]
+verkehrsinformation.de##a[href="https://shop.original-unverpackt.de/"] > img
+verkehrsinformation.de##body > div[style="text-align:center; background-color:#f0f0f0; border-bottom:0px solid #f0f0f0; margin-top:5px; margin-bottom:25px;"]
+verkehrsinformation.de##body > p[style="background-color:#f0f0f0; margin-top:10px; margin-bottom:0px; margin-left:11px; font-size:9px; color:#999999; font-family:verdana,arial"]
+stau.info###rightArea > div[style="border:2px solid #f00;padding:0 1em"]
 mein-mmo.de###gp-sidebar > div[id^="text-"]
 businessinsider.de##.ad-display-wrapper
 tanke-guenstig.de##.ce_weba
@@ -619,7 +688,7 @@ forum.pocketnavigation.de##.messageList > li:not([id]):not([class])
 naviboard.de###posts > .page[style*="min-height:110px"]
 bewerbung.co###dllogin > div[style="text-align:center;margin-top:0px;margin-bottom:24px;padding-bottom:10px;"]
 m-morgenpost-de.cdn.ampproject.org,www-derwesten-de.cdn.ampproject.org##div[class^="amp-doubleclick-wrapper"]
-amp-vox-de.cdn.ampproject.org##.ems-ad
+amp-rtl-de.cdn.ampproject.org,amp-vox-de.cdn.ampproject.org##.ems-ad
 m-bild-de.cdn.ampproject.org##.ad-mark
 www-op--online-de.cdn.ampproject.org,www-tz-de.cdn.ampproject.org,www-merkur-de.cdn.ampproject.org##.id-Amp-recommendation
 www-chip-de.cdn.ampproject.org##.amp-article-ad
@@ -795,7 +864,6 @@ autobild.de##.inlineslot
 prosieben.de##.k-product-placement
 ruhrnachrichten.de##.banner
 ruhrnachrichten.de##.digitaleAnzeige
-otz.de##.adsense-article
 freiepresse.de##.mobile_rb_bottom > .section-rgt
 ||flensburger-stadtanzeiger.de/news-bilder/anzeigen/
 flensburger-stadtanzeiger.de##.ce_sliderStart
@@ -999,7 +1067,7 @@ simfans.de###c4032 + .csc-default
 fifa4life-forum.de###collapseobj_vbcms_table_right > table > tbody > tr:first-child
 deutscherskiverband.de###container-banner-spacer
 hallo-eltern.de###content-ad-bottom
-sprechzimmer.ch###contentinner + table[width="438"]
+sprechzimmer.ch###contentinner + table[Width="438"]
 braunschweigeranzeiger.de###cyclone-slider-widget-2
 drehscheibe-online.de###dsHeaderColoured
 businessinsider.de###editorial2
@@ -1090,7 +1158,6 @@ tagesanzeiger.ch##.adsTitle
 chinamobilemag.de,focus.de,pcwelt.de##.adsbygoogle
 tvspielfilm.de##.adsd_rectangle
 eatsmarter.de##.adsense
-tlz.de##.adsense-article
 polizeinews.ch##.adv_middle
 tvspielfilm.de##.advertising-box
 radiohamburg.de##.afs_ads
@@ -1258,7 +1325,7 @@ t3n.de##.tg-articletype-sponsored-post
 forum.digitalfernsehen.de##.titleBar + div:not([id]):not([class]):not([style])
 willhaben.at##.topAdsBox
 gamona.de##.topdeals
-winfuture.de##.topnews > div[class^="news"] + div + script + iframe[width="660"]
+winfuture.de##.topnews > div[class^="news"] + div + script + iframe[Width="660"]
 tagesspiegel.de##.ts-ad
 m.news.de##.unisterAdsStart
 anonymousnews.ru##.vc_row.wpb_row.td-pb-row.td-ss-row > .td-pb-span4
@@ -1319,7 +1386,7 @@ mathe-lexikon.at##body > div#lb
 wn.de##body > div#top-position
 apfeleimer.de##body > div.ftr
 computerbild.de##body > div[id][style^="z-index:"]
-prosieben.de,prosiebenmaxx.de,ran.de,sat1.de,the-voice-of-germany.de,wetter.com##body.is_video > #modal-overlay
+kabeleins.de,prosieben.de,prosiebenmaxx.de,ran.de,sat1.de,sat1gold.de,sixx.de,the-voice-of-germany.de,wetter.com##body.is_video > #modal-overlay
 hallo-eltern.de##div#wunsch1.home_block.mobile-hide[style="background-color:#ffffff; padding-bottom=20px; border: 1px solid #f5a922;"]
 spiegel.de##div.adition ~ div[class]:not([data-position]):not([itemscope]) > div > :not(div)[id][class]
 vox.de##div:not(.voxde-masonry) > .voxde-medium-rectangle
@@ -1396,7 +1463,7 @@ hamburger-wochenblatt.de##div[id^="yield_gpt_"]
 all-in.de##div[onclick^="javascript:window.location.href='"][class$="specbox"]
 rund-ums-baby.de##div[style="position:absolute; z-index:1; left:26px; width:898px; background-color:#f6f5f3;"]
 mein-gartenbuch.de##div[style^="margin: 20px auto 10px"]
-hl-live.de##div[width="828"][height="90"]
+hl-live.de##div[Width="828"][Height="90"]
 foerderland.de#footerFlyout
 t-online.de##form[action="http://im.banner.t-online.de/"]
 t3n.de##iframe[class*="hb-large"]
@@ -1406,10 +1473,10 @@ rebuy.de##iframe[src^="//partners.webmasterplan.com"]
 bild.de##img[alt$="Skoobe "]
 regensburg-digital.de##img[alt$="_werbung"]
 pz-news.de##img[data-src^="/pu_pz/scripts/holder.js"]
-computerbild.de##img[height="250"][width="1000"]
-zuhause.de##img[height="46"][width="606"]
+computerbild.de##img[Height="250"][Width="1000"]
+zuhause.de##img[Height="46"][Width="606"]
 bild.de##img[usemap$="#ConnectMap"]
-hl-live.de##img[width="160"][height="240"]
+hl-live.de##img[Width="160"][Height="240"]
 spiele.woxikon.de##ins[id^="aswift_"]
 elderscrollsportal.de,netzwelt.de##li.message:not([id^="post-"])
 cosmopolitan.de##li[class*="tsr anzeige"]
@@ -1622,9 +1689,12 @@ tvspielfilm.de##div[class^="netflix"]
 !
 ! The content replacement rules
 !
-! wetter.com, prosieben.de
+! Glomex video ads - kabeleins.de,prosieben.de,prosiebenmaxx.de,ran.de,sat1.de,sat1gold.de,sixx.de,the-voice-of-germany.de,wetter.com
 ! https://forum.adguard.com/index.php?threads/prosieben-de.20468/
 ! https://forum.adguard.com/index.php?threads/resolved-wetter-com.17669/
+! https://forum.adguard.com/index.php?threads/ads-on-kabeleins-de-tv.23357/
+! wetter.com has different script than websites above
+!
 ! comedycentral.tv
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2304
 ! autobild.de
@@ -1672,10 +1742,12 @@ tvspielfilm.de##div[class^="netflix"]
 ! https://github.com/AdguardTeam/AdguardForWindows/issues/960
 @@||gofeminin.de^$content
 !###############
+! https://forum.adguard.com/index.php?threads/23770/
+schogetten.de#@#.Werbung
 ! werbung.qs-optiker.de - site is broken
 @@||werbung.qs-optiker.de^$domain=werbung.qs-optiker.de
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5440
-kachelmannwetter.com#@#iframe[width="300"][height="250"]
+kachelmannwetter.com#@#iframe[Width="300"][Height="250"]
 ! https://forum.adguard.com/index.php?threads/21931/
 @@||arkadiumhosted.com/API/$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5075
@@ -1820,7 +1892,7 @@ rtl.de#@#.rtlde-medium-rectangle
 /werbetrenner_
 /werbezonen/*
 /werbung.$third-party
-/werbung.$~image,~stylesheet,domain=~berlin-airport.de
+/werbung.$~image,~stylesheet,domain=~berlin-airport.de|~qs-optiker.de
 /werbung.gif
 /werbung/*$third-party
 /Werbung/*_banner_
@@ -2264,7 +2336,7 @@ daswetter.com,gofeminin.de#@#div[id^="div-gpt-ad"]
 guterhut.de,hardwareluxx.de,hbf-info.de,rakuten.at,rakuten.de,zalando.de#@#div[id^="div-gpt-ad-"]
 11freunde.de,gofeminin.de#@#div[id^="google_ads_iframe_"]
 11freunde.de,gofeminin.de,guterhut.de,rtl.de,zalando.de#@#iframe[id^="google_ads_iframe"]
-||2mdn.net^$object-subrequest,third-party,domain=anleger-fernsehen.de|blick.ch|clipfish.de|fitforfun.de|focus.de|giga.de|golem.de|helpster.de|myspass.de|netzwelt.de|stol.it|sueddeutsche.de|tvtoday.de
+||2mdn.net^$object-subrequest,third-party,domain=anleger-fernsehen.de|blick.ch|fitforfun.de|focus.de|giga.de|golem.de|helpster.de|myspass.de|netzwelt.de|stol.it|sueddeutsche.de|tvtoday.de
 ||4rm.de^$third-party
 ||85.114.133.62^$third-party
 ||a3h.de^$third-party
@@ -2419,7 +2491,6 @@ guterhut.de,hardwareluxx.de,hbf-info.de,rakuten.at,rakuten.de,zalando.de#@#div[i
 ||doubleclick.net/pfadx/*_video.com_de/$third-party
 ||doubleclick.net/pfadx/*_video.de_de/$third-party
 ||doubleclick.net/pfadx/ch.mtv/$third-party
-||doubleclick.net/pfadx/clipfish-profcon.de/extern_$third-party
 ||doubleclick.net/pfadx/david/extern_$third-party
 ||doubleclick.net/pfadx/de.mtv/$third-party
 ||doubleclick.net/pfadx/de.viva.tv/$third-party
@@ -2527,6 +2598,7 @@ guterhut.de,hardwareluxx.de,hbf-info.de,rakuten.at,rakuten.de,zalando.de#@#div[i
 ||loved-by.s3.amazonaws.com^$third-party
 ||luxyad.com^$third-party
 ||lyrisor.tk^$third-party
+||madsack-native.de^$third-party
 ||malient.tk^$third-party
 ||manughl.de^$third-party
 ||marint.tk^$third-party
@@ -3377,6 +3449,7 @@ guterhut.de,hardwareluxx.de,hbf-info.de,rakuten.at,rakuten.de,zalando.de#@#div[i
 /worker.php$domain=filmpalast.to
 /www/images/*$domain=technic3d.com
 ^what=zone^$domain=ww3.cad.de
+|blob:$domain=hdfilme.tv
 |http:/$third-party,xmlhttprequest,domain=hdfilme.tv
 |http://$subdocument,third-party,domain=bonimail.de
 |http://byte.to^$script
@@ -3673,7 +3746,6 @@ guterhut.de,hardwareluxx.de,hbf-info.de,rakuten.at,rakuten.de,zalando.de#@#div[i
 ||click-learn.de^*_155x155.swf
 ||click-learn.de^*_JungeFahrer_155x430.swf
 ||climbing.de/fileadmin/banner/
-||clipfish.de/wkw/wkwvideoecke.html$domain=wer-kennt-wen.de
 ||cloudfront.net^*/ova-jw.swf$object-subrequest,domain=oberprima.com
 ||clubtime.fm/banner/
 ||cnetde.edgesuite.net/cnetde/ads/$domain=cnet.de
@@ -3704,6 +3776,7 @@ guterhut.de,hardwareluxx.de,hbf-info.de,rakuten.at,rakuten.de,zalando.de#@#div[i
 ||csr-news.net/main/images/grundfos.gif
 ||cybercity.de/domains4sale/
 ||cylex.de/images/cylex.de/credit-report-banner-
+||da-shoppe-ich-gerne.de^$domain=quoka.de
 ||daf.fm/templates/images/flatex_
 ||daf.fm/templates/images/vitrade_
 ||dance-charts.de/images/banners/
@@ -3816,7 +3889,6 @@ guterhut.de,hardwareluxx.de,hbf-info.de,rakuten.at,rakuten.de,zalando.de#@#div[i
 ||dotnetpro.de/grafix/banners/
 ||dotnetpro.de^*/anzeigeh.gif
 ||dotnetpro.de^*/anzeigev.gif
-||doubleclick.net/ddm/pfadx/$object-subrequest,domain=clipfish.de
 ||dragondesigns.de/include/images/sponsor/
 ||dreambox.info/banner/
 ||dreambox.info/d4d468.gif
@@ -4288,6 +4360,7 @@ guterhut.de,hardwareluxx.de,hbf-info.de,rakuten.at,rakuten.de,zalando.de#@#div[i
 ||html-world.de/anzeige.gif
 ||html-world.de/anzeige3.gif
 ||htwk-leipzig.de^*/premium-partner/
+||i-bims-1-produkt.de^$domain=quoka.de
 ||iamgamer.de/uploads/tx_iagnewsandarticles/branding/
 ||iamgamer.de/uploads/tx_iagnewsandarticles/brandings/
 ||iban.de/img/1/bbox.gif
@@ -4295,6 +4368,7 @@ guterhut.de,hardwareluxx.de,hbf-info.de,rakuten.at,rakuten.de,zalando.de#@#div[i
 ||iban.de/img/1/btop.gif
 ||ibash.de^*.html$subdocument
 ||ich-hab-gar-keine-homepage.de/show/kh.php
+||ichkaufehierein.de^$domain=quoka.de
 ||ichspiele.cc/assets/images/backgrounds/
 ||idealo.de/banner/
 ||idowa.de/banner/
@@ -4334,6 +4408,7 @@ guterhut.de,hardwareluxx.de,hbf-info.de,rakuten.at,rakuten.de,zalando.de#@#div[i
 ||israelheute.com^*/promo/
 ||israelnetz.com/uploads/tx_templavoila/
 ||it-sa.de/uploads/tx_macinabanners/
+||italien.info/booking.htm
 ||itseccity.de/banner/
 ||ix.de/icons/ho/seen_by_banner.gif
 ||jacktheripper.de/images/banner/
@@ -4527,6 +4602,7 @@ guterhut.de,hardwareluxx.de,hbf-info.de,rakuten.at,rakuten.de,zalando.de#@#div[i
 ||mega-stream.to/js/ppop*.js
 ||mega-stream.to^*/system.js
 ||mein-shirt.net^$domain=smsit.me
+||meinelieblingsprodukte.de^$domain=quoka.de
 ||meintomtom.de^*/back_adblock.gif
 ||meisterkuehler.de/bilder/artikel/banner/
 ||mensa-kl.de/banner/
@@ -4603,6 +4679,7 @@ guterhut.de,hardwareluxx.de,hbf-info.de,rakuten.at,rakuten.de,zalando.de#@#div[i
 ||mygully.com/daload.php
 ||mygully.com/popbit.js
 ||mygully.com/popup.js
+||mykino.to/templates/tvspirit/js/customPopup.js
 ||myphoto.to/images/20110621/482170186406374378620115.gif$domain=leecher.to
 ||mypolonia.de/promo/
 ||myspass.de/myspass/includes/apps/player/standard/avt_config.php?$object-subrequest
@@ -4803,6 +4880,7 @@ guterhut.de,hardwareluxx.de,hbf-info.de,rakuten.at,rakuten.de,zalando.de#@#div[i
 ||powerforen.de^*/lookatme.js
 ||ppc-welt.info^*/banner/
 ||pr0gramm.com/escobar/data/banners/
+||pr0gramm.com/escobar/data/img/
 ||pr0gramm.com/media/wm/
 ||pragerzeitung.cz/images/banners/
 ||preisbock.de/skin/*/mbskyscraper.gif
@@ -5007,7 +5085,6 @@ guterhut.de,hardwareluxx.de,hbf-info.de,rakuten.at,rakuten.de,zalando.de#@#div[i
 ||serienjunkies.org^*/usenet.php
 ||serienoldies.de^*/jamba_ringtone.gif
 ||service4handys.de/banner/
-||serving-sys.com/Serving?$object-subrequest,domain=clipfish.de
 ||sevac.com/images/bmain-
 ||sevenmac.de/banner/
 ||sexgeschichten.com/banner/
@@ -5331,7 +5408,6 @@ guterhut.de,hardwareluxx.de,hbf-info.de,rakuten.at,rakuten.de,zalando.de#@#div[i
 ||via-ferrata.de/images/300x120px_
 ||via-ferrata.de/images/verticalextreme.jpg
 ||via-ferrata.de/templates/forum/banner/
-||videoplaza.tv/creatives/$domain=clipfish.de
 ||vienna.at^*/gewinnabfrage-120-90.swf
 ||vinschgerwind.it/images/banners/
 ||vipbilder.net^*/layer.js
@@ -5409,8 +5485,7 @@ guterhut.de,hardwareluxx.de,hbf-info.de,rakuten.at,rakuten.de,zalando.de#@#div[i
 ||wilmaa.com^*/brandings/
 ||win-lan.de^*/banners/
 ||windows-tweaks.info^*/safersurf__
-||windowspro.de^*=*!$xmlhttprequest
-||windowspro.de^*?*=$xmlhttprequest
+||windowspro.de^$xmlhttprequest,domain=windowspro.de
 ||winfuture.de/css/images/$image
 ||winfuture.de/css/images/micropages/
 ||winrar.de/images/emsi.jpg
@@ -5456,7 +5531,9 @@ guterhut.de,hardwareluxx.de,hbf-info.de,rakuten.at,rakuten.de,zalando.de#@#div[i
 ||ww4.cad.de^*.php?what=*:*&n=
 ||ww4.cad.de^*/axjs.php
 ||ww4.cad.de^*/view.php?what=zone:
+||www.connect.de^$script,domain=www.connect.de
 ||www.dialo.de^*_*.js?ts=$domain=dialo.de
+||www.pc-magazin.de^$script,domain=www.pc-magazin.de
 ||www.tiervermittlung.de^*.js?ts=$script,domain=tiervermittlung.de
 ||wz-newsline.de/polopoly_fs/*-900x120.
 ||x.technic3d.biz^
@@ -5542,10 +5619,7 @@ guterhut.de,hardwareluxx.de,hbf-info.de,rakuten.at,rakuten.de,zalando.de#@#div[i
 @@||g.doubleclick.net/gampad/ad?iu=*&sz=1x1&$image,domain=focus.de
 @@||g.doubleclick.net/gampad/ads?$script,domain=focus.de|metal-hammer.de|rollingstone.de
 @@||g.doubleclick.net/gampad/ads?*&prev_iu_szs=200x200%7C200x20$script,domain=stern.de
-@@||g.doubleclick.net/gampad/ads?*&prev_iu_szs=200x200%7C200x202&$script,domain=gala.de
-@@||g.doubleclick.net/gampad/ads?*&prev_iu_szs=200x200%7C200x203&$script,domain=gala.de
-@@||g.doubleclick.net/gampad/ads?*&prev_iu_szs=200x200%7C200x211&$script,domain=gala.de
-@@||g.doubleclick.net/gampad/ads?*&prev_iu_szs=200x200&$script,domain=gala.de|stern.de
+@@||g.doubleclick.net/gampad/ads?*&prev_iu_szs=200x200&$script,domain=stern.de
 @@||g.doubleclick.net/gampad/ads?*&sz=160x600&$script,domain=stern.de
 @@||g.doubleclick.net/gampad/ads?*&sz=1x1&$script,domain=stern.de
 @@||g.doubleclick.net/gampad/ads?*&sz=300x250&$script,domain=stern.de
@@ -5554,10 +5628,9 @@ guterhut.de,hardwareluxx.de,hbf-info.de,rakuten.at,rakuten.de,zalando.de#@#div[i
 @@||g.doubleclick.net/gampad/ads?*&sz=728x90&$script,domain=stern.de
 @@||g.doubleclick.net/gampad/ads?slotname=*stern%2F*^sz=480x360^$xmlhttprequest,domain=imasdk.googleapis.com
 @@||g.doubleclick.net/gampad/ads?sz=480x360^*^url=http%3A%2F%2Fwww.stern.de%2F$xmlhttprequest,domain=imasdk.googleapis.com
-@@||g.doubleclick.net/gpt/pubads_impl_$script,domain=focus.de|gala.de|metal-hammer.de|musikexpress.de|rollingstone.de|stern.de
+@@||g.doubleclick.net/gpt/pubads_impl_$script,domain=focus.de|metal-hammer.de|musikexpress.de|rollingstone.de|stern.de
 @@||g.doubleclick.net/static/glade.js$domain=autobild.de|transfermarkt.de
 @@||g.doubleclick.net/static/glade/extra_$script,domain=autobild.de
-@@||gala.de/gujAd/gujAd.js$domain=gala.de
 @@||googlesyndication.com/pagead/js/*/activeview/osd_listener.js$domain=focus.de
 @@||googlesyndication.com/pagead/js/adsbygoogle.js$domain=transfermarkt.de
 @@||himediads.com/js?$domain=rollingstone.de
@@ -5608,16 +5681,16 @@ widgets.outbrain.com##a[onmousedown^="this.href='https://paid.outbrain.com/netwo
 ||2mdn.net^$domain=imasdk.googleapis.com|musikexpress.de|rollingstone.de|serving-sys.com|stern.de
 ||3lift.com^$domain=focus.de
 ||7tv.de/xfiles/*/simad.min.js$domain=kabeleins.de|ran.de
-||a-ssl.ligatus.com^$domain=gala.de|stern.de
+||a-ssl.ligatus.com^$domain=stern.de
 ||ad-srv.net^$domain=focus.de|musikexpress.de|tellows.de
 ||ad.71i.de^$domain=autobild.de|kabeleins.de|ran.de
 ||ad.doubleclick.net^$domain=metal-hammer.de|musikexpress.de|rollingstone.de|stern.de
 ||ad4mat.de^$domain=googlesyndication.com
 ||adform.net^$domain=autobild.de|focus.de|googlesyndication.com|metal-hammer.de|musikexpress.de|rollingstone.de|stern.de
-||adition.com^$domain=focus.de|g.doubleclick.net|gala.de|metal-hammer.de|musikexpress.de|rollingstone.de|stern.de|transfermarkt.de
+||adition.com^$domain=focus.de|g.doubleclick.net|metal-hammer.de|musikexpress.de|rollingstone.de|stern.de|transfermarkt.de
 ||adition.com^$popup,domain=metal-hammer.de|musikexpress.de|rollingstone.de
 ||adnet.de^$domain=tellows.de
-||adnxs.com^$domain=autobild.de|focus.de|gala.de|metal-hammer.de|musikexpress.de|rollingstone.de|stern.de|widgets.outbrain.com
+||adnxs.com^$domain=autobild.de|focus.de|metal-hammer.de|musikexpress.de|rollingstone.de|stern.de|widgets.outbrain.com
 ||adnxs.com^$popup,domain=metal-hammer.de|musikexpress.de|rollingstone.de
 ||adrolays.de^$domain=autobild.de|metal-hammer.de|transfermarkt.de
 ||adsafeprotected.com^$domain=imasdk.googleapis.com|metal-hammer.de|musikexpress.de|rollingstone.de
@@ -5630,22 +5703,20 @@ widgets.outbrain.com##a[onmousedown^="this.href='https://paid.outbrain.com/netwo
 ||adverserve.net^$domain=musikexpress.de
 ||advertising.veeseo.com^$domain=stern.de
 ||advolution.de^$domain=focus.de|musikexpress.de
-||amazon-adsystem.com^$domain=autobild.de|focus.de|gala.de|stern.de|transfermarkt.de
+||amazon-adsystem.com^$domain=autobild.de|focus.de|stern.de|transfermarkt.de
 ||betrad.com^$domain=googlesyndication.com|musikexpress.de
 ||bf-ad.net^$domain=focus.de
-||cas.*.criteo.com^$domain=autobild.de|gala.de|metal-hammer.de|musikexpress.de|rollingstone.de|stern.de|transfermarkt.de
-||cas.criteo.com^$domain=autobild.de|gala.de|metal-hammer.de|musikexpress.de|rollingstone.de|stern.de|transfermarkt.de
+||cas.*.criteo.com^$domain=autobild.de|metal-hammer.de|musikexpress.de|rollingstone.de|stern.de|transfermarkt.de
+||cas.criteo.com^$domain=autobild.de|metal-hammer.de|musikexpress.de|rollingstone.de|stern.de|transfermarkt.de
 ||cdn.flashtalking.com^$domain=imasdk.googleapis.com
 ||cloudfront.net/werbemittel/$domain=stern.de
 ||connextra.com^$domain=metal-hammer.de|musikexpress.de
 ||criteo.com^$domain=tellows.de
 ||elasticad.net^$domain=metal-hammer.de|musikexpress.de|rollingstone.de
 ||emsmobile.de^$domain=stern.de
-||emsservice.de^$domain=gala.de|stern.de
-||flashtalking.com^$domain=focus.de|g.doubleclick.net|gala.de|metal-hammer.de|musikexpress.de|rollingstone.de|stern.de
-||g.doubleclick.net^$domain=focus.de|gala.de|imasdk.googleapis.com|metal-hammer.de|musikexpress.de|rollingstone.de|stern.de|tellows.de|transfermarkt.de
-||gala.de/googleads/$domain=gala.de
-||gala.de/gujAd/$domain=gala.de
+||emsservice.de^$domain=stern.de
+||flashtalking.com^$domain=focus.de|g.doubleclick.net|metal-hammer.de|musikexpress.de|rollingstone.de|stern.de
+||g.doubleclick.net^$domain=focus.de|imasdk.googleapis.com|metal-hammer.de|musikexpress.de|rollingstone.de|stern.de|tellows.de|transfermarkt.de
 ||google.com/adsense/$domain=kabeleins.de
 ||google.com/adsense/search/ads.js$domain=focus.de
 ||googleadservices.com^$domain=stern.de|tellows.de
@@ -5653,7 +5724,7 @@ widgets.outbrain.com##a[onmousedown^="this.href='https://paid.outbrain.com/netwo
 ||googlesyndication.com/pagead$domain=g.doubleclick.net
 ||googlesyndication.com/pagead/$domain=g.doubleclick.net|googlesyndication.com|metal-hammer.de
 ||googlesyndication.com/sadbundle/$domain=g.doubleclick.net
-||googlesyndication.com/safeframe/$domain=g.doubleclick.net|gala.de|googlesyndication.com|metal-hammer.de|musikexpress.de|rollingstone.de|tellows.de
+||googlesyndication.com/safeframe/$domain=g.doubleclick.net|googlesyndication.com|metal-hammer.de|musikexpress.de|rollingstone.de|tellows.de
 ||googlesyndication.com/simgad/$domain=g.doubleclick.net|metal-hammer.de
 ||googlesyndication.com/sodar/$domain=googlesyndication.com|musikexpress.de|rollingstone.de
 ||googlesyndication.com^$domain=focus.de|stern.de
@@ -5663,22 +5734,22 @@ widgets.outbrain.com##a[onmousedown^="this.href='https://paid.outbrain.com/netwo
 ||inskinad.com^$domain=focus.de
 ||intellitxt.com^$domain=autobild.de|stern.de
 ||ktxtr.com^$domain=focus.de
-||ligadx.com^$domain=gala.de|stern.de
+||ligadx.com^$domain=stern.de
 ||mathads.com^$domain=rollingstone.de
 ||mediaplex.com^$domain=musikexpress.de
 ||moatads.com^$domain=autobild.de|focus.de|metal-hammer.de|musikexpress.de|transfermarkt.de
-||mookie1.com^$domain=autobild.de|gala.de|metal-hammer.de|musikexpress.de|rollingstone.de|stern.de|transfermarkt.de
-||mpnrs.com^$domain=focus.de|gala.de|stern.de|transfermarkt.de
-||pagead2.googlesyndication.com^$domain=autobild.de|focus.de|gala.de|kabeleins.de|metal-hammer.de|musikexpress.de|rollingstone.de|transfermarkt.de
+||mookie1.com^$domain=autobild.de|metal-hammer.de|musikexpress.de|rollingstone.de|stern.de|transfermarkt.de
+||mpnrs.com^$domain=focus.de|stern.de|transfermarkt.de
+||pagead2.googlesyndication.com^$domain=autobild.de|focus.de|kabeleins.de|metal-hammer.de|musikexpress.de|rollingstone.de|transfermarkt.de
 ||plista.com/pictureads/$domain=autobild.de
 ||plista.com^*/flyads/$domain=stern.de
 ||plista.com^*_FLYAD.js$domain=stern.de
 ||polarmobile.com^$domain=focus.de
 ||pubmatic.com^$domain=stern.de
-||qservz.com^$domain=gala.de|metal-hammer.de|musikexpress.de|rollingstone.de
+||qservz.com^$domain=metal-hammer.de|musikexpress.de|rollingstone.de
 ||redintelligence.net^$domain=g.doubleclick.net|stern.de
-||revsci.net^$domain=focus.de|gala.de|ran.de|stern.de
-||rtax.criteo.com^$domain=autobild.de|focus.de|gala.de|metal-hammer.de|musikexpress.de|rollingstone.de|stern.de|transfermarkt.de
+||revsci.net^$domain=focus.de|ran.de|stern.de
+||rtax.criteo.com^$domain=autobild.de|focus.de|metal-hammer.de|musikexpress.de|rollingstone.de|stern.de|transfermarkt.de
 ||sascdn.com^$domain=autobild.de|metal-hammer.de|musikexpress.de|rollingstone.de|transfermarkt.de
 ||secure-ds.serving-sys.com/BurstingRes/$domain=metal-hammer.de|musikexpress.de|rollingstone.de
 ||securepubads.g.doubleclick.net^$domain=kabeleins.de
@@ -5688,7 +5759,6 @@ widgets.outbrain.com##a[onmousedown^="this.href='https://paid.outbrain.com/netwo
 ||serving-sys.com/BurstingScript/$domain=serving-sys.com
 ||serving-sys.com/Serving/$domain=imasdk.googleapis.com
 ||smartadserver.com^$domain=autobild.de|metal-hammer.de|musikexpress.de|rollingstone.de|stern.de|transfermarkt.de
-||smartclip.net^$domain=gala.de
 ||smartredirect.de^$domain=focus.de
 ||smartstream.tv^$domain=imasdk.googleapis.com
 ||spotxchange.com^$domain=imasdk.googleapis.com
@@ -5701,11 +5771,12 @@ widgets.outbrain.com##a[onmousedown^="this.href='https://paid.outbrain.com/netwo
 ||unrulymedia.com^$domain=focus.de
 ||w55c.net^$domain=musikexpress.de
 ||widget.spoods.io/loader.js$domain=focus.de
-||yieldlab.net^$domain=autobild.de|focus.de|gala.de|metal-hammer.de|musikexpress.de|ran.de|rollingstone.de|stern.de|transfermarkt.de
+||yieldlab.net^$domain=autobild.de|focus.de|metal-hammer.de|musikexpress.de|ran.de|rollingstone.de|stern.de|transfermarkt.de
 011729c$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 0d73130$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 0edb540$image,domain=digitalfernsehen.de
 11a50f3$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
+19d99f3$image,domain=digitalfernsehen.de
 1a550a5$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 2020077$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 24e861a$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
@@ -5713,14 +5784,20 @@ widgets.outbrain.com##a[onmousedown^="this.href='https://paid.outbrain.com/netwo
 2ef567b$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 2efc088$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 3825dbe$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
+3926e77$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 3999818$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 3b80978$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 4154eb9$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 42f6093$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
+45a18d4$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 467e048$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 4897b4c$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
+49492a2$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 49e8f87$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 5675200$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
+5e45430$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
+619a704$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
+6274d2c$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 63eb8d8$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 648363b$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 66594ec$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
@@ -5746,10 +5823,11 @@ widgets.outbrain.com##a[onmousedown^="this.href='https://paid.outbrain.com/netwo
 937204b$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 96764c7$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 9d9cfe5$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
-@@/about-these-ads.$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
-@@/ad-pub.$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
-@@/ad-skyscraper.$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
-@@/ad-strip.$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
+@@/__adstop.$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
+@@/ABAdsv1.$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
+@@/ad-125.$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
+@@/ad-400.$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
+@@/ad-amz.$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 @@||iban-rechner.de/fileadmin/_migrated/pics/theano_17.gif$image,domain=iban-rechner.de
 @@||iban-rechner.de/fileadmin/slheader.gif$image,domain=iban-rechner.de
 @@||iban-rechner.de/fileadmin/slheader_over.gif$image,domain=iban-rechner.de
@@ -5758,17 +5836,21 @@ widgets.outbrain.com##a[onmousedown^="this.href='https://paid.outbrain.com/netwo
 @@||iban-rechner.de/neu.gif$image,domain=iban-rechner.de
 a79c23d$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 a80007a$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
+a87fede$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 a9f0aba$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 a9f0aba63$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 aachener-nachrichten.de##[style="position: absolute; left: 960px;"]
 aachener-zeitung.de##.ad.skyscraper
 aachener-zeitung.de##.ad.superbanner
 abc7d15$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
+ae42141$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 airliners.de##.ad
 airliners.de##.banner
 airliners.de##.skyscraper
 airliners.de##[style="margin-bottom: 30px; margin-top: 10px;"]
 b18a15e$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
+b1db3b6$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
+b70142e$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 b87b4b3$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 b9337c802df$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 b9e8637$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
@@ -5782,6 +5864,7 @@ boersennews.de###FlexSky
 boersennews.de###FlexTop
 brieffreunde.de##.banner970.mobilehide
 brieffreunde.de##.skyscraper.mobilehide
+d57c67f$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 da485d0$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 dfc63a9$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 digitalfernsehen.de###c5046.csc-default
@@ -5792,6 +5875,8 @@ donnerwetter.de##div[style="text-align: center;"]
 donnerwetter.de##img[style="width: 300px; max-width: 300.1px;"]
 e-hausaufgaben.de##div[style="background-color: rgb(221, 221, 220);"]
 e2ec53a$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
+e3bc7a3$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
+e67a1f2$image,domain=digitalfernsehen.de
 e8adb01$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bafoeg-aktuell.de|bikerszene.de|boersennews.de|brieffreunde.de|clever-tanken.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|fid-gesundheitswissen.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|fussballdaten.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|inside-handy.de|juraforum.de|kicker.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|modhoster.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|quoka.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
 epochtimes.de##img[style="margin: 0.2px auto;"]
 f29173c$image,domain=aachener-nachrichten.de|aachener-zeitung.de|airliners.de|autoscout24.de|bikerszene.de|brieffreunde.de|deine-tierwelt.de|dhd24.com|digitalfernsehen.de|dnn.de|donnerwetter.de|e-hausaufgaben.de|epochtimes.de|fanfiktion.de|finya.de|formel1.de|frag-mutti.de|fremdwort.de|frustfrei-lernen.de|gameswelt.de|gartendialog.de|gartenlexikon.de|gesundheit.de|gevestor.de|goettinger-tageblatt.de|hausgarten.net|haz.de|iban-rechner.de|juraforum.de|kindergeld.org|kn-online.de|laut.de|liga3-online.de|ln-online.de|lvz.de|lz.de|mathepower.com|maz-online.de|motorsport-total.com|moviejones.de|mt.de|netzwelt.de|news.de|nickles.de|nw.de|ostsee-zeitung.de|paz-online.de|pferde.de|pixelio.de|playfront.de|prad.de|psychic.de|sn-online.de|spielen.de|spielfilm.de|truckscout24.de|tvinfo.de|unicum.de|waz-online.de|weristdeinfreund.de|weser-kurier.de|wetteronline.de|wintotal.de|wize.life
@@ -5812,6 +5897,7 @@ kicker.de##[style="margin-bottom: 10px;position: relative;z-index: 300;"]
 kicker.de##[style="max-width: 800px;"]
 kicker.de##[style="position: absolute; max-width: 160px;"]
 kicker.de##[style="position: absolute; max-width: 300px;"]
+kindergeld.org##.g-single.a-9
 liga3-online.de###skyscraperstart
 liga3-online.de##.widget.widget_text
 modhoster.de##.mobile.hidden.tablet.hidden
@@ -5842,11 +5928,7 @@ wintotal.de##[style="margin: 10.3px auto;"]
 wize.life##[style="margin-bottom: 20.5px;"]
 wize.life##[style="margin: auto auto 30px -400px; top: 20.6px; left: 50%;"]
 wize.life##[style="position: absolute; left: 50%; margin-left: 505.5px; top: 115.2px;"]
-||boersennews.de/image/U/$image,domain=boersennews.de
-||clever-tanken.de/static/tisoomi/*.js|
-||digitalfernsehen.de/image/$image,domain=digitalfernsehen.de
-||digitalfernsehen.de/image/static/$image,domain=digitalfernsehen.de
-||digitalfernsehen.de/images/static/$image,domain=digitalfernsehen.de
+||digitalfernsehen.de/images/stat/$image,domain=digitalfernsehen.de
 ||fussballdaten.de/js/blockadblock$script
 ||fussballdaten.de/js/THVQ1vv.js
 ||iban-rechner.de^$image,~third-party,domain=iban-rechner.de
@@ -5854,12 +5936,6 @@ wize.life##[style="position: absolute; left: 50%; margin-left: 505.5px; top: 115
 ||juraforum.de/bilder/statisch/$image
 ||juraforum.de/tsmi.php$script
 ||liga3-online.de/Bilder/Sportwetten24Banner.gif
-||news.de/image/$domain=news.de
-||news.de/imags/$image,domain=news.de
-||news.de/imges/$image,domain=news.de
-||news.de/imgs/$image,domain=news.de
-||news.de/pics/$domain=news.de
-||news.de/pix/$domain=news.de
 ||psychic.de/images/D/$image
 ||quoka.de/image/public/$image,domain=quoka.de
 ||tvinfo.de/img/dmax/DMAX_*.jpg
@@ -5946,27 +6022,13 @@ http://img.svz.de/img/$image,domain=nnn.de|prignitzer.de
 ||classic.comunio.de/i/2/screenshots/bundestliga/*/screenshot_$image,domain=classic.comunio.de
 ||classic.comunio.de/i/2/screenshots/bundezliga/*/screenshot_$image,domain=classic.comunio.de
 ||classic.comunio.de/i/2/screenshots/bundlliga/*/screenshot_$image,domain=classic.comunio.de
-||connect.de/4c545151c66f6890/d2678a34c1c1e6fc.js
 ||gamesaktuell.de/screenshots/*/*/*/*/*-*.$image,domain=gamesaktuell.de
 ||gamesaktuell.de/screenshots/*/*/*/*/*_*.$image,domain=gamesaktuell.de
 ||gamesaktuell.de/screenshots/286$image,domain=gamesaktuell.de
 ||gamezone.de/screenshots/teaserw$image,domain=gamezone.de
 ||i0.auto-service.de/*/*,pd=0$image,domain=auto-service.de
-||images.cgames.de/imager/*_*.jpg$image,domain=gamestar.de
 ||images.cgames.de/imager/gamepro/*_*.jpg$image,domain=gamepro.de
-||images.cgames.de/imageres/*_*.jpg$image,domain=gamestar.de
-||images.cgames.de/imagers/*_*.jpg$image,domain=gamestar.de
-||images.cgames.de/images/*_*.jpg$image,domain=gamestar.de
 ||images.cgames.de/images/gamepro/*_*.jpg$image,domain=gamepro.de
-||images.cgames.de/imagest/*_*.jpg$image,domain=gamestar.de
-||images.cgames.de/imagevest/*_*.jpg$image,domain=gamestar.de
-||images.cgames.de/imagimr/*_*.jpg$image,domain=gamestar.de
-||images.cgames.de/imagist/*_*.jpg$image,domain=gamestar.de
-||images.cgames.de/imagrst/*_*.jpg$image,domain=gamestar.de
-||images.cgames.de/imagvest/*_*.jpg$image,domain=gamestar.de
-||images.cgames.de/imagvsst/*_*.jpg$image,domain=gamestar.de
-||images.cgames.de/imagvst/*_*.jpg$image,domain=gamestar.de
-||images.cgames.de/lmages/*_*.jpg$image,domain=gamestar.de
 ||images.finanzen.net/mediacenter/*/images/*.$image,domain=finanzen.net
 ||images.finanzen.net/mediacenter/*/img/*.$image,domain=finanzen.net
 ||images.finanzen.net/mediacenter/*/inages/*.$image,domain=finanzen.net
@@ -5989,7 +6051,6 @@ http://img.svz.de/img/$image,domain=nnn.de|prignitzer.de
 ||menshealth.de/media/mh-*/*/sh-$image,domain=menshealth.de
 ||menshealth.de/media/mh-*/*/sh_$image,domain=menshealth.de
 ||motorradonline.de/sixcms/media.php/166/thumbnails/$image,domain=motorradonline.de
-||noz.de/media/$image,domain=noz.de
 ||pc-magazin.de/4c545151c66f6890/d2678a34c1c1e6fc.js
 ||pcgames.de/screenshots/teaserw$image,domain=pcgames.de
 ||pcgameshardware.de/screenshots/*/*/*/*/*-*.$image,domain=pcgameshardware.de
@@ -6181,7 +6242,7 @@ bayer04.de###Sponsoren_Logo
 send4free.de###Step1
 helles-koepfchen.de###Superbanner
 helles-koepfchen.de###Syscraper_left
-fussball.de###TArtikel2 > img[height="95"][width="302"]:first-child
+fussball.de###TArtikel2 > img[Height="95"][Width="302"]:first-child
 mobile.de###TBANNER_SPACER
 unterwasserwelt.de###Tabelle671
 unterwasserwelt.de###Tabelle673
@@ -6194,7 +6255,7 @@ mazda-forum.info,unixboard.de###TopRectangle
 freiepresse.de###TopWrapper
 onvista-bank.de###WALLPAPER
 neumarktaktuell.de###Werbung
-ww3.cad.de###WzTtDiV + table[width="100%"][border="0"]
+ww3.cad.de###WzTtDiV + table[Width="100%"][border="0"]
 adhs-zentrum.de,enuresis-zentrum.de,zeitarbeit-zentrum.de###a4d1af
 adhs-zentrum.de,enuresis-zentrum.de,zeitarbeit-zentrum.de###a4d1af + div
 woxikon.de###aContentBottom2
@@ -6256,15 +6317,13 @@ like-fun.eu,schnittberichte.com###background
 falk.de###bahn
 hd-vidz.net###ball
 kress.de###banderole
-anderes-wort.de,apotheke-adhoc.de,bos-fahrzeuge.info,chaoz.ws,cine4home.de,ehrensenf.de,eisenbahn-kurier.de,elektrischer-reporter.de,fettspielen.de,ff-online.com,forum.worldofplayers.de,frischauf-gp.de,gamekeyfinder.de,gamingjunkies.de,handballworld.com,holidaycheck.at,holidaycheck.ch,holidaycheck.de,horseweb.de,isarszene.de,it-sa.de,kath.ch,koelschwasser.eu,meproxsoft.de,neuigkeitendienst.com,rollingplanet.net,see-online.info,sodbrennen-welt.de,softguide.de,suxedoo.ch,vhs-ol.de,we-mod-it.com,xp-antispy.org###banner
-swz.it###banner-center
+anderes-wort.de,apotheke-adhoc.de,bos-fahrzeuge.info,chaoz.ws,cine4home.de,ehrensenf.de,eisenbahn-kurier.de,elektrischer-reporter.de,fettspielen.de,forum.worldofplayers.de,frischauf-gp.de,gamekeyfinder.de,gamingjunkies.de,handballworld.com,holidaycheck.at,holidaycheck.ch,holidaycheck.de,horseweb.de,isarszene.de,it-sa.de,kath.ch,koelschwasser.eu,meproxsoft.de,neuigkeitendienst.com,rollingplanet.net,see-online.info,sodbrennen-welt.de,softguide.de,suxedoo.ch,vhs-ol.de,we-mod-it.com,xp-antispy.org###banner
 donnerwetter.de###banner-container
 macgadget.de###banner-floater
 sportnews.bz###banner-leaderboard
 fremdwort.de###banner-rectangle
 autozeitung.de###banner-region
 deutsche-wirtschafts-nachrichten.de,doppelpunkt.de###banner-right
-swz.it###banner-side
 annos.de,chefkoch.de,dasoertliche.de,dastelefonbuch.de###banner-top
 dastelefonbuch.de###banner-top-wp
 maclife.de###banner-wrapper-lead
@@ -6330,7 +6389,7 @@ modhoster.de###bigsize_inner
 pcpraxis.de,rund-magazin.de###bigsizebanner
 autozeitung.de,computerbild.de,prad.de,volksfreund.de###billboard
 autozeitung.de###billboard + div
-computerbild.de###billboard + div a > img[width="1000"][height="250"]
+computerbild.de###billboard + div a > img[Width="1000"][Height="250"]
 computerbild.de###billboard + div[style="margin-bottom: 20px;"]
 prad.de###billboardbig
 4players.de###billiger-charts
@@ -6344,8 +6403,8 @@ holzwerken.net###blub
 titanic-magazin.de###bnr-kiwi
 computerhilfen.de###bodyarea > div[style="height:95px;margin-top:17px;"]
 computerhilfen.de###bodyarea > div[style="height:95px;margin-top:17px;position:relative;"]
-flashgames.de###bottom10 > table[width="123"][height="615"]
-flashgames.de###bottom10 > table[width="128"][height="75"]
+flashgames.de###bottom10 > table[Width="123"][Height="615"]
+flashgames.de###bottom10 > table[Width="128"][Height="75"]
 1001spiele.de,nailfreaks.com###bottomBanner
 wonnemar.de###box-banner
 futurezone.at###box-karriereat
@@ -6748,9 +6807,9 @@ wetter.de###pageRelated > #pageHalfpage
 wetter.de###page_arranged_quicklink > .pageQuicklinks
 dwdl.de###pagecontainer > .regular_LB
 ogame.de###pagefoldtarget
-amateurchess.com###pagenav_menu + .tborder[width="100%"][cellspacing="1"][cellpadding="7"][border="0"][align="center"] + br + table[border="1"]
-amateurchess.com###pagenav_menu + .tborder[width="100%"][cellspacing="1"][cellpadding="7"][border="0"][align="center"] + br + table[border="1"] + br + table[border="1"]
-rheinforum.com###pagenav_menu + table[width="100%"][border="0"]
+amateurchess.com###pagenav_menu + .tborder[Width="100%"][cellspacing="1"][cellpadding="7"][border="0"][align="center"] + br + table[border="1"]
+amateurchess.com###pagenav_menu + .tborder[Width="100%"][cellspacing="1"][cellpadding="7"][border="0"][align="center"] + br + table[border="1"] + br + table[border="1"]
+rheinforum.com###pagenav_menu + table[Width="100%"][border="0"]
 climbing.de###pane-werbung
 nh24.de###partner
 borussia.de###partnerBottom
@@ -6833,7 +6892,7 @@ pcgames.de###post_rec
 wow-forum.com###posts #wow_ros_postbit
 myboerse.bz###posts > li[id^="yui-gen"]
 mobilfunk-talk.de###posts > li[id^="yui-gen"].postcontainer
-unixboard.de###posts > table[width="100%"][cellspacing="0"][cellpadding="0"][border="0"][style="page-break-before: always"]
+unixboard.de###posts > table[Width="100%"][cellspacing="0"][cellpadding="0"][border="0"][style="page-break-before: always"]
 gutefrage.net###poweredBy
 bild.de###powerplace
 n-tv.de###premio_rectangle
@@ -6845,6 +6904,7 @@ laola1.at###presenting_left
 laola1.at###presenting_right
 schoener-fernsehen.com###previewtxt + div[id][style="display: block;"]
 pcgameshardware.de###pricehitsTextTeaser
+metager.de###products
 buffed.de,gamezone.de,pcgames.de###promo_1
 okitalk.com###promo_foot
 okitalk.com###promo_left
@@ -6852,7 +6912,7 @@ okitalk.com###promo_page
 okitalk.com###promo_right
 stuttgarter-zeitung.de###promoblock_1
 gameswelt.at,gameswelt.ch,gameswelt.de###pslink
-psychic.de###psychictable > table[width="100%"][border="0"] > tbody > tr > td[width="167"][valign="top"]:last-child
+psychic.de###psychictable > table[Width="100%"][border="0"] > tbody > tr > td[Width="167"][valign="top"]:last-child
 fussballtransfers.com###pub-200x197
 fussballtransfers.com###pub-300x250
 fussballtransfers.com###pub-468x60
@@ -7163,7 +7223,7 @@ israelheute.com##.DnnModule-887
 israelheute.com##.DnnModule-888
 israelheute.com##.DnnModule-891
 israelheute.com##.DnnModule-900
-pafnet.de##.FlyerRahmen1[width="125"]
+pafnet.de##.FlyerRahmen1[Width="125"]
 kimeta.de##.GoogleColSpan
 computerwoche.de##.HeadLeaderBoard
 triathlon-szene.de##.HinweisAnzeige
@@ -7178,7 +7238,7 @@ n24.de##.OUTBRAIN .ob_dual_left > .ob-p
 bildderfrau.de,gofeminin.de##.OffresSpe_cadre
 news.preisgenau.de##.Post5
 aol.de##.RHRSLL
-fremdwort.de##.RahmenRundrum[width="560"] > tbody > tr > td[colspan="2"]:first-child:last-child > table[border="0"]:first-child:last-child
+fremdwort.de##.RahmenRundrum[Width="560"] > tbody > tr > td[colspan="2"]:first-child:last-child > table[border="0"]:first-child:last-child
 aol.de##.SLL
 charivari.de##.Skyscraper_Slot
 buerschgens.de##.SponsorFuss
@@ -7188,8 +7248,9 @@ rtl.de##.T_shopKoop
 t-online.de##.Tadblock
 t-online.de##.Tadc
 t-online.de##.Tamrecbox
+chip.de##.Teaser__Affiliate
 eltern-zentrum.de##.Text1[valign="top"]:last-child > .tabberlive:last-child
-adhs-zentrum.de##.Text[width="100%"][valign="top"] + td[valign="top"]:last-child
+adhs-zentrum.de##.Text[Width="100%"][valign="top"] + td[valign="top"]:last-child
 t-online.de##.Thpx600
 kleinreport.ch##.TopBannerContainer
 kellysearch.de##.TopBanners
@@ -7212,7 +7273,7 @@ tutorials.de##.above_body > #header + #navbar + table:last-child
 rc-network.de##.above_body:first-child + table[cellspacing="0"][cellpadding="0"][border="0"][align="center"]
 die-schnelle-kuh.de##.abp
 presseportal.de##.abvbp-parent-hockey
-aachener-nachrichten.de,abendblatt.de,alle-immobilien.ch,azonline.de,bazonline.ch,bernerzeitung.ch,bildderfrau.de,billig-flieger-vergleich.de,bos-fahrzeuge.info,computerbase.de,crn.de,derbund.ch,derlacher.de,echo-online.de,epochtimes.de,fail.to,fettspielen.de,funnypizza.de,glamour.de,gmx.net,gq-magazin.de,hardwareclips.com,inside-handy.de,ircgalerie.net,kalenderwoche.net,kino24.to,kronehit.at,macwelt.de,modhoster.de,newscomm.de,oberhessische-zeitung.de,phonostar.de,podcast.de,prisma.de,radiokoeln.de,raidrush.org,rhein-neckar-loewen.de,sachsen-fernsehen.de,shopbetreiber-blog.de,sueddeutsche.de,suite101.de,tagesanzeiger.ch,wallstreet-online.de,web.de,welt.de,wn.de,yellingnews.com,zeit.de##.ad
+aachener-nachrichten.de,abendblatt.de,alle-immobilien.ch,azonline.de,bazonline.ch,bernerzeitung.ch,bildderfrau.de,billig-flieger-vergleich.de,bos-fahrzeuge.info,computerbase.de,crn.de,derbund.ch,derlacher.de,echo-online.de,epochtimes.de,fail.to,fettspielen.de,funnypizza.de,glamour.de,gmx.net,gq-magazin.de,hardwareclips.com,inside-handy.de,ircgalerie.net,kalenderwoche.net,kino24.to,kronehit.at,macwelt.de,metager.de,modhoster.de,newscomm.de,oberhessische-zeitung.de,phonostar.de,podcast.de,prisma.de,radiokoeln.de,raidrush.org,rhein-neckar-loewen.de,sachsen-fernsehen.de,shopbetreiber-blog.de,sueddeutsche.de,suite101.de,tagesanzeiger.ch,wallstreet-online.de,web.de,welt.de,wn.de,yellingnews.com,zeit.de##.ad
 1und1.de,gmx.net,web.de##.ad-container
 vsport.at##.ad1
 vsport.at##.ad2
@@ -7280,7 +7341,7 @@ tweakpc.de##.aflink
 tarnkappe.info##.after-entry > .wrap > #text-17
 oxygen-scene.com##.alert_green
 modernboard.de##.alt1[style="padding-top:0px"] > div[style="clear:both"] + ul[style="list-style-type:none; margin:0px; padding:0px"]
-dforum.net##.alt2[colspan="2"][style="background: #eaeab4"] > font[color="#000"]:first-child:last-child > table[width="100%"][cellspacing="0"][cellpadding="0"]:first-child:last-child
+dforum.net##.alt2[colspan="2"][style="background: #eaeab4"] > font[color="#000"]:first-child:last-child > table[Width="100%"][cellspacing="0"][cellpadding="0"]:first-child:last-child
 winboard.org##.alt2[style="padding-top:0px"] > ul[style="list-style-type:none; margin:0px; padding:0px"] > br:first-child + div[align="center"]:last-child
 winfuture.de##.am_box
 heise.de##.ama
@@ -7435,7 +7496,7 @@ androidpit.de##.boxLightLeft[style="width:620px; text-align:center; font-size:95
 franchise-net.de##.box_174
 werder.de##.box_sponsor
 schwaebische.de##.box_width2 > div[style="border:1px solid #999999;padding:6px;"]
-sms.de##.boxbody[width="190"][valign="top"][align="left"][rowspan="7"]:last-child
+sms.de##.boxbody[Width="190"][valign="top"][align="left"][rowspan="7"]:last-child
 gronkh.de##.branding
 chefkoch.de##.brandlogo-table
 sbb.ch##.btn_promo
@@ -7469,7 +7530,7 @@ gamepro.de##.centeredDiv > .border > .homeContReg > .doubleBlkRight[style="heigh
 gamestar.de##.centeredDiv > .homeContReg > .doubleBlkLeft[style="height:270px;padding-top:20px;"]:first-child
 gamestar.de##.centeredDiv > .homeContReg > .doubleBlkRight[style="height:300px;padding:20px 0;"]:last-child
 typo3blogger.de##.chemical_sitelogo_r
-putenbrust.net##.children:last-child > table[width="500"][align="center"]
+putenbrust.net##.children:last-child > table[Width="500"][align="center"]
 lesen.to##.clicky_log_outbound[style="color: rgb(255, 51, 0);  title="]
 golem.de##.cluster-header + div[style="margin:15px 0; min-height:103px;"]
 golem.de##.cluster-header + div[style="margin:15px 0; min-height:266px;"]
@@ -7484,7 +7545,7 @@ stayfriends.de##.col1 > div[style="width: 616px; height:185px; border:2px solid 
 3druck.com##.col2 > #text-5
 3druck.com##.col2 > #text-6
 pchilfe.org##.col2 > .ink_box
-daspureleben.com##.column-first > .content > .fl-lft > img[width="139"][height="52"]
+daspureleben.com##.column-first > .content > .fl-lft > img[Width="139"][Height="52"]
 daspureleben.com##.column-first > .content > .logo-slider
 bluewin.ch##.column-right > .column-right-right > .teaser-special > .ts-image + .ts-content
 tripadvisor.de##.commerce
@@ -7502,7 +7563,7 @@ bleckede.de##.content > #rightcontainer:last-child
 sprachnudel.de##.content > #toplinks
 sprachnudel.de##.content > #toplinks2
 fscklog.com##.content > .posted:first-child img
-speedlounge.in##.content > center > hr[width="100%"] + a
+speedlounge.in##.content > center > hr[Width="100%"] + a
 hammstars.de##.content > div[style="margin-top:-18px; float:right; width:237px; text-align:right;"]
 hamm.biz,hammonline.de##.content > div[style="position:relative; top:-13px; float:right; margin-left:15px; font-size:10px; text-align:right;"]
 notebookjournal.de##.content > div[style="width:50%;height:260px;float:left;"]
@@ -7534,7 +7595,7 @@ augsburger-allgemeine.de,heise.de##.contentbanner
 bild.de##.contentbar
 dastelefonbuch.de##.context_banners
 chip.de##.cs-widget[data-cloudsider="vod"]
-klassikradio.de##.cssmedia[height="125"][width="288"]
+klassikradio.de##.cssmedia[Height="125"][Width="288"]
 rimparerhandballer.de##.custom > .adv_slideshowTable
 24-tv.tv##.custom-bravomarket
 lounge.fm##.custom-sponsor
@@ -7546,6 +7607,7 @@ winload.de##.darklayer
 fail.to##.dealheader
 gesichtskirmes.net##.deals
 wetter.com##.desk-one-third a[id][href] > img[src]
+hdfilme.tv##.detail > div[style="text-align: center;position: relative;"]
 filmpalast.to##.detail > li > span > a
 menshealth.de##.dfp_rand1
 menshealth.de##.dfp_ss1
@@ -7595,9 +7657,10 @@ bild.de##.eyecatcher
 fussballoesterreich.at##.fadeVerein1
 fussballoesterreich.at##.fadeVerein2
 fussballoesterreich.at##.fadeVerein3
-computerhilfen.de##.fcontent2 > a > img[width="612"][height="221"]
+computerhilfen.de##.fcontent2 > a > img[Width="612"][Height="221"]
 poker-lernen.info##.featured
 emok.tv##.fenster_gadgets
+ff-bz.com##.ff-ba
 rechnungswesenforum.de##.ffwidget_sidebar
 bloggospace.de##.first_pub
 preisvergleich.de##.flexTop
@@ -7793,7 +7856,7 @@ radio7.de##.microbanner
 wetter.com##.middle > div[id][class]:first-child > a[href]:last-child > img[src]:first-child:last-child
 fettspielen.de##.middle-leaderboard
 wetterspiegel.de##.mir-wallpaper-background[align="right"][style="height: 250px"]
-wetterspiegel.de##.mir-wallpaper-background[height="90"][align="right"]
+wetterspiegel.de##.mir-wallpaper-background[Height="90"][align="right"]
 downloadstube.net##.mirror
 aol.de##.mnid-daily-buzz5
 aol.de##.mnid-marketplace3-2line-ad_evergreen
@@ -7826,14 +7889,14 @@ digitalvideoschnitt.de##.news-list-container > .news[style="height:80px;"]
 glocalist.com##.news-single-content > a + div[style="text-align:center;"]
 urlauburlaub.at##.newsitem
 pc-magazin.de##.newsletterTeaser
-dslteam.de##.newstxt > table[cellspacing="0"][cellpadding="0"][border="0"][align="right"][width="308"]
-onlinekosten.de##.newstxt > table[width="308"][cellspacing="0"][cellpadding="0"][border="0"][align="right"]
+dslteam.de##.newstxt > table[cellspacing="0"][cellpadding="0"][border="0"][align="right"][Width="308"]
+onlinekosten.de##.newstxt > table[Width="308"][cellspacing="0"][cellpadding="0"][border="0"][align="right"]
 beichthaus.com##.no > a[href^="http://bit.ly/"]
 mikrocontroller.net##.noprint > div[style] + div[style] > script:first-child + div[style]:last-child
 mikrocontroller.net##.noprint > div[style] > div[id]:last-child > div[style]
 versicherungsjournal.at,versicherungsjournal.de##.norm-lsp-wbox
 versicherungsjournal.at,versicherungsjournal.de##.norm-rsp-wbox1
-team.gamed.de##.normal_text[width="100%"][valign="top"][height="100"][align="left"][border="0"]
+team.gamed.de##.normal_text[Width="100%"][valign="top"][Height="100"][align="left"][border="0"]
 lpgforum.de,pkw-forum.de##.notices + br + #vbseo_vhtml_1
 gmx.net##.notification-alert[data-notification-browser]
 hamburg.de##.nscout[target="_blank"][href^="http://de.sitestat.com/"]
@@ -7851,8 +7914,8 @@ goldesel.to##.page > .content_right > div[class^="d_"]:last-child
 pizza.de##.page-list__premium-placements
 myvideo.at,myvideo.ch,myvideo.de##.pageFW > .mya:first-child
 wetter.de##.pageTeaserbarHorizontal
-linux-forum.de##.page[width="100%"][cellspacing="0"][cellpadding="0"][align="center"] > tbody > tr[valign="top"] > td[valign="top"]:last-child > div[align="center"][style="margin-bottom:10px"]:first-child
-diaet.abnehmen-forum.com##.page[width="150"][valign="top"][style="padding: 6px;"]:first-child
+linux-forum.de##.page[Width="100%"][cellspacing="0"][cellpadding="0"][align="center"] > tbody > tr[valign="top"] > td[valign="top"]:last-child > div[align="center"][style="margin-bottom:10px"]:first-child
+diaet.abnehmen-forum.com##.page[Width="150"][valign="top"][style="padding: 6px;"]:first-child
 clap-club.de##.page_caption > #menu_border_wrapper + br + br + br + p
 archiv.raid-rush.ws##.pagebody:first-child > div[style="margin-bottom:80px;height:250px;"]
 golem.de##.paged-cluster-header + div[style="margin:15px 0; min-height:103px;"]
@@ -7892,9 +7955,10 @@ moviebox.to##.post > .cover > center > a[target="_blank"]
 serienjunkies.org##.post > .post-title + #outer
 blogprojekt.de##.post > div[style="margin-left: 10px;"] > div[style="clear:both; font-size:8pt; text-align:right; width: 468px;"]
 iphone-tricks.de##.post div[style="float:none;margin:0px 0 0px 0;text-align:center;"]
-ak-kurier.de,nr-kurier.de,ww-kurier.de##.post td[valign="top"] > table[width="100%"][cellspacing="0"][cellpadding="0"][border="0"] > tbody > tr > td > a[target="_blank"] > img
+ak-kurier.de,nr-kurier.de,ww-kurier.de##.post td[valign="top"] > table[Width="100%"][cellspacing="0"][cellpadding="0"][border="0"] > tbody > tr > td > a[target="_blank"] > img
 radio1.ch##.post-box-middle-anzeige
 wallstreet-online.de##.posting + div[style="width:860px;"]
+stol.it##.pr
 dokus.to##.prc
 digitalfernsehen.de##.preisvergleich_search
 scm-gladiators.de##.presenter
@@ -7914,7 +7978,7 @@ quotenmeter.de##.qm-news-list-box
 quotenmeter.de##.qm-right-box[style="position:relative"]
 104.6rtl.com##.quicklinks-wrapper
 au-ja.de##.rechtsADV
-reimemaschine.de##.rechts_neu > table[border="0"][align="center"][width="150"]:first-child:last-child
+reimemaschine.de##.rechts_neu > table[border="0"][align="center"][Width="150"]:first-child:last-child
 gmx.de,web.de##.record-layer
 hamm2night.de##.rect
 hamm2night.de##.rectBox
@@ -7931,7 +7995,7 @@ quoka.de##.result a[href^="http://connect.quoka.de/qpa/click.php?url="]
 quoka.de##.result-sml a[href^="http://connect.quoka.de/qpa/click.php?url="]
 gronkh.de##.revbig
 gronkh.de##.revbox
-notebookcheck.com##.reviewlisttable[width="100%"][border="0"][style="background-color:#EEEEEE;"]
+notebookcheck.com##.reviewlisttable[Width="100%"][border="0"][style="background-color:#EEEEEE;"]
 stefan-niggemeier.de##.right-content > .external-content + .region-info
 stefan-niggemeier.de##.right-content > .external-content + .region-info + a > img
 narutoloads.org##.right-hand-global
@@ -7952,6 +8016,7 @@ magistrix.de##.row > div[style="text-align: right; padding: 0;"]
 boerse-online.de##.rsmodulanzeige
 rtl.de##.rtlde-medium-rectangle
 ebay.de##.rtmad
+quoka.de##.s24widget
 com-magazin.de##.s2teaserboxes-typ-4
 com-magazin.de##.s2teaserboxes-typ-6
 islamische-zeitung.de##.sb-widget
@@ -8070,6 +8135,7 @@ rheintaler.ch##.tbrposthtml
 rheintaler.ch##.tbrprehtml
 hifi-forum.de##.td1[valign="top"] > div[style="float:left; width: 300px; height: 250px; margin-right: 10px; margin-bottom: 10px; padding:0;"]:first-child
 bild.de##.tea-rectangle
+swz.it##.teaser
 notebookinfo.de##.teaser-news-inline-anzeige
 bluewin.ch##.teaser-partnerlink
 n-tv.de##.teaser_220_450.clearfix[style="background-color: #02225a; padding: 5px 0 5px 0; margin: -10px 0 10px 0; "]
@@ -8086,7 +8152,7 @@ computerbild.de##.teaserblock a[href="http://www.evivam.de"]
 computerbild.de##.teaserblock a[href^="http://k.ilius.net/?"]
 computerbild.de##.teaserblock.pricetrend .priceblock .amazon
 computerbild.de##.teaserblock.pricetrend .priceblock .idealo
-teltarif.de##.tetable:first-child + .tetable[width="100%"][cellspacing="0"][cellpadding="0"][border="0"][bgcolor="#E3D470"]
+teltarif.de##.tetable:first-child + .tetable[Width="100%"][cellspacing="0"][cellpadding="0"][border="0"][bgcolor="#E3D470"]
 sinn-frei.com##.text > div[style="margin: 3px 0 1px 0;"]
 adhs-zentrum.de##.text[align="center"][colspan="6"]:first-child:last-child > p[align="center"]:first-child:last-child
 oberberg-aktuell.de##.text_anzeige
@@ -8205,11 +8271,11 @@ npage.at,npage.ch,npage.de,~www.npage.at,~www.npage.ch,~www.npage.de##[class] > 
 npage.at,npage.ch,npage.de,~www.npage.at,~www.npage.ch,~www.npage.de##[id] > a[target="_blank"][href^="/"][href$=".html"]
 filecrypt.cc##[onmouseup$="', this);"][href^="javascript:"]
 filecrypt.cc##[onmouseup^="var c = this;openLink('"][style="cursor:pointer;"]
-forum-sachsen.com##[width="425"][height="600"][style="position: absolute; top: 100px; left: 550px; empty-cells: hide;"]
-sat-erotik.de##[width="800"][cellspacing="0"][cellpadding="4"][border="0"]
+forum-sachsen.com##[Width="425"][Height="600"][style="position: absolute; top: 100px; left: 550px; empty-cells: hide;"]
+sat-erotik.de##[Width="800"][cellspacing="0"][cellpadding="4"][border="0"]
 hsc-bad-neustadt.de##a[class*="sponsor"]
 digitalfernsehen.de##a[data-redirect^="http://click.plista.com/redirect.php"] + div
-xxx-blog.to##a[height="600"][width="120"]
+xxx-blog.to##a[Height="600"][Width="120"]
 goldesel.to##a[href$="-anonym"]
 goldesel.to##a[href$="-download"]
 g4u.me##a[href$="/download/nzb.html"]
@@ -8218,6 +8284,7 @@ pi-news.net##a[href$="/werbung.pdf"]
 metager.de##a[href*=".overture.com/"][href$="?plmg=1"]
 bild.de##a[href*=".smartadserver.com/"]
 lesen.to##a[href*="/?f="]
+windowspro.de##a[href*="/adclick."]
 htwk-leipzig.de##a[href*="/adclick.php?"]
 satindex.de##a[href*="/extern.php?"]
 serienjunkies.org##a[href*="/mirror."]
@@ -8324,6 +8391,7 @@ bild.de##a[href^="/spiele/goodgame/"] > img
 bild.de##a[href^="/spiele/innogames/"] > img
 bild.de##a[href^="/spiele/travian-games/"] > img
 20min.ch##a[href^="/sponsored/"]
+mykino.to##a[href^="/stream4/index.php?id="]
 1kino.in##a[href^="/te3/out.php?id="] > img
 speedlounge.in##a[href^="/to/"]
 rtl.de##a[href^="/tools/count/teaser_ext.php?url="][href*="altfarm.mediaplex.com"]
@@ -8374,7 +8442,7 @@ serienjunkies.org##a[href^="http://alternads.info/"]
 arcor.de,welt.de,weltwoche.ch##a[href^="http://altfarm.mediaplex.com/ad/ck/"]
 derlacher.de,sinn-frei.com,trendhure.com##a[href^="http://amzn.to/"]
 beichthaus.com,gamefront.de##a[href^="http://amzn.to/"] > img
-hornoxe.com##a[href^="http://amzn.to/"] > img[width="480"][height="400"]
+hornoxe.com##a[href^="http://amzn.to/"] > img[Width="480"][Height="400"]
 trendhure.com##a[href^="http://amzn.trendhure.com"]
 pdfs.us##a[href^="http://anonym.to/?http://ul.to/ref/"]
 smsform.de##a[href^="http://api.tapstream.com/lovoo/"]
@@ -8449,6 +8517,7 @@ sdx.cc##a[href^="http://mirror.sdx.cc/"]
 pure-anime.biz##a[href^="http://mmotraffic.com/"]
 musicelster.net##a[href^="http://musicelster.net/premium"]
 myboerse.bz##a[href^="http://myboerse.bz/download/?ff="]
+mykino.to##a[href^="http://mykino.to/stream4/index.php?id="]
 gamingxp.com##a[href^="http://nemexia.de/?"]
 hd-world.org##a[href^="http://netload.in/"][href*="&refer_id="]
 paradise-load.us,sdx.cc##a[href^="http://netload.in/index.php?refer_id="]
@@ -8746,19 +8815,19 @@ leave.to##body > #wrapper > header + aside + #content:last-child
 weihnachtsbaeckerei.com##body > .noprint[style="position: absolute; left: 50%; margin-left: 355px; top: 123px;"]
 solinger-bote.de##body > .xWrap > .xWrapLeft
 solinger-bote.de##body > .xWrap > .xWrapLeft + .xWrapRight
-langes-forum.de##body > :nth-child(75) + .tablec[align="center"][style="width:98%"] > tbody > tr > td[width="100%"] > .tableb[cellspacing="1"][cellpadding="4"][border="0"][style="width:100%"]
+langes-forum.de##body > :nth-child(75) + .tablec[align="center"][style="width:98%"] > tbody > tr > td[Width="100%"] > .tableb[cellspacing="1"][cellpadding="4"][border="0"][style="width:100%"]
 tv-stream.to##body > :nth-child(9) + div[id][style]
 areadvd.de##body > center
 elternforen.com##body > div[align="center"] > table[align="left"][cellspacing="0"][cellpadding="0"][style="width: 99%"]
-www.google.de##body > div[align="left"]:first-child + style + table[cellpadding="0"][width="100%"][style^="border: 1px solid "]
+www.google.de##body > div[align="left"]:first-child + style + table[cellpadding="0"][Width="100%"][style^="border: 1px solid "]
 salzi.at##body > div[id^="fb_"]
 astronews.com##body > div[style="position:absolute; top:10px; width:900px;"]
-dasweinforum.de##body > table > tbody > tr > td[width="160"][valign="top"]:first-child
+dasweinforum.de##body > table > tbody > tr > td[Width="160"][valign="top"]:first-child
 gleitschirmdrachenforum.de##body > table[style="margin-bottom: 10px;"]:first-child
 wortfilter.de##body > table[style="margin-bottom:6px;"]:first-child
 astronews.com##body > table[style="width: 750px"]
-ww3.cad.de##body > table[width="100%"][border="0"]:first-child
-acer-userforum.de##body > table[width="100%"][cellspacing="0"][cellpadding="0"][border="0"]:first-child > tbody:first-child:last-child > tr:first-child:last-child > td[width="195px"][valign="top"]:first-child
+ww3.cad.de##body > table[Width="100%"][border="0"]:first-child
+acer-userforum.de##body > table[Width="100%"][cellspacing="0"][cellpadding="0"][border="0"]:first-child > tbody:first-child:last-child > tr:first-child:last-child > td[Width="195px"][valign="top"]:first-child
 schoener-fernsehen.com##body[msallowfullscreen="true"][webkitallowfullscreen="true"][mozallowfullscreen="true"][allowfullscreen="true"][style="box-sizing: border-box; width: 100%; height: 100%; overflow: hidden;"] > iframe[id][class][frameborder="0"][allowtransparency="true"][scrolling="auto"][src^="http://schoener-fernsehen.com/"] + div[id][class]
 rtl.de##button[onclick^="verivox_go("]
 rsd-store.com##button[onclick^="visitPartner("]
@@ -8768,16 +8837,16 @@ filecrypt.cc##button[onmouseup$=", b, true);"]
 hornoxe.com##center > a[target="_blank"][href^="http://amzn.to/"] > img
 repage.de##center > br + table[style="background-color:FFFFCC;border:1px solid;border-color:;table-layout:visible;width:468px;height:60px;padding-top:0px;padding-left:5px;padding-right:5px;padding-bottom:0px;"]
 abload.de##center > table > tbody > tr > td[valign="bottom"][align="center"][style="width: 100%;"]
-englische-briefe.de##center > table[width="574"][cellspacing="0"][cellpadding="0"][border="0"]
+englische-briefe.de##center > table[Width="574"][cellspacing="0"][cellpadding="0"][border="0"]
 wuerzburger-kickers.de##div > h3 + #ais_129_wrapper
 rundumkoeln.de##div[align="center"] > #top[name="top"]:first-child + table[border="0"]:last-child
 handy-faq.de##div[align="center"] > span[style="text-decoration:none; color:red;font-size:18px;"]:first-child
 handy-faq.de##div[align="center"] > span[style="text-decoration:none; color:red;font-size:18px;"]:first-child + a
 flirttown.net##div[align="center"][style="height:90px; z-index:99;"]
 dslteam.de##div[align="center"][style="width: 850px; margin: 0px auto 15px auto; color: #fff;"]
-3dchip.de##div[align="center"][width="468px"] > table[height="60"][cellspacing="0"][cellpadding="0"][border="0"][align="center"]
+3dchip.de##div[align="center"][Width="468px"] > table[Height="60"][cellspacing="0"][cellpadding="0"][border="0"][align="center"]
 onlinekosten.de##div[align="left"][style="padding:0px 25px 0px 25px"] > div[align="center"][style="margin: 10px 0px 20px 0px;"]
-dslr-forum.de##div[align="left"][style="padding:0px 25px 0px 25px"] > div[style="padding:0px 0px 6px 0px"] > .tborder[cellspacing="1"][cellpadding="6"][border="0"][align="center"][width="100%"]
+dslr-forum.de##div[align="left"][style="padding:0px 25px 0px 25px"] > div[style="padding:0px 0px 6px 0px"] > .tborder[cellspacing="1"][cellpadding="6"][border="0"][align="center"][Width="100%"]
 forum.jswelt.de##div[class="postbit"]
 t-online.de##div[class^="Tsshopst"]
 technic3d.com##div[class^="ad-"]
@@ -8798,6 +8867,7 @@ chip.de##div[data-adzone="contentad-storyad-afc"]
 amazon.de##div[id$="_adcontent"]
 vol.at##div[id^="AdContainer_"]
 www.blick.ch##div[id^="CT299"]
+hdfilme.tv##div[id^="MGWrap"]
 t-online.de##div[id^="T-"].Tmm.Tltb.Tts.Tmc1.Tww1.Thh3[onfocus^="A('zid="] > .Ttsc.Ttsv169
 t-online.de##div[id^="T-"].Tmm.Tts.Tmc4b.Ttshh.Tww1.Thh05.Tmc4s[onfocus^="A('zid="]
 t-online.de##div[id^="T-"][oncontextmenu="return false"]
@@ -8821,9 +8891,10 @@ mafia.to##div[id^="cpa_rotator_"]
 gulli.com##div[id^="crt-"]
 downloadstube.net##div[id^="ddl_"] + div[id] + a[onclick] + br + a[onclick]
 pnp.de##div[id^="diganz"]
-abnehmen-forum.com##div[id^="edit"] > .vbseo_like_postbit + table[width="100%"][bgcolor="#FFFFFF"]
+abnehmen-forum.com##div[id^="edit"] > .vbseo_like_postbit + table[Width="100%"][bgcolor="#FFFFFF"]
 jswelt.de##div[id^="edit"]:first-child:last-child > .spacer:last-child
-boerse.sx##div[id^="edit"][style="padding:0px 0px 6px 0px"] > table[id^="post"][width="100%"][cellspacing="0"][cellpadding="6"][border="0"][align="center"] + br + .tborder[width="100%"][cellspacing="0"][cellpadding="6"][border="0"][align="center"]
+boerse.sx##div[id^="edit"][style="padding:0px 0px 6px 0px"] > table[id^="post"][Width="100%"][cellspacing="0"][cellpadding="6"][border="0"][align="center"] + br + .tborder[Width="100%"][cellspacing="0"][cellpadding="6"][border="0"][align="center"]
+windowspro.de##div[id^="gtWrapper-"]
 gamestar.de##div[id^="idAd"]
 teltarif.de##div[id^="ideaload"]
 freitag.de##div[id^="mf"]
@@ -9052,7 +9123,7 @@ pixelio.de##div[style="width: 750px; height: 95px; float: left; margin-bottom: 1
 onlinekosten.de##div[style="width: 850px; margin: 0px auto 10px auto; color: #fff;"]
 onlinekosten.de##div[style="width: 850px; margin: 0px auto 10px auto;"]
 mimikama.at##div[style="width: 980px; margin: auto; height: 90px;"]
-comag.tv##div[style="width:100%"] > table[width="100%"][border="0"][bgcolor="#FFFFFF"][style="border-collapse: collapse"]
+comag.tv##div[style="width:100%"] > table[Width="100%"][border="0"][bgcolor="#FFFFFF"][style="border-collapse: collapse"]
 pro-linux.de##div[style="width:100%; padding:0.3em 0 0; background-color:#0c4da0; height: 90px; overflow:hidden;"]
 gamestar.de##div[style="width:100%;background: url(/img/aktionen/sb_bg.png) repeat-x;"]
 gamestar.de##div[style="width:100%;background: url(/img/aktionen/sponsorbar_bg.png) repeat-x;"]
@@ -9075,6 +9146,7 @@ mainfranken24.de##div[style="width:300px;overflow:hidden;float:right; margin:0px
 news.ch##div[style="width:300px;padding:12px;float:left;"]
 14-tage-wettervorhersage.de##div[style="width:320px; height:64px; margin-left:-3px; margin-top:-35px;"]
 aero.de##div[style="width:326px;padding-bottom:13px;text-align:center;background-color:#f0f0f0;padding-top:3px;"]
+sportnews.bz##div[style="width:336px; height:280px; float:right; background-color:#ffffff; margin-left:10px; padding:0 0 10px 10px"]
 14-tage-wettervorhersage.de##div[style="width:336px; height:60px; border: 1px solid #c7c7c7;"]
 eierkraulen.net##div[style="width:437px; height:143px; border:0px solid grey; background-image:url(http://www.eierkraulen.net/md/1/mode.png); font-family:Sans-serif; font-size:13px;padding-left:187px;"]
 readmore.de##div[style="width:520px; height:120px;"] > div[style="width:202px; height:88px;float:right;text-align:right;margin:5px 5px 0 0;"]
@@ -9128,17 +9200,17 @@ n-tv.de##form[onsubmit^="return c24_track_"]
 t-online.de##form[target="_blank"][action="http://im.banner.t-online.de/"]
 rtl.de##h2[onclick^="verivox_go_"]
 rtl.de##h2[onclick^="xdot_go_trpix(document.getElementById('parshipform_"]
-heise.de##heisetext > .img[width="100%"]
+heise.de##heisetext > .img[Width="100%"]
 filecrypt.cc##i[onmouseup$="', a);"]
 anime-loads.org##iframe[allowtransparency="true"][src^="http://www.anime-loads.org/"]
-spiegelfechter.com##iframe[height="600"][width="160"]
+spiegelfechter.com##iframe[Height="600"][Width="160"]
 schoener-fernsehen.com##iframe[id][class][scrolling="auto"][frameborder="0"][allowtransparency="true"][src^="http://schoener-fernsehen.com/"] + iframe[id][class][scrolling="auto"][frameborder="0"][allowtransparency="true"][src^="http://schoener-fernsehen.com/"] + div[id][class]
 computerbild.de##iframe[id^="adSlot_"]
 anime-loads.org##iframe[scrolling="auto"][frameborder="0"][style="width:100%; height:100%"]
 spiegelfechter.com##iframe[src="http://spiegelfechter.com/wordpress/gads.html"]
 podcast.de##iframe[style^="width:160px;height:600px;"]
-reitforum.de##iframe[width="160"][height="610"]
-reitforum.de##iframe[width="728"][height="100"]
+reitforum.de##iframe[Width="160"][Height="610"]
+reitforum.de##iframe[Width="728"][Height="100"]
 t-online.de##img[alt*="Mary & Paul"]
 t-online.de##img[alt*="Rabatt"]
 t-online.de##img[alt="Bequeme Slipper & Mokassins von hoher Qualität bei Vamos"]
@@ -9152,12 +9224,12 @@ t-online.de##img[alt="Pauschalreisen bei t-online.de Reisen (Quelle: Fotalia)"]
 t-online.de##img[alt^="Modetrends"]
 t-online.de##img[alt^="Shoppen"]
 hallespektrum.de##img[alt^="Werbung"]
-raidrush.ws##img[height="250"][width="300"]
-t-online.de##img[height="365"][width="178"][style="margin-left:-10px;margin-bottom:10px"]
-lesen.to,liplop.de,teen-blog.us##img[height="60"][width="468"]
-blogtotal.de##img[height="600"][width="120"]
-arthouse.ch##img[height="72"][alt="banner"]
-winfuture.de##img[height="90"][width="729"]
+raidrush.ws##img[Height="250"][Width="300"]
+t-online.de##img[Height="365"][Width="178"][style="margin-left:-10px;margin-bottom:10px"]
+lesen.to,liplop.de,teen-blog.us##img[Height="60"][Width="468"]
+blogtotal.de##img[Height="600"][Width="120"]
+arthouse.ch##img[Height="72"][alt="banner"]
+winfuture.de##img[Height="90"][Width="729"]
 schoener-fernsehen.com##img[id$="closer"] + h2
 schoener-fernsehen.com##img[id$="icon"]
 schoener-fernsehen.com##img[id$="icon"] + p
@@ -9175,50 +9247,50 @@ autozeitung.de##img[style="width: 300px; height: 600px; max-width: 300px; max-he
 filestore.to##img[style="width:728px;"]
 bluewin.ch##img[title="Anzeige"]
 looki.de##img[usemap="#branding"]
-t-online.de##img[usemap^="#picmap"][width="920"]
-quadclub-harz.de##img[width="1"][height="120"] + table[width="100%"][cellspacing="0"][cellpadding="0"]
-suedtirolnews.it##img[width="120"][height="125"]
-speedlounge.in,topmodels.de,xxx-blog.to##img[width="120"][height="600"]
-e-bol.net##img[width="121"][height="601"]
-usa-kulinarisch.de##img[width="125"][height="125"]
-t-online.de##img[width="145"][height="225"]
-iphoneblog.de##img[width="150"][height="125"]
-gamefront.de##img[width="150"][height="350"]
-gamefront.de##img[width="150"][height="563"]
-gamefront.de##img[width="150"][height="600"]
-fscklog.com##img[width="160"][height="160"]
-gamefront.de##img[width="160"][height="300"]
-dashitradio.de,der-postillon.com,gamefront.de,myfunlink.to,picdumps.com,radioholiday.it##img[width="160"][height="600"]
-gamefront.de##img[width="180"][height="350"]
-t-online.de##img[width="209"][usemap^="#immap"]
-hitradio.com.na##img[width="220"][height="48"]
-t-online.de##img[width="297"][height="465"][usemap^="#immap"]
-kraftfuttermischwerk.de##img[width="300"][height="200"]
-02elf.net,dashitradio.de,der-postillon.com,fitforfun.de,foerderland.de,iphoneblog.de,msn.com,sunshine.it,teltarif.de,trendsderzukunft.de,wetter.net##img[width="300"][height="250"]
-t-online.de##img[width="300"][height="450"]
-games-mag.de##img[width="320"][height="315"]
-ingame.de##img[width="325px"][src$="clear.gif"]
-xxx-boardz.com##img[width="360"][height="46"]
-xxx-boardz.com##img[width="366"][height="46"]
-xxx-boardz.com##img[width="366"][height="48"]
-xxx-boardz.com##img[width="366"][height="56"]
-xxx-boardz.com##img[width="368"][height="46"]
-3druck.com,amilo-forum.de,awekas.at,cmmp.de,fake-it.biz,gntm-blog.de,mafia-linkz.to,novalja-zrce.de,technorocker.info,vampirediaries.in,velderboard.li,xboxdome.de##img[width="468"][height="60"]
-e-bol.net##img[width="469"][height="61"]
-emuenzen.de##img[width="486"][height="60"]
-t-online.de##img[width="609"][usemap^="#immap"]
-t-online.de##img[width="610"][usemap^="#imgmap"]
-t-online.de##img[width="610"][usemap^="#immap"]
-prad.de##img[width="614"][height="218"]
-sunshine.it##img[width="620"][height="120"]
-t-online.de##img[width="641"][usemap^="#immap"]
-forum.biosflash.com,gedankenausbruch.de,online-gebuehrenrechner.de,picdumps.com,suedtirolnews.it,tvspielfilm.de,tvtoday.de##img[width="728"][height="90"]
-rp-online.de##img[width="786"][height="100"]
-t-online.de##img[width="797"][usemap^="#immap"]
-t-online.de##img[width="920"][usemap^="#imgmap"]
-t-online.de##img[width="920"][usemap^="#immap"]
-prad.de##img[width="940"][height="174"]
-rnf.de##img[width="960"][height="200"]
+t-online.de##img[usemap^="#picmap"][Width="920"]
+quadclub-harz.de##img[Width="1"][Height="120"] + table[Width="100%"][cellspacing="0"][cellpadding="0"]
+suedtirolnews.it##img[Width="120"][Height="125"]
+speedlounge.in,topmodels.de,xxx-blog.to##img[Width="120"][Height="600"]
+e-bol.net##img[Width="121"][Height="601"]
+usa-kulinarisch.de##img[Width="125"][Height="125"]
+t-online.de##img[Width="145"][Height="225"]
+iphoneblog.de##img[Width="150"][Height="125"]
+gamefront.de##img[Width="150"][Height="350"]
+gamefront.de##img[Width="150"][Height="563"]
+gamefront.de##img[Width="150"][Height="600"]
+fscklog.com##img[Width="160"][Height="160"]
+gamefront.de##img[Width="160"][Height="300"]
+dashitradio.de,der-postillon.com,gamefront.de,myfunlink.to,picdumps.com,radioholiday.it##img[Width="160"][Height="600"]
+gamefront.de##img[Width="180"][Height="350"]
+t-online.de##img[Width="209"][usemap^="#immap"]
+hitradio.com.na##img[Width="220"][Height="48"]
+t-online.de##img[Width="297"][Height="465"][usemap^="#immap"]
+kraftfuttermischwerk.de##img[Width="300"][Height="200"]
+02elf.net,dashitradio.de,der-postillon.com,fitforfun.de,foerderland.de,iphoneblog.de,msn.com,sunshine.it,teltarif.de,trendsderzukunft.de,wetter.net##img[Width="300"][Height="250"]
+t-online.de##img[Width="300"][Height="450"]
+games-mag.de##img[Width="320"][Height="315"]
+ingame.de##img[Width="325px"][src$="clear.gif"]
+xxx-boardz.com##img[Width="360"][Height="46"]
+xxx-boardz.com##img[Width="366"][Height="46"]
+xxx-boardz.com##img[Width="366"][Height="48"]
+xxx-boardz.com##img[Width="366"][Height="56"]
+xxx-boardz.com##img[Width="368"][Height="46"]
+3druck.com,amilo-forum.de,awekas.at,cmmp.de,fake-it.biz,gntm-blog.de,mafia-linkz.to,novalja-zrce.de,technorocker.info,vampirediaries.in,velderboard.li,xboxdome.de##img[Width="468"][Height="60"]
+e-bol.net##img[Width="469"][Height="61"]
+emuenzen.de##img[Width="486"][Height="60"]
+t-online.de##img[Width="609"][usemap^="#immap"]
+t-online.de##img[Width="610"][usemap^="#imgmap"]
+t-online.de##img[Width="610"][usemap^="#immap"]
+prad.de##img[Width="614"][Height="218"]
+sunshine.it##img[Width="620"][Height="120"]
+t-online.de##img[Width="641"][usemap^="#immap"]
+forum.biosflash.com,gedankenausbruch.de,online-gebuehrenrechner.de,picdumps.com,suedtirolnews.it,tvspielfilm.de,tvtoday.de##img[Width="728"][Height="90"]
+rp-online.de##img[Width="786"][Height="100"]
+t-online.de##img[Width="797"][usemap^="#immap"]
+t-online.de##img[Width="920"][usemap^="#imgmap"]
+t-online.de##img[Width="920"][usemap^="#immap"]
+prad.de##img[Width="940"][Height="174"]
+rnf.de##img[Width="960"][Height="200"]
 1zwo.in##input[name="highspeed"]
 ddl-music.org,ddl-warez.in,pornlounge.org##input[onclick^="javascript:window.open('http://www.FriendlyDuck.com/AF_"]
 file-lounge.com##input[onclick^="location.href='http://tiny.cc/"]
@@ -9242,9 +9314,9 @@ goldesel.to##li[url^="http://bit.ly/"]
 goldesel.to##li[url^="http://dereferer.org/?http%3A%2F%2Fbit.ly"]
 goldesel.to##li[url^="http://goo.gl/"]
 playnation.de##noscript + script + script + #al
-teltarif.de##p + .tetable + .tetable[width="100%"][cellspacing="0"][cellpadding="0"][border="0"][bgcolor="#E3D470"]
-prad.de##p > a > img[width="614"][height="249"]
-englische-briefe.de##p > table[width="769"][cellpadding="4"]
+teltarif.de##p + .tetable + .tetable[Width="100%"][cellspacing="0"][cellpadding="0"][border="0"][bgcolor="#E3D470"]
+prad.de##p > a > img[Width="614"][Height="249"]
+englische-briefe.de##p > table[Width="769"][cellpadding="4"]
 schoener-fernsehen.com##p[id$="link"]
 iphone-tricks.de##p[style="clear:both;width:100%;border-bottom: 1px solid #e5e5e5;padding: 5px 0px;"]
 titanic-magazin.de##p[style="font-size: 7pt; color: grey; text-align: left; margin: 0; padding: 0;"]
@@ -9254,7 +9326,7 @@ pure-fm.de##p[style="text-align:center; height:90px; width:100%"]
 lateinwiki.org##p[style="width:100%;border:solid 1px #00ff00;background-color:#98FB98;text-align:left;font-size:12px;color:#000000;"]
 kfz-steuer.de##p[style="width:575px; height:85px; background: #F6F6F6"]
 eot-clan.net##posts > li[id^="yui-gen"]
-doku.me##script + table[width="700"][height="600"]
+doku.me##script + table[Width="700"][Height="600"]
 tv-stream.to##script[src^="/"] + div > div[id][style]
 schwartau-handball.de##span[style="font-size: 14px; color: #000000; background-color: #ccffcc;"]
 finanznachrichten.de##span[title="BOTSWANA METALS Aktie jetzt ab 2,99 Euro handeln! (LYNX)"]
@@ -9262,7 +9334,7 @@ schwartau-handball.de##table[align="left"][style="border: 0px solid #87ceeb; hei
 spielefilmetechnik.de##table[background="/_cinc/img/download.gif"]
 spielefilmetechnik.de##table[background="/_cinc/img/flatrate.gif"]
 pcgameshardware.de##table[background^="/common/gfx/metaboli/"]
-widescreen-online.de##table[bgcolor="#FFC990"][align="center"][width="158"][style="border:1px solid #D25802;"]
+widescreen-online.de##table[bgcolor="#FFC990"][align="center"][Width="158"][style="border:1px solid #D25802;"]
 adhs-zentrum.de##table[bgcolor="#FFCC00"]
 enduro-austria.at##table[border="0"][align="center"][style="width: 220px; margin-right: auto; margin-left: auto;"]
 lesen.to##table[cellpadding="0"][bgcolor="#FFFFFF"][style="width: 750px;"] > tbody > tr > td > center:first-child > a[target="_blank"] > img
@@ -9271,19 +9343,19 @@ astronews.com##table[cellspacing="0"][cellpadding="0"][border="0"][style="width:
 astronews.com##table[cellspacing="0"][cellpadding="0"][style="width: 900px;"]
 loadsieben.org##table[cellspacing="0"][cellpadding="5"][border="0"] > tbody > tr:first-child:last-child > td:first-child + td + td[align="right"]:last-child
 satindex.de##table[cellspacing="1"][cellpadding="4"][border="0"][bgcolor="000000"]
-adhs-zentrum.de##table[cellspacing="2"][cellpadding="4"][border="0"][width="200"]:first-child:last-child
+adhs-zentrum.de##table[cellspacing="2"][cellpadding="4"][border="0"][Width="200"]:first-child:last-child
 bildderfrau.de##table[class^="sas_FormatID_"]
-biokurs.de##table[height="100"][width="850"][cellspacing="0"][cellpadding="0"][border="0"]:first-child
-krankenkassentarife.de##table[height="150"][width="180"][style="border: 1px solid #0F1350;"]
-rga-online.de##table[height="160"][bgcolor="#333399"][width="130"]
-funtastic-party.de##table[height="260"][cellspacing="0"][cellpadding="0"][border="0"][width="100%"]:first-child:last-child
-forum-sachsen.com##table[height="300"][width="300"]
-forum-sachsen.com##table[height="500"][width="300"]
-bordellcommunity.com##table[height="60"][style="width: 960px"]
-tweakpc.de##table[height="60"][width="482"][align="center"]
-die-glocke.de##table[height="90"][width="728"]
+biokurs.de##table[Height="100"][Width="850"][cellspacing="0"][cellpadding="0"][border="0"]:first-child
+krankenkassentarife.de##table[Height="150"][Width="180"][style="border: 1px solid #0F1350;"]
+rga-online.de##table[Height="160"][bgcolor="#333399"][Width="130"]
+funtastic-party.de##table[Height="260"][cellspacing="0"][cellpadding="0"][border="0"][Width="100%"]:first-child:last-child
+forum-sachsen.com##table[Height="300"][Width="300"]
+forum-sachsen.com##table[Height="500"][Width="300"]
+bordellcommunity.com##table[Height="60"][style="width: 960px"]
+tweakpc.de##table[Height="60"][Width="482"][align="center"]
+die-glocke.de##table[Height="90"][Width="728"]
 business-best-practice.de,din-5008-richtlinien.de##table[id^="anzeige_"]
-rheinforum.com##table[id^="v"][width="426"][height="600"]
+rheinforum.com##table[id^="v"][Width="426"][Height="600"]
 putenbrust.net##table[onclick^="window.open('http://in.mydirtyhobby.com/track/"]
 putenbrust.net##table[onclick^="window.open('http://www.FriendlyDuck.com/AF_"]
 repage8.de##table[style*=";table-layout:visible;width:468px;height:60px;"]
@@ -9296,57 +9368,57 @@ mafia.to##table[style="width: 100%; background-image: url('http://pic.ms/v2/imag
 mafia.to##table[style="width: 468px; height: 60px; background-color: #C0C0C0"]
 hoerbuch.us##table[style="width: 699px;"] center > a > img
 web4health.info##table[summary="Top banner ads"]
-david-forum.de##table[width="100%"] > tbody > tr > td[width="160"][valign="top"]:last-child
-diaet.abnehmen-forum.com##table[width="100%"][bgcolor="#FFFFFF"]:last-child
-board.world-of-hentai.to##table[width="100%"][cellspacing="0"][cellpadding="0"] > tbody > tr:first-child + tr > td[valign="middle"][align="left"]
-wettforum.info##table[width="100%"][cellspacing="0"][cellpadding="0"] > tbody:first-child:last-child > tr:first-child + tr > td[width="140"][valign="top"]:first-child
-wettforum.info##table[width="100%"][cellspacing="0"][cellpadding="0"] > tbody:first-child:last-child > tr:first-child > td[align="center"][colspan="2"]:first-child:last-child
-spotlight-wissen.de,spotlight.de##table[width="100%"][cellspacing="0"][cellpadding="0"][border="0"] > tbody > #TopFh + #CntFh
-ak-kurier.de,nr-kurier.de,ww-kurier.de##table[width="100%"][cellspacing="0"][cellpadding="0"][border="0"] > tbody > tr > .copy[width="100%"]
-teltarif.de##table[width="100%"][cellspacing="0"][cellpadding="0"][border="0"][style="margin: 0 0 8px 0;"]
-nisch-center.de##table[width="125"][height="125"]
-homerj.de##table[width="1580"][cellspacing="0"][cellpadding="0"][border="0"][align="center"]
-nisch-center.de##table[width="160"][height="600"]
-geizhals.at##table[width="300"][bgcolor="#999999"]
-viviano.de##table[width="300"][height="250"]
-astronews.com##table[width="300px"][cellspacing="0"][cellpadding="0"][border="0"]
-astronews.com##table[width="320"][cellspacing="0"][cellpadding="0"][border="0"][align="left"]
-astronews.com##table[width="320"][cellspacing="0"][cellpadding="0"][border="0"][align="right"]
-rheinforum.com##table[width="400"][height="600"]
-bordellcommunity.com,rheinforum.com##table[width="425"][height="600"]
-bordellcommunity.com,forum-sachsen.com##table[width="426"][height="600"]
-forum-sachsen.com##table[width="450"][height="450"]
-flashforum.de##table[width="491"][cellspacing="0"][cellpadding="0"][border="0"]
-webvoten.de##table[width="520"][cellspacing="0"][cellpadding="0"][border="0"][align="center"]:first-child
-easy-smsversand.de##table[width="540"][bordercolor="#ffb039"]
-fremdwort.de##table[width="560"][cellspacing="0"][border="0"] > tbody > tr > .text[colspan="2"]
-web4health.info##table[width="720"]
-gamefront.de##table[width="728"][align="center"]:first-child:last-child
-antenne-ac.de,forenhoster.net,nisch-center.de##table[width="728"][height="90"]
-pbportal.de##table[width="730"][height="92"]
-windows-tweaks.info##table[width="738"][cellspacing="0"][cellpadding="0"][border="0"][nof="LY"]
-wetterbote.de##table[width="738"][height="90"]
-erlanger-nachrichten.de,nz-online.de##table[width="770"]
-hat-gar-keine-homepage.de##table[width="800"][align="center"] > tbody:first-child:last-child > tr:last-child > td
-forum-speditionen.de##table[width="846"][style="background-color:#E0E0E0;height:75px;text-align:center;"]
-ww3.cad.de##table[width="95%"][cellspacing="1"][border="0"] > tbody > tr > td[valign="top"]:first-child + td[style="vertical-align: top;"]:last-child
-gamefront.de##table[width="950"][bgcolor][align="center"]
-gamefront.de##table[width="950"][cellspacing="1"][cellpadding="0"][border="0"][bgcolor="#ffffff"][align="left"]
-dforum.net##table[width="983"][cellspacing="5"][style="border:1px solid #505A53;border-top:none;background:#ADB088;"]
+david-forum.de##table[Width="100%"] > tbody > tr > td[Width="160"][valign="top"]:last-child
+diaet.abnehmen-forum.com##table[Width="100%"][bgcolor="#FFFFFF"]:last-child
+board.world-of-hentai.to##table[Width="100%"][cellspacing="0"][cellpadding="0"] > tbody > tr:first-child + tr > td[valign="middle"][align="left"]
+wettforum.info##table[Width="100%"][cellspacing="0"][cellpadding="0"] > tbody:first-child:last-child > tr:first-child + tr > td[Width="140"][valign="top"]:first-child
+wettforum.info##table[Width="100%"][cellspacing="0"][cellpadding="0"] > tbody:first-child:last-child > tr:first-child > td[align="center"][colspan="2"]:first-child:last-child
+spotlight-wissen.de,spotlight.de##table[Width="100%"][cellspacing="0"][cellpadding="0"][border="0"] > tbody > #TopFh + #CntFh
+ak-kurier.de,nr-kurier.de,ww-kurier.de##table[Width="100%"][cellspacing="0"][cellpadding="0"][border="0"] > tbody > tr > .copy[Width="100%"]
+teltarif.de##table[Width="100%"][cellspacing="0"][cellpadding="0"][border="0"][style="margin: 0 0 8px 0;"]
+nisch-center.de##table[Width="125"][Height="125"]
+homerj.de##table[Width="1580"][cellspacing="0"][cellpadding="0"][border="0"][align="center"]
+nisch-center.de##table[Width="160"][Height="600"]
+geizhals.at##table[Width="300"][bgcolor="#999999"]
+viviano.de##table[Width="300"][Height="250"]
+astronews.com##table[Width="300px"][cellspacing="0"][cellpadding="0"][border="0"]
+astronews.com##table[Width="320"][cellspacing="0"][cellpadding="0"][border="0"][align="left"]
+astronews.com##table[Width="320"][cellspacing="0"][cellpadding="0"][border="0"][align="right"]
+rheinforum.com##table[Width="400"][Height="600"]
+bordellcommunity.com,rheinforum.com##table[Width="425"][Height="600"]
+bordellcommunity.com,forum-sachsen.com##table[Width="426"][Height="600"]
+forum-sachsen.com##table[Width="450"][Height="450"]
+flashforum.de##table[Width="491"][cellspacing="0"][cellpadding="0"][border="0"]
+webvoten.de##table[Width="520"][cellspacing="0"][cellpadding="0"][border="0"][align="center"]:first-child
+easy-smsversand.de##table[Width="540"][bordercolor="#ffb039"]
+fremdwort.de##table[Width="560"][cellspacing="0"][border="0"] > tbody > tr > .text[colspan="2"]
+web4health.info##table[Width="720"]
+gamefront.de##table[Width="728"][align="center"]:first-child:last-child
+antenne-ac.de,forenhoster.net,nisch-center.de##table[Width="728"][Height="90"]
+pbportal.de##table[Width="730"][Height="92"]
+windows-tweaks.info##table[Width="738"][cellspacing="0"][cellpadding="0"][border="0"][nof="LY"]
+wetterbote.de##table[Width="738"][Height="90"]
+erlanger-nachrichten.de,nz-online.de##table[Width="770"]
+hat-gar-keine-homepage.de##table[Width="800"][align="center"] > tbody:first-child:last-child > tr:last-child > td
+forum-speditionen.de##table[Width="846"][style="background-color:#E0E0E0;height:75px;text-align:center;"]
+ww3.cad.de##table[Width="95%"][cellspacing="1"][border="0"] > tbody > tr > td[valign="top"]:first-child + td[style="vertical-align: top;"]:last-child
+gamefront.de##table[Width="950"][bgcolor][align="center"]
+gamefront.de##table[Width="950"][cellspacing="1"][cellpadding="0"][border="0"][bgcolor="#ffffff"][align="left"]
+dforum.net##table[Width="983"][cellspacing="5"][style="border:1px solid #505A53;border-top:none;background:#ADB088;"]
 filecrypt.cc##td > [onmousedown$="', this);"]
 chat4free.de,erotikchat4free.de,freechat.de##td > font[style="font-size:9;"]
-loadsieben.org##td[align="CENTER"][width="644"] > p:first-child + center
-heimkinomarkt.de##td[align="center"][height="72"][valign="middle"][colspan="3"]
+loadsieben.org##td[align="CENTER"][Width="644"] > p:first-child + center
+heimkinomarkt.de##td[align="center"][Height="72"][valign="middle"][colspan="3"]
 wide-wallpaper.de##td[align="center"][style="border: 1px solid #666666;"]
-funtastic-party.de##td[align="center"][valign="top"]:last-child > table[background="/a2/base/images/strich.jpg"][width="178"]:last-child
+funtastic-party.de##td[align="center"][valign="top"]:last-child > table[background="/a2/base/images/strich.jpg"][Width="178"]:last-child
 heise.de##td[align="left"][valign="top"][rowspan="5"]
-ak-kurier.de,ww-kurier.de##td[background="images/abstand1.gif"][width="1"] + td[width="180"][valign="top"]:last-child
+ak-kurier.de,ww-kurier.de##td[background="images/abstand1.gif"][Width="1"] + td[Width="180"][valign="top"]:last-child
 ixquick.de##td[bgcolor="#f7f9ff"]
-englische-briefe.de##td[colspan="3"] > table[width="769"][cellpadding="4"]
+englische-briefe.de##td[colspan="3"] > table[Width="769"][cellpadding="4"]
 filecrypt.cc##td[colspan="4"] > [onclick$="', this);"]
-dxtv.de,dxtv.eu,satbook.de##td[height="100%"][width="60%"][bgcolor="#FFFFFF"][align="right"]
-marcus-klein.de##td[height="148"] > table[width="800"][border="0"][align="center"][cellspacing="0"][cellpadding="0"]
-weltuntergang-2012.de##td[height="160"][width="297"][valign="top"]:first-child + td[width="263"]:last-child
+dxtv.de,dxtv.eu,satbook.de##td[Height="100%"][Width="60%"][bgcolor="#FFFFFF"][align="right"]
+marcus-klein.de##td[Height="148"] > table[Width="800"][border="0"][align="center"][cellspacing="0"][cellpadding="0"]
+weltuntergang-2012.de##td[Height="160"][Width="297"][valign="top"]:first-child + td[Width="263"]:last-child
 elixic.de##td[name="google-bar"]
 elixic.de##td[name="top-banner"]
 meteonews.ch##td[style="background-color: #E5E5E5; width:300px;"]
@@ -9354,74 +9426,74 @@ anime-loads.org##td[style="height:100%;"] > iframe[id][scrolling="auto"][framebo
 triathlon-szene.de##td[style="padding: 0px 0px 0px 0px; border-right: 1px solid #CCCCCC; border-bottom: 1px solid #CCCCCC;"] > div[align="left"][style="margin-bottom:10px;"]
 xc.dhv.de##td[style="vertical-align: top; padding-top: 30px; padding-right: 20px; text-align: right;"]:first-child + .bodyline[valign="top"][align="left"] + td[style="vertical-align: top; padding-top: 30px; "]:last-child
 sein.de##td[style="width: 970px;"] + td[style="width: 20%; vertical-align: top; text-align: left;"]
-ww3.cad.de##td[valign="bottom"][align="center"][colspan="2"] > table[width="755"][height="95"][align="center"]
-nr-kurier.de##td[valign="top"]:first-child + td[width="1"][background="images/abstand1.gif"] + td[width="180"][valign="top"]:last-child
-2kino.net##td[valign="top"]:last-child > table[width="186"][cellspacing="0"][cellpadding="0"][border="0"][height="390"]
-sk-austriakaernten.at##td[valign="top"][height="38"][bgcolor="#231f20"][align="center"]:first-child:last-child > table[width="100%"][cellspacing="0"][cellpadding="0"][border="0"]:first-child:last-child
-plz-postleitzahl.de##td[valign="top"][style="padding-left: 15px;"] > table[width="250"][cellspacing="0"][cellpadding="0"]:first-child
+ww3.cad.de##td[valign="bottom"][align="center"][colspan="2"] > table[Width="755"][Height="95"][align="center"]
+nr-kurier.de##td[valign="top"]:first-child + td[Width="1"][background="images/abstand1.gif"] + td[Width="180"][valign="top"]:last-child
+2kino.net##td[valign="top"]:last-child > table[Width="186"][cellspacing="0"][cellpadding="0"][border="0"][Height="390"]
+sk-austriakaernten.at##td[valign="top"][Height="38"][bgcolor="#231f20"][align="center"]:first-child:last-child > table[Width="100%"][cellspacing="0"][cellpadding="0"][border="0"]:first-child:last-child
+plz-postleitzahl.de##td[valign="top"][style="padding-left: 15px;"] > table[Width="250"][cellspacing="0"][cellpadding="0"]:first-child
 ultras.ws##td[valign="top"][style="width: 85%"]:last-child > br:first-child + center > h2:first-child
-ak-kurier.de,nr-kurier.de,ww-kurier.de##td[width="100%"][align="center"] > a[target="_new"] > img[src^="http://www.ak-kurier.de/akkurier/www/upload/"]
-astrotreff.de##td[width="100%"][align="center"] > hr[size="1"][color="#8482A5"] + table[cellspacing="0"][cellpadding="10"][border="0"][bgcolor="#000040"]
-kidsweb.de##td[width="115"][valign="top"][bgcolor="#FFFFCC"]:last-child > div[align="left"] > div[align="center"]
-kidsweb.de##td[width="116"][valign="top"][bgcolor="#FFFFCC"][rowspan="2"]:first-child > table[width="116"][border="0"][bgcolor="#FFFFCC"]:first-child + table[width="114"][border="0"]:last-child
-webvoten.de##td[width="120"][valign="top"] > div[style="font-size:12px; font-family:Verdana, Arial, Sans Serif;"]
-navi-forum.net##td[width="120"][valign="top"]:first-child
-dslr-forum.de##td[width="120"][valign="top"][align="center"]:last-child
-winboard.org##td[width="130"][valign="top"][align="center"]:last-child
-leo.de##td[width="15%"][valign="TOP"][style="font-size:100%;padding-top:2px;"]
-terminplanen.de##td[width="160"][valign="top"][align="center"]:last-child > table[width="156"][border="0"]
-board.world-of-hentai.to##td[width="160"][valign="top"][height="600"][align="left"]:last-child
-sms.de##td[width="170"][valign="top"][align="center"]:last-child > table[width="175"][cellspacing="0"][cellpadding="0"][border="0"]
-echte-abzocke.de##td[width="180px"][valign="top"]
-areadvd.de##td[width="200"][valign="top"][height="1"][rowspan="3"]
-feiertage.net##td[width="25%"][valign="top"] > table[width="271"][cellspacing="0"][cellpadding="0"][border="0"]
-tvmatrix.at,tvmatrix.de,tvmatrix.eu,tvmatrix.net##td[width="300"][height="250"]
-teltarif.de##td[width="300"][valign="top"] > .tetable + .tetable[width="100%"][cellspacing="0"][cellpadding="0"][border="0"][bgcolor="#E3D470"]
-astrotreff.de##td[width="33%"][valign="middle"][align="center"] > a[target="_blank"][href^="/links/wechlink.asp?ID="] > img
-leo.de##td[width="55%"][valign="middle"][style="background-color:#ffffee;text-align:center;"]
-tvmatrix.at,tvmatrix.de,tvmatrix.eu,tvmatrix.net##td[width="728"][height="90"]
-land-der-traeume.de##td[width="730"] + td[align="center"]
-pbportal.de##td[width="730"][height="92"]
-vibe.cd##td[width="760"][height="116"][align="right"][colspan="2"] > img:last-child
-rtf1.de##td[width="83"] + td[align="right"][width="120"]
+ak-kurier.de,nr-kurier.de,ww-kurier.de##td[Width="100%"][align="center"] > a[target="_new"] > img[src^="http://www.ak-kurier.de/akkurier/www/upload/"]
+astrotreff.de##td[Width="100%"][align="center"] > hr[size="1"][color="#8482A5"] + table[cellspacing="0"][cellpadding="10"][border="0"][bgcolor="#000040"]
+kidsweb.de##td[Width="115"][valign="top"][bgcolor="#FFFFCC"]:last-child > div[align="left"] > div[align="center"]
+kidsweb.de##td[Width="116"][valign="top"][bgcolor="#FFFFCC"][rowspan="2"]:first-child > table[Width="116"][border="0"][bgcolor="#FFFFCC"]:first-child + table[Width="114"][border="0"]:last-child
+webvoten.de##td[Width="120"][valign="top"] > div[style="font-size:12px; font-family:Verdana, Arial, Sans Serif;"]
+navi-forum.net##td[Width="120"][valign="top"]:first-child
+dslr-forum.de##td[Width="120"][valign="top"][align="center"]:last-child
+winboard.org##td[Width="130"][valign="top"][align="center"]:last-child
+leo.de##td[Width="15%"][valign="TOP"][style="font-size:100%;padding-top:2px;"]
+terminplanen.de##td[Width="160"][valign="top"][align="center"]:last-child > table[Width="156"][border="0"]
+board.world-of-hentai.to##td[Width="160"][valign="top"][Height="600"][align="left"]:last-child
+sms.de##td[Width="170"][valign="top"][align="center"]:last-child > table[Width="175"][cellspacing="0"][cellpadding="0"][border="0"]
+echte-abzocke.de##td[Width="180px"][valign="top"]
+areadvd.de##td[Width="200"][valign="top"][Height="1"][rowspan="3"]
+feiertage.net##td[Width="25%"][valign="top"] > table[Width="271"][cellspacing="0"][cellpadding="0"][border="0"]
+tvmatrix.at,tvmatrix.de,tvmatrix.eu,tvmatrix.net##td[Width="300"][Height="250"]
+teltarif.de##td[Width="300"][valign="top"] > .tetable + .tetable[Width="100%"][cellspacing="0"][cellpadding="0"][border="0"][bgcolor="#E3D470"]
+astrotreff.de##td[Width="33%"][valign="middle"][align="center"] > a[target="_blank"][href^="/links/wechlink.asp?ID="] > img
+leo.de##td[Width="55%"][valign="middle"][style="background-color:#ffffee;text-align:center;"]
+tvmatrix.at,tvmatrix.de,tvmatrix.eu,tvmatrix.net##td[Width="728"][Height="90"]
+land-der-traeume.de##td[Width="730"] + td[align="center"]
+pbportal.de##td[Width="730"][Height="92"]
+vibe.cd##td[Width="760"][Height="116"][align="right"][colspan="2"] > img:last-child
+rtf1.de##td[Width="83"] + td[align="right"][Width="120"]
 spotlight-wissen.de,spotlight.de##tr > .BoxWPresse[valign="top"][align="center"] > br:first-child + table:last-child
 kgsw.eu##tr > td > .fieldset[style="margin:0px 0px 0px 0px"]:first-child:last-child
 ww3.cad.de##tr > td[align="CENTER"] > table[bgcolor="#e7deee"]
-ww3.cad.de##tr > td[align="center"][colspan="2"][style="vertical-align: bottom;"] > table[align="center"][width="755"][height="95"]
+ww3.cad.de##tr > td[align="center"][colspan="2"][style="vertical-align: bottom;"] > table[align="center"][Width="755"][Height="95"]
 zebradem.com##tr > td[align="right"][style="border-left-width:1px;border-right-width:1px;border-top-width:1px;border-bottom-style:solid;border-bottom-width:1px;border-bottom-color:#555555"]
 chilloutzone.net##tr > td[colspan="2"] > div[style="margin: 10px 0 10px 0;"]
-web.de##tr > td[colspan="2"] > table[cellspacing="0"][cellpadding="0"][border="0"][width="100%"][style="margin-bottom: 5px;"]:first-child:last-child
+web.de##tr > td[colspan="2"] > table[cellspacing="0"][cellpadding="0"][border="0"][Width="100%"][style="margin-bottom: 5px;"]:first-child:last-child
 computerhilfen.de##tr > td[style="background-color:#FFFFFF;border-left:1px solid black;border-right:1px solid black;border-top:1px solid black;padding:5px;"][colspan="4"]
 notebookcheck.com##tr > td[style="text-align:center;"][colspan="2"] > div[style="margin:0px; padding:0px; margin-bottom:10px; background-color:#efefef; height:100px;"]
 homerj.de##tr > td[style="width:952px; height:200px;"]
-ww3.cad.de##tr > td[valign="top"]:first-child + td[align="right"][width="160"][style="vertical-align: top;"]:last-child
-ibash.de##tr > td[valign="top"]:first-child + td[width="15"] + td[width="186"][valign="top"]:last-child
-ww3.cad.de##tr > td[valign="top"]:first-child + td[width="161"][align="right"][style="vertical-align: top;"]
-winboard.org##tr > td[width="100%"][valign="top"][align="center"]:first-child + td[width="180"][style="vertical-align: top;"]:last-child
-pbportal.de##tr > td[width="100%"][valign="top"][align="left"]:first-child + td + td[valign="top"]:last-child
-sexabc.ch##tr > td[width="120"][valign="top"][align="right"]:last-child
-planet3dnow.de##tr > td[width="160"][valign="top"][align="center"]:last-child
-mazda-forum.info##tr > td[width="175"][valign="top"][style="padding-left: 15px"]:last-child
-tv-grossachsen.de##tr > td[width="220"][valign="top"][style="padding-left: 10px"]:first-child + td[width="530"][valign="top"] + td[width="200"][valign="top"][style="padding-left:10px;"]:last-child
-sportforen.de##tr > td[width="89%"]:first-child + td[valign="top"]:last-child
+ww3.cad.de##tr > td[valign="top"]:first-child + td[align="right"][Width="160"][style="vertical-align: top;"]:last-child
+ibash.de##tr > td[valign="top"]:first-child + td[Width="15"] + td[Width="186"][valign="top"]:last-child
+ww3.cad.de##tr > td[valign="top"]:first-child + td[Width="161"][align="right"][style="vertical-align: top;"]
+winboard.org##tr > td[Width="100%"][valign="top"][align="center"]:first-child + td[Width="180"][style="vertical-align: top;"]:last-child
+pbportal.de##tr > td[Width="100%"][valign="top"][align="left"]:first-child + td + td[valign="top"]:last-child
+sexabc.ch##tr > td[Width="120"][valign="top"][align="right"]:last-child
+planet3dnow.de##tr > td[Width="160"][valign="top"][align="center"]:last-child
+mazda-forum.info##tr > td[Width="175"][valign="top"][style="padding-left: 15px"]:last-child
+tv-grossachsen.de##tr > td[Width="220"][valign="top"][style="padding-left: 10px"]:first-child + td[Width="530"][valign="top"] + td[Width="200"][valign="top"][style="padding-left:10px;"]:last-child
+sportforen.de##tr > td[Width="89%"]:first-child + td[valign="top"]:last-child
 rollertuningpage.de##tr:first-child > td[align="center"][style="background-color: white; color: black; font-weight: bold;"]:first-child:last-child
 aero.de##tr:first-child > td[style="padding-bottom:5px;height:82px;"]:first-child
-ww3.cad.de##tr:first-child > td[valign="top"][align="left"]:first-child + td[valign="top"] + td[width="150"][valign="top"]:last-child
-g15-applets.de##tr:first-child:last-child > .bodyline[valign="top"]:first-child + td[width="120"][valign="top"]:last-child
-dieschmids.at##tr:first-child:last-child > .vistaright[width="215"][valign="top"]:last-child
-rga-online.de##tr:first-child:last-child > td:first-child:last-child > table[cellspacing="0"][cellpadding="0"][border="0"][background="http://www.rga-online.de/images/bg2.gif"][width="780"]:first-child
-wohnmobilforum.de##tr:first-child:last-child > td[align="left"][valign="top"]:first-child + td[width="120"][valign="top"]:last-child
-wohnmobilforum.de##tr:first-child:last-child > td[align="left"][width="120"][valign="top"]:first-child
-favicon-generator.de##tr:first-child:last-child > td[align="left"][width="150"][valign="top"]:first-child + td[align="center"] + td[align="left"][width="150"][valign="top"]:last-child
+ww3.cad.de##tr:first-child > td[valign="top"][align="left"]:first-child + td[valign="top"] + td[Width="150"][valign="top"]:last-child
+g15-applets.de##tr:first-child:last-child > .bodyline[valign="top"]:first-child + td[Width="120"][valign="top"]:last-child
+dieschmids.at##tr:first-child:last-child > .vistaright[Width="215"][valign="top"]:last-child
+rga-online.de##tr:first-child:last-child > td:first-child:last-child > table[cellspacing="0"][cellpadding="0"][border="0"][background="http://www.rga-online.de/images/bg2.gif"][Width="780"]:first-child
+wohnmobilforum.de##tr:first-child:last-child > td[align="left"][valign="top"]:first-child + td[Width="120"][valign="top"]:last-child
+wohnmobilforum.de##tr:first-child:last-child > td[align="left"][Width="120"][valign="top"]:first-child
+favicon-generator.de##tr:first-child:last-child > td[align="left"][Width="150"][valign="top"]:first-child + td[align="center"] + td[align="left"][Width="150"][valign="top"]:last-child
 rollertuningpage.de##tr:first-child:last-child > td[style="background-image: url(http://www.rollertuningpage.de/images/shop_hg.jpg); vertical-align:top;padding-left:5px;padding-top:100px;width:125px;"]:last-child
-mtb-news.de##tr:first-child:last-child > td[valign="top"]:first-child + td[align="left"][width="160"][valign="top"]:last-child
+mtb-news.de##tr:first-child:last-child > td[valign="top"]:first-child + td[align="left"][Width="160"][valign="top"]:last-child
 spotlight-wissen.de,spotlight.de##tr:first-child:last-child > td[valign="top"]:first-child + td[valign="top"]:last-child > br:first-child + br + table:last-child
-ww3.cad.de##tr:first-child:last-child > td[valign="top"]:first-child + td[width="152"][valign="top"][align="center"]:last-child
-telefon-treff.de##tr:first-child:last-child > td[valign="top"]:first-child + td[width="160"][valign="top"]:last-child
-ww3.cad.de##tr:first-child:last-child > td[valign="top"]:first-child + td[width="160"][valign="top"][align="right"]:last-child
+ww3.cad.de##tr:first-child:last-child > td[valign="top"]:first-child + td[Width="152"][valign="top"][align="center"]:last-child
+telefon-treff.de##tr:first-child:last-child > td[valign="top"]:first-child + td[Width="160"][valign="top"]:last-child
+ww3.cad.de##tr:first-child:last-child > td[valign="top"]:first-child + td[Width="160"][valign="top"][align="right"]:last-child
 svm-fan.net##tr:first-child:last-child > td[valign="top"]:last-child > small:last-child
 okbb.de##tr[bgcolor="#FFFF00"]
-vibe.cd##tr[height="180px"]:first-child + tr:last-child > td[style="background-color:transparent; margin:0px; padding:0px;"]:first-child
+vibe.cd##tr[Height="180px"]:first-child + tr:last-child > td[style="background-color:transparent; margin:0px; padding:0px;"]:first-child
 gmd-music.com##tr[onclick^="window.open(\"http://gmd-music.com/mirror/"]
 ddl-warez.in##tr[style="background:#D0F5A9"]
 radforum.de##ul[class^="ebayitems"]
@@ -9442,7 +9514,7 @@ erdbeerlounge.de,giga.de,spieletipps.de,transfermarkt.de,welt.de##.trc_related_c
 chip.de##a[data-widget-outbrain-redirect^="http://paid.outbrain.com/network/redir?"]
 plista.com##a[href^="http://click.plista.com/pets"]
 computerbild.de,focus.de,pcwelt.de##a[onmousedown^="this.href='http://paid.outbrain.com/network/redir?"][target="_blank"]
-stol.it##div[id^="div-gpt-ad"]
+computerbild.de,focus.de,pcwelt.de##a[onmousedown^="this.href='https://paid.outbrain.com/network/redir?"][target="_blank"]
 news.de###FlexTopView
 spielen.de###bannerarea
 browsergames.spielen.de###gameimage
@@ -9611,19 +9683,17 @@ tracking.m6r.eu##img[style="width: 728px; height: 90px;"]
 @@||christoph-reischer.at/wb/media/banner_468x60_2.jpg
 @@||classic-motorrad.de/anzeigen/layout_images/new/top_ads_icon.gif
 @@||classistatic.de^*/advertising/*advertisingpacked.js$domain=mobile.de
-@@||clipfish.de/ip/admeta.xml?$object-subrequest
-@@||clipfish.de^$generichide
 @@||comdirect.de^*.html&ad=$subdocument
 @@||comdirect.de^*.html?ad=$subdocument
 @@||comdirect.de^*/advertising.do?$subdocument
 @@||commundia.de^*/affilinet/$~third-party
+@@||connect.de/js/$script,domain=connect.de
 @@||cookex.amp.yahoo.com/v2/cexposer/SIG=*//ad.yieldmanager.com/imp?$script,domain=girlsgogames.de|jetztspielen.de
 @@||coolespiele.com/game.php?url=http://richmedia.coolespiele.com/$subdocument
 @@||d3con.de/data1/$image,~third-party
 @@||damoh.chip.de^$script,domain=chip.de
 @@||damoh.giga.de^$script,domain=giga.de
 @@||damoh.golem.de^$script,domain=golem.de
-@@||damoh.schneevonmorgen.com^$object-subrequest,domain=clipfish.de|n-tv.de
 @@||damoh.schneevonmorgen.com^$script,domain=chip.de|erdbeerlounge.de|giga.de|golem.de|kino.de|spieletipps.de
 @@||daswetter.com/img/publicidad/300x600_newsletter_fw.png
 @@||dawanda.com/ads?$xmlhttprequest
@@ -9650,7 +9720,6 @@ tracking.m6r.eu##img[style="width: 728px; height: 90px;"]
 @@||eltern.de^*_300x250px.$image,domain=eltern.de
 @@||engine.spotrails.com/delivery/pls.php?oasid=*&mediaurl=http%3a//vdn-mobile.oas-limited.com/ad/video.flv$object-subrequest,domain=mobile.de
 @@||enjoykitz.tv/werbung.txt$object-subrequest
-@@||erdbeerlounge.de^$elemhide
 @@||eventim.de^*?affiliate=$subdocument
 @@||eventus-design.com^$~third-party
 @@||expertklein.de/xml/banner.php?id=$object-subrequest
@@ -9724,7 +9793,6 @@ tracking.m6r.eu##img[style="width: 728px; height: 90px;"]
 @@||impde.tradedoubler.com/imp?type(img)$image,domain=sms-box.de|smsgott.de
 @@||ino24.de^*/ratenkredit.jsp$subdocument
 @@||insel-usedom-wollin.de/ads/$script,stylesheet
-@@||inskinmedia.com^*/generic.js$domain=clipfish.de
 @@||interhome.at/javascript/ad-gallery.js
 @@||ix.de^$image,domain=heise.de
 @@||jade-hs.de^*/ext-adv.js
@@ -9777,13 +9845,15 @@ tracking.m6r.eu##img[style="width: 728px; height: 90px;"]
 @@||netzathleten-media.de^*/naMediaAd.js$domain=kino-vorschau.com
 @@||nonstoppartner.net/a/?$subdocument,domain=gutscheindoktor.de
 @@||nordclick.de/js/colors/adsense_colors.js
-@@||nuggad.net/bk?nuggn=$object-subrequest,domain=clipfish.de|edge.download.newmedia.nacamar.net
+@@||nuggad.net/bk?nuggn=$object-subrequest,domain=edge.download.newmedia.nacamar.net
 @@||nuggad.net/bk?nuggn=$script,domain=podcast.de
 @@||nuggad.net/rc?nuggn=$script,domain=areagames.de|dshini.net|frustfrei-lernen.de|juice.de|n-tv.de|schwaebische.de|sky.de|studis-online.de|vox.de
 @@||nutte.ch/banner_fuer_werbung/nutte_$image,domain=ameliatantra.jimdo.com
 @@||oeko-komp.de/evoAds2/
 @@||openx.musotalk.de/crossdomain.xml
 @@||openx.musotalk.de/www/delivery/fc.php?script=bannertypehtml:vastinlinebannertypehtml:vastinlinehtml&$object-subrequest
+@@||openx.net/w/1.0/acj?$script,domain=erdbeerlounge.de|gamona.de|giga.de|kino.de|spielaffe.de|spieletipps.de
+@@||openx.net/w/1.0/jstag?nc=$script,domain=erdbeerlounge.de|gamona.de|giga.de|kino.de|spielaffe.de|spieletipps.de
 @@||os1.tv/js/omsvc_externalad.js
 @@||osthessen-tv.de/werbebanner/$object-subrequest
 @@||otto.heias.com/otto/igoogle/$domain=ig.gmodules.com
@@ -9793,6 +9863,7 @@ tracking.m6r.eu##img[style="width: 728px; height: 90px;"]
 @@||pagead2.googlesyndication.com/simgad/$image,domain=rakuten.at|rakuten.de
 @@||partner.googleadservices.com/gpt/pubads_impl_$script,domain=guterhut.de|hardwareluxx.de|hbf-info.de|rakuten.at|rakuten.de|zalando.de
 @@||partners.webmasterplan.com/click*.asp$subdocument,domain=eule.de|gutscheindoktor.de
+@@||pc-magazin.de/js/$script,domain=pc-magazin.de
 @@||peitsche.de/adserver/www/delivery/ck.php?$subdocument,~third-party
 @@||peitsche.de/adserver/www/images/*.jpg|$~third-party
 @@||photo.knuddels.de/kde/ad2/$image
@@ -9844,7 +9915,6 @@ tracking.m6r.eu##img[style="width: 728px; height: 90px;"]
 @@||servedby.flashtalking.com/imp/$object-subrequest,domain=t-online.de
 @@||servettefc.ch^*.swf?clicktag=http://www.servettefc.ch$object
 @@||serving-sys.com/burstingpipe/adserver.bs?$subdocument,domain=preismafia.com
-@@||serving-sys.com/Serving/adServer.bs?$object-subrequest,domain=clipfish.de|n-tv.de
 @@||sexabc.ch/xxx/topliste/img/sexabc_topliste$image,domain=ameliatantra.jimdo.com
 @@||sexkontaktinserate.com/images/banner/$image,domain=ameliatantra.jimdo.com
 @@||sexlink.ch/images/banner/$image,domain=ameliatantra.jimdo.com
@@ -9887,7 +9957,6 @@ tracking.m6r.eu##img[style="width: 728px; height: 90px;"]
 @@||sport1.fm/ad/my_ad_iframe.html?ad_id=performance*&start=$subdocument
 @@||sport1.fm/ad/my_ad_integration.js
 @@||spotrails.com/video/$object-subrequest,domain=mobile.de
-@@||spotxchange.com/vast/$object-subrequest,domain=clipfish.de|n-tv.de
 @@||srx.de.ebayrtm.com/rtm?RtmCmd&a=$script,domain=pages.ebay.de
 @@||stadtlist.de/images/ads/$image
 @@||stadtlist.de/images/advert-$image,domain=stadtlist.de
@@ -9924,7 +9993,6 @@ tracking.m6r.eu##img[style="width: 728px; height: 90px;"]
 @@||uicdn.com^*/video-adserver-config.xml$object-subrequest
 @@||v.fwmrm.net/ad/p/1?$object-subrequest,domain=southpark.de
 @@||vdn-mobile.oas-limited.com/ad/$object-subrequest,domain=mobile.de
-@@||videoplaza.tv/proxy/distributor/v2^$object-subrequest,domain=clipfish.de|n-tv.de
 @@||videoservice.apa.at/Vast/GetProxy/?*?videotype=preroll1&$xmlhttprequest
 @@||videostream4u.com^*/ac_oetags_clone.js
 @@||webdisk.ads.mwn.de/Scripts/ext-adv.js
