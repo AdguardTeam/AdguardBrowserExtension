@@ -72,7 +72,6 @@ public class SettingUtils {
             case FIREFOX_WEBEXT:
                 File webExtensionDest = new File(dest, "webextension");
                 updateManifestJsonFile(webExtensionDest, version, extensionId, updateUrl);
-                updateInstallRdfFile(dest, version, extensionId, updateUrl);
                 break;
         }
     }
