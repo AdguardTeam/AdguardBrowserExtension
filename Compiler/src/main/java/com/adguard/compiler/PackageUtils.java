@@ -20,10 +20,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 /**
  * Helper methods for packaging extensions
@@ -66,6 +63,20 @@ public class PackageUtils {
     public static File createExtz(String makeExtzSh, File buildFile, File certsDir) throws IOException, InterruptedException {
         execute(makeExtzSh, buildFile.getAbsolutePath(), certsDir.getAbsolutePath());
         return new File(buildFile.getParentFile(), buildFile.getName().replace("safariextension", "safariextz"));
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    public static File createWebExt(String makeSh, File file) throws Exception {
+        execute(makeSh, file.getAbsolutePath());
+        File zipFile = file.listFiles(new FilenameFilter() {
+            public boolean accept(File dir, String filename) {
+                return filename.endsWith(".zip");
+            }
+        })[0];
+        File destZipFile = new File(file.getParentFile(), file.getName() + ".zip");
+        FileUtils.deleteQuietly(destZipFile);
+        FileUtils.moveFile(zipFile, destZipFile);
+        return destZipFile;
     }
 
     private static void execute(String... commands) throws IOException, InterruptedException {

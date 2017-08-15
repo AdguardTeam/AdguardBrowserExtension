@@ -36,7 +36,7 @@ if [ "$env" = release ]; then
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox release for AMO (WebExt)
-    options="$opts --browser=firefox_webext --pack=xpi --extensionId=adguardadblocker@adguard.com --update-filters=true --remote-scripts=false"
+    options="$opts --browser=firefox_webext --pack=webext --extensionId=adguardadblocker@adguard.com --update-filters=true --remote-scripts=false"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
     
     #safari release for extensions.apple.com
@@ -66,11 +66,11 @@ elif [ "$env" = beta ]; then
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox beta for AMO (WebExt)
-    options="--version=${version}beta --branch=$branch --dest=$destPath --browser=firefox_webext --pack=xpi --extensionId=adguardadblocker@adguard.com --remote-scripts=false"
+    options="--version=${version}beta --branch=$branch --dest=$destPath --browser=firefox_webext --pack=webext --extensionId=adguardadblocker@adguard.com --remote-scripts=false"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox beta (WebExt)
-    options="$opts --browser=firefox_webext --pack=xpi --extensionId=adguardadblockerbeta@adguard.com --update-url=https://adguardteam.github.io/AdguardBrowserExtension/firefox_updates.rdf"
+    options="$opts --browser=firefox_webext --pack=webext --extensionId=adguardadblockerbeta@adguard.com --update-url=https://adguardteam.github.io/AdguardBrowserExtension/firefox_updates.rdf"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox beta (Legacy)

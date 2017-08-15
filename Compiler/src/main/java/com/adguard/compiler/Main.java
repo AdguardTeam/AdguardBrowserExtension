@@ -34,12 +34,14 @@ public class Main {
     private static final String ZIP_MAKE_PATH = "../scripts/chrome/zipmake.sh";
     private static final String XPI_MAKE_PATH = "../scripts/firefox/xpimake.sh";
     private static final String EXTZ_MAKE_PATH = "../scripts/safari/extzmake.sh";
+    private static final String WEBEXT_MAKE_PATH = "../scripts/firefox/webextmake.sh";
     private static final File CRX_CERT_FILE = new File("../../extensions/AdguardBrowserExtension/certificate.pem");
     private static final File SAFARI_CERTS_DIR = new File("../../extensions/AdguardBrowserExtension/safari_certs");
 
     private static final String PACK_METHOD_ZIP = "zip";
     private static final String PACK_METHOD_CRX = "crx";
     private static final String PACK_METHOD_XPI = "xpi";
+    private static final String PACK_METHOD_WEBEXT = "webext"; // FF web-ext
     private static final String PACK_METHOD_EXTZ = "extz"; // Safari
 
     /**
@@ -114,6 +116,9 @@ public class Main {
                 FileUtils.deleteQuietly(buildResult);
             } else if (PACK_METHOD_EXTZ.equals(packMethod)) {
                 packedFile = PackageUtils.createExtz(EXTZ_MAKE_PATH, buildResult, SAFARI_CERTS_DIR);
+                FileUtils.deleteQuietly(buildResult);
+            } else if (PACK_METHOD_WEBEXT.equals(packMethod)) {
+                packedFile = PackageUtils.createWebExt(WEBEXT_MAKE_PATH, buildResult);
                 FileUtils.deleteQuietly(buildResult);
             }
         }
@@ -282,7 +287,7 @@ public class Main {
                 return true;
             case FIREFOX_LEGACY:
             case FIREFOX_WEBEXT:
-                if (!PACK_METHOD_XPI.equals(packMethod) && !PACK_METHOD_ZIP.equals(packMethod)) {
+                if (!PACK_METHOD_XPI.equals(packMethod) && !PACK_METHOD_WEBEXT.equals(packMethod)) {
                     log.error("Firefox support only xpi/zip pack methods");
                     return false;
                 }
