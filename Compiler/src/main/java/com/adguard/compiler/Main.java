@@ -287,7 +287,7 @@ public class Main {
             case FIREFOX_LEGACY:
             case FIREFOX_WEBEXT:
                 if (!PACK_METHOD_XPI.equals(packMethod) && !PACK_METHOD_WEBEXT.equals(packMethod)) {
-                    log.error("Firefox support only xpi/zip pack methods");
+                    log.error("Firefox support only xpi/web-ext pack methods");
                     return false;
                 }
                 return true;
