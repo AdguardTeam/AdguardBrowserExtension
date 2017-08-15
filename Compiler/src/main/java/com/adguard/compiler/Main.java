@@ -247,8 +247,6 @@ public class Main {
         if (browser == Browser.FIREFOX_WEBEXT) {
             // Update name and short_name in messages.json
             LocaleUtils.updateExtensionNameForChromeLocales(dest, extensionNamePostfix);
-            // Write localized strings to install.rdf
-            LocaleUtils.writeLocalesToFirefoxInstallRdf(source, dest, extensionNamePostfix);
             if (allowRemoteScripts) {
                 // Remote scripts issue
                 SettingUtils.updatePreloadRemoteScriptRules(dest);
