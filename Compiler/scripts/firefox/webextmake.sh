@@ -12,5 +12,5 @@ fi
 dir=$1
 
 # web-ext build
-cd "$dir/webextension"
-web-ext build --artifacts-dir=../
+cd "$dir"
+web-ext build --artifacts-dir=.

@@ -245,14 +245,13 @@ public class Main {
         }
 
         if (browser == Browser.FIREFOX_WEBEXT) {
-            File webExtensionDest = new File(dest, "webextension");
             // Update name and short_name in messages.json
-            LocaleUtils.updateExtensionNameForChromeLocales(webExtensionDest, extensionNamePostfix);
+            LocaleUtils.updateExtensionNameForChromeLocales(dest, extensionNamePostfix);
             // Write localized strings to install.rdf
             LocaleUtils.writeLocalesToFirefoxInstallRdf(source, dest, extensionNamePostfix);
             if (allowRemoteScripts) {
                 // Remote scripts issue
-                SettingUtils.updatePreloadRemoteScriptRules(webExtensionDest);
+                SettingUtils.updatePreloadRemoteScriptRules(dest);
             }
         }
 
