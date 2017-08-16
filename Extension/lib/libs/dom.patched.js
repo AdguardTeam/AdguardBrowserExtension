@@ -304,7 +304,7 @@ DomPredictionHelper.prototype.selectorGets = function (type, list, the_selector)
         var selector = selectors[j];
 
         for (var k = 0; k < cleaned_list.length; k++) {
-            if (!result || cleaned_list[j] == '') return;
+            if (!result || cleaned_list[k] == '') return;
 
             if (self._selectorGets(cleaned_list[k], selector)) {
                 if (type == 'none') result = false;
