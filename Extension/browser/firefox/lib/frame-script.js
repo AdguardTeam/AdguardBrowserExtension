@@ -121,6 +121,10 @@
         var bindResponseCallback = function (message, callback) {
             if (callback) {
                 var callbackId = uniqueCallbackId++;
+                if (!callbacks) {
+                    callbacks = Object.create(null);
+                }
+
                 callbacks[callbackId] = callback;
                 message.callbackId = callbackId;
             }
@@ -131,6 +135,10 @@
                 return;
             }
             var callbackId = response.callbackId;
+            if (!callbacks) {
+                callbacks = Object.create(null);
+            }
+
             var callback = callbacks[callbackId];
             if (callback) {
                 var json = null;
