@@ -309,6 +309,20 @@
 
         isEdgeBeforeCreatorsUpdate: function () {
             return this.isEdgeBrowser() && adguard.prefs.edgeVersion.build < this.EDGE_CREATORS_UPDATE;
+        },
+
+        /**
+         * Returns extension params: clientId, version and locale
+         */
+        getExtensionParams: function () {
+            var clientId = encodeURIComponent(this.getClientId());
+            var locale = encodeURIComponent(adguard.app.getLocale());
+            var version = encodeURIComponent(adguard.app.getVersion());
+            var params = [];
+            params.push('v=' + version);
+            params.push('cid=' + clientId);
+            params.push('lang=' + locale);
+            return params;
         }
     };
 

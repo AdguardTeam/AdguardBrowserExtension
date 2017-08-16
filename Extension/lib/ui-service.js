@@ -105,6 +105,8 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         return urlBuilder.join("");
     })();
 
+    var THANKYOU_PAGE_URL = 'https://adguard.com/thankyou.html';
+
     // Assistant
 
     var assistantOptions = null;
@@ -506,13 +508,22 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
     var openThankYouPage = function () {
 
+        var params = adguard.utils.browser.getExtensionParams();
+        var thankyouUrl = THANKYOU_PAGE_URL + '?' + params.join('&');
+
         var filtersDownloadUrl = getPageUrl('filter-download.html');
-        var thankyouUrl = getPageUrl('thankyou.html');
 
         adguard.tabs.getAll(function (tabs) {
-            for (var i = 0; i < tabs.length; i++) {
-                var tab = tabs[i];
-                if (tab.url === filtersDownloadUrl || tab.url === thankyouUrl) {
+            var i, tab;
+            for (i = 0; i < tabs.length; i++) {
+                tab = tabs[i];
+                if (adguard.utils.strings.startWith(tab.url, THANKYOU_PAGE_URL)) {
+                    adguard.tabs.remove(tab.tabId);
+                }
+            }
+            for (i = 0; i < tabs.length; i++) {
+                tab = tabs[i];
+                if (tab.url === filtersDownloadUrl) {
                     // In YaBrowser don't activate found page
                     if (!adguard.utils.browser.isYaBrowser()) {
                         adguard.tabs.activate(tab.tabId);
