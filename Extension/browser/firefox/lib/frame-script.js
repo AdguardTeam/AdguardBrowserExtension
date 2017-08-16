@@ -131,14 +131,11 @@
         };
 
         var processResponse = function (response) {
-            if (!response) {
+            if (!response || !callbacks) {
                 return;
             }
-            var callbackId = response.callbackId;
-            if (!callbacks) {
-                callbacks = Object.create(null);
-            }
 
+            var callbackId = response.callbackId;
             var callback = callbacks[callbackId];
             if (callback) {
                 var json = null;
