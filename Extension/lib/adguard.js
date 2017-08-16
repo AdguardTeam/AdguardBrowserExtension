@@ -81,6 +81,11 @@ var adguard = (function () { // jshint ignore:line
         shouldOverrideReferrer: notImplemented
     };
 
+    var syncModule = {
+        syncService: notImplemented(),
+        settingsProvider: notImplemented()
+    };
+
     return {
         lazyGet: lazyGet,
         lazyGetClear: lazyGetClear,
@@ -92,7 +97,8 @@ var adguard = (function () { // jshint ignore:line
         hitStats: hitStatsModule,
         filteringLog: filteringLogModule,
         safebrowsing: safebrowsingModule,
-        integration: integrationModule
+        integration: integrationModule,
+        sync: syncModule
     };
 
 })();

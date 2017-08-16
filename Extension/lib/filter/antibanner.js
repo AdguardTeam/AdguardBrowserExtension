@@ -1233,6 +1233,7 @@ adguard.requestFilter = (function (adguard) {
 
 /**
  * Helper class for working with filters metadata storage (local storage)
+ * //TODO: Duplicated in filters-storage.js
  */
 adguard.filtersState = (function (adguard) {
 
@@ -1440,9 +1441,10 @@ adguard.filters = (function (adguard) {
      * Enable filter
      *
      * @param filterId Filter identifier
+     * @param options
      * @returns {boolean} true if filter was enabled successfully
      */
-    var enableFilter = function (filterId) {
+    var enableFilter = function (filterId, options) {
 
         var filter = antiBannerService.getAntiBannerFilterById(filterId);
         if (filter.enabled || !filter.installed) {
@@ -1451,15 +1453,17 @@ adguard.filters = (function (adguard) {
 
         filter.enabled = true;
         adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
         return true;
     };
 
     /**
      * Successively add filters from filterIds and then enable successfully added filters
      * @param filterIds Filter identifiers
+     * @param options
      * @param callback We pass list of enabled filter identifiers to the callback
      */
-    var addAndEnableFilters = function (filterIds, callback) {
+    var addAndEnableFilters = function (filterIds, callback, options) {
 
         callback = callback || function () {
                 // Empty callback
@@ -1472,7 +1476,7 @@ adguard.filters = (function (adguard) {
             return;
         }
 
-        filterIds = adguard.utils.collections.removeDuplicates(filterIds.slice(0)); // Copy array to prevent parameter mutation
+        filterIds = adguard.utils.collections.removeDuplicates(filterIds.slice(0));
 
         var loadNextFilter = function () {
             if (filterIds.length === 0) {
@@ -1481,7 +1485,7 @@ adguard.filters = (function (adguard) {
                 var filterId = filterIds.shift();
                 antiBannerService.addAntiBannerFilter(filterId, function (success) {
                     if (success) {
-                        var changed = enableFilter(filterId);
+                        var changed = enableFilter(filterId, options);
                         if (changed) {
                             enabledFilters.push(antiBannerService.getAntiBannerFilterById(filterId));
                         }
@@ -1498,9 +1502,10 @@ adguard.filters = (function (adguard) {
      * Disables filter by id
      *
      * @param filterId Filter identifier
+     * @param options
      * @returns {boolean} true if filter was disabled successfully
      */
-    var disableFilter = function (filterId) {
+    var disableFilter = function (filterId, options) {
 
         var filter = antiBannerService.getAntiBannerFilterById(filterId);
         if (!filter.enabled || !filter.installed) {
@@ -1509,6 +1514,7 @@ adguard.filters = (function (adguard) {
 
         filter.enabled = false;
         adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
         return true;
     };
 
@@ -1516,9 +1522,10 @@ adguard.filters = (function (adguard) {
      * Removes filter
      *
      * @param filterId Filter identifier
+     * @param options
      * @returns {boolean} true if filter was removed successfully
      */
-    var removeFilter = function (filterId) {
+    var removeFilter = function (filterId, options) {
 
         var filter = antiBannerService.getAntiBannerFilterById(filterId);
         if (!filter.installed) {
@@ -1531,6 +1538,7 @@ adguard.filters = (function (adguard) {
         filter.installed = false;
         adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
         adguard.listeners.notifyListeners(adguard.listeners.FILTER_ADD_REMOVE, filter);
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
         return true;
     };
 

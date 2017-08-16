@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global $, i18n */
+/* global $, i18n, contentPage */
 
 $(function () {
 
@@ -153,4 +153,40 @@ function customizePopupFooter(isMacOs) {
     } else {
         $('.parental-control-feature').show();
     }
+}
+
+/**
+ * Used to receive notifications from background page
+ * @param events Events for listening
+ * @param callback Event listener callback
+ * @param onUnloadCallback Window unload callback
+ */
+function createEventListener(events, callback, onUnloadCallback) { // jshint ignore:line
+
+    function eventListener() {
+        callback.apply(null, arguments);
+    }
+
+    var listenerId;
+    contentPage.sendMessage({type: 'addEventListener', events: events}, function (response) {
+        listenerId = response.listenerId;
+    });
+
+    contentPage.onMessage.addListener(function (message) {
+        if (message.type === 'notifyListeners') {
+            eventListener.apply(this, message.args);
+        }
+    });
+
+    var onUnload = function () {
+        if (listenerId) {
+            contentPage.sendMessage({type: 'removeListener', listenerId: listenerId});
+            listenerId = null;
+            if (typeof onUnloadCallback === 'function') {
+                onUnloadCallback();
+            }
+        }
+    };
+    $(window).on('beforeunload', onUnload);
+    $(window).on('unload', onUnload);
 }

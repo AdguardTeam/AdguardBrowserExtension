@@ -14,7 +14,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global $, updateDisplayAdguardPromo, customizePopupFooter, contentPage, i18n, moment */
+
+/* global $, updateDisplayAdguardPromo, customizePopupFooter, contentPage, i18n, moment, createEventListener */
+
 var PageController = function () {
 };
 
@@ -71,6 +73,7 @@ PageController.prototype = {
         this.allowAcceptableAdsCheckbox = $("#allowAcceptableAds");
         this.updateAntiBannerFiltersButton = $("#updateAntiBannerFilters");
         this.autodetectFiltersCheckbox = $("#autodetectFiltersCheckbox");
+        this.syncStatusCheckbox = $("#syncStatusCheckbox");
         this.importUserFilterInput = $("#importUserFilterInput");
         this.clearUserFilterButton = $("#clearUserFilter");
         this.importWlFilterInput = $("#importWhiteListFilterInput");
@@ -94,6 +97,7 @@ PageController.prototype = {
         this.sendSafebrowsingStatsCheckbox.on('change', this.sendSafebrowsingStatsChange);
         this.showPageStatisticCheckbox.on('change', this.showPageStatisticsChange);
         this.autodetectFiltersCheckbox.on('change', this.autodetectFiltersChange);
+        this.syncStatusCheckbox.on('change', this.syncStatusChange);
         this.allowAcceptableAdsCheckbox.on('change', this.allowAcceptableAdsChange);
         this.updateAntiBannerFiltersButton.on('click', this.updateAntiBannerFilters.bind(this));
         this.showInfoAboutAdguardFullVersionCheckbox.on('change', this.updateShowInfoAboutAdguardFullVersion);
@@ -235,6 +239,7 @@ PageController.prototype = {
         this._renderShowPageStatistics(showPageStats, environmentOptions.Prefs.mobile);
         this._renderAllowAcceptableAds(acceptableAdsEnabled);
         this._renderAutodetectFilters(autodetectFilters);
+        this._renderSyncStatus(syncStatusInfo.enabled);
         this._renderShowInfoAboutAdguardFullVersion(showAdguardPromo);
         this._renderCollectHitsCount(collectHitsCount);
         this._renderShowContextMenu(showContextMenu);
@@ -322,6 +327,20 @@ PageController.prototype = {
             key: userSettings.names.DISABLE_DETECT_FILTERS,
             value: !this.checked
         });
+    },
+
+    syncStatusChange: function () {
+        var callback;
+        if (!syncStatusInfo.enabled && !syncStatusInfo.currentProvider) {
+            if (this.checked) {
+                // First time switching sync on - open sync settings pages
+                callback = function () {
+                    window.open('/pages/sync.html', '_blank');
+                };
+            }
+        }
+
+        contentPage.sendMessage({type: 'toggleSync'}, callback);
     },
 
     allowAcceptableAdsChange: function () {
@@ -903,6 +922,10 @@ PageController.prototype = {
         this.autodetectFiltersCheckbox.updateCheckbox(autodectedFilters);
     },
 
+    _renderSyncStatus: function (syncEnabled) {
+        this.syncStatusCheckbox.updateCheckbox(syncEnabled);
+    },
+
     _renderAllowAcceptableAds: function (allowAcceptableAds) {
         this.allowAcceptableAdsCheckbox.updateCheckbox(allowAcceptableAds);
     },
@@ -1205,6 +1228,7 @@ var AntiBannerFiltersId;
 var EventNotifierTypes;
 var requestFilterInfo;
 var contentBlockerInfo;
+var syncStatusInfo;
 
 /**
  * Initializes page
@@ -1216,6 +1240,7 @@ var initPage = function (response) {
     environmentOptions = response.environmentOptions;
     requestFilterInfo = response.requestFilterInfo;
     contentBlockerInfo = response.contentBlockerInfo;
+    syncStatusInfo = response.syncStatusInfo;
 
     AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
     EventNotifierTypes = response.constants.EventNotifierTypes;
@@ -1237,7 +1262,7 @@ var initPage = function (response) {
             EventNotifierTypes.REQUEST_FILTER_UPDATED
         ];
 
-        function eventListener(event, filter) {
+        createEventListener(events, function (event, filter) {
             switch (event) {
                 case EventNotifierTypes.FILTER_ENABLE_DISABLE:
                     controller._onAntiBannerFilterStateChange(filter);
@@ -1281,29 +1306,7 @@ var initPage = function (response) {
                     controller.renderFilterRulesInfo(filter);
                     break;
             }
-        }
-
-        var listenerId;
-        contentPage.sendMessage({type: 'addEventListener', events: events}, function (response) {
-            listenerId = response.listenerId;
         });
-
-        contentPage.onMessage.addListener(function (message) {
-            if (message.type == 'notifyListeners') {
-                eventListener.apply(this, message.args);
-            }
-        });
-
-        var onUnload = function () {
-            if (listenerId) {
-                contentPage.sendMessage({type: 'removeListener', listenerId: listenerId});
-                listenerId = null;
-            }
-        };
-
-        // unload event
-        $(window).on('beforeunload', onUnload);
-        $(window).on('unload', onUnload);
     });
 };
 
