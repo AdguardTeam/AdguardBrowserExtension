@@ -121,15 +121,20 @@
         var bindResponseCallback = function (message, callback) {
             if (callback) {
                 var callbackId = uniqueCallbackId++;
+                if (!callbacks) {
+                    callbacks = Object.create(null);
+                }
+
                 callbacks[callbackId] = callback;
                 message.callbackId = callbackId;
             }
         };
 
         var processResponse = function (response) {
-            if (!response) {
+            if (!response || !callbacks) {
                 return;
             }
+
             var callbackId = response.callbackId;
             var callback = callbacks[callbackId];
             if (callback) {
