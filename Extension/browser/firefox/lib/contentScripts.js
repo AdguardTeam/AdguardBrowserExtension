@@ -160,7 +160,7 @@
             'lib/pages/i18n.js',
             'lib/pages/script.js',
             'lib/pages/thankyou.js'
-        ], 'document_start', false, ['adguard.com'], '/thankyou.html');
+        ], 'document_start', false, ['.adguard.com'], '/thankyou.html');
 
         // Register assistant css
         registerCss(adguard.loadURL('lib/content-script/assistant/css/selector.css'));

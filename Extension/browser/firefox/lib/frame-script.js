@@ -232,7 +232,7 @@
                     }
                 }
             }
-            if (script.pathname && script.pathname.indexOf(pathname) < 0) {
+            if (script.pathname && pathname && pathname.indexOf(script.pathname) < 0) {
                 return false;
             }
             return true;

@@ -105,7 +105,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         return urlBuilder.join("");
     })();
 
-    var THANKYOU_PAGE_URL = 'https://adguard.com/thankyou.html';
+    var THANKYOU_PAGE_URL = 'https://adblock.adguard.com/v1/thankyou.html';
 
     // Assistant
 
