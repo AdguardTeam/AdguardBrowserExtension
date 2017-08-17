@@ -259,7 +259,7 @@ adguard.pageStats = (function (adguard) {
      */
     var getStatisticsData = function () {
         var stats = pageStatsHolder.stats;
-        if (!stats) {
+        if (!stats || !stats.data) {
             return null;
         }
 

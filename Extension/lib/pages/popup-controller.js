@@ -289,50 +289,75 @@ PopupController.prototype = {
                     result.push(d.total);
                 });
                 break;
-                break;
         }
 
         return result;
     },
 
-    _getCategories: function (range) {
-        var now = new Date();
-        //TODO: Fill with correct labels
+    _dayOfWeekAsString: function (dayIndex) {
+        return ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][dayIndex];
+    },
 
-        var result = [];
+    _getCategoriesLines: function (range) {
+        var now = new Date();
+        var day = now.getDay();
+
+        var categories = [];
+        var lines = [];
         switch (range) {
             case 'day':
                 for (var i = 0; i < 24; i++) {
-                    result.push(i.toString());
+                    if (i % 3 === 0) {
+                        categories.push(i.toString());
+                        lines.push({
+                            value: i
+                        });
+                    }
                 }
 
                 break;
             case 'week':
-                for (var i = 1; i < 8; i++) {
-                    result.push(i.toString());
+                for (var i = 0; i < 8; i++) {
+                    categories.push(this._dayOfWeekAsString((day + i) % 7 ));
+                    lines.push({
+                        value: i
+                    });
                 }
 
                 break;
             case 'month':
-                for (var i = 1; i < 31; i++) {
-                    result.push(i.toString());
+                for (var i = 0; i < 31; i++) {
+                    if (i % 3 === 0) {
+                        categories.push(i.toString());
+                        lines.push({
+                            value: i
+                        })
+                    }
                 }
 
                 break;
             case 'year':
-                for (var i = 1; i < 12; i++) {
-                    result.push(i.toString());
+                for (var i = 0; i < 12; i++) {
+                    categories.push(i.toString());
+                    lines.push({
+                        value: i
+                    });
                 }
 
                 break;
         }
 
-        return result;
+        return {
+            categories: categories,
+            lines: lines
+        };
     },
 
     _renderStatsGraphs: function (stats, range) {
         var statsData = this._selectStatsData(stats, range);
-        var categories = this._getCategories(range);
+        var categoriesLines = this._getCategoriesLines(range);
+        var categories = categoriesLines.categories;
+        var lines = categoriesLines.lines;
 
         var grad1 =
             '<linearGradient id="grad1" x1="50%" y1="0%" x2="50%" y2="100%">'+
@@ -359,7 +384,7 @@ PopupController.prototype = {
                     type: 'category',
                     categories: categories,
                     tick: {
-                        outer: false,
+                        outer: false
                     }
                 },
                 y: {
@@ -371,7 +396,7 @@ PopupController.prototype = {
             },
             grid: {
                 x: {
-                    show: true
+                    lines: lines
                 },
                 focus: {
                     show: false
