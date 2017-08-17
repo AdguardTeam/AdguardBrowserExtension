@@ -544,8 +544,6 @@ var UserFilter = function () {
 
 var AntiBannerFilters = function (options) {
 
-    var RECOMMENDED_TAG_ID = 10;
-
     var loadedFiltersInfo = {
         filters: [],
         filtersById: {},
@@ -634,7 +632,10 @@ var AntiBannerFilters = function (options) {
                 .append($('<input>', {type: 'checkbox', name: 'filterId', value: filter.filterId, checked: enabled})));
     }
 
-    function getFiltersContentTemplate(tag, filters, recommendedFilters) {
+    function getFiltersContentTemplate(category) {
+        var tag = category.tag;
+        var filters = category.otherFilters;
+        var recommendedFilters = category.recommendedFilters;
 
         var pageTitleEl = $('<div>', {class: 'page-title'})
             .append($('<a>', {href: '#antibanner'})
@@ -673,28 +674,13 @@ var AntiBannerFilters = function (options) {
                 .append(recommendedFiltersList));
     }
 
-    function renderFilterCategory(tag, filters) {
-        var filtersByTag = getFiltersByTagId(tag.tagId, filters);
+    function renderFilterCategory(category) {
 
-        var categoryTemplate = getFilterCategoryTemplate(tag);
+        var categoryTemplate = getFilterCategoryTemplate(category.tag);
         groupsList.append(categoryTemplate);
-        updateCategoryFiltersInfo(tag.tagId);
+        updateCategoryFiltersInfo(category.tag.tagId);
 
-        var recommendedFilters = filtersByTag.filter(function (f) {
-            return f.tags.indexOf(RECOMMENDED_TAG_ID) >= 0;
-        });
-        recommendedFilters.sort(function (a, b) {
-            return a.displayNumber - b.displayNumber;
-        });
-
-        var otherFilters = filtersByTag.filter(function (f) {
-            return f.tags.indexOf(RECOMMENDED_TAG_ID) < 0;
-        });
-        otherFilters.sort(function (a, b) {
-            return a.displayNumber - b.displayNumber;
-        });
-
-        var filtersContentTemplate = getFiltersContentTemplate(tag, otherFilters, recommendedFilters);
+        var filtersContentTemplate = getFiltersContentTemplate(category);
 
         $('#antibanner').parent().append(filtersContentTemplate);
     }
@@ -703,16 +689,14 @@ var AntiBannerFilters = function (options) {
 
         contentPage.sendMessage({type: 'getFiltersMetadata'}, function (response) {
 
-            var i;
-
             loadedFiltersInfo.filters = response.filters;
 
-            var tags = response.tags;
             var filters = response.filters;
+            var categories = response.categories;
 
             var lastUpdateTime = 0;
             var filtersById = Object.create(null);
-            for (i = 0; i < filters.length; i++) {
+            for (var i = 0; i < filters.length; i++) {
                 var filter = filters[i];
                 filtersById[filter.filterId] = filter;
                 if (filter.lastUpdateTime && filter.lastUpdateTime > lastUpdateTime) {
@@ -722,17 +706,9 @@ var AntiBannerFilters = function (options) {
             loadedFiltersInfo.filtersById = filtersById;
             setLastUpdatedTimeText(lastUpdateTime);
 
-            for (i = 0; i < tags.length; i++) {
-
-                var tag = tags[i];
-                if (tag.keyword.indexOf('purpose:') < 0) {
-                    continue;
-                }
-
-                renderFilterCategory(tag, filters);
+            for (var j = 0; j < categories.length; j++) {
+                renderFilterCategory(categories[j]);
             }
-
-            renderFilterCategory({tagId: 0, keyword: "Custom Filters"}, filters);
 
             $('.tabs-bar .tab').click(function (e) {
                 e.preventDefault();
@@ -766,30 +742,13 @@ var AntiBannerFilters = function (options) {
         }
     }
 
-    function getRecommendedFilterIdsByTagId(tagId) {
-        var filters = loadedFiltersInfo.filters;
-        var filterIds = [];
-        for (var i = 0; i < filters.length; i++) {
-            var f = filters[i];
-            if (f.tags.indexOf(tagId) >= 0) {
-                if (f.tags.indexOf(RECOMMENDED_TAG_ID) >= 0) {
-                    filterIds.push(f.filterId);
-                }
-            }
-        }
-
-        return filterIds;
-    }
-
     function toggleCategoryState() {
         var tagId = this.value - 0;
 
-        var filterIds = getRecommendedFilterIdsByTagId(tagId);
-
         if (this.checked) {
-            contentPage.sendMessage({type: 'addAndEnableFilters', filterIds: filterIds});
+            contentPage.sendMessage({type: 'addAndEnableFiltersByTagId', tagId: tagId});
         } else {
-            contentPage.sendMessage({type: 'disableAntiBannerFilters', filterIds: filterIds});
+            contentPage.sendMessage({type: 'disableAntiBannerFiltersByTagId', tagId: tagId});
         }
     }
 
