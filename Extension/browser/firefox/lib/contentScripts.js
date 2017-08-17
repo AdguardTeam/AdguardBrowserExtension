@@ -57,18 +57,6 @@
             'lib/pages/filter-download.js'
         ]);
 
-        // Thankyou.html
-        registerChromeContentScript('pages/thankyou.html', [
-            'lib/libs/jquery-2.2.4.min.js',
-            'lib/content-script/adguard-content.js',
-            'lib/content-script/content-script.js',
-            'lib/content-script/content-utils.js',
-            'lib/content-script/i18n-helper.js',
-            'lib/pages/i18n.js',
-            'lib/pages/script.js',
-            'lib/pages/thankyou.js'
-        ]);
-
         // Options.html
         registerChromeContentScript('pages/options.html', [
             'lib/libs/jquery-2.2.4.min.js',
@@ -163,6 +151,17 @@
             'lib/content-script/assistant/js/start-assistant.js'
         ], 'document_end', false);
 
+        // Thankyou.html
+        registerPageContentScript([
+            'lib/libs/jquery-2.2.4.min.js',
+            'lib/content-script/adguard-content.js',
+            'lib/content-script/content-script.js',
+            'lib/content-script/i18n-helper.js',
+            'lib/pages/i18n.js',
+            'lib/pages/script.js',
+            'lib/pages/thankyou.js'
+        ], 'document_start', false, ['.adguard.com'], '/thankyou.html');
+
         // Register assistant css
         registerCss(adguard.loadURL('lib/content-script/assistant/css/selector.css'));
 
@@ -253,7 +252,7 @@
     /**
      * Registers a content script for http(s) pages
      */
-    function registerPageContentScript(paths, when, allFrames, domains) {
+    function registerPageContentScript(paths, when, allFrames, domains, pathname) {
         var files = [];
         for (var i = 0; i < paths.length; i++) {
             files.push(adguard.getURL(paths[i]));
@@ -264,7 +263,8 @@
             files: files,
             allFrames: allFrames,
             runAt: when || 'document_start',
-            domains: domains || []
+            domains: domains || [],
+            pathname: pathname
         });
     }
 

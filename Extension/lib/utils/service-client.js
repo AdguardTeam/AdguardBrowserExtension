@@ -68,17 +68,13 @@ adguard.backend = (function (adguard) {
 
         // URL for checking filter updates
         get filtersMetadataUrl() {
-            return this.filtersUrl + "/filters.json";
+            var params = adguard.utils.browser.getExtensionParams();
+            return this.filtersUrl + '/filters.json?' + params.join('&');
         },
 
         // URL for user complaints on missed ads or malware/phishing websites
         get reportUrl() {
             return this.backendUrl + "/url-report.html";
-        },
-
-        // URL for tracking Adguard installation
-        get trackInstallUrl() {
-            return this.backendUrl + "/install.html?";
         },
 
         /**
@@ -136,34 +132,6 @@ adguard.backend = (function (adguard) {
      * Loading subscriptions map
      */
     var loadingSubscriptions = Object.create(null);
-
-    /**
-     * Tracks event info: install, uninstall etc
-     * @param trackUrl
-     * @param isAllowedAcceptableAds
-     */
-    function trackInfo(trackUrl, isAllowedAcceptableAds) {
-        try {
-            var clientId = encodeURIComponent(adguard.utils.browser.getClientId());
-            var locale = encodeURIComponent(adguard.app.getLocale());
-            var version = encodeURIComponent(adguard.app.getVersion());
-            var whiteListEnabled = encodeURIComponent(isAllowedAcceptableAds);
-
-            var params = [];
-            params.push("id=" + clientId);
-            params.push("l=" + locale);
-            params.push("v=" + version);
-            params.push("wlen=" + whiteListEnabled);
-
-            var url = trackUrl + params.join("&");
-            url = addKeyParameter(url);
-
-            executeRequestAsync(url, "text/plain");
-
-        } catch (ex) {
-            adguard.console.error('Error track {0}, cause: {1}', trackUrl, ex);
-        }
-    }
 
     /**
      * Load filter rules.
@@ -506,14 +474,6 @@ adguard.backend = (function (adguard) {
     };
 
     /**
-     * Tracks extension install
-     */
-    var trackInstall = function () {
-        // SEARCH_AND_SELF_PROMO_FILTER_ID is enabled by default
-        trackInfo(settings.trackInstallUrl, true);
-    };
-
-    /**
      * Used in integration mode. Sends ajax-request which should be intercepted by Adguard for Windows/Mac/Android.
      *
      * @param ruleText          Rule text
@@ -650,7 +610,6 @@ adguard.backend = (function (adguard) {
         trackSafebrowsingStats: trackSafebrowsingStats,
 
         sendUrlReport: sendUrlReport,
-        trackInstall: trackInstall,
         sendHitStats: sendHitStats,
 
         isAdguardAppRequest: isAdguardAppRequest,

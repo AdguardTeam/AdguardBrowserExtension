@@ -84,6 +84,20 @@
 		{
 			"all_frames": false,
 			"js": [
+				"lib/libs/jquery-2.2.4.min.js",
+				"lib/content-script/i18n-helper.js",
+				"lib/pages/i18n.js",
+				"lib/pages/script.js",
+				"lib/pages/thankyou.js"
+			],
+			"matches": [
+				"*://*.adguard.com/*/thankyou.html*"
+			],
+			"run_at": "document_start"
+		},
+		{
+			"all_frames": false,
+			"js": [
 				"lib/content-script/subscribe.js"
 			],
 			"matches": [

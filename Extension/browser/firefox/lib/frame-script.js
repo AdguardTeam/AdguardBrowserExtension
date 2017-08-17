@@ -213,6 +213,7 @@
         var isTopWin = win === win.top;
         var scheme = location.protocol;
         var domain = location.hostname;
+        var pathname = location.pathname;
         var url = [scheme, '//', domain, location.pathname].join('');
 
         var filter = function (script) {
@@ -231,10 +232,12 @@
             var domains = script.domains;
             if (domains && domains.length > 0) {
                 for (var i = 0; i < domains.length; i++) {
-                    if (domain.endsWith(domains[i])) {
-                        return true;
+                    if (!domain.endsWith(domains[i])) {
+                        return false;
                     }
                 }
+            }
+            if (script.pathname && pathname && pathname.indexOf(script.pathname) < 0) {
                 return false;
             }
             return true;
