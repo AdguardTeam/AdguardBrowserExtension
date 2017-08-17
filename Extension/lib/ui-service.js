@@ -514,23 +514,15 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         var filtersDownloadUrl = getPageUrl('filter-download.html');
 
         adguard.tabs.getAll(function (tabs) {
-            var i, tab;
-            for (i = 0; i < tabs.length; i++) {
-                tab = tabs[i];
-                if (adguard.utils.strings.startWith(tab.url, THANKYOU_PAGE_URL)) {
-                    adguard.tabs.remove(tab.tabId);
-                }
-            }
-            for (i = 0; i < tabs.length; i++) {
-                tab = tabs[i];
+            // Finds the filter-download page and reload it within the thank-you page URL
+            for (var i = 0; i < tabs.length; i++) {
+                var tab = tabs[i];
                 if (tab.url === filtersDownloadUrl) {
                     // In YaBrowser don't activate found page
                     if (!adguard.utils.browser.isYaBrowser()) {
                         adguard.tabs.activate(tab.tabId);
                     }
-                    if (tab.url !== thankyouUrl) {
-                        adguard.tabs.reload(tab.tabId, thankyouUrl);
-                    }
+                    adguard.tabs.reload(tab.tabId, thankyouUrl);
                     return;
                 }
             }

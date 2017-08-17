@@ -77,11 +77,6 @@ adguard.backend = (function (adguard) {
             return this.backendUrl + "/url-report.html";
         },
 
-        // URL for tracking Adguard installation
-        get trackInstallUrl() {
-            return this.backendUrl + "/install.html?";
-        },
-
         /**
          * URL for collecting filter rules statistics.
          * We do not collect it by default, unless user is willing to help.
