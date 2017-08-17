@@ -1,8 +1,8 @@
-! Checksum: iolH6GQfzV8rV7UWqXuiGA
+! Checksum: DA9j/raF22aYRQT0alIkog
 ! Title: Spanish/Portuguese filter
 ! Description: Adguard Spanish/Portuguese filter. Filter list that specifically removes adverts on Spanish and Portuguese language websites.
-! Version: 1.0.86.85
-! TimeUpdated: 2017-08-14T20:01:37.848+04:00
+! Version: 1.0.86.87
+! TimeUpdated: 2017-08-16T01:01:40.854+04:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#spanish
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -161,6 +161,7 @@
 !
 ! These rules are against anti-adblock scripts
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/6175
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6152
 flooxer.com#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6061
@@ -168,11 +169,10 @@ expansion.com#@#.adsbox
 expansion.com#@#div[id^="div-gpt-ad"]
 @@||securepubads.g.doubleclick.net/gpt/pubads_impl_$domain=expansion.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6118
-telecinco.es#%#window._detecAdblock_fake1 = true;
-telecinco.es#%#window._detecAdblock_fake2 = true;
-telecinco.es#$##adsFooter { height: 1px!important; width: 1px!important; }
-telecinco.es#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
-@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=telecinco.es
+bemad.es,cuatro.com,divinity.es,eltiempohoy.es,energytv.es,factoriadeficcion.com,mtmad.es,telecinco.es#%#window._detecAdblock_fake1 = true;
+bemad.es,cuatro.com,divinity.es,eltiempohoy.es,energytv.es,factoriadeficcion.com,mtmad.es,telecinco.es#%#window._detecAdblock_fake2 = true;
+bemad.es,cuatro.com,divinity.es,eltiempohoy.es,energytv.es,factoriadeficcion.com,mtmad.es,telecinco.es#$##adsFooter { height: 1px!important; width: 1px!important; }
+bemad.es,cuatro.com,divinity.es,eltiempohoy.es,energytv.es,factoriadeficcion.com,mtmad.es,telecinco.es#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
 ! https://forum.adguard.com/index.php?threads/24052/
 @@||animeflv.me/static/ads.js
 ! antiblock.org
@@ -481,6 +481,7 @@ http://adw.
 !-------------------- Specific rules --------------------!
 !--------------------------------------------------------!
 !
+bemad.es,cuatro.com,divinity.es,eltiempohoy.es,energytv.es,factoriadeficcion.com,mtmad.es,telecinco.es##.cards__card_ad-3gZy
 animeflv.me##.banner_center
 animeid.io##.banner_center
 mitele.es##.ad-wrapper
@@ -1541,6 +1542,8 @@ uol.com.br##ul.produtos
 !
 ! White list. Fixing filtration errors (false-positive)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/6118
+@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=bemad.es|cuatro.com|divinity.es|eltiempohoy.es|energytv.es|factoriadeficcion.com|mtmad.es|telecinco.es
 ! https://forum.adguard.com/index.php?threads/15571/
 @@||mymrt.com.my/cms/upload_files/banner/banner_$domain=mymrt.com.my,image
 ! http://forum.adguard.com/showthread.php?6421
