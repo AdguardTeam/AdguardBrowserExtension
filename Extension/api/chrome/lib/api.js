@@ -150,7 +150,7 @@
             for (var i = 0; i < enabledFilters.length; i++) {
                 var filter = enabledFilters[i];
                 if (filterIds.indexOf(filter.filterId) < 0) {
-                    adguard.filters.disableFilter(filter.filterId);
+                    adguard.filters.disableFilters([filter.filterId]);
                 }
             }
             callback();

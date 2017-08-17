@@ -88,22 +88,6 @@
     }
 
     /**
-     * Constructs filters metadata for options.html page
-     */
-    function processGetFiltersMetadata() {
-
-        var groups = adguard.subscriptions.getGroups();
-        var filters = adguard.subscriptions.getFilters().filter(function (f) {
-            return f.filterId != adguard.utils.filters.SEARCH_AND_SELF_PROMO_FILTER_ID;
-        });
-
-        return {
-            groups: groups,
-            filters: filters
-        };
-    }
-
-    /**
      * Searches for whitelisted domains.
      *
      * @param offset Offset
@@ -176,10 +160,16 @@
                 break;
             case 'disableAntiBannerFilter':
                 if (message.remove) {
-                    adguard.filters.removeFilter(message.filterId);
+                    adguard.filters.removeFilters([message.filterId]);
                 } else {
-                    adguard.filters.disableFilter(message.filterId);
+                    adguard.filters.disableFilters([message.filterId]);
                 }
+                break;
+            case 'addAndEnableFiltersByTagId':
+                adguard.tags.addAndEnableFiltersByTagId(message.tagId);
+                break;
+            case 'disableAntiBannerFiltersByTagId':
+                adguard.tags.disableAntiBannerFiltersByTagId(message.tagId);
                 break;
             case 'getWhiteListDomains':
                 var whiteListDomains = searchWhiteListDomains(message.offset, message.limit, message.text);
@@ -214,7 +204,7 @@
                 adguard.userrules.addRules(message.rules);
                 break;
             case 'getFiltersMetadata':
-                return processGetFiltersMetadata();
+                return adguard.tags.getFiltersMetadata();
             case 'openThankYouPage':
                 adguard.ui.openThankYouPage();
                 break;
