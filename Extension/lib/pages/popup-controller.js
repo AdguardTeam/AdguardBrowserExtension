@@ -295,12 +295,17 @@ PopupController.prototype = {
     },
 
     _dayOfWeekAsString: function (dayIndex) {
-        return ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][dayIndex];
+        return ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][dayIndex];
+    },
+
+    _monthsAsString: function (monthIndex) {
+        return ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][monthIndex];
     },
 
     _getCategoriesLines: function (range) {
         var now = new Date();
         var day = now.getDay();
+        var month = now.getMonth();
 
         var categories = [];
         var lines = [];
@@ -312,6 +317,8 @@ PopupController.prototype = {
                         lines.push({
                             value: i
                         });
+                    } else {
+                        categories.push('');
                     }
                 }
 
@@ -332,13 +339,15 @@ PopupController.prototype = {
                         lines.push({
                             value: i
                         })
+                    } else {
+                        categories.push('');
                     }
                 }
 
                 break;
             case 'year':
                 for (var i = 0; i < 12; i++) {
-                    categories.push(i.toString());
+                    categories.push(this._monthsAsString((month + i) % 12 ));
                     lines.push({
                         value: i
                     });
