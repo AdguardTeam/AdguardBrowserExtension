@@ -4,9 +4,12 @@
     <title></title>
     <meta charset="utf-8">
     <link type="text/css" rel="stylesheet" href="css/popup.css">
+    <link type="text/css" rel="stylesheet" href="css/c3.css">
 
     <#if browser.name() == "CHROMIUM" || browser.name() == "EDGE" || browser.name() == "SAFARI" || browser.name() == "OPERA">
         <script type="text/javascript" src="../lib/libs/jquery-2.2.4.min.js"></script>
+        <script type="text/javascript" src="../lib/libs/d3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../lib/libs/c3.js"></script>
         <script type="text/javascript" src="../lib/content-script/adguard-content.js"></script>
         <script type="text/javascript" src="../lib/content-script/common-script.js"></script>
         <script type="text/javascript" src="../lib/content-script/popup-script.js"></script>
@@ -24,7 +27,8 @@
         <button class="tab macoshackresize" tab-switch="statistics">Statistics</button>
     </div>
     <div class="tabstack">
-        <div class="tab-main active"></div>
+        <div class="tab-main active tab-switch-tab" tab-switch="main"></div>
+        <div class="tab-statistics tab-switch-tab" tab-switch="statistics"></div>
     </div>
 </div>
 
@@ -120,6 +124,24 @@
         <span class="act-icon"><img src="images/icon-block-ad.png" class="icon-block-ad" alt=""></span>
         <span class="act-name" i18n="popup_block_site_ads"></span>
     </div>
+</div>
+
+<!--Statistics-->
+<div id="filtering-statistics-template" style="display: none;">
+    <div class="statistics-wrapper">
+        <select name="type" class="statistics-select">
+            <option value="">Bad requests</option>
+            <!--<option value="">Some requests</option>-->
+            <!--<option value="">Other requests</option>-->
+        </select>
+        <select name="time" class="statistics-select statistics-select-time">
+            <option value="day">Last day</option>
+            <option value="week" selected="true">Last week</option>
+            <option value="month">Last month</option>
+            <option value="year">Last year</option>
+        </select>
+    </div>
+    <div id="chart" class="chart"></div>
 </div>
 
 <div id="action-open-abuse-template" style="display: none;">

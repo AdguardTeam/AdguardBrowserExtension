@@ -56,6 +56,7 @@ adguard.utils = (function () {
 
     return {
         strings: null, // StringUtils
+        dates: null, //DateUtils
         collections: null, // CollectionUtils,
         concurrent: null, // ConcurrentUtils,
         channels: null, // EventChannels
@@ -171,6 +172,50 @@ adguard.utils = (function () {
     };
 
     api.strings = StringUtils;
+
+})(adguard.utils);
+
+/**
+ * Util class for dates
+ */
+(function (api) {
+
+    var DateUtils = {
+
+        isSameHour: function (a, b) {
+            return (
+                this.isSameDay(a, b) &&
+                a.getHours() === b.getHours()
+            );
+        },
+        isSameDay: function (a, b) {
+            return (
+                this.isSameMonth(a, b) &&
+                a.getDate() === b.getDate()
+            );
+        },
+        isSameMonth: function (a, b) {
+            if (!a || !b) {
+                return false;
+            }
+
+            return (
+                a.getYear() === b.getYear() &&
+                a.getMonth() === b.getMonth()
+            );
+        },
+        getDifferenceInHours: function (a, b) {
+            return (a.getTime() - b.getTime()) / 1000 / 60 / 60;
+        },
+        getDifferenceInDays: function (a, b) {
+            return this.getDifferenceInHours(a, b) / 24;
+        },
+        getDifferenceInMonths: function (a, b) {
+            return this.getDifferenceInDays(a, b) / 30;
+        }
+    };
+
+    api.dates = DateUtils;
 
 })(adguard.utils);
 
@@ -332,6 +377,7 @@ adguard.utils = (function () {
 
     var AntiBannerFiltersId = {
         USER_FILTER_ID: 0,
+        RUSSIAN_FILTER_ID: 1,
         ENGLISH_FILTER_ID: 2,
         TRACKING_FILTER_ID: 3,
         SOCIAL_FILTER_ID: 4,
