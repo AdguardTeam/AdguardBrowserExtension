@@ -306,14 +306,16 @@ PopupController.prototype = {
         var now = new Date();
         var day = now.getDay();
         var month = now.getMonth();
+        var lastDayOfPrevMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
 
         var categories = [];
         var lines = [];
         switch (range) {
             case 'day':
-                for (var i = 0; i < 24; i++) {
+                for (var i = 0; i < 25; i++) {
                     if (i % 3 === 0) {
-                        categories.push(i.toString());
+                        var hour = (i + now.getHours()) % 12 + 3;
+                        categories.push(hour.toString());
                         lines.push({
                             value: i
                         });
@@ -335,10 +337,11 @@ PopupController.prototype = {
             case 'month':
                 for (var i = 0; i < 31; i++) {
                     if (i % 3 === 0) {
-                        categories.push(i.toString());
+                        var c = (i + now.getDate()) % lastDayOfPrevMonth + 1;
+                        categories.push(c.toString());
                         lines.push({
                             value: i
-                        })
+                        });
                     } else {
                         categories.push('');
                     }
