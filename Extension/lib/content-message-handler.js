@@ -185,6 +185,9 @@
             case 'checkAntiBannerFiltersUpdate':
                 adguard.ui.checkFiltersUpdates();
                 break;
+            case 'addCustomFilter':
+                adguard.ui.addCustomFilter(message.url);
+                break;
             case 'changeDefaultWhiteListMode':
                 adguard.whitelist.changeDefaultWhiteListMode(message.enabled);
                 break;

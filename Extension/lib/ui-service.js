@@ -469,6 +469,20 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         };
     }
 
+    function getCustomFilterDownloadResultMessage(success) {
+        var title = success
+            ? adguard.i18n.getMessage("alert_popup_custom_filter_added_title")
+            : adguard.i18n.getMessage("alert_popup_custom_filter_error_title");
+        var text = success
+            ? adguard.i18n.getMessage("alert_popup_custom_filter_added_text")
+            : adguard.i18n.getMessage("alert_popup_custom_filter_error_text");
+
+        return {
+            title: title,
+            text: text
+        };
+    }
+
     var updateTabIconAndContextMenu = function (tab, reloadFrameData) {
         if (reloadFrameData) {
             adguard.frames.reloadFrameData(tab);
@@ -583,6 +597,14 @@ adguard.ui = (function (adguard) { // jshint ignore:line
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTERS_SHOW_POPUP, true, updatedFilters);
         }, function () {
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTERS_SHOW_POPUP, false);
+        });
+    };
+
+    var addCustomFilter = function (url) {
+        adguard.filters.loadCustomFilter(url, function () {
+            adguard.listeners.notifyListeners(adguard.listeners.ADDED_CUSTOM_FILTER_SHOW_POPUP);
+        }, function () {
+            adguard.listeners.notifyListeners(adguard.listeners.ERROR_DOWNLOAD_CUSTOM_FILTER_SHOW_POPUP);
         });
     };
 
@@ -721,6 +743,16 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         }
     });
 
+    //custom filters events
+    adguard.listeners.addListener(function (event) {
+        if (event === adguard.listeners.ADDED_CUSTOM_FILTER_SHOW_POPUP ||
+            event === adguard.listeners.ERROR_DOWNLOAD_CUSTOM_FILTER_SHOW_POPUP) {
+
+            var result = getCustomFilterDownloadResultMessage(event === adguard.listeners.ADDED_CUSTOM_FILTER_SHOW_POPUP);
+            showAlertMessagePopup(result.title, result.text);
+        }
+    });
+
     //close all page on unload
     adguard.unload.when(closeAllPages);
 
@@ -740,6 +772,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
         changeApplicationFilteringDisabled: changeApplicationFilteringDisabled,
         checkFiltersUpdates: checkFiltersUpdates,
+        addCustomFilter: addCustomFilter,
         openAssistant: openAssistant,
         openTab: openTab,
 

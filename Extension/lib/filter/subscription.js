@@ -111,6 +111,107 @@ adguard.subscriptions = (function (adguard) {
     };
 
     /**
+     * Parses filter metadata from rules header
+     *
+     * @param rules
+     * @returns object
+     */
+    var parseFilterDataFromHeader = function (rules) {
+        function parseTag(tagName) {
+            var result = '';
+
+            //Look up only 50 first lines
+            for (var i = 0; i < 50; i++) {
+                var r = rules[i];
+
+                var search = '! ' + tagName + ': ';
+                var indexOf = r.indexOf(search);
+                if (indexOf >= 0) {
+                    result = r.substring(indexOf + search.length);
+                }
+            }
+
+            return result;
+        }
+
+        return {
+            name: parseTag('Title'),
+            description: parseTag('Description'),
+            homepage: parseTag('Homepage'),
+            version: parseTag('Version'),
+            expires: parseTag('Expires')
+        }
+    };
+
+    var addFilterId = function () {
+        var max = 0;
+        filters.forEach(function (f) {
+            if (f.filterId > max) {
+                max = f.filterId;
+            }
+        });
+
+        return max >= 1000 ? max + 1 : 1000;
+    };
+
+    /**
+     * Adds or updates custom filter
+     *
+     * @param url subscriptionUrl
+     * @param callback
+     */
+    var updateCustomFilter = function (url, callback) {
+
+        adguard.backend.loadFilterRulesBySubscriptionUrl(url, function (rules) {
+            var filterData = parseFilterDataFromHeader(rules);
+
+            var filterId = addFilterId();
+            var groupId = 0;
+            var defaultName = filterData.name;
+            var defaultDescription = filterData.description;
+            var homepage = filterData.homepage;
+            var version = filterData.version;
+            var timeUpdated = null;
+            var expires = filterData.expires;
+            var subscriptionUrl = url;
+            var languages = [];
+            var displayNumber = 0;
+            var tags = [0];
+
+            //Check if filter from this url was added before
+            var filter = filters.find(function (f) {
+                return f.customUrl === url;
+            });
+
+            if (filter) {
+                if (version && adguard.utils.browser.isGreaterVersion(filter.version, version)) {
+                    //Update version is not greater
+                    callback();
+                    return;
+                }
+            } else {
+                filter = new SubscriptionFilter(filterId, groupId, defaultName, defaultDescription, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl, tags);
+                filter.loaded = true;
+                //custom filters have special field
+                filter.customUrl = url;
+
+                filters.push(filter);
+                filtersMap[filter.filterId] = filter;
+
+                adguard.listeners.notifyListeners(adguard.listeners.SUCCESS_DOWNLOAD_FILTER, filter);
+            }
+
+            adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, filter, rules);
+
+            callback(filter.filterId);
+
+        }, function (request, cause) {
+            adguard.console.error("Error download filter by url {0}, cause: {1} {2}", url, request.statusText, cause || "");
+            callback();
+        });
+    };
+
+    /**
      * Load groups and filters metadata
      *
      * @param successCallback
@@ -292,7 +393,8 @@ adguard.subscriptions = (function (adguard) {
         getTags: getTags,
         getFilters: getFilters,
         getFilter: getFilter,
-        createSubscriptionFilterFromJSON: createSubscriptionFilterFromJSON
+        createSubscriptionFilterFromJSON: createSubscriptionFilterFromJSON,
+        updateCustomFilter: updateCustomFilter
     };
 
 })(adguard);
