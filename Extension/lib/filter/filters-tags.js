@@ -23,6 +23,9 @@ adguard.tags = (function (adguard) {
     'use strict';
 
     var RECOMMENDED_TAG_ID = 10;
+    var PURPOSE_ADS_TAG_ID = 1;
+    var PURPOSE_SOCIAL_TAG_ID = 3;
+    var PURPOSE_PRIVACY_TAG_ID = 2;
 
     var getFilters = function () {
         return adguard.subscriptions.getFilters().filter(function (f) {
@@ -115,10 +118,24 @@ adguard.tags = (function (adguard) {
         adguard.filters.disableFilters(idsByTagId);
     };
 
+    var getPurposeGroupedFilters = function () {
+        var filters = getFilters();
+        var adsFilters = getFiltersByTagId(PURPOSE_ADS_TAG_ID, filters);
+        var socialFilters = getFiltersByTagId(PURPOSE_SOCIAL_TAG_ID, filters);
+        var privacyFilters = getFiltersByTagId(PURPOSE_PRIVACY_TAG_ID, filters);
+
+        return {
+            ads: adsFilters,
+            social: socialFilters,
+            privacy: privacyFilters
+        };
+    };
+
     return {
         getFiltersMetadata: getFiltersMetadata,
         addAndEnableFiltersByTagId: addAndEnableFiltersByTagId,
-        disableAntiBannerFiltersByTagId: disableAntiBannerFiltersByTagId
+        disableAntiBannerFiltersByTagId: disableAntiBannerFiltersByTagId,
+        getPurposeGroupedFilters: getPurposeGroupedFilters
     };
 })(adguard);
 

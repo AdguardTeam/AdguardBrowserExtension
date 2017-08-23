@@ -108,19 +108,47 @@ adguard.pageStats = (function (adguard) {
          * @returns {number}
          */
         getBlockedTypeByFilterId: function (filterId) {
+            if (!blockedTypesFilters) {
+                blockedTypesFilters = fillBlockedTypes();
+            }
+
             return blockedTypesFilters[filterId] ? blockedTypesFilters[filterId] : blockedTypes.OTHERS;
         }
     };
 
+    var fillBlockedTypes = function () {
+        var blockedTypesFilters = {};
+
+        var grouped = adguard.tags.getPurposeGroupedFilters();
+        if (!grouped) {
+            return null;
+        }
+
+        var i = 0;
+        while (i < grouped.ads.length) {
+            blockedTypesFilters[grouped.ads[i].filterId] = blockedTypes.ADS;
+            i++;
+        }
+
+        var j = 0;
+        while (j < grouped.social.length) {
+            blockedTypesFilters[grouped.ads[j].filterId] = blockedTypes.SOCIAL;
+            j++;
+        }
+
+        var k = 0;
+        while (k < grouped.privacy.length) {
+            blockedTypesFilters[grouped.ads[k].filterId] = blockedTypes.TRACKERS;
+            k++;
+        }
+
+        return blockedTypesFilters;
+    };
+
     /**
      * Blocked types to filters relation dictionary
-     * TODO: Fill it with correct filter ids
      */
-    var blockedTypesFilters = {};
-    blockedTypesFilters[adguard.utils.filters.RUSSIAN_FILTER_ID] = blockedTypes.ADS;
-    blockedTypesFilters[adguard.utils.filters.ENGLISH_FILTER_ID] = blockedTypes.ADS;
-    blockedTypesFilters[adguard.utils.filters.SOCIAL_FILTER_ID] = blockedTypes.SOCIAL;
-    blockedTypesFilters[adguard.utils.filters.TRACKING_FILTER_ID] = blockedTypes.TRACKERS;
+    var blockedTypesFilters = null;
 
     var createStatsData = function (now, type, blocked) {
         var result = Object.create(null);
