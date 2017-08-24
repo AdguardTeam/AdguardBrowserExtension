@@ -34,11 +34,11 @@
         return;
     }
 
-    var MAIN_DIV_STYLE = "position: fixed !important;top: 10px !important;right: 0px !important;z-index: 9999999999 !important;" +
-        "width: 390px !important;padding: 30px 20px 30px 36px !important;border-right: 6px solid #409e56 !important;-webkit-border-radius: 9px 0 0 9px !important;border-radius: 9px 0 0 9px !important;" +
-        "background: rgba(0, 0, 0, 0.93) !important;color: #fff !important;text-align: left !important;";
-    var TITLE_STYLE = "margin: 0 0 10px !important; font: 400 18px/100% 'gotham_proregular', 'opensans_semibold', sans-serif !important;";
-    var TEXT_STYLE = "font: 400 13px/150% 'gotham_proregular', 'opensans_semibold', sans-serif !important; margin-top: 10px !important;";
+    function htmlToElement(html) {
+        var template = document.createElement('template');
+        template.innerHTML = html;
+        return template.content.firstChild;
+    }
 
     /**
      * Shows alert popup.
@@ -48,44 +48,51 @@
      */
     function showAlertPopup(message) {
 
-        var alertPopup = document.createElement('div');
-
-        var mainDiv = document.createElement('div');
-        mainDiv.setAttribute('style', MAIN_DIV_STYLE);
-        var titleDiv = document.createElement('div');
-        titleDiv.setAttribute('style', TITLE_STYLE);
-        titleDiv.appendChild(document.createTextNode(message.title));
-        var textDiv = document.createElement('div');
-        textDiv.setAttribute('style', TEXT_STYLE);
-
         var messages = [];
         if (Array.isArray(message.text)) {
             messages = message.text;
         } else {
             messages = [message.text];
         }
+
+        var text = '';
         for (var i = 0; i < messages.length; i++) {
             if (i > 0) {
-                textDiv.appendChild(document.createElement('br'));
+                text += ', ';
             }
-            textDiv.appendChild(document.createTextNode(messages[i]));
+            text += messages[i];
         }
 
-        mainDiv.appendChild(titleDiv);
-        mainDiv.appendChild(textDiv);
-        alertPopup.appendChild(mainDiv);
+        var title = message.title;
+
+        var alertDivHtml = '<div class="alert alert--active">' +
+                                //'<div class="alert__close"></div>' +
+                                '<div class="alert__in">' +
+                                    '<div class="alert__ico"></div>' +
+                                '<div>' +
+                                    '<div class="subtitle-2">' +
+                                        title +
+                                    '</div>' +
+                                    '<div class="alert__desc">' +
+                                        text +
+                                    '</div>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>';
 
         var triesCount = 10;
+
+        var alertDiv = htmlToElement(alertDivHtml);
 
         function appendPopup(count) {
             if (count >= triesCount) {
                 return;
             }
             if (document.body) {
-                document.body.appendChild(alertPopup);
+                document.body.appendChild(alertDiv);
                 setTimeout(function () {
-                    if (alertPopup && alertPopup.parentNode) {
-                        alertPopup.parentNode.removeChild(alertPopup);
+                    if (alertDiv && alertDiv.parentNode) {
+                        alertDiv.parentNode.removeChild(alertDiv);
                     }
                 }, 4000);
             } else {
