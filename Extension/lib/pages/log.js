@@ -442,11 +442,11 @@ PageController.prototype = {
         var show = !this.searchRequest || StringUtils.containsIgnoreCase(filterData.requestUrl, this.searchRequest);
         show &= this.searchTypes.length === 0 || this.searchTypes.indexOf(filterData.requestType) >= 0; // jshint ignore:line
 
-        var checkboxes = !(this.searchWhitelisted || this.searchBlocked || this.searchThirdParty);
-        checkboxes |= this.searchWhitelisted && filterData.requestRule && filterData.requestRule.whiteListRule; // jshint ignore:line
-        checkboxes |= this.searchBlocked && filterData.requestRule && !filterData.requestRule.whiteListRule; // jshint ignore:line
-        checkboxes |= this.searchThirdParty && filterData.requestThirdParty; // jshint ignore:line
-        show &= checkboxes; // jshint ignore:line
+        var checkboxes = true;
+        checkboxes &= !this.searchWhitelisted || (filterData.requestRule && filterData.requestRule.whiteListRule); // jshint ignore:line
+        checkboxes &= !this.searchBlocked || (filterData.requestRule && !filterData.requestRule.whiteListRule); // jshint ignore:line
+        checkboxes &= !this.searchThirdParty || filterData.requestThirdParty; // jshint ignore:line
+        show &= !(this.searchWhitelisted || this.searchBlocked || this.searchThirdParty) || checkboxes; // jshint ignore:line
 
         if (show) {
             el.removeClass('hidden');
