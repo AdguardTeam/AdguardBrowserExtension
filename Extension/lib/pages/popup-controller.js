@@ -314,7 +314,7 @@ PopupController.prototype = {
             case 'day':
                 for (var i = 0; i < 25; i++) {
                     if (i % 3 === 0) {
-                        var hour = (i + now.getHours()) % 12 + 3;
+                        var hour = (i + now.getHours()) % 24;
                         categories.push(hour.toString());
                         lines.push({
                             value: i
