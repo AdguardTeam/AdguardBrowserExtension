@@ -24,8 +24,11 @@ adguard.tags = (function (adguard) {
 
     var RECOMMENDED_TAG_ID = 10;
     var PURPOSE_ADS_TAG_ID = 1;
-    var PURPOSE_SOCIAL_TAG_ID = 3;
     var PURPOSE_PRIVACY_TAG_ID = 2;
+    var PURPOSE_SOCIAL_TAG_ID = 3;
+    var PURPOSE_SECURITY_TAG_ID = 4;
+    var PURPOSE_ANNOYANCES_TAG_ID = 5;
+    var PURPOSE_COOKIES_TAG_ID = 6;
 
     var getFilters = function () {
         return adguard.subscriptions.getFilters().filter(function (f) {
@@ -123,11 +126,17 @@ adguard.tags = (function (adguard) {
         var adsFilters = getFiltersByTagId(PURPOSE_ADS_TAG_ID, filters);
         var socialFilters = getFiltersByTagId(PURPOSE_SOCIAL_TAG_ID, filters);
         var privacyFilters = getFiltersByTagId(PURPOSE_PRIVACY_TAG_ID, filters);
+        var annoyancesFilters = getFiltersByTagId(PURPOSE_ANNOYANCES_TAG_ID, filters);
+        var cookiesFilters = getFiltersByTagId(PURPOSE_COOKIES_TAG_ID, filters);
+        var securityFilters = getFiltersByTagId(PURPOSE_SECURITY_TAG_ID, filters);
 
         return {
             ads: adsFilters,
             social: socialFilters,
-            privacy: privacyFilters
+            privacy: privacyFilters,
+            security: securityFilters,
+            annoyances: annoyancesFilters,
+            cookies: cookiesFilters
         };
     };
 

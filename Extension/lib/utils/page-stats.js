@@ -96,16 +96,21 @@ adguard.pageStats = (function (adguard) {
      * Blocked requests types
      */
     var blockedTypes = {
-        OTHERS: 0,
-        ADS: 1,
-        TRACKERS: 2,
-        SOCIAL: 3,
+        // jshint ignore:start
+        OTHERS: 1 << 0,
+        ADS: 1 << 1,
+        TRACKERS: 1 << 2,
+        SOCIAL: 1 << 3,
+        ANNOYANCES: 1 << 4,
+        SECURITY: 1 << 5,
+        COOKIES: 1 << 6,
+        // jshint ignore:end
 
         /**
-         * Returns blocked type by filter id
+         * Returns blocked types by filter id
          *
          * @param filterId
-         * @returns {number}
+         * @returns
          */
         getBlockedTypeByFilterId: function (filterId) {
             if (!blockedTypesFilters) {
@@ -117,32 +122,30 @@ adguard.pageStats = (function (adguard) {
     };
 
     var fillBlockedTypes = function () {
-        var blockedTypesFilters = {};
+        var map = {};
 
         var grouped = adguard.tags.getPurposeGroupedFilters();
         if (!grouped) {
             return null;
         }
 
-        var i = 0;
-        while (i < grouped.ads.length) {
-            blockedTypesFilters[grouped.ads[i].filterId] = blockedTypes.ADS;
-            i++;
+        function fillMap(group, blockedType) {
+            var k = 0;
+            while (k < group.length) {
+                var current = map[group[k].filterId];
+                map[group[k].filterId] = current ? (current |= blockedType) : blockedType;
+                k++;
+            }
         }
 
-        var j = 0;
-        while (j < grouped.social.length) {
-            blockedTypesFilters[grouped.ads[j].filterId] = blockedTypes.SOCIAL;
-            j++;
-        }
+        fillMap(grouped.ads, blockedTypes.ADS);
+        fillMap(grouped.social, blockedTypes.SOCIAL);
+        fillMap(grouped.privacy, blockedTypes.TRACKERS);
+        fillMap(grouped.annoyances, blockedTypes.ANNOYANCES);
+        fillMap(grouped.security, blockedTypes.SECURITY);
+        fillMap(grouped.cookies, blockedTypes.COOKIES);
 
-        var k = 0;
-        while (k < grouped.privacy.length) {
-            blockedTypesFilters[grouped.ads[k].filterId] = blockedTypes.TRACKERS;
-            k++;
-        }
-
-        return blockedTypesFilters;
+        return map;
     };
 
     /**
@@ -150,7 +153,7 @@ adguard.pageStats = (function (adguard) {
      */
     var blockedTypesFilters = null;
 
-    var createStatsData = function (now, type, blocked) {
+    var createStatsData = function (now, types, blocked) {
         var result = Object.create(null);
         result.hours = [];
         result.days = [];
