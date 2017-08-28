@@ -65,15 +65,15 @@
 
         var title = message.title;
 
-        var alertDivHtml = '<div class="alert alert--active">' +
-                                //'<div class="alert__close"></div>' +
-                                '<div class="alert__in">' +
-                                    '<div class="alert__ico"></div>' +
+        var alertDivHtml = '<div class="adguard-popup-alert adguard-popup-alert--active">' +
+                                //'<div class="adguard-popup-alert__close"></div>' +
+                                '<div class="adguard-popup-alert__in">' +
+                                    '<div class="adguard-popup-alert__ico"></div>' +
                                 '<div>' +
-                                    '<div class="subtitle-2">' +
+                                    '<div class="adguard-popup-subtitle-2">' +
                                         title +
                                     '</div>' +
-                                    '<div class="alert__desc">' +
+                                    '<div class="adguard-popup-alert__desc">' +
                                         text +
                                     '</div>' +
                                     '</div>' +
