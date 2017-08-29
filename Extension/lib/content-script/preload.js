@@ -172,8 +172,8 @@
         }
 
         // Wraps with try catch and appends cleanup
-        scripts.unshift("try {");
-        scripts.push("} catch (ex) { console.error('Error executing AG js: ' + ex); }");
+        scripts.unshift("(try {");
+        scripts.push("} catch (ex) { console.error('Error executing AG js: ' + ex); })();");
         scripts.push(cleanupCurrentScriptToString());
 
         var script = document.createElement("script");
