@@ -116,6 +116,10 @@ var browser = window.browser || chrome;
             requestFrameId = 0;
         }
 
+        if (requestType === 'IMAGESET') {
+            requestType = adguard.RequestTypes.IMAGE;
+        }
+
         if (requestType === adguard.RequestTypes.OTHER) {
             requestType = parseRequestTypeFromUrl(details.url);
         }
