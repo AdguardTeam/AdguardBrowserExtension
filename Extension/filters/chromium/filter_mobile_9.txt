@@ -1,8 +1,8 @@
-! Checksum: w58sO5Usc1NuVY3RqEwAKA
+! Checksum: cXvBslUmtUSIYMPtDUwrZw
 ! Title: Spanish/Portuguese filter
 ! Description: Adguard Spanish/Portuguese filter. Filter list that specifically removes adverts on Spanish and Portuguese language websites.
-! Version: 1.0.86.87
-! TimeUpdated: 2017-08-16T01:01:40.854+04:00
+! Version: 1.0.87
+! TimeUpdated: 2017-08-30T18:12:59.083+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -140,6 +140,16 @@
 ||xclk-integracion.com^$third-party
 ||yestorrents.org^$third-party
 ||zebestof.com^$third-party
+@@||inmanga.com/Scripts/fuckadblock.js
+@@||habboin.net/public/js/fuckadblock.js
+habboin.net#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
+tinano.com.br#@##adsense
+tinano.com.br#@#.an-advert-banner
+tinano.com.br#@#.an-sponsored
+bmwfaq.org#%#AG_onLoad(function() { XenForo.rellect.AdBlockDetectorParams = {}; XenForo.rellect.AdBlockDetectorParams.loadScript = function() {}; });
+vizer.tv#@#.adsbox
+vizer.tv#@#.banner_ads
+@@||gamersclub.com.br/js/ads.js
 flooxer.com#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
 expansion.com#@#.adsbox
 expansion.com#@#div[id^="div-gpt-ad"]
@@ -372,6 +382,29 @@ _publicidade.
 _publicidade_
 _publicitario.
 http://adw.
+seriesytv.tv,animeytv.tv,peliculasytv.com##.a728
+seriesytv.tv,animeytv.tv,peliculasytv.com##.main > center > a[target="_blank"] > img
+animesorion.org###content > div.contentBox+center
+animesorion.org##.garotaslindas
+habboin.net###client_ads
+adslzone.net###GLOBAL_BD_TOP
+bmwfaq.org##ol#messageList > li.message:not([id]):not([data-author])
+skanime.net##.tabads
+masmusicacristiana.club##.nat-publi
+bateriafina.net###banDe
+bateriafina.net###fblike
+musicasvip.com###tiGen+div:not([id]):not([class]) > div.movil
+musicasvip.com###tiGen+div:not([id]):not([class]) > div.pc
+musicasvip.com###docosas > div#Pub1
+lastmusica.net,mp3xd.mom,goomusica.com,escuchasmusica.com###cuerpo > div.derecha
+remusica.biz,musicaeu.com###baNwan
+remusica.biz,musicaeu.com###banIz
+foxmusicagratis.com##.box-publicidad
+foxmusicagratis.com###contenido > div.bright > div[style="margin: 5px 0;"]
+animeyt.org,jkanimeonline.com,elanimeonline.net##.a728
+jkanime.site##.page > div[style*="width:100%;"][style$=";text-align:center;"]
+jkanime.site##.item-grid-adv
+vizer.tv##body > .vizerNewBox.adsByVizer
 bemad.es,cuatro.com,divinity.es,eltiempohoy.es,energytv.es,factoriadeficcion.com,mtmad.es,telecinco.es##.cards__card_ad-3gZy
 animeflv.me##.banner_center
 animeid.io##.banner_center

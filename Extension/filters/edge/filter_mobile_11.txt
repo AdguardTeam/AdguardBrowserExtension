@@ -1,8 +1,8 @@
-! Checksum: QauCUUUqvrnyFlvUaXre1w
+! Checksum: rjxdDTOZKOu6iqLl/TLFUw
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 1.0.9.33
-! TimeUpdated: 2017-08-16T23:01:47.729+04:00
+! Version: 1.0.9.51
+! TimeUpdated: 2017-08-29T19:02:09.342+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -24,6 +24,14 @@
 ||54.222.186.106^
 ||plugin.mobopay.baidu.com^
 ||mo.freeindoapp.com^
+!+ NOT_OPTIMIZED
+||recreativ.ru^
+||xz15801.com^
+||023hysj.com^
+||lxqcgj.com^
+||inclk.com^$popup
+||betsonsport.ru^
+||m.mrsasharingspace.com^$third-party
 ||holder.com.ua^
 ||crosspromotion-us.avosapps.us^
 ||ad.period-calendar.com^
@@ -634,7 +642,6 @@
 ||r7mediar.com^$popup
 ||rbnt.org^
 ||reate.info^
-||recreativ.ru^
 ||rek.mobi^
 ||reklamz.com^
 ||relap.io^
@@ -995,6 +1002,16 @@ m.auto.ru##.card.i-bem > div[class^="_"] > div[class^="_"]
 m.auto.ru##.index.i-bem > div[class]:not([data-bem])
 m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"])
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
+m.sfgate.com##.ad-point
+healthline.com##div.mlb
+healthline.com##div.mmr.row
+baidu.com##.ec_wise_ad
+mobile.donanimhaber.com##.yorumlar > article~div.ondabir
+mobile.donanimhaber.com##.reklamiatla
+mobile.donanimhaber.com##div[style="margin:10px auto; text-align:center; width:320px; height:100px;"]
+drive2.ru###l-content > div.l-main.js-main > div.g-column-wide > div.cpc-card
+mobile.donanimhaber.com##.reklamiatla
+mail.yandex.by,mail.yandex.kz,mail.yandex.ru,mail.yandex.ua##.direct
 chip.de##.amp-article-ad
 chip.de##.amp-outbrain
 trustedreviews.com##.ipc-advert
@@ -1328,6 +1345,8 @@ auth.wi-fi.ru##.c-fullscreen-banner
 ||login.wi-fi.ru^$script,third-party
 ||static.wi-fi.ru/brandings/rb/
 ||static0.wi-fi.ru/static/000/ios/index.html
+||extmaps-api.yandex.net/promo/api/
+||mobile-campaigns.avast.com^
 ||ketchapp.org/crosspromo/
 ||global.appnext.com/offerWallApi.aspx
 ||104.199.8.250^*/webservices/getDialogAdDetails.php
@@ -1411,6 +1430,8 @@ auth.wi-fi.ru##.c-fullscreen-banner
 ||eviltracker.net^
 ||spotify.com/ads/
 ||trackersimulator.org^
+||track.adform.net^
+||analytics.ff.avast.com^
 ||api.miui.security.xiaomi.com^
 ||metok.sys.miui.com^
 ||sync.adotmob.com^
@@ -1607,7 +1628,8 @@ auth.wi-fi.ru##.c-fullscreen-banner
 ||pingma.qq.com/mstat/
 ||pingma.qq.com^
 ||pipe.aria.microsoft.com/Collector/
-||play.googleapis.com/log
+||play.googleapis.com/log|
+||play.googleapis.com/play/log^
 ||prugskh.com^
 ||prugskh.net^
 ||quantcount.com^
