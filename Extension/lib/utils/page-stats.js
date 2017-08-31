@@ -153,7 +153,7 @@ adguard.pageStats = (function (adguard) {
      */
     var blockedTypesFilters = null;
 
-    var createStatsData = function (now, types, blocked) {
+    var createStatsData = function (now, type, blocked) {
         var result = Object.create(null);
         result.hours = [];
         result.days = [];
