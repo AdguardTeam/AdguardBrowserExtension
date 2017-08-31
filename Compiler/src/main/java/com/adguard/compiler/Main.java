@@ -35,8 +35,8 @@ public class Main {
     private static final String XPI_MAKE_PATH = "../scripts/firefox/xpimake.sh";
     private static final String EXTZ_MAKE_PATH = "../scripts/safari/extzmake.sh";
     private static final String WEBEXT_MAKE_PATH = "../scripts/firefox/webextmake.sh";
-    private static final File CRX_CERT_FILE = new File("../../extensions/AdguardBrowserExtension/certificate.pem");
-    private static final File SAFARI_CERTS_DIR = new File("../../extensions/AdguardBrowserExtension/safari_certs");
+    private static final File CRX_CERT_FILE = new File("../../private/AdguardBrowserExtension/certificate.pem");
+    private static final File SAFARI_CERTS_DIR = new File("../../private/AdguardBrowserExtension/safari_certs");
 
     private static final String PACK_METHOD_ZIP = "zip";
     private static final String PACK_METHOD_CRX = "crx";
