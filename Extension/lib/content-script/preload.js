@@ -290,12 +290,28 @@
     };
 
     /**
+     * Overrides stylesheets property disabled
+     *
+     * Function supposed to be executed in page's context
+     */
+    var overrideStyleSheetProperties = function () {
+        Object.defineProperty(window.HTMLStyleElement.prototype, 'disabled', {
+            get: function () {
+                return false;
+            }, set: function (val) {
+                // Do nothing
+            }
+        });
+    };
+
+    /**
      * Protects shadow root from access in page's context
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/829
      */
     var protectShadowRoot = function () {
-        var script = "(" + overrideShadowRootGetter.toString() + ")();";
-        executeScripts([script]);
+        var scriptShadowRoot = "(" + overrideShadowRootGetter.toString() + ")();";
+        var scriptStylesheets = "(" + overrideStyleSheetProperties.toString() + ")();";
+        executeScripts([scriptShadowRoot, scriptStylesheets]);
     };
 
     /**
