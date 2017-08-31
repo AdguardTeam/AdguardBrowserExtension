@@ -27,6 +27,8 @@
 
     var SYNC_MANIFEST_PROP = "sync-manifest";
 
+    var FILE_TRANSFER_PROTOCOL_VERSION = "1.0";
+
     /**
      * Loads local manifest object
      */
@@ -218,6 +220,48 @@
         }
     };
 
+    /**
+     * Exports settings set in json format
+     */
+    var loadSettingsJson = function (callback) {
+
+        var onSectionLoaded = function (section) {
+            var result = {
+                "protocol-version": FILE_TRANSFER_PROTOCOL_VERSION,
+                "filters": section
+            };
+
+            callback(JSON.stringify(result));
+        };
+
+        loadFiltersSection(onSectionLoaded);
+    };
+
+    /**
+     * Imports settings set from json format
+     */
+    var applySettingsJson = function (json, callback) {
+        var input = null;
+
+        try {
+            input = JSON.parse(json);
+        } catch (ex) {
+            adguard.console.error('Error parsing input json {0}, {1}', json, ex);
+            callback(false);
+            return;
+        }
+
+        if (!input || input['protocol-version'] !== FILE_TRANSFER_PROTOCOL_VERSION) {
+            adguard.console.error('Json input is invalid {0}', json);
+            callback(false);
+            return;
+        }
+
+        applyFiltersSection(input.filters, function (success) {
+            callback(success);
+        });
+    };
+
     // EXPOSE
     api.settingsProvider = {
 
@@ -249,7 +293,17 @@
         /**
          * Apply section to application
          */
-        applySection: applySection
+        applySection: applySection,
+
+        /**
+         * Loads settings json
+         */
+        loadSettingsJson: loadSettingsJson,
+
+        /**
+         * Applies settings json
+         */
+        applySettingsJson: applySettingsJson
     };
 
 })(adguard.sync, adguard);
