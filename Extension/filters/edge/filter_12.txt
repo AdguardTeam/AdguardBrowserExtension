@@ -1,8 +1,8 @@
-! Checksum: ykkeGVX2CZrr/iUuPk0uRg
+! Checksum: IWhOGaXEmaJCFjVy7deEow
 ! Title: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
-! Version: 1.0.3.55
-! TimeUpdated: 2017-08-14T15:02:00.705+04:00
+! Version: 1.0.3.59
+! TimeUpdated: 2017-08-28T16:02:07.016+04:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#safari
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -39,6 +39,41 @@
 !****** TEMPORARY ******
 !
 !***********************
+!
+! URL exclusions for BlockAdBlock
+@@||zoover.adclixx.net/shared/bannerpages/darttagsbanner.aspx
+@@||zoover.adnetasia.com/shared/bannerpages/darttagsbanner.aspx
+@@||zoover.adtrackers.net/shared/bannerpages/darttagsbanner.aspx
+@@||zoover.bannertrack.net/shared/bannerpages/darttagsbanner.aspx
+@@||yasni.adclixx.net/design/relaunch/gfx/elitepartner_
+@@||yasni.adnetasia.com/design/relaunch/gfx/elitepartner_
+@@||yasni.adtrackers.net/design/relaunch/gfx/elitepartner_
+@@||yasni.bannertrack.net/design/relaunch/gfx/elitepartner_
+@@||torrentz.adclixx.net/mgid/ad.js
+@@||torrentz.adnetasia.com/mgid/ad.js
+@@||torrentz.adtrackers.net/mgid/ad.js
+@@||torrentz.bannertrack.net/mgid/ad.js
+@@||crunchyroll.adclixx.net/vast?fg=
+@@||crunchyroll.adnetasia.com/vast?fg=
+@@||crunchyroll.adtrackers.net/vast?fg=
+@@||crunchyroll.bannertrack.net/vast?fg=
+@@||ox-d.adclixx.net/auid=
+@@||ox-d.adnetasia.com/auid=
+@@||ox-d.adtrackers.net/auid=
+@@||ox-d.bannertrack.net/auid=
+@@||yahoo.adclixx.net/serv
+@@||yahoo.adnetasia.com/serv
+@@||yahoo.adtrackers.net/serv
+@@||yahoo.bannertrack.net/serv
+@@||serve.adclixx.net/promoload
+@@||serve.adnetasia.com/promoload
+@@||serve.adtrackers.net/promoload
+@@||serve.bannertrack.net/promoload
+@@||ads.twitter.com/favicon.ico
+@@||advertising.yahoo.com/favicon.ico
+@@||doubleclickbygoogle.com/favicon.ico
+@@||google.com/adsense/start/images/favicon.ico
+@@||gstatic.com/adx/doubleclick.ico
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5314
 @@||jilhub.xyz^$generichide
@@ -88,11 +123,12 @@ televisaofutebol.com#@#iframe[Width="300"][Height="250"]
 @@||computerworm.net^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4767
 ! BlockAdBlock
-@@||bannertrack.net^$script,other,domain=animmex.tv|finalservers.net|freeomovie.com|cmacapps.com
-@@||adnetasia.com^$script,other,domain=animmex.tv|finalservers.net|freeomovie.com|cmacapps.com
-@@||adclixx.net^$script,other,domain=animmex.tv|finalservers.net|freeomovie.com|cmacapps.com
-@@*.ico$domain=animmex.tv|finalservers.net|freeomovie.com|cmacapps.com
-@@||adtrackers.net^$script,other,domain=animmex.tv|finalservers.net|freeomovie.com|cmacapps.com
+@@||adtrackers.net^$script,other,domain=crackhex.ch|animmex.tv|finalservers.net|freeomovie.com|cmacapps.com
+@@*.ico$domain=crackhex.ch|animmex.tv|finalservers.net|freeomovie.com|cmacapps.com
+@@||adclixx.net^$script,other,domain=crackhex.ch|animmex.tv|finalservers.net|freeomovie.com|cmacapps.com
+@@||adnetasia.com^$script,other,domain=crackhex.ch|animmex.tv|finalservers.net|freeomovie.com|cmacapps.com
+@@||bannertrack.net^$script,other,domain=crackhex.ch|animmex.tv|finalservers.net|freeomovie.com|cmacapps.com
+@@||crackhex.ch^$generichide
 @@||finalservers.net^$generichide
 @@||freeomovie.com^$generichide
 ! https://forum.adguard.com/index.php?threads/20240/
@@ -457,8 +493,6 @@ http://*.*.space/v/$third-party
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4630
 eenadu.net#@##body_ad
 @@||eenadu.net/ads/$script
-! https://github.com/AdguardTeam/ExperimentalFilter/issues/923
-@@||moonwalk.cc/*/iframe$elemhide
 !----- General element hiding rules ----
 !
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/2114 [ENG]
@@ -539,8 +573,6 @@ sports.ru##.bonuses-aside
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4764
 o2.pl##div[data-st-area="ST-Article-Body"] > div._1-MSN > div[style*="width: 970px;"]
 o2.pl##div[data-st-area="ST-Article-Body"] > div._1-MSN+div > div[style="padding-top: 20px;"] > div[class] > div[style*="height: 600px;"]
-! https://github.com/AdguardTeam/AdguardFilters/issues/4750
-filmexpresi.com###wrap > center > a > img
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4703
 dizipub.com###video-oncesi img
 ! https://forum.adguard.com/index.php?threads/19151/

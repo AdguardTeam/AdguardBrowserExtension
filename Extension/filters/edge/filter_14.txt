@@ -1,8 +1,8 @@
-! Checksum: TNBmGx8PjiejTQ2VHJZwnw
+! Checksum: c8DD07j1D+jOnk9w6Ke7kw
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on webpages including cookie notices third-party widgets and in-page popups.
-! Version: 1.0.17.1
-! TimeUpdated: 2017-08-17T12:02:37.446+04:00
+! Version: 1.0.17.63
+! TimeUpdated: 2017-08-31T15:02:32.074+04:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#annoyances
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -23,6 +23,15 @@
 !
 !######### Annoying elements (not ads)
 !
+! https://forum.adguard.com/index.php?threads/24112/
+iz.ru#%#(function() { try { if ("undefined" != typeof localStorage) { localStorage.setItem("player.live.current.play", "false") } } catch (ex) {} })();
+iz.ru#%#(function() { try { if ("undefined" != typeof localStorage) { localStorage.setItem("player.live.current.mute", "false") } } catch (ex) {} })();
+iz.ru#%#(function() { try { if ("undefined" != typeof localStorage) { localStorage.setItem("player.live.current.volume", "0") } } catch (ex) {} })();
+iz.ru#%#AG_onLoad(function() { setTimeout(function() { (function() { try { if ("undefined" != typeof localStorage) { localStorage.setItem("player.live.current.play", "false") } } catch (ex) {} })(); }, 1500); });
+! https://github.com/AdguardTeam/AdguardFilters/issues/6305
+vizer.tv##body > .vizerNewBox.vizerNoticia
+! https://github.com/AdguardTeam/AdguardFilters/issues/6340
+softonic.com##.modal.overlay-alternative-apps
 ! https://forum.adguard.com/index.php?threads/24059/
 dailytelegraph.com.au###ad-blocker-banner
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6211
@@ -331,6 +340,33 @@ vchaspik.ua##div[id="conteiner"][style="height: 410px;"]
 !***
 !* Subscriptions/newsletters (not popups)
 !*
+aetv.com,mylifetime.com,history.com##.show-newsletter-container
+wildo.ru##form.mail
+medicalnewstoday.com###footer_newsletter
+tut.by##.toster-popup
+m.faz.net##.subscription_footer_bar
+||widgets.contentfleet.com/newsletter/
+ghacks.net###sidebar > form[action="//inl02.netline.com/rssnews0001/"]
+gerbeaud.com##.form_newsletter
+aljazeera.com##body .NewsLetterForMobile
+techonation.com##.wp_subscribe
+clickz.com###widget_marketo-email-form-widget
+nytimes.com###newsletter-promo
+magicvalley.com###tncms-region-article_instory_middle
+thetimes.co.uk##.ConversionPopup
+barstoolsports.com##.newsletterSignup
+ohmymag.de###signup-holder
+ohmymag.de##body.omm .larger.button-subscribe
+dotesports.com##body ._1j8km1l
+dotesports.com##.hidden-md-down > .mt-1.mb-2
+latimes.com##.trb_nls_c
+pokemongopocket.com##.g1-newsletter
+trustedreviews.com##.keystone-newsletter-class
+heraldscotland.com,warringtonguardian.co.uk,eveningtimes.co.uk,swindonadvertiser.co.uk##.cta-component-half-width
+heraldscotland.com,eveningtimes.co.uk,swindonadvertiser.co.uk##.cta-component-full-width
+gamesradar.com##.box.newsletter-signup
+thescore.com##.newsletter-sidebar
+thescore.com##div[data-react-class="FrontEndArticlesFacebookMessenger"]
 money.cnn.com###mc-embedded-subscribe-form
 popculture.com##form.pc-newsletter-sidebar
 history.com##.newsletter-signup
@@ -501,7 +537,6 @@ welt.de###sectionSponsor + div
 trendblog.net###sidebar-wrapper > ul > li.widget_duplicate_widget
 milligazete.com.tr###subscribe-box
 meduza.io##.Material-subscribe
-instagram.com##._br9is._3v251
 sports.ru##.c-tag-subscription
 onlinemarketingrockstars.de##.cp-info-bar-wrapper
 zoomgirls.net##.header_subtab
@@ -514,7 +549,6 @@ theaustralian.com.au##.subscribe-popover
 marca.com##.suscripciones-noticias
 klops.ru##.topic-subscription-panel
 haaretz.com##body > div.footer-ruler
-mail.ru##form[data-module="Subscription"]
 ||golem.de/microsite
 !*
 !***
@@ -588,6 +622,23 @@ gazetevatan.com##form ._soc.news
 ! FuckAdBlock
 iphonesoft.fr,tmohentai.com,kshowonline.com,topsante.com,topsante.com,getgreenshot.org,forexpeacearmy.com,pr-cy.ru,pokehuntr.com,theland.com.au,greenbayphoenix.com#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
 !
+stol.it###block-message
+glamour.nl##.message-glamour
+@@||adslzone.net/app/themes/adslzone-net-mykonos/assets/js/ads.min.js
+@@||txxx.com/js/advertising.js^
+hdzog.com#@#.adsbox
+@@||cicero.de/themes/cicero/javascripts/advertisement.js
+@@||bazonline.ch/scripts/advertisement.js
+@@||fullanimes.net/ad_banner.js
+@@||audioknigi.club/templates/skin/aclub/js/ads.js
+carbu.com#%#window.canRunAds = true;
+@@||carbu.com^*templates/media/js/ads.js
+@@||pokemongopocket.com/advertisement.js
+@@||musiker-board.de/js/advertisement.js
+propolski.com##body > div[id][class][style*="z-index: 9999"] + div[class][style*="z-index: 9999"]
+propolski.com##body > div[id][class][style*="z-index: 9999"]
+emuparadise.me##.col_12 > #ad728 + .box
+@@||last.fm/*?args=$domain=last.fm
 nnm-club.name,nnm-club.me,nnmclub.to##body > div.request[-ext-has='a[rel="nofollow"][href$="misc/html/request.html"]']
 proporn.com###abmessage
 @@||s3.amazonaws.com/assets.sidearmsports.com/plugins/detector.min.js?$domain=greenbayphoenix.com
@@ -2679,6 +2730,25 @@ _europecookielaw.
 !#######################################################
 !######### Rules for specific sites ####################
 !#######################################################
+riffhold.com###cookie_notice
+habboin.net###privacy_cookies
+obozrevatel.com##.privasypolicy-info
+doctissimo.fr###doc-banner-cookie
+||glamour.nl/js/partials/cookie-law.js
+life-webmaster.ru##.div152
+extrem-bodybuilding.de##body > .activebar-container
+medicalnewstoday.com##.cookies_eu
+firefox-usb.com##.jb.cookie
+cru.be##cru-cookie-policy
+hearthhead.com##.cookie-banner
+wowhead.com###layout > .announcement-fixed
+fussball.de##.cookie-advise
+next-episode.net###eu_cookies_disclaimer
+aida64.com##body > #sliding-popup
+heraldscotland.com,warringtonguardian.co.uk,eveningtimes.co.uk,swindonadvertiser.co.uk###cookieWarningR
+thescore.com##.privacy-popup-wrapper
+tsa-algerie.com##.template-footer__cookies
+acquavivalive.it##.biscotto
 webnovel.com##body > .m-streamer.lh1d5
 iphonesoft.fr###bannerCookie
 houseoffraser.co.uk##.global-messages
@@ -3170,6 +3240,13 @@ wykop.pl#$#.type-permanent+#nav { top: 0px!important; }
 ||publiekeomroep.nl/data/script/cconsent
 ||tol.postnl.nl/toestemming
 !
+prizee.com#$##allow_cookie_holder { display: none!important; }
+prizee.com#$#body.is-cookie-display { padding-top: 0px!important; }
+prizee.com#$#body.is-cookie-display #user .content-user { top: 0px!important; }
+!
+play.google.com#$#.gb_ld.gb_Lc.gb_g { display: none!important; }
+play.google.com#$##gba.gb_hg { height: 60px!important; }
+!
 !+ NOT_PLATFORM(windows, mac, android)
 maisonapart.com#$#html[-ext-has="body"] { margin-top: auto!important; }
 maisonapart.com###accept-top
@@ -3199,6 +3276,7 @@ airport-nuernberg.de#$#body.pt50 { padding-top: 0px!important; }
 !
 tommy.com#$#.privacy_policy_offset { padding-top: 0!important; }
 !
+dropbox.com#$#body.top-notification-bar .supernav__container--fixed { top: auto!important; }
 dropbox.com#$#body.top-notification-bar > .mast-head { top:auto!important; }
 dropbox.com#$#body.top-notification-bar { margin-top:0!important; }
 !
@@ -3210,10 +3288,12 @@ afkortingen.nu#$##page_container { display:block!important; }
 !
 ! Extended CSS rules
 !
+bmwfaq.org##.Notices[-ext-has='a[href="//www.bmwfaq.org/help/cookies"]']
 aliexpress.com###j-site-notice-header[-ext-has='>.site-notice-container:contains(ookies)']
 !
 ! JS rules
 !
+nu.nl#%#AG_onLoad(function() { setTimeout(function() { var el=document.querySelector('a#sanoma-consent-accept-button'); if(el) el.click(); }, 300); });
 ed.nl#%#AG_onLoad(function() { setTimeout(function() { var check = document.getElementsByClassName('fjs-accept')[0]; if (check){check.click();}; }, 300); });
 gezondheidsplein.nl#%#AG_onLoad(function() { var el=document.querySelector('a.button[href="/?acceptcookies=true"]'); if(el) el.click(); });
 3suisses.fr#%#!function(a,b,c,f,g,d,e){e=a[c]||a['WebKit'+c]||a['Moz'+c],e&&(d=new e(function(){b[f].contains(g)&&(b[f].remove(g),d.disconnect())}),d.observe(b,{attributes:!0,attributeFilter:['class']}))}(window,document.documentElement,'MutationObserver','classList','layer_cookie__visible');
@@ -3251,6 +3331,10 @@ ziekenhuis.nl#%#AG_onLoad(function() { setTimeout(function() {var check = docume
 !#######################################################
 !######### White list. Fixing filtering errors #########
 !#######################################################
+! https://github.com/AdguardTeam/AdguardFilters/issues/6465
+idealo.de#@##privacypolicy
+! https://github.com/AdguardTeam/AdguardFilters/issues/6270
+@@||consent.snmmd.nl/js/cookiebar-latest.js$domain=nu.nl
 ! https://forum.adguard.com/index.php?threads/23680/
 maisonapart.com#@#.accept-cookie
 ! https://forum.adguard.com/index.php?threads/23625/
@@ -3402,7 +3486,6 @@ vizyonfilmizle.com.tr##.solside[-ext-has="h2:contains(REKLAM)"]
 uploads.to##.table > tbody > tr[-ext-has='ins.adsbygoogle']
 tagesspiegel.de##.ts-container[-ext-has='div[class$="ts-area ts-billboard-area"]']
 uploads.to##center > #btn_download_block > .row[-ext-has='ins.adsbygoogle']
-filmizle.live##div.sidebar-content.clearfix.widget_text[-ext-has='div[id*="ScriptRootC"]']
 efirde.az##div[class$="block bpop"][-ext-has='h3[class$="btl"]:contains(Reklamlar)']
 legend.az##div[class$="block"][-ext-has='a[href^="/?do=feedback"]']
 shoes-report.ru##div[id^="side_"] div.widget-top[-ext-has="h4:contains(Реклама)"]
@@ -3429,6 +3512,7 @@ sun.az##.blokmy[-ext-has=".blokbtm:contains(Sayğaclar)"]
 run.az##div[class$="bolmem"][-ext-has='load:contains(Sayğac)']
 !
 !--- Annoying social elements -----!
+turn-on.de##.stickycontainer > .stickycontainer__content > .sidebarbox[-ext-has="> .sidebarbox__content > .newsletterbox"]
 onlinemarketingrockstars.de##.widget-area aside.widget-6[-ext-has="div.textwidget>div.newsletter-sidebar"]
 trakyahaberleri.com###page_right > .right_block[-ext-has='.socialRightBlock']
 turn-on.de##.article-section[-ext-has='div[class$="component-social-media"]']
@@ -3479,6 +3563,8 @@ morgenpost.de##.article--type-news > aside.article__aside[-ext-has="> div.sideba
 !
 !--- Ads ---
 !
+||factum-magazin.ch/sites/default/files/werbung
+factum-magazin.ch##.view-werbung
 torrentec.com##center > a[href^="https://goo.gl/"] > img
 btscenetorrents.unlockpro.racing##.dlb > a[rel="nofollow"][onclick]:not(.dl_black)
 btscenetorrents.unlockpro.racing###wrap > div[style*="width:99%"]
@@ -3645,6 +3731,10 @@ ukr-today.com##.soc_vidgets
 !
 ##head[prefix~="medium-com:"] ~ body .js-postActionsBarContent > .js-readNextInteractions
 !
+moviefone.com##.app-intercept
+olx.ua###mobileAppsbadge
+mail.yandex.by,mail.yandex.kz,mail.yandex.ru,mail.yandex.ua##.popup-overlay
+instagram.com##a[href^="https://itunes.apple.com/app/instagram/id389801252?"][role="alert"]
 chip.de##amp-app-banner
 appleinsider.ru###ioimedia_app_banner
 radugaskidok.ru#$#.rs-header-line-new { top: 0px!important; }
@@ -3867,6 +3957,8 @@ mail.yandex.ua,mail.yandex.ru,mail.yandex.kz,mail.yandex.com.tr#%#AG_onLoad(func
 !
 !--- Whitelist
 !
+! https://forum.adguard.com/index.php?threads/23369/
+@@||lekvapteke.ru/assets/*/js/jquery.smartbanner.js
 ! https://forum.adguard.com/index.php?threads/23128/
 @@||mcdonalds.com.tr/Content/Lib/Js/jquery.smartbanner.js$domain=mcdonalds.com.tr
 !#######################################################
@@ -3876,6 +3968,8 @@ mail.yandex.ua,mail.yandex.ru,mail.yandex.kz,mail.yandex.com.tr#%#AG_onLoad(func
 !
 ! Generic rules
 !
+||fortbegother.ru^$third-party
+||kriloff.ru^$third-party
 /plugins/facebook-page-promoter-$~stylesheet
 ||my.hellobar.com^$third-party
 ||leadpages.co^$third-party
@@ -3901,6 +3995,14 @@ mail.yandex.ua,mail.yandex.ru,mail.yandex.kz,mail.yandex.com.tr#%#AG_onLoad(func
 !
 ! Specific sites
 !
+ibrasoftware.com##.msb
+zamundatorrentr.com###kdfbplug
+huffingtonpost.de##.follow-huffpost
+wildo.ru###shadow_vk
+wildo.ru###vk_wiget_popup
+meleklermekani.com##.FloatingContainer
+medicalnewstoday.com##.mobile_newsletter
+medicalnewstoday.com##body > div > #mask
 kanobu.ru##.informer-popup
 ||popup*.lifterapps.com^$domain=linuxandubuntu.com
 tamiltunes.live###fbslidebox
@@ -4206,7 +4308,6 @@ sabah.com.tr##.ilgi
 sex-empire.tv##.in.fade.modal-backdrop
 unn.com.ua##.jqmOverlay
 rgmechanics.com##.jquery-modal.blocker
-zamunda-torrent.net##.koddostufacee
 teknolojic.com##.kosehbr
 mail.ru##.kristi-position
 community.sony.de##.lia-panel-dialog-modal-valuesurvey
@@ -4481,6 +4582,8 @@ livelib.ru,lenta.ru,mychrome,rambler.ru,sports.ru#%#(function() { if (typeof Not
 sports.ru#%#(function() { try { if ("undefined" != typeof localStorage) { var a = { date: (new Date).toString(), time: (new Date).getTime(), data: 2 }; localStorage.setItem("sports:view:notifications-subscribe-popup:closed:count", JSON.stringify(a)) } } catch (ex) {} })();
 sports.ru#%#(function() { try { if ("undefined" != typeof localStorage) { var a = { date: (new Date).toString(), time: (new Date).getTime(), data: true }; localStorage.setItem("sports:view:notifications-subscribe-popup:view", JSON.stringify(a)) } } catch (ex) {} })();
 !
+mail.yandex.com.tr,mail.yandex.by,mail.yandex.kz,mail.yandex.ru,mail.yandex.ua##.js-push-notifications-promo
+mail.yandex.com.tr,mail.yandex.by,mail.yandex.kz,mail.yandex.ru,mail.yandex.ua##.ns-view-done-promo-push-notifications
 ||appleinsider.ru/wp-content/plugins/ioimedia-pushbanner/pushmodal.js
 dtf.ru###push_subscribe
 sporx.com##.box-push
@@ -4561,6 +4664,8 @@ zr.ru#%#document.cookie = "zrPushSubsPopUp=1";
 !
 !######### Remains of ads
 !
+distrowatch.com##td[style="width: 19%; vertical-align: top; border: none"] > table[class="News"]+br+table[Width="100%"]
+distrowatch.com##td[style^="width: 20%; vertical-align: top; border: none;"] > table[class="News"]+br+table[class="Info"]
 fb.ru##div.also_read > article+div.box+div[id]
 online-life.club###container > div[class="pull-left"][style="margin-left: 5px;"]
 prizyv.ru###text-10.widget_text
@@ -5002,7 +5107,6 @@ golem.de##.social-bar.social-bottom
 filmizlesene.com.tr##.tbaslik
 jsfiddle.net##.twitterCont
 general-anzeiger-bonn.de##a[href^="#share-article"]
-muzikindir.xyz##body > nav.navbar-fixed-top + div.sub-header
 karabuknethaber.com##div > div[class="widget"]:nth-child(-n+3)
 vol.az##div[class="tabmenuContent"][style="height:235px;"]
 liveuamap.com##div[data-twitpic] > div.bottom-info > div.top-right
@@ -5028,8 +5132,8 @@ google.ad,google.ae,google.al,google.am,google.as,google.at,google.az,google.ba,
 google.ad,google.ae,google.al,google.am,google.as,google.at,google.az,google.ba,google.be,google.bf,google.bg,google.bi,google.bj,google.bs,google.bt,google.by,google.ca,google.cat,google.cd,google.cf,google.cg,google.ch,google.ci,google.cl,google.cm,google.cn,google.co.ao,google.co.bw,google.co.ck,google.co.cr,google.co.id,google.co.il,google.co.in,google.co.jp,google.co.ke,google.co.kr,google.co.ls,google.co.ma,google.co.mz,google.co.nz,google.co.th,google.co.tz,google.co.ug,google.co.uk,google.co.uz,google.co.ve,google.co.vi,google.co.za,google.co.zm,google.co.zw,google.com,google.com.af,google.com.ag,google.com.ai,google.com.ar,google.com.au,google.com.bd,google.com.bh,google.com.bn,google.com.bo,google.com.br,google.com.bz,google.com.co,google.com.cu,google.com.cy,google.com.do,google.com.ec,google.com.eg,google.com.et,google.com.fj,google.com.gh,google.com.gi,google.com.gt,google.com.hk,google.com.jm,google.com.kh,google.com.kw,google.com.lb,google.com.ly,google.com.mm,google.com.mt,google.com.mx,google.com.my,google.com.na,google.com.nf,google.com.ng,google.com.ni,google.com.np,google.com.om,google.com.pa,google.com.pe,google.com.pg,google.com.ph,google.com.pk,google.com.pr,google.com.py,google.com.qa,google.com.sa,google.com.sb,google.com.sg,google.com.sl,google.com.sv,google.com.tj,google.com.tr,google.com.tw,google.com.ua,google.com.uy,google.com.vc,google.com.vn,google.cv,google.cz,google.de,google.dj,google.dk,google.dm,google.dz,google.ee,google.es,google.fi,google.fm,google.fr,google.ga,google.ge,google.gg,google.gl,google.gm,google.gp,google.gr,google.gy,google.hn,google.hr,google.ht,google.hu,google.ie,google.im,google.iq,google.is,google.it,google.je,google.jo,google.kg,google.ki,google.kz,google.la,google.li,google.lk,google.lt,google.lu,google.lv,google.md,google.me,google.mg,google.mk,google.ml,google.mn,google.ms,google.mu,google.mv,google.mw,google.ne,google.nl,google.no,google.nr,google.nu,google.pl,google.pn,google.ps,google.pt,google.ro,google.rs,google.ru,google.rw,google.sc,google.se,google.sh,google.si,google.sk,google.sm,google.sn,google.so,google.sr,google.st,google.td,google.tg,google.tk,google.tl,google.tm,google.tn,google.to,google.tt,google.vg,google.vu,google.ws##div[class="gb_Xc gb_xc gb_g"][data-ved]
 google.ad,google.ae,google.al,google.am,google.as,google.at,google.az,google.ba,google.be,google.bf,google.bg,google.bi,google.bj,google.bs,google.bt,google.by,google.ca,google.cat,google.cd,google.cf,google.cg,google.ch,google.ci,google.cl,google.cm,google.cn,google.co.ao,google.co.bw,google.co.ck,google.co.cr,google.co.id,google.co.il,google.co.in,google.co.jp,google.co.ke,google.co.kr,google.co.ls,google.co.ma,google.co.mz,google.co.nz,google.co.th,google.co.tz,google.co.ug,google.co.uk,google.co.uz,google.co.ve,google.co.vi,google.co.za,google.co.zm,google.co.zw,google.com,google.com.af,google.com.ag,google.com.ai,google.com.ar,google.com.au,google.com.bd,google.com.bh,google.com.bn,google.com.bo,google.com.br,google.com.bz,google.com.co,google.com.cu,google.com.cy,google.com.do,google.com.ec,google.com.eg,google.com.et,google.com.fj,google.com.gh,google.com.gi,google.com.gt,google.com.hk,google.com.jm,google.com.kh,google.com.kw,google.com.lb,google.com.ly,google.com.mm,google.com.mt,google.com.mx,google.com.my,google.com.na,google.com.nf,google.com.ng,google.com.ni,google.com.np,google.com.om,google.com.pa,google.com.pe,google.com.pg,google.com.ph,google.com.pk,google.com.pr,google.com.py,google.com.qa,google.com.sa,google.com.sb,google.com.sg,google.com.sl,google.com.sv,google.com.tj,google.com.tr,google.com.tw,google.com.ua,google.com.uy,google.com.vc,google.com.vn,google.cv,google.cz,google.de,google.dj,google.dk,google.dm,google.dz,google.ee,google.es,google.fi,google.fm,google.fr,google.ga,google.ge,google.gg,google.gl,google.gm,google.gp,google.gr,google.gy,google.hn,google.hr,google.ht,google.hu,google.ie,google.im,google.iq,google.is,google.it,google.je,google.jo,google.kg,google.ki,google.kz,google.la,google.li,google.lk,google.lt,google.lu,google.lv,google.md,google.me,google.mg,google.mk,google.ml,google.mn,google.ms,google.mu,google.mv,google.mw,google.ne,google.nl,google.no,google.nr,google.nu,google.pl,google.pn,google.ps,google.pt,google.ro,google.rs,google.ru,google.rw,google.sc,google.se,google.sh,google.si,google.sk,google.sm,google.sn,google.so,google.sr,google.st,google.td,google.tg,google.tk,google.tl,google.tm,google.tn,google.to,google.tt,google.vg,google.vu,google.ws##html > body > div[id="gb"][style="min-width: 750px;"] > div.gb_8b.gb_g
 ! Google Chrome banner at translate.google.com
-translate.google.ad,translate.google.ae,translate.google.al,translate.google.am,translate.google.as,translate.google.at,translate.google.az,translate.google.ba,translate.google.be,translate.google.bf,translate.google.bg,translate.google.bi,translate.google.bj,translate.google.bs,translate.google.bt,translate.google.by,translate.google.ca,translate.google.cat,translate.google.cd,translate.google.cf,translate.google.cg,translate.google.ch,translate.google.ci,translate.google.cl,translate.google.cm,translate.google.cn,translate.google.co.ao,translate.google.co.bw,translate.google.co.ck,translate.google.co.cr,translate.google.co.id,translate.google.co.il,translate.google.co.in,translate.google.co.jp,translate.google.co.ke,translate.google.co.kr,translate.google.co.ls,translate.google.co.ma,translate.google.co.mz,translate.google.co.nz,translate.google.co.th,translate.google.co.tz,translate.google.co.ug,translate.google.co.uk,translate.google.co.uz,translate.google.co.ve,translate.google.co.vi,translate.google.co.za,translate.google.co.zm,translate.google.co.zw,translate.google.com,translate.google.com.af,translate.google.com.ag,translate.google.com.ai,translate.google.com.ar,translate.google.com.au,translate.google.com.bd,translate.google.com.bh,translate.google.com.bn,translate.google.com.bo,translate.google.com.br,translate.google.com.bz,translate.google.com.co,translate.google.com.cu,translate.google.com.cy,translate.google.com.do,translate.google.com.ec,translate.google.com.eg,translate.google.com.et,translate.google.com.fj,translate.google.com.gh,translate.google.com.gi,translate.google.com.gt,translate.google.com.hk,translate.google.com.jm,translate.google.com.kh,translate.google.com.kw,translate.google.com.lb,translate.google.com.ly,translate.google.com.mm,translate.google.com.mt,translate.google.com.mx,translate.google.com.my,translate.google.com.na,translate.google.com.nf,translate.google.com.ng,translate.google.com.ni,translate.google.com.np,translate.google.com.om,translate.google.com.pa,translate.google.com.pe,translate.google.com.pg,translate.google.com.ph,translate.google.com.pk,translate.google.com.pr,translate.google.com.py,translate.google.com.qa,translate.google.com.sa,translate.google.com.sb,translate.google.com.sg,translate.google.com.sl,translate.google.com.sv,translate.google.com.tj,translate.google.com.tr,translate.google.com.tw,translate.google.com.ua,translate.google.com.uy,translate.google.com.vc,translate.google.com.vn,translate.google.cv,translate.google.cz,translate.google.de,translate.google.dj,translate.google.dk,translate.google.dm,translate.google.dz,translate.google.ee,translate.google.es,translate.google.fi,translate.google.fm,translate.google.fr,translate.google.ga,translate.google.ge,translate.google.gg,translate.google.gl,translate.google.gm,translate.google.gp,translate.google.gr,translate.google.gy,translate.google.hn,translate.google.hr,translate.google.ht,translate.google.hu,translate.google.ie,translate.google.im,translate.google.iq,translate.google.is,translate.google.it,translate.google.je,translate.google.jo,translate.google.kg,translate.google.ki,translate.google.kz,translate.google.la,translate.google.li,translate.google.lk,translate.google.lt,translate.google.lu,translate.google.lv,translate.google.md,translate.google.me,translate.google.mg,translate.google.mk,translate.google.ml,translate.google.mn,translate.google.ms,translate.google.mu,translate.google.mv,translate.google.mw,translate.google.ne,translate.google.nl,translate.google.no,translate.google.nr,translate.google.nu,translate.google.pl,translate.google.pn,translate.google.ps,translate.google.pt,translate.google.ro,translate.google.rs,translate.google.ru,translate.google.rw,translate.google.sc,translate.google.se,translate.google.sh,translate.google.si,translate.google.sk,translate.google.sm,translate.google.sn,translate.google.so,translate.google.sr,translate.google.st,translate.google.td,translate.google.tg,translate.google.tk,translate.google.tl,translate.google.tm,translate.google.tn,translate.google.to,translate.google.tt,translate.google.vg,translate.google.vu,translate.google.ws#$#div[style="min-width: 750px;"] > div[aria-label~='Automatically']{display:none!important;}
-translate.google.com,translate.google.ad,translate.google.ae,translate.google.com.af,translate.google.com.ag,translate.google.com.ai,translate.google.al,translate.google.am,translate.google.co.ao,translate.google.com.ar,translate.google.as,translate.google.at,translate.google.com.au,translate.google.az,translate.google.ba,translate.google.com.bd,translate.google.be,translate.google.bf,translate.google.bg,translate.google.com.bh,translate.google.bi,translate.google.bj,translate.google.com.bn,translate.google.com.bo,translate.google.com.br,translate.google.bs,translate.google.bt,translate.google.co.bw,translate.google.by,translate.google.com.bz,translate.google.ca,translate.google.cd,translate.google.cf,translate.google.cg,translate.google.ch,translate.google.ci,translate.google.co.ck,translate.google.cl,translate.google.cm,translate.google.cn,translate.google.com.co,translate.google.co.cr,translate.google.com.cu,translate.google.cv,translate.google.com.cy,translate.google.cz,translate.google.de,translate.google.dj,translate.google.dk,translate.google.dm,translate.google.com.do,translate.google.dz,translate.google.com.ec,translate.google.ee,translate.google.com.eg,translate.google.es,translate.google.com.et,translate.google.fi,translate.google.com.fj,translate.google.fm,translate.google.fr,translate.google.ga,translate.google.ge,translate.google.gg,translate.google.com.gh,translate.google.com.gi,translate.google.gl,translate.google.gm,translate.google.gp,translate.google.gr,translate.google.com.gt,translate.google.gy,translate.google.com.hk,translate.google.hn,translate.google.hr,translate.google.ht,translate.google.hu,translate.google.co.id,translate.google.ie,translate.google.co.il,translate.google.im,translate.google.co.in,translate.google.iq,translate.google.is,translate.google.it,translate.google.je,translate.google.com.jm,translate.google.jo,translate.google.co.jp,translate.google.co.ke,translate.google.com.kh,translate.google.ki,translate.google.kg,translate.google.co.kr,translate.google.com.kw,translate.google.kz,translate.google.la,translate.google.com.lb,translate.google.li,translate.google.lk,translate.google.co.ls,translate.google.lt,translate.google.lu,translate.google.lv,translate.google.com.ly,translate.google.co.ma,translate.google.md,translate.google.me,translate.google.mg,translate.google.mk,translate.google.ml,translate.google.com.mm,translate.google.mn,translate.google.ms,translate.google.com.mt,translate.google.mu,translate.google.mv,translate.google.mw,translate.google.com.mx,translate.google.com.my,translate.google.co.mz,translate.google.com.na,translate.google.com.nf,translate.google.com.ng,translate.google.com.ni,translate.google.ne,translate.google.nl,translate.google.no,translate.google.com.np,translate.google.nr,translate.google.nu,translate.google.co.nz,translate.google.com.om,translate.google.com.pa,translate.google.com.pe,translate.google.com.pg,translate.google.com.ph,translate.google.com.pk,translate.google.pl,translate.google.pn,translate.google.com.pr,translate.google.ps,translate.google.pt,translate.google.com.py,translate.google.com.qa,translate.google.ro,translate.google.ru,translate.google.rw,translate.google.com.sa,translate.google.com.sb,translate.google.sc,translate.google.se,translate.google.com.sg,translate.google.sh,translate.google.si,translate.google.sk,translate.google.com.sl,translate.google.sn,translate.google.so,translate.google.sm,translate.google.sr,translate.google.st,translate.google.com.sv,translate.google.td,translate.google.tg,translate.google.co.th,translate.google.com.tj,translate.google.tk,translate.google.tl,translate.google.tm,translate.google.tn,translate.google.to,translate.google.com.tr,translate.google.tt,translate.google.com.tw,translate.google.co.tz,translate.google.com.ua,translate.google.co.ug,translate.google.co.uk,translate.google.com.uy,translate.google.co.uz,translate.google.com.vc,translate.google.co.ve,translate.google.vg,translate.google.co.vi,translate.google.com.vn,translate.google.vu,translate.google.ws,translate.google.rs,translate.google.co.za,translate.google.co.zm,translate.google.co.zw,translate.google.cat#$#body > div[class^="gb_"][id="gba"] { height: 60px!important; }
+translate.google.ad,translate.google.ae,translate.google.al,translate.google.am,translate.google.as,translate.google.at,translate.google.az,translate.google.ba,translate.google.be,translate.google.bf,translate.google.bg,translate.google.bi,translate.google.bj,translate.google.bs,translate.google.bt,translate.google.by,translate.google.ca,translate.google.cat,translate.google.cd,translate.google.cf,translate.google.cg,translate.google.ch,translate.google.ci,translate.google.cl,translate.google.cm,translate.google.cn,translate.google.co.ao,translate.google.co.bw,translate.google.co.ck,translate.google.co.cr,translate.google.co.id,translate.google.co.il,translate.google.co.in,translate.google.co.jp,translate.google.co.ke,translate.google.co.kr,translate.google.co.ls,translate.google.co.ma,translate.google.co.mz,translate.google.co.nz,translate.google.co.th,translate.google.co.tz,translate.google.co.ug,translate.google.co.uk,translate.google.co.uz,translate.google.co.ve,translate.google.co.vi,translate.google.co.za,translate.google.co.zm,translate.google.co.zw,translate.google.com,translate.google.com.af,translate.google.com.ag,translate.google.com.ai,translate.google.com.ar,translate.google.com.au,translate.google.com.bd,translate.google.com.bh,translate.google.com.bn,translate.google.com.bo,translate.google.com.br,translate.google.com.bz,translate.google.com.co,translate.google.com.cu,translate.google.com.cy,translate.google.com.do,translate.google.com.ec,translate.google.com.eg,translate.google.com.et,translate.google.com.fj,translate.google.com.gh,translate.google.com.gi,translate.google.com.gt,translate.google.com.hk,translate.google.com.jm,translate.google.com.kh,translate.google.com.kw,translate.google.com.lb,translate.google.com.ly,translate.google.com.mm,translate.google.com.mt,translate.google.com.mx,translate.google.com.my,translate.google.com.na,translate.google.com.nf,translate.google.com.ng,translate.google.com.ni,translate.google.com.np,translate.google.com.om,translate.google.com.pa,translate.google.com.pe,translate.google.com.pg,translate.google.com.ph,translate.google.com.pk,translate.google.com.pr,translate.google.com.py,translate.google.com.qa,translate.google.com.sa,translate.google.com.sb,translate.google.com.sg,translate.google.com.sl,translate.google.com.sv,translate.google.com.tj,translate.google.com.tr,translate.google.com.tw,translate.google.com.ua,translate.google.com.uy,translate.google.com.vc,translate.google.com.vn,translate.google.cv,translate.google.cz,translate.google.de,translate.google.dj,translate.google.dk,translate.google.dm,translate.google.dz,translate.google.ee,translate.google.es,translate.google.fi,translate.google.fm,translate.google.fr,translate.google.ga,translate.google.ge,translate.google.gg,translate.google.gl,translate.google.gm,translate.google.gp,translate.google.gr,translate.google.gy,translate.google.hn,translate.google.hr,translate.google.ht,translate.google.hu,translate.google.ie,translate.google.im,translate.google.iq,translate.google.is,translate.google.it,translate.google.je,translate.google.jo,translate.google.kg,translate.google.ki,translate.google.kz,translate.google.la,translate.google.li,translate.google.lk,translate.google.lt,translate.google.lu,translate.google.lv,translate.google.md,translate.google.me,translate.google.mg,translate.google.mk,translate.google.ml,translate.google.mn,translate.google.ms,translate.google.mu,translate.google.mv,translate.google.mw,translate.google.ne,translate.google.nl,translate.google.no,translate.google.nr,translate.google.nu,translate.google.pl,translate.google.pn,translate.google.ps,translate.google.pt,translate.google.ro,translate.google.rs,translate.google.ru,translate.google.rw,translate.google.sc,translate.google.se,translate.google.sh,translate.google.si,translate.google.sk,translate.google.sm,translate.google.sn,translate.google.so,translate.google.sr,translate.google.st,translate.google.td,translate.google.tg,translate.google.tk,translate.google.tl,translate.google.tm,translate.google.tn,translate.google.to,translate.google.tt,translate.google.vg,translate.google.vu,translate.google.ws##div#gb[style] > div.gb_Nc.gb_g
+translate.google.ad,translate.google.ae,translate.google.al,translate.google.am,translate.google.as,translate.google.at,translate.google.az,translate.google.ba,translate.google.be,translate.google.bf,translate.google.bg,translate.google.bi,translate.google.bj,translate.google.bs,translate.google.bt,translate.google.by,translate.google.ca,translate.google.cat,translate.google.cd,translate.google.cf,translate.google.cg,translate.google.ch,translate.google.ci,translate.google.cl,translate.google.cm,translate.google.cn,translate.google.co.ao,translate.google.co.bw,translate.google.co.ck,translate.google.co.cr,translate.google.co.id,translate.google.co.il,translate.google.co.in,translate.google.co.jp,translate.google.co.ke,translate.google.co.kr,translate.google.co.ls,translate.google.co.ma,translate.google.co.mz,translate.google.co.nz,translate.google.co.th,translate.google.co.tz,translate.google.co.ug,translate.google.co.uk,translate.google.co.uz,translate.google.co.ve,translate.google.co.vi,translate.google.co.za,translate.google.co.zm,translate.google.co.zw,translate.google.com,translate.google.com.af,translate.google.com.ag,translate.google.com.ai,translate.google.com.ar,translate.google.com.au,translate.google.com.bd,translate.google.com.bh,translate.google.com.bn,translate.google.com.bo,translate.google.com.br,translate.google.com.bz,translate.google.com.co,translate.google.com.cu,translate.google.com.cy,translate.google.com.do,translate.google.com.ec,translate.google.com.eg,translate.google.com.et,translate.google.com.fj,translate.google.com.gh,translate.google.com.gi,translate.google.com.gt,translate.google.com.hk,translate.google.com.jm,translate.google.com.kh,translate.google.com.kw,translate.google.com.lb,translate.google.com.ly,translate.google.com.mm,translate.google.com.mt,translate.google.com.mx,translate.google.com.my,translate.google.com.na,translate.google.com.nf,translate.google.com.ng,translate.google.com.ni,translate.google.com.np,translate.google.com.om,translate.google.com.pa,translate.google.com.pe,translate.google.com.pg,translate.google.com.ph,translate.google.com.pk,translate.google.com.pr,translate.google.com.py,translate.google.com.qa,translate.google.com.sa,translate.google.com.sb,translate.google.com.sg,translate.google.com.sl,translate.google.com.sv,translate.google.com.tj,translate.google.com.tr,translate.google.com.tw,translate.google.com.ua,translate.google.com.uy,translate.google.com.vc,translate.google.com.vn,translate.google.cv,translate.google.cz,translate.google.de,translate.google.dj,translate.google.dk,translate.google.dm,translate.google.dz,translate.google.ee,translate.google.es,translate.google.fi,translate.google.fm,translate.google.fr,translate.google.ga,translate.google.ge,translate.google.gg,translate.google.gl,translate.google.gm,translate.google.gp,translate.google.gr,translate.google.gy,translate.google.hn,translate.google.hr,translate.google.ht,translate.google.hu,translate.google.ie,translate.google.im,translate.google.iq,translate.google.is,translate.google.it,translate.google.je,translate.google.jo,translate.google.kg,translate.google.ki,translate.google.kz,translate.google.la,translate.google.li,translate.google.lk,translate.google.lt,translate.google.lu,translate.google.lv,translate.google.md,translate.google.me,translate.google.mg,translate.google.mk,translate.google.ml,translate.google.mn,translate.google.ms,translate.google.mu,translate.google.mv,translate.google.mw,translate.google.ne,translate.google.nl,translate.google.no,translate.google.nr,translate.google.nu,translate.google.pl,translate.google.pn,translate.google.ps,translate.google.pt,translate.google.ro,translate.google.rs,translate.google.ru,translate.google.rw,translate.google.sc,translate.google.se,translate.google.sh,translate.google.si,translate.google.sk,translate.google.sm,translate.google.sn,translate.google.so,translate.google.sr,translate.google.st,translate.google.td,translate.google.tg,translate.google.tk,translate.google.tl,translate.google.tm,translate.google.tn,translate.google.to,translate.google.tt,translate.google.vg,translate.google.vu,translate.google.ws#$#body > div[class^="gb_"][id="gba"] { height: 60px!important; }
 ! Google Chrome banner at google.com/maps
 google.com,google.ad,google.ae,google.com.af,google.com.ag,google.com.ai,google.al,google.am,google.co.ao,google.com.ar,google.as,google.at,google.com.au,google.az,google.ba,google.com.bd,google.be,google.bf,google.bg,google.com.bh,google.bi,google.bj,google.com.bn,google.com.bo,google.com.br,google.bs,google.bt,google.co.bw,google.by,google.com.bz,google.ca,google.cd,google.cf,google.cg,google.ch,google.ci,google.co.ck,google.cl,google.cm,google.cn,google.com.co,google.co.cr,google.com.cu,google.cv,google.com.cy,google.cz,google.de,google.dj,google.dk,google.dm,google.com.do,google.dz,google.com.ec,google.ee,google.com.eg,google.es,google.com.et,google.fi,google.com.fj,google.fm,google.fr,google.ga,google.ge,google.gg,google.com.gh,google.com.gi,google.gl,google.gm,google.gp,google.gr,google.com.gt,google.gy,google.com.hk,google.hn,google.hr,google.ht,google.hu,google.co.id,google.ie,google.co.il,google.im,google.co.in,google.iq,google.is,google.it,google.je,google.com.jm,google.jo,google.co.jp,google.co.ke,google.com.kh,google.ki,google.kg,google.co.kr,google.com.kw,google.kz,google.la,google.com.lb,google.li,google.lk,google.co.ls,google.lt,google.lu,google.lv,google.com.ly,google.co.ma,google.md,google.me,google.mg,google.mk,google.ml,google.com.mm,google.mn,google.ms,google.com.mt,google.mu,google.mv,google.mw,google.com.mx,google.com.my,google.co.mz,google.com.na,google.com.nf,google.com.ng,google.com.ni,google.ne,google.nl,google.no,google.com.np,google.nr,google.nu,google.co.nz,google.com.om,google.com.pa,google.com.pe,google.com.pg,google.com.ph,google.com.pk,google.pl,google.pn,google.com.pr,google.ps,google.pt,google.com.py,google.com.qa,google.ro,google.ru,google.rw,google.com.sa,google.com.sb,google.sc,google.se,google.com.sg,google.sh,google.si,google.sk,google.com.sl,google.sn,google.so,google.sm,google.sr,google.st,google.com.sv,google.td,google.tg,google.co.th,google.com.tj,google.tk,google.tl,google.tm,google.tn,google.to,google.com.tr,google.tt,google.com.tw,google.co.tz,google.com.ua,google.co.ug,google.co.uk,google.com.uy,google.co.uz,google.com.vc,google.co.ve,google.vg,google.co.vi,google.com.vn,google.vu,google.ws,google.rs,google.co.za,google.co.zm,google.co.zw,google.cat#$##app-container > #pushdown > .gb_Cc.gb_g { display: none!important; }
 google.com,google.ad,google.ae,google.com.af,google.com.ag,google.com.ai,google.al,google.am,google.co.ao,google.com.ar,google.as,google.at,google.com.au,google.az,google.ba,google.com.bd,google.be,google.bf,google.bg,google.com.bh,google.bi,google.bj,google.com.bn,google.com.bo,google.com.br,google.bs,google.bt,google.co.bw,google.by,google.com.bz,google.ca,google.cd,google.cf,google.cg,google.ch,google.ci,google.co.ck,google.cl,google.cm,google.cn,google.com.co,google.co.cr,google.com.cu,google.cv,google.com.cy,google.cz,google.de,google.dj,google.dk,google.dm,google.com.do,google.dz,google.com.ec,google.ee,google.com.eg,google.es,google.com.et,google.fi,google.com.fj,google.fm,google.fr,google.ga,google.ge,google.gg,google.com.gh,google.com.gi,google.gl,google.gm,google.gp,google.gr,google.com.gt,google.gy,google.com.hk,google.hn,google.hr,google.ht,google.hu,google.co.id,google.ie,google.co.il,google.im,google.co.in,google.iq,google.is,google.it,google.je,google.com.jm,google.jo,google.co.jp,google.co.ke,google.com.kh,google.ki,google.kg,google.co.kr,google.com.kw,google.kz,google.la,google.com.lb,google.li,google.lk,google.co.ls,google.lt,google.lu,google.lv,google.com.ly,google.co.ma,google.md,google.me,google.mg,google.mk,google.ml,google.com.mm,google.mn,google.ms,google.com.mt,google.mu,google.mv,google.mw,google.com.mx,google.com.my,google.co.mz,google.com.na,google.com.nf,google.com.ng,google.com.ni,google.ne,google.nl,google.no,google.com.np,google.nr,google.nu,google.co.nz,google.com.om,google.com.pa,google.com.pe,google.com.pg,google.com.ph,google.com.pk,google.pl,google.pn,google.com.pr,google.ps,google.pt,google.com.py,google.com.qa,google.ro,google.ru,google.rw,google.com.sa,google.com.sb,google.sc,google.se,google.com.sg,google.sh,google.si,google.sk,google.com.sl,google.sn,google.so,google.sm,google.sr,google.st,google.com.sv,google.td,google.tg,google.co.th,google.com.tj,google.tk,google.tl,google.tm,google.tn,google.to,google.com.tr,google.tt,google.com.tw,google.co.tz,google.com.ua,google.co.ug,google.co.uk,google.com.uy,google.co.uz,google.com.vc,google.co.ve,google.vg,google.co.vi,google.com.vn,google.vu,google.ws,google.rs,google.co.za,google.co.zm,google.co.zw,google.cat#$##app-container > #pushdown[-ext-has=">.gb_Cc.gb_g"] ~ #content-container { top:0px!important; }
@@ -5041,12 +5145,13 @@ support.office.com###epb[aria-label="promo"]
 ! Syt Yandex as home page
 ya.ru,yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua##.b-sethome
 ! Yandex Browser
-yandex.by,yandex.ru,yandex.ua##.popup_promo_yes
-yandex.by,yandex.ru,yandex.ua##div[data-bem*="tech.portal-ads.images_popup"]
+yandex.by,yandex.com,yandex.com.tr,yandex.kz,yandex.ru,yandex.ua##.col.footer[role="contentinfo"] a[data-statlog="mediafooter.promo"]
+yandex.by,yandex.com,yandex.com.tr,yandex.kz,yandex.ru,yandex.ua##.popup_promo_yes
+yandex.by,yandex.com,yandex.com.tr,yandex.kz,yandex.ru,yandex.ua##div[data-bem*="tech.portal-ads.images_popup"]
 ! Yandex Images - notifications
 yandex.by,yandex.com,yandex.com.tr,yandex.kz,yandex.ru,yandex.ua##.dist.dist_kind_wizard
 ! Yandex Search mobile app banner
-yandex.by,yandex.ru,yandex.ua##.footer__inner > a.scroll-spy_js_inited
+yandex.by,yandex.com,yandex.com.tr,yandex.kz,yandex.ru,yandex.ua##.footer__inner > a.scroll-spy_js_inited
 !
 yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua##.dist-popup
 yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua##.footer-stripe
@@ -5062,7 +5167,8 @@ yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua##div[aria-label="Реклам
 yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua##iframe[src="https://yastatic.net/daas/stripe.html"]
 yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua#$#.head-stripe { height: 0px!important; }
 ! Yandex self-promo in the footer on the search page
-yandex.ru,yandex.ua##div[class$="distro_shown_yes"]
+yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua##promo-info_js_inited
+yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua##div[class$="distro_shown_yes"]
 ||yastatic.net/daas/atom.js
 ! In Yandex Disk
 disk.yandex.ru,disk.yandex.ua##.b-awaps__banner
@@ -5078,6 +5184,12 @@ music.yandex.ru,music.yandex.ua,music.yandex.by,music.yandex.kz##.sidebar__under
 music.yandex.ru,music.yandex.ua,music.yandex.by,music.yandex.kz##.event_promo[data-card="promotion"]
 !-----------------------------------------------
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/6527
+gsmarena.com###wrapper > div#outer > div#subHeader
+! https://github.com/AdguardTeam/AdguardFilters/issues/6343
+tenorshare.com##.wz-ads
+! https://github.com/AdguardTeam/AdguardFilters/issues/6341
+fossbytes.com##.td-ss-main-sidebar > .widget_execphp
 ! envato market self-promo
 ##.canvas__header > .banner[data-google-analytics-payload]
 ! Yahoo self-promo https://forum.adguard.com/index.php?threads/answers-yahoo-com.17663/
@@ -5107,6 +5219,15 @@ cnews.ru##.video.img-block
 1tv.ru##.footer-promo-place
 1tv.ru##.promo-place
 !
+milfhdporno.com##.fc-right
+mover.uz##.block-info-vertical
+||journalistenwatch.com/wp-content/uploads/2017/08/Boxerin-03.gif
+||vkstorm.ru/banners/$third-party
+||files.webmoney.ru/files/vHbEEBYW/inline
+rozetka.com.ua##.exponea-popup-banner
+ebay.co.uk,ebay.com,ebay.de##ul.mfe-recos > li.mfe-reco-ct[-ext-has='div.mfe-promoted-label']
+office.com##.m-alert.f-information
+youtube.com###ticker-content
 meduza.io##.NewsMaterial-banner
 cc-fan.ru,cn-fan.ru,fox-fan.ru###Shop
 /upload/rk/*$domain=radugaskidok.ru
@@ -5257,6 +5378,8 @@ imslp.org#%#AG_onLoad(function(){var b=document.getElementById("sm_dl_wait");if(
 !--- CSS ---
 kinogo-net-2017.ru,kinogo-online.online,kino-zal.net,lavka-invaitov.ru#$#body * { -moz-user-select: text!important; -webkit-user-select: text!important; -ms-user-select: text!important; -o-user-select: text!important; user-select: text!important; }
 !--- JS ----
+korp.tv#%#Object.defineProperty(window, 'preventSelection', { get: function() { return function(){}; } });
+kinogo-720p.ru#%#Object.defineProperty(window, 'preventSelection', { get: function() { return function(){}; } });
 guvenlilink.blogspot.com#%#AG_onLoad(function() { document.oncontextmenu=function(){return true}; });
 allhit.org#%#Object.defineProperty(window, 'preventSelection', { get: function() { return function(){}; } });
 7days2die.info#%#Object.defineProperties(document,{oncontextmenu:{set:function(){}},ondragstart:{set:function(){}}});
@@ -5285,6 +5408,12 @@ webspor2.com,biyografi.info,seiya-saiga.com#%#AG_onLoad(function() { setTimeout(
 !--- HTML ----
 !*
 !*****
+!
+!##############################
+!######### HTML tweaks ########
+!##############################
+!
+! Disable aytoplay
 !#######################################################
 !######### Block useless widgets #######################
 !### Weather, money exchange, 3rd-party feedbacks, #####
@@ -5320,6 +5449,7 @@ pesni-tut.com##.r_m_genre_songs + div[id] + div:not([id])
 !
 ! START: Adviser/online-consultant/feedback widgets
 /PRVD_partnerChat.js
+||api.spotleadia.com^$domain=~venyoo.ru
 ||leadback.ru^$third-party
 ||form.cloudleadia.com^$third-party
 ||highflyers.ru^$third-party
@@ -5370,6 +5500,8 @@ pesni-tut.com##.r_m_genre_songs + div[id] + div:not([id])
 ||widget.whatsbroadcast.com^$third-party
 ||widgets.livetex.ru^$third-party
 ||zopim.com^$third-party
+! https://github.com/AdguardTeam/AdguardFilters/issues/6473
+@@||code.jivosite.com^$domain=help.letyshops.ru
 !
 ||law-divorce.ru/_fb/widget.php
 astrospeak.com##.lucy

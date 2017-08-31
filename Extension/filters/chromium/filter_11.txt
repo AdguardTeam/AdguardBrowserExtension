@@ -1,8 +1,8 @@
-! Checksum: TWp6yo3ofkQimxz2Nnd7YA
+! Checksum: EW9A8b+oZeZD8/GllnGZVg
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 1.0.9.33
-! TimeUpdated: 2017-08-16T23:01:47.729+04:00
+! Version: 1.0.9.51
+! TimeUpdated: 2017-08-29T19:02:09.342+04:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#mobile
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -47,6 +47,15 @@
 ||plugin.mobopay.baidu.com^
 ||mo.freeindoapp.com^
 !
+!+ NOT_OPTIMIZED
+||recreativ.ru^
+!
+||xz15801.com^
+||023hysj.com^
+||lxqcgj.com^
+||inclk.com^$popup
+||betsonsport.ru^
+||m.mrsasharingspace.com^$third-party
 ||holder.com.ua^
 ||crosspromotion-us.avosapps.us^
 ||ad.period-calendar.com^
@@ -657,7 +666,6 @@
 ||r7mediar.com^$popup
 ||rbnt.org^
 ||reate.info^
-||recreativ.ru^
 ||rek.mobi^
 ||reklamz.com^
 ||relap.io^
@@ -1212,6 +1220,16 @@ m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"
 ! https://forum.adguard.com/index.php?threads/10464/
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
 !
+m.sfgate.com##.ad-point
+healthline.com##div.mlb
+healthline.com##div.mmr.row
+baidu.com##.ec_wise_ad
+mobile.donanimhaber.com##.yorumlar > article~div.ondabir
+mobile.donanimhaber.com##.reklamiatla
+mobile.donanimhaber.com##div[style="margin:10px auto; text-align:center; width:320px; height:100px;"]
+drive2.ru###l-content > div.l-main.js-main > div.g-column-wide > div.cpc-card
+mobile.donanimhaber.com##.reklamiatla
+mail.yandex.by,mail.yandex.kz,mail.yandex.ru,mail.yandex.ua##.direct
 chip.de##.amp-article-ad
 chip.de##.amp-outbrain
 trustedreviews.com##.ipc-advert
@@ -1552,12 +1570,16 @@ auth.wi-fi.ru##.c-fullscreen-banner
 !
 ! Section contains rules for specific applications
 !
+! ru.yandex.metro
+||extmaps-api.yandex.net/promo/api/
 ! ua.slando - fixing adverts
 ! com.devexpert.weather https://github.com/AdguardTeam/AdguardFilters/issues/3865
 ! apptornado ads, when Google/FB ads are blocked
 !
 ! Blocking of Facebook ads
 !
+! https://forum.adguard.com/index.php?threads/24268/
+||mobile-campaigns.avast.com^
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6167
 ||ketchapp.org/crosspromo/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6134
@@ -1745,6 +1767,8 @@ auth.wi-fi.ru##.c-fullscreen-banner
 !
 ! Section contains rules for mobile analytics and spyware
 !
+||track.adform.net^
+||analytics.ff.avast.com^
 ||api.miui.security.xiaomi.com^
 ||metok.sys.miui.com^
 ||sync.adotmob.com^
@@ -1941,7 +1965,8 @@ auth.wi-fi.ru##.c-fullscreen-banner
 ||pingma.qq.com/mstat/
 ||pingma.qq.com^
 ||pipe.aria.microsoft.com/Collector/
-||play.googleapis.com/log
+||play.googleapis.com/log|
+||play.googleapis.com/play/log^
 ||prugskh.com^
 ||prugskh.net^
 ||quantcount.com^
