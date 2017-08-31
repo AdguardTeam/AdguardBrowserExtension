@@ -41,12 +41,14 @@ $(document).ready(function () {
         }
 
         var filename = whitelist ? 'whitelist.txt' : 'rules.txt';
+        filename = settings ? 'export.json' : filename;
         if (showSaveFunc) {
             showSaveFunc(rulesText, filename, 'text/plain;charset=utf-8');
         }
     };
 
     var whitelist = document.location.hash == '#wl';
+    var settings = document.location.hash == '#exs';
     var messageType;
 
     var preProcessResponse = callback;
@@ -58,6 +60,11 @@ $(document).ready(function () {
                 return;
             }
             callback(rules.join('\r\n'));
+        };
+    } else if (settings) {
+        messageType = 'loadSettingsJson';
+        preProcessResponse = function (response) {
+            callback(response);
         };
     } else {
         messageType = 'getUserRules';

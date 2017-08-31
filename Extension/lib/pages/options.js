@@ -1078,6 +1078,45 @@ var Settings = function () {
         allowAcceptableAdsCheckbox.updateCheckbox(AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID in enabledFilters);
     };
 
+    var showPopup = function (title, text) {
+        contentPage.sendMessage({type: 'showAlertMessagePopup', title: title, text: text});
+    };
+
+    var importSettingsFile = function () {
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.click();
+
+        var onFileLoaded = function (content) {
+            contentPage.sendMessage({type: 'applySettingsJson', json: content}, function (response) {
+                if (response) {
+                    showPopup("Settings imported successfully", 'Ok!');
+                } else {
+                    showPopup("Error settings import", 'Something went wrong');
+                }
+            });
+        };
+
+        $(input).change(function() {
+            var file = $(input).get(0).files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.readAsText(file, "UTF-8");
+                reader.onload = function (evt) {
+                    onFileLoaded(evt.target.result);
+                };
+                reader.onerror = function (evt) {
+                    showPopup("Error loading file", 'Something went wrong');
+                };
+            }
+        });
+    };
+
+    $('#importSettingsFile').on('click', function (e) {
+        e.preventDefault();
+        importSettingsFile();
+    }.bind(this));
+
     return {
         render: render
     };
