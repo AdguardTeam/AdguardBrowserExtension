@@ -390,13 +390,18 @@ PopupController.prototype = {
                     data1: 'url(#grad1)'
                 }
             },
+            padding: {
+                left: 15,
+                right: 15
+            },
             axis: {
                 x: {
                     show: true,
                     type: 'category',
                     categories: categories,
                     tick: {
-                        outer: false
+                        outer: false,
+                        multiline: false
                     }
                 },
                 y: {
