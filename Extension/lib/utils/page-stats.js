@@ -159,12 +159,12 @@ adguard.pageStats = (function (adguard) {
         result.days = [];
         result.months = [];
 
-        for (var i = 0; i < MAX_HOURS_HISTORY; i++) {
+        for (var i = 1; i < MAX_HOURS_HISTORY; i++) {
             result.hours.push(createStatsDataItem(null, 0));
         }
         result.hours.push(createStatsDataItem(type, blocked));
 
-        for (var j = 0; j < MAX_DAYS_HISTORY; j++) {
+        for (var j = 1; j < MAX_DAYS_HISTORY; j++) {
             result.days.push(createStatsDataItem(null, 0));
         }
         result.days.push(createStatsDataItem(type, blocked));
@@ -211,7 +211,7 @@ adguard.pageStats = (function (adguard) {
 
             result.hours.push(createStatsDataItem(type, blocked));
             if (result.hours.length > MAX_HOURS_HISTORY) {
-                result.hours = result.hours.slice(0, MAX_HOURS_HISTORY);
+                result.hours = result.hours.slice(-MAX_HOURS_HISTORY);
             }
         }
 
@@ -226,7 +226,7 @@ adguard.pageStats = (function (adguard) {
 
             result.days.push(createStatsDataItem(type, blocked));
             if (result.days.length > MAX_DAYS_HISTORY) {
-                result.days = result.days.slice(0, MAX_DAYS_HISTORY);
+                result.days = result.days.slice(-MAX_DAYS_HISTORY);
             }
         }
 
@@ -267,9 +267,9 @@ adguard.pageStats = (function (adguard) {
      *
      * @param filterId
      * @param blocked count
+     * @param now date
      */
-    var updateStats = function (filterId, blocked) {
-        var now = new Date();
+    var updateStats = function (filterId, blocked, now) {
         var type = blockedTypes.getBlockedTypeByFilterId(filterId);
 
         var stats = pageStatsHolder.stats;
