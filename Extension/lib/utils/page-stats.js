@@ -169,6 +169,9 @@ adguard.pageStats = (function (adguard) {
         }
         result.days.push(createStatsDataItem(type, blocked));
 
+        for (var k = 1; k < 3; k++) {
+            result.months.push(createStatsDataItem(null, 0));
+        }
         result.months.push(createStatsDataItem(type, blocked));
 
         result.updated = now.getTime();

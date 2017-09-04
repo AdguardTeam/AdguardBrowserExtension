@@ -44,10 +44,10 @@ QUnit.test("Test Page Stats", function (assert) {
         assert.equal(data.lastMonth[data.lastMonth.length - 1][14], 10);
         assert.equal(data.lastMonth[data.lastMonth.length - 1].total, 10);
         assert.equal(data.lastWeek.length, 7);
-        assert.equal(data.overall.length, 1);
+        assert.equal(data.overall.length, 3);
         assert.equal(data.overall[data.overall.length - 1][14], 10);
         assert.equal(data.overall[data.overall.length - 1].total, 10);
-        assert.equal(data.lastYear.length, 1);
+        assert.equal(data.lastYear.length, 3);
 
         adguard.pageStats.updateStats(2, 100, now);
         data = adguard.pageStats.getStatisticsData();
@@ -61,11 +61,11 @@ QUnit.test("Test Page Stats", function (assert) {
         assert.equal(data.lastMonth[data.lastMonth.length - 1][2], 100);
         assert.equal(data.lastMonth[data.lastMonth.length - 1].total, 110);
         assert.equal(data.lastWeek.length, 7);
-        assert.equal(data.overall.length, 1);
+        assert.equal(data.overall.length, 3);
         assert.equal(data.overall[data.overall.length - 1][14], 10);
         assert.equal(data.overall[data.overall.length - 1][2], 100);
         assert.equal(data.overall[data.overall.length - 1].total, 110);
-        assert.equal(data.lastYear.length, 1);
+        assert.equal(data.lastYear.length, 3);
 
 
         adguard.pageStats.updateStats(5, 1000, now);
@@ -82,12 +82,12 @@ QUnit.test("Test Page Stats", function (assert) {
         assert.equal(data.lastMonth[data.lastMonth.length - 1][4], 1000);
         assert.equal(data.lastMonth[data.lastMonth.length - 1].total, 1110);
         assert.equal(data.lastWeek.length, 7);
-        assert.equal(data.overall.length, 1);
+        assert.equal(data.overall.length, 3);
         assert.equal(data.overall[data.overall.length - 1][14], 10);
         assert.equal(data.overall[data.overall.length - 1][2], 100);
         assert.equal(data.overall[data.overall.length - 1][4], 1000);
         assert.equal(data.overall[data.overall.length - 1].total, 1110);
-        assert.equal(data.lastYear.length, 1);
+        assert.equal(data.lastYear.length, 3);
 
 
         adguard.pageStats.updateStats(5, 10000, new Date(now.getTime() + (3 * 60 * 60 * 1000)));
@@ -106,12 +106,12 @@ QUnit.test("Test Page Stats", function (assert) {
         assert.equal(data.lastMonth[data.lastMonth.length - 1][4], 11000);
         assert.equal(data.lastMonth[data.lastMonth.length - 1].total, 11110);
         assert.equal(data.lastWeek.length, 7);
-        assert.equal(data.overall.length, 1);
+        assert.equal(data.overall.length, 3);
         assert.equal(data.overall[data.overall.length - 1][14], 10);
         assert.equal(data.overall[data.overall.length - 1][2], 100);
         assert.equal(data.overall[data.overall.length - 1][4], 11000);
         assert.equal(data.overall[data.overall.length - 1].total, 11110);
-        assert.equal(data.lastYear.length, 1);
+        assert.equal(data.lastYear.length, 3);
 
         adguard.pageStats.updateStats(5, 10000, new Date(now.getTime() + (2 * 24 * 60 * 60 * 1000)));
         data = adguard.pageStats.getStatisticsData();
@@ -127,12 +127,12 @@ QUnit.test("Test Page Stats", function (assert) {
         assert.equal(data.lastMonth[data.lastMonth.length - 1][4], 10000);
         assert.equal(data.lastMonth[data.lastMonth.length - 1].total, 10000);
         assert.equal(data.lastWeek.length, 7);
-        assert.equal(data.overall.length, 1);
+        assert.equal(data.overall.length, 3);
         assert.equal(data.overall[data.overall.length - 1][14], 10);
         assert.equal(data.overall[data.overall.length - 1][2], 100);
         assert.equal(data.overall[data.overall.length - 1][4], 21000);
         assert.equal(data.overall[data.overall.length - 1].total, 21110);
-        assert.equal(data.lastYear.length, 1);
+        assert.equal(data.lastYear.length, 3);
 
         done();
     });
