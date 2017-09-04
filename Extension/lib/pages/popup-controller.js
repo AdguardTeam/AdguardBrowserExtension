@@ -302,7 +302,7 @@ PopupController.prototype = {
         return ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][monthIndex];
     },
 
-    _getCategoriesLines: function (range) {
+    _getCategoriesLines: function (statsData, range) {
         var now = new Date();
         var day = now.getDay();
         var month = now.getMonth();
@@ -349,8 +349,9 @@ PopupController.prototype = {
 
                 break;
             case 'year':
-                for (var i = 0; i < 12; i++) {
+                for (var i = 0; i < 13; i++) {
                     categories.push(this._monthsAsString((month + i) % 12 ));
+                    categories = categories.slice(-statsData.length);
                     lines.push({
                         value: i
                     });
@@ -367,7 +368,7 @@ PopupController.prototype = {
 
     _renderStatsGraphs: function (stats, range) {
         var statsData = this._selectStatsData(stats, range);
-        var categoriesLines = this._getCategoriesLines(range);
+        var categoriesLines = this._getCategoriesLines(statsData, range);
         var categories = categoriesLines.categories;
         var lines = categoriesLines.lines;
 
