@@ -226,6 +226,8 @@
         adguard.settings.changeCollectHitsCount(!!set["collect-hits-count"]);
         adguard.settings.changeShowContextMenu(!!set["show-context-menu"]);
         adguard.settings.changeShowInfoAboutAdguardFullVersion(!!set["show-info-about-adguard-disabled"]);
+
+        callback(true);
     };
 
     /**
