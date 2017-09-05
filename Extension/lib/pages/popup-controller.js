@@ -265,7 +265,42 @@ PopupController.prototype = {
         }
     },
 
-    _selectStatsData: function (stats, range) {
+    _selectRequestTypesStatsData: function (stats, range) {
+        var result = {};
+
+        switch (range) {
+            case 'day':
+                result = stats.lastMonth[stats.lastMonth.length - 1];
+                break;
+            case 'week':
+                for (var i = 0; i < stats.lastWeek.length; i++) {
+                    var d = stats.lastWeek[i];
+                    for (var type in d) {
+                        if (d[type]) {
+                            result[type] = (result[type] ? result[type] : 0) + d[type];
+                        }
+                    }
+                }
+                break;
+            case 'month':
+                result = stats.lastYear[stats.lastYear.length - 1];
+                break;
+            case 'year':
+                for (var i = 0; i < stats.lastYear.length; i++) {
+                    var d = stats.lastYear[i];
+                    for (var type in d) {
+                        if (d[type]) {
+                            result[type] = (result[type] ? result[type] : 0) + d[type];
+                        }
+                    }
+                }
+                break;
+        }
+
+        return result;
+    },
+
+    _selectBadRequestsStatsData: function (stats, range) {
         var result = [];
 
         switch (range) {
@@ -366,8 +401,8 @@ PopupController.prototype = {
         };
     },
 
-    _renderStatsGraphs: function (stats, range) {
-        var statsData = this._selectStatsData(stats, range);
+    _renderBadRequestsGraphs: function (stats, range) {
+        var statsData = this._selectBadRequestsStatsData(stats, range);
         var categoriesLines = this._getCategoriesLines(statsData, range);
         var categories = categoriesLines.categories;
         var lines = categoriesLines.lines;
@@ -434,11 +469,11 @@ PopupController.prototype = {
                     return {
                         top: top,
                         left: parseInt(element.getAttribute('x')) - 3
-                    }
+                    };
                 },
                 contents: function(d, defaultTitleFormat, defaultValueFormat, color) {
                     d = d[0].value;
-                    return '<div id="tooltip" class="chart__tooltip">' + d + '</div>'
+                    return '<div id="tooltip" class="chart__tooltip">' + d + '</div>';
                 }
             },
             oninit: function() {
@@ -447,12 +482,45 @@ PopupController.prototype = {
         });
     },
 
+    _renderRequestTypesGraphs: function (stats, range) {
+        var statsData = this._selectRequestTypesStatsData(stats, range);
+
+        var columns = [];
+        for (var type in stats.blockedTypes) {
+            var number = statsData[stats.blockedTypes[type]] ? statsData[stats.blockedTypes[type]] : 0;
+            columns.push([type, number]);
+        }
+
+        var chart = c3.generate({
+            data: {
+                columns: columns,
+                type: 'bar'
+            },
+            bar: {
+                width: {
+                    ratio: 0.5 // this makes bar width 50% of length between ticks
+                }
+                // or
+                //width: 100 // this makes bar width 100px
+            }
+        });
+    },
+
+    _renderStatsGraphs: function (stats, range, type) {
+        if (type === 'badRequests') {
+            this._renderBadRequestsGraphs(stats, range);
+        } else {
+            this._renderRequestTypesGraphs(stats, range);
+        }
+    },
+
     _renderStatsBlock: function () {
         var timeRange = $('.statistics-select-time').val();
+        var typeData = $('.statistics-select-type').val();
 
         var self = this;
         popupPage.sendMessage({type: 'getStatisticsData'}, function (message) {
-            self._renderStatsGraphs(message.stats, timeRange);
+            self._renderStatsGraphs(message.stats, timeRange, typeData);
         });
     },
 
@@ -600,7 +668,11 @@ PopupController.prototype = {
         // Stats filters
         parent.on('change', '.statistics-select-time', function (e) {
             self._renderStatsBlock();
-        })
+        });
+
+        parent.on('change', '.statistics-select-type', function (e) {
+            self._renderStatsBlock();
+        });
     },
 
     _initFeedback: function () {

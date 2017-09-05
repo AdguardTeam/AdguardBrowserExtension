@@ -103,22 +103,22 @@ adguard.pageStats = (function (adguard) {
         SOCIAL: 1 << 3,
         ANNOYANCES: 1 << 4,
         SECURITY: 1 << 5,
-        COOKIES: 1 << 6,
+        COOKIES: 1 << 6
         // jshint ignore:end
+    };
 
-        /**
-         * Returns blocked types by filter id
-         *
-         * @param filterId
-         * @returns
-         */
-        getBlockedTypeByFilterId: function (filterId) {
-            if (!blockedTypesFilters) {
-                blockedTypesFilters = fillBlockedTypes();
-            }
-
-            return blockedTypesFilters[filterId] ? blockedTypesFilters[filterId] : blockedTypes.OTHERS;
+    /**
+     * Returns blocked types by filter id
+     *
+     * @param filterId
+     * @returns
+     */
+    var getBlockedTypeByFilterId = function (filterId) {
+        if (!blockedTypesFilters) {
+            blockedTypesFilters = fillBlockedTypes();
         }
+
+        return blockedTypesFilters[filterId] ? blockedTypesFilters[filterId] : blockedTypes.OTHERS;
     };
 
     var fillBlockedTypes = function () {
@@ -273,7 +273,7 @@ adguard.pageStats = (function (adguard) {
      * @param now date
      */
     var updateStats = function (filterId, blocked, now) {
-        var type = blockedTypes.getBlockedTypeByFilterId(filterId);
+        var type = getBlockedTypeByFilterId(filterId);
 
         var stats = pageStatsHolder.stats;
 
@@ -302,7 +302,8 @@ adguard.pageStats = (function (adguard) {
             lastWeek: stats.data.days.slice(-7),
             lastMonth: stats.data.days,
             lastYear: stats.data.months.slice(-12),
-            overall: stats.data.months
+            overall: stats.data.months,
+            blockedTypes: blockedTypes
         };
     };
 
