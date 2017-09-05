@@ -187,6 +187,10 @@ adguard.settings = (function (adguard) {
         return getProperty(settings.USE_OPTIMIZED_FILTERS);
     };
 
+    var changeUseOptimizedFiltersEnabled = function (enabled) {
+        setProperty(settings.USE_OPTIMIZED_FILTERS, !!enabled);
+    };
+
     var changeDefaultWhiteListMode = function (enabled) {
         setProperty(settings.DEFAULT_WHITE_LIST_MODE, enabled);
     };
@@ -223,6 +227,7 @@ adguard.settings = (function (adguard) {
     api.changeShowContextMenu = changeShowContextMenu;
     api.isDefaultWhiteListMode = isDefaultWhiteListMode;
     api.isUseOptimizedFiltersEnabled = isUseOptimizedFiltersEnabled;
+    api.changeUseOptimizedFiltersEnabled = changeUseOptimizedFiltersEnabled;
     api.changeDefaultWhiteListMode = changeDefaultWhiteListMode;
 
     return api;

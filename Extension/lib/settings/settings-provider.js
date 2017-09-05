@@ -24,6 +24,7 @@
     var APP_ID = "adguard-browser-extension";
 
     var FILTERS_SECTION = "filters.json";
+    var GENERAL_SETTINGS_SECTION = "general-settings.json";
 
     var SYNC_MANIFEST_PROP = "sync-manifest";
 
@@ -78,11 +79,10 @@
     };
 
     /**
-     * Loads filters settings section
-     * @param callback
+     * Collect enabled filters
+     * @returns {Array}
      */
-    var loadFiltersSection = function (callback) {
-
+    var collectEnabledFilterIds = function () {
         // Collect enabled filters
         var enabledFilters = adguard.filters.getEnabledFilters();
         var enabledFilterIds = [];
@@ -90,6 +90,16 @@
             var filter = enabledFilters[i];
             enabledFilterIds.push(filter.filterId);
         }
+
+        return enabledFilterIds;
+    };
+
+    /**
+     * Loads filters settings section
+     * @param callback
+     */
+    var loadFiltersSection = function (callback) {
+        var enabledFilterIds = collectEnabledFilterIds();
 
         // Collect whitelist/blacklist domains and whitelist mode
         var whitelistDomains = adguard.whitelist.getWhiteListedDomains() || [];
@@ -121,6 +131,47 @@
     };
 
     /**
+     * Loads general settings section
+     * @param callback
+     */
+    var loadGeneralSettingsSection = function (callback) {
+
+        var enabledFilterIds = collectEnabledFilterIds();
+        var allowAcceptableAds = enabledFilterIds.indexOf(adguard.utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID) >= 0;
+
+        var section = {
+            "general-settings": {
+                "app-language": adguard.app.getLocale(),
+                "allow-acceptable-ads": allowAcceptableAds,
+                "show-blocked-ads-count": adguard.settings.showPageStatistic(),
+                "autodetect-filters": adguard.settings.isAutodetectFilters(),
+                "safebrowsing-enabled": adguard.settings.getSafebrowsingInfo().enabled,
+                "safebrowsing-help": adguard.settings.getSafebrowsingInfo().sendStats
+            }
+        };
+
+        callback(section);
+    };
+
+    /**
+     * Loads extension specific settings section
+     * @param callback
+     */
+    var loadExtensionSpecificSettingsSection = function (callback) {
+
+        var section = {
+            "extension-specific-settings": {
+                "use-optimized-filters": adguard.settings.isUseOptimizedFiltersEnabled(),
+                "collect-hits-count": adguard.settings.collectHitsCount(),
+                "show-context-menu": adguard.settings.showContextMenu(),
+                "show-info-about-adguard-disabled": adguard.settings.isShowInfoAboutAdguardFullVersion()
+            }
+        };
+
+        callback(section);
+    };
+
+    /**
      * Saves manifest and its sections timestamps. If syncTime is passed, timestamps are updated with this value
      * @param manifest Manifest
      * @param syncTime Synchronization time
@@ -136,6 +187,49 @@
             }
         }
         adguard.localStorage.setItem(SYNC_MANIFEST_PROP, JSON.stringify(manifest));
+    };
+
+    /**
+     * Applies general section settings to application
+     * @param section Section
+     * @param callback Finish callback
+     */
+    var applyGeneralSettingsSection = function (section, callback) {
+        var syncSuppressOptions = {
+            syncSuppress: true
+        };
+
+        var set = section["general-settings"];
+
+        adguard.settings.changeShowPageStatistic(!!set["show-blocked-ads-count"]);
+        adguard.settings.changeAutodetectFilters(!!set["autodetect-filters"]);
+        adguard.settings.changeEnableSafebrowsing(!!set["safebrowsing-enabled"]);
+        adguard.settings.changeSendSafebrowsingStats(!!set["safebrowsing-help"]);
+
+        if (!!set["allow-acceptable-ads"]) {
+            adguard.filters.addAndEnableFilters(adguard.utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID, function () {
+                callback(true);
+            }, syncSuppressOptions);
+        } else {
+            adguard.filters.disableFilter(adguard.utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID, syncSuppressOptions);
+            callback(true);
+        }
+    };
+
+    /**
+     * Applies extension specific section settings to application
+     * @param section
+     * @param callback
+     */
+    var applyExtensionSpecificSettingsSection = function (section, callback) {
+        var set = section["extension-specific-settings"];
+
+        adguard.settings.changeUseOptimizedFiltersEnabled(!!set["use-optimized-filters"]);
+        adguard.settings.changeCollectHitsCount(!!set["collect-hits-count"]);
+        adguard.settings.changeShowContextMenu(!!set["show-context-menu"]);
+        adguard.settings.changeShowInfoAboutAdguardFullVersion(!!set["show-info-about-adguard-disabled"]);
+
+        callback(true);
     };
 
     /**
