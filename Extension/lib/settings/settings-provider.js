@@ -24,11 +24,10 @@
     var APP_ID = "adguard-browser-extension";
 
     var FILTERS_SECTION = "filters.json";
-    var GENERAL_SETTINGS_SECTION = "general-settings.json";
 
     var SYNC_MANIFEST_PROP = "sync-manifest";
 
-    var FILE_TRANSFER_PROTOCOL_VERSION = "1.0";
+    var BACKUP_PROTOCOL_VERSION = "1.0";
 
     /**
      * Loads local manifest object
@@ -207,7 +206,7 @@
         adguard.settings.changeSendSafebrowsingStats(!!set["safebrowsing-help"]);
 
         if (!!set["allow-acceptable-ads"]) {
-            adguard.filters.addAndEnableFilters(adguard.utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID, function () {
+            adguard.filters.addAndEnableFilters([adguard.utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID], function () {
                 callback(true);
             }, syncSuppressOptions);
         } else {
@@ -317,24 +316,31 @@
     /**
      * Exports settings set in json format
      */
-    var loadSettingsJson = function (callback) {
+    var loadSettingsBackupJson = function (callback) {
 
-        var onSectionLoaded = function (section) {
-            var result = {
-                "protocol-version": FILE_TRANSFER_PROTOCOL_VERSION,
-                "filters": section
-            };
-
-            callback(JSON.stringify(result));
+        var result = {
+            "protocol-version": BACKUP_PROTOCOL_VERSION
         };
 
-        loadFiltersSection(onSectionLoaded);
+        loadGeneralSettingsSection(function (section) {
+            result["general-settings"] = section;
+
+            loadExtensionSpecificSettingsSection(function (section) {
+                result["extension-specific-settings"] = section;
+
+                loadFiltersSection(function (section) {
+                    result["filters"] = section;
+
+                    callback(JSON.stringify(result));
+                });
+            });
+        });
     };
 
     /**
      * Imports settings set from json format
      */
-    var applySettingsJson = function (json, callback) {
+    var applySettingsBackupJson = function (json, callback) {
         var input = null;
 
         try {
@@ -345,14 +351,28 @@
             return;
         }
 
-        if (!input || input['protocol-version'] !== FILE_TRANSFER_PROTOCOL_VERSION) {
+        if (!input || input['protocol-version'] !== BACKUP_PROTOCOL_VERSION) {
             adguard.console.error('Json input is invalid {0}', json);
             callback(false);
             return;
         }
 
-        applyFiltersSection(input.filters, function (success) {
-            callback(success);
+        applyGeneralSettingsSection(input["general-settings"], function (success) {
+            if (!success) {
+                callback(false);
+                return;
+            }
+
+            applyExtensionSpecificSettingsSection(input["extension-specific-settings"], function (success) {
+                if (!success) {
+                    callback(false);
+                    return;
+                }
+
+                applyFiltersSection(input.filters, function (success) {
+                    callback(success);
+                });
+            });
         });
     };
 
@@ -390,14 +410,14 @@
         applySection: applySection,
 
         /**
-         * Loads settings json
+         * Loads settings backup json
          */
-        loadSettingsJson: loadSettingsJson,
+        loadSettingsBackup: loadSettingsBackupJson,
 
         /**
-         * Applies settings json
+         * Applies settings backup json
          */
-        applySettingsJson: applySettingsJson
+        applySettingsBackup: applySettingsBackupJson
     };
 
 })(adguard.sync, adguard);

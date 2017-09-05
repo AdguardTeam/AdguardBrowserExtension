@@ -397,10 +397,10 @@
                 adguard.sync.syncService.changeDeviceName(message.deviceName);
                 break;
             case 'loadSettingsJson':
-                adguard.sync.settingsProvider.loadSettingsJson(callback);
+                adguard.sync.settingsProvider.loadSettingsBackup(callback);
                 break;
             case 'applySettingsJson':
-                adguard.sync.settingsProvider.applySettingsJson(message.json, callback);
+                adguard.sync.settingsProvider.applySettingsBackup(message.json, callback);
                 break;
             default:
                 // Unhandled message
