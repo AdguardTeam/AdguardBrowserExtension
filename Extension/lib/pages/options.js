@@ -1090,9 +1090,9 @@ var Settings = function () {
         var onFileLoaded = function (content) {
             contentPage.sendMessage({type: 'applySettingsJson', json: content}, function (response) {
                 if (response) {
-                    showPopup("Settings imported successfully", 'Ok!');
+                    showPopup(i18n.getMessage('options_popup_import_success_title'), i18n.getMessage('options_popup_import_success_description'));
                 } else {
-                    showPopup("Error settings import", 'Something went wrong');
+                    showPopup(i18n.getMessage('options_popup_import_error_title'), i18n.getMessage('options_popup_import_error_description'));
                 }
             });
         };
@@ -1106,7 +1106,7 @@ var Settings = function () {
                     onFileLoaded(evt.target.result);
                 };
                 reader.onerror = function (evt) {
-                    showPopup("Error loading file", 'Something went wrong');
+                    showPopup(i18n.getMessage('options_popup_import_error_file_title'), i18n.getMessage('options_popup_import_error_file_description'));
                 };
             }
         });
