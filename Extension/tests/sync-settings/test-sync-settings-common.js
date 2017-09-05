@@ -39,6 +39,18 @@ var filters = {
     }
 };
 
+adguard.i18n = {
+    getMessage: function () {
+        return '';
+    }
+};
+
+adguard.listeners = {
+    notifyListeners: function () {
+        //Do nothing
+    }
+};
+
 var checkManifestData = function (assert, data) {
     assert.ok(data != null);
     assert.equal(data.timestamp, manifest.timestamp);

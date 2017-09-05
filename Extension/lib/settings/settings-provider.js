@@ -24,6 +24,7 @@
     var APP_ID = "adguard-browser-extension";
 
     var FILTERS_SECTION = "filters.json";
+    var GENERAL_SETTINGS_SECTION = "general-settings.json";
 
     var SYNC_MANIFEST_PROP = "sync-manifest";
 
