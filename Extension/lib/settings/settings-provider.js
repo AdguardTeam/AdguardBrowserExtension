@@ -162,7 +162,7 @@
                 "use-optimized-filters": adguard.settings.isUseOptimizedFiltersEnabled(),
                 "collect-hits-count": adguard.settings.collectHitsCount(),
                 "show-context-menu": adguard.settings.showContextMenu(),
-                "show-info-about-adguard-disabled": adguard.settings.isShowInfoAboutAdguardFullVersion()
+                "show-info-about-adguard": adguard.settings.isShowInfoAboutAdguardFullVersion()
             }
         };
 
@@ -225,7 +225,7 @@
         adguard.settings.changeUseOptimizedFiltersEnabled(!!set["use-optimized-filters"]);
         adguard.settings.changeCollectHitsCount(!!set["collect-hits-count"]);
         adguard.settings.changeShowContextMenu(!!set["show-context-menu"]);
-        adguard.settings.changeShowInfoAboutAdguardFullVersion(!!set["show-info-about-adguard-disabled"]);
+        adguard.settings.changeShowInfoAboutAdguardFullVersion(!!set["show-info-about-adguard"]);
 
         callback(true);
     };
