@@ -323,13 +323,13 @@
         };
 
         loadGeneralSettingsSection(function (section) {
-            result["general-settings"] = section;
+            result["general-settings"] = section["general-settings"];
 
             loadExtensionSpecificSettingsSection(function (section) {
-                result["extension-specific-settings"] = section;
+                result["extension-specific-settings"] = section["extension-specific-settings"];
 
                 loadFiltersSection(function (section) {
-                    result["filters"] = section;
+                    result["filters"] = section["filters"];
 
                     callback(JSON.stringify(result));
                 });
@@ -357,19 +357,19 @@
             return;
         }
 
-        applyGeneralSettingsSection(input["general-settings"], function (success) {
+        applyGeneralSettingsSection(input, function (success) {
             if (!success) {
                 callback(false);
                 return;
             }
 
-            applyExtensionSpecificSettingsSection(input["extension-specific-settings"], function (success) {
+            applyExtensionSpecificSettingsSection(input, function (success) {
                 if (!success) {
                     callback(false);
                     return;
                 }
 
-                applyFiltersSection(input.filters, function (success) {
+                applyFiltersSection(input, function (success) {
                     callback(success);
                 });
             });
