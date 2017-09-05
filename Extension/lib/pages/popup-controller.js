@@ -506,12 +506,29 @@ PopupController.prototype = {
         });
     },
 
+    _renderAnalyticsBlock: function (stats, range) {
+        var statsData = this._selectRequestTypesStatsData(stats, range);
+
+        var $analytics = $('#analytics-blocked-types-values');
+        $analytics.empty();
+
+        for (var type in stats.blockedTypes) {
+            var number = statsData[stats.blockedTypes[type]] ? statsData[stats.blockedTypes[type]] : 0;
+
+            $analytics.append(
+                '<li><span class="key">' + type + '</span><span class="value">' + number + '</span></li>'
+            );
+        }
+    },
+
     _renderStatsGraphs: function (stats, range, type) {
         if (type === 'badRequests') {
             this._renderBadRequestsGraphs(stats, range);
         } else {
             this._renderRequestTypesGraphs(stats, range);
         }
+
+        this._renderAnalyticsBlock(stats, range);
     },
 
     _renderStatsBlock: function () {
@@ -672,6 +689,14 @@ PopupController.prototype = {
 
         parent.on('change', '.statistics-select-type', function (e) {
             self._renderStatsBlock();
+        });
+
+        parent.on('click', '.show-full-stats', function (e) {
+            $('.analytics').show();
+        });
+
+        parent.on('click', '.hide-full-stats', function (e) {
+            $('.analytics').hide();
         });
     },
 
