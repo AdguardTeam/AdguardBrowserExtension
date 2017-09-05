@@ -106,27 +106,27 @@
         var defaultWhiteListMode = !!adguard.whitelist.isDefaultMode();
 
         // Collect user rules
-        var userRules = adguard.userrules.getRules() || [];
-
-        var section = {
-            "filters": {
-                "enabled-filters": enabledFilterIds,
-                "custom-filters": [
-                    // Custom filters are not supported yet
-                ],
-                "user-filter": {
-                    "rules": userRules.join('\n'),
-                    "disabled-rules": ""
-                },
-                "whitelist": {
-                    "inverted": !defaultWhiteListMode,
-                    "domains": whitelistDomains,
-                    "inverted-domains": blocklistDomains
+        adguard.userrules.getUserRulesText(function (content) {
+            var section = {
+                "filters": {
+                    "enabled-filters": enabledFilterIds,
+                    "custom-filters": [
+                        // Custom filters are not supported yet
+                    ],
+                    "user-filter": {
+                        "rules": content,
+                        "disabled-rules": ""
+                    },
+                    "whitelist": {
+                        "inverted": !defaultWhiteListMode,
+                        "domains": whitelistDomains,
+                        "inverted-domains": blocklistDomains
+                    }
                 }
-            }
-        };
+            };
 
-        callback(section);
+            callback(section);
+        });
     };
 
     /**

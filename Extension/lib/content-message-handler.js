@@ -398,10 +398,10 @@
                 break;
             case 'loadSettingsJson':
                 adguard.sync.settingsProvider.loadSettingsBackup(callback);
-                break;
+                return true; // Async
             case 'applySettingsJson':
                 adguard.sync.settingsProvider.applySettingsBackup(message.json, callback);
-                break;
+                return true; // Async
             default:
                 // Unhandled message
                 return true;
