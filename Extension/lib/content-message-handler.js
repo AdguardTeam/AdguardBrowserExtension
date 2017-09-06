@@ -317,6 +317,9 @@
                     adguard.ui.showAlertMessagePopup(title, text);
                 });
                 return true; // Async
+            case 'showAlertMessagePopup':
+                adguard.ui.showAlertMessagePopup(message.title, message.text);
+                break;
             // Popup methods
             case 'addWhiteListDomainPopup':
                 adguard.tabs.getActive(function (tab) {
@@ -393,6 +396,12 @@
             case 'syncChangeDeviceName':
                 adguard.sync.syncService.changeDeviceName(message.deviceName);
                 break;
+            case 'loadSettingsJson':
+                adguard.sync.settingsProvider.loadSettingsBackup(callback);
+                return true; // Async
+            case 'applySettingsJson':
+                adguard.sync.settingsProvider.applySettingsBackup(message.json, callback);
+                return true; // Async
             default:
                 // Unhandled message
                 return true;

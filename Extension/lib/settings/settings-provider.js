@@ -24,9 +24,10 @@
     var APP_ID = "adguard-browser-extension";
 
     var FILTERS_SECTION = "filters.json";
-    var GENERAL_SETTINGS_SECTION = "general-settings.json";
 
     var SYNC_MANIFEST_PROP = "sync-manifest";
+
+    var BACKUP_PROTOCOL_VERSION = "1.0";
 
     /**
      * Loads local manifest object
@@ -105,27 +106,27 @@
         var defaultWhiteListMode = !!adguard.whitelist.isDefaultMode();
 
         // Collect user rules
-        var userRules = adguard.userrules.getRules() || [];
-
-        var section = {
-            "filters": {
-                "enabled-filters": enabledFilterIds,
-                "custom-filters": [
-                    // Custom filters are not supported yet
-                ],
-                "user-filter": {
-                    "rules": userRules.join('\n'),
-                    "disabled-rules": ""
-                },
-                "whitelist": {
-                    "inverted": !defaultWhiteListMode,
-                    "domains": whitelistDomains,
-                    "inverted-domains": blocklistDomains
+        adguard.userrules.getUserRulesText(function (content) {
+            var section = {
+                "filters": {
+                    "enabled-filters": enabledFilterIds,
+                    "custom-filters": [
+                        // Custom filters are not supported yet
+                    ],
+                    "user-filter": {
+                        "rules": content,
+                        "disabled-rules": ""
+                    },
+                    "whitelist": {
+                        "inverted": !defaultWhiteListMode,
+                        "domains": whitelistDomains,
+                        "inverted-domains": blocklistDomains
+                    }
                 }
-            }
-        };
+            };
 
-        callback(section);
+            callback(section);
+        });
     };
 
     /**
@@ -205,7 +206,7 @@
         adguard.settings.changeSendSafebrowsingStats(!!set["safebrowsing-help"]);
 
         if (!!set["allow-acceptable-ads"]) {
-            adguard.filters.addAndEnableFilters(adguard.utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID, function () {
+            adguard.filters.addAndEnableFilters([adguard.utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID], function () {
                 callback(true);
             }, syncSuppressOptions);
         } else {
@@ -312,6 +313,80 @@
         }
     };
 
+    /**
+     * Exports settings set in json format
+     */
+    var loadSettingsBackupJson = function (callback) {
+
+        var result = {
+            "protocol-version": BACKUP_PROTOCOL_VERSION
+        };
+
+        loadGeneralSettingsSection(function (section) {
+            result["general-settings"] = section["general-settings"];
+
+            loadExtensionSpecificSettingsSection(function (section) {
+                result["extension-specific-settings"] = section["extension-specific-settings"];
+
+                loadFiltersSection(function (section) {
+                    result["filters"] = section["filters"];
+
+                    callback(JSON.stringify(result));
+                });
+            });
+        });
+    };
+
+    /**
+     * Imports settings set from json format
+     */
+    var applySettingsBackupJson = function (json, callback) {
+        function onFinished(success) {
+            if (success) {
+                adguard.console.info('Settings import finished successfully');
+            } else {
+                adguard.console.error('Error importing settings');
+            }
+
+            adguard.listeners.notifyListeners(adguard.listeners.SETTINGS_UPDATED, success);
+            callback(success);
+        }
+
+        var input = null;
+
+        try {
+            input = JSON.parse(json);
+        } catch (ex) {
+            adguard.console.error('Error parsing input json {0}, {1}', json, ex);
+            onFinished(false);
+            return;
+        }
+
+        if (!input || input['protocol-version'] !== BACKUP_PROTOCOL_VERSION) {
+            adguard.console.error('Json input is invalid {0}', json);
+            onFinished(false);
+            return;
+        }
+
+        applyGeneralSettingsSection(input, function (success) {
+            if (!success) {
+                onFinished(false);
+                return;
+            }
+
+            applyExtensionSpecificSettingsSection(input, function (success) {
+                if (!success) {
+                    onFinished(false);
+                    return;
+                }
+
+                applyFiltersSection(input, function (success) {
+                    onFinished(success);
+                });
+            });
+        });
+    };
+
     // EXPOSE
     api.settingsProvider = {
 
@@ -343,7 +418,17 @@
         /**
          * Apply section to application
          */
-        applySection: applySection
+        applySection: applySection,
+
+        /**
+         * Loads settings backup json
+         */
+        loadSettingsBackup: loadSettingsBackupJson,
+
+        /**
+         * Applies settings backup json
+         */
+        applySettingsBackup: applySettingsBackupJson
     };
 
 })(adguard.sync, adguard);

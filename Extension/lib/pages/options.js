@@ -1078,8 +1078,42 @@ var Settings = function () {
         allowAcceptableAdsCheckbox.updateCheckbox(AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID in enabledFilters);
     };
 
+    var showPopup = function (title, text) {
+        contentPage.sendMessage({type: 'showAlertMessagePopup', title: title, text: text});
+    };
+
+    var importSettingsFile = function () {
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.click();
+
+        var onFileLoaded = function (content) {
+            contentPage.sendMessage({type: 'applySettingsJson', json: content});
+        };
+
+        $(input).change(function() {
+            var file = $(input).get(0).files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.readAsText(file, "UTF-8");
+                reader.onload = function (evt) {
+                    onFileLoaded(evt.target.result);
+                };
+                reader.onerror = function (evt) {
+                    showPopup(i18n.getMessage('options_popup_import_error_file_title'), i18n.getMessage('options_popup_import_error_file_description'));
+                };
+            }
+        });
+    };
+
+    $('#importSettingsFile').on('click', function (e) {
+        e.preventDefault();
+        importSettingsFile();
+    }.bind(this));
+
     return {
-        render: render
+        render: render,
+        showPopup: showPopup
     };
 };
 
@@ -1109,6 +1143,23 @@ PageController.prototype = {
 
         //updateDisplayAdguardPromo(!userSettings.values[userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO]);
         //customizePopupFooter(environmentOptions.isMacOs);
+    },
+
+    onSettingsImported: function (success) {
+        if (success) {
+            this.settings.showPopup(i18n.getMessage('options_popup_import_success_title'), i18n.getMessage('options_popup_import_success_description'));
+
+            var self = this;
+            contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
+                userSettings = response.userSettings;
+                enabledFilters = response.enabledFilters;
+                requestFilterInfo = response.requestFilterInfo;
+
+                self._render();
+            });
+        } else {
+            this.settings.showPopup(i18n.getMessage('options_popup_import_error_title'), i18n.getMessage('options_popup_import_error_description'));
+        }
     },
 
     _customizeText: function () {
@@ -1269,7 +1320,8 @@ var initPage = function (response) {
             EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES,
             EventNotifierTypes.CONTENT_BLOCKER_UPDATED,
             EventNotifierTypes.REQUEST_FILTER_UPDATED,
-            EventNotifierTypes.SYNC_STATUS_UPDATED
+            EventNotifierTypes.SYNC_STATUS_UPDATED,
+            EventNotifierTypes.SETTINGS_UPDATED
         ];
 
         createEventListener(events, function (event, options) {
@@ -1309,6 +1361,9 @@ var initPage = function (response) {
                     break;
                 case EventNotifierTypes.SYNC_STATUS_UPDATED:
                     controller.syncSettings.updateSyncSettings(options);
+                    break;
+                case EventNotifierTypes.SETTINGS_UPDATED:
+                    controller.onSettingsImported(options);
                     break;
             }
         });
