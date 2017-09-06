@@ -210,6 +210,12 @@
             'lib/content-script/subscribe.js'
         ], 'document_end', false, subscribeIncludeDomains);
 
+        // OAuth token processing
+        registerPageContentScript([
+            'lib/content-script/content-script.js',
+            'lib/content-script/oauth.js'
+        ], 'document_end', false, ['testsync.adguard.com']);
+
         loadFrameScript();
     }
 

@@ -71,6 +71,7 @@
             filtersMetadata: adguard.subscriptions.getFilters(),
             requestFilterInfo: adguard.requestFilter.getRequestFilterInfo(),
             contentBlockerInfo: adguard.requestFilter.getContentBlockerInfo(),
+            syncStatusInfo: adguard.sync.syncService.getSyncStatus(),
             environmentOptions: {
                 isMacOs: adguard.utils.browser.isMacOs(),
                 isSafariBrowser: adguard.utils.browser.isSafariBrowser(),
@@ -309,6 +310,9 @@
                     adguard.ui.showAlertMessagePopup(title, text);
                 });
                 return true; // Async
+            case 'showAlertMessagePopup':
+                adguard.ui.showAlertMessagePopup(message.title, message.text);
+                break;
             // Popup methods
             case 'addWhiteListDomainPopup':
                 adguard.tabs.getActive(function (tab) {
@@ -358,6 +362,39 @@
             case 'saveCssHitStats':
                 processSaveCssHitStats(sender.tab, message.stats);
                 break;
+            // Sync messages
+            case 'setSyncProvider':
+                adguard.sync.syncService.setSyncProvider(message.provider);
+                break;
+            case 'setOAuthToken':
+                if (adguard.sync.oauthService.setToken(message.provider, message.token, message.csrfState, message.expires)) {
+                    adguard.sync.syncService.setSyncProvider(message.provider);
+                    adguard.tabs.remove(sender.tab.tabId);
+                }
+                break;
+            case 'getSyncStatus':
+                return adguard.sync.syncService.getSyncStatus();
+            case 'authSync':
+                adguard.sync.oauthService.authorize(message.provider);
+                break;
+            case 'dropAuthSync':
+                adguard.listeners.notifyListeners(adguard.listeners.SYNC_BAD_OR_EXPIRED_TOKEN, message.provider);
+                break;
+            case 'toggleSync':
+                adguard.sync.syncService.toggleSyncStatus();
+                break;
+            case 'syncNow':
+                adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, {force: true});
+                break;
+            case 'syncChangeDeviceName':
+                adguard.sync.syncService.changeDeviceName(message.deviceName);
+                break;
+            case 'loadSettingsJson':
+                adguard.sync.settingsProvider.loadSettingsBackup(callback);
+                return true; // Async
+            case 'applySettingsJson':
+                adguard.sync.settingsProvider.applySettingsBackup(message.json, callback);
+                return true; // Async
             default:
                 // Unhandled message
                 return true;

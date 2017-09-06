@@ -14,7 +14,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global i18n, $, contentPage */
+
+/* global i18n, $, contentPage, createEventListener */
+
 var PageController = function () {
     this.requestWizard = new RequestWizard();
 };
@@ -856,7 +858,18 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
         var pageController = new PageController();
         pageController.init();
 
-        function onEvent(event, tabInfo, filteringEvent) {
+        var events = [
+            EventNotifierTypes.TAB_ADDED,
+            EventNotifierTypes.TAB_UPDATE,
+            EventNotifierTypes.TAB_CLOSE,
+            EventNotifierTypes.TAB_RESET,
+            EventNotifierTypes.LOG_EVENT_ADDED
+        ];
+
+        //set log is open
+        contentPage.sendMessage({type: 'onOpenFilteringLogPage'});
+
+        createEventListener(events, function onEvent(event, tabInfo, filteringEvent) {
             switch (event) {
                 case EventNotifierTypes.TAB_ADDED:
                 case EventNotifierTypes.TAB_UPDATE:
@@ -872,43 +885,9 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
                     pageController.onEventAdded(tabInfo, filteringEvent);
                     break;
             }
-        }
-
-        var events = [
-            EventNotifierTypes.TAB_ADDED,
-            EventNotifierTypes.TAB_UPDATE,
-            EventNotifierTypes.TAB_CLOSE,
-            EventNotifierTypes.TAB_RESET,
-            EventNotifierTypes.LOG_EVENT_ADDED
-        ];
-
-        //set log is open
-        contentPage.sendMessage({type: 'onOpenFilteringLogPage'});
-
-        var listenerId;
-        //add listener for log events
-        contentPage.sendMessage({type: 'addEventListener', events: events}, function (response) {
-            listenerId = response.listenerId;
+        }, function () {
+            //set log is closed
+            contentPage.sendMessage({type: 'onCloseFilteringLogPage'});
         });
-
-        contentPage.onMessage.addListener(function (message) {
-            if (message.type === 'notifyListeners') {
-                onEvent.apply(this, message.args);
-            }
-        });
-
-        var onUnload = function () {
-            if (listenerId) {
-                contentPage.sendMessage({type: 'removeListener', listenerId: listenerId});
-                //set log is closed
-                contentPage.sendMessage({type: 'onCloseFilteringLogPage'});
-                listenerId = null;
-            }
-        };
-
-        //unload event
-        $(window).on('beforeunload', onUnload);
-        $(window).on('unload', onUnload);
-    });
-
+	});
 });

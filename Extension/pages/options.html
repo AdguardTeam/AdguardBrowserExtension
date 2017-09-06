@@ -85,6 +85,10 @@
                     </li>
                 </ul>
             </div>
+            <div class="settings-actions">
+                <a href="/pages/export.html#exs" target="_blank" id="exportSettingsFile" i18n="options_export_settings"></a>
+                <a href="#" id="importSettingsFile" i18n="options_import_settings"></a>
+            </div>
         </div>
 
         <div id="antibanner" class="settings-content tab-pane">
@@ -224,7 +228,7 @@
             <div class="page-title">
                 Sync
             </div>
-            <div class="account account--active">
+            <div id="unauthorizedBlock" class="account account--active">
                 <div class="account__desc">
                     <div class="subtitle settings-body-subtitle">
                         Take your Adguard settings with you !
@@ -239,45 +243,48 @@
                     </div>
                     <div class="account__control-in">
                         <div class="subtitle-2">
-                            Connect with <button class="btn-inline-arrow">Adguard account</button>
+                            Connect with <button id="selectProviderButton" class="btn-inline-arrow">Adguard account</button>
                         </div>
                         <div class="account__btns">
-                            <button class="btn-green">
-                                Create account
-                            </button>
-                            <button class="btn-green">
+                            <button id="signInButton" class="btn-green">
                                 Sign in
+                            </button>
+                            <button id="startSyncButton" class="btn-green">
+                                Start sync
                             </button>
                         </div>
                     </div>
-                    <div class="dropdown">
-                        <div class="dropdown__item dropdown__item--active dropdown__item--adguard">
+                    <div id="selectProviderDropdown" class="dropdown" style="display: none;">
+                        <div id="adguardSelectProvider" class="dropdown__item dropdown__item--adguard">
                             Adguard account
                         </div>
-                        <div class="dropdown__item dropdown__item--dropbox">
+                        <div id="dropboxSelectProvider" class="dropdown__item dropdown__item--dropbox">
                             Dropbox account
                         </div>
-                        <div class="dropdown__item dropdown__item--chrome">
+                        <div id="browserStorageSelectProvider" class="dropdown__item dropdown__item--chrome">
                             Chrome account
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="account">
+            <div id="authorizedBlock" class="account">
                 <div class="account__control account__control-authorized">
                     <div class="account__avatar">
                         <div class="account__avatar-pic"></div>
                     </div>
                     <div class="account__control-in">
-                        <div class="subtitle-2">
+                        <div id="providerNameInfo" class="subtitle-2">
                             Pankich@mail.ru
                         </div>
+                        <span id="lastSyncTimeInfo"></span>
                         <div class="account__btns">
-                            <button class="btn-green">
-                                Manage account
-                            </button>
-                            <button class="btn-transparent">
+                            <a href="https://adguard.com/login.html?utm_source=extension&aid=16593" id="manageAccountButton"
+                               class="btn-green" i18n="sync_manage_account_button_text"></a>
+                            <button id="signOutButton" class="btn-transparent">
                                 Disconnect
+                            </button>
+                            <button id="syncNowButton" class="btn-green">
+                                Sync now
                             </button>
                         </div>
                     </div>
@@ -313,13 +320,13 @@
                         </div>
                     </div>
                 </form>
-                <form class="settings-form" action="#">
+                <form id="deviceNameBlock" style="display: none;" class="settings-form" action="#">
                     <div class="subtitle-2">
                         Device name
                     </div>
                     <div class="settings-form__in">
-                        <input class="settings-form__input" type="text" placeholder="Enter your device name">
-                        <input class="btn-transparent" type="submit" value="Change device name">
+                        <input id="deviceNameInput" class="settings-form__input" type="text" placeholder="Enter your device name">
+                        <input id="changeDeviceNameButton" class="btn-transparent" type="submit" value="Change device name">
                     </div>
                 </form>
             </div>
