@@ -1088,13 +1088,7 @@ var Settings = function () {
         input.click();
 
         var onFileLoaded = function (content) {
-            contentPage.sendMessage({type: 'applySettingsJson', json: content}, function (response) {
-                if (response) {
-                    showPopup(i18n.getMessage('options_popup_import_success_title'), i18n.getMessage('options_popup_import_success_description'));
-                } else {
-                    showPopup(i18n.getMessage('options_popup_import_error_title'), i18n.getMessage('options_popup_import_error_description'));
-                }
-            });
+            contentPage.sendMessage({type: 'applySettingsJson', json: content});
         };
 
         $(input).change(function() {
@@ -1118,7 +1112,8 @@ var Settings = function () {
     }.bind(this));
 
     return {
-        render: render
+        render: render,
+        showPopup: showPopup
     };
 };
 
@@ -1148,6 +1143,23 @@ PageController.prototype = {
 
         //updateDisplayAdguardPromo(!userSettings.values[userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO]);
         //customizePopupFooter(environmentOptions.isMacOs);
+    },
+
+    onSettingsImported: function (success) {
+        if (success) {
+            this.settings.showPopup(i18n.getMessage('options_popup_import_success_title'), i18n.getMessage('options_popup_import_success_description'));
+
+            var self = this;
+            contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
+                userSettings = response.userSettings;
+                enabledFilters = response.enabledFilters;
+                requestFilterInfo = response.requestFilterInfo;
+
+                self._render();
+            });
+        } else {
+            this.settings.showPopup(i18n.getMessage('options_popup_import_error_title'), i18n.getMessage('options_popup_import_error_description'));
+        }
     },
 
     _customizeText: function () {
@@ -1308,7 +1320,8 @@ var initPage = function (response) {
             EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES,
             EventNotifierTypes.CONTENT_BLOCKER_UPDATED,
             EventNotifierTypes.REQUEST_FILTER_UPDATED,
-            EventNotifierTypes.SYNC_STATUS_UPDATED
+            EventNotifierTypes.SYNC_STATUS_UPDATED,
+            EventNotifierTypes.SETTINGS_UPDATED
         ];
 
         createEventListener(events, function (event, options) {
@@ -1348,6 +1361,9 @@ var initPage = function (response) {
                     break;
                 case EventNotifierTypes.SYNC_STATUS_UPDATED:
                     controller.syncSettings.updateSyncSettings(options);
+                    break;
+                case EventNotifierTypes.SETTINGS_UPDATED:
+                    controller.onSettingsImported(options);
                     break;
             }
         });

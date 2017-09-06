@@ -341,36 +341,47 @@
      * Imports settings set from json format
      */
     var applySettingsBackupJson = function (json, callback) {
+        function onFinished(success) {
+            if (success) {
+                adguard.console.info('Settings import finished successfully');
+            } else {
+                adguard.console.error('Error importing settings');
+            }
+
+            adguard.listeners.notifyListeners(adguard.listeners.SETTINGS_UPDATED, success);
+            callback(success);
+        }
+
         var input = null;
 
         try {
             input = JSON.parse(json);
         } catch (ex) {
             adguard.console.error('Error parsing input json {0}, {1}', json, ex);
-            callback(false);
+            onFinished(false);
             return;
         }
 
         if (!input || input['protocol-version'] !== BACKUP_PROTOCOL_VERSION) {
             adguard.console.error('Json input is invalid {0}', json);
-            callback(false);
+            onFinished(false);
             return;
         }
 
         applyGeneralSettingsSection(input, function (success) {
             if (!success) {
-                callback(false);
+                onFinished(false);
                 return;
             }
 
             applyExtensionSpecificSettingsSection(input, function (success) {
                 if (!success) {
-                    callback(false);
+                    onFinished(false);
                     return;
                 }
 
                 applyFiltersSection(input, function (success) {
-                    callback(success);
+                    onFinished(success);
                 });
             });
         });
