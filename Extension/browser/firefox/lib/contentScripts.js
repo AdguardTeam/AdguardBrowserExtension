@@ -165,6 +165,8 @@
 
         // Register assistant css
         registerCss(adguard.loadURL('lib/content-script/assistant/css/selector.css'));
+        // Register alert popup css
+        registerCss(adguard.loadURL('lib/content-script/css/alert-popup.css'));
 
         // abp:subscribe
         var subscribeIncludeDomains = [

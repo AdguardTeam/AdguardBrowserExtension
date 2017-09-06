@@ -231,10 +231,11 @@ adguard.antiBannerService = (function (adguard) {
     /**
      * Select filters for update. It depends on the time of last update.
      * @param forceUpdate Force update flag.
-     * @returns {Array}
+     * @returns object
      */
     function selectFilterIdsToUpdate(forceUpdate) {
         var filterIds = [];
+        var customFilterIds = [];
         var filters = adguard.subscriptions.getFilters();
         for (var i = 0; i < filters.length; i++) {
             var filter = filters[i];
@@ -242,11 +243,19 @@ adguard.antiBannerService = (function (adguard) {
                 // Check filters update period (or forceUpdate flag)
                 var needUpdate = forceUpdate || (!filter.lastCheckTime || (Date.now() - filter.lastCheckTime) >= UPDATE_FILTERS_PERIOD);
                 if (needUpdate) {
-                    filterIds.push(filter.filterId);
+                    if (filter.customUrl) {
+                        customFilterIds.push(filter.filterId);
+                    } else {
+                        filterIds.push(filter.filterId);
+                    }
                 }
             }
         }
-        return filterIds;
+
+        return {
+            filterIds: filterIds,
+            customFilterIds: customFilterIds
+        };
     }
 
     /**
@@ -274,16 +283,19 @@ adguard.antiBannerService = (function (adguard) {
         adguard.console.info("Start checking filters updates");
 
         // Select filters for update
-        var filterIdsToUpdate = selectFilterIdsToUpdate(forceUpdate);
+        var toUpdate = selectFilterIdsToUpdate(forceUpdate);
+        var filterIdsToUpdate = toUpdate.filterIds;
+        var customFilterIdsToUpdate = toUpdate.customFilterIds;
 
-        if (filterIdsToUpdate.length === 0) {
+        var totalToUpdate = filterIdsToUpdate.length + customFilterIdsToUpdate.length;
+        if (totalToUpdate === 0) {
             if (successCallback) {
                 successCallback([]);
                 return;
             }
         }
 
-        adguard.console.info("Checking updates for {0} filters", filterIdsToUpdate.length);
+        adguard.console.info("Checking updates for {0} filters", totalToUpdate);
 
         // Load filters with changed version
         var loadFiltersFromBackendCallback = function (filterMetadataList) {
@@ -296,7 +308,10 @@ adguard.antiBannerService = (function (adguard) {
                             filters.push(filter);
                         }
                     }
-                    successCallback(filters);
+
+                    updateCustomFilters(customFilterIdsToUpdate, function (customFilters) {
+                        successCallback(filters.concat(customFilters));
+                    });
                 } else {
                     errorCallback();
                 }
@@ -325,6 +340,44 @@ adguard.antiBannerService = (function (adguard) {
         // Retrieve current filters metadata for update
         loadFiltersMetadataFromBackend(filterIdsToUpdate, onLoadFilterMetadataList);
     };
+
+    /**
+     * Update filters with custom urls
+     *
+     * @param customFilterIds
+     * @param callback
+     */
+    function updateCustomFilters (customFilterIds, callback) {
+        if (customFilterIds.length === 0) {
+            callback([]);
+            return;
+        }
+
+        var dfds = [];
+        var filters = [];
+        for (var i = 0; i < customFilterIds.length; i++) {
+            var filter = adguard.subscriptions.getFilter(customFilterIds[i]);
+
+            dfds.push((function (filter, filters) {
+                var dfd = new adguard.utils.Promise();
+
+                adguard.subscriptions.updateCustomFilter(filter.customUrl, function (filterId) {
+                    if (filterId) {
+                        filters.push(filter);
+                    }
+
+                    dfd.resolve();
+                });
+
+                return dfd;
+            })(filter, filters));
+        }
+
+        adguard.utils.Promise.all(dfds).then(function () {
+            adguard.console.info("Custom filters updated");
+            callback(filters);
+        });
+    }
 
     /**
      * Resets all filters versions
@@ -1408,45 +1461,55 @@ adguard.filters = (function (adguard) {
     /**
      * Disables filter by id
      *
-     * @param filterId Filter identifier
+     * @param filterIds Filter identifier
      * @param options
      * @returns {boolean} true if filter was disabled successfully
      */
-    var disableFilter = function (filterId, options) {
+    var disableFilters = function (filterIds, options) {
 
-        var filter = adguard.subscriptions.getFilter(filterId);
-        if (!filter || !filter.enabled || !filter.installed) {
-            return false;
+        filterIds = adguard.utils.collections.removeDuplicates(filterIds.slice(0)); // Copy array to prevent parameter mutation
+
+        for (var i = 0; i < filterIds.length; i++) {
+            var filterId = filterIds[i];
+            var filter = adguard.subscriptions.getFilter(filterId);
+            if (!filter || !filter.enabled || !filter.installed) {
+                continue;
+            }
+
+            filter.enabled = false;
+            adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
         }
 
-        filter.enabled = false;
-        adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
         adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
-        return true;
     };
 
     /**
      * Removes filter
      *
-     * @param filterId Filter identifier
+     * @param filterIds Filter identifier
      * @param options
      * @returns {boolean} true if filter was removed successfully
      */
-    var removeFilter = function (filterId, options) {
+    var removeFilters = function (filterIds, options) {
 
-        var filter = adguard.subscriptions.getFilter(filterId);
-        if (!filter || !filter.installed) {
-            return false;
+        filterIds = adguard.utils.collections.removeDuplicates(filterIds.slice(0)); // Copy array to prevent parameter mutation
+
+        for (var i = 0; i < filterIds.length; i++) {
+            var filterId = filterIds[i];
+            var filter = adguard.subscriptions.getFilter(filterId);
+            if (!filter || !filter.installed) {
+                continue;
+            }
+
+            adguard.console.debug("Remove filter {0}", filter.filterId);
+
+            filter.enabled = false;
+            filter.installed = false;
+            adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
+            adguard.listeners.notifyListeners(adguard.listeners.FILTER_ADD_REMOVE, filter);
         }
 
-        adguard.console.debug("Remove filter {0}", filter.filterId);
-
-        filter.enabled = false;
-        filter.installed = false;
-        adguard.listeners.notifyListeners(adguard.listeners.FILTER_ENABLE_DISABLE, filter);
-        adguard.listeners.notifyListeners(adguard.listeners.FILTER_ADD_REMOVE, filter);
         adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
-        return true;
     };
 
     /**
@@ -1470,9 +1533,7 @@ adguard.filters = (function (adguard) {
         var filterMetadata = findFilterMetadataBySubscriptionUrl(subscriptionUrl);
 
         if (filterMetadata) {
-
             addAndEnableFilters([filterMetadata.filterId]);
-
         } else {
 
             // Load filter rules
@@ -1483,6 +1544,36 @@ adguard.filters = (function (adguard) {
                 adguard.console.error("Error download subscription by url {0}, cause: {1} {2}", subscriptionUrl, request.statusText, cause || "");
             });
         }
+    };
+
+    /**
+     * Loads filter rules from url, then tries to parse header to filter metadata
+     * and adds filter object to subscriptions from it.
+     * These custom filters will have special attribute customUrl, from there it could be downloaded and updated.
+     *
+     * @param url custom url, there rules are
+     * @param successCallback
+     * @param errorCallback
+     */
+    var loadCustomFilter = function (url, successCallback, errorCallback) {
+        adguard.console.info('Downloading custom filter from {0}', url);
+
+        adguard.subscriptions.updateCustomFilter(url, function (filterId) {
+            if (filterId) {
+                antiBannerService.addAntiBannerFilter(filterId, function (success) {
+                    if (success) {
+                        enableFilter(filterId);
+
+                        adguard.console.info('Custom filter downloaded and enabled');
+                        successCallback();
+                    } else {
+                        errorCallback();
+                    }
+                });
+            } else {
+                errorCallback();
+            }
+        });
     };
 
     return {
@@ -1501,11 +1592,13 @@ adguard.filters = (function (adguard) {
         checkFiltersUpdates: checkFiltersUpdates,
 
         addAndEnableFilters: addAndEnableFilters,
-        disableFilter: disableFilter,
-        removeFilter: removeFilter,
+        disableFilters: disableFilters,
+        removeFilters: removeFilters,
 
         findFilterMetadataBySubscriptionUrl: findFilterMetadataBySubscriptionUrl,
-        processAbpSubscriptionUrl: processAbpSubscriptionUrl
+        processAbpSubscriptionUrl: processAbpSubscriptionUrl,
+
+        loadCustomFilter: loadCustomFilter
     };
 
 })(adguard);

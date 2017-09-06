@@ -24,7 +24,7 @@ adguard.subscriptions = (function (adguard) {
 
     'use strict';
 
-    var groups = [];
+    var tags = [];
     var filters = [];
     var filtersMap = {};
 
@@ -46,18 +46,17 @@ adguard.subscriptions = (function (adguard) {
     }
 
     /**
-     * Group metadata
+     * Tag metadata
      */
-    var SubscriptionGroup = function (groupId, groupName, displayNumber) {
-        this.groupId = groupId;
-        this.groupName = groupName;
-        this.displayNumber = displayNumber;
+    var FilterTag = function (tagId, keyword) {
+        this.tagId = tagId;
+        this.keyword = keyword;
     };
 
     /**
      * Filter metadata
      */
-    var SubscriptionFilter = function (filterId, groupId, name, description, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl) {
+    var SubscriptionFilter = function (filterId, groupId, name, description, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl, tags) {
 
         this.filterId = filterId;
         this.groupId = groupId;
@@ -70,20 +69,20 @@ adguard.subscriptions = (function (adguard) {
         this.languages = languages;
         this.expires = expires;
         this.subscriptionUrl = subscriptionUrl;
+        this.tags = tags;
     };
 
     /**
-     * Create group from object
-     * @param group Object
-     * @returns {SubscriptionGroup}
+     * Create tag from object
+     * @param tag Object
+     * @returns {FilterTag}
      */
-    function createSubscriptionGroupFromJSON(group) {
+    function createFilterTagFromJSON(tag) {
 
-        var groupId = group.groupId - 0;
-        var defaultGroupName = group.groupName;
-        var displayNumber = group.displayNumber - 0;
+        var tagId = tag.tagId - 0;
+        var keyword = tag.keyword;
 
-        return new SubscriptionGroup(groupId, defaultGroupName, displayNumber);
+        return new FilterTag(tagId, keyword);
     }
 
     /**
@@ -103,8 +102,113 @@ adguard.subscriptions = (function (adguard) {
         var subscriptionUrl = filter.subscriptionUrl;
         var languages = filter.languages;
         var displayNumber = filter.displayNumber - 0;
+        var tags = filter.tags;
+        if (tags.length === 0) {
+            tags.push(0);
+        }
 
-        return new SubscriptionFilter(filterId, groupId, defaultName, defaultDescription, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl);
+        return new SubscriptionFilter(filterId, groupId, defaultName, defaultDescription, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl, tags);
+    };
+
+    /**
+     * Parses filter metadata from rules header
+     *
+     * @param rules
+     * @returns object
+     */
+    var parseFilterDataFromHeader = function (rules) {
+        function parseTag(tagName) {
+            var result = '';
+
+            //Look up only 50 first lines
+            for (var i = 0; i < 50; i++) {
+                var r = rules[i];
+
+                var search = '! ' + tagName + ': ';
+                var indexOf = r.indexOf(search);
+                if (indexOf >= 0) {
+                    result = r.substring(indexOf + search.length);
+                }
+            }
+
+            return result;
+        }
+
+        return {
+            name: parseTag('Title'),
+            description: parseTag('Description'),
+            homepage: parseTag('Homepage'),
+            version: parseTag('Version'),
+            expires: parseTag('Expires')
+        }
+    };
+
+    var addFilterId = function () {
+        var max = 0;
+        filters.forEach(function (f) {
+            if (f.filterId > max) {
+                max = f.filterId;
+            }
+        });
+
+        return max >= 1000 ? max + 1 : 1000;
+    };
+
+    /**
+     * Adds or updates custom filter
+     *
+     * @param url subscriptionUrl
+     * @param callback
+     */
+    var updateCustomFilter = function (url, callback) {
+
+        adguard.backend.loadFilterRulesBySubscriptionUrl(url, function (rules) {
+            var filterData = parseFilterDataFromHeader(rules);
+
+            var filterId = addFilterId();
+            var groupId = 0;
+            var defaultName = filterData.name;
+            var defaultDescription = filterData.description;
+            var homepage = filterData.homepage;
+            var version = filterData.version;
+            var timeUpdated = null;
+            var expires = filterData.expires;
+            var subscriptionUrl = url;
+            var languages = [];
+            var displayNumber = 0;
+            var tags = [0];
+
+            //Check if filter from this url was added before
+            var filter = filters.find(function (f) {
+                return f.customUrl === url;
+            });
+
+            if (filter) {
+                if (version && adguard.utils.browser.isGreaterVersion(filter.version, version)) {
+                    //Update version is not greater
+                    callback();
+                    return;
+                }
+            } else {
+                filter = new SubscriptionFilter(filterId, groupId, defaultName, defaultDescription, homepage, version, timeUpdated, displayNumber, languages, expires, subscriptionUrl, tags);
+                filter.loaded = true;
+                //custom filters have special field
+                filter.customUrl = url;
+
+                filters.push(filter);
+                filtersMap[filter.filterId] = filter;
+
+                adguard.listeners.notifyListeners(adguard.listeners.SUCCESS_DOWNLOAD_FILTER, filter);
+            }
+
+            adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, filter, rules);
+
+            callback(filter.filterId);
+
+        }, function (request, cause) {
+            adguard.console.error("Error download filter by url {0}, cause: {1} {2}", url, request.statusText, cause || "");
+            callback();
+        });
     };
 
     /**
@@ -118,12 +222,12 @@ adguard.subscriptions = (function (adguard) {
 
         adguard.backend.loadLocalFiltersMetadata(function (metadata) {
 
-            groups = [];
+            tags = [];
             filters = [];
             filtersMap = {};
 
-            for (var i = 0; i < metadata.groups.length; i++) {
-                groups.push(createSubscriptionGroupFromJSON(metadata.groups[i]));
+            for (var i = 0; i < metadata.tags.length; i++) {
+                tags.push(createFilterTagFromJSON(metadata.tags[i]));
             }
 
             for (var j = 0; j < metadata.filters.length; j++) {
@@ -151,11 +255,11 @@ adguard.subscriptions = (function (adguard) {
 
         adguard.backend.loadLocalFiltersI18Metadata(function (i18nMetadata) {
 
-            var groupsI18n = i18nMetadata.groups;
+            var tagsI18n = i18nMetadata.tags;
             var filtersI18n = i18nMetadata.filters;
 
-            for (var i = 0; i < groups.length; i++) {
-                applyGroupLocalization(groups[i], groupsI18n);
+            for (var i = 0; i < tags.length; i++) {
+                applyFilterTagLocalization(tags[i], tagsI18n);
             }
 
             for (var j = 0; j < filters.length; j++) {
@@ -188,18 +292,19 @@ adguard.subscriptions = (function (adguard) {
     }
 
     /**
-     * Localize group
-     * @param group
+     * Localize tag
+     * @param tag
      * @param i18nMetadata
      * @private
      */
-    function applyGroupLocalization(group, i18nMetadata) {
-        var groupId = group.groupId;
-        var localizations = i18nMetadata[groupId];
+    function applyFilterTagLocalization(tag, i18nMetadata) {
+        var tagId = tag.tagId;
+        var localizations = i18nMetadata[tagId];
         var locale = adguard.app.getLocale();
         if (localizations && locale in localizations) {
             var localization = localizations[locale];
-            group.groupName = localization.name;
+            tag.name = localization.name;
+            tag.description = localization.description;
         }
     }
 
@@ -253,10 +358,11 @@ adguard.subscriptions = (function (adguard) {
     };
 
     /**
-     * @returns Array of Groups metadata
+     * @returns Array of Tags metadata
+     * @Deprecated
      */
-    var getGroups = function () {
-        return groups;
+    var getTags = function () {
+        return tags;
     };
 
     /**
@@ -284,10 +390,11 @@ adguard.subscriptions = (function (adguard) {
     return {
         init: init,
         getFilterIdsForLanguage: getFilterIdsForLanguage,
-        getGroups: getGroups,
+        getTags: getTags,
         getFilters: getFilters,
         getFilter: getFilter,
-        createSubscriptionFilterFromJSON: createSubscriptionFilterFromJSON
+        createSubscriptionFilterFromJSON: createSubscriptionFilterFromJSON,
+        updateCustomFilter: updateCustomFilter
     };
 
 })(adguard);

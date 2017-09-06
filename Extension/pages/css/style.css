@@ -785,6 +785,109 @@ li.active .toggler:before {
 .sp-table-row-input{
   display: none;
 }
+.alert {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px 25px 20px 25px;
+  background-color: #ffffff;
+  box-shadow: 0 1px 10px 0 rgba(0, 0, 0, .2);
+}
+.alert--active {
+  display: block;
+}
+.alert__close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 13px;
+  height: 13px;
+  cursor: pointer;
+  background-image: url("../images/cross.svg");
+}
+.alert__in {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+.alert__ico {
+  width: 29px;
+  height: 29px;
+  margin-right: 25px;
+  background-repeat: no-repeat;
+  background-image: url("../images/logo-shield.svg");
+}
+.alert__desc {
+  font-size: 12px;
+}
+.filters-check {
+  margin-top: 60px;
+}
+.filters-check__label {
+  font-size: 14px;
+  font-family: "Gotham Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 600;
+}
+.filters-check__in {
+  display: none;
+}
+.filters-check__in--active {
+  display: block;
+}
+.filters-check__in--upload {
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+.filters-check__in--upload.filters-check__in--active {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.filters-check__in--alert {
+  padding-left: 25px;
+  background-image: url("../images/alert.svg");
+  background-repeat: no-repeat;
+  background-size: 17px 14px;
+}
+.filters-check__alert {
+  padding-bottom: 11px;
+}
+.filters-check__ico {
+  width: 35px;
+  height: 35px;
+  margin-right: 23px;
+  background-image: url("../images/filters.svg");
+  background-repeat: no-repeat;
+  background-size: 313px;
+}
+.filters-check__ico--0 {
+  background-position: 0 0;
+}
+.filters-check__ico--1 {
+  background-position: -53px 0;
+}
+.filters-check__ico--2 {
+  background-position: -107px 0;
+}
+.filters-check__ico--3 {
+  background-position: -166px 0;
+}
+.filters-check__ico--4 {
+  background-position: -220px 0;
+}
+.filters-check__ico--5 {
+  background-position: -280px 0;
+}
 /* Thanks page */
 .thanks-wrap {
   min-height: 100%;
