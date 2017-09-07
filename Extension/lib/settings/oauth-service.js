@@ -141,7 +141,7 @@
         adguard.tabs.create({
             active: true,
             type: 'popup',
-            url: provider.getAuthUrl('https://testsync.adguard.com/oauth?provider=' + providerName, getOrGenerateCSRFState())
+            url: provider.getAuthUrl('https://testsync.adguard.com?provider=' + providerName, getOrGenerateCSRFState())
         });
     };
 
