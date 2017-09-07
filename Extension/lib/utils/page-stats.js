@@ -97,13 +97,13 @@ adguard.pageStats = (function (adguard) {
      */
     var blockedTypes = {
         // jshint ignore:start
-        OTHERS: 1 << 0,
         ADS: 1 << 1,
         TRACKERS: 1 << 2,
         SOCIAL: 1 << 3,
         ANNOYANCES: 1 << 4,
         SECURITY: 1 << 5,
-        COOKIES: 1 << 6
+        COOKIES: 1 << 6,
+        OTHERS: 1 << 0
         // jshint ignore:end
     };
 

@@ -485,14 +485,36 @@ PopupController.prototype = {
         });
     },
 
-    _renderRequestTypesGraphs: function (stats, range) {
+    _capitalizeFirstLetter: function (string) {
+        if (!string || string.length < 2) {
+            return string;
+        }
+
+        string = string.toLowerCase();
+
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    },
+
+    _buildRequestTypesColumns: function (stats, range) {
         var statsData = this._selectRequestTypesStatsData(stats, range);
 
-        var columns = [];
+        var columns = {
+            x: ['x'],
+            values: ['Request types']
+        };
+
         for (var type in stats.blockedTypes) {
             var number = statsData[stats.blockedTypes[type]] ? statsData[stats.blockedTypes[type]] : 0;
-            columns.push([type, number]);
+
+            columns.x.push(this._capitalizeFirstLetter(type));
+            columns.values.push(number);
         }
+
+        return columns;
+    },
+
+    _renderRequestTypesGraphs: function (stats, range) {
+        var columns = this._buildRequestTypesColumns(stats, range);
 
         var chart = c3.generate({
             size: {
@@ -502,8 +524,8 @@ PopupController.prototype = {
                 // columns: columns,
                 x: 'x',
                 columns: [
-                    ["x", "Ads", "Trackers", "Social", "Others", "Annoyances", "Security", "Cookies"],
-                    ["Request types", 580, 132, 122, 114, 17, 24, 1]
+                    columns.x,
+                    columns.values
                 ],
                 type: 'bar',
                 color: function(_defaultColor, item) {
@@ -565,7 +587,7 @@ PopupController.prototype = {
             var number = statsData[stats.blockedTypes[type]] ? statsData[stats.blockedTypes[type]] : 0;
 
             $analytics.append(
-                '<li><span class="key">' + type + '</span><span class="value">' + number + '</span></li>'
+                '<li><span class="key">' + this._capitalizeFirstLetter(type) + '</span><span class="value">' + number + '</span></li>'
             );
         }
     },
