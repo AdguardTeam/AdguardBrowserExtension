@@ -234,7 +234,7 @@
                         Take your Adguard settings with you !
                     </div>
                     <div class="setting-desc">
-                        Synchtonize your uer filter, filter settings, and preferences, across all your devices
+                        Synchronize your user filter, filter settings, and preferences, across all your devices
                     </div>
                 </div>
                 <div class="account__control">
@@ -242,8 +242,19 @@
                         <div class="account__avatar-pic"></div>
                     </div>
                     <div class="account__control-in">
-                        <div class="subtitle-2">
+                        <div class="subtitle-2 sync-ntn">
                             Connect with <button id="selectProviderButton" class="btn-inline-arrow">Adguard account</button>
+                            <div id="selectProviderDropdown" class="dropdown dropdown--sync" style="display: none;">
+                                <div id="adguardSelectProvider" class="dropdown__item dropdown__item--adguard">
+                                    Adguard account
+                                </div>
+                                <div id="dropboxSelectProvider" class="dropdown__item dropdown__item--dropbox">
+                                    Dropbox account
+                                </div>
+                                <div id="browserStorageSelectProvider" class="dropdown__item dropdown__item--chrome">
+                                    Chrome account
+                                </div>
+                            </div>
                         </div>
                         <div class="account__btns">
                             <button id="signInButton" class="btn-green">
@@ -252,17 +263,6 @@
                             <button id="startSyncButton" class="btn-green">
                                 Start sync
                             </button>
-                        </div>
-                    </div>
-                    <div id="selectProviderDropdown" class="dropdown" style="display: none;">
-                        <div id="adguardSelectProvider" class="dropdown__item dropdown__item--adguard">
-                            Adguard account
-                        </div>
-                        <div id="dropboxSelectProvider" class="dropdown__item dropdown__item--dropbox">
-                            Dropbox account
-                        </div>
-                        <div id="browserStorageSelectProvider" class="dropdown__item dropdown__item--chrome">
-                            Chrome account
                         </div>
                     </div>
                 </div>
@@ -279,7 +279,7 @@
                         <span id="lastSyncTimeInfo"></span>
                         <div class="account__btns">
                             <a href="https://adguard.com/login.html?utm_source=extension&aid=16593" id="manageAccountButton"
-                               class="btn-green" i18n="sync_manage_account_button_text"></a>
+                               class="btn-green manage-account-btn" i18n="sync_manage_account_button_text"></a>
                             <button id="signOutButton" class="btn-transparent">
                                 Disconnect
                             </button>
