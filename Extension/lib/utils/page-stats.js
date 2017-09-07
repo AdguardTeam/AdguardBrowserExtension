@@ -293,8 +293,15 @@ adguard.pageStats = (function (adguard) {
      */
     var getStatisticsData = function () {
         var stats = pageStatsHolder.stats;
-        if (!stats || !stats.data) {
-            return null;
+        if (!stats) {
+            stats = {};
+        }
+
+        if (!stats.data) {
+            stats.data = createStatsData(new Date(), blockedTypes.OTHERS, 0);
+
+            pageStatsHolder.stats.data = stats.data;
+            pageStatsHolder.save();
         }
 
         return {
