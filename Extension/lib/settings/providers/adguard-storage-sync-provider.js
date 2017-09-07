@@ -252,7 +252,7 @@
         };
 
         var revokeToken = function (token) {
-            return makeRequest(httpAuthApiEndpoint + '/oauth/token/revoke', {
+            return makeRequest(httpAuthApiEndpoint + '/oauth/revoke_token', {
                 accessToken: token
             });
         };
