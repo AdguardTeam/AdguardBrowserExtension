@@ -415,6 +415,9 @@ PopupController.prototype = {
             '</linearGradient>';
 
         var chart = c3.generate({
+            size: {
+                height: 230
+            },
             data: {
                 columns: [
                     ['data1'].concat(statsData)
@@ -492,16 +495,62 @@ PopupController.prototype = {
         }
 
         var chart = c3.generate({
+            size: {
+                height: 230
+            },
             data: {
-                columns: columns,
-                type: 'bar'
+                // columns: columns,
+                x: 'x',
+                columns: [
+                    ["x", "Ads", "Trackers", "Social", "Others", "Annoyances", "Security", "Cookies"],
+                    ["Request types", 580, 132, 122, 114, 17, 24, 1]
+                ],
+                type: 'bar',
+                color: function(_defaultColor, item) {
+                    return ["#53C166", "#5093B0", "#FF9F14", '#D4D5D4'][item.index % 4];
+                },
+                labels: false
             },
             bar: {
                 width: {
-                    ratio: 0.5 // this makes bar width 50% of length between ticks
+                    ratio: 0.5
                 }
-                // or
-                //width: 100 // this makes bar width 100px
+            },
+            axis: {
+                rotated: true,
+                x: {
+                    type: 'category',
+                    tick: {
+                        fit: true,
+                        multiline: false
+                    }
+                },
+                y: {
+                    tick: {
+                        rotate: 50
+                    }
+                }
+            },
+            padding: {
+                right: 20
+            },
+            grid: {
+                focus: {
+                    show: false
+                },
+                y: {
+                    'show': true
+                }
+            },
+            tooltip: {
+                grouped: true,
+                contents: function(d, defaultTitleFormat, defaultValueFormat, color) {
+                    d = d[0].value;
+                    return '<div id="tooltip" class="chart__tooltip chart__tooltip--bar">' + d + '</div>';
+                }
+            },
+            legend: {
+                show: false
             }
         });
     },
