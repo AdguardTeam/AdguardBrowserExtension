@@ -333,7 +333,8 @@
          */
         var hideIframes = iframeHidingExceptions.indexOf(document.domain) < 0;
 
-        var iframeHidingSelector = "iframe[src]";
+        // We do not hide "allowfullscreen" as it is likely to be video player frames
+        var iframeHidingSelector = "iframe[src]:not([allowfullscreen])";
         if (hideIframes) {
             ElementCollapser.hideBySelector(iframeHidingSelector, null, shadowRoot);
         }
