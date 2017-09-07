@@ -350,6 +350,11 @@
                     });
                 });
                 return true; // Async
+            case 'getStatisticsData':
+                callback({
+                    stats: adguard.pageStats.getStatisticsData()
+                });
+                return true;
             case 'resizePanelPopup':
                 adguard.browserAction.resize(message.width, message.height);
                 break;

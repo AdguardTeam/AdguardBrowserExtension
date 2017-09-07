@@ -104,8 +104,11 @@ PopupController.prototype = {
 
         var stack = parent.find('.tabstack');
 
-        var container = parent.find('.tab-main');
-        container.empty();
+        var containerMain = parent.find('.tab-main');
+        containerMain.empty();
+
+        var containerStats = parent.find('.tab-statistics');
+        containerStats.empty();
 
         stack.attr('class', 'tabstack');
 
@@ -145,15 +148,19 @@ PopupController.prototype = {
         // Message text
         this.filteringMessageText = this._getTemplate('filtering-message-template');
 
+        // Stats
+        this.filteringStatisticsTemplate = this._getTemplate('filtering-statistics-template');
+
         // Footer
         this.footerDefault = this._getTemplate('footer-default-template');
         this.footerIntegration = this._getTemplate('footer-integration-template');
 
-        this._renderHeader(container, tabInfo);
-        this._renderFilteringControls(container, tabInfo);
-        this._renderStatus(container, tabInfo);
-        this._renderActions(container, tabInfo);
-        this._renderMessage(container, tabInfo);
+        this._renderHeader(containerMain, tabInfo);
+        this._renderFilteringControls(containerMain, tabInfo);
+        this._renderStatus(containerMain, tabInfo);
+        this._renderActions(containerMain, tabInfo);
+        this._renderMessage(containerMain, tabInfo);
+        this._renderStats(containerStats);
         this._renderFooter(parent, tabInfo);
     },
 
@@ -258,13 +265,365 @@ PopupController.prototype = {
         }
     },
 
+    _selectRequestTypesStatsData: function (stats, range) {
+        var result = {};
+
+        switch (range) {
+            case 'day':
+                result = stats.lastMonth[stats.lastMonth.length - 1];
+                break;
+            case 'week':
+                for (var i = 0; i < stats.lastWeek.length; i++) {
+                    var d = stats.lastWeek[i];
+                    for (var type in d) {
+                        if (d[type]) {
+                            result[type] = (result[type] ? result[type] : 0) + d[type];
+                        }
+                    }
+                }
+                break;
+            case 'month':
+                result = stats.lastYear[stats.lastYear.length - 1];
+                break;
+            case 'year':
+                for (var i = 0; i < stats.lastYear.length; i++) {
+                    var d = stats.lastYear[i];
+                    for (var type in d) {
+                        if (d[type]) {
+                            result[type] = (result[type] ? result[type] : 0) + d[type];
+                        }
+                    }
+                }
+                break;
+        }
+
+        return result;
+    },
+
+    _selectBadRequestsStatsData: function (stats, range) {
+        var result = [];
+
+        switch (range) {
+            case 'day':
+                stats.today.forEach(function (d) {
+                    result.push(d.total);
+                });
+                break;
+            case 'week':
+                stats.lastWeek.forEach(function (d) {
+                    result.push(d.total);
+                });
+                break;
+            case 'month':
+                stats.lastMonth.forEach(function (d) {
+                    result.push(d.total);
+                });
+                break;
+            case 'year':
+                stats.lastYear.forEach(function (d) {
+                    result.push(d.total);
+                });
+                break;
+        }
+
+        return result;
+    },
+
+    _dayOfWeekAsString: function (dayIndex) {
+        return ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][dayIndex];
+    },
+
+    _monthsAsString: function (monthIndex) {
+        return ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][monthIndex];
+    },
+
+    _getCategoriesLines: function (statsData, range) {
+        var now = new Date();
+        var day = now.getDay();
+        var month = now.getMonth();
+        var lastDayOfPrevMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+
+        var categories = [];
+        var lines = [];
+        switch (range) {
+            case 'day':
+                for (var i = 0; i < 25; i++) {
+                    if (i % 3 === 0) {
+                        var hour = (i + now.getHours()) % 24;
+                        categories.push(hour.toString());
+                        lines.push({
+                            value: i
+                        });
+                    } else {
+                        categories.push('');
+                    }
+                }
+
+                break;
+            case 'week':
+                for (var i = 0; i < 8; i++) {
+                    categories.push(this._dayOfWeekAsString((day + i) % 7 ));
+                    lines.push({
+                        value: i
+                    });
+                }
+
+                break;
+            case 'month':
+                for (var i = 0; i < 31; i++) {
+                    if (i % 3 === 0) {
+                        var c = (i + now.getDate()) % lastDayOfPrevMonth + 1;
+                        categories.push(c.toString());
+                        lines.push({
+                            value: i
+                        });
+                    } else {
+                        categories.push('');
+                    }
+                }
+
+                break;
+            case 'year':
+                for (var i = 0; i < 13; i++) {
+                    categories.push(this._monthsAsString((month + i) % 12 ));
+                    categories = categories.slice(-statsData.length);
+                    lines.push({
+                        value: i
+                    });
+                }
+
+                break;
+        }
+
+        return {
+            categories: categories,
+            lines: lines
+        };
+    },
+
+    _renderBadRequestsGraphs: function (stats, range) {
+        var statsData = this._selectBadRequestsStatsData(stats, range);
+        var categoriesLines = this._getCategoriesLines(statsData, range);
+        var categories = categoriesLines.categories;
+        var lines = categoriesLines.lines;
+
+        var grad1 =
+            '<linearGradient id="grad1" x1="50%" y1="0%" x2="50%" y2="100%">'+
+            '  <stop offset="0%" style="stop-color:#73BE66;stop-opacity:1" />'+
+            '  <stop offset="23%" style="stop-color:#6DBE85;stop-opacity:1" />'+
+            '  <stop offset="100%" style="stop-color:#65BDA8;stop-opacity:1" />'+
+            '</linearGradient>';
+
+        var chart = c3.generate({
+            size: {
+                height: 230
+            },
+            data: {
+                columns: [
+                    ['data1'].concat(statsData)
+                ],
+                types: {
+                    data1: 'area-spline'
+                },
+                colors: {
+                    data1: 'url(#grad1)'
+                }
+            },
+            padding: {
+                left: 15,
+                right: 15
+            },
+            axis: {
+                x: {
+                    show: true,
+                    type: 'category',
+                    categories: categories,
+                    tick: {
+                        outer: false,
+                        multiline: false
+                    }
+                },
+                y: {
+                    show: false
+                }
+            },
+            legend: {
+                show: false
+            },
+            grid: {
+                x: {
+                    lines: lines
+                },
+                focus: {
+                    show: false
+                }
+            },
+            spline: {
+                interpolation: {
+                    type: 'basis'
+                }
+            },
+            point: {
+                show: false
+            },
+            tooltip: {
+                position: function(data, width, height, element) {
+                    var top = d3.mouse(element)[1] - 50;
+                    return {
+                        top: top,
+                        left: parseInt(element.getAttribute('x')) - 3
+                    };
+                },
+                contents: function(d, defaultTitleFormat, defaultValueFormat, color) {
+                    d = d[0].value;
+                    return '<div id="tooltip" class="chart__tooltip">' + d + '</div>';
+                }
+            },
+            oninit: function() {
+                this.svg[0][0].getElementsByTagName('defs')[0].innerHTML += grad1;
+            }
+        });
+    },
+
+    _capitalizeFirstLetter: function (string) {
+        if (!string || string.length < 2) {
+            return string;
+        }
+
+        string = string.toLowerCase();
+
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    },
+
+    _buildRequestTypesColumns: function (stats, range) {
+        var statsData = this._selectRequestTypesStatsData(stats, range);
+
+        var columns = {
+            x: ['x'],
+            values: ['Request types']
+        };
+
+        for (var type in stats.blockedTypes) {
+            var number = statsData[stats.blockedTypes[type]] ? statsData[stats.blockedTypes[type]] : 0;
+
+            columns.x.push(this._capitalizeFirstLetter(type));
+            columns.values.push(number);
+        }
+
+        return columns;
+    },
+
+    _renderRequestTypesGraphs: function (stats, range) {
+        var columns = this._buildRequestTypesColumns(stats, range);
+
+        var chart = c3.generate({
+            size: {
+                height: 230
+            },
+            data: {
+                // columns: columns,
+                x: 'x',
+                columns: [
+                    columns.x,
+                    columns.values
+                ],
+                type: 'bar',
+                color: function(_defaultColor, item) {
+                    return ["#53C166", "#5093B0", "#FF9F14", '#D4D5D4'][item.index % 4];
+                },
+                labels: false
+            },
+            bar: {
+                width: {
+                    ratio: 0.5
+                }
+            },
+            axis: {
+                rotated: true,
+                x: {
+                    type: 'category',
+                    tick: {
+                        fit: true,
+                        multiline: false
+                    }
+                },
+                y: {
+                    tick: {
+                        rotate: 50
+                    }
+                }
+            },
+            padding: {
+                right: 20
+            },
+            grid: {
+                focus: {
+                    show: false
+                },
+                y: {
+                    'show': true
+                }
+            },
+            tooltip: {
+                grouped: true,
+                contents: function(d, defaultTitleFormat, defaultValueFormat, color) {
+                    d = d[0].value;
+                    return '<div id="tooltip" class="chart__tooltip chart__tooltip--bar">' + d + '</div>';
+                }
+            },
+            legend: {
+                show: false
+            }
+        });
+    },
+
+    _renderAnalyticsBlock: function (stats, range) {
+        var statsData = this._selectRequestTypesStatsData(stats, range);
+
+        var $analytics = $('#analytics-blocked-types-values');
+        $analytics.empty();
+
+        for (var type in stats.blockedTypes) {
+            var number = statsData[stats.blockedTypes[type]] ? statsData[stats.blockedTypes[type]] : 0;
+
+            $analytics.append(
+                '<li><span class="key">' + this._capitalizeFirstLetter(type) + '</span><span class="value">' + number + '</span></li>'
+            );
+        }
+    },
+
+    _renderStatsGraphs: function (stats, range, type) {
+        if (type === 'badRequests') {
+            this._renderBadRequestsGraphs(stats, range);
+        } else {
+            this._renderRequestTypesGraphs(stats, range);
+        }
+
+        this._renderAnalyticsBlock(stats, range);
+    },
+
+    _renderStatsBlock: function () {
+        var timeRange = $('.statistics-select-time').val();
+        var typeData = $('.statistics-select-type').val();
+
+        var self = this;
+        popupPage.sendMessage({type: 'getStatisticsData'}, function (message) {
+            self._renderStatsGraphs(message.stats, timeRange, typeData);
+        });
+    },
+
+    _renderStats: function (container) {
+        var template = this.filteringStatisticsTemplate;
+        container.append(template);
+
+        this._renderStatsBlock();
+    },
+
     _renderActions: function (container, tabInfo) {
 
         if (tabInfo.urlFilteringDisabled) {
             return;
         }
-
-
 
         var el = $('<div>', {class: 'actions'});
 
@@ -378,6 +737,37 @@ PopupController.prototype = {
         parent.on('click', '.changeProtectionStateEnable', function (e) {
             e.preventDefault();
             changeProtectionState(false);
+        });
+
+        // Tabs
+        parent.on('click', '.tabbar .tab', function (e) {
+            e.preventDefault();
+
+            $('.tabbar .tab').removeClass('active');
+            $(e.target).addClass('active');
+
+            var attr = $(e.target).attr('tab-switch');
+
+            $('.tab-switch-tab').hide();
+            $('.tab-switch-tab[tab-switch="' + attr + '"]').show();
+
+        });
+
+        // Stats filters
+        parent.on('change', '.statistics-select-time', function (e) {
+            self._renderStatsBlock();
+        });
+
+        parent.on('change', '.statistics-select-type', function (e) {
+            self._renderStatsBlock();
+        });
+
+        parent.on('click', '.show-full-stats', function (e) {
+            $('.analytics').show();
+        });
+
+        parent.on('click', '.hide-full-stats', function (e) {
+            $('.analytics').hide();
         });
     },
 
