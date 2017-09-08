@@ -227,6 +227,27 @@ QUnit.test('Test CSP important rules', function (assert) {
     assert.equal(rules[0].ruleText, defaultCspRule.ruleText);
 });
 
+
+QUnit.test('Test object subrequest type', function (assert) {
+
+    var requestFilter = new adguard.RequestFilter();
+
+    var rule1 = new adguard.rules.UrlFilterRule('blockrequest1$object-subrequest');
+    var rule2 = new adguard.rules.UrlFilterRule('blockrequest2$object_subrequest');
+    var rule3 = new adguard.rules.UrlFilterRule('blockrequest3$~object-subrequest');
+    var rule4 = new adguard.rules.UrlFilterRule('blockrequest4$~object_subrequest');
+
+    requestFilter.addRule(rule1);
+    requestFilter.addRule(rule2);
+    requestFilter.addRule(rule3);
+    requestFilter.addRule(rule4);
+
+    assert.ok(requestFilter.findRuleForRequest('blockrequest1', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
+    assert.ok(requestFilter.findRuleForRequest('blockrequest2', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
+    assert.notOk(requestFilter.findRuleForRequest('blockrequest3', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
+    assert.notOk(requestFilter.findRuleForRequest('blockrequest4', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
+});
+
 QUnit.test("Request filter performance", function (assert) {
 
     var done = assert.async();

@@ -162,7 +162,7 @@ var SafariContentBlockerConverter = {
             if (this._isContentType(rule, UrlFilterRule.contentTypes.OBJECT)) {
                 throw new Error('$object content type is not yet supported');
             }
-            if (this._isContentType(rule, UrlFilterRule.contentTypes['OBJECT-SUBREQUEST'])) {
+            if (this._isContentType(rule, UrlFilterRule.contentTypes.OBJECT_SUBREQUEST)) {
                 throw new Error('$object_subrequest content type is not yet supported');
             }
             if (this._isContentType(rule, UrlFilterRule.contentTypes.WEBRTC)) {
