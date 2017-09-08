@@ -113,6 +113,10 @@
 .settings-content a {
   color: #66b574;
 }
+.settings-content .manage-account-btn {
+  color: #ffffff;
+  text-decoration: none;
+}
 .settings-actions {
   margin-top: 30px;
   font-size: 14px;
@@ -532,14 +536,18 @@ li.active .toggler:before {
   bottom: -5px;
 }
 .btn-inline-arrow {
+  outline: none;
   cursor: pointer;
   border: 0;
+  line-height: 22px;
+  font-family: inherit;
   font-size: inherit;
   background-color: transparent;
   color: #66b574;
   transition: 0.3s ease color;
   position: relative;
 }
+
 .btn-inline-arrow:after {
   content: "";
   position: absolute;
@@ -602,6 +610,7 @@ li.active .toggler:before {
   margin-bottom: 25px;
 }
 .account__avatar {
+  flex-shrink: 0;
   width: 80px;
   height: 80px;
   margin-right: 30px;
@@ -622,14 +631,19 @@ li.active .toggler:before {
 }
 .account__btns {
   padding-top: 13px;
-  min-width: 288px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: justify;
-  -ms-flex-pack: justify;
-  justify-content: space-between;
 }
+
+.account__btn {
+  margin-right: 15px;
+}
+
+.account__btn:last-child {
+  margin-right: 0;
+}
+
 .subtitle-2 {
   margin-bottom: 7px;
   font-size: 14px;
