@@ -556,6 +556,9 @@
                 default:
                     optionName = optionName.toUpperCase();
 
+                    /**
+                     * Convert $object-subrequest modifier to UrlFilterRule.contentTypes.OBJECT_SUBREQUEST
+                     */
                     if (optionName === 'OBJECT-SUBREQUEST') {
                         optionName = 'OBJECT_SUBREQUEST';
                     } else if (optionName === '~OBJECT-SUBREQUEST') {
