@@ -555,6 +555,13 @@
                     break;
                 default:
                     optionName = optionName.toUpperCase();
+
+                    if (optionName === 'OBJECT-SUBREQUEST') {
+                        optionName = 'OBJECT_SUBREQUEST';
+                    } else if (optionName === '~OBJECT-SUBREQUEST') {
+                        optionName = '~OBJECT_SUBREQUEST';
+                    }
+
                     if (optionName in UrlFilterRule.contentTypes) {
                         permittedContentType |= UrlFilterRule.contentTypes[optionName]; // jshint ignore:line
                     } else if (optionName[0] === api.FilterRule.NOT_MARK && optionName.substring(1) in UrlFilterRule.contentTypes) {
@@ -608,7 +615,7 @@
         OBJECT: 1 << 4,
         SUBDOCUMENT: 1 << 5,
         XMLHTTPREQUEST: 1 << 6,
-        'OBJECT-SUBREQUEST': 1 << 7,
+        OBJECT_SUBREQUEST: 1 << 7,
         MEDIA: 1 << 8,
         FONT: 1 << 9,
         WEBSOCKET: 1 << 10,
@@ -629,7 +636,7 @@
     if (adguard.prefs.platform === 'chromium' ||
         adguard.prefs.platform === 'webkit') {
 
-        UrlFilterRule.contentTypes['OBJECT-SUBREQUEST'] = UrlFilterRule.contentTypes.OBJECT;
+        UrlFilterRule.contentTypes.OBJECT_SUBREQUEST = UrlFilterRule.contentTypes.OBJECT;
     }
 
     UrlFilterRule.ignoreOptions = {
@@ -656,7 +663,7 @@
     UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.OBJECT;
     UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.SUBDOCUMENT;
     UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.XMLHTTPREQUEST;
-    UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes['OBJECT-SUBREQUEST'];
+    UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.OBJECT_SUBREQUEST;
     UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.MEDIA;
     UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.FONT;
     UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.WEBSOCKET;

@@ -819,7 +819,7 @@ RequestWizard.getRequestType = function (requestType) {
 		case 'IMAGE':
 			return 'Image';
 		case 'OBJECT':
-		case 'OBJECT-SUBREQUEST':
+		case 'OBJECT_SUBREQUEST':
 		case 'MEDIA':
 			return 'Media';
 		case 'FONT':
