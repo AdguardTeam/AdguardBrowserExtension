@@ -31,6 +31,9 @@
     var SYNC_LAST_SYNC_TIME_PROP = 'sync-last-sync-time';
     var SYNC_STATUS_ENABLED_PROP = 'sync-status-enabled';
     var SYNC_DEVICE_NAME_PROP = 'sync-device-name';
+    var SYNC_GENERAL_DISABLED_PROP = 'sync-general-disabled';
+    var SYNC_FILTERS_DISABLED_PROP = 'sync-filters-disabled';
+    var SYNC_EXTENSION_SPECIFIC_DISABLED_PROP = 'sync-extension-specific-disabled';
 
     var lastSyncTimesQueue = [];
     var INF_LOOPS_CHECK_SIZE = 10;
@@ -568,6 +571,12 @@
         }
     };
 
+    var setSyncOptions = function (options) {
+        adguard.localStorage.setItem(SYNC_GENERAL_DISABLED_PROP, !options.syncGeneral);
+        adguard.localStorage.setItem(SYNC_FILTERS_DISABLED_PROP, !options.syncFilters);
+        adguard.localStorage.setItem(SYNC_EXTENSION_SPECIFIC_DISABLED_PROP, !options.syncExtensionSpecific);
+    };
+
     var init = function () {
 
         syncEnabled = String(adguard.localStorage.getItem(SYNC_STATUS_ENABLED_PROP)) === 'true';
@@ -694,11 +703,20 @@
             }
         }
 
+        var syncGeneral = !adguard.localStorage.getItem(SYNC_GENERAL_DISABLED_PROP);
+        var syncFilters = !adguard.localStorage.getItem(SYNC_FILTERS_DISABLED_PROP);
+        var syncExtensionSpecific = !adguard.localStorage.getItem(SYNC_EXTENSION_SPECIFIC_DISABLED_PROP);
+
         return {
             enabled: syncEnabled,
             providers: providers,
             currentProvider: currentProvider,
-            syncInProgress: syncInProgress
+            syncInProgress: syncInProgress,
+            syncOptions: {
+                syncGeneral: syncGeneral,
+                syncFilters: syncFilters,
+                syncExtensionSpecific: syncExtensionSpecific
+            }
         };
     };
 
@@ -746,6 +764,10 @@
          * Enables/disables sync
          */
         toggleSyncStatus: toggleSyncStatus,
+        /**
+         * Sets sync options
+         */
+        setSyncOptions: setSyncOptions,
         /**
          * Changes device name
          */

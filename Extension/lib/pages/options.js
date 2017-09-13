@@ -923,6 +923,31 @@ var SyncSettings = function (options) {
         $('#adguardSelectProvider').on('click', onProviderSelected('ADGUARD_SYNC'));
         $('#dropboxSelectProvider').on('click', onProviderSelected('DROPBOX'));
         $('#browserStorageSelectProvider').on('click', onProviderSelected('BROWSER_SYNC'));
+
+        $('#sync-general-settings-checkbox').on('change', function () {
+            var self = this;
+            contentPage.sendMessage({type: 'setSyncOptions', options: {
+                syncGeneral: self.checked,
+                syncFilters: $('#sync-filters-checkbox').is(':checked'),
+                syncExtensionSpecific: $('#sync-extension-specific-checkbox').is(':checked')
+            }});
+        });
+        $('#sync-filters-checkbox').on('change', function () {
+            var self = this;
+            contentPage.sendMessage({type: 'setSyncOptions', options: {
+                syncGeneral: $('#sync-general-settings-checkbox').is(':checked'),
+                syncFilters: self.checked,
+                syncExtensionSpecific: $('#sync-extension-specific-checkbox').is(':checked')
+            }});
+        });
+        $('#sync-extension-specific-checkbox').on('change', function () {
+            var self = this;
+            contentPage.sendMessage({type: 'setSyncOptions', options: {
+                syncGeneral: $('#sync-general-settings-checkbox').is(':checked'),
+                syncFilters: $('#sync-filters-checkbox').is(':checked'),
+                syncExtensionSpecific: self.checked
+            }});
+        });
     }
 
     function onProviderSelected(providerName) {
@@ -983,7 +1008,9 @@ var SyncSettings = function (options) {
             deviceNameBlock.hide();
         }
 
-        //TODO: Handle sync settings checkboxes
+        $('#sync-general-settings-checkbox').attr('checked', syncStatus.syncOptions.syncGeneral);
+        $('#sync-filters-checkbox').attr('checked', syncStatus.syncOptions.syncFilters);
+        $('#sync-extension-specific-checkbox').attr('checked', syncStatus.syncOptions.syncExtensionSpecific);
     }
 
     function renderSyncSettings() {
