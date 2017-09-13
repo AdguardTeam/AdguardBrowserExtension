@@ -24,6 +24,8 @@
     var APP_ID = "adguard-browser-extension";
 
     var FILTERS_SECTION = "filters.json";
+    var GENERAL_SECTION = "general-settings.json";
+    var EXTENSION_SPECIFIC_SECTION = "extension-specific-settings.json";
 
     var SYNC_MANIFEST_PROP = "sync-manifest";
 
@@ -41,6 +43,14 @@
             "sections": [
                 {
                     "name": FILTERS_SECTION,
+                    "timestamp": 0
+                },
+                {
+                    "name": GENERAL_SECTION,
+                    "timestamp": 0
+                },
+                {
+                    "name": EXTENSION_SPECIFIC_SECTION,
                     "timestamp": 0
                 }
             ]
@@ -71,6 +81,14 @@
             "sections": [
                 {
                     "name": FILTERS_SECTION,
+                    "timestamp": 0
+                },
+                {
+                    "name": GENERAL_SECTION,
+                    "timestamp": 0
+                },
+                {
+                    "name": EXTENSION_SPECIFIC_SECTION,
                     "timestamp": 0
                 }
             ]
@@ -180,9 +198,11 @@
             manifest.timestamp = syncTime;
             for (var i = 0; i < manifest.sections.length; i++) {
                 var section = manifest.sections[i];
-                if (section.name === FILTERS_SECTION) {
-                    section.timestamp = syncTime;
-                }
+                section.timestamp = syncTime;
+                // TODO: only updated section
+                // if (section.name === FILTERS_SECTION) {
+                //     section.timestamp = syncTime;
+                // }
             }
         }
         adguard.localStorage.setItem(SYNC_MANIFEST_PROP, JSON.stringify(manifest));
@@ -275,7 +295,9 @@
      * @param sectionName Section name
      */
     var isSectionSupported = function (sectionName) {
-        return sectionName === FILTERS_SECTION;
+        return sectionName === FILTERS_SECTION
+            || sectionName === GENERAL_SECTION
+            || sectionName === EXTENSION_SPECIFIC_SECTION;
     };
 
     /**
@@ -288,6 +310,12 @@
             case FILTERS_SECTION:
                 loadFiltersSection(callback);
                 break;
+            case GENERAL_SECTION:
+                loadGeneralSettingsSection(callback);
+                break;
+            case EXTENSION_SPECIFIC_SECTION:
+                loadExtensionSpecificSettingsSection(callback);
+                break;
             default:
                 adguard.console.error('Section {0} is not supported', sectionName);
                 callback(false);
@@ -296,7 +324,6 @@
 
     /**
      * Apply section to application.
-     * Now we support only filters.json section
      *
      * @param sectionName Section name
      * @param section Section object
@@ -306,6 +333,12 @@
         switch (sectionName) {
             case FILTERS_SECTION:
                 applyFiltersSection(section, callback);
+                break;
+            case GENERAL_SECTION:
+                applyGeneralSettingsSection(section, callback);
+                break;
+            case EXTENSION_SPECIFIC_SECTION:
+                applyExtensionSpecificSettingsSection(section, callback);
                 break;
             default:
                 adguard.console.error('Section {0} is not supported', sectionName);
