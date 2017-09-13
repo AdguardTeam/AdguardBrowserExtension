@@ -855,16 +855,16 @@ adguard.antiBannerService = (function (adguard) {
 
                 switch (eventType) {
                     case adguard.listeners.ADD_RULES:
-                        loadedRulesText = loadedRulesText.concat(adguard.utils.collections.getRulesText(eventRules));
+                        loadedRulesText = loadedRulesText.concat(eventRules);
                         adguard.console.debug("Add {0} rules to filter {1}", eventRules.length, filterId);
                         break;
                     case adguard.listeners.REMOVE_RULE:
                         var actionRule = eventRules[0];
-                        adguard.utils.collections.removeAll(loadedRulesText, actionRule.ruleText);
-                        adguard.console.debug("Remove {0} rule from filter {1}", actionRule.ruleText, filterId);
+                        adguard.utils.collections.removeAll(loadedRulesText, actionRule);
+                        adguard.console.debug("Remove {0} rule from filter {1}", actionRule, filterId);
                         break;
                     case adguard.listeners.UPDATE_FILTER_RULES:
-                        loadedRulesText = adguard.utils.collections.getRulesText(eventRules);
+                        loadedRulesText = eventRules;
                         adguard.console.debug("Update filter {0} rules count to {1}", filterId, eventRules.length);
                         break;
                 }
@@ -1077,7 +1077,7 @@ adguard.antiBannerService = (function (adguard) {
         }
         var filter = getFilterById(filterId);
         requestFilter.addRules(rules);
-        adguard.listeners.notifyListeners(adguard.listeners.ADD_RULES, filter, rules);
+        adguard.listeners.notifyListeners(adguard.listeners.ADD_RULES, filter, rulesText);
         if (filterId === adguard.utils.filters.USER_FILTER_ID) {
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_USER_FILTER_RULES, getRequestFilterInfo());
         }
@@ -1092,10 +1092,10 @@ adguard.antiBannerService = (function (adguard) {
     var removeFilterRule = function (filterId, ruleText) {
         var rule = adguard.rules.builder.createRule(ruleText, filterId);
         if (rule !== null) {
-            var filter = getFilterById(filterId);
             requestFilter.removeRule(rule);
-            adguard.listeners.notifyListeners(adguard.listeners.REMOVE_RULE, filter, [rule]);
         }
+        var filter = getFilterById(filterId);
+        adguard.listeners.notifyListeners(adguard.listeners.REMOVE_RULE, filter, [ruleText]);
         if (filterId === adguard.utils.filters.USER_FILTER_ID) {
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_USER_FILTER_RULES, getRequestFilterInfo());
         }
