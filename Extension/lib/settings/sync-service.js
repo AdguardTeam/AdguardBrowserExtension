@@ -229,6 +229,12 @@
             if (!merge.hasOwnProperty(sectionName)) {
                 continue;
             }
+
+            if (!isSectionSyncEnabled(sectionName)) {
+                adguard.console.info('Section {0} sync is disabled by user settings', sectionName);
+                continue;
+            }
+
             var section = merge[sectionName];
             if (section.local) {
                 if (canWrite) {
@@ -251,6 +257,24 @@
             sectionsRemoteToLocal: sectionsRemoteToLocal,
             sectionsLocalToRemote: sectionsLocalToRemote
         };
+    }
+
+    /**
+     * Checks if section synchronization is enabled with user sync options
+     * @param sectionName
+     */
+    function isSectionSyncEnabled(sectionName) {
+        switch (sectionName) {
+            case 'filters.json':
+                return syncOptions.syncFilters;
+            case 'general-settings.json':
+                return syncOptions.syncGeneral;
+            case 'extension-specific-settings.json':
+                return syncOptions.syncExtensionSpecific;
+        }
+
+        // Default
+        return true;
     }
 
     /**
@@ -588,9 +612,9 @@
 
         syncEnabled = String(adguard.localStorage.getItem(SYNC_STATUS_ENABLED_PROP)) === 'true';
 
-        syncOptions.syncGeneral = !adguard.localStorage.getItem(SYNC_GENERAL_DISABLED_PROP);
-        syncOptions.syncFilters = !adguard.localStorage.getItem(SYNC_FILTERS_DISABLED_PROP);
-        syncOptions.syncExtensionSpecific = !adguard.localStorage.getItem(SYNC_EXTENSION_SPECIFIC_DISABLED_PROP);
+        syncOptions.syncGeneral = String(adguard.localStorage.getItem(SYNC_GENERAL_DISABLED_PROP)) === 'false';
+        syncOptions.syncFilters = String(adguard.localStorage.getItem(SYNC_FILTERS_DISABLED_PROP)) === 'false';
+        syncOptions.syncExtensionSpecific = String(adguard.localStorage.getItem(SYNC_EXTENSION_SPECIFIC_DISABLED_PROP)) === 'false';
 
         var providerName = adguard.localStorage.getItem(SYNC_CURRENT_PROVIDER_PROP);
         if (providerName) {
