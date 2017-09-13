@@ -773,6 +773,11 @@
             if (element.clientHeight * element.clientWidth > 400 * 300) {
                 return;
             }
+
+            if (element.hasAttribute('allowfullscreen')) {
+                // This is likely to be a video player
+                return;
+            }
         }
 
         /**
