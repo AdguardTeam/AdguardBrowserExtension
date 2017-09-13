@@ -159,3 +159,23 @@ QUnit.test("Test section revisions", function (assert) {
         done();
     });
 });
+
+QUnit.test("Test sync options", function (assert) {
+    var status = adguard.sync.syncService.getSyncStatus();
+
+    assert.ok(status.syncOptions);
+
+    adguard.sync.syncService.setSyncOptions({
+        syncGeneral: false,
+        syncFilters: false,
+        syncExtensionSpecific: true
+    });
+
+    status = adguard.sync.syncService.getSyncStatus();
+    console.log(status);
+
+    assert.ok(status.syncOptions);
+    assert.notOk(status.syncOptions.syncGeneral);
+    assert.notOk(status.syncOptions.syncFilters);
+    assert.ok(status.syncOptions.syncExtensionSpecific);
+});

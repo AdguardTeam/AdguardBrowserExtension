@@ -43,6 +43,11 @@
     var syncProvider = null;
     var lastSyncTimes = null;
     var syncEnabled = false;
+    var syncOptions = {
+        syncGeneral: true,
+        syncFilters: true,
+        syncExtensionSpecific: true
+    };
 
     /**
      * Sections revisions
@@ -575,11 +580,17 @@
         adguard.localStorage.setItem(SYNC_GENERAL_DISABLED_PROP, !options.syncGeneral);
         adguard.localStorage.setItem(SYNC_FILTERS_DISABLED_PROP, !options.syncFilters);
         adguard.localStorage.setItem(SYNC_EXTENSION_SPECIFIC_DISABLED_PROP, !options.syncExtensionSpecific);
+
+        syncOptions = options;
     };
 
     var init = function () {
 
         syncEnabled = String(adguard.localStorage.getItem(SYNC_STATUS_ENABLED_PROP)) === 'true';
+
+        syncOptions.syncGeneral = !adguard.localStorage.getItem(SYNC_GENERAL_DISABLED_PROP);
+        syncOptions.syncFilters = !adguard.localStorage.getItem(SYNC_FILTERS_DISABLED_PROP);
+        syncOptions.syncExtensionSpecific = !adguard.localStorage.getItem(SYNC_EXTENSION_SPECIFIC_DISABLED_PROP);
 
         var providerName = adguard.localStorage.getItem(SYNC_CURRENT_PROVIDER_PROP);
         if (providerName) {
@@ -703,20 +714,12 @@
             }
         }
 
-        var syncGeneral = !adguard.localStorage.getItem(SYNC_GENERAL_DISABLED_PROP);
-        var syncFilters = !adguard.localStorage.getItem(SYNC_FILTERS_DISABLED_PROP);
-        var syncExtensionSpecific = !adguard.localStorage.getItem(SYNC_EXTENSION_SPECIFIC_DISABLED_PROP);
-
         return {
             enabled: syncEnabled,
             providers: providers,
             currentProvider: currentProvider,
             syncInProgress: syncInProgress,
-            syncOptions: {
-                syncGeneral: syncGeneral,
-                syncFilters: syncFilters,
-                syncExtensionSpecific: syncExtensionSpecific
-            }
+            syncOptions: syncOptions
         };
     };
 
