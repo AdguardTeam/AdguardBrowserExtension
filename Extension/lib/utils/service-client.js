@@ -160,16 +160,7 @@ adguard.backend = (function (adguard) {
             }
 
             var lines = responseText.split(/[\r\n]+/);
-
-            var rules = [];
-            for (var i = 0; i < lines.length; i++) {
-                var rule = adguard.rules.builder.createRule(lines[i], filterId);
-                if (rule !== null) {
-                    rules.push(rule);
-                }
-            }
-
-            successCallback(rules);
+            successCallback(lines);
 
         };
 
