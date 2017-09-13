@@ -26,9 +26,15 @@
      * @param callback
      */
     function isSectionsUpdated(callback) {
+        lookupSectionsUpdated(function (sections) {
+            var updated = sections && sections.length > 0;
+            callback(updated);
+        });
+    }
 
+    function lookupSectionsUpdated(callback) {
         var dfds = [];
-        var updated = false;
+        var updated = [];
 
         var localManifest = syncApi.settingsProvider.loadLocalManifest();
         localManifest.sections.forEach(function (section) {
@@ -37,7 +43,7 @@
 
             syncApi.sections.loadLocalSection(section.name, function (data) {
                 if (syncApi.sections.isSectionUpdated(section.name, data)) {
-                    updated = true;
+                    updated.push(section.name);
                 }
                 dfd.resolve();
             });
@@ -50,10 +56,10 @@
 
     function sync(callback) {
 
-        isSectionsUpdated(function (updated) {
-            if (updated) {
+        lookupSectionsUpdated(function (updated) {
+            if (updated && updated.length > 0) {
                 var localManifest = syncApi.settingsProvider.loadLocalManifest();
-                syncApi.settingsProvider.syncLocalManifest(localManifest, Date.now());
+                syncApi.settingsProvider.syncLocalManifest(localManifest, Date.now(), updated);
             }
             syncApi.syncService.syncSettings(callback);
         });
