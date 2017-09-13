@@ -33,6 +33,8 @@
         var localManifest = syncApi.settingsProvider.loadLocalManifest();
         localManifest.sections.forEach(function (section) {
             var dfd = new adguard.utils.Promise();
+            dfds.push(dfd);
+
             syncApi.sections.loadLocalSection(section.name, function (data) {
                 if (syncApi.sections.isSectionUpdated(section.name, data)) {
                     updated = true;
