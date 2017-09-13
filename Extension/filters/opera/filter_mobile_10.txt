@@ -1,8 +1,8 @@
-! Checksum: Vfi+i200NZFT98vz8PQcgg
+! Checksum: oq9HjSpd6RzYs5QI1KsEsA
 ! Title: Filter unblocking useful ads
 ! Description: Filter that unblocks search and self-promo ads.
-! Version: 1.0.1.13
-! TimeUpdated: 2017-08-15T21:01:47.504+04:00
+! Version: 1.0.1.16
+! TimeUpdated: 2017-09-12T20:01:50.778+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -45,10 +45,8 @@ yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by,yandex.com.tr#@$#.b-spec-adv 
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by,yandex.com.tr#@$#.serp-adv { display: none!important; height: 0px!important; visibility: hidden!important; margin: 0px!important; padding: 0px!important; }
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by,yandex.com.tr#@$#.serp-adv__banner { display: none!important; height: 0px!important; visibility: hidden!important; margin: 0px!important; padding: 0px!important; }
 yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua#@#.serp-adv-item
-yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by#@#.serp-list li.serp-item[data-cid][-ext-has='.organic__subtitle:matches-css-after(content: *рекл*)']
-yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by#@#.serp-item[data-cid][-ext-has=".label_color_yellow:contains(Реклама)"]
-yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by,yandex.com.tr#@#.main > div.serp-list > div.serp-item[-ext-has='> div.organic > h2 > a[href^="http://yabs.yandex.ru/count/"]']
-yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by,beta.yandex.by#@#.content__right>.serp-list>.serp-adv__head~div.serp-item
+yandex.by,yandex.com,yandex.kz,yandex.ru,yandex.ua#@#.t-construct-adapter__adv
+yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by,yandex.com.tr#@#.serp-list .serp-item[-ext-has='.path+div:not([class^="extralinks"])']
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by,yandex.com.tr#@#.b-advertizing-and-wizards
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by,yandex.com.tr#@#.serp-adv__add
 @@||direct.yandex.ru$domain=yandex.ru|yandex.ua|yandex.kz|yandex.by
@@ -87,6 +85,9 @@ search.ukr.net#@#.ad-link
 @@||images.rambler.ru/$document
 @@||duckduckgo.com^$document
 @@||search.comodo.com^$elemhide
+ecosia.org#@#.results-ads
+ecosia.org#@#.card-ad
+ecosia.org#@#.js-ad
 @@||ecosia.org^$elemhide
 comss.ru#@##main > .flat td[style*="180px"] > .block
 comss.ru#@##main > .flat td[style*="260px"] > .av:nth-child(2)

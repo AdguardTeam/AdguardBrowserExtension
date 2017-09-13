@@ -1,8 +1,8 @@
-! Checksum: kh4q1wYtr+1cdQ3SLxrAXA
+! Checksum: fYIdN0TC/WtXQ9n69ptPMA
 ! Title: Spanish/Portuguese filter
 ! Description: Adguard Spanish/Portuguese filter. Filter list that specifically removes adverts on Spanish and Portuguese language websites.
-! Version: 1.0.87
-! TimeUpdated: 2017-08-30T18:12:59.083+04:00
+! Version: 1.0.87.16
+! TimeUpdated: 2017-09-12T19:01:35.879+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -140,9 +140,17 @@
 ||xclk-integracion.com^$third-party
 ||yestorrents.org^$third-party
 ||zebestof.com^$third-party
+animextre.me,habboin.net,flooxer.com,bemad.es,cuatro.com,divinity.es,eltiempohoy.es,energytv.es,factoriadeficcion.com,mtmad.es,telecinco.es#%#(function() { var noopfn = function() {;}; var Fab = function() {}; Fab.prototype.check = noopfn; Fab.prototype.clearEvent = noopfn;  Fab.prototype.emitEvent = noopfn; Fab.prototype.on = function(a, b) { if ( !a ) { b(); } return this; }; Fab.prototype.onDetected = function() {  return this; }; Fab.prototype.onNotDetected = function(a) { a(); return this; }; Fab.prototype.setOption = noopfn; var fab = new Fab(),  getSetFab = { get: function() { return Fab; }, set: function() {} }, getsetfab = { get: function() { return fab; }, set: function() {} }; if ( window.hasOwnProperty('FuckAdBlock') ) { window.FuckAdBlock = Fab; } else { Object.defineProperty(window, 'FuckAdBlock', getSetFab); } if ( window.hasOwnProperty('BlockAdBlock') ) { window.BlockAdBlock = Fab; } else {Object.defineProperty(window, 'BlockAdBlock', getSetFab); } if ( window.hasOwnProperty('SniffAdBlock') ) { window.SniffAdBlock = Fab; } else { Object.defineProperty(window, 'SniffAdBlock', getSetFab); } if ( window.hasOwnProperty('fuckAdBlock') ) { window.fuckAdBlock = fab; } else { Object.defineProperty(window, 'fuckAdBlock', getsetfab); } if ( window.hasOwnProperty('blockAdBlock') ) { window.blockAdBlock = fab; } else { Object.defineProperty(window, 'blockAdBlock', getsetfab); } if ( window.hasOwnProperty('sniffAdBlock') ) { window.sniffAdBlock = fab; } else { Object.defineProperty(window, 'sniffAdBlock', getsetfab); } })();
+animextre.me,habboin.net,flooxer.com,bemad.es,cuatro.com,divinity.es,eltiempohoy.es,energytv.es,factoriadeficcion.com,mtmad.es,telecinco.es#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
+@@||seriesgato.com^$generichide
+@@||animextre.me/js/showads.js
+@@||animextre.me/js/fuckadblock.js
+@@||iptvbin.com^$generichide
+vsports.pt#%#window.adblockDetecter = true;
+@@||vsports.pt/video/js/adsense.js
+||esmas.com/wp/assets/js/adblock/kw-pqr_.js
 @@||inmanga.com/Scripts/fuckadblock.js
 @@||habboin.net/public/js/fuckadblock.js
-habboin.net#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
 tinano.com.br#@##adsense
 tinano.com.br#@#.an-advert-banner
 tinano.com.br#@#.an-sponsored
@@ -150,22 +158,28 @@ bmwfaq.org#%#AG_onLoad(function() { XenForo.rellect.AdBlockDetectorParams = {}; 
 vizer.tv#@#.adsbox
 vizer.tv#@#.banner_ads
 @@||gamersclub.com.br/js/ads.js
-flooxer.com#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
 expansion.com#@#.adsbox
 expansion.com#@#div[id^="div-gpt-ad"]
 @@||securepubads.g.doubleclick.net/gpt/pubads_impl_$domain=expansion.com
 bemad.es,cuatro.com,divinity.es,eltiempohoy.es,energytv.es,factoriadeficcion.com,mtmad.es,telecinco.es#%#window._detecAdblock_fake1 = true;
 bemad.es,cuatro.com,divinity.es,eltiempohoy.es,energytv.es,factoriadeficcion.com,mtmad.es,telecinco.es#%#window._detecAdblock_fake2 = true;
 bemad.es,cuatro.com,divinity.es,eltiempohoy.es,energytv.es,factoriadeficcion.com,mtmad.es,telecinco.es#$##adsFooter { height: 1px!important; width: 1px!important; }
-bemad.es,cuatro.com,divinity.es,eltiempohoy.es,energytv.es,factoriadeficcion.com,mtmad.es,telecinco.es#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
 @@||animeflv.me/static/ads.js
 bludv.com#%#Object.defineProperty(window,'bsaAQyLSuO',{get:function(){},set:function(){throw"Adguard: stopped a script execution."}});
+!+ NOT_OPTIMIZED
 @@||mitele.es^$generichide
-@@||mitele.es/vendor/fuckadblock.js
-@@||mitele.es/vendor/adjs.js
-@@||securepubads.g.doubleclick.net/gpt/pubads_impl_*.js$domain=mitele.es
-@@||player.ooyala.com/static/*/ad-plugin/google_ima.min.js$domain=mitele.es
-@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=mitele.es
+!+ NOT_OPTIMIZED
+@@||mitele.es/vendor/*ad$xmlhttprequest,domain=mitele.es
+!+ NOT_OPTIMIZED
+@@||imasdk.googleapis.com/js/sdkloader/ima3.js$script,domain=mitele.es
+!+ NOT_OPTIMIZED
+@@||securepubads.g.doubleclick.net/gpt/pubads_impl_$script,domain=mitele.es
+!+ NOT_OPTIMIZED
+@@||player.ooyala.com/static/*/ad-plugin/google_ima.min.js$script,domain=mitele.es
+!+ NOT_OPTIMIZED
+@@||es-mediaset.videoplaza.tv/proxy/pulse-sdk-html5/*/latest.min.js$script,domain=mitele.es
+!+ NOT_OPTIMIZED
+@@||vp.videoplaza.tv/resources/pulse-sdk-html5/*/pulse-sdk-html5-$script,domain=mitele.es
 @@||minhaconexao.com.br/js/ads_detect.js
 minhaconexao.com.br#%#window.canRunAds = true;
 diariodemallorca.es#%#window.pr_okvalida=true;
@@ -208,6 +222,7 @@ peru21.pe#@#.adstop
 jokerfansub.com#@##adsense
 @@||autonocion.com/js/advertisement.js
 @@||subedlc.com^$elemhide
+wikiseriesonline.com###media-episode > div.row > div[class="col-lg-12"][-ext-has="> div.embed-responsive > div.ads"]
 mangahost.net##.sidebar > section.clearfix[-ext-has='div.ads']
 maisgasolina.com###main [id$="Block"][-ext-has='.adsbygoogle']
 ###PublicidadCentro
@@ -292,6 +307,8 @@ maisgasolina.com###main [id$="Block"][-ext-has='.adsbygoogle']
 ##.video_ads_overdiv
 ##[href^="http://ads.glispa.com/"]
 bludv.com#%#Object.defineProperty(window, 'puShown', { get: function() { return true; } });
+tu.tv#$#div#banner300x250 { display: none!important; }
+windowsblogitalia.com#$#.sidebar > div.tile-top.tile { height: auto!important; }
 -publicidad-
 -publicidad/
 -publicidade.
@@ -382,6 +399,41 @@ _publicidade.
 _publicidade_
 _publicitario.
 http://adw.
+20minutos.es##.ad-fixed
+20minutos.es##.editorial-banner
+||rs.20m.es/js2/third-parts/criteo.js^
+submanga.com##.s818
+submanga.com##body > #w > #f.f
+naruho.do##.pub728
+tu.tv###cointainerBanner300
+||webimg.hispavista.com/autobl/*728_ab.gif
+||webimg.hispavista.com/autobl/*300_ab.gif
+seriesypelis24.com##a[rel="nofollow"] > img
+completocapitulo.stream,capitulospaseries.stream##img[alt="adds"]
+completocapitulo.stream,capitulospaseries.stream##center > a[rel="noopener"] > img
+musicaanime.info###contendor-right-publicidad
+musicaanime.info##body > div[style="z-index:3; display:block"]#players
+elanimeflv.com##.a728
+jkanime.site##div[style^="width:728px;height:90px;"]
+jkanime.site##div[style^="width:300px;height:250px;"]
+anime-latino.net###left > div.cto
+anime-latino.net##.a160
+||ainder.club/*/code.php^
+todoanimeshd.com##.adspl
+sxmanga.com##.bloque_ads
+pepeliculas.com##.ads_player
+pepeliculas.com##.module_single_ads
+inkanime.com##iframe[Height="105"][Width="700"]
+inkanime.com##.a728
+inkanime.com##.adspl
+anime-latino.net##.adspl
+anime-latino.net##iframe[name="Pub300"]
+anime-tube.tv##.ads
+windowsblogitalia.com##div[id^="ppsPopup"]
+windowsblogitalia.com##.sidebar > div.tile-top > div[class="tile-content"]
+animeflv.me##div[id^="divFloat"] > div.avm
+animeflv.me##.episodeList > div > div[class^="clear"]
+masmusicacristiana.club##.nuevos-anuncios
 seriesytv.tv,animeytv.tv,peliculasytv.com##.a728
 seriesytv.tv,animeytv.tv,peliculasytv.com##.main > center > a[target="_blank"] > img
 animesorion.org###content > div.contentBox+center

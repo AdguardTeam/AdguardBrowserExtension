@@ -1,8 +1,8 @@
-! Checksum: rjxdDTOZKOu6iqLl/TLFUw
+! Checksum: SuCN/HrcyEHlZCcCwK1Y3Q
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 1.0.9.51
-! TimeUpdated: 2017-08-29T19:02:09.342+04:00
+! Version: 1.0.9.66
+! TimeUpdated: 2017-09-13T03:02:06.618+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -26,6 +26,12 @@
 ||mo.freeindoapp.com^
 !+ NOT_OPTIMIZED
 ||recreativ.ru^
+!+ NOT_OPTIMIZED
+||hqsjc.com^
+||api.ad-locus.com^
+||m.nbhaosheng168.com^$third-party
+||m.jakc0.com^$third-party
+||s.nvrentao8.com^$third-party
 ||xz15801.com^
 ||023hysj.com^
 ||lxqcgj.com^
@@ -449,7 +455,6 @@
 ||gwallet.com^
 ||h12-media.com^
 ||ha-api.pushwoosh.com^
-||hastrk1.com^
 ||heyzap.com^
 ||himediads.com^
 ||hormebets.info^$popup
@@ -906,6 +911,7 @@ deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important
 ||mobimagic.com/ads/
 ||graph.facebook.com/network_ads
 @@||tf-robots.nl^$elemhide,jsinject,content
+olx.ro#@#DIV[class^="banner"]
 @@||securepubads.g.doubleclick.net/gpt/pubads_impl_$script,domain=m.timesofindia.com
 @@||mobileads.indiatimes.com/Web_Ads/js/22april16/prebid_1.js$script,domain=m.timesofindia.com
 timesofindia.indiatimes.com#@#style[type="text/css"] + div[class]:not([id]):not([style]):not([class*=" "])
@@ -1002,6 +1008,19 @@ m.auto.ru##.card.i-bem > div[class^="_"] > div[class^="_"]
 m.auto.ru##.index.i-bem > div[class]:not([data-bem])
 m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"])
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
+nudevista.at,nudevista.be,nudevista.com,nudevista.com.br,nudevista.com.pl,nudevista.es,nudevista.it,nudevista.jp,nudevista.net,nudevista.nl,nudevista.se,nudevista.tw##.mob_adv
+||x99.nudevista.com/_/x/a*.html
+m.hclips.com##div#pane_related[role="tabpanel"] > .collapse.in
+m.hclips.com##.container > .section--normal[style^="margin-top:"] > .section__panel.text-center
+telegraph.co.uk##div[class^="mobileAdvertInStream"]
+zmovs.com##div[class^="player-banner"]
+||m.fmhua.com/js/lbo1888.js
+laravel-news.com##.site-main > div.container > div.callout:first-child
+udn.com##.overlay-container
+m.17track.net##.yq-panel-gad
+m.17track.net##.slick-slide+div[class^="slick-slide"] > div.tracklist-item.tracklist-default
+hdblog.it##.banner_list_container
+||m.lwxs520.com/wap/lwxs520/gg.js
 m.sfgate.com##.ad-point
 healthline.com##div.mlb
 healthline.com##div.mmr.row
@@ -1430,6 +1449,7 @@ auth.wi-fi.ru##.c-fullscreen-banner
 ||eviltracker.net^
 ||spotify.com/ads/
 ||trackersimulator.org^
+||collector-axa.cloud.ca.com^
 ||track.adform.net^
 ||analytics.ff.avast.com^
 ||api.miui.security.xiaomi.com^
