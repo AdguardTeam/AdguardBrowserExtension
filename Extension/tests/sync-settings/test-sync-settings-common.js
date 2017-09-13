@@ -9,6 +9,10 @@ var manifest = {
         {
             "name": "filters.json",
             "timestamp": 123123123213
+        },
+        {
+            "name": "general-settings.json",
+            "timestamp": 123123123213
         }
     ]
 };
@@ -39,6 +43,19 @@ var filters = {
     }
 };
 
+var generalSettingsPath = 'general-settings.json';
+
+var generalSettings = {
+    "general-settings": {
+        "app-language": "en-US",
+        "allow-acceptable-ads": true,
+        "show-blocked-ads-count": true,
+        "autodetect-filters": true,
+        "safebrowsing-enabled": true,
+        "safebrowsing-help": true
+    }
+};
+
 adguard.i18n = {
     getMessage: function () {
         return '';
@@ -57,9 +74,11 @@ var checkManifestData = function (assert, data) {
     assert.equal(data["protocol-version"], manifest["protocol-version"]);
     assert.equal(data["min-compatible-version"], manifest["min-compatible-version"]);
     assert.equal(data["app-id"], manifest["app-id"]);
-    assert.equal(data["sections"].length, 1);
+    assert.equal(data["sections"].length, 2);
     assert.equal(data["sections"][0].name, manifest["sections"][0].name);
     assert.equal(data["sections"][0].timestamp, manifest["sections"][0].timestamp);
+    assert.equal(data["sections"][1].name, manifest["sections"][1].name);
+    assert.equal(data["sections"][1].timestamp, manifest["sections"][1].timestamp);
 };
 
 
