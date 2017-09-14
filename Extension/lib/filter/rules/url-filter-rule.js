@@ -19,6 +19,8 @@
 
     'use strict';
 
+    var isFirefoxBrowser = adguard.utils.browser.isFirefoxBrowser();
+
     /**
      * Searches for domain name in rule text and transforms it to punycode if needed.
      *
@@ -267,6 +269,35 @@
     }
 
     /**
+     * Tries to convert data: or blob: rule to CSP rule
+     * @param rule Rule
+     * @param urlRuleText URL rule text
+     */
+    function tryConvertToCspRule(rule, urlRuleText) {
+
+        // Convert only blocking domain-specific rules
+        if (rule.whiteListRule || !rule.hasPermittedDomains()) {
+            return;
+        }
+
+        // Firefox browser allow to intercept data: and blob: URIs
+        if (isFirefoxBrowser) {
+            return;
+        }
+
+        if (urlRuleText.indexOf('data:') === 0 || urlRuleText.indexOf('|data:') === 0 ||
+            urlRuleText.indexOf('blob:') === 0 || urlRuleText.indexOf('|blob:') === 0) {
+
+            rule.cspRule = true;
+            rule.cspDirective = api.CspFilter.DEFAULT_DIRECTIVE;
+
+            rule.urlRegExpSource = UrlFilterRule.MASK_ANY_SYMBOL;
+            rule.shortcut = null;
+            rule.permittedContentType = UrlFilterRule.contentTypes.ALL;
+        }
+    }
+
+    /**
      * Rule for blocking requests to URLs.
      * Read here for details:
      * http://adguard.com/en/filterrules.html#baseRules
@@ -323,6 +354,10 @@
 
         if (this.cspRule) {
             validateCspRule(this);
+        }
+
+        if (!this.cspRule) {
+            tryConvertToCspRule(this, urlRuleText);
         }
     };
 
