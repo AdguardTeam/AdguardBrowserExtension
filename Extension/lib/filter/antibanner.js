@@ -950,25 +950,29 @@ adguard.antiBannerService = (function (adguard) {
      */
     function loadFiltersFromBackend(filterMetadataList, callback) {
 
+        var dfds = [];
         var loadedFilters = [];
 
-        var loadNextFilter = function () {
-            if (filterMetadataList.length === 0) {
-                callback(true, loadedFilters);
-            } else {
-                var filterMetadata = filterMetadataList.shift();
-                loadFilterRules(filterMetadata, true, function (success) {
-                    if (!success) {
-                        callback(false);
-                        return;
-                    }
-                    loadedFilters.push(filterMetadata.filterId);
-                    loadNextFilter();
-                });
-            }
-        };
+        filterMetadataList.forEach(function (filterMetadata) {
+            var dfd = new adguard.utils.Promise();
+            dfds.push(dfd);
 
-        loadNextFilter();
+            loadFilterRules(filterMetadata, true, function (success) {
+                if (!success) {
+                    dfd.reject();
+                    return;
+                }
+
+                loadedFilters.push(filterMetadata.filterId);
+                dfd.resolve();
+            });
+        });
+
+        adguard.utils.Promise.all(dfds).then(function () {
+            callback(true, loadedFilters);
+        }, function () {
+            callback(false);
+        });
     }
 
     /**
