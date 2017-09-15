@@ -480,3 +480,19 @@ QUnit.test('RegExp Rules Parsing', function (assert) {
         assert.ok(ex === 'Unknown option: REPLACE');
     }
 });
+
+QUnit.test('Test convert CSP rules', function (assert) {
+
+    var rule = new adguard.rules.UrlFilterRule('|blob:$script,domain=example.com');
+    assert.ok(rule.cspRule);
+    assert.equal(rule.permittedContentType, adguard.rules.UrlFilterRule.contentTypes.ALL);
+
+    rule = new adguard.rules.UrlFilterRule('|blob:$script');
+    assert.notOk(rule.cspRule);
+
+    rule = new adguard.rules.UrlFilterRule('|data:$script,domain=example.com');
+    assert.ok(rule.cspRule);
+
+    rule = new adguard.rules.UrlFilterRule('|data:$script');
+    assert.notOk(rule.cspRule);
+});
