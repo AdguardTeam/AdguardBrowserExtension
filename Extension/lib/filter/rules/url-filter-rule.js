@@ -352,12 +352,12 @@
             this.shortcut = findShortcut(urlRuleText);
         }
 
-        if (this.cspRule) {
-            validateCspRule(this);
-        }
-
         if (!this.cspRule) {
             tryConvertToCspRule(this, urlRuleText);
+        }
+
+        if (this.cspRule) {
+            validateCspRule(this);
         }
     };
 
