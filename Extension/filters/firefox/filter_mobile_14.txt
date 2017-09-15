@@ -1,14 +1,15 @@
-! Checksum: ufcQPI8qu9UeOBIDyPsKJg
+! Checksum: 50FaIjLeVPc1HaD5XolFzg
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on webpages including cookie notices third-party widgets and in-page popups.
-! Version: 1.0.18.26
-! TimeUpdated: 2017-09-13T03:02:38.153+04:00
+! Version: 1.0.18.35
+! TimeUpdated: 2017-09-14T22:02:21.232+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
 #%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
 #%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
+allmusic.com###ctoolbar
 ||dailymotion.com/embed/video/$domain=adshorte.com
 thequestion.ru##a.informer
 haaretz.com##.footer-toolbar.float
@@ -185,6 +186,13 @@ youtube.com##.ytp-pause-overlay
 youtube.com###yt-lang-alert-container
 otzyv.ru##div[align="center"] > .aviasales
 vchaspik.ua##div[id="conteiner"][style="height: 410px;"]
+diatribe.org##.newsletter-featured
+||bilder.augsburger-allgemeine.de/img/incoming/*/Mobilportal-Promo-Smartphone-Portrait-*x*px.png
+augsburger-allgemeine.de##.aside > div[style^="width:300px; overflow:hidden; text-align:right; border: 1px solid"]:not([class]):not([id])
+greenocktelegraph.co.uk##.cta-component-half-width
+greenocktelegraph.co.uk##.cta-component-full-width
+allmusic.com##[class*="promo"] > [title="Newsletter banner"]
+thehardtimes.net##.spot-im-registration-module
 rallye-magazin.de###inj_nl_form
 columbiaspectator.com##.pb-f-article-specdaily-side
 it-tehnik.ru##.subscribe__big
@@ -1218,7 +1226,6 @@ howwindows.ru#%#window.canRunAds = true;
 ###cookieBnr
 ###cookieBox
 ###cookieChoiceBanner
-###cookieChoiceInfo
 ###cookieCompliance
 ###cookieComplianceMessage
 ###cookieConsent
@@ -2575,6 +2582,8 @@ _europecookielaw.
 ||iubenda.com^$third-party
 ||r42tag.com^$third-party
 ||tm.tradetracker.net/public/styles/ttCookieDirective.css
+diaridegirona.cat,diariodeibiza.es,diarioinformacion.com,emporda.info,laopinion.es,laopinioncoruna.es,laopiniondemalaga.es,laopiniondemurcia.es,laopiniondezamora.es,laprovincia.es,lne.es,mallorcazeitung.es,regio7.cat,superdeporte.es###MensajeCompruebaCookieSite
+civetta.tv###ecl-notice
 bayer.de##.bayer-cookie-disclaimer
 basf.com###cookielayer
 ruhrbarone.de###cookie
@@ -3106,6 +3115,9 @@ wykop.pl#$#.type-permanent+#nav { top: 0px!important; }
 ||pnp.de/np-intern/js/Cookie.js
 ||publiekeomroep.nl/data/script/cconsent
 ||tol.postnl.nl/toestemming
+grosbill.com#$##header[style^="height: "] { height: 56px!important; }
+grosbill.com#$#.cnil_bar { display: none!important; }
+grosbill.com#$##body > div[style="height: 136px;"] { height: 56px!important; }
 !+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb)
 premium-link.ninja##.cc_banner-wrapper
 viafree.no#$#.cookie-bar + nav > #navBar { top: auto!important; }
@@ -3473,6 +3485,7 @@ ukr-today.com##.soc_vidgets
 ###smartbanner.windows
 ##head[prefix~="medium-com:"] ~ body .js-openInAppButton
 ##head[prefix~="medium-com:"] ~ body .js-postActionsBarContent > .js-readNextInteractions
+m.topsante.com#$#body.smartbanner { margin-top: auto!important; }
 m.vseinstrumenti.ru##.app-download
 jkanime.site##body > div[style="padding:5px; background-color:yellow; text-align:center; border:2px solid yellow;"]
 m.avito.ru##.promo-app-inner
@@ -3702,6 +3715,7 @@ rozetka.com.ua#%#document.cookie = "hide_popup_banner=true";
 mail.yandex.ua,mail.yandex.ru,mail.yandex.kz,mail.yandex.com.tr#%#AG_onLoad(function(){ var e = document.querySelector('span[data-href="/touch/"][id="js-app-promo-close"]'); if (e) e.click(); });
 @@||lekvapteke.ru/assets/*/js/jquery.smartbanner.js
 @@||mcdonalds.com.tr/Content/Lib/Js/jquery.smartbanner.js$domain=mcdonalds.com.tr
+||my.leadpages.net^$third-party
 ||terthoreper.ru^$third-party
 ||borgan.ru^$third-party
 ||fortbegother.ru^$third-party
@@ -3728,6 +3742,7 @@ mail.yandex.ua,mail.yandex.ru,mail.yandex.kz,mail.yandex.com.tr#%#AG_onLoad(func
 ||mailget.net^$third-party
 ||optnmnstr.com^$third-party
 ||static.popmechanic.ru/service/loader.js$third-party
+edmsauce.com##a[href^="https://my.leadpages.net/leadbox/"]
 columbiaspectator.com###PopupSignupForm_0
 bizled.co.in##.spu-bg
 bizled.co.in##.spu-box
@@ -4251,6 +4266,8 @@ easy-deutsch.de#%#AG_onLoad(function() { setTimeout(function() { var el = docume
 @@||kounta.com/wp-content/plugins/popup-maker/$domain=kounta.com
 @@||tradeciety.com/wp-content/plugins/arscode-ninja-popups/js/jquery.placeholder.js
 @@||photoshoptutorials.ws/wp-content/plugins/arscode-ninja-popups/js/jquery.placeholder.js
+@@||my.leadpages.net/template/$script,domain=weddingjams.com
+@@||my.leadpages.net^*/public/
 ||accengage.net^$third-party
 ||wonderpush.com^$third-party
 ||pushify.com^$third-party
@@ -4790,6 +4807,13 @@ nim.ru##.widget.banner
 thevideo.me##.premium-loader
 thevideo.me##.premium-plans
 thevideo.me##.player-options-section > div[class="col-md-8"] > div[class="col-xs-12 m-a-0 p-a-0"]:last-child
+ebay.co.uk,ebay.com,ebay.de###ListViewInner > li.sresult[-ext-has='div.promoted-lv']
+ebay.co.uk,ebay.com,ebay.de###BrowseRelated
+ebay.co.uk,ebay.com,ebay.de###merch_html_100010
+ebay.co.uk,ebay.com,ebay.de###ads_combo1
+ebay.co.uk,ebay.com,ebay.de###ads_combo2
+a10.com##.wdg_page_game--missing-plugin
+thehardtimes.net##.sidebar > #text-14
 aliexpress.com##.ui-newuser-layer-dialog
 porndoe.com##.go-premium-drawer
 txxx.com##.rek-desk-list

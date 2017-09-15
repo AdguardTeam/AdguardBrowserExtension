@@ -1,8 +1,8 @@
-! Checksum: I0WbQ8rCokF9pMWaOY668Q
+! Checksum: Hwzi+VYZz8VD76y1uhNhCw
 ! Title: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! Version: 1.0.14.44
-! TimeUpdated: 2017-09-13T02:00:45.591+04:00
+! Version: 1.0.14.46
+! TimeUpdated: 2017-09-14T20:00:48.367+04:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#privacy
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -77,11 +77,13 @@ accountkiller.com#%#window.ga = function(){var a = arguments[5];a&&a.hitCallback
 !---------------------------------------------------------------------------!
 !
 ! Extended CSS rules
+!
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6281
 vol.az###footer > .column-one-fourth[-ext-has=".line > span:contains(Sayğac)"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5449
 donnerwetter.de##.col-xs-12 > div.block.prepend-top[-ext-has='> div.blocktitle-brand > h2 > span.blocktitle-brand:contains(weitere Wetter-Nachrichten)']
 !
+latino-serialo.tv###sidebar-left > div.block[-ext-has="> div.box > h2:contains(Счетчик)"]
 prjaga.ru###right > div#right_nav > h3:contains(Онлайн статистика)
 journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Счетчик)"]
 !-------------------------------------------------------------------------------!
@@ -4123,6 +4125,7 @@ _tracking.php?b=
 ||scorecardresearch.com^$domain=cnet.com,important
 ! End: cnet.com trackers
 !
+||files.cdn.spilcloud.com/*_adomic_hb_analytic.js
 ||hotclips24.com/templates/default/js/fingerprintjs/fingerprint2.js
 ||stats.pcsg-server.de/js/
 ||kissmanga.info/*.gif?gid=
@@ -4932,6 +4935,10 @@ dreamprogs.net##td[Width="88"][Height="31"]
 !-------------- Whitelist ------------------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+! https://forum.adguard.com/index.php?threads/25022/
+@@||googletagmanager.com/gtm.js^$domain=arcelik.com.tr
+@@||google-analytics.com/analytics.js$domain=arcelik.com.tr
+@@||google-analytics.com/plugins/ua/ec.js$domain=arcelik.com.tr
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6705
 @@||b.scorecardresearch.com/beacon.js$domain=ntvspor.net
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6649
