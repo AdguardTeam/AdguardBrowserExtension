@@ -20,7 +20,6 @@
     'use strict';
 
     var CSP_HEADER_NAME = 'Content-Security-Policy';
-    var DEFAULT_BLOCK_CSP_DIRECTIVE = 'connect-src http: https:; frame-src http: https:; child-src http: https:';
 
     /**
      * Retrieve referrer url from request details.
@@ -153,7 +152,6 @@
         /**
          * Websocket check.
          * If 'ws://' request is blocked for not existing domain - it's blocked for all domains.
-         * Then we gonna limit frame sources to http to block src:'data/text' etc.
          * More details in these issue:
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/344
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/440
@@ -163,10 +161,6 @@
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/572
         if (!adguard.webRequest.webSocketSupported) {
             rule = adguard.webRequestService.getRuleForRequest(tab, 'ws://adguardwebsocket.check', frameUrl, adguard.RequestTypes.WEBSOCKET);
-            applyCSP = adguard.webRequestService.isRequestBlockedByRule(rule);
-        }
-        if (!applyCSP) {
-            rule = adguard.webRequestService.getRuleForRequest(tab, 'blob:adguardblob.check', frameUrl, adguard.RequestTypes.SCRIPT);
             applyCSP = adguard.webRequestService.isRequestBlockedByRule(rule);
         }
         if (!applyCSP) {
@@ -202,7 +196,7 @@
         if (adguard.webRequestService.isRequestBlockedByRule(legacyCspRule)) {
             cspHeaders.push({
                 name: CSP_HEADER_NAME,
-                value: DEFAULT_BLOCK_CSP_DIRECTIVE
+                value: adguard.rules.CspFilter.DEFAULT_DIRECTIVE
             });
         }
         if (legacyCspRule) {

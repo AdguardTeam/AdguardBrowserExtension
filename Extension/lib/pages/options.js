@@ -45,14 +45,13 @@ PageController.prototype = {
 
         function checkAnchor() {
             var anchor = window.location.hash;
-            if (anchor && anchor != currentAnchor) {
+            if (anchor && anchor !== currentAnchor) {
                 currentAnchor = anchor;
                 $('a.top-menu-item[href="' + anchor + '"]').click();
             }
-            setTimeout(function () {
-                checkAnchor();
-            }, 100);
         }
+
+        window.onhashchange = checkAnchor;
 
         setTimeout(function () {
             checkAnchor();
