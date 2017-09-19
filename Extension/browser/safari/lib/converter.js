@@ -396,6 +396,11 @@ var SafariContentBlockerConverter = {
 
         convertUrlFilterRule: function (rule) {
 
+            if (rule.cspRule) {
+                // CSP rules are not supported
+                return null;
+            }
+
             var urlFilter = this._createUrlFilterString(rule);
 
             // Redefine some of regular expressions

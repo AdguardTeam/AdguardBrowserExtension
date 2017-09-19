@@ -20,7 +20,6 @@
     'use strict';
 
     var isFirefoxBrowser = adguard.utils.browser.isFirefoxBrowser();
-    var isContentBlockerEnabled = adguard.utils.browser.isContentBlockerEnabled();
 
     /**
      * Searches for domain name in rule text and transforms it to punycode if needed.
@@ -283,11 +282,6 @@
 
         // Firefox browser allow to intercept data: and blob: URIs
         if (isFirefoxBrowser) {
-            return;
-        }
-
-        // Safari content blocker doesn't support blob: in some cases
-        if (isContentBlockerEnabled) {
             return;
         }
 
