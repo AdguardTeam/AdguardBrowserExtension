@@ -1,8 +1,8 @@
-! Checksum: /PwCu594Ihe2qQ9Uw732qg
+! Checksum: gWeAuLh0wAcoEi9YQAJIGg
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on webpages including cookie notices third-party widgets and in-page popups.
-! Version: 1.0.18.35
-! TimeUpdated: 2017-09-14T22:02:21.232+04:00
+! Version: 1.0.18.51
+! TimeUpdated: 2017-09-19T21:02:24.336+04:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#annoyances
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -23,6 +23,12 @@
 !
 !######### Annoying elements (not ads)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/6825
+||macerkopf.de/wp-content/plugins/dreamgrow-scroll-triggered-box/js/script.js
+! https://forum.adguard.com/index.php?threads/https-www-viyaza-com.25096/
+viyaza.com###check-also-box
+! https://forum.adguard.com/index.php?threads/http-thefreedictionary-com.25069/
+thefreedictionary.com###OccupSlider
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6720
 allmusic.com###ctoolbar
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6579
@@ -351,6 +357,8 @@ vchaspik.ua##div[id="conteiner"][style="height: 410px;"]
 !***
 !* Subscriptions/newsletters (not popups)
 !*
+bilemezsin.com##body > .altmenu#onboardingalttan_refsiz
+androidsage.com##.jetpack_subscription_widget
 diatribe.org##.newsletter-featured
 ||bilder.augsburger-allgemeine.de/img/incoming/*/Mobilportal-Promo-Smartphone-Portrait-*x*px.png
 augsburger-allgemeine.de##.aside > div[style^="width:300px; overflow:hidden; text-align:right; border: 1px solid"]:not([class]):not([id])
@@ -665,6 +673,9 @@ gazetevatan.com##form ._soc.news
 ! FuckAdBlock CSS
 randaris-anime.net,iphonesoft.fr,tmohentai.com,kshowonline.com,topsante.com,topsante.com,getgreenshot.org,forexpeacearmy.com,pr-cy.ru,pokehuntr.com,theland.com.au,greenbayphoenix.com#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links {display:block!important;}
 !
+telestar.fr##body > div[id^="detection-block"]
+1alivs.xyz##body > div[id][style="display: block;"]
+corneey.com##.information-container
 soccer.ru##.disabled-block
 gp.se##.adblock-checker
 opensubtitles.org##.white_content
@@ -1144,6 +1155,9 @@ howwindows.ru#%#window.canRunAds = true;
 !#######################################################
 !######### General element hiding rules ################
 !#######################################################
+!+ NOT_OPTIMIZED
+##.cookie-banner:not(body):not(html)
+!
 ###cookies-notification-popup:not(body):not(html)
 ##body.sliding-popup-processed > #sliding-popup
 ##.divascookies
@@ -2096,7 +2110,6 @@ howwindows.ru#%#window.canRunAds = true;
 ##.cookie-alert
 ##.cookie-alert-box
 ##.cookie-assistant
-##.cookie-banner:not(body):not(html)
 ##.cookie-banner-bottom
 ##.cookie-bar
 ##.cookie-block
@@ -2796,6 +2809,15 @@ _europecookielaw.
 !######### Rules for specific sites ####################
 !#######################################################
 !
+promotionbasis.de##body > #c_test_box
+mobile.twitter.com##._1363jyKz > ._3xujJ3kq
+greenocktelegraph.co.uk###cookieWarningR
+huawei.com##.browsehappy.ReadPolicy
+myabandonware.com##body > #ddneu
+esendex.com.au###cookies_popup
+play.google.com##div[id="gb"][style="min-width: 750px;"] > div.gb_nd.gb_Nc[style]
+telestar.fr###cookie-bar
+shutterstock.com##.banner-eu-cookie
 diaridegirona.cat,diariodeibiza.es,diarioinformacion.com,emporda.info,laopinion.es,laopinioncoruna.es,laopiniondemalaga.es,laopiniondemurcia.es,laopiniondezamora.es,laprovincia.es,lne.es,mallorcazeitung.es,regio7.cat,superdeporte.es###MensajeCompruebaCookieSite
 civetta.tv###ecl-notice
 bayer.de##.bayer-cookie-disclaimer
@@ -3077,7 +3099,6 @@ puhutv.com##consent > .ag-snack-bar
 m.bosch.com##.bs-cookie-notice
 karakartal.com##.cookie-text
 na-kd.com##.common-cookieNotice
-mobile.twitter.com##._1363jyKz > ._2qq9pBP0
 momox.de##.cookie-teaser
 needrom.com###cookie_assistant_wrapper
 buderus.de##.tt-mybuderus-common-cookieNavBarWrapper > .cookie-manager-portlet
@@ -3845,6 +3866,7 @@ ukr-today.com##.soc_vidgets
 ##head[prefix~="medium-com:"] ~ body .js-openInAppButton
 ##head[prefix~="medium-com:"] ~ body .js-postActionsBarContent > .js-readNextInteractions
 !
+onlineradiobox.com##.page__column-right > .playmarket
 m.topsante.com#$#body.smartbanner { margin-top: auto!important; }
 m.vseinstrumenti.ru##.app-download
 jkanime.site##body > div[style="padding:5px; background-color:yellow; text-align:center; border:2px solid yellow;"]
@@ -4027,7 +4049,6 @@ imageban.ru##img[alt="Get it on Google Play"]
 shiftdelete.net##img[title="Torrent Yasal mı? - ShiftDelete.Net"]
 ||anistar.ru/templates/*/images/android-app-on-google-play.png
 ||banki.ru/static/common/vendor-libs/jquery.smartbanner/
-||hdtvler1.net/wp-content/uploads/2015/10/Google-Play-yukle.png
 ||malatyahaber.com/wp-content/uploads/2016/05/SA.gif
 ||ntv.com.tr/Content/img/promote.jpg
 ||s.livelib.ru/js/smartbanner.
@@ -4101,6 +4122,7 @@ mail.yandex.ua,mail.yandex.ru,mail.yandex.kz,mail.yandex.com.tr#%#AG_onLoad(func
 !
 ! Generic rules
 !
+||falan.ru^$third-party
 ||my.leadpages.net^$third-party
 ||terthoreper.ru^$third-party
 ||borgan.ru^$third-party
@@ -4131,6 +4153,7 @@ mail.yandex.ua,mail.yandex.ru,mail.yandex.kz,mail.yandex.com.tr#%#AG_onLoad(func
 !
 ! Specific sites
 !
+cpygames.com##.afc_popup
 edmsauce.com##a[href^="https://my.leadpages.net/leadbox/"]
 columbiaspectator.com###PopupSignupForm_0
 bizled.co.in##.spu-bg
@@ -4737,6 +4760,9 @@ livelib.ru,lenta.ru,mychrome,rambler.ru,sports.ru#%#(function() { if (typeof Not
 sports.ru#%#(function() { try { if ("undefined" != typeof localStorage) { var a = { date: (new Date).toString(), time: (new Date).getTime(), data: 2 }; localStorage.setItem("sports:view:notifications-subscribe-popup:closed:count", JSON.stringify(a)) } } catch (ex) {} })();
 sports.ru#%#(function() { try { if ("undefined" != typeof localStorage) { var a = { date: (new Date).toString(), time: (new Date).getTime(), data: true }; localStorage.setItem("sports:view:notifications-subscribe-popup:view", JSON.stringify(a)) } } catch (ex) {} })();
 !
+sputniknewslv.com##.globalFade
+sputniknewslv.com##.window-push
+sputniknewslv.com##.modal-push
 kp.ru##.pushNotification
 mail.yandex.com.tr,mail.yandex.by,mail.yandex.kz,mail.yandex.ru,mail.yandex.ua##.js-push-notifications-promo
 mail.yandex.com.tr,mail.yandex.by,mail.yandex.kz,mail.yandex.ru,mail.yandex.ua##.ns-view-done-promo-push-notifications
@@ -5391,6 +5417,7 @@ thevideo.me##.premium-loader
 thevideo.me##.premium-plans
 thevideo.me##.player-options-section > div[class="col-md-8"] > div[class="col-xs-12 m-a-0 p-a-0"]:last-child
 !
+||unikal.org/images/r3.gif
 ebay.co.uk,ebay.com,ebay.de###ListViewInner > li.sresult[-ext-has='div.promoted-lv']
 ebay.co.uk,ebay.com,ebay.de###BrowseRelated
 ebay.co.uk,ebay.com,ebay.de###merch_html_100010

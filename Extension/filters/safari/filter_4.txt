@@ -1,8 +1,8 @@
-! Checksum: ftd4PJ+f4r+kS+iERzITDQ
+! Checksum: EeGzO377roIzkSc92zgayg
 ! Title: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
-! Version: 1.0.23.19
-! TimeUpdated: 2017-09-14T21:01:05.521+04:00
+! Version: 1.0.23.30
+! TimeUpdated: 2017-09-19T19:00:58.223+04:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#social
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -260,6 +260,8 @@ lj_bookmarklet
 !
 ! Extended CSS rules
 !
+gundem.ws##.sidebar > .kopa-article-list-5-widget[-ext-has=">.fb-page"]
+setfilmizle1.com##.content > .sbox[-ext-has=">.dt_social_single"]
 durmamp3indir.biz##.blok[-ext-has=">i:contains(Paylaş)"]
 tubidy.mobi##.video-search-footer > li[-ext-has='>a[href^="/share.php"]']
 mp3indirdim.com##td> div[align="left"] > b:contains(Paylaş)
@@ -433,6 +435,19 @@ m.tf.co.kr#$#li.sBtn_reply { float: initial!important; display: inline-block!imp
 ||crackflare.com/?*=*&_=
 !
 !
+welt.de##.c-article-sharer__social-container > .c-article-sharer__icon-wrapper:not(.c-article-sharer__icon-wrapper--is-mailto):not(.c-article-sharer__icon-wrapper--is-print)
+mobil.stern.de##.social-icon-table > .social-icon:not(.social-icon-email)
+66.ru##.t-social-buttons
+thefreedictionary.com##.share-block
+a2zcrack.com##.tpcrn-shr-post
+hddizisonbolumizle.com##.share.meta
+skidrowcrack.com##.share
+dizifilm.com##.share-area
+setfilmizle1.com##.dt_social_single
+azpolitika.info##.lrshare_interfacehorizontal > lr > lrc > [class]:not(.lrshare_email):not(.lrshare_print)
+bilemezsin.com##a[href^="javascript:window.open('http://www.facebook.com/sharer.php"]
+ushilapychvost.ru##.m-item-post-sharing
+cnet.com##.sharebarContainer > .share-button:not(.emailWrapper):not(.comment-count-redesign)
 hdegedizi.org##.share
 deskmodder.de##.handschriftzeile > .arteilen_ > .arteilen
 deskmodder.de##.handschriftzeile > .arteilen_ > .arteilen + .pfeil
@@ -520,7 +535,7 @@ nhk.or.jp##.social-btn-area
 fullstuff.co##.share-icons > div.entry-comment-count ~ a
 fullstuff.co##.sd-sharing
 seriesytv.tv,animeytv.tv,peliculasytv.com##.share
-hdsonbolumizleyin.org,yuzlercedizitv.com##.share.meta
+yuzlercedizitv.com##.share.meta
 spieletest.at##.navArrows > a[href^="javascript:window.open"]
 iz.ru##.share_bottom
 imgskull.com###tab-about > .panel-share-networks
@@ -623,7 +638,6 @@ teknokulis.com##li.facebook
 teknokulis.com##li.twitter
 teknokulis.com##li.google
 prizyv.ru##.showing-shares
-burdanhdfilmizle.net###alt
 kitguru.net##.share-post
 kitguru.net##.widget_FacebookLikeBox
 shayhowe.com##.toc > .share
@@ -3684,6 +3698,8 @@ bomb01.com#$#.modal-open { overflow: visible!important; }
 !
 ! Section fixing issues caused by social filter
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/6695
+cnet.com#@#.share-button
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6438
 radiojavan.com#@##socialize
 ! https://forum.adguard.com/index.php?threads/24670/

@@ -1,8 +1,8 @@
-! Checksum: /mbG/RZta3XI/Ca0jdKPSg
+! Checksum: cZNU0n1+Xp/V8dviTABvIg
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 1.0.9.67
-! TimeUpdated: 2017-09-14T17:10:33.361+04:00
+! Version: 1.0.9.74
+! TimeUpdated: 2017-09-19T18:10:27.154+04:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#mobile
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -52,6 +52,7 @@
 !+ NOT_OPTIMIZED
 ||hqsjc.com^
 !
+||mobilebanner.ru^$third-party
 ||api.ad-locus.com^
 ||m.nbhaosheng168.com^$third-party
 ||m.jakc0.com^$third-party
@@ -897,6 +898,10 @@ westseattleblog.com#@#.header-ad
 !
 ! Extended CSS rules
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/6804
+mobil.stern.de##.teaserlist__items > .teaser-medium-left.article-type-standard-article.mod-teaser[-ext-has=".teaser > .sponsorship--labels"]
+! https://forum.adguard.com/index.php?threads/m-sondakika-com.25075/
+m.sondakika.com###news-list-container > ul > li[-ext-has=".adsbygoogle"]
 ! https://forum.adguard.com/index.php?threads/24017/
 fishki.net##.list-view-items div.content__preview[-ext-has='> div.picture-holder > a[href="/go/"][target="_blank"]']
 fishki.net##div[class^="list-view"] > div[class^="content__intro-text"][-ext-has='> p.content__intro-text__author > a[href="/profile/543769"]']
@@ -1227,6 +1232,18 @@ m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"
 ! https://forum.adguard.com/index.php?threads/10464/
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
 !
+webclick.megalabs.ru##body > section.intro
+webclick.megalabs.ru##body > section.info
+m.sondakika.com###reksa
+m.sondakika.com##.home_300x250
+m.sondakika.com##div > .widget_partner[style]
+m.sondakika.com###news-list-container > ul > li[style]:not([data-haber-id])
+m.katestube.com##.top-spot
+m.katestube.com##.bottom-spot
+m.katestube.com##.btn-share
+m.katestube.com##.pop-fade
+m.milliyet.com.tr##.Masthead > #div-320x100
+m.milliyet.com.tr##a[href^="http://secure.milliyet.com.tr/redirect/Default.aspx?"][target="_blank"] > article
 m.augsburger-allgemeine.de##main > .aa-teaser-mini-group
 m.augsburger-allgemeine.de##.aa-swatch-topdown-nice.aa-teaser > a[href="https://abo.augsburger-allgemeine.de/epaper-app-login-und-download-uebersicht"]
 m.donanimhaber.com##.yorum-ustu-alan
@@ -1601,6 +1618,7 @@ auth.wi-fi.ru##.c-fullscreen-banner
 !
 ! Blocking of Facebook ads
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/6728
 ! https://forum.adguard.com/index.php?threads/24268/
 ||mobile-campaigns.avast.com^
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6167

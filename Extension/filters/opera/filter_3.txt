@@ -1,8 +1,8 @@
-! Checksum: +Da48LL9wSJna04IZTdwbg
+! Checksum: X1n1HEF15Lk2iD+Cmg+SLg
 ! Title: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! Version: 1.0.14.46
-! TimeUpdated: 2017-09-14T20:00:48.367+04:00
+! Version: 1.0.14.52
+! TimeUpdated: 2017-09-18T17:00:44.444+04:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#privacy
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -1391,7 +1391,6 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 ||google-pr7.de^$third-party
 ||google-rank.org^$third-party
 ||googleadservices.com^$third-party
-||googleapis.com/generate_204
 ||googlerank.info^$third-party
 ||googlesyndication.com/safeframe/$third-party
 ||googletagmanager.com/gtm.js?$third-party
@@ -3603,6 +3602,7 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 !
 ! Section contains the list of tracking servers, which are hosted on useful sites as subdomains
 !
+||tracking.kurier.at^
 ||analytics.codigo.se^
 ||tr.suedkurier.de^
 ||track.toroadvertising.com^
@@ -4125,7 +4125,9 @@ _tracking.php?b=
 ||scorecardresearch.com^$domain=cnet.com,important
 ! End: cnet.com trackers
 !
+||kurier.at/adblock
 ||files.cdn.spilcloud.com/*_adomic_hb_analytic.js
+||d.mobilebanner.ru/p.gif
 ||hotclips24.com/templates/default/js/fingerprintjs/fingerprint2.js
 ||stats.pcsg-server.de/js/
 ||kissmanga.info/*.gif?gid=
@@ -4935,6 +4937,13 @@ dreamprogs.net##td[width="88"][height="31"]
 !-------------- Whitelist ------------------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/6758
+@@||dpm.demdex.net/id$domain=vodafone.com.au
+! https://forum.adguard.com/index.php?threads/25066/
+@@||analytics.wearekiss.com/piwik.js$domain=spritepad.wearekiss.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/6591
+@@||pro.hit.gemius.pl/gplayer.js$domain=nova.cz
+@@||google-analytics.com/analytics.js$domain=nova.cz
 ! https://forum.adguard.com/index.php?threads/25022/
 @@||googletagmanager.com/gtm.js^$domain=arcelik.com.tr
 @@||google-analytics.com/analytics.js$domain=arcelik.com.tr
