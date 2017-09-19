@@ -20,6 +20,7 @@
     'use strict';
 
     var isFirefoxBrowser = adguard.utils.browser.isFirefoxBrowser();
+    var isContentBlockerEnabled = adguard.utils.browser.isContentBlockerEnabled();
 
     /**
      * Searches for domain name in rule text and transforms it to punycode if needed.
@@ -282,6 +283,12 @@
 
         // Firefox browser allow to intercept data: and blob: URIs
         if (isFirefoxBrowser) {
+            return;
+        }
+
+        // Maybe safari could intercept data: and blob: URIs,
+        // otherwise csp rules are not supported in converter
+        if (isContentBlockerEnabled) {
             return;
         }
 
