@@ -532,7 +532,7 @@ var SafariContentBlockerConverter = {
             return this._convertAGRule(rule);
         } catch (ex) {          
             var message = 'Error converting rule from: ' + 
-                (rule.ruleText ? rule.ruleText : rule) + 
+                ((rule && rule.ruleText) ? rule.ruleText : rule) +
                 ' cause:\n' + ex + '\r\n';
             adguard.console.debug(message);
 
