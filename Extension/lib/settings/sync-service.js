@@ -612,9 +612,9 @@
 
         syncEnabled = String(adguard.localStorage.getItem(SYNC_STATUS_ENABLED_PROP)) === 'true';
 
-        syncOptions.syncGeneral = String(adguard.localStorage.getItem(SYNC_GENERAL_DISABLED_PROP)) === 'false';
-        syncOptions.syncFilters = String(adguard.localStorage.getItem(SYNC_FILTERS_DISABLED_PROP)) === 'false';
-        syncOptions.syncExtensionSpecific = String(adguard.localStorage.getItem(SYNC_EXTENSION_SPECIFIC_DISABLED_PROP)) === 'false';
+        syncOptions.syncGeneral = String(adguard.localStorage.getItem(SYNC_GENERAL_DISABLED_PROP)) !== 'true';
+        syncOptions.syncFilters = String(adguard.localStorage.getItem(SYNC_FILTERS_DISABLED_PROP)) !== 'true';
+        syncOptions.syncExtensionSpecific = String(adguard.localStorage.getItem(SYNC_EXTENSION_SPECIFIC_DISABLED_PROP)) !== 'true';
 
         var providerName = adguard.localStorage.getItem(SYNC_CURRENT_PROVIDER_PROP);
         if (providerName) {

@@ -924,30 +924,17 @@ var SyncSettings = function (options) {
         $('#dropboxSelectProvider').on('click', onProviderSelected('DROPBOX'));
         $('#browserStorageSelectProvider').on('click', onProviderSelected('BROWSER_SYNC'));
 
-        $('#sync-general-settings-checkbox').on('change', function () {
-            var self = this;
-            contentPage.sendMessage({type: 'setSyncOptions', options: {
-                syncGeneral: self.checked,
-                syncFilters: $('#sync-filters-checkbox').is(':checked'),
-                syncExtensionSpecific: $('#sync-extension-specific-checkbox').is(':checked')
-            }});
-        });
-        $('#sync-filters-checkbox').on('change', function () {
-            var self = this;
-            contentPage.sendMessage({type: 'setSyncOptions', options: {
-                syncGeneral: $('#sync-general-settings-checkbox').is(':checked'),
-                syncFilters: self.checked,
-                syncExtensionSpecific: $('#sync-extension-specific-checkbox').is(':checked')
-            }});
-        });
-        $('#sync-extension-specific-checkbox').on('change', function () {
-            var self = this;
-            contentPage.sendMessage({type: 'setSyncOptions', options: {
-                syncGeneral: $('#sync-general-settings-checkbox').is(':checked'),
-                syncFilters: $('#sync-filters-checkbox').is(':checked'),
-                syncExtensionSpecific: self.checked
-            }});
-        });
+        $('#sync-general-settings-checkbox').on('change', onSyncOptionsChanged);
+        $('#sync-filters-checkbox').on('change', onSyncOptionsChanged);
+        $('#sync-extension-specific-checkbox').on('change', onSyncOptionsChanged);
+    }
+
+    function onSyncOptionsChanged() {
+        contentPage.sendMessage({type: 'setSyncOptions', options: {
+            syncGeneral: $('#sync-general-settings-checkbox').is(':checked'),
+            syncFilters: $('#sync-filters-checkbox').is(':checked'),
+            syncExtensionSpecific: $('#sync-extension-specific-checkbox').is(':checked')
+        }});
     }
 
     function onProviderSelected(providerName) {
