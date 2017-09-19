@@ -398,7 +398,7 @@ var SafariContentBlockerConverter = {
 
             if (rule.cspRule) {
                 // CSP rules are not supported
-                return null;
+                throw new Error("CSP rules are not supported");
             }
 
             var urlFilter = this._createUrlFilterString(rule);
