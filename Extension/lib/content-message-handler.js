@@ -391,6 +391,9 @@
             case 'syncNow':
                 adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, {force: true});
                 break;
+            case 'setSyncOptions':
+                adguard.sync.syncService.setSyncOptions(message.options);
+                break;
             case 'syncChangeDeviceName':
                 adguard.sync.syncService.changeDeviceName(message.deviceName);
                 break;

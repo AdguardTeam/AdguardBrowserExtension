@@ -24,6 +24,8 @@
     var APP_ID = "adguard-browser-extension";
 
     var FILTERS_SECTION = "filters.json";
+    var GENERAL_SECTION = "general-settings.json";
+    var EXTENSION_SPECIFIC_SECTION = "extension-specific-settings.json";
 
     var SYNC_MANIFEST_PROP = "sync-manifest";
 
@@ -41,6 +43,14 @@
             "sections": [
                 {
                     "name": FILTERS_SECTION,
+                    "timestamp": 0
+                },
+                {
+                    "name": GENERAL_SECTION,
+                    "timestamp": 0
+                },
+                {
+                    "name": EXTENSION_SPECIFIC_SECTION,
                     "timestamp": 0
                 }
             ]
@@ -71,6 +81,14 @@
             "sections": [
                 {
                     "name": FILTERS_SECTION,
+                    "timestamp": 0
+                },
+                {
+                    "name": GENERAL_SECTION,
+                    "timestamp": 0
+                },
+                {
+                    "name": EXTENSION_SPECIFIC_SECTION,
                     "timestamp": 0
                 }
             ]
@@ -174,13 +192,18 @@
      * Saves manifest and its sections timestamps. If syncTime is passed, timestamps are updated with this value
      * @param manifest Manifest
      * @param syncTime Synchronization time
+     * @param sections updated sections names array
      */
-    var syncLocalManifest = function (manifest, syncTime) {
+    var syncLocalManifest = function (manifest, syncTime, sections) {
         if (syncTime) {
             manifest.timestamp = syncTime;
             for (var i = 0; i < manifest.sections.length; i++) {
                 var section = manifest.sections[i];
-                if (section.name === FILTERS_SECTION) {
+                if (sections) {
+                    if (sections.indexOf(section.name) >= 0) {
+                        section.timestamp = syncTime;
+                    }
+                } else {
                     section.timestamp = syncTime;
                 }
             }
@@ -200,17 +223,17 @@
 
         var set = section["general-settings"];
 
-        adguard.settings.changeShowPageStatistic(!!set["show-blocked-ads-count"]);
-        adguard.settings.changeAutodetectFilters(!!set["autodetect-filters"]);
-        adguard.settings.changeEnableSafebrowsing(!!set["safebrowsing-enabled"]);
-        adguard.settings.changeSendSafebrowsingStats(!!set["safebrowsing-help"]);
+        adguard.settings.changeShowPageStatistic(!!set["show-blocked-ads-count"], syncSuppressOptions);
+        adguard.settings.changeAutodetectFilters(!!set["autodetect-filters"], syncSuppressOptions);
+        adguard.settings.changeEnableSafebrowsing(!!set["safebrowsing-enabled"], syncSuppressOptions);
+        adguard.settings.changeSendSafebrowsingStats(!!set["safebrowsing-help"], syncSuppressOptions);
 
         if (!!set["allow-acceptable-ads"]) {
             adguard.filters.addAndEnableFilters([adguard.utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID], function () {
                 callback(true);
             }, syncSuppressOptions);
         } else {
-            adguard.filters.disableFilter(adguard.utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID, syncSuppressOptions);
+            adguard.filters.disableFilters([adguard.utils.filters.ids.SEARCH_AND_SELF_PROMO_FILTER_ID], syncSuppressOptions);
             callback(true);
         }
     };
@@ -221,12 +244,16 @@
      * @param callback
      */
     var applyExtensionSpecificSettingsSection = function (section, callback) {
+        var syncSuppressOptions = {
+            syncSuppress: true
+        };
+
         var set = section["extension-specific-settings"];
 
-        adguard.settings.changeUseOptimizedFiltersEnabled(!!set["use-optimized-filters"]);
-        adguard.settings.changeCollectHitsCount(!!set["collect-hits-count"]);
-        adguard.settings.changeShowContextMenu(!!set["show-context-menu"]);
-        adguard.settings.changeShowInfoAboutAdguardFullVersion(!!set["show-info-about-adguard"]);
+        adguard.settings.changeUseOptimizedFiltersEnabled(!!set["use-optimized-filters"], syncSuppressOptions);
+        adguard.settings.changeCollectHitsCount(!!set["collect-hits-count"], syncSuppressOptions);
+        adguard.settings.changeShowContextMenu(!!set["show-context-menu"], syncSuppressOptions);
+        adguard.settings.changeShowInfoAboutAdguardFullVersion(!!set["show-info-about-adguard"], syncSuppressOptions);
 
         callback(true);
     };
@@ -263,7 +290,7 @@
             for (var i = 0; i < enabledFilters.length; i++) {
                 var filterId = enabledFilters[i].filterId;
                 if (enabledFilterIds.indexOf(filterId) < 0) {
-                    adguard.filters.disableFilter(filterId, syncSuppressOptions);
+                    adguard.filters.disableFilters([filterId], syncSuppressOptions);
                 }
             }
             callback(true);
@@ -275,7 +302,9 @@
      * @param sectionName Section name
      */
     var isSectionSupported = function (sectionName) {
-        return sectionName === FILTERS_SECTION;
+        return sectionName === FILTERS_SECTION
+            || sectionName === GENERAL_SECTION
+            || sectionName === EXTENSION_SPECIFIC_SECTION;
     };
 
     /**
@@ -288,6 +317,12 @@
             case FILTERS_SECTION:
                 loadFiltersSection(callback);
                 break;
+            case GENERAL_SECTION:
+                loadGeneralSettingsSection(callback);
+                break;
+            case EXTENSION_SPECIFIC_SECTION:
+                loadExtensionSpecificSettingsSection(callback);
+                break;
             default:
                 adguard.console.error('Section {0} is not supported', sectionName);
                 callback(false);
@@ -296,7 +331,6 @@
 
     /**
      * Apply section to application.
-     * Now we support only filters.json section
      *
      * @param sectionName Section name
      * @param section Section object
@@ -306,6 +340,12 @@
         switch (sectionName) {
             case FILTERS_SECTION:
                 applyFiltersSection(section, callback);
+                break;
+            case GENERAL_SECTION:
+                applyGeneralSettingsSection(section, callback);
+                break;
+            case EXTENSION_SPECIFIC_SECTION:
+                applyExtensionSpecificSettingsSection(section, callback);
                 break;
             default:
                 adguard.console.error('Section {0} is not supported', sectionName);

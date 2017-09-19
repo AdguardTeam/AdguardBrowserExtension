@@ -87,10 +87,12 @@ adguard.settings = (function (adguard) {
         return propertyValue;
     };
 
-    var setProperty = function (propertyName, propertyValue) {
+    var setProperty = function (propertyName, propertyValue, options) {
         adguard.localStorage.setItem(propertyName, propertyValue);
         properties[propertyName] = propertyValue;
         propertyUpdateChannel.notify(propertyName, propertyValue);
+
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     };
 
     var getAllSettings = function () {
@@ -128,32 +130,34 @@ adguard.settings = (function (adguard) {
         return !getProperty(settings.DISABLE_DETECT_FILTERS);
     };
 
-    var changeAutodetectFilters = function (enabled) {
-        setProperty(settings.DISABLE_DETECT_FILTERS, !enabled);
+    var changeAutodetectFilters = function (enabled, options) {
+        setProperty(settings.DISABLE_DETECT_FILTERS, !enabled, options);
     };
 
     var showPageStatistic = function () {
         return !getProperty(settings.DISABLE_SHOW_PAGE_STATS);
     };
 
-    var changeShowPageStatistic = function (enabled) {
-        setProperty(settings.DISABLE_SHOW_PAGE_STATS, !enabled);
+    var changeShowPageStatistic = function (enabled, options) {
+        setProperty(settings.DISABLE_SHOW_PAGE_STATS, !enabled, options);
     };
 
     var isShowInfoAboutAdguardFullVersion = function () {
         return !getProperty(settings.DISABLE_SHOW_ADGUARD_PROMO_INFO);
     };
 
-    var changeShowInfoAboutAdguardFullVersion = function (show) {
-        setProperty(settings.DISABLE_SHOW_ADGUARD_PROMO_INFO, !show);
+    var changeShowInfoAboutAdguardFullVersion = function (show, options) {
+        setProperty(settings.DISABLE_SHOW_ADGUARD_PROMO_INFO, !show, options);
     };
 
-    var changeEnableSafebrowsing = function (enabled) {
+    var changeEnableSafebrowsing = function (enabled, options) {
         setProperty(settings.DISABLE_SAFEBROWSING, !enabled);
+
+        adguard.listeners.notifyListeners(adguard.listeners.SYNC_REQUIRED, options);
     };
 
-    var changeSendSafebrowsingStats = function (enabled) {
-        setProperty(settings.DISABLE_SEND_SAFEBROWSING_STATS, !enabled);
+    var changeSendSafebrowsingStats = function (enabled, options) {
+        setProperty(settings.DISABLE_SEND_SAFEBROWSING_STATS, !enabled, options);
     };
 
     var getSafebrowsingInfo = function () {
@@ -167,16 +171,16 @@ adguard.settings = (function (adguard) {
         return !getProperty(settings.DISABLE_COLLECT_HITS);
     };
 
-    var changeCollectHitsCount = function (enabled) {
-        setProperty(settings.DISABLE_COLLECT_HITS, !enabled);
+    var changeCollectHitsCount = function (enabled, options) {
+        setProperty(settings.DISABLE_COLLECT_HITS, !enabled, options);
     };
 
     var showContextMenu = function () {
         return !getProperty(settings.DISABLE_SHOW_CONTEXT_MENU);
     };
 
-    var changeShowContextMenu = function (enabled) {
-        setProperty(settings.DISABLE_SHOW_CONTEXT_MENU, !enabled);
+    var changeShowContextMenu = function (enabled, options) {
+        setProperty(settings.DISABLE_SHOW_CONTEXT_MENU, !enabled, options);
     };
 
     var isDefaultWhiteListMode = function () {
@@ -187,8 +191,8 @@ adguard.settings = (function (adguard) {
         return getProperty(settings.USE_OPTIMIZED_FILTERS);
     };
 
-    var changeUseOptimizedFiltersEnabled = function (enabled) {
-        setProperty(settings.USE_OPTIMIZED_FILTERS, !!enabled);
+    var changeUseOptimizedFiltersEnabled = function (enabled, options) {
+        setProperty(settings.USE_OPTIMIZED_FILTERS, !!enabled, options);
     };
 
     var changeDefaultWhiteListMode = function (enabled) {
