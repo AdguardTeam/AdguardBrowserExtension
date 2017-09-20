@@ -751,11 +751,14 @@ PageController.prototype = {
         var fragment = document.createDocumentFragment();
         for (var i = 0; i < rulesText.length; i++) {
 
+            var ruleText = rulesText[i];
+            if (ruleText === '') {  // Filter rules may contain empty strings
+                continue;
+            }
+
             var el = this._getFilterRuleTemplate();
             fragment.appendChild(el[0]);
-
-            var ruleText = rulesText[i];
-            if (!ruleText) {
+            if (ruleText === null) { // It means a new rule
                 el.data("isNew", true);
                 isNewElement = true;
             } else {
