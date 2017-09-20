@@ -153,23 +153,10 @@ public class FileUtil {
 
 	private static void copyWebExtFiles(File source, File dest) throws Exception {
 
-		File webExtFolder = new File(dest, "webextension");
-		copyChromiumFiles(source, webExtFolder, Browser.CHROMIUM);
+		copyChromiumFiles(source, dest, Browser.CHROMIUM);
 
 		File webExtBase = new File(source, FIREFOX_WEBEXT_FOLDER);
 		copyDirectory(webExtBase, dest);
-
-		File libFolder = new File(dest, "lib");
-		FileUtils.copyDirectoryToDirectory(libFolder, webExtFolder);
-		FileUtils.deleteDirectory(libFolder);
-
-		File manifest = new File(dest, "manifest.json");
-		FileUtils.deleteQuietly(new File(webExtFolder, "manifest.json"));
-		FileUtils.moveFileToDirectory(manifest, webExtFolder, false);
-
-		File background = new File(dest, "background.html");
-		FileUtils.deleteQuietly(new File(webExtFolder, "background.html"));
-		FileUtils.moveFileToDirectory(background, webExtFolder, false);
 	}
 
 	private static void copyFirefoxFiles(File source, File dest, Browser browser) throws Exception {

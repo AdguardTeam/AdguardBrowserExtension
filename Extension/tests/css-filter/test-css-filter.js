@@ -611,7 +611,7 @@ QUnit.test("Css Filter WWW Test", function (assert) {
     var rule = new adguard.rules.CssFilterRule(ruleText);
 
     assert.ok(rule != null);
-    assert.equal(rule.permittedDomain, 'google.com');
+    assert.equal(rule.permittedDomain, 'www.google.com');
 });
 
 QUnit.test("Permitted/Restricted domains Test", function (assert) {

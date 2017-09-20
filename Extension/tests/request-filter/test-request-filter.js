@@ -196,11 +196,13 @@ QUnit.test('Test CSP important rules', function (assert) {
     var importantDirectiveWhiteListRule = new adguard.rules.UrlFilterRule('@@||xpanama.net^$csp=frame-src \'none\',domain=merriam-webster.com,important');
     var defaultCspRule = new adguard.rules.UrlFilterRule('||xpanama.net^$csp=frame-src \'none\',domain=merriam-webster.com');
     var importantCspRule = new adguard.rules.UrlFilterRule('||xpanama.net^$csp=frame-src \'none\',domain=merriam-webster.com,important');
+    var convertedCspRule = new adguard.rules.UrlFilterRule('|data:$domain=merriam-webster.com');
     requestFilter.addRule(importantDirectiveWhiteListRule);
     requestFilter.addRule(importantCspRule);
     requestFilter.addRule(defaultCspRule);
     requestFilter.addRule(globalWhiteListRule);
     requestFilter.addRule(directiveWhiteListRule);
+    requestFilter.addRule(convertedCspRule);
 
     var rules = requestFilter.findCspRules('https://nop.xpanama.net/if.html?adflag=1&cb=kq4iOggNyP', 'https://www.merriam-webster.com/', adguard.RequestTypes.DOCUMENT) || [];
     assert.ok(rules.length === 1);
@@ -208,23 +210,49 @@ QUnit.test('Test CSP important rules', function (assert) {
 
     requestFilter.removeRule(globalWhiteListRule);
     rules = requestFilter.findCspRules('https://nop.xpanama.net/if.html?adflag=1&cb=kq4iOggNyP', 'https://www.merriam-webster.com/', adguard.RequestTypes.DOCUMENT) || [];
-    assert.ok(rules.length === 1);
+    assert.ok(rules.length === 2);
     assert.equal(rules[0].ruleText, importantDirectiveWhiteListRule.ruleText);
+    assert.equal(rules[1].ruleText, convertedCspRule.ruleText);
 
     requestFilter.removeRule(importantDirectiveWhiteListRule);
     rules = requestFilter.findCspRules('https://nop.xpanama.net/if.html?adflag=1&cb=kq4iOggNyP', 'https://www.merriam-webster.com/', adguard.RequestTypes.DOCUMENT) || [];
-    assert.ok(rules.length === 1);
+    assert.ok(rules.length === 2);
     assert.equal(rules[0].ruleText, importantCspRule.ruleText);
+    assert.equal(rules[1].ruleText, convertedCspRule.ruleText);
 
     requestFilter.removeRule(importantCspRule);
     rules = requestFilter.findCspRules('https://nop.xpanama.net/if.html?adflag=1&cb=kq4iOggNyP', 'https://www.merriam-webster.com/', adguard.RequestTypes.DOCUMENT) || [];
-    assert.ok(rules.length === 1);
+    assert.ok(rules.length === 2);
     assert.equal(rules[0].ruleText, directiveWhiteListRule.ruleText);
+    assert.equal(rules[1].ruleText, convertedCspRule.ruleText);
 
     requestFilter.removeRule(directiveWhiteListRule);
     rules = requestFilter.findCspRules('https://nop.xpanama.net/if.html?adflag=1&cb=kq4iOggNyP', 'https://www.merriam-webster.com/', adguard.RequestTypes.DOCUMENT) || [];
-    assert.ok(rules.length === 1);
+    assert.ok(rules.length === 2);
     assert.equal(rules[0].ruleText, defaultCspRule.ruleText);
+    assert.equal(rules[1].ruleText, convertedCspRule.ruleText);
+    assert.equal(rules[1].cspDirective, adguard.rules.CspFilter.DEFAULT_DIRECTIVE);
+});
+
+
+QUnit.test('Test object subrequest type', function (assert) {
+
+    var requestFilter = new adguard.RequestFilter();
+
+    var rule1 = new adguard.rules.UrlFilterRule('blockrequest1$object-subrequest');
+    var rule2 = new adguard.rules.UrlFilterRule('blockrequest2$object_subrequest');
+    var rule3 = new adguard.rules.UrlFilterRule('blockrequest3$~object-subrequest');
+    var rule4 = new adguard.rules.UrlFilterRule('blockrequest4$~object_subrequest');
+
+    requestFilter.addRule(rule1);
+    requestFilter.addRule(rule2);
+    requestFilter.addRule(rule3);
+    requestFilter.addRule(rule4);
+
+    assert.ok(requestFilter.findRuleForRequest('blockrequest1', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
+    assert.ok(requestFilter.findRuleForRequest('blockrequest2', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
+    assert.notOk(requestFilter.findRuleForRequest('blockrequest3', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
+    assert.notOk(requestFilter.findRuleForRequest('blockrequest4', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
 });
 
 QUnit.test("Request filter performance", function (assert) {

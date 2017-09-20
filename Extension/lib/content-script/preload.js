@@ -103,6 +103,7 @@
             if ("createShadowRoot" in document.documentElement && shadowDomExceptions.indexOf(document.domain) == -1) {
                 shadowRoot = document.documentElement.createShadowRoot();
                 shadowRoot.appendChild(document.createElement("shadow"));
+                protectShadowRoot();
             }
         }
 
@@ -172,8 +173,8 @@
         }
 
         // Wraps with try catch and appends cleanup
-        scripts.unshift("try {");
-        scripts.push("} catch (ex) { console.error('Error executing AG js: ' + ex); }");
+        scripts.unshift("( function () { try {");
+        scripts.push("} catch (ex) { console.error('Error executing AG js: ' + ex); } })();");
         scripts.push(cleanupCurrentScriptToString());
 
         var script = document.createElement("script");
@@ -266,6 +267,54 @@
     };
 
     /**
+     * Overrides shadowRoot getter
+     * The solution from ABP
+     *
+     * Function supposed to be executed in page's context
+     */
+    var overrideShadowRootGetter = function () {
+        if ("shadowRoot" in Element.prototype) {
+            var ourShadowRoot = document.documentElement.shadowRoot;
+            if (ourShadowRoot) {
+                var desc = Object.getOwnPropertyDescriptor(Element.prototype, "shadowRoot");
+                var shadowRoot = Function.prototype.call.bind(desc.get);
+
+                Object.defineProperty(Element.prototype, "shadowRoot", {
+                    configurable: true, enumerable: true, get: function () {
+                        var thisShadow = shadowRoot(this);
+                        return thisShadow === ourShadowRoot ? null : thisShadow;
+                    }
+                });
+            }
+        }
+    };
+
+    /**
+     * Overrides stylesheets property disabled
+     *
+     * Function supposed to be executed in page's context
+     */
+    var overrideStyleSheetProperties = function () {
+        Object.defineProperty(window.HTMLStyleElement.prototype, 'disabled', {
+            get: function () {
+                return false;
+            }, set: function (val) {
+                // Do nothing
+            }
+        });
+    };
+
+    /**
+     * Protects shadow root from access in page's context
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/829
+     */
+    var protectShadowRoot = function () {
+        var scriptShadowRoot = "(" + overrideShadowRootGetter.toString() + ")();";
+        var scriptStylesheets = "(" + overrideStyleSheetProperties.toString() + ")();";
+        executeScripts([scriptShadowRoot, scriptStylesheets]);
+    };
+
+    /**
      * The main purpose of this function is to prevent blocked iframes "flickering".
      * So, we do two things:
      * 1. Add a temporary display:none style for all frames (which is removed on DOMContentLoaded event)
@@ -284,7 +333,8 @@
          */
         var hideIframes = iframeHidingExceptions.indexOf(document.domain) < 0;
 
-        var iframeHidingSelector = "iframe[src]";
+        // We do not hide "allowfullscreen" as it is likely to be video player frames
+        var iframeHidingSelector = "iframe[src]:not([allowfullscreen])";
         if (hideIframes) {
             ElementCollapser.hideBySelector(iframeHidingSelector, null, shadowRoot);
         }
@@ -721,6 +771,11 @@
         // We skip big frames here
         if (element.localName === 'iframe' || element.localName === 'frame' || element.localName === 'embed') {
             if (element.clientHeight * element.clientWidth > 400 * 300) {
+                return;
+            }
+
+            if (element.hasAttribute('allowfullscreen')) {
+                // This is likely to be a video player
                 return;
             }
         }

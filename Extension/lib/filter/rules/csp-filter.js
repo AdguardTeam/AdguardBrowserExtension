@@ -155,6 +155,7 @@
             }
 
             var blockingRules = cspBlockFilter.findRules(url, documentHost, thirdParty, requestType);
+
             var rulesByDirective = Object.create(null);
 
             // Collect whitelist and blocking CSP rules in one array
@@ -186,5 +187,7 @@
             findCspRules: findCspRules
         };
     };
+
+    api.CspFilter.DEFAULT_DIRECTIVE = 'connect-src http: https:; frame-src http: https:; child-src http: https:';
 
 })(adguard, adguard.rules);

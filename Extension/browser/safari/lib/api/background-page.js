@@ -182,12 +182,31 @@
 		return safari.extension.baseURI + path;
 	};
 
+    /**
+	 * Parses bundleId from baseURI
+	 * safari-extension://com.adguard.safaridev-N33TQXN8C7
+     */
+    var bundleId = (function () {
+        var uri = safari.extension.baseURI;
+        var prefix = 'safari-extension://';
+        var index1 = uri.indexOf(prefix);
+        if (index1 < 0) {
+            return safari.extension.baseURI;
+        }
+        uri = uri.substring(index1 + prefix.length);
+        var index2 = uri.indexOf('-');
+        if (index2 < 0) {
+            return safari.extension.baseURI;
+        }
+        return uri.substring(0, index2);
+    })();
+
 	adguard.app = {
 		/**
 		 * Extension ID
 		 */
 		getId: function () {
-			return 'not supported by Safari';
+			return bundleId;
 		},
 
 		/**
@@ -270,5 +289,13 @@
 			// Empty
 		}
 	};
+
+	// Adds content scripts for adblock.adguard.com/thankyou.html
+    var domains = ['http://*.adguard.com/*/thankyou.html', 'https://*.adguard.com/*/thankyou.html'];
+    safari.extension.addContentScriptFromURL(adguard.getURL("lib/libs/jquery-2.2.4.min.js"), domains, [], false);
+    safari.extension.addContentScriptFromURL(adguard.getURL("lib/content-script/i18n-helper.js"), domains, [], false);
+    safari.extension.addContentScriptFromURL(adguard.getURL("lib/pages/i18n.js"), domains, [], false);
+    safari.extension.addContentScriptFromURL(adguard.getURL("lib/pages/script.js"), domains, [], false);
+    safari.extension.addContentScriptFromURL(adguard.getURL("lib/pages/thankyou.js"), domains, [], false);
 
 })(adguard);

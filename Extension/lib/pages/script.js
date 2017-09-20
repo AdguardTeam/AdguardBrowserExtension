@@ -130,13 +130,17 @@ $(function () {
 });
 
 function updateDisplayAdguardPromo(showPromo) {
-    if (showPromo) {
-        $('.download-adguard-block').show();
-        $('.non-download-adguard-block').hide();
-    } else {
-        $('.download-adguard-block').hide();
-        $('.non-download-adguard-block').show();
-    }
+
+    // Sometimes in FF promo block isn't rendered properly
+    setTimeout(function () {
+        if (showPromo) {
+            $('.download-adguard-block').show();
+            $('.non-download-adguard-block').hide();
+        } else {
+            $('.download-adguard-block').hide();
+            $('.non-download-adguard-block').show();
+        }
+    }, 100);
 }
 
 function customizePopupFooter(isMacOs) {

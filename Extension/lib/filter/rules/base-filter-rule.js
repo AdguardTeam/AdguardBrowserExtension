@@ -63,7 +63,7 @@
                             if (permittedDomains === null) {
                                 permittedDomains = [];
                             }
-                            permittedDomains.push(adguard.utils.url.getCroppedDomainName(domainName));
+                            permittedDomains.push(domainName);
                         }
                     }
                 }

@@ -43,14 +43,6 @@ adguard.initialize = function () {
                  */
                 adguard.ui.openFiltersDownloadPage();
 
-                /**
-                 * Tracking extension install or update according to http://adguard.com/en/privacy.html#browsers
-                 * We do this with a single purpose: to know the number of unique installations of our extension.
-                 * This information is stored for 24 hours and then it is deleted.
-                 *
-                 * The only thing which is not deleted is the aggregated info: installs count and active users count.
-                 */
-                adguard.backend.trackInstall();
 
                 // Retrieve filters and install them
                 adguard.filters.offerFilters(function (filterIds) {
