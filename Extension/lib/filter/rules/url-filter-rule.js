@@ -19,6 +19,8 @@
 
     'use strict';
 
+    var isFirefoxBrowser = adguard.utils.browser.isFirefoxBrowser();
+
     /**
      * Searches for domain name in rule text and transforms it to punycode if needed.
      *
@@ -267,6 +269,35 @@
     }
 
     /**
+     * Tries to convert data: or blob: rule to CSP rule
+     * @param rule Rule
+     * @param urlRuleText URL rule text
+     */
+    function tryConvertToCspRule(rule, urlRuleText) {
+
+        // Convert only blocking domain-specific rules
+        if (rule.whiteListRule || !rule.hasPermittedDomains()) {
+            return;
+        }
+
+        // Firefox browser allow to intercept data: and blob: URIs
+        if (isFirefoxBrowser) {
+            return;
+        }
+
+        if (urlRuleText.indexOf('data:') === 0 || urlRuleText.indexOf('|data:') === 0 ||
+            urlRuleText.indexOf('blob:') === 0 || urlRuleText.indexOf('|blob:') === 0) {
+
+            rule.cspRule = true;
+            rule.cspDirective = api.CspFilter.DEFAULT_DIRECTIVE;
+
+            rule.urlRegExpSource = UrlFilterRule.MASK_ANY_SYMBOL;
+            rule.shortcut = null;
+            rule.permittedContentType = UrlFilterRule.contentTypes.ALL;
+        }
+    }
+
+    /**
      * Rule for blocking requests to URLs.
      * Read here for details:
      * http://adguard.com/en/filterrules.html#baseRules
@@ -319,6 +350,10 @@
         } else {
             // Searching for shortcut
             this.shortcut = findShortcut(urlRuleText);
+        }
+
+        if (!this.cspRule) {
+            tryConvertToCspRule(this, urlRuleText);
         }
 
         if (this.cspRule) {
@@ -555,6 +590,16 @@
                     break;
                 default:
                     optionName = optionName.toUpperCase();
+
+                    /**
+                     * Convert $object-subrequest modifier to UrlFilterRule.contentTypes.OBJECT_SUBREQUEST
+                     */
+                    if (optionName === 'OBJECT-SUBREQUEST') {
+                        optionName = 'OBJECT_SUBREQUEST';
+                    } else if (optionName === '~OBJECT-SUBREQUEST') {
+                        optionName = '~OBJECT_SUBREQUEST';
+                    }
+
                     if (optionName in UrlFilterRule.contentTypes) {
                         permittedContentType |= UrlFilterRule.contentTypes[optionName]; // jshint ignore:line
                     } else if (optionName[0] === api.FilterRule.NOT_MARK && optionName.substring(1) in UrlFilterRule.contentTypes) {
@@ -608,7 +653,7 @@
         OBJECT: 1 << 4,
         SUBDOCUMENT: 1 << 5,
         XMLHTTPREQUEST: 1 << 6,
-        'OBJECT-SUBREQUEST': 1 << 7,
+        OBJECT_SUBREQUEST: 1 << 7,
         MEDIA: 1 << 8,
         FONT: 1 << 9,
         WEBSOCKET: 1 << 10,
@@ -629,7 +674,7 @@
     if (adguard.prefs.platform === 'chromium' ||
         adguard.prefs.platform === 'webkit') {
 
-        UrlFilterRule.contentTypes['OBJECT-SUBREQUEST'] = UrlFilterRule.contentTypes.OBJECT;
+        UrlFilterRule.contentTypes.OBJECT_SUBREQUEST = UrlFilterRule.contentTypes.OBJECT;
     }
 
     UrlFilterRule.ignoreOptions = {
@@ -656,7 +701,7 @@
     UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.OBJECT;
     UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.SUBDOCUMENT;
     UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.XMLHTTPREQUEST;
-    UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes['OBJECT-SUBREQUEST'];
+    UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.OBJECT_SUBREQUEST;
     UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.MEDIA;
     UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.FONT;
     UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.WEBSOCKET;

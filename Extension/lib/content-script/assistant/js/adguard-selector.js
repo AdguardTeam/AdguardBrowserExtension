@@ -145,7 +145,7 @@ var AdguardSelectorLib = (function ($) { // jshint ignore:line
      * @returns {{top: number, left: number, outerWidth: number, outerHeight: number}}
      */
     var getOffsetExtended = function (elem) {
-        var bodyRect = document.body.getBoundingClientRect();
+        var bodyRect = document.documentElement.getBoundingClientRect();
         var elemRect = elem.getBoundingClientRect();
 
         var rectTop = elemRect.top - bodyRect.top;

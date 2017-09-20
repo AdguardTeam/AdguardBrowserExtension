@@ -33,7 +33,7 @@
 				"lib/libs/css.escape.js",
 				"lib/utils/element-collapser.js",
 				"lib/utils/css-hits-counter.js",
-				"lib/libs/extended-css-1.0.6.js",
+				"lib/libs/extended-css.js",
 				"lib/content-script/adguard-content.js",
 				"lib/content-script/common-script.js",
 				"lib/content-script/content-script.js",
@@ -83,6 +83,20 @@
 				"https://*/*"
 			],
 			"run_at": "document_end"
+		},
+		{
+			"all_frames": false,
+			"js": [
+				"lib/libs/jquery-2.2.4.min.js",
+				"lib/content-script/i18n-helper.js",
+				"lib/pages/i18n.js",
+				"lib/pages/script.js",
+				"lib/pages/thankyou.js"
+			],
+			"matches": [
+				"*://*.adguard.com/*/thankyou.html*"
+			],
+			"run_at": "document_start"
 		},
 		{
 			"all_frames": false,

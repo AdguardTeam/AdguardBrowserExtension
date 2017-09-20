@@ -1,7 +1,11 @@
-# Adguard Browser Extension
+# AdGuard Browser Extension
 [![Build Status](https://travis-ci.org/AdguardTeam/AdguardBrowserExtension.svg?branch=master)](https://travis-ci.org/AdguardTeam/AdguardBrowserExtension)
 
-## How to build extension
+## What is AdGuard?
+
+AdGuard is a fast and lightweight ad blocking extension that effectively blocks all types of ads on all web pages! Unlike it's standalone counterparts (AG for Windows, Mac), browser extension is completely free and open source.
+
+## How to build
 
 ### Requirements
 
@@ -9,7 +13,7 @@
 - [Apache Maven 2+](http://maven.apache.org/download.cgi)
 - Set JAVA_HOME and JDK_HOME environment variables
 
-### Building dev version
+### Building the dev version
 
 Run the following command in the Compiler directory:
 ```
@@ -24,7 +28,7 @@ This will create a Build directory with unpacked extensions for all browsers:
   Build/safari-$currentVersion.safariextension
 ```
 
-### Building beta and release versions
+### Building the beta and release versions
 ```
   ./build.sh beta
   ./build.sh release

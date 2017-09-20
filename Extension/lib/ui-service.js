@@ -105,6 +105,8 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         return urlBuilder.join("");
     })();
 
+    var THANKYOU_PAGE_URL = 'https://adblock.adguard.com/v1/thankyou.html';
+
     // Assistant
 
     var assistantOptions = null;
@@ -520,20 +522,21 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
     var openThankYouPage = function () {
 
+        var params = adguard.utils.browser.getExtensionParams();
+        var thankyouUrl = THANKYOU_PAGE_URL + '?' + params.join('&');
+
         var filtersDownloadUrl = getPageUrl('filter-download.html');
-        var thankyouUrl = getPageUrl('thankyou.html');
 
         adguard.tabs.getAll(function (tabs) {
+            // Finds the filter-download page and reload it within the thank-you page URL
             for (var i = 0; i < tabs.length; i++) {
                 var tab = tabs[i];
-                if (tab.url === filtersDownloadUrl || tab.url === thankyouUrl) {
+                if (tab.url === filtersDownloadUrl) {
                     // In YaBrowser don't activate found page
                     if (!adguard.utils.browser.isYaBrowser()) {
                         adguard.tabs.activate(tab.tabId);
                     }
-                    if (tab.url !== thankyouUrl) {
-                        adguard.tabs.reload(tab.tabId, thankyouUrl);
-                    }
+                    adguard.tabs.reload(tab.tabId, thankyouUrl);
                     return;
                 }
             }

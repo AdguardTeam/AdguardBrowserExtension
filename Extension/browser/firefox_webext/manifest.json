@@ -29,8 +29,7 @@
 	},
 
 	"background": {
-		"page": "background.html",
-		"persistent": true
+		"page": "background.html"
 	},
 
 	"content_scripts": [
@@ -40,7 +39,7 @@
 				"lib/libs/css.escape.js",
 				"lib/utils/element-collapser.js",
 				"lib/utils/css-hits-counter.js",
-				"lib/libs/extended-css-1.0.6.js",
+				"lib/libs/extended-css.js",
 				"lib/content-script/adguard-content.js",
 				"lib/content-script/common-script.js",
 				"lib/content-script/content-script.js",
@@ -94,6 +93,20 @@
 		{
 			"all_frames": false,
 			"js": [
+				"lib/libs/jquery-2.2.4.min.js",
+				"lib/content-script/i18n-helper.js",
+				"lib/pages/i18n.js",
+				"lib/pages/script.js",
+				"lib/pages/thankyou.js"
+			],
+			"matches": [
+				"*://*.adguard.com/*/thankyou.html*"
+			],
+			"run_at": "document_start"
+		},
+		{
+			"all_frames": false,
+			"js": [
 				"lib/content-script/subscribe.js"
 			],
 			"matches": [
@@ -135,7 +148,11 @@
 
 	"minimum_chrome_version": "21.0",
 
-	"options_page": "pages/options.html",
+	"options_ui":{
+		"page": "pages/options.html",
+		"open_in_tab": true
+	},
+
   	"devtools_page": "devtools.html",
 
 	"permissions": [

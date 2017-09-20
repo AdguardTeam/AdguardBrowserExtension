@@ -28,6 +28,10 @@ try {
     console = Cu.import('resource://gre/modules/devtools/Console.jsm', {}).console;
 }
 
+var extData;
+
+var windowlessBrowser = null;
+var windowlessBrowserPL = null;
 var bgProcess = null;
 
 // https://developer.mozilla.org/en-US/Add-ons/Bootstrapped_extensions#startup
@@ -44,64 +48,9 @@ function startup(data, reason) {
         return;
     }
 
-    var id = data.id;
-    var version = data.version;
+    extData = data;
 
-    var appShell = Cc['@mozilla.org/appshell/appShellService;1'].getService(Ci.nsIAppShellService);
-
-    var checkDocumentReady = function () {
-
-        var hiddenDoc;
-        try {
-            hiddenDoc = appShell.hiddenDOMWindow && appShell.hiddenDOMWindow.document;
-        } catch (ex) {
-        }
-
-        if (!hiddenDoc || hiddenDoc.readyState !== 'complete') {
-            return false;
-        }
-
-        bgProcess = hiddenDoc.documentElement.appendChild(hiddenDoc.createElementNS('http://www.w3.org/1999/xhtml', 'iframe'));
-        bgProcess.setAttribute(
-            'src',
-            'chrome://adguard/content/background.html?id=' + encodeURIComponent(id) + '&version=' + encodeURIComponent(version)
-        );
-
-        return true;
-    };
-
-    if (checkDocumentReady()) {
-        return;
-    }
-
-    var Timers = Cu.import('chrome://adguard/content/lib/utilsModule.js', {}).Timers;
-
-    var timeout = 5;
-    var triesCount = 0;
-    var triesMax = 100000;
-
-    var setTimeoutCheckDocumentReady = function () {
-
-        if (checkDocumentReady()) {
-            Timers.clearTimeout(timerId);
-            return;
-        }
-
-        triesCount++;
-        if (triesCount >= triesMax) {
-            Timers.clearTimeout(timerId);
-            console.error('Adguard addon: Could not initialize document');
-            return;
-        }
-
-        timeout *= 2;
-        if (timeout > 500) {
-            timeout = 500;
-        }
-        timerId = Timers.setTimeout(setTimeoutCheckDocumentReady, timeout);
-    };
-
-    var timerId = Timers.setTimeout(setTimeoutCheckDocumentReady, timeout);
+    waitForHiddenWindow();
 }
 
 // https://developer.mozilla.org/en-US/Add-ons/Bootstrapped_extensions#shutdown
@@ -116,6 +65,14 @@ function shutdown(data, reason) {
     if (bgProcess !== null) {
         bgProcess.parentNode.removeChild(bgProcess);
         bgProcess = null;
+    }
+
+    if (windowlessBrowser !== null) {
+        if (typeof windowlessBrowser.close === 'function') {
+            windowlessBrowser.close();
+        }
+        windowlessBrowser = null;
+        windowlessBrowserPL = null;
     }
 
     Cu.unload('chrome://adguard/content/lib/utilsModule.js');
@@ -173,4 +130,101 @@ function cleanAdguardDir() {
         adguardDir.remove(true);
         console.log('Adguard addon directory was removed.');
     }
+}
+
+function createBgProcess(parentDocument) {
+    bgProcess = parentDocument.documentElement.appendChild(
+        parentDocument.createElementNS('http://www.w3.org/1999/xhtml', 'iframe')
+    );
+    bgProcess.setAttribute(
+        'src',
+        'chrome://adguard/content/background.html?id=' + encodeURIComponent(extData.id) + '&version=' + encodeURIComponent(extData.version)
+    );
+}
+
+function waitForHiddenWindow() {
+
+    var appShell = Cc['@mozilla.org/appshell/appShellService;1'].getService(Ci.nsIAppShellService);
+
+    var checkDocumentReady = function () {
+
+        var hiddenDoc;
+        try {
+            hiddenDoc = appShell.hiddenDOMWindow && appShell.hiddenDOMWindow.document;
+        } catch (ex) {
+        }
+
+        // Do not test against `loading`: it does appear `readyState` could be
+        // undefined if looked up too early.
+        if (!hiddenDoc || hiddenDoc.readyState !== 'complete') {
+            return false;
+        }
+
+        var {Services} = Cu.import('resource://gre/modules/Services.jsm', null);
+        if (Services.vc.compare(Services.appinfo.platformVersion, '27') >= 0) {
+            getWindowlessBrowserFrame(appShell);
+        } else {
+            createBgProcess(hiddenDoc);
+        }
+        return true;
+    };
+
+    if (checkDocumentReady()) {
+        return;
+    }
+
+    var Timers = Cu.import('chrome://adguard/content/lib/utilsModule.js', {}).Timers;
+
+    var timeout = 5;
+    var triesCount = 0;
+    var triesMax = 600011;
+
+    var setTimeoutCheckDocumentReady = function () {
+
+        if (checkDocumentReady()) {
+            Timers.clearTimeout(timerId);
+            return;
+        }
+
+        triesCount++;
+        if (triesCount >= triesMax) {
+            Timers.clearTimeout(timerId);
+            console.error('Adguard addon: Could not initialize document');
+            return;
+        }
+
+        timeout *= 2;
+        if (timeout > 500) {
+            timeout = 500;
+        }
+        timerId = Timers.setTimeout(setTimeoutCheckDocumentReady, timeout);
+    };
+
+    var timerId = Timers.setTimeout(setTimeoutCheckDocumentReady, timeout);
+}
+
+function getWindowlessBrowserFrame(appShell) {
+    windowlessBrowser = appShell.createWindowlessBrowser(true);
+    windowlessBrowser.QueryInterface(Ci.nsIInterfaceRequestor);
+    var webProgress = windowlessBrowser.getInterface(Ci.nsIWebProgress);
+    var XPCOMUtils = Cu.import('resource://gre/modules/XPCOMUtils.jsm', null).XPCOMUtils;
+    windowlessBrowserPL = {
+        QueryInterface: XPCOMUtils.generateQI([
+            Ci.nsIWebProgressListener,
+            Ci.nsIWebProgressListener2,
+            Ci.nsISupportsWeakReference
+        ]),
+        onStateChange: function (wbp, request, stateFlags) {
+            if (!request) {
+                return;
+            }
+            if (stateFlags & Ci.nsIWebProgressListener.STATE_STOP) {
+                webProgress.removeProgressListener(windowlessBrowserPL);
+                windowlessBrowserPL = null;
+                createBgProcess(windowlessBrowser.document);
+            }
+        }
+    };
+    webProgress.addProgressListener(windowlessBrowserPL, Ci.nsIWebProgress.NOTIFY_STATE_DOCUMENT);
+    windowlessBrowser.document.location = "data:application/vnd.mozilla.xul+xml;charset=utf-8,<window%20id='adguard-win'/>";
 }

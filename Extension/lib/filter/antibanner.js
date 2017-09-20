@@ -850,16 +850,16 @@ adguard.antiBannerService = (function (adguard) {
 
                 switch (eventType) {
                     case adguard.listeners.ADD_RULES:
-                        loadedRulesText = loadedRulesText.concat(adguard.utils.collections.getRulesText(eventRules));
+                        loadedRulesText = loadedRulesText.concat(eventRules);
                         adguard.console.debug("Add {0} rules to filter {1}", eventRules.length, filterId);
                         break;
                     case adguard.listeners.REMOVE_RULE:
                         var actionRule = eventRules[0];
-                        adguard.utils.collections.removeAll(loadedRulesText, actionRule.ruleText);
-                        adguard.console.debug("Remove {0} rule from filter {1}", actionRule.ruleText, filterId);
+                        adguard.utils.collections.removeAll(loadedRulesText, actionRule);
+                        adguard.console.debug("Remove {0} rule from filter {1}", actionRule, filterId);
                         break;
                     case adguard.listeners.UPDATE_FILTER_RULES:
-                        loadedRulesText = adguard.utils.collections.getRulesText(eventRules);
+                        loadedRulesText = eventRules;
                         adguard.console.debug("Update filter {0} rules count to {1}", filterId, eventRules.length);
                         break;
                 }
@@ -947,25 +947,29 @@ adguard.antiBannerService = (function (adguard) {
      */
     function loadFiltersFromBackend(filterMetadataList, callback) {
 
+        var dfds = [];
         var loadedFilters = [];
 
-        var loadNextFilter = function () {
-            if (filterMetadataList.length === 0) {
-                callback(true, loadedFilters);
-            } else {
-                var filterMetadata = filterMetadataList.shift();
-                loadFilterRules(filterMetadata, true, function (success) {
-                    if (!success) {
-                        callback(false);
-                        return;
-                    }
-                    loadedFilters.push(filterMetadata.filterId);
-                    loadNextFilter();
-                });
-            }
-        };
+        filterMetadataList.forEach(function (filterMetadata) {
+            var dfd = new adguard.utils.Promise();
+            dfds.push(dfd);
 
-        loadNextFilter();
+            loadFilterRules(filterMetadata, true, function (success) {
+                if (!success) {
+                    dfd.reject();
+                    return;
+                }
+
+                loadedFilters.push(filterMetadata.filterId);
+                dfd.resolve();
+            });
+        });
+
+        adguard.utils.Promise.all(dfds).then(function () {
+            callback(true, loadedFilters);
+        }, function () {
+            callback(false);
+        });
     }
 
     /**
@@ -1055,7 +1059,7 @@ adguard.antiBannerService = (function (adguard) {
             }
         }
         requestFilter.addRules(rules);
-        adguard.listeners.notifyListeners(adguard.listeners.ADD_RULES, userFilter, rules);
+        adguard.listeners.notifyListeners(adguard.listeners.ADD_RULES, userFilter, rulesText);
         return rules;
     };
 
@@ -1064,17 +1068,7 @@ adguard.antiBannerService = (function (adguard) {
      * @param rulesText Rules text
      */
     var updateUserFilterRules = function (rulesText) {
-        var rules = [];
-        var dirtyRules = [];
-        for (var i = 0; i < rulesText.length; i++) {
-            var ruleText = rulesText[i];
-            var rule = adguard.rules.builder.createRule(ruleText, adguard.utils.filters.USER_FILTER_ID);
-            if (rule !== null) {
-                rules.push(rule);
-            }
-            dirtyRules.push({ruleText: ruleText});
-        }
-        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, userFilter, dirtyRules);
+        adguard.listeners.notifyListeners(adguard.listeners.UPDATE_FILTER_RULES, userFilter, rulesText);
     };
 
     /**
