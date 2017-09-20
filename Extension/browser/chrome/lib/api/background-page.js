@@ -305,10 +305,22 @@ var browser = window.browser || chrome;
         onCommitted: onCommitted
     };
 
+    var browserActionSupported = typeof browser.browserAction.setIcon !== 'undefined';
+    if (!browserActionSupported && browser.browserAction.onClicked) {
+        // Open settings menu
+        browser.browserAction.onClicked.addListener(function () {
+            adguard.ui.openSettingsTab();
+        });
+    }
+
     //noinspection JSUnusedLocalSymbols,JSHint
     adguard.browserAction = {
 
         setBrowserAction: function (tab, icon, badge, badgeColor, title) {
+
+            if (!browserActionSupported) {
+                return;
+            }
 
             var tabId = tab.tabId;
 

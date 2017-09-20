@@ -25,10 +25,11 @@ adguard.prefs = (function (adguard) {
 
     var Prefs = {
 
-        /**
-         * Makes sense in case of FF add-on only
-         */
-        mobile: false,
+        get mobile() {
+            return adguard.lazyGet(Prefs, 'mobile', function () {
+                return this.browser === 'Android';
+            });
+        },
 
         platform: typeof safari === 'undefined' ? "chromium" : "webkit",
 
@@ -45,7 +46,11 @@ adguard.prefs = (function (adguard) {
                 } else if (userAgent.indexOf("Safari") >= 0 && userAgent.indexOf('Chrome') < 0) {
                     browser = "Safari";
                 } else if (userAgent.indexOf("Firefox") >= 0) {
-                    browser = "Firefox";
+                    if (userAgent.indexOf("Android") >= 0) {
+                        browser = "Android";
+                    } else {
+                        browser = "Firefox";
+                    }
                 } else {
                     browser = "Chrome";
                 }
