@@ -49,6 +49,10 @@ PageController.prototype = {
 			e.preventDefault();
 			contentPage.sendMessage({type: 'openExtensionStore'});
 		});
+		$('.openSettings').on('click', function (e) {
+            e.preventDefault();
+            contentPage.sendMessage({type: 'openSettingsTab'});
+        });
 	},
 
 	safebrowsingEnabledChange: function () {
