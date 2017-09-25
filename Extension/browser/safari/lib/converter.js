@@ -18,7 +18,7 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.29';
+var CONVERTER_VERSION = '1.3.30';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var ANY_URL_TEMPLATES = ['||*', '', '*', '|*'];
@@ -170,9 +170,6 @@ var SafariContentBlockerConverter = {
             }
             if (this._isContentType(rule, UrlFilterRule.contentTypes.JSINJECT)) {
                 throw new Error('$jsinject rules are ignored.');
-            }
-            if (rule.cspRule) {
-                throw new Error('$csp content type is not yet supported');
             }
 
             if (types.length > 0) {
@@ -396,6 +393,11 @@ var SafariContentBlockerConverter = {
 
         convertUrlFilterRule: function (rule) {
 
+            if (rule.cspRule) {
+                // CSP rules are not supported
+                throw new Error("CSP rules are not supported");
+            }
+
             var urlFilter = this._createUrlFilterString(rule);
 
             // Redefine some of regular expressions
@@ -532,7 +534,7 @@ var SafariContentBlockerConverter = {
             return this._convertAGRule(rule);
         } catch (ex) {          
             var message = 'Error converting rule from: ' + 
-                (rule.ruleText ? rule.ruleText : rule) + 
+                ((rule && rule.ruleText) ? rule.ruleText : rule) +
                 ' cause:\n' + ex + '\r\n';
             adguard.console.debug(message);
 

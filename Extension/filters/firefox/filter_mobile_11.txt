@@ -1,8 +1,8 @@
-! Checksum: m5gjVsEqpuh7fwYlNYO2ng
+! Checksum: GxFp1IwL3f2dQttR4c4HvQ
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 1.0.9.51
-! TimeUpdated: 2017-08-29T19:02:09.342+04:00
+! Version: 1.0.9.74
+! TimeUpdated: 2017-09-19T18:10:27.154+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -26,6 +26,13 @@
 ||mo.freeindoapp.com^
 !+ NOT_OPTIMIZED
 ||recreativ.ru^
+!+ NOT_OPTIMIZED
+||hqsjc.com^
+||mobilebanner.ru^$third-party
+||api.ad-locus.com^
+||m.nbhaosheng168.com^$third-party
+||m.jakc0.com^$third-party
+||s.nvrentao8.com^$third-party
 ||xz15801.com^
 ||023hysj.com^
 ||lxqcgj.com^
@@ -449,7 +456,6 @@
 ||gwallet.com^
 ||h12-media.com^
 ||ha-api.pushwoosh.com^
-||hastrk1.com^
 ||heyzap.com^
 ||himediads.com^
 ||hormebets.info^$popup
@@ -831,6 +837,8 @@ blogdoiphone.com#@#.header-ad
 blogdoiphone.com#@#.custom-ad
 westseattleblog.com#@#.custom-ad
 westseattleblog.com#@#.header-ad
+mobil.stern.de##.teaserlist__items > .teaser-medium-left.article-type-standard-article.mod-teaser[-ext-has=".teaser > .sponsorship--labels"]
+m.sondakika.com###news-list-container > ul > li[-ext-has=".adsbygoogle"]
 fishki.net##.list-view-items div.content__preview[-ext-has='> div.picture-holder > a[href="/go/"][target="_blank"]']
 fishki.net##div[class^="list-view"] > div[class^="content__intro-text"][-ext-has='> p.content__intro-text__author > a[href="/profile/543769"]']
 yandex.ru,yandex.com,yandex.ua,yandex.kz,yandex.by,yandex.com.tr##.main > div.serp-list > div.serp-item[-ext-has='> div.organic > h2 > a[href^="http://yabs.yandex.ru/count/"]']
@@ -906,6 +914,7 @@ deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important
 ||mobimagic.com/ads/
 ||graph.facebook.com/network_ads
 @@||tf-robots.nl^$elemhide,jsinject,content
+olx.ro#@#DIV[class^="banner"]
 @@||securepubads.g.doubleclick.net/gpt/pubads_impl_$script,domain=m.timesofindia.com
 @@||mobileads.indiatimes.com/Web_Ads/js/22april16/prebid_1.js$script,domain=m.timesofindia.com
 timesofindia.indiatimes.com#@#style[type="text/css"] + div[class]:not([id]):not([style]):not([class*=" "])
@@ -1002,6 +1011,34 @@ m.auto.ru##.card.i-bem > div[class^="_"] > div[class^="_"]
 m.auto.ru##.index.i-bem > div[class]:not([data-bem])
 m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"])
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
+webclick.megalabs.ru##body > section.intro
+webclick.megalabs.ru##body > section.info
+m.sondakika.com###reksa
+m.sondakika.com##.home_300x250
+m.sondakika.com##div > .widget_partner[style]
+m.sondakika.com###news-list-container > ul > li[style]:not([data-haber-id])
+m.katestube.com##.top-spot
+m.katestube.com##.bottom-spot
+m.katestube.com##.btn-share
+m.katestube.com##.pop-fade
+m.milliyet.com.tr##.Masthead > #div-320x100
+m.milliyet.com.tr##a[href^="http://secure.milliyet.com.tr/redirect/Default.aspx?"][target="_blank"] > article
+m.augsburger-allgemeine.de##main > .aa-teaser-mini-group
+m.augsburger-allgemeine.de##.aa-swatch-topdown-nice.aa-teaser > a[href="https://abo.augsburger-allgemeine.de/epaper-app-login-und-download-uebersicht"]
+m.donanimhaber.com##.yorum-ustu-alan
+nudevista.at,nudevista.be,nudevista.com,nudevista.com.br,nudevista.com.pl,nudevista.es,nudevista.it,nudevista.jp,nudevista.net,nudevista.nl,nudevista.se,nudevista.tw##.mob_adv
+||x99.nudevista.com/_/x/a*.html
+m.hclips.com##div#pane_related[role="tabpanel"] > .collapse.in
+m.hclips.com##.container > .section--normal[style^="margin-top:"] > .section__panel.text-center
+telegraph.co.uk##div[class^="mobileAdvertInStream"]
+zmovs.com##div[class^="player-banner"]
+||m.fmhua.com/js/lbo1888.js
+laravel-news.com##.site-main > div.container > div.callout:first-child
+udn.com##.overlay-container
+m.17track.net##.yq-panel-gad
+m.17track.net##.slick-slide+div[class^="slick-slide"] > div.tracklist-item.tracklist-default
+hdblog.it##.banner_list_container
+||m.lwxs520.com/wap/lwxs520/gg.js
 m.sfgate.com##.ad-point
 healthline.com##div.mlb
 healthline.com##div.mmr.row
@@ -1430,6 +1467,7 @@ auth.wi-fi.ru##.c-fullscreen-banner
 ||eviltracker.net^
 ||spotify.com/ads/
 ||trackersimulator.org^
+||collector-axa.cloud.ca.com^
 ||track.adform.net^
 ||analytics.ff.avast.com^
 ||api.miui.security.xiaomi.com^

@@ -1,8 +1,8 @@
-! Checksum: EW9A8b+oZeZD8/GllnGZVg
+! Checksum: cZNU0n1+Xp/V8dviTABvIg
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 1.0.9.51
-! TimeUpdated: 2017-08-29T19:02:09.342+04:00
+! Version: 1.0.9.74
+! TimeUpdated: 2017-09-19T18:10:27.154+04:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#mobile
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -49,7 +49,14 @@
 !
 !+ NOT_OPTIMIZED
 ||recreativ.ru^
+!+ NOT_OPTIMIZED
+||hqsjc.com^
 !
+||mobilebanner.ru^$third-party
+||api.ad-locus.com^
+||m.nbhaosheng168.com^$third-party
+||m.jakc0.com^$third-party
+||s.nvrentao8.com^$third-party
 ||xz15801.com^
 ||023hysj.com^
 ||lxqcgj.com^
@@ -473,7 +480,6 @@
 ||gwallet.com^
 ||h12-media.com^
 ||ha-api.pushwoosh.com^
-||hastrk1.com^
 ||heyzap.com^
 ||himediads.com^
 ||hormebets.info^$popup
@@ -892,6 +898,10 @@ westseattleblog.com#@#.header-ad
 !
 ! Extended CSS rules
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/6804
+mobil.stern.de##.teaserlist__items > .teaser-medium-left.article-type-standard-article.mod-teaser[-ext-has=".teaser > .sponsorship--labels"]
+! https://forum.adguard.com/index.php?threads/m-sondakika-com.25075/
+m.sondakika.com###news-list-container > ul > li[-ext-has=".adsbygoogle"]
 ! https://forum.adguard.com/index.php?threads/24017/
 fishki.net##.list-view-items div.content__preview[-ext-has='> div.picture-holder > a[href="/go/"][target="_blank"]']
 fishki.net##div[class^="list-view"] > div[class^="content__intro-text"][-ext-has='> p.content__intro-text__author > a[href="/profile/543769"]']
@@ -1032,6 +1042,8 @@ deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important
 @@||tf-robots.nl^$elemhide,jsinject,content
 !
 !#####################
+! https://github.com/AdguardTeam/AdguardFilters/issues/6694
+olx.ro#@#DIV[class^="banner"]
 ! https://forum.adguard.com/index.php?threads/20287/
 @@||securepubads.g.doubleclick.net/gpt/pubads_impl_$script,domain=m.timesofindia.com
 @@||mobileads.indiatimes.com/Web_Ads/js/22april16/prebid_1.js$script,domain=m.timesofindia.com
@@ -1220,6 +1232,34 @@ m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"
 ! https://forum.adguard.com/index.php?threads/10464/
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
 !
+webclick.megalabs.ru##body > section.intro
+webclick.megalabs.ru##body > section.info
+m.sondakika.com###reksa
+m.sondakika.com##.home_300x250
+m.sondakika.com##div > .widget_partner[style]
+m.sondakika.com###news-list-container > ul > li[style]:not([data-haber-id])
+m.katestube.com##.top-spot
+m.katestube.com##.bottom-spot
+m.katestube.com##.btn-share
+m.katestube.com##.pop-fade
+m.milliyet.com.tr##.Masthead > #div-320x100
+m.milliyet.com.tr##a[href^="http://secure.milliyet.com.tr/redirect/Default.aspx?"][target="_blank"] > article
+m.augsburger-allgemeine.de##main > .aa-teaser-mini-group
+m.augsburger-allgemeine.de##.aa-swatch-topdown-nice.aa-teaser > a[href="https://abo.augsburger-allgemeine.de/epaper-app-login-und-download-uebersicht"]
+m.donanimhaber.com##.yorum-ustu-alan
+nudevista.at,nudevista.be,nudevista.com,nudevista.com.br,nudevista.com.pl,nudevista.es,nudevista.it,nudevista.jp,nudevista.net,nudevista.nl,nudevista.se,nudevista.tw##.mob_adv
+||x99.nudevista.com/_/x/a*.html
+m.hclips.com##div#pane_related[role="tabpanel"] > .collapse.in
+m.hclips.com##.container > .section--normal[style^="margin-top:"] > .section__panel.text-center
+telegraph.co.uk##div[class^="mobileAdvertInStream"]
+zmovs.com##div[class^="player-banner"]
+||m.fmhua.com/js/lbo1888.js
+laravel-news.com##.site-main > div.container > div.callout:first-child
+udn.com##.overlay-container
+m.17track.net##.yq-panel-gad
+m.17track.net##.slick-slide+div[class^="slick-slide"] > div.tracklist-item.tracklist-default
+hdblog.it##.banner_list_container
+||m.lwxs520.com/wap/lwxs520/gg.js
 m.sfgate.com##.ad-point
 healthline.com##div.mlb
 healthline.com##div.mmr.row
@@ -1578,6 +1618,7 @@ auth.wi-fi.ru##.c-fullscreen-banner
 !
 ! Blocking of Facebook ads
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/6728
 ! https://forum.adguard.com/index.php?threads/24268/
 ||mobile-campaigns.avast.com^
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6167
@@ -1767,6 +1808,7 @@ auth.wi-fi.ru##.c-fullscreen-banner
 !
 ! Section contains rules for mobile analytics and spyware
 !
+||collector-axa.cloud.ca.com^
 ||track.adform.net^
 ||analytics.ff.avast.com^
 ||api.miui.security.xiaomi.com^

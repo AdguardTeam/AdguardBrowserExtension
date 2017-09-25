@@ -1,8 +1,8 @@
-! Checksum: tRtCY91XIjxgTuQR8r0l3w
+! Checksum: X1n1HEF15Lk2iD+Cmg+SLg
 ! Title: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! Version: 1.0.14.24
-! TimeUpdated: 2017-08-31T15:00:49.539+04:00
+! Version: 1.0.14.52
+! TimeUpdated: 2017-09-18T17:00:44.444+04:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#privacy
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -31,7 +31,7 @@ overclockers.ru#%#AG_onLoad(function() { window.trackOutboundLink = window.open;
 #%#navigator.getBattery = undefined;
 !
 ! Yandex Metrika dummy
-~eagleplatform.com,~video.rambler.ru,~films.imhonet.ru,~yandex.ru,~yandex.com,~yandex.ua,~yandex.kz,~yandex.by,~yandex.com.tr#%#(function() { window.Ya = window.Ya || {}; window.Ya.Metrika = function() { var a = function() {}; this.replacePhones = this.reachGoal = this.params = this.notBounce = this.hit = this.file = this.extLink = clickmap = trackLinks = this.addFileExtension = a }; var a = [], c = a.push; a.push = function(b) { a._init || "function" !== typeof b || (b(), a._init = !0); c.call(a, b) }; window.yandex_metrika_callbacks = a})();
+~google.com,~eagleplatform.com,~video.rambler.ru,~films.imhonet.ru,~yandex.ru,~yandex.com,~yandex.ua,~yandex.kz,~yandex.by,~yandex.com.tr#%#(function() { window.Ya = window.Ya || {}; window.Ya.Metrika = function() { var a = function() {}; this.replacePhones = this.reachGoal = this.params = this.notBounce = this.hit = this.file = this.extLink = clickmap = trackLinks = this.addFileExtension = a }; var a = [], c = a.push; a.push = function(b) { a._init || "function" !== typeof b || (b(), a._init = !0); c.call(a, b) }; window.yandex_metrika_callbacks = a})();
 championat.media.eagleplatform.com#%#(function() { window.Ya = window.Ya || {}; window.Ya._metrika = function() { var noop = function() {}; this.counter = noop; }; })();
 !
 ! Fixing possible issues with google analytics blocked
@@ -77,11 +77,13 @@ accountkiller.com#%#window.ga = function(){var a = arguments[5];a&&a.hitCallback
 !---------------------------------------------------------------------------!
 !
 ! Extended CSS rules
+!
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6281
 vol.az###footer > .column-one-fourth[-ext-has=".line > span:contains(Sayğac)"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5449
 donnerwetter.de##.col-xs-12 > div.block.prepend-top[-ext-has='> div.blocktitle-brand > h2 > span.blocktitle-brand:contains(weitere Wetter-Nachrichten)']
 !
+latino-serialo.tv###sidebar-left > div.block[-ext-has="> div.box > h2:contains(Счетчик)"]
 prjaga.ru###right > div#right_nav > h3:contains(Онлайн статистика)
 journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Счетчик)"]
 !-------------------------------------------------------------------------------!
@@ -100,6 +102,15 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 ! Should be uncommented once v2.10 goes live
 ! ||app-measurement.com^
 !
+||dep-x.com^$third-party
+||geoloc*.9cd47096ab1495d8d3b18667f6a52b9c.com^
+||geoloc*.geo20120530.com^
+||geoloc*.geostats.ovh^
+||geoloc*.geovisite.ovh^
+||ns336739.ip-37-187-249.eu^
+||popin.cc^$third-party
+||w1jesu6.package12.com^$third-party
+||quantcount.com^$third-party
 ||fandommetrics.com^$third-party
 ||chengyuplaza.com^$third-party
 ||ip.hivps.xyz^$third-party
@@ -1380,7 +1391,6 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 ||google-pr7.de^$third-party
 ||google-rank.org^$third-party
 ||googleadservices.com^$third-party
-||googleapis.com/generate_204
 ||googlerank.info^$third-party
 ||googlesyndication.com/safeframe/$third-party
 ||googletagmanager.com/gtm.js?$third-party
@@ -3592,6 +3602,8 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 !
 ! Section contains the list of tracking servers, which are hosted on useful sites as subdomains
 !
+||tracking.kurier.at^
+||analytics.codigo.se^
 ||tr.suedkurier.de^
 ||track.toroadvertising.com^
 ||stats.media.onet.pl^
@@ -4113,6 +4125,22 @@ _tracking.php?b=
 ||scorecardresearch.com^$domain=cnet.com,important
 ! End: cnet.com trackers
 !
+||kurier.at/adblock
+||files.cdn.spilcloud.com/*_adomic_hb_analytic.js
+||d.mobilebanner.ru/p.gif
+||hotclips24.com/templates/default/js/fingerprintjs/fingerprint2.js
+||stats.pcsg-server.de/js/
+||kissmanga.info/*.gif?gid=
+||ddizi1.com/geo.js^
+||russian.rt.com/nbc/|
+animeyt.tv##.ed-item > ul#filtro-letra-nuevo+div.bloque.bloque__descargas-centro.ed-container
+||cdn.taboola.com/libtrc/animeyttv/loader.js
+||putlockerhd.watch/stats.js
+||putlocker-hd.com/stats.js
+||koronapay.com/*/metrika_rus.js
+||t.lolalytics.com/?a=
+ixbt.com##.block__recommend
+||altapress.ru/story/counter/
 unilad.co.uk###sidebar > #text-64 > .block-title
 ||suedkurier.de/storage/scr/*_webtrekk.js.js
 ||phoenix.de/php/mediaplayer/conf/tracking_
@@ -4155,8 +4183,8 @@ computerbild.de##.articleAdditional > .mehrthema
 ||xtraffstat.com/js/ktr.js
 ||zapcdn.space/zapret.js
 ||patreon.com/api/tracking^
-/index/ping^$domain=adf.ly|ay.gy|viahold.com|tinyical.com|mmoity.com|pintient.com|riffhold.com|picocurl.com|bitigee.com|picocurl.com|atomcurve.com|atominik.com|battleate.com|kaitect.com|simizer.com|coginator.com|cogismith.com
-/callback/*$domain=adf.ly|ay.gy|viahold.com|tinyical.com|mmoity.com|pintient.com|riffhold.com|picocurl.com|bitigee.com|picocurl.com|atomcurve.com|atominik.com|battleate.com|kaitect.com|simizer.com|coginator.com|cogismith.com
+/index/ping^$domain=adf.ly|ay.gy|zo.ee|viahold.com|tinyical.com|mmoity.com|pintient.com|riffhold.com|picocurl.com|bitigee.com|picocurl.com|atomcurve.com|atominik.com|battleate.com|kaitect.com|simizer.com|coginator.com|cogismith.com
+/callback/*$domain=adf.ly|ay.gy|zo.ee|viahold.com|tinyical.com|mmoity.com|pintient.com|riffhold.com|picocurl.com|bitigee.com|picocurl.com|atomcurve.com|atominik.com|battleate.com|kaitect.com|simizer.com|coginator.com|cogismith.com
 ||tracking-opi.fonpit.de/tracking/
 ||cdn3.net/pixe/
 ||dig.ultimedia.com^
@@ -4188,7 +4216,6 @@ m.lenta.ru##.b-footer_counters
 ||vkcache.com/js/video.*counter*.js
 ||hqq.watch/cdn-cgi/trace|
 ||vidoza.net/papi/*/addevent/promo_data
-||daxab.com/ip.get^
 ||daxab.com/logger^
 ||sueddeutsche.de/statistics?eventType=
 maxpark.com###listOfCounters
@@ -4910,6 +4937,21 @@ dreamprogs.net##td[width="88"][height="31"]
 !-------------- Whitelist ------------------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/6758
+@@||dpm.demdex.net/id$domain=vodafone.com.au
+! https://forum.adguard.com/index.php?threads/25066/
+@@||analytics.wearekiss.com/piwik.js$domain=spritepad.wearekiss.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/6591
+@@||pro.hit.gemius.pl/gplayer.js$domain=nova.cz
+@@||google-analytics.com/analytics.js$domain=nova.cz
+! https://forum.adguard.com/index.php?threads/25022/
+@@||googletagmanager.com/gtm.js^$domain=arcelik.com.tr
+@@||google-analytics.com/analytics.js$domain=arcelik.com.tr
+@@||google-analytics.com/plugins/ua/ec.js$domain=arcelik.com.tr
+! https://github.com/AdguardTeam/AdguardFilters/issues/6705
+@@||b.scorecardresearch.com/beacon.js$domain=ntvspor.net
+! https://github.com/AdguardTeam/AdguardFilters/issues/6649
+@@||tags.tiqcdn.com/utag/hsbc/hk-rbwm/prod/utag.js
 ! Fixing compatibility issues
 @@||google-analytics.com/analytics.js$domain=cgv.co.kr|hypebeast.com|lottedfs.com|moeni.net
 @@||googletagmanager.com/gtm.js$domain=hypebeast.com|lottedfs.com|tvchosun.com
@@ -4927,6 +4969,12 @@ dreamprogs.net##td[width="88"][height="31"]
 !+ NOT_PLATFORM(windows, mac, android)
 @@||ssp.rambler.ru/capirs_async.js$domain=lenta.ru|championat.com|afisha.ru
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/6434
+@@||google-analytics.com/analytics.js$domain=play.tv3.lt
+! https://forum.adguard.com/index.php?threads/resolved-itv-com-windows.22200/
+@@||googletagmanager.com/gtm.js$domain=itv.com
+! https://forum.adguard.com/index.php?threads/24670/
+@@||pixel.quantserve.com/pixel^$domain=mixcloud.com
 ! Unblock adblockanalytics.com marker
 @@||adblockanalytics.com/ads.js|
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6269
@@ -5264,7 +5312,6 @@ epicwow.com#@#img[width="88"][height="31"]
 @@||google-analytics.com/analytics.js$domain=mediamarkt.de
 @@||google-analytics.com/plugins/ua/ec.js$domain=mediamarkt.de
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2243
-@@||cdn.taboola.com/libtrc/*/loader.js$domain=cnet.com
 @@||tags.tiqcdn.com/utag/cbsi/cnetglobalsite/prod/utag.js$domain=cnet.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2244
 @@||tags.tiqcdn.com/utag/cbsi/cbsnewssite/prod/utag.js$domain=cbsnews.com

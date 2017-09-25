@@ -1,8 +1,8 @@
-! Checksum: l2bMj2GFJqzyZQZyZ+eejw
+! Checksum: 4Bf2J1kltVVK/Pwi7Hn6lQ
 ! Title: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
-! Version: 1.0.3.59
-! TimeUpdated: 2017-08-28T16:02:07.016+04:00
+! Version: 1.0.3.62
+! TimeUpdated: 2017-09-18T13:02:21.007+04:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#safari
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -667,6 +667,28 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 !
 ! White list. Fixing content blocking API issues.
 !
+! Fixing Youtube embed players(blocked by wide EasyList rules)
+@@blob:https://www.youtube.com/
+@@||googlevideo.com/videoplayback?
+@@||youtube.com/get_video_info?
+@@||youtube.com/yts/jsbin/player-*/base.js
+@@||youtube.com/yts/jsbin/www-embed-player-*/www-embed-player.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/6731
+@@||cdnjs.cloudflare.com/ajax/libs/$domain=xmoviesforyou.com
+@@||fruithosted.net/dl/*.mp4
+@@||oloadcdn.net/dl/*.mp4
+@@||streamcherry.com/assets/js/license
+@@||streamcherry.com/assets/js/script.*.js$domain=xmoviesforyou.com
+@@||streamcherry.com/assets/js/video-js/
+@@||streamcherry.com/v/*~*/$domain=xmoviesforyou.com
+@@||dato.porn/assets/js/mobile-detection.js
+@@||dato.porn/cdn-cgi/apps/head/*.js$domain=xmoviesforyou.com
+@@||dato.porn/hls/*.m3u8
+@@||dato.porn/js/jquery.cookie.js
+@@||dato.porn/js/jquery.min.js
+@@||dato.porn/js/xupload.js
+@@||dato.porn/player7may/jw-logo-bar.js
+@@||dato.porn/player7may/jwplayer.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5095
 @@||gumtree.com.au/p-post-ad*.html
 ! https://forum.adguard.com/index.php?threads/21858/
@@ -696,16 +718,10 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4766
 ! Fixing redirects via an.yandex.ru
 @@||an.yandex.ru/mapuid/*?location=*&jsredir=
-! https://github.com/AdguardTeam/AdguardFilters/issues/4626
-@@||youtube.com/yts/jsbin/player-*/base.js$domain=infowars.com
-@@||youtube.com/yts/jsbin/www-embed-player-*/www-embed-player.js$domain=infowars.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4608
 @@$websocket,domain=123movies.is
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4611
 @@||olx.ua/static/olxua/naspersclassifieds-regional/olxeu-atlas-web/static/js/xgemius.js
-! https://github.com/AdguardTeam/AdguardFilters/issues/4563
-@@||youtube.com/yts/jsbin/player-*/base.js$domain=godlikeproductions.com
-@@||youtube.com/yts/jsbin/www-embed-player-*/www-embed-player.js$domain=godlikeproductions.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4392
 @@||app.adjust.io/*&utm_source=desktop_kleiderkreisel.de
 ! https://forum.adguard.com/index.php?threads/19610/
@@ -714,9 +730,6 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 @@||mobilitymag.de/werbung/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4375
 @@||basicthinking.de/blog/advertisment/
-! https://github.com/AdguardTeam/AdguardFilters/issues/3986
-@@||googlevideo.com/videoplayback?$domain=korrespondent.net
-@@||youtube.com/get_video_info?$domain=korrespondent.net
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4338
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=vod.pl
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4309
@@ -779,7 +792,6 @@ postnl.com#@##cookiebar-container
 ! https://forum.adguard.com/index.php?threads/www-ultrafilmizle-com.15818/
 ultrafilmizle.com#@##psreklam
 ! unblock mobile app banner, bacause big empty space
-rt.com#@##offers
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3330
 @@||ssl.google-analytics.com/ga.js$domain=google.com|google.ad|google.ae|google.com.af|google.com.ag|google.com.ai|google.al|google.am|google.co.ao|google.com.ar|google.as|google.at|google.com.au|google.az|google.ba|google.com.bd|google.be|google.bf|google.bg|google.com.bh|google.bi|google.bj|google.com.bn|google.com.bo|google.com.br|google.bs|google.bt|google.co.bw|google.by|google.com.bz|google.ca|google.cd|google.cf|google.cg|google.ch|google.ci|google.co.ck|google.cl|google.cm|google.cn|google.com.co|google.co.cr|google.com.cu|google.cv|google.com.cy|google.cz|google.de|google.dj|google.dk|google.dm|google.com.do|google.dz|google.com.ec|google.ee|google.com.eg|google.es|google.com.et|google.fi|google.com.fj|google.fm|google.fr|google.ga|google.ge|google.gg|google.com.gh|google.com.gi|google.gl|google.gm|google.gp|google.gr|google.com.gt|google.gy|google.com.hk|google.hn|google.hr|google.ht|google.hu|google.co.id|google.ie|google.co.il|google.im|google.co.in|google.iq|google.is|google.it|google.je|google.com.jm|google.jo|google.co.jp|google.co.ke|google.com.kh|google.ki|google.kg|google.co.kr|google.com.kw|google.kz|google.la|google.com.lb|google.li|google.lk|google.co.ls|google.lt|google.lu|google.lv|google.com.ly|google.co.ma|google.md|google.me|google.mg|google.mk|google.ml|google.com.mm|google.mn|google.ms|google.com.mt|google.mu|google.mv|google.mw|google.com.mx|google.com.my|google.co.mz|google.com.na|google.com.nf|google.com.ng|google.com.ni|google.ne|google.nl|google.no|google.com.np|google.nr|google.nu|google.co.nz|google.com.om|google.com.pa|google.com.pe|google.com.pg|google.com.ph|google.com.pk|google.pl|google.pn|google.com.pr|google.ps|google.pt|google.com.py|google.com.qa|google.ro|google.ru|google.rw|google.com.sa|google.com.sb|google.sc|google.se|google.com.sg|google.sh|google.si|google.sk|google.com.sl|google.sn|google.so|google.sm|google.sr|google.st|google.com.sv|google.td|google.tg|google.co.th|google.com.tj|google.tk|google.tl|google.tm|google.tn|google.to|google.com.tr|google.tt|google.com.tw|google.co.tz|google.com.ua|google.co.ug|google.co.uk|google.com.uy|google.co.uz|google.com.vc|google.co.ve|google.vg|google.co.vi|google.com.vn|google.vu|google.ws|google.rs|google.co.za|google.co.zm|google.co.zw|google.cat
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3143

@@ -2,6 +2,9 @@
  * Test script for Safari content-blocking rules converter
  */
 
+adguard.rules.CspFilter = {};
+adguard.rules.CspFilter.DEFAULT_DIRECTIVE = 'connect-src http: https:; frame-src http: https:; child-src http: https:'
+
 // Setup test
 var specials = [
     '.',
@@ -383,6 +386,15 @@ QUnit.test("UpperCase domains", function (assert) {
     assert.equal(1, converted.length);
 
     assert.equal(converted[0].trigger["if-domain"], "*uppercase.test");
+});
+
+QUnit.test("CSP rules", function (assert) {
+
+    var rule = new adguard.rules.UrlFilterRule('|blob:$script,domain=pornhub.com|xhamster.com|youporn.com', 0);
+
+    var result = SafariContentBlockerConverter.convertArray([rule]);
+    assert.equal(result.errorsCount, 1);
+    assert.equal(result.convertedCount, 0);
 });
 
 QUnit.test("Elemhide rules", function (assert) {
