@@ -1,8 +1,8 @@
-! Checksum: GxFp1IwL3f2dQttR4c4HvQ
+! Checksum: So+SFrcIM9aqFP0DOritew
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 1.0.9.74
-! TimeUpdated: 2017-09-19T18:10:27.154+04:00
+! Version: 1.0.9.81
+! TimeUpdated: 2017-09-25T19:02:32.636+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -28,6 +28,7 @@
 ||recreativ.ru^
 !+ NOT_OPTIMIZED
 ||hqsjc.com^
+||avazunativeads.com^
 ||mobilebanner.ru^$third-party
 ||api.ad-locus.com^
 ||m.nbhaosheng168.com^$third-party
@@ -914,6 +915,8 @@ deviantart.com#$#div[class*="dp-ad-"] {height:0px!important; width:0px!important
 ||mobimagic.com/ads/
 ||graph.facebook.com/network_ads
 @@||tf-robots.nl^$elemhide,jsinject,content
+!+ PLATFORM(ios, ext_safari, ext_android_cb)
+@@||m.pikabu.ru/story/*_reklama_
 olx.ro#@#DIV[class^="banner"]
 @@||securepubads.g.doubleclick.net/gpt/pubads_impl_$script,domain=m.timesofindia.com
 @@||mobileads.indiatimes.com/Web_Ads/js/22april16/prebid_1.js$script,domain=m.timesofindia.com
@@ -1011,6 +1014,9 @@ m.auto.ru##.card.i-bem > div[class^="_"] > div[class^="_"]
 m.auto.ru##.index.i-bem > div[class]:not([data-bem])
 m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"])
 ||images-*.ssl-images-amazon.com/images/*/ape/sf/MAsf-*_.js
+m.milliyet.com.tr##div[id^="adv_"]
+azeriseks.ru##body > div.iblock > strong
+m.realty.yandex.ru##.search-results__direct
 webclick.megalabs.ru##body > section.intro
 webclick.megalabs.ru##body > section.info
 m.sondakika.com###reksa
@@ -1467,6 +1473,9 @@ auth.wi-fi.ru##.c-fullscreen-banner
 ||eviltracker.net^
 ||spotify.com/ads/
 ||trackersimulator.org^
+||e.apsalar.com^
+||analytics-events.inshorts.com^
+||e-ssl.apsalar.com^
 ||collector-axa.cloud.ca.com^
 ||track.adform.net^
 ||analytics.ff.avast.com^
