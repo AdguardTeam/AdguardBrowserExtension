@@ -1,8 +1,8 @@
-! Checksum: bZm+TJB0JkTiUaOHMNMSOQ
+! Checksum: 6Zha51aVFmJF6X/caU3MCw
 ! Title: Dutch filter
 ! Description: EasyList Dutch + Adguard Dutch filter. Filter list that specifically removes adverts on Dutch language websites.
-! Version: 1.0.9.33
-! TimeUpdated: 2017-09-07T17:01:37.228+04:00
+! Version: 1.0.9.35
+! TimeUpdated: 2017-09-25T20:01:45.767+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -685,6 +685,7 @@ _advertentieleaderboardhome.
 @@||doubleclick.net^*adj/hbvl/homepage;tile=15;sz=160x600;$script,domain=hbvl.be
 @@||doubleclick.net^*adj/ster_cinema.nl/preroll;$script,domain=cinema.nl
 @@||easyads.eu/api/Advertisements/$domain=marktfeed.nl
+@@||easyads.eu/api/v2/AdvertentiePlanet/me/advertisements/$domain=advertentieplanet.nl
 @@||g.doubleclick.net/gampad/ads?$script,domain=marktplaats.nl
 @@||g.doubleclick.net/gampad/ads?$xmlhttprequest,domain=radioluisteren.fm
 @@||google.com/ads/search/module/ads/*/search.js$domain=zoover.be|zoover.nl
@@ -1290,6 +1291,7 @@ kamernet.nl#@#.topAdd
 voetbalnieuws.be#@#a[href^="http://adserving.unibet.com/"]
 tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
 ||wwa.pacific-yield.com^$third-party
+icttipsandtricks.nl##body #adblock_screen
 @@||gamekings.tv/wp-content/themes/*/js/ads.js
 vogelgeluid.nl#@##banner_ad
 @@/ad_bomb/*$image,domain=computerworld.nl|webwereld.nl
@@ -1302,6 +1304,7 @@ ad.nl##.tile[-ext-has=">.ankeiler--advertisement"]
 gelderlander.nl##.page-content > .theme-default[-ext-has='div.ad']
 klusidee.nl##tr.table-row[-ext-has=".td-ad"]
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
+berekenhet.nl##.bh-ads
 jan-magazine.nl##.banner.top
 feyenoord.nl##.reveal-modal-bg
 feyenoord.nl###adModal
