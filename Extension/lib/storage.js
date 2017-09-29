@@ -65,12 +65,21 @@ adguard.localStorage = (function (adguard, impl) {
         }
     };
 
+    var isInitialized = function () {
+        // WebExtension storage has async initialization
+        if (typeof impl.isInitialized === 'function') {
+            return impl.isInitialized();
+        }
+        return true;
+    };
+
     return {
         getItem: getItem,
         setItem: setItem,
         removeItem: removeItem,
         hasItem: hasItem,
-        init: init
+        init: init,
+        isInitialized: isInitialized
     };
 
 })(adguard, adguard.localStorageImpl);
