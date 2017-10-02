@@ -89,26 +89,6 @@
     }
 
     /**
-     * Searches for whitelisted domains.
-     *
-     * @param offset Offset
-     * @param limit Limit
-     * @param text Search string
-     * @returns {Array} Domains found
-     */
-    function searchWhiteListDomains(offset, limit, text) {
-        var domains = adguard.whitelist.getWhiteListDomains();
-        var result = [];
-        for (var i = 0; i < domains.length; i++) {
-            var domain = domains[i];
-            if (!text || adguard.utils.strings.containsIgnoreCase(domain, text)) {
-                result.push(domain);
-            }
-        }
-        return limit ? result.slice(offset, offset + limit) : result;
-    }
-
-    /**
      * Saves css hits from content-script.
      * Message includes stats field. [{filterId: 1, ruleText: 'rule1'}, {filterId: 2, ruleText: 'rule2'}...]
      * @param tab
@@ -172,9 +152,16 @@
             case 'disableAntiBannerFiltersByTagId':
                 adguard.tags.disableAntiBannerFiltersByTagId(message.tagId);
                 break;
+            case 'changeDefaultWhiteListMode':
+                adguard.whitelist.changeDefaultWhiteListMode(message.enabled);
+                break;
             case 'getWhiteListDomains':
-                var whiteListDomains = searchWhiteListDomains(message.offset, message.limit, message.text);
-                return {rules: whiteListDomains};
+                var whiteListDomains = adguard.whitelist.getWhiteListDomains();
+                return {content: whiteListDomains.join('\r\n')};
+            case 'saveWhiteListDomains':
+                var domains = message.content.split(/[\r\n]+/);
+                adguard.whitelist.updateWhiteListDomains(domains);
+                break;
             case 'getUserRules':
                 adguard.userrules.getUserRulesText(function (content) {
                     callback({content: content});
@@ -183,29 +170,23 @@
             case 'saveUserRules':
                 adguard.userrules.updateUserRulesText(message.content);
                 break;
+            case 'addUserRule':
+                adguard.userrules.addRules([message.ruleText]);
+                if (message.adguardDetected || adguard.frames.isTabAdguardDetected(sender.tab)) {
+                    adguard.integration.addRuleToApp(message.ruleText);
+                }
+                break;
+            case 'removeUserRule':
+                adguard.userrules.removeRule(message.ruleText);
+                if (message.adguardDetected || adguard.frames.isTabAdguardDetected(sender.tab)) {
+                    adguard.integration.removeRuleFromApp(message.ruleText);
+                }
+                break;
             case 'checkAntiBannerFiltersUpdate':
                 adguard.ui.checkFiltersUpdates();
                 break;
             case 'addCustomFilter':
                 adguard.ui.addCustomFilter(message.url);
-                break;
-            case 'changeDefaultWhiteListMode':
-                adguard.whitelist.changeDefaultWhiteListMode(message.enabled);
-                break;
-            case 'clearUserFilter':
-                adguard.userrules.clearRules();
-                break;
-            case 'clearWhiteListFilter':
-                adguard.whitelist.clearWhiteList();
-                break;
-            case 'addWhiteListDomains':
-                adguard.whitelist.addToWhiteListArray(message.domains);
-                break;
-            case 'removeWhiteListDomain':
-                adguard.whitelist.removeFromWhiteList(message.text);
-                break;
-            case 'addUserFilterRules':
-                adguard.userrules.addRules(message.rules);
                 break;
             case 'getFiltersMetadata':
                 return adguard.tags.getFiltersMetadata();
@@ -248,18 +229,6 @@
             case 'processShouldCollapseMany':
                 var requests = adguard.webRequestService.processShouldCollapseMany(sender.tab, message.documentUrl, message.requests);
                 return {requests: requests};
-            case 'addUserRule':
-                adguard.userrules.addRules([message.ruleText]);
-                if (message.adguardDetected || adguard.frames.isTabAdguardDetected(sender.tab)) {
-                    adguard.integration.addRuleToApp(message.ruleText);
-                }
-                break;
-            case 'removeUserRule':
-                adguard.userrules.removeRule(message.ruleText);
-                if (message.adguardDetected || adguard.frames.isTabAdguardDetected(sender.tab)) {
-                    adguard.integration.removeRuleFromApp(message.ruleText);
-                }
-                break;
             case 'onOpenFilteringLogPage':
                 adguard.filteringLog.onOpenFilteringLogPage();
                 break;

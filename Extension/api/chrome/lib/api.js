@@ -117,10 +117,7 @@
             adguard.whitelist.changeDefaultWhiteListMode(true);
             domains = configuration.whitelist;
         }
-        adguard.whitelist.clearWhiteList();
-        if (domains) {
-            adguard.whitelist.addToWhiteListArray(domains);
-        }
+        adguard.whitelist.updateWhiteListDomains(domains || []);
     }
 
     /**
@@ -167,8 +164,8 @@
             return;
         }
 
-        adguard.userrules.clearRules();
-        adguard.userrules.addRules(configuration.rules || []);
+        var content = (configuration.rules || []).join('\r\n');
+        adguard.userrules.updateUserRulesText(content);
     }
 
     /**

@@ -1079,8 +1079,8 @@ adguard.antiBannerService = (function (adguard) {
         var rule = adguard.rules.builder.createRule(ruleText, adguard.utils.filters.USER_FILTER_ID);
         if (rule !== null) {
             requestFilter.removeRule(rule);
-            adguard.listeners.notifyListeners(adguard.listeners.REMOVE_RULE, userFilter, [rule]);
         }
+        adguard.listeners.notifyListeners(adguard.listeners.REMOVE_RULE, userFilter, [ruleText]);
     };
 
     return {

@@ -280,8 +280,7 @@
         var userRules = userFilterSection.rules || "";
 
         // Apply user rules
-        adguard.userrules.clearRules(syncSuppressOptions);
-        adguard.userrules.addRules(userRules.split('\n'), syncSuppressOptions);
+        adguard.userrules.updateUserRulesText(userRules, syncSuppressOptions);
 
         // Apply enabled filters
         var enabledFilterIds = section.filters['enabled-filters'] || [];

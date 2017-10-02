@@ -96,393 +96,69 @@ var TopMenu = (function () {
 
 var WhiteListFilter = function (options) {
 
-    var DEFAULT_LIMIT = 200;
-
-    var linkHelper = document.createElement('a');
     var omitRenderEventsCount = 0;
 
-    var wlFilters = $("#whiteListFilters");
-    var importWlFilterInput = $("#importWhiteListFilterInput");
-    var clearWlFilterButton = $("#clearWhiteListFilter");
-    var searchWlFilterInput = $("#white-search");
+    var editor = ace.edit('whiteListRules');
+    editor.setShowPrintMargin(false);
+
+    // Ace TextHighlightRules mode is edited in ace.js library file
+    editor.session.setMode("ace/mode/text_highlight_rules");
+
+    var applyChangesBtn = $('#whiteListFilterApplyChanges');
     var changeDefaultWhiteListModeCheckbox = $('#changeDefaultWhiteListMode');
 
-    var wlSearchResult = {
-        offset: 0,
-        limit: DEFAULT_LIMIT,
-        allLoaded: false
-    };
-
-    wlFilters.jScrollPane({
-        contentWidth: '0px',
-        mouseWheelSpeed: 20
-    });
-    var jScrollPane = wlFilters.data('jsp');
-
-    function renderEmptyRulesOverlay() {
-        var items = wlFilters.find("li");
-        if (items.length === 0) {
-            showEmptyRulesOverlay();
-            if (!wlSearchResult.searchMode) {
-                clearWlFilterButton.hide();
-            }
-        } else {
-            hideEmptyRulesOverlay();
-            clearWlFilterButton.show();
-        }
-    }
-
-    function showEmptyRulesOverlay() {
-        hideEmptyRulesOverlay();
-        if (wlSearchResult.searchMode) {
-            wlFilters.find(".sp-lists-table-overlay.overlay-search").removeClass("hidden");
-        } else {
-            wlFilters.find(".sp-lists-table-overlay:not(.overlay-search)").removeClass("hidden");
-        }
-    }
-
-    function hideEmptyRulesOverlay() {
-        wlFilters.find(".sp-lists-table-overlay").addClass("hidden");
-    }
-
-    function onAddWhiteListFilterClicked(e) {
-        e.preventDefault();
-        renderWhiteListFilterRuleLines([null], {prepend: true});
-    }
-
-    function onImportWhiteListFilterClicked(e) {
-        e.preventDefault();
-        importWlFilterInput.trigger("click");
-    }
-
-    function onImportWhiteListFilterInputChange() {
-        var fileInput = importWlFilterInput[0];
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            try {
-                var text = e.target.result;
-                var domains = text ? text.split(/[\r\n]+/) : [];
-                contentPage.sendMessage({type: 'addWhiteListDomains', domains: domains});
-            } catch (ex) {
-                adguard.console.error("Error while loading whitelist rules {0}", ex);
-            }
-            fileInput.value = '';
-        };
-        reader.onerror = function () {
-            adguard.console.error("Error load whitelist rules");
-            fileInput.value = '';
-        };
-        var file = fileInput.files[0];
-        if (file) {
-            reader.readAsText(file, "utf-8");
-        }
-    }
-
-    function onExportWhiteListFilterClicked(e) {
-        e.preventDefault();
-        contentPage.sendMessage({type: 'openExportRulesTab', whitelist: true});
-    }
-
-    function onClearWhiteListFilterClicked(e) {
-        e.preventDefault();
-        var message = i18n.getMessage("options_whitelistfilter_clear_confirm");
-        if (!confirm(message)) {
-            return;
-        }
-        contentPage.sendMessage({type: 'clearWhiteListFilter'});
-    }
-
-    function getWhiteListRuleLineTemplate() {
-
-        var el = $('<li>')
-            .append($('<div>', {class: 'rule-name rule-text'}))
-            .append($('<div>', {class: 'rule-name rule-input'}).append($('<input/>', {type: 'text'})));
-
-        var options = $('<div>', {class: 'rule-ctrl'})
-            .append($('<a>', {class: 'icon-pencil edit', href: '#'}))
-            .append($('<a>', {class: 'icon-trash delete', href: '#'}))
-            .append($('<a>', {class: 'icon-check-green save', href: '#'}))
-            .append($('<a>', {class: 'icon-cancel-edit cancel', href: '#'}));
-
-        el.append(options);
-        return el;
-    }
-
-    function renderWhiteListFilterRuleLines(rulesText, options) {
-
-        hideEmptyRulesOverlay();
-
-        var fragment = document.createDocumentFragment();
-
-        var editItems = [];
-
-        for (var i = 0; i < rulesText.length; i++) {
-
-            var ruleText = rulesText[i];
-
-            var el = getWhiteListRuleLineTemplate();
-            fragment.appendChild(el[0]);
-
-            var text = el.find('.rule-text');
-
-            if (!ruleText) {
-                el.data("isNew", true);
-                editItems.push(el);
-            } else {
-                el.data("ruleText", ruleText);
-                text.text(ruleText);
-            }
-        }
-
-        if (options && options.prepend) {
-            jScrollPane.getContentPane().prepend(fragment);
-        } else {
-            jScrollPane.getContentPane().append(fragment);
-        }
-        jScrollPane.reinitialise();
-
-        renderEmptyRulesOverlay();
-
-        wlFilters.removeClass("editing");
-        for (var j = 0; j < editItems.length; j++) {
-            editItems[j].find('.edit').click();
-        }
-    }
-
-    function removeWhiteListFilterRuleLine(ruleText) {
-        var filters = wlFilters.find("li");
-        $.each(filters, function (index, f) {
-            var $el = $(f);
-            if ($el.data("ruleText") == ruleText) {
-                $el.remove();
-            }
+    function loadWhiteListDomains() {
+        contentPage.sendMessage({
+            type: 'getWhiteListDomains'
+        }, function (response) {
+            editor.setValue(response.content || '');
+            applyChangesBtn.hide();
         });
-        jScrollPane.reinitialise();
-        renderEmptyRulesOverlay();
     }
 
-    function clearWhiteListFilterRuleLines() {
-        var filters = wlFilters.find("li");
-        filters.remove();
-        jScrollPane.reinitialise();
-        renderEmptyRulesOverlay();
-    }
+    function saveWhiteListDomains(e) {
 
-    function startEditRuleLine(el) {
-        var input = el.find('input');
-        wlFilters.addClass("editing");
-        el.closest('li').addClass('editing-row');
-        var ruleText = el.data("ruleText");
-        if (ruleText) {
-            input.val(ruleText);
-        }
-        input.focus();
-    }
+        e.preventDefault();
 
-    function stopEditRuleLine(el) {
-        el.closest('li').removeClass('editing-row');
-        wlFilters.removeClass("editing");
-    }
-
-    function onSaveRuleLineClicked(el) {
-
-        var input = el.find('input');
-        var text = el.find('.rule-text');
-
-        normalizeWhiteListInput(input, text);
-
-        var value = input.val().trim();
-        if (!value) {
-            return;
-        }
-        var newText = saveWhiteListFilterRule({
-            isNew: el.data("isNew"),
-            text: value,
-            prevText: el.data("ruleText")
-        });
-        if (newText) {
-            el.data("isNew", false);
-            el.data("ruleText", newText);
-            text.text(newText);
-        }
-        stopEditRuleLine(el);
-    }
-
-    function onCancelEditRuleLineClicked(el) {
-        if (el.data("isNew")) {
-            el.remove();
-            wlFilters.removeClass("editing");
-        } else {
-            stopEditRuleLine(el);
-        }
-    }
-
-    function saveWhiteListFilterRule(item) {
-        if (item.isNew) {
-            omitRenderEventsCount = 1;
-            contentPage.sendMessage({type: 'addWhiteListDomains', domains: [item.text]});
-        } else {
-            //start edit rule
-            omitRenderEventsCount = 2;
-            contentPage.sendMessage({type: 'removeWhiteListDomain', text: item.prevText}, function () {
-                contentPage.sendMessage({type: 'addWhiteListDomains', domains: [item.text]});
-            });
-        }
-        return item.text;
-    }
-
-    function deleteWhiteListFilterRule(item) {
         omitRenderEventsCount = 1;
-        contentPage.sendMessage({type: 'removeWhiteListDomain', text: item.text}, function () {
-            removeWhiteListFilterRuleLine(item.text);
+
+        editor.setReadOnly(true);
+        var text = editor.getValue();
+
+        contentPage.sendMessage({
+            type: 'saveWhiteListDomains',
+            content: text
+        }, function () {
+            editor.setReadOnly(false);
+            applyChangesBtn.hide();
         });
     }
 
-    function normalizeWhiteListInput(input, text) {
-        var value = input.val().trim();
-        if (!value) {
+    function updateWhiteListDomains() {
+        if (omitRenderEventsCount > 0) {
+            omitRenderEventsCount--;
             return;
         }
-        if (value.indexOf('http://') < 0 && value.indexOf('https://') < 0) {
-            if (value.indexOf('//') === 0) {
-                value = 'http:' + value;
-            } else {
-                value = 'http://' + value;
-            }
-        }
-        linkHelper.href = value;
-        var host = linkHelper.hostname;
-        input.val(host);
-        text.text(host);
+        loadWhiteListDomains();
     }
 
     function changeDefaultWhiteListMode(e) {
         e.preventDefault();
         contentPage.sendMessage({type: 'changeDefaultWhiteListMode', enabled: !e.currentTarget.checked}, function () {
-            updateWhiteListFilterRules();
+            updateWhiteListDomains();
         });
     }
 
-    function loadAndRenderWhiteListFilterRuleLines(loadNext) {
-
-        loadNext = loadNext === true;
-
-        if (!loadNext) {
-            wlSearchResult.offset = 0;
-            wlSearchResult.allLoaded = false;
-        }
-
-        if (wlSearchResult._isLoading || wlSearchResult.allLoaded) {
-            return;
-        }
-
-        var value = searchWlFilterInput.val() || '';
-        var text = value.trim();
-        wlSearchResult.searchMode = text.length > 0;
-
-        contentPage.sendMessage({
-            type: 'getWhiteListDomains',
-            offset: wlSearchResult.offset,
-            limit: wlSearchResult.limit,
-            text: text
-        }, function (response) {
-
-            var rules = response.rules;
-            if (rules.length < wlSearchResult.limit) {
-                wlSearchResult.allLoaded = true;
-            }
-            wlSearchResult.offset += rules.length;
-            wlSearchResult._isLoading = false;
-
-            if (!loadNext) {
-                clearWhiteListFilterRuleLines();
-            }
-            renderWhiteListFilterRuleLines(rules);
-            renderEmptyRulesOverlay();
-        });
-    }
-
-    var updateWhiteListFilterRules = function () {
-        if (omitRenderEventsCount > 0) {
-            omitRenderEventsCount--;
-            return;
-        }
-        loadAndRenderWhiteListFilterRuleLines();
-    };
-
-    var onShown = function () {
-        jScrollPane.reinitialise();
-    };
-
-    wlFilters.append($('#whitelist-overlay').children());
-
-    var whiteListSection = $("#whitelist");
-    whiteListSection.on('click', '.addWhiteListFilter', onAddWhiteListFilterClicked);
-    whiteListSection.on('click', '#importWhiteListFilter', onImportWhiteListFilterClicked);
-    whiteListSection.on('change', '#importWhiteListFilterInput', onImportWhiteListFilterInputChange);
-    whiteListSection.on('click', '#exportWhiteListFilter', onExportWhiteListFilterClicked);
-    whiteListSection.on('click', '#clearWhiteListFilter', onClearWhiteListFilterClicked);
-
-    whiteListSection.find("#searchWhitelist").on('click', function (e) {
-        e.preventDefault();
-        loadAndRenderWhiteListFilterRuleLines();
-    });
-    searchWlFilterInput.on('keyup', Utils.debounce(loadAndRenderWhiteListFilterRuleLines, 300));
-    wlFilters.bind('jsp-scroll-y', function (e, posY, isAtTop, isAtBottom) {
-        if (isAtBottom) {
-            loadAndRenderWhiteListFilterRuleLines(true);
-        }
-    });
-
-    wlFilters.on('click', '.edit', function (e) {
-        e.preventDefault();
-        startEditRuleLine($(this).closest('li'));
-    });
-
-    wlFilters.on('click', '.save', function (e) {
-        e.preventDefault();
-        onSaveRuleLineClicked($(this).closest('li'));
-    });
-
-    wlFilters.on('click', '.cancel', function (e) {
-        e.preventDefault();
-        onCancelEditRuleLineClicked($(this).closest('li'));
-        jScrollPane.reinitialise();
-        renderEmptyRulesOverlay();
-    });
-
-    wlFilters.on('click', '.delete', function (e) {
-        e.preventDefault();
-        var el = $(this).closest('li');
-        deleteWhiteListFilterRule({text: el.data("ruleText")});
-    });
-
-    wlFilters.on('keypress', 'input[type="text"]', function (e) {
-        if (e.keyCode == 13) {
-            e.preventDefault();
-            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/521#issuecomment-274470832
-            $(this).blur();
-            onSaveRuleLineClicked($(this).closest('li'));
-        }
-    });
-
-    $(document).keydown(function (e) {
-        if (e.keyCode == 27) {
-            var elements = wlFilters.find('li');
-            for (var i = 0; i < elements.length; i++) {
-                onCancelEditRuleLineClicked($(elements[i]));
-            }
-            jScrollPane.reinitialise();
-            renderEmptyRulesOverlay();
-        }
-    });
-
+    applyChangesBtn.on('click', saveWhiteListDomains);
     changeDefaultWhiteListModeCheckbox.on('change', changeDefaultWhiteListMode);
     changeDefaultWhiteListModeCheckbox.updateCheckbox(!options.defaultWhiteListMode);
 
+    editor.getSession().on('change', function () {
+        applyChangesBtn.show();
+    });
+
     return {
-        updateWhiteListFilterRules: updateWhiteListFilterRules,
-        onShown: onShown
+        updateWhiteListDomains: updateWhiteListDomains
     };
 };
 
@@ -930,11 +606,13 @@ var SyncSettings = function (options) {
     }
 
     function onSyncOptionsChanged() {
-        contentPage.sendMessage({type: 'setSyncOptions', options: {
-            syncGeneral: $('#sync-general-settings-checkbox').is(':checked'),
-            syncFilters: $('#sync-filters-checkbox').is(':checked'),
-            syncExtensionSpecific: $('#sync-extension-specific-checkbox').is(':checked')
-        }});
+        contentPage.sendMessage({
+            type: 'setSyncOptions', options: {
+                syncGeneral: $('#sync-general-settings-checkbox').is(':checked'),
+                syncFilters: $('#sync-filters-checkbox').is(':checked'),
+                syncExtensionSpecific: $('#sync-extension-specific-checkbox').is(':checked')
+            }
+        });
     }
 
     function onProviderSelected(providerName) {
@@ -1014,8 +692,8 @@ var SyncSettings = function (options) {
         }
 
         var browserStorageSupported = syncStatus.providers.filter(function (p) {
-                return p.name === 'BROWSER_SYNC';
-            }).length > 0;
+            return p.name === 'BROWSER_SYNC';
+        }).length > 0;
 
         if (!browserStorageSupported) {
             $('#browserStorageSelectProvider').hide();
@@ -1159,7 +837,7 @@ var Settings = function () {
             contentPage.sendMessage({type: 'applySettingsJson', json: content});
         };
 
-        $(input).change(function() {
+        $(input).change(function () {
             var file = $(input).get(0).files[0];
             if (file) {
                 var reader = new FileReader();
@@ -1203,9 +881,7 @@ PageController.prototype = {
         // Initialize top menu
         TopMenu.init({
             onHashUpdated: function (tabId) {
-                if (tabId === '#whitelist') {
-                    this.whiteListFilter.onShown();
-                }
+                // Doing nothing
             }.bind(this)
         });
 
@@ -1283,7 +959,7 @@ PageController.prototype = {
 
         // Initialize whitelist filter
         this.whiteListFilter = new WhiteListFilter({defaultWhiteListMode: defaultWhitelistMode});
-        this.whiteListFilter.updateWhiteListFilterRules();
+        this.whiteListFilter.updateWhiteListDomains();
 
         // Initialize User filter
         this.userFilter = new UserFilter();
@@ -1294,7 +970,7 @@ PageController.prototype = {
         this.antiBannerFilters.render();
 
         // Initialize sync tab
-        this.syncSettings = new SyncSettings({syncStatusInfo:syncStatusInfo});
+        this.syncSettings = new SyncSettings({syncStatusInfo: syncStatusInfo});
         this.syncSettings.renderSyncSettings();
     },
 
@@ -1415,7 +1091,7 @@ var initPage = function (response) {
                     }
                     break;
                 case EventNotifierTypes.UPDATE_WHITELIST_FILTER_RULES:
-                    controller.whiteListFilter.updateWhiteListFilterRules();
+                    controller.whiteListFilter.updateWhiteListDomains();
                     break;
                 case EventNotifierTypes.REQUEST_FILTER_UPDATED:
                     // Don't react on this event. If ContentBlockerEnabled CONTENT_BLOCKER_UPDATED event will be received.
