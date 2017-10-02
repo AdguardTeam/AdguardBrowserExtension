@@ -387,6 +387,10 @@ adguard.ui = (function (adguard) { // jshint ignore:line
      * @param tab Tab
      */
     function updateTabContextMenu(tab) {
+        // Isn't supported by Android WebExt
+        if (!adguard.contextMenus) {
+            return;
+        }
         adguard.contextMenus.removeAll();
         if (adguard.settings.showContextMenu()) {
             if (adguard.prefs.mobile) {

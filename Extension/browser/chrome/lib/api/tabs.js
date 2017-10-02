@@ -32,6 +32,51 @@ adguard.windowsImpl = (function (adguard) {
         };
     }
 
+    // Make compatible with Android WebExt
+    if (typeof browser.windows === 'undefined') {
+
+        browser.windows = (function () {
+
+            var defaultWindow = {
+                id: 1,
+                type: 'normal'
+            };
+
+            var emptyListener = {
+                addListener: function () {
+                    // Doing nothing
+                }
+            };
+
+            var create = function (createData, callback) {
+                callback(defaultWindow);
+            };
+
+            var update = function (windowId, data, callback) {
+                callback();
+            };
+
+            var getAll = function (query, callback) {
+                callback(defaultWindow);
+            };
+
+            var getLastFocused = function (callback) {
+                callback(defaultWindow);
+            };
+
+            return {
+                onCreated: emptyListener,
+                onRemoved: emptyListener,
+                onFocusChanged: emptyListener,
+                create: create,
+                update: update,
+                getAll: getAll,
+                getLastFocused: getLastFocused
+            };
+
+        })();
+    }
+
     var onCreatedChannel = adguard.utils.channels.newChannel();
     var onRemovedChannel = adguard.utils.channels.newChannel();
     var onUpdatedChannel = adguard.utils.channels.newChannel();
@@ -188,7 +233,9 @@ adguard.tabsImpl = (function (adguard) {
 
         if (createData.type === 'popup' &&
             // Does not work properly in Anniversary builds
-            !adguard.utils.browser.isEdgeBeforeCreatorsUpdate()) {
+            !adguard.utils.browser.isEdgeBeforeCreatorsUpdate() &&
+            // Isn't supported by Android WebExt
+            !adguard.prefs.mobile) {
             // https://developer.chrome.com/extensions/windows#method-create
             // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/create
             browser.windows.create({
