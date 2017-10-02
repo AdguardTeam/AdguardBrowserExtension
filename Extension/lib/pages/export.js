@@ -47,19 +47,17 @@ $(document).ready(function () {
         }
     };
 
-    var whitelist = document.location.hash == '#wl';
-    var settings = document.location.hash == '#exs';
+    var whitelist = document.location.hash === '#wl';
+    var settings = document.location.hash === '#exs';
     var messageType;
 
     var preProcessResponse = callback;
     if (whitelist) {
         messageType = 'getWhiteListDomains';
         preProcessResponse = function (response) {
-            var rules = response.rules;
-            if (!rules || rules.length === 0) {
-                return;
+            if (response.content) {
+                callback(response.content);
             }
-            callback(rules.join('\r\n'));
         };
     } else if (settings) {
         messageType = 'loadSettingsJson';

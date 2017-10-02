@@ -149,6 +149,24 @@ adguard.whitelist = (function (adguard) {
     }
 
     /**
+     * Remove domain from whitelist
+     * @param domain
+     */
+    function removeFromWhiteList(domain) {
+        var rule = createWhiteListRule(domain);
+        if (rule) {
+            if (isDefaultWhiteListMode()) {
+                getWhiteListFilter().removeRule(rule);
+            } else {
+                getBlockListFilter().removeRule(rule);
+            }
+        }
+        removeDomainFromWhiteList(domain);
+        saveDomainsToLocalStorage();
+        notifyWhiteListUpdated();
+    }
+
+    /**
      * Save domains to local storage
      */
     function saveDomainsToLocalStorage() {
@@ -252,17 +270,16 @@ adguard.whitelist = (function (adguard) {
     };
 
     /**
-     * Add domains to whitelist
+     * Updates domains in whitelist
      * @param domains
      */
-    var addToWhiteListArray = function (domains) {
-        if (!domains) {
-            return;
-        }
-
-        if (defaultWhiteListMode) {
+    var updateWhiteListDomains = function (domains) {
+        domains = domains || [];
+        if (isDefaultWhiteListMode()) {
+            clearWhiteListed();
             addWhiteListed(domains);
         } else {
+            clearBlockListed();
             addBlockListed(domains);
         }
         notifyWhiteListUpdated();
@@ -276,14 +293,12 @@ adguard.whitelist = (function (adguard) {
         if (!domains) {
             return;
         }
-        var rules = [];
         for (var i = 0; i < domains.length; i++) {
             var domain = domains[i];
+            whiteListDomainsHolder.add(domain);
             var rule = createWhiteListRule(domain);
             if (rule) {
-                rules.push(rule);
                 whiteListFilter.addRule(rule);
-                addDomainToWhiteList(domain);
             }
         }
         saveDomainsToLocalStorage();
@@ -297,47 +312,15 @@ adguard.whitelist = (function (adguard) {
         if (!domains) {
             return;
         }
-        var rules = [];
         for (var i = 0; i < domains.length; i++) {
             var domain = domains[i];
+            blockListDomainsHolder.add(domain);
             var rule = createWhiteListRule(domain);
             if (rule) {
-                rules.push(rule);
                 blockListFilter.addRule(rule);
-                addDomainToWhiteList(domain);
             }
         }
         saveDomainsToLocalStorage();
-    };
-
-    /**
-     * Remove domain from whitelist
-     * @param domain
-     */
-    var removeFromWhiteList = function (domain) {
-        var rule = createWhiteListRule(domain);
-        if (rule) {
-            if (isDefaultWhiteListMode()) {
-                getWhiteListFilter().removeRule(rule);
-            } else {
-                getBlockListFilter().removeRule(rule);
-            }
-        }
-        removeDomainFromWhiteList(domain);
-        saveDomainsToLocalStorage();
-        notifyWhiteListUpdated();
-    };
-
-    /**
-     * Clear whitelist current mode
-     */
-    var clearWhiteList = function () {
-        if (isDefaultWhiteListMode()) {
-            clearWhiteListed();
-        } else {
-            clearBlockListed();
-        }
-        notifyWhiteListUpdated();
     };
 
     /**
@@ -370,7 +353,6 @@ adguard.whitelist = (function (adguard) {
         clearBlockListed();
         addWhiteListed(whitelist || []);
         addBlockListed(blocklist || []);
-        defaultWhiteListMode = whiteListMode;
         adguard.settings.changeDefaultWhiteListMode(whiteListMode);
         notifyWhiteListUpdated(options);
     };
@@ -422,10 +404,7 @@ adguard.whitelist = (function (adguard) {
         whiteListUrl: whiteListUrl,
         unWhiteListUrl: unWhiteListUrl,
 
-        addToWhiteListArray: addToWhiteListArray,
-
-        removeFromWhiteList: removeFromWhiteList,
-        clearWhiteList: clearWhiteList,
+        updateWhiteListDomains: updateWhiteListDomains,
 
         configure: configure,
 
