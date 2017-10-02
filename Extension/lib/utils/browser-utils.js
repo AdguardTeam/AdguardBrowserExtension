@@ -132,7 +132,7 @@
         },
 
         isFirefoxBrowser: function () {
-            return adguard.prefs.browser === "Firefox" || adguard.prefs.browser === "Android";
+            return adguard.prefs.browser === "Firefox";
         },
 
         isChromeBrowser: function () {

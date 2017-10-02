@@ -27,7 +27,7 @@ adguard.prefs = (function (adguard) {
 
         get mobile() {
             return adguard.lazyGet(Prefs, 'mobile', function () {
-                return this.browser === 'Android';
+                return navigator.userAgent.indexOf('Android') >= 0;
             });
         },
 
@@ -46,11 +46,7 @@ adguard.prefs = (function (adguard) {
                 } else if (userAgent.indexOf("Safari") >= 0 && userAgent.indexOf('Chrome') < 0) {
                     browser = "Safari";
                 } else if (userAgent.indexOf("Firefox") >= 0) {
-                    if (userAgent.indexOf("Android") >= 0) {
-                        browser = "Android";
-                    } else {
-                        browser = "Firefox";
-                    }
+                    browser = "Firefox";
                 } else {
                     browser = "Chrome";
                 }
@@ -73,7 +69,7 @@ adguard.prefs = (function (adguard) {
 
         get chromeVersion() {
             return adguard.lazyGet(Prefs, 'chromeVersion', function () {
-                if (this.browser == "Chrome") {
+                if (this.browser === "Chrome") {
                     var i = navigator.userAgent.indexOf("Chrome/");
                     if (i < 0) {
                         return null;

@@ -33,13 +33,7 @@ adguard.prefs = (function (adguard) {
 
         get browser() {
             return adguard.lazyGet(Prefs, 'browser', function () {
-                var browser;
-                if (this.mobile) {
-                    browser = "Android";
-                } else {
-                    browser = "Firefox";
-                }
-                return browser;
+                return 'Firefox';
             });
         },
 
