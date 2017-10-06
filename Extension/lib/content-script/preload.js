@@ -273,6 +273,14 @@
      * Function supposed to be executed in page's context
      */
     var overrideShadowRootGetter = function () {
+        function copyProperty(orig, wrapped, prop) {
+            var desc = Object.getOwnPropertyDescriptor(orig, prop);
+            if (desc && desc.configurable) {
+                desc.value = orig[prop];
+                Object.defineProperty(wrapped, prop, desc);
+            }
+        }
+
         if ("shadowRoot" in Element.prototype) {
             var ourShadowRoot = document.documentElement.shadowRoot;
             if (ourShadowRoot) {
@@ -285,6 +293,12 @@
                         return thisShadow === ourShadowRoot ? null : thisShadow;
                     }
                 });
+
+                var wrapped = Object.getOwnPropertyDescriptor(Element.prototype, "shadowRoot");
+
+                copyProperty(desc.get, wrapped.get, 'name');
+                copyProperty(desc.get, wrapped.get, 'length');
+                wrapped.get.toString = function () { return "function () { [native code] }"; };
             }
         }
     };
