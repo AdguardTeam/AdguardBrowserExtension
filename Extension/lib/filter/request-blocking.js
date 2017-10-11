@@ -422,7 +422,9 @@ adguard.webRequestService = (function (adguard) {
      */
     var shouldApplyReplaceRule = function (requestRule, requestType) {
 
-        if (!adguard.prefs.features.replaceRulesSupported) {
+        // In case of .features or .features.replaceRulesSupported are not defined
+        var replaceRulesSupported = adguard.prefs.features && adguard.prefs.features.replaceRulesSupported;
+        if (!replaceRulesSupported) {
             return false;
         }
 

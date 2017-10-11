@@ -305,51 +305,6 @@
     }
 
     /**
-     * Splits string by a delimiter, ignoring escaped delimiters
-     * @param str               String to split
-     * @param delimiter         Delimiter
-     * @param escapeCharacter   Escape character
-     * @param preserveAllTokens If true - preserve empty entries.
-     */
-    function splitByDelimiterWithEscapeCharacter(str, delimiter, escapeCharacter, preserveAllTokens) {
-
-        var parts = [];
-
-        if (adguard.utils.strings.isEmpty(str)) {
-            return parts;
-        }
-
-        var sb = [];
-        for (var i = 0; i < str.length; i++) {
-
-            var c = str.charAt(i);
-
-            if (c === delimiter) {
-                if (i === 0) { // jshint ignore:line
-                    // Ignore
-                } else if (str.charAt(i - 1) === escapeCharacter) {
-                    sb.splice(sb.length - 1, 1);
-                    sb.push(c);
-                } else {
-                    if (preserveAllTokens || sb.length > 0) {
-                        var part = sb.join('');
-                        parts.push(part);
-                        sb = [];
-                    }
-                }
-            } else {
-                sb.push(c);
-            }
-        }
-
-        if (preserveAllTokens || sb.length > 0) {
-            parts.push(sb.join(''));
-        }
-
-        return parts;
-    }
-
-    /**
      * Represents a $replace modifier value.
      * <p/>
      * Learn more about this modifier syntax here:
@@ -357,7 +312,7 @@
      */
     function ReplaceOption(option) {
 
-        var parts = splitByDelimiterWithEscapeCharacter(option, '/', ESCAPE_CHARACTER, true);
+        var parts = adguard.utils.strings.splitByDelimiterWithEscapeCharacter(option, '/', ESCAPE_CHARACTER, true);
 
         if (parts.length < 2 || parts.length > 3) {
             throw 'Cannot parse ' + option;
@@ -773,7 +728,7 @@
      */
     UrlFilterRule.prototype._loadOptions = function (options) {
 
-        var optionsParts = splitByDelimiterWithEscapeCharacter(options, api.FilterRule.COMA_DELIMITER, ESCAPE_CHARACTER, false);
+        var optionsParts = adguard.utils.strings.splitByDelimiterWithEscapeCharacter(options, api.FilterRule.COMA_DELIMITER, ESCAPE_CHARACTER, false);
 
         for (var i = 0; i < optionsParts.length; i++) {
             var option = optionsParts[i];
@@ -837,7 +792,9 @@
                     }
                     break;
                 case UrlFilterRule.REPLACE_OPTION:
-                    if (!adguard.prefs.features.replaceRulesSupported) {
+                    // In case of .features or .features.replaceRulesSupported are not defined
+                    var replaceRulesSupported = adguard.prefs.features && adguard.prefs.features.replaceRulesSupported;
+                    if (!replaceRulesSupported) {
                         throw 'Unknown option: REPLACE';
                     }
                     if (this.whiteListRule) {

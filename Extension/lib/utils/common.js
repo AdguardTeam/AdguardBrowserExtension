@@ -162,6 +162,51 @@ adguard.utils = (function () {
             }
 
             return -1;
+        },
+
+        /**
+         * Splits string by a delimiter, ignoring escaped delimiters
+         * @param str               String to split
+         * @param delimiter         Delimiter
+         * @param escapeCharacter   Escape character
+         * @param preserveAllTokens If true - preserve empty entries.
+         */
+        splitByDelimiterWithEscapeCharacter: function (str, delimiter, escapeCharacter, preserveAllTokens) {
+
+            var parts = [];
+
+            if (adguard.utils.strings.isEmpty(str)) {
+                return parts;
+            }
+
+            var sb = [];
+            for (var i = 0; i < str.length; i++) {
+
+                var c = str.charAt(i);
+
+                if (c === delimiter) {
+                    if (i === 0) { // jshint ignore:line
+                        // Ignore
+                    } else if (str.charAt(i - 1) === escapeCharacter) {
+                        sb.splice(sb.length - 1, 1);
+                        sb.push(c);
+                    } else {
+                        if (preserveAllTokens || sb.length > 0) {
+                            var part = sb.join('');
+                            parts.push(part);
+                            sb = [];
+                        }
+                    }
+                } else {
+                    sb.push(c);
+                }
+            }
+
+            if (preserveAllTokens || sb.length > 0) {
+                parts.push(sb.join(''));
+            }
+
+            return parts;
         }
     };
 
