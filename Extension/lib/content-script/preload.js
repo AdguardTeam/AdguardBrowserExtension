@@ -287,18 +287,20 @@
                 var desc = Object.getOwnPropertyDescriptor(Element.prototype, "shadowRoot");
                 var shadowRoot = Function.prototype.call.bind(desc.get);
 
+                var overload = function () {
+                    var thisShadow = shadowRoot(this);
+                    return thisShadow === ourShadowRoot ? null : thisShadow;
+                };
+
+                copyProperty(desc.get, overload, 'name');
+                copyProperty(desc.get, overload, 'length');
+
+                var stringValue = desc.get.toString();
+                overload.toString = function () { return stringValue; };
+
                 Object.defineProperty(Element.prototype, "shadowRoot", {
-                    configurable: true, enumerable: true, get: function () {
-                        var thisShadow = shadowRoot(this);
-                        return thisShadow === ourShadowRoot ? null : thisShadow;
-                    }
+                    configurable: true, enumerable: true, get: overload
                 });
-
-                var wrapped = Object.getOwnPropertyDescriptor(Element.prototype, "shadowRoot");
-
-                copyProperty(desc.get, wrapped.get, 'name');
-                copyProperty(desc.get, wrapped.get, 'length');
-                wrapped.get.toString = function () { return "function () { [native code] }"; };
             }
         }
     };
