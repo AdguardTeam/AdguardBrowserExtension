@@ -20,6 +20,70 @@
     'use strict';
 
     /**
+     * Simple request cache
+     * @param requestCacheMaxSize Max cache size
+     */
+    var RequestCache = function (requestCacheMaxSize) {
+
+        this.requestCache = Object.create(null);
+        this.requestCacheSize = 0;
+        this.requestCacheMaxSize = requestCacheMaxSize;
+
+        /**
+         * Searches for cached filter rule
+         *
+         * @param requestUrl Request url
+         * @param refHost Referrer host
+         * @param requestType Request type
+         */
+        this.searchRequestCache = function (requestUrl, refHost, requestType) {
+            var cacheItem = this.requestCache[requestUrl];
+            if (!cacheItem) {
+                return null;
+            }
+
+            var c = cacheItem[requestType];
+            if (c && c[1] === refHost) {
+                return c;
+            }
+
+            return null;
+        };
+
+        /**
+         * Saves resulting filtering rule to requestCache
+         *
+         * @param requestUrl Request url
+         * @param rule Rule found
+         * @param refHost Referrer host
+         * @param requestType Request type
+         */
+        this.saveResultToCache = function (requestUrl, rule, refHost, requestType) {
+            if (this.requestCacheSize > this.requestCacheMaxSize) {
+                this.clearRequestCache();
+            }
+            if (!this.requestCache[requestUrl]) {
+                this.requestCache[requestUrl] = Object.create(null);
+                this.requestCacheSize++;
+            }
+
+            //Two-levels gives us an ability to not to override cached item for different request types with the same url
+            this.requestCache[requestUrl][requestType] = [rule, refHost];
+        };
+
+        /**
+         * Clears request cache
+         */
+        this.clearRequestCache = function () {
+            if (this.requestCacheSize === 0) {
+                return;
+            }
+            this.requestCache = Object.create(null);
+            this.requestCacheSize = 0;
+        }
+    };
+
+    /**
      * Request filter is main class which applies filter rules.
      *
      * @type {Function}
@@ -50,9 +114,9 @@
         // Rules count (includes all types of rules)
         this.rulesCount = 0;
 
-        // Init small cache for url filtering rules
-        this.requestCache = Object.create(null);
-        this.requestCacheSize = 0;
+        // Init small caches for url filtering rules
+        this.urlBlockingCache = new RequestCache(this.requestCacheMaxSize);
+        this.urlWhiteCache = new RequestCache(this.requestCacheMaxSize);
     };
 
     RequestFilter.prototype = {
@@ -89,7 +153,7 @@
                 return;
             }
             if (rule instanceof adguard.rules.UrlFilterRule) {
-                if (rule.cspRule) {
+                if (rule.isCspRule()) {
                     this.cspFilter.addRule(rule);
                 } else {
                     if (rule.whiteListRule) {
@@ -104,7 +168,8 @@
                 this.scriptFilter.addRule(rule);
             }
             this.rulesCount++;
-            this._clearRequestCache();
+            this.urlBlockingCache.clearRequestCache();
+            this.urlWhiteCache.clearRequestCache();
         },
 
         /**
@@ -119,7 +184,7 @@
                 return;
             }
             if (rule instanceof adguard.rules.UrlFilterRule) {
-                if (rule.cspRule) {
+                if (rule.isCspRule()) {
                     this.cspFilter.removeRule(rule);
                 } else {
                     if (rule.whiteListRule) {
@@ -134,7 +199,8 @@
                 this.scriptFilter.removeRule(rule);
             }
             this.rulesCount--;
-            this._clearRequestCache();
+            this.urlBlockingCache.clearRequestCache();
+            this.urlWhiteCache.clearRequestCache();
         },
 
         /**
@@ -207,7 +273,8 @@
             this.urlWhiteFilter.clearRules();
             this.urlBlockingFilter.clearRules();
             this.cssFilter.clearRules();
-            this._clearRequestCache();
+            this.urlBlockingCache.clearRequestCache();
+            this.urlWhiteCache.clearRequestCache();
         },
 
         /**
@@ -215,7 +282,7 @@
          *
          * @param requestUrl  Request URL
          * @param referrer    Referrer
-         * @param requestType        Exception rule modifier (either DOCUMENT or ELEMHIDE or JSINJECT)
+         * @param requestType Request type
          * @returns Filter rule found or null
          */
         findWhiteListRule: function (requestUrl, referrer, requestType) {
@@ -223,7 +290,7 @@
             var refHost = adguard.utils.url.getHost(referrer);
             var thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrer);
 
-            var cacheItem = this._searchRequestCache(requestUrl, refHost, requestType);
+            var cacheItem = this.urlWhiteCache.searchRequestCache(requestUrl, refHost, requestType);
 
             if (cacheItem) {
                 // Element with zero index is a filter rule found last time
@@ -232,7 +299,7 @@
 
             var rule = this._checkWhiteList(requestUrl, refHost, requestType, thirdParty);
 
-            this._saveResultToCache(requestUrl, rule, refHost, requestType);
+            this.urlWhiteCache.saveResultToCache(requestUrl, rule, refHost, requestType);
             return rule;
         },
 
@@ -250,7 +317,7 @@
             var documentHost = adguard.utils.url.getHost(documentUrl);
             var thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
 
-            var cacheItem = this._searchRequestCache(requestUrl, documentHost, requestType);
+            var cacheItem = this.urlBlockingCache.searchRequestCache(requestUrl, documentHost, requestType);
 
             if (cacheItem) {
                 // Element with zero index is a filter rule found last time
@@ -259,7 +326,7 @@
 
             var rule = this._findRuleForRequest(requestUrl, documentHost, requestType, thirdParty, documentWhitelistRule);
 
-            this._saveResultToCache(requestUrl, rule, documentHost, requestType);
+            this.urlBlockingCache.saveResultToCache(requestUrl, rule, documentHost, requestType);
             return rule;
         },
 
@@ -336,8 +403,8 @@
 
             // If UrlBlock is set - than we should not use UrlBlockingFilter against this request.
             // Now check if document rule has $genericblock or $urlblock modifier
-            var genericRulesAllowed = !documentWhiteListRule || !documentWhiteListRule.checkContentType("GENERICBLOCK");
-            var urlRulesAllowed = !documentWhiteListRule || !documentWhiteListRule.checkContentType("URLBLOCK");
+            var genericRulesAllowed = !documentWhiteListRule || !documentWhiteListRule.isGenericBlock();
+            var urlRulesAllowed = !documentWhiteListRule || !documentWhiteListRule.isUrlBlock();
 
             // STEP 2: Looking for blocking rule, which could be applied to the current request
 
@@ -368,63 +435,6 @@
             }
 
             return blockingRule;
-        },
-
-        /**
-         * Searches for cached filter rule
-         *
-         * @param requestUrl Request url
-         * @param refHost Referrer host
-         * @param requestType Request type
-         * @private
-         */
-        _searchRequestCache: function (requestUrl, refHost, requestType) {
-            var cacheItem = this.requestCache[requestUrl];
-            if (!cacheItem) {
-                return null;
-            }
-
-            var c = cacheItem[requestType];
-            if (c && c[1] === refHost) {
-                return c;
-            }
-
-            return null;
-        },
-
-        /**
-         * Saves resulting filtering rule to requestCache
-         *
-         * @param requestUrl Request url
-         * @param rule Rule found
-         * @param refHost Referrer host
-         * @param requestType Request type
-         * @private
-         */
-        _saveResultToCache: function (requestUrl, rule, refHost, requestType) {
-            if (this.requestCacheSize > this.requestCacheMaxSize) {
-                this._clearRequestCache();
-            }
-            if (!this.requestCache[requestUrl]) {
-                this.requestCache[requestUrl] = Object.create(null);
-                this.requestCacheSize++;
-            }
-
-            //Two-levels gives us an ability to not to override cached item for different request types with the same url
-            this.requestCache[requestUrl][requestType] = [rule, refHost];
-        },
-
-        /**
-         * Clears request cache
-         * @private
-         */
-        _clearRequestCache: function () {
-            if (this.requestCacheSize === 0) {
-                return;
-            }
-
-            this.requestCache = Object.create(null);
-            this.requestCacheSize = 0;
         }
     };
 

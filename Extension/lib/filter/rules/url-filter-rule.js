@@ -19,6 +19,8 @@
 
     'use strict';
 
+    var ESCAPE_CHARACTER = '\\';
+
     var isFirefoxBrowser = adguard.utils.browser.isFirefoxBrowser();
     var isContentBlockerEnabled = adguard.utils.browser.isContentBlockerEnabled();
 
@@ -77,7 +79,7 @@
                     startIndex = domainIndex + exceptRule.length;
                 }
 
-                if (startIndex == -1) {
+                if (startIndex === -1) {
                     //Domain is not found in rule options, so we continue a normal way
                     startIndex = 0;
                 }
@@ -93,7 +95,7 @@
                 }
             }
 
-            return symbolIndex == -1 ? ruleText.substring(startIndex) : ruleText.substring(startIndex, symbolIndex);
+            return symbolIndex === -1 ? ruleText.substring(startIndex) : ruleText.substring(startIndex, symbolIndex);
         } catch (ex) {
             adguard.console.error("Error parsing domain from {0}, cause {1}", ruleText, ex);
             return null;
@@ -177,8 +179,6 @@
      */
     function parseRuleText(ruleText) {
 
-        var ESCAPE_CHARACTER = '\\';
-
         var urlRuleText = ruleText;
         var whiteListRule = null;
         var options = null;
@@ -211,8 +211,8 @@
             // If dollar sign is the last symbol - we simply ignore it.
             for (var i = (ruleText.length - 2); i >= startIndex; i--) {
                 var c = ruleText.charAt(i);
-                if (c == UrlFilterRule.OPTIONS_DELIMITER) {
-                    if (i > 0 && ruleText.charAt(i - 1) == ESCAPE_CHARACTER) {
+                if (c === UrlFilterRule.OPTIONS_DELIMITER) {
+                    if (i > 0 && ruleText.charAt(i - 1) === ESCAPE_CHARACTER) {
                         foundEscaped = true;
                     } else {
                         urlRuleText = ruleText.substring(startIndex, i);
@@ -295,13 +295,94 @@
         if (urlRuleText.indexOf('data:') === 0 || urlRuleText.indexOf('|data:') === 0 ||
             urlRuleText.indexOf('blob:') === 0 || urlRuleText.indexOf('|blob:') === 0) {
 
-            rule.cspRule = true;
+            rule._setUrlFilterRuleOption(UrlFilterRule.options.CSP_RULE, true);
             rule.cspDirective = api.CspFilter.DEFAULT_DIRECTIVE;
 
             rule.urlRegExpSource = UrlFilterRule.MASK_ANY_SYMBOL;
             rule.shortcut = null;
             rule.permittedContentType = UrlFilterRule.contentTypes.ALL;
         }
+    }
+
+    /**
+     * Splits string by a delimiter, ignoring escaped delimiters
+     * @param str               String to split
+     * @param delimiter         Delimiter
+     * @param escapeCharacter   Escape character
+     * @param preserveAllTokens If true - preserve empty entries.
+     */
+    function splitByDelimiterWithEscapeCharacter(str, delimiter, escapeCharacter, preserveAllTokens) {
+
+        var parts = [];
+
+        if (adguard.utils.strings.isEmpty(str)) {
+            return parts;
+        }
+
+        var sb = [];
+        for (var i = 0; i < str.length; i++) {
+
+            var c = str.charAt(i);
+
+            if (c === delimiter) {
+                if (i === 0) { // jshint ignore:line
+                    // Ignore
+                } else if (str.charAt(i - 1) === escapeCharacter) {
+                    sb.splice(sb.length - 1, 1);
+                    sb.push(c);
+                } else {
+                    if (preserveAllTokens || sb.length > 0) {
+                        var part = sb.join('');
+                        parts.push(part);
+                        sb = [];
+                    }
+                }
+            } else {
+                sb.push(c);
+            }
+        }
+
+        if (preserveAllTokens || sb.length > 0) {
+            parts.push(sb.join(''));
+        }
+
+        return parts;
+    }
+
+    /**
+     * Represents a $replace modifier value.
+     * <p/>
+     * Learn more about this modifier syntax here:
+     * https://github.com/AdguardTeam/AdguardForWindows/issues/591
+     */
+    function ReplaceOption(option) {
+
+        var parts = splitByDelimiterWithEscapeCharacter(option, '/', ESCAPE_CHARACTER, true);
+
+        if (parts.length < 2 || parts.length > 3) {
+            throw 'Cannot parse ' + option;
+        }
+
+        var modifiers = (parts[2] || '');
+        if (modifiers.indexOf('g') < 0) {
+            modifiers += 'g';
+        }
+        this.pattern = new RegExp(parts[0], modifiers);
+        this.replacement = parts[1];
+
+        this.apply = function (input) {
+            return input.replace(this.pattern, this.replacement);
+        };
+    }
+
+    /**
+     * Check if the specified options mask contains the given option
+     * @param options Options
+     * @param option Option
+     */
+    function containsOption(options, option) {
+        return options !== null &&
+            (options & option) === option; // jshint ignore:line
     }
 
     /**
@@ -318,17 +399,21 @@
         // Content type masks
         this.permittedContentType = UrlFilterRule.contentTypes.ALL;
         this.restrictedContentType = 0;
+        // Rule options
+        this.enabledOptions = null;
+        this.disabledOptions = null;
 
         // Parse rule text
         var parseResult = parseRuleText(rule);
-        // Load options
-        if (parseResult.options) {
-            this._loadOptions(parseResult.options);
-        }
 
         // Exception rule flag
         if (parseResult.whiteListRule) {
             this.whiteListRule = true;
+        }
+
+        // Load options
+        if (parseResult.options) {
+            this._loadOptions(parseResult.options);
         }
 
         var urlRuleText = parseResult.urlRuleText;
@@ -359,11 +444,11 @@
             this.shortcut = findShortcut(urlRuleText);
         }
 
-        if (!this.cspRule) {
+        if (!this.isCspRule()) {
             tryConvertToCspRule(this, urlRuleText);
         }
 
-        if (this.cspRule) {
+        if (this.isCspRule()) {
             validateCspRule(this);
         }
     };
@@ -381,6 +466,17 @@
         return this.urlRegExpSource;
     };
 
+    /**
+     * $replace modifier.
+     * Learn more about this modifier syntax here:
+     * https://github.com/AdguardTeam/AdguardForWindows/issues/591
+     *
+     * @return Parsed $replace modifier
+     */
+    UrlFilterRule.prototype.getReplace = function () {
+        return this.replace;
+    };
+
     // Lazy regexp creation
     UrlFilterRule.prototype.getUrlRegExp = function () {
         //check already compiled but not successful
@@ -391,11 +487,11 @@
         if (!this.urlRegExp) {
             var urlRegExpSource = this.getUrlRegExpSource();
             try {
-                if (!urlRegExpSource || UrlFilterRule.MASK_ANY_SYMBOL == urlRegExpSource) {
+                if (!urlRegExpSource || UrlFilterRule.MASK_ANY_SYMBOL === urlRegExpSource) {
                     // Match any symbol
                     this.urlRegExp = new RegExp(UrlFilterRule.REGEXP_ANY_SYMBOL);
                 } else {
-                    this.urlRegExp = new RegExp(urlRegExpSource, this.matchCase ? "" : "i");
+                    this.urlRegExp = new RegExp(urlRegExpSource, this.isMatchCase() ? "" : "i");
                 }
 
                 delete this.urlRegExpSource;
@@ -439,7 +535,7 @@
             }
 
             // Also firing rules when there's no constraint on ThirdParty-FirstParty type
-            if (!this.checkThirdParty && !hasPermittedDomains) {
+            if (!this.isCheckThirdParty() && !hasPermittedDomains) {
                 return true;
             }
         }
@@ -452,15 +548,20 @@
      *
      * @param requestUrl            Request url
      * @param thirdParty            true if request is third-party
-     * @param requestContentType    Request content type (UrlFilterRule.contentTypes)
+     * @param requestType           Request type (one of adguard.RequestTypes)
      * @return true if request url matches this rule
      */
-    UrlFilterRule.prototype.isFiltered = function (requestUrl, thirdParty, requestContentType) {
+    UrlFilterRule.prototype.isFiltered = function (requestUrl, thirdParty, requestType) {
 
-        if (this.checkThirdParty) {
-            if (this.isThirdParty != thirdParty) {
-                return false;
-            }
+        if (this.isOptionEnabled(UrlFilterRule.options.THIRD_PARTY) && !thirdParty) {
+            // Rule is with $third-party modifier but request is not third party
+            return false;
+        }
+
+        if (this.isOptionDisabled(UrlFilterRule.options.THIRD_PARTY) && thirdParty) {
+            // Match only requests with a Referer header.
+            // Rule is with $~third-party modifier but request is third party
+            return false;
         }
 
         // Shortcut is always in lower case
@@ -468,7 +569,7 @@
             return false;
         }
 
-        if (!this.checkContentType(requestContentType)) {
+        if (!this.checkContentType(requestType)) {
             return false;
         }
 
@@ -481,54 +582,199 @@
     };
 
     /**
-     * Checks if specified content type has intersection with rule's content types.
+     * Checks if request matches rule's content type constraints
      *
-     * @param contentType Request content type (UrlFilterRule.contentTypes)
+     * @param contentType Request type
+     * @return true if request matches this content type
      */
     UrlFilterRule.prototype.checkContentType = function (contentType) {
         var contentTypeMask = UrlFilterRule.contentTypes[contentType];
-        if ((this.permittedContentType & contentTypeMask) === 0) { // jshint ignore:line
-            //not in permitted list - skip this rule
-            return false;
+        if (!contentTypeMask) {
+            throw 'Unsupported content type ' + contentType;
         }
-
-        if (this.restrictedContentType !== 0 && (this.restrictedContentType & contentTypeMask) === contentTypeMask) { // jshint ignore:line
-            //in restricted list - skip this rule
-            return false;
-        }
-
-        return true;
+        return this.checkContentTypeMask(contentTypeMask);
     };
 
     /**
-     * Checks if specified content type is included in the rule content type.
+     * Checks if request matches rule's content type constraints
      *
-     * @param contentType Request content type (UrlFilterRule.contentTypes)
+     * @param contentTypeMask Request content types mask
+     * @return true if request matches this content type
      */
-    UrlFilterRule.prototype.checkContentTypeIncluded = function (contentType) {
-        var contentTypeMask = UrlFilterRule.contentTypes[contentType];
-        if ((this.permittedContentType & contentTypeMask) === contentTypeMask) { // jshint ignore:line
-            if (this.restrictedContentType !== 0 && (this.restrictedContentType & contentTypeMask) === contentTypeMask) { // jshint ignore:line
-                //in restricted list - skip this rule
-                return false;
-            }
+    UrlFilterRule.prototype.checkContentTypeMask = function (contentTypeMask) {
+
+        if (this.permittedContentType === UrlFilterRule.contentTypes.ALL &&
+            this.restrictedContentType === 0) {
+            // Rule does not contain any constraint
             return true;
+        }
+
+        // Checking that either all content types are permitted or request content type is in the permitted list
+        var matchesPermitted = this.permittedContentType === UrlFilterRule.contentTypes.ALL ||
+            (this.permittedContentType & contentTypeMask) !== 0; // jshint ignore:line
+
+        // Checking that either no content types are restricted or request content type is not in the restricted list
+        var notMatchesRestricted = this.restrictedContentType === 0 ||
+            (this.restrictedContentType & contentTypeMask) === 0; // jshint ignore:line
+
+        return matchesPermitted && notMatchesRestricted;
+    };
+
+    /**
+     * Checks if specified option is enabled
+     *
+     * @param option Option to check
+     * @return true if enabled
+     */
+    UrlFilterRule.prototype.isOptionEnabled = function (option) {
+        return containsOption(this.enabledOptions, option);
+    };
+
+    /**
+     * Checks if specified option is disabled
+     *
+     * @param option Option to check
+     * @return true if disabled
+     */
+    UrlFilterRule.prototype.isOptionDisabled = function (option) {
+        return containsOption(this.disabledOptions, option);
+    };
+
+    /**
+     * Returns true if this rule can be applied to DOCUMENT only.
+     * Examples: $popup, $elemhide and such.
+     * Such rules have higher priority than common rules.
+     *
+     * @return true for document-level rules
+     */
+    UrlFilterRule.prototype.isDocumentLevel = function () {
+        return this.documentLevelRule;
+    };
+
+    /**
+     * True if this filter should check if request is third- or first-party.
+     *
+     * @return True if we should check third party property
+     */
+    UrlFilterRule.prototype.isCheckThirdParty = function () {
+        return this.isOptionEnabled(UrlFilterRule.options.THIRD_PARTY) ||
+            this.isOptionDisabled(UrlFilterRule.options.THIRD_PARTY);
+    };
+
+    /**
+     * If true - filter is only applied to requests from
+     * a different origin that the currently viewed page.
+     *
+     * @return If true - filter third-party requests only
+     */
+    UrlFilterRule.prototype.isThirdParty = function () {
+        if (this.isOptionEnabled(UrlFilterRule.options.THIRD_PARTY)) {
+            return true;
+        }
+        if (this.isOptionDisabled(UrlFilterRule.options.THIRD_PARTY)) {
+            return false;
         }
         return false;
     };
 
     /**
-     * Loads rule options
+     * If true -- CssFilter cannot be applied to page
      *
+     * @return true if CssFilter cannot be applied to page
+     */
+    UrlFilterRule.prototype.isElemhide = function () {
+        return this.isOptionEnabled(UrlFilterRule.options.ELEMHIDE);
+    };
+
+    /**
+     * Does not inject adguard javascript to page
+     *
+     * @return If true - we do not inject adguard js to page matching this rule
+     */
+    UrlFilterRule.prototype.isJsInject = function () {
+        return this.isOptionEnabled(UrlFilterRule.options.JSINJECT);
+    };
+
+    /**
+     * Checks if the specified rule contains all document level options
+     * @returns If true - contains $jsinject, $elemhide and $urlblock options
+     */
+    UrlFilterRule.prototype.isDocumentWhiteList = function () {
+        return this.isOptionEnabled(UrlFilterRule.options.DOCUMENT_WHITELIST);
+    };
+
+    /**
+     * If true - do not apply generic UrlFilter rules to the web page.
+     *
+     * @return true if generic url rules should not be applied.
+     */
+    UrlFilterRule.prototype.isGenericBlock = function () {
+        return this.isOptionEnabled(UrlFilterRule.options.GENERICBLOCK);
+    };
+
+    /**
+     * If true - do not apply generic CSS rules to the web page.
+     *
+     * @return true if generic CSS rules should not be applied.
+     */
+    UrlFilterRule.prototype.isGenericHide = function () {
+        return this.isOptionEnabled(UrlFilterRule.options.GENERICHIDE);
+    };
+
+    /**
+     * This attribute is only for exception rules. If true - do not use
+     * url blocking rules for urls where referrer satisfies this rule.
+     *
+     * @return If true - do not block requests originated from the page matching this rule.
+     */
+    UrlFilterRule.prototype.isUrlBlock = function () {
+        return this.isOptionEnabled(UrlFilterRule.options.URLBLOCK);
+    };
+
+    /**
+     * If empty is true than Adguard will return empty response
+     * when request is blocked by such rule
+     *
+     * @return true if $empty option is enabled
+     */
+    UrlFilterRule.prototype.isEmptyResponse = function () {
+        return this.isOptionEnabled(UrlFilterRule.options.EMPTY_RESPONSE);
+    };
+
+    /**
+     * If rule is case sensitive returns true
+     *
+     * @return true if rule is case sensitive
+     */
+    UrlFilterRule.prototype.isMatchCase = function () {
+        return this.isOptionEnabled(UrlFilterRule.options.MATCH_CASE);
+    };
+
+    /**
+     * If BlockPopups is true, than window should be closed
+     *
+     * @return true if window should be closed
+     */
+    UrlFilterRule.prototype.isBlockPopups = function () {
+        return this.isOptionEnabled(UrlFilterRule.options.BLOCK_POPUPS);
+    };
+
+    /**
+     * @returns true if this rule is csp
+     */
+    UrlFilterRule.prototype.isCspRule = function () {
+        return this.isOptionEnabled(UrlFilterRule.options.CSP_RULE);
+    };
+
+    /**
+     * Loads rule options
      * @param options Options string
      * @private
      */
     UrlFilterRule.prototype._loadOptions = function (options) {
 
-        var optionsParts = options.split(api.FilterRule.COMA_DELIMITER);
+        var optionsParts = splitByDelimiterWithEscapeCharacter(options, api.FilterRule.COMA_DELIMITER, ESCAPE_CHARACTER, false);
 
-        var permittedContentType = 0;
-        var restrictedContentType = 0;
         for (var i = 0; i < optionsParts.length; i++) {
             var option = optionsParts[i];
             var optionsKeyValue = option.split(api.FilterRule.EQUAL);
@@ -546,18 +792,13 @@
                     }
                     break;
                 case UrlFilterRule.THIRD_PARTY_OPTION:
-                    // True if this filter should check if request is third- or first-party
-                    this.checkThirdParty = true;
-                    // If true filter is only apply to requests from a different origin than the currently viewed page
-                    this.isThirdParty = true;
+                    this._setUrlFilterRuleOption(UrlFilterRule.options.THIRD_PARTY, true);
                     break;
                 case api.FilterRule.NOT_MARK + UrlFilterRule.THIRD_PARTY_OPTION:
-                    this.checkThirdParty = true;
-                    this.isThirdParty = false;
+                    this._setUrlFilterRuleOption(UrlFilterRule.options.THIRD_PARTY, false);
                     break;
                 case UrlFilterRule.MATCH_CASE_OPTION:
-                    //If true - regex is matching case
-                    this.matchCase = true;
+                    this._setUrlFilterRuleOption(UrlFilterRule.options.MATCH_CASE, true);
                     break;
                 case UrlFilterRule.IMPORTANT_OPTION:
                     this.isImportant = true;
@@ -566,33 +807,48 @@
                     this.isImportant = false;
                     break;
                 case UrlFilterRule.ELEMHIDE_OPTION:
-                    permittedContentType |= UrlFilterRule.contentTypes.ELEMHIDE; // jshint ignore:line
+                    this._setUrlFilterRuleOption(UrlFilterRule.options.ELEMHIDE, true);
                     break;
                 case UrlFilterRule.GENERICHIDE_OPTION:
-                    permittedContentType |= UrlFilterRule.contentTypes.GENERICHIDE; // jshint ignore:line
+                    this._setUrlFilterRuleOption(UrlFilterRule.options.GENERICHIDE, true);
                     break;
                 case UrlFilterRule.JSINJECT_OPTION:
-                    permittedContentType |= UrlFilterRule.contentTypes.JSINJECT; // jshint ignore:line
+                    this._setUrlFilterRuleOption(UrlFilterRule.options.JSINJECT, true);
                     break;
                 case UrlFilterRule.URLBLOCK_OPTION:
-                    permittedContentType |= UrlFilterRule.contentTypes.URLBLOCK; // jshint ignore:line
+                    this._setUrlFilterRuleOption(UrlFilterRule.options.URLBLOCK, true);
                     break;
                 case UrlFilterRule.GENERICBLOCK_OPTION:
-                    permittedContentType |= UrlFilterRule.contentTypes.GENERICBLOCK; // jshint ignore:line
+                    this._setUrlFilterRuleOption(UrlFilterRule.options.GENERICBLOCK, true);
                     break;
                 case UrlFilterRule.DOCUMENT_OPTION:
-                    permittedContentType |= UrlFilterRule.contentTypes.DOCUMENT; // jshint ignore:line
+                    this._setUrlFilterRuleOption(UrlFilterRule.options.DOCUMENT_WHITELIST, true);
                     break;
                 case UrlFilterRule.POPUP_OPTION:
-                    permittedContentType |= UrlFilterRule.contentTypes.POPUP; // jshint ignore:line
+                    this._setUrlFilterRuleOption(UrlFilterRule.options.BLOCK_POPUPS, true);
                     break;
                 case UrlFilterRule.EMPTY_OPTION:
-                    this.emptyResponse = true;
+                    this._setUrlFilterRuleOption(UrlFilterRule.options.EMPTY_RESPONSE, true);
                     break;
                 case UrlFilterRule.CSP_OPTION:
-                    this.cspRule = true;
+                    this._setUrlFilterRuleOption(UrlFilterRule.options.CSP_RULE, true);
                     if (optionsKeyValue.length > 1) {
                         this.cspDirective = optionsKeyValue[1];
+                    }
+                    break;
+                case UrlFilterRule.REPLACE_OPTION:
+                    if (!adguard.prefs.features.replaceRulesSupported) {
+                        throw 'Unknown option: REPLACE';
+                    }
+                    if (this.whiteListRule) {
+                        throw 'Replace modifier cannot be applied to a whitelist rule ' + this.ruleText;
+                    }
+                    if (optionsKeyValue.length > 1) {
+                        var replaceOption = optionsKeyValue[1];
+                        if (optionsKeyValue.length > 2) {
+                            replaceOption = optionsKeyValue.slice(1).join(api.FilterRule.EQUAL);
+                        }
+                        this.replace = new ReplaceOption(replaceOption);
                     }
                     break;
                 default:
@@ -608,10 +864,10 @@
                     }
 
                     if (optionName in UrlFilterRule.contentTypes) {
-                        permittedContentType |= UrlFilterRule.contentTypes[optionName]; // jshint ignore:line
+                        this._appendPermittedContentType(UrlFilterRule.contentTypes[optionName]);
                     } else if (optionName[0] === api.FilterRule.NOT_MARK && optionName.substring(1) in UrlFilterRule.contentTypes) {
-                        restrictedContentType |= UrlFilterRule.contentTypes[optionName.substring(1)]; // jshint ignore:line
-                    } else if (optionName in UrlFilterRule.ignoreOptions) { // jshint ignore:line
+                        this._appendRestrictedContentType(UrlFilterRule.contentTypes[optionName.substring(1)]);
+                    } else if (optionName in UrlFilterRule.ignoreOptions) {
                         if (optionName === 'CONTENT' && optionsParts.length === 1) {
                             //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/719
                             throw 'Single $content option rule is ignored: ' + this.ruleText;
@@ -623,11 +879,74 @@
             }
         }
 
-        if (permittedContentType > 0) {
-            this.permittedContentType = permittedContentType;
+        // Rules of this types can be applied to documents only
+        // $jsinject, $elemhide, $urlblock, $genericblock, $generichide for whitelist rules.
+        // $popup - for url blocking
+        if (this.isOptionEnabled(UrlFilterRule.options.JSINJECT) ||
+            this.isOptionEnabled(UrlFilterRule.options.ELEMHIDE) ||
+            this.isOptionEnabled(UrlFilterRule.options.URLBLOCK) ||
+            this.isOptionEnabled(UrlFilterRule.options.BLOCK_POPUPS) ||
+            this.isOptionEnabled(UrlFilterRule.options.GENERICBLOCK) ||
+            this.isOptionEnabled(UrlFilterRule.options.GENERICHIDE)) {
+
+            this.permittedContentType = UrlFilterRule.contentTypes.DOCUMENT;
+            this.documentLevelRule = true;
         }
-        if (restrictedContentType > 0) {
-            this.restrictedContentType = restrictedContentType;
+    };
+
+    /**
+     * Appends new content type value to permitted list (depending on the current permitted content types)
+     *
+     * @param contentType Content type to append
+     */
+    UrlFilterRule.prototype._appendPermittedContentType = function (contentType) {
+        if (this.permittedContentType === UrlFilterRule.contentTypes.ALL) {
+            this.permittedContentType = contentType;
+        } else {
+            this.permittedContentType |= contentType; // jshint ignore:line
+        }
+    };
+
+    /**
+     * Appends new content type to restricted list (depending on the current restricted content types)
+     *
+     * @param contentType Content type to append
+     */
+    UrlFilterRule.prototype._appendRestrictedContentType = function (contentType) {
+        if (this.restrictedContentType === 0) {
+            this.restrictedContentType = contentType;
+        } else {
+            this.restrictedContentType |= contentType; // jshint ignore:line
+        }
+    };
+
+    /**
+     * Sets UrlFilterRuleOption
+     *
+     * @param option  Option
+     * @param enabled Enabled or not
+     */
+    UrlFilterRule.prototype._setUrlFilterRuleOption = function (option, enabled) {
+
+        if (enabled) {
+
+            if ((this.whiteListRule && containsOption(UrlFilterRule.options.BLACKLIST_OPTIONS, option)) ||
+                !this.whiteListRule && containsOption(UrlFilterRule.options.WHITELIST_OPTIONS, option)) {
+
+                throw option + ' cannot be applied to this type of rule';
+            }
+
+            if (this.enabledOptions === null) {
+                this.enabledOptions = option;
+            } else {
+                this.enabledOptions |= option; // jshint ignore:line
+            }
+        } else {
+            if (this.disabledOptions === null) {
+                this.disabledOptions = option;
+            } else {
+                this.disabledOptions |= option; // jshint ignore:line
+            }
         }
     };
 
@@ -665,15 +984,7 @@
         FONT: 1 << 9,
         WEBSOCKET: 1 << 10,
         WEBRTC: 1 << 11,
-        CSP: 1 << 12,
-
-        ELEMHIDE: 1 << 20,      //CssFilter cannot be applied to page
-        URLBLOCK: 1 << 21,      //This attribute is only for exception rules. If true - do not use urlblocking rules for urls where referrer satisfies this rule.
-        JSINJECT: 1 << 22,      //Does not inject javascript rules to page
-        POPUP: 1 << 23,         //check block popups
-        GENERICHIDE: 1 << 24,   //CssFilter generic rules cannot be applied to page
-        GENERICBLOCK: 1 << 25,  //UrlFilter generic rules cannot be applied to page
-        IMPORTANT: 1 << 26      //Important rules cannot be applied to page
+        DOCUMENT: 1 << 12,
         // jshint ignore:end
     };
 
@@ -683,6 +994,114 @@
 
         UrlFilterRule.contentTypes.OBJECT_SUBREQUEST = UrlFilterRule.contentTypes.OBJECT;
     }
+
+    UrlFilterRule.contentTypes.ALL = 0;
+    for (var key in UrlFilterRule.contentTypes) {
+        if (UrlFilterRule.contentTypes.hasOwnProperty(key)) {
+            UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes[key]; // jshint ignore:line
+        }
+    }
+
+    UrlFilterRule.options = {
+
+        // jshint ignore:start
+
+        /**
+         * $elemhide modifier.
+         * it makes sense to use this parameter for exceptions only.
+         * It prohibits element hiding rules on pages affected by the current rule.
+         * Element hiding rules will be described below.
+         */
+        ELEMHIDE: 1 << 0,
+
+        /**
+         * limitation on third-party and own requests.
+         * If the third-party parameter is used, the rule is applied only to requests
+         * coming from external sources. Similarly, ~third-party restricts the rule
+         * to requests from the same source that the page comes from. Let’s use an example.
+         * The ||domain.com$third-party rule is applied to all sites, except domain.com
+         * itself. If we rewrite it as ||domain.com$~third-party, it will be applied
+         * only to domain.com, but will not work on other sites.
+         */
+        THIRD_PARTY: 1 << 1,
+
+        /**
+         * If this option is enabled, Adguard won't apply generic CSS rules to the web page.
+         */
+        GENERICHIDE: 1 << 2,
+
+        /**
+         * If this option is enabled, Adguard won't apply generic UrlFilter rules to the web page.
+         */
+        GENERICBLOCK: 1 << 3,
+
+        /**
+         * it makes sense to use this parameter for exceptions only.
+         * It prohibits the injection of javascript code to web pages.
+         * Javascript code is added for blocking banners by size and for
+         * the proper operation of Adguard Assistant
+         */
+        JSINJECT: 1 << 4,
+
+        /**
+         * It makes sense to use this parameter for exceptions only.
+         * It prohibits the blocking of requests from pages
+         * affected by the current rule.
+         */
+        URLBLOCK: 1 << 5,  // This attribute is only for exception rules. If true - do not use urlblocking rules for urls where referrer satisfies this rule.
+
+        /**
+         * it makes sense to use this parameter for exceptions only.
+         * It prohibits HTML filtration rules on pages affected by the current rule.
+         * HTML filtration rules will be described below.
+         */
+        CONTENT: 1 << 6,
+
+        /**
+         * For any address matching a&nbsp;blocking rule with this option
+         * Adguard will try to&nbsp;automatically close the browser tab.
+         */
+        BLOCK_POPUPS: 1 << 7,
+
+        /**
+         * For any address matching blocking rule with this option
+         * Adguard will return internal redirect response (307)
+         */
+        EMPTY_RESPONSE: 1 << 8,
+
+        /**
+         * defines a rule applied only to addresses with exact letter case matches.
+         * For example, /BannerAd.gif$match-case will block http://example.com/BannerAd.gif,
+         * but not http://example.com/bannerad.gif.
+         * By default, the letter case is not matched.
+         */
+        MATCH_CASE: 1 << 9,
+
+        /**
+         * defines a CSP rule
+         * For example, ||xpanama.net^$third-party,csp=connect-src 'none'
+         */
+        CSP_RULE: 1 << 10
+
+        // jshint ignore:end
+    };
+
+    /**
+     * These options can be applied to whitelist rules only
+     */
+    UrlFilterRule.options.WHITELIST_OPTIONS =
+        UrlFilterRule.options.ELEMHIDE | UrlFilterRule.options.JSINJECT | UrlFilterRule.options.GENERICHIDE | UrlFilterRule.options.GENERICBLOCK; // jshint ignore:line
+
+    /**
+     * These options can be applied to blacklist rules only
+     */
+    UrlFilterRule.options.BLACKLIST_OPTIONS = UrlFilterRule.options.EMPTY_RESPONSE;
+
+    /**
+     * These options define a document whitelisted rule
+     */
+    UrlFilterRule.options.DOCUMENT_WHITELIST =
+        UrlFilterRule.options.ELEMHIDE | UrlFilterRule.options.URLBLOCK | UrlFilterRule.options.JSINJECT; // jshint ignore:line
 
     UrlFilterRule.ignoreOptions = {
         // Deprecated modifiers
@@ -695,25 +1114,6 @@
         // http://adguard.com/en/filterrules.html#advanced
         'CONTENT': true
     };
-
-    // jshint ignore:start
-    UrlFilterRule.contentTypes.DOCUMENT = UrlFilterRule.contentTypes.ELEMHIDE | UrlFilterRule.contentTypes.URLBLOCK | UrlFilterRule.contentTypes.JSINJECT;
-    UrlFilterRule.contentTypes.DOCUMENT_LEVEL_EXCEPTIONS = UrlFilterRule.contentTypes.DOCUMENT | UrlFilterRule.contentTypes.GENERICHIDE | UrlFilterRule.contentTypes.GENERICBLOCK;
-
-    UrlFilterRule.contentTypes.ALL = 0;
-    UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.OTHER;
-    UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.SCRIPT;
-    UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.IMAGE;
-    UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.STYLESHEET;
-    UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.OBJECT;
-    UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.SUBDOCUMENT;
-    UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.XMLHTTPREQUEST;
-    UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.OBJECT_SUBREQUEST;
-    UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.MEDIA;
-    UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.FONT;
-    UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.WEBSOCKET;
-    UrlFilterRule.contentTypes.ALL |= UrlFilterRule.contentTypes.WEBRTC;
-    // jshint ignore:end
 
     api.UrlFilterRule = UrlFilterRule;
 

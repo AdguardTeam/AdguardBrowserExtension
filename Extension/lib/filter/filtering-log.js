@@ -123,7 +123,7 @@ adguard.filteringLog = (function (adguard) {
             filteringEvent.requestRule.filterId = requestRule.filterId;
             filteringEvent.requestRule.ruleText = requestRule.ruleText;
             filteringEvent.requestRule.whiteListRule = requestRule.whiteListRule;
-            filteringEvent.requestRule.cspRule = requestRule.cspRule;
+            filteringEvent.requestRule.cspRule = requestRule.isCspRule();
             filteringEvent.requestRule.cspDirective = requestRule.cspDirective;
         }
         tabInfo.filteringEvents.push(filteringEvent);

@@ -41,6 +41,13 @@ adguard.prefs = (function (adguard) {
             return adguard.SimplePrefs.get('speedup_startup');
         },
 
+        /**
+         * Collect browser specific features here
+         */
+        features: {
+            replaceRulesSupported: false
+        },
+
         get ICONS() {
             return adguard.lazyGet(Prefs, 'ICONS', function () {
                 return {

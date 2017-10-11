@@ -56,7 +56,6 @@
         if (requestType === adguard.RequestTypes.DOCUMENT) {
             // Reset tab button state
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_TAB_BUTTON_STATE, tab, true);
-            return;
         }
 
         if (!adguard.utils.url.isHttpOrWsRequest(requestUrl)) {
@@ -66,9 +65,19 @@
         var referrerUrl = getReferrerUrl(requestDetails);
 
         var requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
+
+        // Apply replace rule if possible
+        if (adguard.webRequestService.shouldApplyReplaceRule(requestRule, requestType)) {
+            adguard.webRequestService.applyReplaceRule(requestRule, requestDetails.requestId);
+
+            if (requestType === adguard.RequestTypes.DOCUMENT) {
+                adguard.frames.setFrameReplaceRule(tab, requestRule);
+            }
+        }
+
         adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
 
-        return adguard.webRequestService.getBlockedResponseByRule(requestRule);
+        return adguard.webRequestService.getBlockedResponseByRule(requestRule, requestType);
     }
 
     /**
@@ -282,7 +291,6 @@
     adguard.webRequest.onBeforeRequest.addListener(onBeforeRequest, ["<all_urls>"]);
     adguard.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, ["<all_urls>"]);
     adguard.webRequest.onHeadersReceived.addListener(onHeadersReceived, ["<all_urls>"]);
-
 
     // AG for Windows and Mac checks either request signature or request Referer to authorize request.
     // Referer cannot be forged by the website so it's ok for add-on authorization.
