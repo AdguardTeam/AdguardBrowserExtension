@@ -8,7 +8,7 @@ if [[ ! ("$#" == 1) ]] || [[ ! ($1 = dev) && ! ($1 = release) && ! ($1 = beta) ]
 fi
 env=$1
 
-mvn package
+#mvn package
 if [ -d deploy ]; then
     cd deploy
 elif [ -e deploy ]; then
@@ -103,29 +103,29 @@ else
     options="$opts --browser=chrome"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
-    #firefox for AMO (WebExt)
-    options="$opts --browser=firefox_webext --extensionId=adguardadblockerdev@adguard.com --remote-scripts=false"
-    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
+#    #firefox for AMO (WebExt)
+#    options="$opts --browser=firefox_webext --extensionId=adguardadblockerdev@adguard.com --remote-scripts=false"
+#    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     #firefox (WebExt)
     options="$opts --browser=firefox_webext --extensionId=adguardadblockerdev@adguard.com"
     java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
-
-    #firefox (Legacy)
-    options="$opts --browser=firefox --extensionId=adguardadblockerdev@adguard.com"
-    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
-
-    #safari
-    options="$opts --browser=safari --extensionId=com.adguard.safaridev"
-    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
-
-    #edge
-    options="$opts --browser=edge"
-    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
-
-    # chrome api
-    options="$opts --browser=chrome --name=adguard --create-api=true"
-    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
+#
+#    #firefox (Legacy)
+#    options="$opts --browser=firefox --extensionId=adguardadblockerdev@adguard.com"
+#    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
+#
+#    #safari
+#    options="$opts --browser=safari --extensionId=com.adguard.safaridev"
+#    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
+#
+#    #edge
+#    options="$opts --browser=edge"
+#    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
+#
+#    # chrome api
+#    options="$opts --browser=chrome --name=adguard --create-api=true"
+#    java -classpath extension-compiler.jar com.adguard.compiler.Main ${options}
 
     echo "Dev builds created"
 

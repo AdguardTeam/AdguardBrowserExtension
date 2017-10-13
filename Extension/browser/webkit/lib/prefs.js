@@ -116,12 +116,12 @@ adguard.prefs = (function (adguard) {
          */
         features: (function () {
 
-            var replaceRulesSupported = typeof browser !== 'undefined' &&
+            var responseContentFilteringSupported = typeof browser !== 'undefined' &&
                 typeof browser.webRequest !== 'undefined' &&
                 typeof browser.webRequest.filterResponseData !== 'undefined';
 
             return {
-                replaceRulesSupported: replaceRulesSupported
+                responseContentFilteringSupported: responseContentFilteringSupported
             };
         })(),
 

@@ -19,7 +19,80 @@ adguard.webRequestService = (function (adguard) {
 
     'use strict';
 
+    /**
+     * For correctly applying replace or content rules we have to work with the whole response content.
+     * This class allows read response fully.
+     * See some details here: https://mail.mozilla.org/pipermail/dev-addons/2017-April/002729.html
+     *
+     * @constructor
+     */
+    var ResponseContentBuffer = function () {
+
+        /**
+         * Contains all currently processing requests for response reading
+         */
+        this.requests = Object.create(null);
+
+        /**
+         * Must be called when `ResponseFilter.onstart` event is fired
+         * @param requestId Request
+         */
+        this.onStart = function (requestId) {
+            this.requests[requestId] = {
+                decoder: new TextDecoder("utf-8"),
+                content: ''
+            };
+        };
+
+        /**
+         * Must be called when `ResponseFilter.ondata` event is fired
+         * Decodes incoming data and append to the existing response content
+         *
+         * @param requestId Request
+         * @param data Incoming data
+         * @returns Partially response content or null in case of error
+         */
+        this.onDataNext = function (requestId, data) {
+            var request = this.requests[requestId];
+            if (!request) {
+                adguard.console.error('No data for request {0}', requestId);
+                return null;
+            }
+            request.content += request.decoder.decode(data, {stream: true});
+            return request.content;
+        };
+
+        /**
+         * Must be called when `ResponseFilter.onstop` event is fired
+         * @param requestId Request
+         * @returns Full response content or null in case of error
+         */
+        this.onDataEnd = function (requestId) {
+            var request = this.requests[requestId];
+            if (!request) {
+                adguard.console.error('No data for request {0}', requestId);
+                return null;
+            }
+            request.content += request.decoder.decode(); // finish stream
+            return request.content;
+        };
+
+        /**
+         * Finalize response handling.
+         * Must be called after the modified data has been written to output or an error has occurred
+         * @param requestId Request
+         */
+        this.close = function (requestId) {
+            var request = this.requests[requestId];
+            if (request) {
+                delete this.requests[requestId];
+            }
+        };
+    };
+
     var onRequestBlockedChannel = adguard.utils.channels.newChannel();
+
+    var responseContentBuffer = new ResponseContentBuffer();
 
     /**
      * Records filtering rule hit
@@ -422,9 +495,9 @@ adguard.webRequestService = (function (adguard) {
      */
     var shouldApplyReplaceRule = function (requestRule, requestType) {
 
-        // In case of .features or .features.replaceRulesSupported are not defined
-        var replaceRulesSupported = adguard.prefs.features && adguard.prefs.features.replaceRulesSupported;
-        if (!replaceRulesSupported) {
+        // In case of .features or .features.responseContentFilteringSupported are not defined
+        var responseContentFilteringSupported = adguard.prefs.features && adguard.prefs.features.responseContentFilteringSupported;
+        if (!responseContentFilteringSupported) {
             return false;
         }
 
@@ -444,19 +517,47 @@ adguard.webRequestService = (function (adguard) {
      */
     var applyReplaceRule = function (requestRule, requestId) {
 
-        var decoder = new TextDecoder("utf-8");
-        var encoder = new TextEncoder();
-
         var contentFilter = adguard.webRequest.filterResponseData(requestId);
 
+        contentFilter.onstart = function () {
+            responseContentBuffer.onStart(requestId, contentFilter);
+        };
+
         contentFilter.ondata = function (event) {
-            var content = decoder.decode(event.data, {stream: true});
-            content = requestRule.getReplace().apply(content);
-            contentFilter.write(encoder.encode(content));
+            var partialContent = responseContentBuffer.onDataNext(requestId, event.data);
+            if (partialContent === null) {
+                // Something went wrong with data processing. Write data to stream directly and stop processing
+                contentFilter.write(event.data);
+                contentFilter.disconnect();
+            }
         };
 
         contentFilter.onstop = function () {
-            contentFilter.close();
+
+            try {
+
+                var content = responseContentBuffer.onDataEnd(requestId);
+                if (content === null) {
+                    // Something went wrong. Unfortunately, we lost content, but it should never happen.
+                    contentFilter.disconnect();
+                    return;
+                }
+
+                // Modify content
+                content = requestRule.getReplace().apply(content);
+
+                var encoder = new TextEncoder();
+                contentFilter.write(encoder.encode(content));
+                contentFilter.close();
+
+            } finally {
+                responseContentBuffer.close(requestId);
+            }
+        };
+
+        contentFilter.onerror = function () {
+            adguard.console.error('An error has occurred in content filter for request {0}. Error: {1}', requestId, contentFilter.error);
+            responseContentBuffer.close(requestId);
         };
     };
 

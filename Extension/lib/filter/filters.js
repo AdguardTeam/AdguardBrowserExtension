@@ -116,7 +116,7 @@
 
         // Init small caches for url filtering rules
         this.urlBlockingCache = new RequestCache(this.requestCacheMaxSize);
-        this.urlWhiteCache = new RequestCache(this.requestCacheMaxSize);
+        this.urlExceptionsCache = new RequestCache(this.requestCacheMaxSize);
     };
 
     RequestFilter.prototype = {
@@ -169,7 +169,7 @@
             }
             this.rulesCount++;
             this.urlBlockingCache.clearRequestCache();
-            this.urlWhiteCache.clearRequestCache();
+            this.urlExceptionsCache.clearRequestCache();
         },
 
         /**
@@ -200,7 +200,7 @@
             }
             this.rulesCount--;
             this.urlBlockingCache.clearRequestCache();
-            this.urlWhiteCache.clearRequestCache();
+            this.urlExceptionsCache.clearRequestCache();
         },
 
         /**
@@ -274,7 +274,7 @@
             this.urlBlockingFilter.clearRules();
             this.cssFilter.clearRules();
             this.urlBlockingCache.clearRequestCache();
-            this.urlWhiteCache.clearRequestCache();
+            this.urlExceptionsCache.clearRequestCache();
         },
 
         /**
@@ -290,7 +290,7 @@
             var refHost = adguard.utils.url.getHost(referrer);
             var thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrer);
 
-            var cacheItem = this.urlWhiteCache.searchRequestCache(requestUrl, refHost, requestType);
+            var cacheItem = this.urlExceptionsCache.searchRequestCache(requestUrl, refHost, requestType);
 
             if (cacheItem) {
                 // Element with zero index is a filter rule found last time
@@ -299,7 +299,7 @@
 
             var rule = this._checkWhiteList(requestUrl, refHost, requestType, thirdParty);
 
-            this.urlWhiteCache.saveResultToCache(requestUrl, rule, refHost, requestType);
+            this.urlExceptionsCache.saveResultToCache(requestUrl, rule, refHost, requestType);
             return rule;
         },
 

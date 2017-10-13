@@ -258,7 +258,6 @@ var browser = window.browser || chrome;
         onHeadersReceived: onHeadersReceived,
         onBeforeSendHeaders: onBeforeSendHeaders,
         webSocketSupported: typeof browser.webRequest.ResourceType !== 'undefined' && browser.webRequest.ResourceType['WEBSOCKET'] === 'websocket',
-        replaceRulesSupported: true,
         filterResponseData: browser.webRequest.filterResponseData
     };
 

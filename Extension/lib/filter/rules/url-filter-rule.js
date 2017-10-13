@@ -792,9 +792,9 @@
                     }
                     break;
                 case UrlFilterRule.REPLACE_OPTION:
-                    // In case of .features or .features.replaceRulesSupported are not defined
-                    var replaceRulesSupported = adguard.prefs.features && adguard.prefs.features.replaceRulesSupported;
-                    if (!replaceRulesSupported) {
+                    // In case of .features or .features.responseContentFilteringSupported are not defined
+                    var responseContentFilteringSupported = adguard.prefs.features && adguard.prefs.features.responseContentFilteringSupported;
+                    if (!responseContentFilteringSupported) {
                         throw 'Unknown option: REPLACE';
                     }
                     if (this.whiteListRule) {

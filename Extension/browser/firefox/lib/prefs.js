@@ -45,7 +45,7 @@ adguard.prefs = (function (adguard) {
          * Collect browser specific features here
          */
         features: {
-            replaceRulesSupported: false
+            responseContentFilteringSupported: false
         },
 
         get ICONS() {

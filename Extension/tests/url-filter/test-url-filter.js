@@ -462,7 +462,7 @@ QUnit.test("Many rules in one rule filter", function (assert) {
 
 QUnit.test("Escaped ampersand symbol in options", function (assert) {
 
-    adguard.prefs.features.replaceRulesSupported = false;
+    adguard.prefs.features.responseContentFilteringSupported = false;
 
     try {
         new adguard.rules.UrlFilterRule('||goodgame.ru/*.php?script=*vastInlineBannerTypeHtml$important,replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\\$1<\/VAST>/', 1);
@@ -474,7 +474,7 @@ QUnit.test("Escaped ampersand symbol in options", function (assert) {
 
 QUnit.test('RegExp Rules Parsing', function (assert) {
 
-    adguard.prefs.features.replaceRulesSupported = false;
+    adguard.prefs.features.responseContentFilteringSupported = false;
 
     assert.ok(new adguard.rules.UrlFilterRule('/(.jpg)$/').isFiltered('http://test.ru/foo.jpg', false, adguard.RequestTypes.IMAGE));
     assert.notOk(new adguard.rules.UrlFilterRule('/(.jpg)$/').isFiltered('http://test.ru/foo.png', false, adguard.RequestTypes.IMAGE));
@@ -505,7 +505,7 @@ QUnit.test('Test convert CSP rules', function (assert) {
 
 QUnit.test('testReplaceCyrillicText', function (assert) {
 
-    adguard.prefs.features.replaceRulesSupported = true;
+    adguard.prefs.features.responseContentFilteringSupported = true;
 
     var input = "<title>Старый текст</title>";
     var expected = "<title>Новый текст</title>";
@@ -521,7 +521,7 @@ QUnit.test('testReplaceCyrillicText', function (assert) {
 
 QUnit.test('testReplaceModifierJson', function (assert) {
 
-    adguard.prefs.features.replaceRulesSupported = true;
+    adguard.prefs.features.responseContentFilteringSupported = true;
 
     var input = "{\n" +
         "    \"enabled\": true, \n" +
@@ -544,7 +544,7 @@ QUnit.test('testReplaceModifierJson', function (assert) {
 
 QUnit.test('testReplaceModifierVast', function (assert) {
 
-    adguard.prefs.features.replaceRulesSupported = true;
+    adguard.prefs.features.responseContentFilteringSupported = true;
 
     var input = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
         "<VAST version=\"2.0\">\n" +
@@ -595,7 +595,7 @@ QUnit.test('testReplaceModifierVast', function (assert) {
 
 QUnit.test('testReplaceRegexpRule', function (assert) {
 
-    adguard.prefs.features.replaceRulesSupported = true;
+    adguard.prefs.features.responseContentFilteringSupported = true;
 
     // https://github.com/AdguardTeam/AdguardForAndroid/issues/1027
     var input = "http://test.ru/hello/bug/test";
@@ -611,7 +611,7 @@ QUnit.test('testReplaceRegexpRule', function (assert) {
 
 QUnit.test('testReplaceToEmptyString', function (assert) {
 
-    adguard.prefs.features.replaceRulesSupported = true;
+    adguard.prefs.features.responseContentFilteringSupported = true;
 
     var input = "Hello I am the banner image for tests";
     var expected = "Hello I am the image for tests";
