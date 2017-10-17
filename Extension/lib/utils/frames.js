@@ -177,24 +177,6 @@ adguard.frames = (function (adguard) {
 		return adguard.tabs.getTabMetadata(tab.tabId, 'frameWhiteListRule');
 	};
 
-    /**
-     * Gets replace rule for the tab main_frame
-     * @param tab Tab
-     * @returns replace rule applied to that tab (if any)
-     */
-    var getFrameReplaceRule = function (tab) {
-        return adguard.tabs.getTabMetadata(tab.tabId, 'frameReplaceRule');
-    };
-
-    /**
-	 * Assign replace rule to the main frame. Uses for logging
-     * @param tab Tab
-     * @param rule Replace rule
-     */
-    var setFrameReplaceRule = function (tab, rule) {
-        adguard.tabs.updateTabMetadata(tab.tabId, {frameReplaceRule: rule});
-    };
-
 	/**
 	 * Reloads tab data (checks whitelist and filtering status)
 	 *
@@ -371,8 +353,6 @@ adguard.frames = (function (adguard) {
 		getTabAdguardUserWhiteListRule: getTabAdguardUserWhiteListRule,
 		recordAdguardIntegrationForTab: recordAdguardIntegrationForTab,
 		getFrameWhiteListRule: getFrameWhiteListRule,
-		getFrameReplaceRule: getFrameReplaceRule,
-        setFrameReplaceRule: setFrameReplaceRule,
 		reloadFrameData: reloadFrameData,
 		recordFrameReferrerHeader: recordFrameReferrerHeader,
 		getFrameInfo: getFrameInfo,

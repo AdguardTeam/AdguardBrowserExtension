@@ -235,17 +235,21 @@ QUnit.test("Content-specific URL blocking", function (assert) {
     assert.notOk(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.SUBDOCUMENT));
     assert.notOk(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.OTHER));
 
-    mask = "test.com$content,script";
+    mask = "@@||test.ru$content,jsinject";
     rule = new adguard.rules.UrlFilterRule(mask);
-    assert.ok(rule !== null);
+    assert.ok(rule.isContent());
+    assert.ok(rule.isJsInject());
+    assert.notOk(rule.isDocumentWhiteList());
+    assert.ok(rule.isFiltered("http://test.ru", false, RequestTypes.DOCUMENT));
+    assert.notOk(rule.isFiltered("http://test.ru/script.js", false, RequestTypes.SCRIPT));
 
-    mask = "test.com$content";
-    try {
-        new adguard.rules.UrlFilterRule(mask);
-        assert.ok(false);
-    } catch (e) {
-        assert.ok(e !== null);
-    }
+    mask = "@@||test.ru$content";
+    rule = new adguard.rules.UrlFilterRule(mask);
+    assert.ok(rule.isContent());
+    assert.notOk(rule.isJsInject());
+    assert.notOk(rule.isDocumentWhiteList());
+    assert.ok(rule.isFiltered("http://test.ru", false, RequestTypes.DOCUMENT));
+    assert.notOk(rule.isFiltered("http://test.ru/script.js", false, RequestTypes.SCRIPT));
 });
 
 QUnit.test("UrlFilter class tests", function (assert) {

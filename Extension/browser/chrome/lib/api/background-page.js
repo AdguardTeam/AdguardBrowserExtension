@@ -89,7 +89,9 @@ var browser = window.browser || chrome;
         var requestDetails = {
             requestUrl: details.url,    //request url
             tab: tab,                   //request tab,
-            requestId: details.requestId
+            requestId: details.requestId,
+            statusCode: details.statusCode,
+            method: details.method
         };
 
         var frameId = 0;        //id of this frame (only for main_frame and sub_frame types)

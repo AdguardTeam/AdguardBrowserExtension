@@ -48,6 +48,7 @@
         var tab = requestDetails.tab;
         var requestUrl = requestDetails.requestUrl;
         var requestType = requestDetails.requestType;
+        var requestId = requestDetails.requestId;
 
         if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
             adguard.frames.recordFrame(tab, requestDetails.frameId, requestUrl, requestType);
@@ -56,6 +57,7 @@
         if (requestType === adguard.RequestTypes.DOCUMENT) {
             // Reset tab button state
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_TAB_BUTTON_STATE, tab, true);
+            return;
         }
 
         if (!adguard.utils.url.isHttpOrWsRequest(requestUrl)) {
@@ -65,15 +67,6 @@
         var referrerUrl = getReferrerUrl(requestDetails);
 
         var requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
-
-        // Apply replace rule if possible
-        if (adguard.webRequestService.shouldApplyReplaceRule(requestRule, requestType)) {
-            adguard.webRequestService.applyReplaceRule(requestRule, requestDetails.requestId);
-
-            if (requestType === adguard.RequestTypes.DOCUMENT) {
-                adguard.frames.setFrameReplaceRule(tab, requestRule);
-            }
-        }
 
         adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
 
@@ -132,12 +125,19 @@
         var responseHeaders = requestDetails.responseHeaders;
         var requestType = requestDetails.requestType;
         var referrerUrl = getReferrerUrl(requestDetails);
+        var requestId = requestDetails.requestId;
+        var statusCode = requestDetails.statusCode;
+        var method = requestDetails.method;
 
         adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
 
         // Safebrowsing check
         if (requestType === adguard.RequestTypes.DOCUMENT) {
             filterSafebrowsing(tab, requestUrl);
+        }
+
+        if (adguard.contentFiltering) {
+            adguard.contentFiltering.apply(tab, requestUrl, referrerUrl, requestType, requestId, statusCode, method);
         }
 
         if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {

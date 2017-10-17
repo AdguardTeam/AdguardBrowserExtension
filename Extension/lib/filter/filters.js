@@ -111,6 +111,11 @@
         // CSP rules: TODO: add link
         this.cspFilter = new adguard.rules.CspFilter();
 
+
+        // Filter that applies Content rules
+        // Content filtration rules: http://adguard.com/en/filterrules.html#html-filtering-rules
+        this.contentFilter = new adguard.rules.ContentFilter();
+
         // Rules count (includes all types of rules)
         this.rulesCount = 0;
 
@@ -166,6 +171,8 @@
                 this.cssFilter.addRule(rule);
             } else if (rule instanceof adguard.rules.ScriptFilterRule) {
                 this.scriptFilter.addRule(rule);
+            } else if (rule instanceof adguard.rules.ContentFilterRule) {
+                this.contentFilter.addRule(rule);
             }
             this.rulesCount++;
             this.urlBlockingCache.clearRequestCache();
@@ -197,6 +204,8 @@
                 this.cssFilter.removeRule(rule);
             } else if (rule instanceof adguard.rules.ScriptFilterRule) {
                 this.scriptFilter.removeRule(rule);
+            } else if (rule instanceof adguard.rules.ContentFilterRule) {
+                this.contentFilter.removeRule(rule);
             }
             this.rulesCount--;
             this.urlBlockingCache.clearRequestCache();
@@ -273,6 +282,7 @@
             this.urlWhiteFilter.clearRules();
             this.urlBlockingFilter.clearRules();
             this.cssFilter.clearRules();
+            this.contentFilter.clearRules();
             this.urlBlockingCache.clearRequestCache();
             this.urlExceptionsCache.clearRequestCache();
         },
@@ -328,6 +338,26 @@
 
             this.urlBlockingCache.saveResultToCache(requestUrl, rule, documentHost, requestType);
             return rule;
+        },
+
+        /**
+         * Searches for content rules for the specified domain
+         * @param documentUrl Document URL
+         * @returns Collection of content rules
+         */
+        getContentRulesForUrl: function (documentUrl) {
+            var documentHost = adguard.utils.url.getHost(documentUrl);
+            return this.contentFilter.getRulesForDomain(documentHost);
+        },
+
+        /**
+         * Searches for elements in document that matches given content rules
+         * @param doc Document
+         * @param rules Content rules
+         * @returns Matched elements
+         */
+        getMatchedElementsForContentRules: function (doc, rules) {
+            return this.contentFilter.getMatchedElementsForRules(doc, rules);
         },
 
         /**

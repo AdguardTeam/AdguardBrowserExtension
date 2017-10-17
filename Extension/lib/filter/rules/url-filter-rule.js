@@ -651,6 +651,15 @@
     };
 
     /**
+     * If true -- ContentFilter rules cannot be applied to page matching this rule.
+     *
+     * @return true if ContentFilter should not be applied to page matching this rule.
+     */
+    UrlFilterRule.prototype.isContent = function () {
+        return this.isOptionEnabled(UrlFilterRule.options.CONTENT);
+    };
+
+    /**
      * Checks if the specified rule contains all document level options
      * @returns If true - contains $jsinject, $elemhide and $urlblock options
      */
@@ -770,6 +779,9 @@
                 case UrlFilterRule.JSINJECT_OPTION:
                     this._setUrlFilterRuleOption(UrlFilterRule.options.JSINJECT, true);
                     break;
+                case UrlFilterRule.CONTENT_OPTION:
+                    this._setUrlFilterRuleOption(UrlFilterRule.options.CONTENT, true);
+                    break;
                 case UrlFilterRule.URLBLOCK_OPTION:
                     this._setUrlFilterRuleOption(UrlFilterRule.options.URLBLOCK, true);
                     break;
@@ -825,10 +837,6 @@
                     } else if (optionName[0] === api.FilterRule.NOT_MARK && optionName.substring(1) in UrlFilterRule.contentTypes) {
                         this._appendRestrictedContentType(UrlFilterRule.contentTypes[optionName.substring(1)]);
                     } else if (optionName in UrlFilterRule.ignoreOptions) {
-                        if (optionName === 'CONTENT' && optionsParts.length === 1) {
-                            //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/719
-                            throw 'Single $content option rule is ignored: ' + this.ruleText;
-                        }
                         // Ignore others
                     } else {
                         throw 'Unknown option: ' + optionName;
@@ -837,10 +845,11 @@
         }
 
         // Rules of this types can be applied to documents only
-        // $jsinject, $elemhide, $urlblock, $genericblock, $generichide for whitelist rules.
+        // $jsinject, $elemhide, $urlblock, $genericblock, $generichide and $content for whitelist rules.
         // $popup - for url blocking
         if (this.isOptionEnabled(UrlFilterRule.options.JSINJECT) ||
             this.isOptionEnabled(UrlFilterRule.options.ELEMHIDE) ||
+            this.isOptionEnabled(UrlFilterRule.options.CONTENT) ||
             this.isOptionEnabled(UrlFilterRule.options.URLBLOCK) ||
             this.isOptionEnabled(UrlFilterRule.options.BLOCK_POPUPS) ||
             this.isOptionEnabled(UrlFilterRule.options.GENERICBLOCK) ||
@@ -917,6 +926,7 @@
     UrlFilterRule.URLBLOCK_OPTION = "urlblock";
     UrlFilterRule.GENERICBLOCK_OPTION = "genericblock";
     UrlFilterRule.JSINJECT_OPTION = "jsinject";
+    UrlFilterRule.CONTENT_OPTION = "content";
     UrlFilterRule.POPUP_OPTION = "popup";
     UrlFilterRule.IMPORTANT_OPTION = "important";
     UrlFilterRule.MASK_REGEX_RULE = "/";
@@ -1047,7 +1057,7 @@
      * These options can be applied to whitelist rules only
      */
     UrlFilterRule.options.WHITELIST_OPTIONS =
-        UrlFilterRule.options.ELEMHIDE | UrlFilterRule.options.JSINJECT | UrlFilterRule.options.GENERICHIDE | UrlFilterRule.options.GENERICBLOCK; // jshint ignore:line
+        UrlFilterRule.options.ELEMHIDE | UrlFilterRule.options.JSINJECT | UrlFilterRule.options.CONTENT | UrlFilterRule.options.GENERICHIDE | UrlFilterRule.options.GENERICBLOCK; // jshint ignore:line
 
     /**
      * These options can be applied to blacklist rules only
@@ -1058,7 +1068,7 @@
      * These options define a document whitelisted rule
      */
     UrlFilterRule.options.DOCUMENT_WHITELIST =
-        UrlFilterRule.options.ELEMHIDE | UrlFilterRule.options.URLBLOCK | UrlFilterRule.options.JSINJECT; // jshint ignore:line
+        UrlFilterRule.options.ELEMHIDE | UrlFilterRule.options.URLBLOCK | UrlFilterRule.options.JSINJECT | UrlFilterRule.options.CONTENT; // jshint ignore:line
 
     UrlFilterRule.ignoreOptions = {
         // Deprecated modifiers
@@ -1067,9 +1077,7 @@
         // Unused modifiers
         'COLLAPSE': true,
         '~COLLAPSE': true,
-        '~DOCUMENT': true,
-        // http://adguard.com/en/filterrules.html#advanced
-        'CONTENT': true
+        '~DOCUMENT': true
     };
 
     api.UrlFilterRule = UrlFilterRule;

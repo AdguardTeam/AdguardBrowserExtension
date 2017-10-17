@@ -240,6 +240,8 @@
     FilterRule.MASK_SCRIPT_RULE = "#%#";
     FilterRule.MASK_SCRIPT_EXCEPTION_RULE = "#@%#";
     FilterRule.MASK_JS_RULE = "%%";
+    FilterRule.MASK_CONTENT_RULE = "$$";
+    FilterRule.MASK_CONTENT_EXCEPTION_RULE = "$@$";
     FilterRule.MASK_BANNER_RULE = "++";
     FilterRule.MASK_CONFIGURATION_RULE = "~~";
     FilterRule.COMMENT = "!";

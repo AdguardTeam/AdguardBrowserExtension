@@ -19,80 +19,7 @@ adguard.webRequestService = (function (adguard) {
 
     'use strict';
 
-    /**
-     * For correctly applying replace or content rules we have to work with the whole response content.
-     * This class allows read response fully.
-     * See some details here: https://mail.mozilla.org/pipermail/dev-addons/2017-April/002729.html
-     *
-     * @constructor
-     */
-    var ResponseContentBuffer = function () {
-
-        /**
-         * Contains all currently processing requests for response reading
-         */
-        this.requests = Object.create(null);
-
-        /**
-         * Must be called when `ResponseFilter.onstart` event is fired
-         * @param requestId Request
-         */
-        this.onStart = function (requestId) {
-            this.requests[requestId] = {
-                decoder: new TextDecoder("utf-8"),
-                content: ''
-            };
-        };
-
-        /**
-         * Must be called when `ResponseFilter.ondata` event is fired
-         * Decodes incoming data and append to the existing response content
-         *
-         * @param requestId Request
-         * @param data Incoming data
-         * @returns Partially response content or null in case of error
-         */
-        this.onDataNext = function (requestId, data) {
-            var request = this.requests[requestId];
-            if (!request) {
-                adguard.console.error('No data for request {0}', requestId);
-                return null;
-            }
-            request.content += request.decoder.decode(data, {stream: true});
-            return request.content;
-        };
-
-        /**
-         * Must be called when `ResponseFilter.onstop` event is fired
-         * @param requestId Request
-         * @returns Full response content or null in case of error
-         */
-        this.onDataEnd = function (requestId) {
-            var request = this.requests[requestId];
-            if (!request) {
-                adguard.console.error('No data for request {0}', requestId);
-                return null;
-            }
-            request.content += request.decoder.decode(); // finish stream
-            return request.content;
-        };
-
-        /**
-         * Finalize response handling.
-         * Must be called after the modified data has been written to output or an error has occurred
-         * @param requestId Request
-         */
-        this.close = function (requestId) {
-            var request = this.requests[requestId];
-            if (request) {
-                delete this.requests[requestId];
-            }
-        };
-    };
-
     var onRequestBlockedChannel = adguard.utils.channels.newChannel();
-
-    var responseContentBuffer = new ResponseContentBuffer();
 
     /**
      * Records filtering rule hit
@@ -340,6 +267,27 @@ adguard.webRequestService = (function (adguard) {
     };
 
     /**
+     * Finds all content rules for the url
+     * @param tab Tab
+     * @param documentUrl Document URL
+     * @returns collection of content rules or null
+     */
+    var getContentRules = function (tab, documentUrl) {
+
+        if (adguard.frames.isTabAdguardDetected(tab) || adguard.frames.isTabProtectionDisabled(tab) || adguard.frames.isTabWhiteListed(tab)) {
+            //don't process request
+            return null;
+        }
+
+        var whitelistRule = adguard.requestFilter.findWhiteListRule(documentUrl, documentUrl, adguard.RequestTypes.DOCUMENT);
+        if (whitelistRule && whitelistRule.isContent()) {
+            return null;
+        }
+
+        return adguard.requestFilter.getContentRulesForUrl(documentUrl);
+    };
+
+    /**
      * Find CSP rules for request
      * @param tab           Tab
      * @param requestUrl    Request URL
@@ -400,7 +348,7 @@ adguard.webRequestService = (function (adguard) {
         } else if (adguard.frames.isTabProtectionDisabled(tab)) { // jshint ignore:line
             // Doing nothing
         } else if (requestType === adguard.RequestTypes.DOCUMENT) {
-            requestRule = adguard.frames.getFrameWhiteListRule(tab) || adguard.frames.getFrameReplaceRule(tab);
+            requestRule = adguard.frames.getFrameWhiteListRule(tab);
             var domain = adguard.frames.getFrameDomain(tab);
             if (!adguard.frames.isIncognitoTab(tab) &&
                 adguard.settings.collectHitsCount()) {
@@ -436,7 +384,6 @@ adguard.webRequestService = (function (adguard) {
 
             var isRequestBlockingRule = isRequestBlockedByRule(requestRule);
             var isPopupBlockingRule = isPopupBlockedByRule(requestRule);
-            var isReplaceRule = !!requestRule.getReplace();
 
             // Url blocking rules are not applicable to the main_frame
             if (isRequestBlockingRule && requestType === adguard.RequestTypes.DOCUMENT) {
@@ -444,10 +391,6 @@ adguard.webRequestService = (function (adguard) {
             }
             // Popup blocking rules are applicable to the main_frame only
             if (isPopupBlockingRule && requestType !== adguard.RequestTypes.DOCUMENT) {
-                requestRule = null;
-            }
-            // Replace rules are not applicable to the all requests
-            if (isReplaceRule && !shouldApplyReplaceRule(requestRule, requestType)) {
                 requestRule = null;
             }
 
@@ -487,80 +430,6 @@ adguard.webRequestService = (function (adguard) {
         return !safariContentBlockerEnabled;
     };
 
-    /**
-     * Checks if $replace rule should be applied to this request
-     * @param requestRule Request rule
-     * @param requestType Request type
-     * @returns {boolean}
-     */
-    var shouldApplyReplaceRule = function (requestRule, requestType) {
-
-        // In case of .features or .features.responseContentFilteringSupported are not defined
-        var responseContentFilteringSupported = adguard.prefs.features && adguard.prefs.features.responseContentFilteringSupported;
-        if (!responseContentFilteringSupported) {
-            return false;
-        }
-
-        if (!requestRule || !requestRule.getReplace()) {
-            return false;
-        }
-
-        return requestType !== adguard.RequestTypes.MEDIA &&
-            requestType !== adguard.RequestTypes.IMAGE &&
-            requestType !== adguard.RequestTypes.OBJECT;
-    };
-
-    /**
-     * Applies $replace rule to the specified response (associated with the requestId)
-     * @param requestRule Request rule
-     * @param requestId Request identifier
-     */
-    var applyReplaceRule = function (requestRule, requestId) {
-
-        var contentFilter = adguard.webRequest.filterResponseData(requestId);
-
-        contentFilter.onstart = function () {
-            responseContentBuffer.onStart(requestId, contentFilter);
-        };
-
-        contentFilter.ondata = function (event) {
-            var partialContent = responseContentBuffer.onDataNext(requestId, event.data);
-            if (partialContent === null) {
-                // Something went wrong with data processing. Write data to stream directly and stop processing
-                contentFilter.write(event.data);
-                contentFilter.disconnect();
-            }
-        };
-
-        contentFilter.onstop = function () {
-
-            try {
-
-                var content = responseContentBuffer.onDataEnd(requestId);
-                if (content === null) {
-                    // Something went wrong. Unfortunately, we lost content, but it should never happen.
-                    contentFilter.disconnect();
-                    return;
-                }
-
-                // Modify content
-                content = requestRule.getReplace().apply(content);
-
-                var encoder = new TextEncoder();
-                contentFilter.write(encoder.encode(content));
-                contentFilter.close();
-
-            } finally {
-                responseContentBuffer.close(requestId);
-            }
-        };
-
-        contentFilter.onerror = function () {
-            adguard.console.error('An error has occurred in content filter for request {0}. Error: {1}', requestId, contentFilter.error);
-            responseContentBuffer.close(requestId);
-        };
-    };
-
     // EXPOSE
     return {
         processGetSelectorsAndScripts: processGetSelectorsAndScripts,
@@ -572,11 +441,10 @@ adguard.webRequestService = (function (adguard) {
         getBlockedResponseByRule: getBlockedResponseByRule,
         getRuleForRequest: getRuleForRequest,
         getCspRules: getCspRules,
+        getContentRules: getContentRules,
         processRequestResponse: processRequestResponse,
         postProcessRequest: postProcessRequest,
         recordRuleHit: recordRuleHit,
-        shouldApplyReplaceRule: shouldApplyReplaceRule,
-        applyReplaceRule: applyReplaceRule,
         onRequestBlocked: onRequestBlockedChannel
     };
 

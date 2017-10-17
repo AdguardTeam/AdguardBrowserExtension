@@ -281,11 +281,11 @@ adguard.antiBannerService = (function (adguard) {
     var checkAntiBannerFiltersUpdate = function (forceUpdate, successCallback, errorCallback) {
 
         successCallback = successCallback || function () {
-                // Empty callback
-            };
+            // Empty callback
+        };
         errorCallback = errorCallback || function () {
-                // Empty callback
-            };
+            // Empty callback
+        };
 
         // Don't update in background if request filter isn't running
         if (!forceUpdate && !applicationRunning) {
@@ -1199,6 +1199,13 @@ adguard.requestFilter = (function (adguard) {
     var getScriptsForUrl = function (documentUrl) {
         return getRequestFilter().getScriptsForUrl(documentUrl);
     };
+    var getContentRulesForUrl = function (documentUrl) {
+        return getRequestFilter().getContentRulesForUrl(documentUrl);
+    };
+
+    var getMatchedElementsForContentRules = function (doc, rules) {
+        return getRequestFilter().getMatchedElementsForContentRules(doc, rules);
+    };
 
     var getCspRules = function (requestUrl, referrer, requestType) {
         return getRequestFilter().findCspRules(requestUrl, referrer, requestType);
@@ -1226,6 +1233,8 @@ adguard.requestFilter = (function (adguard) {
         getSelectorsForUrl: getSelectorsForUrl,
         getInjectedSelectorsForUrl: getInjectedSelectorsForUrl,
         getScriptsForUrl: getScriptsForUrl,
+        getContentRulesForUrl: getContentRulesForUrl,
+        getMatchedElementsForContentRules: getMatchedElementsForContentRules,
         getCspRules: getCspRules,
 
         getRequestFilterInfo: getRequestFilterInfo,
@@ -1466,8 +1475,8 @@ adguard.filters = (function (adguard) {
     var addAndEnableFilters = function (filterIds, callback) {
 
         callback = callback || function () {
-                // Empty callback
-            };
+            // Empty callback
+        };
 
         var enabledFilters = [];
 
