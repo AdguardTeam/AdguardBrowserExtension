@@ -18,21 +18,6 @@
         this.regexp = new RegExp(wildcardToRegex(pattern), 'i');
         this.shortcut = extractShortcut(pattern);
 
-        function indexOfAny(str, searchChars) {
-            if (!str || searchChars.length === 0) {
-                return -1;
-            }
-            for (var i = 0; i < str.length; i++) {
-                var ch = str.charAt(i);
-                for (var j = 0; j < searchChars.length; j++) {
-                    if (searchChars[j] === ch) {
-                        return i;
-                    }
-                }
-            }
-            return -1;
-        }
-
         /**
          * Converts wildcard to regular expression
          *
@@ -62,7 +47,7 @@
 
             var wildcardChars = ['*', '?'];
             var startIndex = 0;
-            var endIndex = indexOfAny(pattern, wildcardChars);
+            var endIndex = adguard.utils.strings.indexOfAny(pattern, wildcardChars);
 
             if (endIndex < 0) {
                 return pattern.toLowerCase();
@@ -77,7 +62,7 @@
                     break;
                 }
 
-                endIndex = indexOfAny(pattern.substring(startIndex), wildcardChars);
+                endIndex = adguard.utils.strings.indexOfAny(pattern.substring(startIndex), wildcardChars);
                 var tmpShortcut = endIndex < 0 ? pattern.substring(startIndex) : pattern.substring(startIndex, endIndex + startIndex);
 
                 if (tmpShortcut.length > shortcut.length) {

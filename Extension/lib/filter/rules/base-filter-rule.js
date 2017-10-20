@@ -232,7 +232,6 @@
     FilterRule.PARAMETER_START = "[";
     FilterRule.PARAMETER_END = "]";
     FilterRule.MASK_WHITE_LIST = "@@";
-    FilterRule.MASK_CONTENT_RULE = "$$";
     FilterRule.MASK_CSS_RULE = "##";
     FilterRule.MASK_CSS_EXCEPTION_RULE = "#@#";
     FilterRule.MASK_CSS_INJECT_RULE = "#$#";

@@ -142,14 +142,17 @@ adguard.utils = (function () {
         },
 
         /**
-         * Look for any symbol from "chars" array starting at "start" index
+         * Look for any symbol from "chars" array starting at "start" index or from the start of the string
          *
          * @param str   String to search
-         * @param start Start index (inclusive)
          * @param chars Chars to search for
+         * @param start Start index (optional, inclusive)
          * @return int Index of the element found or null
          */
-        indexOfAny: function (str, start, chars) {
+        indexOfAny: function (str, chars, start) {
+
+            start = start || 0;
+
             if (typeof str === 'string' && str.length <= start) {
                 return -1;
             }
