@@ -192,10 +192,6 @@
                     this.parentSearchLevel = parseInt(attributeValue);
                     break;
                 default:
-                    if (!this.attributesFilter) {
-                        this.attributesFilter = Object.create(null);
-                    }
-                    this.attributesFilter[attributeName] = attributeValue;
                     selector.push('[');
                     selector.push(attributeName);
                     selector.push('*=');
