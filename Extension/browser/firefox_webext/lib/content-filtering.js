@@ -126,11 +126,29 @@ adguard.contentFiltering = (function (adguard) {
     var documentParser = new DocumentParser();
 
     /**
+     * Contains mask of accepted request types for replace rules
+     */
+    var replaceRuleAllowedRequestTypeMask = (function () {
+        var mask = 0;
+        var replaceRuleAllowedRequestTypes = [adguard.RequestTypes.DOCUMENT, adguard.RequestTypes.SUBDOCUMENT, adguard.RequestTypes.SCRIPT, adguard.RequestTypes.STYLESHEET, adguard.RequestTypes.XMLHTTPREQUEST];
+        for (var i = 0; i < replaceRuleAllowedRequestTypes.length; i++) {
+            var requestType = replaceRuleAllowedRequestTypes[i];
+            mask |= adguard.rules.UrlFilterRule.contentTypes[requestType];
+        }
+        return mask;
+    })();
+    /**
+     * Contains collection of accepted content types for replace rules
+     */
+    var replaceRuleAllowedContentTypes = ['text/', 'application/json', 'application/xml', 'application/xhtml+xml', 'application/javascript', 'application/x-javascript'];
+
+    /**
      * Checks if $replace rule should be applied to this request
      * @param requestType Request type
+     * @param contentType Content-Type header value
      * @returns {boolean}
      */
-    var shouldApplyReplaceRule = function (requestType) {
+    var shouldApplyReplaceRule = function (requestType, contentType) {
 
         // In case of .features or .features.responseContentFilteringSupported are not defined
         var responseContentFilteringSupported = adguard.prefs.features && adguard.prefs.features.responseContentFilteringSupported;
@@ -138,9 +156,20 @@ adguard.contentFiltering = (function (adguard) {
             return false;
         }
 
-        return requestType !== adguard.RequestTypes.MEDIA &&
-            requestType !== adguard.RequestTypes.IMAGE &&
-            requestType !== adguard.RequestTypes.OBJECT;
+        var requestTypeMask = adguard.rules.UrlFilterRule.contentTypes[requestType];
+        if ((requestTypeMask & replaceRuleAllowedRequestTypeMask) === requestTypeMask) {
+            return true;
+        }
+
+        if (requestType === adguard.RequestTypes.OTHER && contentType) {
+            for (var i = 0; i < replaceRuleAllowedContentTypes.length; i++) {
+                if (contentType.indexOf(replaceRuleAllowedContentTypes[i]) === 0) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     };
 
     /**
@@ -168,8 +197,9 @@ adguard.contentFiltering = (function (adguard) {
      * @param requestId Request identifier
      * @param statusCode Request status
      * @param method Request method
+     * @param contentType Content-Type header
      */
-    var apply = function (tab, requestUrl, referrerUrl, requestType, requestId, statusCode, method) {
+    var apply = function (tab, requestUrl, referrerUrl, requestType, requestId, statusCode, method, contentType) {
 
         if (statusCode !== 200) {
             adguard.console.debug('Skipping request to {0} - {1} with status {2}', requestUrl, requestType, statusCode);
@@ -191,7 +221,7 @@ adguard.contentFiltering = (function (adguard) {
             }
         }
 
-        if (shouldApplyReplaceRule(requestType)) {
+        if (shouldApplyReplaceRule(requestType, contentType)) {
             var requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
             if (requestRule && requestRule.getReplace()) {
                 replaceRule = requestRule;

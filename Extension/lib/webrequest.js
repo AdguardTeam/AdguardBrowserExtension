@@ -137,7 +137,8 @@
         }
 
         if (adguard.contentFiltering) {
-            adguard.contentFiltering.apply(tab, requestUrl, referrerUrl, requestType, requestId, statusCode, method);
+            var contentType = adguard.utils.browser.getHeaderValueByName(responseHeaders, 'content-type');
+            adguard.contentFiltering.apply(tab, requestUrl, referrerUrl, requestType, requestId, statusCode, method, contentType);
         }
 
         if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
