@@ -141,6 +141,39 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
+            "url-filter": ".*",
+            "if-domain": [
+                "*www.any.gs"
+            ]
+        },
+        "action": {
+            "type": "ignore-previous-rules"
+        }
+    },
+    {
+        "trigger": {
+            "url-filter": "^[htpsw]+://([^/]*\\.)?hulu-jsinject-image\\.com",
+            "resource-type": [
+                "image"
+            ]
+        },
+        "action": {
+            "type": "ignore-previous-rules"
+        }
+    },
+    {
+        "trigger": {
+            "url-filter": ".*",
+            "if-domain": [
+                "*test-urlblock.com"
+            ]
+        },
+        "action": {
+            "type": "ignore-previous-rules"
+        }
+    },
+    {
+        "trigger": {
             "url-filter": "^[htpsw]+://([^/]*\\.)?hulu\\.com\\/embed"
         },
         "action": {
@@ -184,17 +217,6 @@ var safariCorrectRules = [
         "trigger": {
             "url-filter": ".*",
             "if-domain": [
-                "*www.any.gs"
-            ]
-        },
-        "action": {
-            "type": "ignore-previous-rules"
-        }
-    },
-    {
-        "trigger": {
-            "url-filter": ".*",
-            "if-domain": [
                 "*wfarm.yandex.net"
             ]
         },
@@ -212,31 +234,9 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": "^[htpsw]+://([^/]*\\.)?hulu-jsinject-image\\.com",
-            "resource-type": [
-                "image"
-            ]
-        },
-        "action": {
-            "type": "ignore-previous-rules"
-        }
-    },
-    {
-        "trigger": {
             "url-filter": ".*",
             "if-domain": [
                 "*test-document.com"
-            ]
-        },
-        "action": {
-            "type": "ignore-previous-rules"
-        }
-    },
-    {
-        "trigger": {
-            "url-filter": ".*",
-            "if-domain": [
-                "*test-urlblock.com"
             ]
         },
         "action": {
