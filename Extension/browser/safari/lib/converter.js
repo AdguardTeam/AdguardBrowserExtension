@@ -761,11 +761,11 @@ var SafariContentBlockerConverter = {
             urlBlocking: [],
             // Other exceptions
             other: [],
-            // Important modified url blocking
+            // $important url blocking rules
             important: [],
-            // Important modified url blocking exceptions
+            // $important url blocking exceptions
             importantExceptions: [],
-            // Document modified url blocking exceptions
+            // Document url blocking exceptions
             documentExceptions: [],
             // Errors
             errors: []
