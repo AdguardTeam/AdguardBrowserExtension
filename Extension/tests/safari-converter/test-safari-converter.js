@@ -423,3 +423,32 @@ QUnit.test("Elemhide rules", function (assert) {
     assert.equal(converted[3].action.type, "ignore-previous-rules");
     assert.equal(converted[3].trigger["url-filter"], "^[htpsw]+://([^/]*\\.)?lenta\\.ru[/:&?]?");
 });
+
+QUnit.test("Important modifier rules sorting order", function(assert) {
+    var result = SafariContentBlockerConverter.convertArray([
+        '||example-url-block.org^',
+        '||example-url-block-important.org^$important',
+        '@@||example-url-block-exception.org^',
+        '@@||example-url-block-exception-important.org^$important',
+        '@@||example-url-block-exception-document.org^$document' ]);
+    assert.equal(result.convertedCount, 5);
+    assert.equal(result.errorsCount, 0);
+    var converted = JSON.parse(result.converted);
+    assert.equal(converted.length, 5);
+
+    assert.equal(converted[0].action.type, "block");
+    assert.equal(converted[0].trigger["url-filter"], "^[htpsw]+://([^/]*\\.)?example-url-block\\.org[/:&?]?");
+
+    assert.equal(converted[1].action.type, "ignore-previous-rules");
+    assert.equal(converted[1].trigger["url-filter"], "^[htpsw]+://([^/]*\\.)?example-url-block-exception\\.org[/:&?]?");
+
+    assert.equal(converted[2].action.type, "block");
+    assert.equal(converted[2].trigger["url-filter"], "^[htpsw]+://([^/]*\\.)?example-url-block-important\\.org[/:&?]?");
+
+    assert.equal(converted[3].action.type, "ignore-previous-rules");
+    assert.equal(converted[3].trigger["url-filter"], "^[htpsw]+://([^/]*\\.)?example-url-block-exception-important\\.org[/:&?]?");
+
+    assert.equal(converted[4].action.type, "ignore-previous-rules");
+    assert.equal(converted[4].trigger["url-filter"], ".*");
+    assert.equal(converted[4].trigger["if-domain"], "*example-url-block-exception-document.org");
+});
