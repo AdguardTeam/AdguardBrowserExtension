@@ -18,7 +18,7 @@
 /**
  * Safari content blocking format rules converter.
  */
-var CONVERTER_VERSION = '1.3.30';
+var CONVERTER_VERSION = '1.3.32';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var ANY_URL_TEMPLATES = ['||*', '', '*', '|*'];
@@ -767,6 +767,12 @@ var SafariContentBlockerConverter = { // jshint ignore:line
             urlBlocking: [],
             // Other exceptions
             other: [],
+            // $important url blocking rules
+            important: [],
+            // $important url blocking exceptions
+            importantExceptions: [],
+            // Document url blocking exceptions
+            documentExceptions: [],
             // Errors
             errors: []
         };
@@ -798,7 +804,12 @@ var SafariContentBlockerConverter = { // jshint ignore:line
                 }
 
                 if (item.action.type === 'block') {
-                    contentBlocker.urlBlocking.push(item);
+                    // Url blocking rules
+                    if (agRule.isImportant) {
+                        contentBlocker.important.push(item);
+                    } else {
+                        contentBlocker.urlBlocking.push(item);
+                    }
                 } else if (item.action.type === 'css-display-none') {
                     cssBlocking.push(item);
                 } else if (item.action.type === 'ignore-previous-rules' &&
@@ -813,7 +824,14 @@ var SafariContentBlockerConverter = { // jshint ignore:line
                     // elemhide rules
                     contentBlocker.cssElemhide.push(item);
                 } else {
-                    contentBlocker.other.push(item);
+                    // other exceptions
+                    if (agRule.isImportant) {
+                        contentBlocker.importantExceptions.push(item);
+                    } else if (agRule.isDocumentWhiteList()) {
+                        contentBlocker.documentExceptions.push(item);
+                    } else {
+                        contentBlocker.other.push(item);
+                    }
                 }
             }
         }
@@ -830,11 +848,14 @@ var SafariContentBlockerConverter = { // jshint ignore:line
         var convertedCount = rules.length - contentBlocker.errors.length;
         var message = 'Rules converted: ' + convertedCount + ' (' + contentBlocker.errors.length + ' errors)';
         message += '\nBasic rules: ' + contentBlocker.urlBlocking.length;
+        message += '\nBasic important rules: ' + contentBlocker.important.length;
         message += '\nElemhide rules (wide): ' + contentBlocker.cssBlockingWide.length;
         message += '\nElemhide rules (generic domain sensitive): ' + contentBlocker.cssBlockingGenericDomainSensitive.length;
         message += '\nExceptions Elemhide (wide): ' + contentBlocker.cssBlockingGenericHideExceptions.length;
         message += '\nElemhide rules (domain-sensitive): ' + contentBlocker.cssBlockingDomainSensitive.length;
         message += '\nExceptions (elemhide): ' + contentBlocker.cssElemhide.length;
+        message += '\nExceptions (important): ' + contentBlocker.importantExceptions.length;
+        message += '\nExceptions (document): ' + contentBlocker.documentExceptions.length;
         message += '\nExceptions (other): ' + contentBlocker.other.length;
         adguard.console.info(message);
 
@@ -851,6 +872,9 @@ var SafariContentBlockerConverter = { // jshint ignore:line
         converted = converted.concat(contentBlocker.cssElemhide);
         converted = converted.concat(contentBlocker.urlBlocking);
         converted = converted.concat(contentBlocker.other);
+        converted = converted.concat(contentBlocker.important);
+        converted = converted.concat(contentBlocker.importantExceptions);
+        converted = converted.concat(contentBlocker.documentExceptions);
 
         var convertedLength = converted.length;
 
