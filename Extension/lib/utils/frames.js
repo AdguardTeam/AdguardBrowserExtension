@@ -92,7 +92,7 @@ adguard.frames = (function (adguard) {
 	 */
 	var isTabWhiteListed = function (tab) {
 		var frameWhiteListRule = adguard.tabs.getTabMetadata(tab.tabId, 'frameWhiteListRule');
-		return frameWhiteListRule && frameWhiteListRule.checkContentTypeIncluded("DOCUMENT");
+		return frameWhiteListRule && frameWhiteListRule.isDocumentWhiteList();
 	};
 
 	/**

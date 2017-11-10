@@ -152,17 +152,6 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": "^[htpsw]+://([^/]*\\.)?hulu-jsinject-image\\.com",
-            "resource-type": [
-                "image"
-            ]
-        },
-        "action": {
-            "type": "ignore-previous-rules"
-        }
-    },
-    {
-        "trigger": {
             "url-filter": ".*",
             "if-domain": [
                 "*test-urlblock.com"

@@ -1,3 +1,5 @@
+/* global QUnit */
+
 QUnit.test("Punycode rules", function (assert) {
     // "||яндекс.рф^$third-party,domain=почта.рф";
     var ruleText = decodeURIComponent("%7C%7C%D1%8F%D0%BD%D0%B4%D0%B5%D0%BA%D1%81.%D1%80%D1%84%5E%24third-party%2Cdomain%3D%D0%BF%D0%BE%D1%87%D1%82%D0%B0.%D1%80%D1%84");
@@ -15,9 +17,9 @@ QUnit.test("Whitelist rule", function (assert) {
 
     assert.ok(rule);
     assert.ok(rule.whiteListRule);
-    assert.notOk(rule.matchCase);
-    assert.notOk(rule.isThirdParty);
-    assert.notOk(rule.checkThirdParty);
+    assert.notOk(rule.isMatchCase());
+    assert.notOk(rule.isThirdParty());
+    assert.notOk(rule.isCheckThirdParty());
     assert.ok(rule.getPermittedDomains().indexOf("topzone.lt") >= 0);
     assert.equal("^(http|https|ws|wss)://([a-z0-9-_.]+\\.)?tradedoubler\\.com\\/anet\\?type\\(iframe\\)loc\\(", rule.getUrlRegExpSource());
     assert.equal("/^(http|https|ws|wss):\\/\\/([a-z0-9-_.]+\\.)?tradedoubler\\.com\\/anet\\?type\\(iframe\\)loc\\(/i", rule.getUrlRegExp().toString());
@@ -92,18 +94,18 @@ QUnit.test("Generic domain specific", function (assert) {
     var rule = new adguard.rules.UrlFilterRule(ruleText);
 
     assert.ok(rule);
-    assert.notOk(rule.matchCase);
-    assert.notOk(rule.isThirdParty);
+    assert.notOk(rule.isMatchCase());
+    assert.notOk(rule.isThirdParty());
     assert.notOk(rule.isGeneric());
 
     var filter = new adguard.rules.UrlFilter([rule]);
-    assert.ok(filter.isFiltered("http://cdn.innity.net/admanager.js", "sharejunction.com", RequestTypes.SCRIPT, true) != null);
+    assert.ok(filter.isFiltered("http://cdn.innity.net/admanager.js", "sharejunction.com", RequestTypes.SCRIPT, true) !== null);
 
     //var genericBlockRuleText = "@@||sharejunction.com^$genericblock,generichide";
     //var genericBlockRule = new adguard.rules.UrlFilterRule(genericBlockRuleText);
 
     var filtered = filter.isFiltered("http://cdn.innity.net/admanager.js", "sharejunction.com", RequestTypes.SCRIPT, true, true);
-    assert.ok(filtered != null);
+    assert.ok(filtered !== null);
     assert.notOk(filtered.whiteListRule);
 
 
@@ -111,8 +113,8 @@ QUnit.test("Generic domain specific", function (assert) {
     var genericRuleText = "||innity.net^$third-party";
     var genericRule = new adguard.rules.UrlFilterRule(genericRuleText);
 
-    assert.notOk(genericRule.matchCase);
-    assert.ok(genericRule.isThirdParty);
+    assert.notOk(genericRule.isMatchCase());
+    assert.ok(genericRule.isThirdParty());
     assert.ok(genericRule.isGeneric());
 
     //Should be blocked by generic
@@ -137,9 +139,9 @@ QUnit.test("Url blocking rule without domain", function (assert) {
     var rule = new adguard.rules.UrlFilterRule(ruleText);
 
     assert.ok(rule);
-    assert.notOk(rule.matchCase);
-    assert.notOk(rule.isThirdParty);
-    assert.notOk(rule.checkThirdParty);
+    assert.notOk(rule.isMatchCase());
+    assert.notOk(rule.isThirdParty());
+    assert.notOk(rule.isCheckThirdParty());
 });
 
 QUnit.test("Url blocking rule", function (assert) {
@@ -150,9 +152,9 @@ QUnit.test("Url blocking rule", function (assert) {
     var rule = new adguard.rules.UrlFilterRule(ruleText);
 
     // Check rule properties
-    assert.ok(rule.matchCase);
-    assert.ok(rule.isThirdParty);
-    assert.ok(rule.checkThirdParty);
+    assert.ok(rule.isMatchCase());
+    assert.ok(rule.isThirdParty());
+    assert.ok(rule.isCheckThirdParty());
     assert.equal("test.ru/", rule.shortcut);
     assert.equal("google.com", rule.getPermittedDomains()[0]);
     assert.equal("nigma.ru", rule.getRestrictedDomains()[0]);
@@ -160,8 +162,8 @@ QUnit.test("Url blocking rule", function (assert) {
     assert.equal("/^(http|https|ws|wss):\\/\\/([a-z0-9-_.]+\\.)?test\\.ru\\/([^ a-zA-Z0-9.%]|$)/", rule.getUrlRegExp().toString());
 
     // Check rule work
-    assert.ok(rule.isFiltered("http://test.ru/", true, RequestTypes.POPUP));
-    assert.notOk(rule.isFiltered("http://test.ru/", true, RequestTypes.DOCUMENT));
+    assert.ok(rule.isBlockPopups());
+    assert.ok(rule.isFiltered("http://test.ru/", true, RequestTypes.DOCUMENT));
     assert.notOk(rule.isFiltered("http://test.ru/", true, RequestTypes.SUBDOCUMENT));
     assert.notOk(rule.isFiltered("http://TEst.ru/", false, RequestTypes.SUBDOCUMENT));
     assert.notOk(rule.isFiltered("http://test.ru", true, RequestTypes.SUBDOCUMENT));
@@ -233,17 +235,21 @@ QUnit.test("Content-specific URL blocking", function (assert) {
     assert.notOk(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.SUBDOCUMENT));
     assert.notOk(rule.isFiltered("http://test.ru/?ololo=ololo", false, RequestTypes.OTHER));
 
-    mask = "test.com$content,script";
+    mask = "@@||test.ru$content,jsinject";
     rule = new adguard.rules.UrlFilterRule(mask);
-    assert.ok(rule != null);
+    assert.ok(rule.isContent());
+    assert.ok(rule.isJsInject());
+    assert.notOk(rule.isDocumentWhiteList());
+    assert.ok(rule.isFiltered("http://test.ru", false, RequestTypes.DOCUMENT));
+    assert.notOk(rule.isFiltered("http://test.ru/script.js", false, RequestTypes.SCRIPT));
 
-    mask = "test.com$content";
-    try {
-        rule = new adguard.rules.UrlFilterRule(mask);
-        assert.ok(false);
-    } catch (e) {
-        assert.ok(e != null);
-    }
+    mask = "@@||test.ru$content";
+    rule = new adguard.rules.UrlFilterRule(mask);
+    assert.ok(rule.isContent());
+    assert.notOk(rule.isJsInject());
+    assert.notOk(rule.isDocumentWhiteList());
+    assert.ok(rule.isFiltered("http://test.ru", false, RequestTypes.DOCUMENT));
+    assert.notOk(rule.isFiltered("http://test.ru/script.js", false, RequestTypes.SCRIPT));
 });
 
 QUnit.test("UrlFilter class tests", function (assert) {
@@ -256,12 +262,12 @@ QUnit.test("UrlFilter class tests", function (assert) {
 
     var filter = new adguard.rules.UrlFilter([rule, rule1, rule2]);
 
-    assert.notOk(filter.isFiltered("http://test.ru/", "test.test.ru", RequestTypes.SUBDOCUMENT, false) != null);
-    assert.ok(filter.isFiltered("http://test.ru/", "www.google.com", RequestTypes.SCRIPT, true) != null);
-    assert.ok(filter.isFiltered("http://www.google.com/ad/advertisment", "test.ru", RequestTypes.SUBDOCUMENT, true) != null);
-    assert.notOk(filter.isFiltered("http://test.ru/", "www.nigma.ru", RequestTypes.SUBDOCUMENT, true) != null);
-    assert.ok(filter.isFiltered("http://partner.nekki.ru/banner.php?no_cache=41122&rotation_id=7", "rutracker.org", RequestTypes.SUBDOCUMENT, true) != null);
-    assert.notOk(filter.isFiltered("http://partner.yandex.ru", "yandex.ru", RequestTypes.SUBDOCUMENT, false) != null);
+    assert.notOk(filter.isFiltered("http://test.ru/", "test.test.ru", RequestTypes.SUBDOCUMENT, false) !== null);
+    assert.ok(filter.isFiltered("http://test.ru/", "www.google.com", RequestTypes.SCRIPT, true) !== null);
+    assert.ok(filter.isFiltered("http://www.google.com/ad/advertisment", "test.ru", RequestTypes.SUBDOCUMENT, true) !== null);
+    assert.notOk(filter.isFiltered("http://test.ru/", "www.nigma.ru", RequestTypes.SUBDOCUMENT, true) !== null);
+    assert.ok(filter.isFiltered("http://partner.nekki.ru/banner.php?no_cache=41122&rotation_id=7", "rutracker.org", RequestTypes.SUBDOCUMENT, true) !== null);
+    assert.notOk(filter.isFiltered("http://partner.yandex.ru", "yandex.ru", RequestTypes.SUBDOCUMENT, false) !== null);
 });
 
 QUnit.test("Regexp characters escaping", function (assert) {
@@ -317,7 +323,7 @@ QUnit.test("Test UrlFilterRule Matching Any Url", function (assert) {
     var ruleText = "*$domain=test.com";
     var rule = new adguard.rules.UrlFilterRule(ruleText);
 
-    assert.notOk(rule.isThirdParty);
+    assert.notOk(rule.isThirdParty());
     assert.ok(rule.getPermittedDomains());
     assert.equal(1, rule.getPermittedDomains().length);
     assert.notOk(rule.shortcut);
@@ -327,7 +333,7 @@ QUnit.test("Test UrlFilterRule Matching Any Url", function (assert) {
     ruleText = "$domain=test.com";
     rule = new adguard.rules.UrlFilterRule(ruleText);
 
-    assert.notOk(rule.isThirdParty);
+    assert.notOk(rule.isThirdParty());
     assert.ok(rule.getPermittedDomains());
     assert.equal(1, rule.getPermittedDomains().length);
     assert.notOk(rule.shortcut);
@@ -337,7 +343,7 @@ QUnit.test("Test UrlFilterRule Matching Any Url", function (assert) {
     ruleText = "||$domain=test.com";
     rule = new adguard.rules.UrlFilterRule(ruleText);
 
-    assert.notOk(rule.isThirdParty);
+    assert.notOk(rule.isThirdParty());
     assert.ok(rule.getPermittedDomains());
     assert.equal(1, rule.getPermittedDomains().length);
     assert.notOk(rule.shortcut);
@@ -346,7 +352,7 @@ QUnit.test("Test UrlFilterRule Matching Any Url", function (assert) {
     ruleText = "|$domain=test.com";
     rule = new adguard.rules.UrlFilterRule(ruleText);
 
-    assert.notOk(rule.isThirdParty);
+    assert.notOk(rule.isThirdParty());
     assert.ok(rule.getPermittedDomains());
     assert.equal(1, rule.getPermittedDomains().length);
     assert.notOk(rule.shortcut);
@@ -355,7 +361,7 @@ QUnit.test("Test UrlFilterRule Matching Any Url", function (assert) {
     ruleText = "@@||$xmlhttprequest,domain=last.fm";
     rule = new adguard.rules.UrlFilterRule(ruleText);
 
-    assert.notOk(rule.isThirdParty);
+    assert.notOk(rule.isThirdParty());
     assert.ok(rule.getPermittedDomains());
     assert.equal(1, rule.getPermittedDomains().length);
     assert.notOk(rule.shortcut);
@@ -364,7 +370,7 @@ QUnit.test("Test UrlFilterRule Matching Any Url", function (assert) {
     ruleText = "|$domain=test.com,script";
     rule = new adguard.rules.UrlFilterRule(ruleText);
 
-    assert.notOk(rule.isThirdParty);
+    assert.notOk(rule.isThirdParty());
     assert.ok(rule.getPermittedDomains());
     assert.equal(1, rule.getPermittedDomains().length);
     assert.notOk(rule.shortcut);
@@ -373,7 +379,7 @@ QUnit.test("Test UrlFilterRule Matching Any Url", function (assert) {
     ruleText = "||$domain=test.com,script";
     rule = new adguard.rules.UrlFilterRule(ruleText);
 
-    assert.notOk(rule.isThirdParty);
+    assert.notOk(rule.isThirdParty());
     assert.ok(rule.getPermittedDomains());
     assert.equal(1, rule.getPermittedDomains().length);
     assert.notOk(rule.shortcut);
@@ -405,37 +411,36 @@ QUnit.test("Important modifier rules priority", function (assert) {
     urlFilter.addRule(importantRule);
 
     var result = urlFilter.isFiltered("http://example.com", "test.com", adguard.RequestTypes.SUBDOCUMENT, true);
-    assert.ok(result != null);
+    assert.ok(result !== null);
     assert.equal(result.ruleText, importantRule.ruleText);
 });
 
 QUnit.test("Rule content types", function (assert) {
-    var basicRule = new adguard.rules.UrlFilterRule("||example.com^");
-    assert.notOk(basicRule.checkContentType("DOCUMENT"));
-    assert.notOk(basicRule.checkContentTypeIncluded("DOCUMENT"));
 
-    assert.ok(basicRule.checkContentType("IMAGE"));
-    assert.ok(basicRule.checkContentTypeIncluded("IMAGE"));
+    var basicRule = new adguard.rules.UrlFilterRule("@@||example.com^");
+    assert.notOk(basicRule.isDocumentWhiteList());
+    assert.ok(basicRule.checkContentType(adguard.RequestTypes.DOCUMENT));
+    assert.ok(basicRule.checkContentType(adguard.RequestTypes.IMAGE));
 
-    var documentRule = new adguard.rules.UrlFilterRule("||example.com^$document");
-    assert.ok(documentRule.checkContentType("DOCUMENT"));
-    assert.ok(documentRule.checkContentTypeIncluded("DOCUMENT"));
+    var documentRule = new adguard.rules.UrlFilterRule("@@||example.com^$document");
+    assert.ok(documentRule.isDocumentWhiteList());
+    assert.ok(documentRule.isElemhide());
+    assert.ok(documentRule.checkContentType(adguard.RequestTypes.DOCUMENT));
+    assert.notOk(documentRule.checkContentType(adguard.RequestTypes.IMAGE));
 
-    assert.ok(documentRule.checkContentType("ELEMHIDE"));
-    assert.ok(documentRule.checkContentTypeIncluded("ELEMHIDE"));
+    var elemhideRule = new adguard.rules.UrlFilterRule("@@||example.com^$elemhide");
+    assert.notOk(elemhideRule.isDocumentWhiteList());
+    assert.ok(elemhideRule.isElemhide());
+    assert.notOk(elemhideRule.checkContentType(adguard.RequestTypes.IMAGE));
 
-    assert.notOk(documentRule.checkContentType("IMAGE"));
-    assert.notOk(documentRule.checkContentTypeIncluded("IMAGE"));
-
-    var elemhideRule = new adguard.rules.UrlFilterRule("||example.com^$elemhide");
-    assert.ok(elemhideRule.checkContentType("DOCUMENT"));
-    assert.notOk(elemhideRule.checkContentTypeIncluded("DOCUMENT"));
-
-    assert.ok(elemhideRule.checkContentType("ELEMHIDE"));
-    assert.ok(elemhideRule.checkContentTypeIncluded("ELEMHIDE"));
-
-    assert.notOk(elemhideRule.checkContentType("IMAGE"));
-    assert.notOk(elemhideRule.checkContentTypeIncluded("IMAGE"));
+    var whiteListRule = new adguard.rules.UrlFilterRule("@@||example.com^$elemhide,jsinject,urlblock,content");
+    assert.ok(whiteListRule.isDocumentWhiteList());
+    assert.ok(whiteListRule.isElemhide());
+    assert.ok(whiteListRule.isUrlBlock());
+    assert.ok(whiteListRule.isJsInject());
+    assert.notOk(whiteListRule.isGenericBlock());
+    assert.notOk(whiteListRule.isGenericHide());
+    assert.notOk(whiteListRule.checkContentType(adguard.RequestTypes.IMAGE));
 });
 
 QUnit.test("Regexp rules shortcuts", function (assert) {
@@ -460,6 +465,9 @@ QUnit.test("Many rules in one rule filter", function (assert) {
 });
 
 QUnit.test("Escaped ampersand symbol in options", function (assert) {
+
+    adguard.prefs.features.responseContentFilteringSupported = false;
+
     try {
         new adguard.rules.UrlFilterRule('||goodgame.ru/*.php?script=*vastInlineBannerTypeHtml$important,replace=/(<VAST[\s\S]*?>)[\s\S]*<\/VAST>/\\$1<\/VAST>/', 1);
         assert.ok(false);
@@ -469,6 +477,8 @@ QUnit.test("Escaped ampersand symbol in options", function (assert) {
 });
 
 QUnit.test('RegExp Rules Parsing', function (assert) {
+
+    adguard.prefs.features.responseContentFilteringSupported = false;
 
     assert.ok(new adguard.rules.UrlFilterRule('/(.jpg)$/').isFiltered('http://test.ru/foo.jpg', false, adguard.RequestTypes.IMAGE));
     assert.notOk(new adguard.rules.UrlFilterRule('/(.jpg)$/').isFiltered('http://test.ru/foo.png', false, adguard.RequestTypes.IMAGE));
@@ -484,15 +494,137 @@ QUnit.test('RegExp Rules Parsing', function (assert) {
 QUnit.test('Test convert CSP rules', function (assert) {
 
     var rule = new adguard.rules.UrlFilterRule('|blob:$script,domain=example.com');
-    assert.ok(rule.cspRule);
+    assert.ok(rule.isCspRule());
     assert.equal(rule.permittedContentType, adguard.rules.UrlFilterRule.contentTypes.ALL);
 
     rule = new adguard.rules.UrlFilterRule('|blob:$script');
-    assert.notOk(rule.cspRule);
+    assert.notOk(rule.isCspRule());
 
     rule = new adguard.rules.UrlFilterRule('|data:$script,domain=example.com');
-    assert.ok(rule.cspRule);
+    assert.ok(rule.isCspRule());
 
     rule = new adguard.rules.UrlFilterRule('|data:$script');
-    assert.notOk(rule.cspRule);
+    assert.notOk(rule.isCspRule());
+});
+
+QUnit.test('testReplaceCyrillicText', function (assert) {
+
+    adguard.prefs.features.responseContentFilteringSupported = true;
+
+    var input = "<title>Старый текст</title>";
+    var expected = "<title>Новый текст</title>";
+
+    var ruleText = "||example.com^$replace=/старый ТЕКСТ/Новый текст/i";
+    var rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.ok(rule.getReplace());
+
+    var output = rule.getReplace().apply(input);
+    assert.equal(expected, output);
+});
+
+QUnit.test('testReplaceModifierJson', function (assert) {
+
+    adguard.prefs.features.responseContentFilteringSupported = true;
+
+    var input = "{\n" +
+        "    \"enabled\": true, \n" +
+        "    \"force_disabled\": false\n" +
+        "}";
+
+    var expected = "{\n" +
+        "    \"enabled\": false, \n" +
+        "    \"force_disabled\": false\n" +
+        "}";
+
+    var ruleText = "||example.com^$replace=/\"enabled\": true\\,/\"enabled\": false\\,/i,~third-party,xmlhttprequest";
+    var rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.ok(rule.getReplace());
+
+    var output = rule.replace.apply(input);
+    assert.equal(expected, output);
+});
+
+QUnit.test('testReplaceModifierVast', function (assert) {
+
+    adguard.prefs.features.responseContentFilteringSupported = true;
+
+    var input = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+        "<VAST version=\"2.0\">\n" +
+        "    <Ad id=\"VPAID\">\n" +
+        "        <InLine>\n" +
+        "            <AdSystem version=\"3.1\">LiveRail</AdSystem>\n" +
+        "            <AdTitle>VPAID Ad Manager</AdTitle>\n" +
+        "            <Impression></Impression>\n" +
+        "            <Creatives>\n" +
+        "                <Creative sequence=\"1\">\n" +
+        "                    <Linear>\n" +
+        "                        <Duration>00:00:15</Duration>\n" +
+        "                        <MediaFiles>\n" +
+        "                            <MediaFile delivery=\"progressive\" width=\"640\" height=\"480\" scalable=\"1\" type=\"application/javascript\" apiFramework=\"VPAID\"><![CDATA[http://cdn-static.liverail.com/js/LiveRail.AdManager-1.0.js?LR_PUBLISHER_ID=1331&LR_AUTOPLAY=0&LR_CONTENT=1&LR_TITLE=Foo&LR_VIDEO_ID=1234&LR_VERTICALS=international_news&LR_FORMAT=application/javascript]]></MediaFile>\n" +
+        "                        </MediaFiles>\n" +
+        "                    </Linear>\n" +
+        "                </Creative>\n" +
+        "\n" +
+        "                <Creative sequence=\"1\">\n" +
+        "                    <CompanionAds>\n" +
+        "                        <Companion width=\"300\" height=\"250\">\n" +
+        "                            <HTMLResource><![CDATA[<div id=\"lr_comp_300x250\" style=\" width: 300px; height: 250px; display: none;\"></div>]]></HTMLResource>\n" +
+        "                        </Companion>\n" +
+        "                        <Companion width=\"300\" height=\"60\">\n" +
+        "                            <HTMLResource><![CDATA[<div id=\"lr_comp_300x60\" style=\" width: 300px; height: 60px; display: none;\"></div>]]></HTMLResource>\n" +
+        "                        </Companion>\n" +
+        "                        <Companion width=\"728\" height=\"90\">\n" +
+        "                            <HTMLResource><![CDATA[<div id=\"lr_comp_728x90\" style=\" width: 728px; height: 90px; display: none;\"></div>]]></HTMLResource>\n" +
+        "                        </Companion>\n" +
+        "                    </CompanionAds>\n" +
+        "                </Creative>\n" +
+        "            </Creatives>\n" +
+        "        </InLine>\n" +
+        "    </Ad>\n" +
+        "</VAST>";
+
+    var expected = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+        "<VAST version=\"2.0\"></VAST>";
+
+    var ruleText = "||example.com^$third-party,replace=/(<VAST[\\s\\S]*?>)[\\s\\S]*<\\/VAST>/\\$1<\\/VAST>/,object-subrequest";
+    var rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.ok(rule.getReplace());
+
+    var output = rule.getReplace().apply(input);
+    assert.equal(expected, output);
+});
+
+QUnit.test('testReplaceRegexpRule', function (assert) {
+
+    adguard.prefs.features.responseContentFilteringSupported = true;
+
+    // https://github.com/AdguardTeam/AdguardForAndroid/issues/1027
+    var input = "http://test.ru/hello/bug/test";
+    var expected = "http://test.ru/bug/bug/test";
+    var ruleText = "/.*/$replace=/hello/bug/";
+
+    var rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.ok(rule.getReplace());
+
+    assert.equal(rule.getReplace().apply(input), expected);
+});
+
+QUnit.test('testReplaceToEmptyString', function (assert) {
+
+    adguard.prefs.features.responseContentFilteringSupported = true;
+
+    var input = "Hello I am the banner image for tests";
+    var expected = "Hello I am the image for tests";
+
+    var ruleText = "||example.com^$replace=/banner //i,~third-party,xmlhttprequest";
+    var rule = new adguard.rules.UrlFilterRule(ruleText);
+
+    assert.ok(rule.getReplace());
+
+    var output = rule.getReplace().apply(input);
+    assert.equal(expected, output);
 });

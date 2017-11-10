@@ -136,7 +136,7 @@ adguard.integration = (function (adguard) {
         if (rule && rule.whiteListRule &&
             rule instanceof adguard.rules.UrlFilterRule &&
             rule.isFiltered(tabUrl, false, adguard.RequestTypes.DOCUMENT) &&
-            rule.checkContentTypeIncluded("DOCUMENT")) {
+            rule.isDocumentWhiteList()) {
 
             ruleInfo.headerRule = rule;
             ruleInfo.documentWhiteListed = true;

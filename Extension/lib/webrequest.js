@@ -48,6 +48,7 @@
         var tab = requestDetails.tab;
         var requestUrl = requestDetails.requestUrl;
         var requestType = requestDetails.requestType;
+        var requestId = requestDetails.requestId;
 
         if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
             adguard.frames.recordFrame(tab, requestDetails.frameId, requestUrl, requestType);
@@ -66,9 +67,10 @@
         var referrerUrl = getReferrerUrl(requestDetails);
 
         var requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
+
         adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
 
-        return adguard.webRequestService.getBlockedResponseByRule(requestRule);
+        return adguard.webRequestService.getBlockedResponseByRule(requestRule, requestType);
     }
 
     /**
@@ -123,12 +125,20 @@
         var responseHeaders = requestDetails.responseHeaders;
         var requestType = requestDetails.requestType;
         var referrerUrl = getReferrerUrl(requestDetails);
+        var requestId = requestDetails.requestId;
+        var statusCode = requestDetails.statusCode;
+        var method = requestDetails.method;
 
         adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
 
         // Safebrowsing check
         if (requestType === adguard.RequestTypes.DOCUMENT) {
             filterSafebrowsing(tab, requestUrl);
+        }
+
+        if (adguard.contentFiltering) {
+            var contentType = adguard.utils.browser.getHeaderValueByName(responseHeaders, 'content-type');
+            adguard.contentFiltering.apply(tab, requestUrl, referrerUrl, requestType, requestId, statusCode, method, contentType);
         }
 
         if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
@@ -282,7 +292,6 @@
     adguard.webRequest.onBeforeRequest.addListener(onBeforeRequest, ["<all_urls>"]);
     adguard.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, ["<all_urls>"]);
     adguard.webRequest.onHeadersReceived.addListener(onHeadersReceived, ["<all_urls>"]);
-
 
     // AG for Windows and Mac checks either request signature or request Referer to authorize request.
     // Referer cannot be forged by the website so it's ok for add-on authorization.
