@@ -185,14 +185,18 @@ adguard.frames = (function (adguard) {
 	var reloadFrameData = function (tab) {
 		var frame = adguard.tabs.getTabFrame(tab.tabId, 0);
 		if (frame) {
-			var url = frame.url;
-			var frameWhiteListRule = adguard.whitelist.findWhiteListRule(url);
-			if (!frameWhiteListRule) {
-				frameWhiteListRule = adguard.requestFilter.findWhiteListRule(url, url, adguard.RequestTypes.DOCUMENT);
-			}
-			adguard.tabs.updateTabMetadata(tab.tabId, {
+            var applicationFilteringDisabled = adguard.settings.isFilteringDisabled();
+            var frameWhiteListRule = null;
+            if (!applicationFilteringDisabled) {
+                var url = frame.url;
+                frameWhiteListRule = adguard.whitelist.findWhiteListRule(url);
+                if (!frameWhiteListRule) {
+                    frameWhiteListRule = adguard.requestFilter.findWhiteListRule(url, url, adguard.RequestTypes.DOCUMENT);
+                }
+            }
+            adguard.tabs.updateTabMetadata(tab.tabId, {
 				frameWhiteListRule: frameWhiteListRule,
-				applicationFilteringDisabled: adguard.settings.isFilteringDisabled()
+				applicationFilteringDisabled: applicationFilteringDisabled
 			});
 		}
 	};
