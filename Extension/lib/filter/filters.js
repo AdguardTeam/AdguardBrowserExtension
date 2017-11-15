@@ -355,7 +355,7 @@
             if (rule && rule instanceof adguard.rules.UrlFilterRule) {
                 if (this.badFilterRules.indexOf(rule.ruleText) >= 0) {
                     // Removed with bad-filter rule
-                    return null;
+                    rule = null;
                 }
             }
 
