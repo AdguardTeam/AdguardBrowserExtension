@@ -173,7 +173,7 @@
                     }
 
                     if (rule.isBadFilter()) {
-                        this.badFilterRules.push(rule.getUrlRuleText());
+                        this.badFilterRules.push(rule.badFilter);
                     }
                 }
             } else if (rule instanceof adguard.rules.CssFilterRule) {
@@ -211,7 +211,7 @@
                     }
 
                     if (rule.isBadFilter()) {
-                        adguard.utils.collections.remove(this.badFilterRules, rule.getUrlRuleText())
+                        adguard.utils.collections.remove(this.badFilterRules, rule.badFilter);
                     }
                 }
             } else if (rule instanceof adguard.rules.CssFilterRule) {
@@ -353,7 +353,7 @@
             var rule = this._findRuleForRequest(requestUrl, documentHost, requestType, thirdParty, documentWhitelistRule);
 
             if (rule && rule instanceof adguard.rules.UrlFilterRule) {
-                if (this.badFilterRules.indexOf(rule.getUrlRuleText()) >= 0) {
+                if (this.badFilterRules.indexOf(rule.ruleText) >= 0) {
                     // Removed with bad-filter rule
                     return null;
                 }

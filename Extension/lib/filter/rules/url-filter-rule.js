@@ -829,6 +829,10 @@
                     break;
                 case UrlFilterRule.BADFILTER_OPTION:
                     this._setUrlFilterRuleOption(UrlFilterRule.options.BAD_FILTER, true);
+                    this.badFilter = this.ruleText
+                        .replace(UrlFilterRule.OPTIONS_DELIMITER + UrlFilterRule.BADFILTER_OPTION + api.FilterRule.COMA_DELIMITER, UrlFilterRule.OPTIONS_DELIMITER)
+                        .replace(api.FilterRule.COMA_DELIMITER + UrlFilterRule.BADFILTER_OPTION, '')
+                        .replace(UrlFilterRule.OPTIONS_DELIMITER + UrlFilterRule.BADFILTER_OPTION, '');
                     break;
                 default:
                     optionName = optionName.toUpperCase();

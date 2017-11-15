@@ -281,6 +281,46 @@ QUnit.test("BadFilter option", function (assert) {
 
 });
 
+QUnit.test("BadFilter multi-options", function (assert) {
+
+    var rule = new adguard.rules.UrlFilterRule("||example.org^$object-subrequest");
+    var ruleTwo = new adguard.rules.UrlFilterRule("||example.org^");
+    var badFilterRule = new adguard.rules.UrlFilterRule("||example.org^$badfilter,object-subrequest");
+
+    var requestFilter = new adguard.RequestFilter();
+
+    requestFilter.addRule(rule);
+    requestFilter.addRule(ruleTwo);
+
+    assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
+    assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.SUBDOCUMENT));
+
+
+    requestFilter.addRule(badFilterRule);
+
+    assert.notOk(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
+    assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.SUBDOCUMENT));
+
+    requestFilter.removeRule(badFilterRule);
+
+    assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
+    assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.SUBDOCUMENT));
+
+
+    badFilterRule = new adguard.rules.UrlFilterRule("||example.org^$object-subrequest,badfilter");
+
+    requestFilter.addRule(badFilterRule);
+
+    assert.notOk(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
+    assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.SUBDOCUMENT));
+
+    requestFilter.removeRule(badFilterRule);
+
+    assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
+    assert.ok(requestFilter.findRuleForRequest('https://example.org', '', adguard.RequestTypes.SUBDOCUMENT));
+
+});
+
 QUnit.test("Request filter performance", function (assert) {
 
     var done = assert.async();

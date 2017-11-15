@@ -17,6 +17,7 @@
 
 /**
  * Safari content blocking format rules converter.
+ * TODO: Support badfilter rules
  */
 var CONVERTER_VERSION = '1.3.32';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
