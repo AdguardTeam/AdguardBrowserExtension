@@ -628,3 +628,10 @@ QUnit.test('testReplaceToEmptyString', function (assert) {
     var output = rule.getReplace().apply(input);
     assert.equal(expected, output);
 });
+
+QUnit.test("BadFilter option", function (assert) {
+    var badFilterRule = new adguard.rules.UrlFilterRule("https:*_ad_$badfilter");
+
+    assert.ok(badFilterRule);
+    assert.ok(badFilterRule.isBadFilter());
+});

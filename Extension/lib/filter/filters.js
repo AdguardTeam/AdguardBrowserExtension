@@ -80,7 +80,7 @@
             }
             this.requestCache = Object.create(null);
             this.requestCacheSize = 0;
-        }
+        };
     };
 
     /**
@@ -97,6 +97,10 @@
         // Filter that applies whitelist rules
         // Exception rules: http://adguard.com/en/filterrules.html#exclusionRules
         this.urlWhiteFilter = new adguard.rules.UrlFilter();
+
+        // Bad-filter rules collection
+        // TODO: add link
+        this.badFilterRules = [];
 
         // Filter that applies CSS rules
         // ABP element hiding rules: http://adguard.com/en/filterrules.html#hideRules
@@ -157,6 +161,7 @@
                 adguard.console.error("FilterRule must not be null");
                 return;
             }
+
             if (rule instanceof adguard.rules.UrlFilterRule) {
                 if (rule.isCspRule()) {
                     this.cspFilter.addRule(rule);
@@ -166,6 +171,10 @@
                     } else {
                         this.urlBlockingFilter.addRule(rule);
                     }
+
+                    if (rule.isBadFilter()) {
+                        this.badFilterRules.push(rule.getUrlRuleText());
+                    }
                 }
             } else if (rule instanceof adguard.rules.CssFilterRule) {
                 this.cssFilter.addRule(rule);
@@ -174,6 +183,7 @@
             } else if (rule instanceof adguard.rules.ContentFilterRule) {
                 this.contentFilter.addRule(rule);
             }
+
             this.rulesCount++;
             this.urlBlockingCache.clearRequestCache();
             this.urlExceptionsCache.clearRequestCache();
@@ -199,6 +209,10 @@
                     } else {
                         this.urlBlockingFilter.removeRule(rule);
                     }
+
+                    if (rule.isBadFilter()) {
+                        adguard.utils.collections.remove(this.badFilterRules, rule.getUrlRuleText())
+                    }
                 }
             } else if (rule instanceof adguard.rules.CssFilterRule) {
                 this.cssFilter.removeRule(rule);
@@ -223,6 +237,7 @@
             result = result.concat(this.cssFilter.getRules());
             result = result.concat(this.scriptFilter.getRules());
             result = result.concat(this.cspFilter.getRules());
+            result = result.concat(this.badFilterRules);
 
             return result;
         },
@@ -285,6 +300,7 @@
             this.contentFilter.clearRules();
             this.urlBlockingCache.clearRequestCache();
             this.urlExceptionsCache.clearRequestCache();
+            this.badFilterRules = [];
         },
 
         /**
@@ -335,6 +351,13 @@
             }
 
             var rule = this._findRuleForRequest(requestUrl, documentHost, requestType, thirdParty, documentWhitelistRule);
+
+            if (rule && rule instanceof adguard.rules.UrlFilterRule) {
+                if (this.badFilterRules.indexOf(rule.getUrlRuleText()) >= 0) {
+                    // Removed with bad-filter rule
+                    return null;
+                }
+            }
 
             this.urlBlockingCache.saveResultToCache(requestUrl, rule, documentHost, requestType);
             return rule;

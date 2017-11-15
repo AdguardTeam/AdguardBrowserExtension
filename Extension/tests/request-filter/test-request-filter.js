@@ -255,6 +255,32 @@ QUnit.test('Test object subrequest type', function (assert) {
     assert.notOk(requestFilter.findRuleForRequest('blockrequest4', '', adguard.RequestTypes.OBJECT_SUBREQUEST));
 });
 
+QUnit.test("BadFilter option", function (assert) {
+
+    var rule = new adguard.rules.UrlFilterRule("https:*_ad_");
+    var ruleTwo = new adguard.rules.UrlFilterRule("https:*_da_");
+    var badFilterRule = new adguard.rules.UrlFilterRule("https:*_ad_$badfilter");
+
+    var requestFilter = new adguard.RequestFilter();
+
+    requestFilter.addRule(rule);
+    requestFilter.addRule(ruleTwo);
+
+    assert.ok(requestFilter.findRuleForRequest('https://google.com/_ad_agency', '', adguard.RequestTypes.SUBDOCUMENT));
+    assert.ok(requestFilter.findRuleForRequest('https://google.com/_da_agency', '', adguard.RequestTypes.SUBDOCUMENT));
+
+    requestFilter.addRule(badFilterRule);
+
+    assert.notOk(requestFilter.findRuleForRequest('https://google.com/_ad_agency', '', adguard.RequestTypes.SUBDOCUMENT));
+    assert.ok(requestFilter.findRuleForRequest('https://google.com/_da_agency', '', adguard.RequestTypes.SUBDOCUMENT));
+
+    requestFilter.removeRule(badFilterRule);
+
+    assert.ok(requestFilter.findRuleForRequest('https://google.com/_ad_agency', '', adguard.RequestTypes.SUBDOCUMENT));
+    assert.ok(requestFilter.findRuleForRequest('https://google.com/_da_agency', '', adguard.RequestTypes.SUBDOCUMENT));
+
+});
+
 QUnit.test("Request filter performance", function (assert) {
 
     var done = assert.async();

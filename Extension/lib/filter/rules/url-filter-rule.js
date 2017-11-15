@@ -731,6 +731,13 @@
     };
 
     /**
+     * If rule is bad-filter returns true
+     */
+    UrlFilterRule.prototype.isBadFilter = function () {
+        return this.isOptionEnabled(UrlFilterRule.options.BAD_FILTER);
+    };
+
+    /**
      * Loads rule options
      * @param options Options string
      * @private
@@ -819,6 +826,9 @@
                         }
                         this.replace = new ReplaceOption(replaceOption);
                     }
+                    break;
+                case UrlFilterRule.BADFILTER_OPTION:
+                    this._setUrlFilterRuleOption(UrlFilterRule.options.BAD_FILTER, true);
                     break;
                 default:
                     optionName = optionName.toUpperCase();
@@ -935,6 +945,7 @@
     UrlFilterRule.EMPTY_OPTION = "empty";
     UrlFilterRule.REPLACE_OPTION = "replace"; // Extension doesn't support replace rules, $replace option is here only for correctly parsing
     UrlFilterRule.CSP_OPTION = "csp";
+    UrlFilterRule.BADFILTER_OPTION = "badfilter";
 
     UrlFilterRule.contentTypes = {
 
@@ -1048,7 +1059,13 @@
          * defines a CSP rule
          * For example, ||xpanama.net^$third-party,csp=connect-src 'none'
          */
-        CSP_RULE: 1 << 10
+        CSP_RULE: 1 << 10,
+
+        /**
+         * Defines a 'bad filter', which works like exception for url-blocking rules, as an example:
+         * using https:*_ad_$badfilter rule will prevent https:*_ad_ rule from being loaded in filter.
+         */
+        BAD_FILTER: 1 << 11
 
         // jshint ignore:end
     };
