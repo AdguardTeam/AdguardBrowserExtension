@@ -448,3 +448,18 @@ QUnit.test("Important modifier rules sorting order", function(assert) {
     assert.equal(converted[4].trigger["url-filter"], ".*");
     assert.equal(converted[4].trigger["if-domain"], "*example-url-block-exception-document.org");
 });
+
+QUnit.test("BadFilter rules", function (assert) {
+
+    var rule = new adguard.rules.UrlFilterRule('||example.org^$image', 0);
+    var ruleTwo = new adguard.rules.UrlFilterRule("||test.org^");
+    var badFilterRule = new adguard.rules.UrlFilterRule("||example.org^$badfilter,image");
+
+    var result = SafariContentBlockerConverter.convertArray([rule, ruleTwo, badFilterRule]);
+    assert.equal(result.errorsCount, 0);
+
+    var converted = JSON.parse(result.converted);
+    assert.equal(converted.length, 1);
+    assert.equal(converted[0].trigger['url-filter'], "^[htpsw]+://([^/]*\\.)?test\\.org[/:&?]?");
+
+});

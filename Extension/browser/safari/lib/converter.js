@@ -17,9 +17,8 @@
 
 /**
  * Safari content blocking format rules converter.
- * TODO: Support badfilter rules
  */
-var CONVERTER_VERSION = '1.3.32';
+var CONVERTER_VERSION = '1.3.33';
 // Max number of CSS selectors per rule (look at _compactCssRules function)
 var MAX_SELECTORS_PER_WIDE_RULE = 250;
 var ANY_URL_TEMPLATES = ['||*', '', '*', '|*'];
@@ -784,20 +783,35 @@ var SafariContentBlockerConverter = { // jshint ignore:line
         // Elemhide exceptions (#@#)
         var cssExceptions = [];
 
-        for (var i = 0, len = rules.length; i < len; i++) {
-            var item;
-            var agRule;
-            var ruleText;
+        // $badfilter rules
+        var badFilterExceptions = [];
 
-            if (rules[i] !== null && rules[i].ruleText) {
-                agRule = rules[i];
-                item = this.convertAGRule(rules[i], contentBlocker.errors);
-                ruleText = rules[i].ruleText;
+        var agRules = [];
+        for (var j = 0; j < rules.length; j++) {
+            var c;
+
+            if (rules[j] !== null && rules[j].ruleText) {
+                c = rules[j];
             } else {
-                agRule = this._parseAGRule(rules[i], contentBlocker.errors);
-                item = this.convertAGRule(agRule, contentBlocker.errors);
-                ruleText = rules[i];
+                c = this._parseAGRule(rules[j], contentBlocker.errors);
             }
+
+            if (c.isBadFilter && c.isBadFilter()) {
+                badFilterExceptions.push(c.badFilter);
+            } else {
+                agRules.push(c);
+            }
+        }
+
+        for (var i = 0, len = agRules.length; i < len; i++) {
+            var agRule = agRules[i];
+            if (badFilterExceptions.indexOf(agRule.ruleText) >= 0) {
+                // Removed with bad-filter
+                adguard.console.info('Rule ' + agRule.ruleText + ' removed with badfilter');
+                continue;
+            }
+
+            var item = this.convertAGRule(agRules[i], contentBlocker.errors);
 
             if (item !== null && item !== '') {
                 if (item.action === null || item.action === '') {
