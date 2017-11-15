@@ -168,12 +168,10 @@
                 } else {
                     if (rule.whiteListRule) {
                         this.urlWhiteFilter.addRule(rule);
+                    } else if (rule.isBadFilter()) {
+                        this.badFilterRules.push(rule.badFilter);
                     } else {
                         this.urlBlockingFilter.addRule(rule);
-                    }
-
-                    if (rule.isBadFilter()) {
-                        this.badFilterRules.push(rule.badFilter);
                     }
                 }
             } else if (rule instanceof adguard.rules.CssFilterRule) {
@@ -206,12 +204,10 @@
                 } else {
                     if (rule.whiteListRule) {
                         this.urlWhiteFilter.removeRule(rule);
+                    } else if (rule.isBadFilter()) {
+                        adguard.utils.collections.remove(this.badFilterRules, rule.badFilter);
                     } else {
                         this.urlBlockingFilter.removeRule(rule);
-                    }
-
-                    if (rule.isBadFilter()) {
-                        adguard.utils.collections.remove(this.badFilterRules, rule.badFilter);
                     }
                 }
             } else if (rule instanceof adguard.rules.CssFilterRule) {
