@@ -48,7 +48,6 @@
         var tab = requestDetails.tab;
         var requestUrl = requestDetails.requestUrl;
         var requestType = requestDetails.requestType;
-        var requestId = requestDetails.requestId;
 
         if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
             adguard.frames.recordFrame(tab, requestDetails.frameId, requestUrl, requestType);
@@ -57,6 +56,15 @@
         if (requestType === adguard.RequestTypes.DOCUMENT) {
             // Reset tab button state
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_TAB_BUTTON_STATE, tab, true);
+
+            /**
+             * In the case of the "about:newtab" pages we don't receive onResponseReceived event for the main_frame, so we have to append log event here.
+             * Also if chrome://newtab is overwritten, we won't receive any webRequest events for the main_frame
+             * Unfortunately, we can't do anything in this case and just must remember about it
+             */
+            var tabRequestRule = adguard.frames.getFrameWhiteListRule(tab);
+            adguard.filteringLog.addEvent(tab, requestUrl, requestUrl, requestType, tabRequestRule);
+
             return;
         }
 

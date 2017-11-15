@@ -334,8 +334,6 @@ adguard.webRequestService = (function (adguard) {
 
                 adguard.integration.checkHeaders(tab, responseHeaders, requestUrl);
             }
-            // Clear previous events
-            adguard.filteringLog.clearEventsByTabId(tab.tabId);
         }
 
         var requestRule = null;
@@ -345,8 +343,6 @@ adguard.webRequestService = (function (adguard) {
             // Parse rule applied to request from response headers
             requestRule = adguard.integration.parseAdguardRuleFromHeaders(responseHeaders);
             appendLogEvent = !adguard.backend.isAdguardAppRequest(requestUrl);
-        } else if (adguard.frames.isTabProtectionDisabled(tab)) { // jshint ignore:line
-            // Doing nothing
         } else if (requestType === adguard.RequestTypes.DOCUMENT) {
             requestRule = adguard.frames.getFrameWhiteListRule(tab);
             var domain = adguard.frames.getFrameDomain(tab);

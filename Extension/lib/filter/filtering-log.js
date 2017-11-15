@@ -27,6 +27,8 @@ adguard.filteringLog = (function (adguard) {
     var tabsInfoMap = Object.create(null);
     var openedFilteringLogsPage = 0;
 
+    var extensionURL = adguard.getURL('');
+
     /**
      * Updates tab info (title and url)
      * @param tab
@@ -35,7 +37,7 @@ adguard.filteringLog = (function (adguard) {
         var tabInfo = tabsInfoMap[tab.tabId] || Object.create(null);
         tabInfo.tabId = tab.tabId;
         tabInfo.title = tab.title;
-        tabInfo.isHttp = adguard.utils.url.isHttpRequest(tab.url);
+        tabInfo.isExtensionTab = tab.url && tab.url.indexOf(extensionURL) === 0;
         tabsInfoMap[tab.tabId] = tabInfo;
         return tabInfo;
     }
@@ -91,6 +93,10 @@ adguard.filteringLog = (function (adguard) {
      * @param requestRule
      */
     var addEvent = function (tab, requestUrl, frameUrl, requestType, requestRule) {
+
+        if (requestType === adguard.RequestTypes.DOCUMENT) {
+            clearEventsByTabId(tab.tabId);
+        }
 
         if (openedFilteringLogsPage === 0) {
             return;
