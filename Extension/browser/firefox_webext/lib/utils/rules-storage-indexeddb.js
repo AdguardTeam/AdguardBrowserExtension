@@ -26,11 +26,12 @@
  * https://bugzilla.mozilla.org/show_bug.cgi?id=1371255
  * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/892
  */
-adguard.rulesStorageImpl = (function () {
+adguard.rulesStorageImpl = (function (adguard, initialAPI) {
 
     var STORAGE_NAME = 'AdguardRulesStorage';
 
     var database;
+    var databaseInitFailed = false;
     var connectionRequests = [];
 
     function onError(error) {
@@ -49,7 +50,7 @@ adguard.rulesStorageImpl = (function () {
      * @param callback Callback
      */
     function connectDatabase(callback) {
-        if (connectionRequests === null) {
+        if (databaseInitFailed) {
             callback();
             return;
         }
@@ -88,9 +89,9 @@ adguard.rulesStorageImpl = (function () {
         };
         request.onerror = request.onblocked = function () {
             onError(this.error);
+            databaseInitFailed = true;
             // Call all connection requests
             processConnectionRequests();
-            connectionRequests = null;
         };
     }
 
@@ -101,8 +102,9 @@ adguard.rulesStorageImpl = (function () {
 
         connectDatabase(function (db) {
 
-            if (!db) {
-                return callback();
+            if (databaseInitFailed) {
+                callback();
+                return;
             }
 
             var transaction = db.transaction(STORAGE_NAME);
@@ -121,8 +123,9 @@ adguard.rulesStorageImpl = (function () {
 
         connectDatabase(function (db) {
 
-            if (!db) {
-                return callback();
+            if (databaseInitFailed) {
+                callback();
+                return;
             }
 
             var transaction = db.transaction(STORAGE_NAME, 'readwrite');
@@ -130,7 +133,7 @@ adguard.rulesStorageImpl = (function () {
 
             var request = table.put({
                 key: key,
-                value: value
+                value: value.join('\n')
             });
             request.onsuccess = callback;
             request.onerror = callback;
@@ -144,8 +147,9 @@ adguard.rulesStorageImpl = (function () {
 
         connectDatabase(function (db) {
 
-            if (!db) {
-                return callback();
+            if (databaseInitFailed) {
+                callback();
+                return;
             }
 
             var transaction = db.transaction(STORAGE_NAME, 'readwrite');
@@ -164,6 +168,10 @@ adguard.rulesStorageImpl = (function () {
      */
     var read = function (path, callback) {
         return getFromDatabase(path, function (event) {
+            if (databaseInitFailed) {
+                initialAPI.read(path, callback);
+                return;
+            }
             var request = event.target;
             if (request.error) {
                 callback(request.error);
@@ -185,7 +193,11 @@ adguard.rulesStorageImpl = (function () {
      * @param callback
      */
     var write = function (path, data, callback) {
-        putToDatabase(path, data.join('\n'), function (event) {
+        putToDatabase(path, data, function (event) {
+            if (databaseInitFailed) {
+                initialAPI.write(path, data, callback);
+                return;
+            }
             var request = event.target;
             callback(request.error);
         });
@@ -197,7 +209,14 @@ adguard.rulesStorageImpl = (function () {
      * @param callback
      */
     var remove = function (path, callback) {
-        deleteFromDatabase(path, callback || function () {
+        deleteFromDatabase(path, function () {
+            if (databaseInitFailed) {
+                initialAPI.remove(path, callback);
+                return;
+            }
+            if (callback) {
+                callback();
+            }
         });
     };
 
@@ -205,10 +224,17 @@ adguard.rulesStorageImpl = (function () {
     connectDatabase(function () {
     });
 
+    var init = function (callback) {
+        connectDatabase(function () {
+            callback({success: !databaseInitFailed});
+        })
+    };
+
     return {
         read: read,
         write: write,
-        remove: remove
+        remove: remove,
+        init: init
     };
 
-})();
+})(adguard, adguard.rulesStorageImpl || {});

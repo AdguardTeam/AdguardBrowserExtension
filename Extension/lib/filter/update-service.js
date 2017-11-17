@@ -175,16 +175,29 @@ adguard.applicationUpdateService = (function (adguard) {
             }
         }
 
-        browser.storage.local.get(null, function (items) {
+        function migrate() {
 
-            var keys = [];
-            for (var key in items) {
-                if (items.hasOwnProperty(key) && key.indexOf('filterrules_') === 0) {
-                    keys.push(key);
+            browser.storage.local.get(null, function (items) {
+
+                var keys = [];
+                for (var key in items) {
+                    if (items.hasOwnProperty(key) && key.indexOf('filterrules_') === 0) {
+                        keys.push(key);
+                    }
                 }
-            }
 
-            writeFilterRules(keys, items);
+                writeFilterRules(keys, items);
+            });
+        }
+
+        // Wait for indexedDB initialization
+        adguard.rulesStorageImpl.init(function (result) {
+            if (result.success) {
+                migrate();
+            } else {
+                // indexedDB initialization failed, doing nothing
+                dfd.resolve();
+            }
         });
 
         return dfd;
