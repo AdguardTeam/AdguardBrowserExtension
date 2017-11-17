@@ -498,6 +498,37 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         }
     };
 
+    /**
+     * Opens site complaint report tab
+     *
+     * @param url
+     */
+    var openAbuseTab = function (url) {
+        var browser;
+        var browserDetails;
+
+        var supportedBrowsers = ['Chrome', 'Firefox', 'Opera', 'Safari', 'IE', 'Edge'];
+        if (supportedBrowsers.indexOf(adguard.prefs.browser) >= 0) {
+            browser = adguard.prefs.browser;
+        } else {
+            browser = 'Other';
+            browserDetails = adguard.prefs.browser;
+        }
+
+        var filters = [];
+        var enabledFilters = adguard.filters.getEnabledFilters();
+        for (var i = 0; i < enabledFilters.length; i++) {
+            var filter = enabledFilters[i];
+            filters.push(filter.filterId);
+        }
+
+        openTab("https://reports.adguard.com/new_issue.html?product_type=Ext&product_version=" + encodeURIComponent(adguard.app.getVersion()) +
+            "&browser=" + encodeURIComponent(browser) +
+            (browserDetails ? '&browser_detail=' + encodeURIComponent(browserDetails) : '') +
+            "&url=" + encodeURIComponent(url) +
+            "&filters=" + encodeURIComponent(filters.join('.')));
+    };
+
     var openFilteringLog = function (tabId) {
         var options = {activateSameTab: true, type: "popup"};
         if (!tabId) {
@@ -739,6 +770,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         openThankYouPage: openThankYouPage,
         openExtensionStore: openExtensionStore,
         openFiltersDownloadPage: openFiltersDownloadPage,
+        openAbuseTab: openAbuseTab,
 
         updateTabIconAndContextMenu: updateTabIconAndContextMenu,
 
