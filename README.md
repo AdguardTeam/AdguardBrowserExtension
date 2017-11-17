@@ -30,7 +30,7 @@ You can get a beta version of AdGuard Browser Extension for any browser. All nec
 #### Requirements
 
 - [JDK 1.7+](http://www.oracle.com/technetwork/java/javaee/downloads/index.html)
-- [Apache Maven 2+](http://maven.apache.org/download.cgi)
+- [Apache Maven 2+](https://maven.apache.org/download.cgi)
 - Set JAVA_HOME and JDK_HOME environment variables
 
 #### Building the dev version
