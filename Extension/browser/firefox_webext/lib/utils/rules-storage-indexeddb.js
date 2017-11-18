@@ -31,68 +31,9 @@ adguard.rulesStorageImpl = (function (adguard, initialAPI) {
     var STORAGE_NAME = 'AdguardRulesStorage';
 
     var database;
-    var databaseInitFailed = false;
-    var connectionRequests = [];
 
     function onError(error) {
         adguard.console.error('Adguard rulesStorage error: {0}', error.error || error);
-    }
-
-    function processConnectionRequests() {
-        var connect;
-        while ((connect = connectionRequests.shift())) {
-            connect(database);
-        }
-    }
-
-    /**
-     * Connects to the database (Creates a new one or opens existing)
-     * @param callback Callback
-     */
-    function connectDatabase(callback) {
-        if (databaseInitFailed) {
-            callback();
-            return;
-        }
-        // Not the first request
-        if (connectionRequests.length > 0) {
-            connectionRequests.push(callback);
-            return;
-        }
-        // Database is initialized
-        if (database instanceof IDBDatabase) {
-            callback(database);
-            return;
-        }
-        // Add new request
-        connectionRequests.push(callback);
-        if (connectionRequests.length !== 1) {
-            return;
-        }
-
-        // Failed in private browsing mode.
-        var request = indexedDB.open(STORAGE_NAME, 1);
-
-        request.onupgradeneeded = function (ev) {
-            database = ev.target.result;
-            database.onerror = database.onabort = onError;
-            // DB doesn't exist => creates new storage
-            var table = database.createObjectStore(STORAGE_NAME, {keyPath: 'key'});
-            table.createIndex('value', 'value', {unique: false});
-        };
-
-        request.onsuccess = function (ev) {
-            database = ev.target.result;
-            database.onerror = database.onabort = onError;
-            // Call all connection requests
-            processConnectionRequests();
-        };
-        request.onerror = request.onblocked = function () {
-            onError(this.error);
-            databaseInitFailed = true;
-            // Call all connection requests
-            processConnectionRequests();
-        };
     }
 
     /**
@@ -100,20 +41,12 @@ adguard.rulesStorageImpl = (function (adguard, initialAPI) {
      */
     function getFromDatabase(key, callback) {
 
-        connectDatabase(function (db) {
+        var transaction = database.transaction(STORAGE_NAME);
+        var table = transaction.objectStore(STORAGE_NAME);
 
-            if (databaseInitFailed) {
-                callback();
-                return;
-            }
-
-            var transaction = db.transaction(STORAGE_NAME);
-            var table = transaction.objectStore(STORAGE_NAME);
-
-            var request = table.get(key);
-            request.onsuccess = callback;
-            request.onerror = callback;
-        });
+        var request = table.get(key);
+        request.onsuccess = callback;
+        request.onerror = callback;
     }
 
     /**
@@ -121,23 +54,15 @@ adguard.rulesStorageImpl = (function (adguard, initialAPI) {
      */
     function putToDatabase(key, value, callback) {
 
-        connectDatabase(function (db) {
+        var transaction = database.transaction(STORAGE_NAME, 'readwrite');
+        var table = transaction.objectStore(STORAGE_NAME);
 
-            if (databaseInitFailed) {
-                callback();
-                return;
-            }
-
-            var transaction = db.transaction(STORAGE_NAME, 'readwrite');
-            var table = transaction.objectStore(STORAGE_NAME);
-
-            var request = table.put({
-                key: key,
-                value: value.join('\n')
-            });
-            request.onsuccess = callback;
-            request.onerror = callback;
+        var request = table.put({
+            key: key,
+            value: value.join('\n')
         });
+        request.onsuccess = callback;
+        request.onerror = callback;
     }
 
     /**
@@ -145,20 +70,12 @@ adguard.rulesStorageImpl = (function (adguard, initialAPI) {
      */
     function deleteFromDatabase(key, callback) {
 
-        connectDatabase(function (db) {
+        var transaction = database.transaction(STORAGE_NAME, 'readwrite');
+        var table = transaction.objectStore(STORAGE_NAME);
 
-            if (databaseInitFailed) {
-                callback();
-                return;
-            }
-
-            var transaction = db.transaction(STORAGE_NAME, 'readwrite');
-            var table = transaction.objectStore(STORAGE_NAME);
-
-            var request = table.delete(key);
-            request.onsuccess = callback;
-            request.onerror = callback;
-        });
+        var request = table.delete(key);
+        request.onsuccess = callback;
+        request.onerror = callback;
     }
 
     /**
@@ -168,10 +85,6 @@ adguard.rulesStorageImpl = (function (adguard, initialAPI) {
      */
     var read = function (path, callback) {
         return getFromDatabase(path, function (event) {
-            if (databaseInitFailed) {
-                initialAPI.read(path, callback);
-                return;
-            }
             var request = event.target;
             if (request.error) {
                 callback(request.error);
@@ -194,10 +107,6 @@ adguard.rulesStorageImpl = (function (adguard, initialAPI) {
      */
     var write = function (path, data, callback) {
         putToDatabase(path, data, function (event) {
-            if (databaseInitFailed) {
-                initialAPI.write(path, data, callback);
-                return;
-            }
             var request = event.target;
             callback(request.error);
         });
@@ -209,32 +118,48 @@ adguard.rulesStorageImpl = (function (adguard, initialAPI) {
      * @param callback
      */
     var remove = function (path, callback) {
-        deleteFromDatabase(path, function () {
-            if (databaseInitFailed) {
-                initialAPI.remove(path, callback);
-                return;
-            }
-            if (callback) {
-                callback();
-            }
+        deleteFromDatabase(path, callback || function () {
         });
     };
 
-    // Initialize db as soon as possible
-    connectDatabase(function () {
-    });
-
+    /**
+     * We can detect whether IndexedDB was initialized or not only in an async way
+     *
+     * @param callback
+     */
     var init = function (callback) {
-        connectDatabase(function () {
-            callback({success: !databaseInitFailed});
-        })
+
+        // Failed in private browsing mode.
+        var request = indexedDB.open(STORAGE_NAME, 1);
+
+        request.onupgradeneeded = function (ev) {
+            database = ev.target.result;
+            database.onerror = database.onabort = onError;
+            // DB doesn't exist => creates new storage
+            var table = database.createObjectStore(STORAGE_NAME, {keyPath: 'key'});
+            table.createIndex('value', 'value', {unique: false});
+        };
+
+        request.onsuccess = function (ev) {
+            database = ev.target.result;
+            database.onerror = database.onabort = onError;
+            callback(api);
+        };
+
+        request.onerror = request.onblocked = function () {
+            onError(this.error);
+            // Fallback to the browser.storage API
+            callback(initialAPI);
+        };
     };
 
-    return {
-        read: read,
-        write: write,
-        remove: remove,
-        init: init
-    };
+    var api = {};
+    api.read = read;
+    api.write = write;
+    api.remove = remove;
+    api.init = init;
+    api.migrationRequired = true; // For data migration
+
+    return api;
 
 })(adguard, adguard.rulesStorageImpl || {});

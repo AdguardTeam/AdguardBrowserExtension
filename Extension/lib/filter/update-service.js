@@ -156,8 +156,6 @@ adguard.applicationUpdateService = (function (adguard) {
      */
     function onUpdateFirefoxWebExtRulesStorage() {
 
-        adguard.console.info('Call update to use indexedDB instead of storage.local for Firefox browser');
-
         var dfd = new adguard.utils.Promise();
 
         function writeFilterRules(keys, items) {
@@ -177,6 +175,8 @@ adguard.applicationUpdateService = (function (adguard) {
 
         function migrate() {
 
+            adguard.console.info('Call update to use indexedDB instead of storage.local for Firefox browser');
+
             browser.storage.local.get(null, function (items) {
 
                 var keys = [];
@@ -190,15 +190,12 @@ adguard.applicationUpdateService = (function (adguard) {
             });
         }
 
-        // Wait for indexedDB initialization
-        adguard.rulesStorageImpl.init(function (result) {
-            if (result.success) {
-                migrate();
-            } else {
-                // indexedDB initialization failed, doing nothing
-                dfd.resolve();
-            }
-        });
+        if (adguard.rulesStorageImpl.migrationRequired) {
+            migrate();
+        } else {
+            // indexedDB initialization failed, doing nothing
+            dfd.resolve();
+        }
 
         return dfd;
     }
