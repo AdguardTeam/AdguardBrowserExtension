@@ -169,7 +169,7 @@
                     if (rule.whiteListRule) {
                         this.urlWhiteFilter.addRule(rule);
                     } else if (rule.isBadFilter()) {
-                        this.badFilterRules[rule.badFilter] = true;
+                        this.badFilterRules[rule.badFilter] = rule;
                     } else {
                         this.urlBlockingFilter.addRule(rule);
                     }
@@ -233,6 +233,10 @@
             result = result.concat(this.cssFilter.getRules());
             result = result.concat(this.scriptFilter.getRules());
             result = result.concat(this.cspFilter.getRules());
+
+            for (var badFilter in this.badFilterRules) {
+                result.push(this.badFilterRules[badFilter]);
+            }
 
             return result;
         },
