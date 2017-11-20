@@ -300,6 +300,23 @@
         },
 
         /**
+         * Checks if the rule is in bad filter exceptions
+         *
+         * @param rule
+         * @returns {*}
+         */
+        checkBadFilterExceptions: function (rule) {
+            if (rule && rule instanceof adguard.rules.UrlFilterRule) {
+                if (adguard.utils.collections.contains(this.badFilterRules, rule.ruleText)) {
+                    // Removed with bad-filter rule
+                    return null;
+                }
+            }
+
+            return rule;
+        },
+
+        /**
          * Searches for the whitelist rule for the specified pair (url/referrer)
          *
          * @param requestUrl  Request URL
@@ -320,6 +337,7 @@
             }
 
             var rule = this._checkWhiteList(requestUrl, refHost, requestType, thirdParty);
+            rule = this.checkBadFilterExceptions(rule);
 
             this.urlExceptionsCache.saveResultToCache(requestUrl, rule, refHost, requestType);
             return rule;
@@ -347,13 +365,7 @@
             }
 
             var rule = this._findRuleForRequest(requestUrl, documentHost, requestType, thirdParty, documentWhitelistRule);
-
-            if (rule && rule instanceof adguard.rules.UrlFilterRule) {
-                if (this.badFilterRules.indexOf(rule.ruleText) >= 0) {
-                    // Removed with bad-filter rule
-                    rule = null;
-                }
-            }
+            rule = this.checkBadFilterExceptions(rule);
 
             this.urlBlockingCache.saveResultToCache(requestUrl, rule, documentHost, requestType);
             return rule;
