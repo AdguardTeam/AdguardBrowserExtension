@@ -300,24 +300,6 @@ adguard.utils = (function () {
         },
 
         /**
-         * Check if element is in array
-         *
-         * @param array
-         * @param obj
-         * @returns {boolean}
-         */
-        contains: function (array, obj) {
-            var i = array.length;
-            while (i--) {
-                if (array[i] === obj) {
-                    return true;
-                }
-            }
-
-            return false;
-        },
-
-        /**
          * Checks if specified object is array
          * We don't use instanceof because it is too slow: http://jsperf.com/instanceof-performance/2
          * @param obj Object

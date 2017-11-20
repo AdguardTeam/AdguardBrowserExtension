@@ -734,7 +734,7 @@
      * If rule is bad-filter returns true
      */
     UrlFilterRule.prototype.isBadFilter = function () {
-        return this.isOptionEnabled(UrlFilterRule.options.BAD_FILTER);
+        return this.badFilter != null;
     };
 
     /**
@@ -828,7 +828,6 @@
                     }
                     break;
                 case UrlFilterRule.BADFILTER_OPTION:
-                    this._setUrlFilterRuleOption(UrlFilterRule.options.BAD_FILTER, true);
                     this.badFilter = this.ruleText
                         .replace(UrlFilterRule.OPTIONS_DELIMITER + UrlFilterRule.BADFILTER_OPTION + api.FilterRule.COMA_DELIMITER, UrlFilterRule.OPTIONS_DELIMITER)
                         .replace(api.FilterRule.COMA_DELIMITER + UrlFilterRule.BADFILTER_OPTION, '')
@@ -1063,13 +1062,7 @@
          * defines a CSP rule
          * For example, ||xpanama.net^$third-party,csp=connect-src 'none'
          */
-        CSP_RULE: 1 << 10,
-
-        /**
-         * Defines a 'bad filter', which works like exception for url-blocking rules, as an example:
-         * using https:*_ad_$badfilter rule will prevent https:*_ad_ rule from being loaded in filter.
-         */
-        BAD_FILTER: 1 << 11
+        CSP_RULE: 1 << 10
 
         // jshint ignore:end
     };

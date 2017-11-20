@@ -100,7 +100,7 @@
 
         // Bad-filter rules collection
         // TODO: add link
-        this.badFilterRules = [];
+        this.badFilterRules = {};
 
         // Filter that applies CSS rules
         // ABP element hiding rules: http://adguard.com/en/filterrules.html#hideRules
@@ -169,7 +169,7 @@
                     if (rule.whiteListRule) {
                         this.urlWhiteFilter.addRule(rule);
                     } else if (rule.isBadFilter()) {
-                        this.badFilterRules.push(rule.badFilter);
+                        this.badFilterRules[rule.badFilter] = true;
                     } else {
                         this.urlBlockingFilter.addRule(rule);
                     }
@@ -205,7 +205,7 @@
                     if (rule.whiteListRule) {
                         this.urlWhiteFilter.removeRule(rule);
                     } else if (rule.isBadFilter()) {
-                        adguard.utils.collections.remove(this.badFilterRules, rule.badFilter);
+                        delete this.badFilterRules[rule.badFilter];
                     } else {
                         this.urlBlockingFilter.removeRule(rule);
                     }
@@ -233,7 +233,6 @@
             result = result.concat(this.cssFilter.getRules());
             result = result.concat(this.scriptFilter.getRules());
             result = result.concat(this.cspFilter.getRules());
-            result = result.concat(this.badFilterRules);
 
             return result;
         },
@@ -296,7 +295,7 @@
             this.contentFilter.clearRules();
             this.urlBlockingCache.clearRequestCache();
             this.urlExceptionsCache.clearRequestCache();
-            this.badFilterRules = [];
+            this.badFilterRules = {};
         },
 
         /**
@@ -307,7 +306,7 @@
          */
         checkBadFilterExceptions: function (rule) {
             if (rule && rule instanceof adguard.rules.UrlFilterRule) {
-                if (adguard.utils.collections.contains(this.badFilterRules, rule.ruleText)) {
+                if (rule.ruleText in this.badFilterRules) {
                     // Removed with bad-filter rule
                     return null;
                 }
