@@ -202,10 +202,10 @@
                 if (rule.isCspRule()) {
                     this.cspFilter.removeRule(rule);
                 } else {
-                    if (rule.whiteListRule) {
-                        this.urlWhiteFilter.removeRule(rule);
-                    } else if (rule.isBadFilter()) {
+                    if (rule.isBadFilter()) {
                         delete this.badFilterRules[rule.badFilter];
+                    } else if (rule.whiteListRule) {
+                        this.urlWhiteFilter.removeRule(rule);
                     } else {
                         this.urlBlockingFilter.removeRule(rule);
                     }
