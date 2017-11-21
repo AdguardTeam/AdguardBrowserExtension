@@ -80,7 +80,7 @@
             }
             this.requestCache = Object.create(null);
             this.requestCacheSize = 0;
-        }
+        };
     };
 
     /**
@@ -97,6 +97,10 @@
         // Filter that applies whitelist rules
         // Exception rules: http://adguard.com/en/filterrules.html#exclusionRules
         this.urlWhiteFilter = new adguard.rules.UrlFilter();
+
+        // Bad-filter rules collection
+        // TODO: add link
+        this.badFilterRules = {};
 
         // Filter that applies CSS rules
         // ABP element hiding rules: http://adguard.com/en/filterrules.html#hideRules
@@ -157,11 +161,14 @@
                 adguard.console.error("FilterRule must not be null");
                 return;
             }
+
             if (rule instanceof adguard.rules.UrlFilterRule) {
                 if (rule.isCspRule()) {
                     this.cspFilter.addRule(rule);
                 } else {
-                    if (rule.whiteListRule) {
+                    if (rule.isBadFilter()) {
+                        this.badFilterRules[rule.badFilter] = rule;
+                    } else if (rule.whiteListRule) {
                         this.urlWhiteFilter.addRule(rule);
                     } else {
                         this.urlBlockingFilter.addRule(rule);
@@ -174,6 +181,7 @@
             } else if (rule instanceof adguard.rules.ContentFilterRule) {
                 this.contentFilter.addRule(rule);
             }
+
             this.rulesCount++;
             this.urlBlockingCache.clearRequestCache();
             this.urlExceptionsCache.clearRequestCache();
@@ -194,7 +202,9 @@
                 if (rule.isCspRule()) {
                     this.cspFilter.removeRule(rule);
                 } else {
-                    if (rule.whiteListRule) {
+                    if (rule.isBadFilter()) {
+                        delete this.badFilterRules[rule.badFilter];
+                    } else if (rule.whiteListRule) {
                         this.urlWhiteFilter.removeRule(rule);
                     } else {
                         this.urlBlockingFilter.removeRule(rule);
@@ -223,6 +233,10 @@
             result = result.concat(this.cssFilter.getRules());
             result = result.concat(this.scriptFilter.getRules());
             result = result.concat(this.cspFilter.getRules());
+
+            for (var badFilter in this.badFilterRules) {
+                result.push(this.badFilterRules[badFilter]);
+            }
 
             return result;
         },
@@ -285,6 +299,24 @@
             this.contentFilter.clearRules();
             this.urlBlockingCache.clearRequestCache();
             this.urlExceptionsCache.clearRequestCache();
+            this.badFilterRules = {};
+        },
+
+        /**
+         * Checks if the rule is in bad filter exceptions
+         *
+         * @param rule
+         * @returns {*}
+         */
+        _checkBadFilterExceptions: function (rule) {
+            if (rule && rule instanceof adguard.rules.UrlFilterRule) {
+                if (rule.ruleText in this.badFilterRules) {
+                    // Removed with bad-filter rule
+                    return null;
+                }
+            }
+
+            return rule;
         },
 
         /**
@@ -308,6 +340,7 @@
             }
 
             var rule = this._checkWhiteList(requestUrl, refHost, requestType, thirdParty);
+            rule = this._checkBadFilterExceptions(rule);
 
             this.urlExceptionsCache.saveResultToCache(requestUrl, rule, refHost, requestType);
             return rule;
@@ -335,6 +368,7 @@
             }
 
             var rule = this._findRuleForRequest(requestUrl, documentHost, requestType, thirdParty, documentWhitelistRule);
+            rule = this._checkBadFilterExceptions(rule);
 
             this.urlBlockingCache.saveResultToCache(requestUrl, rule, documentHost, requestType);
             return rule;
@@ -430,6 +464,7 @@
 
             // Checks white list for a rule for this RequestUrl. If something is found - returning it.
             var urlWhiteListRule = this._checkWhiteList(requestUrl, documentHost, requestType, thirdParty);
+            urlWhiteListRule = this._checkBadFilterExceptions(urlWhiteListRule);
 
             // If UrlBlock is set - than we should not use UrlBlockingFilter against this request.
             // Now check if document rule has $genericblock or $urlblock modifier

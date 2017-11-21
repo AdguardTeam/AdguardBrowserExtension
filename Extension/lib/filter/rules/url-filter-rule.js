@@ -731,6 +731,13 @@
     };
 
     /**
+     * If rule is bad-filter returns true
+     */
+    UrlFilterRule.prototype.isBadFilter = function () {
+        return this.badFilter != null;
+    };
+
+    /**
      * Loads rule options
      * @param options Options string
      * @private
@@ -819,6 +826,12 @@
                         }
                         this.replace = new ReplaceOption(replaceOption);
                     }
+                    break;
+                case UrlFilterRule.BADFILTER_OPTION:
+                    this.badFilter = this.ruleText
+                        .replace(UrlFilterRule.OPTIONS_DELIMITER + UrlFilterRule.BADFILTER_OPTION + api.FilterRule.COMA_DELIMITER, UrlFilterRule.OPTIONS_DELIMITER)
+                        .replace(api.FilterRule.COMA_DELIMITER + UrlFilterRule.BADFILTER_OPTION, '')
+                        .replace(UrlFilterRule.OPTIONS_DELIMITER + UrlFilterRule.BADFILTER_OPTION, '');
                     break;
                 default:
                     optionName = optionName.toUpperCase();
@@ -935,6 +948,7 @@
     UrlFilterRule.EMPTY_OPTION = "empty";
     UrlFilterRule.REPLACE_OPTION = "replace"; // Extension doesn't support replace rules, $replace option is here only for correctly parsing
     UrlFilterRule.CSP_OPTION = "csp";
+    UrlFilterRule.BADFILTER_OPTION = "badfilter";
 
     UrlFilterRule.contentTypes = {
 

@@ -628,3 +628,26 @@ QUnit.test('testReplaceToEmptyString', function (assert) {
     var output = rule.getReplace().apply(input);
     assert.equal(expected, output);
 });
+
+QUnit.test("BadFilter option", function (assert) {
+    var badFilterRule = new adguard.rules.UrlFilterRule("https:*_ad_$badfilter");
+
+    assert.ok(badFilterRule);
+    assert.ok(badFilterRule.isBadFilter());
+    assert.ok(badFilterRule.badFilter);
+    assert.equal(badFilterRule.badFilter,'https:*_ad_');
+
+    badFilterRule = new adguard.rules.UrlFilterRule("https:*_ad_$badfilter,image");
+
+    assert.ok(badFilterRule);
+    assert.ok(badFilterRule.isBadFilter());
+    assert.ok(badFilterRule.badFilter);
+    assert.equal(badFilterRule.badFilter,'https:*_ad_$image');
+
+    badFilterRule = new adguard.rules.UrlFilterRule("https:*_ad_$third-party,badfilter,image");
+
+    assert.ok(badFilterRule);
+    assert.ok(badFilterRule.isBadFilter());
+    assert.ok(badFilterRule.badFilter);
+    assert.equal(badFilterRule.badFilter,'https:*_ad_$third-party,image');
+});
