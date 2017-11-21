@@ -295,6 +295,43 @@ QUnit.test("BadFilter option", function (assert) {
 
 });
 
+QUnit.test("BadFilter option whitelist", function (assert) {
+
+    var url = "https://test.com/";
+    var referrer = "http://example.org";
+
+    var rule = new adguard.rules.UrlFilterRule("||test.com^");
+    var whitelist = new adguard.rules.UrlFilterRule("@@||test.com^");
+    var badFilterRule = new adguard.rules.UrlFilterRule("@@||test.com^$badfilter");
+
+    var requestFilter = new adguard.RequestFilter();
+
+    requestFilter.addRule(rule);
+
+    var result = requestFilter.findRuleForRequest(url, referrer, adguard.RequestTypes.SUBDOCUMENT);
+    assert.ok(result);
+    assert.equal(result.ruleText, rule.ruleText);
+
+    requestFilter.addRule(whitelist);
+
+    result = requestFilter.findWhiteListRule(url, referrer, adguard.RequestTypes.SUBDOCUMENT);
+    assert.ok(result);
+    assert.equal(result.ruleText, whitelist.ruleText);
+
+    result = requestFilter.findRuleForRequest(url, referrer, adguard.RequestTypes.SUBDOCUMENT);
+    assert.ok(result);
+    assert.equal(result.ruleText, whitelist.ruleText);
+
+    requestFilter.addRule(badFilterRule);
+
+    result = requestFilter.findWhiteListRule(url, referrer, adguard.RequestTypes.SUBDOCUMENT);
+    assert.notOk(result);
+
+    result = requestFilter.findRuleForRequest(url, referrer, adguard.RequestTypes.SUBDOCUMENT);
+    assert.ok(result);
+    assert.equal(result.ruleText, rule.ruleText);
+});
+
 QUnit.test("BadFilter multi-options", function (assert) {
 
     var rule = new adguard.rules.UrlFilterRule("||example.org^$object-subrequest");
