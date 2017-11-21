@@ -190,7 +190,8 @@ adguard.applicationUpdateService = (function (adguard) {
             });
         }
 
-        if (adguard.rulesStorageImpl.migrationRequired) {
+        if (adguard.rulesStorageImpl.isIndexedDB) {
+            // Switch implementation to indexedDB
             migrate();
         } else {
             // indexedDB initialization failed, doing nothing

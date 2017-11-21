@@ -153,12 +153,18 @@ adguard.rulesStorageImpl = (function (adguard, initialAPI) {
         };
     };
 
-    var api = {};
-    api.read = read;
-    api.write = write;
-    api.remove = remove;
-    api.init = init;
-    api.migrationRequired = true; // For data migration
+    var api = {
+        read: read,
+        write: write,
+        remove: remove,
+        init: init,
+        /**
+         * IndexedDB isn't initialized in the private mode.
+         * In this case we should switch implementation to the browser.storage (see init method)
+         * This flag helps us to understand which implementation is used now (see update-service.js for example)
+         */
+        isIndexedDB: true
+    };
 
     return api;
 
