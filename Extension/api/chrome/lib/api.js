@@ -200,9 +200,11 @@
         // Force apply all configuration fields
         configuration.force = true;
 
-        adguard.localStorage.init(function () {
-            adguard.filters.start({}, function () {
-                configure(configuration, callback);
+        adguard.rulesStorage.init(function () {
+            adguard.localStorage.init(function () {
+                adguard.filters.start({}, function () {
+                    configure(configuration, callback);
+                });
             });
         });
     };

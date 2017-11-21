@@ -54,6 +54,7 @@ adguard.initialize = function () {
         });
     }
 
-    adguard.localStorage.init(onLocalStorageLoaded);
-
+    adguard.rulesStorage.init(function () {
+        adguard.localStorage.init(onLocalStorageLoaded);
+    });
 };
