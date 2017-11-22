@@ -248,7 +248,12 @@ var browser = window.browser || chrome;
          * Extension UI locale
          */
         getLocale: function () {
-            return browser.i18n.getUILanguage();
+            /**
+             * Always use 2-letter language code
+             * getUILanguage returns full locale (e.g. ru_RU), but Adguard filters metadata contains language code
+             * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/889
+             */
+            return browser.i18n.getUILanguage().substring(0, 2);
         }
     };
 

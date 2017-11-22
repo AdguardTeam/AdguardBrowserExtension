@@ -79,7 +79,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
     var extensionStoreLink = (function () {
 
-        var urlBuilder = ["http://adguard.com/"];
+        var urlBuilder = ["https://adguard.com/"];
 
         if (adguard.app.getLocale() === "ru") {
             urlBuilder.push("ru");
