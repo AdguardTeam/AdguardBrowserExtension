@@ -20,7 +20,7 @@ QUnit.test("testContentFilterRule", function (assert) {
     assert.ok(rule.getRestrictedDomains().indexOf("nigma.ru") >= 0);
     assert.ok(rule.getPermittedDomains().indexOf("google.com") >= 0);
     assert.equal("teas\"ernet", rule.tagContentFilter);
-    assert.equal("div[id*=ad_text]", rule.selector);
+    assert.equal("div[id*=\"ad_text\"]", rule.selector);
     assert.equal(500, rule.maxLength);
     assert.equal(50, rule.minLength);
     assert.equal("^[\\s\\S]*\\.adriver\\.[\\s\\S]*$", rule.wildcard.regexp.source);
