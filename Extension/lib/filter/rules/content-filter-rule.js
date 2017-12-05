@@ -194,9 +194,9 @@
                 default:
                     selector.push('[');
                     selector.push(attributeName);
-                    selector.push('*=');
+                    selector.push('*="');
                     selector.push(attributeValue);
-                    selector.push(']');
+                    selector.push('"]');
                     break;
             }
 
@@ -207,6 +207,9 @@
         }
 
         this.selector = selector.join('');
+
+        // Validates selector immediately
+        window.document.querySelectorAll(this.selector);
     };
 
     ContentFilterRule.prototype = Object.create(api.FilterRule.prototype);

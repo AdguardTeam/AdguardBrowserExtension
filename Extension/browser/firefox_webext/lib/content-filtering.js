@@ -72,7 +72,11 @@ adguard.contentFiltering = (function (adguard) {
 
             contentFilter.getContent()
                 .then(function (content) {
-                    content = callback(content);
+                    try {
+                        content = callback(content);
+                    } catch (ex) {
+                        adguard.console.error('Error while applying content filter to {0}. Error: {1}', requestUrl, ex);
+                    }
                     contentFilter.write(content);
                 }, function (error) {
                     adguard.console.error('An error has occurred in content filter for request {0} to {1} - {2}. Error: {3}', requestId, requestUrl, requestType, error);
@@ -137,6 +141,14 @@ adguard.contentFiltering = (function (adguard) {
         }
         return mask;
     })();
+
+    function isUtf8Charset(contentType) {
+        if (!contentType) {
+            return true;
+        }
+        return contentType.toLowerCase().indexOf('utf-8') >= 0;
+    }
+
     /**
      * Contains collection of accepted content types for replace rules
      */
@@ -208,6 +220,11 @@ adguard.contentFiltering = (function (adguard) {
 
         if (method !== 'GET' && method !== 'POST') {
             adguard.console.debug('Skipping request to {0} - {1} with method {2}', requestUrl, requestType, method);
+            return;
+        }
+
+        if (!isUtf8Charset(contentType)) {
+            adguard.console.debug('Skipping request to {0} - {1} with Content-Type {2}', requestUrl, requestType, contentType);
             return;
         }
 
