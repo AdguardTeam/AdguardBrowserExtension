@@ -77,6 +77,68 @@ adguard.filteringLog = (function (adguard) {
     }
 
     /**
+     * Writes to filtering event some useful properties from the request rule
+     * @param filteringEvent
+     * @param requestRule
+     */
+    function addRuleToFilteringEvent(filteringEvent, requestRule) {
+        filteringEvent.requestRule = Object.create(null);
+        filteringEvent.requestRule.filterId = requestRule.filterId;
+        filteringEvent.requestRule.ruleText = requestRule.ruleText;
+        if (requestRule instanceof adguard.rules.ContentFilterRule) {
+            filteringEvent.requestRule.contentRule = true;
+        } else if (requestRule instanceof adguard.rules.CssFilterRule) {
+            filteringEvent.requestRule.cssRule = true;
+        } else if (requestRule instanceof adguard.rules.UrlFilterRule) {
+            filteringEvent.requestRule.whiteListRule = requestRule.whiteListRule;
+            filteringEvent.requestRule.cspRule = requestRule.isCspRule();
+            filteringEvent.requestRule.cspDirective = requestRule.cspDirective;
+        }
+    }
+
+    /**
+     * Serialize HTML element
+     * @param element
+     */
+    function elementToString(element) {
+        var s = [];
+        s.push('<');
+        s.push(element.localName);
+        var attributes = element.attributes;
+        for (var i = 0; i < attributes.length; i++) {
+            var attr = attributes[i];
+            s.push(' ');
+            s.push(attr.name);
+            s.push('="');
+            s.push(attr.value);
+            s.push('"');
+        }
+        s.push('>');
+        return s.join('');
+    }
+
+    /**
+     * Adds filtering event to log
+     * @param tabInfo Tab
+     * @param filteringEvent Event to add
+     */
+    function pushFilteringEvent(tabInfo, filteringEvent) {
+
+        if (!tabInfo.filteringEvents) {
+            tabInfo.filteringEvents = [];
+        }
+
+        tabInfo.filteringEvents.push(filteringEvent);
+
+        if (tabInfo.filteringEvents.length > REQUESTS_SIZE_PER_TAB) {
+            //don't remove first item, cause it's request to main frame
+            tabInfo.filteringEvents.splice(1, 1);
+        }
+
+        adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_ADDED, tabInfo, filteringEvent);
+    }
+
+    /**
      * Get filtering info for tab
      * @param tabId
      */
@@ -91,12 +153,9 @@ adguard.filteringLog = (function (adguard) {
      * @param frameUrl
      * @param requestType
      * @param requestRule
+     * @param requestId
      */
-    var addEvent = function (tab, requestUrl, frameUrl, requestType, requestRule) {
-
-        if (requestType === adguard.RequestTypes.DOCUMENT) {
-            clearEventsByTabId(tab.tabId);
-        }
+    var addHttpRequestEvent = function (tab, requestUrl, frameUrl, requestType, requestRule, requestId) {
 
         if (openedFilteringLogsPage === 0) {
             return;
@@ -107,39 +166,88 @@ adguard.filteringLog = (function (adguard) {
             return;
         }
 
-        if (!tabInfo.filteringEvents) {
-            tabInfo.filteringEvents = [];
-        }
-
         var requestDomain = adguard.utils.url.getDomainName(requestUrl);
         var frameDomain = adguard.utils.url.getDomainName(frameUrl);
 
         var filteringEvent = {
+            requestId: requestId,
             requestUrl: requestUrl,
             requestDomain: requestDomain,
             frameUrl: frameUrl,
             frameDomain: frameDomain,
             requestType: requestType,
-            requestThirdParty: adguard.utils.url.isThirdPartyRequest(requestUrl, frameUrl),
-            requestRule: requestRule
+            requestThirdParty: adguard.utils.url.isThirdPartyRequest(requestUrl, frameUrl)
         };
         if (requestRule) {
             // Copy useful properties
-            filteringEvent.requestRule = Object.create(null);
-            filteringEvent.requestRule.filterId = requestRule.filterId;
-            filteringEvent.requestRule.ruleText = requestRule.ruleText;
-            filteringEvent.requestRule.whiteListRule = requestRule.whiteListRule;
-            filteringEvent.requestRule.cspRule = requestRule.isCspRule();
-            filteringEvent.requestRule.cspDirective = requestRule.cspDirective;
-        }
-        tabInfo.filteringEvents.push(filteringEvent);
-
-        if (tabInfo.filteringEvents.length > REQUESTS_SIZE_PER_TAB) {
-            //don't remove first item, cause it's request to main frame
-            tabInfo.filteringEvents.splice(1, 1);
+            addRuleToFilteringEvent(filteringEvent, requestRule);
         }
 
-        adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_ADDED, tabInfo, filteringEvent);
+        pushFilteringEvent(tabInfo, filteringEvent);
+    };
+
+    /**
+     * Add event to log with the cosmetic rule
+     * @param tab
+     * @param element
+     * @param frameUrl
+     * @param requestType
+     * @param requestRule
+     */
+    var addCosmeticEvent = function (tab, element, frameUrl, requestType, requestRule) {
+
+        if (openedFilteringLogsPage === 0) {
+            return;
+        }
+
+        var tabInfo = tabsInfoMap[tab.tabId];
+        if (!tabInfo) {
+            return;
+        }
+
+        var frameDomain = adguard.utils.url.getDomainName(frameUrl);
+
+        var filteringEvent = {
+            requestUrl: elementToString(element), // TODO: change naming
+            frameUrl: frameUrl,
+            frameDomain: frameDomain,
+            requestType: requestType
+        };
+        if (requestRule) {
+            // Copy useful properties
+            addRuleToFilteringEvent(filteringEvent, requestRule);
+        }
+
+        pushFilteringEvent(tabInfo, filteringEvent);
+    };
+
+    /**
+     * Some rules are fired after the event was added (e.g. for replace rule)
+     * We should find event for this rule and update in log UI
+     * @param tab
+     * @param requestRule
+     * @param requestId
+     */
+    var bindRuleToHttpRequestEvent = function (tab, requestRule, requestId) {
+
+        if (openedFilteringLogsPage === 0) {
+            return;
+        }
+
+        var tabInfo = tabsInfoMap[tab.tabId];
+        if (!tabInfo) {
+            return;
+        }
+
+        var events = tabInfo.filteringEvents;
+        for (var i = 0; i < events.length; i++) {
+            var event = events[i];
+            if (event.requestId === requestId) {
+                addRuleToFilteringEvent(event, requestRule);
+                adguard.listeners.notifyListeners(adguard.listeners.LOG_EVENT_UPDATED, tabInfo, event);
+                break;
+            }
+        }
     };
 
     /**
@@ -225,7 +333,9 @@ adguard.filteringLog = (function (adguard) {
         synchronizeOpenTabs: synchronizeOpenTabs,
 
         getFilteringInfoByTabId: getFilteringInfoByTabId,
-        addEvent: addEvent,
+        addHttpRequestEvent: addHttpRequestEvent,
+        bindRuleToHttpRequestEvent: bindRuleToHttpRequestEvent,
+        addCosmeticEvent: addCosmeticEvent,
         clearEventsByTabId: clearEventsByTabId,
 
         onOpenFilteringLogPage: onOpenFilteringLogPage,

@@ -322,18 +322,20 @@ adguard.webRequestService = (function (adguard) {
      * @param referrerUrl Referrer URL
      * @param requestType Request type
      * @param responseHeaders Response headers
+     * @param requestId Request identifier
      */
-    var processRequestResponse = function (tab, requestUrl, referrerUrl, requestType, responseHeaders) {
+    var processRequestResponse = function (tab, requestUrl, referrerUrl, requestType, responseHeaders, requestId) {
 
         if (requestType === adguard.RequestTypes.DOCUMENT) {
             // Check headers to detect Adguard application
-
             if (adguard.integration.isSupported() && // Integration module may be missing
                 !adguard.prefs.mobile &&  // Mobile Firefox doesn't support integration mode
                 !adguard.utils.browser.isEdgeBrowser()) { // TODO[Edge]: Integration mode is not fully functional in Edge (cannot redefine Referer header yet and Edge doesn't intercept requests from background page)
 
                 adguard.integration.checkHeaders(tab, responseHeaders, requestUrl);
             }
+            // Clear previous events
+            adguard.filteringLog.clearEventsByTabId(tab.tabId);
         }
 
         var requestRule = null;
@@ -356,7 +358,7 @@ adguard.webRequestService = (function (adguard) {
 
         // add event to filtering log
         if (appendLogEvent) {
-            adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
+            adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, requestType, requestRule, requestId);
         }
     };
 
@@ -368,8 +370,9 @@ adguard.webRequestService = (function (adguard) {
      * @param referrerUrl   referrer url
      * @param requestType   one of RequestType
      * @param requestRule   rule
+     * @param requestId     request identifier
      */
-    var postProcessRequest = function (tab, requestUrl, referrerUrl, requestType, requestRule) {
+    var postProcessRequest = function (tab, requestUrl, referrerUrl, requestType, requestRule, requestId) {
 
         if (adguard.frames.isTabAdguardDetected(tab)) {
             //do nothing, log event will be added on response
@@ -380,6 +383,7 @@ adguard.webRequestService = (function (adguard) {
 
             var isRequestBlockingRule = isRequestBlockedByRule(requestRule);
             var isPopupBlockingRule = isPopupBlockedByRule(requestRule);
+            var isReplaceRule = !!requestRule.getReplace();
 
             // Url blocking rules are not applicable to the main_frame
             if (isRequestBlockingRule && requestType === adguard.RequestTypes.DOCUMENT) {
@@ -387,6 +391,10 @@ adguard.webRequestService = (function (adguard) {
             }
             // Popup blocking rules are applicable to the main_frame only
             if (isPopupBlockingRule && requestType !== adguard.RequestTypes.DOCUMENT) {
+                requestRule = null;
+            }
+            // Replace rules are processed in content-filtering.js
+            if (isReplaceRule) {
                 requestRule = null;
             }
 
@@ -406,7 +414,7 @@ adguard.webRequestService = (function (adguard) {
 
         // main_frame record will be added onResponseReceived event
         if (requestType !== adguard.RequestTypes.DOCUMENT) {
-            adguard.filteringLog.addEvent(tab, requestUrl, referrerUrl, requestType, requestRule);
+            adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, referrerUrl, requestType, requestRule, requestId);
         }
 
         // Record rule hit

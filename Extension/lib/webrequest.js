@@ -46,6 +46,7 @@
     function onBeforeRequest(requestDetails) {
 
         var tab = requestDetails.tab;
+        var requestId = requestDetails.requestId;
         var requestUrl = requestDetails.requestUrl;
         var requestType = requestDetails.requestType;
 
@@ -54,6 +55,9 @@
         }
 
         if (requestType === adguard.RequestTypes.DOCUMENT) {
+
+            adguard.filteringLog.clearEventsByTabId(tab.tabId);
+
             // Reset tab button state
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_TAB_BUTTON_STATE, tab, true);
 
@@ -63,7 +67,7 @@
              * Unfortunately, we can't do anything in this case and just must remember about it
              */
             var tabRequestRule = adguard.frames.getFrameWhiteListRule(tab);
-            adguard.filteringLog.addEvent(tab, requestUrl, requestUrl, requestType, tabRequestRule);
+            adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, requestUrl, requestType, tabRequestRule, requestId);
 
             return;
         }
@@ -76,7 +80,7 @@
 
         var requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
 
-        adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
+        adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule, requestId);
 
         return adguard.webRequestService.getBlockedResponseByRule(requestRule, requestType);
     }
@@ -137,7 +141,7 @@
         var statusCode = requestDetails.statusCode;
         var method = requestDetails.method;
 
-        adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
+        adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders, requestId);
 
         // Safebrowsing check
         if (requestType === adguard.RequestTypes.DOCUMENT) {
@@ -219,7 +223,7 @@
         }
         if (legacyCspRule) {
             adguard.webRequestService.recordRuleHit(tab, legacyCspRule, frameUrl);
-            adguard.filteringLog.addEvent(tab, 'content-security-policy-check', frameUrl, adguard.RequestTypes.CSP, legacyCspRule);
+            adguard.filteringLog.addHttpRequestEvent(tab, 'content-security-policy-check', frameUrl, adguard.RequestTypes.CSP, legacyCspRule);
         }
 
         /**
@@ -238,7 +242,7 @@
                     });
                 }
                 adguard.webRequestService.recordRuleHit(tab, rule, requestUrl);
-                adguard.filteringLog.addEvent(tab, requestUrl, frameUrl, adguard.RequestTypes.CSP, rule);
+                adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, frameUrl, adguard.RequestTypes.CSP, rule);
             }
         }
 

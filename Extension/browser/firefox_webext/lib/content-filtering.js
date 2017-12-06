@@ -200,6 +200,39 @@ adguard.contentFiltering = (function (adguard) {
             requestType === adguard.RequestTypes.SUBDOCUMENT;
     };
 
+
+    /**
+     * Applies content rules to the document.
+     * If document wasn't modified then method will return null
+     * @param tab Tab
+     * @param frameUrl Frame URL
+     * @param requestType Request type
+     * @param doc Document
+     * @param rules Content rules
+     * @returns Matched elements
+     */
+    function applyContentRules(tab, frameUrl, requestType, doc, rules) {
+
+        var deleted = [];
+
+        for (var i = 0; i < rules.length; i++) {
+            var rule = rules[i];
+            var elements = rule.getMatchedElements(doc);
+            if (elements) {
+                for (var j = 0; j < elements.length; j++) {
+                    var element = elements[j];
+                    if (element.parentNode && deleted.indexOf(element) < 0) {
+                        element.parentNode.removeChild(element);
+                        adguard.filteringLog.addCosmeticEvent(tab, element, frameUrl, requestType, rule);
+                        deleted.push(element);
+                    }
+                }
+            }
+        }
+
+        return deleted.length > 0 ? doc.documentElement.outerHTML : null;
+    }
+
     /**
      * Applies content and replace rules to the request
      * @param tab Tab
@@ -254,15 +287,9 @@ adguard.contentFiltering = (function (adguard) {
             if (contentRules && contentRules.length > 0) {
                 var doc = documentParser.parse(content);
                 if (doc !== null) {
-                    var elements = adguard.requestFilter.getMatchedElementsForContentRules(doc, contentRules);
-                    if (elements) {
-                        for (var i = 0; i < elements.length; i++) {
-                            var element = elements[i];
-                            if (element.parentNode) {
-                                element.parentNode.removeChild(element);
-                            }
-                        }
-                        content = doc.documentElement.outerHTML;
+                    var modified = applyContentRules(tab, referrerUrl, requestType, doc, contentRules);
+                    if (modified !== null) {
+                        content = modified;
                     }
                 }
             }
@@ -274,6 +301,8 @@ adguard.contentFiltering = (function (adguard) {
 
             if (replaceRule) {
                 content = replaceRule.getReplace().apply(content);
+                adguard.filteringLog.bindRuleToHttpRequestEvent(tab, requestRule, requestId);
+                adguard.webRequestService.recordRuleHit(tab, replaceRule, requestUrl);
             }
 
             return content;
