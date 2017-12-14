@@ -1,19 +1,39 @@
-# AdGuard Browser Extension
-[![Build Status](https://travis-ci.org/AdguardTeam/AdguardBrowserExtension.svg?branch=master)](https://travis-ci.org/AdguardTeam/AdguardBrowserExtension)
+# AdGuard Browser Extension [![Build Status](https://travis-ci.org/AdguardTeam/AdguardBrowserExtension.svg?branch=master)](https://travis-ci.org/AdguardTeam/AdguardBrowserExtension)
+> ### Disclaimer
+> * AdGuard Browser Extension is free. We believe that all free products should be open source, and AdGuard Browser Extension is not an exception. Its code can be found in this repository.
+> * Privacy policy: https://adguard.com/privacy/browser-extension.html (Briefly: AdGuard sends only necessary, limited information, e.g. information required for filter updates).
 
-## What is AdGuard?
+AdGuard is a fast and lightweight ad blocking browser extension that effectively blocks all types of ads on all web pages. Unlike its standalone counterparts (AG for Windows, Mac), browser extension is completely free and open source.
 
-AdGuard is a fast and lightweight ad blocking extension that effectively blocks all types of ads on all web pages! Unlike it's standalone counterparts (AG for Windows, Mac), browser extension is completely free and open source.
+To get more information and to download AdGuard Browser Extension, visit our website [https://adguard.com/](https://adguard.com/adguard-browser-extension/overview.html).
 
-## How to build
+### How to report an issue?
 
-### Requirements
+GitHub can be used to report a bug or to submit a feature request. To do so, go to [this page](https://github.com/AdguardTeam/AdguardBrowserExtension/issues) and click the *New issue* button.
+
+>**Note:** for the filter-related issues (missed ads, false positives etc.) use the [dedicated repository](https://github.com/AdguardTeam/AdguardFilters). 
+
+### Our plans
+
+To see the 'big picture', to watch current progress and to get an idea of approximate dates for upcoming AdGuard Browser Extension releases, see this page: https://github.com/AdguardTeam/AdguardBrowserExtension/milestones
+
+### Releases
+
+You can find all AdGuard Browser Extension releases here: https://github.com/AdguardTeam/AdguardBrowserExtension/releases
+
+### How to become a beta tester?
+
+You can get a beta version of AdGuard Browser Extension for any browser. All necessary information on this topic can be found in our [Knowledgebase article](https://kb.adguard.com/general/adguard-beta-testing-program#browser-extensions). 
+
+### How to build
+
+#### Requirements
 
 - [JDK 1.7+](http://www.oracle.com/technetwork/java/javaee/downloads/index.html)
-- [Apache Maven 2+](http://maven.apache.org/download.cgi)
+- [Apache Maven 2+](https://maven.apache.org/download.cgi)
 - Set JAVA_HOME and JDK_HOME environment variables
 
-### Building the dev version
+#### Building the dev version
 
 Run the following command in the Compiler directory:
 ```
@@ -28,23 +48,15 @@ This will create a Build directory with unpacked extensions for all browsers:
   Build/safari-$currentVersion.safariextension
 ```
 
-### Building the beta and release versions
+#### Building the beta and release versions
 ```
   ./build.sh beta
   ./build.sh release
 ```
 You will need to put certificate.pem file to the Compiler directory. This build will create unpacked extensions and then pack them (crx for Chrome, xpi for Firefox).
 
-## How to run tests
+### How to run tests
 ```
   cd tests 
   ./run.sh
 ```
-
-## How to download a beta version of the extension?
-
-All information related to AdGuard beta testing is collected in this [blog article](https://blog.adguard.com/en/adguard-beta-test/). 
-
-## Releases
-
-You can find all AdGuard browser extension releases here: https://github.com/AdguardTeam/AdguardBrowserExtension/releases
