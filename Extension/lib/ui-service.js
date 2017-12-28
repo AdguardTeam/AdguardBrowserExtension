@@ -105,7 +105,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         return urlBuilder.join("");
     })();
 
-    var THANKYOU_PAGE_URL = 'https://adblock.adguard.com/v1/thankyou.html';
+    var THANKYOU_PAGE_URL = 'https://welcome.adguard.com/v2/thankyou.html';
 
     // Assistant
 
@@ -544,6 +544,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     var openThankYouPage = function () {
 
         var params = adguard.utils.browser.getExtensionParams();
+        params.push('_locale=' + encodeURIComponent(adguard.app.getLocale()));
         var thankyouUrl = THANKYOU_PAGE_URL + '?' + params.join('&');
 
         var filtersDownloadUrl = getPageUrl('filter-download.html');
