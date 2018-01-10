@@ -65,14 +65,14 @@
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/880
      */
     var getContentPage = function () {
-        if (!window.contentPage) {
-            window.contentPage = {
+        if (typeof contentPage === 'undefined') {
+            contentPage = {
                 sendMessage: adguardContent.runtimeImpl.sendMessage,
                 onMessage: adguardContent.runtimeImpl.onMessage
             };
         }
 
-        return window.contentPage;
+        return contentPage;
     };
 
     /**
