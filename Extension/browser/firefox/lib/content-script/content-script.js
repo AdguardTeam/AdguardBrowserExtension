@@ -87,7 +87,3 @@ var i18n = (function () { // jshint ignore:line
     };
 
 })();
-
-// Backward compatibility with preload.js
-adguardContent.i18n = adguardContent.i18n || i18n;
-adguardContent.runtimeImpl = adguardContent.runtimeImpl || contentPage;
