@@ -65,7 +65,7 @@
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/880
      */
     var getContentPage = function () {
-        if (!contentPage) {
+        if (typeof contentPage === 'undefined') {
             contentPage = {
                 sendMessage: adguardContent.runtimeImpl.sendMessage,
                 onMessage: adguardContent.runtimeImpl.onMessage
