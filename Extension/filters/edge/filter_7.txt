@@ -1,8 +1,8 @@
-! Checksum: qVpc1A8KqpmMw44OrUhh9Q
+! Checksum: XZaOxnfsrjPmyLA59rlCag
 ! Title: Japanese filter
 ! Description: Adguard Japanese filter. Filter that enables blocking of ads on websites in Japanese.
-! Version: 1.0.93.16
-! TimeUpdated: 2017-12-11T13:46:52.536+04:00
+! Version: 1.0.93.26
+! TimeUpdated: 2018-01-10T06:00:55.296+04:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#japanese
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -28,6 +28,8 @@
 !
 ! Section contains list of advertising networks
 !
+||ad.ad-arata.com^$third-party
+||trafficjp.com^$third-party
 |http://www*.a8.net/$third-party
 ||10clicks.com^$third-party
 ||12freeweb.com/img/cmimg.jpg
@@ -195,11 +197,47 @@
 !
 ! These rules are against anti-adblock scripts
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/9125
+socom.yokohama#@#.an-advert-banner
+socom.yokohama#@##adsense
+socom.yokohama#@#.an-sponsored
+! https://github.com/AdguardTeam/AdguardFilters/issues/9097
+! https://github.com/AdguardTeam/AdguardFilters/issues/9094
+! https://github.com/AdguardTeam/AdguardFilters/issues/9093
+@@||eikaiwamastery.blogspot.jp^$generichide
+! https://github.com/AdguardTeam/AdguardFilters/issues/9092
+footballnews.jp##.ads
+! https://github.com/AdguardTeam/AdguardFilters/issues/9090
+! https://github.com/AdguardTeam/AdguardFilters/issues/9085
+! https://github.com/AdguardTeam/AdguardFilters/issues/9083
+! https://github.com/AdguardTeam/AdguardFilters/issues/9082
+nasubiblog.com,kyukyoku-matome.com##.widget_pc_ad
+! https://github.com/AdguardTeam/AdguardFilters/issues/9091
+wakudan.seesaa.net#%#AG_abortInlineScript(/google_ad_client/, 'document.addEventListener');
+! https://github.com/AdguardTeam/AdguardFilters/issues/9084
+omutulove.seesaa.net,omutulove.blog.fc2.com#%#AG_abortInlineScript(/google_ad_client/, 'document.addEventListener');
+! https://github.com/AdguardTeam/AdguardFilters/issues/9079
+akb48gnittimatome.com#%#AG_abortInlineScript(/google_ad_client/, 'document.addEventListener');
+! https://github.com/AdguardTeam/AdguardFilters/issues/9081
+kamikiyuki.hatenablog.com#%#AG_abortInlineScript(/google_ad_client/, 'document.addEventListener');
+! https://github.com/AdguardTeam/AdguardFilters/issues/9080
+halchim.jp#%#AG_abortInlineScript(/google_ad_client/, 'document.addEventListener');
+! https://github.com/AdguardTeam/AdguardFilters/issues/9078
+gtoys.blog48.fc2.com#%#AG_abortInlineScript(/google_ad_client/, 'document.addEventListener');
+! https://github.com/AdguardTeam/AdguardFilters/issues/9068
+@@||mushinavi.com^$generichide
+! https://github.com/AdguardTeam/AdguardFilters/issues/9057
+off-soft.net#@#.adsbygoogle
+! https://github.com/AdguardTeam/AdguardFilters/issues/9055
+nazolog.com#%#(function(b){Object.defineProperty(Element.prototype,"innerHTML",{get:function(){return b.get.call(this)},set:function(a){/^(?:<([abisuq]) id="[^"]*"><\/\1>)*$/.test(a)||b.set.call(this,a)},enumerable:!0,configurable:!0})})(Object.getOwnPropertyDescriptor(Element.prototype,"innerHTML"));
+! https://github.com/AdguardTeam/AdguardFilters/issues/9050
+anipo.jp#@#.adbanner
 !---------------------------------------------------------------------------!
 !-------------- Extended CSS rules -----------------------------------------!
 !---------------------------------------------------------------------------!
 !
 ! Extended CSS rules
+repeat-drama.info##.side_inner > .box:contains(スポンサーリンク)
 !---------------------------------------------------------------------------!
 !-------------- General element hiding rules -------------------------------!
 !---------------------------------------------------------------------------!
@@ -376,6 +414,16 @@ _ds_adtag_
 !
 ! Section contains rules for specific websites
 !
+repeat-drama.info##.ad
+mukulog.com##.theContentWrap-ccc > .head-cons2-pc
+mukulog.com##div[id^="side_ad"]
+kyukyoku-matome.com###list > .widgets
+kyukyoku-matome.com###sidebar #pc_text-5
+youflix.is###detail_main > .content_vlist[style*="height: 100%; overflow:hidden;"]
+youflix.is###detail_side > div[style*="width:630px; margin:10px auto; overflow: hidden;"] + script + .content_vlist
+youflix.is##.movie-in-ad
+youflix.is##.over_videoAd
+youflix.is##.content_vlist .content_vlist[style^="height:305px; overflow:hidden;"]
 avgle.com##div[style^="width:100%; height: 90px;"]
 ||avgle.com/templates/frontend/videojs-*.js
 ||avgle.com/images/av/*.mp4
@@ -685,12 +733,18 @@ yahoo.co.jp##ul[class^="sponsor"]
 ||yjaxc.yahoo.co.jp^
 ||yomiuri.co.jp/ad/
 ||zenback.jp^*/tracking.html
+!
+!
+! https://github.com/AdguardTeam/AdguardFilters/issues/9091
+! https://github.com/AdguardTeam/AdguardFilters/issues/9079
+! https://github.com/AdguardTeam/AdguardFilters/issues/9078
 !---------------------------------------------------------------------------!
 !------ White list. Fixing filtration errors (false-positive)---------------!
 !---------------------------------------------------------------------------!
 !
 ! White list. Fixing filtration errors(false-positive)
 !
+publicdomainq.net#@#.adsbygoogle
 @@/weblog/*$domain=mplus-fonts.sourceforge.jp
 @@||ad.adlantis.jp/ad/load_ad?zid=FM9TTM6yoVDcOMoJFB32bQ%3D%3D$domain=labaq.com
 @@||ad.adlantis.jp/ad/show?s=201&zid=FM9TTM6yoVDcOMoJFB32bQ%3D%3D$domain=labaq.com
