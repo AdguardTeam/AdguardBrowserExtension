@@ -29,6 +29,8 @@ adguard.initialize = function () {
             popup: adguard.getURL('pages/popup.html')
         });
 
+        adguard.whitelist.init();
+
         /**
          * Start application
          */
