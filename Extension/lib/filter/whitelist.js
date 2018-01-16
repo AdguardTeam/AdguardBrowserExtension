@@ -325,8 +325,22 @@ adguard.whitelist = (function (adguard) {
         return getWhiteListFilter().getRules();
     };
 
+    /**
+     * Initializes whitelist filter
+     */
+    var init = function () {
+        /**
+         * Access to whitelist/blacklist domains before the proper initialization of localStorage leads to wrong caching of its values
+         * To prevent it we should clear cached values
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/933
+         */
+        adguard.lazyGetClear(whiteListDomainsHolder, 'domains');
+        adguard.lazyGetClear(blockListDomainsHolder, 'domains');
+    };
+
     return {
 
+        init: init,
         getRules: getRules,
         getWhiteListDomains: getWhiteListDomains,
 
