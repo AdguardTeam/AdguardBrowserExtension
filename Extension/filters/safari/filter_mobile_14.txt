@@ -1,8 +1,8 @@
-! Checksum: QMZtUR5ua9tXS9KSh9MsGg
+! Checksum: FUofTUkv+f19TwZv/ZMuKg
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on webpages including cookie notices third-party widgets and in-page popups.
-! Version: 1.0.24.56
-! TimeUpdated: 2018-01-16T17:01:35.218+04:00
+! Version: 1.0.24.73
+! TimeUpdated: 2018-01-18T20:01:25.824+04:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -11,6 +11,9 @@
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
 #%#var AG_abortInlineScript=function(d,e,f){var c;if("currentScript"in document)var b=function(){return document.currentScript};else b=function(){var a=document.getElementsByTagName("script");return a[a.length-1]},window.addEventListener("DOMContentLoaded",function(){b=function(){return null}});AG_defineProperty(e,{beforeGet:function(){var a=b();if(a&&a!==c&&(c=a,""===a.src&&d.test(a.textContent)))throw setTimeout(function(){console.warn("AdGuard aborted an execution of an inline script")}),null;}},f)};
 #%#var AG_defineProperty=function(){var k,l=Object.defineProperty;if("function"==typeof WeakMap)k=WeakMap;else{var m=0,n=function(){this.a=(m+=Math.random()).toString()};n.prototype.set=function(a,b){var c=a[this.a];c&&c[0]===a?c[1]=b:l(a,this.a,{value:[a,b],writable:!0});return this};n.prototype.get=function(a){var b;return(b=a[this.a])&&b[0]===a?b[1]:void 0};n.prototype.has=function(a){var b=a[this.a];return b?b[0]===a:!1};k=n}function r(a){this.b=a;this.h=Object.create(null)}function t(a,b,c,d){this.g=a;this.i=b;this.c=c;this.f=d}function u(){this.a=new k}function v(a,b,c){var d=b.i,e=b.c,f=new r(e.b),g;for(g in e.h)v(a,e.h[g],f);d=new t(c,d,f,b.f);c.h[d.i]=d;"undefined"!==typeof c.b&&(e=w(c.b,d.i),d.a=e,f=x(d.f)||y(a,d),!e||e.configurable?(l(c.b,d.i,f),e&&z(e)&&(A(c.b,f,e.value),B(a,e.value,b.c))):B(a,c.b[d.i],b.c))}function y(a,b){return{get:function(){var c=b.f;c&&c.beforeGet&&c.beforeGet.call(this,b.g.b);a:if(c=b.a)c=z(c)?c.value:c.get?c.get.call(this):void 0;else{c=b.g.b;if(b.i in c&&(c=C(c),null!==c)){var d=D.call(c,b.i);c=d?d.call(this):c[b.i];break a}c=void 0}this===b.g.b&&B(a,c,b.c);return c},set:function(c){if(this!==b.g.b)c=E(b,c,this);else{b.f&&b.f.beforeSet&&(c=b.f.beforeSet.call(this,c,this));var d=b.a;d&&z(d)&&d.value===c?c=!0:(d=E(b,c,this),F(c)&&(c=G(a,c),H(a,c,b.c)),c=d)}return c},enumerable:b.a?b.a.enumerable:!0}}function H(a,b,c){for(var d in c.h){var e=c.h[d];if(b.h[d]){var f=a,g=b.h[d];!e.f||g.f||"undefined"===typeof g.g.b||g.a||(g.a=x(e.f));g.c&&e.c&&g.c!==e.c&&H(f,g.c,e.c)}else v(a,e,b)}}function B(a,b,c){F(b)&&(b=G(a,b),H(a,b,c))}function A(a,b,c){return z(b)?b.writable?(b.value=c,!0):!1:b.set?b.set.call(a,c):!1}function E(a,b,c){var d=a.a;if(!d){d=C(a.g.b);if(null!==d&&(d=I.call(d,a.i)))return d.call(c,b);if(!J(a.g.b))return!1;a.a={value:b,configurable:!0,writable:!0,enumerable:!0};return!0}return A(c,d,b)}function z(a){return"undefined"!==typeof a.writable}function x(a){if(a){for(var b={},c=K,d=!1;c--;){var e=L[c];a.hasOwnProperty(e)&&(d=!0,b[e]=a[e])}return d?b:void 0}}function G(a,b){var c=a.a.get(b);c||(c=new r(b),a.a.set(b,c));return c}var L="value get set writable configurable enumerable".split(" "),K=6,w=Object.getOwnPropertyDescriptor,J=Object.isExtensible,C=Object.getPrototypeOf,D=Object.prototype.__lookupGetter__||function(a){return(a=M(this,a))&&a.get?a.get:void 0},I=Object.prototype.__lookupSetter__||function(a){return(a=M(this,a))&&a.set?a.set:void 0};function M(a,b){if(b in a){for(;!a.hasOwnProperty(b);)a=C(a);return w(a,b)}}function F(a){var b=typeof a;return"function"===b||"object"===b&&null!==a?!0:!1}var N;return function(a,b,c){N||(N=new u);var d=N;c=c||window;var e=new r;a+=".";var f=e||new r;for(var g=d.g||(d.g=/^([^\\\.]|\\.)*?\./),h,p,q;a;){h=g.exec(a);if(null===h)throw 1;h=h[0].length;p=a.slice(0,h-1);a=a.slice(h);(h=f.h[p])?q=h.c:(q=new r,h=new t(f,p,q),f.h[p]=h);f=q}if(!h)throw 1;a=h;a.f=b;B(d,c,e)};}();
+foerderland.de###footerFlyout
+1movies.to###subsribe_news
+spiegel.de##a[href^="/newsletter/"]
 blickamabend.ch##.rightElement > .widget_maxiteaser + h3
 blickamabend.ch##.rightElement > .widget_maxiteaser + h3 + div[style]
 bildderfrau.de##div[id^="newsletter-weekly"]
@@ -287,11 +290,13 @@ afisha.yandex.by,afisha.yandex.com,afisha.yandex.kz,afisha.yandex.ru,afisha.yand
 afisha.yandex.by,afisha.yandex.com,afisha.yandex.kz,afisha.yandex.ru,afisha.yandex.ua#$#.content-event_commercial_yes { margin-top: 0!important; }
 afisha.yandex.by,afisha.yandex.com,afisha.yandex.kz,afisha.yandex.ru,afisha.yandex.ua##.page-footer__subscribe
 avia.yandex.by,avia.yandex.kz,avia.yandex.ru,avia.yandex.ua,bilet.yandex.com.tr,flights.yandex.com##.mobile-app-links_kb
+music.yandex.by,music.yandex.kz,music.yandex.ru,music.yandex.ua##.notify__message
 music.yandex.by,music.yandex.kz,music.yandex.ru,music.yandex.ua#$#.bar_new-pay-under > div.progress { bottom: 60px!important; }
 music.yandex.by,music.yandex.kz,music.yandex.ru,music.yandex.ua#$#.bar_new-pay-under { height: 60px!important; }
 music.yandex.by,music.yandex.kz,music.yandex.ru,music.yandex.ua##.bar__new-pay
 music.yandex.by,music.yandex.kz,music.yandex.ru,music.yandex.ua##.ads-block__no-ads
 music.yandex.by,music.yandex.kz,music.yandex.ru,music.yandex.ua##.button-store_all
+music.yandex.by,music.yandex.kz,music.yandex.ru,music.yandex.ua##.app-sms
 music.yandex.by,music.yandex.kz,music.yandex.ru,music.yandex.ua##a[href="/contest/dogmoroz"]
 music.yandex.by,music.yandex.kz,music.yandex.ru,music.yandex.ua##.subscription-hint
 realty.yandex.by,realty.yandex.kz,realty.yandex.ru,realty.yandex.ua##.newbuilding-discount-promo
@@ -300,6 +305,9 @@ realty.yandex.by,realty.yandex.kz,realty.yandex.ru,realty.yandex.ua##.subscripti
 realty.yandex.by,realty.yandex.kz,realty.yandex.ru,realty.yandex.ua##.popup__under_type_paranja
 translate.yandex.by,translate.yandex.com,ceviri.yandex.com.tr,translate.yandex.fr,translate.yandex.kz,translate.yandex.ru,translate.yandex.ua##.footer-line_promo
 ||yandex.*/stripe.html|
+onhax.net##.jetpack_subscription_widget
+onhax.net###sb_viewer > ul > #text-5
+chita.ru##.subscribe-form
 incrussia.ru##.subs
 techinside.com##.jetpack_subscription_widget
 mesosphere.com##.subscribe-post.js-subscriber-cookie
@@ -746,6 +754,8 @@ rulu.co#%#!function(b,a){AG_defineProperty('CloudflareApps.installs',{get:functi
 ||s3.amazonaws.com/assets.sidearmsports.com/plugins/detector.min.js
 /wp-content/plugins/kill-adblock/*
 ##.kill-adblock-container
+myegy.tv##.link-content > .disclaimer
+f.tabtter.jp#@##googlead
 @@||showsport-tv.com/showads.js
 @@||ci.rdtcdn.com/www-static/js/adframe.js
 onlinethreatalerts.com###adblockermsg
@@ -2975,6 +2985,12 @@ _europecookielaw.
 chimica-online.it###cookieChoiceInfo
 !+ PLATFORM(ios, ext_safari, ext_android_cb)
 strunz.com###v-cookielaw
+vvvvid.it##.cookie-alert-container
+ucpa-vacances.com###bandeau_cnil
+ign.com##.evidon-banner
+aerobaticteams.net##.cookies-agreement
+elconfidencial.com##.disclaimer-cookies-message
+udacity.com##ir-cookie-consent
 markapark.com###header > .htext
 decathlon.com.tr###fr_cookie_alert
 huurwoningnet.nl##.cc-cookiecontainer
@@ -3809,6 +3825,7 @@ trouw.nl#%#AG_onLoad(function() { var check = document.getElementsByClassName('s
 vi.nl#%#AG_onLoad(function() { if(window.location.href.indexOf("cookies") != -1){document.getElementsByClassName('btn')[0].click();} });
 volkskrant.nl#%#AG_onLoad(function() { setTimeout(function() {if(document.getElementsByClassName("modal-overlay")[0].isvisible = true){document.getElementsByClassName("button button--accept")[0].click();}}, 300); });
 ziekenhuis.nl#%#AG_onLoad(function() { setTimeout(function() {var check = document.getElementsByClassName('cookiewall')[0]; if (check){document.cookie = "acceptcookies=true"; location.reload();}; }, 300); });
+@@||tonatto.com/skin/*css
 moemax.de#@#.cookie-bar
 @@/Resources/Public/JavaScript/CookieBar.js$~third-party
 media.netflix.com#@##cookieAlert
@@ -3978,6 +3995,7 @@ pz-news.de##.nfy-content+aside.nfy-service > aside > section.nfy-sebox-multibox.
 morgenpost.de##.article--type-news > aside.article__aside[-ext-has="> div.sidebar__column > div.cross-heading > h3:contains(News per WhatsApp)"]
 @@||pubg-pro.ru^$generichide
 @@||seedhirah.blogspot.com^$generichide
+hi-cd.ru##.bannpanel
 ||factum-magazin.ch/sites/default/files/werbung
 factum-magazin.ch##.view-werbung
 torrentec.com##center > a[href^="https://goo.gl/"] > img
@@ -4140,6 +4158,8 @@ gir.im#$#.smartbanner-show { margin-top: 0px!important; }
 gir.im##.smartbanner
 !+ NOT_PLATFORM(ios, ext_android_cb)
 shazam.com##.shz-frame-apps-banner
+coursera.org##.rc-MobilePromoBannerBottom
+hi-news.ru###app-post
 blickamabend.ch###mobdl
 binance.com##.ng-scope > div.download-fixed
 ||gir.im/assets/scripts/smart-app-banner.js
@@ -4452,6 +4472,10 @@ edeka.de#@##smartbanner.android
 ||mailget.net^$third-party
 ||optnmnstr.com^$third-party
 ||static.popmechanic.ru/service/loader.js$third-party
+chita.ru###subscribe-sendpulse
+topspb.tv##.social-popup
+rupornotube.me##.inline_el
+root-nation.com##.td-more-articles-box
 onlinemultfilmy.ru###add_favorite_tooltip
 radyopop.com###fancybox-wrap
 radyopop.com###fancybox-overlay
@@ -4628,7 +4652,7 @@ tamiltunes.live###fbslidebox
 dota2.ru###vkd2ru-content
 dota2.ru###vkd2ru-overlay
 prizyv.ru##.pum-overlay
-tomsguide.com###ec-popup-modal
+tomsguide.com,tomsguide.fr###ec-popup-modal
 softonic.com##div[id^="Newsletter-Subscription"]
 cebhe.info###rooteto_geri
 tomshardware.com##.ec-popup-modal
@@ -5183,6 +5207,8 @@ livelib.ru,lenta.ru,rambler.ru,sports.ru#%#(function() { if (typeof Notification
 ||cleverpush.com^$third-party
 sports.ru#%#(function() { try { if ("undefined" != typeof localStorage) { var a = { date: (new Date).toString(), time: (new Date).getTime(), data: 2 }; localStorage.setItem("sports:view:notifications-subscribe-popup:closed:count", JSON.stringify(a)) } } catch (ex) {} })();
 sports.ru#%#(function() { try { if ("undefined" != typeof localStorage) { var a = { date: (new Date).toString(), time: (new Date).getTime(), data: true }; localStorage.setItem("sports:view:notifications-subscribe-popup:view", JSON.stringify(a)) } } catch (ex) {} })();
+forbes.ru##.push_warn
+forbes.ru##.push_back
 petburada.com##.tsoft-push--in-notification
 smutty.com###noti_msg
 doctor.ndtv.com###___ndtvpushdiv
@@ -5194,7 +5220,6 @@ arabam.com##.notification-bar
 ceptetamir.com##.frizbit-prompt
 encilek.com##.insider-opt-in-notification
 vc.ru##.push_subscribe
-fikriyat.com##.notBar
 bkmkitap.com##.tsoft-push--in-notification
 koroglugazetesi.com##.alerttt
 ura.news###sub_bottom
@@ -5252,7 +5277,7 @@ qrz.ru###qrzpush-prompt-widget
 habertam.com,nededik.com##.alerttt
 trinixy.ru##.b-notification-push
 gittigidiyor.com##.gg-subscribe-container
-ahaber.com.tr,sabah.com.tr,takvim.com.tr##.notBar
+fotomac.com.tr,fikriyat.com,ahaber.com.tr,sabah.com.tr,takvim.com.tr##.notBar
 haberturk.com##.notifacition-area
 haber7.com##.notification-box
 tass.ru##.push-notice
@@ -5282,7 +5307,6 @@ zr.ru#%#document.cookie = "zrPushSubsPopUp=1";
 @@||cdn.sendpulse.com/js/push/*.js$domain=surfingbird.ru
 t-online.de##.Tvideosearch ~ #Tcontbox > #Tcontboxi > div[class]:not([id]):not([onfocus]):not(.Tinfinitlayer)
 t-online.de##div[data-dy-embedded-object]
-evdekimseyok70.com###rb_300
 vivud.com##.closeContainer
 videam.party##.ads
 westgahome.com##.fZone
@@ -5971,6 +5995,7 @@ te-en.com##splashvip
 ||c-s.net.ua/images/200x200-empty.gif
 ||mpgh.net/images/mini_offur.png
 ||new-line.net.ua/templates/CounterStrike/images/8831.png
+dwatchseries.to##.sp-leader
 ilikewallpaper.net#$##divWalllist { padding: 0px!important; }
 altyazili.net###main-wrapper> center > br
 forum.donanimhaber.com#$#.soltaraf{width: calc(100%)!important;}

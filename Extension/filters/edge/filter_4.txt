@@ -1,8 +1,8 @@
-! Checksum: eh+opqxt23dD/Lf+A5mCqA
+! Checksum: /ZlAs8WbcUr5Dt1WTER31w
 ! Title: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such).
-! Version: 1.0.27.95
-! TimeUpdated: 2018-01-16T17:00:49.247+04:00
+! Version: 1.0.28.2
+! TimeUpdated: 2018-01-18T17:00:34.893+04:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#social
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -270,6 +270,7 @@ lj_bookmarklet
 !
 ! Extended CSS rules
 !
+dcode.fr###right > .heading_bar:contains(Share)
 ultrafilmizle.co###sidebar > .sidebarborder:contains(Facebook)
 online.anidub.com##.content > div#lcol > div.lblockhead:has(> font:contains(Twitter))
 online.anidub.com##.content > div#lcol > div.lblockhead:has(> font:contains(Twitter)) + div.lblockcon
@@ -420,6 +421,8 @@ takprosto.cc#%#document.cookie = "popup_displayed=true";
 !-------------------
 !-------CSS---------
 !-------------------
+! https://github.com/AdguardTeam/AdguardFilters/issues/9762
+bildderfrau.de#$#.socialbar { visibility:hidden!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9491
 playnation.de#$#.e3_refresh_button { position: absolute!important; left: -3000px!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9322
@@ -499,6 +502,17 @@ m.tf.co.kr#$#li.sBtn_reply { float: initial!important; display: inline-block!imp
 ||worldhack.net/foro/clientscript/locker/
 !
 !
+!
+metabomb.net##.like-and-subscribe
+multiup.eu##a[href^="https://flattr.com"]
+||html-online.com/like.html
+history.com##.player__info > .c022
+history.com##.share-this
+chita.ru##.article__links-line__share
+bildderfrau.de##a[href^="fb-messenger:"]
+dcode.fr##img[alt="Share"]
+asianovel.com##blockquote.alert-warning > div.margin-top-20
+hi-news.ru###ShareButton
 markapark.com##body .ProductDetail .product-social-icon-wrapper
 bershka.com##.product-social-container
 atv.com.tr##.socialTab
@@ -3800,7 +3814,7 @@ designboom.com,livescience.com,pbtech.co.nz,peoplesworld.org,space.com##.fa-face
 ##.socbclass
 ##.socbuttons
 ##.sociable
-~seahawks.com##.social-bar
+~patriots.com,~seahawks.com##.social-bar
 ##.social-bar-wrapper
 ##.social-block
 ##.social-block-div
@@ -4145,6 +4159,7 @@ designboom.com,livescience.com,pbtech.co.nz,peoplesworld.org,space.com##.fa-face
 ||mailget.net^$third-party
 ||my.hellobar.com^$third-party
 !
+topspb.tv##.social-popup
 radyopop.com###fancybox-wrap
 radyopop.com###fancybox-overlay
 lifter.com.ua###substrate
