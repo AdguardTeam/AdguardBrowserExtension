@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global contentPage, ExtendedCss, HTMLDocument, XMLDocument, ElementCollapser, CssHitsCounter */
+/* global contentPage, ExtendedCss, HTMLDocument, XMLDocument, ElementCollapser, CssHitsCounter, adguardContent */
 (function () {
 
     var requestTypeMap = {
@@ -57,13 +57,32 @@
     var loadTruncatedCss = false;
 
     /**
+     * Unexpectedly global variable contentPage could become undefined in FF,
+     * in this case we redefine it.
+     *
+     * More details:
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/924
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/880
+     */
+    var getContentPage = function () {
+        if (typeof contentPage === 'undefined') {
+            contentPage = {
+                sendMessage: adguardContent.runtimeImpl.sendMessage,
+                onMessage: adguardContent.runtimeImpl.onMessage
+            };
+        }
+
+        return contentPage;
+    };
+
+    /**
      * Set callback for saving css hits
      */
     if (typeof CssHitsCounter !== 'undefined' &&
         typeof CssHitsCounter.setCssHitsFoundCallback === 'function') {
 
         CssHitsCounter.setCssHitsFoundCallback(function (stats) {
-            contentPage.sendMessage({type: 'saveCssHitStats', stats: stats});
+            getContentPage().sendMessage({type: 'saveCssHitStats', stats: stats});
         });
     }
 
@@ -72,7 +91,7 @@
      * It allows us to execute script as soon as possible, because runtime.messaging makes huge overhead
      * If onCommitted event doesn't occur for the frame, scripts will be applied in usual way.
      */
-    contentPage.onMessage.addListener(function (response, sender, sendResponse) {
+    getContentPage().onMessage.addListener(function (response, sender, sendResponse) {
         if (response.type === 'injectScripts') {
             // Notify background-page that content-script was received scripts
             sendResponse({applied: true});
@@ -192,8 +211,8 @@
     var shouldOverrideWebSocket = function () {
 
         // Checks for using of Content Blocker API for Safari 9+
-        if (contentPage.isSafari) {
-            return !contentPage.isSafariContentBlockerEnabled;
+        if (getContentPage().isSafari) {
+            return !getContentPage().isSafariContentBlockerEnabled;
         }
 
         var userAgent = navigator.userAgent.toLowerCase();
@@ -225,8 +244,8 @@
     var shouldOverrideWebRTC = function () {
 
         // Checks for using of Content Blocker API for Safari 9+
-        if (contentPage.isSafari) {
-            return !contentPage.isSafariContentBlockerEnabled;
+        if (getContentPage().isSafari) {
+            return !getContentPage().isSafariContentBlockerEnabled;
         }
 
         return true;
@@ -273,17 +292,33 @@
      * Function supposed to be executed in page's context
      */
     var overrideShadowRootGetter = function () {
+        function copyProperty(orig, wrapped, prop) {
+            var desc = Object.getOwnPropertyDescriptor(orig, prop);
+            if (desc && desc.configurable) {
+                desc.value = orig[prop];
+                Object.defineProperty(wrapped, prop, desc);
+            }
+        }
+
         if ("shadowRoot" in Element.prototype) {
             var ourShadowRoot = document.documentElement.shadowRoot;
             if (ourShadowRoot) {
                 var desc = Object.getOwnPropertyDescriptor(Element.prototype, "shadowRoot");
                 var shadowRoot = Function.prototype.call.bind(desc.get);
 
+                var overload = function () {
+                    var thisShadow = shadowRoot(this);
+                    return thisShadow === ourShadowRoot ? null : thisShadow;
+                };
+
+                copyProperty(desc.get, overload, 'name');
+                copyProperty(desc.get, overload, 'length');
+
+                var stringValue = desc.get.toString();
+                overload.toString = function () { return stringValue; };
+
                 Object.defineProperty(Element.prototype, "shadowRoot", {
-                    configurable: true, enumerable: true, get: function () {
-                        var thisShadow = shadowRoot(this);
-                        return thisShadow === ourShadowRoot ? null : thisShadow;
-                    }
+                    configurable: true, enumerable: true, get: overload
                 });
             }
         }
@@ -434,7 +469,7 @@
         /**
          * Sending message to background page and passing a callback function
          */
-        contentPage.sendMessage(message, processCssAndScriptsResponse);
+        getContentPage().sendMessage(message, processCssAndScriptsResponse);
     };
 
     /**
@@ -854,7 +889,7 @@
             requestId: requestId
         };
 
-        contentPage.sendMessage(message, onProcessShouldCollapseResponse);
+        getContentPage().sendMessage(message, onProcessShouldCollapseResponse);
     };
 
     /**
@@ -912,7 +947,7 @@
         };
 
         // Send all prepared requests in one message
-        contentPage.sendMessage(message, onProcessShouldCollapseManyResponse);
+        getContentPage().sendMessage(message, onProcessShouldCollapseManyResponse);
     };
 
     /**
@@ -946,7 +981,7 @@
     /**
      * Messaging won't work when page is loaded by Safari top hits
      */
-    if (contentPage.isSafari && document.hidden) {
+    if (getContentPage().isSafari && document.hidden) {
         document.addEventListener("visibilitychange", onVisibilityChange);
         return;
     }

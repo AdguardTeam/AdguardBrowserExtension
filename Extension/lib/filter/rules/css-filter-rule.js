@@ -124,7 +124,7 @@
                 }
             }
 
-            var nameEndIndex = adguard.utils.strings.indexOfAny(selector, nameStartIndex + 1, [' ', '\t', '>', '(', '[', '.', '#', ':', '+', '~', '"', "'"]);
+            var nameEndIndex = adguard.utils.strings.indexOfAny(selector, [' ', '\t', '>', '(', '[', '.', '#', ':', '+', '~', '"', "'"], nameStartIndex + 1);
             if (nameEndIndex < 0) {
                 nameEndIndex = selector.length;
             }

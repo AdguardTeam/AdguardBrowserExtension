@@ -20,17 +20,17 @@
  */
 adguard.localStorageImpl = adguard.localStorageImpl || (function () {
 
-        function notImplemented() {
-            throw new Error('Not implemented');
-        }
+    function notImplemented() {
+        throw new Error('Not implemented');
+    }
 
-        return {
-            getItem: notImplemented,
-            setItem: notImplemented,
-            removeItem: notImplemented,
-            hasItem: notImplemented
-        };
-    })();
+    return {
+        getItem: notImplemented,
+        setItem: notImplemented,
+        removeItem: notImplemented,
+        hasItem: notImplemented
+    };
+})();
 
 /**
  * This class manages local storage
@@ -89,16 +89,16 @@ adguard.localStorage = (function (adguard, impl) {
  */
 adguard.rulesStorageImpl = adguard.rulesStorageImpl || (function () {
 
-        function notImplemented() {
-            throw new Error('Not implemented');
-        }
+    function notImplemented() {
+        throw new Error('Not implemented');
+    }
 
-        return {
-            read: notImplemented,
-            write: notImplemented
-        };
+    return {
+        read: notImplemented,
+        write: notImplemented
+    };
 
-    })();
+})();
 
 /**
  * This class manages storage for filters.
@@ -142,9 +142,27 @@ adguard.rulesStorage = (function (adguard, impl) {
         });
     };
 
+    /**
+     * IndexedDB implementation of the rules storage requires async initialization.
+     * Also in some cases IndexedDB isn't supported, so we have to replace implementation with the browser.storage
+     *
+     * @param callback
+     */
+    var init = function (callback) {
+        if (typeof impl.init === 'function') {
+            impl.init(function (api) {
+                impl = api;
+                callback();
+            });
+        } else {
+            callback();
+        }
+    };
+
     return {
         read: read,
-        write: write
+        write: write,
+        init: init
     };
 
 })(adguard, adguard.rulesStorageImpl);

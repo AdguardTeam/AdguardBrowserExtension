@@ -202,8 +202,7 @@ PageController.prototype = {
 	},
 
 	onTabAdded: function (tabInfo) {
-		//don't add not http tabs
-		if (!tabInfo.isHttp) {
+		if (tabInfo.isExtensionTab) {
 			return;
 		}
 		this.tabSelectorList.append($('<div>', {
@@ -218,8 +217,7 @@ PageController.prototype = {
 
 	onTabUpdated: function (tabInfo) {
 		var item = this.tabSelectorList.find('[data-tab-id=' + tabInfo.tabId + ']');
-		if (!tabInfo.isHttp) {
-			//remove not http tabs
+		if (tabInfo.isExtensionTab) {
 			this.onTabClose(tabInfo);
 			return;
 		}
@@ -258,6 +256,18 @@ PageController.prototype = {
 		}
 		this._renderEvents([event]);
 	},
+
+    onEventUpdated: function (tabInfo, event) {
+        if (this.currentTabId != tabInfo.tabId) {
+            //don't relate to the current tab
+            return;
+        }
+        var element = this.logTable.find('#request-' + event.requestId);
+        if (element.length > 0) {
+            var template = this._renderTemplate(event);
+            element.replaceWith(template);
+        }
+    },
 
 	onSelectedTabChange: function () {
 		var selectedItem = this.tabSelectorList.find('[data-tab-id="' + this.currentTabId + '"]');
@@ -404,6 +414,9 @@ PageController.prototype = {
 		if (event.requestRule) {
 			metadata.class += event.requestRule.whiteListRule ? ' green' : ' red';
 		}
+        if (event.requestId) {
+            metadata.id = 'request-' + event.requestId;
+        }
 
 		var ruleText = '';
 		if (event.requestRule) {
@@ -872,9 +885,12 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
 				case EventNotifierTypes.TAB_RESET:
 					pageController.onTabReset(tabInfo);
 					break;
-				case EventNotifierTypes.LOG_EVENT_ADDED :
+				case EventNotifierTypes.LOG_EVENT_ADDED:
 					pageController.onEventAdded(tabInfo, filteringEvent);
 					break;
+                case EventNotifierTypes.LOG_EVENT_UPDATED:
+                    pageController.onEventUpdated(tabInfo, filteringEvent);
+                    break;
 			}
 		}
 
@@ -883,7 +899,8 @@ contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
 			EventNotifierTypes.TAB_UPDATE,
 			EventNotifierTypes.TAB_CLOSE,
 			EventNotifierTypes.TAB_RESET,
-			EventNotifierTypes.LOG_EVENT_ADDED
+			EventNotifierTypes.LOG_EVENT_ADDED,
+            EventNotifierTypes.LOG_EVENT_UPDATED
 		];
 
 		//set log is open

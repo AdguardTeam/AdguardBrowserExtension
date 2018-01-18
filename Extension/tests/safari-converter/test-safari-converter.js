@@ -2,8 +2,10 @@
  * Test script for Safari content-blocking rules converter
  */
 
+/* global SafariContentBlockerConverter, QUnit, URL_FILTER_REGEXP_START_URL, _checkResult */
+
 adguard.rules.CspFilter = {};
-adguard.rules.CspFilter.DEFAULT_DIRECTIVE = 'connect-src http: https:; frame-src http: https:; child-src http: https:'
+adguard.rules.CspFilter.DEFAULT_DIRECTIVE = 'connect-src http: https:; frame-src http: https:; child-src http: https:';
 
 // Setup test
 var specials = [
@@ -20,11 +22,6 @@ var specials = [
     '\\',
     '/'
 ];
-
-var regex = new RegExp('[' + specials.join('\\') + ']', 'g');
-var escapeRegExp = function (str) {
-    return str.replace(regex, "\\$&");
-};
 
 var rules = [
     '||pics.rbc.ru/js/swf',
@@ -45,7 +42,6 @@ var rules = [
     '@@.instantservice.com$document',
     '/addyn|*|adtech;',
     '@@||hulu-jsinject.com$jsinject',
-    '@@||hulu-jsinject-image.com$image,jsinject',
     '@@||test-document.com$document',
     '@@||test-urlblock.com$urlblock',
     '@@||test-elemhide.com$elemhide',
@@ -61,7 +57,7 @@ var rules = [
 ];
 // Setup
 
-QUnit.test("Convert rules to JSON", function(assert) {
+QUnit.test("Convert rules to JSON", function (assert) {
     var safariJSON = SafariContentBlockerConverter.convertArray(rules);
     var errors = [];
     _checkResult(safariJSON, errors);
@@ -85,9 +81,9 @@ QUnit.test("Convert rules to JSON", function(assert) {
     }
 });
 
-QUnit.test("Convert first-party rule", function(assert) {
+QUnit.test("Convert first-party rule", function (assert) {
     var ruleText = "@@||adriver.ru^$~third-party";
-    var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    var result = SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(1, result.convertedCount);
     assert.equal(0, result.errorsCount);
 
@@ -103,8 +99,8 @@ QUnit.test("Convert first-party rule", function(assert) {
     assert.equal("ignore-previous-rules", convertedRule.action.type);
 });
 
-QUnit.test("Convert websocket rule", function(assert) {
-    var result = SafariContentBlockerConverter.convertArray([ "||test.com^$websocket" ]);
+QUnit.test("Convert websocket rule", function (assert) {
+    var result = SafariContentBlockerConverter.convertArray(["||test.com^$websocket"]);
     assert.equal(1, result.convertedCount);
     assert.equal(0, result.errorsCount);
 
@@ -120,7 +116,7 @@ QUnit.test("Convert websocket rule", function(assert) {
     assert.equal("raw", convertedRule.trigger["resource-type"][0]);
 
 
-    result = SafariContentBlockerConverter.convertArray([ "$websocket,domain=123movies.is" ]);
+    result = SafariContentBlockerConverter.convertArray(["$websocket,domain=123movies.is"]);
     assert.equal(1, result.convertedCount);
     assert.equal(0, result.errorsCount);
 
@@ -134,9 +130,9 @@ QUnit.test("Convert websocket rule", function(assert) {
     assert.equal(convertedRule.trigger["resource-type"][0], "raw");
 });
 
-QUnit.test("Convert ~script rule", function(assert) {
+QUnit.test("Convert ~script rule", function (assert) {
     var ruleText = "||test.com^$~script,third-party";
-    var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    var result = SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(1, result.convertedCount);
     assert.equal(0, result.errorsCount);
 
@@ -153,22 +149,22 @@ QUnit.test("Convert ~script rule", function(assert) {
     assert.equal("third-party", convertedRule.trigger["load-type"][0]);
 });
 
-QUnit.test("Convert subdocument first-party rule", function(assert) {
+QUnit.test("Convert subdocument first-party rule", function (assert) {
     var ruleText = "||youporn.com^$subdocument,~third-party";
-    var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    var result = SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(0, result.convertedCount);
     assert.equal(1, result.errorsCount);
 });
 
-QUnit.test("Convert subdocument third-party rule", function(assert) {
+QUnit.test("Convert subdocument third-party rule", function (assert) {
     var ruleText = "||youporn.com^$subdocument,third-party";
-    var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    var result = SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(1, result.convertedCount);
     assert.equal(0, result.errorsCount);
-    
+
     var converted = JSON.parse(result.converted);
-    assert.equal(1, converted.length);    
-    
+    assert.equal(1, converted.length);
+
     var convertedRule = converted[0];
     assert.equal(URL_FILTER_REGEXP_START_URL + "youporn\\.com[/:&?]?", convertedRule.trigger["url-filter"]);
     assert.notOk(convertedRule.trigger["if-domain"]);
@@ -180,9 +176,9 @@ QUnit.test("Convert subdocument third-party rule", function(assert) {
     assert.equal("block", convertedRule.action.type);
 });
 
-QUnit.test("Convert rule with empty regexp", function(assert) {
+QUnit.test("Convert rule with empty regexp", function (assert) {
     var ruleText = "@@$image,domain=moonwalk.cc";
-    var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    var result = SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(1, result.convertedCount);
     assert.equal(0, result.errorsCount);
     var converted = JSON.parse(result.converted);
@@ -197,9 +193,9 @@ QUnit.test("Convert rule with empty regexp", function(assert) {
     assert.equal("ignore-previous-rules", convertedRule.action.type);
 });
 
-QUnit.test("Inverted whitelist", function(assert) {
+QUnit.test("Inverted whitelist", function (assert) {
     var ruleText = "@@||*$domain=~whitelisted.domain.com|~whitelisted.domain2.com";
-    var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    var result = SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(1, result.convertedCount);
     assert.equal(0, result.errorsCount);
     var converted = JSON.parse(result.converted);
@@ -213,10 +209,10 @@ QUnit.test("Inverted whitelist", function(assert) {
     assert.equal("ignore-previous-rules", convertedRule.action.type);
 });
 
-QUnit.test("Generichide rules", function(assert) {
+QUnit.test("Generichide rules", function (assert) {
     var ruleText = '@@||hulu.com/page$generichide';
 
-    var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    var result = SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(1, result.convertedCount);
     assert.equal(0, result.errorsCount);
     var converted = JSON.parse(result.converted);
@@ -227,10 +223,10 @@ QUnit.test("Generichide rules", function(assert) {
     assert.equal(convertedRule.trigger["url-filter"], '^[htpsw]+://([^/]*\\.)?hulu\\.com\\/page');
 });
 
-QUnit.test("Generic domain sensitive rules", function(assert) {
+QUnit.test("Generic domain sensitive rules", function (assert) {
     var ruleText = '~google.com##banner';
 
-    var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    var result = SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(1, result.convertedCount);
     assert.equal(0, result.errorsCount);
     var converted = JSON.parse(result.converted);
@@ -242,8 +238,8 @@ QUnit.test("Generic domain sensitive rules", function(assert) {
     assert.equal(convertedRule.trigger["url-filter"], '.*');
 });
 
-QUnit.test("Generic domain sensitive rules sorting order", function(assert) {
-    var result = SafariContentBlockerConverter.convertArray([ '~example.org##generic', '##wide1', '##specific', '@@||example.org^$generichide' ]);
+QUnit.test("Generic domain sensitive rules sorting order", function (assert) {
+    var result = SafariContentBlockerConverter.convertArray(['~example.org##generic', '##wide1', '##specific', '@@||example.org^$generichide']);
     assert.equal(result.convertedCount, 3);
     assert.equal(result.errorsCount, 0);
     var converted = JSON.parse(result.converted);
@@ -263,11 +259,11 @@ QUnit.test("Generic domain sensitive rules sorting order", function(assert) {
     assert.equal(converted[2].trigger["if-domain"], '*example.org');
 });
 
-QUnit.test("Convert cyrillic rules", function(assert) {
+QUnit.test("Convert cyrillic rules", function (assert) {
     var ruleText = 'меил.рф';
     var ruleTextMarkedDomain = '||меил.рф';
 
-    var result = SafariContentBlockerConverter.convertArray([ ruleText, ruleTextMarkedDomain ]);
+    var result = SafariContentBlockerConverter.convertArray([ruleText, ruleTextMarkedDomain]);
     assert.equal(2, result.convertedCount);
     assert.equal(0, result.errorsCount);
     var converted = JSON.parse(result.converted);
@@ -277,31 +273,31 @@ QUnit.test("Convert cyrillic rules", function(assert) {
     assert.equal(converted[1].trigger["url-filter"], "^[htpsw]+://([^/]*\\.)?xn--e1agjb\\.xn--p1ai");
 });
 
-QUnit.test("Convert regexp rules", function(assert) {
+QUnit.test("Convert regexp rules", function (assert) {
     var ruleText = "/^https?://(?!static\.)([^.]+\.)+?fastpic\.ru[:/]/$script,domain=fastpic.ru";
-    var result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    var result = SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(0, result.convertedCount);
     assert.equal(1, result.errorsCount);
 
     ruleText = "^https?://(?!static)([^.]+)+?fastpicru[:/]$script,domain=fastpic.ru";
-    result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    result = SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(1, result.convertedCount);
     assert.equal(0, result.errorsCount);
 
     ruleText = "@@/:\/\/.*[.]wp[.]pl\/[a-z0-9_]{30,50}[.][a-z]{2,5}[/:&?]?/";
-    result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    result = SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(0, result.convertedCount);
     assert.equal(1, result.errorsCount);
 
     ruleText = "@@/:\/\/.*[.]wp[.]pl\/[a-z0-9_]+[.][a-z]+\\b/";
-    result = SafariContentBlockerConverter.convertArray([ ruleText ]);
+    result = SafariContentBlockerConverter.convertArray([ruleText]);
     assert.equal(0, result.convertedCount);
     assert.equal(1, result.errorsCount);
 });
 
-QUnit.test("CSS pseudo classes", function(assert) {
+QUnit.test("CSS pseudo classes", function (assert) {
     // :style should be ignored
-    var result = SafariContentBlockerConverter.convertArray([ 'yandex.ru##body:style(background:inherit;)', 'yandex.ru#@#body:style(background:inherit;)' ]);
+    var result = SafariContentBlockerConverter.convertArray(['yandex.ru##body:style(background:inherit;)', 'yandex.ru#@#body:style(background:inherit;)']);
     assert.equal(0, result.convertedCount);
     assert.equal(2, result.errorsCount);
 
@@ -321,8 +317,8 @@ QUnit.test("CSS pseudo classes", function(assert) {
     assert.equal(0, result.errorsCount);
 });
 
-QUnit.test("Regular expressions performance", function(assert) {
-    
+QUnit.test("Regular expressions performance", function (assert) {
+
     function _testCompare(regExp1, regExp2, count) {
         var startTime1 = new Date().getTime();
         _testRegex(regExp1, count);
@@ -348,7 +344,7 @@ QUnit.test("Regular expressions performance", function(assert) {
         assert.ok(1, 'Elapsed: ' + elapsed + 'ms');
     }
 
-    var count = 1 * 1000 * 1000;
+    var count = 1000 * 1000;
 
     // Test URL with domain rule
     var regExp1 = new RegExp('^https?://([a-z0-9-_.]+\\.)?some-domain.com\\.com([^ a-zA-Z0-9.%]|$)', 'i');
@@ -410,7 +406,7 @@ QUnit.test("Elemhide rules", function (assert) {
     var converted = JSON.parse(result.converted);
     assert.equal(4, converted.length);
 
-    assert.equal(converted[0].action["selector"], "#root > section.b-header.b-header-main.js-header:nth-child(4) > div.g-layout > div.row");
+    assert.equal(converted[0].action.selector, "#root > section.b-header.b-header-main.js-header:nth-child(4) > div.g-layout > div.row");
     assert.equal(converted[0].action.type, "css-display-none");
 
     assert.equal(converted[1].trigger["url-filter"], ".*");
@@ -422,4 +418,48 @@ QUnit.test("Elemhide rules", function (assert) {
 
     assert.equal(converted[3].action.type, "ignore-previous-rules");
     assert.equal(converted[3].trigger["url-filter"], "^[htpsw]+://([^/]*\\.)?lenta\\.ru[/:&?]?");
+});
+
+QUnit.test("Important modifier rules sorting order", function(assert) {
+    var result = SafariContentBlockerConverter.convertArray([
+        '||example-url-block.org^',
+        '||example-url-block-important.org^$important',
+        '@@||example-url-block-exception.org^',
+        '@@||example-url-block-exception-important.org^$important',
+        '@@||example-url-block-exception-document.org^$document' ]);
+    assert.equal(result.convertedCount, 5);
+    assert.equal(result.errorsCount, 0);
+    var converted = JSON.parse(result.converted);
+    assert.equal(converted.length, 5);
+
+    assert.equal(converted[0].action.type, "block");
+    assert.equal(converted[0].trigger["url-filter"], "^[htpsw]+://([^/]*\\.)?example-url-block\\.org[/:&?]?");
+
+    assert.equal(converted[1].action.type, "ignore-previous-rules");
+    assert.equal(converted[1].trigger["url-filter"], "^[htpsw]+://([^/]*\\.)?example-url-block-exception\\.org[/:&?]?");
+
+    assert.equal(converted[2].action.type, "block");
+    assert.equal(converted[2].trigger["url-filter"], "^[htpsw]+://([^/]*\\.)?example-url-block-important\\.org[/:&?]?");
+
+    assert.equal(converted[3].action.type, "ignore-previous-rules");
+    assert.equal(converted[3].trigger["url-filter"], "^[htpsw]+://([^/]*\\.)?example-url-block-exception-important\\.org[/:&?]?");
+
+    assert.equal(converted[4].action.type, "ignore-previous-rules");
+    assert.equal(converted[4].trigger["url-filter"], ".*");
+    assert.equal(converted[4].trigger["if-domain"], "*example-url-block-exception-document.org");
+});
+
+QUnit.test("BadFilter rules", function (assert) {
+
+    var rule = new adguard.rules.UrlFilterRule('||example.org^$image', 0);
+    var ruleTwo = new adguard.rules.UrlFilterRule("||test.org^");
+    var badFilterRule = new adguard.rules.UrlFilterRule("||example.org^$badfilter,image");
+
+    var result = SafariContentBlockerConverter.convertArray([rule, ruleTwo, badFilterRule]);
+    assert.equal(result.errorsCount, 0);
+
+    var converted = JSON.parse(result.converted);
+    assert.equal(converted.length, 1);
+    assert.equal(converted[0].trigger['url-filter'], "^[htpsw]+://([^/]*\\.)?test\\.org[/:&?]?");
+
 });

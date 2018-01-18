@@ -381,6 +381,9 @@
             case 'openSiteReportTab':
                 adguard.ui.openSiteReportTab(message.url);
                 break;
+            case 'openAbuseTab':
+                adguard.ui.openAbuseTab(message.url);
+                break;
             case 'openSettingsTab':
                 adguard.ui.openSettingsTab();
                 break;
