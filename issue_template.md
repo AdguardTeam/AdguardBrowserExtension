@@ -34,7 +34,7 @@
 
 ### Your environment
 <!--- Please include all relevant details about the environment you experienced the bug in -->
-* Adguard AdBlocker extension version: 
+* AdGuard AdBlocker extension version: 
 * Environment name and version: (e.g. Chrome 59.0.3071.115)
-* Filters you use in Adguard:
+* Filters you use in AdGuard:
 * Any other browser extensions you have installed:

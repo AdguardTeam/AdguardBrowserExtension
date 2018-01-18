@@ -111,6 +111,20 @@ adguard.prefs = (function (adguard) {
             return false;
         },
 
+        /**
+         * Collect browser specific features here
+         */
+        features: (function () {
+
+            var responseContentFilteringSupported = typeof browser !== 'undefined' &&
+                typeof browser.webRequest !== 'undefined' &&
+                typeof browser.webRequest.filterResponseData !== 'undefined';
+
+            return {
+                responseContentFilteringSupported: responseContentFilteringSupported
+            };
+        })(),
+
         get ICONS() {
             return adguard.lazyGet(Prefs, 'ICONS', function () {
                 return {

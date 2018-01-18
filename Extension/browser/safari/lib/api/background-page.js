@@ -290,12 +290,9 @@
 		}
 	};
 
-	// Adds content scripts for adblock.adguard.com/thankyou.html
+	// Adds content scripts for welcome.adguard.com/v2/thankyou.html
     var domains = ['http://*.adguard.com/*/thankyou.html', 'https://*.adguard.com/*/thankyou.html'];
     safari.extension.addContentScriptFromURL(adguard.getURL("lib/libs/jquery-2.2.4.min.js"), domains, [], false);
-    safari.extension.addContentScriptFromURL(adguard.getURL("lib/content-script/i18n-helper.js"), domains, [], false);
-    safari.extension.addContentScriptFromURL(adguard.getURL("lib/pages/i18n.js"), domains, [], false);
-    safari.extension.addContentScriptFromURL(adguard.getURL("lib/pages/script.js"), domains, [], false);
     safari.extension.addContentScriptFromURL(adguard.getURL("lib/pages/thankyou.js"), domains, [], false);
 
 })(adguard);

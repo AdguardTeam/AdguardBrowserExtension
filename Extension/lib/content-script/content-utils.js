@@ -37,8 +37,8 @@
     var MAIN_DIV_STYLE = "position: fixed !important;top: 10px !important;right: 0px !important;z-index: 9999999999 !important;" +
         "width: 390px !important;padding: 30px 20px 30px 36px !important;border-right: 6px solid #409e56 !important;-webkit-border-radius: 9px 0 0 9px !important;border-radius: 9px 0 0 9px !important;" +
         "background: rgba(0, 0, 0, 0.93) !important;color: #fff !important;text-align: left !important;";
-    var TITLE_STYLE = "margin: 0 0 10px !important; font: 400 18px/100% 'Open Sans', sans-serif !important;";
-    var TEXT_STYLE = "font: 400 13px/150% 'Open Sans', sans-serif !important; margin-top: 10px !important;";
+    var TITLE_STYLE = "margin: 0 0 10px !important; font: 400 18px/100% 'Open Sans', Arial, sans-serif !important;";
+    var TEXT_STYLE = "font: 400 13px/150% 'Open Sans', Arial, sans-serif !important; margin-top: 10px !important;";
 
     /**
      * Shows alert popup.

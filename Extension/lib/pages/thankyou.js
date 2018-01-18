@@ -19,110 +19,123 @@ var PageController = function () {
 
 PageController.prototype = {
 
-	init: function () {
+    init: function () {
 
-		this._bindEvents();
-		this._render();
+        this._bindEvents();
+        this._render();
+    },
 
-		$(".sp-table-row-input").toggleCheckbox();
-		$("[data-popup]").popupHelp();
+    _bindEvents: function () {
 
-		updateDisplayAdguardPromo(!userSettings.values[userSettings.names.DISABLE_SHOW_ADGUARD_PROMO_INFO]);
-		customizePopupFooter(environmentOptions.isMacOs);
-	},
-
-	_bindEvents: function () {
-
-		this.safebrowsingEnabledCheckbox = $("#safebrowsingEnabledCheckbox");
-		this.trackingFilterEnabledCheckbox = $("#trackingFilterEnabledCheckbox");
-		this.socialFilterEnabledCheckbox = $("#socialFilterEnabledCheckbox");
-		this.sendSafebrowsingStatsCheckbox = $("#sendSafebrowsingStatsCheckbox");
+        this.safebrowsingEnabledCheckbox = $("#safebrowsingEnabledCheckbox");
+        this.trackingFilterEnabledCheckbox = $("#trackingFilterEnabledCheckbox");
+        this.socialFilterEnabledCheckbox = $("#socialFilterEnabledCheckbox");
+        this.sendSafebrowsingStatsCheckbox = $("#sendSafebrowsingStatsCheckbox");
         this.allowAcceptableAdsCheckbox = $("#allowAcceptableAds");
 
-		this.safebrowsingEnabledCheckbox.on('change', this.safebrowsingEnabledChange);
-		this.trackingFilterEnabledCheckbox.on('change', this.trackingFilterEnabledChange);
-		this.socialFilterEnabledCheckbox.on('change', this.socialFilterEnabledChange);
-		this.sendSafebrowsingStatsCheckbox.on('change', this.sendSafebrowsingStatsChange);
+        this.safebrowsingEnabledCheckbox.on('change', this.safebrowsingEnabledChange);
+        this.trackingFilterEnabledCheckbox.on('change', this.trackingFilterEnabledChange);
+        this.socialFilterEnabledCheckbox.on('change', this.socialFilterEnabledChange);
+        this.sendSafebrowsingStatsCheckbox.on('change', this.sendSafebrowsingStatsChange);
         this.allowAcceptableAdsCheckbox.on('change', this.allowAcceptableAdsChange);
 
-		$(".openExtensionStore").on('click', function (e) {
-			e.preventDefault();
-			contentPage.sendMessage({type: 'openExtensionStore'});
-		});
-		$('.openSettings').on('click', function (e) {
+        $(".openExtensionStore").on('click', function (e) {
+            e.preventDefault();
+            contentPage.sendMessage({type: 'openExtensionStore'});
+        });
+        $('.openSettings').on('click', function (e) {
             e.preventDefault();
             contentPage.sendMessage({type: 'openSettingsTab'});
         });
-	},
-
-	safebrowsingEnabledChange: function () {
-		contentPage.sendMessage({
-			type: 'changeUserSetting',
-			key: userSettings.names.DISABLE_SAFEBROWSING,
-			value: !this.checked
-		});
-	},
-
-	trackingFilterEnabledChange: function () {
-		if (this.checked) {
-			contentPage.sendMessage({type: 'addAndEnableFilter', filterId: AntiBannerFiltersId.TRACKING_FILTER_ID});
-		} else {
-			contentPage.sendMessage({type: 'disableAntiBannerFilter', filterId: AntiBannerFiltersId.TRACKING_FILTER_ID, remove: true});
-		}
-	},
-
-	socialFilterEnabledChange: function () {
-		if (this.checked) {
-			contentPage.sendMessage({type: 'addAndEnableFilter', filterId: AntiBannerFiltersId.SOCIAL_FILTER_ID});
-		} else {
-			contentPage.sendMessage({type: 'disableAntiBannerFilter', filterId: AntiBannerFiltersId.SOCIAL_FILTER_ID, remove: true});
-		}
-	},
-
-	sendSafebrowsingStatsChange: function () {
-		contentPage.sendMessage({
-			type: 'changeUserSetting',
-			key: userSettings.names.DISABLE_SEND_SAFEBROWSING_STATS,
-			value: !this.checked
-		});
-		contentPage.sendMessage({
-			type: 'changeUserSetting',
-			key: userSettings.names.DISABLE_COLLECT_HITS,
-			value: !this.checked
-		});
-	},
-    
-    allowAcceptableAdsChange: function() {
-		if (this.checked) {
-			contentPage.sendMessage({type: 'addAndEnableFilter', filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID});
-		} else {
-			contentPage.sendMessage({type: 'disableAntiBannerFilter', filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID, remove: true});
-		}
     },
 
-	_render: function () {
+    safebrowsingEnabledChange: function () {
+        contentPage.sendMessage({
+            type: 'changeUserSetting',
+            key: userSettings.names.DISABLE_SAFEBROWSING,
+            value: !this.checked
+        });
+    },
 
-		var safebrowsingEnabled = !userSettings.values[userSettings.names.DISABLE_SAFEBROWSING];
-		var sendSafebrowsingStats = !userSettings.values[userSettings.names.DISABLE_SEND_SAFEBROWSING_STATS];
-		var collectHitsCount = !userSettings.values[userSettings.names.DISABLE_COLLECT_HITS];
-		var trackingFilterEnabled = AntiBannerFiltersId.TRACKING_FILTER_ID in enabledFilters;
-		var socialFilterEnabled = AntiBannerFiltersId.SOCIAL_FILTER_ID in enabledFilters;
+    trackingFilterEnabledChange: function () {
+        if (this.checked) {
+            contentPage.sendMessage({type: 'addAndEnableFilter', filterId: AntiBannerFiltersId.TRACKING_FILTER_ID});
+        } else {
+            contentPage.sendMessage({
+                type: 'disableAntiBannerFilter',
+                filterId: AntiBannerFiltersId.TRACKING_FILTER_ID,
+                remove: true
+            });
+        }
+    },
+
+    socialFilterEnabledChange: function () {
+        if (this.checked) {
+            contentPage.sendMessage({type: 'addAndEnableFilter', filterId: AntiBannerFiltersId.SOCIAL_FILTER_ID});
+        } else {
+            contentPage.sendMessage({
+                type: 'disableAntiBannerFilter',
+                filterId: AntiBannerFiltersId.SOCIAL_FILTER_ID,
+                remove: true
+            });
+        }
+    },
+
+    sendSafebrowsingStatsChange: function () {
+        contentPage.sendMessage({
+            type: 'changeUserSetting',
+            key: userSettings.names.DISABLE_SEND_SAFEBROWSING_STATS,
+            value: !this.checked
+        });
+        contentPage.sendMessage({
+            type: 'changeUserSetting',
+            key: userSettings.names.DISABLE_COLLECT_HITS,
+            value: !this.checked
+        });
+    },
+
+    allowAcceptableAdsChange: function () {
+        if (this.checked) {
+            contentPage.sendMessage({
+                type: 'addAndEnableFilter',
+                filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID
+            });
+        } else {
+            contentPage.sendMessage({
+                type: 'disableAntiBannerFilter',
+                filterId: AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID,
+                remove: true
+            });
+        }
+    },
+
+    _render: function () {
+
+        var safebrowsingEnabled = !userSettings.values[userSettings.names.DISABLE_SAFEBROWSING];
+        var sendSafebrowsingStats = !userSettings.values[userSettings.names.DISABLE_SEND_SAFEBROWSING_STATS];
+        var collectHitsCount = !userSettings.values[userSettings.names.DISABLE_COLLECT_HITS];
+        var trackingFilterEnabled = AntiBannerFiltersId.TRACKING_FILTER_ID in enabledFilters;
+        var socialFilterEnabled = AntiBannerFiltersId.SOCIAL_FILTER_ID in enabledFilters;
         var allowAcceptableAdsEnabled = AntiBannerFiltersId.SEARCH_AND_SELF_PROMO_FILTER_ID in enabledFilters;
 
-		this._renderSafebrowsingSection(safebrowsingEnabled, sendSafebrowsingStats, collectHitsCount);
-		this._renderFilter(this.trackingFilterEnabledCheckbox, trackingFilterEnabled);
-		this._renderFilter(this.socialFilterEnabledCheckbox, socialFilterEnabled);
-        this._renderFilter(this.allowAcceptableAdsCheckbox, allowAcceptableAdsEnabled);
-	},
+        this._renderSafebrowsingSection(safebrowsingEnabled, sendSafebrowsingStats, collectHitsCount);
+        this._updateCheckbox(this.trackingFilterEnabledCheckbox, trackingFilterEnabled);
+        this._updateCheckbox(this.socialFilterEnabledCheckbox, socialFilterEnabled);
+        this._updateCheckbox(this.allowAcceptableAdsCheckbox, allowAcceptableAdsEnabled);
+    },
 
-	_renderSafebrowsingSection: function (safebrowsingEnabled, sendSafebrowsingStats, collectHitStats) {
-		this.safebrowsingEnabledCheckbox.updateCheckbox(safebrowsingEnabled);
-		this.sendSafebrowsingStatsCheckbox.updateCheckbox(sendSafebrowsingStats || collectHitStats);
-	},
+    _renderSafebrowsingSection: function (safebrowsingEnabled, sendSafebrowsingStats, collectHitStats) {
+        this._updateCheckbox(this.safebrowsingEnabledCheckbox, safebrowsingEnabled);
+        this._updateCheckbox(this.sendSafebrowsingStatsCheckbox, sendSafebrowsingStats || collectHitStats);
+    },
 
-	_renderFilter: function (checkbox, enabled) {
-		checkbox.updateCheckbox(enabled);
-	}
+    _updateCheckbox: function (checkbox, enabled) {
+        if (enabled) {
+            checkbox.attr('checked', 'checked');
+        } else {
+            checkbox.removeAttr('checked');
+        }
+    }
 };
 
 var userSettings;
@@ -132,13 +145,13 @@ var environmentOptions;
 
 contentPage.sendMessage({type: 'initializeFrameScript'}, function (response) {
 
-	userSettings = response.userSettings;
-	enabledFilters = response.enabledFilters;
-	environmentOptions = response.environmentOptions;
-	AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
+    userSettings = response.userSettings;
+    enabledFilters = response.enabledFilters;
+    environmentOptions = response.environmentOptions;
+    AntiBannerFiltersId = response.constants.AntiBannerFiltersId;
 
-	$(document).ready(function () {
-		var controller = new PageController();
-		controller.init();
-	});
+    $(document).ready(function () {
+        var controller = new PageController();
+        controller.init();
+    });
 });

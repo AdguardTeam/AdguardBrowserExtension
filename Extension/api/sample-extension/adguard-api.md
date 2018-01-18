@@ -1,13 +1,13 @@
-# Adguard API
+# AdGuard API
 **Document version: 0.9**
 
-This document is a draft of Adguard's API.
+This document is a draft of AdGuard's API.
 
-## Including Adguard files into extension manifest
+## Including AdGuard files into extension manifest
 
-Here is what should be done for Adguard API to work.
+Here is what should be done for AdGuard API to work.
 
-#### 1. Add Adguard's content script to the manifest:
+#### 1. Add AdGuard's content script to the manifest:
 ```
     {
       "all_frames": true,
@@ -21,12 +21,12 @@ Here is what should be done for Adguard API to work.
     }
 ```
 
-#### 2. Add Adguard's script to the background page:
+#### 2. Add AdGuard's script to the background page:
 ```
 <script type="text/javascript" src="adguard/adguard-api.js"></script>
 ```
 
-#### 3. Add Adguard's assistant content script and CSS file to the manifest and modify `web_accessible_resources`:
+#### 3. Add AdGuard's assistant content script and CSS file to the manifest and modify `web_accessible_resources`:
 ```
     {
       "all_frames": false,
@@ -48,11 +48,11 @@ Here is what should be done for Adguard API to work.
 
 ## API methods
 
-Adguard API is exposed through a global javascript object: `adguardApi`.
+AdGuard API is exposed through a global javascript object: `adguardApi`.
 
 ### `adguardApi.start`
 
-Initializes Adguard and starts it immediately.
+Initializes AdGuard and starts it immediately.
 
 #### Syntax
 ```javascript
@@ -85,21 +85,21 @@ An array of filters identifiers. You can look for possible filters identifiers i
 
 `whitelist` (optional)
 
-An array of domains, for which Adguard won't work.
+An array of domains, for which AdGuard won't work.
 
 `blacklist` (optional)
 
-This property completely changes Adguard behavior. If it is defined, Adguard will work for domains from the `blacklist` only. All other domains will be ignored. If `blacklist` is defined, `whitelist` will be ignored.
+This property completely changes AdGuard behavior. If it is defined, Adguard will work for domains from the `blacklist` only. All other domains will be ignored. If `blacklist` is defined, `whitelist` will be ignored.
 
 `rules` (optional)
 
 An array of custom filtering rules. Here is an [article](https://adguard.com/en/filterrules.html) describing filtering rules syntax.
 
-These custom rules might be created by a user via Adguard Assistant UI.
+These custom rules might be created by a user via AdGuard Assistant UI.
 
 `filtersMetadataUrl` (mandatory)
 
-An absolute path to a file, containing filters metadata. Once started, Adguard will periodically check filters updates by downloading this file.
+An absolute path to a file, containing filters metadata. Once started, AdGuard will periodically check filters updates by downloading this file.
 
 **Example:**
 ```
@@ -122,7 +122,7 @@ https://filters.adtidy.org/extension/chromium/2.txt
 
 ### `adguardApi.stop`
 
-Completely stops Adguard.
+Completely stops AdGuard.
 
 #### Syntax
 ```javascript
@@ -133,7 +133,7 @@ adguardApi.stop(
 
 ### `adguardApi.configure`
 
-This method modifies Adguard configuration. Please note, that Adguard must be already started.
+This method modifies AdGuard configuration. Please note, that Adguard must be already started.
 
 #### Syntax
 ```javascript
@@ -194,7 +194,7 @@ Request mime type. Possible values are listed below.
 
 ### `adguardApi.openAssistant`
 
-This method opens the Adguard assistant UI in the specified tab. You should also add a listener for messages with type `assistant-create-rule` for rules, which are created by the Adguard assistant.
+This method opens the AdGuard assistant UI in the specified tab. You should also add a listener for messages with type `assistant-create-rule` for rules, which are created by the Adguard assistant.
 
 #### Syntax
 ```javascript
@@ -205,7 +205,7 @@ adguardApi.openAssistant(
 
 ### `adguardApi.closeAssistant`
 
-This method closes Adguard assistant in the specified tab.
+This method closes AdGuard assistant in the specified tab.
 
 #### Syntax
 ```javascript

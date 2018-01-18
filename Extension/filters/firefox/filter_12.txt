@@ -1,8 +1,8 @@
-! Checksum: 4Bf2J1kltVVK/Pwi7Hn6lQ
+! Checksum: hV2b6OTt+RCyjq0UOus+qQ
 ! Title: Safari filter
 ! Description: Special filter for Safari 9+ on iOS and OS X. We need a separate filter for Safari because it does not fully support our rules syntax.
-! Version: 1.0.3.62
-! TimeUpdated: 2017-09-18T13:02:21.007+04:00
+! Version: 1.0.4.7
+! TimeUpdated: 2018-01-12T14:01:22.175+04:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#safari
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -38,43 +38,59 @@
 !
 !****** TEMPORARY ******
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/7995
 !***********************
 !
-! URL exclusions for BlockAdBlock
-@@||zoover.adclixx.net/shared/bannerpages/darttagsbanner.aspx
-@@||zoover.adnetasia.com/shared/bannerpages/darttagsbanner.aspx
-@@||zoover.adtrackers.net/shared/bannerpages/darttagsbanner.aspx
-@@||zoover.bannertrack.net/shared/bannerpages/darttagsbanner.aspx
-@@||yasni.adclixx.net/design/relaunch/gfx/elitepartner_
-@@||yasni.adnetasia.com/design/relaunch/gfx/elitepartner_
-@@||yasni.adtrackers.net/design/relaunch/gfx/elitepartner_
-@@||yasni.bannertrack.net/design/relaunch/gfx/elitepartner_
-@@||torrentz.adclixx.net/mgid/ad.js
-@@||torrentz.adnetasia.com/mgid/ad.js
-@@||torrentz.adtrackers.net/mgid/ad.js
-@@||torrentz.bannertrack.net/mgid/ad.js
-@@||crunchyroll.adclixx.net/vast?fg=
-@@||crunchyroll.adnetasia.com/vast?fg=
-@@||crunchyroll.adtrackers.net/vast?fg=
-@@||crunchyroll.bannertrack.net/vast?fg=
-@@||ox-d.adclixx.net/auid=
-@@||ox-d.adnetasia.com/auid=
-@@||ox-d.adtrackers.net/auid=
-@@||ox-d.bannertrack.net/auid=
-@@||yahoo.adclixx.net/serv
-@@||yahoo.adnetasia.com/serv
-@@||yahoo.adtrackers.net/serv
-@@||yahoo.bannertrack.net/serv
-@@||serve.adclixx.net/promoload
-@@||serve.adnetasia.com/promoload
-@@||serve.adtrackers.net/promoload
-@@||serve.bannertrack.net/promoload
-@@||ads.twitter.com/favicon.ico
-@@||advertising.yahoo.com/favicon.ico
-@@||doubleclickbygoogle.com/favicon.ico
-@@||google.com/adsense/start/images/favicon.ico
-@@||gstatic.com/adx/doubleclick.ico
-!
+! https://github.com/AdguardTeam/AdguardFilters/issues/9576
+@@||1337x.info^$generichide
+! https://github.com/AdguardTeam/AdguardFilters/issues/9566
+@@||opensnow.com^$generichide
+@@||opensnow.com/js/fuckadblock.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/9552
+@@||uploadedpremiumlink.xyz^$generichide
+! https://github.com/AdguardTeam/AdguardFilters/issues/9539
+@@||sandrives.blogspot.de^$generichide
+@@||sandrives.blogspot.com^$generichide
+@@||sandrives.blogspot.com.au^$generichide
+! https://github.com/AdguardTeam/AdguardFilters/issues/9534
+pallok.com##.adsbygoogle
+@@||pallok.com^$generichide
+! https://github.com/AdguardTeam/AdguardFilters/issues/9527
+@@||nflstreams.me^$generichide
+! https://github.com/AdguardTeam/AdguardFilters/issues/9170
+@@||embed.kijk.nl^$generichide
+! https://github.com/AdguardTeam/AdguardFilters/issues/9110
+@@||businessvoip.me^$generichide
+businessvoip.me##.adsbygoogle
+! https://github.com/AdguardTeam/AdguardFilters/issues/9055
+@@||nazolog.com^$generichide
+nazolog.com##.adsbygoogle
+! https://github.com/AdguardTeam/AdguardFilters/issues/9019
+italiashare.life##.bforum > #___gcse_0 + div[align="center"]:not([id]):not([class])
+@@||italiashare.life^$generichide
+! https://github.com/AdguardTeam/AdguardFilters/issues/8989
+@@||9ketsuki.info^$generichide
+!https://github.com/AdguardTeam/AdguardFilters/issues/8800
+@@||play.anghami.com^$generichide
+play.anghami.com##.header-banner
+play.anghami.com##.content > .mpu
+! https://github.com/AdguardTeam/AdguardFilters/issues/8696
+@@||smslisten.com^$generichide
+! https://github.com/AdguardTeam/AdguardFilters/issues/8695
+@@||smsreceiving.com^$generichide
+! https://github.com/AdguardTeam/AdguardFilters/issues/8653
+@@||sabishiidesu.com^$generichide
+! https://github.com/AdguardTeam/AdguardFilters/issues/8567
+@@||yibtccoins.com^$generichide
+! https://github.com/AdguardTeam/AdguardFilters/issues/8557
+@@||faucethubgiveaway.win^$generichide
+! https://github.com/AdguardTeam/AdguardFilters/issues/8476
+@@||freebitcoin.win^$generichide
+! https://github.com/AdguardTeam/AdguardFilters/issues/8442
+@@||coinpot.win^$generichide
+! https://github.com/AdguardTeam/AdguardFilters/issues/8455
+@@||opensnow.com/js/fuckadblock.js
+@@||opensnow.com^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5314
 @@||jilhub.xyz^$generichide
 ! https://forum.adguard.com/index.php?threads/clkmein-com.22184/
@@ -109,7 +125,6 @@ mathb-ege.sdamgia.ru##.content >div[style="margin-bottom:20px"] > div[style="wid
 televisaofutebol.com#@#iframe[width="300"][height="250"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4906
 @@||mobilesringtones.com^$generichide
-@@||cdnjs.cloudflare.com/ajax/libs/fuckadblock/*/fuckadblock.min.js$domain=mobilesringtones.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4899
 @@||susutin.com^$generichide
 ! https://forum.adguard.com/index.php?threads/deezer-com-antiadblock.21269/
@@ -122,15 +137,6 @@ televisaofutebol.com#@#iframe[width="300"][height="250"]
 ! https://forum.adguard.com/index.php?threads/21060/
 @@||computerworm.net^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/4767
-! BlockAdBlock
-@@||adtrackers.net^$script,other,domain=crackhex.ch|animmex.tv|finalservers.net|freeomovie.com|cmacapps.com
-@@*.ico$domain=crackhex.ch|animmex.tv|finalservers.net|freeomovie.com|cmacapps.com
-@@||adclixx.net^$script,other,domain=crackhex.ch|animmex.tv|finalservers.net|freeomovie.com|cmacapps.com
-@@||adnetasia.com^$script,other,domain=crackhex.ch|animmex.tv|finalservers.net|freeomovie.com|cmacapps.com
-@@||bannertrack.net^$script,other,domain=crackhex.ch|animmex.tv|finalservers.net|freeomovie.com|cmacapps.com
-@@||crackhex.ch^$generichide
-@@||finalservers.net^$generichide
-@@||freeomovie.com^$generichide
 ! https://forum.adguard.com/index.php?threads/20240/
 @@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=broadbandforum.co
 @@||broadbandforum.co$generichide
@@ -163,14 +169,17 @@ televisaofutebol.com#@#iframe[width="300"][height="250"]
 !* impspcabe clickunder
 @@/path/ads/ads.js|
 @@||bambergerkennanchitinous.com/.adframesrc.
+@@||bambergerkennanchitinous.com/.adframesrc.
 @@||adsrvgateway.com/.adframesrc.
 @@||imprisonemblemhoosier.com/path/ads/ads.js
 @@||requiredcollectfilm.info/path/ads/ads.js
 @@||linoleictanzaniatitanic.com/path/ads/ads.js
-@@.adframesrc.$domain=votrube.ru|tumejortorrent.com|soundpark.pw|hentai-id.tv|salefiles.com|convertfiles.com|megapeer.org|bravoerotica.com
+@@.adframesrc.$domain=masalaclips.org|votrube.ru|tumejortorrent.com|soundpark.pw|hentai-id.tv|salefiles.com|convertfiles.com|megapeer.org|bravoerotica.com
 @@/ads/ad$domain=pipec.ru|xyya.net|pandamovie.net|streamgaroo.com|vidzi.tv|befuck.com
 @@||adstreet.tech/*ad$domain=befuck.com
 @@.adcenter.$domain=mcfucker.com|losmovies.club|rapidvideo.com|subs.ro
+@@||deutsche-porn.com^$generichide
+@@||masalaclips.org^$generichide
 @@||convertfiles.com^$generichide
 @@||watchvideo.us^$generichide
 @@||salefiles.com$generichide
@@ -436,7 +445,6 @@ ad4msan.com#@##adver5
 ad4msan.com#@##googleAdwordsModule
 ad4msan.com#@##iframeTopAd
 ad4msan.com#@##multi_ad
-ad4msan.com#@##ads
 ad4msan.com#@##adsense
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1353
 !@@||forbes.com^$elemhide
@@ -452,7 +460,6 @@ ad4msan.com#@##adsense
 !
 ! Extended CSS rules
 !
-sports.ru###branding-layout > a[style]:not([-ext-has="div"])
 !---------------------------------------------------------------------------!
 !-------------- Rules for specific websites --------------------------------!
 !---------------------------------------------------------------------------!
@@ -540,17 +547,20 @@ hdrezka.me##div[style="padding: 0px; margin: 0px;"] > table[style*="word-break:b
 @@||jsc.marketgid.com/*/seasonvar.ru.*.js
 @@||rootmedia.ws/js/lib.js
 tree.tv,comedy-film.net,free-torrent.org,free-torrents.org,onlyf.ws,torrentino.me##body > :not(div)
-tapochek.net##body > div#body_container > div#page_container > div#page_content > table > tbody > tr > td > div[id*="Composite"]
-24videos.me,ahs-online.net,all-episodes.net,all-tv.org,allhit.tv,amovies.biz,audioboo.ru,baskino.club,bigcinema.to,bigtorrent.org,bobfilm1.net,cloud.mail.ru,comedy-portal.net,cwer.ws,dnevniki-vampira.net,dochronika.ru,doramatv.ru,fanserials.tv,fast-bit.org,fast-torrent.ru,fastpic.ru,fasttorrent.ru,filin.tv,filmix-online.net,filmix.net,filmogo.co,filmtor.net,findanime.ru,firebit.net,fizrukoff.net,free-torrent.org,free-torrents.org,freehd.com.ua,game-torrent.info,games-reviews.net,hd720.biz,hdclub.org,hdkinomax.com,hdkinoteatr.com,hdrezka.me,hronika.info,ikinohd.com,kino-dom.org,kino-hd.in,kino-hd720.net,kino-live.red,kino-live2.org,kino-nada.net,kino-v-online.tv,kinoclips.net,kinogb.net,kinogo-co-2016.ru,kinogo-hd.net,kinogo-net-2016.ru,kinogo-net-co.ru,kinogo-online.net,kinogo.club,kinogo.eu,kinoklad.net,kinokong.net,kinokrad.co,kinoprosmotr.net,kinosvit.tv,kinozadrot.net,kinozz.net,klipzona.co,krutor.org,linecinema.org,livetv-torrent.com,lostfilm-online.ru,lostfilmonline.ru,megaserial.net,megogo-hd.net,multiki-online24.ru,my-tfile.org,n-torrents.ru,nice-film.ru,nnm-club.me,nnmclub.to,nod32eset.ru,nowa.cc,onelike.tv,onlainfilm.ucoz.ua,online-freebee.net,online-life.cc,only-tv.org,ostfilm.tv,ovgorskiy.ru,radikal.ru,rsload.net,rufilmtv.org,rumedia.ws,rustorka.com,rutor.info,seasonvar.ru,serialguru.ru,serialytut.tv,sezon-hd.ru,show-online.tv,stereotraker.ru,tapochek.net,tfile-music.org,tfile.co,tfilm.club,tivix.net,torrent-games.net,torrent-soft.net,torrent-windows.net,tracker.hdclub.com.ua,trackeroc.ru,trackerock.ru,tracktor.tv,trialeset.ru,turkcinema.tv,tv-torrent.org,tvbook.tv,tvfru.net,uniongang.net,unionpeer.org,wikianime.ru,x-true.info,yourcinema.tv,yummyanime.com,zagonka.ru##body > div[id][class][style*="data:image/jpeg;base64"]
+nnm-club.tv,24videos.me,ahs-online.net,all-episodes.net,all-tv.org,allhit.tv,amovies.biz,audioboo.ru,baskino.club,bigcinema.to,bigtorrent.org,bobfilm1.net,cloud.mail.ru,comedy-portal.net,cwer.ws,dnevniki-vampira.net,dochronika.ru,doramatv.ru,fanserials.tv,fast-bit.org,fast-torrent.ru,fastpic.ru,fasttorrent.ru,filin.tv,filmix-online.net,filmix.net,filmogo.co,filmtor.net,findanime.ru,firebit.net,fizrukoff.net,free-torrent.org,free-torrents.org,freehd.com.ua,game-torrent.info,games-reviews.net,hd720.biz,hdkinomax.com,hdkinoteatr.com,hdrezka.me,hronika.info,ikinohd.com,kino-dom.org,kino-hd.in,kino-hd720.net,kino-live.red,kino-live2.org,kino-nada.net,kino-v-online.tv,kinoclips.net,kinogb.net,kinogo-co-2016.ru,kinogo-hd.net,kinogo-net-2016.ru,kinogo-net-co.ru,kinogo-online.net,kinogo.club,kinogo.eu,kinoklad.net,kinokong.net,kinokrad.co,kinoprosmotr.net,kinosvit.tv,kinozadrot.net,kinozz.net,klipzona.co,krutor.org,linecinema.org,livetv-torrent.com,lostfilm-online.ru,lostfilmonline.ru,megaserial.net,megogo-hd.net,multiki-online24.ru,my-tfile.org,n-torrents.ru,nice-film.ru,nnm-club.me,nnmclub.to,nod32eset.ru,nowa.cc,onelike.tv,onlainfilm.ucoz.ua,online-freebee.net,online-life.cc,only-tv.org,ostfilm.tv,ovgorskiy.ru,radikal.ru,rsload.net,rufilmtv.org,rumedia.ws,rustorka.com,rutor.info,seasonvar.ru,serialguru.ru,serialytut.tv,sezon-hd.ru,show-online.tv,stereotraker.ru,tapochek.net,tfile-music.org,tfile.co,tfilm.club,tivix.net,torrent-games.net,torrent-soft.net,torrent-windows.net,tracker.hdclub.com.ua,trackeroc.ru,trackerock.ru,tracktor.tv,trialeset.ru,turkcinema.tv,tv-torrent.org,tvbook.tv,tvfru.net,uniongang.net,unionpeer.org,wikianime.ru,x-true.info,yourcinema.tv,yummyanime.com,zagonka.ru##body > div[id][class][style*="data:image/jpeg;base64"]
 rutorgames.org##body > noindex
 filmix.net##noindex > div[style$="!important;"]
-nnm-club.me,nnmclub.to,filmix.net,kinokrad.co##div[id*="Composite"]
-nnm-club.me,nnmclub.to##.leftnav > center > noindex
-baskino.club##div[id*="Composite"] *
+nnm-club.tv,nnm-club.me,nnmclub.to##.leftnav > center > noindex
 meddaily.ru##div[style="width: 240px; background-color: White;"]
 !***
 !******
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/8401
+9to5mac.com,9to5google.com##div[class^="th"][class*=" th"]
+! https://github.com/AdguardTeam/AdguardFilters/issues/7793
+motorradonline.de##.mps-banner > span
+! https://forum.adguard.com/index.php?threads/26080/
+themefire.net##.adsbygoogle
 ! https://github.com/AdguardTeam/AdguardFilters/issues/5149
 convertfiles.com###advertisement_section
 convertfiles.com##div[id^="div-gpt-ad"]
@@ -582,6 +592,7 @@ forbes.com###stackForbesAdvoice
 forbes.com##.article-speed-bump
 ! AdMaven mobile clickunder
 flashx.tv###__admvn_ios_ol
+xclusivejams2.com##a[href^="//ayclinical.com"]
 ! https://forum.adguard.com/index.php?threads/18517/
 specout.com##.ad-text
 system-on-a-chip.specout.com##div.ad
@@ -597,9 +608,6 @@ golem.de###screen > div[id][data-google-query-id]
 !
 ! https://forum.adguard.com/index.php?threads/19829/
 stupdroid.com##.adsbygoogle
-sports.ru###branding-layout > a[style]:not([-ext-has="div"])
-||s5o.ru/source/_desktop/assets/mara-$image
-||s5o.ru/source/_desktop/assets/mara_$image
 ! https://forum.adguard.com/index.php?threads/13017/
 torrentdownloads.me##a[href^="http://www.friendlyquacks.com/"]
 ! https://github.com/AdguardTeam/AdguardForiOS/issues/128
@@ -673,6 +681,17 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 @@||youtube.com/get_video_info?
 @@||youtube.com/yts/jsbin/player-*/base.js
 @@||youtube.com/yts/jsbin/www-embed-player-*/www-embed-player.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/8073
+@@||tracking.asosconnect.com/aff_c?offer_id=*&aff_id=*&aff_sub=clickref&*&url=http%3a%2f%2fwww.asos.de%2fasos%2f
+! https://github.com/AdguardTeam/AdguardFilters/issues/7125
+@@||googleusercontent.com/download/$domain=9anime.to
+@@||p.jwpcdn.com/player/$domain=9anime.to
+@@||playercdn.net/*.mp4$domain=9anime.to
+! https://github.com/AdguardTeam/AdguardFilters/issues/6760
+@@||ahcdn.com/*.mp4$domain=xhamster.com
+@@||xhcdn.com/*.mp4$domain=xhamster.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/7211
+@@||google.com/recaptcha/$domain=pornhub.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6731
 @@||cdnjs.cloudflare.com/ajax/libs/$domain=xmoviesforyou.com
 @@||fruithosted.net/dl/*.mp4
@@ -695,7 +714,7 @@ m.sports.ru##iframe[src^="http://www.sports.ru/desktop/special/"]
 @@||engine.admelon.ru/c?pid=$domain=argumenti.ru
 @@||engine2.admelon.ru/c?pid=$domain=argumenti.ru
 ! rarbg - сhoose popup instead of popunder. Popup will be blocked.
-@@||dyncdn.me/static/20/js/expla*.js$domain=rarbg.to|rarbg.unblocked.work|rarbgmirror.com
+@@||dyncdn.me/static/20/js/expla*.js$domain=rarbg.to|rarbg.unblocked.work|rarbgmirror.com|rarbgaccess.org
 ! https://github.com/AdguardTeam/AdguardBrowserExtension/issues/678
 ! Prevent self-blocking of Adguard for Safari extension
 @@safari-extension://com.adguard.safari-$document
@@ -815,7 +834,6 @@ ultrafilmizle.com#@##psreklam
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2811
 @@||cdnssl.mediafire.com/js/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2112
-@@||googleadservices.com/pagead/aclk?*&adurl=
 @@||xg4ken.com/trk/*&adgroupid=
 ! https://github.com/AdguardTeam/AdguardFilters/issues/2751
 @@||analytics.edgesuite.net^$domain=foxnews.com
@@ -879,9 +897,6 @@ cari.com.my###cvidloader
 ! https://github.com/AdguardTeam/ExperimentalFilter/issues/1071
 ! nfl.com - fixing video
 @@||googletagservices.com/tag/js/gpt.js$domain=nfl.com
-! https://github.com/AdguardTeam/AdguardBrowserExtension/issues/182
-! fixing acceptable ads on Google search
-@@||googleadservices.com/pagead/aclk?
 ! http://forum.adguard.com/showthread.php?6936
 @@||go.admost.com/adx/js/admost.js^$domain=mackolik.com
 ! http://forum.adguard.com/showthread.php?7046
@@ -937,6 +952,8 @@ youtube.com#%#(function () {try {var youtubeAdRegExp = /^((.*_)?(ad|ads|afv|adse
 @@||adverweb.cjenm.com/vod.mezzo/$domain=m.tving.com
 @@||cc.naver.com/cc^$image
 @@||pagead2.googlesyndication.com/pagead/show_ads.js^$domain=sportsseoul.co.kr|sportsseoul.com
+@@||spdeliver.i-mobile.co.jp/script/adcore_pc_inline.js^$domain=totomi.co
+@@||spdeliver.i-mobile.co.jp/script/ads.js^$domain=totomi.co
 @@||tab2.clickmon.co.kr/pop/wp_ad_728_js.php^$domain=ilsangt.tistory.com
 !@@||tvcast.naver.com/resources/*/clickcr_*.js^ - until Adguard browser extensions suppport $empty modifier
 @@||wcs.naver.net/wcslog.js^
@@ -954,10 +971,11 @@ youtube.com#%#(function () {try {var youtubeAdRegExp = /^((.*_)?(ad|ads|afv|adse
 @@||minitoon.net^$generichide
 @@||money2015.tistory.com^$generichide
 @@||mongri.net^$generichide
-@@||pinaya.center^$generichide
 @@||ruinses.tistory.com^$generichide
 @@||ssulwar.com^$generichide
 @@||te31.com^$generichide
+@@||webzook.net^$generichide
+@@||yabang.org^$generichide
 @@||anigod.com^$generichide
 @@||anigod.org^$generichide
 @@||kflix.tv^$generichide

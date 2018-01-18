@@ -88,7 +88,10 @@ var browser = window.browser || chrome;
         //https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
         var requestDetails = {
             requestUrl: details.url,    //request url
-            tab: tab                    //request tab
+            tab: tab,                   //request tab,
+            requestId: details.requestId,
+            statusCode: details.statusCode,
+            method: details.method
         };
 
         var frameId = 0;        //id of this frame (only for main_frame and sub_frame types)
@@ -256,7 +259,8 @@ var browser = window.browser || chrome;
         onErrorOccurred: browser.webRequest.onErrorOccurred,
         onHeadersReceived: onHeadersReceived,
         onBeforeSendHeaders: onBeforeSendHeaders,
-        webSocketSupported: typeof browser.webRequest.ResourceType !== 'undefined' && browser.webRequest.ResourceType['WEBSOCKET'] === 'websocket'
+        webSocketSupported: typeof browser.webRequest.ResourceType !== 'undefined' && browser.webRequest.ResourceType['WEBSOCKET'] === 'websocket',
+        filterResponseData: browser.webRequest.filterResponseData
     };
 
     var onCreatedNavigationTarget = {

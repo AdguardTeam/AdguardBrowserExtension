@@ -29,6 +29,8 @@ adguard.initialize = function () {
             popup: adguard.getURL('pages/popup.html')
         });
 
+        adguard.whitelist.init();
+
         /**
          * Start application
          */
@@ -54,6 +56,7 @@ adguard.initialize = function () {
         });
     }
 
-    adguard.localStorage.init(onLocalStorageLoaded);
-
+    adguard.rulesStorage.init(function () {
+        adguard.localStorage.init(onLocalStorageLoaded);
+    });
 };

@@ -60,6 +60,10 @@ result=1
     node-qunit-phantomjs css-filter/test-css-filter.html
 ) || result=0
 (
+    echo "Content filter tests"
+    node-qunit-phantomjs content-filter/test-content-filter.html
+) || result=0
+(
     echo "Css hits tests"
     node-qunit-phantomjs css-filter/test-css-hits.html
 ) || result=0

@@ -30,12 +30,12 @@
 
 		delete tabsLoading[tabId];
 
-		var requestRule = adguard.webRequestService.getRuleForRequest(sourceTab, requestUrl, referrerUrl, adguard.RequestTypes.POPUP);
+		var requestRule = adguard.webRequestService.getRuleForRequest(sourceTab, requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT);
 
-		if (adguard.webRequestService.isRequestBlockedByRule(requestRule)) {
+        if (adguard.webRequestService.isPopupBlockedByRule(requestRule)) {
+
 			//remove popup tab
 			adguard.tabs.remove(tabId);
-			//append log event and fix log event type from POPUP to DOCUMENT
 			adguard.webRequestService.postProcessRequest(sourceTab, requestUrl, referrerUrl, adguard.RequestTypes.DOCUMENT, requestRule);
 		}
 	}

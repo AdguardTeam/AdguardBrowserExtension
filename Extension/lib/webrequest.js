@@ -46,6 +46,7 @@
     function onBeforeRequest(requestDetails) {
 
         var tab = requestDetails.tab;
+        var requestId = requestDetails.requestId;
         var requestUrl = requestDetails.requestUrl;
         var requestType = requestDetails.requestType;
 
@@ -54,8 +55,20 @@
         }
 
         if (requestType === adguard.RequestTypes.DOCUMENT) {
+
+            adguard.filteringLog.clearEventsByTabId(tab.tabId);
+
             // Reset tab button state
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_TAB_BUTTON_STATE, tab, true);
+
+            /**
+             * In the case of the "about:newtab" pages we don't receive onResponseReceived event for the main_frame, so we have to append log event here.
+             * Also if chrome://newtab is overwritten, we won't receive any webRequest events for the main_frame
+             * Unfortunately, we can't do anything in this case and just must remember about it
+             */
+            var tabRequestRule = adguard.frames.getFrameWhiteListRule(tab);
+            adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, requestUrl, requestType, tabRequestRule, requestId);
+
             return;
         }
 
@@ -66,9 +79,10 @@
         var referrerUrl = getReferrerUrl(requestDetails);
 
         var requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
-        adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
 
-        return adguard.webRequestService.getBlockedResponseByRule(requestRule);
+        adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule, requestId);
+
+        return adguard.webRequestService.getBlockedResponseByRule(requestRule, requestType);
     }
 
     /**
@@ -123,12 +137,20 @@
         var responseHeaders = requestDetails.responseHeaders;
         var requestType = requestDetails.requestType;
         var referrerUrl = getReferrerUrl(requestDetails);
+        var requestId = requestDetails.requestId;
+        var statusCode = requestDetails.statusCode;
+        var method = requestDetails.method;
 
-        adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
+        adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders, requestId);
 
         // Safebrowsing check
         if (requestType === adguard.RequestTypes.DOCUMENT) {
             filterSafebrowsing(tab, requestUrl);
+        }
+
+        if (adguard.contentFiltering) {
+            var contentType = adguard.utils.browser.getHeaderValueByName(responseHeaders, 'content-type');
+            adguard.contentFiltering.apply(tab, requestUrl, referrerUrl, requestType, requestId, statusCode, method, contentType);
         }
 
         if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
@@ -201,7 +223,7 @@
         }
         if (legacyCspRule) {
             adguard.webRequestService.recordRuleHit(tab, legacyCspRule, frameUrl);
-            adguard.filteringLog.addEvent(tab, 'content-security-policy-check', frameUrl, adguard.RequestTypes.CSP, legacyCspRule);
+            adguard.filteringLog.addHttpRequestEvent(tab, 'content-security-policy-check', frameUrl, adguard.RequestTypes.CSP, legacyCspRule);
         }
 
         /**
@@ -220,7 +242,7 @@
                     });
                 }
                 adguard.webRequestService.recordRuleHit(tab, rule, requestUrl);
-                adguard.filteringLog.addEvent(tab, requestUrl, frameUrl, adguard.RequestTypes.CSP, rule);
+                adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, frameUrl, adguard.RequestTypes.CSP, rule);
             }
         }
 
@@ -266,7 +288,7 @@
         adguard.safebrowsing.checkSafebrowsingFilter(mainFrameUrl, referrerUrl, function (safebrowsingUrl) {
             // Chrome doesn't allow open extension url in incognito mode
             // So close current tab and open new
-            if (incognitoTab && adguard.utils.browser.isChromium()) {
+            if (adguard.utils.browser.isChromium()) {
                 adguard.ui.openTab(safebrowsingUrl, {}, function () {
                     adguard.tabs.remove(tab.tabId);
                 });
@@ -282,7 +304,6 @@
     adguard.webRequest.onBeforeRequest.addListener(onBeforeRequest, ["<all_urls>"]);
     adguard.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, ["<all_urls>"]);
     adguard.webRequest.onHeadersReceived.addListener(onHeadersReceived, ["<all_urls>"]);
-
 
     // AG for Windows and Mac checks either request signature or request Referer to authorize request.
     // Referer cannot be forged by the website so it's ok for add-on authorization.
