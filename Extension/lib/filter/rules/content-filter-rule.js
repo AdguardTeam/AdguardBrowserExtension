@@ -178,9 +178,6 @@
                     break;
                 case TAG_CONTENT_MAX_LENGTH:
                     this.maxLength = parseInt(attributeValue);
-                    if (this.maxLength > 32768 || this.maxLength < 0) {
-                        throw TAG_CONTENT_MAX_LENGTH + ' must be less than 32kb';
-                    }
                     break;
                 case TAG_CONTENT_MIN_LENGTH:
                     this.minLength = parseInt(attributeValue);
