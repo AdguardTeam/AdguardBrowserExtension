@@ -1,4 +1,4 @@
-# AdGuard Browser Extension
+# AdGuard Browser Extension [![Build Status](https://travis-ci.org/AdguardTeam/AdguardBrowserExtension.svg?branch=master)](https://travis-ci.org/AdguardTeam/AdguardBrowserExtension)
 > ### Disclaimer
 > * AdGuard Browser Extension is free. We believe that all free products should be open source, and AdGuard Browser Extension is not an exception. Its code can be found in this repository.
 > * Privacy policy: https://adguard.com/privacy/browser-extension.html (Briefly: AdGuard sends only necessary, limited information, e.g. information required for filter updates).
