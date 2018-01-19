@@ -1,8 +1,8 @@
-! Checksum: VFvClby32Gwi51XHi0GO6Q
+! Checksum: 7MX+xBOQDhzDj18SZVQ5Aw
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on webpages including cookie notices third-party widgets and in-page popups.
-! Version: 1.0.24.56
-! TimeUpdated: 2018-01-16T17:01:35.218+04:00
+! Version: 1.0.24.73
+! TimeUpdated: 2018-01-18T20:01:25.824+04:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#annoyances
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -28,6 +28,12 @@
 !
 !######### Annoying elements (not ads)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/9988
+foerderland.de###footerFlyout
+! https://github.com/AdguardTeam/AdguardFilters/issues/9997
+1movies.to###subsribe_news
+! https://github.com/AdguardTeam/AdguardFilters/issues/9862
+spiegel.de##a[href^="/newsletter/"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9761
 blickamabend.ch##.rightElement > .widget_maxiteaser + h3
 blickamabend.ch##.rightElement > .widget_maxiteaser + h3 + div[style]
@@ -545,6 +551,8 @@ afisha.yandex.by,afisha.yandex.com,afisha.yandex.kz,afisha.yandex.ru,afisha.yand
 avia.yandex.by,avia.yandex.kz,avia.yandex.ru,avia.yandex.ua,bilet.yandex.com.tr,flights.yandex.com##.mobile-app-links_kb
 !
 ! Yandex.Music
+! Anti-adblock message
+music.yandex.by,music.yandex.kz,music.yandex.ru,music.yandex.ua##.notify__message
 ! Disable ads(bottom)
 music.yandex.by,music.yandex.kz,music.yandex.ru,music.yandex.ua#$#.bar_new-pay-under > div.progress { bottom: 60px!important; }
 music.yandex.by,music.yandex.kz,music.yandex.ru,music.yandex.ua#$#.bar_new-pay-under { height: 60px!important; }
@@ -553,6 +561,7 @@ music.yandex.by,music.yandex.kz,music.yandex.ru,music.yandex.ua##.bar__new-pay
 music.yandex.by,music.yandex.kz,music.yandex.ru,music.yandex.ua##.ads-block__no-ads
 ! Mobile apps
 music.yandex.by,music.yandex.kz,music.yandex.ru,music.yandex.ua##.button-store_all
+music.yandex.by,music.yandex.kz,music.yandex.ru,music.yandex.ua##.app-sms
 ! Promo (dogs)
 music.yandex.by,music.yandex.kz,music.yandex.ru,music.yandex.ua##a[href="/contest/dogmoroz"]
 ! Paid subscription
@@ -580,6 +589,9 @@ translate.yandex.by,translate.yandex.com,ceviri.yandex.com.tr,translate.yandex.f
 !***
 !* Subscriptions/newsletters (not popups)
 !*
+onhax.net##.jetpack_subscription_widget
+onhax.net###sb_viewer > ul > #text-5
+chita.ru##.subscribe-form
 incrussia.ru##.subs
 techinside.com##.jetpack_subscription_widget
 mesosphere.com##.subscribe-post.js-subscriber-cookie
@@ -1053,6 +1065,8 @@ rulu.co#%#!function(b,a){AG_defineProperty('CloudflareApps.installs',{get:functi
 /wp-content/plugins/kill-adblock/*
 ##.kill-adblock-container
 !
+myegy.tv##.link-content > .disclaimer
+f.tabtter.jp#@##googlead
 @@||showsport-tv.com/showads.js
 @@||ci.rdtcdn.com/www-static/js/adframe.js
 onlinethreatalerts.com###adblockermsg
@@ -3316,6 +3330,12 @@ chimica-online.it###cookieChoiceInfo
 !+ PLATFORM(ios, ext_safari, ext_android_cb)
 strunz.com###v-cookielaw
 !
+vvvvid.it##.cookie-alert-container
+ucpa-vacances.com###bandeau_cnil
+ign.com##.evidon-banner
+aerobaticteams.net##.cookies-agreement
+elconfidencial.com##.disclaimer-cookies-message
+udacity.com##ir-cookie-consent
 markapark.com###header > .htext
 decathlon.com.tr###fr_cookie_alert
 huurwoningnet.nl##.cc-cookiecontainer
@@ -4187,6 +4207,8 @@ ziekenhuis.nl#%#AG_onLoad(function() { setTimeout(function() {var check = docume
 !#######################################################
 !######### White list. Fixing filtering errors #########
 !#######################################################
+! https://github.com/AdguardTeam/AdguardFilters/issues/9856
+@@||tonatto.com/skin/*css
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9514
 moemax.de#@#.cookie-bar
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9142
@@ -4481,6 +4503,7 @@ morgenpost.de##.article--type-news > aside.article__aside[-ext-has="> div.sideba
 !
 !--- Ads ---
 !
+hi-cd.ru##.bannpanel
 ||factum-magazin.ch/sites/default/files/werbung
 factum-magazin.ch##.view-werbung
 torrentec.com##center > a[href^="https://goo.gl/"] > img
@@ -4655,6 +4678,8 @@ gir.im##.smartbanner
 !+ NOT_PLATFORM(ios, ext_android_cb)
 shazam.com##.shz-frame-apps-banner
 !
+coursera.org##.rc-MobilePromoBannerBottom
+hi-news.ru###app-post
 blickamabend.ch###mobdl
 binance.com##.ng-scope > div.download-fixed
 ||gir.im/assets/scripts/smart-app-banner.js
@@ -5006,6 +5031,10 @@ edeka.de#@##smartbanner.android
 !
 ! Specific sites
 !
+chita.ru###subscribe-sendpulse
+topspb.tv##.social-popup
+rupornotube.me##.inline_el
+root-nation.com##.td-more-articles-box
 onlinemultfilmy.ru###add_favorite_tooltip
 radyopop.com###fancybox-wrap
 radyopop.com###fancybox-overlay
@@ -5182,7 +5211,7 @@ tamiltunes.live###fbslidebox
 dota2.ru###vkd2ru-content
 dota2.ru###vkd2ru-overlay
 prizyv.ru##.pum-overlay
-tomsguide.com###ec-popup-modal
+tomsguide.com,tomsguide.fr###ec-popup-modal
 softonic.com##div[id^="Newsletter-Subscription"]
 cebhe.info###rooteto_geri
 tomshardware.com##.ec-popup-modal
@@ -5798,6 +5827,8 @@ livelib.ru,lenta.ru,rambler.ru,sports.ru#%#(function() { if (typeof Notification
 sports.ru#%#(function() { try { if ("undefined" != typeof localStorage) { var a = { date: (new Date).toString(), time: (new Date).getTime(), data: 2 }; localStorage.setItem("sports:view:notifications-subscribe-popup:closed:count", JSON.stringify(a)) } } catch (ex) {} })();
 sports.ru#%#(function() { try { if ("undefined" != typeof localStorage) { var a = { date: (new Date).toString(), time: (new Date).getTime(), data: true }; localStorage.setItem("sports:view:notifications-subscribe-popup:view", JSON.stringify(a)) } } catch (ex) {} })();
 !
+forbes.ru##.push_warn
+forbes.ru##.push_back
 petburada.com##.tsoft-push--in-notification
 smutty.com###noti_msg
 doctor.ndtv.com###___ndtvpushdiv
@@ -5809,7 +5840,6 @@ arabam.com##.notification-bar
 ceptetamir.com##.frizbit-prompt
 encilek.com##.insider-opt-in-notification
 vc.ru##.push_subscribe
-fikriyat.com##.notBar
 bkmkitap.com##.tsoft-push--in-notification
 koroglugazetesi.com##.alerttt
 ura.news###sub_bottom
@@ -5867,7 +5897,7 @@ qrz.ru###qrzpush-prompt-widget
 habertam.com,nededik.com##.alerttt
 trinixy.ru##.b-notification-push
 gittigidiyor.com##.gg-subscribe-container
-ahaber.com.tr,sabah.com.tr,takvim.com.tr##.notBar
+fotomac.com.tr,fikriyat.com,ahaber.com.tr,sabah.com.tr,takvim.com.tr##.notBar
 haberturk.com##.notifacition-area
 haber7.com##.notification-box
 tass.ru##.push-notice
@@ -5907,7 +5937,6 @@ zr.ru#%#document.cookie = "zrPushSubsPopUp=1";
 !
 t-online.de##.Tvideosearch ~ #Tcontbox > #Tcontboxi > div[class]:not([id]):not([onfocus]):not(.Tinfinitlayer)
 t-online.de##div[data-dy-embedded-object]
-evdekimseyok70.com###rb_300
 vivud.com##.closeContainer
 videam.party##.ads
 westgahome.com##.fZone
@@ -6753,6 +6782,8 @@ te-en.com##splashvip
 !##############################
 !######### CSS tweaks #########
 !##############################
+! https://github.com/AdguardTeam/AdguardFilters/issues/10021
+dwatchseries.to##.sp-leader
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9338
 ilikewallpaper.net#$##divWalllist { padding: 0px!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9053

@@ -1,8 +1,8 @@
-! Checksum: c1DQOzLxbub/Gv8QBL2QXQ
+! Checksum: kGqhAVy2G038R5o92ozRhg
 ! Title: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. If you do not want your actions on the Internet to be tracked, use this filter.
-! Version: 1.0.16.95
-! TimeUpdated: 2018-01-16T17:00:45.054+04:00
+! Version: 1.0.17.3
+! TimeUpdated: 2018-01-18T18:00:39.090+04:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#privacy
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -101,6 +101,7 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 ! Should be uncommented once v2.10 goes live
 ! ||app-measurement.com^
 !
+||d10lpsik1i8c69.cloudfront.net^$third-party
 ||stg-data-collector.playbuzz.com^
 ||smrtrdrct.com^$third-party
 ||adblockmetrics.ru^$third-party
@@ -4087,6 +4088,31 @@ charlestownwyllie.oaklawnnonantum.com^
 /cdn-cgi/pe/bag2?*scorecardresearch.com
 /cdn-cgi/pe/bag2?r[]=*ps.eyeota.net
 /cdn-cgi/pe/bag2?r[]=*whos.amung.us
+/cdn-cgi/pe/bag2?*.google-analytics.com
+/cdn-cgi/pe/bag2?*bluekai.com
+/cdn-cgi/pe/bag2?*bounceexchange.com
+/cdn-cgi/pe/bag2?*cdn.onthe.io%2Fio.js
+/cdn-cgi/pe/bag2?*chartbeat.js
+/cdn-cgi/pe/bag2?*dnn506yrbagrg.cloudfront.net
+/cdn-cgi/pe/bag2?*geoiplookup
+/cdn-cgi/pe/bag2?*getblueshift.com
+/cdn-cgi/pe/bag2?*google-analytics.com
+/cdn-cgi/pe/bag2?*histats.com
+/cdn-cgi/pe/bag2?*hs-analytics.net
+/cdn-cgi/pe/bag2?*log.outbrain.com
+/cdn-cgi/pe/bag2?*mc.yandex.ru
+/cdn-cgi/pe/bag2?*newrelic.com
+/cdn-cgi/pe/bag2?*nr-data.net
+/cdn-cgi/pe/bag2?*optimizely.com
+/cdn-cgi/pe/bag2?*piwik.js
+/cdn-cgi/pe/bag2?*quantserve.com
+/cdn-cgi/pe/bag2?*radarurl.com
+/cdn-cgi/pe/bag2?*scorecardresearch.com
+/cdn-cgi/pe/bag2?*static.getclicky.com%2Fjs
+/cdn-cgi/pe/bag2?*viglink.com
+/cdn-cgi/pe/bag2?*yieldbot.intent.js
+/cdn-cgi/pe/bag2?r[]=*ps.eyeota.net
+/cdn-cgi/pe/bag2?r[]=*whos.amung.us
 /click_metrics-jquery.js
 /cnt.aspx?*rnd=
 /cp2.gif?
@@ -4225,6 +4251,7 @@ link.gmapp*.net$image
 ||scorecardresearch.com^$domain=cnet.com,important
 ! End: cnet.com trackers
 !
+||google-analtyics.com/analytics.js
 ||api.jetlore.com/track.png?
 ||dz7cp6bdqjjn5.cloudfront.net/q/s/stats/init.min.js
 ||tagsd.com/newServing/tracking_id.php^
@@ -5172,6 +5199,16 @@ dreamprogs.net##td[width="88"][height="31"]
 !-------------- Whitelist ------------------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/9914
+@@||google-analytics.com/analytics.js$domain=chocotv.com.tw
+! https://github.com/AdguardTeam/AdguardFilters/issues/9889
+@@||googletagmanager.com/gtm.js^$domain=hurriyet.com.tr
+! https://github.com/AdguardTeam/AdguardFilters/issues/9973
+@@||cloudfront.net/libs/amplitude-*-min.gz.js$domain=elconfidencial.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/9935
+@@||cdn.mxpnl.com/libs/mixpanel-2-latest.min.js$domain=twe.no
+! https://github.com/AdguardTeam/AdguardFilters/issues/9880
+@@||google-analytics.com/analytics.js$domain=ndtv.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9665
 @@||cdn.cxense.com/cx.js$domain=itmedia.co.jp
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9529
@@ -5878,6 +5915,18 @@ mozilla-russia.org#@#img[width="88"][height="31"]
 ! http://forum.adguard.com/showthread.php?2229
 @@.2o7.net/$domain=today.com
 !
+@@/cdn-cgi/pe/bag2?*google-analytics.com%2Fanalytics.js$domain=amypink.de|biznews.com|cryptospot.me|dailycaller.com|droid-life.com|forwardprogressives.com|fpif.org|fullpotentialma.com|geekzone.co.nz|goldsday.com|hoyentec.com|imageupload.co.uk|is-arquitectura.es|lazygamer.net|lingholic.com|mmanews.com|nehandaradio.com|nmac.to|orain.org|tvunblock.com|unilad.co.uk|xrussianteens.com|youngcons.com
+@@/cdn-cgi/pe/bag2?*googleadservices.com$domain=droid-life.com
+@@/cdn-cgi/pe/bag2?*googlesyndication.com%2Fpagead%2Fosd.js$domain=forwardprogressives.com
+@@/cdn-cgi/pe/bag2?*histats.com$domain=nmac.to|xrussianteens.com
+@@/cdn-cgi/pe/bag2?*log.outbrain.com$domain=dailycaller.com
+@@/cdn-cgi/pe/bag2?*newrelic.com$domain=clamav.net|dailycaller.com
+@@/cdn-cgi/pe/bag2?*piwik.js$domain=orain.org
+@@/cdn-cgi/pe/bag2?*quantserve.com$xmlhttprequest,domain=dailycaller.com
+@@/cdn-cgi/pe/bag2?*scorecardresearch.com$xmlhttprequest,domain=amren.com|amypink.de|biznews.com|dailycaller.com|droid-life.com|mmanews.com|nehandaradio.com|unilad.co.uk
+@@/cdn-cgi/pe/bag2?*skimlinks.js$domain=droid-life.com
+@@/cdn-cgi/pe/bag2?*static.getclicky.com%2Fjs$domain=amazingpics.net
+@@/cdn-cgi/pe/bag2?*yieldbot.intent.js$domain=droid-life.com
 @@/cdn-cgi/pe/bag2?*nr-data.net$domain=dailycaller.com|realhardwarereviews.com|thepoliticalinsider.com
 @@||bam.nr-data.net^$script,domain=play.spotify.com
 @@||google-analytics.com/ga.js$domain=7digital.com|account.hirezstudios.com|aebn.net|aftonbladet.se|alatest.com|americanapparel.net|apps.facebook.com|asus.com|avast.com|babylon.com|bangbros.com|banshee.fm|billabong.com|billboard.com|bolha.com|bookadumpster.com|boostmobile.com|break.com|brobible.com|change.org|cinemassacre.com|comingsoon.net|comingsoon.neteverydayhealth.com|dailyfreegames.com|dailysteals.com|donanimhaber.com|echo.msk.ru|ehow.com|eonline.com|filmweb.pl|fora.tv|fossil.com|foxsports.com.au|frequency.com|g4tv.com|gasbuddy.com|globaltv.com|google.com|gumtree.com.au|hoerzu.de|imageshack.us|intellicast.com|jetbrains.com|jobsite.co.uk|justjared.com|juxtapoz.com|kaspersky.pl|kleinanzeigen.ebay.de|latimes.com|lemonfree.com|liptonicetea.com|logitech.com|lucasarts.com|mashable.com|maxcdn.com|media.zie.nl|medonet.pl|meetme.com|mevio.com|mommyish.com|newyorker.com|nme.com|nuts.co.uk|opendns.com|oyster.com|philips.com|photobucket.com|priceme.co.nz|priestville.org|salon.com|search.diy.com|seekingalpha.com|sundance.org|techbargains.com|tempe12.com|theblaze.com|thegrindstone.com|thevine.com.au|theweek.com|threatfire.com|timberland.com|tomshardware.com|tube8.com|tvunetworks.com|tweetgrid.com|umbro.com|videochart.net|weeworld.com|wonka.com|xda-developers.com|yellow.co.nz|youtube.com|zoo.org.au
