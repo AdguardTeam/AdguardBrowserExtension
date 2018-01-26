@@ -454,7 +454,7 @@
     if (shouldUseInsertCSS) {
         (function insertCSS(adguard){
             function tryInsertCss(tabId, frameId, frame, css) {
-                var cssStringified = css.join(' ').replace(/::content/g, '');
+                var cssStringified = css.join(' ');
 
                 var details = {
                     code: cssStringified,

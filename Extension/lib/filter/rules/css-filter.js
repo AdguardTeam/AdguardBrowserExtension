@@ -19,8 +19,6 @@
 
     'use strict';
 
-    var isShadowDomSupported = adguard.utils.browser.isShadowDomSupported();
-
     /**
      * This class manages CSS rules and builds styles to inject to pages.
      * ABP element hiding rules: http://adguard.com/en/filterrules.html#hideRules
@@ -597,11 +595,7 @@
         },
 
         _getRuleCssSelector: function (rule) {
-            if (!isShadowDomSupported || rule.extendedCss) {
-                return rule.cssSelector;
-            } else {
-                return "::content " + rule.cssSelector;
-            }
+            return rule.cssSelector;
         },
 
         _arrayToMap: function (array, prop) {
