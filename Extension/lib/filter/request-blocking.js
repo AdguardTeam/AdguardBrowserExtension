@@ -40,12 +40,33 @@ adguard.webRequestService = (function (adguard) {
         }
     };
 
+    // Option flags to be used in processGetSelectorsAndScripts call.
+    var RETRIEVE_TRADITIONAL_CSS = 1 << 0;
+    var RETRIEVE_EXTCSS          = 1 << 1;
+    var GENERIC_HIDE_APPLIED     = 1 << 2;
+    var RETRIEVE_SCRIPTS         = 1 << 3;
+
+    var RETRIEVE_SELECTORS = RETRIEVE_TRADITIONAL_CSS + RETRIEVE_EXTCSS;
+
+    // To be exported
+    var GetSelectorAndScriptsEnum = {
+        RETRIEVE_TRADITIONAL_CSS: RETRIEVE_TRADITIONAL_CSS,
+        RETRIEVE_EXTCSS: RETRIEVE_EXTCSS,
+        GENERIC_HIDE_APPLIED: GENERIC_HIDE_APPLIED,
+        RETRIEVE_SCRIPTS: RETRIEVE_SCRIPTS,
+
+        RETRIEVE_SELECTORS: RETRIEVE_SELECTORS
+    };
+
     /**
      * Prepares CSS and JS which should be injected to the page.
      *
      * @param tab           Tab
      * @param documentUrl   Document URL
-     * @param options       Options for select:
+     * @param options       Bitmask of GetSelectorAndScriptsEnum
+     * 
+     * 
+     * Options for select:
      * options = {
      *      filter: ['selectors', 'scripts'] (selection filter) (mandatory)
      *      genericHide: true|false ( select only generic hide css rules) (optional)
@@ -53,7 +74,7 @@ adguard.webRequestService = (function (adguard) {
      *
      * @returns {*}         null or object the following properties: "selectors", "scripts", "collapseAllElements"
      */
-    var processGetSelectorsAndScripts = function (tab, documentUrl, options) {
+    var processGetSelectorsAndScripts = function (tab, frameId, documentUrl, options) {
 
         var result = Object.create(null);
 
@@ -79,8 +100,9 @@ adguard.webRequestService = (function (adguard) {
             whitelistRule = adguard.requestFilter.findWhiteListRule(documentUrl, mainFrameUrl, adguard.RequestTypes.DOCUMENT);
         }
 
-        var retrieveSelectors = options.filter.indexOf('selectors') >= 0;
-        var retrieveScripts = options.filter.indexOf('scripts') >= 0;
+        var retrieveSelectors = (options & RETRIEVE_SELECTORS) 
+        !== 0;
+        var retrieveScripts = (options & RETRIEVE_SCRIPTS) === RETRIEVE_SCRIPTS;
 
         if (retrieveSelectors) {
             // Record rule hit
@@ -94,28 +116,33 @@ adguard.webRequestService = (function (adguard) {
         }
 
         if (retrieveSelectors) {
-
             // Prepare result
             result.selectors = {
                 css: null,
                 extendedCss: null,
                 cssHitsCounterEnabled: false
-
             };
             result.collapseAllElements = adguard.requestFilter.shouldCollapseAllElements();
             result.useShadowDom = adguard.utils.browser.isShadowDomSupported();
 
             // Check what exactly is disabled by this rule
-            var genericHideFlag = options.genericHide || (whitelistRule && whitelistRule.isGenericHide());
+            var genericHideFlag = ((options & GENERIC_HIDE_APPLIED) === GENERIC_HIDE_APPLIED) || (whitelistRule && whitelistRule.isGenericHide());
             var elemHideFlag = whitelistRule && whitelistRule.isElemhide();
 
             if (!elemHideFlag) {
                 // Element hiding rules aren't disabled, so we should use them
-                if (shouldLoadAllSelectors(result.collapseAllElements)) {
-                    result.selectors = adguard.requestFilter.getSelectorsForUrl(documentUrl, genericHideFlag);
-                } else {
-                    result.selectors = adguard.requestFilter.getInjectedSelectorsForUrl(documentUrl, genericHideFlag);
+                
+                /**
+                 * Build up options bitmask for CssFilter class.
+                 * RETRIEVE_TRADITIONAL_CSS, RETRIEVE_EXTCSS, GENERIC_HIDE_APPLIED parts
+                 * are identical, only need to set CSS_INJECTION_ONLY (1 << 3).
+                 */
+                var cssFilterOptions = options & (~RETRIEVE_SCRIPTS);
+                if (!shouldLoadAllSelectors(result.collapseAllElements)) {
+                    cssFilterOptions += adguard.rules.CssFilter.CSS_INJECTION_ONLY;
                 }
+
+                result.selectors = adguard.requestFilter.getSelectorsForUrl(documentUrl, cssFilterOptions);
             }
         }
 
@@ -123,7 +150,7 @@ adguard.webRequestService = (function (adguard) {
             var jsInjectFlag = whitelistRule && whitelistRule.isJsInject();
             if (!jsInjectFlag) {
                 // JS rules aren't disabled, returning them
-                result.scripts = adguard.requestFilter.getScriptsForUrl(documentUrl);
+                result.scripts = adguard.requestFilter.getScriptsStringForUrl(documentUrl);
             }
         }
 
@@ -437,6 +464,7 @@ adguard.webRequestService = (function (adguard) {
     // EXPOSE
     return {
         processGetSelectorsAndScripts: processGetSelectorsAndScripts,
+        GetSelectorAndScriptsEnum: GetSelectorAndScriptsEnum,
         checkPageScriptWrapperRequest: checkPageScriptWrapperRequest,
         processShouldCollapse: processShouldCollapse,
         processShouldCollapseMany: processShouldCollapseMany,

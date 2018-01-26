@@ -290,15 +290,13 @@ var browser = window.browser || chrome;
     var onCommitted = {
 
         addListener: function (callback) {
-
             // https://developer.chrome.com/extensions/webNavigation#event-onCommitted
-            browser.webNavigation.onCommitted.addListener(function (details) {
-
-                if (details.tabId === -1) {
-                    return;
-                }
-
-                callback(details.tabId, details.frameId, details.url);
+            browser.webNavigation.onCommitted.addListener(callback, {
+                url: [{
+                    urlPrefix: 'http'
+                }, {
+                    urlPrefix: 'https'
+                }]
             });
         }
     };

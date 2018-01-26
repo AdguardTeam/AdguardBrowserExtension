@@ -886,7 +886,10 @@
             }
             callback(toTabFromXulTab(xulTab));
         };
-
+        
+        var insertCSS = browser.tabs.insertCSS;
+        var executeScript = browser.tabs.executeScript;
+        
         return {
 
             onCreated: onCreatedChannel,
@@ -907,7 +910,10 @@
             getTabForBrowser: getTabForBrowser,
             getTabForContentWindow: getTabForContentWindow,
             onTabUpdated: onTabUpdated,
-            browsers: getAllBrowsers
+            browsers: getAllBrowsers,
+
+            insertCSS: insertCSS,
+            executeScript: executeScript
         };
 
     })(adguard);

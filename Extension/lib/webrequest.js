@@ -44,7 +44,6 @@
      * @returns {boolean} False if request must be blocked
      */
     function onBeforeRequest(requestDetails) {
-
         var tab = requestDetails.tab;
         var requestId = requestDetails.requestId;
         var requestUrl = requestDetails.requestUrl;
@@ -341,59 +340,171 @@
         }
     });
 
+    var isEdgeBrowser = adguard.utils.browser.isEdgeBrowser();
+
     /**
-     * When frame is committed we send to it js rules
-     * We do this because we need to apply js rules as soon as possible
+     * Edge browser does not support `runAt` in options of tabs.executeScript
      */
-    (function fastScriptRulesLoader(adguard) {
+    var shouldUseExecuteScript = !isEdgeBrowser;
 
-        var isEdgeBrowser = adguard.utils.browser.isEdgeBrowser();
-
-        function tryInjectScripts(tabId, frameId, url, result, limit) {
-
-            var options = null;
-            if (!isEdgeBrowser) {
-                /**
-                 * In Edge browser: If we pass frameId in tabs.sendMessage then message aren't delivered to content-script
-                 */
-                options = {frameId: frameId};
+    if (shouldUseExecuteScript) {
+        /**
+         * When frame is committed, we execute our JS rules in it.
+         * We do this because we need to apply JS rules as soon as possible.
+         * This listener should be added before tabs.insertCSS, in order to apply
+         * without the overhead for looking up CSS rules.
+         */  
+        (function fastScriptRulesLoader(adguard) {
+            /**
+             * Taken from
+             * {@link https://github.com/seanl-adg/InlineResourceLiteral/blob/master/index.js#L136}
+             * {@link https://github.com/joliss/js-string-escape/blob/master/index.js}
+             */
+            var reJsEscape = /["'\\\n\r\u2028\u2029]/g;
+            function escapeJs(match) {
+                switch (match) {
+                    case '"':
+                    case "'":
+                    case '\\':
+                        return '\\' + match
+                    case '\n':
+                        return '\\n\\\n' // Line continuation character for ease
+                                        // of reading inlined resource.
+                    case '\r':
+                        return ''        // Carriage returns won't have
+                                        // any semantic meaning in JS
+                    case '\u2028':
+                        return '\\u2028'
+                    case '\u2029':
+                        return '\\u2029'
+                }
             }
 
-            adguard.tabs.sendMessage(tabId, result, function (response) {
+            function tryInjectScripts(tabId, frameId, frame, result) {
+                /**
+                 * `injectedScript` will set a global variable adguardScriptsApplied on the scope of the content script.
+                 * If it was done before by the content script, it will do nothing.
+                 */
+                var injectedScript = '(function() {\
+                    if (window.adguardScriptsApplied) { return true; }\
+                    var script = document.createElement("script");\
+                    script.setAttribute("type", "text/javascript");\
+                    script.textContent = "' + result.scripts.replace(reJsEscape, escapeJs) + '";\
+                    var parent = document.head || document.documentElement;\
+                    try {\
+                        parent.appendChild(script);\
+                        parent.removeChild(script);\
+                    } catch (e) {\
+                    } finally {\
+                        window.adguardScriptsApplied = true;\
+                        return true;\
+                    }\
+                })()';
+                adguard.tabs.executeScript(tabId, {
+                    code: injectedScript,
+                    frameId: frameId,
+                    runAt: 'document_start'
+                }, function(response) {
+                    adguard.runtime.lastError;
+                    // This can happen with Chrome preloaded tabs
+                    // See https://stackoverflow.com/questions/43665470/cannot-call-chrome-tabs-executescript-into-preloaded-tab-is-this-a-bug-in-chr
+                });
 
-                // Try again if no response was received from content-script
-                if (adguard.runtime.lastError || !response) {
+                // Update frames metadata
+                frame.executedJS = true;
+            }
 
-                    if (--limit <= 0) {
-                        return;
-                    }
+            adguard.webNavigation.onCommitted.addListener(function (details) {
+                var tabId = details.tabId;
+                var frameId = details.frameId;
+                var url = details.url;
 
-                    setTimeout(function () {
-                        tryInjectScripts(tabId, frameId, url, result, limit);
-                    }, 10);
+                var frame = adguard.tabs.getTabFrame(tabId, frameId);
+                if (!frame || frame.executedJS) {
+                    return;
                 }
 
-            }, options);
-        }
+                var bits = adguard.webRequestService.GetSelectorAndScriptsEnum;
+                var getScripts = bits.RETRIEVE_SCRIPTS;
+                var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, frameId, url, getScripts);
 
-        adguard.webNavigation.onCommitted.addListener(function (tabId, frameId, url) {
+                if (!result.scripts || result.scripts.length === 0) {
+                    return;
+                }
+                tryInjectScripts(tabId, frameId, frame, result);
+            });
+        })(adguard);
+    }
 
-            /**
-             * Messaging a specific frame is not yet supported in Edge
-             */
-            if (frameId !== 0 && isEdgeBrowser) {
-                return;
+    /**
+     * Edge browser does not support `runAt` in options of tabs.insertCSS
+     */
+    var shouldUseInsertCSS = !isEdgeBrowser;
+
+    /**
+     * Whether it implements cssOrigin: 'user' option.
+     * Style declarations in user origin stylesheets that have `!important` priority
+     * takes precedence over page styles
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/Cascade#Cascading_order}
+     */
+    var userCSSSupport =
+        typeof chrome.extensionTypes === 'object' && 
+        typeof chrome.extensionTypes.CSSOrigin !== 'undefined';
+
+    if (shouldUseInsertCSS) {
+        (function insertCSS(adguard){
+            function tryInsertCss(tabId, frameId, frame, css) {
+                var cssStringified = css.join(' ').replace(/::content/g, '');
+
+                var details = {
+                    code: cssStringified,
+                    runAt: 'document_start'
+                    //, matchAboutBlank: true
+                };
+
+                if (userCSSSupport) {
+                    // If this is set for not supporting browser, it will throw an error.
+                    details.cssOrigin = 'user'; 
+                }
+
+                adguard.tabs.insertCSS(tabId, details, function () {
+                    adguard.runtime.lastError;
+                    // This can happen with Chrome preloaded tabs.
+                });
+                // Update frame data, so that we do not needlessly request
+                // stylesheets on message from content script.
+                frame.insertedCSS = true;
             }
 
-            var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, url, {filter: ['scripts']});
-            if (!result.scripts || result.scripts.length === 0) {
-                return;
-            }
+            adguard.webNavigation.onCommitted.addListener(function (details) {
+                var tabId = details.tabId;
+                var frameId = details.frameId;
+                var url = details.url;
+                
+                /**
+                 * We should use tabs.insertCSS only on top frames.
+                 */
+                if (frameId !== 0) {
+                    return;
+                }
 
-            result.type = 'injectScripts';
-            tryInjectScripts(tabId, frameId, url, result, 5);
-        });
+                var frame = adguard.tabs.getTabFrame(tabId, frameId);
+                if (!frame || frame.insertedCSS) {
+                    return;
+                }
 
-    })(adguard);
+                var bits = adguard.webRequestService.GetSelectorAndScriptsEnum;
+                var getTraditionalCssOnly = bits.RETRIEVE_TRADITIONAL_CSS;
+
+                var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, frameId, url, getTraditionalCssOnly);
+
+                if (!result.selectors || !result.selectors.css) {
+                    return;
+                }
+                tryInsertCss(tabId, frameId, frame, result.selectors.css);
+            });
+        })(adguard);
+    }
+
 
 })(adguard);

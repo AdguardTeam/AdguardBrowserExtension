@@ -291,7 +291,15 @@
                 if (adguard.utils.workaround.isFacebookIframe(message.documentUrl)) {
                     return {};
                 }
-                var cssAndScripts = adguard.webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl, message.options);
+                var frame = adguard.tabs.getTabFrame(sender.tab.tabId, sender.frameId);
+                var GetSelectorAndScriptsEnum = adguard.webRequestService.GetSelectorAndScriptsEnum; 
+                if (frame.insertedCSS) {
+                    message.options &= (~GetSelectorAndScriptsEnum.RETRIEVE_TRADITIONAL_CSS);
+                }
+                if (frame.executedJS) {
+                    message.options &= (~GetSelectorAndScriptsEnum.RETRIEVE_SCRIPTS);
+                }
+                var cssAndScripts = adguard.webRequestService.processGetSelectorsAndScripts(sender.tab, sender.frameId, message.documentUrl, message.options);
                 return cssAndScripts || {};
             case 'checkPageScriptWrapperRequest':
                 var block = adguard.webRequestService.checkPageScriptWrapperRequest(sender.tab, message.elementUrl, message.documentUrl, message.requestType);

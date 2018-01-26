@@ -247,34 +247,27 @@
          * http://adguard.com/en/filterrules.html#hideRules
          *
          * @param url Page URL
-         * @param genericHide flag to hide common rules
+         * @param options CssFilter bitmask
          * @returns CSS ready to be injected
          */
-        getSelectorsForUrl: function (url, genericHide) {
+        getSelectorsForUrl: function (url, options) {
             var domain = adguard.utils.url.getHost(url);
-            if (adguard.prefs.collectHitsCountEnabled && adguard.settings.collectHitsCount()) {
+
+            var CSS_INJECTION_ONLY = adguard.rules.CssFilter.CSS_INJECTION_ONLY;
+            var cssInjectionOnly = (options & CSS_INJECTION_ONLY) === CSS_INJECTION_ONLY;
+
+            if (
+                !cssInjectionOnly &&
+                adguard.prefs.collectHitsCountEnabled && adguard.settings.collectHitsCount()
+            ) {
                 // If user has enabled "Send statistics for ad filters usage" option we build CSS with enabled hits stats.
                 // In this case style contains "content" with filter identifier and rule text.
-                var selectors = this.cssFilter.buildCssHits(domain, genericHide);
+                var selectors = this.cssFilter.buildCssHits(domain, options);
                 selectors.cssHitsCounterEnabled = true;
                 return selectors;
             } else {
-                return this.cssFilter.buildCss(domain, genericHide);
+                return this.cssFilter.buildCss(domain, options);
             }
-        },
-
-        /**
-         * Builds CSS for the specified web page.
-         * Only CSS injection rules used to build this CSS:
-         * http://adguard.com/en/filterrules.html#cssInjection
-         *
-         * @param url Page URL
-         * @param genericHide flag to hide common rules
-         * @returns CSS ready to be injected.
-         */
-        getInjectedSelectorsForUrl: function (url, genericHide) {
-            var domain = adguard.utils.url.getHost(url);
-            return this.cssFilter.buildInjectCss(domain, genericHide);
         },
 
         /**
@@ -287,6 +280,45 @@
         getScriptsForUrl: function (url) {
             var domain = adguard.utils.url.getHost(url);
             return this.scriptFilter.buildScript(domain);
+        },
+
+        /**
+         * Builds the final output string for the specified page.
+         */
+        getScriptsStringForUrl: function (url) {
+            var scripts = this.getScriptsForUrl(url);
+
+            var isFirefox = adguard.utils.browser.isFirefoxBrowser();
+            var isOpera = adguard.utils.browser.isOperaBrowser();
+
+            var scriptsToApply = [];
+
+            for (var i = 0, l = scripts.length; i < l; i++) {
+                var scriptRule = scripts[i];
+                switch (scriptRule.scriptSource) {
+                    case 'local':
+                        scriptsToApply.push(scriptRule.rule);
+                        break;
+                    case 'remote':
+                        /**
+                         * Note (!) (Firefox, Opera):
+                         * In case of Firefox and Opera add-ons, JS filtering rules are hardcoded into add-on code.
+                         * Look at ScriptFilterRule.getScriptSource to learn more.
+                         */
+                        if (!isFirefox && !isOpera) {
+                            scriptsToApply.push(scriptRule.rule);
+                        }
+                        break;
+                }
+            }
+            scriptsToApply.unshift("( function () {\
+                try {");
+            scriptsToApply.push("\
+                } catch (ex) {\
+                    console.error('Error executing AG js: ' + ex);\
+                }\
+            })();");
+            return scriptsToApply.join('\r\n');
         },
 
         /**
