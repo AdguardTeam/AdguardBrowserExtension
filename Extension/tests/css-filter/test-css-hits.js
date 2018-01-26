@@ -1,6 +1,6 @@
 QUnit.test("Extended Css Build CssHits", function (assert) {
 
-    var shadowDomPrefix = adguard.utils.browser.isShadowDomSupported() ? "::content " : "";
+    var shadowDomPrefix = "";
 
     var rule = new adguard.rules.CssFilterRule("adguard.com##.sponsored", 1);
     var genericRule = new adguard.rules.CssFilterRule("##.banner", 2);
@@ -36,15 +36,7 @@ QUnit.test("Extended Css Build CssHits", function (assert) {
 
 QUnit.test('Count css hits', function (assert) {
 
-    var isShadowDomSupported = adguard.utils.browser.isShadowDomSupported();
-
-    var shadowRoot = document.documentElement.shadowRoot;
-    if (!shadowRoot) {
-        if ("createShadowRoot" in document.documentElement) {
-            shadowRoot = document.documentElement.createShadowRoot();
-            shadowRoot.appendChild(document.createElement("shadow"));
-        }
-    }
+    var isShadowDomSupported = false;
 
     var rule = new adguard.rules.CssFilterRule("adguard.com##.sponsored", 1);
     var genericRule = new adguard.rules.CssFilterRule("adguard.com##.banner", 2);

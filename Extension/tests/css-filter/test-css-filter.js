@@ -498,7 +498,7 @@ QUnit.test("Extended Css Build Common Extended", function (assert) {
 
 QUnit.test("Extended Css Build CssHits", function (assert) {
 
-    var shadowDomPrefix = adguard.utils.browser.isShadowDomSupported() ? "::content " : "";
+    var shadowDomPrefix = "";
 
     var rule = new adguard.rules.CssFilterRule("adguard.com##.sponsored", 1);
     var genericRule = new adguard.rules.CssFilterRule("##.banner", 2);
