@@ -540,12 +540,14 @@ QUnit.test("Extended Css Build Inject Css", function (assert) {
 
     var selectors, css, extendedCss, commonCss;
 
+    var baseOption = adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS + adguard.rules.CssFilter.RETRIEVE_EXTCSS + adguard.rules.CssFilter.CSS_INJECTION_ONLY;
+
     var injectRule = new adguard.rules.CssFilterRule('adguard.com##body:style(background:inherit;)');
     assert.ok(injectRule.isInjectRule);
     assert.notOk(injectRule.extendedCss);
     filter.addRule(injectRule);
 
-    selectors = filter.buildInjectCss("adguard.com");
+    selectors = filter.buildCss("adguard.com", baseOption);
     css = selectors.css;
     extendedCss = selectors.extendedCss;
     commonCss = filter.buildCss(null).css;
@@ -553,7 +555,7 @@ QUnit.test("Extended Css Build Inject Css", function (assert) {
     assert.equal(css.length, 1);
     assert.equal(extendedCss.length, 1);
 
-    selectors = filter.buildInjectCss("adguard.com", true);
+    selectors = filter.buildCss("adguard.com", baseOption + adguard.rules.CssFilter.GENERIC_HIDE_APPLIED);
     css = selectors.css;
     extendedCss = selectors.extendedCss;
     commonCss = filter.buildCss(null).css;
@@ -567,7 +569,7 @@ QUnit.test("Extended Css Build Inject Css", function (assert) {
     assert.ok(exceptionInjectRule.whiteListRule);
     filter.addRule(exceptionInjectRule);
 
-    selectors = filter.buildInjectCss("adguard.com");
+    selectors = filter.buildCss("adguard.com", baseOption);
     css = selectors.css;
     extendedCss = selectors.extendedCss;
     commonCss = filter.buildCss(null).css;
@@ -589,7 +591,7 @@ QUnit.test("Extended Css Selector Inject Rule", function (assert) {
     assert.ok(injectRule.extendedCss);
     filter.addRule(injectRule);
 
-    selectors = filter.buildInjectCss("adguard.com");
+    selectors = filter.buildCss("adguard.com", adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS + adguard.rules.CssFilter.RETRIEVE_EXTCSS + adguard.rules.CssFilter.CSS_INJECTION_ONLY);
     css = selectors.css;
     extendedCss = selectors.extendedCss;
     commonCss = filter.buildCss(null).css;
@@ -597,7 +599,7 @@ QUnit.test("Extended Css Selector Inject Rule", function (assert) {
     assert.equal(css.length, 0);
     assert.equal(extendedCss.length, 2);
 
-    selectors = filter.buildInjectCss("adguard.com", true);
+    selectors = filter.buildCss("adguard.com", adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS + adguard.rules.CssFilter.RETRIEVE_EXTCSS + adguard.rules.CssFilter.CSS_INJECTION_ONLY + adguard.rules.CssFilter.GENERIC_HIDE_APPLIED);
     css = selectors.css;
     extendedCss = selectors.extendedCss;
     commonCss = filter.buildCss(null).css;

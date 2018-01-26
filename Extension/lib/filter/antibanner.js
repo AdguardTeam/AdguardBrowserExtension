@@ -1199,6 +1199,9 @@ adguard.requestFilter = (function (adguard) {
     var getScriptsForUrl = function (documentUrl) {
         return getRequestFilter().getScriptsForUrl(documentUrl);
     };
+    var getScriptsStringForUrl = function (documentUrl) {
+        return getRequestFilter().getScriptsStringForUrl(documentUrl);
+    };
     var getContentRulesForUrl = function (documentUrl) {
         return getRequestFilter().getContentRulesForUrl(documentUrl);
     };
@@ -1233,6 +1236,7 @@ adguard.requestFilter = (function (adguard) {
         getSelectorsForUrl: getSelectorsForUrl,
         getInjectedSelectorsForUrl: getInjectedSelectorsForUrl,
         getScriptsForUrl: getScriptsForUrl,
+        getScriptsStringForUrl: getScriptsStringForUrl,
         getContentRulesForUrl: getContentRulesForUrl,
         getMatchedElementsForContentRules: getMatchedElementsForContentRules,
         getCspRules: getCspRules,

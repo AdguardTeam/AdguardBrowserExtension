@@ -28,9 +28,6 @@
         "embed": "OBJECT"
     };
 
-    // Don't apply scripts twice
-    var scriptsApplied = false;
-
     /**
      * Do not use shadow DOM on some websites
      * https://code.google.com/p/chromium/issues/detail?id=496055
@@ -165,41 +162,30 @@
     };
 
     /**
-     * Try to keep DOM clean: let script removes itself when execution completes
-     * @returns {string}
-     */
-    var cleanupCurrentScriptToString = function () {
-
-        var cleanup = function () {
-            var current = document.currentScript;
-            var parent = current && current.parentNode;
-            if (parent) {
-                parent.removeChild(current);
-            }
-        };
-
-        return '(' + cleanup.toString() + ')();';
-    };
-
-    /**
      * Execute scripts in a page context and cleanup itself when execution completes
-     * @param scripts Array of scripts to execute
+     * @param scripts Scripts to execute
      */
     var executeScripts = function (scripts) {
-
         if (!scripts || scripts.length === 0) {
             return;
         }
-
         // Wraps with try catch and appends cleanup
         scripts.unshift("( function () { try {");
         scripts.push("} catch (ex) { console.error('Error executing AG js: ' + ex); } })();");
-        scripts.push(cleanupCurrentScriptToString());
 
-        var script = document.createElement("script");
-        script.setAttribute("type", "text/javascript");
-        script.textContent = scripts.join("\r\n");
-        (document.head || document.documentElement).appendChild(script);
+        executeScript(scripts.join('\r\n'));
+    };
+
+    var executeScript = function (script) {
+        var scriptTag = document.createElement('script');
+        scriptTag.setAttribute("type", "text/javascript");
+        scriptTag.textContent = script;
+
+        var parent = document.head || document.documentElement;
+        parent.appendChild(scriptTag);
+        if (scriptTag.parentNode) {
+            scriptTag.parentNode.removeChild(scriptTag);
+        }
     };
 
     /**
@@ -454,16 +440,31 @@
     };
 
     /**
+     * Option flags to be used in processGetSelectorsAndScripts call.
+     * We cannot reference variables in background script.
+     */ 
+    var RETRIEVE_TRADITIONAL_CSS = 1 << 0;
+    var RETRIEVE_EXTCSS          = 1 << 1;
+    var GENERIC_HIDE_APPLIED     = 1 << 2;
+    var RETRIEVE_SCRIPTS         = 1 << 3;
+
+    /**
      * Loads CSS and JS injections
      */
     var tryLoadCssAndScripts = function () {
+        var options = RETRIEVE_TRADITIONAL_CSS + RETRIEVE_EXTCSS;
+        if (loadTruncatedCss) {
+            options += GENERIC_HIDE_APPLIED;
+        }
+        // Check a flag that would have been set by tabs.executeScript from the background page.
+        if (!window.adguardScriptsApplied) {
+            options += RETRIEVE_SCRIPTS;
+        }
+
         var message = {
             type: 'getSelectorsAndScripts',
             documentUrl: window.location.href,
-            options: {
-                filter: ['selectors', 'scripts'],
-                genericHide: loadTruncatedCss
-            }
+            options: options
         };
 
         /**
@@ -689,37 +690,12 @@
      */
     var applyScripts = function (scripts) {
 
-        if (scriptsApplied) {
+        if (window.adguardScriptsApplied) {
             return;
         }
-        scriptsApplied = true;
+        window.adguardScriptsApplied = true;
 
         if (!scripts || scripts.length === 0) {
-            return;
-        }
-
-        var scriptsToApply = [];
-
-        for (var i = 0; i < scripts.length; i++) {
-            var scriptRule = scripts[i];
-            switch (scriptRule.scriptSource) {
-                case 'local':
-                    scriptsToApply.push(scriptRule.rule);
-                    break;
-                case 'remote':
-                    /**
-                     * Note (!) (Firefox, Opera):
-                     * In case of Firefox and Opera add-ons, JS filtering rules are hardcoded into add-on code.
-                     * Look at ScriptFilterRule.getScriptSource to learn more.
-                     */
-                    if (!isFirefox && !isOpera) {
-                        scriptsToApply.push(scriptRule.rule);
-                    }
-                    break;
-            }
-        }
-
-        if (scriptsToApply.length === 0) {
             return;
         }
 
@@ -727,7 +703,7 @@
          * JS injections are created by JS filtering rules:
          * http://adguard.com/en/filterrules.html#javascriptInjection
          */
-        executeScripts(scriptsToApply);
+        executeScript(scripts);
     };
 
     /**
