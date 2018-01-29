@@ -353,7 +353,7 @@
          * We do this because we need to apply JS rules as soon as possible.
          * This listener should be added before tabs.insertCSS, in order to apply
          * without the overhead for looking up CSS rules.
-         */  
+         */
         (function fastScriptRulesLoader(adguard) {
             /**
              * Taken from
@@ -381,12 +381,8 @@
             }
 
             function tryInjectScripts(tabId, frameId, frame, result) {
-                /**
-                 * `injectedScript` will set a global variable adguardScriptsApplied on the scope of the content script.
-                 * If it was done before by the content script, it will do nothing.
-                 */
+                // Executes scripts in a scope of page.
                 var injectedScript = '(function() {\
-                    if (window.adguardScriptsApplied) { return true; }\
                     var script = document.createElement("script");\
                     script.setAttribute("type", "text/javascript");\
                     script.textContent = "' + result.scripts.replace(reJsEscape, escapeJs) + '";\
@@ -396,7 +392,6 @@
                         parent.removeChild(script);\
                     } catch (e) {\
                     } finally {\
-                        window.adguardScriptsApplied = true;\
                         return true;\
                     }\
                 })()';
@@ -448,7 +443,7 @@
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/Cascade#Cascading_order}
      */
     var userCSSSupport =
-        typeof chrome.extensionTypes === 'object' && 
+        typeof chrome.extensionTypes === 'object' &&
         typeof chrome.extensionTypes.CSSOrigin !== 'undefined';
 
     if (shouldUseInsertCSS) {
@@ -464,7 +459,7 @@
 
                 if (userCSSSupport) {
                     // If this is set for not supporting browser, it will throw an error.
-                    details.cssOrigin = 'user'; 
+                    details.cssOrigin = 'user';
                 }
 
                 adguard.tabs.insertCSS(tabId, details, function () {
@@ -480,7 +475,7 @@
                 var tabId = details.tabId;
                 var frameId = details.frameId;
                 var url = details.url;
-                
+
                 /**
                  * We should use tabs.insertCSS only on top frames.
                  */

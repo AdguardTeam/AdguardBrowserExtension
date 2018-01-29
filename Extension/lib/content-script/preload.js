@@ -452,13 +452,9 @@
      * Loads CSS and JS injections
      */
     var tryLoadCssAndScripts = function () {
-        var options = RETRIEVE_TRADITIONAL_CSS + RETRIEVE_EXTCSS;
+        var options = RETRIEVE_TRADITIONAL_CSS + RETRIEVE_EXTCSS + RETRIEVE_SCRIPTS;
         if (loadTruncatedCss) {
             options += GENERIC_HIDE_APPLIED;
-        }
-        // Check a flag that would have been set by tabs.executeScript from the background page.
-        if (!window.adguardScriptsApplied) {
-            options += RETRIEVE_SCRIPTS;
         }
 
         var message = {
@@ -689,11 +685,6 @@
      * @param scripts Array with JS scripts and scriptSource ('remote' or 'local')
      */
     var applyScripts = function (scripts) {
-
-        if (window.adguardScriptsApplied) {
-            return;
-        }
-        window.adguardScriptsApplied = true;
 
         if (!scripts || scripts.length === 0) {
             return;
