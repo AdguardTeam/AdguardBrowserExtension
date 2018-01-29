@@ -368,4 +368,8 @@ var browser = window.browser || chrome;
 
     adguard.contextMenus = browser.contextMenus;
 
+    
+    // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/extensionTypes
+    adguard.extensionTypes = browser.extensionTypes;
+
 })(adguard, browser);

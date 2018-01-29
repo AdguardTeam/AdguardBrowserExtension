@@ -443,8 +443,8 @@
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/Cascade#Cascading_order}
      */
     var userCSSSupport =
-        typeof chrome.extensionTypes === 'object' &&
-        typeof chrome.extensionTypes.CSSOrigin !== 'undefined';
+        typeof adguard.extensionTypes === 'object' &&
+        typeof adguard.extensionTypes.CSSOrigin !== 'undefined';
 
     if (shouldUseInsertCSS) {
         (function insertCSS(adguard){
