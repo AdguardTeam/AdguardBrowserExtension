@@ -152,19 +152,6 @@
         },
 
         /**
-         * Returns true if Shadow DOM is supported.
-         * http://caniuse.com/#feat=shadowdom
-         *
-         * In this case we transform CSS selectors and inject CSS to shadow DOM.
-         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/44
-         */
-        isShadowDomSupported: function () {
-
-            // Shadow DOM is supported by all modern chromium browsers
-            return this.isChromium();
-        },
-
-        /**
          * Returns true if Safari content blocker API is supported
          */
         isContentBlockerEnabled: function () {
