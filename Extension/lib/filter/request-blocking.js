@@ -123,7 +123,6 @@ adguard.webRequestService = (function (adguard) {
                 cssHitsCounterEnabled: false
             };
             result.collapseAllElements = adguard.requestFilter.shouldCollapseAllElements();
-            result.useShadowDom = adguard.utils.browser.isShadowDomSupported();
 
             // Check what exactly is disabled by this rule
             var genericHideFlag = ((options & GENERIC_HIDE_APPLIED) === GENERIC_HIDE_APPLIED) || (whitelistRule && whitelistRule.isGenericHide());
