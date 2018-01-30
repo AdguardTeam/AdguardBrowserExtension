@@ -648,7 +648,6 @@
 
     /**
      * Protects style element from removing.
-     *
      * @param protectStyleEl protected style element
      * @param useShadowDom shadowDOM flag
      */
@@ -681,7 +680,6 @@
 
     /**
      * Applies JS injections.
-     *
      * @param scripts Array with JS scripts and scriptSource ('remote' or 'local')
      */
     var applyScripts = function (scripts) {
@@ -711,7 +709,6 @@
 
     /**
      * Checks if loaded element is blocked by AG and should be hidden
-     *
      * @param event Load or error event
      */
     var checkShouldCollapse = function (event) {
@@ -729,7 +726,6 @@
 
     /**
      * Extracts element URL from the dom node
-     *
      * @param element DOM node
      */
     var getElementUrl = function (element) {
@@ -747,7 +743,6 @@
 
     /**
      * Saves collapse request (to be reused after we get result from bg page)
-     *
      * @param element Element to check
      * @return request ID
      */
@@ -766,7 +761,6 @@
 
     /**
      * Hides element temporarily (until collapse check request is processed)
-     *
      * @param element Element to hide
      */
     var tempHideElement = function (element) {
@@ -796,7 +790,6 @@
 
     /**
      * Response callback for "processShouldCollapse" message.
-     *
      * @param response Response got from the background page
      */
     var onProcessShouldCollapseResponse = function (response) {
@@ -826,7 +819,6 @@
 
     /**
      * Checks if element is blocked by AG and should be hidden
-     *
      * @param element Element to check
      */
     var checkShouldCollapseElement = function (element) {
@@ -861,7 +853,6 @@
 
     /**
      * Response callback for "processShouldCollapseMany" message.
-     *
      * @param response Response from bg page.
      */
     var onProcessShouldCollapseManyResponse = function (response) {
