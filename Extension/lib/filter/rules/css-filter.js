@@ -124,7 +124,7 @@
          * @todo Modify unit tests and get rid of this
          * @param {boolean|undefined} genericHide 
          */
-        _convertGenericHideFlagToBM(genericHide) {
+        _convertGenericHideFlagToBitmask(genericHide) {
             if (genericHide === true) {
                 return RETRIEVE_TRADITIONAL_CSS + RETRIEVE_EXTCSS + GENERIC_HIDE_APPLIED;
             }
@@ -142,7 +142,7 @@
          */
         buildCss: function (domainName, options) {
             if (typeof options !== 'number') {
-                options = this._convertGenericHideFlagToBM(options);
+                options = this._convertGenericHideFlagToBitmask(options);
             }
 
             var cssInjectionOnly = (options & CSS_INJECTION_ONLY) === CSS_INJECTION_ONLY;
@@ -185,16 +185,16 @@
             this._rebuildHits();
 
             if (typeof options !== 'number') {
-                options = this._convertGenericHideFlagToBM(options);
+                options = this._convertGenericHideFlagToBitmask(options);
             }
 
             var rules = this._filterRules(domainName, options);
 
             var genericHide = (options & GENERIC_HIDE_APPLIED) === GENERIC_HIDE_APPLIED;
-            var getTraditionalCss = (options & RETRIEVE_TRADITIONAL_CSS) === RETRIEVE_TRADITIONAL_CSS;
+            var shouldGetTraditionalCss = (options & RETRIEVE_TRADITIONAL_CSS) === RETRIEVE_TRADITIONAL_CSS;
 
             var stylesheets = this._createCssStylesheetsHits(rules);
-            if (!genericHide && getTraditionalCss) {
+            if (!genericHide && shouldGetTraditionalCss) {
                 stylesheets.css = this._getCommonCssHits().concat(stylesheets.css);
             }
 
