@@ -489,9 +489,9 @@
                 }
 
                 var bits = adguard.webRequestService.GetSelectorAndScriptsEnum;
-                var getTraditionalCssOnly = bits.RETRIEVE_TRADITIONAL_CSS;
+                var shouldGetTraditionalCssOnly = bits.RETRIEVE_TRADITIONAL_CSS;
 
-                var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, frameId, url, getTraditionalCssOnly);
+                var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, frameId, url, shouldGetTraditionalCssOnly);
 
                 if (!result.selectors || !result.selectors.css) {
                     return;
