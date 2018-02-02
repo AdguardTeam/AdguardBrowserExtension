@@ -288,9 +288,6 @@
                 adguard.frames.resetBlockedAdsCount();
                 break;
             case 'getSelectorsAndScripts':
-                if (adguard.utils.workaround.isFacebookIframe(message.documentUrl)) {
-                    return {};
-                }
                 var frame = adguard.tabs.getTabFrame(sender.tab.tabId, sender.frameId);
                 var GetSelectorAndScriptsEnum = adguard.webRequestService.GetSelectorAndScriptsEnum; 
                 if (frame.insertedCSS) {
