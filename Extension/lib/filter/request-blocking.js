@@ -130,7 +130,7 @@ adguard.webRequestService = (function (adguard) {
 
             if (!elemHideFlag) {
                 // Element hiding rules aren't disabled, so we should use them
-                
+
                 /**
                  * Build up options bitmask for CssFilter class.
                  * RETRIEVE_TRADITIONAL_CSS, RETRIEVE_EXTCSS, GENERIC_HIDE_APPLIED parts
