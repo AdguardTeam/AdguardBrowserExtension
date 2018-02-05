@@ -40,7 +40,6 @@
     var collapseRequestId = 1;
     var isFirefox = false;
     var isOpera = false;
-    var loadTruncatedCss = false;
 
     /**
      * Unexpectedly global variable contentPage could become undefined in FF,
@@ -102,15 +101,6 @@
         var userAgent = navigator.userAgent.toLowerCase();
         isFirefox = userAgent.indexOf('firefox') > -1;
         isOpera = userAgent.indexOf('opera') > -1 || userAgent.indexOf('opr') > -1;
-
-        if (window !== window.top) {
-            var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-            var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-            // Load only small set of css for small frames.
-            // We hide all generic css rules in this case.
-            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/223
-            loadTruncatedCss = (height * width) < 100000;
-        }
 
         initCollapseEventListeners();
         tryLoadCssAndScripts();
@@ -371,27 +361,12 @@
     };
 
     /**
-     * Option flags to be used in processGetSelectorsAndScripts call.
-     * We cannot reference variables in background script.
-     */ 
-    var RETRIEVE_TRADITIONAL_CSS = 1 << 0;
-    var RETRIEVE_EXTCSS          = 1 << 1;
-    var GENERIC_HIDE_APPLIED     = 1 << 2;
-    var RETRIEVE_SCRIPTS         = 1 << 3;
-
-    /**
      * Loads CSS and JS injections
      */
     var tryLoadCssAndScripts = function () {
-        var options = RETRIEVE_TRADITIONAL_CSS + RETRIEVE_EXTCSS + RETRIEVE_SCRIPTS;
-        if (loadTruncatedCss) {
-            options += GENERIC_HIDE_APPLIED;
-        }
-
         var message = {
             type: 'getSelectorsAndScripts',
             documentUrl: window.location.href,
-            options: options
         };
 
         /**

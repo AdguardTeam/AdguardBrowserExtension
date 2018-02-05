@@ -289,7 +289,7 @@
                 break;
             case 'getSelectorsAndScripts':
                 var frame = adguard.tabs.getTabFrame(sender.tab.tabId, sender.frameId);
-                var GetSelectorAndScriptsEnum = adguard.webRequestService.GetSelectorAndScriptsEnum; 
+                var GetSelectorAndScriptsEnum = adguard.webRequestService.GetSelectorAndScriptsEnum;
                 if (frame.insertedCSS) {
                     message.options &= (~GetSelectorAndScriptsEnum.RETRIEVE_TRADITIONAL_CSS);
                 }
