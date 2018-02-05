@@ -288,15 +288,20 @@
                 adguard.frames.resetBlockedAdsCount();
                 break;
             case 'getSelectorsAndScripts':
-                var frame = adguard.tabs.getTabFrame(sender.tab.tabId, sender.frameId);
-                var GetSelectorAndScriptsEnum = adguard.webRequestService.GetSelectorAndScriptsEnum;
-                if (frame.insertedCSS) {
-                    message.options &= (~GetSelectorAndScriptsEnum.RETRIEVE_TRADITIONAL_CSS);
+                let GetSelectorAndScriptsEnum = adguard.webRequestService.GetSelectorAndScriptsEnum;
+                let options = GetSelectorAndScriptsEnum.RETRIEVE_EXTCSS;
+                if (adguard.utils.browser.useInsertCSSAndExecuteScript() && sender.frameId !== 0) {
+                    // sender.frameId will only be defiend on webext and chrome,
+                    // but on other platforms do not have tabs.insertCSS and tabs.executeScript
+                    // so we have to retrieve all anyway.
+
+                    // For top frames, we have injected traditional css with tabs.insertCSS
+                    // and injected JS rules with tabs.executeScript.
+                    options +=
+                        GetSelectorAndScriptsEnum.RETRIEVE_TRADITIONAL_CSS +
+                        GetSelectorAndScriptsEnum.RETRIEVE_SCRIPTS;
                 }
-                if (frame.executedJS) {
-                    message.options &= (~GetSelectorAndScriptsEnum.RETRIEVE_SCRIPTS);
-                }
-                var cssAndScripts = adguard.webRequestService.processGetSelectorsAndScripts(sender.tab, sender.frameId, message.documentUrl, message.options);
+                let cssAndScripts = adguard.webRequestService.processGetSelectorsAndScripts(sender.tab, sender.frameId, message.documentUrl, options);
                 return cssAndScripts || {};
             case 'checkPageScriptWrapperRequest':
                 var block = adguard.webRequestService.checkPageScriptWrapperRequest(sender.tab, message.elementUrl, message.documentUrl, message.requestType);

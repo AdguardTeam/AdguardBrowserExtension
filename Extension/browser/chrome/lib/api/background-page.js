@@ -33,6 +33,9 @@ var browser = window.browser || chrome;
                     if (sender.tab) {
                         senderOverride.tab = adguard.tabsImpl.fromChromeTab(sender.tab);
                     }
+                    if (typeof sender.frameId !== 'undefined') {
+                        senderOverride.frameId = sender.frameId;
+                    }
                     var response = callback(message, senderOverride, sendResponse);
                     var async = response === true;
                     // If async sendResponse will be invoked later

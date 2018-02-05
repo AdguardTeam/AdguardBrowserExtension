@@ -340,14 +340,9 @@
         }
     });
 
-    var isEdgeBrowser = adguard.utils.browser.isEdgeBrowser();
+    var shouldUseInsertCSSAndExecuteScript = adguard.utils.browser.useInsertCSSAndExecuteScript();
 
-    /**
-     * Edge browser does not support `runAt` in options of tabs.executeScript
-     */
-    var shouldUseExecuteScript = !isEdgeBrowser;
-
-    if (shouldUseExecuteScript) {
+    if (shouldUseInsertCSSAndExecuteScript) {
         /**
          * When frame is committed, we execute our JS rules in it.
          * We do this because we need to apply JS rules as soon as possible.
@@ -380,7 +375,7 @@
                 }
             }
 
-            function tryInjectScripts(tabId, frameId, frame, result) {
+            function tryInjectScripts(tabId, frameId, result) {
                 // Executes scripts in a scope of page.
                 var injectedScript = '(function() {\
                     var script = document.createElement("script");\
@@ -404,9 +399,6 @@
                     // This can happen with Chrome preloaded tabs
                     // See https://stackoverflow.com/questions/43665470/cannot-call-chrome-tabs-executescript-into-preloaded-tab-is-this-a-bug-in-chr
                 });
-
-                // Update frames metadata
-                frame.executedJS = true;
             }
 
             adguard.webNavigation.onCommitted.addListener(function (details) {
@@ -414,27 +406,18 @@
                 var frameId = details.frameId;
                 var url = details.url;
 
-                var frame = adguard.tabs.getTabFrame(tabId, frameId);
-                if (!frame || frame.executedJS) {
-                    return;
-                }
-
                 var bits = adguard.webRequestService.GetSelectorAndScriptsEnum;
-                var getScripts = bits.RETRIEVE_SCRIPTS;
-                var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, frameId, url, getScripts);
+                var shouldGetScripts = bits.RETRIEVE_SCRIPTS;
+
+                var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, frameId, url, shouldGetScripts);
 
                 if (!result.scripts || result.scripts.length === 0) {
                     return;
                 }
-                tryInjectScripts(tabId, frameId, frame, result);
+                tryInjectScripts(tabId, frameId, result);
             });
         })(adguard);
     }
-
-    /**
-     * Edge browser does not support `runAt` in options of tabs.insertCSS
-     */
-    var shouldUseInsertCSS = !isEdgeBrowser;
 
     /**
      * Whether it implements cssOrigin: 'user' option.
@@ -446,9 +429,9 @@
         typeof adguard.extensionTypes === 'object' &&
         typeof adguard.extensionTypes.CSSOrigin !== 'undefined';
 
-    if (shouldUseInsertCSS) {
+    if (shouldUseInsertCSSAndExecuteScript) {
         (function insertCSS(adguard){
-            function tryInsertCss(tabId, frameId, frame, css) {
+            function tryInsertCss(tabId, frameId, css) {
                 var cssStringified = css.join(' ');
 
                 var details = {
@@ -466,9 +449,6 @@
                     adguard.runtime.lastError;
                     // This can happen with Chrome preloaded tabs.
                 });
-                // Update frame data, so that we do not needlessly request
-                // stylesheets on message from content script.
-                frame.insertedCSS = true;
             }
 
             adguard.webNavigation.onCommitted.addListener(function (details) {
@@ -483,11 +463,6 @@
                     return;
                 }
 
-                var frame = adguard.tabs.getTabFrame(tabId, frameId);
-                if (!frame || frame.insertedCSS) {
-                    return;
-                }
-
                 var bits = adguard.webRequestService.GetSelectorAndScriptsEnum;
                 var shouldGetTraditionalCssOnly = bits.RETRIEVE_TRADITIONAL_CSS;
 
@@ -496,7 +471,7 @@
                 if (!result.selectors || !result.selectors.css) {
                     return;
                 }
-                tryInsertCss(tabId, frameId, frame, result.selectors.css);
+                tryInsertCss(tabId, frameId, result.selectors.css);
             });
         })(adguard);
     }

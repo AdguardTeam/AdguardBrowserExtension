@@ -312,6 +312,14 @@
             params.push('lang=' + locale);
             params.push('id=' + id);
             return params;
+        },
+
+        /**
+         * Edge browser does not support `runAt` in options of tabs.insertCSS
+         * and tabs.executeScript
+         */
+        useInsertCSSAndExecuteScript: function () {
+            return this.isChromium() || this.isFirefoxBrowser();
         }
     };
 
