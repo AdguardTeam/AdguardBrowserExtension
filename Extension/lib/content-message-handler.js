@@ -300,7 +300,7 @@
                         GetSelectorAndScriptsEnum.RETRIEVE_TRADITIONAL_CSS +
                         GetSelectorAndScriptsEnum.RETRIEVE_SCRIPTS;
                 }
-                let cssAndScripts = adguard.webRequestService.processGetSelectorsAndScripts(sender.tab, sender.frameId, message.documentUrl, options);
+                let cssAndScripts = adguard.webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl, options);
                 return cssAndScripts || {};
             case 'checkPageScriptWrapperRequest':
                 var block = adguard.webRequestService.checkPageScriptWrapperRequest(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
