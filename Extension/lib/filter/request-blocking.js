@@ -74,7 +74,7 @@ adguard.webRequestService = (function (adguard) {
      *
      * @returns {*}         null or object the following properties: "selectors", "scripts", "collapseAllElements"
      */
-    var processGetSelectorsAndScripts = function (tab, documentUrl, options) {
+    var processGetSelectorsAndScripts = function (tab, frameId, documentUrl, options) {
 
         var result = Object.create(null);
 
