@@ -409,7 +409,7 @@
                 var bits = adguard.webRequestService.GetSelectorAndScriptsEnum;
                 var shouldGetScripts = bits.RETRIEVE_SCRIPTS;
 
-                var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, frameId, url, shouldGetScripts);
+                var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, url, shouldGetScripts);
 
                 if (!result.scripts || result.scripts.length === 0) {
                     return;
@@ -466,7 +466,7 @@
                 var bits = adguard.webRequestService.GetSelectorAndScriptsEnum;
                 var shouldGetTraditionalCssOnly = bits.RETRIEVE_TRADITIONAL_CSS;
 
-                var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, frameId, url, shouldGetTraditionalCssOnly);
+                var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, url, shouldGetTraditionalCssOnly);
 
                 if (!result.selectors || !result.selectors.css) {
                     return;
