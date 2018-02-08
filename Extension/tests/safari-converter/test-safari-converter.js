@@ -81,6 +81,23 @@ QUnit.test("Convert rules to JSON", function (assert) {
     }
 });
 
+QUnit.test("Convert a comment", function(assert) {
+    var ruleText = "! this is a comment";
+    var result = SafariContentBlockerConverter.convertArray([ruleText]);
+    assert.equal(0, result.convertedCount);
+
+    // Comments are simply ignored, that's why just a zero
+    assert.equal(0, result.errorsCount);
+});
+
+QUnit.test("Convert a $network rule", function(assert) {
+    var ruleText = "127.0.0.1$network";
+    var result = SafariContentBlockerConverter.convertArray([ruleText]);
+
+    assert.equal(0, result.convertedCount);
+    assert.equal(1, result.errorsCount);
+});
+
 QUnit.test("Convert first-party rule", function (assert) {
     var ruleText = "@@||adriver.ru^$~third-party";
     var result = SafariContentBlockerConverter.convertArray([ruleText]);
