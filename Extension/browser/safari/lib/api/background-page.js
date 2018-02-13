@@ -227,8 +227,7 @@
 		 * Extension UI locale
 		 */
 		getLocale: function () {
-            // Always use 2-letter code
-			return adguard.i18n.getUILanguage().substring(0, 2);
+			return adguard.i18n.getUILanguage();
 		}
 	};
 

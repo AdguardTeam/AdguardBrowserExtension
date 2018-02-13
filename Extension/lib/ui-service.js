@@ -81,7 +81,7 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
         var urlBuilder = ["https://adguard.com/"];
 
-        if (adguard.app.getLocale() === "ru") {
+        if (adguard.app.getLocale().startsWith("ru")) {
             urlBuilder.push("ru");
         } else {
             urlBuilder.push("en");
