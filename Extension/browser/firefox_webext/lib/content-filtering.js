@@ -147,7 +147,7 @@ adguard.contentFiltering = (function (adguard) {
             return true;
         }
 
-        if (contentType === 'text/html') {
+        if (contentType.toLowerCase().indexOf("charset=") < 0) {
             // Most probably is utf-8
             return true;
         }
