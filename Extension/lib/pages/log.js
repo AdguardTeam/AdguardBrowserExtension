@@ -554,15 +554,16 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 	}
 
 	//bind events
-	template.find('#openRequestNewTab').on('click', function (e) {
-		e.preventDefault();
-		contentPage.sendMessage({type: 'openTab', url: filteringEvent.requestUrl, options: {inNewWindow: true}});
-	});
-
+    var openRequestButton = template.find('#openRequestNewTab');
 	var blockRequestButton = template.find('#blockRequest');
 	var unblockRequestButton = template.find('#unblockRequest');
 	var removeWhiteListDomainButton = template.find('#removeWhiteListDomain');
 	var removeUserFilterRuleButton = template.find('#removeUserFilterRule');
+
+    openRequestButton.on('click', function (e) {
+        e.preventDefault();
+        contentPage.sendMessage({type: 'openTab', url: filteringEvent.requestUrl, options: {inNewWindow: true}});
+    });
 
 	blockRequestButton.on('click', function (e) {
 		e.preventDefault();
@@ -606,6 +607,12 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 		} else if (!requestRule.whiteListRule) {
 			unblockRequestButton.removeClass('hidden');
 		}
+	}
+
+	// Legacy CSP rules
+	if (filteringEvent.requestUrl === 'content-security-policy-check') {
+        unblockRequestButton.hide();
+        openRequestButton.hide();
 	}
 
 	this.showModal(template);
