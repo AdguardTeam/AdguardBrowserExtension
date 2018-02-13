@@ -146,6 +146,12 @@ adguard.contentFiltering = (function (adguard) {
         if (!contentType) {
             return true;
         }
+
+        if (contentType === 'text/html') {
+            // Most probably is utf-8
+            return true;
+        }
+
         return contentType.toLowerCase().indexOf('utf-8') >= 0;
     }
 
