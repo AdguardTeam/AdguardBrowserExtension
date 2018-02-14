@@ -117,20 +117,6 @@
             return result.concat(this.commonRules).concat(this.domainSensitiveRules).concat(this.exceptionRules).concat(this.extendedCssRules);
         },
 
-
-        /**
-         * To convert old call signatures for buildCss, buildInjectCss, buildCssHits
-         * in unit tests to a bitmask-based call signature
-         * @todo Modify unit tests and get rid of this
-         * @param {boolean|undefined} genericHide 
-         */
-        _convertGenericHideFlagToBitmask(genericHide) {
-            if (genericHide === true) {
-                return RETRIEVE_TRADITIONAL_CSS + RETRIEVE_EXTCSS + GENERIC_HIDE_APPLIED;
-            }
-            return RETRIEVE_TRADITIONAL_CSS + RETRIEVE_EXTCSS;
-        },
-
         /**
          * Builds CSS to be injected to the page.
          * This method builds CSS for element hiding rules only:
@@ -141,8 +127,8 @@
          * @returns {{css: (*|*[]), extendedCss: (*|*[])}}
          */
         buildCss: function (domainName, options) {
-            if (typeof options !== 'number') {
-                options = this._convertGenericHideFlagToBitmask(options);
+            if (typeof options === 'undefined') {
+                options = RETRIEVE_TRADITIONAL_CSS + RETRIEVE_EXTCSS;
             }
 
             var cssInjectionOnly = (options & CSS_INJECTION_ONLY) === CSS_INJECTION_ONLY;
@@ -184,10 +170,10 @@
         buildCssHits: function (domainName, options) {
             this._rebuildHits();
 
-            if (typeof options !== 'number') {
-                options = this._convertGenericHideFlagToBitmask(options);
+            if (typeof options === 'undefined') {
+                options = RETRIEVE_TRADITIONAL_CSS + RETRIEVE_EXTCSS;
             }
-
+            
             var rules = this._filterRules(domainName, options);
 
             var genericHide = (options & GENERIC_HIDE_APPLIED) === GENERIC_HIDE_APPLIED;

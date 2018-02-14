@@ -1,3 +1,7 @@
+var CssFilter = adguard.rules.CssFilter;
+
+var genericHide = CssFilter.RETRIEVE_TRADITIONAL_CSS + CssFilter.RETRIEVE_EXTCSS + CssFilter.GENERIC_HIDE_APPLIED;
+
 QUnit.test("Extended Css Build CssHits", function (assert) {
 
     var rule = new adguard.rules.CssFilterRule("adguard.com##.sponsored", 1);
@@ -19,7 +23,7 @@ QUnit.test("Extended Css Build CssHits", function (assert) {
     assert.equal(extendedCss.length, 1);
     assert.equal(extendedCss[0].trim(), ".sponsored[-ext-contains=test] { display: none!important; content: 'adguard1%3Badguard.com%23%23.sponsored%5B-ext-contains%3Dtest%5D' !important;}");
 
-    selectors = filter.buildCssHits("adguard.com", true);
+    selectors = filter.buildCssHits("adguard.com", genericHide);
     css = selectors.css;
     extendedCss = selectors.extendedCss;
     commonCss = filter.buildCssHits(null).css;
