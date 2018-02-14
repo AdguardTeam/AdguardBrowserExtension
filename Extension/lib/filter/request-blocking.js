@@ -65,13 +65,6 @@ adguard.webRequestService = (function (adguard) {
      * @param documentUrl   Document URL
      * @param options       Bitmask of GetSelectorAndScriptsEnum
      * 
-     * 
-     * Options for select:
-     * options = {
-     *      filter: ['selectors', 'scripts'] (selection filter) (mandatory)
-     *      genericHide: true|false ( select only generic hide css rules) (optional)
-     * }
-     *
      * @returns {*}         null or object the following properties: "selectors", "scripts", "collapseAllElements"
      */
     var processGetSelectorsAndScripts = function (tab, documentUrl, options) {
