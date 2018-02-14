@@ -16,22 +16,40 @@
  */
 
 /**
- * Safari content blocking format rules converter.
+ * Converts URLs in the AdGuard format to the format supported by Safari
+ * https://webkit.org/blog/3476/content-blockers-first-look/
  */
-var CONVERTER_VERSION = '1.3.34';
-// Max number of CSS selectors per rule (look at compactCssRules function)
-var MAX_SELECTORS_PER_WIDE_RULE = 250;
-var ANY_URL_TEMPLATES = ['||*', '', '*', '|*'];
-var URL_FILTER_ANY_URL = ".*";
-var URL_FILTER_WS_ANY_URL = "^wss?://.*";
-// Improved regular expression instead of UrlFilterRule.REGEXP_START_URL
-var URL_FILTER_REGEXP_START_URL = "^[htpsw]+://([^/]*\\.)?";
-// Simplified separator (to fix an issue with $ restriction - it can be only in the end of regexp)
-var URL_FILTER_REGEXP_SEPARATOR = "[/:&?]?";
+var SafariContentBlockerConverter = (function () {
 
-var SafariContentBlockerConverter = (function() {
+    /**
+     * Safari content blocking format rules converter.
+     */
+    var CONVERTER_VERSION = '2.0.0';
+    // Max number of CSS selectors per rule (look at compactCssRules function)
+    var MAX_SELECTORS_PER_WIDE_RULE = 250;
 
-    var AGRuleConverter = (function() {
+    /**
+     * It's important to mention why do we need these regular expression.
+     * The thing is that on iOS it is crucial to use regexes as simple as possible.
+     * Otherwise, Safari takes too much memory on compiling a content blocker, and iOS simply kills the process.
+     * 
+     * Angry users are here:
+     * https://github.com/AdguardTeam/AdguardForiOS/issues/550
+     */
+
+    var ANY_URL_TEMPLATES = ['||*', '', '*', '|*'];
+    var URL_FILTER_ANY_URL = "^[htpsw]+:\\/\\/";
+    var URL_FILTER_WS_ANY_URL = "^wss?:\\/\\/";
+    /** 
+     * Improved regular expression instead of UrlFilterRule.REGEXP_START_URL (||)
+     * Please note, that this regular expression matches only ONE level of subdomains
+     * Using ([a-z0-9-.]+\\.)? instead increases memory usage by 10Mb
+     */
+    var URL_FILTER_REGEXP_START_URL = URL_FILTER_ANY_URL + "([a-z0-9-]+\\.)?";
+    /** Simplified separator (to fix an issue with $ restriction - it can be only in the end of regexp) */
+    var URL_FILTER_REGEXP_SEPARATOR = "[/:&?]?";
+
+    var AGRuleConverter = (function () {
 
         var parseDomains = function (rule, included, excluded) {
             var domain, domains, iDomains;
@@ -184,8 +202,15 @@ var SafariContentBlockerConverter = (function() {
             //TODO: Add restricted content types?
         };
 
+        /**
+         * Creates a regular expression that will be used in the trigger["url-filter"].
+         * This method transforms
+         * 
+         * @param {*} filter UrlFilterRule object
+         */
         var createUrlFilterString = function (filter) {
-            if (ANY_URL_TEMPLATES.indexOf(filter.getUrlRuleText()) >= 0) {
+            var urlRuleText = filter.getUrlRuleText();
+            if (ANY_URL_TEMPLATES.indexOf(urlRuleText) >= 0) {
                 if (adguard.rules.UrlFilterRule.contentTypes.WEBSOCKET === filter.permittedContentType) {
                     return URL_FILTER_WS_ANY_URL;
                 }
@@ -197,12 +222,13 @@ var SafariContentBlockerConverter = (function() {
             }
 
             var urlRegExpSource = filter.getUrlRegExpSource();
-            if (urlRegExpSource) {
-                return urlRegExpSource;
+
+            if (!urlRegExpSource) {
+                // Rule with empty regexp
+                return URL_FILTER_ANY_URL;
             }
 
-            // Rule with empty regexp
-            return URL_FILTER_ANY_URL;
+            return urlRegExpSource;
         };
 
         var parseRuleDomain = function (ruleText) {
@@ -403,10 +429,6 @@ var SafariContentBlockerConverter = (function() {
 
             var urlFilter = createUrlFilterString(rule);
 
-            // Redefine some of regular expressions
-            urlFilter = adguard.utils.strings.replaceAll(urlFilter, adguard.rules.SimpleRegex.regexConfiguration.regexStartUrl, URL_FILTER_REGEXP_START_URL);
-            urlFilter = adguard.utils.strings.replaceAll(urlFilter, adguard.rules.SimpleRegex.regexConfiguration.regexSeparator, URL_FILTER_REGEXP_SEPARATOR);
-
             validateRegExp(urlFilter);
 
             var result = {
@@ -483,9 +505,9 @@ var SafariContentBlockerConverter = (function() {
      */
     var parseAGRule = function (ruleText, errors) {
         try {
-            if (ruleText === null || 
+            if (ruleText === null ||
                 ruleText === '' ||
-                ruleText.indexOf('!') === 0 || 
+                ruleText.indexOf('!') === 0 ||
                 ruleText.indexOf(' ') === 0 ||
                 ruleText.indexOf(' - ') > 0) {
                 return null;
@@ -934,19 +956,33 @@ var SafariContentBlockerConverter = (function() {
     var convertArray = function (rules, limit, optimize) {
         printVersionMessage();
 
-        if (rules === null) {
-            adguard.console.error('Invalid argument rules');
-            return null;
-        }
+        // Temporarily change the configuration in order to generate more effective regular expressions
+        var regexConfiguration = adguard.rules.SimpleRegex.regexConfiguration;
+        var prevRegexStartUrl = regexConfiguration.regexStartUrl;
+        var prevRegexSeparator = regexConfiguration.regexSeparator;
 
-        if (rules.length === 0) {
-            adguard.console.info('No rules presented for convertation');
-            return null;
-        }
+        try {
+            regexConfiguration.regexStartUrl = URL_FILTER_REGEXP_START_URL;
+            regexConfiguration.regexSeparator = URL_FILTER_REGEXP_SEPARATOR;
 
-        var contentBlocker = convertLines(rules, !!optimize);
-        return createConversionResult(contentBlocker, limit);
-    }
+            if (rules === null) {
+                adguard.console.error('Invalid argument rules');
+                return null;
+            }
+
+            if (rules.length === 0) {
+                adguard.console.info('No rules presented for convertation');
+                return null;
+            }
+
+            var contentBlocker = convertLines(rules, !!optimize);
+            return createConversionResult(contentBlocker, limit);
+        } finally {
+            // Restore the regex configuration
+            regexConfiguration.regexStartUrl = prevRegexStartUrl;
+            regexConfiguration.regexSeparator = prevRegexSeparator;
+        }
+    };
 
     // Expose SafariContentBlockerConverter API
     return {
