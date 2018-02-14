@@ -147,12 +147,13 @@ adguard.contentFiltering = (function (adguard) {
             return true;
         }
 
-        if (contentType.toLowerCase().indexOf("charset=") < 0) {
+        var lowerCased = contentType.toLowerCase();
+        if (lowerCased.indexOf("charset=") < 0) {
             // Most probably is utf-8
             return true;
         }
 
-        return contentType.toLowerCase().indexOf('utf-8') >= 0;
+        return lowerCased.indexOf('utf-8') >= 0;
     }
 
     /**
