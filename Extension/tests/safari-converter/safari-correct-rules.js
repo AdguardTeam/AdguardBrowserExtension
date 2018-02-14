@@ -1,7 +1,49 @@
+var URL_FILTER_ANY_URL = "^[htpsw]+:\\/\\/";
+var URL_FILTER_WS_ANY_URL = "^wss?:\\/\\/";
+// Improved regular expression instead of UrlFilterRule.REGEXP_START_URL (||)
+var URL_FILTER_REGEXP_START_URL = URL_FILTER_ANY_URL + "([a-z0-9-]+\\.)?";
+// Simplified separator (to fix an issue with $ restriction - it can be only in the end of regexp)
+var URL_FILTER_REGEXP_SEPARATOR = "[/:&?]?";
+
+// Rules to test
+var rules = [
+    '||pics.rbc.ru/js/swf',
+    '||tardangro.com^$third-party',
+    '||videoplaza.com^$~object-subrequest,third-party',
+    '||videoplaza.tv^$object-subrequest,third-party,domain=tv4play.se',
+    '||b.babylon.com^',
+    '||getsecuredfiles.com^$popup,third-party',
+    'popsugar.com###calendar_widget',
+    '@@||emjcd.com^$image,domain=catalogfavoritesvip.com|freeshipping.com',
+    '@@||intellitxt.com/ast/js/nbcuni/$script',
+    '@@||hulu.com/embed$document',
+    '@@||hulu.com/$document',
+    '@@http://hulu.com^$document',
+    '@@https://hulu.com$document',
+    '@@www.any.gs$urlblock',
+    '@@wfarm.yandex.net/$document',
+    '@@.instantservice.com$document',
+    '/addyn|*|adtech;',
+    '@@||hulu-jsinject.com$jsinject',
+    '@@||test-document.com$document',
+    '@@||test-urlblock.com$urlblock',
+    '@@||test-elemhide.com$elemhide',
+    '@@/testelemhidenodomain$document',
+    'lenta1.ru#@##social',
+    'lenta2.ru#@##social',
+    '###social',
+    'yandex.ru###pub',
+    'yandex.ru#@##pub',
+    '@@/^https?\:\/\/(?!(qs\.ivwbox\.de|qs\.ioam.de|platform\.twitter\.com|connect\.facebook\.net|de\.ioam\.de|pubads\.g\.doubleclick\.net|stats\.wordpress\.com|www\.google-analytics\.com|www\.googletagservices\.com|apis\.google\.com|script\.ioam\.de)\/)/$script,third-party,domain=gamona.de',
+    '/\.filenuke\.com/.*[a-zA-Z0-9]{4}/$script',
+    '##.banner'
+];
+
+// Conversion result
 var safariCorrectRules = [
     {
         "trigger": {
-            "url-filter": ".*"
+            "url-filter": URL_FILTER_ANY_URL
         },
         "action": {
             "type": "css-display-none",
@@ -10,7 +52,7 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": ".*",
+            "url-filter": URL_FILTER_ANY_URL,
             "unless-domain": [
                 "*lenta1.ru",
                 "*lenta2.ru"
@@ -23,7 +65,7 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": ".*",
+            "url-filter": URL_FILTER_ANY_URL,
             "if-domain": [
                 "*popsugar.com"
             ]
@@ -35,7 +77,7 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": ".*",
+            "url-filter": URL_FILTER_ANY_URL,
             "if-domain": [
                 "*test-elemhide.com"
             ]
@@ -46,7 +88,7 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": "^[htpsw]+://([^/]*\\.)?pics\\.rbc\\.ru\\/js\\/swf"
+            "url-filter": URL_FILTER_REGEXP_START_URL + "pics\\.rbc\\.ru\\/js\\/swf"
         },
         "action": {
             "type": "block"
@@ -54,7 +96,7 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": "^[htpsw]+://([^/]*\\.)?tardangro\\.com[/:&?]?",
+            "url-filter": URL_FILTER_REGEXP_START_URL + "tardangro\\.com" + URL_FILTER_REGEXP_SEPARATOR,
             "load-type": [
                 "third-party"
             ]
@@ -65,7 +107,7 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": "^[htpsw]+://([^/]*\\.)?videoplaza\\.com[/:&?]?",
+            "url-filter": URL_FILTER_REGEXP_START_URL + "videoplaza\\.com" + URL_FILTER_REGEXP_SEPARATOR,
             "resource-type": [
                 "image",
                 "style-sheet",
@@ -85,7 +127,7 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": "^[htpsw]+://([^/]*\\.)?b\\.babylon\\.com[/:&?]?"
+            "url-filter": URL_FILTER_REGEXP_START_URL + "b\\.babylon\\.com" + URL_FILTER_REGEXP_SEPARATOR
         },
         "action": {
             "type": "block"
@@ -93,7 +135,7 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": "^[htpsw]+://([^/]*\\.)?getsecuredfiles\\.com[/:&?]?",
+            "url-filter": URL_FILTER_REGEXP_START_URL + "getsecuredfiles\\.com" + URL_FILTER_REGEXP_SEPARATOR,
             "resource-type": [
                 "popup"
             ],
@@ -115,7 +157,7 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": "^[htpsw]+://([^/]*\\.)?emjcd\\.com[/:&?]?",
+            "url-filter": URL_FILTER_REGEXP_START_URL + "emjcd\\.com" + URL_FILTER_REGEXP_SEPARATOR,
             "resource-type": [
                 "image"
             ],
@@ -130,7 +172,7 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": "^[htpsw]+://([^/]*\\.)?intellitxt\\.com\\/ast\\/js\\/nbcuni\\/",
+            "url-filter": URL_FILTER_REGEXP_START_URL + "intellitxt\\.com\\/ast\\/js\\/nbcuni\\/",
             "resource-type": [
                 "script"
             ]
@@ -141,7 +183,7 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": ".*",
+            "url-filter": URL_FILTER_ANY_URL,
             "if-domain": [
                 "*www.any.gs"
             ]
@@ -152,7 +194,7 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": ".*",
+            "url-filter": URL_FILTER_ANY_URL,
             "if-domain": [
                 "*test-urlblock.com"
             ]
@@ -163,7 +205,7 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": "^[htpsw]+://([^/]*\\.)?hulu\\.com\\/embed"
+            "url-filter": URL_FILTER_REGEXP_START_URL + "hulu\\.com\\/embed"
         },
         "action": {
             "type": "ignore-previous-rules"
@@ -171,7 +213,7 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": ".*",
+            "url-filter": URL_FILTER_ANY_URL,
             "if-domain": [
                 "*hulu.com"
             ]
@@ -182,7 +224,7 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": ".*",
+            "url-filter": URL_FILTER_ANY_URL,
             "if-domain": [
                 "*hulu.com"
             ]
@@ -193,7 +235,7 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": ".*",
+            "url-filter": URL_FILTER_ANY_URL,
             "if-domain": [
                 "*hulu.com"
             ]
@@ -204,7 +246,7 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": ".*",
+            "url-filter": URL_FILTER_ANY_URL,
             "if-domain": [
                 "*wfarm.yandex.net"
             ]
@@ -223,7 +265,7 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": ".*",
+            "url-filter": URL_FILTER_ANY_URL,
             "if-domain": [
                 "*test-document.com"
             ]

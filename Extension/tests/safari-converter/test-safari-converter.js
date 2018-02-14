@@ -4,59 +4,6 @@
 
 /* global SafariContentBlockerConverter, QUnit, URL_FILTER_REGEXP_START_URL, _checkResult */
 
-adguard.rules.CspFilter = {};
-adguard.rules.CspFilter.DEFAULT_DIRECTIVE = 'connect-src http: https:; frame-src http: https:; child-src http: https:';
-
-// Setup test
-var specials = [
-    '.',
-    '+',
-    '?',
-    '$',
-    '{',
-    '}',
-    '(',
-    ')',
-    '[',
-    ']',
-    '\\',
-    '/'
-];
-
-var rules = [
-    '||pics.rbc.ru/js/swf',
-    '||tardangro.com^$third-party',
-    '||videoplaza.com^$~object-subrequest,third-party',
-    '||videoplaza.tv^$object-subrequest,third-party,domain=tv4play.se',
-    '||b.babylon.com^',
-    '||getsecuredfiles.com^$popup,third-party',
-    'popsugar.com###calendar_widget',
-    '@@||emjcd.com^$image,domain=catalogfavoritesvip.com|freeshipping.com',
-    '@@||intellitxt.com/ast/js/nbcuni/$script',
-    '@@||hulu.com/embed$document',
-    '@@||hulu.com/$document',
-    '@@http://hulu.com^$document',
-    '@@https://hulu.com$document',
-    '@@www.any.gs$urlblock',
-    '@@wfarm.yandex.net/$document',
-    '@@.instantservice.com$document',
-    '/addyn|*|adtech;',
-    '@@||hulu-jsinject.com$jsinject',
-    '@@||test-document.com$document',
-    '@@||test-urlblock.com$urlblock',
-    '@@||test-elemhide.com$elemhide',
-    '@@/testelemhidenodomain$document',
-    'lenta1.ru#@##social',
-    'lenta2.ru#@##social',
-    '###social',
-    'yandex.ru###pub',
-    'yandex.ru#@##pub',
-    '@@/^https?\:\/\/(?!(qs\.ivwbox\.de|qs\.ioam.de|platform\.twitter\.com|connect\.facebook\.net|de\.ioam\.de|pubads\.g\.doubleclick\.net|stats\.wordpress\.com|www\.google-analytics\.com|www\.googletagservices\.com|apis\.google\.com|script\.ioam\.de)\/)/$script,third-party,domain=gamona.de',
-    '/\.filenuke\.com/.*[a-zA-Z0-9]{4}/$script',
-    '##.banner'
-];
-// Setup
-
 QUnit.test("Convert rules to JSON", function (assert) {
     var safariJSON = SafariContentBlockerConverter.convertArray(rules);
     var errors = [];
@@ -141,7 +88,7 @@ QUnit.test("Convert websocket rule", function (assert) {
     assert.equal(1, converted.length);
 
     convertedRule = converted[0];
-    assert.equal(convertedRule.trigger["url-filter"], "^wss?://.*");
+    assert.equal(convertedRule.trigger["url-filter"], "^wss?:\\/\\/");
     assert.equal(convertedRule.trigger["if-domain"][0], "*123movies.is");
     assert.ok(convertedRule.trigger["resource-type"]);
     assert.equal(convertedRule.trigger["resource-type"][0], "raw");
@@ -202,7 +149,7 @@ QUnit.test("Convert rule with empty regexp", function (assert) {
     assert.equal(1, converted.length);
 
     var convertedRule = converted[0];
-    assert.equal(".*", convertedRule.trigger["url-filter"]);
+    assert.equal(URL_FILTER_ANY_URL, convertedRule.trigger["url-filter"]);
     assert.equal(1, convertedRule.trigger["if-domain"].length);
     assert.equal("*moonwalk.cc", convertedRule.trigger["if-domain"][0]);
     assert.equal(1, convertedRule.trigger["resource-type"].length);
@@ -219,7 +166,7 @@ QUnit.test("Inverted whitelist", function (assert) {
     assert.equal(1, converted.length);
 
     var convertedRule = converted[0];
-    assert.equal(".*", convertedRule.trigger["url-filter"]);
+    assert.equal(URL_FILTER_ANY_URL, convertedRule.trigger["url-filter"]);
     assert.equal(2, convertedRule.trigger["unless-domain"].length);
     assert.equal("*whitelisted.domain2.com", convertedRule.trigger["unless-domain"][0]);
     assert.equal("*whitelisted.domain.com", convertedRule.trigger["unless-domain"][1]);
@@ -237,7 +184,7 @@ QUnit.test("Generichide rules", function (assert) {
 
     var convertedRule = converted[0];
     assert.equal(convertedRule.action.type, "ignore-previous-rules");
-    assert.equal(convertedRule.trigger["url-filter"], '^[htpsw]+://([^/]*\\.)?hulu\\.com\\/page');
+    assert.equal(convertedRule.trigger["url-filter"], URL_FILTER_REGEXP_START_URL + 'hulu\\.com\\/page');
 });
 
 QUnit.test("Generic domain sensitive rules", function (assert) {
@@ -252,7 +199,7 @@ QUnit.test("Generic domain sensitive rules", function (assert) {
     var convertedRule = converted[0];
     assert.equal(convertedRule.action.type, "css-display-none");
     assert.equal(convertedRule.trigger["unless-domain"], '*google.com');
-    assert.equal(convertedRule.trigger["url-filter"], '.*');
+    assert.equal(convertedRule.trigger["url-filter"], URL_FILTER_ANY_URL);
 });
 
 QUnit.test("Generic domain sensitive rules sorting order", function (assert) {
@@ -264,15 +211,15 @@ QUnit.test("Generic domain sensitive rules sorting order", function (assert) {
 
     assert.equal(converted[0].action.selector, "wide1, specific");
     assert.equal(converted[0].action.type, "css-display-none");
-    assert.equal(converted[0].trigger["url-filter"], '.*');
+    assert.equal(converted[0].trigger["url-filter"], URL_FILTER_ANY_URL);
 
     assert.equal(converted[1].action.selector, "generic");
     assert.equal(converted[1].action.type, "css-display-none");
     assert.equal(converted[1].trigger["unless-domain"], '*example.org');
-    assert.equal(converted[1].trigger["url-filter"], '.*');
+    assert.equal(converted[1].trigger["url-filter"], URL_FILTER_ANY_URL);
 
     assert.equal(converted[2].action.type, "ignore-previous-rules");
-    assert.equal(converted[2].trigger["url-filter"], '.*');
+    assert.equal(converted[2].trigger["url-filter"], URL_FILTER_ANY_URL);
     assert.equal(converted[2].trigger["if-domain"], '*example.org');
 });
 
@@ -287,7 +234,7 @@ QUnit.test("Convert cyrillic rules", function (assert) {
     assert.equal(2, converted.length);
 
     assert.equal(converted[0].trigger["url-filter"], "xn--e1agjb\\.xn--p1ai");
-    assert.equal(converted[1].trigger["url-filter"], "^[htpsw]+://([^/]*\\.)?xn--e1agjb\\.xn--p1ai");
+    assert.equal(converted[1].trigger["url-filter"], URL_FILTER_REGEXP_START_URL + "xn--e1agjb\\.xn--p1ai");
 });
 
 QUnit.test("Convert regexp rules", function (assert) {
@@ -426,7 +373,7 @@ QUnit.test("Elemhide rules", function (assert) {
     assert.equal(converted[0].action.selector, "#root > section.b-header.b-header-main.js-header:nth-child(4) > div.g-layout > div.row");
     assert.equal(converted[0].action.type, "css-display-none");
 
-    assert.equal(converted[1].trigger["url-filter"], ".*");
+    assert.equal(converted[1].trigger["url-filter"], URL_FILTER_ANY_URL);
     assert.equal(converted[1].trigger["if-domain"], "*lenta.ru");
     assert.equal(converted[1].action.type, "ignore-previous-rules");
 
@@ -434,7 +381,7 @@ QUnit.test("Elemhide rules", function (assert) {
     assert.equal(converted[2].action.type, "block");
 
     assert.equal(converted[3].action.type, "ignore-previous-rules");
-    assert.equal(converted[3].trigger["url-filter"], "^[htpsw]+://([^/]*\\.)?lenta\\.ru[/:&?]?");
+    assert.equal(converted[3].trigger["url-filter"], URL_FILTER_REGEXP_START_URL + "lenta\\.ru[/:&?]?");
 });
 
 QUnit.test("Important modifier rules sorting order", function(assert) {
@@ -450,19 +397,19 @@ QUnit.test("Important modifier rules sorting order", function(assert) {
     assert.equal(converted.length, 5);
 
     assert.equal(converted[0].action.type, "block");
-    assert.equal(converted[0].trigger["url-filter"], "^[htpsw]+://([^/]*\\.)?example-url-block\\.org[/:&?]?");
+    assert.equal(converted[0].trigger["url-filter"], URL_FILTER_REGEXP_START_URL + "example-url-block\\.org[/:&?]?");
 
     assert.equal(converted[1].action.type, "ignore-previous-rules");
-    assert.equal(converted[1].trigger["url-filter"], "^[htpsw]+://([^/]*\\.)?example-url-block-exception\\.org[/:&?]?");
+    assert.equal(converted[1].trigger["url-filter"], URL_FILTER_REGEXP_START_URL + "example-url-block-exception\\.org[/:&?]?");
 
     assert.equal(converted[2].action.type, "block");
-    assert.equal(converted[2].trigger["url-filter"], "^[htpsw]+://([^/]*\\.)?example-url-block-important\\.org[/:&?]?");
+    assert.equal(converted[2].trigger["url-filter"], URL_FILTER_REGEXP_START_URL + "example-url-block-important\\.org[/:&?]?");
 
     assert.equal(converted[3].action.type, "ignore-previous-rules");
-    assert.equal(converted[3].trigger["url-filter"], "^[htpsw]+://([^/]*\\.)?example-url-block-exception-important\\.org[/:&?]?");
+    assert.equal(converted[3].trigger["url-filter"], URL_FILTER_REGEXP_START_URL + "example-url-block-exception-important\\.org[/:&?]?");
 
     assert.equal(converted[4].action.type, "ignore-previous-rules");
-    assert.equal(converted[4].trigger["url-filter"], ".*");
+    assert.equal(converted[4].trigger["url-filter"], URL_FILTER_ANY_URL);
     assert.equal(converted[4].trigger["if-domain"], "*example-url-block-exception-document.org");
 });
 
@@ -477,6 +424,6 @@ QUnit.test("BadFilter rules", function (assert) {
 
     var converted = JSON.parse(result.converted);
     assert.equal(converted.length, 1);
-    assert.equal(converted[0].trigger['url-filter'], "^[htpsw]+://([^/]*\\.)?test\\.org[/:&?]?");
+    assert.equal(converted[0].trigger['url-filter'], URL_FILTER_REGEXP_START_URL + "test\\.org[/:&?]?");
 
 });
