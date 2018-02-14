@@ -444,7 +444,8 @@
 
                 var details = {
                     code: cssStringified,
-                    runAt: 'document_start'
+                    runAt: 'document_start',
+                    frameId: frameId
                     //, matchAboutBlank: true
                 };
 
@@ -463,13 +464,6 @@
                 var tabId = details.tabId;
                 var frameId = details.frameId;
                 var url = details.url;
-
-                /**
-                 * We should use tabs.insertCSS only on top frames.
-                 */
-                if (frameId !== 0) {
-                    return;
-                }
 
                 var bits = adguard.webRequestService.GetSelectorAndScriptsEnum;
                 var shouldGetTraditionalCssOnly = bits.RETRIEVE_TRADITIONAL_CSS;
