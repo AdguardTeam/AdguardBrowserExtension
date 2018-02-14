@@ -312,32 +312,8 @@
             params.push('lang=' + locale);
             params.push('id=' + id);
             return params;
-        },
-
-        /**
-         * Edge browser does not support `runAt` in options of tabs.insertCSS
-         * and tabs.executeScript
-         */
-        useInsertCSSAndExecuteScript: function () {
-            return (
-                // Support for tabs.insertCSS and tabs.executeScript on chrome 
-                // requires chrome version above or equal to 39.
-                // https://developers.chrome.com/extensions/tabs
-                (this.isChromeBrowser() || this.isOperaBrowser()) &&
-                adguard.prefs.chromeVersion >= 39 
-            ) || (
-                // Support for tabs.insertCSS and tabs.executeScript on firefox
-                // requires firefox version above or equal to 47.
-                // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/executeScript
-                // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/insertCSS
-                // So, basically all webextension will be able to use it.
-                this.isFirefoxBrowser()
-            )
-            
-            
-            
-            this.isChromium() || this.isFirefoxBrowser();
         }
+
     };
 
     api.browser = Utils;

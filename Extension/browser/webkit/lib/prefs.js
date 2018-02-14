@@ -69,13 +69,8 @@ adguard.prefs = (function (adguard) {
 
         get chromeVersion() {
             return adguard.lazyGet(Prefs, 'chromeVersion', function () {
-                if (this.browser === "Chrome") {
-                    var i = navigator.userAgent.indexOf("Chrome/");
-                    if (i < 0) {
-                        return null;
-                    }
-                    return parseInt(navigator.userAgent.substring(i + 7));
-                }
+                let match = /\sChrome\/(\d+)\./.exec(navigator.userAgent);
+                return match === null ? null : parseInt(match[1]);
             });
         },
 
@@ -111,20 +106,6 @@ adguard.prefs = (function (adguard) {
             return false;
         },
 
-        /**
-         * Collect browser specific features here
-         */
-        features: (function () {
-
-            var responseContentFilteringSupported = typeof browser !== 'undefined' &&
-                typeof browser.webRequest !== 'undefined' &&
-                typeof browser.webRequest.filterResponseData !== 'undefined';
-
-            return {
-                responseContentFilteringSupported: responseContentFilteringSupported
-            };
-        })(),
-
         get ICONS() {
             return adguard.lazyGet(Prefs, 'ICONS', function () {
                 return {
@@ -150,6 +131,38 @@ adguard.prefs = (function (adguard) {
          */
         collectHitsCountEnabled: (typeof safari === 'undefined')
     };
+
+    /**
+     * Collect browser specific features here
+     */
+    Prefs.features = (function () {
+
+        var responseContentFilteringSupported = typeof browser !== 'undefined' &&
+            typeof browser.webRequest !== 'undefined' &&
+            typeof browser.webRequest.filterResponseData !== 'undefined';
+
+        var canUseInsertCSSAndExecuteScript = (
+            // Blink engine based browsers
+            (Prefs.browser === 'Chrome' || Prefs.browser === 'Opera' || Prefs.browser === 'YaBrowser') &&
+            // Support for tabs.insertCSS and tabs.executeScript on chrome 
+            // requires chrome version above or equal to 39.
+            // https://developers.chrome.com/extensions/tabs
+            Prefs.chromeVersion >= 39
+        ) || (
+            Prefs.browser === 'Firefox' && (
+                typeof browser !== 'undefined' &&
+                typeof browser.tabs !== 'undefined' &&
+                typeof browser.tabs.insertCSS !== 'undefined' 
+            )
+        );
+        // Edge browser does not support `runAt` in options of tabs.insertCSS
+        // and tabs.executeScript
+            
+        return {
+            responseContentFilteringSupported: responseContentFilteringSupported,
+            canUseInsertCSSAndExecuteScript: canUseInsertCSSAndExecuteScript
+        };
+    })();
 
     return Prefs;
 
