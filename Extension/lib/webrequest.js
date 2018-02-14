@@ -340,7 +340,7 @@
         }
     });
 
-    var shouldUseInsertCSSAndExecuteScript = adguard.utils.browser.useInsertCSSAndExecuteScript();
+    var shouldUseInsertCSSAndExecuteScript = adguard.prefs.features.canUseInsertCSSAndExecuteScript;
 
     if (shouldUseInsertCSSAndExecuteScript) {
         /**
@@ -361,13 +361,13 @@
                     case '"':
                     case "'":
                     case '\\':
-                        return '\\' + match
+                        return '\\' + match;
                     case '\n':
                         return '\\n\\\n' // Line continuation character for ease
-                                        // of reading inlined resource.
+                                         // of reading inlined resource.
                     case '\r':
                         return ''        // Carriage returns won't have
-                                        // any semantic meaning in JS
+                                         // any semantic meaning in JS
                     case '\u2028':
                         return '\\u2028'
                     case '\u2029':
@@ -409,12 +409,20 @@
                 var bits = adguard.webRequestService.GetSelectorAndScriptsEnum;
                 var shouldGetScripts = bits.RETRIEVE_SCRIPTS;
 
-                var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, url, shouldGetScripts);
+                function tryGetScripts() {
+                    var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, url, shouldGetScripts);
 
-                if (!result.scripts || result.scripts.length === 0) {
-                    return;
+                    if (result.requestFilterReady === false) {
+                        setTimeout(tryGetScripts, 100);
+                    }
+
+                    if (!result.scripts || result.scripts.length === 0) {
+                        return;
+                    }
+                    tryInjectScripts(tabId, frameId, result);
                 }
-                tryInjectScripts(tabId, frameId, result);
+
+                tryGetScripts();
             });
         })(adguard);
     }
@@ -466,12 +474,20 @@
                 var bits = adguard.webRequestService.GetSelectorAndScriptsEnum;
                 var shouldGetTraditionalCssOnly = bits.RETRIEVE_TRADITIONAL_CSS;
 
-                var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, url, shouldGetTraditionalCssOnly);
+                function tryGetCss() {
+                    var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, url, shouldGetTraditionalCssOnly);
 
-                if (!result.selectors || !result.selectors.css) {
-                    return;
+                    if (result.requestFilterReady) {
+                        setTimeout(tryGetCss, 100);
+                    }
+
+                    if (!result.selectors || !result.selectors.css) {
+                        return;
+                    }
+                    tryInsertCss(tabId, frameId, result.selectors.css);
                 }
-                tryInsertCss(tabId, frameId, result.selectors.css);
+
+                tryGetCss();
             });
         })(adguard);
     }

@@ -290,12 +290,7 @@
             case 'getSelectorsAndScripts':
                 let GetSelectorAndScriptsEnum = adguard.webRequestService.GetSelectorAndScriptsEnum;
                 let options = GetSelectorAndScriptsEnum.RETRIEVE_EXTCSS;
-                if (adguard.utils.browser.useInsertCSSAndExecuteScript() && sender.frameId !== 0) {
-                    // For top frames, i.e. those with sender.frameId === 0, we have injected
-                    // traditional css with tabs.insertCSS and injected JS rules with tabs.executeScript.
-                    // sender.frameId will only be defined on webext and chrome,
-                    // but on other platforms do not have tabs.insertCSS and tabs.executeScript
-                    // so we have to retrieve all anyway.
+                if (!adguard.prefs.features.canUseInsertCSSAndExecuteScript) {
                     options +=
                         GetSelectorAndScriptsEnum.RETRIEVE_TRADITIONAL_CSS +
                         GetSelectorAndScriptsEnum.RETRIEVE_SCRIPTS;
