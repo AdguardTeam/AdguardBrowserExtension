@@ -387,6 +387,7 @@
 
                 if (result.requestFilterReady === false) {
                     setTimeout(tryInjectScripts, 100, details);
+                    return;
                 }
 
                 if (!result.scripts || result.scripts.length === 0) {
@@ -445,8 +446,9 @@
             
                 var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, url, shouldGetTraditionalCssOnly);
 
-                if (result.requestFilterReady) {
+                if (result.requestFilterReady === false) {
                     setTimeout(tryGetCss, 100, details);
+                    return;
                 }
 
                 if (!result.selectors || !result.selectors.css) {
