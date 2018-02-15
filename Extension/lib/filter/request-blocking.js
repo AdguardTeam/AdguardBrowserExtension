@@ -83,10 +83,11 @@ adguard.webRequestService = (function (adguard) {
         if (typeof cssFilterOptions === 'undefined' && typeof retrieveScripts === 'undefined') {
             // content-message-handler calls it in this way
             cssFilterOptions = CssFilter.RETRIEVE_EXTCSS;
+            retrieveScripts = false;
             if (!adguard.prefs.features.canUseInsertCSSAndExecuteScript) {
                 cssFilterOptions += CssFilter.RETRIEVE_TRADITIONAL_CSS;
+                retrieveScripts = true;    
             }
-            retrieveScripts = true;
         }
 
         var retrieveSelectors = (cssFilterOptions & (CssFilter.RETRIEVE_TRADITIONAL_CSS + CssFilter.RETRIEVE_EXTCSS)) !== 0;
