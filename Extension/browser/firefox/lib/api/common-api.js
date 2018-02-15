@@ -84,7 +84,7 @@
 
     adguard.app = (function () {
 
-        var locale = Cc["@mozilla.org/chrome/chrome-registry;1"].getService(Ci.nsIXULChromeRegistry).getSelectedLocale('global').substring(0, 2).toLowerCase();
+        var locale = Cc["@mozilla.org/chrome/chrome-registry;1"].getService(Ci.nsIXULChromeRegistry).getSelectedLocale('global');
 
         var getId = function () {
             return id;
