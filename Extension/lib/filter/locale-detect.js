@@ -117,6 +117,10 @@
      */
     function detectLanguage(language) {
 
+        /**
+         * For an unknown language "und" will be returned
+         * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/detectLanguage
+         */
         if (!language || language === "und") {
             return;
         }
