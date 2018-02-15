@@ -380,10 +380,7 @@
                 var frameId = details.frameId;
                 var url = details.url;
 
-                var bits = adguard.webRequestService.GetSelectorAndScriptsEnum;
-                var shouldGetScripts = bits.RETRIEVE_SCRIPTS;
-
-                var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, url, shouldGetScripts);
+                var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, url, 0, true);
 
                 if (result.requestFilterReady === false) {
                     setTimeout(tryInjectScripts, 100, details);
@@ -440,11 +437,9 @@
                 var frameId = details.frameId;
                 var url = details.url;
 
-                var bits = adguard.webRequestService.GetSelectorAndScriptsEnum;
-                var shouldGetTraditionalCssOnly = bits.RETRIEVE_TRADITIONAL_CSS;
-
+                var cssFilterOption = adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS;
             
-                var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, url, shouldGetTraditionalCssOnly);
+                var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, url, cssFilterOption, false);
 
                 if (result.requestFilterReady === false) {
                     setTimeout(tryGetCss, 100, details);

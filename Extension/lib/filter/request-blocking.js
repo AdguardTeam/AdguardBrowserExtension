@@ -40,34 +40,19 @@ adguard.webRequestService = (function (adguard) {
         }
     };
 
-    // Option flags to be used in processGetSelectorsAndScripts call.
-    var RETRIEVE_TRADITIONAL_CSS = 1 << 0;
-    var RETRIEVE_EXTCSS          = 1 << 1;
-    var GENERIC_HIDE_APPLIED     = 1 << 2;
-    var RETRIEVE_SCRIPTS         = 1 << 3;
-
-    var RETRIEVE_SELECTORS = RETRIEVE_TRADITIONAL_CSS + RETRIEVE_EXTCSS;
-
-    // To be exported
-    var GetSelectorAndScriptsEnum = {
-        RETRIEVE_TRADITIONAL_CSS: RETRIEVE_TRADITIONAL_CSS,
-        RETRIEVE_EXTCSS: RETRIEVE_EXTCSS,
-        GENERIC_HIDE_APPLIED: GENERIC_HIDE_APPLIED,
-        RETRIEVE_SCRIPTS: RETRIEVE_SCRIPTS,
-
-        RETRIEVE_SELECTORS: RETRIEVE_SELECTORS
-    };
-
     /**
      * Prepares CSS and JS which should be injected to the page.
      *
-     * @param tab           Tab
-     * @param documentUrl   Document URL
-     * @param options       Bitmask of GetSelectorAndScriptsEnum
+     * @param tab                       Tab
+     * @param documentUrl               Document URL
+     * @param cssFilterOptions          Bitmask of CssFilter
+     * @param {boolean} retrieveScripts indicates whether to retrieve JS rules or not
      * 
-     * @returns {*}         null or object the following properties: "selectors", "scripts", "collapseAllElements"
+     * When cssFilterOptions and retrieveScripts are undefined, we handle it in a special way.
+     * 
+     * @returns {*} null or object the following properties: "selectors", "scripts", "collapseAllElements"
      */
-    var processGetSelectorsAndScripts = function (tab, documentUrl, options) {
+    var processGetSelectorsAndScripts = function (tab, documentUrl, cssFilterOptions, retrieveScripts) {
 
         var result = Object.create(null);
 
@@ -93,9 +78,18 @@ adguard.webRequestService = (function (adguard) {
             whitelistRule = adguard.requestFilter.findWhiteListRule(documentUrl, mainFrameUrl, adguard.RequestTypes.DOCUMENT);
         }
 
-        var retrieveSelectors = (options & RETRIEVE_SELECTORS) 
-        !== 0;
-        var retrieveScripts = (options & RETRIEVE_SCRIPTS) === RETRIEVE_SCRIPTS;
+        let CssFilter = adguard.rules.CssFilter;
+
+        if (typeof cssFilterOptions === 'undefined' && typeof retrieveScripts === 'undefined') {
+            // content-message-handler calls it in this way
+            cssFilterOptions = CssFilter.RETRIEVE_EXTCSS;
+            if (!adguard.prefs.features.canUseInsertCSSAndExecuteScript) {
+                cssFilterOptions += CssFilter.RETRIEVE_TRADITIONAL_CSS;
+            }
+            retrieveScripts = true;
+        }
+
+        var retrieveSelectors = (cssFilterOptions & (CssFilter.RETRIEVE_TRADITIONAL_CSS + CssFilter.RETRIEVE_EXTCSS)) !== 0;
 
         if (retrieveSelectors) {
             // Record rule hit
@@ -118,20 +112,13 @@ adguard.webRequestService = (function (adguard) {
             result.collapseAllElements = adguard.requestFilter.shouldCollapseAllElements();
 
             // Check what exactly is disabled by this rule
-            var genericHideFlag = ((options & GENERIC_HIDE_APPLIED) === GENERIC_HIDE_APPLIED) || (whitelistRule && whitelistRule.isGenericHide());
+            var genericHideFlag = ((cssFilterOptions & CssFilter.GENERIC_HIDE_APPLIED) === CssFilter.GENERIC_HIDE_APPLIED) || (whitelistRule && whitelistRule.isGenericHide());
             var elemHideFlag = whitelistRule && whitelistRule.isElemhide();
 
             if (!elemHideFlag) {
                 // Element hiding rules aren't disabled, so we should use them
-
-                /**
-                 * Build up options bitmask for CssFilter class.
-                 * RETRIEVE_TRADITIONAL_CSS, RETRIEVE_EXTCSS, GENERIC_HIDE_APPLIED parts
-                 * are identical, only need to set CSS_INJECTION_ONLY (1 << 3).
-                 */
-                var cssFilterOptions = options & (~RETRIEVE_SCRIPTS);
                 if (!shouldLoadAllSelectors(result.collapseAllElements)) {
-                    cssFilterOptions += adguard.rules.CssFilter.CSS_INJECTION_ONLY;
+                    cssFilterOptions += CssFilter.CSS_INJECTION_ONLY;
                 }
 
                 result.selectors = adguard.requestFilter.getSelectorsForUrl(documentUrl, cssFilterOptions);
@@ -456,7 +443,6 @@ adguard.webRequestService = (function (adguard) {
     // EXPOSE
     return {
         processGetSelectorsAndScripts: processGetSelectorsAndScripts,
-        GetSelectorAndScriptsEnum: GetSelectorAndScriptsEnum,
         checkPageScriptWrapperRequest: checkPageScriptWrapperRequest,
         processShouldCollapse: processShouldCollapse,
         processShouldCollapseMany: processShouldCollapseMany,

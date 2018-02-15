@@ -288,15 +288,7 @@
                 adguard.frames.resetBlockedAdsCount();
                 break;
             case 'getSelectorsAndScripts':
-                let GetSelectorAndScriptsEnum = adguard.webRequestService.GetSelectorAndScriptsEnum;
-                let options = GetSelectorAndScriptsEnum.RETRIEVE_EXTCSS;
-                if (!adguard.prefs.features.canUseInsertCSSAndExecuteScript) {
-                    options +=
-                        GetSelectorAndScriptsEnum.RETRIEVE_TRADITIONAL_CSS +
-                        GetSelectorAndScriptsEnum.RETRIEVE_SCRIPTS;
-                }
-                let cssAndScripts = adguard.webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl, options);
-                return cssAndScripts || {};
+                return adguard.webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl) || {};
             case 'checkPageScriptWrapperRequest':
                 var block = adguard.webRequestService.checkPageScriptWrapperRequest(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
                 return {block: block, requestId: message.requestId};
