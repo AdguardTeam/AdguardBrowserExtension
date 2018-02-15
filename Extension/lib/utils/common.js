@@ -57,6 +57,7 @@ adguard.utils = (function () {
         browser: null, // BrowserUtils
         filters: null, // FilterUtils,
         workaround: null, // WorkaroundUtils
+        i18n: null, // I18nUtils
         StopWatch: null,
         Promise: null // Deferred,
     };
@@ -636,6 +637,61 @@ adguard.utils = (function () {
     };
 
     api.workaround = WorkaroundUtils;
+
+})(adguard.utils);
+
+/**
+ * Simple i18n utils
+ */
+(function (api) {
+
+    function isArrayElement(array, elem) {
+        return array.indexOf(elem) >= 0;
+    }
+
+    function isObjectKey(object, key) {
+        return key in object;
+    }
+
+    api.i18n = {
+
+        /**
+         * Tries to find locale in the given collection of locales
+         * @param locales Collection of locales (array or object)
+         * @param locale Locale (e.g. en, en_GB, pt_BR)
+         * @returns matched locale from the locales collection or null
+         */
+        normalize: function (locales, locale) {
+
+            if (!locale) {
+                return null;
+            }
+
+            // Transform Language-Country => Language_Country
+            locale = locale.replace("-", "_");
+
+            var search;
+
+            if (api.collections.isArray(locales)) {
+                search = isArrayElement;
+            } else {
+                search = isObjectKey;
+            }
+
+            if (search(locales, locale)) {
+                return locale;
+            }
+
+            // Try to search by the language
+            var parts = locale.split('_');
+            var language = parts[0];
+            if (search(locales, language)) {
+                return language;
+            }
+
+            return null;
+        }
+    };
 
 })(adguard.utils);
 

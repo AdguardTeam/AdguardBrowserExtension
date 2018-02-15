@@ -79,15 +79,8 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
     var extensionStoreLink = (function () {
 
-        var urlBuilder = ["http://adguard.com/"];
-
-        if (adguard.app.getLocale() === "ru") {
-            urlBuilder.push("ru");
-        } else {
-            urlBuilder.push("en");
-        }
-        urlBuilder.push("/extension-page.html?browser=");
-
+        var urlBuilder = ["https://adguard.com/extension-page.html"];
+        urlBuilder.push("?browser=");
         if (adguard.utils.browser.isOperaBrowser()) {
             urlBuilder.push("opera");
         } else if (adguard.utils.browser.isFirefoxBrowser()) {
