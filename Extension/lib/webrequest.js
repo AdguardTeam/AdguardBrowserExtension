@@ -375,7 +375,24 @@
                 }
             }
 
-            function tryInjectScripts(tabId, frameId, result) {
+            function tryInjectScripts(details) {
+                var tabId = details.tabId;
+                var frameId = details.frameId;
+                var url = details.url;
+
+                var bits = adguard.webRequestService.GetSelectorAndScriptsEnum;
+                var shouldGetScripts = bits.RETRIEVE_SCRIPTS;
+
+                var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, url, shouldGetScripts);
+
+                if (result.requestFilterReady === false) {
+                    setTimeout(tryInjectScripts, 100, details);
+                }
+
+                if (!result.scripts || result.scripts.length === 0) {
+                    return;
+                }
+
                 // Executes scripts in a scope of page.
                 var injectedScript = '(function() {\
                     var script = document.createElement("script");\
@@ -401,29 +418,7 @@
                 });
             }
 
-            adguard.webNavigation.onCommitted.addListener(function (details) {
-                var tabId = details.tabId;
-                var frameId = details.frameId;
-                var url = details.url;
-
-                var bits = adguard.webRequestService.GetSelectorAndScriptsEnum;
-                var shouldGetScripts = bits.RETRIEVE_SCRIPTS;
-
-                function tryGetScripts() {
-                    var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, url, shouldGetScripts);
-
-                    if (result.requestFilterReady === false) {
-                        setTimeout(tryGetScripts, 100);
-                    }
-
-                    if (!result.scripts || result.scripts.length === 0) {
-                        return;
-                    }
-                    tryInjectScripts(tabId, frameId, result);
-                }
-
-                tryGetScripts();
-            });
+            adguard.webNavigation.onCommitted.addListener(tryInjectScripts);
         })(adguard);
     }
 
@@ -439,7 +434,27 @@
 
     if (shouldUseInsertCSSAndExecuteScript) {
         (function insertCSS(adguard){
-            function tryInsertCss(tabId, frameId, css) {
+            function tryInsertCss(details) {
+                var tabId = details.tabId;
+                var frameId = details.frameId;
+                var url = details.url;
+
+                var bits = adguard.webRequestService.GetSelectorAndScriptsEnum;
+                var shouldGetTraditionalCssOnly = bits.RETRIEVE_TRADITIONAL_CSS;
+
+            
+                var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, url, shouldGetTraditionalCssOnly);
+
+                if (result.requestFilterReady) {
+                    setTimeout(tryGetCss, 100, details);
+                }
+
+                if (!result.selectors || !result.selectors.css) {
+                    return;
+                }
+
+                var css = result.selectors.css;
+
                 var cssStringified = css.join(' ');
 
                 var details = {
@@ -460,29 +475,7 @@
                 });
             }
 
-            adguard.webNavigation.onCommitted.addListener(function (details) {
-                var tabId = details.tabId;
-                var frameId = details.frameId;
-                var url = details.url;
-
-                var bits = adguard.webRequestService.GetSelectorAndScriptsEnum;
-                var shouldGetTraditionalCssOnly = bits.RETRIEVE_TRADITIONAL_CSS;
-
-                function tryGetCss() {
-                    var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, url, shouldGetTraditionalCssOnly);
-
-                    if (result.requestFilterReady) {
-                        setTimeout(tryGetCss, 100);
-                    }
-
-                    if (!result.selectors || !result.selectors.css) {
-                        return;
-                    }
-                    tryInsertCss(tabId, frameId, result.selectors.css);
-                }
-
-                tryGetCss();
-            });
+            adguard.webNavigation.onCommitted.addListener(tryInsertCss);
         })(adguard);
     }
 
