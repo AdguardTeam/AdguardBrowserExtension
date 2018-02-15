@@ -475,7 +475,8 @@
         }
 
         // https://github.com/AdguardTeam/ExtendedCss
-        new ExtendedCss(extendedCss.join("\n")).apply();
+        window.extcss = new ExtendedCss(extendedCss.join("\n"));
+        extcss.apply();
     };
 
     /**
