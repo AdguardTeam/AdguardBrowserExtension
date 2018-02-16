@@ -63,7 +63,7 @@ QUnit.test("Convert first-party rule", function (assert) {
     assert.equal("ignore-previous-rules", convertedRule.action.type);
 });
 
-QUnit.test("Convert websocket rule", function (assert) {
+QUnit.test("Convert websocket rules", function (assert) {
     var result = SafariContentBlockerConverter.convertArray(["||test.com^$websocket"]);
     assert.equal(1, result.convertedCount);
     assert.equal(0, result.errorsCount);
@@ -88,8 +88,23 @@ QUnit.test("Convert websocket rule", function (assert) {
     assert.equal(1, converted.length);
 
     convertedRule = converted[0];
-    assert.equal(convertedRule.trigger["url-filter"], "^wss?:\\/\\/");
+    assert.equal(convertedRule.trigger["url-filter"], URL_FILTER_WS_ANY_URL);
     assert.equal(convertedRule.trigger["if-domain"][0], "*123movies.is");
+    assert.ok(convertedRule.trigger["resource-type"]);
+    assert.equal(convertedRule.trigger["resource-type"][0], "raw");
+
+    result = SafariContentBlockerConverter.convertArray([".rocks^$third-party,websocket"]);
+    assert.equal(1, result.convertedCount);
+    assert.equal(0, result.errorsCount);
+
+    converted = JSON.parse(result.converted);
+    assert.equal(1, converted.length);
+
+    convertedRule = converted[0];
+    assert.equal(convertedRule.trigger["url-filter"], URL_FILTER_WS_ANY_URL + ".*\\.rocks" + URL_FILTER_REGEXP_SEPARATOR);
+    assert.notOk(convertedRule.trigger["if-domain"]);
+    assert.notOk(convertedRule.trigger["unless-domain"]);
+    assert.equal(convertedRule.trigger["load-type"], "third-party");
     assert.ok(convertedRule.trigger["resource-type"]);
     assert.equal(convertedRule.trigger["resource-type"][0], "raw");
 });
