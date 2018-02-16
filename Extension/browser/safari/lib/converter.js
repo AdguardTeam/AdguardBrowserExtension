@@ -231,8 +231,8 @@ var SafariContentBlockerConverter = (function () {
             // Prepending WebSocket protocol to resolve this:
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/957
             if (isWebSocket &&
-                !urlRegExpSource.startsWith("^") &&
-                !urlRegExpSource.startsWith("ws")) {
+                urlRegExpSource.indexOf("^") !== 0 &&
+                urlRegExpSource.indexOf("ws") !== 0) {
                 return URL_FILTER_WS_ANY_URL + ".*" + urlRegExpSource;
             }
 
