@@ -442,7 +442,7 @@
                 var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, url, cssFilterOption, false);
 
                 if (result.requestFilterReady === false) {
-                    setTimeout(tryGetCss, 100, details);
+                    setTimeout(tryInsertCss, 100, details);
                     return;
                 }
 
@@ -454,7 +454,7 @@
 
                 var cssStringified = css.join(' ');
 
-                var details = {
+                var injectDetails = {
                     code: cssStringified,
                     runAt: 'document_start',
                     frameId: frameId
@@ -463,10 +463,10 @@
 
                 if (userCSSSupport) {
                     // If this is set for not supporting browser, it will throw an error.
-                    details.cssOrigin = 'user';
+                    injectDetails.cssOrigin = 'user';
                 }
 
-                adguard.tabs.insertCSS(tabId, details, function () {
+                adguard.tabs.insertCSS(tabId, injectDetails, function () {
                     adguard.runtime.lastError;
                     // This can happen with Chrome preloaded tabs.
                 });
