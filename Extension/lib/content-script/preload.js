@@ -459,7 +459,6 @@
 
             (document.head || document.documentElement).appendChild(styleEl);
 
-            protectStyleElementFromRemoval(styleEl);
             protectStyleElementContent(styleEl);
         }
     };
@@ -533,37 +532,6 @@
             'subtree': true,
             'characterDataOldValue': true
         });
-    };
-
-    /**
-     * Protects style element from removing.
-     * @param protectStyleEl protected style element
-     */
-    var protectStyleElementFromRemoval = function (protectStyleEl) {
-        var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-        if (!MutationObserver) {
-            return;
-        }
-        /* observer, which observe deleting protectStyleEl */
-        var outerObserver = new MutationObserver(function (mutations) {
-            for (var i = 0; i < mutations.length; i++) {
-
-                var m = mutations[i];
-                var removedNodeIndex = [].indexOf.call(mutations[i].removedNodes, protectStyleEl);
-                if (removedNodeIndex != -1) {
-                    var removedStyleEl = m.removedNodes[removedNodeIndex];
-
-                    outerObserver.disconnect();
-
-                    applyCss([removedStyleEl.textContent]);
-
-                    break;
-                }
-            }
-
-        });
-
-        outerObserver.observe(protectStyleEl.parentNode, {'childList': true, 'characterData': true});
     };
 
     /**
