@@ -243,7 +243,6 @@
 
         /**
          * Builds CSS for the specified web page.
-         * Only element hiding rules are used to build this CSS:
          * http://adguard.com/en/filterrules.html#hideRules
          *
          * @param url Page URL
