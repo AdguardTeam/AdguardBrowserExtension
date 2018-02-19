@@ -24,7 +24,7 @@ var SafariContentBlockerConverter = (function () {
     /**
      * Safari content blocking format rules converter.
      */
-    var CONVERTER_VERSION = '2.0.2';
+    var CONVERTER_VERSION = '2.0.3';
     // Max number of CSS selectors per rule (look at compactCssRules function)
     var MAX_SELECTORS_PER_WIDE_RULE = 250;
 
@@ -40,6 +40,12 @@ var SafariContentBlockerConverter = (function () {
     var ANY_URL_TEMPLATES = ['||*', '', '*', '|*'];
     var URL_FILTER_ANY_URL = "^[htpsw]+:\\/\\/";
     var URL_FILTER_WS_ANY_URL = "^wss?:\\/\\/";
+    /**
+     * Using .* for the css-display-none rules trigger.url-filter.
+     * Please note, that this is important to use ".*" for this kind of rules, otherwise performance is degraded:
+     * https://github.com/AdguardTeam/AdguardForiOS/issues/662
+     */
+    var URL_FILTER_CSS_RULES = ".*";
     /** 
      * Improved regular expression instead of UrlFilterRule.REGEXP_START_URL (||)
      * Please note, that this regular expression matches only ONE level of subdomains
@@ -307,7 +313,7 @@ var SafariContentBlockerConverter = (function () {
 
             var result = {
                 trigger: {
-                    "url-filter": URL_FILTER_ANY_URL
+                    "url-filter": URL_FILTER_CSS_RULES
                     // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/153#issuecomment-263067779
                     //,"resource-type": [ "document" ]
                 },
@@ -742,7 +748,7 @@ var SafariContentBlockerConverter = (function () {
 
             var rule = {
                 trigger: {
-                    "url-filter": URL_FILTER_ANY_URL
+                    "url-filter": URL_FILTER_CSS_RULES
                     // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/153#issuecomment-263067779
                     //,"resource-type": [ "document" ]
                 },
