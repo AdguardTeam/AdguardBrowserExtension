@@ -133,7 +133,7 @@
 
             var cssInjectionOnly = (options & CSS_INJECTION_ONLY) === CSS_INJECTION_ONLY;
             var genericHide = (options & GENERIC_HIDE_APPLIED) === GENERIC_HIDE_APPLIED;
-            var getTraditionalCss = (options & RETRIEVE_TRADITIONAL_CSS) === RETRIEVE_TRADITIONAL_CSS;
+            var traditionalCss = (options & RETRIEVE_TRADITIONAL_CSS) === RETRIEVE_TRADITIONAL_CSS;
 
             if (cssInjectionOnly) {
                 this._rebuildBinding();
@@ -144,7 +144,7 @@
             var rules = this._filterRules(domainName, options);
 
             var stylesheets = this._createCssStylesheets(rules);
-            if (!genericHide && getTraditionalCss) { // ExtCss rules are not contained in commonRules
+            if (!genericHide && traditionalCss) { // ExtCss rules are not contained in commonRules
                 var commonCss = this._getCommonCss();
                 if (cssInjectionOnly) {
                     commonCss = commonCss.filter(function (rule) {
