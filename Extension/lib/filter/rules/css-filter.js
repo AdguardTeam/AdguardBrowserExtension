@@ -41,7 +41,7 @@
         }
     };
 
-    // Bitmask to be used in CssFilter#_filterRules and Cssfilter#_filterDomainSensitiveRules calls.
+    // Bitmask to be used in CssFilter#_filterRules and Cssfilter#buildCSS calls.
     var RETRIEVE_TRADITIONAL_CSS = CssFilter.RETRIEVE_TRADITIONAL_CSS = 1 << 0;
     var RETRIEVE_EXTCSS = CssFilter.RETRIEVE_EXTCSS = 1 << 1;
     var GENERIC_HIDE_APPLIED = CssFilter.GENERIC_HIDE_APPLIED = 1 << 2;

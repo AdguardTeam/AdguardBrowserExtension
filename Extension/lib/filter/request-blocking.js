@@ -113,7 +113,6 @@ adguard.webRequestService = (function (adguard) {
             result.collapseAllElements = adguard.requestFilter.shouldCollapseAllElements();
 
             // Check what exactly is disabled by this rule
-            var genericHideFlag = ((cssFilterOptions & CssFilter.GENERIC_HIDE_APPLIED) === CssFilter.GENERIC_HIDE_APPLIED) || (whitelistRule && whitelistRule.isGenericHide());
             var elemHideFlag = whitelistRule && whitelistRule.isElemhide();
 
             if (!elemHideFlag) {
