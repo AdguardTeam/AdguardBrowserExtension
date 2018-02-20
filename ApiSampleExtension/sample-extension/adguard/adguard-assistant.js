@@ -2284,6 +2284,8 @@ this['DIFF_EQUAL'] = DIFF_EQUAL;
  * Patched to exclude jquery usages.
  * Patched to change className to classList to support svg elements.
  * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/386
+ * Patched with a small fix
+ * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/786
  */
 
 function DomPredictionHelper() {
@@ -2576,16 +2578,16 @@ DomPredictionHelper.prototype.selectorGets = function (type, list, the_selector)
         cleaned_list.push(self.fragmentSelector(list[i])[0]);
     }
 
-    for (var i = 0; i < selectors.length; i++) {
+    for (var j = 0; j < selectors.length; j++) {
         if (!result) return;
-        var selector = selectors[i];
+        var selector = selectors[j];
 
-        for (var j = 0; j < cleaned_list.length; i++) {
-            if (!result || cleaned_list[j] == '') return;
+        for (var k = 0; k < cleaned_list.length; k++) {
+            if (!result || cleaned_list[k] == '') return;
 
-            if (self._selectorGets(cleaned_list[j], selector)) {
+            if (self._selectorGets(cleaned_list[k], selector)) {
                 if (type == 'none') result = false;
-                cleaned_list[j] = '';
+                cleaned_list[k] = '';
             }
         }
     }
@@ -3068,7 +3070,7 @@ var AdguardSelectorLib = (function ($) { // jshint ignore:line
      * @returns {{top: number, left: number, outerWidth: number, outerHeight: number}}
      */
     var getOffsetExtended = function (elem) {
-        var bodyRect = document.body.getBoundingClientRect();
+        var bodyRect = document.documentElement.getBoundingClientRect();
         var elemRect = elem.getBoundingClientRect();
 
         var rectTop = elemRect.top - bodyRect.top;

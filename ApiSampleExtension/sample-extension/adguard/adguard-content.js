@@ -465,9 +465,9 @@ var ElementCollapser = (function() { // jshint ignore:line
     };
 })();
 
-/*! extended-css - v1.0.6 - 2016-10-19
+/*! extended-css - v1.0.9 - 2017-12-04
 * https://github.com/AdguardTeam/ExtendedCss
-* Copyright (c) 2016 ; Licensed Apache License 2.0 */
+* Copyright (c) 2017 ; Licensed Apache License 2.0 */
 var ExtendedCss = (function(window) {
 /**
  * Very simple and lightweight CSS parser.
@@ -624,18 +624,13 @@ var DomObserver = (function() { // jshint ignore:line
      * @param callback Callback method to be called when anything has changed
      */
     var observeDom = function(callback) {
-        if (!document.body) {
-            // Do nothing if there is no body
-            return;
-        }
-
         if (MutationObserver) {
             domMutationObserver = new MutationObserver(function(mutations) {
                 if (mutations && mutations.length) {
                     callback();
                 }
             });
-            domMutationObserver.observe(document.body, { 
+            domMutationObserver.observe(document.documentElement, {
                 childList: true,
                 subtree: true,
                 attributes: false
@@ -643,6 +638,7 @@ var DomObserver = (function() { // jshint ignore:line
         } else if (eventListenerSupported) {
             document.addEventListener('DOMNodeInserted', callback, false);
             document.addEventListener('DOMNodeRemoved', callback, false);
+            document.addEventListener('DOMAttrModified', callback, false);
         }
     };
 
@@ -655,20 +651,13 @@ var DomObserver = (function() { // jshint ignore:line
         } else if (eventListenerSupported) {
             document.removeEventListener('DOMNodeInserted', callback, false);
             document.removeEventListener('DOMNodeRemoved', callback, false);
+            document.removeEventListener('DOMAttrModified', callback, false);
         }
     };
 
     // EXPOSE
     return {
-        observeDom: function(callback) {
-            if (!document.body) {
-                document.addEventListener('DOMContentLoaded', function() {
-                    observeDom(callback);
-                });
-            } else {
-                observeDom(callback);
-            }
-        },
+        observeDom: observeDom,
         disconnectDom: disconnectDom,
         protectAttribute: protectAttribute 
     };
@@ -813,6 +802,15 @@ var SimpleRegex = (function() { // jshint ignore:line
  *				return Sizzle( selector, elem ).length > 0;
  *			};
  *		}),
+ *
+ * Patch #3:
+ * Remove declarations for the following non-standard pseudo classes
+ * :parent, :header, :input, :button, :text, :first, :last, :eq,
+ * :even, :odd, :lt, :gt, :nth, :radio, :checkbox, :file,
+ * :password, :image, :submit, :reset
+ *
+ * Patch #4:
+ * Move :contains declaration outside of Sizzle, remove getText function.
  */
 
 /**
@@ -823,7 +821,6 @@ var Sizzle = (function( window ) {
 var i,
 	support,
 	Expr,
-	getText,
 	isXML,
 	tokenize,
 	compile,
@@ -1885,41 +1882,6 @@ Sizzle.uniqueSort = function( results ) {
 	return results;
 };
 
-/**
- * Utility function for retrieving the text value of an array of DOM nodes
- * @param {Array|Element} elem
- */
-getText = Sizzle.getText = function( elem ) {
-	var node,
-		ret = "",
-		i = 0,
-		nodeType = elem.nodeType;
-
-	if ( !nodeType ) {
-		// If no nodeType, this is expected to be an array
-		while ( (node = elem[i++]) ) {
-			// Do not traverse comment nodes
-			ret += getText( node );
-		}
-	} else if ( nodeType === 1 || nodeType === 9 || nodeType === 11 ) {
-		// Use textContent for elements
-		// innerText usage removed for consistency of new lines (jQuery #11153)
-		if ( typeof elem.textContent === "string" ) {
-			return elem.textContent;
-		} else {
-			// Traverse its children
-			for ( elem = elem.firstChild; elem; elem = elem.nextSibling ) {
-				ret += getText( elem );
-			}
-		}
-	} else if ( nodeType === 3 || nodeType === 4 ) {
-		return elem.nodeValue;
-	}
-	// Do not include comment or processing instruction nodes
-
-	return ret;
-};
-
 Expr = Sizzle.selectors = {
 
 	// Can be adjusted by the user
@@ -2268,13 +2230,6 @@ Expr = Sizzle.selectors = {
 			};
 		}),
 
-		"contains": markFunction(function( text ) {
-			text = text.replace( runescape, funescape );
-			return function( elem ) {
-				return ( elem.textContent || elem.innerText || getText( elem ) ).indexOf( text ) > -1;
-			};
-		}),
-
 		// "Whether an element is represented by a :lang() selector
 		// is based solely on the element's language value
 		// being equal to the identifier C,
@@ -2350,92 +2305,9 @@ Expr = Sizzle.selectors = {
 				}
 			}
 			return true;
-		},
-
-		"parent": function( elem ) {
-			return !Expr.pseudos["empty"]( elem );
-		},
-
-		// Element/input types
-		"header": function( elem ) {
-			return rheader.test( elem.nodeName );
-		},
-
-		"input": function( elem ) {
-			return rinputs.test( elem.nodeName );
-		},
-
-		"button": function( elem ) {
-			var name = elem.nodeName.toLowerCase();
-			return name === "input" && elem.type === "button" || name === "button";
-		},
-
-		"text": function( elem ) {
-			var attr;
-			return elem.nodeName.toLowerCase() === "input" &&
-				elem.type === "text" &&
-
-				// Support: IE<8
-				// New HTML5 attribute values (e.g., "search") appear with elem.type === "text"
-				( (attr = elem.getAttribute("type")) == null || attr.toLowerCase() === "text" );
-		},
-
-		// Position-in-collection
-		"first": createPositionalPseudo(function() {
-			return [ 0 ];
-		}),
-
-		"last": createPositionalPseudo(function( matchIndexes, length ) {
-			return [ length - 1 ];
-		}),
-
-		"eq": createPositionalPseudo(function( matchIndexes, length, argument ) {
-			return [ argument < 0 ? argument + length : argument ];
-		}),
-
-		"even": createPositionalPseudo(function( matchIndexes, length ) {
-			var i = 0;
-			for ( ; i < length; i += 2 ) {
-				matchIndexes.push( i );
-			}
-			return matchIndexes;
-		}),
-
-		"odd": createPositionalPseudo(function( matchIndexes, length ) {
-			var i = 1;
-			for ( ; i < length; i += 2 ) {
-				matchIndexes.push( i );
-			}
-			return matchIndexes;
-		}),
-
-		"lt": createPositionalPseudo(function( matchIndexes, length, argument ) {
-			var i = argument < 0 ? argument + length : argument;
-			for ( ; --i >= 0; ) {
-				matchIndexes.push( i );
-			}
-			return matchIndexes;
-		}),
-
-		"gt": createPositionalPseudo(function( matchIndexes, length, argument ) {
-			var i = argument < 0 ? argument + length : argument;
-			for ( ; ++i < length; ) {
-				matchIndexes.push( i );
-			}
-			return matchIndexes;
-		})
+		}
 	}
 };
-
-Expr.pseudos["nth"] = Expr.pseudos["eq"];
-
-// Add button/input type pseudos
-for ( i in { radio: true, checkbox: true, file: true, password: true, image: true } ) {
-	Expr.pseudos[ i ] = createInputPseudo( i );
-}
-for ( i in { submit: true, reset: true } ) {
-	Expr.pseudos[ i ] = createButtonPseudo( i );
-}
 
 // Easy API for creating new setFilters
 function setFilters() {}
@@ -3067,51 +2939,24 @@ return Sizzle;
 
 })( window );
 
-/* global console */
+/* global SimpleRegex, console */
 /**
  * Class that extends Sizzle and adds support for "matches-css" pseudo element.
  */
 var StylePropertyMatcher = (function (window, document) { // jshint ignore:line
 
-    var isWebKit = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
+    var useFallback = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
                navigator.userAgent && !navigator.userAgent.match('CriOS') && 
-               window.getMatchedCSSRules;
-
-    /**
-     * There is a known issue in Safari browser:
-     * getComputedStyle(el, ":before") is empty if element is not visible.
-     * 
-     * To circumvent this issue we use getMatchedCSSRules instead.
-     */
-    var getPseudoElementComputedStyle = function(element, pseudoElement) {
-        var styles = [];
-        var cssRules = window.getMatchedCSSRules(element, pseudoElement) || [];
-
-        var iCssRules = cssRules.length;
-        while (iCssRules--) {
-            var style = cssRules[iCssRules].style;
-            var iStyle = style.length;
-            while (iStyle--) {
-                var name = style[iStyle];
-                styles[name] = style.getPropertyValue(name);
-                styles.push(name);
-            }
-        }
-
-        styles.sort();
-        styles.getPropertyValue = function(name) {
-            return styles[name];
-        };
-        return styles;
-    };
+               !!window.getMatchedCSSRules;
 
     /**
      * Unquotes specified value
+     * Webkit-based browsers singlequotes <string> content property values
+     * Other browsers doublequotes content property values.
      */
-    var removeDoubleQuotes = function(value) {
-        if (typeof value === "string" && value.length > 1 && value[0] === '"' && value[value.length - 1] === '"') {
-            // Remove double-quotes
-            value = value.substring(1, value.length - 1);
+    var removeContentQuotes = function(value) {
+        if(typeof value === "string") {
+            return value.replace(/^(["'])([\s\S]*)\1$/,  '$2');
         }
         return value;
     };
@@ -3129,42 +2974,34 @@ var StylePropertyMatcher = (function (window, document) { // jshint ignore:line
         return value.replace(re, "url($1)");
     };
 
-    /**
-     * Cross-browser getComputedStyle function.
+     /**
+     * There is a known issue in Safari browser:
+     * getComputedStyle(el, ":before") is empty if element is not visible.
      * 
-     * Known WebKit issue: 
-     * getComputedStyle(el, ":before").content returns empty string if element is not visible. 
-     */
-    var getComputedStyle = function (element, pseudoElement) {
-        var style;
-
-        if (isWebKit && pseudoElement) {
-            style = getPseudoElementComputedStyle(element, pseudoElement);
-        } else {
-            style = window.getComputedStyle(element, pseudoElement);
-        }
-        
-        return style;
-    };
-
-    /**
-     * Gets CSS property value
+     * To circumvent this issue we use getMatchedCSSRules instead.
+     *
+     * It appears that getMatchedCSSRules sorts the CSS rules
+     * in increasing order of specifities of corresponding selectors.
+     * We pick the css rule that is being applied to an element based on this assumption.
      * 
      * @param element       DOM node
      * @param pseudoElement Optional pseudoElement name
      * @param propertyName  CSS property name
      */
     var getComputedStylePropertyValue = function (element, pseudoElement, propertyName) {
-        var style = getComputedStyle(element, pseudoElement);
-        if (!style) {
-            return null;
+        var value = '';
+        if (useFallback && pseudoElement) {
+            var cssRules = window.getMatchedCSSRules(element, pseudoElement) || [];
+            var i = cssRules.length;
+            while(i-- > 0 && !value) { value = cssRules[i].style.getPropertyValue(propertyName); }
+        } else {
+            var style = window.getComputedStyle(element, pseudoElement);
+            if(style) { value = style.getPropertyValue(propertyName); }
         }
 
-        var value = style.getPropertyValue(propertyName);
         value = removeUrlQuotes(value);
         if (propertyName === "content") {
-            // FF doublequotes content property value
-            value = removeDoubleQuotes(value);
+            value = removeContentQuotes(value);
         }
 
         return value;
@@ -3174,15 +3011,26 @@ var StylePropertyMatcher = (function (window, document) { // jshint ignore:line
      * Class that matches element style against the specified expression
      */
     var Matcher = function (propertyFilter, pseudoElement) {
-
         var propertyName;
         var regex;
 
         try {
-            var parts = propertyFilter.split(":", 2);
-            propertyName = parts[0].trim();
-            var regexText = SimpleRegex.createRegexText(parts[1].trim());
-            regex = new RegExp(regexText, "i");
+            var index = propertyFilter.indexOf(":");
+            propertyName = propertyFilter.substring(0, index).trim();
+            var pattern = propertyFilter.substring(index + 1).trim();
+
+            // Unescaping pattern
+            // For non-regex patterns, (,),[,] should be unescaped, because we require escaping them in filter rules.
+            // For regex patterns, ",\ should be escaped, because we manually escape those in extended-css-selector.js.
+            if(/^\/.*\/$/.test(pattern)) {
+                pattern = pattern.slice(1,-1).replace(/\\(["\\])/g, '$1');
+                regex = new RegExp(pattern);
+            }
+            else {
+                pattern = pattern.replace(/\\([\\()[\]"])/g, '$1');
+                var regexText = SimpleRegex.createRegexText(pattern);
+                regex = new RegExp(regexText, "i");
+            }
         } catch (ex) {
             if (typeof console !== 'undefined' && console.error) {
                 console.error('StylePropertyMatcher: invalid match string ' + propertyFilter);
@@ -3236,6 +3084,7 @@ var StylePropertyMatcher = (function (window, document) { // jshint ignore:line
         extendSizzle: extendSizzle
     };
 })(window, document);
+
 /* global Sizzle, console, StylePropertyMatcher */
 
 /**
@@ -3252,277 +3101,333 @@ var StylePropertyMatcher = (function (window, document) { // jshint ignore:line
  * [-ext-contains="string"] - allows to select elements containing specified string
  * [-ext-matches-css="|background-image: url(data:*)"]
  */
+
+
 var ExtendedSelector = (function () { // jshint ignore:line
-
-    var PSEUDO_EXTENSIONS_MARKERS = [ ":has", ":contains", ":matches-css" ];
-
-    // Add :matches-css-*() support
-    StylePropertyMatcher.extendSizzle(Sizzle);
-
-    /**
-     * Complex replacement function. 
-     * Unescapes quote characters inside of an extended selector.
-     * 
-     * @param match     Whole matched string
-     * @param name      Group 1
-     * @param quoteChar Group 2
-     * @param value     Group 3
-     */
-    var evaluateMatch = function (match, name, quoteChar, value) {
-        // Unescape quotes
-        var re = new RegExp("([^\\\\]|^)\\\\" + quoteChar, "g");
-        value = value.replace(re, "$1" + quoteChar);
-        return ":" + name + "(" + value + ")";
-    };
-
-    /**
-     * Checks if specified token is simple and can be used by document.querySelectorAll. 
-     */
-    var isSimpleToken = function (token) {
-
-        if (token.type === "ID" ||
-            token.type === "CLASS" ||
-            token.type === "ATTR" ||
-            token.type === "TAG" ||
-            token.type === "CHILD") {
-            // known simple tokens
-            return true;
-        }
-
-        if (token.type === "PSEUDO") {
-            // check if value contains any of extended pseudo classes
-            var i = PSEUDO_EXTENSIONS_MARKERS.length;
-            while (i--) {
-                if (token.value.indexOf(PSEUDO_EXTENSIONS_MARKERS[i]) >= 0) {
-                    return false;
+    
+        var PSEUDO_EXTENSIONS_MARKERS = [ ":has", ":contains", ":has-text", ":matches-css" ];
+    
+        // Add :matches-css-*() support
+        StylePropertyMatcher.extendSizzle(Sizzle);
+    
+        // Add :contains, :has-text, :-abp-contains support
+        Sizzle.selectors.pseudos["contains"] = Sizzle.selectors.pseudos["has-text"] = Sizzle.selectors.pseudos["-abp-contains"] = Sizzle.selectors.createPseudo(function( text ) {
+            if(/^\s*\/.*\/\s*$/.test(text)) {
+                text = text.trim().slice(1, -1).replace(/\\([\\"])/g, '$1');
+                var regex;
+                try {
+                    regex = new RegExp(text);
+                } catch(e) {
+                    throw new Error('Invalid argument of :contains pseudo class: ' + text);
                 }
-            }
-            return true;
-        }
-
-        // all others aren't simple
-        return false;
-    };
-
-    /**
-     * Checks if specified token is parenthesis relation
-     */
-    var isRelationToken = function(token) {
-        return token.type === " " || token.type === ">";
-    };
-
-    /**
-     * Joins tokens values
-     */
-    var joinTokens = function(selector, relationToken, tokens) {
-        selector = selector || "";
-        if (relationToken) {
-            selector += relationToken.value;
-        }
-
-        for (var i = 0; i < tokens.length; i++) {
-            selector += tokens[i].value;
-        }
-        return selector;
-    };
-
-    /**
-     * Parses selector into two parts:
-     * 1. Simple selector, which can be used by document.querySelectorAll.
-     * 2. Complex selector, which can be used by Sizzle only.
-     * 
-     * @returns object with three fields: simple, complex and relation (and also "selectorText" with source selector)
-     */
-    var tokenizeSelector = function (selectorText) {
-
-        var tokens = Sizzle.tokenize(selectorText);
-        if (tokens.length !== 1) {
-            // Do not optimize complex selectors
-            return {
-                simple: null,
-                relation: null,
-                complex: selectorText,
-                selectorText: selectorText
-            };
-        }
-
-        tokens = tokens[0];
-        var simple = "";
-        var complex = "";
-        
-        // Simple tokens (can be used by document.querySelectorAll)
-        var simpleTokens = [];
-        // Complex tokens (cannot be used at all)
-        var complexTokens = [];
-        var relationToken = null;
-        
-        for (var i = 0; i < tokens.length; i++) {
-            var token = tokens[i];
-
-            if (complexTokens.length > 0 || (!isSimpleToken(token) && !isRelationToken(token))) {
-                // If we meet complex token, all subsequent tokens are considered complex
-                // All previously found simple tokens are also considered complex
-                if (simpleTokens.length > 0) {
-                    complexTokens = complexTokens.concat(simpleTokens);
-                    simpleTokens = [];
-                }
-
-                complexTokens.push(token);
-            } else if (isRelationToken(token)) {
-                // Parenthesis relation token
-                simple = joinTokens(simple, relationToken, simpleTokens);
-                simpleTokens = [];
-
-                // Save relation token (it could be used further)
-                relationToken = token;
+                return function( elem ) {
+                    return regex.test(elem.textContent);
+                };
             } else {
-                // Save to simple tokens collection
-                simpleTokens.push(token);                
+                text = text.replace(/\\([\\()[\]"])/g, '$1');
+                return function( elem ) {
+                    return elem.textContent.indexOf( text ) > -1;
+                };
             }
-        }
-
-        // Finalize building simple and complex selectors
-        if (simpleTokens.length > 0) {
-            simple = joinTokens(simple, relationToken, simpleTokens);
-            relationToken = null;
-        }
-        complex = joinTokens(complex, null, complexTokens);
-
-        if (!simple) {
-            // Nothing to optimize
-            return {
-                simple: null,
-                relation: null,
-                complex: selectorText,
-                selectorText: selectorText
-            };
-        }
-
-        // Validate simple token
-        try {
-            document.querySelector(simple);
-        } catch (ex) {
-            // Simple token appears to be invalid
-            return {
-                simple: null,
-                relation: null,
-                complex: selectorText,
-                selectorText: selectorText
-            };
-        }
-
-        return {
-            simple: simple,
-            relation: (relationToken === null ? null : relationToken.type),
-            complex: (complex === "" ? null : complex),
-            selectorText: selectorText
+        });
+    
+        // Add :-abp-has support
+        Sizzle.selectors.pseudos["-abp-has"] = Sizzle.selectors.pseudos["has"];
+    
+        /**
+         * Complex replacement function. 
+         * Unescapes quote characters inside of an extended selector.
+         * 
+         * @param match     Whole matched string
+         * @param name      Group 1
+         * @param quoteChar Group 2
+         * @param value     Group 3
+         */
+        var evaluateMatch = function (match, name, quoteChar, value) {
+            // Unescape quotes
+            var re = new RegExp("([^\\\\]|^)\\\\" + quoteChar, "g");
+            value = value.replace(re, "$1" + quoteChar);
+            return ":" + name + "(" + value + ")";
         };
-    };
-
-    /**
-     * Prepares specified selector and compiles it with the Sizzle engine.
-     * Preparation means transforming [-ext-*=""] attributes to pseudo classes.
-     * 
-     * @param selectorText Selector text
-     */
-    var prepareSelector = function (selectorText) {
-        try {
-            // Prepare selector to be compiled with Sizzle
-            // Which means transform [-ext-*=""] attributes to pseudo classes
-            var re = /\[-ext-([a-z-_]+)=(["'])((?:(?=(\\?))\4.)*?)\2\]/g;
-            var str = selectorText.replace(re, evaluateMatch);
-
-            var compiledSelector = tokenizeSelector(str);
-
-            // Compiles and validates selector
-            // Compilation in Sizzle means that selector will be saved to the inner cache and then reused
-            Sizzle.compile(selectorText);
-            if (compiledSelector.complex) {
-                Sizzle.compile(compiledSelector.complex);
+    
+        /**
+         * Checks if specified token is simple and can be used by document.querySelectorAll. 
+         */
+        var isSimpleToken = function (token) {
+    
+            if (token.type === "ID" ||
+                token.type === "CLASS" ||
+                token.type === "ATTR" ||
+                token.type === "TAG" ||
+                token.type === "CHILD") {
+                // known simple tokens
+                return true;
             }
-            return compiledSelector;
-        } catch (ex) {
-            if (typeof console !== 'undefined' && console.error) {
-                console.error('Extended selector is invalid: ' + selectorText);
-            }
-            return null;
-        }
-    };
-
-    /**
-     * Does the complex search (first executes document.querySelectorAll, then Sizzle)
-     * 
-     * @param compiledSelector Compiled selector (simple, complex and relation)
-     */
-    var complexSearch = function(compiledSelector) {
-        var resultNodes = [];
-
-        // First we use simple selector to narrow our search
-        var simpleNodes = document.querySelectorAll(compiledSelector.simple);
-        if (!simpleNodes || !simpleNodes.length) {
-            return resultNodes;
-        }
-
-        var iSimpleNodes = simpleNodes.length;
-        while (iSimpleNodes--) {
-            var node = simpleNodes[iSimpleNodes];
-            var childNodes = Sizzle(compiledSelector.complex, node); // jshint ignore:line
-            if (compiledSelector.relation === ">") {
-                // Filter direct children
-                var iChildNodes = childNodes.length;
-                while (iChildNodes--) {
-                    var childNode = childNodes[iChildNodes];
-                    if (childNode.parentNode === node) {
-                        resultNodes.push(childNode);
+    
+            if (token.type === "PSEUDO") {
+                // check if value contains any of extended pseudo classes
+                var i = PSEUDO_EXTENSIONS_MARKERS.length;
+                while (i--) {
+                    if (token.value.indexOf(PSEUDO_EXTENSIONS_MARKERS[i]) >= 0) {
+                        return false;
                     }
                 }
+                return true;
+            }
+    
+            // all others aren't simple
+            return false;
+        };
+    
+        /**
+         * Checks if specified token is parenthesis relation
+         */
+        var isRelationToken = function(token) {
+            var type = token.type;
+            return type === " " || type === ">" || type === '+' || type === '~';
+        };
+    
+        var getEasyTokenization = function(selectorText) {
+            return {
+                simple: null,
+                relation: null,
+                complex: selectorText,
+                selectorText: selectorText
+            };
+        };
+
+        /**
+         * Parses selector into two parts:
+         * 1. Simple selector, which can be used by document.querySelectorAll.
+         * 2. Complex selector, which is a single compound selector and to be used with Sizzle.
+         * 
+         * @returns object with three fields: simple, complex and relation (and also "selectorText" with source selector)
+         */
+        var tokenizeSelector = function (selectorText) {
+            var tokens = Sizzle.tokenize(selectorText);
+
+            if (tokens.length !== 1) {
+                // Do not optimize complex selectors
+                return getEasyTokenization(selectorText);
+            }
+            tokens = tokens[0];
+
+            // We split selector only when the last compound selector
+            // is the only extended selector.
+            var latestRelationToken = -1;
+            var haveMetComplexToken = false;
+            var iToken, lToken;
+            for (iToken = 0, lToken = tokens.length; iToken < lToken; iToken++) {
+                var token = tokens[iToken];
+                if (isRelationToken(token)) {
+                    if (haveMetComplexToken) {
+                        return getEasyTokenization(selectorText);
+                    } else {
+                        latestRelationToken = iToken;
+                    }
+                } else if (!isSimpleToken(token)) {
+                    haveMetComplexToken = true;
+                }
+            }
+
+            var simple = "";
+            var relation = null;
+            var complex = "";
+
+            if (haveMetComplexToken) {
+                for (iToken = 0; iToken < latestRelationToken; iToken++) {
+                    simple += tokens[iToken].value;
+                }
+                if (iToken > -1) {
+                    relation = tokens[iToken].type;
+                }
+                iToken++;
+                for (; iToken < lToken; iToken++) {
+                    complex += tokens[iToken].value;
+                }
             } else {
-                resultNodes = resultNodes.concat(childNodes);
-            }
-        }
-
-        return Sizzle.uniqueSort(resultNodes);
-    };
-
-    // Constructor
-    return function (selectorText) {
-        var compiledSelector = prepareSelector(selectorText);
-
-        // EXPOSE
-        this.compiledSelector = compiledSelector;
-        this.selectorText = (compiledSelector == null ? null : compiledSelector.selectorText);
-
-        /**
-         * Selects all DOM nodes matching this selector.
-         */
-        this.querySelectorAll = function () {
-            if (compiledSelector === null) {
-                // Invalid selector, always return empty array
-                return [];
+                simple = selectorText;
             }
 
-            if (!compiledSelector.simple) {
-                // No simple selector applied
-                return Sizzle(compiledSelector.complex); // jshint ignore:line
+            // Validate simple token
+            try {
+                document.querySelector(simple);
+            } catch(e) {
+                // Simple token appears to be invalid
+                return getEasyTokenization(selectorText);
             }
-
-            if (!compiledSelector.complex) {
-                // There is no complex selector, so we could simply return it immediately
-                return document.querySelectorAll(compiledSelector.simple);
-            }
-
-            return complexSearch(compiledSelector);
+            return {
+                simple: simple || null,
+                relation: relation,
+                complex: complex || null,
+                selectorText: selectorText 
+            };
         };
 
         /**
-         * Checks if the specified element matches this selector
+         * Used for pre-processing pseud-classes values (see prepareSelector)
          */
-        this.matches = function (element) {
-            return Sizzle.matchesSelector(element, compiledSelector.selectorText);
+        var addQuotes = function(_, c1, c2) { return ':' + c1 + '("' + c2.replace(/["\\]/g, '\\$&') + '")'; };
+    
+        /**
+         * Prepares specified selector and compiles it with the Sizzle engine.
+         * Preparation means transforming [-ext-*=""] attributes to pseudo classes.
+         * 
+         * @param selectorText Selector text
+         */
+        var prepareSelector = function (selectorText) {
+            try {
+                // Prepare selector to be compiled with Sizzle
+                // Which means transform [-ext-*=""] attributes to pseudo classes
+                var re = /\[-ext-([a-z-_]+)=(["'])((?:(?=(\\?))\4.)*?)\2\]/g;
+                var str = selectorText.replace(re, evaluateMatch);
+    
+                // Sizzle's parsing of pseudo class arguments is buggy on certain circumstances
+                // We support following form of arguments:
+                // 1. for :matches-css, those of a form {propertyName}: /.*/
+                // 2. for :contains, those of a form /.*/
+                // We transform such cases in a way that Sizzle has no ambiguity in parsing arguments.
+                str = str.replace(/\:(matches-css(?:-after|-before)?)\(([a-z-\s]*\:\s*\/(?:\\.|[^\/])*?\/\s*)\)/g, addQuotes);
+                str = str.replace(/:(contains|has-text)\((\s*\/(?:\\.|[^\/])*?\/\s*)\)/g, addQuotes);
+                // Note that we require `/` character in regular expressions to be escaped.
+    
+                var compiledSelector = tokenizeSelector(str);
+    
+                // Compiles and validates selector
+                // Compilation in Sizzle means that selector will be saved to the inner cache and then reused
+                // Directly compiling unprocessed selectorText can cause problems.
+                // For instance, one of tests in test/test-selector.html fails without this change.
+                // It will fall into the same pitfall we were trying to fix in https://github.com/AdguardTeam/ExtendedCss/issues/23
+                Sizzle.compile(compiledSelector.selectorText);
+    
+                if (compiledSelector.complex) {
+                    Sizzle.compile(compiledSelector.complex);
+                }
+                return compiledSelector;
+            } catch (ex) {
+                if (typeof console !== 'undefined' && console.error) {
+                    console.error('Extended selector is invalid: ' + selectorText);
+                }
+                return null;
+            }
         };
-    };
-})();
-/* global CssParser, DomObserver, ExtendedSelector */
+
+        /**
+         * Does the complex search (first executes document.querySelectorAll, then Sizzle)
+         * 
+         * @param compiledSelector Compiled selector (simple, complex and relation)
+         */
+        var complexSearch = function(compiledSelector) {
+            var resultNodes = [];
+
+            // First we use simple selector to narrow our search
+            var simpleNodes = document.querySelectorAll(compiledSelector.simple);
+            if (!simpleNodes || !simpleNodes.length) {
+                return resultNodes;
+            }
+            var iSimpleNodes = simpleNodes.length;
+            var node, childNodes, iChildNodes, childNode, parentNode;
+            switch (compiledSelector.relation) {
+                case " ":
+                    while (iSimpleNodes--) {
+                        node = simpleNodes[iSimpleNodes];
+                        Sizzle(compiledSelector.complex, node, resultNodes); // jshint ignore:line
+                    }
+                    break;
+                case ">":
+                    // buffer array
+                    childNodes = [];
+                    while (iSimpleNodes--) {
+                        node = simpleNodes[iSimpleNodes];
+                        Sizzle(compiledSelector.complex, node, childNodes); // jshint ignore:line
+                        iChildNodes = childNodes.length;
+                        while (iChildNodes--) {
+                            childNode = childNodes[iChildNodes];
+                            if (childNode.parentNode === node) {
+                                resultNodes.push(childNode);
+                            }
+                        }
+                        // clears the buffer
+                        childNodes.length = 0;
+                    }
+                    break;
+                case "+":
+                    childNodes = [];
+                    while (iSimpleNodes--) {
+                        node = simpleNodes[iSimpleNodes];
+                        parentNode = node.parentNode;
+                        if (!parentNode) { continue; }
+                        Sizzle(compiledSelector.complex, parentNode, childNodes); // jshint ignore:line
+                        iChildNodes = childNodes.length;
+                        while (iChildNodes--) {
+                            childNode = childNodes[iChildNodes];
+                            if (childNode.previousElementSibling === node) {
+                                resultNodes.push(childNode);
+                            }
+                        }
+                        childNodes.length = 0;
+                    }
+                    break;
+                case "~":
+                    childNodes = [];
+                    while (iSimpleNodes--) {
+                        node = simpleNodes[iSimpleNodes];
+                        parentNode = node.parentNode;
+                        if (!parentNode) { continue; }
+                        Sizzle(compiledSelector.complex, parentNode, childNodes); // jshint ignore:line
+                        iChildNodes = childNodes.length;
+                        while (iChildNodes--) {
+                            childNode = childNodes[iChildNodes];
+                            if (childNode.parentNode === parentNode && node.compareDocumentPosition(childNode) === 4) {
+                                resultNodes.push(childNode);
+                            }
+                        }
+                        childNodes.length = 0;
+                    }
+            }
+
+            return Sizzle.uniqueSort(resultNodes);
+        };
+        
+        // Constructor
+        return function (selectorText) {
+            var compiledSelector = prepareSelector(selectorText);
+    
+            // EXPOSE
+            this.compiledSelector = compiledSelector;
+            this.selectorText = (compiledSelector == null ? null : compiledSelector.selectorText);
+    
+            /**
+             * Selects all DOM nodes matching this selector.
+             */
+            this.querySelectorAll = function () {
+                if (compiledSelector === null) {
+                    // Invalid selector, always return empty array
+                    return [];
+                }
+    
+                if (!compiledSelector.simple) {
+                    // No simple selector applied
+                    return Sizzle(compiledSelector.complex); // jshint ignore:line
+                }
+    
+                if (!compiledSelector.complex) {
+                    // There is no complex selector, so we could simply return it immediately
+                    return document.querySelectorAll(compiledSelector.simple);
+                }
+    
+                return complexSearch(compiledSelector);
+            };
+    
+            /**
+             * Checks if the specified element matches this selector
+             */
+            this.matches = function (element) {
+                return Sizzle.matchesSelector(element, compiledSelector.selectorText);
+            };
+        };
+    })();
+/* global CssParser, DomObserver, ExtendedSelector, console */
 
 /**
  * Extended css class
@@ -3685,7 +3590,7 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
         while (iRules--) {
             var rule = rules[iRules];
             var nodes = applyRule(rule);
-            elementsIndex = elementsIndex.concat(nodes);
+            Array.prototype.push.apply(elementsIndex, nodes);
         }
 
         // Now revert styles for elements which are no more affected
@@ -3711,9 +3616,14 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
             return;
         }
 
+        // When DOMMutationEvents are used, applyRules emits DOMAttrModified events,
+        // so handleDomChangeThrottle will be called in the same execution context.
+        // We update lastTimeDomChange before applying styles, to enable throttling
+        // of the mutation events handler.
+        // see https://github.com/AdguardTeam/ExtendedCss/issues/35#issuecomment-313452395
+        lastTimeDomChanged = new Date().getTime();
         domChanged = false;
         applyRules(rules);
-        lastTimeDomChanged = new Date().getTime();
     };
 
     /**
@@ -3803,6 +3713,21 @@ var ExtendedCss = function (styleSheet) { // jshint ignore:line
         return affectedElements;
     };
 };
+
+// Expose querySelectorAll for debugging selectors
+ExtendedCss.query = function(selectorText) {
+    var now = 'now' in performance ? function() {
+        return performance.now();
+    } : function() {
+        return (new Date()).getTime();
+    };
+    var start = now();
+    var matched = (new ExtendedSelector(selectorText)).querySelectorAll();
+    var end = now();
+    console.info('[ExtendedCss] Elapsed: ' + Math.round((end - start)*1000) + ' μs.');
+    return matched;
+};
+
 // EXPOSE
 return ExtendedCss;
 })(window);
@@ -4396,7 +4321,7 @@ var initPageMessageListener = function () { // jshint ignore:line
     window.addEventListener("message", pageMessageListener, false);
 };
 
-/* global contentPage, ExtendedCss, HTMLDocument, XMLDocument, ElementCollapser, CssHitsCounter */
+/* global contentPage, ExtendedCss, HTMLDocument, XMLDocument, ElementCollapser, CssHitsCounter, adguardContent */
 (function () {
 
     var requestTypeMap = {
@@ -4439,13 +4364,32 @@ var initPageMessageListener = function () { // jshint ignore:line
     var loadTruncatedCss = false;
 
     /**
+     * Unexpectedly global variable contentPage could become undefined in FF,
+     * in this case we redefine it.
+     *
+     * More details:
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/924
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/880
+     */
+    var getContentPage = function () {
+        if (typeof contentPage === 'undefined') {
+            contentPage = {
+                sendMessage: adguardContent.runtimeImpl.sendMessage,
+                onMessage: adguardContent.runtimeImpl.onMessage
+            };
+        }
+
+        return contentPage;
+    };
+
+    /**
      * Set callback for saving css hits
      */
     if (typeof CssHitsCounter !== 'undefined' &&
         typeof CssHitsCounter.setCssHitsFoundCallback === 'function') {
 
         CssHitsCounter.setCssHitsFoundCallback(function (stats) {
-            contentPage.sendMessage({type: 'saveCssHitStats', stats: stats});
+            getContentPage().sendMessage({type: 'saveCssHitStats', stats: stats});
         });
     }
 
@@ -4454,7 +4398,7 @@ var initPageMessageListener = function () { // jshint ignore:line
      * It allows us to execute script as soon as possible, because runtime.messaging makes huge overhead
      * If onCommitted event doesn't occur for the frame, scripts will be applied in usual way.
      */
-    contentPage.onMessage.addListener(function (response, sender, sendResponse) {
+    getContentPage().onMessage.addListener(function (response, sender, sendResponse) {
         if (response.type === 'injectScripts') {
             // Notify background-page that content-script was received scripts
             sendResponse({applied: true});
@@ -4485,6 +4429,7 @@ var initPageMessageListener = function () { // jshint ignore:line
             if ("createShadowRoot" in document.documentElement && shadowDomExceptions.indexOf(document.domain) == -1) {
                 shadowRoot = document.documentElement.createShadowRoot();
                 shadowRoot.appendChild(document.createElement("shadow"));
+                protectShadowRoot();
             }
         }
 
@@ -4554,8 +4499,8 @@ var initPageMessageListener = function () { // jshint ignore:line
         }
 
         // Wraps with try catch and appends cleanup
-        scripts.unshift("try {");
-        scripts.push("} catch (ex) { console.error('Error executing AG js: ' + ex); }");
+        scripts.unshift("( function () { try {");
+        scripts.push("} catch (ex) { console.error('Error executing AG js: ' + ex); } })();");
         scripts.push(cleanupCurrentScriptToString());
 
         var script = document.createElement("script");
@@ -4573,8 +4518,8 @@ var initPageMessageListener = function () { // jshint ignore:line
     var shouldOverrideWebSocket = function () {
 
         // Checks for using of Content Blocker API for Safari 9+
-        if (contentPage.isSafari) {
-            return !contentPage.isSafariContentBlockerEnabled;
+        if (getContentPage().isSafari) {
+            return !getContentPage().isSafariContentBlockerEnabled;
         }
 
         var userAgent = navigator.userAgent.toLowerCase();
@@ -4606,8 +4551,8 @@ var initPageMessageListener = function () { // jshint ignore:line
     var shouldOverrideWebRTC = function () {
 
         // Checks for using of Content Blocker API for Safari 9+
-        if (contentPage.isSafari) {
-            return !contentPage.isSafariContentBlockerEnabled;
+        if (getContentPage().isSafari) {
+            return !getContentPage().isSafariContentBlockerEnabled;
         }
 
         return true;
@@ -4648,6 +4593,70 @@ var initPageMessageListener = function () { // jshint ignore:line
     };
 
     /**
+     * Overrides shadowRoot getter
+     * The solution from ABP
+     *
+     * Function supposed to be executed in page's context
+     */
+    var overrideShadowRootGetter = function () {
+        function copyProperty(orig, wrapped, prop) {
+            var desc = Object.getOwnPropertyDescriptor(orig, prop);
+            if (desc && desc.configurable) {
+                desc.value = orig[prop];
+                Object.defineProperty(wrapped, prop, desc);
+            }
+        }
+
+        if ("shadowRoot" in Element.prototype) {
+            var ourShadowRoot = document.documentElement.shadowRoot;
+            if (ourShadowRoot) {
+                var desc = Object.getOwnPropertyDescriptor(Element.prototype, "shadowRoot");
+                var shadowRoot = Function.prototype.call.bind(desc.get);
+
+                var overload = function () {
+                    var thisShadow = shadowRoot(this);
+                    return thisShadow === ourShadowRoot ? null : thisShadow;
+                };
+
+                copyProperty(desc.get, overload, 'name');
+                copyProperty(desc.get, overload, 'length');
+
+                var stringValue = desc.get.toString();
+                overload.toString = function () { return stringValue; };
+
+                Object.defineProperty(Element.prototype, "shadowRoot", {
+                    configurable: true, enumerable: true, get: overload
+                });
+            }
+        }
+    };
+
+    /**
+     * Overrides stylesheets property disabled
+     *
+     * Function supposed to be executed in page's context
+     */
+    var overrideStyleSheetProperties = function () {
+        Object.defineProperty(window.HTMLStyleElement.prototype, 'disabled', {
+            get: function () {
+                return false;
+            }, set: function (val) {
+                // Do nothing
+            }
+        });
+    };
+
+    /**
+     * Protects shadow root from access in page's context
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/829
+     */
+    var protectShadowRoot = function () {
+        var scriptShadowRoot = "(" + overrideShadowRootGetter.toString() + ")();";
+        var scriptStylesheets = "(" + overrideStyleSheetProperties.toString() + ")();";
+        executeScripts([scriptShadowRoot, scriptStylesheets]);
+    };
+
+    /**
      * The main purpose of this function is to prevent blocked iframes "flickering".
      * So, we do two things:
      * 1. Add a temporary display:none style for all frames (which is removed on DOMContentLoaded event)
@@ -4666,7 +4675,8 @@ var initPageMessageListener = function () { // jshint ignore:line
          */
         var hideIframes = iframeHidingExceptions.indexOf(document.domain) < 0;
 
-        var iframeHidingSelector = "iframe[src]";
+        // We do not hide "allowfullscreen" as it is likely to be video player frames
+        var iframeHidingSelector = "iframe[src]:not([allowfullscreen])";
         if (hideIframes) {
             ElementCollapser.hideBySelector(iframeHidingSelector, null, shadowRoot);
         }
@@ -4766,7 +4776,7 @@ var initPageMessageListener = function () { // jshint ignore:line
         /**
          * Sending message to background page and passing a callback function
          */
-        contentPage.sendMessage(message, processCssAndScriptsResponse);
+        getContentPage().sendMessage(message, processCssAndScriptsResponse);
     };
 
     /**
@@ -5105,6 +5115,20 @@ var initPageMessageListener = function () { // jshint ignore:line
             if (element.clientHeight * element.clientWidth > 400 * 300) {
                 return;
             }
+
+            if (element.hasAttribute('allowfullscreen')) {
+                // This is likely to be a video player
+                return;
+            }
+        }
+
+        /**
+         * Due to some reasons after applying style to 'embed' element with SVG causes 'load' event, so we get into the infinite loop.
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/770
+         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/779
+         */
+        if (element.localName === 'embed') {
+            return;
         }
 
         ElementCollapser.hideElement(element, shadowRoot);
@@ -5172,7 +5196,7 @@ var initPageMessageListener = function () { // jshint ignore:line
             requestId: requestId
         };
 
-        contentPage.sendMessage(message, onProcessShouldCollapseResponse);
+        getContentPage().sendMessage(message, onProcessShouldCollapseResponse);
     };
 
     /**
@@ -5230,7 +5254,7 @@ var initPageMessageListener = function () { // jshint ignore:line
         };
 
         // Send all prepared requests in one message
-        contentPage.sendMessage(message, onProcessShouldCollapseManyResponse);
+        getContentPage().sendMessage(message, onProcessShouldCollapseManyResponse);
     };
 
     /**
@@ -5264,7 +5288,7 @@ var initPageMessageListener = function () { // jshint ignore:line
     /**
      * Messaging won't work when page is loaded by Safari top hits
      */
-    if (contentPage.isSafari && document.hidden) {
+    if (getContentPage().isSafari && document.hidden) {
         document.addEventListener("visibilitychange", onVisibilityChange);
         return;
     }

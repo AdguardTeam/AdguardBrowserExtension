@@ -80,7 +80,6 @@
     adguard.i18n = (function () {
 
         var defaultLocale = 'en';
-        var supportedLocales = ['ru', 'en', 'tr', 'uk', 'de', 'pl', 'pt_BR', 'pt_PT', 'ko', 'zh_CN', 'sr', 'fr', 'sk', 'hy', 'es', 'es_419', 'it', 'id'];
 
         var _messages = null;
         var _defaultMessages = null;
@@ -91,12 +90,6 @@
             var locale = parts[0].toLowerCase();
             if (parts[1]) {
                 locale += '_' + parts[1].toUpperCase();
-            }
-            if (supportedLocales.indexOf(locale) < 0) {
-                locale = parts[0];
-            }
-            if (supportedLocales.indexOf(locale) < 0) {
-                locale = defaultLocale;
             }
             return locale;
         })();

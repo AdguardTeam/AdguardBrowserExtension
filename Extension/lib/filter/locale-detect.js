@@ -117,11 +117,13 @@
      */
     function detectLanguage(language) {
 
-        if (!language || language == "und") {
+        /**
+         * For an unknown language "und" will be returned
+         * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/detectLanguage
+         */
+        if (!language || language === "und") {
             return;
         }
-
-        language = language.trim().toLowerCase();
 
         browsingLanguages.push({
             language: language,
@@ -132,7 +134,7 @@
         }
 
         var history = browsingLanguages.filter(function (h) {
-            return h.language == language;
+            return h.language === language;
         });
 
         if (history.length >= SUCCESS_HIT_COUNT) {
