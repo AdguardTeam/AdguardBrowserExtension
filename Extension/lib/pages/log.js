@@ -108,7 +108,9 @@ var UrlFilterRule = {
 	MATCH_CASE_OPTION: "match-case",
 	THIRD_PARTY_OPTION: "third-party",
 	OPTIONS_DELIMITER: "$",
-    CSP_OPTION: "csp"
+    CSP_OPTION: "csp",
+    WEBRTC_OPTION: "webrtc",
+    WEBSOCKET_OPTION: "websocket"
 };
 
 PageController.prototype = {
@@ -562,7 +564,13 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 
     openRequestButton.on('click', function (e) {
         e.preventDefault();
-        contentPage.sendMessage({type: 'openTab', url: filteringEvent.requestUrl, options: {inNewWindow: true}});
+
+        var requestUrl = filteringEvent.requestUrl;
+        if (requestUrl === 'content-security-policy-check') {
+            requestUrl = filteringEvent.frameUrl;
+        }
+
+        contentPage.sendMessage({type: 'openTab', url: requestUrl, options: {inNewWindow: true}});
     });
 
 	blockRequestButton.on('click', function (e) {
@@ -609,12 +617,6 @@ RequestWizard.prototype.showRequestInfoModal = function (frameInfo, filteringEve
 		}
 	}
 
-	// Legacy CSP rules
-	if (filteringEvent.requestUrl === 'content-security-policy-check') {
-        unblockRequestButton.hide();
-        openRequestButton.hide();
-	}
-
 	this.showModal(template);
 };
 
@@ -622,7 +624,7 @@ RequestWizard.prototype.showCreateBlockRuleModal = function (frameInfo, filterin
 
 	var template = this.createBlockRuleTemplate.clone();
 
-    var patterns = RequestWizard.splitToPatterns(filteringEvent, false).reverse();
+    var patterns = RequestWizard.splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, false).reverse();
 
 	this._initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
 };
@@ -631,7 +633,11 @@ RequestWizard.prototype.showCreateExceptionRuleModal = function (frameInfo, filt
 
 	var template = this.createExceptionRuleTemplate.clone();
 
-	var patterns = RequestWizard.splitToPatterns(filteringEvent, true).reverse();
+	var patterns = RequestWizard.splitToPatterns(filteringEvent.requestUrl, filteringEvent.requestDomain, true).reverse();
+
+    if (filteringEvent.requestUrl === 'content-security-policy-check') {
+        patterns = ['@@'];
+    }
 
 	this._initCreateRuleDialog(frameInfo, template, patterns, filteringEvent);
 };
@@ -710,6 +716,10 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 			mandatoryOptions = [UrlFilterRule.CSP_OPTION];
         }
 
+        if (filteringEvent.requestUrl === 'content-security-policy-check') {
+        	mandatoryOptions = [UrlFilterRule.WEBRTC_OPTION, UrlFilterRule.WEBSOCKET_OPTION];
+		}
+
 		var ruleText = RequestWizard.createRuleFromParams(urlPattern, domain, matchCase, thirdParty, important, mandatoryOptions);
 		ruleTextEl.val(ruleText);
 	}
@@ -741,10 +751,7 @@ RequestWizard.prototype._initCreateRuleDialog = function (frameInfo, template, p
 
 RequestWizard.PATTERNS_COUNT = 2; //exclude domain and full request url
 
-RequestWizard.splitToPatterns = function (filteringEvent, whitelist) {
-
-    var requestUrl = filteringEvent.requestUrl;
-	var domain = filteringEvent.requestDomain;
+RequestWizard.splitToPatterns = function (requestUrl, domain, whitelist) {
 
 	var hierarchicUrl = UrlUtils.isHierarchicUrl(requestUrl);
     var protocol = UrlUtils.getProtocol(requestUrl);
