@@ -24,20 +24,44 @@ adguard.contentFiltering = (function (adguard) {
      * https://mail.mozilla.org/pipermail/dev-addons/2017-April/002729.html
      *
      * @param requestId Request identifier
+     * @param charset encoding
      * @constructor
      */
-    var ContentFilter = function (requestId) {
+    var ContentFilter = function (requestId, charset) {
 
         this.filter = adguard.webRequest.filterResponseData(requestId);
-        this.decoder = new TextDecoder("utf-8");
+
+        this.charset = charset;
+        this.decoder = new TextDecoder(this.charset ? this.charset : 'utf-8');
+        this.encoder = new TextEncoder(this.charset ? this.charset : 'utf-8');
         this.content = '';
         this.contentDfd = new adguard.utils.Promise();
 
         this.filter.ondata = function (event) {
+
+            // Charset is not detected, looking for <meta> tags
+            if (!this.charset) {
+                var decoded = new TextDecoder('utf-8').decode(event.data).toLowerCase();
+                var match = /<meta charset=['"](.*?)['"]/.exec(decoded);
+                if (match && match.length > 1) {
+                    this.charset = match[1].toLowerCase();
+                    if (SUPPORTED_CHARSETS.indexOf(this.charset) < 0) {
+                        // Parsed charset is not supported
+                        // Setting default
+                        this.charset = 'utf-8';
+                        //throw new Error('Charset is not supported: ' + this.charset);
+                    }
+
+                    this.decoder = new TextDecoder(this.charset);
+                    this.encoder = new TextEncoder(this.charset);
+                }
+            }
+
             this.content += this.decoder.decode(event.data, {stream: true});
         }.bind(this);
 
         this.filter.onstop = function () {
+
             this.content += this.decoder.decode(); // finish stream
             this.contentDfd.resolve(this.content);
         }.bind(this);
@@ -47,8 +71,7 @@ adguard.contentFiltering = (function (adguard) {
         }.bind(this);
 
         this.write = function (content) {
-            var encoder = new TextEncoder();
-            this.filter.write(encoder.encode(content));
+            this.filter.write(this.encoder.encode(content));
             this.filter.close();
         };
 
@@ -66,9 +89,9 @@ adguard.contentFiltering = (function (adguard) {
      */
     var ResponseContentHandler = function () {
 
-        this.handleResponse = function (requestId, requestUrl, requestType, callback) {
+        this.handleResponse = function (requestId, requestUrl, requestType, charset, callback) {
 
-            var contentFilter = new ContentFilter(requestId);
+            var contentFilter = new ContentFilter(requestId, charset);
 
             contentFilter.getContent()
                 .then(function (content) {
@@ -240,6 +263,9 @@ adguard.contentFiltering = (function (adguard) {
         return deleted.length > 0 ? doc.documentElement.outerHTML : null;
     }
 
+    var DEFAULT_CHARSET = 'utf-8';
+    var SUPPORTED_CHARSETS = [ DEFAULT_CHARSET, 'iso-8859-1'];
+
     /**
      * Applies content and replace rules to the request
      * @param tab Tab
@@ -264,8 +290,8 @@ adguard.contentFiltering = (function (adguard) {
         }
 
         var charset = parseCharset(contentType);
-        if (charset && charset !== 'utf-8') {
-            // Charset is detected and it is not UTF-8
+        if (charset && SUPPORTED_CHARSETS.indexOf(charset) < 0) {
+            // Charset is detected and it is not supported
             adguard.console.debug('Skipping request to {0} - {1} with Content-Type {2}', requestUrl, requestType, contentType);
             return;
         }
@@ -291,19 +317,7 @@ adguard.contentFiltering = (function (adguard) {
             return;
         }
 
-        responseContentHandler.handleResponse(requestId, requestUrl, requestType, function (content) {
-
-            // Charset is not detected, looking for <meta> tags
-            if (!charset) {
-                if (requestType === adguard.RequestTypes.DOCUMENT ||
-                    requestType === adguard.RequestTypes.SUBDOCUMENT) {
-                    if (content.indexOf('<meta charset="utf-8"') < 0 &&
-                        content.indexOf("<meta charset='utf-8'") < 0) {
-                        // Charset tag is not UTF-8
-                        return content;
-                    }
-                }
-            }
+        responseContentHandler.handleResponse(requestId, requestUrl, requestType, charset, function (content) {
 
             if (contentRules && contentRules.length > 0) {
                 var doc = documentParser.parse(content);
