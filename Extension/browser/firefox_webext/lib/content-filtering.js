@@ -24,13 +24,12 @@ adguard.contentFiltering = (function (adguard) {
      * https://mail.mozilla.org/pipermail/dev-addons/2017-April/002729.html
      *
      * @param requestId Request identifier
-     * @param charset encoding
      * @constructor
      */
-    var ContentFilter = function (requestId, charset) {
+    var ContentFilter = function (requestId) {
 
         this.filter = adguard.webRequest.filterResponseData(requestId);
-        this.decoder = new TextDecoder(charset);
+        this.decoder = new TextDecoder("utf-8");
         this.content = '';
         this.contentDfd = new adguard.utils.Promise();
 
@@ -48,7 +47,7 @@ adguard.contentFiltering = (function (adguard) {
         }.bind(this);
 
         this.write = function (content) {
-            var encoder = new TextEncoder(charset);
+            var encoder = new TextEncoder();
             this.filter.write(encoder.encode(content));
             this.filter.close();
         };
@@ -67,9 +66,9 @@ adguard.contentFiltering = (function (adguard) {
      */
     var ResponseContentHandler = function () {
 
-        this.handleResponse = function (requestId, requestUrl, requestType, charset, callback) {
+        this.handleResponse = function (requestId, requestUrl, requestType, callback) {
 
-            var contentFilter = new ContentFilter(requestId, charset);
+            var contentFilter = new ContentFilter(requestId);
 
             contentFilter.getContent()
                 .then(function (content) {
@@ -143,29 +142,18 @@ adguard.contentFiltering = (function (adguard) {
         return mask;
     })();
 
-    var DEFAULT_CHARSET = 'utf-8';
-    var SUPPORTED_CHARSETS = [ DEFAULT_CHARSET, 'utf-16'];
-
-    function parseCharset(contentType) {
+    function isUtf8Charset(contentType) {
         if (!contentType) {
-            return DEFAULT_CHARSET;
+            return true;
         }
 
         contentType = contentType.toLowerCase();
         if (contentType.indexOf("charset=") < 0) {
             // Most probably is utf-8
-            return DEFAULT_CHARSET;
+            return true;
         }
 
-        var match = /charset=['"](.*?)['"]/.exec(contentType);
-        if (match && match.length > 1) {
-            var charset = match[1];
-            if (charset && SUPPORTED_CHARSETS.indexOf(charset)) {
-                return charset;
-            }
-        }
-
-        return null;
+        return contentType.indexOf('utf-8') >= 0;
     }
 
     /**
@@ -275,8 +263,7 @@ adguard.contentFiltering = (function (adguard) {
             return;
         }
 
-        var charset = parseCharset(contentType);
-        if (!charset) {
+        if (!isUtf8Charset(contentType)) {
             adguard.console.debug('Skipping request to {0} - {1} with Content-Type {2}', requestUrl, requestType, contentType);
             return;
         }
@@ -302,7 +289,7 @@ adguard.contentFiltering = (function (adguard) {
             return;
         }
 
-        responseContentHandler.handleResponse(requestId, requestUrl, requestType, charset, function (content) {
+        responseContentHandler.handleResponse(requestId, requestUrl, requestType, function (content) {
 
             if (contentRules && contentRules.length > 0) {
                 var doc = documentParser.parse(content);
