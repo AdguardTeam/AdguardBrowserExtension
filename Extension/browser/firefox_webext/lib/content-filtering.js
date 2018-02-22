@@ -142,18 +142,18 @@ adguard.contentFiltering = (function (adguard) {
         return mask;
     })();
 
-    function isUtf8Charset(contentType) {
+    function parseCharset(contentType) {
         if (!contentType) {
-            return true;
+            return null;
         }
 
         contentType = contentType.toLowerCase();
-        if (contentType.indexOf("charset=") < 0) {
-            // Most probably is utf-8
-            return true;
+        var match = /charset=['"](.*?)['"]/.exec(contentType);
+        if (match && match.length > 1) {
+            return match[1].toLowerCase();
         }
 
-        return contentType.indexOf('utf-8') >= 0;
+        return null;
     }
 
     /**
@@ -263,7 +263,9 @@ adguard.contentFiltering = (function (adguard) {
             return;
         }
 
-        if (!isUtf8Charset(contentType)) {
+        var charset = parseCharset(contentType);
+        if (charset && charset !== 'utf-8') {
+            // Charset is detected and it is not UTF-8
             adguard.console.debug('Skipping request to {0} - {1} with Content-Type {2}', requestUrl, requestType, contentType);
             return;
         }
@@ -290,6 +292,18 @@ adguard.contentFiltering = (function (adguard) {
         }
 
         responseContentHandler.handleResponse(requestId, requestUrl, requestType, function (content) {
+
+            // Charset is not detected, looking for <meta> tags
+            if (!charset) {
+                if (requestType === adguard.RequestTypes.DOCUMENT ||
+                    requestType === adguard.RequestTypes.SUBDOCUMENT) {
+                    if (content.indexOf('<meta charset="utf-8"') < 0 &&
+                        content.indexOf("<meta charset='utf-8'") < 0) {
+                        // Charset tag is not UTF-8
+                        return content;
+                    }
+                }
+            }
 
             if (contentRules && contentRules.length > 0) {
                 var doc = documentParser.parse(content);
