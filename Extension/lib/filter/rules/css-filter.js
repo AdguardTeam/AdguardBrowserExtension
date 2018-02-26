@@ -147,9 +147,9 @@
             if (!genericHide && retrieveTraditionalCss) { // ExtCss rules are not contained in commonRules
                 var commonCss = this._getCommonCss();
                 if (cssInjectionOnly) {
-                    commonCss = commonCss.filter(function (rule) {
+                    commonCss = this._buildCssByRules(this.commonRules.filter(function (rule) {
                         return rule.isInjectRule;
-                    });
+                    }));
                 }
                 Array.prototype.unshift.apply(stylesheets.css, commonCss);
             }
@@ -398,7 +398,7 @@
          */
         _applyExceptionRule: function (commonRule, exceptionRule) {
 
-            if (commonRule.cssSelector != exceptionRule.cssSelector) {
+            if (commonRule.cssSelector !== exceptionRule.cssSelector) {
                 return;
             }
 
