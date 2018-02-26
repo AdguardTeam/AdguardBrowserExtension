@@ -593,19 +593,23 @@ QUnit.test("Extended Css Selector Inject Rule", function (assert) {
     assert.ok(injectRule.extendedCss);
     filter.addRule(injectRule);
 
+    injectRule = new adguard.rules.CssFilterRule('#$#.first-item { font-size: 130px; })');
+    assert.ok(injectRule.isInjectRule);
+    filter.addRule(injectRule);
+
     selectors = filter.buildCss("adguard.com", adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS + adguard.rules.CssFilter.RETRIEVE_EXTCSS + adguard.rules.CssFilter.CSS_INJECTION_ONLY);
     css = selectors.css;
     extendedCss = selectors.extendedCss;
     commonCss = filter.buildCss(null).css;
-    assert.equal(commonCss.length, 1);
-    assert.equal(css.length, 0);
+    assert.equal(commonCss.length, 2);
+    assert.equal(css.length, 1);
     assert.equal(extendedCss.length, 2);
 
     selectors = filter.buildCss("adguard.com", adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS + adguard.rules.CssFilter.RETRIEVE_EXTCSS + adguard.rules.CssFilter.CSS_INJECTION_ONLY + adguard.rules.CssFilter.GENERIC_HIDE_APPLIED);
     css = selectors.css;
     extendedCss = selectors.extendedCss;
     commonCss = filter.buildCss(null).css;
-    assert.equal(commonCss.length, 1);
+    assert.equal(commonCss.length, 2);
     assert.equal(css.length, 0);
     assert.equal(extendedCss.length, 2);
 });
