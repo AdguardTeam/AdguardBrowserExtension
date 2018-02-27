@@ -1,5 +1,6 @@
 var URL_FILTER_ANY_URL = "^[htpsw]+:\\/\\/";
 var URL_FILTER_WS_ANY_URL = "^wss?:\\/\\/";
+var URL_FILTER_CSS_RULES = ".*";
 // Improved regular expression instead of UrlFilterRule.REGEXP_START_URL (||)
 var URL_FILTER_REGEXP_START_URL = URL_FILTER_ANY_URL + "([a-z0-9-]+\\.)?";
 // Simplified separator (to fix an issue with $ restriction - it can be only in the end of regexp)
@@ -43,7 +44,7 @@ var rules = [
 var safariCorrectRules = [
     {
         "trigger": {
-            "url-filter": URL_FILTER_ANY_URL
+            "url-filter": URL_FILTER_CSS_RULES
         },
         "action": {
             "type": "css-display-none",
@@ -52,7 +53,7 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": URL_FILTER_ANY_URL,
+            "url-filter": URL_FILTER_CSS_RULES,
             "unless-domain": [
                 "*lenta1.ru",
                 "*lenta2.ru"
@@ -65,7 +66,7 @@ var safariCorrectRules = [
     },
     {
         "trigger": {
-            "url-filter": URL_FILTER_ANY_URL,
+            "url-filter": URL_FILTER_CSS_RULES,
             "if-domain": [
                 "*popsugar.com"
             ]
