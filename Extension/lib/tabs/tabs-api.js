@@ -364,6 +364,9 @@
             }
         };
 
+        // Execute script to tab
+        var executeScript = tabsImpl.executeScript;
+
         return {
 
             // Events
@@ -391,7 +394,8 @@
             // Other
             updateTabMetadata: updateTabMetadata,
             getTabMetadata: getTabMetadata,
-            clearTabMetadata: clearTabMetadata
+            clearTabMetadata: clearTabMetadata,
+            executeScript: executeScript
         };
 
     })(adguard.tabsImpl);

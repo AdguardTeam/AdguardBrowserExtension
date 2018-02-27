@@ -147,7 +147,6 @@
             'lib/content-script/assistant/js/slider-widget.js',
             'lib/content-script/assistant/js/adguard-selector.js',
             'lib/content-script/assistant/js/adguard-rules-constructor.js',
-            'lib/content-script/assistant/js/assistant.js',
             'lib/content-script/assistant/js/start-assistant.js'
         ], 'document_end', false);
 
@@ -158,9 +157,6 @@
             'lib/content-script/content-script.js',
             'lib/pages/thankyou.js'
         ], 'document_start', false, ['.adguard.com'], '/thankyou.html');
-
-        // Register assistant css
-        registerCss(adguard.loadURL('lib/content-script/assistant/css/selector.css'));
 
         // abp:subscribe
         var subscribeIncludeDomains = [
