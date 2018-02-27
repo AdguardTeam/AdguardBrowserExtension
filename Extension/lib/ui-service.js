@@ -619,10 +619,13 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     };
 
     var openAssistant = function (selectElement) {
-
         var options = getAssistantOptions();
         options.selectElement = selectElement;
 
+        // executing assistant code
+        adguard.tabs.executeScript(null, {file: '/lib/content-script/assistant/js/assistant.js'});
+
+        // init assistant
         adguard.tabs.getActive(function (tab) {
             adguard.tabs.sendMessage(tab.tabId, {
                 type: 'initAssistant',

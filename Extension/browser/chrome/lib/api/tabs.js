@@ -413,6 +413,8 @@ adguard.tabsImpl = (function (adguard) {
         });
     };
 
+    var executeScript = browser.tabs.executeScript;
+
     return {
 
         onCreated: onCreatedChannel,
@@ -428,6 +430,8 @@ adguard.tabsImpl = (function (adguard) {
         getAll: getAll,
         getActive: getActive,
         get: get,
+
+        executeScript: executeScript,
 
         fromChromeTab: toTabFromChromeTab
     };
