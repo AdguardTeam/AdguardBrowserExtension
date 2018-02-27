@@ -80,17 +80,28 @@ adguard.webRequestService = (function (adguard) {
 
         let CssFilter = adguard.rules.CssFilter;
 
+
+        // Check what exactly is disabled by this rule
+        var elemHideFlag = whitelistRule && whitelistRule.isElemhide();
+        var genericHideFlag = whitelistRule && whitelistRule.isGenericHide();
+
+        // content-message-handler calls it in this way
         if (typeof cssFilterOptions === 'undefined' && typeof retrieveScripts === 'undefined') {
-            // content-message-handler calls it in this way
-            cssFilterOptions = CssFilter.RETRIEVE_EXTCSS;
-            retrieveScripts = false;
-            if (!adguard.prefs.features.canUseInsertCSSAndExecuteScript) {
-                cssFilterOptions += CssFilter.RETRIEVE_TRADITIONAL_CSS;
-                retrieveScripts = true;    
-            }
+            // Build up default flags.    
+            let canUseInsertCSSAndExecuteScript = adguard.prefs.features.canUseInsertCSSAndExecuteScript;
+            // If tabs.executeScript is unavailable, retrieve JS rules now.
+            retrieveScripts = !canUseInsertCSSAndExecuteScript;
+            if (!elemHideFlag) {
+                cssFilterOptions = CssFilter.RETRIEVE_EXTCSS;
+                if (!adguard.prefs.features.canUseInsertCSSAndExecuteScript) {
+                    cssFilterOptions += CssFilter.RETRIEVE_TRADITIONAL_CSS;
+                }
+                if (genericHideFlag) {
+                    cssFilterOptions += CssFilter.GENERIC_HIDE_APPLIED;
+                }
         }
 
-        var retrieveSelectors = (cssFilterOptions & (CssFilter.RETRIEVE_TRADITIONAL_CSS + CssFilter.RETRIEVE_EXTCSS)) !== 0;
+        var retrieveSelectors = !elemHideFlag && (cssFilterOptions & (CssFilter.RETRIEVE_TRADITIONAL_CSS + CssFilter.RETRIEVE_EXTCSS)) !== 0;
 
         if (retrieveSelectors) {
             // Record rule hit
@@ -112,22 +123,11 @@ adguard.webRequestService = (function (adguard) {
             };
             result.collapseAllElements = adguard.requestFilter.shouldCollapseAllElements();
 
-            // Check what exactly is disabled by this rule
-            var genericHideFlag = whitelistRule && whitelistRule.isGenericHide();
-            var elemHideFlag = whitelistRule && whitelistRule.isElemhide();
-
-            if (genericHideFlag) {
-                cssFilterOptions += CssFilter.GENERIC_HIDE_APPLIED;
+            if (!shouldLoadAllSelectors(result.collapseAllElements)) {
+                cssFilterOptions += CssFilter.CSS_INJECTION_ONLY;
             }
 
-            if (!elemHideFlag) {
-                // Element hiding rules aren't disabled, so we should use them
-                if (!shouldLoadAllSelectors(result.collapseAllElements)) {
-                    cssFilterOptions += CssFilter.CSS_INJECTION_ONLY;
-                }
-
-                result.selectors = adguard.requestFilter.getSelectorsForUrl(documentUrl, cssFilterOptions);
-            }
+            result.selectors = adguard.requestFilter.getSelectorsForUrl(documentUrl, cssFilterOptions);
         }
 
         if (retrieveScripts) {

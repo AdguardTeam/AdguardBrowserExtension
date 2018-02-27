@@ -242,21 +242,6 @@
     };
 
     /**
-     * Overrides stylesheets property disabled
-     *
-     * Function supposed to be executed in page's context
-     */
-    var overrideStyleSheetProperties = function () {
-        Object.defineProperty(window.HTMLStyleElement.prototype, 'disabled', {
-            get: function () {
-                return false;
-            }, set: function (val) {
-                // Do nothing
-            }
-        });
-    };
-
-    /**
      * The main purpose of this function is to prevent blocked iframes "flickering".
      * So, we do two things:
      * 1. Add a temporary display:none style for all frames (which is removed on DOMContentLoaded event)

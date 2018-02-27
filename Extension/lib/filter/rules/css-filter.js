@@ -123,7 +123,7 @@
          * http://adguard.com/en/filterrules.html#hideRules
          *
          * @param domainName    Domain name
-         * @param options       Bitmask passed from `processGetSelectorsAndScript`
+         * @param options       CssFilter Bitmask
          * @returns {{css: (*|*[]), extendedCss: (*|*[])}}
          */
         buildCss: function (domainName, options) {
