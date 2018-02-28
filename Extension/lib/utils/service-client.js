@@ -535,6 +535,30 @@ adguard.backend = (function (adguard) {
     };
 
     /**
+     * Allows to receive response headers from the request to the given URL
+     * @param url URL
+     * @param callback Callback with headers or null in the case of error
+     */
+    var getResponseHeaders = function (url, callback) {
+        executeRequestAsync(url, 'text/plain', function (request) {
+            var arr = request.getAllResponseHeaders().trim().split(/[\r\n]+/);
+            var headers = arr.map(function (line) {
+                var parts = line.split(': ');
+                var header = parts.shift();
+                var value = parts.join(': ');
+                return {
+                    name: header,
+                    value: value
+                };
+            });
+            callback(headers);
+        }, function (request) {
+            adguard.console.error("Error retrieved response from {0}, cause: {1}", url, request.statusText);
+            callback(null);
+        })
+    };
+
+    /**
      * Configures backend's URLs
      * @param configuration Configuration object:
      * {
@@ -604,6 +628,8 @@ adguard.backend = (function (adguard) {
         sendHitStats: sendHitStats,
 
         isAdguardAppRequest: isAdguardAppRequest,
+
+        getResponseHeaders: getResponseHeaders,
 
         configure: configure
     };
