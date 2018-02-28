@@ -886,7 +886,7 @@
             }
             callback(toTabFromXulTab(xulTab));
         };
-
+                
         return {
 
             onCreated: onCreatedChannel,
@@ -908,6 +908,7 @@
             getTabForContentWindow: getTabForContentWindow,
             onTabUpdated: onTabUpdated,
             browsers: getAllBrowsers
+
         };
 
     })(adguard);

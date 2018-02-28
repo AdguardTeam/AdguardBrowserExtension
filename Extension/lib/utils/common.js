@@ -620,19 +620,6 @@ adguard.utils = (function () {
             }
 
             return blockedText;
-        },
-
-        /**
-         * Checks if it is facebook like button iframe
-         * TODO: Ugly, remove this
-         *
-         * @param url URL
-         * @returns true if it is
-         */
-        isFacebookIframe: function (url) {
-            // facebook iframe workaround
-            // do not inject anything to facebook frames
-            return url.indexOf('www.facebook.com/plugins/like.php') > -1;
         }
     };
 

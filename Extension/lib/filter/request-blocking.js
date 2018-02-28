@@ -43,17 +43,16 @@ adguard.webRequestService = (function (adguard) {
     /**
      * Prepares CSS and JS which should be injected to the page.
      *
-     * @param tab           Tab
-     * @param documentUrl   Document URL
-     * @param options       Options for select:
-     * options = {
-     *      filter: ['selectors', 'scripts'] (selection filter) (mandatory)
-     *      genericHide: true|false ( select only generic hide css rules) (optional)
-     * }
-     *
-     * @returns {*}         null or object the following properties: "selectors", "scripts", "collapseAllElements"
+     * @param tab                       Tab
+     * @param documentUrl               Document URL
+     * @param cssFilterOptions          Bitmask of CssFilter
+     * @param {boolean} retrieveScripts indicates whether to retrieve JS rules or not
+     * 
+     * When cssFilterOptions and retrieveScripts are undefined, we handle it in a special way.
+     * 
+     * @returns {*} null or object the following properties: "selectors", "scripts", "collapseAllElements"
      */
-    var processGetSelectorsAndScripts = function (tab, documentUrl, options) {
+    var processGetSelectorsAndScripts = function (tab, documentUrl, cssFilterOptions, retrieveScripts) {
 
         var result = Object.create(null);
 
@@ -79,8 +78,31 @@ adguard.webRequestService = (function (adguard) {
             whitelistRule = adguard.requestFilter.findWhiteListRule(documentUrl, mainFrameUrl, adguard.RequestTypes.DOCUMENT);
         }
 
-        var retrieveSelectors = options.filter.indexOf('selectors') >= 0;
-        var retrieveScripts = options.filter.indexOf('scripts') >= 0;
+        let CssFilter = adguard.rules.CssFilter;
+
+
+        // Check what exactly is disabled by this rule
+        var elemHideFlag = whitelistRule && whitelistRule.isElemhide();
+        var genericHideFlag = whitelistRule && whitelistRule.isGenericHide();
+
+        // content-message-handler calls it in this way
+        if (typeof cssFilterOptions === 'undefined' && typeof retrieveScripts === 'undefined') {
+            // Build up default flags.    
+            let canUseInsertCSSAndExecuteScript = adguard.prefs.features.canUseInsertCSSAndExecuteScript;
+            // If tabs.executeScript is unavailable, retrieve JS rules now.
+            retrieveScripts = !canUseInsertCSSAndExecuteScript;
+            if (!elemHideFlag) {
+                cssFilterOptions = CssFilter.RETRIEVE_EXTCSS;
+                if (!adguard.prefs.features.canUseInsertCSSAndExecuteScript) {
+                    cssFilterOptions += CssFilter.RETRIEVE_TRADITIONAL_CSS;
+                }
+                if (genericHideFlag) {
+                    cssFilterOptions += CssFilter.GENERIC_HIDE_APPLIED;
+                }
+            }
+        }
+
+        var retrieveSelectors = !elemHideFlag && (cssFilterOptions & (CssFilter.RETRIEVE_TRADITIONAL_CSS + CssFilter.RETRIEVE_EXTCSS)) !== 0;
 
         if (retrieveSelectors) {
             // Record rule hit
@@ -94,36 +116,26 @@ adguard.webRequestService = (function (adguard) {
         }
 
         if (retrieveSelectors) {
-
             // Prepare result
             result.selectors = {
                 css: null,
                 extendedCss: null,
                 cssHitsCounterEnabled: false
-
             };
             result.collapseAllElements = adguard.requestFilter.shouldCollapseAllElements();
-            result.useShadowDom = adguard.utils.browser.isShadowDomSupported();
 
-            // Check what exactly is disabled by this rule
-            var genericHideFlag = options.genericHide || (whitelistRule && whitelistRule.isGenericHide());
-            var elemHideFlag = whitelistRule && whitelistRule.isElemhide();
-
-            if (!elemHideFlag) {
-                // Element hiding rules aren't disabled, so we should use them
-                if (shouldLoadAllSelectors(result.collapseAllElements)) {
-                    result.selectors = adguard.requestFilter.getSelectorsForUrl(documentUrl, genericHideFlag);
-                } else {
-                    result.selectors = adguard.requestFilter.getInjectedSelectorsForUrl(documentUrl, genericHideFlag);
-                }
+            if (!shouldLoadAllSelectors(result.collapseAllElements)) {
+                cssFilterOptions += CssFilter.CSS_INJECTION_ONLY;
             }
+
+            result.selectors = adguard.requestFilter.getSelectorsForUrl(documentUrl, cssFilterOptions);
         }
 
         if (retrieveScripts) {
             var jsInjectFlag = whitelistRule && whitelistRule.isJsInject();
             if (!jsInjectFlag) {
                 // JS rules aren't disabled, returning them
-                result.scripts = adguard.requestFilter.getScriptsForUrl(documentUrl);
+                result.scripts = adguard.requestFilter.getScriptsStringForUrl(documentUrl);
             }
         }
 
