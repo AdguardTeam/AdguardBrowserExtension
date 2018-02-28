@@ -61,14 +61,14 @@ adguard.integration = (function (adguard) {
 
     var integrationModeForceDisabled = false;
     var integrationModeLastCheckTime = 0;
-    var CHECK_PERIOD_MS = 30 * 60 * 1000; // 30 minutes
+    var INTEGRATION_CHECK_PERIOD_MS = 30 * 60 * 1000; // 30 minutes
 
     /**
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/963
      */
     function reCheckIntegrationMode() {
 
-        if (Date.now() - integrationModeLastCheckTime > CHECK_PERIOD_MS) {
+        if (Date.now() - integrationModeLastCheckTime > INTEGRATION_CHECK_PERIOD_MS) {
 
             integrationModeLastCheckTime = Date.now();
 
