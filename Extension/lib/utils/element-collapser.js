@@ -75,62 +75,51 @@ var ElementCollapser = (function() { // jshint ignore:line
      * Applies CSS stylesheets
      * Special characters should be escaped in selector text
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/373
-     *
      * @param rule css rule
-     * @param shadowRoot
      */
-    var applyCss = function (rule, shadowRoot) {
-        var styleElement = getStyleElement(shadowRoot);
+    var applyCss = function (rule) {
+        var styleElement = getStyleElement();
         if (!styleElement) {
             styleElement = document.createElement("style");
             styleElement.id = collapserStyleId;
             styleElement.setAttribute("type", "text/css");
-
-            if (shadowRoot) {
-                shadowRoot.appendChild(styleElement);
-            } else {
-                (document.head || document.documentElement).appendChild(styleElement);
-            }
+            (document.head || document.documentElement).appendChild(styleElement);
         }
 
-        styleElement.sheet.insertRule(prepareSelector(rule, !!shadowRoot), styleElement.sheet.cssRules.length);
+        styleElement.sheet.insertRule(prepareSelector(rule), styleElement.sheet.cssRules.length);
     };
 
     /**
      * Adds "selectorText { display:none!important; }" style
-     *
      * @param selectorText
      * @param cssText optional
-     * @param shadowRoot optional
      */
-    var hideBySelector = function(selectorText, cssText, shadowRoot) {
+    var hideBySelector = function(selectorText, cssText) {
         var rule = selectorText + '{' + (cssText || "display: none!important;") + '}';
-        applyCss(rule, shadowRoot);
+        applyCss(rule);
     };
 
     /**
      * Adds "selectorText { display:none!important; }" style
-     *
-     * @param shadowRoot optional
      */
-    var hideBySelectorAndTagName = function(selectorText, tagName, shadowRoot) {
+    var hideBySelectorAndTagName = function(selectorText, tagName) {
         if (tagName === "frame" || tagName === "iframe") {
             // Use specific style for frames due to these issues:
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/346
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/355
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/347
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/733
-            hideBySelector(selectorText, "visibility: hidden!important; height: 0px!important; min-height: 0px!important;", shadowRoot);
+            hideBySelector(selectorText, "visibility: hidden!important; height: 0px!important; min-height: 0px!important;");
         } else {
-            hideBySelector(selectorText, null, shadowRoot);
+            hideBySelector(selectorText, null);
         }
     };
 
     /**
      * Unhides elements which were previously hidden by the specified selector
      */
-    var unhideBySelector = function(selectorText, shadowRoot, selectorTextEscaped) {
-        var styleElement = getStyleElement(shadowRoot);
+    var unhideBySelector = function(selectorText, selectorTextEscaped) {
+        var styleElement = getStyleElement();
         if (!styleElement || !styleElement.sheet) {
             return;
         }
@@ -138,8 +127,8 @@ var ElementCollapser = (function() { // jshint ignore:line
         while (iLength--) {
             var cssRule = styleElement.sheet.cssRules[iLength];
             // Returns escaped selector in FF and unescaped in Chrome
-            if (cssRule.selectorText == prepareSelector(selectorText, !!shadowRoot)
-                || cssRule.selectorText == prepareSelector(selectorTextEscaped, !!shadowRoot)) {
+            if (cssRule.selectorText == prepareSelector(selectorText)
+                || cssRule.selectorText == prepareSelector(selectorTextEscaped)) {
                 styleElement.sheet.deleteRule(iLength);
             }
         }
@@ -172,10 +161,8 @@ var ElementCollapser = (function() { // jshint ignore:line
 
     /**
      * Hides specified element
-     *
-     * @param shadowRoot optional
      */
-    var hideElement = function(element, shadowRoot) {
+    var hideElement = function(element) {
         var domPath = getDomPath(element);
         var selectorText = domPath.selectorText;
         var selectorTextEscaped = domPath.selectorTextEscaped;
@@ -187,11 +174,11 @@ var ElementCollapser = (function() { // jshint ignore:line
         }
 
         var tagName = element.tagName.toLowerCase();
-        hideBySelectorAndTagName(selectorTextEscaped, tagName, shadowRoot);
+        hideBySelectorAndTagName(selectorTextEscaped, tagName);
 
         if (hiddenElement) {
             // Remove redundant selector and save the new one
-            unhideBySelector(hiddenElement.selectorText, shadowRoot, hiddenElement.selectorTextEscaped);
+            unhideBySelector(hiddenElement.selectorText, hiddenElement.selectorTextEscaped);
             hiddenElement.selectorText = selectorText;
             hiddenElement.selectorTextEscaped = selectorTextEscaped;
         } else {
@@ -207,12 +194,12 @@ var ElementCollapser = (function() { // jshint ignore:line
     /**
      * Unhides specified element
      */
-    var unhideElement = function(element, shadowRoot) {
+    var unhideElement = function(element) {
         var iLength = hiddenElements.length;
         while (iLength--) {
             var hiddenElement = hiddenElements[iLength];
             if (hiddenElement.node === element) {
-                unhideBySelector(hiddenElement.selectorText, shadowRoot, hiddenElement.selectorTextEscaped);
+                unhideBySelector(hiddenElement.selectorText, hiddenElement.selectorTextEscaped);
                 hiddenElements.splice(iLength, 1);
             }
         }
@@ -227,30 +214,19 @@ var ElementCollapser = (function() { // jshint ignore:line
 
     /**
      * Finds style containing dom element
-     *
-     * @param shadowRoot
      * @returns {Element} or null
      */
-    var getStyleElement = function(shadowRoot) {
-        if (shadowRoot) {
-            var el = shadowRoot.querySelector('#' + collapserStyleId);
-            if (el) {
-                return el;
-            }
-        }
-
+    var getStyleElement = function() {
         return document.getElementById(collapserStyleId);
     };
 
     /**
      * Prepares selector or rule text
-     *
      * @param selector
-     * @param useShadowDom
      * @returns {*}
      */
-    var prepareSelector = function (selector, useShadowDom) {
-        return useShadowDom ? '::content ' + selector : selector;
+    var prepareSelector = function (selector) {
+        return selector;
     };
 
     /**
@@ -276,9 +252,8 @@ var ElementCollapser = (function() { // jshint ignore:line
      *
      * @param element Element to collapse
      * @param elementUrl Element's source url
-     * @param shadowRoot optional
      */
-    var collapseElement = function(element, elementUrl, shadowRoot) {
+    var collapseElement = function(element, elementUrl) {
         
         var tagName = element.tagName.toLowerCase();
 
@@ -292,7 +267,7 @@ var ElementCollapser = (function() { // jshint ignore:line
                 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/408
                 var srcAttribute = element.getAttribute('src');
                 var srcSelector = createSelectorForSrcAttr(srcAttribute, tagName);
-                hideBySelectorAndTagName(srcSelector, tagName, shadowRoot);
+                hideBySelectorAndTagName(srcSelector, tagName);
 
                 // Remove important priority from element style
                 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/733
@@ -327,43 +302,33 @@ var ElementCollapser = (function() { // jshint ignore:line
     return {
         /**
          * Collapses specified element using inline style
-         *
          * @param element Element to collapse
          * @param elementUrl Element's source url
-         * @param shadowRoot optional shadow root element
          */
         collapseElement: collapseElement,
 
         /**
          * Hides specified element
-         *
          * @param element Element to hide
-         * @param shadowRoot optional shadow root element
          */
         hideElement: hideElement,
 
         /**
          * Removes the style used to hide the specified element
-         *
          * @param element Element to unhide
-         * @param shadowRoot optional shadow root element
          */
         unhideElement: unhideElement,
 
         /**
          * Adds "selectorText { display:none!important; }" style
-         *
          * @param selectorText CSS selector
          * @param cssText (optional) Overrides style used for hiding
-         * @param shadowRoot optional shadow root element
          */
         hideBySelector: hideBySelector,
 
         /**
          * Unhides elements which were previously hidden by the specified selector
-         *
          * @param selectorText CSS selector
-         * @param shadowRoot optional shadow root element
          */
         unhideBySelector: unhideBySelector
     };

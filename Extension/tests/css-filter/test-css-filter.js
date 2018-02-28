@@ -1,3 +1,7 @@
+var CssFilter = adguard.rules.CssFilter;
+
+var genericHide = CssFilter.RETRIEVE_TRADITIONAL_CSS + CssFilter.RETRIEVE_EXTCSS + CssFilter.GENERIC_HIDE_APPLIED;
+
 QUnit.test("Css Filter Rule", function (assert) {
     var ruleText = "~gamespot.com,~mint.com,~slidetoplay.com,~smh.com.au,~zattoo.com##.sponsored";
     var rule = new adguard.rules.CssFilterRule(ruleText);
@@ -113,7 +117,7 @@ QUnit.test("Css GenericHide Exception Rules", function (assert) {
     assert.equal(css.length, 1);
 
     filter.addRule(genericHideRule);
-    css = filter.buildCss("adguard.com", true).css;
+    css = filter.buildCss("adguard.com", genericHide).css;
     commonCss = filter.buildCss(null).css;
     otherCss = filter.buildCss("another.domain").css;
     assert.equal(css.length, 1);
@@ -122,7 +126,7 @@ QUnit.test("Css GenericHide Exception Rules", function (assert) {
     assert.equal(otherCss.length, 2);
 
     filter.removeRule(exceptionRule);
-    css = filter.buildCss("adguard.com", true).css;
+    css = filter.buildCss("adguard.com", genericHide).css;
     commonCss = filter.buildCss(null).css;
     otherCss = filter.buildCss("another.domain").css;
     assert.equal(css.length, 1);
@@ -130,7 +134,7 @@ QUnit.test("Css GenericHide Exception Rules", function (assert) {
     assert.equal(otherCss.length, 2);
 
     filter.addRule(elemHideRule);
-    css = filter.buildCss("adguard.com", true).css;
+    css = filter.buildCss("adguard.com", genericHide).css;
     commonCss = filter.buildCss(null).css;
     otherCss = filter.buildCss("another.domain").css;
     assert.equal(css.length, 1);
@@ -138,7 +142,7 @@ QUnit.test("Css GenericHide Exception Rules", function (assert) {
     assert.equal(otherCss.length, 2);
 
     filter.addRule(injectRule);
-    css = filter.buildCss("adguard.com", true).css;
+    css = filter.buildCss("adguard.com", genericHide).css;
     commonCss = filter.buildCss(null).css;
     otherCss = filter.buildCss("another.domain").css;
     assert.equal(css.length, 2);
@@ -462,7 +466,7 @@ QUnit.test("Extended Css Build", function (assert) {
     assert.equal(css.length, 2);
     assert.equal(extendedCss.length, 1);
 
-    selectors = filter.buildCss("adguard.com", true);
+    selectors = filter.buildCss("adguard.com", genericHide);
     css = selectors.css;
     extendedCss = selectors.extendedCss;
     commonCss = filter.buildCss(null).css;
@@ -487,7 +491,7 @@ QUnit.test("Extended Css Build Common Extended", function (assert) {
     assert.equal(css.length, 2);
     assert.equal(extendedCss.length, 1);
 
-    selectors = filter.buildCss("adguard.com", true);
+    selectors = filter.buildCss("adguard.com", genericHide);
     css = selectors.css;
     extendedCss = selectors.extendedCss;
     commonCss = filter.buildCss(null).css;
@@ -497,8 +501,6 @@ QUnit.test("Extended Css Build Common Extended", function (assert) {
 });
 
 QUnit.test("Extended Css Build CssHits", function (assert) {
-
-    var shadowDomPrefix = adguard.utils.browser.isShadowDomSupported() ? "::content " : "";
 
     var rule = new adguard.rules.CssFilterRule("adguard.com##.sponsored", 1);
     var genericRule = new adguard.rules.CssFilterRule("##.banner", 2);
@@ -512,21 +514,21 @@ QUnit.test("Extended Css Build CssHits", function (assert) {
     extendedCss = selectors.extendedCss;
     commonCss = filter.buildCssHits(null).css;
     assert.equal(commonCss.length, 1);
-    assert.equal(commonCss[0].trim(), shadowDomPrefix + ".banner { display: none!important; content: 'adguard2%3B%23%23.banner' !important;}");
+    assert.equal(commonCss[0].trim(), ".banner { display: none!important; content: 'adguard2%3B%23%23.banner' !important;}");
     assert.equal(css.length, 2);
-    assert.equal(css[0].trim(), shadowDomPrefix + ".banner { display: none!important; content: 'adguard2%3B%23%23.banner' !important;}");
-    assert.equal(css[1].trim(), shadowDomPrefix + ".sponsored { display: none!important; content: 'adguard1%3Badguard.com%23%23.sponsored' !important;}");
+    assert.equal(css[0].trim(), ".banner { display: none!important; content: 'adguard2%3B%23%23.banner' !important;}");
+    assert.equal(css[1].trim(), ".sponsored { display: none!important; content: 'adguard1%3Badguard.com%23%23.sponsored' !important;}");
     assert.equal(extendedCss.length, 1);
     assert.equal(extendedCss[0].trim(), ".sponsored[-ext-contains=test] { display: none!important; content: 'adguard1%3Badguard.com%23%23.sponsored%5B-ext-contains%3Dtest%5D' !important;}");
 
-    selectors = filter.buildCssHits("adguard.com", true);
+    selectors = filter.buildCssHits("adguard.com", genericHide);
     css = selectors.css;
     extendedCss = selectors.extendedCss;
     commonCss = filter.buildCssHits(null).css;
     assert.equal(commonCss.length, 1);
-    assert.equal(commonCss[0].trim(), shadowDomPrefix + ".banner { display: none!important; content: 'adguard2%3B%23%23.banner' !important;}");
+    assert.equal(commonCss[0].trim(), ".banner { display: none!important; content: 'adguard2%3B%23%23.banner' !important;}");
     assert.equal(css.length, 1);
-    assert.equal(css[0].trim(), shadowDomPrefix + ".sponsored { display: none!important; content: 'adguard1%3Badguard.com%23%23.sponsored' !important;}");
+    assert.equal(css[0].trim(), ".sponsored { display: none!important; content: 'adguard1%3Badguard.com%23%23.sponsored' !important;}");
     assert.equal(extendedCss.length, 1);
     assert.equal(extendedCss[0].trim(), ".sponsored[-ext-contains=test] { display: none!important; content: 'adguard1%3Badguard.com%23%23.sponsored%5B-ext-contains%3Dtest%5D' !important;}");
 
@@ -540,12 +542,14 @@ QUnit.test("Extended Css Build Inject Css", function (assert) {
 
     var selectors, css, extendedCss, commonCss;
 
+    var baseOption = adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS + adguard.rules.CssFilter.RETRIEVE_EXTCSS + adguard.rules.CssFilter.CSS_INJECTION_ONLY;
+
     var injectRule = new adguard.rules.CssFilterRule('adguard.com##body:style(background:inherit;)');
     assert.ok(injectRule.isInjectRule);
     assert.notOk(injectRule.extendedCss);
     filter.addRule(injectRule);
 
-    selectors = filter.buildInjectCss("adguard.com");
+    selectors = filter.buildCss("adguard.com", baseOption);
     css = selectors.css;
     extendedCss = selectors.extendedCss;
     commonCss = filter.buildCss(null).css;
@@ -553,7 +557,7 @@ QUnit.test("Extended Css Build Inject Css", function (assert) {
     assert.equal(css.length, 1);
     assert.equal(extendedCss.length, 1);
 
-    selectors = filter.buildInjectCss("adguard.com", true);
+    selectors = filter.buildCss("adguard.com", baseOption + adguard.rules.CssFilter.GENERIC_HIDE_APPLIED);
     css = selectors.css;
     extendedCss = selectors.extendedCss;
     commonCss = filter.buildCss(null).css;
@@ -567,7 +571,7 @@ QUnit.test("Extended Css Build Inject Css", function (assert) {
     assert.ok(exceptionInjectRule.whiteListRule);
     filter.addRule(exceptionInjectRule);
 
-    selectors = filter.buildInjectCss("adguard.com");
+    selectors = filter.buildCss("adguard.com", baseOption);
     css = selectors.css;
     extendedCss = selectors.extendedCss;
     commonCss = filter.buildCss(null).css;
@@ -589,19 +593,23 @@ QUnit.test("Extended Css Selector Inject Rule", function (assert) {
     assert.ok(injectRule.extendedCss);
     filter.addRule(injectRule);
 
-    selectors = filter.buildInjectCss("adguard.com");
+    injectRule = new adguard.rules.CssFilterRule('#$#.first-item { font-size: 130px; })');
+    assert.ok(injectRule.isInjectRule);
+    filter.addRule(injectRule);
+
+    selectors = filter.buildCss("adguard.com", adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS + adguard.rules.CssFilter.RETRIEVE_EXTCSS + adguard.rules.CssFilter.CSS_INJECTION_ONLY);
     css = selectors.css;
     extendedCss = selectors.extendedCss;
     commonCss = filter.buildCss(null).css;
-    assert.equal(commonCss.length, 1);
-    assert.equal(css.length, 0);
+    assert.equal(commonCss.length, 2);
+    assert.equal(css.length, 1);
     assert.equal(extendedCss.length, 2);
 
-    selectors = filter.buildInjectCss("adguard.com", true);
+    selectors = filter.buildCss("adguard.com", adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS + adguard.rules.CssFilter.RETRIEVE_EXTCSS + adguard.rules.CssFilter.CSS_INJECTION_ONLY + adguard.rules.CssFilter.GENERIC_HIDE_APPLIED);
     css = selectors.css;
     extendedCss = selectors.extendedCss;
     commonCss = filter.buildCss(null).css;
-    assert.equal(commonCss.length, 1);
+    assert.equal(commonCss.length, 2);
     assert.equal(css.length, 0);
     assert.equal(extendedCss.length, 2);
 });

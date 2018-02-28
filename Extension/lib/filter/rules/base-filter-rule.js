@@ -158,10 +158,7 @@
          * @returns boolean true if rule is permitted
          */
         isPermitted: function (domainName) {
-
-            if (!domainName) {
-                return false;
-            }
+            if (!domainName) { return false; }
 
             if (this.restrictedDomain && adguard.utils.url.isDomainOrSubDomain(domainName, this.restrictedDomain)) {
                 return false;
