@@ -40,7 +40,7 @@ adguard.contentFiltering = (function (adguard) {
         this.content = '';
         this.contentDfd = new adguard.utils.Promise();
 
-        this.filter.ondata = function (event) {
+        this.filter.ondata = (event) => {
 
             if (!this.charset) {
                 // Charset is not detected, looking for <meta> tags
@@ -59,17 +59,17 @@ adguard.contentFiltering = (function (adguard) {
             }
 
             this.content += this.decoder.decode(event.data, {stream: true});
-        }.bind(this);
+        };
 
-        this.filter.onstop = function () {
+        this.filter.onstop = () => {
 
             this.content += this.decoder.decode(); // finish stream
             this.contentDfd.resolve(this.content);
-        }.bind(this);
+        };
 
-        this.filter.onerror = function () {
+        this.filter.onerror = () => {
             this.contentDfd.reject(this.filter.error);
-        }.bind(this);
+        };
 
         this.write = function (content) {
             this.filter.write(this.encoder.encode(content));
@@ -201,7 +201,7 @@ adguard.contentFiltering = (function (adguard) {
         }
 
         contentType = contentType.toLowerCase();
-        var match = /charset=['"](.*?)['"]/.exec(contentType);
+        var match = /charset=(.*?)$/.exec(contentType);
         if (match && match.length > 1) {
             return match[1].toLowerCase();
         }
