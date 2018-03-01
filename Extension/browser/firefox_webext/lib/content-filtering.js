@@ -20,7 +20,7 @@
 adguard.contentFiltering = (function (adguard) {
 
     var DEFAULT_CHARSET = 'utf-8';
-    var SUPPORTED_CHARSETS = [ DEFAULT_CHARSET, 'iso-8859-1', 'windows-1251'];
+    var SUPPORTED_CHARSETS = [ DEFAULT_CHARSET, 'windows-1251', 'windows-1252'];
 
     /**
      * Encapsulates response data filter logic
@@ -34,11 +34,22 @@ adguard.contentFiltering = (function (adguard) {
 
         this.filter = adguard.webRequest.filterResponseData(requestId);
 
-        this.charset = charset;
-        this.decoder = new TextDecoder(this.charset ? this.charset : DEFAULT_CHARSET);
-        this.encoder = new TextEncoder(this.charset ? this.charset : DEFAULT_CHARSET);
         this.content = '';
         this.contentDfd = new adguard.utils.Promise();
+
+        this.initEncoders = (encoding) => {
+            let set = encoding ? encoding : DEFAULT_CHARSET;
+
+            this.decoder = new TextDecoder(set);
+            if (set === DEFAULT_CHARSET) {
+                this.encoder = new TextEncoder(set);
+            } else {
+                this.encoder = new TextEncoder(set, { NONSTANDARD_allowLegacyEncoding: true });
+            }
+        };
+
+        this.charset = charset;
+        this.initEncoders(charset);
 
         this.filter.ondata = (event) => {
 
@@ -53,8 +64,7 @@ adguard.contentFiltering = (function (adguard) {
                     adguard.console.error(e);
                     this.charset = DEFAULT_CHARSET;
                 } finally {
-                    this.decoder = new TextDecoder(this.charset);
-                    this.encoder = new TextEncoder(this.charset);
+                    this.initEncoders(this.charset);
                 }
             }
 
@@ -95,7 +105,7 @@ adguard.contentFiltering = (function (adguard) {
                 return match[1].trim().toLowerCase();
             }
 
-            match = /<meta\s*http-equiv\s*=\s*['"]Content-type['"]\s*content\s*=\s*['"]text\/html;\s*charset=(.*?)['"]/.exec(decoded);
+            match = /<meta\s*http-equiv\s*=\s*['"]content-type['"]\s*content\s*=\s*['"]text\/html;\s*charset=(.*?)['"]/.exec(decoded);
             if (match && match.length > 1) {
                 return match[1].trim().toLowerCase();
             }
