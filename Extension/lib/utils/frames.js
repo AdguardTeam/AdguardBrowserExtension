@@ -68,10 +68,10 @@ adguard.frames = (function (adguard) {
 	/**
 	 * Gets main frame URL
 	 *
-	 * @param tab	Tab
+	 * @param tab    Tab
 	 * @returns Frame URL
 	 */
-	var getMainFrameUrl = function(tab){
+	var getMainFrameUrl = function (tab) {
 		return getFrameUrl(tab, 0);
 	};
 
@@ -118,7 +118,7 @@ adguard.frames = (function (adguard) {
 	 * @returns true if Adguard for Windows/Android/Mac is detected
 	 */
 	var isTabAdguardDetected = function (tab) {
-		return adguard.tabs.getTabMetadata(tab.tabId, 'adguardDetected');
+		return adguard.integration.isEnabled() && adguard.tabs.getTabMetadata(tab.tabId, 'adguardDetected');
 	};
 
 	/**
@@ -128,7 +128,7 @@ adguard.frames = (function (adguard) {
 	 * @returns true if Adguard for Windows/Android/Mac is detected and tab in white list
 	 */
 	var isTabAdguardWhiteListed = function (tab) {
-		var adguardDetected = adguard.tabs.getTabMetadata(tab.tabId, 'adguardDetected');
+		var adguardDetected = isTabAdguardDetected(tab);
 		var adguardDocumentWhiteListed = adguard.tabs.getTabMetadata(tab.tabId, 'adguardDocumentWhiteListed');
 		return adguardDetected && adguardDocumentWhiteListed;
 	};
@@ -138,7 +138,7 @@ adguard.frames = (function (adguard) {
 	 * @returns Adguard whitelist rule in user filter associated with this tab
 	 */
 	var getTabAdguardUserWhiteListRule = function (tab) {
-		var adguardDetected = adguard.tabs.getTabMetadata(tab.tabId, 'adguardDetected');
+		var adguardDetected = isTabAdguardDetected(tab);
 		var adguardUserWhiteListed = adguard.tabs.getTabMetadata(tab.tabId, 'adguardUserWhiteListed');
 		if (adguardDetected && adguardUserWhiteListed) {
 			return adguard.tabs.getTabMetadata(tab.tabId, 'adguardWhiteListRule');
@@ -185,16 +185,16 @@ adguard.frames = (function (adguard) {
 	var reloadFrameData = function (tab) {
 		var frame = adguard.tabs.getTabFrame(tab.tabId, 0);
 		if (frame) {
-            var applicationFilteringDisabled = adguard.settings.isFilteringDisabled();
-            var frameWhiteListRule = null;
-            if (!applicationFilteringDisabled) {
-                var url = frame.url;
-                frameWhiteListRule = adguard.whitelist.findWhiteListRule(url);
-                if (!frameWhiteListRule) {
-                    frameWhiteListRule = adguard.requestFilter.findWhiteListRule(url, url, adguard.RequestTypes.DOCUMENT);
-                }
-            }
-            adguard.tabs.updateTabMetadata(tab.tabId, {
+			var applicationFilteringDisabled = adguard.settings.isFilteringDisabled();
+			var frameWhiteListRule = null;
+			if (!applicationFilteringDisabled) {
+				var url = frame.url;
+				frameWhiteListRule = adguard.whitelist.findWhiteListRule(url);
+				if (!frameWhiteListRule) {
+					frameWhiteListRule = adguard.requestFilter.findWhiteListRule(url, url, adguard.RequestTypes.DOCUMENT);
+				}
+			}
+			adguard.tabs.updateTabMetadata(tab.tabId, {
 				frameWhiteListRule: frameWhiteListRule,
 				applicationFilteringDisabled: applicationFilteringDisabled
 			});
@@ -235,7 +235,7 @@ adguard.frames = (function (adguard) {
 		var canAddRemoveRule = false;
 		var frameRule;
 
-		var adguardDetected = adguard.tabs.getTabMetadata(tabId, 'adguardDetected');
+		var adguardDetected = isTabAdguardDetected(tab);
 		var adguardProductName = '';
 
 		if (!urlFilteringDisabled) {

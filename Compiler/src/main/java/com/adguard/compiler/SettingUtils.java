@@ -129,7 +129,7 @@ public class SettingUtils {
 
         String replaceClauseTemplate = "if (!isFirefox && !isOpera) {";
 
-        File file = new File(dest, "lib/content-script/preload.js");
+        File file = new File(dest, "lib/filter/filters.js");
         String content = FileUtils.readFileToString(file, "utf-8").trim();
 
         if (StringUtils.indexOf(content, replaceClauseTemplate) < 0) {

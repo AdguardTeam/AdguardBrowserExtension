@@ -28,19 +28,6 @@
         "embed": "OBJECT"
     };
 
-    // Don't apply scripts twice
-    var scriptsApplied = false;
-
-    /**
-     * Do not use shadow DOM on some websites
-     * https://code.google.com/p/chromium/issues/detail?id=496055
-     */
-    var shadowDomExceptions = [
-        'mail.google.com',
-        'inbox.google.com',
-        'productforums.google.com'
-    ];
-
     /**
      * Do not use iframes pre-hiding on some websites.
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/720
@@ -53,8 +40,6 @@
     var collapseRequestId = 1;
     var isFirefox = false;
     var isOpera = false;
-    var shadowRoot = null;
-    var loadTruncatedCss = false;
 
     /**
      * Unexpectedly global variable contentPage could become undefined in FF,
@@ -113,31 +98,9 @@
 
         initRequestWrappers();
 
-        // We use shadow DOM when it's available to minimize our impact on web page DOM tree.
-        // According to ABP issue #452, creating a shadow root breaks running CSS transitions.
-        // Because of this, we create shadow root right after content script is initialized.
-        // First check if it's available already, chrome shows warning message in case of we try to create an additional root.
-        shadowRoot = document.documentElement.shadowRoot;
-        if (!shadowRoot) {
-            if ("createShadowRoot" in document.documentElement && shadowDomExceptions.indexOf(document.domain) == -1) {
-                shadowRoot = document.documentElement.createShadowRoot();
-                shadowRoot.appendChild(document.createElement("shadow"));
-                protectShadowRoot();
-            }
-        }
-
         var userAgent = navigator.userAgent.toLowerCase();
         isFirefox = userAgent.indexOf('firefox') > -1;
         isOpera = userAgent.indexOf('opera') > -1 || userAgent.indexOf('opr') > -1;
-
-        if (window !== window.top) {
-            var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-            var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-            // Load only small set of css for small frames.
-            // We hide all generic css rules in this case.
-            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/223
-            loadTruncatedCss = (height * width) < 100000;
-        }
 
         initCollapseEventListeners();
         tryLoadCssAndScripts();
@@ -165,41 +128,34 @@
     };
 
     /**
-     * Try to keep DOM clean: let script removes itself when execution completes
-     * @returns {string}
+     * Execute several scripts
+     * @param {Array<string>} scripts Scripts to execute
      */
-    var cleanupCurrentScriptToString = function () {
+    var executeScripts = function (scripts) {
+        if (!scripts || scripts.length === 0) {
+            return;
+        }
+        // Wraps with try catch and appends cleanup
+        scripts.unshift("( function () { try {");
+        scripts.push("} catch (ex) { console.error('Error executing AG js: ' + ex); } })();");
 
-        var cleanup = function () {
-            var current = document.currentScript;
-            var parent = current && current.parentNode;
-            if (parent) {
-                parent.removeChild(current);
-            }
-        };
-
-        return '(' + cleanup.toString() + ')();';
+        executeScript(scripts.join('\r\n'));
     };
 
     /**
      * Execute scripts in a page context and cleanup itself when execution completes
-     * @param scripts Array of scripts to execute
+     * @param {string} script Script to execute
      */
-    var executeScripts = function (scripts) {
+    var executeScript = function (script) {
+        var scriptTag = document.createElement('script');
+        scriptTag.setAttribute("type", "text/javascript");
+        scriptTag.textContent = script;
 
-        if (!scripts || scripts.length === 0) {
-            return;
+        var parent = document.head || document.documentElement;
+        parent.appendChild(scriptTag);
+        if (scriptTag.parentNode) {
+            scriptTag.parentNode.removeChild(scriptTag);
         }
-
-        // Wraps with try catch and appends cleanup
-        scripts.unshift("( function () { try {");
-        scripts.push("} catch (ex) { console.error('Error executing AG js: ' + ex); } })();");
-        scripts.push(cleanupCurrentScriptToString());
-
-        var script = document.createElement("script");
-        script.setAttribute("type", "text/javascript");
-        script.textContent = scripts.join("\r\n");
-        (document.head || document.documentElement).appendChild(script);
     };
 
     /**
@@ -286,70 +242,6 @@
     };
 
     /**
-     * Overrides shadowRoot getter
-     * The solution from ABP
-     *
-     * Function supposed to be executed in page's context
-     */
-    var overrideShadowRootGetter = function () {
-        function copyProperty(orig, wrapped, prop) {
-            var desc = Object.getOwnPropertyDescriptor(orig, prop);
-            if (desc && desc.configurable) {
-                desc.value = orig[prop];
-                Object.defineProperty(wrapped, prop, desc);
-            }
-        }
-
-        if ("shadowRoot" in Element.prototype) {
-            var ourShadowRoot = document.documentElement.shadowRoot;
-            if (ourShadowRoot) {
-                var desc = Object.getOwnPropertyDescriptor(Element.prototype, "shadowRoot");
-                var shadowRoot = Function.prototype.call.bind(desc.get);
-
-                var overload = function () {
-                    var thisShadow = shadowRoot(this);
-                    return thisShadow === ourShadowRoot ? null : thisShadow;
-                };
-
-                copyProperty(desc.get, overload, 'name');
-                copyProperty(desc.get, overload, 'length');
-
-                var stringValue = desc.get.toString();
-                overload.toString = function () { return stringValue; };
-
-                Object.defineProperty(Element.prototype, "shadowRoot", {
-                    configurable: true, enumerable: true, get: overload
-                });
-            }
-        }
-    };
-
-    /**
-     * Overrides stylesheets property disabled
-     *
-     * Function supposed to be executed in page's context
-     */
-    var overrideStyleSheetProperties = function () {
-        Object.defineProperty(window.HTMLStyleElement.prototype, 'disabled', {
-            get: function () {
-                return false;
-            }, set: function (val) {
-                // Do nothing
-            }
-        });
-    };
-
-    /**
-     * Protects shadow root from access in page's context
-     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/829
-     */
-    var protectShadowRoot = function () {
-        var scriptShadowRoot = "(" + overrideShadowRootGetter.toString() + ")();";
-        var scriptStylesheets = "(" + overrideStyleSheetProperties.toString() + ")();";
-        executeScripts([scriptShadowRoot, scriptStylesheets]);
-    };
-
-    /**
      * The main purpose of this function is to prevent blocked iframes "flickering".
      * So, we do two things:
      * 1. Add a temporary display:none style for all frames (which is removed on DOMContentLoaded event)
@@ -371,7 +263,7 @@
         // We do not hide "allowfullscreen" as it is likely to be video player frames
         var iframeHidingSelector = "iframe[src]:not([allowfullscreen])";
         if (hideIframes) {
-            ElementCollapser.hideBySelector(iframeHidingSelector, null, shadowRoot);
+            ElementCollapser.hideBySelector(iframeHidingSelector, null);
         }
 
         /**
@@ -432,7 +324,7 @@
             }
 
             if (hideIframes) {
-                ElementCollapser.unhideBySelector(iframeHidingSelector, shadowRoot);
+                ElementCollapser.unhideBySelector(iframeHidingSelector);
             }
 
             if (document.body) {
@@ -460,10 +352,6 @@
         var message = {
             type: 'getSelectorsAndScripts',
             documentUrl: window.location.href,
-            options: {
-                filter: ['selectors', 'scripts'],
-                genericHide: loadTruncatedCss
-            }
         };
 
         /**
@@ -474,7 +362,6 @@
 
     /**
      * Processes response from the background page containing CSS and JS injections
-     *
      * @param response Response from the background page
      */
     var processCssAndScriptsResponse = function (response) {
@@ -497,11 +384,11 @@
              * ad/tracking requests because extension is not yet initialized when
              * these requests are executed. At least we could hide these elements.
              */
-            applySelectors(response.selectors, response.useShadowDom);
+            applySelectors(response.selectors);
             applyScripts(response.scripts);
             initBatchCollapse();
         } else {
-            applySelectors(response.selectors, response.useShadowDom);
+            applySelectors(response.selectors);
             applyScripts(response.scripts);
         }
 
@@ -520,36 +407,23 @@
 
     /**
      * Sets "style" DOM element content.
-     *
      * @param styleEl       "style" DOM element
      * @param cssContent    CSS content to set
-     * @param useShadowDom  true if we want to use shadow DOM
      */
-    var setStyleContent = function (styleEl, cssContent, useShadowDom) {
-
-        if (useShadowDom && !shadowRoot) {
-            // Despite our will to use shadow DOM we cannot
-            // It is rare case, but anyway: https://code.google.com/p/chromium/issues/detail?id=496055
-            // The only thing we can do is to append styles to document root
-            // We should remove ::content pseudo-element first
-            cssContent = cssContent.replace(new RegExp('::content ', 'g'), '');
-        }
-
+    var setStyleContent = function (styleEl, cssContent) {
         styleEl.textContent = cssContent;
     };
 
     /**
      * Applies CSS and extended CSS stylesheets
-     *
      * @param selectors     Object with the stylesheets got from the background page.
-     * @param useShadowDom  If true - add styles to shadow DOM instead of normal DOM.
      */
-    var applySelectors = function (selectors, useShadowDom) {
+    var applySelectors = function (selectors) {
         if (!selectors) {
             return;
         }
 
-        applyCss(selectors.css, useShadowDom);
+        applyCss(selectors.css);
         applyExtendedCss(selectors.extendedCss);
     };
 
@@ -558,7 +432,7 @@
      *
      * @param css Array with CSS stylesheets
      */
-    var applyCss = function (css, useShadowDom) {
+    var applyCss = function (css) {
         if (!css || css.length === 0) {
             return;
         }
@@ -566,15 +440,10 @@
         for (var i = 0; i < css.length; i++) {
             var styleEl = document.createElement("style");
             styleEl.setAttribute("type", "text/css");
-            setStyleContent(styleEl, css[i], useShadowDom);
+            setStyleContent(styleEl, css[i]);
 
-            if (useShadowDom && shadowRoot) {
-                shadowRoot.appendChild(styleEl);
-            } else {
-                (document.head || document.documentElement).appendChild(styleEl);
-            }
+            (document.head || document.documentElement).appendChild(styleEl);
 
-            protectStyleElementFromRemoval(styleEl, useShadowDom);
             protectStyleElementContent(styleEl);
         }
     };
@@ -590,7 +459,8 @@
         }
 
         // https://github.com/AdguardTeam/ExtendedCss
-        new ExtendedCss(extendedCss.join("\n")).apply();
+        window.extcss = new ExtendedCss(extendedCss.join("\n"));
+        extcss.apply();
     };
 
     /**
@@ -650,76 +520,12 @@
     };
 
     /**
-     * Protects style element from removing.
-     *
-     * @param protectStyleEl protected style element
-     * @param useShadowDom shadowDOM flag
-     */
-    var protectStyleElementFromRemoval = function (protectStyleEl, useShadowDom) {
-        var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-        if (!MutationObserver) {
-            return;
-        }
-        /* observer, which observe deleting protectStyleEl */
-        var outerObserver = new MutationObserver(function (mutations) {
-            for (var i = 0; i < mutations.length; i++) {
-
-                var m = mutations[i];
-                var removedNodeIndex = [].indexOf.call(mutations[i].removedNodes, protectStyleEl);
-                if (removedNodeIndex != -1) {
-                    var removedStyleEl = m.removedNodes[removedNodeIndex];
-
-                    outerObserver.disconnect();
-
-                    applyCss([removedStyleEl.textContent], useShadowDom);
-
-                    break;
-                }
-            }
-
-        });
-
-        outerObserver.observe(protectStyleEl.parentNode, {'childList': true, 'characterData': true});
-    };
-
-    /**
      * Applies JS injections.
-     *
      * @param scripts Array with JS scripts and scriptSource ('remote' or 'local')
      */
     var applyScripts = function (scripts) {
 
-        if (scriptsApplied) {
-            return;
-        }
-        scriptsApplied = true;
-
         if (!scripts || scripts.length === 0) {
-            return;
-        }
-
-        var scriptsToApply = [];
-
-        for (var i = 0; i < scripts.length; i++) {
-            var scriptRule = scripts[i];
-            switch (scriptRule.scriptSource) {
-                case 'local':
-                    scriptsToApply.push(scriptRule.rule);
-                    break;
-                case 'remote':
-                    /**
-                     * Note (!) (Firefox, Opera):
-                     * In case of Firefox and Opera add-ons, JS filtering rules are hardcoded into add-on code.
-                     * Look at ScriptFilterRule.getScriptSource to learn more.
-                     */
-                    if (!isFirefox && !isOpera) {
-                        scriptsToApply.push(scriptRule.rule);
-                    }
-                    break;
-            }
-        }
-
-        if (scriptsToApply.length === 0) {
             return;
         }
 
@@ -727,7 +533,7 @@
          * JS injections are created by JS filtering rules:
          * http://adguard.com/en/filterrules.html#javascriptInjection
          */
-        executeScripts(scriptsToApply);
+        executeScript(scripts);
     };
 
     /**
@@ -744,7 +550,6 @@
 
     /**
      * Checks if loaded element is blocked by AG and should be hidden
-     *
      * @param event Load or error event
      */
     var checkShouldCollapse = function (event) {
@@ -762,7 +567,6 @@
 
     /**
      * Extracts element URL from the dom node
-     *
      * @param element DOM node
      */
     var getElementUrl = function (element) {
@@ -780,7 +584,6 @@
 
     /**
      * Saves collapse request (to be reused after we get result from bg page)
-     *
      * @param element Element to check
      * @return request ID
      */
@@ -799,7 +602,6 @@
 
     /**
      * Hides element temporarily (until collapse check request is processed)
-     *
      * @param element Element to hide
      */
     var tempHideElement = function (element) {
@@ -824,12 +626,11 @@
             return;
         }
 
-        ElementCollapser.hideElement(element, shadowRoot);
+        ElementCollapser.hideElement(element);
     };
 
     /**
      * Response callback for "processShouldCollapse" message.
-     *
      * @param response Response got from the background page
      */
     var onProcessShouldCollapseResponse = function (response) {
@@ -848,18 +649,17 @@
         var element = collapseRequest.element;
         if (response.collapse === true) {
             var elementUrl = collapseRequest.src;
-            ElementCollapser.collapseElement(element, elementUrl, shadowRoot);
+            ElementCollapser.collapseElement(element, elementUrl);
         }
 
         // Unhide element, which was previously hidden by "tempHideElement"
         // In case if element is collapsed, there's no need to hide it
         // Otherwise we shouldn't hide it either as it shouldn't be blocked
-        ElementCollapser.unhideElement(element, shadowRoot);
+        ElementCollapser.unhideElement(element);
     };
 
     /**
      * Checks if element is blocked by AG and should be hidden
-     *
      * @param element Element to check
      */
     var checkShouldCollapseElement = function (element) {
@@ -894,7 +694,6 @@
 
     /**
      * Response callback for "processShouldCollapseMany" message.
-     *
      * @param response Response from bg page.
      */
     var onProcessShouldCollapseManyResponse = function (response) {

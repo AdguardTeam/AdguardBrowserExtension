@@ -413,6 +413,7 @@ adguard.tabsImpl = (function (adguard) {
         });
     };
 
+    var insertCSS = browser.tabs.insertCSS;
     var executeScript = browser.tabs.executeScript;
 
     return {
@@ -431,6 +432,7 @@ adguard.tabsImpl = (function (adguard) {
         getActive: getActive,
         get: get,
 
+        insertCSS: insertCSS,
         executeScript: executeScript,
 
         fromChromeTab: toTabFromChromeTab
