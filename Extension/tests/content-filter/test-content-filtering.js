@@ -53,9 +53,40 @@ adguard.webRequest.filterResponseData = function () {
     return singleton;
 };
 
+QUnit.test("Test content filtering - encoders", function (assert) {
+    let textEncoderUtf8 = new TextEncoder();
+    let textDecoderUtf8 = new TextDecoder();
+
+    let message = 'test 123';
+
+    let encoded = textEncoderUtf8.encode(message);
+    let decoded = textDecoderUtf8.decode(encoded);
+    assert.equal(decoded, message);
+
+    let textEncoderWin1251 = new TextEncoder('windows-1251', { NONSTANDARD_allowLegacyEncoding: true });
+    let textDecoderWin1251 = new TextDecoder('windows-1251');
+
+    encoded = textEncoderWin1251.encode(message);
+    decoded = textDecoderWin1251.decode(encoded);
+    assert.equal(decoded, message);
+
+    let textEncoderIso8859 = new TextEncoder('windows-1252', { NONSTANDARD_allowLegacyEncoding: true });
+    let textDecoderIso8859 = new TextDecoder('windows-1252');
+
+    encoded = textEncoderIso8859.encode(message);
+    decoded = textDecoderIso8859.decode(encoded);
+    assert.equal(decoded, message);
+});
+
 QUnit.test("Test content filtering - charsets", function (assert) {
-    let textEncoder = new TextEncoder();
-    let textDecoder = new TextDecoder();
+    let textEncoderUtf8 = new TextEncoder('utf-8');
+    let textDecoderUtf8 = new TextDecoder('utf-8');
+
+    let textEncoderWin1251 = new TextEncoder('windows-1251', { NONSTANDARD_allowLegacyEncoding: true });
+    let textDecoderWin1251 = new TextDecoder('windows-1251');
+
+    let textEncoderIso8859 = new TextEncoder('windows-1252', { NONSTANDARD_allowLegacyEncoding: true });
+    let textDecoderIso8859 = new TextDecoder('windows-1252');
 
     let filter = adguard.webRequest.filterResponseData(1);
     let received;
@@ -63,55 +94,69 @@ QUnit.test("Test content filtering - charsets", function (assert) {
 
     data = 'some data';
     adguard.contentFiltering.apply({}, 'http://example.org', null, adguard.RequestTypes.DOCUMENT, 1, 200, 'GET', '');
-    filter.send(textEncoder.encode('some data'));
-    received = textDecoder.decode(filter.receive());
+    filter.send(textEncoderUtf8.encode('some data'));
+    received = textDecoderUtf8.decode(filter.receive());
     assert.ok(received);
     assert.equal(received, data);
 
     data = 'utf-8 in header';
     adguard.contentFiltering.apply({}, 'http://example.org', null, adguard.RequestTypes.DOCUMENT, 1, 200, 'GET', 'text/html; charset=utf-8');
-    filter.send(textEncoder.encode(data));
-    received = textDecoder.decode(filter.receive());
+    filter.send(textEncoderUtf8.encode(data));
+    received = textDecoderUtf8.decode(filter.receive());
+    assert.ok(received);
+    assert.equal(received, data);
+
+    data = 'Тест windows-1251 in header';
+    adguard.contentFiltering.apply({}, 'http://example.org', null, adguard.RequestTypes.DOCUMENT, 1, 200, 'GET', 'text/html; charset=windows-1251');
+    filter.send(textEncoderWin1251.encode(data));
+    received = textDecoderWin1251.decode(filter.receive());
     assert.ok(received);
     assert.equal(received, data);
 
     data = 'unsupported charset in header - request is skipped';
     adguard.contentFiltering.apply({}, 'http://example.org', null, adguard.RequestTypes.DOCUMENT, 1, 200, 'GET', 'text/html; charset=koi8-r');
-    filter.send(textEncoder.encode(data));
+    filter.send(textEncoderUtf8.encode(data));
     assert.notOk(filter.receive());
 
     data = 'no charset in header';
     adguard.contentFiltering.apply({}, 'http://example.org', null, adguard.RequestTypes.DOCUMENT, 1, 200, 'GET', 'text/html');
-    filter.send(textEncoder.encode(data));
-    received = textDecoder.decode(filter.receive());
+    filter.send(textEncoderUtf8.encode(data));
+    received = textDecoderUtf8.decode(filter.receive());
     assert.ok(received);
     assert.equal(received, data);
 
-    data = 'charset in data <meta charset="UTF-8">';
+    data = 'Тест charset in data <meta charset="UTF-8">';
     adguard.contentFiltering.apply({}, 'http://example.org', null, adguard.RequestTypes.DOCUMENT, 1, 200, 'GET', 'text/html');
-    filter.send(textEncoder.encode(data));
-    received = textDecoder.decode(filter.receive());
+    filter.send(textEncoderUtf8.encode(data));
+    received = textDecoderUtf8.decode(filter.receive());
     assert.ok(received);
     assert.equal(received, data);
 
-    data = 'charset in data <meta charset="windows-1251">';
+    data = 'Тест charset in data <meta charset="windows-1251">';
     adguard.contentFiltering.apply({}, 'http://example.org', null, adguard.RequestTypes.DOCUMENT, 1, 200, 'GET', 'text/html');
-    filter.send(textEncoder.encode(data));
-    received = textDecoder.decode(filter.receive());
+    filter.send(textEncoderWin1251.encode(data));
+    received = textDecoderWin1251.decode(filter.receive());
     assert.ok(received);
     assert.equal(received, data);
 
-    data = 'charset in data <meta http-equiv="content-type" content="text/html; charset=windows-1251">';
+    data = 'Charset in data <meta charset="windows-1252">';
     adguard.contentFiltering.apply({}, 'http://example.org', null, adguard.RequestTypes.DOCUMENT, 1, 200, 'GET', 'text/html');
-    filter.send(textEncoder.encode(data));
-    received = textDecoder.decode(filter.receive());
+    filter.send(textEncoderIso8859.encode(data));
+    received = textDecoderIso8859.decode(filter.receive());
+    assert.ok(received);
+    assert.equal(received, data);
+
+    data = 'Тест charset in data <meta http-equiv="content-type" content="text/html; charset=windows-1251">';
+    adguard.contentFiltering.apply({}, 'http://example.org', null, adguard.RequestTypes.DOCUMENT, 1, 200, 'GET', 'text/html');
+    filter.send(textEncoderWin1251.encode(data));
+    received = textDecoderWin1251.decode(filter.receive());
     assert.ok(received);
     assert.equal(received, data);
 
     data = 'unsupported charset in data <meta charset="koi8-r">';
     adguard.contentFiltering.apply({}, 'http://example.org', null, adguard.RequestTypes.DOCUMENT, 1, 200, 'GET', 'text/html');
-    filter.send(textEncoder.encode(data));
-    received = textDecoder.decode(filter.receive());
+    filter.send(textEncoderUtf8.encode(data));
+    received = textDecoderUtf8.decode(filter.receive());
     assert.ok(received);
     assert.equal(received, data);
 });
