@@ -5337,8 +5337,6 @@ var IframeController = function ($, settings, uiUtils, gmApi, log, selector, uiV
     var onCloseMenu = new CustomEvent();
     var onShowMenuItem = new CustomEvent();
 
-    CommonUtils.createStylesElement('adg-styles-selector', CSS.selector);
-
     var createIframe = function (onIframeLoadCallback) {
         log.debug('Creating iframe');
         iframe = CommonUtils.createElement('iframe');
@@ -5513,6 +5511,7 @@ var IframeController = function ($, settings, uiUtils, gmApi, log, selector, uiV
         };
 
         if (!iframe) {
+            CommonUtils.createStylesElement('adg-styles-selector', CSS.selector);
             createIframe(onIframeLoad);
             return;
         }
@@ -7374,9 +7373,14 @@ var adguardAssistantExtended = function () {
     Ioc.register('iframeController', iframe);
 
     return {
-        start: function(callback) {
+        start: function(element, callback) {
             Ioc.register('addRule', callback.bind(this));
-            iframe.showSelectorMenu();
+
+            if (element) {
+                iframe.showSliderMenu(element);
+            } else {
+                iframe.showSelectorMenu();
+            }
         },
         close: function() {
             iframe.removeIframe();

@@ -33,6 +33,9 @@ var browser = window.browser || chrome;
                     if (sender.tab) {
                         senderOverride.tab = adguard.tabsImpl.fromChromeTab(sender.tab);
                     }
+                    if (typeof sender.frameId !== 'undefined') {
+                        senderOverride.frameId = sender.frameId;
+                    }
                     var response = callback(message, senderOverride, sendResponse);
                     var async = response === true;
                     // If async sendResponse will be invoked later
@@ -290,15 +293,13 @@ var browser = window.browser || chrome;
     var onCommitted = {
 
         addListener: function (callback) {
-
             // https://developer.chrome.com/extensions/webNavigation#event-onCommitted
-            browser.webNavigation.onCommitted.addListener(function (details) {
-
-                if (details.tabId === -1) {
-                    return;
-                }
-
-                callback(details.tabId, details.frameId, details.url);
+            browser.webNavigation.onCommitted.addListener(callback, {
+                url: [{
+                    urlPrefix: 'http'
+                }, {
+                    urlPrefix: 'https'
+                }]
             });
         }
     };
@@ -369,5 +370,9 @@ var browser = window.browser || chrome;
     };
 
     adguard.contextMenus = browser.contextMenus;
+
+    
+    // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/extensionTypes
+    adguard.extensionTypes = browser.extensionTypes;
 
 })(adguard, browser);

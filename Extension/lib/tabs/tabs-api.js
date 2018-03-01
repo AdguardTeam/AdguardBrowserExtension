@@ -364,7 +364,8 @@
             }
         };
 
-        // Execute script to tab
+        // Injecting resources to tabs
+        var insertCSS = tabsImpl.insertCSS;
         var executeScript = tabsImpl.executeScript;
 
         return {
@@ -395,6 +396,8 @@
             updateTabMetadata: updateTabMetadata,
             getTabMetadata: getTabMetadata,
             clearTabMetadata: clearTabMetadata,
+
+            insertCSS: insertCSS,
             executeScript: executeScript
         };
 
