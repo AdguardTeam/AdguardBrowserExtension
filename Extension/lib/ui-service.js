@@ -632,10 +632,10 @@ adguard.ui = (function (adguard) { // jshint ignore:line
     };
 
     /*
-     * The `openAssistant` function uses the GM `executeScript`
+     * The `openAssistant` function uses the `tabs.executeScript`
      * function to inject the Assistant code on a page without using a manifest.
      * That helps to avoid Assistant executing on each tab and iframe which can cause the use of browser memory.
-     * Browsers that do not support `executeScript`function use Assistant from the manifest file manually.
+     * Browsers that do not support `tabs.executeScript`function use Assistant from the manifest file manually.
      * After executing Assistant in callback the `initAssistant` function is called.
      * It sends messages to current tab and runs Assistant. Other browsers call `initAssistant` function manually.
      *
