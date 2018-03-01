@@ -50,13 +50,18 @@
                 var options = message.options;
                 var addRuleCallbackName = options.addRuleCallbackName;
 
+                var selectedElement = null;
+                if (clickedEl && options.selectElement) {
+                    selectedElement = clickedEl;
+                }
+
                 if (!assistant) {
                     assistant = adguardAssistant();
                 } else {
                     assistant.close();
                 }
 
-                assistant.start(function(rules) {
+                assistant.start(selectedElement, function(rules) {
                     contentPage.sendMessage({type: addRuleCallbackName, ruleText: rules}, function() {
                         // TODO: bypass reload page
                         window.location.reload();

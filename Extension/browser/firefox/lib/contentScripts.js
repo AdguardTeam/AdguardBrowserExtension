@@ -137,16 +137,10 @@
 
         // Assistant
         registerPageContentScript([
-            'lib/libs/css.escape.js', // It's very weird. This script has been already loaded above, but it doesn't work. Load it again!
-            'lib/libs/diff_match_patch.js',
-            'lib/libs/dom.patched.js',
-            'lib/libs/balalaika.patched.js',
             'lib/content-script/i18n-helper.js',    // Localization placeholders
             'lib/content-script/adguard-content.js',
             'lib/content-script/content-script.js', // Message passing
-            'lib/content-script/assistant/js/slider-widget.js',
-            'lib/content-script/assistant/js/adguard-selector.js',
-            'lib/content-script/assistant/js/adguard-rules-constructor.js',
+            'lib/content-script/assistant/js/assistant.js',
             'lib/content-script/assistant/js/start-assistant.js'
         ], 'document_end', false);
 
