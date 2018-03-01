@@ -79,8 +79,8 @@ QUnit.test("Test content filtering - encoders", function (assert) {
 });
 
 QUnit.test("Test content filtering - charsets", function (assert) {
-    let textEncoderUtf8 = new TextEncoder('utf-8');
-    let textDecoderUtf8 = new TextDecoder('utf-8');
+    let textEncoderUtf8 = new TextEncoder();
+    let textDecoderUtf8 = new TextDecoder();
 
     let textEncoderWin1251 = new TextEncoder('windows-1251', { NONSTANDARD_allowLegacyEncoding: true });
     let textDecoderWin1251 = new TextDecoder('windows-1251');
@@ -140,6 +140,13 @@ QUnit.test("Test content filtering - charsets", function (assert) {
     assert.equal(received, data);
 
     data = 'Charset in data <meta charset="windows-1252">';
+    adguard.contentFiltering.apply({}, 'http://example.org', null, adguard.RequestTypes.DOCUMENT, 1, 200, 'GET', 'text/html');
+    filter.send(textEncoderIso8859.encode(data));
+    received = textDecoderIso8859.decode(filter.receive());
+    assert.ok(received);
+    assert.equal(received, data);
+
+    data = 'Charset in data <meta charset="iso-8859-1">';
     adguard.contentFiltering.apply({}, 'http://example.org', null, adguard.RequestTypes.DOCUMENT, 1, 200, 'GET', 'text/html');
     filter.send(textEncoderIso8859.encode(data));
     received = textDecoderIso8859.decode(filter.receive());

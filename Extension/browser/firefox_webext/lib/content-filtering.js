@@ -20,7 +20,7 @@
 adguard.contentFiltering = (function (adguard) {
 
     var DEFAULT_CHARSET = 'utf-8';
-    var SUPPORTED_CHARSETS = [ DEFAULT_CHARSET, 'windows-1251', 'windows-1252'];
+    var SUPPORTED_CHARSETS = [ DEFAULT_CHARSET, 'windows-1251', 'windows-1252', 'iso-8859-1'];
 
     /**
      * Encapsulates response data filter logic
@@ -39,10 +39,13 @@ adguard.contentFiltering = (function (adguard) {
 
         this.initEncoders = (encoding) => {
             let set = encoding ? encoding : DEFAULT_CHARSET;
+            if (set === 'iso-8859-1') {
+                set = 'windows-1252';
+            }
 
             this.decoder = new TextDecoder(set);
             if (set === DEFAULT_CHARSET) {
-                this.encoder = new TextEncoder(set);
+                this.encoder = new TextEncoder();
             } else {
                 this.encoder = new TextEncoder(set, { NONSTANDARD_allowLegacyEncoding: true });
             }
@@ -61,7 +64,7 @@ adguard.contentFiltering = (function (adguard) {
                         throw new Error('Charset is not supported: ' + this.charset);
                     }
                 } catch (e) {
-                    adguard.console.error(e);
+                    adguard.console.warn(e);
                     this.charset = DEFAULT_CHARSET;
                 } finally {
                     this.initEncoders(this.charset);
