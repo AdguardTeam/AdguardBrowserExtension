@@ -618,12 +618,9 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         });
     };
 
-    var openAssistant = function (selectElement) {
+    var initAssistant = function (selectElement) {
         var options = getAssistantOptions();
         options.selectElement = selectElement;
-
-        // executing assistant code
-        adguard.tabs.executeScript(null, {file: '/lib/content-script/assistant/js/assistant.js'});
 
         // init assistant
         adguard.tabs.getActive(function (tab) {
@@ -632,6 +629,27 @@ adguard.ui = (function (adguard) { // jshint ignore:line
                 options: options
             });
         });
+    };
+
+    /*
+     * The `openAssistant` function uses the GM `executeScript`
+     * function to inject the Assistant code on a page without using a manifest.
+     * That helps to avoid Assistant executing on each tab and iframe which can cause the use of browser memory.
+     * Browsers that do not support `executeScript`function use Assistant from the manifest file manually.
+     * After executing Assistant in callback the `initAssistant` function is called.
+     * It sends messages to current tab and runs Assistant. Other browsers call `initAssistant` function manually.
+     *
+     * @param {boolean} selectElement - if true select the element on which the Mousedown event was
+     */
+    var openAssistant = function (selectElement) {
+        if (adguard.tabs.executeScript) {
+            // executing assistant code
+            adguard.tabs.executeScript(null, {file: '/lib/content-script/assistant/js/assistant.js'}, function() {
+                initAssistant(selectElement);
+            });
+        } else {
+            initAssistant(selectElement);
+        }
     };
 
     var openTab = function (url, options, callback) {
