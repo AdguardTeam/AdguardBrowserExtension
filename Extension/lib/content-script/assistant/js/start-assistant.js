@@ -62,10 +62,7 @@
                 }
 
                 assistant.start(selectedElement, function(rules) {
-                    contentPage.sendMessage({type: addRuleCallbackName, ruleText: rules}, function() {
-                        // TODO: bypass reload page
-                        window.location.reload();
-                    });
+                    contentPage.sendMessage({type: addRuleCallbackName, ruleText: rules});
                 });
             break;
         }
