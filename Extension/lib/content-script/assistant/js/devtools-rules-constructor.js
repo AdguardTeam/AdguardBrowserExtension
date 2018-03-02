@@ -23,6 +23,8 @@ var DevToolsRulesConstructorHelper = (function () { // jshint ignore:line
     var CSS_RULE_MARK = '##';
     var RULE_OPTIONS_MARK = '$';
 
+    var URLBLOCK_ATTRIBUTES = ["src", "data"];
+
     var linkHelper = document.createElement('a');
 
     /**
@@ -206,6 +208,19 @@ var DevToolsRulesConstructorHelper = (function () { // jshint ignore:line
         return false;
     };
 
+    var haveUrlBlockParameter = function (element) {
+        var value = getUrlBlockAttribute(element);
+        return value && value !== '';
+    };
+
+    var haveClassAttribute = function (element) {
+        return element.classList && element.classList.length > 0;
+    };
+
+    var haveIdAttribute = function (element) {
+        return element.id && element.id.trim() !== '';
+    };
+
     var cropDomain = function (url) {
         var domain = getUrl(url).host;
         return domain.replace("www.", "").replace(/:\d+/, '');
@@ -240,8 +255,54 @@ var DevToolsRulesConstructorHelper = (function () { // jshint ignore:line
         return blockUrlRuleText;
     };
 
+    var getUrlBlockAttribute = function (element) {
+        if (!element || !element.getAttribute) {
+            return null;
+        }
+
+        for (var i = 0; i < URLBLOCK_ATTRIBUTES.length; i++) {
+            var attr = URLBLOCK_ATTRIBUTES[i];
+            var value = element.getAttribute(attr);
+            if (isValidUrl(value)) {
+                return value;
+            }
+        }
+
+        return null;
+    };
+
     // Public API
     var api = {};
+
+    /**
+     * Returns detailed element info
+     *
+     * @param element
+     */
+    api.getElementInfo = function (element) {
+
+        // Convert attributes to array
+        var attributes = [];
+        var elementAttributes = element.attributes;
+        if (elementAttributes) {
+            for (var i = 0; i < elementAttributes.length; i++) {
+                var attr = elementAttributes[i];
+                attributes.push({
+                    name: attr.name,
+                    value: attr.value
+                });
+            }
+        }
+
+        return {
+            tagName: element.tagName,
+            attributes: attributes,
+            urlBlockAttributeValue: getUrlBlockAttribute(element),
+            haveUrlBlockParameter: haveUrlBlockParameter(element),
+            haveClassAttribute: haveClassAttribute(element),
+            haveIdAttribute: haveIdAttribute(element)
+        };
+    };
 
     /**
      * Constructs css selector for specified rule
