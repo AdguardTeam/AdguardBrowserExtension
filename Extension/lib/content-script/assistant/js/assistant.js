@@ -1,6 +1,6 @@
-/*! AdGuard Assistant - v4.1.1123 - 2018-02-27
+/*! AdGuard Assistant - v4.1.6 - 2018-03-02
 * https://github.com/AdguardTeam/AdguardAssistant
-* Copyright (c) 2018 ; Licensed LGPL 3.0 */
+* Copyright (c) 2018; Licensed LGPL 3.0 */
 
 (function() {
 /* Inline resource generating by gulp tasks/compile.js */

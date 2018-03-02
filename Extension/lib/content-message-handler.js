@@ -303,6 +303,7 @@
                 if (message.adguardDetected || adguard.frames.isTabAdguardDetected(sender.tab)) {
                     adguard.integration.addRuleToApp(message.ruleText);
                 }
+                adguard.tabs.sendMessage(sender.tab.tabId, {type: 'no-cache-reload'});
                 break;
             case 'removeUserRule':
                 adguard.userrules.removeRule(message.ruleText);
@@ -428,4 +429,3 @@
     adguard.runtime.onMessageHandler = handleMessage;
 
 })(adguard);
-

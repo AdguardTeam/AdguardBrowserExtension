@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global AdguardRulesConstructorLib, contentPage */
+/* global DevToolsRulesConstructorHelper, contentPage */
 
 /**
  * Helper object that provides methods used in devtools panel's code
@@ -48,7 +48,7 @@ var DevToolsHelper = (function () { // jshint ignore:line
             return;
         }
 
-        var selector = AdguardRulesConstructorLib.constructRuleCssSelector(ruleText);
+        var selector = DevToolsRulesConstructorHelper.constructRuleCssSelector(ruleText);
         if (!selector) {
             return;
         }

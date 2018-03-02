@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global chrome, AdguardRulesConstructorLib, balalaika */
+/* global chrome, DevToolsRulesConstructorHelper, balalaika */
 
 var browser = window.browser || chrome;
 
@@ -26,7 +26,7 @@ var browser = window.browser || chrome;
 
         var onElementSelected = function () {
 
-            browser.devtools.inspectedWindow.eval("AdguardRulesConstructorLib.getElementInfo($0)", {
+            browser.devtools.inspectedWindow.eval("DevToolsRulesConstructorHelper.getElementInfo($0)", {
                 useContentScriptContext: true
             }, function (info) {
                 if (!info) {
@@ -258,7 +258,7 @@ var browser = window.browser || chrome;
             classList: selectedClasses
         };
 
-        var func = 'AdguardRulesConstructorLib.constructRuleText($0, ' + JSON.stringify(options) + ');';
+        var func = 'DevToolsRulesConstructorHelper.constructRuleText($0, ' + JSON.stringify(options) + ');';
         browser.devtools.inspectedWindow.eval(func, {
             useContentScriptContext: true
         }, function (result) {
