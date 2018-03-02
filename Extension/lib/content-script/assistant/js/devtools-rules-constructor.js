@@ -25,6 +25,176 @@ var DevToolsRulesConstructorHelper = (function () { // jshint ignore:line
 
     var linkHelper = document.createElement('a');
 
+    /**
+	 * Constructs css selector for element using tag name, id and classed, like: tagName#id.class1.class2
+	 *
+	 * @param element Element
+	 * @param classList Override element classes (If classList is null, element classes will be used)
+	 * @param excludeTagName Omit tag name in selector
+	 * @param excludeId Omit element id in selector
+	 * @returns {string}
+	 */
+    var makeDefaultCssFilter = function (element, classList, excludeTagName, excludeId) {
+        var cssSelector = excludeTagName ? '' : element.tagName.toLowerCase();
+        if (element.id && !excludeId) {
+            cssSelector += '#' + CSS.escape(element.id);
+        }
+        cssSelector += constructClassCssSelectorByAND(classList || element.classList);
+        return cssSelector;
+    };
+
+	/**
+	 * Constructs css selector for element using parent elements and nth-child (first-child, last-child) pseudo classes.
+	 *
+	 * @param element Element
+	 * @param options Construct options. For example: {excludeTagName: false, excludeId: false, classList: []}
+	 * @returns {string}
+	 */
+    var makeCssNthChildFilter = function (element, options) {
+
+        options = options || {};
+
+        var classList = options.classList;
+
+        var excludeTagNameOverride = 'excludeTagName' in options;
+        var excludeTagName = options.excludeTagName;
+
+        var excludeIdOverride = 'excludeId' in options;
+        var excludeId = options.excludeId;
+
+        var path = [];
+        var el = element;
+        while (el.parentNode) {
+            var nodeName = el && el.nodeName ? el.nodeName.toUpperCase() : "";
+            if (nodeName === "BODY") {
+                break;
+            }
+            if (el.id) {
+				/**
+				 * Be default we don't include tag name and classes to selector for element with id attribute
+				 */
+				var cssSelector = '';
+                if (el === element) {
+                    cssSelector = makeDefaultCssFilter(el, classList || [], excludeTagNameOverride ? excludeTagName : true, excludeIdOverride ? excludeId : false);
+                } else {
+                    cssSelector = makeDefaultCssFilter(el, [], true, false);
+                }
+                path.unshift(cssSelector);
+                break;
+            } else {
+                var c = 1;
+                for (var e = el; e.previousSibling; e = e.previousSibling) {
+                    if (e.previousSibling.nodeType === 1) {
+                        c++;
+                    }
+                }
+
+                var cldCount = 0;
+                for (var i = 0; el.parentNode && i < el.parentNode.childNodes.length; i++) {
+                    cldCount += el.parentNode.childNodes[i].nodeType === 1 ? 1 : 0;
+                }
+
+                var ch;
+                if (cldCount === 0 || cldCount === 1) {
+                    ch = "";
+                } else if (c === 1) {
+                    ch = ":first-child";
+                } else if (c === cldCount) {
+                    ch = ":last-child";
+                } else {
+                    ch = ":nth-child(" + c + ")";
+                }
+
+				/**
+				 * By default we include tag name and element classes to selector for element without id attribute
+				 */
+                if (el === element) {
+                    var p = makeDefaultCssFilter(el, classList, excludeTagNameOverride ? excludeTagName : false, excludeId);
+                    p += ch;
+                    path.unshift(p);
+                } else {
+                    path.unshift(makeDefaultCssFilter(el, el.classList, false, false) + ch);
+                }
+
+                el = el.parentNode;
+            }
+        }
+        return path.join(" > ");
+    };
+
+    /**
+     * Constructs css selector by combining classes by AND
+     * @param classList
+     * @returns {string}
+     */
+    var constructClassCssSelectorByAND = function (classList) {
+        var selectors = [];
+        if (classList) {
+            for (var i = 0; i < classList.length; i++) {
+                selectors.push('.' + CSS.escape(classList[i]));
+            }
+        }
+        return selectors.join('');
+    };
+
+    /**
+     * Constructs css selector by combining classes by OR
+     * @param classList
+     * @returns {string}
+     */
+    var constructClassCssSelectorByOR = function (classList) {
+        var selectors = [];
+        if (classList) {
+            for (var i = 0; i < classList.length; i++) {
+                selectors.push('.' + CSS.escape(classList[i]));
+            }
+        }
+        return selectors.join(', ');
+    };
+
+	/**
+	 * Constructs element selector for matching elements that contain any of classes in original element
+	 * For example <el class="cl1 cl2 cl3"></el> => .cl1, .cl2, .cl3
+	 *
+	 * @param element Element
+	 * @param classList Override element classes (If classList is null, element classes will be used)
+	 * @returns {string}
+	 */
+    var makeSimilarCssFilter = function (element, classList) {
+        return constructClassCssSelectorByOR(classList || element.classList);
+    };
+
+	/**
+	 * Creates css rule text
+	 * @param element Element
+	 * @param options Construct options. For example: {cssSelectorType: 'STRICT_FULL', excludeTagName: false, excludeId: false, classList: []}
+	 * @returns {string}
+	 */
+    var constructCssRuleText = function (element, options) {
+
+        if (!element) {
+            return;
+        }
+
+        options = options || {};
+        var cssSelectorType = options.cssSelectorType || 'STRICT_FULL';
+
+        var selector;
+        switch (cssSelectorType) {
+            case 'STRICT_FULL':
+                selector = makeCssNthChildFilter(element, options);
+                break;
+            case 'STRICT':
+                selector = makeDefaultCssFilter(element, options.classList, options.excludeTagName, options.excludeId);
+                break;
+            case 'SIMILAR':
+                selector = makeSimilarCssFilter(element, options.classList, true);
+                break;
+        }
+
+        return selector ? CSS_RULE_MARK + selector : '';
+    };
+
     var isValidUrl = function(value) {
         if (value) {
             linkHelper.href = value;
@@ -34,6 +204,40 @@ var DevToolsRulesConstructorHelper = (function () { // jshint ignore:line
         }
 
         return false;
+    };
+
+    var cropDomain = function (url) {
+        var domain = getUrl(url).host;
+        return domain.replace("www.", "").replace(/:\d+/, '');
+    };
+
+    var getUrl = function (url) {
+        var pattern = "^(([^:/\\?#]+):)?(//(([^:/\\?#]*)(?::([^/\\?#]*))?))?([^\\?#]*)(\\?([^#]*))?(#(.*))?$";
+        var rx = new RegExp(pattern);
+        var parts = rx.exec(url);
+
+        return {
+            host: parts[4] || "",
+            path: parts[7] || ""
+        };
+    };
+
+    var constructUrlBlockRuleText = function (element, urlBlockAttribute, oneDomain, domain) {
+
+        if (!urlBlockAttribute) {
+            return null;
+        }
+
+        var blockUrlRuleText = urlBlockAttribute.replace(/^http:\/\/(www\.)?/, "||");
+        if (blockUrlRuleText.indexOf('.') === 0) {
+            blockUrlRuleText = blockUrlRuleText.substring(1);
+        }
+
+        if (!oneDomain) {
+            blockUrlRuleText = blockUrlRuleText + RULE_OPTIONS_MARK + "domain=" + domain;
+        }
+
+        return blockUrlRuleText;
     };
 
     // Public API
@@ -65,6 +269,57 @@ var DevToolsRulesConstructorHelper = (function () { // jshint ignore:line
         }
 
         return null;
+    };
+
+    /**
+     * Constructs adguard rule text from element node and specified options
+     *
+     * var options = {
+	 *	urlBlockAttribute: url mask,
+	 *	isBlockOneDomain: boolean,
+	 *	url: url,
+	 *  attributes: attributesSelectorText,
+	 *  ruleType: (URL, CSS)
+	 *  cssSelectorType: (STRICT_FULL, STRICT, SIMILAR),
+	 *  excludeTagName: false, (Exclude element tag name from selector)
+	 *  excludeId: false, (Exclude element identifier from selector)
+	 *  classList: [] (Override element classes (If classList is null, element classes will be used))
+	 * }
+     *
+     * @param element
+     * @param options
+     * @returns {*}
+     */
+    api.constructRuleText = function (element, options) {
+
+        var croppedDomain = cropDomain(options.url);
+
+        var ruleType = options.ruleType;
+
+        if (ruleType === 'URL') {
+            var blockUrlRuleText = constructUrlBlockRuleText(element, options.urlMask, options.isBlockOneDomain, croppedDomain);
+            if (blockUrlRuleText) {
+                return blockUrlRuleText;
+            }
+        }
+
+        var result;
+
+        if (ruleType === 'CSS') {
+
+            result = constructCssRuleText(element, options);
+
+            // Append html attributes to css selector
+            if (options.attributes) {
+                result = (result ? result : CSS_RULE_MARK + result) + options.attributes;
+            }
+        }
+
+        if (!options.isBlockOneDomain) {
+            result = croppedDomain + result;
+        }
+
+        return result;
     };
 
     return api;
