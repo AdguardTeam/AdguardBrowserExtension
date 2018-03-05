@@ -61,8 +61,12 @@
                     assistant.close();
                 }
 
-                assistant.start(selectedElement, function(rules) {
-                    contentPage.sendMessage({type: addRuleCallbackName, ruleText: rules});
+                assistant.start(selectedElement, function(rules, element) {
+                    contentPage.sendMessage({type: addRuleCallbackName, ruleText: rules}, function() {
+                        if (element) {
+                            element.style.display = 'none';
+                        }
+                    });
                 });
             break;
         }
