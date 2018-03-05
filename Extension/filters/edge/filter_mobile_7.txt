@@ -1,8 +1,8 @@
-! Checksum: q1lN+Hw4mYv11cS4fVZuEw
+! Checksum: mN8spZxWIy1b997bNiEOVg
 ! Title: Japanese filter
-! Description: Adguard Japanese filter. Filter that enables blocking of ads on websites in Japanese.
-! Version: 1.0.93.26
-! TimeUpdated: 2018-01-10T06:00:55.296+04:00
+! Description: AdGuard Japanese filter. Filter that enables ad blocking on websites in Japanese language.
+! Version: 2.0.0.32
+! TimeUpdated: 2018-03-02T06:03:07+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -10,7 +10,8 @@
 #%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
 #%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
 #%#var AG_abortInlineScript=function(d,e,f){var c;if("currentScript"in document)var b=function(){return document.currentScript};else b=function(){var a=document.getElementsByTagName("script");return a[a.length-1]},window.addEventListener("DOMContentLoaded",function(){b=function(){return null}});AG_defineProperty(e,{beforeGet:function(){var a=b();if(a&&a!==c&&(c=a,""===a.src&&d.test(a.textContent)))throw setTimeout(function(){console.warn("AdGuard aborted an execution of an inline script")}),null;}},f)};
-#%#var AG_defineProperty=function(){var k,l=Object.defineProperty;if("function"==typeof WeakMap)k=WeakMap;else{var m=0,n=function(){this.a=(m+=Math.random()).toString()};n.prototype.set=function(a,b){var c=a[this.a];c&&c[0]===a?c[1]=b:l(a,this.a,{value:[a,b],writable:!0});return this};n.prototype.get=function(a){var b;return(b=a[this.a])&&b[0]===a?b[1]:void 0};n.prototype.has=function(a){var b=a[this.a];return b?b[0]===a:!1};k=n}function r(a){this.b=a;this.h=Object.create(null)}function t(a,b,c,d){this.g=a;this.i=b;this.c=c;this.f=d}function u(){this.a=new k}function v(a,b,c){var d=b.i,e=b.c,f=new r(e.b),g;for(g in e.h)v(a,e.h[g],f);d=new t(c,d,f,b.f);c.h[d.i]=d;"undefined"!==typeof c.b&&(e=w(c.b,d.i),d.a=e,f=x(d.f)||y(a,d),!e||e.configurable?(l(c.b,d.i,f),e&&z(e)&&(A(c.b,f,e.value),B(a,e.value,b.c))):B(a,c.b[d.i],b.c))}function y(a,b){return{get:function(){var c=b.f;c&&c.beforeGet&&c.beforeGet.call(this,b.g.b);a:if(c=b.a)c=z(c)?c.value:c.get?c.get.call(this):void 0;else{c=b.g.b;if(b.i in c&&(c=C(c),null!==c)){var d=D.call(c,b.i);c=d?d.call(this):c[b.i];break a}c=void 0}this===b.g.b&&B(a,c,b.c);return c},set:function(c){if(this!==b.g.b)c=E(b,c,this);else{b.f&&b.f.beforeSet&&(c=b.f.beforeSet.call(this,c,this));var d=b.a;d&&z(d)&&d.value===c?c=!0:(d=E(b,c,this),F(c)&&(c=G(a,c),H(a,c,b.c)),c=d)}return c},enumerable:b.a?b.a.enumerable:!0}}function H(a,b,c){for(var d in c.h){var e=c.h[d];if(b.h[d]){var f=a,g=b.h[d];!e.f||g.f||"undefined"===typeof g.g.b||g.a||(g.a=x(e.f));g.c&&e.c&&g.c!==e.c&&H(f,g.c,e.c)}else v(a,e,b)}}function B(a,b,c){F(b)&&(b=G(a,b),H(a,b,c))}function A(a,b,c){return z(b)?b.writable?(b.value=c,!0):!1:b.set?b.set.call(a,c):!1}function E(a,b,c){var d=a.a;if(!d){d=C(a.g.b);if(null!==d&&(d=I.call(d,a.i)))return d.call(c,b);if(!J(a.g.b))return!1;a.a={value:b,configurable:!0,writable:!0,enumerable:!0};return!0}return A(c,d,b)}function z(a){return"undefined"!==typeof a.writable}function x(a){if(a){for(var b={},c=K,d=!1;c--;){var e=L[c];a.hasOwnProperty(e)&&(d=!0,b[e]=a[e])}return d?b:void 0}}function G(a,b){var c=a.a.get(b);c||(c=new r(b),a.a.set(b,c));return c}var L="value get set writable configurable enumerable".split(" "),K=6,w=Object.getOwnPropertyDescriptor,J=Object.isExtensible,C=Object.getPrototypeOf,D=Object.prototype.__lookupGetter__||function(a){return(a=M(this,a))&&a.get?a.get:void 0},I=Object.prototype.__lookupSetter__||function(a){return(a=M(this,a))&&a.set?a.set:void 0};function M(a,b){if(b in a){for(;!a.hasOwnProperty(b);)a=C(a);return w(a,b)}}function F(a){var b=typeof a;return"function"===b||"object"===b&&null!==a?!0:!1}var N;return function(a,b,c){N||(N=new u);var d=N;c=c||window;var e=new r;a+=".";var f=e||new r;for(var g=d.g||(d.g=/^([^\\\.]|\\.)*?\./),h,p,q;a;){h=g.exec(a);if(null===h)throw 1;h=h[0].length;p=a.slice(0,h-1);a=a.slice(h);(h=f.h[p])?q=h.c:(q=new r,h=new t(f,p,q),f.h[p]=h);f=q}if(!h)throw 1;a=h;a.f=b;B(d,c,e)};}();
+#%#var AG_defineProperty=function(){var k,l=Object.defineProperty;if("function"==typeof WeakMap)k=WeakMap;else{var m=0,n=function(){this.a=(m+=Math.random()).toString()};n.prototype.set=function(a,b){var c=a[this.a];c&&c[0]===a?c[1]=b:l(a,this.a,{value:[a,b],writable:!0});return this};n.prototype.get=function(a){var b;return(b=a[this.a])&&b[0]===a?b[1]:void 0};n.prototype.has=function(a){var b=a[this.a];return b?b[0]===a:!1};k=n}function r(a){this.b=a;this.h=Object.create(null)}function t(a,b,c,d){this.a=a;this.i=b;this.c=c;this.g=d}function u(){this.a=new k}function v(a,b,c){var d=b.i,e=b.c,f=new r(e.b),g;for(g in e.h)v(a,e.h[g],f);d=new t(c,d,f,b.g);c.h[d.i]=d;"undefined"!==typeof c.b&&(e=w(c.b,d.i),d.f=e,f=x(d.g)||y(a,d),!e||e.configurable?(l(c.b,d.i,f),e&&z(e)&&(A(c.b,f,e.value),B(a,e.value,b.c))):B(a,c.b[d.i],b.c))}function y(a,b){return{get:function(){var c=b.g;c&&c.beforeGet&&c.beforeGet.call(this,b.a.b);a:if(c=b.f)c=z(c)?c.value:c.get?c.get.call(this):void 0;else{c=b.a.b;if(b.i in c&&(c=C(c),null!==c)){var d=D.call(c,b.i);c=d?d.call(this):c[b.i];break a}c=void 0}(this===b.a.b||E.call(b.a.b,this))&&B(a,c,b.c);return c},set:function(c){if(this===b.a.b||E.call(b.a.b,this)){b.g&&b.g.beforeSet&&(c=b.g.beforeSet.call(this,c,this));var d=b.f;d&&z(d)&&d.value===c?c=!0:(d=F(b,c,this),G(c)&&(c=H(a,c),I(a,c,b.c)),c=d)}else c=F(b,c,this);return c},enumerable:b.f?b.f.enumerable:!0}}function I(a,b,c){for(var d in c.h){var e=c.h[d];if(b.h[d]){var f=a,g=b.h[d];!e.g||g.g||"undefined"===typeof g.a.b||g.f||(g.f=x(e.g));g.c&&e.c&&g.c!==e.c&&I(f,g.c,e.c)}else v(a,e,b)}}function B(a,b,c){G(b)&&(b=H(a,b),I(a,b,c))}function A(a,b,c){return z(b)?b.writable?(b.value=c,!0):!1:b.set?b.set.call(a,c):!1}function F(a,b,c){var d=a.f;if(!d){d=C(a.a.b);if(null!==d&&(d=J.call(d,a.i)))return d.call(c,b);if(!K(a.a.b))return!1;a.f={value:b,configurable:!0,writable:!0,enumerable:!0};return!0}return A(c,d,b)}function z(a){return"undefined"!==typeof a.writable}function x(a){if(a){for(var b={},c=L,d=!1;c--;){var e=M[c];N.call(a,e)&&(d=!0,b[e]=a[e])}return d?b:void 0}}function H(a,b){var c=a.a.get(b);c||(c=new r(b),a.a.set(b,c));return c}var M="value get set writable configurable enumerable".split(" "),L=6,w=Object.getOwnPropertyDescriptor,K=Object.isExtensible,C=Object.getPrototypeOf,N=Object.prototype.hasOwnProperty,E=Object.prototype.isPrototypeOf,D=Object.prototype.__lookupGetter__||function(a){return(a=O(this,a))&&a.get?a.get:void 0},J=Object.prototype.__lookupSetter__||function(a){return(a=O(this,a))&&a.set?a.set:void 0};function O(a,b){if(b in a){for(;!N.call(a,b);)a=C(a);return w(a,b)}}function G(a){var b=typeof a;return"function"===b||"object"===b&&null!==a?!0:!1}var P;return function(a,b,c){P||(P=new u);var d=P;c=c||window;var e=new r;a+=".";var f=e||new r;for(var g=d.f||(d.f=/^([^\\\.]|\\.)*?\./),h,p,q;a;){h=g.exec(a);if(null===h)throw 1;h=h[0].length;p=a.slice(0,h-1);a=a.slice(h);(h=f.h[p])?q=h.c:(q=new r,h=new t(f,p,q),f.h[p]=h);f=q}if(!h)throw 1;a=h;a.g=b;B(d,c,e)};}();
+||q-sht-zidjk.co^$third-party
 ||ad.ad-arata.com^$third-party
 ||trafficjp.com^$third-party
 |http://www*.a8.net/$third-party
@@ -146,7 +147,7 @@
 ||rentracks.jp^$third-party
 ||rranking5.ziyu.net^$third-party
 ||rssad.jp^$third-party
-||sankei2ad.durasite.net^$third-party
+||durasite.net^$third-party
 ||scadnet.com^$third-party
 ||search.jword.jp^$third-party
 ||seoparts.com^$third-party
@@ -174,6 +175,12 @@
 ||webtracker.jp^
 ||widget.zenback.jp^$third-party
 ||yeas.yahoo.co.jp^$third-party
+@@||avgle.com^$generichide,genericblock
+@@||ads.exosrv.com/ads.js$domain=avgle.com
+@@||adserver.juicyads.com/js/jads.js^$domain=avgle.com
+@@||dtscout.com^$domain=avgle.com
+@@||histats.com^$domain=avgle.com
+avgle.com#@#a[href*="/redirect"]
 socom.yokohama#@#.an-advert-banner
 socom.yokohama#@##adsense
 socom.yokohama#@#.an-sponsored
@@ -263,6 +270,10 @@ repeat-drama.info##.side_inner > .box:contains(スポンサーリンク)
 ##.yahoo_ad
 ##a[href^="http://ad2.trafficgate.net/"]
 ##a[href^="http://www.rssad.jp/"]
+ogeji.hatenablog.com#$#.sleeping-ads {position: absolute!important; left: -3000px!important; }
+avgle.com#$#img[src^="https://isafe.pro"] { height: 35px!important; width: 15%!important; }
+avgle.com#$#iframe[src*="exosrv"] { height: 200px!important; }
+avgle.com#$#iframe[src*="juicyads"] { height: 10px!important; }
 .com/ufo/$script
 .com/Zen?
 .jp/ads/$image
@@ -329,6 +340,40 @@ repeat-drama.info##.side_inner > .box:contains(スポンサーリンク)
 /top/head_s_bnr
 /yaad.js
 _ds_adtag_
+evidus.com##.module__adheadion
+nicovideo.jp##.realdabista_banner
+nicovideo.jp###sideNav > #enjoy
+nicovideo.jp###sideContents > div[style="min-height:240px;"]:not([class]):not([id])
+hatena.ne.jp##.entry-relationGoods
+hatena.ne.jp##div[class^="entry-ad-pc-"]
+||hatena.ne.jp/fragments/entry.ads_amazon^
+moongift.jp###sidebar .mg-no-premium
+cg-method.com##a[href^="https://www.amazon.co.jp"]
+noaboutsnote.hatenablog.com##.hatena-asin-detail
+ogeji.hatenablog.com##.entry-content > .code ~ table[style*="width:300px"]
+cyg-server.playing.wiki,seesaawiki.jp###seesaa-bnr
+wiki.seesaa.jp##.ad-boomapp
+wiki.seesaa.jp##.banner
+ejje.weblio.jp###learning-level-table-wrap > #leadBtnWrp
+ejje.weblio.jp##body > #contentWrp ~ #outerSideLeft
+ejje.weblio.jp##.free-reg-banner
+ejje.weblio.jp##.indexSideAdTop
+ejje.weblio.jp##.premium-service-button
+ejje.weblio.jp##.theme-learning-banner
+translate.weblio.jp##a[onclick*="lead_to_premium"]
+forum.minecraftuser.jp##a[href^="https://goo.gl"] > img
+||sakurajav.com/img/banners^
+javegg.com##.sidebar > .widget_text.sidebar-wrapper
+||static.javhd.com/h5/files/*/*x300.html$third-party
+||javhub.net/img/r18_
+||javhub.net/highporn.html
+||jav.guru/wp-content/uploads/*/TokyoHentaiClub.jpg
+jadult.net##a[href^="https://goo.gl"]
+jadult.net##a[href^="http://www.adxpansion"]
+jadult.net##.icon_fb
+||avgle.com/images.php$domain=avgle.com
+||juicyads.com^$domain=avgle.com
+avgle.com##a[href^="http://pussl48.com"]
 repeat-drama.info##.ad
 mukulog.com##.theContentWrap-ccc > .head-cons2-pc
 mukulog.com##div[id^="side_ad"]
@@ -339,12 +384,12 @@ youflix.is###detail_side > div[style*="width:630px; margin:10px auto; overflow: 
 youflix.is##.movie-in-ad
 youflix.is##.over_videoAd
 youflix.is##.content_vlist .content_vlist[style^="height:305px; overflow:hidden;"]
-avgle.com##div[style^="width:100%; height: 90px;"]
-||avgle.com/templates/frontend/videojs-*.js
-||avgle.com/images/av/*.mp4
-||avgle.com/avideos.js
+||dtsedge.com^$domain=avgle.com
+||adserver.juicyads.com/adshow.php^$domain=avgle.com
+||adx1.com^$domain=avgle.com
+||avgle.com/*/av^$domain=avgle.com
+avgle.com###player_3x2_container
 avgle.com###aoverlay
-avgle.com##a[href^="http://www.poweredbyliquidfire.mobi/"]
 avgle.com###ps32-container > center > div[style="width: 300px; height: 250px;"]
 ||image.getchu.com/afbanner/
 designnewsjapan.com###AD_BB
@@ -522,7 +567,7 @@ google.co.jp##[id^="tpa"].tas
 yomiuri.co.jp##[style="margin: 8px 0pt;"]
 yomiuri.co.jp##[style="margin:8px 0 8px;"]
 page2.jp##[style="text-align:left; background-color:#FFFBFF; width:450px; height:50px; font-size:12px; color:#9aa9ac; margin:3px 0 auto 20px; float: right; padding-top:2px;"]
-infoseek.co.jp##[Width="300"][Height="260"]
+infoseek.co.jp##[Width="300"][height="260"]
 livedoor.jp##a[href="http://blog.livedoor.com/smartphone/dqnplus/"]
 livedoor.jp##a[href="http://cambridge-correction.com"]
 livedoor.jp##a[href^="http://9lick.net"]
@@ -648,6 +693,7 @@ yahoo.co.jp##ul[class^="sponsor"]
 ||yjaxc.yahoo.co.jp^
 ||yomiuri.co.jp/ad/
 ||zenback.jp^*/tracking.html
+@@||nazolog.com^$generichide
 publicdomainq.net#@#.adsbygoogle
 @@/weblog/*$domain=mplus-fonts.sourceforge.jp
 @@||ad.adlantis.jp/ad/load_ad?zid=FM9TTM6yoVDcOMoJFB32bQ%3D%3D$domain=labaq.com
