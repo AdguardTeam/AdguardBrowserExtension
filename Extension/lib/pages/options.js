@@ -1005,6 +1005,9 @@ PageController.prototype = {
 
                 var filtersInGroupElements = [];
                 var filters = filtersMeta[group.groupId];
+                filters.sort(function(a, b) {
+                    return a.displayNumber - b.displayNumber;
+                });
                 for (var j = 0; j < filters.length; j++) {
 
                     filter = filters[j];
