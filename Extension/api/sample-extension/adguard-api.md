@@ -26,19 +26,6 @@ Here is what should be done for AdGuard API to work.
 <script type="text/javascript" src="adguard/adguard-api.js"></script>
 ```
 
-#### 3. Add AdGuard's assistant content script:
-```
-    {
-      "all_frames": false,
-      "js": ["adguard/assistant.js"],
-      "matches": [
-        "http://*/*",
-        "https://*/*"
-      ],
-      "run_at": "document_end"
-    }
-```
-
 
 ## API methods
 
