@@ -107,7 +107,7 @@ adguard.backend = (function (adguard) {
         // This url is used in integration mode. Adguard for Windows/Mac/Android intercepts requests to injections.adguard.com host.
         // It is not used for remote requests, requests are intercepted by the desktop version of Adguard.
         get injectionsUrl() {
-            return "http://injections.adguard.com";
+            return "https://injections.adguard.com";
         },
 
         // URLs used when add-on works in integration mode.
