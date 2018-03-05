@@ -4542,6 +4542,10 @@ var AdguardSelectorLib = (function(api, $) {
                 return;
             }
 
+            if (!borderTop) {
+                api.init();
+            }
+
             var p = getOffsetExtended(element);
 
             var top = p.top;
@@ -6402,7 +6406,8 @@ var SliderMenuController = function ($, selector, sliderWidget, settings, adguar
                 CommonUtils.reloadPageBypassCache();
             });
         } else {
-            addRule(getFilterRuleInputText(), selectedElement);
+            selectedElement.style.display = 'none';
+            addRule(getFilterRuleInputText());
             iframeCtrl.removeIframe();
         }
     };
@@ -6635,6 +6640,7 @@ var SliderMenuControllerMobile = function ($, selector, adguardRulesConstructor,
     };
 
     var blockElement = function () {
+        selectedElement.style.display = 'none';
         addRule(getFilterText());
         iframeCtrl.removeIframe();
     };
@@ -7377,6 +7383,7 @@ var adguardAssistantExtended = function () {
             Ioc.register('addRule', callback.bind(this));
 
             if (element) {
+                iframe.showSelectorMenu();
                 iframe.showSliderMenu(element);
             } else {
                 iframe.showSelectorMenu();
@@ -7402,9 +7409,15 @@ var adguardAssistantMini = function() {
     Ioc.register('iframeController', iframeController);
 
     return {
-        start: function(callback) {
+        start: function(element, callback) {
             Ioc.register('addRule', callback.bind(this));
-            iframeController.showSelectorMenu();
+
+            if (element) {
+                iframeController.showSelectorMenu();
+                iframeController.showSliderMenu(element);
+            } else {
+                iframeController.showSelectorMenu();
+            }
         },
         close: function() {
             iframeController.removeIframe();
