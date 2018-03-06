@@ -60,7 +60,6 @@ adguard.contentFiltering = (function (adguard) {
                 // Charset is not detected, looking for <meta> tags
                 try {
                     var charset = this.parseCharset(event.data);
-                    console.log(charset);
                     if (charset && SUPPORTED_CHARSETS.indexOf(charset) >= 0) {
                         this.charset = charset;
                         this.initEncoders();
