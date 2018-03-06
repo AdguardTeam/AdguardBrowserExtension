@@ -26,25 +26,6 @@ Here is what should be done for AdGuard API to work.
 <script type="text/javascript" src="adguard/adguard-api.js"></script>
 ```
 
-#### 3. Add AdGuard's assistant content script and CSS file to the manifest and modify `web_accessible_resources`:
-```
-    {
-      "all_frames": false,
-      "css": ["adguard/assistant/css/selector.css"],
-      "js": ["adguard/adguard-assistant.js"],
-      "matches": [
-        "http://*/*",
-        "https://*/*"
-      ],
-      "run_at": "document_end"
-    }
-```
-```
-    "web_accessible_resources": [
-      "adguard/assistant/css/assistant.css",
-      "adguard/assistant/i/close.svg"
-    ]
-```  
 
 ## API methods
 
@@ -227,10 +208,10 @@ var configuration = {
 
     // Array with custom filtering rules
     rules: [ 'example.org##h1' ],
-   
+
     // Filters metadata file path
     filtersMetadataUrl: 'https://filters.adtidy.org/extension/chromium/filters.json',
-    
+
     // Filter file mask
     filterRulesUrl: 'https://filters.adtidy.org/extension/chromium/filters/{filter_id}.txt'
 };

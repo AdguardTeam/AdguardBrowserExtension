@@ -100,59 +100,6 @@ adguard.ui = (function (adguard) { // jshint ignore:line
 
     var THANKYOU_PAGE_URL = 'https://welcome.adguard.com/v2/thankyou.html';
 
-    // Assistant
-
-    var assistantOptions = null;
-
-    /**
-     * Returns localization map by passed message identifiers
-     * @param ids Message identifiers
-     */
-    function getLocalization(ids) {
-        var result = {};
-        for (var id in ids) {
-            if (ids.hasOwnProperty(id)) {
-                var current = ids[id];
-                result[current] = adguard.i18n.getMessage(current);
-            }
-        }
-        return result;
-    }
-
-    function getAssistantOptions() {
-        if (assistantOptions !== null) {
-            return assistantOptions;
-        }
-        assistantOptions = {
-            cssLink: adguard.getURL('lib/content-script/assistant/css/assistant.css'),
-            addRuleCallbackName: 'addUserRule'
-        };
-        var ids = [
-            'assistant_select_element',
-            'assistant_select_element_ext',
-            'assistant_select_element_cancel',
-            'assistant_block_element',
-            'assistant_block_element_explain',
-            'assistant_slider_explain',
-            'assistant_slider_if_hide',
-            'assistant_slider_min',
-            'assistant_slider_max',
-            'assistant_extended_settings',
-            'assistant_apply_rule_to_all_sites',
-            'assistant_block_by_reference',
-            'assistant_block_similar',
-            'assistant_block',
-            'assistant_another_element',
-            'assistant_preview',
-            'assistant_preview_header',
-            'assistant_preview_header_info',
-            'assistant_preview_end',
-            'assistant_preview_start'
-        ];
-        assistantOptions.localization = getLocalization(ids);
-        return assistantOptions;
-    }
-
     /**
      * Update icon for tab
      * @param tab Tab
@@ -618,17 +565,41 @@ adguard.ui = (function (adguard) { // jshint ignore:line
         });
     };
 
-    var openAssistant = function (selectElement) {
+    var initAssistant = function (selectElement) {
+        var options = {
+            addRuleCallbackName: 'addUserRule',
+            selectElement: selectElement
+        };
 
-        var options = getAssistantOptions();
-        options.selectElement = selectElement;
-
+        // init assistant
         adguard.tabs.getActive(function (tab) {
             adguard.tabs.sendMessage(tab.tabId, {
                 type: 'initAssistant',
                 options: options
             });
         });
+    };
+
+    /*
+     * The `openAssistant` function uses the `tabs.executeScript`
+     * function to inject the Assistant code on a page without using a manifest.
+     * That helps to avoid Assistant executing on each tab and iframe which can cause the use of browser memory.
+     * Browsers that do not support `tabs.executeScript`function use Assistant from the manifest file manually.
+     * After executing Assistant in callback the `initAssistant` function is called.
+     * It sends messages to current tab and runs Assistant. Other browsers call `initAssistant` function manually.
+     *
+     * @param {boolean} selectElement - if true select the element on which the Mousedown event was
+     */
+    var openAssistant = function (selectElement) {
+        if (adguard.tabs.executeScript) {
+            // executing assistant code
+            adguard.tabs.executeScript(null, {file: '/lib/content-script/assistant/js/assistant.js'}, function() {
+                initAssistant(selectElement);
+            });
+        } else {
+            // Mannualy start assistant in safari and firefox
+            initAssistant(selectElement);
+        }
     };
 
     var openTab = function (url, options, callback) {

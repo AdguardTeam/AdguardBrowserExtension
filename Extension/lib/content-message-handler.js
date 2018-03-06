@@ -428,4 +428,3 @@
     adguard.runtime.onMessageHandler = handleMessage;
 
 })(adguard);
-
