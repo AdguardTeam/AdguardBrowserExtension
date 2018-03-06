@@ -69,7 +69,7 @@ adguard.prefs = (function (adguard) {
 
         get chromeVersion() {
             return adguard.lazyGet(Prefs, 'chromeVersion', function () {
-                let match = /\sChrome\/(\d+)\./.exec(navigator.userAgent);
+                var match = /\sChrome\/(\d+)\./.exec(navigator.userAgent);
                 return match === null ? null : parseInt(match[1]);
             });
         },
