@@ -19,41 +19,110 @@
 
 adguard.contentFiltering = (function (adguard) {
 
+    var DEFAULT_CHARSET = 'utf-8';
+    var SUPPORTED_CHARSETS = [ DEFAULT_CHARSET, 'windows-1251', 'windows-1252', 'iso-8859-1'];
+
     /**
      * Encapsulates response data filter logic
      * https://mail.mozilla.org/pipermail/dev-addons/2017-April/002729.html
      *
      * @param requestId Request identifier
+     * @param charset encoding
      * @constructor
      */
-    var ContentFilter = function (requestId) {
+    var ContentFilter = function (requestId, charset) {
 
         this.filter = adguard.webRequest.filterResponseData(requestId);
-        this.decoder = new TextDecoder("utf-8");
+
         this.content = '';
         this.contentDfd = new adguard.utils.Promise();
 
-        this.filter.ondata = function (event) {
-            this.content += this.decoder.decode(event.data, {stream: true});
-        }.bind(this);
+        this.initEncoders = () => {
+            let set = this.charset ? this.charset : DEFAULT_CHARSET;
+            if (set === 'iso-8859-1') {
+                set = 'windows-1252';
+            }
 
-        this.filter.onstop = function () {
+            this.decoder = new TextDecoder(set);
+            if (set === DEFAULT_CHARSET) {
+                this.encoder = new TextEncoder();
+            } else {
+                this.encoder = new TextEncoder(set, { NONSTANDARD_allowLegacyEncoding: true });
+            }
+        };
+
+        this.charset = charset;
+        this.initEncoders();
+
+        this.filter.ondata = (event) => {
+
+            if (!this.charset) {
+                // Charset is not detected, looking for <meta> tags
+                try {
+                    var charset = this.parseCharset(event.data);
+                    if (charset && SUPPORTED_CHARSETS.indexOf(charset) >= 0) {
+                        this.charset = charset;
+                        this.initEncoders();
+
+                        this.content += this.decoder.decode(event.data, {stream: true});
+                    } else {
+                        // Charset is not supported
+                        this.disconnect(event.data);
+                    }
+                } catch (e) {
+                    adguard.console.warn(e);
+                }
+            } else {
+                this.content += this.decoder.decode(event.data, {stream: true});
+            }
+        };
+
+        this.filter.onstop = () => {
             this.content += this.decoder.decode(); // finish stream
             this.contentDfd.resolve(this.content);
-        }.bind(this);
+        };
 
-        this.filter.onerror = function () {
+        this.filter.onerror = () => {
             this.contentDfd.reject(this.filter.error);
-        }.bind(this);
+        };
+
+        this.disconnect = (data) => {
+            this.filter.write(data);
+            this.filter.disconnect();
+
+            this.contentDfd.resolve(null);
+        };
 
         this.write = function (content) {
-            var encoder = new TextEncoder();
-            this.filter.write(encoder.encode(content));
+            this.filter.write(this.encoder.encode(content));
             this.filter.close();
         };
 
         this.getContent = function () {
             return this.contentDfd;
+        };
+
+        /**
+         * Parses charset from data, looking for:
+         * <meta charset="utf-8" />
+         * <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+         *
+         * @param data
+         * @returns {*}
+         */
+        this.parseCharset = function (data) {
+            var decoded = new TextDecoder('utf-8').decode(data).toLowerCase();
+            var match = /<meta\s*charset\s*=\s*['"](.*?)['"]/.exec(decoded);
+            if (match && match.length > 1) {
+                return match[1].trim().toLowerCase();
+            }
+
+            match = /<meta\s*http-equiv\s*=\s*['"]?content-type['"]?\s*content\s*=\s*[\\]?['"]text\/html;\s*charset=(.*?)[\\]?['"]/.exec(decoded);
+            if (match && match.length > 1) {
+                return match[1].trim().toLowerCase();
+            }
+
+            return null;
         };
     };
 
@@ -66,12 +135,16 @@ adguard.contentFiltering = (function (adguard) {
      */
     var ResponseContentHandler = function () {
 
-        this.handleResponse = function (requestId, requestUrl, requestType, callback) {
+        this.handleResponse = function (requestId, requestUrl, requestType, charset, callback) {
 
-            var contentFilter = new ContentFilter(requestId);
+            var contentFilter = new ContentFilter(requestId, charset);
 
             contentFilter.getContent()
                 .then(function (content) {
+                    if (!content) {
+                        return;
+                    }
+
                     try {
                         content = callback(content);
                     } catch (ex) {
@@ -142,12 +215,25 @@ adguard.contentFiltering = (function (adguard) {
         return mask;
     })();
 
-    function isUtf8Charset(contentType) {
+    /**
+     * Parses charset from content-type header
+     *
+     * @param contentType
+     * @returns {*}
+     */
+    var parseCharsetFromHeader = function (contentType) {
         if (!contentType) {
-            return true;
+            return null;
         }
-        return contentType.toLowerCase().indexOf('utf-8') >= 0;
-    }
+
+        contentType = contentType.toLowerCase();
+        var match = /charset=(.*?)$/.exec(contentType);
+        if (match && match.length > 1) {
+            return match[1].toLowerCase();
+        }
+
+        return null;
+    };
 
     /**
      * Contains collection of accepted content types for replace rules
@@ -256,8 +342,10 @@ adguard.contentFiltering = (function (adguard) {
             return;
         }
 
-        if (!isUtf8Charset(contentType)) {
-            adguard.console.debug('Skipping request to {0} - {1} with Content-Type {2}', requestUrl, requestType, contentType);
+        var charset = parseCharsetFromHeader(contentType);
+        if (charset && SUPPORTED_CHARSETS.indexOf(charset) < 0) {
+            // Charset is detected and it is not supported
+            adguard.console.warn('Skipping request to {0} - {1} with Content-Type {2}', requestUrl, requestType, contentType);
             return;
         }
 
@@ -282,7 +370,11 @@ adguard.contentFiltering = (function (adguard) {
             return;
         }
 
-        responseContentHandler.handleResponse(requestId, requestUrl, requestType, function (content) {
+        responseContentHandler.handleResponse(requestId, requestUrl, requestType, charset, function (content) {
+
+            if (!content) {
+                return content;
+            }
 
             if (contentRules && contentRules.length > 0) {
                 var doc = documentParser.parse(content);
@@ -311,6 +403,6 @@ adguard.contentFiltering = (function (adguard) {
 
     return {
         apply: apply
-    }
+    };
 
 })(adguard);
