@@ -72,6 +72,10 @@ result=1
     node-qunit-phantomjs request-filter/test-request-filter.html
 ) || result=0
 (
+    echo "Element collapser tests"
+    node-qunit-phantomjs miscellaneous/test-element-collapser.html
+) || result=0
+(
     echo "Ring buffer tests"
     node-qunit-phantomjs miscellaneous/test-ring-buffer.html
 ) || result=0

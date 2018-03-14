@@ -84,7 +84,7 @@
          * Builds script for the specified domain to be injected
          *
          * @param domainName Domain name
-         * @returns List of scripts to be applied and scriptSource
+         * @returns {Array.<{{scriptSource: string, rule: string}}>} List of scripts to be applied and scriptSource
          */
         buildScript: function (domainName) {
             var scripts = [];
