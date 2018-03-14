@@ -1,4 +1,4 @@
-/*! AdGuard Assistant - v4.1.9 - 2018-03-13
+/*! AdGuard Assistant - v4.1.9 - 2018-03-14
 * https://github.com/AdguardTeam/AdguardAssistant
 * Copyright (c) 2018; Licensed LGPL 3.0 */
 
@@ -4242,10 +4242,14 @@ var CommonUtils = { // jshint ignore:line
     },
 
     /**
-     * Check browser shadow dom support
+     * Check browser shadow dom support.
+     * Safari crashes after adding style tag in attachShadow so exclude it
+     * see: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/974
      */
     checkShadowDomSupport: function() {
-        return typeof(document.documentElement.attachShadow) !== 'undefined';
+        var safari = /^((?!chrome|android).)*safari/i;
+
+        return typeof(document.documentElement.attachShadow) !== 'undefined' && !safari.test(navigator.userAgent);
     },
 
     /**
@@ -4268,16 +4272,20 @@ var CommonUtils = { // jshint ignore:line
     /**
      * Creating style element
      * @param {String}  id to prevent duplicates
-     * @param {String}  styles   styles string
+     * @param {String}  styles   css styles in string
+     * @return {Object|false}  style tag with styles or false if the styles with transferred id is exist
      */
-    createStylesElement: function(id, styles) {
-        if(document.querySelector('#' + id)) {
+    createStylesElement: function(styles, id) {
+        if(id && document.querySelector('#' + id)) {
             return false;
         }
 
         var tagNode = this.createElement('style');
         tagNode.setAttribute('type', 'text/css');
-        tagNode.setAttribute('id', id);
+
+        if (id) {
+            tagNode.setAttribute('id', id);
+        }
 
         if (tagNode.styleSheet) {
             tagNode.styleSheet.cssText = styles;
@@ -4285,7 +4293,7 @@ var CommonUtils = { // jshint ignore:line
             tagNode.appendChild(document.createTextNode(styles));
         }
 
-        document.documentElement.appendChild(tagNode);
+        return tagNode;
     }
 };
 
@@ -5381,7 +5389,8 @@ var IframeController = function ($, settings, uiUtils, gmApi, log, selector, uiV
 
     var createShadowRootElement = function(iframeElement) {
         var shadowiframeElement = iframeElement.attachShadow({mode: 'closed'});
-        shadowiframeElement.innerHTML = '<style>' + CSS.common + CSS.iframe + '</style>';
+        shadowiframeElement.appendChild(CommonUtils.createStylesElement(CSS.common + CSS.iframe));
+
         return shadowiframeElement;
     };
 
@@ -5390,7 +5399,7 @@ var IframeController = function ($, settings, uiUtils, gmApi, log, selector, uiV
 
         if (!buttonPosition) {
             return {
-                left: iframe.offsetLeft <= 0 ? iframePositionOffset : iframe.offsetLeft,
+                left: iframe.offsetLeft <= 0 ? 9999 : iframe.offsetLeft,
                 top: iframe.offsetTop <= 0 ? iframePositionOffset : iframe.offsetTop
             };
         }
@@ -5473,8 +5482,8 @@ var IframeController = function ($, settings, uiUtils, gmApi, log, selector, uiV
             var frameElement = iframe;
 
             var view = CommonUtils.createElement(views[viewName]);
-            var styles = CommonUtils.createElement('<style type="text/css">' + getStyleNonce() + CSS.common + CSS.button + CSS.iframe + '</style>');
-            view.appendChild(styles);
+            var styles = getStyleNonce() + CSS.common + CSS.button + CSS.iframe;
+            view.appendChild(CommonUtils.createStylesElement(styles));
             appendContent(view);
             localize();
             if (!options) {
@@ -5499,7 +5508,11 @@ var IframeController = function ($, settings, uiUtils, gmApi, log, selector, uiV
         };
 
         if (!iframe) {
-            CommonUtils.createStylesElement('adg-styles-selector', CSS.selector);
+            var adgStylesSelector = CommonUtils.createStylesElement(CSS.selector, 'adg-styles-selector');
+            if (adgStylesSelector) {
+                document.documentElement.appendChild(adgStylesSelector);
+            }
+
             createIframe(onIframeLoad);
             return;
         }
@@ -6895,11 +6908,15 @@ var UIButton = function(log, settings, uiValidationUtils, $, gmApi, uiUtils, ifr
 
         if (CommonUtils.checkShadowDomSupport()) {
             var shadowbuttonElement = buttonElement.attachShadow({mode: 'closed'});
-            shadowbuttonElement.innerHTML = '<style>' + CSS.common + CSS.button + '</style>';
+            shadowiframeElement.appendChild(CommonUtils.createStylesElement(CSS.common + CSS.button));
             shadowbuttonElement.appendChild(button);
             document.documentElement.appendChild(buttonElement);
         } else {
-            CommonUtils.createStylesElement('adg-styles-button', CSS.button);
+            var adgStylesButton = CommonUtils.createStylesElement(CSS.button, 'adg-styles-button');
+            if (adgStylesButton) {
+                document.documentElement.appendChild(adgStylesButton);
+            }
+
             document.documentElement.appendChild(button);
             buttonElement = button;
         }
@@ -7119,8 +7136,6 @@ var IframeControllerMobile = function ($, log, selector, localization) { // jshi
         iframe = CommonUtils.createElement('iframe');
 
         $(iframe).on('load', function () {
-            // styles inside iframe
-            appendDefaultStyleInIframe();
             onIframeLoadCallback();
 
             updateIframeAttrs(attrs);
@@ -7128,7 +7143,12 @@ var IframeControllerMobile = function ($, log, selector, localization) { // jshi
         });
 
         iframeElement = iframe;
-        CommonUtils.createStylesElement('adg-styles-selector', CSS.selector);
+
+        var adgStylesSelector = CommonUtils.createStylesElement(CSS.selector, 'adg-styles-selector');
+        if (adgStylesSelector) {
+            document.documentElement.appendChild(adgStylesSelector);
+        }
+
         document.documentElement.appendChild(iframeElement);
     };
 
@@ -7153,7 +7173,7 @@ var IframeControllerMobile = function ($, log, selector, localization) { // jshi
         });
 
         style = ':host {' + style.join('') + '}';
-        shadowiframeElement.innerHTML = '<style>' + style + '</style>';
+        shadowiframeElement.appendChild(CommonUtils.createStylesElement(style));
 
         return shadowiframeElement;
     };
@@ -7182,18 +7202,6 @@ var IframeControllerMobile = function ($, log, selector, localization) { // jshi
         iframe.style.height = iframe.contentDocument.body.scrollHeight + 'px';
     };
 
-    var appendDefaultStyleInIframe = function() {
-        try {
-            log.info('Iframe loaded writing styles');
-            var doc = iframe.contentDocument;
-            doc.open();
-            doc.write('<html><head><style type="text/css">' + CSS.common + CSS.mobile + '</style></head></html>');
-            doc.close();
-        } catch (ex) {
-            log.error(ex);
-        }
-    };
-
     var showMenuItem = function (viewName, controller, options, styles, attrs) {
         if (currentItem === viewName) {
             return;
@@ -7202,6 +7210,8 @@ var IframeControllerMobile = function ($, log, selector, localization) { // jshi
         var onIframeLoad = function () {
             var frameElement = iframe;
             var view = CommonUtils.createElement(views[viewName]);
+            var iframeStyles = CSS.common + CSS.mobile;
+            view.appendChild(CommonUtils.createStylesElement(iframeStyles));
             appendContent(view);
             localize();
 
@@ -7221,6 +7231,11 @@ var IframeControllerMobile = function ($, log, selector, localization) { // jshi
         };
 
         if (!iframe) {
+            var adgStylesSelector = CommonUtils.createStylesElement(CSS.selector, 'adg-styles-selector');
+            if (adgStylesSelector) {
+                document.documentElement.appendChild(adgStylesSelector);
+            }
+
             createIframe(onIframeLoad, styles, attrs);
             return;
         }
