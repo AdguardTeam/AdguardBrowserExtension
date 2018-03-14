@@ -137,9 +137,12 @@ adguard.prefs = (function (adguard) {
      */
     Prefs.features = (function () {
 
-        var responseContentFilteringSupported = typeof browser !== 'undefined' &&
+        // Get the global extension object (browser for FF, chrome for Chromium)
+        var browser = window.browser || window.chrome;
+
+        var responseContentFilteringSupported = (typeof browser !== 'undefined' &&
             typeof browser.webRequest !== 'undefined' &&
-            typeof browser.webRequest.filterResponseData !== 'undefined';
+            typeof browser.webRequest.filterResponseData !== 'undefined');
 
         var canUseInsertCSSAndExecuteScript = (
             // Blink engine based browsers
@@ -157,10 +160,23 @@ adguard.prefs = (function (adguard) {
         );
         // Edge browser does not support `runAt` in options of tabs.insertCSS
         // and tabs.executeScript
-            
+          
+        /**
+         * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/extensionTypes
+         * 
+         * Whether it implements cssOrigin: 'user' option.
+         * Style declarations in user origin stylesheets that have `!important` priority
+         * takes precedence over page styles
+         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/Cascade#Cascading_order}
+         */
+        var userCSSSupport = typeof browser !== 'undefined' &&
+            typeof browser.extensionTypes === 'object' &&
+            typeof browser.extensionTypes.CSSOrigin !== 'undefined';
+
         return {
             responseContentFilteringSupported: responseContentFilteringSupported,
-            canUseInsertCSSAndExecuteScript: canUseInsertCSSAndExecuteScript
+            canUseInsertCSSAndExecuteScript: canUseInsertCSSAndExecuteScript,
+            userCSSSupport: userCSSSupport
         };
     })();
 

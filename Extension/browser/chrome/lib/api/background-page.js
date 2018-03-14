@@ -78,7 +78,7 @@ var browser = window.browser || chrome;
 
     function getRequestDetails(details) {
 
-        var tab = {tabId: details.tabId};
+        var tab = { tabId: details.tabId };
 
         /**
          * FF sends http instead of ws protocol at the http-listeners layer
@@ -88,7 +88,7 @@ var browser = window.browser || chrome;
             details.url = details.url.replace(/^http(s)?:/, 'ws$1:');
         }
 
-        //https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
+        // https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
         var requestDetails = {
             requestUrl: details.url,    //request url
             tab: tab,                   //request tab,
@@ -117,7 +117,7 @@ var browser = window.browser || chrome;
                 break;
         }
 
-        //relate request to main_frame
+        // Relate request to main_frame
         if (requestFrameId === -1) {
             requestFrameId = 0;
         }
@@ -131,7 +131,7 @@ var browser = window.browser || chrome;
         }
 
         /**
-         * Use `OTHER` type as fallback
+         * Use `OTHER` type as a fallback
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/777
          */
         if (!(requestType in adguard.RequestTypes)) {
@@ -167,7 +167,7 @@ var browser = window.browser || chrome;
                 var requestDetails = getRequestDetails(details);
                 return callback(requestDetails);
 
-            }, urls ? {urls: urls} : {}, ["blocking"]);
+            }, urls ? { urls: urls } : {}, ["blocking"]);
         }
     };
 
@@ -184,10 +184,10 @@ var browser = window.browser || chrome;
                 var requestDetails = getRequestDetails(details);
                 var result = callback(requestDetails);
                 if (result) {
-                    return 'responseHeaders' in result ? {responseHeaders: result.responseHeaders} : {};
+                    return 'responseHeaders' in result ? { responseHeaders: result.responseHeaders } : {};
                 }
 
-            }, urls ? {urls: urls} : {}, ["responseHeaders", "blocking"]);
+            }, urls ? { urls: urls } : {}, ["responseHeaders", "blocking"]);
         }
     };
 
@@ -204,10 +204,10 @@ var browser = window.browser || chrome;
                 var requestDetails = getRequestDetails(details);
                 var result = callback(requestDetails);
                 if (result) {
-                    return 'requestHeaders' in result ? {requestHeaders: result.requestHeaders} : {};
+                    return 'requestHeaders' in result ? { requestHeaders: result.requestHeaders } : {};
                 }
 
-            }, urls ? {urls: urls} : {}, ["requestHeaders", "blocking"]);
+            }, urls ? { urls: urls } : {}, ["requestHeaders", "blocking"]);
         }
     };
 
@@ -333,13 +333,13 @@ var browser = window.browser || chrome;
                 if (browser.runtime.lastError) {
                     return;
                 }
-                browser.browserAction.setBadgeText({tabId: tabId, text: badge});
+                browser.browserAction.setBadgeText({ tabId: tabId, text: badge });
 
                 if (browser.runtime.lastError) {
                     return;
                 }
                 if (badge) {
-                    browser.browserAction.setBadgeBackgroundColor({tabId: tabId, color: badgeColor});
+                    browser.browserAction.setBadgeBackgroundColor({ tabId: tabId, color: badgeColor });
                 }
 
                 //title setup via manifest.json file
@@ -356,7 +356,7 @@ var browser = window.browser || chrome;
                 return;
             }
 
-            browser.browserAction.setIcon({tabId: tabId, path: icon}, onIconReady);
+            browser.browserAction.setIcon({ tabId: tabId, path: icon }, onIconReady);
         },
         setPopup: function () {
             // Do nothing. Popup is already installed in manifest file
@@ -370,9 +370,5 @@ var browser = window.browser || chrome;
     };
 
     adguard.contextMenus = browser.contextMenus;
-
-    
-    // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/extensionTypes
-    adguard.extensionTypes = browser.extensionTypes;
 
 })(adguard, browser);
