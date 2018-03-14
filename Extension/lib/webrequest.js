@@ -136,7 +136,7 @@
         }
         let srcUrl = requestUrl.substring(srcUrlStartIndex);
 
-        const collapseStyle = "{ display: none!important; visibility: hidden!important; }";
+        const collapseStyle = "{ display: none!important; visibility: hidden!important; height: 0px!important; min-height: 0px!important; }";
         let css = "";
         let iTagNames = tagNames.length;
 
