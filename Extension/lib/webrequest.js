@@ -25,9 +25,10 @@
      * In the case of the tabs.insertCSS API support we're trying to collapse a blocked element from the background page.
      * In order to do it we need to have a mapping requestType<->tagNames.
      */
-    const REQUEST_TYPE_COLLAPSE_TAG_NAMES = {};
-    REQUEST_TYPE_COLLAPSE_TAG_NAMES[adguard.RequestTypes.SUBDOCUMENT] = ["frame", "iframe"];
-    REQUEST_TYPE_COLLAPSE_TAG_NAMES[adguard.RequestTypes.IMAGE] = ["img"];
+    const REQUEST_TYPE_COLLAPSE_TAG_NAMES = {
+        [adguard.RequestTypes.SUBDOCUMENT]: ["frame", "iframe"],
+        [adguard.RequestTypes.IMAGE]: ["img"]
+    };    
 
     /**
      * Retrieve referrer url from request details.
