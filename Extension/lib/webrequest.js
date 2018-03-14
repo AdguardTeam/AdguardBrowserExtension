@@ -28,7 +28,14 @@
     const REQUEST_TYPE_COLLAPSE_TAG_NAMES = {
         [adguard.RequestTypes.SUBDOCUMENT]: ["frame", "iframe"],
         [adguard.RequestTypes.IMAGE]: ["img"]
-    };    
+    };
+
+    /**
+     * In the newer versions of Firefox and Chromium we're able to inject CSS and scripts
+     * using a better approach -- `browser.tabs.insertCSS` and `browser.tabs.executeScript`
+     * instead of the traditional one (messaging to the content script).
+     */
+    const shouldUseInsertCSSAndExecuteScript = adguard.prefs.features.canUseInsertCSSAndExecuteScript;
 
     /**
      * Retrieve referrer url from request details.
@@ -118,7 +125,7 @@
      * @param {string} requestType A member of adguard.RequestTypes
      */
     function collapseElement(tabId, requestFrameId, requestUrl, referrerUrl, requestType) {
-        if (!adguard.prefs.features.canUseInsertCSSAndExecuteScript) {
+        if (!shouldUseInsertCSSAndExecuteScript) {
             return;
         }
 
@@ -128,7 +135,7 @@
             return;
         }
 
-       
+
         // Strip the protocol and host name (for first-party requests) from the selector
         let thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrerUrl);
         let srcUrlStartIndex = requestUrl.indexOf("//");
@@ -145,21 +152,7 @@
             css += tagNames[iTagNames] + "[src$=\"" + srcUrl + "\"] " + collapseStyle + "\n";
         }
 
-        let injectDetails = {
-            code: css,
-            runAt: 'document_start',
-            frameId: requestFrameId
-        };
-
-        if (adguard.prefs.features.userCSSSupport) {
-            // If this is set for not supporting browser, it will throw an error.
-            injectDetails.cssOrigin = 'user';
-        }
-
-        adguard.tabs.insertCSS(tabId, injectDetails, function () {
-            adguard.runtime.lastError;
-            // This can happen with Chrome preloaded tabs.
-        });
+        adguard.tabs.insertCssCode(tabId, requestFrameId, css);
     }
 
     /**
@@ -418,26 +411,25 @@
         }
     });
 
-    /**
-     * In newer versions of Firefox and Chromium we're able to inject CSS and scripts
-     * using a better approach -- browser.tabs.insertCSS and browser.tabs.executeScript.
-     */
-    var shouldUseInsertCSSAndExecuteScript = adguard.prefs.features.canUseInsertCSSAndExecuteScript;
-
     if (shouldUseInsertCSSAndExecuteScript) {
+
         /**
-         * When frame is committed, we execute our JS rules in it.
-         * We do this because we need to apply JS rules as soon as possible.
-         * This listener should be added before tabs.insertCSS, in order to apply
-         * without the overhead for looking up CSS rules.
+         * Applying CSS/JS rules from the background page.
+         * 
+         * When the frame is commited (webNavigation.onCommitted), we use browser.tabs.insertCSS 
+         * and browser.tabs.executeScript functions to inject our CSS/JS rules. This
+         * method can be used in modern Chrome and FF only.
          */
-        (function fastScriptRulesLoader(adguard) {
+        (function (adguard) {
+
+            const REQUEST_FILTER_READY_TIMEOUT = 100;
+
             /**
              * Taken from
              * {@link https://github.com/seanl-adg/InlineResourceLiteral/blob/master/index.js#L136}
              * {@link https://github.com/joliss/js-string-escape/blob/master/index.js}
              */
-            var reJsEscape = /["'\\\n\r\u2028\u2029]/g;
+            const reJsEscape = /["'\\\n\r\u2028\u2029]/g;
             function escapeJs(match) {
                 switch (match) {
                     case '"':
@@ -457,27 +449,17 @@
                 }
             }
 
-            function tryInjectScripts(details) {
-                var tabId = details.tabId;
-                var frameId = details.frameId;
-                var url = details.url;
+            function buildScriptText(scriptText) {
 
-                var result = adguard.webRequestService.processGetSelectorsAndScripts({ tabId: tabId }, url, 0, true);
-
-                if (result.requestFilterReady === false) {
-                    setTimeout(tryInjectScripts, 100, details);
-                    return;
-                }
-
-                if (!result.scripts || result.scripts.length === 0) {
-                    return;
+                if (!scriptText) {
+                    return null;
                 }
 
                 // Executes scripts in a scope of page.
-                var injectedScript = '(function() {\
+                let injectedScript = '(function() {\
                     var script = document.createElement("script");\
                     script.setAttribute("type", "text/javascript");\
-                    script.textContent = "' + result.scripts.replace(reJsEscape, escapeJs) + '";\
+                    script.textContent = "' + scriptText.replace(reJsEscape, escapeJs) + '";\
                     var parent = document.head || document.documentElement;\
                     try {\
                         parent.appendChild(script);\
@@ -487,61 +469,54 @@
                         return true;\
                     }\
                 })()';
-                adguard.tabs.executeScript(tabId, {
-                    code: injectedScript,
-                    frameId: frameId,
-                    runAt: 'document_start'
-                }, function (response) {
-                    adguard.runtime.lastError;
-                    // This can happen with Chrome preloaded tabs
-                    // See https://stackoverflow.com/questions/43665470/cannot-call-chrome-tabs-executescript-into-preloaded-tab-is-this-a-bug-in-chr
-                });
+
+                return injectedScript;
             }
 
-            adguard.webNavigation.onCommitted.addListener(tryInjectScripts);
-        })(adguard);
-    }
+            /**
+             * @param {SelectorsData} selectorsData Selectors data
+             * @returns {string} CSS to be supplied to insertCSS or null if selectors data is empty
+             */
+            function buildCssText(selectorsData) {
+                if (!selectorsData || !selectorsData.css) {
+                    return null;
+                }
 
-    if (shouldUseInsertCSSAndExecuteScript) {
-        (function insertCSS(adguard) {
-            function tryInsertCss(details) {
-                var tabId = details.tabId;
-                var frameId = details.frameId;
-                var url = details.url;
+                return selectorsData.css.join("\n");
+            }
 
-                var cssFilterOption = adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS;
-                var result = adguard.webRequestService.processGetSelectorsAndScripts({ tabId: tabId }, url, cssFilterOption, false);
+            /**
+             * Injects necessary CSS and scripts into the web page.
+             * 
+             * @param {*} details Details about the navigation event: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webNavigation/onCommitted#details
+             */
+            function tryInject(details) {
+                let tabId = details.tabId;
+                let frameId = details.frameId;
+                let url = details.url;
+
+                let cssFilterOption = adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS;
+                const retrieveScripts = true;
+                let result = adguard.webRequestService.processGetSelectorsAndScripts({ tabId: tabId }, url, cssFilterOption, retrieveScripts);
 
                 if (result.requestFilterReady === false) {
-                    setTimeout(tryInsertCss, 100, details);
+                    setTimeout(tryInject, REQUEST_FILTER_READY_TIMEOUT, details);
                     return;
                 }
 
-                if (!result.selectors || !result.selectors.css) {
-                    return;
+                let scriptText = buildScriptText(result.scripts);
+                let cssText = buildCssText(result.selectors);
+
+                if (scriptText) {
+                    adguard.tabs.executeScriptCode(tabId, frameId, scriptText);
                 }
 
-                var css = result.selectors.css;
-                var cssStringified = css.join(' ');
-
-                var injectDetails = {
-                    code: cssStringified,
-                    runAt: 'document_start',
-                    frameId: frameId
-                };
-
-                if (adguard.prefs.features.userCSSSupport) {
-                    // If this is set for not supporting browser, it will throw an error.
-                    injectDetails.cssOrigin = 'user';
+                if (cssText) {
+                    adguard.tabs.insertCssCode(tabId, frameId, cssText);
                 }
-
-                adguard.tabs.insertCSS(tabId, injectDetails, function () {
-                    adguard.runtime.lastError;
-                    // This can happen with Chrome preloaded tabs.
-                });
             }
 
-            adguard.webNavigation.onCommitted.addListener(tryInsertCss);
+            adguard.webNavigation.onCommitted.addListener(tryInject);
         })(adguard);
     }
 })(adguard);
