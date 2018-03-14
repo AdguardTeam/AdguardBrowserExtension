@@ -43,7 +43,7 @@
             }
         });
         eventListeners[listenerId] = sender;
-        return {listenerId: listenerId};
+        return { listenerId: listenerId };
     }
 
     /**
@@ -217,7 +217,7 @@
                 adguard.settings.setProperty(message.key, message.value);
                 break;
             case 'checkRequestFilterReady':
-                return {ready: adguard.requestFilter.isReady()};
+                return { ready: adguard.requestFilter.isReady() };
             case 'addAndEnableFilter':
                 adguard.filters.addAndEnableFilters([message.filterId]);
                 break;
@@ -230,16 +230,16 @@
                 break;
             case 'getWhiteListDomains':
                 var whiteListDomains = searchWhiteListDomains(message.offset, message.limit, message.text);
-                return {rules: whiteListDomains};
+                return { rules: whiteListDomains };
             case 'getUserFilters':
                 var rules = searchUserRules(message.offset, message.limit, message.text);
-                return {rules: rules};
+                return { rules: rules };
             case 'checkAntiBannerFiltersUpdate':
                 adguard.ui.checkFiltersUpdates();
                 break;
             case 'getAntiBannerFiltersForOptionsPage':
                 var renderedFilters = adguard.filters.getFiltersForOptionsPage();
-                return {filters: renderedFilters};
+                return { filters: renderedFilters };
             case 'changeDefaultWhiteListMode':
                 adguard.whitelist.changeDefaultWhiteListMode(message.enabled);
                 break;
@@ -291,13 +291,13 @@
                 return adguard.webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl) || {};
             case 'checkPageScriptWrapperRequest':
                 var block = adguard.webRequestService.checkPageScriptWrapperRequest(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
-                return {block: block, requestId: message.requestId};
+                return { block: block, requestId: message.requestId };
             case 'processShouldCollapse':
                 var collapse = adguard.webRequestService.processShouldCollapse(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
-                return {collapse: collapse, requestId: message.requestId};
+                return { collapse: collapse, requestId: message.requestId };
             case 'processShouldCollapseMany':
                 var requests = adguard.webRequestService.processShouldCollapseMany(sender.tab, message.documentUrl, message.requests);
-                return {requests: requests};
+                return { requests: requests };
             case 'addUserRule':
                 adguard.userrules.addRules([message.ruleText]);
                 if (message.adguardDetected || adguard.frames.isTabAdguardDetected(sender.tab)) {
@@ -324,22 +324,22 @@
                 break;
             case 'getTabFrameInfoById':
                 if (message.tabId) {
-                    var frameInfo = adguard.frames.getFrameInfo({tabId: message.tabId});
-                    return {frameInfo: frameInfo};
+                    var frameInfo = adguard.frames.getFrameInfo({ tabId: message.tabId });
+                    return { frameInfo: frameInfo };
                 } else {
                     adguard.tabs.getActive(function (tab) {
                         var frameInfo = adguard.frames.getFrameInfo(tab);
-                        callback({frameInfo: frameInfo});
+                        callback({ frameInfo: frameInfo });
                     });
                     return true; // Async
                 }
                 break;
             case 'getFilteringInfoByTabId':
                 var filteringInfo = adguard.filteringLog.getFilteringInfoByTabId(message.tabId);
-                return {filteringInfo: filteringInfo};
+                return { filteringInfo: filteringInfo };
             case 'synchronizeOpenTabs':
                 adguard.filteringLog.synchronizeOpenTabs(function (tabs) {
-                    callback({tabs: tabs});
+                    callback({ tabs: tabs });
                 });
                 return true; // Async
             case 'checkSubscriptionUrl':
@@ -352,7 +352,7 @@
                     //filter not found
                     confirmText = adguard.i18n.getMessage('abp_subscribe_confirm_import', [message.title]);
                 }
-                return {confirmText: confirmText};
+                return { confirmText: confirmText };
             case 'enableSubscription':
                 adguard.filters.processAbpSubscriptionUrl(message.url, function (rulesAddedCount) {
                     var title = adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_title');
