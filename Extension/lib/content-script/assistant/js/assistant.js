@@ -4271,12 +4271,12 @@ var CommonUtils = { // jshint ignore:line
 
     /**
      * Creating style element
-     * @param {String}  id to prevent duplicates
-     * @param {String}  styles   css styles in string
+     * @param {String}  styles css styles in string
+     * @param {String}  id     to prevent duplicates, can be empty
      * @return {Object|false}  style tag with styles or false if the styles with transferred id is exist
      */
     createStylesElement: function(styles, id) {
-        if(id && document.querySelector('#' + id)) {
+        if (id && document.querySelector('#' + id)) {
             return false;
         }
 
