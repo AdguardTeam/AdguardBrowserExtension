@@ -91,11 +91,11 @@
     var RequestFilter = function () {
 
         // Filter that applies URL blocking rules
-        // Basic rules: http://adguard.com/en/filterrules.html#baseRules
+        // Basic rules: https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#basic-rules
         this.urlBlockingFilter = new adguard.rules.UrlFilter();
 
         // Filter that applies whitelist rules
-        // Exception rules: http://adguard.com/en/filterrules.html#exclusionRules
+        // Exception rules: https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#exceptions-modifiers
         this.urlWhiteFilter = new adguard.rules.UrlFilter();
 
         // Bad-filter rules collection
@@ -103,21 +103,20 @@
         this.badFilterRules = {};
 
         // Filter that applies CSS rules
-        // ABP element hiding rules: http://adguard.com/en/filterrules.html#hideRules
-        // CSS injection rules http://adguard.com/en/filterrules.html#cssInjection
+        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#cosmetic-rules
         this.cssFilter = new adguard.rules.CssFilter();
 
         // Filter that applies JS rules
-        // JS injection rules: http://adguard.com/en/filterrules.html#javascriptInjection
+        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#javascript-rules
         this.scriptFilter = new adguard.rules.ScriptFilter();
 
         // Filter that applies CSP rules
-        // CSP rules: TODO: add link
+        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#csp-modifier
         this.cspFilter = new adguard.rules.CspFilter();
 
 
-        // Filter that applies Content rules
-        // Content filtration rules: http://adguard.com/en/filterrules.html#html-filtering-rules
+        // Filter that applies HTML filtering rules
+        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#html-filtering-rules
         this.contentFilter = new adguard.rules.ContentFilter();
 
         // Rules count (includes all types of rules)

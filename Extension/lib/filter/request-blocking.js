@@ -93,7 +93,7 @@ adguard.webRequestService = (function (adguard) {
             retrieveScripts = !canUseInsertCSSAndExecuteScript;
             if (!elemHideFlag) {
                 cssFilterOptions = CssFilter.RETRIEVE_EXTCSS;
-                if (!adguard.prefs.features.canUseInsertCSSAndExecuteScript) {
+                if (!canUseInsertCSSAndExecuteScript) {
                     cssFilterOptions += CssFilter.RETRIEVE_TRADITIONAL_CSS;
                 }
                 if (genericHideFlag) {
@@ -161,7 +161,6 @@ adguard.webRequestService = (function (adguard) {
         var requestRule = getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
 
         postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
-
         return isRequestBlockedByRule(requestRule);
     };
 
@@ -387,7 +386,7 @@ adguard.webRequestService = (function (adguard) {
     var postProcessRequest = function (tab, requestUrl, referrerUrl, requestType, requestRule, requestId) {
 
         if (adguard.frames.isTabAdguardDetected(tab)) {
-            //do nothing, log event will be added on response
+            // Do nothing, log event will be added on response
             return;
         }
 

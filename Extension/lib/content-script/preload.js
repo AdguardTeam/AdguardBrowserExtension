@@ -28,14 +28,6 @@
         "embed": "OBJECT"
     };
 
-    /**
-     * Do not use iframes pre-hiding on some websites.
-     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/720
-     */
-    var iframeHidingExceptions = [
-        'docs.google.com'
-    ];
-
     var collapseRequests = Object.create(null);
     var collapseRequestId = 1;
     var isFirefox = false;
@@ -242,110 +234,6 @@
     };
 
     /**
-     * The main purpose of this function is to prevent blocked iframes "flickering".
-     * So, we do two things:
-     * 1. Add a temporary display:none style for all frames (which is removed on DOMContentLoaded event)
-     * 2. Use a MutationObserver to react on dynamically added iframe
-     *
-     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/301
-     */
-    var addIframeHidingStyle = function () {
-        if (window !== window.top) {
-            // Do nothing for frames
-            return;
-        }
-
-        /**
-         * Checks for pre-hide iframes exception
-         */
-        var hideIframes = iframeHidingExceptions.indexOf(document.domain) < 0;
-
-        // We do not hide "allowfullscreen" as it is likely to be video player frames
-        var iframeHidingSelector = "iframe[src]:not([allowfullscreen])";
-        if (hideIframes) {
-            ElementCollapser.hideBySelector(iframeHidingSelector, null);
-        }
-
-        /**
-         * For iframes with changed source we check if it should be collapsed
-         *
-         * @param mutations
-         */
-        var handleIframeSrcChanged = function (mutations) {
-            for (var i = 0; i < mutations.length; i++) {
-                var iframe = mutations[i].target;
-                if (iframe) {
-                    checkShouldCollapseElement(iframe);
-                }
-            }
-        };
-
-        var iframeObserver = new MutationObserver(handleIframeSrcChanged);
-        var iframeObserverOptions = {
-            attributes: true,
-            attributeFilter: ['src']
-        };
-
-        /**
-         * Dynamically added frames handler
-         *
-         * @param mutations
-         */
-        var handleDomChanged = function (mutations) {
-            var iframes = [];
-            for (var i = 0; i < mutations.length; i++) {
-                var mutation = mutations[i];
-                var addedNodes = mutation.addedNodes;
-                for (var j = 0; j < addedNodes.length; j++) {
-                    var node = addedNodes[j];
-                    if (node.localName === "iframe") {
-                        iframes.push(node);
-                    }
-                }
-            }
-
-            if (iframes.length > 0) {
-                var iIframes = iframes.length;
-                while (iIframes--) {
-                    var iframe = iframes[iIframes];
-                    checkShouldCollapseElement(iframe);
-                    iframeObserver.observe(iframe, iframeObserverOptions);
-                }
-            }
-        };
-
-        /**
-         * Removes iframes hide style and initiates should-collapse check for iframes
-         */
-        var onDocumentReady = function () {
-            var iframes = document.getElementsByTagName('iframe');
-            for (var i = 0; i < iframes.length; i++) {
-                checkShouldCollapseElement(iframes[i]);
-            }
-
-            if (hideIframes) {
-                ElementCollapser.unhideBySelector(iframeHidingSelector);
-            }
-
-            if (document.body) {
-                // Handle dynamically added frames
-                var domObserver = new MutationObserver(handleDomChanged);
-                domObserver.observe(document.body, {
-                    childList: true,
-                    subtree: true
-                });
-            }
-        };
-
-        //Document can already be loaded
-        if (['interactive', 'complete'].indexOf(document.readyState) >= 0) {
-            onDocumentReady();
-        } else {
-            document.addEventListener('DOMContentLoaded', onDocumentReady);
-        }
-    };
-
-    /**
      * Loads CSS and JS injections
      */
     var tryLoadCssAndScripts = function () {
@@ -390,10 +278,6 @@
         } else {
             applySelectors(response.selectors);
             applyScripts(response.scripts);
-        }
-
-        if (response && response.selectors && response.selectors.css && response.selectors.css.length > 0) {
-            addIframeHidingStyle();
         }
 
         if (typeof CssHitsCounter !== 'undefined' &&
@@ -601,35 +485,6 @@
     };
 
     /**
-     * Hides element temporarily (until collapse check request is processed)
-     * @param element Element to hide
-     */
-    var tempHideElement = function (element) {
-        // We skip big frames here
-        if (element.localName === 'iframe' || element.localName === 'frame' || element.localName === 'embed') {
-            if (element.clientHeight * element.clientWidth > 400 * 300) {
-                return;
-            }
-
-            if (element.hasAttribute('allowfullscreen')) {
-                // This is likely to be a video player
-                return;
-            }
-        }
-
-        /**
-         * Due to some reasons after applying style to 'embed' element with SVG causes 'load' event, so we get into the infinite loop.
-         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/770
-         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/779
-         */
-        if (element.localName === 'embed') {
-            return;
-        }
-
-        ElementCollapser.hideElement(element);
-    };
-
-    /**
      * Response callback for "processShouldCollapse" message.
      * @param response Response got from the background page
      */
@@ -651,11 +506,6 @@
             var elementUrl = collapseRequest.src;
             ElementCollapser.collapseElement(element, elementUrl);
         }
-
-        // Unhide element, which was previously hidden by "tempHideElement"
-        // In case if element is collapsed, there's no need to hide it
-        // Otherwise we shouldn't hide it either as it shouldn't be blocked
-        ElementCollapser.unhideElement(element);
     };
 
     /**
@@ -674,11 +524,12 @@
             return;
         }
 
+        if (ElementCollapser.isCollapsed(element)) {
+            return;
+        }
+
         // Save request to a map (it will be used in response callback)
         var requestId = saveCollapseRequest(element);
-
-        // Hide element right away (to prevent iframes "blinking")
-        tempHideElement(element);
 
         // Send a message to the background page to check if the element really should be collapsed
         var message = {

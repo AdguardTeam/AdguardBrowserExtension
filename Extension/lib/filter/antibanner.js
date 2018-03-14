@@ -1144,7 +1144,6 @@ adguard.antiBannerService = (function (adguard) {
 })(adguard);
 
 /**
- *
  * Api for filtering and elements hiding.
  */
 adguard.requestFilter = (function (adguard) {
