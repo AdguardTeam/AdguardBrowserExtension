@@ -1,4 +1,4 @@
-/*! AdGuard Assistant - v4.1.8 - 2018-03-06
+/*! AdGuard Assistant - v4.1.9 - 2018-03-14
 * https://github.com/AdguardTeam/AdguardAssistant
 * Copyright (c) 2018; Licensed LGPL 3.0 */
 
@@ -22,7 +22,7 @@ var HTML = {
     'settings_menu': "<div class=\"main\"><div class=\"close\"></div><div class=\"head\"><div i18n=\"assistant_settings\" class=\"head_title\"></div><div i18n=\"settings_choose_size_and_position\" class=\"head_text head_text--mobile-h\"></div></div><div class=\"content\"><div class=\"settings settings__horizontal\"><div class=\"settings_fieldset\"><div i18n=\"settings_icon_size\" class=\"settings_fieldset_lbl\"></div><div class=\"settings_fieldset_val\"><div class=\"choice-size\"><div class=\"choice-size_group\"><div class=\"choice-size_field\"><input class=\"choice-size_input form-ui-control\" id=\"size-small\" type=\"radio\" name=\"radio\"><label class=\"form-ui\" for=\"size-small\"><span i18n=\"settings_small\" class=\"form-ui-txt\"></span></label><div class=\"adguard-assistant-button-main-logo choice-size_logo logo__small\"></div></div><div class=\"choice-size_field\"><input class=\"choice-size_input form-ui-control\" id=\"size-big\" type=\"radio\" name=\"radio\"><label class=\"form-ui\" for=\"size-big\"><span i18n=\"settings_big\" class=\"form-ui-txt\"></span></label><div class=\"adguard-assistant-button-main-logo choice-size_logo\"></div></div></div></div></div></div><div class=\"settings_fieldset\"><div i18n=\"settings_position\" class=\"settings_fieldset_lbl settings_fieldset_lbl__pos\"></div><div class=\"settings_fieldset_val\"><div class=\"change-position\"><div class=\"change-position_i\"><input type=\"radio\" name=\"position\" class=\"change-position_input\" id=\"position-top-left\"><label class=\"change-position_label\" for=\"position-top-left\"><span class=\"s-position-arr-top-left\"></span></label><div i18n=\"settings_left_top\" class=\"change-position_val\"></div></div><div class=\"change-position_i\"><input type=\"radio\" name=\"position\" class=\"change-position_input\" id=\"position-top-right\"><label class=\"change-position_label\" for=\"position-top-right\"><span class=\"s-position-arr-top-right\"></span></label><div i18n=\"settings_right_top\" class=\"change-position_val\"></div></div><div class=\"change-position_i\"><input type=\"radio\" name=\"position\" class=\"change-position_input\" id=\"position-bottom-left\"><label class=\"change-position_label\" for=\"position-bottom-left\"><span class=\"s-position-arr-bottom-left\"></span></label><div i18n=\"settings_left_bottom\" class=\"change-position_val\"></div></div><div class=\"change-position_i\"><input type=\"radio\" name=\"position\" class=\"change-position_input\" id=\"position-bottom-right\"><label class=\"change-position_label\" for=\"position-bottom-right\"><span class=\"s-position-arr-bottom-right\"></span></label><div i18n=\"settings_right_bottom\" class=\"change-position_val\"></div></div></div></div></div></div></div><div class=\"foot\"><div class=\"foot_action\"><div class=\"foot_action_btn\"><button i18n=\"settings_cancel\" class=\"btn btn-default\" type=\"button\" id=\"cancel\"></button> <button i18n=\"settings_save\" class=\"btn btn-primary\" type=\"button\" id=\"save-settings\"></button></div></div><div class=\"cf\"></div></div></div>",
     'slider_menu': "<div class=\"main\"><div class=\"close adg-close\"></div><div class=\"head head--slider\"><div class=\"head_in head_in--slider\"><div i18n=\"assistant_block_element\" class=\"head_title head_title--slider\" id=\"head_title\"></div><div class=\"element-rule_more element-rule_more--mobile\"><span class=\"element-rule_expand-link\" id=\"ExtendedSettingsText\"></span> <button i18n=\"assistant_block\" type=\"button\" class=\"btn btn-cancel\" id=\"adg-accept\"></button> <button i18n=\"assistant_another_element\" type=\"button\" class=\"btn btn-default\" id=\"adg-cancel\"></button></div></div><div class=\"adg-slide-btns\"><div class=\"adg-slide-btn adg-slide-btn--minus\"></div><div class=\"adg-slide-btn adg-slide-btn--plus\"></div></div><div i18n=\"assistant_block_element_explain\" class=\"head_text head_text--mobile-h\" id=\"head_text\"></div></div><div class=\"content\" id=\"slider-area\"><div class=\"element-rule element-rule--slider\"><div i18n=\"assistant_slider_explain\" class=\"element-rule_text element-rule_text--slider\"></div><div class=\"element-rule_slider\"><div class=\"adg-slide\" id=\"slider\"><div i18n=\"assistant_slider_max\" class=\"adg-slide-clue-max\"></div><div i18n=\"assistant_slider_min\" class=\"adg-slide-clue-min\"></div></div></div><div class=\"element-rule_more\"><span class=\"element-rule_expand-link\" id=\"ExtendedSettingsText\"><span i18n=\"assistant_extended_settings\" class=\"element-rule_expand-link_txt\"></span> <span class=\"element-rule_expand-link_arr\"></span></span></div><div class=\"element-rule_form\" id=\"adv-settings\"><div class=\"element-rule_form-cont\"><div class=\"element-rule_fieldset\" id=\"one-domain-checkbox-block\"><input class=\"form-ui-control\" id=\"one-domain-checkbox\" type=\"checkbox\"><label for=\"one-domain-checkbox\" class=\"form-ui\"><span i18n=\"assistant_apply_rule_to_all_sites\" class=\"form-ui-txt\"></span></label></div><div style=\"display:none\" class=\"element-rule_fieldset\" id=\"block-by-url-checkbox-block\"><input class=\"form-ui-control\" id=\"block-by-url-checkbox\" type=\"checkbox\"><label for=\"block-by-url-checkbox\" class=\"form-ui\"><span i18n=\"assistant_block_by_reference\" class=\"form-ui-txt\"></span></label></div><div style=\"display:none\" class=\"element-rule_fieldset\" id=\"block-similar-checkbox-block\"><input class=\"form-ui-control\" id=\"block-similar-checkbox\" type=\"checkbox\"><label for=\"block-similar-checkbox\" class=\"form-ui\"><span i18n=\"assistant_block_similar\" class=\"form-ui-txt\"></span></label></div><div class=\"element-rule_fieldset\"><input class=\"form-control\" id=\"filter-rule\" type=\"text\"></div></div></div></div></div><div class=\"foot foot--slider\"><button i18n=\"assistant_another_element\" type=\"button\" class=\"btn btn-default btn-another-el\" id=\"adg-cancel\"></button><div class=\"foot_action\"><div class=\"foot_action_btn\"><button i18n=\"assistant_preview\" type=\"button\" class=\"btn btn-primary\" id=\"adg-preview\"></button> <button i18n=\"assistant_block\" type=\"button\" class=\"btn btn-cancel\" id=\"adg-accept\"></button></div></div></div></div>",
     'preview': "<div class=\"main\"><div class=\"close\"></div><div class=\"head\"><div i18n=\"assistant_preview_header\" class=\"head_title\"></div><div i18n=\"assistant_preview_header_info\" class=\"head_text\"></div></div><div class=\"foot\"><button i18n=\"assistant_another_element\" class=\"btn btn-default\" id=\"select-another-element\" type=\"button\"></button><div class=\"foot_action\"><div class=\"foot_action_btn\"><button i18n=\"assistant_preview_end\" class=\"btn btn-primary\" id=\"end-preview\" type=\"button\"></button> <button i18n=\"assistant_block\" class=\"btn btn-cancel\" id=\"block-element\" type=\"button\"></button></div></div></div></div>",
-    'popup': "<div class=\"main mobile main-popup\"><div class=\"main-popup__logo adguard-assistant-button-main-logo\"></div><h2 class=\"mobile-title main-popup__title\" i18n=\"assistant_select_element\"></h2><div class=\"content main-popup__content\" i18n=\"assistant_select_element_text\"></div><div class=\"footer\"><button i18n=\"assistant_select_element_start\" class=\"btn btn-active start-select-mode main-popup__btn main-popup__btn--green\"></button> <button i18n=\"assistant_select_element_cancel\" class=\"btn cancel-select-mode main-popup__btn\"></button></div><i class=\"main-version\">v4.1.8</i></div>",
+    'popup': "<div class=\"main mobile main-popup\"><div class=\"main-popup__logo adguard-assistant-button-main-logo\"></div><h2 class=\"mobile-title main-popup__title\" i18n=\"assistant_select_element\"></h2><div class=\"content main-popup__content\" i18n=\"assistant_select_element_text\"></div><div class=\"footer\"><button i18n=\"assistant_select_element_start\" class=\"btn btn-active start-select-mode main-popup__btn main-popup__btn--green\"></button> <button i18n=\"assistant_select_element_cancel\" class=\"btn cancel-select-mode main-popup__btn\"></button></div><i class=\"main-version\">v4.1.9</i></div>",
     'mobile_menu': "<div class=\"main mobile main-menu\"><button i18n-title=\"assistant_block\" class=\"adg-accept main-menu__btn main-menu__btn--accept\">accept</button> <button i18n-title=\"assistant_preview\" class=\"adg-preview main-menu__btn main-menu__btn--preview\">preview</button> <button i18n-title=\"plus\" class=\"adg-plus main-menu__btn main-menu__btn--plus\">plus</button> <button i18n-title=\"minus\" class=\"adg-minus main-menu__btn main-menu__btn--minus\">minus</button> <button i18n-title=\"close\" class=\"adg-close main-menu__btn main-menu__btn--close\">close</button></div>"
 };
 
@@ -4242,10 +4242,14 @@ var CommonUtils = { // jshint ignore:line
     },
 
     /**
-     * Check browser shadow dom support
+     * Check browser shadow dom support.
+     * Safari crashes after adding style tag in attachShadow so exclude it
+     * see: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/974
      */
     checkShadowDomSupport: function() {
-        return typeof(document.documentElement.attachShadow) !== 'undefined';
+        var safari = /^((?!chrome|android).)*safari/i;
+
+        return typeof(document.documentElement.attachShadow) !== 'undefined' && !safari.test(navigator.userAgent);
     },
 
     /**
@@ -4267,17 +4271,21 @@ var CommonUtils = { // jshint ignore:line
 
     /**
      * Creating style element
-     * @param {String}  id to prevent duplicates
-     * @param {String}  styles   styles string
+     * @param {String}  styles css styles in string
+     * @param {String}  id     to prevent duplicates, can be empty
+     * @return {Object|false}  style tag with styles or false if the styles with transferred id is exist
      */
-    createStylesElement: function(id, styles) {
-        if(document.querySelector('#' + id)) {
+    createStylesElement: function(styles, id) {
+        if (id && document.querySelector('#' + id)) {
             return false;
         }
 
         var tagNode = this.createElement('style');
         tagNode.setAttribute('type', 'text/css');
-        tagNode.setAttribute('id', id);
+
+        if (id) {
+            tagNode.setAttribute('id', id);
+        }
 
         if (tagNode.styleSheet) {
             tagNode.styleSheet.cssText = styles;
@@ -4285,7 +4293,7 @@ var CommonUtils = { // jshint ignore:line
             tagNode.appendChild(document.createTextNode(styles));
         }
 
-        document.documentElement.appendChild(tagNode);
+        return tagNode;
     }
 };
 
@@ -5381,7 +5389,8 @@ var IframeController = function ($, settings, uiUtils, gmApi, log, selector, uiV
 
     var createShadowRootElement = function(iframeElement) {
         var shadowiframeElement = iframeElement.attachShadow({mode: 'closed'});
-        shadowiframeElement.innerHTML = '<style>' + CSS.common + CSS.iframe + '</style>';
+        shadowiframeElement.appendChild(CommonUtils.createStylesElement(CSS.common + CSS.iframe));
+
         return shadowiframeElement;
     };
 
@@ -5390,8 +5399,8 @@ var IframeController = function ($, settings, uiUtils, gmApi, log, selector, uiV
 
         if (!buttonPosition) {
             return {
-                left: 0,
-                top: 0
+                left: iframe.offsetLeft <= 0 ? window.innerWidth : iframe.offsetLeft,
+                top: iframe.offsetTop <= 0 ? iframePositionOffset : iframe.offsetTop
             };
         }
 
@@ -5454,7 +5463,6 @@ var IframeController = function ($, settings, uiUtils, gmApi, log, selector, uiV
         if (iframe.offsetHeight < 0) {
             iframe.style.top = iframePositionOffset + 'px';
         }
-
     };
 
     var getStyleNonce = function () {
@@ -5474,8 +5482,8 @@ var IframeController = function ($, settings, uiUtils, gmApi, log, selector, uiV
             var frameElement = iframe;
 
             var view = CommonUtils.createElement(views[viewName]);
-            var styles = CommonUtils.createElement('<style type="text/css">' + getStyleNonce() + CSS.common + CSS.button + CSS.iframe + '</style>');
-            view.appendChild(styles);
+            var styles = getStyleNonce() + CSS.common + CSS.button + CSS.iframe;
+            view.appendChild(CommonUtils.createStylesElement(styles));
             appendContent(view);
             localize();
             if (!options) {
@@ -5500,7 +5508,11 @@ var IframeController = function ($, settings, uiUtils, gmApi, log, selector, uiV
         };
 
         if (!iframe) {
-            CommonUtils.createStylesElement('adg-styles-selector', CSS.selector);
+            var adgStylesSelector = CommonUtils.createStylesElement(CSS.selector, 'adg-styles-selector');
+            if (adgStylesSelector) {
+                document.documentElement.appendChild(adgStylesSelector);
+            }
+
             createIframe(onIframeLoad);
             return;
         }
@@ -6688,11 +6700,12 @@ var SliderMenuControllerMobile = function ($, selector, adguardRulesConstructor,
  * @param $
  * @param selector
  * @param gmApi
+ * @param addRule
  * @returns {{init: init}}
  * @constructor
  */
 /* global Ioc */
-var BlockPreviewController = function ($, selector, gmApi) { // jshint ignore:line
+var BlockPreviewController = function ($, selector, gmApi, addRule) { // jshint ignore:line
     var contentDocument = null;
     var selectedElement = null;
     var selectedPath = null;
@@ -6748,10 +6761,16 @@ var BlockPreviewController = function ($, selector, gmApi) { // jshint ignore:li
     };
 
     var blockElement = function () {
-        gmApi.ADG_addRule(selectedPath, function() {
+        if (gmApi.ADG_addRule) {
+            gmApi.ADG_addRule(selectedPath, function () {
+                iframeCtrl.removeIframe();
+                CommonUtils.reloadPageBypassCache();
+            });
+        } else {
+            selectedElement.style.display = 'none';
+            addRule(selectedPath);
             iframeCtrl.removeIframe();
-            CommonUtils.reloadPageBypassCache();
-        });
+        }
     };
 
     var showDetailedMenu = function () {
@@ -6889,11 +6908,15 @@ var UIButton = function(log, settings, uiValidationUtils, $, gmApi, uiUtils, ifr
 
         if (CommonUtils.checkShadowDomSupport()) {
             var shadowbuttonElement = buttonElement.attachShadow({mode: 'closed'});
-            shadowbuttonElement.innerHTML = '<style>' + CSS.common + CSS.button + '</style>';
+            shadowiframeElement.appendChild(CommonUtils.createStylesElement(CSS.common + CSS.button));
             shadowbuttonElement.appendChild(button);
             document.documentElement.appendChild(buttonElement);
         } else {
-            CommonUtils.createStylesElement('adg-styles-button', CSS.button);
+            var adgStylesButton = CommonUtils.createStylesElement(CSS.button, 'adg-styles-button');
+            if (adgStylesButton) {
+                document.documentElement.appendChild(adgStylesButton);
+            }
+
             document.documentElement.appendChild(button);
             buttonElement = button;
         }
@@ -7113,8 +7136,6 @@ var IframeControllerMobile = function ($, log, selector, localization) { // jshi
         iframe = CommonUtils.createElement('iframe');
 
         $(iframe).on('load', function () {
-            // styles inside iframe
-            appendDefaultStyleInIframe();
             onIframeLoadCallback();
 
             updateIframeAttrs(attrs);
@@ -7122,7 +7143,12 @@ var IframeControllerMobile = function ($, log, selector, localization) { // jshi
         });
 
         iframeElement = iframe;
-        CommonUtils.createStylesElement('adg-styles-selector', CSS.selector);
+
+        var adgStylesSelector = CommonUtils.createStylesElement(CSS.selector, 'adg-styles-selector');
+        if (adgStylesSelector) {
+            document.documentElement.appendChild(adgStylesSelector);
+        }
+
         document.documentElement.appendChild(iframeElement);
     };
 
@@ -7147,7 +7173,7 @@ var IframeControllerMobile = function ($, log, selector, localization) { // jshi
         });
 
         style = ':host {' + style.join('') + '}';
-        shadowiframeElement.innerHTML = '<style>' + style + '</style>';
+        shadowiframeElement.appendChild(CommonUtils.createStylesElement(style));
 
         return shadowiframeElement;
     };
@@ -7176,18 +7202,6 @@ var IframeControllerMobile = function ($, log, selector, localization) { // jshi
         iframe.style.height = iframe.contentDocument.body.scrollHeight + 'px';
     };
 
-    var appendDefaultStyleInIframe = function() {
-        try {
-            log.info('Iframe loaded writing styles');
-            var doc = iframe.contentDocument;
-            doc.open();
-            doc.write('<html><head><style type="text/css">' + CSS.common + CSS.mobile + '</style></head></html>');
-            doc.close();
-        } catch (ex) {
-            log.error(ex);
-        }
-    };
-
     var showMenuItem = function (viewName, controller, options, styles, attrs) {
         if (currentItem === viewName) {
             return;
@@ -7196,6 +7210,8 @@ var IframeControllerMobile = function ($, log, selector, localization) { // jshi
         var onIframeLoad = function () {
             var frameElement = iframe;
             var view = CommonUtils.createElement(views[viewName]);
+            var iframeStyles = CSS.common + CSS.mobile;
+            view.appendChild(CommonUtils.createStylesElement(iframeStyles));
             appendContent(view);
             localize();
 
@@ -7215,6 +7231,11 @@ var IframeControllerMobile = function ($, log, selector, localization) { // jshi
         };
 
         if (!iframe) {
+            var adgStylesSelector = CommonUtils.createStylesElement(CSS.selector, 'adg-styles-selector');
+            if (adgStylesSelector) {
+                document.documentElement.appendChild(adgStylesSelector);
+            }
+
             createIframe(onIframeLoad, styles, attrs);
             return;
         }
