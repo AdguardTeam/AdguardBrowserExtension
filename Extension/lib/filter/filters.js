@@ -241,12 +241,22 @@
         },
 
         /**
+         * An object with the information on the CSS and ExtendedCss stylesheets which 
+         * need to be injected into a web page.
+         * 
+         * @typedef {Object} SelectorsData
+         * @property {Array.<string>} css Regular CSS stylesheets
+         * @property {Array.<string>} extendedCss ExtendedCSS stylesheets
+         * @property {boolean} cssHitsCounterEnabled If true -- collecting CSS rules hits stats is enabled
+         */
+
+        /**
          * Builds CSS for the specified web page.
          * http://adguard.com/en/filterrules.html#hideRules
          *
-         * @param url Page URL
-         * @param options CssFilter bitmask
-         * @returns CSS ready to be injected
+         * @param {string} url Page URL
+         * @param {number} options CssFilter bitmask
+         * @returns {SelectorsData} CSS and ExtCss data for the webpage
          */
         getSelectorsForUrl: function (url, options) {
             var domain = adguard.utils.url.getHost(url);
@@ -254,10 +264,10 @@
             var CSS_INJECTION_ONLY = adguard.rules.CssFilter.CSS_INJECTION_ONLY;
             var cssInjectionOnly = (options & CSS_INJECTION_ONLY) === CSS_INJECTION_ONLY;
 
-            if (
-                !cssInjectionOnly &&
-                adguard.prefs.collectHitsCountEnabled && adguard.settings.collectHitsCount()
-            ) {
+            if (!cssInjectionOnly &&
+                adguard.prefs.collectHitsCountEnabled &&
+                adguard.settings.collectHitsCount()) {
+
                 // If user has enabled "Send statistics for ad filters usage" option we build CSS with enabled hits stats.
                 // In this case style contains "content" with filter identifier and rule text.
                 var selectors = this.cssFilter.buildCssHits(domain, options);
@@ -273,7 +283,7 @@
          * http://adguard.com/en/filterrules.html#javascriptInjection
          *
          * @param url Page URL
-         * @returns Javascript
+         * @returns {Array.<{{scriptSource: string, rule: string}}>} Javascript for the specified URL
          */
         getScriptsForUrl: function (url) {
             var domain = adguard.utils.url.getHost(url);
@@ -282,6 +292,10 @@
 
         /**
          * Builds the final output string for the specified page.
+         * Depending on the browser we either allow or forbid the new remote rules (see how `scriptSource` is used).
+         * 
+         * @param {string} url Page URL
+         * @returns {string} Script to be applied
          */
         getScriptsStringForUrl: function (url) {
             var scripts = this.getScriptsForUrl(url);

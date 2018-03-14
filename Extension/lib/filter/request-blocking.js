@@ -41,16 +41,25 @@ adguard.webRequestService = (function (adguard) {
     };
 
     /**
+     * An object with the selectors and scripts to be injected into the page
+     * @typedef {Object} SelectorsAndScripts
+     * @property {SelectorsData} selectors An object with the CSS styles that needs to be applied
+     * @property {string} scripts Javascript to be injected into the page
+     * @property {boolean} collapseAllElements If true, content script must force the collapse check of the page elements
+     */
+
+    /**
      * Prepares CSS and JS which should be injected to the page.
      *
-     * @param tab                       Tab
+     * @param tab                       Tab data
      * @param documentUrl               Document URL
-     * @param cssFilterOptions          Bitmask of CssFilter
-     * @param {boolean} retrieveScripts indicates whether to retrieve JS rules or not
+     * @param cssFilterOptions          Bitmask for the CssFilter
+     * @param {boolean} retrieveScripts Indicates whether to retrieve JS rules or not
      * 
-     * When cssFilterOptions and retrieveScripts are undefined, we handle it in a special way.
+     * When cssFilterOptions and retrieveScripts are undefined, we handle it in a special way
+     * that depends on whether the browser supports inserting CSS and scripts from the background page
      * 
-     * @returns {*} null or object the following properties: "selectors", "scripts", "collapseAllElements"
+     * @returns {SelectorsAndScripts} an object with the selectors and scripts to be injected into the page
      */
     var processGetSelectorsAndScripts = function (tab, documentUrl, cssFilterOptions, retrieveScripts) {
 
@@ -116,15 +125,10 @@ adguard.webRequestService = (function (adguard) {
         }
 
         if (retrieveSelectors) {
-            // Prepare result
-            result.selectors = {
-                css: null,
-                extendedCss: null,
-                cssHitsCounterEnabled: false
-            };
             result.collapseAllElements = adguard.requestFilter.shouldCollapseAllElements();
 
             if (!shouldLoadAllSelectors(result.collapseAllElements)) {
+                // We don't need regular element hiding rules in case of the Safari content blocker
                 cssFilterOptions += CssFilter.CSS_INJECTION_ONLY;
             }
 
@@ -240,9 +244,9 @@ adguard.webRequestService = (function (adguard) {
             requestType !== adguard.RequestTypes.DOCUMENT) {
 
             if (requestRule.isEmptyResponse()) {
-                return {redirectUrl: 'data:,'};
+                return { redirectUrl: 'data:,' };
             } else {
-                return {cancel: true};
+                return { cancel: true };
             }
         }
         return null;

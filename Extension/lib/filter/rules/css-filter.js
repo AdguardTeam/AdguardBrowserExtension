@@ -118,13 +118,22 @@
         },
 
         /**
+         * An object with the information on the CSS and ExtendedCss stylesheets which 
+         * need to be injected into a web page.
+         * 
+         * @typedef {Object} CssFilterBuildResult
+         * @property {Array.<string>} css Regular CSS stylesheets
+         * @property {Array.<string>} extendedCss ExtendedCSS stylesheets
+         */        
+
+        /**
          * Builds CSS to be injected to the page.
          * This method builds CSS for element hiding rules only:
          * http://adguard.com/en/filterrules.html#hideRules
          *
          * @param domainName    Domain name
          * @param options       CssFilter Bitmask
-         * @returns {{css: (*|*[]), extendedCss: (*|*[])}}
+         * @returns {CssFilterBuildResult} CSS and ExtCss stylesheets
          */
         buildCss: function (domainName, options) {
             if (typeof options === 'undefined') {
@@ -165,7 +174,7 @@
          *
          * @param domainName    Domain name
          * @param options CssFilter bitmask
-         * @returns {{css: (*|*[]), extendedCss: (*|*[])}}
+         * @returns {CssFilterBuildResult} CSS and ExtCss stylesheets
          */
         buildCssHits: function (domainName, options) {
             this._rebuildHits();
