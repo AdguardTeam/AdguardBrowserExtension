@@ -5399,7 +5399,7 @@ var IframeController = function ($, settings, uiUtils, gmApi, log, selector, uiV
 
         if (!buttonPosition) {
             return {
-                left: iframe.offsetLeft <= 0 ? 9999 : iframe.offsetLeft,
+                left: iframe.offsetLeft <= 0 ? window.innerWidth : iframe.offsetLeft,
                 top: iframe.offsetTop <= 0 ? iframePositionOffset : iframe.offsetTop
             };
         }
