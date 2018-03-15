@@ -141,7 +141,7 @@
 
         var specialCharacter = "...";
 
-        if (reText.indexOf('?')) {
+        if (reText.indexOf('?') !== -1) {
             // Do not mess with complex expressions which use lookahead
             // And with those using ? special character: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/978
             return null;
