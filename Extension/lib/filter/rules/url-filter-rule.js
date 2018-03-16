@@ -126,8 +126,8 @@
     /**
      * Extracts a shortcut from a regexp rule.
      *
-     * @param ruleText
-     * @returns {*}
+     * @param {string} ruleText rule text
+     * @returns {string} shortcut or null if it's not possible to extract it
      */
     function extractRegexpShortcut(ruleText) {
 
@@ -141,8 +141,9 @@
 
         var specialCharacter = "...";
 
-        if (reText.indexOf('(?') >= 0 || reText.indexOf('(!?') >= 0) {
+        if (reText.indexOf('?') !== -1) {
             // Do not mess with complex expressions which use lookahead
+            // And with those using ? special character: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/978
             return null;
         }
 

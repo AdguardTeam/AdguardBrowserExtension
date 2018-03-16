@@ -275,6 +275,14 @@ QUnit.test("Regexp characters escaping", function (assert) {
     assert.ok(rule);
 });
 
+QUnit.test("Simple regexp rule", function(assert) {
+    var RequestTypes = adguard.RequestTypes;
+
+    var mask = "/^https?/";
+    var rule = new adguard.rules.UrlFilterRule(mask);
+    assert.ok(rule.isFiltered("http://www.vmhadwuuj.com/v.js", true, RequestTypes.SCRIPT));
+});
+
 QUnit.test("Regexp rule", function (assert) {
 
     var RequestTypes = adguard.RequestTypes;
