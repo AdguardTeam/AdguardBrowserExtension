@@ -316,7 +316,8 @@ adguard.contentFiltering = (function (adguard) {
             }
         }
 
-        return deleted.length > 0 ? doc.documentElement.outerHTML : null;
+        var doctype = doc.doctype ? new XMLSerializer().serializeToString(doc.doctype) + '\r\n' : "";
+        return deleted.length > 0 ? doctype + doc.documentElement.outerHTML : null;
     }
 
     /**
