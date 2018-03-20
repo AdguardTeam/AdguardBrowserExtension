@@ -295,7 +295,7 @@ adguard.contentFiltering = (function (adguard) {
      * @param requestType Request type
      * @param doc Document
      * @param rules Content rules
-     * @returns Matched elements
+     * @returns null or document html
      */
     function applyContentRules(tab, frameUrl, requestType, doc, rules) {
 
@@ -316,7 +316,8 @@ adguard.contentFiltering = (function (adguard) {
             }
         }
 
-        var doctype = doc.doctype ? new XMLSerializer().serializeToString(doc.doctype) + '\r\n' : "";
+        // Add <!DOCTYPE html ... >
+        var doctype = doc.doctype ? new XMLSerializer().serializeToString(doc.doctype) + "\r\n" : "";
         return deleted.length > 0 ? doctype + doc.documentElement.outerHTML : null;
     }
 
