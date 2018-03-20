@@ -43,7 +43,7 @@
             if (typeof responseCallback === 'function') {
                 var responseListener = function (event) {
                     if (event.name === "response-" + requestId) {
-                        eventTarget.removeEventListener('message', responseListener, false);
+                        eventTarget.removeEventListener('message', this, false);
                         responseCallback(event.message);
                     }
                 };
