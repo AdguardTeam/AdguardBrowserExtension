@@ -1,4 +1,4 @@
-/*! AdGuard Assistant - v4.1.9 - 2018-03-14
+/*! AdGuard Assistant - v4.1.10 - 2018-03-21
 * https://github.com/AdguardTeam/AdguardAssistant
 * Copyright (c) 2018; Licensed LGPL 3.0 */
 
@@ -22,7 +22,7 @@ var HTML = {
     'settings_menu': "<div class=\"main\"><div class=\"close\"></div><div class=\"head\"><div i18n=\"assistant_settings\" class=\"head_title\"></div><div i18n=\"settings_choose_size_and_position\" class=\"head_text head_text--mobile-h\"></div></div><div class=\"content\"><div class=\"settings settings__horizontal\"><div class=\"settings_fieldset\"><div i18n=\"settings_icon_size\" class=\"settings_fieldset_lbl\"></div><div class=\"settings_fieldset_val\"><div class=\"choice-size\"><div class=\"choice-size_group\"><div class=\"choice-size_field\"><input class=\"choice-size_input form-ui-control\" id=\"size-small\" type=\"radio\" name=\"radio\"><label class=\"form-ui\" for=\"size-small\"><span i18n=\"settings_small\" class=\"form-ui-txt\"></span></label><div class=\"adguard-assistant-button-main-logo choice-size_logo logo__small\"></div></div><div class=\"choice-size_field\"><input class=\"choice-size_input form-ui-control\" id=\"size-big\" type=\"radio\" name=\"radio\"><label class=\"form-ui\" for=\"size-big\"><span i18n=\"settings_big\" class=\"form-ui-txt\"></span></label><div class=\"adguard-assistant-button-main-logo choice-size_logo\"></div></div></div></div></div></div><div class=\"settings_fieldset\"><div i18n=\"settings_position\" class=\"settings_fieldset_lbl settings_fieldset_lbl__pos\"></div><div class=\"settings_fieldset_val\"><div class=\"change-position\"><div class=\"change-position_i\"><input type=\"radio\" name=\"position\" class=\"change-position_input\" id=\"position-top-left\"><label class=\"change-position_label\" for=\"position-top-left\"><span class=\"s-position-arr-top-left\"></span></label><div i18n=\"settings_left_top\" class=\"change-position_val\"></div></div><div class=\"change-position_i\"><input type=\"radio\" name=\"position\" class=\"change-position_input\" id=\"position-top-right\"><label class=\"change-position_label\" for=\"position-top-right\"><span class=\"s-position-arr-top-right\"></span></label><div i18n=\"settings_right_top\" class=\"change-position_val\"></div></div><div class=\"change-position_i\"><input type=\"radio\" name=\"position\" class=\"change-position_input\" id=\"position-bottom-left\"><label class=\"change-position_label\" for=\"position-bottom-left\"><span class=\"s-position-arr-bottom-left\"></span></label><div i18n=\"settings_left_bottom\" class=\"change-position_val\"></div></div><div class=\"change-position_i\"><input type=\"radio\" name=\"position\" class=\"change-position_input\" id=\"position-bottom-right\"><label class=\"change-position_label\" for=\"position-bottom-right\"><span class=\"s-position-arr-bottom-right\"></span></label><div i18n=\"settings_right_bottom\" class=\"change-position_val\"></div></div></div></div></div></div></div><div class=\"foot\"><div class=\"foot_action\"><div class=\"foot_action_btn\"><button i18n=\"settings_cancel\" class=\"btn btn-default\" type=\"button\" id=\"cancel\"></button> <button i18n=\"settings_save\" class=\"btn btn-primary\" type=\"button\" id=\"save-settings\"></button></div></div><div class=\"cf\"></div></div></div>",
     'slider_menu': "<div class=\"main\"><div class=\"close adg-close\"></div><div class=\"head head--slider\"><div class=\"head_in head_in--slider\"><div i18n=\"assistant_block_element\" class=\"head_title head_title--slider\" id=\"head_title\"></div><div class=\"element-rule_more element-rule_more--mobile\"><span class=\"element-rule_expand-link\" id=\"ExtendedSettingsText\"></span> <button i18n=\"assistant_block\" type=\"button\" class=\"btn btn-cancel\" id=\"adg-accept\"></button> <button i18n=\"assistant_another_element\" type=\"button\" class=\"btn btn-default\" id=\"adg-cancel\"></button></div></div><div class=\"adg-slide-btns\"><div class=\"adg-slide-btn adg-slide-btn--minus\"></div><div class=\"adg-slide-btn adg-slide-btn--plus\"></div></div><div i18n=\"assistant_block_element_explain\" class=\"head_text head_text--mobile-h\" id=\"head_text\"></div></div><div class=\"content\" id=\"slider-area\"><div class=\"element-rule element-rule--slider\"><div i18n=\"assistant_slider_explain\" class=\"element-rule_text element-rule_text--slider\"></div><div class=\"element-rule_slider\"><div class=\"adg-slide\" id=\"slider\"><div i18n=\"assistant_slider_max\" class=\"adg-slide-clue-max\"></div><div i18n=\"assistant_slider_min\" class=\"adg-slide-clue-min\"></div></div></div><div class=\"element-rule_more\"><span class=\"element-rule_expand-link\" id=\"ExtendedSettingsText\"><span i18n=\"assistant_extended_settings\" class=\"element-rule_expand-link_txt\"></span> <span class=\"element-rule_expand-link_arr\"></span></span></div><div class=\"element-rule_form\" id=\"adv-settings\"><div class=\"element-rule_form-cont\"><div class=\"element-rule_fieldset\" id=\"one-domain-checkbox-block\"><input class=\"form-ui-control\" id=\"one-domain-checkbox\" type=\"checkbox\"><label for=\"one-domain-checkbox\" class=\"form-ui\"><span i18n=\"assistant_apply_rule_to_all_sites\" class=\"form-ui-txt\"></span></label></div><div style=\"display:none\" class=\"element-rule_fieldset\" id=\"block-by-url-checkbox-block\"><input class=\"form-ui-control\" id=\"block-by-url-checkbox\" type=\"checkbox\"><label for=\"block-by-url-checkbox\" class=\"form-ui\"><span i18n=\"assistant_block_by_reference\" class=\"form-ui-txt\"></span></label></div><div style=\"display:none\" class=\"element-rule_fieldset\" id=\"block-similar-checkbox-block\"><input class=\"form-ui-control\" id=\"block-similar-checkbox\" type=\"checkbox\"><label for=\"block-similar-checkbox\" class=\"form-ui\"><span i18n=\"assistant_block_similar\" class=\"form-ui-txt\"></span></label></div><div class=\"element-rule_fieldset\"><input class=\"form-control\" id=\"filter-rule\" type=\"text\"></div></div></div></div></div><div class=\"foot foot--slider\"><button i18n=\"assistant_another_element\" type=\"button\" class=\"btn btn-default btn-another-el\" id=\"adg-cancel\"></button><div class=\"foot_action\"><div class=\"foot_action_btn\"><button i18n=\"assistant_preview\" type=\"button\" class=\"btn btn-primary\" id=\"adg-preview\"></button> <button i18n=\"assistant_block\" type=\"button\" class=\"btn btn-cancel\" id=\"adg-accept\"></button></div></div></div></div>",
     'preview': "<div class=\"main\"><div class=\"close\"></div><div class=\"head\"><div i18n=\"assistant_preview_header\" class=\"head_title\"></div><div i18n=\"assistant_preview_header_info\" class=\"head_text\"></div></div><div class=\"foot\"><button i18n=\"assistant_another_element\" class=\"btn btn-default\" id=\"select-another-element\" type=\"button\"></button><div class=\"foot_action\"><div class=\"foot_action_btn\"><button i18n=\"assistant_preview_end\" class=\"btn btn-primary\" id=\"end-preview\" type=\"button\"></button> <button i18n=\"assistant_block\" class=\"btn btn-cancel\" id=\"block-element\" type=\"button\"></button></div></div></div></div>",
-    'popup': "<div class=\"main mobile main-popup\"><div class=\"main-popup__logo adguard-assistant-button-main-logo\"></div><h2 class=\"mobile-title main-popup__title\" i18n=\"assistant_select_element\"></h2><div class=\"content main-popup__content\" i18n=\"assistant_select_element_text\"></div><div class=\"footer\"><button i18n=\"assistant_select_element_start\" class=\"btn btn-active start-select-mode main-popup__btn main-popup__btn--green\"></button> <button i18n=\"assistant_select_element_cancel\" class=\"btn cancel-select-mode main-popup__btn\"></button></div><i class=\"main-version\">v4.1.9</i></div>",
+    'popup': "<div class=\"main mobile main-popup\"><div class=\"main-popup__logo adguard-assistant-button-main-logo\"></div><h2 class=\"mobile-title main-popup__title\" i18n=\"assistant_select_element\"></h2><div class=\"content main-popup__content\" i18n=\"assistant_select_element_text\"></div><div class=\"footer\"><button i18n=\"assistant_select_element_start\" class=\"btn btn-active start-select-mode main-popup__btn main-popup__btn--green\"></button> <button i18n=\"assistant_select_element_cancel\" class=\"btn cancel-select-mode main-popup__btn\"></button></div><i class=\"main-version\">v4.1.10</i></div>",
     'mobile_menu': "<div class=\"main mobile main-menu\"><button i18n-title=\"assistant_block\" class=\"adg-accept main-menu__btn main-menu__btn--accept\">accept</button> <button i18n-title=\"assistant_preview\" class=\"adg-preview main-menu__btn main-menu__btn--preview\">preview</button> <button i18n-title=\"plus\" class=\"adg-plus main-menu__btn main-menu__btn--plus\">plus</button> <button i18n-title=\"minus\" class=\"adg-minus main-menu__btn main-menu__btn--minus\">minus</button> <button i18n-title=\"close\" class=\"adg-close main-menu__btn main-menu__btn--close\">close</button></div>"
 };
 
@@ -5537,16 +5537,16 @@ var IframeController = function ($, settings, uiUtils, gmApi, log, selector, uiV
         setCloseEventIfNotHitIframe(false);
     };
 
-    var showSliderMenu = function (element) {
+    var showSliderMenu = function (initElement, currentElement) {
         var controller = Ioc.get(SliderMenuController);
-        var options = {element: element, dragElement: '.head'};
+        var options = {element: initElement, dragElement: '.head', currentElement: currentElement};
         showMenuItem(settings.MenuItemsNames.SliderMenu, controller, menuMaxWidth, 'auto', options);
         setCloseEventIfNotHitIframe(true);
     };
 
-    var showBlockPreview = function (element, path, currentElement) {
+    var showBlockPreview = function (initElement, path, currentElement) {
         var controller = Ioc.get(BlockPreviewController);
-        var options = {element: element, path: path, dragElement: '.head', currentElement: currentElement};
+        var options = {element: initElement, path: path, dragElement: '.head', currentElement: currentElement};
         showMenuItem(settings.MenuItemsNames.BlockPreview, controller, menuMaxWidth, 'auto', options);
         setCloseEventIfNotHitIframe(true);
     };
@@ -6363,6 +6363,7 @@ var SliderMenuController = function ($, selector, sliderWidget, settings, adguar
     var contentDocument = null;
     var selectedElement = null;
     var startElement = null;
+    var currentElement = null;
     var iframeCtrl = Ioc.get('iframeController');
 
     /*
@@ -6372,10 +6373,16 @@ var SliderMenuController = function ($, selector, sliderWidget, settings, adguar
         selectedElement = options.element;
         startElement = selectedElement;
         contentDocument = iframe.contentDocument;
+        currentElement = options.currentElement;
         bindEvents();
-        createSlider();
+        createSlider(currentElement);
         onScopeChange();
         selector.selectElement(selectedElement);
+
+        // select current element after returning from preview mode
+        if (currentElement) {
+            onSliderMove(currentElement);
+        }
     };
 
     var close = function () {
@@ -6426,12 +6433,13 @@ var SliderMenuController = function ($, selector, sliderWidget, settings, adguar
         iframeCtrl.showBlockPreview(selectedElement, getFilterRuleInputText(), startElement);
     };
 
-    var createSlider = function () {
+    var createSlider = function (setElement) {
         var parents = CommonUtils.getParentsLevel(selectedElement);
         var children = CommonUtils.getAllChildren(selectedElement);
 
         var value = Math.abs(parents.length + 1);
         var max = parents.length + children.length + 1;
+
         var min = 1;
         var options = {value: value, min: min, max: max};
         var slider = contentDocument.getElementById('slider');
@@ -6459,10 +6467,18 @@ var SliderMenuController = function ($, selector, sliderWidget, settings, adguar
             onSliderMove(elem);
         };
 
+        var currentVal = options.value;
+
+        // set slider position on current element after returning from preview mode
+        if (setElement) {
+            var setElementparents = CommonUtils.getParentsLevel(setElement);
+            currentVal = setElementparents.length + 1;
+        }
+
         sliderWidget.init(slider, {
             min: options.min,
             max: options.max,
-            value: options.value,
+            value: currentVal,
             onValueChanged: function (value) {
                 var delta = options.value - value;
                 options.onSliderMove(delta);
@@ -6775,7 +6791,7 @@ var BlockPreviewController = function ($, selector, gmApi, addRule) { // jshint 
 
     var showDetailedMenu = function () {
         showElement();
-        iframeCtrl.showSliderMenu(currentElement);
+        iframeCtrl.showSliderMenu(currentElement, selectedElement);
     };
 
     return {
@@ -6908,7 +6924,7 @@ var UIButton = function(log, settings, uiValidationUtils, $, gmApi, uiUtils, ifr
 
         if (CommonUtils.checkShadowDomSupport()) {
             var shadowbuttonElement = buttonElement.attachShadow({mode: 'closed'});
-            shadowiframeElement.appendChild(CommonUtils.createStylesElement(CSS.common + CSS.button));
+            shadowbuttonElement.appendChild(CommonUtils.createStylesElement(CSS.common + CSS.button));
             shadowbuttonElement.appendChild(button);
             document.documentElement.appendChild(buttonElement);
         } else {
