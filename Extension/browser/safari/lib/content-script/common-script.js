@@ -39,19 +39,19 @@
         var sendMessage = function (dispatcher, eventTarget, message, responseCallback) {
 
             var requestId = sendMessageNextRequestId++;
-            var handledResponses = Object.create(null);
+            var responseReceived = false;
 
             if (typeof responseCallback === 'function') {
                 var responseListener = function (event) {
                     if (event.name === "response-" + requestId) {
-                        if (handledResponses[requestId]) {
+                        if (responseReceived) {
                             // Due to some strange bug in Safari removeEventListener triggers the event one more time,
                             // so here we skip these already handled events.
                             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/979
                             return;
                         }
 
-                        handledResponses[requestId] = true;
+                        responseReceived = true;
 
                         eventTarget.removeEventListener('message', responseListener, false);
                         responseCallback(event.message);
