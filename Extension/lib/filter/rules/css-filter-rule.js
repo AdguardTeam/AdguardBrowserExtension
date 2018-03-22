@@ -27,31 +27,6 @@
      * http://adguard.com/en/filterrules.html#cssInjection
      */
     var CssFilterRule = (function () {
-        /**
-         * The problem with pseudo-classes is that any unknown pseudo-class makes browser ignore the whole CSS rule,
-         * which contains a lot more selectors. So, if CSS selector contains a pseudo-class, we should try to validate it.
-         * <p>
-         * One more problem with pseudo-classes is that they are actively used in uBlock, hence it may mess AG styles.
-         */
-        var SUPPORTED_PSEUDO_CLASSES = [":active",
-            ":checked", ":contains", ":disabled", ":empty", ":enabled", ":first-child", ":first-of-type",
-            ":focus", ":has", ":has-text", ":hover", ":if", ":if-not", ":in-range", ":invalid", ":lang",
-            ":last-child", ":last-of-type", ":link", ":matches-css", ":matches-css-before", ":matches-css-after",
-            ":not", ":nth-child", ":nth-last-child", ":nth-last-of-type", ":nth-of-type",
-            ":only-child", ":only-of-type", ":optional", ":out-of-range", ":properties", ":read-only",
-            ":read-write", ":required", ":root", ":target", ":valid", ":visited",
-            ":-abp-has", ":-abp-contains"];
-
-        /**
-         * The problem with it is that ":has" and ":contains" pseudo classes are not a valid pseudo classes,
-         * hence using it may break old versions of AG.
-         *
-         * @type {string[]}
-         */
-        var EXTENDED_CSS_MARKERS = ["[-ext-has=", "[-ext-contains=", "[-ext-has-text=", "[-ext-matches-css=",
-            "[-ext-matches-css-before=", "[-ext-matches-css-after=", ":has(", ":has-text(", ":contains(",
-            ":matches-css(", ":matches-css-before(", ":matches-css-after(", ":-abp-has(", ":-abp-contains(",
-            ":if(", ":if-not(", ":properties("];
 
         /**
          * Tries to convert CSS injections rules from uBlock syntax to our own
@@ -194,8 +169,7 @@
 
             var mask = parseMask(rule, isExtendedCss, isInjectRule);
 
-            this.whiteListRule = [api.FilterRule.MASK_CSS_EXCEPTION_RULE, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE,
-                api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE].indexOf(mask) !== -1;
+            this.whiteListRule = CssFilterRule.WHITELIST_MASKS.indexOf(mask) !== -1;
 
             var indexOfMask = rule.indexOf(mask);
             if (indexOfMask > 0) {
@@ -216,7 +190,7 @@
                     isInjectRule = true;
                     cssContent = convertCssInjectionRule(pseudoClass, cssContent);
                 } else if (pseudoClass !== null) {
-                    if (SUPPORTED_PSEUDO_CLASSES.indexOf(pseudoClass.name) < 0) {
+                    if (CssFilterRule.SUPPORTED_PSEUDO_CLASSES.indexOf(pseudoClass.name) < 0) {
                         throw new Error("Unknown pseudo class: " + cssContent);
                     }
                 }
@@ -224,8 +198,8 @@
 
             // Extended CSS selectors support
             // https://github.com/AdguardTeam/ExtendedCss
-            for (var i = 0; i < EXTENDED_CSS_MARKERS.length; i++) {
-                if (cssContent.indexOf(EXTENDED_CSS_MARKERS[i]) >= 0) {
+            for (var i = 0; i < CssFilterRule.EXTENDED_CSS_MARKERS.length; i++) {
+                if (cssContent.indexOf(CssFilterRule.EXTENDED_CSS_MARKERS[i]) >= 0) {
                     isExtendedCss = true;
                 }
             }
@@ -239,6 +213,36 @@
     })();
 
     CssFilterRule.prototype = Object.create(api.FilterRule.prototype);
+
+    /**
+     * The problem with pseudo-classes is that any unknown pseudo-class makes browser ignore the whole CSS rule,
+     * which contains a lot more selectors. So, if CSS selector contains a pseudo-class, we should try to validate it.
+     * <p>
+     * One more problem with pseudo-classes is that they are actively used in uBlock, hence it may mess AG styles.
+     */
+    CssFilterRule.SUPPORTED_PSEUDO_CLASSES = [":active",
+        ":checked", ":contains", ":disabled", ":empty", ":enabled", ":first-child", ":first-of-type",
+        ":focus", ":has", ":has-text", ":hover", ":if", ":if-not", ":in-range", ":invalid", ":lang",
+        ":last-child", ":last-of-type", ":link", ":matches-css", ":matches-css-before", ":matches-css-after",
+        ":not", ":nth-child", ":nth-last-child", ":nth-last-of-type", ":nth-of-type",
+        ":only-child", ":only-of-type", ":optional", ":out-of-range", ":properties", ":read-only",
+        ":read-write", ":required", ":root", ":target", ":valid", ":visited",
+        ":-abp-has", ":-abp-contains"];
+
+    /**
+     * The problem with it is that ":has" and ":contains" pseudo classes are not a valid pseudo classes,
+     * hence using it may break old versions of AG.
+     */
+    CssFilterRule.EXTENDED_CSS_MARKERS = ["[-ext-has=", "[-ext-contains=", "[-ext-has-text=", "[-ext-matches-css=",
+        "[-ext-matches-css-before=", "[-ext-matches-css-after=", ":has(", ":has-text(", ":contains(",
+        ":matches-css(", ":matches-css-before(", ":matches-css-after(", ":-abp-has(", ":-abp-contains(",
+        ":if(", ":if-not(", ":properties("];
+
+    /**
+     * Masks indicating whitelist exception rules
+     */
+    CssFilterRule.WHITELIST_MASKS = [api.FilterRule.MASK_CSS_EXCEPTION_RULE, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE,
+        api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE];
 
     api.CssFilterRule = CssFilterRule;
 
