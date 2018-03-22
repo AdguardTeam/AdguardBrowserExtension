@@ -233,6 +233,10 @@
     FilterRule.MASK_CSS_EXCEPTION_RULE = "#@#";
     FilterRule.MASK_CSS_INJECT_RULE = "#$#";
     FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE = "#@$#";
+    FilterRule.MASK_CSS_EXTENDED_CSS_RULE = "#?#";
+    FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE = "#@?#";
+    FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE = "#$?#";
+    FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE = "#@$?#";
     FilterRule.MASK_SCRIPT_RULE = "#%#";
     FilterRule.MASK_SCRIPT_EXCEPTION_RULE = "#@%#";
     FilterRule.MASK_JS_RULE = "%%";
