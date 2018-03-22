@@ -52,14 +52,14 @@ QUnit.test("Css Filter Rule Extended Css", function (assert) {
     assert.ok(rule.extendedCss);
     assert.equal("div", rule.cssSelector);
 
-    ruleText = "~gamespot.com,~mint.com,~slidetoplay.com,~smh.com.au,~zattoo.com#$?#div:style(background:inherit;)";
+    ruleText = "~gamespot.com,~mint.com,~slidetoplay.com,~smh.com.au,~zattoo.com#$?#div { background-color: #333!important; }";
     rule = new adguard.rules.CssFilterRule(ruleText);
 
     assert.ok(rule.getRestrictedDomains().length > 0);
     assert.notOk(rule.whiteListRule);
     assert.ok(rule.isInjectRule);
     assert.ok(rule.extendedCss);
-    assert.equal("div:style(background:inherit;)", rule.cssSelector);
+    assert.equal("div { background-color: #333!important; }", rule.cssSelector);
 });
 
 QUnit.test("Css Filter WhiteList Rule", function (assert) {
@@ -82,14 +82,14 @@ QUnit.test("Css Filter WhiteList Rule", function (assert) {
     assert.ok(rule.extendedCss);
     assert.equal("div", rule.cssSelector);
 
-    ruleText = "~gamespot.com,~mint.com,~slidetoplay.com,~smh.com.au,~zattoo.com#@$?#div:style(background:inherit;)";
+    ruleText = "~gamespot.com,~mint.com,~slidetoplay.com,~smh.com.au,~zattoo.com#@$?#div { background-color: #333!important; }";
     rule = new adguard.rules.CssFilterRule(ruleText);
 
     assert.ok(rule.getRestrictedDomains().length > 0);
     assert.ok(rule.whiteListRule);
     assert.ok(rule.isInjectRule);
     assert.ok(rule.extendedCss);
-    assert.equal("div:style(background:inherit;)", rule.cssSelector);
+    assert.equal("div { background-color: #333!important; }", rule.cssSelector);
 });
 
 QUnit.test("Css Exception Rules", function (assert) {
@@ -282,6 +282,26 @@ QUnit.test("Invalid Style Syntax", function (assert) {
         throw new Error("Rule should not be parsed successfully");
     } catch (ex) {
         assert.equal(ex.message, 'Empty :style pseudo class: body:style()');
+    }
+});
+
+QUnit.test("Invalid Css Injection Rules", function (assert) {
+    try {
+        //Invalid rule - lacking of css style
+        var ruleText = "~gamespot.com,~mint.com,~slidetoplay.com,~smh.com.au,~zattoo.com#$?#div";
+        new adguard.rules.CssFilterRule(ruleText);
+        throw new Error("Rule should not be parsed successfully");
+    } catch (ex) {
+        assert.equal(ex.message, 'Invalid css injection rule, no style presented: ~gamespot.com,~mint.com,~slidetoplay.com,~smh.com.au,~zattoo.com#$?#div');
+    }
+
+    try {
+        //Invalid rule - lacking of css style
+        var ruleText = "~gamespot.com,~mint.com,~slidetoplay.com,~smh.com.au,~zattoo.com#$?#div {asdasd]";
+        new adguard.rules.CssFilterRule(ruleText);
+        throw new Error("Rule should not be parsed successfully");
+    } catch (ex) {
+        assert.equal(ex.message, 'Invalid css injection rule, no style presented: ~gamespot.com,~mint.com,~slidetoplay.com,~smh.com.au,~zattoo.com#$?#div {asdasd]');
     }
 });
 
@@ -678,12 +698,12 @@ QUnit.test("Extended Css Selector Inject Rule", function (assert) {
 
     var selectors, css, extendedCss, commonCss;
 
-    var injectRule = new adguard.rules.CssFilterRule('adguard.com#$#.first-item h2:has(time) { font-size: 128px; })');
+    var injectRule = new adguard.rules.CssFilterRule('adguard.com#$#.first-item h2:has(time) { font-size: 128px; }');
     assert.ok(injectRule.isInjectRule);
     assert.ok(injectRule.extendedCss);
     filter.addRule(injectRule);
 
-    injectRule = new adguard.rules.CssFilterRule('#$#.first-item { font-size: 130px; })');
+    injectRule = new adguard.rules.CssFilterRule('#$#.first-item { font-size: 130px; }');
     assert.ok(injectRule.isInjectRule);
     filter.addRule(injectRule);
 

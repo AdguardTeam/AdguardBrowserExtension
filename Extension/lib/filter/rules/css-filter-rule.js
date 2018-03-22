@@ -196,6 +196,13 @@
                 }
             }
 
+            if (isInjectRule) {
+                // Simple validation for css injection rules
+                if (!/\s{.+}$/.test(cssContent)) {
+                    throw new Error("Invalid css injection rule, no style presented: " + rule);
+                }
+            }
+
             // Extended CSS selectors support
             // https://github.com/AdguardTeam/ExtendedCss
             for (var i = 0; i < CssFilterRule.EXTENDED_CSS_MARKERS.length; i++) {
