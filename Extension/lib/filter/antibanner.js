@@ -907,7 +907,7 @@ adguard.antiBannerService = (function (adguard) {
     function scheduleFiltersUpdate(isFirstRun) {
 
         // First run delay
-        setTimeout(checkAntiBannerFiltersUpdate, UPDATE_FILTERS_DELAY, isFirstRun);
+        setTimeout(checkAntiBannerFiltersUpdate, UPDATE_FILTERS_DELAY, isFirstRun === true);
 
         // Scheduling job
         var scheduleUpdate = function () {
