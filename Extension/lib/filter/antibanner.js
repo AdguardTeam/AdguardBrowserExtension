@@ -144,7 +144,7 @@ adguard.antiBannerService = (function (adguard) {
             }
 
             // Schedule filters update job
-            scheduleFiltersUpdate();
+            scheduleFiltersUpdate(runInfo.isFirstRun);
         };
 
         /**
@@ -900,13 +900,14 @@ adguard.antiBannerService = (function (adguard) {
 
     /**
      * Schedules filters update job
-     * @isFirstRun
+     *
+     * @param isFirstRun App first run flag
      * @private
      */
-    function scheduleFiltersUpdate() {
+    function scheduleFiltersUpdate(isFirstRun) {
 
         // First run delay
-        setTimeout(checkAntiBannerFiltersUpdate, UPDATE_FILTERS_DELAY, true);
+        setTimeout(checkAntiBannerFiltersUpdate, UPDATE_FILTERS_DELAY, isFirstRun);
 
         // Scheduling job
         var scheduleUpdate = function () {
