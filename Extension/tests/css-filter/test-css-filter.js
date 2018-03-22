@@ -52,14 +52,14 @@ QUnit.test("Css Filter Rule Extended Css", function (assert) {
     assert.ok(rule.extendedCss);
     assert.equal("div", rule.cssSelector);
 
-    ruleText = "~gamespot.com,~mint.com,~slidetoplay.com,~smh.com.au,~zattoo.com#$?#div";
+    ruleText = "~gamespot.com,~mint.com,~slidetoplay.com,~smh.com.au,~zattoo.com#$?#div:style(background:inherit;)";
     rule = new adguard.rules.CssFilterRule(ruleText);
 
     assert.ok(rule.getRestrictedDomains().length > 0);
     assert.notOk(rule.whiteListRule);
     assert.ok(rule.isInjectRule);
     assert.ok(rule.extendedCss);
-    assert.equal("div", rule.cssSelector);
+    assert.equal("div:style(background:inherit;)", rule.cssSelector);
 });
 
 QUnit.test("Css Filter WhiteList Rule", function (assert) {
@@ -82,14 +82,14 @@ QUnit.test("Css Filter WhiteList Rule", function (assert) {
     assert.ok(rule.extendedCss);
     assert.equal("div", rule.cssSelector);
 
-    ruleText = "~gamespot.com,~mint.com,~slidetoplay.com,~smh.com.au,~zattoo.com#@$?#div";
+    ruleText = "~gamespot.com,~mint.com,~slidetoplay.com,~smh.com.au,~zattoo.com#@$?#div:style(background:inherit;)";
     rule = new adguard.rules.CssFilterRule(ruleText);
 
     assert.ok(rule.getRestrictedDomains().length > 0);
     assert.ok(rule.whiteListRule);
     assert.ok(rule.isInjectRule);
     assert.ok(rule.extendedCss);
-    assert.equal("div", rule.cssSelector);
+    assert.equal("div:style(background:inherit;)", rule.cssSelector);
 });
 
 QUnit.test("Css Exception Rules", function (assert) {
