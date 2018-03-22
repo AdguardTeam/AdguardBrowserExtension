@@ -317,6 +317,8 @@ adguard.contentFiltering = (function (adguard) {
         }
 
         // Add <!DOCTYPE html ... >
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/959
+        // XMLSerializer is used to serialize doctype object
         var doctype = doc.doctype ? new XMLSerializer().serializeToString(doc.doctype) + "\r\n" : "";
         return deleted.length > 0 ? doctype + doc.documentElement.outerHTML : null;
     }
