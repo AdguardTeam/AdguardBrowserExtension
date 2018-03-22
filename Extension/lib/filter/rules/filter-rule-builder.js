@@ -57,6 +57,10 @@
                 rule = new api.CssFilterRule(ruleText, filterId);
             } else if (StringUtils.contains(ruleText, api.FilterRule.MASK_CSS_INJECT_RULE) || StringUtils.contains(ruleText, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE)) {
                 rule = new api.CssFilterRule(ruleText, filterId);
+            } else if (StringUtils.contains(ruleText, api.FilterRule.MASK_CSS_EXTENDED_CSS_RULE) || StringUtils.contains(ruleText, api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE)) {
+                rule = new api.CssFilterRule(ruleText, filterId);
+            } else if (StringUtils.contains(ruleText, api.FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE) || StringUtils.contains(ruleText, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE)) {
+                rule = new api.CssFilterRule(ruleText, filterId);
             } else if (StringUtils.contains(ruleText, api.FilterRule.MASK_SCRIPT_RULE) || StringUtils.contains(ruleText, api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE)) {
                 rule = new api.ScriptFilterRule(ruleText, filterId);
             } else {

@@ -34,12 +34,13 @@
          * One more problem with pseudo-classes is that they are actively used in uBlock, hence it may mess AG styles.
          */
         var SUPPORTED_PSEUDO_CLASSES = [":active",
-            ":checked", ":disabled", ":empty", ":enabled", ":first-child", ":first-of-type",
-            ":focus", ":hover", ":in-range", ":invalid", ":lang", ":last-child", ":last-of-type",
-            ":link", ":not", ":nth-child", ":nth-last-child", ":nth-last-of-type", ":nth-of-type",
-            ":only-child", ":only-of-type", ":optional", ":out-of-range", ":read-only",
-            ":read-write", ":required", ":root", ":target", ":valid", ":visited", ":has", ":has-text", ":contains",
-            ":matches-css", ":matches-css-before", ":matches-css-after", ":-abp-has", ":-abp-contains"];
+            ":checked", ":contains", ":disabled", ":empty", ":enabled", ":first-child", ":first-of-type",
+            ":focus", ":has", ":has-text", ":hover", ":if", ":if-not", ":in-range", ":invalid", ":lang",
+            ":last-child", ":last-of-type", ":link", ":matches-css", ":matches-css-before", ":matches-css-after",
+            ":not", ":nth-child", ":nth-last-child", ":nth-last-of-type", ":nth-of-type",
+            ":only-child", ":only-of-type", ":optional", ":out-of-range", ":properties", ":read-only",
+            ":read-write", ":required", ":root", ":target", ":valid", ":visited",
+            ":-abp-has", ":-abp-contains"];
 
         /**
          * The problem with it is that ":has" and ":contains" pseudo classes are not a valid pseudo classes,
@@ -49,7 +50,8 @@
          */
         var EXTENDED_CSS_MARKERS = ["[-ext-has=", "[-ext-contains=", "[-ext-has-text=", "[-ext-matches-css=",
             "[-ext-matches-css-before=", "[-ext-matches-css-after=", ":has(", ":has-text(", ":contains(",
-            ":matches-css(", ":matches-css-before(", ":matches-css-after(", ":-abp-has(", ":-abp-contains("];
+            ":matches-css(", ":matches-css-before(", ":matches-css-after(", ":-abp-has(", ":-abp-contains(",
+            ":if(", ":if-not(", ":properties("];
 
         /**
          * Tries to convert CSS injections rules from uBlock syntax to our own
@@ -143,22 +145,57 @@
         };
 
         /**
+         * Parses rule mask
+         *
+         * @param rule
+         * @param isExtendedCss
+         * @param isInjectRule
+         */
+        var parseMask = function (rule, isExtendedCss, isInjectRule) {
+            var mask;
+            var isException;
+            if (!isExtendedCss) {
+                if (isInjectRule) {
+                    isException = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE);
+                    mask = isException ? api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE : api.FilterRule.MASK_CSS_INJECT_RULE;
+                } else {
+                    isException = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_RULE);
+                    mask = isException ? api.FilterRule.MASK_CSS_EXCEPTION_RULE : api.FilterRule.MASK_CSS_RULE;
+                }
+            } else {
+                if (isInjectRule) {
+                    isException = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE);
+                    mask = isException ? api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE : api.FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE;
+                } else {
+                    isException = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE);
+                    mask = isException ? api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE : api.FilterRule.MASK_CSS_EXTENDED_CSS_RULE;
+                }
+            }
+
+            return mask;
+        };
+
+        /**
          * CssFilterRule constructor
          */
         var constructor = function (rule, filterId) {
 
             api.FilterRule.call(this, rule, filterId);
 
-            var isInjectRule = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_INJECT_RULE) || adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE);
+            var isExtendedCss = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXTENDED_CSS_RULE) ||
+                adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE) ||
+                adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE) ||
+                adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE);
 
-            var mask;
-            if (isInjectRule) {
-                this.whiteListRule = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE);
-                mask = this.whiteListRule ? api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE : api.FilterRule.MASK_CSS_INJECT_RULE;
-            } else {
-                this.whiteListRule = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_RULE);
-                mask = this.whiteListRule ? api.FilterRule.MASK_CSS_EXCEPTION_RULE : api.FilterRule.MASK_CSS_RULE;
-            }
+            var isInjectRule = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_INJECT_RULE) ||
+                adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE) ||
+                adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE) ||
+                adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE);
+
+            var mask = parseMask(rule, isExtendedCss, isInjectRule);
+
+            this.whiteListRule = [api.FilterRule.MASK_CSS_EXCEPTION_RULE, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE,
+                api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE].indexOf(mask) !== -1;
 
             var indexOfMask = rule.indexOf(mask);
             if (indexOfMask > 0) {
@@ -167,7 +204,6 @@
                 this.loadDomains(domains);
             }
 
-            var isExtendedCss = false;
             var cssContent = rule.substring(indexOfMask + mask.length);
 
             if (!isInjectRule) {
