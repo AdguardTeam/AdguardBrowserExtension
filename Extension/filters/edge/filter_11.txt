@@ -1,8 +1,8 @@
-! Checksum: wOP/x+AB4Q4fmpMv0IZUwQ
+! Checksum: vEzJZA/0KNedk+VSkhCeRQ
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.0.41
-! TimeUpdated: 2018-03-02T17:05:38+00:00
+! Version: 2.0.0.68
+! TimeUpdated: 2018-03-21T15:04:38+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#mobile
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -40,7 +40,9 @@
 ||coinhive.com^
 ||coin-hive.com^
 !
-! DU Speed Booster
+! DU ads
+/adunion/*
+||mblapi.ssl2.duapps.com^
 ||api.mobula.ds.duapps.com^
 ||noxagile.duapp.com^
 ||common.duapps.com^
@@ -68,6 +70,15 @@
 !+ NOT_OPTIMIZED
 ||hqsjc.com^
 !
+||agent.tamedia.com.tw^
+||www.adbert.com.tw^
+||tw.api.vpon.com^
+||sdk.adtiming.com^
+||adsmogo.net^
+||adsmogo.org^
+||adsmogo.mobi^
+||adbetnet.advertserve.com^
+||chartboosts.com^
 ||mobpowertech.com^
 ||ap.smardroid.com^
 ||aclickoooo.host^$third-party
@@ -948,6 +959,8 @@ westseattleblog.com#@#.header-ad
 !
 ! Extended CSS rules
 !
+! reddit.com hiding promoted posts on mobile device
+reddit.com##.PostsList > .Post[-ext-has='.PostHeader__promoted-flair']
 ! https://github.com/AdguardTeam/AdguardFilters/issues/11988
 m.sabah.com.tr##.manset > ul > li:has(>a[href^="/haber/advertorial/"])
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9536
@@ -1019,8 +1032,6 @@ m.dizilab.net#$##player { display:block!important; }
 m.dizilab.net#$#.previd-link { display:none!important; }
 ! https://forum.adguard.com/index.php?threads/12443/
 pornhub.com#%#AG_onLoad(function() { if (typeof redirect !== 'function') return; var str = redirect.toString(); var m = str.match(/\'(\/view.*)\'/); if (m.length != 2) return; var link = m[1]; window.location.href = m[1]; });
-! For Moscow metro Wi-Fi
-auth.wi-fi.ru#%#(function(){var b={};(function(a,c,d){"undefined"!==typeof window[a]?window[a][c]=d:Object.defineProperty(window,a,{get:function(){return b[a]},set:function(e){b[a]=e;e[c]=d}})})("authConfig","adfox",[])})();
 !#################
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9324
@@ -1050,6 +1061,8 @@ sasisa.ru#%#AG_onLoad(function() { window.Umobi = function() {}; });
 !-------CSS---------
 !-------------------
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/12867
+m.fanfox.net#$#header > .top-banner { display: block!important; height: 60px!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/8970
 m.empflix.com##.videoActions
 m.empflix.com##.thumb
@@ -1186,7 +1199,6 @@ reviews.mtbr.com#@#.header-ad
 stevengoh.com#@#.header-ad
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6725
 m.tubewolf.com#@#.block-ads
-! https://github.com/AdguardTeam/AdguardFilters/issues/6914
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6694
 olx.ro#@#DIV[class^="banner"]
 ! https://forum.adguard.com/index.php?threads/20287/
@@ -1377,6 +1389,35 @@ m.youtube.com##a[href^="/watch?v="][onclick^="return koya.onEvent(arguments[0]||
 m.youtube.com##a[href^="/watch?v="][onclick^="return koya.onEvent(arguments[0]||window.event,'"]:not([role]):not([class]):not([id]) + div
 !
 !
+m.nihaogood.com##.Adinfo
+||m.nihaogood.com/js/neironga.js
+||ddreminder.appspot.com/android_ad_target.txt
+||twrailpolice.appspot.com/full_ad_priority.txt
+||twrailpolice.appspot.com/campaign.xml
+||54.169.80.245/ad^
+||tw.api.vpon.com/api/webviewAdReq
+m.cna.com.tw##.fancybox-wrap
+m.cna.com.tw##.fancybox-wrap + .fancybox-overlay
+m.cda.pl###reklama_layout_top
+m.cda.pl##.r-bt-scale > [id^="reklama"]
+dni.ru##.container__partners-line
+dni.ru##.article-footer-adv
+||zaytung.com/images/radore
+zaytung.com###pgcontainer > li > .dotted
+||cdn.mob-api.net/mbanner.js
+||rad.mob-api.net/imp^
+m.nn.by##.groups-container > div[class="group ordinary line has-section-title"]:first-child > div.sp-block
+forums.windowscentral.com###posts > div > div.adunit
+m.ntv.ru###topbnr
+m.fanfox.net##.adv-here
+m.fanfox.net##.top-banner
+m.fanfox.net##.top-banner > .flexslider
+merlininkazani.com##div[class^="adver-mobile-"]
+mediafire.com##.m-ad
+comnews.ru###mv-bottom-banner
+comnews.ru###mv-fullscreen
+m.auto.ru##div[class$="_place_direct"]
+vgtimes.ru##a[href^="http://ads.adfox.ru"]
 topwar.ru##.banner_yandex
 m.rambler.ru##.image-banner-place
 wallstreet-online.de##.breakingNewsOfferteBox
@@ -1921,6 +1962,12 @@ yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua##.dir
 !
 ! Blocking of Facebook ads
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/13130
+! https://github.com/AdguardTeam/AdguardFilters/issues/11291
+||behacdn.ksmobile.net^
+||cmdts.ksmobile.com^
+||p-behacdn.ksmobile.net^
+! https://github.com/AdguardTeam/AdguardFilters/issues/12552
 ! https://github.com/AdguardTeam/AdguardFilters/issues/11459
 ! https://github.com/AdguardTeam/AdguardFilters/issues/11600
 ! https://github.com/AdguardTeam/AdguardFilters/issues/10326
@@ -2120,6 +2167,7 @@ yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua##.dir
 !+ NOT_PLATFORM(ios, ext_safari, ext_android_cb)
 ||app.adjust.com^
 !
+||m.vpadn.com^
 ||parse-ppom-prod.herokuapp.com/parse/events^
 ||api.instabug.com^
 ||sts.batmobi.net^
@@ -2208,7 +2256,6 @@ yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua##.dir
 ||o2o.api.xiaomi.com^
 ||auth.be.sec.miui.com^
 ||thm.market.xiaomi.com/thm/stats
-||behacdn.ksmobile.net^
 ||geoip.ifunny.co^
 ||alogs.umeng.com^
 ||alogs.umengcloud.com^

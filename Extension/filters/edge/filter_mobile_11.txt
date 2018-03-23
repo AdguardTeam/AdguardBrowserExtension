@@ -1,8 +1,8 @@
-! Checksum: 28KC6na9BIPXMXVgXX2pdQ
+! Checksum: e0EiontzWl5AWRGeR0PNOQ
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.0.41
-! TimeUpdated: 2018-03-02T17:05:38+00:00
+! Version: 2.0.0.68
+! TimeUpdated: 2018-03-21T15:04:38+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -15,6 +15,8 @@
 ||banners.mobile.yandex.net^
 ||coinhive.com^
 ||coin-hive.com^
+/adunion/*
+||mblapi.ssl2.duapps.com^
 ||api.mobula.ds.duapps.com^
 ||noxagile.duapp.com^
 ||common.duapps.com^
@@ -39,6 +41,15 @@
 ||recreativ.ru^
 !+ NOT_OPTIMIZED
 ||hqsjc.com^
+||agent.tamedia.com.tw^
+||www.adbert.com.tw^
+||tw.api.vpon.com^
+||sdk.adtiming.com^
+||adsmogo.net^
+||adsmogo.org^
+||adsmogo.mobi^
+||adbetnet.advertserve.com^
+||chartboosts.com^
 ||mobpowertech.com^
 ||ap.smardroid.com^
 ||aclickoooo.host^$third-party
@@ -882,6 +893,7 @@ blogdoiphone.com#@#.header-ad
 blogdoiphone.com#@#.custom-ad
 westseattleblog.com#@#.custom-ad
 westseattleblog.com#@#.header-ad
+reddit.com##.PostsList > .Post[-ext-has='.PostHeader__promoted-flair']
 m.sabah.com.tr##.manset > ul > li:has(>a[href^="/haber/advertorial/"])
 m.imgur.com##.GalleryInfiniteScroll .GalleryHandler-postContainer[-ext-has='.Post-opContainer--promoted']
 chiemgau24.de##div[data-id-module="col-width-watcher"] > div.id-Container--hasNoHeadline:matches-css-before(content:*- Reklame)
@@ -914,7 +926,6 @@ nnm-club.tv,all-tor.net,free-rutor.org,lenfilm.tv,krutor.org,fast-bit.org,tor-ru
 m.dizilab.net#$##player { display:block!important; }
 m.dizilab.net#$#.previd-link { display:none!important; }
 pornhub.com#%#AG_onLoad(function() { if (typeof redirect !== 'function') return; var str = redirect.toString(); var m = str.match(/\'(\/view.*)\'/); if (m.length != 2) return; var link = m[1]; window.location.href = m[1]; });
-auth.wi-fi.ru#%#(function(){var b={};(function(a,c,d){"undefined"!==typeof window[a]?window[a][c]=d:Object.defineProperty(window,a,{get:function(){return b[a]},set:function(e){b[a]=e;e[c]=d}})})("authConfig","adfox",[])})();
 youjizz.com#%#AG_defineProperty('config.ads.mobilePopunder', {value: false});
 pornhub.com#%#Object.defineProperty(window, 'initPopUnderLinks', { get: function() { return function() { }; } });
 m.iceporn.com#%#document.cookie = "adv_show=3";
@@ -928,6 +939,7 @@ m.spankbang.com#%#AG_onLoad(function() { rpuSetCookie('true', '1000'); });
 sasisa.ru#%#AG_onLoad(function() { window.show_ads = function() {}; });
 sasisa.ru#%#Object.defineProperty(window, 'Umobi', { get: function() { return; } });
 sasisa.ru#%#AG_onLoad(function() { window.Umobi = function() {}; });
+m.fanfox.net#$#header > .top-banner { display: block!important; height: 60px!important; }
 m.empflix.com##.videoActions
 m.empflix.com##.thumb
 m.empflix.com#$##flixPlayer > video {display:block!important;}
@@ -1112,6 +1124,35 @@ m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"
 m.youtube.com##a[href^="/watch?v="][onclick^="return koya.onEvent(arguments[0]||window.event,'"]:not([role]):not([class]):not([id])
 !+ NOT_OPTIMIZED
 m.youtube.com##a[href^="/watch?v="][onclick^="return koya.onEvent(arguments[0]||window.event,'"]:not([role]):not([class]):not([id]) + div
+m.nihaogood.com##.Adinfo
+||m.nihaogood.com/js/neironga.js
+||ddreminder.appspot.com/android_ad_target.txt
+||twrailpolice.appspot.com/full_ad_priority.txt
+||twrailpolice.appspot.com/campaign.xml
+||54.169.80.245/ad^
+||tw.api.vpon.com/api/webviewAdReq
+m.cna.com.tw##.fancybox-wrap
+m.cna.com.tw##.fancybox-wrap + .fancybox-overlay
+m.cda.pl###reklama_layout_top
+m.cda.pl##.r-bt-scale > [id^="reklama"]
+dni.ru##.container__partners-line
+dni.ru##.article-footer-adv
+||zaytung.com/images/radore
+zaytung.com###pgcontainer > li > .dotted
+||cdn.mob-api.net/mbanner.js
+||rad.mob-api.net/imp^
+m.nn.by##.groups-container > div[class="group ordinary line has-section-title"]:first-child > div.sp-block
+forums.windowscentral.com###posts > div > div.adunit
+m.ntv.ru###topbnr
+m.fanfox.net##.adv-here
+m.fanfox.net##.top-banner
+m.fanfox.net##.top-banner > .flexslider
+merlininkazani.com##div[class^="adver-mobile-"]
+mediafire.com##.m-ad
+comnews.ru###mv-bottom-banner
+comnews.ru###mv-fullscreen
+m.auto.ru##div[class$="_place_direct"]
+vgtimes.ru##a[href^="http://ads.adfox.ru"]
 topwar.ru##.banner_yandex
 m.rambler.ru##.image-banner-place
 wallstreet-online.de##.breakingNewsOfferteBox
@@ -1629,6 +1670,9 @@ yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua##body
 yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua##.banner__link-frame
 yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua##.direct_type_between
 ||extmaps-api.yandex.net/promo/api/
+||behacdn.ksmobile.net^
+||cmdts.ksmobile.com^
+||p-behacdn.ksmobile.net^
 ||api.ambelbet.com/assets/js/page.ads.js$empty
 ||api.ambelbet.com/assets/js/in.ads.js$empty
 ||m.yap.yahoo.com^
@@ -1713,6 +1757,7 @@ yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua##.dir
 ||trackersimulator.org^
 !+ NOT_PLATFORM(ios, ext_safari, ext_android_cb)
 ||app.adjust.com^
+||m.vpadn.com^
 ||parse-ppom-prod.herokuapp.com/parse/events^
 ||api.instabug.com^
 ||sts.batmobi.net^
@@ -1801,7 +1846,6 @@ yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua##.dir
 ||o2o.api.xiaomi.com^
 ||auth.be.sec.miui.com^
 ||thm.market.xiaomi.com/thm/stats
-||behacdn.ksmobile.net^
 ||geoip.ifunny.co^
 ||alogs.umeng.com^
 ||alogs.umengcloud.com^
