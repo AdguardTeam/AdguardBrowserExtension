@@ -157,19 +157,14 @@
 
             api.FilterRule.call(this, rule, filterId);
 
-            var isExtendedCss = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXTENDED_CSS_RULE) ||
-                adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE) ||
-                adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE) ||
-                adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE);
+            var mask = api.FilterRule.findRuleMarker(rule, CssFilterRule.RULE_MARKERS, CssFilterRule.RULE_MARKER_FIRST_CHAR);
+            if (!mask) {
+                throw new Error("ruleText does not contain a CSS rule marker: " + rule);
+            }
 
-            var isInjectRule = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_INJECT_RULE) ||
-                adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE) ||
-                adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE) ||
-                adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE);
-
-            var mask = parseMask(rule, isExtendedCss, isInjectRule);
-
-            this.whiteListRule = CssFilterRule.WHITELIST_MASKS.indexOf(mask) !== -1;
+            var isInjectRule = CssFilterRule.INJECT_MARKERS.indexOf(mask) !== -1;
+            this.whiteListRule = CssFilterRule.WHITELIST_MARKERS.indexOf(mask) !== -1;
+            var isExtendedCss = CssFilterRule.EXTCSS_MARKERS.indexOf(mask) !== -1;
 
             var indexOfMask = rule.indexOf(mask);
             if (indexOfMask > 0) {
@@ -234,7 +229,7 @@
         ":not", ":nth-child", ":nth-last-child", ":nth-last-of-type", ":nth-of-type",
         ":only-child", ":only-of-type", ":optional", ":out-of-range", ":properties", ":read-only",
         ":read-write", ":required", ":root", ":target", ":valid", ":visited",
-        ":-abp-has", ":-abp-contains"];
+        ":-abp-has", ":-abp-contains", ":-abp-properties"];
 
     /**
      * The problem with it is that ":has" and ":contains" pseudo classes are not a valid pseudo classes,
@@ -243,13 +238,47 @@
     CssFilterRule.EXTENDED_CSS_MARKERS = ["[-ext-has=", "[-ext-contains=", "[-ext-has-text=", "[-ext-matches-css=",
         "[-ext-matches-css-before=", "[-ext-matches-css-after=", ":has(", ":has-text(", ":contains(",
         ":matches-css(", ":matches-css-before(", ":matches-css-after(", ":-abp-has(", ":-abp-contains(",
-        ":if(", ":if-not(", ":properties("];
+        ":if(", ":if-not(", ":properties(", ":-abp-properties("];
+
+    /**
+     * All CSS rules markers start with this character
+     */
+    CssFilterRule.RULE_MARKER_FIRST_CHAR = '#';
+
+    /**
+     * CSS rule markers
+     */
+    CssFilterRule.RULE_MARKERS = [
+        api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE,
+        api.FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE,
+        api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE,
+        api.FilterRule.MASK_CSS_INJECT_RULE,
+        api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE,
+        api.FilterRule.MASK_CSS_EXTENDED_CSS_RULE,
+        api.FilterRule.MASK_CSS_EXCEPTION_RULE,
+        api.FilterRule.MASK_CSS_RULE
+    ];
 
     /**
      * Masks indicating whitelist exception rules
      */
-    CssFilterRule.WHITELIST_MASKS = [api.FilterRule.MASK_CSS_EXCEPTION_RULE, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE,
+    CssFilterRule.WHITELIST_MARKERS = [
+        api.FilterRule.MASK_CSS_EXCEPTION_RULE, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE,
         api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE];
+
+    /**
+     * Masks indicating extended css rules
+     */
+    CssFilterRule.EXTCSS_MARKERS = [
+        api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE, api.FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE,
+        api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE, api.FilterRule.MASK_CSS_EXTENDED_CSS_RULE];
+
+    /**
+     * Masks indicating inject css rules
+     */
+    CssFilterRule.INJECT_MARKERS = [
+        api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE, api.FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE,
+        api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE, api.FilterRule.MASK_CSS_INJECT_RULE];
 
     api.CssFilterRule = CssFilterRule;
 
