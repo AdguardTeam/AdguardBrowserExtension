@@ -198,7 +198,7 @@
 
             if (isInjectRule) {
                 // Simple validation for css injection rules
-                if (!/\s{.+}$/.test(cssContent)) {
+                if (!/{.+}/.test(cssContent)) {
                     throw new Error("Invalid css injection rule, no style presented: " + rule);
                 }
             }
