@@ -322,6 +322,19 @@
         return null;
     };
 
+    /**
+     * All content rules markers start with this character
+     */
+    ContentFilterRule.RULE_MARKER_FIRST_CHAR = '$';
+
+    /**
+     * Content rule markers
+     */
+    ContentFilterRule.RULE_MARKERS = [
+        api.FilterRule.MASK_CONTENT_EXCEPTION_RULE,
+        api.FilterRule.MASK_CONTENT_RULE
+    ];
+
     api.ContentFilterRule = ContentFilterRule;
     api.Wildcard = Wildcard;
 
