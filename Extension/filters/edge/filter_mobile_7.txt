@@ -1,8 +1,8 @@
-! Checksum: mN8spZxWIy1b997bNiEOVg
+! Checksum: nAkyV8OE5lvbfQ1TMbRIEA
 ! Title: Japanese filter
 ! Description: AdGuard Japanese filter. Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.0.32
-! TimeUpdated: 2018-03-02T06:03:07+00:00
+! Version: 2.0.0.34
+! TimeUpdated: 2018-03-23T12:02:58+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -271,7 +271,8 @@ repeat-drama.info##.side_inner > .box:contains(スポンサーリンク)
 ##a[href^="http://ad2.trafficgate.net/"]
 ##a[href^="http://www.rssad.jp/"]
 ogeji.hatenablog.com#$#.sleeping-ads {position: absolute!important; left: -3000px!important; }
-avgle.com#$#img[src^="https://isafe.pro"] { height: 35px!important; width: 15%!important; }
+avgle.com#%#AG_onLoad(function() { var el = document.querySelector('.col-lg-8  > a[href^="https://bit.ly/"][target="_blank"]'); if(el) { el.removeAttribute("href"); }; });
+avgle.com#$#img[src^="https://isafe.pro"] { height: 35px!important; width: 60%!important; filter: blur(200px); }
 avgle.com#$#iframe[src*="exosrv"] { height: 200px!important; }
 avgle.com#$#iframe[src*="juicyads"] { height: 10px!important; }
 .com/ufo/$script
