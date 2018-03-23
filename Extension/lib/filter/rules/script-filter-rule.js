@@ -59,6 +59,19 @@
 
     ScriptFilterRule.prototype = Object.create(api.FilterRule.prototype);
 
+    /**
+     * All content rules markers start with this character
+     */
+    ScriptFilterRule.RULE_MARKER_FIRST_CHAR = '#';
+
+    /**
+     * Content rule markers
+     */
+    ScriptFilterRule.RULE_MARKERS = [
+        api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE,
+        api.FilterRule.MASK_SCRIPT_RULE
+    ];
+
     api.ScriptFilterRule = ScriptFilterRule;
 
 })(adguard, adguard.rules);

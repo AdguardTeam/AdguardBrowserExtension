@@ -27,29 +27,6 @@
      * http://adguard.com/en/filterrules.html#cssInjection
      */
     var CssFilterRule = (function () {
-        /**
-         * The problem with pseudo-classes is that any unknown pseudo-class makes browser ignore the whole CSS rule,
-         * which contains a lot more selectors. So, if CSS selector contains a pseudo-class, we should try to validate it.
-         * <p>
-         * One more problem with pseudo-classes is that they are actively used in uBlock, hence it may mess AG styles.
-         */
-        var SUPPORTED_PSEUDO_CLASSES = [":active",
-            ":checked", ":disabled", ":empty", ":enabled", ":first-child", ":first-of-type",
-            ":focus", ":hover", ":in-range", ":invalid", ":lang", ":last-child", ":last-of-type",
-            ":link", ":not", ":nth-child", ":nth-last-child", ":nth-last-of-type", ":nth-of-type",
-            ":only-child", ":only-of-type", ":optional", ":out-of-range", ":read-only",
-            ":read-write", ":required", ":root", ":target", ":valid", ":visited", ":has", ":has-text", ":contains",
-            ":matches-css", ":matches-css-before", ":matches-css-after", ":-abp-has", ":-abp-contains"];
-
-        /**
-         * The problem with it is that ":has" and ":contains" pseudo classes are not a valid pseudo classes,
-         * hence using it may break old versions of AG.
-         *
-         * @type {string[]}
-         */
-        var EXTENDED_CSS_MARKERS = ["[-ext-has=", "[-ext-contains=", "[-ext-has-text=", "[-ext-matches-css=",
-            "[-ext-matches-css-before=", "[-ext-matches-css-after=", ":has(", ":has-text(", ":contains(",
-            ":matches-css(", ":matches-css-before(", ":matches-css-after(", ":-abp-has(", ":-abp-contains("];
 
         /**
          * Tries to convert CSS injections rules from uBlock syntax to our own
@@ -143,22 +120,51 @@
         };
 
         /**
+         * Parses rule mask
+         *
+         * @param rule
+         * @param isExtendedCss
+         * @param isInjectRule
+         */
+        var parseMask = function (rule, isExtendedCss, isInjectRule) {
+            var mask;
+            var isException;
+            if (!isExtendedCss) {
+                if (isInjectRule) {
+                    isException = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE);
+                    mask = isException ? api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE : api.FilterRule.MASK_CSS_INJECT_RULE;
+                } else {
+                    isException = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_RULE);
+                    mask = isException ? api.FilterRule.MASK_CSS_EXCEPTION_RULE : api.FilterRule.MASK_CSS_RULE;
+                }
+            } else {
+                if (isInjectRule) {
+                    isException = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE);
+                    mask = isException ? api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE : api.FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE;
+                } else {
+                    isException = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE);
+                    mask = isException ? api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE : api.FilterRule.MASK_CSS_EXTENDED_CSS_RULE;
+                }
+            }
+
+            return mask;
+        };
+
+        /**
          * CssFilterRule constructor
          */
         var constructor = function (rule, filterId) {
 
             api.FilterRule.call(this, rule, filterId);
 
-            var isInjectRule = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_INJECT_RULE) || adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE);
-
-            var mask;
-            if (isInjectRule) {
-                this.whiteListRule = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE);
-                mask = this.whiteListRule ? api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE : api.FilterRule.MASK_CSS_INJECT_RULE;
-            } else {
-                this.whiteListRule = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_RULE);
-                mask = this.whiteListRule ? api.FilterRule.MASK_CSS_EXCEPTION_RULE : api.FilterRule.MASK_CSS_RULE;
+            var mask = api.FilterRule.findRuleMarker(rule, CssFilterRule.RULE_MARKERS, CssFilterRule.RULE_MARKER_FIRST_CHAR);
+            if (!mask) {
+                throw new Error("ruleText does not contain a CSS rule marker: " + rule);
             }
+
+            var isInjectRule = CssFilterRule.INJECT_MARKERS.indexOf(mask) !== -1;
+            this.whiteListRule = CssFilterRule.WHITELIST_MARKERS.indexOf(mask) !== -1;
+            var isExtendedCss = CssFilterRule.EXTCSS_MARKERS.indexOf(mask) !== -1;
 
             var indexOfMask = rule.indexOf(mask);
             if (indexOfMask > 0) {
@@ -167,7 +173,6 @@
                 this.loadDomains(domains);
             }
 
-            var isExtendedCss = false;
             var cssContent = rule.substring(indexOfMask + mask.length);
 
             if (!isInjectRule) {
@@ -180,16 +185,23 @@
                     isInjectRule = true;
                     cssContent = convertCssInjectionRule(pseudoClass, cssContent);
                 } else if (pseudoClass !== null) {
-                    if (SUPPORTED_PSEUDO_CLASSES.indexOf(pseudoClass.name) < 0) {
+                    if (CssFilterRule.SUPPORTED_PSEUDO_CLASSES.indexOf(pseudoClass.name) < 0) {
                         throw new Error("Unknown pseudo class: " + cssContent);
                     }
                 }
             }
 
+            if (isInjectRule) {
+                // Simple validation for css injection rules
+                if (!/{.+}/.test(cssContent)) {
+                    throw new Error("Invalid css injection rule, no style presented: " + rule);
+                }
+            }
+
             // Extended CSS selectors support
             // https://github.com/AdguardTeam/ExtendedCss
-            for (var i = 0; i < EXTENDED_CSS_MARKERS.length; i++) {
-                if (cssContent.indexOf(EXTENDED_CSS_MARKERS[i]) >= 0) {
+            for (var i = 0; i < CssFilterRule.EXTENDED_CSS_MARKERS.length; i++) {
+                if (cssContent.indexOf(CssFilterRule.EXTENDED_CSS_MARKERS[i]) >= 0) {
                     isExtendedCss = true;
                 }
             }
@@ -203,6 +215,70 @@
     })();
 
     CssFilterRule.prototype = Object.create(api.FilterRule.prototype);
+
+    /**
+     * The problem with pseudo-classes is that any unknown pseudo-class makes browser ignore the whole CSS rule,
+     * which contains a lot more selectors. So, if CSS selector contains a pseudo-class, we should try to validate it.
+     * <p>
+     * One more problem with pseudo-classes is that they are actively used in uBlock, hence it may mess AG styles.
+     */
+    CssFilterRule.SUPPORTED_PSEUDO_CLASSES = [":active",
+        ":checked", ":contains", ":disabled", ":empty", ":enabled", ":first-child", ":first-of-type",
+        ":focus", ":has", ":has-text", ":hover", ":if", ":if-not", ":in-range", ":invalid", ":lang",
+        ":last-child", ":last-of-type", ":link", ":matches-css", ":matches-css-before", ":matches-css-after",
+        ":not", ":nth-child", ":nth-last-child", ":nth-last-of-type", ":nth-of-type",
+        ":only-child", ":only-of-type", ":optional", ":out-of-range", ":properties", ":read-only",
+        ":read-write", ":required", ":root", ":target", ":valid", ":visited",
+        ":-abp-has", ":-abp-contains", ":-abp-properties"];
+
+    /**
+     * The problem with it is that ":has" and ":contains" pseudo classes are not a valid pseudo classes,
+     * hence using it may break old versions of AG.
+     */
+    CssFilterRule.EXTENDED_CSS_MARKERS = ["[-ext-has=", "[-ext-contains=", "[-ext-has-text=", "[-ext-matches-css=",
+        "[-ext-matches-css-before=", "[-ext-matches-css-after=", ":has(", ":has-text(", ":contains(",
+        ":matches-css(", ":matches-css-before(", ":matches-css-after(", ":-abp-has(", ":-abp-contains(",
+        ":if(", ":if-not(", ":properties(", ":-abp-properties("];
+
+    /**
+     * All CSS rules markers start with this character
+     */
+    CssFilterRule.RULE_MARKER_FIRST_CHAR = '#';
+
+    /**
+     * CSS rule markers
+     */
+    CssFilterRule.RULE_MARKERS = [
+        api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE,
+        api.FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE,
+        api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE,
+        api.FilterRule.MASK_CSS_INJECT_RULE,
+        api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE,
+        api.FilterRule.MASK_CSS_EXTENDED_CSS_RULE,
+        api.FilterRule.MASK_CSS_EXCEPTION_RULE,
+        api.FilterRule.MASK_CSS_RULE
+    ];
+
+    /**
+     * Masks indicating whitelist exception rules
+     */
+    CssFilterRule.WHITELIST_MARKERS = [
+        api.FilterRule.MASK_CSS_EXCEPTION_RULE, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE,
+        api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE];
+
+    /**
+     * Masks indicating extended css rules
+     */
+    CssFilterRule.EXTCSS_MARKERS = [
+        api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE, api.FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE,
+        api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE, api.FilterRule.MASK_CSS_EXTENDED_CSS_RULE];
+
+    /**
+     * Masks indicating inject css rules
+     */
+    CssFilterRule.INJECT_MARKERS = [
+        api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE, api.FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE,
+        api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE, api.FilterRule.MASK_CSS_INJECT_RULE];
 
     api.CssFilterRule = CssFilterRule;
 

@@ -46,26 +46,31 @@
             }
 
             if (StringUtils.startWith(ruleText, api.FilterRule.MASK_WHITE_LIST)) {
-                rule = new api.UrlFilterRule(ruleText, filterId);
-            } else if (StringUtils.contains(ruleText, api.FilterRule.MASK_CONTENT_RULE) || StringUtils.contains(ruleText, api.FilterRule.MASK_CONTENT_EXCEPTION_RULE)) {
+                return new api.UrlFilterRule(ruleText, filterId);
+            }
+
+            if (api.FilterRule.findRuleMarker(ruleText, api.ContentFilterRule.RULE_MARKERS, api.ContentFilterRule.RULE_MARKER_FIRST_CHAR)) {
                 var responseContentFilteringSupported = adguard.prefs.features && adguard.prefs.features.responseContentFilteringSupported;
                 if (!responseContentFilteringSupported) {
                     return null;
                 }
-                rule = new api.ContentFilterRule(ruleText, filterId);
-            } else if (StringUtils.contains(ruleText, api.FilterRule.MASK_CSS_RULE) || StringUtils.contains(ruleText, api.FilterRule.MASK_CSS_EXCEPTION_RULE)) {
-                rule = new api.CssFilterRule(ruleText, filterId);
-            } else if (StringUtils.contains(ruleText, api.FilterRule.MASK_CSS_INJECT_RULE) || StringUtils.contains(ruleText, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE)) {
-                rule = new api.CssFilterRule(ruleText, filterId);
-            } else if (StringUtils.contains(ruleText, api.FilterRule.MASK_SCRIPT_RULE) || StringUtils.contains(ruleText, api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE)) {
-                rule = new api.ScriptFilterRule(ruleText, filterId);
-            } else {
-                rule = new api.UrlFilterRule(ruleText, filterId);
+                return new api.ContentFilterRule(ruleText, filterId);
             }
+
+            if (api.FilterRule.findRuleMarker(ruleText, api.CssFilterRule.RULE_MARKERS, api.CssFilterRule.RULE_MARKER_FIRST_CHAR)) {
+                return new api.CssFilterRule(ruleText, filterId);
+            }
+
+            if (api.FilterRule.findRuleMarker(ruleText, api.ScriptFilterRule.RULE_MARKERS, api.ScriptFilterRule.RULE_MARKER_FIRST_CHAR)) {
+                return new api.ScriptFilterRule(ruleText, filterId);
+            }
+
+            return  new api.UrlFilterRule(ruleText, filterId);
         } catch (ex) {
             adguard.console.warn("Cannot create rule from filter {0}: {1}, cause {2}", filterId || 0, ruleText, ex);
         }
-        return rule;
+
+        return null;
     };
 
     api.builder = {
