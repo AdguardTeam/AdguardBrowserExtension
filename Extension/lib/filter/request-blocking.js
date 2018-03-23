@@ -109,6 +109,10 @@ adguard.webRequestService = (function (adguard) {
                     cssFilterOptions += CssFilter.GENERIC_HIDE_APPLIED;
                 }
             }
+        } else {
+            if (!elemHideFlag && genericHideFlag) {
+                cssFilterOptions += CssFilter.GENERIC_HIDE_APPLIED;
+            }
         }
 
         var retrieveSelectors = !elemHideFlag && (cssFilterOptions & (CssFilter.RETRIEVE_TRADITIONAL_CSS + CssFilter.RETRIEVE_EXTCSS)) !== 0;
