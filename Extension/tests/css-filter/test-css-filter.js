@@ -123,8 +123,8 @@ QUnit.test("Css GenericHide Exception Rules", function (assert) {
     var nonGeneric = new adguard.rules.CssFilterRule("adguard.com##.non-generic");
     var injectRule = new adguard.rules.CssFilterRule("adguard.com#$#body { background-color: #111!important; }");
     var exceptionRule = new adguard.rules.CssFilterRule("adguard.com#@#.generic-one");
-    var genericHideRule = new adguard.rules.CssFilterRule("@@||adguard.com^$generichide");
-    var elemHideRule = new adguard.rules.CssFilterRule("@@||adguard.com^$elemhide");
+    var genericHideRule = new adguard.rules.UrlFilterRule("@@||adguard.com^$generichide");
+    var elemHideRule = new adguard.rules.UrlFilterRule("@@||adguard.com^$elemhide");
     var filter = new adguard.rules.CssFilter([genericOne]);
 
     var css = filter.buildCss("adguard.com").css;
@@ -149,8 +149,11 @@ QUnit.test("Css GenericHide Exception Rules", function (assert) {
 
     filter.addRule(exceptionRule);
     css = filter.buildCss("adguard.com").css;
-    //commonCss = filter.buildCss(null).css;
+    commonCss = filter.buildCss(null).css;
+    otherCss = filter.buildCss("another.domain").css;
     assert.equal(css.length, 1);
+    assert.equal(commonCss.length, 0);
+    assert.equal(otherCss.length, 1);
 
     filter.addRule(genericHideRule);
     css = filter.buildCss("adguard.com", genericHide).css;
@@ -158,8 +161,8 @@ QUnit.test("Css GenericHide Exception Rules", function (assert) {
     otherCss = filter.buildCss("another.domain").css;
     assert.equal(css.length, 1);
     assert.ok(css[0].indexOf('#generic') < 0);
-    assert.equal(commonCss.length, 1);
-    assert.equal(otherCss.length, 2);
+    assert.equal(commonCss.length, 0);
+    assert.equal(otherCss.length, 1);
 
     filter.removeRule(exceptionRule);
     css = filter.buildCss("adguard.com", genericHide).css;
@@ -394,7 +397,15 @@ QUnit.test("Valid Pseudo Class", function (assert) {
     assert.notOk(cssFilterRule.whiteListRule);
     assert.equal(selector, cssFilterRule.cssSelector);
 
-    selector = ".todaystripe::properties(background-color: rgb\(0, 0, 0\))";
+    selector = ".todaystripe:properties(background-color: rgb\(0, 0, 0\))";
+    ruleText = "w3schools.com##" + selector;
+    cssFilterRule = new adguard.rules.CssFilterRule(ruleText);
+    assert.ok(cssFilterRule != null);
+    assert.notOk(cssFilterRule.isInjectRule);
+    assert.notOk(cssFilterRule.whiteListRule);
+    assert.equal(selector, cssFilterRule.cssSelector);
+
+    selector = ".todaystripe:-abp-properties(background-color: rgb\(0, 0, 0\))";
     ruleText = "w3schools.com##" + selector;
     cssFilterRule = new adguard.rules.CssFilterRule(ruleText);
     assert.ok(cssFilterRule != null);

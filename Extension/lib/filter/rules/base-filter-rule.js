@@ -218,6 +218,54 @@
     };
 
     /**
+     * Checks if the specified string starts with a substr at the specified index
+     *
+     * @param str        String to check
+     * @param startIndex Index to start checking from
+     * @param substr     Substring to check
+     * @return boolean true if it does start
+     */
+    function startsAtIndexWith(str, startIndex, substr) {
+
+        if (str.length - startIndex < substr.length) {
+            return false;
+        }
+
+        for (var i = 0; i < substr.length; i++) {
+            if (str.charAt(startIndex + i) !== substr.charAt(i)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Finds CSS rule marker in the rule text
+     *
+     * @param ruleText        rule text to check
+     * @param markers         a list of markers to check (IMPORTANT: sorted by length desc)
+     * @param firstMarkerChar first character of the marker we're looking for
+     * @return rule marker found
+     */
+    FilterRule.findRuleMarker = function (ruleText, markers, firstMarkerChar) {
+
+        var startIndex = ruleText.indexOf(firstMarkerChar);
+        if (startIndex === -1) {
+            return null;
+        }
+
+        for (var i = 0; i < markers.length; i++) {
+            var marker = markers[i];
+            if (startsAtIndexWith(ruleText, startIndex, marker)) {
+                return marker;
+            }
+        }
+
+        return null;
+    };
+
+    /**
      * urlencodes rule text.
      * We need this function because of this issue:
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/34
