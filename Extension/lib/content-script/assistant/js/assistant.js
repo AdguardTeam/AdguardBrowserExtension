@@ -5935,6 +5935,16 @@ var Localization = function() { // jshint ignore:line
         'sr': sr_Latn
     };
 
+    /*
+     * In Edge, there is undocumented behavior. When you run the script
+     * through `executeScript`, the Edge browser blocks access to the
+     * `languages` property of the `navigator` object without displaying
+     * an error in the console and stopping the processing of the code.
+     * When you call `navigator.languages` manually from the console,
+     * there is no error and the correct value is returned. Therefore,
+     * it is necessary to check `typeof navigator.languages !== 'undefined'`.
+     * issue: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/983
+     */
     if (typeof AdguardSettings !== 'undefined') {
         locale = AdguardSettings.locale;
     } else if (typeof navigator.languages !== 'undefined') {
