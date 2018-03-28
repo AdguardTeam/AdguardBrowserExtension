@@ -1089,6 +1089,9 @@
         // Deprecated modifiers
         'BACKGROUND': true,
         '~BACKGROUND': true,
+        // Specific to desktop version (can be ignored)
+        'EXTENSION': true,
+        '~EXTENSION': true,
         // Unused modifiers
         'COLLAPSE': true,
         '~COLLAPSE': true,
