@@ -193,22 +193,12 @@ if (typeof exports != 'undefined') {
 	exports.SHA256 = SHA256;
 }
 
+/**
+ * Patched: changed the way punycode is exposed, removed AMD/exports
+ */
+
 /*! http://mths.be/punycode v1.3.0 by @mathias */
 ;(function(root) {
-
-	/** Detect free variables */
-	var freeExports = typeof exports == 'object' && exports &&
-		!exports.nodeType && exports;
-	var freeModule = typeof module == 'object' && module &&
-		!module.nodeType && module;
-	var freeGlobal = typeof global == 'object' && global;
-	if (
-		freeGlobal.global === freeGlobal ||
-		freeGlobal.window === freeGlobal ||
-		freeGlobal.self === freeGlobal
-		) {
-		root = freeGlobal;
-	}
 
 	/**
 	 * The `punycode` object.
@@ -692,32 +682,9 @@ if (typeof exports != 'undefined') {
 		'toUnicode': toUnicode
 	};
 
-	/** Expose `punycode` */
-	// Some AMD build optimizers, like r.js, check for specific condition patterns
-	// like the following:
-	if (typeof exports !== 'undefined') {
-		exports.punycode = punycode;
-	} else if (
-		typeof define == 'function' &&
-		typeof define.amd == 'object' &&
-		define.amd
-		) {
-		define('punycode', function () {
-			return punycode;
-		});
-	} else if (freeExports && freeModule) {
-		if (module.exports == freeExports) { // in Node.js or RingoJS v0.8.0+
-			freeModule.exports = punycode;
-		} else { // in Narwhal or RingoJS v0.7.0-
-			for (key in punycode) {
-				punycode.hasOwnProperty(key) && (freeExports[key] = punycode[key]);
-			}
-		}
-	} else { // in Rhino or a web browser
-		root.punycode = punycode;
-	}
-
-}(this));
+    // Changed the way punycode is exposed
+	root.punycode = punycode;
+}(window));
 
 /**
  * Global adguard object
@@ -781,6 +748,7 @@ var adguard = (function () { // jshint ignore:line
 
     var integrationModule = {
         isSupported: notImplemented,
+        isEnabled: notImplemented,
         isIntegrationRequest: notImplemented,
         shouldOverrideReferrer: notImplemented
     };
@@ -855,13 +823,8 @@ adguard.prefs = (function (adguard) {
 
         get chromeVersion() {
             return adguard.lazyGet(Prefs, 'chromeVersion', function () {
-                if (this.browser === "Chrome") {
-                    var i = navigator.userAgent.indexOf("Chrome/");
-                    if (i < 0) {
-                        return null;
-                    }
-                    return parseInt(navigator.userAgent.substring(i + 7));
-                }
+                var match = /\sChrome\/(\d+)\./.exec(navigator.userAgent);
+                return match === null ? null : parseInt(match[1]);
             });
         },
 
@@ -897,20 +860,6 @@ adguard.prefs = (function (adguard) {
             return false;
         },
 
-        /**
-         * Collect browser specific features here
-         */
-        features: (function () {
-
-            var responseContentFilteringSupported = typeof browser !== 'undefined' &&
-                typeof browser.webRequest !== 'undefined' &&
-                typeof browser.webRequest.filterResponseData !== 'undefined';
-
-            return {
-                responseContentFilteringSupported: responseContentFilteringSupported
-            };
-        })(),
-
         get ICONS() {
             return adguard.lazyGet(Prefs, 'ICONS', function () {
                 return {
@@ -936,6 +885,56 @@ adguard.prefs = (function (adguard) {
          */
         collectHitsCountEnabled: (typeof safari === 'undefined')
     };
+
+    /**
+     * Collect browser specific features here
+     */
+    Prefs.features = (function () {
+
+        // Get the global extension object (browser for FF, chrome for Chromium)
+        var browser = window.browser || window.chrome;
+
+        var responseContentFilteringSupported = (typeof browser !== 'undefined' &&
+            typeof browser.webRequest !== 'undefined' &&
+            typeof browser.webRequest.filterResponseData !== 'undefined');
+
+        var canUseInsertCSSAndExecuteScript = (
+            // Blink engine based browsers
+            (Prefs.browser === 'Chrome' || Prefs.browser === 'Opera' || Prefs.browser === 'YaBrowser') &&
+            // Support for tabs.insertCSS and tabs.executeScript on chrome 
+            // requires chrome version above or equal to 39, as per documentation: https://developers.chrome.com/extensions/tabs
+            // But due to a bug, it requires version >= 50
+            // https://bugs.chromium.org/p/chromium/issues/detail?id=63979
+            Prefs.chromeVersion >= 50
+        ) || (
+            Prefs.browser === 'Firefox' && (
+                typeof browser !== 'undefined' &&
+                typeof browser.tabs !== 'undefined' &&
+                typeof browser.tabs.insertCSS !== 'undefined' 
+            )
+        );
+        // Edge browser does not support `runAt` in options of tabs.insertCSS
+        // and tabs.executeScript
+          
+        /**
+         * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/extensionTypes
+         * 
+         * Whether it implements cssOrigin: 'user' option.
+         * Style declarations in user origin stylesheets that have `!important` priority
+         * takes precedence over page styles
+         * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/Cascade#Cascading_order}
+         */
+        var userCSSSupport = typeof browser !== 'undefined' &&
+            typeof browser.extensionTypes === 'object' &&
+            typeof browser.extensionTypes.CSSOrigin !== 'undefined';
+
+        return {
+            responseContentFilteringSupported: responseContentFilteringSupported,
+            canUseInsertCSSAndExecuteScript: canUseInsertCSSAndExecuteScript,
+            userCSSSupport: userCSSSupport,
+            hasBackgroundTab: typeof browser !== 'undefined' // Background requests have sense only in case of webext
+        };
+    })();
 
     return Prefs;
 
@@ -983,6 +982,7 @@ adguard.utils = (function () {
         browser: null, // BrowserUtils
         filters: null, // FilterUtils,
         workaround: null, // WorkaroundUtils
+        i18n: null, // I18nUtils
         StopWatch: null,
         Promise: null // Deferred,
     };
@@ -1545,23 +1545,65 @@ adguard.utils = (function () {
             }
 
             return blockedText;
-        },
-
-        /**
-         * Checks if it is facebook like button iframe
-         * TODO: Ugly, remove this
-         *
-         * @param url URL
-         * @returns true if it is
-         */
-        isFacebookIframe: function (url) {
-            // facebook iframe workaround
-            // do not inject anything to facebook frames
-            return url.indexOf('www.facebook.com/plugins/like.php') > -1;
         }
     };
 
     api.workaround = WorkaroundUtils;
+
+})(adguard.utils);
+
+/**
+ * Simple i18n utils
+ */
+(function (api) {
+
+    function isArrayElement(array, elem) {
+        return array.indexOf(elem) >= 0;
+    }
+
+    function isObjectKey(object, key) {
+        return key in object;
+    }
+
+    api.i18n = {
+
+        /**
+         * Tries to find locale in the given collection of locales
+         * @param locales Collection of locales (array or object)
+         * @param locale Locale (e.g. en, en_GB, pt_BR)
+         * @returns matched locale from the locales collection or null
+         */
+        normalize: function (locales, locale) {
+
+            if (!locale) {
+                return null;
+            }
+
+            // Transform Language-Country => Language_Country
+            locale = locale.replace("-", "_");
+
+            var search;
+
+            if (api.collections.isArray(locales)) {
+                search = isArrayElement;
+            } else {
+                search = isObjectKey;
+            }
+
+            if (search(locales, locale)) {
+                return locale;
+            }
+
+            // Try to search by the language
+            var parts = locale.split('_');
+            var language = parts[0];
+            if (search(locales, language)) {
+                return language;
+            }
+
+            return null;
+        }
+    };
 
 })(adguard.utils);
 
@@ -8285,19 +8327,6 @@ adguard.listeners = (function () {
         },
 
         /**
-         * Returns true if Shadow DOM is supported.
-         * http://caniuse.com/#feat=shadowdom
-         *
-         * In this case we transform CSS selectors and inject CSS to shadow DOM.
-         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/44
-         */
-        isShadowDomSupported: function () {
-
-            // Shadow DOM is supported by all modern chromium browsers
-            return this.isChromium();
-        },
-
-        /**
          * Returns true if Safari content blocker API is supported
          */
         isContentBlockerEnabled: function () {
@@ -8459,6 +8488,7 @@ adguard.listeners = (function () {
             params.push('id=' + id);
             return params;
         }
+
     };
 
     api.browser = Utils;
@@ -8557,7 +8587,7 @@ adguard.backend = (function (adguard) {
         // This url is used in integration mode. Adguard for Windows/Mac/Android intercepts requests to injections.adguard.com host.
         // It is not used for remote requests, requests are intercepted by the desktop version of Adguard.
         get injectionsUrl() {
-            return "http://injections.adguard.com";
+            return "https://injections.adguard.com";
         },
 
         // URLs used when add-on works in integration mode.
@@ -8985,6 +9015,30 @@ adguard.backend = (function (adguard) {
     };
 
     /**
+     * Allows to receive response headers from the request to the given URL
+     * @param url URL
+     * @param callback Callback with headers or null in the case of error
+     */
+    var getResponseHeaders = function (url, callback) {
+        executeRequestAsync(url, 'text/plain', function (request) {
+            var arr = request.getAllResponseHeaders().trim().split(/[\r\n]+/);
+            var headers = arr.map(function (line) {
+                var parts = line.split(': ');
+                var header = parts.shift();
+                var value = parts.join(': ');
+                return {
+                    name: header,
+                    value: value
+                };
+            });
+            callback(headers);
+        }, function (request) {
+            adguard.console.error("Error retrieved response from {0}, cause: {1}", url, request.statusText);
+            callback(null);
+        })
+    };
+
+    /**
      * Configures backend's URLs
      * @param configuration Configuration object:
      * {
@@ -9054,6 +9108,8 @@ adguard.backend = (function (adguard) {
         sendHitStats: sendHitStats,
 
         isAdguardAppRequest: isAdguardAppRequest,
+
+        getResponseHeaders: getResponseHeaders,
 
         configure: configure
     };
@@ -9419,10 +9475,10 @@ adguard.frames = (function (adguard) {
 	/**
 	 * Gets main frame URL
 	 *
-	 * @param tab	Tab
+	 * @param tab    Tab
 	 * @returns Frame URL
 	 */
-	var getMainFrameUrl = function(tab){
+	var getMainFrameUrl = function (tab) {
 		return getFrameUrl(tab, 0);
 	};
 
@@ -9469,7 +9525,7 @@ adguard.frames = (function (adguard) {
 	 * @returns true if Adguard for Windows/Android/Mac is detected
 	 */
 	var isTabAdguardDetected = function (tab) {
-		return adguard.tabs.getTabMetadata(tab.tabId, 'adguardDetected');
+		return adguard.integration.isEnabled() && adguard.tabs.getTabMetadata(tab.tabId, 'adguardDetected');
 	};
 
 	/**
@@ -9479,7 +9535,7 @@ adguard.frames = (function (adguard) {
 	 * @returns true if Adguard for Windows/Android/Mac is detected and tab in white list
 	 */
 	var isTabAdguardWhiteListed = function (tab) {
-		var adguardDetected = adguard.tabs.getTabMetadata(tab.tabId, 'adguardDetected');
+		var adguardDetected = isTabAdguardDetected(tab);
 		var adguardDocumentWhiteListed = adguard.tabs.getTabMetadata(tab.tabId, 'adguardDocumentWhiteListed');
 		return adguardDetected && adguardDocumentWhiteListed;
 	};
@@ -9489,7 +9545,7 @@ adguard.frames = (function (adguard) {
 	 * @returns Adguard whitelist rule in user filter associated with this tab
 	 */
 	var getTabAdguardUserWhiteListRule = function (tab) {
-		var adguardDetected = adguard.tabs.getTabMetadata(tab.tabId, 'adguardDetected');
+		var adguardDetected = isTabAdguardDetected(tab);
 		var adguardUserWhiteListed = adguard.tabs.getTabMetadata(tab.tabId, 'adguardUserWhiteListed');
 		if (adguardDetected && adguardUserWhiteListed) {
 			return adguard.tabs.getTabMetadata(tab.tabId, 'adguardWhiteListRule');
@@ -9536,16 +9592,16 @@ adguard.frames = (function (adguard) {
 	var reloadFrameData = function (tab) {
 		var frame = adguard.tabs.getTabFrame(tab.tabId, 0);
 		if (frame) {
-            var applicationFilteringDisabled = adguard.settings.isFilteringDisabled();
-            var frameWhiteListRule = null;
-            if (!applicationFilteringDisabled) {
-                var url = frame.url;
-                frameWhiteListRule = adguard.whitelist.findWhiteListRule(url);
-                if (!frameWhiteListRule) {
-                    frameWhiteListRule = adguard.requestFilter.findWhiteListRule(url, url, adguard.RequestTypes.DOCUMENT);
-                }
-            }
-            adguard.tabs.updateTabMetadata(tab.tabId, {
+			var applicationFilteringDisabled = adguard.settings.isFilteringDisabled();
+			var frameWhiteListRule = null;
+			if (!applicationFilteringDisabled) {
+				var url = frame.url;
+				frameWhiteListRule = adguard.whitelist.findWhiteListRule(url);
+				if (!frameWhiteListRule) {
+					frameWhiteListRule = adguard.requestFilter.findWhiteListRule(url, url, adguard.RequestTypes.DOCUMENT);
+				}
+			}
+			adguard.tabs.updateTabMetadata(tab.tabId, {
 				frameWhiteListRule: frameWhiteListRule,
 				applicationFilteringDisabled: applicationFilteringDisabled
 			});
@@ -9586,7 +9642,7 @@ adguard.frames = (function (adguard) {
 		var canAddRemoveRule = false;
 		var frameRule;
 
-		var adguardDetected = adguard.tabs.getTabMetadata(tabId, 'adguardDetected');
+		var adguardDetected = isTabAdguardDetected(tab);
 		var adguardProductName = '';
 
 		if (!urlFilteringDisabled) {
@@ -10177,6 +10233,9 @@ var browser = window.browser || chrome;
                     if (sender.tab) {
                         senderOverride.tab = adguard.tabsImpl.fromChromeTab(sender.tab);
                     }
+                    if (typeof sender.frameId !== 'undefined') {
+                        senderOverride.frameId = sender.frameId;
+                    }
                     var response = callback(message, senderOverride, sendResponse);
                     var async = response === true;
                     // If async sendResponse will be invoked later
@@ -10196,6 +10255,27 @@ var browser = window.browser || chrome;
             }
         };
     })();
+
+    const backgroundTabId = -1;
+
+    // Calculates absolute URL of this extension
+    const extensionProtocol = (function () {
+        var url = browser.extension.getURL("");
+        var index = url.indexOf('://');
+        if (index > 0) {
+            return url.substring(0, index);
+        }
+        return url;
+    })();
+
+    /**
+     * We are skipping requests to internal resources of extensions (e.g. chrome-extension:// or moz-extension://... etc.)
+     * @param details Request details
+     * @returns {boolean}
+     */
+    function shouldSkipRequest(details) {
+        return details.tabId === backgroundTabId && details.url.indexOf(extensionProtocol) === 0;
+    }
 
     var linkHelper = document.createElement('a');
 
@@ -10219,7 +10299,7 @@ var browser = window.browser || chrome;
 
     function getRequestDetails(details) {
 
-        var tab = {tabId: details.tabId};
+        var tab = { tabId: details.tabId };
 
         /**
          * FF sends http instead of ws protocol at the http-listeners layer
@@ -10229,7 +10309,7 @@ var browser = window.browser || chrome;
             details.url = details.url.replace(/^http(s)?:/, 'ws$1:');
         }
 
-        //https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
+        // https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
         var requestDetails = {
             requestUrl: details.url,    //request url
             tab: tab,                   //request tab,
@@ -10258,7 +10338,7 @@ var browser = window.browser || chrome;
                 break;
         }
 
-        //relate request to main_frame
+        // Relate request to main_frame
         if (requestFrameId === -1) {
             requestFrameId = 0;
         }
@@ -10272,7 +10352,7 @@ var browser = window.browser || chrome;
         }
 
         /**
-         * Use `OTHER` type as fallback
+         * Use `OTHER` type as a fallback
          * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/777
          */
         if (!(requestType in adguard.RequestTypes)) {
@@ -10291,6 +10371,13 @@ var browser = window.browser || chrome;
             requestDetails.responseHeaders = details.responseHeaders;
         }
 
+        if (details.tabId === backgroundTabId) {
+            // In case of background request, its details contains referrer url
+            // Chrome uses `initiator`: https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
+            // FF uses `originUrl`: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webRequest/onBeforeRequest#Additional_objects
+            requestDetails.referrerUrl = details.originUrl || details.initiator;
+        }
+
         return requestDetails;
     }
 
@@ -10301,14 +10388,14 @@ var browser = window.browser || chrome;
             // https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
             browser.webRequest.onBeforeRequest.addListener(function (details) {
 
-                if (details.tabId === -1) {
+                if (shouldSkipRequest(details)) {
                     return;
                 }
 
                 var requestDetails = getRequestDetails(details);
                 return callback(requestDetails);
 
-            }, urls ? {urls: urls} : {}, ["blocking"]);
+            }, urls ? { urls: urls } : {}, ["blocking"]);
         }
     };
 
@@ -10318,17 +10405,17 @@ var browser = window.browser || chrome;
 
             browser.webRequest.onHeadersReceived.addListener(function (details) {
 
-                if (details.tabId === -1) {
+                if (shouldSkipRequest(details)) {
                     return;
                 }
 
                 var requestDetails = getRequestDetails(details);
                 var result = callback(requestDetails);
                 if (result) {
-                    return 'responseHeaders' in result ? {responseHeaders: result.responseHeaders} : {};
+                    return 'responseHeaders' in result ? { responseHeaders: result.responseHeaders } : {};
                 }
 
-            }, urls ? {urls: urls} : {}, ["responseHeaders", "blocking"]);
+            }, urls ? { urls: urls } : {}, ["responseHeaders", "blocking"]);
         }
     };
 
@@ -10338,17 +10425,17 @@ var browser = window.browser || chrome;
 
             browser.webRequest.onBeforeSendHeaders.addListener(function (details) {
 
-                if (details.tabId === -1) {
+                if (shouldSkipRequest(details)) {
                     return;
                 }
 
                 var requestDetails = getRequestDetails(details);
                 var result = callback(requestDetails);
                 if (result) {
-                    return 'requestHeaders' in result ? {requestHeaders: result.requestHeaders} : {};
+                    return 'requestHeaders' in result ? { requestHeaders: result.requestHeaders } : {};
                 }
 
-            }, urls ? {urls: urls} : {}, ["requestHeaders", "blocking"]);
+            }, urls ? { urls: urls } : {}, ["requestHeaders", "blocking"]);
         }
     };
 
@@ -10418,7 +10505,7 @@ var browser = window.browser || chrome;
 
             browser.webNavigation.onCreatedNavigationTarget.addListener(function (details) {
 
-                if (details.tabId === -1) {
+                if (details.tabId === backgroundTabId) {
                     return;
                 }
 
@@ -10434,15 +10521,13 @@ var browser = window.browser || chrome;
     var onCommitted = {
 
         addListener: function (callback) {
-
             // https://developer.chrome.com/extensions/webNavigation#event-onCommitted
-            browser.webNavigation.onCommitted.addListener(function (details) {
-
-                if (details.tabId === -1) {
-                    return;
-                }
-
-                callback(details.tabId, details.frameId, details.url);
+            browser.webNavigation.onCommitted.addListener(callback, {
+                url: [{
+                    urlPrefix: 'http'
+                }, {
+                    urlPrefix: 'https'
+                }]
             });
         }
     };
@@ -10476,13 +10561,13 @@ var browser = window.browser || chrome;
                 if (browser.runtime.lastError) {
                     return;
                 }
-                browser.browserAction.setBadgeText({tabId: tabId, text: badge});
+                browser.browserAction.setBadgeText({ tabId: tabId, text: badge });
 
                 if (browser.runtime.lastError) {
                     return;
                 }
                 if (badge) {
-                    browser.browserAction.setBadgeBackgroundColor({tabId: tabId, color: badgeColor});
+                    browser.browserAction.setBadgeBackgroundColor({ tabId: tabId, color: badgeColor });
                 }
 
                 //title setup via manifest.json file
@@ -10499,7 +10584,7 @@ var browser = window.browser || chrome;
                 return;
             }
 
-            browser.browserAction.setIcon({tabId: tabId, path: icon}, onIconReady);
+            browser.browserAction.setIcon({ tabId: tabId, path: icon }, onIconReady);
         },
         setPopup: function () {
             // Do nothing. Popup is already installed in manifest file
@@ -10716,7 +10801,7 @@ adguard.tabsImpl = (function (adguard) {
         getActive(function (activeTabId) {
             if (tabId !== activeTabId) {
                 // Focus window
-                browser.windows.update(windowId, {focused: true}, function () {
+                browser.windows.update(windowId, { focused: true }, function () {
                     if (checkLastError("Update window " + windowId)) {
                         return;
                     }
@@ -10814,7 +10899,7 @@ adguard.tabsImpl = (function (adguard) {
 
     var activate = function (tabId, callback) {
         // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/update
-        browser.tabs.update(tabIdToInt(tabId), {active: true}, function (chromeTab) {
+        browser.tabs.update(tabIdToInt(tabId), { active: true }, function (chromeTab) {
             if (checkLastError("Before tab update")) {
                 return;
             }
@@ -10844,19 +10929,19 @@ adguard.tabsImpl = (function (adguard) {
                  * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/580
                  */
                 setTimeout(function () {
-                    sendMessage(tabId, {type: 'update-tab-url', url: url});
+                    sendMessage(tabId, { type: 'update-tab-url', url: url });
                 }, 100);
             } else {
-                browser.tabs.update(tabIdToInt(tabId), {url: url}, checkLastError);
+                browser.tabs.update(tabIdToInt(tabId), { url: url }, checkLastError);
             }
         } else {
             // https://developer.chrome.com/extensions/tabs#method-reload
             // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/reload#Browser_compatibility
             if (browser.tabs.reload) {
-                browser.tabs.reload(tabIdToInt(tabId), {bypassCache: true}, checkLastError);
+                browser.tabs.reload(tabIdToInt(tabId), { bypassCache: true }, checkLastError);
             } else {
                 // Reload page without cache via content script
-                sendMessage(tabId, {type: 'no-cache-reload'});
+                sendMessage(tabId, { type: 'no-cache-reload' });
             }
         }
     };
@@ -10893,7 +10978,7 @@ adguard.tabsImpl = (function (adguard) {
          * https://dev.opera.com/extensions/tab-window/#accessing-the-current-tab
          * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/query
          */
-        browser.tabs.query({currentWindow: true, active: true}, function (tabs) {
+        browser.tabs.query({ currentWindow: true, active: true }, function (tabs) {
             if (tabs && tabs.length > 0) {
                 callback(tabs[0].id);
             }
@@ -10914,6 +10999,79 @@ adguard.tabsImpl = (function (adguard) {
         });
     };
 
+    /**
+     * True if `browser.tabs.insertCSS` supports `cssOrigin: "user"`.
+     */
+    const userCSSSupport = adguard.prefs.features.userCSSSupport;
+
+    /**
+     * The only purpose of this callback is to read `lastError` and prevent 
+     * unnecessary console warnings (can happen with Chrome preloaded tabs).
+     * See https://stackoverflow.com/questions/43665470/cannot-call-chrome-tabs-executescript-into-preloaded-tab-is-this-a-bug-in-chr
+     */
+    const noopCallback = function () {
+        adguard.runtime.lastError;
+    };
+
+    /**
+     * Inserts CSS using the `browser.tabs.insertCSS` under the hood.
+     * This method always injects CSS using `runAt: document_start`/
+     * 
+     * @param {number} tabId Tab id or null if you want to inject into the active tab
+     * @param {number} requestFrameId Target frame id (CSS will be inserted into that frame)
+     * @param {number} code CSS code to insert
+     */
+    const insertCssCode = !browser.tabs.insertCSS ? undefined : function (tabId, requestFrameId, code) {
+        let injectDetails = {
+            code: code,
+            runAt: 'document_start',
+            frameId: requestFrameId
+        };
+
+        if (userCSSSupport) {
+            // If this is set for not supporting browser, it will throw an error.
+            injectDetails.cssOrigin = 'user';
+        }
+
+        browser.tabs.insertCSS(tabId, injectDetails, noopCallback);
+    };
+
+    /**
+     * Executes the specified JS code using `browser.tabs.executeScript` under the hood.
+     * This method forces `runAt: document_start`.
+     * 
+     * @param {number} tabId Tab id or null if you want to inject into the active tab
+     * @param {requestFrameId} requestFrameId Target frame id (script will be injected into that frame)
+     * @param {requestFrameId} code Javascript code to execute
+     */
+    const executeScriptCode = !browser.tabs.executeScript ? undefined : function (tabId, requestFrameId, code) {
+        browser.tabs.executeScript(tabId, {
+            code: code,
+            frameId: requestFrameId,
+            runAt: 'document_start'
+        }, noopCallback);
+    };
+
+    /**
+     * Executes the specified javascript file in the top frame of the specified tab.
+     * This method forces `runAt: document_start`.
+     * 
+     * @param {number} tabId Tab id or null if you want to inject into the active tab
+     * @param {filePath} filePath Path to the javascript file
+     * @param {function} callback Called when the script injection is complete
+     */
+    const executeScriptFile = !browser.tabs.executeScript ? undefined : function (tabId, filePath, callback) {
+        browser.tabs.executeScript(tabId, {
+            file: filePath,
+            runAt: 'document_start'
+        }, function () {
+            noopCallback();
+            if (callback) {
+                callback();
+            }
+        });
+    };
+
     return {
 
         onCreated: onCreatedChannel,
@@ -10929,6 +11087,10 @@ adguard.tabsImpl = (function (adguard) {
         getAll: getAll,
         getActive: getActive,
         get: get,
+
+        insertCssCode: insertCssCode,
+        executeScriptCode: executeScriptCode,
+        executeScriptFile: executeScriptFile,
 
         fromChromeTab: toTabFromChromeTab
     };
@@ -11284,6 +11446,11 @@ adguard.tabsImpl = (function (adguard) {
             }
         };
 
+        // Injecting resources to tabs
+        var insertCssCode = tabsImpl.insertCssCode;
+        var executeScriptCode = tabsImpl.executeScriptCode;
+        var executeScriptFile = tabsImpl.executeScriptFile;
+
         return {
 
             // Events
@@ -11311,7 +11478,11 @@ adguard.tabsImpl = (function (adguard) {
             // Other
             updateTabMetadata: updateTabMetadata,
             getTabMetadata: getTabMetadata,
-            clearTabMetadata: clearTabMetadata
+            clearTabMetadata: clearTabMetadata,
+
+            insertCssCode: insertCssCode,
+            executeScriptCode: executeScriptCode,
+            executeScriptFile: executeScriptFile
         };
 
     })(adguard.tabsImpl);
@@ -12142,10 +12313,7 @@ adguard.rules = (function () {
          * @returns boolean true if rule is permitted
          */
         isPermitted: function (domainName) {
-
-            if (!domainName) {
-                return false;
-            }
+            if (!domainName) { return false; }
 
             if (this.restrictedDomain && adguard.utils.url.isDomainOrSubDomain(domainName, this.restrictedDomain)) {
                 return false;
@@ -12205,6 +12373,54 @@ adguard.rules = (function () {
     };
 
     /**
+     * Checks if the specified string starts with a substr at the specified index
+     *
+     * @param str        String to check
+     * @param startIndex Index to start checking from
+     * @param substr     Substring to check
+     * @return boolean true if it does start
+     */
+    function startsAtIndexWith(str, startIndex, substr) {
+
+        if (str.length - startIndex < substr.length) {
+            return false;
+        }
+
+        for (var i = 0; i < substr.length; i++) {
+            if (str.charAt(startIndex + i) !== substr.charAt(i)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Finds CSS rule marker in the rule text
+     *
+     * @param ruleText        rule text to check
+     * @param markers         a list of markers to check (IMPORTANT: sorted by length desc)
+     * @param firstMarkerChar first character of the marker we're looking for
+     * @return rule marker found
+     */
+    FilterRule.findRuleMarker = function (ruleText, markers, firstMarkerChar) {
+
+        var startIndex = ruleText.indexOf(firstMarkerChar);
+        if (startIndex === -1) {
+            return null;
+        }
+
+        for (var i = 0; i < markers.length; i++) {
+            var marker = markers[i];
+            if (startsAtIndexWith(ruleText, startIndex, marker)) {
+                return marker;
+            }
+        }
+
+        return null;
+    };
+
+    /**
      * urlencodes rule text.
      * We need this function because of this issue:
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/34
@@ -12220,6 +12436,10 @@ adguard.rules = (function () {
     FilterRule.MASK_CSS_EXCEPTION_RULE = "#@#";
     FilterRule.MASK_CSS_INJECT_RULE = "#$#";
     FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE = "#@$#";
+    FilterRule.MASK_CSS_EXTENDED_CSS_RULE = "#?#";
+    FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE = "#@?#";
+    FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE = "#$?#";
+    FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE = "#@$?#";
     FilterRule.MASK_SCRIPT_RULE = "#%#";
     FilterRule.MASK_SCRIPT_EXCEPTION_RULE = "#@%#";
     FilterRule.MASK_JS_RULE = "%%";
@@ -12250,29 +12470,6 @@ adguard.rules = (function () {
      * http://adguard.com/en/filterrules.html#cssInjection
      */
     var CssFilterRule = (function () {
-        /**
-         * The problem with pseudo-classes is that any unknown pseudo-class makes browser ignore the whole CSS rule,
-         * which contains a lot more selectors. So, if CSS selector contains a pseudo-class, we should try to validate it.
-         * <p>
-         * One more problem with pseudo-classes is that they are actively used in uBlock, hence it may mess AG styles.
-         */
-        var SUPPORTED_PSEUDO_CLASSES = [":active",
-            ":checked", ":disabled", ":empty", ":enabled", ":first-child", ":first-of-type",
-            ":focus", ":hover", ":in-range", ":invalid", ":lang", ":last-child", ":last-of-type",
-            ":link", ":not", ":nth-child", ":nth-last-child", ":nth-last-of-type", ":nth-of-type",
-            ":only-child", ":only-of-type", ":optional", ":out-of-range", ":read-only",
-            ":read-write", ":required", ":root", ":target", ":valid", ":visited", ":has", ":has-text", ":contains",
-            ":matches-css", ":matches-css-before", ":matches-css-after", ":-abp-has", ":-abp-contains"];
-
-        /**
-         * The problem with it is that ":has" and ":contains" pseudo classes are not a valid pseudo classes,
-         * hence using it may break old versions of AG.
-         *
-         * @type {string[]}
-         */
-        var EXTENDED_CSS_MARKERS = ["[-ext-has=", "[-ext-contains=", "[-ext-has-text=", "[-ext-matches-css=",
-            "[-ext-matches-css-before=", "[-ext-matches-css-after=", ":has(", ":has-text(", ":contains(",
-            ":matches-css(", ":matches-css-before(", ":matches-css-after(", ":-abp-has(", ":-abp-contains("];
 
         /**
          * Tries to convert CSS injections rules from uBlock syntax to our own
@@ -12366,22 +12563,51 @@ adguard.rules = (function () {
         };
 
         /**
+         * Parses rule mask
+         *
+         * @param rule
+         * @param isExtendedCss
+         * @param isInjectRule
+         */
+        var parseMask = function (rule, isExtendedCss, isInjectRule) {
+            var mask;
+            var isException;
+            if (!isExtendedCss) {
+                if (isInjectRule) {
+                    isException = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE);
+                    mask = isException ? api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE : api.FilterRule.MASK_CSS_INJECT_RULE;
+                } else {
+                    isException = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_RULE);
+                    mask = isException ? api.FilterRule.MASK_CSS_EXCEPTION_RULE : api.FilterRule.MASK_CSS_RULE;
+                }
+            } else {
+                if (isInjectRule) {
+                    isException = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE);
+                    mask = isException ? api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE : api.FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE;
+                } else {
+                    isException = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE);
+                    mask = isException ? api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE : api.FilterRule.MASK_CSS_EXTENDED_CSS_RULE;
+                }
+            }
+
+            return mask;
+        };
+
+        /**
          * CssFilterRule constructor
          */
         var constructor = function (rule, filterId) {
 
             api.FilterRule.call(this, rule, filterId);
 
-            var isInjectRule = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_INJECT_RULE) || adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE);
-
-            var mask;
-            if (isInjectRule) {
-                this.whiteListRule = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE);
-                mask = this.whiteListRule ? api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE : api.FilterRule.MASK_CSS_INJECT_RULE;
-            } else {
-                this.whiteListRule = adguard.utils.strings.contains(rule, api.FilterRule.MASK_CSS_EXCEPTION_RULE);
-                mask = this.whiteListRule ? api.FilterRule.MASK_CSS_EXCEPTION_RULE : api.FilterRule.MASK_CSS_RULE;
+            var mask = api.FilterRule.findRuleMarker(rule, CssFilterRule.RULE_MARKERS, CssFilterRule.RULE_MARKER_FIRST_CHAR);
+            if (!mask) {
+                throw new Error("ruleText does not contain a CSS rule marker: " + rule);
             }
+
+            var isInjectRule = CssFilterRule.INJECT_MARKERS.indexOf(mask) !== -1;
+            this.whiteListRule = CssFilterRule.WHITELIST_MARKERS.indexOf(mask) !== -1;
+            var isExtendedCss = CssFilterRule.EXTCSS_MARKERS.indexOf(mask) !== -1;
 
             var indexOfMask = rule.indexOf(mask);
             if (indexOfMask > 0) {
@@ -12390,7 +12616,6 @@ adguard.rules = (function () {
                 this.loadDomains(domains);
             }
 
-            var isExtendedCss = false;
             var cssContent = rule.substring(indexOfMask + mask.length);
 
             if (!isInjectRule) {
@@ -12403,16 +12628,23 @@ adguard.rules = (function () {
                     isInjectRule = true;
                     cssContent = convertCssInjectionRule(pseudoClass, cssContent);
                 } else if (pseudoClass !== null) {
-                    if (SUPPORTED_PSEUDO_CLASSES.indexOf(pseudoClass.name) < 0) {
+                    if (CssFilterRule.SUPPORTED_PSEUDO_CLASSES.indexOf(pseudoClass.name) < 0) {
                         throw new Error("Unknown pseudo class: " + cssContent);
                     }
                 }
             }
 
+            if (isInjectRule) {
+                // Simple validation for css injection rules
+                if (!/{.+}/.test(cssContent)) {
+                    throw new Error("Invalid css injection rule, no style presented: " + rule);
+                }
+            }
+
             // Extended CSS selectors support
             // https://github.com/AdguardTeam/ExtendedCss
-            for (var i = 0; i < EXTENDED_CSS_MARKERS.length; i++) {
-                if (cssContent.indexOf(EXTENDED_CSS_MARKERS[i]) >= 0) {
+            for (var i = 0; i < CssFilterRule.EXTENDED_CSS_MARKERS.length; i++) {
+                if (cssContent.indexOf(CssFilterRule.EXTENDED_CSS_MARKERS[i]) >= 0) {
                     isExtendedCss = true;
                 }
             }
@@ -12427,6 +12659,70 @@ adguard.rules = (function () {
 
     CssFilterRule.prototype = Object.create(api.FilterRule.prototype);
 
+    /**
+     * The problem with pseudo-classes is that any unknown pseudo-class makes browser ignore the whole CSS rule,
+     * which contains a lot more selectors. So, if CSS selector contains a pseudo-class, we should try to validate it.
+     * <p>
+     * One more problem with pseudo-classes is that they are actively used in uBlock, hence it may mess AG styles.
+     */
+    CssFilterRule.SUPPORTED_PSEUDO_CLASSES = [":active",
+        ":checked", ":contains", ":disabled", ":empty", ":enabled", ":first-child", ":first-of-type",
+        ":focus", ":has", ":has-text", ":hover", ":if", ":if-not", ":in-range", ":invalid", ":lang",
+        ":last-child", ":last-of-type", ":link", ":matches-css", ":matches-css-before", ":matches-css-after",
+        ":not", ":nth-child", ":nth-last-child", ":nth-last-of-type", ":nth-of-type",
+        ":only-child", ":only-of-type", ":optional", ":out-of-range", ":properties", ":read-only",
+        ":read-write", ":required", ":root", ":target", ":valid", ":visited",
+        ":-abp-has", ":-abp-contains", ":-abp-properties"];
+
+    /**
+     * The problem with it is that ":has" and ":contains" pseudo classes are not a valid pseudo classes,
+     * hence using it may break old versions of AG.
+     */
+    CssFilterRule.EXTENDED_CSS_MARKERS = ["[-ext-has=", "[-ext-contains=", "[-ext-has-text=", "[-ext-matches-css=",
+        "[-ext-matches-css-before=", "[-ext-matches-css-after=", ":has(", ":has-text(", ":contains(",
+        ":matches-css(", ":matches-css-before(", ":matches-css-after(", ":-abp-has(", ":-abp-contains(",
+        ":if(", ":if-not(", ":properties(", ":-abp-properties("];
+
+    /**
+     * All CSS rules markers start with this character
+     */
+    CssFilterRule.RULE_MARKER_FIRST_CHAR = '#';
+
+    /**
+     * CSS rule markers
+     */
+    CssFilterRule.RULE_MARKERS = [
+        api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE,
+        api.FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE,
+        api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE,
+        api.FilterRule.MASK_CSS_INJECT_RULE,
+        api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE,
+        api.FilterRule.MASK_CSS_EXTENDED_CSS_RULE,
+        api.FilterRule.MASK_CSS_EXCEPTION_RULE,
+        api.FilterRule.MASK_CSS_RULE
+    ];
+
+    /**
+     * Masks indicating whitelist exception rules
+     */
+    CssFilterRule.WHITELIST_MARKERS = [
+        api.FilterRule.MASK_CSS_EXCEPTION_RULE, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE,
+        api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE];
+
+    /**
+     * Masks indicating extended css rules
+     */
+    CssFilterRule.EXTCSS_MARKERS = [
+        api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE, api.FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE,
+        api.FilterRule.MASK_CSS_EXCEPTION_EXTENDED_CSS_RULE, api.FilterRule.MASK_CSS_EXTENDED_CSS_RULE];
+
+    /**
+     * Masks indicating inject css rules
+     */
+    CssFilterRule.INJECT_MARKERS = [
+        api.FilterRule.MASK_CSS_EXCEPTION_INJECT_EXTENDED_CSS_RULE, api.FilterRule.MASK_CSS_INJECT_EXTENDED_CSS_RULE,
+        api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE, api.FilterRule.MASK_CSS_INJECT_RULE];
+
     api.CssFilterRule = CssFilterRule;
 
 })(adguard, adguard.rules);
@@ -12434,8 +12730,6 @@ adguard.rules = (function () {
 (function (adguard, api) {
 
     'use strict';
-
-    var isShadowDomSupported = adguard.utils.browser.isShadowDomSupported();
 
     /**
      * This class manages CSS rules and builds styles to inject to pages.
@@ -12458,6 +12752,12 @@ adguard.rules = (function () {
             }
         }
     };
+
+    // Bitmask to be used in CssFilter#_filterRules and Cssfilter#buildCss calls.
+    var RETRIEVE_TRADITIONAL_CSS = CssFilter.RETRIEVE_TRADITIONAL_CSS = 1 << 0;
+    var RETRIEVE_EXTCSS = CssFilter.RETRIEVE_EXTCSS = 1 << 1;
+    var GENERIC_HIDE_APPLIED = CssFilter.GENERIC_HIDE_APPLIED = 1 << 2;
+    var CSS_INJECTION_ONLY = CssFilter.CSS_INJECTION_ONLY = 1 << 3;
 
     CssFilter.prototype = {
 
@@ -12529,6 +12829,14 @@ adguard.rules = (function () {
             return result.concat(this.commonRules).concat(this.domainSensitiveRules).concat(this.exceptionRules).concat(this.extendedCssRules);
         },
 
+        /**
+         * An object with the information on the CSS and ExtendedCss stylesheets which 
+         * need to be injected into a web page.
+         * 
+         * @typedef {Object} CssFilterBuildResult
+         * @property {Array.<string>} css Regular CSS stylesheets
+         * @property {Array.<string>} extendedCss ExtendedCSS stylesheets
+         */        
 
         /**
          * Builds CSS to be injected to the page.
@@ -12536,54 +12844,38 @@ adguard.rules = (function () {
          * http://adguard.com/en/filterrules.html#hideRules
          *
          * @param domainName    Domain name
-         * @param genericHide    flag to hide common rules
-         * @returns {{css: (*|*[]), extendedCss: (*|*[])}}
+         * @param options       CssFilter Bitmask
+         * @returns {CssFilterBuildResult} CSS and ExtCss stylesheets
          */
-        buildCss: function (domainName, genericHide) {
-            this._rebuild();
+        buildCss: function (domainName, options) {
+            if (typeof options === 'undefined') {
+                options = RETRIEVE_TRADITIONAL_CSS + RETRIEVE_EXTCSS;
+            }
 
-            var rules = this._filterRules(domainName, genericHide);
+            var cssInjectionOnly = (options & CSS_INJECTION_ONLY) === CSS_INJECTION_ONLY;
+            var genericHide = (options & GENERIC_HIDE_APPLIED) === GENERIC_HIDE_APPLIED;
+            var retrieveTraditionalCss = (options & RETRIEVE_TRADITIONAL_CSS) === RETRIEVE_TRADITIONAL_CSS;
+
+            if (cssInjectionOnly) {
+                this._rebuildBinding();
+            } else {
+                this._rebuild();
+            }
+
+            var rules = this._filterRules(domainName, options);
 
             var stylesheets = this._createCssStylesheets(rules);
-            if (!genericHide) {
-                stylesheets.css = this._getCommonCss().concat(stylesheets.css);
+            if (!genericHide && retrieveTraditionalCss) { // ExtCss rules are not contained in commonRules
+                var commonCss = this._getCommonCss();
+                if (cssInjectionOnly) {
+                    commonCss = this._buildCssByRules(this.commonRules.filter(function (rule) {
+                        return rule.isInjectRule;
+                    }));
+                }
+                Array.prototype.unshift.apply(stylesheets.css, commonCss);
             }
 
             return stylesheets;
-        },
-
-        /**
-         * Builds CSS to be injected to the page.
-         * This method builds CSS for CSS injection rules:
-         * http://adguard.com/en/filterrules.html#cssInjection
-         *
-         * @param domainName Domain name
-         * @param genericHide flag to hide common rules
-         * @returns {{css: (*|*[]), extendedCss: (*|*[])}}
-         */
-        buildInjectCss: function (domainName, genericHide) {
-            this._rebuildBinding();
-            var domainRules = this._filterDomainSensitiveRules(domainName);
-            var injectDomainRules = [];
-            if (domainRules !== null) {
-                injectDomainRules = domainRules.filter(function (rule) {
-                    return (rule.isInjectRule || rule.extendedCss) && (!genericHide || !rule.isGeneric());
-                });
-            }
-
-            var result;
-
-            if (genericHide) {
-                result = injectDomainRules;
-            } else {
-                var commonInjectedRules = this.commonRules.filter(function (rule) {
-                    return rule.isInjectRule;
-                });
-
-                result = injectDomainRules.concat(commonInjectedRules);
-            }
-
-            return this._createCssStylesheets(result);
         },
 
         /**
@@ -12593,16 +12885,23 @@ adguard.rules = (function () {
          * Parsing this attributes shows us which rule has been used.
          *
          * @param domainName    Domain name
-         * @param genericHide   Flag to hide common rules
-         * @returns {{css: (*|*[]), extendedCss: (*|*[])}}
+         * @param options CssFilter bitmask
+         * @returns {CssFilterBuildResult} CSS and ExtCss stylesheets
          */
-        buildCssHits: function (domainName, genericHide) {
+        buildCssHits: function (domainName, options) {
             this._rebuildHits();
 
-            var rules = this._filterRules(domainName, genericHide);
+            if (typeof options === 'undefined') {
+                options = RETRIEVE_TRADITIONAL_CSS + RETRIEVE_EXTCSS;
+            }
+            
+            var rules = this._filterRules(domainName, options);
+
+            var genericHide = (options & GENERIC_HIDE_APPLIED) === GENERIC_HIDE_APPLIED;
+            var retrieveTraditionalCss = (options & RETRIEVE_TRADITIONAL_CSS) === RETRIEVE_TRADITIONAL_CSS;
 
             var stylesheets = this._createCssStylesheetsHits(rules);
-            if (!genericHide) {
+            if (!genericHide && retrieveTraditionalCss) {
                 stylesheets.css = this._getCommonCssHits().concat(stylesheets.css);
             }
 
@@ -12613,27 +12912,46 @@ adguard.rules = (function () {
          * Filters rules with specified parameters
          *
          * @param domainName
-         * @param genericHide
+         * @param options CssFilter bitmask
          * @returns {*}
          * @private
          */
-        _filterRules: function (domainName, genericHide) {
-            var result;
-            var domainRules = this._filterDomainSensitiveRules(domainName);
-            if (genericHide) {
-                var nonGenericRules = [];
-                if (domainRules !== null) {
-                    nonGenericRules = domainRules.filter(function (rule) {
-                        return !rule.isGeneric();
-                    });
-                }
+        _filterRules: function (domainName, options) {
+            var rules = [];
+            var rule;
 
-                result = nonGenericRules;
-            } else {
-                result = domainRules;
+            var retrieveTraditionalCss = (options & RETRIEVE_TRADITIONAL_CSS) === RETRIEVE_TRADITIONAL_CSS;
+            var retrieveExtCss = (options & RETRIEVE_EXTCSS) === RETRIEVE_EXTCSS;
+            var genericHide = (options & GENERIC_HIDE_APPLIED) === GENERIC_HIDE_APPLIED;
+            var cssInjectionOnly = (options & CSS_INJECTION_ONLY) === CSS_INJECTION_ONLY;
+
+            if (!domainName) { return rules; }
+
+            if (retrieveTraditionalCss && this.domainSensitiveRules !== null) {
+                var iDomainSensitive = this.domainSensitiveRules.length;
+                while (iDomainSensitive--) {
+                    rule = this.domainSensitiveRules[iDomainSensitive];
+                    if (rule.isPermitted(domainName)) {
+                        if (genericHide && rule.isGeneric()) { continue; }
+                        if (cssInjectionOnly && !rule.isInjectRule) { continue; }
+                        rules.push(rule);
+                    }
+                }
             }
 
-            return result;
+            if (retrieveExtCss && this.extendedCssRules !== null) {
+                var iExtendedCss = this.extendedCssRules.length;
+                while (iExtendedCss--) {
+                    rule = this.extendedCssRules[iExtendedCss];
+                    if (rule.isPermitted(domainName)) {
+                        if (genericHide && rule.isGeneric()) { continue; }
+                        // Extcss rules should be injected for safari content blocking api
+                        rules.push(rule);
+                    }
+                }
+            }
+
+            return rules;
         },
 
         /**
@@ -12801,7 +13119,7 @@ adguard.rules = (function () {
          */
         _applyExceptionRule: function (commonRule, exceptionRule) {
 
-            if (commonRule.cssSelector != exceptionRule.cssSelector) {
+            if (commonRule.cssSelector !== exceptionRule.cssSelector) {
                 return;
             }
 
@@ -12879,46 +13197,10 @@ adguard.rules = (function () {
         },
 
         /**
-         * Gets list of domain-sensitive rules for the specified domain name.
-         *
-         * @param domainName Domain name
-         * @returns {Array} List of rules which could be applied to this domain
-         * @private
-         */
-        _filterDomainSensitiveRules: function (domainName) {
-            var rules = [];
-            var rule;
-
-            if (domainName) {
-                if (this.domainSensitiveRules !== null) {
-                    var iDomainSensitive = this.domainSensitiveRules.length;
-                    while (iDomainSensitive--) {
-                        rule = this.domainSensitiveRules[iDomainSensitive];
-                        if (rule.isPermitted(domainName)) {
-                            rules.push(rule);
-                        }
-                    }
-                }
-
-                if (this.extendedCssRules !== null) {
-                    var iExtendedCss = this.extendedCssRules.length;
-                    while (iExtendedCss--) {
-                        rule = this.extendedCssRules[iExtendedCss];
-                        if (rule.isPermitted(domainName)) {
-                            rules.push(rule);
-                        }
-                    }
-                }
-            }
-
-            return rules;
-        },
-
-        /**
          * Builds CSS to be injected
          *
          * @param rules     List of rules
-         * @returns *[] of CSS stylesheets
+         * @returns {Array<string>} of CSS stylesheets
          * @private
          */
         _buildCssByRules: function (rules) {
@@ -13020,11 +13302,7 @@ adguard.rules = (function () {
         },
 
         _getRuleCssSelector: function (rule) {
-            if (!isShadowDomSupported || rule.extendedCss) {
-                return rule.cssSelector;
-            } else {
-                return "::content " + rule.cssSelector;
-            }
+            return rule.cssSelector;
         },
 
         _arrayToMap: function (array, prop) {
@@ -13088,6 +13366,19 @@ adguard.rules = (function () {
     };
 
     ScriptFilterRule.prototype = Object.create(api.FilterRule.prototype);
+
+    /**
+     * All content rules markers start with this character
+     */
+    ScriptFilterRule.RULE_MARKER_FIRST_CHAR = '#';
+
+    /**
+     * Content rule markers
+     */
+    ScriptFilterRule.RULE_MARKERS = [
+        api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE,
+        api.FilterRule.MASK_SCRIPT_RULE
+    ];
 
     api.ScriptFilterRule = ScriptFilterRule;
 
@@ -13162,7 +13453,7 @@ adguard.rules = (function () {
          * Builds script for the specified domain to be injected
          *
          * @param domainName Domain name
-         * @returns List of scripts to be applied and scriptSource
+         * @returns {Array.<{{scriptSource: string, rule: string}}>} List of scripts to be applied and scriptSource
          */
         buildScript: function (domainName) {
             var scripts = [];
@@ -13350,8 +13641,8 @@ adguard.rules = (function () {
     /**
      * Extracts a shortcut from a regexp rule.
      *
-     * @param ruleText
-     * @returns {*}
+     * @param {string} ruleText rule text
+     * @returns {string} shortcut or null if it's not possible to extract it
      */
     function extractRegexpShortcut(ruleText) {
 
@@ -13365,8 +13656,9 @@ adguard.rules = (function () {
 
         var specialCharacter = "...";
 
-        if (reText.indexOf('(?') >= 0 || reText.indexOf('(!?') >= 0) {
+        if (reText.indexOf('?') !== -1) {
             // Do not mess with complex expressions which use lookahead
+            // And with those using ? special character: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/978
             return null;
         }
 
@@ -14312,6 +14604,9 @@ adguard.rules = (function () {
         // Deprecated modifiers
         'BACKGROUND': true,
         '~BACKGROUND': true,
+        // Specific to desktop version (can be ignored)
+        'EXTENSION': true,
+        '~EXTENSION': true,
         // Unused modifiers
         'COLLAPSE': true,
         '~COLLAPSE': true,
@@ -14736,6 +15031,19 @@ adguard.rules = (function () {
 
         return null;
     };
+
+    /**
+     * All content rules markers start with this character
+     */
+    ContentFilterRule.RULE_MARKER_FIRST_CHAR = '$';
+
+    /**
+     * Content rule markers
+     */
+    ContentFilterRule.RULE_MARKERS = [
+        api.FilterRule.MASK_CONTENT_EXCEPTION_RULE,
+        api.FilterRule.MASK_CONTENT_RULE
+    ];
 
     api.ContentFilterRule = ContentFilterRule;
     api.Wildcard = Wildcard;
@@ -15205,26 +15513,31 @@ adguard.rules = (function () {
             }
 
             if (StringUtils.startWith(ruleText, api.FilterRule.MASK_WHITE_LIST)) {
-                rule = new api.UrlFilterRule(ruleText, filterId);
-            } else if (StringUtils.contains(ruleText, api.FilterRule.MASK_CONTENT_RULE) || StringUtils.contains(ruleText, api.FilterRule.MASK_CONTENT_EXCEPTION_RULE)) {
+                return new api.UrlFilterRule(ruleText, filterId);
+            }
+
+            if (api.FilterRule.findRuleMarker(ruleText, api.ContentFilterRule.RULE_MARKERS, api.ContentFilterRule.RULE_MARKER_FIRST_CHAR)) {
                 var responseContentFilteringSupported = adguard.prefs.features && adguard.prefs.features.responseContentFilteringSupported;
                 if (!responseContentFilteringSupported) {
                     return null;
                 }
-                rule = new api.ContentFilterRule(ruleText, filterId);
-            } else if (StringUtils.contains(ruleText, api.FilterRule.MASK_CSS_RULE) || StringUtils.contains(ruleText, api.FilterRule.MASK_CSS_EXCEPTION_RULE)) {
-                rule = new api.CssFilterRule(ruleText, filterId);
-            } else if (StringUtils.contains(ruleText, api.FilterRule.MASK_CSS_INJECT_RULE) || StringUtils.contains(ruleText, api.FilterRule.MASK_CSS_EXCEPTION_INJECT_RULE)) {
-                rule = new api.CssFilterRule(ruleText, filterId);
-            } else if (StringUtils.contains(ruleText, api.FilterRule.MASK_SCRIPT_RULE) || StringUtils.contains(ruleText, api.FilterRule.MASK_SCRIPT_EXCEPTION_RULE)) {
-                rule = new api.ScriptFilterRule(ruleText, filterId);
-            } else {
-                rule = new api.UrlFilterRule(ruleText, filterId);
+                return new api.ContentFilterRule(ruleText, filterId);
             }
+
+            if (api.FilterRule.findRuleMarker(ruleText, api.CssFilterRule.RULE_MARKERS, api.CssFilterRule.RULE_MARKER_FIRST_CHAR)) {
+                return new api.CssFilterRule(ruleText, filterId);
+            }
+
+            if (api.FilterRule.findRuleMarker(ruleText, api.ScriptFilterRule.RULE_MARKERS, api.ScriptFilterRule.RULE_MARKER_FIRST_CHAR)) {
+                return new api.ScriptFilterRule(ruleText, filterId);
+            }
+
+            return  new api.UrlFilterRule(ruleText, filterId);
         } catch (ex) {
-            adguard.console.warn("Cannot create rule from filter {0}: {1}, cause {2}", filterId, ruleText, ex);
+            adguard.console.warn("Cannot create rule from filter {0}: {1}, cause {2}", filterId || 0, ruleText, ex);
         }
-        return rule;
+
+        return null;
     };
 
     api.builder = {
@@ -15406,10 +15719,12 @@ adguard.subscriptions = (function (adguard) {
     function applyGroupLocalization(group, i18nMetadata) {
         var groupId = group.groupId;
         var localizations = i18nMetadata[groupId];
-        var locale = adguard.app.getLocale();
-        if (localizations && locale in localizations) {
+        if (localizations) {
+            var locale = adguard.utils.i18n.normalize(localizations, adguard.app.getLocale());
             var localization = localizations[locale];
-            group.groupName = localization.name;
+            if (localization) {
+                group.groupName = localization.name;
+            }
         }
     }
 
@@ -15422,11 +15737,13 @@ adguard.subscriptions = (function (adguard) {
     function applyFilterLocalization(filter, i18nMetadata) {
         var filterId = filter.filterId;
         var localizations = i18nMetadata[filterId];
-        var locale = adguard.app.getLocale();
-        if (localizations && locale in localizations) {
+        if (localizations) {
+            var locale = adguard.utils.i18n.normalize(localizations, adguard.app.getLocale());
             var localization = localizations[locale];
-            filter.name = localization.name;
-            filter.description = localization.description;
+            if (localization) {
+                filter.name = localization.name;
+                filter.description = localization.description;
+            }
         }
     }
 
@@ -15474,20 +15791,22 @@ adguard.subscriptions = (function (adguard) {
     /**
      * Gets list of filters for the specified languages
      *
-     * @param lang Language to check
+     * @param locale Locale to check
      * @returns List of filters identifiers
      */
-    var getFilterIdsForLanguage = function (lang) {
-        if (!lang) {
+    var getFilterIdsForLanguage = function (locale) {
+        if (!locale) {
             return [];
         }
-        lang = lang.substring(0, 2).toLowerCase();
         var filterIds = [];
         for (var i = 0; i < filters.length; i++) {
             var filter = filters[i];
             var languages = filter.languages;
-            if (languages && languages.indexOf(lang) >= 0) {
-                filterIds.push(filter.filterId);
+            if (languages && languages.length > 0) {
+                var language = adguard.utils.i18n.normalize(languages, locale);
+                if (language) {
+                    filterIds.push(filter.filterId);
+                }
             }
         }
         return filterIds;
@@ -16298,11 +16617,11 @@ adguard.userrules = (function (adguard) {
     var RequestFilter = function () {
 
         // Filter that applies URL blocking rules
-        // Basic rules: http://adguard.com/en/filterrules.html#baseRules
+        // Basic rules: https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#basic-rules
         this.urlBlockingFilter = new adguard.rules.UrlFilter();
 
         // Filter that applies whitelist rules
-        // Exception rules: http://adguard.com/en/filterrules.html#exclusionRules
+        // Exception rules: https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#exceptions-modifiers
         this.urlWhiteFilter = new adguard.rules.UrlFilter();
 
         // Bad-filter rules collection
@@ -16310,21 +16629,20 @@ adguard.userrules = (function (adguard) {
         this.badFilterRules = {};
 
         // Filter that applies CSS rules
-        // ABP element hiding rules: http://adguard.com/en/filterrules.html#hideRules
-        // CSS injection rules http://adguard.com/en/filterrules.html#cssInjection
+        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#cosmetic-rules
         this.cssFilter = new adguard.rules.CssFilter();
 
         // Filter that applies JS rules
-        // JS injection rules: http://adguard.com/en/filterrules.html#javascriptInjection
+        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#javascript-rules
         this.scriptFilter = new adguard.rules.ScriptFilter();
 
         // Filter that applies CSP rules
-        // CSP rules: TODO: add link
+        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#csp-modifier
         this.cspFilter = new adguard.rules.CspFilter();
 
 
-        // Filter that applies Content rules
-        // Content filtration rules: http://adguard.com/en/filterrules.html#html-filtering-rules
+        // Filter that applies HTML filtering rules
+        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#html-filtering-rules
         this.contentFilter = new adguard.rules.ContentFilter();
 
         // Rules count (includes all types of rules)
@@ -16449,39 +16767,41 @@ adguard.userrules = (function (adguard) {
         },
 
         /**
-         * Builds CSS for the specified web page.
-         * Only element hiding rules are used to build this CSS:
-         * http://adguard.com/en/filterrules.html#hideRules
-         *
-         * @param url Page URL
-         * @param genericHide flag to hide common rules
-         * @returns CSS ready to be injected
+         * An object with the information on the CSS and ExtendedCss stylesheets which 
+         * need to be injected into a web page.
+         * 
+         * @typedef {Object} SelectorsData
+         * @property {Array.<string>} css Regular CSS stylesheets
+         * @property {Array.<string>} extendedCss ExtendedCSS stylesheets
+         * @property {boolean} cssHitsCounterEnabled If true -- collecting CSS rules hits stats is enabled
          */
-        getSelectorsForUrl: function (url, genericHide) {
-            var domain = adguard.utils.url.getHost(url);
-            if (adguard.prefs.collectHitsCountEnabled && adguard.settings.collectHitsCount()) {
-                // If user has enabled "Send statistics for ad filters usage" option we build CSS with enabled hits stats.
-                // In this case style contains "content" with filter identifier and rule text.
-                var selectors = this.cssFilter.buildCssHits(domain, genericHide);
-                selectors.cssHitsCounterEnabled = true;
-                return selectors;
-            } else {
-                return this.cssFilter.buildCss(domain, genericHide);
-            }
-        },
 
         /**
          * Builds CSS for the specified web page.
-         * Only CSS injection rules used to build this CSS:
-         * http://adguard.com/en/filterrules.html#cssInjection
+         * http://adguard.com/en/filterrules.html#hideRules
          *
-         * @param url Page URL
-         * @param genericHide flag to hide common rules
-         * @returns CSS ready to be injected.
+         * @param {string} url Page URL
+         * @param {number} options CssFilter bitmask
+         * @returns {SelectorsData} CSS and ExtCss data for the webpage
          */
-        getInjectedSelectorsForUrl: function (url, genericHide) {
+        getSelectorsForUrl: function (url, options) {
             var domain = adguard.utils.url.getHost(url);
-            return this.cssFilter.buildInjectCss(domain, genericHide);
+
+            var CSS_INJECTION_ONLY = adguard.rules.CssFilter.CSS_INJECTION_ONLY;
+            var cssInjectionOnly = (options & CSS_INJECTION_ONLY) === CSS_INJECTION_ONLY;
+
+            if (!cssInjectionOnly &&
+                adguard.prefs.collectHitsCountEnabled &&
+                adguard.settings.collectHitsCount()) {
+
+                // If user has enabled "Send statistics for ad filters usage" option we build CSS with enabled hits stats.
+                // In this case style contains "content" with filter identifier and rule text.
+                var selectors = this.cssFilter.buildCssHits(domain, options);
+                selectors.cssHitsCounterEnabled = true;
+                return selectors;
+            } else {
+                return this.cssFilter.buildCss(domain, options);
+            }
         },
 
         /**
@@ -16489,11 +16809,54 @@ adguard.userrules = (function (adguard) {
          * http://adguard.com/en/filterrules.html#javascriptInjection
          *
          * @param url Page URL
-         * @returns Javascript
+         * @returns {Array.<{{scriptSource: string, rule: string}}>} Javascript for the specified URL
          */
         getScriptsForUrl: function (url) {
             var domain = adguard.utils.url.getHost(url);
             return this.scriptFilter.buildScript(domain);
+        },
+
+        /**
+         * Builds the final output string for the specified page.
+         * Depending on the browser we either allow or forbid the new remote rules (see how `scriptSource` is used).
+         * 
+         * @param {string} url Page URL
+         * @returns {string} Script to be applied
+         */
+        getScriptsStringForUrl: function (url) {
+            var scripts = this.getScriptsForUrl(url);
+
+            var isFirefox = adguard.utils.browser.isFirefoxBrowser();
+            var isOpera = adguard.utils.browser.isOperaBrowser();
+
+            var scriptsToApply = [];
+
+            for (var i = 0, l = scripts.length; i < l; i++) {
+                var scriptRule = scripts[i];
+                switch (scriptRule.scriptSource) {
+                    case 'local':
+                        scriptsToApply.push(scriptRule.rule);
+                        break;
+                    case 'remote':
+                        /**
+                         * Note (!) (Firefox, Opera):
+                         * In case of Firefox and Opera add-ons, JS filtering rules are hardcoded into add-on code.
+                         * Look at ScriptFilterRule.getScriptSource to learn more.
+                         */
+                        if (!isFirefox && !isOpera) {
+                            scriptsToApply.push(scriptRule.rule);
+                        }
+                        break;
+                }
+            }
+            scriptsToApply.unshift("( function () {\
+                try {");
+            scriptsToApply.push("\
+                } catch (ex) {\
+                    console.error('Error executing AG js: ' + ex);\
+                }\
+            })();");
+            return scriptsToApply.join('\r\n');
         },
 
         /**
@@ -16843,7 +17206,7 @@ adguard.antiBannerService = (function (adguard) {
             }
 
             // Schedule filters update job
-            scheduleFiltersUpdate();
+            scheduleFiltersUpdate(runInfo.isFirstRun);
         };
 
         /**
@@ -17599,13 +17962,14 @@ adguard.antiBannerService = (function (adguard) {
 
     /**
      * Schedules filters update job
-     * @isFirstRun
+     *
+     * @param isFirstRun App first run flag
      * @private
      */
-    function scheduleFiltersUpdate() {
+    function scheduleFiltersUpdate(isFirstRun) {
 
         // First run delay
-        setTimeout(checkAntiBannerFiltersUpdate, UPDATE_FILTERS_DELAY);
+        setTimeout(checkAntiBannerFiltersUpdate, UPDATE_FILTERS_DELAY, isFirstRun === true);
 
         // Scheduling job
         var scheduleUpdate = function () {
@@ -17843,7 +18207,6 @@ adguard.antiBannerService = (function (adguard) {
 })(adguard);
 
 /**
- *
  * Api for filtering and elements hiding.
  */
 adguard.requestFilter = (function (adguard) {
@@ -17898,6 +18261,9 @@ adguard.requestFilter = (function (adguard) {
     var getScriptsForUrl = function (documentUrl) {
         return getRequestFilter().getScriptsForUrl(documentUrl);
     };
+    var getScriptsStringForUrl = function (documentUrl) {
+        return getRequestFilter().getScriptsStringForUrl(documentUrl);
+    };
     var getContentRulesForUrl = function (documentUrl) {
         return getRequestFilter().getContentRulesForUrl(documentUrl);
     };
@@ -17932,6 +18298,7 @@ adguard.requestFilter = (function (adguard) {
         getSelectorsForUrl: getSelectorsForUrl,
         getInjectedSelectorsForUrl: getInjectedSelectorsForUrl,
         getScriptsForUrl: getScriptsForUrl,
+        getScriptsStringForUrl: getScriptsStringForUrl,
         getContentRulesForUrl: getContentRulesForUrl,
         getMatchedElementsForContentRules: getMatchedElementsForContentRules,
         getCspRules: getCspRules,
@@ -18359,19 +18726,27 @@ adguard.webRequestService = (function (adguard) {
     };
 
     /**
+     * An object with the selectors and scripts to be injected into the page
+     * @typedef {Object} SelectorsAndScripts
+     * @property {SelectorsData} selectors An object with the CSS styles that needs to be applied
+     * @property {string} scripts Javascript to be injected into the page
+     * @property {boolean} collapseAllElements If true, content script must force the collapse check of the page elements
+     */
+
+    /**
      * Prepares CSS and JS which should be injected to the page.
      *
-     * @param tab           Tab
-     * @param documentUrl   Document URL
-     * @param options       Options for select:
-     * options = {
-     *      filter: ['selectors', 'scripts'] (selection filter) (mandatory)
-     *      genericHide: true|false ( select only generic hide css rules) (optional)
-     * }
-     *
-     * @returns {*}         null or object the following properties: "selectors", "scripts", "collapseAllElements"
+     * @param tab                       Tab data
+     * @param documentUrl               Document URL
+     * @param cssFilterOptions          Bitmask for the CssFilter
+     * @param {boolean} retrieveScripts Indicates whether to retrieve JS rules or not
+     * 
+     * When cssFilterOptions and retrieveScripts are undefined, we handle it in a special way
+     * that depends on whether the browser supports inserting CSS and scripts from the background page
+     * 
+     * @returns {SelectorsAndScripts} an object with the selectors and scripts to be injected into the page
      */
-    var processGetSelectorsAndScripts = function (tab, documentUrl, options) {
+    var processGetSelectorsAndScripts = function (tab, documentUrl, cssFilterOptions, retrieveScripts) {
 
         var result = Object.create(null);
 
@@ -18397,8 +18772,35 @@ adguard.webRequestService = (function (adguard) {
             whitelistRule = adguard.requestFilter.findWhiteListRule(documentUrl, mainFrameUrl, adguard.RequestTypes.DOCUMENT);
         }
 
-        var retrieveSelectors = options.filter.indexOf('selectors') >= 0;
-        var retrieveScripts = options.filter.indexOf('scripts') >= 0;
+        let CssFilter = adguard.rules.CssFilter;
+
+
+        // Check what exactly is disabled by this rule
+        var elemHideFlag = whitelistRule && whitelistRule.isElemhide();
+        var genericHideFlag = whitelistRule && whitelistRule.isGenericHide();
+
+        // content-message-handler calls it in this way
+        if (typeof cssFilterOptions === 'undefined' && typeof retrieveScripts === 'undefined') {
+            // Build up default flags.    
+            let canUseInsertCSSAndExecuteScript = adguard.prefs.features.canUseInsertCSSAndExecuteScript;
+            // If tabs.executeScript is unavailable, retrieve JS rules now.
+            retrieveScripts = !canUseInsertCSSAndExecuteScript;
+            if (!elemHideFlag) {
+                cssFilterOptions = CssFilter.RETRIEVE_EXTCSS;
+                if (!canUseInsertCSSAndExecuteScript) {
+                    cssFilterOptions += CssFilter.RETRIEVE_TRADITIONAL_CSS;
+                }
+                if (genericHideFlag) {
+                    cssFilterOptions += CssFilter.GENERIC_HIDE_APPLIED;
+                }
+            }
+        } else {
+            if (!elemHideFlag && genericHideFlag) {
+                cssFilterOptions += CssFilter.GENERIC_HIDE_APPLIED;
+            }
+        }
+
+        var retrieveSelectors = !elemHideFlag && (cssFilterOptions & (CssFilter.RETRIEVE_TRADITIONAL_CSS + CssFilter.RETRIEVE_EXTCSS)) !== 0;
 
         if (retrieveSelectors) {
             // Record rule hit
@@ -18412,36 +18814,21 @@ adguard.webRequestService = (function (adguard) {
         }
 
         if (retrieveSelectors) {
-
-            // Prepare result
-            result.selectors = {
-                css: null,
-                extendedCss: null,
-                cssHitsCounterEnabled: false
-
-            };
             result.collapseAllElements = adguard.requestFilter.shouldCollapseAllElements();
-            result.useShadowDom = adguard.utils.browser.isShadowDomSupported();
 
-            // Check what exactly is disabled by this rule
-            var genericHideFlag = options.genericHide || (whitelistRule && whitelistRule.isGenericHide());
-            var elemHideFlag = whitelistRule && whitelistRule.isElemhide();
-
-            if (!elemHideFlag) {
-                // Element hiding rules aren't disabled, so we should use them
-                if (shouldLoadAllSelectors(result.collapseAllElements)) {
-                    result.selectors = adguard.requestFilter.getSelectorsForUrl(documentUrl, genericHideFlag);
-                } else {
-                    result.selectors = adguard.requestFilter.getInjectedSelectorsForUrl(documentUrl, genericHideFlag);
-                }
+            if (!shouldLoadAllSelectors(result.collapseAllElements)) {
+                // We don't need regular element hiding rules in case of the Safari content blocker
+                cssFilterOptions += CssFilter.CSS_INJECTION_ONLY;
             }
+
+            result.selectors = adguard.requestFilter.getSelectorsForUrl(documentUrl, cssFilterOptions);
         }
 
         if (retrieveScripts) {
             var jsInjectFlag = whitelistRule && whitelistRule.isJsInject();
             if (!jsInjectFlag) {
                 // JS rules aren't disabled, returning them
-                result.scripts = adguard.requestFilter.getScriptsForUrl(documentUrl);
+                result.scripts = adguard.requestFilter.getScriptsStringForUrl(documentUrl);
             }
         }
 
@@ -18467,7 +18854,6 @@ adguard.webRequestService = (function (adguard) {
         var requestRule = getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
 
         postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
-
         return isRequestBlockedByRule(requestRule);
     };
 
@@ -18547,9 +18933,9 @@ adguard.webRequestService = (function (adguard) {
             requestType !== adguard.RequestTypes.DOCUMENT) {
 
             if (requestRule.isEmptyResponse()) {
-                return {redirectUrl: 'data:,'};
+                return { redirectUrl: 'data:,' };
             } else {
-                return {cancel: true};
+                return { cancel: true };
             }
         }
         return null;
@@ -18693,7 +19079,7 @@ adguard.webRequestService = (function (adguard) {
     var postProcessRequest = function (tab, requestUrl, referrerUrl, requestType, requestRule, requestId) {
 
         if (adguard.frames.isTabAdguardDetected(tab)) {
-            //do nothing, log event will be added on response
+            // Do nothing, log event will be added on response
             return;
         }
 
@@ -18800,7 +19186,7 @@ adguard.webRequestService = (function (adguard) {
             }
         });
         eventListeners[listenerId] = sender;
-        return {listenerId: listenerId};
+        return { listenerId: listenerId };
     }
 
     /**
@@ -18974,7 +19360,7 @@ adguard.webRequestService = (function (adguard) {
                 adguard.settings.setProperty(message.key, message.value);
                 break;
             case 'checkRequestFilterReady':
-                return {ready: adguard.requestFilter.isReady()};
+                return { ready: adguard.requestFilter.isReady() };
             case 'addAndEnableFilter':
                 adguard.filters.addAndEnableFilters([message.filterId]);
                 break;
@@ -18987,16 +19373,16 @@ adguard.webRequestService = (function (adguard) {
                 break;
             case 'getWhiteListDomains':
                 var whiteListDomains = searchWhiteListDomains(message.offset, message.limit, message.text);
-                return {rules: whiteListDomains};
+                return { rules: whiteListDomains };
             case 'getUserFilters':
                 var rules = searchUserRules(message.offset, message.limit, message.text);
-                return {rules: rules};
+                return { rules: rules };
             case 'checkAntiBannerFiltersUpdate':
                 adguard.ui.checkFiltersUpdates();
                 break;
             case 'getAntiBannerFiltersForOptionsPage':
                 var renderedFilters = adguard.filters.getFiltersForOptionsPage();
-                return {filters: renderedFilters};
+                return { filters: renderedFilters };
             case 'changeDefaultWhiteListMode':
                 adguard.whitelist.changeDefaultWhiteListMode(message.enabled);
                 break;
@@ -19045,20 +19431,16 @@ adguard.webRequestService = (function (adguard) {
                 adguard.frames.resetBlockedAdsCount();
                 break;
             case 'getSelectorsAndScripts':
-                if (adguard.utils.workaround.isFacebookIframe(message.documentUrl)) {
-                    return {};
-                }
-                var cssAndScripts = adguard.webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl, message.options);
-                return cssAndScripts || {};
+                return adguard.webRequestService.processGetSelectorsAndScripts(sender.tab, message.documentUrl) || {};
             case 'checkPageScriptWrapperRequest':
                 var block = adguard.webRequestService.checkPageScriptWrapperRequest(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
-                return {block: block, requestId: message.requestId};
+                return { block: block, requestId: message.requestId };
             case 'processShouldCollapse':
                 var collapse = adguard.webRequestService.processShouldCollapse(sender.tab, message.elementUrl, message.documentUrl, message.requestType);
-                return {collapse: collapse, requestId: message.requestId};
+                return { collapse: collapse, requestId: message.requestId };
             case 'processShouldCollapseMany':
                 var requests = adguard.webRequestService.processShouldCollapseMany(sender.tab, message.documentUrl, message.requests);
-                return {requests: requests};
+                return { requests: requests };
             case 'addUserRule':
                 adguard.userrules.addRules([message.ruleText]);
                 if (message.adguardDetected || adguard.frames.isTabAdguardDetected(sender.tab)) {
@@ -19085,22 +19467,22 @@ adguard.webRequestService = (function (adguard) {
                 break;
             case 'getTabFrameInfoById':
                 if (message.tabId) {
-                    var frameInfo = adguard.frames.getFrameInfo({tabId: message.tabId});
-                    return {frameInfo: frameInfo};
+                    var frameInfo = adguard.frames.getFrameInfo({ tabId: message.tabId });
+                    return { frameInfo: frameInfo };
                 } else {
                     adguard.tabs.getActive(function (tab) {
                         var frameInfo = adguard.frames.getFrameInfo(tab);
-                        callback({frameInfo: frameInfo});
+                        callback({ frameInfo: frameInfo });
                     });
                     return true; // Async
                 }
                 break;
             case 'getFilteringInfoByTabId':
                 var filteringInfo = adguard.filteringLog.getFilteringInfoByTabId(message.tabId);
-                return {filteringInfo: filteringInfo};
+                return { filteringInfo: filteringInfo };
             case 'synchronizeOpenTabs':
                 adguard.filteringLog.synchronizeOpenTabs(function (tabs) {
-                    callback({tabs: tabs});
+                    callback({ tabs: tabs });
                 });
                 return true; // Async
             case 'checkSubscriptionUrl':
@@ -19113,7 +19495,7 @@ adguard.webRequestService = (function (adguard) {
                     //filter not found
                     confirmText = adguard.i18n.getMessage('abp_subscribe_confirm_import', [message.title]);
                 }
-                return {confirmText: confirmText};
+                return { confirmText: confirmText };
             case 'enableSubscription':
                 adguard.filters.processAbpSubscriptionUrl(message.url, function (rulesAddedCount) {
                     var title = adguard.i18n.getMessage('abp_subscribe_confirm_import_finished_title');
@@ -19194,7 +19576,23 @@ adguard.webRequestService = (function (adguard) {
 
     'use strict';
 
-    var CSP_HEADER_NAME = 'Content-Security-Policy';
+    const CSP_HEADER_NAME = 'Content-Security-Policy';
+
+    /**
+     * In the case of the tabs.insertCSS API support we're trying to collapse a blocked element from the background page.
+     * In order to do it we need to have a mapping requestType<->tagNames.
+     */
+    const REQUEST_TYPE_COLLAPSE_TAG_NAMES = {
+        [adguard.RequestTypes.SUBDOCUMENT]: ["frame", "iframe"],
+        [adguard.RequestTypes.IMAGE]: ["img"]
+    };
+
+    /**
+     * In the newer versions of Firefox and Chromium we're able to inject CSS and scripts
+     * using a better approach -- `browser.tabs.insertCSS` and `browser.tabs.executeScript`
+     * instead of the traditional one (messaging to the content script).
+     */
+    const shouldUseInsertCSSAndExecuteScript = adguard.prefs.features.canUseInsertCSSAndExecuteScript;
 
     /**
      * Retrieve referrer url from request details.
@@ -19219,19 +19617,21 @@ adguard.webRequestService = (function (adguard) {
      * @returns {boolean} False if request must be blocked
      */
     function onBeforeRequest(requestDetails) {
-
         var tab = requestDetails.tab;
+        var tabId = tab.tabId;
         var requestId = requestDetails.requestId;
         var requestUrl = requestDetails.requestUrl;
         var requestType = requestDetails.requestType;
+        var frameId = requestDetails.frameId;
+        var requestFrameId = requestDetails.requestFrameId || 0;
 
         if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
-            adguard.frames.recordFrame(tab, requestDetails.frameId, requestUrl, requestType);
+            adguard.frames.recordFrame(tab, frameId, requestUrl, requestType);
         }
 
         if (requestType === adguard.RequestTypes.DOCUMENT) {
-
-            adguard.filteringLog.clearEventsByTabId(tab.tabId);
+            // New document is being loaded -- clear the filtering log for that tab
+            adguard.filteringLog.clearEventsByTabId(tabId);
 
             // Reset tab button state
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_TAB_BUTTON_STATE, tab, true);
@@ -19248,16 +19648,68 @@ adguard.webRequestService = (function (adguard) {
         }
 
         if (!adguard.utils.url.isHttpOrWsRequest(requestUrl)) {
+            // Do not mess with other extensions
             return;
         }
 
         var referrerUrl = getReferrerUrl(requestDetails);
-
         var requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
 
         adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule, requestId);
+        var response = adguard.webRequestService.getBlockedResponseByRule(requestRule, requestType);
 
-        return adguard.webRequestService.getBlockedResponseByRule(requestRule, requestType);
+        if (response && response.cancel) {
+            collapseElement(tabId, requestFrameId, requestUrl, referrerUrl, requestType);
+        }
+
+        return response;
+    }
+
+    /**
+     * Tries to collapse a blocked element using tabs.insertCSS.
+     * 
+     * This method of collapsing has numerous advantages over the traditional one.
+     * First of all, it prevents blocked elements flickering as it occurs earlier.
+     * Second, it is harder to detect as there's no custom <style> node required.
+     * 
+     * However, we're still keeping the old approach intact - we have not enough information 
+     * here to properly collapse elements that use relative URLs (<img src='../path_to_element'>).
+     * 
+     * @param {number} tabId Tab id
+     * @param {number} requestFrameId Id of a frame request was sent from
+     * @param {string} requestUrl Request URL
+     * @param {string} referrerUrl Referrer URL
+     * @param {string} requestType A member of adguard.RequestTypes
+     */
+    function collapseElement(tabId, requestFrameId, requestUrl, referrerUrl, requestType) {
+        if (!shouldUseInsertCSSAndExecuteScript) {
+            return;
+        }
+
+        let tagNames = REQUEST_TYPE_COLLAPSE_TAG_NAMES[requestType];
+        if (!tagNames) {
+            // Collapsing is not supported for this request type
+            return;
+        }
+
+
+        // Strip the protocol and host name (for first-party requests) from the selector
+        let thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrerUrl);
+        let srcUrlStartIndex = requestUrl.indexOf("//");
+        if (!thirdParty) {
+            srcUrlStartIndex = requestUrl.indexOf("/", srcUrlStartIndex + 2);
+        }
+        let srcUrl = requestUrl.substring(srcUrlStartIndex);
+
+        const collapseStyle = "{ display: none!important; visibility: hidden!important; height: 0px!important; min-height: 0px!important; }";
+        let css = "";
+        let iTagNames = tagNames.length;
+
+        while (iTagNames--) {
+            css += tagNames[iTagNames] + "[src$=\"" + srcUrl + "\"] " + collapseStyle + "\n";
+        }
+
+        adguard.tabs.insertCssCode(tabId, requestFrameId, css);
     }
 
     /**
@@ -19493,9 +19945,9 @@ adguard.webRequestService = (function (adguard) {
                 headers = adguard.utils.browser.setHeaderValue(details.requestHeaders, authHeaders[i].headerName, authHeaders[i].headerValue);
             }
 
-            return {requestHeaders: headers};
+            return { requestHeaders: headers };
 
-        }, {urls: [adguard.integration.getIntegrationBaseUrl() + "*"]}, ["requestHeaders", "blocking"]);
+        }, { urls: [adguard.integration.getIntegrationBaseUrl() + "*"] }, ["requestHeaders", "blocking"]);
     }
 
     var handlerBehaviorTimeout = null;
@@ -19516,61 +19968,114 @@ adguard.webRequestService = (function (adguard) {
         }
     });
 
-    /**
-     * When frame is committed we send to it js rules
-     * We do this because we need to apply js rules as soon as possible
-     */
-    (function fastScriptRulesLoader(adguard) {
+    if (shouldUseInsertCSSAndExecuteScript) {
 
-        var isEdgeBrowser = adguard.utils.browser.isEdgeBrowser();
+        /**
+         * Applying CSS/JS rules from the background page.
+         * 
+         * When the frame is commited (webNavigation.onCommitted), we use browser.tabs.insertCSS 
+         * and browser.tabs.executeScript functions to inject our CSS/JS rules. This
+         * method can be used in modern Chrome and FF only.
+         */
+        (function (adguard) {
 
-        function tryInjectScripts(tabId, frameId, url, result, limit) {
-
-            var options = null;
-            if (!isEdgeBrowser) {
-                /**
-                 * In Edge browser: If we pass frameId in tabs.sendMessage then message aren't delivered to content-script
-                 */
-                options = {frameId: frameId};
-            }
-
-            adguard.tabs.sendMessage(tabId, result, function (response) {
-
-                // Try again if no response was received from content-script
-                if (adguard.runtime.lastError || !response) {
-
-                    if (--limit <= 0) {
-                        return;
-                    }
-
-                    setTimeout(function () {
-                        tryInjectScripts(tabId, frameId, url, result, limit);
-                    }, 10);
-                }
-
-            }, options);
-        }
-
-        adguard.webNavigation.onCommitted.addListener(function (tabId, frameId, url) {
+            const REQUEST_FILTER_READY_TIMEOUT = 100;
 
             /**
-             * Messaging a specific frame is not yet supported in Edge
+             * Taken from
+             * {@link https://github.com/seanl-adg/InlineResourceLiteral/blob/master/index.js#L136}
+             * {@link https://github.com/joliss/js-string-escape/blob/master/index.js}
              */
-            if (frameId !== 0 && isEdgeBrowser) {
-                return;
+            const reJsEscape = /["'\\\n\r\u2028\u2029]/g;
+            function escapeJs(match) {
+                switch (match) {
+                    case '"':
+                    case "'":
+                    case '\\':
+                        return '\\' + match;
+                    case '\n':
+                        return '\\n\\\n' // Line continuation character for ease
+                    // of reading inlined resource.
+                    case '\r':
+                        return ''        // Carriage returns won't have
+                    // any semantic meaning in JS
+                    case '\u2028':
+                        return '\\u2028'
+                    case '\u2029':
+                        return '\\u2029'
+                }
             }
 
-            var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, url, {filter: ['scripts']});
-            if (!result.scripts || result.scripts.length === 0) {
-                return;
+            function buildScriptText(scriptText) {
+
+                if (!scriptText) {
+                    return null;
+                }
+
+                // Executes scripts in a scope of page.
+                let injectedScript = '(function() {\
+                    var script = document.createElement("script");\
+                    script.setAttribute("type", "text/javascript");\
+                    script.textContent = "' + scriptText.replace(reJsEscape, escapeJs) + '";\
+                    var parent = document.head || document.documentElement;\
+                    try {\
+                        parent.appendChild(script);\
+                        parent.removeChild(script);\
+                    } catch (e) {\
+                    } finally {\
+                        return true;\
+                    }\
+                })()';
+
+                return injectedScript;
             }
 
-            result.type = 'injectScripts';
-            tryInjectScripts(tabId, frameId, url, result, 5);
-        });
+            /**
+             * @param {SelectorsData} selectorsData Selectors data
+             * @returns {string} CSS to be supplied to insertCSS or null if selectors data is empty
+             */
+            function buildCssText(selectorsData) {
+                if (!selectorsData || !selectorsData.css) {
+                    return null;
+                }
 
-    })(adguard);
+                return selectorsData.css.join("\n");
+            }
 
+            /**
+             * Injects necessary CSS and scripts into the web page.
+             * 
+             * @param {*} details Details about the navigation event: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webNavigation/onCommitted#details
+             */
+            function tryInject(details) {
+                let tabId = details.tabId;
+                let frameId = details.frameId;
+                let url = details.url;
+
+                let cssFilterOption = adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS;
+                const retrieveScripts = true;
+                let result = adguard.webRequestService.processGetSelectorsAndScripts({ tabId: tabId }, url, cssFilterOption, retrieveScripts);
+
+                if (result.requestFilterReady === false) {
+                    setTimeout(tryInject, REQUEST_FILTER_READY_TIMEOUT, details);
+                    return;
+                }
+
+                let scriptText = buildScriptText(result.scripts);
+                let cssText = buildCssText(result.selectors);
+
+                if (scriptText) {
+                    adguard.tabs.executeScriptCode(tabId, frameId, scriptText);
+                }
+
+                if (cssText) {
+                    adguard.tabs.insertCssCode(tabId, frameId, cssText);
+                }
+            }
+
+            adguard.webNavigation.onCommitted.addListener(tryInject);
+        })(adguard);
+    }
 })(adguard);
 
 (function (adguard) {
@@ -19650,32 +20155,6 @@ adguard.webRequestService = (function (adguard) {
 
     function noOpFunc() {
     }
-
-    /**
-     * Default assistant localization
-     */
-    var defaultAssistantLocalization = {
-        'assistant_select_element': 'Selection mode',
-        'assistant_select_element_ext': 'Click on&nbsp;any element on&nbsp;the page',
-        'assistant_select_element_cancel': 'Cancel',
-        'assistant_block_element': 'Block element',
-        'assistant_block_element_explain': 'Element blocking rule setup',
-        'assistant_slider_explain': 'Use the slider to&nbsp;change the size of&nbsp;the element to&nbsp;be&nbsp;blocked by&nbsp;this rule:',
-        'assistant_slider_if_hide': 'The filter will contain a&nbsp;rule that blocks the selected element',
-        'assistant_slider_min': 'SMALLER',
-        'assistant_slider_max': 'LARGER',
-        'assistant_extended_settings': 'Advanced settings',
-        'assistant_apply_rule_to_all_sites': 'Apply this rule to&nbsp;every web site',
-        'assistant_block_by_reference': 'Block element by&nbsp;url',
-        'assistant_block_similar': 'Block similar elements',
-        'assistant_block': 'Block',
-        'assistant_another_element': 'Select another element',
-        'assistant_preview': 'Preview',
-        'assistant_preview_header': 'Block element - Preview',
-        'assistant_preview_header_info': 'Check how the page will look like before confirming the block.',
-        'assistant_preview_start': 'Preview',
-        'assistant_preview_end': 'Finish preview'
-    };
 
     /**
      * Validates configuration
@@ -19866,16 +20345,26 @@ adguard.webRequestService = (function (adguard) {
      * Opens assistant dialog in the specified tab
      * @param tabId Tab identifier
      */
-    var openAssistant = function (tabId) {
+    var initAssistant = function (tabId) {
         var assistantOptions = {
-            cssLink: adguard.getURL('adguard/assistant/css/assistant.css'),
-            addRuleCallbackName: 'assistant-create-rule',
-            localization: defaultAssistantLocalization
+            addRuleCallbackName: 'assistant-create-rule'
         };
         adguard.tabs.sendMessage(tabId, {
             type: 'initAssistant',
             options: assistantOptions
         });
+    };
+
+    var openAssistant = function (tabId) {
+        if (adguard.tabs.executeScriptFile) {
+            // Load Assistant code to the activate tab immediately
+            adguard.tabs.executeScriptFile(null, "/adguard/assistant/assistant.js", function() {
+                initAssistant(tabId);
+            });
+        } else {
+            // Manualy start assistant in safari and legacy firefox
+            initAssistant(tabId);
+        }
     };
 
     /**
