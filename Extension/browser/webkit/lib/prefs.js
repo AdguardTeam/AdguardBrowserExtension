@@ -176,7 +176,8 @@ adguard.prefs = (function (adguard) {
         return {
             responseContentFilteringSupported: responseContentFilteringSupported,
             canUseInsertCSSAndExecuteScript: canUseInsertCSSAndExecuteScript,
-            userCSSSupport: userCSSSupport
+            userCSSSupport: userCSSSupport,
+            hasBackgroundTab: typeof browser !== 'undefined' // Background requests have sense only in case of webext
         };
     })();
 

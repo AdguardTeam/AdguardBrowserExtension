@@ -35,8 +35,10 @@ adguard.filteringLog = (function (adguard) {
 
     var extensionURL = adguard.getURL('');
 
-    // Force to add background tab
-    tabsInfoMap[backgroundTabId] = backgroundTab;
+    // Force to add background tab if it's defined
+    if (adguard.prefs.features.hasBackgroundTab) {
+        tabsInfoMap[backgroundTabId] = backgroundTab;
+    }
 
     /**
      * Updates tab info (title and url)
