@@ -8,10 +8,10 @@ var configuration = {
 
     // Array of custom rules
     rules: [ 'example.org##h1' ],
-   
+
     // Filters metadata file path
     filtersMetadataUrl: 'https://filters.adtidy.org/extension/chromium/filters.json',
-    
+
     // Filter file mask
     filterRulesUrl: 'https://filters.adtidy.org/extension/chromium/filters/{filter_id}.txt'
 };
