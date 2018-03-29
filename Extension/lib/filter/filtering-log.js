@@ -24,10 +24,21 @@ adguard.filteringLog = (function (adguard) {
 
     var REQUESTS_SIZE_PER_TAB = 1000;
 
+    const backgroundTabId = -1;
+    const backgroundTab = {
+        tabId: backgroundTabId,
+        title: adguard.i18n.getMessage('background_tab_title')
+    };
+
     var tabsInfoMap = Object.create(null);
     var openedFilteringLogsPage = 0;
 
     var extensionURL = adguard.getURL('');
+
+    // Force to add background tab if it's defined
+    if (adguard.prefs.features.hasBackgroundTab) {
+        tabsInfoMap[backgroundTabId] = backgroundTab;
+    }
 
     /**
      * Updates tab info (title and url)
@@ -47,6 +58,12 @@ adguard.filteringLog = (function (adguard) {
      * @param tab
      */
     function addTab(tab) {
+
+        // Background tab can't be added
+        if (tab.tabId == backgroundTabId) {
+            return;
+        }
+
         var tabInfo = updateTabInfo(tab);
         if (tabInfo) {
             adguard.listeners.notifyListeners(adguard.listeners.TAB_ADDED, tabInfo);
@@ -58,6 +75,12 @@ adguard.filteringLog = (function (adguard) {
      * @param tabId
      */
     function removeTabById(tabId) {
+
+        // Background tab can't be removed
+        if (tabId == backgroundTabId) {
+            return;
+        }
+
         var tabInfo = tabsInfoMap[tabId];
         if (tabInfo) {
             adguard.listeners.notifyListeners(adguard.listeners.TAB_CLOSE, tabInfo);
@@ -70,6 +93,12 @@ adguard.filteringLog = (function (adguard) {
      * @param tab
      */
     function updateTab(tab) {
+
+        // Background tab can't be updated
+        if (tab.tabId == backgroundTabId) {
+            return;
+        }
+
         var tabInfo = updateTabInfo(tab);
         if (tabInfo) {
             adguard.listeners.notifyListeners(adguard.listeners.TAB_UPDATE, tabInfo);
