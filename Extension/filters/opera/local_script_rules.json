@@ -386,10 +386,6 @@
       "script" : "document.cookie = \"anCookie=true\";"
     },
     {
-      "domains" : "arenavision2018.tk,saikocloud.ml,saikoanimes.com,tvfree.me,gamesandroidhvga.net,mangahost.cc,minhasreceita.in,torrentbrazil.org,alt-torrent.com,animesgo.net,futeboltv.com,eusouandroid.co,peliculasmegahdd.net,urlcloud.us,meulink.tk,mwpaste.com,wakfutemporada2subs.blogspot.com",
-      "script" : "(function() { var sto = window.setTimeout, re = /\\.bab_elementid.$/; window.setTimeout = function(a, b) { if ( typeof a !== 'string' || !re.test(a) ) { return sto(a, b); } }.bind(window); var signatures = [ ['blockadblock'], ['babasbm'], [/getItem\\('babn'\\)/], ['getElementById','String.fromCharCode','ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789','charAt','DOMContentLoaded','AdBlock','addEventListener','doScroll','fromCharCode','<<2|r>>4','sessionStorage','clientWidth','localStorage','Math','random'] ]; var check = function(s) { var tokens, match, j, token, pos; for ( var i = 0; i < signatures.length; i++ ) { tokens = signatures[i]; match = 0; for ( j = 0, pos = 0; j < tokens.length; j++ ) { token = tokens[j]; pos = token instanceof RegExp ? s.search(token) : s.indexOf(token); if ( pos !== -1 ) { match += 1; } } if ( (match / tokens.length) >= 0.8 ) { return true; } } return false; }; var realEval = window.eval; window.eval = function(a) { if ( !check(a) ) { return realEval(a); } var el = document.body; if ( el ) { el.style.removeProperty('visibility'); } el = document.getElementById('babasbmsgx'); if ( el ) { el.parentNode.removeChild(el); } }.bind(window); })();"
-    },
-    {
       "domains" : "eurogamer.pl",
       "script" : "Object.defineProperty(window, 'yafaIt', { get: function() { return {}; } });"
     },
@@ -1398,10 +1394,6 @@
       "script" : "Object.defineProperties(window, { _wm2: { get: function(){ return null; } }, _wm2_settings: { get: function(){return{};} } });"
     },
     {
-      "domains" : "zserials.cc,kinogo.cc,onelike.tv,fast-torrent.ru,online-life.club,hdpicture.ru,rodinkam.com,hdreactor.club,kinogo-hit.com,tfile-soft.cc,gogoanime.se,foxi.tv,it-tehnik.ru,gtavicecity.ru,tsargrad.tv,kinokrad.co,kinokrad.co,allday2.com,viks.tv,only-tv.org,hdrezka.ag,kinokrab.co,kinokrab.co,citysmile.org,torrentom.com",
-      "script" : "(function(){var b=XMLHttpRequest.prototype.open,c=/[/.@](piguiqproxy\\.com|rcdn\\.pro|amgload\\.net|dsn-fishki\\.ru|v6t39t\\.ru|greencuttlefish\\.com|rgy1wk\\.ru|vt4dlx\\.ru|d38dub\\.ru|csp-oz66pp\\.ru|ok9ydq\\.ru|kingoablc\\.com)[:/]/i;XMLHttpRequest.prototype.open=function(d,a){if(\"GET\"===d&&c.test(a))this.send=function(){return null},this.setRequestHeader=function(){return null},console.log(\"AG has blocked request: \",a);else return b.apply(this,arguments)}})();"
-    },
-    {
       "domains" : "losslessbests.com,azvideo.net,94lauin.com",
       "script" : "AG_abortInlineScript(/,displayMessage:/, 'document.addEventListener');"
     },
@@ -1650,12 +1642,12 @@
       "script" : "AG_onLoad(function() { setTimeout(function() {var click = document.getElementById(\"btd\"); link = click.onclick.toString().split(\";\"); link1 = link[0].split(\")\"); link2 = link1[1].split(\"(\"); link3 = link2[1] + \"(\" + link2[2] + \")\"; document.location.href = eval(link3); }, 300); });"
     },
     {
-      "domains" : "hdpass.net",
-      "script" : "AG_onLoad(function() {setTimeout(function() {function clearify(url) {         var size = url.length;         if (size % 2 == 0) {             var halfIndex = size / 2;             var firstHalf = url.substring(0, halfIndex);             var secondHalf = url.substring(halfIndex, size);             var url = secondHalf + firstHalf;             var base = url.split(\"\").reverse().join(\"\");             var clearText = $.base64('decode', base);             return clearText         } else {             var lastChar = url[size - 1];             url[size - 1] = ' ';             url = $.trim(url);             var newSize = url.length;             var halfIndex = newSize / 2;             var firstHalf = url.substring(0, halfIndex);             var secondHalf = url.substring(halfIndex, newSize);             url = secondHalf + firstHalf;             var base = url.split(\"\").reverse().join(\"\");             base = base + lastChar;             var clearText = $.base64('decode', base);             return clearText         }     }  var urlEmbed = $('#urlEmbed').val(); urlEmbed = clearify(urlEmbed); var iframe = '<iframe width=\"100%\" height=\"100%\" src=\"' + urlEmbed + '\" frameborder=\"0\" scrolling=\"no\" allowfullscreen />'; $('#playerFront').html(iframe); }, 300); });"
-    },
-    {
       "domains" : "free-mp3-streaming.online",
       "script" : "var b=window.open;window.open=function(a,c,d){if(0!=a.indexOf(\"https://goo.gl/\"))return b(a,c,d)};"
+    },
+    {
+      "domains" : "hdpass.net",
+      "script" : "AG_onLoad(function() {setTimeout(function() {function clearify(url) {         var size = url.length;         if (size % 2 == 0) {             var halfIndex = size / 2;             var firstHalf = url.substring(0, halfIndex);             var secondHalf = url.substring(halfIndex, size);             var url = secondHalf + firstHalf;             var base = url.split(\"\").reverse().join(\"\");             var clearText = $.base64('decode', base);             return clearText         } else {             var lastChar = url[size - 1];             url[size - 1] = ' ';             url = $.trim(url);             var newSize = url.length;             var halfIndex = newSize / 2;             var firstHalf = url.substring(0, halfIndex);             var secondHalf = url.substring(halfIndex, newSize);             url = secondHalf + firstHalf;             var base = url.split(\"\").reverse().join(\"\");             base = base + lastChar;             var clearText = $.base64('decode', base);             return clearText         }     }  var urlEmbed = $('#urlEmbed').val(); urlEmbed = clearify(urlEmbed); var iframe = '<iframe width=\"100%\" height=\"100%\" src=\"' + urlEmbed + '\" frameborder=\"0\" scrolling=\"no\" allowfullscreen />'; $('#playerFront').html(iframe); }, 300); });"
     },
     {
       "domains" : "armorgames.com,onrpg.com,mmohuts.com,newgrounds.com",
@@ -1948,6 +1940,10 @@
     {
       "domains" : "your-pictures.net",
       "script" : "window.open = function() {};"
+    },
+    {
+      "domains" : "watchmynewgf.com",
+      "script" : "Object.defineProperty(window, 'prPopunder', { get: function() { return; } });"
     },
     {
       "domains" : "rozetka.com.ua",
@@ -2556,6 +2552,10 @@
     {
       "domains" : "newsland.com,kimcartoon.me,sunhome.ru,bigtorrent.org,tivix.co,4chan.org,tele.ru,0day.kiev.ua,112.ua,24boxing.com.ua,24tv.ua,5.ua,5litra.ru,allboxing.ru,allday2.com,alluc.com,alluc.ee,altapress.ru,animeflv.me,animeget.ch,animeget.tv,animeid.io,animekade.com,animekb.com,animereborn.co,aniorion.com,antidiary.com,audioboo.ru,autoua.net,avtodispetcher.ru,avtovod.org.ua,azov-sea.info,baskino.co,baskino.me,beztabu.net,bigmir.net,bilshe.com,bitvid.sx,blackboxrepack.com,bmovies.is,bookre.org,bookree.org,boxnews.com.ua,buhgalter.com.ua,buhgalter911.com,bukvar.su,businessua.com,byhgalter.com,car.ru,censor.net.ua,chia-anime.tv,chiaanime.co,chtyvo.org.ua,cikavosti.com,cinema-hd.tv,cn.ru,comments.ua,cxid.info,dailymotiontomp3.com,dengi.ua,depo.ua,detectivebooks.ru,dextv.net,dinoklafbzor.org,dokonlin.ru,doramatv.ru,dovidka.biz.ua,dsnews.ua,dwatchseries.to,dynamo.kiev.ua,economics-prorok.com,eizvestia.com,ekabu.ru,eknigi.org,elise.com.ua,estrenos10.com,etextlib.ru,ex-fs.net,expres.ua,extendedunlimited.org,f1analytic.com,facenews.ua,fakty.ua,fan-tv.ru,fanread.ru,fast-torrent.ru,fastpic.ru,fightsday.com,filmaon.com,filmix.info,filmix.me,filmxy.me,finance.ua,findanime.me,fontanka.fm,fontanka.ru,football-ukraine.com,football24.ua,footballgazeta.com,footballtransfer.com.ua,forumodua.com,fotokto.ru,fritchy.com,gagadget.com,gameorplay.info,gazeta.ua,getwall.ru,glavcom.ua,glavpost.com,gogetnews.info,gogoanime.io,grouple.co,guru.ua,hd-1080.com,hd-dream.ru,hdkinohit.net,hdkinoset.org,headinsider.net,hronika.info,hvylya.net,hyser.com.ua,i.ua,igra-prestoloff.biz,igra-prestoloff.com,imperiya.by,indiankino.net,inforesist.org,irr.ua,isport.ua,it-like.ru,jkanime.co,kaktus.site,kaztorka.org,khazin.ru,kidstaff.com.ua,kimcartoon.me,kino-dom.org,kino-dom.tv,kino-hd1080.ru,kino-live2.org,kinoafisha.ua,kinogo-hd.pro,kinohome.net,kinomaxpro.com,kinotan.ru,kinozal.tv,klerk.ru,kolobok.ua,korrespondent.net,korupciya.com,kp.ua,kriminal.tv,krutor.org,kurs.com.ua,lavamovies.com,lessons.com.ua,librebook.ru,liga.net,linx.cloud,look.com.ua,lostfilm-hd720.ru,love.ua,lugradar.net,luxlux.net,lvivexpres.com,m24.ru,mabila.ua,makataka.ru,mama.ua,mash-xxl.info,maximum.fm,meta.ua,metodportal.net,mibius.com.ua,mil.in.ua,minfin.com.ua,mintmanga.com,mport.ua,mrutor.org,my-hit.fm,myledi.net,mynnm.ru,nashamama.com,nashasvadba.ua,newdeaf-online.net,newsyou.info,nnm-club-me.appspot.com,nnm-club.lib,nnm-club.me,nnm-club.name,nnm-club.tv,nnm.me,nnm2.com,nnmclub.to,nnovosti.info,novosti-n.org,novostionline.net,novostivmire.com,nowvideo.sx,nowwatchtvlive.cc,nwanime.com,obozrevatel.com,obsuzhday.com,ok-tv.org,okino.ua,oklivetv.com,online-freebee.ru,onpress.info,ostfilm.org,ostrnum.com,ostro.org,padabum.com,padaread.com,peers.tv,postimg.org,pravda.com.ua,pure-t.ru,putin-today.ru,putlocker.io,qp.ua,radikal.ru,radio24.ua,radnuk.info,rbc.ua,real-vin.com,ria-m.tv,rian.com.ua,ringside24.com,romanbook.ru,rumedia.ws,rus-porno.org,rustorka.com,scribble.su,seasonvar.ru,seedoff.cc,seedoff.tv,segodnya.ua,seria-z.net,serialbox.org,simpsonsua.com.ua,sinoptik.com.ru,sinoptik.ua,skidrowcrack.com,smak.ua,smotri-filmi.co,sockshare.net,socportal.info,solarmovie.net,sport.ua,sportanalytic.com,sprashivalka.com,stereotraker.ru,strana.ua,subject.com.ua,tchkcdn.com,tfile.cc,the-cinema.net,tochka.net,toneto.net,tribuna.com,tushkan.net,tv.ua,tvgid.ua,tvonlinegratis1.com,tvplayvideos.com,tvtorrent.su,u-news.com.ua,ubr.ua,uchim.org,udoktora.net,ukrinform.ua,ukrlib.com.ua,ukrlit.net,unian.net,v-androide.com,vchaspik.ua,vesti-ukr.com,vesti.ru,vesti.ua,vgorode.ua,videolike.org,vimeotomp3.com,vklasse.org,vmirechudes.com,voroniny-online.net,vseserialy.org,vsetv.com,vshkole.com,watch32.is,watchcartoononline.com,webcam.guru.ua,webpark.ru,wikibit.me,woman.ua,womanhappiness.ru,wow-helper.com,yahooeu.ru,youtubecomtomp3.com,yummyanime.com,zarlit.com,zaxid.net,zdorovia.com.ua,zhzh.info,zk.fm,zona-film.com,zoo-dom.com.ua,кинопират.рф",
       "script" : "(function(){var b=XMLHttpRequest.prototype.open,c=/[/.@](piguiqproxy\\.com|rcdn\\.pro|amgload\\.net|dsn-fishki\\.ru|v6t39t\\.ru|greencuttlefish\\.com|rgy1wk\\.ru|vt4dlx\\.ru|d38dub\\.ru)[:/]/i;XMLHttpRequest.prototype.open=function(d,a){if(\"GET\"===d&&c.test(a))this.send=function(){return null},this.setRequestHeader=function(){return null},console.log(\"AG has blocked request: \",a);else return b.apply(this,arguments)}})();"
+    },
+    {
+      "domains" : "hdrezka.name,zserials.cc,kinogo.cc,onelike.tv,fast-torrent.ru,online-life.club,hdpicture.ru,rodinkam.com,hdreactor.club,kinogo-hit.com,tfile-soft.cc,gogoanime.se,foxi.tv,it-tehnik.ru,gtavicecity.ru,tsargrad.tv,kinokrad.co,kinokrad.co,allday2.com,viks.tv,only-tv.org,hdrezka.ag,kinokrab.co,kinokrab.co,citysmile.org,torrentom.com",
+      "script" : "(function(){var b=XMLHttpRequest.prototype.open,c=/[/.@](piguiqproxy\\.com|rcdn\\.pro|amgload\\.net|dsn-fishki\\.ru|v6t39t\\.ru|greencuttlefish\\.com|rgy1wk\\.ru|vt4dlx\\.ru|d38dub\\.ru|csp-oz66pp\\.ru|ok9ydq\\.ru|kingoablc\\.com)[:/]/i;XMLHttpRequest.prototype.open=function(d,a){if(\"GET\"===d&&c.test(a))this.send=function(){return null},this.setRequestHeader=function(){return null},console.log(\"AG has blocked request: \",a);else return b.apply(this,arguments)}})();"
     },
     {
       "domains" : "e.mail.ru",
@@ -3360,6 +3360,10 @@
     {
       "domains" : "cookies.weeronline.nl",
       "script" : "AG_onLoad(function() { setTimeout(function() {var check = document.getElementsByClassName('btn-accept')[0]; if (check){check.click();}; }, 300); });"
+    },
+    {
+      "domains" : "ddmix.net,arenavision2018.tk,saikocloud.ml,saikoanimes.com,tvfree.me,gamesandroidhvga.net,mangahost.cc,minhasreceita.in,torrentbrazil.org,alt-torrent.com,animesgo.net,futeboltv.com,eusouandroid.co,peliculasmegahdd.net,urlcloud.us,meulink.tk,mwpaste.com,wakfutemporada2subs.blogspot.com",
+      "script" : "(function() { var sto = window.setTimeout, re = /\\.bab_elementid.$/; window.setTimeout = function(a, b) { if ( typeof a !== 'string' || !re.test(a) ) { return sto(a, b); } }.bind(window); var signatures = [ ['blockadblock'], ['babasbm'], [/getItem\\('babn'\\)/], ['getElementById','String.fromCharCode','ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789','charAt','DOMContentLoaded','AdBlock','addEventListener','doScroll','fromCharCode','<<2|r>>4','sessionStorage','clientWidth','localStorage','Math','random'] ]; var check = function(s) { var tokens, match, j, token, pos; for ( var i = 0; i < signatures.length; i++ ) { tokens = signatures[i]; match = 0; for ( j = 0, pos = 0; j < tokens.length; j++ ) { token = tokens[j]; pos = token instanceof RegExp ? s.search(token) : s.indexOf(token); if ( pos !== -1 ) { match += 1; } } if ( (match / tokens.length) >= 0.8 ) { return true; } } return false; }; var realEval = window.eval; window.eval = function(a) { if ( !check(a) ) { return realEval(a); } var el = document.body; if ( el ) { el.style.removeProperty('visibility'); } el = document.getElementById('babasbmsgx'); if ( el ) { el.parentNode.removeChild(el); } }.bind(window); })();"
     },
     {
       "domains" : "sextubehub.com",

@@ -1,8 +1,8 @@
-! Checksum: G1vk3khj7AqNS2KWk5nrTw
+! Checksum: 7suvvo1QY72RwfZfqzFYYQ
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on web pages including cookie notices, third-party widgets and in-page pop-ups.
-! Version: 2.0.1.99
-! TimeUpdated: 2018-03-29T12:02:55+00:00
+! Version: 2.0.2.0
+! TimeUpdated: 2018-03-29T15:04:21+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#annoyances
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -3593,6 +3593,7 @@ _europecookielaw.
 !######### Rules for specific sites ####################
 !#######################################################
 !
+soft32.com##.cookie
 ||jouw.postnl.nl/widgets/cookie-widget/
 mein-glueck.de##.c-cookiesBox
 gumtree.com##div[data-toggler^="channel:cookie-policy"]
@@ -5457,6 +5458,8 @@ edeka.de#@##smartbanner.android
 !
 ! Specific sites
 !
+hola.com###webpush-modal
+hola.com##.gigya-background-layer
 intersportv.com###ef-content
 ||forms.intercdn.xyz^$domain=intersportv.com
 stern.de##.js-inactivity-layer
@@ -7246,6 +7249,7 @@ tennistemple.com##.right > div.box_nd > div[id="300x250"]
 ! https://forum.adguard.com/index.php?threads/23073/
 themeforest.net##body > .preview__header
 !
+vsetop.com##p[style="text-align:center;"] > a
 dyttw.com.cn##a[href="/ads"]
 dx.com###commonHeadBannerPanel
 blog.konusarakogren.com##a.nolazy

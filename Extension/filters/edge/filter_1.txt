@@ -1,8 +1,8 @@
-! Checksum: uZHGqH+7HWAhzUatEywWqA
+! Checksum: hRBI52mBF3OV32Aq7ziPhQ
 ! Title: Russian Filter
 ! Description: AdGuard Russian filter. Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.1.70
-! TimeUpdated: 2018-03-29T12:03:01+00:00
+! Version: 2.0.1.72
+! TimeUpdated: 2018-03-29T16:45:58+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#russian
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -4813,7 +4813,7 @@ gazeta.ru##.main_article .sausage:has(> div.sausage-header:contains(Новост
 dota2.ru##.main-b-right-c-right > div[class]:has(> div > div[id^="adfox_"])
 dota2.ru##.main-b-right-c-right > div[class]:has(> div > div[id^="yandex_rtb_"])
 domenolog.ru##.col-md-12 > div.col-md-7 > div[class="panel panel-default"]:has(> div[id^="yandex_rtb"])
-rp5.by,rp5.kz,rp5.ru,rp5.ua###content-data > div[id]:has(> div[id][class] > a:contains(Ρазмеcтить οбъявление))
+rp5.by,rp5.kz,rp5.ru,rp5.ua###content-data > div[id]:has(> div[id][class] > [class]:not(:has(> *)))
 torrent-games.net###right > div[class="r_block3"]:has(> div:contains(Реклама))
 xatab-repack.net##.colum_right > div.block:has(> div.b_in > div[align="center"] > a[href^="http://ctaddlinkcnds.net/"])
 ikinohd.club##body > div[id]:has(> a[rel="nofollow"])
@@ -4916,7 +4916,7 @@ pr-cy.ru##.row > div.col-sm-4 > div.index-talk[-ext-has='> h3.index-talk__title 
 ! baskino.club - удаление отступа сверху
 baskino.club#$#body.branding.active-native-holder[-ext-has="div"] { padding-top: 0px!important; }
 ! hdrezka.me - удаление отступа сверху
-hdrezka.me,hdrezka.co,hdrezka.club#$#body.active-brand[-ext-has="div"] { padding-top: 0px!important; }
+hdrezka.name,hdrezka.me,hdrezka.co,hdrezka.club#$#body.active-brand[-ext-has="div"] { padding-top: 0px!important; }
 !
 tracker.0day.kiev.ua##td[valign="top"] > table[style^="margin-bottom: 20px"][-ext-has=".titlemedium:contains(Полезное для тебя!)"]
 tracker.0day.kiev.ua##td[valign="top"] > table[style^="margin-bottom: 20px"][-ext-has=".titlemedium:contains(Реклама)"]
@@ -7959,6 +7959,9 @@ Ly9hbi55YW5kZXgucnUv
 !
 ||avtovzglyad.ru/*/*/*/*/*/*/*/*/*/*/*/*/*/*/$script
 !
+moyareklama.ru##.super_context_block
+moyareklama.ru##a[href^="/redirect.php?bid="]
+||ironfriends.ru/SocialMartWidgetProxy/
 open-sharing.com###top > center > a > img
 muzmo.ru###ifrt
 muzmo.ru###ifrb
@@ -8313,7 +8316,6 @@ quto.ru###car_latest > ul.car_list > noindex
 quto.ru##.vitrine_block_four > noindex
 auto.ru##.search-controller__content > div[id][class][style*="!important;"]
 /Scripts/rcs.js$script,domain=rp5.by|rp5.kz|rp5.ru|rp5.ua
-rp5.by,rp5.kz,rp5.ru,rp5.ua###content-wrapper > div#content~div.inline-block[style]
 gamesubject.com##.advb
 pluggedin.ru##.banner-advertise-img
 3g-aerial.biz##.vt_nivo_slider

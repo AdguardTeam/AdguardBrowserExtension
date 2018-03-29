@@ -1,8 +1,8 @@
-! Checksum: VxOl+IIRkaxVcl8q4VRyUA
+! Checksum: WLO8mz2TFBe1LSJVokN8xA
 ! Title: English Filter
 ! Description: EasyList + AdGuard English filter. This filter is necessary for quality ad blocking.
-! Version: 2.0.3.76
-! TimeUpdated: 2018-03-29T12:03:21+00:00
+! Version: 2.0.3.77
+! TimeUpdated: 2018-03-29T15:04:57+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#english
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -1374,6 +1374,8 @@ j.gs#@##bottom
 !*
 !*****
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/14021
+webforefront.com#@##banner_ad
 ! https://github.com/AdguardTeam/AdguardFilters/issues/14006
 forum.hackinformer.com#@#.headerads
 forum.hackinformer.com#@#.adsbygoogle
@@ -7367,6 +7369,8 @@ youporngay.com#%#Object.defineProperty(window, 'loadPUscript', { get: function()
 ! END: Popular clickunders
 !**********************************
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/13414
+watchmynewgf.com#%#Object.defineProperty(window, 'prPopunder', { get: function() { return; } });
 ! https://github.com/AdguardTeam/AdguardFilters/issues/12386
 fileflares.com#%#(function() { window.open_ = window.open; var w_open = window.open, regex = /hicpm10.com/; window.open = function(a, b) { if (typeof a !== 'string' || !regex.test(a)) { w_open(a, b); } }; })();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/13562
@@ -8845,6 +8849,14 @@ eztv.unblocked.sh,piratbaypirate.link,animeshow.tv,vidzi.tv##body > div[id][styl
 ||servicer.mgid.com^$empty,third-party,important
 ||jsc.marketgid.com/*.js?t=$empty,important,~websocket
 !
+watchmynewgf.com##body > section.bb
+||watchmynewgf.com/exo/
+||watchmynewgf.com/js/mes.js
+||watchmynewgf.com/js/cash*.js
+webforefront.com##.adslot_leader
+surelyawesome.com##img[title="BigSidebar1"]
+surelyawesome.com##.surel-responsive-bottom > div[style="margin: 10px 0px 20px; padding-bottom: 5px"] > div[style$="text-align: center"]
+||readmng.com/onlinenovelreader.jpg
 gogoanime.to##.safeuploada-filter
 ||123movies.one/banners/
 ||123movies.one/wp-content/uploads/*/player4k.jpg
@@ -16377,6 +16389,7 @@ implbits.com#@#.banner_container
 .n.2.1.l60.js^$third-party
 !
 !
+||pon.ewtuyytdf45.com^
 ||appelamule.com^$third-party
 ||hhb123.tk^$third-party
 ||bhzejltg.info^$third-party
@@ -32745,6 +32758,7 @@ _popunder+$popup
 ##.ADServer
 ##.ADStyle
 ##.ADTextSingle
+##.ADTop
 ##.ADV-Space
 ##.AD_2
 ##.AD_300x100
@@ -48730,7 +48744,6 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad"]
 ||v2mlblack.biz^$third-party
 ||v3g4s.com^$third-party
 ||vadpay.com^$third-party
-||valassis.eu^$third-party
 ||validclick.com^$third-party
 ||valuead.com^$third-party
 ||valueaffiliate.net^$third-party
@@ -51666,6 +51679,7 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad"]
 ||gevrsbmqvp.bid^$third-party
 ||gezkddgdbliip.bid^$third-party
 ||gfdeapuaymd.bid^$third-party
+||gffupsrgds.com^$third-party
 ||gfhlwbxjjdla.bid^$third-party
 ||ggagqobykjh.com^$third-party
 ||ggbfbseakyqv.com^$third-party

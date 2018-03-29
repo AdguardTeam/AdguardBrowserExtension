@@ -1,8 +1,8 @@
-! Checksum: CwkVJ5Uio4iajtScdJPgSg
+! Checksum: ek3Bk7LC3h9TktKSpHF7Fg
 ! Title: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such)
-! Version: 2.0.1.40
-! TimeUpdated: 2018-03-28T18:03:14+00:00
+! Version: 2.0.1.42
+! TimeUpdated: 2018-03-29T16:46:27+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -449,6 +449,8 @@ business-tv.org##.shareit
 dir50.com###sharebuttons
 !+ PLATFORM(ext_ff, ext_opera, ios, ext_android_cb, ext_ublock)
 thetalko.com##.btn-facebook-like
+stltoday.com##li.social-share-link > a[data-tncms-track-dmp="Social Media Share"]:not(.pr)
+hola.com##.news-share
 betkupa.tv##.embed-responsive + .s-b[style="margin-top: 0"]
 badoo.com##.js-footer-likes
 mhealth.ru##.social
@@ -4308,6 +4310,9 @@ designboom.com,livescience.com,pbtech.co.nz,peoplesworld.org,space.com##.fa-face
 ||cdn-library.su/plusonet/lib/$domain=~pluso.net
 ||mailget.net^$third-party
 ||my.hellobar.com^$third-party
+canliperiscopeizle.com#$##likeus { display: none!important; }
+canliperiscopeizle.com#$##likeus ~ .modal-backdrop { display: none!important; }
+canliperiscopeizle.com#$#body.modal-open { overflow: visible!important; padding-right: 0px!important; }
 gucluanadolugazetesi.com##body > div#kodac
 materikelas.com###sidebar > #text-7 #box-message
 crazymailing.com##.fb_block
