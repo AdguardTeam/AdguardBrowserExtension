@@ -1,8 +1,8 @@
-! Checksum: e0EiontzWl5AWRGeR0PNOQ
+! Checksum: +PfJ10MdVh2fmUAw03rAmA
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.0.68
-! TimeUpdated: 2018-03-21T15:04:38+00:00
+! Version: 2.0.0.76
+! TimeUpdated: 2018-03-27T12:03:15+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -1124,6 +1124,16 @@ m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"
 m.youtube.com##a[href^="/watch?v="][onclick^="return koya.onEvent(arguments[0]||window.event,'"]:not([role]):not([class]):not([id])
 !+ NOT_OPTIMIZED
 m.youtube.com##a[href^="/watch?v="][onclick^="return koya.onEvent(arguments[0]||window.event,'"]:not([role]):not([class]):not([id]) + div
+!+ NOT_OPTIMIZED
+m.news.de##.articleTeaser + div[style="height: 250px"]
+!+ NOT_OPTIMIZED
+m.news.de##.aside > div[style="height: 600px;"]
+!+ NOT_OPTIMIZED
+m.news.de##.unisterAdsStart
+vulture.com##.nym-ad
+m.news.de##.content.clearfix > div[style="height:50px"]
+m.news.de##[data-widget="plista_widget_topArticle"] + div[style="height: 100px"]
+thenewslens.com##.ad-btm
 m.nihaogood.com##.Adinfo
 ||m.nihaogood.com/js/neironga.js
 ||ddreminder.appspot.com/android_ad_target.txt
@@ -1669,7 +1679,10 @@ auth.wi-fi.ru##.c-fullscreen-banner
 yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua##body.i-bem > div.body__wrapper > div.content.i-bem > div[class] > div[class^="time"]~div
 yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua##.banner__link-frame
 yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua##.direct_type_between
+m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m.news.yandex.ru,m.news.yandex.ua##.page__advert
+m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m.news.yandex.ru,m.news.yandex.ua##.page-content > div.story+div[id]:not(.story)
 ||extmaps-api.yandex.net/promo/api/
+||varravgames.com/AdVarServer/
 ||behacdn.ksmobile.net^
 ||cmdts.ksmobile.com^
 ||p-behacdn.ksmobile.net^
@@ -1757,6 +1770,8 @@ yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua##.dir
 ||trackersimulator.org^
 !+ NOT_PLATFORM(ios, ext_safari, ext_android_cb)
 ||app.adjust.com^
+||alog.umeng.co^
+||oc.umeng.co^
 ||m.vpadn.com^
 ||parse-ppom-prod.herokuapp.com/parse/events^
 ||api.instabug.com^

@@ -1,8 +1,8 @@
-! Checksum: JxOECGQt1oLBrmaOIj9HDg
+! Checksum: h0679kwDnq46BuZxeP6FiQ
 ! Title: Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.0.68
-! TimeUpdated: 2018-03-21T15:04:38+00:00
+! Version: 2.0.0.76
+! TimeUpdated: 2018-03-27T12:03:15+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#mobile
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -1387,8 +1387,19 @@ m.auto.ru##.listing__page > div[class^="_"]:not([class$="listing__item_view_old"
 m.youtube.com##a[href^="/watch?v="][onclick^="return koya.onEvent(arguments[0]||window.event,'"]:not([role]):not([class]):not([id])
 !+ NOT_OPTIMIZED
 m.youtube.com##a[href^="/watch?v="][onclick^="return koya.onEvent(arguments[0]||window.event,'"]:not([role]):not([class]):not([id]) + div
+! https://github.com/AdguardTeam/AdguardFilters/issues/13505
+!+ NOT_OPTIMIZED
+m.news.de##.articleTeaser + div[style="height: 250px"]
+!+ NOT_OPTIMIZED
+m.news.de##.aside > div[style="height: 600px;"]
+!+ NOT_OPTIMIZED
+m.news.de##.unisterAdsStart
 !
 !
+vulture.com##.nym-ad
+m.news.de##.content.clearfix > div[style="height:50px"]
+m.news.de##[data-widget="plista_widget_topArticle"] + div[style="height: 100px"]
+thenewslens.com##.ad-btm
 m.nihaogood.com##.Adinfo
 ||m.nihaogood.com/js/neironga.js
 ||ddreminder.appspot.com/android_ad_target.txt
@@ -1944,6 +1955,10 @@ yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua##.ban
 ! Yandex.Images
 yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua##.direct_type_between
 !
+! Yandex.News
+m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m.news.yandex.ru,m.news.yandex.ua##.page__advert
+m.news.yandex.by,m.news.yandex.com,m.news.yandex.fr,m.news.yandex.kz,m.news.yandex.ru,m.news.yandex.ua##.page-content > div.story+div[id]:not(.story)
+!
 ! END: Yandex
 !
 !---------------------------------------------------------------------------!
@@ -1962,6 +1977,9 @@ yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua##.dir
 !
 ! Blocking of Facebook ads
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/13716
+||varravgames.com/AdVarServer/
+! https://github.com/AdguardTeam/AdguardFilters/issues/13224
 ! https://github.com/AdguardTeam/AdguardFilters/issues/13130
 ! https://github.com/AdguardTeam/AdguardFilters/issues/11291
 ||behacdn.ksmobile.net^
@@ -2167,6 +2185,8 @@ yandex.by,yandex.com,yandex.com.tr,yandex.fr,yandex.kz,yandex.ru,yandex.ua##.dir
 !+ NOT_PLATFORM(ios, ext_safari, ext_android_cb)
 ||app.adjust.com^
 !
+||alog.umeng.co^
+||oc.umeng.co^
 ||m.vpadn.com^
 ||parse-ppom-prod.herokuapp.com/parse/events^
 ||api.instabug.com^
