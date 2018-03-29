@@ -148,9 +148,10 @@ adguard.prefs = (function (adguard) {
             // Blink engine based browsers
             (Prefs.browser === 'Chrome' || Prefs.browser === 'Opera' || Prefs.browser === 'YaBrowser') &&
             // Support for tabs.insertCSS and tabs.executeScript on chrome 
-            // requires chrome version above or equal to 39.
-            // https://developers.chrome.com/extensions/tabs
-            Prefs.chromeVersion >= 39
+            // requires chrome version above or equal to 39, as per documentation: https://developers.chrome.com/extensions/tabs
+            // But due to a bug, it requires version >= 50
+            // https://bugs.chromium.org/p/chromium/issues/detail?id=63979
+            Prefs.chromeVersion >= 50
         ) || (
             Prefs.browser === 'Firefox' && (
                 typeof browser !== 'undefined' &&
