@@ -1,8 +1,8 @@
-! Checksum: s3yIGqYVWHFfBHCkzFPzHQ
+! Checksum: nd7jgARliMwe0CQNMnzzRQ
 ! Title: Social media filter
 ! Description: Filter for social media widgets (Like buttons and such)
-! Version: 2.0.1.40
-! TimeUpdated: 2018-03-28T18:03:14+00:00
+! Version: 2.0.1.42
+! TimeUpdated: 2018-03-29T16:46:27+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#social
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -530,6 +530,8 @@ gazeta.ru##.article-share-name
 kakprosto.ru##.content__share
 !
 !
+stltoday.com##li.social-share-link > a[data-tncms-track-dmp="Social Media Share"]:not(.pr)
+hola.com##.news-share
 betkupa.tv##.embed-responsive + .s-b[style="margin-top: 0"]
 badoo.com##.js-footer-likes
 mhealth.ru##.social
@@ -4420,6 +4422,9 @@ designboom.com,livescience.com,pbtech.co.nz,peoplesworld.org,space.com##.fa-face
 ||mailget.net^$third-party
 ||my.hellobar.com^$third-party
 !
+canliperiscopeizle.com#$##likeus { display: none!important; }
+canliperiscopeizle.com#$##likeus ~ .modal-backdrop { display: none!important; }
+canliperiscopeizle.com#$#body.modal-open { overflow: visible!important; padding-right: 0px!important; }
 gucluanadolugazetesi.com##body > div#kodac
 materikelas.com###sidebar > #text-7 #box-message
 crazymailing.com##.fb_block

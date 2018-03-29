@@ -1,8 +1,8 @@
-! Checksum: ITrKTIGHfKFqFaPFTxJoOQ
+! Checksum: lgsDQ5wPWKG9JCBhihXZ3w
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on web pages including cookie notices, third-party widgets and in-page pop-ups.
-! Version: 2.0.1.99
-! TimeUpdated: 2018-03-29T12:02:55+00:00
+! Version: 2.0.2.1
+! TimeUpdated: 2018-03-29T16:45:51+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -3207,6 +3207,7 @@ _europecookielaw.
 ||r42tag.com^$third-party
 ||tm.tradetracker.net/public/styles/ttCookieDirective.css
 ||cookieq.com^$third-party
+soft32.com##.cookie
 ||jouw.postnl.nl/widgets/cookie-widget/
 mein-glueck.de##.c-cookiesBox
 gumtree.com##div[data-toggler^="channel:cookie-policy"]
@@ -4840,6 +4841,12 @@ edeka.de#@##smartbanner.android
 ||optnmnstr.com^$third-party
 ||static.popmechanic.ru/service/loader.js$third-party
 /wp-content/plugins/chimpmatepro/*
+canliperiscopeizle.com#$##likeus { display: none!important; }
+canliperiscopeizle.com#$##likeus ~ .modal-backdrop { display: none!important; }
+canliperiscopeizle.com#$#body.modal-open { overflow: visible!important; padding-right: 0px!important; }
+rp5.by,rp5.kz,rp5.ru,rp5.ua###declare
+hola.com###webpush-modal
+hola.com##.gigya-background-layer
 intersportv.com###ef-content
 ||forms.intercdn.xyz^$domain=intersportv.com
 stern.de##.js-inactivity-layer
@@ -6383,6 +6390,7 @@ tennistemple.com##div[id="728x90_tennistemple"]
 tennistemple.com##div[id="300x250_premium"]
 tennistemple.com##.right > div.box_nd > div[id="300x250"]
 themeforest.net##body > .preview__header
+vsetop.com##p[style="text-align:center;"] > a
 dyttw.com.cn##a[href="/ads"]
 dx.com###commonHeadBannerPanel
 blog.konusarakogren.com##a.nolazy
