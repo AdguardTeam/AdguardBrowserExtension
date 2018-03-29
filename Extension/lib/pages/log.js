@@ -157,6 +157,10 @@ PageController.prototype = {
 		// Bind click to reload tab
 		$('.task-manager').on('click', '.reloadTab', function (e) {
 			e.preventDefault();
+			// Unable to reload "background" tab
+            if (this.currentTabId == -1) {
+                return;
+            }
 			contentPage.sendMessage({type: 'reloadTabById', tabId: this.currentTabId});
 		}.bind(this));
 
