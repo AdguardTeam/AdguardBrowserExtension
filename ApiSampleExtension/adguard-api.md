@@ -26,7 +26,7 @@ Here is what should be done for Adguard API to work.
 <script type="text/javascript" src="adguard/adguard-api.js"></script>
 ```
 
-#### 3. Add Adguard's assistant content script and CSS file to the manifest and modify `web_accessible_resources`:
+#### 3. Add Adguard's assistant content script file to the manifest
 ```
     {
       "all_frames": false,
@@ -39,12 +39,6 @@ Here is what should be done for Adguard API to work.
       "run_at": "document_end"
     }
 ```
-```
-    "web_accessible_resources": [
-      "adguard/assistant/css/assistant.css",
-      "adguard/assistant/i/close.svg"
-    ]
-```  
 
 ## API methods
 
