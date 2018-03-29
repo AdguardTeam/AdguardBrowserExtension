@@ -56,6 +56,27 @@ var browser = window.browser || chrome;
         };
     })();
 
+    const backgroundTabId = -1;
+
+    // Calculates absolute URL of this extension
+    const extensionProtocol = (function () {
+        var url = browser.extension.getURL("");
+        var index = url.indexOf('://');
+        if (index > 0) {
+            return url.substring(0, index);
+        }
+        return url;
+    })();
+
+    /**
+     * We are skipping requests to internal resources of extensions (e.g. chrome-extension:// or moz-extension://... etc.)
+     * @param details Request details
+     * @returns {boolean}
+     */
+    function shouldSkipRequest(details) {
+        return details.tabId === backgroundTabId && details.url.indexOf(extensionProtocol) === 0;
+    }
+
     var linkHelper = document.createElement('a');
 
     /**
@@ -150,6 +171,13 @@ var browser = window.browser || chrome;
             requestDetails.responseHeaders = details.responseHeaders;
         }
 
+        if (details.tabId === backgroundTabId) {
+            // In case of background request, its details contains referrer url
+            // Chrome uses `initiator`: https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
+            // FF uses `originUrl`: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webRequest/onBeforeRequest#Additional_objects
+            requestDetails.referrerUrl = details.originUrl || details.initiator;
+        }
+
         return requestDetails;
     }
 
@@ -160,7 +188,7 @@ var browser = window.browser || chrome;
             // https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
             browser.webRequest.onBeforeRequest.addListener(function (details) {
 
-                if (details.tabId === -1) {
+                if (shouldSkipRequest(details)) {
                     return;
                 }
 
@@ -177,7 +205,7 @@ var browser = window.browser || chrome;
 
             browser.webRequest.onHeadersReceived.addListener(function (details) {
 
-                if (details.tabId === -1) {
+                if (shouldSkipRequest(details)) {
                     return;
                 }
 
@@ -197,7 +225,7 @@ var browser = window.browser || chrome;
 
             browser.webRequest.onBeforeSendHeaders.addListener(function (details) {
 
-                if (details.tabId === -1) {
+                if (shouldSkipRequest(details)) {
                     return;
                 }
 
@@ -277,7 +305,7 @@ var browser = window.browser || chrome;
 
             browser.webNavigation.onCreatedNavigationTarget.addListener(function (details) {
 
-                if (details.tabId === -1) {
+                if (details.tabId === backgroundTabId) {
                     return;
                 }
 
