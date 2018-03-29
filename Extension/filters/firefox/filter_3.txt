@@ -1,8 +1,8 @@
-! Checksum: UU4hjYr06oGeSFxawNOrcQ
+! Checksum: CBvQMvr3hErBKHOGfbxQHA
 ! Title: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. Use this filter if you do not want your actions on the Internet to be tracked.
-! Version: 2.0.0.87
-! TimeUpdated: 2018-03-23T00:02:47+00:00
+! Version: 2.0.0.94
+! TimeUpdated: 2018-03-27T15:05:41+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#privacy
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -104,6 +104,7 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 ! Should be uncommented once v2.10 goes live
 ! ||app-measurement.com^
 !
+||t.frtyi.com^$third-party
 ||static.1dmp.io^$third-party
 ||ymetrica1.com^$third-party
 ||visitor-analytics.io^$third-party
@@ -3543,6 +3544,7 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 ! https://github.com/easylist/easylist/commit/a4d380ad1a3b33a0fab679a1a8c5a791321622b3
 ||functionalclam.com^$third-party
 ! Admiral domains
+||ariseboundary.com^$third-party
 ||hammerhearing.com^$third-party
 ||frightenedpotato.com^$third-party
 ||abashedangle.com^$third-party
@@ -4016,7 +4018,6 @@ charlestownwyllie.oaklawnnonantum.com^
 ||vzw.sp1.convertro.com^
 ||w88.espn.com^
 ||wtsdc.uhc.com^$image
-||www.podtrac.com^$third-party
 ||xtag.autotrader.com^
 ||xtag.kbb.com^
 ||zdlogs.sphereup.com^
@@ -4274,6 +4275,8 @@ link.gmapp*.net$image
 ||semasio.net^$domain=avgle.com
 ||t.dtscdn.com^$domain=avgle.com
 !
+||img.sputniknews.com/min/js/plugins/video-counters.jss
+||phimmoi.net/js/fx/ga.js
 ||shazoo.ru/ping|
 ||shazoo.ru/pixel/
 ||wix.com/_api/blog-social-counters/
@@ -5263,6 +5266,18 @@ dreamprogs.net##td[width="88"][height="31"]
 !-------------- Whitelist ------------------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/13560
+@@||letelegramme.fr/js/xtcore.js
+@@||scdn.cxense.com/cx.js$domain=letelegramme.fr
+! https://github.com/AdguardTeam/AdguardFilters/issues/13558
+@@||google-analytics.com/analytics.js$domain=broadwayworld.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/13499
+@@||googletagmanager.com/gtm.js$domain=flo.com.tr
+@@||cdn.segmentify.com/account-js/segmentify_flo.js$domain=flo.com.tr
+@@||segmentify.com//get/key/v1.json$domain=flo.com.tr
+@@||segmentify.com//*/events/v1.json?apiKey=$domain=flo.com.tr
+! https://github.com/AdguardTeam/AdguardFilters/issues/13643
+@@||freegeoip.net/json/|$domain=load.pelispedia.vip
 ! https://github.com/AdguardTeam/AdguardFilters/issues/13428
 ! https://github.com/AdguardTeam/AdguardFilters/issues/13436
 @@||google-analytics.com/analytics.js$domain=wakanim.tv
@@ -5299,8 +5314,6 @@ dreamprogs.net##td[width="88"][height="31"]
 @@||torrentsafe.com/fingerprint2.min.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/12332
 @@||google-analytics.com/analytics.js$domain=vatanbilgisayar.com
-! https://github.com/AdguardTeam/AdguardFilters/issues/12285
-@@||podtrac.com/pts/redirect.mp4^$domain=twit.tv
 ! https://github.com/AdguardTeam/AdguardFilters/issues/12269
 @@||api.curalate.com^$domain=potterybarn.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/12188
@@ -5434,8 +5447,6 @@ dreamprogs.net##td[width="88"][height="31"]
 @@||tags.tiqcdn.com/utag/turkcell/sol/prod/utag.js$domain=superonline.net
 ! https://github.com/AdguardTeam/AdguardFilters/issues/7589
 @@||google-analytics.com/analytics.js$domain=viasatsport.se
-! https://github.com/AdguardTeam/AdguardFilters/issues/7740
-@@||podtrac.com/pts/redirect.mp3/cdn.pri.org/sites/default/files/segment-audio/$domain=pri.org
 ! https://github.com/AdguardTeam/AdguardFilters/issues/7727
 @@||cdn.cquotient.com/js/*/gretel.min.js$domain=karstadt.de
 @@||e.cquotient.com/recs/*?callback=$domain=karstadt.de
