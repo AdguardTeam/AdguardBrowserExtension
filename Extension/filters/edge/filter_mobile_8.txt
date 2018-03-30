@@ -1,8 +1,8 @@
-! Checksum: 8yQiq8aP69k1nPNULSa65w
+! Checksum: uNIuCVptFRYZ2teL2FH6Wg
 ! Title: Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.0.25
-! TimeUpdated: 2018-02-28T21:03:31+00:00
+! Version: 2.0.0.27
+! TimeUpdated: 2018-03-14T03:03:20+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -1293,6 +1293,9 @@ kamernet.nl#@#.topAdd
 voetbalnieuws.be#@#a[href^="http://adserving.unibet.com/"]
 tweakers.net#@#a[href^="http://pubads.g.doubleclick.net/"]
 ||wwa.pacific-yield.com^$third-party
+@@/ad_bomb/*$image,domain=computerworld.nl|webwereld.nl
+@@/ad_pics/*$image,domain=webwereld.nl
+@@||static.webwereld.nl/javascripts/advert.js
 @@||v.fwmrm.net/ad/g/1$domain=player.medialaancdn.be|vtm.be
 player.medialaancdn.be,vtm.be#$#.pub300x250.pub300x250m.pub728x90.text-ad.textAd.textad.textads.text-ads.text-ad-links {display:block!important;}
 voetbalwedstrijdenvandaag.nl#@##sponsorText
@@ -1301,7 +1304,6 @@ q2.be#$#.pub300x250.pub300x250m.pub728x90.text-ad.textAd.textad.textads.text-ads
 icttipsandtricks.nl##body #adblock_screen
 @@||gamekings.tv/wp-content/themes/*/js/ads.js
 vogelgeluid.nl#@##banner_ad
-@@/ad_bomb/*$image,domain=computerworld.nl|webwereld.nl
 @@||telegraaf.tcdn.nl/javascript/ads/*$domain=telegraaf.nl,third-party
 telegraaf.nl#%#window.canRunAds = true;
 @@||static.buienradar.nl/resources/js/advertisement.js
@@ -1315,6 +1317,7 @@ ad.nl##.tile[-ext-has=">.ankeiler--advertisement"]
 gelderlander.nl##.page-content > .theme-default[-ext-has='div.ad']
 klusidee.nl##tr.table-row[-ext-has=".td-ad"]
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
+||topomania.net/sites/topomania.net/images/pacnum-promo.png
 ondertitel.com##.billboard_ad_new
 mediamarkt.nl###colorbox
 ||pornozot.com/js/compiled/exo-
