@@ -214,7 +214,10 @@
         adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders, requestId);
 
         // Safebrowsing check
-        if (requestType === adguard.RequestTypes.DOCUMENT) {
+        if (requestType === adguard.RequestTypes.DOCUMENT &&
+            // Don't apply safebrowsing filter in case of redirect
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/995
+            statusCode !== 301 && statusCode !== 302) {
             filterSafebrowsing(tab, requestUrl);
         }
 
@@ -359,8 +362,10 @@
             // Chrome doesn't allow open extension url in incognito mode
             // So close current tab and open new
             if (adguard.utils.browser.isChromium() && incognitoTab) {
-                adguard.tabs.remove(tab.tabId);
-                adguard.ui.openTab(safebrowsingUrl, {});
+                // Closing tab before opening a new one may lead to browser crash (Chromium)
+                adguard.ui.openTab(safebrowsingUrl, {}, function () {
+                    adguard.tabs.remove(tab.tabId);
+                });
             } else {
                 adguard.tabs.reload(tab.tabId, safebrowsingUrl);
             }
