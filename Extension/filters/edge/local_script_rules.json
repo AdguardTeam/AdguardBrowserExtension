@@ -374,6 +374,10 @@
       "script" : "AG_defineProperty('oncontextmenu', {value:true}, document);"
     },
     {
+      "domains" : "hdreactor.club,e-news.su,myshows.me,hdpicture.ru,kg-portal.ru,names.neolove.ru",
+      "script" : "AG_abortInlineScript(/\\['charCodeAt'\\]/, 'atob');"
+    },
+    {
       "domains" : "~pilot.wp.pl,abczdrowie.pl,allani.pl,autokrata.pl,autokult.pl,biztok.pl,bloog.pl,dobreprogramy.pl,dzieci.pl,easygo.pl,fotoblogia.pl,gadzetomania.pl,hotmoney.pl,interaktywnie.com,inwestycje.pl,jejswiat.pl,kafeteria.pl,kafeteria.tv,kantory.pl,kazimierzdolny.pl,komediowo.pl,komorkomania.pl,mazury.com,mojeauto.pl,mojeosiedle.pl,money.pl,nasygnale.pl,niewiarygodne.pl,nocowanie.pl,o2.pl,odkrywcy.pl,parenting.pl,pudelek.pl,pudelek.tv,pytamy.pl,sfora.pl,snobka.pl,tlen.pl,totalmoney.pl,wakacje.pl,wawalove.pl,wp.pl,wp.tv,wrzuta.pl",
       "script" : "AG_defineProperty('PWA_adbd', {value: 2});"
     },
@@ -1250,6 +1254,10 @@
       "script" : "window.open = function() {};"
     },
     {
+      "domains" : "aftonbladet.se",
+      "script" : "(function(){var b=XMLHttpRequest.prototype.open,c=/ib\\.adnxs\\.com/i;XMLHttpRequest.prototype.open=function(d,a){if(\"POST\"===d&&c.test(a))this.send=function(){return null},this.setRequestHeader=function(){return null},console.log(\"AG has blocked request: \",a);else return b.apply(this,arguments)}})();"
+    },
+    {
       "domains" : "loks.us",
       "script" : "AG_onLoad(function() { count = 0; });"
     },
@@ -1411,6 +1419,10 @@
     },
     {
       "domains" : "strip2.me",
+      "script" : "Object.defineProperty(window, 'mobiads_loader', { get: function() { return function(){}; } });"
+    },
+    {
+      "domains" : "spaces.ru",
       "script" : "Object.defineProperty(window, 'mobiads_loader', { get: function() { return function(){}; } });"
     },
     {
@@ -2518,12 +2530,12 @@
       "script" : "(function() { var _setTimeout = window.setTimeout, regex = /bab_elementid/; window.setTimeout = function(a, b) { if ( typeof a !== 'string' || !regex.test(a) ) { _setTimeout(a, b); } }; })();"
     },
     {
-      "domains" : "businessinsider.com.pl",
-      "script" : "var _st = window.setTimeout; window.setTimeout = function(a, b) { if(!/document\\.body\\.getAttribute\\(\"abp\"\\)/.test(a)){ _st(a,b);}};"
-    },
-    {
       "domains" : "imgclick.net",
       "script" : "AG_onLoad(function() { document.getElementById(\"form-captcha\").submit(); });"
+    },
+    {
+      "domains" : "businessinsider.com.pl",
+      "script" : "var _st = window.setTimeout; window.setTimeout = function(a, b) { if(!/document\\.body\\.getAttribute\\(\"abp\"\\)/.test(a)){ _st(a,b);}};"
     },
     {
       "domains" : "generation-nt.com",
@@ -3740,6 +3752,10 @@
     {
       "domains" : "news.de",
       "script" : "window.disablePopUnder = true;"
+    },
+    {
+      "domains" : "chip.de",
+      "script" : "AG_onLoad(function() { document.body.innerHTML = document.body.innerHTML.replace(/data-autoplay=\"true\"/g, 'data-autoplay=\"false\"'); });"
     },
     {
       "domains" : "hlamer.ru",
@@ -5228,10 +5244,6 @@
     {
       "domains" : "2ip.ru",
       "script" : "window.qwerty = { on: function() { return { onNotDetected: function() {} }; } };"
-    },
-    {
-      "domains" : "kg-portal.ru,names.neolove.ru",
-      "script" : "AG_abortInlineScript(/\\['charCodeAt'\\]/, 'atob');"
     },
     {
       "domains" : "divyabhaskar.co.in",

@@ -1,8 +1,8 @@
-! Checksum: dI/xXCQvKj393SW9dTG64A
+! Checksum: bL1Ce9PEYeO3G1Gsejq7ag
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on web pages including cookie notices, third-party widgets and in-page pop-ups.
-! Version: 2.0.2.12
-! TimeUpdated: 2018-04-02T12:02:47+00:00
+! Version: 2.0.2.15
+! TimeUpdated: 2018-04-03T12:02:26+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#annoyances
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -1229,6 +1229,7 @@ rulu.co#%#!function(b,a){AG_defineProperty('CloudflareApps.installs',{get:functi
 /wp-content/plugins/kill-adblock/*
 ##.kill-adblock-container
 !
+@@||wettercomassets.com/wcomv5/js/advertising/ads.js
 ||czechavfree.com/wp-content/uploads/*/*.js
 @@||techsolutiontips.com/wp-content/plugins/better-adsmanager/js/advertising.min.js
 @@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=techsolutiontips.com
@@ -1888,7 +1889,7 @@ wotspeak.ru##.adb
 !
 !+ PLATFORM(ext_ff, ext_opera)
 savevideo.me#$#.max_bl > tbody > tr > .max_bl_right > [class][style^="width:95%;"] { position: absolute!important; left: -3000px!important; }
-!+ PLATFORM(ext_ff, ext_opera,)
+!+ PLATFORM(ext_ff, ext_opera)
 savevideo.me#$#.max_bl > tbody > tr > .max_bl_right > [class][style^="width: 95%;"] { position: absolute!important; left: -3000px!important; }
 !+ PLATFORM(ext_ff, ext_opera)
 savevideo.me#$#[id^="ads_notice_"] { position: absolute!important; left: -3000px!important; }
@@ -3614,6 +3615,7 @@ _europecookielaw.
 !######### Rules for specific sites ####################
 !#######################################################
 !
+loreal-paris.de###loreal-cookie
 legacy.speedtest.net##.alert-container
 periscope-solutions.com###gdpr
 viki.com##.alert[data-block-track="euCookieNotice"]
@@ -5098,6 +5100,7 @@ gir.im##.smartbanner
 !+ NOT_PLATFORM(ios, ext_android_cb)
 shazam.com##.shz-frame-apps-banner
 !
+computerbild.de##section[data-on-scroll-element-top*="PartnerBoxCtrl"]
 avito.ru##.common-banner
 99kubo.tv##.Notice-box
 op.gg##a[href^="https://play.google.com/store/apps/details?id=gg.op.lol.android"]
@@ -5488,6 +5491,11 @@ edeka.de#@##smartbanner.android
 !
 ! Specific sites
 !
+choiz.me##.socialblock
+choiz.me###overlay
+computerbild.de##div[id^="newsletterOverlay"]
+loreal-paris.de##body > form ~ div[style^="cursor: pointer; overflow: hidden;"][style*="z-index:"][style*="background: rgb"]
+vucutgelistirmeteknikleri.com##.td-more-articles-box
 interpress.az###interpresspop
 motortrend.com##.newsletter-signup-module
 coolutils.com##.leadinModal
@@ -7592,8 +7600,9 @@ explorewin.com#%#Object.defineProperty(document, 'oncontextmenu', { get: functio
 !######### HTML tweaks ########
 !##############################
 !
-! Disable aytoplay
+! Disable autoplay
 azaku-anime.com#%#AG_onLoad(function() { document.body.innerHTML = document.body.innerHTML.replace(/autoPlay=1/g, 'autoPlay=0'); });
+chip.de#%#AG_onLoad(function() { document.body.innerHTML = document.body.innerHTML.replace(/data-autoplay="true"/g, 'data-autoplay="false"'); });
 !#######################################################
 !######### Block useless widgets #######################
 !### Weather, money exchange, 3rd-party feedbacks, #####
@@ -7611,6 +7620,9 @@ mhealth.ru##.incut_readmore
 ||cvmarket.lv/infoblocks/$third-party
 ||widgets.digitalmediacommunications.com^$third-party
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/14136
+||carambo.la^$third-party
+majorgeeks.com##div[style="height:340px;margin:0;padding:0;overflow:auto;"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/12313
 ||cevapla.tv/widget/$third-party
 ! https://github.com/AdguardTeam/AdguardFilters/issues/10373

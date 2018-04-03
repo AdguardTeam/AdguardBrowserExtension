@@ -1246,6 +1246,10 @@
       "script" : "window.open = function() {};"
     },
     {
+      "domains" : "aftonbladet.se",
+      "script" : "(function(){var b=XMLHttpRequest.prototype.open,c=/ib\\.adnxs\\.com/i;XMLHttpRequest.prototype.open=function(d,a){if(\"POST\"===d&&c.test(a))this.send=function(){return null},this.setRequestHeader=function(){return null},console.log(\"AG has blocked request: \",a);else return b.apply(this,arguments)}})();"
+    },
+    {
       "domains" : "loks.us",
       "script" : "AG_onLoad(function() { count = 0; });"
     },
@@ -1403,6 +1407,10 @@
     },
     {
       "domains" : "strip2.me",
+      "script" : "Object.defineProperty(window, 'mobiads_loader', { get: function() { return function(){}; } });"
+    },
+    {
+      "domains" : "spaces.ru",
       "script" : "Object.defineProperty(window, 'mobiads_loader', { get: function() { return function(){}; } });"
     },
     {
@@ -2758,12 +2766,12 @@
       "script" : "(function() { window.open_ = window.open; var w_open = window.open, regex = /depodomino.com/; window.open = function(a, b) { if (typeof a !== 'string' || !regex.test(a)) { w_open(a, b); } }; })();"
     },
     {
-      "domains" : "nulledscripts.pro",
-      "script" : "Object.defineProperty(window,'Get_Cookie',{value:0});"
-    },
-    {
       "domains" : "youjizz.com",
       "script" : "AG_onLoad(function() { for (var key in window) { if (key.indexOf('ExoLoader') == 0) { window[key] = {}; } }; });"
+    },
+    {
+      "domains" : "nulledscripts.pro",
+      "script" : "Object.defineProperty(window,'Get_Cookie',{value:0});"
     },
     {
       "domains" : "datafilehost.com",
@@ -3732,6 +3740,10 @@
     {
       "domains" : "news.de",
       "script" : "window.disablePopUnder = true;"
+    },
+    {
+      "domains" : "chip.de",
+      "script" : "AG_onLoad(function() { document.body.innerHTML = document.body.innerHTML.replace(/data-autoplay=\"true\"/g, 'data-autoplay=\"false\"'); });"
     },
     {
       "domains" : "hlamer.ru",
