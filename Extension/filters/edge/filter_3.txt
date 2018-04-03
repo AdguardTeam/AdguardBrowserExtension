@@ -1,8 +1,8 @@
-! Checksum: BvJRTiAY6+AOpQJFFWraKw
+! Checksum: 9/6soRKp07wbzEXaTGg5yw
 ! Title: Spyware filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. Use this filter if you do not want your actions on the Internet to be tracked.
-! Version: 2.0.0.98
-! TimeUpdated: 2018-04-02T12:03:18+00:00
+! Version: 2.0.1.0
+! TimeUpdated: 2018-04-03T12:02:54+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#privacy
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -3679,6 +3679,8 @@ journal-plaza.net##.rightside div.block.bnavi[-ext-has="h3.dtitle:contains(Сч�
 !
 ! Section contains the list of tracking servers, which are hosted on useful sites as subdomains
 !
+||pixel.carambo.la^
+||analytics*.carambo.la^
 ||collect.tianya.cn^
 ||t.dtscdn.com^
 ||adcounter*.uptolike.ru^
@@ -5264,6 +5266,8 @@ dreamprogs.net##td[Width="88"][height="31"]
 !-------------- Whitelist ------------------------------------------------------!
 !-------------------------------------------------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/14245
+@@||googletagmanager.com/gtm.js$domain=militaria.pl
 ! https://github.com/AdguardTeam/AdguardFilters/issues/13560
 @@||letelegramme.fr/js/xtcore.js
 @@||scdn.cxense.com/cx.js$domain=letelegramme.fr
@@ -5540,6 +5544,7 @@ dreamprogs.net##td[Width="88"][height="31"]
 @@||pixel.quantserve.com/pixel^$domain=mixcloud.com
 ! Unblock adblockanalytics.com marker
 @@||adblockanalytics.com/ads.js|
+@@||detectadblock.com/ads.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6269
 @@||ukit.com/js/lib/fingerprint2.min.js^$domain=ukit.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/6216

@@ -1,8 +1,8 @@
-! Checksum: IXFLA4OWbslJYUAqqGMShQ
+! Checksum: 2IRDXhnnux3U9WQwNb2ecQ
 ! Title: Annoyances filter
 ! Description: Blocks irritating elements on web pages including cookie notices, third-party widgets and in-page pop-ups.
-! Version: 2.0.2.12
-! TimeUpdated: 2018-04-02T12:02:47+00:00
+! Version: 2.0.2.15
+! TimeUpdated: 2018-04-03T12:02:26+00:00
 ! Expires: 2 days (update frequency)
 #%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
 #%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
@@ -871,6 +871,7 @@ rulu.co#%#!function(b,a){AG_defineProperty('CloudflareApps.installs',{get:functi
 ||s3.amazonaws.com/assets.sidearmsports.com/plugins/detector.min.js
 /wp-content/plugins/kill-adblock/*
 ##.kill-adblock-container
+@@||wettercomassets.com/wcomv5/js/advertising/ads.js
 ||czechavfree.com/wp-content/uploads/*/*.js
 @@||techsolutiontips.com/wp-content/plugins/better-adsmanager/js/advertising.min.js
 @@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=techsolutiontips.com
@@ -1527,7 +1528,7 @@ wotspeak.ru##.adb
 @@||pagead2.googlesyndication.com/pagead/js/r*/show_ads_impl.js$domain=genesisowners.com
 !+ PLATFORM(ext_ff, ext_opera)
 savevideo.me#$#.max_bl > tbody > tr > .max_bl_right > [class][style^="width:95%;"] { position: absolute!important; left: -3000px!important; }
-!+ PLATFORM(ext_ff, ext_opera,)
+!+ PLATFORM(ext_ff, ext_opera)
 savevideo.me#$#.max_bl > tbody > tr > .max_bl_right > [class][style^="width: 95%;"] { position: absolute!important; left: -3000px!important; }
 !+ PLATFORM(ext_ff, ext_opera)
 savevideo.me#$#[id^="ads_notice_"] { position: absolute!important; left: -3000px!important; }
@@ -3223,6 +3224,7 @@ _europecookielaw.
 ||r42tag.com^$third-party
 ||tm.tradetracker.net/public/styles/ttCookieDirective.css
 ||cookieq.com^$third-party
+loreal-paris.de###loreal-cookie
 legacy.speedtest.net##.alert-container
 periscope-solutions.com###gdpr
 viki.com##.alert[data-block-track="euCookieNotice"]
@@ -4513,6 +4515,7 @@ gir.im#$#.smartbanner-show { margin-top: 0px!important; }
 gir.im##.smartbanner
 !+ NOT_PLATFORM(ios, ext_android_cb)
 shazam.com##.shz-frame-apps-banner
+computerbild.de##section[data-on-scroll-element-top*="PartnerBoxCtrl"]
 avito.ru##.common-banner
 99kubo.tv##.Notice-box
 op.gg##a[href^="https://play.google.com/store/apps/details?id=gg.op.lol.android"]
@@ -4863,6 +4866,11 @@ edeka.de#@##smartbanner.android
 ||optnmnstr.com^$third-party
 ||static.popmechanic.ru/service/loader.js$third-party
 /wp-content/plugins/chimpmatepro/*
+choiz.me##.socialblock
+choiz.me###overlay
+computerbild.de##div[id^="newsletterOverlay"]
+loreal-paris.de##body > form ~ div[style^="cursor: pointer; overflow: hidden;"][style*="z-index:"][style*="background: rgb"]
+vucutgelistirmeteknikleri.com##.td-more-articles-box
 interpress.az###interpresspop
 motortrend.com##.newsletter-signup-module
 coolutils.com##.leadinModal
@@ -6660,7 +6668,7 @@ turkstar.in$$style[tag-content=".unselectable"][max-length="350"]
 openssource.biz$$script[tag-content="document.onkeypress = function"][max-length="2000"]
 twgreatdaily.com$$script[tag-content="indexOf|css|fn|this|attr|unselectable|console|empty|copy|contextmenu"]
 azaku-anime.com#%#AG_onLoad(function() { document.body.innerHTML = document.body.innerHTML.replace(/autoPlay=1/g, 'autoPlay=0'); });
-||chip.de$replace=/data-autoplay="true"/data-autoplay="false"/,important,~script,~stylesheet,~xmlhttprequest
+chip.de#%#AG_onLoad(function() { document.body.innerHTML = document.body.innerHTML.replace(/data-autoplay="true"/g, 'data-autoplay="false"'); });
 ||focus.de$replace=/autoPlay:[\s\S]*\,autoStickiness/autoPlay:false\,autoStickiness/,important,~script,~stylesheet,~xmlhttprequest
 ||oe24.at$replace=/"autostart":"true"/"autostart":"false"/,important,~script,~stylesheet,~xmlhttprequest
 ||huffingtonpost.de$replace=/autoplay=true/autoplay=false/,important,~script,~stylesheet,~xmlhttprequest
@@ -6672,6 +6680,8 @@ mhealth.ru##.incut_readmore
 ||likemore-fe.go.mail.ru^$domain=mhealth.ru
 ||cvmarket.lv/infoblocks/$third-party
 ||widgets.digitalmediacommunications.com^$third-party
+||carambo.la^$third-party
+majorgeeks.com##div[style="height:340px;margin:0;padding:0;overflow:auto;"]
 ||cevapla.tv/widget/$third-party
 ||sharpay.io^$third-party
 ||zen.yandex.ru/widget-loader$domain=~yandex.by|~yandex.kz|~yandex.ru|~yandex.ua
