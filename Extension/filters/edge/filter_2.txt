@@ -1,8 +1,8 @@
-! Checksum: HfYdKU94iYoInoxnwLRbKw
+! Checksum: vOB6IPfHxsTgZld1CQnNtg
 ! Title: English Filter
 ! Description: EasyList + AdGuard English filter. This filter is necessary for quality ad blocking.
-! Version: 2.0.4.13
-! TimeUpdated: 2018-04-03T12:02:53+00:00
+! Version: 2.0.4.14
+! TimeUpdated: 2018-04-03T15:05:10+00:00
 ! Expires: 2 days (update frequency)
 ! Homepage: http://adguard.com/filters.html#english
 ! License: http://creativecommons.org/licenses/by-sa/3.0/
@@ -1520,9 +1520,10 @@ cooltamilhd.com#@##banner_ad
 streamcloud.eu#%#AG_defineProperty('scApp.cs', {value: true});
 streamcloud.eu#$#.info_notice { display: none!important; }
 streamcloud.eu#$##login > div[style*="width"][style*="display: none;"] { display: block!important; }
+! https://github.com/AdguardTeam/AdguardFilters/issues/14251
 ! https://github.com/AdguardTeam/AdguardFilters/issues/12297
 vidlox.me#%#window.popns = true;
-streamapi.xyz#%#AG_onLoad(function() { if(typeof adBlockNotDetected !== "undefined") adBlockNotDetected(); });
+streamapi.xyz#%#(function(){var a={debug:{set:function(){return a}},on:function(b,c){b||setTimeout(function(){c()},1);return a},onDetected:function(b){return a.on(!0,b)},onNotDetected:function(b){return a.on(!1,b)},check:function(){}};Object.defineProperty(window,"fuckAdBlock",{get:function(){return a}})})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/12416
 ! https://github.com/AdguardTeam/AdguardFilters/issues/12414
 itprotoday.com#$##body-wrapper { opacity: 1!important; }
@@ -8842,6 +8843,7 @@ eztv.unblocked.sh,piratbaypirate.link,animeshow.tv,vidzi.tv##body > div[id][styl
 ||servicer.mgid.com^$empty,third-party,important
 ||jsc.marketgid.com/*.js?t=$empty,important,~websocket
 !
+amazon.co.jp,amazon.cn,amazon.ca,amazon.co.uk,amazon.it,amazon.fr,amazon.de,amazon.com##div[id^="sponsoredProducts"]
 freeppt.net##.ads350
 freeppt.net##.advertgeneral
 kissasian.ch###adsFloat1
@@ -52911,6 +52913,7 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad"]
 ||lmwdcdzievq.bid^$third-party
 ||lndzkpjtjfjz.bid^$third-party
 ||lnelcbntwru.com^$third-party
+||lnglwoexxrsv.com^$third-party
 ||lnjpyxvbpyvj.com^$third-party
 ||lnjrawgb.com^$third-party
 ||lnltyqqop.bid^$third-party
