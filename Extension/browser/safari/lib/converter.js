@@ -1,39 +1,63 @@
 /**
-* This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
-*
-* Adguard Browser Extension is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* Adguard Browser Extension is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public License
-* along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * This file is part of Adguard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
+ *
+ * Adguard Browser Extension is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Adguard Browser Extension is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /**
- * Safari content blocking format rules converter.
+ * Converts URLs in the AdGuard format to the format supported by Safari
+ * https://webkit.org/blog/3476/content-blockers-first-look/
  */
-var CONVERTER_VERSION = '1.3.29';
-// Max number of CSS selectors per rule (look at _compactCssRules function)
-var MAX_SELECTORS_PER_WIDE_RULE = 250;
-var ANY_URL_TEMPLATES = ['||*', '', '*', '|*'];
-var URL_FILTER_ANY_URL = ".*";
-var URL_FILTER_WS_ANY_URL = "^wss?://.*";
-// Improved regular expression instead of UrlFilterRule.REGEXP_START_URL
-var URL_FILTER_REGEXP_START_URL = "^[htpsw]+://([^/]*\\.)?";
-// Simplified separator (to fix an issue with $ restriction - it can be only in the end of regexp)
-var URL_FILTER_REGEXP_SEPARATOR = "[/:&?]?";
+var SafariContentBlockerConverter = (function () {
 
-var SafariContentBlockerConverter = {
+    /**
+     * Safari content blocking format rules converter.
+     */
+    var CONVERTER_VERSION = '2.0.3';
+    // Max number of CSS selectors per rule (look at compactCssRules function)
+    var MAX_SELECTORS_PER_WIDE_RULE = 250;
 
-    AGRuleConverter: {
+    /**
+     * It's important to mention why do we need these regular expression.
+     * The thing is that on iOS it is crucial to use regexes as simple as possible.
+     * Otherwise, Safari takes too much memory on compiling a content blocker, and iOS simply kills the process.
+     * 
+     * Angry users are here:
+     * https://github.com/AdguardTeam/AdguardForiOS/issues/550
+     */
 
-        _parseDomains: function (rule, included, excluded) {
+    var ANY_URL_TEMPLATES = ['||*', '', '*', '|*'];
+    var URL_FILTER_ANY_URL = "^[htpsw]+:\\/\\/";
+    var URL_FILTER_WS_ANY_URL = "^wss?:\\/\\/";
+    /**
+     * Using .* for the css-display-none rules trigger.url-filter.
+     * Please note, that this is important to use ".*" for this kind of rules, otherwise performance is degraded:
+     * https://github.com/AdguardTeam/AdguardForiOS/issues/662
+     */
+    var URL_FILTER_CSS_RULES = ".*";
+    /** 
+     * Improved regular expression instead of UrlFilterRule.REGEXP_START_URL (||)
+     * Please note, that this regular expression matches only ONE level of subdomains
+     * Using ([a-z0-9-.]+\\.)? instead increases memory usage by 10Mb
+     */
+    var URL_FILTER_REGEXP_START_URL = URL_FILTER_ANY_URL + "([a-z0-9-]+\\.)?";
+    /** Simplified separator (to fix an issue with $ restriction - it can be only in the end of regexp) */
+    var URL_FILTER_REGEXP_SEPARATOR = "[/:&?]?";
+
+    var AGRuleConverter = (function () {
+
+        var parseDomains = function (rule, included, excluded) {
             var domain, domains, iDomains;
 
             if (rule.permittedDomain) {
@@ -66,25 +90,24 @@ var SafariContentBlockerConverter = {
                     }
                 }
             }
-
-        },
+        };
 
         /**
          * Adds load-type specification
          */
-        _addThirdParty: function (trigger, rule) {
-            if (rule.checkThirdParty) {
-                trigger["load-type"] = rule.isThirdParty ? ["third-party"] : ["first-party"];
+        var addThirdParty = function (trigger, rule) {
+            if (rule.isCheckThirdParty()) {
+                trigger["load-type"] = rule.isThirdParty() ? ["third-party"] : ["first-party"];
             }
-        },
+        };
 
-        _addMatchCase: function (trigger, rule) {
-            if (rule.matchCase !== null && rule.matchCase) {
+        var addMatchCase = function (trigger, rule) {
+            if (rule.isMatchCase()) {
                 trigger["url-filter-is-case-sensitive"] = true;
             }
-        },
+        };
 
-        _writeDomainOptions: function (included, excluded, trigger) {
+        var writeDomainOptions = function (included, excluded, trigger) {
             if (included.length > 0 && excluded.length > 0) {
                 throw new Error('Safari does not support both permitted and restricted domains');
             }
@@ -95,84 +118,87 @@ var SafariContentBlockerConverter = {
             if (excluded.length > 0) {
                 trigger["unless-domain"] = excluded;
             }
-        },
+        };
 
-        _addDomainOptions: function (trigger, rule) {
+        var addDomainOptions = function (trigger, rule) {
             var included = [];
             var excluded = [];
-            this._parseDomains(rule, included, excluded);
-            this._writeDomainOptions(included, excluded, trigger);
-        },
+            parseDomains(rule, included, excluded);
+            writeDomainOptions(included, excluded, trigger);
+        };
 
-        _setWhiteList: function (rule, result) {
+        var setWhiteList = function (rule, result) {
             if (rule.whiteListRule && rule.whiteListRule === true) {
                 result.action.type = "ignore-previous-rules";
             }
-        },
+        };
 
-        _hasContentType: function(rule, contentType) {
-            return (rule.permittedContentType & contentType) && // jshint ignore:line
-                !(rule.restrictedContentType & contentType); // jshint ignore:line
-        },
+        var hasContentType = function (rule, contentType) {
+            return rule.checkContentTypeMask(contentType);
+        };
 
-        _isContentType: function(rule, contentType) {
-            return rule.permittedContentType == contentType;
-        },
+        var isContentType = function (rule, contentType) {
+            return rule.permittedContentType === contentType;
+        };
 
-        _addResourceType: function (rule, result) {
+        var isSingleOption = function (rule, option) {
+            return rule.enabledOptions === option;
+        };
+
+        var addResourceType = function (rule, result) {
             var types = [];
 
-            var UrlFilterRule = adguard.rules.UrlFilterRule;
+            var contentTypes = adguard.rules.UrlFilterRule.contentTypes;
 
-            if (this._isContentType(rule, UrlFilterRule.contentTypes.ALL) &&
+            if (rule.permittedContentType === contentTypes.ALL &&
                 rule.restrictedContentType === 0) {
                 // Safari does not support all other default content types, like subdocument etc.
                 // So we can use default safari content types instead.
                 return;
             }
-            if (this._hasContentType(rule, UrlFilterRule.contentTypes.IMAGE)) {
-                types.push("image");                
+            if (hasContentType(rule, contentTypes.IMAGE)) {
+                types.push("image");
             }
-            if (this._hasContentType(rule, UrlFilterRule.contentTypes.STYLESHEET)) {
-                types.push("style-sheet");                
+            if (hasContentType(rule, contentTypes.STYLESHEET)) {
+                types.push("style-sheet");
             }
-            if (this._hasContentType(rule, UrlFilterRule.contentTypes.SCRIPT)) {
-                types.push("script");                
+            if (hasContentType(rule, contentTypes.SCRIPT)) {
+                types.push("script");
             }
-            if (this._hasContentType(rule, UrlFilterRule.contentTypes.MEDIA)) {
-                types.push("media");                
+            if (hasContentType(rule, contentTypes.MEDIA)) {
+                types.push("media");
             }
-            if (this._hasContentType(rule, UrlFilterRule.contentTypes.XMLHTTPREQUEST) ||
-                this._hasContentType(rule, UrlFilterRule.contentTypes.OTHER) ||
-                this._hasContentType(rule, UrlFilterRule.contentTypes.WEBSOCKET)) {
+            if (hasContentType(rule, contentTypes.XMLHTTPREQUEST) ||
+                hasContentType(rule, contentTypes.OTHER) ||
+                hasContentType(rule, contentTypes.WEBSOCKET)) {
                 types.push("raw");
             }
-            if (this._hasContentType(rule, UrlFilterRule.contentTypes.FONT)) {
-                types.push("font");                
+            if (hasContentType(rule, contentTypes.FONT)) {
+                types.push("font");
             }
-            if (this._hasContentType(rule, UrlFilterRule.contentTypes.SUBDOCUMENT)) {
+            if (hasContentType(rule, contentTypes.SUBDOCUMENT)) {
                 types.push("document");
             }
-            if (this._hasContentType(rule, UrlFilterRule.contentTypes.POPUP)) {
+            if (rule.isBlockPopups()) {
                 // Ignore other in case of $popup modifier
-                types = [ "popup" ];
+                types = ["popup"];
             }
 
             // Not supported modificators
-            if (this._isContentType(rule, UrlFilterRule.contentTypes.OBJECT)) {
+            if (isContentType(rule, contentTypes.OBJECT)) {
                 throw new Error('$object content type is not yet supported');
             }
-            if (this._isContentType(rule, UrlFilterRule.contentTypes.OBJECT_SUBREQUEST)) {
+            if (isContentType(rule, contentTypes.OBJECT_SUBREQUEST)) {
                 throw new Error('$object_subrequest content type is not yet supported');
             }
-            if (this._isContentType(rule, UrlFilterRule.contentTypes.WEBRTC)) {
+            if (isContentType(rule, contentTypes.WEBRTC)) {
                 throw new Error('$webrtc content type is not yet supported');
             }
-            if (this._isContentType(rule, UrlFilterRule.contentTypes.JSINJECT)) {
+            if (isSingleOption(rule, adguard.rules.UrlFilterRule.options.JSINJECT)) {
                 throw new Error('$jsinject rules are ignored.');
             }
-            if (rule.cspRule) {
-                throw new Error('$csp content type is not yet supported');
+            if (rule.getReplace()) {
+                throw new Error('$replace rules are ignored.');
             }
 
             if (types.length > 0) {
@@ -180,14 +206,21 @@ var SafariContentBlockerConverter = {
             }
 
             //TODO: Add restricted content types?
-        },
+        };
 
-        _createUrlFilterString: function (filter) {
-            if (ANY_URL_TEMPLATES.indexOf(filter.getUrlRuleText()) >= 0) {
-                if (adguard.rules.UrlFilterRule.contentTypes.WEBSOCKET === filter.permittedContentType) {
-                    return URL_FILTER_WS_ANY_URL;
-                }
-                return URL_FILTER_ANY_URL;
+        /**
+         * Creates a regular expression that will be used in the trigger["url-filter"].
+         * This method transforms
+         * 
+         * @param {*} filter UrlFilterRule object
+         */
+        var createUrlFilterString = function (filter) {
+            var urlRuleText = filter.getUrlRuleText();
+            var isWebSocket = (filter.permittedContentType === adguard.rules.UrlFilterRule.contentTypes.WEBSOCKET);
+
+            // Use a single standard regex for rules that are supposed to match every URL 
+            if (ANY_URL_TEMPLATES.indexOf(urlRuleText) >= 0) {
+                return isWebSocket ? URL_FILTER_WS_ANY_URL : URL_FILTER_ANY_URL;
             }
 
             if (filter.isRegexRule && filter.urlRegExp) {
@@ -195,15 +228,24 @@ var SafariContentBlockerConverter = {
             }
 
             var urlRegExpSource = filter.getUrlRegExpSource();
-            if (urlRegExpSource) {
-                return urlRegExpSource;
+
+            if (!urlRegExpSource) {
+                // Rule with empty regexp
+                return URL_FILTER_ANY_URL;
             }
 
-            // Rule with empty regexp
-            return URL_FILTER_ANY_URL;
-        },
+            // Prepending WebSocket protocol to resolve this:
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/957
+            if (isWebSocket &&
+                urlRegExpSource.indexOf("^") !== 0 &&
+                urlRegExpSource.indexOf("ws") !== 0) {
+                return URL_FILTER_WS_ANY_URL + ".*" + urlRegExpSource;
+            }
 
-        _parseRuleDomain: function (ruleText) {
+            return urlRegExpSource;
+        };
+
+        var parseRuleDomain = function (ruleText) {
             try {
                 var i;
                 var startsWith = ["http://www.", "https://www.", "http://", "https://", "||", "//"];
@@ -225,7 +267,7 @@ var SafariContentBlockerConverter = {
                     startIndex = domainIndex + exceptRule.length;
                 }
 
-                if (startIndex == -1) {
+                if (startIndex === -1) {
                     return null;
                 }
 
@@ -239,9 +281,9 @@ var SafariContentBlockerConverter = {
                     }
                 }
 
-                var domain = symbolIndex == -1 ? ruleText.substring(startIndex) : ruleText.substring(startIndex, symbolIndex);
-                var path = symbolIndex == -1 ? null : ruleText.substring(symbolIndex);
-                
+                var domain = symbolIndex === -1 ? ruleText.substring(startIndex) : ruleText.substring(startIndex, symbolIndex);
+                var path = symbolIndex === -1 ? null : ruleText.substring(symbolIndex);
+
                 if (!/^[a-zA-Z0-9][a-zA-Z0-9-.]*[a-zA-Z0-9]\.[a-zA-Z-]{2,}$/.test(domain)) {
                     // Not a valid domain name, ignore it
                     return null;
@@ -256,9 +298,9 @@ var SafariContentBlockerConverter = {
                 adguard.console.error("Error parsing domain from {0}, cause {1}", ruleText, ex);
                 return null;
             }
-        },
+        };
 
-        convertCssFilterRule: function (rule) {
+        var convertCssFilterRule = function (rule) {
 
             if (rule.isInjectRule && rule.isInjectRule === true) {
                 // There is no way to convert these rules to safari format
@@ -271,7 +313,7 @@ var SafariContentBlockerConverter = {
 
             var result = {
                 trigger: {
-                    "url-filter": URL_FILTER_ANY_URL
+                    "url-filter": URL_FILTER_CSS_RULES
                     // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/153#issuecomment-263067779
                     //,"resource-type": [ "document" ]
                 },
@@ -281,66 +323,64 @@ var SafariContentBlockerConverter = {
                 }
             };
 
-            this._setWhiteList(rule, result);
-            this._addThirdParty(result.trigger, rule);
-            this._addMatchCase(result.trigger, rule);
-            this._addDomainOptions(result.trigger, rule);
+            setWhiteList(rule, result);
+            addDomainOptions(result.trigger, rule);
 
             return result;
-        },
+        };
 
-        convertScriptRule: function (rule) {
+        var convertScriptRule = function (rule) {
             // There is no way to convert these rules to safari format
             throw new Error("Script-injection rule " + rule.ruleText + " cannot be converted");
-        },
-        
+        };
+
         /**
          * Validates url blocking rule and discards rules considered dangerous or invalid.
          */
-        _validateUrlBlockingRule: function(rule) {
-            
-            if (rule.action.type == "block" &&
+        var validateUrlBlockingRule = function (rule) {
+
+            if (rule.action.type === "block" &&
                 rule.trigger["resource-type"] &&
                 rule.trigger["resource-type"].indexOf("document") >= 0 &&
                 !rule.trigger["if-domain"] &&
-                (!rule.trigger["load-type"] || rule.trigger["load-type"].indexOf("third-party") == -1)) {
+                (!rule.trigger["load-type"] || rule.trigger["load-type"].indexOf("third-party") === -1)) {
                 // Due to https://github.com/AdguardTeam/AdguardBrowserExtension/issues/145
-                throw new Error("Document blocking rules are allowed only along with third-party or if-domain modifiers");        
+                throw new Error("Document blocking rules are allowed only along with third-party or if-domain modifiers");
             }
-        },
+        };
 
-        _checkWhiteListExceptions: function (rule, result) {
-            var self = this;
+        var checkWhiteListExceptions = function (rule, result) {
+
             function isDocumentRule(r) {
-                return self._isContentType(r, adguard.rules.UrlFilterRule.contentTypes.DOCUMENT);
+                return r.isDocumentWhiteList();
             }
 
             function isUrlBlockRule(r) {
-                return self._isContentType(r, adguard.rules.UrlFilterRule.contentTypes.URLBLOCK) ||
-                    self._isContentType(r, adguard.rules.UrlFilterRule.contentTypes.GENERICBLOCK);
+                return isSingleOption(r, adguard.rules.UrlFilterRule.options.URLBLOCK) ||
+                    isSingleOption(r, adguard.rules.UrlFilterRule.options.GENERICBLOCK);
             }
 
             function isCssExceptionRule(r) {
-                return self._isContentType(r, adguard.rules.UrlFilterRule.contentTypes.GENERICHIDE) ||
-                    self._isContentType(r, adguard.rules.UrlFilterRule.contentTypes.ELEMHIDE);
+                return isSingleOption(r, adguard.rules.UrlFilterRule.options.GENERICHIDE) ||
+                    isSingleOption(r, adguard.rules.UrlFilterRule.options.ELEMHIDE);
             }
 
             if (rule.whiteListRule && rule.whiteListRule === true) {
-                
-                var documentRule = isDocumentRule(rule); 
-                
+
+                var documentRule = isDocumentRule(rule);
+
                 if (documentRule || isUrlBlockRule(rule) || isCssExceptionRule(rule)) {
                     if (documentRule) {
                         //http://jira.performix.ru/browse/AG-8715
                         delete result.trigger["resource-type"];
                     }
 
-                    var parseDomainResult = this._parseRuleDomain(rule.getUrlRuleText());
+                    var parseDomainResult = parseRuleDomain(rule.getUrlRuleText());
 
-                    if (parseDomainResult !== null && 
+                    if (parseDomainResult !== null &&
                         parseDomainResult.path !== null &&
-                        parseDomainResult.path != "^" &&
-                        parseDomainResult.path != "/") {
+                        parseDomainResult.path !== "^" &&
+                        parseDomainResult.path !== "/") {
                         // http://jira.performix.ru/browse/AG-8664
                         adguard.console.debug('Whitelist special warning for rule: ' + rule.ruleText);
 
@@ -358,15 +398,15 @@ var SafariContentBlockerConverter = {
                     var excluded = [];
 
                     included.push(domain);
-                    this._writeDomainOptions(included, excluded, result.trigger);
+                    writeDomainOptions(included, excluded, result.trigger);
 
                     result.trigger["url-filter"] = URL_FILTER_ANY_URL;
                     delete result.trigger["resource-type"];
                 }
             }
-        },
+        };
 
-        _validateRegExp: function (regExp) {
+        var validateRegExp = function (regExp) {
             // Safari doesn't support {digit} in regular expressions
             if (regExp.match(/\{[0-9,]+\}/g)) {
                 throw new Error("Safari doesn't support '{digit}' in regular expressions");
@@ -392,17 +432,18 @@ var SafariContentBlockerConverter = {
             if (regExp.match(/[^\\]\\[bBdDfnrsStvwW]/g)) {
                 throw new Error("Safari doesn't support metacharacters in regular expressions");
             }
-        },
+        };
 
-        convertUrlFilterRule: function (rule) {
+        var convertUrlFilterRule = function (rule) {
 
-            var urlFilter = this._createUrlFilterString(rule);
+            if (rule.isCspRule()) {
+                // CSP rules are not supported
+                throw new Error("CSP rules are not supported");
+            }
 
-            // Redefine some of regular expressions
-            urlFilter = adguard.utils.strings.replaceAll(urlFilter, adguard.rules.SimpleRegex.regexConfiguration.regexStartUrl, URL_FILTER_REGEXP_START_URL);
-            urlFilter = adguard.utils.strings.replaceAll(urlFilter, adguard.rules.SimpleRegex.regexConfiguration.regexSeparator, URL_FILTER_REGEXP_SEPARATOR);
+            var urlFilter = createUrlFilterString(rule);
 
-            this._validateRegExp(urlFilter);
+            validateRegExp(urlFilter);
 
             var result = {
                 trigger: {
@@ -413,30 +454,38 @@ var SafariContentBlockerConverter = {
                 }
             };
 
-            this._setWhiteList(rule, result);
-            this._addResourceType(rule, result);
-            this._addThirdParty(result.trigger, rule);
-            this._addMatchCase(result.trigger, rule);
-            this._addDomainOptions(result.trigger, rule);
+            setWhiteList(rule, result);
+            addResourceType(rule, result);
+            addThirdParty(result.trigger, rule);
+            addMatchCase(result.trigger, rule);
+            addDomainOptions(result.trigger, rule);
 
             // Check whitelist exceptions
-            this._checkWhiteListExceptions(rule, result);
-            
+            checkWhiteListExceptions(rule, result);
+
             // Validate the rule
-            this._validateUrlBlockingRule(result);
+            validateUrlBlockingRule(result);
 
             return result;
+        };
+
+        // Expose AGRuleConverter API
+        return {
+            convertCssFilterRule: convertCssFilterRule,
+            convertScriptRule: convertScriptRule,
+            convertUrlFilterRule: convertUrlFilterRule,
+            isSingleOption: isSingleOption
         }
-    },
+    })();
 
     /**
      * Add converter version message
      *
      * @private
      */
-    _addVersionMessage: function () {
+    var printVersionMessage = function () {
         adguard.console.info('Safari Content Blocker Converter v' + CONVERTER_VERSION);
-    },
+    };
 
     /**
      * Converts ruleText string to Safari format
@@ -446,9 +495,9 @@ var SafariContentBlockerConverter = {
      * @param errors array
      * @returns {*}
      */
-    convertLine: function (ruleText, errors) {
+    var convertLine = function (ruleText, errors) {
         try {
-            return this._convertAGRule(this._parseAGRule(ruleText, errors));
+            return convertAGRuleToCB(parseAGRule(ruleText, errors));
         } catch (ex) {
             var message = 'Error converting rule from: ' + ruleText + ' cause:\n' + ex;
             message = ruleText + '\r\n' + message + '\r\n';
@@ -460,7 +509,7 @@ var SafariContentBlockerConverter = {
 
             return null;
         }
-    },
+    };
 
     /**
      * Creates AG rule form text
@@ -468,10 +517,12 @@ var SafariContentBlockerConverter = {
      * @param ruleText
      * @param errors
      */
-    _parseAGRule: function (ruleText, errors) {
+    var parseAGRule = function (ruleText, errors) {
         try {
-            if (ruleText === null || ruleText === '' ||
-                ruleText.indexOf('!') === 0 || ruleText.indexOf(' ') === 0 ||
+            if (ruleText === null ||
+                ruleText === '' ||
+                ruleText.indexOf('!') === 0 ||
+                ruleText.indexOf(' ') === 0 ||
                 ruleText.indexOf(' - ') > 0) {
                 return null;
             }
@@ -493,7 +544,7 @@ var SafariContentBlockerConverter = {
 
             return null;
         }
-    },
+    };
 
     /**
      * Converts rule to Safari format
@@ -501,24 +552,24 @@ var SafariContentBlockerConverter = {
      * @param rule AG rule object
      * @returns {*}
      */
-    _convertAGRule: function (rule) {
+    var convertAGRuleToCB = function (rule) {
         if (rule === null) {
             throw new Error('Invalid argument rule');
         }
 
         var result;
         if (rule instanceof adguard.rules.CssFilterRule) {
-            result = this.AGRuleConverter.convertCssFilterRule(rule);
+            result = AGRuleConverter.convertCssFilterRule(rule);
         } else if (rule instanceof adguard.rules.ScriptFilterRule) {
-            result = this.AGRuleConverter.convertScriptRule(rule);
+            result = AGRuleConverter.convertScriptRule(rule);
         } else if (rule instanceof adguard.rules.UrlFilterRule) {
-            result = this.AGRuleConverter.convertUrlFilterRule(rule);
+            result = AGRuleConverter.convertUrlFilterRule(rule);
         } else {
             throw new Error('Rule is not supported: ' + rule);
         }
 
         return result;
-    },
+    };
 
     /**
      * Converts rule to Safari format
@@ -527,12 +578,12 @@ var SafariContentBlockerConverter = {
      * @param errors array
      * @returns {*}
      */
-    convertAGRule: function (rule, errors) {
+    var convertAGRule = function (rule, errors) {
         try {
-            return this._convertAGRule(rule);
-        } catch (ex) {          
-            var message = 'Error converting rule from: ' + 
-                (rule.ruleText ? rule.ruleText : rule) + 
+            return convertAGRuleToCB(rule);
+        } catch (ex) {
+            var message = 'Error converting rule from: ' +
+                ((rule && rule.ruleText) ? rule.ruleText : rule) +
                 ' cause:\n' + ex + '\r\n';
             adguard.console.debug(message);
 
@@ -542,7 +593,7 @@ var SafariContentBlockerConverter = {
 
             return null;
         }
-    },
+    };
 
     /**
      * Converts array to map object
@@ -553,7 +604,7 @@ var SafariContentBlockerConverter = {
      * @returns {null}
      * @private
      */
-    _arrayToMap: function (array, prop, prop2) {
+    var arrayToMap = function (array, prop, prop2) {
         var map = Object.create(null);
         for (var i = 0; i < array.length; i++) {
             var el = array[i];
@@ -564,7 +615,7 @@ var SafariContentBlockerConverter = {
             map[property].push(el);
         }
         return map;
-    },
+    };
 
     /**
      * Updates if-domain and unless-domain fields.
@@ -572,7 +623,7 @@ var SafariContentBlockerConverter = {
      *
      * @private
      */
-    _applyDomainWildcards: function (rules) {
+    var applyDomainWildcards = function (rules) {
         var addWildcard = function (array) {
             if (!array || !array.length) {
                 return;
@@ -589,7 +640,7 @@ var SafariContentBlockerConverter = {
                 addWildcard(rule.trigger["unless-domain"]);
             }
         });
-    },
+    };
 
     /**
      * Apply css exceptions
@@ -599,7 +650,7 @@ var SafariContentBlockerConverter = {
      * @param cssExceptions
      * @private
      */
-    _applyCssExceptions: function (cssBlocking, cssExceptions) {
+    var applyCssExceptions = function (cssBlocking, cssExceptions) {
         adguard.console.info('Applying ' + cssExceptions.length + ' css exceptions');
 
         /**
@@ -630,8 +681,8 @@ var SafariContentBlockerConverter = {
             ruleRestrictedDomains.push(domain);
         };
 
-        var rulesMap = this._arrayToMap(cssBlocking, 'action', 'selector');
-        var exceptionRulesMap = this._arrayToMap(cssExceptions, 'action', 'selector');
+        var rulesMap = arrayToMap(cssBlocking, 'action', 'selector');
+        var exceptionRulesMap = arrayToMap(cssExceptions, 'action', 'selector');
 
         var exceptionsAppliedCount = 0;
         var exceptionsErrorsCount = 0;
@@ -661,7 +712,7 @@ var SafariContentBlockerConverter = {
 
         var result = [];
         cssBlocking.forEach(function (r) {
-            if (r.trigger["if-domain"] && (r.trigger["if-domain"].length > 0) && 
+            if (r.trigger["if-domain"] && (r.trigger["if-domain"].length > 0) &&
                 r.trigger["unless-domain"] && (r.trigger["unless-domain"].length > 0)) {
                 adguard.console.debug('Safari does not support permitted and restricted domains in one rule');
                 adguard.console.debug(JSON.stringify(r));
@@ -674,14 +725,14 @@ var SafariContentBlockerConverter = {
         adguard.console.info('Css exceptions applied: ' + exceptionsAppliedCount);
         adguard.console.info('Css exceptions errors: ' + exceptionsErrorsCount);
         return result;
-    },
+    };
 
     /**
      * Compacts wide CSS rules
      * @param unsorted css elemhide rules
      * @return an object with two properties: cssBlockingWide and cssBlockingDomainSensitive
      */
-    _compactCssRules: function(cssBlocking) {
+    var compactCssRules = function (cssBlocking) {
         adguard.console.info('Trying to compact ' + cssBlocking.length + ' elemhide rules');
 
         var cssBlockingWide = [];
@@ -689,7 +740,7 @@ var SafariContentBlockerConverter = {
         var cssBlockingGenericDomainSensitive = [];
 
         var wideSelectors = [];
-        var addWideRule = function() {
+        var addWideRule = function () {
             if (!wideSelectors.length) {
                 // Nothing to add
                 return;
@@ -697,7 +748,7 @@ var SafariContentBlockerConverter = {
 
             var rule = {
                 trigger: {
-                    "url-filter": URL_FILTER_ANY_URL
+                    "url-filter": URL_FILTER_CSS_RULES
                     // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/153#issuecomment-263067779
                     //,"resource-type": [ "document" ]
                 },
@@ -732,7 +783,7 @@ var SafariContentBlockerConverter = {
             cssBlockingDomainSensitive: cssBlockingDomainSensitive,
             cssBlockingGenericDomainSensitive: cssBlockingGenericDomainSensitive
         };
-    },
+    };
 
     /**
      * Converts array of rules to JSON
@@ -741,7 +792,7 @@ var SafariContentBlockerConverter = {
      * @param optimize if true - ignore slow rules
      * @return content blocker object with converted rules grouped by type
      */
-    _convertLines: function (rules, optimize) {
+    var convertLines = function (rules, optimize) {
         adguard.console.info('Converting ' + rules.length + ' rules. Optimize=' + optimize);
 
         var contentBlocker = {
@@ -759,6 +810,12 @@ var SafariContentBlockerConverter = {
             urlBlocking: [],
             // Other exceptions
             other: [],
+            // $important url blocking rules
+            important: [],
+            // $important url blocking exceptions
+            importantExceptions: [],
+            // Document url blocking exceptions
+            documentExceptions: [],
             // Errors
             errors: []
         };
@@ -769,50 +826,79 @@ var SafariContentBlockerConverter = {
         // Elemhide exceptions (#@#)
         var cssExceptions = [];
 
-        for (var i = 0, len = rules.length; i < len; i++) {
-            var item;
-            var agRule;
-            var ruleText;
+        // $badfilter rules
+        var badFilterExceptions = [];
 
-            if (rules[i] !== null && rules[i].ruleText) {
-                agRule = rules[i];
-                item = this.convertAGRule(rules[i], contentBlocker.errors);
-                ruleText = rules[i].ruleText;
+        var agRules = [];
+        for (var j = 0; j < rules.length; j++) {
+            var rule;
+
+            if (rules[j] !== null && rules[j].ruleText) {
+                rule = rules[j];
             } else {
-                agRule = this._parseAGRule(rules[i], contentBlocker.errors);
-                item = this.convertAGRule(agRule, contentBlocker.errors);
-                ruleText = rules[i];
+                rule = parseAGRule(rules[j], contentBlocker.errors);
             }
+
+            if (rule) {
+                if (rule.isBadFilter && rule.isBadFilter()) {
+                    badFilterExceptions.push(rule.badFilter);
+                } else {
+                    agRules.push(rule);
+                }
+            }
+        }
+
+        for (var i = 0, len = agRules.length; i < len; i++) {
+            var agRule = agRules[i];
+            if (badFilterExceptions.indexOf(agRule.ruleText) >= 0) {
+                // Removed with bad-filter
+                adguard.console.info('Rule ' + agRule.ruleText + ' removed with a $badfilter modifier');
+                continue;
+            }
+
+            var item = convertAGRule(agRules[i], contentBlocker.errors);
 
             if (item !== null && item !== '') {
                 if (item.action === null || item.action === '') {
                     continue;
                 }
 
-                if (item.action.type == 'block') {
-                    contentBlocker.urlBlocking.push(item);
-                } else if (item.action.type == 'css-display-none') {
+                if (item.action.type === 'block') {
+                    // Url blocking rules
+                    if (agRule.isImportant) {
+                        contentBlocker.important.push(item);
+                    } else {
+                        contentBlocker.urlBlocking.push(item);
+                    }
+                } else if (item.action.type === 'css-display-none') {
                     cssBlocking.push(item);
-                } else if (item.action.type == 'ignore-previous-rules' && 
+                } else if (item.action.type === 'ignore-previous-rules' &&
                     (item.action.selector && item.action.selector !== '')) {
                     // #@# rules
                     cssExceptions.push(item);
-                } else if (item.action.type == 'ignore-previous-rules' &&
-                    this.AGRuleConverter._isContentType(agRule, adguard.rules.UrlFilterRule.contentTypes.GENERICHIDE)) {
+                } else if (item.action.type === 'ignore-previous-rules' &&
+                    AGRuleConverter.isSingleOption(agRule, adguard.rules.UrlFilterRule.options.GENERICHIDE)) {
                     contentBlocker.cssBlockingGenericHideExceptions.push(item);
-                } else if (item.action.type == 'ignore-previous-rules' &&
-                    this.AGRuleConverter._isContentType(agRule, adguard.rules.UrlFilterRule.contentTypes.ELEMHIDE)) {
+                } else if (item.action.type === 'ignore-previous-rules' &&
+                    AGRuleConverter.isSingleOption(agRule, adguard.rules.UrlFilterRule.options.ELEMHIDE)) {
                     // elemhide rules
                     contentBlocker.cssElemhide.push(item);
                 } else {
-                    contentBlocker.other.push(item);
+                    // other exceptions
+                    if (agRule.isImportant) {
+                        contentBlocker.importantExceptions.push(item);
+                    } else if (agRule.isDocumentWhiteList()) {
+                        contentBlocker.documentExceptions.push(item);
+                    } else {
+                        contentBlocker.other.push(item);
+                    }
                 }
             }
         }
 
         // Applying CSS exceptions
-        cssBlocking = this._applyCssExceptions(cssBlocking, cssExceptions);
-        var cssCompact = this._compactCssRules(cssBlocking);
+        cssBlocking = applyCssExceptions(cssBlocking, cssExceptions);
+        var cssCompact = compactCssRules(cssBlocking);
         if (!optimize) {
             contentBlocker.cssBlockingWide = cssCompact.cssBlockingWide;
         }
@@ -822,18 +908,21 @@ var SafariContentBlockerConverter = {
         var convertedCount = rules.length - contentBlocker.errors.length;
         var message = 'Rules converted: ' + convertedCount + ' (' + contentBlocker.errors.length + ' errors)';
         message += '\nBasic rules: ' + contentBlocker.urlBlocking.length;
+        message += '\nBasic important rules: ' + contentBlocker.important.length;
         message += '\nElemhide rules (wide): ' + contentBlocker.cssBlockingWide.length;
         message += '\nElemhide rules (generic domain sensitive): ' + contentBlocker.cssBlockingGenericDomainSensitive.length;
         message += '\nExceptions Elemhide (wide): ' + contentBlocker.cssBlockingGenericHideExceptions.length;
         message += '\nElemhide rules (domain-sensitive): ' + contentBlocker.cssBlockingDomainSensitive.length;
         message += '\nExceptions (elemhide): ' + contentBlocker.cssElemhide.length;
+        message += '\nExceptions (important): ' + contentBlocker.importantExceptions.length;
+        message += '\nExceptions (document): ' + contentBlocker.documentExceptions.length;
         message += '\nExceptions (other): ' + contentBlocker.other.length;
         adguard.console.info(message);
 
         return contentBlocker;
-    },
+    };
 
-    _createConversionResult: function (contentBlocker, limit) {
+    var createConversionResult = function (contentBlocker, limit) {
         var overLimit = false;
         var converted = [];
         converted = converted.concat(contentBlocker.cssBlockingWide);
@@ -843,9 +932,12 @@ var SafariContentBlockerConverter = {
         converted = converted.concat(contentBlocker.cssElemhide);
         converted = converted.concat(contentBlocker.urlBlocking);
         converted = converted.concat(contentBlocker.other);
+        converted = converted.concat(contentBlocker.important);
+        converted = converted.concat(contentBlocker.importantExceptions);
+        converted = converted.concat(contentBlocker.documentExceptions);
 
         var convertedLength = converted.length;
-        
+
         if (limit && limit > 0 && converted.length > limit) {
             var message = '' + limit + ' limit is achieved. Next rules will be ignored.';
             contentBlocker.errors.push(message);
@@ -854,7 +946,7 @@ var SafariContentBlockerConverter = {
             converted = converted.slice(0, limit);
         }
 
-        this._applyDomainWildcards(converted);
+        applyDomainWildcards(converted);
         adguard.console.info('Content blocker length: ' + converted.length);
 
         var result = {
@@ -866,7 +958,7 @@ var SafariContentBlockerConverter = {
         };
 
         return result;
-    },
+    };
 
     /**
      * Converts array of rule texts or AG rules to JSON
@@ -875,20 +967,39 @@ var SafariContentBlockerConverter = {
      * @param limit over that limit rules will be ignored
      * @param optimize if true - "wide" rules will be ignored
      */
-    convertArray: function (rules, limit, optimize) {
-        this._addVersionMessage();
+    var convertArray = function (rules, limit, optimize) {
+        printVersionMessage();
 
-        if (rules === null) {
-            adguard.console.error('Invalid argument rules');
-            return null;
+        // Temporarily change the configuration in order to generate more effective regular expressions
+        var regexConfiguration = adguard.rules.SimpleRegex.regexConfiguration;
+        var prevRegexStartUrl = regexConfiguration.regexStartUrl;
+        var prevRegexSeparator = regexConfiguration.regexSeparator;
+
+        try {
+            regexConfiguration.regexStartUrl = URL_FILTER_REGEXP_START_URL;
+            regexConfiguration.regexSeparator = URL_FILTER_REGEXP_SEPARATOR;
+
+            if (rules === null) {
+                adguard.console.error('Invalid argument rules');
+                return null;
+            }
+
+            if (rules.length === 0) {
+                adguard.console.info('No rules presented for convertation');
+                return null;
+            }
+
+            var contentBlocker = convertLines(rules, !!optimize);
+            return createConversionResult(contentBlocker, limit);
+        } finally {
+            // Restore the regex configuration
+            regexConfiguration.regexStartUrl = prevRegexStartUrl;
+            regexConfiguration.regexSeparator = prevRegexSeparator;
         }
+    };
 
-        if (rules.length === 0) {
-            adguard.console.info('No rules presented for convertation');
-            return null;
-        }
-
-        var contentBlocker = this._convertLines(rules, !!optimize);
-        return this._createConversionResult(contentBlocker, limit);
+    // Expose SafariContentBlockerConverter API
+    return {
+        convertArray: convertArray
     }
-};
+})();

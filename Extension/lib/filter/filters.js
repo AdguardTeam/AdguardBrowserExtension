@@ -20,6 +20,70 @@
     'use strict';
 
     /**
+     * Simple request cache
+     * @param requestCacheMaxSize Max cache size
+     */
+    var RequestCache = function (requestCacheMaxSize) {
+
+        this.requestCache = Object.create(null);
+        this.requestCacheSize = 0;
+        this.requestCacheMaxSize = requestCacheMaxSize;
+
+        /**
+         * Searches for cached filter rule
+         *
+         * @param requestUrl Request url
+         * @param refHost Referrer host
+         * @param requestType Request type
+         */
+        this.searchRequestCache = function (requestUrl, refHost, requestType) {
+            var cacheItem = this.requestCache[requestUrl];
+            if (!cacheItem) {
+                return null;
+            }
+
+            var c = cacheItem[requestType];
+            if (c && c[1] === refHost) {
+                return c;
+            }
+
+            return null;
+        };
+
+        /**
+         * Saves resulting filtering rule to requestCache
+         *
+         * @param requestUrl Request url
+         * @param rule Rule found
+         * @param refHost Referrer host
+         * @param requestType Request type
+         */
+        this.saveResultToCache = function (requestUrl, rule, refHost, requestType) {
+            if (this.requestCacheSize > this.requestCacheMaxSize) {
+                this.clearRequestCache();
+            }
+            if (!this.requestCache[requestUrl]) {
+                this.requestCache[requestUrl] = Object.create(null);
+                this.requestCacheSize++;
+            }
+
+            //Two-levels gives us an ability to not to override cached item for different request types with the same url
+            this.requestCache[requestUrl][requestType] = [rule, refHost];
+        };
+
+        /**
+         * Clears request cache
+         */
+        this.clearRequestCache = function () {
+            if (this.requestCacheSize === 0) {
+                return;
+            }
+            this.requestCache = Object.create(null);
+            this.requestCacheSize = 0;
+        };
+    };
+
+    /**
      * Request filter is main class which applies filter rules.
      *
      * @type {Function}
@@ -27,32 +91,40 @@
     var RequestFilter = function () {
 
         // Filter that applies URL blocking rules
-        // Basic rules: http://adguard.com/en/filterrules.html#baseRules
+        // Basic rules: https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#basic-rules
         this.urlBlockingFilter = new adguard.rules.UrlFilter();
 
         // Filter that applies whitelist rules
-        // Exception rules: http://adguard.com/en/filterrules.html#exclusionRules
+        // Exception rules: https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#exceptions-modifiers
         this.urlWhiteFilter = new adguard.rules.UrlFilter();
 
+        // Bad-filter rules collection
+        // TODO: add link
+        this.badFilterRules = {};
+
         // Filter that applies CSS rules
-        // ABP element hiding rules: http://adguard.com/en/filterrules.html#hideRules
-        // CSS injection rules http://adguard.com/en/filterrules.html#cssInjection
+        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#cosmetic-rules
         this.cssFilter = new adguard.rules.CssFilter();
 
         // Filter that applies JS rules
-        // JS injection rules: http://adguard.com/en/filterrules.html#javascriptInjection
+        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#javascript-rules
         this.scriptFilter = new adguard.rules.ScriptFilter();
 
         // Filter that applies CSP rules
-        // CSP rules: TODO: add link
+        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#csp-modifier
         this.cspFilter = new adguard.rules.CspFilter();
+
+
+        // Filter that applies HTML filtering rules
+        // https://kb.adguard.com/en/general/how-to-create-your-own-ad-filters#html-filtering-rules
+        this.contentFilter = new adguard.rules.ContentFilter();
 
         // Rules count (includes all types of rules)
         this.rulesCount = 0;
 
-        // Init small cache for url filtering rules
-        this.requestCache = Object.create(null);
-        this.requestCacheSize = 0;
+        // Init small caches for url filtering rules
+        this.urlBlockingCache = new RequestCache(this.requestCacheMaxSize);
+        this.urlExceptionsCache = new RequestCache(this.requestCacheMaxSize);
     };
 
     RequestFilter.prototype = {
@@ -88,11 +160,14 @@
                 adguard.console.error("FilterRule must not be null");
                 return;
             }
+
             if (rule instanceof adguard.rules.UrlFilterRule) {
-                if (rule.cspRule) {
+                if (rule.isCspRule()) {
                     this.cspFilter.addRule(rule);
                 } else {
-                    if (rule.whiteListRule) {
+                    if (rule.isBadFilter()) {
+                        this.badFilterRules[rule.badFilter] = rule;
+                    } else if (rule.whiteListRule) {
                         this.urlWhiteFilter.addRule(rule);
                     } else {
                         this.urlBlockingFilter.addRule(rule);
@@ -102,9 +177,13 @@
                 this.cssFilter.addRule(rule);
             } else if (rule instanceof adguard.rules.ScriptFilterRule) {
                 this.scriptFilter.addRule(rule);
+            } else if (rule instanceof adguard.rules.ContentFilterRule) {
+                this.contentFilter.addRule(rule);
             }
+
             this.rulesCount++;
-            this._clearRequestCache();
+            this.urlBlockingCache.clearRequestCache();
+            this.urlExceptionsCache.clearRequestCache();
         },
 
         /**
@@ -119,10 +198,12 @@
                 return;
             }
             if (rule instanceof adguard.rules.UrlFilterRule) {
-                if (rule.cspRule) {
+                if (rule.isCspRule()) {
                     this.cspFilter.removeRule(rule);
                 } else {
-                    if (rule.whiteListRule) {
+                    if (rule.isBadFilter()) {
+                        delete this.badFilterRules[rule.badFilter];
+                    } else if (rule.whiteListRule) {
                         this.urlWhiteFilter.removeRule(rule);
                     } else {
                         this.urlBlockingFilter.removeRule(rule);
@@ -132,9 +213,12 @@
                 this.cssFilter.removeRule(rule);
             } else if (rule instanceof adguard.rules.ScriptFilterRule) {
                 this.scriptFilter.removeRule(rule);
+            } else if (rule instanceof adguard.rules.ContentFilterRule) {
+                this.contentFilter.removeRule(rule);
             }
             this.rulesCount--;
-            this._clearRequestCache();
+            this.urlBlockingCache.clearRequestCache();
+            this.urlExceptionsCache.clearRequestCache();
         },
 
         /**
@@ -149,43 +233,49 @@
             result = result.concat(this.scriptFilter.getRules());
             result = result.concat(this.cspFilter.getRules());
 
+            for (var badFilter in this.badFilterRules) {
+                result.push(this.badFilterRules[badFilter]);
+            }
+
             return result;
         },
 
         /**
-         * Builds CSS for the specified web page.
-         * Only element hiding rules are used to build this CSS:
-         * http://adguard.com/en/filterrules.html#hideRules
-         *
-         * @param url Page URL
-         * @param genericHide flag to hide common rules
-         * @returns CSS ready to be injected
+         * An object with the information on the CSS and ExtendedCss stylesheets which 
+         * need to be injected into a web page.
+         * 
+         * @typedef {Object} SelectorsData
+         * @property {Array.<string>} css Regular CSS stylesheets
+         * @property {Array.<string>} extendedCss ExtendedCSS stylesheets
+         * @property {boolean} cssHitsCounterEnabled If true -- collecting CSS rules hits stats is enabled
          */
-        getSelectorsForUrl: function (url, genericHide) {
-            var domain = adguard.utils.url.getHost(url);
-            if (adguard.prefs.collectHitsCountEnabled && adguard.settings.collectHitsCount()) {
-                // If user has enabled "Send statistics for ad filters usage" option we build CSS with enabled hits stats.
-                // In this case style contains "content" with filter identifier and rule text.
-                var selectors = this.cssFilter.buildCssHits(domain, genericHide);
-                selectors.cssHitsCounterEnabled = true;
-                return selectors;
-            } else {
-                return this.cssFilter.buildCss(domain, genericHide);
-            }
-        },
 
         /**
          * Builds CSS for the specified web page.
-         * Only CSS injection rules used to build this CSS:
-         * http://adguard.com/en/filterrules.html#cssInjection
+         * http://adguard.com/en/filterrules.html#hideRules
          *
-         * @param url Page URL
-         * @param genericHide flag to hide common rules
-         * @returns CSS ready to be injected.
+         * @param {string} url Page URL
+         * @param {number} options CssFilter bitmask
+         * @returns {SelectorsData} CSS and ExtCss data for the webpage
          */
-        getInjectedSelectorsForUrl: function (url, genericHide) {
+        getSelectorsForUrl: function (url, options) {
             var domain = adguard.utils.url.getHost(url);
-            return this.cssFilter.buildInjectCss(domain, genericHide);
+
+            var CSS_INJECTION_ONLY = adguard.rules.CssFilter.CSS_INJECTION_ONLY;
+            var cssInjectionOnly = (options & CSS_INJECTION_ONLY) === CSS_INJECTION_ONLY;
+
+            if (!cssInjectionOnly &&
+                adguard.prefs.collectHitsCountEnabled &&
+                adguard.settings.collectHitsCount()) {
+
+                // If user has enabled "Send statistics for ad filters usage" option we build CSS with enabled hits stats.
+                // In this case style contains "content" with filter identifier and rule text.
+                var selectors = this.cssFilter.buildCssHits(domain, options);
+                selectors.cssHitsCounterEnabled = true;
+                return selectors;
+            } else {
+                return this.cssFilter.buildCss(domain, options);
+            }
         },
 
         /**
@@ -193,11 +283,54 @@
          * http://adguard.com/en/filterrules.html#javascriptInjection
          *
          * @param url Page URL
-         * @returns Javascript
+         * @returns {Array.<{{scriptSource: string, rule: string}}>} Javascript for the specified URL
          */
         getScriptsForUrl: function (url) {
             var domain = adguard.utils.url.getHost(url);
             return this.scriptFilter.buildScript(domain);
+        },
+
+        /**
+         * Builds the final output string for the specified page.
+         * Depending on the browser we either allow or forbid the new remote rules (see how `scriptSource` is used).
+         * 
+         * @param {string} url Page URL
+         * @returns {string} Script to be applied
+         */
+        getScriptsStringForUrl: function (url) {
+            var scripts = this.getScriptsForUrl(url);
+
+            var isFirefox = adguard.utils.browser.isFirefoxBrowser();
+            var isOpera = adguard.utils.browser.isOperaBrowser();
+
+            var scriptsToApply = [];
+
+            for (var i = 0, l = scripts.length; i < l; i++) {
+                var scriptRule = scripts[i];
+                switch (scriptRule.scriptSource) {
+                    case 'local':
+                        scriptsToApply.push(scriptRule.rule);
+                        break;
+                    case 'remote':
+                        /**
+                         * Note (!) (Firefox, Opera):
+                         * In case of Firefox and Opera add-ons, JS filtering rules are hardcoded into add-on code.
+                         * Look at ScriptFilterRule.getScriptSource to learn more.
+                         */
+                        if (!isFirefox && !isOpera) {
+                            scriptsToApply.push(scriptRule.rule);
+                        }
+                        break;
+                }
+            }
+            scriptsToApply.unshift("( function () {\
+                try {");
+            scriptsToApply.push("\
+                } catch (ex) {\
+                    console.error('Error executing AG js: ' + ex);\
+                }\
+            })();");
+            return scriptsToApply.join('\r\n');
         },
 
         /**
@@ -207,7 +340,27 @@
             this.urlWhiteFilter.clearRules();
             this.urlBlockingFilter.clearRules();
             this.cssFilter.clearRules();
-            this._clearRequestCache();
+            this.contentFilter.clearRules();
+            this.urlBlockingCache.clearRequestCache();
+            this.urlExceptionsCache.clearRequestCache();
+            this.badFilterRules = {};
+        },
+
+        /**
+         * Checks if the rule is in bad filter exceptions
+         *
+         * @param rule
+         * @returns {*}
+         */
+        _checkBadFilterExceptions: function (rule) {
+            if (rule && rule instanceof adguard.rules.UrlFilterRule) {
+                if (rule.ruleText in this.badFilterRules) {
+                    // Removed with bad-filter rule
+                    return null;
+                }
+            }
+
+            return rule;
         },
 
         /**
@@ -215,7 +368,7 @@
          *
          * @param requestUrl  Request URL
          * @param referrer    Referrer
-         * @param requestType        Exception rule modifier (either DOCUMENT or ELEMHIDE or JSINJECT)
+         * @param requestType Request type
          * @returns Filter rule found or null
          */
         findWhiteListRule: function (requestUrl, referrer, requestType) {
@@ -223,7 +376,7 @@
             var refHost = adguard.utils.url.getHost(referrer);
             var thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrer);
 
-            var cacheItem = this._searchRequestCache(requestUrl, refHost, requestType);
+            var cacheItem = this.urlExceptionsCache.searchRequestCache(requestUrl, refHost, requestType);
 
             if (cacheItem) {
                 // Element with zero index is a filter rule found last time
@@ -231,8 +384,9 @@
             }
 
             var rule = this._checkWhiteList(requestUrl, refHost, requestType, thirdParty);
+            rule = this._checkBadFilterExceptions(rule);
 
-            this._saveResultToCache(requestUrl, rule, refHost, requestType);
+            this.urlExceptionsCache.saveResultToCache(requestUrl, rule, refHost, requestType);
             return rule;
         },
 
@@ -250,7 +404,7 @@
             var documentHost = adguard.utils.url.getHost(documentUrl);
             var thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, documentUrl);
 
-            var cacheItem = this._searchRequestCache(requestUrl, documentHost, requestType);
+            var cacheItem = this.urlBlockingCache.searchRequestCache(requestUrl, documentHost, requestType);
 
             if (cacheItem) {
                 // Element with zero index is a filter rule found last time
@@ -258,9 +412,30 @@
             }
 
             var rule = this._findRuleForRequest(requestUrl, documentHost, requestType, thirdParty, documentWhitelistRule);
+            rule = this._checkBadFilterExceptions(rule);
 
-            this._saveResultToCache(requestUrl, rule, documentHost, requestType);
+            this.urlBlockingCache.saveResultToCache(requestUrl, rule, documentHost, requestType);
             return rule;
+        },
+
+        /**
+         * Searches for content rules for the specified domain
+         * @param documentUrl Document URL
+         * @returns Collection of content rules
+         */
+        getContentRulesForUrl: function (documentUrl) {
+            var documentHost = adguard.utils.url.getHost(documentUrl);
+            return this.contentFilter.getRulesForDomain(documentHost);
+        },
+
+        /**
+         * Searches for elements in document that matches given content rules
+         * @param doc Document
+         * @param rules Content rules
+         * @returns Matched elements
+         */
+        getMatchedElementsForContentRules: function (doc, rules) {
+            return this.contentFilter.getMatchedElementsForRules(doc, rules);
         },
 
         /**
@@ -333,11 +508,12 @@
 
             // Checks white list for a rule for this RequestUrl. If something is found - returning it.
             var urlWhiteListRule = this._checkWhiteList(requestUrl, documentHost, requestType, thirdParty);
+            urlWhiteListRule = this._checkBadFilterExceptions(urlWhiteListRule);
 
             // If UrlBlock is set - than we should not use UrlBlockingFilter against this request.
             // Now check if document rule has $genericblock or $urlblock modifier
-            var genericRulesAllowed = !documentWhiteListRule || !documentWhiteListRule.checkContentType("GENERICBLOCK");
-            var urlRulesAllowed = !documentWhiteListRule || !documentWhiteListRule.checkContentType("URLBLOCK");
+            var genericRulesAllowed = !documentWhiteListRule || !documentWhiteListRule.isGenericBlock();
+            var urlRulesAllowed = !documentWhiteListRule || !documentWhiteListRule.isUrlBlock();
 
             // STEP 2: Looking for blocking rule, which could be applied to the current request
 
@@ -368,63 +544,6 @@
             }
 
             return blockingRule;
-        },
-
-        /**
-         * Searches for cached filter rule
-         *
-         * @param requestUrl Request url
-         * @param refHost Referrer host
-         * @param requestType Request type
-         * @private
-         */
-        _searchRequestCache: function (requestUrl, refHost, requestType) {
-            var cacheItem = this.requestCache[requestUrl];
-            if (!cacheItem) {
-                return null;
-            }
-
-            var c = cacheItem[requestType];
-            if (c && c[1] === refHost) {
-                return c;
-            }
-
-            return null;
-        },
-
-        /**
-         * Saves resulting filtering rule to requestCache
-         *
-         * @param requestUrl Request url
-         * @param rule Rule found
-         * @param refHost Referrer host
-         * @param requestType Request type
-         * @private
-         */
-        _saveResultToCache: function (requestUrl, rule, refHost, requestType) {
-            if (this.requestCacheSize > this.requestCacheMaxSize) {
-                this._clearRequestCache();
-            }
-            if (!this.requestCache[requestUrl]) {
-                this.requestCache[requestUrl] = Object.create(null);
-                this.requestCacheSize++;
-            }
-
-            //Two-levels gives us an ability to not to override cached item for different request types with the same url
-            this.requestCache[requestUrl][requestType] = [rule, refHost];
-        },
-
-        /**
-         * Clears request cache
-         * @private
-         */
-        _clearRequestCache: function () {
-            if (this.requestCacheSize === 0) {
-                return;
-            }
-
-            this.requestCache = Object.create(null);
-            this.requestCacheSize = 0;
         }
     };
 

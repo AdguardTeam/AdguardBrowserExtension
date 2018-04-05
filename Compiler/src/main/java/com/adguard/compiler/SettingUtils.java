@@ -129,7 +129,7 @@ public class SettingUtils {
 
         String replaceClauseTemplate = "if (!isFirefox && !isOpera) {";
 
-        File file = new File(dest, "lib/content-script/preload.js");
+        File file = new File(dest, "lib/filter/filters.js");
         String content = FileUtils.readFileToString(file, "utf-8").trim();
 
         if (StringUtils.indexOf(content, replaceClauseTemplate) < 0) {
@@ -183,6 +183,7 @@ public class SettingUtils {
         // Copy assistant file
         File assistantDir = new File(dest, "adguard/assistant");
         List<String> lines = IOUtils.readLines(new StringReader(manifestContent));
+
         for (String line : lines) {
             if (line.contains("/assistant/")) {
                 String fileName = StringUtils.substringBetween(line.trim(), "\"", "\"");
@@ -193,6 +194,9 @@ public class SettingUtils {
                 manifestContent = StringUtils.replace(manifestContent, fileName, "adguard/assistant/" + copyFileName);
             }
         }
+
+        // Copy external assistant library to api folder
+        FileUtils.copyFile(new File(dest,"lib/content-script/assistant/js/assistant.js"),new File(dest,"adguard/assistant/assistant.js"));
 
         FileUtils.writeStringToFile(manifestFile, manifestContent);
 

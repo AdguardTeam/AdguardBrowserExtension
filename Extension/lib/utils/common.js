@@ -41,12 +41,7 @@ adguard.RequestTypes = {
     WEBSOCKET: "WEBSOCKET",
     WEBRTC: "WEBRTC",
     OTHER: "OTHER",
-    CSP: "CSP",
-
-    /**
-     * Synthetic request type for requests detected as pop-ups
-     */
-    POPUP: "POPUP"
+    CSP: "CSP"
 };
 
 /**
@@ -63,6 +58,7 @@ adguard.utils = (function () {
         browser: null, // BrowserUtils
         filters: null, // FilterUtils,
         workaround: null, // WorkaroundUtils
+        i18n: null, // I18nUtils
         StopWatch: null,
         Promise: null // Deferred,
     };
@@ -148,14 +144,17 @@ adguard.utils = (function () {
         },
 
         /**
-         * Look for any symbol from "chars" array starting at "start" index
+         * Look for any symbol from "chars" array starting at "start" index or from the start of the string
          *
          * @param str   String to search
-         * @param start Start index (inclusive)
          * @param chars Chars to search for
+         * @param start Start index (optional, inclusive)
          * @return int Index of the element found or null
          */
-        indexOfAny: function (str, start, chars) {
+        indexOfAny: function (str, chars, start) {
+
+            start = start || 0;
+
             if (typeof str === 'string' && str.length <= start) {
                 return -1;
             }
@@ -168,6 +167,51 @@ adguard.utils = (function () {
             }
 
             return -1;
+        },
+
+        /**
+         * Splits string by a delimiter, ignoring escaped delimiters
+         * @param str               String to split
+         * @param delimiter         Delimiter
+         * @param escapeCharacter   Escape character
+         * @param preserveAllTokens If true - preserve empty entries.
+         */
+        splitByDelimiterWithEscapeCharacter: function (str, delimiter, escapeCharacter, preserveAllTokens) {
+
+            var parts = [];
+
+            if (adguard.utils.strings.isEmpty(str)) {
+                return parts;
+            }
+
+            var sb = [];
+            for (var i = 0; i < str.length; i++) {
+
+                var c = str.charAt(i);
+
+                if (c === delimiter) {
+                    if (i === 0) { // jshint ignore:line
+                        // Ignore
+                    } else if (str.charAt(i - 1) === escapeCharacter) {
+                        sb.splice(sb.length - 1, 1);
+                        sb.push(c);
+                    } else {
+                        if (preserveAllTokens || sb.length > 0) {
+                            var part = sb.join('');
+                            parts.push(part);
+                            sb = [];
+                        }
+                    }
+                } else {
+                    sb.push(c);
+                }
+            }
+
+            if (preserveAllTokens || sb.length > 0) {
+                parts.push(sb.join(''));
+            }
+
+            return parts;
         }
     };
 
@@ -622,23 +666,65 @@ adguard.utils = (function () {
             }
 
             return blockedText;
-        },
-
-        /**
-         * Checks if it is facebook like button iframe
-         * TODO: Ugly, remove this
-         *
-         * @param url URL
-         * @returns true if it is
-         */
-        isFacebookIframe: function (url) {
-            // facebook iframe workaround
-            // do not inject anything to facebook frames
-            return url.indexOf('www.facebook.com/plugins/like.php') > -1;
         }
     };
 
     api.workaround = WorkaroundUtils;
+
+})(adguard.utils);
+
+/**
+ * Simple i18n utils
+ */
+(function (api) {
+
+    function isArrayElement(array, elem) {
+        return array.indexOf(elem) >= 0;
+    }
+
+    function isObjectKey(object, key) {
+        return key in object;
+    }
+
+    api.i18n = {
+
+        /**
+         * Tries to find locale in the given collection of locales
+         * @param locales Collection of locales (array or object)
+         * @param locale Locale (e.g. en, en_GB, pt_BR)
+         * @returns matched locale from the locales collection or null
+         */
+        normalize: function (locales, locale) {
+
+            if (!locale) {
+                return null;
+            }
+
+            // Transform Language-Country => Language_Country
+            locale = locale.replace("-", "_");
+
+            var search;
+
+            if (api.collections.isArray(locales)) {
+                search = isArrayElement;
+            } else {
+                search = isObjectKey;
+            }
+
+            if (search(locales, locale)) {
+                return locale;
+            }
+
+            // Try to search by the language
+            var parts = locale.split('_');
+            var language = parts[0];
+            if (search(locales, language)) {
+                return language;
+            }
+
+            return null;
+        }
+    };
 
 })(adguard.utils);
 

@@ -33,18 +33,20 @@ adguard.prefs = (function (adguard) {
 
         get browser() {
             return adguard.lazyGet(Prefs, 'browser', function () {
-                var browser;
-                if (this.mobile) {
-                    browser = "Android";
-                } else {
-                    browser = "Firefox";
-                }
-                return browser;
+                return 'Firefox';
             });
         },
 
         speedupStartup: function () {
             return adguard.SimplePrefs.get('speedup_startup');
+        },
+
+        /**
+         * Collect browser specific features here
+         */
+        features: {
+            responseContentFilteringSupported: false,
+            hasBackgroundTab: false
         },
 
         get ICONS() {

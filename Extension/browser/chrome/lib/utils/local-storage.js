@@ -114,6 +114,9 @@ adguard.localStorageImpl = (function () {
      * @returns {*}
      */
     var getItem = function (key) {
+        if (!isInitialized()) {
+            return null;
+        }
         if (!(key in values)) {
             migrateKeyValue(key);
         }
@@ -121,11 +124,17 @@ adguard.localStorageImpl = (function () {
     };
 
     var setItem = function (key, value) {
+        if (!isInitialized()) {
+            return;
+        }
         values[key] = value;
         write(ADGUARD_SETTINGS_PROP, values, checkError);
     };
 
     var removeItem = function (key) {
+        if (!isInitialized()) {
+            return;
+        }
         delete values[key];
         // Remove from localStorage too, as a part of migration process
         localStorage.removeItem(key);
@@ -133,6 +142,9 @@ adguard.localStorageImpl = (function () {
     };
 
     var hasItem = function (key) {
+        if (!isInitialized()) {
+            return false;
+        }
         if (key in values) {
             return true;
         }
@@ -148,7 +160,7 @@ adguard.localStorageImpl = (function () {
      * @param callback
      */
     var init = function (callback) {
-        if (values !== null) {
+        if (isInitialized()) {
             // Already initialized
             callback();
             return;
@@ -162,12 +174,21 @@ adguard.localStorageImpl = (function () {
         });
     };
 
+    /**
+     * Due to async initialization of storage, we have to check it before accessing values object
+     * @returns {boolean}
+     */
+    var isInitialized = function () {
+        return values !== null;
+    };
+
     return {
         getItem: getItem,
         setItem: setItem,
         removeItem: removeItem,
         hasItem: hasItem,
-        init: init
+        init: init,
+        isInitialized: isInitialized
     };
 
 })();

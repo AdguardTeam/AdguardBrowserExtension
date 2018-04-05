@@ -132,7 +132,7 @@
         },
 
         isFirefoxBrowser: function () {
-            return adguard.prefs.browser === "Firefox" || adguard.prefs.browser === "Android";
+            return adguard.prefs.browser === "Firefox";
         },
 
         isChromeBrowser: function () {
@@ -149,19 +149,6 @@
 
         isMacOs: function () {
             return navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-        },
-
-        /**
-         * Returns true if Shadow DOM is supported.
-         * http://caniuse.com/#feat=shadowdom
-         *
-         * In this case we transform CSS selectors and inject CSS to shadow DOM.
-         * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/44
-         */
-        isShadowDomSupported: function () {
-
-            // Shadow DOM is supported by all modern chromium browsers
-            return this.isChromium();
         },
 
         /**
@@ -326,6 +313,7 @@
             params.push('id=' + id);
             return params;
         }
+
     };
 
     api.browser = Utils;

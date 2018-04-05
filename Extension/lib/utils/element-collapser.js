@@ -20,246 +20,60 @@
 /**
  * Object that collapses or hides DOM elements and able to roll it back.
  */
-var ElementCollapser = (function() { // jshint ignore:line
-
-    var collapserStyleId = "adguard-collapse-styles";
-    var hiddenElements = [];
+var ElementCollapser = (function () { // jshint ignore:line
 
     /**
-     * Gets full DOM path to the specified element
+     * The <style> node that contains all the collapsing styles
      */
-    var getDomPath = function (el) {
-        var stack = [];
-        var stackEscaped = [];
-        while (el.parentNode !== null) {
-            var sibCount = 0;
-            var sibIndex = 0;
-            // get sibling indexes
-            for (var i = 0; i < el.parentNode.childNodes.length; i++) {
-                var sib = el.parentNode.childNodes[i];
-                if (sib.nodeName == el.nodeName) {
-                    if (sib === el) {
-                        sibIndex = sibCount;
-                    }
-                    sibCount++;
-                }
-            }
-
-            //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/373
-            var nodeName = el.nodeName.toLowerCase();
-            var nodeNameEscaped = nodeName.replace(/[^a-zA-Z0-9]/g, '\\$&');
-            if (sibCount > 1) {
-                stack.unshift(nodeName + ':nth-of-type(' + (sibIndex + 1) + ')');
-                stackEscaped.unshift(nodeNameEscaped + ':nth-of-type(' + (sibIndex + 1) + ')');
-            } else {
-                stack.unshift(nodeName);
-                stackEscaped.unshift(nodeNameEscaped);
-            }
-            el = el.parentNode;
-        }
-
-        //Remove heading html
-        //https://github.com/AdguardTeam/AdguardBrowserExtension/issues/400
-        if (stack.length > 1 && stack[0] == 'html' && stack[1] == 'body') {
-            stack.splice(0, 1);
-            stackEscaped.splice(0, 1);
-        }
-
-        return {
-            selectorText: stack.join(' > '),
-            selectorTextEscaped: stackEscaped.join(' > ')
-        };
-    };
-
-    /**
-     * Applies CSS stylesheets
-     * Special characters should be escaped in selector text
-     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/373
-     *
-     * @param rule css rule
-     * @param shadowRoot
-     */
-    var applyCss = function (rule, shadowRoot) {
-        var styleElement = getStyleElement(shadowRoot);
-        if (!styleElement) {
-            styleElement = document.createElement("style");
-            styleElement.id = collapserStyleId;
-            styleElement.setAttribute("type", "text/css");
-
-            if (shadowRoot) {
-                shadowRoot.appendChild(styleElement);
-            } else {
-                (document.head || document.documentElement).appendChild(styleElement);
-            }
-        }
-
-        styleElement.sheet.insertRule(prepareSelector(rule, !!shadowRoot), styleElement.sheet.cssRules.length);
-    };
+    var styleNode;
 
     /**
      * Adds "selectorText { display:none!important; }" style
-     *
      * @param selectorText
      * @param cssText optional
-     * @param shadowRoot optional
      */
-    var hideBySelector = function(selectorText, cssText, shadowRoot) {
+    var hideBySelector = function (selectorText, cssText) {
         var rule = selectorText + '{' + (cssText || "display: none!important;") + '}';
-        applyCss(rule, shadowRoot);
+
+        if (!styleNode) {
+            styleNode = document.createElement("style");
+            styleNode.setAttribute("type", "text/css");
+            (document.head || document.documentElement).appendChild(styleNode);
+        }
+
+        styleNode.sheet.insertRule(rule, styleNode.sheet.cssRules.length);
     };
 
     /**
      * Adds "selectorText { display:none!important; }" style
-     *
-     * @param shadowRoot optional
      */
-    var hideBySelectorAndTagName = function(selectorText, tagName, shadowRoot) {
+    var hideBySelectorAndTagName = function (selectorText, tagName) {
         if (tagName === "frame" || tagName === "iframe") {
             // Use specific style for frames due to these issues:
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/346
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/355
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/347
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/733
-            hideBySelector(selectorText, "visibility: hidden!important; height: 0px!important; min-height: 0px!important;", shadowRoot);
+            hideBySelector(selectorText, "visibility: hidden!important; height: 0px!important; min-height: 0px!important;");
         } else {
-            hideBySelector(selectorText, null, shadowRoot);
-        }
-    };
-
-    /**
-     * Unhides elements which were previously hidden by the specified selector
-     */
-    var unhideBySelector = function(selectorText, shadowRoot, selectorTextEscaped) {
-        var styleElement = getStyleElement(shadowRoot);
-        if (!styleElement || !styleElement.sheet) {
-            return;
-        }
-        var iLength = styleElement.sheet.cssRules.length;
-        while (iLength--) {
-            var cssRule = styleElement.sheet.cssRules[iLength];
-            // Returns escaped selector in FF and unescaped in Chrome
-            if (cssRule.selectorText == prepareSelector(selectorText, !!shadowRoot)
-                || cssRule.selectorText == prepareSelector(selectorTextEscaped, !!shadowRoot)) {
-                styleElement.sheet.deleteRule(iLength);
-            }
-        }
-
-        if (styleElement.sheet.cssRules.length === 0) {
-            // Schedule empty stylesheet removal
-            setTimeout(function() {
-                // Double check stylesheet size
-                if (styleElement.parentNode && styleElement.sheet && styleElement.sheet.cssRules.length === 0) {
-                    styleElement.parentNode.removeChild(styleElement);
-                }
-            }, 500);
-        }
-    };
-
-    /**
-     * Searches for the specified elements in the hiddenElements collection
-     * and returns the first occurence.
-     */
-    var findHiddenElement = function(element) {
-        var iLength = hiddenElements.length;
-        while (iLength--) {
-            var hiddenElement = hiddenElements[iLength];
-            if (hiddenElement.node === element) {
-                return hiddenElement;
-            }
-        }
-        return null;
-    };
-
-    /**
-     * Hides specified element
-     *
-     * @param shadowRoot optional
-     */
-    var hideElement = function(element, shadowRoot) {
-        var domPath = getDomPath(element);
-        var selectorText = domPath.selectorText;
-        var selectorTextEscaped = domPath.selectorTextEscaped;
-        // First check if we have hidden it already
-        var hiddenElement = findHiddenElement(element);
-        if (hiddenElement && hiddenElement.selectorText === selectorText) {
-            // Nothing changed, we should do nothing
-            return;
-        }
-
-        var tagName = element.tagName.toLowerCase();
-        hideBySelectorAndTagName(selectorTextEscaped, tagName, shadowRoot);
-
-        if (hiddenElement) {
-            // Remove redundant selector and save the new one
-            unhideBySelector(hiddenElement.selectorText, shadowRoot, hiddenElement.selectorTextEscaped);
-            hiddenElement.selectorText = selectorText;
-            hiddenElement.selectorTextEscaped = selectorTextEscaped;
-        } else {
-            hiddenElement = {
-                node: element,
-                selectorText: selectorText,
-                selectorTextEscaped: selectorTextEscaped
-            };
-            hiddenElements.push(hiddenElement);
-        }
-    };
-
-    /**
-     * Unhides specified element
-     */
-    var unhideElement = function(element, shadowRoot) {
-        var iLength = hiddenElements.length;
-        while (iLength--) {
-            var hiddenElement = hiddenElements[iLength];
-            if (hiddenElement.node === element) {
-                unhideBySelector(hiddenElement.selectorText, shadowRoot, hiddenElement.selectorTextEscaped);
-                hiddenElements.splice(iLength, 1);
-            }
+            hideBySelector(selectorText, null);
         }
     };
 
     /**
      * Creates selector for specified tagName and src attribute
      */
-    var createSelectorForSrcAttr = function(srcAttrValue, tagName) {
-        return tagName + '[src="'+ CSS.escape(srcAttrValue) + '"]';
-    };
-
-    /**
-     * Finds style containing dom element
-     *
-     * @param shadowRoot
-     * @returns {Element} or null
-     */
-    var getStyleElement = function(shadowRoot) {
-        if (shadowRoot) {
-            var el = shadowRoot.querySelector('#' + collapserStyleId);
-            if (el) {
-                return el;
-            }
-        }
-
-        return document.getElementById(collapserStyleId);
-    };
-
-    /**
-     * Prepares selector or rule text
-     *
-     * @param selector
-     * @param useShadowDom
-     * @returns {*}
-     */
-    var prepareSelector = function (selector, useShadowDom) {
-        return useShadowDom ? '::content ' + selector : selector;
+    var createSelectorForSrcAttr = function (srcAttrValue, tagName) {
+        return tagName + '[src="' + CSS.escape(srcAttrValue) + '"]';
     };
 
     /**
      * Clears priority for specified styles
      *
-     * @param element element affected
-     * @param styles array of style names
+     * @param {HTMLElement} element element affected
+     * @param {Array.<string>} styles array of style names
      */
-    var clearElStylesPriority = function(element, styles) {
+    var clearElStylesPriority = function (element, styles) {
         var elementStyle = element.style;
 
         styles.forEach(function (prop) {
@@ -272,29 +86,32 @@ var ElementCollapser = (function() { // jshint ignore:line
     };
 
     /**
-     * Collapses specified element.
+     * Collapses the specified element using a CSS style if possible (or inline style if not)
      *
-     * @param element Element to collapse
-     * @param elementUrl Element's source url
-     * @param shadowRoot optional
+     * @param {HTMLElement} element Element to collapse
+     * @param {string} elementUrl Element's source url
      */
-    var collapseElement = function(element, elementUrl, shadowRoot) {
-        
+    var collapseElement = function (element, elementUrl) {
+
+        if (isCollapsed(element)) {
+            return;
+        }
+
         var tagName = element.tagName.toLowerCase();
 
         if (elementUrl) {
-            
+
             // Check that element still has the same "src" attribute
             // If it has changed, we do not need to collapse it anymore
-            if (element.src == elementUrl) {
+            if (element.src === elementUrl) {
                 // To not to keep track of changing src for elements, we are going to collapse it with a CSS rule
                 // But we take element url, cause current source could be already modified
                 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/408
                 var srcAttribute = element.getAttribute('src');
                 var srcSelector = createSelectorForSrcAttr(srcAttribute, tagName);
-                hideBySelectorAndTagName(srcSelector, tagName, shadowRoot);
+                hideBySelectorAndTagName(srcSelector, tagName);
 
-                // Remove important priority from element style
+                // Remove important priority from the element style
                 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/733
                 clearElStylesPriority(element, ['display', 'visibility', 'height', 'min-height']);
             }
@@ -324,47 +141,32 @@ var ElementCollapser = (function() { // jshint ignore:line
         }
     };
 
+    /**
+     * Checks if specified element is already collapsed or not.
+     * There is a big chance that we've already done it from the background page (see collapseElement method in webrequest.js)
+     * 
+     * @param {HTMLElement} element Element to check
+     */
+    var isCollapsed = function (element) {
+        var computedStyle = window.getComputedStyle(element);
+        return (computedStyle && computedStyle.display === "none");
+    };
+
+    /**
+     * Removes the collapser's style node
+     */
+    var clear = function() {
+        if (!styleNode) {
+            return;
+        }
+
+        styleNode.parentNode.removeChild(styleNode);
+    };
+
+    // EXPOSE
     return {
-        /**
-         * Collapses specified element using inline style
-         *
-         * @param element Element to collapse
-         * @param elementUrl Element's source url
-         * @param shadowRoot optional shadow root element
-         */
         collapseElement: collapseElement,
-
-        /**
-         * Hides specified element
-         *
-         * @param element Element to hide
-         * @param shadowRoot optional shadow root element
-         */
-        hideElement: hideElement,
-
-        /**
-         * Removes the style used to hide the specified element
-         *
-         * @param element Element to unhide
-         * @param shadowRoot optional shadow root element
-         */
-        unhideElement: unhideElement,
-
-        /**
-         * Adds "selectorText { display:none!important; }" style
-         *
-         * @param selectorText CSS selector
-         * @param cssText (optional) Overrides style used for hiding
-         * @param shadowRoot optional shadow root element
-         */
-        hideBySelector: hideBySelector,
-
-        /**
-         * Unhides elements which were previously hidden by the specified selector
-         *
-         * @param selectorText CSS selector
-         * @param shadowRoot optional shadow root element
-         */
-        unhideBySelector: unhideBySelector
+        isCollapsed: isCollapsed,
+        clear: clear
     };
 })();

@@ -26,14 +26,14 @@
      * @param url                 Request url
      * @param referrerHost        Referrer host
      * @param thirdParty          Is request third-party or not
-     * @param contentTypes        Request content types mask
+     * @param requestType         Request type
      * @param genericRulesAllowed If true - generic rules are allowed
      * @return true if rule should filter this request
      */
-    function isFiltered(rule, url, referrerHost, thirdParty, contentTypes, genericRulesAllowed) {
+    function isFiltered(rule, url, referrerHost, thirdParty, requestType, genericRulesAllowed) {
         return rule.isPermitted(referrerHost) &&
             (genericRulesAllowed || !rule.isGeneric()) &&
-            rule.isFiltered(url, thirdParty, contentTypes);
+            rule.isFiltered(url, thirdParty, requestType);
     }
 
     /**
@@ -43,23 +43,24 @@
      * @param url                 Request url
      * @param referrerHost        Request referrer host
      * @param thirdParty          Is request third-party or not
-     * @param contentTypes        Request content types mask
+     * @param requestType         Request type
      * @param genericRulesAllowed If true - generic rules are allowed
      * @param findFirst           If true - find first matching rule and return it, otherwise continue search
      * @return Collection of matching rules or first matching rule or null if nothing found
      */
-    function filterRules(rules, url, referrerHost, thirdParty, contentTypes, genericRulesAllowed, findFirst) {
+    function filterRules(rules, url, referrerHost, thirdParty, requestType, genericRulesAllowed, findFirst) {
 
         var rule, i;
 
         var result = null;
 
-        if (api.UrlFilterRule.contentTypes[contentTypes] === api.UrlFilterRule.contentTypes.DOCUMENT) {
+        if (requestType === adguard.RequestTypes.DOCUMENT) {
             // Looking for document level rules
             for (i = 0; i < rules.length; i++) {
                 rule = rules[i];
-                if ((api.UrlFilterRule.contentTypes.DOCUMENT_LEVEL_EXCEPTIONS & rule.permittedContentType) > 0 && // jshint ignore:line
-                    isFiltered(rule, url, referrerHost, thirdParty, "DOCUMENT_LEVEL_EXCEPTIONS", genericRulesAllowed)) {
+                if (rule.isDocumentLevel() &&
+                    isFiltered(rule, url, referrerHost, thirdParty, requestType, genericRulesAllowed)) {
+
                     if (findFirst) {
                         return rule;
                     }
@@ -74,7 +75,7 @@
 
         for (i = 0; i < rules.length; i++) {
             rule = rules[i];
-            if (isFiltered(rule, url, referrerHost, thirdParty, contentTypes, genericRulesAllowed)) {
+            if (isFiltered(rule, url, referrerHost, thirdParty, requestType, genericRulesAllowed)) {
                 if (findFirst) {
                     return rule;
                 }
@@ -95,11 +96,11 @@
      * @param url URL
      * @param referrerHost Referrer Host
      * @param thirdParty Is third-party request?
-     * @param contentTypes Request content types mask
+     * @param requestType Request type
      * @param genericRulesAllowed If true - generic rules are allowed
      */
-    function findFirstRule(rules, url, referrerHost, thirdParty, contentTypes, genericRulesAllowed) {
-        return filterRules(rules, url, referrerHost, thirdParty, contentTypes, genericRulesAllowed, true);
+    function findFirstRule(rules, url, referrerHost, thirdParty, requestType, genericRulesAllowed) {
+        return filterRules(rules, url, referrerHost, thirdParty, requestType, genericRulesAllowed, true);
     }
 
     /**
@@ -108,11 +109,11 @@
      * @param url URL
      * @param referrerHost Referrer Host
      * @param thirdParty Is third-party request?
-     * @param contentTypes Request content types mask
+     * @param requestType Request type
      * @param genericRulesAllowed If true - generic rules are allowed
      */
-    function findAllRules(rules, url, referrerHost, thirdParty, contentTypes, genericRulesAllowed) {
-        return filterRules(rules, url, referrerHost, thirdParty, contentTypes, genericRulesAllowed, false);
+    function findAllRules(rules, url, referrerHost, thirdParty, requestType, genericRulesAllowed) {
+        return filterRules(rules, url, referrerHost, thirdParty, requestType, genericRulesAllowed, false);
     }
 
     /**
@@ -174,11 +175,11 @@
          * @param url                 Url to check
          * @param documentHost        Request document host
          * @param thirdParty          Is request third-party or not
-         * @param contentTypes        Request content types mask
+         * @param requestType         Request type
          * @param genericRulesAllowed If true - generic rules are allowed
          * @return First matching rule or null if no match found
          */
-        findRule: function (url, documentHost, thirdParty, contentTypes, genericRulesAllowed) {
+        findRule: function (url, documentHost, thirdParty, requestType, genericRulesAllowed) {
 
             if (!url) {
                 return null;
@@ -191,7 +192,7 @@
 
             // Check against rules with shortcuts
             if (rules && rules.length > 0) {
-                rule = findFirstRule(rules, url, documentHost, thirdParty, contentTypes, genericRulesAllowed);
+                rule = findFirstRule(rules, url, documentHost, thirdParty, requestType, genericRulesAllowed);
                 if (rule) {
                     return rule;
                 }
@@ -199,7 +200,7 @@
 
             rules = this.domainsLookupTable.lookupRules(documentHost);
             if (rules && rules.length > 0) {
-                rule = findFirstRule(rules, url, documentHost, thirdParty, contentTypes, genericRulesAllowed);
+                rule = findFirstRule(rules, url, documentHost, thirdParty, requestType, genericRulesAllowed);
                 if (rule) {
                     return rule;
                 }
@@ -207,7 +208,7 @@
 
             // Check against rules without shortcuts
             if (this.rulesWithoutShortcuts.length > 0) {
-                rule = findFirstRule(this.rulesWithoutShortcuts, url, documentHost, thirdParty, contentTypes, genericRulesAllowed);
+                rule = findFirstRule(this.rulesWithoutShortcuts, url, documentHost, thirdParty, requestType, genericRulesAllowed);
                 if (rule) {
                     return rule;
                 }
@@ -222,10 +223,10 @@
          * @param url                 Url to check
          * @param documentHost        Request document host
          * @param thirdParty          Is request third-party or not
-         * @param contentTypes        Request content types mask
+         * @param requestType         Request type
          * @return All matching rules or null if no match found
          */
-        findRules: function (url, documentHost, thirdParty, contentTypes) {
+        findRules: function (url, documentHost, thirdParty, requestType) {
 
             if (!url) {
                 return null;
@@ -248,7 +249,7 @@
             allRules = allRules.concat(this.rulesWithoutShortcuts);
 
             if (allRules && allRules.length > 0) {
-                return findAllRules(allRules, url, documentHost, thirdParty, contentTypes, true);
+                return findAllRules(allRules, url, documentHost, thirdParty, requestType, true);
             }
 
             return null;

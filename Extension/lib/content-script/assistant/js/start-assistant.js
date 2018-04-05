@@ -15,7 +15,7 @@
  * along with Adguard Browser Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global contentPage, I18nHelper, AdguardAssistant, balalaika, AdguardSelectorLib, AdguardRulesConstructorLib, SliderWidget */
+/* global contentPage, adguardAssistant */
 
 (function () {
 
@@ -34,7 +34,7 @@
         return;
     }
 
-    var adguardAssistant;
+    var assistant;
 
     //save right-clicked element for assistant
     var clickedEl = null;
@@ -48,44 +48,24 @@
         switch (message.type) {
             case 'initAssistant':
                 var options = message.options;
-                var localization = options.localization;
                 var addRuleCallbackName = options.addRuleCallbackName;
-
-                var onElementBlocked = function (ruleText, callback) {
-                    contentPage.sendMessage({type: addRuleCallbackName, ruleText: ruleText}, callback);
-                };
-
-                var translateElement = function (element, msgId) {
-                    var message = localization[msgId];
-                    I18nHelper.translateElement(element, message);
-                };
-
-                if (adguardAssistant) {
-                    adguardAssistant.destroy();
-                } else {
-                    adguardAssistant = new AdguardAssistant(balalaika, AdguardSelectorLib, AdguardRulesConstructorLib, SliderWidget);
-                }
 
                 var selectedElement = null;
                 if (clickedEl && options.selectElement) {
                     selectedElement = clickedEl;
                 }
 
-                adguardAssistant.init({
-                    cssLink: options.cssLink,
-                    onElementBlocked: onElementBlocked,
-                    translateElement: translateElement,
-                    selectedElement: selectedElement
-                });
-                break;
-            case 'destroyAssistant':
-                if (adguardAssistant) {
-                    adguardAssistant.destroy();
-                    adguardAssistant = null;
+                if (!assistant) {
+                    assistant = adguardAssistant();
+                } else {
+                    assistant.close();
                 }
-                break;
+
+                assistant.start(selectedElement, function(rules) {
+                    contentPage.sendMessage({type: addRuleCallbackName, ruleText: rules});
+                });
+            break;
         }
     });
 
 })();
-

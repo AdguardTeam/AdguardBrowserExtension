@@ -19,7 +19,23 @@
 
     'use strict';
 
-    var CSP_HEADER_NAME = 'Content-Security-Policy';
+    const CSP_HEADER_NAME = 'Content-Security-Policy';
+
+    /**
+     * In the case of the tabs.insertCSS API support we're trying to collapse a blocked element from the background page.
+     * In order to do it we need to have a mapping requestType<->tagNames.
+     */
+    const REQUEST_TYPE_COLLAPSE_TAG_NAMES = {
+        [adguard.RequestTypes.SUBDOCUMENT]: ["frame", "iframe"],
+        [adguard.RequestTypes.IMAGE]: ["img"]
+    };
+
+    /**
+     * In the newer versions of Firefox and Chromium we're able to inject CSS and scripts
+     * using a better approach -- `browser.tabs.insertCSS` and `browser.tabs.executeScript`
+     * instead of the traditional one (messaging to the content script).
+     */
+    const shouldUseInsertCSSAndExecuteScript = adguard.prefs.features.canUseInsertCSSAndExecuteScript;
 
     /**
      * Retrieve referrer url from request details.
@@ -44,31 +60,99 @@
      * @returns {boolean} False if request must be blocked
      */
     function onBeforeRequest(requestDetails) {
-
         var tab = requestDetails.tab;
+        var tabId = tab.tabId;
+        var requestId = requestDetails.requestId;
         var requestUrl = requestDetails.requestUrl;
         var requestType = requestDetails.requestType;
+        var frameId = requestDetails.frameId;
+        var requestFrameId = requestDetails.requestFrameId || 0;
 
         if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
-            adguard.frames.recordFrame(tab, requestDetails.frameId, requestUrl, requestType);
+            adguard.frames.recordFrame(tab, frameId, requestUrl, requestType);
         }
 
         if (requestType === adguard.RequestTypes.DOCUMENT) {
+            // New document is being loaded -- clear the filtering log for that tab
+            adguard.filteringLog.clearEventsByTabId(tabId);
+
             // Reset tab button state
             adguard.listeners.notifyListeners(adguard.listeners.UPDATE_TAB_BUTTON_STATE, tab, true);
+
+            /**
+             * In the case of the "about:newtab" pages we don't receive onResponseReceived event for the main_frame, so we have to append log event here.
+             * Also if chrome://newtab is overwritten, we won't receive any webRequest events for the main_frame
+             * Unfortunately, we can't do anything in this case and just must remember about it
+             */
+            var tabRequestRule = adguard.frames.getFrameWhiteListRule(tab);
+            adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, requestUrl, requestType, tabRequestRule, requestId);
+
             return;
         }
 
         if (!adguard.utils.url.isHttpOrWsRequest(requestUrl)) {
+            // Do not mess with other extensions
             return;
         }
 
         var referrerUrl = getReferrerUrl(requestDetails);
-
         var requestRule = adguard.webRequestService.getRuleForRequest(tab, requestUrl, referrerUrl, requestType);
-        adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule);
 
-        return adguard.webRequestService.getBlockedResponseByRule(requestRule);
+        adguard.webRequestService.postProcessRequest(tab, requestUrl, referrerUrl, requestType, requestRule, requestId);
+        var response = adguard.webRequestService.getBlockedResponseByRule(requestRule, requestType);
+
+        if (response && response.cancel) {
+            collapseElement(tabId, requestFrameId, requestUrl, referrerUrl, requestType);
+        }
+
+        return response;
+    }
+
+    /**
+     * Tries to collapse a blocked element using tabs.insertCSS.
+     * 
+     * This method of collapsing has numerous advantages over the traditional one.
+     * First of all, it prevents blocked elements flickering as it occurs earlier.
+     * Second, it is harder to detect as there's no custom <style> node required.
+     * 
+     * However, we're still keeping the old approach intact - we have not enough information 
+     * here to properly collapse elements that use relative URLs (<img src='../path_to_element'>).
+     * 
+     * @param {number} tabId Tab id
+     * @param {number} requestFrameId Id of a frame request was sent from
+     * @param {string} requestUrl Request URL
+     * @param {string} referrerUrl Referrer URL
+     * @param {string} requestType A member of adguard.RequestTypes
+     */
+    function collapseElement(tabId, requestFrameId, requestUrl, referrerUrl, requestType) {
+        if (!shouldUseInsertCSSAndExecuteScript) {
+            return;
+        }
+
+        let tagNames = REQUEST_TYPE_COLLAPSE_TAG_NAMES[requestType];
+        if (!tagNames) {
+            // Collapsing is not supported for this request type
+            return;
+        }
+
+
+        // Strip the protocol and host name (for first-party requests) from the selector
+        let thirdParty = adguard.utils.url.isThirdPartyRequest(requestUrl, referrerUrl);
+        let srcUrlStartIndex = requestUrl.indexOf("//");
+        if (!thirdParty) {
+            srcUrlStartIndex = requestUrl.indexOf("/", srcUrlStartIndex + 2);
+        }
+        let srcUrl = requestUrl.substring(srcUrlStartIndex);
+
+        const collapseStyle = "{ display: none!important; visibility: hidden!important; height: 0px!important; min-height: 0px!important; }";
+        let css = "";
+        let iTagNames = tagNames.length;
+
+        while (iTagNames--) {
+            css += tagNames[iTagNames] + "[src$=\"" + srcUrl + "\"] " + collapseStyle + "\n";
+        }
+
+        adguard.tabs.insertCssCode(tabId, requestFrameId, css);
     }
 
     /**
@@ -123,12 +207,23 @@
         var responseHeaders = requestDetails.responseHeaders;
         var requestType = requestDetails.requestType;
         var referrerUrl = getReferrerUrl(requestDetails);
+        var requestId = requestDetails.requestId;
+        var statusCode = requestDetails.statusCode;
+        var method = requestDetails.method;
 
-        adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders);
+        adguard.webRequestService.processRequestResponse(tab, requestUrl, referrerUrl, requestType, responseHeaders, requestId);
 
         // Safebrowsing check
-        if (requestType === adguard.RequestTypes.DOCUMENT) {
+        if (requestType === adguard.RequestTypes.DOCUMENT &&
+            // Don't apply safebrowsing filter in case of redirect
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/995
+            statusCode !== 301 && statusCode !== 302) {
             filterSafebrowsing(tab, requestUrl);
+        }
+
+        if (adguard.contentFiltering) {
+            var contentType = adguard.utils.browser.getHeaderValueByName(responseHeaders, 'content-type');
+            adguard.contentFiltering.apply(tab, requestUrl, referrerUrl, requestType, requestId, statusCode, method, contentType);
         }
 
         if (requestType === adguard.RequestTypes.DOCUMENT || requestType === adguard.RequestTypes.SUBDOCUMENT) {
@@ -201,7 +296,7 @@
         }
         if (legacyCspRule) {
             adguard.webRequestService.recordRuleHit(tab, legacyCspRule, frameUrl);
-            adguard.filteringLog.addEvent(tab, 'content-security-policy-check', frameUrl, adguard.RequestTypes.CSP, legacyCspRule);
+            adguard.filteringLog.addHttpRequestEvent(tab, 'content-security-policy-check', frameUrl, adguard.RequestTypes.CSP, legacyCspRule);
         }
 
         /**
@@ -220,7 +315,7 @@
                     });
                 }
                 adguard.webRequestService.recordRuleHit(tab, rule, requestUrl);
-                adguard.filteringLog.addEvent(tab, requestUrl, frameUrl, adguard.RequestTypes.CSP, rule);
+                adguard.filteringLog.addHttpRequestEvent(tab, requestUrl, frameUrl, adguard.RequestTypes.CSP, rule);
             }
         }
 
@@ -266,7 +361,8 @@
         adguard.safebrowsing.checkSafebrowsingFilter(mainFrameUrl, referrerUrl, function (safebrowsingUrl) {
             // Chrome doesn't allow open extension url in incognito mode
             // So close current tab and open new
-            if (incognitoTab && adguard.utils.browser.isChromium()) {
+            if (adguard.utils.browser.isChromium() && incognitoTab) {
+                // Closing tab before opening a new one may lead to browser crash (Chromium)
                 adguard.ui.openTab(safebrowsingUrl, {}, function () {
                     adguard.tabs.remove(tab.tabId);
                 });
@@ -283,7 +379,6 @@
     adguard.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, ["<all_urls>"]);
     adguard.webRequest.onHeadersReceived.addListener(onHeadersReceived, ["<all_urls>"]);
 
-
     // AG for Windows and Mac checks either request signature or request Referer to authorize request.
     // Referer cannot be forged by the website so it's ok for add-on authorization.
     if (adguard.integration.isSupported() && adguard.utils.browser.isChromium()) {
@@ -297,9 +392,9 @@
                 headers = adguard.utils.browser.setHeaderValue(details.requestHeaders, authHeaders[i].headerName, authHeaders[i].headerValue);
             }
 
-            return {requestHeaders: headers};
+            return { requestHeaders: headers };
 
-        }, {urls: [adguard.integration.getIntegrationBaseUrl() + "*"]}, ["requestHeaders", "blocking"]);
+        }, { urls: [adguard.integration.getIntegrationBaseUrl() + "*"] }, ["requestHeaders", "blocking"]);
     }
 
     var handlerBehaviorTimeout = null;
@@ -320,59 +415,112 @@
         }
     });
 
-    /**
-     * When frame is committed we send to it js rules
-     * We do this because we need to apply js rules as soon as possible
-     */
-    (function fastScriptRulesLoader(adguard) {
+    if (shouldUseInsertCSSAndExecuteScript) {
 
-        var isEdgeBrowser = adguard.utils.browser.isEdgeBrowser();
+        /**
+         * Applying CSS/JS rules from the background page.
+         * 
+         * When the frame is commited (webNavigation.onCommitted), we use browser.tabs.insertCSS 
+         * and browser.tabs.executeScript functions to inject our CSS/JS rules. This
+         * method can be used in modern Chrome and FF only.
+         */
+        (function (adguard) {
 
-        function tryInjectScripts(tabId, frameId, url, result, limit) {
-
-            var options = null;
-            if (!isEdgeBrowser) {
-                /**
-                 * In Edge browser: If we pass frameId in tabs.sendMessage then message aren't delivered to content-script
-                 */
-                options = {frameId: frameId};
-            }
-
-            adguard.tabs.sendMessage(tabId, result, function (response) {
-
-                // Try again if no response was received from content-script
-                if (adguard.runtime.lastError || !response) {
-
-                    if (--limit <= 0) {
-                        return;
-                    }
-
-                    setTimeout(function () {
-                        tryInjectScripts(tabId, frameId, url, result, limit);
-                    }, 10);
-                }
-
-            }, options);
-        }
-
-        adguard.webNavigation.onCommitted.addListener(function (tabId, frameId, url) {
+            const REQUEST_FILTER_READY_TIMEOUT = 100;
 
             /**
-             * Messaging a specific frame is not yet supported in Edge
+             * Taken from
+             * {@link https://github.com/seanl-adg/InlineResourceLiteral/blob/master/index.js#L136}
+             * {@link https://github.com/joliss/js-string-escape/blob/master/index.js}
              */
-            if (frameId !== 0 && isEdgeBrowser) {
-                return;
+            const reJsEscape = /["'\\\n\r\u2028\u2029]/g;
+            function escapeJs(match) {
+                switch (match) {
+                    case '"':
+                    case "'":
+                    case '\\':
+                        return '\\' + match;
+                    case '\n':
+                        return '\\n\\\n' // Line continuation character for ease
+                    // of reading inlined resource.
+                    case '\r':
+                        return ''        // Carriage returns won't have
+                    // any semantic meaning in JS
+                    case '\u2028':
+                        return '\\u2028'
+                    case '\u2029':
+                        return '\\u2029'
+                }
             }
 
-            var result = adguard.webRequestService.processGetSelectorsAndScripts({tabId: tabId}, url, {filter: ['scripts']});
-            if (!result.scripts || result.scripts.length === 0) {
-                return;
+            function buildScriptText(scriptText) {
+
+                if (!scriptText) {
+                    return null;
+                }
+
+                // Executes scripts in a scope of page.
+                let injectedScript = '(function() {\
+                    var script = document.createElement("script");\
+                    script.setAttribute("type", "text/javascript");\
+                    script.textContent = "' + scriptText.replace(reJsEscape, escapeJs) + '";\
+                    var parent = document.head || document.documentElement;\
+                    try {\
+                        parent.appendChild(script);\
+                        parent.removeChild(script);\
+                    } catch (e) {\
+                    } finally {\
+                        return true;\
+                    }\
+                })()';
+
+                return injectedScript;
             }
 
-            result.type = 'injectScripts';
-            tryInjectScripts(tabId, frameId, url, result, 5);
-        });
+            /**
+             * @param {SelectorsData} selectorsData Selectors data
+             * @returns {string} CSS to be supplied to insertCSS or null if selectors data is empty
+             */
+            function buildCssText(selectorsData) {
+                if (!selectorsData || !selectorsData.css) {
+                    return null;
+                }
 
-    })(adguard);
+                return selectorsData.css.join("\n");
+            }
 
+            /**
+             * Injects necessary CSS and scripts into the web page.
+             * 
+             * @param {*} details Details about the navigation event: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webNavigation/onCommitted#details
+             */
+            function tryInject(details) {
+                let tabId = details.tabId;
+                let frameId = details.frameId;
+                let url = details.url;
+
+                let cssFilterOption = adguard.rules.CssFilter.RETRIEVE_TRADITIONAL_CSS;
+                const retrieveScripts = true;
+                let result = adguard.webRequestService.processGetSelectorsAndScripts({ tabId: tabId }, url, cssFilterOption, retrieveScripts);
+
+                if (result.requestFilterReady === false) {
+                    setTimeout(tryInject, REQUEST_FILTER_READY_TIMEOUT, details);
+                    return;
+                }
+
+                let scriptText = buildScriptText(result.scripts);
+                let cssText = buildCssText(result.selectors);
+
+                if (scriptText) {
+                    adguard.tabs.executeScriptCode(tabId, frameId, scriptText);
+                }
+
+                if (cssText) {
+                    adguard.tabs.insertCssCode(tabId, frameId, cssText);
+                }
+            }
+
+            adguard.webNavigation.onCommitted.addListener(tryInject);
+        })(adguard);
+    }
 })(adguard);

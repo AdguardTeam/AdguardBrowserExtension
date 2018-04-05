@@ -364,6 +364,11 @@
             }
         };
 
+        // Injecting resources to tabs
+        var insertCssCode = tabsImpl.insertCssCode;
+        var executeScriptCode = tabsImpl.executeScriptCode;
+        var executeScriptFile = tabsImpl.executeScriptFile;
+
         return {
 
             // Events
@@ -391,7 +396,11 @@
             // Other
             updateTabMetadata: updateTabMetadata,
             getTabMetadata: getTabMetadata,
-            clearTabMetadata: clearTabMetadata
+            clearTabMetadata: clearTabMetadata,
+
+            insertCssCode: insertCssCode,
+            executeScriptCode: executeScriptCode,
+            executeScriptFile: executeScriptFile
         };
 
     })(adguard.tabsImpl);

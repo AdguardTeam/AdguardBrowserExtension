@@ -63,18 +63,10 @@
 		},
 		{
 			"all_frames": false,
-			"css": [
-				"lib/content-script/assistant/css/selector.css"
-			],
 			"js": [
-				"lib/libs/diff_match_patch.js",
-				"lib/libs/dom.patched.js",
-				"lib/libs/balalaika.patched.js",
 				"lib/content-script/i18n-helper.js",
-				"lib/content-script/assistant/js/adguard-selector.js",
-				"lib/content-script/assistant/js/adguard-rules-constructor.js",
-				"lib/content-script/assistant/js/slider-widget.js",
-				"lib/content-script/assistant/js/assistant.js",
+                "lib/libs/balalaika.patched.js",
+                "lib/content-script/devtools/devtools-rules-constructor.js",
 				"lib/content-script/assistant/js/start-assistant.js",
 				"lib/content-script/devtools-helper.js"
 			],
@@ -88,9 +80,6 @@
 			"all_frames": false,
 			"js": [
 				"lib/libs/jquery-2.2.4.min.js",
-				"lib/content-script/i18n-helper.js",
-				"lib/pages/i18n.js",
-				"lib/pages/script.js",
 				"lib/pages/thankyou.js"
 			],
 			"matches": [
@@ -144,7 +133,7 @@
 				"lib/content-script/oauth.js"
 			],
 			"matches": [
-				"*://*.testsync.adguard.com/*"
+				"*://*.testauth.adguard.com/*"
 			],
 			"run_at": "document_end"
 		}
@@ -164,10 +153,5 @@
 		"storage",
 		"unlimitedStorage",
 		"contextMenus"
-	],
-
-	"web_accessible_resources": [
-		"lib/content-script/assistant/css/assistant.css",
-		"lib/content-script/assistant/i/close.svg"
 	]
 }

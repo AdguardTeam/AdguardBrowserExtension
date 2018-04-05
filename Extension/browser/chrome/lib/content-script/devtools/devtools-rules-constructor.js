@@ -16,9 +16,9 @@
  */
 
 /**
- * Adguard rules constructor library
+ * DevTools rules constructor helper
  */
-var AdguardRulesConstructorLib = (function () { // jshint ignore:line
+var DevToolsRulesConstructor = (function () { // jshint ignore:line
 
     var CSS_RULE_MARK = '##';
     var RULE_OPTIONS_MARK = '$';
@@ -124,6 +124,36 @@ var AdguardRulesConstructorLib = (function () { // jshint ignore:line
         return path.join(" > ");
     };
 
+    /**
+     * Constructs css selector by combining classes by AND
+     * @param classList
+     * @returns {string}
+     */
+    var constructClassCssSelectorByAND = function (classList) {
+        var selectors = [];
+        if (classList) {
+            for (var i = 0; i < classList.length; i++) {
+                selectors.push('.' + CSS.escape(classList[i]));
+            }
+        }
+        return selectors.join('');
+    };
+
+    /**
+     * Constructs css selector by combining classes by OR
+     * @param classList
+     * @returns {string}
+     */
+    var constructClassCssSelectorByOR = function (classList) {
+        var selectors = [];
+        if (classList) {
+            for (var i = 0; i < classList.length; i++) {
+                selectors.push('.' + CSS.escape(classList[i]));
+            }
+        }
+        return selectors.join(', ');
+    };
+
 	/**
 	 * Constructs element selector for matching elements that contain any of classes in original element
 	 * For example <el class="cl1 cl2 cl3"></el> => .cl1, .cl2, .cl3
@@ -167,6 +197,46 @@ var AdguardRulesConstructorLib = (function () { // jshint ignore:line
         return selector ? CSS_RULE_MARK + selector : '';
     };
 
+    var isValidUrl = function(value) {
+        if (value) {
+            linkHelper.href = value;
+            if (linkHelper.hostname) {
+                return true;
+            }
+        }
+
+        return false;
+    };
+
+    var haveUrlBlockParameter = function (element) {
+        var value = getUrlBlockAttribute(element);
+        return value && value !== '';
+    };
+
+    var haveClassAttribute = function (element) {
+        return element.classList && element.classList.length > 0;
+    };
+
+    var haveIdAttribute = function (element) {
+        return element.id && element.id.trim() !== '';
+    };
+
+    var cropDomain = function (url) {
+        var domain = getUrl(url).host;
+        return domain.replace("www.", "").replace(/:\d+/, '');
+    };
+
+    var getUrl = function (url) {
+        var pattern = "^(([^:/\\?#]+):)?(//(([^:/\\?#]*)(?::([^/\\?#]*))?))?([^\\?#]*)(\\?([^#]*))?(#(.*))?$";
+        var rx = new RegExp(pattern);
+        var parts = rx.exec(url);
+
+        return {
+            host: parts[4] || "",
+            path: parts[7] || ""
+        };
+    };
+
     var constructUrlBlockRuleText = function (element, urlBlockAttribute, oneDomain, domain) {
 
         if (!urlBlockAttribute) {
@@ -201,86 +271,8 @@ var AdguardRulesConstructorLib = (function () { // jshint ignore:line
         return null;
     };
 
-    var haveUrlBlockParameter = function (element) {
-        var value = getUrlBlockAttribute(element);
-        return value && value !== '';
-    };
-
-    var haveClassAttribute = function (element) {
-        return element.classList && element.classList.length > 0;
-    };
-
-    var haveIdAttribute = function (element) {
-        return element.id && element.id.trim() !== '';
-    };
-
-    var cropDomain = function (url) {
-        var domain = getUrl(url).host;
-        return domain.replace("www.", "").replace(/:\d+/, '');
-    };
-
-    var getUrl = function (url) {
-        var pattern = "^(([^:/\\?#]+):)?(//(([^:/\\?#]*)(?::([^/\\?#]*))?))?([^\\?#]*)(\\?([^#]*))?(#(.*))?$";
-        var rx = new RegExp(pattern);
-        var parts = rx.exec(url);
-
-        return {
-            host: parts[4] || "",
-            path: parts[7] || ""
-        };
-    };
-
-    var isValidUrl = function(value) {
-        if (value) {
-            linkHelper.href = value;
-            if (linkHelper.hostname) {
-                return true;
-            }
-        }
-
-        return false;
-    };
-
-    /**
-     * Constructs css selector by combining classes by AND
-     * @param classList
-     * @returns {string}
-     */
-    var constructClassCssSelectorByAND = function (classList) {
-        var selectors = [];
-        if (classList) {
-            for (var i = 0; i < classList.length; i++) {
-                selectors.push('.' + CSS.escape(classList[i]));
-            }
-        }
-        return selectors.join('');
-    };
-
-    /**
-     * Constructs css selector by combining classes by OR
-     * @param classList
-     * @returns {string}
-     */
-    var constructClassCssSelectorByOR = function (classList) {
-        var selectors = [];
-        if (classList) {
-            for (var i = 0; i < classList.length; i++) {
-                selectors.push('.' + CSS.escape(classList[i]));
-            }
-        }
-        return selectors.join(', ');
-    };
-
     // Public API
     var api = {};
-
-    /**
-     * Utility method
-     *
-     * @param element
-     * @returns {string}
-     */
-    api.makeCssNthChildFilter = makeCssNthChildFilter;
 
     /**
      * Returns detailed element info

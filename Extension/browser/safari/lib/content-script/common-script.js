@@ -39,10 +39,20 @@
         var sendMessage = function (dispatcher, eventTarget, message, responseCallback) {
 
             var requestId = sendMessageNextRequestId++;
+            var responseReceived = false;
 
             if (typeof responseCallback === 'function') {
                 var responseListener = function (event) {
                     if (event.name === "response-" + requestId) {
+                        if (responseReceived) {
+                            // Due to some strange bug in Safari removeEventListener triggers the event one more time,
+                            // so here we skip these already handled events.
+                            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/979
+                            return;
+                        }
+
+                        responseReceived = true;
+
                         eventTarget.removeEventListener('message', responseListener, false);
                         responseCallback(event.message);
                     }
@@ -79,24 +89,17 @@
     // I18n implementation
     adguard.i18n = (function () {
 
-        var defaultLocale = 'en';
-        var supportedLocales = ['ru', 'en', 'tr', 'uk', 'de', 'pl', 'pt_BR', 'pt_PT', 'ko', 'zh_CN', 'sr', 'fr', 'sk', 'hy', 'es', 'es_419', 'it', 'id'];
+        var DEFAULT_LOCALE = 'en';
 
-        var _messages = null;
-        var _defaultMessages = null;
+        var messages = null;
+        var defaultMessages = null;
 
-        var _uiLocale = (function () {
+        var uiLocale = (function () {
             var prefix = navigator.language;
             var parts = prefix.replace('-', '_').split('_');
             var locale = parts[0].toLowerCase();
             if (parts[1]) {
                 locale += '_' + parts[1].toUpperCase();
-            }
-            if (supportedLocales.indexOf(locale) < 0) {
-                locale = parts[0];
-            }
-            if (supportedLocales.indexOf(locale) < 0) {
-                locale = defaultLocale;
             }
             return locale;
         })();
@@ -107,7 +110,7 @@
             try {
                 xhr.send();
             } catch (e) {
-                return Object.create(null);
+                return null;
             }
             return JSON.parse(xhr.responseText);
         }
@@ -118,28 +121,34 @@
                 return getUILanguage();
             }
 
-            if (!_messages) {
-                _messages = getMessages(_uiLocale);
-                if (_uiLocale === defaultLocale) {
-                    _defaultMessages = _messages;
+            if (!messages) {
+                // Use locale
+                messages = getMessages(uiLocale);
+                if (messages === null) {
+                    // Use only language from locale
+                    uiLocale = uiLocale.substring(0, 2);
+                    messages = getMessages(uiLocale);
+                }
+                if (uiLocale === DEFAULT_LOCALE) {
+                    defaultMessages = messages;
                 }
             }
 
             // Load messages for default locale
-            if (!_defaultMessages) {
-                _defaultMessages = getMessages(defaultLocale);
+            if (!defaultMessages) {
+                defaultMessages = getMessages(DEFAULT_LOCALE) || Object.create(null);
             }
 
-            return _getI18nMessage(msgId, substitutions);
+            return getI18nMessage(msgId, substitutions);
         };
 
         var getUILanguage = function () {
-            return _uiLocale;
+            return uiLocale;
         };
 
-        function _getI18nMessage(msgId, substitutions) {
+        function getI18nMessage(msgId, substitutions) {
 
-            var msg = _messages[msgId] || _defaultMessages[msgId];
+            var msg = messages[msgId] || defaultMessages[msgId];
             if (!msg) {
                 return "";
             }
